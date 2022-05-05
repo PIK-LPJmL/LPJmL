@@ -20,6 +20,7 @@ void freefilename(Filename *filename)
 {
   free(filename->name);
   free(filename->var);
+  free(filename->map);
   free(filename->unit);
   free(filename->time);
 } /* of 'freefilename' */
@@ -40,6 +41,7 @@ void freeconfig(Config *config /**< LPJmL configuration */
   freefilename(&config->slope_filename);
   freefilename(&config->slope_min_filename);
   freefilename(&config->slope_max_filename);
+  freefilename(&config->hydrotopes_filename);
   free(config->arglist);
   free(config->sim_name);
   free(config->pft_index);

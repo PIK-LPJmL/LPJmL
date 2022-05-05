@@ -248,6 +248,9 @@ Bool fscanconfig(Config *config,    /**< LPJ configuration */
   config->double_harvest=FALSE;
   config->others_to_crop = FALSE;
   config->fertilizer_input=NO_FERTILIZER;
+  config->ma_bnf = FALSE;
+  if(fscanbool(file,&config->ma_bnf,"ma_bnf",TRUE,verbose))
+    return TRUE;
   config->soilpar_option=NO_FIXED_SOILPAR;
   if(fscankeywords(file,&config->soilpar_option,"soilpar_option",soilpar_option,3,TRUE,verbose))
     return TRUE;

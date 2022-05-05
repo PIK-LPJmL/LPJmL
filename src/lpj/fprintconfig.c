@@ -320,6 +320,8 @@ void fprintconfig(FILE *file,          /**< File pointer to text output file */
     count++;
     len=fputstring(file,len,"prescribed soil parameter",78);
   }
+  if(config->ma_bnf)
+      len=printsim(file,len,&count,"Ma et al., 2022 BNF, ");
   if(config->withlanduse)
   {
     switch(config->withlanduse)
@@ -485,7 +487,7 @@ void fprintconfig(FILE *file,          /**< File pointer to text output file */
   }
   else
     fputs("Variable     Fmt  Filename\n"
-          "------------ ---- --------------------------------------------------------------\n",file);
+          "------------ ---- -------------------------------------------------------------\n",file);
   printinputfile(file,"soil",&config->soil_filename,width);
   if(config->soil_filename.fmt!=CDF)
     printinputfile(file,"coord",&config->coord_filename,width);
@@ -622,7 +624,7 @@ void fprintconfig(FILE *file,          /**< File pointer to text output file */
     fputc('\n',file);
   }
   else
-    fputs("------------ ---- --------------------------------------------------------------\n",file);
+    fputs("------------ ---- -------------------------------------------------------------\n",file);
   if(config->param_out)
     fprintparam(file,npft,ncft,config);
   if(iswriterestart(config))

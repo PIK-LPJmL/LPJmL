@@ -262,7 +262,7 @@ Bool setaside(Cell *cell,          /**< Pointer to LPJ cell */
     data->irrigation= irrig;
 #ifdef SAFE
     if(!isempty(&cropstand->pftlist))
-      fail(LIST_NOT_EMPTY_ERR,TRUE,"Pftlist is not empty in setaside().");
+      fail(LIST_NOT_EMPTY_ERR,TRUE,"Pftlist is not empty in setaside()");
 #endif
     if(intercrop)
     {

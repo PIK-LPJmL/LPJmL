@@ -161,7 +161,8 @@ Real daily_natural(Stand *stand,                /**< [inout] stand pointer */
       getoutputindex(output,PFT_GCGP,pft->par->id,config)+=gc_pft/gp_pft[getpftpar(pft,id)];
     }
 
-    npp=npp(pft,gtemp_air,gtemp_soil,gpp-rd,config->with_nitrogen);
+    npp=npp(pft,gtemp_air,gtemp_soil,gpp-rd-pft->npp_bnf,config->with_nitrogen);
+    pft->npp_bnf=0.0;
     if(isdailyoutput_stand(config,stand))
     {
       if(config->crop_index==ALLSTAND)

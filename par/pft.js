@@ -70,6 +70,15 @@
 #define K_LATOSA 6e3      /* leaf area to sapwood area */
 #define BC3 0.015         /*leaf respiration as fraction of Vmax for C3 plants */
 #define BC4 0.035         /* leaf respiration as fraction of Vmax for C4 plants */
+#define TEMP_BNF_MIN 0.5
+#define TEMP_BNF_MAX 45.0
+#define SWC_BNF_LOW 0.0
+#define SWC_BNF_HIGH 0.5
+#define PHI_BNF_1 0.0
+#define PHI_BNF_2 2.0
+#define MAXBNFCOST 0.25
+#define BNF_COST 6.0
+
 
 "pftpar" :
 [
@@ -79,7 +88,7 @@
     "type" : "tree",
     "peatland_pft" : false, /* if peatland pft */
     "cultivation_type" : "none", /* cultivation_type */
-    "nfixing" : false,           /* no N fixing */
+    "nfixing" : true,           /* N fixing in Ma et al., 2022 appraoch */
     "cn" : [30.0, 55.0, 70.0, 77.0], /* curve number */
     "beta_root" : 0.952,    /* beta_root original 0.962*/
     "minwscal" : 0.0,       /* minwscal 3*/
@@ -176,7 +185,14 @@
     "crown_mort_rck" : 1.00, /* crown damage (rCK) */
     "crown_mort_p" : 3.00,  /* crown damage (p)     */
     "fuelfraction" : [0.045,0.075,0.21,0.67], /* fuel fraction */
-    "k_est": K_EST         /* k_est */
+    "k_est": K_EST,         /* k_est */
+    "temp_bnf_lim" : {"low" : TEMP_BNF_MIN, "high" : TEMP_BNF_MAX},
+    "temp_bnf_opt" : {"low" : 20, "high" : 35},  /* Yu and Zhuang 2020 tropical forest*/
+    "swc_bnf" : {"low" : SWC_BNF_LOW, "high" : SWC_BNF_HIGH},
+    "phi_bnf" : [PHI_BNF_1, PHI_BNF_2],
+    "nfixpot" : 0.8,  /* Yu and Zhuang 2020 tropical forest*/
+    "maxbnfcost" : MAXBNFCOST,
+    "bnf_cost" : BNF_COST
   },
 /*--------------------------------------------------------------------------*/
 /* 2. pft */
@@ -185,7 +201,7 @@
     "type" : "tree",
     "peatland_pft" : false, /* if peatland pft */
     "cultivation_type" : "none", /* cultivation_type */
-    "nfixing" : false,           /* no N fixing */
+    "nfixing" : true,           /* N fixing in Ma et al., 2022 appraoch */
     "cn" : [30.0, 55.0, 70.0, 77.0], /* curve number */
     "beta_root" : 0.981,    /* beta_root  original 0.962*/
     "minwscal" : 0.35,      /* minwscal 3*/
@@ -282,7 +298,14 @@
     "crown_mort_rck" : 0.05, /* crown damage (rCK) */
     "crown_mort_p" : 3.00,  /* crown damage (p)     */
     "fuelfraction" : [0.045,0.075,0.21,0.67], /* fuel fraction */
-    "k_est": K_EST         /* k_est */
+    "k_est": K_EST,         /* k_est */
+    "temp_bnf_lim" : {"low" : TEMP_BNF_MIN, "high" : TEMP_BNF_MAX},
+    "temp_bnf_opt" : {"low" : 20, "high" : 35},  /* Yu and Zhuang 2020 tropical forest*/
+    "swc_bnf" : {"low" : SWC_BNF_LOW, "high" : SWC_BNF_HIGH},
+    "phi_bnf" : [PHI_BNF_1, PHI_BNF_2],
+    "nfixpot" : 0.8,  /* Yu and Zhuang 2020 tropical forest*/
+    "maxbnfcost" : MAXBNFCOST,
+    "bnf_cost" : BNF_COST 
   },
 /*---------------------------------------------------------------------------------------------*/
 /* 3. pft */
@@ -291,7 +314,7 @@
     "type" : "tree",
     "peatland_pft" : false, /* if peatland pft */
     "cultivation_type" : "none", /* cultivation_type */
-    "nfixing" : false,           /* no N fixing */
+    "nfixing" : true,           /* N fixing in Ma et al., 2022 appraoch */
     "cn" : [30.0, 55.0, 70.0, 77.0], /* curve number */
     "beta_root" : 0.976,    /* beta_root 1 */
     "minwscal" : 0.00,      /* minwscal 3*/
@@ -388,7 +411,14 @@
     "crown_mort_rck" : 1.00, /* crown damage (rCK) */
     "crown_mort_p" : 3.75,  /* crown damage (p)     */
     "fuelfraction" : [0.045,0.075,0.21,0.67], /* fuel fraction */
-    "k_est": K_EST         /* k_est */
+    "k_est": K_EST,         /* k_est */
+    "temp_bnf_lim" : {"low" : TEMP_BNF_MIN, "high" : TEMP_BNF_MAX},
+    "temp_bnf_opt" : {"low" : 16, "high" : 35},  /* Yu and Zhuang 2020 temperate coniferous forest*/
+    "swc_bnf" : {"low" : SWC_BNF_LOW, "high" : SWC_BNF_HIGH},
+    "phi_bnf" : [PHI_BNF_1, PHI_BNF_2],
+    "nfixpot" : 0.55,  /* Yu and Zhuang 2020 temperate coniferous forest*/
+    "maxbnfcost" : MAXBNFCOST,
+    "bnf_cost" : BNF_COST 
  },
 /*--------------------------------------------------------------------------*/
 /* 4. pft */
@@ -397,7 +427,7 @@
     "type" : "tree",
     "peatland_pft" : false, /* if peatland pft */
     "cultivation_type" : "none", /* cultivation_type */
-    "nfixing" : false,           /* no N fixing */
+    "nfixing" : true,           /* N fixing in Ma et al., 2022 appraoch */
     "cn" : [30.0, 55.0, 70.0, 77.0], /* curve number */
     "beta_root" : 0.964,    /* beta_root 1 */
     "minwscal" : 0.00,      /* minwscal 3*/
@@ -494,7 +524,14 @@
     "crown_mort_rck" : 0.95, /* crown damage (rCK) */
     "crown_mort_p" : 3.00,  /* crown damage (p)     */
     "fuelfraction" : [0.045,0.075,0.21,0.67], /* fuel fraction */
-    "k_est": K_EST         /* k_est */
+    "k_est": K_EST,         /* k_est */
+    "temp_bnf_lim" : {"low" : TEMP_BNF_MIN, "high" : TEMP_BNF_MAX},
+    "temp_bnf_opt" : {"low" : 18, "high" : 35},  /* Yu and Zhuang 2020 temperate evergreen forest*/
+    "swc_bnf" : {"low" : SWC_BNF_LOW, "high" : SWC_BNF_HIGH},
+    "phi_bnf" : [PHI_BNF_1, PHI_BNF_2],
+    "nfixpot" : 0.55,  /* Yu and Zhuang 2020 temperate evergreen forest*/
+    "maxbnfcost" : MAXBNFCOST,
+    "bnf_cost" : BNF_COST 
   },
 /*--------------------------------------------------------------------------*/
 /* 5. pft */
@@ -503,7 +540,7 @@
     "type" : "tree",
     "peatland_pft" : false, /* if peatland pft */
     "cultivation_type" : "none", /* cultivation_type */
-    "nfixing" : false,           /* no N fixing */
+    "nfixing" : true,           /* N fixing in Ma et al., 2022 appraoch */
     "cn" : [30.0, 55.0, 70.0, 77.0], /* curve number */
     "beta_root" : 0.966,    /* beta_root */
     "minwscal" : 0.00,      /* minwscal 3*/
@@ -602,7 +639,14 @@
     "crown_mort_rck" : 1.00, /* crown damage (rCK) */
     "crown_mort_p" : 3.00,  /* crown damage (p)     */
     "fuelfraction" : [0.045,0.075,0.21,0.67], /* fuel fraction */
-    "k_est": K_EST         /* k_est */
+    "k_est": K_EST,         /* k_est */
+    "temp_bnf_lim" : {"low" : TEMP_BNF_MIN, "high" : TEMP_BNF_MAX},
+    "temp_bnf_opt" : {"low" : 18, "high" : 35},  /* Yu and Zhuang 2020 temperate deciduous forest*/
+    "swc_bnf" : {"low" : SWC_BNF_LOW, "high" : SWC_BNF_HIGH},
+    "phi_bnf" : [PHI_BNF_1, PHI_BNF_2],
+    "nfixpot" : 0.55,  /* Yu and Zhuang 2020 temperate deciduous forest*/
+    "maxbnfcost" : MAXBNFCOST,
+    "bnf_cost" : BNF_COST 
   },
 /*--------------------------------------------------------------------------*/
 /* 6. pft */
@@ -611,7 +655,7 @@
     "type" : "tree",
     "peatland_pft" : false, /* if peatland pft */
     "cultivation_type" : "none", /* cultivation_type */
-    "nfixing" : false,           /* no N fixing */
+    "nfixing" : true,           /* N fixing in Ma et al., 2022 appraoch */
     "cn" : [30.0, 55.0, 70.0, 77.0], /* curve number */
     "beta_root" : 0.955,    /* beta_root original 0.943*/
     "minwscal" : 0.00,      /* minwscal 3*/
@@ -708,7 +752,14 @@
     "crown_mort_rck" : 1.00, /* crown damage (rCK) */
     "crown_mort_p" : 3.00,  /* crown damage (p)     */
     "fuelfraction" : [0.045,0.075,0.21,0.67], /* fuel fraction */
-    "k_est": K_EST         /* k_est */
+    "k_est": K_EST,         /* k_est */
+    "temp_bnf_lim" : {"low" : TEMP_BNF_MIN, "high" : TEMP_BNF_MAX},
+    "temp_bnf_opt" : {"low" : 12, "high" : 25},  /* Yu and Zhuang 2020 boreal forest*/
+    "swc_bnf" : {"low" : SWC_BNF_LOW, "high" : SWC_BNF_HIGH},
+    "phi_bnf" : [PHI_BNF_1, PHI_BNF_2],
+    "nfixpot" : 0.032,  /* Yu and Zhuang 2020 boreal forest*/
+    "maxbnfcost" : MAXBNFCOST,
+    "bnf_cost" : BNF_COST 
   },
 /*--------------------------------------------------------------------------*/
 /* 7. pft */
@@ -717,7 +768,7 @@
     "type" : "tree",
     "peatland_pft" : false, /* if peatland pft */
     "cultivation_type" : "none", /* cultivation_type */
-    "nfixing" : false,           /* no N fixing */
+    "nfixing" : true,           /* N fixing in Ma et al., 2022 appraoch */
     "cn" : [30.0, 55.0, 70.0, 77.0], /* curve number */
     "beta_root" : 0.955,    /* beta_root original 0.943*/
     "minwscal" : 0.00,      /* minwscal 3*/
@@ -816,7 +867,14 @@
     "crown_mort_rck" : 1.00, /* crown damage (rCK) */
     "crown_mort_p" : 3.00,  /* crown damage (p)     */
     "fuelfraction" : [0.045,0.075,0.21,0.67], /* fuel fraction */
-    "k_est": K_EST         /* k_est */
+    "k_est": K_EST,         /* k_est */
+    "temp_bnf_lim" : {"low" : TEMP_BNF_MIN, "high" : TEMP_BNF_MAX},
+    "temp_bnf_opt" : {"low" : 12, "high" : 25},  /* Yu and Zhuang 2020 boreal forest*/
+    "swc_bnf" : {"low" : SWC_BNF_LOW, "high" : SWC_BNF_HIGH},
+    "phi_bnf" : [PHI_BNF_1, PHI_BNF_2],
+    "nfixpot" : 0.032,  /* Yu and Zhuang 2020 boreal forest*/
+    "maxbnfcost" : MAXBNFCOST,
+    "bnf_cost" : BNF_COST
   },
 /*--------------------------------------------------------------------------*/
 /* 8. pft */
@@ -825,7 +883,7 @@
     "type" : "tree",
     "peatland_pft" : false, /* if peatland pft */
     "cultivation_type" : "none", /* cultivation_type */
-    "nfixing" : false,           /* no N fixing */
+    "nfixing" : true,           /* N fixing in Ma et al., 2022 appraoch */
     "cn" : [30.0, 55.0, 70.0, 77.0], /* curve number */
     "beta_root" : 0.955,     /* beta_root original 0.943*/
     "minwscal" : 0.00,      /* minwscal 3*/
@@ -924,7 +982,14 @@
     "crown_mort_rck" : 1.00, /* crown damage (rCK) */
     "crown_mort_p" : 3.00,  /* crown damage (p)     */
     "fuelfraction" : [0.045,0.075,0.21,0.67], /* fuel fraction */
-    "k_est": K_EST         /* k_est */
+    "k_est": K_EST,         /* k_est */
+    "temp_bnf_lim" : {"low" : TEMP_BNF_MIN, "high" : TEMP_BNF_MAX},
+    "temp_bnf_opt" : {"low" : 12, "high" : 25},  /* Yu and Zhuang 2020 boreal forest*/
+    "swc_bnf" : {"low" : SWC_BNF_LOW, "high" : SWC_BNF_HIGH},
+    "phi_bnf" : [PHI_BNF_1, PHI_BNF_2],
+    "nfixpot" : 0.032,  /* Yu and Zhuang 2020 boreal forest*/
+    "maxbnfcost" : MAXBNFCOST,
+    "bnf_cost" : BNF_COST
  },
 /*--------------------------------------------------------------------------*/
 /* 9. pft */
@@ -933,7 +998,7 @@
     "type" : "grass",
     "peatland_pft" : false, /* if peatland pft */
     "cultivation_type" : "none", /* cultivation_type */
-    "nfixing" : false,           /* no N fixing */
+    "nfixing" : true,           /* N fixing in Ma et al., 2022 appraoch */
     "cn" : [39.0, 61.0, 74.0, 80.0], /* curve number */
     "beta_root" : 0.972,    /* beta_root */
     "minwscal" : 0.20,      /* minwscal 3*/
@@ -1013,7 +1078,14 @@
     "turnover" : {"leaf" : 1.0, "root" : 2.0}, /* turnover leaf  root 9 12*/
     "cn_ratio" : {"leaf" : CTON_LEAF, "root" : CTON_ROOT}, /* C:N mass ratio for leaf, and root 13,15*/
     "ratio" : 1.16,
-    "reprod_cost" : REPROD_COST /* reproduction cost */
+    "reprod_cost" : REPROD_COST, /* reproduction cost */
+    "temp_bnf_lim" : {"low" : TEMP_BNF_MIN, "high" : TEMP_BNF_MAX},
+    "temp_bnf_opt" : {"low" : 18, "high" : 35},  /* Yu and Zhuang 2020 grassland*/
+    "swc_bnf" : {"low" : SWC_BNF_LOW, "high" : SWC_BNF_HIGH},
+    "phi_bnf" : [PHI_BNF_1, PHI_BNF_2],
+    "nfixpot" : 0.05,  /* Yu and Zhuang 2020 grassland*/
+    "maxbnfcost" : MAXBNFCOST,
+    "bnf_cost" : BNF_COST 
   },
 /*--------------------------------------------------------------------------*/
 /* 10. pft */
@@ -1022,7 +1094,7 @@
     "type" : "grass",
     "peatland_pft" : false, /* if peatland pft */
     "cultivation_type" : "none", /* cultivation_type */
-    "nfixing" : false,           /* no N fixing */
+    "nfixing" : true,           /* N fixing in Ma et al., 2022 appraoch */
     "cn" : [39.0, 61.0, 74.0, 80.0], /* curve number */
     "beta_root" : 0.943,    /* beta_root */
     "minwscal" : 0.20,      /* minwscal 3*/
@@ -1102,7 +1174,14 @@
     "turnover" : {"leaf" : 1.0, "root" : 2.0}, /* turnover leaf  root 9 12*/
     "cn_ratio" : {"leaf" : CTON_LEAF, "root" : CTON_ROOT}, /* C:N mass ratio for leaf, and root 13,15*/
     "ratio" : 1.16,
-    "reprod_cost" : REPROD_COST /* reproduction cost */
+    "reprod_cost" : REPROD_COST, /* reproduction cost */
+    "temp_bnf_lim" : {"low" : TEMP_BNF_MIN, "high" : TEMP_BNF_MAX},
+    "temp_bnf_opt" : {"low" : 18, "high" : 35},  /* Yu and Zhuang 2020 grassland*/
+    "swc_bnf" : {"low" : SWC_BNF_LOW, "high" : SWC_BNF_HIGH},
+    "phi_bnf" : [PHI_BNF_1, PHI_BNF_2],
+    "nfixpot" : 0.05,  /* Yu and Zhuang 2020 grassland*/
+    "maxbnfcost" : MAXBNFCOST,
+    "bnf_cost" : BNF_COST 
   },
 /*--------------------------------------------------------------------------*/
 /* 11. pft */
@@ -1111,7 +1190,7 @@
     "type" : "grass",
     "peatland_pft" : false, /* if peatland pft */
     "cultivation_type" : "none", /* cultivation_type */
-    "nfixing" : false,           /* no N fixing */
+    "nfixing" : true,           /* N fixing in Ma et al., 2022 appraoch */
     "cn" : [39.0, 61.0, 74.0, 80.0], /* curve number */
     "beta_root" : 0.943,    /* beta_root */
     "minwscal" : 0.20,      /* minwscal 3*/
@@ -1191,7 +1270,14 @@
     "turnover" : {"leaf" : 1.0, "root" : 2.0}, /* turnover leaf  root 9 12*/
     "cn_ratio" : {"leaf" : CTON_LEAF, "root" : CTON_ROOT}, /* C:N mass ratio for leaf, and root 13,15*/
     "ratio" : 1.16,
-    "reprod_cost" : REPROD_COST /* reproduction cost */
+    "reprod_cost" : REPROD_COST, /* reproduction cost */
+    "temp_bnf_lim" : {"low" : TEMP_BNF_MIN, "high" : TEMP_BNF_MAX},
+    "temp_bnf_opt" : {"low" : 18, "high" : 35},  /* Yu and Zhuang 2020 grassland*/
+    "swc_bnf" : {"low" : SWC_BNF_LOW, "high" : SWC_BNF_HIGH},
+    "phi_bnf" : [PHI_BNF_1, PHI_BNF_2],
+    "nfixpot" : 0.05,  /* Yu and Zhuang 2020 grassland*/
+    "maxbnfcost" : MAXBNFCOST,
+    "bnf_cost" : BNF_COST
   },
 /*--------------------------------------------------------------------------*/
 /* 12. pft */
@@ -1280,7 +1366,14 @@
     "turnover" : {"leaf" : 1.0, "root" : 2.0}, /* turnover leaf  root 9 12*/
     "cn_ratio" : {"leaf" : CTON_LEAF, "root" : CTON_ROOT}, /* C:N mass ratio for leaf, and root 13,15*/
     "ratio" : 1.16,
-    "reprod_cost" : REPROD_COST /* reproduction cost */
+    "reprod_cost" : REPROD_COST, /* reproduction cost */
+    "temp_bnf_lim" : {"low" : TEMP_BNF_MIN, "high" : TEMP_BNF_MAX},
+    "temp_bnf_opt" : {"low" : 18, "high" : 35},  /* Yu and Zhuang 2020 grassland*/
+    "swc_bnf" : {"low" : SWC_BNF_LOW, "high" : SWC_BNF_HIGH},
+    "phi_bnf" : [PHI_BNF_1, PHI_BNF_2],
+    "nfixpot" : 0.05,  /* Yu and Zhuang 2020 grassland*/
+    "maxbnfcost" : MAXBNFCOST,
+    "bnf_cost" : BNF_COST 
   },
 /*--------------------------------------------------------------------------*/
 /* 13. pft */
@@ -1379,7 +1472,7 @@
     "type" : "tree",
     "peatland_pft" : false, /* if peatland pft */
     "cultivation_type" : "biomass",/* cultivation_type */
-    "nfixing" : false,           /* no N fixing */
+    "nfixing" : false,           /* No N fixing in Ma et al., 2022 appraoch */
     "cn" : [30.0, 55.0, 70.0, 77.0], /* curve number */
     "beta_root" : 0.975,    /* beta_root */
     "minwscal" : 0.00,      /* minwscal 3*/
@@ -1486,7 +1579,7 @@
     "type" : "tree",
     "peatland_pft" : false, /* if peatland pft */
     "cultivation_type" : "biomass",/* cultivation_type */
-    "nfixing" : false,           /* no N fixing */
+    "nfixing" : true,           /* N fixing in Ma et al., 2022 appraoch */
     "cn" : [30.0, 55.0, 70.0, 77.0], /* curve number */
     "beta_root" : 0.966,    /* beta_root */
     "minwscal" : 0.00,      /* minwscal 3*/
@@ -1586,7 +1679,14 @@
     "fuelfraction" : [0.045,0.075,0.21,0.67], /* fuel fraction */
     "k_est" : 0.8,          /* k_est TIM 1.5*/
     "rotation" : 8,         /* rotation */
-    "max_rotation_length" : 40 /* max_rotation_length */
+    "max_rotation_length" : 40, /* max_rotation_length */
+    "temp_bnf_lim" : {"low" : TEMP_BNF_MIN, "high" : TEMP_BNF_MAX},
+    "temp_bnf_opt" : {"low" : 18, "high" : 35},  /* Yu and Zhuang 2020 temperate deciduous forest*/
+    "swc_bnf" : {"low" : SWC_BNF_LOW, "high" : SWC_BNF_HIGH},
+    "phi_bnf" : [PHI_BNF_1, PHI_BNF_2],
+    "nfixpot" : 0.55,  /* Yu and Zhuang 2020 temperate deciduous forest*/
+    "maxbnfcost" : MAXBNFCOST,
+    "bnf_cost" : BNF_COST 
   },
 /*--------------------------------------------------------------------------*/
 /* 3. bft ONLY FOR BIOENERGY*/
@@ -1595,7 +1695,7 @@
     "type" : "grass",
     "peatland_pft" : false, /* if peatland pft */
     "cultivation_type" : "biomass", /* cultivation_type */
-    "nfixing" : false,           /* no N fixing */
+    "nfixing" : true,           /* N fixing in Ma et al., 2022 appraoch */
     "cn" : [39.0, 61.0, 74.0, 80.0], /* curve number */
     "beta_root" : 0.972,    /* beta_root */
     "minwscal" : 0.20,      /* minwscal 3*/
@@ -1674,7 +1774,14 @@
     "turnover" : {"leaf" : 1.0, "root" : 2.0}, /* turnover leaf  root 9 12*/
     "cn_ratio" : {"leaf" : CTON_LEAF, "root" : CTON_ROOT}, /* C:N mass ratio for leaf and root 13,15*/
     "ratio" : 1.16,
-    "reprod_cost" : REPROD_COST /* reproduction cost */
+    "reprod_cost" : REPROD_COST, /* reproduction cost */
+    "temp_bnf_lim" : {"low" : TEMP_BNF_MIN, "high" : TEMP_BNF_MAX},
+    "temp_bnf_opt" : {"low" : 18, "high" : 35},  /* Yu and Zhuang 2020 grassland*/
+    "swc_bnf" : {"low" : SWC_BNF_LOW, "high" : SWC_BNF_HIGH},
+    "phi_bnf" : [PHI_BNF_1, PHI_BNF_2],
+    "nfixpot" : 0.05,  /* Yu and Zhuang 2020 grassland*/
+    "maxbnfcost" : MAXBNFCOST,
+    "bnf_cost" : BNF_COST 
   },
 /*--------------------------------------------------------------------------*/
 /* 1. cft */
@@ -1683,7 +1790,7 @@
     "type" : "crop",
     "peatland_pft" : false, /* if peatland pft */
     "cultivation_type" : "annual crop", /* cultivation_type */
-    "nfixing" : false,           /* no N fixing */
+    "nfixing" : false,           /* No N fixing in Ma et al., 2022 appraoch */
     "cn" : [60.0, 72.0, 80.0, 84.0], /* curve number */
     "beta_root" : 0.969,    /* beta_root */
     "minwscal" : 0.30,      /* minwscal 3*/
@@ -1797,7 +1904,7 @@
     "type" : "crop",
     "peatland_pft" : false, /* if peatland pft */
     "cultivation_type" : "annual crop", /* cultivation_type */
-    "nfixing" : false,           /* no N fixing */
+    "nfixing" : false,           /* No N fixing in Ma et al., 2022 appraoch */
     "cn" : [60.0, 72.0, 80.0, 84.0], /* curve number */
     "beta_root" : 0.969,    /* beta_root */
     "minwscal" : 0.30,      /* minwscal 3*/
@@ -1911,7 +2018,7 @@
     "type" : "crop",
     "peatland_pft" : false, /* if peatland pft */
     "cultivation_type" : "annual crop", /* cultivation_type */
-    "nfixing" : false,           /* no N fixing */
+    "nfixing" : false,           /* No N fixing in Ma et al., 2022 appraoch */
     "cn" : [60.0, 72.0, 80.0, 84.0], /* curve number */
     "beta_root" : 0.969,    /* beta_root */
     "minwscal" : 0.30,      /* minwscal 3*/
@@ -2025,7 +2132,7 @@
     "type" : "crop",
     "peatland_pft" : false, /* if peatland pft */
     "cultivation_type" : "annual crop", /* cultivation_type */
-    "nfixing" : false,           /* no N fixing */
+    "nfixing" : false,           /* No N fixing in Ma et al., 2022 appraoch */
     "cn" : [60.0, 72.0, 80.0, 84.0], /* curve number */
     "beta_root" : 0.969,    /* beta_root */
     "minwscal" : 0.30,      /* minwscal 3*/
@@ -2139,7 +2246,7 @@
     "type" : "crop",
     "peatland_pft" : false, /* if peatland pft */
     "cultivation_type" : "annual crop", /* cultivation_type */
-    "nfixing" : true,           /* N fixing */
+    "nfixing" : true,           /* N fixing in Ma et al., 2022 appraoch */
     "cn" : [60.0, 72.0, 80.0, 84.0], /* curve number */
     "beta_root" : 0.969,    /* beta_root */
     "minwscal" : 0.30,      /* minwscal 3*/
@@ -2244,7 +2351,14 @@
     "himin" : 0.10,         /* himin: minimum harvest index HI reached at harvest*/
     "shapesenescencenorm" : 2.0, /* shapesenescencenorm */
     "cn_ratio" : {"leaf" : CTON_LEAF, "root" : CTON_ROOT, "so" : CTON_SO, "pool" : CTON_POOL}, /* C:N mass ratio for root, storage organ, and pool */
-    "ratio" : {"root": 1.16, "so": 0.45, "pool": 3}                    /* relative C:N ratios of root, storage organ, and pool; for roots: Friend et al. 1997, Ecological Modeling, Table 4 */
+    "ratio" : {"root": 1.16, "so": 0.45, "pool": 3},                    /* relative C:N ratios of root, storage organ, and pool; for roots: Friend et al. 1997, Ecological Modeling, Table 4 */
+    "temp_bnf_lim" : {"low" : 1, "high" : 40},  /* Ma et al., 2022 faba bean*/
+    "temp_bnf_opt" : {"low" : 16, "high" : 25},  /* Ma et al., 2022 faba bean*/
+    "swc_bnf" : {"low" : SWC_BNF_LOW, "high" : SWC_BNF_HIGH},  /* Ma et al., 2022 faba bean*/
+    "phi_bnf" : [PHI_BNF_1, PHI_BNF_2],  /* Ma et al., 2022 faba bean*/
+    "nfixpot" : 0.05,  /* Yu and Zhuang 2020 grassland*/
+    "maxbnfcost" : MAXBNFCOST,
+    "bnf_cost" : BNF_COST 
   },
 /*--------------------------------------------------------------------------*/
 /* 6. cft */
@@ -2253,7 +2367,7 @@
     "type" : "crop",
     "peatland_pft" : false, /* if peatland pft */
     "cultivation_type" : "annual crop", /* cultivation_type */
-    "nfixing" : false,           /* no N fixing */
+    "nfixing" : false,           /* No N fixing in Ma et al., 2022 appraoch */
     "cn" : [60.0, 72.0, 80.0, 84.0], /* curve number */
     "beta_root" : 0.969,    /* beta_root */
     "minwscal" : 0.30,      /* minwscal 3*/
@@ -2367,7 +2481,7 @@
     "type" : "crop",
     "peatland_pft" : false, /* if peatland pft */
     "cultivation_type" : "annual crop", /* cultivation_type */
-    "nfixing" : false,           /* no N fixing */
+    "nfixing" : false,           /* No N fixing in Ma et al., 2022 appraoch */
     "cn" : [60.0, 72.0, 80.0, 84.0], /* curve number */
     "beta_root" : 0.969,    /* beta_root */
     "minwscal" : 0.30,      /* minwscal 3*/
@@ -2481,7 +2595,7 @@
     "type" : "crop",
     "peatland_pft" : false, /* if peatland pft */
     "cultivation_type" : "annual crop", /* cultivation_type */
-    "nfixing" : false,           /* no N fixing */
+    "nfixing" : false,           /* No N fixing in Ma et al., 2022 appraoch */
     "cn" : [60.0, 72.0, 80.0, 84.0], /* curve number */
     "beta_root" : 0.969,    /* beta_root */
     "minwscal" : 0.3,       /* minwscal 3*/
@@ -2595,7 +2709,7 @@
     "type" : "crop",
     "peatland_pft" : false, /* if peatland pft */
     "cultivation_type" : "annual crop", /* cultivation_type */
-    "nfixing" : true,           /* N fixing */
+    "nfixing" : true,           /* N fixing in Ma et al., 2022 appraoch */
     "cn" : [60.0, 72.0, 80.0, 84.0], /* curve number */
     "beta_root" : 0.969,    /* beta_root */
     "minwscal" : 0.30,      /* minwscal 3*/
@@ -2700,7 +2814,14 @@
     "himin" : 0.10,         /* himin: minimum harvest index HI reached at harvest*/
     "shapesenescencenorm" : 0.5, /* shapesenescencenorm */
     "cn_ratio" : {"leaf" : CTON_LEAF, "root" : CTON_ROOT, "so" : CTON_SO, "pool" : CTON_POOL}, /* C:N mass ratio for root, storage organ, and pool */
-    "ratio" : {"root": 1.16, "so": 0.42, "pool": 3}                    /* relative C:N ratios of root, storage organ, and pool; for roots: Friend et al. 1997, Ecological Modeling, Table 4 */
+    "ratio" : {"root": 1.16, "so": 0.42, "pool": 3},                    /* relative C:N ratios of root, storage organ, and pool; for roots: Friend et al. 1997, Ecological Modeling, Table 4 */
+    "temp_bnf_lim" : {"low" : 5, "high" : 44},  /* Ma et al., 2022 soy bean*/
+    "temp_bnf_opt" : {"low" : 20, "high" : 35},  /* Ma et al., 2022 soy bean*/
+    "swc_bnf" : {"low" : 0.2, "high" : 0.8},  /* Ma et al., 2022 soy bean*/
+    "phi_bnf" : [-0.33, 1.67],  /* Ma et al., 2022 soy bean*/
+    "nfixpot" : 0.05,  /* Yu and Zhuang 2020 grassland*/
+    "maxbnfcost" : MAXBNFCOST,
+    "bnf_cost" : BNF_COST 
   },
 /*--------------------------------------------------------------------------*/
 /* 10. cft */
@@ -2709,7 +2830,7 @@
     "type" : "crop",
     "peatland_pft" : false, /* if peatland pft */
     "cultivation_type" : "annual crop", /* cultivation_type */
-    "nfixing" : false,           /* no N fixing */
+    "nfixing" : false,           /* No N fixing in Ma et al., 2022 appraoch */
     "cn" : [60.0, 72.0, 80.0, 84.0], /* curve number */
     "beta_root" : 0.969,    /* beta_root */
     "minwscal" : 0.30,      /* minwscal 3*/
@@ -2823,7 +2944,7 @@
     "type" : "crop",
     "peatland_pft" : false, /* if peatland pft */
     "cultivation_type" : "annual crop", /* cultivation_type */
-    "nfixing" : false,           /* no N fixing */
+    "nfixing" : false,           /* No N fixing in Ma et al., 2022 appraoch */
     "cn" : [60.0, 72.0, 80.0, 84.0], /* curve number */
     "beta_root" : 0.969,    /* beta_root */
     "minwscal" : 0.30,      /* minwscal 3*/
@@ -2937,7 +3058,7 @@
     "type" : "crop",
     "peatland_pft" : false, /* if peatland pft */
     "cultivation_type": "annual crop", /* cultivation_type */
-    "nfixing" : false,           /* no N fixing */
+    "nfixing" : false,           /* No N fixing in Ma et al., 2022 appraoch */
     "cn" : [60.0, 72.0, 80.0, 84.0], /* curve number */
     "beta_root" : 0.969,    /* beta_root */
     "minwscal" : 0.30,      /* minwscal 3*/

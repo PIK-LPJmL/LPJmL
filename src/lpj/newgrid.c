@@ -30,22 +30,18 @@ static Cell *newgrid2(Config *config,          /* Pointer to LPJ configuration *
                      ) /* returns allocated cell grid or NULL */
 {
   Cell *grid;
-  Header header;
-  String headername;
   Stand *stand;
   int i,n,l,j,data;
-  int version;
   int cft;
   Celldata celldata;
-  Real lake_scalar;
   Bool swap_restart;
   Bool missing;
   Infile grassfix_file;
   Infile grassharvest_file;
   unsigned int soilcode;
   int soil_id;
-  long long filesize;
   char *name;
+  size_t offset;
 #ifdef IMAGE
   Infile aquifers;
 #ifdef COUPLED
@@ -79,6 +75,7 @@ static Cell *newgrid2(Config *config,          /* Pointer to LPJ configuration *
   }
   if(config->countrypar!=NULL) /*does country file exist*/
   {
+    countrycode.fmt=config->countrycode_filename.fmt;
     if(config->countrycode_filename.fmt==CDF)
     {
       countrycode.cdf=openinput_netcdf(&config->countrycode_filename,NULL,0,config);
@@ -87,6 +84,7 @@ static Cell *newgrid2(Config *config,          /* Pointer to LPJ configuration *
         closecelldata(celldata);
         return NULL;
       }
+      regioncode.fmt=config->regioncode_filename.fmt;
       regioncode.cdf=openinput_netcdf(&config->regioncode_filename,NULL,0,config);
       if(regioncode.cdf==NULL)
       {
@@ -98,169 +96,53 @@ static Cell *newgrid2(Config *config,          /* Pointer to LPJ configuration *
     else
     {
       /* Open countrycode file */
-      countrycode.bin.file=opencountrycode(&config->countrycode_filename,
-                                           &countrycode.bin.swap,&countrycode.bin.type,&countrycode.bin.offset,isroot(*config));
-      if(countrycode.bin.file==NULL)
+      countrycode.file=opencountrycode(&config->countrycode_filename,
+                                       &countrycode.swap,&countrycode.type,&offset,isroot(*config));
+      if(countrycode.file==NULL)
       {
         closecelldata(celldata);
         return NULL;
       }
-      if(seekcountrycode(countrycode.bin.file,config->startgrid,countrycode.bin.type,countrycode.bin.offset))
+      if(seekcountrycode(countrycode.file,config->startgrid,countrycode.type,offset))
       {
         /* seeking to position of first grid cell failed */
         fprintf(stderr,
                 "ERROR106: Cannot seek in countrycode file to position %d.\n",
                 config->startgrid);
         closecelldata(celldata);
-        fclose(countrycode.bin.file);
+        fclose(countrycode.file);
         return NULL;
       }
     }
     if(config->grassfix_filename.name!=NULL)
     {
-      if(config->grassfix_filename.fmt==CDF)
+      if(openinputdata(&grassfix_file,&config->grassfix_filename,"grassfix",NULL,LPJ_BYTE,1.0,config))
       {
-        grassfix_file.cdf=openinput_netcdf(&config->grassfix_filename,NULL,0,config);
-        if(grassfix_file.cdf==NULL)
+        closecelldata(celldata);
+        if(config->countrypar!=NULL)
         {
-          closecelldata(celldata);
-          return NULL;
+          closeinput(&countrycode);
+          if(config->countrycode_filename.fmt==CDF)
+            closeinput(&regioncode);
         }
-      }
-      else
-      {
-        /* Open grassfix file */
-        grassfix_file.bin.file=openinputfile(&header,&grassfix_file.bin.swap,&config->grassfix_filename,
-                                             headername,&version,&grassfix_file.bin.offset,FALSE,config);
-        if(grassfix_file.bin.file==NULL)
-        {
-          closecelldata(celldata);
-          if(config->countrypar!=NULL)
-          {
-            closeinput(countrycode,config->countrycode_filename.fmt);
-            if(config->countrycode_filename.fmt==CDF)
-              closeinput(regioncode,config->regioncode_filename.fmt);
-          }
-          return NULL;
-        }
-        if(config->grassfix_filename.fmt==RAW)
-          header.nyear=1;
-        grassfix_file.bin.type=(version<3) ? LPJ_BYTE : header.datatype;
-        if(header.nbands!=1)
-        {
-          if(isroot(*config))
-            fprintf(stderr,"ERROR218: Invalid number of bands %d in '%s', must be 1.\n",
-                  header.nbands,config->grassfix_filename.name);
-          free(celldata);
-          return NULL;
-        }
-        if(header.nstep!=1)
-        {
-          if(isroot(*config))
-            fprintf(stderr,"ERROR218: Invalid number of steps %d in '%s', must be 1.\n",
-                  header.nstep,config->grassfix_filename.name);
-          free(celldata);
-          return NULL;
-        }
-        if(isroot(*config) && config->grassfix_filename.fmt!=META)
-        {
-          filesize=getfilesizep(grassfix_file.bin.file)-headersize(headername,version)-grassfix_file.bin.offset;
-          if(filesize!=typesizes[grassfix_file.bin.type]*header.nyear*header.nbands*header.ncell)
-            fprintf(stderr,"WARNING032: File size of '%s' does not match nyear*ncell*nbands.\n",config->grassfix_filename.name);
-        }
-        if(fseek(grassfix_file.bin.file,(config->startgrid-header.firstcell)*typesizes[grassfix_file.bin.type]+grassfix_file.bin.offset,SEEK_CUR))
-        {
-          /* seeking to position of first grid cell failed */
-          fprintf(stderr,
-                  "ERROR108: Cannot seek in grass fixed pft file to position %d.\n",
-                  config->startgrid);
-          closecelldata(celldata);
-          fclose(grassfix_file.bin.file);
-          if(config->countrypar!=NULL)
-          {
-            closeinput(countrycode,config->countrycode_filename.fmt);
-            if(config->countrycode_filename.fmt==CDF)
-              closeinput(regioncode,config->regioncode_filename.fmt);
-          }
-          return NULL;
-        }
+        return NULL;
       }
     }
-    // SR, grass management options: here choosing the grass harvest regime on the managed grassland
     if(config->grassharvest_filename.name!=NULL)
     {
-      if(config->grassharvest_filename.fmt==CDF)
+      // SR, grass management options: here choosing the grass harvest regime on the managed grassland
+      if(openinputdata(&grassharvest_file,&config->grassharvest_filename,"grass harvest",NULL,LPJ_BYTE,1.0,config))
       {
-        grassharvest_file.cdf=openinput_netcdf(&config->grassharvest_filename,NULL,0,config);
-        if(grassharvest_file.cdf==NULL)
+        closecelldata(celldata);
+        if(config->countrypar!=NULL)
         {
-          closecelldata(celldata);
-          return NULL;
+          closeinput(&countrycode);
+          if(config->countrycode_filename.fmt==CDF)
+            closeinput(&regioncode);
         }
-      }
-      else
-      {
-        /* Open grassharvest file */
-        grassharvest_file.bin.file=openinputfile(&header,&grassharvest_file.bin.swap,&config->grassharvest_filename,
-                                                 headername,&version,&grassharvest_file.bin.offset,FALSE,config);
-        if(grassharvest_file.bin.file==NULL)
-        {
-          closecelldata(celldata);
-          if(config->countrypar!=NULL)
-          {
-            closeinput(countrycode,config->countrycode_filename.fmt);
-            if(config->countrycode_filename.fmt==CDF)
-              closeinput(regioncode,config->regioncode_filename.fmt);
-          }
-          if(config->grassfix_filename.name!=NULL)
-            closeinput(grassfix_file,config->grassfix_filename.fmt);
-          return NULL;
-        }
-        if(config->grassharvest_filename.fmt==RAW)
-          header.nyear=1;
-        grassharvest_file.bin.type=(version<3) ? LPJ_BYTE : header.datatype;
-        if(header.nbands!=1)
-        {
-          if(isroot(*config))
-            fprintf(stderr,"ERROR218: Invalid number of bands %d in '%s', must be 1.\n",
-                  header.nbands,config->grassharvest_filename.name);
-          free(celldata);
-          return NULL;
-        }
-        if(header.nstep!=1)
-        {
-          if(isroot(*config))
-            fprintf(stderr,"ERROR218: Invalid number of steps %d in '%s', must be 1.\n",
-                  header.nstep,config->grassharvest_filename.name);
-          free(celldata);
-          return NULL;
-        }
-        if(isroot(*config) && config->grassharvest_filename.fmt!=META)
-        {
-          filesize=getfilesizep(grassharvest_file.bin.file)-headersize(headername,version)-grassharvest_file.bin.offset;
-          if(filesize!=typesizes[grassharvest_file.bin.type]*header.nyear*header.nbands*header.ncell)
-            fprintf(stderr,"WARNING032: File size of '%s' does not match nyear*ncell*nbands.\n",config->grassharvest_filename.name);
-        }
-        if(fseek(grassharvest_file.bin.file,config->startgrid*typesizes[grassharvest_file.bin.type]+grassharvest_file.bin.offset,SEEK_CUR))
-        {
-          /* seeking to position of first grid cell failed */
-          fprintf(stderr,
-                  "ERROR108: Cannot seek in grass harvest options file to position %d.\n",
-                  config->startgrid);
-          closecelldata(celldata);
-          fclose(grassharvest_file.bin.file);
-          if(config->countrypar!=NULL)
-          {
-            closeinput(countrycode,config->countrycode_filename.fmt);
-            if(config->countrycode_filename.fmt==CDF)
-              closeinput(regioncode,config->regioncode_filename.fmt);
-          }
-          if(config->grassharvest_filename.name!=NULL)
-            closeinput(grassharvest_file,config->grassharvest_filename.fmt);
-          if(config->grassfix_filename.name!=NULL)
-            closeinput(grassfix_file,config->grassfix_filename.fmt);
-          return NULL;
-        }
+        if(config->grassfix_filename.name!=NULL)
+          closeinput(&grassfix_file);
+        return NULL;
       }
     }
   }
@@ -268,166 +150,42 @@ static Cell *newgrid2(Config *config,          /* Pointer to LPJ configuration *
   if(config->river_routing)
   {
     /* Open file for lake fraction */
-    if(config->lakes_filename.fmt==CDF)
+    if(openinputdata(&lakes,&config->lakes_filename,"lakes","1",LPJ_BYTE,0.01,config))
     {
-      lakes.cdf=openinput_netcdf(&config->lakes_filename,"1",0,config);
-      if(lakes.cdf==NULL)
+      closecelldata(celldata);
+      if(config->countrypar!=NULL)
       {
-        closecelldata(celldata);
-        if(config->countrypar!=NULL)
-        {
-          closeinput(countrycode,config->countrycode_filename.fmt);
-          if(config->countrycode_filename.fmt==CDF)
-            closeinput(regioncode,config->regioncode_filename.fmt);
-        }
-        if(config->grassfix_filename.name!=NULL)
-          closeinput(grassfix_file,config->grassfix_filename.fmt);
-        if(config->grassharvest_filename.name!=NULL)
-          closeinput(grassharvest_file,config->grassharvest_filename.fmt);
-        return NULL;
+        closeinput(&countrycode);
+        if(config->countrycode_filename.fmt==CDF)
+          closeinput(&regioncode);
       }
-    }
-    else
-    {
-      lakes.bin.file=openinputfile(&header,&lakes.bin.swap,&config->lakes_filename,
-                                   headername,&version,&lakes.bin.offset,FALSE,config);
-      if(lakes.bin.file==NULL)
-      {
-        /* opening of lake fraction file failed */
-        closecelldata(celldata);
-        if(config->countrypar!=NULL)
-        {
-          closeinput(countrycode,config->countrycode_filename.fmt);
-          if(config->countrycode_filename.fmt==CDF)
-            closeinput(regioncode,config->regioncode_filename.fmt);
-        }
-        if(config->grassfix_filename.name!=NULL)
-          closeinput(grassfix_file,config->grassfix_filename.fmt);
-        if(config->grassharvest_filename.name!=NULL)
-          closeinput(grassharvest_file,config->grassharvest_filename.fmt);
-        return NULL;
-      }
-      if(config->lakes_filename.fmt==RAW)
-        header.nyear=1;
-      lake_scalar=(version<=1) ? 0.01 : header.scalar;
-      lakes.bin.type=(version<3) ? LPJ_BYTE : header.datatype;
-      if(header.nbands!=1)
-      {
-        if(isroot(*config))
-          fprintf(stderr,"ERROR218: Invalid number of bands %d in '%s', must be 1.\n",
-                  header.nbands,config->lakes_filename.name);
-        free(celldata);
-        return NULL;
-      }
-      if(header.nstep!=1)
-      {
-        if(isroot(*config))
-          fprintf(stderr,"ERROR218: Invalid number of steps %d in '%s', must be 1.\n",
-                  header.nstep,config->lakes_filename.name);
-        free(celldata);
-        return NULL;
-      }
-      if(isroot(*config) && config->lakes_filename.fmt!=META)
-      {
-        filesize=getfilesizep(lakes.bin.file)-headersize(headername,version)-lakes.bin.offset;
-        if(filesize!=typesizes[lakes.bin.type]*header.nyear*header.nbands*header.ncell)
-          fprintf(stderr,"WARNING032: File size of '%s' does not match nyear*ncell*nbands.\n",config->lakes_filename.name);
-      }
-      if(fseek(lakes.bin.file,(config->startgrid-header.firstcell)*typesizes[lakes.bin.type]+lakes.bin.offset,SEEK_CUR))
-      {
-        /* seeking to position of first grid cell failed */
-        fprintf(stderr,
-                "ERROR108: Cannot seek in lake fraction file to position %d.\n",
-                config->startgrid);
-        closecelldata(celldata);
-        fclose(lakes.bin.file);
-        if(config->countrypar!=NULL)
-        {
-          closeinput(countrycode,config->countrycode_filename.fmt);
-          if(config->countrycode_filename.fmt==CDF)
-            closeinput(regioncode,config->regioncode_filename.fmt);
-        }
-        if(config->grassfix_filename.name!=NULL)
-          closeinput(grassfix_file,config->grassfix_filename.fmt);
-        if(config->grassharvest_filename.name!=NULL)
-          closeinput(grassharvest_file,config->grassharvest_filename.fmt);
-        return NULL;
-      }
+      if(config->grassfix_filename.name!=NULL)
+        closeinput(&grassfix_file);
+      if(config->grassharvest_filename.name!=NULL)
+        closeinput(&grassharvest_file);
+      return NULL;
     }
   }
 #if defined IMAGE
   if(config->aquifer_irrig==AQUIFER_IRRIG)
   {
     /* Open file with aquifer locations */
-    if(config->aquifer_filename.fmt==CDF)
+    if(openinputdata(&aquifers,&config->aquifer_filename,"aquifer",NULL,LPJ_BYTE,1.0,config))
     {
-      aquifers.cdf=openinput_netcdf(&config->aquifer_filename,NULL,0,config);
-      if(aquifers.cdf==NULL)
+      closecelldata(celldata);
+      if(config->river_routing)
+        closeinput(&lakes);
+      if(config->countrypar!=NULL)
       {
-        closecelldata(celldata);
-        if(config->river_routing)
-          closeinput(lakes,config->lakes_filename.fmt);
-        if(config->countrypar!=NULL)
-        {
-          closeinput(countrycode,config->countrycode_filename.fmt);
-          if(config->countrycode_filename.fmt==CDF)
-            closeinput(regioncode,config->regioncode_filename.fmt);
-        }
-        if(config->grassfix_filename.name!=NULL)
-          closeinput(grassfix_file,config->grassfix_filename.fmt);
-        if(config->grassharvest_filename.name!=NULL)
-          closeinput(grassharvest_file,config->grassharvest_filename.fmt);
-        return NULL;
+        closeinput(&countrycode);
+        if(config->countrycode_filename.fmt==CDF)
+          closeinput(&regioncode);
       }
-    }
-    else
-    {
-      aquifers.bin.file=openinputfile(&header,&aquifers.bin.swap,&config->aquifer_filename,
-                                      headername,&version,&aquifers.bin.offset,FALSE,config);
-      if(aquifers.bin.file==NULL)
-      {
-        /* opening of aquifer file failed */
-        closecelldata(celldata);
-        if(config->river_routing)
-          closeinput(lakes,config->lakes_filename.fmt);
-        if(config->countrypar!=NULL)
-        {
-          closeinput(countrycode,config->countrycode_filename.fmt);
-          if(config->countrycode_filename.fmt==CDF)
-            closeinput(regioncode,config->regioncode_filename.fmt);
-        }
-        if(config->grassfix_filename.name!=NULL)
-          closeinput(grassfix_file,config->grassfix_filename.fmt);
-        if(config->grassharvest_filename.name!=NULL)
-          closeinput(grassharvest_file,config->grassharvest_filename.fmt);
-        return NULL;
-      }
-      if(config->aquifer_filename.fmt==RAW  || version<3)
-         aquifers.bin.type=LPJ_BYTE;
-      else
-         aquifers.bin.type=header.datatype;
-      if(fseek(aquifers.bin.file,config->startgrid*typesizes[aquifers.bin.type],SEEK_CUR))
-      {
-        /* seeking to position of first grid cell failed */
-        fprintf(stderr,
-                "ERROR108: Cannot seek in aquifer file to position %d.\n",
-                config->startgrid);
-        closecelldata(celldata);
-        fclose(aquifers.bin.file);
-        if(config->river_routing)
-          closeinput(lakes,config->lakes_filename.fmt);
-        if(config->countrypar!=NULL)
-        {
-          closeinput(countrycode,config->countrycode_filename.fmt);
-          if(config->countrycode_filename.fmt==CDF)
-            closeinput(regioncode,config->regioncode_filename.fmt);
-        }
-        if(config->grassfix_filename.name!=NULL)
-          closeinput(grassfix_file,config->grassfix_filename.fmt);
-        if(config->grassharvest_filename.name!=NULL)
-          closeinput(grassharvest_file,config->grassharvest_filename.fmt);
-        return NULL;
-      }
+      if(config->grassfix_filename.name!=NULL)
+        closeinput(&grassfix_file);
+      if(config->grassharvest_filename.name!=NULL)
+         closeinput(&grassharvest_file);
+      return NULL;
     }
   }
 #endif
@@ -458,21 +216,21 @@ static Cell *newgrid2(Config *config,          /* Pointer to LPJ configuration *
     printallocerr("grid");
     closecelldata(celldata);
     if(config->river_routing)
-      closeinput(lakes,config->lakes_filename.fmt);
+      closeinput(&lakes);
 #ifdef IMAGE
     if(config->aquifer_irrig==AQUIFER_IRRIG)
-      closeinput(aquifers,config->aquifer_filename.fmt);
+      closeinput(&aquifers);
 #endif
     if(config->countrypar!=NULL)
     {
-      closeinput(countrycode,config->countrycode_filename.fmt);
+      closeinput(&countrycode);
       if(config->countrycode_filename.fmt==CDF)
-        closeinput(regioncode,config->regioncode_filename.fmt);
+        closeinput(&regioncode);
     }
     if(config->grassfix_filename.name!=NULL)
-      closeinput(grassfix_file,config->grassfix_filename.fmt);
+      closeinput(&grassfix_file);
     if(config->grassharvest_filename.name!=NULL)
-      closeinput(grassharvest_file,config->grassharvest_filename.fmt);
+      closeinput(&grassharvest_file);
     return NULL;
   }
   config->initsoiltemp=FALSE;
@@ -492,17 +250,17 @@ static Cell *newgrid2(Config *config,          /* Pointer to LPJ configuration *
       free(grid);
       closecelldata(celldata);
       if(config->river_routing)
-        closeinput(lakes,config->lakes_filename.fmt);
+        closeinput(&lakes);
       if(config->countrypar!=NULL)
       {
-        closeinput(countrycode,config->countrycode_filename.fmt);
+        closeinput(&countrycode);
         if(config->countrycode_filename.fmt==CDF)
-          closeinput(regioncode,config->regioncode_filename.fmt);
+          closeinput(&regioncode);
       }
       if(config->grassfix_filename.name!=NULL)
-        closeinput(grassfix_file,config->grassfix_filename.fmt);
+        closeinput(&grassfix_file);
       if(config->grassharvest_filename.name!=NULL)
-        closeinput(grassharvest_file,config->grassharvest_filename.fmt);
+        closeinput(&grassharvest_file);
       return NULL;
     }
     if(!config->ischeckpoint && config->new_seed)
@@ -530,7 +288,7 @@ static Cell *newgrid2(Config *config,          /* Pointer to LPJ configuration *
       }
       else
       {
-        if(readcountrycode(countrycode.bin.file,&code,countrycode.bin.type,countrycode.bin.swap))
+        if(readcountrycode(countrycode.file,&code,countrycode.type,countrycode.swap))
         {
           name=getrealfilename(&config->countrycode_filename);
           fprintf(stderr,"ERROR190: Unexpected end of file in '%s' for cell %d.\n",
@@ -555,53 +313,15 @@ static Cell *newgrid2(Config *config,          /* Pointer to LPJ configuration *
 
       if(config->grassfix_filename.name != NULL)
       {
-        if(config->grassfix_filename.fmt==CDF)
-        {
-          if(readintinput_netcdf(grassfix_file.cdf,&grid[i].ml.fixed_grass_pft,&grid[i].coord,&missing) || missing)
-          {
-            fprintf(stderr,"ERROR190: Unexpected end of file in '%s' for cell %d.\n",
-                    config->grassfix_filename.name,i+config->startgrid);
-            return NULL;
-          }
-        }
-        else
-        {
-          if(readintvec(grassfix_file.bin.file,&grid[i].ml.fixed_grass_pft,1,grassfix_file.bin.swap,grassfix_file.bin.type))
-          {
-            name=getrealfilename(&config->grassfix_filename);
-            fprintf(stderr,"ERROR190: Unexpected end of file in '%s' for cell %d.\n",
-                    name,i+config->startgrid);
-            free(name);
-            return NULL;
-          }
-        }
+        if(readintinputdata(&grassfix_file,&grid[i].ml.fixed_grass_pft,NULL,&grid[i].coord,i+config->startgrid,&config->grassfix_filename))
+          return NULL;
       }
       else
         grid[i].ml.fixed_grass_pft= -1;
       if(config->grassharvest_filename.name != NULL)
       {
-        if(config->grassharvest_filename.fmt==CDF)
-        {
-          if(readintinput_netcdf(grassharvest_file.cdf,&data,&grid[i].coord,&missing) || missing)
-          {
-            fprintf(stderr,"ERROR190: Unexpected end of file in '%s' for cell %d.\n",
-                    config->grassharvest_filename.name,i+config->startgrid);
-            return NULL;
-          }
-          grid[i].ml.grass_scenario=(GrassScenarioType)data;
-        }
-        else
-        {
-          if(readintvec(grassharvest_file.bin.file,(int *)(&grid[i].ml.grass_scenario),1,grassharvest_file.bin.swap,grassharvest_file.bin.type))
-          {
-            name=getrealfilename(&config->grassharvest_filename);
-            fprintf(stderr,"ERROR190: Unexpected end of file in '%s' for cell %d.\n",
-                    name,i+config->startgrid);
-            free(name);
-            return NULL;
-          }
-          //grid[i].ml.grass_scenario=GS_NONE;
-        }
+        if(readintinputdata(&grassharvest_file,(int *)&grid[i].ml.grass_scenario,NULL,&grid[i].coord,i+config->startgrid,&config->grassharvest_filename))
+          return NULL;
       }
       else
         grid[i].ml.grass_scenario=(GrassScenarioType)config->grazing;
@@ -610,26 +330,8 @@ static Cell *newgrid2(Config *config,          /* Pointer to LPJ configuration *
     grid[i].lakefrac=0.0;
     if(config->river_routing)
     {
-      if(config->lakes_filename.fmt==CDF)
-      {
-        if(readinput_netcdf(lakes.cdf,&grid[i].lakefrac,&grid[i].coord))
-        {
-          fprintf(stderr,"ERROR190: Unexpected end of file in '%s' for cell %d.\n",
-                  config->lakes_filename.name,i+config->startgrid);
-          return NULL;
-        }
-      }
-      else
-      {
-        if(readrealvec(lakes.bin.file,&grid[i].lakefrac,0,lake_scalar,1,lakes.bin.swap,lakes.bin.type))
-        {
-          name=getrealfilename(&config->lakes_filename);
-          fprintf(stderr,"ERROR190: Unexpected end of file in '%s' for cell %d.\n",
-                  name,i+config->startgrid);
-          free(name);
-          return NULL;
-        }
-      }
+      if(readinputdata(&lakes,&grid[i].lakefrac,&grid[i].coord,i+config->startgrid,&config->lakes_filename))
+        return NULL;
       if(grid[i].lakefrac>1-epsilon)
         grid[i].lakefrac=1;
     }
@@ -637,27 +339,8 @@ static Cell *newgrid2(Config *config,          /* Pointer to LPJ configuration *
     grid[i].discharge.aquifer=0;
     if(config->aquifer_irrig==AQUIFER_IRRIG)
     {
-      if(config->aquifer_filename.fmt==CDF)
-      {
-        if (readintinput_netcdf(aquifers.cdf, &grid[i].discharge.aquifer, &grid[i].coord,&missing) || missing)
-        {
-          fprintf(stderr,"ERROR190: Unexpected end of file in '%s' for cell %d.\n",
-                  config->aquifer_filename.name,i+config->startgrid);
-          return NULL;
-        }
-        grid[i].discharge.aquifer = (Bool)data;
-      }
-      else
-      {
-        if(readintvec(aquifers.bin.file,&grid[i].discharge.aquifer,1,aquifers.bin.swap,aquifers.bin.type))
-        {
-          name=getrealfilename(&config->aquifer_filename);
-          fprintf(stderr,"ERROR190: Unexpected end of file in '%s' for cell %d.\n",
-                  name,i+config->startgrid);
-          free(name);
-          return NULL;
-        }
-      }
+      if(readintinputdata(&aquifers,&grid[i].discharge.aquifer,NULL,&grid[i].coord,i+config->startgrid,&config->aquifer_filename))
+        return NULL;
     }
 #endif
     /* Init cells */
@@ -867,16 +550,16 @@ static Cell *newgrid2(Config *config,          /* Pointer to LPJ configuration *
     fclose(file_restart);
   closecelldata(celldata);
   if(config->river_routing)
-    closeinput(lakes,config->lakes_filename.fmt);
+    closeinput(&lakes);
   if(config->grassfix_filename.name!=NULL)
-      closeinput(grassfix_file,config->grassfix_filename.fmt);
+    closeinput(&grassfix_file);
   if(config->grassharvest_filename.name!=NULL)
-    closeinput(grassharvest_file,config->grassharvest_filename.fmt);
+    closeinput(&grassharvest_file);
   if(config->countrypar!=NULL)
   {
-    closeinput(countrycode,config->countrycode_filename.fmt);
+    closeinput(&countrycode);
     if(config->countrycode_filename.fmt==CDF)
-      closeinput(regioncode,config->regioncode_filename.fmt);
+      closeinput(&regioncode);
   }
 #if defined IMAGE && defined COUPLED
   if(config->sim_id==LPJML_IMAGE)
@@ -887,7 +570,7 @@ static Cell *newgrid2(Config *config,          /* Pointer to LPJ configuration *
 #endif
 #ifdef IMAGE
   if(config->aquifer_irrig==AQUIFER_IRRIG)
-    closeinput(aquifers,config->aquifer_filename.fmt);
+    closeinput(&aquifers);
 #endif
   return grid;
 } /* of 'newgrid2' */

@@ -112,11 +112,10 @@ extern Bool getco2(const Climate *,Real *,int);
 extern Bool getch4(const Climate *,Real *,int);
 extern void closeclimateanomalies(Climate *,const Config *);
 extern void closeclimatefiles(Climate *,const Config *);
-extern void freeclimate(Climate *,const Config *);
+extern void freeclimate(Climate *,Bool);
 extern Bool storeclimate(Climatedata *,Climate *,const Cell *,int,int,
                          const Config *);
 extern void freeclimatedata(Climatedata *);
-extern void freeclimatedata2(Climate *);
 extern void restoreclimate(Climate *,const Climatedata *,int);
 extern void moveclimate(Climate *,const Climatedata *,int,int);
 extern void prdaily(Real [],int,Real,Real,Seed);
@@ -125,7 +124,7 @@ extern void dailyclimate(Dailyclimate *,const Climate *,Climbuf *,
 extern Real getmtemp(const Climate *,const Climbuf *,int,int);
 extern Real getmprec(const Climate *,const Climbuf *,int,int);
 extern void initclimate_monthly(const Climate *,Climbuf *,int,int,Seed);
-extern Bool openclimate(Climatefile *,const Filename *,const char *,Type,int,
+extern Bool openclimate(Climatefile *,const Filename *,const char *,Type,int,Real,
                         const Config *);
 extern Real avgtemp(const Climate *,int cell);
 extern Real avgprec(const Climate *,int cell);
@@ -137,5 +136,13 @@ extern Bool readtracegas(Tracedata *,const Filename *,Bool);
 extern void radiation(Real *, Real *,Real *,Real,int,Dailyclimate *,Real,int);
 extern void interpolate_climate(Climate *, int, Real);
 extern void addanomaly_climate(Climate *, int);
+extern Real *readdata(Climatefile *,Real *data,const Cell [],const char *,int,const Config *);
+extern int *readintdata(Climatefile *,const Cell [],const char *,int,const Config *);
+extern Bool opendata(Climatefile *,const Filename *,const char *,const char *,
+                     Type,Real,int,Bool,const Config *config);
+extern Bool openinputdata(Infile *,const Filename *,const char *,const char *,
+                          Type,Real,const Config *config);
+extern Bool readinputdata(Infile *,Real *,const Coord *,int,const Filename *);
+extern Bool readintinputdata(Infile *,int *,Bool *,const Coord *,int,const Filename *);
 
 #endif

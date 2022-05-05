@@ -20,7 +20,8 @@ OBJS    = initclimate.$O getclimate.$O freeclimate.$O avgtemp.$O\
           getmtemp.$O initclimate_monthly.$O openclimate.$O\
           getmprec.$O checkvalidclimate.$O readtracegas.$O\
           closeclimate.$O getch4.$O radiation.$O interpolate_climate.$O\
-          addanomaly_climate.$O
+          addanomaly_climate.$O readdata.$O readintdata.$O opendata.$O\
+          openinputdata.$O readinputdata.$O readintinputdata.$O
 
 INC     = ../../include
 LIBDIR  = ../../lib

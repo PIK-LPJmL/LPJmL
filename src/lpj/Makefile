@@ -48,7 +48,8 @@ OBJS    = update_daily.$O update_annual.$O init_annual.$O\
           f_lai.$O getsize.$O  wetland.$O copypft.$O plant_gas_transport.$O\
           fprintoutputvar.$O isdailyoutput_natural.$O check_glaciated.$O fwriteoutput_ch4.$O\
           getngrassnat.$O fscancnratio.$O isnitrogen_output.$O initoutputdata.$O\
-          fprintcsvflux.$O extflow.$O fprintoutputjson.$O
+          fprintcsvflux.$O extflow.$O ma_biological_n_fixation.$O\
+          fprintoutputjson.$O
 
 INC     = ../../include
 LIBDIR  = ../../lib

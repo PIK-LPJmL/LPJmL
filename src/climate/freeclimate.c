@@ -16,7 +16,7 @@
 
 #include "lpj.h"
 
-void freeclimatedata2(Climate *climate)
+static void freeclimatedata2(Climate *climate)
 {
   int i;
   free(climate->co2.data);
@@ -41,69 +41,6 @@ void freeclimatedata2(Climate *climate)
   }
 } /* of 'freeclimatedata2' */
 
-void closeclimateanomalies(Climate *climate,    /**< pointer to climate data */
-                           const Config *config /**< pointer to LPJ configuration */
-                          )
-{
-  if(config->isanomaly)
-  {
-    closeclimatefile(&climate->file_delta_temp,isroot(*config));
-    closeclimatefile(&climate->file_delta_prec,isroot(*config));
-    switch(config->with_radiation)
-    {
-      //case CLOUDINESS:
-      //  closeclimatefile(&climate->file_delta_cloud,isroot(*config));
-     //   break;
-      case RADIATION: case RADIATION_LWDOWN:
-        closeclimatefile(&climate->file_delta_swdown,isroot(*config));
-        closeclimatefile(&climate->file_delta_lwnet,isroot(*config));
-        break;
-      case RADIATION_SWONLY:
-        closeclimatefile(&climate->file_delta_swdown,isroot(*config));
-        break;
-    }
-  }
-} /* of 'closeclimateanomalies' */
-
-void closeclimatefiles(Climate *climate,    /**< pointer to climate data */
-                       const Config *config /**< pointer to LPJ configuration */
-                      )
-{
-  closeclimatefile(&climate->file_temp,isroot(*config));
-  closeclimatefile(&climate->file_prec,isroot(*config));
-  if(climate->data[0].tmax!=NULL)
-    closeclimatefile(&climate->file_tmax,isroot(*config));
-  if(climate->data[0].tmin!=NULL)
-    closeclimatefile(&climate->file_tmin,isroot(*config));
-  if(climate->data[0].wind!=NULL)
-    closeclimatefile(&climate->file_wind,isroot(*config));
-  if(climate->data[0].sun!=NULL)
-    closeclimatefile(&climate->file_cloud,isroot(*config));
-  if(climate->data[0].lwnet!=NULL)
-    closeclimatefile(&climate->file_lwnet,isroot(*config));
-  if(climate->data[0].swdown!=NULL)
-    closeclimatefile(&climate->file_swdown,isroot(*config));
-  if(climate->data[0].humid!=NULL)
-    closeclimatefile(&climate->file_humid,isroot(*config));
-  if(climate->data[0].tamp!=NULL)
-    closeclimatefile(&climate->file_tamp,isroot(*config));
-  if(climate->data[0].wet!=NULL)
-    closeclimatefile(&climate->file_wet,isroot(*config));
-  if(climate->data[0].burntarea!=NULL)
-    closeclimatefile(&climate->file_burntarea,isroot(*config));
-  if(climate->data[0].no3deposition!=NULL)
-    closeclimatefile(&climate->file_no3deposition,isroot(*config));
-  if(climate->data[0].nh4deposition!=NULL)
-    closeclimatefile(&climate->file_nh4deposition,isroot(*config));
-  closeclimateanomalies(climate,config);
-#if defined IMAGE && defined COUPLED
-  if(climate->file_temp_var.file!=NULL)
-    closeclimatefile(&climate->file_temp_var,isroot(*config));
-  if(climate->file_prec_var.file!=NULL)
-    closeclimatefile(&climate->file_prec_var,isroot(*config));
-#endif
-} /* of 'closeclimatefiles' */
-
 void freeclimatedata(Climatedata *data /**< pointer to climate data */
                     )                  /** \return void */
 {
@@ -124,14 +61,36 @@ void freeclimatedata(Climatedata *data /**< pointer to climate data */
   free(data->nh4deposition);
 } /* of 'freeclimatedata' */
 
-void freeclimate(Climate *climate,    /**< pointer to climate data */
-                 const Config *config /**< LPJ configuration */
-                )                     /** \return void */
+void freeclimate(Climate *climate, /**< pointer to climate data */
+                 Bool isroot       /**< task is root task */
+                )                  /** \return void */
 {
   if(climate!=NULL)
   {
-    closeclimatefiles(climate,config);
+    closeclimatefile(&climate->file_temp,isroot);
+    closeclimatefile(&climate->file_prec,isroot);
+    closeclimatefile(&climate->file_tmax,isroot);
+    closeclimatefile(&climate->file_tmin,isroot);
+    closeclimatefile(&climate->file_cloud,isroot);
+    closeclimatefile(&climate->file_lwnet,isroot);
+    closeclimatefile(&climate->file_swdown,isroot);
+    closeclimatefile(&climate->file_humid,isroot);
+    closeclimatefile(&climate->file_wind,isroot);
+    closeclimatefile(&climate->file_tamp,isroot);
+    closeclimatefile(&climate->file_wet,isroot);
+    closeclimatefile(&climate->file_burntarea,isroot);
+    closeclimatefile(&climate->file_no3deposition,isroot);
+    closeclimatefile(&climate->file_nh4deposition,isroot);
+    closeclimatefile(&climate->file_delta_temp,isroot(*config));
+    closeclimatefile(&climate->file_delta_prec,isroot(*config));
+    closeclimatefile(&climate->file_delta_swdown,isroot(*config));
+    closeclimatefile(&climate->file_delta_lwnet,isroot(*config));
+    closeclimatefile(&climate->file_delta_swdown,isroot(*config));
+#if defined IMAGE && defined COUPLED
+    closeclimatefile(&climate->file_temp_var,isroot);
+    closeclimatefile(&climate->file_prec_var,isroot);
+#endif
     freeclimatedata2(climate);
+    free(climate);
   }
-  free(climate);
 } /* of 'freeclimate' */

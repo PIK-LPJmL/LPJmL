@@ -184,7 +184,7 @@ Bool annual_natural(Stand *stand,         /**< Pointer to stand */
     }
 #ifdef SAFE
     if(pft->fpc<0)
-      fail(INVALID_FPC_ERR,TRUE,"FPC=%g for '%s' less than zero.\n",pft->fpc,pft->par->name);
+      fail(INVALID_FPC_ERR,TRUE,"FPC=%g for '%s' less than zero",pft->fpc,pft->par->name);
 #endif
   } /* of foreachpft */
   return FALSE;

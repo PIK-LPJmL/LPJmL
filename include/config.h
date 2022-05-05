@@ -269,6 +269,7 @@ struct config
   int prescribe_landcover; /**< use input to prescribe land cover ? */
   int* mowingdays;         /**< mowing days for grassland */
   int mowingdays_size;     /**< size of mowing days array */
+  Bool ma_bnf;             /**< biological nitrogen fixation folowing Ma et al., 2022 */
   Seed seed;
 #ifdef IMAGE
   int start_imagecoupling; /**< year in which coupling to IMAGE starts
