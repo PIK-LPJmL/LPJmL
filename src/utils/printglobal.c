@@ -14,7 +14,7 @@
 
 #include "lpj.h"
 
-#define USAGE "Usage: %s [-firstyear year] [-nbands n] [-cellsize size] [-day|month] [-noheader] [-csv] [-mean] [-yearsum] grid.bin out.bin ...\n"
+#define USAGE "Usage: %s [-clm] [-firstyear year] [-nbands n] [-cellsize size] [-day|month] [-noheader] [-csv] [-mean] [-yearsum] grid.bin out.bin ...\n"
 
 int main(int argc,char **argv)
 {
@@ -23,18 +23,24 @@ int main(int argc,char **argv)
   Intcoord intcoord;
   FILE *gridfile;
   FILE **file;
-  int i,n,nyear,cell,year,iarg,firstyear,step,nstep,nbands,band,nyear_min;
-  Bool header,ismean,csv,yearsum;
+  int i,n,nyear,cell,year,iarg,firstyear,step,nstep,nbands,band,nyear_min,version;
+  Bool isheader,ismean,csv,yearsum,isclm,swap;
   float data;
   Real sum,area_sum,*sum_array;
   char *endptr;
+  Header header;
+  Coordfile grid;
+  Filename filename;
+  float lon,lat;
   /* set default values */
   firstyear=1901;
   nstep=1;
   nbands=1;
-  header=TRUE;
+  isheader=TRUE;
   ismean=csv=FALSE;
   yearsum=FALSE;
+  isclm=FALSE;
+  swap=FALSE;
   resolution.lon=resolution.lat=0.5;
   for(iarg=1;iarg<argc;iarg++)
     if(argv[iarg][0]=='-')
@@ -84,12 +90,14 @@ int main(int argc,char **argv)
           return EXIT_FAILURE;
         }
       }
+      else if(!strcmp(argv[iarg],"-clm"))
+        isclm=TRUE;
       else if(!strcmp(argv[iarg],"-day"))
         nstep=NDAYYEAR;
       else if(!strcmp(argv[iarg],"-month"))
         nstep=NMONTH;
       else if(!strcmp(argv[iarg],"-noheader"))
-        header=FALSE;
+        isheader=FALSE;
       else if(!strcmp(argv[iarg],"-mean"))
         ismean=TRUE;
       else if(!strcmp(argv[iarg],"-csv"))
@@ -111,30 +119,58 @@ int main(int argc,char **argv)
             USAGE,argv[0]);
     return EXIT_FAILURE;
   }
-  gridfile=fopen(argv[iarg],"rb");
-  if(gridfile==NULL)
+  if(isclm)
   {
-    fprintf(stderr,"Error opening '%s': %s.\n",
-            argv[iarg],strerror(errno));
-    return EXIT_FAILURE;
+    filename.name=argv[iarg];
+    filename.fmt=CLM;
+    grid=opencoord(&filename,TRUE);
+    if(grid==NULL)
+      return EXIT_FAILURE;
+    n=numcoord(grid);
+    getcellsizecoord(&lon,&lat,grid);
+    resolution.lon=lon;
+    resolution.lat=lat;
+    area=newvec(Real,n);
+    area_sum=0;
+    for(i=0;i<n;i++)
+    {
+      if(readcoord(grid,&coord,&resolution))
+      {
+        fprintf(stderr,"Error reading cell %d in '%s'.\n",i,argv[iarg]);
+        return EXIT_FAILURE;
+      }
+      area[i]=cellarea(&coord,&resolution);
+      area_sum+=area[i];
+    }
+    closecoord(grid);
   }
-  n=getfilesizep(gridfile)/sizeof(Intcoord);
-  if(n==0)
+  else
   {
-    fprintf(stderr,"Error: No coordinates written in grid file.\n");
-    return EXIT_FAILURE;
+    gridfile=fopen(argv[iarg],"rb");
+    if(gridfile==NULL)
+    {
+      fprintf(stderr,"Error opening '%s': %s.\n",
+              argv[iarg],strerror(errno));
+      return EXIT_FAILURE;
+    }
+    n=getfilesizep(gridfile)/sizeof(Intcoord);
+    if(n==0)
+    {
+      fprintf(stderr,"Error: No coordinates written in grid file.\n");
+      return EXIT_FAILURE;
+    }
+    area=newvec(Real,n);
+    area_sum=0;
+    for(i=0;i<n;i++)
+    {
+      fread(&intcoord,sizeof(Intcoord),1,gridfile);
+      coord.lon=intcoord.lon*0.01;
+      coord.lat=intcoord.lat*0.01;
+      area[i]=cellarea(&coord,&resolution);
+      area_sum+=area[i];
+    }
+    fclose(gridfile);
   }
-  area=newvec(Real,n);
-  area_sum=0;
-  for(i=0;i<n;i++)
-  {
-    fread(&intcoord,sizeof(Intcoord),1,gridfile);
-    coord.lon=intcoord.lon*0.01;
-    coord.lat=intcoord.lat*0.01;
-    area[i]=cellarea(&coord,&resolution);
-    area_sum+=area[i];
-  }
-  fclose(gridfile);
   file=newvec(FILE *,argc-iarg-1);
   for(i=iarg+1;i<argc;i++)
   {
@@ -145,14 +181,42 @@ int main(int argc,char **argv)
               argv[i],strerror(errno));
       return EXIT_FAILURE;
     }
-    nyear=getfilesizep(file[i-iarg-1])/sizeof(float)/n/nstep/nbands;
-    if(nyear==0)
+    if(isclm)
     {
-      fprintf(stderr,"No data written for on year in '%s'.\n",argv[i]);
-      return EXIT_FAILURE;
+      version=READ_VERSION;
+      if(freadheader(file[i-iarg-1],&header,&swap,LPJOUTPUT_HEADER,&version,TRUE))
+      {
+        fprintf(stderr,"Error reading header in '%s.\n",argv[i]);
+        return EXIT_FAILURE;
+      }
+      nyear=header.nyear;
+      nbands=header.nbands;
+      nstep=header.nstep;
+      if(i>iarg+1 && firstyear!=header.firstyear)
+      {
+        fprintf(stderr,"First year=%d in '%s' differs from %d.\n",
+                header.firstyear,argv[i],firstyear);
+        return EXIT_FAILURE;
+      }
+      if(n!=header.ncell)
+      {
+        fprintf(stderr,"Number of cells=%d in '%s' differs from %d.\n",
+                header.ncell,argv[i],n);
+        return EXIT_FAILURE;
+      }
+      firstyear=header.firstyear;
     }
-    if(getfilesizep(file[i-iarg-1]) % (sizeof(float)*n*nstep*nbands))
-      fprintf(stderr,"Warning: Filesize of '%s' is not multiple of cell size and number and years.\n",argv[i]);
+    else
+    {
+      nyear=getfilesizep(file[i-iarg-1])/sizeof(float)/n/nstep/nbands;
+      if(nyear==0)
+      {
+        fprintf(stderr,"No data written for on year in '%s'.\n",argv[i]);
+        return EXIT_FAILURE;
+      }
+      if(getfilesizep(file[i-iarg-1]) % (sizeof(float)*n*nstep*nbands))
+        fprintf(stderr,"Warning: Filesize of '%s' is not multiple of cell size and number of years.\n",argv[i]);
+    }
     if(i==iarg+1)
       nyear_min=nyear;
     else if(nyear<nyear_min)
@@ -161,7 +225,7 @@ int main(int argc,char **argv)
       nyear_min=nyear;
     }
   }
-  if(header)
+  if(isheader)
   {
     printf("Year");
     if(!yearsum)

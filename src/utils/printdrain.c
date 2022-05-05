@@ -78,6 +78,27 @@ int main(int argc,char **argv)
     fprintf(stderr,"Error reading header in '%s'.\n",argv[1]);
     return EXIT_FAILURE;
   }
+  if(version>CLM_MAX_VERSION)
+  {
+    fprintf(stderr,"Error: Unsupported version %d in '%s', must be less than %d.\n",
+            version,argv[1],CLM_MAX_VERSION+1);
+    return EXIT_FAILURE;
+  }
+  if(header.nbands!=2)
+  {
+    fprintf(stderr,"Invalid number of bands=%d in '%s', must be 2.\n",header.nbands,argv[1]);
+    return EXIT_FAILURE;
+  }
+  if(header.nstep!=1)
+  {
+    fprintf(stderr,"Invalid number of steps=%d in '%s', must be 1.\n",header.nstep,argv[1]);
+    return EXIT_FAILURE;
+  }
+  if(version>2 && header.datatype!=LPJ_INT)
+  {
+    fprintf(stderr,"Invalid datatype %s in '%s', muste bei int.\n",typenames[header.datatype],argv[1]);
+    return EXIT_FAILURE;
+  }
   lmin=1000000;
   lmax=count_max=0;
   for(cell=0;cell<header.ncell;cell++)

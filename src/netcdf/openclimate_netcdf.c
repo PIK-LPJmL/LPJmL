@@ -38,6 +38,7 @@ Bool openclimate_netcdf(Climatefile *file,    /**< climate data file */
   double *date;
   size_t len,time_len;
   Bool isopen,isdim;
+  file->isopen=FALSE;
   if(filename==NULL || file==NULL)
     return TRUE;
   rc=open_netcdf(filename,&file->ncid,&isopen);
@@ -103,6 +104,10 @@ Bool openclimate_netcdf(Climatefile *file,    /**< climate data file */
           return TRUE;
         }
         file->firstyear=time[0];
+        if(time_len>1)
+          file->delta_year=time[1]-time[0];
+        else
+          file->delta_year=1;
         free(time);
       }
       else if(!strcmp("day as %Y%m%d.%f",s))
@@ -180,6 +185,10 @@ Bool openclimate_netcdf(Climatefile *file,    /**< climate data file */
         {
           file->time_step=YEAR;
           file->firstyear+=time[0];
+          if(time_len>1)
+            file->delta_year=time[1]-time[0];
+          else
+            file->delta_year=1;
         }
         else if(!strcmp(name,"days"))
         {
@@ -376,6 +385,7 @@ Bool openclimate_netcdf(Climatefile *file,    /**< climate data file */
   }
   else
     file->var_len=1;
+  file->isopen=TRUE;
   return FALSE;
 #else
   fputs("ERROR401: NetCDF input is not supported by this version of LPJmL.\n",stderr);

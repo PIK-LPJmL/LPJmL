@@ -25,6 +25,7 @@ typedef struct
   Real maxsnowpack; /**< max. snow pack (mm) */
   Real soildepth_evap; /**< depth of sublayer at top of upper soil layer (mm) */
   Real soil_infil;      /**< soil infiltration */
+  Real soil_infil_litter; /**< soil infiltration intensification by litter cover*/
   Real co2_p;       /**< pre-industrial CO2 concentration (ppm) */
   Real k;
   Real theta;      /**< co-limitation (shape) parameter */

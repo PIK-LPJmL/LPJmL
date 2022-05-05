@@ -30,7 +30,9 @@ Bool fwriteheader(FILE *file,             /**< file pointer of binary file */
       return (fwrite(header,sizeof(Header_old),1,file)!=1);
     case 2:
       return (fwrite(header,sizeof(Header2),1,file)!=1);
-    default:
+    case 4:
       return (fwrite(header,sizeof(Header),1,file)!=1);
+    default:
+      return (fwrite(header,sizeof(Header3),1,file)!=1);
   }
 } /* of 'fwriteheader' */

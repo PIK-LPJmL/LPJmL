@@ -25,7 +25,7 @@ typedef struct
 
 /* Declaration of functions */
 
-extern List *newlist(void);
+extern List *newlist(int);
 extern int addlistitem(List *,void *);
 extern int dellistitem(List *,int);
 extern void freelist(List *);

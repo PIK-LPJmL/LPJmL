@@ -67,6 +67,7 @@ static Bool myopen_netcdf(Climatefile *file,int year,const Config *config)
 static Bool openfile(Climatefile *file,int year,const Config *config)
 {
   int rc;
+  file->isopen=FALSE;
   if(isroot(*config))
     rc=myopen_netcdf(file,year,config);
 #ifdef USE_MPI
@@ -89,6 +90,7 @@ static Bool openfile(Climatefile *file,int year,const Config *config)
   MPI_Bcast(&file->missing_value,sizeof(file->missing_value),MPI_BYTE,0,
             config->comm);
 #endif
+  file->isopen=TRUE;
   return FALSE;
 } /* of 'openfile' */
 

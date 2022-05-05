@@ -1,9 +1,9 @@
-.TH txt2clm 1  "June 3, 2021" "version 1.0.001" "USER COMMANDS"
+.TH txt2clm 1  "January 24, 2022" "version 1.0.001" "USER COMMANDS"
 .SH NAME
 txt2clm \- convert text files to clm data files for LPJmL
 .SH SYNOPSIS
 .B txt2clm
-[\-h] [\-float] [\-int] [\-scale s] [\-nbands n] [\-firstyear f] [\-firstcell c] [\-ncell n]  [\-header id]
+[\-h] [\-version v] [\-float] [\-int] [\-scale s] [\-nbands n] [-nstep n] [\-firstyear f] [\-firstcell c] [\-ncell n]  [\-header id]
 .I txtfile clmfile 
 .SH DESCRIPTION
 Program converts text files containing white space separated numbers into LPJ climate data files. File is read until end of file is reached.
@@ -11,6 +11,9 @@ Program converts text files containing white space separated numbers into LPJ cl
 .TP
 \-h
 display a short help text
+.TP
+\-version v
+set clm version, default is 3
 .TP
 \-float 
 write data as float, default is short
@@ -23,6 +26,9 @@ scale data by a factor
 .TP
 \-nbands n
 set number of bands, default is 12
+.TP
+\-nstep n
+set number of steps, default is 1
 .TP
 \-firstyear f
 set first year, default is 1901

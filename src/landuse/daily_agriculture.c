@@ -298,7 +298,8 @@ Real daily_agriculture(Stand *stand,                /**< [inout] stand pointer *
       getoutputindex(output,PFT_GCGP_COUNT,nnat+pft->par->id-npft+data->irrigation*nirrig,config)++;
       getoutputindex(output,PFT_GCGP,nnat+pft->par->id-npft+data->irrigation*nirrig,config)+=gc_pft/gp_pft[getpftpar(pft,id)];
     }
-    npp=npp_crop(pft,gtemp_air,gtemp_soil,gpp-rd,&negbm,wdf,config);
+    npp=npp_crop(pft,gtemp_air,gtemp_soil,gpp-rd-pft->npp_bnf,&negbm,wdf,config);
+    pft->npp_bnf=0.0;
     getoutput(output,NPP,config)+=npp*stand->frac;
     stand->cell->balance.anpp+=npp*stand->frac;
     stand->cell->balance.agpp+=gpp*stand->frac;

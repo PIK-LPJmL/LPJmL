@@ -15,22 +15,7 @@
 /**                                                                                \n**/
 /**************************************************************************************/
 
-#ifdef USE_JSON
-#include <json-c/json.h>
-#endif
 #include "lpj.h"
-
-#define LINE_LEN 1024 /* maximum line length in JSON file + 1  */
-
-static void closeconfig(LPJfile *file)
-{
-#ifdef USE_JSON
-  if(file->isjson)
-    json_object_put(file->file.obj);
-  else
-#endif
-    pclose(file->file.file);
-} /* of 'closeconfig' */
 
 Bool readconfig(Config *config,        /**< LPJ configuration */
                 const char *filename,  /**< Default configuration filename */
@@ -48,11 +33,6 @@ Bool readconfig(Config *config,        /**< LPJ configuration */
   String s;
   Verbosity verbosity;
   const char *sim_id[]={"lpj","lpjml","lpjml_image","lpjml_fms"};
-#ifdef USE_JSON
-  char line[LINE_LEN];
-  enum json_tokener_error json_error;
-  struct json_tokener *tok;
-#endif
   config->arglist=catstrvec(*argv,*argc); /* store command line in arglist */
   file=openconfig(config,filename,argc,argv,usage);
   if(file==NULL)
@@ -67,41 +47,20 @@ Bool readconfig(Config *config,        /**< LPJ configuration */
     closeconfig(&lpjfile);
     return TRUE;
   }
-  if(!strcmp(s,"{")) /* check whether file is in JSON format */
+  if(s[0]=='{') /* check whether file is in JSON format */
   {
 #ifdef USE_JSON
-    lpjfile.isjson=TRUE;     /* yes, we have to parse it */
-    tok=json_tokener_new();
-    lpjfile.file.obj=json_tokener_parse_ex(tok,s,strlen(s));
-    while(!fscanline(file,line,LINE_LEN,verbosity))  /* read line from file */
+    if(parse_json(file,&lpjfile,s,verbosity))
     {
-      if(line[0]!='#')
-      {
-        lpjfile.file.obj=json_tokener_parse_ex(tok,line,strlen(line));
-        json_error=json_tokener_get_error(tok);
-        if(json_error!=json_tokener_continue)
-          break;
-      }
-    }
-    pclose(file);
-    json_tokener_free(tok);
-    if(json_error!=json_tokener_success)
-    {
-      if(verbosity)
-      {
-        fprintf(stderr,"ERROR228: Cannot parse json file '%s' in line %d, %s:\n",
-                getfilename(),getlinecount()-1,(json_error==json_tokener_continue) ? "missing closing '}'" : json_tokener_error_desc(json_error));
-        if(json_error!=json_tokener_continue)
-          fprintf(stderr,"%s:%d:%s",getfilename(),getlinecount()-1,line);
-      }
-      json_object_put(lpjfile.file.obj);
+      pclose(file);
       return TRUE;
     }
+    pclose(file);
     if(fscanstring(&lpjfile,s,"sim_name",FALSE,verbosity))
     {
       if(verbosity)
         fputs("ERROR121: Cannot read simulation name.\n",stderr);
-      json_object_put(lpjfile.file.obj);
+      closeconfig(&lpjfile);
       return TRUE;
     }
 #else

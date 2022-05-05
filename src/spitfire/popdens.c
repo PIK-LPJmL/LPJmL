@@ -26,62 +26,16 @@ Popdens initpopdens(const Config *config /**< LPJ configuration */
                    )                     /** \return pointer to population
                                             struct or NULL */
 {
-  Header header;
   Popdens popdens;
-  String headername;
-  int i,version;
-  size_t offset,filesize;
+  int i;
 
   if(config->popdens_filename.name==NULL)
     return NULL;
   popdens=new(struct popdens);
   if(popdens==NULL)
     return NULL;
-  popdens->file.fmt=config->popdens_filename.fmt;
-  if(config->popdens_filename.fmt==CDF)
+  if(opendata(&popdens->file,&config->popdens_filename,"population density","km-2",LPJ_SHORT,1.0,1,TRUE,config))
   {
-    if(opendata_netcdf(&popdens->file,&config->popdens_filename,"km-2",config))
-    {
-      free(popdens);
-      return NULL;
-    }
-  }
-  else
-  {
-    if((popdens->file.file=openinputfile(&header,&popdens->file.swap,
-                                         &config->popdens_filename,
-                                         headername,
-                                         &version,&offset,TRUE,config))==NULL)
-    {
-      free(popdens);
-      return NULL;
-    }
-
-    popdens->file.firstyear=header.firstyear;
-    popdens->file.size=header.ncell*typesizes[header.datatype];
-    popdens->file.scalar=header.scalar;
-    popdens->file.datatype=header.datatype;
-    popdens->file.nyear=header.nyear;
-    popdens->file.var_len=header.nbands;
-    if(config->popdens_filename.fmt==RAW)
-      popdens->file.offset=config->startgrid*sizeof(short);
-    else
-    {
-      popdens->file.offset=(config->startgrid-header.firstcell)*typesizes[header.datatype]+headersize(headername,version)+offset;
-      if(isroot(*config) && config->popdens_filename.fmt!=META)
-      {
-         filesize=getfilesizep(popdens->file.file)-headersize(headername,version)-offset;
-         if(filesize!=typesizes[header.datatype]*header.nyear*header.nbands*header.ncell)
-           fprintf(stderr,"WARNING032: File size of '%s' does not match nyear*ncell*nbands.\n",config->popdens_filename.name);
-      }
-    }
-  }
-  if(popdens->file.var_len>1)
-  {
-    if(isroot(*config))
-      fprintf(stderr,"ERROR218: Number of bands=%zu in population density file '%s' is not 1.\n",
-              popdens->file.var_len,config->popdens_filename.name);
-    closeclimatefile(&popdens->file,isroot(*config));
     free(popdens);
     return NULL;
   }
@@ -114,39 +68,7 @@ Bool readpopdens(Popdens popdens,     /**< pointer to population data */
                  const Config *config /**< LPJ configuration */
                 )                     /** \return TRUE on error */
 {
-  char *name;
-  year-=popdens->file.firstyear;
-  if(year<0)
-    year=0;
-  if(year>=popdens->file.nyear)
-    year=popdens->file.nyear-1;
-  if(popdens->file.fmt==CDF)
-  {
-    if(readdata_netcdf(&popdens->file,popdens->npopdens,grid,year,config))
-    {
-      fprintf(stderr,"ERROR185: Cannot read population density of year %d from '%s'.\n",
-              year+popdens->file.firstyear,config->popdens_filename.name);
-      return TRUE;
-    }
-    return FALSE;
-  }
-  if(fseek(popdens->file.file,year*popdens->file.size+popdens->file.offset,SEEK_SET))
-  {
-    name=getrealfilename(&config->popdens_filename);
-    fprintf(stderr,"ERROR184: Cannot seek to population density of year %d in '%s'.\n",
-            year+popdens->file.firstyear,name);
-    free(name);
-    return TRUE;
-  }
-  if(readrealvec(popdens->file.file,popdens->npopdens,0,popdens->file.scalar,popdens->file.n,popdens->file.swap,popdens->file.datatype))
-  {
-    name=getrealfilename(&config->popdens_filename);
-    fprintf(stderr,"ERROR185: Cannot read population density of year %d from '%s'.\n",
-            year+popdens->file.firstyear,name);
-    free(name);
-    return TRUE;
-  }
-   return FALSE;
+  return (readdata(&popdens->file,popdens->npopdens,grid,"population density",year,config)==NULL);
 } /* of 'readpopdens' */
 
 Real getpopdens(const Popdens popdens,int cell)

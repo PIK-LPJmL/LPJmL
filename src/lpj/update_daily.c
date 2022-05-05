@@ -136,7 +136,7 @@ void update_daily(Cell *cell,            /**< cell pointer           */
     cell->output.mpet+=eeq*PRIESTLEY_TAYLOR*stand->frac;
     getoutput(&cell->output,ALBEDO,config) += beta * stand->frac;
 
-    if((config->fire==SPITFIRE  || config->fire==SPITFIRE_TMAX)&& cell->afire_frac<1)
+    if((config->fire==SPITFIRE  || config->fire==SPITFIRE_TMAX)&& stand->afire_frac<1)
       dailyfire_stand(stand,&livefuel,popdensity,avgprec,&climate,config);
     if(config->permafrost)
     {
@@ -341,7 +341,7 @@ void update_daily(Cell *cell,            /**< cell pointer           */
 
     } /* of if(config->with_nitrogen) */
 
-    if(config->with_nitrogen)
+    if(config->with_nitrogen && !config->ma_bnf)
     {
       bnf=biologicalnfixation(stand);
       stand->soil.NH4[0]+=bnf;
@@ -489,7 +489,7 @@ void update_daily(Cell *cell,            /**< cell pointer           */
     getoutput(&cell->output,LAKEVOL,config)+=cell->discharge.dmass_lake;
   } /* of 'if(river_routing)' */
   getoutput(&cell->output,DAYLENGTH,config)+=daylength;
-  soilpar_output(cell,config);
+  soilpar_output(cell,agrfrac,config);
   killstand(cell,npft, cell->ml.with_tillage,intercrop,year,config);
 #ifdef SAFE
   check_stand_fracs(cell,cell->lakefrac+cell->ml.reservoirfrac);

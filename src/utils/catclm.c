@@ -94,9 +94,15 @@ int main(int argc,char **argv)
         fprintf(stderr,"Error reading header in '%s'.\n",argv[i+iarg]);
         return EXIT_FAILURE;
       }
+      if(version>CLM_MAX_VERSION)
+      {
+        fprintf(stderr,"Error: Unsupported version %d in '%s', must be less than %d.\n",
+                version,argv[i+iarg],CLM_MAX_VERSION+1);
+        return EXIT_FAILURE;
+      }
       filesize=getfilesizep(in)-headersize(id,version);
-      if((header.order==CELLINDEX && filesize!=sizeof(int)*header.ncell+((version==3) ? typesizes[header.datatype] : size)*header.ncell*header.nbands*header.nyear) ||
-         (header.order!=CELLINDEX && filesize!=((version==3) ? typesizes[header.datatype] : size)*header.ncell*header.nbands*header.nyear))
+      if((header.order==CELLINDEX && filesize!=sizeof(int)*header.ncell+((version==3) ? typesizes[header.datatype] : size)*header.ncell*header.nbands*header.nstep*header.nyear) ||
+         (header.order!=CELLINDEX && filesize!=((version==3) ? typesizes[header.datatype] : size)*header.ncell*header.nbands*header.nstep*header.nyear))
       {
         fprintf(stderr,"Error: file length of '%s' does not match header.\n",argv[iarg+i]);
         return EXIT_FAILURE;
@@ -124,6 +130,11 @@ int main(int argc,char **argv)
       if(header.nbands!=oldheader.nbands)
       {
         fprintf(stderr,"Error: Different number of bands in '%s'.\n",argv[i+iarg]);
+        return EXIT_FAILURE;
+      }
+      if(header.nstep!=oldheader.nstep)
+      {
+        fprintf(stderr,"Error: Different number of steps in '%s'.\n",argv[i+iarg]);
         return EXIT_FAILURE;
       }
       if(header.firstyear!=oldheader.firstyear+oldheader.nyear)
@@ -154,9 +165,15 @@ int main(int argc,char **argv)
         fprintf(stderr,"Error reading header in '%s'.\n",argv[i+iarg]);
         return EXIT_FAILURE;
       }
+      if(version>CLM_MAX_VERSION)
+      {
+        fprintf(stderr,"Error: Unsupported version %d in '%s', must be less than %d.\n",
+                version,argv[i+iarg],CLM_MAX_VERSION+1);
+        return EXIT_FAILURE;
+      }
       filesize=getfilesizep(in)-headersize(id,version);
-      if((header.order==CELLINDEX && filesize!=sizeof(int)*header.ncell+((version==3) ? typesizes[header.datatype] : size)*header.ncell*header.nbands*header.nyear) ||
-         (header.order!=CELLINDEX && filesize!=((version==3) ? typesizes[header.datatype] : size)*header.ncell*header.nbands*header.nyear))
+      if((header.order==CELLINDEX && filesize!=sizeof(int)*header.ncell+((version==3) ? typesizes[header.datatype] : size)*header.ncell*header.nbands*header.nstep*header.nyear) ||
+         (header.order!=CELLINDEX && filesize!=((version==3) ? typesizes[header.datatype] : size)*header.ncell*header.nbands*header.nstep*header.nyear))
       {
         fprintf(stderr,"Error: file length of '%s' does not match header.\n",argv[i+iarg]);
         return EXIT_FAILURE;
@@ -197,15 +214,15 @@ int main(int argc,char **argv)
     switch(size)
     {
       case 1:
-        bvals=newvec(Byte,(long long)header.nbands*header.ncell);
+        bvals=newvec(Byte,(long long)header.nbands*header.nstep*header.ncell);
         for(j=0;j<header.nyear;j++)
         {
-          if(fread(bvals,1,(long long)header.nbands*header.ncell,in)!=(long long)header.nbands*header.ncell)
+          if(fread(bvals,1,(long long)header.nbands*header.nstep*header.ncell,in)!=(long long)header.nbands*header.nstep*header.ncell)
           {
             fprintf(stderr,"Error reading from '%s'.\n",argv[i+iarg]);
             return EXIT_FAILURE;
           }
-          if(fwrite(bvals,1,(long long)header.nbands*header.ncell,out)!=(long long)header.nbands*header.ncell)
+          if(fwrite(bvals,1,(long long)header.nbands*header.nstep*header.ncell,out)!=(long long)header.nbands*header.nstep*header.ncell)
           {
             fprintf(stderr,"Error writing to '%s'.\n",argv[argc-1]);
             return EXIT_FAILURE;
@@ -214,18 +231,18 @@ int main(int argc,char **argv)
         free(bvals);
         break;
       case 2:
-        values=newvec(short,(long long)header.nbands*header.ncell);
+        values=newvec(short,(long long)header.nbands*header.nstep*header.ncell);
         for(j=0;j<header.nyear;j++)
         {
-          if(fread(values,sizeof(short),(long long)header.nbands*header.ncell,in)!=(long long)header.nbands*header.ncell)
+          if(fread(values,sizeof(short),(long long)header.nbands*header.nstep*header.ncell,in)!=(long long)header.nbands*header.nstep*header.ncell)
           {
             fprintf(stderr,"Error reading from '%s'.\n",argv[i+iarg]);
             return EXIT_FAILURE;
           }
           if(swap)
-            for(k=0;k<(long long)header.nbands*(long long)header.ncell;k++)
+            for(k=0;k<(long long)header.nbands*header.nstep*(long long)header.ncell;k++)
               values[k]=swapshort(values[k]);
-          if(fwrite(values,sizeof(short),(long long)header.nbands*header.ncell,out)!=(long long)header.nbands*header.ncell)
+          if(fwrite(values,sizeof(short),(long long)header.nbands*header.nstep*header.ncell,out)!=(long long)header.nbands*header.nstep*header.ncell)
           {
             fprintf(stderr,"Error writing to '%s'.\n",argv[argc-1]);
             return EXIT_FAILURE;
@@ -234,18 +251,18 @@ int main(int argc,char **argv)
         free(values);
         break;
       case 4:
-        ivals=newvec(int,(long long)header.nbands*header.ncell);
+        ivals=newvec(int,(long long)header.nbands*header.nstep*header.ncell);
         for(j=0;j<header.nyear;j++)
         {
-          if(fread(ivals,sizeof(int),(long long)header.nbands*header.ncell,in)!=(long long)header.nbands*header.ncell)
+          if(fread(ivals,sizeof(int),(long long)header.nbands*header.nstep*header.ncell,in)!=(long long)header.nbands*header.nstep*header.ncell)
           {
             fprintf(stderr,"Error reading from '%s'.\n",argv[i+iarg]);
             return EXIT_FAILURE;
           }
           if(swap)
-            for(k=0;k<(long long)header.nbands*header.ncell;k++)
+            for(k=0;k<(long long)header.nbands*header.nstep*header.ncell;k++)
               ivals[k]=swapint(ivals[k]);
-          if(fwrite(ivals,sizeof(int),(long long)header.nbands*header.ncell,out)!=(long long)header.nbands*header.ncell)
+          if(fwrite(ivals,sizeof(int),(long long)header.nbands*header.nstep*header.ncell,out)!=(long long)header.nbands*header.nstep*header.ncell)
           {
             fprintf(stderr,"Error writing to '%s'.\n",argv[argc-1]);
             return EXIT_FAILURE;
@@ -254,18 +271,18 @@ int main(int argc,char **argv)
         free(ivals);
         break;
       case 8:
-        lvals=newvec(long long,(long long)header.nbands*header.ncell);
+        lvals=newvec(long long,(long long)header.nbands*header.nstep*header.ncell);
         for(j=0;j<header.nyear;j++)
         {
-          if(fread(lvals,sizeof(long long),(long long)header.nbands*header.ncell,in)!=(long long)header.nbands*header.ncell)
+          if(fread(lvals,sizeof(long long),(long long)header.nbands*header.nstep*header.ncell,in)!=(long long)header.nbands*header.nstep*header.ncell)
           {
             fprintf(stderr,"Error reading from '%s'.\n",argv[i+iarg]);
             return EXIT_FAILURE;
           }
           if(swap)
-            for(k=0;k<(long long)header.nbands*header.ncell;k++)
+            for(k=0;k<(long long)header.nbands*header.nstep*header.ncell;k++)
               lvals[k]=swaplong(lvals[k]);
-          if(fwrite(lvals,sizeof(long long),(long long)header.nbands*header.ncell,out)!=(long long)header.nbands*header.ncell)
+          if(fwrite(lvals,sizeof(long long),(long long)header.nbands*header.ncell,out)!=(long long)header.nbands*header.nstep*header.ncell)
           {
             fprintf(stderr,"Error writing to '%s'.\n",argv[argc-1]);
             return EXIT_FAILURE;

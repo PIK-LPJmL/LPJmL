@@ -189,7 +189,8 @@ Real daily_agriculture_grass(Stand *stand,                /**< stand pointer */
          getoutputindex(output,PFT_GCGP,nnat + index,config) += gcgp;
       }
     }
-    npp = npp_grass(pft, gtemp_air, gtemp_soil, gpp - rd,config->with_nitrogen);
+    npp = npp_grass(pft, gtemp_air, gtemp_soil, gpp - rd - pft->npp_bnf,config->with_nitrogen);
+    pft->npp_bnf=0.0;
     stand->cell->balance.anpp+=npp*stand->frac;
     stand->cell->balance.agpp+=gpp*stand->frac;
     getoutput(output,NPP,config) += npp * stand->frac;

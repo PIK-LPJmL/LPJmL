@@ -15,7 +15,7 @@
 #include "lpj.h"
 
 #ifdef USE_UDUNITS
-#define USAGE "Usage: %s [-swap] [-v] [-units unit] [-var name] [-clm] [-cellsize size] [-byte] [-o filename] gridfile netcdffile ...\n"
+#define USAGE "Usage: %s [-swap] [-v] [-units unit] [-var name] [-clm] [-cellsize size] [-byte] [-o filename] [-json] gridfile netcdffile ...\n"
 #else
 #define USAGE "Usage: %s [-swap] [-v] [-var name] [-clm] [-cellsize size] [-byte] [-o filename] gridfile netcdffile ...\n"
 #endif
@@ -224,14 +224,15 @@ int main(int argc,char **argv)
   Filename coord_filename;
   Climatefile data;
   Config config;
-  char *units,*var,*outname,*endptr;
+  char *units,*var,*outname,*endptr,*out_json,*arglist;
   Coord *grid;
   Intcoord intcoord;
   FILE *file;
   int i,j;
   float cellsize_lon,cellsize_lat;
-  Bool swap,verbose,isclm,isbyte;
-  isbyte=swap=verbose=isclm=FALSE;
+  Bool swap,verbose,isclm,isbyte,isjson;
+  Header header;
+  isbyte=swap=verbose=isclm=isjson=FALSE;
   units=NULL;
   var=NULL;
   outname="out.bin"; /* default file name for output */
@@ -249,6 +250,8 @@ int main(int argc,char **argv)
         isclm=TRUE;
       else if(!strcmp(argv[i],"-byte"))
         isbyte=TRUE;
+      else if(!strcmp(argv[i],"-json"))
+        isjson=TRUE;
       else if(!strcmp(argv[i],"-var"))
       {
         if(argc==i-1)
@@ -337,6 +340,7 @@ int main(int argc,char **argv)
     config.resolution.lon=cellsize_lon;
     for(j=0;j<numcoord(coordfile);j++)
       readcoord(coordfile,grid+j,&config.resolution);
+    header.firstcell=getfirstcoord(coordfile);
     closecoord(coordfile);
   }
   else
@@ -370,8 +374,12 @@ int main(int argc,char **argv)
     }
     config.resolution.lat=cellsize_lat;
     config.resolution.lon=cellsize_lon;
+    header.firstcell=0;
     fclose(file);
   }
+  header.cellsize_lat=config.resolution.lat;
+  header.cellsize_lon=config.resolution.lon;
+  header.ncell=config.ngridcell;
   file=fopen(outname,"wb");
   if(file==NULL)
   {
@@ -387,6 +395,48 @@ int main(int argc,char **argv)
       fprintf(stderr,"Error opening '%s'.\n",argv[j]);
       return EXIT_FAILURE;
     }
+    if(isclm || isjson)
+    {
+      if(j==i+1)
+      {
+        header.firstyear=data.firstyear;
+        header.nyear=data.nyear;
+        header.datatype=data.datatype;
+        header.nbands=data.var_len;
+        header.timestep=1;
+        header.order=CELLSEQ;
+        header.scalar=1;
+        switch(data.time_step)
+        {
+          case DAY:
+            header.nstep=NDAYYEAR;
+            break;
+          case MONTH:
+            header.nstep=NMONTH;
+            break;
+          case YEAR: case MISSING_TIME:
+            header.nstep=1;
+            header.timestep=data.delta_year;
+            break;
+        }
+        if(isclm)
+          fwriteheader(file,&header,LPJOUTPUT_HEADER,LPJOUTPUT_VERSION);
+      }
+      else
+      {
+        if(data.firstyear!=header.firstyear+header.nyear)
+        {
+          fprintf(stderr,"First year %d in '%s' is not %d.\n",data.firstyear,argv[j],header.firstyear+header.nyear);
+          return EXIT_FAILURE;
+        }
+        if(data.var_len!=header.nbands)
+        {
+          fprintf(stderr,"Number of bands %d in '%s' is not %d.\n",(int)data.var_len,argv[j],header.nbands);
+          return EXIT_FAILURE;
+        }
+        header.nyear+=data.nyear;
+      }
+    }
     if(readdata(&data,file,grid,isbyte,&config))
     {
       fprintf(stderr,"Error reading '%s'.\n",argv[j]);
@@ -394,7 +444,31 @@ int main(int argc,char **argv)
     }
     nc_close(data.ncid);
   }
+  if(isclm)
+  {
+    rewind(file);
+    fwriteheader(file,&header,LPJOUTPUT_HEADER,LPJOUTPUT_VERSION);
+  }
   fclose(file);
+  if(isjson)
+  {
+    out_json=malloc(strlen(outname)+strlen(".json")+1);
+    if(out_json==NULL)
+    {
+      printallocerr("filename");
+      return EXIT_FAILURE;
+    }
+    strcat(strcpy(out_json,outname),".json");
+    arglist=catstrvec(argv,argc);
+    file=fopen(out_json,"w");
+    if(file==NULL)
+    {
+      printfcreateerr(out_json);
+      return EXIT_FAILURE;
+    }
+    fprintjson(file,outname,arglist,&header,NULL,NULL,(isclm) ? CLM : RAW,LPJOUTPUT_HEADER,FALSE,LPJOUTPUT_VERSION);
+    fclose(file);
+  }
   return EXIT_SUCCESS;
 #else
   fprintf(stderr,"ERROR401: NetCDF is not supported in this version of %s.\n",argv[0]);

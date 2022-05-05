@@ -241,6 +241,9 @@ Bool fscanconfig(Config *config,    /**< LPJ configuration */
   config->black_fallow=FALSE;
   config->double_harvest=FALSE;
   config->others_to_crop = FALSE;
+  config->ma_bnf = FALSE;
+  if(fscanbool(file,&config->ma_bnf,"ma_bnf",TRUE,verbose))
+    return TRUE;
   config->soilpar_option=NO_FIXED_SOILPAR;
   if(fscankeywords(file,&config->soilpar_option,"soilpar_option",soilpar_option,3,TRUE,verbose))
     return TRUE;
@@ -430,15 +433,23 @@ Bool fscanconfig(Config *config,    /**< LPJ configuration */
       fputs("ERROR230: Cannot read LPJ parameter 'param'.\n",stderr);
     return TRUE;
   }
-  if((config->nsoil=fscansoilpar(file,&config->soilpar,config->soilpar_option,config->with_nitrogen,verbose))==0)
+  if(fscansoilpar(file,config))
   {
     if(verbose)
       fputs("ERROR230: Cannot read soil parameter 'soilpar'.\n",stderr);
     return TRUE;
   }
-  config->soilmap=fscansoilmap(file,&config->soilmap_size,config);
-  if(config->soilmap==NULL)
-    return TRUE;
+  if(iskeydefined(file,"soilmap"))
+  {
+    config->soilmap=fscansoilmap(file,&config->soilmap_size,config);
+    if(config->soilmap==NULL)
+      return TRUE;
+  }
+  else
+  {
+    config->soilmap=NULL;
+    config->soilmap_size=0;
+  }
   config->ntypes=ntypes;
   if(fscanpftpar(file,scanfcn,config))
   {

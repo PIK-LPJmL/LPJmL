@@ -146,6 +146,13 @@ typedef struct Pft
     Real knstore;
     Real fn_turnover;           /**< fraction of N not recovered before turnover */
     Cnratio ncleaf;             /**< minimum, median, maximum leaf foliage N concentration */
+    Limit temp_bnf_lim;
+    Limit temp_bnf_opt;
+    Limit swc_bnf;
+    Real phi_bnf[2];
+    Real nfixpot;
+    Real maxbnfcost;
+    Real bnf_cost;
     Real windspeed;             /**< windspeed dampening */
     Real roughness;             /**< roughness length */
     Real alpha_fuelp;           /**< scaling factor for Nesterov fire danger index */
@@ -207,6 +214,7 @@ typedef struct Pft
   Real nleaf;            /**< nitrogen in leaf (gN/m2) */
   Real vscal;            /**< nitrogen stress scaling factor for allocation, used as mean for trees and grasses, initialized daily for crops */
   Real nlimit;
+  Real npp_bnf;
 #ifdef DAILY_ESTABLISHMENT
   Bool established;
 #endif
@@ -270,6 +278,8 @@ extern Real f_lai(Real);
 extern int findpftname(const char *,const Pftpar[],int);
 extern Bool findcftmap(const char *,const Pftpar[],const int[],int);
 extern void fprintpftnames(FILE *,const Pftpar[],int);
+extern Real ma_biological_n_fixation(Pft *,Soil *,Real,const Config *);
+
 
 /* needed for IMAGE, but can also be used otherwise */
 

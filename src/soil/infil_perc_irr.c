@@ -158,7 +158,7 @@ Real infil_perc_irr(Stand *stand,        /**< Stand pointer */
           /*percolation*/
           if((soil->w[l]+soil->ice_depth[l]/soil->whcs[l]-param.percthres)>epsilon)
           {
-            HC=soil->par->Ks*pow(((soil->w[l]*soil->whcs[l]+inactive_water[l])/soil->wsats[l]),soil->beta_soil[l]);
+            HC=soil->Ks[l]*pow(((soil->w[l]*soil->whcs[l]+inactive_water[l])/soil->wsats[l]),soil->beta_soil[l]);
             TT=((soil->w[l]-param.percthres)*soil->whcs[l]+soil->ice_depth[l])/HC;
             perc=((soil->w[l]-param.percthres)*soil->whcs[l]+soil->ice_depth[l])*(1-exp(-24/TT));
             /*correction of percolation for water content of the following layer*/

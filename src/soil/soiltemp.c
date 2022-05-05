@@ -39,8 +39,8 @@ Real soiltemp_lag(const Soil *soil,      /**< Soil data */
  * Y.Bayazitoglu / M.N.Oezisik: Elements of Heat Transfer (1988)
  */
 
-void soiltemp(Soil *soil,     /**< pointer to soil data */
-              Real airtemp,   /**< air temperature (deg C) */
+void soiltemp(Soil *soil,          /**< pointer to soil data */
+              Real temp_bs,        /**< temperature below snow (deg C) */
               const Config *config /**< LPJmL configuration */
              )
 {
@@ -135,22 +135,22 @@ void soiltemp(Soil *soil,     /**< pointer to soil data */
     }
   } /* of 'for(l=0;...)' */
 
-/* for all combinations of temperature gradients and thermal litter properties, the resulting litter temperature is the average of airtemp and soiltemp */
-  soil->litter.agtop_temp=(airtemp+soil->temp[0])/2;
+/* for all combinations of temperature gradients and thermal litter properties, the resulting litter temperature is the average of temp_bs and soiltemp */
+  soil->litter.agtop_temp=(temp_bs+soil->temp[0])/2;
   /* thermal properties of dry litter for next step */
   heatcap_litter=heatcap_om*bd_leaves/rho_om;
 
   /* heat transfer soil layers */
-  t_upper=airtemp*(1-soil->litter.agtop_cover)+soil->litter.agtop_temp*soil->litter.agtop_cover;
-#ifndef USE_LINEAR_CONTACT_T
-  admit_upper=admit[0]*(1-soil->litter.agtop_cover)+sqrt(lambda_litter*heatcap_litter)*soil->litter.agtop_cover;
-#endif
 
   /* calculate soil temperatures */
   for (t=0; t<heat_steps;++t)
   {
-    t_upper=airtemp;
+    t_upper=temp_bs*(1-soil->litter.agtop_cover)+soil->litter.agtop_temp*soil->litter.agtop_cover;
+#ifndef USE_LINEAR_CONTACT_T
+    admit_upper=admit[0]*(1-soil->litter.agtop_cover)+sqrt(lambda_litter*heatcap_litter)*soil->litter.agtop_cover;
+#else
     admit_upper=admit[0];
+#endif
     for(l=0;l<NSOILLAYER;++l)
     {
       temp_old=soil->temp[l];

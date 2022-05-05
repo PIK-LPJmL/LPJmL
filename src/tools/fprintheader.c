@@ -31,9 +31,11 @@ void fprintheader(FILE *file, /**< pointer to text file */
           "First cell:\t%6d\n"
           "Number of cells:%6d\n"
           "Number of bands:%6d\n"
+          "Number of steps:%6d\n"
+          "Time step:%6d\n"
           "cellsize:\t%10.6f %10.6f\n"
           "conversion factor:\t%g\n",
-          header->firstyear,header->firstyear+header->nyear-1,
-          header->firstcell,header->ncell,header->nbands,header->cellsize_lon,
+          header->firstyear,header->firstyear+(header->nyear-1)*header->timestep,
+          header->firstcell,header->ncell,header->nbands,header->nstep,header->timestep,header->cellsize_lon,
           header->cellsize_lat,header->scalar);
 } /* of 'fprintheader' */

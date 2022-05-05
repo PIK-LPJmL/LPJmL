@@ -17,34 +17,35 @@
 #include "lpj.h"
 
 void soilpar_output(Cell *cell,          /**< pointer to cell */
+                    Real frac_agr,       /**< agricultural fraction (0..1) */
                     const Config *config /**< LPJmL configuration */
                    )
 {
   Stand *stand;
   int s,l;
-  Real whc[NSOILLAYER];
-  Real frac_agr;
-  frac_agr=0;
-  foreachsoillayer(l)
-    whc[l]=0; 
   foreachstand(stand,s,cell->standlist)
-    switch(stand->type->landusetype)
-    {
-      case NATURAL:
-        foreachsoillayer(l)
-          getoutputindex(&cell->output,WHC_NAT,l,config)+=stand->soil.whc[l];
-        break;
-      case GRASSLAND:
-        foreachsoillayer(l)
-          getoutputindex(&cell->output,WHC_GRASS,l,config)+=stand->soil.whc[l];
-        break;
-      case AGRICULTURE: case SETASIDE_RF: case SETASIDE_IR:
-        foreachsoillayer(l)
-          whc[l]+=stand->soil.whc[l]*stand->frac;
-        frac_agr+=stand->frac;
-        break;
+    if(isagriculture(stand->type->landusetype))
+      foreachsoillayer(l)
+      {
+        getoutputindex(&cell->output,WHC_AGR,l,config)+=stand->soil.whc[l]*stand->frac/frac_agr;
+        getoutputindex(&cell->output,KS_AGR,l,config)+=stand->soil.Ks[l]*stand->frac/frac_agr;
+      }
+    else
+      switch(stand->type->landusetype)
+      {
+        case NATURAL:
+          foreachsoillayer(l)
+          {
+            getoutputindex(&cell->output,WHC_NAT,l,config)+=stand->soil.whc[l];
+            getoutputindex(&cell->output,KS_NAT,l,config)+=stand->soil.Ks[l];
+          }
+          break;
+        case GRASSLAND:
+          foreachsoillayer(l)
+          {
+            getoutputindex(&cell->output,WHC_GRASS,l,config)+=stand->soil.whc[l];
+            getoutputindex(&cell->output,KS_GRASS,l,config)+=stand->soil.Ks[l];
+          }
+          break;
     }
-  if(frac_agr>0)
-     foreachsoillayer(l)
-        getoutputindex(&cell->output,WHC_AGR,l,config)+=whc[l]/frac_agr;
 } /* of 'soilpar_output' */

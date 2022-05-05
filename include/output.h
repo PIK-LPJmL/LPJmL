@@ -20,7 +20,8 @@
 /* Definition of datatypes */
 
 #define DEFAULT_PORT 2222 /* default port for socket connection */
-#define issoil(index) (index==WHC_NAT || index==WHC_GRASS || index==WHC_AGR || index==SOILC_LAYER || index == SOILC_AGR_LAYER || index==SOILN_LAYER || index==SOILNO3_LAYER || index==SOILNH4_LAYER || index==SOILTEMP || index==SWC || \
+#define issoil(index) (index==KS_NAT || index==KS_GRASS || index==KS_AGR ||index==WHC_NAT || index==WHC_GRASS || index==WHC_AGR ||\
+                       index==SOILC_LAYER || index == SOILC_AGR_LAYER || index==SOILN_LAYER || index==SOILNO3_LAYER || index==SOILNH4_LAYER || index==SOILTEMP || index==SWC || \
                        index==RESPONSE_LAYER_AGR || index==RESPONSE_LAYER_NV || index==CSHIFT_FAST_NV || index==CSHIFT_SLOW_NV || index == SOILC_AGR_LAYER || index==PERC)
 
 #define getoutput(output,index,config) (output)->data[(config)->outputmap[index]]
@@ -122,6 +123,7 @@ extern void fwriteoutputdata(FILE *,const Output *,const Config *);
 extern Bool freadoutputdata(FILE *,Output *,Bool,Config *);
 extern Bool isannual(int,const Config *);
 extern int outputindex(int,int,const Config *);
+extern Bool fprintoutputjson(int,int,const Config *);
 #ifdef USE_MPI
 extern int mpi_write(FILE *,void *,MPI_Datatype,int,int *,
                      int *,int,MPI_Comm);

@@ -93,6 +93,7 @@ Bool fscanparam(LPJfile *file,       /**< File pointer to text file */
               param.soil_infil);
     return TRUE;
   }
+  fscanparamreal(&f,&param.soil_infil_litter,"soil_infil_litter");
   fscanparamreal(&f,&param.co2_p,"co2_p");
   fscanparamreal(&f,&param.k,"k");
   if(param.k<=0)

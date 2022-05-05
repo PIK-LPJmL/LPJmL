@@ -45,6 +45,12 @@ int main(int argc,char **argv)
     fprintf(stderr,"Error reading header.\n");
     return EXIT_FAILURE;
   }
+  if(version>CLM_MAX_VERSION)
+  {
+    fprintf(stderr,"Error: Unsupported version %d in '%s', must be less than %d.\n",
+            version,argv[1],CLM_MAX_VERSION+1);
+    return EXIT_FAILURE;
+  }
   for(i=0;i<header.ncell;i++)
   {
     if(readreservoir(&reservoir,swap,file))

@@ -89,7 +89,7 @@ Real infil_perc_rain(Stand *stand,        /**< Stand pointer */
       freewater+=(soil->w[l]+soil->ice_depth[l]/soil->whcs[l]-1)*soil->whcs[l];
   }
 
-  soil_infil *= (1 + soil->litter.agtop_cover*2); /*soil_infil is scaled between 2 and 6, based on Jaegermeyr et al. 2016*/
+  soil_infil *= (1 + soil->litter.agtop_cover*param.soil_infil_litter); /*soil_infil is scaled between 2 and 6, based on Jaegermeyr et al. 2016*/
   while(infil > epsilon || freewater > epsilon)
   {
     NO3perc_ly=0;
@@ -151,7 +151,7 @@ Real infil_perc_rain(Stand *stand,        /**< Stand pointer */
         /*percolation*/
         if((soil->w[l]+soil->ice_depth[l]/soil->whcs[l]-param.percthres)>epsilon/soil->whcs[l])
         {
-          HC=soil->par->Ks*pow(((soil->w[l]*soil->whcs[l]+inactive_water[l])/soil->wsats[l]),soil->beta_soil[l]);
+          HC=soil->Ks[l]*pow(((soil->w[l]*soil->whcs[l]+inactive_water[l])/soil->wsats[l]),soil->beta_soil[l]);
           TT=((soil->w[l]-param.percthres)*soil->whcs[l]+soil->ice_depth[l])/HC;
           perc=((soil->w[l]-param.percthres)*soil->whcs[l]+soil->ice_depth[l])*(1-exp(-24/TT));
           //printf("HC=%g,TT=%g,perc=%h\n",HC,TT,perc);
@@ -195,6 +195,11 @@ Real infil_perc_rain(Stand *stand,        /**< Stand pointer */
           }
           if(config->with_nitrogen && l<BOTTOMLAYER)
           {
+            /* nitrate movement with percolation */
+            /* nitrate percolating from overlying layer */
+
+            soil->NO3[l] += NO3perc_ly;   // from layer above
+            NO3perc_ly=0;
             /* determination of nitrate concentration in mobile water */
             w_mobile=vno3=concNO3_mobile=0;
             /* w_mobile as in Neitsch et al. 2005: Eq. 4:2.1.3 */
@@ -206,11 +211,6 @@ Real infil_perc_rain(Stand *stand,        /**< Stand pointer */
               vno3 = soil->NO3[l] * (1 - exp(ww));
               concNO3_mobile = max(vno3/w_mobile, 0);
             }
-            /* nitrate movement with percolation */
-            /* nitrate percolating from overlying layer */
-
-            soil->NO3[l] += NO3perc_ly;
-            NO3perc_ly=0;
             /* calculate nitrate in surface runoff */
             /* assume that there is no N in surface runoff as it does not infiltrate */
             if(l==-999)

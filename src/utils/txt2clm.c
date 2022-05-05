@@ -17,7 +17,7 @@
 #include "lpj.h"
 
 #define TXT2CLM_VERSION "1.0.001"
-#define USAGE "Usage: txt2clm [-h] [-cellindex] [-scale s] [-float] [-int] [-nbands n] [-cellsize size]\n               [-firstcell n] [-ncell n] [-firstyear f] [-header id] txtfile clmfile\n"
+#define USAGE "Usage: txt2clm [-h] [-version v] [-cellindex] [-scale s] [-float] [-int] [-nbands n] [-nstep n] [-cellsize size]\n               [-firstcell n] [-ncell n] [-firstyear f] [-header id] txtfile clmfile\n"
 
 int main(int argc,char **argv)
 {
@@ -28,18 +28,22 @@ int main(int argc,char **argv)
   short s;
   int data;
   Header header;
+  int version;
   char *id;
   int i,iarg,rc;
   /* set default values */
   header.order=CELLYEAR;
   header.firstyear=1901;
   header.nbands=12;
+  header.nstep=1;
+  header.timestep=1;
   header.firstcell=0;
   header.ncell=67420;
   multiplier=1;
   header.datatype=LPJ_SHORT;
   header.cellsize_lon=header.cellsize_lat=0.5;
   id=LPJ_CLIMATE_HEADER;
+  version=LPJ_CLIMATE_VERSION;
   /* parse command line options */
   for(iarg=1;iarg<argc;iarg++)
     if(argv[iarg][0]=='-')
@@ -52,10 +56,12 @@ int main(int argc,char **argv)
         printf(USAGE
                "Arguments:\n"
                "-h           print this help text\n"
+               "-version     set version, default is %d\n"
                "-cellindex   set order to cell index\n"
                "-float       write data as float, default is short\n"
                "-int         write data as int, default is short\n"
                "-nbands n    number of bands, default is %d\n"
+               "-nstep n     number of bands, default is %d\n"
                "-firstcell n index of first cell\n"
                "-ncell n     number of cells, default is %d\n"
                "-firstyear f first year,default is %d\n"
@@ -64,7 +70,7 @@ int main(int argc,char **argv)
                "-header id   clm header string, default is '%s'\n"
                "txtfile      filename of text file\n"
                "clmfile      filename of clm data file\n",
-               header.nbands,header.ncell,header.firstyear,header.cellsize_lon,id);
+               version,header.nbands,header.nstep,header.ncell,header.firstyear,header.cellsize_lon,id);
         return EXIT_SUCCESS;
       }
       else if(!strcmp(argv[iarg],"-float"))
@@ -133,6 +139,53 @@ int main(int argc,char **argv)
         if(header.nbands<1)
         {
           fprintf(stderr,"Number of bands=%d must be greater than zero.\n",header.nbands);
+          return EXIT_FAILURE;
+        }
+      }
+      else if(!strcmp(argv[iarg],"-nstep"))
+      {
+        if(iarg==argc-1)
+        {
+          fputs("Argument missing after '-nstep' option.\n"
+                USAGE,stderr);
+          return EXIT_FAILURE;
+        }
+        header.nstep=strtol(argv[++iarg],&endptr,10);
+        if(*endptr!='\0')
+        {
+          fprintf(stderr,"Invalid value '%s' for option '-nstep'.\n",
+                  argv[iarg]);
+          return EXIT_FAILURE;
+        }
+        if(header.nstep<1)
+        {
+          fprintf(stderr,"Number of steps=%d must be greater than zero.\n",header.nstep);
+          return EXIT_FAILURE;
+        }
+      }
+      else if(!strcmp(argv[iarg],"-version"))
+      {
+        if(iarg==argc-1)
+        {
+          fputs("Argument missing after '-version' option.\n"
+                USAGE,stderr);
+          return EXIT_FAILURE;
+        }
+        version=strtol(argv[++iarg],&endptr,10);
+        if(*endptr!='\0')
+        {
+          fprintf(stderr,"Invalid value '%s' for option '-version'.\n",
+                  argv[iarg]);
+          return EXIT_FAILURE;
+        }
+        if(version<1)
+        {
+          fprintf(stderr,"Version=%d must be greater than zero.\n",version);
+          return EXIT_FAILURE;
+        }
+        if(version>CLM_MAX_VERSION)
+        {
+          fprintf(stderr,"Version=%d must be less than %d.\n",version,CLM_MAX_VERSION);
           return EXIT_FAILURE;
         }
       }
@@ -228,7 +281,7 @@ int main(int argc,char **argv)
     fprintf(stderr,"Error creating '%s': %s\n",argv[iarg+1],strerror(errno));
     return EXIT_FAILURE;
   }
-  fwriteheader(out,&header,id,LPJ_CLIMATE_VERSION);
+  fwriteheader(out,&header,id,version);
   if(header.order==CELLINDEX)
   {
     for(i=0;i<header.ncell;i++)
@@ -249,7 +302,7 @@ int main(int argc,char **argv)
   {
     if(header.datatype==LPJ_INT)
     {
-      for(i=0;i<header.ncell*header.nbands;i++)
+      for(i=0;i<header.ncell*header.nbands*header.nstep;i++)
       {
         rc=fscanf(file,"%d",&data);
         if(rc!=1)
@@ -262,7 +315,7 @@ int main(int argc,char **argv)
       }
     }
     else
-      for(i=0;i<header.ncell*header.nbands;i++)
+      for(i=0;i<header.ncell*header.nbands*header.nstep;i++)
       {
         rc=fscanf(file,"%g",&value);
         if(rc!=1)
@@ -271,7 +324,7 @@ int main(int argc,char **argv)
         {
           if(value*multiplier<SHRT_MIN || value*multiplier>SHRT_MAX)
              fprintf(stderr,"WARNING: Data overflow %g in year %d at cell %d and band %d\n",
-                     value*multiplier,header.nyear,i/header.nbands+1,i % header.nbands+1);
+                     value*multiplier,header.nyear,i/header.nbands/header.nstep+1,i % (header.nbands*header.nstep)+1);
           s=(short)(value*multiplier);
           if(fwrite(&s,sizeof(short),1,out)!=1)
           {
@@ -288,17 +341,17 @@ int main(int argc,char **argv)
           }
         }
     }
-    if(i==header.ncell*header.nbands)
+    if(i==header.ncell*header.nbands*header.nstep)
       header.nyear++;
     else if(i!=0)
       fprintf(stderr,"Cannot read data in year %d at cell %d and band %d.\n",
-              header.nyear+1,i / header.nbands+1,i % header.nbands+1);
+              header.nyear+1,i / header.nbands/header.nstep+1,i % (header.nbands*header.nstep)+1);
     else if(!feof(file))
       fprintf(stderr,"End of file not reached in '%s'.\n",argv[iarg]);
   } while(rc==1);
   fclose(file);
   rewind(out);
-  fwriteheader(out,&header,id,LPJ_CLIMATE_VERSION);
+  fwriteheader(out,&header,id,version);
   fclose(out);
   return EXIT_SUCCESS;
 } /* of 'main' */

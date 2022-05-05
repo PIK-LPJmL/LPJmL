@@ -209,10 +209,10 @@ static void printinputfile(FILE *file,const char *descr,const Filename *filename
                            int width)
 {
   if(width)
-    fprintf(file,"%-11s %-4s %-*s %s\n",descr,fmt[filename->fmt],
+    fprintf(file,"%-12s %-4s %-*s %s\n",descr,fmt[filename->fmt],
             width,notnull(filename->var),notnull(filename->name));
   else
-    fprintf(file,"%-11s %-4s %s\n",descr,fmt[filename->fmt],
+    fprintf(file,"%-12s %-4s %s\n",descr,fmt[filename->fmt],
             notnull(filename->name));
 } /* of 'printinputfile' */
 
@@ -320,6 +320,8 @@ void fprintconfig(FILE *file,          /**< File pointer to text output file */
     count++;
     len=fputstring(file,len,"prescribed soil parameter",78);
   }
+  if(config->ma_bnf)
+      len=printsim(file,len,&count,"Ma et al., 2022 BNF, ");
   if(config->withlanduse)
   {
     switch(config->withlanduse)
@@ -474,16 +476,16 @@ void fprintconfig(FILE *file,          /**< File pointer to text output file */
   fputs("Input files:\n",file);
   if(width)
   {
-    fprintf(file,"Variable    Fmt  %-*s Filename\n"
-          "----------- ---- ",width,"Varname");
+    fprintf(file,"Variable     Fmt  %-*s Filename\n"
+          "------------ ---- ",width,"Varname");
     frepeatch(file,'-',width);
     fputc(' ',file);
-    frepeatch(file,'-',79-19-width);
+    frepeatch(file,'-',79-20-width);
     fputc('\n',file);
   }
   else
-    fputs("Variable    Fmt  Filename\n"
-          "----------- ---- --------------------------------------------------------------\n",file);
+    fputs("Variable     Fmt  Filename\n"
+          "------------ ---- -------------------------------------------------------------\n",file);
   printinputfile(file,"soil",&config->soil_filename,width);
   if(config->soil_filename.fmt!=CDF)
     printinputfile(file,"coord",&config->coord_filename,width);
@@ -603,14 +605,14 @@ void fprintconfig(FILE *file,          /**< File pointer to text output file */
 #endif
   if(width)
   {
-    fputs("----------- ---- ",file);
+    fputs("------------ ---- ",file);
     frepeatch(file,'-',width);
     fputc(' ',file);
-    frepeatch(file,'-',79-19-width);
+    frepeatch(file,'-',79-20-width);
     fputc('\n',file);
   }
   else
-    fputs("----------- ---- --------------------------------------------------------------\n",file);
+    fputs("------------ ---- -------------------------------------------------------------\n",file);
   if(config->param_out)
     fprintparam(file,npft,ncft,config);
   if(iswriterestart(config))
@@ -707,11 +709,13 @@ void fprintconfig(FILE *file,          /**< File pointer to text output file */
         fprintf(file,"%*d",-width,config->outputvars[index].id);
       else
         fprintf(file,"%*s",-width,config->outnames[config->outputvars[index].id].name);
-      fprintf(file," %s %*s %-5s %-3s %3d ",fmt[config->outputvars[index].filename.fmt],
+      fprintf(file," %-3s %*s %-5s %-3s %3d ",fmt[config->outputvars[index].filename.fmt],
               -width_unit,strlen(config->outnames[config->outputvars[index].id].unit)==0 ? "-" : config->outnames[config->outputvars[index].id].unit,
               typenames[getoutputtype(config->outputvars[index].id,config->float_grid)],
               sprinttimestep(s,config->outnames[config->outputvars[index].id].timestep),outputsize(config->outputvars[index].id,npft,ncft,config));
       printoutname(file,config->outputvars[index].filename.name,config->outputvars[index].oneyear,config);
+      if(config->outputvars[index].filename.fmt!=CDF && config->outputvars[index].filename.meta)
+        fprintf(file," + %s",config->json_suffix);
       putc('\n',file);
     }
     free(item);

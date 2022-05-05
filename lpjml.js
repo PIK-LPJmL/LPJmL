@@ -102,6 +102,7 @@
   "crop_phu_option" : "new",
   "cropsheatfrost" : false,
   "double_harvest" : true,
+  "ma_bnf" : false,                    /* Biological N fixation using Cleveland, 1999 (false) or Ma et al., 2022 (true) approach
 
 /*===================================================================*/
 /*  II. Input parameter section                                      */
@@ -127,7 +128,8 @@
 #define SUFFIX pft.bin
 #endif
 
-  "float_grid" : false, /* set datatype of grid file to float (TRUE/FALSE) */
+  "output_metafile" : false, /* no json metafile created */
+  "float_grid" : false,      /* set datatype of grid file to float (TRUE/FALSE) */
 
 #define mkstr(s) xstr(s) /* putting string in quotation marks */
 #define xstr(s) #s

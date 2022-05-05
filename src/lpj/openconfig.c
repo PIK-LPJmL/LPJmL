@@ -464,6 +464,20 @@ FILE *openconfig(Config *config,      /**< configuration struct */
     free(options);
     return NULL;
   }
+  else if(isdir(config->filename))
+  {
+    if(isroot(*config))
+      fprintf(stderr,"ERROR241: File '%s' is a directory, must be a file.\n",config->filename);
+    free(options);
+    return NULL;
+  }
+  else if(getfilesize(config->filename)==0)
+  {
+    if(isroot(*config))
+      fprintf(stderr,"ERROR242: File '%s' is empty.\n",config->filename);
+    free(options);
+    return NULL;
+  }
   /* adjust argc and argv */
   *argv+=i;
   *argc-=i;
@@ -478,6 +492,7 @@ FILE *openconfig(Config *config,      /**< configuration struct */
   else
   { /* yes, include LPJROOT directory in search path for includes */
     lpjinc=malloc(strlen(lpjpath)+3);
+    checkptr(lpjinc);
     options[dcount++]=strcat(strcpy(lpjinc,"-I"),lpjpath);
     len+=strlen(lpjinc)+1;
   }
@@ -494,6 +509,7 @@ FILE *openconfig(Config *config,      /**< configuration struct */
     len+=strlen(" 2>/dev/null");
 #endif
   cmd=malloc(strlen(config->filename)+len+1);
+  checkptr(cmd);
   strcat(strcpy(cmd,filter)," ");
   /* concatenate options for cpp command */
   for(i=0;i<dcount;i++)

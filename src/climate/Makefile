@@ -18,8 +18,9 @@ include ../../Makefile.inc
 OBJS    = initclimate.$O getclimate.$O freeclimate.$O avgtemp.$O\
           prdaily.$O getco2.$O storeclimate.$O dailyclimate.$O\
           getmtemp.$O initclimate_monthly.$O openclimate.$O\
-          getmprec.$O checkvalidclimate.$O readco2.$O\
-          closeclimate.$O radiation.$O
+          getmprec.$O checkvalidclimate.$O readco2.$O opendata.$O\
+          closeclimate.$O radiation.$O readdata.$O readintdata.$O\
+          openinputdata.$O readinputdata.$O readintinputdata.$O
 
 INC     = ../../include
 LIBDIR  = ../../lib

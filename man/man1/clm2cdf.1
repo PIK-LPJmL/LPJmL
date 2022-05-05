@@ -3,7 +3,7 @@
 clm2cdf \- convert CLM files into NetCDF files
 .SH SYNOPSIS
 .B clm2cdf
-[\-global] [\-scale factor] [\-cellsize size] [\-byte] [\-int] [\-float] [\-raw] [\-nbands n] [\-landuse] [\-notime] [\-compress level] [\-units u] [\-descr d]
+[\-global] [\-scale factor] [\-cellsize size] [\-byte] [\-int] [\-float] [\-metafile] [\-map name] [\-raw] [\-nbands n] [\-landuse] [\-notime] [\-compress level] [\-units u] [\-descr d]
 .I varname gridfile clmfile netcdffile
 .SH DESCRIPTION
 Program converts CLM input data into NetCDF input data. 
@@ -26,6 +26,12 @@ set data type in CLM file to int, default is short or read from CLM header
 .TP
 \-float
 set data type in CLM file to float, default is short or read from CLM header
+.TP
+\-metafile
+set the innput format to metafile instead of CLM
+.TP
+\-map name
+name of map in JSON metafile, default is "map"
 .TP
 \-raw
 set the innput format to raw instead of CLM
