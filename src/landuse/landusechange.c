@@ -59,7 +59,8 @@ void deforest(Cell *cell,          /**< pointer to cell */
       reclaim_land(natstand,cutstand,cell,config->istimber,npft+ncft,config);
       /*force one tillage event on new stand upon cultivation after deforestation of natural land */
       tillage(&cutstand->soil, param.residue_frac);
-      updatelitterproperties(cutstand,cutstand->frac);
+      if(config->litter_cover)
+        updatelitterproperties(cutstand,cutstand->frac);
       if(config->soilpar_option==NO_FIXED_SOILPAR || (config->soilpar_option==FIXED_SOILPAR && year<config->soilpar_fixyear))
         pedotransfer(cutstand,NULL,NULL,cutstand->frac);
       if(difffrac+epsilon>=natstand->frac)
@@ -472,7 +473,8 @@ static void grasslandreduction(Cell *cell,            /* cell pointer */
     grassstand->frac-=difffrac;
     /*force one tillage event on new stand upon cultivation of previous grassland */
     tillage(&cutstand->soil, param.residue_frac);
-    updatelitterproperties(cutstand,cutstand->frac);
+    if(config->litter_cover)
+      updatelitterproperties(cutstand,cutstand->frac);
     if(config->soilpar_option==NO_FIXED_SOILPAR || (config->soilpar_option==FIXED_SOILPAR && year<config->soilpar_fixyear))
       pedotransfer(cutstand,NULL,NULL,cutstand->frac);
     /* empty irrig stor and pay back conveyance losses that have been consumed by transport into irrig_stor, only evaporative conv. losses, drainage conv. losses already returned */

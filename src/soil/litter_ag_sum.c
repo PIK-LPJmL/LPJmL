@@ -55,7 +55,7 @@ Real litter_agsub_sum(const Litter *litter /**< pointer to litter data */
   {
     sum+=litter->item[l].agsub.leaf.carbon;
     for(i=0;i<NFUELCLASS;i++)
-      sum+=litter->item[l].ag.wood[i].carbon;
+      sum+=litter->item[l].agsub.wood[i].carbon;
   }
   return sum;
 } /* of litter_agsub_sum */

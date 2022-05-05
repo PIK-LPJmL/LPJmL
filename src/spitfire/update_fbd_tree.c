@@ -21,10 +21,7 @@ void update_fbd_tree(Litter* litter,Real fuelbulkdensity,Real carbon,
   Real ratio,fuel;
   if(carbon<=0)
     return; /* no change in fbd, if carbon is lost*/
-  if(param.bioturbate==1)
-    fuel=litter_agsub_tree(litter,fuelclass);
-  else
-    fuel=litter_ag_tree(litter,fuelclass);
+  fuel=litter_ag_tree(litter,fuelclass);
 
   if(fuel>carbon)
   {
