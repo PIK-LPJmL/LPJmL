@@ -17,6 +17,8 @@
 #include "lpj.h"
 
 void fprintparam(FILE *file,    /**< pointer to text file */
+                 const Standtype standtypes[],
+                 int nstand,
                  int npft,      /**< number of natural PFTs */
                  int ncft,      /**< number of crop PFTs */
                  const Config *config /**< LPJ configuration */
@@ -57,10 +59,14 @@ void fprintparam(FILE *file,    /**< pointer to text file */
   if(config->equilsoil)
     fprintf(file,"veg_equil_year:\t%d\n",param.veg_equil_year);
   if(config->fire==SPITFIRE || config->fire==SPITFIRE_TMAX)
+  {
     fprintf(file,"firedura:\t%g\n"
             "fire_intens:\t%g\n"
-            "hum_ign:\t%g\n",
-            param.firedura,param.fire_intens,param.hum_ign);
+            "hum_ign:\t%g\n"
+            "max fire:\t%g (min)\n",
+            param.firedura,param.fire_intens,param.hum_ign,param.max_fireduration);
+    fprintfireduration(file,standtypes,nstand);
+  }
   if(config->with_nitrogen)
     fprintf(file,"k_max:\t\t%g (1/d)\n"
             "k_2:\t\t%g\n"

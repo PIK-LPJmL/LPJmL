@@ -136,7 +136,10 @@ void soiltemp(Soil *soil,          /**< pointer to soil data */
   } /* of 'for(l=0;...)' */
 
 /* for all combinations of temperature gradients and thermal litter properties, the resulting litter temperature is the average of temp_bs and soiltemp */
-  soil->litter.agtop_temp=(temp_bs+soil->temp[0])/2;
+   if(soil->litter.agtop_cover<epsilon)
+     soil->litter.agtop_temp=temp_bs;
+   else
+     soil->litter.agtop_temp=(temp_bs+soil->temp[0])/2;
   /* thermal properties of dry litter for next step */
   heatcap_litter=heatcap_om*bd_leaves/rho_om;
 

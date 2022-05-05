@@ -50,6 +50,7 @@
 typedef struct cell Cell;   /* forward declaration of cell */
 typedef struct stand Stand; /* forward declaration of stand */
 typedef struct config Config; /* forward declaration of stand */
+typedef struct standtype Standtype; /* forward declaration of standtype */
 
 /*  Defined header files for LPJ */
 
@@ -82,9 +83,9 @@ typedef struct config Config; /* forward declaration of stand */
 #include "landuse.h"
 #include "errmsg.h"
 #include "pftlist.h"
-#include "spitfire.h"
 #include "units.h"
 #include "stand.h"
+#include "spitfire.h"
 #include "crop.h"
 #include "discharge.h"
 #include "input.h"

@@ -217,6 +217,8 @@ static void printinputfile(FILE *file,const char *descr,const Filename *filename
 } /* of 'printinputfile' */
 
 void fprintconfig(FILE *file,          /**< File pointer to text output file */
+                  const Standtype standtypes[],
+                  int nstand,
                   int npft,            /**< Number of natural PFTs */
                   int ncft,            /**< Number of crop PFTs */
                   const Config *config /**< LPJmL configuration */
@@ -614,7 +616,7 @@ void fprintconfig(FILE *file,          /**< File pointer to text output file */
   else
     fputs("------------ ---- -------------------------------------------------------------\n",file);
   if(config->param_out)
-    fprintparam(file,npft,ncft,config);
+    fprintparam(file,standtypes,nstand,npft,ncft,config);
   if(iswriterestart(config))
     fprintf(file,"Writing restart file '%s' after year %d.\n",
             config->write_restart_filename,config->restartyear);

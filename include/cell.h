@@ -101,7 +101,6 @@ struct cell
   Standlist standlist;      /**< Stand list */
   Climbuf climbuf;
   Ignition ignition;
-  Real afire_frac;          /**< fraction of grid cell burnt this year */
   Real *gdd;                /**< Growing degree days array */
   Real lakefrac;            /**< lake fraction (0..1) */
 #ifdef COUPLING_WITH_FMS

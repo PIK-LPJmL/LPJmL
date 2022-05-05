@@ -19,8 +19,16 @@
 #include "tree.h"
 #include "crop.h"
 #include "grass.h"
+#include "natural.h"
+#include "grassland.h"
+#include "biomass_tree.h"
+#include "biomass_grass.h"
+#include "agriculture.h"
+#include "agriculture_grass.h"
+#include "agriculture_tree.h"
 
 #define NTYPES 3
+#define NSTANDTYPES 12 /* number of stand types / land use types as defined in landuse.h*/
 #define LPJSERVER_VERSION "0.9.005"
 #define USAGE "%s [LPJargs ...]"
 #define dflt_filename "lpjml.conf"
@@ -51,6 +59,19 @@ int main(int argc,char **argv)
     {name_tree,fscanpft_tree},
     {name_crop,fscanpft_crop}
   };
+  Standtype standtype[NSTANDTYPES];
+  standtype[NATURAL]=natural_stand;
+  standtype[SETASIDE_RF]=setaside_rf_stand;
+  standtype[SETASIDE_IR]=setaside_ir_stand;
+  standtype[AGRICULTURE]=agriculture_stand;
+  standtype[MANAGEDFOREST]=managedforest_stand;
+  standtype[GRASSLAND]=grassland_stand;
+  standtype[BIOMASS_TREE]=biomass_tree_stand;
+  standtype[BIOMASS_GRASS]=biomass_grass_stand;
+  standtype[AGRICULTURE_TREE]=agriculture_tree_stand;
+  standtype[AGRICULTURE_GRASS]=agriculture_grass_stand;
+  standtype[WOODPLANTATION]=woodplantation_stand;
+  standtype[KILL]=kill_stand;
   progname=strippath(argv[0]);
   config.rank=0;
   config.ntask=1;
@@ -60,7 +81,7 @@ int main(int argc,char **argv)
   title[1]="Save output data for LPJmL Version " LPJ_VERSION;
   title[2]="(c)2008-2015 PIK Potsdam";
   banner(title,3,78);
-  if(readconfig(&config,dflt_filename,scanfcn,NTYPES,NOUT,&argc,&argv,USAGE))
+  if(readconfig(&config,dflt_filename,scanfcn,NTYPES,standtype,NSTANDTYPES,NOUT,&argc,&argv,USAGE))
     fail(READ_CONFIG_ERR,FALSE,"Error opening config");
   socket=open_socket(config.port,0);
   if(socket==NULL)
@@ -70,7 +91,7 @@ int main(int argc,char **argv)
     return EXIT_FAILURE;
   }
   /* Establish the connection */
-  printconfig(config.npft[GRASS]+config.npft[TREE],config.npft[CROP],&config);
+  printconfig(standtype,NSTANDTYPES,config.npft[GRASS]+config.npft[TREE],config.npft[CROP],&config);
   read_socket(socket,id,3);
   if(strncmp(id,"LPJ",3))
   {

@@ -22,6 +22,8 @@ Bool readconfig(Config *config,        /**< LPJ configuration */
                 Pfttype scanfcn[],     /**< array of PFT-specific scan
                                              functions */
                 int ntypes,            /**< Number of PFT classes */
+                Standtype standtypes[],
+                int nstand,
                 int nout,              /**< Maximum number of output files */
                 int *argc,             /**< pointer to the number of arguments */
                 char ***argv,          /**< pointer to the argument vector */
@@ -126,7 +128,7 @@ Bool readconfig(Config *config,        /**< LPJ configuration */
     return TRUE;
   }
 #endif
-  if(fscanconfig(config,&lpjfile,scanfcn,ntypes,nout))
+  if(fscanconfig(config,&lpjfile,scanfcn,ntypes,standtypes,nstand,nout))
   {
     closeconfig(&lpjfile);
     return TRUE;

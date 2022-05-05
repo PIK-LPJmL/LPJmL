@@ -20,7 +20,7 @@
 
 const char *grassland_names[NGRASS]={"others","grassland"};
 
-Standtype grassland_stand={GRASSLAND,"grassland",new_grassland,
+Standtype grassland_stand={GRASSLAND,"grassland",0.0,new_grassland,
                            free_agriculture,fwrite_grassland,
                            fread_grassland,fprint_grassland,
                            daily_grassland,annual_grassland,dailyfire,

@@ -27,7 +27,7 @@ void init_annual(Cell *cell,          /**< Pointer to cell */
   Stand *stand;
   init_climbuf(&cell->climbuf,ncft);
   cell->balance.aprec=cell->balance.anpp=cell->balance.arh=cell->balance.awater_flux=0.0;
-  cell->afire_frac=cell->balance.biomass_yield.carbon=cell->balance.biomass_yield.nitrogen=0.0;
+  cell->balance.biomass_yield.carbon=cell->balance.biomass_yield.nitrogen=0.0;
   cell->balance.total_irrig_from_reservoir=cell->balance.total_reservoir_out=0.0;
   cell->balance.n_influx=cell->balance.n_outflux=cell->balance.n_demand=cell->balance.n_uptake=0.0;
   cell->balance.ainterc=cell->balance.atransp=cell->balance.aevap=cell->balance.aevap_lake=
@@ -54,6 +54,7 @@ void init_annual(Cell *cell,          /**< Pointer to cell */
     printf("init npft=%d\n",stand->pftlist.n);
 #endif
     stand->fire_sum=0;
+    stand->afire_frac=0;
     stand->soil.maxthaw_depth=0;
     foreachpft(pft,p,&stand->pftlist)
       init(pft);

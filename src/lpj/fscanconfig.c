@@ -121,6 +121,8 @@ Bool fscanconfig(Config *config,    /**< LPJ configuration */
                  Pfttype scanfcn[], /**< array of PFT-specific scan
                                          functions */
                  int ntypes,        /**< Number of PFT classes */
+                 Standtype standtypes[], /* array of stand types */
+                 int nstand,              /* number of stand types */
                  int nout_max       /**< maximum number of output files */
                 )                   /** \return TRUE on error */
  {
@@ -463,6 +465,15 @@ Bool fscanconfig(Config *config,    /**< LPJ configuration */
   config->nwptype=(config->nwft) ? NWPTYPE : 0;
   config->ngrass=getngrassnat(config->pftpar,config->npft[GRASS]+config->npft[TREE]);
   config->iscotton=findpftname("cotton",config->pftpar+config->npft[GRASS]+config->npft[TREE]-config->nagtree,config->nagtree)!=NOT_FOUND;
+  if(config->fire==SPITFIRE  || config->fire==SPITFIRE_TMAX)
+  {
+    if(fscanfireduration(file,standtypes,nstand,verbose))
+    {
+      if(verbose)
+        fputs("ERROR246: Cannot read stand-specific maximum fire durations.\n",stderr);
+      return TRUE;
+    }
+  }
   if(config->others_to_crop)
   {
     if(fscanstring(file,name,"cft_temp",FALSE,verbose))

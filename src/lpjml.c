@@ -181,12 +181,12 @@ int main(int argc,char **argv)
   rc=readconfig(&config,
                 (strcmp(progname,"lpj")) ? dflt_conf_filename_ml :
                                            dflt_conf_filename,
-                scanfcn,NTYPES,NOUT,&argc,&argv,lpj_usage);
+                scanfcn,NTYPES,standtype,NSTANDTYPES,NOUT,&argc,&argv,lpj_usage);
   failonerror(&config,rc,READ_CONFIG_ERR,"Cannot read configuration");
   if(isroot(config) && argc)
     fputs("WARNING018: Arguments listed after configuration filename, will be ignored.\n",stderr);
   if(isroot(config))
-    printconfig(config.npft[GRASS]+config.npft[TREE],
+    printconfig(standtype,NSTANDTYPES,config.npft[GRASS]+config.npft[TREE],
                 config.npft[CROP],&config);
   if(config.sim_id==LPJML_FMS)
   {

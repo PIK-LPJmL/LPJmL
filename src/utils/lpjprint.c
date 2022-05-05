@@ -226,7 +226,7 @@ int main(int argc,char **argv)
   title[3]="see COPYRIGHT file";
   banner(title,4,78);
   initconfig(&config);
-  if(readconfig(&config,dflt_conf_filename_ml,scanfcn,NTYPES,NOUT,&argc,&argv,USAGE))
+  if(readconfig(&config,dflt_conf_filename_ml,scanfcn,NTYPES,standtype,NSTANDTYPES,NOUT,&argc,&argv,USAGE))
     fail(READ_CONFIG_ERR,FALSE,"Error opening config");
   printf("Simulation: %s\n",config.sim_name);
   config.ischeckpoint=ischeckpointrestart(&config) && getfilesize(config.checkpoint_restart_filename)!=-1;

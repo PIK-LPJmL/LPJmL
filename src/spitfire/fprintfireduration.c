@@ -1,10 +1,8 @@
 /**************************************************************************************/
 /**                                                                                \n**/
-/**                     b  i  o  m  a  s  s  _  g  r  a  s  s  . c                 \n**/
+/**           f  p  r  i  n  t  f  i  r  e  d  u  r  a  t  i  o  n  .  c           \n**/
 /**                                                                                \n**/
-/**     C implementation of LPJmL                                                  \n**/
-/**                                                                                \n**/
-/**     Definition of biomass stand                                                \n**/
+/**     Function prints stand->specific maximum fire duration                      \n**/
 /**                                                                                \n**/
 /** (C) Potsdam Institute for Climate Impact Research (PIK), see COPYRIGHT file    \n**/
 /** authors, and contributors see AUTHORS file                                     \n**/
@@ -15,11 +13,23 @@
 /**************************************************************************************/
 
 #include "lpj.h"
-#include "agriculture.h"
-#include "grassland.h"
-#include "biomass_grass.h"
 
-Standtype biomass_grass_stand={BIOMASS_GRASS,"biomass_grass",0.0,new_agriculture,
-                               free_agriculture,fwrite_agriculture,
-                               fread_agriculture,fprint_agriculture,
-                               daily_biomass_grass,annual_biomass_grass,NULL,NULL};
+void fprintfireduration(FILE *file,const Standtype standtypes[],int nstand)
+{
+  int i;
+  Bool first=TRUE;
+  for(i=0;i<nstand;i++)
+    if(standtypes[i].max_fireduration!=param.max_fireduration)
+    {
+      if(first)
+      {
+        fprintf(file,"Maximum fire durations:");
+        first=FALSE;
+      }
+      else
+        fputc(',',file);
+      fprintf(file," '%s' = %g (min)",
+              standtypes[i].name,standtypes[i].max_fireduration);
+    }
+    fputc('\n',file);
+} /* of 'fprintfireduration' */

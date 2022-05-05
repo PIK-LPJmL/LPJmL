@@ -17,9 +17,18 @@
 #include "grass.h"
 #include "tree.h"
 #include "crop.h"
+#include "natural.h"
+#include "grassland.h"
+#include "biomass_tree.h"
+#include "biomass_grass.h"
+#include "agriculture.h"
+#include "agriculture_grass.h"
+#include "agriculture_tree.h"
 
 #define LPJCHECK_VERSION "1.0.004"
 #define NTYPES 3 /* number of PFT types: grass, tree, crop */
+#define NSTANDTYPES 12 /* number of stand types / land use types as defined in landuse.h*/
+
 #ifdef USE_MPI
 #define USAGE "Usage: %s [-h] [-q] [-nocheck] [-param] [-vv]\n"\
               "       [-output {mpi2|gather|socket=hostname[:port]}]\n"\
@@ -41,6 +50,7 @@ int main(int argc,char **argv)
     {name_tree,fscanpft_tree},
     {name_crop,fscanpft_crop}
   };
+  Standtype standtype[NSTANDTYPES];
   Config config;         /* LPJ configuration */
   int rc;                /* return code of program */
   Bool isout,check;
@@ -48,6 +58,18 @@ int main(int argc,char **argv)
   const char *title[4];
   String line;
   FILE *file;
+  standtype[NATURAL]=natural_stand;
+  standtype[SETASIDE_RF]=setaside_rf_stand;
+  standtype[SETASIDE_IR]=setaside_ir_stand;
+  standtype[AGRICULTURE]=agriculture_stand;
+  standtype[MANAGEDFOREST]=managedforest_stand;
+  standtype[GRASSLAND]=grassland_stand;
+  standtype[BIOMASS_TREE]=biomass_tree_stand;
+  standtype[BIOMASS_GRASS]=biomass_grass_stand;
+  standtype[AGRICULTURE_TREE]=agriculture_tree_stand;
+  standtype[AGRICULTURE_GRASS]=agriculture_grass_stand;
+  standtype[WOODPLANTATION]=woodplantation_stand;
+  standtype[KILL]=kill_stand;
   initconfig(&config);
   isout=check=TRUE;
   progname=strippath(argv[0]);
@@ -115,7 +137,7 @@ int main(int argc,char **argv)
     banner(title,4,78);
   }
 
-  if(readconfig(&config,dflt_conf_filename_ml,scanfcn,NTYPES,NOUT,&argc,&argv,USAGE))
+  if(readconfig(&config,dflt_conf_filename_ml,scanfcn,NTYPES,standtype,NSTANDTYPES,NOUT,&argc,&argv,USAGE))
   {
     fputs("ERROR001: Cannot process configuration file.\n",stderr);
     rc=EXIT_FAILURE;
@@ -127,7 +149,7 @@ int main(int argc,char **argv)
     if(isout)
     {
       /* print LPJ configuration on stdout if '-q' option is not set */
-      printconfig(config.npft[GRASS]+config.npft[TREE],
+      printconfig(standtype,NSTANDTYPES,config.npft[GRASS]+config.npft[TREE],
                   config.npft[CROP],&config);
     }
     if(config.nall>0 && config.n_out)

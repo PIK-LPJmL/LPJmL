@@ -19,10 +19,11 @@
 
 /* Definition of datatypes */
 
-typedef struct
+struct standtype
 {
   Landusetype landusetype;
   char *name;
+  Real max_fireduration;
   void (*newstand)(Stand *);
   void (*freestand)(Stand *);
   Bool (*fwrite)(FILE *,const Stand *);
@@ -35,7 +36,7 @@ typedef struct
                  Real,int,Bool,Bool,const Config *);
   void (*dailyfire)(Stand *,Livefuel *,Real,Real,const Dailyclimate *,const Config *);
   Bool (*isdaily_output)(const Config *,const Stand *);
-} Standtype;
+};
 
 struct stand
 {
@@ -47,6 +48,7 @@ struct stand
   Real frac;                  /**< Stand fraction (0..1) */
   Real frac_change;           /**< Expansion fraction due to landuse change (only used for woodplantations) */
   Real frac_g[NSOILLAYER];    /**< fraction of green water in total available soil water, including free water */
+  Real afire_frac;          /**< fraction of grid cell burnt this year */
   int growing_days;           /**< for GRASS days since harvest*/
   int prescribe_landcover;
   void *data;                 /**< stand-specific extensions */

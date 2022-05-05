@@ -164,6 +164,7 @@ Bool fscanparam(LPJfile *file,       /**< File pointer to text file */
     fscanparamreal(&f,&param.firedura,"firedura");
     fscanparamreal(&f,&param.fire_intens,"fire_intens");
     fscanparamreal(&f,&param.hum_ign,"hum_ign");
+    fscanparamreal(&f,&param.max_fireduration,"max_fireduration");
   }
   if(config->residue_treatment)
   {
