@@ -40,67 +40,64 @@ void fertilize_tree(Stand *stand,        /**< pointer to stand */
           (pft->stand->cell->coord.lat<0.0 && day==COLDEST_DAY_SHEMISPHERE))
       {
         tree->nfert_event = 0;
+        pft->aphen = 0;
       }
-
       /* Apply fertilizer depending on how much there is (currently always) and split parameters */
-
       /* Start fertilization only if a full phenology cycle begins, otherwise
        * in the first rotation year (esp. SH) is aphen=0 twice and trees will be
        * fertilized in the first half of the year (incomplete phenology cycle) */
-      if(fertil>0 &&
+      if((fertil>0 || manure >0) &&
          ((pft->stand->cell->coord.lat>=0.0 && day>=COLDEST_DAY_NHEMISPHERE) ||
           (pft->stand->cell->coord.lat<0.0 && day>=COLDEST_DAY_SHEMISPHERE)))
-      {
+      { 
         /* First fertilizer application,
-           Assuming aphen > 10, as early-season proxy */
-        if (pft->aphen > 10 && tree->nfert_event == 0)
+           Assuming aphen > 30, as early-season proxy */
+        if (pft->aphen>30 && tree->nfert_event==0)
         {
+          /* application of mineral fertilizer */
           stand->soil.NO3[0] += fertil * param.nfert_no3_frac * param.nfert_split_frac;
           stand->soil.NH4[0] += fertil * (1 - param.nfert_no3_frac) * param.nfert_split_frac;
           stand->cell->balance.n_influx += fertil * param.nfert_split_frac * stand->frac;
           getoutput(output, NFERT_AGR, config) += fertil * param.nfert_split_frac * pft->stand->frac;
           /* Store remainder of fertilizer for second application */
           tree->nfertilizer = fertil * (1 - param.nfert_split_frac);
+
+          /* application of manure */
+          stand->soil.NH4[0] += manure*param.nmanure_nh4_frac*param.nfert_split_frac;
+          stand->soil.litter.item->agsub.leaf.carbon += manure*param.manure_cn*param.nfert_split_frac;
+          stand->soil.litter.item->agsub.leaf.nitrogen += manure*(1-param.nmanure_nh4_frac)*param.nfert_split_frac;
+          getoutput(&stand->cell->output,FLUX_ESTABC,config) += manure*param.manure_cn*stand->frac*param.nfert_split_frac;
+          stand->cell->balance.flux_estab.carbon += manure*param.manure_cn*stand->frac*param.nfert_split_frac;
+          stand->cell->balance.n_influx += manure*stand->frac*param.nfert_split_frac;
+          getoutput(&stand->cell->output,NMANURE_AGR,config)+=manure*stand->frac*param.nfert_split_frac; 
+          
+          /* store remainder of manure for second application */
+          tree->nmanure=manure*(1-param.nfert_split_frac); 
+
           tree->nfert_event++;
         }
         /* Second fertilizer application */
-        else if (pft->aphen > 30 && tree->nfert_event == 1)
+        else if (pft->aphen>50 && tree->nfert_event==1)
         {
+          /* application of mineral fertilizer */
           fertil = tree->nfertilizer;
           stand->soil.NO3[0] += fertil * param.nfert_no3_frac;
           stand->soil.NH4[0] += fertil * (1 - param.nfert_no3_frac);
           stand->cell->balance.n_influx += fertil * stand->frac;
           getoutput(output, NFERT_AGR, config) += fertil * pft->stand->frac;
           tree->nfertilizer = 0;
-          tree->nfert_event++;
-        }
-      }
 
-      if(manure>0)
-      {
-        /* Apply manure depending on how much there is (currently always) and split parameters */
-
-        /* First manure application,
-           Assuming aphen > 10, as early-season proxy */
-        if (pft->aphen > 10 && tree->nfert_event == 0)
-        {
-          stand->soil.NO3[0] += manure * param.nfert_no3_frac * param.nfert_split_frac;
-          stand->soil.NH4[0] += manure * (1 - param.nfert_no3_frac) * param.nfert_split_frac;
-          stand->cell->balance.n_influx += manure * param.nfert_split_frac * stand->frac;
-          getoutput(output, NMANURE_AGR, config) += manure * param.nfert_split_frac * pft->stand->frac;
-          /* Store remainder of manure for second application */
-          tree->nmanure = manure * (1 - param.nfert_split_frac);
-          tree->nfert_event++;
-        }
-        /* Second manure application */
-        else if (pft->aphen > 30 && tree->nfert_event == 1)
-        {
+          /* application of manure */
           manure = tree->nmanure;
-          stand->soil.NO3[0] += manure * param.nfert_no3_frac;
-          stand->soil.NH4[0] += manure * (1 - param.nfert_no3_frac);
-          stand->cell->balance.n_influx += manure * stand->frac;
-          getoutput(output, NMANURE_AGR, config) += manure * pft->stand->frac;
-          tree->nmanure = 0;
+          stand->soil.NH4[0] += manure*param.nmanure_nh4_frac;
+          stand->soil.litter.item->agsub.leaf.carbon += manure*param.manure_cn;
+          stand->soil.litter.item->agsub.leaf.nitrogen += manure*(1-param.nmanure_nh4_frac);
+          getoutput(output,NMANURE_AGR,config)+=manure*stand->frac;
+          stand->cell->balance.flux_estab.carbon += manure*param.manure_cn*stand->frac;
+          stand->cell->balance.n_influx += manure*stand->frac;
+          getoutput(&stand->cell->output,NMANURE_AGR,config)+=manure*stand->frac; 
+          tree->nmanure = 0; 
+
           tree->nfert_event++;
         }
       }
