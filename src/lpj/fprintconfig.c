@@ -309,7 +309,7 @@ void fprintconfig(FILE *file,          /**< File pointer to text output file */
     len=fputstring(file,len,"prescribed soil parameter",78);
   }
   if(config->ma_bnf)
-      len=printsim(file,len,&count,"Ma et al., 2022 BNF, ");
+      len=printsim(file,len,&count,"Ma et al., 2022 BNF");
   if(config->withlanduse)
   {
     switch(config->withlanduse)
