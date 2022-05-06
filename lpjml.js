@@ -37,6 +37,7 @@
   "fire" : "fire",          /* fire disturbance enabled, other options: NO_FIRE, FIRE, SPITFIRE, SPITFIRE_TMAX (for GLDAS input data) */
   "fire_on_grassland" : false, /* enable fire on grassland for Spitfire */
   "fdi" : "nesterov",       /* different fire danger index formulations: "wvpd" (needs GLDAS input data), "nesterov" */
+  "max_fireduration" : [{"stand" : "grassland", "duration" : 60.0}], /* max fire duration for specfic stands */
   "firewood" : false,
   "new_phenology" : true,   /* GSI phenology enabled */
   "new_trf" : false,        /* new transpiration reduction function disabled */
@@ -44,6 +45,7 @@
   "extflow" : false,
   "permafrost" : true,
   "johansen" : true,
+  "litter_cover" : true,
   "soilpar_option" : "no_fixed_soilpar", /* other options "no_fixed_soilpar", "fixed_soilpar", "prescribed_soilpar" */
   "with_nitrogen" : "lim", /* other options: "no", "lim", "unlim" */
   "store_climate" : true, /* store climate data in spin-up phase */
