@@ -129,7 +129,7 @@ void fprintpftpar(FILE *file,           /**< pointer to text file */
             pftpar->vmax_up,pftpar->kNmin,pftpar->KNmin,1/pftpar->ncleaf.high,
             1/pftpar->ncleaf.median,1/pftpar->ncleaf.low,pftpar->knstore,
             pftpar->fn_turnover,bool2str(pftpar->nfixing));
-  if(pftpar->nfixing)
+  if(config->ma_bnf && pftpar->nfixing)
   {
     fprintf(file,"temp_bnf_lim:\t%g %g\n"
                  "temp_bnf_opt:\t%g %g\n"
