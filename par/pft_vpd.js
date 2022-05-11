@@ -1,6 +1,6 @@
 /**************************************************************************************/
 /**                                                                                \n**/
-/**              p  f  t  _  v  p  d  .  j  s                                      \n**/
+/**              p  f  t  .  j  s                                                  \n**/
 /**                                                                                \n**/
 /**  PFT and CFT parameter file for LPJmL version 5.3.001                          \n**/
 /**  CFTs parameters must be put after PFTs                                        \n**/
@@ -12,6 +12,8 @@
 /** Contact: https://github.com/PIK-LPJmL/LPJmL                                    \n**/
 /**                                                                                \n**/
 /**************************************************************************************/
+
+#include "../include/pftpar.h" /* include constant definitions */
 
 #define CTON_LEAF 30.0
 #define CTON_ROOT 30.0
@@ -37,12 +39,15 @@
 #define REPROD_COST 0.1 /* reproduction cost */
 #define K_EST 0.12 /* maximum overall sapling establishment rate (indiv/m2) */
 #ifdef WITH_SPITFIRE
-#define MORT_MAX 0.02
+#define MORT_MAX 0.03
 #else
-#define MORT_MAX 0.02
+#define MORT_MAX 0.03
 #endif
+#define MORT_MAX_GRASS 0.00
 #define FN_TURNOVER 0.3      /* fraction of N not recovered before turnover */
+#define FN_TURNOVER_EV_BR 0.7   /* fraction of N not recovered before turnover */
 #define FN_TURNOVER_EV 0.8   /* fraction of N not recovered before turnover */
+#define FN_TURNOVER_GR 0.3   /* fraction of N not recovered before turnover */
 #define ALPHAA_NITROGEN 0.5  /* alphaa for simulations with nitrogen limitation */
 #define RATIO_SAPW 13.5 /* relative C:N ratio of sapwood */
 #define CN_BL_EG_MX 46.2
@@ -67,7 +72,15 @@
 #define K_LATOSA 6e3      /* leaf area to sapwood area */
 #define BC3 0.015         /*leaf respiration as fraction of Vmax for C3 plants */
 #define BC4 0.035         /* leaf respiration as fraction of Vmax for C4 plants */
-#define LMTORM_OFFSET 0.5
+#define TEMP_BNF_MIN 0.5
+#define TEMP_BNF_MAX 45.0
+#define SWC_BNF_LOW 0.0
+#define SWC_BNF_HIGH 0.5
+#define PHI_BNF_1 0.0
+#define PHI_BNF_2 2.0
+#define MAXBNFCOST 0.25
+#define BNF_COST 6.0
+
 
 "pftpar" :
 [
@@ -76,17 +89,18 @@
     "name" : "tropical broadleaved evergreen tree",
     "type" : "tree",
     "cultivation_type" : "none", /* cultivation_type */
-    "nfixing" : false,           /* no N fixing */
+    "nfixing" : true,           /* N fixing in Ma et al., 2022 appraoch */
     "cn" : [30.0, 55.0, 70.0, 77.0], /* curve number */
-    "beta_root" : 0.962,    /* beta_root */
+    "beta_root" : 0.952,    /* beta_root original 0.962*/
     "minwscal" : 0.0,       /* minwscal 3*/
     "gmin"  : 1.6,          /* gmin 4*/
     "respcoeff" : 0.2,      /* respcoeff 5*/
     "nmax" : 100.0,          /* nmax 7*/
     "resist" : 0.12,        /* resist 8*/
     "longevity" : 1.6,      /* leaf longevity 10*/
+    "sla" : 0.01986,         /* specific leaf area */
     "lmro_ratio" : 1.0,     /* lmro_ratio 18*/
-    "lmro_offset" : LMTORM_OFFSET,
+    "lmro_offset" : 0.5,     /* lmro_ratio 18*/
     "ramp" : 1000.0,         /* ramp 19*/
     "lai_sapl" : 1.500,     /* lai_sapl 21*/
     "gdd5min" : 0.0,        /* gdd5min 30*/
@@ -97,7 +111,7 @@
     "emax": 10.0,            /* emax 35*/
     "intc" : 0.02,          /* intc 36*/
     "alphaa" : ALPHAA_NITROGEN, /* alphaa, fraction of PAR assimilated at ecosystem level, relative to leaf level */
-    "albedo_leaf" : 0.14,   /* albedo of green leaves */
+    "albedo_leaf" : 0.13,   /* albedo of green leaves */
     "albedo_stem" : 0.1,    /* albedo of stems */
     "albedo_litter" : 0.1,  /* albedo of litter */
     "snowcanopyfrac" : 0.4, /* maximum snow coverage in green canopy */
@@ -146,15 +160,15 @@
     "kNmin": 0.05,                /* kNmin, Rate of N uptake not associated with Michaelis-Menten Kinetics, Zaehle&Friend 2000 */
     "KNmin" : 1.48,               /* KNmin, Half saturation concentration of fine root N uptake, Smith et al. 2014 */
     "cnratio_leaf": {"low": CN_BL_EG_MN, "median" : CN_BL_EG_MD, "high" : CN_BL_EG_MX}, /* 10.7 79.4 cnleaf min max, based on TRY data, prepared by Boris Sakschewski */
-    "knstore" : 0.15,       /* knstore, Smith et al. 2014 */
-    "fn_turnover" : FN_TURNOVER_EV, /* fraction of N not recovered before turnover */
+    "knstore" : 0.1,       /* knstore, Smith et al. 2014 */
+    "fn_turnover" : FN_TURNOVER_EV_BR, /* fraction of N not recovered before turnover */
     "windspeed_dampening" : 0.4, /* windspeed dampening */
     "roughness_length" : 2.0,  /* roughness length */
     "leaftype" : "broadleaved",  /* leaftype */
-    "turnover" : {"leaf" : 2.0, "sapwood" : 20.0, "root" : 2.0}, /* turnover leaf  sapwood root 9 11 12*/
+    "turnover" : {"leaf" : 2.0, "sapwood" : 30.0, "root" : 2.0}, /* turnover leaf  sapwood root 9 11 12*/
     "cn_ratio" : {"leaf" : CTON_LEAF, "sapwood" :  CTON_SAP, "root" : CTON_ROOT}, /* C:N mass ratio for leaf, sapwood, and root 13,14,15*/
     "ratio" : {"sapwood" :  RATIO_SAPW, "root" :  1.16}, /* relative C:N ratio of sapwood and root, Friend et al. 1997, Ecological Modeling, Table 4*/
-    "crownarea_max" : 15.0, /* crownarea_max 20*/
+    "crownarea_max" : 25.0, /* crownarea_max 20*/
     "wood_sapl" : 1.2,      /* sapwood sapling 22*/
     "reprod_cost" : REPROD_COST,  /* reproduction cost */
     "allom1" : ALLOM1,      /* allometry */
@@ -170,7 +184,14 @@
     "crown_mort_rck" : 0.985, /* crown damage (rCK) */
     "crown_mort_p" : 3.00,  /* crown damage (p)     */
     "fuelfraction" : [0.045,0.075,0.21,0.67], /* fuel fraction */
-    "k_est": K_EST         /* k_est */
+    "k_est": K_EST,         /* k_est */
+    "temp_bnf_lim" : {"low" : TEMP_BNF_MIN, "high" : TEMP_BNF_MAX},
+    "temp_bnf_opt" : {"low" : 20, "high" : 35},  /* Yu and Zhuang 2020 tropical forest*/
+    "swc_bnf" : {"low" : SWC_BNF_LOW, "high" : SWC_BNF_HIGH},
+    "phi_bnf" : [PHI_BNF_1, PHI_BNF_2],
+    "nfixpot" : 0.8,  /* Yu and Zhuang 2020 tropical forest*/
+    "maxbnfcost" : MAXBNFCOST,
+    "bnf_cost" : BNF_COST
   },
 /*--------------------------------------------------------------------------*/
 /* 2. pft */
@@ -178,17 +199,18 @@
     "name" : "tropical broadleaved raingreen tree",
     "type" : "tree",
     "cultivation_type" : "none", /* cultivation_type */
-    "nfixing" : false,           /* no N fixing */
+    "nfixing" : true,           /* N fixing in Ma et al., 2022 appraoch */
     "cn" : [30.0, 55.0, 70.0, 77.0], /* curve number */
-    "beta_root" : 0.961,    /* beta_root */
+    "beta_root" : 0.981,    /* beta_root  original 0.962*/
     "minwscal" : 0.35,      /* minwscal 3*/
     "gmin"  : 1.8,          /* gmin 4*/
     "respcoeff" : 0.2,      /* respcoeff 5*/
     "nmax" : 100.0,          /* nmax 7*/
     "resist" : 0.5,         /* resist 8*/
     "longevity" : 0.5,      /* leaf longevity 10*/
+    "sla" : 0.03233,         /* specific leaf area */
     "lmro_ratio" : 1.0,     /* lmro_ratio 18*/
-    "lmro_offset" : LMTORM_OFFSET,
+    "lmro_offset" : 0.5,     /* lmro_ratio 18*/
     "ramp" : 1000.0,         /* ramp 19*/
     "lai_sapl" : 1.500,     /* lai_sapl 21*/
     "gdd5min" : 0.0,        /* gdd5min 30*/
@@ -199,28 +221,28 @@
     "emax": 10.0,            /* emax 35*/
     "intc" : 0.02,          /* intc 36*/
     "alphaa" : ALPHAA_NITROGEN, /* alphaa, fraction of PAR assimilated at ecosystem level, relative to leaf level */
-    "albedo_leaf" : 0.13,   /* albedo of green leaves */
-    "albedo_stem" : 0.07,   /* albedo of stems */
-    "albedo_litter" : 0.06, /* albedo of litter */
+    "albedo_leaf" : 0.14,   /* albedo of green leaves */
+    "albedo_stem" : 0.1,   /* albedo of stems */
+    "albedo_litter" : 0.1, /* albedo of litter */
     "snowcanopyfrac" : 0.5, /* maximum snow coverage in green canopy */
     "lightextcoeff" : 0.5,  /* lightextcoeff, light extinction coeffcient in Lambert-Beer equation */
     "tmin" :
     {
       "slope" : 0.24,       /* new phenology: slope of cold-temperature limiting function */
       "base" : 7.66,        /* new phenology: inflection point of cold-temperature limiting function (deg C) */
-      "tau" : 0.2           /* new phenology: change rate of actual to previous day cold-temperature limiting fct */
+      "tau" : 0.1           /* new phenology: change rate of actual to previous day cold-temperature limiting fct */
     },
     "tmax" :
     {
       "slope" : 1.625,      /* new phenology: slope of warm-temperature limiting function tmax_sl */
       "base" : 38.64,       /* new phenology: inflection point of warm-temperature limiting function (deg C) */
-      "tau" : 0.2           /* new phenology: change rate of actual to previous day warm-temperature limiting fct */
+      "tau" : 0.1           /* new phenology: change rate of actual to previous day warm-temperature limiting fct */
     },
     "light" :
     {
       "slope" : 23,         /* new phenology: slope of light limiting function */
       "base" : 13.01,       /* new phenology: inflection point of light limiting function (Wm-2) */
-      "tau" : 0.2           /* new phenology: change rate of actual to previous day light limiting function */
+      "tau" : 0.1           /* new phenology: change rate of actual to previous day light limiting function */
     },
     "wscal" :
     {
@@ -248,15 +270,15 @@
     "kNmin": 0.05,                /* kNmin, Rate of N uptake not associated with Michaelis-Menten Kinetics, Zaehle&Friend 2000 */
     "KNmin" : 1.48,               /* KNmin, Half saturation concentration of fine root N uptake, Smith et al. 2014 */
     "cnratio_leaf": {"low": CN_BL_DC_MN, "median" : CN_BL_DC_MD, "high" : CN_BL_DC_MX}, /* 10.7 79.4 cnleaf min max, based on TRY data, prepared by Boris Sakschewski */
-    "knstore" : 0.15,       /* knstore, Smith et al. 2014 */
+    "knstore" : 0.1,       /* knstore, Smith et al. 2014 */
     "fn_turnover" : FN_TURNOVER, /* fraction of N not recovered before turnover */
     "windspeed_dampening" : 0.4,  /* windspeed dampening */
     "roughness_length" : 2.0,  /* roughness length */
     "leaftype" : "broadleaved",  /* leaftype */
-    "turnover" : {"leaf" : 1.0, "sapwood" : 20.0, "root" : 1.0}, /* turnover leaf  sapwood root 9 11 12*/
+    "turnover" : {"leaf" : 1.0, "sapwood" : 30.0, "root" : 1.0}, /* turnover leaf  sapwood root 9 11 12*/
     "cn_ratio" : {"leaf" : CTON_LEAF, "sapwood" :  CTON_SAP, "root" : CTON_ROOT}, /* C:N mass ratio for leaf, sapwood, and root 13,14,15*/
     "ratio" : {"sapwood" :  RATIO_SAPW, "root" :  1.16}, /* relative C:N ratio of sapwood and root, Friend et al. 1997, Ecological Modeling, Table 4*/
-    "crownarea_max" : 12.0, /* crownarea_max 20*/
+    "crownarea_max" : 15.0, /* crownarea_max 20*/
     "wood_sapl" : 1.2,      /* sapwood sapling 22*/
     "reprod_cost" : REPROD_COST, /* reproduction cost */
     "allom1" : ALLOM1,      /* allometry */
@@ -272,7 +294,14 @@
     "crown_mort_rck" : 0.09, /* crown damage (rCK) */
     "crown_mort_p" : 3.00,  /* crown damage (p)     */
     "fuelfraction" : [0.045,0.075,0.21,0.67], /* fuel fraction */
-    "k_est": K_EST         /* k_est */
+    "k_est": K_EST,         /* k_est */
+    "temp_bnf_lim" : {"low" : TEMP_BNF_MIN, "high" : TEMP_BNF_MAX},
+    "temp_bnf_opt" : {"low" : 20, "high" : 35},  /* Yu and Zhuang 2020 tropical forest*/
+    "swc_bnf" : {"low" : SWC_BNF_LOW, "high" : SWC_BNF_HIGH},
+    "phi_bnf" : [PHI_BNF_1, PHI_BNF_2],
+    "nfixpot" : 0.8,  /* Yu and Zhuang 2020 tropical forest*/
+    "maxbnfcost" : MAXBNFCOST,
+    "bnf_cost" : BNF_COST 
   },
 /*---------------------------------------------------------------------------------------------*/
 /* 3. pft */
@@ -280,7 +309,7 @@
     "name": "temperate needleleaved evergreen tree",
     "type" : "tree",
     "cultivation_type" : "none", /* cultivation_type */
-    "nfixing" : false,           /* no N fixing */
+    "nfixing" : true,           /* N fixing in Ma et al., 2022 appraoch */
     "cn" : [30.0, 55.0, 70.0, 77.0], /* curve number */
     "beta_root" : 0.976,    /* beta_root 1 */
     "minwscal" : 0.00,      /* minwscal 3*/
@@ -289,8 +318,9 @@
     "nmax" : 100.0,          /* nmax 7*/
     "resist" : 0.12,        /* resist 8*/
     "longevity" : 4.0,      /* leaf longevity 10*/
+    "sla" : 0.01049,          /* specific leaf area */
     "lmro_ratio" : 1.0,     /* lmro_ratio 18*/
-    "lmro_offset" : LMTORM_OFFSET,
+    "lmro_offset" : 0.5,     /* lmro_ratio 18*/
     "ramp" : 1000.0,         /* ramp 19*/
     "lai_sapl" : 1.500,     /* lai_sapl 21*/
     "gdd5min" : 900.0,      /* gdd5min 30*/
@@ -298,7 +328,7 @@
     "twmax_daily" : 1000.0,  /* twmax_daily 31*/
     "gddbase" : 5.0,        /* gddbase (deg C) 33*/
     "min_temprange" : -1000.0, /* min_temprange 34*/
-    "emax": 7.0,            /* emax 35*/
+    "emax": 5.0, //7.0,            /* emax 35*/
     "intc" : 0.02,          /* intc 36*/
     "alphaa" : ALPHAA_NITROGEN, /* alphaa, fraction of PAR assimilated at ecosystem level, relative to leaf level */
     "albedo_leaf" : 0.137,  /* albedo of green leaves */
@@ -328,7 +358,7 @@
     {
       "slope" : 5,          /* new phenology: slope of water limiting function */
       "base" : 8.613,       /* new phenology: inflection point of water limiting function (% water availability)  */
-      "tau" : 0.8           /* new phenology: change rate of actual to previous day water limiting function */
+      "tau" : 0.7           /* new phenology: change rate of actual to previous day water limiting function */
     },
     "mort_max" : MORT_MAX,  /* asymptotic maximum mortality rate (1/year) */
     "phenology" : "evergreen",/* phenology */
@@ -350,12 +380,12 @@
     "kNmin": 0.05,                /* kNmin, Rate of N uptake not associated with Michaelis-Menten Kinetics, Zaehle&Friend 2000 */
     "KNmin" : 1.48,               /* KNmin, Half saturation concentration of fine root N uptake, Smith et al. 2014 */
     "cnratio_leaf": {"low": CN_NL_EG_MN, "median" : CN_NL_EG_MD, "high" : CN_NL_EG_MX}, /* 10.7 79.4 cnleaf min max, based on TRY data, prepared by Boris Sakschewski */
-    "knstore" : 0.15,       /* knstore, Smith et al. 2014 */
+    "knstore" : 0.1,       /* knstore, Smith et al. 2014 */
     "fn_turnover" : FN_TURNOVER_EV, /* fraction of N not recovered before turnover */
     "windspeed_dampening" : 0.4,  /* windspeed dampening */
     "roughness_length" : 1.0,     /* roughness length */
     "leaftype" : "needleleaved",/* leaftype */
-    "turnover" : {"leaf" : 4.0, "sapwood" : 20.0, "root" : 4.0}, /* turnover leaf  sapwood root 9 11 12*/
+    "turnover" : {"leaf" : 4.0, "sapwood" : 25.0, "root" : 4.0}, /* turnover leaf  sapwood root 9 11 12*/
     "cn_ratio" : {"leaf" : CTON_LEAF, "sapwood" :  CTON_SAP, "root" : CTON_ROOT}, /* C:N mass ratio for leaf, sapwood, and root 13,14,15*/
     "ratio" : {"sapwood" :  RATIO_SAPW, "root" :  1.16}, /* relative C:N ratio of sapwood and root, Friend et al. 1997, Ecological Modeling, Table 4*/
     "crownarea_max" : 15.0, /* crownarea_max 20*/
@@ -374,15 +404,22 @@
     "crown_mort_rck" : 1.00, /* crown damage (rCK) */
     "crown_mort_p" : 3.75,  /* crown damage (p)     */
     "fuelfraction" : [0.045,0.075,0.21,0.67], /* fuel fraction */
-    "k_est": K_EST         /* k_est */
-  },
+    "k_est": K_EST,         /* k_est */
+    "temp_bnf_lim" : {"low" : TEMP_BNF_MIN, "high" : TEMP_BNF_MAX},
+    "temp_bnf_opt" : {"low" : 16, "high" : 35},  /* Yu and Zhuang 2020 temperate coniferous forest*/
+    "swc_bnf" : {"low" : SWC_BNF_LOW, "high" : SWC_BNF_HIGH},
+    "phi_bnf" : [PHI_BNF_1, PHI_BNF_2],
+    "nfixpot" : 0.55,  /* Yu and Zhuang 2020 temperate coniferous forest*/
+    "maxbnfcost" : MAXBNFCOST,
+    "bnf_cost" : BNF_COST 
+ },
 /*--------------------------------------------------------------------------*/
 /* 4. pft */
   {
     "name" : "temperate broadleaved evergreen tree",
     "type" : "tree",
     "cultivation_type" : "none", /* cultivation_type */
-    "nfixing" : false,           /* no N fixing */
+    "nfixing" : true,           /* N fixing in Ma et al., 2022 appraoch */
     "cn" : [30.0, 55.0, 70.0, 77.0], /* curve number */
     "beta_root" : 0.964,    /* beta_root 1 */
     "minwscal" : 0.00,      /* minwscal 3*/
@@ -391,8 +428,9 @@
     "nmax" : 100.0,          /* nmax 7*/
     "resist" : 0.5,         /* resist 8*/
     "longevity" : 1.6,      /* leaf longevity 10*/
+    "sla" : 0.01986,         /* specific leaf area */
     "lmro_ratio" : 1.0,     /* lmro_ratio 18*/
-    "lmro_offset" : LMTORM_OFFSET,
+    "lmro_offset" : 0.5,     /* lmro_ratio 18*/
     "ramp" : 1000.0,         /* ramp 19*/
     "lai_sapl" : 1.500,     /* lai_sapl 21*/
     "gdd5min" : 1200.0,     /* gdd5min 30*/
@@ -416,7 +454,7 @@
     },
     "tmax" :
     {
-      "slope" : 0.98,       /* new phenology: slope of warm-temperature limiting function tmax_sl */
+      "slope" : 1.6,       /* new phenology: slope of warm-temperature limiting function tmax_sl */
       "base" : 41.12,       /* new phenology: inflection point of warm-temperature limiting function (deg C) */
       "tau" : 0.2           /* new phenology: change rate of actual to previous day warm-temperature limiting fct */
     },
@@ -440,7 +478,7 @@
     "b":  BC3, /* leaf respiration as fraction of Vmax for C3 plants */
     "temp" : { "low" : 3.0, "high" : 18.8 }, /* lower and upper coldest monthly mean temperature(deg C) 28 29*/
     "soc_k" : 0.43740,     /* shape factor for soil organic matter vertical distribution*/
-    "alpha_fuelp" : 0.0000667, /* scaling factor nesterov fire danger index */
+    "alpha_fuelp" : 0.0000334, /* scaling factor nesterov fire danger index */
     "vpd_par" : 6, /*scaling factor vpd fire danger index*/
     "fuelbulkdensity" : 22.0, /* fuel bulk density */
     "emission_factor" : { "co2" : 1568.0, "co" :  106.0, "ch4" : 4.80, "voc" : 5.70, "tpm" : 17.60, "nox" : 3.240}, /* emission factors */
@@ -452,12 +490,12 @@
     "kNmin": 0.05,                /* kNmin, Rate of N uptake not associated with Michaelis-Menten Kinetics, Zaehle&Friend 2000 */
     "KNmin" : 1.48,               /* KNmin, Half saturation concentration of fine root N uptake, Smith et al. 2014 */
     "cnratio_leaf": {"low": CN_BL_EG_MN, "median" : CN_BL_EG_MD, "high" : CN_BL_EG_MX}, /* 10.7 79.4 cnleaf min max, based on TRY data, prepared by Boris Sakschewski */
-    "knstore" : 0.15,       /* knstore, Smith et al. 2014 */
+    "knstore" : 0.1,       /* knstore, Smith et al. 2014 */
     "fn_turnover" : FN_TURNOVER_EV, /* fraction of N not recovered before turnover */
     "windspeed_dampening" : 0.4,  /* windspeed dampening */
     "roughness_length" : 1.0, /* roughness length */
     "leaftype" : "broadleaved",/* leaftype */
-    "turnover" : {"leaf" : 1.0, "sapwood" : 20.0, "root" : 1.0}, /* turnover leaf  sapwood root 9 11 12*/
+    "turnover" : {"leaf" : 1.0, "sapwood" : 25.0, "root" : 1.0}, /* turnover leaf  sapwood root 9 11 12*/
     "cn_ratio" : {"leaf" : CTON_LEAF, "sapwood" :  CTON_SAP, "root" : CTON_ROOT}, /* C:N mass ratio for leaf, sapwood, and root 13,14,15*/
     "ratio" : {"sapwood" :  RATIO_SAPW, "root" :  1.16}, /* relative C:N ratio of sapwood and root, Friend et al. 1997, Ecological Modeling, Table 4*/
     "crownarea_max" : 15.0, /* crownarea_max 20*/
@@ -476,7 +514,14 @@
     "crown_mort_rck" : 0.95, /* crown damage (rCK) */
     "crown_mort_p" : 3.00,  /* crown damage (p)     */
     "fuelfraction" : [0.045,0.075,0.21,0.67], /* fuel fraction */
-    "k_est": K_EST         /* k_est */
+    "k_est": K_EST,         /* k_est */
+    "temp_bnf_lim" : {"low" : TEMP_BNF_MIN, "high" : TEMP_BNF_MAX},
+    "temp_bnf_opt" : {"low" : 18, "high" : 35},  /* Yu and Zhuang 2020 temperate evergreen forest*/
+    "swc_bnf" : {"low" : SWC_BNF_LOW, "high" : SWC_BNF_HIGH},
+    "phi_bnf" : [PHI_BNF_1, PHI_BNF_2],
+    "nfixpot" : 0.55,  /* Yu and Zhuang 2020 temperate evergreen forest*/
+    "maxbnfcost" : MAXBNFCOST,
+    "bnf_cost" : BNF_COST 
   },
 /*--------------------------------------------------------------------------*/
 /* 5. pft */
@@ -484,7 +529,7 @@
     "name" : "temperate broadleaved summergreen tree",
     "type" : "tree",
     "cultivation_type" : "none", /* cultivation_type */
-    "nfixing" : false,           /* no N fixing */
+    "nfixing" : true,           /* N fixing in Ma et al., 2022 appraoch */
     "cn" : [30.0, 55.0, 70.0, 77.0], /* curve number */
     "beta_root" : 0.966,    /* beta_root */
     "minwscal" : 0.00,      /* minwscal 3*/
@@ -493,8 +538,9 @@
     "nmax" : 120.0,          /* nmax 7*/
     "resist" : 0.3,         /* resist 8*/
     "longevity" : 0.45,     /* leaf longevity 10*/
+    "sla" : 0.03233,          /* specific leaf area */
     "lmro_ratio" : 1.0,     /* lmro_ratio 18*/
-    "lmro_offset" : LMTORM_OFFSET,
+    "lmro_offset" : 0.5,     /* lmro_ratio 18*/
     "ramp" : 300.0,          /* ramp 19*/
     "lai_sapl" : 1.500,     /* lai_sapl 21*/
     "gdd5min" : 1200.0,     /* gdd5min 30*/
@@ -554,15 +600,15 @@
     "kNmin": 0.05,                /* kNmin, Rate of N uptake not associated with Michaelis-Menten Kinetics, Zaehle&Friend 2000 */
     "KNmin" : 1.48,               /* KNmin, Half saturation concentration of fine root N uptake, Smith et al. 2014 */
     "cnratio_leaf": {"low": CN_BL_DC_MN, "median" : CN_BL_DC_MD, "high" : CN_BL_DC_MX}, /* 10.7 79.4 cnleaf min max, based on TRY data, prepared by Boris Sakschewski */
-    "knstore" : 0.15,       /* knstore, Smith et al. 2014 */
+    "knstore" : 0.1,       /* knstore, Smith et al. 2014 */
     "fn_turnover" : FN_TURNOVER, /* fraction of N not recovered before turnover */
     "windspeed_dampening" : 0.4,  /* windspeed dampening */
     "roughness_length" : 1.0, /* roughness length */
     "leaftype" : "broadleaved",/* leaftype */
-    "turnover" : {"leaf" : 1.0, "sapwood" : 20.0, "root" : 1.0}, /* turnover leaf  sapwood root 9 11 12*/
+    "turnover" : {"leaf" : 1.0, "sapwood" : 25.0, "root" : 1.0}, /* turnover leaf  sapwood root 9 11 12*/
     "cn_ratio" : {"leaf" : CTON_LEAF, "sapwood" :  CTON_SAP, "root" : CTON_ROOT}, /* C:N mass ratio for leaf, sapwood, and root 13,14,15*/
     "ratio" : {"sapwood" :  RATIO_SAPW, "root" :  1.16}, /* relative C:N ratio of sapwood and root, Friend et al. 1997, Ecological Modeling, Table 4*/
-    "crownarea_max" : 15.0, /* crownarea_max 20*/
+    "crownarea_max" : 25.0, /* crownarea_max 20*/
     "wood_sapl" : 1.2,      /* sapwood sapling 22*/
     "aphen_min" : APHEN_MIN,
     "aphen_max" : APHEN_MAX,
@@ -580,7 +626,14 @@
     "crown_mort_rck" : 1.00, /* crown damage (rCK) */
     "crown_mort_p" : 3.00,  /* crown damage (p)     */
     "fuelfraction" : [0.045,0.075,0.21,0.67], /* fuel fraction */
-    "k_est": K_EST         /* k_est */
+    "k_est": K_EST,         /* k_est */
+    "temp_bnf_lim" : {"low" : TEMP_BNF_MIN, "high" : TEMP_BNF_MAX},
+    "temp_bnf_opt" : {"low" : 18, "high" : 35},  /* Yu and Zhuang 2020 temperate deciduous forest*/
+    "swc_bnf" : {"low" : SWC_BNF_LOW, "high" : SWC_BNF_HIGH},
+    "phi_bnf" : [PHI_BNF_1, PHI_BNF_2],
+    "nfixpot" : 0.55,  /* Yu and Zhuang 2020 temperate deciduous forest*/
+    "maxbnfcost" : MAXBNFCOST,
+    "bnf_cost" : BNF_COST 
   },
 /*--------------------------------------------------------------------------*/
 /* 6. pft */
@@ -588,17 +641,18 @@
     "name" : "boreal needleleaved evergreen tree",
     "type" : "tree",
     "cultivation_type" : "none", /* cultivation_type */
-    "nfixing" : false,           /* no N fixing */
+    "nfixing" : true,           /* N fixing in Ma et al., 2022 appraoch */
     "cn" : [30.0, 55.0, 70.0, 77.0], /* curve number */
-    "beta_root" : 0.943,    /* beta_root */
+    "beta_root" : 0.955,    /* beta_root original 0.943*/
     "minwscal" : 0.00,      /* minwscal 3*/
     "gmin"  : 0.8,          /* gmin 4*/
     "respcoeff" : 1.2,      /* respcoeff 5*/
     "nmax" : 100.0,          /* nmax 7*/
     "resist" : 0.12,        /* resist 8*/
     "longevity" : 4.0,      /* leaf longevity 10*/
+    "sla" : 0.01049,          /* specific leaf area */
     "lmro_ratio" : 1.0,     /* lmro_ratio 18*/
-    "lmro_offset" : LMTORM_OFFSET,
+    "lmro_offset" : 0.5,     /* lmro_ratio 18*/
     "ramp" : 1000.0,         /* ramp 19*/
     "lai_sapl" : 1.500,     /* lai_sapl 21*/
     "gdd5min" : 600.0,      /* gdd5min 30*/
@@ -606,14 +660,14 @@
     "twmax_daily" : 25.0,    /* twmax_daily 31*/
     "gddbase" : 5.0,        /* gddbase (deg C) 33*/
     "min_temprange" : -1000.0, /* min_temprange 34*/
-    "emax": 7.0,            /* emax 35*/
+    "emax": 5.0, //7.0,            /* emax 35*/
     "intc" : 0.06,          /* intc 36*/
     "alphaa" : ALPHAA_NITROGEN, /* alphaa, fraction of PAR assimilated at ecosystem level, relative to leaf level */
-    "albedo_leaf" : 0.13,   /* albedo of green leaves */
+    "albedo_leaf" : 0.18,   /* albedo of green leaves */
     "albedo_stem" : 0.1,    /* albedo of stems */
     "albedo_litter" : 0.1,  /* albedo of litter */
-    "snowcanopyfrac" : 0.1, /* maximum snow coverage in green canopy */
-    "lightextcoeff" : 0.5,  /* lightextcoeff, light extinction coeffcient in Lambert-Beer equation */
+    "snowcanopyfrac" : 0.15, /* maximum snow coverage in green canopy */
+    "lightextcoeff" : 0.4,  /* lightextcoeff, light extinction coeffcient in Lambert-Beer equation */
     "tmin" :
     {
       "slope" : 0.1008,     /* new phenology: slope of cold-temperature limiting function */
@@ -657,16 +711,16 @@
     "vmax_up" : 2.8,              /* vmax_up, Maximum N uptake capacity per unit fine root mass, Smith et al. 2014 */
     "kNmin": 0.05,                /* kNmin, Rate of N uptake not associated with Michaelis-Menten Kinetics, Zaehle&Friend 2000 */
     "KNmin" : 1.48,               /* KNmin, Half saturation concentration of fine root N uptake, Smith et al. 2014 */
-    "cnratio_leaf": {"low": CN_NL_EG_MN, "median" : CN_NL_EG_MD, "high" : CN_NL_EG_MX}, /* 10.7 79.4 cnleaf min max, based on TRY data, prepared by Boris Sakschewski */
-    "knstore" : 0.15,       /* knstore, Smith et al. 2014 */
+    "cnratio_leaf": {"low": CN_NL_EG_MN, "median": CN_NL_EG_MD, "high" : CN_NL_EG_MX}, /* 10.7 79.4 cnleaf min max, based on TRY data, prepared by Boris Sakschewski */
+    "knstore" : 0.1,       /* knstore, Smith et al. 2014 */
     "fn_turnover" : FN_TURNOVER_EV, /* fraction of N not recovered before turnover */
     "windspeed_dampening" : 0.4,  /* windspeed dampening */
     "roughness_length" : 1.0, /* roughness length */
     "leaftype" : "needleleaved",/* leaftype */
-    "turnover" : {"leaf" : 4.0, "sapwood" : 20.0, "root" : 4.0}, /* turnover leaf  sapwood root 9 11 12*/
+    "turnover" : {"leaf" : 4.0, "sapwood" : 25.0, "root" : 4.0}, /* turnover leaf  sapwood root 9 11 12*/
     "cn_ratio" : {"leaf" : CTON_LEAF, "sapwood" :  CTON_SAP, "root" : CTON_ROOT}, /* C:N mass ratio for leaf, sapwood, and root 13,14,15*/
     "ratio" : {"sapwood" :  RATIO_SAPW, "root" :  1.16}, /* relative C:N ratio of sapwood and root, Friend et al. 1997, Ecological Modeling, Table 4*/
-    "crownarea_max" : 15.0, /* crownarea_max 20*/
+    "crownarea_max" : 20.0, /* crownarea_max 20*/
     "wood_sapl" : 1.2,      /* sapwood sapling 22*/
     "reprod_cost" : REPROD_COST, /* reproduction cost */
     "allom1" : ALLOM1,      /* allometry */
@@ -682,7 +736,14 @@
     "crown_mort_rck" : 1.00, /* crown damage (rCK) */
     "crown_mort_p" : 3.00,  /* crown damage (p)     */
     "fuelfraction" : [0.045,0.075,0.21,0.67], /* fuel fraction */
-    "k_est": K_EST         /* k_est */
+    "k_est": K_EST,         /* k_est */
+    "temp_bnf_lim" : {"low" : TEMP_BNF_MIN, "high" : TEMP_BNF_MAX},
+    "temp_bnf_opt" : {"low" : 12, "high" : 25},  /* Yu and Zhuang 2020 boreal forest*/
+    "swc_bnf" : {"low" : SWC_BNF_LOW, "high" : SWC_BNF_HIGH},
+    "phi_bnf" : [PHI_BNF_1, PHI_BNF_2],
+    "nfixpot" : 0.032,  /* Yu and Zhuang 2020 boreal forest*/
+    "maxbnfcost" : MAXBNFCOST,
+    "bnf_cost" : BNF_COST 
   },
 /*--------------------------------------------------------------------------*/
 /* 7. pft */
@@ -690,17 +751,18 @@
     "name" : "boreal broadleaved summergreen tree",
     "type" : "tree",
     "cultivation_type" : "none", /* cultivation_type */
-    "nfixing" : false,           /* no N fixing */
+    "nfixing" : true,           /* N fixing in Ma et al., 2022 appraoch */
     "cn" : [30.0, 55.0, 70.0, 77.0], /* curve number */
-    "beta_root" : 0.943,    /* beta_root */
+    "beta_root" : 0.955,    /* beta_root original 0.943*/
     "minwscal" : 0.00,      /* minwscal 3*/
     "gmin"  : 0.8,          /* gmin 4*/
     "respcoeff" : 1.2,      /* respcoeff 5*/
     "nmax" : 100.0,          /* nmax 7*/
     "resist" : 0.3,         /* resist 8*/
     "longevity" : 0.5,      /* leaf longevity 10*/
+    "sla" : 0.03233,          /* specific leaf area */
     "lmro_ratio" : 1.0,     /* lmro_ratio 18*/
-    "lmro_offset" : LMTORM_OFFSET,
+    "lmro_offset" : 0.5,     /* lmro_ratio 18*/
     "ramp" : 200.0,          /* ramp 19*/
     "lai_sapl" : 1.500,     /* lai_sapl 21*/
     "gdd5min" : 350.0,      /* gdd5min 30*/
@@ -738,7 +800,7 @@
     {
       "slope" : 5.24,       /* new phenology: slope of water limiting function */
       "base" : 20.96,       /* new phenology: inflection point of water limiting function (% water availability)  */
-      "tau" : 0.8           /* new phenology: change rate of actual to previous day water limiting function */
+      "tau" : 0.7           /* new phenology: change rate of actual to previous day water limiting function */
     },
     "mort_max" : MORT_MAX,  /* asymptotic maximum mortality rate (1/year) */
     "phenology" : "summergreen",/* phenology */
@@ -759,16 +821,16 @@
     "vmax_up" : 2.8,              /* vmax_up, Maximum N uptake capacity per unit fine root mass, Smith et al. 2014 */
     "kNmin": 0.05,                /* kNmin, Rate of N uptake not associated with Michaelis-Menten Kinetics, Zaehle&Friend 2000 */
     "KNmin" : 1.48,               /* KNmin, Half saturation concentration of fine root N uptake, Smith et al. 2014 */
-    "cnratio_leaf": {"low": CN_BL_DC_MN, "median" : CN_BL_DC_MD, "high" : CN_BL_DC_MX}, /* 10.7 79.4 cnleaf min max, based on TRY data, prepared by Boris Sakschewski */
-    "knstore" : 0.15,       /* knstore, Smith et al. 2014 */
+    "cnratio_leaf": {"low": CN_BL_DC_MN, "median": CN_BL_DC_MD, "high" : CN_BL_DC_MX}, /* 10.7 79.4 cnleaf min max, based on TRY data, prepared by Boris Sakschewski */
+    "knstore" : 0.1,       /* knstore, Smith et al. 2014 */
     "fn_turnover" : FN_TURNOVER, /* fraction of N not recovered before turnover */
     "windspeed_dampening" : 0.4,  /* windspeed dampening */
     "roughness_length" : 1.0,     /* roughness length */
     "leaftype" : "broadleaved",/* leaftype */
-    "turnover" : {"leaf" : 1.0, "sapwood" : 20.0, "root" : 1.0}, /* turnover leaf  sapwood root 9 11 12*/
+    "turnover" : {"leaf" : 1.0, "sapwood" : 25.0, "root" : 1.0}, /* turnover leaf  sapwood root 9 11 12*/
     "cn_ratio" : {"leaf" : CTON_LEAF, "sapwood" :  CTON_SAP, "root" : CTON_ROOT}, /* C:N mass ratio for leaf, sapwood, and root 13,14,15*/
     "ratio" : {"sapwood" :  RATIO_SAPW, "root" :  1.16}, /* relative C:N ratio of sapwood and root, Friend et al. 1997, Ecological Modeling, Table 4*/
-    "crownarea_max" : 15.0, /* crownarea_max 20*/
+    "crownarea_max" : 20.0, /* crownarea_max 20*/
     "wood_sapl" : 1.2,      /* sapwood sapling 22*/
     "aphen_min" : APHEN_MIN,
     "aphen_max" : APHEN_MAX,
@@ -786,7 +848,14 @@
     "crown_mort_rck" : 1.00, /* crown damage (rCK) */
     "crown_mort_p" : 3.00,  /* crown damage (p)     */
     "fuelfraction" : [0.045,0.075,0.21,0.67], /* fuel fraction */
-    "k_est": K_EST         /* k_est */
+    "k_est": K_EST,         /* k_est */
+    "temp_bnf_lim" : {"low" : TEMP_BNF_MIN, "high" : TEMP_BNF_MAX},
+    "temp_bnf_opt" : {"low" : 12, "high" : 25},  /* Yu and Zhuang 2020 boreal forest*/
+    "swc_bnf" : {"low" : SWC_BNF_LOW, "high" : SWC_BNF_HIGH},
+    "phi_bnf" : [PHI_BNF_1, PHI_BNF_2],
+    "nfixpot" : 0.032,  /* Yu and Zhuang 2020 boreal forest*/
+    "maxbnfcost" : MAXBNFCOST,
+    "bnf_cost" : BNF_COST
   },
 /*--------------------------------------------------------------------------*/
 /* 8. pft */
@@ -794,17 +863,18 @@
     "name" : "boreal needleleaved summergreen tree",
     "type" : "tree",
     "cultivation_type" : "none", /* cultivation_type */
-    "nfixing" : false,           /* no N fixing */
+    "nfixing" : true,           /* N fixing in Ma et al., 2022 appraoch */
     "cn" : [30.0, 55.0, 70.0, 77.0], /* curve number */
-    "beta_root" : 0.943,    /* beta_root */
+    "beta_root" : 0.955,     /* beta_root original 0.943*/
     "minwscal" : 0.00,      /* minwscal 3*/
     "gmin"  : 0.3,          /* gmin 4*/
     "respcoeff" : 1.2,      /* respcoeff 5*/
     "nmax" : 100.0,          /* nmax 7*/
     "resist" : 0.12,        /* resist 8*/
     "longevity" : 0.65,     /* leaf longevity 10*/
+    "sla" : 0.02118,        /* specific leaf area */
     "lmro_ratio" : 1.0,     /* lmro_ratio 18*/
-    "lmro_offset" : LMTORM_OFFSET,
+    "lmro_offset" : 0.5,     /* lmro_ratio 18*/
     "ramp" : 200.0,          /* ramp 19*/
     "lai_sapl" : 1.500,     /* lai_sapl 21*/
     "gdd5min" : 350.0,      /* gdd5min 30*/
@@ -812,7 +882,7 @@
     "twmax_daily" : 25.0,    /* twmax_daily 31*/
     "gddbase" : 5.0,        /* gddbase (deg C) 33*/
     "min_temprange" : 30.0,  /* min_temprange 34*/
-    "emax": 7.0,            /* emax 35*/
+    "emax": 5.0, //7.0,            /* emax 35*/
     "intc" : 0.06,          /* intc 36*/
     "alphaa" : ALPHAA_NITROGEN, /* alphaa, fraction of PAR assimilated at ecosystem level, relative to leaf level */
     "albedo_leaf" : 0.12,   /* albedo of green leaves */
@@ -823,7 +893,7 @@
     "tmin" :
     {
       "slope" : 0.21,       /* new phenology: slope of cold-temperature limiting function 0.15 */
-      "base" : -4.165,      /* new phenology: inflection point of cold-temperature limiting function (deg C) */
+      "base" : -4.165,      /* new phenology: inflection point of cold-temperature limiting function (deg C) -4.165*/
       "tau" : 0.2           /* new phenology: change rate of actual to previous day cold-temperature limiting fct */
     },
     "tmax" :
@@ -863,16 +933,16 @@
     "vmax_up" : 2.8,              /* vmax_up, Maximum N uptake capacity per unit fine root mass, Smith et al. 2014 */
     "kNmin": 0.05,                /* kNmin, Rate of N uptake not associated with Michaelis-Menten Kinetics, Zaehle&Friend 2000 */
     "KNmin" : 1.48,               /* KNmin, Half saturation concentration of fine root N uptake, Smith et al. 2014 */
-    "cnratio_leaf": {"low": CN_NL_DC_MN, "median" : CN_NL_DC_MD, "high" : CN_NL_DC_MX}, /* 10.7 79.4 cnleaf min max, based on TRY data, prepared by Boris Sakschewski */
-    "knstore" : 0.15,       /* knstore, Smith et al. 2014 */
+    "cnratio_leaf": {"low": CN_NL_DC_MN, "median": CN_NL_DC_MD, "high" : CN_NL_DC_MX}, /* 10.7 79.4 cnleaf min max, based on TRY data, prepared by Boris Sakschewski */
+    "knstore" : 0.1,       /* knstore, Smith et al. 2014 */
     "fn_turnover" : FN_TURNOVER, /* fraction of N not recovered before turnover */
     "windspeed_dampening" : 0.4,  /* windspeed dampening */
     "roughness_length" : 1.0,     /* roughness length */
     "leaftype" : "needleleaved",/* leaftype */
-    "turnover" : {"leaf" : 1.0, "sapwood" : 20.0, "root" : 1.0}, /* turnover leaf  sapwood root 9 11 12*/
+    "turnover" : {"leaf" : 1.0, "sapwood" : 25.0, "root" : 1.0}, /* turnover leaf  sapwood root 9 11 12*/
     "cn_ratio" : {"leaf" : CTON_LEAF, "sapwood" :  CTON_SAP, "root" : CTON_ROOT}, /* C:N mass ratio for leaf, sapwood, and root 13,14,15*/
     "ratio" : {"sapwood" :  RATIO_SAPW, "root" :  1.16}, /* relative C:N ratio of sapwood and root, Friend et al. 1997, Ecological Modeling, Table 4*/
-    "crownarea_max" : 15.0, /* crownarea_max 20*/
+    "crownarea_max" : 20.0, /* crownarea_max 20*/
     "wood_sapl" : 1.2,      /* sapwood sapling 22*/
     "aphen_min" : 10,
     "aphen_max" : 200,
@@ -890,15 +960,22 @@
     "crown_mort_rck" : 1.00, /* crown damage (rCK) */
     "crown_mort_p" : 3.00,  /* crown damage (p)     */
     "fuelfraction" : [0.045,0.075,0.21,0.67], /* fuel fraction */
-    "k_est": K_EST         /* k_est */
-  },
+    "k_est": K_EST,         /* k_est */
+    "temp_bnf_lim" : {"low" : TEMP_BNF_MIN, "high" : TEMP_BNF_MAX},
+    "temp_bnf_opt" : {"low" : 12, "high" : 25},  /* Yu and Zhuang 2020 boreal forest*/
+    "swc_bnf" : {"low" : SWC_BNF_LOW, "high" : SWC_BNF_HIGH},
+    "phi_bnf" : [PHI_BNF_1, PHI_BNF_2],
+    "nfixpot" : 0.032,  /* Yu and Zhuang 2020 boreal forest*/
+    "maxbnfcost" : MAXBNFCOST,
+    "bnf_cost" : BNF_COST
+ },
 /*--------------------------------------------------------------------------*/
 /* 9. pft */
   {
     "name" : "Tropical C4 grass",
     "type" : "grass",
     "cultivation_type" : "none", /* cultivation_type */
-    "nfixing" : false,           /* no N fixing */
+    "nfixing" : true,           /* N fixing in Ma et al., 2022 appraoch */
     "cn" : [39.0, 61.0, 74.0, 80.0], /* curve number */
     "beta_root" : 0.972,    /* beta_root */
     "minwscal" : 0.20,      /* minwscal 3*/
@@ -907,10 +984,11 @@
     "nmax" : 100.0,          /* nmax 7*/
     "resist" : 0.01,        /* resist 8*/
     "longevity" : 0.4,      /* leaf longevity 10*/
+    "sla" : 0.040373,        /* specific leaf area */
     "lmro_ratio" : 0.6,     /* lmro_ratio 18*/
-    "lmro_offset" : LMTORM_OFFSET,
+    "lmro_offset" : 0.5,     /* lmro_ratio 18*/
     "ramp" : 100.0,          /* ramp 19*/
-    "lai_sapl" : 0.001,     /* lai_sapl 21*/
+    "lai_sapl" : 0.1,     /* lai_sapl 21*/
     "gdd5min" : 0.0,        /* gdd5min 30*/
     "twmax" : 1000.0,        /* twmax 31*/
     "twmax_daily" : 1000.0,  /* twmax_daily 31*/
@@ -948,7 +1026,7 @@
       "base" : 41.72,       /* new phenology: inflection point of water limiting function (% water availability)  */
       "tau" : 0.17          /* new phenology: change rate of actual to previous day water limiting function */
     },
-    "mort_max" : MORT_MAX,  /* asymptotic maximum mortality rate (1/year) */
+    "mort_max" : MORT_MAX_GRASS,  /* asymptotic maximum mortality rate (1/year) */
     "phenology" : "any",      /* phenology */
     "path" : "C4",            /* pathway */
     "temp_co2" : { "low" : 6.0, "high" : 55.0 }, /* lower and upper temperature limit for co2 (deg C) 24 27*/
@@ -958,7 +1036,7 @@
     "soc_k" : 0.46513,     /* shape factor for soil organic matter vertical distribution*/
     "alpha_fuelp" : 0.0000667, /* scaling factor nesterov fire danger index */
     "vpd_par" : 3.85899, /*scaling factor vpd fire danger index*/
-    "fuelbulkdensity" : 1.9, /* fuel bulk density */
+    "fuelbulkdensity" : 2.0, /* fuel bulk density */
     "emission_factor" : { "co2" : 1664.0, "co" :  63.0, "ch4" : 2.20, "voc" : 3.40, "tpm" : 8.50, "nox" : 2.540}, /* emission factors */
     "aprec_min" : 100,                        /* minimum annual precipitation to establish */
     "flam" : FLAM_GRASS,     /* flam */
@@ -968,14 +1046,21 @@
     "kNmin": 0.05,                /* kNmin, Rate of N uptake not associated with Michaelis-Menten Kinetics, Zaehle&Friend 2000 */
     "KNmin" : 1.19,               /* KNmin, Half saturation concentration of fine root N uptake, Smith et al. 2014 */
     "cnratio_leaf": {"low": CN_GC4_MN, "median" : CN_GC4_MD, "high" : CN_GC4_MX}, /* 10.7 79.4 cnleaf min max, based on TRY data, prepared by Boris Sakschewski */
-    "knstore" : 0.15,       /* knstore, Smith et al. 2014 */
-    "fn_turnover" : FN_TURNOVER, /* fraction of N not recovered before turnover */
+    "knstore" : 0.05,       /* knstore, Smith et al. 2014 */
+    "fn_turnover" : FN_TURNOVER_GR, /* fraction of N not recovered before turnover */
     "windspeed_dampening" : 0.6,/* windspeed dampening */
     "roughness_length" : 0.03,  /* roughness length */
     "turnover" : {"leaf" : 1.0, "root" : 2.0}, /* turnover leaf  root 9 12*/
     "cn_ratio" : {"leaf" : CTON_LEAF, "root" : CTON_ROOT}, /* C:N mass ratio for leaf, and root 13,15*/
     "ratio" : 1.16,
-    "reprod_cost" : REPROD_COST /* reproduction cost */
+    "reprod_cost" : REPROD_COST, /* reproduction cost */
+    "temp_bnf_lim" : {"low" : TEMP_BNF_MIN, "high" : TEMP_BNF_MAX},
+    "temp_bnf_opt" : {"low" : 18, "high" : 35},  /* Yu and Zhuang 2020 grassland*/
+    "swc_bnf" : {"low" : SWC_BNF_LOW, "high" : SWC_BNF_HIGH},
+    "phi_bnf" : [PHI_BNF_1, PHI_BNF_2],
+    "nfixpot" : 0.05,  /* Yu and Zhuang 2020 grassland*/
+    "maxbnfcost" : MAXBNFCOST,
+    "bnf_cost" : BNF_COST 
   },
 /*--------------------------------------------------------------------------*/
 /* 10. pft */
@@ -983,7 +1068,7 @@
     "name" : "Temperate C3 grass",
     "type" : "grass",
     "cultivation_type" : "none", /* cultivation_type */
-    "nfixing" : false,           /* no N fixing */
+    "nfixing" : true,           /* N fixing in Ma et al., 2022 appraoch */
     "cn" : [39.0, 61.0, 74.0, 80.0], /* curve number */
     "beta_root" : 0.943,    /* beta_root */
     "minwscal" : 0.20,      /* minwscal 3*/
@@ -992,10 +1077,11 @@
     "nmax" : 100.0,          /* nmax 7*/
     "resist" : 0.01,        /* resist 8*/
     "longevity" : 0.35,     /* leaf longevity 10*/
+    "sla" : 0.042242,        /* specific leaf area */
     "lmro_ratio" : 0.8,     /* lmro_ratio 18*/
-    "lmro_offset" : LMTORM_OFFSET,
+    "lmro_offset" : 0.5,     /* lmro_ratio 18*/
     "ramp" : 100.0,          /* ramp 19*/
-    "lai_sapl" : 0.001,     /* lai_sapl 21*/
+    "lai_sapl" : 0.1,     /* lai_sapl 21*/
     "gdd5min" : 0.0,        /* gdd5min 30*/
     "twmax" : 1000.0,        /* twmax 31*/
     "twmax_daily" : 1000.0,  /* twmax_daily 31*/
@@ -1004,7 +1090,7 @@
     "emax": 7.0,            /* emax 35*/
     "intc" : 0.01,          /* intc 36*/
     "alphaa" : ALPHAA_NITROGEN, /* alphaa, fraction of PAR assimilated at ecosystem level, relative to leaf level */
-    "albedo_leaf" : 0.20,   /* albedo of green leaves */
+    "albedo_leaf" : 0.23,   /* albedo of green leaves */
     "albedo_stem" : 0.15,   /* albedo of stems */
     "albedo_litter" : 0.1,  /* albedo of litter */
     "snowcanopyfrac" : 0.4, /* maximum snow coverage in green canopy */
@@ -1033,7 +1119,7 @@
       "base" : 53.07,       /* new phenology: inflection point of water limiting function (% water availability)  */
       "tau" : 0.01001       /* new phenology: change rate of actual to previous day water limiting function */
     },
-    "mort_max" : MORT_MAX,  /* asymptotic maximum mortality rate (1/year) */
+    "mort_max" : MORT_MAX_GRASS,  /* asymptotic maximum mortality rate (1/year) */
     "phenology" : "any",      /* phenology */
     "path" : "C3",            /* pathway */
     "temp_co2" : { "low" : -4.0, "high" : 45.0 }, /* lower and upper temperature limit for co2 (deg C) 24 27*/
@@ -1053,14 +1139,21 @@
     "kNmin": 0.05,                /* kNmin, Rate of N uptake not associated with Michaelis-Menten Kinetics, Zaehle&Friend 2000 */
     "KNmin" : 1.19,               /* KNmin, Half saturation concentration of fine root N uptake, Smith et al. 2014 */
     "cnratio_leaf": {"low": CN_GC3_MN, "median" : CN_GC3_MD, "high" : CN_GC3_MX}, /* 10.7 79.4 cnleaf min max, based on TRY data, prepared by Boris Sakschewski */
-    "knstore" : 0.15,       /* knstore, Smith et al. 2014 */
-    "fn_turnover" : FN_TURNOVER, /* fraction of N not recovered before turnover */
+    "knstore" : 0.05,       /* knstore, Smith et al. 2014 */
+    "fn_turnover" : FN_TURNOVER_GR, /* fraction of N not recovered before turnover */
     "windspeed_dampening" : 0.6, /* windspeed dampening */
     "roughness_length" : 0.03,   /* roughness length */
     "turnover" : {"leaf" : 1.0, "root" : 2.0}, /* turnover leaf  root 9 12*/
     "cn_ratio" : {"leaf" : CTON_LEAF, "root" : CTON_ROOT}, /* C:N mass ratio for leaf, and root 13,15*/
     "ratio" : 1.16,
-    "reprod_cost" : REPROD_COST /* reproduction cost */
+    "reprod_cost" : REPROD_COST, /* reproduction cost */
+    "temp_bnf_lim" : {"low" : TEMP_BNF_MIN, "high" : TEMP_BNF_MAX},
+    "temp_bnf_opt" : {"low" : 18, "high" : 35},  /* Yu and Zhuang 2020 grassland*/
+    "swc_bnf" : {"low" : SWC_BNF_LOW, "high" : SWC_BNF_HIGH},
+    "phi_bnf" : [PHI_BNF_1, PHI_BNF_2],
+    "nfixpot" : 0.05,  /* Yu and Zhuang 2020 grassland*/
+    "maxbnfcost" : MAXBNFCOST,
+    "bnf_cost" : BNF_COST 
   },
 /*--------------------------------------------------------------------------*/
 /* 11. pft */
@@ -1068,7 +1161,7 @@
     "name" : "Polar C3 grass",
     "type" : "grass",
     "cultivation_type" : "none", /* cultivation_type */
-    "nfixing" : false,           /* no N fixing */
+    "nfixing" : true,           /* N fixing in Ma et al., 2022 appraoch */
     "cn" : [39.0, 61.0, 74.0, 80.0], /* curve number */
     "beta_root" : 0.943,    /* beta_root */
     "minwscal" : 0.20,      /* minwscal 3*/
@@ -1077,10 +1170,11 @@
     "nmax" : 100.0,          /* nmax 7*/
     "resist" : 0.01,        /* resist 8*/
     "longevity" : 0.35,     /* leaf longevity 10*/
+    "sla" : 0.042242,        /* specific leaf area */
     "lmro_ratio" : 0.6,     /* lmro_ratio 18*/
-    "lmro_offset" : LMTORM_OFFSET,
+    "lmro_offset" : 0.5,     /* lmro_ratio 18*/
     "ramp" : 100.0,          /* ramp 19*/
-    "lai_sapl" : 0.001,     /* lai_sapl 21*/
+    "lai_sapl" : 0.1,     /* lai_sapl 21*/
     "gdd5min" : 0.01,       /* gdd5min 30*/
     "twmax" : 1000.0,        /* twmax 31*/
     "twmax_daily" : 1000.0,  /* twmax_daily 31*/
@@ -1089,7 +1183,7 @@
     "emax": 7.0,            /* emax 35*/
     "intc" : 0.01,          /* intc 36*/
     "alphaa" : ALPHAA_NITROGEN, /* alphaa, fraction of PAR assimilated at ecosystem level, relative to leaf level */
-    "albedo_leaf" : 0.21,   /* albedo of green leaves */
+    "albedo_leaf" : 0.23,   /* albedo of green leaves */
     "albedo_stem" : 0.1,    /* albedo of stems */
     "albedo_litter" : 0.1,  /* albedo of litter */
     "snowcanopyfrac" : 0.4, /* maximum snow coverage in green canopy */
@@ -1118,11 +1212,11 @@
       "base" : 1,           /* new phenology: inflection point of water limiting function (% water availability)  */
       "tau" : 0.94          /* new phenology: change rate of actual to previous day water limiting function */
     },
-    "mort_max" : MORT_MAX,  /* asymptotic maximum mortality rate (1/year) */
+    "mort_max" : MORT_MAX_GRASS,  /* asymptotic maximum mortality rate (1/year) */
     "phenology" : "any",      /* phenology */
     "path" : "C3",            /* pathway */
-    "temp_co2" : { "low" : -4.0, "high" : 45.0 }, /* lower and upper temperature limit for co2 (deg C) 24 27*/
-    "temp_photos" : { "low" : 10.0, "high" : 30.0},/* lower and upper limit of temperature optimum for photosynthesis(deg C) 25 26*/
+    "temp_co2" : { "low" : -4.0, "high" : 38.0 }, /* lower and upper temperature limit for co2 (deg C) 24 27*/
+    "temp_photos" : { "low" : 10.0, "high" : 25.0},/* lower and upper limit of temperature optimum for photosynthesis(deg C) 25 26*/
     "b":  BC3, /* leaf respiration as fraction of Vmax for C3 plants */
     "temp" : { "low" : -1000.0, "high" : -2.6 }, /* lower and upper coldest monthly mean temperature(deg C) 28 29*/
     "soc_k" : 0.38184,     /* shape factor for soil organic matter vertical distribution*/
@@ -1138,14 +1232,21 @@
     "kNmin": 0.05,                /* kNmin, Rate of N uptake not associated with Michaelis-Menten Kinetics, Zaehle&Friend 2000 */
     "KNmin" : 1.19,               /* KNmin, Half saturation concentration of fine root N uptake, Smith et al. 2014 */
     "cnratio_leaf": {"low": CN_GC3_MN, "median" : CN_GC3_MD, "high" : CN_GC3_MX}, /* 10.7 79.4 cnleaf min max, based on TRY data, prepared by Boris Sakschewski */
-    "knstore" : 0.15,       /* knstore, Smith et al. 2014 */
-    "fn_turnover" : FN_TURNOVER, /* fraction of N not recovered before turnover */
+    "knstore" : 0.05,       /* knstore, Smith et al. 2014 */
+    "fn_turnover" : FN_TURNOVER_GR, /* fraction of N not recovered before turnover */
     "windspeed_dampening" : 0.6,  /* windspeed dampening */
     "roughness_length" : 0.03,    /* roughness length */
     "turnover" : {"leaf" : 1.0, "root" : 2.0}, /* turnover leaf  root 9 12*/
     "cn_ratio" : {"leaf" : CTON_LEAF, "root" : CTON_ROOT}, /* C:N mass ratio for leaf, and root 13,15*/
     "ratio" : 1.16,
-    "reprod_cost" : REPROD_COST /* reproduction cost */
+    "reprod_cost" : REPROD_COST, /* reproduction cost */
+    "temp_bnf_lim" : {"low" : TEMP_BNF_MIN, "high" : TEMP_BNF_MAX},
+    "temp_bnf_opt" : {"low" : 18, "high" : 35},  /* Yu and Zhuang 2020 grassland*/
+    "swc_bnf" : {"low" : SWC_BNF_LOW, "high" : SWC_BNF_HIGH},
+    "phi_bnf" : [PHI_BNF_1, PHI_BNF_2],
+    "nfixpot" : 0.05,  /* Yu and Zhuang 2020 grassland*/
+    "maxbnfcost" : MAXBNFCOST,
+    "bnf_cost" : BNF_COST 
   },
 /*----------------------------------------------------------------------------------------*/
 /* 1. bft */
@@ -1153,7 +1254,7 @@
     "name" : "bioenergy tropical tree",
     "type" : "tree",
     "cultivation_type" : "biomass",/* cultivation_type */
-    "nfixing" : false,           /* no N fixing */
+    "nfixing" : false,           /* No N fixing in Ma et al., 2022 appraoch */
     "cn" : [30.0, 55.0, 70.0, 77.0], /* curve number */
     "beta_root" : 0.975,    /* beta_root */
     "minwscal" : 0.00,      /* minwscal 3*/
@@ -1163,7 +1264,7 @@
     "resist" : 1.0,         /* resist 8*/
     "longevity" : 2.0,      /* leaf longevity 10*/
     "lmro_ratio" : 1.0,     /* lmro_ratio 18*/
-    "lmro_offset" : LMTORM_OFFSET,
+    "lmro_offset" : 0.5,     /* lmro_ratio 18*/
     "ramp" : 1000.0,         /* ramp 19*/
     "lai_sapl" : 1.6,       /* lai_sapl 21*/
     "gdd5min" : 0.0,        /* gdd5min 30*/
@@ -1223,7 +1324,7 @@
     "kNmin": 0.05,                /* kNmin, Rate of N uptake not associated with Michaelis-Menten Kinetics, Zaehle&Friend 2000 */
     "KNmin" : 1.48,               /* KNmin, Half saturation concentration of fine root N uptake, Smith et al. 2014 */
     "cnratio_leaf": {"low": CN_BL_EG_MN, "median" : CN_BL_EG_MD, "high" : CN_BL_EG_MX}, /* 10.7 79.4 cnleaf min max, based on TRY data, prepared by Boris Sakschewski */
-    "knstore" : 0.15,       /* knstore, Smith et al. 2014 */
+    "knstore" : 0.1,       /* knstore, Smith et al. 2014 */
     "fn_turnover" : FN_TURNOVER, /* fraction of N not recovered before turnover */
     "windspeed_dampening" : 0.4, /* windspeed dampening */
     "roughness_length" : 1.0,/* roughness length */
@@ -1257,7 +1358,7 @@
     "name" : "bioenergy temperate tree",
     "type" : "tree",
     "cultivation_type" : "biomass",/* cultivation_type */
-    "nfixing" : false,           /* no N fixing */
+    "nfixing" : true,           /* N fixing in Ma et al., 2022 appraoch */
     "cn" : [30.0, 55.0, 70.0, 77.0], /* curve number */
     "beta_root" : 0.966,    /* beta_root */
     "minwscal" : 0.00,      /* minwscal 3*/
@@ -1267,7 +1368,7 @@
     "resist" : 0.95,        /* resist 8*/
     "longevity" : 0.45,     /* leaf longevity 10*/
     "lmro_ratio" : 1.0,     /* lmro_ratio 18*/
-    "lmro_offset" : LMTORM_OFFSET,
+    "lmro_offset" : 0.5,     /* lmro_ratio 18*/
     "ramp" : 300.0,          /* ramp 19*/
     "lai_sapl" : 1.6,       /* lai_sapl 2.1, larger sapling used for plantations, original value 1.5  */
     "gdd5min" : 300.0,      /* gdd5min 30*/
@@ -1327,7 +1428,7 @@
     "kNmin": 0.05,                /* kNmin, Rate of N uptake not associated with Michaelis-Menten Kinetics, Zaehle&Friend 2000 */
     "KNmin" : 1.48,               /* KNmin, Half saturation concentration of fine root N uptake, Smith et al. 2014 */
     "cnratio_leaf": {"low": CN_BL_DC_MN, "median" : CN_BL_DC_MD, "high" : CN_BL_DC_MX}, /* 10.7 79.4 cnleaf min max, based on TRY data, prepared by Boris Sakschewski */
-    "knstore" : 0.15,       /* knstore, Smith et al. 2014 */
+    "knstore" : 0.1,       /* knstore, Smith et al. 2014 */
     "fn_turnover" : FN_TURNOVER, /* fraction of N not recovered before turnover */
     "windspeed_dampening" : 0.4,  /* windspeed dampening */
     "roughness_length" : 1.0,     /* roughness length */
@@ -1355,7 +1456,14 @@
     "fuelfraction" : [0.045,0.075,0.21,0.67], /* fuel fraction */
     "k_est" : 0.8,          /* k_est TIM 1.5*/
     "rotation" : 8,         /* rotation */
-    "max_rotation_length" : 40 /* max_rotation_length */
+    "max_rotation_length" : 40, /* max_rotation_length */
+    "temp_bnf_lim" : {"low" : TEMP_BNF_MIN, "high" : TEMP_BNF_MAX},
+    "temp_bnf_opt" : {"low" : 18, "high" : 35},  /* Yu and Zhuang 2020 temperate deciduous forest*/
+    "swc_bnf" : {"low" : SWC_BNF_LOW, "high" : SWC_BNF_HIGH},
+    "phi_bnf" : [PHI_BNF_1, PHI_BNF_2],
+    "nfixpot" : 0.55,  /* Yu and Zhuang 2020 temperate deciduous forest*/
+    "maxbnfcost" : MAXBNFCOST,
+    "bnf_cost" : BNF_COST 
   },
 /*--------------------------------------------------------------------------*/
 /* 3. bft ONLY FOR BIOENERGY*/
@@ -1363,7 +1471,7 @@
     "name" : "bioenergy C4 grass",
     "type" : "grass",
     "cultivation_type" : "biomass", /* cultivation_type */
-    "nfixing" : false,           /* no N fixing */
+    "nfixing" : true,           /* N fixing in Ma et al., 2022 appraoch */
     "cn" : [39.0, 61.0, 74.0, 80.0], /* curve number */
     "beta_root" : 0.972,    /* beta_root */
     "minwscal" : 0.20,      /* minwscal 3*/
@@ -1373,7 +1481,7 @@
     "resist" : 1.0,         /* resist 8*/
     "longevity" : 0.25,     /* leaf longevity 10*/
     "lmro_ratio" : 0.75,   /* lmro_ratio 18*/
-    "lmro_offset" : LMTORM_OFFSET,
+    "lmro_offset" : 0.5,     /* lmro_ratio 18*/
     "ramp" : 100.0,          /* ramp 19*/
     "lai_sapl" : 0.001,     /* lai_sapl 21*/
     "gdd5min" : 0.0,        /* gdd5min 30*/
@@ -1433,14 +1541,21 @@
     "kNmin": 0.05,                /* kNmin, Rate of N uptake not associated with Michaelis-Menten Kinetics, Zaehle&Friend 2000 */
     "KNmin" : 1.19,               /* KNmin, Half saturation concentration of fine root N uptake, Smith et al. 2014 */
     "cnratio_leaf": {"low": CN_GC4_MN, "median" : CN_GC4_MD, "high" : CN_GC4_MX}, /* 10.7 79.4 cnleaf min max, based on TRY data, prepared by Boris Sakschewski */
-    "knstore" : 0.15,       /* knstore, Smith et al. 2014 */
-    "fn_turnover" : FN_TURNOVER, /* fraction of N not recovered before turnover */
+    "knstore" : 0.1,       /* knstore, Smith et al. 2014 */
+    "fn_turnover" : FN_TURNOVER_GR, /* fraction of N not recovered before turnover */
     "windspeed_dampening" : 0.6,/* windspeed dampening */
     "roughness_length" : 0.03,  /* roughness length */
     "turnover" : {"leaf" : 1.0, "root" : 2.0}, /* turnover leaf  root 9 12*/
     "cn_ratio" : {"leaf" : CTON_LEAF, "root" : CTON_ROOT}, /* C:N mass ratio for leaf and root 13,15*/
     "ratio" : 1.16,
-    "reprod_cost" : REPROD_COST /* reproduction cost */
+    "reprod_cost" : REPROD_COST, /* reproduction cost */
+    "temp_bnf_lim" : {"low" : TEMP_BNF_MIN, "high" : TEMP_BNF_MAX},
+    "temp_bnf_opt" : {"low" : 18, "high" : 35},  /* Yu and Zhuang 2020 grassland*/
+    "swc_bnf" : {"low" : SWC_BNF_LOW, "high" : SWC_BNF_HIGH},
+    "phi_bnf" : [PHI_BNF_1, PHI_BNF_2],
+    "nfixpot" : 0.05,  /* Yu and Zhuang 2020 grassland*/
+    "maxbnfcost" : MAXBNFCOST,
+    "bnf_cost" : BNF_COST 
   },
 /*--------------------------------------------------------------------------*/
 /* 1. cft */
@@ -1448,7 +1563,7 @@
     "name" : "temperate cereals",
     "type" : "crop",
     "cultivation_type" : "annual crop", /* cultivation_type */
-    "nfixing" : false,           /* no N fixing */
+    "nfixing" : false,           /* No N fixing in Ma et al., 2022 appraoch */
     "cn" : [60.0, 72.0, 80.0, 84.0], /* curve number */
     "beta_root" : 0.969,    /* beta_root */
     "minwscal" : 0.30,      /* minwscal 3*/
@@ -1458,7 +1573,7 @@
     "resist" : 0.5,         /* resist 8*/
     "longevity" : 0.5,      /* leaf longevity 10*/
     "lmro_ratio" : 1.5,     /* lmro_ratio 18*/
-    "lmro_offset" : LMTORM_OFFSET,
+    "lmro_offset" : 0.5,     /* lmro_ratio 18*/
     "ramp" : 500.0,          /* ramp 19*/
     "lai_sapl" : 0.0001,    /* lai_sapl 21*/
     "gdd5min" : 0.0,        /* gdd5min 30*/
@@ -1518,7 +1633,7 @@
     "kNmin": 0.05,                /* kNmin, Rate of N uptake not associated with Michaelis-Menten Kinetics, Zaehle&Friend 2000 */
     "KNmin" : 1.48,               /* KNmin, Half saturation concentration of fine root N uptake, Smith et al. 2014 */
     "cnratio_leaf": {"low": 14.3, "median" : CN_CROPS_MEAN, "high" : 58.8},  /* cnleaf min max, White et al. 2000 doi: 10.1175/1087-3562(2000)004<0003:PASAOT>2.0.CO;2*/
-    "knstore" : 0.3,       /* knstore, Smith et al. 2014 */
+    "knstore" : 0.1,       /* knstore, Smith et al. 2014 */
     "fn_turnover" : FN_TURNOVER, /* fraction of N not recovered before turnover */
     "windspeed_dampening" : 0.6, /* windspeed dampening */
     "roughness_length" : 0.03, /* roughness length */
@@ -1527,10 +1642,10 @@
     "hlimit" : 330,         /* hlimit: max length of crop cycle  */
     "fallow_days" : 30,     /* fallow_days: wait after harvest until next sowing */
     "temp_fall" : 12, "temp_spring" :  5, "temp_vern" : 12, /* temp_fall, temp_spring, temp_vernalization: thresholds for sowing date f(T)*/
-    "trg" : { "low" : 3, "high" : 10 }, /* min & max trg: temperature under which vernalization is possible (deg C)*/
     "tv_eff" : { "low" : -4, "high" : 17 }, /* min & max tv: lower and upper temperature threshold under which vernalization is possible (deg C)*/
     "tv_opt" : { "low" : 3, "high" : 10 }, /* min & max tv: lower and upper temperature threshold under which vernalization is optimal (deg C)*/
     "pvd_max" : 70,              /* pvd_max: number of vernalising days required*/
+    "trg" : { "low" : 3, "high" : 10 }, /* min & max trg: temperature under which vernalization is possible (deg C)*/
     "pvd" : 0,              /* pvd: number of vernalising days required*/
     "psens": 1.0,           /* psens: sensitivity to the photoperiod effect [0-1](1 means no sensitivity)*/
     "pb" : 8,               /* pb: basal photoperiod (h)(pb<ps for longer days plants)*/
@@ -1559,7 +1674,7 @@
     "name" : "rice",
     "type" : "crop",
     "cultivation_type" : "annual crop", /* cultivation_type */
-    "nfixing" : false,           /* no N fixing */
+    "nfixing" : false,           /* No N fixing in Ma et al., 2022 appraoch */
     "cn" : [60.0, 72.0, 80.0, 84.0], /* curve number */
     "beta_root" : 0.969,    /* beta_root */
     "minwscal" : 0.30,      /* minwscal 3*/
@@ -1569,7 +1684,7 @@
     "resist" : 0.5,         /* resist 8*/
     "longevity" : 0.33,     /* leaf longevity 10*/
     "lmro_ratio" : 1.5,     /* lmro_ratio 18*/
-    "lmro_offset" : LMTORM_OFFSET,
+    "lmro_offset" : 0.5,     /* lmro_ratio 18*/
     "ramp" : 500.0,          /* ramp 19*/
     "lai_sapl" : 0.001,     /* lai_sapl 21*/
     "gdd5min" : 0.0,        /* gdd5min 30*/
@@ -1629,7 +1744,7 @@
     "kNmin": 0.05,                /* kNmin, Rate of N uptake not associated with Michaelis-Menten Kinetics, Zaehle&Friend 2000 */
     "KNmin" : 1.48,               /* KNmin, Half saturation concentration of fine root N uptake, Smith et al. 2014 */
     "cnratio_leaf": {"low": 14.3, "median" : CN_CROPS_MEAN, "high" : 58.8},  /* cnleaf min max, White et al. 2000 doi: 10.1175/1087-3562(2000)004<0003:PASAOT>2.0.CO;2*/
-    "knstore" : 0.3,       /* knstore, Smith et al. 2014 */
+    "knstore" : 0.1,       /* knstore, Smith et al. 2014 */
     "fn_turnover" : FN_TURNOVER, /* fraction of N not recovered before turnover */
     "windspeed_dampening" : 0.6, /* windspeed dampening */
     "roughness_length" : 0.03,   /* roughness length */
@@ -1638,10 +1753,10 @@
     "hlimit" : 180,         /* hlimit: max length of crop cycle  */
     "fallow_days" : 30,     /* fallow_days: wait after harvest until next sowing */
     "temp_fall" : 1000, "temp_spring" :  18, "temp_vern" : 1000, /* temp_fall, temp_spring, temp_vernalization: thresholds for sowing date f(T)*/
-    "trg" : { "low" : 1000, "high" : 1000 }, /* min & max trg: temperature under which vernalization is possible (deg C)*/
     "tv_eff" : { "low" : 1000, "high" : 1000 }, /* min & max tv: lower and upper temperature threshold under which vernalization is possible (deg C)*/
     "tv_opt" : { "low" : 1000, "high" : 1000 }, /* min & max tv: lower and upper temperature threshold under which vernalization is optimal (deg C)*/
     "pvd_max" : 0,              /* pvd_max: number of vernalising days required*/
+    "trg" : { "low" : 1000, "high" : 1000 }, /* min & max trg: temperature under which vernalization is possible (deg C)*/
     "pvd" : 0,              /* pvd: number of vernalising days required*/
     "psens": 1.0,           /* psens: sensitivity to the photoperiod effect [0-1](1 means no sensitivity)*/
     "pb" : 24,              /* pb: basal photoperiod (h)(pb<ps for longer days plants)*/
@@ -1670,7 +1785,7 @@
     "name" : "maize",
     "type" : "crop",
     "cultivation_type" : "annual crop", /* cultivation_type */
-    "nfixing" : false,           /* no N fixing */
+    "nfixing" : false,           /* No N fixing in Ma et al., 2022 appraoch */
     "cn" : [60.0, 72.0, 80.0, 84.0], /* curve number */
     "beta_root" : 0.969,    /* beta_root */
     "minwscal" : 0.30,      /* minwscal 3*/
@@ -1680,7 +1795,7 @@
     "resist" : 0.5,         /* resist 8*/
     "longevity" : 0.33,     /* leaf longevity 10*/
     "lmro_ratio" : 1.5,     /* lmro_ratio 18*/
-    "lmro_offset" : LMTORM_OFFSET,
+    "lmro_offset" : 0.5,     /* lmro_ratio 18*/
     "ramp" : 500.0,          /* ramp 19*/
     "lai_sapl" : 0.001,     /* lai_sapl 21*/
     "gdd5min" : 0.0,        /* gdd5min 30*/
@@ -1722,7 +1837,7 @@
     },
     "mort_max" : MORT_MAX,  /* asymptotic maximum mortality rate (1/year) */
     "phenology" : "cropgreen",/* phenology */
-    "path" : "C4",            /* pathway */
+    "path" : C4,            /* pathway */
     "temp_co2" : { "low" : 8.0, "high" : 42.0 }, /* lower and upper temperature limit for co2 (deg C) 24 27*/
     "temp_photos" : { "low" : 21.0, "high" : 26.0},/* lower and upper limit of temperature optimum for photosynthesis(deg C) 25 26*/
     "b":  BC4, /* leaf respiration as fraction of Vmax for C4 plants */
@@ -1740,7 +1855,7 @@
     "kNmin": 0.05,                /* kNmin, Rate of N uptake not associated with Michaelis-Menten Kinetics, Zaehle&Friend 2000 */
     "KNmin" : 1.48,               /* KNmin, Half saturation concentration of fine root N uptake, Smith et al. 2014 */
     "cnratio_leaf": {"low": 14.3, "median" : CN_CROPS_MEAN, "high" : 58.8},  /* cnleaf min max, White et al. 2000 doi: 10.1175/1087-3562(2000)004<0003:PASAOT>2.0.CO;2*/
-    "knstore" : 0.3,       /* knstore, Smith et al. 2014 */
+    "knstore" : 0.1,       /* knstore, Smith et al. 2014 */
     "fn_turnover" : FN_TURNOVER, /* fraction of N not recovered before turnover */
     "windspeed_dampening" : 0.6,  /* windspeed dampening */
     "roughness_length" : 0.03,    /* roughness length */
@@ -1749,9 +1864,9 @@
     "hlimit" : 240,         /* hlimit: max length of crop cycle  */
     "fallow_days" : 30,     /* fallow_days: wait after harvest until next sowing */
     "temp_fall" : 1000, "temp_spring" :  14, "temp_vern" : 1000, /* temp_fall, temp_spring, temp_vernalization: thresholds for sowing date f(T)*/
-    "trg" : { "low" : 1000, "high" : 1000 }, /* min & max trg: temperature under which vernalization is possible (deg C)*/
     "tv_eff" : { "low" : 1000, "high" : 1000 }, /* min & max tv: lower and upper temperature threshold under which vernalization is possible (deg C)*/
     "tv_opt" : { "low" : 1000, "high" : 1000 }, /* min & max tv: lower and upper temperature threshold under which vernalization is optimal (deg C)*/
+    "trg" : { "low" : 1000, "high" : 1000 }, /* min & max trg: temperature under which vernalization is possible (deg C)*/
     "pvd_max" : 0,              /* pvd_max: number of vernalising days required*/
     "pvd" : 0,              /* pvd: number of vernalising days required*/
     "psens": 1.0,           /* psens: sensitivity to the photoperiod effect [0-1](1 means no sensitivity)*/
@@ -1781,7 +1896,7 @@
     "name" : "tropical cereals",
     "type" : "crop",
     "cultivation_type" : "annual crop", /* cultivation_type */
-    "nfixing" : false,           /* no N fixing */
+    "nfixing" : false,           /* No N fixing in Ma et al., 2022 appraoch */
     "cn" : [60.0, 72.0, 80.0, 84.0], /* curve number */
     "beta_root" : 0.969,    /* beta_root */
     "minwscal" : 0.30,      /* minwscal 3*/
@@ -1791,7 +1906,7 @@
     "resist" : 0.5,         /* resist 8*/
     "longevity" : 0.5,      /* leaf longevity 10*/
     "lmro_ratio" : 1.5,     /* lmro_ratio 18*/
-    "lmro_offset" : LMTORM_OFFSET,
+    "lmro_offset" : 0.5,     /* lmro_ratio 18*/
     "ramp" : 500.0,          /* ramp 19*/
     "lai_sapl" : 0.001,     /* lai_sapl 21*/
     "gdd5min" : 0.0,        /* gdd5min 30*/
@@ -1851,7 +1966,7 @@
     "kNmin": 0.05,                /* kNmin, Rate of N uptake not associated with Michaelis-Menten Kinetics, Zaehle&Friend 2000 */
     "KNmin" : 1.48,               /* KNmin, Half saturation concentration of fine root N uptake, Smith et al. 2014 */
     "cnratio_leaf": {"low": 14.3, "median" : CN_CROPS_MEAN, "high" : 58.8},  /* cnleaf min max, White et al. 2000 doi: 10.1175/1087-3562(2000)004<0003:PASAOT>2.0.CO;2*/
-    "knstore" : 0.3,       /* knstore, Smith et al. 2014 */
+    "knstore" : 0.1,       /* knstore, Smith et al. 2014 */
     "fn_turnover" : FN_TURNOVER, /* fraction of N not recovered before turnover */
     "windspeed_dampening" : 0.6, /* windspeed dampening */
     "roughness_length" : 0.03,   /* roughness length */
@@ -1860,10 +1975,10 @@
     "hlimit" : 240,         /* hlimit: max length of crop cycle  */
     "fallow_days" : 30,     /* fallow_days: wait after harvest until next sowing */
     "temp_fall" : 1000, "temp_spring" :  12, "temp_vern" : 1000, /* temp_fall, temp_spring, temp_vernalization: thresholds for sowing date f(T)*/
-    "trg" : { "low" : 1000, "high" : 1000 }, /* min & max trg: temperature under which vernalization is possible (deg C)*/
     "tv_eff" : { "low" : 1000, "high" : 1000 }, /* min & max tv: lower and upper temperature threshold under which vernalization is possible (deg C)*/
     "tv_opt" : { "low" : 1000, "high" : 1000 }, /* min & max tv: lower and upper temperature threshold under which vernalization is optimal (deg C)*/
     "pvd_max" : 0,              /* pvd_max: number of vernalising days required*/
+    "trg" : { "low" : 1000, "high" : 1000 }, /* min & max trg: temperature under which vernalization is possible (deg C)*/
     "pvd" : 0,              /* pvd: number of vernalising days required*/
     "psens": 1.0,           /* psens: sensitivity to the photoperiod effect [0-1](1 means no sensitivity)*/
     "pb" : 0,               /* pb: basal photoperiod (h)(pb<ps for longer days plants)*/
@@ -1892,8 +2007,8 @@
     "name" : "pulses",
     "type" : "crop",
     "cultivation_type" : "annual crop", /* cultivation_type */
+    "nfixing" : true,           /* N fixing in Ma et al., 2022 appraoch */
     "cn" : [60.0, 72.0, 80.0, 84.0], /* curve number */
-    "nfixing" : true,           /* N fixing */
     "beta_root" : 0.969,    /* beta_root */
     "minwscal" : 0.30,      /* minwscal 3*/
     "gmin"  : 0.5,          /* gmin 4*/
@@ -1902,7 +2017,7 @@
     "resist" : 0.5,         /* resist 8*/
     "longevity" : 0.5,      /* leaf longevity 10*/
     "lmro_ratio" : 1.5,     /* lmro_ratio 18*/
-    "lmro_offset" : LMTORM_OFFSET,
+    "lmro_offset" : 0.5,     /* lmro_ratio 18*/
     "ramp" : 500.0,          /* ramp 19*/
     "lai_sapl" : 0.001,     /* lai_sapl 21*/
     "gdd5min" : 0.0,        /* gdd5min 30*/
@@ -1962,7 +2077,7 @@
     "kNmin": 0.05,                /* kNmin, Rate of N uptake not associated with Michaelis-Menten Kinetics, Zaehle&Friend 2000 */
     "KNmin" : 1.48,               /* KNmin, Half saturation concentration of fine root N uptake, Smith et al. 2014 */
     "cnratio_leaf": {"low": 14.3, "median" : CN_CROPS_MEAN, "high" : 58.8},  /* cnleaf min max, White et al. 2000 doi: 10.1175/1087-3562(2000)004<0003:PASAOT>2.0.CO;2*/
-    "knstore" : 0.3,       /* knstore, Smith et al. 2014 */
+    "knstore" : 0.1,       /* knstore, Smith et al. 2014 */
     "fn_turnover" : FN_TURNOVER, /* fraction of N not recovered before turnover */
     "windspeed_dampening" : 0.6, /* windspeed dampening */
     "roughness_length" : 0.03,   /* roughness length */
@@ -1971,10 +2086,10 @@
     "hlimit" : 300,         /* hlimit: max length of crop cycle  */
     "fallow_days" : 30,     /* fallow_days: wait after harvest until next sowing */
     "temp_fall" : 1000, "temp_spring" :  10, "temp_vern" : 1000, /* temp_fall, temp_spring, temp_vernalization: thresholds for sowing date f(T)*/
-    "trg" : { "low" : 1000, "high" : 1000 }, /* min & max trg: temperature under which vernalization is possible (deg C)*/
     "tv_eff" : { "low" : 1000, "high" : 1000 }, /* min & max tv: lower and upper temperature threshold under which vernalization is possible (deg C)*/
     "tv_opt" : { "low" : 1000, "high" : 1000 }, /* min & max tv: lower and upper temperature threshold under which vernalization is optimal (deg C)*/
     "pvd_max" : 0,              /* pvd_max: number of vernalising days required*/
+    "trg" : { "low" : 1000, "high" : 1000 }, /* min & max trg: temperature under which vernalization is possible (deg C)*/
     "pvd" : 0,              /* pvd: number of vernalising days required*/
     "psens": 1.0,           /* psens: sensitivity to the photoperiod effect [0-1](1 means no sensitivity)*/
     "pb" : 0,               /* pb: basal photoperiod (h)(pb<ps for longer days plants)*/
@@ -1995,7 +2110,14 @@
     "himin" : 0.10,         /* himin: minimum harvest index HI reached at harvest*/
     "shapesenescencenorm" : 2.0, /* shapesenescencenorm */
     "cn_ratio" : {"leaf" : CTON_LEAF, "root" : CTON_ROOT, "so" : CTON_SO, "pool" : CTON_POOL}, /* C:N mass ratio for root, storage organ, and pool */
-    "ratio" : {"root": 1.16, "so": 0.45, "pool": 3}                    /* relative C:N ratios of root, storage organ, and pool; for roots: Friend et al. 1997, Ecological Modeling, Table 4 */
+    "ratio" : {"root": 1.16, "so": 0.45, "pool": 3},                    /* relative C:N ratios of root, storage organ, and pool; for roots: Friend et al. 1997, Ecological Modeling, Table 4 */
+    "temp_bnf_lim" : {"low" : 1, "high" : 40},  /* Ma et al., 2022 faba bean*/
+    "temp_bnf_opt" : {"low" : 16, "high" : 25},  /* Ma et al., 2022 faba bean*/
+    "swc_bnf" : {"low" : SWC_BNF_LOW, "high" : SWC_BNF_HIGH},  /* Ma et al., 2022 faba bean*/
+    "phi_bnf" : [PHI_BNF_1, PHI_BNF_2],  /* Ma et al., 2022 faba bean*/
+    "nfixpot" : 0.05,  /* Yu and Zhuang 2020 grassland*/
+    "maxbnfcost" : MAXBNFCOST,
+    "bnf_cost" : BNF_COST 
   },
 /*--------------------------------------------------------------------------*/
 /* 6. cft */
@@ -2003,7 +2125,7 @@
     "name": "temperate roots",
     "type" : "crop",
     "cultivation_type" : "annual crop", /* cultivation_type */
-    "nfixing" : false,           /* no N fixing */
+    "nfixing" : false,           /* No N fixing in Ma et al., 2022 appraoch */
     "cn" : [60.0, 72.0, 80.0, 84.0], /* curve number */
     "beta_root" : 0.969,    /* beta_root */
     "minwscal" : 0.30,      /* minwscal 3*/
@@ -2013,7 +2135,7 @@
     "resist" : 0.5,         /* resist 8*/
     "longevity" : 0.5,      /* leaf longevity 10*/
     "lmro_ratio" : 1.5,     /* lmro_ratio 18*/
-    "lmro_offset" : LMTORM_OFFSET,
+    "lmro_offset" : 0.5,     /* lmro_ratio 18*/
     "ramp" : 500.0,          /* ramp 19*/
     "lai_sapl" : 0.001,     /* lai_sapl 21*/
     "gdd5min" : 0.0,        /* gdd5min 30*/
@@ -2073,7 +2195,7 @@
     "kNmin": 0.05,                /* kNmin, Rate of N uptake not associated with Michaelis-Menten Kinetics, Zaehle&Friend 2000 */
     "KNmin" : 1.48,               /* KNmin, Half saturation concentration of fine root N uptake, Smith et al. 2014 */
     "cnratio_leaf": {"low": 14.3, "median" : CN_CROPS_MEAN, "high" : 58.8},  /* cnleaf min max, White et al. 2000 doi: 10.1175/1087-3562(2000)004<0003:PASAOT>2.0.CO;2*/
-    "knstore" : 0.3,       /* knstore, Smith et al. 2014 */
+    "knstore" : 0.1,       /* knstore, Smith et al. 2014 */
     "fn_turnover" : FN_TURNOVER, /* fraction of N not recovered before turnover */
     "windspeed_dampening" : 0.6,   /* windspeed dampening */
     "roughness_length" : 0.03,     /* roughness length */
@@ -2082,10 +2204,10 @@
     "hlimit" : 260,         /* hlimit: max length of crop cycle  */
     "fallow_days" : 30,     /* fallow_days: wait after harvest until next sowing */
     "temp_fall" : 1000, "temp_spring" :  8, "temp_vern" : 1000, /* temp_fall, temp_spring, temp_vernalization: thresholds for sowing date f(T)*/
-    "trg" : { "low" : 1000, "high" : 1000 }, /* min & max trg: temperature under which vernalization is possible (deg C)*/
     "tv_eff" : { "low" : 1000, "high" : 1000 }, /* min & max tv: lower and upper temperature threshold under which vernalization is possible (deg C)*/
     "tv_opt" : { "low" : 1000, "high" : 1000 }, /* min & max tv: lower and upper temperature threshold under which vernalization is optimal (deg C)*/
     "pvd_max" : 0,              /* pvd_max: number of vernalising days required*/
+    "trg" : { "low" : 1000, "high" : 1000 }, /* min & max trg: temperature under which vernalization is possible (deg C)*/
     "pvd" : 0,              /* pvd: number of vernalising days required*/
     "psens": 1.0,           /* psens: sensitivity to the photoperiod effect [0-1](1 means no sensitivity)*/
     "pb" : 0,               /* pb: basal photoperiod (h)(pb<ps for longer days plants)*/
@@ -2114,7 +2236,7 @@
     "name" : "tropical roots", /* re-parameterized as Cassava, 14.12.2009 KW */
     "type" : "crop",
     "cultivation_type" : "annual crop", /* cultivation_type */
-    "nfixing" : false,           /* no N fixing */
+    "nfixing" : false,           /* No N fixing in Ma et al., 2022 appraoch */
     "cn" : [60.0, 72.0, 80.0, 84.0], /* curve number */
     "beta_root" : 0.969,    /* beta_root */
     "minwscal" : 0.30,      /* minwscal 3*/
@@ -2124,7 +2246,7 @@
     "resist" : 0.5,         /* resist 8*/
     "longevity" : 0.5,      /* leaf longevity 10*/
     "lmro_ratio" : 1.5,     /* lmro_ratio 18*/
-    "lmro_offset" : LMTORM_OFFSET,
+    "lmro_offset" : 0.5,     /* lmro_ratio 18*/
     "ramp" : 500.0,          /* ramp 19*/
     "lai_sapl" : 0.001,     /* lai_sapl 21*/
     "gdd5min" : 0.0,        /* gdd5min 30*/
@@ -2184,7 +2306,7 @@
     "kNmin": 0.05,                /* kNmin, Rate of N uptake not associated with Michaelis-Menten Kinetics, Zaehle&Friend 2000 */
     "KNmin" : 1.48,               /* KNmin, Half saturation concentration of fine root N uptake, Smith et al. 2014 */
     "cnratio_leaf": {"low": 14.3, "median" : CN_CROPS_MEAN, "high" : 58.8},  /* cnleaf min max, White et al. 2000 doi: 10.1175/1087-3562(2000)004<0003:PASAOT>2.0.CO;2*/
-    "knstore" : 0.3,       /* knstore, Smith et al. 2014 */
+    "knstore" : 0.1,       /* knstore, Smith et al. 2014 */
     "fn_turnover" : FN_TURNOVER, /* fraction of N not recovered before turnover */
     "windspeed_dampening" : 0.6, /* windspeed dampening */
     "roughness_length" : 0.03,   /* roughness length */
@@ -2193,10 +2315,10 @@
     "hlimit" : 330,         /* hlimit: max length of crop cycle  */
     "fallow_days" : 30,     /* fallow_days: wait after harvest until next sowing */
     "temp_fall" : 1000, "temp_spring" :  22, "temp_vern" : 1000, /* temp_fall, temp_spring, temp_vernalization: thresholds for sowing date f(T)*/
-    "trg" : { "low" : 1000, "high" : 1000 }, /* min & max trg: temperature under which vernalization is possible (deg C)*/
     "tv_eff" : { "low" : 1000, "high" : 1000 }, /* min & max tv: lower and upper temperature threshold under which vernalization is possible (deg C)*/
     "tv_opt" : { "low" : 1000, "high" : 1000 }, /* min & max tv: lower and upper temperature threshold under which vernalization is optimal (deg C)*/
     "pvd_max" : 0,              /* pvd_max: number of vernalising days required*/
+    "trg" : { "low" : 1000, "high" : 1000 }, /* min & max trg: temperature under which vernalization is possible (deg C)*/
     "pvd" : 0,              /* pvd: number of vernalising days required*/
     "psens": 1.0,           /* psens: sensitivity to the photoperiod effect [0-1](1 means no sensitivity)*/
     "pb" : 0,               /* pb: basal photoperiod (h)(pb<ps for longer days plants)*/
@@ -2225,7 +2347,7 @@
     "name" : "oil crops sunflower",
     "type" : "crop",
     "cultivation_type" : "annual crop", /* cultivation_type */
-    "nfixing" : false,           /* no N fixing */
+    "nfixing" : false,           /* No N fixing in Ma et al., 2022 appraoch */
     "cn" : [60.0, 72.0, 80.0, 84.0], /* curve number */
     "beta_root" : 0.969,    /* beta_root */
     "minwscal" : 0.3,       /* minwscal 3*/
@@ -2235,7 +2357,7 @@
     "resist" : 0.5,         /* resist 8*/
     "longevity" : 0.33,     /* leaf longevity 10*/
     "lmro_ratio" : 1.5,     /* lmro_ratio 18*/
-    "lmro_offset" : LMTORM_OFFSET,
+    "lmro_offset" : 0.5,     /* lmro_ratio 18*/
     "ramp" : 500.0,          /* ramp 19*/
     "lai_sapl" : 0.001,     /* lai_sapl 21*/
     "gdd5min" : 0.0,        /* gdd5min 30*/
@@ -2295,7 +2417,7 @@
     "kNmin": 0.05,                /* kNmin, Rate of N uptake not associated with Michaelis-Menten Kinetics, Zaehle&Friend 2000 */
     "KNmin" : 1.48,               /* KNmin, Half saturation concentration of fine root N uptake, Smith et al. 2014 */
     "cnratio_leaf": {"low": 14.3, "median" : CN_CROPS_MEAN, "high" : 58.8},  /* cnleaf min max, White et al. 2000 doi: 10.1175/1087-3562(2000)004<0003:PASAOT>2.0.CO;2*/
-    "knstore" : 0.3,       /* knstore, Smith et al. 2014 */
+    "knstore" : 0.1,       /* knstore, Smith et al. 2014 */
     "fn_turnover" : FN_TURNOVER, /* fraction of N not recovered before turnover */
     "windspeed_dampening" : 0.6, /* windspeed dampening */
     "roughness_length" : 0.03,   /* roughness length */
@@ -2304,10 +2426,10 @@
     "hlimit" : 240,         /* hlimit: max length of crop cycle  */
     "fallow_days" : 30,     /* fallow_days: wait after harvest until next sowing */
     "temp_fall" : 1000, "temp_spring" :  13, "temp_vern" : 1000, /* temp_fall, temp_spring, temp_vernalization: thresholds for sowing date f(T)*/
-    "trg" : { "low" : 1000, "high" : 1000 }, /* min & max trg: temperature under which vernalization is possible (deg C)*/
     "tv_eff" : { "low" : 1000, "high" : 1000 }, /* min & max tv: lower and upper temperature threshold under which vernalization is possible (deg C)*/
     "tv_opt" : { "low" : 1000, "high" : 1000 }, /* min & max tv: lower and upper temperature threshold under which vernalization is optimal (deg C)*/
     "pvd_max" : 0,              /* pvd_max: number of vernalising days required*/
+    "trg" : { "low" : 1000, "high" : 1000 }, /* min & max trg: temperature under which vernalization is possible (deg C)*/
     "pvd" : 0,              /* pvd: number of vernalising days required*/
     "psens": 1.0,           /* psens: sensitivity to the photoperiod effect [0-1](1 means no sensitivity)*/
     "pb" : 0,               /* pb: basal photoperiod (h)(pb<ps for longer days plants)*/
@@ -2336,7 +2458,7 @@
     "name" : "oil crops soybean",
     "type" : "crop",
     "cultivation_type" : "annual crop", /* cultivation_type */
-    "nfixing" : true,           /* N fixing */
+    "nfixing" : true,           /* N fixing in Ma et al., 2022 appraoch */
     "cn" : [60.0, 72.0, 80.0, 84.0], /* curve number */
     "beta_root" : 0.969,    /* beta_root */
     "minwscal" : 0.30,      /* minwscal 3*/
@@ -2346,7 +2468,7 @@
     "resist" : 0.5,         /* resist 8*/
     "longevity" : 0.66,     /* leaf longevity 10*/
     "lmro_ratio" : 1.5,     /* lmro_ratio 18*/
-    "lmro_offset" : LMTORM_OFFSET,
+    "lmro_offset" : 0.5,     /* lmro_ratio 18*/
     "ramp" : 500.0,          /* ramp 19*/
     "lai_sapl" : 0.001,     /* lai_sapl 21*/
     "gdd5min" : 0.0,        /* gdd5min 30*/
@@ -2406,7 +2528,7 @@
     "kNmin": 0.05,                /* kNmin, Rate of N uptake not associated with Michaelis-Menten Kinetics, Zaehle&Friend 2000 */
     "KNmin" : 1.48,               /* KNmin, Half saturation concentration of fine root N uptake, Smith et al. 2014 */
     "cnratio_leaf": {"low": 14.3, "median" : CN_CROPS_MEAN, "high" : 58.8},  /* cnleaf min max, White et al. 2000 doi: 10.1175/1087-3562(2000)004<0003:PASAOT>2.0.CO;2*/
-    "knstore" : 0.3,       /* knstore, Smith et al. 2014 */
+    "knstore" : 0.1,       /* knstore, Smith et al. 2014 */
     "fn_turnover" : FN_TURNOVER, /* fraction of N not recovered before turnover */
     "windspeed_dampening" : 0.6, /* windspeed dampening */
     "roughness_length" : 0.03,   /* roughness length */
@@ -2415,10 +2537,10 @@
     "hlimit" : 240,         /* hlimit: max length of crop cycle  */
     "fallow_days" : 30,     /* fallow_days: wait after harvest until next sowing */
     "temp_fall" : 1000, "temp_spring" :  13, "temp_vern" : 1000, /* temp_fall, temp_spring, temp_vernalization: thresholds for sowing date f(T)*/
-    "trg" : { "low" : 1000, "high" : 1000 }, /* min & max trg: temperature under which vernalization is possible (deg C)*/
     "tv_eff" : { "low" : 1000, "high" : 1000 }, /* min & max tv: lower and upper temperature threshold under which vernalization is possible (deg C)*/
     "tv_opt" : { "low" : 1000, "high" : 1000 }, /* min & max tv: lower and upper temperature threshold under which vernalization is optimal (deg C)*/
-    "pvd_max" : 0,              /* pvd_max: number of vernalising days required*/
+    "pvd_max" : 70,              /* pvd_max: number of vernalising days required*/
+    "trg" : { "low" : 1000, "high" : 1000 }, /* min & max trg: temperature under which vernalization is possible (deg C)*/
     "pvd" : 0,              /* pvd: number of vernalising days required*/
     "psens": 1.0,           /* psens: sensitivity to the photoperiod effect [0-1](1 means no sensitivity)*/
     "pb" : 0,               /* pb: basal photoperiod (h)(pb<ps for longer days plants)*/
@@ -2439,7 +2561,14 @@
     "himin" : 0.10,         /* himin: minimum harvest index HI reached at harvest*/
     "shapesenescencenorm" : 0.5, /* shapesenescencenorm */
     "cn_ratio" : {"leaf" : CTON_LEAF, "root" : CTON_ROOT, "so" : CTON_SO, "pool" : CTON_POOL}, /* C:N mass ratio for root, storage organ, and pool */
-    "ratio" : {"root": 1.16, "so": 0.42, "pool": 3}                    /* relative C:N ratios of root, storage organ, and pool; for roots: Friend et al. 1997, Ecological Modeling, Table 4 */
+    "ratio" : {"root": 1.16, "so": 0.42, "pool": 3},                    /* relative C:N ratios of root, storage organ, and pool; for roots: Friend et al. 1997, Ecological Modeling, Table 4 */
+    "temp_bnf_lim" : {"low" : 5, "high" : 44},  /* Ma et al., 2022 soy bean*/
+    "temp_bnf_opt" : {"low" : 20, "high" : 35},  /* Ma et al., 2022 soy bean*/
+    "swc_bnf" : {"low" : 0.2, "high" : 0.8},  /* Ma et al., 2022 soy bean*/
+    "phi_bnf" : [-0.33, 1.67],  /* Ma et al., 2022 soy bean*/
+    "nfixpot" : 0.05,  /* Yu and Zhuang 2020 grassland*/
+    "maxbnfcost" : MAXBNFCOST,
+    "bnf_cost" : BNF_COST 
   },
 /*--------------------------------------------------------------------------*/
 /* 10. cft */
@@ -2447,7 +2576,7 @@
     "name": "oil crops groundnut",
     "type" : "crop",
     "cultivation_type" : "annual crop", /* cultivation_type */
-    "nfixing" : false,           /* no N fixing */
+    "nfixing" : false,           /* No N fixing in Ma et al., 2022 appraoch */
     "cn" : [60.0, 72.0, 80.0, 84.0], /* curve number */
     "beta_root" : 0.969,    /* beta_root */
     "minwscal" : 0.30,      /* minwscal 3*/
@@ -2457,7 +2586,7 @@
     "resist" : 0.5,         /* resist 8*/
     "longevity" : 0.5,      /* leaf longevity 10*/
     "lmro_ratio" : 1.5,     /* lmro_ratio 18*/
-    "lmro_offset" : LMTORM_OFFSET,
+    "lmro_offset" : 0.5,     /* lmro_ratio 18*/
     "ramp" : 500.0,          /* ramp 19*/
     "lai_sapl" : 0.001,     /* lai_sapl 21*/
     "gdd5min" : 0.0,        /* gdd5min 30*/
@@ -2517,7 +2646,7 @@
     "kNmin": 0.05,                /* kNmin, Rate of N uptake not associated with Michaelis-Menten Kinetics, Zaehle&Friend 2000 */
     "KNmin" : 1.48,               /* KNmin, Half saturation concentration of fine root N uptake, Smith et al. 2014 */
     "cnratio_leaf": {"low": 14.3, "median" : CN_CROPS_MEAN, "high" : 58.8},  /* cnleaf min max, White et al. 2000 doi: 10.1175/1087-3562(2000)004<0003:PASAOT>2.0.CO;2*/
-    "knstore" : 0.3,       /* knstore, Smith et al. 2014 */
+    "knstore" : 0.1,       /* knstore, Smith et al. 2014 */
     "fn_turnover" : FN_TURNOVER, /* fraction of N not recovered before turnover */
     "windspeed_dampening" : 0.6, /* windspeed dampening */
     "roughness_length" : 0.03,   /* roughness length */
@@ -2526,10 +2655,10 @@
     "hlimit" : 240,         /* hlimit: max length of crop cycle  */
     "fallow_days" : 30,     /* fallow_days: wait after harvest until next sowing */
     "temp_fall" : 1000, "temp_spring" :  15, "temp_vern" : 1000, /* temp_fall, temp_spring, temp_vernalization: thresholds for sowing date f(T)*/
-    "trg" : { "low" : 1000, "high" : 1000 }, /* min & max trg: temperature under which vernalization is possible (deg C)*/
     "tv_eff" : { "low" : 1000, "high" : 1000 }, /* min & max tv: lower and upper temperature threshold under which vernalization is possible (deg C)*/
     "tv_opt" : { "low" : 1000, "high" : 1000 }, /* min & max tv: lower and upper temperature threshold under which vernalization is optimal (deg C)*/
-    "pvd_max" : 0,              /* pvd_max: number of vernalising days required*/
+    "pvd_max" : 70,              /* pvd_max: number of vernalising days required*/
+    "trg" : { "low" : 1000, "high" : 1000 }, /* min & max trg: temperature under which vernalization is possible (deg C)*/
     "pvd" : 0,              /* pvd: number of vernalising days required*/
     "psens": 1.0,           /* psens: sensitivity to the photoperiod effect [0-1](1 means no sensitivity)*/
     "pb" : 0,               /* pb: basal photoperiod (h)(pb<ps for longer days plants)*/
@@ -2558,7 +2687,7 @@
     "name" : "oil crops rapeseed",
     "type" : "crop",
     "cultivation_type" : "annual crop", /* cultivation_type */
-    "nfixing" : false,           /* no N fixing */
+    "nfixing" : false,           /* No N fixing in Ma et al., 2022 appraoch */
     "cn" : [60.0, 72.0, 80.0, 84.0], /* curve number */
     "beta_root" : 0.969,    /* beta_root */
     "minwscal" : 0.30,      /* minwscal 3*/
@@ -2568,7 +2697,7 @@
     "resist" : 0.5,         /* resist 8*/
     "longevity" : 0.41,     /* leaf longevity 10*/
     "lmro_ratio" : 1.5,     /* lmro_ratio 18*/
-    "lmro_offset" : LMTORM_OFFSET,
+    "lmro_offset" : 0.5,     /* lmro_ratio 18*/
     "ramp" : 500.0,          /* ramp 19*/
     "lai_sapl" : 0.001,     /* lai_sapl 21*/
     "gdd5min" : 0.0,        /* gdd5min 30*/
@@ -2628,7 +2757,7 @@
     "kNmin": 0.05,                /* kNmin, Rate of N uptake not associated with Michaelis-Menten Kinetics, Zaehle&Friend 2000 */
     "KNmin" : 1.48,               /* KNmin, Half saturation concentration of fine root N uptake, Smith et al. 2014 */
     "cnratio_leaf": {"low": 14.3, "median" : CN_CROPS_MEAN, "high" : 58.8},  /* cnleaf min max, White et al. 2000 doi: 10.1175/1087-3562(2000)004<0003:PASAOT>2.0.CO;2*/
-    "knstore" : 0.3,       /* knstore, Smith et al. 2014 */
+    "knstore" : 0.1,       /* knstore, Smith et al. 2014 */
     "fn_turnover" : FN_TURNOVER, /* fraction of N not recovered before turnover */
     "windspeed_dampening" : 0.6, /* windspeed dampening */
     "roughness_length" : 0.03,   /* roughness length */
@@ -2637,10 +2766,11 @@
     "hlimit" : 210,         /* hlimit: max length of crop cycle  */
     "fallow_days" : 0,      /* fallow_days: wait after harvest until next sowing */
     "temp_fall" : 17, "temp_spring" :  5, "temp_vern" : 12, /* temp_fall, temp_spring, temp_vernalization: thresholds for sowing date f(T)*/
-    "trg" : { "low" : 3, "high" : 10 }, /* min & max trg: temperature under which vernalization is possible (deg C)*/
     "tv_eff" : { "low" : -4, "high" : 17 }, /* min & max tv: lower and upper temperature threshold under which vernalization is possible (deg C)*/
     "tv_opt" : { "low" : 3, "high" : 10 }, /* min & max tv: lower and upper temperature threshold under which vernalization is optimal (deg C)*/
     "pvd_max" : 70,              /* pvd_max: number of vernalising days required*/
+    "trg" : { "low" : 3, "high" : 10 }, /* min & max trg: temperature under which vernalization is possible (deg C)*/
+    "pvd" : 0,              /* pvd: number of vernalising days required*/
     "psens": 1.0,           /* psens: sensitivity to the photoperiod effect [0-1](1 means no sensitivity)*/
     "pb" : 8,               /* pb: basal photoperiod (h)(pb<ps for longer days plants)*/
     "ps" : 20,              /* ps: saturating photoperiod (h) (ps<pb for shorter days plants)*/
@@ -2668,7 +2798,7 @@
     "name" : "sugarcane",
     "type" : "crop",
     "cultivation_type": "annual crop", /* cultivation_type */
-    "nfixing" : false,           /* no N fixing */
+    "nfixing" : false,           /* No N fixing in Ma et al., 2022 appraoch */
     "cn" : [60.0, 72.0, 80.0, 84.0], /* curve number */
     "beta_root" : 0.969,    /* beta_root */
     "minwscal" : 0.30,      /* minwscal 3*/
@@ -2678,7 +2808,7 @@
     "resist" : 0.5,         /* resist 8*/
     "longevity" : 0.66,     /* leaf longevity 10*/
     "lmro_ratio" : 1.5,     /* lmro_ratio 18*/
-    "lmro_offset" : LMTORM_OFFSET,
+    "lmro_offset" : 0.5,     /* lmro_ratio 18*/
     "ramp" : 500.0,          /* ramp 19*/
     "lai_sapl" : 0.001,     /* lai_sapl 21*/
     "gdd5min" : 0.0,        /* gdd5min 30*/
@@ -2738,7 +2868,7 @@
     "kNmin": 0.05,                /* kNmin, Rate of N uptake not associated with Michaelis-Menten Kinetics, Zaehle&Friend 2000 */
     "KNmin" : 1.48,               /* KNmin, Half saturation concentration of fine root N uptake, Smith et al. 2014 */
     "cnratio_leaf": {"low": 14.3, "median" : CN_CROPS_MEAN, "high" : 58.8},  /* cnleaf min max, White et al. 2000 doi: 10.1175/1087-3562(2000)004<0003:PASAOT>2.0.CO;2*/
-    "knstore" : 0.3,       /* knstore, Smith et al. 2014 */
+    "knstore" : 0.1,       /* knstore, Smith et al. 2014 */
     "fn_turnover" : FN_TURNOVER, /* fraction of N not recovered before turnover */
     "windspeed_dampening" : 0.6, /* windspeed dampening */
     "roughness_length" : 0.03,   /* roughness length */
@@ -2747,10 +2877,10 @@
     "hlimit" : 360,         /* hlimit: max length of crop cycle  */
     "fallow_days" : 0,      /* fallow_days: wait after harvest until next sowing */
     "temp_fall" : 1000, "temp_spring" :  14, "temp_vern" : 1000, /* temp_fall, temp_spring, temp_vernalization: thresholds for sowing date f(T)*/
-    "trg" : { "low" : 1000, "high" : 1000 }, /* min & max trg: temperature under which vernalization is possible (deg C)*/
     "tv_eff" : { "low" : 1000, "high" : 1000 }, /* min & max tv: lower and upper temperature threshold under which vernalization is possible (deg C)*/
     "tv_opt" : { "low" : 1000, "high" : 1000 }, /* min & max tv: lower and upper temperature threshold under which vernalization is optimal (deg C)*/
     "pvd_max" : 0,              /* pvd_max: number of vernalising days required*/
+    "trg" : { "low" : 1000, "high" : 1000 }, /* min & max trg: temperature under which vernalization is possible (deg C)*/
     "pvd" : 0,              /* pvd: number of vernalising days required*/
     "psens": 1.0,           /* psens: sensitivity to the photoperiod effect [0-1](1 means no sensitivity)*/
     "pb" : 0,               /* pb: basal photoperiod (h)(pb<ps for longer days plants)*/
