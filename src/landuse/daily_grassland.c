@@ -374,57 +374,54 @@ Real daily_grassland(Stand *stand,                /**< stand pointer */
     cleaf_max+=grass->max_leaf;
   }
 
-  if (&stand->pftlist != SETASIDE_RF || &stand->pftlist != SETASIDE_IR)
+  switch(stand->cell->ml.grass_scenario)
   {
-    switch(stand->cell->ml.grass_scenario)
-    {
-      case GS_DEFAULT: // default
-        if(cleaf>cleaf_max && ((config->with_nitrogen && stand->growing_days>=20) ||
-           (!config->with_nitrogen && (day==31 || day==59 || day==90 || day==120 || day==151 || day==181 || day==212 || day==243 || day==273 || day==304 || day==334 || day==365))))
+    case GS_DEFAULT: // default
+      if(cleaf>cleaf_max && ((config->with_nitrogen && stand->growing_days>=20) ||
+         (!config->with_nitrogen && (day==31 || day==59 || day==90 || day==120 || day==151 || day==181 || day==212 || day==243 || day==273 || day==304 || day==334 || day==365))))
+      {
+        isphen=TRUE;
+        hfrac=1-param.hfrac2/(param.hfrac2+cleaf);
+        if(config->with_nitrogen)
         {
-          isphen=TRUE;
-          hfrac=1-param.hfrac2/(param.hfrac2+cleaf);
-          if(config->with_nitrogen)
+          fpc_inc=newvec(Real,n_pft);
+          check(fpc_inc);
+          foreachpft(pft,p,&stand->pftlist)
           {
-            fpc_inc=newvec(Real,n_pft);
-            check(fpc_inc);
-            foreachpft(pft,p,&stand->pftlist)
-            {
-              grass=pft->data;
-              turnover_grass(&stand->soil.litter,pft,(Real)grass->growing_days/NDAYYEAR,config);
-            }
-            allocation_today(stand,config);
-            light(stand,fpc_inc,config);
-            free(fpc_inc);
+            grass=pft->data;
+            turnover_grass(&stand->soil.litter,pft,(Real)grass->growing_days/NDAYYEAR,config);
           }
+          allocation_today(stand,config);
+          light(stand,fpc_inc,config);
+          free(fpc_inc);
         }
-        break;
-      case GS_MOWING: // mowing
-        if (isMowingDay(day,config->mowingdays,config->mowingdays_size))
-        {
-          if (cleaf > STUBBLE_HEIGHT_MOWING) // 5 cm or 25 g.C.m-2 threshold
-            isphen=TRUE;
-        }
-        break;
-      case GS_GRAZING_EXT: /* ext. grazing  */
-        data->rotation.mode = RM_UNDEFINED;
-        if (cleaf > STUBBLE_HEIGHT_GRAZING_EXT) /* minimum threshold */
-        {
+      }
+      break;
+    case GS_MOWING: // mowing
+      if (isMowingDay(day,config->mowingdays,config->mowingdays_size))
+      {
+        if (cleaf > STUBBLE_HEIGHT_MOWING) // 5 cm or 25 g.C.m-2 threshold
           isphen=TRUE;
-          data->rotation.mode = RM_GRAZING;
-          data->nr_of_lsus_ext = param.lsuha;
-        }
-        break;
-      case GS_GRAZING_INT: /* int. grazing */
-        data->nr_of_lsus_int = 0.0;
-        if ((cleaf > STUBBLE_HEIGHT_GRAZING_INT) || (data->rotation.mode > RM_UNDEFINED)) // 7-8 cm or 40 g.C.m-2 threshold
-        {
-          isphen=TRUE;
-          data->nr_of_lsus_int = param.lsuha;
-        }
-        break;
-    } /* of switch */
-  }
+      }
+      break;
+    case GS_GRAZING_EXT: /* ext. grazing  */
+      data->rotation.mode = RM_UNDEFINED;
+      if (cleaf > STUBBLE_HEIGHT_GRAZING_EXT) /* minimum threshold */
+      {
+        isphen=TRUE;
+        data->rotation.mode = RM_GRAZING;
+        data->nr_of_lsus_ext = param.lsuha;
+      }
+      break;
+    case GS_GRAZING_INT: /* int. grazing */
+      data->nr_of_lsus_int = 0.0;
+      if ((cleaf > STUBBLE_HEIGHT_GRAZING_INT) || (data->rotation.mode > RM_UNDEFINED)) // 7-8 cm or 40 g.C.m-2 threshold
+      {
+        isphen=TRUE;
+        data->nr_of_lsus_int = param.lsuha;
+      }
+      break;
+  } /* of switch */
   if(isphen)
   {
     harvest=harvest_stand(output,stand,hfrac,config);
