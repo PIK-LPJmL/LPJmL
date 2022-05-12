@@ -149,7 +149,7 @@
     "temp" : { "low" : 15.5, "high" : 1000.0}, /* lower and upper coldest monthly mean temperature(deg C) 28 29*/
     "soc_k" : 0.38009,     /* shape factor for soil organic matter vertical distribution*/
     "alpha_fuelp" : 0.0000334, /* scaling factor nesterov fire danger index */
-    "vpd_par" : 47.22296, /*scaling factor vpd fire danger index*/
+    "vpd_par" : 23, //47.22296, /*scaling factor vpd fire danger index*/
     "fuelbulkdensity" : 24.5, /* fuel bulk density */
     "emission_factor" : { "co2" : 1580.0, "co" :  103.0, "ch4" : 6.80, "voc" : 8.10, "tpm" : 8.50, "nox" : 1.999}, /* emission factors */
     "aprec_min" : APREC_MIN,  /* minimum annual precipitation to establish */
@@ -259,7 +259,7 @@
     "temp" : { "low" : 15.5, "high" : 1000.0}, /* lower and upper coldest monthly mean temperature(deg C) 28 29*/
     "soc_k" : 0.51395,     /* shape factor for soil organic matter vertical distribution*/
     "alpha_fuelp" : 0.0000334, /* scaling factor nesterov fire danger index */
-    "vpd_par" : 15.43195, /*scaling factor vpd fire danger index*/
+    "vpd_par" : 3,//15.43195, /*scaling factor vpd fire danger index*/
     "fuelbulkdensity" : 12.38, /* fuel bulk density */
     "emission_factor" : { "co2" : 1664.0, "co" :  63.0, "ch4" : 2.20, "voc" : 3.40, "tpm" : 8.50, "nox" : 2.540}, /* emission factors */
     "aprec_min" : APREC_MIN,/* minimum annual precipitation to establish */
@@ -369,7 +369,7 @@
     "temp" : { "low" : -2.0, "high" : 22.0 }, /* lower and upper coldest monthly mean temperature(deg C) 28 29*/
     "soc_k" : 0.32198,     /* shape factor for soil organic matter vertical distribution*/
     "alpha_fuelp" : 0.0000667, /*scaling factor nesterov fire danger index */
-    "vpd_par" : 6, /*scaling factor vpd fire danger index*/
+    "vpd_par" : 50,//6, /*scaling factor vpd fire danger index*/
     "fuelbulkdensity" : 25.0, /* fuel bulk density */
     "emission_factor" : { "co2" : 1568.0, "co" :  106.0, "ch4" : 4.80, "voc" : 5.70, "tpm" : 17.60, "nox" : 3.240}, /* emission factors */
     "aprec_min" : APREC_MIN,/* minimum annual precipitation to establish */
@@ -479,7 +479,7 @@
     "temp" : { "low" : 3.0, "high" : 18.8 }, /* lower and upper coldest monthly mean temperature(deg C) 28 29*/
     "soc_k" : 0.43740,     /* shape factor for soil organic matter vertical distribution*/
     "alpha_fuelp" : 0.0000334, /* scaling factor nesterov fire danger index */
-    "vpd_par" : 6, /*scaling factor vpd fire danger index*/
+    "vpd_par" : 50,//6, /*scaling factor vpd fire danger index*/
     "fuelbulkdensity" : 22.0, /* fuel bulk density */
     "emission_factor" : { "co2" : 1568.0, "co" :  106.0, "ch4" : 4.80, "voc" : 5.70, "tpm" : 17.60, "nox" : 3.240}, /* emission factors */
     "aprec_min" : APREC_MIN,/* minimum annual precipitation to establish */
@@ -589,7 +589,7 @@
     "temp" : { "low" : -17.0, "high" : 15.5 }, /* lower and upper coldest monthly mean temperature(deg C) 28 29*/
     "soc_k" : 0.28880,     /* shape factor for soil organic matter vertical distribution*/
     "alpha_fuelp" : 0.0000667, /* scaling factor nesterov fire danger index */
-    "vpd_par" : 6, /*scaling factor vpd fire danger index*/
+    "vpd_par" : 50,//6, /*scaling factor vpd fire danger index*/
     "fuelbulkdensity" : 22.0, /* fuel bulk density */
     "emission_factor" : { "co2" : 1568.0, "co" :  106.0, "ch4" : 4.80, "voc" : 5.70, "tpm" : 17.60, "nox" : 3.240}, /* emission factors */
     "aprec_min" : APREC_MIN,/* minimum annual precipitation to establish */
@@ -701,7 +701,7 @@
     "temp" : { "low" : -32.5, "high" : -2.0}, /* lower and upper coldest monthly mean temperature(deg C) 28 29*/
     "soc_k" : 0.28670,     /* shape factor for soil organic matter vertical distribution*/
     "alpha_fuelp" : 0.0000667, /* scaling factor nesterov fire danger index */
-    "vpd_par" : 6, /*scaling factor vpd fire danger index*/
+    "vpd_par" : 50,//6, /*scaling factor vpd fire danger index*/
     "fuelbulkdensity" : 25.0, /* fuel bulk density */
     "emission_factor" : { "co2" : 1568.0, "co" :  106.0, "ch4" : 4.80, "voc" : 5.70, "tpm" : 17.60, "nox" : 3.240}, /* emission factors */
     "aprec_min" : APREC_MIN,/* minimum annual precipitation to establish */
@@ -811,7 +811,7 @@
     "temp" : { "low" : -1000, "high" : -2.0}, /* lower and upper coldest monthly mean temperature(deg C) 28 29*/
     "soc_k" : 0.28670,     /* shape factor for soil organic matter vertical distribution*/
     "alpha_fuelp" : 0.0000667, /* scaling factor nesterov fire danger index */
-    "vpd_par" : 6, /*scaling factor vpd fire danger index*/
+    "vpd_par" : 50,//6, /*scaling factor vpd fire danger index*/
     "fuelbulkdensity" : 22.0, /* fuel bulk density */
     "emission_factor" : { "co2" : 1568.0, "co" :  106.0, "ch4" : 4.80, "voc" : 5.70, "tpm" : 17.60, "nox" : 3.240}, /* emission factors */
     "aprec_min" : APREC_MIN,/* minimum annual precipitation to establish */
@@ -923,7 +923,7 @@
     "temp" : { "low" : -46, "high" : -5.4 }, /* lower and upper coldest monthly mean temperature(deg C) 28 29*/
     "soc_k" : 0.28670,     /* shape factor for soil organic matter vertical distribution*/
     "alpha_fuelp" : 0.0000667, /* scaling factor nesterov fire danger index */
-    "vpd_par" : 6, /*scaling factor vpd fire danger index*/
+    "vpd_par" : 50,//6, /*scaling factor vpd fire danger index*/
     "fuelbulkdensity" : 22.0, /* fuel bulk density */
     "emission_factor" : { "co2" : 1568.0, "co" :  106.0, "ch4" : 4.80, "voc" : 5.70, "tpm" : 17.60, "nox" : 3.240}, /* emission factors */
     "aprec_min" : APREC_MIN,/* minimum annual precipitation to establish */
@@ -1035,7 +1035,7 @@
     "temp" : { "low" : 7.0, "high" : 1000 }, /* lower and upper coldest monthly mean temperature(deg C) 28 29*/
     "soc_k" : 0.46513,     /* shape factor for soil organic matter vertical distribution*/
     "alpha_fuelp" : 0.0000667, /* scaling factor nesterov fire danger index */
-    "vpd_par" : 3.85899, /*scaling factor vpd fire danger index*/
+    "vpd_par" : 1.5,//3.85899, /*scaling factor vpd fire danger index*/
     "fuelbulkdensity" : 2.0, /* fuel bulk density */
     "emission_factor" : { "co2" : 1664.0, "co" :  63.0, "ch4" : 2.20, "voc" : 3.40, "tpm" : 8.50, "nox" : 2.540}, /* emission factors */
     "aprec_min" : 100,                        /* minimum annual precipitation to establish */

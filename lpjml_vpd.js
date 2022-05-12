@@ -46,7 +46,7 @@
   "permafrost" : true,
   "johansen" : true,
   "soilpar_option" : "no_fixed_soilpar", /* other options "no_fixed_soilpar", "fixed_soilpar", "prescribed_soilpar" */
-  "with_nitrogen" : "no", /* other options: "no", "lim", "unlim" */
+  "with_nitrogen" : "lim", /* other options: "no", "lim", "unlim" */
   "store_climate" : true, /* store climate data in spin-up phase */
   "const_climate" : false,
   "shuffle_climate" : false,
@@ -208,7 +208,7 @@ ID                         Fmt                    filename
 
 #ifndef FROM_RESTART
 
-  "nspinup" : 5000,  /* spinup years */
+  "nspinup" : 1000,  /* spinup years */
   "nspinyear" : 30,  /* cycle length during spinup (yr) */
   "firstyear": 1948, /* first year of simulation */
   "lastyear" : 1948, /* last year of simulation */
@@ -219,7 +219,7 @@ ID                         Fmt                    filename
 
 #else
 
-  "nspinup" : 390,   /* spinup years */
+  "nspinup" : 190,   /* spinup years */
   "nspinyear" : 30,  /* cycle length during spinup (yr)*/
   "firstyear": 1948, /* first year of simulation */
   "lastyear" : 2017, /* last year of simulation */
