@@ -211,6 +211,8 @@
   { "id" : RUNOFF_LAT, "name": "runoff_lat", "timestep" : "monthly", "var" :  "runoff_lat", "descr" :  "lateral runoff", "unit" : "mm/month", "scale" : 1.0, "offset" : 0.0},
   { "id" : SEEPAGE, "name": "seepage",  "timestep" : "monthly", "var" :  "seepage", "descr" :  "seepage water", "unit" : "mm/month", "scale" : 1.0, "offset" : 0.0},
   { "id" : BURNTAREA, "name": "burntarea", "timestep" : "monthly", "var" :  "burntarea", "descr" :  "monthly area burnt", "unit" : "hectare", "scale" : 1.0, "offset" : 0.0},
+  { "id" : HUMAN_IGNITION, "name": "human_ignition", "timestep" : "monthly", "var" :  "human_ignition", "descr" :  "human ignition", "unit" : "", "scale" : 1.0, "offset" : 0.0},
+  { "id" : LIGHTNING, "name": "lightning", "timestep" : "monthly", "var" :  "lightning", "descr" :  "lightnings causing fires", "unit" : "", "scale" : 1.0, "offset" : 0.0},
   { "id" : SOILC_SLOW, "name": "soilc_slow", "timestep" : "annual", "var" :  "soilc_slow", "descr" :  "slow soil carbon", "unit" : "gC/m2", "scale" : 1.0, "offset" : 0.0},
   { "id" : SWC3, "name": "swc3", "timestep" : "monthly", "var" :  "SWC3", "descr" :  "fractional saturation of soil water content in layer 3", "unit" : "", "scale" : 1.0, "offset" : 0.0},
   { "id" : SWC4, "name": "swc4", "timestep" : "monthly", "var" :  "SWC4", "descr" :  "fractional saturation of soil water content in layer 4", "unit" : "", "scale" : 1.0, "offset" : 0.0},

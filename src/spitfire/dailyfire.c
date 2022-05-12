@@ -17,7 +17,6 @@
 #include "lpj.h"
 
 #define CG 0.2   /* cloud to ground flashes ratio */
-#define LER 0.04 /* efficiency in starting fires */
 
 void dailyfire(Stand *stand,            /**< pointer to stand */
                Livefuel *livefuel,
@@ -82,8 +81,13 @@ void dailyfire(Stand *stand,            /**< pointer to stand */
   {
     human_ignition=humanignition(popdens,&stand->cell->ignition);
     num_fires=wildfire_ignitions(fire_danger_index,
-                                 human_ignition+climate->lightning*CG*LER,
+                                 human_ignition+climate->lightning*param.cg_ratio*param.ler,
                                  stand->cell->coord.area*stand->frac);
+    if(stand->type->landusetype==NATURAL)
+    {
+      getoutput(output,LIGHTNING,config) +=climate->lightning*param.cg_ratio*param.ler;
+      getoutput(output,HUMAN_IGNITION,config) +=human_ignition;
+    }
   }
   windsp_cover=windspeed_fpc(climate->windspeed,&stand->pftlist);
   ros_forward=rateofspread(windsp_cover,&fuel);

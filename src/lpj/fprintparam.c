@@ -63,8 +63,10 @@ void fprintparam(FILE *file,    /**< pointer to text file */
     fprintf(file,"firedura:\t%g\n"
             "fire_intens:\t%g\n"
             "hum_ign:\t%g\n"
+            "cg_ratio:\t%g\n"
+            "ler:\t\t%g\n"
             "max fire:\t%g (min)\n",
-            param.firedura,param.fire_intens,param.hum_ign,param.max_fireduration);
+            param.firedura,param.fire_intens,param.hum_ign,param.cg_ratio,param.ler,param.max_fireduration);
     fprintfireduration(file,standtypes,nstand);
   }
   if(config->with_nitrogen)

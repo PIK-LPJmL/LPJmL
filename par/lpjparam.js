@@ -95,6 +95,7 @@
   "firedura" : -11.06,                /* scaling factor for fire duration for the WVPD*/
   "hum_ign" : -0.50,		      /* a parameter for scaling the human ignintions within SPITFIRE */
   "fire_intens" : 0.000001,           /* threshold of fireintensity for which burnt area can be modeled */
+  "ler" : 0.04,                       /* efficiency in starting fires */
   "max_fireduration" : 241.0,         /* maximum fire duration (min) */
   "rootreduction" : 0.5,              /* fraction used to calculate amount of roots dying at harvest in managed grasslands */
   "phen_limit" : 0.5,                 /* phen. limit for agricultural trees */
