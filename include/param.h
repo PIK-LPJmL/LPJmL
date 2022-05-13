@@ -68,6 +68,8 @@ typedef struct
   Real drip_evap;        /**< reduction of drip soil evap */
   Real firedura;        /**< scaling factor for fire duration */
   Real max_fireduration; /**< default maximum fire duration (min) */
+  Real ler;              /**< efficiency in starting fires (0..1) */
+  Real cg_ratio;         /**< cloud to ground flashes ratio */
   Real fire_intens;     /**< threshold of fireintensity for which burnt area can be modeled */
   Real hum_ign;         /**< a parameter for scaling the human ignintions within SPITFIRE */
   Real residues_in_soil;  /**< minimum residues in soil*/

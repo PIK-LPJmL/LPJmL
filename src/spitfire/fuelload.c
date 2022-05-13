@@ -179,7 +179,9 @@ void fuelload(Stand *stand,
   }
 #endif
   /* daily litter moisture back-calculated from nesterov_accum */
-  fuel->daily_litter_moist = exp(-(fuel->char_alpha_fuel) * nesterov_accum);
+ /* fuel->daily_litter_moist = exp(-(fuel->char_alpha_fuel) * nesterov_accum);  old version without new litter from tillage version */
+  fuel->daily_litter_moist =  (stand->soil.litter.agtop_wcap>0) ? stand->soil.litter.agtop_moist/stand->soil.litter.agtop_wcap : 1; /* new version making use of new litter moisture calculation from tillage version */
+
 
   /* combustion efficiency for litter */
   fuel->CME = 0.0005*pow(fuel->daily_litter_moist*100,2)-0.02*fuel->daily_litter_moist*100+0.94;  

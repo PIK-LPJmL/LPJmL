@@ -90,6 +90,7 @@ Real firedangerindex(Real char_moist_factor,
       /*calculation of Vapor Pressure Deficite (VPD) */
       d_fdi = pow(10,Z) * (1-rh) * VD * exp(-cR * R);
       d_fdi*= vpd_sum;
+      d_fdi = min(d_fdi,1);
       break;
   }  /* of 'switch' */
   return d_fdi;

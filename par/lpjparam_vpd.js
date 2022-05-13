@@ -1,6 +1,6 @@
 /**************************************************************************************/
 /**                                                                                \n**/
-/**              l  p  j  p  a  r  a  m  .  j  s                                   \n**/
+/**              l  p  j  p  a  r  a  m  _  v  p  d  .  j  s                       \n**/
 /**                                                                                \n**/
 /**     LPJ parameter file for LPJmL version 5.3.001                               \n**/
 /**                                                                                \n**/
@@ -95,6 +95,8 @@
   "firedura" : -8.79,                 /* scaling factor for fire duration for the WVPD*/
   "hum_ign" : -0.53,                  /* a parameter for scaling the human ignintions within SPITFIRE */
   "fire_intens" : 0.000001,             /* threshold of fireintensity for which burnt area can be modeled */
+  "ler" : 1,                        /* efficiency in starting fires */
+  "cg_ratio" : 0.2,                  /*cloud to ground ratio for lightning flashes */
   "max_fireduration" : 241.0,         /* maximum fire duration (min) */
   "rootreduction" : 0.5,              /* fraction used to calculate amount of roots dying at harvest in managed grasslands */
   "phen_limit" : 0.5,                 /* phen. limit for agricultural trees */

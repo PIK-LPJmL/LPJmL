@@ -1031,6 +1031,8 @@ void fwriteoutput(Outputfile *output,  /**< output file array */
   writeoutputvar(FIREEMISSION_TPM,1);
   writeoutputvar(FIREEMISSION_NOX,1);
   writeoutputvar(BURNTAREA,1);
+  writeoutputvar(HUMAN_IGNITION,1);
+  writeoutputvar(LIGHTNING,1);
   writeoutputvar(TEMP_IMAGE,ndate1);
   writeoutputvar(PREC_IMAGE,1);
   writeoutputvar(SUN_IMAGE,ndate1);
