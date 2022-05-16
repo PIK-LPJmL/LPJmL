@@ -1023,7 +1023,7 @@ void fwriteoutput(Outputfile *output,  /**< output file array */
   writeoutputvar(PREC_RES,1);
   writeoutputvar(NFIRE,1);
   writeoutputvar(FIREDI,ndate1);
-  writeoutputvar(FIREDURATION,1);
+  writeoutputvar(FIREDURATION,ndate1);
   writeoutputvar(FIREEMISSION_CO2,1);
   writeoutputvar(FIREEMISSION_CO,1);
   writeoutputvar(FIREEMISSION_CH4,1);
@@ -1033,9 +1033,10 @@ void fwriteoutput(Outputfile *output,  /**< output file array */
   writeoutputvar(BURNTAREA,1);
   writeoutputvar(HUMAN_IGNITION,1);
   writeoutputvar(LIGHTNING,1);
-  writeoutputvar(SURFACE_FI,1);
-  writeoutputvar(ROS,1);
-  writeoutputvar(FIRESIZE,1);
+  writeoutputvar(SURFACE_FI,ndate1);
+  writeoutputvar(ROS,ndate1);
+  writeoutputvar(FIRESIZE,ndate1);
+  writeoutputvar(FIREDAYS,1);
   writeoutputvar(TEMP_IMAGE,ndate1);
   writeoutputvar(PREC_IMAGE,1);
   writeoutputvar(SUN_IMAGE,ndate1);

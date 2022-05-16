@@ -92,14 +92,14 @@ void dailyfire(Stand *stand,            /**< pointer to stand */
   }
   windsp_cover=windspeed_fpc(climate->windspeed,&stand->pftlist);
   ros_forward=rateofspread(windsp_cover,&fuel);
-  getoutput(output,ROS,config)+=ros_forward;
   /* use prescribed burnt area or calculate burnt area */
   if (config->prescribe_burntarea)
     burnt_area = climate->burntarea;
   else
   {
     burnt_area = area_burnt(&fireduration,stand->type->max_fireduration,fire_danger_index, num_fires, windsp_cover, ros_forward, config->ntypes, &stand->pftlist);
-    getoutput(output,FIREDURATION,config)+=fireduration;
+    if(stand->type->landusetype==NATURAL)
+      getoutput(output,FIREDURATION,config)+=fireduration;
   }
   fire_frac=burnt_area*1e4 / (stand->cell->coord.area * stand->frac);  /*in m2*/
   if(fire_frac > 1.0)
@@ -117,7 +117,6 @@ void dailyfire(Stand *stand,            /**< pointer to stand */
   /*fuel consumption in gBiomass/m2 for calculation of surface fire intensity*/
   fuel_consump=deadfuel_consumption(&stand->soil.litter,&fuel,fire_frac);
   surface_fi=surface_fire_intensity(fuel_consump, fire_frac, ros_forward);
-  getoutput(output,SURFACE_FI,config)+=surface_fi;
   /* if not enough surface fire energy to sustain burning */
   if(surface_fi<50)  //&& !prescribe_burntarea)
   {
@@ -166,12 +165,19 @@ void dailyfire(Stand *stand,            /**< pointer to stand */
   total_fire.nitrogen = (deadfuel_consump.nitrogen + livefuel_consump.nitrogen);
 
   /* write SPITFIRE outputs to LPJ output structures */
-  getoutput(output,FIREDI,config) += fire_danger_index;
   getoutput(output,NFIRE,config) += num_fires;
   getoutput(output,FIREF,config) += fire_frac;
   getoutput(output,BURNTAREA,config) += burnt_area; /*ha*/
-  getoutput(output,FIRESIZE,config) += burnt_area*1e4/num_fires;
-  getoutput(output,FIREC,config)+= total_fire.carbon;
+  getoutput(output,FIREC,config) += total_fire.carbon;
+  if(stand->type->landusetype==NATURAL)
+  {
+    if (burnt_area>0)
+      getoutput(output,FIREDAYS,config) += 1;
+    getoutput(output,SURFACE_FI,config) += surface_fi;
+    getoutput(output,FIREDI,config) += fire_danger_index;
+    getoutput(output,ROS,config) += ros_forward;
+    getoutput(output,FIRESIZE,config) += burnt_area*1e4/num_fires;
+  }
   stand->cell->balance.fire.carbon+=total_fire.carbon;
   getoutput(output,FIREN,config)+=total_fire.nitrogen*(1-param.q_ash)*stand->frac;
   stand->cell->balance.fire.nitrogen+=total_fire.nitrogen*(1-param.q_ash)*stand->frac;

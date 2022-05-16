@@ -216,6 +216,7 @@
   { "id" : SURFACE_FI, "name": "surface_fi", "timestep" : "monthly", "var" :  "surface_fi", "descr" :  "average surface fire intensity", "unit" : "kW/m2", "scale" : 1.0e-3, "offset" : 0.0},
   { "id" : ROS, "name": "ros", "timestep" : "monthly", "var" :  "ros", "descr" :  "rate of spread", "unit" : "m/s", "scale" : 1.0, "offset" : 0.0},
   { "id" : FIRESIZE, "name": "firesize", "timestep" : "monthly", "var" :  "firesize", "descr" :  "average size of fire", "unit" : "km2", "scale" : 1.0e-6, "offset" : 0.0},
+  { "id" : FIREDAYS, "name": "firedays", "timestep" : "monthly", "var" :  "firedays", "descr" :  "number of days with fire", "unit" : "days", "scale" : 1.0, "offset" : 0.0},
   { "id" : SOILC_SLOW, "name": "soilc_slow", "timestep" : "annual", "var" :  "soilc_slow", "descr" :  "slow soil carbon", "unit" : "gC/m2", "scale" : 1.0, "offset" : 0.0},
   { "id" : SWC3, "name": "swc3", "timestep" : "monthly", "var" :  "SWC3", "descr" :  "fractional saturation of soil water content in layer 3", "unit" : "", "scale" : 1.0, "offset" : 0.0},
   { "id" : SWC4, "name": "swc4", "timestep" : "monthly", "var" :  "SWC4", "descr" :  "fractional saturation of soil water content in layer 4", "unit" : "", "scale" : 1.0, "offset" : 0.0},
