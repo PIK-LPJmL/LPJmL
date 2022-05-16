@@ -92,7 +92,7 @@ void dailyfire(Stand *stand,            /**< pointer to stand */
   }
   windsp_cover=windspeed_fpc(climate->windspeed,&stand->pftlist);
   ros_forward=rateofspread(windsp_cover,&fuel);
-
+  getoutput(output,ROS,config)+=ros_forward;
   /* use prescribed burnt area or calculate burnt area */
   if (config->prescribe_burntarea)
     burnt_area = climate->burntarea;
@@ -117,6 +117,7 @@ void dailyfire(Stand *stand,            /**< pointer to stand */
   /*fuel consumption in gBiomass/m2 for calculation of surface fire intensity*/
   fuel_consump=deadfuel_consumption(&stand->soil.litter,&fuel,fire_frac);
   surface_fi=surface_fire_intensity(fuel_consump, fire_frac, ros_forward);
+  getoutput(output,SURFACE_FI,config)+=surface_fi;
   /* if not enough surface fire energy to sustain burning */
   if(surface_fi<50)  //&& !prescribe_burntarea)
   {
@@ -169,6 +170,7 @@ void dailyfire(Stand *stand,            /**< pointer to stand */
   getoutput(output,NFIRE,config) += num_fires;
   getoutput(output,FIREF,config) += fire_frac;
   getoutput(output,BURNTAREA,config) += burnt_area; /*ha*/
+  getoutput(output,FIRESIZE,config) += burnt_area*1e4/num_fires;
   getoutput(output,FIREC,config)+= total_fire.carbon;
   stand->cell->balance.fire.carbon+=total_fire.carbon;
   getoutput(output,FIREN,config)+=total_fire.nitrogen*(1-param.q_ash)*stand->frac;
