@@ -23,7 +23,7 @@ Bool freadcell(FILE *file,             /**< File pointer to binary file */
                int npft,               /**< number of natural PFTs */
                int ncft,               /**< number of crop PFTs */
                const Soilpar *soilpar, /**< pointer to soil parameter */
-               const Standtype standtype[], /**< array of stand types */
+               Standtype **standtype, /**< array of stand types */
                int nstand,             /**< number of stand types */
                Bool swap, /**< Byte order has to be changed (TRUE/FALSE) */
                Config *config          /**< LPJ configuration */

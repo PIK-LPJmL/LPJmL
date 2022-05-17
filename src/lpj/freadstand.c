@@ -21,7 +21,7 @@ Stand *freadstand(FILE *file, /**< File pointer to binary file */
                   const Pftpar pftpar[],/**< Pft parameter array */
                   int ntotpft,          /**<  total number of PFTs */
                   const Soilpar *soilpar, /**< soil parameter */
-                  const Standtype standtype[], /**< array of stand types */
+                  Standtype **standtype, /**< array of stand types */
                   int nstand, /**< number of stand types */
                   Bool double_harvest,
                   Bool swap /**< Byte order has to be changed (TRUE/FALSE) */
@@ -65,7 +65,7 @@ Stand *freadstand(FILE *file, /**< File pointer to binary file */
     return NULL;
   }
   stand->data=NULL;
-  stand->type=standtype+landusetype;
+  stand->type=standtype[landusetype];
   /* read stand-specific data */
   if(stand->type->fread(file,stand,swap))
   {

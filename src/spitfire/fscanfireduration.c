@@ -14,17 +14,17 @@
 
 #include "lpj.h"
 
-static int findstandname(const char *name,const Standtype standtypes[],int nstand)
+static int findstandname(const char *name,Standtype **standtypes,int nstand)
 {
   int i;
   for(i=0;i<nstand;i++)
-    if(!strcmp(name,standtypes[i].name))
+    if(!strcmp(name,standtypes[i]->name))
       return i;
   return NOT_FOUND;
 } /* of 'findstandname' */
 
 Bool fscanfireduration(LPJfile *file,          /**< pointer to LPJ file */
-                       Standtype standtypes[], /**< stand type array */
+                       Standtype **standtypes, /**< stand type array */
                        int nstand,             /**< number of stand types */
                        Verbosity verbose
                       )                        /** \return TRUE on error */
@@ -33,7 +33,7 @@ Bool fscanfireduration(LPJfile *file,          /**< pointer to LPJ file */
   LPJfile array,item,s;
   int i,size,index;
   for(i=0;i<nstand;i++)
-    standtypes[i].max_fireduration=param.max_fireduration;
+    standtypes[i]->max_fireduration=param.max_fireduration;
   if(iskeydefined(file,"max_fireduration"))
   {
     if(fscanarray(file,&array,&size,FALSE,"max_fireduration",verbose))
@@ -53,7 +53,7 @@ Bool fscanfireduration(LPJfile *file,          /**< pointer to LPJ file */
           fprintf(stderr,"ERROR245: Stand type '%s' not defined, must be in [",name);
           for(i=0;i<nstand;i++)
           {
-            fprintf(stderr,"\"%s\"",standtypes[i].name);
+            fprintf(stderr,"\"%s\"",standtypes[i]->name);
             if(i<nstand-1)
               fprintf(stderr,",");
           }
@@ -61,7 +61,7 @@ Bool fscanfireduration(LPJfile *file,          /**< pointer to LPJ file */
         }
         return TRUE;
       }
-      if(fscanreal(&s,&standtypes[index].max_fireduration,"duration",FALSE,verbose)) 
+      if(fscanreal(&s,&standtypes[index]->max_fireduration,"duration",FALSE,verbose)) 
         return TRUE;
     }
   }

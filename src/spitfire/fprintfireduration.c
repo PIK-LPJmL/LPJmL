@@ -14,12 +14,12 @@
 
 #include "lpj.h"
 
-void fprintfireduration(FILE *file,const Standtype standtypes[],int nstand)
+void fprintfireduration(FILE *file,Standtype **standtypes,int nstand)
 {
   int i;
   Bool first=TRUE;
   for(i=0;i<nstand;i++)
-    if(standtypes[i].max_fireduration!=param.max_fireduration)
+    if(standtypes[i]->max_fireduration!=param.max_fireduration)
     {
       if(first)
       {
@@ -29,7 +29,7 @@ void fprintfireduration(FILE *file,const Standtype standtypes[],int nstand)
       else
         fputc(',',file);
       fprintf(file," '%s' = %g (min)",
-              standtypes[i].name,standtypes[i].max_fireduration);
+              standtypes[i]->name,standtypes[i]->max_fireduration);
     }
     fputc('\n',file);
 } /* of 'fprintfireduration' */
