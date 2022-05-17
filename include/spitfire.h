@@ -52,7 +52,7 @@ extern void update_fbd_tree(Litter*,Real,Real,int);
 extern void update_fbd_grass(Litter*,Real,Real);
 extern Real wildfire_ignitions(Real,Real,Real);
 extern Real windspeed_fpc(Real,const Pftlist *);
-extern void dailyfire(Stand *,Livefuel *,Real,Real,const Dailyclimate *,const Config *);
+extern void dailyfire(Stand *,Real,Real,const Dailyclimate *,const Config *);
 extern void update_nesterov(Cell *,const Dailyclimate *);
 extern Bool fwriteignition(FILE *,const Ignition *);
 extern Bool freadignition(FILE *,Ignition *,Bool);

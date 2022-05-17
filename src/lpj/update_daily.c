@@ -57,7 +57,6 @@ void update_daily(Cell *cell,            /**< cell pointer           */
   Real nh3;
   int index,l,i;
   Real rootdepth=0.0;
-  Livefuel livefuel={0,0,0,0,0};
   const Real prec_save=climate.prec;
   Real agrfrac;
   Real litsum_old_nv[2]={0,0},litsum_new_nv[2]={0,0};
@@ -137,7 +136,7 @@ void update_daily(Cell *cell,            /**< cell pointer           */
     getoutput(&cell->output,ALBEDO,config) += beta * stand->frac;
 
     if((config->fire==SPITFIRE  || config->fire==SPITFIRE_TMAX)&& stand->afire_frac<1)
-      dailyfire_stand(stand,&livefuel,popdensity,avgprec,&climate,config);
+      dailyfire_stand(stand,popdensity,avgprec,&climate,config);
     if(config->permafrost)
     {
       snowrunoff=snow(&stand->soil,&climate.prec,&melt,

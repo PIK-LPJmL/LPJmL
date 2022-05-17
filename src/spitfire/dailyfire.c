@@ -19,7 +19,6 @@
 #define CG 0.2   /* cloud to ground flashes ratio */
 
 void dailyfire(Stand *stand,            /**< pointer to stand */
-               Livefuel *livefuel,
                Real popdens, /**< population density (capita/km2) */
                Real avgprec,                /**< monthly averaged precipitation (mm/day) */
                const Dailyclimate *climate, /**< daily climate data */
@@ -38,6 +37,7 @@ void dailyfire(Stand *stand,            /**< pointer to stand */
   int p;
   Output *output;
   Pft *pft;
+  Livefuel livefuel={0,0,0,0,0};
   Tracegas emission={0,0,0,0,0,0};
   if(stand->type->landusetype==GRASSLAND && !config->fire_on_grassland)
     return;
@@ -70,7 +70,7 @@ void dailyfire(Stand *stand,            /**< pointer to stand */
     /* if burnt area is simulated use the actual Nesterov index instead the maximum */
     stand->cell->ignition.nesterov_max = stand->cell->ignition.nesterov_accum;
   }
-  fuelload(stand, &fuel, livefuel, stand->cell->ignition.nesterov_max);
+  fuelload(stand, &fuel,&livefuel, stand->cell->ignition.nesterov_max);
   fire_danger_index=firedangerindex(fuel.char_moist_factor,
                                     stand->cell->ignition.nesterov_max,
                                     &stand->pftlist,climate->humid,
@@ -139,10 +139,10 @@ void dailyfire(Stand *stand,            /**< pointer to stand */
     if(surface_fi>50)
     {
       livefuel_consump_pft=pft->par->livefuel_consumption(&stand->soil.litter, pft,
-                                                          &fuel, livefuel, &isdead, surface_fi, fire_frac,config);
+                                                          &fuel, &livefuel, &isdead, surface_fi, fire_frac,config);
 #ifdef WITH_FIRE_MOISTURE
-      emission.co2+=c2biomass(livefuel_consump_pft.carbon)*pft->par->emissionfactor.co2 * (livefuel->CME/0.94);
-      emission.co+=c2biomass(livefuel_consump_pft.carbon)*pft->par->emissionfactor.co * (2- livefuel->CME/0.94);
+      emission.co2+=c2biomass(livefuel_consump_pft.carbon)*pft->par->emissionfactor.co2 * (livefuel.CME/0.94);
+      emission.co+=c2biomass(livefuel_consump_pft.carbon)*pft->par->emissionfactor.co * (2- livefuel.CME/0.94);
 #else
       emission.co2+=c2biomass(livefuel_consump_pft.carbon)*pft->par->emissionfactor.co2;
       emission.co+=c2biomass(livefuel_consump_pft.carbon)*pft->par->emissionfactor.co;
