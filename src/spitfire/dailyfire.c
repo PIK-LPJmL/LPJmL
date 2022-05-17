@@ -176,7 +176,8 @@ void dailyfire(Stand *stand,            /**< pointer to stand */
     getoutput(output,SURFACE_FI,config) += surface_fi;
     getoutput(output,FIREDI,config) += fire_danger_index;
     getoutput(output,ROS,config) += ros_forward;
-    getoutput(output,FIRESIZE,config) += burnt_area*1e4/num_fires;
+    if (num_fires>0)
+      getoutput(output,FIRESIZE,config) += burnt_area*1e4/num_fires;
   }
   stand->cell->balance.fire.carbon+=total_fire.carbon;
   getoutput(output,FIREN,config)+=total_fire.nitrogen*(1-param.q_ash)*stand->frac;
