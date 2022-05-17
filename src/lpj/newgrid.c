@@ -23,7 +23,7 @@
 
 static Cell *newgrid2(Config *config,          /* Pointer to LPJ configuration */
                       int *count,
-                      const Standtype standtype[], /* array of stand types */
+                      Standtype **standtype, /* array of stand types */
                       int nstand,              /* number of stand types */
                       int npft,                /* number of natural PFTs */
                       int ncft                 /* number of crop PFTs */
@@ -558,7 +558,7 @@ static Cell *newgrid2(Config *config,          /* Pointer to LPJ configuration *
 } /* of 'newgrid2' */
 
 Cell *newgrid(Config *config,          /**< Pointer to LPJ configuration */
-              const Standtype standtype[], /**< array of stand types */
+              Standtype **standtype, /**< array of stand types */
               int nstand,              /**< number of stand types */
               int npft,                /**< number of natural PFTs */
               int ncft                 /**< number of crop PFTs */

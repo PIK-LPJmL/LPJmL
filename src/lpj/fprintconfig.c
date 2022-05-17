@@ -217,7 +217,7 @@ static void printinputfile(FILE *file,const char *descr,const Filename *filename
 } /* of 'printinputfile' */
 
 void fprintconfig(FILE *file,          /**< File pointer to text output file */
-                  const Standtype standtypes[],
+                  Standtype **standtypes,
                   int nstand,
                   int npft,            /**< Number of natural PFTs */
                   int ncft,            /**< Number of crop PFTs */

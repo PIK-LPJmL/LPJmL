@@ -17,7 +17,7 @@
 #include "lpj.h"
 
 void fprintparam(FILE *file,    /**< pointer to text file */
-                 const Standtype standtypes[],
+                 Standtype **standtypes,
                  int nstand,
                  int npft,      /**< number of natural PFTs */
                  int ncft,      /**< number of crop PFTs */

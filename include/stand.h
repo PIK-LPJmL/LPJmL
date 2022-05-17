@@ -64,9 +64,9 @@ extern void fprintstand(FILE *,const Stand *,const Pftpar[],int,int);
 extern int fwritestandlist(FILE *,const Standlist,int);
 extern void fprintstandlist(FILE *,const Standlist,const Pftpar[],int,int);
 extern Stand *freadstand(FILE *,Cell *,const Pftpar[],int,
-                         const Soilpar *,const Standtype [],int,Bool,Bool);
+                         const Soilpar *,Standtype **,int,Bool,Bool);
 extern Standlist freadstandlist(FILE *,Cell *,const Pftpar [],int,
-                                const Soilpar *,const Standtype [],int,Bool,Bool);
+                                const Soilpar *,Standtype **,int,Bool,Bool);
 extern int addstand(const Standtype *,Cell *);
 extern void initstand (Stand *);
 extern void freestand(Stand *);

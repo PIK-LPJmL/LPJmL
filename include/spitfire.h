@@ -29,8 +29,8 @@ typedef struct
 
 /* Declaration of functions */
 
-extern Bool fscanfireduration(LPJfile *,Standtype [],int,Verbosity);
-extern void fprintfireduration(FILE *,const Standtype [],int);
+extern Bool fscanfireduration(LPJfile *,Standtype **,int,Verbosity);
+extern void fprintfireduration(FILE *,Standtype **,int);
 extern Real area_burnt(Real *,Real,Real,Real,Real,Real, int,const Pftlist *);
 extern Real deadfuel_consumption(const Litter *,Fuel *, Real);
 extern Real firedangerindex(Real,Real,const Pftlist *, Real, Real, int, Real);
