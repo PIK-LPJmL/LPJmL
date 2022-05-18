@@ -170,7 +170,8 @@ extern void double_harvest(int, Real *, Real *, Real);
 extern Real nuptake_crop(Pft *,Real *,Real *,int,int,const Config *);
 extern Real ndemand_crop(const Pft *,Real *,Real,Real,Real);
 extern Real vmaxlimit_crop(const Pft *,Real,Real);
-
+extern Stocks livefuel_consum_crop(Litter *,Pft *,const Fuel *,Livefuel *,
+                                   Bool *,Real, Real,const Config *);
 
 /* Definitions of macros */
 
