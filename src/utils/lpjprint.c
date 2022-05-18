@@ -34,7 +34,7 @@
 
 
 static Bool printgrid(Config *config, /* Pointer to LPJ configuration */
-                      Standtype standtype[],
+                      Standtype **standtype,
                       int npft,       /* number of natural PFTs */
                       int ncft,       /* number of crop PFTs */
                       Bool isout      /* print output (TRUE/FALSE) */
@@ -179,20 +179,20 @@ int main(int argc,char **argv)
     {name_crop,fscanpft_crop}
   };
 
-  Standtype standtype[NSTANDTYPES];
+  Standtype *standtype[NSTANDTYPES];
 
-  standtype[NATURAL]=natural_stand;
-  standtype[SETASIDE_RF]=setaside_rf_stand;
-  standtype[SETASIDE_IR]=setaside_ir_stand;
-  standtype[AGRICULTURE]=agriculture_stand;
-  standtype[MANAGEDFOREST]=managedforest_stand;
-  standtype[GRASSLAND]=grassland_stand;
-  standtype[BIOMASS_TREE]=biomass_tree_stand;
-  standtype[BIOMASS_GRASS]=biomass_grass_stand;
-  standtype[AGRICULTURE_TREE]=agriculture_tree_stand;
-  standtype[AGRICULTURE_GRASS]=agriculture_grass_stand;
-  standtype[WOODPLANTATION]=woodplantation_stand,
-  standtype[KILL]=kill_stand;
+  standtype[NATURAL]=&natural_stand;
+  standtype[SETASIDE_RF]=&setaside_rf_stand;
+  standtype[SETASIDE_IR]=&setaside_ir_stand;
+  standtype[AGRICULTURE]=&agriculture_stand;
+  standtype[MANAGEDFOREST]=&managedforest_stand;
+  standtype[GRASSLAND]=&grassland_stand;
+  standtype[BIOMASS_TREE]=&biomass_tree_stand;
+  standtype[BIOMASS_GRASS]=&biomass_grass_stand;
+  standtype[AGRICULTURE_TREE]=&agriculture_tree_stand;
+  standtype[AGRICULTURE_GRASS]=&agriculture_grass_stand;
+  standtype[WOODPLANTATION]=&woodplantation_stand,
+  standtype[KILL]=&kill_stand;
 
   progname=strippath(argv[0]);
   if(argc>1 && !strcmp(argv[1],"-h"))

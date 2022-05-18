@@ -213,6 +213,12 @@ char **createpftnames(int index,           /**< output index */
          strcat(pftnames[i+config->ngrass*4+config->nbiomass],config->pftpar[i+nnat].name);
        }
        break;
+     case STAND_BURNTAREA:
+       pftnames[0]=strdup("total");
+       pftnames[1]=strdup("natural");
+       pftnames[2]=strdup("grassland");
+       pftnames[3]=strdup("agriculture");
+       break;
   }
   return pftnames;
 } /* of 'createpftnames' */

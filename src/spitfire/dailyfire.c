@@ -39,7 +39,7 @@ void dailyfire(Stand *stand,            /**< pointer to stand */
   Pft *pft;
   Livefuel livefuel={0,0,0,0,0};
   Tracegas emission={0,0,0,0,0,0};
-  if(stand->type->landusetype==GRASSLAND && !config->fire_on_grassland)
+  if(stand->type->landusetype!=NATURAL && !config->fire_on_grassland)
     return;
   output=&stand->cell->output;
   initfuel(&fuel);
@@ -168,6 +168,19 @@ void dailyfire(Stand *stand,            /**< pointer to stand */
   getoutput(output,NFIRE,config) += num_fires;
   getoutput(output,FIREF,config) += fire_frac;
   getoutput(output,BURNTAREA,config) += burnt_area; /*ha*/
+  getoutputindex(output,STAND_BURNTAREA,0,config) += burnt_area; /*ha*/
+  switch(stand->type->landusetype)
+  {
+    case NATURAL:
+      getoutputindex(output,STAND_BURNTAREA,1,config) += burnt_area; /*ha*/
+      break;
+    case GRASSLAND:
+      getoutputindex(output,STAND_BURNTAREA,2,config) += burnt_area; /*ha*/
+      break;
+    case AGRICULTURE:
+      getoutputindex(output,STAND_BURNTAREA,3,config) += burnt_area; /*ha*/
+      break;
+  }     
   getoutput(output,FIREC,config) += total_fire.carbon;
   if(stand->type->landusetype==NATURAL)
   {

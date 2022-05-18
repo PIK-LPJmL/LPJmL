@@ -15,6 +15,7 @@
 
 #include "lpj.h"
 #include "grass.h"
+#include "crop.h"
 
 #define moist_extinct_livegrass 0.2
 #define fbd_c3_livegrass 4.0
@@ -40,6 +41,7 @@ void fuelload(Stand *stand,
   Real fuel_gBiomass[NFUELCLASS];
   Pft *pft;
   Pftgrass *grass;
+  Pftcrop *crop;
   int p,i;
 
   dlm_1hr=ratio_dead_fuel=ratio_live_fuel=fbd_deadfuel=mean_w=0;
@@ -81,6 +83,16 @@ void fuelload(Stand *stand,
       else
         livefuel->pot_fc_lg_c4 = c2biomass(grass->ind.leaf.carbon*pft->nind*pft->phen);
     }
+    else if(iscrop(pft))
+    {
+      crop=pft->data;
+      livegrass += c2biomass((crop->ind.leaf.carbon+crop->ind.so.carbon+crop->ind.pool.carbon) * pft->nind );
+      if(pft->par->path==C3)
+        livefuel->pot_fc_lg_c3 = c2biomass((crop->ind.leaf.carbon+crop->ind.so.carbon+crop->ind.pool.carbon)*pft->nind);
+      else
+        livefuel->pot_fc_lg_c4 = c2biomass((crop->ind.leaf.carbon+crop->ind.so.carbon+crop->ind.pool.carbon)*pft->nind);
+    }
+
   }
   fuel->char_net_fuel = net_fuel +(1.0-MINER_TOT)*livegrass*1e-3;  /*in kg biomass */
 
