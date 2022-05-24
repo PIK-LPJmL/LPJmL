@@ -32,7 +32,8 @@ void update_fbd_grass(Litter* litter,Real fuelbulkdensity,Real carbon)
     litter->avg_fbd[NFUELCLASS]=fuelbulkdensity;
   else
     litter->avg_fbd[NFUELCLASS]=0;
-  if (litter->avg_fbd[NFUELCLASS] < 0 || litter->avg_fbd[NFUELCLASS] > 30){
+  if (litter->avg_fbd[NFUELCLASS] < 0 || litter->avg_fbd[NFUELCLASS] > 30)
+  {
     printf("litter->avg_fbd=%.5f carbon=%.5f litter= %.5f fuelclass=%d\n",
            litter->avg_fbd[NFUELCLASS],carbon,fuel,NFUELCLASS);
     fflush(stdout);

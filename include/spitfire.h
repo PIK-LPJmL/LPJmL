@@ -30,6 +30,7 @@ typedef struct
 /* Declaration of functions */
 
 extern Bool fscanfireduration(LPJfile *,Standtype **,int,Verbosity);
+extern Bool fscanfirestand(LPJfile *,Standtype **,int,Verbosity);
 extern void fprintfireduration(FILE *,Standtype **,int);
 extern Real area_burnt(Real *,Real,Real,Real,Real,Real, int,const Pftlist *);
 extern Real deadfuel_consumption(const Litter *,Fuel *, Real);

@@ -64,7 +64,6 @@ Real daily_agriculture(Stand *stand,                /**< [inout] stand pointer *
   Output *output;
   Pftcrop *crop;
   irrig_apply=0.0;
-
   data=stand->data;
   negbm=FALSE;
   output=&stand->cell->output;

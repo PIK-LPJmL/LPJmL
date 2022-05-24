@@ -39,8 +39,6 @@ void dailyfire(Stand *stand,            /**< pointer to stand */
   Pft *pft;
   Livefuel livefuel={0,0,0,0,0};
   Tracegas emission={0,0,0,0,0,0};
-  if(stand->type->landusetype!=NATURAL && !config->fire_on_grassland)
-    return;
   output=&stand->cell->output;
   initfuel(&fuel);
 
@@ -75,6 +73,7 @@ void dailyfire(Stand *stand,            /**< pointer to stand */
                                     stand->cell->ignition.nesterov_max,
                                     &stand->pftlist,climate->humid,
                                     avgprec,config->fdi,climate->temp);
+  //printf("fdi(%s)=%g\n",stand->type->name,fire_danger_index);
   if(config->prescribe_ignition)
     num_fires=climate->ignition;
   else
@@ -169,16 +168,24 @@ void dailyfire(Stand *stand,            /**< pointer to stand */
   getoutput(output,FIREF,config) += fire_frac;
   getoutput(output,BURNTAREA,config) += burnt_area; /*ha*/
   getoutputindex(output,STAND_BURNTAREA,0,config) += burnt_area; /*ha*/
+  getoutputindex(output,STAND_FDI,0,config) += fire_danger_index;
+  getoutputindex(output,STAND_SURFACE_FI,0,config) += surface_fi;
   switch(stand->type->landusetype)
   {
     case NATURAL:
       getoutputindex(output,STAND_BURNTAREA,1,config) += burnt_area; /*ha*/
+      getoutputindex(output,STAND_FDI,1,config) += fire_danger_index;
+      getoutputindex(output,STAND_SURFACE_FI,1,config) += surface_fi;
       break;
     case GRASSLAND:
       getoutputindex(output,STAND_BURNTAREA,2,config) += burnt_area; /*ha*/
+      getoutputindex(output,STAND_FDI,2,config) += fire_danger_index;
+      getoutputindex(output,STAND_SURFACE_FI,2,config) += surface_fi;
       break;
     case AGRICULTURE:
       getoutputindex(output,STAND_BURNTAREA,3,config) += burnt_area; /*ha*/
+      getoutputindex(output,STAND_FDI,3,config) += fire_danger_index;
+      getoutputindex(output,STAND_SURFACE_FI,3,config) += surface_fi;
       break;
   }     
   getoutput(output,FIREC,config) += total_fire.carbon;

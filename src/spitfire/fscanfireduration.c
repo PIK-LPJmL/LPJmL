@@ -43,7 +43,7 @@ Bool fscanfireduration(LPJfile *file,          /**< pointer to LPJ file */
       fscanarrayindex(&array,&item,i,verbose);
       if(fscanstruct(&item,&s,NULL,verbose))
         return TRUE;
-      if(fscanstring(&s,name,"stand",FALSE,verbose)) 
+      if(fscanstring(&s,name,"stand",FALSE,verbose))
         return TRUE;
       index=findstandname(name,standtypes,nstand);
       if(index==NOT_FOUND)
@@ -61,9 +61,52 @@ Bool fscanfireduration(LPJfile *file,          /**< pointer to LPJ file */
         }
         return TRUE;
       }
-      if(fscanreal(&s,&standtypes[index]->max_fireduration,"duration",FALSE,verbose)) 
+      if(fscanreal(&s,&standtypes[index]->max_fireduration,"duration",FALSE,verbose))
         return TRUE;
+      standtypes[index]->dailyfire=dailyfire;
     }
   }
   return FALSE;
 } /* of 'fscanfireduration */
+
+Bool fscanfirestand(LPJfile *file,          /**< pointer to LPJ file */
+                    Standtype **standtypes, /**< stand type array */
+                    int nstand,             /**< number of stand types */
+                    Verbosity verbose
+                   )                        /** \return TRUE on error */
+{
+  String name;
+  LPJfile array,item;
+  int i,size,index;
+  if(iskeydefined(file,"firestand"))
+  {
+    if(fscanarray(file,&array,&size,FALSE,"firestand",verbose))
+      return TRUE;
+    if(fscanarray(file,&array,&size,FALSE,"firestand",verbose))
+      return TRUE;
+    for(i=0;i<size;i++)
+    {
+      fscanarrayindex(&array,&item,i,verbose);
+      if(fscanstring(&item,name,NULL,FALSE,verbose))
+        return TRUE;
+      index=findstandname(name,standtypes,nstand);
+      if(index==NOT_FOUND)
+      {
+        if(verbose)
+        {
+          fprintf(stderr,"ERROR245: Stand type '%s' not defined, must be in [",name);
+          for(i=0;i<nstand;i++)
+          {
+            fprintf(stderr,"\"%s\"",standtypes[i]->name);
+            if(i<nstand-1)
+              fprintf(stderr,",");
+          }
+          fprintf(stderr,"].\n");
+        }
+        return TRUE;
+      }
+      standtypes[index]->dailyfire=dailyfire;
+    }
+  }
+  return FALSE;
+} /* of 'fscanfirestand */

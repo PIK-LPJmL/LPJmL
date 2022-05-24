@@ -14,8 +14,15 @@
 
 #include "lpj.h"
 
-Real area_burnt(Real *fire_durat,Real max_fireduration,Real fire_danger_index, Real num_fires, Real windsp_cover,
-                Real ros_forward, int ntypes,const Pftlist *pftlist)
+Real area_burnt(Real *fire_durat,       /**< fire duration (min) */
+                Real max_fireduration,  /**< maximum fire duration */
+                Real fire_danger_index, /**< fire danger index (0..1) */
+                Real num_fires,         /**< number of fires */
+                Real windsp_cover,      /**< windspeed cover (m/min) */
+                Real ros_forward,       /**< rate of spread */
+                int ntypes,             /**< number of PFT types */
+                const Pftlist *pftlist  /**< array of established PFTs */
+               )                        /** \return area burnt (hectare) */
 {
   Real dbf,length_breath_ratio;
   Real lb_grass,lb_tree,base,lb_crop;
