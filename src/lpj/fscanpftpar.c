@@ -371,7 +371,7 @@ Bool fscanpftpar(LPJfile *file,       /**< pointer to LPJ file */
       pft->ncleaf.median=1/cnratio.median;
       pft->ncleaf.low=1/cnratio.high;
       pft->ncleaf.high=1/cnratio.low;
-      if(pft->nfixing)
+      if(config->ma_bnf && pft->nfixing)
       {
         fscanpftlimit(verb,&item,&pft->temp_bnf_lim,pft->name,"temp_bnf_lim");
         fscanpftlimit(verb,&item,&pft->temp_bnf_opt,pft->name,"temp_bnf_opt");

@@ -44,8 +44,8 @@ void litter_update_tree(Litter *litter, /**< Litter pool */
   {
     litter->item[pft->litter].ag.leaf.carbon+=tree->fruit.carbon/pft->nind*frac;
     litter->item[pft->litter].ag.leaf.nitrogen+=(pft->bm_inc.nitrogen+tree->fruit.nitrogen)/pft->nind*frac;
-    getoutput(output,LITFALLN,config)+=(pft->bm_inc.nitrogen+tree->fruit.nitrogen)/pft->nind*frac;
-    getoutput(output,LITFALLC,config)+=tree->fruit.carbon/pft->nind*frac;
+    getoutput(output,LITFALLN,config)+=(pft->bm_inc.nitrogen+tree->fruit.nitrogen)/pft->nind*frac*pft->stand->frac;
+    getoutput(output,LITFALLC,config)+=tree->fruit.carbon/pft->nind*frac*pft->stand->frac;
   }
   litter->item[pft->litter].ag.leaf.carbon+=tree->ind.leaf.carbon*frac;
   getoutput(output,LITFALLC,config)+=tree->ind.leaf.carbon*frac*pft->stand->frac;
