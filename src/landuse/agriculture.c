@@ -48,4 +48,4 @@ Standtype agriculture_stand={AGRICULTURE,"agriculture",0.0,new_agriculture,
                              free_agriculture,fwrite_agriculture,
                              fread_agriculture,fprint_agriculture,
                              daily_agriculture,annual_agriculture,
-                             dailyfire,isdailyoutput_agriculture};
+                             NULL,isdailyoutput_agriculture};

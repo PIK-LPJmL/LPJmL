@@ -17,7 +17,7 @@
 Stocks litter_update_fire(Litter *litter,Tracegas *emission,const Fuel *fuel)
 {
   int i,j;
-  Stocks fuel_consum,fuel_consum_pft;;
+  Stocks fuel_consum,fuel_consum_pft;
   /* litter update [gC/m2]*/
   fuel_consum.carbon=fuel_consum.nitrogen=0;
   for(i=0;i<litter->n;i++)

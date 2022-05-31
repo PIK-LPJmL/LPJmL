@@ -1120,6 +1120,8 @@ void fwriteoutput(Outputfile *output,  /**< output file array */
   writeoutputarray(CFT_LEACHING,1);
   writeoutputarray(CFT_C_EMIS,1);
   writeoutputarray(STAND_BURNTAREA,1);
+  writeoutputarray(STAND_FDI,ndate1);
+  writeoutputarray(STAND_SURFACE_FI,ndate1);
 
   if(isopen(output,PFT_NLIMIT))
   {

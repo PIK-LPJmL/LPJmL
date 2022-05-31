@@ -14,11 +14,18 @@
 
 #include "lpj.h"
 
-Real area_burnt(Real *fire_durat,Real max_fireduration,Real fire_danger_index, Real num_fires, Real windsp_cover,
-                Real ros_forward, int ntypes,const Pftlist *pftlist)
+Real area_burnt(Real *fire_durat,       /**< fire duration (min) */
+                Real max_fireduration,  /**< maximum fire duration */
+                Real fire_danger_index, /**< fire danger index (0..1) */
+                Real num_fires,         /**< number of fires */
+                Real windsp_cover,      /**< windspeed cover (m/min) */
+                Real ros_forward,       /**< rate of spread */
+                int ntypes,             /**< number of PFT types */
+                const Pftlist *pftlist  /**< array of established PFTs */
+               )                        /** \return area burnt (hectare) */
 {
   Real dbf,length_breath_ratio;
-  Real lb_grass,lb_tree,base;
+  Real lb_grass,lb_tree,base,lb_crop;
   Real ros_backward;
   Real *fpc_total; /* total grid FPC for PFTs */
   Real d_area_burnt;
@@ -41,7 +48,8 @@ Real area_burnt(Real *fire_durat,Real max_fireduration,Real fire_danger_index, R
     fpc_sum(fpc_total,ntypes,pftlist);
     lb_tree=fpc_total[TREE]*(1.0+(8.729*(pow(base,2.155))));
     lb_grass=fpc_total[GRASS]*(1.1+pow(windsp_cover,0.464));
-    length_breath_ratio=lb_tree+lb_grass;
+    lb_crop=fpc_total[CROP]*(1.1+pow(windsp_cover,0.464));
+    length_breath_ratio=lb_tree+lb_grass+lb_crop;
     free(fpc_total);
     if (length_breath_ratio > 8)
       length_breath_ratio = 8;

@@ -162,7 +162,6 @@ struct config
   Bool fix_climate;             /**< fix climate after specified year */
   Bool fix_landuse;             /**< fix land use after specified year */
   Bool iscotton;                /**< cotton present in PFT parameter file */
-  Bool fire_on_grassland;       /**< enable fires on grassland for Spitfire */
   int fix_landuse_year;         /**< year at which land use is fixed */
   int fix_climate_year;         /**< year at which climate is fixed */
   int fix_climate_cycle;        /**< number of years for climate shuffle for fixed climate */

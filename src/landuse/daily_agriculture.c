@@ -64,7 +64,6 @@ Real daily_agriculture(Stand *stand,                /**< [inout] stand pointer *
   Output *output;
   Pftcrop *crop;
   irrig_apply=0.0;
-
   data=stand->data;
   negbm=FALSE;
   output=&stand->cell->output;
@@ -122,6 +121,7 @@ Real daily_agriculture(Stand *stand,                /**< [inout] stand pointer *
         stand->soil.NH4[0] += crop->nmanure*param.nmanure_nh4_frac;
         /* no tillage at second application, so manure goes to ag litter not agsub as at cultivation */
         stand->soil.litter.item->ag.leaf.carbon += crop->nmanure*param.manure_cn;
+        update_fbd_grass(&stand->soil.litter,pft->par->fuelbulkdensity,crop->nmanure*param.manure_cn);
         stand->soil.litter.item->ag.leaf.nitrogen += crop->nmanure*(1-param.nmanure_nh4_frac);
         getoutput(output,FLUX_ESTABC,config) += crop->nmanure*param.manure_cn*stand->frac;
         stand->cell->balance.flux_estab.carbon += crop->nmanure*param.manure_cn*stand->frac;

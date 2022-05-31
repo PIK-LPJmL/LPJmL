@@ -54,6 +54,8 @@ Stocks livefuel_consum_crop(Litter * UNUSED(litter),Pft *pft,
   }
   livefuel_consum_total.carbon+=livefuel_consum.carbon;
   livefuel_consum_total.nitrogen+=livefuel_consum.nitrogen;
+  pft->bm_inc.carbon-=livefuel_consum_total.carbon;
+  pft->bm_inc.nitrogen-=livefuel_consum_total.nitrogen;
   *isdead=FALSE;
   return livefuel_consum_total;
 } /* of 'livefuel_consum_crop' */

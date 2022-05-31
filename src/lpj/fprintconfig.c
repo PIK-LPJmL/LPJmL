@@ -256,8 +256,6 @@ void fprintconfig(FILE *file,          /**< File pointer to text output file */
       len=printsim(file,len,&count,"prescribed ignitions");
     if(config->fire==SPITFIRE || config->fire==SPITFIRE_TMAX)
       len=printsim(file,len,&count,fdi[config->fdi]);
-    if(config->fire_on_grassland)
-      len=printsim(file,len,&count,"fire on grassland");
   }
   if(config->const_climate)
     len=printsim(file,len,&count,"const. climate");
@@ -398,6 +396,13 @@ void fprintconfig(FILE *file,          /**< File pointer to text output file */
       len+=fprintf(file,", ");
       len=fputstring(file,len,"fire in residuals",78);
     }
+    for(i=0;i<nstand;i++)
+      if(standtypes[i]->dailyfire!=NULL && standtypes[i]->landusetype!=NATURAL)
+      {
+        len+=fprintf(file,", ");
+        snprintf(s,STRING_LEN,"fire on %s",standtypes[i]->name);
+        len=fputstring(file,len,s,78);
+      }
     if(config->laimax_interpolate==LAIMAX_INTERPOLATE)
     {
       len+=fprintf(file,", ");

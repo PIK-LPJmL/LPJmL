@@ -72,7 +72,7 @@ int outputsize(int index,     /**< output index */
       return (config->nbiomass+config->ngrass*2)*2;
     case WFT_VEGC:
       return config->nwft;
-    case STAND_BURNTAREA:
+    case STAND_BURNTAREA: case STAND_FDI: case STAND_SURFACE_FI:
       return 4;
     default:
       return 1;
