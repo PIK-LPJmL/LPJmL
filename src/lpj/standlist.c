@@ -137,3 +137,14 @@ void freestandlist(Standlist standlist /**< stand list */
     freestand(stand);
   freelist(standlist);
 } /* of 'freestandlist' */
+
+Real standfracsum(const Standlist standlist /**< stand list */
+                 )                          /** \return sum of all stand fractions */
+{
+  Stand *stand;
+  Real frac_sum=0.0;
+  int s;
+  foreachstand(stand,s,standlist)
+    frac_sum+=stand->frac;
+  return frac_sum;
+} /* of 'standfracsum' */

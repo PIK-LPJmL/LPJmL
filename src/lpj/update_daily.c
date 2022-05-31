@@ -418,7 +418,7 @@ void update_daily(Cell *cell,            /**< cell pointer           */
 
   getoutput(&cell->output,RUNOFF,config)+=cell->discharge.drunoff;
   cell->balance.awater_flux+=cell->discharge.drunoff;
-  if(config->river_routing)
+  if(config->river_routing_restart)
   {
     radiation(&daylength,&par,&eeq,cell->coord.lat,day,&climate,c_albwater,config->with_radiation);
     getoutput(&cell->output,PET,config)+=eeq*PRIESTLEY_TAYLOR*(cell->lakefrac+cell->ml.reservoirfrac);
@@ -491,7 +491,7 @@ void update_daily(Cell *cell,            /**< cell pointer           */
   soilpar_output(cell,agrfrac,config);
   killstand(cell,npft, cell->ml.with_tillage,intercrop,year,config);
 #ifdef SAFE
-  check_stand_fracs(cell,cell->lakefrac+cell->ml.reservoirfrac);
+  check_stand_fracs(cell,TRUE);
 #endif
   /* Establishment fluxes are area weighted in subroutines */
   getoutput(&cell->output,FLUX_ESTABC,config)+=flux_estab.carbon;

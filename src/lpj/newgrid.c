@@ -241,6 +241,7 @@ static Cell *newgrid2(Config *config,          /* Pointer to LPJ configuration *
   {
     file_restart=NULL;
     config->initsoiltemp=TRUE;
+    config->river_routing_restart=config->river_routing;
   }
   else
   {
@@ -502,8 +503,10 @@ static Cell *newgrid2(Config *config,          /* Pointer to LPJ configuration *
       if(!config->ischeckpoint && config->new_seed)
         setseed(grid[i].seed,config->seed_start+(i+config->startgrid)*36363);
       if(!grid[i].skip)
-        check_stand_fracs(grid+i,
-                          grid[i].lakefrac+grid[i].ml.reservoirfrac);
+      {
+        if(check_stand_fracs(grid+i,FALSE))
+          return NULL;
+      }
       else
         (*count)++;
     }

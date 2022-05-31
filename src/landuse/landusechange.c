@@ -987,7 +987,7 @@ void landusechange(Cell *cell,          /**< pointer to cell */
       set_irrigsystem(stand,0,npft,ncft,config); /* no CFT index needed for non-agricultural stands */
 
 #ifdef SAFE
-  check_stand_fracs(cell,cell->lakefrac+cell->ml.reservoirfrac);
+  check_stand_fracs(cell,TRUE);
 #endif
   sum[0]=sum[1]=0.0;
   foreachstand(stand,s,cell->standlist)
@@ -1020,7 +1020,7 @@ void landusechange(Cell *cell,          /**< pointer to cell */
       cell->ml.image_data->timber_frac=0.0;
     }
   /* check that sum of fractions is 1.0 */
-  check_stand_fracs(cell,cell->lakefrac+cell->ml.reservoirfrac);
+  check_stand_fracs(cell,TRUE);
 
   /* check if there is more than 1 natural stand */
   nnat = 0;

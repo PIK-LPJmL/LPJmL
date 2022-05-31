@@ -23,9 +23,9 @@ Bool freadcell(FILE *file,             /**< File pointer to binary file */
                int npft,               /**< number of natural PFTs */
                int ncft,               /**< number of crop PFTs */
                const Soilpar *soilpar, /**< pointer to soil parameter */
-               Standtype **standtype, /**< array of stand types */
+               Standtype **standtype,  /**< array of stand types */
                int nstand,             /**< number of stand types */
-               Bool swap, /**< Byte order has to be changed (TRUE/FALSE) */
+               Bool swap,              /**< Byte order has to be changed (TRUE/FALSE) */
                Config *config          /**< LPJ configuration */
               )                        /** \return TRUE on error */
 {
@@ -58,7 +58,24 @@ Bool freadcell(FILE *file,             /**< File pointer to binary file */
       if(freadresdata(file,cell,swap))
         return TRUE;
     }
-  } 
+  }
+  else if(config->river_routing_restart)
+  {
+    /* restart was created with river routing enabled, skip data */
+    fseek(file,sizeof(Real)*4,SEEK_CUR);
+#ifdef IMAGE
+    fseek(file,sizeof(Real),SEEK_CUR);
+#endif
+#ifdef COUPLING_WITH_FMS
+    fseek(file,sizeof(Real),SEEK_CUR);
+#endif
+    if(skipqueue(file,swap))
+      return TRUE;
+    if(fread(&b,sizeof(b),1,file)!=1)
+      return TRUE;
+    if(b)
+      fseek(file,sizeof(Real)*(NMONTH*HIST_YEARS*3+NIRRIGDAYS+NMONTH+4)+sizeof(Stocks)+sizeof(float),SEEK_CUR);
+  }
   if(!cell->skip)
   {
     freadreal((Real *)cell->balance.estab_storage_tree,2*sizeof(Stocks)/sizeof(Real),swap,file);
@@ -77,6 +94,8 @@ Bool freadcell(FILE *file,             /**< File pointer to binary file */
                                    standtype,nstand,config->double_harvest,swap);
     if(cell->standlist==NULL)
       return TRUE;
+    if(!config->river_routing && config->river_routing_restart)
+      cell->lakefrac=1-standfracsum(cell->standlist);
     freadreal1(&cell->ml.cropfrac_rf,swap,file);
     freadreal1(&cell->ml.cropfrac_ir,swap,file);
     if(freadclimbuf(file,&cell->climbuf,ncft,swap))

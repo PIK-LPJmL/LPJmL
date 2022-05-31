@@ -111,6 +111,16 @@ Queue freadqueue(FILE *file, /**< pointer to binary file */
   }
   return queue; 
 } /* of 'freadqueue' */
+
+Bool skipqueue(FILE *file, /**< pointer to binary file */
+               Bool swap   /**< byte order has to be swapped */
+              )            /** \return TRUE on error */
+{
+  int size;
+  if(freadint1(&size,swap,file)!=1)
+    return TRUE;
+  return fseek(file,sizeof(int)+sizeof(Real)*size,SEEK_CUR);
+} /* of 'skipqueue' */
  
 Real getqueue(const Queue queue, /**< pointer to queue */
               int i              /**< index of requested queue element */

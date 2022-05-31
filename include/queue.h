@@ -27,6 +27,7 @@ extern Real getqueue(const Queue,int);
 extern void putqueue(Queue,Real);
 extern Real sumqueue(const Queue);
 extern Bool fwritequeue(FILE *,const Queue);
+extern Bool skipqueue(FILE *,Bool);
 extern Queue freadqueue(FILE *,Bool);
 extern void freequeue(Queue);
 extern void fprintqueue(FILE *,const Queue);

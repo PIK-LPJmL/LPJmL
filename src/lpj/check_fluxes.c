@@ -67,7 +67,7 @@ void check_fluxes(Cell *cell,          /**< cell pointer */
   else
     startyear=config->firstyear+1;
 
-  if(year>startyear && fabs(balance.carbon)>1)
+  if(year>startyear && fabs(balance.carbon)>.2)
   {
 #if defined IMAGE && defined COUPLED
     if(config->sim_id==LPJML_IMAGE)
@@ -127,7 +127,7 @@ void check_fluxes(Cell *cell,          /**< cell pointer */
       cell->balance.estab_storage_tree[1].nitrogen);
     foreachstand(stand,s,cell->standlist){
       foreachpft(pft,p,&stand->pftlist){
-        fprintf(stderr,"PFT bm_inc nitrogen %g\n",pft->bm_inc.nitrogen);
+        fprintf(stderr,"PFT(%s) on %s bm_inc nitrogen %g\n",pft->par->name,stand->type->name,pft->bm_inc.nitrogen);
       }
     }
   }

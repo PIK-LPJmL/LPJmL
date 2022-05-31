@@ -48,7 +48,7 @@ struct stand
   Real frac;                  /**< Stand fraction (0..1) */
   Real frac_change;           /**< Expansion fraction due to landuse change (only used for woodplantations) */
   Real frac_g[NSOILLAYER];    /**< fraction of green water in total available soil water, including free water */
-  Real afire_frac;          /**< fraction of grid cell burnt this year */
+  Real afire_frac;            /**< fraction of grid cell burnt this year */
   int growing_days;           /**< for GRASS days since harvest*/
   int prescribe_landcover;
   void *data;                 /**< stand-specific extensions */
@@ -72,9 +72,10 @@ extern void initstand (Stand *);
 extern void freestand(Stand *);
 extern int delstand(Standlist,int);
 extern void freestandlist(Standlist);
+extern Real standfracsum(const Standlist);
 extern void mixsoil(Stand *,const Stand *,int,const Config *);
 extern Bool check_lu(const Standlist ,Real,int,Bool);
-extern void check_stand_fracs(const Cell *,Real);
+extern Bool check_stand_fracs(const Cell *,Bool);
 extern int findstand(const Standlist, Landusetype, Bool);
 extern int findstandpft(const Standlist,int,Bool);
 extern int findlandusetype(const Standlist,Landusetype);
