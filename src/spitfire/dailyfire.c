@@ -18,11 +18,11 @@
 
 #define CG 0.2   /* cloud to ground flashes ratio */
 
-void dailyfire(Stand *stand,            /**< pointer to stand */
-               Real popdens, /**< population density (capita/km2) */
+void dailyfire(Stand *stand,                /**< pointer to stand */
+               Real popdens,                /**< population density (capita/km2) */
                Real avgprec,                /**< monthly averaged precipitation (mm/day) */
                const Dailyclimate *climate, /**< daily climate data */
-               const Config *config /**< prescribed burnt area (TRUE/FALSE) */
+               const Config *config         /**< LPJmL configuration */
               )
 {
   Real fire_danger_index,human_ignition,num_fires,windsp_cover,ros_forward;
@@ -69,10 +69,8 @@ void dailyfire(Stand *stand,            /**< pointer to stand */
     stand->cell->ignition.nesterov_max = stand->cell->ignition.nesterov_accum;
   }
   fuelload(stand, &fuel,&livefuel, stand->cell->ignition.nesterov_max);
-  fire_danger_index=firedangerindex(fuel.char_moist_factor,
-                                    stand->cell->ignition.nesterov_max,
-                                    &stand->pftlist,climate->humid,
-                                    avgprec,config->fdi,climate->temp);
+  fire_danger_index=firedangerindex(fuel.char_moist_factor,stand,climate,
+                                    avgprec,config->fdi);
   //printf("fdi(%s)=%g\n",stand->type->name,fire_danger_index);
   if(config->prescribe_ignition)
     num_fires=climate->ignition;

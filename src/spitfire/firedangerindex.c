@@ -28,27 +28,26 @@
 #define cR 2   /* day/mm */
 
 Real firedangerindex(Real char_moist_factor,
-                     Real nesterov_accum,
-                     const Pftlist *pftlist, /**< PFT list */
-                     Real humidity,          /**< specific humidity (kg/kg) */
-                     Real avgprec,           /**< monthly averaged precipitation (mm/day) */
-                     int fid,                /**< fire danger index method (NESTEROV_INDEX,WVPD_INDEX) */
-                     Real temp               /**< air temperature (Celsius) */
-                    )                        /** \return fire danged index */
+                     const Stand *stand,           /**< pointer to stand */
+                     const Dailyclimate  *climate, /**< daily climate data */
+                     Real avgprec,                 /**< monthly averaged precipitation (mm/day) */
+                     int fid                       /**< fire danger index method (NESTEROV_INDEX,WVPD_INDEX) */
+                    )                              /** \return fire danger index (0..1) */
 {
   Real d_fdi,alpha_fuelp_ave,fpc_sum=0;
   Real temperature, rh, VD, R, Z, vpd_sum;
-
+  Real nesterov_accum;
   const Pft *pft;
   int p,n;
-  n=getnpft(pftlist);
+  n=getnpft(&stand->pftlist);
   switch(fid)
   {
     case NESTEROV_INDEX:
+      nesterov_accum=stand->cell->ignition.nesterov_max;
       alpha_fuelp_ave=0;
       if(n>0)
       {
-        foreachpft(pft,p,pftlist)
+        foreachpft(pft,p,&stand->pftlist)
           alpha_fuelp_ave+=pft->par->alpha_fuelp;
         alpha_fuelp_ave/=n;
       } 
@@ -64,21 +63,21 @@ Real firedangerindex(Real char_moist_factor,
       fpc_sum=0;
 
       /*Goff and Gratch: coefficient z of saturation vapor pressure*/
-      temperature = temp + 273.16;
-      Z =( a * (Ts/temperature -1) + b * log(Ts/temperature) + c * (pow(10,pow(d,(1-(Ts/temperature))))-1) + f * (pow(10,-pow(h,(Ts/temperature)-1))-1));
+      temperature = climate->temp + 273.16;
+      Z =( a * (Ts/temperature -1) + b * log(Ts/temperature)/log(10.0) + c * (pow(10,pow(d,(1-(Ts/temperature))))-1) + f * (pow(10,-pow(h,(Ts/temperature)-1))-1));
   
       /*conversion of specific humidity to relative humidity*/
-      rh= 0.263 * 1013.25 * humidity *1/(exp(17.67*temp/(temperature-29.65)));
+      rh= 0.263 * 1013.25 * climate->humid *1/(exp(17.67*climate->temp/(temperature-29.65)));
   
       /* average precipitation over one month to avoid unrealistically high flammability fluctuations in time steps with very low or zero precipitation */
-       R = avgprec; /* letzten monat aufsummieren und durch num month teilen (units: mm/day) */
+       R = avgprec;
        if (rh > 1)
          rh = 1;
   
       /*calculation of vegetation density and average alpha_fuelp as skaling factor for VPD*/
       if(n>0)
       {
-        foreachpft(pft,p,pftlist)
+        foreachpft(pft,p,&stand->pftlist)
         {
           vpd_sum+=pft->par->vpd_par*pft->fpc;
           fpc_sum+=pft->fpc;

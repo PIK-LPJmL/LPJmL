@@ -34,7 +34,7 @@ extern Bool fscanfirestand(LPJfile *,Standtype **,int,Verbosity);
 extern void fprintfireduration(FILE *,Standtype **,int);
 extern Real area_burnt(Real *,Real,Real,Real,Real,Real, int,const Pftlist *);
 extern Real deadfuel_consumption(const Litter *,Fuel *, Real);
-extern Real firedangerindex(Real,Real,const Pftlist *, Real, Real, int, Real);
+extern Real firedangerindex(Real,const Stand *, const Dailyclimate *,Real, int);
 extern Real firemortality_tree(Pft *,const Fuel *,Livefuel *,Real,Real);
 extern void fraction_of_consumption(Fuel *);
 extern Real fuel_consumption_1hr(Real, Real);
