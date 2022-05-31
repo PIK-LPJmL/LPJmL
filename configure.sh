@@ -5,8 +5,8 @@
 ##                                                                             ##
 ##   configure script to copy appropriate Makefile.$osname                     ##
 ##                                                                             ##
-##   Usage: configure.sh [-h] [-prefix dir] [-debug] [-check] [-nompi]         ##
-##                       [-Dmacro[=value] ...]                                 ##
+##   Usage: configure.sh [-h] [-prefix dir] [-inpath dir] [-debug] [-check]    ##
+##                       [-nompi] [-Dmacro[=value] ...]                        ##
 ##                                                                             ##
 ## (C) Potsdam Institute for Climate Impact Research (PIK), see COPYRIGHT file ##
 ## authors, and contributors see AUTHORS file                                  ##
@@ -19,15 +19,17 @@ debug=0
 nompi=0
 prefix=$PWD
 macro=""
+inpath=""
 while(( "$#" )); do
   case "$1" in
     -h)
       echo $0 - configure LPJmL $(cat VERSION)
-      echo Usage: $0 [-h] [-prefix dir] [-debug] [-nompi] [-check] [-Dmacro[=value] ...]
+      echo Usage: $0 [-h] [-prefix dir] [-inpath dir] [-debug] [-nompi] [-check] [-Dmacro[=value] ...]
       echo
       echo Arguments:
       echo "-h              print this help text"
       echo "-prefix dir     set installation directory for LPJmL. Default is current directory"
+      echo "-inpath dir     set input directory directory for LPJmL"
       echo "-debug          set debug flags and disable optimization"
       echo "-check          set debug flags, enable pointer checking and disable optimization"
       echo "-nompi          do not build MPI version"
@@ -41,10 +43,20 @@ while(( "$#" )); do
       if [ $# -lt 2 ]
       then
         echo >&2 Error: prefix directory missing
-        echo >&2 Usage: $0 [-h] [-prefix dir] [-debug] [-nompi] [-check] [-Dmacro[=value] ...]
+        echo >&2 Usage: $0 [-h] [-prefix dir] [-inpath dir] [-debug] [-nompi] [-check] [-Dmacro[=value] ...]
         exit 1
       fi
       prefix=$2
+      shift 2
+      ;;
+    -inpath)
+      if [ $# -lt 2 ]
+      then
+        echo >&2 Error: inpath directory missing
+        echo >&2 Usage: $0 [-h] [-prefix dir] [-inpath dir] [-debug] [-nompi] [-check] [-Dmacro[=value] ...]
+        exit 1
+      fi
+      inpath=$2
       shift 2
       ;;
     -debug)
@@ -65,12 +77,12 @@ while(( "$#" )); do
       ;;
     -*)
       echo >&2 Invalid option $1
-      echo >&2 Usage: $0 [-h] [-prefix dir] [-debug] [-nompi] [-check] [-Dmacro[=value] ...]
+      echo >&2 Usage: $0 [-h] [-prefix dir] [-inpath dir] [-debug] [-nompi] [-check] [-Dmacro[=value] ...]
       exit 1
       ;;
     *)
       echo >&2 Invalid argument $1
-      echo >&2 Usage: $0 [-h] [-prefix dir] [-debug] [-nompi] [-check] [-Dmacro[=value] ...]
+      echo >&2 Usage: $0 [-h] [-prefix dir] [-inpath dir] [-debug] [-nompi] [-check] [-Dmacro[=value] ...]
       exit 1
       ;;
   esac
@@ -80,12 +92,15 @@ echo Configuring LPJmL $(cat VERSION)...
         
 osname=$(uname)
 
+if [ "$inpath" = "" ]
+then
 if test -d /p ;
 then
   inpath=/p/projects/lpjml/input/historical
 else
   inpath=""
   echo >&2 No input directory found, LPJINPATH has to be set
+fi
 fi
 
 if [ "$osname" = "Linux" ]  || [ "$osname" = "CYGWIN_NT-5.1" ]

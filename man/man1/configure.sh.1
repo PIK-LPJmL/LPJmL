@@ -1,9 +1,9 @@
-.TH configure.sh 1  "June 24, 2019" "version 5.1.001" "USER COMMANDS"
+.TH configure.sh 1  "May 25, 2022" "version 5.3.001" "USER COMMANDS"
 .SH NAME
 configure.sh \- Configure LPJmL
 .SH SYNOPSIS
 .B configure.sh
-[-h] [-prefix \fIdir\fP] [-debug] [-nompi] [-check] [-Dmacro[=value] ...]
+[-h] [-prefix \fIdir\fP] [-prefix \fIdir\fP] [-debug] [-nompi] [-check] [-Dmacro[=value] ...]
 .SH DESCRIPTION
 Script configures LPJmL for specific OS and compiler. File \fIMakefile.inc\fP and scripts \fBlpj_paths.sh\fP, \fBlpj_paths.csh\fP are created. After configuration LPJmL program and utilities can be created by invoking
 
@@ -16,6 +16,9 @@ display a short help text.
 .TP
 -prefix \fIdir\fP
 Set installation directory for LPJmL. Default is current working directory.
+.TP
+-inpath \fIdir\fP
+Set input directory for LPJmL.
 .TP
 -debug
 Set debug flags and disable optimization of compiler. LPJmL has to be rebuilt by invoking \fBmake clean\fP and \fBmake all\fP.
