@@ -111,8 +111,7 @@ void update_daily(Cell *cell,            /**< cell pointer           */
         cell->balance.flux_estab.carbon+=param.residue_rate*stand->frac*0.5;
         getoutput(&cell->output,FLUX_ESTABN,config)+=param.residue_rate/param.residue_cn*0.5*stand->frac;
         cell->balance.flux_estab.nitrogen+=param.residue_rate/param.residue_cn*0.5*stand->frac;
-        if(config->litter_cover)
-          updatelitterproperties(stand,stand->frac);
+        updatelitterproperties(stand,stand->frac);
       }
       if(config->fix_fertilization)
       {
@@ -125,8 +124,7 @@ void update_daily(Cell *cell,            /**< cell pointer           */
         tillage(&stand->soil,param.residue_frac);
         if(config->soilpar_option==NO_FIXED_SOILPAR || (config->soilpar_option==FIXED_SOILPAR && year<config->soilpar_fixyear))
           pedotransfer(stand,NULL,NULL,stand->frac);
-        if(config->litter_cover)
-          updatelitterproperties(stand,stand->frac);
+        updatelitterproperties(stand,stand->frac);
       }
     }
     beta=albedo_stand(stand);
@@ -186,8 +184,7 @@ void update_daily(Cell *cell,            /**< cell pointer           */
     /* update soil and litter properties to account for all changes since last call of littersom */
     if(config->soilpar_option==NO_FIXED_SOILPAR || (config->soilpar_option==FIXED_SOILPAR && year<config->soilpar_fixyear))
       pedotransfer(stand,NULL,NULL,stand->frac);
-    if(config->litter_cover)
-      updatelitterproperties(stand,stand->frac);
+    updatelitterproperties(stand,stand->frac);
     stand->soil.litter.avg_fbd[0]*=(1-param.bioturbate);
     stand->soil.litter.avg_fbd[NFUELCLASS]*=(1-param.bioturbate);
 
@@ -243,8 +240,7 @@ void update_daily(Cell *cell,            /**< cell pointer           */
     /* update soil and litter properties to account for all changes from littersom */
     if(config->soilpar_option==NO_FIXED_SOILPAR || (config->soilpar_option==FIXED_SOILPAR && year<config->soilpar_fixyear))
       pedotransfer(stand,NULL,NULL,stand->frac);
-    if(config->litter_cover)
-      updatelitterproperties(stand,stand->frac);
+    updatelitterproperties(stand,stand->frac);
 
     /*monthly rh for agricutural stands*/
     if (isagriculture(stand->type->landusetype))
