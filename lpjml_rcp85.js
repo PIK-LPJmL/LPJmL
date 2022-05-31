@@ -43,7 +43,9 @@
   "random_prec" : false,    /* Random weather generator for precipitation enabled */
   "random_seed" : "random_seed",        /* seed for random number generator */
   "radiation" : "radiation",  /* other options: CLOUDINESS, RADIATION, RADIATION_SWONLY, RADIATION_LWDOWN */
-  "fire" : "fire",            /* fire disturbance enabled, other options: NO_FIRE, FIRE, SPITFIRE, SPITFIRE_TMAX */
+  "fire" : "spitfire_tmax",            /* fire disturbance enabled, other options: NO_FIRE, FIRE, SPITFIRE, SPITFIRE_TMAX */
+  "fdi" : "wvpd",       /* different fire danger index formulations: "wvpd" (needs GLDAS input data), "nesterov" */
+  "firestand" : ["grassland","agriculture"], /*enable spitfire on land-use stands */
   "firewood" : false,
   "new_phenology": true,    /* GSI phenology enabled */
   "new_trf" : false,        /* new transpiration reduction function disabled */
@@ -65,7 +67,7 @@
 #ifdef FROM_RESTART
   "new_seed" : false,
   "equilsoil" :  false,
-  "population" : false,
+  "population" : true,
   "landuse" : "yes", /* other options: NO_LANDUSE, LANDUSE, CONST_LANDUSE, ALL_CROPS */
   "landuse_year_const" : 2000, /* set landuse year for CONST_LANDUSE case */
   "reservoir" : true,
@@ -78,6 +80,7 @@
   "wateruse" : "no",
 #endif
   "prescribe_burntarea" : false,
+  "prescribe_ignition" : false,
   "prescribe_landcover" : "no_landcover", /* NO_LANDCOVER, LANDCOVERFPC, LANDCOVEREST */
   "sowing_date_option" : "fixed_sdate",   /* NO_FIXED_SDATE, FIXED_SDATE, PRESCRIBED_SDATE */
   "sdate_fixyear" : 1970,               /* year in which sowing dates shall be fixed */
@@ -112,12 +115,14 @@
   "crop_phu_option" : "new",
   "cropsheatfrost" : false,
   "double_harvest" : true,
+  "ma_bnf" : true,                    /* Biological N fixation using Cleveland, 1999 (false) or Ma et al., 2022 (true) approach
+
 
 /*===================================================================*/
 /*  II. Input parameter section                                      */
 /*===================================================================*/
 
-#include "param.js"    /* Input parameter file */
+#include "param_vpd.js"    /* Input parameter file */
 
 /*===================================================================*/
 /*  III. Input data section                                          */
@@ -140,6 +145,7 @@
 #define mkstr(s) xstr(s) /* putting string in quotation marks */
 #define xstr(s) #s
 
+  "output_metafile" : true, /* no json metafile created */
   "crop_index" : "temperate cereals", /* CFT for daily output */
   "crop_irrigation" : false,          /* irrigation flag for daily output */
 
@@ -207,13 +213,12 @@ ID                         Fmt                    filename
     { "id" : "pft_nsapw",        "file" : { "fmt" : "raw", "name" : "output/pft_nsapw.bin"}},
     { "id" : "pft_chawo",        "file" : { "fmt" : "raw", "name" : "output/pft_chawo.bin"}},
     { "id" : "pft_nhawo",        "file" : { "fmt" : "raw", "name" : "output/pft_nhawo.bin"}},
-#ifdef WITH_SPITFIRE
     { "id" : "firec",            "file" : { "fmt" : "raw", "timestep" : "monthly", "unit" : "gC/m2/month", "name" : "output/mfirec.bin"}},
     { "id" : "nfire",            "file" : { "fmt" : "raw", "name" : "output/mnfire.bin"}},
+    { "id" : "stand_fdi",        "file" : { "fmt" : "cdf", "name" : "output/afdi.nc"}},
+    { "id" : "stand_surface_fi", "file" : { "fmt" : "cdf", "name" : "output/asurface_fi.nc"}},
+    { "id" : "stand_burntarea",  "file" : { "fmt" : "cdf", "name" : "output/aburntarea.nc"}},
     { "id" : "burntarea",        "file" : { "fmt" : "raw", "name" : "output/mburnt_area.bin"}},
-#else
-    { "id" : "firec",            "file" : { "fmt" : "raw", "name" : "output/firec.bin"}},
-#endif
     { "id" : "discharge",        "file" : { "fmt" : "raw", "name" : "output/mdischarge.bin"}},
     { "id" : "wateramount",      "file" : { "fmt" : "raw", "name" : "output/mwateramount.bin"}},
     { "id" : "harvestc",         "file" : { "fmt" : "raw", "name" : "output/flux_harvestc.bin"}},

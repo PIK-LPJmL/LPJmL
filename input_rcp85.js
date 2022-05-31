@@ -55,10 +55,13 @@
   "elevation" :    { "fmt" : "clm",  "name" : "input_VERSION2/elevation.bin"},
   "reservoir" :    { "fmt" : "clm",  "name" : "input_VERSION2/reservoir_info_grand5.bin"},
   "temp" :         { "fmt" : "clm",  "name" : mkstr(/p/projects/biodiversity/bloh/input/MODEL/tas_1861-2099.clm)},
+  "tmin" :         { "fmt" : "clm",  "name" : mkstr(/p/projects/biodiversity/bloh/input/MODEL/tasmin_1861-2099.clm)},
+  "tmax" :         { "fmt" : "clm",  "name" : mkstr(/p/projects/biodiversity/bloh/input/MODEL/tasmax_1861-2099.clm)},
   "prec" :         { "fmt" : "clm",  "name" : mkstr(/p/projects/biodiversity/bloh/input/MODEL/pr_1861-2099.clm)},
   "lwnet" :        { "fmt" : "clm",  "name" : mkstr(/p/projects/biodiversity/bloh/input/MODEL/lwnet_1861-2099.clm)},
   "swdown" :       { "fmt" : "clm",  "name" : mkstr(/p/projects/biodiversity/bloh/input/MODEL/rsds_1861-2099.clm)},
   "wind" :         { "fmt" : "clm",  "name" : mkstr(/p/projects/biodiversity/bloh/input/MODEL/sfcWind_1861-2099.clm)},
+  "humid" :        { "fmt" : "clm",  "name" : mkstr(/p/projects/biodiversity/bloh/input/MODEL/huss_1861-2099.clm)},
   "tamp":          { "fmt" : "clm",  "name" : "CRUDATA_TS3_23/cru_ts3.23.1901.2014.dtr.dat.clm"}, /* diurnal temp. range */
   "lightning" :    { "fmt" : "clm",  "name" : "input_VERSION2/mlightning.clm"},
   "human_ignition": { "fmt" : "clm", "name" : "input_VERSION2/human_ignition.clm"},
