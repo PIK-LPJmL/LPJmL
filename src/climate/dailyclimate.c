@@ -64,19 +64,30 @@ void dailyclimate(Dailyclimate *daily,    /**< */
     else
       daily->windspeed=interpolate(getcellwind(climate,cell),month,dayofmonth);
   }
-  if(climate->data.tamp!=NULL)
+  if(climate->data.tmax!=NULL&&climate->data.tmin!=NULL) /* Tmin and Tmax available */
   {
-    if(climate->data.tmax!=NULL)
-    {
-      daily->tmin=isdaily(climate->file_tamp) ?  climate->data.tamp[cell*NDAYYEAR+day-1] : interpolate(getcelltamp(climate,cell),month,dayofmonth);
-      daily->tmax=isdaily(climate->file_tmax) ?  climate->data.tmax[cell*NDAYYEAR+day-1] : interpolate(getcelltmax(climate,cell),month,dayofmonth);
-    }
+    daily->tmax=isdaily(climate->file_tmax) ?  climate->data.tmax[cell*NDAYYEAR+day-1] : interpolate(getcelltmax(climate,cell),month,dayofmonth);
+    daily->tmin=isdaily(climate->file_tmin) ?  climate->data.tmin[cell*NDAYYEAR+day-1] : interpolate(getcelltmin(climate,cell),month,dayofmonth);
+  }
+  else if(climate->data.tamp!=NULL)
+  {
+    tamp=isdaily(climate->file_tamp) ?  climate->data.tamp[cell*NDAYYEAR+day-1] : interpolate(getcelltamp(climate,cell),month,dayofmonth);
+    daily->tmin=daily->temp-tamp*0.5;
+    daily->tmax=daily->temp+tamp*0.5;
+  }
+  if(climate->data.no3deposition!=NULL)
+  {
+    if(isdaily(climate->file_no3deposition))
+      daily->no3deposition=climate->data.no3deposition[cell*NDAYYEAR+day-1];
     else
-    {
-      tamp=isdaily(climate->file_tamp) ?  climate->data.tamp[cell*NDAYYEAR+day-1] : interpolate(getcelltamp(climate,cell),month,dayofmonth);
-      daily->tmin=daily->temp-tamp*0.5;
-      daily->tmax=daily->temp+tamp*0.5;
-    }
+      daily->no3deposition=interpolate(getcellno3deposition(climate,cell),month,dayofmonth);
+  }
+  if(climate->data.nh4deposition!=NULL)
+  {
+    if(isdaily(climate->file_nh4deposition))
+      daily->nh4deposition=climate->data.nh4deposition[cell*NDAYYEAR+day-1];
+    else
+      daily->nh4deposition=interpolate(getcellnh4deposition(climate,cell),month,dayofmonth);
   }
   if(climate->data.lightning!=NULL)
   {

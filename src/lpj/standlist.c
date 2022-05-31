@@ -15,7 +15,6 @@
 /**************************************************************************************/
 
 #include "lpj.h"
-#include "natural.h"
 
 int fwritestandlist(FILE *file,                /**< pointer to binary file */
                     const Standlist standlist, /**< stand list */
@@ -31,8 +30,11 @@ int fwritestandlist(FILE *file,                /**< pointer to binary file */
   return s;
 } /* of 'fwritestandlist' */
 
-void fprintstandlist(FILE *file,               /**< Pointer to text file */
-                     const Standlist standlist /**< Stand list */
+void fprintstandlist(FILE *file,                /**< Pointer to text file */
+                     const Standlist standlist, /**< Stand list */
+                     const Pftpar *pftpar,      /**< PFT parameter array */
+                     int ntotpft,               /**< total number of PFTs */
+                     int with_nitrogen          /**< nitrogen cycle enabled */
                     )
 {
   const Stand *stand;
@@ -41,7 +43,7 @@ void fprintstandlist(FILE *file,               /**< Pointer to text file */
   foreachstand(stand,s,standlist)
   {
     fprintf(file,"Stand:\t\t%d\n",s);
-    fprintstand(file,stand);
+    fprintstand(file,stand,pftpar,ntotpft,with_nitrogen);
   }
 } /* of 'fprintstandlist' */
 
@@ -52,35 +54,26 @@ Standlist freadstandlist(FILE *file,            /**< File pointer to binary file
                          const Soilpar *soilpar,/**< soil parameter */
                          const Standtype standtype[],
                          int nstand,            /**< number of stand types */
+                         Bool double_harvest,
                          Bool swap              /**< Byte order has to be changed */
                         ) /** \return allocated stand list or NULL */
 {
   /* Function reads stand list from file */
-  int s;
+  int s,n;
   Standlist standlist;
   /* Read number of stands */
-  standlist=new(List);
+  if(freadint1(&n,swap,file)!=1)
+    return NULL;
+  standlist=newlist(n);
   if(standlist==NULL)
   {
     printallocerr("standlist");
     return NULL;
   }
-  if(freadint1(&standlist->n,swap,file)!=1)
-  {
-    free(standlist);
-    return NULL;
-  }
-  standlist->data=newvec(void *,standlist->n);
-  if(standlist->data==NULL)
-  {
-    printallocerr("standlist");
-    free(standlist);
-    return NULL;
-  }
   /* Read all stand data */
   for(s=0;s<standlist->n;s++)
-    if((standlist->data[s]=freadstand(file,cell,pftpar,ntotpft,soilpar,
-                                      standtype,nstand,swap))==NULL)
+    if((getlistitem(standlist,s)=freadstand(file,cell,pftpar,ntotpft,soilpar,
+                                            standtype,nstand,double_harvest,swap))==NULL)
       return NULL;
   return standlist;
 } /* of 'freadstandlist' */
@@ -109,9 +102,8 @@ void initstand(Stand *stand /**< Pointer to stand */
 {
   /* Function initializes stand */
   stand->fire_sum=0.0;
-  stand->growing_time=stand->growing_days=stand->age=0;
+  stand->growing_days=0;
   stand->prescribe_landcover=NO_LANDCOVER;
-  stand->landcover=NULL;
 } /* of 'initstand' */
 
 void freestand(Stand *stand /**< Pointer to stand */

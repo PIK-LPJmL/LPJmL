@@ -27,17 +27,20 @@ Bool fwritepft(FILE *file,    /**< File pointer to binary file */
   fwrite(&pft->phen_gsi,sizeof(Phenology),1,file);
   fwrite1(&pft->wscal,sizeof(Real),file);
   fwrite1(&pft->wscal_mean,sizeof(Real),file);
+  fwrite1(&pft->vscal,sizeof(Real),file);
   fwrite1(&pft->aphen,sizeof(Real),file);
   fwrite1(&pft->phen,sizeof(Real),file);
   /* write type-dependent PFT variables */
   if(pft->par->fwrite(file,pft))
     return TRUE;
-  fwrite1(&pft->bm_inc,sizeof(Real),file);
+  fwrite1(&pft->bm_inc,sizeof(Stocks),file);
   fwrite1(&pft->nind,sizeof(Real),file);
   fwrite1(&pft->gdd,sizeof(Real),file); 
   fwrite1(&pft->fpc,sizeof(Real),file);
   fwrite1(&pft->albedo,sizeof(Real),file);
   fwrite1(&pft->fapar,sizeof(Real),file);
+  fwrite1(&pft->nleaf,sizeof(Real),file);
+  fwrite1(&pft->establish,sizeof(Stocks),file);
   b=(Byte)pft->litter;
   fwrite1(&b,sizeof(b),file);
   return FALSE;

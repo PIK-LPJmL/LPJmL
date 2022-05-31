@@ -4,7 +4,7 @@
 /**                                                                                \n**/
 /**     C implementation of LPJ                                                    \n**/
 /**                                                                                \n**/
-/**     Function reads human ignitions from file                                   \n**/ 
+/**     Function reads human ignitions from file                                   \n**/
 /**                                                                                \n**/
 /** (C) Potsdam Institute for Climate Impact Research (PIK), see COPYRIGHT file    \n**/
 /** authors, and contributors see AUTHORS file                                     \n**/
@@ -20,69 +20,21 @@ Bool initignition(Cell grid[],         /* LPJ grid */
                   const Config *config /* LPJ configuration */
                  )                     /* returns TRUE on error */
 {
-  FILE *file;
-  Header header;
-  String headername;
-  int version;
-  Bool swap;
   int cell;
-  size_t offset;
-  Input_netcdf input_netcdf;
-  if(config->human_ignition_filename.fmt==CDF)
+  Infile input;
+  if(openinputdata(&input,&config->human_ignition_filename,"human ignition","yr-1",LPJ_SHORT,0.001,config))
+    return TRUE;
+  for(cell=0;cell<config->ngridcell;cell++)
   {
-    input_netcdf=openinput_netcdf(config->human_ignition_filename.name,
-                                  NULL,NULL,0,config);
-    if(input_netcdf==NULL)
-      return TRUE;
-    for(cell=0;cell<config->ngridcell;cell++)
+    if(readinputdata(&input,&grid[cell].ignition.human,&grid[cell].coord,cell+config->startgrid,&config->human_ignition_filename))
     {
-      if(readinput_netcdf(input_netcdf,&grid[cell].ignition.human,
-                          &grid[cell].coord))
-      {
-        closeinput_netcdf(input_netcdf);
-        return TRUE;
-      }
+      closeinput(&input);
+      return TRUE;
     }
-    closeinput_netcdf(input_netcdf);
+    if(grid[cell].ignition.human<0)
+      grid[cell].ignition.human=0;
+    grid[cell].ignition.human/=365;
   }
-  else
-  {
-    file=openinputfile(&header,&swap,&config->human_ignition_filename,
-                       headername,&version,&offset,config);
-    if(file==NULL)
-    {
-     printfopenerr(config->human_ignition_filename.name);
-     return TRUE;
-    }
-    if(version<=1)
-      header.scalar=0.001;
-    if(config->human_ignition_filename.fmt!=RAW && header.nbands!=1)
-    {
-      if(isroot(*config))
-        fprintf(stderr,"ERROR218: Number of bands=%d in human ignition file '%s' is not 1.\n",
-                header.nbands,config->human_ignition_filename.name);
-      fclose(file);
-      return TRUE;
-    }
-    if(fseek(file,(config->startgrid-header.firstcell)*typesizes[header.datatype]+offset,SEEK_CUR))
-    {
-      fprintf(stderr,"ERROR186: Cannot seek file for human ignition to position %d.\n",config->startgrid);
-      fclose(file);
-      return TRUE;
-    }
-    for(cell=0;cell<config->ngridcell;cell++)
-    {
-      if(readrealvec(file,&grid[cell].ignition.human,0,header.scalar,1,swap,header.datatype))
-      {
-        fputs("ERROR186: Cannot read human ignition.\n",stderr);
-        fclose(file);
-        return TRUE;
-      }
-      if(grid[cell].ignition.human<0)
-        grid[cell].ignition.human=0;
-      grid[cell].ignition.human/=365;
-    }
-    fclose(file);
-  }
+  closeinput(&input);
   return FALSE;
 } /* of 'initignition' */

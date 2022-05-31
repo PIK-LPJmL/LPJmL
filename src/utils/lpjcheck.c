@@ -20,11 +20,6 @@
 
 #define LPJCHECK_VERSION "1.0.004"
 #define NTYPES 3 /* number of PFT types: grass, tree, crop */
-#ifdef USE_JSON
-#define dflt_conf_filename "lpjml.js" /* Default LPJ configuration file */
-#else
-#define dflt_conf_filename "lpjml.conf" /* Default LPJ configuration file */
-#endif
 #ifdef USE_MPI
 #define USAGE "Usage: %s [-h] [-q] [-nocheck] [-param] [-vv]\n"\
               "       [-output {mpi2|gather|socket=hostname[:port]}]\n"\
@@ -39,8 +34,13 @@
 
 int main(int argc,char **argv)
 {
-  /* Create array of functions, uses the typedef of (*Fscanpftparfcn) in pft.h */
-  Fscanpftparfcn scanfcn[NTYPES]={fscanpft_grass,fscanpft_tree,fscanpft_crop};
+  /* Create array of functions, uses the typedef of Pfttype in config.h */
+  Pfttype scanfcn[NTYPES]=
+  {
+    {name_grass,fscanpft_grass},
+    {name_tree,fscanpft_tree},
+    {name_crop,fscanpft_crop}
+  };
   Config config;         /* LPJ configuration */
   int rc;                /* return code of program */
   Bool isout,check;
@@ -92,7 +92,7 @@ int main(int argc,char **argv)
              "-Idir            directory to search for include files\n"
              "filename         configuration filename. Default is '%s'\n\n"
              "(C) Potsdam Institute for Climate Impact Research (PIK), see COPYRIGHT file\n",
-             dflt_conf_filename);
+             dflt_conf_filename_ml);
       if(file!=stdout)
         pclose(file);
       return EXIT_SUCCESS;
@@ -115,20 +115,22 @@ int main(int argc,char **argv)
     banner(title,4,78);
   }
 
-  if(readconfig(&config,dflt_conf_filename,scanfcn,NTYPES,NOUT,&argc,&argv,USAGE))
+  if(readconfig(&config,dflt_conf_filename_ml,scanfcn,NTYPES,NOUT,&argc,&argv,USAGE))
   {
-    fputs("Error occurred in processing configuration file.\n",stderr);
+    fputs("ERROR001: Cannot process configuration file.\n",stderr);
     rc=EXIT_FAILURE;
   }
   else
   {
+    if(argc)
+      fputs("WARNING018: Arguments listed after configuration filename, will be ignored.\n",stderr);
     if(isout)
     {
       /* print LPJ configuration on stdout if '-q' option is not set */
-      printconfig(&config,config.npft[GRASS]+config.npft[TREE],
-                  config.npft[CROP]);
+      printconfig(config.npft[GRASS]+config.npft[TREE],
+                  config.npft[CROP],&config);
     }
-    if(config.n_out)
+    if(config.nall>0 && config.n_out)
     {
       config.nall=config.total=config.ngridcell;
       printf("Estimated disk usage for output: ");

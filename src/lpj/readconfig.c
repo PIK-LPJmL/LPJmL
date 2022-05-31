@@ -15,26 +15,11 @@
 /**                                                                                \n**/
 /**************************************************************************************/
 
-#ifdef USE_JSON
-#include <json-c/json.h>
-#endif
 #include "lpj.h"
-
-#define LINE_LEN 1024 /* maximum line length in JSON file + 1  */
-
-static void closeconfig(LPJfile *file)
-{
-#ifdef USE_JSON
-  if(file->isjson)
-    json_object_put(file->file.obj);
-  else
-#endif
-    pclose(file->file.file); 
-} /* of 'closeconfig' */
 
 Bool readconfig(Config *config,        /**< LPJ configuration */
                 const char *filename,  /**< Default configuration filename */
-                Fscanpftparfcn scanfcn[], /**< array of PFT-specific scan
+                Pfttype scanfcn[],     /**< array of PFT-specific scan
                                              functions */
                 int ntypes,            /**< Number of PFT classes */
                 int nout,              /**< Maximum number of output files */
@@ -47,18 +32,14 @@ Bool readconfig(Config *config,        /**< LPJ configuration */
   LPJfile lpjfile;
   String s;
   Verbosity verbosity;
-#ifdef USE_JSON
-  char line[LINE_LEN];
-  enum json_tokener_error json_error;
-  struct json_tokener *tok;
-#endif
+  const char *sim_id[]={"lpj","lpjml","lpjml_image","lpjml_fms"};
   config->arglist=catstrvec(*argv,*argc); /* store command line in arglist */
   file=openconfig(config,filename,argc,argv,usage);
   if(file==NULL)
     return TRUE;
   verbosity=(isroot(*config)) ? config->scan_verbose : NO_ERR;
   lpjfile.file.file=file;
-  lpjfile.isjson=FALSE; 
+  lpjfile.isjson=FALSE;
   if(fscanstring(&lpjfile,s,"sim_name",FALSE,verbosity))
   {
     if(verbosity)
@@ -66,37 +47,20 @@ Bool readconfig(Config *config,        /**< LPJ configuration */
     closeconfig(&lpjfile);
     return TRUE;
   }
-  if(!strcmp(s,"{")) /* check whether file is in JSON format */
+  if(s[0]=='{') /* check whether file is in JSON format */
   {
 #ifdef USE_JSON
-    lpjfile.isjson=TRUE;     /* yes, we have to parse it */
-    tok=json_tokener_new();
-    lpjfile.file.obj=json_tokener_parse_ex(tok,s,strlen(s));
-    while(!fscanline(file,line,LINE_LEN,verbosity))  /* read line from file */
+    if(parse_json(file,&lpjfile,s,verbosity))
     {
-      if(line[0]!='#')
-      {
-        lpjfile.file.obj=json_tokener_parse_ex(tok,line,strlen(line));
-        json_error=json_tokener_get_error(tok);
-        if(json_error!=json_tokener_continue)
-          break;
-      }
-    }
-    pclose(file);
-    json_tokener_free(tok);
-    if(json_error!=json_tokener_success)
-    {
-      if(verbosity)
-        fprintf(stderr,"ERROR228: Cannot parse json file '%s' in line %d, %s.\n",
-                getfilename(),getlinecount()-1,(json_error==json_tokener_continue) ? "missing closing '}'" : json_tokener_error_desc(json_error));
-      json_object_put(lpjfile.file.obj);
+      pclose(file);
       return TRUE;
     }
+    pclose(file);
     if(fscanstring(&lpjfile,s,"sim_name",FALSE,verbosity))
     {
       if(verbosity)
         fputs("ERROR121: Cannot read simulation name.\n",stderr);
-      json_object_put(lpjfile.file.obj);
+      closeconfig(&lpjfile);
       return TRUE;
     }
 #else
@@ -131,11 +95,11 @@ Bool readconfig(Config *config,        /**< LPJ configuration */
       return TRUE;
     }
     if(verbosity && strncmp(s,LPJ_VERSION,strlen(s)))
-      fprintf(stderr,"WARNING025: Expected LPJ version '%s' does not match '" LPJ_VERSION "'.\n",s);
+      fprintf(stderr,"WARNING025: LPJ version '%s' does not match '" LPJ_VERSION "'.\n",s);
   }
   /* Read LPJ configuration */
   config->sim_id=LPJML;
-  if(fscanint(&lpjfile,&config->sim_id,"sim_id",TRUE,verbosity))
+  if(fscankeywords(&lpjfile,&config->sim_id,"sim_id",sim_id,4,TRUE,verbosity))
   {
     closeconfig(&lpjfile);
     return TRUE;
@@ -144,7 +108,7 @@ Bool readconfig(Config *config,        /**< LPJ configuration */
   if(config->sim_id!=LPJML && config->sim_id!=LPJ && config->sim_id!=LPJML_IMAGE)
   {
     if(verbosity)
-      fprintf(stderr,"ERROR123: Invalid simulation type in line %d of '%s', must be 'LPJML' or 'LPJ' or 'LPJML_IMAGE'.\n",getlinecount(),getfilename());
+      fprintf(stderr,"ERROR123: Invalid simulation type, must be 'LPJML' or 'LPJ' or 'LPJML_IMAGE'.\n");
     closeconfig(&lpjfile);
     return TRUE;
   }
@@ -156,7 +120,7 @@ Bool readconfig(Config *config,        /**< LPJ configuration */
       if(config->sim_id==LPJML_IMAGE)
         fputs("ERROR219: LPJmL has to be compiled with '-DIMAGE -DCOUPLED' for simulation type 'LPJML_IMAGE'.\n",stderr);
       else
-        fprintf(stderr,"ERROR123: Invalid simulation type in line %d of '%s', must be 'LPJML', 'LPJML_FMS' or 'LPJ'.\n",getlinecount(),getfilename());
+        fprintf(stderr,"ERROR123: Invalid simulation type, must be 'LPJML', 'LPJML_FMS' or 'LPJ'.\n");
     }
     closeconfig(&lpjfile);
     return TRUE;

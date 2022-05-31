@@ -22,7 +22,7 @@
 #if defined IMAGE && defined COUPLED
 #define epsilon 1.0E-8  /* this value must be smaller than MINCROPFR used in INTERFACE */
 #else
-#define epsilon 1.0E-6 /* a minimal value -- check if neglegible */
+#define epsilon 1.0E-7 /* a minimal value -- check if neglegible */
 #endif
 #define NOT_FOUND -1
 #ifndef TRUE    /* Check whether TRUE or FALSE are already defined */
@@ -45,12 +45,15 @@
 #define pclose _pclose
 #define popen _popen
 #define alloca _alloca
+#define strcasecmp stricmp
 
 #endif
  
 #ifdef __INTEL_COMPILER
 /* #pragma warning ( disable : 869 )*/ /* disable warning about unused parameter */
 #endif
+
+#define N_FMT 7 /* number of format types for input/output files */
 
 /* Definition of datatypes */
 
@@ -62,9 +65,9 @@ typedef unsigned char Byte;
 
 typedef char String[STRING_LEN+1];
 
-extern size_t typesizes[];
-extern char *typenames[];
-extern const char *fmt[];
+extern const size_t typesizes[];
+extern const char *typenames[];
+extern const char *fmt[N_FMT];
 
 typedef enum {LPJ_BYTE,LPJ_SHORT,LPJ_INT,LPJ_FLOAT,LPJ_DOUBLE} Type;
 typedef enum {NO_ERR, ERR, VERB } Verbosity;
@@ -72,9 +75,16 @@ typedef enum {NO_ERR, ERR, VERB } Verbosity;
 typedef struct
 {
   char *name; /* name of file */
-  char *time; /* name of time or NULL */
+  char *time; /* name of time variable or NULL */
   char *var;  /* name of variable in NetCDF file or NULL */
+  char *unit; /* units of variable in NetCDF file or NULL */
+  char *map;  /* name of map in NetCDF file */
+  Real scale; /* scale factor for output */
+  Bool isscale; /* scale factor defined? */
+  int timestep; /* time step for output (ANNUAL,MONTHLY,DAILY) */
   int fmt;    /* format (TXT/RAW/CLM/CDF) */
+  Bool meta; /* meta file output enabled */
+  int version; /* version of clm file */
 } Filename;
 
 typedef struct
@@ -88,11 +98,18 @@ typedef struct
   } file;
   Bool isjson;
 } LPJfile;
- 
+
+typedef struct
+{
+  Real carbon;
+  Real nitrogen;
+} Stocks;
+
 /* Declaration of functions */
 
 extern void fail(int,Bool,const char *,...);
 extern Bool fscanreal(LPJfile *,Real *,const char *,Bool,Verbosity);
+extern Bool fscanreal01(LPJfile *,Real *,const char *,Bool,Verbosity);
 extern Bool fscanbool(LPJfile *,Bool *,const char *,Bool,Verbosity);
 extern Bool fscanrealarray(LPJfile *,Real *,int,const char *,Verbosity);
 extern Bool fscanstring(LPJfile *,String,const char *,Bool,Verbosity);
@@ -101,8 +118,13 @@ extern Bool fscanarray(LPJfile *,LPJfile *,int *,Bool,const char *,Verbosity);
 extern Bool fscanarrayindex(const LPJfile *,LPJfile *,int,Verbosity);
 extern Bool iskeydefined(const LPJfile *,const char *);
 extern Bool isboolean(const LPJfile *,const char *);
-extern Bool fscanline(FILE *,char [],int,Verbosity);
+extern Bool isint(const LPJfile *,const char *);
+extern Bool isstring(const LPJfile *,const char *);
+extern char *fscanline(FILE *);
 extern Bool fscantoken(FILE *,String);
+extern Bool fscankeywords(LPJfile *,int *,const char *,const char *const *,
+                          int,Bool,Verbosity);
+extern Bool isnull(const LPJfile *);
 extern char *sysname(void);
 extern char *getpath(const char *);
 extern char *gethost(void);
@@ -114,6 +136,7 @@ extern Bool isabspath(const char *);
 extern char *addpath(const char *,const char *);
 extern void printflags(const char *);
 extern long long getfilesize(const char *);
+extern long long getfilesizep(FILE *);
 extern const char *strippath(const char *);
 extern long long diskfree(const char *);
 extern void fprintintf(FILE *,int);
@@ -136,6 +159,7 @@ extern Bool readfloatvec(FILE *,float *,float,size_t,Bool,Type);
 extern Bool readintvec(FILE *,int *,size_t,Bool,Type);
 extern Bool readuintvec(FILE *,unsigned int *,size_t,Bool,Type);
 extern Bool readfilename(LPJfile *,Filename *,const char *,const char *,Bool,Verbosity);
+extern void freefilename(Filename *);
 extern void **newmat(size_t,int,int);
 extern void freemat(void **);
 extern char *catstrvec(const char * const *,int);
@@ -145,6 +169,11 @@ extern char* getfilename(void);
 extern void initscan(const char *);
 extern void fputprintable(FILE *,const char *);
 extern Bool fscaninteof(FILE *,int *,const char *,Bool *,Bool);
+extern char *sprinttimestep(String,int);
+extern Bool fscantimestep(LPJfile *,int *,Verbosity);
+extern char *getrealfilename(const Filename *);
+extern Bool parse_json(FILE *,LPJfile *,char *,Verbosity);
+extern Bool isdir(const char *);
 #ifdef WITH_FPE
 extern void enablefpe(void);
 #endif

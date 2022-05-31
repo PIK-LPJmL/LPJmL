@@ -22,6 +22,9 @@
 #include <json-c/json.h>
 #endif
 #include "types.h"
+#include "errmsg.h"
+
+#define LINE_LEN 1024  /* line length read in at once */
 
 static int line_count; /* line number currently read */
 static int line_pos;   /* position in line */
@@ -104,43 +107,74 @@ static int fscanspace(FILE *file /* file pointer of a text file       */
   return c;
 } /* of 'fscanspace' */
 
-Bool fscanline(FILE *file,    /**< pointer to text file */
-               char line[],   /**< line to read */
-               int size,      /**< size of line */
-               Verbosity verb /**< verbosity level */
-              )               /** \return TRUE on error or end of file */
+char *fscanline(FILE *file /**< pointer to text file */
+               )           /** \return pointer to line or NULL on error or end of file */
 {
+  char *line,*ptr;
+  int size;
   int c;
   int len;
   c=fscanspace(file);
   if(c==EOF)
+    return NULL;
+  size=LINE_LEN;
+  line=malloc(size);
+  if(line==NULL)
   {
-    line[0]='\0';
-    return TRUE;
+    printallocerr("line");
+    return NULL;
   }
   line[0]=(char)c;
   len=1;
   while((c=fgetc(file))!=EOF)
   {
-    if(len==size-1)
+    if(len==size)
     {
-      if(verb)
-        fprintf(stderr,"ERROR103: Line too long in line %d of '%s'.\n",line_count,incfile);
-      line[len]='\0';
-      return TRUE;
+      size+=LINE_LEN;
+      ptr=line;
+      line=realloc(line,size);
+      if(line==NULL)
+      {
+        printallocerr("line");
+        free(ptr);
+        return NULL;
+      }
     }
     if(c=='\n')
     {
       line[len++]=(char)c;
+      if(len==size)
+      {
+        ptr=line;
+        line=realloc(line,size+1);
+        if(line==NULL)
+        {
+          printallocerr("line");
+          free(ptr);
+          return NULL;
+        }
+      }
       line[len]='\0';
       line_count++; /* increase line number */
       line_pos=0;
-      return FALSE;
+      return line;
     }
     line[len++]=(char)c; /* add character to string */
     line_pos++;
   }
-  return FALSE;
+  if(len==size)
+  {
+    ptr=line;
+    line=realloc(line,size+1);
+    if(line==NULL)
+    {
+      printallocerr("line");
+      free(ptr);
+      return NULL;
+    }
+  }
+  line[len]='\0';
+  return line;
 } /* of 'fscanline' */
 
 Bool fscantoken(FILE *file, /**< file pointer of a text file         */
@@ -181,13 +215,13 @@ Bool fscantoken(FILE *file, /**< file pointer of a text file         */
   return FALSE;
 } /* of 'fscantoken' */
 
-Bool fscanstring(LPJfile *file, /**< pointer to  a LPJ file         */
-                 String s,   /**< pointer to a char array of dimension
-                                  STRING_LEN+1                        */
-                 const char *name, /**< name of string                */
+Bool fscanstring(LPJfile *file,     /**< pointer to  a LPJ file         */
+                 String s,          /**< pointer to a char array of dimension
+                                         STRING_LEN+1                        */
+                 const char *name,  /**< name of string or NULL        */
                  Bool with_default, /**< allow default value */
-                 Verbosity verb  /**< enable error output */
-                )            /** \return TRUE on error                */
+                 Verbosity verb     /**< enable error output */
+                )                   /** \return TRUE on error                */
 {
   int c;
   int len;
@@ -196,34 +230,39 @@ Bool fscanstring(LPJfile *file, /**< pointer to  a LPJ file         */
   const char *str;
   if(file->isjson)
   {
-    if(!json_object_object_get_ex(file->file.obj,name,&item))
+    if(name==NULL)
+      item=file->file.obj;
+    else
     {
-      if(with_default)
+      if(!json_object_object_get_ex(file->file.obj,name,&item))
       {
-        if(verb)
-          fprintf(stderr,"WARNING027: Name '%s' for string not found, set to '%s'.\n",name,s);
-        return FALSE;
-      }
-      else
-      {
-        if(verb)
-          fprintf(stderr,"ERROR225: Name '%s' for string not found.\n",name);
-        return TRUE;
+        if(with_default)
+        {
+          if(verb)
+            fprintf(stderr,"WARNING027: Name '%s' for string not found, set to '%s'.\n",name,s);
+          return FALSE;
+        }
+        else
+        {
+          if(verb)
+            fprintf(stderr,"ERROR225: Name '%s' for string not found.\n",name);
+          return TRUE;
+        }
       }
     }
     if(json_object_get_type(item)!=json_type_string)
     {
       if(verb)
-        fprintf(stderr,"ERROR226: Type of '%s' is not string.\n",name);
+        fprintf(stderr,"ERROR226: Type of '%s' is not string.\n",(name==NULL) ? "N/A" : name);
       return TRUE;
     }
     str=json_object_get_string(item);
     if(strlen(str)>STRING_LEN && verb)
-      fprintf(stderr,"ERROR103: String too long for name '%s', truncated.\n",name);
+      fprintf(stderr,"ERROR103: String too long for name '%s', truncated.\n",(name==NULL) ? "N/A" : name);
     strncpy(s,str,STRING_LEN);
     s[STRING_LEN]='\0';
     if (verb >= VERB)
-      printf("\"%s\" : \"%s\"\n",name,s);
+      printf("\"%s\" : \"%s\"\n",(name==NULL) ? "N/A" : name,s);
     return FALSE;
   }
 #endif
@@ -287,7 +326,7 @@ Bool fscanstring(LPJfile *file, /**< pointer to  a LPJ file         */
       }
     }
   }
-  else
+  else if(c!=EOF)
   {
     s[0]=(char)c;
     len=1;
@@ -325,6 +364,8 @@ Bool fscanstring(LPJfile *file, /**< pointer to  a LPJ file         */
       printf("\"%s\" : \"%s\"\n",name,s);
     return FALSE;
   }
+  else
+    len=0;
   if(c==EOF && verb)
     fprintf(stderr,"ERROR103: EOF reached reading string in line %d of '%s'.\n",line_count,incfile);
   s[len]='\0';  /* terminate string */

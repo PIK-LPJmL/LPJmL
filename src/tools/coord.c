@@ -15,7 +15,6 @@
 /**************************************************************************************/
 
 #include "lpj.h"
-#include <sys/stat.h>
 
 struct coordfile
 {
@@ -40,9 +39,9 @@ Coordfile opencoord(const Filename *filename, /**< filename of coord file */
 {
   Coordfile coordfile;
   Header header;
-  struct stat filestat;
   coordfile=new(struct coordfile);
   int version;
+  size_t filesize;
   if(coordfile==NULL)
   {
     printallocerr("coord");
@@ -54,10 +53,14 @@ Coordfile opencoord(const Filename *filename, /**< filename of coord file */
     header.scalar=0.01;
     header.datatype=LPJ_SHORT;
     header.nbands=2;
+    header.nstep=1;
+    header.timestep=1;
     header.firstcell=0;
     header.ncell=0;
+    header.nyear=1;
+    header.order=CELLYEAR;
     header.cellsize_lon=header.cellsize_lat=0.5;
-    coordfile->file=openmetafile(&header,&coordfile->swap,&coordfile->offset,filename->name,isout);
+    coordfile->file=openmetafile(&header,NULL,NULL,&coordfile->swap,&coordfile->offset,filename->name,isout);
     if(coordfile->file==NULL)
     {
       free(coordfile);
@@ -66,7 +69,8 @@ Coordfile opencoord(const Filename *filename, /**< filename of coord file */
     if(header.ncell<=0)
     {
       if(isout)
-        fprintf(stderr,"ERROR221: Invalid number of cells in description file '%s'.\n",filename->name);
+        fprintf(stderr,"ERROR221: Invalid number %d of cells in description file '%s', must be greater than zero.\n",
+                header.ncell,filename->name);
       free(coordfile);
       return NULL;
     }
@@ -84,6 +88,24 @@ Coordfile opencoord(const Filename *filename, /**< filename of coord file */
       free(coordfile);
       return NULL;
     }
+    if(header.nstep!=1)
+    {
+      if(isout)
+        fprintf(stderr,"ERROR218: Number of steps=%d in description file '%s' is not 1.\n",
+                header.nstep,filename->name);
+      fclose(coordfile->file);
+      free(coordfile);
+      return NULL;
+    }
+    if(header.timestep!=1)
+    {
+      if(isout)
+        fprintf(stderr,"ERROR218: Time step=%d in description file '%s' is not 1.\n",
+                header.timestep,filename->name);
+      fclose(coordfile->file);
+      free(coordfile);
+      return NULL;
+    }
     return coordfile;
   }
   coordfile->file=fopen(filename->name,"rb");
@@ -96,8 +118,7 @@ Coordfile opencoord(const Filename *filename, /**< filename of coord file */
   }
   if(filename->fmt==RAW)
   {
-    fstat(fileno(coordfile->file),&filestat);
-    coordfile->n=filestat.st_size/sizeof(Intcoord);
+    coordfile->n=getfilesizep(coordfile->file)/sizeof(Intcoord);
     coordfile->first=0;
     coordfile->swap=FALSE;
     coordfile->scalar=0.01;
@@ -112,10 +133,19 @@ Coordfile opencoord(const Filename *filename, /**< filename of coord file */
     else
       version=2;
     if(freadheader(coordfile->file,&header,&coordfile->swap,
-                   LPJGRID_HEADER,&version))
+                   LPJGRID_HEADER,&version,isout))
     {
       if(isout)
         fprintf(stderr,"ERROR154: Invalid header in '%s'.\n",filename->name);
+      fclose(coordfile->file);
+      free(coordfile);
+      return NULL;
+    }
+    if(version>CLM_MAX_VERSION)
+    {
+      if(isout)
+        fprintf(stderr,"ERROR154: Unsupported version %d in '%s', must be less than %d.\n",
+                version,filename->name,CLM_MAX_VERSION+1);
       fclose(coordfile->file);
       free(coordfile);
       return NULL;
@@ -136,6 +166,21 @@ Coordfile opencoord(const Filename *filename, /**< filename of coord file */
       free(coordfile);
       return NULL;
     }
+    if(header.nstep!=1)
+    {
+      if(isout)
+        fprintf(stderr,"ERROR218: Number of steps=%d in grid file '%s' is not 1.\n",
+                header.nstep,filename->name);
+      fclose(coordfile->file);
+      free(coordfile);
+      return NULL;
+    }
+    if(isout)
+    {
+      filesize=getfilesizep(coordfile->file)-coordfile->offset;
+      if(filesize!=typesizes[header.datatype]*header.nyear*header.nbands*header.ncell)
+        fprintf(stderr,"WARNING032: File size of '%s' does not match nyear*ncell*nbands.\n",filename->name);
+    }
   }
   coordfile->fmt=filename->fmt;
   return coordfile;
@@ -154,6 +199,12 @@ int numcoord(const Coordfile coordfile /**< open coord file */
 {
   return coordfile->n;
 } /* of 'numcoord' */
+
+int getfirstcoord(const Coordfile coordfile /**< open coord file */
+                 )                          /** \return first index of coords in file */
+{
+  return coordfile->first;
+} /* of 'getfirstcoord' */
 
 void closecoord(Coordfile coordfile /**< coord file to be closed */
                )

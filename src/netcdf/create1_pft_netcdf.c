@@ -73,8 +73,8 @@ Bool create1_pft_netcdf(Netcdf *cdf,
     printallocerr("lat");
     return TRUE;
   }
-  size=outputsize(index,npft,config->nbiomass,config->nwft,ncft);
-  if(index==SOILC_LAYER || index==MSOILTEMP || index==MSWC)
+  size=outputsize(index,npft,ncft,config);
+  if(issoil(index))
   {
     layer=newvec(float,size);
     if(layer==NULL)
@@ -117,8 +117,7 @@ Bool create1_pft_netcdf(Netcdf *cdf,
         days[i]=i;
       break;
     default:
-      fputs("ERROR425: Invalid value for number of data points per year.\n",
-            stderr);
+      fprintf(stderr,"ERROR425: Invalid value=%d for number of data points per year.\n",n);
       free(days);
       free(lon);
       free(lat);
@@ -143,7 +142,7 @@ Bool create1_pft_netcdf(Netcdf *cdf,
     return TRUE;
   }
   error(rc);
-  rc=nc_def_dim(cdf->ncid,(index==SOILC_LAYER || index==MSOILTEMP || index==MSWC) ? config->layer_index : config->pft_index,size,&pft_dim_id);
+  rc=nc_def_dim(cdf->ncid,issoil(index) ? config->layer_index : config->pft_index,size,&pft_dim_id);
   error(rc);
   rc=nc_def_dim(cdf->ncid,LAT_DIM_NAME,array->nlat,&lat_dim_id);
   error(rc);
@@ -164,7 +163,7 @@ Bool create1_pft_netcdf(Netcdf *cdf,
     dim[1]=lat_dim_id;
     dim[2]=lon_dim_id;
   }
-  if(index==SOILC_LAYER || index==MSOILTEMP || index==MSWC)
+  if(issoil(index))
   {
     rc=nc_def_var(cdf->ncid,"layer",NC_FLOAT,1,&pft_dim_id,&pft_var_id);
     error(rc);
@@ -174,7 +173,7 @@ Bool create1_pft_netcdf(Netcdf *cdf,
   }
   else
   {
-    pftnames=createpftnames(index,npft,config->nbiomass,config->nwft,ncft,config->pftpar);
+    pftnames=createpftnames(index,npft,ncft,config);
     if(pftnames==NULL)
     {
       free(lon);
@@ -285,7 +284,7 @@ Bool create1_pft_netcdf(Netcdf *cdf,
     rc=nc_put_var_int(cdf->ncid,time_var_id,days);
     error(rc);
   }
-  if(index==SOILC_LAYER || index==MSOILTEMP || index==MSWC)
+  if(issoil(index))
   {
     rc=nc_put_var_float(cdf->ncid,pft_var_id,layer);
     error(rc);
@@ -306,7 +305,7 @@ Bool create1_pft_netcdf(Netcdf *cdf,
       error(rc);
     }
 #endif
-    freepftnames(pftnames,index,npft,config->nbiomass,config->nwft,ncft);
+    freepftnames(pftnames,index,npft,ncft,config);
   }
   rc=nc_put_var_float(cdf->ncid,lat_var_id,lat);
   error(rc);

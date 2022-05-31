@@ -168,8 +168,8 @@ int main(int argc,char **argv)
             fwrite(&data4,sizeof(char),1,ofp); 
                 break;
             }
-      }
-	} /* end: if in window */
+        }
+       } /* end: if in window */
       } /* end: lat loop over global grid */
     } /* end: lon loop over global grid */
   } /* end of for(...) */

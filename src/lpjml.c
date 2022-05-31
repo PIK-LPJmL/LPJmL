@@ -81,25 +81,11 @@
 #include "biomass_tree.h"
 #include "biomass_grass.h"
 #include "agriculture.h"
+#include "agriculture_grass.h"
+#include "agriculture_tree.h"
 
 #define NTYPES 3 /* number of plant functional types: grass, tree, annual_crop */
-#if defined IMAGE || defined INCLUDEWP
-#define NSTANDTYPES 10 /* number of stand types / land use types as defined in landuse.h*/
-#else
-#define NSTANDTYPES 9 /* number of stand types / land use types as defined in landuse.h*/
-#endif
-
-#ifdef USE_JSON
-#define dflt_conf_filename_ml "lpjml.js" /* Default LPJ configuration file
-                                            if called by lpjml */
-#define dflt_conf_filename "lpj.js" /* Default LPJ configuration file
-                                       if called by lpj */
-#else
-#define dflt_conf_filename_ml "lpjml.conf" /* Default LPJ configuration file
-                                              if called by lpjml */
-#define dflt_conf_filename "lpj.conf" /* Default LPJ configuration file
-                                         if called by lpj */
-#endif
+#define NSTANDTYPES 12 /* number of stand types / land use types as defined in landuse.h*/
 
 int main(int argc,char **argv)
 {
@@ -112,8 +98,13 @@ int main(int argc,char **argv)
   Standtype standtype[NSTANDTYPES];
   Config config;         /* LPJ configuration */
 
-  /* Create array of functions, uses the typedef of (*Fscanpftparfcn) in pft.h */
-  Fscanpftparfcn scanfcn[NTYPES]={fscanpft_grass,fscanpft_tree,fscanpft_crop};
+  /* Create array of functions, uses the typedef of Pfttype in config.h */
+  Pfttype scanfcn[NTYPES]=
+  {
+    {name_grass,fscanpft_grass},
+    {name_tree,fscanpft_tree},
+    {name_crop,fscanpft_crop}
+  };
 
   standtype[NATURAL]=natural_stand;
   standtype[SETASIDE_RF]=setaside_rf_stand;
@@ -123,9 +114,9 @@ int main(int argc,char **argv)
   standtype[GRASSLAND]=grassland_stand;
   standtype[BIOMASS_TREE]=biomass_tree_stand;
   standtype[BIOMASS_GRASS]=biomass_grass_stand;
-#if defined IMAGE || defined INCLUDEWP
-  standtype[WOODPLANTATION]=woodplantation_stand,
-#endif
+  standtype[AGRICULTURE_TREE]=agriculture_tree_stand;
+  standtype[AGRICULTURE_GRASS]=agriculture_grass_stand;
+  standtype[WOODPLANTATION]=woodplantation_stand;
   standtype[KILL]=kill_stand;
 
 
@@ -195,12 +186,12 @@ int main(int argc,char **argv)
   if(isroot(config) && argc)
     fputs("WARNING018: Arguments listed after configuration filename, will be ignored.\n",stderr);
   if(isroot(config))
-    printconfig(&config,config.npft[GRASS]+config.npft[TREE],
-                config.npft[CROP]);
+    printconfig(config.npft[GRASS]+config.npft[TREE],
+                config.npft[CROP],&config);
   if(config.sim_id==LPJML_FMS)
   {
     if(isroot(config))
-      fputs("ERROR032: FMS coupler not supported.\n",stderr);
+      fputs("ERROR032: FMS coupler not supported in standalone version.\n",stderr);
     return NO_FMS_ERR;
   }
 #if defined IMAGE && defined COUPLED
@@ -213,8 +204,8 @@ int main(int argc,char **argv)
   /* Allocation and initialization of grid */
   rc=((grid=newgrid(&config,standtype,NSTANDTYPES,config.npft[GRASS]+config.npft[TREE],config.npft[CROP]))==NULL);
   failonerror(&config,rc,INIT_GRID_ERR,"Initialization of LPJ grid failed");
-
-  rc=initinput(&input,grid,config.npft[GRASS]+config.npft[TREE],config.npft[CROP],&config);
+  
+  rc=initinput(&input,grid,config.npft[GRASS]+config.npft[TREE],&config);
   failonerror(&config,rc,INIT_INPUT_ERR,
               "Initialization of input data failed");
   if(config.check_climate)
@@ -224,7 +215,9 @@ int main(int argc,char **argv)
   }
   /* open output files */  
   output=fopenoutput(grid,NOUT,&config);
-
+  rc=initoutput(output,grid,config.npft[GRASS]+config.npft[TREE],config.npft[CROP],&config);
+  failonerror(&config,rc,INIT_INPUT_ERR,
+              "Initialization of output data failed");
   if(isopen(output,GRID))
     writecoords(output,GRID,grid,&config);
   if(isopen(output,COUNTRY) && config.withlanduse)

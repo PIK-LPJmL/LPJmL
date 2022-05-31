@@ -20,7 +20,8 @@ void newpft(Pft *pft,            /**< PFT variables */
             Stand *stand,        /**< Stand pointer */
             const Pftpar *pftpar,/**< Parameter of PFT */
             int year,            /**< anno domini */
-            int day              /**< day of year (1..365) */
+            int day,             /**< day of year (1..365) */
+            const Config *config /**< LPJmL configuration */
            )
 {
   int index;
@@ -37,13 +38,14 @@ void newpft(Pft *pft,            /**< PFT variables */
     pft->litter=index;
   /* Initialize variables to zero */
   pft->stand=stand;
-  pft->fpc=pft->nind=pft->wscal=pft->aphen=pft->bm_inc=pft->wscal_mean=
-           pft->gdd=pft->phen=pft->fapar=0.0;
+  pft->fpc=pft->nind=pft->wscal=pft->aphen=pft->bm_inc.carbon=pft->bm_inc.nitrogen=
+           pft->wscal_mean=pft->vscal=pft->vmax=pft->nlimit=
+           pft->gdd=pft->phen=pft->fapar=pft->npp_bnf=0.0;
  pft->phen_gsi.tmin=pft->phen_gsi.light=pft->albedo=0;
  pft->phen_gsi.tmax=pft->phen_gsi.wscal=1;
 #ifdef DAILY_ESTABLISHMENT
   pft->established=FALSE;
 #endif
-  pft->prescribe_fpc=FALSE;
-  pft->par->newpft(pft,year,day); /* type-specific allocation of memory */
+  pft->establish.carbon=pft->establish.nitrogen=0;
+  pft->par->newpft(pft,year,day,config); /* type-specific allocation of memory */
 } /* of 'newpft' */

@@ -20,7 +20,7 @@
 #include <netcdf.h>
 #endif
 
-#define error(rc) if(rc){ fprintf(stderr,"ERROR: Cannot read '%s': %s.\n",argv[i],nc_strerror(rc)); return EXIT_FAILURE;}
+#define error(rc) if(rc){ fprintf(stderr,"ERROR421: Cannot read '%s': %s.\n",argv[i],nc_strerror(rc)); return EXIT_FAILURE;}
 
 int main(int argc,char **argv)
 {
@@ -144,7 +144,7 @@ int main(int argc,char **argv)
   nc_inq_varndims(ncid,var_id,&ndims);
   if(ndims<2)
   {
-    fprintf(stderr,"ERROR408: Invalid number of dimensions %d in '%s'.\n",
+    fprintf(stderr,"ERROR408: Invalid number of dimensions %d in '%s', must be >1.\n",
             ndims,argv[i]);
     return TRUE;
   }

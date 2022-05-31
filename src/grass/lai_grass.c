@@ -17,12 +17,12 @@
 
 Real lai_grass(const Pft *pft)
 {
-  return ((Pftgrass *)pft->data)->ind.leaf*getpftpar(pft,sla);
+  return ((Pftgrass *)pft->data)->ind.leaf.carbon*getpftpar(pft,sla);
 } /* 'lai_grass' */
 /*
 - this function is called in fpc_grass() and returns the maximum lai of a grass (last year's LAI)
 */
 Real actual_lai_grass(const Pft *pft)
 {
-  return ((Pftgrass *)pft->data)->ind.leaf*getpftpar(pft,sla)*pft->phen;
+  return ((Pftgrass *)pft->data)->ind.leaf.carbon*getpftpar(pft,sla)*pft->phen;
 } /* 'actual_lai_grass' */

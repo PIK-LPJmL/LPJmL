@@ -71,7 +71,7 @@ int main(int argc,char **argv)
   }
 
   /* reading original grid file */
-  if(freadheader(mfp,&header_grid,&swap_grid,LPJGRID_HEADER,&version))
+  if(freadheader(mfp,&header_grid,&swap_grid,LPJGRID_HEADER,&version,TRUE))
   {
     fclose(mfp);
     fprintf(stderr,"Invalid header in original grid file.\n");
@@ -105,7 +105,7 @@ int main(int argc,char **argv)
   fclose(mfp);
   fclose(soil_file);
   version=READ_VERSION;
-  if(freadheader(ifp,&header_grid,&swap_grid,LPJGRID_HEADER,&version))
+  if(freadheader(ifp,&header_grid,&swap_grid,LPJGRID_HEADER,&version,TRUE))
   {
     fclose(ifp);
     fprintf(stderr,"Invalid header in re-ordered grid file.\n");
@@ -122,7 +122,7 @@ int main(int argc,char **argv)
     for(k=0;k<ncell;k++)
       if(lat==lpjlat[k] && lon==lpjlon[k])
       {
-	/* printf("j=%d k=%d soil=%d\n",j,k,soil[k]); */
+    /* printf("j=%d k=%d soil=%d\n",j,k,soil[k]); */
     fwrite(soil+k,sizeof(char),1,ofp);
     break;
       }

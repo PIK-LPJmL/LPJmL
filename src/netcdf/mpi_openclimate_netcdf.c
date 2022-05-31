@@ -30,7 +30,7 @@ Bool mpi_openclimate_netcdf(Climatefile *file,    /**< climate data file */
 #if defined(USE_NETCDF) || defined(USE_NETCDF4)
   int rc;
   if(isroot(*config))
-    rc=openclimate_netcdf(file,filename->name,filename->time,filename->var,units,config);
+    rc=openclimate_netcdf(file,filename->name,filename->time,filename->var,filename->unit,units,config);
 #ifdef USE_MPI
   /* broadcast return code */
   MPI_Bcast(&rc,1,MPI_INT,0,config->comm);
@@ -42,6 +42,7 @@ Bool mpi_openclimate_netcdf(Climatefile *file,    /**< climate data file */
   MPI_Bcast(&file->datatype,1,MPI_INT,0,config->comm);
   MPI_Bcast(&file->var_len,sizeof(size_t),MPI_BYTE,0,config->comm);
   MPI_Bcast(&file->time_step,1,MPI_INT,0,config->comm);
+  MPI_Bcast(&file->delta_year,1,MPI_INT,0,config->comm);
   MPI_Bcast(&file->isleap,1,MPI_INT,0,config->comm);
   MPI_Bcast(&file->n,1,MPI_INT,0,config->comm);
   MPI_Bcast(&file->firstyear,1,MPI_INT,0,config->comm);

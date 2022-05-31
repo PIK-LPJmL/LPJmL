@@ -13,24 +13,44 @@
 /**************************************************************************************/
 
 #include "lpj.h"
+#include "crop.h"
 
-void initmanage(Manage *manage, /**< pointer to management data */
+Bool initmanage(Manage *manage,               /**< pointer to management data */
                 const Countrypar *countrypar, /**< pointer to country param */
-                const Regionpar *regionpar, /**< pointer to region param */
-                int npft, /**< number of natural PFTs */
-                int ncft, /**< number of crop PFts */
-                Bool isconstlai, /**< using const. LAImax? */
-                Real laimax     /**< maximum LAI */
-               )
+                const Regionpar *regionpar,   /**< pointer to region param */
+                const Pftpar *pftpar,         /**< PFT parameter array */
+                int npft,                     /**< number of natural PFTs */
+                int nagtree,
+                int ncft,                     /**< number of crop PFts */
+                int laimax_opt,               /**< Option for maximm LAI setting */
+                Real laimax                   /**< maximum LAI */
+               )                              /** \return TRUE on error */
 {
+  const Pftcroppar *croppar;
   int cft;
   manage->par=countrypar;    
   manage->regpar=regionpar;
   if(manage->par->laimax_cft==NULL)
+  {
     manage->laimax=newvec2(Real,npft,npft+ncft-1);  /* allocate memory for country-specific laimax*/
+    if(manage->laimax+npft==NULL)
+    {
+      printallocerr("laimax");
+      return TRUE;
+    }
+  }
   else
     manage->laimax=manage->par->laimax_cft-npft;  /* set pointer to country specific laimax */
-  if(isconstlai)
+  manage->k_est = manage->par->k_est - npft + nagtree; /* set pointer to country specific k_est */
+
+  if(laimax_opt==CONST_LAI_MAX)
     for(cft=0;cft<ncft;cft++)
       manage->laimax[npft+cft]=laimax;
+  else if(laimax_opt==LAIMAX_PAR)
+    for(cft=0;cft<ncft;cft++)
+    {
+      croppar=pftpar[npft+cft].data;
+      manage->laimax[npft+cft]=croppar->laimax;
+    }
+  return FALSE;
 } /* of 'initmanage' */

@@ -21,6 +21,7 @@ Bool freadpft(FILE *file,            /**< pointer to binary file */
               Pft *pft,              /**< PFT variables to read */
               const Pftpar pftpar[], /**< PFT parameter array */
               int ntotpft,           /**< total number of PFTs */
+              Bool double_harvest,
               Bool swap              /**< Byte order has to be changed
                                         (TRUE/FALSE) */
              )                       /** \return TRUE on error */
@@ -32,27 +33,30 @@ Bool freadpft(FILE *file,            /**< pointer to binary file */
     return TRUE;
   if(id>=ntotpft)
   {
-    fprintf(stderr,"ERROR195: Invalid value %d for PFT index.\n",id); 
+    fprintf(stderr,"ERROR195: Invalid value %d for PFT index, must be in [0,%d].\n",id,ntotpft-1);
     return TRUE;
   }
   pft->par=pftpar+id;
   pft->stand=stand;
-  pft->prescribe_fpc=FALSE;
-  pft->fpc_obs=0;
   freadreal((Real *)(&pft->phen_gsi),sizeof(Phenology)/sizeof(Real),swap,file);
   freadreal1(&pft->wscal,swap,file);
   freadreal1(&pft->wscal_mean,swap,file);
+  freadreal1(&pft->vscal,swap,file);
   freadreal1(&pft->aphen,swap,file);
   freadreal1(&pft->phen,swap,file);
   /* read class-dependent PFT variables */
-  if(pft->par->fread(file,pft,swap))
+  if(pft->par->fread(file,pft,double_harvest,swap))
     return TRUE;
-  freadreal1(&pft->bm_inc,swap,file);
+  freadreal((Real *)&pft->bm_inc,sizeof(Stocks)/sizeof(Real),swap,file);
   freadreal1(&pft->nind,swap,file);
-  freadreal1(&pft->gdd,swap,file); 
+  freadreal1(&pft->gdd,swap,file);
   freadreal1(&pft->fpc,swap,file);
   freadreal1(&pft->albedo,swap,file);
   freadreal1(&pft->fapar,swap,file);
+  freadreal1(&pft->nleaf,swap,file);
+  freadreal((Real *)&pft->establish,sizeof(Stocks)/sizeof(Real),swap,file);
+  pft->vmax=0;
+  pft->npp_bnf=0;
   if(fread(&id,sizeof(id),1,file)!=1)
     return TRUE;
   pft->litter=id;

@@ -336,7 +336,7 @@ int main(int argc,char **argv)
     fprintf(stderr,"Error opening '%s': %s.\n",argv[1],strerror(errno));
     return EXIT_FAILURE;
   }
-  if(freadanyheader(file,&header,&swap_country,headername,&country_version))
+  if(freadanyheader(file,&header,&swap_country,headername,&country_version,TRUE))
   {
     fprintf(stderr,"Error reading header of '%s'.\n",argv[1]);
     return EXIT_FAILURE;
@@ -347,7 +347,7 @@ int main(int argc,char **argv)
     fprintf(stderr,"Error opening '%s': %s.\n",argv[2],strerror(errno));
     return EXIT_FAILURE;
   }
-  if(freadheader(grid,&gridheader,&swap_grid,LPJGRID_HEADER,&version))
+  if(freadheader(grid,&gridheader,&swap_grid,LPJGRID_HEADER,&version,TRUE))
   {
     fprintf(stderr,"Error reading header of '%s'.\n",argv[2]);
     return EXIT_FAILURE;

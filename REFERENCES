@@ -25,6 +25,9 @@
    Kurths J, & Thonicke K 2019 Improving the LPJmL4-SPITFIRE vegetation-fire
    model for South America using satellite data.i
    Geoscientific Model Development 12: 5029-2054
+ Fader M, von Bloh W Shi S, Bondeau A, & Cramer W 2015 Modelling Mediterranean
+   agro-ecosystems by including agricultural trees in the LPJmL model
+   Geoscientific Model Development 8: 3545-3561
  Farquhar GD & von Caemmerer 1982 Modelling of photosynthetic response to
    environmental conditions. In: Lange, OL, Nobel PS, Osmond CB, Ziegler H
    (eds) Physiological Plant Ecology II: Water Relations and Carbon
@@ -46,12 +49,19 @@
  Jaegermeyr J, Gerten D, Heinke J, Schaphoff S., Kumm M & Lucht W 2015 Water
    savings potentials of irrigation systems: global simulation of processes
    and linkages. Hydrol. Earth Syst. Sci 19: 3073-3091
+ Janis Y, von Bloh W, Schaphoff S &  Mueller C 2021 Global cotton production
+   under climate change - Implications for yield and water consumption.
+   Hydrol. Earth Syst. Sci. 25: 2027-2044
  Jarvis, PG & McNaughton KG 1986 Stomatal control of transpiration: scaling up
    from leaf to region. Advances in Ecological Research 15: 1-49
  Jury WA, Gardner WR & Gardner WH 1991 Soil Physics 5th ed, John Wiley, NY
  Larcher W 1983 Physiological Plant Ecology, 2nd ed, Springer-Verlag, Berlin
  Lloyd, J & Taylor JA 1994 On the temperature dependence of soil respiration
    Functional Ecology 8: 315-323
+ Lutz F, Herzfeld T, Heinke J, Rolinski S, Schaphoff S, von Bloh W,
+   Stoorvogel JJ & Mueller C 2019 Simulating the effect of tillage practices
+   with the global ecosystem model LPJmL (version 5.0-tillage),
+   Geoscientific Model Development 12: 2419-2440
  Monsi, M & Saeki, T 1953 Ueber den Lichtfaktor in den Pflanzengesellschaften
    und seine Bedeutung fuer die Stoffproduktion. Japanese Journal of Botany
    14: 22-52
@@ -104,6 +114,10 @@
  von Bloh, W, Rost, S, Gerten, D & Lucht, W 2010 Efficient parallelization of a
    dynamic global vegetation model with river routing. Environmental Modelling &
    Software 25: 685-690
+ von Bloh, W, Schaphoff, S, Mueller, C,Rolinski, S, Waha, K & Zaehle, S 2018
+   Implementing the nitrogen cycle into the dynamic global vegetation,
+   hydrology, and crop growth model LPJmL (version 5.0).
+   Geoscientific Model Development 11, 2789-2812
  Waha K, van Bussel LGJ, Mueller C, Bondeau A 2012 Climate-driven simulation of
    global crop sowing dates. Global Ecology and Biogeography, 21,2,
    pp. 247-259, doi: 10.1111/j.1466-8238.2011.00678.x

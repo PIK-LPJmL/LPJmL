@@ -16,14 +16,14 @@
 
 #include "lpj.h"
 
-
-Real getco2(const Climate *climate, /**< Pointer to climate data */
+Bool getco2(const Climate *climate, /**< Pointer to climate data */
+            Real *pco2,             /** atmospheric CO2 (ppm) */
             int year                /**< year (AD) */
-           )                        /** \return atmospheric CO2 (ppm) */
+           )                        /** \return TRUE on error */
 {
   year-=climate->co2.firstyear;
   if(year>=climate->co2.nyear)
-    fail(INVALID_YEAR_ERR,FALSE,"Invalid yr=%d in getco2()",
-         year+climate->co2.firstyear);
-  return (year<0) ? param.co2_p : climate->co2.data[year];
+    return TRUE;
+  *pco2=(year<0) ? param.co2_p : climate->co2.data[year];
+  return FALSE;
 } /* of 'getco2' */

@@ -190,7 +190,7 @@ int main(int argc,char **argv)
     printallocerr("data");
     return EXIT_FAILURE;
   }
-  if(getfilesize(argv[iarg+1]) % (sizeof(float)*nlat*nlon))
+  if(getfilesizep(in) % (sizeof(float)*nlat*nlon))
     fprintf(stderr,"Warning: File size of '%s' is not multiple of %d x %d.\n",
             argv[iarg+1],nlon,nlat);
   while(fread(data,sizeof(float),nlat*nlon,in)==nlat*nlon)

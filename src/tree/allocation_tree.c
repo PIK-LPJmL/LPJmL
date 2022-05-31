@@ -123,77 +123,100 @@ static Real f(Real leaf_inc,Data *data)
              1.0+2/data->allom3);
 } /* of 'f' */
 
-Bool allocation_tree(Litter *litter, /**< litter pool */
-                     Pft *pft,       /**< pointer to PFT */
-                     Real *fpc_inc   /**< fpc increment */
-                    )                /** \return TRUE on death */
+Bool allocation_tree(Litter *litter,   /**< litter pool */
+                     Pft *pft,         /**< pointer to PFT */
+                     Real *fpc_inc,    /**< fpc increment */
+                     const Config *config /**< LPJmL configuration */
+                    )                  /** \return TRUE on death */
 {
-  Real bm_inc_ind,lmtorm;
+  Stocks bm_inc_ind={0,0};
+  Real lmtorm;
   Real cmass_loan,cmass_deficit;
   Real x1,x2;
   Treephys2 tinc_ind,tinc_ind_min;
   Pfttree *tree;
   Pfttreepar *treepar;
   Data data;
+  Real vscal,wscal;
+  Real csapwood,croot,cleaf,a,b,c,nitrogen_before;
   tree=pft->data;
+  /* add excess carbon from last year to bm_inc to have this allocated now */
+  pft->bm_inc.carbon+=tree->excess_carbon*pft->nind;
+  tree->excess_carbon=0;
   if(isneg_tree(pft))
   {
-    if(pft->nind>0)
+    if(pft->nind!=0)
     {
-      bm_inc_ind=pft->bm_inc/pft->nind;
-      tree->ind.root+=bm_inc_ind;
+      bm_inc_ind.carbon=pft->bm_inc.carbon/pft->nind;
+      tree->ind.root.carbon+=bm_inc_ind.carbon;
     }
     return TRUE;
   }
-  bm_inc_ind=pft->bm_inc/pft->nind;
-  lmtorm=getpftpar(pft,lmro_ratio)*(pft->wscal_mean/365);
+  if(!strcmp(pft->par->name,"cotton"))
+  {
+    wscal=pft->wscal_mean/(Real)pft->stand->growing_days;
+    vscal=(config->with_nitrogen) ? min(1,pft->vscal/(Real)pft->stand->growing_days) : 1;
+    lmtorm=getpftpar(pft,lmro_ratio)*(getpftpar(pft,lmro_offset)+(1-getpftpar(pft,lmro_offset))*min(vscal,wscal));
+  }
+  else
+  {
+    vscal=(config->with_nitrogen) ? min(1,pft->vscal/NDAYYEAR) : 1;
+    wscal=pft->wscal_mean/NDAYYEAR;
+    lmtorm=getpftpar(pft,lmro_ratio)*(getpftpar(pft,lmro_offset)+(1-getpftpar(pft,lmro_offset))*min(vscal,wscal));
+  }
+  bm_inc_ind.carbon=pft->bm_inc.carbon/pft->nind;
+  bm_inc_ind.nitrogen=pft->bm_inc.nitrogen/pft->nind;
   treepar=pft->par->data;
-  tinc_ind.heartwood=tinc_ind.debt=0.0;
+  tinc_ind.heartwood.carbon=tinc_ind.debt.carbon=0.0;
+  tinc_ind.heartwood.nitrogen=tinc_ind.debt.nitrogen=0.0;
   if (lmtorm<1.0e-10) /* No leaf production possible - put all biomass 
                            into roots (Individual will die next time period)*/
   {
-    tinc_ind.leaf=0.0;
-    tinc_ind.root=bm_inc_ind;
-    tinc_ind.sapwood=-tree->ind.sapwood;
-    tinc_ind.heartwood=-tinc_ind.sapwood;
-    tinc_ind.debt=0.0;
+    tinc_ind.leaf.carbon=0.0;
+    tinc_ind.root.carbon=bm_inc_ind.carbon;
+    tinc_ind.sapwood.carbon=-tree->ind.sapwood.carbon;
+    tinc_ind.heartwood.carbon=-tinc_ind.sapwood.carbon;
+    tinc_ind.debt.carbon=0.0;
   }
   else
   {
     if (tree->height>0.0) 
     {
-      tinc_ind_min.leaf=k_latosa*tree->ind.sapwood/(wooddens*tree->height*
-                        pft->par->sla)-tree->ind.leaf;
-      tinc_ind_min.root=k_latosa*tree->ind.sapwood/(wooddens*tree->height*
-                        pft->par->sla*lmtorm)-tree->ind.root;
+      tinc_ind_min.leaf.carbon=treepar->k_latosa*tree->ind.sapwood.carbon/(wooddens*tree->height*
+                        pft->par->sla)-tree->ind.leaf.carbon;
+      tinc_ind_min.root.carbon=treepar->k_latosa*tree->ind.sapwood.carbon/(wooddens*tree->height*
+                        pft->par->sla*lmtorm)-tree->ind.root.carbon;
     }
     else 
-      tinc_ind_min.leaf=tinc_ind_min.root=0.0;
+    {
+      tinc_ind_min.leaf.carbon=tinc_ind_min.root.carbon=0.0;
+      tinc_ind_min.leaf.nitrogen=tinc_ind_min.root.nitrogen=0.0;
+    }
 
-    cmass_deficit=tinc_ind_min.leaf+tinc_ind_min.root-bm_inc_ind;
+    cmass_deficit=tinc_ind_min.leaf.carbon+tinc_ind_min.root.carbon-bm_inc_ind.carbon;
     if (cmass_deficit>0.0) 
     {
       cmass_loan=max(min(cmass_deficit*CDEBT_MAXLOAN_DEFICIT,
-                 tree->ind.sapwood-tree->ind.debt)*CDEBT_MAXLOAN_MASS,0.0);
-      bm_inc_ind+=cmass_loan;
-      tinc_ind.debt=cmass_loan;
+                 tree->ind.sapwood.carbon-tree->ind.debt.carbon)*CDEBT_MAXLOAN_MASS,0.0);
+      bm_inc_ind.carbon+=cmass_loan;
+      tinc_ind.debt.carbon=cmass_loan;
     }
     else 
-      tinc_ind.debt=0.0;
+      tinc_ind.debt.carbon=0.0;
   
-    if (tinc_ind_min.root>=0.0 && tinc_ind_min.leaf>=0.0 &&
-        (tinc_ind_min.root+tinc_ind_min.leaf<=bm_inc_ind || bm_inc_ind<=0.0)) 
+    if (tinc_ind_min.root.carbon>=0.0 && tinc_ind_min.leaf.carbon>=0.0 &&
+        (tinc_ind_min.root.carbon+tinc_ind_min.leaf.carbon<=bm_inc_ind.carbon || bm_inc_ind.carbon<=0.0)) 
     {
-      data.b= tree->ind.sapwood+bm_inc_ind-tree->ind.leaf/lmtorm+
-              tree->ind.root;
+      data.b= tree->ind.sapwood.carbon+bm_inc_ind.carbon-tree->ind.leaf.carbon/lmtorm+
+              tree->ind.root.carbon;
       data.lm=1+1/lmtorm;
       data.k1=pow(treepar->allom2,2.0/treepar->allom3)*4.0*M_1_PI/wooddens;
-      data.k3=k_latosa/wooddens/pft->par->sla;
-      data.ind_leaf=tree->ind.leaf;
-      data.ind_heart=tree->ind.heartwood;
+      data.k3=treepar->k_latosa/wooddens/pft->par->sla;
+      data.ind_leaf=tree->ind.leaf.carbon;
+      data.ind_heart=tree->ind.heartwood.carbon;
       data.allom3=treepar->allom3;
-      x2=(bm_inc_ind-(tree->ind.leaf/lmtorm-tree->ind.root))/data.lm;
-      x1= (tree->ind.leaf<1.0e-10)  ? x2/NSEG : 0;
+      x2=(bm_inc_ind.carbon-(tree->ind.leaf.carbon/lmtorm-tree->ind.root.carbon))/data.lm;
+      x1= (tree->ind.leaf.carbon<1.0e-10)  ? x2/NSEG : 0;
 
 /*  Bisection loop
  *  Search iterates on value of xmid until xmid lies within
@@ -202,14 +225,19 @@ Bool allocation_tree(Litter *litter, /**< litter pool */
  
       if((x1==0 && x2==0) || data.b-x1*data.lm<0.0 || data.ind_leaf+x1<=0.0 
          || data.b-x2*data.lm<0.0 || data.ind_leaf+x2<=0.0 )
-        tinc_ind.leaf=0;
+        tinc_ind.leaf.carbon=0;
       else
-        tinc_ind.leaf=leftmostzero((Bisectfcn)f,x1,x2,&data,0.001,1.0e-10,40);
-      if (tinc_ind.leaf<0.0)
-        tinc_ind.root=0.0;
+        tinc_ind.leaf.carbon=leftmostzero((Bisectfcn)f,x1,x2,&data,0.001,1.0e-10,40);
+      if (tinc_ind.leaf.carbon<0.0)
+        tinc_ind.root.carbon=0.0;
       else
-        tinc_ind.root=(tinc_ind.leaf+tree->ind.leaf)/lmtorm-tree->ind.root; 
-      tinc_ind.sapwood=bm_inc_ind-tinc_ind.leaf-tinc_ind.root;
+        tinc_ind.root.carbon=(tinc_ind.leaf.carbon+tree->ind.leaf.carbon)/lmtorm-tree->ind.root.carbon; 
+      if(bm_inc_ind.carbon>0 && tinc_ind.root.carbon+tinc_ind.leaf.carbon>bm_inc_ind.carbon)
+      {
+        tinc_ind.root.carbon=bm_inc_ind.carbon*tinc_ind.root.carbon/(tinc_ind.root.carbon+tinc_ind.leaf.carbon);
+        tinc_ind.leaf.carbon=bm_inc_ind.carbon*tinc_ind.leaf.carbon/(tinc_ind.root.carbon+tinc_ind.leaf.carbon);
+      }
+      tinc_ind.sapwood.carbon=bm_inc_ind.carbon-tinc_ind.leaf.carbon-tinc_ind.root.carbon;
     }
     else 
     {
@@ -218,26 +246,111 @@ Bool allocation_tree(Litter *litter, /**< litter pool */
  * satisfy allometry
  * Attempt to distribute this year's production among leaves and roots only
  */
-      tinc_ind.leaf=(bm_inc_ind+tree->ind.root-tree->ind.leaf/lmtorm)/
+      tinc_ind.leaf.carbon=(bm_inc_ind.carbon+tree->ind.root.carbon-tree->ind.leaf.carbon/lmtorm)/
                     (1.0+1.0/lmtorm);
-      if (tinc_ind.leaf>0.0) 
-        tinc_ind.root=bm_inc_ind-tinc_ind.leaf;
+      if (tinc_ind.leaf.carbon>0.0) 
+        tinc_ind.root.carbon=bm_inc_ind.carbon-tinc_ind.leaf.carbon;
       else 
       {
-        tinc_ind.root=bm_inc_ind;
-        tinc_ind.leaf=(tree->ind.root+tinc_ind.root)*lmtorm-tree->ind.leaf;
-        litter->ag[pft->litter].trait.leaf+=-tinc_ind.leaf*pft->nind;
+        tinc_ind.root.carbon=bm_inc_ind.carbon;
+        tinc_ind.leaf.carbon=(tree->ind.root.carbon+tinc_ind.root.carbon)*lmtorm-tree->ind.leaf.carbon;
+        litter->item[pft->litter].ag.leaf.carbon+=-tinc_ind.leaf.carbon*pft->nind;
+        getoutput(&pft->stand->cell->output,LITFALLC,config)+=-tinc_ind.leaf.carbon*pft->nind*pft->stand->frac;
       }
-      tinc_ind.sapwood=(tinc_ind.leaf+tree->ind.leaf)*wooddens*tree->height*
-                       pft->par->sla/k_latosa-tree->ind.sapwood;
-      tinc_ind.heartwood=-tinc_ind.sapwood;
+      tinc_ind.sapwood.carbon=(tinc_ind.leaf.carbon+tree->ind.leaf.carbon)*wooddens*tree->height*
+                       pft->par->sla/treepar->k_latosa-tree->ind.sapwood.carbon;
+      tinc_ind.heartwood.carbon=-tinc_ind.sapwood.carbon;
     }
   }
-  tree->ind.leaf+=tinc_ind.leaf;
-  tree->ind.root+=tinc_ind.root;
-  tree->ind.sapwood+=tinc_ind.sapwood;
-  tree->ind.heartwood+=tinc_ind.heartwood;
-  tree->ind.debt+=tinc_ind.debt;
+
+  if(bm_inc_ind.carbon>0 && tinc_ind.leaf.carbon>0 && tinc_ind.sapwood.carbon>0 && tree->ind.root.carbon>0)
+  {
+    tree->falloc.leaf=tinc_ind.leaf.carbon/bm_inc_ind.carbon;
+    tree->falloc.root=tinc_ind.root.carbon/bm_inc_ind.carbon;
+    tree->falloc.sapwood=tinc_ind.sapwood.carbon/bm_inc_ind.carbon;
+  }
+  tree->ind.leaf.carbon+=tinc_ind.leaf.carbon;
+  tree->ind.root.carbon+=tinc_ind.root.carbon;
+  tree->ind.sapwood.carbon+=tinc_ind.sapwood.carbon;
+  tree->ind.heartwood.carbon+=tinc_ind.heartwood.carbon;
+  tree->ind.debt.carbon+=tinc_ind.debt.carbon;
+  /* all carbon from bm_inc_ind.carbon has been allocated according to rules*/
+  /* check if there is too much carbon for allowed CN ratios and eventually put
+     some carbon back to bm_inc_ind.carbon */
+  if(config->with_nitrogen)
+  {
+
+    /* nitrogen allocation */
+    if(tree->ind.leaf.carbon>0 && bm_inc_ind.nitrogen>0)
+    {
+      nitrogen_allocation_tree(&a,&b,&c,tree->ind.leaf,tree->ind.root,tree->ind.sapwood,
+                               treepar->ratio.root,treepar->ratio.sapwood,bm_inc_ind.nitrogen);
+      /* check if there is too much nitrogen, fill up leaves, roots sapwood to max allowed */
+      if((tree->ind.leaf.nitrogen+a*bm_inc_ind.nitrogen)/tree->ind.leaf.carbon>pft->par->ncleaf.high)
+      {
+        nitrogen_before=tree->ind.leaf.nitrogen;
+        tree->ind.leaf.nitrogen=tree->ind.leaf.carbon*pft->par->ncleaf.high;
+        bm_inc_ind.nitrogen-=tree->ind.leaf.nitrogen-nitrogen_before;
+        if(bm_inc_ind.nitrogen>=tree->ind.root.carbon*pft->par->ncleaf.high/treepar->ratio.root-tree->ind.root.nitrogen)
+        {
+          nitrogen_before=tree->ind.root.nitrogen;
+          tree->ind.root.nitrogen=tree->ind.root.carbon*pft->par->ncleaf.high/treepar->ratio.root;
+          bm_inc_ind.nitrogen-=tree->ind.root.nitrogen-nitrogen_before;
+        }
+        else
+        {
+          tree->ind.root.nitrogen+= bm_inc_ind.nitrogen;
+          bm_inc_ind.nitrogen=0;
+        }
+        if( bm_inc_ind.nitrogen>=tree->ind.sapwood.carbon*pft->par->ncleaf.high/treepar->ratio.sapwood-tree->ind.sapwood.nitrogen)
+        {
+          nitrogen_before=tree->ind.sapwood.nitrogen;
+          tree->ind.sapwood.nitrogen=tree->ind.sapwood.carbon*pft->par->ncleaf.high/treepar->ratio.sapwood;
+          bm_inc_ind.nitrogen-=tree->ind.sapwood.nitrogen-nitrogen_before;
+        }
+        else
+        {
+          tree->ind.sapwood.nitrogen+= bm_inc_ind.nitrogen;
+          bm_inc_ind.nitrogen=0;
+        }
+      }
+      else /* not too much nitrogen, allocate normally */
+      {
+        tree->ind.leaf.nitrogen+=a*bm_inc_ind.nitrogen;
+        tree->ind.root.nitrogen+=b*bm_inc_ind.nitrogen;
+        tree->ind.sapwood.nitrogen+=c*bm_inc_ind.nitrogen;
+        bm_inc_ind.nitrogen=0;
+        /* testing if there is too much carbon for allowed NC ratios */
+        if(tree->ind.leaf.nitrogen/tree->ind.leaf.carbon<pft->par->ncleaf.low)
+        {
+          cleaf=tree->ind.leaf.nitrogen/pft->par->ncleaf.low;
+          //litter->item[pft->litter].ag.leaf.carbon+=(tree->ind.leaf.carbon-cleaf)*pft->nind;
+          tree->excess_carbon+=(tree->ind.leaf.carbon-cleaf);
+          tree->ind.leaf.carbon=cleaf;
+        }
+        if(tree->ind.root.nitrogen/tree->ind.root.carbon<pft->par->ncleaf.low/treepar->ratio.root)
+        {
+          croot=tree->ind.root.nitrogen/pft->par->ncleaf.low*treepar->ratio.root;
+          //litter->bg[pft->litter].carbon+=(tree->ind.root.carbon-croot)*pft->nind;
+          tree->excess_carbon+=(tree->ind.root.carbon-croot);
+          tree->ind.root.carbon=croot;
+        }
+        if(tree->ind.sapwood.carbon>0 && tree->ind.sapwood.nitrogen/tree->ind.sapwood.carbon<pft->par->ncleaf.low/treepar->ratio.sapwood)
+        {
+          csapwood=tree->ind.sapwood.nitrogen/pft->par->ncleaf.low*treepar->ratio.sapwood;
+          /*for(i=0;i<NFUELCLASS;i++)
+          {
+            litter->item[pft->litter].ag.wood[i].carbon+=(tree->ind.sapwood.carbon-csapwood)*pft->nind*treepar->fuelfrac[i];
+            update_fbd_tree(litter,pft->par->fuelbulkdensity,
+                            (tree->ind.sapwood.carbon-csapwood)*pft->nind*treepar->fuelfrac[i],i);
+          }*/
+          tree->excess_carbon+=(tree->ind.sapwood.carbon-csapwood);
+          tree->ind.sapwood.carbon=csapwood;
+        }
+      }
+    }
+    pft->bm_inc.nitrogen=bm_inc_ind.nitrogen*pft->nind;
+  } /* of config->with_nitrogen */
   allometry_tree(pft);
   *fpc_inc=fpc_tree(pft);
   return isneg_tree(pft);

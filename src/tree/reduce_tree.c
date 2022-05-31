@@ -4,6 +4,8 @@
 /**                                                                                \n**/
 /**     C implementation of LPJmL                                                  \n**/
 /**                                                                                \n**/
+/**     Function reduces tree density and FPC by a factor                          \n**/
+/**                                                                                \n**/
 /** (C) Potsdam Institute for Climate Impact Research (PIK), see COPYRIGHT file    \n**/
 /** authors, and contributors see AUTHORS file                                     \n**/
 /** This file is part of LPJmL and licensed under GNU AGPL Version 3               \n**/
@@ -15,12 +17,17 @@
 #include "lpj.h"
 #include "tree.h"
 
-void reduce_tree(Litter *litter,Pft *pft,Real factor) 
+void reduce_tree(Litter *litter, /**< pointer to litter */
+                 Pft *pft,       /**< pointer to tree PFT */
+                 Real factor,    /**< factor for reduction of tree density */
+                 const Config *config /**< LPJmL configuration */
+                ) 
 {
-  pft->nind/=factor;
   pft->fpc/=factor;
-  litter_update_tree(litter,pft,pft->nind*factor-pft->nind); 
-  
+  litter_update_tree(litter,pft,pft->nind-pft->nind/factor,config);
+  if(pft->nind>0)
+    pft->bm_inc.nitrogen/=factor;
+  pft->nind/=factor;
 } /* of 'reduce_tree' */
 
 /**************************************************************************************/

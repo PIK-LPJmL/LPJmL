@@ -1,0 +1,29 @@
+/**************************************************************************************/
+/**                                                                                \n**/
+/**            a  g  r  i  c  u  l  t  u  r  a  l  _  g  r  a  s  s  .  h          \n**/
+/**                                                                                \n**/
+/**     C implementation of LPJ                                                    \n**/
+/**                                                                                \n**/
+/**     Declaration of agricultural grass stand                                    \n**/
+/**                                                                                \n**/
+/** (C) Potsdam Institute for Climate Impact Research (PIK), see COPYRIGHT file    \n**/
+/** authors, and contributors see AUTHORS file                                     \n**/
+/** This file is part of LPJmL and licensed under GNU AGPL Version 3               \n**/
+/** or later. See LICENSE file or go to http://www.gnu.org/licenses/               \n**/
+/** Contact: https://github.com/PIK-LPJmL/LPJmL                                    \n**/
+/**                                                                                \n**/
+/**************************************************************************************/
+
+#ifndef AGRICULTURE_GRASS_H
+#define AGRICULTURE_GRASS_H
+
+extern Standtype agriculture_grass_stand;
+
+extern Real daily_agriculture_grass(Stand *,Real,const Dailyclimate *,int,int,
+                                    Real,
+                                    Real,Real,Real,Real,Real,int,int,int,
+                                    Bool,Real,const Config *);
+
+extern Bool annual_agriculture_grass(Stand *,int,int,Real,int,Bool,Bool,const Config *);
+
+#endif

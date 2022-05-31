@@ -25,10 +25,10 @@ Real moistfactor(const Litter *litter  /**< Litter pool */
   moistfactor=0;
   for(p=0;p<litter->n;p++)
   {
-    sum=litter->ag[p].trait.leaf;
+    sum=litter->item[p].ag.leaf.carbon;
     for(i=0;i<NFUELCLASS;i++)
-      sum+=litter->ag[p].trait.wood[i];
-    moistfactor+=litter->ag[p].pft->flam*sum;
+      sum+=litter->item[p].ag.wood[i].carbon;
+    moistfactor+=litter->item[p].pft->flam*sum;
   }
   return moistfactor/litter_sum;
 } /* of 'moistfactor' */

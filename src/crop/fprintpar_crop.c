@@ -17,12 +17,11 @@
 #include "lpj.h"
 #include "crop.h"
 
-void fprintpar_crop(FILE *file, /**< pointer to text file */
-                    const Pftpar *par /**< pointer to PFT parameter */
+void fprintpar_crop(FILE *file,          /**< pointer to text file */
+                    const Pftpar *par,   /**< pointer to PFT parameter */
+                    const Config *config /**< LPJmL configuration */
                    )
 {
-  char *calcmethod[]={"no calc","prec calc","temp wtyp calc","temp styp calc",
-                      "temp prec calc","multi crop"}; 
   Pftcroppar *croppar;
   croppar=par->data;
   fprintf(file,"sdate calcmethod:\t %s\n"
@@ -32,8 +31,7 @@ void fprintpar_crop(FILE *file, /**< pointer to text file */
                "temp fall:\t%g (deg C)\n"
                "temp spring:\t%g (deg C)\n"
                "temp vern:\t%g (deg C)\n"
-               "trg:\t\t%g %g\n"
-               "pvd:\t\t%g\n"
+               "pvd_max:\t%g\n"
                "psens:\t\t%g\n"
                "pb:\t\t%g (h)\n"
                "ps:\t\t%g (h)\n"
@@ -48,15 +46,14 @@ void fprintpar_crop(FILE *file, /**< pointer to text file */
                "fphusen:\t%g\n"
                "flaimaxharvest:\t%g\n"
                "min, max LAI:\t%g %g\n"
-               "opt,min hi:\t%g %g\n"
+               "opt, min hi:\t%g %g\n"
                "shapesenescencenorm:\t%g\n"
                "C:N ratio:\t%g %g %g\n",
           calcmethod[croppar->calcmethod_sdate],
           croppar->initdate.sdatenh,croppar->initdate.sdatesh,
           croppar->hlimit,croppar->fallow_days,
           croppar->temp_fall,croppar->temp_spring,croppar->temp_vern,
-          croppar->trg.low,croppar->trg.high,
-          croppar->pvd,
+          croppar->pvd_max,
           croppar->psens,
           croppar->pb,
           croppar->ps,
@@ -73,7 +70,18 @@ void fprintpar_crop(FILE *file, /**< pointer to text file */
           croppar->laimin,croppar->laimax,
           croppar->hiopt,croppar->himin,
           croppar->shapesenescencenorm,
-          par->respcoeff*param.k/croppar->cn_ratio.root,
-          par->respcoeff*param.k/croppar->cn_ratio.so,
-          par->respcoeff*param.k/croppar->cn_ratio.pool);
+          1/croppar->nc_ratio.root,
+          1/croppar->nc_ratio.so,
+          1/croppar->nc_ratio.pool);
+  if(config->crop_phu_option==OLD_CROP_PHU)
+    fprintf(file,"trg:\t\t%g %g (deg C)\n",
+            croppar->trg.low,croppar->trg.high);
+  else
+    fprintf(file,"tv_eff:\t\t%g %g (deg C)\n"
+                 "tv_opt:\t\t%g %g (deg C)\n",
+            croppar->tv_eff.low,croppar->tv_eff.high,
+            croppar->tv_opt.low,croppar->tv_opt.high);
+  if(config->with_nitrogen)
+    fprintf(file,"rel. C:N ratio:\t%g %g %g\n",
+            croppar->ratio.root,croppar->ratio.so,croppar->ratio.pool);
 } /* of 'fprintpar_crop' */

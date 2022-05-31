@@ -24,12 +24,13 @@
 
 void equilsom(Cell *cell,           /**< pointer to cell */
               int ntotpft,          /**< total number of PFTs */
-              const Pftpar pftpar[] /**< PFT parameter array */
+              const Pftpar pftpar[], /**< PFT parameter array */
+              Bool shift
              )
 {
   int s;
   Stand *stand;
   
   foreachstand(stand,s,cell->standlist)
-    equilsoil(&stand->soil,ntotpft,pftpar);
+    equilsoil(&stand->soil,ntotpft,pftpar,shift);
 } /* of 'equilsom' */

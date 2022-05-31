@@ -19,6 +19,7 @@
 
 Bool fread_tree(FILE *file, /**< pointer to binary file */
                 Pft *pft,   /**< pointer to PFT read */
+                Bool UNUSED(double_harvest),
                 Bool swap   /**< Byte order has to be changed (TRUE/FALSE) */
                )            /** \return TRUE on error */
 {
@@ -30,13 +31,24 @@ Bool fread_tree(FILE *file, /**< pointer to binary file */
     printallocerr("tree");
     return TRUE;
   }
+  pft->nlimit=0.0;
   freadreal1(&tree->height,swap,file);
   freadreal1(&tree->crownarea,swap,file);
   freadreal1(&tree->barkthickness,swap,file);
   freadreal1(&tree->gddtw,swap,file);
   freadreal1(&tree->aphen_raingreen,swap,file);
   freadint1(&tree->isphen,swap,file);
-  freadreal((Real *)&tree->turn,sizeof(Treephys)/sizeof(Real),swap,file);
-  freadreal((Real *)&tree->turn_litt,sizeof(Treephys)/sizeof(Real),swap,file);
-  return freadreal((Real *)&tree->ind,sizeof(Treephys2)/sizeof(Real),swap,file)!=sizeof(Treephys2)/sizeof(Real);
+  freadreal((Real *)&tree->turn,sizeof(Treeturn)/sizeof(Real),swap,file);
+  freadreal((Real *)&tree->turn_litt,sizeof(Treeturn)/sizeof(Real),swap,file);
+  freadreal1(&tree->turn_nbminc,swap,file);
+  freadreal((Real *)&tree->ind,sizeof(Treephys2)/sizeof(Real),swap,file);
+  if(pft->par->cultivation_type==ANNUAL_TREE)
+  {
+    freadreal((Real *)&tree->fruit,sizeof(Stocks)/sizeof(Real),swap,file);
+    freadint1(&tree->boll_age,swap,file);
+  }
+  else
+    tree->fruit.carbon=tree->fruit.nitrogen=0;
+  freadreal1(&tree->excess_carbon,swap,file);
+  return freadreal((Real *)&tree->falloc,sizeof(Treephyspar)/sizeof(Real),swap,file)!=sizeof(Treephyspar)/sizeof(Real);
 } /* of 'fread_tree' */

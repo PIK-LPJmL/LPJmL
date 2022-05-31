@@ -22,13 +22,14 @@ FILE *openinputfile(Header *header, /**< pointer to file header */
                     String headername, /**< clm file header string */
                     int *version, /**< clm file version */
                     size_t *offset, /**< offset in binary file */
+                    Bool isyear,
                     const Config *config /**< grid configuration */
                    )           /** \return file pointer to open file or NULL */
 {
   FILE *file;
   if(filename->fmt==META)
   {
-    *version=4;
+    *version=CLM_MAX_VERSION+1;
     /* set default values for header */
     header->order=CELLYEAR;
     header->firstyear=config->firstyear;
@@ -36,12 +37,14 @@ FILE *openinputfile(Header *header, /**< pointer to file header */
     header->firstcell=0;
     header->ncell=config->nall;
     header->nbands=1;
+    header->nstep=1;
+    header->timestep=1;
     header->scalar=1;
     header->datatype=LPJ_SHORT;
     header->cellsize_lon=(float)config->resolution.lon;
     header->cellsize_lat=(float)config->resolution.lat;
     /* open description file */
-    file=openmetafile(header,swap,offset,filename->name,isroot(*config));
+    file=openmetafile(header,NULL,NULL,swap,offset,filename->name,isroot(*config));
     if(file==NULL)
     {
       if(isroot(*config))
@@ -65,7 +68,7 @@ FILE *openinputfile(Header *header, /**< pointer to file header */
       return NULL;
     }*/
     if(header->firstyear>config->firstyear)
-      if(isroot(*config))
+      if(isyear && isroot(*config))
         fprintf(stderr,"WARNING004: First year in '%s'=%d greater than %d.\n",
                  filename->name,header->firstyear,config->firstyear);
     if(config->firstgrid<header->firstcell ||
@@ -96,6 +99,8 @@ FILE *openinputfile(Header *header, /**< pointer to file header */
     header->firstcell=0;
     header->ncell=config->nall;
     header->nbands=1;
+    header->nstep=1;
+    header->timestep=1;
     header->scalar=1;
     header->datatype=LPJ_SHORT;
     *version=0;
@@ -103,7 +108,7 @@ FILE *openinputfile(Header *header, /**< pointer to file header */
   else
   {
     *version=(filename->fmt==CLM) ? READ_VERSION : 2;
-    if(freadanyheader(file,header,swap,headername,version))
+    if(freadanyheader(file,header,swap,headername,version,isroot(*config)))
     {
       if(isroot(*config))
         fprintf(stderr,"ERROR154: Invalid header in '%s'.\n",filename->name);
@@ -129,19 +134,30 @@ FILE *openinputfile(Header *header, /**< pointer to file header */
         return NULL;
       }
     }
-    if(header->firstyear>config->firstyear)
-      if(isroot(*config))
-        fprintf(stderr,"WARNING004: First year in '%s'=%d greater than %d.\n",
-                filename->name,header->firstyear,config->firstyear);
-    if(config->firstgrid<header->firstcell ||
-       config->nall+config->firstgrid>header->ncell+header->firstcell)
+    if(*version>CLM_MAX_VERSION)
     {
       if(isroot(*config))
-        fprintf(stderr,"ERROR155: gridcells [%d,%d] in '%s' not in [%d,%d].\n",
-                header->firstcell,header->ncell+header->firstcell-1,filename->name,
-                config->firstgrid,config->nall+config->firstgrid-1);
+        fprintf(stderr,"ERROR154: Unsupported version %d in '%s', must be less than %d.\n",
+                *version,filename->name,CLM_MAX_VERSION+1);
       fclose(file);
       return NULL;
+    }
+    if(header->firstyear>config->firstyear)
+      if(isyear && isroot(*config))
+        fprintf(stderr,"WARNING004: First year in '%s'=%d greater than %d.\n",
+                filename->name,header->firstyear,config->firstyear);
+    if(header->order!=CELLINDEX)
+    {
+      if(config->firstgrid<header->firstcell ||
+         config->nall+config->firstgrid>header->ncell+header->firstcell)
+      {
+        if(isroot(*config))
+          fprintf(stderr,"ERROR155: gridcells [%d,%d] in '%s' not in [%d,%d].\n",
+                  header->firstcell,header->ncell+header->firstcell-1,filename->name,
+                  config->firstgrid,config->nall+config->firstgrid-1);
+        fclose(file);
+        return NULL;
+      }
     }
   }
   return file;

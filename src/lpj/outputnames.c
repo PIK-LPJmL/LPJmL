@@ -4,7 +4,7 @@
 /**                                                                                \n**/
 /**     C implementation of LPJmL                                                  \n**/
 /**                                                                                \n**/
-/**     Checks whether outpiut filenames has been used more than once              \n**/
+/**     Checks whether output filenames has been used more than once               \n**/
 /**     Only NetCDF files can share filenames                                      \n**/
 /**                                                                                \n**/
 /** (C) Potsdam Institute for Climate Impact Research (PIK), see COPYRIGHT file    \n**/

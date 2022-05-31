@@ -115,7 +115,7 @@ Real roughnesslength(const Standlist standlist /**< stand list */
   /* *z0eff = 10.0/exp(sum); */
   test = zb/(exp(sqrt(1/z0all)));
 
-#ifndef NDEBUG
+#ifdef SAFE
   /*if (*z0eff > 2 || *z0eff < 0) {
    *  printf("WARNING z0eff=%g is out of bounds!\n",*z0eff);
    *  printf("exp(sum)=%g\n",exp(sum));
@@ -144,7 +144,7 @@ Real roughnesslength(const Standlist standlist /**< stand list */
       }
     }
   }
-#endif /* NDEBUG */
+#endif /* SAFE */
 
   return test;
 } /* of roughnesslength() */

@@ -18,11 +18,11 @@ void phenology_gsi(Pft *pft,    /**< pointer to PFT variables */
                    Real temp,   /**< temperature (deg C) */
                    Real light,  /**< light, i.e. shortwave-downward radiation (W m-2) */
                    int day,     /**< day of the year */
-                   Bool isdaily /**< daily temperature data (TRUE/FALSE) */
+                   Bool isdaily, /**< daily temperature data (TRUE/FALSE) */
+                   const Config *config
                   )
 {
   Pfttree *tree;
-
   /* get parameters */
 
   Phen_param tminpar = getpftpar(pft, tmin);
@@ -32,20 +32,25 @@ void phenology_gsi(Pft *pft,    /**< pointer to PFT variables */
 
   /* cold temperature response function */
   pft->phen_gsi.tmin += ( 1 / (1 + exp(-tminpar.sl * (temp - tminpar.base))) - pft->phen_gsi.tmin) * tminpar.tau;
-
+  pft->phen_gsi.tmin=max(epsilon,pft->phen_gsi.tmin);
   /* heat stress response function */
   pft->phen_gsi.tmax += ( 1 / (1 + exp(tmaxpar.sl * (temp - tmaxpar.base))) - pft->phen_gsi.tmax) * tmaxpar.tau;
+  pft->phen_gsi.tmax=max(epsilon,pft->phen_gsi.tmax);
 
   /* photosynthetic active radiation response function */
-  pft->phen_gsi.light += ( 1 / (1 + exp(-lightpar.sl * (light - lightpar.base))) - pft->phen_gsi.light) * lightpar.tau;
-
+  if(-lightpar.sl * (light - lightpar.base)<200) /* check to avoid overflow in exp function */
+    pft->phen_gsi.light += ( 1 / (1 + exp(-lightpar.sl * (light - lightpar.base))) - pft->phen_gsi.light) * lightpar.tau;
+  else
+    pft->phen_gsi.light -=pft->phen_gsi.light * lightpar.tau;
+  pft->phen_gsi.light=max(epsilon,pft->phen_gsi.light);
   /* water availability response function */
   pft->phen_gsi.wscal += ( 1 / (1 + exp(-wscalpar.sl * (pft->wscal*100 - wscalpar.base))) - pft->phen_gsi.wscal) * wscalpar.tau;
+  pft->phen_gsi.wscal=max(epsilon,pft->phen_gsi.wscal);
 
   /* phenology */
   pft->phen = pft->phen_gsi.tmin * pft->phen_gsi.tmax * pft->phen_gsi.light * pft->phen_gsi.wscal;
 
-  turnover_daily(&pft->stand->soil.litter,pft,temp,isdaily);
+  turnover_daily(&pft->stand->soil.litter,pft,temp,day,isdaily,config);
 
   if ((pft->stand->cell->coord.lat>=0.0 && day==COLDEST_DAY_NHEMISPHERE) ||
       (pft->stand->cell->coord.lat<0.0 && day==COLDEST_DAY_SHEMISPHERE))

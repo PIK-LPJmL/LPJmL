@@ -31,7 +31,7 @@ int main(int argc,char **argv)
   FILE **ifp;
   void *data;
   int i,j,k,p,*n,runs,bands,sum;
-  char *outfile;
+  char *outfile,*endptr;
   struct stat filestat;
   k=LPJ_FLOAT;
   bands=103;
@@ -67,7 +67,7 @@ int main(int argc,char **argv)
           return EXIT_FAILURE;
         }
         else
-         outfile=argv[++i];
+          outfile=argv[++i];
       }
       else if(!strcmp(argv[i],"-bands"))
       {
@@ -78,7 +78,19 @@ int main(int argc,char **argv)
           return EXIT_FAILURE;
         }
         else
-         bands=atoi(argv[++i]);
+        {
+          bands=strtol(argv[++i],&endptr,10);
+          if(*endptr!='\0')
+          {
+            fprintf(stderr,"Invalid number '%s' for option '-bands'.\n",argv[i]);
+            return EXIT_FAILURE;
+          }
+        }
+        if(bands<1)
+        {
+          fprintf(stderr,"Number of bands=%d must be greater than zero.\n",bands);
+          return EXIT_FAILURE;
+        }
       }
       else
       {

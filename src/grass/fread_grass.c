@@ -17,6 +17,7 @@
 
 Bool fread_grass(FILE *file, /**< pointer to binary file */
                  Pft *pft,   /**< pointer to PFT data read */
+                 Bool UNUSED(double_harvest),
                  Bool swap   /**< byte order has to be swapped (TRUE/FALSE) */
                 )            /** \return TRUE on error */
 {
@@ -28,7 +29,12 @@ Bool fread_grass(FILE *file, /**< pointer to binary file */
     printallocerr("grass");
     return TRUE;
   }
+  pft->nlimit=0.0;
   freadreal((Real *)&grass->turn,sizeof(Grassphys)/sizeof(Real),swap,file);
+  freadreal((Real *)&grass->turn_litt,sizeof(Grassphys)/sizeof(Real),swap,file);
+  freadreal(&grass->max_leaf,1,swap,file);
+  freadreal(&grass->excess_carbon,1,swap,file);
   freadreal((Real *)&grass->ind,sizeof(Grassphys)/sizeof(Real),swap,file);
-  return freadreal((Real *)&grass->max_leaf,1,swap,file)!=1;
+  freadreal((Real *)&grass->falloc,sizeof(Grassphyspar)/sizeof(Real),swap,file);
+  return freadint(&grass->growing_days,1,swap,file)!=1;
 } /* of 'fread_grass' */

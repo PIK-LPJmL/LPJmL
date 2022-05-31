@@ -18,32 +18,24 @@ void fprintheader(FILE *file, /**< pointer to text file */
                   const Header *header /**< file header to print */
                  )
 {
-  fputs("Order:\t\t",file);
-  switch(header->order)
-  {
-    case CELLYEAR:
-      fputs("CELLYEAR\n",file);
-      break;
-    case YEARCELL:
-      fputs("YEARCELL\n",file);
-      break;
-    case CELLINDEX:
-      fputs("CELLINDEX\n",file);
-      break;
-    case CELLSEQ:
-      fputs("CELLSEQ\n",file);
-      break;
-    default:
-      fprintf(file,"%d\n",header->order);
-  }
+  if(header->datatype>=0 && header->datatype<5)
+    fprintf(file,"Type:\t\t%s\n",typenames[header->datatype]);
+  else
+    fprintf(file,"Type:\t\t%d\n",(int)header->datatype);
+  if(header->order>=CELLYEAR && header->order<=CELLSEQ)
+    fprintf(file,"Order:\t\t%s\n",ordernames[header->order-1]);
+  else
+    fprintf(file,"Order:\t\t%d\n",header->order);
   fprintf(file,"First year:\t%6d\n"
           "Last year:\t%6d\n"
           "First cell:\t%6d\n"
           "Number of cells:%6d\n"
           "Number of bands:%6d\n"
+          "Number of steps:%6d\n"
+          "Time step:%6d\n"
           "cellsize:\t%10.6f %10.6f\n"
           "conversion factor:\t%g\n",
-          header->firstyear,header->firstyear+header->nyear-1,
-          header->firstcell,header->ncell,header->nbands,header->cellsize_lon,
+          header->firstyear,header->firstyear+(header->nyear-1)*header->timestep,
+          header->firstcell,header->ncell,header->nbands,header->nstep,header->timestep,header->cellsize_lon,
           header->cellsize_lat,header->scalar);
 } /* of 'fprintheader' */

@@ -16,6 +16,9 @@
 
 #include "lpj.h"
 
+const char *fmt[N_FMT]={"raw","clm","clm2","txt","fms","meta","cdf"};
+const char *time_step[]={"annual","monthly","daily"};
+
 Bool readfilename(LPJfile *file,      /**< pointer to text file read */
                   Filename *filename, /**< returns filename and format */
                   const char *key,    /**< name of json object */
@@ -28,26 +31,43 @@ Bool readfilename(LPJfile *file,      /**< pointer to text file read */
   String name;
   if(fscanstruct(file,&f,key,verb))
     return TRUE;
-  if(fscanint(&f,&filename->fmt,"fmt",FALSE,verb))
+  if(fscankeywords(&f,&filename->fmt,"fmt",fmt,N_FMT,FALSE,verb))
     return TRUE;
-  if(filename->fmt<0 || filename->fmt>CDF)
-  {
-    if(verb)
-      fprintf(stderr,"ERROR205: Invalid value for input format in line %d of '%s'.\n",getlinecount(),getfilename());
-    return TRUE;
-  }
   if(filename->fmt==FMS)
   {
     filename->var=NULL;
+    filename->map=NULL;
     filename->name=NULL;
+    filename->time=NULL;
+    filename->unit=NULL;
     return FALSE;
   }
+  if(iskeydefined(&f,"map"))
+  {
+    if(fscanstring(&f,name,"map",FALSE,verb))
+    {
+      if(verb)
+        readstringerr("map");
+      return TRUE;
+    }
+    else
+    {
+      filename->map=strdup(name);
+      if(filename->map==NULL)
+      {
+        printallocerr("map");
+        return TRUE;
+      }
+    }
+  }
+  else
+    filename->map=NULL;
   if(isvar && filename->fmt==CDF)
   {
     if(fscanstring(&f,name,"var",FALSE,verb))
     {
       if(verb)
-        readstringerr("variable");
+        readstringerr("var");
       return TRUE;
     }
     else
@@ -55,7 +75,7 @@ Bool readfilename(LPJfile *file,      /**< pointer to text file read */
       filename->var=strdup(name);
       if(filename->var==NULL)
       {
-        printallocerr("variable");
+        printallocerr("var");
         return TRUE;
       }
     }
@@ -81,7 +101,47 @@ Bool readfilename(LPJfile *file,      /**< pointer to text file read */
       filename->time=NULL;
   }
   else
-    filename->var=filename->time=NULL;
+  {
+    if(iskeydefined(&f,"var"))
+    {
+      if(fscanstring(&f,name,"var",FALSE,verb))
+      {
+        if(verb)
+          readstringerr("var");
+        return TRUE;
+      }
+      else
+      {
+        filename->var=strdup(name);
+        if(filename->var==NULL)
+        {
+          printallocerr("var");
+          return TRUE;
+        }
+      }
+    }
+    else
+      filename->var=NULL;
+    if(iskeydefined(&f,"scale"))
+    {
+      filename->isscale=TRUE;
+      if(fscanreal(&f,&filename->scale,"scale",FALSE,verb))
+      {
+        if(verb)
+          readstringerr("scale");
+        return TRUE;
+      }
+      if(filename->scale==0)
+      {
+        if(verb)
+          fprintf(stderr,"ERROR229: Scale must not be zero.\n");
+        return TRUE;
+      }
+    }
+    else
+      filename->isscale=FALSE;
+    filename->time=NULL;
+  }
   if(fscanstring(&f,name,"name",FALSE,verb))
   {
     if(verb)
@@ -92,8 +152,65 @@ Bool readfilename(LPJfile *file,      /**< pointer to text file read */
   filename->name=addpath(name,path); /* add path to filename */
   if(filename->name==NULL)
   {
+    printallocerr("name");
     free(filename->var);
     return TRUE;
   }
+  if(iskeydefined(&f,"metafile"))
+  {
+    if(fscanbool(&f,&filename->meta,"metafile",FALSE,verb))
+    {
+      free(filename->var);
+      return TRUE;
+    }
+  }
+  if(iskeydefined(&f,"version"))
+  {
+    if(fscanint(&f,&filename->version,"version",FALSE,verb))
+    {
+      free(filename->var);
+      return TRUE;
+    }
+    if(filename->version<1 || filename->version>CLM_MAX_VERSION)
+    {
+      if(verb)
+       fprintf(stderr,"ERROR229: Invalid version %d, must be in [1,%d].\n",
+               filename->version,CLM_MAX_VERSION);
+      free(filename->var);
+      return TRUE;
+    }
+
+  }
+  if(iskeydefined(&f,"unit"))
+  {
+    if(fscanstring(&f,name,"unit",FALSE,verb))
+    {
+      if(verb)
+        readstringerr("unit");
+      return TRUE;
+    }
+    else
+    {
+      filename->unit=strdup(name);
+      if(filename->unit==NULL)
+      {
+        printallocerr("unit");
+        return TRUE;
+      }
+    }
+  }
+  else
+    filename->unit=NULL;
+  if(iskeydefined(&f,"timestep"))
+  {
+    if(fscantimestep(&f,&filename->timestep,verb))
+    {
+      if(verb)
+        fputs("ERROR229: Cannot read int 'timestep'.\n",stderr);
+      return TRUE;
+    }
+  }
+  else
+    filename->timestep=NOT_FOUND;
   return FALSE;
 } /* of 'readfilename' */

@@ -16,12 +16,13 @@
 
 #include "lpj.h"
 
-void cutpfts(Stand *stand /**< Pointer to stand */
+void cutpfts(Stand *stand, /**< Pointer to stand */
+             const Config *config /**< LPJmL configuration */
             )
 {
   int p;
   Pft *pft;
   foreachpft(pft,p,&stand->pftlist)
-    litter_update(&stand->soil.litter,pft,pft->nind);
+    litter_update(&stand->soil.litter,pft,pft->nind,config);
   freepftlist(&stand->pftlist);
 } /* of 'cutpfts' */

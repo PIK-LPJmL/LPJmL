@@ -39,6 +39,7 @@ typedef struct
 {
   Reservoir reservoir;
   Real *fraction;
+  Real mprec_res;        /**< monthly reservoir precipitation (mm) */
   Real dmass;            /* water currently stored (dm3) */
   Real dfout_res;        /* daily outflow from reservoir to river */
   Real dfout_irrigation; /* daily outflow from reservoir for irrigation */
@@ -64,7 +65,7 @@ typedef struct
                           higher than one eg the day after rain because of the
                           even release through the month*/
 
-  Real c_pool;           /* pool where the carbon is stored from the land
+  Stocks pool;           /* pool where the carbon and nitrogen is stored from the land
                             that has been taken by the reservoir */
 } Resdata;
 
@@ -75,11 +76,11 @@ extern Real outflow_reservoir(Resdata *,int);
 extern Bool initreservoir(Cell *,Config *);
 extern void irrig_amount_reservoir(Cell *,const Config *);
 extern void allocate_reservoir(Cell *,int,const Config *);
-extern void landusechange_for_reservoir(Cell *,const Pftpar [],int,
-                                        Bool,Bool,int,int);
+extern void landusechange_for_reservoir(Cell *,int,int,
+                                        Bool,int,const Config *);
 extern Bool check_stand_fracs_for_reservoir(const Cell *,Real *);
-extern void update_reservoir_daily(Cell *,Real,Real);
-extern void update_reservoir_monthly(Cell *,int);
+extern void update_reservoir_daily(Cell *,Real,Real,int,const Config *);
+extern void update_reservoir_monthly(Cell *,int,const Config *);
 extern void update_reservoir_annual(Cell *);
 extern void initresdata(Cell *);
 extern void drain_reservoir(Cell *,const Config *,int,Real);

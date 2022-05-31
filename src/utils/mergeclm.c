@@ -22,10 +22,12 @@ int main(int argc,char **argv)
   FILE **files;
   FILE *out;
   int i,iarg,year,cell,version,version_out,*nbands,setversion,numfiles,nbands_sum,index;
+  Bool swapnstep;
   Byte *bvec;
   short *svec;
   int *ivec;
   float *fvec;
+  double *dvec;
   void *vec;
   struct stat filestat;
   char c;
@@ -38,6 +40,7 @@ int main(int argc,char **argv)
   force=FALSE;
   verbose=FALSE;
   size4=FALSE;
+  swapnstep=FALSE;
   setversion=READ_VERSION;
   /* process command options */
   for(iarg=1;iarg<argc;iarg++)
@@ -123,12 +126,30 @@ int main(int argc,char **argv)
         return EXIT_FAILURE;
       }
       version=setversion;
-      if(freadanyheader(files[i],&header,swap+i,id,&version))
+      if(freadanyheader(files[i],&header,swap+i,id,&version,TRUE))
       {
         fprintf(stderr,"Error reading header in '%s'.\n",argv[i+iarg]);
         return EXIT_FAILURE;
       }
-      nbands[i]=header.nbands;
+      if(version>CLM_MAX_VERSION)
+      {
+        fprintf(stderr,"Error: Unsupported version %d in '%s', must be less than %d.\n",
+                version,argv[i+iarg],CLM_MAX_VERSION+1);
+          return EXIT_FAILURE;
+      }
+      if(version==4 && header.nstep>1)
+      {
+        if(header.nbands>1)
+        {
+          fprintf(stderr,"Number of bands %d and number of steps %d >1 in '%s'.\n",
+                  header.nbands,header.nstep,argv[i+iarg]);
+          return EXIT_FAILURE;
+        }
+        swapnstep=TRUE;
+        nbands[i]=header.nstep;
+      }
+      else
+        nbands[i]=header.nbands;
       nbands_sum+=nbands[i];
       if(first)
       {
@@ -189,6 +210,12 @@ int main(int argc,char **argv)
   }
   printf("Number of nbands: %d\n",nbands_sum);
   header_out.nbands=nbands_sum;
+  if(swapnstep)
+  {
+    version_out=4;
+    header_out.nstep=header_out.nbands;
+    header_out.nbands=1;
+  }
   fwriteheader(out,&header_out,id_out,version_out);
   switch(header_out.datatype)
   {
@@ -203,6 +230,9 @@ int main(int argc,char **argv)
       break;
     case LPJ_FLOAT:
       vec=fvec=newvec(float,nbands_sum);
+      break;
+    case LPJ_DOUBLE:
+      vec=dvec=newvec(double,nbands_sum);
       break;
   }
   if(vec==NULL)
@@ -242,6 +272,12 @@ int main(int argc,char **argv)
               fvec[index]=0;
             else
               rc=freadfloat(fvec+index,nbands[i],swap[i],files[i]);
+            break;
+          case LPJ_DOUBLE:
+            if(files[i]==NULL)
+              dvec[index]=0;
+            else
+              rc=freaddouble(dvec+index,nbands[i],swap[i],files[i]);
             break;
         }
         if(rc!=nbands[i])

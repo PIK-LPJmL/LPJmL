@@ -34,15 +34,9 @@ Bool fscanarrayindex(const LPJfile *file, /**< pointer to a LPJ file            
   if(file->isjson)
   {
     item =json_object_array_get_idx(file->file.obj,index);
-    if(item==NULL)
-    {
-      if(verb)
-        fprintf(stderr,"ERROR101: Invalid index %d.\n",index);
-      return TRUE;
-    }
     s->isjson=TRUE;
     s->file.obj=item;
-    return FALSE;
+    return (item==NULL);
   }
 #endif
   *s=*file;

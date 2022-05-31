@@ -28,6 +28,8 @@
 #define cpp_cmd "cpp"  /* C preprocessor command for Unix */
 #endif
 
+#define checkptr(ptr) if(ptr==NULL) { printallocerr(#ptr); return NULL; }
+
 FILE *openconfig(Config *config,      /**< configuration struct */
                  const char *dflt_filename, /**< default name of configuration file */
                  int *argc,           /**< pointer to the number of arguments */
@@ -54,17 +56,26 @@ FILE *openconfig(Config *config,      /**< configuration struct */
   if(pos==NULL)
     config->outputdir=NULL;
   else
+  {
     config->outputdir=strdup(pos);
+    checkptr(config->outputdir);
+  }
   pos=getenv(LPJINPUT);
   if(pos==NULL)
     config->inputdir=NULL;
   else
+  {
     config->inputdir=strdup(pos);
+    checkptr(config->inputdir);
+  }
   pos=getenv(LPJRESTART);
   if(pos==NULL)
     config->restartdir=NULL;
   else
+  {
     config->restartdir=strdup(pos);
+    checkptr(config->restartdir);
+  }
   env_options=getenv(LPJOUTPUTMETHOD);
   config->port=DEFAULT_PORT;
   config->param_out=FALSE;
@@ -309,6 +320,7 @@ FILE *openconfig(Config *config,      /**< configuration struct */
         {
           free(config->inputdir);
           config->inputdir=strdup((*argv)[++i]);
+          checkptr(config->inputdir);
         }
       }
       else if(!strcmp((*argv)[i],"-outpath"))
@@ -329,6 +341,7 @@ FILE *openconfig(Config *config,      /**< configuration struct */
         {
           free(config->outputdir);
           config->outputdir=strdup((*argv)[++i]);
+          checkptr(config->outputdir);
         }
       }
       else if(!strcmp((*argv)[i],"-restartpath"))
@@ -348,6 +361,7 @@ FILE *openconfig(Config *config,      /**< configuration struct */
         {
           free(config->restartdir);
           config->restartdir=strdup((*argv)[++i]);
+          checkptr(config->restartdir);
         }
       }
 #ifdef WITH_FPE
@@ -450,6 +464,20 @@ FILE *openconfig(Config *config,      /**< configuration struct */
     free(options);
     return NULL;
   }
+  else if(isdir(config->filename))
+  {
+    if(isroot(*config))
+      fprintf(stderr,"ERROR241: File '%s' is a directory, must be a file.\n",config->filename);
+    free(options);
+    return NULL;
+  }
+  else if(getfilesize(config->filename)==0)
+  {
+    if(isroot(*config))
+      fprintf(stderr,"ERROR242: File '%s' is empty.\n",config->filename);
+    free(options);
+    return NULL;
+  }
   /* adjust argc and argv */
   *argv+=i;
   *argc-=i;
@@ -464,6 +492,7 @@ FILE *openconfig(Config *config,      /**< configuration struct */
   else
   { /* yes, include LPJROOT directory in search path for includes */
     lpjinc=malloc(strlen(lpjpath)+3);
+    checkptr(lpjinc);
     options[dcount++]=strcat(strcpy(lpjinc,"-I"),lpjpath);
     len+=strlen(lpjinc)+1;
   }
@@ -480,6 +509,7 @@ FILE *openconfig(Config *config,      /**< configuration struct */
     len+=strlen(" 2>/dev/null");
 #endif
   cmd=malloc(strlen(config->filename)+len+1);
+  checkptr(cmd);
   strcat(strcpy(cmd,filter)," ");
   /* concatenate options for cpp command */
   for(i=0;i<dcount;i++)

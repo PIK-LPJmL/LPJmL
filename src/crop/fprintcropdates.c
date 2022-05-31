@@ -33,6 +33,6 @@ void fprintcropdates(FILE *file, /**< pointer to text file */
             cropdates[cft].fall_sdate20,cropdates[cft].last_update_fall,
             cropdates[cft].spring_sdate20,cropdates[cft].last_update_spring,
             cropdates[cft].vern_date20,cropdates[cft].last_update_vern,
-            cropdates[cft].fallow,cropdates[cft].fallow_irrig);
+            cropdates[cft].fallow[0],cropdates[cft].fallow[1]);
   fputs("------------------- ------- ----------- ------- ------------- ------ ----------- ------ ------\n",file);
 } /* of 'fprintcropdates' */

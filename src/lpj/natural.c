@@ -19,4 +19,4 @@
 
 Standtype natural_stand={NATURAL,"natural",new_natural,free_natural,
                          fwrite_natural,fread_natural,fprint_natural,
-                         daily_natural,annual_natural,dailyfire};
+                         daily_natural,annual_natural,dailyfire,isdailyoutput_natural};

@@ -35,7 +35,7 @@ Bool getlatlon_netcdf(Climatefile *file,    /**< Climate data */
   if(ndims<2)
   {
     if(isroot(*config))
-      fprintf(stderr,"ERROR408: Invalid number of dimensions %d in '%s'.\n",
+      fprintf(stderr,"ERROR408: Invalid number %d of dimensions in '%s', must be >1.\n",
               ndims,filename);
     return TRUE;
   }

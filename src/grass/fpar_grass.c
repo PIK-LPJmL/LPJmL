@@ -17,5 +17,5 @@
 
 Real fpar_grass(const Pft *pft)
 {
-  return pft->phen*pft->fpc;
+  return pft->phen*pft->fpc*(1-pft->snowcover);
 } /* of 'fpar_grass' */

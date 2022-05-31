@@ -14,10 +14,10 @@
 
 #include "lpj.h"
 
-Real interception(Real *wet,      /**< relative wetness */
-                  const Pft *pft, /**< PFT variables */
-                  Real eeq,       /**< equilibrium evapotranspiration (mm) */
-                  Real rain       /**< precipitation (mm) */
+Real interception(Real *wet,      /**< [out] relative wetness */
+                  const Pft *pft, /**< [in] PFT variables */
+                  Real eeq,       /**< [in] equilibrium evapotranspiration (mm) */
+                  Real rain       /**< [in] precipitation (mm) */
                  )                /** \return interception (mm) */ 
 {
   Real int_store;

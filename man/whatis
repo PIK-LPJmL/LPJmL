@@ -89,6 +89,7 @@ pnet_reverse (3) -  reverse direction of all connections
 pnet_setup (3) - initialize communication pattern
 pnet_strerror (3) - return string describing Pnet error
 printflag (3) - print LPJmL compilation flags and compiler used
+printglobal (1) - print global values for raw binary output files
 printharvest (1) - print global harvested carbon for crops and managed grasslands
 printlicense (3) - print LPJmL license
 readconfig (3) - read LPJmL configuration

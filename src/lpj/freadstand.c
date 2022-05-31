@@ -23,6 +23,7 @@ Stand *freadstand(FILE *file, /**< File pointer to binary file */
                   const Soilpar *soilpar, /**< soil parameter */
                   const Standtype standtype[], /**< array of stand types */
                   int nstand, /**< number of stand types */
+                  Bool double_harvest,
                   Bool swap /**< Byte order has to be changed (TRUE/FALSE) */
                  ) /** \return allocated stand data or NULL */
 {
@@ -35,7 +36,7 @@ Stand *freadstand(FILE *file, /**< File pointer to binary file */
     return NULL;
   }
   stand->cell=cell;
-  if(freadpftlist(file,stand,&stand->pftlist,pftpar,ntotpft,swap))
+  if(freadpftlist(file,stand,&stand->pftlist,pftpar,ntotpft,double_harvest,swap))
   {
     free(stand);
     return NULL;
@@ -56,13 +57,14 @@ Stand *freadstand(FILE *file, /**< File pointer to binary file */
   }
   if(landusetype>=nstand)
   {
-    fprintf(stderr,"ERROR196: Invalid value %d for stand type.\n",
-            landusetype);
+    fprintf(stderr,"ERROR196: Invalid value %d for stand type, must be in [0,%d].\n",
+            landusetype,nstand-1);
     freepftlist(&stand->pftlist);
     freesoil(&stand->soil);
     free(stand);
     return NULL;
   }
+  stand->data=NULL;
   stand->type=standtype+landusetype;
   /* read stand-specific data */
   if(stand->type->fread(file,stand,swap))

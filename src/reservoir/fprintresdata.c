@@ -36,11 +36,11 @@ void fprintresdata(FILE *file,       /**< filepointer to print to */
 {
   int i;
   fprintf(file,"Reservoir frac:\t%g\n"
-               "C pool:\t%g\n"
+               "Pool:\t%g (gC/m2) %g (gN/m2)\n"
                "water mass:\t%g\n" 
                "k_rls:\t%g\n"
                "target release for coming year:\t%g\n",
-          cell->ml.reservoirfrac,cell->ml.resdata->c_pool,
+          cell->ml.reservoirfrac,cell->ml.resdata->pool.carbon,cell->ml.resdata->pool.nitrogen,
           cell->ml.resdata->dmass,cell->ml.resdata->k_rls,
           cell->ml.resdata->target_release_year);
   fprintf(file, "target release for the coming months:");

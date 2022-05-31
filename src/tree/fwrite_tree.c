@@ -29,8 +29,16 @@ Bool fwrite_tree(FILE *file,    /**< pointer to binary file */
   fwrite1(&tree->gddtw,sizeof(Real),file);
   fwrite1(&tree->aphen_raingreen,sizeof(Real),file);
   fwrite1(&tree->isphen,sizeof(int),file);
-  fwrite1(&tree->turn,sizeof(Treephys),file);
-  fwrite1(&tree->turn_litt,sizeof(Treephys),file);
+  fwrite1(&tree->turn,sizeof(Treeturn),file);
+  fwrite1(&tree->turn_litt,sizeof(Treeturn),file);
+  fwrite1(&tree->turn_nbminc,sizeof(Real),file);
   fwrite1(&tree->ind,sizeof(Treephys2),file);
+  if(pft->par->cultivation_type==ANNUAL_TREE)
+  {
+    fwrite1(&tree->fruit,sizeof(Stocks),file);
+    fwrite1(&tree->boll_age,sizeof(int),file);
+  }
+  fwrite1(&tree->excess_carbon,sizeof(Real),file);
+  fwrite1(&tree->falloc,sizeof(Treephyspar),file);
   return FALSE;
 } /* of 'fwrite_tree' */

@@ -17,21 +17,30 @@
 
 void litter_update_crop(Litter *litter, /**< Litter pools */
                         Pft *pft,       /**< PFT variables */
-                        Real frac       /**< fraction (0..1) */
+                        Real frac,      /**< fraction (0..1) */
+                        const Config *config /**< LPJmL configuration */
                        )
 {
   Pftcrop *crop;
-  
+  Output *output;
   crop=pft->data;
-  
-  litter->ag[pft->litter].trait.leaf+=(crop->ind.leaf+crop->ind.pool+crop->ind.so)*frac;
+  output=&pft->stand->cell->output;
+  litter->item[pft->litter].ag.leaf.carbon+=(crop->ind.leaf.carbon+crop->ind.pool.carbon+crop->ind.so.carbon)*frac;
+  getoutput(output,LITFALLC,config)+=(crop->ind.leaf.carbon+crop->ind.pool.carbon+crop->ind.so.carbon)*frac*pft->stand->frac;
+  litter->item[pft->litter].ag.leaf.nitrogen+=(crop->ind.leaf.nitrogen+crop->ind.pool.nitrogen+crop->ind.so.nitrogen)*frac;
+  getoutput(output,LITFALLN,config)+=(crop->ind.leaf.nitrogen+crop->ind.pool.nitrogen+crop->ind.so.nitrogen)*frac*pft->stand->frac;
+  getoutput(output,LITFALLN_AGR,config)+=(crop->ind.leaf.nitrogen+crop->ind.pool.nitrogen+crop->ind.so.nitrogen)*frac*pft->stand->frac;
   update_fbd_grass(litter,pft->par->fuelbulkdensity,
-                   (crop->ind.leaf+crop->ind.so+crop->ind.pool)*frac);
-  litter->bg[pft->litter]+=crop->ind.root*frac;
+                   (crop->ind.leaf.carbon+crop->ind.so.carbon+crop->ind.pool.carbon)*frac);
+  litter->item[pft->litter].bg.carbon+=crop->ind.root.carbon*frac;
+  getoutput(output,LITFALLC,config)+=crop->ind.root.carbon*frac*pft->stand->frac;
+  litter->item[pft->litter].bg.nitrogen+=crop->ind.root.nitrogen*frac;
+  getoutput(output,LITFALLN,config)+=crop->ind.root.nitrogen*frac*pft->stand->frac;
+  getoutput(output,LITFALLN_AGR,config)+=crop->ind.root.nitrogen*frac*pft->stand->frac;
 
 #ifdef DEBUG3
   printf("%s ag=%.2f bg=%.2f ind.so=%.2f ind.leaf=%.2f ind.pool=%.2f ind.root=%.2f pft->bm_inc_%.2f\n",
-         pft->par->name,litter->ag[pft->litter].trait.leaf,litter->bg[pft->litter],crop->ind.so,
-         crop->ind.leaf,crop->ind.pool,crop->ind.root,pft->bm_inc);
+         pft->par->name,litter->item[pft->litter].ag.leaf.carbon,litter->item[pft->litter].bg.carbon,crop->ind.so.carbon,
+         crop->ind.leaf.carbon,crop->ind.pool.carbon,crop->ind.root.carbon,pft->bm_inc.carbon);
 #endif
 } /* of 'litter_update_crop' */

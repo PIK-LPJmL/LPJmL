@@ -42,7 +42,7 @@ int mpi_write(FILE *file,        /**< File pointer to binary file */
   {
     rc=fwrite(vec,extent,size,file); /* write data to file */
     if(rc!=size)
-      fprintf(stderr,"ERROR204: Error writing output: %s.\n",strerror(errno));
+      fprintf(stderr,"ERROR204: Cannot write output: %s.\n",strerror(errno));
     free(vec);
   }
   MPI_Barrier(comm);

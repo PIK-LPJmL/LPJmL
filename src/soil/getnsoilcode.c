@@ -66,11 +66,17 @@ int getnsoilcode(const Filename *filename, /**< filename of soil code file */
   else if(filename->fmt==META)
   {
     header.ncell=-1;
-    file=openmetafile(&header,&swap,&offset,filename->name,isout);
+    header.order=CELLYEAR;
+    header.firstcell=0;
+    header.nyear=1;
+    header.datatype=LPJ_BYTE;
+    header.nbands=1;
+    header.nstep=1;
+    file=openmetafile(&header,NULL,NULL,&swap,&offset,filename->name,isout);
     if(file==NULL)
     {
       if(isout)
-        fprintf(stderr,"ERROR224: Cannot read description file '%s'.\n",filename->name);
+        fputs("ERROR165: Cannot get number of cells from soil code file.\n",stderr);
       return -1;
     }
     return header.ncell; 
@@ -89,7 +95,7 @@ int getnsoilcode(const Filename *filename, /**< filename of soil code file */
     else
       version=2;
     /* read header */
-    if(freadheader(file,&header,&swap,LPJSOIL_HEADER,&version))
+    if(freadheader(file,&header,&swap,LPJSOIL_HEADER,&version,isout))
     {
       if(isout)
         fprintf(stderr,"ERROR154: Invalid header in '%s'.\n",filename->name);

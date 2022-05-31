@@ -27,10 +27,10 @@ void output_gbw_woodplantation(Output *output, /**< output data */
                                Real intercep_stand,  /**< stand interception (mm) */
                                Real intercep_stand_blue,  /**< stand interception from irrigation(mm) */
                                int ncft,            /**< number of CROPS */
-                               Bool pft_output_scaled
+                               const Config *config /**< LPJmL configuration */
                               )
 {
-  int l;
+  int l,index;
   Real total_g,total_b;
   Irrigation *data;
   data=stand->data;
@@ -46,49 +46,48 @@ void output_gbw_woodplantation(Output *output, /**< output data */
     total_g+=green_transp[l];
     total_b+=aet_stand[l]-green_transp[l];
   }
-#if defined IMAGE || defined INCLUDEWP
-  if(pft_output_scaled)
+  index=rwp(ncft)+data->irrigation*getnirrig(ncft,config);
+  if(config->pft_output_scaled)
   {
-    output->cft_consump_water_g[rwp(ncft)+data->irrigation*(ncft+NGRASS+NBIOMASSTYPE+NWPTYPE)]+=total_g*stand->cell->ml.landfrac[data->irrigation].woodplantation;
-    output->cft_consump_water_b[rwp(ncft)+data->irrigation*(ncft+NGRASS+NBIOMASSTYPE+NWPTYPE)]+=total_b*stand->cell->ml.landfrac[data->irrigation].woodplantation;
+    getoutputindex(output,CFT_CONSUMP_WATER_G,index,config)+=total_g*stand->cell->ml.landfrac[data->irrigation].woodplantation;
+    getoutputindex(output,CFT_CONSUMP_WATER_B,index,config)+=total_b*stand->cell->ml.landfrac[data->irrigation].woodplantation;
     forrootsoillayer(l)
     {
-      output->cft_transp[rwp(ncft)+data->irrigation*(ncft+NGRASS+NBIOMASSTYPE+NWPTYPE)]+=aet_stand[l]*stand->cell->ml.landfrac[data->irrigation].woodplantation;
-      output->cft_transp_b[rwp(ncft)+data->irrigation*(ncft+NGRASS+NBIOMASSTYPE+NWPTYPE)]+=(aet_stand[l]-green_transp[l])*stand->cell->ml.landfrac[data->irrigation].woodplantation;
+      getoutputindex(output,CFT_TRANSP,index,config)+=aet_stand[l]*stand->cell->ml.landfrac[data->irrigation].woodplantation;
+      getoutputindex(output,CFT_TRANSP_B,index,config)+=(aet_stand[l]-green_transp[l])*stand->cell->ml.landfrac[data->irrigation].woodplantation;
     }
 
-    output->cft_evap[rwp(ncft)+data->irrigation*(ncft+NGRASS+NBIOMASSTYPE+NWPTYPE)]+=evap*stand->cell->ml.landfrac[data->irrigation].woodplantation;
-    output->cft_evap_b[rwp(ncft)+data->irrigation*(ncft+NGRASS+NBIOMASSTYPE+NWPTYPE)]+=evap_blue*stand->cell->ml.landfrac[data->irrigation].woodplantation;
-    output->cft_interc[rwp(ncft)+data->irrigation*(ncft+NGRASS+NBIOMASSTYPE+NWPTYPE)]+=intercep_stand*stand->cell->ml.landfrac[data->irrigation].woodplantation;
-    output->cft_interc_b[rwp(ncft)+data->irrigation*(ncft+NGRASS+NBIOMASSTYPE+NWPTYPE)]+=intercep_stand_blue*stand->cell->ml.landfrac[data->irrigation].woodplantation;
-    output->cft_return_flow_b[rwp(ncft)+data->irrigation*(ncft+NGRASS+NBIOMASSTYPE+NWPTYPE)]+=return_flow_b*stand->cell->ml.landfrac[data->irrigation].woodplantation;
+    getoutputindex(output,CFT_EVAP,index,config)+=evap*stand->cell->ml.landfrac[data->irrigation].woodplantation;
+    getoutputindex(output,CFT_EVAP_B,index,config)+=evap_blue*stand->cell->ml.landfrac[data->irrigation].woodplantation;
+    getoutputindex(output,CFT_INTERC,index,config)+=intercep_stand*stand->cell->ml.landfrac[data->irrigation].woodplantation;
+    getoutputindex(output,CFT_INTERC_B,index,config)+=intercep_stand_blue*stand->cell->ml.landfrac[data->irrigation].woodplantation;
+    getoutputindex(output,CFT_RETURN_FLOW_B,index,config)+=return_flow_b*stand->cell->ml.landfrac[data->irrigation].woodplantation;
   }
   else
   {
-    output->cft_consump_water_g[rwp(ncft)+data->irrigation*(ncft+NGRASS+NBIOMASSTYPE+NWPTYPE)]+=total_g;
-    output->cft_consump_water_b[rwp(ncft)+data->irrigation*(ncft+NGRASS+NBIOMASSTYPE+NWPTYPE)]+=total_b;
+    getoutputindex(output,CFT_CONSUMP_WATER_G,index,config)+=total_g;
+    getoutputindex(output,CFT_CONSUMP_WATER_B,index,config)+=total_b;
     forrootsoillayer(l)
     {
-      output->cft_transp[rwp(ncft) + data->irrigation*(ncft + NGRASS + NBIOMASSTYPE + NWPTYPE)] += aet_stand[l];
-      output->cft_transp_b[rwp(ncft) + data->irrigation*(ncft + NGRASS + NBIOMASSTYPE + NWPTYPE)] += aet_stand[l];
+      getoutputindex(output,CFT_TRANSP,index,config) += aet_stand[l];
+      getoutputindex(output,CFT_TRANSP_B,index,config) += aet_stand[l];
     }
 
-    output->cft_evap[rwp(ncft) + data->irrigation*(ncft + NGRASS + NBIOMASSTYPE + NWPTYPE)] += evap;
-    output->cft_evap_b[rwp(ncft) + data->irrigation*(ncft + NGRASS + NBIOMASSTYPE + NWPTYPE)] += evap_blue;
-    output->cft_interc[rwp(ncft) + data->irrigation*(ncft + NGRASS + NBIOMASSTYPE + NWPTYPE)] += intercep_stand;
-    output->cft_interc_b[rwp(ncft) + data->irrigation*(ncft + NGRASS + NBIOMASSTYPE + NWPTYPE)] += intercep_stand_blue;
-    output->cft_return_flow_b[rwp(ncft) + data->irrigation*(ncft + NGRASS + NBIOMASSTYPE + NWPTYPE)] += return_flow_b;
-  }
+    getoutputindex(output,CFT_EVAP,index,config) += evap;
+    getoutputindex(output,CFT_EVAP_B,index,config) += evap_blue;
+    getoutputindex(output,CFT_INTERC,index,config) += intercep_stand;
+    getoutputindex(output,CFT_INTERC_B,index,config) += intercep_stand_blue;
+    getoutputindex(output,CFT_RETURN_FLOW_B,index,config) += return_flow_b;
+  } /* if(config->pft_output_scaled) */
 
   if (data->irrigation)
   {
-    output->mgcons_irr += total_g*stand->cell->ml.landfrac[1].woodplantation;
-    output->mbcons_irr += total_b*stand->cell->ml.landfrac[1].woodplantation;
+    getoutput(output,GCONS_IRR,config) += total_g*stand->cell->ml.landfrac[1].woodplantation;
+    getoutput(output,BCONS_IRR,config) += total_b*stand->cell->ml.landfrac[1].woodplantation;
   }
   else
   {
-    output->mgcons_rf += total_g*stand->cell->ml.landfrac[0].woodplantation;
-    output->mgcons_rf += total_b*stand->cell->ml.landfrac[0].woodplantation;
+    getoutput(output,GCONS_RF,config) += total_g*stand->cell->ml.landfrac[0].woodplantation;
+    getoutput(output,GCONS_RF,config) += total_b*stand->cell->ml.landfrac[0].woodplantation;
   }
-#endif
 } /* of 'output_gbw_woodplantation' */

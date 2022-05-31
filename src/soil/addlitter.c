@@ -20,17 +20,23 @@ int addlitter(Litter *litter,    /**< pointer to litter */
               )                  /** \return PFT-specific above ground litter pool */
 {
   int i;
-  litter->ag=(Litteritem *)realloc(litter->ag,
-                                   sizeof(Litteritem)*(litter->n+1));
-  check(litter->ag);
-  litter->bg=(Real *)realloc(litter->bg,
-                                   sizeof(Real)*(litter->n+1));
-  check(litter->bg);
-  litter->ag[litter->n].pft=pft;
-  litter->ag[litter->n].trait.leaf=0;
-  litter->bg[litter->n]=0;
+  litter->item=(Litteritem *)realloc(litter->item,
+                                     sizeof(Litteritem)*(litter->n+1));
+  check(litter->item);
+  litter->item[litter->n].pft=pft;
+  litter->item[litter->n].ag.leaf.carbon=0;
+  litter->item[litter->n].ag.leaf.nitrogen=0;
+  litter->item[litter->n].agsub.leaf.carbon=0;
+  litter->item[litter->n].agsub.leaf.nitrogen=0;
+  litter->item[litter->n].bg.carbon=0;
+  litter->item[litter->n].bg.nitrogen=0;
   for(i=0;i<NFUELCLASS;i++)
-    litter->ag[litter->n].trait.wood[i]=0;
+  {
+    litter->item[litter->n].ag.wood[i].carbon=0;
+    litter->item[litter->n].ag.wood[i].nitrogen=0;
+    litter->item[litter->n].agsub.wood[i].carbon=0;
+    litter->item[litter->n].agsub.wood[i].nitrogen=0;
+  }
   litter->n++;
   return litter->n;
 } /* of 'addlitter' */

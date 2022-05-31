@@ -261,6 +261,12 @@ int main(int argc,char **argv)
     {
       grid.lon=coord.lon;
       grid.lat=coord.lat;
+      if(fabs(coord.lon*100-round(coord.lon*100))>1e-3)
+        fprintf(stderr,"Warning: Longitude of %.6g at %d cannot be represented by short value of %g.\n",
+                coord.lon,header.ncell,round(coord.lon*100));
+      if(fabs(coord.lat*100-round(coord.lat*100))>1e-3)
+        fprintf(stderr,"Warning: Latitude of %.6g at %d cannot be represented by short value of %g.\n",
+                coord.lat,header.ncell,round(coord.lat*100));
       writecoord(gridfile,&grid);
     }
     header.ncell++;

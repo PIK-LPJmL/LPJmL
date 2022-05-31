@@ -2,7 +2,7 @@
 /**                                                                                \n**/
 /**      f  r  e  a  d  r  e  s  t  a  r  t  h  e  a  d  e  r  .  c                \n**/
 /**                                                                                \n**/
-/**     Reading file header for LPJ related files. Detects                         \n**/
+/**     Reading file header for LPJ restart files. Detects                         \n**/
 /**     whether byte order has to be changed                                       \n**/
 /**                                                                                \n**/
 /** (C) Potsdam Institute for Climate Impact Research (PIK), see COPYRIGHT file    \n**/
@@ -15,18 +15,24 @@
 
 #include "lpj.h"
 
-Bool freadrestartheader(FILE *file, /**< file pointer of binary file */
+Bool freadrestartheader(FILE *file,            /**< file pointer of binary file */
                         Restartheader *header, /**< file header to be read */
-                        Bool swap /**< set to TRUE if data is in different order */
-                       ) /** \return TRUE on error */
+                        Bool swap              /**< set to TRUE if data is in different byte order */
+                       )                       /** \return TRUE on error */
 {
-  if(fread(header,sizeof(Restartheader),1,file)!=1)
+  if(freadint(&header->landuse,1,swap,file)!=1)
     return TRUE;
-  if(swap)
-  {
-    header->landuse=swapint(header->landuse);
-    header->river_routing=swapint(header->river_routing);
-    header->sdate_option=swapint(header->sdate_option);
-  }
-  return FALSE;
+  if(freadint(&header->river_routing,1,swap,file)!=1)
+    return TRUE;
+  if(freadint(&header->sdate_option,1,swap,file)!=1)
+    return TRUE;
+  if(freadint(&header->crop_option,1,swap,file)!=1)
+    return TRUE;
+  if(freadint(&header->double_harvest,1,swap,file)!=1)
+    return TRUE;
+#ifdef USE_RAND48
+  return freadushort(header->seed,NSEED,swap,file)!=NSEED;
+#else
+  return freadint(header->seed,NSEED,swap,file)!=NSEED;
+#endif
 } /* of 'freadrestartheader' */

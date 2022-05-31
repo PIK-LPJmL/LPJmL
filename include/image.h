@@ -18,9 +18,6 @@
 
 /* Definition of constants for biomass pools used in IMAGE */
 
-#define PRODUCT_FAST 0.1
-#define PRODUCT_SLOW 0.01
-
 #define LPJIMAGE "LPJIMAGE"  /* Environment variable for IMAGE coupler */
 #define LPJWAITIMAGE "LPJWAITIMAGE"  /* time to wait for IMAGE connection */
 #define DEFAULT_IMAGE_HOST "localhost" /* Default host for IMAGE model */
@@ -28,8 +25,6 @@
 #define DEFAULT_IMAGE_OUTPORT 2224 /* Default port for outgoing connection */
 #define WAIT_IMAGE 12000             /* wait for IMAGE connection (sec) */
 #define NIMAGETREEPARTS (sizeof(Takeaway)/sizeof(float))
-
-#define INCLUDEWP /*wood plantations are always switched on in coupled mode*/
 
 typedef struct
 {
@@ -157,13 +152,8 @@ typedef struct
   Real totwatcons;         /* total water consumption */
   Real totwatdem;          /* total water demand */
   Real deforest_emissions; /* carbon emissions from deforested wood burnt [gC/m2]*/
-  Pool timber_f;           /* fraction that enters fast and slow product pool */
-  Pool timber;             /* fast and slow timber pool [gC/m2] */
+  Poolpar timber_f;        /* fraction that enters fast and slow product pool */
   Real timber_turnover;    /* annual sum of decayed product pool [gC/m2] */
-  Real anpp;               /* annual NPP (gC/m2) */
-  Real arh;                /* annual Rh (gC/m2) */
-  Real prod_turn_fast;     /* product turnover from fast product pool (gC/m2/a) */
-  Real prod_turn_slow;     /* product turnover from slow product pool (gC/m2/a) */
   Real store_bmtree_yield; /* yield of biomass trees storage to distribute over following years (gC/m2/8a) */
   Real biomass_yield_annual; /* biomass yield scaled to annual fractions */
   Real takeaway[NIMAGETREEPARTS];          /* fraction of harvested carbonpools taken from forest */
@@ -173,12 +163,13 @@ typedef struct
 } Image_data;
 
 /* Declaration of functions */
-extern Image_data *new_image(const Product *);
+
+extern Bool new_image(Cell *,const Product *);
 extern Bool open_image(Config *);
 extern void close_image(const Config *);
-extern Real product_turnover(Image_data *);
-extern Bool send_image_data(const Config *,const Cell *,const  Climate *,int, int);
-extern Bool receive_image_climate(Climate *,int,const Config *);
+extern void product_turnover(Cell *,const Config *);
+extern Bool send_image_data(const Cell *,const  Climate *,int, int,const Config *);
+extern Bool receive_image_climate(Climate *,const Cell *,int,const Config *);
 extern Bool receive_image_productpools(Cell *,const Config *);
 extern Bool receive_image_luc(Cell *,int,int,const Config *);
 extern Bool receive_image_data(Cell *,int,int,const Config *);
@@ -187,7 +178,7 @@ extern Real receive_image_finish(const Config *);
 extern Productinit *initproductinit(const Config *);
 extern Bool getproductpools(Productinit *,Product [],int);
 extern void freeproductinit(Productinit *);
-extern void setoutput_image(Cell *,int);
-extern void monthlyoutput_image(Output *,const Climate *,int,int);
+extern void setoutput_image(Cell *,int,const Config *);
+extern void monthlyoutput_image(Output *,const Climate *,int,int,const Config *);
 
 #endif /* IMAGE_H */

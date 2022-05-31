@@ -18,9 +18,10 @@ Bool freadanyheader(FILE *file,        /**< file pointer of binary file */
                     Header *header,    /**< file header to be read */
                     Bool *swap,        /**< set to TRUE if data is in different order */
                     String headername, /**< returns header string */
-                    int *version       /**< returns version of CLM file, has to
+                    int *version,      /**< returns version of CLM file, has to
                                           be set to READ_VERSION or prescribed
                                           value */
+                    Bool isout         /**< write output on stdout (TRUE/FALSE) */
                    )                   /** \return TRUE on error */
 {
   int count,*ptr,file_version;
@@ -30,18 +31,42 @@ Bool freadanyheader(FILE *file,        /**< file pointer of binary file */
   do
   {
     if(count==STRING_LEN) /* string too long? */
+    {
+      if(isout)
+        fprintf(stderr,"ERROR239: Header id too long.\n");
       return TRUE;
+    }
     else if(count==3 && strncmp("LPJ",headername,3))
+    {
+      if(isout)
+        fprintf(stderr,"ERROR239: Header id does not start with 'LPJ'.\n");
       return TRUE;
+    }
     if(fread(headername+count,1,1,file)!=1)
+    {
+      if(isout)
+        fprintf(stderr,"ERROR239: Unexpected end of file reading header id.\n");
       return TRUE;
+    }
   }while(headername[count++]>=' ');
   if(count<3)
+  {
+    if(isout)
+      fprintf(stderr,"ERROR239: Header id shorter than 3 characters.\n");
     return TRUE;
+  }
   if(fread(&b,1,1,file)!=1)
+  {
+    if(isout)
+      fprintf(stderr,"ERROR239: Unexpected end of file reading header.\n");
     return TRUE;
+  }
   if(headername[count-1] && b)
+  {
+    if(isout)
+      fprintf(stderr,"ERROR239: Invalid version in header.\n");
     return TRUE;
+  }
   headername[count-1]='\0';
   fseek(file,-2,SEEK_CUR);
   if(fread(&file_version,sizeof(int),1,file)!=1)
@@ -60,19 +85,45 @@ Bool freadanyheader(FILE *file,        /**< file pointer of binary file */
   {
     case 1: /* old version header? */
       if(fread(header,sizeof(Header_old),1,file)!=1)
+      {
+        if(isout)
+          fprintf(stderr,"ERROR239: Cannot read header data: %s.\n",strerror(errno));
         return TRUE;
+      }
       header->cellsize_lon=0.5;   /* set default cell size */
       header->scalar=1;           /* and scaling factor */
       header->datatype=LPJ_SHORT; /* and datatype */
+      header->nstep=1;
+      header->timestep=1;
       break;
     case 2:
       if(fread(header,sizeof(Header2),1,file)!=1)
+      {
+        if(isout)
+          fprintf(stderr,"ERROR239: Cannot read header data: %s.\n",strerror(errno));
         return TRUE;
+      }
       header->datatype=LPJ_SHORT; /* set default datatype */
+      header->nstep=1;
+      header->timestep=1;
+      break;
+    case 4:
+      if(fread(header,sizeof(Header),1,file)!=1)
+      {
+        if(isout)
+          fprintf(stderr,"ERROR239: Cannot read header data: %s.\n",strerror(errno));
+        return TRUE;
+      }
       break;
     default:
-     if(fread(header,sizeof(Header),1,file)!=1)
+      if(fread(header,sizeof(Header3),1,file)!=1)
+      {
+        if(isout)
+          fprintf(stderr,"ERROR239: Cannot read header data: %s.\n",strerror(errno));
         return TRUE;
+      }
+      header->nstep=1;
+      header->timestep=1;
   } /* of switch */
   if(*swap) /* is data in different byte order? */
   {
@@ -96,10 +147,19 @@ Bool freadanyheader(FILE *file,        /**< file pointer of binary file */
       header->cellsize_lat=swapfloat(*ptr);
       header->datatype=(Type)swapint(header->datatype);
     }
+    if(*version==4)
+    {
+      header->nstep=swapint(header->nstep);
+      header->timestep=swapint(header->timestep);
+    }
   }
   if(*version<3)
     header->cellsize_lat=header->cellsize_lon;
   if(header->datatype<0 || header->datatype>LPJ_DOUBLE)
+  {
+   if(isout)
+     fprintf(stderr,"ERROR240: Invalid value %d for datatype.\n",(int)header->datatype);
     return TRUE;
+  }
   return FALSE;
 } /* of 'freadanyheader' */

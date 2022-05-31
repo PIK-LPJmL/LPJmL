@@ -17,12 +17,11 @@
 
 #include "lpj.h"
 #include "grass.h"
-#include "agriculture.h"
 #include "grassland.h"
 
 Bool annual_grassland(Stand *stand,         /**< Pointer to stand */
                       int npft,             /**< number of natural pfts */
-                      int UNUSED(ncft),     /**< number of crop PFTs */
+                      int ncft,             /**< number of crop PFTs */
                       Real UNUSED(popdens), /**< population density (capita/km2) */
                       int year,             /**< simulation year (AD) */
                       Bool isdaily,         /**< daily temperature data? */
@@ -30,38 +29,42 @@ Bool annual_grassland(Stand *stand,         /**< Pointer to stand */
                       const Config *config  /**< LPJ configuration */
                      )                      /** \return stand has to be killed */
 {
-  int p;
+  int p,nirrig,nnat;
   Bool *present;
   Pft *pft;
+  Pftgrass *grass;
   Real fpc_inc;
-  Real acflux_estab;
+  Stocks flux_estab,stocks;
   int n_est=0;
   Real fpc_total,*fpc_type;
-  Irrigation *irrigation;
+  Grassland *grassland;
 
   fpc_type=newvec(Real,config->ntypes);
   check(fpc_type);
   present=newvec(Bool,npft);
   check(present);
-  acflux_estab=0;
+  flux_estab.carbon=flux_estab.nitrogen=0;
   for(p=0;p<npft;p++)
     present[p]=FALSE;
 
-  irrigation=stand->data;
+  grassland=stand->data;
+
+  nnat=getnnat(npft,config);
+  nirrig=getnirrig(ncft,config);
 
   foreachpft(pft,p,&stand->pftlist)
   {
 #ifdef DEBUG2
     printf("PFT:%s fpc=%g\n",pft->par->name,pft->fpc);
     printf("PFT:%s bm_inc=%g vegc=%g soil=%g\n",pft->par->name,
-           pft->bm_inc,vegc_sum(pft),soilcarbon(&stand->soil));
+           pft->bm_inc.carbon,vegc_sum(pft),soilcarbon(&stand->soil));
 #endif
 
     present[pft->par->id]=TRUE;
-    if(annual_grass(stand,pft,&fpc_inc,isdaily))
+    if(annual_grass(stand,pft,&fpc_inc,isdaily,config))
     {
       /* PFT killed, delete from list of established PFTs */
-      litter_update_grass(&stand->soil.litter,pft,pft->nind);
+      litter_update_grass(&stand->soil.litter,pft,pft->nind,config);
       delpft(&stand->pftlist,p);
       p--; /* adjust loop variable */
     }
@@ -82,20 +85,61 @@ Bool annual_grassland(Stand *stand,         /**< Pointer to stand */
        establish(stand->cell->gdd[p],config->pftpar+p,&stand->cell->climbuf))
     {
       if(!present[p])
-       addpft(stand,config->pftpar+p,year,0);
+       addpft(stand,config->pftpar+p,year,0,config);
       n_est++;
     }
   }
   fpc_total=fpc_sum(fpc_type,config->ntypes,&stand->pftlist);
   foreachpft(pft,p,&stand->pftlist)
-   if(establish(stand->cell->gdd[pft->par->id],pft->par,&stand->cell->climbuf))
-    acflux_estab+=establishment_grass(pft,fpc_total,fpc_type[pft->par->type],n_est);
+    if(establish(stand->cell->gdd[pft->par->id],pft->par,&stand->cell->climbuf))
+    {
+      stocks=establishment_grass(pft,fpc_total,fpc_type[pft->par->type],n_est);
+      flux_estab.carbon+=stocks.carbon;
+      flux_estab.nitrogen+=stocks.nitrogen;
+    }
+  getoutput(&stand->cell->output,FLUX_ESTABC,config)+=flux_estab.carbon*stand->frac;
+  getoutput(&stand->cell->output,FLUX_ESTABN,config)+=flux_estab.nitrogen*stand->frac;
+  stand->cell->balance.flux_estab.carbon+=flux_estab.carbon*stand->frac;
+  stand->cell->balance.flux_estab.nitrogen+=flux_estab.nitrogen*stand->frac;
+  stand->cell->output.dcflux-=flux_estab.carbon*stand->frac;
 
-  stand->cell->output.flux_estab+=acflux_estab*stand->frac;
-  stand->cell->output.dcflux-=acflux_estab*stand->frac;
-
-  stand->cell->output.soil_storage+=(irrigation->irrig_stor+irrigation->irrig_amount)*stand->frac*stand->cell->coord.area;
-  stand->cell->output.mean_vegc_mangrass/=NDAYYEAR;
+  stand->cell->balance.soil_storage+=(grassland->irrigation.irrig_stor+grassland->irrigation.irrig_amount)*stand->frac*stand->cell->coord.area;
+  foreachpft(pft,p,&stand->pftlist)
+  {
+    grass=pft->data;
+    if(isannual(FPC_BFT,config))
+      getoutputindex(&stand->cell->output,FPC_BFT,getpftpar(pft, id)-(nnat-config->ngrass)+grassland->irrigation.irrigation*(config->nbiomass+2*config->ngrass),config)+=pft->fpc;
+    if(isannual(PFT_VEGC,config))
+    {
+      getoutputindex(&stand->cell->output,PFT_VEGC,nnat+rothers(ncft)+grassland->irrigation.irrigation*nirrig,config)+=vegc_sum(pft);
+      getoutputindex(&stand->cell->output,PFT_VEGC,nnat+rmgrass(ncft)+grassland->irrigation.irrigation*nirrig,config)+=vegc_sum(pft);
+    }
+    if(isannual(PFT_VEGN,config))
+    {
+      getoutputindex(&stand->cell->output,PFT_VEGN,nnat+rothers(ncft)+grassland->irrigation.irrigation*nirrig,config)+=vegn_sum(pft)+pft->bm_inc.nitrogen;
+      getoutputindex(&stand->cell->output,PFT_VEGN,nnat+rmgrass(ncft)+grassland->irrigation.irrigation*nirrig,config)+=vegn_sum(pft)+pft->bm_inc.nitrogen;
+    }
+    if(isannual(PFT_CROOT,config))
+    {
+      getoutputindex(&stand->cell->output,PFT_CROOT,nnat+rothers(ncft)+grassland->irrigation.irrigation*nirrig,config)+=grass->ind.root.carbon;
+      getoutputindex(&stand->cell->output,PFT_CROOT,nnat+rmgrass(ncft)+grassland->irrigation.irrigation*nirrig,config)+=grass->ind.root.carbon;
+    } 
+    if(isannual(PFT_NROOT,config))
+    {
+      getoutputindex(&stand->cell->output,PFT_NROOT,nnat+rothers(ncft)+grassland->irrigation.irrigation*nirrig,config)+=grass->ind.root.nitrogen;
+      getoutputindex(&stand->cell->output,PFT_NROOT,nnat+rmgrass(ncft)+grassland->irrigation.irrigation*nirrig,config)+=grass->ind.root.nitrogen;
+    } 
+    if(isannual(PFT_CLEAF,config))
+    {
+      getoutputindex(&stand->cell->output,PFT_CLEAF,nnat+rothers(ncft)+grassland->irrigation.irrigation*nirrig,config)+=grass->ind.leaf.carbon;
+      getoutputindex(&stand->cell->output,PFT_CLEAF,nnat+rmgrass(ncft)+grassland->irrigation.irrigation*nirrig,config)+=grass->ind.root.carbon;
+    } 
+    if(isannual(PFT_NLEAF,config))
+    {
+      getoutputindex(&stand->cell->output,PFT_NLEAF,nnat+rothers(ncft)+grassland->irrigation.irrigation*nirrig,config)+=grass->ind.leaf.nitrogen;
+      getoutputindex(&stand->cell->output,PFT_NLEAF,nnat+rmgrass(ncft)+grassland->irrigation.irrigation*nirrig,config)+=grass->ind.leaf.nitrogen;
+    } 
+  }
 
   free(present);
   free(fpc_type);

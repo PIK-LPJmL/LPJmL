@@ -15,16 +15,18 @@
 
 #include "lpj.h"
 
-#if defined IMAGE && defined COUPLED
-
-Real product_turnover(Image_data *data)
+void product_turnover(Cell *cell,const Config *config)
 {
-  data->prod_turn_fast=(data->timber.fast)*PRODUCT_FAST;
-  data->prod_turn_slow=(data->timber.slow)*PRODUCT_SLOW;
-  
-  data->timber.fast*=(1.0-PRODUCT_FAST);
-  data->timber.slow*=(1.0-PRODUCT_SLOW);
-  return data->prod_turn_fast+data->prod_turn_slow;
+  getoutput(&cell->output,PROD_TURNOVER,config)+=cell->ml.product.fast.carbon*param.product_turnover.fast;
+  cell->balance.prod_turnover.fast.carbon+=cell->ml.product.fast.carbon*param.product_turnover.fast;
+  getoutput(&cell->output,PROD_TURNOVER,config)+=cell->ml.product.slow.carbon*param.product_turnover.slow;
+  cell->balance.prod_turnover.slow.carbon+=cell->ml.product.slow.carbon*param.product_turnover.slow;
+  cell->ml.product.fast.carbon*=(1.0-param.product_turnover.fast);
+  cell->ml.product.slow.carbon*=(1.0-param.product_turnover.slow);
+  cell->balance.prod_turnover.fast.nitrogen+=cell->ml.product.fast.nitrogen*param.product_turnover.fast;
+  cell->balance.prod_turnover.slow.nitrogen+=cell->ml.product.slow.nitrogen*param.product_turnover.slow;
+  cell->ml.product.fast.nitrogen*=(1.0-param.product_turnover.fast);
+  cell->ml.product.slow.nitrogen*=(1.0-param.product_turnover.slow);
+  getoutput(&cell->output,PRODUCT_POOL_FAST,config)=cell->ml.product.fast.carbon;
+  getoutput(&cell->output,PRODUCT_POOL_SLOW,config)=cell->ml.product.slow.carbon;
 } /* of 'product_turnover' */
-
-#endif

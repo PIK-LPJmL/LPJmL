@@ -18,13 +18,13 @@ include ../../Makefile.inc
 OBJS    = lai_crop.$O npp_crop.$O phenology_crop.$O fwritecropdates.$O\
           freadcropdates.$O litter_update_crop.$O calc_cropdates.$O\
           fpc_crop.$O new_crop.$O fwrite_crop.$O fscanpft_crop.$O\
-          fprint_crop.$O fread_crop.$O free_crop.$O vegc_sum_crop.$O\
+          fprint_crop.$O fread_crop.$O free_crop.$O veg_sum_crop.$O\
           phen_variety.$O fpar_crop.$O freecropdates.$O\
           laimax_manage.$O init_cropdates.$O fprintcropdates.$O\
           update_cropdates.$O allocation_daily_crop.$O double_harvest.$O\
           wdf_crop.$O harvest_crop.$O fprintpar_crop.$O alphaa_crop.$O\
           output_daily_crop.$O calc_seasonality.$O update_fallowdays.$O\
-          albedo_crop.$O agb_crop.$O
+          albedo_crop.$O agb_crop.$O nuptake_crop.$O ndemand_crop.$O vmaxlimit_crop.$O
 
 INC     = ../../include
 LIBDIR  = ../../lib

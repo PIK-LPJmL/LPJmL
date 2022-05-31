@@ -25,6 +25,14 @@
     return TRUE; \
   }
 
+#define fscanreal012(verb,file,var,pft,name) \
+  if(fscanreal01(file,var,name,FALSE,verb)) \
+  { \
+    if(verb)\
+    fprintf(stderr,"ERROR110: Cannot read float '%s' for PFT '%s'.\n",name,pft); \
+    return TRUE; \
+  }
+
 #define fscangrassphys2(verb,file,var,pft,name) \
   if(fscangrassphys(file,var,name,verb))\
   { \
@@ -34,7 +42,7 @@
   }
 
 
-static Bool fscangrassphys(LPJfile *file,Grassphys *phys,const char *name,Verbosity verb)
+static Bool fscangrassphys(LPJfile *file,Grassphyspar *phys,const char *name,Verbosity verb)
 {
   LPJfile item;
   if(fscanstruct(file,&item,name,verb))
@@ -43,17 +51,23 @@ static Bool fscangrassphys(LPJfile *file,Grassphys *phys,const char *name,Verbos
     return TRUE;
   if(fscanreal(&item,&phys->root,"root",FALSE,verb))
     return TRUE;
-  if(phys->leaf<=0 ||  phys->root<=0)
+  if(phys->leaf<=0 || phys->root<=0)
+  {
+    if(verb)
+      fprintf(stderr,"ERROR235: Grass parameter '%s'=(%g,%g) must be greater than zero.\n",name,phys->leaf,phys->root);
     return TRUE;
+  }
   return FALSE;
 } /* of 'fscangrassphys' */
 
 Bool fscanpft_grass(LPJfile *file, /**< pointer to LPJ file */
                     Pftpar *pft,   /**< Pointer to Pftpar array */
-                    Verbosity verb /**< verbosity level (NO_ERR,ERR,VERB) */
+                    const Config *config /**< LPJmL configuration */
                    )               /** \return TRUE on error  */
 {
   Pftgrasspar *grass;
+  Verbosity verb;
+  verb=(isroot(*config)) ? config->scan_verbose : NO_ERR;
   pft->newpft=new_grass;
   pft->npp=npp_grass;
   /*pft->fpc=fpc_grass; */
@@ -70,35 +84,61 @@ Bool fscanpft_grass(LPJfile *file, /**< pointer to LPJ file */
   pft->establishment=establishment_grass;
   pft->reduce=reduce_grass;
   pft->actual_lai=actual_lai_grass;
+  pft->lai=lai_grass;
   pft->init=init_grass;
   pft->free=free_grass;
   pft->vegc_sum=vegc_sum_grass;
+  pft->vegn_sum=vegn_sum_grass;
   pft->fprintpar=fprintpar_grass;
   pft->livefuel_consumption=livefuel_consum_grass;
   pft->turnover_monthly=turnover_monthly_grass;
   pft->turnover_daily=turnover_daily_grass;
   pft->albedo_pft=albedo_grass;
   pft->agb=agb_grass;
+  pft->nuptake=nuptake_grass;
+  pft->ndemand=ndemand_grass;
+  pft->vmaxlimit=vmaxlimit_grass;
   grass=new(Pftgrasspar);
-  check(grass);
-  pft->data=grass;
+  if(grass==NULL)
+  {
+    printallocerr("grass");
+    return TRUE;
+  }
   pft->data=grass;
   if(iskeydefined(file,"sla"))
   {
     fscanreal2(verb,file,&pft->sla,pft->name,"sla");
+    if(pft->sla<=0)
+    {
+      if(verb)
+        fprintf(stderr,"ERROR235: SLA=%g must be greater than zero for PFT '%s'.\n",
+                pft->sla,pft->name);
+      return TRUE;
+    }
   }
   else
     pft->sla=2e-4*pow(10,2.25-0.4*log(pft->longevity*12)/log(10))/CCpDM;
   fscangrassphys2(verb,file,&grass->turnover,pft->name,"turnover");
   grass->turnover.leaf=1.0/grass->turnover.leaf;
   grass->turnover.root=1.0/grass->turnover.root;
-  fscangrassphys2(verb,file,&grass->cn_ratio,pft->name,"cn_ratio");
-  fscanreal2(verb,file,&grass->reprod_cost,pft->name,"reprod_cost");
-  grass->cn_ratio.leaf=pft->respcoeff*param.k/grass->cn_ratio.leaf;
-  grass->cn_ratio.root=pft->respcoeff*param.k/grass->cn_ratio.root;
+  fscangrassphys2(verb,file,&grass->nc_ratio,pft->name,"cn_ratio");
+  if(config->with_nitrogen)
+  {
+    fscanreal2(verb,file,&grass->ratio,pft->name,"ratio");
+    if(grass->ratio<=0)
+    {
+      if(verb)
+        fprintf(stderr,"ERROR235: Grass ratio=%g must be greater than zero for PFT '%s'.\n",
+                grass->ratio,pft->name);
+      return TRUE;
+    }
+  }
+  fscanreal012(verb,file,&grass->reprod_cost,pft->name,"reprod_cost");
+  grass->nc_ratio.leaf=1/grass->nc_ratio.leaf;
+  grass->nc_ratio.root=1/grass->nc_ratio.root;
   grass->sapl.leaf=pft->lai_sapl/pft->sla;
   grass->sapl.root=(1.0/pft->lmro_ratio)*grass->sapl.leaf;
-  grass->sapling_C=phys_sum_grass(grass->sapl);
+  grass->sapling_C=grass->sapl.leaf+grass->sapl.root;
 
   return FALSE;
 } /* of 'fscanpft_grass' */

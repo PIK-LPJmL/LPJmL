@@ -30,9 +30,13 @@ void freegrid(Cell grid[],         /**< cell grid */
       freequeue(grid[cell].discharge.queue);
       free(grid[cell].discharge.tfunct);
     }
+    freelandfrac(grid[cell].ml.fertilizer_nr);
+    freelandfrac(grid[cell].ml.manure_nr);
+    freelandfrac(grid[cell].ml.residue_on_field);
     if(grid[cell].ml.irrig_system!=NULL)
     {
       free(grid[cell].ml.irrig_system->crop);
+      free(grid[cell].ml.irrig_system->ag_tree);
       free(grid[cell].ml.irrig_system);
     }
     if(config->reservoir)
@@ -44,11 +48,7 @@ void freegrid(Cell grid[],         /**< cell grid */
       }
       free(grid[cell].ml.fraction);
     }
-    if(grid[cell].ml.landfrac!=NULL)
-    {
-      freelandfrac(grid[cell].ml.landfrac);
-      free(grid[cell].ml.landfrac);
-    }
+    freelandfrac(grid[cell].ml.landfrac);
     freeoutput(&grid[cell].output);
     if(!grid[cell].skip)
     {
@@ -66,9 +66,12 @@ void freegrid(Cell grid[],         /**< cell grid */
       free(grid[cell].ml.gs);
       if(config->sdate_option>NO_FIXED_SDATE)
         free(grid[cell].ml.sdate_fixed);
+      if(config->crop_phu_option==PRESCRIBED_CROP_PHU)
+        free(grid[cell].ml.crop_phu_fixed);
 
 #if defined IMAGE && defined COUPLED
       free(grid[cell].ml.image_data);
+      free(grid[cell].pft_harvest);
 #endif
     }
   } /* of 'for(cell=...)' */

@@ -15,15 +15,23 @@
 #include "lpj.h"
 #include "grass.h"
 
-void turnover_monthly_grass(Litter *litter,Pft *pft)
+void turnover_monthly_grass(Litter *litter,Pft *pft,const Config *config)
 {
   Pftgrass *grass;
   Pftgrasspar *grasspar;
+  Output *output;
   if(pft->stand->type->landusetype==NATURAL)
   {
     grasspar=pft->par->data;
     grass=pft->data;
-    grass->turn.root+=grass->ind.root*grasspar->turnover.root/NMONTH;
-    litter->bg[pft->litter]+=grass->ind.root*grasspar->turnover.root/NMONTH*pft->nind;
+    output=&pft->stand->cell->output;
+    grass->turn.root.carbon+=grass->ind.root.carbon*grasspar->turnover.root/NMONTH;
+    grass->turn.root.nitrogen+=grass->ind.root.nitrogen*grasspar->turnover.root/NMONTH;
+    grass->turn_litt.root.carbon+=grass->ind.root.carbon*grasspar->turnover.root/NMONTH*pft->nind;
+    grass->turn_litt.root.nitrogen+=grass->ind.root.nitrogen*grasspar->turnover.root/NMONTH*pft->nind;
+    litter->item[pft->litter].bg.carbon+=grass->ind.root.carbon*grasspar->turnover.root/NMONTH*pft->nind;
+    getoutput(output,LITFALLC,config)+=grass->ind.root.carbon*grasspar->turnover.root/NMONTH*pft->nind*pft->stand->frac;
+    litter->item[pft->litter].bg.nitrogen+=grass->ind.root.nitrogen*grasspar->turnover.root/NMONTH*pft->nind*pft->par->fn_turnover;
+    getoutput(output,LITFALLN,config)+=grass->ind.root.nitrogen*grasspar->turnover.root/NMONTH*pft->nind*pft->par->fn_turnover*pft->stand->frac;
   }
 } /* of 'turnover_monthly_grass' */

@@ -26,7 +26,7 @@ Bool freadcell(FILE *file,             /**< File pointer to binary file */
                const Standtype standtype[], /**< array of stand types */
                int nstand,             /**< number of stand types */
                Bool swap, /**< Byte order has to be changed (TRUE/FALSE) */
-               const Config *config    /**< LPJ configuration */
+               Config *config          /**< LPJ configuration */
               )                        /** \return TRUE on error */
 {
   int i;
@@ -34,6 +34,7 @@ Bool freadcell(FILE *file,             /**< File pointer to binary file */
   if(fread(&b,sizeof(b),1,file)!=1)
     return TRUE;
   cell->skip=b;
+  freadseed(file,cell->seed,swap);
   if(config->river_routing)
   {
     freadreal1(&cell->discharge.dmass_lake,swap,file);
@@ -60,10 +61,12 @@ Bool freadcell(FILE *file,             /**< File pointer to binary file */
   } 
   if(!cell->skip)
   {
-    freadreal(cell->balance.estab_storage_tree,2,swap,file);
-    freadreal(cell->balance.estab_storage_grass,2,swap,file);
+    freadreal((Real *)cell->balance.estab_storage_tree,2*sizeof(Stocks)/sizeof(Real),swap,file);
+    freadreal((Real *)cell->balance.estab_storage_grass,2*sizeof(Stocks)/sizeof(Real),swap,file);
     if(freadignition(file,&cell->ignition,swap))
       return TRUE;
+    freadreal1(&cell->balance.excess_water,swap,file);
+
     /* cell has valid soilcode */
     freadreal1(&cell->discharge.waterdeficit,swap,file);
     cell->gdd=newgdd(npft);
@@ -71,12 +74,13 @@ Bool freadcell(FILE *file,             /**< File pointer to binary file */
     freadreal(cell->gdd,npft,swap,file);
     /* read stand list */
     cell->standlist=freadstandlist(file,cell,config->pftpar,npft+ncft,soilpar,
-                                   standtype,nstand,swap);
+                                   standtype,nstand,config->double_harvest,swap);
     if(cell->standlist==NULL)
       return TRUE;
     freadreal1(&cell->ml.cropfrac_rf,swap,file);
     freadreal1(&cell->ml.cropfrac_ir,swap,file);
-    freadclimbuf(file,&cell->climbuf,swap);
+    if(freadclimbuf(file,&cell->climbuf,ncft,swap))
+      return TRUE;
     cell->ml.cropdates=freadcropdates(file,ncft,swap);
     if(cell->ml.cropdates==NULL)
       return TRUE;
@@ -87,14 +91,30 @@ Bool freadcell(FILE *file,             /**< File pointer to binary file */
       if(config->sdate_option_restart>NO_FIXED_SDATE)
         freadint(cell->ml.sdate_fixed,2*ncft,swap,file);
       else
-        for(i=0;i<2*ncft;i++)
+        for(i=0; i<2*ncft; i++)
           cell->ml.sdate_fixed[i]=0;
     }
     else
     {
       cell->ml.sdate_fixed=NULL;
-      if(config->sdate_option_restart>NO_FIXED_SDATE)
-         fseek(file,sizeof(int)*2*ncft,SEEK_CUR);
+      if(config->sdate_option_restart)
+        fseek(file,sizeof(int)*2*ncft,SEEK_CUR);
+    }
+    if(config->crop_phu_option==PRESCRIBED_CROP_PHU)
+    {
+      cell->ml.crop_phu_fixed=newvec(Real,2*ncft);
+      checkptr(cell->ml.crop_phu_fixed);
+      if(config->crop_option_restart)
+        freadreal(cell->ml.crop_phu_fixed,2*ncft,swap,file);
+      else
+        for(i=0; i<2*ncft; i++)
+          cell->ml.crop_phu_fixed[i]=0;
+    }
+    else
+    {
+      cell->ml.crop_phu_fixed=NULL;
+      if(config->crop_option_restart)
+        fseek(file,sizeof(Real)*2*ncft,SEEK_CUR);
     }
     cell->ml.sowing_month=newvec(int,2*ncft);
     checkptr(cell->ml.sowing_month);
@@ -104,7 +124,19 @@ Bool freadcell(FILE *file,             /**< File pointer to binary file */
     if(freadint(cell->ml.gs,2*ncft,swap,file)!=2*ncft)
       return TRUE;
     if(cell->ml.landfrac!=NULL && config->landuse_restart)
-      return freadlandfrac(file,cell->ml.landfrac,ncft,swap);
+    {
+      freadlandfrac(file,cell->ml.landfrac,ncft,config->nagtree,swap);
+#ifndef IMAGE
+      freadreal((Real *)&cell->ml.product,sizeof(Pool)/sizeof(Real),swap,file);
+#endif
+    }
+    if(cell->ml.fertilizer_nr!=NULL && config->landuse_restart)
+      freadlandfrac(file,cell->ml.fertilizer_nr,ncft,config->nagtree,swap);
+    if(config->ischeckpoint && config->n_out)
+    {
+      if(freadoutputdata(file,&cell->output,swap,config))
+        return TRUE;
+    }
   }
   return FALSE;
 } /* of 'freadcell' */

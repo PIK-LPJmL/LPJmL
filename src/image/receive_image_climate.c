@@ -18,57 +18,35 @@
 #if defined IMAGE && defined COUPLED
 
 Bool receive_image_climate(Climate *climate,    /**< Climate data */
+                           const Cell grid[],   /**< LPJ grid */
                            int year,            /**< year (AD) */
                            const Config *config /**< LPJ configuration */
-                          )                     /**< returns TRUE on error */
+                          )                     /** \return TRUE on error */
 {
-  short *vec;
   int i;
 
-  int index;
 #ifdef USE_MPI
   int *counts,*offsets;
   int n;
 #endif
   float *image_data;
-  vec=newvec(short,climate->file_temp_var.n);
-  check(vec);
-  /* read in data */
-  index=year-climate->file_temp_var.firstyear;
-  /* IMAGE temperature consists of CRU variability (absolute) and IMAGE temperatures */
-  if(fseek(climate->file_temp_var.file,
-         (long)(index*climate->file_temp_var.size+climate->file_temp_var.offset),SEEK_SET))
+#ifdef IMAGE_CLIM_AVG
+  for(i=0;i<climate->file_temp_var.n;i++)
+    climate->data.temp[i]=0; /* setting varibility to 0 */
+#else
+  if(readclimate(&climate->file_temp_var,climate->data.temp,0,climate->file_temp_var.scalar,grid,year,config))
   {
-    fprintf(stderr,"ERROR190: seeking temperature variability of year %d in receive_image_climate().\n",year);
-    fflush(stderr);
-    free(vec);
+    if(isroot(*config))
+      fprintf(stderr,"ERROR190: Cannot read temperature variability of year %d receive_image_climate().\n",
+              year);
     return TRUE;
   }
-  if(fread(vec,sizeof(short),climate->file_temp_var.n,climate->file_temp_var.file)!=climate->file_temp_var.n)
+  if(climate->data.temp[0]<-70 || climate->data.temp[0]>70)
   {
-    fprintf(stderr,"ERROR190: reading temperature variability of year %d in receive_image_climate().\n",year);
-    fflush(stderr);
-    free(vec);
-    return TRUE;
-  }
-  if(climate->file_temp_var.swap)
-    for(i=0;i<climate->file_temp_var.n;i++)
-#ifdef IMAGE_CLIM_AVG
-      climate->data.temp[i]=0; /* setting varibility to 0 */
-#else
-      climate->data.temp[i]=swapshort(vec[i])*0.1; /* temp variability in deg C *10 */
-#endif
-  else
-    for(i=0;i<climate->file_temp_var.n;i++)
-#ifdef IMAGE_CLIM_AVG
-      climate->data.temp[i]=0; /* setting varibility to 0 */
-#else
-      climate->data.temp[i]=vec[i]*0.1; /* temp variability in deg C *10 */
-#endif
-  if(climate->data.temp[0]<-70 || climate->data.temp[0]>70){
     fprintf(stderr,"tempvar incorrect %g\n",climate->data.temp[0]);
     fflush(stderr);
   }
+#endif
     
   image_data = newvec(float,climate->file_temp_var.n);
   check(image_data);
@@ -104,41 +82,23 @@ Bool receive_image_climate(Climate *climate,    /**< Climate data */
   free(image_data);
 
   /* IMAGE precipitation consists of CRU variability (%) and IMAGE prec */
-  index=year-climate->file_prec_var.firstyear;
-  if(fseek(climate->file_prec_var.file,
-        (long)(index*climate->file_prec_var.size+climate->file_prec_var.offset),SEEK_SET))
+#ifdef IMAGE_CLIM_AVG
+  for(i=0;i<climate->file_prec_var.n;i++)
+    climate->data.prec[i]=1; /* setting relative varibility to 1 */
+#else
+  if(readclimate(&climate->file_prec_var,climate->data.prec,0,climate->file_prec_var.scalar,grid,year,config))
   {
-    fprintf(stderr,"ERROR189: seeking precipitation variability of year %d in receive_image_climate().\n",year);
-    fflush(stderr);
-    free(vec);
+    if(isroot(*config))
+      fprintf(stderr,"ERROR189: Cannot read precipitation variability of year %d in receive_image_climate().\n",
+              year);
     return TRUE;
   }
-  if(fread(vec,sizeof(short),climate->file_prec_var.n,climate->file_prec_var.file)!=climate->file_prec_var.n)
-  {
-    fprintf(stderr,"ERROR189: reading precipitation variability of year %d in receive_image_climate().\n",year);
-    fflush(stderr);
-    free(vec);
-    return TRUE;
-  }
-  if(climate->file_prec_var.swap)
-    for(i=0;i<climate->file_prec_var.n;i++)
-#ifdef IMAGE_CLIM_AVG
-      climate->data.prec[i]=1; /* setting relative varibility to 1 */
-#else
-      climate->data.prec[i]=swapshort(vec[i])*0.01; /* prec variability in percent */
-#endif
-  else
-    for(i=0;i<climate->file_prec_var.n;i++)
-#ifdef IMAGE_CLIM_AVG
-      climate->data.prec[i]=1; /* setting relative varibility to 1 */
-#else
-      climate->data.prec[i]=vec[i]*0.01; /* prec variability in percent */
-#endif
   if(climate->data.prec[0]<0 || climate->data.prec[0]>1000)
   {
     fprintf(stderr,"ERROR174: precvar incorrect %g\n",climate->data.prec[0]);
     fflush(stderr);
   }
+#endif
    
   image_data = newvec(float,climate->file_prec_var.n);
   check(image_data);
@@ -166,7 +126,6 @@ Bool receive_image_climate(Climate *climate,    /**< Climate data */
 #endif
   }
 
-  free(vec);
   free(image_data);
   
   image_data = newvec(float,climate->file_cloud.n);

@@ -22,7 +22,8 @@ void init_tree(Pft *pft /**< pointer to tree PFT */
 {
   Pfttree *tree;
   tree=pft->data;
-  pft->bm_inc=pft->wscal_mean=0;
+  pft->nleaf=0;
+  pft->bm_inc.carbon=pft->wscal_mean=pft->vscal=pft->nlimit=0;
 #ifdef DAILY_ESTABLISHMENT
   pft->established=FALSE;
 #endif

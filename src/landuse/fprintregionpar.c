@@ -21,7 +21,7 @@ void fprintregionpar(FILE *file, /**< pointer to text file */
   fputs("Region                                       bifratio fuelratio woodconsum\n"
         "-------------------------------------------- -------- --------- ----------\n",file);
   for(i=0;i<nregions;i++)
-   fprintf(file,"%44s %8.5f %9.5f %10.5f\n",regionpar[i].name,
+   fprintf(file,"%-44s %8.5f %9.5f %10.5f\n",regionpar[i].name,
            regionpar[i].bifratio,regionpar[i].fuelratio,regionpar[i].woodconsum);
   fputs("-------------------------------------------- -------- --------- ----------\n",file);
 } /* of 'fprintregionpar' */

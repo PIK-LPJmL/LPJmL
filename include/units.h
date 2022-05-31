@@ -22,6 +22,7 @@
 #define degCtoK(deg) ((deg)+273.15)  /* Convert deg C --> Kelvin */
 #define ppm2bar(ppm) ((ppm)*1e-6)      /* Convert ppmv --> bar */
 #define ppm2Pa(ppm) ((ppm)*1e-1)      /* Convert ppmv --> Pa */
+#define day2sec(sec) ((sec)*86400.0)      /* Convert day --> sec */
 #define hour2sec(hour) ((hour)*3600)      /* Convert hour --> sec */
 #define day2hour(day) ((day)*24)          /* Convert day --> hour */
 #define hour2day(hour) ((hour)*.04166666666666666666) /* Convert hour --> day */

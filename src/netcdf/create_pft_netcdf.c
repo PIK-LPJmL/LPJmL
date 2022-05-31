@@ -34,6 +34,7 @@ Bool create_pft_netcdf(Netcdf *cdf,
                        const char *units,    /**< unit of output variable */
                        Type type,            /**< type of output variable */
                        int n,                /**< number of samples per year (1/12/365) */
+                       int timestep,         /**< time step for annual output (yrs) */
                        const Coord_array *array, /**< coordinate array */
                        const Config *config  /**< LPJ configuration */
                       )                      /** \return TRUE on error */
@@ -98,7 +99,10 @@ Bool create_pft_netcdf(Netcdf *cdf,
     printallocerr("lat");
     return TRUE;
   }
-  year=newvec(int,nyear*n);
+  if(n==1)
+    year=newvec(int,nyear/timestep);
+  else
+    year=newvec(int,nyear*n);
   if(year==NULL)
   {
     free(lon);
@@ -106,8 +110,8 @@ Bool create_pft_netcdf(Netcdf *cdf,
     printallocerr("year");
     return TRUE;
   }
-  size=outputsize(index,npft,config->nbiomass,config->nwft,ncft);
-  if(index==SOILC_LAYER || index==MSOILTEMP || index==MSWC)
+  size=outputsize(index,npft,ncft,config);
+  if(issoil(index))
   {
     layer=newvec(float,size);
     if(layer==NULL)
@@ -130,8 +134,8 @@ Bool create_pft_netcdf(Netcdf *cdf,
   switch(n)
   {
     case 1:
-      for(i=0;i<nyear;i++)
-        year[i]=config->outputyear+i;
+      for(i=0;i<nyear/timestep;i++)
+        year[i]=config->outputyear+i*timestep+timestep/2;
       break;
     case 12:
       for(i=0;i<nyear;i++)
@@ -146,8 +150,7 @@ Bool create_pft_netcdf(Netcdf *cdf,
         year[i]=i;
       break;
     default:
-      fputs("ERROR425: Invalid value for number of data points per year.\n",
-            stderr);
+      fprintf(stderr,"ERROR425: Invalid value=%d for number of data points per year.\n",n);
       free(year);
       free(lon);
       free(lat);
@@ -169,9 +172,12 @@ Bool create_pft_netcdf(Netcdf *cdf,
     return TRUE;
   }
   error(rc);
-  rc=nc_def_dim(cdf->ncid,TIME_DIM_NAME,nyear*n,&time_dim_id);
+  if(n==1)
+    rc=nc_def_dim(cdf->ncid,TIME_DIM_NAME,nyear/timestep,&time_dim_id);
+  else
+    rc=nc_def_dim(cdf->ncid,TIME_DIM_NAME,nyear*n,&time_dim_id);
   error(rc);
-  rc=nc_def_dim(cdf->ncid,(index==SOILC_LAYER || index==MSOILTEMP || index==MSWC) ? config->layer_index : config->pft_index,size,&pft_dim_id);
+  rc=nc_def_dim(cdf->ncid,issoil(index) ? config->layer_index : config->pft_index,size,&pft_dim_id);
   error(rc);
   rc=nc_def_dim(cdf->ncid,LAT_DIM_NAME,array->nlat,&lat_dim_id);
   error(rc);
@@ -181,7 +187,7 @@ Bool create_pft_netcdf(Netcdf *cdf,
   dim[1]=pft_dim_id;
   dim[2]=lat_dim_id;
   dim[3]=lon_dim_id;
-  if(index==SOILC_LAYER || index==MSOILTEMP || index==MSWC)
+  if(issoil(index))
   {
     rc=nc_def_var(cdf->ncid,"layer",NC_FLOAT,1,&pft_dim_id,&pft_var_id);
     error(rc);
@@ -191,7 +197,7 @@ Bool create_pft_netcdf(Netcdf *cdf,
   }
   else
   {
-    pftnames=createpftnames(index,npft,config->nbiomass,config->nwft,ncft,config->pftpar);
+    pftnames=createpftnames(index,npft,ncft,config);
     if(pftnames==NULL)
     {
       free(lat);
@@ -219,7 +225,7 @@ Bool create_pft_netcdf(Netcdf *cdf,
   rc=nc_def_var(cdf->ncid,TIME_NAME,NC_INT,1,&time_dim_id,&time_var_id);
   error(rc);
   if(n==1)
-    rc=nc_put_att_text(cdf->ncid,time_var_id,"units",strlen("year"),"year");
+    rc=nc_put_att_text(cdf->ncid,time_var_id,"units",strlen(YEARS_NAME),YEARS_NAME);
   else
   {
     snprintf(s,STRING_LEN,"days since %d-1-1 0:0:0",config->outputyear);
@@ -303,7 +309,7 @@ Bool create_pft_netcdf(Netcdf *cdf,
   error(rc);
   rc=nc_put_var_int(cdf->ncid,time_var_id,year);
   error(rc);
-  if(index==SOILC_LAYER || index==MSOILTEMP || index==MSWC)
+  if(issoil(index))
   {
     rc=nc_put_var_float(cdf->ncid,pft_var_id,layer);
     error(rc);
@@ -324,7 +330,7 @@ Bool create_pft_netcdf(Netcdf *cdf,
       error(rc);
     }
 #endif
-    freepftnames(pftnames,index,npft,config->nbiomass,config->nwft,ncft);
+    freepftnames(pftnames,index,npft,ncft,config);
   }
   rc=nc_put_var_float(cdf->ncid,lat_var_id,lat);
   error(rc);

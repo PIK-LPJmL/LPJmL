@@ -14,29 +14,45 @@
 
 #include "lpj.h"
 
-Real firepft(Litter *litter,   /**< Litter pool */
-             Pftlist *pftlist, /**< list of established PFTs */
-             Real fire_frac    /**< fire fraction (0..1) */
-            )                  /** \return fire flux (gC/m2) */
+Stocks firepft(Stand *stand,   /**< Litter pool */
+               Real fire_frac,    /**< fire fraction (0..1) */
+               const Config *config /**< LPJmL configuration */
+              )                  /** \return fire flux (gC/m2) */
 {
   int i,p;
   Pft *pft;
-  Real flux,flux_litter;
-  if(isempty(pftlist)) /*if(pftlist->n==0)*/
-    return 0.0;
-  flux=flux_litter=0;
-  foreachpft(pft,p,pftlist)
+  Litter *litter;
+  Stocks flux,flux_litter,flux_sum;
+  litter=&stand->soil.litter;
+  flux_litter.carbon=flux_litter.nitrogen=flux_sum.carbon=flux_sum.nitrogen=0;
+  if(isempty(&stand->pftlist)) /*if(pftlist->n==0)*/
+    return flux_sum;
+  foreachpft(pft,p,&stand->pftlist)
   {
-    flux+=fire(pft,&fire_frac);
+    flux=fire(pft,&fire_frac);
+    flux_sum.carbon+=flux.carbon;
+    flux_sum.nitrogen+=flux.nitrogen;
   }
   for(p=0;p<litter->n;p++)
   {
-    flux_litter+=litter->ag[p].trait.leaf;
+    flux_litter.carbon+=litter->item[p].ag.leaf.carbon;
+    flux_litter.nitrogen+=litter->item[p].ag.leaf.nitrogen;
     for(i=0;i<NFUELCLASS;i++)
-      flux_litter+=litter->ag[p].trait.wood[i];
-    litter->ag[p].trait.leaf*=(1-fire_frac);
+    {
+      flux_litter.carbon+=litter->item[p].ag.wood[i].carbon;
+      flux_litter.nitrogen+=litter->item[p].ag.wood[i].nitrogen;
+    }
+    litter->item[p].ag.leaf.carbon*=(1-fire_frac);
+    litter->item[p].ag.leaf.nitrogen*=(1-fire_frac);
     for(i=0;i<NFUELCLASS;i++)
-      litter->ag[p].trait.wood[i]*=(1-fire_frac);
+    {
+      getoutput(&stand->cell->output,LITBURNC_WOOD,config)+=litter->item[p].ag.wood[i].carbon*fire_frac;
+      litter->item[p].ag.wood[i].carbon*=(1-fire_frac);
+      litter->item[p].ag.wood[i].nitrogen*=(1-fire_frac);
+    }
   } /* of 'for(p=0;...)' */
-  return flux+flux_litter*fire_frac; 
+  getoutput(&stand->cell->output,LITBURNC,config)+=flux_litter.carbon*fire_frac;
+  flux_sum.carbon+=flux_litter.carbon*fire_frac;
+  flux_sum.nitrogen+=flux_litter.nitrogen*fire_frac;
+  return flux_sum; 
 } /* of 'firepft' */

@@ -18,9 +18,9 @@ void newsoil(Soil *soil /**< pointer to soil data */)
 {
   int l;
   soil->litter.n=0;
-  soil->litter.ag=NULL;
-  soil->litter.bg=NULL;
+  soil->litter.item=NULL;
+  soil->litter.agtop_wcap=soil->litter.agtop_moist=soil->litter.agtop_cover=soil->litter.agtop_temp=0;
   forrootsoillayer(l)
-    soil->cpool[l].fast=soil->cpool[l].slow=soil->YEDOMA=0.0;
+    soil->pool[l].fast.carbon=soil->pool[l].slow.carbon=soil->pool[l].fast.nitrogen=soil->pool[l].slow.nitrogen=soil->YEDOMA=0.0;
   soil->snowheight=soil->snowfraction=0;
 } /* of 'newsoil' */

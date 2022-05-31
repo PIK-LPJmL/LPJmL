@@ -26,11 +26,8 @@ Landcover initlandcover(int npft,            /**< number of natural PFTs */
                         const Config *config /**< LPJmL configuration */
                        )                     /** \return landcover data or NULL */
 {
-  Header header;
   Landcover landcover;
-  String headername;
-  size_t offset;
-  int i,version,len;
+  int i,len;
   
   landcover=new(struct landcover);
   if(landcover==NULL)
@@ -38,54 +35,12 @@ Landcover initlandcover(int npft,            /**< number of natural PFTs */
     printallocerr("landcover");
     return NULL;
   }
-  landcover->file.fmt=config->landcover_filename.fmt;
-  if(config->landcover_filename.fmt==CDF)
+  if(opendata(&landcover->file,&config->landcover_filename,"landcover","1",LPJ_SHORT,0.01,getnnat(npft,config),TRUE,config))
   {
-    if(opendata_netcdf(&landcover->file,&config->landcover_filename,NULL,config))
-    {
-      free(landcover);
-      return NULL;
-    }
-    len=landcover->file.var_len*config->ngridcell;
-  }
-  else
-  {
-    if((landcover->file.file=openinputfile(&header,&landcover->file.swap,
-                                           &config->landcover_filename,headername,
-                                           &version,&offset,config))==NULL)
-
-    {
-      free(landcover);
-      return NULL;
-    }
-    if(version<2)
-      landcover->file.scalar=0.01;
-    else
-      landcover->file.scalar=header.scalar;
-    landcover->file.firstyear=header.firstyear;
-    landcover->file.nyear=header.nyear;
-    if(config->landcover_filename.fmt==RAW)
-      header.nbands=npft-config->nbiomass-config->nwft;
-    if(version<=2)
-      landcover->file.datatype=LPJ_SHORT;
-    else
-      landcover->file.datatype=header.datatype;
-    landcover->file.var_len=header.nbands;
-    landcover->file.size=header.ncell*header.nbands*typesizes[landcover->file.datatype];
-    landcover->file.n=header.nbands*config->ngridcell;
-    landcover->file.offset=(config->startgrid-header.firstcell)*header.nbands*
-                           typesizes[landcover->file.datatype]+headersize(headername,version)+offset;
-    len=landcover->file.n;
-  }
-  if(landcover->file.var_len!=npft-config->nbiomass-config->nwft)
-  {
-    if(isroot(*config))
-      fprintf(stderr,"ERROR225: Number of bands=%d in landcover file '%s' is not %d\n",
-              (int)landcover->file.var_len,config->landcover_filename.name,npft-config->nbiomass-config->nwft);
-    closeclimatefile(&landcover->file,isroot(*config));
     free(landcover);
     return NULL;
   }
+  len=config->ngridcell*landcover->file.var_len;
   if((landcover->frac=newvec(Real,len))==NULL)
   {
     printallocerr("frac");
@@ -110,44 +65,7 @@ Bool readlandcover(Landcover landcover, /**< landcover data */
                    const Config *config /**< LPJmL configuration */
                   )                     /** \return TRUE on error */
 {
-  int index;
-  index = year - landcover->file.firstyear;
-  if(index >= landcover->file.nyear)
-    index = landcover->file.nyear - 1;
-  /* read first year of file if iteration year is earlier */
-  if(index<0)
-    index=0;
-  /* read always first year if there is only one year in the file */
-  if(landcover->file.nyear == 1)
-    index=0;
-  if(landcover->file.fmt==CDF)
-  {
-    if(readdata_netcdf(&landcover->file,landcover->frac,grid,year,config))
-    {
-      fprintf(stderr,
-              "ERROR149: Cannot read landcover of year %d in readlandcover().\n",
-              year+landcover->file.firstyear);
-      fflush(stderr);
-      return TRUE;
-    }
-    return FALSE;
-  }
-  else
-  {
-    /* read last year of file if iteration year is later */
-  
-    if(fseek(landcover->file.file, landcover->file.size * index + landcover->file.offset,SEEK_SET))
-    {  
-      fprintf(stderr,"ERROR184: Cannot seek to landcover fractions of year %d in readlandcover().\n", index+landcover->file.firstyear);
-      return TRUE;
-    }
-    if(readrealvec(landcover->file.file,landcover->frac,0,landcover->file.scalar,landcover->file.n,landcover->file.swap,landcover->file.datatype))
-    {
-      fprintf(stderr,"ERROR184: Cannot read landcover fractions of year %d in readlandcover().\n",index+landcover->file.firstyear);
-      return TRUE;
-    }
-  }
-  return FALSE;
+  return (readdata(&landcover->file,landcover->frac,grid,"landcover",year,config)==NULL);
 } /* of 'readlandcover */
 
 Real *getlandcover(Landcover landcover, /**< landcover data */

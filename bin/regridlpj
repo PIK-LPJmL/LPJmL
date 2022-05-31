@@ -67,60 +67,17 @@ then
   regridclm $LPJINPATH/input_VERSION2/grid.bin $dir/grid_$name.clm  $LPJINPATH/input_VERSION2/swdown_erainterim_1901-2011.clm $dir/swdown_$name.clm
   regridclm $LPJINPATH/input_VERSION2/grid.bin $dir/grid_$name.clm  $LPJINPATH/input_VERSION2/gpcc_cru09_wet_monthly_1901_2009.clm $dir/wet_$name.clm
   regridclm $LPJINPATH/input_VERSION2/grid.bin $dir/grid_$name.clm  $LPJINPATH/input_VERSION2/cow_mg_2006_full.bin $dir/country_$name.clm
+  regridclm -size4 $LPJINPATH/input_VERSION2/grid.bin $dir/grid_$name.clm $LPJINPATH/input_VERSION2/no3_deposition_rcp8p5.clm $dir/no3_deposition_$name.clm
+  regridclm -size4 $LPJINPATH/input_VERSION2/grid.bin $dir/grid_$name.clm $LPJINPATH/input_VERSION2/nh4_deposition_rcp8p5.clm $dir/nh4_deposition_$name.clm
+  regridclm $LPJINPATH/input_VERSION2/grid.bin $dir/grid_$name.clm $LPJINPATH/input_VERSION2/soil_ph.clm $dir/soil_ph_$name.clm
+  regridclm $LPJINPATH/input_VERSION2/grid.bin $dir/grid_$name.clm $LPJINPATH/input_VERSION2/fertilizer_ggcmi.clm2 $dir/fertilizer_ggcmi_$name.clm
 
-  cat << EOF >input_$name.conf
-/*********************************************************************/
-/*                                                                   */
-/*                 i  n  p  u  t  .  c  o  n  f                      */
-/*                                                                   */
-/* Configuration file for input dataset for LPJ C Version 4.0.001    */
-/*                                                                   */
-/* Created: $(date +"%d.%m.%Y")                                               */
-/*                                                                   */
-/*********************************************************************/
-
-#include "include/conf.h" /* include constant definitions */
-#undef LPJ
-
-RAW $dir/soil_$name.bin
-CLM $dir/grid_$name.clm 
-#ifdef WITH_LANDUSE
-CLM $dir/country_$name.clm
-CLM $dir/landuse_$name.clm
-#endif
-CLM $dir/tmp_$name.clm
-CLM $dir/prec_$name.clm
-#ifdef USE_RADIATION
-CLM $dir/lwnet_$name.clm
-CLM $dir/swdown_$name.clm
-#else
-CLM $dir/cld_$name.clm
-#endif
-#ifdef WITH_SPITFIRE
-CLM $dir/windspeed_$name.clm
-CLM $dir/tamp_$name.clm
-CLM $dir/lightning_$name.clm
-CLM $dir/human_ignition_$name.clm
-#endif
-#if defined(WITH_SPITFIRE) || defined(WITH_FIREWOOD)
-#if defined(FROM_RESTART)
-CLM $dir/popdens_$name.clm 
-#endif
-#endif
-TXT input_VERSION2/co2_1841-2010.dat
-
-#ifdef ISRANDOM
-
-CLM $dir/wet_$name.clm
-
-#endif
-EOF
   cat << EOF >input_$name.js
 /*********************************************************************/
 /*                                                                   */
 /*                 i  n  p  u  t  .  j  s                            */
 /*                                                                   */
-/* Configuration file for input dataset for LPJ C Version 4.0.001    */
+/* Configuration file for input dataset for LPJ C Version 5.1.001    */
 /*                                                                   */
 /* Created: $(date +"%d.%m.%Y")                                               */
 /*                                                                   */
@@ -130,22 +87,26 @@ EOF
 
 "input" :
 {
-  "soil" : { "fmt" : RAW, "name" : "$dir/soil_$name.bin"},
-  "coord" : { "fmt" : CLM, "name" : "$dir/grid_$name.clm"},
-  "countrycode" : { "fmt" : CLM, "name" : "$dir/country_$name.clm"},
-  "landuse": { "fmt" : CLM, "name" : "$dir/landuse_$name.clm"},
-  "temp" : { "fmt" : CLM, "name" : "$dir/tmp_$name.clm"},
-  "prec" : { "fmt" : CLM, "name" : "$dir/prec_$name.clm"},
-  "lwnet" : { "fmt" : CLM, "name" : "$dir/lwnet_$name.clm"},
-  "swdown" : { "fmt" : CLM, "name" : "$dir/swdown_$name.clm"},
-  "cloud" : { "fmt" : CLM, "name" : "$dir/cld_$name.clm"},
-  "wind" : { "fmt" : CLM, "name" : "$dir/windspeed_$name.clm"},
-  "tamp" : { "fmt" : CLM, "name" : "$dir/tamp_$name.clm"},
-  "lightning" : { "fmt" : CLM, "name" : "$dir/lightning_$name.clm"},
+  "soil"           : { "fmt" : RAW, "name" : "$dir/soil_$name.bin"},
+  "coord"          : { "fmt" : CLM, "name" : "$dir/grid_$name.clm"},
+  "countrycode"    : { "fmt" : CLM, "name" : "$dir/country_$name.clm"},
+  "landuse"        : { "fmt" : CLM, "name" : "$dir/landuse_$name.clm"},
+  "temp"           : { "fmt" : CLM, "name" : "$dir/tmp_$name.clm"},
+  "prec"           : { "fmt" : CLM, "name" : "$dir/prec_$name.clm"},
+  "lwnet"          : { "fmt" : CLM, "name" : "$dir/lwnet_$name.clm"},
+  "swdown"         : { "fmt" : CLM, "name" : "$dir/swdown_$name.clm"},
+  "cloud"          : { "fmt" : CLM, "name" : "$dir/cld_$name.clm"},
+  "wind"           : { "fmt" : CLM, "name" : "$dir/windspeed_$name.clm"},
+  "tamp"           : { "fmt" : CLM, "name" : "$dir/tamp_$name.clm"},
+  "lightning"      : { "fmt" : CLM, "name" : "$dir/lightning_$name.clm"},
   "human_ignition" : { "fmt" : CLM, "name" : "$dir/human_ignition_$name.clm"},
-  "popdens" : { "fmt" : CLM, "name" : "$dir/popdens_$name.clm "},
-  "co2" : { "fmt" : TXT, "name" : "/p/projects/lpjml/input/historical/input_VERSION2/co2_1841-2012.dat"},
-  "wetdays" : { "fmt" : CLM, "name" : "$dir/wet_$name.clm"}
+  "popdens"        : { "fmt" : CLM, "name" : "$dir/popdens_$name.clm "},
+  "co2"            : { "fmt" : TXT, "name" : "/p/projects/lpjml/input/historical/input_VERSION2/co2_1841-2012.dat"},
+  "wetdays"        : { "fmt" : CLM, "name" : "$dir/wet_$name.clm"},
+  "no3deposition"  : { "fmt" : CLM, "name" : "$dir/no3_deposition_$name.clm"},
+  "nh4deposition"  : { "fmt" : CLM, "name" : "$dir/nh4_deposition_$name.clm"},
+  "soilpH"         : { "fmt" : CLM, "name" : "$dir/soil_ph_$name.clm"},
+  "fertilizer_nr"  : { "fmt" : CLM, "name" : "$dir/fertilizer_ggcmi_$name.clm"}
 },
 EOF
 else

@@ -78,8 +78,8 @@ int main(int argc,char **argv)
                "-nbands n    number of bands, default is 12\n"
                "-header s    header string, default is " LPJ_CLIMATE_HEADER "\n"
                "-scale s     scale data by a factor of s\n"
-               "-int         integer values to read\n"
-               "-float       write float values\n"
+               "-int         write integer data into clm file\n"
+               "-float       write float data into clm file\n"
                "infile       filename(s) of gridded data file\n"
                "clmfile      filename of clm data file\n",FIRSTYEAR);
         return EXIT_SUCCESS;

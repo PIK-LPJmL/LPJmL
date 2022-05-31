@@ -20,7 +20,7 @@ int findlitter(const Litter *litter, /**< pointer to litter */
 {
   int l;
   for(l=0;l<litter->n;l++)
-    if(litter->ag[l].pft==pft)
+    if(litter->item[l].pft==pft)
       return l;
   return NOT_FOUND;
 } /* of 'findlitter' */

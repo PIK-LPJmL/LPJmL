@@ -15,7 +15,6 @@
 #undef USE_MPI /* no MPI */
 
 #include "lpj.h"
-#include <sys/stat.h>
 
 #define CRU2CLM_VERSION "1.0.003"
 #define NYEAR 103  /* default value for number of years */
@@ -32,11 +31,11 @@ int main(int argc,char **argv)
 {
   FILE *file;
   Data *data;
+  char *endptr;
   Header header;
   long int k;
   int i,j,n;
   Bool swap;
-  struct stat filestat;
   header.nyear=NYEAR;
   header.firstyear=FIRSTYEAR;
   header.order=CELLYEAR;
@@ -79,7 +78,18 @@ int main(int argc,char **argv)
                 USAGE,stderr);
           return EXIT_FAILURE;
         }
-        header.nyear=atoi(argv[++i]);
+        header.nyear=strtol(argv[++i],&endptr,10);
+        if(*endptr!='\0')
+        {
+          fprintf(stderr,"Invalid value '%s' for option '-nyear'.\n",
+                  argv[i]);
+          return EXIT_FAILURE;
+        }
+        if(header.nyear<1)
+        {
+          fprintf(stderr,"Number of years=%d must be greater than zero.\n",header.nyear);
+          return EXIT_FAILURE;
+        }
       }
       else if(!strcmp(argv[i],"-firstyear"))
       {
@@ -89,7 +99,13 @@ int main(int argc,char **argv)
                 USAGE,stderr);
           return EXIT_FAILURE;
         }
-        header.firstyear=atoi(argv[++i]);
+        header.firstyear=strtol(argv[++i],&endptr,10);
+        if(*endptr!='\0')
+        {
+          fprintf(stderr,"Invalid value '%s' for option '-firstyear'.\n",
+                  argv[i]);
+          return EXIT_FAILURE;
+        }
       }
       else if(!strcmp(argv[i],"-lastyear"))
       {
@@ -99,7 +115,18 @@ int main(int argc,char **argv)
                 USAGE,stderr);
           return EXIT_FAILURE;
         }
-        header.nyear=atoi(argv[++i])-header.firstyear+1;
+        header.nyear=strtol(argv[++i],&endptr,10)-header.firstyear+1;
+        if(*endptr!='\0')
+        {
+          fprintf(stderr,"Invalid value '%s' for option '-lastyear'.\n",
+                  argv[i]);
+          return EXIT_FAILURE;
+        }
+        if(header.nyear<1)
+        {
+          fprintf(stderr,"Last year=%d less than first year=%d.\n",header.firstyear+header.nyear-1,header.firstyear);
+          return EXIT_FAILURE;
+        }
       }
       else if(!strcmp(argv[i],"-scale"))
       {
@@ -109,7 +136,18 @@ int main(int argc,char **argv)
                 USAGE,stderr);
           return EXIT_FAILURE;
         }
-        header.scalar=(float)atof(argv[++i]);
+        header.scalar=(float)strtod(argv[++i],&endptr);
+        if(*endptr!='\0')
+        {
+          fprintf(stderr,"Invalid value '%s' for option '-scale'.\n",
+                  argv[i]);
+          return EXIT_FAILURE;
+        }
+        if(header.scalar<=0)
+        {
+          fprintf(stderr,"Scalar=%g must be greater than zero.\n",header.scalar);
+          return EXIT_FAILURE;
+        }
       }
       else if(!strcmp(argv[i],"-firstcell"))
       {
@@ -119,7 +157,18 @@ int main(int argc,char **argv)
                 USAGE,stderr);
           return EXIT_FAILURE;
         }
-        header.firstcell=atoi(argv[++i]);
+        header.firstcell=strtol(argv[++i],&endptr,10);
+        if(*endptr!='\0')
+        {
+          fprintf(stderr,"Invalid value '%s' for option '-firstcell'.\n",
+                  argv[i]);
+          return EXIT_FAILURE;
+        }
+        if(header.firstcell<1)
+        {
+          fprintf(stderr,"First cell=%d must be greater than zero.\n",header.firstcell);
+          return EXIT_FAILURE;
+        }
       }
       else if(!strcmp(argv[i],"-ncell"))
       {
@@ -129,7 +178,18 @@ int main(int argc,char **argv)
                 USAGE,stderr);
           return EXIT_FAILURE;
         }
-        header.ncell=atoi(argv[++i]);
+        header.ncell=strtol(argv[++i],&endptr,10);
+        if(*endptr!='\0')
+        {
+          fprintf(stderr,"Invalid value '%s' for option '-ncell'.\n",
+                  argv[i]);
+          return EXIT_FAILURE;
+        }
+        if(header.ncell<1)
+        {
+          fprintf(stderr,"Number of cells=%d must be greater than zero.\n",header.ncell);
+          return EXIT_FAILURE;
+        }
       }
       else if(!strcmp(argv[i],"-nbands"))
       {
@@ -139,7 +199,18 @@ int main(int argc,char **argv)
                 USAGE,stderr);
           return EXIT_FAILURE;
         }
-        header.nbands=atoi(argv[++i]);
+        header.nbands=strtol(argv[++i],&endptr,10);
+        if(*endptr!='\0')
+        {
+          fprintf(stderr,"Invalid value '%s' for option '-nbands'.\n",
+                  argv[i]);
+          return EXIT_FAILURE;
+        }
+        if(header.nbands<1)
+        {
+          fprintf(stderr,"Number of bands=%d must be greater than zero.\n",header.nbands);
+          return EXIT_FAILURE;
+        }
       }
       else if(!strcmp(argv[i],"-swap"))
         swap=TRUE;
@@ -166,8 +237,7 @@ int main(int argc,char **argv)
     fprintf(stderr,"Error opening '%s': %s\n",argv[i],strerror(errno));
     return EXIT_FAILURE;
   }
-  fstat(fileno(file),&filestat);
-  n=filestat.st_size/header.nyear/sizeof(Data);
+  n=getfilesizep(file)/header.nyear/sizeof(Data);
   printf("Number of cells: %d\n",n);
   data=(Data *)malloc(n*sizeof(Data)*header.nyear);
   if(data==NULL)

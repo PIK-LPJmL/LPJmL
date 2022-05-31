@@ -15,29 +15,37 @@
 #include "lpj.h"
 #include "agriculture.h"
 
-Real cultivate(Cell *cell,           /**< cell pointer */
-               const Pftpar *pftpar, /**< PFT parameter to be established */
-               int vern_date20,
-               Real landfrac,        /**< land fraction (0..1) */
-               Bool irrigation,      /**< irrigated (TRUE/FALSE) */
-               int day,              /**< day (1..365) */
-               Bool wtype,           /**< winter type (TRUE/FALSE) */
-               Stand *setasidestand, /**< pointer to setaside stand */
-               Bool istimber,
-               int irrig_scenario,   /**< irrigation scenario */
-               int npft,             /**< number of natural PFTs */
-               int ncft,             /**< number of crop PFTs */
-               int cft,              /**< cft index for set_irrigsystem */
-               int year              /**< AD */
-              )                      /** \return establihment flux (gC/m2) */
+Stocks cultivate(Cell *cell,           /**< cell pointer */
+                 Bool irrigation,      /**< irrigated (TRUE/FALSE) */
+                 int day,              /**< day (1..365) */
+                 Bool wtype,           /**< winter type (TRUE/FALSE) */
+                 Stand *setasidestand, /**< pointer to setaside stand */
+                 int npft,             /**< number of natural PFTs */
+                 int ncft,             /**< number of crop PFTs */
+                 int cft,              /**< cft index for set_irrigsystem */
+                 int year,             /**< AD */
+                 const Config *config  /**< LPJmL configuration */
+                )                      /** \return establihment flux (gC/m2,gN/m2) */
 {
   int pos; /*position of new stand in list*/
+  int vern_date20;
   Pft *pft;
   Stand *cropstand;
   Irrigation *data;
+  Stocks bm_inc;
+  //Real split_fert=0.5;
+  //Real fmanure_NH4=2/3;
+  Pftcrop *crop;
+  Real manure;
+  Real fertil;
+  Real landfrac;
 #ifdef IMAGE
   int nagr,s;
   Stand *stand;
+#endif
+  vern_date20=cell->ml.cropdates[cft].vern_date20;
+  landfrac=cell->ml.landfrac[irrigation].crop[cft];
+#ifdef IMAGE
   nagr=2*ncft;
   foreachstand(stand,s,cell->standlist)
     if(stand->type->landusetype==AGRICULTURE)
@@ -52,37 +60,92 @@ Real cultivate(Cell *cell,           /**< cell pointer */
 #else
   if(landfrac>=setasidestand->frac-0.00001)
 #endif
-
   {
     setasidestand->type->freestand(setasidestand);
     setasidestand->type=&agriculture_stand;
-    new_agriculture(setasidestand);
+    setasidestand->type->newstand(setasidestand);
     /* delete all PFTs */
-    cutpfts(setasidestand);
-    pos=addpft(setasidestand,pftpar,year,day);
-    pft=getpft(&setasidestand->pftlist,pos-1);
-    phen_variety(pft,vern_date20,cell->coord.lat,day,wtype);
-    data=setasidestand->data;
-    data->irrigation= irrig_scenario==ALL_IRRIGATION ? TRUE : irrigation;
-    set_irrigsystem(setasidestand,cft,0,FALSE); /* calls set_irrigsystem() for landusetype AGRICULTURE only */
-    return pft->bm_inc*setasidestand->frac;
+    cutpfts(setasidestand,config);
+    cropstand=setasidestand;
   }
   else
   {
     pos=addstand(&agriculture_stand,cell);
-
     cropstand=getstand(cell->standlist,pos-1);
-    data=cropstand->data;
     cropstand->frac=landfrac;
-    data->irrigation= irrig_scenario==ALL_IRRIGATION ? TRUE : irrigation;
-    reclaim_land(setasidestand,cropstand,cell,istimber,npft+ncft);
-    set_irrigsystem(cropstand,cft,0,FALSE);
-    pos=addpft(cropstand,pftpar,year,day);
-    pft=getpft(&cropstand->pftlist,pos-1);
-    phen_variety(pft,vern_date20,cell->coord.lat,day,wtype);
+    reclaim_land(setasidestand,cropstand,cell,config->istimber,npft+ncft,config);
     setasidestand->frac-=landfrac;
-    return pft->bm_inc*cropstand->frac;
   }
+  if(cell->ml.with_tillage && year>=config->till_startyear)
+  {
+    tillage(&cropstand->soil,param.residue_frac);
+    updatelitterproperties(cropstand,cropstand->frac);
+    if(config->soilpar_option==NO_FIXED_SOILPAR || (config->soilpar_option==FIXED_SOILPAR && year<config->soilpar_fixyear))
+      pedotransfer(cropstand,NULL,NULL,cropstand->frac);
+  }
+  data=cropstand->data;
+  data->irrigation= (config->irrig_scenario==ALL_IRRIGATION) || irrigation;
+  set_irrigsystem(cropstand,cft,npft,ncft,config);
+  pft=addpft(cropstand,config->pftpar+npft+cft,year,day,config);
+  phen_variety(pft,vern_date20,cell->coord.lat,day,wtype,npft,ncft,config);
+  bm_inc.carbon=pft->bm_inc.carbon*cropstand->frac;
+  bm_inc.nitrogen=pft->bm_inc.nitrogen*cropstand->frac;
+  if (cell->ml.manure_nr != NULL)
+  {
+    manure = cell->ml.manure_nr[irrigation].crop[cft];
+    cropstand->soil.NH4[0] += manure*param.nmanure_nh4_frac*param.nfert_split_frac;
+    cropstand->soil.litter.item->agsub.leaf.carbon += manure*param.manure_cn*param.nfert_split_frac;
+    cropstand->soil.litter.item->agsub.leaf.nitrogen += manure*(1-param.nmanure_nh4_frac)*param.nfert_split_frac;
+    getoutput(&cell->output,FLUX_ESTABC,config) += manure*param.manure_cn*cropstand->frac*param.nfert_split_frac;
+    cell->balance.flux_estab.carbon += manure*param.manure_cn*cropstand->frac*param.nfert_split_frac;
+    cell->balance.n_influx += manure*cropstand->frac*param.nfert_split_frac;
+    getoutput(&cell->output,NMANURE_AGR,config)+=manure*cropstand->frac*param.nfert_split_frac;
+    /* store remainder of manure for second application */
+    crop = pft->data;
+    crop->nmanure=manure*(1-param.nfert_split_frac);
+  }
+  if (cell->ml.fertilizer_nr != NULL)
+  {
+    fertil = cell->ml.fertilizer_nr[irrigation].crop[cft];
+    cropstand->soil.NO3[0] += fertil*param.nfert_no3_frac*param.nfert_split_frac;
+    cropstand->soil.NH4[0] += fertil*(1 - param.nfert_no3_frac)*param.nfert_split_frac;
+    cell->balance.n_influx += fertil*param.nfert_split_frac*cropstand->frac;
+    getoutput(&cell->output,NFERT_AGR,config)+=fertil*param.nfert_split_frac*cropstand->frac;
+    /* store remainder of fertilizer for second application */
+    crop = pft->data;
+    crop->nfertilizer = fertil*(1-param.nfert_split_frac);
+  }
+
+    /*cropstand->soil.NH4[0] += manure*fmanure_NH4;
+    cropstand->soil.litter.item->agsub.leaf.carbon += manure*param.manure_cn;
+    cropstand->soil.litter.item->agsub.leaf.nitrogen += manure*(1 - fmanure_NH4);
+    cell->output.flux_estab.carbon += manure*param.manure_cn*cropstand->frac;
+    cell->balance.flux_estab.carbon += manure*param.manure_cn*cropstand->frac;
+    cell->balance.n_influx += manure*cropstand->frac;
+
+    if (manure*fmanure_NH4 < param.nfert_split)
+    {
+      if (fertil <= (param.nfert_split - manure*fmanure_NH4))
+      {
+        cropstand->soil.NO3[0] += fertil*split_fert;
+        cropstand->soil.NH4[0] += fertil*(1 - split_fert);
+        cell->balance.n_influx += fertil*cropstand->frac;
+      }
+      else
+      {
+        cropstand->soil.NO3[0] += (param.nfert_split - manure*fmanure_NH4)*split_fert;
+        cropstand->soil.NH4[0] += (param.nfert_split - manure*fmanure_NH4)*(1 - split_fert);
+        cell->balance.n_influx += (param.nfert_split - manure*fmanure_NH4)*cropstand->frac;
+        crop = pft->data;
+        crop->nfertilizer = fertil - (param.nfert_split - manure*fmanure_NH4);
+      }
+    }
+    else
+    {
+      crop = pft->data;
+      crop->nfertilizer = fertil;
+    }*/
+  return bm_inc;
 } /* of 'cultivate' */
 
 /*

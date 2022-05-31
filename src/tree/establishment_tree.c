@@ -15,11 +15,15 @@
 #include "lpj.h"
 #include "tree.h"
 
-Real establishment_tree(Pft *pft,Real UNUSED(fpc_total),
-                        Real fpc_type,int n_est)
+Stocks establishment_tree(Pft *pft,               /**< pointer to tree PFT */
+                          Real UNUSED(fpc_total), /**< total sum of FPCs */
+                          Real fpc_type,          /**< FPC of tree PFTs */
+                          int n_est               /**< number of established tree PFTs */
+                         ) /** \return establishment flux (gC/m2, gN/m2) */
 {
 
-  Real nind_old,acflux_est=0;
+  Real nind_old;
+  Stocks flux_est={0,0};
   Real est_pft, frac_old;
   /* establishment rate for a particular PFT on modelled area
    * basis (for trees, indiv/m2; for grasses, fraction of
@@ -32,14 +36,22 @@ Real establishment_tree(Pft *pft,Real UNUSED(fpc_total),
   Pfttreepar *treepar;
   tree=pft->data;
   treepar=getpftpar(pft,data);
-  if (fpc_type>=FPC_TREE_MAX || n_est<=epsilon)
+
+  if (fpc_type>=param.fpc_tree_max || n_est<=epsilon)
   {
     allometry_tree(pft);
-    return 0.0;
+    return flux_est;
   }
-  if (pft->par->cultivation_type==BIOMASS)
+  if (pft->par->cultivation_type == BIOMASS)
     est_nind=treepar->k_est-pft->nind;
-#if defined IMAGE || defined INCLUDEWP
+  else if(pft->par->cultivation_type == ANNUAL_TREE)
+  {
+    if(pft->stand->cell->ml.manage.k_est[pft->par->id]>0)
+      /*assign country specified k_est*/
+      est_nind=pft->stand->cell->ml.manage.k_est[pft->par->id]-pft->nind;
+    else
+      est_nind=treepar->k_est-pft->nind;
+  }
   else if (pft->par->cultivation_type== WP)
     if (pft->stand->frac_change >= 0.0)
     {
@@ -53,8 +65,7 @@ Real establishment_tree(Pft *pft,Real UNUSED(fpc_total),
       est_nind = (frac_old * treepar->k_est + pft->stand->frac_change * treepar->P_init) / pft->stand->frac;
     }
   else
-    est_nind = treepar->k_est;
-#endif
+    est_nind=treepar->k_est;
   else
     est_nind=treepar->k_est;
   est_pft=est_nind*(1.0-exp(-5.0*(1.0-fpc_type)))*(1.0-fpc_type)/(Real)n_est;
@@ -65,25 +76,40 @@ Real establishment_tree(Pft *pft,Real UNUSED(fpc_total),
 #endif
 
   nind_old=pft->nind;
-  if (pft->nind<epsilon && vegc_sum(pft)<2.0) /* avoid C-balance error by checking vegc */
+  if (pft->nind<epsilon && vegc_sum(pft)<2) /* avoid C-balance error by checking vegc */
     pft->nind=0.0;
   pft->nind+=est_pft;
   /* Account for flux from the atmosphere to new saplings */
-  acflux_est=phys_sum_tree(treepar->sapl)*est_pft;
+  flux_est.carbon=phys_sum_tree(treepar->sapl)*est_pft;
+  flux_est.nitrogen=phys_sum_tree_n(treepar->sapl)*est_pft;
 
   /* Adjust average individual C biomass based on average biomass and density of the new saplings*/
-  tree->ind.leaf=(tree->ind.leaf*nind_old+treepar->sapl.leaf*est_pft)/pft->nind;
-  tree->ind.root=(tree->ind.root*nind_old+treepar->sapl.root*est_pft)/pft->nind;
-  tree->ind.sapwood=(tree->ind.sapwood*nind_old+treepar->sapl.sapwood*est_pft)/pft->nind;
-  tree->ind.heartwood=(tree->ind.heartwood*nind_old+treepar->sapl.heartwood*est_pft)/pft->nind;
-  tree->ind.debt=tree->ind.debt*nind_old/pft->nind;
-  if((pft->par->phenology==SUMMERGREEN || pft->par->phenology==RAINGREEN) && nind_old==0){
-    tree->turn.leaf+=treepar->sapl.leaf*treepar->turnover.leaf;
-    tree->turn_litt.leaf+=treepar->sapl.leaf*treepar->turnover.leaf*pft->nind;
-    pft->stand->soil.litter.ag[pft->litter].trait.leaf+=treepar->sapl.leaf*treepar->turnover.leaf*pft->nind;
-    update_fbd_tree(&pft->stand->soil.litter,pft->par->fuelbulkdensity,(treepar->sapl.leaf*treepar->turnover.leaf*pft->nind),0); //have - before treepar->sapl.leaf deleted
+  tree->ind.leaf.carbon=(tree->ind.leaf.carbon*nind_old+treepar->sapl.leaf.carbon*est_pft)/pft->nind;
+  tree->ind.root.carbon=(tree->ind.root.carbon*nind_old+treepar->sapl.root.carbon*est_pft)/pft->nind;
+  tree->ind.sapwood.carbon=(tree->ind.sapwood.carbon*nind_old+treepar->sapl.sapwood.carbon*est_pft)/pft->nind;
+  tree->ind.heartwood.carbon=(tree->ind.heartwood.carbon*nind_old+treepar->sapl.heartwood.carbon*est_pft)/pft->nind;
+  tree->ind.debt.carbon=tree->ind.debt.carbon*nind_old/pft->nind;
+  tree->excess_carbon*=nind_old/pft->nind;
+#if 0
+  if((pft->par->phenology==SUMMERGREEN || pft->par->phenology==RAINGREEN) && nind_old==0)
+  {
+    tree->turn.leaf.carbon+=treepar->sapl.leaf.carbon*treepar->turnover.leaf;
+    tree->turn_litt.leaf.carbon+=treepar->sapl.leaf.carbon*treepar->turnover.leaf*pft->nind;
+    tree->turn.leaf.nitrogen+=treepar->sapl.leaf.nitrogen*treepar->turnover.leaf;
+    tree->turn_litt.leaf.nitrogen+=treepar->sapl.leaf.nitrogen*treepar->turnover.leaf*pft->nind;
+    pft->stand->soil.litter.ag[pft->litter].trait.leaf.carbon+=treepar->sapl.leaf.carbon*treepar->turnover.leaf*pft->nind;
+    update_fbd_tree(&pft->stand->soil.litter,pft->par->fuelbulkdensity,(treepar->sapl.leaf.carbon*treepar->turnover.leaf*pft->nind),0); //have - before treepar->sapl.leaf deleted
   }
+#endif
+  /* do the same for N */
+  tree->ind.leaf.nitrogen=(tree->ind.leaf.nitrogen*nind_old+treepar->sapl.leaf.nitrogen*est_pft)/pft->nind;
+  tree->ind.root.nitrogen=(tree->ind.root.nitrogen*nind_old+treepar->sapl.root.nitrogen*est_pft)/pft->nind;
+  tree->ind.sapwood.nitrogen=(tree->ind.sapwood.nitrogen*nind_old+treepar->sapl.sapwood.nitrogen*est_pft)/pft->nind;
+  tree->ind.heartwood.nitrogen=(tree->ind.heartwood.nitrogen*nind_old+treepar->sapl.heartwood.nitrogen*est_pft)/pft->nind;
+  tree->ind.debt.nitrogen=tree->ind.debt.nitrogen*nind_old/pft->nind;
   allometry_tree(pft);
   fpc_tree(pft);
-  return acflux_est;
+  pft->establish.carbon+=flux_est.carbon;
+  pft->establish.nitrogen+=flux_est.nitrogen;
+  return flux_est;
 } /* of 'establishment_tree' */

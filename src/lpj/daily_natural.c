@@ -17,28 +17,34 @@
 #include "lpj.h"
 #include "natural.h"
 
-Real daily_natural(Stand *stand, /**< stand pointer */
-                   Real co2,     /**< atmospheric CO2 (ppmv) */
-                   const Dailyclimate *climate, /**< Daily climate values */
-                   int day,    /**< day (1..365) */
-                   Real daylength, /**< length of day (h) */
-                   const Real gp_pft[], /**< pot. canopy conductance for PFTs & CFTs*/
-                   Real gtemp_air,  /**< value of air temperature response function */
-                   Real gtemp_soil, /**< value of soil temperature response function */
-                   Real gp_stand,   /* potential stomata conductance */
-                   Real gp_stand_leafon, /**< pot. canopy conduct.at full leaf cover */
-                   Real eeq,   /**< equilibrium evapotranspiration (mm) */
-                   Real par,   /**< photosynthetic active radiation flux */
-                   Real melt,  /**< melting water (mm) */
-                   int npft,   /**< number of natural PFTs */
-                   int UNUSED(ncft), /**< number of crop PFTs   */
-                   int year,         /**< simulation year (AD) */
-                   Bool UNUSED(intercrop), /**< enabled intercropping */
-                   const Config *config /**< LPJ config */
-                  ) /** \return runoff (mm) */
+Real daily_natural(Stand *stand,                /**< [inout] stand pointer */
+                   Real co2,                    /**< [in] atmospheric CO2 (ppmv) */
+                   const Dailyclimate *climate, /**< [in] Daily climate values */
+                   int day,                     /**< [in] day (1..365) */
+                   int month,                   /**< [in] month (0..11) */
+                   Real daylength,              /**< [in] length of day (h) */
+                   Real gtemp_air,              /**< [in] value of air temperature response function */
+                   Real gtemp_soil,             /**< [in] value of soil temperature response function */
+                   Real eeq,                    /**< [in] equilibrium evapotranspiration (mm) */
+                   Real par,                    /**< [in] photosynthetic active radiation flux  (J/m2/day) */
+                   Real melt,                   /**< [in] melting water (mm/day) */
+                   int npft,                    /**< [in] number of natural PFTs */
+                   int ncft,                    /**< [in] number of crop PFTs   */
+                   int year,                    /**< [in] simulation year (AD) */
+                   Bool UNUSED(intercrop),      /**< [in] enabled intercropping */
+                   Real agrfrac,
+                   const Config *config         /**< [in] LPJ config */
+                  )                             /** \return runoff (mm/day) */
 {
   int p,l;
+#ifdef PERMUTE
+  int *pvec;
+#endif
   Pft *pft;
+  Real *gp_pft;         /**< pot. canopy conductance for PFTs & CFTs (mm/s) */
+  Real gp_stand;               /**< potential stomata conductance  (mm/s) */
+  Real gp_stand_leafon;        /**< pot. canopy conduct.at full leaf cover  (mm/s) */
+  Real fpc_total_stand;
   Output *output;
   Real aet_stand[LASTLAYER];
   Real green_transp[LASTLAYER];
@@ -50,9 +56,10 @@ Real daily_natural(Stand *stand, /**< stand pointer */
   Real npp; /* net primary productivity (gC/m2) */
   Real wdf; /* water deficit fraction */
   Real gc_pft;
+  Real transp;
 
 #ifdef DAILY_ESTABLISHMENT
-  Real acflux_estab = 0;
+  Stocks flux_estab = {0,0};
 #endif
   Soil *soil;
   soil = &stand->soil;
@@ -66,21 +73,42 @@ Real daily_natural(Stand *stand, /**< stand pointer */
   {
     wet=newvec(Real,getnpft(&stand->pftlist)); /* wet from pftlist */
     check(wet);
+#ifdef PERMUTE
+    pvec=newvec(int,getnpft(&stand->pftlist));
+    check(pvec);
+    permute(pvec,getnpft(&stand->pftlist),stand->cell->seed);
+#endif
     for(p=0;p<getnpft(&stand->pftlist);p++)
       wet[p]=0;
   }
   else
+  {
     wet=NULL;
+#ifdef PERMUTE
+    pvec=NULL;
+#endif
+  }
+  gp_pft=newvec(Real,npft+ncft);
+  check(gp_pft);
+  gp_stand=gp_sum(&stand->pftlist,co2,climate->temp,par,daylength,
+                  &gp_stand_leafon,gp_pft,&fpc_total_stand,config);
+
   for(l=0;l<LASTLAYER;l++)
     aet_stand[l]=green_transp[l]=0;
-
+#ifdef PERMUTE
+  for(p=0;p<getnpft(&stand->pftlist);p++)
+#else
   foreachpft(pft,p,&stand->pftlist)
+#endif
   {
+#ifdef PERMUTE
+    pft=getpft(&stand->pftlist,pvec[p]);
+#endif
     /* calculate old or new phenology*/
     if (config->new_phenology)
-      phenology_gsi(pft, climate->temp, climate->swdown, day,climate->isdailytemp);
+      phenology_gsi(pft, climate->temp, climate->swdown, day,climate->isdailytemp,config);
     else
-      leaf_phenology(pft,climate->temp,day,climate->isdailytemp);
+      leaf_phenology(pft,climate->temp,day,climate->isdailytemp,config);
     cover_stand+=pft->fpc*pft->phen;
 
     /* calculate albedo and FAPAR of PFT  already called in update_daily via albedo_stand*/
@@ -90,102 +118,158 @@ Real daily_natural(Stand *stand, /**< stand pointer */
   }
 
   /* soil inflow: infiltration and percolation */
-  runoff+=infil_perc_rain(stand,climate->prec+melt-intercep_stand,&return_flow_b,config->rw_manage);
-
+  runoff+=infil_perc_rain(stand,climate->prec+melt-intercep_stand,&return_flow_b,npft,ncft,config);
+#ifdef PERMUTE
+  for(p=0;p<getnpft(&stand->pftlist);p++)
+#else
   foreachpft(pft,p,&stand->pftlist)
+#endif
   {
 /*
  *  Calculate net assimilation, i.e. gross primary production minus leaf
  *  respiration, including conversion from FPC to grid cell basis.
  *
  */
+#ifdef PERMUTE
+    pft=getpft(&stand->pftlist,pvec[p]);
+#endif
     gpp=water_stressed(pft,aet_stand,gp_stand,gp_stand_leafon,
                        gp_pft[getpftpar(pft,id)],&gc_pft,&rd,
-                       &wet[p],eeq,co2,climate->temp,par,daylength,&wdf,config->permafrost);
+                       &wet[p],eeq,co2,climate->temp,par,daylength,&wdf,npft,ncft,config);
     if(gp_pft[getpftpar(pft,id)]>0.0)
     {
-      output->gcgp_count[pft->par->id]++;
-      output->pft_gcgp[pft->par->id]+=gc_pft/gp_pft[getpftpar(pft,id)];
+      getoutputindex(output,PFT_GCGP_COUNT,pft->par->id,config)++;
+      getoutputindex(output,PFT_GCGP,pft->par->id,config)+=gc_pft/gp_pft[getpftpar(pft,id)];
     }
 
-    npp=npp(pft,gtemp_air,gtemp_soil,gpp-rd);
-    if(config->withdailyoutput && output->daily.cft == ALLNATURAL)
-      output->daily.npp+=npp;
+    npp=npp(pft,gtemp_air,gtemp_soil,gpp-rd-pft->npp_bnf,config->with_nitrogen);
+    pft->npp_bnf=0.0;
+    if(isdailyoutput_stand(config,stand))
+    {
+      if(config->crop_index==ALLSTAND)
+      {
+        getoutput(output,D_NPP,config)+=npp*stand->frac;
+        getoutput(output,D_GPP,config)+=gpp*stand->frac;
+      }
+      else
+      {
+        getoutput(output,D_NPP,config)+=npp;
+        getoutput(output,D_GPP,config)+=gpp;
+      }
+    }
     output->dcflux-=npp*stand->frac;
-    output->mnpp+=npp*stand->frac;
 #if defined IMAGE && defined COUPLED
     if(stand->type->landusetype==NATURAL)
     {
       stand->cell->npp_nat+=npp*stand->frac;
     }
 #endif
-    output->mgpp+=gpp*stand->frac;
-    output->mfapar += pft->fapar * stand->frac * (1.0/(1-stand->cell->lakefrac-stand->cell->ml.reservoirfrac));
+    stand->cell->balance.anpp+=npp*stand->frac;
+    stand->cell->balance.agpp+=gpp*stand->frac;
+    getoutput(output,NPP,config)+=npp*stand->frac;
+    getoutput(output,GPP,config)+=gpp*stand->frac;
+    getoutput(output,FAPAR,config) += pft->fapar * stand->frac * (1.0/(1-stand->cell->lakefrac-stand->cell->ml.reservoirfrac));
+    if (stand->type->landusetype == SETASIDE_RF || stand->type->landusetype == SETASIDE_IR)
+      getoutput(output,NPP_AGR,config) += npp*stand->frac / agrfrac;
 
-    output->mphen_tmin += pft->fpc * pft->phen_gsi.tmin * stand->frac * (1.0/(1-stand->cell->lakefrac-stand->cell->ml.reservoirfrac));
-    output->mphen_tmax += pft->fpc * pft->phen_gsi.tmax * stand->frac * (1.0/(1-stand->cell->lakefrac-stand->cell->ml.reservoirfrac));
-    output->mphen_light += pft->fpc * pft->phen_gsi.light * stand->frac * (1.0/(1-stand->cell->lakefrac-stand->cell->ml.reservoirfrac));
-    output->mphen_water += pft->fpc * pft->phen_gsi.wscal * stand->frac * (1.0/(1-stand->cell->lakefrac-stand->cell->ml.reservoirfrac));
-    output->mwscal += pft->fpc * pft->wscal * stand->frac * (1.0/(1-stand->cell->lakefrac-stand->cell->ml.reservoirfrac));
+    getoutput(output,PHEN_TMIN,config)  += pft->fpc * pft->phen_gsi.tmin * stand->frac * (1.0/(1-stand->cell->lakefrac-stand->cell->ml.reservoirfrac));
+    getoutput(output,PHEN_TMAX,config)  += pft->fpc * pft->phen_gsi.tmax * stand->frac * (1.0/(1-stand->cell->lakefrac-stand->cell->ml.reservoirfrac));
+    getoutput(output,PHEN_LIGHT,config) += pft->fpc * pft->phen_gsi.light * stand->frac * (1.0/(1-stand->cell->lakefrac-stand->cell->ml.reservoirfrac));
+    getoutput(output,PHEN_WATER,config) += pft->fpc * pft->phen_gsi.wscal * stand->frac * (1.0/(1-stand->cell->lakefrac-stand->cell->ml.reservoirfrac));
+    getoutput(output,WSCAL,config)      += pft->fpc * pft->wscal * stand->frac * (1.0/(1-stand->cell->lakefrac-stand->cell->ml.reservoirfrac));
 
 
     if(pft->stand->type->landusetype==NATURAL)
     {
       if(config->pft_output_scaled)
-        output->pft_npp[pft->par->id]+=npp*stand->frac;
+        getoutputindex(output,PFT_NPP,pft->par->id,config)+=npp*stand->frac;
       else
-        output->pft_npp[pft->par->id]+=npp;
-      output->mpft_lai[pft->par->id]+=actual_lai(pft);
+        getoutputindex(output,PFT_NPP,pft->par->id,config)+=npp;
+      getoutputindex(output,PFT_LAI,pft->par->id,config)+=actual_lai(pft);
     }
   } /* of foreachpft */
-
+  free(gp_pft);
   /* soil outflow: evap and transpiration */
   waterbalance(stand,aet_stand,green_transp,&evap,&evap_blue,wet_all,eeq,cover_stand,
                &frac_g_evap,FALSE);
 
-  if(config->withdailyoutput)
-  {
-#ifndef COUPLING_WITH_FMS
-    // when coupling with FMS/POEM, we always need evap output,
-    // regardless whether it is requested in the LPJ output configuration.
-    foreachpft(pft,p,&stand->pftlist)
-    if(pft->par->id==output->daily.cft)
-#endif
-      {
-        output->daily.evap=evap;
-        forrootsoillayer(l)
-          output->daily.trans+=aet_stand[l];
-        output->daily.irrig=0;
-        output->daily.w0=stand->soil.w[1];
-        output->daily.w1=stand->soil.w[2];
-        output->daily.wevap=stand->soil.w[0];
-        output->daily.par=par;
-        output->daily.daylength=daylength;
-        output->daily.pet=eeq*PRIESTLEY_TAYLOR;
-      }
-    output->daily.interc=intercep_stand*stand->frac;
-  }
-
+  transp=0;
   forrootsoillayer(l)
   {
-    output->mtransp+=aet_stand[l]*stand->frac;
-    output->mtransp_b+=(aet_stand[l]-green_transp[l])*stand->frac;
+    transp+=aet_stand[l]*stand->frac;
+    getoutput(output,TRANSP_B,config)+=(aet_stand[l]-green_transp[l])*stand->frac;
   }
+  if(isdailyoutput_stand(config,stand))
+  {
+    if(config->crop_index==ALLSTAND)
+    {
+      getoutput(output,D_EVAP,config)+=evap*stand->frac;
+      getoutput(output,D_TRANS,config)+=transp;
+      getoutput(output,D_INTERC,config)+=intercep_stand*stand->frac;
+      getoutput(output,D_W0,config)+=stand->soil.w[1]*stand->frac;
+      getoutput(output,D_W1,config)+=stand->soil.w[2]*stand->frac;
+      getoutput(output,D_WEVAP,config)+=stand->soil.w[0]*stand->frac;
+      getoutput(output,D_PAR,config)=par;
+      getoutput(output,D_PET,config)=eeq*PRIESTLEY_TAYLOR;
+    }
+    else
+    {
+      getoutput(output,D_EVAP,config)=evap;
+      forrootsoillayer(l)
+        getoutput(output,D_TRANS,config)+=aet_stand[l];
+      getoutput(output,D_IRRIG,config)=0;
+      getoutput(output,D_W0,config)=stand->soil.w[1];
+      getoutput(output,D_W1,config)=stand->soil.w[2];
+      getoutput(output,D_WEVAP,config)=stand->soil.w[0];
+      getoutput(output,D_PAR,config)=par;
+      getoutput(output,D_PET,config)=eeq*PRIESTLEY_TAYLOR;
+      getoutput(output,D_INTERC,config)=intercep_stand*stand->frac;
+      /* only write to daily outputs if there are no values yet from the crop stand in order to record values from setaside stands */
+      if(getoutput(output,D_NH4,config)==0 && getoutput(output,D_NO3,config)==0 && getoutput(output,D_NSOIL_FAST,config)==0 &&
+         (config->crop_irrigation && stand->type->landusetype==SETASIDE_IR) || (!config->crop_irrigation && stand->type->landusetype==SETASIDE_RF))
+        forrootsoillayer(l)
+        {
+          getoutput(output,D_NH4,config)+=stand->soil.NH4[l];
+          getoutput(output,D_NO3,config)+=stand->soil.NO3[l];
+          getoutput(output,D_NSOIL_FAST,config)+=stand->soil.pool[l].fast.nitrogen;
+          getoutput(output,D_NSOIL_SLOW,config)+=stand->soil.pool[l].slow.nitrogen;
+        }
+    }
 
-  output->minterc+=intercep_stand*stand->frac;
-  output->mevap+=evap*stand->frac;
-  output->mevap_b+=evap_blue*stand->frac;
-  output->mreturn_flow_b+=return_flow_b*stand->frac;
+  }
+  getoutput(output,TRANSP,config)+=transp;
+  stand->cell->balance.atransp+=transp;
+  getoutput(output,INTERC,config)+=intercep_stand*stand->frac;
+  getoutput(output,EVAP,config)+=evap*stand->frac;
+  stand->cell->balance.aevap+=evap*stand->frac;
+  stand->cell->balance.ainterc+=intercep_stand*stand->frac;
+  getoutput(output,EVAP_B,config)+=evap_blue*stand->frac;
+  getoutput(output,RETURN_FLOW_B,config)+=return_flow_b*stand->frac;
+#if defined(IMAGE) && defined(COUPLED)
+  if(stand->cell->ml.image_data!=NULL)
+    stand->cell->ml.image_data->mevapotr[month] += transp + (evap + intercep_stand)*stand->frac;
+#endif
+  if(stand->type->landusetype==NATURAL)
+    foreachpft(pft, p, &stand->pftlist)
+    {
+      getoutputindex(output,NV_LAI,getpftpar(pft,id),config)+=actual_lai(pft);
+    }
 
-  #ifdef DAILY_ESTABLISHMENT
+#ifdef DAILY_ESTABLISHMENT
   if (year==911 && day==365) /* TODO: replace the hardcoded value 911 with a more indicative flag like first_year_of_spinup */
-    acflux_estab=establishmentpft(stand,config->pftpar,npft,config->ntypes,stand->cell->balance.aprec,year);
+    flux_estab=establishmentpft(stand,config->pftpar,npft,config->ntypes,stand->cell->balance.aprec,year);
   else if (year>911)
-    acflux_estab=establishmentpft(stand,config->pftpar,npft,config->ntypes,stand->cell->balance.aprec,year);
-  output->flux_estab+=acflux_estab*stand->frac;
-  output->dcflux-=acflux_estab*stand->frac;
+    flux_estab=establishmentpft(stand,config->pftpar,npft,config->ntypes,stand->cell->balance.aprec,year);
+  getoutput(output,FLUX_ESTABC,config)+=flux_estab.carbon*stand->frac;
+  getoutput(output,FLUX_ESTABN,config)+=flux_estab.nitrogen*stand->frac;
+  stand->cell->balance.flux_estab.carbon+=flux_estab.carbon*stand->frac;
+  stand->cell->balance.flux_estab.nitrogen+=flux_estab.nitrogen*stand->frac;
+  output->dcflux-=flux_estab.carbon*stand->frac;
 #endif
 
   free(wet);
+#ifdef PERMUTE
+  free(pvec);
+#endif
   return runoff;
 } /* of 'daily_natural' */

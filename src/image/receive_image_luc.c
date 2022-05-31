@@ -74,13 +74,13 @@ static void reducelandfrac(Cell *cell,Real cropsum,int ncft)
         cell->ml.landfrac[i].grass[j]=0;
       }
   }
-}
+} /* of 'reducelandfrac' */
 
-Bool receive_image_luc(Cell *grid,          /* LPJ grid */
-                       int npft,            /* number of natural PFTs */
-                       int ncft,            /* number of crop PFTs */
-                       const Config *config /* Grid configuration */
-                      )                     /* returns TRUE on error */
+Bool receive_image_luc(Cell *grid,          /**< LPJ grid */
+                       int npft,            /**< number of natural PFTs */
+                       int ncft,            /**< number of crop PFTs */
+                       const Config *config /**< Grid configuration */
+                      )                     /** \return TRUE on error */
 {
   int i;
   Real cropsum;
@@ -195,8 +195,8 @@ Bool receive_image_luc(Cell *grid,          /* LPJ grid */
 #endif
   if (readfloat_socket(config->in, image_data, config->ngridcell))
   {
-     free(image_data);
-     return TRUE;
+    free(image_data);
+    return TRUE;
   }
 
 #ifdef DEBUG_IMAGE
@@ -205,21 +205,21 @@ Bool receive_image_luc(Cell *grid,          /* LPJ grid */
 #endif
   for (i = 0; i<config->ngridcell; i++)
   {
-     if (!grid[i].skip)
-     {
-        grid[i].ml.image_data->totwatcons = (Real)image_data[i];
-        grid[i].discharge.wateruse = grid[i].ml.image_data->totwatcons;//HB->check of er nog unit conversie nodig is.
-        grid[i].discharge.wateruse = grid[i].discharge.wateruse * 1000;
-        grid[i].output.waterusecons = grid[i].discharge.wateruse;
-     }
+    if (!grid[i].skip)
+    {
+      grid[i].ml.image_data->totwatcons = (Real)image_data[i];
+      grid[i].discharge.wateruse = grid[i].ml.image_data->totwatcons;//HB->check of er nog unit conversie nodig is.
+      grid[i].discharge.wateruse = grid[i].discharge.wateruse * 1000;
+      getoutput(&grid[i].output,WATERUSECONS,config) = grid[i].discharge.wateruse*NDAYYEAR;
+    }
 #ifdef DEBUG_IMAGE
-     if (grid[i].coord.lon>5.0 && grid[i].coord.lon<5.5 && grid[i].coord.lat>48.0 && grid[i].coord.lat<48.5)/*(i==1 || i==67032)*/
-     {
-        printf("cell %d %g/%g\n", i, grid[i].coord.lon, grid[i].coord.lat);
-        fflush(stdout);
-        printf("th[%d]:%g %g\n", i, grid[i].ml.image_data->totwatcons, image_data[i]);
-        fflush(stdout);
-     }
+    if (grid[i].coord.lon>5.0 && grid[i].coord.lon<5.5 && grid[i].coord.lat>48.0 && grid[i].coord.lat<48.5)/*(i==1 || i==67032)*/
+    {
+      printf("cell %d %g/%g\n", i, grid[i].coord.lon, grid[i].coord.lat);
+      fflush(stdout);
+      printf("th[%d]:%g %g\n", i, grid[i].ml.image_data->totwatcons, image_data[i]);
+      fflush(stdout);
+    }
 #endif
   }
   free(image_data);
@@ -233,8 +233,8 @@ Bool receive_image_luc(Cell *grid,          /* LPJ grid */
 #endif
   if (readfloat_socket(config->in, image_data, config->ngridcell))
   {
-     free(image_data);
-     return TRUE;
+    free(image_data);
+    return TRUE;
   }
 
 #ifdef DEBUG_IMAGE
@@ -243,21 +243,21 @@ Bool receive_image_luc(Cell *grid,          /* LPJ grid */
 #endif
   for (i = 0; i<config->ngridcell; i++)
   {
-     if (!grid[i].skip)
-     {
-        grid[i].ml.image_data->totwatdem = (Real)image_data[i];
-        grid[i].discharge.wateruse_wd = grid[i].ml.image_data->totwatdem;
-        grid[i].discharge.wateruse_wd = grid[i].discharge.wateruse_wd * 1000;
-        grid[i].output.waterusedem = grid[i].discharge.wateruse_wd;
-     }
+    if (!grid[i].skip)
+    {
+      grid[i].ml.image_data->totwatdem = (Real)image_data[i];
+      grid[i].discharge.wateruse_wd = grid[i].ml.image_data->totwatdem;
+      grid[i].discharge.wateruse_wd = grid[i].discharge.wateruse_wd * 1000;
+      getoutput(&grid[i].output,WATERUSEDEM,config) = grid[i].discharge.wateruse_wd*NDAYYEAR;
+    }
 #ifdef DEBUG_IMAGE
-     if (grid[i].coord.lon>5.0 && grid[i].coord.lon<5.5 && grid[i].coord.lat>48.0 && grid[i].coord.lat<48.5)/*(i==1 || i==67032)*/
-     {
-        printf("cell %d %g/%g\n", i, grid[i].coord.lon, grid[i].coord.lat);
-        fflush(stdout);
-        printf("th[%d]:%g %g\n", i, grid[i].ml.image_data->totwatdem, image_data[i]);
-        fflush(stdout);
-     }
+    if (grid[i].coord.lon>5.0 && grid[i].coord.lon<5.5 && grid[i].coord.lat>48.0 && grid[i].coord.lat<48.5)/*(i==1 || i==67032)*/
+    {
+      printf("cell %d %g/%g\n", i, grid[i].coord.lon, grid[i].coord.lat);
+      fflush(stdout);
+      printf("th[%d]:%g %g\n", i, grid[i].ml.image_data->totwatdem, image_data[i]);
+      fflush(stdout);
+    }
 #endif
   }
   free(image_data);
@@ -303,27 +303,30 @@ Bool receive_image_luc(Cell *grid,          /* LPJ grid */
 #endif
   for(i=0;i<config->ngridcell;i++)
   {
-    if(!grid[i].skip){
+    if(!grid[i].skip)
+    {
       grid[i].ml.image_data->takeaway[0]=(Real)image_takeaway[i].stems;
       grid[i].ml.image_data->takeaway[1]=(Real)image_takeaway[i].branches;
       grid[i].ml.image_data->takeaway[2]=(Real)image_takeaway[i].leaves;
       grid[i].ml.image_data->takeaway[3]=(Real)image_takeaway[i].roots;
 
 #ifdef DEBUG_IMAGE
-      if(i==3794 || i==4696 || i==850 || i==4582){
-          printf("takeaway cell %d %g/%g/%g/%g\n",i,grid[i].ml.image_data->takeaway[0],grid[i].ml.image_data->takeaway[1],grid[i].ml.image_data->takeaway[2],grid[i].ml.image_data->takeaway[3]);
-            fflush(stdout);}	
+      if(i==3794 || i==4696 || i==850 || i==4582)
+      {
+        printf("takeaway cell %d %g/%g/%g/%g\n",i,grid[i].ml.image_data->takeaway[0],grid[i].ml.image_data->takeaway[1],grid[i].ml.image_data->takeaway[2],grid[i].ml.image_data->takeaway[3]);
+        fflush(stdout);
+      }
 #endif
     }
 #ifdef DEBUG_IMAGE_CELL
-   if(image_takeaway[i].stems>0)
-	{
+    if(image_takeaway[i].stems>0)
+    {
       printf("cell %d %g/%g\n",i,grid[i].coord.lon,grid[i].coord.lat);
       fflush(stdout);
       printf("takeaway: th[%d]:%g %g\n",i,grid[i].ml.image_data->takeaway[0],image_takeaway[i].stems);
       fflush(stdout);
-      for (j=0;j<4;j++){
-         printf("takeaway2:%d %.6g\n", i, grid[i].ml.image_data->takeaway[j]);}
+      for (j=0;j<4;j++)
+        printf("takeaway2:%d %.6g\n", i, grid[i].ml.image_data->takeaway[j]);
     }
 #endif
   }
@@ -510,29 +513,29 @@ Bool receive_image_luc(Cell *grid,          /* LPJ grid */
       fflush(stdout);
 #endif
       /* 0 wheat rainfed */
-      grid[i].ml.landfrac[0].crop[TEMPERATE_CEREALS-npft]= (Real)image_landuse[i].wheat_rf + (Real)image_landuse[i].oth_temp_cereals_rf;
+      grid[i].ml.landfrac[0].crop[TEMPERATE_CEREALS]= (Real)image_landuse[i].wheat_rf + (Real)image_landuse[i].oth_temp_cereals_rf;
       /* 1 rice rainfed */
-      grid[i].ml.landfrac[0].crop[RICE-npft]=(Real)image_landuse[i].rice_rf;
+      grid[i].ml.landfrac[0].crop[RICE]=(Real)image_landuse[i].rice_rf;
       /* 2 maize rainfed = rf maize + rf grains */
-      grid[i].ml.landfrac[0].crop[MAIZE - npft] = (Real)image_landuse[i].maize_rf + (Real)image_landuse[i].grains_rf;
+      grid[i].ml.landfrac[0].crop[MAIZE] = (Real)image_landuse[i].maize_rf + (Real)image_landuse[i].grains_rf;
       /* 3 tropical cereals rainfed*/
-      grid[i].ml.landfrac[0].crop[TROPICAL_CEREALS-npft]= (Real)image_landuse[i].trop_cereals_rf;;
+      grid[i].ml.landfrac[0].crop[TROPICAL_CEREALS]= (Real)image_landuse[i].trop_cereals_rf;;
       /* 4 pulses rainfed */
-      grid[i].ml.landfrac[0].crop[PULSES-npft]=(Real)image_landuse[i].pulses_rf;
+      grid[i].ml.landfrac[0].crop[PULSES]=(Real)image_landuse[i].pulses_rf;
       /* 5 temperate roots rainfed = temp_roots_tub_rf + 0.5 * sugercrops_bf */
-      grid[i].ml.landfrac[0].crop[TEMPERATE_ROOTS-npft]= (Real)image_landuse[i].temp_roots_tub_rf + (Real)image_landuse[i].sugercrops_bf * 0.5;
+      grid[i].ml.landfrac[0].crop[TEMPERATE_ROOTS]= (Real)image_landuse[i].temp_roots_tub_rf + (Real)image_landuse[i].sugercrops_bf * 0.5;
       /* 6 tropical roots rainfed */
-      grid[i].ml.landfrac[0].crop[TROPICAL_ROOTS-npft]= (Real)image_landuse[i].trop_roots_tub_rf;
+      grid[i].ml.landfrac[0].crop[TROPICAL_ROOTS]= (Real)image_landuse[i].trop_roots_tub_rf;
       /* 7 sunflower rainfed*/
-      grid[i].ml.landfrac[0].crop[OIL_CROPS_SUNFLOWER-npft]= (Real)image_landuse[i].temp_oilcrops_rf * 0.5;
+      grid[i].ml.landfrac[0].crop[OIL_CROPS_SUNFLOWER]= (Real)image_landuse[i].temp_oilcrops_rf * 0.5;
       /* 8 soybean  rainfed*/
-      grid[i].ml.landfrac[0].crop[OIL_CROPS_SOYBEAN - npft] = (Real)image_landuse[i].soybeans_rf;
+      grid[i].ml.landfrac[0].crop[OIL_CROPS_SOYBEAN] = (Real)image_landuse[i].soybeans_rf;
       /* 9 groundnut  rainfed*/
-      grid[i].ml.landfrac[0].crop[OIL_CROPS_GROUNDNUT - npft] = (Real)image_landuse[i].trop_oilcrops_rf + (Real)image_landuse[i].oilcrops_bf * 0.5;
+      grid[i].ml.landfrac[0].crop[OIL_CROPS_GROUNDNUT] = (Real)image_landuse[i].trop_oilcrops_rf + (Real)image_landuse[i].oilcrops_bf * 0.5;
       /* 10 rapeseed  rainfed*/
-      grid[i].ml.landfrac[0].crop[OIL_CROPS_RAPESEED-npft]= (Real)image_landuse[i].temp_oilcrops_rf * 0.5 + (Real)image_landuse[i].oilcrops_bf *0.5;
+      grid[i].ml.landfrac[0].crop[OIL_CROPS_RAPESEED]= (Real)image_landuse[i].temp_oilcrops_rf * 0.5 + (Real)image_landuse[i].oilcrops_bf *0.5;
       /* 11 suger cane rainfed */
-      grid[i].ml.landfrac[0].crop[SUGARCANE-npft]= (Real)image_landuse[i].suger_cain_rf + (Real)image_landuse[i].sugercrops_bf * 0.5;
+      grid[i].ml.landfrac[0].crop[SUGARCANE]= (Real)image_landuse[i].suger_cain_rf + (Real)image_landuse[i].sugercrops_bf * 0.5;
       /* 12 grass(0) = others rainfed  */
       grid[i].ml.landfrac[0].grass[0]= (Real)image_landuse[i].oil_palmfruit_rf + (Real)image_landuse[i].veg_fruits_rf + (Real)image_landuse[i].oth_non_rf + (Real)image_landuse[i].plant_fibres_rf;
       /* 13 grass(1) = grassland managed rainfed */
@@ -550,41 +553,41 @@ Bool receive_image_luc(Cell *grid,          /* LPJ grid */
 #endif
       /* irrigated crops */
       /* 17 wheat irrigated */
-      grid[i].ml.landfrac[1].crop[TEMPERATE_CEREALS-npft]= (Real)image_landuse[i].wheat_ir + (Real)image_landuse[i].oth_temp_cereals_ir;
-      grid[i].ml.irrig_system->crop[TEMPERATE_CEREALS - npft] = grid[i].ml.manage.par->default_irrig_system;
+      grid[i].ml.landfrac[1].crop[TEMPERATE_CEREALS]= (Real)image_landuse[i].wheat_ir + (Real)image_landuse[i].oth_temp_cereals_ir;
+      grid[i].ml.irrig_system->crop[TEMPERATE_CEREALS] = grid[i].ml.manage.par->default_irrig_system;
       /* 18 rice irrigated */
-      grid[i].ml.landfrac[1].crop[RICE-npft]=(Real)image_landuse[i].rice_ir;
-      grid[i].ml.irrig_system->crop[RICE - npft] = grid[i].ml.manage.par->default_irrig_system;
+      grid[i].ml.landfrac[1].crop[RICE]=(Real)image_landuse[i].rice_ir;
+      grid[i].ml.irrig_system->crop[RICE] = grid[i].ml.manage.par->default_irrig_system;
       /* 19 maize irrigated = irr maize */
-      grid[i].ml.landfrac[1].crop[MAIZE-npft]=(Real)image_landuse[i].maize_ir;
-      grid[i].ml.irrig_system->crop[MAIZE - npft] = grid[i].ml.manage.par->default_irrig_system;
+      grid[i].ml.landfrac[1].crop[MAIZE]=(Real)image_landuse[i].maize_ir;
+      grid[i].ml.irrig_system->crop[MAIZE] = grid[i].ml.manage.par->default_irrig_system;
       /* 20 millet irrigated */
-      grid[i].ml.landfrac[1].crop[TROPICAL_CEREALS-npft]= (Real)image_landuse[i].trop_cereals_ir;
-      grid[i].ml.irrig_system->crop[TROPICAL_CEREALS - npft] = grid[i].ml.manage.par->default_irrig_system;
+      grid[i].ml.landfrac[1].crop[TROPICAL_CEREALS]= (Real)image_landuse[i].trop_cereals_ir;
+      grid[i].ml.irrig_system->crop[TROPICAL_CEREALS] = grid[i].ml.manage.par->default_irrig_system;
       /* 21 peas irrigated */
-      grid[i].ml.landfrac[1].crop[PULSES-npft]= (Real)image_landuse[i].pulses_ir;
-      grid[i].ml.irrig_system->crop[PULSES - npft] = grid[i].ml.manage.par->default_irrig_system;
+      grid[i].ml.landfrac[1].crop[PULSES]= (Real)image_landuse[i].pulses_ir;
+      grid[i].ml.irrig_system->crop[PULSES] = grid[i].ml.manage.par->default_irrig_system;
       /* 22 suger beet irrigated */
-      grid[i].ml.landfrac[1].crop[TEMPERATE_ROOTS-npft]= (Real)image_landuse[i].temp_roots_tub_ir;
-      grid[i].ml.irrig_system->crop[TEMPERATE_ROOTS - npft] = grid[i].ml.manage.par->default_irrig_system;
+      grid[i].ml.landfrac[1].crop[TEMPERATE_ROOTS]= (Real)image_landuse[i].temp_roots_tub_ir;
+      grid[i].ml.irrig_system->crop[TEMPERATE_ROOTS] = grid[i].ml.manage.par->default_irrig_system;
       /* 23 cassava */
-      grid[i].ml.landfrac[1].crop[TROPICAL_ROOTS-npft]= (Real)image_landuse[i].trop_roots_tub_ir;
-      grid[i].ml.irrig_system->crop[TROPICAL_ROOTS - npft] = grid[i].ml.manage.par->default_irrig_system;
+      grid[i].ml.landfrac[1].crop[TROPICAL_ROOTS]= (Real)image_landuse[i].trop_roots_tub_ir;
+      grid[i].ml.irrig_system->crop[TROPICAL_ROOTS] = grid[i].ml.manage.par->default_irrig_system;
       /* 24 sunflower  irrigated*/
-      grid[i].ml.landfrac[1].crop[OIL_CROPS_SUNFLOWER-npft]= (Real)image_landuse[i].temp_oilcrops_ir * 0.5;
-      grid[i].ml.irrig_system->crop[OIL_CROPS_SUNFLOWER - npft] = grid[i].ml.manage.par->default_irrig_system;
+      grid[i].ml.landfrac[1].crop[OIL_CROPS_SUNFLOWER]= (Real)image_landuse[i].temp_oilcrops_ir * 0.5;
+      grid[i].ml.irrig_system->crop[OIL_CROPS_SUNFLOWER] = grid[i].ml.manage.par->default_irrig_system;
       /* 25 soybean irrigated  */
-      grid[i].ml.landfrac[1].crop[OIL_CROPS_GROUNDNUT-npft]= (Real)image_landuse[i].soybeans_ir;
-      grid[i].ml.irrig_system->crop[OIL_CROPS_GROUNDNUT - npft] = grid[i].ml.manage.par->default_irrig_system;
+      grid[i].ml.landfrac[1].crop[OIL_CROPS_GROUNDNUT]= (Real)image_landuse[i].soybeans_ir;
+      grid[i].ml.irrig_system->crop[OIL_CROPS_GROUNDNUT] = grid[i].ml.manage.par->default_irrig_system;
       /* 26 groundnut irrigated  */
-      grid[i].ml.landfrac[1].crop[OIL_CROPS_RAPESEED-npft]= (Real)image_landuse[i].trop_oilcrops_ir;
-      grid[i].ml.irrig_system->crop[OIL_CROPS_RAPESEED - npft] = grid[i].ml.manage.par->default_irrig_system;
+      grid[i].ml.landfrac[1].crop[OIL_CROPS_RAPESEED]= (Real)image_landuse[i].trop_oilcrops_ir;
+      grid[i].ml.irrig_system->crop[OIL_CROPS_RAPESEED] = grid[i].ml.manage.par->default_irrig_system;
       /* 27 rapeseed irrigated  */
-      grid[i].ml.landfrac[1].crop[OIL_CROPS_SOYBEAN - npft] = (Real)image_landuse[i].temp_oilcrops_ir * 0.5;
-      grid[i].ml.irrig_system->crop[OIL_CROPS_SOYBEAN - npft] = grid[i].ml.manage.par->default_irrig_system;
+      grid[i].ml.landfrac[1].crop[OIL_CROPS_SOYBEAN] = (Real)image_landuse[i].temp_oilcrops_ir * 0.5;
+      grid[i].ml.irrig_system->crop[OIL_CROPS_SOYBEAN] = grid[i].ml.manage.par->default_irrig_system;
       /* 28 suger cane irrigation */
-      grid[i].ml.landfrac[1].crop[SUGARCANE-npft]= (Real)image_landuse[i].suger_cain_ir;
-      grid[i].ml.irrig_system->crop[SUGARCANE - npft] = grid[i].ml.manage.par->default_irrig_system;
+      grid[i].ml.landfrac[1].crop[SUGARCANE]= (Real)image_landuse[i].suger_cain_ir;
+      grid[i].ml.irrig_system->crop[SUGARCANE] = grid[i].ml.manage.par->default_irrig_system;
       /* 29 grass(0) = ir others irrigated  */
       grid[i].ml.landfrac[1].grass[0]= (Real)image_landuse[i].oil_palmfruit_ir + (Real)image_landuse[i].veg_fruits_ir + (Real)image_landuse[i].oth_non_ir + (Real)image_landuse[i].plant_fibres_ir;
       grid[i].ml.irrig_system->grass[0] = grid[i].ml.manage.par->default_irrig_system;
@@ -621,7 +624,7 @@ Bool receive_image_luc(Cell *grid,          /* LPJ grid */
       printf("done with reducing timber in %d, now reducing too large fractions\n",i);
       fflush(stdout);
 #endif
-      cropsum=landfrac_sum(grid[i].ml.landfrac,ncft,FALSE)+landfrac_sum(grid[i].ml.landfrac,ncft,TRUE);
+      cropsum=landfrac_sum(grid[i].ml.landfrac,ncft,config->nagtree,FALSE)+landfrac_sum(grid[i].ml.landfrac,ncft,config->nagtree,TRUE);
       if(cropsum>(1.0+epsilon))
       {
 #ifdef SAFE

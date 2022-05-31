@@ -40,7 +40,7 @@ Productinit *initproductinit(const Config *config)
   if((productinit->file=openinputfile(&header,&productinit->swap,
                                       &config->prodpool_init_filename,
                                       headername,
-                                      &version,&offset,config))==NULL)
+                                      &version,&offset,TRUE,config))==NULL)
   {
     free(productinit);
     return NULL;

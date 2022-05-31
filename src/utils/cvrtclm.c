@@ -13,9 +13,8 @@
 /**************************************************************************************/
 
 #include "lpj.h"
-#include <sys/stat.h>
 
-#define USAGE "Usage: %s [-scale s] [-type {byte|short|int|float|double}] [-cellsize size] infile outfile\n"
+#define USAGE "Usage: %s [-4] [-scale s] [-type {byte|short|int|float|double}] [-timestep n] [-cellsize size] [-swapnstep] infile outfile\n"
 
 #define BUFSIZE (1024*1024) /* size of read buffer */
 
@@ -23,36 +22,39 @@ int main(int argc,char **argv)
 {
   FILE *infile,*outfile;
   Header header;
-  int version;
+  int version,new_version,timestep;
   String id;
   const char *progname;
   char *endptr;
-  int index;
+  int iarg,*index;
   size_t i,size;
-  struct stat filestat;
+  long long filesize;
   void *buffer;
   Type datatype;
   float scalar,cellsize;
-  Bool swap;
+  Bool swap,swapnstep;
   /* set default values */
   datatype=LPJ_SHORT;
   scalar=1;
   cellsize=0.5;
+  new_version=3;
+  swapnstep=FALSE;
+  timestep=1;
   progname=strippath(argv[0]);
-  for(index=1;index<argc;index++)
-    if(argv[index][0]=='-')
+  for(iarg=1;iarg<argc;iarg++)
+    if(argv[iarg][0]=='-')
     {
-      if(!strcmp(argv[index],"-scale"))
+      if(!strcmp(argv[iarg],"-scale"))
       {
-        if(index==argc-1)
+        if(iarg==argc-1)
         {
           fprintf(stderr,"Argument missing for option '-scale'.\n");
           return EXIT_FAILURE;
         }
-        scalar=(float)strtod(argv[++index],&endptr);
+        scalar=(float)strtod(argv[++iarg],&endptr);
         if(*endptr!='\0')
         {
-          fprintf(stderr,"Invalid number '%s' for option '-scale'.\n",argv[index]);
+          fprintf(stderr,"Invalid number '%s' for option '-scale'.\n",argv[iarg]);
           return EXIT_FAILURE;
         }
         if(scalar<=0)
@@ -61,33 +63,37 @@ int main(int argc,char **argv)
           return EXIT_FAILURE;
         }
       }
-      else if(!strcmp(argv[index],"-type"))
+      else if(!strcmp(argv[iarg],"-4"))
+        new_version=4;
+      else if(!strcmp(argv[iarg],"-swapnstep"))
+        swapnstep=TRUE;
+      else if(!strcmp(argv[iarg],"-type"))
       {
-        if(index==argc-1)
+        if(iarg==argc-1)
         {
           fprintf(stderr,"Argument missing for option '-type'.\n");
           return EXIT_FAILURE;
         }
-        i=findstr(argv[++index],typenames,5);
+        i=findstr(argv[++iarg],typenames,5);
         if(i==NOT_FOUND)
         {
           fprintf(stderr,"Invalid argument '%s' for option '-type'.\n"
-                  USAGE,argv[index],progname);
+                  USAGE,argv[iarg],progname);
           return EXIT_FAILURE;
         }
         datatype=(Type)i;
       }
-      else if(!strcmp(argv[index],"-cellsize"))
+      else if(!strcmp(argv[iarg],"-cellsize"))
       {
-        if(index==argc-1)
+        if(iarg==argc-1)
         {
           fprintf(stderr,"Argument missing for option '-cellsize'.\n");
           return EXIT_FAILURE;
         }
-        cellsize=(float)strtod(argv[++index],&endptr);
+        cellsize=(float)strtod(argv[++iarg],&endptr);
         if(*endptr!='\0')
         {
-          fprintf(stderr,"Invalid number '%s' for option '-cellsize'.\n",argv[index]);
+          fprintf(stderr,"Invalid number '%s' for option '-cellsize'.\n",argv[iarg]);
           return EXIT_FAILURE;
         }
         if(cellsize<=0)
@@ -96,36 +102,55 @@ int main(int argc,char **argv)
           return EXIT_FAILURE;
         }
       }
+      else if(!strcmp(argv[iarg],"-timestep"))
+      {
+        if(iarg==argc-1)
+        {
+          fprintf(stderr,"Argument missing for option '-timestep'.\n");
+          return EXIT_FAILURE;
+        }
+        timestep=(float)strtol(argv[++iarg],&endptr,10);
+        if(*endptr!='\0')
+        {
+          fprintf(stderr,"Invalid number '%s' for option '-timestep'.\n",argv[iarg]);
+          return EXIT_FAILURE;
+        }
+        if(timestep<=0)
+        {
+          fputs("Time step less than or equal to zero.\n",stderr);
+          return EXIT_FAILURE;
+        }
+      }
       else
       {
         fprintf(stderr,"Invalid option '%s'.\n"
-                USAGE,argv[index],progname);
+                USAGE,argv[iarg],progname);
         return EXIT_FAILURE;
       }
     }
     else
       break;
-  if(argc<index+2)
+  if(argc<iarg+2)
   {
     fprintf(stderr,"Argument(s) missing.\n"
             USAGE,progname);
     return EXIT_FAILURE;
   }
-  if(!strcmp(argv[index],argv[index+1]))
+  if(!strcmp(argv[iarg],argv[iarg+1]))
   {
     fputs("Error: source and destination filename are the same.\n",stderr);
     return EXIT_FAILURE;
   }
-  infile=fopen(argv[index],"rb");
+  infile=fopen(argv[iarg],"rb");
   if(infile==NULL)
   {
-    fprintf(stderr,"Error opening '%s': %s.\n",argv[index],strerror(errno));
+    fprintf(stderr,"Error opening '%s': %s.\n",argv[iarg],strerror(errno));
     return EXIT_FAILURE;
   }
   version=READ_VERSION;
-  if(freadanyheader(infile,&header,&swap,id,&version))
+  if(freadanyheader(infile,&header,&swap,id,&version,TRUE))
   {
-    fprintf(stderr,"Error reading header in '%s'.\n",argv[index]);
+    fprintf(stderr,"Error reading header in '%s'.\n",argv[iarg]);
     return EXIT_FAILURE;
   }
   if(version==1)
@@ -135,27 +160,50 @@ int main(int argc,char **argv)
   }
   if(version<3)
     header.datatype=datatype;
-  fstat(fileno(infile),&filestat);
-  if(filestat.st_size!=(long long)header.ncell*header.nbands*header.nyear*typesizes[header.datatype]+headersize(id,version))
+  if(new_version==4 && swapnstep)
   {
-     fprintf(stderr,"Error: File size of '%s' is not multiple of nyear*nbands*ncell.\n",argv[index]);
+     header.nstep=header.nbands;
+     header.nbands=1;
+  }
+  header.timestep=timestep;
+  filesize=getfilesizep(infile);
+  if((header.order==CELLINDEX && filesize!=sizeof(int)*header.ncell+(long long)header.ncell*header.nbands*header.nstep*header.nyear*typesizes[header.datatype]+headersize(id,version)) ||
+     (header.order!=CELLINDEX && filesize!=(long long)header.ncell*header.nbands*header.nstep*header.nyear*typesizes[header.datatype]+headersize(id,version)))
+  {
+     fprintf(stderr,"Error: File size of '%s' does not match nyear*nbands*nstep*ncell.\n",argv[iarg]);
      fclose(infile);
      return EXIT_FAILURE;
   }
-  outfile=fopen(argv[index+1],"wb");
+  outfile=fopen(argv[iarg+1],"wb");
   if(outfile==NULL)
   {
-    fprintf(stderr,"Error creating '%s': %s.\n",argv[index+1],strerror(errno));
+    fprintf(stderr,"Error creating '%s': %s.\n",argv[iarg+1],strerror(errno));
     return EXIT_FAILURE;
   }
-  fwriteheader(outfile,&header,id,3);
+  fwriteheader(outfile,&header,id,new_version);
   buffer=malloc(BUFSIZE);
   if(buffer==NULL)
   {
     printallocerr("buffer");
     return EXIT_FAILURE;
   }
-  size=filestat.st_size-headersize(id,version);
+  size=filesize-headersize(id,version);
+  if(header.order==CELLINDEX)
+  {
+    index=newvec(int,header.ncell);
+    if(index==NULL)
+    {
+      printallocerr("index");
+      return EXIT_FAILURE;
+    }
+    size-=sizeof(int)*header.ncell;
+    freadint(index,header.ncell,swap,infile);
+    if(fwrite(index,sizeof(int),header.ncell,outfile)!=header.ncell)
+    {
+      fprintf(stderr,"Error writing data in '%s'.\n",argv[iarg+1]);
+      return EXIT_FAILURE;
+    }
+  }
   for(i=0;i<size / BUFSIZE;i++)
   {
     switch(typesizes[header.datatype])
@@ -174,7 +222,7 @@ int main(int argc,char **argv)
     }
     if(fwrite(buffer,1,BUFSIZE,outfile)!=BUFSIZE)
     {
-      fprintf(stderr,"Error writing data in '%s'.\n",argv[index+1]);
+      fprintf(stderr,"Error writing data in '%s'.\n",argv[iarg+1]);
       return EXIT_FAILURE;
     }
   }
@@ -196,7 +244,7 @@ int main(int argc,char **argv)
     }
     if(fwrite(buffer,1,size % BUFSIZE,outfile)!=size % BUFSIZE)
     {
-      fprintf(stderr,"Error writing data in '%s'.\n",argv[index+1]);
+      fprintf(stderr,"Error writing data in '%s'.\n",argv[iarg+1]);
       return EXIT_FAILURE;
     }
   }

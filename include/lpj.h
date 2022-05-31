@@ -28,7 +28,7 @@
 #ifndef LPJ_H /* Already included? */
 #define LPJ_H
 
-#define LPJ_VERSION  "4.0.004"
+#define LPJ_VERSION  "5.3.001"
 
 /* Necessary header files */
 
@@ -45,14 +45,19 @@
 #include <mpi.h> /* Include MPI header for parallel program */
 #endif
 
+/* Definition of datatypes */
+
 typedef struct cell Cell;   /* forward declaration of cell */
 typedef struct stand Stand; /* forward declaration of stand */
+typedef struct config Config; /* forward declaration of stand */
 
 /*  Defined header files for LPJ */
 
+#include "conf.h"
 #include "list.h"
 #include "types.h"
 #include "swap.h"
+#include "numeric.h"
 #include "channel.h"
 #include "queue.h"
 #include "pnet.h"
@@ -63,26 +68,22 @@ typedef struct stand Stand; /* forward declaration of stand */
 #include "pftpar.h"
 #include "output.h"
 #include "date.h"
-#include "manage.h"
 #include "pft.h"
+#include "manage.h"
 #include "config.h"
 #include "cdf.h"
 #include "outfile.h"
 #include "param.h"
 #include "header.h"
 #include "climate.h"
-#ifdef IMAGE  /* Compile with IMAGE coupler or compile for IMAGE spinup run */
 #include "image.h"
-#endif
 #include "cropdates.h"
 #include "reservoir.h"
 #include "landuse.h"
 #include "errmsg.h"
 #include "pftlist.h"
 #include "spitfire.h"
-#include "numeric.h"
 #include "units.h"
-#include "conf.h"
 #include "stand.h"
 #include "crop.h"
 #include "discharge.h"
@@ -91,12 +92,22 @@ typedef struct stand Stand; /* forward declaration of stand */
 #include "tree.h"
 #include "biomass_tree.h"
 #include "landuse.h"
-#if defined IMAGE || defined INCLUDEWP
 #include "woodplantation.h"
-#endif
 #include "biomes.h"
 
 /* Definition of constants */
+
+#ifdef USE_JSON
+#define dflt_conf_filename_ml "lpjml.js"   /* Default LPJ configuration file
+                                              if called by lpjml */
+#define dflt_conf_filename "lpj.js"        /* Default LPJ configuration file
+                                              if called by lpj */
+#else
+#define dflt_conf_filename_ml "lpjml.conf" /* Default LPJ configuration file
+                                              if called by lpjml */
+#define dflt_conf_filename "lpj.conf"      /* Default LPJ configuration file
+                                              if called by lpj */
+#endif
 
 /* Environment variables */
 
@@ -116,7 +127,7 @@ extern char *lpj_usage;
 /* Declaration of functions */
 
 extern Cell *newgrid(Config *,const Standtype [],int,int,int);
-extern Bool fwriterestart(const Cell[],int,int,int,const char *,const Config *);
+extern Bool fwriterestart(const Cell[],int,int,int,const char *,Bool,const Config *);
 extern FILE *openrestart(const char *,Config *,int,Bool *);
 extern void copyright(const char *);
 extern void printlicense(void);
@@ -134,5 +145,6 @@ extern Bool iserror(int,const Config *);
 /* Definition of macros */
 
 #define printflux(flux,total,year,config) fprintflux(stdout,flux,total,year,config)
+#define printcsvflux(flux,total,scale,year,config) fprintcsvflux(stdout,flux,total,scale,year,config)
 
 #endif

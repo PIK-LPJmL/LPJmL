@@ -28,6 +28,8 @@
 #define LON_DIM_NAME "longitude"
 #define LAT_DIM_NAME "latitude"
 #define TIME_DIM_NAME "time"
+#define YEARS_NAME "Years"
+#define NULL_NAME "(null)"
 
 typedef enum { ONEFILE,CREATE,APPEND,CLOSE} State_nc;
 
@@ -40,7 +42,7 @@ typedef struct
   int *index;
 } Coord_array;
 
-typedef struct cdf 
+typedef struct cdf
 {
   State_nc state;
   struct cdf *root;
@@ -55,12 +57,14 @@ typedef struct cdf
 
 typedef struct
 {
+  Bool isopen;      /**< file is open (TRUE/FALSE) */
   int firstyear;    /**< first year of climate data (AD) */
   int n;            /**< number of grid cell data to be read */
   long long offset; /**< file offset in bytes */
   long long size;   /**< size of dataset for each year in bytes */
   int nyear;        /**< number of years of climate data */
   Time time_step;   /**< time steps (DAY/MONTH/YEAR) */
+  int delta_year;   /**< time step for yearly output (yrs) */
   Bool ready;       /**< data was already averaged */
   Bool swap;        /**< byte order has to be changed (TRUE/FALSE) */
   FILE *file;       /**< file pointer */
@@ -70,6 +74,7 @@ typedef struct
   Type datatype;    /**< datatype */
   char *filename;
   const char *var;  /**< variable name */
+  const char *var_units;  /**< variable name */
   const char *units;/**< variable units or NULL */
   Bool oneyear;     /**< one file for each year (TRUE/FALSE) */
   size_t var_len;
@@ -98,9 +103,13 @@ typedef struct coord_netcdf *Coord_netcdf;
 
 typedef struct input_netcdf *Input_netcdf;
 
-typedef union
+typedef struct
 {
-  FILE *file;
+  int fmt;       /**< format (RAW/CLM/CDF) */
+  Bool swap;     /**< byte order has to be changed */
+  Type type;     /**< data type in binary file */
+  Real scalar;   /**< scaling factor */
+  FILE *file;    /**< pointer to binary file */
   Input_netcdf cdf;
 } Infile;
 
@@ -108,14 +117,14 @@ extern Bool create1_netcdf(Netcdf *,const char *,const char *,
                           const char *,const char *,Type,int,
                           const Coord_array *,int,const Config *);
 extern Bool create_netcdf(Netcdf *,const char *,const char *,
-                          const char *,const char *,Type,int,
+                          const char *,const char *,Type,int,int,
                           const Coord_array *,const Config *);
-extern Bool openclimate_netcdf(Climatefile *,const char *,const char *,
+extern Bool openclimate_netcdf(Climatefile *,const char *,const char *,const char *,
                                const char *,const char *,const Config *);
 extern Bool mpi_openclimate_netcdf(Climatefile *,const Filename *,
                                    const char *,const Config *);
 extern Bool create_pft_netcdf(Netcdf *,const char *,int,int,int,const char *,
-                              const char *,const char *,Type,int,
+                              const char *,const char *,Type,int,int,
                               const Coord_array *,const Config *);
 extern Bool create1_pft_netcdf(Netcdf *,const char *,int,int,int,const char *,
                               const char *,const char *,Type,int,int,
@@ -152,22 +161,23 @@ extern int numcoord_netcdf(const Coord_netcdf);
 extern int *getindexcoord_netcdf(const Coord_netcdf);
 extern void getresolution_netcdf(const Coord_netcdf,Coord *);
 extern void getextension_netcdf(Extension *,const Coord_netcdf);
-extern Input_netcdf openinput_netcdf(const char *,const char *,const char *,
+extern Input_netcdf openinput_netcdf(const Filename *,const char *,
                                      size_t,const Config *);
 extern void closeinput_netcdf(Input_netcdf);
 extern size_t getindexinput_netcdf(const Input_netcdf,const Coord *);
 extern size_t getindexsize_netcdf(const Input_netcdf);
 extern Bool readinput_netcdf(const Input_netcdf,Real *,const Coord *);
-extern Bool readintinput_netcdf(const Input_netcdf,int *,const Coord *);
+extern Bool readintinput_netcdf(const Input_netcdf,int *,const Coord *,Bool *);
 extern Bool readshortinput_netcdf(const Input_netcdf,short *,const Coord *);
 extern Input_netcdf dupinput_netcdf(const Input_netcdf);
 extern Type getinputtype_netcdf(const Input_netcdf);
 extern Bool getlatlon_netcdf(Climatefile *,const char *,const Config *);
-extern Bool getvar_netcdf(Climatefile *,const char *,const char *,
+extern Bool getvar_netcdf(Climatefile *,const char *,const char *,const char *,
                           const char *,const Config *);
-extern void closeinput(Infile,int);
+extern void closeinput(Infile *);
 extern int open_netcdf(const char *,int *,Bool *);
 extern void free_netcdf(int);
+extern Bool checkcoord(const size_t *,int,const Coord *,const Climatefile *);
 
 #ifdef USE_MPI
 extern Bool mpi_write_netcdf(const Netcdf *,void *,MPI_Datatype,int,int,

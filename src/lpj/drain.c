@@ -127,8 +127,19 @@ void drain(Cell grid[],         /**< Cell array */
 
       grid[i].discharge.dmass_river-=grid[i].discharge.fout;
       grid[i].discharge.dfout+=grid[i].discharge.fout;
-      grid[i].output.mdischarge+=grid[i].discharge.fout;
-      grid[i].output.daily.discharge+=grid[i].discharge.fout*1e-3*dayseconds1; /*in m3 per second */
+      getoutput(&grid[i].output,DISCHARGE,config)+=grid[i].discharge.fout;
+#ifdef IMAGE
+      getoutput(&grid[i].output,YDISCHARGE,config)+=grid[i].discharge.fout;
+#ifdef COUPLED
+     grid[i].ydischarge+=grid[i].discharge.fout;
+#endif
+#endif
+
+      if(grid[i].discharge.next<0)
+      {
+        getoutput(&grid[i].output,ADISCHARGE,config)+=grid[i].discharge.fout;           /* only endcell outflow */
+        grid[i].balance.adischarge+=grid[i].discharge.fout;           /* only endcell outflow */
+      }
       grid[i].discharge.mfout+=grid[i].discharge.fout;
     }
 
@@ -141,8 +152,14 @@ void drain(Cell grid[],         /**< Cell array */
 
     for(i=pnet_lo(config->route);i<=pnet_hi(config->route);i++)
     {
+      if(iter==0)
+      {
+        fin=grid[i].discharge.fin_ext;
+        grid[i].discharge.afin_ext+=fin;
+      }
+      else
+        fin=0;
       /* sum up all inflows from other cells */
-      fin=0.0;
       for(j=0;j<pnet_inlen(config->route,i);j++)
         fin+=in[pnet_inindex(config->route,i,j)];
 
@@ -192,7 +209,7 @@ void drain(Cell grid[],         /**< Cell array */
   
   for(cell=0;cell<config->ngridcell;cell++)
   {
-    grid[cell].output.mwateramount+=grid[cell].discharge.dmass_sum/count;
+    getoutput(&grid[cell].output,WATERAMOUNT,config)+=grid[cell].discharge.dmass_sum/count;
     grid[cell].discharge.dmass_sum=0.0;
     if(grid[cell].discharge.withdrawal<grid[cell].discharge.wd_demand)
     {
@@ -209,7 +226,7 @@ void drain(Cell grid[],         /**< Cell array */
         grid[cell].discharge.dmass_lake=0.0;
       }
     }
-    grid[cell].output.mwd_local+=grid[cell].discharge.withdrawal/grid[cell].coord.area; /* withdrawal in local cell */
+    getoutput(&grid[cell].output,WD_LOCAL,config)+=grid[cell].discharge.withdrawal/grid[cell].coord.area; /* withdrawal in local cell */
   }
 
 }  /* of 'drain' */

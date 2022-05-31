@@ -21,6 +21,7 @@ Bool initsoiltemp(Climate* climate,    /**< pointer to climate data */
                   const Config *config /**< LPJmL configuration */
                  )                     /** \return TRUE on error */
 {
+  char *name;
   int year,s,l,day,dayofmonth;
   int month;
   int cell;
@@ -34,15 +35,23 @@ Bool initsoiltemp(Climate* climate,    /**< pointer to climate data */
     if(readclimate(&climate->file_temp,climate->data.temp,0,climate->file_temp.scalar,grid,year,config))
     {
       if(isroot(*config))
-        fprintf(stderr,"ERROR131: Cannot read temperature of year %d in initsoiltemp().\n",
-                year);
+      {
+        name=getrealfilename(&config->temp_filename);
+        fprintf(stderr,"ERROR131: Cannot read temperature of year %d from '%s'.\n",
+                year,name);
+        free(name);
+      }
       return TRUE;
     }
     if(readclimate(&climate->file_prec,climate->data.prec,0,climate->file_prec.scalar,grid,year,config))
     {
       if(isroot(*config))
-        fprintf(stderr,"ERROR131: Cannot read precipitation of year %d in initsoiltemp().\n",
-                year);
+      {
+        name=getrealfilename(&config->prec_filename);
+        fprintf(stderr,"ERROR131: Cannot read precipitation of year %d from '%s'.\n",
+                year,name);
+        free(name);
+      }
       return TRUE;
     }
     day=0;
@@ -88,11 +97,11 @@ Bool initsoiltemp(Climate* climate,    /**< pointer to climate data */
           {
             whcs_all=0.0;
             foreachsoillayer(l)
-              whcs_all+=stand->soil.par->whcs[l];
+              whcs_all+=stand->soil.whcs[l];
             foreachsoillayer(l)
             {
               stand->soil.temp[l]+=temp/NMONTH/nsoilmeanyears;
-              stand->soil.w[l]+=balance/nsoilmeanyears/stand->soil.par->whcs[l]*stand->soil.par->whcs[l]/whcs_all;
+              stand->soil.w[l]+=balance/nsoilmeanyears/stand->soil.whcs[l]*stand->soil.whcs[l]/whcs_all;
             }
           }
         }
@@ -108,7 +117,7 @@ Bool initsoiltemp(Climate* climate,    /**< pointer to climate data */
             stand->soil.w[l]=1.0;
           if(stand->soil.temp[l]<initfrozen)
           {
-            stand->soil.ice_depth[l]=stand->soil.par->whcs[l]*stand->soil.w[l];
+            stand->soil.ice_depth[l]=stand->soil.whcs[l]*stand->soil.w[l];
             stand->soil.w[l]=0;
             stand->soil.freeze_depth[l]=soildepth[l];
             stand->soil.ice_pwp[l]=1;

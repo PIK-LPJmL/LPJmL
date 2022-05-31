@@ -47,6 +47,13 @@ Bool storeclimate(Climatedata *store,  /**< pointer to climate data to be stored
   }
   else
     store->humid=NULL;
+  if(climate->data.tmin!=NULL)
+  {
+    store->tmin=newvec(Real,climate->file_tmin.n*nyear);
+    checkptr(store->tmin);
+  }
+  else
+    store->tmin=NULL;
   if(climate->data.sun!=NULL)
   {
     store->sun=newvec(Real,climate->file_cloud.n*nyear);
@@ -96,6 +103,20 @@ Bool storeclimate(Climatedata *store,  /**< pointer to climate data to be stored
   }
   else
     store->burntarea=NULL;
+  if(climate->data.no3deposition!=NULL)
+  {
+    store->no3deposition=newvec(Real,climate->file_no3deposition.n*nyear);
+    checkptr(store->no3deposition);
+  }
+  else
+    store->no3deposition=NULL;
+  if(climate->data.nh4deposition!=NULL)
+  {
+    store->nh4deposition=newvec(Real,climate->file_nh4deposition.n*nyear);
+    checkptr(store->nh4deposition);
+  }
+  else
+    store->nh4deposition=NULL;
   if(climate->data.lightning!=NULL)
   {
     store->lightning=newvec(Real,climate->file_lightning.n);
@@ -133,6 +154,12 @@ Bool storeclimate(Climatedata *store,  /**< pointer to climate data to be stored
       for(j=0;j<climate->file_humid.n;j++)
         store->humid[count++]=climate->data.humid[j];
     }
+    if(store->tmin!=NULL)
+    {
+      count=climate->file_tmin.n*(year-firstyear);
+      for(j=0;j<climate->file_tmin.n;j++)
+        store->tmin[count++]=climate->data.tmin[j];
+    }
     if(store->lwnet!=NULL)
     {
       count=climate->file_lwnet.n*(year-firstyear);
@@ -169,6 +196,18 @@ Bool storeclimate(Climatedata *store,  /**< pointer to climate data to be stored
       for(j=0;j<climate->file_burntarea.n;j++)
         store->burntarea[count++]=climate->data.burntarea[j];
     }
+    if(store->no3deposition!=NULL)
+    {
+      count=climate->file_no3deposition.n*(year-firstyear);
+      for(j=0;j<climate->file_no3deposition.n;j++)
+        store->no3deposition[count++]=climate->data.no3deposition[j];
+    }
+    if(store->nh4deposition!=NULL)
+    {
+      count=climate->file_nh4deposition.n*(year-firstyear);
+      for(j=0;j<climate->file_nh4deposition.n;j++)
+        store->nh4deposition[count++]=climate->data.nh4deposition[j];
+    }
   }
   return FALSE;
 } /* of 'storeclimate' */
@@ -197,6 +236,12 @@ void restoreclimate(Climate *climate,         /**< pointer to climate data */
     index=year*climate->file_humid.n;
     for(i=0;i<climate->file_humid.n;i++)
       climate->data.humid[i]=store->humid[index++];
+  }
+  if(store->tmin!=NULL)
+  {
+    index=year*climate->file_tmin.n;
+    for(i=0;i<climate->file_tmin.n;i++)
+      climate->data.tmin[i]=store->tmin[index++];
   }
   if(store->sun!=NULL)
   {
@@ -240,6 +285,18 @@ void restoreclimate(Climate *climate,         /**< pointer to climate data */
     for(i=0;i<climate->file_burntarea.n;i++)
       climate->data.burntarea[i]=store->burntarea[index++];
   }
+  if(store->no3deposition!=NULL)
+  {
+    index=year*climate->file_no3deposition.n;
+    for(i=0;i<climate->file_no3deposition.n;i++)
+      climate->data.no3deposition[i]=store->no3deposition[index++];
+  }
+  if(store->nh4deposition!=NULL)
+  {
+    index=year*climate->file_nh4deposition.n;
+    for(i=0;i<climate->file_nh4deposition.n;i++)
+      climate->data.nh4deposition[i]=store->nh4deposition[index++];
+  }
 } /* of 'restoreclimate' */
 
 void moveclimate(Climate *climate,  /**< Pointer to climate data */
@@ -253,6 +310,8 @@ void moveclimate(Climate *climate,  /**< Pointer to climate data */
     climate->data.tmax=store->tmax+climate->file_tmax.n*year;
   if(climate->data.humid!=NULL)
     climate->data.humid=store->humid+climate->file_humid.n*year;
+  if(climate->data.tmin!=NULL)
+    climate->data.tmin=store->tmin+climate->file_tmin.n*year;
   if(climate->data.sun!=NULL)
     climate->data.sun=store->sun+climate->file_cloud.n*year;
   if(climate->data.lwnet!=NULL)
@@ -267,4 +326,8 @@ void moveclimate(Climate *climate,  /**< Pointer to climate data */
     climate->data.tamp=store->tamp+climate->file_tamp.n*year;
   if(climate->data.burntarea!=NULL)
     climate->data.burntarea=store->burntarea+climate->file_burntarea.n*year;
+  if(climate->data.no3deposition!=NULL)
+    climate->data.no3deposition=store->no3deposition+climate->file_no3deposition.n*year;
+  if(climate->data.nh4deposition!=NULL)
+    climate->data.nh4deposition=store->nh4deposition+climate->file_nh4deposition.n*year;
 } /* of 'moveclimate' */

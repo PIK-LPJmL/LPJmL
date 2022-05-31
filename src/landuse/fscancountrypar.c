@@ -24,21 +24,43 @@
 
 #define checkptr(ptr) if(ptr==NULL) { printallocerr(#ptr); return 0;}
 
+const char *irrigsys[]={"no irrig","surf","sprink","drip"};
+
 int fscancountrypar(LPJfile *file,           /**< pointer to LPJ file */
                     Countrypar **countrypar, /**< Pointer to countrypar array */
-                    Bool rw_manage,          /**< rain water management options (TRUE/FALSE) */
+                    int npft,                /**< number of natural PFTs */
                     int ncft,                /**< number of CFTs or zero */
-                    Verbosity verb           /**< verbosity level (NO_ERR,ERR,VERB) */
+                    Verbosity verb,          /**< verbosity level (NO_ERR,ERR,VERB) */
+                    const Config *config     /**< LPJmL configuration */
                    )                         /** \return number of elements in array */
 {
   LPJfile arr,item;
-  int i,ncountries,n,id;
+  int i,ncountries,n,id,*cftmap,cftmap_size;
+  Real *laimax_cft;
   String s;
   Countrypar *country;
   ncountries = 1;
   if (verb>=VERB) puts("// Country parameters");
+  if(ncft)
+  {
+    cftmap=scancftmap(file,&cftmap_size,"laimaxmap",TRUE,npft,ncft,config);
+    if(cftmap==NULL)
+      return 0;
+    if(cftmap_size!=ncft)
+    {
+      if(verb)
+        fprintf(stderr,"ERROR243: Size of map 'laimaxmap'=%d does not match the number of crops %d.\n",
+                cftmap_size,ncft);
+      free(cftmap);
+      return 0;
+    }
+  }
   if(fscanarray(file,&arr,&ncountries,TRUE,"countrypar",verb))
+  {
+    if(ncft)
+      free(cftmap);
     return 0;
+  }
   *countrypar=newvec(Countrypar,ncountries);
   checkptr(*countrypar);
   for(n=0;n<ncountries;n++)
@@ -47,11 +69,18 @@ int fscancountrypar(LPJfile *file,           /**< pointer to LPJ file */
   {
     fscanarrayindex(&arr,&item,n,verb);
     if(fscanint(&item,&id,"id",FALSE,verb))
+    {
+      if(ncft)
+        free(cftmap);
       return 0;
+    }
     if(id<0 || id>=ncountries)
     {
       if(verb)
-        fprintf(stderr,"ERROR125: Invalid range=%d of 'countrynumber' in line %d of '%s'.\n",id,getlinecount(),getfilename());
+        fprintf(stderr,"ERROR125: Invalid range=%d of 'countrynumber', must be in [0,%d].\n",
+                id,ncountries-1);
+      if(ncft)
+        free(cftmap);
       return 0;
     }
     country=(*countrypar)+id;
@@ -59,32 +88,43 @@ int fscancountrypar(LPJfile *file,           /**< pointer to LPJ file */
     {
       if(verb)
         fprintf(stderr,
-                "ERROR178: Country number=%d in line %d of '%s' has been already defined.\n",id,getlinecount(),getfilename());
+                "ERROR178: Country number=%d has been already defined.\n",id);
+      if(ncft)
+        free(cftmap);
       return 0;
     }
     if(fscanstring(&item,s,"name",FALSE,verb))  /*reads country name*/
     {
       if(verb)
         readstringerr("name");
+      if(ncft)
+        free(cftmap);
       return 0;
     }
     country->name=strdup(s);
     checkptr(country->name);
     country->id=id;
+    country->k_est=NULL;
     if(ncft)
     {
       country->laimax_cft=newvec(Real,ncft);
       checkptr(country->laimax_cft);
-      if(fscanrealarray(&item,country->laimax_cft,ncft,"laimax",verb))
+      laimax_cft=newvec(Real,ncft);
+      checkptr(laimax_cft);
+      if(fscanrealarray(&item,laimax_cft,ncft,"laimax",verb))
       {
         if(verb)
           fprintf(stderr,"ERROR102: Cannot read array 'laimax' for country '%s'.\n",country->name);  
+        free(cftmap);
         return 0;
       } 
       /*in case rw_manage: increases laimax by bridge gap factor*/
-      if(rw_manage)
+      if(config->rw_manage)
         for(i=0;i<ncft;i++)
-          country->laimax_cft[i]+=(7-country->laimax_cft[i])*param.yield_gap_bridge;
+          laimax_cft[i]+=(7-laimax_cft[i])*param.yield_gap_bridge;
+      for(i=0;i<ncft;i++)
+        country->laimax_cft[cftmap[i]]=laimax_cft[i];
+      free(laimax_cft);
     }  
     else
     {
@@ -92,14 +132,14 @@ int fscancountrypar(LPJfile *file,           /**< pointer to LPJ file */
       fscanreal2(verb,&item,&country->laimax_tempcer,"laimax_tempcer",country->name);
       fscanreal2(verb,&item,&country->laimax_maize,"laimax_maize",country->name);
     }
-    if(fscanint(&item,&country->default_irrig_system,"default_irrig_system",FALSE,verb))
-      return 0;
-    if(country->default_irrig_system<1 || country->default_irrig_system>3)
+    if(fscankeywords(&item,(int *)&country->default_irrig_system,"default_irrig_system",irrigsys,4,FALSE,verb))
     {
       if(verb)
-        fprintf(stderr,"ERROR215: Default irrigation system=%d is not defined within 1 to 3 for %s in line %d of '%s'.\n",country->default_irrig_system,country->name,getlinecount(),getfilename());
-       return 0;
+        fprintf(stderr,"ERROR215: Invalid value for irrigation system for country '%s'.\n",country->name);
+      return 0;
     }
   } /* of 'for(n=0;...)' */
+  if(ncft)
+    free(cftmap);
   return n;
 } /* of 'fscancountrypar' */

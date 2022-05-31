@@ -16,6 +16,7 @@
 #include <stdio.h>
 #include "types.h"
 #include "swap.h"
+#include "errmsg.h"
 #include "queue.h"
 
 struct queue
@@ -76,7 +77,10 @@ Queue freadqueue(FILE *file, /**< pointer to binary file */
   Queue queue;
   queue=new(struct queue);
   if(queue==NULL)
+  {
+    printallocerr("queue");
     return NULL;
+  }
   if(freadint1(&queue->size,swap,file)!=1)
   {
     free(queue);
@@ -95,6 +99,7 @@ Queue freadqueue(FILE *file, /**< pointer to binary file */
   queue->data=newvec(Real,queue->size);
   if(queue->data==NULL)
   {
+    printallocerr("queue");
     free(queue);
     return NULL;
   }

@@ -19,25 +19,16 @@
 #include "natural.h"
 #include "grassland.h"
 #include "agriculture.h"
+#include "agriculture_tree.h"
+#include "agriculture_grass.h"
 #include "biomass_tree.h"
 #include "biomass_grass.h"
-#if defined IMAGE || defined INCLUDEWP
 #include "woodplantation.h"
-#endif
 
-#define PRINTLPJ_VERSION "1.0.018"
+#define PRINTLPJ_VERSION "1.0.020"
 #define NTYPES 3
-#if defined IMAGE || defined INCLUDEWP
-#define NSTANDTYPES 10 /* number of stand types */
-#else 
-#define NSTANDTYPES 9 /* number of stand types */
-#endif
+#define NSTANDTYPES 12 /* number of stand types */
 
-#ifdef USE_JSON
-#define dflt_conf_filename "lpjml.js"
-#else
-#define dflt_conf_filename "lpjml.conf"
-#endif
 #define USAGE "Usage: %s [-h] [-inpath dir] [-restartpath dir]\n"\
               "       [[-Dmacro[=value]] [-Idir] ...] [filename [-check] [start [end]]]\n"
 
@@ -50,11 +41,11 @@ static Bool printgrid(Config *config, /* Pointer to LPJ configuration */
              )
 {
   Cell grid;
-  int i;
+  int i,soil_id;
   Bool swap,swap_cow;
   unsigned int soilcode;
   Code code;
-  long offset;
+  size_t offset;
   FILE *file_restart,*file_countrycode;
   Type cow_type;
   Celldata celldata;
@@ -94,7 +85,7 @@ static Bool printgrid(Config *config, /* Pointer to LPJ configuration */
            config->checkpoint_restart_filename,config->checkpointyear);
   for(i=0;i<config->ngridcell;i++)
   {
-    if(readcelldata(celldata,&grid.coord,&soilcode,i,config))
+    if(readcelldata(celldata,&grid.coord,&soilcode,&grid.soilph,i,config))
       break;
     if(config->countrypar!=NULL)
     {
@@ -107,7 +98,7 @@ static Bool printgrid(Config *config, /* Pointer to LPJ configuration */
       if(code.country<0 || code.country>=config->ncountries ||
          code.region<0 || code.region>=config->nregions)
       {
-          if(soilcode>=1 && soilcode<=config->nsoil)
+          if(config->soilmap[soilcode]>0)
             fprintf(stderr,"WARNING009: Invalid countrycode=%d or regioncode=%d with valid soilcode in cell (not skipped)\n",code.country,code.region);
           grid.ml.manage.laimax=NULL;
           grid.ml.manage.par=NULL;
@@ -115,8 +106,8 @@ static Bool printgrid(Config *config, /* Pointer to LPJ configuration */
       }
       else
         initmanage(&grid.ml.manage,config->countrypar+code.country,
-                   config->regionpar+code.region,npft,ncft,
-                   config->laimax_interpolate==CONST_LAI_MAX,config->laimax);
+                   config->regionpar+code.region,config->pftpar,npft,config->nagtree,ncft,
+                   config->laimax_interpolate,config->laimax);
     }
     else
     {
@@ -126,7 +117,8 @@ static Bool printgrid(Config *config, /* Pointer to LPJ configuration */
     }
     /* Init cells */
     grid.ml.cropfrac_rf=grid.ml.cropfrac_ir=0;
-    grid.balance.totw=grid.balance.totc=0.0;
+    grid.balance.totw=grid.balance.tot.carbon=grid.balance.tot.nitrogen=0.0;
+    grid.ml.product.fast.carbon=grid.ml.product.slow.carbon=grid.ml.product.fast.nitrogen=grid.ml.product.slow.nitrogen=0;
     grid.discharge.dmass_lake=0.0;
     grid.discharge.next=0;
     grid.ml.fraction=NULL;
@@ -134,29 +126,36 @@ static Bool printgrid(Config *config, /* Pointer to LPJ configuration */
     grid.ml.dam=FALSE;
     if(config->withlanduse!=NO_LANDUSE)
     {
-      grid.ml.landfrac=newvec(Landfrac,2);
-      newlandfrac(grid.ml.landfrac,ncft);
+      grid.ml.landfrac=newlandfrac(ncft,config->nagtree);
+      if(config->with_nitrogen)
+        grid.ml.fertilizer_nr=newlandfrac(ncft,config->nagtree);
+      else
+        grid.ml.fertilizer_nr=NULL;
+
     }
     else
-      grid.ml.landfrac=NULL;
-    initoutput(&grid.output,config->crop_index,config->crop_irrigation,npft,config->nbiomass,config->nwft,ncft);
-    /*grid.cropdates=init_cropdates(&config.pftpar+npft,ncft,grid.coord.lat); */
-
-    if(freadcell(file_restart,&grid,npft,ncft,
-                 config->soilpar+soilcode-1,standtype,NSTANDTYPES,swap,config))
     {
-      fprintf(stderr,"WARNING008: Unexpected end of file in '%s', number of gridcells truncated to %d.\n",config->write_restart_filename,i);
+      grid.ml.landfrac=NULL;
+      grid.ml.fertilizer_nr=NULL;
+    }
+    grid.output.data=NULL;
+    grid.output.syear2=NULL;
+    grid.output.syear=NULL;
+    /*grid.cropdates=init_cropdates(&config.pftpar+npft,ncft,grid.coord.lat); */
+    soil_id=config->soilmap[soilcode]-1;
+    if(freadcell(file_restart,&grid,npft,ncft,
+                 config->soilpar+soil_id,standtype,NSTANDTYPES,swap,config))
+    {
+      fprintf(stderr,"WARNING008: Unexpected end of file in '%s', number of gridcells truncated to %d.\n",
+              (config->ischeckpoint) ? config->checkpoint_restart_filename : config->write_restart_filename,i);
       config->ngridcell=i;
       break;
     }
     if(isout)
       printcell(&grid,1,npft,ncft,config);
-    if(grid.ml.landfrac!=NULL)
-    {
-      freelandfrac(grid.ml.landfrac);
-      free(grid.ml.landfrac);
-    }
-    freecell(&grid,npft,config->river_routing);
+    freelandfrac(grid.ml.landfrac);
+    freelandfrac(grid.ml.fertilizer_nr);
+    freecell(&grid,npft,config);
   } /* of for(i=0;...) */
   fclose(file_restart);
   closecelldata(celldata);
@@ -173,7 +172,13 @@ int main(int argc,char **argv)
   const char *progname;
   const char *title[4];
   String line;
-  Fscanpftparfcn scanfcn[NTYPES]={fscanpft_grass,fscanpft_tree,fscanpft_crop};
+  Pfttype scanfcn[NTYPES]=
+  {
+    {name_grass,fscanpft_grass},
+    {name_tree,fscanpft_tree},
+    {name_crop,fscanpft_crop}
+  };
+
   Standtype standtype[NSTANDTYPES];
 
   standtype[NATURAL]=natural_stand;
@@ -184,17 +189,22 @@ int main(int argc,char **argv)
   standtype[GRASSLAND]=grassland_stand;
   standtype[BIOMASS_TREE]=biomass_tree_stand;
   standtype[BIOMASS_GRASS]=biomass_grass_stand;
-#if defined IMAGE || defined INCLUDEWP
+  standtype[AGRICULTURE_TREE]=agriculture_tree_stand;
+  standtype[AGRICULTURE_GRASS]=agriculture_grass_stand;
   standtype[WOODPLANTATION]=woodplantation_stand,
-#endif
   standtype[KILL]=kill_stand;
 
   progname=strippath(argv[0]);
   if(argc>1 && !strcmp(argv[1],"-h"))
   {
-    printf("%s Version %s (" __DATE__ ") - print contents of restart files for LPJmL\n",progname,PRINTLPJ_VERSION);
+    fputs("     ",stdout);
+    rc=printf("%s Version " PRINTLPJ_VERSION " (" __DATE__ ") Help",
+              progname);
+    fputs("\n     ",stdout);
+    repeatch('=',rc);
+    fputs("\n\nPrint content of restart files for LPJmL " LPJ_VERSION "\n\n",stdout);
     printf(USAGE,progname);
-    printf("Arguments:\n"
+    printf("\nArguments:\n"
            "-h               print this help text\n"
            "-inpath dir      directory appended to input filenames\n"
            "-restartpath dir directory appended to restart filename\n"
@@ -203,8 +213,9 @@ int main(int argc,char **argv)
            "filename         configuration filename. Default is '%s'\n"
            "-check           check only restart file\n"
            "start            index of first grid cell to print\n"
-           "end              index of last grid cell to print\n",
-           dflt_conf_filename);
+           "end              index of last grid cell to print\n\n"
+           "(C) Potsdam Institute for Climate Impact Research (PIK), see COPYRIGHT file\n",
+           dflt_conf_filename_ml);
     return EXIT_SUCCESS;
   }
   snprintf(line,78-10,
@@ -215,7 +226,7 @@ int main(int argc,char **argv)
   title[3]="see COPYRIGHT file";
   banner(title,4,78);
   initconfig(&config);
-  if(readconfig(&config,dflt_conf_filename,scanfcn,NTYPES,NOUT,&argc,&argv,USAGE))
+  if(readconfig(&config,dflt_conf_filename_ml,scanfcn,NTYPES,NOUT,&argc,&argv,USAGE))
     fail(READ_CONFIG_ERR,FALSE,"Error opening config");
   printf("Simulation: %s\n",config.sim_name);
   config.ischeckpoint=ischeckpointrestart(&config) && getfilesize(config.checkpoint_restart_filename)!=-1;

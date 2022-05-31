@@ -15,21 +15,23 @@
 #include "lpj.h"
 #include "tree.h"
 
-Bool annual_tree(Stand *stand,  /**< pointer to stand */
-                 Pft *pft,      /**< pointer to PFT */
-                 Real *fpc_inc, /**< FPC increment */
-                 Bool isdaily   /**< daily temperature data (TRUE/FALSE) */
-                )               /** \return TRUE on death */
+Bool annual_tree(Stand *stand,       /**< pointer to stand */
+                 Pft *pft,           /**< pointer to PFT */
+                 Real *fpc_inc,      /**< FPC increment */
+                 Bool isdaily,       /**< daily temperature data (TRUE/FALSE) */
+                 const Config *config /**< LPJmL configuration */
+                )                    /** \return TRUE on death */
 {
-  Real turnover_ind;
+  Stocks turnover_ind;
   Bool isdead;
-  turnover_ind=turnover_tree(&stand->soil.litter,pft);
-  isdead=allocation_tree(&stand->soil.litter,pft,fpc_inc);
+  turnover_ind=turnover_tree(&stand->soil.litter,pft,config);
+  isdead=allocation_tree(&stand->soil.litter,pft,fpc_inc,config);
   if(!isdead)
   {
-    isdead=mortality_tree(&stand->soil.litter,pft,turnover_ind,
-                          stand->cell->climbuf.temp_max,isdaily);
-    if (!pft->prescribe_fpc && !isdead)  /* still not dead? */
+    isdead=mortality_tree(&stand->soil.litter,pft,turnover_ind.carbon,
+                          stand->cell->climbuf.temp_max,isdaily,config);
+  if (!(pft->stand->prescribe_landcover==LANDCOVERFPC && pft->stand->type->landusetype==NATURAL) &&
+      !isdead)  /* still not dead? */
       isdead=!survive(pft->par,&stand->cell->climbuf);
   }
   return isdead;

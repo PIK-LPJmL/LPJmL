@@ -17,24 +17,28 @@
 
 #if defined IMAGE && defined COUPLED
 
-Image_data *new_image(const Product *productpool)
+#define CN_ratio 7.0 /* C:N ratio of product pools */
+
+Bool new_image(Cell *cell,const Product *productpool)
 {
   Image_data *image_data;
   image_data=new(Image_data);
-  check(image_data);
+  if(image_data==NULL)
+    return TRUE;
+  cell->ml.image_data=image_data;
   /* data received from IMAGE */
-  image_data->fburnt=image_data->timber.fast=
-  image_data->timber.slow=image_data->timber_frac=
+  image_data->fburnt=image_data->timber_frac=
   image_data->timber_f.fast=image_data->timber_f.slow=
   image_data->timber_turnover=image_data->deforest_emissions=
   image_data->store_bmtree_yield=image_data->biomass_yield_annual=
   image_data->totwatcons=image_data->totwatdem=0.0
 ;
-  image_data->timber.fast=productpool->fast;
-  image_data->timber.slow=productpool->slow;
+  cell->ml.product.fast.carbon=productpool->fast;
+  cell->ml.product.slow.carbon=productpool->slow;
+  cell->ml.product.fast.nitrogen=productpool->fast/CN_ratio;
+  cell->ml.product.slow.nitrogen=productpool->slow/CN_ratio;
   /* data sent to image */
-  image_data->anpp=image_data->arh=0.0;
-  return image_data;
+  return FALSE;
 } /* of 'new_image' */
 
 #endif

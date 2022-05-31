@@ -27,10 +27,15 @@ Bool fwritelitter(FILE *file, /**< pointer to binary file */
   fwrite1(&b,sizeof(b),file);
   for(l=0;l<litter->n;l++)
   {
-    b=(Byte)litter->ag[l].pft->id;
+    b=(Byte)litter->item[l].pft->id;
     fwrite1(&b,sizeof(b),file);
-    fwrite1(&litter->ag[l].trait,sizeof(Trait),file);
-    fwrite1(&litter->bg[l],sizeof(Real),file);
+    fwrite1(&litter->item[l].ag,sizeof(Trait),file);
+    fwrite1(&litter->item[l].agsub,sizeof(Trait),file);
+    fwrite1(&litter->item[l].bg,sizeof(Stocks),file);
   }
+  fwrite1(&litter->agtop_wcap,sizeof(Real),file);
+  fwrite1(&litter->agtop_moist,sizeof(Real),file);
+  fwrite1(&litter->agtop_cover,sizeof(Real),file);
+  fwrite1(&litter->agtop_temp,sizeof(Real),file);
   return FALSE;
 } /* of 'fwritelitter' */

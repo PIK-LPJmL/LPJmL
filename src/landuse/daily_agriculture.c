@@ -16,31 +16,33 @@
 
 #include "lpj.h"
 #include "crop.h"
-#include "natural.h"
 #include "agriculture.h"
 
-Real daily_agriculture(Stand *stand, /**< stand pointer */
-                       Real co2,   /**< atmospheric CO2 (ppmv) */
-                       const Dailyclimate *climate, /**< Daily climate values */
-                       int day,    /**< day (1..365) */
-                       Real daylength, /**< length of day (h) */
-                       const Real gp_pft[], /**< pot. canopy conductance for PFTs & CFTs*/
-                       Real gtemp_air,  /**< value of air temperature response function */
-                       Real gtemp_soil, /**< value of soil temperature response function */
-                       Real gp_stand,   /* potential stomata conductance */
-                       Real gp_stand_leafon, /**< pot. canopy conduct.at full leaf cover */
-                       Real eeq,   /**< equilibrium evapotranspiration (mm) */
-                       Real par,   /**< photosynthetic active radiation flux */
-                       Real melt,  /**< melting water (mm) */
-                       int npft,   /**< number of natural PFTs */
-                       int ncft,   /**< number of crop PFTs   */
-                       int UNUSED(year), /**< simulation year */
-                       Bool UNUSED(intercrop), /**< enable intercropping (TRUE/FALSE) */
-                       const Config *config /**< LPJ config */
-                      )            /** \return runoff (mm) */
+Real daily_agriculture(Stand *stand,                /**< [inout] stand pointer */
+                       Real co2,                    /**< [in] atmospheric CO2 (ppmv) */
+                       const Dailyclimate *climate, /**< [in] Daily climate values */
+                       int day,                     /**< [in] day (1..365) */
+                       int month,                   /**< [in] month (0..11) */
+                       Real daylength,              /**< [in] length of day (h) */
+                       Real gtemp_air,              /**< [in] value of air temperature response function */
+                       Real gtemp_soil,             /**< [in] value of soil temperature response function */
+                       Real eeq,                    /**< [in] equilibrium evapotranspiration (mm) */
+                       Real par,                    /**< [in] photosynthetic active radiation flux  (J/m2/day) */
+                       Real melt,                   /**< [in] melting water (mm/day) */
+                       int npft,                    /**< [in] number of natural PFTs */
+                       int ncft,                    /**< [in] number of crop PFTs   */
+                       int year,                    /**< [in] simulation year (AD) */
+                       Bool UNUSED(intercrop),      /**< [in] enabled intercropping */
+                       Real agrfrac,                /**< [in] total agriculture fraction (0..1) */
+                       const Config *config         /**< [in] LPJ config */
+                      )                             /** \return runoff (mm/day) */
 {
-  int p,l;
+  int p,l,nnat,nirrig;
   Pft *pft;
+  Real *gp_pft;         /**< pot. canopy conductance for PFTs & CFTs (mm/s) */
+  Real gp_stand;               /**< potential stomata conductance  (mm/s) */
+  Real gp_stand_leafon;        /**< pot. canopy conduct.at full leaf cover  (mm/s) */
+  Real fpc_total_stand;
   Real aet_stand[LASTLAYER];
   Real green_transp[LASTLAYER];
   Real evap,evap_blue,rd,gpp,frac_g_evap,runoff,wet_all,intercept,sprink_interc;
@@ -55,6 +57,8 @@ Real daily_agriculture(Stand *stand, /**< stand pointer */
   Real npp; /* net primary productivity (gC/m2) */
   Real gc_pft;
   Real wdf; /* water deficit fraction */
+  Real transp;
+  Real cft_rm=0.0; /* cft-specific monthly root moisture */
   Bool negbm;
   Irrigation *data;
   Output *output;
@@ -75,102 +79,108 @@ Real daily_agriculture(Stand *stand, /**< stand pointer */
   }
   else
     wet=NULL;
+  gp_pft=newvec(Real,npft+ncft);
+  check(gp_pft);
+  gp_stand=gp_sum(&stand->pftlist,co2,climate->temp,par,daylength,
+                  &gp_stand_leafon,gp_pft,&fpc_total_stand,config);
+
   for(l=0;l<LASTLAYER;l++)
     aet_stand[l]=green_transp[l]=0;
 
   if(!config->river_routing)
-    irrig_amount(stand,config->pft_output_scaled,npft,ncft);
+    irrig_amount(stand,data,npft,ncft,month,config);
+
+  nnat=getnnat(npft,config);
+  nirrig=getnirrig(ncft,config);
 
   foreachpft(pft,p,&stand->pftlist)
   {
-    if(phenology_crop(pft,climate->temp,daylength))
+    crop=pft->data;
+    /* kill crop at frost events */
+    if(config->cropsheatfrost && climate->tmin<(-5))
     {
-      if(pft->par->id==output->daily.cft
-         && data->irrigation==output->daily.irrigation)
-        output_daily_crop(&(output->daily),pft,0.0,0.0);
-      crop=pft->data;
-#ifdef DOUBLE_HARVEST
-      if(output->syear[pft->par->id-npft+data->irrigation*ncft]>epsilon)
-        output->syear2[pft->par->id-npft+data->irrigation*ncft]=crop->sowing_year;
-      else
-        output->syear[pft->par->id-npft+data->irrigation*ncft]=crop->sowing_year;
-      if(output->syear2[pft->par->id-npft+data->irrigation*ncft]>epsilon)
-        output->hdate2[pft->par->id-npft+data->irrigation*ncft]=day;
-      else
-        output->hdate[pft->par->id-npft+data->irrigation*ncft]=day;
-      double_harvest(output->syear2[pft->par->id-npft+data->irrigation*ncft],
-        output->cft_aboveground_biomass+(pft->par->id-npft+data->irrigation*(ncft+NGRASS)),
-        output->cft_aboveground_biomass2+(pft->par->id-npft+data->irrigation*(ncft+NGRASS)),
-        (crop->ind.leaf+crop->ind.pool+crop->ind.so)*pft->nind);
-      double_harvest(output->syear2[pft->par->id-npft+data->irrigation*ncft],
-        output->cft_pet+(pft->par->id-npft+data->irrigation*(ncft+NGRASS)),
-        output->cft_pet2+(pft->par->id-npft+data->irrigation*(ncft+NGRASS)),
-        crop->petsum);
-      double_harvest(output->syear2[pft->par->id-npft+data->irrigation*ncft],
-        output->cft_nir+(pft->par->id-npft+data->irrigation*(ncft+NGRASS+NBIOMASSTYPE+NWPTYPE)),
-        output->cft_nir2+(pft->par->id-npft+data->irrigation*(ncft+NGRASS+NBIOMASSTYPE+NWPTYPE)),
-        crop->nirsum);
-      double_harvest(output->syear2[pft->par->id-npft+data->irrigation*ncft],
-        output->cft_transp+(pft->par->id-npft+data->irrigation*(ncft+NGRASS+NBIOMASSTYPE+NWPTYPE)),
-        output->cft_transp2+(pft->par->id-npft+data->irrigation*(ncft+NGRASS+NBIOMASSTYPE+NWPTYPE)),
-        crop->transpsum);
-      double_harvest(output->syear2[pft->par->id-npft+data->irrigation*ncft],
-        output->cft_evap+(pft->par->id-npft+data->irrigation*(ncft+NGRASS+NBIOMASSTYPE+NWPTYPE)),
-        output->cft_evap2+(pft->par->id-npft+data->irrigation*(ncft+NGRASS+NBIOMASSTYPE+NWPTYPE)),
-        crop->evapsum);
-      double_harvest(output->syear2[pft->par->id-npft+data->irrigation*ncft],
-        output->cft_interc+(pft->par->id-npft+data->irrigation*(ncft+NGRASS+NBIOMASSTYPE+NWPTYPE)),
-        output->cft_interc2+(pft->par->id-npft+data->irrigation*(ncft+NGRASS+NBIOMASSTYPE+NWPTYPE)),
-        crop->intercsum);
-      double_harvest(output->syear2[pft->par->id-npft+data->irrigation*ncft],
-        output->cft_prec+(pft->par->id-npft+data->irrigation*(ncft+NGRASS)),
-        output->cft_prec2+(pft->par->id-npft+data->irrigation*(ncft+NGRASS)),
-        crop->precsum);
-      double_harvest(output->syear2[pft->par->id-npft+data->irrigation*ncft],
-        output->growing_period+(pft->par->id-npft+data->irrigation*(ncft+NGRASS)),
-        output->growing_period2+(pft->par->id-npft+data->irrigation*(ncft+NGRASS)),
-        crop->lgp);
-      double_harvest(output->syear2[pft->par->id-npft+data->irrigation*ncft],
-        output->cft_srad+(pft->par->id-npft+data->irrigation*(ncft+NGRASS)),
-        output->cft_srad2+(pft->par->id-npft+data->irrigation*(ncft+NGRASS)),
-        crop->sradsum);
-      double_harvest(output->syear2[pft->par->id-npft+data->irrigation*ncft],
-        output->cft_airrig+(pft->par->id-npft+data->irrigation*(ncft+NGRASS+NBIOMASSTYPE+NWPTYPE)),
-        output->cft_airrig2+(pft->par->id-npft+data->irrigation*(ncft+NGRASS+NBIOMASSTYPE+NWPTYPE)),
-        crop->pirrww);
-      double_harvest(output->syear2[pft->par->id-npft+data->irrigation*ncft],
-        output->cft_temp+(pft->par->id-npft+data->irrigation*(ncft+NGRASS)),
-        output->cft_temp2+(pft->par->id-npft+data->irrigation*(ncft+NGRASS)),
-        crop->tempsum);
-#else
-      output->cft_aboveground_biomass[pft->par->id-npft+data->irrigation*(ncft+NGRASS)]=
-        (crop->ind.leaf+crop->ind.pool+crop->ind.so)*pft->nind;
-      output->hdate[pft->par->id-npft+data->irrigation*ncft]=day;
-#endif
-      harvest_crop(output,stand,pft,npft,ncft,config->remove_residuals,config->residues_fire,
-                   config->pft_output_scaled);
+      //if(crop->fphu>0.45 || !crop->wtype) /* frost damage possible for winter crops after storage organs develop, for other crops always possible */
+      if(crop->fphu>0.45) /* frost damage possible after storage organs develop */
+        crop->frostkill=TRUE;
+    }
+    if(!config->with_nitrogen)
+      pft->vscal=1;
+    else
+    {
+      /* trigger 2nd fertilization */
+      /* GGCMI phase 3 rule: apply second dosis at fphu=0.25*/
+      if(crop->fphu>0.25 && crop->nfertilizer>0)
+      {
+        stand->soil.NO3[0]+=crop->nfertilizer*param.nfert_no3_frac;
+        stand->soil.NH4[0]+=crop->nfertilizer*(1-param.nfert_no3_frac);
+        stand->cell->balance.n_influx+=crop->nfertilizer*stand->frac;
+        getoutput(output,NFERT_AGR,config)+=crop->nfertilizer*pft->stand->frac;
+        crop->nfertilizer=0;
+      }
+      if(crop->fphu>0.25 && crop->nmanure>0)
+      {
+        stand->soil.NH4[0] += crop->nmanure*param.nmanure_nh4_frac;
+        /* no tillage at second application, so manure goes to ag litter not agsub as at cultivation */
+        stand->soil.litter.item->ag.leaf.carbon += crop->nmanure*param.manure_cn;
+        stand->soil.litter.item->ag.leaf.nitrogen += crop->nmanure*(1-param.nmanure_nh4_frac);
+        getoutput(output,FLUX_ESTABC,config) += crop->nmanure*param.manure_cn*stand->frac;
+        stand->cell->balance.flux_estab.carbon += crop->nmanure*param.manure_cn*stand->frac;
+        stand->cell->balance.n_influx += crop->nmanure*stand->frac;
+        getoutput(output,NMANURE_AGR,config)+=crop->nmanure*pft->stand->frac;
+        crop->nmanure=0;
+      }
+    }
+    if(!isannual(PFT_NLEAF,config))
+      getoutputindex(output,PFT_NLEAF,nnat+pft->par->id-npft+data->irrigation*nirrig,config)=crop->ind.leaf.nitrogen;
+    if(!isannual(PFT_NLIMIT,config))
+      getoutputindex(output,PFT_NLIMIT,nnat+pft->par->id-npft+data->irrigation*nirrig,config)=pft->nlimit;
+    if(!isannual(PFT_CLEAF,config))
+      getoutputindex(output,PFT_CLEAF,nnat+pft->par->id-npft+data->irrigation*nirrig,config)=crop->ind.leaf.carbon;
+    if(!isannual(PFT_NROOT,config))
+      getoutputindex(output,PFT_NROOT,nnat+pft->par->id-npft+data->irrigation*nirrig,config)=crop->ind.root.nitrogen;
+    if(!isannual(PFT_CROOT,config))
+      getoutputindex(output,PFT_CROOT,nnat+pft->par->id-npft+data->irrigation*nirrig,config)=crop->ind.root.carbon;
+    if(!isannual(PFT_VEGN,config))
+      getoutputindex(output,PFT_VEGN,nnat+pft->par->id-npft+data->irrigation*nirrig,config)=vegn_sum(pft)+pft->bm_inc.nitrogen;
+    if(!isannual(PFT_VEGC,config))
+      getoutputindex(output,PFT_VEGC,nnat+pft->par->id-npft+data->irrigation*nirrig,config)=vegc_sum(pft);
+
+    if(phenology_crop(pft,climate->temp,climate->tmax,daylength,npft,config))
+    {
+      if(pft->par->id==config->crop_index && data->irrigation==config->crop_irrigation)
+        output_daily_crop(output,pft,0.0,0.0,config);
+      update_double_harvest(output,pft,data->irrigation,day,npft,ncft,config);
+      harvest_crop(output,stand,pft,npft,ncft,year,config);
       /* return irrig_stor and irrig_amount */
       if(data->irrigation)
       {
         stand->cell->discharge.dmass_lake+=(data->irrig_stor+data->irrig_amount)*stand->cell->coord.area*stand->frac;
         stand->cell->balance.awater_flux-=(data->irrig_stor+data->irrig_amount)*stand->frac; /* cell water balance account for cell inflow */
-        output->mstor_return+=(data->irrig_stor+data->irrig_amount)*stand->frac;
+        getoutput(output,STOR_RETURN,config)+=(data->irrig_stor+data->irrig_amount)*stand->frac;
 
         /* pay back conveyance losses that have already been consumed by transport into irrig_stor, only evaporative conv. losses, drainage conv. losses already returned */
         stand->cell->discharge.dmass_lake+=(data->irrig_stor+data->irrig_amount)*(1/data->ec-1)*data->conv_evap*stand->cell->coord.area*stand->frac;
         stand->cell->balance.awater_flux-=(data->irrig_stor+data->irrig_amount)*(1/data->ec-1)*data->conv_evap*stand->frac;
-        output->aconv_loss_evap-=(data->irrig_stor+data->irrig_amount)*(1/data->ec-1)*data->conv_evap*stand->frac; /* part of global water balance */
-        output->aconv_loss_drain-=(data->irrig_stor+data->irrig_amount)*(1/data->ec-1)*(1-data->conv_evap)*stand->frac; /* not included in global water balance */
-
+        getoutput(output,CONV_LOSS_EVAP,config)-=(data->irrig_stor+data->irrig_amount)*(1/data->ec-1)*data->conv_evap*stand->frac;
+        stand->cell->balance.aconv_loss_evap-=(data->irrig_stor+data->irrig_amount)*(1/data->ec-1)*data->conv_evap*stand->frac;
+        getoutput(output,CONV_LOSS_DRAIN,config)-=(data->irrig_stor+data->irrig_amount)*(1/data->ec-1)*(1-data->conv_evap)*stand->frac;
+        stand->cell->balance.aconv_loss_drain-=(data->irrig_stor+data->irrig_amount)*(1/data->ec-1)*(1-data->conv_evap)*stand->frac;
+#if defined IMAGE && defined COUPLED
+        if(stand->cell->ml.image_data!=NULL)
+        {
+          stand->cell->ml.image_data->mirrwatdem[month]-=(data->irrig_stor+data->irrig_amount)*(1/data->ec-1)*stand->frac;
+          stand->cell->ml.image_data->mevapotr[month]-=(data->irrig_stor+data->irrig_amount)*(1/data->ec-1)*stand->frac;
+        }
+#endif
         if(config->pft_output_scaled)
         {
-          stand->cell->output.cft_conv_loss_evap[pft->par->id-npft+data->irrigation*(ncft+NGRASS+NBIOMASSTYPE+NWPTYPE)]-=(data->irrig_stor+data->irrig_amount)*(1/data->ec-1)*data->conv_evap*stand->frac;
-          stand->cell->output.cft_conv_loss_drain[pft->par->id-npft+data->irrigation*(ncft+NGRASS+NBIOMASSTYPE+NWPTYPE)]-=(data->irrig_stor+data->irrig_amount)*(1/data->ec-1)*(1-data->conv_evap)*stand->frac;
+          getoutputindex(output, CFT_CONV_LOSS_EVAP ,pft->par->id-npft+data->irrigation*nirrig,config)-=(data->irrig_stor+data->irrig_amount)*(1/data->ec-1)*data->conv_evap*stand->frac;
+          getoutputindex(output, CFT_CONV_LOSS_DRAIN ,pft->par->id-npft+data->irrigation*nirrig,config)-=(data->irrig_stor+data->irrig_amount)*(1/data->ec-1)*(1-data->conv_evap)*stand->frac;
         }
         else
         {
-          stand->cell->output.cft_conv_loss_evap[pft->par->id-npft+data->irrigation*(ncft+NGRASS+NBIOMASSTYPE+NWPTYPE)]-=(data->irrig_stor+data->irrig_amount)*(1/data->ec-1)*data->conv_evap;
-          stand->cell->output.cft_conv_loss_drain[pft->par->id-npft+data->irrigation*(ncft+NGRASS+NBIOMASSTYPE+NWPTYPE)]-=(data->irrig_stor+data->irrig_amount)*(1/data->ec-1)*(1-data->conv_evap);
+          getoutputindex(output, CFT_CONV_LOSS_EVAP ,pft->par->id-npft+data->irrigation*nirrig,config)-=(data->irrig_stor+data->irrig_amount)*(1/data->ec-1)*data->conv_evap;
+          getoutputindex(output, CFT_CONV_LOSS_DRAIN ,pft->par->id-npft+data->irrigation*nirrig,config)-=(data->irrig_stor+data->irrig_amount)*(1/data->ec-1)*(1-data->conv_evap);
         }
         data->irrig_stor=0;
         data->irrig_amount=0;
@@ -180,7 +190,6 @@ Real daily_agriculture(Stand *stand, /**< stand pointer */
       /* adjust index */
       p--;
       stand->type=&kill_stand;
-      continue;
     }
   } /* of foreachpft() */
 
@@ -203,16 +212,37 @@ Real daily_agriculture(Stand *stand, /**< stand pointer */
     else
     {
       /* write irrig_apply to output */
-      output->mirrig+=irrig_apply*stand->frac;
-      pft=getpft(&stand->pftlist,0);
-#ifndef DOUBLE_HARVEST
-      if(config->pft_output_scaled)
-        output->cft_airrig[pft->par->id-npft+data->irrigation*(ncft+NGRASS+NBIOMASSTYPE+NWPTYPE)]+=irrig_apply*stand->frac;
-      else
-        output->cft_airrig[pft->par->id-npft+data->irrigation*(ncft+NGRASS+NBIOMASSTYPE+NWPTYPE)]+=irrig_apply;
+      getoutput(output,IRRIG,config)+=irrig_apply*stand->frac;
+      stand->cell->balance.airrig+=irrig_apply*stand->frac;
+#if defined IMAGE && defined COUPLED
+      if(stand->cell->ml.image_data!=NULL)
+      {
+        stand->cell->ml.image_data->mirrwatdem[month]+=irrig_apply*stand->frac;
+        stand->cell->ml.image_data->mevapotr[month] += irrig_apply*stand->frac;
+      }
 #endif
-      if(pft->par->id==output->daily.cft && data->irrigation==output->daily.irrigation)
-        output->daily.irrig=irrig_apply;
+
+      if(getnpft(&stand->pftlist)>0)
+      {
+        pft=getpft(&stand->pftlist,0);
+        if(config->double_harvest)
+        {
+          crop=pft->data;
+          if(config->pft_output_scaled)
+            crop->dh->irrig_apply+=irrig_apply*stand->frac;
+          else
+            crop->dh->irrig_apply+=irrig_apply;
+        }
+        else
+        {
+          if(config->pft_output_scaled)
+            getoutputindex(output,CFT_AIRRIG,pft->par->id-npft+data->irrigation*nirrig,config)+=irrig_apply*stand->frac;
+          else
+            getoutputindex(output,CFT_AIRRIG,pft->par->id-npft+data->irrigation*nirrig,config)+=irrig_apply;
+        }
+        if(pft->par->id==config->crop_index && data->irrigation==config->crop_irrigation)
+          getoutput(output,D_IRRIG,config)=irrig_apply;
+      }
     }
   }
 
@@ -226,24 +256,24 @@ Real daily_agriculture(Stand *stand, /**< stand pointer */
     intercep_stand_blue+=(climate->prec+irrig_apply*sprink_interc>epsilon) ? intercept*(irrig_apply*sprink_interc)/(climate->prec+irrig_apply*sprink_interc) : 0; /* blue intercept fraction */
     intercep_stand+=intercept;
   }
+
   irrig_apply-=intercep_stand_blue;
   rainmelt-=(intercep_stand-intercep_stand_blue);
 
-
   /* rain-water harvesting*/
   if(!data->irrigation && config->rw_manage && rainmelt<5)
-    rw_apply=rw_irrigation(stand,gp_stand,wet,eeq); /* Note: RWH supplementary irrigation is here considered green water */
+    rw_apply=rw_irrigation(stand,gp_stand,wet,eeq,config); /* Note: RWH supplementary irrigation is here considered green water */
 
   /* INFILTRATION and PERCOLATION */
   if(irrig_apply>epsilon)
   {
-    runoff+=infil_perc_irr(stand,irrig_apply,&return_flow_b,config->rw_manage);
+    runoff+=infil_perc_irr(stand,irrig_apply,&return_flow_b,npft,ncft,config);
     /* count irrigation events*/
     pft=getpft(&stand->pftlist,0);
-    output->cft_irrig_events[pft->par->id-npft+data->irrigation*(ncft+NGRASS+NBIOMASSTYPE+NWPTYPE)]++; /* id is consecutively counted over natural pfts, biomass, and the cfts; ids for cfts are from 12-23, that is why npft (=12) is distracted from id */
+    getoutputindex(output,CFT_IRRIG_EVENTS,pft->par->id-npft+data->irrigation*nirrig,config)++; /* id is consecutively counted over natural pfts, biomass, and the cfts; ids for cfts are from 12-23, that is why npft (=12) is distracted from id */
   }
 
-  runoff+=infil_perc_rain(stand,rainmelt+rw_apply,&return_flow_b,config->rw_manage);
+  runoff+=infil_perc_rain(stand,rainmelt+rw_apply,&return_flow_b,npft,ncft,config);
 
   foreachpft(pft,p,&stand->pftlist)
   {
@@ -256,196 +286,199 @@ Real daily_agriculture(Stand *stand, /**< stand pointer */
  *  respiration, including conversion from FPC to grid cell basis.
  *
  */
-
     gpp=water_stressed(pft,aet_stand,gp_stand,gp_stand_leafon,
                        gp_pft[getpftpar(pft,id)],&gc_pft,&rd,
-                       &wet[p],eeq,co2,climate->temp,par,daylength,&wdf,config->permafrost);
-    if(pft->par->id==output->daily.cft && data->irrigation==output->daily.irrigation)
-      output_daily_crop(&output->daily,pft,gpp,rd);
+                       &wet[p],eeq,co2,climate->temp,par,daylength,&wdf,
+                       npft,ncft,config);
+    if(pft->par->id==config->crop_index && data->irrigation==config->crop_irrigation)
+      output_daily_crop(output,pft,gpp,rd,config);
 
     if(gp_pft[getpftpar(pft,id)]>0.0)
     {
-      output->gcgp_count[pft->par->id-config->nbiomass-config->nwft+data->irrigation*(ncft+NGRASS+NBIOMASSTYPE+NWPTYPE)]++;
-      output->pft_gcgp[pft->par->id-config->nbiomass-config->nwft+data->irrigation*(ncft+NGRASS+NBIOMASSTYPE+NWPTYPE)]+=gc_pft/gp_pft[getpftpar(pft,id)];
+      getoutputindex(output,PFT_GCGP_COUNT,nnat+pft->par->id-npft+data->irrigation*nirrig,config)++;
+      getoutputindex(output,PFT_GCGP,nnat+pft->par->id-npft+data->irrigation*nirrig,config)+=gc_pft/gp_pft[getpftpar(pft,id)];
     }
-    npp=npp_crop(pft,gtemp_air,gtemp_soil,gpp-rd,&negbm,wdf,&output->daily);
-    output->mnpp+=npp*stand->frac;
+    npp=npp_crop(pft,gtemp_air,gtemp_soil,gpp-rd-pft->npp_bnf,&negbm,wdf,config);
+    pft->npp_bnf=0.0;
+    getoutput(output,NPP,config)+=npp*stand->frac;
+    stand->cell->balance.anpp+=npp*stand->frac;
+    stand->cell->balance.agpp+=gpp*stand->frac;
+    getoutput(output,NPP_AGR,config) += npp*stand->frac / agrfrac;
     output->dcflux-=npp*stand->frac;
-    output->mgpp+=gpp*stand->frac;
-    output->mfapar += pft->fapar * stand->frac * (1.0/(1-stand->cell->lakefrac-stand->cell->ml.reservoirfrac));
-    output->mwscal += pft->fpc * pft->wscal * stand->frac * (1.0/(1-stand->cell->lakefrac-stand->cell->ml.reservoirfrac));
-
-
-    output->cft_fpar[pft->par->id-npft+data->irrigation*(ncft+NGRASS+NBIOMASSTYPE+NWPTYPE)]+=(fpar(pft)*stand->frac*(1.0/(1-stand->cell->lakefrac)))*(1-pft->albedo);
+    getoutput(output,GPP,config)+=gpp*stand->frac;
+    getoutput(output,FAPAR,config) += pft->fapar * stand->frac * (1.0/(1-stand->cell->lakefrac-stand->cell->ml.reservoirfrac));
+    getoutput(output,WSCAL,config) += pft->fpc * pft->wscal * stand->frac * (1.0/(1-stand->cell->lakefrac-stand->cell->ml.reservoirfrac));
+    getoutputindex(output,CFT_FPAR,pft->par->id-npft+data->irrigation*nirrig,config)+=(fpar(pft)*stand->frac*(1.0/(1-stand->cell->lakefrac)))*(1-pft->albedo);
 
     if(config->pft_output_scaled)
-      output->pft_npp[(pft->par->id-config->nbiomass-config->nwft)+data->irrigation*(ncft+NGRASS+NBIOMASSTYPE+NWPTYPE)]+=npp*stand->frac;
+      getoutputindex(output,PFT_NPP,nnat+pft->par->id-npft+data->irrigation*nirrig,config)+=npp*stand->frac;
     else
-      output->pft_npp[(pft->par->id-config->nbiomass-config->nwft)+data->irrigation*(ncft+NGRASS+NBIOMASSTYPE+NWPTYPE)]+=npp;
-    output->mpft_lai[(pft->par->id-config->nbiomass-config->nwft)+data->irrigation*(ncft+NGRASS+NBIOMASSTYPE+NWPTYPE)]+=actual_lai_crop(pft);
+      getoutputindex(output,PFT_NPP,nnat+pft->par->id-npft+data->irrigation*nirrig,config)+=npp;
+    getoutputindex(output,PFT_LAI,nnat+pft->par->id-npft+data->irrigation*nirrig,config)+=actual_lai_crop(pft);
     crop=pft->data;
-#ifdef DOUBLE_HARVEST
-    crop->lgp+=1;
-    if(config->pft_output_scaled)
+    if(config->double_harvest)
     {
-      crop->petsum+=eeq*((1-pft->phen)*PRIESTLEY_TAYLOR+pft->phen*(1-wet[p])*PRIESTLEY_TAYLOR+pft->phen*wet[p]*PRIESTLEY_TAYLOR)*stand->frac; //???
-      crop->precsum+=climate->prec*stand->frac;
-      crop->sradsum+=climate->swdown*stand->frac;
-      crop->tempsum+=climate->temp*stand->frac;
-      crop->pirrww+=data->irrig_amount*stand->frac;
+      crop->dh->lgp+=1;
+      if(config->pft_output_scaled)
+      {
+        crop->dh->petsum+=eeq*((1-pft->phen)*PRIESTLEY_TAYLOR+pft->phen*(1-wet[p])*PRIESTLEY_TAYLOR+pft->phen*wet[p]*PRIESTLEY_TAYLOR)*stand->frac; //???
+        crop->dh->precsum+=climate->prec*stand->frac;
+        crop->dh->sradsum+=climate->swdown*stand->frac;
+        crop->dh->tempsum+=climate->temp*stand->frac;
+      }
+      else
+      {
+        crop->dh->petsum+=eeq*((1-pft->phen)*PRIESTLEY_TAYLOR+pft->phen*(1-wet[p])*PRIESTLEY_TAYLOR+pft->phen*wet[p]*PRIESTLEY_TAYLOR); //???
+        crop->dh->precsum+=climate->prec;
+        crop->dh->sradsum+=climate->swdown;
+        crop->dh->tempsum+=climate->temp;
+      }
+      if(stand->type->landusetype==AGRICULTURE)
+        crop->dh->runoffsum+=runoff;
     }
     else
     {
-      crop->petsum+=eeq*((1-pft->phen)*PRIESTLEY_TAYLOR+pft->phen*(1-wet[p])*PRIESTLEY_TAYLOR+pft->phen*wet[p]*PRIESTLEY_TAYLOR); //???
-      crop->precsum+=climate->prec;
-      crop->sradsum+=climate->swdown;
-      crop->tempsum+=climate->temp;
-      crop->pirrww+=data->irrig_amount;
+      getoutputindex(output,GROWING_PERIOD,pft->par->id-npft+data->irrigation*(ncft+NGRASS),config)+=1.;
+      getoutputindex(output,CFT_PET,pft->par->id-npft+data->irrigation*(ncft+NGRASS),config)+=eeq*PRIESTLEY_TAYLOR;
+      getoutputindex(output,CFT_TEMP,pft->par->id-npft+data->irrigation*(ncft+NGRASS),config)+= climate->temp >= 5 ? climate->temp : 0;
+      getoutputindex(output,CFT_PREC,pft->par->id-npft+data->irrigation*(ncft+NGRASS),config)+=climate->prec;
+      getoutputindex(output,CFT_SRAD,pft->par->id-npft+data->irrigation*(ncft+NGRASS),config)+=climate->swdown;
     }
-
-#else
-    output->growing_period[pft->par->id-npft+data->irrigation*(ncft+NGRASS)]+=1.;
-    output->cft_pet[pft->par->id-npft+data->irrigation*(ncft+NGRASS)]+=eeq*PRIESTLEY_TAYLOR;
-    output->cft_temp[pft->par->id-npft+data->irrigation*(ncft+NGRASS)]+= climate->temp >= 5 ? climate->temp : 0;
-    output->cft_prec[pft->par->id-npft+data->irrigation*(ncft+NGRASS)]+=climate->prec;
-    output->cft_srad[pft->par->id-npft+data->irrigation*(ncft+NGRASS)]+=climate->swdown;
-#endif
     if(negbm)
     {
-#ifdef DOUBLE_HARVEST
-      if(output->syear[pft->par->id-npft+data->irrigation*ncft]>epsilon)
-        output->syear2[pft->par->id-npft+data->irrigation*ncft]=crop->sowing_year;
-      else
-        output->syear[pft->par->id-npft+data->irrigation*ncft]=crop->sowing_year;
-      if(output->syear2[pft->par->id-npft+data->irrigation*ncft]>epsilon)
-        output->hdate2[pft->par->id-npft+data->irrigation*ncft]=day;
-      else
-        output->hdate[pft->par->id-npft+data->irrigation*ncft]=day;
-      double_harvest(output->syear2[pft->par->id-npft+data->irrigation*ncft],
-        output->cft_aboveground_biomass+(pft->par->id-npft+data->irrigation*(ncft+NGRASS)),
-        output->cft_aboveground_biomass2+(pft->par->id-npft+data->irrigation*(ncft+NGRASS)),
-        (crop->ind.leaf+crop->ind.pool+crop->ind.so)*pft->nind);
-      double_harvest(output->syear2[pft->par->id-npft+data->irrigation*ncft],
-        output->cft_pet+(pft->par->id-npft+data->irrigation*(ncft+NGRASS)),
-        output->cft_pet2+(pft->par->id-npft+data->irrigation*(ncft+NGRASS)),
-        crop->petsum);
-      double_harvest(output->syear2[pft->par->id-npft+data->irrigation*ncft],
-        output->cft_nir+(pft->par->id-npft+data->irrigation*(ncft+NGRASS+NBIOMASSTYPE+NWPTYPE)),
-        output->cft_nir2+(pft->par->id-npft+data->irrigation*(ncft+NGRASS+NBIOMASSTYPE+NWPTYPE)),
-        crop->nirsum);
-      double_harvest(output->syear2[pft->par->id-npft+data->irrigation*ncft],
-        output->cft_transp+(pft->par->id-npft+data->irrigation*(ncft+NGRASS+NBIOMASSTYPE+NWPTYPE)),
-        output->cft_transp2+(pft->par->id-npft+data->irrigation*(ncft+NGRASS+NBIOMASSTYPE+NWPTYPE)),
-        crop->transpsum);
-      double_harvest(output->syear2[pft->par->id-npft+data->irrigation*ncft],
-        output->cft_evap+(pft->par->id-npft+data->irrigation*(ncft+NGRASS+NBIOMASSTYPE+NWPTYPE)),
-        output->cft_evap2+(pft->par->id-npft+data->irrigation*(ncft+NGRASS+NBIOMASSTYPE+NWPTYPE)),
-        crop->evapsum);
-      double_harvest(output->syear2[pft->par->id-npft+data->irrigation*ncft],
-        output->cft_interc+(pft->par->id-npft+data->irrigation*(ncft+NGRASS+NBIOMASSTYPE+NWPTYPE)),
-        output->cft_interc2+(pft->par->id-npft+data->irrigation*(ncft+NGRASS+NBIOMASSTYPE+NWPTYPE)),
-        crop->intercsum);
-      double_harvest(output->syear2[pft->par->id-npft+data->irrigation*ncft],
-        output->cft_prec+(pft->par->id-npft+data->irrigation*(ncft+NGRASS)),
-        output->cft_prec2+(pft->par->id-npft+data->irrigation*(ncft+NGRASS)),
-        crop->precsum);
-      double_harvest(output->syear2[pft->par->id-npft+data->irrigation*ncft],
-        output->growing_period+(pft->par->id-npft+data->irrigation*(ncft+NGRASS)),
-        output->growing_period2+(pft->par->id-npft+data->irrigation*(ncft+NGRASS)),
-        crop->lgp);
-      double_harvest(output->syear2[pft->par->id-npft+data->irrigation*ncft],
-        output->cft_srad+(pft->par->id-npft+data->irrigation*(ncft+NGRASS)),
-        output->cft_srad2+(pft->par->id-npft+data->irrigation*(ncft+NGRASS)),
-        crop->sradsum);
-      double_harvest(output->syear2[pft->par->id-npft+data->irrigation*ncft],
-        output->cft_airrig+(pft->par->id-npft+data->irrigation*(ncft+NGRASS+NBIOMASSTYPE+NWPTYPE)),
-        output->cft_airrig2+(pft->par->id-npft+data->irrigation*(ncft+NGRASS+NBIOMASSTYPE+NWPTYPE)),
-        crop->pirrww);
-      double_harvest(output->syear2[pft->par->id-npft+data->irrigation*ncft],
-        output->cft_temp+(pft->par->id-npft+data->irrigation*(ncft+NGRASS)),
-        output->cft_temp2+(pft->par->id-npft+data->irrigation*(ncft+NGRASS)),
-        crop->tempsum);
-#else
-      output->cft_aboveground_biomass[pft->par->id-npft+data->irrigation*(ncft+NGRASS)]=
-        (crop->ind.leaf+crop->ind.pool+crop->ind.so)*pft->nind;
-      output->hdate[pft->par->id-npft+data->irrigation*ncft]=day;
-#endif
-      harvest_crop(output,stand,pft,npft,ncft,config->remove_residuals,config->residues_fire,
-                   config->pft_output_scaled);
+      update_double_harvest(output,pft,data->irrigation,day,npft,ncft,config);
+      harvest_crop(output,stand,pft,npft,ncft,year,config);
       if(data->irrigation)
       {
         stand->cell->discharge.dmass_lake+=(data->irrig_stor+data->irrig_amount)*stand->cell->coord.area*stand->frac;
         stand->cell->balance.awater_flux-=(data->irrig_stor+data->irrig_amount)*stand->frac;
-        output->mstor_return+=(data->irrig_stor+data->irrig_amount)*stand->frac;
+        getoutput(output,STOR_RETURN,config)+=(data->irrig_stor+data->irrig_amount)*stand->frac;
 
         /* pay back conveyance losses that have already been consumed by transport into irrig_stor */
         stand->cell->discharge.dmass_lake+=(data->irrig_stor+data->irrig_amount)*(1/data->ec-1)*data->conv_evap*stand->cell->coord.area*stand->frac;
         stand->cell->balance.awater_flux-=(data->irrig_stor+data->irrig_amount)*(1/data->ec-1)*data->conv_evap*stand->frac;
-        output->aconv_loss_evap-=(data->irrig_stor+data->irrig_amount)*(1/data->ec-1)*data->conv_evap*stand->frac;
-        output->aconv_loss_drain-=(data->irrig_stor+data->irrig_amount)*(1/data->ec-1)*(1-data->conv_evap)*stand->frac;
+        getoutput(output,CONV_LOSS_EVAP,config)-=(data->irrig_stor+data->irrig_amount)*(1/data->ec-1)*data->conv_evap*stand->frac;
+        stand->cell->balance.aconv_loss_evap-=(data->irrig_stor+data->irrig_amount)*(1/data->ec-1)*data->conv_evap*stand->frac;
+        getoutput(output,CONV_LOSS_DRAIN,config)-=(data->irrig_stor+data->irrig_amount)*(1/data->ec-1)*(1-data->conv_evap)*stand->frac;
+        stand->cell->balance.aconv_loss_drain-=(data->irrig_stor+data->irrig_amount)*(1/data->ec-1)*(1-data->conv_evap)*stand->frac;
+#if defined IMAGE && defined COUPLED
+        if(stand->cell->ml.image_data!=NULL)
+        {
+          stand->cell->ml.image_data->mirrwatdem[month]-=(data->irrig_stor+data->irrig_amount)*(1/data->ec-1)*stand->frac;
+          stand->cell->ml.image_data->mevapotr[month]-=(data->irrig_stor+data->irrig_amount)*(1/data->ec-1)*stand->frac;
+        }
+#endif
 
         if(config->pft_output_scaled)
         {
-          stand->cell->output.cft_conv_loss_evap[pft->par->id-npft+data->irrigation*(ncft+NGRASS+NBIOMASSTYPE+NWPTYPE)]-=(data->irrig_stor+data->irrig_amount)*(1/data->ec-1)*data->conv_evap*stand->frac;
-          stand->cell->output.cft_conv_loss_drain[pft->par->id-npft+data->irrigation*(ncft+NGRASS+NBIOMASSTYPE+NWPTYPE)]-=(data->irrig_stor+data->irrig_amount)*(1/data->ec-1)*(1-data->conv_evap)*stand->frac;
+          getoutputindex(output, CFT_CONV_LOSS_EVAP ,pft->par->id-npft+nirrig,config)-=(data->irrig_stor+data->irrig_amount)*(1/data->ec-1)*data->conv_evap*stand->frac;
+          getoutputindex(output, CFT_CONV_LOSS_DRAIN ,pft->par->id-npft+nirrig,config)-=(data->irrig_stor+data->irrig_amount)*(1/data->ec-1)*(1-data->conv_evap)*stand->frac;
         }
         else
         {
-          stand->cell->output.cft_conv_loss_evap[pft->par->id-npft+data->irrigation*(ncft+NGRASS+NBIOMASSTYPE+NWPTYPE)]-=(data->irrig_stor+data->irrig_amount)*(1/data->ec-1)*data->conv_evap;
-          stand->cell->output.cft_conv_loss_drain[pft->par->id-npft+data->irrigation*(ncft+NGRASS+NBIOMASSTYPE+NWPTYPE)]-=(data->irrig_stor+data->irrig_amount)*(1/data->ec-1)*(1-data->conv_evap);
+          getoutputindex(output, CFT_CONV_LOSS_EVAP ,pft->par->id-npft+nirrig,config)-=(data->irrig_stor+data->irrig_amount)*(1/data->ec-1)*data->conv_evap;
+          getoutputindex(output, CFT_CONV_LOSS_DRAIN ,pft->par->id-npft+nirrig,config)-=(data->irrig_stor+data->irrig_amount)*(1/data->ec-1)*(1-data->conv_evap);
         }
 
         data->irrig_stor=0;
         data->irrig_amount=0;
-      }
+      } /* of if(data->irrigation) */
       delpft(&stand->pftlist,p);
       stand->type=&kill_stand;
       p--;
-      continue;
-    }
+    } /* of if(negbm) */
   } /* of foreachpft */
-
+  free(gp_pft);
   /* soil outflow: evap and transpiration */
   waterbalance(stand,aet_stand,green_transp,&evap,&evap_blue,wet_all,eeq,cover_stand,
                &frac_g_evap,config->rw_manage);
-  if(config->withdailyoutput)
+  transp=0;
+  forrootsoillayer(l)
   {
-    foreachpft(pft,p,&stand->pftlist)
-      if(pft->par->id==output->daily.cft && data->irrigation==output->daily.irrigation)
+    transp+=aet_stand[l]*stand->frac;
+    getoutput(output,TRANSP,config)+=(aet_stand[l]-green_transp[l])*stand->frac;
+  }
+  if(isdailyoutput_agriculture(config,stand))
+  {
+    if(config->crop_index==ALLSTAND)
+    {
+      getoutput(output,D_EVAP,config)+=evap*stand->frac;
+      getoutput(output,D_TRANS,config)+=transp;
+      getoutput(output,D_W0,config)+=stand->soil.w[1]*stand->frac;
+      getoutput(output,D_W1,config)+=stand->soil.w[2]*stand->frac;
+      getoutput(output,D_WEVAP,config)+=stand->soil.w[0]*stand->frac;
+      getoutput(output,D_INTERC,config)+=intercep_stand*stand->frac;
+    }
+    else
+    {
+      getoutput(output,D_EVAP,config)=evap;
+      forrootsoillayer(l)
+        getoutput(output,D_TRANS,config)+=aet_stand[l];
+      getoutput(output,D_PET,config)=eeq*PRIESTLEY_TAYLOR;
+      /* if there are already values from the setaside stand, which does not know if there's the cropstand of interest
+         these values are overwritten here */
+      if(getoutput(output,D_NH4,config)>0) getoutput(output,D_NH4,config)=0;
+      if(getoutput(output,D_NO3,config)>0) getoutput(output,D_NO3,config)=0;
+      if(getoutput(output,D_NSOIL_FAST,config)>0) getoutput(output,D_NSOIL_FAST,config)=0;
+      if(getoutput(output,D_NSOIL_SLOW,config)>0) getoutput(output,D_NSOIL_SLOW,config)=0;
+      forrootsoillayer(l)
       {
-        output->daily.evap=evap;
-        forrootsoillayer(l)
-          output->daily.trans+=aet_stand[l];
-        output->daily.w0=stand->soil.w[1];
-        output->daily.w1=stand->soil.w[2];
-        output->daily.wevap=stand->soil.w[0];
-        output->daily.par=par;
-        output->daily.daylength=daylength;
-        output->daily.pet=eeq*PRIESTLEY_TAYLOR;
+        getoutput(output,D_NH4,config)+=stand->soil.NH4[l];
+        getoutput(output,D_NO3,config)+=stand->soil.NO3[l];
+        getoutput(output,D_NSOIL_FAST,config)+=stand->soil.pool[l].fast.nitrogen;
+        getoutput(output,D_NSOIL_SLOW,config)+=stand->soil.pool[l].slow.nitrogen;
+        getoutput(output,D_TRANS,config)+=aet_stand[l];
       }
+      /*output->daily.w0=stand->soil.w[1];
+      output->daily.w1=stand->soil.w[2];
+      output->daily.wevap=stand->soil.w[0];*/
+      /* output in mm including ice, free water and dead water */
+      getoutput(output,D_W0,config) = stand->soil.w[1] * stand->soil.whcs[1] + stand->soil.w_fw[1] +
+        stand->soil.ice_depth[1] + stand->soil.ice_fw[1] + stand->soil.wpwps[1];
+      getoutput(output,D_W1,config) = stand->soil.w[2] * stand->soil.whcs[2] + stand->soil.w_fw[2] +
+        stand->soil.ice_depth[2] + stand->soil.ice_fw[2] + stand->soil.wpwps[2];
+      getoutput(output,D_WEVAP,config) = stand->soil.w[0] * stand->soil.whcs[0] + stand->soil.w_fw[0] +
+        stand->soil.ice_depth[0] + stand->soil.ice_fw[0] + stand->soil.wpwps[0];
+
+      getoutput(output,D_PAR,config)=par;
+    }
   }
 
   /* calculate net irrigation requirements (NIR) for next days irrigation */
   if(data->irrigation && stand->pftlist.n>0) /* second element to avoid irrigation on just harvested fields */
-    calc_nir(stand,gp_stand,wet,eeq);
+    calc_nir(stand,data,gp_stand,wet,eeq);
 
-  forrootsoillayer(l)
-  {
-    output->mtransp+=aet_stand[l]*stand->frac;
-    output->mtransp_b+=(aet_stand[l]-green_transp[l])*stand->frac;
-  }
+  getoutput(output,TRANSP,config)+=transp;
+  stand->cell->balance.atransp+=transp;
+  getoutput(output,INTERC,config)+=intercep_stand*stand->frac; /* Note: including blue fraction*/
+  getoutput(output,INTERC_B,config)+=intercep_stand_blue*stand->frac;   /* blue interception and evap */
 
-  output->minterc+=intercep_stand*stand->frac; /* Note: including blue fraction*/
-  output->minterc_b+=intercep_stand_blue*stand->frac;   /* blue interception and evap */
+  getoutput(output,EVAP,config)+=evap*stand->frac;
+  stand->cell->balance.aevap+=evap*stand->frac;
+  stand->cell->balance.ainterc+=intercep_stand*stand->frac;
+  getoutput(output,EVAP_B,config)+=evap_blue*stand->frac;   /* blue soil evap */
+#if defined(IMAGE) && defined(COUPLED)
+  if(stand->cell->ml.image_data!=NULL)
+    stand->cell->ml.image_data->mevapotr[month] += transp + (evap + intercep_stand)*stand->frac;
+#endif
 
-  output->mevap+=evap*stand->frac;
-  output->mevap_b+=evap_blue*stand->frac;   /* blue soil evap */
-
-  output->mreturn_flow_b+=return_flow_b*stand->frac; /* now only changed in waterbalance_new.c*/
+  getoutput(output,RETURN_FLOW_B,config)+=return_flow_b*stand->frac; /* now only changed in waterbalance_new.c*/
 
   /* output for green and blue water for evaporation, transpiration and interception */
   output_gbw_agriculture(output,stand,frac_g_evap,evap,evap_blue,return_flow_b,aet_stand,green_transp,
-      intercep_stand,intercep_stand_blue,npft,ncft,config->pft_output_scaled);
+                         intercep_stand,intercep_stand_blue,npft,ncft,config);
+
+  /* write CFT-specific soil moisture output */
+  foreachpft(pft,p,&stand->pftlist)
+  {
+    cft_rm=0.0;
+    forrootmoist(l)
+      cft_rm+=pft->stand->soil.w[l]*pft->stand->soil.whcs[l]; /* absolute soil water content between wilting point and field capacity (mm) */
+    getoutputindex(output,NDAY_MONTH,pft->par->id-npft+data->irrigation*ncft,config)+=1; /* track number of growing season days in each month for calculating the mean in update_monthly.c */
+    getoutputindex(output,CFT_SWC,pft->par->id-npft+data->irrigation*ncft,config)+=cft_rm; /* no secondary output needed as monthly outputs are written even in double harvest situation */
+  }
+
   free(wet);
+
   return runoff;
 } /* of 'daily_agriculture' */

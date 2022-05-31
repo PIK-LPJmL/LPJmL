@@ -40,7 +40,7 @@ int main(int argc,char **argv)
     return EXIT_FAILURE;
   }
   version=READ_VERSION;
-  if(freadanyheader(file,&header,&swap,s,&version))
+  if(freadanyheader(file,&header,&swap,s,&version,TRUE))
   {
     fprintf(stderr,"Error reading header in '%s', perhaps not a clm file.\n",
             argv[3]);
@@ -71,8 +71,13 @@ int main(int argc,char **argv)
     header.order=strtol(argv[2],&endptr,10);
     if(*endptr!='\0')
     {
-      fprintf(stderr,"Invalid number '%s' for order.\n",argv[2]);
-      return EXIT_FAILURE;
+      header.order=findstr(argv[2],ordernames,4);
+      if(header.order==NOT_FOUND)
+      {
+        fprintf(stderr,"Invalid number '%s' for order.\n",argv[2]);
+        return EXIT_FAILURE;
+      }
+      header.order++;
     }
   }
   else if(!strcmp(argv[1],"firstyear"))

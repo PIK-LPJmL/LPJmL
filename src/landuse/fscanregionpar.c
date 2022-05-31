@@ -22,6 +22,14 @@
     return 0;\
   }
 
+#define fscanreal012(verb,file,var,name,region)\
+  if(fscanreal01(file,var,name,FALSE,verb))\
+  {\
+    if(verb)\
+      fprintf(stderr,"ERROR102: Cannot read float '%s' for region '%s'.\n",name,region);\
+    return 0;\
+  }
+
 #define checkptr(ptr) if(ptr==NULL) { printallocerr(#ptr); return 0;}
 
 int fscanregionpar(LPJfile *file,         /**< pointer to LPJ file */
@@ -50,7 +58,8 @@ int fscanregionpar(LPJfile *file,         /**< pointer to LPJ file */
     {
       if(verb)
         fprintf(stderr,
-                "ERROR126: Invalid range of region number=%d in line %d of '%s' in fscanregionpar().\n",id,getlinecount(),getfilename());
+                "ERROR126: Invalid range of region number=%d in fscanregionpar(), must be in [0,%d].\n",
+                id,nregions-1);
       return 0;
     }
     region=(*regionpar)+id;
@@ -58,7 +67,7 @@ int fscanregionpar(LPJfile *file,         /**< pointer to LPJ file */
     {
       if(verb)
         fprintf(stderr,
-                "ERROR179: Region number=%d in line %d of '%s' has been already defined in fscanregionpar().\n",id,getlinecount(),getfilename());
+                "ERROR179: Region number=%d has been already defined in fscanregionpar().\n",id);
       return 0;
     }
     if(fscanstring(&item,s,"name",FALSE,verb))
@@ -70,8 +79,8 @@ int fscanregionpar(LPJfile *file,         /**< pointer to LPJ file */
     region->name=strdup(s);
     checkptr(region->name);
     region->id=id;
-    fscanreal2(verb,&item,&region->fuelratio,"fuelratio",region->name);
-    fscanreal2(verb,&item,&region->bifratio,"bifratio",region->name);
+    fscanreal012(verb,&item,&region->fuelratio,"fuelratio",region->name);
+    fscanreal012(verb,&item,&region->bifratio,"bifratio",region->name);
     fscanreal2(verb,&item,&region->woodconsum,"woodconsum",region->name);
 
   } /* of 'for(n=0;...)' */

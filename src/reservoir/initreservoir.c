@@ -22,80 +22,35 @@ typedef struct
 
 static Bool initreservoir2(Cell grid[],   /**< LPJ grid */
                            Config *config /**< LPJ configuration */
-                           )              /** \return TRUE on error */
+                          )               /** \return TRUE on error */
 {
   int cell;
-  Real data,*vec;
+  Real data;
   Bool swap;
   Header header;
   String headername;
   int version;
   FILE *file;
-  Input_netcdf input;
+  char *name;
+  size_t filesize;
+  Infile input;
   Reservoir reservoir;
   size_t offset;
-  if(config->elevation_filename.fmt==CDF)
+  if(openinputdata(&input,&config->elevation_filename,"elevation","m",LPJ_SHORT,1.0,config))
+    return TRUE;
+  for(cell=0;cell<config->ngridcell;cell++)
   {
-    input=openinput_netcdf(config->elevation_filename.name,
-                           config->elevation_filename.var,"m",0,config);
-    if(input==NULL)
-      return TRUE;
-    for(cell=0;cell<config->ngridcell;cell++)
+    if(readinputdata(&input,&data,&grid[cell].coord,cell+config->startgrid,&config->elevation_filename))
     {
-       if(readinput_netcdf(input,&data,&grid[cell].coord))
-       {
-         closeinput_netcdf(input);
-         return TRUE;
-       }
-       grid[cell].elevation=(int)data;
+      closeinput(&input);
+      return TRUE;
     }
-    closeinput_netcdf(input);
+    grid[cell].elevation=(int)data;
   }
-  else
-  {
-    if((file=openinputfile(&header,&swap,&config->elevation_filename,
-                           headername,
-                           &version,&offset,config))==NULL)
-      return TRUE;
-    if(header.nbands!=1)
-    {
-      if(isroot(*config))
-        fprintf(stderr,"ERROR218: Number of bands=%d in elevation data file '%s' is not 1.\n",
-                header.nbands,config->elevation_filename.name);
-      fclose(file);
-      return TRUE;
-    }
- 
-    if(fseek(file,typesizes[header.datatype]*(config->startgrid-header.firstcell)+offset,SEEK_CUR))
-    {
-      fprintf(stderr,"ERROR150: Cannot seek elevation data file '%s' to position %d.\n",
-              config->elevation_filename.name,config->startgrid);
-      fclose(file);
-      return TRUE;
-    }
-    vec=newvec(Real,config->ngridcell);
-    if(vec==NULL)
-    {
-      printallocerr("vec");
-      fclose(file);
-      return TRUE;
-    }
-    if(readrealvec(file,vec,0,header.scalar,config->ngridcell,swap,header.datatype))
-    {
-      fprintf(stderr,"ERROR151: Cannot read elevation data file '%s'.\n",
-              config->elevation_filename.name);
-      free(vec);
-      fclose(file);
-      return TRUE;
-    }
-    for(cell=0;cell<config->ngridcell;cell++)
-      grid[cell].elevation=(int)vec[cell];
-    free(vec);
-    fclose(file);
-  }
+  closeinput(&input);
   if((file=openinputfile(&header,&swap,&config->reservoir_filename,
                          headername,
-                         &version,&offset,config))==NULL)
+                         &version,&offset,TRUE,config))==NULL)
     return TRUE;
   if(header.nbands!=10)
   {
@@ -105,10 +60,35 @@ static Bool initreservoir2(Cell grid[],   /**< LPJ grid */
     fclose(file);
     return TRUE;
   }
+  if(header.nstep!=1)
+  {
+    if(isroot(*config))
+      fprintf(stderr,"ERROR218: Number of steps=%d in reservoir data file '%s' is not 1.\n",
+              header.nstep,config->reservoir_filename.name);
+    fclose(file);
+    return TRUE;
+  }
+  if(header.timestep!=1)
+  {
+    if(isroot(*config))
+      fprintf(stderr,"ERROR218: Time step=%d in reservoir data file '%s' is not 1.\n",
+              header.timestep,config->reservoir_filename.name);
+    fclose(file);
+    return TRUE;
+  }
+  if(isroot(*config) && config->reservoir_filename.fmt!=META)
+  {
+    filesize=getfilesizep(file)-headersize(headername,version)-offset;
+    if(filesize!=sizeof(int)*header.nyear*header.nbands*header.ncell)
+      fprintf(stderr,"WARNING032: File size of '%s' does not match nyear*ncell*nbands.\n",
+              config->reservoir_filename.name);
+  }
   if(fseek(file,sizeof(Reservoir)*(config->startgrid-header.firstcell)+offset,SEEK_CUR))
   {
-      fprintf(stderr,"ERROR150: Cannot seek reservoir data file '%s' to position %d.\n",
-              config->reservoir_filename.name,config->startgrid);
+    name=getrealfilename(&config->reservoir_filename);
+    fprintf(stderr,"ERROR150: Cannot seek reservoir data file '%s' to position %d.\n",
+            name,config->startgrid);
+    free(name);
     fclose(file);
     return TRUE;
   }
@@ -116,8 +96,10 @@ static Bool initreservoir2(Cell grid[],   /**< LPJ grid */
   {
     if(readreservoir(&reservoir,swap,file))
     {
+      name=getrealfilename(&config->reservoir_filename);
       fprintf(stderr,"ERROR151: Cannot read reservoir data file '%s'.\n",
-              config->reservoir_filename.name);
+              name);
+      free(name);
       fclose(file);
       return TRUE;
     }

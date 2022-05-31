@@ -4,7 +4,7 @@
 /**                                                                                \n**/
 /**     C implementation of LPJmL                                                  \n**/
 /**                                                                                \n**/
-/**     Function calculates above-ground vegetation carbon of tree PFTs            \n**/
+/**     Function calculates above-ground vegetation carbon of grass PFTs           \n**/
 /**                                                                                \n**/
 /** (C) Potsdam Institute for Climate Impact Research (PIK), see COPYRIGHT file    \n**/
 /** authors, and contributors see AUTHORS file                                     \n**/
@@ -22,5 +22,5 @@ Real agb_grass(const Pft *pft /**< pointer to grass PFT */
 {
   const Pftgrass *grass;
   grass=pft->data;
-  return (grass->ind.leaf)*pft->nind;
+  return grass->ind.leaf.carbon*pft->nind;
 } /* of 'agb_grass' */

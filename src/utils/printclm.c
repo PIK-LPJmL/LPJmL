@@ -14,13 +14,13 @@
 
 #include "lpj.h"
 
-#define USAGE "Usage: %s [-metafile] [-header] [-data] [-text] [-scale] [-longheader] [-type {byte|short|int|float|double}]\n       [-nbands n] [-start s] [-end e] [-first f] [-last l] filename ...\n"
+#define USAGE "Usage: %s [-metafile] [-header] [-data] [-text] [-json] [-scale] [-longheader] [-type {byte|short|int|float|double}]\n       [-map name] [-nbands n] [-start s] [-end e] [-first f] [-last l] filename ...\n"
 #define NO_HEADER 1
 #define NO_DATA 2
 #define NO_TEXT 4
 
 static void printclm(const char *filename,int output,int nbands,int version,
-                     int start,int stop,int first,int last,Type type,Bool ismeta,Bool isscale)
+                     int start,int stop,int first,int last,Type type,Bool ismeta,const char *map_name,Bool isscale,Bool isjon)
 {
   FILE *file;
   time_t mod_date;
@@ -33,20 +33,25 @@ static void printclm(const char *filename,int output,int nbands,int version,
   char byte;
   float fdata;
   double ddata;
-  int year,cell,i,*index,rc;
+  int year,cell,i,*index,rc,t;
   Bool swap,isrestart,isreservoir;
   size_t offset;
   Reservoir reservoir;
+  List *map=NULL;
   if(ismeta)
   {
     isrestart=isreservoir=FALSE;
     header.scalar=1;
     header.cellsize_lon=header.cellsize_lat=0.5;
     header.firstyear=1901;
+    header.firstcell=0;
     header.nyear=1;
     header.nbands=(nbands==-1)  ? 1 : nbands;
+    header.nstep=1;
+    header.timestep=1;
     header.datatype=type;
-    file=openmetafile(&header,&swap,&offset,filename,TRUE);
+    header.order=CELLYEAR;
+    file=openmetafile(&header,&map,map_name,&swap,&offset,filename,TRUE);
     if(file==NULL)
       return;
     if(fseek(file,offset,SEEK_CUR))
@@ -56,8 +61,7 @@ static void printclm(const char *filename,int output,int nbands,int version,
       return;
     }
     type=header.datatype;
-    header.order=CELLYEAR;
-    version=4;
+    version=CLM_MAX_VERSION+1;
     strcpy(id,"description file");
   }
   else
@@ -68,7 +72,7 @@ static void printclm(const char *filename,int output,int nbands,int version,
       fprintf(stderr,"Error opening '%s': %s.\n",filename,strerror(errno));
       return;
     }
-    if(freadanyheader(file,&header,&swap,id,&version))
+    if(freadanyheader(file,&header,&swap,id,&version,TRUE))
     {
       fprintf(stderr,"Error reading header in '%s', perhaps not a clm file.\n",
               filename);
@@ -76,10 +80,17 @@ static void printclm(const char *filename,int output,int nbands,int version,
     }
     if(version>2)
       type=header.datatype;
+    else
+      header.datatype=type;
     if(nbands!=-1)
       header.nbands=nbands;
     isrestart=(!strcmp(id,RESTART_HEADER));
     isreservoir=(!strcmp(id,LPJRESERVOIR_HEADER));
+  }
+  if(isjon)
+  {
+    fprintjson(stdout,filename,NULL,&header,NULL,NULL,CLM,id,swap,version);
+    return;
   }
   if((output & NO_HEADER)==0)
   {
@@ -94,11 +105,14 @@ static void printclm(const char *filename,int output,int nbands,int version,
     else
       printf((swap) ? "Big endian" : "Little endian");
     putchar('\n');
-    if(type>=0 && type<5)
-      printf("Type:\t\t%s\n",typenames[type]);
-    else
-      printf("Type:\t\t%d\n",(int)type); 
     printheader(&header);
+    if(map!=NULL)
+    {
+      printf("%s: ",map_name);
+      printmap(map);
+      printf("\n");
+      freemap(map);
+    }
     if(isrestart)
     {
       if(RESTART_VERSION==version)
@@ -106,28 +120,42 @@ static void printclm(const char *filename,int output,int nbands,int version,
         freadrestartheader(file,&restartheader,swap);
         printf("Land use:\t\t%s\n"
                "River routing:\t\t%s\n"
-               "Fixed sowing date:\t%s\n",
+               "Fixed sowing date:\t%s\n"
+               "Prescribed PHU:\t\t%s\n"
+               "Double harvest:\t\t%s\n",
                bool2str(restartheader.landuse),
                bool2str(restartheader.river_routing),
-               bool2str(restartheader.sdate_option));
+               bool2str(restartheader.sdate_option),
+               bool2str(restartheader.crop_option),
+               bool2str(restartheader.double_harvest));
+        printf("Random seed:\t");
+        for(i=0;i<NSEED;i++)
+          printf(" %d",restartheader.seed[i]);
+        putchar('\n');
       }
       else
-        fprintf(stderr,"Warning: invalid restart version %d.\n",version);
+        fprintf(stderr,"Warning: invalid restart version %d, must be %d.\n",
+                version,RESTART_VERSION);
     }
   }
-  if(header.order==CELLINDEX)
+  if(!ismeta && !isrestart && version>CLM_MAX_VERSION)
+    fprintf(stderr,"Warning: Unsupported version %d, must be less than %d.\n",
+            version,CLM_MAX_VERSION+1);
+  if(!ismeta && header.order==CELLINDEX)
   {
     if(version<3)
       type=LPJ_FLOAT;
-    size=getfilesize(filename)-headersize(id,version)-sizeof(int)*header.ncell;
-    if(size!=typesizes[type]*header.ncell*header.nbands*header.nyear)
-      fputs("Warning: file length does not match header.\n",stderr);
+    size=getfilesizep(file)-headersize(id,version)-sizeof(int)*header.ncell;
+    if(size!=(long long)typesizes[type]*header.ncell*header.nbands*header.nstep*header.nyear)
+      fprintf(stderr,"Warning: File length does not match header, differs by %lld bytes.\n",
+              llabs(size-(long long)typesizes[type]*header.ncell*header.nbands*header.nstep*header.nyear));
   }
-  else if(!isrestart && !isreservoir)
+  else if(!isrestart && !isreservoir && !ismeta)
   {
-    size=getfilesize(filename)-headersize(id,version);
-    if(size!=typesizes[type]*header.ncell*header.nbands*header.nyear)
-      fputs("Warning: file length does not match header.\n",stderr);
+    size=getfilesizep(file)-headersize(id,version);
+    if(size!=typesizes[type]*header.ncell*header.nbands*header.nyear*header.nstep)
+      fprintf(stderr,"Warning: File length does not match header, differs by %lld bytes.\n",
+              llabs(size-(long long)typesizes[type]*header.ncell*header.nbands*header.nstep*header.nyear));
   }
   if((output & NO_DATA)==0)
   {
@@ -213,7 +241,7 @@ static void printclm(const char *filename,int output,int nbands,int version,
         }
         fseek(file,sizeof(int)*(header.ncell-last-first+header.firstcell),SEEK_CUR);
       }
-      if(fseek(file,typesizes[type]*header.ncell*header.nbands*(start-header.firstyear),SEEK_CUR))
+      if(fseek(file,typesizes[type]*header.ncell*header.nstep*header.nbands*(start-header.firstyear),SEEK_CUR))
       {
         fprintf(stderr,"Error seeking to year %d.\n",start);
         fclose(file);
@@ -222,10 +250,11 @@ static void printclm(const char *filename,int output,int nbands,int version,
       if(header.order==CELLINDEX || header.order==CELLSEQ)
       {
         for(year=start;year<=stop;year++)
+          for(t=0;t<header.nstep;t++)
           for(i=0;i<header.nbands;i++)
           {
             if((output & NO_TEXT)==0)
-              printf("Band, Year: %d %d\n",i,year);
+              printf("Year, Step, Band: %d %d %d\n",year,t,i);
             fseek(file,typesizes[type]*(first-header.firstcell),SEEK_CUR);
             for(cell=0;cell<last;cell++)
             {
@@ -304,12 +333,12 @@ static void printclm(const char *filename,int output,int nbands,int version,
         {
         if((output & NO_TEXT)==0)
           printf("Year: %d\n",year);
-        fseek(file,typesizes[type]*header.nbands*(first-header.firstcell),SEEK_CUR);
+        fseek(file,typesizes[type]*header.nbands*header.nstep*(first-header.firstcell),SEEK_CUR);
         for(cell=0;cell<last;cell++)
         {
           if((output & NO_TEXT)==0)
             printf("%5d:",cell+first);
-          for(i=0;i<header.nbands;i++)
+          for(i=0;i<header.nbands*header.nstep;i++)
             switch(type)
             {
               case LPJ_BYTE:
@@ -374,7 +403,7 @@ static void printclm(const char *filename,int output,int nbands,int version,
             }
           putchar('\n');
         } /* of for(cell=...) */
-        fseek(file,typesizes[type]*header.nbands*(header.ncell-last-first+header.firstcell),SEEK_CUR);
+        fseek(file,typesizes[type]*header.nbands*header.nstep*(header.ncell-last-first+header.firstcell),SEEK_CUR);
       }
     }
   }
@@ -387,16 +416,19 @@ int main(int argc,char **argv)
   Type type;
   const char *progname;
   char *endptr;
+  char *map_name;
   Bool ismeta;
   Bool isscale;
+  Bool isjson;
   progname=strippath(argv[0]);
   output=0;
   first=0;
   start=stop=last=INT_MAX;
   type=LPJ_SHORT;
   nbands=-1;
-  ismeta=isscale=FALSE;
+  ismeta=isscale=isjson=FALSE;
   version=READ_VERSION;
+  map_name=MAP_NAME;
   for(i=1;i<argc;i++)
     if(argv[i][0]=='-')
     {
@@ -406,12 +438,24 @@ int main(int argc,char **argv)
         output|=NO_DATA;
       else if(!strcmp(argv[i],"-text"))
         output|=NO_HEADER|NO_TEXT;
+      else if(!strcmp(argv[i],"-json"))
+        isjson=TRUE;
       else if(!strcmp(argv[i],"-longheader"))
         version=2;
       else if(!strcmp(argv[i],"-metafile"))
         ismeta=TRUE;
       else if(!strcmp(argv[i],"-scale"))
         isscale=TRUE;
+      else if(!strcmp(argv[i],"-map"))
+      {
+        if(argc-1==i)
+        {
+          fprintf(stderr,"Argument missing for option '-map'.\n"
+                  USAGE,progname);
+          return EXIT_FAILURE;
+        }
+        map_name=argv[++i];
+      }
       else if(!strcmp(argv[i],"-first"))
       {
         if(argc-1==i)
@@ -508,8 +552,8 @@ int main(int argc,char **argv)
         index=findstr(argv[++i],typenames,5);
         if(index==NOT_FOUND)
         {
-          fprintf(stderr,"Invalid argument for option '-type'.\n"
-                  USAGE,progname);
+          fprintf(stderr,"Invalid argument '%s' for option '-type'.\n"
+                  USAGE,argv[i],progname);
           return EXIT_FAILURE;
         }
         type=(Type)index;
@@ -535,7 +579,7 @@ int main(int argc,char **argv)
   {
     if(argc>1)
       printf("Filename:\t%s\n",argv[i]);
-    printclm(argv[i],output,nbands,version,start,stop,first,last,type,ismeta,isscale);
+    printclm(argv[i],output,nbands,version,start,stop,first,last,type,ismeta,map_name,isscale,isjson);
   }
   return EXIT_SUCCESS;
 } /* of 'main' */

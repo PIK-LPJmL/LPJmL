@@ -43,7 +43,7 @@ extern Bool readpopdens(Popdens,int,const Cell *,const Config *);
 extern Real humanignition(Real,Ignition *);
 extern Bool initignition(Cell *,const Config *);
 extern Popdens initpopdens(const Config *);          
-extern Real litter_update_fire(Litter *,Tracegas *,const Fuel *);
+extern Stocks litter_update_fire(Litter *,Tracegas *,const Fuel *);
 extern Real rateofspread(Real,Fuel *);
 extern Real surface_fire_intensity(Real, Real, Real);
 extern void update_fbd_tree(Litter*,Real,Real,int);

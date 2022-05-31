@@ -64,15 +64,16 @@ int fwritepftlist(FILE *file,            /**< file pointer of binary file */
   return p;
 } /* of 'fwritepftlist' */
 
-void fprintpftlist(FILE *file,            /**< pointer of text file */
-                   const Pftlist *pftlist /**< PFT list */
+void fprintpftlist(FILE *file,             /**< pointer of text file */
+                   const Pftlist *pftlist, /**< PFT list */
+                   int with_nitrogen       /**< nitrogen cycle enabled */
                   )
 {
   int p;
   /* Write data of all Pfts in list in a human readable form */
   fprintf(file,"Number of PFTs: %d\n",pftlist->n);
   for(p=0;p<pftlist->n;p++)
-    fprintpft(file,pftlist->pft+p);
+    fprintpft(file,pftlist->pft+p,with_nitrogen);
 } /* of 'fprintpftlist' */
 
 Bool freadpftlist(FILE *file,            /**< file pointer of a binary file */
@@ -80,6 +81,7 @@ Bool freadpftlist(FILE *file,            /**< file pointer of a binary file */
                   Pftlist *pftlist,      /**< PFT list */
                   const Pftpar pftpar[], /**< PFT parameter array */
                   int ntotpft,           /**< total number of PFTs */
+                  Bool double_harvest,
                   Bool swap              /**< if true data is in different byte order */
                  )                       /** \return TRUE on error */
 {
@@ -100,7 +102,7 @@ Bool freadpftlist(FILE *file,            /**< file pointer of a binary file */
       return TRUE;
     }
     for(p=0;p<pftlist->n;p++)
-      if(freadpft(file,stand,pftlist->pft+p,pftpar,ntotpft,swap))
+      if(freadpft(file,stand,pftlist->pft+p,pftpar,ntotpft,double_harvest,swap))
       {
         pftlist->n=p;
         return TRUE;
@@ -125,17 +127,17 @@ void freepftlist(Pftlist *pftlist /**< PFT list */
   }
 } /* of 'freepftlist' */
 
-int addpft(Stand *stand,         /**< Stand pointer */
-           const Pftpar *pftpar, /**< PFT parameter */
-           int year,             /**< simulation year (AD) */
-           int day               /**< day of year (1..365) */
-          )                      /** \return updated length of PFT list */
+Pft *addpft(Stand *stand,         /**< Stand pointer */
+            const Pftpar *pftpar, /**< PFT parameter */
+            int year,             /**< simulation year (AD) */
+            int day,              /**< day of year (1..365) */
+            const Config *config  /**< LPJmL configuration */
+           )                      /** \return pointer to added PFT */
 {
   /* resize PFT array */
   stand->pftlist.pft=(Pft *)realloc(stand->pftlist.pft,
                                     sizeof(Pft)*(stand->pftlist.n+1));
   check(stand->pftlist.pft);
-  newpft(stand->pftlist.pft+stand->pftlist.n,stand,pftpar,year,day);
-  stand->pftlist.n++;
-  return stand->pftlist.n;
+  newpft(stand->pftlist.pft+stand->pftlist.n,stand,pftpar,year,day,config);
+  return stand->pftlist.pft+stand->pftlist.n++;
 } /* of 'addpft' */

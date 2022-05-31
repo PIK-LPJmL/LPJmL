@@ -45,7 +45,12 @@ int main(int argc,char **argv)
   const char *title[3];
   time_t start,end;
   Flux flux;
-  Fscanpftparfcn scanfcn[NTYPES]={fscanpft_grass,fscanpft_tree,fscanpft_crop};
+  Pfttype scanfcn[NTYPES]=
+  {
+    {name_grass,fscanpft_grass},
+    {name_tree,fscanpft_tree},
+    {name_crop,fscanpft_crop}
+  };
   progname=strippath(argv[0]);
   config.rank=0;
   config.ntask=1;
@@ -65,8 +70,7 @@ int main(int argc,char **argv)
     return EXIT_FAILURE;
   }
   /* Establish the connection */
-  printconfig(&config,config.npft[GRASS]+config.npft[TREE],
-              config.npft[CROP]);
+  printconfig(config.npft[GRASS]+config.npft[TREE],config.npft[CROP],&config);
   read_socket(socket,id,3);
   if(strncmp(id,"LPJ",3))
   {
@@ -101,7 +105,7 @@ int main(int argc,char **argv)
         sub++;
         break;
       default:
-        if(ismonthlyoutput(config.outputvars[i].id))
+        if(config.outnames[config.outputvars[i].id].timestep==MONTHLY)
         {
           nmonth++;
           sub++;
@@ -109,7 +113,7 @@ int main(int argc,char **argv)
         break;
     }
     files[config.outputvars[i].id].file=fopen(config.outputvars[i].filename.name,"wb");
-    files[config.outputvars[i].id].count=outputsize(config.outputvars[i].id,config.npft[TREE]+config.npft[GRASS],config.nbiomass,config.nwft,config.npft[CROP]);
+    files[config.outputvars[i].id].count=outputsize(config.outputvars[i].id,config.npft[TREE]+config.npft[GRASS],config.npft[CROP],&config);
     if(files[config.outputvars[i].id].count>count_max)
       count_max=files[config.outputvars[i].id].count;
   }

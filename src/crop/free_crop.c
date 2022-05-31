@@ -20,5 +20,8 @@
 void free_crop(Pft *pft /**< pointer to PFT data */
               )
 {
+  Pftcrop *crop;
+  crop=pft->data;
+  free(crop->dh);
   free(pft->data);
 } /* of 'free_crop' */

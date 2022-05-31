@@ -22,9 +22,9 @@ Real soilcarbon(const Soil *soil /**< pointer to soil data */
   Real carbon=0;
   int l;
   forrootsoillayer(l)
-    carbon+=soil->cpool[l].slow+soil->cpool[l].fast;
+    carbon+=soil->pool[l].slow.carbon+soil->pool[l].fast.carbon;
   carbon+=soil->YEDOMA;
-  return carbon+littersum(&soil->litter);
+  return carbon+littercarbon(&soil->litter);
 } /* of 'soilcarbon' */
 
 Real soilcarbon_slow(const Soil *soil /**< pointer to soil data */
@@ -33,6 +33,6 @@ Real soilcarbon_slow(const Soil *soil /**< pointer to soil data */
   Real carbon=0;
   int l;
   forrootsoillayer(l)
-     carbon+=soil->cpool[l].slow;
+    carbon+=soil->pool[l].slow.carbon;
   return carbon;
 } /* of 'soilcarbon_slow' */

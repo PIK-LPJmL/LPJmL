@@ -15,6 +15,7 @@
 #################################################################################
 
 include Makefile.inc
+
 INC     = include
 
 HDRS    = $(INC)/buffer.h $(INC)/cell.h $(INC)/climate.h $(INC)/conf.h\
@@ -29,17 +30,14 @@ HDRS    = $(INC)/buffer.h $(INC)/cell.h $(INC)/climate.h $(INC)/conf.h\
           $(INC)/queue.h $(INC)/pnet.h $(INC)/channel.h $(INC)/woodplantation.h\
           $(INC)/natural.h $(INC)/grassland.h $(INC)/agriculture.h\
           $(INC)/reservoir.h $(INC)/spitfire.h $(INC)/biomass_tree.h\
-          $(INC)/biomass_grass.h $(INC)/cdf.h $(INC)/outfile.h $(INC)/cpl.h
+          $(INC)/biomass_grass.h $(INC)/cdf.h $(INC)/outfile.h $(INC)/cpl.h\
+          $(INC)/agriculture_tree.h $(INC)/agriculture_grass.h
 
-CONF	= lpjml.conf input.conf param.conf lpj.conf\
-          lpjml_image_*.conf input_crumonthly.conf\
-          lpjml_netcdf.conf input_netcdf.conf lpjml_fms.conf input_fms.conf
+DATA    = par/*.js
 
-JSON	= lpjml.js input_crumonthly.js param.js lpj.js\
+JSON	= lpjml.js input_crumonthly.js param.js lpj.js input_GSWP3-ERA5.js\
           lpjml_netcdf.js input_netcdf.js lpjml_fms.js input_fms.js\
-          lpjml_vpd.js input_GLDAS.js param_vpd.js
-
-DATA    = par/*.par par/*.js
+          lpjml_vpd.js input_GLDAS.js param_vpd.js param_non.js lpjml_non.js
 
 SCRIPTS	= configure.bat configure.sh\
           bin/output_bsq bin/lpjsubmit_aix bin/lpjsubmit_intel\
@@ -47,7 +45,7 @@ SCRIPTS	= configure.bat configure.sh\
           bin/filetypes.vim bin/regridlpj bin/lpjsubmit_slurm
 
 FILES	= Makefile config/* README AUTHORS INSTALL VERSION LICENSE STYLESHEET\
-          $(CONF) $(JSON) $(DATA) $(HDRS) $(SCRIPTS)
+          $(JSON) $(DATA) $(HDRS) $(SCRIPTS)
 
 main: 
 	$(MKDIR) lib
@@ -62,7 +60,6 @@ install: all
 	$(MKDIR) $(LPJROOT)/bin
 	$(MKDIR) $(LPJROOT)/include
 	$(MKDIR) $(LPJROOT)/html
-	$(MKDIR) $(LPJROOT)/lib
 	$(MKDIR) $(LPJROOT)/par
 	$(MKDIR) $(LPJROOT)/man/man1
 	$(MKDIR) $(LPJROOT)/man/man5
@@ -71,7 +68,6 @@ install: all
 	chmod 755 $(LPJROOT)/bin
 	chmod 755 $(LPJROOT)/include
 	chmod 755 $(LPJROOT)/html
-	chmod 755 $(LPJROOT)/lib
 	chmod 755 $(LPJROOT)/par
 	chmod 755 $(LPJROOT)/man
 	chmod 755 $(LPJROOT)/man/man1
@@ -80,9 +76,8 @@ install: all
 	install bin/* $(LPJROOT)/bin
 	install -m 644 html/* $(LPJROOT)/html
 	install -m 644 $(HDRS) $(LPJROOT)/include
-	install -m 644 lib/* $(LPJROOT)/lib
 	install -m 644 $(DATA) $(LPJROOT)/par
-	install -m 644 README INSTALL VERSION AUTHORS LICENSE COPYRIGHT $(CONF) $(JSON) $(LPJROOT)
+	install -m 644 README INSTALL VERSION AUTHORS LICENSE COPYRIGHT $(JSON) $(LPJROOT)
 	install -m 644 man/whatis $(LPJROOT)/man
 	install -m 644 man/man1/*.1 $(LPJROOT)/man/man1
 	install -m 644 man/man5/*.5 $(LPJROOT)/man/man5
@@ -96,7 +91,7 @@ clean:
 	(cd src  && $(MAKE) clean)
 
 tar: 
-	tar -cf lpjml-4.0.004.tar $(FILES) src/Makefile src/*.c\
+	tar -cf lpjml-5.3.001.tar $(FILES) src/Makefile src/*.c\
 	    src/climate/Makefile src/climate/*.c\
             man/man1/*.1 man/man3/*.3 man/man5/*.5 man/whatis\
             man/man1/Makefile man/man3/Makefile man/man5/Makefile man/Makefile\
@@ -111,10 +106,10 @@ tar:
             src/pnet/Makefile REFERENCES COPYRIGHT src/utils/*.c src/utils/Makefile\
             src/spitfire/Makefile src/spitfire/*.c src/netcdf/Makefile src/netcdf/*.c\
             src/cpl/Makefile src/cpl/*.c
-	    gzip -f lpjml-4.0.004.tar
+	    gzip -f lpjml-5.3.001.tar
 
 zipfile: 
-	zip -l lpjml-4.0.004.zip $(FILES) src/Makefile src/*.c\
+	zip -l lpjml-5.3.001.zip $(FILES) src/Makefile src/*.c\
 	    src/climate/Makefile src/climate/*.c config/* man/* man/man1/*.1\
             man/man3/*.3 man/man5/*.5\
 	    src/crop/*.c src/crop/Makefile src/grass/*.c src/grass/Makefile\

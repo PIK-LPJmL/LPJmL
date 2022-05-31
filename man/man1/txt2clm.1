@@ -1,42 +1,57 @@
-.TH txt2clm 1  "November 26, 2018" "version 1.0.005" "USER COMMANDS"
+.TH txt2clm 1  "January 24, 2022" "version 1.0.001" "USER COMMANDS"
 .SH NAME
-txt2clm \- convert CRU ASCII files to clm data files for LPJmL
+txt2clm \- convert text files to clm data files for LPJmL
 .SH SYNOPSIS
 .B txt2clm
-[\-h] [\-yearcell] [\-float] [\-scale s] 
-.I crufile clmfile 
-[\fIgridfile\fP]
+[\-h] [\-version v] [\-float] [\-int] [\-scale s] [\-nbands n] [-nstep n] [\-firstyear f] [\-firstcell c] [\-ncell n]  [\-header id]
+.I txtfile clmfile 
 .SH DESCRIPTION
-Program converts Climate Research Unit (CRU) data files into LPJ climate data files
-CRU data files have to be in the format specified in
-http://www.cru.uea.ac.uk/~timm/grid/CRU_TS_2_1.html
+Program converts text files containing white space separated numbers into LPJ climate data files. File is read until end of file is reached.
 .SH OPTIONS
 .TP
 \-h
 display a short help text
 .TP
-\-yearcell 
-does not revert order in CRU file
+\-version v
+set clm version, default is 3
 .TP
 \-float 
 write data as float, default is short
 .TP
+\-int 
+write data as int, default is short
+.TP
 \-scale s
 scale data by a factor
 .TP
-.I crufile    
-filename of ASCII CRU data file
+\-nbands n
+set number of bands, default is 12
+.TP
+\-nstep n
+set number of steps, default is 1
+.TP
+\-firstyear f
+set first year, default is 1901
+.TP
+\-firstcell c
+set first cell, default is 0
+.TP
+\-ncell n
+set number of cells, default is 67420
+.TP
+\-header id 
+set header string in clm file, default is LPJCLIM
+.TP
+.I txtfile    
+filename of text file
 .TP
 .I clmfile     
 filename of clm data file written
-.TP
-.I gridfile     
-filename of grid coordinates data file written
 .SH EXAMPLES
 .TP
-Create clm data and grid file from CRU dataset:
-.B txt2clm
-tmp_1901-2003.txt tmp2003.clm coord.clm
+Create clm data from text file:
+.B txt2clm -nbands 365
+tmp_1901-2003.txt tmp2003.clm
 .PP
 .SH EXIT STATUS
 .B txt2clm
@@ -52,4 +67,4 @@ For authors and contributors see AUTHORS file
 (C) Potsdam Institute for Climate Impact Research (PIK), see COPYRIGHT file
 
 .SH SEE ALSO
-lpjml(1), asc2clm(1), cru2clm(1), grid2clm(1), cft2clm(1), catclm(1), clm(5)
+lpjml(1), asc2clm(1), cru2clm(1), grid2clm(1), txt2grid.(1), cft2clm(1), catclm(1), clm(5)

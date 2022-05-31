@@ -22,7 +22,7 @@
 #define error(var,rc) if(rc){ if(isout) fprintf(stderr,"ERROR403: Cannot read '%s' in '%s': %s.\n",var,filename,nc_strerror(rc)); nc_close(coord->ncid); free(coord); return NULL;}
 #endif
 
-#define MISSING_VALUE_FLOAT -9999.
+//#define MISSING_VALUE_FLOAT -9999.
 
 struct coord_netcdf
 {
@@ -547,7 +547,7 @@ Coord_netcdf opencoord_netcdf(const char *filename,const char *var,Bool isout)
   if(ndims!=2)
   {
     if(isout)
-      fprintf(stderr,"ERROR408: Invalid number of dimensions %d in '%s'.\n",
+      fprintf(stderr,"ERROR408: Invalid number of dimensions %d in '%s', must be 2.\n",
               ndims,filename);
     nc_close(coord->ncid);
     free(coord);

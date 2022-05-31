@@ -76,11 +76,11 @@ void fuelload(Stand *stand,
     if(isgrass(pft))
     {
       grass=pft->data;
-      livegrass += c2biomass((grass->ind.leaf * pft->nind )* pft->phen);
+      livegrass += c2biomass((grass->ind.leaf.carbon * pft->nind )* pft->phen);
       if(pft->par->path==C3)
-        livefuel->pot_fc_lg_c3 = c2biomass(grass->ind.leaf*pft->nind*pft->phen);
+        livefuel->pot_fc_lg_c3 = c2biomass(grass->ind.leaf.carbon*pft->nind*pft->phen);
       else
-        livefuel->pot_fc_lg_c4 = c2biomass(grass->ind.leaf*pft->nind*pft->phen);
+        livefuel->pot_fc_lg_c4 = c2biomass(grass->ind.leaf.carbon*pft->nind*pft->phen);
     }
   }
   fuel->char_net_fuel = net_fuel +(1.0-MINER_TOT)*livegrass*1e-3;  /*in kg biomass */
@@ -89,10 +89,10 @@ void fuelload(Stand *stand,
   if(livegrass > 0)
   {
     /*TODO*/
-    mean_w=((stand->soil.w[0]*stand->soil.par->whcs[0]+stand->soil.w_fw[0]+stand->soil.par->wpwps[0]+
-            stand->soil.ice_depth[0]+stand->soil.ice_fw[0])/stand->soil.par->wsats[0]+
-            (stand->soil.w[1]*stand->soil.par->whcs[1]+stand->soil.w_fw[1]+stand->soil.par->wpwps[1]+
-            stand->soil.ice_depth[1]+stand->soil.ice_fw[1])/stand->soil.par->wsats[1])/2 ;
+    mean_w=((stand->soil.w[0]*stand->soil.whcs[0]+stand->soil.w_fw[0]+stand->soil.wpwps[0]+
+            stand->soil.ice_depth[0]+stand->soil.ice_fw[0])/stand->soil.wsats[0]+
+            (stand->soil.w[1]*stand->soil.whcs[1]+stand->soil.w_fw[1]+stand->soil.wpwps[1]+
+            stand->soil.ice_depth[1]+stand->soil.ice_fw[1])/stand->soil.wsats[1])/2 ;
     livefuel->dlm_livegrass = (0.0 > ((10.0/9.0) * mean_w -(1.0/9.0)) ?
                                 0 : ((10.0/9.0) * mean_w -(1.0/9.0)));
     ratio_c3_livegrass = livefuel->pot_fc_lg_c3 / livegrass;

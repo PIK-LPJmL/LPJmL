@@ -20,6 +20,7 @@ void freeclimatedata(Climatedata *data /**< pointer to climate data */
                     )                  /** \return void */
 {
   free(data->tmax);
+  free(data->tmin);
   free(data->prec);
   free(data->temp);
   free(data->sun);
@@ -31,42 +32,36 @@ void freeclimatedata(Climatedata *data /**< pointer to climate data */
   free(data->tamp);
   free(data->burntarea);
   free(data->lightning);
+  free(data->no3deposition);
+  free(data->nh4deposition);
 } /* of 'freeclimatedata' */
 
 void freeclimate(Climate *climate, /**< pointer to climate data */
                  Bool isroot       /**< task is root task */
-                 )                 /** \return void */
+                )                  /** \return void */
 {
   if(climate!=NULL)
   {
     closeclimatefile(&climate->file_temp,isroot);
     closeclimatefile(&climate->file_prec,isroot);
-    if(climate->data.tmax!=NULL)
-      closeclimatefile(&climate->file_tmax,isroot);
-    if(climate->data.sun!=NULL)
-      closeclimatefile(&climate->file_cloud,isroot);
-    if(climate->data.lwnet!=NULL)
-      closeclimatefile(&climate->file_lwnet,isroot);
-    if(climate->data.swdown!=NULL)
-      closeclimatefile(&climate->file_swdown,isroot);
-    if(climate->data.humid!=NULL)
-      closeclimatefile(&climate->file_humid,isroot);
-    if(climate->data.wind!=NULL)
-      closeclimatefile(&climate->file_wind,isroot);
-    if(climate->data.tamp!=NULL)
-      closeclimatefile(&climate->file_tamp,isroot);
-    if(climate->data.wet!=NULL)
-      closeclimatefile(&climate->file_wet,isroot);
-   if(climate->data.burntarea!=NULL)
-       closeclimatefile(&climate->file_burntarea,isroot);
+    closeclimatefile(&climate->file_tmax,isroot);
+    closeclimatefile(&climate->file_tmin,isroot);
+    closeclimatefile(&climate->file_cloud,isroot);
+    closeclimatefile(&climate->file_lwnet,isroot);
+    closeclimatefile(&climate->file_swdown,isroot);
+    closeclimatefile(&climate->file_humid,isroot);
+    closeclimatefile(&climate->file_wind,isroot);
+    closeclimatefile(&climate->file_tamp,isroot);
+    closeclimatefile(&climate->file_wet,isroot);
+    closeclimatefile(&climate->file_burntarea,isroot);
+    closeclimatefile(&climate->file_no3deposition,isroot);
+    closeclimatefile(&climate->file_nh4deposition,isroot);
 #if defined IMAGE && defined COUPLED
-    if(climate->file_temp_var.file!=NULL)
-      closeclimatefile(&climate->file_temp_var,isroot);
-    if(climate->file_prec_var.file!=NULL)
-      closeclimatefile(&climate->file_prec_var,isroot);
+    closeclimatefile(&climate->file_temp_var,isroot);
+    closeclimatefile(&climate->file_prec_var,isroot);
 #endif
     free(climate->co2.data);
     freeclimatedata(&climate->data);
+    free(climate);
   }
-  free(climate);
 } /* of 'freeclimate' */

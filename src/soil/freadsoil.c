@@ -28,24 +28,31 @@ Bool freadsoil(FILE *file,             /**< pointer to binary file */
   soil->par=soilpar;
   forrootsoillayer(l)
   {
-    freadreal((Real *)&soil->cpool[l],sizeof(Pool)/sizeof(Real),swap,file);
-    soil->c_shift_fast[l]=newvec(Real,ntotpft);
-    if(soil->c_shift_fast[l]==NULL)
+    freadreal((Real *)&soil->pool[l],sizeof(Pool)/sizeof(Real),swap,file);
+    soil->c_shift[l]=newvec(Poolpar,ntotpft);
+    if(soil->c_shift[l]==NULL)
     {
-      printallocerr("c_shift_fast");
+      printallocerr("c_shift");
       return TRUE;
     }
-    soil->c_shift_slow[l]=newvec(Real,ntotpft);
-    if(soil->c_shift_slow[l]==NULL)
-    {
-      printallocerr("c_shift_slow");
-      return TRUE;
-    }
-    freadreal(soil->c_shift_fast[l],ntotpft,swap,file);
-    freadreal(soil->c_shift_slow[l],ntotpft,swap,file);
+    freadreal((Real *)soil->c_shift[l],ntotpft*sizeof(Poolpar)/sizeof(Real),swap,file);
   }
   if(freadlitter(file,&soil->litter,pftpar,ntotpft,swap))
     return TRUE;
+  freadreal(soil->NO3,LASTLAYER,swap,file);
+  freadreal(soil->NH4,LASTLAYER,swap,file);
+  freadreal(soil->wsat, NSOILLAYER, swap, file);
+  freadreal(soil->wpwp, NSOILLAYER, swap, file);
+  freadreal(soil->wfc, NSOILLAYER, swap, file);
+  freadreal(soil->whc, NSOILLAYER, swap, file);
+  freadreal(soil->whcs, NSOILLAYER, swap, file);
+  freadreal(soil->wpwps, NSOILLAYER, swap, file);
+  freadreal(soil->wsats, NSOILLAYER, swap, file);
+  freadreal(soil->beta_soil,NSOILLAYER, swap,file);
+  freadreal(soil->bulkdens, NSOILLAYER, swap, file);
+  freadreal(soil->k_dry, NSOILLAYER, swap, file);
+  freadreal(soil->Ks, NSOILLAYER, swap, file);
+  freadreal(soil->df_tillage, NTILLLAYER, swap, file);
   freadreal(soil->w,NSOILLAYER,swap,file);
   freadreal1(&soil->w_evap,swap,file);
   freadreal(soil->w_fw,NSOILLAYER,swap,file);
@@ -66,8 +73,8 @@ Bool freadsoil(FILE *file,             /**< pointer to binary file */
 #ifdef MICRO_HEATING
   foreachsoillayer(l) soil->decomC[l]=soil->micro_heating[l]=0;
 #endif
-  freadreal((Real *)soil->k_mean,LASTLAYER*sizeof(Pool)/sizeof(Real),swap,file);
-  freadreal1(&soil->decomp_litter_mean,swap,file);
+  freadreal((Real *)soil->k_mean,LASTLAYER*sizeof(Poolpar)/sizeof(Real),swap,file);
+  freadreal((Real *)&soil->decomp_litter_mean,sizeof(Stocks)/sizeof(Real),swap,file);
   freadint1(&soil->count,swap,file);
 #ifdef MICRO_HEATING
   soil->litter.decomC=0;

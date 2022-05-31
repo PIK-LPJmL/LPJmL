@@ -15,9 +15,9 @@
 #include "lpj.h"
 
 #ifdef USE_UDUNITS
-#define USAGE "Usage: %s [-v] [-units unit] [-var name] [-o filename] [-scale factor] [-id s] [-version v] [-float] gridfile netcdffile\n"
+#define USAGE "Usage: %s [-v] [-units unit] [-var name] [-time name] [-o filename] [-scale factor] [-id s] [-version v] [-float] gridfile netcdffile ...\n"
 #else
-#define USAGE "Usage: %s [-v] [-var name] [-o filename] [-scale factor] [-id s] [-version v] [-float] gridfile netcdffile\n"
+#define USAGE "Usage: %s [-v] [-var name] [-o filename] [-scale factor] [-id s] [-version v] [-float] gridfile netcdffile ...\n"
 #endif
 
 #if defined(USE_NETCDF) || defined(USE_NETCDF4)
@@ -42,7 +42,7 @@ static void printindex(size_t i,Time time,size_t var_len)
         fprintf(stderr,"at item %d",(int)(i % var_len)+1);
       break;
   }
-}
+} /* of 'printindex' */
 
 static Bool readclimate2(Climatefile *file,    /* climate data file */
                          float data[],         /* pointer to data read in */
@@ -52,6 +52,8 @@ static Bool readclimate2(Climatefile *file,    /* climate data file */
                         )                      /* returns TRUE on error */
 {
   int cell,rc;
+  short *s;
+  int *idata;
   float *f;
   double *d;
   int index,start;
@@ -105,7 +107,7 @@ static Bool readclimate2(Climatefile *file,    /* climate data file */
       {
         free(f);
         fprintf(stderr,"ERROR421: Cannot read float data: %s.\n",
-               nc_strerror(rc)); 
+               nc_strerror(rc));
         nc_close(file->ncid);
         return TRUE;
       }
@@ -127,8 +129,43 @@ static Bool readclimate2(Climatefile *file,    /* climate data file */
         return TRUE;
       }
       break;
+    case LPJ_SHORT:
+      s=newvec(short,size*file->var_len*file->nlon*file->nlat);
+      if(s==NULL)
+      {
+        printallocerr("data");
+        nc_close(file->ncid);
+        return TRUE;
+      }
+      if((rc=nc_get_vara_short(file->ncid,file->varid,offsets,counts,s)))
+      {
+        free(s);
+        fprintf(stderr,"ERROR421: Cannot read short data: %s.\n",
+               nc_strerror(rc));
+        nc_close(file->ncid);
+        return TRUE;
+      }
+      break;
+    case LPJ_INT:
+      idata=newvec(int,size*file->var_len*file->nlon*file->nlat);
+      if(idata==NULL)
+      {
+        printallocerr("data");
+        nc_close(file->ncid);
+        return TRUE;
+      }
+      if((rc=nc_get_vara_int(file->ncid,file->varid,offsets,counts,idata)))
+      {
+        free(idata);
+        fprintf(stderr,"ERROR421: Cannot read int data: %s.\n",
+               nc_strerror(rc));
+        nc_close(file->ncid);
+        return TRUE;
+      }
+      break;
+
     default:
-      fprintf(stderr,"Datatype not supported.\n");
+      fprintf(stderr,"Datatype %s not supported.\n",typenames[file->datatype]);
       nc_close(file->ncid);
       return TRUE;
   }
@@ -142,76 +179,126 @@ static Bool readclimate2(Climatefile *file,    /* climate data file */
       offsets[index+1]=(int)((360+coords[cell].lon-file->lon_min)/file->lon_res+0.5);
     else
       offsets[index+1]=(int)((coords[cell].lon-file->lon_min)/file->lon_res+0.5);
-    if(offsets[index]>=file->nlat || offsets[index+1]>=file->nlon)
+    if(checkcoord(offsets+index,cell,coords+cell,file))
     {
-      fprintf(stderr,"ERROR422: Invalid coordinate for cell %d (",
-              cell);
-      fprintcoord(stderr,coords+cell);
-      fputs(") in data file.\n",stderr);
-      free(f);
+      switch(file->datatype)
+      {
+        case LPJ_FLOAT:
+          free(f);
+          break;
+        case LPJ_DOUBLE:
+          free(d);
+          break;
+        case LPJ_INT:
+          free(idata);
+          break;
+        case LPJ_SHORT:
+          free(s);
+          break;
+      }
       nc_close(file->ncid);
       return TRUE;
     }
     for(i=0;i<size*file->var_len;i++)
     {
-      if(file->datatype==LPJ_FLOAT)
+      switch(file->datatype)
       {
-        if(f[file->nlon*(i*file->nlat+offsets[index])+offsets[index+1]]==file->missing_value.f)
-        {
-          fprintf(stderr,"ERROR423: Missing value for cell=%d (",cell);
-          fprintcoord(stderr,coords+cell);
-          fprintf(stderr,") ");
-          printindex(i,file->time_step,file->var_len);
-          fprintf(stderr,".\n");
-          free(f);
-          nc_close(file->ncid);
-          return TRUE;
-        }
-        else if(isnan(f[file->nlon*(i*file->nlat+offsets[index])+offsets[index+1]]))
-        {
-          fprintf(stderr,"ERROR423: Invalid value for cell=%d (",cell);
-          fprintcoord(stderr,coords+cell);
-          fprintf(stderr,") ");
-          printindex(i,file->time_step,file->var_len);
-          fprintf(stderr,".\n");
-          free(f);
-          nc_close(file->ncid);
-          return TRUE;
-        }
-        data[cell*size*file->var_len+i]=(float)(file->slope*f[file->nlon*(i*file->nlat+offsets[index])+offsets[index+1]]+file->intercept);
-      }
-      else
-      {
-        if(d[file->nlon*(i*file->nlat+offsets[index])+offsets[index+1]]==file->missing_value.d)
-        {
-          fprintf(stderr,"ERROR423: Missing value for cell=%d (",cell);
-          fprintcoord(stderr,coords+cell);
-          fprintf(stderr,") ");
-          printindex(i,file->time_step,file->var_len);
-          fprintf(stderr,".\n");
-          free(d);
-          nc_close(file->ncid);
-          return TRUE;
-        }
-        else if(isnan(d[file->nlon*(i*file->nlat+offsets[index])+offsets[index+1]]))
-        {
-          fprintf(stderr,"ERROR423: Invalid value for cell=%d (",cell);
-          fprintcoord(stderr,coords+cell);
-          fprintf(stderr,") ");
-          printindex(i,file->time_step,file->var_len);
-          fprintf(stderr,".\n");
-          free(d);
-          nc_close(file->ncid);
-          return TRUE;
-        }
-        data[cell*size*file->var_len+i]=file->slope*d[file->nlon*(i*file->nlat+offsets[index])+offsets[index+1]]+file->intercept;
-      }
+        case LPJ_FLOAT:
+          if(f[file->nlon*(i*file->nlat+offsets[index])+offsets[index+1]]==file->missing_value.f)
+          {
+            fprintf(stderr,"ERROR423: Missing value for cell=%d (",cell);
+            fprintcoord(stderr,coords+cell);
+            fprintf(stderr,") ");
+            printindex(i,file->time_step,file->var_len);
+            fprintf(stderr,".\n");
+            free(f);
+            nc_close(file->ncid);
+            return TRUE;
+          }
+          else if(isnan(f[file->nlon*(i*file->nlat+offsets[index])+offsets[index+1]]))
+          {
+            fprintf(stderr,"ERROR423: Invalid value for cell=%d (",cell);
+            fprintcoord(stderr,coords+cell);
+            fprintf(stderr,") ");
+            printindex(i,file->time_step,file->var_len);
+            fprintf(stderr,".\n");
+            free(f);
+            nc_close(file->ncid);
+            return TRUE;
+          }
+          data[cell*size*file->var_len+i]=(float)(file->slope*f[file->nlon*(i*file->nlat+offsets[index])+offsets[index+1]]+file->intercept);
+          break;
+        case LPJ_DOUBLE:
+          if(d[file->nlon*(i*file->nlat+offsets[index])+offsets[index+1]]==file->missing_value.d)
+          {
+            fprintf(stderr,"ERROR423: Missing value for cell=%d (",cell);
+            fprintcoord(stderr,coords+cell);
+            fprintf(stderr,") ");
+            printindex(i,file->time_step,file->var_len);
+            fprintf(stderr,".\n");
+            free(d);
+            nc_close(file->ncid);
+            return TRUE;
+          }
+          else if(isnan(d[file->nlon*(i*file->nlat+offsets[index])+offsets[index+1]]))
+          {
+            fprintf(stderr,"ERROR423: Invalid value for cell=%d (",cell);
+            fprintcoord(stderr,coords+cell);
+            fprintf(stderr,") ");
+            printindex(i,file->time_step,file->var_len);
+            fprintf(stderr,".\n");
+            free(d);
+            nc_close(file->ncid);
+            return TRUE;
+          }
+          data[cell*size*file->var_len+i]=file->slope*d[file->nlon*(i*file->nlat+offsets[index])+offsets[index+1]]+file->intercept;
+          break;
+        case LPJ_INT:
+          if(idata[file->nlon*(i*file->nlat+offsets[index])+offsets[index+1]]==file->missing_value.i)
+          {
+            fprintf(stderr,"ERROR423: Missing value for cell=%d (",cell);
+            fprintcoord(stderr,coords+cell);
+            fprintf(stderr,") ");
+            printindex(i,file->time_step,file->var_len);
+            fprintf(stderr,".\n");
+            free(idata);
+            nc_close(file->ncid);
+            return TRUE;
+          }
+          data[cell*size*file->var_len+i]=file->slope*idata[file->nlon*(i*file->nlat+offsets[index])+offsets[index+1]]+file->intercept;
+          break;
+        case LPJ_SHORT:
+          if(s[file->nlon*(i*file->nlat+offsets[index])+offsets[index+1]]==file->missing_value.s)
+          {
+            fprintf(stderr,"ERROR423: Missing value for cell=%d (",cell);
+            fprintcoord(stderr,coords+cell);
+            fprintf(stderr,") ");
+            printindex(i,file->time_step,file->var_len);
+            fprintf(stderr,".\n");
+            free(s);
+            nc_close(file->ncid);
+            return TRUE;
+          }
+          data[cell*size*file->var_len+i]=file->slope*s[file->nlon*(i*file->nlat+offsets[index])+offsets[index+1]]+file->intercept;
+          break;
+      } /* of 'switch' */
     }
   }
-  if(file->datatype==LPJ_FLOAT)
-    free(f);
-  else 
-    free(d);
+  switch(file->datatype)
+  {
+    case LPJ_FLOAT:
+      free(f);
+      break;
+    case LPJ_DOUBLE:
+      free(d);
+      break;
+    case LPJ_INT:
+      free(idata);
+      break;
+    case LPJ_SHORT:
+      free(s);
+      break;
+  }
   return FALSE;
 } /* of 'readclimate2' */
 
@@ -223,7 +310,7 @@ int main(int argc,char **argv)
   Coordfile coordfile;
   Climatefile climate;
   Config config;
-  char *units,*var,*outname,*endptr;
+  char *units,*var,*outname,*endptr,*time_name;
   float scale,*data;
   Filename coord_filename;
   Coord *coords;
@@ -238,6 +325,7 @@ int main(int argc,char **argv)
   /* set default values */
   units=NULL;
   var=NULL;
+  time_name=NULL;
   scale=1;
   isfloat=verbose=FALSE;
   outname="out.clm"; /* default file name for output */
@@ -257,6 +345,16 @@ int main(int argc,char **argv)
           return EXIT_FAILURE;
         }
         var=argv[++i];
+      }
+      else if(!strcmp(argv[i],"-time"))
+      {
+        if(argc==i+1)
+        {
+          fprintf(stderr,"Missing argument after option '-time'.\n"
+                 USAGE,argv[0]);
+          return EXIT_FAILURE;
+        }
+        time_name=argv[++i];
       }
 #ifdef USE_UDUNITS
       else if(!strcmp(argv[i],"-units"))
@@ -362,14 +460,15 @@ int main(int argc,char **argv)
   config.resolution.lat=header.cellsize_lat;
   config.resolution.lon=header.cellsize_lon;
   for(j=0;j<numcoord(coordfile);j++)
-    readcoord(coordfile,coords+j,&config.resolution); 
+    readcoord(coordfile,coords+j,&config.resolution);
   closecoord(coordfile);
   header.nyear=0;
   header.ncell=config.ngridcell;
   header.scalar=scale;
   header.order=CELLYEAR;
   header.firstcell=0;
-  header.datatype=(isfloat) ? LPJ_FLOAT : LPJ_SHORT; 
+  header.timestep=1;
+  header.datatype=(isfloat) ? LPJ_FLOAT : LPJ_SHORT;
   file=fopen(outname,"wb");
   if(file==NULL)
   {
@@ -379,29 +478,46 @@ int main(int argc,char **argv)
   fwriteheader(file,&header,id,version);
   for(j=i+1;j<argc;j++)
   {
-    if(verbose)
-      printf("%s\n",argv[j]);
-    if(openclimate_netcdf(&climate,argv[j],NULL,var,units,&config))
+    if(openclimate_netcdf(&climate,argv[j],time_name,var,NULL,units,&config))
     {
       fprintf(stderr,"Error opening '%s'.\n",argv[j]);
       return EXIT_FAILURE;
     }
+    if(verbose)
+      printf("%s: ",argv[j]);
     if(j==i+1)
     {
       header.firstyear=climate.firstyear;
       switch(climate.time_step)
       {
         case DAY:
-          header.nbands=NDAYYEAR*climate.var_len;
-          break; 
-        case MONTH:
-          header.nbands=NMONTH*climate.var_len;
-          break; 
-        case YEAR: case MISSING_TIME:
+          header.nstep=NDAYYEAR;
           header.nbands=climate.var_len;
+          if(verbose)
+            printf("daily");
+          break;
+        case MONTH:
+          header.nstep=NMONTH;
+          header.nbands=climate.var_len;
+          if(verbose)
+            printf("monthly");
+          break;
+        case YEAR: case MISSING_TIME:
+          header.nstep=1;
+          header.nbands=climate.var_len;
+          if(verbose)
+            printf((climate.time_step==YEAR) ? "yearly" : "no");
           break;
       }
-      data=newvec(float,config.ngridcell*header.nbands);
+      if(verbose)
+      {
+        printf(" time step from %d",climate.firstyear);
+        if(climate.slope!=1 || climate.intercept!=0)
+          printf(", convert by %g*data%+g\n",climate.slope,climate.intercept);
+        else
+          printf("\n");
+      }
+      data=newvec(float,config.ngridcell*header.nbands*header.nstep);
       if(data==NULL)
       {
         printallocerr("data");
@@ -409,7 +525,7 @@ int main(int argc,char **argv)
       }
       if(!isfloat)
       {
-        s=newvec(short,config.ngridcell*header.nbands);
+        s=newvec(short,config.ngridcell*header.nbands*header.nstep);
         if(s==NULL)
         {
           printallocerr("short");
@@ -446,25 +562,25 @@ int main(int argc,char **argv)
       }
       if(isfloat)
       {
-        if(fwrite(data,sizeof(float),config.ngridcell*header.nbands,file)!=config.ngridcell*header.nbands)
+        if(fwrite(data,sizeof(float),config.ngridcell*header.nbands*header.nstep,file)!=config.ngridcell*header.nbands*header.nstep)
         {
           fprintf(stderr,"Error writing data in '%s' in year %d.\n",outname,year+climate.firstyear);
           return EXIT_FAILURE;
         }
       }
       else
-      { 
-        for(k=0;k<config.ngridcell*header.nbands;k++)
+      {
+        for(k=0;k<config.ngridcell*header.nbands*header.nstep;k++)
         {
           if(round(data[k]/scale)<SHRT_MIN || round(data[k]/scale)>SHRT_MAX)
           {
-            fprintf(stderr,"WARNING: Data overflow for cell %d ",k/header.nbands);
-            fprintcoord(stderr,coords+k/header.nbands);
-            fprintf(stderr,") at %s %d in %d.\n",isdaily(climate) ? "day" : "month",(k % header.nbands)+1,climate.firstyear+year);
-          } 
-          s[k]=(short)round(data[k]/scale); 
+            fprintf(stderr,"WARNING: Data overflow for cell %d ",k/header.nbands/header.nbands);
+            fprintcoord(stderr,coords+k/header.nbands/header.nbands);
+            fprintf(stderr,") at %s %d in %d.\n",isdaily(climate) ? "day" : "month",(k % (header.nbands*header.nbands))+1,climate.firstyear+year);
+          }
+          s[k]=(short)round(data[k]/scale);
         }
-        if(fwrite(s,sizeof(short),config.ngridcell*header.nbands,file)!=config.ngridcell*header.nbands)
+        if(fwrite(s,sizeof(short),config.ngridcell*header.nbands*header.nstep,file)!=config.ngridcell*header.nbands*header.nstep)
         {
           fprintf(stderr,"Error writing data in '%s' in year %d.\n",outname,year+climate.firstyear);
           return EXIT_FAILURE;
@@ -475,6 +591,8 @@ int main(int argc,char **argv)
     nc_close(climate.ncid);
   }
   rewind(file);
+  if(version<4)
+    header.nbands*=header.nstep;
   fwriteheader(file,&header,id,version);
   fclose(file);
   return EXIT_SUCCESS;

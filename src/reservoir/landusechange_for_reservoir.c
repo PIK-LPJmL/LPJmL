@@ -22,12 +22,13 @@
 static void deforest_for_reservoir(Cell *cell,    /**< pointer to cell */
                                    Real difffrac, /**< fraction to deforest */
                                    Bool istimber, /**< setting istimber */
-                                   int ntotpft    /**< total number of PFTs */
+                                   int ntotpft,   /**< total number of PFTs */
+                                   const Config *config
                                   )               /** \return void */
 {
   int s,pos;
   Stand *natstand,*cutstand;
-
+  Stocks stocks;
   s=findlandusetype(cell->standlist,NATURAL);
   if(s!=NOT_FOUND)
   {
@@ -35,7 +36,7 @@ static void deforest_for_reservoir(Cell *cell,    /**< pointer to cell */
     natstand=getstand(cell->standlist,s);
     cutstand=getstand(cell->standlist,pos);
     cutstand->frac=difffrac;
-    reclaim_land(natstand,cutstand,cell,istimber,ntotpft);
+    reclaim_land(natstand,cutstand,cell,istimber,ntotpft,config);
     if(difffrac+epsilon>=natstand->frac)
     {
       difffrac=natstand->frac;
@@ -48,9 +49,10 @@ static void deforest_for_reservoir(Cell *cell,    /**< pointer to cell */
 
     /* all the water from the cutstand goes in the reservoir */
     cell->ml.resdata->dmass+=soilwater(&cutstand->soil)*cutstand->frac*cell->coord.area;
-
-    /* all the carbon from the reservoir goes into a c_pool */
-    cell->ml.resdata->c_pool+=soilcarbon(&cutstand->soil)*cutstand->frac;
+    /* all the carbon and nitrogen from the reservoir goes into a pool  */
+    stocks=soilstocks(&cutstand->soil);
+    cell->ml.resdata->pool.carbon+=stocks.carbon*cutstand->frac;
+    cell->ml.resdata->pool.nitrogen+=stocks.nitrogen*cutstand->frac;
     /* delete the cutstand */
     delstand(cell->standlist,pos);
   }
@@ -59,20 +61,19 @@ static void deforest_for_reservoir(Cell *cell,    /**< pointer to cell */
 
 } /* of 'deforest_for_reservoir' */
 
-static Real from_setaside_for_reservoir(Cell *cell,             /**< pointer to cell */
-                                        Real difffrac,          /**< requested reservoir fraction */
-                                        const Pftpar pftpar[],  /**< PFT parameters */
-                                        Bool istimber,          /**< setting timber harvest */
-                                        Bool intercrop,         /**< intercrop setting */
-                                        int npft,               /**< number of PFTs */
-                                        int ncft,               /**< number of CFTs */
-                                        int year
-                                        )                       /** \return reservoir fraction that could be created from setaside */
+static Real from_setaside_for_reservoir(Cell *cell,          /**< pointer to cell */
+                                        Real difffrac,       /**< requested reservoir fraction */
+                                        Bool intercrop,      /**< intercrop setting */
+                                        int npft,            /**< number of PFTs */
+                                        int ncft,            /**< number of CFTs */
+                                        int year,            /**< simulation year */
+                                        const Config *config /**< LPJmL configuration */
+                                       )                     /** \return reservoir fraction that could be created from setaside */
 {
-  int s,s2,pos,p;
+  int s,s2,pos;
   Stand *setasidestand,*setasidestand_ir,*cutstand, *stand;
   Real factor;
-  Pft *pft;
+  Stocks stocks;
   String line;
   Irrigation *data;
 
@@ -94,21 +95,17 @@ static Real from_setaside_for_reservoir(Cell *cell,             /**< pointer to 
         if(difffrac+epsilon>=setasidestand->frac+setasidestand_ir->frac)
         {
           /* remove all vegetation on irrigated setaside */
-          foreachpft(pft,p,&setasidestand_ir->pftlist){
-            litter_update(&setasidestand_ir->soil.litter,pft,pft->nind);
-            delpft(&setasidestand_ir->pftlist,p);
-            p--; /* adjust loop variable */
-          }
-          mixsetaside(setasidestand,setasidestand_ir,intercrop);
+          cutpfts(setasidestand_ir,config);
+          mixsetaside(setasidestand,setasidestand_ir,intercrop,year,config);
           delstand(cell->standlist,s2);
         }
         else{
           pos=addstand(&natural_stand,cell)-1;
           cutstand=getstand(cell->standlist,pos);
           cutstand->frac=difffrac-setasidestand->frac;
-          reclaim_land(setasidestand_ir,cutstand,cell,istimber,npft+ncft);
+          reclaim_land(setasidestand_ir,cutstand,cell,config->istimber,npft+ncft,config);
           setasidestand_ir->frac-=difffrac-setasidestand->frac;
-          mixsetaside(setasidestand,cutstand,intercrop);
+          mixsetaside(setasidestand,cutstand,intercrop,year,config);
           delstand(cell->standlist,pos);
         }
       }
@@ -128,13 +125,13 @@ static Real from_setaside_for_reservoir(Cell *cell,             /**< pointer to 
           pos=addstand(&natural_stand,cell)-1;
           cutstand=getstand(cell->standlist,pos);
           cutstand->frac=factor*stand->frac;
-          reclaim_land(stand,cutstand,cell,istimber,npft+ncft);
+          reclaim_land(stand,cutstand,cell,config->istimber,npft+ncft,config);
           stand->frac-=cutstand->frac;
 
-          cell->discharge.dmass_lake+=(data->irrig_stor+data->irrig_amount)*cell->coord.area*cutstand->frac;
-          cell->balance.awater_flux-=(data->irrig_stor+data->irrig_amount)*cutstand->frac;
-          
-          if(setaside(cell,getstand(cell->standlist,pos),pftpar,intercrop,npft,FALSE,year))
+          cell->discharge.dmass_lake+=(data->irrig_stor+data->irrig_amount+cutstand->soil.litter.agtop_moist)*cell->coord.area*cutstand->frac;
+          cell->balance.awater_flux-=(data->irrig_stor+data->irrig_amount+cutstand->soil.litter.agtop_moist)*cutstand->frac;
+
+          if(setaside(cell,getstand(cell->standlist,pos),cell->ml.with_tillage,intercrop,npft,FALSE,year,config))
             delstand(cell->standlist,pos);
         }
       }
@@ -152,13 +149,13 @@ static Real from_setaside_for_reservoir(Cell *cell,             /**< pointer to 
         pos=addstand(&natural_stand,cell)-1;
         cutstand=getstand(cell->standlist,pos);
         cutstand->frac=factor*stand->frac;
-        reclaim_land(stand,cutstand,cell,istimber,npft+ncft);
+        reclaim_land(stand,cutstand,cell,config->istimber,npft+ncft,config);
         stand->frac-=cutstand->frac;
-        
-        cell->discharge.dmass_lake+=(data->irrig_stor+data->irrig_amount)*cell->coord.area*cutstand->frac;
-        cell->balance.awater_flux-=(data->irrig_stor+data->irrig_amount)*cutstand->frac;
-        
-        if(setaside(cell,getstand(cell->standlist,pos),pftpar,intercrop,npft,FALSE,year))
+
+        cell->discharge.dmass_lake+=(data->irrig_stor+data->irrig_amount+cutstand->soil.litter.agtop_moist)*cell->coord.area*cutstand->frac;
+        cell->balance.awater_flux-=(data->irrig_stor+data->irrig_amount+cutstand->soil.litter.agtop_moist)*cutstand->frac;
+
+        if(setaside(cell,getstand(cell->standlist,pos),cell->ml.with_tillage,intercrop,npft,FALSE,year,config))
           delstand(cell->standlist,pos);
       }
 
@@ -175,14 +172,16 @@ static Real from_setaside_for_reservoir(Cell *cell,             /**< pointer to 
     pos=addstand(&natural_stand,cell)-1;
     cutstand=getstand(cell->standlist,pos);
     cutstand->frac=difffrac;
-    reclaim_land(setasidestand,cutstand,cell,istimber,npft+ncft);
+    reclaim_land(setasidestand,cutstand,cell,config->istimber,npft+ncft,config);
     setasidestand->frac-=difffrac;
 
     /* all the water from the cutstand goes in the reservoir */
     cell->ml.resdata->dmass+=soilwater(&cutstand->soil)*cutstand->frac*cell->coord.area;
 
-    /* all the carbon from the reservoir goes into a c_pool */
-    cell->ml.resdata->c_pool+=soilcarbon(&cutstand->soil)*cutstand->frac;
+    /* all the carbon from the reservoir goes into a pool */
+    stocks=soilstocks(&cutstand->soil);
+    cell->ml.resdata->pool.carbon+=stocks.carbon*cutstand->frac;
+    cell->ml.resdata->pool.nitrogen+=stocks.nitrogen*cutstand->frac;
 
     /* delete the cutstand, and the setasidestand if empty */
     delstand(cell->standlist,pos);
@@ -203,14 +202,13 @@ static Real from_setaside_for_reservoir(Cell *cell,             /**< pointer to 
   return difffrac;
 } /* of 'from setaside for reservoir' */
 
-void landusechange_for_reservoir(Cell *cell,            /**< pointer to cell */
-                                 const Pftpar pftpar[], /**< PFT parameter array */
-                                 int npft,              /**< number of natural PFTs */
-                                 Bool istimber,         /**< timber harvest setting */
-                                 Bool intercrop,        /**< intercrop setting */
-                                 int ncft,              /**< number of CFTs */
-                                 int year
-                                )                       /** \return void */
+void landusechange_for_reservoir(Cell *cell,          /**< pointer to cell */
+                                 int npft,            /**< number of natural PFTs */
+                                 int ncft,            /**< number of CFTs */
+                                 Bool intercrop,      /**< intercrop setting */
+                                 int year,            /**< simulation year */
+                                 const Config *config /**< LPJmL configuration */
+                                )                     /** \return void */
 /* needs to be called before establishment, to ensure that regrowth is possible in the
    following year */
 {
@@ -219,7 +217,8 @@ void landusechange_for_reservoir(Cell *cell,            /**< pointer to cell */
   Real sum[2];
   Real minnatfrac_res;
   int s;
-  Real totw_before,totw_after,totc_before,totc_after,balanceW,balanceC; /* to check the water and c balance in the cells */
+  Real totw_before,totw_after,balanceW;
+  Stocks tot_before={0,0},tot_after={0,0},balance,stocks; /* to check the water and c balance in the cells */
   Irrigation *data;
 #if defined IMAGE && defined COUPLED
   minnatfrac_res=0.0002;
@@ -238,20 +237,27 @@ void landusechange_for_reservoir(Cell *cell,            /**< pointer to cell */
     /* total water and carbon calculation before the correction of fractions
      * for reservoir water
      */
-    totc_before=totc_after=0.0;
-    totw_before=cell->balance.awater_flux;
+    totw_before=cell->balance.awater_flux+cell->balance.excess_water;
     foreachstand(stand,s,cell->standlist)
       totw_before+=soilwater(&stand->soil)*stand->frac;
     totw_before+=(cell->discharge.dmass_lake)/cell->coord.area;
     totw_before+=cell->ml.resdata->dmass/cell->coord.area;
     totw_before+=cell->ml.resdata->dfout_irrigation/cell->coord.area;
-
     /* carbon */
     foreachstand(stand,s,cell->standlist)
-      totc_before+=standcarbon(stand)*stand->frac;
-    totc_before+=cell->ml.resdata->c_pool;
-    totc_before+=cell->output.deforest_emissions;
-
+    {
+      stocks=standstocks(stand);
+      tot_before.carbon+=stocks.carbon*stand->frac;
+      tot_before.nitrogen+=stocks.nitrogen*stand->frac;
+    }
+    tot_before.carbon+=cell->ml.resdata->pool.carbon;
+    tot_before.nitrogen+=cell->ml.resdata->pool.nitrogen;
+    tot_before.carbon+=cell->balance.timber_harvest.carbon;
+    tot_before.nitrogen+=cell->balance.timber_harvest.nitrogen;
+    tot_before.carbon+=cell->balance.deforest_emissions.carbon;
+    tot_before.nitrogen+=cell->balance.deforest_emissions.nitrogen;
+    tot_before.carbon-=cell->balance.flux_estab.carbon;
+    tot_before.nitrogen-=cell->balance.flux_estab.nitrogen;
     /* cut cut entire natural stand if lakefraction+reservoir fraction equals 1 */
     if(difffrac>=1-cell->lakefrac-minnatfrac_res)
       minnatfrac_res=0.0;
@@ -260,14 +266,15 @@ void landusechange_for_reservoir(Cell *cell,            /**< pointer to cell */
     if(difffrac>epsilon && (1-cell->lakefrac-cell->ml.cropfrac_rf-cell->ml.cropfrac_ir-minnatfrac_res)>=difffrac)
     {  /* deforestation to built the reservoir */
        s=findlandusetype(cell->standlist,NATURAL);
-       if(s!=NOT_FOUND) deforest_for_reservoir(cell,difffrac,istimber,npft+ncft);
+       if(s!=NOT_FOUND)
+         deforest_for_reservoir(cell,difffrac,config->istimber,npft+ncft,config);
     }
     /* if this is not possible: deforest all the natural land and then reduce crops  */
     if(difffrac>epsilon && 1-cell->lakefrac-cell->ml.cropfrac_rf-cell->ml.cropfrac_ir-minnatfrac_res<difffrac)
     {
       s=findlandusetype(cell->standlist,NATURAL);
       if(s!=NOT_FOUND) /* check if there is still natural land in the gridcell */
-        deforest(cell,difffrac,pftpar,intercrop,npft,FALSE,istimber,FALSE,ncft,year,minnatfrac_res); /* 1 deforest */
+        deforest(cell,difffrac,intercrop,npft,FALSE,FALSE,ncft,year,minnatfrac_res,config); /* 1 deforest */
       s=findlandusetype(cell->standlist,NATURAL); /* 2 check if everyting is deforested */
       if(s!=NOT_FOUND)
       {
@@ -282,8 +289,8 @@ void landusechange_for_reservoir(Cell *cell,            /**< pointer to cell */
           fflush(stdout);
 /*        fail(FOREST_LEFT_ERR,TRUE,
                "wrong loop, there is still natural land to deforest left"); */
-      
-          deforest(cell,difffrac,pftpar,intercrop,npft,FALSE,istimber,FALSE,ncft,year,minnatfrac_res); /* 1 deforest */
+
+          deforest(cell,difffrac,intercrop,npft,FALSE,FALSE,ncft,year,minnatfrac_res,config); /* 1 deforest */
           s=findlandusetype(cell->standlist,NATURAL); /* 2 check if everyting is deforested */
           if(s!=NOT_FOUND)
           {
@@ -312,8 +319,8 @@ void landusechange_for_reservoir(Cell *cell,            /**< pointer to cell */
       cell->ml.cropfrac_rf=sum[0];
       cell->ml.cropfrac_ir=sum[1];
 
-      difffrac-=from_setaside_for_reservoir(cell,difffrac,pftpar,istimber,
-                                            intercrop,npft,ncft,year);
+      difffrac-=from_setaside_for_reservoir(cell,difffrac,
+                                            intercrop,npft,ncft,year,config);
       /*3 cut setaside stand to built the reservoir */
 
       /* update the cropfactor */
@@ -332,31 +339,60 @@ void landusechange_for_reservoir(Cell *cell,            /**< pointer to cell */
     /* total water and carbon calculation after the correction of fractions
      * for reservoir water
      */
-    totw_after=cell->balance.awater_flux;
+    totw_after=cell->balance.awater_flux+cell->balance.excess_water;
     foreachstand(stand,s,cell->standlist)
       totw_after+=soilwater(&stand->soil)*stand->frac;
     totw_after+=(cell->discharge.dmass_lake)/cell->coord.area;
     totw_after+=cell->ml.resdata->dmass/cell->coord.area;
     totw_after+=cell->ml.resdata->dfout_irrigation/cell->coord.area;
-
     /* carbon */
     foreachstand(stand,s,cell->standlist)
-      totc_after+=standcarbon(stand)*stand->frac;
-    totc_after+=cell->ml.resdata->c_pool;
-    totc_after+=cell->output.deforest_emissions;
+    {
+      stocks=standstocks(stand);
+      tot_after.carbon+=stocks.carbon*stand->frac;
+      tot_after.nitrogen+=stocks.nitrogen*stand->frac;
+    }
+    tot_after.carbon+=cell->ml.resdata->pool.carbon;
+    tot_after.nitrogen+=cell->ml.resdata->pool.nitrogen;
+    tot_after.carbon+=cell->balance.timber_harvest.carbon;
+    tot_after.nitrogen+=cell->balance.timber_harvest.nitrogen;
+    tot_after.carbon+=cell->balance.deforest_emissions.carbon;
+    tot_after.nitrogen+=cell->balance.deforest_emissions.nitrogen;
+    tot_after.carbon-=cell->balance.flux_estab.carbon;
+    tot_after.nitrogen-=cell->balance.flux_estab.nitrogen;
     /* check if the same */
+    balance.carbon=tot_before.carbon-tot_after.carbon;
+    balance.nitrogen=tot_before.nitrogen-tot_after.nitrogen;
     balanceW=totw_before-totw_after;
-    balanceC=totc_before-totc_after;
 
 #ifndef IMAGE /*  Because the timber harvest is not accounted for in the carbon balance check*/
     if(fabs(balanceW)>0.01)
-      fail(INVALID_WATER_BALANCE_ERR,TRUE,
-           "balance error in the building of the reservoir, balanceW=%g",
+#ifdef NO_FAIL_BALANCE
+      fprintf(stderr,"ERROR005: "
+#else
+      fail(INVALID_WATER_BALANCE_ERR,FALSE,
+#endif
+           "water balance error in the building of the reservoir, balanceW=%g",
            balanceW);
-    if(fabs(balanceC)>2)
-      fail(INVALID_CARBON_BALANCE_ERR,TRUE,
-           "balance error in the building of the reservoir, balanceC=%g",
-           balanceC);
+    if(fabs(balance.nitrogen)>0.1)
+    {
+#ifdef NO_FAIL_BALANCE
+      fprintf(stderr,"ERROR037: "
+#else
+      fail(INVALID_NITROGEN_BALANCE_ERR,FALSE,
+#endif
+           "nitrogen balance error in cell (%g,%g) in the building of the reservoir, balanceN=%g",
+           cell->coord.lat,cell->coord.lon,balance.nitrogen);
+      fflush(stderr);
+    }
+    if(fabs(balance.carbon)>2)
+#ifdef NO_FAIL_BALANCE
+      fprintf(stderr,"ERROR004: "
+#else
+      fail(INVALID_CARBON_BALANCE_ERR,FALSE,
+#endif
+           "carbon balance error in the building of the reservoir, balanceC=%g",
+           balance.carbon);
 #endif
     /* check if total fractions add up to 1 again */
     check_stand_fracs(cell,cell->lakefrac+cell->ml.reservoirfrac);

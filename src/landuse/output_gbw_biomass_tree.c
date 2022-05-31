@@ -13,7 +13,6 @@
 /**************************************************************************************/
 
 #include "lpj.h"
-#include "agriculture.h"
 #include "biomass_tree.h"
 
 void output_gbw_biomass_tree(Output *output,      /**< output data */
@@ -27,13 +26,14 @@ void output_gbw_biomass_tree(Output *output,      /**< output data */
                              Real intercep_stand,  /**< stand interception (mm) */
                              Real intercep_stand_blue, /**< stand interception from irrigation (mm) */
                              int ncft,            /**< number of CROPS */
-                             Bool pft_output_scaled
+                             const Config *config /**< LPJmL configuration */
                             )
 {
-  int l;
+  int l,irrigation,index;
   Real total_g,total_b;
-  Irrigation *data;
+  Biomass_tree *data;
   data=stand->data;
+  irrigation=data->irrigation.irrigation;
   total_g=total_b=0;
 
   total_g+=intercep_stand-intercep_stand_blue;
@@ -46,48 +46,49 @@ void output_gbw_biomass_tree(Output *output,      /**< output data */
     total_g+=green_transp[l];
     total_b+=aet_stand[l]-green_transp[l];
   }
-  if(pft_output_scaled)
+  index=rbtree(ncft)+irrigation*getnirrig(ncft,config);
+  if(config->pft_output_scaled)
   {
-    output->cft_consump_water_g[rbtree(ncft)+data->irrigation*(ncft+NGRASS+NBIOMASSTYPE+NWPTYPE)]+=total_g*stand->cell->ml.landfrac[data->irrigation].biomass_tree;
-    output->cft_consump_water_b[rbtree(ncft)+data->irrigation*(ncft+NGRASS+NBIOMASSTYPE+NWPTYPE)]+=total_b*stand->cell->ml.landfrac[data->irrigation].biomass_tree;
+    getoutputindex(output,CFT_CONSUMP_WATER_G,index,config)+=total_g*stand->cell->ml.landfrac[irrigation].biomass_tree;
+    getoutputindex(output,CFT_CONSUMP_WATER_B,index,config)+=total_b*stand->cell->ml.landfrac[irrigation].biomass_tree;
     forrootsoillayer(l)
     {
-      output->cft_transp[rbtree(ncft)+data->irrigation*(ncft+NGRASS+NBIOMASSTYPE+NWPTYPE)]+=aet_stand[l]*stand->cell->ml.landfrac[data->irrigation].biomass_tree;
-      output->cft_transp_b[rbtree(ncft)+data->irrigation*(ncft+NGRASS+NBIOMASSTYPE+NWPTYPE)]+=(aet_stand[l]-green_transp[l])*stand->cell->ml.landfrac[data->irrigation].biomass_tree;
+      getoutputindex(output,CFT_TRANSP,index,config)+=aet_stand[l]*stand->cell->ml.landfrac[irrigation].biomass_tree;
+      getoutputindex(output,CFT_TRANSP_B,index,config)+=(aet_stand[l]-green_transp[l])*stand->cell->ml.landfrac[irrigation].biomass_tree;
     }
 
-    output->cft_evap[rbtree(ncft)+data->irrigation*(ncft+NGRASS+NBIOMASSTYPE+NWPTYPE)]+=evap*stand->cell->ml.landfrac[data->irrigation].biomass_tree;
-    output->cft_evap_b[rbtree(ncft)+data->irrigation*(ncft+NGRASS+NBIOMASSTYPE+NWPTYPE)]+=evap_blue*stand->cell->ml.landfrac[data->irrigation].biomass_tree;
-    output->cft_interc[rbtree(ncft)+data->irrigation*(ncft+NGRASS+NBIOMASSTYPE+NWPTYPE)]+=intercep_stand*stand->cell->ml.landfrac[data->irrigation].biomass_tree;
-    output->cft_interc_b[rbtree(ncft)+data->irrigation*(ncft+NGRASS+NBIOMASSTYPE+NWPTYPE)]+=intercep_stand_blue*stand->cell->ml.landfrac[data->irrigation].biomass_tree;
-    output->cft_return_flow_b[rbtree(ncft)+data->irrigation*(ncft+NGRASS+NBIOMASSTYPE+NWPTYPE)]+=return_flow_b*stand->cell->ml.landfrac[data->irrigation].biomass_tree;
+    getoutputindex(output,CFT_EVAP,index,config)+=evap*stand->cell->ml.landfrac[irrigation].biomass_tree;
+    getoutputindex(output,CFT_EVAP_B,index,config)+=evap_blue*stand->cell->ml.landfrac[irrigation].biomass_tree;
+    getoutputindex(output,CFT_INTERC,index,config)+=intercep_stand*stand->cell->ml.landfrac[irrigation].biomass_tree;
+    getoutputindex(output,CFT_INTERC_B,index,config)+=intercep_stand_blue*stand->cell->ml.landfrac[irrigation].biomass_tree;
+    getoutputindex(output,CFT_RETURN_FLOW_B,index,config)+=return_flow_b*stand->cell->ml.landfrac[irrigation].biomass_tree;
   }
   else
   {
-    output->cft_consump_water_g[rbtree(ncft)+data->irrigation*(ncft+NGRASS+NBIOMASSTYPE+NWPTYPE)]+=total_g;
-    output->cft_consump_water_b[rbtree(ncft)+data->irrigation*(ncft+NGRASS+NBIOMASSTYPE+NWPTYPE)]+=total_b;
+    getoutputindex(output,CFT_CONSUMP_WATER_G,index,config)+=total_g;
+    getoutputindex(output,CFT_CONSUMP_WATER_B,index,config)+=total_b;
     forrootsoillayer(l)
     {
-      output->cft_transp[rbtree(ncft)+data->irrigation*(ncft+NGRASS+NBIOMASSTYPE+NWPTYPE)]+=aet_stand[l];
-      output->cft_transp_b[rbtree(ncft)+data->irrigation*(ncft+NGRASS+NBIOMASSTYPE+NWPTYPE)]+=aet_stand[l]-green_transp[l];
+      getoutputindex(output,CFT_TRANSP,index,config)+=aet_stand[l];
+      getoutputindex(output,CFT_TRANSP_B,index,config)+=aet_stand[l]-green_transp[l];
     }
 
-    output->cft_evap[rbtree(ncft)+data->irrigation*(ncft+NGRASS+NBIOMASSTYPE+NWPTYPE)]+=evap;
-    output->cft_evap_b[rbtree(ncft)+data->irrigation*(ncft+NGRASS+NBIOMASSTYPE+NWPTYPE)]+=evap_blue;
-    output->cft_interc[rbtree(ncft)+data->irrigation*(ncft+NGRASS+NBIOMASSTYPE+NWPTYPE)]+=intercep_stand;
-    output->cft_interc_b[rbtree(ncft)+data->irrigation*(ncft+NGRASS+NBIOMASSTYPE+NWPTYPE)]+=intercep_stand_blue;
-    output->cft_return_flow_b[rbtree(ncft)+data->irrigation*(ncft+NGRASS+NBIOMASSTYPE+NWPTYPE)]+=return_flow_b;
+    getoutputindex(output,CFT_EVAP,index,config)+=evap;
+    getoutputindex(output,CFT_EVAP_B,index,config)+=evap_blue;
+    getoutputindex(output,CFT_INTERC,index,config)+=intercep_stand;
+    getoutputindex(output,CFT_INTERC_B,index,config)+=intercep_stand_blue;
+    getoutputindex(output,CFT_RETURN_FLOW_B,index,config)+=return_flow_b;
   }
 
-  if(data->irrigation)
+  if(irrigation)
   {
-    output->mgcons_irr+=total_g*stand->cell->ml.landfrac[1].biomass_tree;
-    output->mbcons_irr+=total_b*stand->cell->ml.landfrac[1].biomass_tree;
+    getoutput(output,GCONS_IRR,config)+=total_g*stand->cell->ml.landfrac[1].biomass_tree;
+    getoutput(output,BCONS_IRR,config)+=total_b*stand->cell->ml.landfrac[1].biomass_tree;
   }
   else
   {
-    output->mgcons_rf+=total_g*stand->cell->ml.landfrac[0].biomass_tree;
-    output->mgcons_rf+=total_b*stand->cell->ml.landfrac[0].biomass_tree;
+    getoutput(output,GCONS_RF,config)+=total_g*stand->cell->ml.landfrac[0].biomass_tree;
+    getoutput(output,GCONS_RF,config)+=total_b*stand->cell->ml.landfrac[0].biomass_tree;
   }
 } /* of 'output_gbw_biomass_tree' */
 

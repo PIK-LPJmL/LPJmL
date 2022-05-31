@@ -19,12 +19,17 @@
 
 /* Definition of constants */
 
+#define name_crop "crop"
 #define MINLGP 4              /* minimum length of growing period, used in calc_seasonality */
 #define DEFAULT_MONTH 1       /* default setting if no sowing month can be found in calc_seasonality*/
 #define MIN_PREC 0.1          /* minimum daily precipitation (mm) at a wet day - definition from CRU*/
 
 /* Declaration of datatypes */
 
+typedef struct
+{
+  Real root,so,pool;
+} Cropratio;
 
 typedef struct
 {
@@ -38,7 +43,7 @@ typedef struct
 
 typedef struct
 {
-  Real root,so,pool,leaf;
+  Stocks root,so,pool,leaf;
 } Cropphys2;
 
 typedef struct
@@ -51,7 +56,9 @@ typedef struct
   Real temp_spring;         /**< threshold for increasing temperature to determine the crop date */
   Real temp_vern;           /**< threshold for increasing temperature to determine the crop date */
   Limit trg;                /**< temperature under which vernalization is possible (deg C) */
-  Real pvd;                 /**< number of vernalization days required */
+  Limit tv_eff;             /**< lower and upper temperature thresholds for effective vernalization (deg C) */
+  Limit tv_opt;             /**< lower and upper temperature thresholds for optimal vernalization (deg C) */
+  Real pvd_max;             /**< maximum number of vernalization days required */
   Real psens;               /**< sensitivity to the photoperiod effect [0-1] (1 means no sensitivity) */
   Real pb;                  /**< basal photoperiod (h) (pb<ps for longer days plants) */
   Real ps;                  /**< saturating photoperiod (h) (ps<pb for shorter days plants) */
@@ -70,17 +77,40 @@ typedef struct
   Real hiopt;               /**< optimum harvest index HI reached at harvest*/
   Real himin;               /**< minimum harvest index HI reached at harvest*/
   Real shapesenescencenorm; /**< parameter for calculating the fraction of maximal LAI */
-  Cropphys cn_ratio;        /**< C:N mass ratio for root, storage organ, and pool */
+  Cropphys nc_ratio;        /**< N:C mass ratio for root, storage organ, and pool */
+  Cropratio ratio;          /**< relative C:N ratio for root, storage organ and pool */
 } Pftcroppar;
 
+typedef struct
+{
+  Real petsum;
+  Real evapsum;
+  Real transpsum;
+  Real nfertsum;
+  Real intercsum;
+  Real precsum;
+  Real sradsum;
+  Real irrig_apply;
+  Real tempsum;
+  Real nirsum;
+  Real lgp;
+  Real runoffsum;
+  Real n2o_denitsum;
+  Real n2o_nitsum;
+  Real n2_emissum;
+  Real leachingsum;
+  Real c_emissum;
+  int sdate;
+  int sowing_year;
+} Double_harvest;
 
 typedef struct
 {
   Bool wtype;               /**< distinguish between winter and summer crop */
   int growingdays;          /**< counter for the days of the crop cycle */
-  Real pvd;                 /**< vernalization days */
-  Real phu;                 /**< phenological heat unit */
-  Real basetemp;            /**< base temperature */
+  Real pvd;                 /**< actually required vernalization days (only if STATIC_PHU) */
+  Real phu;                 /**< required phenological heat units from emergence to maturity (STATIC_PHU, PRESCRIBED_PHU, CALCULATED_PHU) */
+  Real basetemp;            /**< base temperature for phenological development */
   Bool senescence;          /**< current senescence period */
   Bool senescence0;         /**< senescence period of yesterday */
   Real husum;               /**< sum of heat units */
@@ -93,59 +123,61 @@ typedef struct
   Real laimax_adjusted;     /**< adjusted maximum lai */
   Real lai_nppdeficit;      /**< LAI reduction due to insufficient NPP */
   Real demandsum;
+  Real ndemandsum;
+  Real nuptakesum;
+  Real nfertilizer;         /* fertilizer amount */
+  Real nmanure;             /* manure ammount */
+  Real vscal_sum;
+  Bool frostkill;           /* set to TRUE in daily_agriculture if tmin<-5 and 0.2<fphu<0.95 */
   Real supplysum;
-#ifdef DOUBLE_HARVEST
-  Real petsum;
-  Real evapsum;
-  Real transpsum;
-  Real intercsum;
-  Real precsum;
-  Real sradsum;
-  Real pirrww;
-  Real tempsum;
-  Real nirsum;
-  Real lgp;
-  int sdate;
-  int sowing_year;
-#endif
+  Double_harvest *dh;
 } Pftcrop;
+
+extern const char *calcmethod[];
 
 /* Declaration of functions */
 
-extern void new_crop(Pft *,int,int);
-extern void allocation_daily_crop(Pft *,Real, Real,Daily_outputs *);
-extern Real npp_crop(Pft *,Real,Real,Real,Bool *,Real,Daily_outputs *);
+extern void new_crop(Pft *,int,int,const Config *);
+extern void allocation_daily_crop(Pft *,Real, Real,Bool,const Config *);
+extern Real npp_crop(Pft *,Real,Real,Real,Bool *,Real,const Config *);
 extern Real fpc_crop(Pft *);
 extern Real fpar_crop(const Pft *);
-extern Real alphaa_crop(const Pft *);
-extern void litter_update_crop(Litter *,Pft *,Real);
+extern Real alphaa_crop(const Pft *,int,int);
+extern void litter_update_crop(Litter *,Pft *,Real,const Config *);
 extern Real lai_crop(const Pft *);
 extern Real actual_lai_crop(const Pft *);
-extern Bool phenology_crop(Pft *,Real,Real);
+extern Bool phenology_crop(Pft *,Real,Real,Real,int,const Config *);
 extern void laimax_manage(Manage *,const Pftpar [],int,int,int);
 extern Bool fwrite_crop(FILE *,const Pft *);
-extern void fprint_crop(FILE *,const Pft *);
-extern Bool fread_crop(FILE *,Pft *,Bool);
-extern Bool fscanpft_crop(LPJfile *,Pftpar *,Verbosity);
-extern Real establishment_crop(Pft *,Real,Real,int);
+extern void fprint_crop(FILE *,const Pft *,int);
+extern Bool fread_crop(FILE *,Pft *,Bool,Bool);
+extern Bool fscanpft_crop(LPJfile *,Pftpar *,const Config *);
+extern Stocks establishment_crop(Pft *,Real,Real,int);
 extern void init_crop(Pft *);
 extern Real vegc_sum_crop(const Pft *);
+extern Real vegn_sum_crop(const Pft *);
 extern Real agb_crop(const Pft *);
 extern void free_crop(Pft *);
-extern void phen_variety(Pft *,int,Real,int,Bool);
-extern void harvest_crop(Output *,Stand *,Pft *,int,int,Bool,Bool,Bool);
+extern void phen_variety(Pft *,int,Real,int,Bool,int,int,const Config *);
+extern void harvest_crop(Output *,Stand *,Pft *,int,int,int,const Config *);
 extern void adapt_crop_type(Real [],Real,const Pftpar [],int,int,int);
 extern Real wdf_crop(Pft *,Real,Real);
-extern void fprintpar_crop(FILE *,const Pftpar *);
-extern void output_daily_crop(Daily_outputs *,const Pft *,Real,Real);
+extern void fprintpar_crop(FILE *,const Pftpar *,const Config *);
+extern void output_daily_crop(Output *,const Pft *,Real,Real,const Config *);
 extern void calc_seasonality(Cell *,int,int,const Config *);
 extern void albedo_crop(Pft *,Real,Real);
 extern void double_harvest(int, Real *, Real *, Real);
+extern Real nuptake_crop(Pft *,Real *,Real *,int,int,const Config *);
+extern Real ndemand_crop(const Pft *,Real *,Real,Real,Real);
+extern Real vmaxlimit_crop(const Pft *,Real,Real);
+
 
 /* Definitions of macros */
 
 #define iscrop(pft) (getpftpar(pft,type)==CROP)
-#define phys_sum_crop(ind) (ind.leaf+ind.root+ind.so+ind.pool)
-#define fprintcropphys2(file,phys,nind) fprintf(file,"%.2f %.2f %.2f %.2f (gC/m2)",phys.leaf*nind,phys.so*nind,phys.pool*nind,phys.root*nind)
+#define phys_sum_crop(ind) (ind.leaf.carbon+ind.root.carbon+ind.so.carbon+ind.pool.carbon)
+#define phys_sum_crop_n(ind) (ind.leaf.nitrogen+ind.root.nitrogen+ind.so.nitrogen+ind.pool.nitrogen)
+#define fprintcropphys2(file,phys,nind) fprintf(file,"%.2f %.2f %.2f %.2f (gC/m2) %.2f %.2f %.2f %.2f (gN/m2)",phys.leaf.carbon*nind,phys.so.carbon*nind,phys.pool.carbon*nind,phys.root.carbon*nind,phys.leaf.nitrogen*nind,phys.so.nitrogen*nind,phys.pool.nitrogen*nind,phys.root.nitrogen*nind)
+#define fprintcropphys2carbon(file,phys,nind) fprintf(file,"%.2f %.2f %.2f %.2f (gC/m2)",phys.leaf.carbon*nind,phys.so.carbon*nind,phys.pool.carbon*nind,phys.root.carbon*nind)
 
 #endif

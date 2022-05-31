@@ -20,8 +20,12 @@
 #include <netcdf.h>
 #endif
 
-Bool readshortdata_netcdf(const Climatefile *file,short data[],const Cell grid[],
-                         int year,const Config *config)
+Bool readshortdata_netcdf(const Climatefile *file, /**< climate data file */
+                          short data[],            /**< data to read */
+                          const Cell grid[],       /**< LPJ grid */
+                          int year,                /**< simulation year (0..nyear-1) */
+                          const Config *config     /**< LPJmL configuration */
+                         )                         /** \return TRUE on error */
 {
 #if defined(USE_NETCDF) || defined(USE_NETCDF4)
   int cell,rc;
@@ -48,12 +52,12 @@ Bool readshortdata_netcdf(const Climatefile *file,short data[],const Cell grid[]
     {
       printallocerr("data");
       rc=TRUE;
-    } 
+    }
     else if(isroot(*config))
     {
       if((rc=nc_get_vara_short(file->ncid,file->varid,offsets,counts,f)))
         fprintf(stderr,"ERROR421: Cannot read short data: %s.\n",
-                nc_strerror(rc)); 
+                nc_strerror(rc));
     }
     else
       rc=FALSE;
@@ -82,11 +86,8 @@ Bool readshortdata_netcdf(const Climatefile *file,short data[],const Cell grid[]
       offsets[2]=(int)((360+grid[cell].coord.lon-file->lon_min)/file->lon_res+0.5);
     else
       offsets[2]=(int)((grid[cell].coord.lon-file->lon_min)/file->lon_res+0.5);
-    
-    if(offsets[1]>=file->nlat || offsets[2]>=file->nlon)
+    if(checkcoord(offsets+1,cell+config->startgrid,&grid[cell].coord,file))
     {
-      fprintf(stderr,"ERROR422: Invalid coordinate for cell %d (%s) in data file.\n",
-              cell+config->startgrid,sprintcoord(line,&grid[cell].coord));
       free(f);
       return TRUE;
     }

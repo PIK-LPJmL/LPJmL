@@ -25,11 +25,12 @@
 #define BOTTOMLAYER (NSOILLAYER-1)
 #define NFUELCLASS 4 /* Number of fuel classes */
 #define TOPLAYER 0
+#define NTILLLAYER 1 /* number of layers to be tilled */
 
 #define SNOWLAYER NSOILLAYER
 
-#define veg_equil_year 990
-#define soil_equil_year veg_equil_year+1320
+#define soil_equil_year (param.veg_equil_year+1320)
+#define cshift_year 300
 #define snow_skin_depth 40.0 /* snow skin layer depth (mm water equivalent)*/
 #define c_water 4.2e6 /* J/m3/K */
 #define c_ice   2.1e6 /* J/m3/K */
@@ -59,6 +60,7 @@
 #define ORGDENS 1400     /* density of organic soil substances [kg/m3]*/
 #define PRIESTLEY_TAYLOR 1.32 /* Priestley-Taylor coefficient */
 #define SOILDEPTH_IRRIG 500 /*size of layer considered for calculation of irrigation ammount*/
+#define CDN 1.2         /* shape factor for denitrification from SWAT; beta_denit eq 3:1.4.1, SWAT Manual 2009 , take smaller value as it seems to be to high 1.4 originally*/
 
 /* Declaration of variables */
 
@@ -79,6 +81,12 @@ typedef struct
 {
   Real fast;       /**< fast-decomposing component */
   Real slow;       /**< slow-decomposing component */
+} Poolpar;
+
+typedef struct
+{
+  Stocks fast;       /**< fast-decomposing component */
+  Stocks slow;       /**< slow-decomposing component */
 } Pool;
 
 typedef struct
@@ -90,30 +98,35 @@ typedef struct
 
 typedef struct
 {
-  Real leaf;             /**< leaf litter (gC/m2)  */
-  Real wood[NFUELCLASS]; /**< woody litter (gC/m2) */
+  Stocks leaf;             /**< leaf litter (gC/m2, gN/m2)  */
+  Stocks wood[NFUELCLASS]; /**< woody litter (gC/m2, gN/m2) */
 } Trait;
 
 typedef struct
 {
   const struct Pftpar *pft; /**< PFT id for litter */
-  Trait trait;              /**< leaf and wood litter */
+  Trait ag;                 /**< above-ground leaf and wood litter */
+  Trait agsub;              /**< above-ground leaf and wood litter incorporated to first layer through tillage */
+  Stocks bg;                /**< below-ground litter (gC/m2, gN/m2) */
 } Litteritem;
 
 typedef struct
 {
   Real avg_fbd[NFUELCLASS+1]; /**< average fuel bulk densities */
-  Litteritem *ag; /**< above ground litter list for PFTs (gC/m2) */
-  Real *bg;        /**< below ground litter (gC/m2) */
-  int n;          /**< Number of above ground litter pools */
+  Litteritem *item;           /**< litter list for PFTs */
+  int n;                      /**< number of litter pools */
+  Real agtop_wcap;            /**< capacity of ag litter to store water in mm */
+  Real agtop_moist;           /**< amount of water stored in ag litter in mm */
+  Real agtop_cover;           /**< fraction of soil coverd by ag litter */
+  Real agtop_temp;            /**< temperature of ag litter */
 #ifdef MICRO_HEATING
-  Real decomC;  /**< litter decomposed*/
+  Real decomC;                /**< litter decomposed (gC/m2) */
 #endif
 } Litter;
 
 typedef struct
 {
-  Real harvest,residual,residuals_burnt,residuals_burntinfield;
+  Stocks harvest,residual,residuals_burnt,residuals_burntinfield;
 } Harvest;
 
 typedef struct
@@ -125,33 +138,37 @@ typedef struct
   Real wpwp;  /**< relative water content at wilting point */
   Real wfc;   /**< relative water content at field capacity */
   Real wsat;  /**< relative water content at saturation */
-  Real beta_soil;
-  Real whcs_all;
-  Real whc[NSOILLAYER];   /**< water holding capacity (fraction), whc = wfc - wpwp */
-  Real wsats[NSOILLAYER]; /**< absolute water content at saturation (mm), wsats = wsat * soildepth*/
-  Real whcs[NSOILLAYER];  /**< absolute water holding capacity (mm), whcs = whc * soildepth */
-  Real wpwps[NSOILLAYER]; /**< water at permanent wilting point in mm, depends on soildepth*/
-  Real bulkdens[NSOILLAYER]; /**< bulk density of soil [kg/m3]*/
-  Real k_dry[NSOILLAYER]; /**< thermal conductivity of dry soil */
+  Real sand;  /**< fraction of sand content in soil texture*/
+  Real silt;  /**< fraction of silt content in soil texture*/
+  Real clay;  /**< fraction of clay content in soil texture*/
   int hsg;        /**< hydrological soil group for CN */
   Real tdiff_0;   /**< thermal diffusivity (mm^2/s) at wilting point (0% whc) */
   Real tdiff_15;  /**< thermal diffusivity (mm^2/s) at 15% whc */
   Real tdiff_100; /**< thermal diffusivity (mm^2/s) at field capacity (100% whc) */
   Real tcond_pwp, tcond_100, tcond_100_ice; /**< thermal conductivity [W/m/K]*/
-  //Real albedo; /**< albedo of the soil */
+  Real z_nit;
+  Real a_nit;
+  Real b_nit;
+  Real c_nit;
+  Real d_nit;
+  Real m_nit;
+  Real n_nit;
+  Real anion_excl; /* fraction of porosity from which anions are excluded (from SWAT) */
+  Real cn_ratio; /* C:N ration in soil pools */
 } Soilpar;  /* soil parameters */
 
 typedef struct
 {
   const Soilpar *par; /**< pointer to soil parameters */
-  Pool cpool[LASTLAYER];         /**< fast and slow carbon pool for all layers*/
-  Pool k_mean[LASTLAYER];        /**< fast and slow decay constant */
-  Real *c_shift_fast[LASTLAYER];       /**< shifting rate of carbon matter to the different layer*/
-  Real *c_shift_slow[LASTLAYER];       /**< shifting rate of carbon matter to the different layer*/
-  Real w[NSOILLAYER],            /**< fraction of whc*/
-    w_fw[NSOILLAYER];            /**< mm */
+  Pool pool[LASTLAYER];          /**< fast and slow carbon pool for all layers*/
+  Poolpar k_mean[LASTLAYER];     /**< fast and slow decay constant */
+  Poolpar *c_shift[LASTLAYER];   /**< shifting rate of carbon matter to the different layer*/
+  Real NO3[LASTLAYER];           /**< NO3 per soillayer (gN/m2) */
+  Real NH4[LASTLAYER];           /**< NH4 per soillayer (gN/m2) */
+  Real w[NSOILLAYER],            /**< soil water as fraction of whc (fractional water holding capacity) */
+    w_fw[NSOILLAYER];            /**< free water or gravitational water (mm), absolute water content between field capacity and saturation */
   Real w_evap;                   /**< soil moisture content which is not transpired and can evaporate? correct? */
-  Real perc_energy[NSOILLAYER]; /**< energy transfer by percolation*/
+  Real perc_energy[NSOILLAYER];  /**< energy transfer by percolation */
 #ifdef MICRO_HEATING
   Real micro_heating[NSOILLAYER]; /**< energy of microbiological heating*/
   Real decomC[NSOILLAYER];
@@ -161,14 +178,26 @@ typedef struct
   Real snowheight; /**< height of snow */
   Real snowfraction;  /**< fraction of snow-covered ground */
   Real temp[NSOILLAYER+1];      /**< [deg C]; last layer=snow*/
+  Real Ks[NSOILLAYER];    /**< saturated hydraulic conductivity (mm/h) per layer*/
+  Real wpwp[NSOILLAYER];  /**< relative water content at wilting point */
+  Real wfc[NSOILLAYER];   /**< relative water content at field capacity */
+  Real wsat[NSOILLAYER];  /**< relative water content at saturation */
+  Real whc[NSOILLAYER];   /**< water holding capacity (fraction), whc = wfc - wpwp */
+  Real wsats[NSOILLAYER]; /**< absolute water content at saturation (mm), wsats = wsat * soildepth */
+  Real whcs[NSOILLAYER];  /**< absolute water holding capacity (mm), whcs = whc * soildepth */
+  Real wpwps[NSOILLAYER]; /**< water at permanent wilting point in mm, depends on soildepth */
   Real ice_depth[NSOILLAYER];   /**< mm */
   Real ice_fw[NSOILLAYER];      /**< mm */
   Real freeze_depth[NSOILLAYER]; /**< mm */
   Real ice_pwp[NSOILLAYER];      /**< fraction of water below pwp frozen */
+  Real k_dry[NSOILLAYER];        /**< thermal conductivity of dry soil */
+  Real bulkdens[NSOILLAYER];     /**<  bulk density of soil [kg/m3]*/
+  Real df_tillage[NTILLLAYER];
+  Real beta_soil[NSOILLAYER];
   short state[NSOILLAYER];
   Real maxthaw_depth;
   Real mean_maxthaw;
-  Real decomp_litter_mean;
+  Stocks decomp_litter_mean;
   int count;
   Real YEDOMA;       /**< g/m2 */
   Litter litter;     /**< Litter pool */
@@ -186,49 +215,70 @@ extern void convert_water(Soil*,int,Real*);
 extern void copysoil(Soil *,const Soil *, int);
 extern int findlitter(const Litter *,const struct Pftpar *);
 extern Real fire_prob(const Litter *,Real);
-extern unsigned int fscansoilpar(LPJfile *,Soilpar **,Verbosity);
-extern Bool fscanpool(LPJfile *,Pool *,const char *,Verbosity);
+extern Bool fscansoilpar(LPJfile *,Config *);
+extern int *fscansoilmap(LPJfile *,int *,const Config *);
+extern int *defaultsoilmap(int *,const Config *);
+extern Bool fscanpoolpar(LPJfile *,Poolpar *,const char *,Verbosity);
 extern Bool freadlitter(FILE *,Litter *,const struct Pftpar *,int,Bool);
 extern Bool freadsoil(FILE *,Soil *,const Soilpar *,const struct Pftpar *,int,Bool);
 extern Bool freadsoilcode(FILE *,unsigned int *,Bool,Type);
 extern void freesoil(Soil *);
 extern void freelitter(Litter *);
 extern void freesoilpar(Soilpar [],int);
-extern void fprintlitter(FILE *,const Litter *);
-extern void fprintsoilpar(FILE *,const Soilpar [],int);
-extern void fprintsoil(FILE *,const Soil *);
-extern FILE *fopensoilcode(const Filename *,Bool *,size_t *,Type *,unsigned int,Bool);
+extern void fprintlitter(FILE *,const Litter *,int);
+extern void fprintsoilpar(FILE *,const Config *);
+extern void fprintsoil(FILE *,const Soil *,const struct Pftpar *,int,int);
+extern FILE *fopensoilcode(const Filename *,List **,Bool *,size_t *,Type *,unsigned int,Bool);
+extern int *getsoilmap(List *,const Config *);
 extern Bool fwritesoil(FILE *,const Soil *,int);
 extern Bool fwritelitter(FILE *,const Litter *);
 extern void getlag(Soil *,int);
 extern int getnsoilcode(const Filename *,unsigned int,Bool);
 extern Soilstate getstate(Real *); /*temperature above/below/at T_zero?*/
-extern Bool initsoil(Soil *soil,const Soilpar *, int);
+extern Bool initsoil(Stand *soil,const Soilpar *,int,const Config *);
 extern Real litter_ag_sum(const Litter *);
+extern Real litter_ag_sum_n(const Litter *);
+extern Real litter_agsub_sum(const Litter *);
+extern Real litter_agsub_sum_n(const Litter *);
 extern Real litter_ag_grass(const Litter *);
 extern Real litter_ag_sum_quick(const Litter *);
-extern Real littersom(Soil *,Real [NSOILLAYER]);
-extern Real littersum(const Litter *);
+extern Stocks littersom(Stand *,const Real [NSOILLAYER],Real,int,int,const Config *);
+extern Real littercarbon(const Litter *);
+extern Stocks litterstocks(const Litter *);
 extern Real moistfactor(const Litter *);
 extern void moisture2soilice(Soil *,Real *,int);
 extern void newsoil(Soil *);
 extern int seeksoilcode(FILE *,int,size_t,Type);
 extern Real snow(Soil *,Real *,Real *,Real, Real *,Real *);
 extern Real snow_old(Real *,Real *,Real *,Real);
-extern void soiltemp(Soil*, Real);
+extern void soiltemp(Soil*, Real,const Config *);
 #ifdef COUPLING_WITH_FMS
 extern void laketemp(Cell*, const struct Dailyclimate *);
 #endif
 extern Real soiltemp_lag(const Soil *,const Climbuf *);
 extern Real soilcarbon(const Soil *);
 extern Real soilcarbon_slow(const Soil *);
+extern Stocks soilstocks(const Soil *);
 extern Real soilwater(const Soil *);
-extern Real soilconduct(const Soil *,int);
+extern Real soilconduct(const Soil *,int,Bool);
 extern Real soilheatcap(const Soil *,int);
 extern void soilice2moisture(Soil *, Real *,int);
 extern Real temp_response(Real);
 extern Real litter_ag_tree(const Litter *,int);
-
+extern Real litter_ag_nitrogen_tree(const Litter *,int);
+extern Real biologicalnfixation(const Stand *);
+extern void leaching(Soil *,const Real);
+extern Real volatilization(Real,Real,Real,Real,Real);
+extern Real nuptake_temp_fcn(Real);
+extern void denitrification(Stand *,int,int,const Config *);
+extern void getrootdist(Real [],const Real[],Real);
+extern Stocks checklitter(Litter *);
+extern Real getwr(const Soil *,const Real []);
+extern void updatelitterproperties(Stand *,Real);
+extern void pedotransfer(Stand *, Real *, Real *,Real);
+extern void soilpar_output(Cell *,Real,const Config *);
+extern int findsoilid(const char *,const Soilpar *,int);
+extern void cmpsoilmap(const int*,int,const Config *);
 
 /* Definition of macros */
 
@@ -236,9 +286,11 @@ extern Real litter_ag_tree(const Litter *,int);
 #define foreachsoillayer(l) for(l=0;l<NSOILLAYER;l++)
 #define forrootmoist(l) for(l=0;l<3;l++)                   /* here defined for the first 1 m*/
 #define forrootsoillayer(l) for(l=0;l<LASTLAYER;l++)
-#define allice(soil,l) (soil->ice_depth[l]+soil->par->wpwps[l]*soil->ice_pwp[l]+soil->ice_fw[l])
-#define allwater(soil,l) (soil->w[l]*soil->par->whcs[l]+soil->par->wpwps[l]*(1-soil->ice_pwp[l])+soil->w_fw[l])
+#define allice(soil,l) (soil->ice_depth[l]+soil->wpwps[l]*soil->ice_pwp[l]+soil->ice_fw[l])
+#define allwater(soil,l) (soil->w[l]*soil->whcs[l]+soil->wpwps[l]*(1-soil->ice_pwp[l])+soil->w_fw[l])
 #define timestep2sec(timestep,steps) (24.0*3600.0*((timestep)/(steps))) /* convert timestep --> sec */
 #define fprintpool(file,pool) fprintf(file,"%.2f %.2f",pool.slow,pool.fast)
-
+#define f_temp(soiltemp) exp(-(soiltemp-18.79)*(soiltemp-18.79)/(2*5.26*5.26)) /* Parton et al 2001*/
+#define f_NH4(nh4) (1-exp(-0.0105*(nh4))) /* Parton et al 1996 */
+#define getsoilmoist(soil,l) (((soil)->w[l] * (soil)->whcs[l] + ((soil)->wpwps[l] * (1 - (soil)->ice_pwp[l])) + (soil)->w_fw[l]) / (soil)->wsats[l])
 #endif /* SOIL_H */

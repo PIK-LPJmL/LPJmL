@@ -15,7 +15,12 @@
 #include "lpj.h"
 #include "grass.h"
 
-void adjust_grass(Litter * UNUSED(litter),Pft *pft,Real grass_fpc, Real fpc_max)
+void adjust_grass(Litter * UNUSED(litter), /**< pointer to litter */
+                  Pft *pft,                /**< pointer to grass PFT */
+                  Real grass_fpc,          /**< grass foliage projective cover */
+                  Real fpc_max,            /**< maximum foliage projective cover */
+                  const Config * UNUSED(config) /**< LPJmL configuration */
+                 )
 {
   Real fpc_end;
   if(grass_fpc>fpc_max)
@@ -23,7 +28,6 @@ void adjust_grass(Litter * UNUSED(litter),Pft *pft,Real grass_fpc, Real fpc_max)
     fpc_grass(pft);
     fpc_end=pft->fpc-(grass_fpc-fpc_max)*pft->fpc/grass_fpc;
     pft->fpc = fpc_end;
-    //printf("PFT:%s fpc_obs=%g fpc=%g\n",pft->par->name, pft->fpc_obs, pft->fpc);
   }
 } /* of 'adjust_grass' */
 

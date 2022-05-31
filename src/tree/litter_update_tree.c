@@ -17,31 +17,62 @@
 
 void litter_update_tree(Litter *litter, /**< Litter pool */
                         Pft *pft,       /**< PFT variables */
-                        Real frac       /**< fraction added to litter (0..1) */
+                        Real frac,      /**< fraction added to litter (0..1) */
+                        const Config *config /**< LPJmL configuration */
                        )
 {
   int i;
   const Pfttreepar *treepar;
+  Output *output;
   Pfttree *tree;
   tree=pft->data;
   treepar=pft->par->data;
-  tree->ind.leaf-= tree->turn.leaf;
-  tree->ind.root-= tree->turn.root;
-  litter->ag[pft->litter].trait.leaf+=tree->turn.leaf*pft->nind-tree->turn_litt.leaf;
-  update_fbd_tree(litter,pft->par->fuelbulkdensity,tree->turn.leaf*pft->nind-tree->turn_litt.leaf,0);
-  litter->bg[pft->litter]+=tree->turn.root*pft->nind-tree->turn_litt.root;
-  tree->turn.root=tree->turn.leaf=tree->turn_litt.leaf=tree->turn_litt.root=0.0;
+  output=&pft->stand->cell->output;
+  tree->ind.leaf.carbon-= tree->turn.leaf.carbon;
+  tree->ind.root.carbon-= tree->turn.root.carbon;
+  tree->ind.leaf.nitrogen-= tree->turn.leaf.nitrogen;
+  tree->ind.root.nitrogen-= tree->turn.root.nitrogen;
+  litter->item[pft->litter].ag.leaf.carbon+=tree->turn.leaf.carbon*pft->nind-tree->turn_litt.leaf.carbon;
+  litter->item[pft->litter].ag.leaf.nitrogen+=tree->turn.leaf.nitrogen*pft->nind-tree->turn_litt.leaf.nitrogen;
+  update_fbd_tree(litter,pft->par->fuelbulkdensity,tree->turn.leaf.carbon*pft->nind-tree->turn_litt.leaf.carbon,0);
+  litter->item[pft->litter].bg.carbon+=tree->turn.root.carbon*pft->nind-tree->turn_litt.root.carbon;
+  litter->item[pft->litter].bg.nitrogen+=tree->turn.root.nitrogen*pft->nind-tree->turn_litt.root.nitrogen;
+  tree->turn.root.carbon=tree->turn.leaf.carbon=tree->turn_litt.leaf.carbon=tree->turn_litt.root.carbon=0.0;
+  tree->turn.root.nitrogen=tree->turn.leaf.nitrogen=tree->turn_litt.leaf.nitrogen=tree->turn_litt.root.nitrogen=0.0;
 
-  litter->ag[pft->litter].trait.leaf+=tree->ind.leaf*frac;
+  if(pft->nind>0)
+  {
+    litter->item[pft->litter].ag.leaf.carbon+=tree->fruit.carbon/pft->nind*frac;
+    litter->item[pft->litter].ag.leaf.nitrogen+=(pft->bm_inc.nitrogen+tree->fruit.nitrogen)/pft->nind*frac;
+    getoutput(output,LITFALLN,config)+=(pft->bm_inc.nitrogen+tree->fruit.nitrogen)/pft->nind*frac*pft->stand->frac;
+    getoutput(output,LITFALLC,config)+=tree->fruit.carbon/pft->nind*frac*pft->stand->frac;
+  }
+  litter->item[pft->litter].ag.leaf.carbon+=tree->ind.leaf.carbon*frac;
+  getoutput(output,LITFALLC,config)+=tree->ind.leaf.carbon*frac*pft->stand->frac;
+  litter->item[pft->litter].ag.leaf.nitrogen+=tree->ind.leaf.nitrogen*frac;
+  getoutput(output,LITFALLN,config)+=tree->ind.leaf.nitrogen*frac*pft->stand->frac;
   for(i=0;i<NFUELCLASS;i++)
   {
-    litter->ag[pft->litter].trait.wood[i]+=(tree->ind.sapwood+tree->ind.heartwood-
-                                  tree->ind.debt)*frac*treepar->fuelfrac[i];
+    litter->item[pft->litter].ag.wood[i].carbon+=(tree->ind.sapwood.carbon+tree->ind.heartwood.carbon-
+                                  tree->ind.debt.carbon+tree->excess_carbon)*frac*treepar->fuelfrac[i];
+    getoutput(output,LITFALLC,config)+=(tree->ind.sapwood.carbon+tree->ind.heartwood.carbon-
+                                  tree->ind.debt.carbon+tree->excess_carbon)*frac*treepar->fuelfrac[i]*pft->stand->frac;
+    getoutput(output,LITFALLC_WOOD,config)+=(tree->ind.sapwood.carbon+tree->ind.heartwood.carbon-
+                                  tree->ind.debt.carbon+tree->excess_carbon)*frac*treepar->fuelfrac[i]*pft->stand->frac;
+    litter->item[pft->litter].ag.wood[i].nitrogen+=(tree->ind.sapwood.nitrogen+tree->ind.heartwood.nitrogen-
+                                  tree->ind.debt.nitrogen)*frac*treepar->fuelfrac[i];
+    getoutput(output,LITFALLN,config)+=(tree->ind.sapwood.nitrogen+tree->ind.heartwood.nitrogen-
+                                  tree->ind.debt.nitrogen)*frac*treepar->fuelfrac[i]*pft->stand->frac;
+    getoutput(output,LITFALLN_WOOD,config)+=(tree->ind.sapwood.nitrogen+tree->ind.heartwood.nitrogen-
+                                  tree->ind.debt.nitrogen)*frac*treepar->fuelfrac[i]*pft->stand->frac;
     update_fbd_tree(litter,pft->par->fuelbulkdensity,
-                    (tree->ind.sapwood+tree->ind.heartwood-tree->ind.debt)
+                    (tree->ind.sapwood.carbon+tree->ind.heartwood.carbon-tree->ind.debt.carbon)
                *frac*treepar->fuelfrac[i],i);
   }
-  litter->bg[pft->litter]+=tree->ind.root*frac;
-  update_fbd_tree(&pft->stand->soil.litter,pft->par->fuelbulkdensity,tree->ind.leaf*treepar->turnover.leaf*frac,0); //CHECK
+  litter->item[pft->litter].bg.carbon+=tree->ind.root.carbon*frac;
+  getoutput(output,LITFALLC,config)+=tree->ind.root.carbon*frac*pft->stand->frac;
+  litter->item[pft->litter].bg.nitrogen+=tree->ind.root.nitrogen*frac;
+  getoutput(output,LITFALLN,config)+=tree->ind.root.nitrogen*frac*pft->stand->frac;
+  update_fbd_tree(&pft->stand->soil.litter,pft->par->fuelbulkdensity,tree->ind.leaf.carbon*treepar->turnover.leaf*frac,0); //CHECK
 
 } /* of 'litter_update_tree' */

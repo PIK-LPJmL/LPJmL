@@ -14,216 +14,563 @@
 
 #include "lpj.h"
 
+#define USAGE "Usage: %s [-longheader] [-type {byte|short|int|float|double}] {add|sub|mul|div|avg|max|min|repl|float|int} infile1.clm [{infile2.clm|value}] outfile.clm\n"
+
 int main(int argc,char **argv)
 {
   Header header1,header2,header3;
   int version,yr,cell,k;
-  Bool swap1,swap2;
+  Bool swap1,swap2,flag;
   String id;
   float *data1,*data2,*data3;
+  int *idata1,*idata2,*idata3;
   float value;
+  int iarg,ivalue,setversion;
   char *endptr;
-  Bool isvalue;
-  enum {ADD,SUB,MUL,DIV,AVG,MAX,MIN} op;
+  size_t size;
+  Type type;
+  int index;
+  int *cell_index,*cell_index2;
+  Bool isvalue,intvalue,isint;
+  enum {ADD,SUB,MUL,DIV,AVG,MAX,MIN,REPL,FLOAT,INT} op;
   FILE *in1,*in2,*out;
-  if(argc<5)
+  setversion=READ_VERSION;
+  index=NOT_FOUND;
+  for(iarg=1;iarg<argc;iarg++)
+    if(argv[iarg][0]=='-')
+    {
+      if(!strcmp(argv[iarg],"-longheader"))
+        setversion=2;
+      else if(!strcmp(argv[iarg],"-type"))
+      {
+        if(argc-1==iarg)
+        {
+          fprintf(stderr,"Argument missing for option '-type'.\n"
+                  USAGE,argv[0]);
+          return EXIT_FAILURE;
+        }
+        index=findstr(argv[++iarg],typenames,5);
+        if(index==NOT_FOUND)
+        {
+          fprintf(stderr,"Invalid argument '%s' for option '-type'.\n"
+                  USAGE,argv[iarg],argv[0]);
+          return EXIT_FAILURE;
+        }
+        type=(Type)index;
+      }
+      else
+      {
+        fprintf(stderr,"Invalid option '%s'.\n",argv[iarg]);
+        fprintf(stderr,USAGE,argv[0]);
+        return EXIT_FAILURE;
+      }
+    }
+    else
+      break;
+  if(argc<iarg+3)
   {
     fprintf(stderr,"Missing argument(s).\n"
-            "Usage: %s {add|sub|mul|div|avg|max|min} infile1.clm {infile2.clm|value} outfile.clm\n",argv[0]);
+            USAGE,argv[0]);
     return EXIT_FAILURE;
   }
-  if(!strcmp(argv[1],"add"))
+  if(!strcmp(argv[iarg],"add"))
     op=ADD;
-  else if(!strcmp(argv[1],"sub"))
+  else if(!strcmp(argv[iarg],"sub"))
     op=SUB;
-  else if(!strcmp(argv[1],"mul"))
+  else if(!strcmp(argv[iarg],"mul"))
     op=MUL;
-  else if(!strcmp(argv[1],"div"))
+  else if(!strcmp(argv[iarg],"div"))
     op=DIV;
-  else if(!strcmp(argv[1],"avg"))
+  else if(!strcmp(argv[iarg],"avg"))
     op=AVG;
-  else if(!strcmp(argv[1],"max"))
+  else if(!strcmp(argv[iarg],"max"))
     op=MAX;
-  else if(!strcmp(argv[1],"min"))
+  else if(!strcmp(argv[iarg],"min"))
     op=MIN;
+  else if(!strcmp(argv[iarg],"repl"))
+    op=REPL;
+  else if(!strcmp(argv[iarg],"float"))
+    op=FLOAT;
+  else if(!strcmp(argv[iarg],"int"))
+    op=INT;
   else
   {
-    fprintf(stderr,"Invalid operator '%s'.\n",argv[1]); 
+    fprintf(stderr,"Invalid operator '%s'.\n",argv[iarg]);
+    fprintf(stderr,USAGE,argv[0]);
     return EXIT_FAILURE;
   }
-  in1=fopen(argv[2],"rb");
+  if(op!=FLOAT && op!=INT && argc<iarg+4)
+  {
+    fprintf(stderr,"Missing argument(s).\n"
+            USAGE,argv[0]);
+    return EXIT_FAILURE;
+  }
+  in1=fopen(argv[iarg+1],"rb");
   if(in1==NULL)
   {
-    fprintf(stderr,"Error opening '%s': %s.\n",argv[2],strerror(errno));
+    fprintf(stderr,"Error opening '%s': %s.\n",argv[iarg+1],strerror(errno));
     return EXIT_FAILURE;
   }
-  version=READ_VERSION; 
-  if(freadanyheader(in1,&header1,&swap1,id,&version))
+  version=setversion;
+  if(freadanyheader(in1,&header1,&swap1,id,&version,TRUE))
   {
-    fprintf(stderr,"Error reading header in '%s'.\n",argv[2]);
+    fprintf(stderr,"Error reading header in '%s'.\n",argv[iarg+1]);
     return EXIT_FAILURE;
   }
-  value=(float)strtod(argv[3],&endptr);
-  if(*endptr=='\0')
-    isvalue=TRUE;
+  if(version>CLM_MAX_VERSION)
+  {
+    fprintf(stderr,"Error: Unsupported version %d in '%s', must be less than %d.\n",
+            version,argv[iarg+1],CLM_MAX_VERSION+1);
+    return EXIT_FAILURE;
+  }
+  if(index!=NOT_FOUND)
+    header1.datatype=type;
+  size=getfilesizep(in1)-headersize(id,version);
+  if((header1.order==CELLINDEX && size!=sizeof(int)*header1.ncell+(long long)header1.nyear*header1.ncell*header1.nbands*header1.nstep*typesizes[header1.datatype]) ||
+     (header1.order!=CELLINDEX && size!=(long long)header1.nyear*header1.ncell*header1.nbands*header1.nstep*typesizes[header1.datatype]))
+    fprintf(stderr,"Warning: File size of '%s' does not match nbands*nstep*ncell*nyear.\n",argv[iarg+1]);
+  if(op!=FLOAT && op!=INT)
+  {
+    value=(float)strtod(argv[iarg+2],&endptr);
+    if(op!=REPL && *endptr=='\0')
+    {
+      ivalue=(float)strtol(argv[iarg+2],&endptr,10);
+      intvalue=(*endptr=='\0');
+      isvalue=TRUE;
+      if(intvalue && ivalue==0 && op==DIV)
+      {
+        fprintf(stderr,"Value must not be zero for div operator.\n");
+        return EXIT_FAILURE;
+      }
+    }
+    else
+    {
+      isvalue=FALSE;
+      in2=fopen(argv[iarg+2],"rb");
+      if(in2==NULL)
+      {
+        fprintf(stderr,"Error opening '%s': %s.\n",argv[iarg+2],strerror(errno));
+        return EXIT_FAILURE;
+      }
+      version=setversion;
+      if(freadheader(in2,&header2,&swap2,id,&version,TRUE))
+      {
+        fprintf(stderr,"Error reading header in '%s'.\n",argv[iarg+2]);
+        return EXIT_FAILURE;
+      }
+      if(version>CLM_MAX_VERSION)
+      {
+        fprintf(stderr,"Error: Unsupported version %d in '%s', must be less than %d.\n",
+                version,argv[iarg+2],CLM_MAX_VERSION+1);
+        return EXIT_FAILURE;
+      }
+      if(index!=NOT_FOUND)
+        header2.datatype=type;
+      if(header1.nyear!=header2.nyear)
+      {
+        fprintf(stderr,"nyear %d differs from %d.\n",header1.nyear,header2.nyear);
+        return EXIT_FAILURE;
+      }
+      if(header1.nbands!=header2.nbands)
+      {
+        fprintf(stderr,"nbands %d differs from %d.\n",header1.nbands,header2.nbands);
+        return EXIT_FAILURE;
+      }
+      if(header1.nstep!=header2.nstep)
+      {
+        fprintf(stderr,"nstep %d differs from %d.\n",header1.nstep,header2.nstep);
+        return EXIT_FAILURE;
+      }
+      if(header1.firstyear!=header2.firstyear)
+      {
+        fprintf(stderr,"firstyear %d differs from %d.\n",header1.firstyear,header2.firstyear);
+        return EXIT_FAILURE;
+      }
+      if(header1.ncell!=header2.ncell)
+      {
+        fprintf(stderr,"ncell %d differs from %d.\n",header1.ncell,header2.ncell);
+        return EXIT_FAILURE;
+      }
+      if(header1.firstcell!=header2.firstcell)
+      {
+        fprintf(stderr,"firstcell %d differs from %d.\n",header1.firstcell,header2.firstcell);
+        return EXIT_FAILURE;
+      }
+      if(header1.cellsize_lon!=header2.cellsize_lon)
+      {
+        fprintf(stderr,"cellsize %g differs from %g.\n",header1.cellsize_lon,header2.cellsize_lon);
+        return EXIT_FAILURE;
+      }
+      if(header1.cellsize_lat!=header2.cellsize_lat)
+      {
+        fprintf(stderr,"cellsize %g differs from %g.\n",header1.cellsize_lat,header2.cellsize_lat);
+        return EXIT_FAILURE;
+      }
+      if(header1.order!=header2.order)
+      {
+        fprintf(stderr,"cell order %d differs from %d.\n",header1.order,header2.order);
+        return EXIT_FAILURE;
+      }
+      size=getfilesizep(in2)-headersize(id,version);
+      if((header1.order==CELLINDEX && size!=sizeof(int)*header2.ncell+(long long)header2.nyear*header2.ncell*header2.nbands*header2.nstep*typesizes[header2.datatype]) ||
+         (header1.order!=CELLINDEX && size!=(long long)header2.nyear*header2.ncell*header2.nbands*header2.nstep*typesizes[header2.datatype]))
+        fprintf(stderr,"Warning: File size of '%s' does not match nbands*nstep*ncell*nyear.\n",argv[iarg+2]);
+    }
+    if(isvalue)
+      isint=(intvalue && header1.datatype==LPJ_INT && header1.scalar==1);
+    else
+      isint=(header1.datatype==LPJ_INT && header2.datatype==LPJ_INT && header1.scalar==1 && header2.scalar==1);
+    if(isint)
+    {
+      idata1=newvec(int,header1.nbands*header1.nstep);
+      check(idata1);
+      idata3=newvec(int,header1.nbands*header1.nstep);
+      check(idata3);
+      if(!isvalue)
+      {
+        idata2=newvec(int,header1.nbands*header1.nstep);
+        check(idata2);
+      }
+    }
+    else
+    {
+      data1=newvec(float,header1.nbands*header1.nstep);
+      check(data1);
+      data3=newvec(float,header1.nbands*header1.nstep);
+      check(data3);
+      if(!isvalue)
+      {
+        data2=newvec(float,header1.nbands*header1.nstep);
+        check(data2);
+      }
+    }
+  }
+  else if(op==INT)
+  {
+    idata1=newvec(int,header1.nbands*header1.nstep);
+    check(idata1);
+  }
   else
   {
-    isvalue=FALSE;
-    in2=fopen(argv[3],"rb");
-    if(in2==NULL)
-    {
-      fprintf(stderr,"Error opening '%s': %s.\n",argv[3],strerror(errno));
-      return EXIT_FAILURE;
-    }
-    version=READ_VERSION; 
-    if(freadheader(in2,&header2,&swap2,id,&version))
-    {
-      fprintf(stderr,"Error reading header in '%s'.\n",argv[3]);
-      return EXIT_FAILURE;
-    }
-    if(header1.nyear!=header2.nyear)
-    {
-      fprintf(stderr,"nyear %d differs from %d.\n",header1.nyear,header2.nyear);
-      return EXIT_FAILURE;
-    }
-    if(header1.nbands!=header2.nbands)
-    {
-      fprintf(stderr,"nbands %d differs from %d.\n",header1.nbands,header2.nbands);
-      return EXIT_FAILURE;
-    }
-    if(header1.firstyear!=header2.firstyear)
-    {
-      fprintf(stderr,"firstyear %d differs from %d.\n",header1.firstyear,header2.firstyear);
-      return EXIT_FAILURE;
-    }
-    if(header1.ncell!=header2.ncell)
-    {
-      fprintf(stderr,"ncell %d differs from %d.\n",header1.ncell,header2.ncell);
-      return EXIT_FAILURE;
-    }
-    if(header1.firstcell!=header2.firstcell)
-    {
-      fprintf(stderr,"firstcell %d differs from %d.\n",header1.firstcell,header2.firstcell);
-      return EXIT_FAILURE;
-    }
-    if(header1.cellsize_lon!=header2.cellsize_lon)
-    {
-      fprintf(stderr,"cellsize %g differs from %g.\n",header1.cellsize_lon,header2.cellsize_lon);
-      return EXIT_FAILURE;
-    }
-    if(header1.cellsize_lat!=header2.cellsize_lat)
-    {
-      fprintf(stderr,"cellsize %g differs from %g.\n",header1.cellsize_lat,header2.cellsize_lat);
-      return EXIT_FAILURE;
-    }
-    data2=newvec(float,header1.nbands);
-    check(data2);
+    data1=newvec(float,header1.nbands*header1.nstep);
+    check(data1);
   }
-  data1=newvec(float,header1.nbands);
-  check(data1);
-  data3=newvec(float,header1.nbands);
-  check(data3);
-  out=fopen(argv[4],"wb");
+  out=fopen(argv[iarg+((op==FLOAT || op==INT) ? 2 : 3)],"wb");
   if(out==NULL)
   {
-    fprintf(stderr,"Error creating '%s': %s.\n",argv[4],strerror(errno));
+    fprintf(stderr,"Error creating '%s': %s.\n",argv[iarg+((op==FLOAT) ? 2 : 3)],strerror(errno));
     return EXIT_FAILURE;
   }
   header3=header1;
-  header3.scalar=1;
-  header3.datatype=LPJ_FLOAT; 
-  fwriteheader(out,&header3,id,3);
-  for(yr=0;yr<header1.nyear;yr++)
-    for(cell=0;cell<header1.ncell;cell++)
+  if(op==INT)
+  {
+    header3.datatype=LPJ_INT;
+    header3.scalar=header1.scalar;
+  }
+  else
+  {
+    header3.scalar=1;
+    header3.datatype=(op!=FLOAT && isint) ? LPJ_INT : LPJ_FLOAT;
+  }
+  fwriteheader(out,&header3,id,max(version,3));
+  if(header1.order==CELLINDEX)
+  {
+    cell_index=newvec(int,header1.ncell);
+    if(cell_index==NULL)
     {
-      if(readfloatvec(in1,data1,header1.scalar,header1.nbands,swap1,header1.datatype))
+      printallocerr("index");
+      return EXIT_FAILURE;
+    }
+    if(freadint(cell_index,header1.ncell,swap1,in1)!=header1.ncell)
+    {
+      fprintf(stderr,"Unexpected end of file in '%s' at reading cell index.\n",
+              argv[iarg+1]);
+      return EXIT_FAILURE;
+    }
+    fwrite(cell_index,sizeof(int),header1.ncell,out);
+    if(op!=FLOAT && op!=INT && !isvalue)
+    {
+      cell_index2=newvec(int,header1.ncell);
+      if(cell_index2==NULL)
       {
-        fprintf(stderr,"Unexpected end of file in '%s' in year %d.\n",
-                argv[2],yr+header1.firstyear);
+        printallocerr("index2");
         return EXIT_FAILURE;
       }
-      if(isvalue)
-        switch(op)
-        {
-          case ADD:
-            for(k=0;k<header1.nbands;k++)
-              data3[k]=data1[k]+value;
-            break;
-          case SUB:
-            for(k=0;k<header1.nbands;k++)
-              data3[k]=data1[k]-value;
-            break;
-          case MUL:
-            for(k=0;k<header1.nbands;k++)
-              data3[k]=data1[k]*value;
-            break;
-          case DIV:
-            for(k=0;k<header1.nbands;k++)
-              data3[k]=data1[k]/value;
-            break;
-          case AVG:
-            for(k=0;k<header1.nbands;k++)
-              data3[k]=(data1[k]+value)*0.5f;
-            break;
-          case MAX:
-            for(k=0;k<header1.nbands;k++)
-              data3[k]=max(data1[k],value);
-            break;
-          case MIN:
-            for(k=0;k<header1.nbands;k++)
-              data3[k]=min(data1[k],value);
-            break;
-        } /* of switch */
-      else
+      if(freadint(cell_index2,header1.ncell,swap2,in2)!=header1.ncell)
       {
-        if(readfloatvec(in2,data2,header2.scalar,header1.nbands,swap2,header2.datatype))
+        fprintf(stderr,"Unexpected end of file in '%s' at reading cell index.\n",
+                argv[iarg+2]);
+        return EXIT_FAILURE;
+      }
+      for(cell=0;cell<header1.ncell;cell++)
+        if(cell_index[cell]!=cell_index2[cell])
         {
-          fprintf(stderr,"Unexpected end of file in '%s' in year %d.\n",
-                  argv[3],yr+header1.firstyear);
+          fprintf(stderr,"Cell index in '%s' of %d=%d not equal %d in '%s'.\n",
+                  argv[iarg+1],cell,cell_index[cell],cell_index2[cell],argv[iarg+2]);
           return EXIT_FAILURE;
         }
-        switch(op)
-        {
-          case ADD:
-            for(k=0;k<header1.nbands;k++)
-              data3[k]=data1[k]+data2[k];
-            break;
-          case SUB:
-            for(k=0;k<header1.nbands;k++)
-              data3[k]=data1[k]-data2[k];
-            break;
-          case MUL:
-            for(k=0;k<header1.nbands;k++)
-              data3[k]=data1[k]*data2[k];
-            break;
-          case DIV:
-            for(k=0;k<header1.nbands;k++)
-              data3[k]=data1[k]/data2[k];
-            break;
-          case AVG:
-            for(k=0;k<header1.nbands;k++)
-              data3[k]=(data1[k]+data2[k])*0.5f;
-            break;
-          case MAX:
-            for(k=0;k<header1.nbands;k++)
-              data3[k]=max(data1[k],data2[k]);
-            break;
-          case MIN:
-            for(k=0;k<header1.nbands;k++)
-              data3[k]=min(data1[k],data2[k]);
-            break;
-        } /* of switch */
-      }
-      /* write float data to file */
-      if(fwrite(data3,sizeof(float),header1.nbands,out)!=header1.nbands)
-      {
-        fprintf(stderr,"Error writing '%s' in year %d.\n",
-                argv[4],yr+header1.firstyear);
-        return EXIT_FAILURE;
-      }
+      free(cell_index);
+      free(cell_index2);
     }
+  }
+  if(op==FLOAT)
+  {
+    for(yr=0;yr<header1.nyear;yr++)
+      for(cell=0;cell<header1.ncell;cell++)
+      {
+        if(readfloatvec(in1,data1,header1.scalar,header1.nbands*header1.nstep,swap1,header1.datatype))
+        {
+          fprintf(stderr,"Unexpected end of file in '%s' in year %d.\n",
+                  argv[iarg+1],yr+header1.firstyear);
+          return EXIT_FAILURE;
+        }
+        if(fwrite(data1,sizeof(float),header1.nbands*header1.nstep,out)!=header1.nbands*header1.nstep)
+        {
+          fprintf(stderr,"Error writing '%s' in year %d.\n",
+                  argv[iarg+2],yr+header1.firstyear);
+          return EXIT_FAILURE;
+        }
+      }
+  }
+  else if(op==INT)
+  {
+    for(yr=0;yr<header1.nyear;yr++)
+      for(cell=0;cell<header1.ncell;cell++)
+      {
+        if(readintvec(in1,idata1,header1.nbands*header1.nstep,swap1,header1.datatype))
+        {
+          fprintf(stderr,"Unexpected end of file in '%s' in year %d.\n",
+                  argv[iarg+1],yr+header1.firstyear);
+          return EXIT_FAILURE;
+        }
+        if(fwrite(idata1,sizeof(int),header1.nbands*header1.nstep,out)!=header1.nbands)
+        {
+          fprintf(stderr,"Error writing '%s' in year %d.\n",
+                  argv[iarg+2],yr+header1.firstyear);
+          return EXIT_FAILURE;
+        }
+      }
+  }
+  else if(isint)
+    for(yr=0;yr<header1.nyear;yr++)
+      for(cell=0;cell<header1.ncell;cell++)
+      {
+        if(readintvec(in1,idata1,header1.nbands*header1.nstep,swap1,header1.datatype))
+        {
+          fprintf(stderr,"Unexpected end of file in '%s' in year %d.\n",
+                  argv[iarg+1],yr+header1.firstyear);
+          return EXIT_FAILURE;
+        }
+        if(isvalue)
+          switch(op)
+          {
+            case ADD:
+              for(k=0;k<header1.nbands*header1.nstep;k++)
+                idata3[k]=idata1[k]+ivalue;
+              break;
+            case SUB:
+              for(k=0;k<header1.nbands*header1.nstep;k++)
+                idata3[k]=idata1[k]-ivalue;
+              break;
+            case MUL:
+              for(k=0;k<header1.nbands*header1.nstep;k++)
+                idata3[k]=idata1[k]*ivalue;
+              break;
+            case DIV:
+              for(k=0;k<header1.nbands*header1.nstep;k++)
+                idata3[k]=idata1[k]/ivalue;
+              break;
+            case AVG:
+              for(k=0;k<header1.nbands*header1.nstep;k++)
+                idata3[k]=(idata1[k]+ivalue)/2;
+              break;
+            case MAX:
+              for(k=0;k<header1.nbands*header1.nstep;k++)
+                idata3[k]=max(idata1[k],ivalue);
+              break;
+            case MIN:
+              for(k=0;k<header1.nbands*header1.nstep;k++)
+                idata3[k]=min(idata1[k],ivalue);
+              break;
+          } /* of switch */
+        else
+        {
+          if(readintvec(in2,idata2,header1.nbands*header1.nstep,swap2,header2.datatype))
+          {
+            fprintf(stderr,"Unexpected end of file in '%s' in year %d.\n",
+                    argv[iarg+2],yr+header1.firstyear);
+            return EXIT_FAILURE;
+          }
+          switch(op)
+          {
+            case ADD:
+              for(k=0;k<header1.nbands*header1.nstep;k++)
+                idata3[k]=idata1[k]+idata2[k];
+              break;
+            case SUB:
+              for(k=0;k<header1.nbands*header1.nstep;k++)
+                idata3[k]=idata1[k]-idata2[k];
+              break;
+            case MUL:
+              for(k=0;k<header1.nbands*header1.nstep;k++)
+                idata3[k]=idata1[k]*idata2[k];
+              break;
+            case DIV:
+              for(k=0;k<header1.nbands*header1.nstep;k++)
+              {
+                if(idata2[k]==0)
+                {
+                  fprintf(stderr,"Value is zero for year %d and band %d.\n",
+                          yr+header1.firstyear,k+1);
+                  return EXIT_FAILURE;
+                }
+                idata3[k]=idata1[k]/idata2[k];
+              }
+              break;
+            case AVG:
+              for(k=0;k<header1.nbands*header1.nstep;k++)
+                idata3[k]=(idata1[k]+idata2[k])/2;
+              break;
+            case MAX:
+              for(k=0;k<header1.nbands*header1.nstep;k++)
+                idata3[k]=max(idata1[k],idata2[k]);
+              break;
+            case MIN:
+              for(k=0;k<header1.nbands*header1.nstep;k++)
+                idata3[k]=min(idata1[k],idata2[k]);
+              break;
+            case REPL:
+              flag=FALSE;
+              for(k=0;k<header1.nbands*header1.nstep;k++)
+                if(idata2[k]!=0)
+                {
+                  flag=TRUE;
+                  break;
+                }
+              if(flag)
+                for(k=0;k<header1.nbands*header1.nstep;k++)
+                  idata3[k]=idata2[k];
+              else
+                for(k=0;k<header1.nbands*header1.nstep;k++)
+                  idata3[k]=idata1[k];
+              break;
+          } /* of switch */
+        }
+        /* write int data to file */
+        if(fwrite(idata3,sizeof(int),header1.nbands*header1.nstep,out)!=header1.nbands*header1.nstep)
+        {
+          fprintf(stderr,"Error writing '%s' in year %d.\n",
+                  argv[iarg+3],yr+header1.firstyear);
+          return EXIT_FAILURE;
+        }
+      }
+  else
+    for(yr=0;yr<header1.nyear;yr++)
+      for(cell=0;cell<header1.ncell;cell++)
+      {
+        if(readfloatvec(in1,data1,header1.scalar,header1.nbands*header1.nstep,swap1,header1.datatype))
+        {
+          fprintf(stderr,"Unexpected end of file in '%s' in year %d.\n",
+                  argv[iarg+1],yr+header1.firstyear);
+          return EXIT_FAILURE;
+        }
+        if(isvalue)
+          switch(op)
+          {
+            case ADD:
+              for(k=0;k<header1.nbands*header1.nstep;k++)
+              data3[k]=data1[k]+value;
+              break;
+            case SUB:
+              for(k=0;k<header1.nbands*header1.nstep;k++)
+                data3[k]=data1[k]-value;
+              break;
+            case MUL:
+              for(k=0;k<header1.nbands*header1.nstep;k++)
+                data3[k]=data1[k]*value;
+              break;
+            case DIV:
+              for(k=0;k<header1.nbands*header1.nstep;k++)
+                data3[k]=data1[k]/value;
+              break;
+            case AVG:
+              for(k=0;k<header1.nbands*header1.nstep;k++)
+                data3[k]=(data1[k]+value)*0.5f;
+              break;
+            case MAX:
+              for(k=0;k<header1.nbands*header1.nstep;k++)
+                data3[k]=max(data1[k],value);
+              break;
+            case MIN:
+              for(k=0;k<header1.nbands*header1.nstep;k++)
+                data3[k]=min(data1[k],value);
+              break;
+          } /* of switch */
+        else
+        {
+          if(readfloatvec(in2,data2,header2.scalar,header1.nbands*header1.nstep,swap2,header2.datatype))
+          {
+            fprintf(stderr,"Unexpected end of file in '%s' in year %d.\n",
+                    argv[iarg+2],yr+header1.firstyear);
+            return EXIT_FAILURE;
+          }
+          switch(op)
+          {
+            case ADD:
+              for(k=0;k<header1.nbands*header1.nstep;k++)
+                data3[k]=data1[k]+data2[k];
+              break;
+            case SUB:
+              for(k=0;k<header1.nbands*header1.nstep;k++)
+                data3[k]=data1[k]-data2[k];
+              break;
+            case MUL:
+              for(k=0;k<header1.nbands*header1.nstep;k++)
+                data3[k]=data1[k]*data2[k];
+              break;
+            case DIV:
+              for(k=0;k<header1.nbands*header1.nstep;k++)
+                data3[k]=data1[k]/data2[k];
+              break;
+            case AVG:
+              for(k=0;k<header1.nbands*header1.nstep;k++)
+                data3[k]=(data1[k]+data2[k])*0.5f;
+              break;
+            case MAX:
+              for(k=0;k<header1.nbands*header1.nstep;k++)
+                data3[k]=max(data1[k],data2[k]);
+              break;
+            case MIN:
+              for(k=0;k<header1.nbands*header1.nstep;k++)
+                data3[k]=min(data1[k],data2[k]);
+              break;
+            case REPL:
+              flag=FALSE;
+              for(k=0;k<header1.nbands*header1.nstep;k++)
+                if(data2[k]!=0)
+                {
+                  flag=TRUE;
+                  break;
+                }
+              if(flag)
+                for(k=0;k<header1.nbands*header1.nstep;k++)
+                  data3[k]=data2[k];
+              else
+                for(k=0;k<header1.nbands*header1.nstep;k++)
+                  data3[k]=data1[k];
+              break;
+          } /* of switch */
+        }
+        /* write float data to file */
+        if(fwrite(data3,sizeof(float),header1.nbands*header1.nstep,out)!=header1.nbands*header1.nstep)
+        {
+          fprintf(stderr,"Error writing '%s' in year %d.\n",
+                  argv[iarg+3],yr+header1.firstyear);
+          return EXIT_FAILURE;
+        }
+      }
   fclose(in1);
-  if(!isvalue)
+  if(op!=FLOAT && !isvalue)
     fclose(in2);
   fclose(out);
   return EXIT_FAILURE;

@@ -1,6 +1,6 @@
 /**************************************************************************************/
 /**                                                                                \n**/
-/**                     w o o d p l a n t a t i o n  .  h                          \n**/
+/**                     w o o d p l a n t a t i o n . h                            \n**/
 /**                                                                                \n**/
 /**     Declaration of woodplantation stand                                        \n**/
 /**                                                                                \n**/
@@ -16,13 +16,14 @@
 #define WOODPLANTATION_H
 
 extern Standtype woodplantation_stand;
+extern const char *woodplantation_names[NWPTYPE];
 
 extern Bool annual_woodplantation(Stand *, int,int,Real,int,Bool,Bool,const Config *);
-extern Real daily_woodplantation(Stand *, Real, const Dailyclimate *, int,
-                                 Real, const Real[],
-                                 Real, Real, Real, Real, Real, Real,
-                                 Real, int, int, int, Bool, const Config *);
+extern Real daily_woodplantation(Stand *, Real, const Dailyclimate *, int,int,
+                                 Real, 
+                                 Real, Real, Real, Real,
+                                 Real, int, int, int, Bool,Real, const Config *);
 extern void output_gbw_woodplantation(Output *, const Stand *, Real, Real, Real, Real,
                                       const Real[LASTLAYER], const Real[LASTLAYER], Real, Real, int,
-                                      Bool);
+                                      const Config *);
 #endif

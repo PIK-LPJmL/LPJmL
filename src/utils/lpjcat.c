@@ -13,7 +13,6 @@
 /**                                                                                \n**/
 /**************************************************************************************/
 
-#include <sys/stat.h>
 #include "lpj.h"
 
 #define USAGE "Usage: %s [-o filename] lpjfile ...\n"
@@ -42,7 +41,6 @@ int main(int argc,char **argv)
   void *data;
   Header header;
   Restartheader restartheader;
-  struct stat filestat;
   FILE *out;
   out=stdout;
   for(i=1;i<argc;i++)
@@ -77,7 +75,7 @@ int main(int argc,char **argv)
       continue;
     }
     version=READ_VERSION;
-    if(freadheader(item[count].file,&item[count].header,&swap,RESTART_HEADER,&version))
+    if(freadheader(item[count].file,&item[count].header,&swap,RESTART_HEADER,&version,TRUE))
     {
       fprintf(stderr,"Error reading header of file '%s'\n",argv[i]);
       continue;
@@ -123,14 +121,13 @@ int main(int argc,char **argv)
   header.firstyear=item[0].header.firstyear;
   header.ncell=ncell;
   fwriteheader(out,&header,RESTART_HEADER,RESTART_VERSION);
-  fwrite(&restartheader,sizeof(Restartheader),1,out);
-  header_offset=strlen(RESTART_HEADER)+sizeof(Restartheader)+sizeof(int)+sizeof(Header);
+  fwriterestartheader(out,&restartheader);
+  header_offset=strlen(RESTART_HEADER)+restartsize()+sizeof(int)+sizeof(Header);
   o_offset=header_offset;
   offset=0;
   for(i=0;i<count;i++)
   { 
-    fstat(fileno(item[i].file),&filestat);
-    len=filestat.st_size-header_offset-item[i].header.ncell*sizeof(int);
+    len=getfilesizep(item[i].file)-header_offset-item[i].header.ncell*sizeof(int);
     fseek(out,o_offset,SEEK_SET);
     o_offset+=item[i].header.ncell*sizeof(int);
     for(j=0;j<item[i].header.ncell;j++)

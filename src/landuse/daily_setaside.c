@@ -24,24 +24,27 @@ Real daily_setaside(Stand *stand, /**< stand pointer */
                    Real co2,     /**< atmospheric CO2 (ppmv) */
                    const Dailyclimate *climate, /**< Daily climate values */
                    int day,    /**< day (1..365) */
+                   int month,       /**< [in] month (0..11) */
                    Real daylength, /**< length of day (h) */
-                   const Real gp_pft[], /**< pot. canopy conductance for PFTs & CFTs*/
                    Real gtemp_air,  /**< value of air temperature response function */
                    Real gtemp_soil, /**< value of soil temperature response function */
-                   Real gp_stand,   /* potential stomata conductance */
-                   Real gp_stand_leafon, /**< pot. canopy conduct.at full leaf cover */
                    Real eeq,   /**< equilibrium evapotranspiration (mm) */
                    Real par,   /**< photosynthetic active radiation flux */
                    Real melt,  /**< melting water (mm) */
                    int npft,   /**< number of natural PFTs */
-                   int UNUSED(ncft),   /**< number of crop PFTs   */
+                   int ncft,   /**< number of crop PFTs   */
                    int year,           /**< simulation year (AD) */
                    Bool intercrop, /**< enable intercropping (TRUE/FALSE) */
+                   Real agrfrac,
                    const Config *config /**< LPJ config */
                   ) /** \return runoff (mm) */
 {
   int p,l;
   Pft *pft;
+  Real *gp_pft;         /**< pot. canopy conductance for PFTs & CFTs (mm/s) */
+  Real gp_stand;               /**< potential stomata conductance  (mm/s) */
+  Real gp_stand_leafon;        /**< pot. canopy conduct.at full leaf cover  (mm/s) */
+  Real fpc_total_stand;
   Output *output;
   Real aet_stand[LASTLAYER];
   Real green_transp[LASTLAYER];
@@ -52,8 +55,10 @@ Real daily_setaside(Stand *stand, /**< stand pointer */
   Real cover_stand,intercep_stand,rainmelt;
   Real npp; /* net primary productivity (gC/m2) */
   Real wdf; /* water deficit fraction */
+  Real transp;
   Real gc_pft;
-  Real acflux_estab = 0;
+  Stocks flux_estab = {0,0};
+  Stocks stocks;
   int n_est;
   Bool *present;
   Soil *soil;
@@ -77,6 +82,10 @@ Real daily_setaside(Stand *stand, /**< stand pointer */
   }
   else
     wet=NULL;
+  gp_pft=newvec(Real,npft+ncft);
+  check(gp_pft);
+  gp_stand=gp_sum(&stand->pftlist,co2,climate->temp,par,daylength,
+                  &gp_stand_leafon,gp_pft,&fpc_total_stand,config);
 
   for(l=0;l<LASTLAYER;l++)
     aet_stand[l]=green_transp[l]=0;
@@ -102,7 +111,7 @@ Real daily_setaside(Stand *stand, /**< stand pointer */
   rainmelt=climate->prec+melt;
   if(rainmelt<0)
     rainmelt=0.0;
-  runoff+=infil_perc_rain(stand,rainmelt-intercep_stand,&return_flow_b,config->rw_manage);
+  runoff+=infil_perc_rain(stand,rainmelt-intercep_stand,&return_flow_b,config);
 
   foreachpft(pft,p,&stand->pftlist)
   {
@@ -111,21 +120,29 @@ Real daily_setaside(Stand *stand, /**< stand pointer */
      *  respiration, including conversion from FPC to grid cell basis.
      *
      */
-
     gpp=water_stressed(pft,aet_stand,gp_stand,gp_stand_leafon,
                        gp_pft[getpftpar(pft,id)],&gc_pft,&rd,
-                       &wet[p],eeq,co2,climate->temp,par,daylength,&wdf,config->permafrost);
+                       &wet[p],eeq,co2,climate->temp,par,daylength,&wdf,npft,ncft,config);
     if(gp_pft[getpftpar(pft,id)]>0.0)
     {
       output->gcgp_count[pft->par->id]++;
       output->pft_gcgp[pft->par->id]+=gc_pft/gp_pft[getpftpar(pft,id)];
     }
 
-    npp=npp(pft,gtemp_air,gtemp_soil,gpp-rd);
-    output->mnpp+=npp*stand->frac;
+    npp=npp(pft,gtemp_air,gtemp_soil,gpp-rd-pft->npp_bnf,config->with_nitrogen);
+    pft->npp_bnf=0.0;
+    if(output->daily.cft==ALLSTAND)
+    {
+      output->daily.npp+=npp*stand->frac;
+      output->daily.gpp+=gpp*stand->frac;
+    }
+    output->npp+=npp*stand->frac;
+    output->npp_agr += npp*stand->frac / agrfrac;
+    stand->cell->balance.anpp+=npp*stand->frac;
+    stand->cell->balance.agpp+=gpp*stand->frac;
     output->dcflux-=npp*stand->frac;
-    output->mgpp+=gpp*stand->frac;
-    output->mfapar += pft->fapar * stand->frac * (1.0/(1-stand->cell->lakefrac-stand->cell->ml.reservoirfrac));
+    output->gpp+=gpp*stand->frac;
+    output->fapar += pft->fapar * stand->frac * (1.0/(1-stand->cell->lakefrac-stand->cell->ml.reservoirfrac));
     output->mphen_tmin += pft->fpc * pft->phen_gsi.tmin * stand->frac * (1.0/(1-stand->cell->lakefrac-stand->cell->ml.reservoirfrac));
     output->mphen_tmax += pft->fpc * pft->phen_gsi.tmax * stand->frac * (1.0/(1-stand->cell->lakefrac-stand->cell->ml.reservoirfrac));
     output->mphen_light += pft->fpc * pft->phen_gsi.light * stand->frac * (1.0/(1-stand->cell->lakefrac-stand->cell->ml.reservoirfrac));
@@ -135,44 +152,47 @@ Real daily_setaside(Stand *stand, /**< stand pointer */
 
   } /* of foreachpft */
 
+  free(gp_pft);
   /* soil outflow: evap and transpiration */
   waterbalance(stand,aet_stand,green_transp,&evap,&evap_blue,wet_all,eeq,cover_stand,
                &frac_g_evap,config->rw_manage);
-
-  if(config->withdailyoutput)
+  if(output->daily.cft==ALLSTAND)
   {
-    foreachpft(pft,p,&stand->pftlist)
-      if(pft->par->id==output->daily.cft)
-      {
-        output->daily.evap=evap;
-        forrootsoillayer(l)
-          output->daily.trans+=aet_stand[l];
-        output->daily.irrig=0;
-        output->daily.w0=stand->soil.w[1];
-        output->daily.w1=stand->soil.w[2];
-        output->daily.wevap=stand->soil.w[0];
-        output->daily.par=par;
-        output->daily.daylength=daylength;
-        output->daily.pet=eeq*PRIESTLEY_TAYLOR;
-      }
+    output->daily.evap+=evap*stand->frac;
+    forrootsoillayer(l)
+      output->daily.trans+=aet_stand[l]*stand->frac;
+    output->daily.irrig=0;
+    output->daily.w0+=stand->soil.w[1]*stand->frac;
+    output->daily.w1+=stand->soil.w[2]*stand->frac;
+    output->daily.wevap+=stand->soil.w[0]*stand->frac;
+    output->daily.par=par;
+    output->daily.pet=eeq*PRIESTLEY_TAYLOR;
   }
 
+  transp=0;
   forrootsoillayer(l)
   {
-    output->mtransp+=aet_stand[l]*stand->frac;
+    transp+=aet_stand[l]*stand->frac;
     output->mtransp_b+=(aet_stand[l]-green_transp[l])*stand->frac;
   }
-
-  output->minterc+=intercep_stand*stand->frac;
-  output->mevap+=evap*stand->frac;
+  output->transp+=transp;
+  output->atransp+=transp;
+  output->interc+=intercep_stand*stand->frac;
+  output->evap+=evap*stand->frac;
+  output->aevap+=evap*stand->frac;
+  output->ainterc+=intercep_stand*stand->frac;
   output->mevap_b+=evap_blue*stand->frac; /*TODOJJ why are monthly outputs in setaside written but cft-outputs not? */
   output->mreturn_flow_b+=return_flow_b*stand->frac;
+#if defined(IMAGE) && defined(COUPLED)
+  if(cell->ml.image_data!=NULL)
+    stand->cell->ml.image_data->mevapotr[month] += transp + (evap + intercep_stand)*stand->frac;
+#endif
 
   /* new block for daily establishment */
   n_est=0;
   if(intercrop)
   {
-    acflux_estab=0;
+    flux_estab.carbon=flux_estab.nitrogen=0;
     for(p=0;p<npft;p++)
     {
       if(config->pftpar[p].type==GRASS && config->pftpar[p].cultivation_type==NONE /* still correct?? */ && (!present[p]) &&
@@ -183,7 +203,9 @@ Real daily_setaside(Stand *stand, /**< stand pointer */
     foreachpft(pft,p,&stand->pftlist)
       if(!pft->established)
       {
-        acflux_estab+=establishment_grass(pft,0,0,n_est);
+        stocks=establishment_grass(pft,0,0,n_est);
+        flux_estab.carbon+=stocks.carbon;
+        flux_estab.nitrogen+=stocks.nitrogen;
         pft->established=TRUE;
       }
 
@@ -191,8 +213,11 @@ Real daily_setaside(Stand *stand, /**< stand pointer */
     foreachpft(pft,p,&stand->pftlist)
       fpc_grass(pft);
 
-    output->flux_estab+=acflux_estab*stand->frac;
-    output->dcflux-=acflux_estab*stand->frac;
+    output->flux_estab.carbon+=flux_estab.carbon*stand->frac;
+    output->flux_estab.nitrogen+=flux_estab.nitrogen*stand->frac;
+    stand->cell->balance.flux_estab.carbon+=flux_estab.carbon*stand->frac;
+    stand->cell->balance.flux_estab.nitrogen+=flux_estab.nitrogen*stand->frac;
+    output->dcflux-=flux_estab.carbon*stand->frac;
   }
   free(present);
   /* end new block for daily establishment */

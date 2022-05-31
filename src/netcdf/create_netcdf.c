@@ -31,7 +31,8 @@ Bool create_netcdf(Netcdf *cdf,
                    const char *descr, /**< description of output variable */
                    const char *units, /**< unit of output variable */
                    Type type, /**< Type of output variable */
-                   int n, /**< number of samples per year (0/1/12/365) */ 
+                   int n, /**< number of samples per year (0/1/12/365) */
+                   int timestep, /**< time step for annual output (yrs) */
                    const Coord_array *array, /**< coordinate array */
                    const Config *config /**< LPJ configuration */
                   ) /** \return TRUE on error */
@@ -109,7 +110,10 @@ Bool create_netcdf(Netcdf *cdf,
       lat[i]=(float)(array->lat_min+i*config->resolution.lat);
     if(n)
     {
-      year=newvec(int,nyear*n);
+      if(n==1)
+        year=newvec(int,nyear/timestep);
+      else
+        year=newvec(int,nyear*n);
       if(year==NULL)
       {
         printallocerr("year");
@@ -120,13 +124,13 @@ Bool create_netcdf(Netcdf *cdf,
     }
     else
       year=NULL;
-      switch(n)
-      {
+    switch(n)
+    {
       case 0:
         break;
       case 1:
-        for(i=0;i<nyear;i++)
-          year[i]=config->outputyear+i;
+        for(i=0;i<nyear/timestep;i++)
+          year[i]=config->outputyear+i*timestep+timestep/2;
         break;
       case 12:
         for(i=0;i<nyear;i++)
@@ -141,8 +145,7 @@ Bool create_netcdf(Netcdf *cdf,
           year[i]=i;
         break;
       default:
-        fputs("ERROR425: Invalid value for number of data points per year.\n",
-              stderr);
+        fprintf(stderr,"ERROR425: Invalid value=%d for number of data points per year.\n",n);
         free(year);
         free(lon);
         free(lat);
@@ -170,7 +173,10 @@ Bool create_netcdf(Netcdf *cdf,
     }
     if(n)
     {
-      rc=nc_def_dim(cdf->ncid,TIME_DIM_NAME,nyear*n,&cdf->time_dim_id);
+      if(n==1)
+        rc=nc_def_dim(cdf->ncid,TIME_DIM_NAME,nyear/timestep,&cdf->time_dim_id);
+      else
+        rc=nc_def_dim(cdf->ncid,TIME_DIM_NAME,nyear*n,&cdf->time_dim_id);
       error(rc);
       rc=nc_def_var(cdf->ncid,"time",NC_INT,1,&cdf->time_dim_id,&cdf->time_var_id);
       error(rc);
@@ -194,7 +200,7 @@ Bool create_netcdf(Netcdf *cdf,
     rc=nc_def_var(cdf->ncid,LON_NAME,NC_FLOAT,1,&cdf->lon_dim_id,&cdf->lon_var_id);
     error(rc);
     if(n==1)
-      rc=nc_put_att_text(cdf->ncid,cdf->time_var_id,"units",strlen("Years"),"Years");
+      rc=nc_put_att_text(cdf->ncid,cdf->time_var_id,"units",strlen(YEARS_NAME),YEARS_NAME);
     else if(n>1)
     {
       snprintf(s,STRING_LEN,"days since %d-1-1 0:0:0",config->outputyear);

@@ -70,7 +70,7 @@ int main(int argc,char **argv)
   }
 
   climate_version=setversion;
-  if(freadanyheader(climate_file,&header,&swap,headername,&climate_version))
+  if(freadanyheader(climate_file,&header,&swap,headername,&climate_version,TRUE))
   {
     fclose(climate_file);
     fail(2,FALSE,"Invalid header in climate-infile.");
@@ -87,7 +87,7 @@ int main(int argc,char **argv)
 
   /* reading original grid file */
   version=setversion;
-  if(freadheader(mfp,&header_grid,&swap_grid,LPJGRID_HEADER,&version))
+  if(freadheader(mfp,&header_grid,&swap_grid,LPJGRID_HEADER,&version,TRUE))
   {
     fclose(mfp);
     fail(23,FALSE,"Invalid header in original grid file.");
@@ -109,7 +109,7 @@ int main(int argc,char **argv)
 
   /* reading re-ordered grid file */
   version=setversion;
-  if(freadheader(ifp,&header_grid,&swap_grid,LPJGRID_HEADER,&version))
+  if(freadheader(ifp,&header_grid,&swap_grid,LPJGRID_HEADER,&version,TRUE))
   {
     fclose(ifp);
     fail(23,FALSE,"Invalid header in re-ordered grid file");
@@ -129,7 +129,7 @@ int main(int argc,char **argv)
       {
     lon=rbuf1[0];
     lat=rbuf1[1];
-	/* printf("%d %d %d\n",k,lon,lat); */
+    /* printf("%d %d %d\n",k,lon,lat); */
       }
       else
       {

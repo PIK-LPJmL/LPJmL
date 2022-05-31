@@ -15,9 +15,8 @@
 #include "lpj.h"
 #include "natural.h"
 
-Bool fread_natural(FILE * UNUSED(file),Stand *stand,
+Bool fread_natural(FILE * UNUSED(file),Stand * UNUSED(stand),
                    Bool UNUSED(swap))
 {
-  stand->landcover=NULL;
   return FALSE;
 } /* of 'fread_natural' */

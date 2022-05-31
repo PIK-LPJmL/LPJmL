@@ -127,7 +127,7 @@ Real snow(Soil *soil,       /**< pointer to soil data */
     {
       /*temperature change of remaining snow layer */
       dT=th_diff_snow*timestep2sec(1.0,heat_steps)/(soil->snowpack*soil->snowpack*1e-6)
-         *(temp+soil->temp[TOPLAYER]-2*soil->temp[SNOWLAYER]);
+         *(temp+(soil->temp[TOPLAYER]*(1-soil->litter.agtop_cover)+soil->litter.agtop_temp*soil->litter.agtop_cover)-2*soil->temp[SNOWLAYER]);
       if(fabs(dT)<epsilon || t==maxheatsteps)
         break;
       /* melting of the whole snow layer*/
@@ -160,21 +160,21 @@ Real snow(Soil *soil,       /**< pointer to soil data */
   else
     *temp_bsnow=temp;
 
- /* calculate snow height and fraction of snow coverage */
- if(soil->snowpack>epsilon)
- {
-  HS = c_watertosnow * (soil->snowpack/1000.0); /* mm -> m */
-  frsg = HS / (HS+0.5*c_roughness);
+  /* calculate snow height and fraction of snow coverage */
+  if(soil->snowpack>epsilon)
+  {
+    HS = c_watertosnow * (soil->snowpack/1000.0); /* mm -> m */
+    frsg = HS / (HS+0.5*c_roughness);
 
-  soil->snowheight = HS;
-  soil->snowfraction = frsg;
-}
-else
-{
-  soil->snowpack=0.0;
-  soil->snowheight=0.0;
-  soil->snowfraction=0.0;
-}
+    soil->snowheight = HS;
+    soil->snowfraction = frsg;
+  }
+  else
+  {
+    soil->snowpack=0.0;
+    soil->snowheight=0.0;
+    soil->snowfraction=0.0;
+  }
 
   return runoff;
 } /* of 'snow' */

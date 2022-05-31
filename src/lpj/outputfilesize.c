@@ -32,34 +32,36 @@ long long outputfilesize(const Config *config /**< LPJ configuration */
       sum+=(config->lastyear-config->firstyear+config->nspinup+1)*200;
     else
     {
-    size=getsize(i,config);
-    size*=config->lastyear-config->outputyear+1;
-    if(config->outputvars[i].filename.fmt==CDF)
-    {
-      if(!iscdf)
+      size=getsize(i,config);
+      size*=config->lastyear-config->outputyear+1;
+      if(config->outnames[config->outputvars[i].id].timestep>1)
+        size/=config->outnames[config->outputvars[i].id].timestep;
+      if(config->outputvars[i].filename.fmt==CDF)
       {
-         if(config->soil_filename.fmt==CDF)
-         {
-           coord=opencoord_netcdf(config->soil_filename.name,
-                                  config->soil_filename.var,isroot(*config));
-           if(coord!=NULL)
+        if(!iscdf)
+        {
+           if(config->soil_filename.fmt==CDF)
            {
-             getextension_netcdf(&ext,coord);
-             closecoord_netcdf(coord);
+             coord=opencoord_netcdf(config->soil_filename.name,
+                                    config->soil_filename.var,isroot(*config));
+             if(coord!=NULL)
+             {
+               getextension_netcdf(&ext,coord);
+               closecoord_netcdf(coord);
+             }
+             else
+               ext.lon_res=ext.lat_res=0.5;
            }
            else
-             ext.lon_res=ext.lat_res=0.5;
-         }
-         else
-           getextension(&ext,config);
-         size_cdf=((long long)((ext.lon_max-ext.lon_min)/ext.lon_res)+1)*
-                  ((long long)((ext.lat_max-ext.lat_min)/ext.lat_res)+1);
-         iscdf=TRUE;
+             getextension(&ext,config);
+           size_cdf=((long long)((ext.lon_max-ext.lon_min)/ext.lon_res)+1)*
+                    ((long long)((ext.lat_max-ext.lat_min)/ext.lat_res)+1);
+           iscdf=TRUE;
+        }
+        sum+=size_cdf*(size/config->total);
       }
-      sum+=size_cdf*(size/config->total);
-    }
-    else
-      sum+=size;
+      else
+        sum+=size;
     }
   }
   return sum;

@@ -34,9 +34,26 @@
 #define NONE 0
 #define BIOMASS 1
 #define ANNUAL_CROP 2
-#define WP 3
+#define ANNUAL_TREE 3
+#define WP 4
 
-/* CROP must always last id because of ntypes, see also lpjml.c */
+#define NO_CALC_SDATE 0
+#define PREC_CALC_SDATE 1
+#define TEMP_WTYP_CALC_SDATE 2
+#define TEMP_STYP_CALC_SDATE 3
+#define TEMP_PREC_CALC_SDATE 4
+#define MULTICROP 5
+
+#define NGRASS 2 /* OTHERS + MANAGED GRASSLAND */
+#define NBIOMASSTYPE 2 /* GRASS + TREE */
+#define NWPTYPE 1
+#define WIRRIG 2
+#define ALLNATURAL -2 /* ensures summing daily outputs for all natural vegetation pfts */
+#define ALLGRASSLAND -3 /* ensures summing daily outputs for all natural vegetation pfts */
+#define ALLSTAND -4
+
+/* the following constants are used by IMAGE */
+
 #define TROPICAL_BROADLEAVED_EVERGREEN_TREE 0
 #define TROPICAL_BROADLEAVED_RAINGREEN_TREE 1
 #define TEMPERATE_NEEDLELEAVED_EVERGREEN_TREE 2
@@ -48,55 +65,18 @@
 #define TROPICAL_HERBACEOUS 8
 #define TEMPERATE_HERBACEOUS 9
 #define POLAR_HERBACEOUS 10
-#define BIOENERGY_TROPICAL_TREE 11
-#define BIOENERGY_TEMPERATE_TREE 12
-#define BIOENERGY_C4_GRASS 13
-#if defined IMAGE || defined INCLUDEWP
-#define WOODPLANTATION_TEMPERATE_TREE 14
-#define WOODPLANTATION_TROPICAL_TREE 15
-#define WOODPLANTATION_BOREAL_TREE 16
-#define TEMPERATE_CEREALS 17
-#define RICE 18
-#define MAIZE 19
-#define TROPICAL_CEREALS 20
-#define PULSES 21
-#define TEMPERATE_ROOTS 22
-#define TROPICAL_ROOTS 23
-#define OIL_CROPS_SUNFLOWER 24
-#define OIL_CROPS_SOYBEAN 25
-#define OIL_CROPS_GROUNDNUT 26
-#define OIL_CROPS_RAPESEED 27
-#define SUGARCANE 28
-#else
-#define TEMPERATE_CEREALS 14
-#define RICE 15
-#define MAIZE 16
-#define TROPICAL_CEREALS 17
-#define PULSES 18
-#define TEMPERATE_ROOTS 19
-#define TROPICAL_ROOTS 20
-#define OIL_CROPS_SUNFLOWER 21
-#define OIL_CROPS_SOYBEAN 22
-#define OIL_CROPS_GROUNDNUT 23
-#define OIL_CROPS_RAPESEED 24
-#define SUGARCANE 25
-#endif
 
-#define NO_CALC_SDATE 0
-#define PREC_CALC_SDATE 1
-#define TEMP_WTYP_CALC_SDATE 2
-#define TEMP_STYP_CALC_SDATE 3
-#define TEMP_PREC_CALC_SDATE 4
-#define MULTICROP 5
-
-#define NGRASS 2 /* OTHERS + MANAGED GRASSLAND */
-#define NBIOMASSTYPE 2 /* GRASS + TREE */
-#if defined IMAGE || defined INCLUDEWP
-#define NWPTYPE 1 
-#else
-#define NWPTYPE 0
-#endif
-#define WIRRIG 2
-#define ALLNATURAL -1 /* ensures summing daily outputs for all natural vegetation pfts */
+#define TEMPERATE_CEREALS 0
+#define RICE 1
+#define MAIZE 2
+#define TROPICAL_CEREALS 3
+#define PULSES  4
+#define TEMPERATE_ROOTS 5
+#define TROPICAL_ROOTS 6
+#define OIL_CROPS_SUNFLOWER 7
+#define OIL_CROPS_SOYBEAN 8
+#define OIL_CROPS_GROUNDNUT 9
+#define OIL_CROPS_RAPESEED 10
+#define SUGARCANE 11
 
 #endif

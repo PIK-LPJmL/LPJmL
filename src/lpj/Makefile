@@ -15,12 +15,10 @@
 
 include ../../Makefile.inc
 
-OBJS    = update_daily.$O update_annual.$O init_annual.$O \
-          update_monthly.$O newgrid.$O iterate.$O initoutput_monthly.$O\
+OBJS    = update_daily.$O update_annual.$O init_annual.$O\
+          update_monthly.$O newgrid.$O iterate.$O  outputindex.$O\
           iterateyear.$O initoutput.$O fopenoutput.$O\
-          fcloseoutput.$O fwriteoutput_annual.$O fwriteoutput_pft.$O\
-          fwriteoutput_monthly.$O fprintincludes.$O\
-          cflux_sum.$O flux_sum.$O initoutput_annual.$O\
+          fcloseoutput.$O fprintincludes.$O flux_sum.$O\
           freeoutput.$O freegrid.$O freecell.$O fscanoutput.$O\
           fscanpftpar.$O firepft.$O climbuf.$O outputsize.$O\
           pftlist.$O newpft.$O establish.$O fprintstand.$O temp_stress.$O\
@@ -36,18 +34,21 @@ OBJS    = update_daily.$O update_annual.$O init_annual.$O \
           fprintconfig.$O freepftpar.$O drain.$O initdrain.$O\
           openconfig.$O freeconfig.$O readconfig.$O initconfig.$O\
           check_stand_fracs.$O waterusefcns.$O getoutputtype.$O\
-          fscanlimit.$O filesexist.$O freeoutputvar.$O\
-          fprintflux.$O initoutput_daily.$O fwriteoutput_daily.$O\
-          outputfilesize.$O nowdf.$O printlicense.$O fprintcsvflux.$O\
-          ismonthlyoutput.$O initmpiconfig.$O fscanparam.$O fprintparam.$O\
+          fscanlimit.$O filesexist.$O freeoutputvar.$O fprintpftnames.$O\
+          fprintflux.$O fwriteoutput.$O freadoutputdata.$O fwriteoutputdata.$O\
+          outputfilesize.$O nowdf.$O printlicense.$O isannual.$O\
+          initmpiconfig.$O fscanparam.$O fprintparam.$O\
           fprintpftpar.$O help.$O copyright.$O initinput.$O freeinput.$O\
           natural.$O daily_natural.$O fread_natural.$O fprint_natural.$O\
-          annual_natural.$O standcarbon.$O fwrite_natural.$O celldata.$O\
+          annual_natural.$O fwrite_natural.$O celldata.$O\
           fscanemissionfactor.$O check_balance.$O transfer_function.$O\
           fprintfiles.$O roughnesslength.$O closeoutput_yearly.$O\
-          getnbiomass.$O getextension.$O albedo_stand.$O phenology_gsi.$O\
-          fscanphenparam.$O landcover.$O getsize.$O getnwft.$O
-
+          getnculttype.$O getextension.$O albedo_stand.$O phenology_gsi.$O\
+          fscanphenparam.$O landcover.$O standstocks.$O nitrogen_stress.$O\
+          f_lai.$O getsize.$O fprintoutputvar.$O isdailyoutput_natural.$O\
+          getngrassnat.$O fscancnratio.$O isnitrogen_output.$O initoutputdata.$O\
+          fprintcsvflux.$O extflow.$O ma_biological_n_fixation.$O\
+          fprintoutputjson.$O
 
 INC     = ../../include
 LIBDIR  = ../../lib
@@ -72,7 +73,7 @@ $(LIBDIR)/$(LIB): $(OBJS)
 $(OBJS): $(HDRS)
 
 .c.$O: 
-	$(CC) $(CFLAGS) -I$(INC) $(JSON_INC) -c $*.c
+	$(CC) $(CFLAGS) -I$(INC) -c $*.c
 
 clean: 
 	$(RM) $(RMFLAGS) $(OBJS)

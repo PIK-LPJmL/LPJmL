@@ -52,7 +52,7 @@ void printlicense(void)
     file=stdout;
   in=fopen(path,"r");
   if(in==NULL)
-    fprintf(stderr,"Error opening license file '%s': %s.\n",path,strerror(errno));
+    fprintf(stderr,"ERROR100: Cannot open license file '%s': %s.\n",path,strerror(errno));
   else
   {
     while(fgets(line,STRING_LEN,in)!=NULL)

@@ -23,8 +23,8 @@ int fwritecell(FILE *file,        /**< File pointer of binary file */
                int ncell,         /**< number of cells */
                int ncft,          /**< number of crop PFTs */
                int npft,          /**< number of PFTs */
-               int sdate_option,  /**< sowing date option (0-2) */
-               Bool river_routing /**< river routing (TRUE/FALSE) */
+               Bool ischeckpoint,
+               const Config *config /**< LPJml configuration  */
               )                   /** \return number of cells written */
 {
   int cell;
@@ -35,7 +35,8 @@ int fwritecell(FILE *file,        /**< File pointer of binary file */
       index[cell]=ftell(file); /* store actual position in index vector */
     b=(Byte)grid[cell].skip;
     fwrite(&b,sizeof(b),1,file);
-    if(river_routing)
+    fwrite(grid[cell].seed,sizeof(Seed),1,file);
+    if(config->river_routing)
     {
       if(fwrite(&grid[cell].discharge.dmass_lake,sizeof(Real),1,file)!=1)
         break;
@@ -65,11 +66,13 @@ int fwritecell(FILE *file,        /**< File pointer of binary file */
     }
     if(!grid[cell].skip)
     {
-      if(fwrite(grid[cell].balance.estab_storage_tree,sizeof(Real),2,file)!=2)
+      if(fwrite(grid[cell].balance.estab_storage_tree,sizeof(Stocks),2,file)!=2)
         break;
-      if(fwrite(grid[cell].balance.estab_storage_grass,sizeof(Real),2,file)!=2)
+      if(fwrite(grid[cell].balance.estab_storage_grass,sizeof(Stocks),2,file)!=2)
         break;
       if(fwriteignition(file,&grid[cell].ignition))
+        break;
+      if(fwrite(&grid[cell].balance.excess_water,sizeof(Real),1,file)!=1)
         break;
       if(fwrite(&grid[cell].discharge.waterdeficit,sizeof(Real),1,file)!=1)
         break;
@@ -82,13 +85,18 @@ int fwritecell(FILE *file,        /**< File pointer of binary file */
         break;
       if(fwrite(&grid[cell].ml.cropfrac_ir,sizeof(Real),1,file)!=1)
         break;
-      if(fwriteclimbuf(file,&grid[cell].climbuf))
+      if(fwriteclimbuf(file,&grid[cell].climbuf,ncft))
         break;
       if(fwritecropdates(file,grid[cell].ml.cropdates,ncft))
         break;
-      if(sdate_option>NO_FIXED_SDATE)
+      if(config->sdate_option>NO_FIXED_SDATE)
       {
         if(fwrite(grid[cell].ml.sdate_fixed,sizeof(int),2*ncft,file)!=2*ncft)
+          break;
+      }
+      if(config->crop_phu_option==PRESCRIBED_CROP_PHU)
+      {
+        if(fwrite(grid[cell].ml.crop_phu_fixed,sizeof(Real),2*ncft,file)!=2*ncft)
           break;
       }
       if(fwrite(grid[cell].ml.sowing_month,sizeof(int),2*ncft,file)!=2*ncft)
@@ -96,7 +104,17 @@ int fwritecell(FILE *file,        /**< File pointer of binary file */
       if(fwrite(grid[cell].ml.gs,sizeof(int),2*ncft,file)!=2*ncft)
         break;
       if(grid[cell].ml.landfrac!=NULL)
-        fwritelandfrac(file,grid[cell].ml.landfrac,ncft);
+      {
+        fwritelandfrac(file,grid[cell].ml.landfrac,ncft,config->nagtree);
+#ifndef IMAGE
+        fwrite(&grid[cell].ml.product,sizeof(Pool),1,file);
+#endif
+      }
+      if(grid[cell].ml.fertilizer_nr!=NULL)
+        fwritelandfrac(file,grid[cell].ml.fertilizer_nr,ncft,config->nagtree);
+      if(ischeckpoint && config->n_out)
+       fwriteoutputdata(file,&grid[cell].output,config);
+
     }
   } /* of 'for(cell=...)' */
   return cell;
