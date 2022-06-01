@@ -64,7 +64,7 @@ Real firedangerindex(Real char_moist_factor,
 
       /*Goff and Gratch: coefficient z of saturation vapor pressure*/
       temperature = climate->temp + 273.16;
-      Z =( a * (Ts/temperature -1) + b * log(Ts/temperature)/log(10.0) + c * (pow(10,pow(d,(1-(Ts/temperature))))-1) + f * (pow(10,-pow(h,(Ts/temperature)-1))-1));
+      Z =( a * (Ts/temperature -1) + b * log(Ts/temperature) + c * (pow(10,pow(d,(1-(Ts/temperature))))-1) + f * (pow(10,-pow(h,(Ts/temperature)-1))-1));
   
       /*conversion of specific humidity to relative humidity*/
       rh= 0.263 * 1013.25 * climate->humid *1/(exp(17.67*climate->temp/(temperature-29.65)));
