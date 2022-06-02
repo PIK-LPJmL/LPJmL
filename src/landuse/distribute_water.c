@@ -160,14 +160,6 @@ void distribute_water(Cell *cell,            /**< pointer to LPJ cell */
                 getoutputindex(&cell->output,CFT_NIR,rmgrass(ncft)+nirrig,config)+=data->net_irrig_amount;
               }
               break;
-#if defined IMAGE || defined INCLUDEWP
-            case WOODPLANTATION:
-              if(pft_output_scaled)
-                stand->cell->output.cft_nir[rwp(ncft)+data->irrigation*(ncft+NGRASS+NBIOMASSTYPE+NWPTYPE)]+=data->net_irrig_amount*stand->cell->ml.landfrac[1].woodplantation;
-              else
-                stand->cell->output.cft_nir[rwp(ncft)+data->irrigation*(ncft+NGRASS+NBIOMASSTYPE+NWPTYPE)]+=data->net_irrig_amount;
-              break;
-#endif
             case BIOMASS_GRASS:
               if(config->pft_output_scaled)
                 getoutputindex(&cell->output,CFT_NIR,rbgrass(ncft)+nirrig,config)+=data->net_irrig_amount*cell->ml.landfrac[1].biomass_grass;
