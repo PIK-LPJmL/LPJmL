@@ -23,6 +23,8 @@ char *getfilefrommeta(const char *filename, /**< name of metafile */
   LPJfile file;
   String key,value;
   char *name,*path,*fullname;
+  size_t offset;
+  Bool swap;
   file.isjson=FALSE;
   /* open description file */
   if((file.file.file=fopen(filename,"r"))==NULL)
@@ -34,7 +36,21 @@ char *getfilefrommeta(const char *filename, /**< name of metafile */
   initscan(filename);
   name=NULL;
   while(!fscantoken(file.file.file,key))
-    if(!strcmp(key,"file"))
+    if(key[0]=='{')
+    {
+#ifdef USE_JSON
+      name=parse_json_metafile(&file,key,NULL,NULL,NULL,&offset,&swap,isout ? ERR : NO_ERR);
+      break;
+#else
+      if(isout)
+        printf(stderr,"ERROR229: JSON format not supported for metafile '%s' in this version of LPJmL.\n",
+               filename);
+      free(name);
+      fclose(file.file.file);
+      return NULL;
+#endif
+    }
+    else if(!strcmp(key,"file"))
     {
       if(fscanstring(&file,value,"file",FALSE,isout ? ERR : NO_ERR))
       {
@@ -84,6 +100,21 @@ char *getfilefrommeta(const char *filename, /**< name of metafile */
      free(name);
      free(path);
      name=fullname;
+  }
+  else
+  {
+    path=getpath(filename);
+    fullname=addpath(name,path);
+    if(fullname==NULL)
+    {
+     printallocerr("name");
+     free(path);
+     free(name);
+     return NULL;
+    }
+    free(name);
+    free(path);
+    name=fullname;
   }
   return name;
 } /* of 'getfilefrommeta' */

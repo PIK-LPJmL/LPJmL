@@ -134,6 +134,7 @@ Bool fscanconfig(Config *config,    /**< LPJ configuration */
   const char *radiation[]={"cloudiness","radiation","radiation_swonly","radiation_lwdown"};
   const char *fire[]={"no_fire","fire","spitfire","spitfire_tmax"};
   const char *sowing_data_option[]={"no_fixed_sdate","fixed_sdate","prescribed_sdate"};
+  const char *soilpar_option[]={"no_fixed_soilpar","fixed_soilpar","prescribed_soilpar"};
   const char *wateruse[]={"no","yes","all"};
   const char *prescribe_landcover[]={"no_landcover","landcoverest","landcoverfpc"};
   const char *laimax_interpolate[]={"laimax_cft","laimax_interpolate","const_lai_max","laimax_par"};
@@ -237,6 +238,16 @@ Bool fscanconfig(Config *config,    /**< LPJ configuration */
   config->black_fallow=FALSE;
   config->double_harvest=FALSE;
   config->others_to_crop = FALSE;
+  config->ma_bnf = FALSE;
+  if(fscanbool(file,&config->ma_bnf,"ma_bnf",TRUE,verbose))
+    return TRUE;
+  config->soilpar_option=NO_FIXED_SOILPAR;
+  if(fscankeywords(file,&config->soilpar_option,"soilpar_option",soilpar_option,3,TRUE,verbose))
+    return TRUE;
+  if(config->soilpar_option==FIXED_SOILPAR)
+  {
+    fscanint2(file,&config->soilpar_fixyear,"soilpar_fixyear");
+  }
   if(fscanbool(file,&config->const_climate,"const_climate",TRUE,verbose))
     return TRUE;
   config->storeclimate=TRUE;;
@@ -419,15 +430,23 @@ Bool fscanconfig(Config *config,    /**< LPJ configuration */
       fputs("ERROR230: Cannot read LPJ parameter 'param'.\n",stderr);
     return TRUE;
   }
-  if((config->nsoil=fscansoilpar(file,&config->soilpar,config->with_nitrogen,verbose))==0)
+  if(fscansoilpar(file,config))
   {
     if(verbose)
       fputs("ERROR230: Cannot read soil parameter 'soilpar'.\n",stderr);
     return TRUE;
   }
-  config->soilmap=fscansoilmap(file,&config->soilmap_size,config);
-  if(config->soilmap==NULL)
-    return TRUE;
+  if(iskeydefined(file,"soilmap"))
+  {
+    config->soilmap=fscansoilmap(file,&config->soilmap_size,config);
+    if(config->soilmap==NULL)
+      return TRUE;
+  }
+  else
+  {
+    config->soilmap=NULL;
+    config->soilmap_size=0;
+  }
   config->ntypes=ntypes;
   if(fscanpftpar(file,scanfcn,config))
   {
@@ -941,8 +960,8 @@ Bool fscanconfig(Config *config,    /**< LPJ configuration */
   else
   {
     config->restart_filename=NULL;
-    fscanbool2(file,&config->equilsoil,"equilsoil");
   }
+  fscanbool2(file,&config->equilsoil,"equilsoil");
   if(iskeydefined(file,"checkpoint_filename"))
   {
     fscanname(file,name,"checkpoint_filename");

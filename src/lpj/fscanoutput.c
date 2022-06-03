@@ -63,8 +63,8 @@ Bool fscanoutput(LPJfile *file,  /**< pointer to LPJ file */
                 )                /** \return TRUE on error */
 {
   LPJfile arr,item;
-  int count,flag,size,index,ntotpft;
-  Bool isdaily;
+  int count,flag,size,index,ntotpft,version;
+  Bool isdaily,metafile;
   String outpath,name;
   Verbosity verbosity;
   String s,s2;
@@ -103,12 +103,29 @@ Bool fscanoutput(LPJfile *file,  /**< pointer to LPJ file */
     config->n_out=0;
     config->crop_index=-1;
     config->crop_irrigation=-1;
+    config->json_suffix=NULL;
     return FALSE;
   }
   if(fscanarray(file,&arr,&size,FALSE,"output",verbosity))
   {
     config->n_out=0;
     return file->isjson;
+  }
+  metafile=FALSE;
+  if(fscanbool(file,&metafile,"output_metafile",TRUE,verbosity))
+    return TRUE;
+  version=0;
+  if(iskeydefined(file,"output_version"))
+  {
+    if(fscanint(file,&version,"output_version",FALSE,verbosity))
+      return TRUE;
+    if(version<1 || version>CLM_MAX_VERSION)
+    {
+      if(verbosity)
+        fprintf(stderr,"ERROR229: Invalid version %d, must be in [1,%d].\n",
+                version,CLM_MAX_VERSION);
+      return TRUE;
+    }
   }
   config->global_netcdf=FALSE;
   if(iskeydefined(file,"global_netcdf"))
@@ -138,6 +155,10 @@ Bool fscanoutput(LPJfile *file,  /**< pointer to LPJ file */
   {
     fscanint2(file,&config->pft_output_scaled,"pft_output_scaled");
   }
+  if(fscanstring(file,name,"json_suffix",FALSE,verbosity))
+    return TRUE;
+  config->json_suffix=strdup(name);
+  checkptr(config->json_suffix);
   isdaily=FALSE;
   while(count<=nout_max && index<size)
   {
@@ -169,6 +190,11 @@ Bool fscanoutput(LPJfile *file,  /**< pointer to LPJ file */
     }
     else
     {
+      config->outputvars[count].filename.meta=metafile;
+      if(version>0)
+        config->outputvars[count].filename.version=version;
+      else
+        config->outputvars[count].filename.version=(flag==GRID) ? LPJGRID_VERSION : LPJOUTPUT_VERSION;
       if(readfilename(&item,&config->outputvars[count].filename,"file",config->outputdir,FALSE,verbosity))
       {
         if(verbosity)
@@ -182,30 +208,42 @@ Bool fscanoutput(LPJfile *file,  /**< pointer to LPJ file */
           fprintf(stderr,
                   "ERROR161: Invalid value=%d for index of output file '%s', must be in [0,%d].\n",
                   flag,config->outputvars[count].filename.name,nout_max-1);
+        freefilename(&config->outputvars[count].filename);
       }
       else if(isopenoutput(flag,config->outputvars,count))
       {
         if(verbosity)
           fprintf(stderr,"WARNING006: Output file for '%s' is opened twice, will be ignored.\n",
                 config->outnames[flag].name);
+        freefilename(&config->outputvars[count].filename);
       }
       else if(outputsize(flag,npft,ncft,config)==0)
       {
         if(verbosity)
           fprintf(stderr,"WARNING006: Number of bands in output file for '%s' is zero, will be ignored.\n",
                 config->outnames[flag].name);
+        freefilename(&config->outputvars[count].filename);
       }
       else if(!config->with_nitrogen && isnitrogen_output(flag))
       {
         if(verbosity)
           fprintf(stderr,"WARNING006: Output file for '%s' is nitrogen output but nitrogen is not enabled, will be ignored.\n",
                 config->outnames[flag].name);
+        freefilename(&config->outputvars[count].filename);
       }
       else if(config->outputvars[count].filename.fmt==CLM2)
       {
         if(verbosity)
           fprintf(stderr,"ERROR223: File format CLM2 is not supported for output file '%s'.\n",
                   config->outputvars[count].filename.name);
+        freefilename(&config->outputvars[count].filename);
+      }
+      else if(config->outputvars[count].filename.fmt==META)
+      {
+        if(verbosity)
+          fprintf(stderr,"ERROR223: File format META is not supported for output file '%s'.\n",
+                  config->outputvars[count].filename.name);
+        freefilename(&config->outputvars[count].filename);
       }
       else
       {

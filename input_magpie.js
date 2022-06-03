@@ -18,7 +18,7 @@
 
 "input" :
 {
-  "soil" :         { "fmt" : META, "name" : "input_VERSION2/soil.descr"},
+  "soil" :         { "fmt" : META, "name" : "input_VERSION2/soil.json"},
   "coord" :        { "fmt" : CLM,  "name" : "input_VERSION2/grid.bin"},
   "countrycode" :  { "fmt" : CLM,  "name" : "input_VERSION2/cow_full_2018.bin"},
   "no3deposition" : { "fmt" : CLM,  "name" : "input_VERSION2/no3_deposition_rcp8p5.clm"},
@@ -37,7 +37,7 @@
   /* insert prescribed sdate file name here */
   "grassland_fixed_pft" : { "fmt" : RAW, "name" : "/p/projects/landuse/users/rolinski/Newinput/scenario_MO0.bin"},
   "grass_harvest_options" : { "fmt" : RAW, "name": "/p/projects/landuse/users/rolinski/Newinput/scenario_MO2.bin"},
-  "lakes" :        { "fmt" : META, "name" : "input_VERSION2/glwd_lakes_and_rivers.descr"},
+  "lakes" :        { "fmt" : META, "name" : "input_VERSION2/glwd_lakes_and_rivers.json"},
   "drainage" :     { "fmt" : CLM,  "name" : "input_VERSION2/drainagestn.bin"},
   "neighb_irrig" : { "fmt" : CLM,  "name" : "input_VERSION2/neighb_irrig_stn.bin"},
   "elevation" :    { "fmt" : CLM,  "name" : "input_VERSION2/elevation.bin"},

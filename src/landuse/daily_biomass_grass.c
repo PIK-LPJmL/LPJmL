@@ -63,6 +63,7 @@ Real daily_biomass_grass(Stand *stand,                /**< stand pointer */
   Bool isphen;
   Irrigation *data;
   Pftgrass *grass;
+  Pftgrasspar *grasspar;
   Real *fpc_inc;
   int index;
   irrig_apply=0.0;
@@ -203,7 +204,8 @@ Real daily_biomass_grass(Stand *stand,                /**< stand pointer */
         getoutputindex(output,PFT_GCGP,nnat+index,config)+=gcgp;
       }
     }
-    npp=npp_grass(pft,gtemp_air,gtemp_soil,gpp-rd,config->with_nitrogen);
+    npp=npp_grass(pft,gtemp_air,gtemp_soil,gpp-rd-pft->npp_bnf,config->with_nitrogen);
+    pft->npp_bnf=0.0;
     if(config->crop_index==ALLSTAND)
     {
       getoutput(output,D_NPP,config)+=npp*stand->frac;
@@ -243,7 +245,7 @@ Real daily_biomass_grass(Stand *stand,                /**< stand pointer */
       fpc_inc=newvec(Real,n_pft);
       check(fpc_inc);
 
-        foreachpft(pft,p,&stand->pftlist)
+      foreachpft(pft,p,&stand->pftlist)
       {
         grass=pft->data;
         if (pft->bm_inc.carbon > 5.0|| day==NDAYYEAR)
@@ -263,12 +265,20 @@ Real daily_biomass_grass(Stand *stand,                /**< stand pointer */
          }
          else
          {
+           grass->turn.leaf.carbon+=grass->ind.leaf.carbon*grasspar->turnover.leaf/NDAYYEAR;
+           grass->turn.leaf.nitrogen+=grass->ind.leaf.nitrogen*grasspar->turnover.leaf/NDAYYEAR;
+           grass->turn_litt.leaf.carbon+=grass->ind.leaf.carbon*grasspar->turnover.leaf/NDAYYEAR*pft->nind;
+           grass->turn_litt.leaf.nitrogen+=grass->ind.leaf.nitrogen*grasspar->turnover.leaf/NDAYYEAR*pft->nind;
+
+           grass->turn.root.carbon+=grass->ind.root.carbon*grasspar->turnover.root/NDAYYEAR;
+           grass->turn.root.nitrogen+=grass->ind.root.nitrogen*grasspar->turnover.root/NDAYYEAR;
+           grass->turn_litt.root.carbon+=grass->ind.root.carbon*grasspar->turnover.root/NDAYYEAR*pft->nind;
+           grass->turn_litt.root.nitrogen+=grass->ind.root.nitrogen*grasspar->turnover.root/NDAYYEAR*pft->nind;
+
            grass->growing_days++;
            fpc_inc[p]=0;
          }
-      }
-      light(stand,fpc_inc,config);
-      free(fpc_inc);
+       }
     }
   }
   else

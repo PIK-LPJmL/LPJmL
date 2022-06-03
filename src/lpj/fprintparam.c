@@ -29,6 +29,7 @@ void fprintparam(FILE *file,    /**< pointer to text file */
                "max snow pack:\t%g (mm)\n"
                "evap soildepth:\t%g (mm)\n"
                "soil infil:\t%g\n"
+               "soil infil litt:\t%g\n"
                "pre. CO2:\t%g (ppm)\n"
                "k:\t\t%g (1/yr)\n"
                "theta:\t\t%g\n"
@@ -48,7 +49,7 @@ void fprintparam(FILE *file,    /**< pointer to text file */
                "percthres:\t%g\n",
           param.k_litter10*NDAYYEAR,param.k_soil10.fast*NDAYYEAR,
           param.k_soil10.slow*NDAYYEAR,param.maxsnowpack,param.soildepth_evap,
-          param.soil_infil,param.co2_p,
+          param.soil_infil,param.soil_infil_litter,param.co2_p,
           param.k,param.theta,param.alphac3,param.alphac4,
           param.r_growth,param.GM,param.ALPHAM,
           param.ko25,param.kc25,param.atmfrac,param.fastfrac,1-pow(1-param.bioturbate,NDAYYEAR),param.k_mort,
@@ -145,7 +146,7 @@ void fprintparam(FILE *file,    /**< pointer to text file */
     fprintf(file,"Phen limit:\t%g\n",param.phen_limit);
   }
   fputs("Soil parameter\n",file);
-  fprintsoilpar(file,config->soilpar,config->nsoil,config->with_nitrogen);
+  fprintsoilpar(file,config);
   fputs("PFT parameter\n",file);
   if(config->withlanduse!=NO_LANDUSE)
   {

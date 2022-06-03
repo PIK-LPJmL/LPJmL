@@ -44,6 +44,7 @@ void fprintpftpar(FILE *file,           /**< pointer to text file */
                "longevity:\t%g (yr)\n"
                "SLA:\t\t%g (m2/gC)\n"
                "lmro ratio:\t%g\n"
+               "lmro offset:\t%g\n"
                "ramp:\t\t%g\n"
                "LAI sapl:\t%g\n"
                "gdd5min:\t%g\n"
@@ -77,7 +78,7 @@ void fprintpftpar(FILE *file,           /**< pointer to text file */
           pftpar->beta_root,
           pftpar->minwscal,pftpar->gmin,pftpar->respcoeff,pftpar->nmax,
           pftpar->resist,
-          pftpar->longevity,pftpar->sla,pftpar->lmro_ratio,1.0/pftpar->ramp,
+          pftpar->longevity,pftpar->sla,pftpar->lmro_ratio,pftpar->lmro_offset,1.0/pftpar->ramp,
           pftpar->lai_sapl,pftpar->gdd5min,
           pftpar->twmax,pftpar->twmax_daily,pftpar->gddbase,pftpar->min_temprange,
           pftpar->emax,pftpar->intc,
@@ -130,5 +131,20 @@ void fprintpftpar(FILE *file,           /**< pointer to text file */
             pftpar->vmax_up,pftpar->kNmin,pftpar->KNmin,1/pftpar->ncleaf.high,
             1/pftpar->ncleaf.median,1/pftpar->ncleaf.low,pftpar->knstore,
             pftpar->fn_turnover,bool2str(pftpar->nfixing));
+  if(config->ma_bnf && pftpar->nfixing)
+  {
+    fprintf(file,"temp_bnf_lim:\t%g %g\n"
+                 "temp_bnf_opt:\t%g %g\n"
+                 "swc_bnf:\t%g %g\n"
+                 "phi_bnf:\t%g %g\n"
+                 "nfixpot:\t%g\n"
+                 "maxbnfcost:\t%g\n"
+                 "bnf_cost:\t%g\n",
+            pftpar->temp_bnf_lim.low, pftpar->temp_bnf_lim.high,
+            pftpar->temp_bnf_opt.low, pftpar->temp_bnf_opt.high,
+            pftpar->swc_bnf.low, pftpar->swc_bnf.high,
+            pftpar->phi_bnf[0], pftpar->phi_bnf[1], pftpar->nfixpot,
+            pftpar->maxbnfcost,pftpar->bnf_cost);
+  }
   pftpar->fprintpar(file,pftpar,config); /* call type-specific print function */
 } /* of 'fprintpftpar' */

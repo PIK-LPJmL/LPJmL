@@ -38,17 +38,18 @@
 
 "input" :
 {
-  "soil" :         { "fmt" : "meta", "name" : "input_VERSION2/soil.descr"},
+  "soil" :         { "fmt" : "meta", "name" : "input_VERSION2/soil.json"},
   "coord" :        { "fmt" : "clm",  "name" : "input_VERSION2/grid.bin"},
   "countrycode" :  { "fmt" : "clm",  "name" : "input_VERSION2/cow_full_2018.bin"},
   "no3deposition" : { "fmt" : "clm",  "name" : "input_VERSION2/no3_deposition_rcp8p5.clm"},
   "nh4deposition" : { "fmt" : "clm",  "name" : "input_VERSION2/nh4_deposition_rcp8p5.clm"},
   "soilpH" :        { "fmt" : "clm",  "name" : "input_VERSION2/soil_ph.clm"},
   "landuse" :      { "fmt" : "clm",  "name" : "input_VERSION2/cft1700_2005_irrigation_systems_64bands.bin"},
-  "fertilizer_nr" : { "fmt" : "clm",  "name" : "input_VERSION2/fertilizer_ggcmi.clm2"},
+  "fertilizer_nr" : { "fmt" :"clm",  "name" : "input_VERSION3/fertilizer_luh2v2_1900-2015_32bands.clm"},
+  "manure_nr" :    { "fmt" : "clm", "name" : "input_VERSION3/manure_zhang17_1860-2014_32bands_clm2.clm"},
   /* insert prescribed sdate file name here */
   "grassland_fixed_pft" : { "fmt" : "raw", "name" : "/home/rolinski/LPJ/Newinput/scenario_MO0.bin"},
-  "lakes" :        { "fmt" : "meta", "name" : "input_VERSION2/glwd_lakes_and_rivers.descr"},
+  "lakes" :        { "fmt" : "meta", "name" : "input_VERSION2/glwd_lakes_and_rivers.json"},
   "drainage" :     { "fmt" : "clm",  "name" : "input_VERSION2/drainagestn.bin"},
   "neighb_irrig" : { "fmt" : "clm",  "name" : "input_VERSION2/neighb_irrig_stn.bin"},
   "elevation" :    { "fmt" : "clm",  "name" : "input_VERSION2/elevation.bin"},

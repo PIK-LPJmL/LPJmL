@@ -30,6 +30,7 @@
 #ifndef MODEL
 #define MODEL HadGEM2-ES
 #endif
+
 {   /* LPJmL configuration in JSON format */
 
 /*===================================================================*/
@@ -47,14 +48,17 @@
   "new_phenology": true,    /* GSI phenology enabled */
   "new_trf" : false,        /* new transpiration reduction function disabled */
   "river_routing" : true,
+  "extflow" : false,
   "permafrost" : true,
+  "johansen" : true,
+  "soilpar_option" : "no_fixed_soilpar", /* other options "no_fixed_soilpar", "fixed_soilpar", "prescribed_soilpar" */
   "with_nitrogen" : "lim", /* other options: NO_NITROGEN, LIM_NITROGEN, UNLIM_NITROGEN */
   "store_climate" : true, /* store climate data in spin-up phase */
   "const_climate" : false,
   "shuffle_climate" : true,
   "const_deposition" : false,
   "no_ndeposition" : false,
-  "fix_climate" : true,      /* fix climate after specified year */
+  "fix_climate" : false,      /* fix climate after specified year */
   "fix_landuse" : false,     /* fix land use after specified year */
   "fix_climate_year" : 2094, /* year at which climate (and land use) is fixed */
   "fix_climate_cycle": 11,   /* number of years for climate shuffle for fixed climate */
@@ -73,27 +77,41 @@
   "reservoir" : false,
   "wateruse" : "no",
 #endif
-  "black_fallow" : false,
   "prescribe_burntarea" : false,
   "prescribe_landcover" : "no_landcover", /* NO_LANDCOVER, LANDCOVERFPC, LANDCOVEREST */
   "sowing_date_option" : "fixed_sdate",   /* NO_FIXED_SDATE, FIXED_SDATE, PRESCRIBED_SDATE */
   "sdate_fixyear" : 1970,               /* year in which sowing dates shall be fixed */
   "intercrop" : true,                   /* intercrops on setaside */
-  "remove_residuals" : false,           /* remove residuals */
+  "residue_treatment" : "fixed_residue_remove", /* residue options: READ_RESIDUE_DATA, NO_RESIDUE_REMOVE, FIXED_RESIDUE_REMOVE (uses param residues_in_soil) */
   "residues_fire" : false,              /* fire in residuals */
-  "irrigation" : "lim",        /* NO_IRRIGATION, LIM_IRRIGATION, POT_IRRIGATION, ALL_IRRIGATION */
-  "laimax_interpolate" : "laimax_par",    /* laimax values from manage parameter file, */
-                                        /* other options: LAIMAX_CFT, CONST_LAI_MAX, LAIMAX_INTERPOLATE, LAIMAX_PAR  */
+  "irrigation" : "lim",                 /* other options: "no", "lim", "pot", "all" */
+  "laimax_interpolate" : "laimax_par",  /* laimax values from manage parameter file, */
+                                        /* other options: LAIMAX_CFT, CONST_LAI_MAX, LAIMAX_INTERPOLATE */
+  "tillage_type" : "all",               /* Options: "all" (all agr. cells tilled), "no" (no cells tilled) and "read" (tillage dataset used) */
+  "till_startyear" : 1850,              /* year in which tillage should start */
+  "black_fallow" : false,               /* simulation with black fallow on PNV */
+  "pft_residue" : "temperate cereals",
+  "no_ndeposition" : false,             /* turn off atmospheric N deposition */
   "rw_manage" : false,                  /* rain water management */
   "laimax" : 5,                         /* maximum LAI for CONST_LAI_MAX */
   "fertilizer_input" : "yes",           /* enable fertilizer input, other options: "no", "yes", "auto" */
+  "manure_input" : true,                /* enable manure input */
+  "fix_fertilization" : false,          /* fix fertilizer input */
+  "others_to_crop" : true,              /* move PFT type others into PFT crop, cft_tropic for tropical,  cft_temp for temperate */
+  "grazing" : "default",                /* default grazing type, other options : "default", "mowing", "ext", "int", "none" */
+  "cft_temp" : "temperate cereals",
+  "cft_tropic" : "maize",
+  "grassonly" : false,                  /* set all cropland including others to zero but keep managed grasslands */
   "istimber" : true,
   "grassland_fixed_pft" : false,
   "grass_harvest_options" : false,
-  "others_to_crop" : true,              /* move PFT type others into PFT crop, cft_tropic for tropical,  cft_temp for temperate */
-  "cft_temp" : "temperate cereals",
-  "cft_tropic" : "maize",
-  "crop_resp_fix" : false,
+  "mowing_days" : [152, 335],          /* Mowing days for grassland if grass harvest options are ser */
+  "crop_resp_fix" : false,             /* variable C:N ratio for crop respiration */
+                                       /* for MAgPIE runs, turn off dynamic C:N ratio dependent respiration,
+                                          which reduces yields at high N inputs */
+  "crop_phu_option" : "new",
+  "cropsheatfrost" : false,
+  "double_harvest" : true,
 
 /*===================================================================*/
 /*  II. Input parameter section                                      */
@@ -238,7 +256,6 @@ ID                         Fmt                    filename
 /*===================================================================*/
 
   "startgrid" : "all", /* 27410, 67208 60400 all grid cells */
-  "endgrid" : ALL,
 
 #ifdef CHECKPOINT
   "checkpoint_filename" : "restart/restart_checkpoint.lpj", /* filename of checkpoint file */
@@ -246,7 +263,7 @@ ID                         Fmt                    filename
 
 #ifndef FROM_RESTART
 
-  "nspinup" : 8000,  /* spinup years */
+  "nspinup" : 20000,  /* spinup years */
   "nspinyear" : 30,  /* cycle length during spinup (yr) */
   "firstyear": 1861, /* first year of simulation */
   "lastyear" : 1861, /* last year of simulation */
@@ -260,7 +277,7 @@ ID                         Fmt                    filename
   "nspinup" : 390,   /* spinup years */
   "nspinyear" : 30,  /* cycle length during spinup (yr)*/
   "firstyear": 1861, /* first year of simulation */
-  "lastyear" : 2699, /* last year of simulation */
+  "lastyear" : 2099, /* last year of simulation */
   "outputyear": 1861, /* first year output is written  */
   "restart" :  true, /* start from restart file */
   "restart_filename" : "restart/restart_1860_nv_stdfire.lpj", /* filename of restart file */

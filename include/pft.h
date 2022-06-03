@@ -111,6 +111,8 @@ typedef struct Pft
     Real longevity;             /**< leaf longevity (10) */
     Real lmro_ratio;            /**< leaf to root ratio under non-water stressed
                                    conditions (18) */
+    Real lmro_offset;           /**< leaf to root ratio offsetfraction under water/nitrogen stressed
+                                   conditions  */
     Real ramp;                  /**< number of GDDs to attain full leaf cover
                                    (par19) */
     Real gdd5min;               /**< PFT-specific minimum GDD(30) */
@@ -150,6 +152,13 @@ typedef struct Pft
     Real knstore;
     Real fn_turnover;           /**< fraction of N not recovered before turnover */
     Cnratio ncleaf;             /**< minimum, median, maximum leaf foliage N concentration */
+    Limit temp_bnf_lim;
+    Limit temp_bnf_opt;
+    Limit swc_bnf;
+    Real phi_bnf[2];
+    Real nfixpot;
+    Real maxbnfcost;
+    Real bnf_cost;
     Real windspeed;             /**< windspeed dampening */
     Real roughness;             /**< roughness length */
     Real alpha_fuelp;           /**< scaling factor for Nesterov fire danger index */
@@ -189,7 +198,7 @@ typedef struct Pft
     void (*fprintpar)(FILE *,const struct Pftpar *,const Config *);
     //void (*output_daily)(Daily_outputs *,const struct Pft *);
     void (*turnover_monthly)(Litter *,struct Pft *,const Config *);
-    void (*turnover_daily)(Litter *,struct Pft *,Real,Bool,const Config *);
+    void (*turnover_daily)(Litter *,struct Pft *,Real,int,Bool,const Config *);
     Stocks (*livefuel_consumption)(Litter *,struct Pft *,const Fuel *,
                                    Livefuel *,Bool *,Real,Real,const Config *);
     Bool (*annual)(Stand *,struct Pft *,Real *,Bool,const Config *);
@@ -212,6 +221,7 @@ typedef struct Pft
   Real nleaf;            /**< nitrogen in leaf (gN/m2) */
   Real vscal;            /**< nitrogen stress scaling factor for allocation, used as mean for trees and grasses, initialized daily for crops */
   Real nlimit;
+  Real npp_bnf;
 #ifdef DAILY_ESTABLISHMENT
   Bool established;
 #endif
@@ -270,11 +280,13 @@ extern void freepftnames(char **,int,int,int,const Config *);
 extern int getnculttype(const Pftpar [],int,int);
 extern int getngrassnat(const Pftpar [],int);
 extern void phenology_gsi(Pft *, Real, Real, int,Bool,const Config *);
-extern Real nitrogen_stress(Pft *,Real,Real,int,int,const Config *);
+extern Real nitrogen_stress(Pft *,Real,Real,Real [LASTLAYER],Real,int,int,const Config *);
 extern Real f_lai(Real);
 extern int findpftname(const char *,const Pftpar[],int);
 extern Bool findcftmap(const char *,const Pftpar[],const int[],int);
 extern void fprintpftnames(FILE *,const Pftpar[],int);
+extern Real ma_biological_n_fixation(Pft *,Soil *,Real,const Config *);
+
 
 /* needed for IMAGE, but can also be used otherwise */
 
@@ -298,7 +310,7 @@ extern Stocks timber_harvest(Pft *,Soil *,Poolpar,Real,Real,Real *,Stocks *,cons
 
 #define fpar(pft) pft->par->fpar(pft)
 #define turnover_monthly(litter,pft,config) pft->par->turnover_monthly(litter,pft,config)
-#define turnover_daily(litter,pft,temp,isdaily,config) pft->par->turnover_daily(litter,pft,temp,isdaily,config)
+#define turnover_daily(litter,pft,temp,day,isdaily,config) pft->par->turnover_daily(litter,pft,temp,day,isdaily,config)
 #define alphaa(pft,with_nitrogen,lai_opt) pft->par->alphaa_manage(pft,with_nitrogen,lai_opt)
 #define npp(pft,gtemp_air,gtemp_soil,assim,with_nitrogen) pft->par->npp(pft,gtemp_air,gtemp_soil,assim,with_nitrogen)
 #define leaf_phenology(pft,temp,day,isdaily,config) pft->par->leaf_phenology(pft,temp,day,isdaily,config)

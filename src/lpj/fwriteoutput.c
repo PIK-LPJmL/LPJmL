@@ -725,7 +725,7 @@ void fwriteoutput(Outputfile *output,  /**< output file array */
             foreachstand(stand,s,grid[cell].standlist)
               /*if(stand->type->landusetype==NATURAL) */
               foreachpft(pft,p,&stand->pftlist)
-                getoutput(&grid[cell].output,VEGN,config)+=vegn_sum(pft)*stand->frac;
+                getoutput(&grid[cell].output,VEGN,config)+=(vegn_sum(pft)+pft->bm_inc.nitrogen)*stand->frac;
           }
         }
     }
@@ -1003,6 +1003,12 @@ void fwriteoutput(Outputfile *output,  /**< output file array */
   writeoutputvar(TRANSP_B,1);
   writeoutputvar(EVAP_B,1);
   writeoutputvar(INTERC_B,1);
+  writeoutputarray(WHC_NAT,ndate1);
+  writeoutputarray(WHC_GRASS,ndate1);
+  writeoutputarray(KS_AGR,ndate1);
+  writeoutputarray(KS_NAT,ndate1);
+  writeoutputarray(KS_GRASS,ndate1);
+  writeoutputarray(WHC_AGR,ndate1);
   writeoutputarray(SWC,ndate1);
   writeoutputvar(SWC1,ndate1);
   writeoutputvar(SWC2,ndate1);
@@ -1157,7 +1163,7 @@ void fwriteoutput(Outputfile *output,  /**< output file array */
           {
             if(stand->type->landusetype == NATURAL)
               foreachpft(pft,p,&stand->pftlist)
-                getoutputindex(&grid[cell].output,PFT_VEGN,pft->par->id,config)+=vegn_sum(pft);
+                getoutputindex(&grid[cell].output,PFT_VEGN,pft->par->id,config)+=vegn_sum(pft)+pft->bm_inc.nitrogen;
           }
         }
       }

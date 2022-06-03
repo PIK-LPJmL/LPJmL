@@ -30,7 +30,7 @@
 #define SNOWLAYER NSOILLAYER
 
 #define soil_equil_year (param.veg_equil_year+1320)
-#define cshift_year 120
+#define cshift_year 300
 #define snow_skin_depth 40.0 /* snow skin layer depth (mm water equivalent)*/
 #define c_water 4.2e6 /* J/m3/K */
 #define c_ice   2.1e6 /* J/m3/K */
@@ -135,6 +135,9 @@ typedef struct
   char *name; /**< soil name */
   Real Ks;    /**< hydraulic conductivity (mm/h)*/
   Real Sf;    /**< Suction head (mm)*/
+  Real wpwp;  /**< relative water content at wilting point */
+  Real wfc;   /**< relative water content at field capacity */
+  Real wsat;  /**< relative water content at saturation */
   Real sand;  /**< fraction of sand content in soil texture*/
   Real silt;  /**< fraction of silt content in soil texture*/
   Real clay;  /**< fraction of clay content in soil texture*/
@@ -212,8 +215,9 @@ extern void convert_water(Soil*,int,Real*);
 extern void copysoil(Soil *,const Soil *, int);
 extern int findlitter(const Litter *,const struct Pftpar *);
 extern Real fire_prob(const Litter *,Real);
-extern unsigned int fscansoilpar(LPJfile *,Soilpar **,int,Verbosity);
+extern Bool fscansoilpar(LPJfile *,Config *);
 extern int *fscansoilmap(LPJfile *,int *,const Config *);
+extern int *defaultsoilmap(int *,const Config *);
 extern Bool fscanpoolpar(LPJfile *,Poolpar *,const char *,Verbosity);
 extern Bool freadlitter(FILE *,Litter *,const struct Pftpar *,int,Bool);
 extern Bool freadsoil(FILE *,Soil *,const Soilpar *,const struct Pftpar *,int,Bool);
@@ -222,15 +226,16 @@ extern void freesoil(Soil *);
 extern void freelitter(Litter *);
 extern void freesoilpar(Soilpar [],int);
 extern void fprintlitter(FILE *,const Litter *,int);
-extern void fprintsoilpar(FILE *,const Soilpar [],int,int);
+extern void fprintsoilpar(FILE *,const Config *);
 extern void fprintsoil(FILE *,const Soil *,const struct Pftpar *,int,int);
-extern FILE *fopensoilcode(const Filename *,Bool *,size_t *,Type *,unsigned int,Bool);
+extern FILE *fopensoilcode(const Filename *,List **,Bool *,size_t *,Type *,unsigned int,Bool);
+extern int *getsoilmap(List *,const Config *);
 extern Bool fwritesoil(FILE *,const Soil *,int);
 extern Bool fwritelitter(FILE *,const Litter *);
 extern void getlag(Soil *,int);
 extern int getnsoilcode(const Filename *,unsigned int,Bool);
 extern Soilstate getstate(Real *); /*temperature above/below/at T_zero?*/
-extern Bool initsoil(Stand *soil,const Soilpar *, int,Bool);
+extern Bool initsoil(Stand *soil,const Soilpar *,int,const Config *);
 extern Real litter_ag_sum(const Litter *);
 extern Real litter_ag_sum_n(const Litter *);
 extern Real litter_agsub_sum(const Litter *);
@@ -271,6 +276,9 @@ extern Stocks checklitter(Litter *);
 extern Real getwr(const Soil *,const Real []);
 extern void updatelitterproperties(Stand *,Real);
 extern void pedotransfer(Stand *, Real *, Real *,Real);
+extern void soilpar_output(Cell *,Real,const Config *);
+extern int findsoilid(const char *,const Soilpar *,int);
+extern void cmpsoilmap(const int*,int,const Config *);
 
 /* Definition of macros */
 
@@ -284,4 +292,5 @@ extern void pedotransfer(Stand *, Real *, Real *,Real);
 #define fprintpool(file,pool) fprintf(file,"%.2f %.2f",pool.slow,pool.fast)
 #define f_temp(soiltemp) exp(-(soiltemp-18.79)*(soiltemp-18.79)/(2*5.26*5.26)) /* Parton et al 2001*/
 #define f_NH4(nh4) (1-exp(-0.0105*(nh4))) /* Parton et al 1996 */
+#define getsoilmoist(soil,l) (((soil)->w[l] * (soil)->whcs[l] + ((soil)->wpwps[l] * (1 - (soil)->ice_pwp[l])) + (soil)->w_fw[l]) / (soil)->wsats[l])
 #endif /* SOIL_H */

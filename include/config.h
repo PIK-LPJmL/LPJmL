@@ -110,7 +110,7 @@ struct config
   int nwft;               /**< numer of WFTs */
   int ngrass;             /**< number of grass PFTs not biomass */
   int nwptype;
-  unsigned int nsoil;     /**< number of soil types */
+  int nsoil;              /**< number of soil types */
   Soilpar *soilpar;       /**< Soil parameter array */
   int ncountries;         /**< number of countries */
   Countrypar *countrypar; /**< country parameter array */
@@ -219,6 +219,8 @@ struct config
   Bool new_trf;         /**< new transpiration reduction function enabled */
   Bool equilsoil;      /**< equilsoil is called */
   Bool from_restart;   /**< reading from restart */
+  int soilpar_option;  /**< soil parameter option (NO_FIXED_SOILPAR, FIXED_SOILPAR, PRESCRIBED_SOILPAR) */
+  int soilpar_fixyear; /**< year soil parameter should be fixed */
   int sdate_option;    /**< sowing date option (computed internally: 0, fixed: 1, prescribed: 2)*/
   int sdate_fixyear;    /**< year after which sowing dates are held constant (for both FIXED_SDATE or NO_FIXED_SDATE), also used to fix updating vernalization requirements */
   int crop_phu_option;    /**< crop phu option (old LPJmL4, semistatic internally computed, prescribed  */
@@ -246,11 +248,13 @@ struct config
   int irrig_scenario;       /**< irrigation scenario (NO:0, LIM:1, POT:2, ALL:3, IRRIG on RAINFED: 4) */
   Bool rw_manage;           /**< rain-water management enabled: reduced soil evaporation + rain-water harvesting */
   Bool pft_output_scaled;   /**< PFT output grid scaled */
+  char *json_suffix;        /**< suffix for JSON metafiles */
   int with_radiation;       /**< input of radiation components (CLOUDINESS, RADIATION, RADIATION_SWONLY, RADIATION_LWDOWN) */
   Bool prescribe_burntarea;	/**< use input to prescribe burnt area to SPITFIRE? */
   int prescribe_landcover; /**< use input to prescribe land cover ? */
   int* mowingdays;         /**< mowing days for grassland */
   int mowingdays_size;     /**< size of mowing days array */
+  Bool ma_bnf;             /**< biological nitrogen fixation folowing Ma et al., 2022 */
   Seed seed;
 #ifdef IMAGE
   int start_imagecoupling; /**< year in which coupling to IMAGE starts
@@ -297,6 +301,7 @@ extern void fprintfiles(FILE *,Bool,Bool,const Config *);
 extern Bool getextension(Extension *,const Config *);
 extern void fprintincludes(FILE *,const char *,int,char **);
 extern size_t getsize(int,const Config *);
+extern void closeconfig(LPJfile *);
 
 /* Definition of macros */
 

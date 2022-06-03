@@ -20,6 +20,7 @@
   "maxsnowpack": 20000.0,    /* max. snow pack (mm) */
   "soildepth_evap" : 300.0,  /* depth of sublayer at top of upper soil layer (mm) */
   "soil_infil" : 2.0,        /* default soil infiltration */
+  "soil_infil_litter" : 2.0, /* soil infiltration intensification by litter cover*/
   "co2_p" : 278.0,           /* pre-industrial CO2 (ppmv) */
   "k" : 0.0548,              /* k    k = 7.4e-7 * atomic_mass_C / atomic_mass_N * seconds_per_day = 0.0548 Sprugel et al. 1996, Eqn 7*/
   "theta" : 0.7,             /* theta */
@@ -31,7 +32,7 @@
   "GM" : 3.26,               /* GM empirical parameter in demand function */
   "ALPHAM" : 1.391,          /* ALPHAM Priestley-Taylor coefficient*/
   "ko25" : 3.0e4,            /* Michaelis constant for O2 (Pa) at 25 deg C */
-  "kc25" : 30.,              /* Michaelis constant for CO2 (Pa) at 25 deg C */
+  "kc25" : 30.0,              /* Michaelis constant for CO2 (Pa) at 25 deg C */
   "atmfrac" : 0.7,           /* atmfrac */
   "fastfrac" : 0.98,         /* fastfrac */
   "veg_equil_year" : 990,

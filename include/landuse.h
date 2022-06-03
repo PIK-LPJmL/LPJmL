@@ -126,7 +126,7 @@ extern Real crop_sum_frac(Landfrac *,int,int,Real,Bool);
 extern Stocks cultivate(Cell *,Bool,int,Bool,Stand *,
                         int,int,int,int,const Config *);
 #ifdef IMAGE
-extern void deforest_for_timber(Cell *,Real,int,Bool,int,Real,const Config *);
+extern void deforest_for_timber(Cell *,Real,int,Bool,int,Real,int,const Config *);
 #endif
 extern void reclaim_land(const Stand *, Stand *,Cell *,Bool,int,const Config *);
 extern Bool getlanduse(Landuse,Cell *,int,int,int,const Config *);
@@ -142,7 +142,7 @@ extern void calc_nir(Stand *,Irrigation *,Real,Real [],Real);
 extern Real rw_irrigation(Stand *,Real,const Real [],Real,const Config *);
 extern void irrig_amount_river(Cell *,const Config *);
 extern void irrig_amount(Stand *,Irrigation *,int,int,int,const Config *);
-extern void mixsetaside(Stand *,Stand *,Bool);
+extern void mixsetaside(Stand *,Stand *,Bool,int,const Config *);
 extern void set_irrigsystem(Stand *,int,int,int,const Config *);
 extern void init_irrigation(Irrigation *);
 extern Bool fwrite_irrigation(FILE *,const Irrigation *);

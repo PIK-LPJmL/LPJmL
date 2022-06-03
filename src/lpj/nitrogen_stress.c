@@ -17,6 +17,8 @@
 Real nitrogen_stress(Pft *pft,             /**< PFT */
                      Real temp,            /**< temperature (deg C) */
                      Real daylength,       /**< daylength (h) */
+                     Real aet_layer[LASTLAYER], /**< [inout] layer-specific transpiration (mm/day) */
+                     Real npp,
                      int npft,             /**< number of natural PFTs */
                      int ncft,             /**< number of crop PFTs */
                      const Config *config  /**< LPJmL configuration  */
@@ -41,13 +43,17 @@ Real nitrogen_stress(Pft *pft,             /**< PFT */
 #endif
     /* calculation of limitation in ndemad_leaf is missing */
     if(nplant_demand>pft->bm_inc.nitrogen || pft->bm_inc.nitrogen<2)  //nuptake happens always if nitrogen bm_inc< 2
+    {
+      if(pft->par->nfixing && config->ma_bnf)
+        pft->npp_bnf=npp;
       nup=nuptake(pft,&nplant_demand,&ndemand_leaf,npft,ncft,config);
+    }
     else if(pft->stand->type->landusetype!=AGRICULTURE)
       pft->vscal+=1;
     getoutput(&pft->stand->cell->output,NUPTAKE,config)+=nup*pft->stand->frac;
     if(isagriculture(pft->stand->type->landusetype))
       getoutput(&pft->stand->cell->output,NUPTAKE_AGR,config)+=nup*pft->stand->frac;
-    pft->nleaf=max(pft->nleaf,ndemand_leaf);
+    pft->nleaf=max(0,ndemand_leaf);
     if(ndemand_leaf_opt>ndemand_leaf)
     {
       pft->vmax=vmaxlimit(pft,daylength,temp);

@@ -18,7 +18,7 @@
 
 "input" :
 {
-  "soil" :         { "fmt" : META, "name" : "input_VERSION2/soil.descr"},
+  "soil" :         { "fmt" : META, "name" : "input_VERSION2/soil.json"},
   "coord" :        { "fmt" : CLM,  "name" : "input_VERSION2/grid.bin"},
   "countrycode" :  { "fmt" : CLM,  "name" : "input_VERSION2/cow_full_2018.bin"},
   "no3deposition" : { "fmt" : CLM,  "name" : "input_VERSION2/no3_deposition_rcp8p5.clm"},
@@ -32,7 +32,7 @@
   "residue_on_field" : { "fmt" : CLM, "name" : "/p/projects/lpjml/input/MADRAT/residues_madrat_1850-2015_16bands.clm"},
   
   "grassland_fixed_pft" : { "fmt" : RAW, "name" : "/p/projects/landuse/users/rolinski/Newinput/scenario_MO0.bin"},
-  "lakes" :        { "fmt" : META, "name" : "input_VERSION2/glwd_lakes_and_rivers.descr"},
+  "lakes" :        { "fmt" : META, "name" : "input_VERSION2/glwd_lakes_and_rivers.json"},
   "drainage" :     { "fmt" : CLM,  "name" : "input_VERSION2/drainagestn.bin"},
   "neighb_irrig" : { "fmt" : CLM,  "name" : "input_VERSION2/neighb_irrig_stn.bin"},
   "elevation" :    { "fmt" : CLM,  "name" : "input_VERSION2/elevation.bin"},
