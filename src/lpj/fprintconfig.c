@@ -215,8 +215,8 @@ static void printinputfile(FILE *file,const char *descr,const Filename *filename
 } /* of 'printinputfile' */
 
 void fprintconfig(FILE *file,          /**< File pointer to text output file */
-                  Standtype **standtypes,
-                  int nstand,
+                  Standtype **standtypes, /**< array of stand types */
+                  int nstand,          /**< Number of stand types */
                   int npft,            /**< Number of natural PFTs */
                   int ncft,            /**< Number of crop PFTs */
                   const Config *config /**< LPJmL configuration */

@@ -185,7 +185,7 @@ void dailyfire(Stand *stand,                /**< pointer to stand */
       getoutputindex(output,STAND_FDI,3,config) += fire_danger_index;
       getoutputindex(output,STAND_SURFACE_FI,3,config) += surface_fi;
       break;
-  }     
+  }
   getoutput(output,FIREC,config) += total_fire.carbon;
   if(stand->type->landusetype==NATURAL)
   {

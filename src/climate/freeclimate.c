@@ -55,6 +55,7 @@ void freeclimate(Climate *climate, /**< pointer to climate data */
     closeclimatefile(&climate->file_tamp,isroot);
     closeclimatefile(&climate->file_wet,isroot);
     closeclimatefile(&climate->file_burntarea,isroot);
+    closeclimatefile(&climate->file_ignition,isroot);
     closeclimatefile(&climate->file_no3deposition,isroot);
     closeclimatefile(&climate->file_nh4deposition,isroot);
 #if defined IMAGE && defined COUPLED

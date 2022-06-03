@@ -52,9 +52,9 @@ Standlist freadstandlist(FILE *file,            /**< File pointer to binary file
                          const Pftpar pftpar[], /**< pft parameter array */
                          int ntotpft,           /**< total number of PFTs */
                          const Soilpar *soilpar,/**< soil parameter */
-                         Standtype **standtype,
+                         Standtype **standtype, /**< array of stand types */
                          int nstand,            /**< number of stand types */
-                         Bool double_harvest,
+                         Bool double_harvest,   /**< double harvest enabled (TRUE/FALSE) */
                          Bool swap              /**< Byte order has to be changed */
                         ) /** \return allocated stand list or NULL */
 {

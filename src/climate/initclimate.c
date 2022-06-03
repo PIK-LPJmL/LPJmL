@@ -210,6 +210,8 @@ Climate *initclimate(const Cell grid[],   /**< LPJ grid */
     {
       if(openclimate(&climate->file_ignition,&config->ignition_filename,NULL,LPJ_SHORT,1.0,config))
       {
+        if(isroot(*config))
+          fprintf(stderr,"ERROR236: Cannot open ignition data file.\n");
         freeclimate(climate,isroot(*config));
         return NULL;
       }

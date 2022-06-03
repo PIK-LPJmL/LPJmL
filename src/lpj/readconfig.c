@@ -22,8 +22,8 @@ Bool readconfig(Config *config,        /**< LPJ configuration */
                 Pfttype scanfcn[],     /**< array of PFT-specific scan
                                              functions */
                 int ntypes,            /**< Number of PFT classes */
-                Standtype **standtypes,
-                int nstand,
+                Standtype **standtypes,/**< array of stand types */
+                int nstand,            /**< number of stand types */
                 int nout,              /**< Maximum number of output files */
                 int *argc,             /**< pointer to the number of arguments */
                 char ***argv,          /**< pointer to the argument vector */

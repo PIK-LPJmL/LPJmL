@@ -121,8 +121,8 @@ Bool fscanconfig(Config *config,    /**< LPJ configuration */
                  Pfttype scanfcn[], /**< array of PFT-specific scan
                                          functions */
                  int ntypes,        /**< Number of PFT classes */
-                 Standtype **standtypes, /* array of stand types */
-                 int nstand,              /* number of stand types */
+                 Standtype **standtypes, /**< array of stand types */
+                 int nstand,        /**< number of stand types */
                  int nout_max       /**< maximum number of output files */
                 )                   /** \return TRUE on error */
  {
