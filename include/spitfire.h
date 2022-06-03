@@ -38,7 +38,7 @@ extern Real firedangerindex(Real,const Stand *, const Dailyclimate *,Real, int);
 extern Real firemortality_tree(Pft *,const Fuel *,Livefuel *,Real,Real);
 extern void fraction_of_consumption(Fuel *);
 extern Real fuel_consumption_1hr(Real, Real);
-extern void fuelload(Stand*,Fuel*,Livefuel *,Real);
+extern void fuelload(const Stand*,Fuel*,Livefuel *,Real);
 extern void initfuel(Fuel *);
 extern void freepopdens(Popdens,Bool);
 extern Real getpopdens(const Popdens,int);

@@ -165,7 +165,7 @@
   { "id" : FIREEMISSION_NOX, "name": "fireemission_nox", "timestep" : "monthly", "var" : "nox_emission", "descr" :  "NOX fire emission", "unit" : "g/m2/month", "scale" : 1.0, "offset" : 0.0},
   { "id" : FLUX_FIREWOOD, "name": "flux_firewood", "timestep" : "annual", "var" :  "flux_firewood", "descr" :  "wood fire emissions", "unit" : "gC/m2/yr", "scale" : 1.0, "offset" : 0.0},
   { "id" : RHARVEST_BURNTC, "name": "rharvest_burntc", "timestep" : "annual", "var" :  "rharvest_burnt", "descr" :  "residual burnt carbon", "unit" : "gC/m2/yr", "scale" : 1.0, "offset" : 0.0},
-  { "id" : RHARVEST_BURNT_IN_FIELDC, "name": "rharvest_burnt_in_fieldc", "timestep" : "annual", "var" :  "rharvest_burntinfield", "descr" :  "", "unit" : "gC/m2/yr", "scale" : 1.0, "offset" : 0.0},
+  { "id" : RHARVEST_BURNT_IN_FIELDC, "name": "rharvest_burnt_in_fieldc", "timestep" : "annual", "var" :  "rharvest_burntinfield", "descr" :  "harvest residual carbon burnt in field", "unit" : "gC/m2/yr", "scale" : 1.0, "offset" : 0.0},
   { "id" : TEMP_IMAGE, "name": "temp_image", "timestep" : "monthly", "var" :  "temp", "descr" :  "temperature received from IMAGE", "unit" : "Celsius", "scale" : 1.0, "offset" : 0.0},
   { "id" : PREC_IMAGE, "name": "prec_image", "timestep" : "monthly", "var" :  "prec", "descr" :  "precipitation received from IMAGE", "unit" : "mm/month", "scale" : 1.0, "offset" : 0.0},
   { "id" : SUN_IMAGE, "name": "sun_image", "timestep" : "monthly", "var" :  "sun", "descr" :  "sunshine received from IMAGE", "unit" : "%", "scale" : 1.0, "offset" : 0.0},
@@ -204,7 +204,7 @@
   { "id" : RAIN, "name": "rain", "timestep" : "monthly", "var" :  "rain", "descr" :  "precipitation fallen as rain", "unit" : "mm/month", "scale" : 1.0, "offset" : 0.0},
   { "id" : SNOWF, "name": "snowf", "timestep" : "monthly", "var" :  "snowfall", "descr" :  "monthly snowfall", "unit" : "mm/month", "scale" : 1.0, "offset" : 0.0},
   { "id" : MELT, "name": "melt", "timestep" : "monthly", "var" :  "melt", "descr" :  "monthly snowmelt", "unit" : "mm/month", "scale" : 1.0, "offset" : 0.0},
-  { "id" : SNOWRUNOFF, "name": "snowrunoff", "timestep" : "monthly", "var" :  "snowrunoff", "descr" :  "", "unit" : "mm/month", "scale" : 1.0, "offset" : 0.0},
+  { "id" : SNOWRUNOFF, "name": "snowrunoff", "timestep" : "monthly", "var" :  "snowrunoff", "descr" :  "monthly runoff from snow", "unit" : "mm/month", "scale" : 1.0, "offset" : 0.0},
   { "id" : SWE, "name": "swe", "timestep" : "monthly", "var" :  "SWE", "descr" :  "snow water equivalent", "unit" : "mm", "scale" : 1.0, "offset" : 0.0},
   { "id" : SOILC_LAYER, "name": "soilc_layer", "timestep" : "annual", "var" :  "SoilC", "descr" :  "Soil carbon in layer", "unit" : "gC/m2", "scale" : 1.0, "offset" : 0.0},
   { "id" : RUNOFF_SURF, "name": "runoff_surf", "timestep" : "monthly", "var" :  "runoff_surf", "descr" :  "surface runoff", "unit" : "mm/month", "scale" : 1.0, "offset" : 0.0},
@@ -288,8 +288,8 @@
   { "id" : D_VSCAL, "name":  "d_vscal","timestep" : "daily", "var": "vscal", "descr": "N-stress scalor", "unit": "-", "scale":  1.0, "offset" : 0.0},
 
   /* further non-daily outputs */
-  { "id" : RHARVEST_BURNTN, "name": "rharvest_burntn", "timestep" : "annual", "var": "rharvest_burntn", "descr": "residual burnt nitrogen", "unit": "gN/m2/yr", "scale": 1.0, "offset" : 0.0},
-  { "id" : RHARVEST_BURNT_IN_FIELDN, "name": "rharvest_burnt_in_fieldn", "timestep" : "annual", "var": "rharvest_burntinfieldn", "descr": "", "unit": "gN/m2/yr", "scale": 1.0, "offset" : 0.0},
+  { "id" : RHARVEST_BURNTN, "name": "rharvest_burntn", "timestep" : "annual", "var": "rharvest_burntn", "descr": "harvest residual burnt nitrogen", "unit": "gN/m2/yr", "scale": 1.0, "offset" : 0.0},
+  { "id" : RHARVEST_BURNT_IN_FIELDN, "name": "rharvest_burnt_in_fieldn", "timestep" : "annual", "var": "rharvest_burntinfieldn", "descr": "harvest residual nitrogen burnt in field", "unit": "gN/m2/yr", "scale": 1.0, "offset" : 0.0},
   { "id" : VEGN, "name": "vegn", "timestep" : "annual", "var": "VegN", "descr": "vegetation nitrogen", "unit": "gN/m2", "scale": 1.0, "offset" : 0.0},
   { "id" : SOILN, "name": "soiln", "timestep" : "annual", "var": "SoilN", "descr": "total soil nitrogen density", "unit": "gN/m2", "scale": 1.0, "offset" : 0.0},
   { "id" : SOILN_SLOW, "name": "soiln_slow", "timestep" : "annual", "var": "SoilN_slow", "descr": "slow soil nitrogen density", "unit": "gN/m2", "scale": 1.0, "offset" : 0.0},

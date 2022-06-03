@@ -99,7 +99,8 @@ static Real from_setaside_for_reservoir(Cell *cell,          /**< pointer to cel
           mixsetaside(setasidestand,setasidestand_ir,intercrop,year,config);
           delstand(cell->standlist,s2);
         }
-        else{
+        else
+        {
           pos=addstand(&natural_stand,cell)-1;
           cutstand=getstand(cell->standlist,pos);
           cutstand->frac=difffrac-setasidestand->frac;
@@ -112,35 +113,35 @@ static Real from_setaside_for_reservoir(Cell *cell,          /**< pointer to cel
       if(difffrac>setasidestand->frac+epsilon)
       {
         factor=(difffrac-setasidestand->frac)/(cell->ml.cropfrac_rf+cell->ml.cropfrac_ir-setasidestand->frac);
-        fprintf(stderr,"WARNING025: not enough setasidestand in cell (%s) to put the reservoir, reduce cropland by %g\n",sprintcoord(line,&cell->coord),factor);
-      if(factor>1.0+epsilon)
-        fprintf(stderr,"ERROR187: factor=%g >1 in cell (%s).\n",
-                factor,sprintcoord(line,&cell->coord));
-      foreachstand(stand,s,cell->standlist)
-        if(stand->type->landusetype!=NATURAL &&
-           stand->type->landusetype!=SETASIDE_RF &&
-           stand->type->landusetype!=SETASIDE_IR)
-        {
-          data=stand->data;
-          pos=addstand(&natural_stand,cell)-1;
-          cutstand=getstand(cell->standlist,pos);
-          cutstand->frac=factor*stand->frac;
-          reclaim_land(stand,cutstand,cell,config->istimber,npft+ncft,config);
-          stand->frac-=cutstand->frac;
+        fprintf(stderr,"WARNING025: not enough setasidestand in cell (%s) to put the reservoir in year %d, reduce cropland by %g\n",sprintcoord(line,&cell->coord),year,factor);
+        if(factor>1.0+epsilon)
+          fprintf(stderr,"ERROR187: factor=%g >1 in cell (%s).\n",
+                  factor,sprintcoord(line,&cell->coord));
+        foreachstand(stand,s,cell->standlist)
+          if(stand->type->landusetype!=NATURAL &&
+             stand->type->landusetype!=SETASIDE_RF &&
+             stand->type->landusetype!=SETASIDE_IR)
+          {
+            data=stand->data;
+            pos=addstand(&natural_stand,cell)-1;
+            cutstand=getstand(cell->standlist,pos);
+            cutstand->frac=factor*stand->frac;
+            reclaim_land(stand,cutstand,cell,config->istimber,npft+ncft,config);
+            stand->frac-=cutstand->frac;
 
-          cell->discharge.dmass_lake+=(data->irrig_stor+data->irrig_amount+cutstand->soil.litter.agtop_moist)*cell->coord.area*cutstand->frac;
-          cell->balance.awater_flux-=(data->irrig_stor+data->irrig_amount+cutstand->soil.litter.agtop_moist)*cutstand->frac;
+            cell->discharge.dmass_lake+=(data->irrig_stor+data->irrig_amount+cutstand->soil.litter.agtop_moist)*cell->coord.area*cutstand->frac;
+            cell->balance.awater_flux-=(data->irrig_stor+data->irrig_amount+cutstand->soil.litter.agtop_moist)*cutstand->frac;
 
-          if(setaside(cell,getstand(cell->standlist,pos),cell->ml.with_tillage,intercrop,npft,FALSE,year,config))
-            delstand(cell->standlist,pos);
-        }
+            if(setaside(cell,getstand(cell->standlist,pos),cell->ml.with_tillage,intercrop,npft,FALSE,year,config))
+              delstand(cell->standlist,pos);
+          }
       }
     }
   }
   else /* if there IS no setaside in the the cell: */
   {
     factor=difffrac/(cell->ml.cropfrac_rf+cell->ml.cropfrac_ir);
-    fprintf(stderr,"WARNING026: no setasidestand in cell (%s) to put the reservoir, reduce cropland by %g\n",sprintcoord(line,&cell->coord),factor);
+    fprintf(stderr,"WARNING026: no setasidestand in cell (%s) to put the reservoir in year %d, reduce cropland by %g\n",sprintcoord(line,&cell->coord),year,factor);
     foreachstand(stand,s,cell->standlist)
       if(stand->type->landusetype!=NATURAL) /*&&
          stand->type->landusetype!=SETASIDE)*/ /* existence of SETASIDES has been ruled out */

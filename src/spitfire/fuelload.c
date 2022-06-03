@@ -4,7 +4,6 @@
 /**                                                                                \n**/
 /**     C implementation of LPJmL                                                  \n**/
 /**                                                                                \n**/
-/**     Kirsten Thonicke                                                           \n**/
 /** (C) Potsdam Institute for Climate Impact Research (PIK), see COPYRIGHT file    \n**/
 /** authors, and contributors see AUTHORS file                                     \n**/
 /** This file is part of LPJmL and licensed under GNU AGPL Version 3               \n**/
@@ -24,8 +23,7 @@
 static Real alpha[NFUELCLASS]={0.001,0.00005424,0.00001485,0};
 static Real SIGMA[NFUELCLASS]={66.0,3.58,0.98,0};
 
-
-void fuelload(Stand *stand,
+void fuelload(const Stand *stand,
               Fuel *fuel,
               Livefuel *livefuel,
               Real nesterov_accum /**< accumulated Nesterov index */
@@ -185,8 +183,10 @@ void fuelload(Stand *stand,
 #ifdef SAFE
   if(fuel->char_alpha_fuel < 0)
   {
+#if 0
     fprintf(stderr,"fuel->char_alpha_fuel: %f alpha_fuel %f alpha_livegrass %f\n",
             fuel->char_alpha_fuel,alpha_fuel,alpha_livegrass);
+#endif
     fuel->char_alpha_fuel = 0.0001;
   }
 #endif

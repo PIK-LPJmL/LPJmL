@@ -66,9 +66,7 @@ void fprintoutputvar(FILE *file,              /**< pointer to text file */
   frepeatch(file,'-',width_var);
   fputc(' ',file);
   frepeatch(file,'-',width_unit);
-  fputs(" --- --- ----- ------- ------ ",file);
-  frepeatch(file,'-',77-width-width_unit-width_var-7-4);
-  putc('\n',file);
+  fputs(" --- --- ----- ------- ------ -----------\n",file);
   for(i=0;i<size;i++)
   {
     index=(item==NULL) ? i : item[i].index;
@@ -104,7 +102,5 @@ void fprintoutputvar(FILE *file,              /**< pointer to text file */
   frepeatch(file,'-',width_var);
   fputc(' ',file);
   frepeatch(file,'-',width_unit);
-  fputs(" --- --- ----- ------- ------ ",file);
-  frepeatch(file,'-',77-width-width_unit-width_var-7-4);
-  putc('\n',file);
+  fputs(" --- --- ----- ------- ------ -----------\n",file);
 } /* of 'fprintoutputvar' */

@@ -61,8 +61,9 @@ Bool freadcell(FILE *file,             /**< File pointer to binary file */
   }
   else if(config->river_routing_restart)
   {
+    freadreal1(&cell->discharge.dmass_lake,swap,file);
     /* restart was created with river routing enabled, skip data */
-    fseek(file,sizeof(Real)*4,SEEK_CUR);
+    fseek(file,sizeof(Real)*3,SEEK_CUR);
 #ifdef IMAGE
     fseek(file,sizeof(Real),SEEK_CUR);
 #endif
