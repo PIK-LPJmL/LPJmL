@@ -377,6 +377,7 @@ void lpj_init_
   standtype[NATURAL]=natural_stand;
   standtype[SETASIDE_RF]=setaside_rf_stand;
   standtype[SETASIDE_IR]=setaside_ir_stand;
+  standtype[SETASIDE_WETLAND]=setaside_wetland_stand;
   standtype[AGRICULTURE]=agriculture_stand;
   standtype[MANAGEDFOREST]=managedforest_stand;
   standtype[GRASSLAND]=grassland_stand;

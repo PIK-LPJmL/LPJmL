@@ -24,6 +24,7 @@
 #define kkk (1/365.)
 #define LEAF 0
 #define WOOD 1
+//#define CHECK_BALANCE
 
 void update_daily(Cell *cell,            /**< cell pointer           */
                   Real co2,              /**< atmospheric CO2 (ppmv) */
@@ -59,6 +60,11 @@ void update_daily(Cell *cell,            /**< cell pointer           */
   Real ebul;
 #ifdef CHECK_BALANCE
   Real ende, start;
+  Real water_before=(cell->discharge.dmass_lake+cell->discharge.dmass_river)/cell->coord.area;
+  Real water_after=0;
+  Real balanceW=0;
+  Real wfluxes_old=cell->balance.atransp+cell->balance.aevap+cell->balance.ainterc+cell->balance.aevap_lake+cell->balance.aevap_res-cell->balance.airrig-cell->balance.aMT_water;
+  Real exess_old=cell->balance.excess_water;
   ende = start=0;
 #endif
   ebul = 0;
@@ -72,7 +78,12 @@ void update_daily(Cell *cell,            /**< cell pointer           */
   Real litsum_old_nv[2]={0,0},litsum_new_nv[2]={0,0};
   Real litsum_old_agr[2]={0,0},litsum_new_agr[2]={0,0};
 
-
+#ifdef CHECK_BALANCE
+  foreachstand(stand,s,cell->standlist)
+  {
+    water_before+=soilwater(&stand->soil)*stand->frac;
+  }
+#endif
   forrootmoist(l)
     rootdepth+=soildepth[l];
 
@@ -201,8 +212,8 @@ void update_daily(Cell *cell,            /**< cell pointer           */
     }
     else
     {
-      getoutput(&cell->output,CH4_SINK,config) -= CH4_em*stand->frac;
-      cell->balance.aCH4_sink-=CH4_em*stand->frac;
+      getoutput(&cell->output,CH4_SINK,config)+= CH4_em*stand->frac;
+      cell->balance.aCH4_sink+=CH4_em*stand->frac;
     }
     fpc_total_stand = 0;
     foreachpft(pft, p, &stand->pftlist)
@@ -282,7 +293,7 @@ void update_daily(Cell *cell,            /**< cell pointer           */
 
     getoutput(&cell->output,CH4_EMISSIONS,config) += CH4_em*stand->frac;
     cell->balance.aCH4_em+=CH4_em*stand->frac;
-    cell->balance.aMT_water += MT_water*stand->frac;
+    //cell->balance.aMT_water += MT_water*stand->frac;
     getoutput(&cell->output,MT_WATER,config) += MT_water*stand->frac;
     /*monthly rh for agricutural stands*/
     if (isagriculture(stand->type->landusetype))
@@ -567,4 +578,29 @@ void update_daily(Cell *cell,            /**< cell pointer           */
   cell->balance.flux_estab.nitrogen+=flux_estab.nitrogen;
   cell->balance.flux_estab.carbon+=flux_estab.carbon;
   cell->output.dcflux-=flux_estab.carbon;
+#ifdef CHECK_BALANCE
+  Irrigation* data;
+  water_after=(cell->discharge.dmass_lake+cell->discharge.dmass_river)/cell->coord.area;
+  foreachstand(stand,s,cell->standlist)
+  {
+    water_after+=soilwater(&stand->soil)*stand->frac;
+/*
+    data=stand->data;
+    if(stand->type->landusetype!=WETLAND && stand->type->landusetype!=NATURAL)
+      fprintf(stdout,"type: %d frac : %g irrig_stor: %g \n",stand->type->landusetype,stand->frac,(data->irrig_stor + data->irrig_amount) * stand->frac);
+*/
+  }
+  balanceW=water_after-water_before-climate.prec+
+          ((cell->balance.atransp+cell->balance.aevap+cell->balance.ainterc+cell->balance.aevap_lake+cell->balance.aevap_res-cell->balance.airrig-cell->balance.aMT_water)-wfluxes_old)+cell->discharge.drunoff+
+          (exess_old-cell->balance.excess_water);
+
+  if(fabs(balanceW)>0.01)
+    fprintf(stdout,"W-BALANCE-ERROR in update_daily: day %d balanceW: %g  exess_old: %g balance.excess_water: %g water_after: %g water_before: %g aprec: %g flux_bal: %g  runoff %g  mfin-mfout : %g  \n",day,balanceW,exess_old,cell->balance.excess_water,
+        water_after,water_before,climate.prec,((cell->balance.atransp+cell->balance.aevap+cell->balance.ainterc+cell->balance.aevap_lake+cell->balance.aevap_res-cell->balance.airrig-cell->balance.aMT_water)-wfluxes_old),
+        cell->discharge.drunoff,((cell->discharge.mfout-cell->discharge.mfin)/cell->coord.area));
+
+#endif
+
+
+
 } /* of 'update_daily' */

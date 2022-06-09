@@ -21,6 +21,7 @@ extern Standtype agriculture_stand;
 extern Standtype managedforest_stand;
 extern Standtype setaside_rf_stand;
 extern Standtype setaside_ir_stand;
+extern Standtype setaside_wetland_stand;
 extern Standtype kill_stand;
 
 extern Real daily_agriculture(Stand *,Real,const Dailyclimate *,int,int,

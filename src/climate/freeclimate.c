@@ -81,11 +81,11 @@ void freeclimate(Climate *climate, /**< pointer to climate data */
     closeclimatefile(&climate->file_burntarea,isroot);
     closeclimatefile(&climate->file_no3deposition,isroot);
     closeclimatefile(&climate->file_nh4deposition,isroot);
-    closeclimatefile(&climate->file_delta_temp,isroot(*config));
-    closeclimatefile(&climate->file_delta_prec,isroot(*config));
-    closeclimatefile(&climate->file_delta_swdown,isroot(*config));
-    closeclimatefile(&climate->file_delta_lwnet,isroot(*config));
-    closeclimatefile(&climate->file_delta_swdown,isroot(*config));
+    closeclimatefile(&climate->file_delta_temp,isroot);
+    closeclimatefile(&climate->file_delta_prec,isroot);
+    closeclimatefile(&climate->file_delta_swdown,isroot);
+    closeclimatefile(&climate->file_delta_lwnet,isroot);
+    closeclimatefile(&climate->file_delta_swdown,isroot);
 #if defined IMAGE && defined COUPLED
     closeclimatefile(&climate->file_temp_var,isroot);
     closeclimatefile(&climate->file_prec_var,isroot);

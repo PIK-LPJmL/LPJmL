@@ -65,7 +65,7 @@ Real ebullition(Soil *soil,   /**< pointer to soil data */
       if ((soil->CH4[l] / soildepth[l] * 1000 / epsilon_CH4*ratio)>C_thres && soil->wtable<layerbound[l] && soil->CH4[l] / soildepth[l] * 1000 / epsilon_CH4 > soil->CH4[l - 1] / soildepth[l - 1] * 1000 / epsilon_CH4_u)
       {
 */
-    	  Q_ebull=k_e*(soil->CH4[l]/soildepth[l]/epsilon_CH4*1000*ratio-C_thres)*soildepth[l]*epsilon_CH4*1e-3;
+        Q_ebull=k_e*(soil->CH4[l]/soildepth[l]/epsilon_CH4*1000*ratio-C_thres)*soildepth[l]*epsilon_CH4*1e-3;
         soil->CH4[l] -= Q_ebull;
         if (l == 0)
           Q_ebull_day += Q_ebull;

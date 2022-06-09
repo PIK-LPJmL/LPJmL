@@ -16,7 +16,7 @@
 #include "grass.h"
 #include "tree.h"
 #include "agriculture.h"
-
+//#define CHECK_BALANCE
 void mixsoil(Stand *stand1,const Stand *stand2,int year,const Config *config)
 {
   int l,index,i;
@@ -124,6 +124,9 @@ void mixsoil(Stand *stand1,const Stand *stand2,int year,const Config *config)
   mixpool(stand1->soil.snowfraction,stand2->soil.snowfraction,stand1->frac,stand2->frac);
   mixpool(stand1->soil.snowheight,stand2->soil.snowheight,stand1->frac,stand2->frac);
   mixpool(stand1->soil.wa,stand2->soil.wa,stand1->frac,stand2->frac);
+  mixpool(stand1->soil.snowdens,stand2->soil.snowdens,stand1->frac,stand2->frac);
+  mixpool(stand1->soil.wtable,stand2->soil.wtable,stand1->frac,stand2->frac);
+
   forrootsoillayer(l)
   {
     water1 = (stand1->soil.w[l] * stand1->soil.whcs[l] + stand1->soil.ice_depth[l] + stand1->soil.w_fw[l] + stand1->soil.ice_fw[l])*stand1->frac;
@@ -218,6 +221,8 @@ void mixsetaside(Stand *setasidestand,Stand *cropstand,Bool intercrop,int year,c
   Pft *pft;
 
   mixsoil(setasidestand,cropstand,year,config);
+  setasidestand->slope_mean=(setasidestand->slope_mean*setasidestand->frac+cropstand->slope_mean*cropstand->frac)/(setasidestand->frac+cropstand->frac);
+  setasidestand->Hag_Beta=min(1,(0.06*log(setasidestand->slope_mean+0.1)+0.22)/0.43);
 
   if(intercrop)
   {
@@ -234,32 +239,70 @@ Bool setaside(Cell *cell,          /**< Pointer to LPJ cell */
               Bool intercrop,      /**< intercropping possible (TRUE/FALSE) */
               int npft,            /**< number of natural PFTs */
               Bool irrig,          /**< irrigated stand (TRUE/FALSE) */
+              Bool iswetland,
               int year,            /**< simulation year */
               const Config *config /**< LPJmL configuration */
              )                     /** \return stand has to be killed (TRUE/FALSE) */
 {
-  int s,p,n_est;
+  int s,p,n_est,k;
   Pft *pft;
   Stocks flux_estab,stocks;
   Irrigation *data;
+
+#ifdef CHECK_BALANCE
+  Real end=0;
+  Real start=0;
+  Stand *checkstand;
+  foreachstand(checkstand,s,cell->standlist)
+    start+=(standstocks(checkstand).carbon*checkstand->frac+soilmethane(&checkstand->soil)*checkstand->frac);
+//  foreachstand(checkstand,s,cell->standlist)
+//  {
+//    fprintf(stdout,"SETASIDE type %d frac:%g id:%d carbon:%g methan:%g\n",checkstand->type->landusetype,checkstand->frac,s,standstocks(checkstand).carbon*checkstand->frac,soilmethane(&checkstand->soil)*checkstand->frac);
+//     foreachpft(pft,p,&checkstand->pftlist)
+//        fprintf(stdout,"name:%s vegc:%g\n", pft->par->name,vegc_sum(pft));
+//  }
+#endif
+
   /* call tillage before */
   if(with_tillage && year >= config->till_startyear)
     tillage(&cropstand->soil,param.residue_frac);
 
+  if(iswetland)
+    s=findlandusetype(cell->standlist,SETASIDE_WETLAND);
+  else
+    s=findlandusetype(cell->standlist,irrig? SETASIDE_IR : SETASIDE_RF);
+ // fprintf(stdout,"SETASIDE: s=%d intercrop=%d irrig:%d\n",s, intercrop,irrig);
 
-  s=findlandusetype(cell->standlist,irrig? SETASIDE_IR : SETASIDE_RF);
   if(s!=NOT_FOUND)
   {
-    mixsetaside(getstand(cell->standlist,s),cropstand,intercrop,year,config);
+    mixsetaside(getstand(cell->standlist,s),cropstand,TRUE,year,config);
+#ifdef CHECK_BALANCE
+  foreachstand(checkstand,k,cell->standlist)
+  {
+    if(cropstand!=checkstand)
+      end+=(standstocks(checkstand).carbon*checkstand->frac+soilmethane(&checkstand->soil)*checkstand->frac);
+  }
+  if (fabs(start-end)>epsilon)
+  {
+     fprintf(stdout, "C-ERROR in SETASIDE: %g start:%g  end:%g s;%d \n",
+             start-end,start, end,s);
+     foreachstand(checkstand,k,cell->standlist)
+       fprintf(stdout,"type %d frac:%g id:%d carbon:%g methan:%g\n",checkstand->type->landusetype,checkstand->frac,k,standstocks(checkstand).carbon*checkstand->frac,soilmethane(&checkstand->soil)*checkstand->frac);
+  }
+#endif
     return TRUE;
   }
   else
   {
     cropstand->type->freestand(cropstand);
-    cropstand->type= irrig? &setaside_ir_stand : &setaside_rf_stand;
+    if(iswetland)
+      cropstand->type=&setaside_wetland_stand;
+    else
+      cropstand->type= irrig? &setaside_ir_stand : &setaside_rf_stand;
     cropstand->type->newstand(cropstand);
     data=cropstand->data;
     data->irrigation= irrig;
+    cropstand->soil.iswetland=iswetland;
 #ifdef SAFE
     if(!isempty(&cropstand->pftlist))
       fail(LIST_NOT_EMPTY_ERR,TRUE,"Pftlist is not empty in setaside()");
@@ -269,7 +312,7 @@ Bool setaside(Cell *cell,          /**< Pointer to LPJ cell */
       n_est=0;
       for(p=0;p<npft;p++)
       {
-        if(establish(cell->gdd[p],config->pftpar+p,&cell->climbuf,cropstand->type->landusetype==WETLAND) &&
+        if(establish(cell->gdd[p],config->pftpar+p,&cell->climbuf,cropstand->type->landusetype==WETLAND || cropstand->type->landusetype==SETASIDE_WETLAND) &&
            config->pftpar[p].type==GRASS && config->pftpar[p].cultivation_type==NONE)
         {
           addpft(cropstand,config->pftpar+p,year,0,config);
@@ -289,6 +332,20 @@ Bool setaside(Cell *cell,          /**< Pointer to LPJ cell */
       cell->balance.flux_estab.nitrogen+=flux_estab.nitrogen*cropstand->frac;
     }
   }
+#ifdef CHECK_BALANCE
+  end=-flux_estab.carbon*cropstand->frac;
+  foreachstand(checkstand,s,cell->standlist)
+    end+=(standstocks(checkstand).carbon*checkstand->frac+soilmethane(&checkstand->soil)*checkstand->frac);
+  //fprintf(stdout, "flux_estab:%g \n",flux_estab.carbon*cropstand->frac)  ;
+
+  if (fabs(start-end)>epsilon)
+  {
+     fprintf(stdout, "C-ERROR in SETASIDE: %g start:%g  end:%g\n",
+             start-end,start, end);
+     foreachstand(checkstand,s,cell->standlist)
+       fprintf(stdout,"type %d frac:%g carbon:%g flux_estab:%g \n",checkstand->type->landusetype,checkstand->frac,(standstocks(checkstand).carbon*checkstand->frac+soilmethane(&checkstand->soil)*checkstand->frac),cell->balance.flux_estab.carbon);
+  }
+#endif
   return FALSE;
 } /* of 'setaside' */
 

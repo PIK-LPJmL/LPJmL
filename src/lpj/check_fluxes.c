@@ -15,6 +15,7 @@
 /**************************************************************************************/
 
 #include "lpj.h"
+#define NO_FAIL_BALANCE
 
 void check_fluxes(Cell *cell,          /**< cell pointer */
                   int year,            /**< simulation year (AD) */
@@ -64,10 +65,11 @@ void check_fluxes(Cell *cell,          /**< cell pointer */
   balance.nitrogen-=cell->balance.prod_turnover.fast.nitrogen+cell->balance.prod_turnover.slow.nitrogen;
 #endif
   if(config->ischeckpoint)
-    startyear=max(config->firstyear,config->checkpointyear)+1;
+    startyear=max(config->firstyear-config->nspinup,config->checkpointyear)+1;
   else
-    startyear=config->firstyear+1;
+    startyear=config->firstyear-config->nspinup+1;
 
+  //if(year>startyear && fabs(balance.carbon)>1)
   if(year>startyear && fabs(balance.carbon)>1)
   {
 #if defined IMAGE && defined COUPLED
@@ -109,6 +111,11 @@ void check_fluxes(Cell *cell,          /**< cell pointer */
          cell->balance.flux_estab.carbon,cell->balance.flux_harvest.carbon,delta_tot.carbon,cell->balance.biomass_yield.carbon,
          cell->balance.estab_storage_grass[0].carbon,cell->balance.estab_storage_grass[1].carbon,cell->balance.estab_storage_tree[0].carbon,cell->balance.estab_storage_tree[1].carbon,
          cell->balance.deforest_emissions.carbon,cell->balance.prod_turnover.fast.carbon+cell->balance.prod_turnover.slow.carbon);
+         foreachstand(stand,s,cell->standlist)
+             fprintf(stderr,"standfrac: %g standtype: %d iswetland: %d cropfraction_rf: %g cropfraction_irr: %g grasfrac_rf: %g grasfrac_irr: %g\n",stand->frac, stand->type->landusetype,stand->soil.iswetland,
+                     crop_sum_frac(cell->ml.landfrac,12,config->nagtree,cell->ml.reservoirfrac+cell->lakefrac,FALSE),crop_sum_frac(cell->ml.landfrac,12,config->nagtree,cell->ml.reservoirfrac+cell->lakefrac,TRUE),
+                     cell->ml.landfrac[0].grass[0]+cell->ml.landfrac[0].grass[1],cell->ml.landfrac[1].grass[0]+cell->ml.landfrac[1].grass[1]);
+
 #endif
   }
   if(config->with_nitrogen && year>startyear && fabs(balance.nitrogen)>.2)
@@ -126,11 +133,11 @@ void check_fluxes(Cell *cell,          /**< cell pointer */
       delta_tot.nitrogen,tot.nitrogen,
       cell->balance.estab_storage_grass[0].nitrogen,cell->balance.estab_storage_grass[1].nitrogen,cell->balance.estab_storage_tree[0].nitrogen,
       cell->balance.estab_storage_tree[1].nitrogen);
-    foreachstand(stand,s,cell->standlist){
-      foreachpft(pft,p,&stand->pftlist){
-        fprintf(stderr,"PFT bm_inc nitrogen %g\n",pft->bm_inc.nitrogen);
+      foreachstand(stand,s,cell->standlist){
+        foreachpft(pft,p,&stand->pftlist){
+          fprintf(stderr,"PFT bm_inc nitrogen %g\n",pft->bm_inc.nitrogen);
+        }
       }
-    }
   }
 
   /* water balance check */
@@ -158,8 +165,8 @@ void check_fluxes(Cell *cell,          /**< cell pointer */
 #else
     fail(INVALID_WATER_BALANCE_ERR,FALSE,
 #endif
-         "y: %d c: %d (%s) BALANCE_W-error %.2f cell->totw:%.2f totw:%.2f awater_flux:%.2f aprec:%.2f excess water:%.2f\n",
+         "y: %d c: %d (%s) BALANCE_W-error %.2f cell->totw:%.2f totw:%.2f awater_flux:%.2f aprec:%.2f excess water:%.2f atransp: %g  aevap %g  ainterc %g runoff %g aevap_lake %g  aevap_res %g  airrig %g  aMT_water %g\n",
          year,cellid+config->startgrid,sprintcoord(line,&cell->coord),balanceW,cell->balance.totw,totw,
-         cell->balance.awater_flux,cell->balance.aprec,cell->balance.excess_water);
+         cell->balance.awater_flux,cell->balance.aprec,cell->balance.excess_water,cell->balance.atransp,cell->balance.aevap,cell->balance.ainterc,cell->discharge.drunoff,cell->balance.aevap_lake,cell->balance.aevap_res,cell->balance.airrig,cell->balance.aMT_water);
   cell->balance.totw=totw;
 } /* of 'check_fluxes' */

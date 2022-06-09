@@ -233,7 +233,7 @@ void iterateyear(Outputfile *output,  /**< Output file data */
       grid[cell].landcover=(config->prescribe_landcover!=NO_LANDCOVER) ? getlandcover(input.landcover,cell) : NULL;
       update_annual(grid+cell,npft,ncft,popdens,year,daily.isdailytemp,intercrop,config);
 #ifdef SAFE
-      check_fluxes(grid+cell,year,cell,config);
+      if(config->withlanduse) check_fluxes(grid+cell,year,cell,config);
 #endif
 
 #ifdef DEBUG

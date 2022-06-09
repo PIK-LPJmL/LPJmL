@@ -72,6 +72,7 @@ typedef struct
   Cropdates *cropdates;
   Real cropfrac_rf;       /**< rain-fed crop fraction (0..1) */
   Real cropfrac_ir;       /**< irrigated crop fraction (0..1) */
+  Real cropfrac_wl[2];       /**< crop fraction on wetland(0..1) */
   int *sowing_month;      /**< sowing month (index of month, 1..12), rainfed, irrigated*/
   int *gs;                /**< length of growing season (number of consecutive months, 0..11)*/
   int sowing_day_cotton[2];
@@ -131,12 +132,12 @@ extern void deforest_for_timber(Cell *,Real,int,Bool,int,Real,int,const Config *
 extern void reclaim_land(const Stand *, Stand *,Cell *,Bool,int,const Config *);
 extern Bool getlanduse(Landuse,Cell *,int,int,int,const Config *);
 extern void landusechange(Cell *,int,int,Bool,int,const Config *);
-extern Bool setaside(Cell *,Stand *,Bool,Bool,int,Bool,int,const Config *);
+extern Bool setaside(Cell *,Stand *,Bool,Bool,int,Bool,Bool,int,const Config *);
 extern void sowingcft(Stocks *,Bool *,Cell *,Bool,Bool,Bool,int,int,int,int,int,const Config *);
 extern Stocks sowing_season(Cell *,int,int,int,Real,int,const Config *);
 extern Stocks sowing_prescribe(Cell *,int,int,int,int,const Config *);
 extern Stocks sowing(Cell *,Real,int,int,int,int,const Config *);
-extern void deforest(Cell *,Real,Bool,int,Bool,Bool,int,int,Real,const Config *);
+extern void deforest(Cell *,Real,Bool,int,Bool,Bool,Bool,int,int,Real,const Config *);
 extern Stocks woodconsum(Stand*,Real);
 extern void calc_nir(Stand *,Irrigation *,Real,Real [],Real);
 extern Real rw_irrigation(Stand *,Real,const Real [],Real,const Config *);

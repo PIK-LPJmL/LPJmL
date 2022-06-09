@@ -92,7 +92,7 @@ Bool annual_grassland(Stand *stand,         /**< Pointer to stand */
   }
   fpc_total=fpc_sum(fpc_type,config->ntypes,&stand->pftlist);
   foreachpft(pft,p,&stand->pftlist)
-    if(establish(stand->cell->gdd[pft->par->id],pft->par,&stand->cell->climbuf, stand->type->landusetype == WETLAND))
+    if(establish(stand->cell->gdd[pft->par->id],pft->par,&stand->cell->climbuf, stand->type->landusetype == WETLAND || stand->type->landusetype==SETASIDE_WETLAND))
     {
       stocks=establishment_grass(pft,fpc_total,fpc_type[pft->par->type],n_est);
       flux_estab.carbon+=stocks.carbon;

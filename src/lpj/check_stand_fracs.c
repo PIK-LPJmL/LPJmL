@@ -46,11 +46,15 @@ void check_stand_fracs(const Cell *cell, /**< pointer to cell */
   }
   
   if(fabs(frac_sum-1)>accuracy)
+  {
 #if defined IMAGE && defined COUPLED
     fail(STAND_FRAC_SUM_ERR,TRUE,"Sum of stand fractions differs from 1 by %g, frac_sum %g, lakefrac: %g, cell (%s), reservoirfrac %g",
          fabs(frac_sum-1),frac_sum, lakefrac,sprintcoord(line,&cell->coord),cell->ml.reservoirfrac);
 #else
+    foreachstand(stand,s,cell->standlist)
+      fprintf(stderr,"frac[%s]= %g \n",stand->type->name,stand->frac);
     fail(STAND_FRAC_SUM_ERR,TRUE,"Sum of stand fractions differs from 1 by %g, lakefrac: %g, cell (%s)",
          fabs(frac_sum-1),lakefrac,sprintcoord(line,&cell->coord));
 #endif
+  }
 } /* of 'check_stand_fracs' */

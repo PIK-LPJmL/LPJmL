@@ -111,38 +111,38 @@ static Real from_setaside_for_reservoir(Cell *cell,          /**< pointer to cel
       }
       if(difffrac>setasidestand->frac+epsilon)
       {
-        factor=(difffrac-setasidestand->frac)/(cell->ml.cropfrac_rf+cell->ml.cropfrac_ir-setasidestand->frac);
+        factor=(difffrac-setasidestand->frac)/(cell->ml.cropfrac_rf+cell->ml.cropfrac_ir+cell->ml.cropfrac_wl[0]+cell->ml.cropfrac_wl[1]-setasidestand->frac);
         fprintf(stderr,"WARNING025: not enough setasidestand in cell (%s) to put the reservoir, reduce cropland by %g\n",sprintcoord(line,&cell->coord),factor);
-      if(factor>1.0+epsilon)
-        fprintf(stderr,"ERROR187: factor=%g >1 in cell (%s).\n",
+        if(factor>1.0+epsilon)
+          fprintf(stderr,"ERROR187: factor=%g >1 in cell (%s).\n",
                 factor,sprintcoord(line,&cell->coord));
-      foreachstand(stand,s,cell->standlist)
-        if(stand->type->landusetype!=NATURAL &&
-           stand->type->landusetype!=SETASIDE_RF &&
-           stand->type->landusetype!=SETASIDE_IR)
-        {
-          data=stand->data;
-          pos=addstand(&natural_stand,cell)-1;
-          cutstand=getstand(cell->standlist,pos);
-          cutstand->frac=factor*stand->frac;
-          reclaim_land(stand,cutstand,cell,config->istimber,npft+ncft,config);
-          stand->frac-=cutstand->frac;
+        foreachstand(stand,s,cell->standlist)
+          if(stand->type->landusetype!=NATURAL  && stand->type->landusetype!=WETLAND &&
+            stand->type->landusetype!=SETASIDE_RF && stand->type->landusetype!=SETASIDE_WETLAND &&
+            stand->type->landusetype!=SETASIDE_IR)
+         {
+            data=stand->data;
+            pos=addstand(&natural_stand,cell)-1;
+            cutstand=getstand(cell->standlist,pos);
+            cutstand->frac=factor*stand->frac;
+            reclaim_land(stand,cutstand,cell,config->istimber,npft+ncft,config);
+            stand->frac-=cutstand->frac;
 
-          cell->discharge.dmass_lake+=(data->irrig_stor+data->irrig_amount+cutstand->soil.litter.agtop_moist)*cell->coord.area*cutstand->frac;
-          cell->balance.awater_flux-=(data->irrig_stor+data->irrig_amount+cutstand->soil.litter.agtop_moist)*cutstand->frac;
+            cell->discharge.dmass_lake+=(data->irrig_stor+data->irrig_amount+cutstand->soil.litter.agtop_moist)*cell->coord.area*cutstand->frac;
+            cell->balance.awater_flux-=(data->irrig_stor+data->irrig_amount+cutstand->soil.litter.agtop_moist)*cutstand->frac;
 
-          if(setaside(cell,getstand(cell->standlist,pos),cell->ml.with_tillage,intercrop,npft,FALSE,year,config))
-            delstand(cell->standlist,pos);
+            if(setaside(cell,getstand(cell->standlist,pos),cell->ml.with_tillage,intercrop,npft,FALSE,stand->soil.iswetland,year,config))
+             delstand(cell->standlist,pos);
         }
       }
     }
   }
   else /* if there IS no setaside in the the cell: */
   {
-    factor=difffrac/(cell->ml.cropfrac_rf+cell->ml.cropfrac_ir);
+    factor=difffrac/(cell->ml.cropfrac_rf+cell->ml.cropfrac_ir+cell->ml.cropfrac_wl[0]+cell->ml.cropfrac_wl[1]);
     fprintf(stderr,"WARNING026: no setasidestand in cell (%s) to put the reservoir, reduce cropland by %g\n",sprintcoord(line,&cell->coord),factor);
     foreachstand(stand,s,cell->standlist)
-      if(stand->type->landusetype!=NATURAL) /*&&
+      if(stand->type->landusetype!=NATURAL && stand->type->landusetype!=WETLAND) /*&&
          stand->type->landusetype!=SETASIDE)*/ /* existence of SETASIDES has been ruled out */
       {
         data=stand->data;
@@ -155,7 +155,7 @@ static Real from_setaside_for_reservoir(Cell *cell,          /**< pointer to cel
         cell->discharge.dmass_lake+=(data->irrig_stor+data->irrig_amount+cutstand->soil.litter.agtop_moist)*cell->coord.area*cutstand->frac;
         cell->balance.awater_flux-=(data->irrig_stor+data->irrig_amount+cutstand->soil.litter.agtop_moist)*cutstand->frac;
 
-        if(setaside(cell,getstand(cell->standlist,pos),cell->ml.with_tillage,intercrop,npft,FALSE,year,config))
+        if(setaside(cell,getstand(cell->standlist,pos),cell->ml.with_tillage,intercrop,npft,FALSE,stand->soil.iswetland,year,config))
           delstand(cell->standlist,pos);
       }
 
@@ -214,7 +214,7 @@ void landusechange_for_reservoir(Cell *cell,          /**< pointer to cell */
 {
   Real difffrac;
   Stand *stand;
-  Real sum[2];
+  Real sum[2],sum_wl[2];
   Real minnatfrac_res;
   int s;
   Real totw_before,totw_after,balanceW;
@@ -263,41 +263,39 @@ void landusechange_for_reservoir(Cell *cell,          /**< pointer to cell */
       minnatfrac_res=0.0;
 
     /* first choice: deforest natural land */
-    if(difffrac>epsilon && (1-cell->lakefrac-cell->ml.cropfrac_rf-cell->ml.cropfrac_ir-minnatfrac_res)>=difffrac)
+    if(difffrac>epsilon && (1-cell->lakefrac-cell->ml.cropfrac_rf-cell->ml.cropfrac_ir-cell->ml.cropfrac_wl[0]-cell->ml.cropfrac_wl[1]-minnatfrac_res)>=difffrac)
     {  /* deforestation to built the reservoir */
        s=findlandusetype(cell->standlist,NATURAL);
        if(s!=NOT_FOUND)
          deforest_for_reservoir(cell,difffrac,config->istimber,npft+ncft,config);
     }
     /* if this is not possible: deforest all the natural land and then reduce crops  */
-    if(difffrac>epsilon && 1-cell->lakefrac-cell->ml.cropfrac_rf-cell->ml.cropfrac_ir-minnatfrac_res<difffrac)
+    if(difffrac>epsilon && 1-cell->lakefrac-cell->ml.cropfrac_rf-cell->ml.cropfrac_ir-cell->ml.cropfrac_wl[0]-cell->ml.cropfrac_wl[1]-minnatfrac_res<difffrac)
     {
-      s=findlandusetype(cell->standlist,NATURAL);
-      if(s!=NOT_FOUND) /* check if there is still natural land in the gridcell */
-        deforest(cell,difffrac,intercrop,npft,FALSE,FALSE,ncft,year,minnatfrac_res,config); /* 1 deforest */
+      deforest(cell,difffrac,intercrop,npft,FALSE,FALSE,FALSE,ncft,year,minnatfrac_res,config); /* 1 deforest */
       s=findlandusetype(cell->standlist,NATURAL); /* 2 check if everyting is deforested */
       if(s!=NOT_FOUND)
       {
         stand=getstand(cell->standlist,s);
         if(stand->frac>minnatfrac_res+epsilon)
         {
-          printf("defor res 1 wrong loop %d %g %g %g %g %g %g\n in cell lon %.2f lat %.2f\n",
+          printf("defor res 1 wrong loop %d %g %g %g %g %g %g %g %g \n in cell lon %.2f lat %.2f\n",
                  s,difffrac,
-                 1-cell->lakefrac-cell->ml.cropfrac_rf-cell->ml.cropfrac_ir,
-                 cell->lakefrac,cell->ml.cropfrac_rf, cell->ml.cropfrac_ir,
+                 1-cell->lakefrac-cell->ml.cropfrac_rf-cell->ml.cropfrac_ir-cell->ml.cropfrac_wl[0]-cell->ml.cropfrac_wl[1],
+                 cell->lakefrac,cell->ml.cropfrac_rf, cell->ml.cropfrac_ir,cell->ml.cropfrac_wl[0],cell->ml.cropfrac_wl[1],
                  cell->ml.reservoirfrac, cell->coord.lon, cell->coord.lat);
           fflush(stdout);
 /*        fail(FOREST_LEFT_ERR,TRUE,
                "wrong loop, there is still natural land to deforest left"); */
 
-          deforest(cell,difffrac,intercrop,npft,FALSE,FALSE,ncft,year,minnatfrac_res,config); /* 1 deforest */
+          deforest(cell,difffrac,intercrop,npft,FALSE,FALSE,FALSE,ncft,year,minnatfrac_res,config); /* 1 deforest */
           s=findlandusetype(cell->standlist,NATURAL); /* 2 check if everyting is deforested */
           if(s!=NOT_FOUND)
           {
-            printf("defor res 2 wrong loop %d %g %g %g %g %g %g\n in cell lon %.2f lat %.2f\n",
+            printf("defor res 2 wrong loop %d %g %g %g %g %g %g %g %g\n in cell lon %.2f lat %.2f\n",
                    s,difffrac,
-                   1-cell->lakefrac-cell->ml.cropfrac_rf-cell->ml.cropfrac_ir,
-                   cell->lakefrac,cell->ml.cropfrac_rf, cell->ml.cropfrac_ir,
+                   1-cell->lakefrac-cell->ml.cropfrac_rf-cell->ml.cropfrac_ir-cell->ml.cropfrac_wl[0]-cell->ml.cropfrac_wl[1],
+                   cell->lakefrac,cell->ml.cropfrac_rf, cell->ml.cropfrac_ir,cell->ml.cropfrac_wl[0],cell->ml.cropfrac_wl[1],
                    cell->ml.reservoirfrac, cell->coord.lon, cell->coord.lat);
             fflush(stdout);
             fail(FOREST_LEFT_ERR,TRUE,
@@ -307,34 +305,37 @@ void landusechange_for_reservoir(Cell *cell,          /**< pointer to cell */
       }
 
       /* update the cropfactor to include the 'new' setaside */
-      sum[0]=sum[1]=0.0;
+      sum[0]=sum[1]=sum_wl[0]=sum_wl[1]=0.0;
       foreachstand(stand,s,cell->standlist)
-        if(stand->type->landusetype!=NATURAL){
+        if(stand->type->landusetype!=NATURAL && stand->type->landusetype!=WETLAND){
           data=stand->data;
-          if(data->irrigation)
-            sum[1]+=stand->frac;
-          else
-            sum[0]+=stand->frac;
+          sum[data->irrigation]+=stand->frac;
+          if(stand->soil.iswetland)
+            sum_wl[data->irrigation]+=stand->frac;
         }
-      cell->ml.cropfrac_rf=sum[0];
-      cell->ml.cropfrac_ir=sum[1];
+      cell->ml.cropfrac_rf=sum[0]-sum_wl[0];
+      cell->ml.cropfrac_ir=sum[1]-sum_wl[1];
+      cell->ml.cropfrac_wl[0]=sum_wl[0];
+      cell->ml.cropfrac_wl[1]=sum_wl[1];
 
       difffrac-=from_setaside_for_reservoir(cell,difffrac,
                                             intercrop,npft,ncft,year,config);
       /*3 cut setaside stand to built the reservoir */
 
       /* update the cropfactor */
-      sum[0]=sum[1]=0.0;
+      sum[0]=sum[1]=sum_wl[0]=sum_wl[1]=0.0;
       foreachstand(stand,s,cell->standlist)
-        if(stand->type->landusetype!=NATURAL){
+        if(stand->type->landusetype!=NATURAL && stand->type->landusetype!=WETLAND){
           data=stand->data;
-          if(data->irrigation)
-            sum[1]+=stand->frac;
-          else
-            sum[0]+=stand->frac;
+          sum[data->irrigation]+=stand->frac;
+          if(stand->soil.iswetland)
+            sum_wl[data->irrigation]+=stand->frac;
         }
-      cell->ml.cropfrac_rf=sum[0];
-      cell->ml.cropfrac_ir=sum[1];
+      cell->ml.cropfrac_rf=sum[0]-sum_wl[0];
+      cell->ml.cropfrac_ir=sum[1]-sum_wl[1];
+      cell->ml.cropfrac_wl[0]=sum_wl[0];
+      cell->ml.cropfrac_wl[1]=sum_wl[1];
+
     }
     /* total water and carbon calculation after the correction of fractions
      * for reservoir water

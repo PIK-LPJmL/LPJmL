@@ -38,7 +38,7 @@ void killstand(Cell *cell,          /**< cell pointer */
       }
       else
         irrig=FALSE;
-      if(setaside(cell,stand,with_tillage,intercrop,npft,irrig,year,config))
+      if(setaside(cell,stand,with_tillage,intercrop,npft,irrig,stand->soil.iswetland,year,config))
       {
         delstand(cell->standlist,s);
         s--; /* stand has been killed, adjust stand index */

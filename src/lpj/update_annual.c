@@ -18,6 +18,7 @@
 #include "lpj.h"
 
 #define N 5
+//#define CHECK_BALANCE
 
 void update_annual(Cell *cell,          /**< Pointer to cell */
                    int npft,            /**< number of natural pfts */
@@ -129,25 +130,27 @@ void update_annual(Cell *cell,          /**< Pointer to cell */
     //fprintf(stdout,"update_annual: landusetype: %s stand.frac: %g NEP: %g\n\n",stand->type->name, stand->frac,cell->balance.nep);
   }
   //if(fabs(anfang-ende)>0.001) fprintf(stdout,"C_ERROR update annual - annual stand year=%d: C_ERROR=%g anfang : %g ende : %g\n",year,anfang-ende,anfang,ende);
-  if (fabs(anfang_w - ende_w)>0.001) fprintf(stdout, "W_ERROR update annual - annual stand: year=%d: W_ERROR=%g anfang : %g ende : %g\n", year, anfang_w - ende_w, anfang_w, ende_w);
-  if (fabs(anfang.nitrogen - ende.nitrogen)>0.001) fprintf(stdout, "N_ERROR update annual - annual stand: year=%d: error=%g anfang : %g ende : %g\n", year, anfang.nitrogen - ende.nitrogen, anfang.nitrogen, ende.nitrogen);
+  //if (fabs(anfang_w - ende_w)>0.001) fprintf(stdout, "W_ERROR update annual - annual stand: year=%d: W_ERROR=%g anfang : %g ende : %g\n", year, anfang_w - ende_w, anfang_w, ende_w);
+  //if (fabs(anfang.nitrogen - ende.nitrogen)>0.001) fprintf(stdout, "N_ERROR update annual - annual stand: year=%d: error=%g anfang : %g ende : %g\n", year, anfang.nitrogen - ende.nitrogen, anfang.nitrogen, ende.nitrogen);
 #endif
-  getoutputindex(&cell->output,FPC,0,config) += 1 - cell->ml.cropfrac_rf - cell->ml.cropfrac_ir - cell->lakefrac - cell->ml.reservoirfrac - cell->hydrotopes.wetland_area;
+  getoutputindex(&cell->output,FPC,0,config) += 1 - cell->ml.cropfrac_rf - cell->ml.cropfrac_ir- cell->ml.cropfrac_wl[0]  - cell->ml.cropfrac_wl[1] - cell->lakefrac - cell->ml.reservoirfrac - cell->hydrotopes.wetland_area;
   getoutputindex(&cell->output,WPC,0,config) += cell->hydrotopes.wetland_area;
   cell->hydrotopes.wetland_wtable_mean /= NMONTH;
   cell->hydrotopes.wtable_mean /= NMONTH;
   if(cell->lakefrac<1)
     update_wetland(cell, npft + ncft,year,config);
 #ifdef CHECK_BALANCE
-  ende.carbon=ende.nitrogen = 0;
+  ende.carbon=ende.nitrogen = ende_w=0;
   foreachstand(stand, s, cell->standlist)
   {
     st=standstocks(stand);
     ende.carbon+=(st.carbon+ soilmethane(&stand->soil))*stand->frac;
     ende.nitrogen+=st.nitrogen*stand->frac;
-    //fprintf(stdout,"update_annual: landusetype: %s stand.frac: %g NEP: %g\n\n",stand->type->name, stand->frac,cell->balance.nep);
+    ende_w += soilwater(&stand->soil)*stand->frac;
+   //fprintf(stdout,"update_annual: landusetype: %s stand.frac: %g NEP: %g\n\n",stand->type->name, stand->frac,cell->balance.nep);
   }
-  if (fabs(anfang.nitrogen - ende.nitrogen)>0.001) fprintf(stdout, "N_ERROR update annual - annual stand after update_wetland: year=%d: error=%g anfang : %g ende : %g\n", year, anfang.nitrogen - ende.nitrogen, anfang.nitrogen, ende.nitrogen);
+  //if (fabs(anfang.nitrogen - ende.nitrogen)>0.001) fprintf(stdout, "N_ERROR update annual - annual stand after update_wetland: year=%d: error=%g anfang : %g ende : %g\n", year, anfang.nitrogen - ende.nitrogen, anfang.nitrogen, ende.nitrogen);
+  //if (fabs(anfang_w - ende_w)>0.001) fprintf(stdout, "W_ERROR update annual - annual stand: year=%d: W_ERROR=%g anfang : %g ende : %g\n", year, anfang_w - ende_w, anfang_w, ende_w);
 #endif
   stand_fracs=0;
   soilc_agr=0;
@@ -192,4 +195,18 @@ void update_annual(Cell *cell,          /**< Pointer to cell */
   }
   product_turnover(cell,config);
 #endif
+#ifdef CHECK_BALANCE
+  ende.carbon=ende.nitrogen = ende_w=0;
+  foreachstand(stand, s, cell->standlist)
+  {
+    st=standstocks(stand);
+    ende.carbon+=(st.carbon+ soilmethane(&stand->soil))*stand->frac;
+    ende.nitrogen+=st.nitrogen*stand->frac;
+    ende_w += soilwater(&stand->soil)*stand->frac;
+   //fprintf(stdout,"update_annual: landusetype: %s stand.frac: %g NEP: %g\n\n",stand->type->name, stand->frac,cell->balance.nep);
+  }
+  //if (fabs(anfang.nitrogen - ende.nitrogen)>0.001) fprintf(stdout, "N_ERROR update annual - annual stand after update_wetland: year=%d: error=%g anfang : %g ende : %g neg_fluxes : %g\n", year, anfang.nitrogen - ende.nitrogen, anfang.nitrogen, ende.nitrogen,cell->balance.neg_fluxes.nitrogen);
+  if (fabs(anfang_w - ende_w)>0.001) fprintf(stdout, "W_ERROR update annual - annual stand: year=%d: W_ERROR=%g anfang : %g ende : %g\n", year, anfang_w - ende_w, anfang_w, ende_w);
+#endif
+
 } /* of 'update_annual' */

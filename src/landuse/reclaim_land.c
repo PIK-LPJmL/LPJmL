@@ -156,6 +156,8 @@ void reclaim_land(const Stand *stand1,Stand *stand2,Cell *cell,Bool istimber,int
   Soil *soil;
   soil=&stand2->soil;
   stand2->fire_sum=stand1->fire_sum;
+  stand2->slope_mean=stand1->slope_mean;
+  stand2->Hag_Beta=stand1->Hag_Beta;
 
   for (l=0;l<LASTLAYER;l++)
   {

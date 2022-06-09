@@ -21,7 +21,7 @@
 #define tiller_weight  0.22  /* [gc] PARAMETER*/
 #define tiller_radius 0.003
 #define tiller_por 0.7
-#define water_min 0.05
+#define water_min 0.01
 //#define DEBUG
 
 #ifdef DEBUG
@@ -151,8 +151,8 @@ void plant_gas_transport(Stand *stand,        /**< pointer to soil data */
   }
   else
   {
-    getoutput(&stand->cell->output,CH4_SINK,config)-=CH4_plant_all*stand->frac;
-    stand->cell->balance.aCH4_sink-=CH4_plant_all*stand->frac;
+    getoutput(&stand->cell->output,CH4_SINK,config)+=CH4_plant_all*stand->frac;
+    stand->cell->balance.aCH4_sink+=CH4_plant_all*stand->frac;
   }
   getoutput(&stand->cell->output,CH4_PLANT_GAS,config)+=CH4_plant_all*stand->frac;
 #ifdef DEBUG

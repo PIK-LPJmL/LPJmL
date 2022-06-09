@@ -60,6 +60,7 @@ Real daily_natural(Stand *stand,                /**< [inout] stand pointer */
 #ifdef CHECK_BALANCE
   Real start = 0;
   Real ende = 0;
+  Real methane_start=soilmethane(&stand->soil);
 #endif
 
 #ifdef DAILY_ESTABLISHMENT
@@ -287,7 +288,11 @@ Real daily_natural(Stand *stand,                /**< [inout] stand pointer */
 #endif
 #ifdef CHECK_BALANCE
   ende = standstocks(stand).carbon + soilmethane(&stand->soil);
-  if (fabs(start - ende)>epsilon) fprintf(stderr, "C-ERROR daily: %g start:%g  ende:%g \n", start - ende, start, ende);
+  if (fabs(start - ende)>0.001)
+  {
+    fprintf(stderr, "C-ERROR daily: %.3f start:%.3f  ende:%.3f type:%d\n", start - ende, start, ende,stand->type->landusetype);
+    fprintf(stderr, "methane: start:%.3f  ende:%.3f \n",methane_start,soilmethane(&stand->soil));
+  }
 #endif
 
   free(wet);

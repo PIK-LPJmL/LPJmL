@@ -17,32 +17,31 @@
 void hydrotopes(Cell *cell /**< Pointer to cell */
                )
 {
-  Real wtable;
+  Real wtable,wtable_h;
   Stand *stand;
-  Stand *wetstand;
   Bool iswetland;
-  int s;
-  iswetland = FALSE;
+  int s,w;
+  iswetland=FALSE;
 
-  wtable = 0;
+  wtable=w=wtable_h=0;
   // 	determine mean water table position
 
   // Latest formulation: Follow Habets & Saulnier (2001) and use mean wetness as indicator of water table depth.
-  foreachstand(stand, s, cell->standlist)
+  foreachstand(stand,s,cell->standlist)
   {
     wtable += stand->soil.wtable*stand->frac*(1.0 / (1 - stand->cell->lakefrac));
-    if(stand->type->landusetype==WETLAND)
+    if(stand->type->landusetype==WETLAND && stand->type->landusetype==SETASIDE_WETLAND)
     {
-      wetstand=stand;
-      iswetland=TRUE;
+      stand->soil.iswetland=TRUE;
+  // 	determine hydrotope water level
+      if (!cell->hydrotopes.skip_cell)
+      {
+        wtable_h+= (iswetland) ? stand->soil.wtable/-1000 : -99;
+        w++;
+      }
     }
   }
-
-  wtable /= -1000;                            // transform from mm to m, negative values = under surface
-
-  cell->hydrotopes.meanwater = wtable;
-
-  // 	determine hydrotope water level
-  if (!cell->hydrotopes.skip_cell)
-    cell->hydrotopes.wetland_wtable_current = (iswetland) ? wetstand->soil.wtable/-1000 : -99;
+  if(w>0) cell->hydrotopes.wetland_wtable_current=wtable_h/w;
+  wtable/=-1000;                            // transform from mm to m, negative values = under surface
+  cell->hydrotopes.meanwater=wtable;
 } /* of 'hydrotopes' */

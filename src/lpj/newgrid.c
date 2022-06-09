@@ -346,7 +346,7 @@ static Cell *newgrid2(Config *config,          /* Pointer to LPJ configuration *
     /* Init cells */
     grid[i].ml.dam=FALSE;
     grid[i].ml.seasonality_type=NO_SEASONALITY;
-    grid[i].ml.cropfrac_rf=grid[i].ml.cropfrac_ir=grid[i].ml.reservoirfrac=0;
+    grid[i].ml.cropfrac_rf=grid[i].ml.cropfrac_ir=grid[i].ml.cropfrac_wl[0]=grid[i].ml.reservoirfrac=grid[i].ml.cropfrac_wl[1]=0;
     grid[i].ml.product.fast.carbon=grid[i].ml.product.slow.carbon=grid[i].ml.product.fast.nitrogen=grid[i].ml.product.slow.nitrogen=0;
     grid[i].balance.totw=grid[i].balance.tot.carbon=grid[i].balance.tot.nitrogen=0.0;
     grid[i].balance.estab_storage_tree[0].carbon=grid[i].balance.estab_storage_tree[1].carbon=100.0;

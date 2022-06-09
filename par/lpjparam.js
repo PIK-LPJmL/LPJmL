@@ -28,8 +28,8 @@
   "ch4_ip" : 1790,           /* initial  pre-industrial amount of atmospheric CH4 (ppb) */
   "k" : 0.0548,              /* k    k = 7.4e-7 * atomic_mass_C / atomic_mass_N * seconds_per_day = 0.0548 Sprugel et al. 1996, Eqn 7*/
   "theta" : 0.9,             /* theta */
-  "alphac3" : 0.08,          /* alphac3 Intrinsic quantum efficiency of CO2 uptake in C3 plants 0.06 */
-  "alphac4" : 0.053,          /* alphac4 Intrinsic quantum efficiency of CO2 uptake in C4 plants 0.04 0.053*/
+  "alphac3" : 0.06,          /* alphac3 Intrinsic quantum efficiency of CO2 uptake in C3 plants 0.08 */
+  "alphac4" : 0.043,          /* alphac4 Intrinsic quantum efficiency of CO2 uptake in C4 plants 0.04 0.053*/
   "r_growth" : 0.25,         /* r_growthgrowth respiration per unit NPP 0.3*/
   "GM" : 2.41,               /* GM empirical parameter in demand function */
   "ALPHAM" : 1.485,          /* ALPHAM Priestley-Taylor coefficient*/
@@ -37,11 +37,11 @@
   "kc25" : 30.0,              /* Michaelis constant for CO2 (Pa) at 25 deg C */
   "atmfrac" : 0.6,           /* atmfrac */
   "fastfrac" : 0.98,         /* fastfrac */
-  "bioturbate" : 0.5,        /* bioturbation (0 = no bioturbation) */
+  "bioturbate" : 0.2,        /* bioturbation (0 = no bioturbation) */
   "veg_equil_year" : 2400,
   "k_max": 0.10,             /* k_max, maximum fraction of soil->NH4 assumed to be nitrified Parton, 2001*/
   "fpc_tree_max" : 0.95,     /* maximum foliage projective cover for trees */
-  "temp_response" : 56.02,   /* Parameter in temperature response function */
+  "temp_response" : 60.02,   /* Parameter in temperature response function */
   "percthres" : 1.0,
   "k_2": 0.01,               /* k_2, fraction of nitrified N lost as N20 flux Parton, 2001*/
   "p" : 25,                  /* Haxeltine & Prentice regression coefficient */
@@ -55,7 +55,7 @@
   "T_0" : -25.0,             /* parameter in N uptake temperature function */
   "T_r" : 15.0,              /* parameter in N uptake temperature function */
   "lsuha" : 0.0,             /* livestock density applied for daily or rotational grazing on mangement grasslands */
-  "k_mort" : 0.35,            /* coefficient of growth efficiency in mortality equation (k_mort2) */
+  "k_mort" : 0.3,            /* coefficient of growth efficiency in mortality equation (k_mort2) */
   "residue_rate": 200,       /* fixed residue rate in gC/m2/yr, ignored if <=0 and if pool >0  */
   "residue_pool" : 100,      /* fixed aboveground residue pool in gC/m2, ignored if <=0, overrules constant rate */
   "residue_cn": 20,         /* CN ratio of prescribed residues */

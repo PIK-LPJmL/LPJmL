@@ -171,7 +171,7 @@ Bool annual_biomass_tree(Stand *stand,         /**< Pointer to stand */
 
   for(p=0;p<npft;p++)
   {
-    if(establish(stand->cell->gdd[p],config->pftpar+p,&stand->cell->climbuf, stand->type->landusetype == WETLAND) &&
+    if(establish(stand->cell->gdd[p],config->pftpar+p,&stand->cell->climbuf, stand->type->landusetype == WETLAND || stand->type->landusetype==SETASIDE_WETLAND) &&
        ((config->pftpar[p].type==TREE && config->pftpar[p].cultivation_type==BIOMASS) ||
         (config->pftpar[p].type==GRASS && config->pftpar[p].cultivation_type==NONE)))
     {
@@ -196,7 +196,7 @@ Bool annual_biomass_tree(Stand *stand,         /**< Pointer to stand */
   foreachpft(pft,p,&stand->pftlist)
   {
     fpc_inc2[p]=0;
-    if(establish(stand->cell->gdd[pft->par->id],pft->par,&stand->cell->climbuf,stand->type->landusetype==WETLAND))
+    if(establish(stand->cell->gdd[pft->par->id],pft->par,&stand->cell->climbuf,stand->type->landusetype==WETLAND || stand->type->landusetype==SETASIDE_WETLAND))
     {
       if (istree(pft))
       {
@@ -257,7 +257,7 @@ Bool annual_biomass_tree(Stand *stand,         /**< Pointer to stand */
   if(isdead)
   {
     update_irrig(stand,rbtree(ncft),ncft,config);
-    if(setaside(stand->cell,stand,stand->cell->ml.with_tillage,intercrop,npft,biomass_tree->irrigation.irrigation,year,config))
+    if(setaside(stand->cell,stand,stand->cell->ml.with_tillage,intercrop,npft,biomass_tree->irrigation.irrigation,stand->soil.iswetland,year,config))
       return TRUE;
   }
   else

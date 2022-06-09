@@ -146,15 +146,15 @@
     "temp_photos" : { "low" : 25.0, "high" : 30. },/* lower and upper limit of temperature optimum for photosynthesis(deg C) 25 26*/
     "b":  BC3, /* leaf respiration as fraction of Vmax for C3 plants */
     "temp" : { "low" : 15.5, "high" : 1000. }, /* lower and upper coldest monthly mean temperature(deg C) 28 29*/
-    "soc_k" : 0.38009,     /* shape factor for soil organic matter vertical distribution*/
+    "soc_k" : 0.38009,     /* shape factor for soil organic matter vertical distribution */
     "alpha_fuelp" : 0.0000334, /* scaling factor nesterov fire danger index */
     "vpd_par" : 47.22296, /*scaling factor vpd fire danger index*/
     "fuelbulkdensity" : 25, /* fuel bulk density */
     "emission_factor" : { "co2" : 1580.0, "co" :  103.0, "ch4" : 6.80, "voc" : 8.10, "tpm" : 8.50, "nox" : 1.999}, /* emission factors */
     "aprec_min" : APREC_MIN,  /* minimum annual precipitation to establish */
     "flam" : FLAM_TREE,  /* flam */
-    "k_litter10" : { "leaf" : 1.17, "wood" : 0.124 }, /* 0.039K_LITTER10 turnover rate after Brovkin etal 2012*/
-    "k_litter10_q10_wood" : 3, /* Q10_wood */
+    "k_litter10" : { "leaf" : 0.93, "wood" : 0.039 }, /* 0.039K_LITTER10 turnover rate after Brovkin etal 2012{ "leaf" : 1.17, "wood" : 0.124 }*/
+    "k_litter10_q10_wood" : 2.75, /* Q10_wood 3*/
     "vmax_up" : 2.8,             /* vmax_up, Maximum N uptake capacity per unit fine root mass, Smith et al. 2014 */
     "kNmin": 0.05,                /* kNmin, Rate of N uptake not associated with Michaelis-Menten Kinetics, Zaehle&Friend 2000 */
     "KNmin" : 1.48,               /* KNmin, Half saturation concentration of fine root N uptake, Smith et al. 2014 */
@@ -266,8 +266,8 @@
     "emission_factor" : { "co2" : 1664.0, "co" :  63.0, "ch4" : 2.20, "voc" : 3.40, "tpm" : 8.50, "nox" : 2.540}, /* emission factors */
     "aprec_min" : APREC_MIN,/* minimum annual precipitation to establish */
     "flam" : FLAM_TREE,     /* flam */
-    "k_litter10" : { "leaf" : 1.17, "wood" : 0.124 }, /* K_LITTER10 turnover rate after Brovkin etal 2012*/
-    "k_litter10_q10_wood" : 3, /* Q10_wood */
+    "k_litter10" : { "leaf" : 1.17, "wood" : 0.124 }, /* K_LITTER10 turnover rate after Brovkin etal 2012{ "leaf" : 1.17, "wood" : 0.124 },*/
+    "k_litter10_q10_wood" : 2.75, /* Q10_wood */
     "vmax_up" : 2.8,              /* vmax_up, Maximum N uptake capacity per unit fine root mass, Smith et al. 2014 */
     "kNmin": 0.05,                /* kNmin, Rate of N uptake not associated with Michaelis-Menten Kinetics, Zaehle&Friend 2000 */
     "KNmin" : 1.48,               /* KNmin, Half saturation concentration of fine root N uptake, Smith et al. 2014 */
@@ -276,7 +276,7 @@
     "fn_turnover" : FN_TURNOVER, /* fraction of N not recovered before turnover */
     "windspeed_dampening" : 0.4,  /* windspeed dampening */
     "roughness_length" : 2.0,  /* roughness length */
-    "ist_m" : -0.25,             /* inundation stress threshold [m] */
+    "ist_m" : -0.35,             /* inundation stress threshold [m] */
     "idt_d" : 20.0,             /* inundation duration threshold [days] */
     "leaftype" : "broadleaved",  /* leaftype */
     "turnover" : {"leaf" : 1.0, "sapwood" : 30.0, "root" : 1.0}, /* turnover leaf  sapwood root 9 11 12*/
@@ -389,8 +389,8 @@
     "fn_turnover" : FN_TURNOVER_EV_BR, /* fraction of N not recovered before turnover */
     "windspeed_dampening" : 0.4,  /* windspeed dampening */
     "roughness_length" : 1.0,     /* roughness length */
-    "ist_m" : -0.2,             /* inundation stress threshold [m] */
-    "idt_d" : 20.0,             /* inundation duration threshold [days] */
+    "ist_m" : -0.25,             /* inundation stress threshold [m] */
+    "idt_d" : 10.0,             /* inundation duration threshold [days] */
     "leaftype" : "needleleaved",/* leaftype */
     "turnover" : {"leaf" : 4.0, "sapwood" : 25.0, "root" : 4.0}, /* turnover leaf  sapwood root 9 11 12*/
     "cn_ratio" : {"leaf" : CTON_LEAF, "sapwood" :  CTON_SAP, "root" : CTON_ROOT}, /* C:N mass ratio for leaf, sapwood, and root 13,14,15*/
@@ -502,8 +502,8 @@
     "fn_turnover" : FN_TURNOVER_EV_BR, /* fraction of N not recovered before turnover */
     "windspeed_dampening" : 0.4,  /* windspeed dampening */
     "roughness_length" : 1.0, /* roughness length */
-    "ist_m" : -0.2,            /* inundation stress threshold [m] */
-    "idt_d" : 20.0,             /* inundation duration threshold [days] */
+    "ist_m" : -0.25,            /* inundation stress threshold [m] */
+    "idt_d" : 10.0,             /* inundation duration threshold [days] */
     "leaftype" : "broadleaved",/* leaftype */
     "turnover" : {"leaf" : 1.0, "sapwood" : 25.0, "root" : 1.0}, /* turnover leaf  sapwood root 9 11 12*/
     "cn_ratio" : {"leaf" : CTON_LEAF, "sapwood" :  CTON_SAP, "root" : CTON_ROOT}, /* C:N mass ratio for leaf, sapwood, and root 13,14,15*/
@@ -720,8 +720,8 @@
     "emission_factor" : { "co2" : 1568.0, "co" :  106.0, "ch4" : 4.80, "voc" : 5.70, "tpm" : 17.60, "nox" : 3.240}, /* emission factors */
     "aprec_min" : APREC_MIN,/* minimum annual precipitation to establish */
     "flam" : FLAM_TREE,     /* flam */
-    "k_litter10" : { "leaf" : 0.95, "wood" : 0.104 }, /* K_LITTER10 turnover rate after Brovkin etal 2012*/
-    "k_litter10_q10_wood" : 2.22, /* Q10_wood */
+    "k_litter10" : { "leaf" : 0.76, "wood" : 0.041 }, /* K_LITTER10 turnover rate after Brovkin etal 2012{ "leaf" : 0.95, "wood" : 0.104 }*/
+    "k_litter10_q10_wood" : 1.97, /* Q10_wood */
     "vmax_up" : 2.8,              /* vmax_up, Maximum N uptake capacity per unit fine root mass, Smith et al. 2014 */
     "kNmin": 0.05,                /* kNmin, Rate of N uptake not associated with Michaelis-Menten Kinetics, Zaehle&Friend 2000 */
     "KNmin" : 1.48,               /* KNmin, Half saturation concentration of fine root N uptake, Smith et al. 2014 */
@@ -773,7 +773,7 @@
     "beta_root" : 0.955,    /* beta_root original 0.943*/
     "minwscal" : 0.00,      /* minwscal 3*/
     "gmin"  : 0.8,          /* gmin 4*/
-    "respcoeff" : 1.2,      /* respcoeff 5*/
+    "respcoeff" : 0.8,      /* respcoeff 5*/
     "nmax" : 100.0,          /* nmax 7*/
     "resist" : 0.3,         /* resist 8*/
     "longevity" : 0.5,      /* leaf longevity 10*/
@@ -833,8 +833,8 @@
     "emission_factor" : { "co2" : 1568.0, "co" :  106.0, "ch4" : 4.80, "voc" : 5.70, "tpm" : 17.60, "nox" : 3.240}, /* emission factors */
     "aprec_min" : APREC_MIN,/* minimum annual precipitation to establish */
     "flam" : FLAM_TREE,     /* flam */
-    "k_litter10" : { "leaf" : 1.2, "wood" : 0.104 }, /* K_LITTER10 turnover rate after Brovkin etal 2012*/
-    "k_litter10_q10_wood" : 1.62, /* Q10_wood */
+    "k_litter10" : { "leaf" : 0.95, "wood" : 0.104 }, /* K_LITTER10 turnover rate after Brovkin etal 2012{ "leaf" : 1.2, "wood" : 0.104 }*/
+    "k_litter10_q10_wood" : 1.37, /* Q10_wood 1.62*/
     "vmax_up" : 2.8,              /* vmax_up, Maximum N uptake capacity per unit fine root mass, Smith et al. 2014 */
     "kNmin": 0.05,                /* kNmin, Rate of N uptake not associated with Michaelis-Menten Kinetics, Zaehle&Friend 2000 */
     "KNmin" : 1.48,               /* KNmin, Half saturation concentration of fine root N uptake, Smith et al. 2014 */
@@ -888,7 +888,7 @@
     "beta_root" : 0.955,     /* beta_root original 0.943*/
     "minwscal" : 0.00,      /* minwscal 3*/
     "gmin"  : 0.3,          /* gmin 4*/
-    "respcoeff" : 0.8,      /* respcoeff 5*/
+    "respcoeff" : 0.6,      /* respcoeff 5*/
     "nmax" : 100.0,          /* nmax 7*/
     "resist" : 0.2,        /* resist 8*/
     "longevity" : 0.65,     /* leaf longevity 10*/
@@ -948,8 +948,8 @@
     "emission_factor" : { "co2" : 1568.0, "co" :  106.0, "ch4" : 4.80, "voc" : 5.70, "tpm" : 17.60, "nox" : 3.240}, /* emission factors */
     "aprec_min" : APREC_MIN,/* minimum annual precipitation to establish */
     "flam" : FLAM_TREE,     /* flam */
-    "k_litter10" : { "leaf" : 0.95, "wood" : 0.104 }, /* K_LITTER10 turnover rate after Brovkin etal 2012*/
-    "k_litter10_q10_wood" : 2.22, /* Q10_wood */
+    "k_litter10" : { "leaf" : 0.76, "wood" : 0.041 }, /* K_LITTER10 turnover rate after Brovkin etal 2012{ "leaf" : 0.95, "wood" : 0.104 }*/
+    "k_litter10_q10_wood" : 1.97, /* Q10_wood 2.22*/
     "vmax_up" : 2.8,              /* vmax_up, Maximum N uptake capacity per unit fine root mass, Smith et al. 2014 */
     "kNmin": 0.05,                /* kNmin, Rate of N uptake not associated with Michaelis-Menten Kinetics, Zaehle&Friend 2000 */
     "KNmin" : 1.48,               /* KNmin, Half saturation concentration of fine root N uptake, Smith et al. 2014 */
@@ -1063,7 +1063,7 @@
     "emission_factor" : { "co2" : 1664.0, "co" :  63.0, "ch4" : 2.20, "voc" : 3.40, "tpm" : 8.50, "nox" : 2.540}, /* emission factors */
     "aprec_min" : 100,                        /* minimum annual precipitation to establish */
     "flam" : FLAM_GRASS,     /* flam */
-    "k_litter10" : { "leaf" : 1.2, "wood" : 0.97 }, /* K_LITTER10 turnover rate after Brovkin etal 2012*/
+    "k_litter10" : { "leaf" : 0.97, "wood" : 0.97 }, /* K_LITTER10 turnover rate after Brovkin etal 2012{ "leaf" : 1.2, "wood" : 0.97 }*/
     "k_litter10_q10_wood" : 1.0, /* Q10_wood */
     "vmax_up" : 5.51,             /* vmax_up, Maximum N uptake capacity per unit fine root mass, Smith et al. 2014 */
     "kNmin": 0.05,                /* kNmin, Rate of N uptake not associated with Michaelis-Menten Kinetics, Zaehle&Friend 2000 */
@@ -1099,7 +1099,7 @@
     "beta_root" : 0.943,    /* beta_root */
     "minwscal" : 0.20,      /* minwscal 3*/
     "gmin"  : 0.8,          /* gmin 4*/
-    "respcoeff" : 1.2,      /* respcoeff 5*/
+    "respcoeff" : 0.8,      /* respcoeff 5*/
     "nmax" : 100.0,          /* nmax 7*/
     "resist" : 0.01,        /* resist 8*/
     "longevity" : 0.35,     /* leaf longevity 10*/
@@ -1153,7 +1153,7 @@
     "b":  BC3, /* leaf respiration as fraction of Vmax for C3 plants */
     "temp" : { "low" : -39.0, "high" : 15.5 }, /* lower and upper coldest monthly mean temperature(deg C) 28 29*/
     "soc_k" : 0.38184,     /* shape factor for soil organic matter vertical distribution*/
-    "alpha_fuelp" : 0.0000667, /* scaling factor nesterov fire danger index */
+    "alpha_fuelp" : 0.0000667, /* scaling factor nesterov fire danger index 0.38184 */
     "vpd_par" : 6, /*scaling factor vpd fire danger index*/
     "fuelbulkdensity" : 4.0, /* fuel bulk density */
     "emission_factor" : { "co2" : 1568.0, "co" :  106.0, "ch4" : 4.80, "voc" : 5.70, "tpm" : 17.60, "nox" : 3.240}, /* emission factors */
@@ -1169,7 +1169,7 @@
     "fn_turnover" : FN_TURNOVER_GR, /* fraction of N not recovered before turnover */
     "windspeed_dampening" : 0.6, /* windspeed dampening */
     "roughness_length" : 0.03,   /* roughness length */
-    "ist_m" : -0.1,             /* inundation stress threshold [m] */
+    "ist_m" : -0.05,             /* inundation stress threshold [m] */
     "idt_d" : 31.0,             /* inundation duration threshold [days] */
     "turnover" : {"leaf" : 1.0, "root" : 2.0}, /* turnover leaf  root 9 12*/
     "cn_ratio" : {"leaf" : CTON_LEAF, "root" : CTON_ROOT}, /* C:N mass ratio for leaf, and root 13,15*/
@@ -1195,7 +1195,7 @@
     "beta_root" : 0.943,    /* beta_root */
     "minwscal" : 0.20,      /* minwscal 3*/
     "gmin"  : 0.8,          /* gmin 4*/
-    "respcoeff" : 1.2,      /* respcoeff 5*/
+    "respcoeff" : 0.8,      /* respcoeff 5*/
     "nmax" : 100.0,          /* nmax 7*/
     "resist" : 0.01,        /* resist 8*/
     "longevity" : 0.35,     /* leaf longevity 10*/
@@ -1289,9 +1289,9 @@
     "nfixing" : false,           /* no N fixing */
     "cn" : [39.0, 61.0, 74.0, 80.0], /* curve number */
     "beta_root" : 0.95,     /* beta_root */
-    "minwscal" : 0.0,      /* minwscal 3*/
-    "gmin"  : 0.8,          /* gmin 4*/
-    "respcoeff" : 0.5,      /* respcoeff 5*/
+    "minwscal" : 0.10,      /* minwscal 3*/
+    "gmin"  : 0.2,          /* gmin 4*/
+    "respcoeff" : 0.2,      /* respcoeff 5*/
     "nmax" : 30.0,          /* nmax 7*/
     "resist" : 0.01,        /* resist 8*/
     "longevity" : 0.2,     /* leaf longevity 10*/
@@ -1341,13 +1341,13 @@
     "phenology" : "any",      /* phenology */
     "path" : "C3",            /* pathway */
     "temp_co2" : { "low" : -4.0, "high" : 45.0 }, /* lower and upper temperature limit for co2 (deg C) 24 27*/
-    "temp_photos" : { "low" : 10., "high" : 30. },/* lower and upper limit of temperature optimum for photosynthesis(deg C) 25 26*/
+    "temp_photos" : { "low" : 5., "high" : 30. },/* lower and upper limit of temperature optimum for photosynthesis(deg C) 25 26*/
     "b":  BC3, /* leaf respiration as fraction of Vmax for C3 plants */
     "temp" : { "low" : -1000.0, "high" : 1000 }, /* lower and upper coldest monthly mean temperature(deg C) 28 29*/
-    "soc_k" : 0.38184,     /* shape factor for soil organic matter vertical distribution*/
+    "soc_k" : 0.54056,     /* shape factor for soil organic matter vertical distribution*/
     "alpha_fuelp" : 0.0000667, /* scaling factor nesterov fire danger index */
     "vpd_par" : 6, /*scaling factor vpd fire danger index*/
-    "fuelbulkdensity" : 4.0, /* fuel bulk density */
+    "fuelbulkdensity" : 2.0, /* fuel bulk density */
     "emission_factor" : { "co2" : 1568.0, "co" :  106.0, "ch4" : 4.80, "voc" : 5.70, "tpm" : 17.60, "nox" : 3.240}, /* emission factors */
     "aprec_min" : APREC_MIN,/* minimum annual precipitation to establish */
     "flam" : FLAM_GRASS,     /* flam */
@@ -1386,8 +1386,8 @@
     "cn" : [39.0, 61.0, 74.0, 80.0], /* curve number */
     "beta_root" : 0.95,     /* beta_root */
     "minwscal" : 0.0,       /* minwscal 3*/
-    "gmin"  : 0.8,          /* gmin 4*/
-    "respcoeff" : 0.5,      /* respcoeff 5*/
+    "gmin"  : 0.2,          /* gmin 4*/
+    "respcoeff" : 0.2,      /* respcoeff 5*/
     "nmax" : 20.0,          /* nmax 7*/
     "resist" : 0.01,        /* resist 8*/
     "longevity" : 0.2,     /* leaf longevity 10*/
@@ -1440,7 +1440,7 @@
     "temp_photos" : { "low" : 0.0, "high" : 20. },/* lower and upper limit of temperature optimum for photosynthesis(deg C) 25 26*/
     "b":  BC3, /* leaf respiration as fraction of Vmax for C3 plants */
     "temp" : { "low" : -1000.0, "high" : 15.5 }, /* lower and upper coldest monthly mean temperature(deg C) 28 29*/
-    "soc_k" : 0.38184 ,     /* shape factor for soil organic matter vertical distribution*/
+    "soc_k" : 0.60235 ,     /* shape factor for soil organic matter vertical distribution*/
     "alpha_fuelp" : 0.0000667, /* scaling factor nesterov fire danger index */
     "vpd_par" : 6, /*scaling factor vpd fire danger index*/
     "fuelbulkdensity" : 4.0, /* fuel bulk density */
@@ -1902,7 +1902,7 @@
   {
     "name" : "rice",
     "type" : "crop",
-    "peatland_pft" : false, /* if peatland pft */
+    "peatland_pft" : true, /* if peatland pft */
     "cultivation_type" : "annual crop", /* cultivation_type */
     "nfixing" : false,           /* No N fixing in Ma et al., 2022 appraoch */
     "cn" : [60.0, 72.0, 80.0, 84.0], /* curve number */
