@@ -136,8 +136,8 @@ extern Bool readtracegas(Tracedata *,const Filename *,Bool);
 extern void radiation(Real *, Real *,Real *,Real,int,Dailyclimate *,Real,int);
 extern void interpolate_climate(Climate *, int, Real);
 extern void addanomaly_climate(Climate *, int);
-extern Real *readdata(Climatefile *,Real *data,const Cell [],const char *,int,const Config *);
-extern int *readintdata(Climatefile *,const Cell [],const char *,int,const Config *);
+extern Real *readdata(Climatefile *,Real *data,const Cell *,const char *,int,const Config *);
+extern int *readintdata(Climatefile *,const Cell *,const char *,int,const Config *);
 extern Bool opendata(Climatefile *,const Filename *,const char *,const char *,
                      Type,Real,int,Bool,const Config *config);
 extern Bool openinputdata(Infile *,const Filename *,const char *,const char *,
