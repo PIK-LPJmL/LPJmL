@@ -1,0 +1,98 @@
+{
+   "creators":[
+      {
+         "orcid":"0000-0003-1677-8282",
+         "affiliation":"Potsdam Institute for Climate Impact Research (PIK)",
+         "name":"Schaphoff, Sibyll"
+      },
+      {
+         "orcid":"0000-0002-7399-2704",
+         "affiliation":"Potsdam Institute for Climate Impact Research (PIK)",
+         "name":"von Bloh, Werner"
+      },
+      {
+         "name":"Rammig, Anja"
+      },
+      {
+         "affiliation":"Potsdam Institute for Climate Impact Research (PIK)",
+         "name":"Thonicke, Kirsten"
+      },
+      {
+         "name":"Biemans, Hester"
+      },
+      {
+         "name":"Forkel, Matthias"
+      },
+      {
+         "affiliation":"Potsdam Institute for Climate Impact Research (PIK)",
+         "name":"Gerten, Dieter"
+      },
+      {
+         "affiliation":"Potsdam Institute for Climate Impact Research (PIK)",
+         "name":"Heinke, Jens"
+      },
+      {
+         "affiliation":"Potsdam Institute for Climate Impact Research (PIK)",
+         "name":"Jägermeyr, Jonas"
+      },
+      {
+         "name":"Knauer, Jürgen"
+      },
+      {
+         "affiliation":"Potsdam Institute for Climate Impact Research (PIK)",
+         "name":"Langerwisch, Fanny"
+      },
+      {
+         "affiliation":"Potsdam Institute for Climate Impact Research (PIK)",
+         "name":"Lucht, Wolfgang"
+      },
+      {
+         "affiliation":"Potsdam Institute for Climate Impact Research (PIK)",
+         "name":"Rolinski, Susanne"
+      },
+      {
+         "name":"Waha, Katharina"
+      },
+      {
+         "affiliation":"Potsdam Institute for Climate Impact Research (PIK)",
+         "name":"Ostberg, Sebastian"
+      },
+      {
+         "orcid":"0000-0002-9491-3550",
+         "affiliation":"Potsdam Institute for Climate Impact Research (PIK)",
+         "name":"Müller, Christoph"
+      }
+   ],
+   "license":"AGPL-3.0 license",
+   "title":"LPJmL: central open-source github repository of LPJmL at PIK",
+   "related_identifiers":[
+      {
+         "scheme":"doi",
+         "identifier":"10.5194/gmd-11-1343-2018",
+         "relation":"isDocumentedBy",
+         "resource_type":"publication-article"
+      },
+      {
+         "scheme":"doi",
+         "identifier":"10.5194/gmd-11-1377-2018",
+         "relation":"isDocumentedBy",
+         "resource_type":"publication-article"
+      }
+   ],
+   "keywords":[
+      "DGVM",
+      "carbon",
+      "hydrology",
+      "crop",
+      "grassland",
+      "bioenergy",
+      "model",
+      "open source",
+      "PIK"
+   ],
+   "communities":[
+      {
+         "identifier":"lpjml"
+      }
+   ]
+}
