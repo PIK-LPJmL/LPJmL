@@ -36,7 +36,6 @@ Real nuptake_grass(Pft *pft,             /**< pointer to PFT data */
   Real autofert_n;
   Real n_uptake=0;
   Real n_upfail=0; /**< track n_uptake that is not available from soil for output reporting */
-  Real fixed_n=0;
   Real rootdist_n[LASTLAYER];
   Real n_deficit=0.0;
   Real n_fixed=0.0;
@@ -113,21 +112,7 @@ Real nuptake_grass(Pft *pft,             /**< pointer to PFT data */
       }
     }
   }
-  if ((pft->stand->type->landusetype == SETASIDE_RF || pft->stand->type->landusetype == SETASIDE_IR)
-    && !config->fertilizer_input==AUTO_FERTILIZER
-    && !config->ma_bnf
-    && config->bnf_setaside
-    && *n_plant_demand / (1 + pft->par->knstore) > (vegn_sum_grass(pft) - grass->turn_litt.root.nitrogen - grass->turn_litt.leaf.nitrogen + pft->bm_inc.nitrogen))
-  {
-    fixed_n = *n_plant_demand / (1 + pft->par->knstore) - (vegn_sum_grass(pft) - grass->turn_litt.root.nitrogen - grass->turn_litt.leaf.nitrogen + pft->bm_inc.nitrogen);
-    n_uptake += fixed_n;
-    pft->bm_inc.nitrogen += fixed_n;
-    getoutput(&pft->stand->cell->output,BNF,config) += fixed_n*pft->stand->frac;
-    pft->stand->cell->balance.n_influx += fixed_n*pft->stand->frac;
-    getoutput(&pft->stand->cell->output,BNF_AGR,config) += fixed_n*pft->stand->frac;
-    pft->vscal = 1;
-  }
-  else if(config->fertilizer_input==AUTO_FERTILIZER
+  if(config->fertilizer_input==AUTO_FERTILIZER
     && (pft->stand->type->landusetype==GRASSLAND || pft->stand->type->landusetype==BIOMASS_GRASS || pft->stand->type->landusetype==AGRICULTURE_GRASS || pft->stand->type->landusetype == SETASIDE_RF || pft->stand->type->landusetype == SETASIDE_IR))
   {
     data=pft->stand->data;

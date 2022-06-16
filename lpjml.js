@@ -102,8 +102,7 @@
   "crop_phu_option" : "new",
   "cropsheatfrost" : false,
   "double_harvest" : true,
-  "bnf_setaside" : false,
-  "ma_bnf" : false,
+  "ma_bnf" : true,
 
 /*===================================================================*/
 /*  II. Input parameter section                                      */

@@ -264,8 +264,6 @@ void fprintconfig(FILE *file,          /**< File pointer to text output file */
   }
   if(config->const_deposition)
     len=printsim(file,len,&count,"const. deposition");
-  if(config->bnf_setaside)
-    len=printsim(file,len,&count,"N fixation on setaside");
   if(config->no_ndeposition)
     len=printsim(file,len,&count,"no N deposition");
   if(config->river_routing)
