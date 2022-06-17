@@ -467,6 +467,8 @@ Bool fscanconfig(Config *config,    /**< LPJ configuration */
     if(fscanfirestand(file,standtypes,nstand,verbose))
       return TRUE;
   }
+  else
+    standtypes[NATURAL]->dailyfire=NULL;
   if(config->others_to_crop)
   {
     if(fscanstring(file,name,"cft_temp",FALSE,verbose))

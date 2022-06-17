@@ -77,6 +77,7 @@
   "cg_ratio" : 0.2,                  /*cloud to ground ratio for lightning flashes */
   "ler" : 0.4,                        /* efficiency in starting fires */
   "max_fireduration" : 241.0,         /* maximum fire duration (min) */
+  "max_ndayfire" : 15,                /* maximum fire days (days) */
   "rootreduction" : 0.5,              /* fraction used to calculate amount of roots dying at harvest in managed grasslands */
   "phen_limit" : 0.5                  /* phen. limit for agricultural trees */
 },

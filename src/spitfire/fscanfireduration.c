@@ -33,7 +33,10 @@ Bool fscanfireduration(LPJfile *file,          /**< pointer to LPJ file */
   LPJfile array,item,s;
   int i,size,index;
   for(i=0;i<nstand;i++)
+  {
     standtypes[i]->max_fireduration=param.max_fireduration;
+    standtypes[i]->max_ndayfire=param.max_ndayfire;
+  }
   if(iskeydefined(file,"max_fireduration"))
   {
     if(fscanarray(file,&array,&size,FALSE,"max_fireduration",verbose))
@@ -62,6 +65,8 @@ Bool fscanfireduration(LPJfile *file,          /**< pointer to LPJ file */
         return TRUE;
       }
       if(fscanreal(&s,&standtypes[index]->max_fireduration,"duration",FALSE,verbose))
+        return TRUE;
+      if(fscanint(&s,&standtypes[index]->max_ndayfire,"ndayfire",FALSE,verbose))
         return TRUE;
       standtypes[index]->dailyfire=dailyfire;
     }

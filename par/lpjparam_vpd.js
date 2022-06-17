@@ -92,12 +92,13 @@
   "yield_gap_bridge" : 0.0,           /* factor by which laimax value is closed (7 - country-value)*factor */
   "allocation_threshold" : 35.0,      /* allocation threshold for daily grassland allocation */
   "hfrac2" : 2500.0,
-  "firedura" : -8.79,                 /* scaling factor for fire duration for the WVPD*/
+  "firedura" : -11.06,//-8.79,//-8.79,                 /* scaling factor for fire duration for the WVPD*/
   "hum_ign" : -0.53,                  /* a parameter for scaling the human ignintions within SPITFIRE */
-  "fire_intens" : 0.000001,             /* threshold of fireintensity for which burnt area can be modeled */
-  "ler" : 1,                        /* efficiency in starting fires */
-  "cg_ratio" : 0.2,                  /*cloud to ground ratio for lightning flashes */
-  "max_fireduration" : 241.0,         /* maximum fire duration (min) */
+  "fire_intens" : 0.000001,           /* threshold of fireintensity for which burnt area can be modeled */
+  "ler" : 0.04,                       /* efficiency in starting fires */
+  "cg_ratio" : 0.2,                   /*cloud to ground ratio for lightning flashes */
+  "max_fireduration" : 1320,          /* maximum fire duration (min) */
+  "max_ndayfire" : 15,                /* maximum fire days (days) */
   "rootreduction" : 0.5,              /* fraction used to calculate amount of roots dying at harvest in managed grasslands */
   "phen_limit" : 0.5,                 /* phen. limit for agricultural trees */
   "nfrac_grassharvest" : 0.5,         /* fraction of nitrogen from grass harvest not returned to NH4 pool via manure after mowing*/

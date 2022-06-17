@@ -24,6 +24,7 @@ struct standtype
   Landusetype landusetype;
   char *name;
   Real max_fireduration;
+  int max_ndayfire;
   void (*newstand)(Stand *);
   void (*freestand)(Stand *);
   Bool (*fwrite)(FILE *,const Stand *);
@@ -49,6 +50,7 @@ struct stand
   Real frac_change;           /**< Expansion fraction due to landuse change (only used for woodplantations) */
   Real frac_g[NSOILLAYER];    /**< fraction of green water in total available soil water, including free water */
   Real afire_frac;            /**< fraction of grid cell burnt this year */
+  Queue fires;
   int growing_days;           /**< for GRASS days since harvest*/
   int prescribe_landcover;
   void *data;                 /**< stand-specific extensions */

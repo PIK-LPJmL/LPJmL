@@ -93,6 +93,13 @@ int addstand(const Standtype *type, /**< stand type */
    stand->type=type;
    /* call stand-specific allocation function */
    initstand(stand);
+   if(stand->type->dailyfire!=NULL && stand->type->max_ndayfire>0)
+   {
+     stand->fires=newqueue(sizeof(Fire)/sizeof(Real),stand->type->max_ndayfire);
+     check(stand->fires);
+   }
+   else
+     stand->fires=NULL;
    stand->type->newstand(stand);
    return getlistlen(cell->standlist);
 } /* of 'addstand' */
@@ -112,11 +119,12 @@ void freestand(Stand *stand /**< Pointer to stand */
 {
   freepftlist(&stand->pftlist); /* free list of established PFTs */
   freesoil(&stand->soil);
+  freequeue(stand->fires);
   /* call stand-specific free function */
   stand->type->freestand(stand);
   free(stand);
 } /* of 'freestand'  */
- 
+
 int delstand(Standlist list, /**< stand list */
              int index       /**< index of stand to be deleted */
             )                /** \return new number of stands */
@@ -148,3 +156,4 @@ Real standfracsum(const Standlist standlist /**< stand list */
     frac_sum+=stand->frac;
   return frac_sum;
 } /* of 'standfracsum' */
+

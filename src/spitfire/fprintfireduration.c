@@ -31,5 +31,20 @@ void fprintfireduration(FILE *file,Standtype **standtypes,int nstand)
       fprintf(file," '%s' = %g (min)",
               standtypes[i]->name,standtypes[i]->max_fireduration);
     }
-    fputc('\n',file);
+  fputc('\n',file);
+  first=TRUE;
+  for(i=0;i<nstand;i++)
+    if(standtypes[i]->max_ndayfire!=param.max_ndayfire)
+    {
+      if(first)
+      {
+        fprintf(file,"Maximum fire days:");
+        first=FALSE;
+      }
+      else
+        fputc(',',file);
+      fprintf(file," '%s' = %d (days)",
+              standtypes[i]->name,standtypes[i]->max_ndayfire);
+    }
+  fputc('\n',file);
 } /* of 'fprintfireduration' */

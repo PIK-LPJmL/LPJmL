@@ -28,7 +28,7 @@ Stand *freadstand(FILE *file, /**< File pointer to binary file */
                  ) /** \return allocated stand data or NULL */
 {
   Stand *stand;
-  Byte landusetype;
+  Byte landusetype,isfire;
   stand=new(Stand);
   if(stand==NULL)
   {
@@ -66,6 +66,39 @@ Stand *freadstand(FILE *file, /**< File pointer to binary file */
   }
   stand->data=NULL;
   stand->type=standtype[landusetype];
+  fread(&isfire,sizeof(isfire),1,file);
+  if(stand->type->dailyfire!=NULL && stand->type->max_ndayfire>0)
+  {
+    if(isfire)
+    {
+      stand->fires=freadqueue(file,swap);
+      if(stand->fires==NULL)
+      {
+        freepftlist(&stand->pftlist);
+        freesoil(&stand->soil);
+        free(stand);
+        return NULL;
+      }
+    }
+    else
+    {
+      stand->fires=newqueue(sizeof(Fire)/sizeof(Real),stand->type->max_ndayfire);
+      if(stand->fires==NULL)
+      {
+        printallocerr("fires");
+        freepftlist(&stand->pftlist);
+        freesoil(&stand->soil);
+        free(stand);
+        return NULL;
+      }
+    }
+  }
+  else
+  {
+    stand->fires=NULL;
+    if(isfire)
+      skipqueue(file,swap);
+  }
   /* read stand-specific data */
   if(stand->type->fread(file,stand,swap))
   {

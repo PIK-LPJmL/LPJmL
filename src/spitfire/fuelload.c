@@ -4,6 +4,7 @@
 /**                                                                                \n**/
 /**     C implementation of LPJmL                                                  \n**/
 /**                                                                                \n**/
+/**     Kirsten Thonicke                                                           \n**/
 /** (C) Potsdam Institute for Climate Impact Research (PIK), see COPYRIGHT file    \n**/
 /** authors, and contributors see AUTHORS file                                     \n**/
 /** This file is part of LPJmL and licensed under GNU AGPL Version 3               \n**/
@@ -22,6 +23,7 @@
 
 static Real alpha[NFUELCLASS]={0.001,0.00005424,0.00001485,0};
 static Real SIGMA[NFUELCLASS]={66.0,3.58,0.98,0};
+
 
 void fuelload(const Stand *stand,
               Fuel *fuel,
@@ -156,6 +158,8 @@ void fuelload(const Stand *stand,
     /* may happen if litter is negative and causes numerical problems in rateofspread*/
     fuel->sigma=SIGMA[0];
   }
+  else if(fuel->sigma<epsilon)
+    fuel->sigma=epsilon;
 #endif
   /* Calculate weighted fuel moisture */
   /* To be sent do firedangerindex */
@@ -193,7 +197,8 @@ void fuelload(const Stand *stand,
   /* daily litter moisture back-calculated from nesterov_accum */
  /* fuel->daily_litter_moist = exp(-(fuel->char_alpha_fuel) * nesterov_accum);  old version without new litter from tillage version */
   fuel->daily_litter_moist =  (stand->soil.litter.agtop_wcap>0) ? stand->soil.litter.agtop_moist/stand->soil.litter.agtop_wcap : 1; /* new version making use of new litter moisture calculation from tillage version */
-
+  if(fuel->daily_litter_moist>1)
+    fuel->daily_litter_moist=1;
 
   /* combustion efficiency for litter */
   fuel->CME = 0.0005*pow(fuel->daily_litter_moist*100,2)-0.02*fuel->daily_litter_moist*100+0.94;  

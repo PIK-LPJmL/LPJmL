@@ -1024,6 +1024,7 @@ void fwriteoutput(Outputfile *output,  /**< output file array */
   writeoutputvar(NFIRE,1);
   writeoutputvar(FIREDI,ndate1);
   writeoutputvar(FIREDURATION,ndate1);
+  writeoutputvar(NDAYFIRE,ndate1);
   writeoutputvar(FIREEMISSION_CO2,1);
   writeoutputvar(FIREEMISSION_CO,1);
   writeoutputvar(FIREEMISSION_CH4,1);

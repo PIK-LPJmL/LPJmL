@@ -32,6 +32,17 @@ Bool fwritestand(FILE *file,        /**< pointer to binary file */
   b=(Byte)stand->type->landusetype;
   fwrite(&b,sizeof(b),1,file);
   /* write stand-specific data */
+  if(stand->type->dailyfire!=NULL && stand->type->max_ndayfire>0)
+  {
+    b=1;
+    fwrite(&b,sizeof(b),1,file);
+    fwritequeue(file,stand->fires);
+  }
+  else
+  {
+    b=0;
+    fwrite(&b,sizeof(b),1,file);
+  }
   if(stand->type->fwrite(file,stand))
     return TRUE;
   return (fwrite(stand->frac_g,sizeof(Real),NSOILLAYER,file)!=NSOILLAYER);

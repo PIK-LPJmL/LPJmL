@@ -27,14 +27,22 @@ typedef struct
   int nesterov_day;  /* number of days since the last nesterov_max value was set */
 } Ignition;
 
+typedef struct
+{
+  Real num_fires;
+  Real burnt_area;
+  Real dbf;
+  Real wind_cover;
+} Fire;
+
 /* Declaration of functions */
 
 extern Bool fscanfireduration(LPJfile *,Standtype **,int,Verbosity);
 extern Bool fscanfirestand(LPJfile *,Standtype **,int,Verbosity);
 extern void fprintfireduration(FILE *,Standtype **,int);
-extern Real area_burnt(Real *,Real,Real,Real,Real,Real, int,const Pftlist *);
+extern Real area_burnt(Real *,Real *,Real,Real,Real,Real,Real, int,Stand *);
 extern Real deadfuel_consumption(const Litter *,Fuel *, Real);
-extern Real firedangerindex(Real,const Stand *, const Dailyclimate *,Real, int);
+extern Real firedangerindex(Real,const Stand *,const Dailyclimate *,Real,int);
 extern Real firemortality_tree(Pft *,const Fuel *,Livefuel *,Real,Real);
 extern void fraction_of_consumption(Fuel *);
 extern Real fuel_consumption_1hr(Real, Real);

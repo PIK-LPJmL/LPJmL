@@ -370,7 +370,7 @@ static Bool initriver(Cell grid[],Config *config)
     /* initialize delay queue with the same size */
     if(grid[cell].discharge.queue==NULL) /* has queue been read by freadcell? */
     {
-      grid[cell].discharge.queue=newqueue(ncoeff); /* no, allocate it */
+      grid[cell].discharge.queue=newqueue(1,ncoeff); /* no, allocate it */
       if(grid[cell].discharge.queue==NULL)
       {
         printallocerr("queue");

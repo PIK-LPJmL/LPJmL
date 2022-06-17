@@ -18,17 +18,18 @@
 
 #define CG 0.2   /* cloud to ground flashes ratio */
 
-void dailyfire(Stand *stand,                /**< pointer to stand */
-               Real popdens,                /**< population density (capita/km2) */
+void dailyfire(Stand *stand,            /**< pointer to stand */
+               Real popdens, /**< population density (capita/km2) */
                Real avgprec,                /**< monthly averaged precipitation (mm/day) */
                const Dailyclimate *climate, /**< daily climate data */
-               const Config *config         /**< LPJmL configuration */
+               const Config *config /**< prescribed burnt area (TRUE/FALSE) */
               )
 {
   Real fire_danger_index,human_ignition,num_fires,windsp_cover,ros_forward;
   Real burnt_area,fire_frac;
   Real fuel_consump;
   Real fireduration;
+  Real ndayfire;
   Stocks deadfuel_consump,livefuel_consump,livefuel_consump_pft;
   Real surface_fi;
   Stocks total_fire;
@@ -69,7 +70,8 @@ void dailyfire(Stand *stand,                /**< pointer to stand */
     stand->cell->ignition.nesterov_max = stand->cell->ignition.nesterov_accum;
   }
   fuelload(stand, &fuel,&livefuel, stand->cell->ignition.nesterov_max);
-  fire_danger_index=firedangerindex(fuel.char_moist_factor,stand,climate,
+  fire_danger_index=firedangerindex(fuel.char_moist_factor,
+                                    stand,climate,
                                     avgprec,config->fdi);
   //printf("fdi(%s)=%g\n",stand->type->name,fire_danger_index);
   if(config->prescribe_ignition)
@@ -94,9 +96,12 @@ void dailyfire(Stand *stand,                /**< pointer to stand */
     burnt_area = climate->burntarea;
   else
   {
-    burnt_area = area_burnt(&fireduration,stand->type->max_fireduration,fire_danger_index, num_fires, windsp_cover, ros_forward, config->ntypes, &stand->pftlist);
+    burnt_area = area_burnt(&fireduration,&ndayfire,stand->type->max_fireduration,fire_danger_index, num_fires, windsp_cover, ros_forward, config->ntypes, stand);
     if(stand->type->landusetype==NATURAL)
+    {
       getoutput(output,FIREDURATION,config)+=fireduration;
+      getoutput(output,NDAYFIRE,config)+=ndayfire;
+    }
   }
   fire_frac=burnt_area*1e4 / (stand->cell->coord.area * stand->frac);  /*in m2*/
   if(fire_frac > 1.0)
