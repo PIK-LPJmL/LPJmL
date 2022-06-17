@@ -374,7 +374,7 @@ Real daily_grassland(Stand *stand,                /**< stand pointer */
     cleaf_max+=grass->max_leaf;
   }
 
-  if (!pft->stand->type->landusetype!=SETASIDE_RF && !pft->stand->type->landusetype!=SETASIDE_IR) 
+  if (!stand->type->landusetype!=SETASIDE_RF && !stand->type->landusetype!=SETASIDE_IR)
   {
     switch(stand->cell->ml.grass_scenario)
     {
