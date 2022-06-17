@@ -79,6 +79,20 @@ Stand *freadstand(FILE *file, /**< File pointer to binary file */
         free(stand);
         return NULL;
       }
+      /* check for length of queues */
+      if(queuesize(stand->fires)!=stand->type->max_ndayfire)
+      {
+        /*lengths differ, delete queue and initialize new queue */
+        freequeue(stand->fires);
+        stand->fires=newqueue(sizeof(Fire)/sizeof(Real),stand->type->max_ndayfire);
+        if(stand->fires==NULL)
+        {
+          freepftlist(&stand->pftlist);
+          freesoil(&stand->soil);
+          free(stand);
+          return NULL;
+        }
+      }
     }
     else
     {
