@@ -17,6 +17,8 @@
 #include "lpj.h"
 #include "natural.h"
 #include "agriculture.h"
+#include "grassland.h"
+
 
 Standtype setaside_rf_stand={SETASIDE_RF,"setaside_rf",new_agriculture,
                              free_agriculture,fwrite_agriculture,
@@ -24,7 +26,7 @@ Standtype setaside_rf_stand={SETASIDE_RF,"setaside_rf",new_agriculture,
 #ifdef DAILY_ESTABLISHMENT
                              daily_setaside,
 #else
-                             daily_natural,
+                             daily_grassland,
 #endif
                              annual_setaside,NULL,isdailyoutput_agriculture};
 
@@ -34,7 +36,7 @@ Standtype setaside_ir_stand={SETASIDE_IR,"setaside_ir",new_agriculture,
 #ifdef DAILY_ESTABLISHMENT
                              daily_setaside,
 #else
-                             daily_natural,
+                             daily_grassland,
 #endif
                              annual_setaside,NULL,isdailyoutput_agriculture};
 
