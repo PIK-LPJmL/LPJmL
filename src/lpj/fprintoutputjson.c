@@ -83,7 +83,7 @@ Bool fprintoutputjson(int index,           /**< index in outputvars array */
   {
    if(issoil(config->outputvars[index].id))
    {
-     fprintf(file,"  \"band_names\" : [%f",layerbound[0]);
+     fprintf(file,"  \"" BAND_NAMES "\" : [%f",layerbound[0]);
      for(p=1;p<nbands;p++)
        fprintf(file,",%f",layerbound[p]);
      fprintf(file,"],\n");
@@ -92,10 +92,10 @@ Bool fprintoutputjson(int index,           /**< index in outputvars array */
    {
      pftnames=createpftnames(config->outputvars[index].id,config->npft[GRASS]+config->npft[TREE],config->npft[CROP],config);
      if(pftnames==NULL)
-       printallocerr("band_names");
+       printallocerr(BAND_NAMES);
      else
      {
-       len=fprintf(file,"  \"band_names\" : [");
+       len=fprintf(file,"  \"" BAND_NAMES "\" : [");
        for(p=0;p<nbands;p++)
        {
          if(p)

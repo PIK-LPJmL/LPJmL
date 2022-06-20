@@ -119,9 +119,9 @@ Bool fscansoilpar(LPJfile *file, /**< pointer to LPJ file */
     checkptr(soil->name);
     soil->type=id;
     fscanreal2(verb,item,&soil->Sf,soil->name,"Sf");
+    fscanreal2(verb,item,&soil->Ks,soil->name,"Ks");
     if(config->soilpar_option==PRESCRIBED_SOILPAR)
     {
-      fscanreal2(verb,item,&soil->Ks,soil->name,"Ks");
       fscanreal2(verb,item,&soil->wpwp,soil->name,"w_pwp");
       fscanreal2(verb,item,&soil->wfc,soil->name,"w_fc");
       if(soil->wfc<=0 || soil->wfc>1)

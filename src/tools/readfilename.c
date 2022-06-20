@@ -37,18 +37,40 @@ Bool readfilename(LPJfile *file,      /**< pointer to text file read */
   if(filename->fmt==FMS)
   {
     filename->var=NULL;
+    filename->map=NULL;
     filename->name=NULL;
     filename->time=NULL;
     filename->unit=NULL;
     return FALSE;
   }
+  if(iskeydefined(f,"map"))
+  {
+    name=fscanstring(f,NULL,"map",verb);
+    if(name==NULL)
+    {
+      if(verb)
+        readstringerr("map");
+      return TRUE;
+    }
+    else
+    {
+      filename->map=strdup(name);
+      if(filename->map==NULL)
+      {
+        printallocerr("map");
+        return TRUE;
+      }
+    }
+  }
+  else
+    filename->map=NULL;
   if(isvar && filename->fmt==CDF)
   {
     name=fscanstring(f,NULL,"var",verb);
     if(name==NULL)
     {
       if(verb)
-        readstringerr("variable");
+        readstringerr("var");
       return TRUE;
     }
     else
@@ -56,7 +78,7 @@ Bool readfilename(LPJfile *file,      /**< pointer to text file read */
       filename->var=strdup(name);
       if(filename->var==NULL)
       {
-        printallocerr("variable");
+        printallocerr("var");
         return TRUE;
       }
     }
@@ -90,7 +112,7 @@ Bool readfilename(LPJfile *file,      /**< pointer to text file read */
       if(name==NULL)
       {
         if(verb)
-          readstringerr("variable");
+          readstringerr("var");
         return TRUE;
       }
       else
@@ -98,7 +120,7 @@ Bool readfilename(LPJfile *file,      /**< pointer to text file read */
         filename->var=strdup(name);
         if(filename->var==NULL)
         {
-          printallocerr("variable");
+          printallocerr("var");
           return TRUE;
         }
       }

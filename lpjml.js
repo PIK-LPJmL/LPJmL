@@ -102,6 +102,7 @@
   "crop_phu_option" : "new",
   "cropsheatfrost" : false,
   "double_harvest" : true,
+  "ma_bnf" : false,                    /* Biological N fixation using Cleveland, 1999 (false) or Ma et al., 2022 (true) approach */
 
 /*===================================================================*/
 /*  II. Input parameter section                                      */
@@ -247,7 +248,7 @@ ID                               Fmt                        filename
 /*===================================================================*/
 
   "startgrid" : "all", /* 27410, 67208 60400 47284 47293 47277 all grid cells */
-
+  "endgrid"   : "all",
 #ifdef CHECKPOINT
   "checkpoint_filename" : "restart/restart_checkpoint.lpj", /* filename of checkpoint file */
 #endif

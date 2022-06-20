@@ -51,7 +51,7 @@ void waterbalance(Stand *stand,           /**< Stand pointer */
   *frac_g_evap=0;
   evap_litter=evap_soil=litter_depth=0;
   for(p=0;p<soil->litter.n;p++)
-    litter_depth+=soil->litter.item[p].ag.leaf.carbon/soil->litter.item[p].pft->fuelbulkdensity;       // units g/m2  / (kg/m³*1000) = m -> *1000 = mm
+    litter_depth+=soil->litter.item[p].ag.leaf.carbon/soil->litter.item[p].pft->fuelbulkdensity;       // units g/m2  / (kg/m3*1000) = m -> *1000 = mm
 
   if(litter_depth<0) litter_depth=0;
   soildepth_evap=max(soildepth_evap-litter_depth,0);
