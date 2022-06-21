@@ -96,6 +96,11 @@ Stocks turnover_grass(Litter *litter, /**< Litter pool */
   }
   else
   {
+    grass->ind.root.carbon-=grass->turn.root.carbon;
+    grass->ind.leaf.carbon-=grass->turn.leaf.carbon;
+    grass->ind.root.nitrogen-=grass->turn.root.nitrogen;
+    grass->ind.leaf.nitrogen-=grass->turn.leaf.nitrogen;
+    pft->bm_inc.nitrogen+= (grass->turn.root.nitrogen+grass->turn.leaf.nitrogen)*pft->nind*(1-pft->par->fn_turnover);
     gturn.root.carbon=grass->ind.root.carbon*grasspar->turnover.root*fraction;
     gturn.root.nitrogen=grass->ind.root.nitrogen*grasspar->turnover.root*fraction;
     gturn.leaf.carbon=grass->ind.leaf.carbon*grasspar->turnover.leaf*fraction;

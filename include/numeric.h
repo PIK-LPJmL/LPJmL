@@ -52,4 +52,7 @@ extern void permute(int [],int,Seed);
 #define erand48(seed) randfrac(seed)
 #endif
 
+/* weighted average */
+#define weightedaverage(v1,v2,w1,w2) ((v1*w1+v2*w2)/(w1+w2))
+
 #endif
