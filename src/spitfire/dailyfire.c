@@ -30,6 +30,7 @@ void dailyfire(Stand *stand,            /**< pointer to stand */
   Real fuel_consump;
   Real fireduration;
   Real ndayfire;
+  Real burnt_area_max;
   Stocks deadfuel_consump,livefuel_consump,livefuel_consump_pft;
   Real surface_fi;
   Stocks total_fire;
@@ -96,11 +97,12 @@ void dailyfire(Stand *stand,            /**< pointer to stand */
     burnt_area = climate->burntarea;
   else
   {
-    burnt_area = area_burnt(&fireduration,&ndayfire,stand->type->max_fireduration,fire_danger_index, num_fires, windsp_cover, ros_forward, config->ntypes, stand);
+    burnt_area = area_burnt(&fireduration,&ndayfire,&burnt_area_max,stand->type->max_fireduration,fire_danger_index, num_fires, windsp_cover, ros_forward, config->ntypes, stand);
     if(stand->type->landusetype==NATURAL)
     {
       getoutput(output,FIREDURATION,config)+=fireduration;
       getoutput(output,NDAYFIRE,config)+=ndayfire;
+      getoutput(output,MAX_FIRESIZE,config)=max(getoutput(output,MAX_FIRESIZE,config),burnt_area_max);
     }
   }
   fire_frac=burnt_area*1e4 / (stand->cell->coord.area * stand->frac);  /*in m2*/

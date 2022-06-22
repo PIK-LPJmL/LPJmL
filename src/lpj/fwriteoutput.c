@@ -1032,6 +1032,7 @@ void fwriteoutput(Outputfile *output,  /**< output file array */
   writeoutputvar(FIREEMISSION_TPM,1);
   writeoutputvar(FIREEMISSION_NOX,1);
   writeoutputvar(BURNTAREA,1);
+  writeoutputvar(MAX_FIRESIZE,1);
   writeoutputvar(HUMAN_IGNITION,1);
   writeoutputvar(LIGHTNING,1);
   writeoutputvar(SURFACE_FI,ndate1);

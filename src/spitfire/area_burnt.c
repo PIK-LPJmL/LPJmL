@@ -34,6 +34,7 @@ static Real getlength_breath_ratio(Real windsp_cover,const Real fpc_total[])
 
 Real area_burnt(Real *fire_durat,       /**< fire duration (min) */
                 Real *ndayfire,         /**< number of days with fire */
+                Real *burnt_area_max,
                 Real max_fireduration,  /**< maximum fire duration */
                 Real fire_danger_index, /**< fire danger index (0..1) */
                 Real num_fires,         /**< number of fires */
@@ -81,6 +82,7 @@ Real area_burnt(Real *fire_durat,       /**< fire duration (min) */
      printf("normal burnt area= %g, fire_dura=%g,num_fires=%g,max_dura=%g,fdi=%g\n",burnt_area_sum,*fire_durat,num_fires,max_fireduration,fire_danger_index);
 #endif
   }
+  *burnt_area_max=0;
   if(stand->type->max_ndayfire==0)
     *ndayfire=(*fire_durat==0) ? 0 : 1;
   else
@@ -104,6 +106,7 @@ Real area_burnt(Real *fire_durat,       /**< fire duration (min) */
         {
           burnt_area_sum += max(0,(fire.num_fires * M_PI_4/length_breath_ratio * fire.dbf*fire.dbf)*1e-4 - fire.burnt_area);
           fire.burnt_area = (fire.num_fires * M_PI_4/length_breath_ratio * fire.dbf*fire.dbf)*1e-4;
+          *burnt_area_max=max(*burnt_area_max,fire.burnt_area);
         }
 #ifdef DEBUG
         if (fire.burnt_area>0)
