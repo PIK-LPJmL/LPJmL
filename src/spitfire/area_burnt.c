@@ -82,7 +82,7 @@ Real area_burnt(Real *fire_durat,       /**< fire duration (min) */
 #endif
   }
   if(stand->type->max_ndayfire==0)
-    *ndayfire=1;
+    *ndayfire=(*fire_durat==0) ? 0 : 1;
   else
   {
     *ndayfire=0;

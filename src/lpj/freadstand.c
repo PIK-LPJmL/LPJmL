@@ -87,6 +87,7 @@ Stand *freadstand(FILE *file, /**< File pointer to binary file */
         stand->fires=newqueue(sizeof(Fire)/sizeof(Real),stand->type->max_ndayfire);
         if(stand->fires==NULL)
         {
+          printallocerr("fires");
           freepftlist(&stand->pftlist);
           freesoil(&stand->soil);
           free(stand);

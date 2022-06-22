@@ -198,7 +198,15 @@ static void regrowth(Cell *cell, /* pointer to cell */
     else
     {
       mixstand->type->freestand(mixstand);
+      freequeue(mixstand->fires);
       mixstand->type=&natural_stand;
+      if(mixstand->type->dailyfire!=NULL && mixstand->type->max_ndayfire>0)
+      {
+        mixstand->fires=newqueue(sizeof(Fire)/sizeof(Real),mixstand->type->max_ndayfire);
+        check(mixstand->fires);
+      }
+      else
+        mixstand->fires=NULL;
       mixstand->type->newstand(mixstand);
       natstand=mixstand;
     }

@@ -16,20 +16,21 @@
 #include <stdio.h>
 #include "types.h"
 #include "swap.h"
+#include "errmsg.h"
 #include "queue.h"
 
 struct queue
 {
-  Real *data; /* data array */
-  int count;  /* number of Real values per queue element */
-  int size;   /* length of queue */
-  int first;  /* index of first element in queue */
-}; /* definition of opaque datatype Queue */
+  Real *data; /**< data array */
+  int count;  /**< number of Real values per queue element */
+  int size;   /**< length of queue */
+  int first;  /**< index of first element in queue */
+}; /**< definition of opaque datatype Queue */
 
 
-Queue newqueue(int count, /* number of Real values per queue element */
-               int size   /* length of queue */
-              )           /* returns NULL on error */
+Queue newqueue(int count, /**< number of Real values per queue element */
+               int size   /**< length of queue */
+              )           /** \return pointer to queue or NULL on error */
 {
   Queue queue;
   int i;
@@ -55,7 +56,9 @@ Queue newqueue(int count, /* number of Real values per queue element */
   return queue;
 } /* of 'newqueue' */
 
-Bool fwritequeue(FILE *file,const Queue queue)
+Bool fwritequeue(FILE *file,       /**< pointer to binary file */
+                 const Queue queue /**< pointer to queue */
+                )
 {
   fwrite(&queue->size,sizeof(int),1,file);
   fwrite(&queue->count,sizeof(int),1,file);
@@ -63,7 +66,9 @@ Bool fwritequeue(FILE *file,const Queue queue)
   return fwrite(queue->data,sizeof(Real),queue->size*queue->count,file)!=queue->size*queue->count;
 } /* of 'fwritequeue' */
 
-void fprintqueue(FILE *file,const Queue queue)
+void fprintqueue(FILE *file,       /**< pointer to text file */
+                 const Queue queue /**< pointer to queue */
+                )
 {
   int i,j;
   for(j=0;j<queue->count;j++)
@@ -75,12 +80,17 @@ void fprintqueue(FILE *file,const Queue queue)
   }
 } /* of 'fprintqueue' */
 
-Queue freadqueue(FILE *file,Bool swap)
+Queue freadqueue(FILE *file, /**< pointer to binary file */
+                 Bool swap   /**< byte order has to be swapped */
+                )            /** \return pointer to queue read or NULL on error */
 {
   Queue queue;
   queue=new(struct queue);
   if(queue==NULL)
+  {
+    printallocerr("queue");
     return NULL;
+  }
   if(freadint1(&queue->size,swap,file)!=1)
   {
     free(queue);
@@ -104,6 +114,7 @@ Queue freadqueue(FILE *file,Bool swap)
   queue->data=newvec(Real,queue->size*queue->count);
   if(queue->data==NULL)
   {
+    printallocerr("queue");
     free(queue);
     return NULL;
   }
@@ -128,9 +139,9 @@ Bool skipqueue(FILE *file, /**< pointer to binary file */
   return fseek(file,sizeof(int)+sizeof(Real)*size*count,SEEK_CUR);
 } /* of 'skipqueue' */
 
-void getqueue(const Queue queue, /* pointer to queue */
-              Real val[],        /* values to be read from queue */
-              int index          /* index of requested queue element */
+void getqueue(const Queue queue, /**< pointer to queue */
+              Real val[],        /**< values to be read from queue */
+              int index          /**< index of requested queue element */
              )
 {
   int i;
@@ -138,9 +149,9 @@ void getqueue(const Queue queue, /* pointer to queue */
     val[i]=queue->data[((queue->first+index) % queue->size)*queue->count+i];
 } /* of 'getqueue' */
 
-void setqueue(Queue queue,      /* pointer to queue */
-              const Real val[], /* values to written to queue */
-              int index         /* index of requested queue element */
+void setqueue(Queue queue,      /**< pointer to queue */
+              const Real val[], /**< values to written to queue */
+              int index         /**< index of requested queue element */
              )
 {
   int i;
@@ -148,13 +159,14 @@ void setqueue(Queue queue,      /* pointer to queue */
     queue->data[((queue->first+index) % queue->size)*queue->count+i]=val[i];
 } /* of 'setqueue' */
 
-int queuesize(const Queue queue)
+int queuesize(const Queue queue /**< pointer to queue */
+             )                  /** \return size of queue */
 {
   return queue->size;
 } /* of 'queuesize' */
 
-void putqueue(Queue queue,     /* pointer to queue */
-              const Real val[] /* values to be put in queue */
+void putqueue(Queue queue,     /**< pointer to queue */
+              const Real val[] /**< values to be put in queue */
              )
 {
   int i;
@@ -166,9 +178,9 @@ void putqueue(Queue queue,     /* pointer to queue */
     queue->data[queue->first*queue->count+i]=val[i];
 } /* of 'putqueue' */
 
-Real sumqueue(const Queue queue, /* pointer to queue */
-              int index          /* index of queue element summed up */
-             )                   /* returns total sum */
+Real sumqueue(const Queue queue, /**< pointer to queue */
+              int index          /**< index of queue element summed up */
+             )                   /** \return total sum */
 {
   int i;
   Real sum;
@@ -179,8 +191,8 @@ Real sumqueue(const Queue queue, /* pointer to queue */
   return sum;
 } /* of 'sumqueue' */
 
-void allsumqueue(const Queue queue, /* pointer to queue */
-                 Real sum[]         /* sum of queue elements */
+void allsumqueue(const Queue queue, /**< pointer to queue */
+                 Real sum[]         /** \return sum of queue elements */
                 )
 {
   int i,j,k;
@@ -193,7 +205,8 @@ void allsumqueue(const Queue queue, /* pointer to queue */
       sum[j]+=queue->data[k++];
 } /* of 'allsumqueue' */
 
-void freequeue(Queue queue)
+void freequeue(Queue queue /**< pointer to queue */
+              )
 {
   if(queue!=NULL)
   {
