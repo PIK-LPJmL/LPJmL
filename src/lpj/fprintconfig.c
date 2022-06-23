@@ -108,6 +108,11 @@ static size_t isnetcdfinput(const Config *config)
       if(config->human_ignition_filename.fmt==CDF)
         width=max(width,strlen(config->human_ignition_filename.var));
     }
+    if(config->max_firesize)
+    {
+      if(config->max_firesize_filename.fmt==CDF)
+        width=max(width,strlen(config->max_firesize_filename.var));
+    }
   }
   if(config->ispopulation && config->popdens_filename.fmt==CDF)
     width=max(width,strlen(config->popdens_filename.var));
@@ -541,6 +546,8 @@ void fprintconfig(FILE *file,          /**< File pointer to text output file */
       printinputfile(file,"lightning",&config->lightning_filename,width);
       printinputfile(file,"human ign",&config->human_ignition_filename,width);
     }
+    if(config->max_firesize)
+      printinputfile(file,"maxfire",&config->max_firesize_filename,width);
   }
   if(config->ispopulation)
     printinputfile(file,"pop. dens",&config->popdens_filename,width);

@@ -620,6 +620,11 @@ Cell *newgrid(Config *config,          /**< Pointer to LPJ configuration */
     if(initignition(grid,config))
       return NULL;
   }
+  if(config->max_firesize)
+  {
+    if(initmax_firesize(grid,config))
+      return NULL;
+  }
   if(config->withlanduse!=NO_LANDUSE && config->iscotton)
   {
     if(readcottondays(grid,config))

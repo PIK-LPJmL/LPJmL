@@ -56,6 +56,7 @@ struct config
   Filename swdown_filename;
   Filename popdens_filename;
   Filename human_ignition_filename;
+  Filename max_firesize_filename;
   Filename co2_filename;
   Filename drainage_filename;
   Filename extflow_filename;
@@ -170,6 +171,7 @@ struct config
   Bool param_out;               /**< print LPJmL parameter */
   Bool check_climate;           /**< check climate input data for NetCDF files */
   Bool others_to_crop;          /**< move PFT type others into PFT crop, cft_tropic for tropical, cft_temp for temperate */
+  Bool max_firesize;
   int cft_temp;
   int cft_tropic;
   Verbosity scan_verbose;       /**< option -vv 2: verbosely print the read values during fscanconfig. default 1; 0 would supress even error messages */

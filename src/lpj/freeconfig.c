@@ -107,6 +107,8 @@ void freeconfig(Config *config /**< LPJmL configuration */
   {
     if(config->fdi==WVPD_INDEX)
       freefilename(&config->humid_filename);
+    if(config->max_firesize)
+      freefilename(&config->max_firesize_filename);
     if(config->prescribe_ignition)
       freefilename(&config->ignition_filename);
     else

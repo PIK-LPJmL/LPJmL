@@ -384,6 +384,8 @@ Bool filesexist(Config config, /**< LPJmL configuration */
   {
     if(config.fdi==WVPD_INDEX)
       bad+=checkclmfile(&config,&config.humid_filename,NULL,TRUE);
+    if(config.max_firesize)
+      bad+=checkclmfile(&config,&config.max_firesize_filename,NULL,TRUE);
     if(config.prescribe_ignition)
       bad+=checkclmfile(&config,&config.ignition_filename,NULL,TRUE);
     else

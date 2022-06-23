@@ -194,6 +194,7 @@ Bool fscanconfig(Config *config,    /**< LPJ configuration */
   }
   config->prescribe_burntarea=FALSE;
   config->prescribe_ignition=FALSE;
+  config->max_firesize=FALSE;
   if(config->fire==SPITFIRE  || config->fire==SPITFIRE_TMAX)
   {
     if(fscankeywords(file,&config->fdi,"fdi",fdi,2,FALSE,verbose))
@@ -201,6 +202,8 @@ Bool fscanconfig(Config *config,    /**< LPJ configuration */
     if(config->fdi==WVPD_INDEX && verbose)
       fputs("WARNING029: VPD index only calibrated for South America.\n",stderr);
     if(fscanbool(file,&config->prescribe_burntarea,"prescribe_burntarea",TRUE,verbose))
+      return TRUE;
+    if(fscanbool(file,&config->max_firesize,"max_firesize",TRUE,verbose))
       return TRUE;
     if(fscanbool(file,&config->prescribe_ignition,"prescribe_ignition",TRUE,verbose))
       return TRUE;
@@ -760,6 +763,10 @@ Bool fscanconfig(Config *config,    /**< LPJ configuration */
       scanclimatefilename(&input,&config->lightning_filename,config->inputdir,FALSE,"lightning");
       scanclimatefilename(&input,&config->human_ignition_filename,
                           config->inputdir,FALSE,"human_ignition");
+    }
+    if(config->max_firesize)
+    {
+      scanclimatefilename(&input,&config->max_firesize_filename,config->inputdir,FALSE,"maxfiresize");
     }
   }
   if(config->ispopulation)

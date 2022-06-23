@@ -14,10 +14,12 @@
 
 #include "lpj.h"
 
-static Real getlength_breath_ratio(Real windsp_cover,const Real fpc_total[])
+static Real getlength_breath_ratio(Real windsp_cover,Real fpc_sum,const Real fpc_total[])
 {
   Real length_breath_ratio;
   Real lb_grass,lb_tree,base,lb_crop;
+  if(fpc_sum==0)
+    return 0;
   if (windsp_cover < 16.67)
     return 1;
   windsp_cover*=0.06; /* Conversion of units from m/min to km/h of windspeed */
@@ -26,7 +28,7 @@ static Real getlength_breath_ratio(Real windsp_cover,const Real fpc_total[])
   lb_tree=fpc_total[TREE]*(1.0+(8.729*(pow(base,2.155))));
   lb_grass=fpc_total[GRASS]*(1.1+pow(windsp_cover,0.464));
   lb_crop=fpc_total[CROP]*(1.1+pow(windsp_cover,0.464));
-  length_breath_ratio=lb_tree+lb_grass+lb_crop;
+  length_breath_ratio=(lb_tree+lb_grass+lb_crop)/fpc_sum;
   if (length_breath_ratio > 8)
     length_breath_ratio = 8;
   return length_breath_ratio;
@@ -51,6 +53,7 @@ Real area_burnt(Real *fire_durat,       /**< fire duration (min) */
   Real burnt_area_sum=0;
   Fire fire={0,0,0,0};
   Real wind_cover_avg;
+  Real fpcsum;
   int i;
   if(ros_forward<=0)
     ros_forward=0;
@@ -60,8 +63,8 @@ Real area_burnt(Real *fire_durat,       /**< fire duration (min) */
 
   fpc_total=newvec(Real,ntypes);
   check(fpc_total);
-  fpc_sum(fpc_total,ntypes,&stand->pftlist);
-  length_breath_ratio=getlength_breath_ratio(windsp_cover,fpc_total);
+  fpcsum=fpc_sum(fpc_total,ntypes,&stand->pftlist);
+  length_breath_ratio=getlength_breath_ratio(windsp_cover,fpcsum,fpc_total);
 
   if(length_breath_ratio <= 0)
   {
@@ -99,7 +102,7 @@ Real area_burnt(Real *fire_durat,       /**< fire duration (min) */
         getqueue(stand->fires,(Real *)&fire,i);
         wind_cover_avg+=fire.wind_cover;
         fire.dbf += (ros_backward+ros_forward) * *fire_durat;  /* in min , dbf in m*/
-        length_breath_ratio=getlength_breath_ratio((windsp_cover+wind_cover_avg)/(i+2),fpc_total);
+        length_breath_ratio=getlength_breath_ratio((windsp_cover+wind_cover_avg)/(i+2),fpcsum,fpc_total);
         if(length_breath_ratio<=0)
           fire.burnt_area=0;
         else

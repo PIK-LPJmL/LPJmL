@@ -123,6 +123,7 @@ Received 19 November 1997; accepted 15 January 1999*/
   int elevation;            /**< cell elevation (m) */
   const Real *landcover;    /**< prescribed landcover or NULL */
   Balance balance;          /**< balance checks */
+  Real max_firesize;        /**< maximum fire size (hectare) */
   Seed seed;                /**< seed for random generator */
 #if defined IMAGE && defined COUPLED
   Real npp_nat;             /**< NPP natural stand */
