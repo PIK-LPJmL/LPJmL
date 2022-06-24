@@ -313,7 +313,15 @@ static void landexpansion(Cell *cell,            /* cell pointer */
               n_est[config->pftpar[p].type]++;
             }
           mixstand->type->freestand(mixstand);
+          freequeue(mixstand->fires);
           mixstand->type=&grassland_stand;
+          if(mixstand->type->dailyfire!=NULL && mixstand->type->max_ndayfire>0)
+          {
+            mixstand->fires=newqueue(sizeof(Fire)/sizeof(Real),mixstand->type->max_ndayfire);
+            check(mixstand->fires);
+          }
+          else
+            mixstand->fires=NULL;
           mixstand->type->newstand(mixstand);
           break;
         case BIOMASS_TREE_PLANTATION:
@@ -325,7 +333,15 @@ static void landexpansion(Cell *cell,            /* cell pointer */
               n_est[config->pftpar[p].type]++;
             }
           mixstand->type->freestand(mixstand);
+          freequeue(mixstand->fires);
           mixstand->type=&biomass_tree_stand;
+          if(mixstand->type->dailyfire!=NULL && mixstand->type->max_ndayfire>0)
+          {
+            mixstand->fires=newqueue(sizeof(Fire)/sizeof(Real),mixstand->type->max_ndayfire);
+            check(mixstand->fires);
+          }
+          else
+            mixstand->fires=NULL;
           mixstand->type->newstand(mixstand);
           break;
         case AGRICULTURE_TREE_PLANTATION:
@@ -348,7 +364,15 @@ static void landexpansion(Cell *cell,            /* cell pointer */
             printf("establish %d PFT %s in agriculture.\n",pft_id,pftpar[pft_id].name);
           */
           mixstand->type->freestand(mixstand);
+          freequeue(mixstand->fires);
           mixstand->type=(config->pftpar[pft_id].type==GRASS) ? &agriculture_grass_stand : &agriculture_tree_stand;
+          if(mixstand->type->dailyfire!=NULL && mixstand->type->max_ndayfire>0)
+          {
+            mixstand->fires=newqueue(sizeof(Fire)/sizeof(Real),mixstand->type->max_ndayfire);
+            check(mixstand->fires);
+          }
+          else
+            mixstand->fires=NULL;
           mixstand->type->newstand(mixstand);
           biomass_tree=mixstand->data;
           biomass_tree->irrigation.pft_id=pft_id;
@@ -362,7 +386,15 @@ static void landexpansion(Cell *cell,            /* cell pointer */
               n_est[config->pftpar[p].type]++;
             }
           mixstand->type->freestand(mixstand);
+          freequeue(mixstand->fires);
           mixstand->type=&biomass_grass_stand;
+          if(mixstand->type->dailyfire!=NULL && mixstand->type->max_ndayfire>0)
+          {
+            mixstand->fires=newqueue(sizeof(Fire)/sizeof(Real),mixstand->type->max_ndayfire);
+            check(mixstand->fires);
+          }
+          else
+            mixstand->fires=NULL;
           mixstand->type->newstand(mixstand);
           break;
         case WOOD_PLANTATION:
@@ -374,7 +406,15 @@ static void landexpansion(Cell *cell,            /* cell pointer */
               n_est[config->pftpar[p].type]++;
             }
           mixstand->type->freestand(mixstand);
+          freequeue(mixstand->fires);
           mixstand->type = &woodplantation_stand;
+          if(mixstand->type->dailyfire!=NULL && mixstand->type->max_ndayfire>0)
+          {
+            mixstand->fires=newqueue(sizeof(Fire)/sizeof(Real),mixstand->type->max_ndayfire);
+            check(mixstand->fires);
+          }
+          else
+            mixstand->fires=NULL;
           mixstand->type->newstand(mixstand);
         break;
           default:
