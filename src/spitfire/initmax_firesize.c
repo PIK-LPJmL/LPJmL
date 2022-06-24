@@ -31,9 +31,6 @@ Bool initmax_firesize(Cell grid[],         /* LPJ grid */
       closeinput(&input);
       return TRUE;
     }
-    if(grid[cell].ignition.human<0)
-      grid[cell].ignition.human=0;
-    grid[cell].ignition.human/=365;
   }
   closeinput(&input);
   return FALSE;
