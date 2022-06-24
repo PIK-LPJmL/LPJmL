@@ -67,7 +67,7 @@ void check_fluxes(Cell *cell,          /**< cell pointer */
   else
     startyear=config->firstyear+1;
 
-  if(year>startyear && fabs(balance.carbon)>.2)
+  if(year>startyear && fabs(balance.carbon)>1.0)
   {
 #if defined IMAGE && defined COUPLED
     if(config->sim_id==LPJML_IMAGE)
