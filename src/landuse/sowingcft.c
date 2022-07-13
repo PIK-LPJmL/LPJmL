@@ -72,10 +72,14 @@ void sowingcft(Stocks *flux_estab,  /**< establishment flux */
   Real difffrac;
   int s,p,cft_id,pos;
   Irrigation *irrigation,*data;
+  s=NOT_FOUND;
   /* set sowing date for all CFTs not in the land-use data set */
   if(config->sdate_option==FIXED_SDATE && cell->ml.landfrac[irrig].crop[cft]==0)
     cell->ml.sdate_fixed[cft+irrig*ncft]=day;
-  s=findlandusetype(cell->standlist,(irrig) ? SETASIDE_IR : SETASIDE_RF);
+  if(cft==RICE)
+    s=findlandusetype(cell->standlist,SETASIDE_WETLAND);
+  if(s==NOT_FOUND)
+    s=findlandusetype(cell->standlist,(irrig) ? SETASIDE_IR : SETASIDE_RF);
 
   if(s!=NOT_FOUND)
   {
