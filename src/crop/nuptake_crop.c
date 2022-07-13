@@ -85,7 +85,7 @@ Real nuptake_crop(Pft *pft,             /**< pointer to PFT data */
         nsum+=totn*rootdist_n[l];
       }
     }
-  if(nsum==0)
+  if(nsum<epsilon)   //nsum==0 ??
     n_uptake=0;
   else
   {

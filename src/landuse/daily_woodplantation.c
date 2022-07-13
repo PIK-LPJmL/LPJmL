@@ -234,8 +234,8 @@ Real daily_woodplantation(Stand *stand,       /**< stand pointer */
   getoutput(output,TRANSP,config)+=transp;
   stand->cell->balance.atransp+=transp;
   getoutput(output,INTERC,config) += intercep_stand*stand->frac; /* Note: including blue fraction*/
-  stand->cell->balance.ainterc+=intercep_stand*stand->frac;
   getoutput(output,INTERC_B,config) += intercep_stand_blue*stand->frac;   /* blue interception and evap */
+  stand->cell->balance.ainterc+=(intercep_stand+intercep_stand_blue)*stand->frac;
 
   getoutput(output,EVAP,config) += evap*stand->frac;
   stand->cell->balance.aevap+=evap*stand->frac;

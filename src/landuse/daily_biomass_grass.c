@@ -127,6 +127,7 @@ Real daily_biomass_grass(Stand *stand,                /**< stand pointer */
         getoutputindex(output,CFT_AIRRIG,index,config)+=irrig_apply;
     }
   }
+  fprintf(stdout,"irrig_stor: %g irrig_amount: %g \n",data->irrig_stor,data->irrig_amount);
 
   /* INTERCEPTION */
   foreachpft(pft,p,&stand->pftlist)
@@ -339,7 +340,7 @@ Real daily_biomass_grass(Stand *stand,                /**< stand pointer */
   stand->cell->balance.atransp+=transp;
   getoutput(output,EVAP,config)+=evap*stand->frac;
   stand->cell->balance.aevap+=evap*stand->frac;
-  stand->cell->balance.ainterc+=intercep_stand*stand->frac;
+  stand->cell->balance.ainterc+=(intercep_stand+intercep_stand_blue)*stand->frac;
   getoutput(output,EVAP_B,config)+=evap_blue*stand->frac;   /* blue soil evap */
 
   getoutput(output,INTERC,config)+=intercep_stand*stand->frac;

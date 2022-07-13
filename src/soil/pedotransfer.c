@@ -13,7 +13,7 @@
 /**************************************************************************************/
 
 #include "lpj.h"
-
+#define CHECK_BALANCE
 void pedotransfer(Stand *stand,  /**< pointer to stand */
                   Real *abswmm,
                   Real *absimm,
@@ -207,7 +207,7 @@ void pedotransfer(Stand *stand,  /**< pointer to stand */
 #ifdef CHECK_BALANCE
     w_after=soilwater(&stand->soil)+excess;
     if(fabs(w_before-w_after)>epsilon)
-      fprintf(stderr,"ERROR: %.2f/%.2f water balance=%.10f=%.10f-%.10f (excess is %.10f) in pedotransfer() wmm %.10f imm %.10f.\n",
+      fprintf(stderr,"ERROR pedotransfer: %.2f/%.2f water balance=%.10f=%.10f-%.10f (excess is %.10f) in pedotransfer() wmm %.10f imm %.10f.\n",
               stand->cell->coord.lon,stand->cell->coord.lat,fabs(w_before-w_after),w_before,w_after+excess,excess,wmm,imm);
 #endif
   } /* end of if not ROCK */

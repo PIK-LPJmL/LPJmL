@@ -14,7 +14,7 @@
 /**************************************************************************************/
 
 #include "lpj.h"
-//#define CHECK_BALANCE
+#define CHECK_BALANCE
 
 typedef struct
 {
@@ -263,6 +263,9 @@ fprintf(stderr,"w[%d] %3.12f, fw[%d] %3.12f, icedepth[%d] %3.12f, whcs[%d] %3.12
     if(stand->frac_g[l]<0)
       stand->frac_g[l]=0;
   stand->cell->discharge.drunoff+=marginal*stand->frac;
+  if(marginal>2)
+    fprintf(stdout,"MARGINAL : &g \n",marginal*stand->frac);
+
   //*evap=evap_test;
   } /* soil layer loop */
 #ifdef CHECK_BALANCE

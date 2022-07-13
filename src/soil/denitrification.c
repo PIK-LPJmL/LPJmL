@@ -68,7 +68,8 @@ void denitrification(Stand *stand,  /**< pointer to stand */
     {
       FW = min(1.0,6.664096e-10*exp(21.12912*denit_t)); /* newly fitted parameters on curve with threshold */
       TCDF = 1-exp(-CDN*FT*Corg);
-      N_denit = FW*TCDF*soil->NO3[l];
+      if(TCDF>0)
+        N_denit = FW*TCDF*soil->NO3[l];
     }
 #ifdef SAFE
     if((FW*TCDF)>1.0 && N_denit>(soil->NO3[l]+epsilon*10))
@@ -78,8 +79,7 @@ void denitrification(Stand *stand,  /**< pointer to stand */
       N_denit=soil->NO3[l];
     }
 #endif
-    if(N_denit>soil->NO3[l])
-      N_denit=soil->NO3[l];
+    N_denit=min(N_denit,soil->NO3[l]);
     soil->NO3[l]-=N_denit;
 #ifdef SAFE
     if(soil->NO3[l]<-epsilon)

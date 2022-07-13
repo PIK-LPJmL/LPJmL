@@ -72,7 +72,7 @@
 #define WCH4 16
 #define WH2O 18
 #define WCO2 44
-#define O2star 2.5             /*g/m3*/
+#define O2star 3             /*g/m3*/
 #define BO2 0.038            /*Bunsen coefficient of oxygen*/
 #define BCH4 0.043           /*Bunsen coefficient of methane  0.043 Khvorostynov etal. 2008*/
 #define Vmax_CH4 10          /*Michaelis-Menten coefficient in mikroM/h =  mikro mol/l/h = 10−3 mol/m3/h  20 original */
@@ -201,7 +201,7 @@ typedef struct
   Real w[NSOILLAYER],            /**< soil water as fraction of whc (fractional water holding capacity) */
     w_fw[NSOILLAYER];            /**< free water or gravitational water (mm), absolute water content between field capacity and saturation */
   Real O2[LASTLAYER];            /*mass of soil oxygen per soil layer*/
-  Real CH4[LASTLAYER];           /*mass of soil methane per soil layer*/
+  Real CH4[LASTLAYER];           /*mass of soil methane per soil layer in gC*/
   Real w_evap;                   /**< soil moisture content which is not transpired and can evaporate? correct? */
   Real perc_energy[NSOILLAYER];  /**< energy transfer by percolation */
 #ifdef MICRO_HEATING

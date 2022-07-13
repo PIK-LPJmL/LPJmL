@@ -28,7 +28,7 @@ Stocks standstocks(const Stand *stand /**< pointer to stand */
   Stocks turn;
   Real turn_all=0;
   tot=soilstocks(&stand->soil); /* get stocks in soil */
-  //fprintf(stdout,"type: %d  frac: %g  iswetland: %d  ",stand->type->landusetype, stand-> frac, stand->soil.iswetland);
+  //fprintf(stderr,"type: %d  frac: %g  iswetland: %d soilccarbon: %g ",stand->type->landusetype, stand-> frac, stand->soil.iswetland,tot);
   foreachpft(pft,p,&stand->pftlist)
   {
     turn.carbon=turn.nitrogen=0;
@@ -51,6 +51,6 @@ Stocks standstocks(const Stand *stand /**< pointer to stand */
     if(pft->par->cultivation_type==ANNUAL_CROP)
       tot.nitrogen-=pft->bm_inc.nitrogen;
   }
-  //fprintf(stderr,"standstocks:tot_carbon: %g turn_all_carbon %g\n",tot.carbon,turn_all);
+  //fprintf(stderr,"standstocks:tot_carbon: %g turn_all_carbon %g  \n \n \n",tot.carbon,turn_all);
   return tot;
 } /* of 'standstocks' */

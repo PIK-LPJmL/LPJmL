@@ -115,12 +115,11 @@ void plant_gas_transport(Stand *stand,        /**< pointer to soil data */
         epsilon_CH4=max(0.0004,V+soil_moist*stand->soil.wsat[l]*BCH4);
         epsilon_O2=max(0.0004,V+soil_moist*stand->soil.wsat[l]*BO2);
         soil_water_vol=(stand->soil.w[l]*stand->soil.whcs[l]+stand->soil.wpwps[l]*(1-stand->soil.ice_pwp[l])+stand->soil.w_fw[l])/soildepth[l];  //in  m-3 *1000/1000/soildepth
-        //printf("CH4 %g O2 %g\n",stand->soil.CH4[l] / soildepth[l] / epsilon_CH4 * 1000,stand->soil.O2[l]/soildepth[l]/epsilon_O2*1000);
-        if (soil_moist>water_min)
+        if (soil_water_vol>water_min)
         {
           tillers = grass->ind.leaf.carbon*pft->nind*pft->phen / tiller_weight;
           tiller_frac = tillers*pft->par->rootdist[l];
-          tiller_area = max(0.0001,tiller_radius*tiller_radius*M_PI*tiller_frac*tiller_por);
+          tiller_area = max(0.001,tiller_radius*tiller_radius*M_PI*tiller_frac*tiller_por);
           Conc_new = 0;
           CH4 = stand->soil.CH4[l] / soildepth[l] / epsilon_CH4 * 1000;
           if (CH4>CH4_air && tiller_area>0 && soil_water_vol>epsilon)
@@ -146,15 +145,15 @@ void plant_gas_transport(Stand *stand,        /**< pointer to soil data */
   }
   if (CH4_plant_all>0)
   {
-    getoutput(&stand->cell->output,CH4_EMISSIONS,config)+=CH4_plant_all*stand->frac;
+    getoutput(&stand->cell->output,CH4_EMISSIONS,config)+=CH4_plant_all*stand->frac*WCH4/WC;
     stand->cell->balance.aCH4_em+=CH4_plant_all*stand->frac;
   }
   else
   {
-    getoutput(&stand->cell->output,CH4_SINK,config)+=CH4_plant_all*stand->frac;
+    getoutput(&stand->cell->output,CH4_SINK,config)+=CH4_plant_all*stand->frac*WCH4/WC;
     stand->cell->balance.aCH4_sink+=CH4_plant_all*stand->frac;
   }
-  getoutput(&stand->cell->output,CH4_PLANT_GAS,config)+=CH4_plant_all*stand->frac;
+  getoutput(&stand->cell->output,CH4_PLANT_GAS,config)+=CH4_plant_all*stand->frac*WCH4/WC;
 #ifdef DEBUG
   printf("plantgas after");
   printch4(stand->soil.CH4);

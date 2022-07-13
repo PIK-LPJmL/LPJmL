@@ -24,7 +24,7 @@ void check_fluxes(Cell *cell,          /**< cell pointer */
                  )
 {
   Stocks tot={0,0},stocks,delta_tot,balance;
-  Real balanceW,totw;
+  Real balanceW,totw,awater_flux;
   Stand *stand;
   String line;
   int s,i,startyear;
@@ -32,6 +32,18 @@ void check_fluxes(Cell *cell,          /**< cell pointer */
   int p;
   Pft *pft;
   /* carbon balance check */
+  awater_flux = cell->balance.awater_flux;
+
+/*
+  if(year>=1940 && year<=1980)
+  {
+    foreachstand(stand,s,cell->standlist)
+      fprintf(stderr,"\n\nYEAR= %d standfrac: %g standtype: %d iswetland: %d cropfraction_rf: %g cropfraction_irr: %g grasfrac_rf: %g grasfrac_irr: %g\n",year,stand->frac, stand->type->landusetype,stand->soil.iswetland,
+              crop_sum_frac(cell->ml.landfrac,12,config->nagtree,cell->ml.reservoirfrac+cell->lakefrac,FALSE),crop_sum_frac(cell->ml.landfrac,12,config->nagtree,cell->ml.reservoirfrac+cell->lakefrac,TRUE),
+              cell->ml.landfrac[0].grass[0]+cell->ml.landfrac[0].grass[1],cell->ml.landfrac[1].grass[0]+cell->ml.landfrac[1].grass[1]);
+  }
+*/
+
 
   foreachstand(stand,s,cell->standlist)
   {
@@ -111,10 +123,12 @@ void check_fluxes(Cell *cell,          /**< cell pointer */
          cell->balance.flux_estab.carbon,cell->balance.flux_harvest.carbon,delta_tot.carbon,cell->balance.biomass_yield.carbon,
          cell->balance.estab_storage_grass[0].carbon,cell->balance.estab_storage_grass[1].carbon,cell->balance.estab_storage_tree[0].carbon,cell->balance.estab_storage_tree[1].carbon,
          cell->balance.deforest_emissions.carbon,cell->balance.prod_turnover.fast.carbon+cell->balance.prod_turnover.slow.carbon);
+/*
          foreachstand(stand,s,cell->standlist)
              fprintf(stderr,"standfrac: %g standtype: %d iswetland: %d cropfraction_rf: %g cropfraction_irr: %g grasfrac_rf: %g grasfrac_irr: %g\n",stand->frac, stand->type->landusetype,stand->soil.iswetland,
                      crop_sum_frac(cell->ml.landfrac,12,config->nagtree,cell->ml.reservoirfrac+cell->lakefrac,FALSE),crop_sum_frac(cell->ml.landfrac,12,config->nagtree,cell->ml.reservoirfrac+cell->lakefrac,TRUE),
                      cell->ml.landfrac[0].grass[0]+cell->ml.landfrac[0].grass[1],cell->ml.landfrac[1].grass[0]+cell->ml.landfrac[1].grass[1]);
+*/
 
 #endif
   }
@@ -133,11 +147,13 @@ void check_fluxes(Cell *cell,          /**< cell pointer */
       delta_tot.nitrogen,tot.nitrogen,
       cell->balance.estab_storage_grass[0].nitrogen,cell->balance.estab_storage_grass[1].nitrogen,cell->balance.estab_storage_tree[0].nitrogen,
       cell->balance.estab_storage_tree[1].nitrogen);
+/*
       foreachstand(stand,s,cell->standlist){
         foreachpft(pft,p,&stand->pftlist){
           fprintf(stderr,"PFT bm_inc nitrogen %g\n",pft->bm_inc.nitrogen);
         }
       }
+*/
   }
 
   /* water balance check */
@@ -157,16 +173,16 @@ void check_fluxes(Cell *cell,          /**< cell pointer */
       totw+=cell->ml.resdata->dfout_irrigation_daily[i]/cell->coord.area;
   }
   cell->balance.awater_flux+=cell->balance.atransp+cell->balance.aevap+cell->balance.ainterc+cell->balance.aevap_lake+cell->balance.aevap_res-cell->balance.airrig-cell->balance.aMT_water;
-  balanceW=totw-cell->balance.totw-cell->balance.aprec+cell->balance.awater_flux+cell->balance.excess_water;
-  if(year>startyear && fabs(balanceW)>1.5)
+  balanceW=totw-cell->balance.totw-cell->balance.aprec+cell->balance.awater_flux+cell->balance.excess_water+cell->lateral_water;
+  if(year>startyear+1 && fabs(balanceW)>1.5)
   //if(year>1511 && fabs(balanceW)>1.5)
 #ifdef NO_FAIL_BALANCE
     fprintf(stderr,"ERROR005: "
 #else
     fail(INVALID_WATER_BALANCE_ERR,FALSE,
 #endif
-         "y: %d c: %d (%s) BALANCE_W-error %.2f cell->totw:%.2f totw:%.2f awater_flux:%.2f aprec:%.2f excess water:%.2f atransp: %g  aevap %g  ainterc %g runoff %g aevap_lake %g  aevap_res %g  airrig %g  aMT_water %g\n",
-         year,cellid+config->startgrid,sprintcoord(line,&cell->coord),balanceW,cell->balance.totw,totw,
-         cell->balance.awater_flux,cell->balance.aprec,cell->balance.excess_water,cell->balance.atransp,cell->balance.aevap,cell->balance.ainterc,cell->discharge.drunoff,cell->balance.aevap_lake,cell->balance.aevap_res,cell->balance.airrig,cell->balance.aMT_water);
-  cell->balance.totw=totw;
+         "y: %d c: %d (%s) BALANCE_W-error %.2f \n cell->totw: %.2f totw: %.2f lateral_water: %.2f \n awater_flux:%.2f awater_flux_before:%.2f \n aprec:%.2f excess water:%.2f \natransp: %g  aevap %g  ainterc %g runoff %g aevap_lake %g  aevap_res %g  airrig %g  aMT_water %g\n",
+         year,cellid+config->startgrid,sprintcoord(line,&cell->coord),balanceW,cell->balance.totw,totw,cell->lateral_water,
+         cell->balance.awater_flux,awater_flux,cell->balance.aprec,cell->balance.excess_water,cell->balance.atransp,cell->balance.aevap,cell->balance.ainterc,cell->discharge.drunoff,cell->balance.aevap_lake,cell->balance.aevap_res,cell->balance.airrig,cell->balance.aMT_water);
+  cell->balance.totw=totw+cell->lateral_water;
 } /* of 'check_fluxes' */

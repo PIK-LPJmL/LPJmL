@@ -276,7 +276,8 @@ Bool setaside(Cell *cell,          /**< Pointer to LPJ cell */
   if(s!=NOT_FOUND)
   {
     mixsetaside(getstand(cell->standlist,s),cropstand,TRUE,year,config);
-#ifdef CHECK_BALANCE
+ //   if(year>=1937) fprintf(stdout,"SETASIDE: mixsetaside s=%d \n",s);
+    #ifdef CHECK_BALANCE
   foreachstand(checkstand,k,cell->standlist)
   {
     if(cropstand!=checkstand)
@@ -305,7 +306,10 @@ Bool setaside(Cell *cell,          /**< Pointer to LPJ cell */
     cropstand->soil.iswetland=iswetland;
 #ifdef SAFE
     if(!isempty(&cropstand->pftlist))
-      fail(LIST_NOT_EMPTY_ERR,TRUE,"Pftlist is not empty in setaside()");
+    {
+      fprintf(stderr,"SETASIDE: s=%d intercrop=%d irrig:%d iswetland:%d\n",s, intercrop,irrig,iswetland);
+      fail(LIST_NOT_EMPTY_ERR,TRUE,"Pftlist is not empty in setaside() on lat: %g lon: %g",cell->coord.lat, cell->coord.lon);
+    }
 #endif
     if(intercrop)
     {

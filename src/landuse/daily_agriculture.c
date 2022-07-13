@@ -245,12 +245,13 @@ Real daily_agriculture(Stand *stand,                /**< [inout] stand pointer *
       }
     }
   }
+  //if(year>=2002 && year<2005) fprintf(stdout,"daily_agriculture: irrig_stor= %g irrig_amount= %g irrig_apply= %g rainmelt= %g\n\n ",data->irrig_stor,data->irrig_amount,irrig_apply,rainmelt);
 
   /* INTERCEPTION */
+  sprink_interc=(data->irrig_system==SPRINK) ? 1 : 0;
+
   foreachpft(pft,p,&stand->pftlist)
   {
-    sprink_interc=(data->irrig_system==SPRINK) ? 1 : 0;
-
     intercept=interception(&wet[p],pft,eeq,climate->prec+irrig_apply*sprink_interc); /* in case of sprinkler, irrig_amount goes through interception */
     wet_all+=wet[p]*pft->fpc;
     intercep_stand_blue+=(climate->prec+irrig_apply*sprink_interc>epsilon) ? intercept*(irrig_apply*sprink_interc)/(climate->prec+irrig_apply*sprink_interc) : 0; /* blue intercept fraction */
@@ -258,8 +259,10 @@ Real daily_agriculture(Stand *stand,                /**< [inout] stand pointer *
   }
 
   irrig_apply-=intercep_stand_blue;
-  rainmelt-=(intercep_stand-intercep_stand_blue);
+  if(irrig_apply<0)
+    intercep_stand_blue+=irrig_apply;
   irrig_apply=max(0,irrig_apply);
+  rainmelt-=intercep_stand;
 
   /* rain-water harvesting*/
   if(!data->irrigation && config->rw_manage && rainmelt<5)
@@ -455,7 +458,7 @@ Real daily_agriculture(Stand *stand,                /**< [inout] stand pointer *
 
   getoutput(output,EVAP,config)+=evap*stand->frac;
   stand->cell->balance.aevap+=evap*stand->frac;
-  stand->cell->balance.ainterc+=intercep_stand*stand->frac;
+  stand->cell->balance.ainterc+=(intercep_stand+intercep_stand_blue)*stand->frac;
   getoutput(output,EVAP_B,config)+=evap_blue*stand->frac;   /* blue soil evap */
 #if defined(IMAGE) && defined(COUPLED)
   if(stand->cell->ml.image_data!=NULL)

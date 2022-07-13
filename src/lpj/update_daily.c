@@ -43,7 +43,7 @@ void update_daily(Cell *cell,            /**< cell pointer           */
   int s,p;
   Pft *pft;
   Real melt=0,eeq,par,daylength,beta,gw_outflux,CH4_em;
-  Real runoff,snowrunoff,epsilon_gas,soilmoist,V;
+  Real melt_all=0,runoff,snowrunoff,epsilon_gas,soilmoist,V;
 #ifdef IMAGE
   Real fout_gw; // local variable for groundwater outflow (baseflow)
 #endif
@@ -60,11 +60,13 @@ void update_daily(Cell *cell,            /**< cell pointer           */
   Real ebul;
 #ifdef CHECK_BALANCE
   Real ende, start;
-  Real water_before=(cell->discharge.dmass_lake+cell->discharge.dmass_river)/cell->coord.area;
+  Real water_before=+cell->lateral_water+(cell->discharge.dmass_lake+cell->discharge.dmass_river)/cell->coord.area;
   Real water_after=0;
   Real balanceW=0;
   Real wfluxes_old=cell->balance.atransp+cell->balance.aevap+cell->balance.ainterc+cell->balance.aevap_lake+cell->balance.aevap_res-cell->balance.airrig-cell->balance.aMT_water;
   Real exess_old=cell->balance.excess_water;
+  if(year==2002 && day >=360)
+    fprintf(stdout,"wfluxes_old: %g exess_old: %g prec: %g drunoff: %g \n",wfluxes_old,exess_old,climate.prec,cell->discharge.drunoff);
   ende = start=0;
 #endif
   ebul = 0;
@@ -158,7 +160,7 @@ void update_daily(Cell *cell,            /**< cell pointer           */
     {
       snowrunoff=snow(&stand->soil,&climate.prec,&melt,
                       climate.temp,&temp_bs,&evap)*stand->frac;
-      cell->discharge.drunoff+=snowrunoff;
+      cell->discharge.drunoff+=snowrunoff*stand->frac;
       getoutput(&cell->output,EVAP,config)+=evap*stand->frac; /* evap from snow runoff*/
       cell->balance.aevap+=evap*stand->frac; /* evap from snow runoff*/
 #if defined IMAGE && defined COUPLED
@@ -185,7 +187,7 @@ void update_daily(Cell *cell,            /**< cell pointer           */
       for(l=1;l<NSOILLAYER;l++)
         stand->soil.temp[l]=stand->soil.temp[0];
       snowrunoff=snow_old(&stand->soil.snowpack,&climate.prec,&melt,climate.temp)*stand->frac;
-      cell->discharge.drunoff+=snowrunoff;
+      cell->discharge.drunoff+=snowrunoff*stand->frac;
     }
 
     foreachsoillayer(l)
@@ -207,12 +209,12 @@ void update_daily(Cell *cell,            /**< cell pointer           */
     cell->discharge.drunoff += runoff*stand->frac;
     if (CH4_em>0)
     {
-      getoutput(&cell->output,CH4_EMISSIONS,config) += CH4_em*stand->frac;
+      getoutput(&cell->output,CH4_EMISSIONS,config) += CH4_em*stand->frac*WCH4/WC;
       cell->balance.aCH4_em+=CH4_em*stand->frac;
     }
     else
     {
-      getoutput(&cell->output,CH4_SINK,config)+= CH4_em*stand->frac;
+      getoutput(&cell->output,CH4_SINK,config)+= CH4_em*stand->frac*WCH4/WC;
       cell->balance.aCH4_sink+=CH4_em*stand->frac;
     }
     fpc_total_stand = 0;
@@ -223,9 +225,9 @@ void update_daily(Cell *cell,            /**< cell pointer           */
 #endif
     ebul = ebullition(&stand->soil, fpc_total_stand);
     //cell->output.mCH4_em+=ebullition(&stand->soil,fpc_total_stand)*stand->frac;
-    getoutput(&cell->output,CH4_EMISSIONS,config) += ebul*stand->frac;
+    getoutput(&cell->output,CH4_EMISSIONS,config) += ebul*stand->frac*WCH4/WC;
     cell->balance.aCH4_em+=ebul*stand->frac;
-    getoutput(&cell->output,CH4_EBULLITION,config) += ebul*stand->frac;
+    getoutput(&cell->output,CH4_EBULLITION,config) += ebul*stand->frac*WCH4/WC;
 #ifdef CHECK_BALANCE
     ende = standstocks(stand).carbon + soilmethane(&stand->soil);
     if (fabs(start - ende - ebul)>epsilon) fprintf(stdout, "C-ERROR: %g start:%g  ende:%g daily: %g\n", start - ende - ebul, start, ende, ebul);
@@ -291,7 +293,7 @@ void update_daily(Cell *cell,            /**< cell pointer           */
       pedotransfer(stand,NULL,NULL,stand->frac);
     updatelitterproperties(stand,stand->frac);
 
-    getoutput(&cell->output,CH4_EMISSIONS,config) += CH4_em*stand->frac;
+    getoutput(&cell->output,CH4_EMISSIONS,config) += CH4_em*stand->frac*WCH4/WC;
     cell->balance.aCH4_em+=CH4_em*stand->frac;
     //cell->balance.aMT_water += MT_water*stand->frac;
     getoutput(&cell->output,MT_WATER,config) += MT_water*stand->frac;
@@ -331,7 +333,7 @@ void update_daily(Cell *cell,            /**< cell pointer           */
 
     getoutput(&cell->output,SNOWRUNOFF,config)+=snowrunoff;
     getoutput(&cell->output,MELT,config)+=melt*stand->frac;
-
+    melt_all+=melt*stand->frac;
     if(config->fire==FIRE && climate.temp>0 && stand->soil.wtable>400)
       stand->fire_sum+=fire_sum(&stand->soil.litter,stand->soil.w[0]);
 
@@ -497,6 +499,7 @@ void update_daily(Cell *cell,            /**< cell pointer           */
 
   getoutput(&cell->output,RUNOFF,config)+=cell->discharge.drunoff;
   cell->balance.awater_flux+=cell->discharge.drunoff;
+
   if(config->river_routing)
   {
     radiation(&daylength,&par,&eeq,cell->coord.lat,day,&climate,c_albwater,config->with_radiation);
@@ -579,25 +582,23 @@ void update_daily(Cell *cell,            /**< cell pointer           */
   cell->balance.flux_estab.carbon+=flux_estab.carbon;
   cell->output.dcflux-=flux_estab.carbon;
 #ifdef CHECK_BALANCE
-  Irrigation* data;
   water_after=(cell->discharge.dmass_lake+cell->discharge.dmass_river)/cell->coord.area;
   foreachstand(stand,s,cell->standlist)
   {
     water_after+=soilwater(&stand->soil)*stand->frac;
-/*
-    data=stand->data;
-    if(stand->type->landusetype!=WETLAND && stand->type->landusetype!=NATURAL)
-      fprintf(stdout,"type: %d frac : %g irrig_stor: %g \n",stand->type->landusetype,stand->frac,(data->irrig_stor + data->irrig_amount) * stand->frac);
-*/
+//    if(stand->type->landusetype!=WETLAND && stand->type->landusetype!=NATURAL && year>=1960)
+//      fprintf(stdout,"type: %d frac : %g irrig_stor: %g \n",stand->type->landusetype,stand->frac,(data->irrig_stor + data->irrig_amount) * stand->frac);
   }
-  balanceW=water_after-water_before-climate.prec+
+  balanceW=water_after-water_before-climate.prec-melt_all+
           ((cell->balance.atransp+cell->balance.aevap+cell->balance.ainterc+cell->balance.aevap_lake+cell->balance.aevap_res-cell->balance.airrig-cell->balance.aMT_water)-wfluxes_old)+cell->discharge.drunoff+
-          (exess_old-cell->balance.excess_water);
+          (exess_old-cell->balance.excess_water)+cell->lateral_water;
 
-  if(fabs(balanceW)>0.01)
-    fprintf(stdout,"W-BALANCE-ERROR in update_daily: day %d balanceW: %g  exess_old: %g balance.excess_water: %g water_after: %g water_before: %g aprec: %g flux_bal: %g  runoff %g  mfin-mfout : %g  \n",day,balanceW,exess_old,cell->balance.excess_water,
-        water_after,water_before,climate.prec,((cell->balance.atransp+cell->balance.aevap+cell->balance.ainterc+cell->balance.aevap_lake+cell->balance.aevap_res-cell->balance.airrig-cell->balance.aMT_water)-wfluxes_old),
-        cell->discharge.drunoff,((cell->discharge.mfout-cell->discharge.mfin)/cell->coord.area));
+  if(fabs(balanceW)>0.01 && year>=1940)
+    fprintf(stdout,"W-BALANCE-ERROR in update_daily: day %d balanceW: %g  exess_old: %g balance.excess_water: %g water_after: %g water_before: %g prec: %g melt: %g "
+        "atransp: %g  aevap %g ainterc %g aevap_lake  %g aevap_res: %g    airrig : %g aMT_water : %g flux_bal: %g runoff %g lateral_water %g mfin-mfout : %g dmass_lake : %g  dmassriver : %g  \n",day,balanceW,exess_old,cell->balance.excess_water,
+        water_after,water_before,climate.prec,melt_all,cell->balance.atransp,cell->balance.aevap,cell->balance.ainterc,cell->balance.aevap_lake,cell->balance.aevap_res,cell->balance.airrig,cell->balance.aMT_water,
+        ((cell->balance.atransp+cell->balance.aevap+cell->balance.ainterc+cell->balance.aevap_lake+cell->balance.aevap_res-cell->balance.airrig-cell->balance.aMT_water)-wfluxes_old),
+        cell->discharge.drunoff,cell->lateral_water,((cell->discharge.mfout-cell->discharge.mfin)/cell->coord.area),cell->discharge.dmass_lake/cell->coord.area,cell->discharge.dmass_river/cell->coord.area);
 
 #endif
 

@@ -75,7 +75,7 @@
   "canal_conveyance_eff_loam" : 0.75, /* open canal conveyance efficiency, soil type loam (10<=Ks<=20)*/
   "canal_conveyance_eff_clay" : 0.8,  /* open canal conveyance efficiency, soil type clay (Ks<10) */
   "pipe_conveyance_eff" : 0.95,       /* pressurized conveyance efficiency*/
-  "saturation_level_surf" : 1.0,      /* saturation level surface irrigation*/
+  "saturation_level_surf" : 1.2,      /* saturation level surface irrigation 1.0 */
   "saturation_level_sprink" : 0.55,   /* saturation level sprinkler irrigation*/
   "saturation_level_drip" : 0.05,     /* saturation level drip irrigation*/
   "drip_evap_reduction" : 0.6,        /* reduction of drip soil evap */

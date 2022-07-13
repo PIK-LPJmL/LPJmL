@@ -42,7 +42,7 @@ Real daily_grassland(Stand *stand,                /**< stand pointer */
                      Real melt,                   /**< melting water (mm/day) */
                      int npft,                    /**< number of natural PFTs */
                      int ncft,                    /**< number of crop PFTs   */
-                     int UNUSED(year),            /**< simulation year (AD) */
+                     int year,                    /**< simulation year (AD) */
                      Bool UNUSED(intercrop),      /**< enabled intercropping */
                      Real UNUSED(agrfrac),        /**< [in] total agriculture fraction (0..1) */
                      const Config *config         /**< LPJ config */
@@ -163,6 +163,7 @@ Real daily_grassland(Stand *stand,                /**< stand pointer */
       }
     }
   }
+  //if(year>=2002 && year<2004) fprintf(stdout,"daily_grasl: irrig_stor= %g irrig_amount= %g irrig_apply= %g rainmelt= %g\n\n ",data->irrigation.irrig_stor,data->irrigation.irrig_amount,irrig_apply,rainmelt);
 
   /* INTERCEPTION */
 #ifdef PERMUTE
@@ -181,9 +182,12 @@ Real daily_grassland(Stand *stand,                /**< stand pointer */
     intercep_stand_blue+=(climate->prec+irrig_apply*sprink_interc>epsilon) ? intercept*(irrig_apply*sprink_interc)/(climate->prec+irrig_apply*sprink_interc) : 0; /* blue intercept fraction */
     intercep_stand+=intercept;
   }
+
   irrig_apply-=intercep_stand_blue;
-  rainmelt-=(intercep_stand-intercep_stand_blue);
+  if(irrig_apply<0)
+    intercep_stand_blue+=irrig_apply;
   irrig_apply=max(0,irrig_apply);
+  rainmelt-=intercep_stand;
 
   /* rain-water harvesting*/
   if(!data->irrigation.irrigation && config->rw_manage && rainmelt<5)
@@ -530,10 +534,10 @@ Real daily_grassland(Stand *stand,                /**< stand pointer */
   stand->cell->balance.atransp+=transp;
   getoutput(output,INTERC,config)+=intercep_stand*stand->frac; /* Note: including blue fraction*/
   getoutput(output,INTERC_B,config)+=intercep_stand_blue*stand->frac;   /* blue interception and evap */
+  stand->cell->balance.ainterc+=(intercep_stand+intercep_stand_blue)*stand->frac;
 
   getoutput(output,EVAP,config)+=evap*stand->frac;
   stand->cell->balance.aevap+=evap*stand->frac;
-  stand->cell->balance.ainterc+=intercep_stand*stand->frac;
   getoutput(output,EVAP_B,config)+=evap_blue*stand->frac;   /* blue soil evap */
 #if defined(IMAGE) && defined(COUPLED)
   if(stand->cell->ml.image_data!=NULL)

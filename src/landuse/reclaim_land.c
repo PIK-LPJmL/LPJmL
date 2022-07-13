@@ -16,21 +16,25 @@
 #include "grass.h"
 #include "tree.h"
 
-static void remove_vegetation_copy(Soil *soil, /* soil pointer */
+void remove_vegetation_copy(Soil *soil, /* soil pointer */
                                    const Stand *stand, /* stand pointer */
                                    Cell *cell, /* cell pointer */
                                    Real standfrac, /* stand fraction (0..1) */
                                    Bool istimber,
+                                   Bool usefrac,
                                    const Config *config
                                   )
 {
   int p;
   Pft *pft;
-  Real nind;
+  Real nind, sfrac=1;
   Real ftimber; /* fraction harvested for timber */
   Stocks harvest;
   Stocks stocks;
   Stocks trad_biofuel;
+  if(usefrac==TRUE)
+    sfrac=standfrac;
+  //fprintf(stderr,"REMOVE VEG sfrac: %g standfrac: %g\n", sfrac,standfrac);
 #if defined IMAGE && defined COUPLED
   Bool tharvest=FALSE;
   if(istimber)
@@ -111,8 +115,17 @@ static void remove_vegetation_copy(Soil *soil, /* soil pointer */
 #endif
         getoutput(&cell->output,DEFOREST_EMIS,config)+=stocks.carbon*standfrac;
         cell->balance.deforest_emissions.carbon+=stocks.carbon*standfrac;
-        cell->balance.deforest_emissions.nitrogen+=stocks.nitrogen*(1-param.q_ash)*standfrac;
-        soil->NO3[0]+=stocks.nitrogen*param.q_ash;
+        if(stocks.nitrogen>0)
+        {
+          soil->NO3[0]+=stocks.nitrogen*param.q_ash;
+          cell->balance.deforest_emissions.nitrogen+=stocks.nitrogen*(1-param.q_ash)*standfrac;
+        }
+        else
+        {
+          cell->balance.deforest_emissions.nitrogen+=stocks.nitrogen*stand->frac;
+        }
+
+
       } /* if tree */
     } /* is timber */
 #if defined DEBUG_IMAGE && defined COUPLED
@@ -127,7 +140,7 @@ static void remove_vegetation_copy(Soil *soil, /* soil pointer */
     }
 #endif
     /* rest goes to litter */
-    litter_update(&soil->litter,pft,nind,config);
+    litter_update(&soil->litter,pft,nind*sfrac,config);
 #ifdef DEBUG_IMAGE_CELL
     if(ftimber>0 ||
       (cell->coord.lon-.1<-43.25 && cell->coord.lon+.1>-43.25 && cell->coord.lat-.1<-11.75 && cell->coord.lat+.1>-11.75)||
@@ -180,7 +193,7 @@ void reclaim_land(const Stand *stand1,Stand *stand2,Cell *cell,Bool istimber,int
   for(l=0;l<NSOILLAYER;l++)
     stand2->frac_g[l]=stand1->frac_g[l];
   remove_vegetation_copy(&stand2->soil,stand1,cell,stand2->frac,
-                         istimber,config);
+                         istimber,FALSE,config);
 }/* of 'reclaim_land' */
 
 /*
