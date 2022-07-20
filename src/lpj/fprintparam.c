@@ -50,7 +50,7 @@ void fprintparam(FILE *file,    /**< pointer to text file */
                "percthres:\t%g\n",
           param.k_litter10*NDAYYEAR,param.k_soil10.fast*NDAYYEAR,
           param.k_soil10.slow*NDAYYEAR,param.maxsnowpack,param.soildepth_evap,
-          param.soil_infil,param.soil_infil_litter,param.co2_p,
+          param.soil_infil,param.soil_infil_litter,param.co2_p,param.pch4,
           param.k,param.theta,param.alphac3,param.alphac4,
           param.r_growth,param.GM,param.ALPHAM,
           param.ko25,param.kc25,param.atmfrac,param.fastfrac,1-pow(1-param.bioturbate,NDAYYEAR),param.k_mort,

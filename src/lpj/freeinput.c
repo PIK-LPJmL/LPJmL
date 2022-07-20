@@ -20,7 +20,7 @@ void freeinput(Input input,          /**< Input struct */
                const Config *config  /**< LPJmL configuration */
               )
 {
-  freeclimate(input.climate,config);
+  freeclimate(input.climate,isroot(*config));
   freeextflow(input.extflow);
   freewateruse(input.wateruse,isroot(*config));
 #ifdef IMAGE

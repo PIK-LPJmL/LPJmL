@@ -89,7 +89,7 @@ int fwritecell(FILE *file,        /**< File pointer of binary file */
         break;
       if(fwrite(&grid[cell].ml.cropfrac_rf,sizeof(Real),1,file)!=1)
         break;
-      if(fwrite(&grid[cell].ml.cropfrac_wl,sizeof(Real),1,file)!=1)
+      if(fwrite(grid[cell].ml.cropfrac_wl,sizeof(Real),2,file)!=2)
         break;
       if(fwrite(&grid[cell].ml.cropfrac_ir,sizeof(Real),1,file)!=1)
         break;
