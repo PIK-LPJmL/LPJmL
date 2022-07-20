@@ -28,7 +28,7 @@ void light_tree(Litter *litter, /**< pointer to litter pools */
 #ifdef DEBUG3
   printf("light: %g %g %s %g\n",pft->fpc,pft->nind,pft->par->name,excess);
 #endif
-  if (pft->stand->prescribe_landcover!=LANDCOVERFPC || pft->stand->type->landusetype!=NATURAL || pft->stand->type->landusetype!=WETLAND)
+  if (pft->stand->prescribe_landcover!=LANDCOVERFPC || (pft->stand->type->landusetype!=NATURAL && pft->stand->type->landusetype!=WETLAND))
   {
     nind_kill=(excess<1e-20) ? 0 : pft->nind*(excess/pft->fpc);
     if(nind_kill>pft->nind)
