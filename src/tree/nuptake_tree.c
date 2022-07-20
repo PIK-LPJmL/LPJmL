@@ -113,7 +113,7 @@ Real nuptake_tree(Pft *pft,             /**< pointer to PFT data */
       }
     }
   }
-  if(config->fertilizer_input==AUTO_FERTILIZER && (pft->stand->type->landusetype!=NATURAL || pft->stand->type->landusetype!=WETLAND))
+  if(config->fertilizer_input==AUTO_FERTILIZER && pft->stand->type->landusetype!=NATURAL && pft->stand->type->landusetype!=WETLAND)
   {
     data=pft->stand->data;
     autofert_n=*n_plant_demand-(vegn_sum_tree(pft)+pft->bm_inc.nitrogen-tree->ind.heartwood.nitrogen*pft->nind);
