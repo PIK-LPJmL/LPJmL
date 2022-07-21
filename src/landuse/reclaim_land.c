@@ -122,7 +122,7 @@ void remove_vegetation_copy(Soil *soil, /* soil pointer */
         }
         else
         {
-          cell->balance.deforest_emissions.nitrogen+=stocks.nitrogen*stand->frac;
+          cell->balance.deforest_emissions.nitrogen+=stocks.nitrogen*standfrac;
         }
 
 

@@ -323,12 +323,12 @@ void update_wetland(Cell *cell,          /**< pointer to cell */
           end.nitrogen+=st.nitrogen*stand->frac;
           water_after+=soilwater(&stand->soil)*stand->frac;
         }
-        if (fabs(start.carbon - end.carbon)>0.001)
-          fprintf(stdout, "C-ERROR in update wetland 1: %g start:%g  ende:%g \n", start.carbon - end.carbon, start.carbon, end.carbon);
-        if (fabs(start.nitrogen - end.nitrogen)>0.001)
-          fprintf(stdout, "N-ERROR in update wetland 1: %g start:%g  ende:%g \n", start.nitrogen - end.nitrogen, start.nitrogen, end.nitrogen);
-        if (fabs(water_before - water_after)>0.001)
-          fprintf(stdout, "W-ERROR in update wetland 1: %g start:%g  ende:%g \n", water_before - water_after, water_before, water_after);
+        if (fabs(start.carbon - end.carbon)>0.1)
+          fprintf(stderr, "C-ERROR in update wetland 1: %g start:%g  ende:%g \n", start.carbon - end.carbon, start.carbon, end.carbon);
+        if (fabs(start.nitrogen - end.nitrogen)>0.1)
+          fprintf(stderr, "N-ERROR in update wetland 1: %g start:%g  ende:%g \n", start.nitrogen - end.nitrogen, start.nitrogen, end.nitrogen);
+        if (fabs(water_before - water_after)>0.1)
+          fprintf(stderr, "W-ERROR in update wetland 1: %g start:%g  ende:%g \n", water_before - water_after, water_before, water_after);
 #endif
          check_stand_fracs(cell,cell->lakefrac+cell->ml.reservoirfrac);
 
@@ -345,8 +345,8 @@ void update_wetland(Cell *cell,          /**< pointer to cell */
         {
           wetstand = getstand(cell->standlist, wetlandstandnum);
           //fprintf(stderr,"XXX update_wetland.c wants to shrink in %d.\n",year);
-          if(-delta_wetland>(wetstand->frac-crop_wetland))
-            delta_wetland = -(wetstand->frac-crop_wetland);
+          if(-delta_wetland>wetstand->frac)
+            delta_wetland = -wetstand->frac;
 
           //        mix wetland soil carbon into non-wetland
           frac = wetstand->frac;
@@ -558,12 +558,12 @@ void update_wetland(Cell *cell,          /**< pointer to cell */
     end.nitrogen+=st.nitrogen*stand->frac;
     water_after+=soilwater(&stand->soil)*stand->frac;
   }
-  if (fabs(start.carbon - end.carbon)>0.001)
-    fprintf(stdout, "C-ERROR in update wetland 2: %g start:%g  ende:%g \n", start.carbon - end.carbon, start.carbon, end.carbon);
-  if (fabs(start.nitrogen - end.nitrogen)>0.001)
-    fprintf(stdout, "N-ERROR in update wetland 2: %g start:%g  ende:%g \n", start.nitrogen - end.nitrogen, start.nitrogen, end.nitrogen);
-  if (fabs(water_before - water_after)>0.001)
-    fprintf(stdout, "W-ERROR in update wetland 1: %g start:%g  ende:%g \n", water_before - water_after, water_before, water_after);
+  if (fabs(start.carbon - end.carbon)>0.1)
+    fprintf(stderr, "C-ERROR in update wetland 2: %g start:%g  ende:%g \n", start.carbon - end.carbon, start.carbon, end.carbon);
+  if (fabs(start.nitrogen - end.nitrogen)>0.1)
+    fprintf(stderr, "N-ERROR in update wetland 2: %g start:%g  ende:%g \n", start.nitrogen - end.nitrogen, start.nitrogen, end.nitrogen);
+  if (fabs(water_before - water_after)>0.1)
+    fprintf(stderr, "W-ERROR in update wetland 2: %g start:%g  ende:%g \n", water_before - water_after, water_before, water_after);
 #endif
   free(present);
   free(position);

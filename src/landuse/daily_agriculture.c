@@ -262,7 +262,7 @@ Real daily_agriculture(Stand *stand,                /**< [inout] stand pointer *
   if(irrig_apply<0)
     intercep_stand_blue+=irrig_apply;
   irrig_apply=max(0,irrig_apply);
-  rainmelt-=intercep_stand;
+  rainmelt-=(intercep_stand-intercep_stand_blue);
 
   /* rain-water harvesting*/
   if(!data->irrigation && config->rw_manage && rainmelt<5)
@@ -458,7 +458,7 @@ Real daily_agriculture(Stand *stand,                /**< [inout] stand pointer *
 
   getoutput(output,EVAP,config)+=evap*stand->frac;
   stand->cell->balance.aevap+=evap*stand->frac;
-  stand->cell->balance.ainterc+=(intercep_stand+intercep_stand_blue)*stand->frac;
+  stand->cell->balance.ainterc+=intercep_stand*stand->frac;
   getoutput(output,EVAP_B,config)+=evap_blue*stand->frac;   /* blue soil evap */
 #if defined(IMAGE) && defined(COUPLED)
   if(stand->cell->ml.image_data!=NULL)
