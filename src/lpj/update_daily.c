@@ -60,7 +60,7 @@ void update_daily(Cell *cell,            /**< cell pointer           */
   Real ebul;
 #ifdef CHECK_BALANCE
   Real ende, start;
-  Real water_before=+cell->lateral_water+(cell->discharge.dmass_lake+cell->discharge.dmass_river)/cell->coord.area;
+  Real water_before=cell->lateral_water+(cell->discharge.dmass_lake+cell->discharge.dmass_river)/cell->coord.area;
   Real water_after=0;
   Real balanceW=0;
   Real wfluxes_old=cell->balance.atransp+cell->balance.aevap+cell->balance.ainterc+cell->balance.aevap_lake+cell->balance.aevap_res-cell->balance.airrig-cell->balance.aMT_water;
@@ -160,7 +160,7 @@ void update_daily(Cell *cell,            /**< cell pointer           */
     {
       snowrunoff=snow(&stand->soil,&climate.prec,&melt,
                       climate.temp,&temp_bs,&evap)*stand->frac;
-      cell->discharge.drunoff+=snowrunoff*stand->frac;
+      cell->discharge.drunoff+=snowrunoff;
       getoutput(&cell->output,EVAP,config)+=evap*stand->frac; /* evap from snow runoff*/
       cell->balance.aevap+=evap*stand->frac; /* evap from snow runoff*/
 #if defined IMAGE && defined COUPLED
@@ -187,7 +187,7 @@ void update_daily(Cell *cell,            /**< cell pointer           */
       for(l=1;l<NSOILLAYER;l++)
         stand->soil.temp[l]=stand->soil.temp[0];
       snowrunoff=snow_old(&stand->soil.snowpack,&climate.prec,&melt,climate.temp)*stand->frac;
-      cell->discharge.drunoff+=snowrunoff*stand->frac;
+      cell->discharge.drunoff+=snowrunoff;
     }
 
     foreachsoillayer(l)

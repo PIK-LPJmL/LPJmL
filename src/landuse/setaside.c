@@ -20,6 +20,7 @@
 void mixsoil(Stand *stand1,const Stand *stand2,int year,const Config *config)
 {
   int l,index,i;
+  String line;
   Real water1,water2;
   //Real absolute_water1[NSOILLAYER],absolute_water2;
   //Real absolute_ice1[NSOILLAYER],absolute_ice2;
@@ -45,6 +46,15 @@ void mixsoil(Stand *stand1,const Stand *stand2,int year,const Config *config)
             stand1->frac,stand2->frac);
     mixpool(stand1->soil.CH4[l],stand2->soil.CH4[l],stand1->frac,stand2->frac);
     mixpool(stand1->soil.O2[l],stand2->soil.O2[l],stand1->frac,stand2->frac);
+#ifdef SAFE
+      if(stand2->soil.NO3[l]<-epsilon || stand1->soil.NO3[l]<-epsilon)
+        fail(NEGATIVE_SOIL_NO3_ERR,TRUE,"setaside: Negative soil NO3-1=%g NO3-2=%gin layer %d in cell (%s)",
+            stand1->soil.NO3[l],stand2->soil.NO3[l],l,sprintcoord(line,&stand2->cell->coord));
+      if(stand2->soil.NH4[l]<-epsilon || stand1->soil.NH4[l]<-epsilon)
+        fail(NEGATIVE_SOIL_NH4_ERR,TRUE,"Negative soil NH4-1=%g  NH4-2=%gin layer %d in cell (%s)",
+            stand1->soil.NH4[l],stand2->soil.NH4[l],l,sprintcoord(line,&stand2->cell->coord));
+#endif
+
 
   }
   for(l=0;l<stand2->soil.litter.n;l++)
@@ -248,6 +258,7 @@ Bool setaside(Cell *cell,          /**< Pointer to LPJ cell */
   Pft *pft;
   Stocks flux_estab,stocks;
   Irrigation *data;
+  String line;
 
 #ifdef CHECK_BALANCE
   Real end=0;
@@ -262,6 +273,8 @@ Bool setaside(Cell *cell,          /**< Pointer to LPJ cell */
 //        fprintf(stdout,"name:%s vegc:%g\n", pft->par->name,vegc_sum(pft));
 //  }
 #endif
+  if(cropstand<0)
+    fail(NEGATIVE_STAND_FRAC_ERR,TRUE,"setaside: Negative crop stand frac =%g in cell (%s) before update",cropstand->frac,sprintcoord(line,&cell->coord));
 
   /* call tillage before */
   if(with_tillage && year >= config->till_startyear)

@@ -34,7 +34,7 @@ void irrig_amount(Stand *stand,        /**< pointer to non-natural stand */
   data->irrig_amount=0;
   nirrig=getnirrig(ncft,config);
 
-  if(data->irrigation)
+  if(data->irrigation && stand->pftlist.n>0)
   {
     foreachpft(pft,p,&stand->pftlist)
     {

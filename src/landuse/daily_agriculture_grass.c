@@ -286,7 +286,7 @@ Real daily_agriculture_grass(Stand *stand,                /**< stand pointer */
   getoutput(output,EVAP,config) += evap * stand->frac;
   stand->cell->balance.aevap+=evap*stand->frac;
   getoutput(output,INTERC,config) += intercep_stand * stand->frac;
-  stand->cell->balance.ainterc+=(intercep_stand+intercep_stand_blue)*stand->frac;
+  stand->cell->balance.ainterc+=intercep_stand*stand->frac;
 
   getoutput(output,EVAP_B,config) += evap_blue * stand->frac;   /* blue soil evap */
 

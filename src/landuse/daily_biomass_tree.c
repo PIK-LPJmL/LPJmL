@@ -227,7 +227,7 @@ Real daily_biomass_tree(Stand *stand,                /**< stand pointer */
   stand->cell->balance.atransp+=transp;
   getoutput(output,INTERC,config)+=intercep_stand*stand->frac; /* Note: including blue fraction*/
   getoutput(output,INTERC_B,config)+=intercep_stand_blue*stand->frac;   /* blue interception and evap */
-  stand->cell->balance.ainterc+=(intercep_stand+intercep_stand_blue)*stand->frac;
+  stand->cell->balance.ainterc+=intercep_stand*stand->frac;
 
   getoutput(output,EVAP,config)+=evap*stand->frac;
   stand->cell->balance.aevap+=evap*stand->frac;

@@ -14,7 +14,7 @@
 
 "param" :
 {
-  "k_litter10" : 0.5,        /* 0.3 k_litter10  (1/yr) */
+  "k_litter10" : 0.4,        /* 0.3 k_litter10  (1/yr) */
   "k_soil10" : { "fast" : 0.03, "slow":  0.001}, /* fast, slow k_soil10  (1/yr) */
   "init_soiln" : { "fast" : 3500.0, "slow":  3500.0}, /* initial fast and slow soil nitrogen (gN/m2) 5500*/
   "maxsnowpack": 20000.0,    /* max. snow pack (mm) */
