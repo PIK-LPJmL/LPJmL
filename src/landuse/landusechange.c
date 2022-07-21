@@ -180,8 +180,9 @@ void deforest(Cell *cell,          /**< pointer to cell */
   {
     foreachstand(stand,s,cell->standlist)
     {
-       fprintf(stderr,"type %d frac:%g diff:%g irrig: %d carbon:%g methan:%g\n",stand->type->landusetype,stand->frac,difffrac,irrig,standstocks(stand).carbon,
-            soilmethane(&stand->soil));
+       fprintf(stderr,"type %s frac:%g diff:%g irrig: %d carbon:%g methan:%g\n",
+               stand->type->name,stand->frac,difffrac,irrig,standstocks(stand).carbon,
+               soilmethane(&stand->soil));
     }
     fail(NO_NATURAL_STAND_ERR,TRUE,"No natural stand or wetland for deforest, difffrac=%g",difffrac);
   }
