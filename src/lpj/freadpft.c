@@ -45,7 +45,7 @@ Bool freadpft(FILE *file,            /**< pointer to binary file */
   freadreal1(&pft->aphen,swap,file);
   freadreal1(&pft->phen,swap,file);
   freadint1(&pft->inun_count, swap, file);
-  freadint1(&pft->inun_stress, swap, file);
+  freadreal1(&pft->inun_stress, swap, file);
   /* read class-dependent PFT variables */
   if(pft->par->fread(file,pft,double_harvest,swap))
     return TRUE;

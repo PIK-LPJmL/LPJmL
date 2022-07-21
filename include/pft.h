@@ -219,7 +219,7 @@ typedef struct Pft
   Real nleaf;            /**< nitrogen in leaf (gN/m2) */
   Real vscal;            /**< nitrogen stress scaling factor for allocation, used as mean for trees and grasses, initialized daily for crops */
   Real nlimit;
-  Bool inun_stress;
+  Real inun_stress;
   int inun_count;
   Real npp_bnf;
 #ifdef DAILY_ESTABLISHMENT
