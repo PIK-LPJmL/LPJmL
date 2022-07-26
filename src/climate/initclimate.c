@@ -382,15 +382,6 @@ Climate *initclimate(const Cell grid[],   /**< LPJ grid */
         freeclimate(climate,isroot(*config));
         return NULL;
       }
-      if(readclimate(&climate->file_lightning,climate->data.lightning,0,climate->file_lightning.scalar,grid,climate->file_lightning.firstyear,config))
-      {
-        name=getrealfilename(&config->lightning_filename);
-        fprintf(stderr,"ERROR192: Cannot read lightning from '%s'.\n",name);
-        free(name);
-        freeclimate(climate,isroot(*config));
-        return NULL;
-      }
-      closeclimatefile(&climate->file_lightning,isroot(*config));
     }
   }
   if(config->with_radiation)

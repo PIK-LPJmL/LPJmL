@@ -390,7 +390,7 @@ Bool filesexist(Config config, /**< LPJmL configuration */
       bad+=checkclmfile(&config,&config.ignition_filename,NULL,TRUE);
     else
     {
-      bad+=checkdatafile(&config,&config.lightning_filename,NULL);
+      bad+=checkclmfile(&config,&config.lightning_filename,"1/day/hectare",FALSE);
       bad+=checkinputfile(&config,&config.human_ignition_filename,NULL,0);
     }
   }

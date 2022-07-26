@@ -61,7 +61,7 @@ Bool getclimate(Climate *climate,    /**< pointer to climate data */
 {
   char *name;
   Real *wet;
-  int i,index,year_climate,year_depos;
+  int i,index,year_climate,year_depos,year_lightning;
   Bool rc;
   if(config->const_climate)
     year_climate=climate->firstyear+(year-config->firstyear) % 30;
@@ -101,6 +101,26 @@ Bool getclimate(Climate *climate,    /**< pointer to climate data */
       {
         name=getrealfilename(&config->tmax_filename);
         fprintf(stderr,"ERROR131: Cannot read tmax of year %d from '%s'.\n",
+                year_climate,name);
+        free(name);
+      }
+      return TRUE;
+    }
+  }
+  if(climate->data.lightning!=NULL)
+  {
+    if(year_climate<climate->file_lightning.firstyear)
+      year_lightning=climate->file_lightning.firstyear;
+    else if(year_climate>=climate->file_lightning.firstyear+climate->file_lightning.nyear)
+      year_lightning=climate->file_lightning.firstyear+climate->file_lightning.nyear-1;
+    else
+      year_lightning=year_climate;
+    if(readclimate(&climate->file_lightning,climate->data.lightning,0,climate->file_lightning.scalar,grid,year_lightning,config))
+    {
+      if(isroot(*config))
+      {
+        name=getrealfilename(&config->lightning_filename);
+        fprintf(stderr,"ERROR131: Cannot read lightning of year %d from '%s'.\n",
                 year_climate,name);
         free(name);
       }
