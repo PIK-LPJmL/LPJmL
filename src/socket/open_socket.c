@@ -44,11 +44,13 @@ Socket *open_socket(int port, /* port of TCP/IP connection */
   WORD version;
   WSADATA data;
   version=MAKEWORD(1,1);
+  timing=0;
   if(WSAStartup(version,&data))
     return NULL;
 #else
   int my_socket;
 #endif
+  timing=0;
   if(isinvalid_socket(my_socket=socket(AF_INET,SOCK_STREAM,0)))
   {
 #ifdef _WIN32

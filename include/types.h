@@ -175,6 +175,7 @@ extern Bool fscantimestep(LPJfile *,int *,Verbosity);
 extern char *getrealfilename(const Filename *);
 extern Bool parse_json(FILE *,LPJfile *,char *,Verbosity);
 extern Bool isdir(const char *);
+extern double mrun(void);
 #ifdef WITH_FPE
 extern void enablefpe(void);
 #endif

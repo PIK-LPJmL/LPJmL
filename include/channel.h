@@ -22,6 +22,8 @@
 #include <winsock.h> /* required for definition of SOCKET */
 #endif
 
+extern double timing; /**< stores time spent in socket I/O (sec) */
+
 /* Definition of datatype */
 
 typedef struct

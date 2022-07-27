@@ -45,6 +45,7 @@ Socket *connecttdt_socket(const char *hostname, /**< host name */
   SOCKET my_socket;
   WSADATA data;
   version=MAKEWORD(1,1);
+  timing=0;
   if(WSAStartup(version,&data))
   {
     fprintf(stderr,"ERROR301: Cannot start socket, rc=%d\n",WSAGetLastError());
@@ -53,6 +54,7 @@ Socket *connecttdt_socket(const char *hostname, /**< host name */
 #else
   int my_socket;
 #endif
+  timing=0;
   if(isinvalid_socket(my_socket=socket(AF_INET,SOCK_STREAM,0)))
   {
 #ifdef _WIN32

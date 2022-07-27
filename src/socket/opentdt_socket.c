@@ -28,6 +28,8 @@
 #include "types.h"
 #include "channel.h"
 
+double timing; /**< stores time spent in socket I/O (sec) */
+
 Socket *opentdt_socket(int port, /* port of TCP/IP connection */
                        int wait  /* maximum time for connection (sec)
                                     if zero unlimited */
@@ -45,6 +47,7 @@ Socket *opentdt_socket(int port, /* port of TCP/IP connection */
   WORD version;
   WSADATA data;
   SOCKET my_socket;
+  timing=0;
   version=MAKEWORD(1,1);
   if(WSAStartup(version,&data))
   {
