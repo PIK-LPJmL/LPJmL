@@ -28,7 +28,9 @@
 #include "types.h"
 #include "channel.h"
 
+#ifdef USE_TIMING
 double timing; /**< stores time spent in socket I/O (sec) */
+#endif
 
 Socket *opentdt_socket(int port, /* port of TCP/IP connection */
                        int wait  /* maximum time for connection (sec)
@@ -47,7 +49,9 @@ Socket *opentdt_socket(int port, /* port of TCP/IP connection */
   WORD version;
   WSADATA data;
   SOCKET my_socket;
+#ifdef USE_TIMING
   timing=0;
+#endif
   version=MAKEWORD(1,1);
   if(WSAStartup(version,&data))
   {
@@ -57,6 +61,9 @@ Socket *opentdt_socket(int port, /* port of TCP/IP connection */
 #else
   int my_socket;
   socklen_t len;
+#ifdef USE_TIMING
+  timing=0;
+#endif
 #endif
   if(isinvalid_socket(my_socket=socket(AF_INET,SOCK_STREAM,0)))
   {

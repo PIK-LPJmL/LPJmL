@@ -259,9 +259,11 @@ int main(int argc,char **argv)
            config.total,(int)(tend-tstart),
            (double)(tend-tstart)/config.total/max(year-config.firstyear+
                                                    config.nspinup,1));
+#ifdef USE_TIMING
     if(iscoupled(config))
       printf("Time spent in communication to %s model: %.2g sec.\n",
              config.coupled_model,timing);
+#endif
   }
 #if defined IMAGE && defined COUPLED
   if(config.sim_id==LPJML_IMAGE)

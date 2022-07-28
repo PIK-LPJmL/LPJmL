@@ -24,8 +24,10 @@
 Bool read_socket(Socket *socket,void *data,int n)
 {
   int i,j;
+#ifdef USE_TIMING
   double tstart,tend;
   tstart=mrun();
+#endif
   i=n;
   do
   {
@@ -34,7 +36,9 @@ Bool read_socket(Socket *socket,void *data,int n)
       return TRUE;
     i-=j;
   }while(i);
+#ifdef USE_TIMING
   tend=mrun();
   timing+=tend-tstart;
+#endif
   return FALSE;
 } /* of 'read_socket' */

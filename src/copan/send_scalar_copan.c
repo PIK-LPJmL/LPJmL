@@ -24,7 +24,9 @@ Bool send_scalar_copan(int index,           /**< index of output stream */
                        const Config *config /**< LPJ configuration */
                       )                     /** \return TRUE on error */
 {
+#if COPAN_COUPLER_VERSION == 4
   int date=0;
+#endif
   send_token_copan(PUT_DATA,index,config);
   writeint_socket(config->socket,&year,1);
 #if COPAN_COUPLER_VERSION == 4

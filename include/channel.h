@@ -22,7 +22,9 @@
 #include <winsock.h> /* required for definition of SOCKET */
 #endif
 
+#ifdef USE_TIMING
 extern double timing; /**< stores time spent in socket I/O (sec) */
+#endif
 
 /* Definition of datatype */
 
