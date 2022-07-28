@@ -22,7 +22,9 @@ Bool receive_scalar_copan(int index,           /**< index of input stream */
                           const Config *config /**< LPJmL configuration */
                          )                     /** \return TRUE on error */
 {
+#if COPAN_COUPLER_VERSION == 4
   int rc;
+#endif
   if(isroot(*config))
   {
     send_token_copan(GET_DATA,index,config);

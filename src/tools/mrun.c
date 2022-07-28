@@ -1,8 +1,6 @@
 /**************************************************************************************/
 /**                                                                                \n**/
-/**              w  r  i  t  e  _  s  o  c  k  e  t  .  c                          \n**/
-/**                                                                                \n**/
-/**     Function writes bytes to socket                                            \n**/
+/**                        m  r  u  n  .  c                                        \n**/
 /**                                                                                \n**/
 /** (C) Potsdam Institute for Climate Impact Research (PIK), see COPYRIGHT file    \n**/
 /** authors, and contributors see AUTHORS file                                     \n**/
@@ -12,36 +10,16 @@
 /**                                                                                \n**/
 /**************************************************************************************/
 
-#include <stdlib.h>
 #include <stdio.h>
-#ifndef _WIN32
-#include <sys/types.h>
-#include <sys/socket.h>
-#endif
+#include <sys/time.h>
 #include "types.h"
-#include "channel.h"
 
-Bool write_socket(Socket *socket,const void *buffer,int n)
+#define uSecScale 1.0e-6 /* Microsecond conversions */
+
+double mrun(void) /** \return time in sec with microsecond resolution */
 {
-#ifdef USE_TIMING
-  double tstart,tend;
-#endif
-  int i,j;
-  i=0;
-#ifdef USE_TIMING
-  tstart=mrun();
-#endif
-  do
-  {
-    j=send(socket->channel,(char *)buffer+i,n,0);
-    if(j<0)
-      return TRUE;
-    i+=j;
-    n-=j;
-  }while(n);
-#ifdef USE_TIMING
-  tend=mrun();
-  timing+=tend-tstart;
-#endif
-  return FALSE;
-} /* of 'write_socket' */
+  struct timeval tp;
+  struct timezone tzp;
+  gettimeofday(&tp,&tzp);
+  return  (((double)tp.tv_usec) * uSecScale) + (double)tp.tv_sec;
+} /* of 'mrun' */

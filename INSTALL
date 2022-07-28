@@ -164,6 +164,7 @@ USE_NETCDF          enable NetCDF input/output
 USE_NETCDF4         enable NetCDF version 4 input/output
 USE_RAND48          use drand48() random number generator
 USE_UDUNITS         enable unit conversion in NetCDF files
+USE_TIMING          enables timing for socket I/O
 WITH_FIRE_MOISTURE  enable moisture dependent fire emissions
 WITH_FPE            floating point exceptions are enabled for debugging purposes
 ------------------- ------------------------------------------------------------

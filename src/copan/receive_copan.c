@@ -31,7 +31,9 @@ Bool receive_copan(int index,           /**< index of input file */
   int *counts;
   int *offsets;
 #endif
+#if COPAN_COUPLER_VERSION == 4
   int rc;
+#endif
   if(isroot(*config))
   {
     send_token_copan(GET_DATA,index,config);
