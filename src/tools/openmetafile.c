@@ -73,6 +73,8 @@ void freemap(List *map)
   freelist(map);
 } /* of 'freemap' */
 
+#ifdef USE_JSON
+
 char *parse_json_metafile(LPJfile *lpjfile,   /**< pointer to JSON file */
                           char *s,            /**< first string of JSON file */
                           Header *header,     /**< pointer to file header */
@@ -260,6 +262,8 @@ char *parse_json_metafile(LPJfile *lpjfile,   /**< pointer to JSON file */
   lpjfile->file.file=file;
   return strdup(filename);
 } /* of 'parse_json_metafile' */
+
+#endif
 
 FILE *openmetafile(Header *header,       /**< pointer to file header */
                    List **map,           /**< map from json file or NULL */
