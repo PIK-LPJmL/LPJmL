@@ -298,8 +298,8 @@ FILE *openmetafile(Header *header,       /**< pointer to file header */
       break;
 #else
       if(isout)
-        printf(stderr,"ERROR229: JSON format not supported for metafile '%s' in this version of LPJmL.\n",
-               filename);
+        fprintf(stderr,"ERROR229: JSON format not supported for metafile '%s' in this version of LPJmL.\n",
+                filename);
       free(name);
       fclose(file.file.file);
       return NULL;
