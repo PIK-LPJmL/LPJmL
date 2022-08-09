@@ -111,7 +111,7 @@ Real area_burnt(Real *fire_durat,       /**< fire duration (min) */
           /* applying maximum fire size condition */
           if(ismaxfire && M_PI_4/length_breath_ratio * fire.dbf*fire.dbf*1e-4 > stand->cell->max_firesize)
           {
-            burnt_area_sum += max(0,stand->cell->max_firesize - fire.burnt_area);
+            burnt_area_sum += max(0,fire.num_fires*stand->cell->max_firesize - fire.burnt_area);
             fire.burnt_area=fire.num_fires*stand->cell->max_firesize;
           }
           else
