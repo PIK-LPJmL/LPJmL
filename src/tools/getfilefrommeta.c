@@ -43,8 +43,8 @@ char *getfilefrommeta(const char *filename, /**< name of metafile */
       break;
 #else
       if(isout)
-        printf(stderr,"ERROR229: JSON format not supported for metafile '%s' in this version of LPJmL.\n",
-               filename);
+        fprintf(stderr,"ERROR229: JSON format not supported for metafile '%s' in this version of LPJmL.\n",
+                filename);
       free(name);
       fclose(file.file.file);
       return NULL;
