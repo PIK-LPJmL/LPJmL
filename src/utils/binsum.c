@@ -14,18 +14,23 @@
 
 #include "lpj.h"
 
-#define USAGE "Usage: %s [-clm] [-nitem n] [-nsum n] [-month|day] [-swap] [-mean] [gridfile] binfile sumfile\n"
+#define USAGE "Usage: %s [-clm] [-nitem n] [-nsum n] [-month|day] [-swap] [-mean] [-floatgrid] [-metafile] [gridfile] binfile sumfile\n"
 
 int main(int argc,char **argv)
 {
   FILE *file,*out;
   float *data;
   float *data_sum;
+  size_t offset;
   int i,j,ngrid,iarg,nitem,nsum,nyear,version;
   char *endptr;
+  char *map_name=BAND_NAMES;
+  char *arglist;
+  char *out_json;
+  List *map=NULL;
   Header header;
-  Bool swap,mean,isclm;
-  swap=mean=isclm=FALSE;
+  Bool swap,mean,isclm,floatgrid,ismeta;
+  swap=mean=isclm=floatgrid=ismeta=FALSE;
   nitem=1;
   nsum=NMONTH;
   for(iarg=1;iarg<argc;iarg++)
@@ -33,8 +38,12 @@ int main(int argc,char **argv)
     {
       if(!strcmp(argv[iarg],"-swap"))
         swap=TRUE;
+      else if(!strcmp(argv[iarg],"-floatgrid"))
+        floatgrid=TRUE;
       else if(!strcmp(argv[iarg],"-clm"))
         isclm=TRUE;
+      else if(!strcmp(argv[iarg],"-metafile"))
+        ismeta=TRUE;
       else if(!strcmp(argv[iarg],"-mean"))
         mean=TRUE;
       else if(!strcmp(argv[iarg],"-nitem"))
@@ -90,13 +99,13 @@ int main(int argc,char **argv)
     }
     else
       break;
-  if(argc<iarg+((isclm) ? 2 : 3))
+  if(argc<iarg+((isclm || ismeta) ? 2 : 3))
   {
     fprintf(stderr,"Error: Missing argument(s).\n"
             USAGE,argv[0]);
     return EXIT_FAILURE;
   }
-  if(!isclm)
+  if(!isclm && !ismeta)
   {
     file=fopen(argv[iarg],"rb");
     if(file==NULL)
@@ -105,7 +114,10 @@ int main(int argc,char **argv)
               strerror(errno));
       return EXIT_FAILURE;
     }
-    ngrid=getfilesizep(file)/sizeof(short)/2;
+    if(floatgrid)
+      ngrid=getfilesizep(file)/sizeof(float)/2;
+    else
+      ngrid=getfilesizep(file)/sizeof(short)/2;
     if(ngrid==0)
     {
        fprintf(stderr,"Error: Number of grid cells in '%s' is zero.\n",argv[iarg]);
@@ -114,11 +126,14 @@ int main(int argc,char **argv)
     fclose(file);
     iarg++;
   }
-  file=fopen(argv[iarg],"rb");
-  if(file==NULL)
+  if(!ismeta)
   {
-    fprintf(stderr,"Error opening '%s': %s.\n",argv[iarg],strerror(errno));
-    return EXIT_FAILURE;
+    file=fopen(argv[iarg],"rb");
+    if(file==NULL)
+    {
+      fprintf(stderr,"Error opening '%s': %s.\n",argv[iarg],strerror(errno));
+      return EXIT_FAILURE;
+    }
   }
   out=fopen(argv[iarg+1],"wb");
   if(out==NULL)
@@ -139,6 +154,28 @@ int main(int argc,char **argv)
     nitem=header.nbands;
     if(getfilesizep(file)!=headersize(LPJOUTPUT_HEADER,version)+typesizes[header.datatype]*header.nyear*header.nstep*header.nbands*header.ncell)
       fprintf(stderr,"Warning: file size of '%s' does not match header.\n",argv[iarg]);
+    header.nstep=1;
+    fwriteheader(out,&header,LPJOUTPUT_HEADER,version);
+  }
+  else if(ismeta)
+  {
+    file=openmetafile(&header,&map,map_name,&swap,&offset,argv[iarg],TRUE);
+    if(file==NULL)
+      return EXIT_FAILURE;
+    if(header.order!=CELLSEQ)
+    {
+      fprintf(stderr,"Error: Order in '%s' must be cellseq, order ",argv[iarg]);
+      if(header.order>0 || header.order<=CELLSEQ)
+        fprintf(stderr,"%s",ordernames[header.order-1]);
+      else
+        fprintf(stderr,"%d",header.order);
+      fprintf(stderr," is not supported.\n.");
+      return EXIT_FAILURE;
+    }
+    ngrid=header.ncell;
+    nsum=header.nstep;
+    nyear=header.nyear*nsum;
+    nitem=header.nbands;
     header.nstep=1;
     fwriteheader(out,&header,LPJOUTPUT_HEADER,version);
   }
@@ -196,5 +233,24 @@ int main(int argc,char **argv)
   }
   fclose(file);
   fclose(out);
+  if(ismeta)
+  {
+    out_json=malloc(strlen(argv[iarg+1])+strlen(".json")+1);
+    if(out_json==NULL)
+    {
+      printallocerr("filename");
+      return EXIT_FAILURE;
+    }
+    strcat(strcpy(out_json,argv[iarg+1]),".json");
+    arglist=catstrvec(argv,argc);
+    file=fopen(out_json,"w");
+    if(file==NULL)
+    {
+      printfcreateerr(out_json);
+      return EXIT_FAILURE;
+    }
+    fprintjson(file,argv[iarg+1],arglist,&header,map,map_name,RAW,LPJOUTPUT_HEADER,FALSE,LPJOUTPUT_VERSION);
+    fclose(file);
+  }
   return EXIT_SUCCESS;
 } /* of 'main' */
