@@ -15,9 +15,9 @@
 #include "lpj.h"
 
 #ifdef USE_UDUNITS
-#define USAGE "Usage: %s [-v] [-units unit] [-var name] [-time name] [-o filename] [-scale factor] [-id s] [-version v] [-float] gridfile netcdffile ...\n"
+#define USAGE "Usage: %s [-v] [-units unit] [-var name] [-time name] [-o filename] [-scale factor] [-id s] [-version v] [-float] [-zero] gridfile netcdffile ...\n"
 #else
-#define USAGE "Usage: %s [-v] [-var name] [-o filename] [-scale factor] [-id s] [-version v] [-float] gridfile netcdffile ...\n"
+#define USAGE "Usage: %s [-v] [-var name] [-o filename] [-scale factor] [-id s] [-version v] [-float] [-zero] gridfile netcdffile ...\n"
 #endif
 
 #if defined(USE_NETCDF) || defined(USE_NETCDF4)
@@ -48,6 +48,7 @@ static Bool readclimate2(Climatefile *file,    /* climate data file */
                          float data[],         /* pointer to data read in */
                          int year,             /* year */
                          const Coord coords[], /* coordinates */
+                         Bool iszero,          /* set to zero if data is not found */
                          const Config *config  /* LPJ configuration */
                         )                      /* returns TRUE on error */
 {
@@ -211,9 +212,14 @@ static Bool readclimate2(Climatefile *file,    /* climate data file */
             fprintf(stderr,") ");
             printindex(i,file->time_step,file->var_len);
             fprintf(stderr,".\n");
-            free(f);
-            nc_close(file->ncid);
-            return TRUE;
+            if(iszero)
+              f[file->nlon*(i*file->nlat+offsets[index])+offsets[index+1]]=0;
+            else
+            {
+              free(f);
+              nc_close(file->ncid);
+              return TRUE;
+            }
           }
           else if(isnan(f[file->nlon*(i*file->nlat+offsets[index])+offsets[index+1]]))
           {
@@ -236,9 +242,14 @@ static Bool readclimate2(Climatefile *file,    /* climate data file */
             fprintf(stderr,") ");
             printindex(i,file->time_step,file->var_len);
             fprintf(stderr,".\n");
-            free(d);
-            nc_close(file->ncid);
-            return TRUE;
+            if(iszero)
+              d[file->nlon*(i*file->nlat+offsets[index])+offsets[index+1]]=0;
+            else
+            {
+              free(d);
+              nc_close(file->ncid);
+              return TRUE;
+            }
           }
           else if(isnan(d[file->nlon*(i*file->nlat+offsets[index])+offsets[index+1]]))
           {
@@ -251,7 +262,7 @@ static Bool readclimate2(Climatefile *file,    /* climate data file */
             nc_close(file->ncid);
             return TRUE;
           }
-          data[cell*size*file->var_len+i]=file->slope*d[file->nlon*(i*file->nlat+offsets[index])+offsets[index+1]]+file->intercept;
+          data[cell*size*file->var_len+i]=(float)(file->slope*d[file->nlon*(i*file->nlat+offsets[index])+offsets[index+1]]+file->intercept);
           break;
         case LPJ_INT:
           if(idata[file->nlon*(i*file->nlat+offsets[index])+offsets[index+1]]==file->missing_value.i)
@@ -261,11 +272,16 @@ static Bool readclimate2(Climatefile *file,    /* climate data file */
             fprintf(stderr,") ");
             printindex(i,file->time_step,file->var_len);
             fprintf(stderr,".\n");
-            free(idata);
-            nc_close(file->ncid);
-            return TRUE;
+            if(iszero)
+              idata[file->nlon*(i*file->nlat+offsets[index])+offsets[index+1]]=0;
+            else
+            {
+              free(idata);
+              nc_close(file->ncid);
+              return TRUE;
+            }
           }
-          data[cell*size*file->var_len+i]=file->slope*idata[file->nlon*(i*file->nlat+offsets[index])+offsets[index+1]]+file->intercept;
+          data[cell*size*file->var_len+i]=(float)(file->slope*idata[file->nlon*(i*file->nlat+offsets[index])+offsets[index+1]]+file->intercept);
           break;
         case LPJ_SHORT:
           if(s[file->nlon*(i*file->nlat+offsets[index])+offsets[index+1]]==file->missing_value.s)
@@ -275,11 +291,16 @@ static Bool readclimate2(Climatefile *file,    /* climate data file */
             fprintf(stderr,") ");
             printindex(i,file->time_step,file->var_len);
             fprintf(stderr,".\n");
-            free(s);
-            nc_close(file->ncid);
-            return TRUE;
+            if(iszero)
+              s[file->nlon*(i*file->nlat+offsets[index])+offsets[index+1]]=0;
+            else
+            {
+              free(s);
+              nc_close(file->ncid);
+              return TRUE;
+            }
           }
-          data[cell*size*file->var_len+i]=file->slope*s[file->nlon*(i*file->nlat+offsets[index])+offsets[index+1]]+file->intercept;
+          data[cell*size*file->var_len+i]=(float)(file->slope*s[file->nlon*(i*file->nlat+offsets[index])+offsets[index+1]]+file->intercept);
           break;
       } /* of 'switch' */
     }
@@ -318,7 +339,7 @@ int main(int argc,char **argv)
   FILE *file;
   int i,j,k,year,version;
   short *s;
-  Bool isfloat,verbose;
+  Bool isfloat,verbose,iszero;
   Time time;
   size_t var_len;
   char *id;
@@ -327,7 +348,7 @@ int main(int argc,char **argv)
   var=NULL;
   time_name=NULL;
   scale=1;
-  isfloat=verbose=FALSE;
+  isfloat=verbose=iszero=FALSE;
   outname="out.clm"; /* default file name for output */
   id=LPJ_CLIMATE_HEADER;
   version=LPJ_CLIMATE_VERSION;
@@ -392,6 +413,8 @@ int main(int argc,char **argv)
         isfloat=TRUE;
       else if(!strcmp(argv[i],"-v"))
         verbose=TRUE;
+      else if(!strcmp(argv[i],"-zero"))
+        iszero=TRUE;
       else if(!strcmp(argv[i],"-scale"))
       {
         if(argc==i+1)
@@ -555,7 +578,7 @@ int main(int argc,char **argv)
     var_len=climate.var_len;
     for(year=0;year<climate.nyear;year++)
     {
-      if(readclimate2(&climate,data,year,coords,&config))
+      if(readclimate2(&climate,data,year,coords,iszero,&config))
       {
         fprintf(stderr,"Error reading '%s' in year %d.\n",argv[j],year+climate.firstyear);
         return EXIT_FAILURE;
