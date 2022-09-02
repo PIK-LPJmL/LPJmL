@@ -210,6 +210,8 @@ int main(int argc,char **argv)
   header.firstcell=0;
   header.firstyear=0;
   header.nyear=1;
+  header.nstep=1;
+  header.timestep=1;
   if(isfloat)
   {
    header.scalar=1;
@@ -245,8 +247,8 @@ int main(int argc,char **argv)
         printcoord(grid_ref+index);
         printf(", distance=%g\n",dist_min);
       }
-      coord.lon=grid_ref[index].lon;
-      coord.lat=grid_ref[index].lat;
+      coord.lon=(float)grid_ref[index].lon;
+      coord.lat=(float)grid_ref[index].lat;
     }
     else if(verbose)
     {
