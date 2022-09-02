@@ -3,7 +3,7 @@
 cdf2clm \- convert NetCDF files into CLM files
 .SH SYNOPSIS
 .B cdf2clm
-[\-v] [\-scale factor] [\-units u] [\-var name] [\-time name] [\-id string] [\-version v] [\-float] [\-o clmfile] 
+[\-v] [\-scale factor] [\-units u] [\-var name] [\-time name] [\-id string] [\-version v] [\-float] [\-zero] [\-o clmfile]
 gridfile netcdffile ...
 .SH DESCRIPTION
 Program converts NetCDF input data into CLM input data.
@@ -17,10 +17,10 @@ scaling factor for CLM files. Default is one
 \-units u
 set unit to convert from  NetCDF file
 .TP
-\-var name 
+\-var name
 variable name in NetCDF file
 .TP3
-\-time name 
+\-time name
 name of time in NetCDF file, default is "time" or "TIME"
 .TP
 \-id string
@@ -31,6 +31,9 @@ version of clm header, default is 3
 .TP
 \-float
 write float values in clm file, default is short
+.TP
+\-zero
+write zero values in clm file if data is not found
 .TP
 .I -o clmfile
 filename of CLM data file written. Default is out.clm
