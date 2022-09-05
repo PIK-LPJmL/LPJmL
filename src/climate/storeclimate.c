@@ -126,7 +126,7 @@ Bool storeclimate(Climatedata *store,  /**< pointer to climate data to be stored
     store->nh4deposition=NULL;
   if(climate->data.lightning!=NULL)
   {
-    store->lightning=newvec(Real,climate->file_lightning.n);
+    store->lightning=newvec(Real,climate->file_lightning.n*nyear);
     checkptr(store->lightning);
   }
   else
