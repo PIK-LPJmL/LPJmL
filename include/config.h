@@ -131,6 +131,7 @@ struct config
   int fdi;
   char *pft_index;
   char *layer_index;
+  char *fuel_index;
   Bool crop_irrigation;
   int with_nitrogen;      /**< enable nitrogen cycle */
   Bool crop_resp_fix;      /**< with fixed crop respiration (TRUE/FALSE) */

@@ -25,10 +25,11 @@ static Real alpha[NFUELCLASS]={0.001,0.00005424,0.00001485,0};
 static Real SIGMA[NFUELCLASS]={66.0,3.58,0.98,0};
 
 
-void fuelload(const Stand *stand,
+void fuelload(const Stand *stand, /**< pointer to stand */
               Fuel *fuel,
               Livefuel *livefuel,
-              Real nesterov_accum /**< accumulated Nesterov index */
+              Real nesterov_accum, /**< accumulated Nesterov index */
+              const Config *config /**< LPJmL configuration */
              )
 
 {
@@ -59,8 +60,12 @@ void fuelload(const Stand *stand,
   } */
   /*TODO: simplify loop with new function litter_ag_tree.c!! */
   fuel_gBiomass[0]=c2biomass(litter_ag_grass(&stand->soil.litter)+litter_ag_tree(&stand->soil.litter,0));
+  getoutputindex(&stand->cell->output,FUEL,0,config)+=fuel_gBiomass[0];
   for (i=1; i<NFUELCLASS;++i) /* 1hr fuel consumption not included*/
+  {
     fuel_gBiomass[i]=c2biomass(litter_ag_tree(&stand->soil.litter,i));
+    getoutputindex(&stand->cell->output,FUEL,i,config)+=fuel_gBiomass[i];
+  }
   dead_fuel = c2biomass(litter_ag_sum_quick(&stand->soil.litter));
 
 
@@ -94,6 +99,7 @@ void fuelload(const Stand *stand,
     }
 
   }
+  getoutput(&stand->cell->output,LIVEGRASS,config)+=livegrass;
   fuel->char_net_fuel = net_fuel +(1.0-MINER_TOT)*livegrass*1e-3;  /*in kg biomass */
 
   /* Compute dry litter moisture for livegrass from soil moisture */

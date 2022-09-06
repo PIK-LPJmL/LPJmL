@@ -27,6 +27,7 @@
 "missing_value" : -1e32, /* missing value in NetCDF files */
 "pft_index" : "npft",    /* name of index variable for PFT output */
 "layer_index" : "layer", /* name of index variable for soil layer output */
+"fuel_index" : "fuelclass", /* name of index variable for fuel output */
 "compress_cmd" : "gzip -f", /* command for compression of output files */
 "compress_suffix" : ".gz",  /* file suffix for compressed output files */
 "json_suffix" : ".json",    /* file suffix for JSON metafiles */
@@ -61,6 +62,8 @@
   { "id" : SWC2, "name": "swc2", "timestep" : "monthly", "var" : "SWC2", "descr" : "fractional saturation of soil water content in layer 2", "unit" : "", "scale" : 1.0, "offset" : 0.0},
   { "id" : FIREC, "name": "firec", "timestep" : "annual", "var" : "FireC", "descr" : "fire carbon emission", "unit" : "gC/m2/yr", "scale" : 1.0, "offset" : 0.0},
   { "id" : FIREF, "name": "firef", "timestep" : "annual", "var" : "Firef", "descr" : "fire interval", "unit" : "yr", "scale" : 1.0, "offset" : 0.0},
+  { "id" : FUEL, "name": "fuel", "timestep" : "monthly", "var" : "fuel", "descr" : "class-specific fire fuel", "unit" : "g/m2", "scale" : 1.0, "offset" : 0.0},
+  { "id" : LIVEGRASS, "name": "livegrass", "timestep" : "monthly", "var" : "livegrass", "descr" : "live grass fuel", "unit" : "g/m2", "scale" : 1.0, "offset" : 0.0},
   { "id" : VEGC, "name": "vegc", "timestep" : "annual", "var" : "VegC", "descr" : "vegetation carbon", "unit" : "gC/m2", "scale" : 1.0, "offset" : 0.0},
   { "id" : SOILC, "name": "soilc", "timestep" : "annual", "var" : "SoilC", "descr" : "total soil carbon density", "unit" : "gC/m2", "scale" : 1.0, "offset" : 0.0},
   { "id" : LITC, "name": "litc", "timestep" : "annual", "var" : "LitC", "descr" : "litter carbon", "unit" : "gC/m2", "scale" : 1.0, "offset" : 0.0},

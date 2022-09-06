@@ -564,6 +564,9 @@ Bool fscanconfig(Config *config,    /**< LPJ configuration */
   fscanname(file,name,"layer_index");
   config->layer_index=strdup(name);
   checkptr(config->layer_index);
+  fscanname(file,name,"fuel_index");
+  config->fuel_index=strdup(name);
+  checkptr(config->fuel_index);
   config->outnames=fscanoutputvar(file,NOUT,verbose);
   if(config->outnames==NULL)
   {

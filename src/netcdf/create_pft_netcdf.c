@@ -42,7 +42,7 @@ Bool create_pft_netcdf(Netcdf *cdf,
 #if defined(USE_NETCDF) || defined(USE_NETCDF4)
   String s;
   time_t t;
-  int i,j,rc,nyear,imiss=MISSING_VALUE_INT,size;
+  int i,j,rc,nyear,imiss=MISSING_VALUE_INT,size,fuel[NFUELCLASS];
   short smiss=MISSING_VALUE_SHORT;
   float *lon,*lat,miss=config->missing_value,*layer;
   int *year,dim[4];
@@ -127,6 +127,9 @@ Bool create_pft_netcdf(Netcdf *cdf,
      layer[i]=(float)layerbound[i-1];
   }
   else layer=NULL;
+  if(index==FUEL)
+     for(i=0;i<NFUELCLASS;i++)
+       fuel[i]=i;
   for(i=0;i<array->nlon;i++)
     lon[i]=(float)(array->lon_min+i*config->resolution.lon);
   for(i=0;i<array->nlat;i++)
@@ -177,7 +180,12 @@ Bool create_pft_netcdf(Netcdf *cdf,
   else
     rc=nc_def_dim(cdf->ncid,TIME_DIM_NAME,nyear*n,&time_dim_id);
   error(rc);
-  rc=nc_def_dim(cdf->ncid,issoil(index) ? config->layer_index : config->pft_index,size,&pft_dim_id);
+  if(issoil(index))
+    rc=nc_def_dim(cdf->ncid,config->layer_index,size,&pft_dim_id);
+  else if(index==FUEL)
+    rc=nc_def_dim(cdf->ncid,config->fuel_index,size,&pft_dim_id);
+  else
+    rc=nc_def_dim(cdf->ncid,config->pft_index,size,&pft_dim_id);
   error(rc);
   rc=nc_def_dim(cdf->ncid,LAT_DIM_NAME,array->nlat,&lat_dim_id);
   error(rc);
@@ -194,6 +202,12 @@ Bool create_pft_netcdf(Netcdf *cdf,
     rc=nc_put_att_text(cdf->ncid,pft_var_id,"units",strlen("mm"),"mm");
     error(rc);
     rc=nc_put_att_text(cdf->ncid,pft_var_id,"long_name",strlen("soil depth"),"soil depth");
+  }
+  else if(index==FUEL)
+  {
+    rc=nc_def_var(cdf->ncid,"fuelclass",NC_INT,1,&pft_dim_id,&pft_var_id);
+    error(rc);
+    rc=nc_put_att_text(cdf->ncid,pft_var_id,"long_name",strlen("fuel class"),"fuel class");
   }
   else
   {
@@ -312,6 +326,11 @@ Bool create_pft_netcdf(Netcdf *cdf,
   if(issoil(index))
   {
     rc=nc_put_var_float(cdf->ncid,pft_var_id,layer);
+    error(rc);
+  }
+  else if(index==FUEL)
+  {
+    rc=nc_put_var_int(cdf->ncid,pft_var_id,fuel);
     error(rc);
   }
   else

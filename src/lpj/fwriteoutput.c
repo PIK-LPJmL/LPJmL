@@ -1045,6 +1045,8 @@ void fwriteoutput(Outputfile *output,  /**< output file array */
   writeoutputvar(WET_IMAGE,1);
   writeoutputarray(PERC,1);
   writeoutputarray(SOILTEMP,ndate1);
+  writeoutputarray(FUEL,ndate1);
+  writeoutputvar(LIVEGRASS,ndate1);
   writeoutputvar(SOILTEMP1,ndate1);
   writeoutputvar(SOILTEMP2,ndate1);
   writeoutputvar(SOILTEMP3,ndate1);

@@ -117,7 +117,7 @@
 #define NO_FERTILIZER 0
 #define FERTILIZER 1
 #define AUTO_FERTILIZER 2
-#define NOUT 364           /* number of output files */
+#define NOUT 366           /* number of output files */
 #define END -1              /* end marker for output files */
 #define GRIDBASED 1         /* pft-specific outputs scaled by stand->frac */
 #define PFTBASED 0          /* pft-specific outputs not scaled by stand->frac */
@@ -499,6 +499,8 @@
 #define STAND_SURFACE_FI 361
 #define NDAYFIRE 362
 #define MAX_FIRESIZE 363
+#define FUEL 364
+#define LIVEGRASS 365
 #define PFT_GCGP_COUNT 0
 #define NDAY_MONTH 1
 #define RANDOM_SEED 0

@@ -77,6 +77,13 @@ Bool fprintoutputjson(int index,           /**< index in outputvars array */
        fprintf(file,",%f",layerbound[p]);
      fprintf(file,"],\n");
    }
+   else if(config->outputvars[index].id==FUEL)
+   {
+     fprintf(file,"  \"" BAND_NAMES "\" : [0");
+     for(p=1;p<nbands;p++)
+       fprintf(file,",%d",p);
+     fprintf(file,"],\n");
+   }
    else
    {
      pftnames=createpftnames(config->outputvars[index].id,config->npft[GRASS]+config->npft[TREE],config->npft[CROP],config);

@@ -74,6 +74,8 @@ int outputsize(int index,     /**< output index */
       return config->nwft;
     case STAND_BURNTAREA: case STAND_FDI: case STAND_SURFACE_FI:
       return 4;
+    case FUEL:
+      return NFUELCLASS;
     default:
       return 1;
   } /* of 'switch' */
