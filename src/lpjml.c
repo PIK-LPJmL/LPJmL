@@ -205,7 +205,7 @@ int main(int argc,char **argv)
   rc=((grid=newgrid(&config,standtype,NSTANDTYPES,config.npft[GRASS]+config.npft[TREE],config.npft[CROP]))==NULL);
   failonerror(&config,rc,INIT_GRID_ERR,"Initialization of LPJ grid failed");
   
-  rc=initinput(&input,grid,config.npft[GRASS]+config.npft[TREE],&config);
+  rc=initinput(&input,config.npft[GRASS]+config.npft[TREE],&config);
   failonerror(&config,rc,INIT_INPUT_ERR,
               "Initialization of input data failed");
   if(config.check_climate)

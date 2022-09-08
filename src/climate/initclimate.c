@@ -60,11 +60,9 @@ static void initdata(Climate *climate)
   climate->data.nh4deposition=NULL;
 } /* of 'initdata' */
 
-Climate *initclimate(const Cell grid[],   /**< LPJ grid */
-                     const Config *config /**< pointer to LPJ configuration */
+Climate *initclimate(const Config *config /**< pointer to LPJ configuration */
                     )                     /** \return allocated climate data struct or NULL on error */
 {
-  char *name;
   Climate *climate;
   climate=new(Climate);
   if(climate==NULL)
