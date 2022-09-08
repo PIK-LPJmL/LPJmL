@@ -226,7 +226,7 @@ Real daily_natural(Stand *stand,                /**< [inout] stand pointer */
       getoutput(output,D_INTERC,config)=intercep_stand*stand->frac;
       /* only write to daily outputs if there are no values yet from the crop stand in order to record values from setaside stands */
       if(getoutput(output,D_NH4,config)==0 && getoutput(output,D_NO3,config)==0 && getoutput(output,D_NSOIL_FAST,config)==0 &&
-         (config->crop_irrigation && stand->type->landusetype==SETASIDE_IR) || (!config->crop_irrigation && stand->type->landusetype==SETASIDE_RF))
+         ((config->crop_irrigation && stand->type->landusetype==SETASIDE_IR) || (!config->crop_irrigation && stand->type->landusetype==SETASIDE_RF)))
         forrootsoillayer(l)
         {
           getoutput(output,D_NH4,config)+=stand->soil.NH4[l];

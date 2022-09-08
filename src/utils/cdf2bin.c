@@ -23,12 +23,12 @@
 #if defined(USE_NETCDF) || defined(USE_NETCDF4)
 #include <netcdf.h>
 
-static Bool readdata(Climatefile *file,    /* climate data file */
-                     FILE *bin,            /* pointer to output file */
-                     const Coord coords[], /* coordinates */
-                     Bool isbyte,
-                     const Config *config  /* LPJ configuration */
-                    )                      /* returns TRUE on error */
+static Bool readmydata(Climatefile *file,    /* climate data file */
+                       FILE *bin,            /* pointer to output file */
+                       const Coord coords[], /* coordinates */
+                       Bool isbyte,
+                       const Config *config  /* LPJ configuration */
+                      )                      /* returns TRUE on error */
 {
   int t,cell,rc,index,n,start;
   size_t i;
@@ -213,7 +213,7 @@ static Bool readdata(Climatefile *file,    /* climate data file */
   else
     free(s);
   return FALSE;
-} /* of 'readdata' */
+} /* of 'readmydata' */
 
 #endif
 
@@ -437,7 +437,7 @@ int main(int argc,char **argv)
         header.nyear+=data.nyear;
       }
     }
-    if(readdata(&data,file,grid,isbyte,&config))
+    if(readmydata(&data,file,grid,isbyte,&config))
     {
       fprintf(stderr,"Error reading '%s'.\n",argv[j]);
       return EXIT_FAILURE;

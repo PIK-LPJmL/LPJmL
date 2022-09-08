@@ -73,6 +73,8 @@ void freemap(List *map)
   freelist(map);
 } /* of 'freemap' */
 
+#ifdef USE_JSON
+
 char *parse_json_metafile(LPJfile *lpjfile,   /**< pointer to JSON file */
                           char *s,            /**< first string of JSON file */
                           Header *header,     /**< pointer to file header */
@@ -261,6 +263,8 @@ char *parse_json_metafile(LPJfile *lpjfile,   /**< pointer to JSON file */
   return strdup(filename);
 } /* of 'parse_json_metafile' */
 
+#endif
+
 FILE *openmetafile(Header *header,       /**< pointer to file header */
                    List **map,           /**< map from json file or NULL */
                    const char *map_name, /**< name of map or NULL */
@@ -298,8 +302,8 @@ FILE *openmetafile(Header *header,       /**< pointer to file header */
       break;
 #else
       if(isout)
-        printf(stderr,"ERROR229: JSON format not supported for metafile '%s' in this version of LPJmL.\n",
-               filename);
+        fprintf(stderr,"ERROR229: JSON format not supported for metafile '%s' in this version of LPJmL.\n",
+                filename);
       free(name);
       fclose(file.file.file);
       return NULL;

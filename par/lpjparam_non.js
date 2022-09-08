@@ -59,6 +59,7 @@
   "saturation_level_drip" : 0.05,     /* saturation level drip irrigation*/
   "drip_evap_reduction" : 0.6,        /* reduction of drip soil evap */
   "residues_in_soil" : 0.1,           /* minimum residues in soil*/
+  "residues_in_soil_notillage" : 0.1, /* minimum residues in soil before till_startyear (only if tilled) */
   "fburnt" : 0,                       /* fraction of trees burnt at deforestation */
   "ftimber" : 0,                      /* timber fraction at deforestation */
   "harvest_fast_frac" : 0.34,         /* fraction of harvested wood going to fast pools */
