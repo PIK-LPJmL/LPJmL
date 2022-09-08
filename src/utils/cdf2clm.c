@@ -228,9 +228,14 @@ static Bool readclimate2(Climatefile *file,    /* climate data file */
             fprintf(stderr,") ");
             printindex(i,file->time_step,file->var_len);
             fprintf(stderr,".\n");
-            free(f);
-            nc_close(file->ncid);
-            return TRUE;
+            if(iszero)
+              f[file->nlon*(i*file->nlat+offsets[index])+offsets[index+1]]=0;
+            else
+            {
+              free(f);
+              nc_close(file->ncid);
+              return TRUE;
+            }
           }
           data[cell*size*file->var_len+i]=(float)(file->slope*f[file->nlon*(i*file->nlat+offsets[index])+offsets[index+1]]+file->intercept);
           break;
@@ -258,9 +263,14 @@ static Bool readclimate2(Climatefile *file,    /* climate data file */
             fprintf(stderr,") ");
             printindex(i,file->time_step,file->var_len);
             fprintf(stderr,".\n");
-            free(d);
-            nc_close(file->ncid);
-            return TRUE;
+            if(iszero)
+              d[file->nlon*(i*file->nlat+offsets[index])+offsets[index+1]]=0;
+            else
+            {
+              free(d);
+              nc_close(file->ncid);
+              return TRUE;
+            }
           }
           data[cell*size*file->var_len+i]=(float)(file->slope*d[file->nlon*(i*file->nlat+offsets[index])+offsets[index+1]]+file->intercept);
           break;
