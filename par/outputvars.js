@@ -58,6 +58,7 @@
   { "id" : KS_NAT, "name": "ks_nat", "timestep" : "monthly", "var" : "ks_nat", "descr" : "hydraulic conductivity for natural vegetation", "unit" : "mm/h", "scale" : 1.0, "offset" : 0.0},
   { "id" : KS_GRASS, "name": "ks_grass", "timestep" : "monthly", "var" : "ks_grass", "descr" : "hydraulic conductivity for grassland", "unit" : "mm/h", "scale" : 1.0, "offset" : 0.0},
   { "id" : KS_AGR, "name": "ks_agr", "timestep" : "monthly", "var" : "ks_agr", "descr" : "hydraulic conductivity for agriculture", "unit" : "mm/h", "scale" : 1.0, "offset" : 0.0},
+  { "id" : LITTERMOIST, "name": "littermoist", "timestep" : "monthly", "var" : "littermoist", "descr" : "litter moisture", "unit" : "mm", "scale" : 1.0, "offset" : 0.0},
   { "id" : SWC1, "name": "swc1", "timestep" : "monthly", "var" : "SWC1", "descr" : "fractional saturation of soil water content in layer 1", "unit" : "", "scale" : 1.0, "offset" : 0.0},
   { "id" : SWC2, "name": "swc2", "timestep" : "monthly", "var" : "SWC2", "descr" : "fractional saturation of soil water content in layer 2", "unit" : "", "scale" : 1.0, "offset" : 0.0},
   { "id" : FIREC, "name": "firec", "timestep" : "annual", "var" : "FireC", "descr" : "fire carbon emission", "unit" : "gC/m2/yr", "scale" : 1.0, "offset" : 0.0},

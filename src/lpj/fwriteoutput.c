@@ -1053,6 +1053,7 @@ void fwriteoutput(Outputfile *output,  /**< output file array */
   writeoutputvar(SOILTEMP4,ndate1);
   writeoutputvar(SOILTEMP5,ndate1);
   writeoutputvar(SOILTEMP6,ndate1);
+  writeoutputvar(LITTERMOIST,ndate1);
   writeoutputvar(NUPTAKE,1);
   writeoutputvar(LEACHING,1);
   writeoutputvar(N2O_DENIT,1);
