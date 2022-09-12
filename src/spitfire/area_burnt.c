@@ -119,7 +119,7 @@ Real area_burnt(Real *fire_durat,       /**< fire duration (min) */
             burnt_area_sum += max(0,(fire.num_fires * M_PI_4/length_breath_ratio * fire.dbf*fire.dbf)*1e-4 - fire.burnt_area);
             fire.burnt_area = (fire.num_fires * M_PI_4/length_breath_ratio * fire.dbf*fire.dbf)*1e-4;
           }
-          *burnt_area_max=max(*burnt_area_max,fire.burnt_area/fire.num_fires);
+          *burnt_area_max=max(*burnt_area_max,(fire.num_fires>0) ? fire.burnt_area/fire.num_fires : 0.0);
         }
 #ifdef DEBUG
         if (fire.burnt_area>0)
