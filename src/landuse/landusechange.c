@@ -932,23 +932,26 @@ void landusechange(Cell *cell,          /**< pointer to cell */
       deforest(cell,difffrac,intercrop,npft,FALSE,i,ncft,year,minnatfrac_luc,config);  /*deforestation*/
     else if(difffrac<=-epsilon)
       regrowth(cell,difffrac,npft,i,ncft,year,config);        /*regrowth*/
-    /* other */
-    cultivation_type=OTHER_PASTURE;
-    irrigation=i;
-    s=findstand(cell->standlist,OTHERS,irrigation);
-    if(s!=NOT_FOUND)
+    if(!config->others_to_crop)
     {
-      stand=getstand(cell->standlist,s);
-      difffrac=stand->frac-grassfrac;
-      if(difffrac>epsilon)
-        grasslandreduction(cell,difffrac,intercrop,npft,s,stand,ncft,year,config);
-      else if(difffrac<-epsilon)
-        landexpansion(cell,difffrac,npft,stand,irrigation,cultivation_type,0,ncft,year,config);
-    }
-    else if(grassfrac>epsilon)
-    {
-      difffrac= -grassfrac;
-      landexpansion(cell,difffrac,npft,NULL,irrigation,cultivation_type,0,ncft,year,config);
+      /* other */
+      cultivation_type=OTHER_PASTURE;
+      irrigation=i;
+      s=findstand(cell->standlist,OTHERS,irrigation);
+      if(s!=NOT_FOUND)
+      {
+        stand=getstand(cell->standlist,s);
+        difffrac=stand->frac-grassfrac;
+        if(difffrac>epsilon)
+          grasslandreduction(cell,difffrac,intercrop,npft,s,stand,ncft,year,config);
+        else if(difffrac<-epsilon)
+          landexpansion(cell,difffrac,npft,stand,irrigation,cultivation_type,0,ncft,year,config);
+      }
+      else if(grassfrac>epsilon)
+      {
+        difffrac= -grassfrac;
+        landexpansion(cell,difffrac,npft,NULL,irrigation,cultivation_type,0,ncft,year,config);
+      }
     }
     /* Biomass plantations */
     cultivation_type=BIOMASS_TREE_PLANTATION;

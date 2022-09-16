@@ -517,21 +517,6 @@ Bool getlanduse(Landuse landuse,     /**< Pointer to landuse data */
 */
 /* END DEBUG */
 
-    if(config->others_to_crop)
-    {
-      if(grid[cell].coord.lat>30||grid[cell].coord.lat<-30)
-      {
-        grid[cell].ml.landfrac[0].crop[config->cft_temp]+=grid[cell].ml.landfrac[0].grass[0];
-        grid[cell].ml.landfrac[1].crop[config->cft_temp]+=grid[cell].ml.landfrac[1].grass[0];
-        grid[cell].ml.landfrac[0].grass[0]=grid[cell].ml.landfrac[1].grass[0]=0;
-      }
-      else
-      {
-        grid[cell].ml.landfrac[0].crop[config->cft_tropic]+=grid[cell].ml.landfrac[0].grass[0];
-        grid[cell].ml.landfrac[1].crop[config->cft_tropic]+=grid[cell].ml.landfrac[1].grass[0];
-        grid[cell].ml.landfrac[0].grass[0]=grid[cell].ml.landfrac[1].grass[0]=0;
-      }
-    }
     if(config->grassonly)
     {
       for(j=0; j<ncft; j++)

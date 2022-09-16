@@ -37,7 +37,7 @@ Real daily_agriculture(Stand *stand,                /**< [inout] stand pointer *
                        const Config *config         /**< [in] LPJ config */
                       )                             /** \return runoff (mm/day) */
 {
-  int p,l,nnat,nirrig;
+  int p,l,nnat,nirrig,index;
   Pft *pft;
   Real *gp_pft;         /**< pot. canopy conductance for PFTs & CFTs (mm/s) */
   Real gp_stand;               /**< potential stomata conductance  (mm/s) */
@@ -92,9 +92,10 @@ Real daily_agriculture(Stand *stand,                /**< [inout] stand pointer *
 
   nnat=getnnat(npft,config);
   nirrig=getnirrig(ncft,config);
-
+    
   foreachpft(pft,p,&stand->pftlist)
   {
+    index=(stand->type->landusetype==OTHERS) ? data->irrigation*nirrig+rothers(ncft) : pft->par->id-npft+data->irrigation*nirrig;
     crop=pft->data;
     /* kill crop at frost events */
     if(config->cropsheatfrost && climate->tmin<(-5))
@@ -131,19 +132,19 @@ Real daily_agriculture(Stand *stand,                /**< [inout] stand pointer *
       }
     }
     if(!isannual(PFT_NLEAF,config))
-      getoutputindex(output,PFT_NLEAF,nnat+pft->par->id-npft+data->irrigation*nirrig,config)=crop->ind.leaf.nitrogen;
+      getoutputindex(output,PFT_NLEAF,nnat+index,config)=crop->ind.leaf.nitrogen;
     if(!isannual(PFT_NLIMIT,config))
-      getoutputindex(output,PFT_NLIMIT,nnat+pft->par->id-npft+data->irrigation*nirrig,config)=pft->nlimit;
+      getoutputindex(output,PFT_NLIMIT,nnat+index,config)=pft->nlimit;
     if(!isannual(PFT_CLEAF,config))
-      getoutputindex(output,PFT_CLEAF,nnat+pft->par->id-npft+data->irrigation*nirrig,config)=crop->ind.leaf.carbon;
+      getoutputindex(output,PFT_CLEAF,nnat+index,config)=crop->ind.leaf.carbon;
     if(!isannual(PFT_NROOT,config))
-      getoutputindex(output,PFT_NROOT,nnat+pft->par->id-npft+data->irrigation*nirrig,config)=crop->ind.root.nitrogen;
+      getoutputindex(output,PFT_NROOT,nnat+index,config)=crop->ind.root.nitrogen;
     if(!isannual(PFT_CROOT,config))
-      getoutputindex(output,PFT_CROOT,nnat+pft->par->id-npft+data->irrigation*nirrig,config)=crop->ind.root.carbon;
+      getoutputindex(output,PFT_CROOT,nnat+index,config)=crop->ind.root.carbon;
     if(!isannual(PFT_VEGN,config))
-      getoutputindex(output,PFT_VEGN,nnat+pft->par->id-npft+data->irrigation*nirrig,config)=vegn_sum(pft)+pft->bm_inc.nitrogen;
+      getoutputindex(output,PFT_VEGN,nnat+index,config)=vegn_sum(pft)+pft->bm_inc.nitrogen;
     if(!isannual(PFT_VEGC,config))
-      getoutputindex(output,PFT_VEGC,nnat+pft->par->id-npft+data->irrigation*nirrig,config)=vegc_sum(pft);
+      getoutputindex(output,PFT_VEGC,nnat+index,config)=vegc_sum(pft);
 
     if(phenology_crop(pft,climate->temp,climate->tmax,daylength,npft,config))
     {
@@ -174,13 +175,13 @@ Real daily_agriculture(Stand *stand,                /**< [inout] stand pointer *
 #endif
         if(config->pft_output_scaled)
         {
-          getoutputindex(output, CFT_CONV_LOSS_EVAP ,pft->par->id-npft+data->irrigation*nirrig,config)-=(data->irrig_stor+data->irrig_amount)*(1/data->ec-1)*data->conv_evap*stand->frac;
-          getoutputindex(output, CFT_CONV_LOSS_DRAIN ,pft->par->id-npft+data->irrigation*nirrig,config)-=(data->irrig_stor+data->irrig_amount)*(1/data->ec-1)*(1-data->conv_evap)*stand->frac;
+          getoutputindex(output, CFT_CONV_LOSS_EVAP ,index,config)-=(data->irrig_stor+data->irrig_amount)*(1/data->ec-1)*data->conv_evap*stand->frac;
+          getoutputindex(output, CFT_CONV_LOSS_DRAIN ,index,config)-=(data->irrig_stor+data->irrig_amount)*(1/data->ec-1)*(1-data->conv_evap)*stand->frac;
         }
         else
         {
-          getoutputindex(output, CFT_CONV_LOSS_EVAP ,pft->par->id-npft+data->irrigation*nirrig,config)-=(data->irrig_stor+data->irrig_amount)*(1/data->ec-1)*data->conv_evap;
-          getoutputindex(output, CFT_CONV_LOSS_DRAIN ,pft->par->id-npft+data->irrigation*nirrig,config)-=(data->irrig_stor+data->irrig_amount)*(1/data->ec-1)*(1-data->conv_evap);
+          getoutputindex(output, CFT_CONV_LOSS_EVAP ,index,config)-=(data->irrig_stor+data->irrig_amount)*(1/data->ec-1)*data->conv_evap;
+          getoutputindex(output, CFT_CONV_LOSS_DRAIN ,index,config)-=(data->irrig_stor+data->irrig_amount)*(1/data->ec-1)*(1-data->conv_evap);
         }
         data->irrig_stor=0;
         data->irrig_amount=0;
@@ -225,7 +226,8 @@ Real daily_agriculture(Stand *stand,                /**< [inout] stand pointer *
       if(getnpft(&stand->pftlist)>0)
       {
         pft=getpft(&stand->pftlist,0);
-        if(config->double_harvest)
+        index=(stand->type->landusetype==OTHERS) ? data->irrigation*nirrig+rothers(ncft) : pft->par->id-npft+data->irrigation*nirrig;
+        if(stand->type->landusetype==AGRICULTURE && config->double_harvest)
         {
           crop=pft->data;
           if(config->pft_output_scaled)
@@ -236,9 +238,9 @@ Real daily_agriculture(Stand *stand,                /**< [inout] stand pointer *
         else
         {
           if(config->pft_output_scaled)
-            getoutputindex(output,CFT_AIRRIG,pft->par->id-npft+data->irrigation*nirrig,config)+=irrig_apply*stand->frac;
+            getoutputindex(output,CFT_AIRRIG,index,config)+=irrig_apply*stand->frac;
           else
-            getoutputindex(output,CFT_AIRRIG,pft->par->id-npft+data->irrigation*nirrig,config)+=irrig_apply;
+            getoutputindex(output,CFT_AIRRIG,index,config)+=irrig_apply;
         }
         if(pft->par->id==config->crop_index && data->irrigation==config->crop_irrigation)
           getoutput(output,D_IRRIG,config)=irrig_apply;
@@ -277,6 +279,7 @@ Real daily_agriculture(Stand *stand,                /**< [inout] stand pointer *
 
   foreachpft(pft,p,&stand->pftlist)
   {
+    index=(stand->type->landusetype==OTHERS) ? data->irrigation*nirrig+rothers(ncft) : pft->par->id-npft+data->irrigation*nirrig;
     cover_stand+=fpar(pft);
     /* calculate albedo and FAPAR of PFT */
     albedo_crop(pft, stand->soil.snowheight, stand->soil.snowfraction);
@@ -295,8 +298,8 @@ Real daily_agriculture(Stand *stand,                /**< [inout] stand pointer *
 
     if(gp_pft[getpftpar(pft,id)]>0.0)
     {
-      getoutputindex(output,PFT_GCGP_COUNT,nnat+pft->par->id-npft+data->irrigation*nirrig,config)++;
-      getoutputindex(output,PFT_GCGP,nnat+pft->par->id-npft+data->irrigation*nirrig,config)+=gc_pft/gp_pft[getpftpar(pft,id)];
+      getoutputindex(output,PFT_GCGP_COUNT,nnat+index,config)++;
+      getoutputindex(output,PFT_GCGP,nnat+index,config)+=gc_pft/gp_pft[getpftpar(pft,id)];
     }
     npp=npp_crop(pft,gtemp_air,gtemp_soil,gpp-rd-pft->npp_bnf,&negbm,wdf,config);
     pft->npp_bnf=0.0;
@@ -308,15 +311,15 @@ Real daily_agriculture(Stand *stand,                /**< [inout] stand pointer *
     getoutput(output,GPP,config)+=gpp*stand->frac;
     getoutput(output,FAPAR,config) += pft->fapar * stand->frac * (1.0/(1-stand->cell->lakefrac-stand->cell->ml.reservoirfrac));
     getoutput(output,WSCAL,config) += pft->fpc * pft->wscal * stand->frac * (1.0/(1-stand->cell->lakefrac-stand->cell->ml.reservoirfrac));
-    getoutputindex(output,CFT_FPAR,pft->par->id-npft+data->irrigation*nirrig,config)+=(fpar(pft)*stand->frac*(1.0/(1-stand->cell->lakefrac)))*(1-pft->albedo);
+    getoutputindex(output,CFT_FPAR,index,config)+=(fpar(pft)*stand->frac*(1.0/(1-stand->cell->lakefrac)))*(1-pft->albedo);
 
     if(config->pft_output_scaled)
-      getoutputindex(output,PFT_NPP,nnat+pft->par->id-npft+data->irrigation*nirrig,config)+=npp*stand->frac;
+      getoutputindex(output,PFT_NPP,nnat+index,config)+=npp*stand->frac;
     else
-      getoutputindex(output,PFT_NPP,nnat+pft->par->id-npft+data->irrigation*nirrig,config)+=npp;
-    getoutputindex(output,PFT_LAI,nnat+pft->par->id-npft+data->irrigation*nirrig,config)+=actual_lai_crop(pft);
+      getoutputindex(output,PFT_NPP,nnat+index,config)+=npp;
+    getoutputindex(output,PFT_LAI,nnat+index,config)+=actual_lai_crop(pft);
     crop=pft->data;
-    if(config->double_harvest)
+    if(stand->type->landusetype==AGRICULTURE && config->double_harvest)
     {
       crop->dh->lgp+=1;
       if(config->pft_output_scaled)
@@ -338,11 +341,12 @@ Real daily_agriculture(Stand *stand,                /**< [inout] stand pointer *
     }
     else
     {
-      getoutputindex(output,GROWING_PERIOD,pft->par->id-npft+data->irrigation*(ncft+NGRASS),config)+=1.;
-      getoutputindex(output,CFT_PET,pft->par->id-npft+data->irrigation*(ncft+NGRASS),config)+=eeq*PRIESTLEY_TAYLOR;
-      getoutputindex(output,CFT_TEMP,pft->par->id-npft+data->irrigation*(ncft+NGRASS),config)+= climate->temp >= 5 ? climate->temp : 0;
-      getoutputindex(output,CFT_PREC,pft->par->id-npft+data->irrigation*(ncft+NGRASS),config)+=climate->prec;
-      getoutputindex(output,CFT_SRAD,pft->par->id-npft+data->irrigation*(ncft+NGRASS),config)+=climate->swdown;
+      index=(stand->type->landusetype==OTHERS) ? data->irrigation*(ncft+NGRASS)+rothers(ncft) : pft->par->id-npft+data->irrigation*(npft+NGRASS);
+      getoutputindex(output,GROWING_PERIOD,index,config)+=1.;
+      getoutputindex(output,CFT_PET,index,config)+=eeq*PRIESTLEY_TAYLOR;
+      getoutputindex(output,CFT_TEMP,index,config)+= climate->temp >= 5 ? climate->temp : 0;
+      getoutputindex(output,CFT_PREC,index,config)+=climate->prec;
+      getoutputindex(output,CFT_SRAD,index,config)+=climate->swdown;
     }
     if(negbm)
     {
@@ -369,15 +373,16 @@ Real daily_agriculture(Stand *stand,                /**< [inout] stand pointer *
         }
 #endif
 
+        index=(stand->type->landusetype==OTHERS) ? data->irrigation*nirrig+rothers(ncft) : pft->par->id-npft+data->irrigation*nirrig;
         if(config->pft_output_scaled)
         {
-          getoutputindex(output, CFT_CONV_LOSS_EVAP ,pft->par->id-npft+nirrig,config)-=(data->irrig_stor+data->irrig_amount)*(1/data->ec-1)*data->conv_evap*stand->frac;
-          getoutputindex(output, CFT_CONV_LOSS_DRAIN ,pft->par->id-npft+nirrig,config)-=(data->irrig_stor+data->irrig_amount)*(1/data->ec-1)*(1-data->conv_evap)*stand->frac;
+          getoutputindex(output, CFT_CONV_LOSS_EVAP ,index,config)-=(data->irrig_stor+data->irrig_amount)*(1/data->ec-1)*data->conv_evap*stand->frac;
+          getoutputindex(output, CFT_CONV_LOSS_DRAIN ,index,config)-=(data->irrig_stor+data->irrig_amount)*(1/data->ec-1)*(1-data->conv_evap)*stand->frac;
         }
         else
         {
-          getoutputindex(output, CFT_CONV_LOSS_EVAP ,pft->par->id-npft+nirrig,config)-=(data->irrig_stor+data->irrig_amount)*(1/data->ec-1)*data->conv_evap;
-          getoutputindex(output, CFT_CONV_LOSS_DRAIN ,pft->par->id-npft+nirrig,config)-=(data->irrig_stor+data->irrig_amount)*(1/data->ec-1)*(1-data->conv_evap);
+          getoutputindex(output, CFT_CONV_LOSS_EVAP ,index,config)-=(data->irrig_stor+data->irrig_amount)*(1/data->ec-1)*data->conv_evap;
+          getoutputindex(output, CFT_CONV_LOSS_DRAIN ,index,config)-=(data->irrig_stor+data->irrig_amount)*(1/data->ec-1)*(1-data->conv_evap);
         }
 
         data->irrig_stor=0;
@@ -474,8 +479,11 @@ Real daily_agriculture(Stand *stand,                /**< [inout] stand pointer *
     cft_rm=0.0;
     forrootmoist(l)
       cft_rm+=pft->stand->soil.w[l]*pft->stand->soil.whcs[l]; /* absolute soil water content between wilting point and field capacity (mm) */
-    getoutputindex(output,NDAY_MONTH,pft->par->id-npft+data->irrigation*ncft,config)+=1; /* track number of growing season days in each month for calculating the mean in update_monthly.c */
-    getoutputindex(output,CFT_SWC,pft->par->id-npft+data->irrigation*ncft,config)+=cft_rm; /* no secondary output needed as monthly outputs are written even in double harvest situation */
+    if(stand->type->landusetype==AGRICULTURE)
+    {
+      getoutputindex(output,NDAY_MONTH,pft->par->id-npft+data->irrigation*ncft,config)+=1; /* track number of growing season days in each month for calculating the mean in update_monthly.c */
+      getoutputindex(output,CFT_SWC,pft->par->id-npft+data->irrigation*ncft,config)+=cft_rm; /* no secondary output needed as monthly outputs are written even in double harvest situation */
+    }
   }
 
   free(wet);
