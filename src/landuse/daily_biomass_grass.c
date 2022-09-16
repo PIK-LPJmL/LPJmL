@@ -248,6 +248,7 @@ Real daily_biomass_grass(Stand *stand,                /**< stand pointer */
       foreachpft(pft,p,&stand->pftlist)
       {
         grass=pft->data;
+        grasspar=pft->par->data;
         if (pft->bm_inc.carbon > 5.0|| day==NDAYYEAR)
         {
           turnover_grass(&stand->soil.litter,pft,(Real)grass->growing_days/NDAYYEAR,config);
