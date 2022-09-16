@@ -195,6 +195,7 @@ Bool fscanparam(LPJfile *file,       /**< File pointer to text file */
     fscanparamreal(&f,&param.sat_level[3],"saturation_level_drip");
     fscanparamreal01(&f,&param.drip_evap,"drip_evap_reduction");
     fscanparamreal01(&f,&param.residues_in_soil,"residues_in_soil");
+    fscanparamreal01(&f,&param.residues_in_soil_notillage,"residues_in_soil_notillage");
     if(config->with_nitrogen)
     {
       fscanparamreal(&f,&param.manure_cn,"manure_cn");

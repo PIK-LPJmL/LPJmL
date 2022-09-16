@@ -71,7 +71,7 @@
   "prescribe_landcover" : "no_landcover", /* NO_LANDCOVER, LANDCOVERFPC, LANDCOVEREST */
   "sowing_date_option" : "fixed_sdate",   /* NO_FIXED_SDATE, FIXED_SDATE, PRESCRIBED_SDATE */
   "sdate_fixyear" : 1970,               /* year in which sowing dates shall be fixed */
-  "intercrop" : true,                   /* intercrops on setaside */
+  "intercrop" : false,                  /* intercrops on setaside */
   "residue_treatment" : "fixed_residue_remove", /* residue options: READ_RESIDUE_DATA, NO_RESIDUE_REMOVE, FIXED_RESIDUE_REMOVE (uses param residues_in_soil) */ 
   "residues_fire" : false,              /* fire in residuals */
   "irrigation" : "lim",                 /* other options: "no", "lim", "pot", "all" */
@@ -103,7 +103,7 @@
   "crop_phu_option" : "new",
   "cropsheatfrost" : false,
   "double_harvest" : true,
-  "ma_bnf" : false,                    /* Biological N fixation using Cleveland, 1999 (false) or Ma et al., 2022 (true) approach */
+  "ma_bnf" : true,
 
 /*===================================================================*/
 /*  II. Input parameter section                                      */
