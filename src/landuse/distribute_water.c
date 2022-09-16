@@ -131,13 +131,21 @@ void distribute_water(Cell *cell,            /**< pointer to LPJ cell */
             case GRASSLAND:
               if(config->pft_output_scaled)
               {
-                getoutputindex(&cell->output,CFT_NIR,rothers(ncft)+nirrig,config)+=data->net_irrig_amount*cell->ml.landfrac[1].grass[0];
                 getoutputindex(&cell->output,CFT_NIR,rmgrass(ncft)+nirrig,config)+=data->net_irrig_amount*cell->ml.landfrac[1].grass[1];
               }
               else
               {
-                getoutputindex(&cell->output,CFT_NIR,rothers(ncft)+nirrig,config)+=data->net_irrig_amount;
                 getoutputindex(&cell->output,CFT_NIR,rmgrass(ncft)+nirrig,config)+=data->net_irrig_amount;
+              }
+              break;
+            case OTHERS:
+              if(config->pft_output_scaled)
+              {
+                getoutputindex(&cell->output,CFT_NIR,rothers(ncft)+nirrig,config)+=data->net_irrig_amount*cell->ml.landfrac[1].grass[0];
+              }
+              else
+              {
+                getoutputindex(&cell->output,CFT_NIR,rothers(ncft)+nirrig,config)+=data->net_irrig_amount;
               }
               break;
             case BIOMASS_GRASS:
