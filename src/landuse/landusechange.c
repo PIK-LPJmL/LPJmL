@@ -309,16 +309,19 @@ static void landexpansion(Cell *cell,            /* cell pointer */
           mixstand->type->newstand(mixstand);
           break;
        case OTHER_PASTURE:
-          for(p=0;p<npft;p++)
-            if(establish(cell->gdd[p],config->pftpar+p,&cell->climbuf) &&
-              config->pftpar[p].type==GRASS && config->pftpar[p].cultivation_type==NONE)
-            {
-              addpft(mixstand,config->pftpar+p,year,0,config);
-              n_est[config->pftpar[p].type]++;
-            }
-          mixstand->type->freestand(mixstand);
-          mixstand->type=&others_stand;
-          mixstand->type->newstand(mixstand);
+          if(!config->others_to_crop)
+          {
+            for(p=0;p<npft;p++)
+              if(establish(cell->gdd[p],config->pftpar+p,&cell->climbuf) &&
+                config->pftpar[p].type==GRASS && config->pftpar[p].cultivation_type==NONE)
+              {
+                addpft(mixstand,config->pftpar+p,year,0,config);
+                n_est[config->pftpar[p].type]++;
+              }
+            mixstand->type->freestand(mixstand);
+            mixstand->type=&others_stand;
+            mixstand->type->newstand(mixstand);
+          }
           break;
         case BIOMASS_TREE_PLANTATION:
           for(p=0;p<npft;p++)
@@ -546,7 +549,7 @@ void set_irrigsystem(Stand *stand,          /**< stand pointer */
       break;
     case GRASSLAND:
       if(data->irrigation)
-        if(data->irrig_system!=stand->cell->ml.irrig_system->grass[1]) 
+        if(data->irrig_system!=stand->cell->ml.irrig_system->grass[1])
         {
           /* empty irrig_stor and pay back conveyance losses before changing irrigation system */
           stand->cell->discharge.dmass_lake+=(data->irrig_stor+data->irrig_amount)*stand->cell->coord.area*stand->frac;
@@ -585,41 +588,44 @@ void set_irrigsystem(Stand *stand,          /**< stand pointer */
       if(!data->irrigation)
         data->irrig_system=NOIRRIG;
       break;
-     case OTHERS:
+    case OTHERS:
       if(data->irrigation)
         if(data->irrig_system!=stand->cell->ml.irrig_system->grass[0])
         {
-          /* empty irrig_stor and pay back conveyance losses before changing irrigation system */
-          stand->cell->discharge.dmass_lake+=(data->irrig_stor+data->irrig_amount)*stand->cell->coord.area*stand->frac;
-          stand->cell->balance.awater_flux-=(data->irrig_stor+data->irrig_amount)*stand->frac;
-          getoutput(output,STOR_RETURN,config)+=(data->irrig_stor+data->irrig_amount)*stand->frac;
-          stand->cell->discharge.dmass_lake+=(data->irrig_stor+data->irrig_amount)*(1/data->ec-1)*data->conv_evap*stand->cell->coord.area*stand->frac;
-          stand->cell->balance.awater_flux-=(data->irrig_stor+data->irrig_amount)*(1/data->ec-1)*data->conv_evap*stand->frac;
-          getoutput(output,CONV_LOSS_EVAP,config)-=(data->irrig_stor+data->irrig_amount)*(1/data->ec-1)*data->conv_evap*stand->frac;
-          stand->cell->balance.aconv_loss_evap-=(data->irrig_stor+data->irrig_amount)*(1/data->ec-1)*data->conv_evap*stand->frac;
-          getoutput(output,CONV_LOSS_DRAIN,config)-=(data->irrig_stor+data->irrig_amount)*(1/data->ec-1)*(1-data->conv_evap)*stand->frac;
-          stand->cell->balance.aconv_loss_drain-=(data->irrig_stor+data->irrig_amount)*(1/data->ec-1)*(1-data->conv_evap)*stand->frac;
-#if defined IMAGE && defined COUPLED
-          if(stand->cell->ml.image_data!=NULL)
+          if(!config->others_to_crop)
           {
-            stand->cell->ml.image_data->mirrwatdem[0]-=(data->irrig_stor+data->irrig_amount)*(1/data->ec-1)*stand->frac;
-            stand->cell->ml.image_data->mevapotr[0]-=(data->irrig_stor+data->irrig_amount)*(1/data->ec-1)*stand->frac;
-          }
+            /* empty irrig_stor and pay back conveyance losses before changing irrigation system */
+            stand->cell->discharge.dmass_lake+=(data->irrig_stor+data->irrig_amount)*stand->cell->coord.area*stand->frac;
+            stand->cell->balance.awater_flux-=(data->irrig_stor+data->irrig_amount)*stand->frac;
+            getoutput(output,STOR_RETURN,config)+=(data->irrig_stor+data->irrig_amount)*stand->frac;
+            stand->cell->discharge.dmass_lake+=(data->irrig_stor+data->irrig_amount)*(1/data->ec-1)*data->conv_evap*stand->cell->coord.area*stand->frac;
+            stand->cell->balance.awater_flux-=(data->irrig_stor+data->irrig_amount)*(1/data->ec-1)*data->conv_evap*stand->frac;
+            getoutput(output,CONV_LOSS_EVAP,config)-=(data->irrig_stor+data->irrig_amount)*(1/data->ec-1)*data->conv_evap*stand->frac;
+            stand->cell->balance.aconv_loss_evap-=(data->irrig_stor+data->irrig_amount)*(1/data->ec-1)*data->conv_evap*stand->frac;
+            getoutput(output,CONV_LOSS_DRAIN,config)-=(data->irrig_stor+data->irrig_amount)*(1/data->ec-1)*(1-data->conv_evap)*stand->frac;
+            stand->cell->balance.aconv_loss_drain-=(data->irrig_stor+data->irrig_amount)*(1/data->ec-1)*(1-data->conv_evap)*stand->frac;
+#if defined IMAGE && defined COUPLED
+            if(stand->cell->ml.image_data!=NULL)
+            {
+              stand->cell->ml.image_data->mirrwatdem[0]-=(data->irrig_stor+data->irrig_amount)*(1/data->ec-1)*stand->frac;
+              stand->cell->ml.image_data->mevapotr[0]-=(data->irrig_stor+data->irrig_amount)*(1/data->ec-1)*stand->frac;
+            }
 #endif
 
-          if(config->pft_output_scaled)
-          {
-            getoutputindex(output,CFT_CONV_LOSS_EVAP,rothers(ncft)+nirrig,config)-=(data->irrig_stor+data->irrig_amount)*(1/data->ec-1)*data->conv_evap*stand->cell->ml.landfrac[1].grass[0];
-            getoutputindex(output,CFT_CONV_LOSS_DRAIN,rothers(ncft)+nirrig,config)-=(data->irrig_stor+data->irrig_amount)*(1/data->ec-1)*(1-data->conv_evap)*stand->cell->ml.landfrac[1].grass[0];
-          }
-          else
-          {
-            getoutputindex(output,CFT_CONV_LOSS_EVAP,rothers(ncft)+nirrig,config)-=(data->irrig_stor+data->irrig_amount)*(1/data->ec-1)*data->conv_evap;
-            getoutputindex(output,CFT_CONV_LOSS_DRAIN,rothers(ncft)+nirrig,config)-=(data->irrig_stor+data->irrig_amount)*(1/data->ec-1)*(1-data->conv_evap);
-          }
+            if(config->pft_output_scaled)
+            {
+              getoutputindex(output,CFT_CONV_LOSS_EVAP,rothers(ncft)+nirrig,config)-=(data->irrig_stor+data->irrig_amount)*(1/data->ec-1)*data->conv_evap*stand->cell->ml.landfrac[1].grass[0];
+              getoutputindex(output,CFT_CONV_LOSS_DRAIN,rothers(ncft)+nirrig,config)-=(data->irrig_stor+data->irrig_amount)*(1/data->ec-1)*(1-data->conv_evap)*stand->cell->ml.landfrac[1].grass[0];
+            }
+            else
+            {
+              getoutputindex(output,CFT_CONV_LOSS_EVAP,rothers(ncft)+nirrig,config)-=(data->irrig_stor+data->irrig_amount)*(1/data->ec-1)*data->conv_evap;
+              getoutputindex(output,CFT_CONV_LOSS_DRAIN,rothers(ncft)+nirrig,config)-=(data->irrig_stor+data->irrig_amount)*(1/data->ec-1)*(1-data->conv_evap);
+            }
 
-          data->irrig_stor=0;
-          data->irrig_amount=0;
+            data->irrig_stor=0;
+            data->irrig_amount=0;
+          }
           /* change irrig_system */
           data->irrig_system=stand->cell->ml.irrig_system->grass[0];
         }
@@ -897,18 +903,14 @@ void landusechange(Cell *cell,          /**< pointer to cell */
   for(i=0;i<2;i++)
   {
     cropfrac= i==0 ? cell->ml.cropfrac_rf : cell->ml.cropfrac_ir;
-
     difffrac=crop_sum_frac(cell->ml.landfrac,ncft,config->nagtree,cell->ml.reservoirfrac+cell->lakefrac,i)-cropfrac; /* hb 8-1-09: added the resfrac, see function AND replaced to BEFORE next three lines */
-
-    grassfrac=cell->ml.landfrac[i].grass[1]; /* pasture */
-
-
     if(difffrac>=epsilon && cell->lakefrac+cell->ml.reservoirfrac+cell->ml.cropfrac_rf+cell->ml.cropfrac_ir<(1-epsilon))
       deforest(cell,difffrac,intercrop,npft,FALSE,i,ncft,year,minnatfrac_luc,config);  /*deforestation*/
     else if(difffrac<=-epsilon)
       regrowth(cell,difffrac,npft,i,ncft,year,config);        /*regrowth*/
 
     /* pasture */
+    grassfrac=cell->ml.landfrac[i].grass[1]; /* pasture */
     cultivation_type=PASTURE;
     irrigation=i;
     s=findstand(cell->standlist,GRASSLAND,irrigation);
@@ -926,14 +928,9 @@ void landusechange(Cell *cell,          /**< pointer to cell */
       difffrac= -grassfrac;
       landexpansion(cell,difffrac,npft,NULL,irrigation,cultivation_type,0,ncft,year,config);
     }
-    grassfrac=cell->ml.landfrac[i].grass[0]; /* other */
-
-    if(difffrac>=epsilon && cell->lakefrac+cell->ml.reservoirfrac+cell->ml.cropfrac_rf+cell->ml.cropfrac_ir<(1-epsilon))
-      deforest(cell,difffrac,intercrop,npft,FALSE,i,ncft,year,minnatfrac_luc,config);  /*deforestation*/
-    else if(difffrac<=-epsilon)
-      regrowth(cell,difffrac,npft,i,ncft,year,config);        /*regrowth*/
     if(!config->others_to_crop)
     {
+      grassfrac=cell->ml.landfrac[i].grass[0]; /* other */
       /* other */
       cultivation_type=OTHER_PASTURE;
       irrigation=i;
@@ -1044,7 +1041,7 @@ void landusechange(Cell *cell,          /**< pointer to cell */
   }
 
   foreachstand(stand,s,cell->standlist)
-    if(stand->type->landusetype==GRASSLAND || stand->type->landusetype==OTHERS || stand->type->landusetype==BIOMASS_GRASS || stand->type->landusetype==BIOMASS_TREE || stand->type->landusetype==AGRICULTURE_TREE || stand->type->landusetype==AGRICULTURE_GRASS || stand->type->landusetype==WOODPLANTATION) /* do not update for crops, must be done in sowing functions */
+    if(stand->type->landusetype==GRASSLAND || stand->type->landusetype==BIOMASS_GRASS || stand->type->landusetype==BIOMASS_TREE || stand->type->landusetype==AGRICULTURE_TREE || stand->type->landusetype==AGRICULTURE_GRASS || stand->type->landusetype==WOODPLANTATION || (!config->others_to_crop && stand->type->landusetype==OTHERS)) /* do not update for crops, must be done in sowing functions */
       set_irrigsystem(stand,0,npft,ncft,config); /* no CFT index needed for non-agricultural stands */
 
 #ifdef SAFE

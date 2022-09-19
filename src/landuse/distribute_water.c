@@ -89,7 +89,7 @@ void distribute_water(Cell *cell,            /**< pointer to LPJ cell */
   cell->discharge.withdrawal_gw=0.0;
 #endif
   foreachstand(stand,s,cell->standlist)
-    if(stand->type->landusetype==AGRICULTURE || stand->type->landusetype==GRASSLAND || stand->type->landusetype==BIOMASS_GRASS || stand->type->landusetype==BIOMASS_TREE || stand->type->landusetype==WOODPLANTATION || stand->type->landusetype==AGRICULTURE_TREE || stand->type->landusetype==AGRICULTURE_GRASS)
+    if(stand->type->landusetype==AGRICULTURE || stand->type->landusetype==GRASSLAND || stand->type->landusetype==OTHERS || stand->type->landusetype==BIOMASS_GRASS || stand->type->landusetype==BIOMASS_TREE || stand->type->landusetype==WOODPLANTATION || stand->type->landusetype==AGRICULTURE_TREE || stand->type->landusetype==AGRICULTURE_GRASS)
     {
       data=stand->data;
       data->irrig_event=FALSE;
@@ -225,17 +225,25 @@ void distribute_water(Cell *cell,            /**< pointer to LPJ cell */
           case GRASSLAND:
             if(config->pft_output_scaled)
             {
-              getoutputindex(&cell->output, CFT_CONV_LOSS_EVAP ,rothers(ncft)+nirrig,config)+=conv_loss*data->conv_evap*cell->ml.landfrac[1].grass[0];
               getoutputindex(&cell->output, CFT_CONV_LOSS_EVAP ,rmgrass(ncft)+nirrig,config)+=conv_loss*data->conv_evap*cell->ml.landfrac[1].grass[1];
-              getoutputindex(&cell->output, CFT_CONV_LOSS_DRAIN ,rothers(ncft)+nirrig,config)+=conv_loss*(1-data->conv_evap)*cell->ml.landfrac[1].grass[0];
               getoutputindex(&cell->output, CFT_CONV_LOSS_DRAIN ,rmgrass(ncft)+nirrig,config)+=conv_loss*(1-data->conv_evap)*cell->ml.landfrac[1].grass[1];
             }
             else
             {
-              getoutputindex(&cell->output, CFT_CONV_LOSS_EVAP ,rothers(ncft)+nirrig,config)+=conv_loss*data->conv_evap;
               getoutputindex(&cell->output, CFT_CONV_LOSS_EVAP ,rmgrass(ncft)+nirrig,config)+=conv_loss*data->conv_evap;
-              getoutputindex(&cell->output, CFT_CONV_LOSS_DRAIN ,rothers(ncft)+nirrig,config)+=conv_loss*(1-data->conv_evap);
               getoutputindex(&cell->output, CFT_CONV_LOSS_DRAIN ,rmgrass(ncft)+nirrig,config)+=conv_loss*(1-data->conv_evap);
+            }
+            break;
+          case OTHERS:
+            if(config->pft_output_scaled)
+            {
+              getoutputindex(&cell->output, CFT_CONV_LOSS_EVAP ,rothers(ncft)+nirrig,config)+=conv_loss*data->conv_evap*cell->ml.landfrac[1].grass[0];
+              getoutputindex(&cell->output, CFT_CONV_LOSS_DRAIN ,rothers(ncft)+nirrig,config)+=conv_loss*(1-data->conv_evap)*cell->ml.landfrac[1].grass[0];
+            }
+            else
+            {
+              getoutputindex(&cell->output, CFT_CONV_LOSS_EVAP ,rothers(ncft)+nirrig,config)+=conv_loss*data->conv_evap;
+              getoutputindex(&cell->output, CFT_CONV_LOSS_DRAIN ,rothers(ncft)+nirrig,config)+=conv_loss*(1-data->conv_evap);
             }
             break;
           case BIOMASS_GRASS:

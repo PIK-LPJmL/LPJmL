@@ -84,8 +84,6 @@ int iterate(Outputfile *output, /**< Output file data */
     signal(SIGTERM,handler); /* enable checkpointing by setting signal handler */
 #endif
   startyear=(config->ischeckpoint) ? config->checkpointyear+1 : config->firstyear-config->nspinup;
-  if(config->others_to_crop)
-    setotherstocrop();
   /* main loop over spinup + simulation years  */
   if(isroot(*config) && config->ischeckpoint)
     printf("Starting from checkpoint file '%s'.\n",config->checkpoint_restart_filename);

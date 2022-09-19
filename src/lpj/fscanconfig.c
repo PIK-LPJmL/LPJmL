@@ -473,6 +473,7 @@ Bool fscanconfig(Config *config,    /**< LPJ configuration */
   config->iscotton=findpftname("cotton",config->pftpar+config->npft[GRASS]+config->npft[TREE]-config->nagtree,config->nagtree)!=NOT_FOUND;
   if(config->others_to_crop)
   {
+    setotherstocrop();
     if(fscanstring(file,name,"cft_temp",FALSE,verbose))
       return TRUE;
     config->cft_temp=findpftname(name,config->pftpar+config->npft[GRASS]+config->npft[TREE],config->npft[CROP]);
