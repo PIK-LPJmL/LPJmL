@@ -85,7 +85,7 @@ void harvest_crop(Output *output,      /**< Output data */
   stand->soil.litter.item[pft->litter].bg.nitrogen+=crop->ind.root.nitrogen;
   getoutput(output,LITFALLN,config)+=crop->ind.root.nitrogen*stand->frac;
   getoutput(output,LITFALLN_AGR,config)+=crop->ind.root.nitrogen*stand->frac;
-  if(stand->type->landusetype==AGRICULTURE && config->double_harvest)
+  if(crop->dh!=NULL)
   {
     if(config->pft_output_scaled)
     {
