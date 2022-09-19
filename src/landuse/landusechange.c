@@ -44,6 +44,7 @@ void deforest(Cell *cell,          /**< pointer to cell */
 {
   int s,pos;
   Stand *natstand,*cutstand;
+  String line;
   s=findlandusetype(cell->standlist,NATURAL);
   if(s!=NOT_FOUND)
   {
@@ -78,7 +79,8 @@ void deforest(Cell *cell,          /**< pointer to cell */
     }
   }
   else
-    fail(NO_NATURAL_STAND_ERR,TRUE,"No natural stand for deforest, difffrac=%g",difffrac);
+    fail(NO_NATURAL_STAND_ERR,TRUE,"No natural stand for deforest in cell (%s), difffrac=%g",
+         sprintcoord(line,&cell->coord),difffrac);
 } /* of 'deforest' */
 
 #ifdef IMAGE
@@ -95,6 +97,7 @@ void deforest_for_timber(Cell *cell,     /**< pointer to cell */
   int s, pos, p;
   Pft *pft;
   Stand *natstand, *cutstand;
+  String line;
   s = findlandusetype(cell->standlist, NATURAL);
   if (s != NOT_FOUND)
   {
@@ -130,7 +133,8 @@ void deforest_for_timber(Cell *cell,     /**< pointer to cell */
     }
   }
   else
-    fail(NO_NATURAL_STAND_ERR,TRUE,"No natural stand for deforest, difffrac=%g",difffrac);
+    fail(NO_NATURAL_STAND_ERR,TRUE,"No natural stand for deforest in cell (%s), difffrac=%g",
+         sprintcoord(line,&cell->coord),difffrac);
 } /* of 'deforest_for_timber' */
 #endif
 

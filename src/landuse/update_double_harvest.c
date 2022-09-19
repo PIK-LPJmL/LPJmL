@@ -31,7 +31,7 @@ void update_double_harvest(Output *output,      /**< pointer to output */
   nnat=getnnat(npft,config);
   nirrig=getnirrig(ncft,config);
   index=(pft->stand->type->landusetype==OTHERS) ? rothers(ncft) : pft->par->id-npft;
-  if(pft->stand->type->landusetype==AGRICULTURE && config->double_harvest)
+  if(crop->dh!=NULL)
   {
     if(output->syear[pft->par->id-npft+irrigation*ncft]>epsilon)
     {

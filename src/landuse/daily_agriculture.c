@@ -92,7 +92,7 @@ Real daily_agriculture(Stand *stand,                /**< [inout] stand pointer *
 
   nnat=getnnat(npft,config);
   nirrig=getnirrig(ncft,config);
-    
+
   foreachpft(pft,p,&stand->pftlist)
   {
     index=(stand->type->landusetype==OTHERS) ? data->irrigation*nirrig+rothers(ncft) : pft->par->id-npft+data->irrigation*nirrig;
@@ -226,8 +226,7 @@ Real daily_agriculture(Stand *stand,                /**< [inout] stand pointer *
       if(getnpft(&stand->pftlist)>0)
       {
         pft=getpft(&stand->pftlist,0);
-        index=(stand->type->landusetype==OTHERS) ? data->irrigation*nirrig+rothers(ncft) : pft->par->id-npft+data->irrigation*nirrig;
-        if(stand->type->landusetype==AGRICULTURE && config->double_harvest)
+        if(crop->dh!=NULL)
         {
           crop=pft->data;
           if(config->pft_output_scaled)
@@ -237,6 +236,7 @@ Real daily_agriculture(Stand *stand,                /**< [inout] stand pointer *
         }
         else
         {
+          index=(stand->type->landusetype==OTHERS) ? data->irrigation*nirrig+rothers(ncft) : pft->par->id-npft+data->irrigation*nirrig;
           if(config->pft_output_scaled)
             getoutputindex(output,CFT_AIRRIG,index,config)+=irrig_apply*stand->frac;
           else
