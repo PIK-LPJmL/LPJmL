@@ -61,16 +61,12 @@ Bool getclimate(Climate *climate,    /**< pointer to climate data */
 {
   char *name;
   Real *wet;
-  int i,index,year_climate,year_depos;
+  int i,index,year_climate;
   Bool rc;
   if(config->const_climate)
     year_climate=climate->firstyear+(year-config->firstyear) % 30;
   else
     year_climate=year;
-  if(config->const_deposition)
-    year_depos=climate->firstyear+(year-config->firstyear) % 30;
-  else
-    year_depos=year;
   if(readclimate(&climate->file_temp,climate->data.temp,0,climate->file_temp.scalar,grid,year_climate,config))
   {
     if(isroot(*config))
@@ -217,34 +213,6 @@ Bool getclimate(Climate *climate,    /**< pointer to climate data */
         name=getrealfilename(&config->burntarea_filename);
         fprintf(stderr,"ERROR131: Cannot read burntarea of year %d from '%s'.\n",
                 year,name);
-        free(name);
-      }
-      return TRUE;
-    }
-  }
-  if(climate->data.no3deposition!=NULL)
-  {
-    if(readclimate(&climate->file_no3deposition,climate->data.no3deposition,0,climate->file_no3deposition.scalar,grid,year_depos,config))
-    {
-      if(isroot(*config))
-      {
-        name=getrealfilename(&config->no3deposition_filename);
-        fprintf(stderr,"ERROR131: Cannot read no3deposition of year %d from '%s'.\n",
-                year_depos,name);
-        free(name);
-      }
-      return TRUE;
-    }
-  }
-  if(climate->data.nh4deposition!=NULL)
-  {
-    if(readclimate(&climate->file_nh4deposition,climate->data.nh4deposition,0,climate->file_nh4deposition.scalar,grid,year_depos,config))
-    {
-      if(isroot(*config))
-      {
-        name=getrealfilename(&config->nh4deposition_filename);
-        fprintf(stderr,"ERROR131: Cannot read nh4deposition of year %d from '%s'.\n",
-                year_depos,name);
         free(name);
       }
       return TRUE;

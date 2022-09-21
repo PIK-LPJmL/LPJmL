@@ -151,8 +151,6 @@ Climate *initclimate(const Cell grid[],   /**< LPJ grid */
       freeclimate(climate,isroot(*config));
       return NULL;
     }
-    if(climate->firstyear<climate->file_nh4deposition.firstyear)
-      climate->firstyear=climate->file_nh4deposition.firstyear;
   }
   if(config->fire==SPITFIRE || config->fire==SPITFIRE_TMAX || config->with_nitrogen)
   {
