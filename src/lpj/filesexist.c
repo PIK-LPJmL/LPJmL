@@ -144,28 +144,35 @@ static int checkinputfile(const Config *config,const Filename *filename,const ch
   return 0;
 } /* of 'checkinputfile' */
 
-static int checkdatafile(const Config *config,const Filename *filename,const char *unit)
+static int checklanduse(const Config *config)
 {
-  FILE *file;
-  Header header;
-  String headername;
-  int version;
-  Bool swap;
+  Climatefile landuse;
+ /* open landuse input data */
+  if(opendata(&landuse,&config->landuse_filename,"landuse","1",LPJ_SHORT,0.001,2*config->landusemap_size,FALSE,config))
+  {
+    return 1;
+  }
+  if(landuse.var_len!=2*config->landusemap_size && landuse.var_len!=4*config->landusemap_size)
+  {
+    fprintf(stderr,
+            "ERROR147: Invalid number of bands=%zu in landuse data file, must be %d or %d.\n",
+            landuse.var_len,2*config->landusemap_size,4*config->landusemap_size);
+    closeclimatefile(&landuse,TRUE);
+    return 1;
+  }
+  if(landuse.var_len!=4*config->landusemap_size)
+    fputs("WARNING024: Land-use input does not include irrigation systems, suboptimal country values are used.\n",stderr);
+  closeclimatefile(&landuse,TRUE);
+  return 0;
+} /* of 'checklanduse' */
+
+static int checkdatafile(const Config *config,const Filename *filename,char *name,char *unit,Type datatype,int nbands)
+{
   Climatefile input;
-  size_t offset;
-  if(filename->fmt==CDF)
-  {
-    if(openfile_netcdf(&input,filename,unit,config))
-      return 1;
-    closeclimate_netcdf(&input,TRUE);
-  }
-  else
-  {
-    file=openinputfile(&header,&swap,filename,headername,&version,&offset,FALSE,config);
-    if(file==NULL)
-      return 1;
-    fclose(file);
-  }
+  /* open input data */
+  if(opendata(&input,filename,name,unit,datatype,1,nbands,TRUE,config))
+    return 1;
+  closeclimatefile(&input,TRUE);
   return 0;
 } /* of 'checkdatafile' */
 
@@ -364,7 +371,7 @@ Bool filesexist(Config config, /**< LPJmL configuration */
       bad+=checkinputfile(&config,&config.neighb_irrig_filename,NULL,0);
   }
   if(config.ispopulation)
-    bad+=checkdatafile(&config,&config.popdens_filename,"km-2");
+    bad+=checkdatafile(&config,&config.popdens_filename,"popdens","km-2",LPJ_SHORT,1);
   if(config.with_nitrogen)
   {
     if(config.with_nitrogen==LIM_NITROGEN && !config.no_ndeposition)
@@ -384,7 +391,7 @@ Bool filesexist(Config config, /**< LPJmL configuration */
   {
     if(config.fdi==WVPD_INDEX)
       bad+=checkclmfile(&config,&config.humid_filename,NULL,TRUE);
-    bad+=checkdatafile(&config,&config.lightning_filename,NULL);
+    bad+=checkdatafile(&config,&config.lightning_filename,"lightning",NULL,LPJ_INT,12);
     bad+=checkinputfile(&config,&config.human_ignition_filename,NULL,0);
   }
   if(config.cropsheatfrost || config.fire==SPITFIRE_TMAX)
@@ -397,12 +404,12 @@ Bool filesexist(Config config, /**< LPJmL configuration */
     bad+=checkclmfile(&config,&config.tamp_filename,NULL,TRUE);
   }
   if(config.wateruse)
-    bad+=checkdatafile(&config,&config.wateruse_filename,"dm3/yr");
+    bad+=checkdatafile(&config,&config.wateruse_filename,"wateruse","dm3/yr",LPJ_INT,1);
   bad+=checkclmfile(&config,&config.temp_filename,"celsius",TRUE);
   bad+=checkclmfile(&config,&config.prec_filename,"kg/m2/day",TRUE);
 #ifdef IMAGE
   if (config.wateruse_wd_filename.name != NULL)
-    bad += checkdatafile(&config, &config.wateruse_wd_filename,"dm3/yr");
+    bad += checkdatafile(&config, &config.wateruse_wd_filename,"wateruse_wd","dm3/yr",LPJ_INT,1);
 #endif
   if(config.with_radiation)
   {
@@ -442,7 +449,7 @@ Bool filesexist(Config config, /**< LPJmL configuration */
     bad+=checkinputfile(&config,&config.landcover_filename,"1",config.npft[GRASS]+config.npft[TREE]-config.nbiomass);
   if(config.withlanduse!=NO_LANDUSE)
   {
-    bad+=checkdatafile(&config,&config.landuse_filename,"1");
+    bad+=checklanduse(&config);
     if(config.iscotton)
     {
       bad+=checkinputfile(&config,&config.sowing_cotton_rf_filename,NULL,0);
