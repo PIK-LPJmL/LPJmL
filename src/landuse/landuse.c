@@ -94,7 +94,7 @@ Landuse initlanduse(const Config *config /**< LPJ configuration */
   {
     if(isroot(*config))
       fprintf(stderr,
-              "ERROR147: Invalid number of bands=%zu in landuse data file,must be %d or %d.\n",
+              "ERROR147: Invalid number of bands=%zu in landuse data file, must be %d or %d.\n",
               landuse->landuse.var_len,2*config->landusemap_size,4*config->landusemap_size);
     freelanduse(landuse,config);
     return NULL;
