@@ -450,6 +450,8 @@ Bool filesexist(Config config, /**< LPJmL configuration */
   if(config.withlanduse!=NO_LANDUSE)
   {
     bad+=checklanduse(&config);
+    if(config.sdate_option==PRESCRIBED_SDATE)
+      bad+=checkdatafile(&config,&config.sdate_filename,"sowing",NULL,LPJ_SHORT,2*config.cftmap_size);
     if(config.iscotton)
     {
       bad+=checkinputfile(&config,&config.sowing_cotton_rf_filename,NULL,0);
@@ -460,7 +462,7 @@ Bool filesexist(Config config, /**< LPJmL configuration */
     if(config.sdate_option==PRESCRIBED_SDATE)
       bad+=checkinputfile(&config,&config.sdate_filename,NULL,2*config.npft[CROP]);
     if(config.crop_phu_option==PRESCRIBED_CROP_PHU)
-      bad+=checkclmfile(&config,&config.crop_phu_filename,NULL,FALSE);
+      bad+=checkdatafile(&config,&config.crop_phu_filename,"crop phu",NULL,LPJ_SHORT,2*config.cftmap_size);
     if(config.countrycode_filename.fmt==CDF)
     {
       bad+=checkinputfile(&config,&config.countrycode_filename,NULL,0);
@@ -474,7 +476,7 @@ Bool filesexist(Config config, /**< LPJmL configuration */
       bad+=checkinputfile(&config,&config.reservoir_filename,NULL,10);
     }
     if(config.with_nitrogen&& config.fertilizer_input==FERTILIZER &&!config.fix_fertilization)
-      bad+=checkclmfile(&config,&config.fertilizer_nr_filename,"g/m2",FALSE);
+      bad+=checkdatafile(&config,&config.fertilizer_nr_filename,"fertilizer","g/m2",LPJ_SHORT,2*config.fertilizermap_size);
 #ifdef IMAGE
     if(config.aquifer_irrig==AQUIFER_IRRIG)
     {
@@ -482,7 +484,11 @@ Bool filesexist(Config config, /**< LPJmL configuration */
     }
 #endif
     if (config.with_nitrogen&&config.manure_input&&!config.fix_fertilization)
-      bad+=checkclmfile(&config,&config.manure_nr_filename,"g/m2",FALSE);
+      bad+=checkdatafile(&config,&config.manure_nr_filename,"manure","g/m2",LPJ_SHORT,2*config.fertilizermap_size);
+    if(config.tillage_type==READ_TILLAGE)
+      bad+=checkdatafile(&config,&config.with_tillage_filename,"tillage",NULL,LPJ_SHORT,1);
+    if(config.residue_treatment==READ_RESIDUE_DATA)
+      bad+=checkdatafile(&config,&config.residue_data_filename,"residue extraction",NULL,LPJ_SHORT,2*config.fertilizermap_size);
   }
   badout=0;
   oldpath=strdup("");
