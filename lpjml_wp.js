@@ -92,7 +92,8 @@
   "grassland_fixed_pft" : false,
   "grass_harvest_options" : false,
   "others_to_crop" : false,              /* move PFT type others into PFT crop, cft_tropic for tropical, cft_temp for temperate */
-  "grazing" : "default",                /* default grazing type, other options : "default", "mowing", "ext", "int", "none" */
+  "grazing" : "default",                 /* default grazing type, other options : "default", "mowing", "ext", "int", "none" */
+  "grazing_others" : "default",          /* default other grazing type, other options : "default", "mowing", "ext", "int", "none" */
   "cft_temp" : "temperate cereals",
   "cft_tropic" : "maize",
   "mowing_days" : [152, 335],          /* Mowing days for grassland if grass harvest options are ser */
@@ -102,6 +103,7 @@
   "crop_phu_option" : "new",
   "cropsheatfrost" : false,
   "double_harvest" : true,
+  "ma_bnf" : true,
 
 /*===================================================================*/
 /*  II. Input parameter section                                      */
@@ -127,6 +129,7 @@
 #define SUFFIX pft.bin
 #endif
 
+  "output_metafile" : false, /* no json metafile created */
   "float_grid" : false, /* set datatype of grid file to float (TRUE/FALSE) */
 
 #define mkstr(s) xstr(s) /* putting string in quotation marks */
