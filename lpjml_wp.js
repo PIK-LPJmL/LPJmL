@@ -35,18 +35,19 @@
   "version"  : "5.3",       /* LPJmL version expected */
   "random_prec" : true,     /* Random weather generator for precipitation enabled */
   "random_seed" : 2,        /* seed for random number generator */
-  "radiation" : "radiation",/* other options: CLOUDINESS, RADIATION, RADIATION_SWONLY, RADIATION_LWDOWN */
+  "radiation" : "radiation",/* other options: "cloudiness", "radiation", "radiation_swonly", "radiation_lwdown" */
   "fire" : "fire",          /* fire disturbance enabled, other options: NO_FIRE, FIRE, SPITFIRE, SPITFIRE_TMAX (for GLDAS input data) */
+  "fire_on_grassland" : false, /* enable fire on grassland for Spitfire */
   "fdi" : "nesterov_index", /* different fire danger index formulations: WVPD_INDEX(needs GLDAS input data), NESTEROV_INDEX*/
   "firewood" : false,
-  "new_phenology": true,    /* GSI phenology enabled */
+  "new_phenology" : true,   /* GSI phenology enabled */
   "new_trf" : false,        /* new transpiration reduction function disabled */
-  "river_routing" : false,
+  "river_routing" : true,
   "extflow" : false,
   "permafrost" : true,
   "johansen" : true,
   "soilpar_option" : "no_fixed_soilpar", /* other options "no_fixed_soilpar", "fixed_soilpar", "prescribed_soilpar" */
-  "with_nitrogen" : "lim",  /* other options: "no", "lim", "unlim" */
+  "with_nitrogen" : "lim", /* other options: "no", "lim", "unlim" */
   "store_climate" : true, /* store climate data in spin-up phase */
   "const_climate" : false,
   "shuffle_climate" : true, /* shuffle spinup climate */
@@ -56,17 +57,17 @@
 #ifdef FROM_RESTART
   "new_seed" : false, /* read random seed from restart file */
   "population" : false,
-  "landuse" : "yes", /* other options: NO_LANDUSE, LANDUSE, CONST_LANDUSE, ALL_CROPS */
-  "landuse_year_const" : 2000, /* set landuse year for CONST_LANDUSE case */
+  "landuse" : "yes", /* other options: "no", "yes", "const", "all_crops", "only_crops" */
+  "landuse_year_const" : 2000, /* set landuse year for "const" case */
   "reservoir" : true,
-  "wateruse" : "yes",  /* other options: NO_WATERUSE, WATERUSE, ALL_WATERUSE */
+  "wateruse" : "yes",  /* other options: "no", "yes", "all" */
   "equilsoil" : false,
 #else
+  "equilsoil" : true,
   "population" : false,
   "landuse" : "no",
   "reservoir" : false,
   "wateruse" : "no",
-  "equilsoil" : true,
 #endif
   "prescribe_burntarea" : false,
   "prescribe_landcover" : "no_landcover", /* NO_LANDCOVER, LANDCOVERFPC, LANDCOVEREST */
@@ -75,18 +76,23 @@
   "intercrop" : true,                   /* intercrops on setaside */
   "residue_treatment" : "fixed_residue_remove", /* residue options: READ_RESIDUE_DATA, NO_RESIDUE_REMOVE, FIXED_RESIDUE_REMOVE (uses param residues_in_soil) */
   "residues_fire" : false,              /* fire in residuals */
-  "irrigation" : "lim",                 /* other options "no", "lim", "pot", "all" */
+  "irrigation" : "lim",                 /* other options: "no", "lim", "pot", "all" */
   "laimax_interpolate" : "laimax_par",  /* laimax values from manage parameter file, */
                                         /* other options: LAIMAX_CFT, CONST_LAI_MAX, LAIMAX_INTERPOLATE */
-  "tillage_type" : "all",               /* Options: TILLAGE (all agr. cells tilled), NO_TILLAGE (no cells tilled) and READ_TILLAGE (tillage dataset used) */
+  "tillage_type" : "all",               /* Options: "all" (all agr. cells tilled), "no" (no cells tilled) and "read" (tillage dataset used) */
   "till_startyear" : 1850,              /* year in which tillage should start */
   "black_fallow" : false,               /* simulation with black fallow on PNV */
+  "pft_residue" : "temperate cereals",
   "no_ndeposition" : false,             /* turn off atmospheric N deposition */
   "rw_manage" : false,                  /* rain water management */
   "laimax" : 5,                         /* maximum LAI for CONST_LAI_MAX */
-  "fertilizer_input" : "yes",           /* enable fertilizer input */
+  "fertilizer_input" : "yes",           /* enable fertilizer input, other options: "no", "yes", "auto" */
   "manure_input" : true,                /* enable manure input */
   "fix_fertilization" : false,          /* fix fertilizer input */
+  "others_to_crop" : true,              /* move PFT type others into PFT crop, cft_tropic for tropical, cft_temp for temperate */
+  "grazing" : "default",                /* default grazing type, other options : "default", "mowing", "ext", "int", "none" */
+  "cft_temp" : "temperate cereals",
+  "cft_tropic" : "maize",
   "grassonly" : false,                  /* set all cropland including others to zero but keep managed grasslands */
   "istimber" : true,
   "grassland_fixed_pft" : false,
@@ -103,7 +109,7 @@
   "crop_phu_option" : "new",
   "cropsheatfrost" : false,
   "double_harvest" : true,
-  "ma_bnf" : true,
+  "ma_bnf" : true,                    /* Biological N fixation using Cleveland, 1999 (false) or Ma et al., 2022 (true) approach */
 
 /*===================================================================*/
 /*  II. Input parameter section                                      */
@@ -115,7 +121,7 @@
 /*  III. Input data section                                          */
 /*===================================================================*/
 
-#include "input_crumonthly.js"    /* Input files of CRU dataset */
+#include "input_crumonthly_wp.js"    /* Input files of CRU dataset */
 
 /*===================================================================*/
 /*  IV. Output data section                                          */
@@ -236,8 +242,10 @@ ID                               Fmt                        filename
 
 #else
 
-  "output" : [],  /* no output written */
-
+  "output" :
+  [
+    { "id" : "globalflux",       "file" : { "fmt" : "txt", "name" : "output/globalflux_spinup.csv"}}
+  ],
 #endif
 
 /*===================================================================*/
@@ -245,7 +253,7 @@ ID                               Fmt                        filename
 /*===================================================================*/
 
   "startgrid" : "all", /* 27410, 67208 60400 47284 47293 47277 all grid cells */
-  "endgrid" : ALL,
+  "endgrid"   : "all",
 
 #ifdef CHECKPOINT
   "checkpoint_filename" : "restart/restart_checkpoint.lpj", /* filename of checkpoint file */
@@ -253,7 +261,7 @@ ID                               Fmt                        filename
 
 #ifndef FROM_RESTART
 
-  "nspinup" : 7000,  /* spinup years */
+  "nspinup" : 10000,  /* spinup years */
   "nspinyear" : 30,  /* cycle length during spinup (yr) */
   "firstyear": 1901, /* first year of simulation */
   "lastyear" : 1901, /* last year of simulation */
