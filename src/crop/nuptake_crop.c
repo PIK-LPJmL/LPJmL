@@ -132,7 +132,7 @@ Real nuptake_crop(Pft *pft,             /**< pointer to PFT data */
   if(*n_plant_demand > pft->bm_inc.nitrogen)
   {
     /* no N limitation for N-fixing crops */
-    if (pft->par->nfixing)  
+    if (pft->par->nfixing)
     {
       if(!config->ma_bnf)
       {
@@ -144,7 +144,7 @@ Real nuptake_crop(Pft *pft,             /**< pointer to PFT data */
         getoutput(&pft->stand->cell->output,BNF_AGR,config) += fixed_n*pft->stand->frac;
         pft->vscal = 1;
       }
-      if(config->ma_bnf)
+      else
       {
         n_deficit = *n_plant_demand-pft->bm_inc.nitrogen;
         if(n_deficit>0 && pft->npp_bnf>0)
@@ -168,7 +168,7 @@ Real nuptake_crop(Pft *pft,             /**< pointer to PFT data */
         n_uptake += autofert_n;
         pft->bm_inc.nitrogen = *n_plant_demand;
         pft->vscal = 1;
-        if(pft->stand->type->landusetype==AGRICULTURE && config->double_harvest)
+        if(crop->dh!=NULL)
           crop->dh->nfertsum+=autofert_n*pft->stand->frac;
         else
           getoutputindex(&pft->stand->cell->output,CFT_NFERT,index+data->irrigation*nirrig,config)+=autofert_n;
