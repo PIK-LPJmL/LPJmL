@@ -25,7 +25,7 @@ Bool getdeposition(Climate *climate,    /**< pointer to climate data */
   int year_depos;
   char *name;
   if(config->const_deposition)
-    year=config->depos_year_const+(year-config->depos_year_const) % 30;
+    year=config->depos_year_const+(year-config->depos_year_const) % config->fix_climate_cycle;
   if(climate->data.no3deposition!=NULL)
   {
     if(year<climate->file_no3deposition.firstyear)

@@ -262,8 +262,8 @@ void fprintconfig(FILE *file,          /**< File pointer to text output file */
   }
   if(config->const_deposition)
   {
-    snprintf(s,STRING_LEN,"const deposition after year %d",
-             config->depos_year_const);
+    snprintf(s,STRING_LEN,"const N deposition after year %d cycling %d years",
+             config->depos_year_const,config->fix_climate_cycle);
     len=printsim(file,len,&count,s);
   }
   if(config->no_ndeposition)
