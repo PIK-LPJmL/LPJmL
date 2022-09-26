@@ -16,26 +16,6 @@
 
 #include "lpj.h"
 
-#define isread(index) (config->outnames[index].timestep>1)
-
-#define readoutputvarreal(index,name) if(isread(index))\
-   freadreal(&output->name,1,swap,file)
-
-#define readoutputarrayreal(index,name,n) if(isread(index))\
-   freadreal(output->name,n,swap,file)
-
-#define readoutputarrayint(index,name,n) if(isread(index))\
-   freadint(output->name,n,swap,file)
-
-#define readoutputvarint(index,name,n) if(isread(index))\
-   freadint(&output->name,n,swap,file)
-
-#define readoutputarrayitem(index,name,item,n) if(isread(index))\
-  {\
-    for(i=0;i<n;i++)\
-     freadreal(&output->name[i].item,1,swap,file);\
-  }
-
 Bool freadoutputdata(FILE *file,          /**< pointer to restart file */
                      Output *output,      /**< output data */
                      Bool swap,           /**< byte order has to be changed? */
