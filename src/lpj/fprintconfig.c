@@ -261,7 +261,11 @@ void fprintconfig(FILE *file,          /**< File pointer to text output file */
     len=printsim(file,len,&count,s);
   }
   if(config->const_deposition)
-    len=printsim(file,len,&count,"const. deposition");
+  {
+    snprintf(s,STRING_LEN,"const deposition after year %d",
+             config->depos_year_const);
+    len=printsim(file,len,&count,s);
+  }
   if(config->no_ndeposition)
     len=printsim(file,len,&count,"no N deposition");
   if(config->river_routing)

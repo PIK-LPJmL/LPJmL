@@ -270,10 +270,17 @@ Bool fscanconfig(Config *config,    /**< LPJ configuration */
   config->const_deposition=FALSE;
   if(config->with_nitrogen==LIM_NITROGEN)
   {
-    if(fscanbool(file,&config->const_deposition,"const_deposition",TRUE,verbose))
-      return TRUE;
     if(fscanbool(file,&config->no_ndeposition,"no_ndeposition",TRUE,verbose))
       return TRUE;
+    if(!config->no_ndeposition)
+    {
+      if(fscanbool(file,&config->const_deposition,"const_deposition",TRUE,verbose))
+        return TRUE;
+      if(config->const_deposition)
+      {
+        fscanint2(file,&config->depos_year_const,"depos_year_const");
+      }
+    }
   }
   config->fertilizer_input=NO_FERTILIZER;
   config->fire_on_grassland=FALSE;

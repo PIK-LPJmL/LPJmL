@@ -165,6 +165,7 @@ struct config
   int fix_climate_year;         /**< year at which climate is fixed */
   int fix_climate_cycle;        /**< number of years for climate shuffle for fixed climate */
   Bool const_deposition;        /**< constant N deposition */
+  int depos_year_const;         /**< year deposition is fixed */
   Bool residues_fire;           /**< use parameters for agricultural fires */
   Bool param_out;               /**< print LPJmL parameter */
   Bool check_climate;           /**< check climate input data for NetCDF files */
