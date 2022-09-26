@@ -194,8 +194,21 @@ Climate *initclimate(const Cell grid[],   /**< LPJ grid */
       freeclimate(climate,isroot(*config));
       return NULL;
     }
+<<<<<<< HEAD
     if(climate->firstyear<climate->file_nh4deposition.firstyear)
       climate->firstyear=climate->file_nh4deposition.firstyear;
+=======
+    if(isroot(*config) && !config->const_deposition)
+    {
+      lastyear=(config->const_deposition) ? config->depos_year_const+config->fix_climate_cycle-1 : config->lastyear;
+      if(climate->file_no3deposition.firstyear+climate->file_no3deposition.nyear-1<lastyear)
+        fprintf(stderr,"WARNING024: Last year in '%s'=%d is less than last simulation year %d, data from last year used.\n",
+                config->no3deposition_filename.name,climate->file_no3deposition.firstyear+climate->file_nh4deposition.nyear-1,lastyear);
+      if(climate->file_nh4deposition.firstyear+climate->file_nh4deposition.nyear-1<lastyear)
+        fprintf(stderr,"WARNING024: Last year in '%s'=%d is less than last simulation year %d, data from last year used.\n",
+                config->nh4deposition_filename.name,climate->file_nh4deposition.firstyear+climate->file_nh4deposition.nyear-1,lastyear);
+    }
+>>>>>>> a846810f... fix_climate_cycle used for const N deposition
   }
 
   if(config->fire==SPITFIRE || config->fire==SPITFIRE_TMAX || config->with_nitrogen)

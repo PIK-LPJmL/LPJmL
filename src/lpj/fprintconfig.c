@@ -271,7 +271,15 @@ void fprintconfig(FILE *file,          /**< File pointer to text output file */
     len=printsim(file,len,&count,s);
   }
   if(config->const_deposition)
+<<<<<<< HEAD
     len=printsim(file,len,&count,"const. deposition");
+=======
+  {
+    snprintf(s,STRING_LEN,"const N deposition after year %d cycling %d years",
+             config->depos_year_const,config->fix_climate_cycle);
+    len=printsim(file,len,&count,s);
+  }
+>>>>>>> a846810f... fix_climate_cycle used for const N deposition
   if(config->no_ndeposition)
     len=printsim(file,len,&count,"no N deposition");
   if(config->river_routing)

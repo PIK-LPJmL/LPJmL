@@ -272,7 +272,6 @@ Bool fscanconfig(Config *config,    /**< LPJ configuration */
   if(config->fix_climate)
   {
     fscanint2(file,&config->fix_climate_year,"fix_climate_year");
-    fscanint2(file,&config->fix_climate_cycle,"fix_climate_cycle");
   }
   config->const_deposition=FALSE;
   if(config->with_nitrogen==LIM_NITROGEN)
@@ -281,6 +280,10 @@ Bool fscanconfig(Config *config,    /**< LPJ configuration */
       return TRUE;
     if(fscanbool(file,&config->no_ndeposition,"no_ndeposition",TRUE,verbose))
       return TRUE;
+  }
+  if(config->fix_climate || config->const_deposition)
+  {
+    fscanint2(file,&config->fix_climate_cycle,"fix_climate_cycle");
   }
   config->fertilizer_input=NO_FERTILIZER;
   config->fire_on_grassland=FALSE;
