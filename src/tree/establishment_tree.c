@@ -62,6 +62,8 @@ Stocks establishment_tree(Pft *pft,               /**< pointer to tree PFT */
       // and the change.
       // NB: Reduction of existing plantation density due to expansion is done in landexpansion()->mix_veg_tree()
       frac_old = pft->stand->frac - pft->stand->frac_change;
+      if(frac_old<0)
+         frac_old=0;
       est_nind = (frac_old * treepar->k_est + pft->stand->frac_change * treepar->P_init) / pft->stand->frac;
     }
   else
