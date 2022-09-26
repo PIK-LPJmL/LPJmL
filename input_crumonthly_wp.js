@@ -45,7 +45,7 @@
   "nh4deposition" : { "fmt" : "clm",  "name" : "input_VERSION2/nh4_deposition_rcp8p5.clm"},
   "soilpH" :        { "fmt" : "clm",  "name" : "input_VERSION2/soil_ph.clm"},
   "extflow" :        { "fmt" : "cdf",  "var" : "txt","name" : "input_VERSION2/soil_ph.clm"},
-  "landuse" :      { "fmt" : "clm",  "name" : "input_VERSION2/cft1700_2005_irrigation_systems_64bands.bin"},
+  "landuse" :      { "fmt" : "clm",  "name" : "/p/projects/open/Fabian/LPJbox/cftfrac_1500-2015_68bands_f2o_woodplantations_from_secdf_LUH2.clm"},
 //  "landuse" :      { "fmt" : "clm",  "name" : "/p/projects/lpjml/input/MADRAT/lu_madrat_850-2015_32bands.clm"},
 //  "fertilizer_nr" : { "fmt" :"clm",  "name" : "input_VERSION2/fertilizer_ggcmi.clm2"},
   "fertilizer_nr" : { "fmt" :"clm",  "name" : "input_VERSION3/fertilizer_luh2v2_1900-2015_32bands.clm"},
