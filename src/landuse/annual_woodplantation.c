@@ -180,8 +180,8 @@ Bool annual_woodplantation(Stand *stand,         /**< Pointer to stand */
         treepar=pft->par->data;
         if(biomass_tree->growing_time>=treepar->rotation && biomass_tree->growing_time%treepar->rotation==0)
         {
-
           yield=timber_harvest(pft,&stand->soil,frac,param.ftimber_wp,stand->frac,&pft->nind,&biofuel,config);
+          pft->bm_inc.nitrogen*=(1-param.ftimber_wp);
           getoutput(&stand->cell->output,TRAD_BIOFUEL,config)+=biofuel.carbon;
           stand->cell->balance.trad_biofuel.carbon+=biofuel.carbon;
           stand->cell->balance.trad_biofuel.nitrogen+=biofuel.nitrogen;
@@ -190,13 +190,13 @@ Bool annual_woodplantation(Stand *stand,         /**< Pointer to stand */
           getoutput(&stand->cell->output,TIMBER_HARVESTC,config)+=yield.carbon;
           if(config->pft_output_scaled)
           {
-            getoutputindex(&stand->cell->output,PFT_HARVESTC,index,config)+=yield.carbon*stand->frac;
-            getoutputindex(&stand->cell->output,PFT_HARVESTN,index,config)+=yield.nitrogen*stand->frac;
+            getoutputindex(&stand->cell->output,PFT_HARVESTC,index,config)+=yield.carbon;
+            getoutputindex(&stand->cell->output,PFT_HARVESTN,index,config)+=yield.nitrogen;
           }
           else
           {
-            getoutputindex(&stand->cell->output,PFT_HARVESTC,index,config)+=yield.carbon;
-            getoutputindex(&stand->cell->output,PFT_HARVESTN,index,config)+=yield.nitrogen;
+            getoutputindex(&stand->cell->output,PFT_HARVESTC,index,config)+=yield.carbon/stand->frac;
+            getoutputindex(&stand->cell->output,PFT_HARVESTN,index,config)+=yield.nitrogen/stand->frac;
           }
           biomass_tree->growing_time=0;
           fpc_tree(pft);
