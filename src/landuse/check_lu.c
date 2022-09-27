@@ -23,7 +23,7 @@
 Bool check_lu(const Standlist standlist, /**< List of stands */
               Real landfrac,             /**< land fraction for crop */
               int id,                    /**< PFT index of crop */
-              Landusetype landusetype,
+              Landusetype landusetype,   /**< landuse type (AGRICULTURE/OTHERS) */
               Bool irrigation            /**< irrigated (TRUE/FALSE) */
              )                           /** \return TRUE if crop stand can
                                               be established */
