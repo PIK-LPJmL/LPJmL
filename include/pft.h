@@ -156,9 +156,9 @@ typedef struct Pft
     Limit temp_bnf_opt;
     Limit swc_bnf;
     Real phi_bnf[2];
-    Real nfixpot;
-    Real maxbnfcost;
-    Real bnf_cost;
+    Real nfixpot;               /**< maximum N fixation potential (gN/m2/day) */
+    Real maxbnfcost;            /**< maximum cost for N fixation (gC/m2/day) */
+    Real bnf_cost;              /**< cost for N fixation (gC/gN) */
     Real windspeed;             /**< windspeed dampening */
     Real roughness;             /**< roughness length */
     Real alpha_fuelp;           /**< scaling factor for Nesterov fire danger index */
