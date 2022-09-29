@@ -1,10 +1,8 @@
 /**************************************************************************************/
 /**                                                                                \n**/
-/**                f  r  e  a  d  o  u  t  p  u  t  d  a  t  a  .  c               \n**/
+/**           s  e  t  o  t  h  e  r  s  t  o  c  r  o  p  .  c                    \n**/
 /**                                                                                \n**/
 /**     C implementation of LPJmL                                                  \n**/
-/**                                                                                \n**/
-/**     Function reads output data from restart file                               \n**/
 /**                                                                                \n**/
 /** (C) Potsdam Institute for Climate Impact Research (PIK), see COPYRIGHT file    \n**/
 /** authors, and contributors see AUTHORS file                                     \n**/
@@ -15,20 +13,15 @@
 /**************************************************************************************/
 
 #include "lpj.h"
+#include "grassland.h"
+#include "agriculture.h"
 
-Bool freadoutputdata(FILE *file,          /**< pointer to restart file */
-                     Output *output,      /**< output data */
-                     Bool swap,           /**< byte order has to be changed? */
-                     Config *config /**< LPJ configuration */
-                    )
+void setotherstocrop(void)
 {
-  if(freadint(&config->totalsize,1,swap,file)!=1)
-    return TRUE;
-  output->data=newvec(Real,config->totalsize);
-  if(output->data==NULL)
-  {
-    printallocerr("data");
-    return TRUE;
-  }
-  return freadreal(output->data,config->totalsize,swap,file)!=config->totalsize;
-} /* of 'freadoutputdata' */
+  others_stand.newstand=agriculture_stand.newstand;
+  others_stand.fwrite=agriculture_stand.fwrite;
+  others_stand.fread=agriculture_stand.fread;
+  others_stand.fprint=agriculture_stand.fprint;
+  others_stand.annual=agriculture_stand.annual;
+  others_stand.daily=agriculture_stand.daily;
+} /* of 'setotherstocrop' */

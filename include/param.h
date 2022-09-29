@@ -66,6 +66,7 @@ typedef struct
   Real fire_intens;     /**< threshold of fireintensity for which burnt area can be modeled */
   Real hum_ign;         /**< a parameter for scaling the human ignintions within SPITFIRE */
   Real residues_in_soil;  /**< minimum residues in soil*/
+  Real residues_in_soil_notillage;  /**< minimum residues in soil*/
   Real nfert_split;     /**< threshold fertilizer input for split application */
   Real manure_cn;       /* CN ratio of applied manure gC/gN */
   Real nfert_split_frac;       /* fraction of fertilizer to be applied at sowing */

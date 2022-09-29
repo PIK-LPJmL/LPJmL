@@ -27,7 +27,7 @@
 
 #define PRINTLPJ_VERSION "1.0.020"
 #define NTYPES 3
-#define NSTANDTYPES 12 /* number of stand types */
+#define NSTANDTYPES 13 /* number of stand types */
 
 #define USAGE "Usage: %s [-h] [-inpath dir] [-restartpath dir]\n"\
               "       [[-Dmacro[=value]] [-Idir] ...] [filename [-check] [start [end]]]\n"
@@ -187,6 +187,7 @@ int main(int argc,char **argv)
   standtype[AGRICULTURE]=agriculture_stand;
   standtype[MANAGEDFOREST]=managedforest_stand;
   standtype[GRASSLAND]=grassland_stand;
+  standtype[OTHERS]=others_stand;
   standtype[BIOMASS_TREE]=biomass_tree_stand;
   standtype[BIOMASS_GRASS]=biomass_grass_stand;
   standtype[AGRICULTURE_TREE]=agriculture_tree_stand;

@@ -94,10 +94,10 @@ void fprintpftpar(FILE *file,           /**< pointer to text file */
     fprintf(file,"tmin_sl:\t%g\n"
                 "tmin_base:\t%g (deg C)\n"
                 "tmin_tau:\t%g\n"
-                "tmax_sl:\t%g\n"
+                "tmax_sl:\t%g (1/(deg c))\n"
                 "tmax_base:\t%g (deg C)\n"
                 "tmax_tau:\t%g\n"
-                "light_sl:\t%g\n"
+                "light_sl:\t%g (1/(W/m2))\n"
                 "light_base:\t%g (W/m2)\n"
                 "light_tau:\t%g\n"
                 "wscal_sl:\t%g\n"
@@ -137,9 +137,9 @@ void fprintpftpar(FILE *file,           /**< pointer to text file */
                  "temp_bnf_opt:\t%g %g\n"
                  "swc_bnf:\t%g %g\n"
                  "phi_bnf:\t%g %g\n"
-                 "nfixpot:\t%g\n"
-                 "maxbnfcost:\t%g\n"
-                 "bnf_cost:\t%g\n",
+                 "nfixpot:\t%g (gN/m2/day)\n"
+                 "maxbnfcost:\t%g (gC/m2/day)\n"
+                 "bnf_cost:\t%g (gC/gN)\n",
             pftpar->temp_bnf_lim.low, pftpar->temp_bnf_lim.high,
             pftpar->temp_bnf_opt.low, pftpar->temp_bnf_opt.high,
             pftpar->swc_bnf.low, pftpar->swc_bnf.high,

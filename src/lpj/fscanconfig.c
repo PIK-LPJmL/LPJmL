@@ -239,8 +239,11 @@ Bool fscanconfig(Config *config,    /**< LPJ configuration */
   config->double_harvest=FALSE;
   config->others_to_crop = FALSE;
   config->ma_bnf = FALSE;
-  if(fscanbool(file,&config->ma_bnf,"ma_bnf",TRUE,verbose))
-    return TRUE;
+  if(config->with_nitrogen)
+  {
+    if(fscanbool(file,&config->ma_bnf,"ma_bnf",TRUE,verbose))
+      return TRUE;
+  }
   config->soilpar_option=NO_FIXED_SOILPAR;
   if(fscankeywords(file,&config->soilpar_option,"soilpar_option",soilpar_option,3,TRUE,verbose))
     return TRUE;
@@ -308,14 +311,16 @@ Bool fscanconfig(Config *config,    /**< LPJ configuration */
       if(fscankeywords(file,&config->crop_phu_option,"crop_phu_option",crop_phu_options,3,TRUE,verbose))
         return TRUE;
       fscanbool2(file,&config->intercrop,"intercrop");
-      config->crop_resp_fix=FALSE;
       config->manure_input=FALSE;
       config->fix_fertilization=FALSE;
       if(config->with_nitrogen)
       {
+        config->crop_resp_fix=FALSE;
         if(fscanbool(file,&config->crop_resp_fix,"crop_resp_fix",TRUE,verbose))
           return TRUE;
       }
+      else
+        config->crop_resp_fix=TRUE;
       if(config->with_nitrogen==LIM_NITROGEN)
       {
         if(fscanbool(file,&config->fix_fertilization,"fix_fertilization",TRUE,verbose))
@@ -371,6 +376,12 @@ Bool fscanconfig(Config *config,    /**< LPJ configuration */
       {
         config->grazing=GS_DEFAULT;
         if(fscankeywords(file,&config->grazing,"grazing",grazing_type,5,TRUE,verbose))
+          return TRUE;
+      }
+      config->grazing_others=GS_DEFAULT;
+      if(!config->others_to_crop)
+      {
+        if(fscankeywords(file,&config->grazing_others,"grazing_others",grazing_type,5,TRUE,verbose))
           return TRUE;
       }
       if(fscanmowingdays(file,config))
@@ -462,6 +473,7 @@ Bool fscanconfig(Config *config,    /**< LPJ configuration */
   config->iscotton=findpftname("cotton",config->pftpar+config->npft[GRASS]+config->npft[TREE]-config->nagtree,config->nagtree)!=NOT_FOUND;
   if(config->others_to_crop)
   {
+    setotherstocrop();
     if(fscanstring(file,name,"cft_temp",FALSE,verbose))
       return TRUE;
     config->cft_temp=findpftname(name,config->pftpar+config->npft[GRASS]+config->npft[TREE],config->npft[CROP]);

@@ -574,9 +574,9 @@ int main(int argc,char **argv)
         {
           if(round(data[k]/scale)<SHRT_MIN || round(data[k]/scale)>SHRT_MAX)
           {
-            fprintf(stderr,"WARNING: Data overflow for cell %d ",k/header.nbands/header.nbands);
-            fprintcoord(stderr,coords+k/header.nbands/header.nbands);
-            fprintf(stderr,") at %s %d in %d.\n",isdaily(climate) ? "day" : "month",(k % (header.nbands*header.nbands))+1,climate.firstyear+year);
+            fprintf(stderr,"WARNING: Data overflow for cell %d ",k/header.nbands/header.nstep);
+            fprintcoord(stderr,coords+k/header.nbands/header.nstep);
+            fprintf(stderr,") at %s %d in %d.\n",isdaily(climate) ? "day" : "month",(k % (header.nbands*header.nstep))+1,climate.firstyear+year);
           }
           s[k]=(short)round(data[k]/scale);
         }

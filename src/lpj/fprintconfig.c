@@ -418,6 +418,13 @@ void fprintconfig(FILE *file,          /**< File pointer to text output file */
       snprintf(s,STRING_LEN,"%s grazing",grazing_type[config->grazing]);
       len=fputstring(file,len,s,78);
     }
+    if(!config->others_to_crop)
+    {
+      len=fputstring(file,len,", ",78);
+      snprintf(s,STRING_LEN,"%s others grazing",grazing_type[config->grazing_others]);
+      count++;
+      len=fputstring(file,len,s,78);
+    }
     len=fputstring(file,len,", ",78);
     count++;
     snprintf(s,STRING_LEN,"%s crop PHU option",crop_phu_options[config->crop_phu_option]);

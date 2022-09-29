@@ -26,11 +26,12 @@ void update_double_harvest(Output *output,      /**< pointer to output */
                           )
 {
   Pftcrop *crop;
-  int nnat,nirrig;
+  int nnat,nirrig,index;
   crop=pft->data;
   nnat=getnnat(npft,config);
   nirrig=getnirrig(ncft,config);
-  if(config->double_harvest)
+  index=(pft->stand->type->landusetype==OTHERS) ? rothers(ncft) : pft->par->id-npft;
+  if(crop->dh!=NULL)
   {
     if(output->syear[pft->par->id-npft+irrigation*ncft]>epsilon)
     {
@@ -47,52 +48,52 @@ void update_double_harvest(Output *output,      /**< pointer to output */
     else
       getoutputindex(output,HDATE,pft->par->id-npft+irrigation*ncft,config)=day;
     double_harvest(output->syear2[pft->par->id-npft+irrigation*ncft],
-                   &getoutputindex(output,CFT_ABOVEGBMC,pft->par->id-npft+irrigation*(ncft+NGRASS),config),
-                   &getoutputindex(output,CFT_ABOVEGBMC2,pft->par->id-npft+irrigation*(ncft+NGRASS),config),
+                   &getoutputindex(output,CFT_ABOVEGBMC,index+irrigation*(ncft+NGRASS),config),
+                   &getoutputindex(output,CFT_ABOVEGBMC2,index+irrigation*(ncft+NGRASS),config),
                    (crop->ind.leaf.carbon+crop->ind.pool.carbon+crop->ind.so.carbon)*pft->nind);
     double_harvest(output->syear2[pft->par->id-npft+irrigation*ncft],
-                   &getoutputindex(output,CFT_ABOVEGBMN,pft->par->id-npft+irrigation*(ncft+NGRASS),config),
-                   &getoutputindex(output,CFT_ABOVEGBMN2,pft->par->id-npft+irrigation*(ncft+NGRASS),config),
+                   &getoutputindex(output,CFT_ABOVEGBMN,index+irrigation*(ncft+NGRASS),config),
+                   &getoutputindex(output,CFT_ABOVEGBMN2,index+irrigation*(ncft+NGRASS),config),
                    (crop->ind.leaf.nitrogen+crop->ind.pool.nitrogen+crop->ind.so.nitrogen)*pft->nind);
     double_harvest(output->syear2[pft->par->id-npft+irrigation*ncft],
-                   &getoutputindex(output,CFT_PET,(pft->par->id-npft+irrigation*(ncft+NGRASS)),config),
-                   &getoutputindex(output,CFT_PET2,(pft->par->id-npft+irrigation*(ncft+NGRASS)),config),
+                   &getoutputindex(output,CFT_PET,(index+irrigation*(ncft+NGRASS)),config),
+                   &getoutputindex(output,CFT_PET2,(index+irrigation*(ncft+NGRASS)),config),
                    crop->dh->petsum);
     double_harvest(output->syear2[pft->par->id-npft+irrigation*ncft],
-                   &getoutputindex(output,CFT_NIR,(pft->par->id-npft+irrigation*nirrig),config),
-                   &getoutputindex(output,CFT_NIR2,(pft->par->id-npft+irrigation*nirrig),config),
+                   &getoutputindex(output,CFT_NIR,(index+irrigation*nirrig),config),
+                   &getoutputindex(output,CFT_NIR2,(index+irrigation*nirrig),config),
                    crop->dh->nirsum);
     double_harvest(output->syear2[pft->par->id-npft+irrigation*ncft],
-                   &getoutputindex(output,CFT_TRANSP,(pft->par->id-npft+irrigation*nirrig),config),
-                   &getoutputindex(output,CFT_TRANSP2,(pft->par->id-npft+irrigation*nirrig),config),
+                   &getoutputindex(output,CFT_TRANSP,(index+irrigation*nirrig),config),
+                   &getoutputindex(output,CFT_TRANSP2,(index+irrigation*nirrig),config),
                    crop->dh->transpsum);
     double_harvest(output->syear2[pft->par->id-npft+irrigation*ncft],
-                   &getoutputindex(output,CFT_EVAP,(pft->par->id-npft+irrigation*nirrig),config),
-                   &getoutputindex(output,CFT_EVAP2,(pft->par->id-npft+irrigation*nirrig),config),
+                   &getoutputindex(output,CFT_EVAP,(index+irrigation*nirrig),config),
+                   &getoutputindex(output,CFT_EVAP2,(index+irrigation*nirrig),config),
                    crop->dh->evapsum);
     double_harvest(output->syear2[pft->par->id-npft+irrigation*ncft],
-                   &getoutputindex(output,CFT_INTERC,(pft->par->id-npft+irrigation*nirrig),config),
-                   &getoutputindex(output,CFT_INTERC2,(pft->par->id-npft+irrigation*nirrig),config),
+                   &getoutputindex(output,CFT_INTERC,(index+irrigation*nirrig),config),
+                   &getoutputindex(output,CFT_INTERC2,(index+irrigation*nirrig),config),
                    crop->dh->intercsum);
     double_harvest(output->syear2[pft->par->id-npft+irrigation*ncft],
-                   &getoutputindex(output,CFT_PREC,(pft->par->id-npft+irrigation*(ncft+NGRASS)),config),
-                   &getoutputindex(output,CFT_PREC2,(pft->par->id-npft+irrigation*(ncft+NGRASS)),config),
+                   &getoutputindex(output,CFT_PREC,(index+irrigation*(ncft+NGRASS)),config),
+                   &getoutputindex(output,CFT_PREC2,(index+irrigation*(ncft+NGRASS)),config),
                    crop->dh->precsum);
     double_harvest(output->syear2[pft->par->id-npft+irrigation*ncft],
-                   &getoutputindex(output,GROWING_PERIOD,(pft->par->id-npft+irrigation*(ncft+NGRASS)),config),
-                   &getoutputindex(output,GROWING_PERIOD2,(pft->par->id-npft+irrigation*(ncft+NGRASS)),config),
+                   &getoutputindex(output,GROWING_PERIOD,(index+irrigation*(ncft+NGRASS)),config),
+                   &getoutputindex(output,GROWING_PERIOD2,(index+irrigation*(ncft+NGRASS)),config),
                    crop->dh->lgp);
     double_harvest(output->syear2[pft->par->id-npft+irrigation*ncft],
-                   &getoutputindex(output,CFT_SRAD,(pft->par->id-npft+irrigation*(ncft+NGRASS)),config),
-                   &getoutputindex(output,CFT_SRAD2,(pft->par->id-npft+irrigation*(ncft+NGRASS)),config),
+                   &getoutputindex(output,CFT_SRAD,(index+irrigation*(ncft+NGRASS)),config),
+                   &getoutputindex(output,CFT_SRAD2,(index+irrigation*(ncft+NGRASS)),config),
                    crop->dh->sradsum);
     double_harvest(output->syear2[pft->par->id-npft+irrigation*ncft],
-                   &getoutputindex(output,CFT_AIRRIG,(pft->par->id-npft+irrigation*nirrig),config),
-                   &getoutputindex(output,CFT_AIRRIG2,(pft->par->id-npft+irrigation*nirrig),config),
+                   &getoutputindex(output,CFT_AIRRIG,(index+irrigation*nirrig),config),
+                   &getoutputindex(output,CFT_AIRRIG2,(index+irrigation*nirrig),config),
                    crop->dh->irrig_apply);
     double_harvest(output->syear2[pft->par->id-npft+irrigation*ncft],
-                   &getoutputindex(output,CFT_TEMP,(pft->par->id-npft+irrigation*(ncft+NGRASS)),config),
-                   &getoutputindex(output,CFT_TEMP2,(pft->par->id-npft+irrigation*(ncft+NGRASS)),config),
+                   &getoutputindex(output,CFT_TEMP,(index+irrigation*(ncft+NGRASS)),config),
+                   &getoutputindex(output,CFT_TEMP2,(index+irrigation*(ncft+NGRASS)),config),
                    crop->dh->tempsum);
     double_harvest(output->syear2[pft->par->id-npft+irrigation*ncft],
                    &getoutputindex(output,HUSUM,(pft->par->id-npft+irrigation*ncft),config),
@@ -119,23 +120,23 @@ void update_double_harvest(Output *output,      /**< pointer to output */
                    &getoutputindex(output,CFT_LEACHING2,(pft->par->id-npft+irrigation*ncft),config),
                    crop->dh->leachingsum);
     double_harvest(output->syear2[pft->par->id-npft+irrigation*ncft],
-                   &getoutputindex(output,CFT_NFERT,(pft->par->id-npft+irrigation*nirrig),config),
-                   &getoutputindex(output,CFT_NFERT2,(pft->par->id-npft+irrigation*nirrig),config),
+                   &getoutputindex(output,CFT_NFERT,(index+irrigation*nirrig),config),
+                   &getoutputindex(output,CFT_NFERT2,(index+irrigation*nirrig),config),
                    crop->dh->nfertsum);
     double_harvest(output->syear2[pft->par->id-npft+irrigation*ncft],
                    &getoutputindex(output,CFT_C_EMIS,(pft->par->id-npft+irrigation*ncft),config),
                    &getoutputindex(output,CFT_C_EMIS2,(pft->par->id-npft+irrigation*ncft),config),
                    crop->dh->c_emissum);
     double_harvest(output->syear2[pft->par->id-npft+irrigation*ncft],
-                   &getoutputindex(output,PFT_NUPTAKE,nnat+pft->par->id-npft+irrigation*nirrig,config),
-                   &getoutputindex(output,PFT_NUPTAKE2,nnat+pft->par->id-npft+irrigation*nirrig,config),
+                   &getoutputindex(output,PFT_NUPTAKE,nnat+index+irrigation*nirrig,config),
+                   &getoutputindex(output,PFT_NUPTAKE2,nnat+index+irrigation*nirrig,config),
                    crop->nuptakesum);
   }
   else
   {
-    getoutputindex(output,CFT_ABOVEGBMC,pft->par->id-npft+irrigation*(ncft+NGRASS),config)=
+    getoutputindex(output,CFT_ABOVEGBMC,index+irrigation*(ncft+NGRASS),config)=
       (crop->ind.leaf.carbon+crop->ind.pool.carbon+crop->ind.so.carbon)*pft->nind;
-    getoutputindex(output,CFT_ABOVEGBMN,pft->par->id-npft+irrigation*(ncft+NGRASS),config)=
+    getoutputindex(output,CFT_ABOVEGBMN,index+irrigation*(ncft+NGRASS),config)=
       (crop->ind.leaf.nitrogen+crop->ind.pool.nitrogen+crop->ind.so.nitrogen)*pft->nind;
     getoutputindex(output,HDATE,pft->par->id-npft+irrigation*ncft,config)=day;
     getoutputindex(output,HUSUM,pft->par->id-npft+irrigation*ncft,config)=crop->husum;
