@@ -15,9 +15,9 @@
 #include "lpj.h"
 
 #ifdef USE_UDUNITS
-#define USAGE "Usage: %s [-v] [-units unit] [-var name] [-time name] [-o filename] [-scale factor] [-id s] [-version v] [-float] [-zero] gridfile netcdffile ...\n"
+#define USAGE "Usage: %s [-v] [-units unit] [-var name] [-time name] [-o filename] [-scale factor] [-id s] [-version v] [-float] [-zero] [-json] gridfile netcdffile ...\n"
 #else
-#define USAGE "Usage: %s [-v] [-var name] [-o filename] [-scale factor] [-id s] [-version v] [-float] [-zero] gridfile netcdffile ...\n"
+#define USAGE "Usage: %s [-v] [-var name] [-o filename] [-scale factor] [-id s] [-version v] [-float] [-zero] [-json] gridfile netcdffile ...\n"
 #endif
 
 #if defined(USE_NETCDF) || defined(USE_NETCDF4)
@@ -341,7 +341,7 @@ int main(int argc,char **argv)
   Coordfile coordfile;
   Climatefile climate;
   Config config;
-  char *units,*var,*outname,*endptr,*time_name;
+  char *units,*var,*outname,*endptr,*time_name,*arglist;
   float scale,*data;
   Filename coord_filename;
   Coord *coords;
@@ -349,16 +349,16 @@ int main(int argc,char **argv)
   FILE *file;
   int i,j,k,year,version;
   short *s;
-  Bool isfloat,verbose,iszero;
+  Bool isfloat,verbose,iszero,isjson;
   Time time;
   size_t var_len;
-  char *id;
+  char *id,*out_json;
   /* set default values */
   units=NULL;
   var=NULL;
   time_name=NULL;
   scale=1;
-  isfloat=verbose=iszero=FALSE;
+  isfloat=verbose=iszero=isjson=FALSE;
   outname="out.clm"; /* default file name for output */
   id=LPJ_CLIMATE_HEADER;
   version=LPJ_CLIMATE_VERSION;
@@ -425,6 +425,8 @@ int main(int argc,char **argv)
         verbose=TRUE;
       else if(!strcmp(argv[i],"-zero"))
         iszero=TRUE;
+      else if(!strcmp(argv[i],"-json"))
+        isjson=TRUE;
       else if(!strcmp(argv[i],"-scale"))
       {
         if(argc==i+1)
@@ -628,6 +630,27 @@ int main(int argc,char **argv)
     header.nbands*=header.nstep;
   fwriteheader(file,&header,id,version);
   fclose(file);
+  if(isjson)
+  {
+    out_json=malloc(strlen(outname)+strlen(".json")+1);
+    if(out_json==NULL)
+    {
+      printallocerr("filename");
+      return EXIT_FAILURE;
+    }
+    strcat(strcpy(out_json,outname),".json");
+    arglist=catstrvec(argv,argc);
+    file=fopen(out_json,"w");
+    if(file==NULL)
+    {
+      printfcreateerr(out_json);
+      return EXIT_FAILURE;
+    }
+    if(version<4)
+      header.nbands/=header.nstep;
+    fprintjson(file,outname,arglist,&header,NULL,NULL,CLM,id,FALSE,version);
+    fclose(file);
+  }
   return EXIT_SUCCESS;
 #else
   fprintf(stderr,"ERROR401: NetCDF is not supported in this version of %s.\n",argv[0]);

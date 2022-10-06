@@ -1,9 +1,9 @@
-.TH cdf2clm 1  "June 26, 2013" "version 1.0.001" "USER COMMANDS"
+.TH cdf2clm 1  "October 6, 2022" "version 1.0.001" "USER COMMANDS"
 .SH NAME
 cdf2clm \- convert NetCDF files into CLM files
 .SH SYNOPSIS
 .B cdf2clm
-[\-v] [\-scale factor] [\-units u] [\-var name] [\-time name] [\-id string] [\-version v] [\-float] [\-zero] [\-o clmfile]
+[\-v] [\-scale factor] [\-units u] [\-var name] [\-time name] [\-id string] [\-version v] [\-float] [\-zero] [\-json] [\-o clmfile]
 gridfile netcdffile ...
 .SH DESCRIPTION
 Program converts NetCDF input data into CLM input data.
@@ -34,6 +34,9 @@ write float values in clm file, default is short
 .TP
 \-zero
 write zero values in clm file if data is not found
+.TP
+\-json
+JSON metafile is created with suffix '.json'
 .TP
 .I -o clmfile
 filename of CLM data file written. Default is out.clm
