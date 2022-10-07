@@ -371,8 +371,8 @@ Bool filesexist(Config config, /**< LPJmL configuration */
   {
     if(config.with_nitrogen==LIM_NITROGEN && !config.no_ndeposition)
     {
-      bad+=checkclmfile(&config,&config.no3deposition_filename,"g/m2/day",TRUE);
-      bad+=checkclmfile(&config,&config.nh4deposition_filename,"g/m2/day",TRUE);
+      bad+=checkclmfile(&config,&config.no3deposition_filename,"g/m2/day",FALSE);
+      bad+=checkclmfile(&config,&config.nh4deposition_filename,"g/m2/day",FALSE);
     }
     bad+=checkinputfile(&config,&config.soilph_filename,NULL,0);
   }

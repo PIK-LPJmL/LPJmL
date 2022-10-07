@@ -168,6 +168,16 @@ int iterate(Outputfile *output, /**< Output file data */
         }
       }
     }
+    rc=getdeposition(input.climate,grid,year,config);
+    if(iserror(rc,config))
+    {
+      if(isroot(*config))
+      {
+        fprintf(stderr,"ERROR104: Simulation stopped in getdeposition().\n");
+        fflush(stderr);
+      }
+      break; /* leave time loop */
+    }
     if(input.landuse!=NULL)
     {
       calc_seasonality(grid,npft,ncft,config);
