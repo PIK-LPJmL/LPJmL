@@ -34,6 +34,12 @@ Bool allocation_grass(Litter *litter,   /**< litter pool */
   int growing_days;
   grasspar=pft->par->data;
   grass=pft->data;
+#ifdef CHECK_BALANCE
+  Real start,end;
+  Stocks stocks;
+  stocks=litterstocks(litter);
+  start = vegc_sum(pft)+pft->bm_inc.carbon-(grass->turn_litt.leaf.carbon+grass->turn_litt.root.carbon)+stocks.carbon;
+#endif
   output=&pft->stand->cell->output;
   bm_inc_ind.carbon=pft->bm_inc.carbon/pft->nind;
   bm_inc_ind.nitrogen=pft->bm_inc.nitrogen/pft->nind;
@@ -82,6 +88,8 @@ Bool allocation_grass(Litter *litter,   /**< litter pool */
       inc_ind.leaf.carbon=bm_inc_ind.carbon*grass->ind.leaf.carbon/(grass->ind.root.carbon+grass->ind.leaf.carbon);
       inc_ind.root.carbon=bm_inc_ind.carbon*grass->ind.root.carbon/(grass->ind.root.carbon+grass->ind.leaf.carbon);
     }
+    output->bm_inc=pft->bm_inc.carbon;
+    pft->bm_inc.carbon-=(inc_ind.leaf.carbon+inc_ind.root.carbon)*pft->nind;
   }
   else /* this is for natural vegetation with yearly full reallocation */
   {
@@ -114,6 +122,8 @@ Bool allocation_grass(Litter *litter,   /**< litter pool */
         inc_ind.root.carbon=bm_inc_ind.carbon-inc_ind.leaf.carbon;
       }
     }
+    output->bm_inc=pft->bm_inc.carbon;
+    pft->bm_inc.carbon=0;
   }
   if(bm_inc_ind.carbon>0 && inc_ind.leaf.carbon>0 && inc_ind.root.carbon>0)
   {
@@ -142,15 +152,15 @@ Bool allocation_grass(Litter *litter,   /**< litter pool */
       if((grass->ind.leaf.nitrogen+a*bm_inc_ind.nitrogen)/grass->ind.leaf.carbon > pft->par->ncleaf.high)
       {
         grass->ind.leaf.nitrogen = grass->ind.leaf.carbon*pft->par->ncleaf.high;
-        pft->bm_inc.nitrogen -= grass->ind.leaf.nitrogen-lastday.leaf.nitrogen;
+        pft->bm_inc.nitrogen -= (grass->ind.leaf.nitrogen-lastday.leaf.nitrogen)*pft->nind;
         if (pft->bm_inc.nitrogen >= grass->ind.root.carbon*pft->par->ncleaf.high / grasspar->ratio - grass->ind.root.nitrogen)
         {
           grass->ind.root.nitrogen = grass->ind.root.carbon*pft->par->ncleaf.high / grasspar->ratio;
-          pft->bm_inc.nitrogen -= grass->ind.root.nitrogen - lastday.root.nitrogen;
+          pft->bm_inc.nitrogen -= (grass->ind.root.nitrogen - lastday.root.nitrogen)*pft->nind;
         }
         else
         {
-          grass->ind.root.nitrogen += pft->bm_inc.nitrogen;
+          grass->ind.root.nitrogen += pft->bm_inc.nitrogen/pft->nind;
           pft->bm_inc.nitrogen = 0;
         }
       }
@@ -211,6 +221,16 @@ Bool allocation_grass(Litter *litter,   /**< litter pool */
     }
     pft->nleaf = grass->ind.leaf.nitrogen*pft->nind;
   } /* of config->with_nitrogen */
+
+#ifdef CHECK_BALANCE
+  stocks=litterstocks(litter);
+  end = vegc_sum(pft)-(grass->turn_litt.leaf.carbon+grass->turn_litt.root.carbon)+stocks.carbon;
+
+  if(fabs(end-start)>0.01)
+    fprintf(stderr, "C_ERROR allocation_grass: %g start : %g end : %g  bm_inc.carbon: %g  PFT:%s nind: %g leaf_turn_litt: %g root_turn_litt: %g  root_turn: %g  leaf_turn: %g \n",
+        end-start, start,end,pft->bm_inc.carbon,pft->par->name,pft->nind,grass->turn_litt.root.carbon,grass->turn_litt.leaf.carbon,grass->turn.root.carbon,grass->turn.leaf.carbon);
+#endif
+
   *fpc_inc=fpc_grass(pft);
 #ifdef DEBUG
   printf("allocation grass leaf %g root %g fpcinc %g\n",grass->ind.leaf.carbon,grass->ind.root.carbon,*fpc_inc);

@@ -40,7 +40,7 @@ void fprintcsvflux(FILE *file,          /**< Output file pointer */
     if(config->river_routing)
       fprintf(file,"%cdischarge",d);
     fprintf(file,"%cCH4 emiss.%cCH4 sink%cCH4 fire",d,d,d);
-    fprintf(file,"%cprec%cSoilC%cSoilC_slow%cLitC%cVegC",d,d,d,d,d);
+    fprintf(file,"%cprec%cSoilC%cSoilC_slow%cLitC%cVegC%cSoil_CH4%cSoil_NO3%cSoil_NH4",d,d,d,d,d,d,d,d);
     if(config->withlanduse!=NO_LANDUSE)
       fprintf(file,"%cProductC",d);
     if(config->with_nitrogen)
@@ -55,8 +55,8 @@ void fprintcsvflux(FILE *file,          /**< Output file pointer */
       fprintf(file,"%c(%g dm3/yr)",d,1/scale);
     if(config->river_routing)
       fprintf(file,"%c(%g dm3/yr)",d,1/scale);
-    fprintf(file,"%c(%g gC/yr)%c(%g gC/yr)%c(%g gC/yr)",d,1/scale,d,1/scale,d,1/scale);
-    fprintf(file,"%c(%g dm3/yr)%c(%g gC)%c(%g gC)%c(%g gC)%c(%g gC)",d,1/scale,d,1/scale,d,1/scale,d,1/scale,d,1/scale);
+    fprintf(file,"%c(%g gCH4/yr)%c(%g gCH4/yr)%c(%g gC/yr)",d,1/scale,d,1/scale,d,1/scale);
+    fprintf(file,"%c(%g dm3/yr)%c(%g gC)%c(%g gC)%c(%g gC)%c(%g gC)%c(%g gC)%c(%g gN)%c(%g gN)",d,1/scale,d,1/scale,d,1/scale,d,1/scale,d,1/scale,d,1/scale,d,1/scale,d,1/scale);
     if(config->withlanduse!=NO_LANDUSE)
       fprintf(file,"%c(%g gC/yr)",d,1/scale);
     if(config->with_nitrogen)
@@ -84,6 +84,9 @@ void fprintcsvflux(FILE *file,          /**< Output file pointer */
   fprintf(file,"%c%g",d,flux.soilc_slow*scale);
   fprintf(file,"%c%g",d,flux.litc*scale);
   fprintf(file,"%c%g",d,flux.vegc*scale);
+  fprintf(file,"%c%g",d,flux.soil_CH4*scale);
+  fprintf(file,"%c%g",d,flux.soil_NO3*scale);
+  fprintf(file,"%c%g",d,flux.soil_NH4*scale);
   if(config->withlanduse!=NO_LANDUSE)
     fprintf(file,"%c%g",d,flux.productc*scale);
   if(config->with_nitrogen)

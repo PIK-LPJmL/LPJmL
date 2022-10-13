@@ -15,7 +15,7 @@
 #include "lpj.h"
 
 void fwriteoutput_ch4(Outputfile *output,  /**< output file array */
-                      Real pch4,           /**< atmnospheric CH4 (ppm) */
+                      Real pch4,           /**< atmnospheric CH4 (ppb) */
                       Real pco2,           /**< atmospheric CO2 (ppm) */
                       const Config *config /**< LPJmL configuration */
                      )

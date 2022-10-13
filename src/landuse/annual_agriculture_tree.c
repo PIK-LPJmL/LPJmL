@@ -147,7 +147,7 @@ Bool annual_agriculture_tree(Stand *stand,         /**< Pointer to stand */
 
     } /* of foreachpft */
 #ifdef DEBUG2
-    printf("Number of updated pft: %d\n",stand->pftlist.n);
+    printf("2 Number of updated pft: %d\n",stand->pftlist.n);
 #endif
 
     light(stand,fpc_inc,config);

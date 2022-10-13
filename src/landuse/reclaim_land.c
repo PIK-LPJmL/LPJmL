@@ -51,7 +51,7 @@ void remove_vegetation_copy(Soil *soil, /* soil pointer */
   foreachpft(pft,p,&stand->pftlist)
   {
     nind = pft->nind;
-
+    //if(pft->bm_inc.carbon>0) fprintf(stderr,"PFT: %s remove vegetation: BM_inc= %g \n",pft->par->name, pft->bm_inc.carbon);
     /* if plot is deforested, wood is returned to litter, harvested or burnt
     * allows for mixed use, first harvesting a fraction of the stand,
     * then burning a fraction, then returning the rest to the litter pools
@@ -140,6 +140,7 @@ void remove_vegetation_copy(Soil *soil, /* soil pointer */
     }
 #endif
     /* rest goes to litter */
+    soil->litter.item[pft->litter].ag.leaf.carbon+=pft->bm_inc.carbon*sfrac;
     litter_update(&soil->litter,pft,nind*sfrac,config);
 #ifdef DEBUG_IMAGE_CELL
     if(ftimber>0 ||

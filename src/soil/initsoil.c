@@ -36,8 +36,10 @@ Bool initsoil(Stand *stand,           /**< Pointer to stand data */
       soil->pool[l].slow.nitrogen=soil->pool[l].fast.nitrogen=soil->NH4[l]=soil->NO3[l]=0.0;
     else
     {
-      soil->pool[l].slow.nitrogen=param.init_soiln.slow*(soildepth[l]/layerbound[BOTTOMLAYER]);
-      soil->pool[l].fast.nitrogen=param.init_soiln.fast*(soildepth[l]/layerbound[BOTTOMLAYER]);
+      soil->pool[l].slow.nitrogen=param.init_soiln.slow*(pow(10,0.35*logmidlayer[l])
+      -(l>0 ? pow(10,0.35*logmidlayer[l-1]): 0));                                              //assuming a mean soc_k value for all regions
+      soil->pool[l].fast.nitrogen=param.init_soiln.fast*(pow(10,0.35*logmidlayer[l])
+      -(l>0 ? pow(10,0.35*logmidlayer[l-1]): 0));
       soil->pool[l].slow.carbon=soil->pool[l].slow.nitrogen*soil->par->cn_ratio;
       soil->pool[l].fast.carbon=soil->pool[l].fast.nitrogen*soil->par->cn_ratio;
       soil->NH4[l]=soil->NO3[l]=soil->pool[l].slow.nitrogen/10;

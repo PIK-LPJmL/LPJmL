@@ -77,6 +77,7 @@ Bool fscanpft_grass(LPJfile *file, /**< pointer to LPJ file */
   pft->fwrite=fwrite_grass;
   pft->mix_veg=mix_veg_grass;
   pft->mix_veg_stock=mix_veg_stock_grass;
+  pft->copy=copy_grass;
   pft->fire=fire_grass;
   pft->fprint=fprint_grass;
   pft->fread=fread_grass;

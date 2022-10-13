@@ -217,7 +217,6 @@ Real daily_setaside(Stand *stand, /**< stand pointer */
     output->flux_estab.nitrogen+=flux_estab.nitrogen*stand->frac;
     stand->cell->balance.flux_estab.carbon+=flux_estab.carbon*stand->frac;
     stand->cell->balance.flux_estab.nitrogen+=flux_estab.nitrogen*stand->frac;
-    output->dcflux-=flux_estab.carbon*stand->frac;
   }
   free(present);
   /* end new block for daily establishment */

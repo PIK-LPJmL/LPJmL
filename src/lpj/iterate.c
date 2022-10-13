@@ -118,7 +118,7 @@ int iterate(Outputfile *output, /**< Output file data */
           fprintf(stderr,"ERROR015: Invalid year %d in getch4().\n",year);
         break;
       }
-      pch4=ch4*1e-3;
+      pch4=ch4*1e-3; /*convert to ppm*/
      }
     
     if(year<input.climate->firstyear) /* are we in spinup phase? */

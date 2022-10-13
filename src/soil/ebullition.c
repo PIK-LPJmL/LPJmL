@@ -66,11 +66,12 @@ Real ebullition(Soil *soil,   /**< pointer to soil data */
       {
 */
         Q_ebull=k_e*(soil->CH4[l]/soildepth[l]/epsilon_CH4*1000*ratio-C_thres)*soildepth[l]*epsilon_CH4*1e-3;
+        Q_ebull= max(0,min(soil->CH4[l],Q_ebull));
         soil->CH4[l] -= Q_ebull;
         if (l == 0)
           Q_ebull_day += Q_ebull;
         else
-          soil->CH4[l - 1] += Q_ebull;
+          soil->CH4[l-1] += Q_ebull;
         //printf("ebullition: %g layer: %d\n",Q_ebull,l);
       }
       else

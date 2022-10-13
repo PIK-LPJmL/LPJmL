@@ -16,7 +16,7 @@
 #include "grass.h"
 #include "tree.h"
 #include "agriculture.h"
-//#define CHECK_BALANCE
+
 void mixsoil(Stand *stand1,const Stand *stand2,int year,const Config *config)
 {
   int l,index,i;
@@ -284,24 +284,22 @@ Bool setaside(Cell *cell,          /**< Pointer to LPJ cell */
     s=findlandusetype(cell->standlist,SETASIDE_WETLAND);
   else
     s=findlandusetype(cell->standlist,irrig? SETASIDE_IR : SETASIDE_RF);
- // fprintf(stdout,"SETASIDE: s=%d intercrop=%d irrig:%d\n",s, intercrop,irrig);
 
   if(s!=NOT_FOUND)
   {
     mixsetaside(getstand(cell->standlist,s),cropstand,TRUE,year,config);
- //   if(year>=1937) fprintf(stdout,"SETASIDE: mixsetaside s=%d \n",s);
     #ifdef CHECK_BALANCE
   foreachstand(checkstand,k,cell->standlist)
   {
     if(cropstand!=checkstand)
       end+=(standstocks(checkstand).carbon*checkstand->frac+soilmethane(&checkstand->soil)*checkstand->frac);
   }
-  if (fabs(start-end)>epsilon)
+  if (fabs(start-end)>0.01)
   {
-     fprintf(stdout, "C-ERROR in SETASIDE: %g start:%g  end:%g s;%d \n",
+     fprintf(stderr, "C-ERROR in SETASIDE: %g start:%g  end:%g s;%d \n",
              start-end,start, end,s);
      foreachstand(checkstand,k,cell->standlist)
-       fprintf(stdout,"type %d frac:%g id:%d carbon:%g methan:%g\n",checkstand->type->landusetype,checkstand->frac,k,standstocks(checkstand).carbon*checkstand->frac,soilmethane(&checkstand->soil)*checkstand->frac);
+       fprintf(stderr,"type %d frac:%g id:%d carbon:%g methan:%g\n",checkstand->type->landusetype,checkstand->frac,k,standstocks(checkstand).carbon*checkstand->frac,soilmethane(&checkstand->soil)*checkstand->frac);
   }
 #endif
     return TRUE;
@@ -347,6 +345,7 @@ Bool setaside(Cell *cell,          /**< Pointer to LPJ cell */
       getoutput(&cell->output,FLUX_ESTABN,config)+=flux_estab.nitrogen*cropstand->frac;
       cell->balance.flux_estab.carbon+=flux_estab.carbon*cropstand->frac;
       cell->balance.flux_estab.nitrogen+=flux_estab.nitrogen*cropstand->frac;
+      //cell->output.dcflux-=flux_estab.carbon*cropstand->frac;
     }
   }
 #ifdef CHECK_BALANCE
@@ -355,12 +354,13 @@ Bool setaside(Cell *cell,          /**< Pointer to LPJ cell */
     end+=(standstocks(checkstand).carbon*checkstand->frac+soilmethane(&checkstand->soil)*checkstand->frac);
   //fprintf(stdout, "flux_estab:%g \n",flux_estab.carbon*cropstand->frac)  ;
 
-  if (fabs(start-end)>epsilon)
+  if (fabs(start-end)>0.01)
   {
-     fprintf(stdout, "C-ERROR in SETASIDE: %g start:%g  end:%g\n",
+     fprintf(stderr, "C-ERROR in SETASIDE: %g start:%g  end:%g\n",
              start-end,start, end);
      foreachstand(checkstand,s,cell->standlist)
-       fprintf(stdout,"type %d frac:%g carbon:%g flux_estab:%g \n",checkstand->type->landusetype,checkstand->frac,(standstocks(checkstand).carbon*checkstand->frac+soilmethane(&checkstand->soil)*checkstand->frac),cell->balance.flux_estab.carbon);
+       fprintf(stderr,"type %d frac:%g carbon:%g flux_estab:%g \n",checkstand->type->landusetype,checkstand->frac,
+           (standstocks(checkstand).carbon*checkstand->frac+soilmethane(&checkstand->soil)*checkstand->frac),cell->balance.flux_estab.carbon);
   }
 #endif
   return FALSE;

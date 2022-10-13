@@ -108,7 +108,7 @@ Bool annual_woodplantation(Stand *stand,         /**< Pointer to stand */
 
     } /* of foreachpft */
 #ifdef DEBUG2
-    printf("Number of updated pft: %d\n",stand->pftlist.n);
+    printf("6 Number of updated pft: %d\n",stand->pftlist.n);
 #endif
 
     light(stand,fpc_inc,config);

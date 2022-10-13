@@ -145,7 +145,7 @@ void iterateyear(Outputfile *output,  /**< Output file data */
             popdens=getpopdens(input.popdens,cell);
           if (config->isanomaly)
             grid[cell].icefrac = geticefrac(input.icefrac, cell);
-          grid[cell].output.dcflux=0;
+          grid[cell].output.dcflux=grid[cell].output.bm_inc=0;
           initoutputdata(&((grid+cell)->output),DAILY,year,config);
           /* get daily values for temperature, precipitation and sunshine */
           dailyclimate(&daily,input.climate,&grid[cell].climbuf,cell,day,
@@ -245,20 +245,20 @@ void iterateyear(Outputfile *output,  /**< Output file data */
       }
 #endif
 
-      if(config->equilsoil)
-      {
-        if(config->nspinup>param.veg_equil_year &&
-           (year==config->firstyear-config->nspinup+param.veg_equil_year))
-          equilveg(grid+cell);
 
-         if(config->nspinup>soil_equil_year &&
-            (year==config->firstyear-config->nspinup+soil_equil_year) && !config->from_restart)
-           equilsom(grid+cell,npft+ncft,config->pftpar,FALSE);
-      }
+      if(config->nspinup>param.veg_equil_year &&
+         (year==config->firstyear-config->nspinup+param.veg_equil_year))
+        equilveg(grid+cell);
       if(!config->from_restart)
         if(config->nspinup>soil_equil_year &&
            (year==config->firstyear-config->nspinup+cshift_year))
           equilsom(grid+cell,npft+ncft,config->pftpar,TRUE);
+      if(config->equilsoil)
+      {
+         if(config->nspinup>soil_equil_year &&
+            (year==config->firstyear-config->nspinup+soil_equil_year) && !config->from_restart)
+           equilsom(grid+cell,npft+ncft,config->pftpar,FALSE);
+      }
 
 
 

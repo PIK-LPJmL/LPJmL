@@ -73,7 +73,7 @@ Bool annual_setaside(Stand *stand,         /**< Pointer to stand */
     fpc_grass(pft);
 
 #ifdef DEBUG2
-  printf("Number of updated pft: %d\n",stand->pftlist.n);
+  printf("5 Number of updated pft: %d\n",stand->pftlist.n);
 #endif
 
 #ifndef DAILY_ESTABLISHMENT

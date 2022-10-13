@@ -149,6 +149,7 @@ Bool allocation_tree(Litter *litter,   /**< litter pool */
     {
       bm_inc_ind.carbon=pft->bm_inc.carbon/pft->nind;
       tree->ind.root.carbon+=bm_inc_ind.carbon;
+      pft->bm_inc.carbon=0;
     }
     return TRUE;
   }
@@ -327,6 +328,7 @@ Bool allocation_tree(Litter *litter,   /**< litter pool */
           //litter->item[pft->litter].ag.leaf.carbon+=(tree->ind.leaf.carbon-cleaf)*pft->nind;
           tree->excess_carbon+=(tree->ind.leaf.carbon-cleaf);
           tree->ind.leaf.carbon=cleaf;
+          //fprintf(stderr,"ALLOCATION 1\n");
         }
         if(tree->ind.root.carbon>0 && tree->ind.root.nitrogen/tree->ind.root.carbon<pft->par->ncleaf.low/treepar->ratio.root)
         {
@@ -334,8 +336,9 @@ Bool allocation_tree(Litter *litter,   /**< litter pool */
           //litter->bg[pft->litter].carbon+=(tree->ind.root.carbon-croot)*pft->nind;
           tree->excess_carbon+=(tree->ind.root.carbon-croot);
           tree->ind.root.carbon=croot;
+          //fprintf(stderr,"ALLOCATION 2\n");
         }
-        if(tree->ind.sapwood.carbon>0 && tree->ind.sapwood.carbon>0 && tree->ind.sapwood.nitrogen/tree->ind.sapwood.carbon<pft->par->ncleaf.low/treepar->ratio.sapwood)
+        if(tree->ind.sapwood.carbon>0 && tree->ind.sapwood.nitrogen/tree->ind.sapwood.carbon<pft->par->ncleaf.low/treepar->ratio.sapwood)
         {
           csapwood=tree->ind.sapwood.nitrogen/pft->par->ncleaf.low*treepar->ratio.sapwood;
           /*for(i=0;i<NFUELCLASS;i++)
@@ -345,6 +348,7 @@ Bool allocation_tree(Litter *litter,   /**< litter pool */
                             (tree->ind.sapwood.carbon-csapwood)*pft->nind*treepar->fuelfrac[i],i);
           }*/
           tree->excess_carbon+=(tree->ind.sapwood.carbon-csapwood);
+          //fprintf(stderr,"ALLOCATION 3\n");
           tree->ind.sapwood.carbon=csapwood;
         }
       }
@@ -353,9 +357,10 @@ Bool allocation_tree(Litter *litter,   /**< litter pool */
   } /* of config->with_nitrogen */
   if(tree->ind.leaf.carbon<=0 && tree->ind.root.carbon>0)   //QUICK-FIX very occasional it happens that leaf carbon is ZERO and a lot of carbon is in roots
   {
-      tree->ind.leaf.carbon+=tree->ind.root.carbon/2;
-      tree->ind.root.carbon-=tree->ind.root.carbon/2;
+      tree->ind.leaf.carbon+=tree->ind.root.carbon/lmtorm;
+      tree->ind.root.carbon-=tree->ind.root.carbon/lmtorm;
   }
+  pft->bm_inc.carbon=0;
   allometry_tree(pft);
   *fpc_inc=fpc_tree(pft);
   return isneg_tree(pft);

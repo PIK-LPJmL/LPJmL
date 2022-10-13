@@ -22,11 +22,14 @@ void copypft(Pft *dst, const Pft *src)
   dst->nind = src->nind;
   dst->gdd = src->gdd;
   dst->bm_inc = src->bm_inc;
+  dst->establish = src->establish;
   dst->gdd = src->gdd;
   dst->wscal = src->wscal;
   dst->wscal_mean = src->wscal_mean;
   dst->phen = src->phen;
   dst->aphen = src->aphen;
+  dst->phen_gsi = src->phen_gsi;
+  dst->npp_bnf = src->npp_bnf;
   /* call PFT-specific copy function */
   src->par->copy(dst, src);
 } /* of 'copypft' */

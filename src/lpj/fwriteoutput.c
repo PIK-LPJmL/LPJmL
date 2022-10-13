@@ -841,7 +841,7 @@ void fwriteoutput(Outputfile *output,  /**< output file array */
           foreachstand(stand,s,grid[cell].standlist)
           {
             if (stand->type->landusetype == SETASIDE_RF || stand->type->landusetype == SETASIDE_IR ||
-                 stand->type->landusetype == AGRICULTURE)
+                 stand->type->landusetype == AGRICULTURE|| stand->type->landusetype == SETASIDE_WETLAND)
             {
               for (p = 0; p<stand->soil.litter.n; p++)
                 grid[cell].output.soilc_agr+=stand->soil.litter.item[p].bg.carbon*stand->frac;
@@ -865,7 +865,7 @@ void fwriteoutput(Outputfile *output,  /**< output file array */
           foreachstand(stand,s,grid[cell].standlist)
           {
             if (stand->type->landusetype == SETASIDE_RF || stand->type->landusetype == SETASIDE_IR ||
-                 stand->type->landusetype == AGRICULTURE)
+                 stand->type->landusetype == AGRICULTURE || stand->type->landusetype == SETASIDE_WETLAND)
             {
               grid[cell].output.litc_agr +=(litter_ag_sum(&stand->soil.litter) + litter_agsub_sum(&stand->soil.litter))*stand->frac;            }
           }

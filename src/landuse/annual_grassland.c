@@ -18,6 +18,7 @@
 #include "lpj.h"
 #include "grass.h"
 #include "grassland.h"
+//#define DEBUG2
 
 Bool annual_grassland(Stand *stand,         /**< Pointer to stand */
                       int npft,             /**< number of natural pfts */
@@ -39,6 +40,15 @@ Bool annual_grassland(Stand *stand,         /**< Pointer to stand */
   int n_est=0;
   Real fpc_total,*fpc_type;
   Grassland *grassland;
+#ifdef CHECK_BALANCE
+  Real start = 0;
+  Real end = 0;
+  Real firec=0;
+  Stocks bm_inc={0,0};
+  start = standstocks(stand).carbon + soilmethane(&stand->soil);
+  foreachpft(pft,p,&stand->pftlist)
+   bm_inc.carbon+=pft->bm_inc.carbon;
+#endif
 
   fpc_type=newvec(Real,config->ntypes);
   check(fpc_type);
@@ -52,7 +62,6 @@ Bool annual_grassland(Stand *stand,         /**< Pointer to stand */
 
   nnat=getnnat(npft,config);
   nirrig=getnirrig(ncft,config);
-
   foreachpft(pft,p,&stand->pftlist)
   {
 #ifdef DEBUG2
@@ -77,7 +86,7 @@ Bool annual_grassland(Stand *stand,         /**< Pointer to stand */
     fpc_grass(pft);
 
 #ifdef DEBUG2
-  printf("Number of updated pft: %d\n",stand->pftlist.n);
+  printf("4 Number of updated pft: %d\n",stand->pftlist.n);
 #endif
 
   for(p=0;p<npft;p++)
@@ -141,7 +150,12 @@ Bool annual_grassland(Stand *stand,         /**< Pointer to stand */
       getoutputindex(&stand->cell->output,PFT_NLEAF,nnat+rmgrass(ncft)+grassland->irrigation.irrigation*nirrig,config)+=grass->ind.leaf.nitrogen;
     } 
   }
-
+#ifdef CHECK_BALANCE
+    end = standstocks(stand).carbon + soilmethane(&stand->soil);
+    if (fabs(end-start-flux_estab.carbon)>0.1)
+      fprintf(stderr, "C-ERROR annual grassland: %g start:%g  end:%g flux_estab.carbon: %g  type:%s\n",
+              end-start, start, end, flux_estab.carbon, stand->type->name);
+#endif
   free(present);
   free(fpc_type);
   return FALSE;

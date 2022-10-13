@@ -23,6 +23,10 @@ void cutpfts(Stand *stand, /**< Pointer to stand */
   int p;
   Pft *pft;
   foreachpft(pft,p,&stand->pftlist)
+  {
+    stand->soil.litter.item[pft->litter].ag.leaf.carbon+=pft->bm_inc.carbon;
+    pft->bm_inc.carbon=0;
     litter_update(&stand->soil.litter,pft,pft->nind,config);
+  }
   freepftlist(&stand->pftlist);
 } /* of 'cutpfts' */

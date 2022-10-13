@@ -129,7 +129,7 @@ extern Real vegc_sum_tree(const Pft *);
 extern Real vegn_sum_tree(const Pft *);
 extern Real agb_tree(const Pft *);
 extern void mix_veg_tree(Pft *,Real);
-extern void mix_veg_stock_tree(Pft *, Pft *, Real, Real);
+extern Bool mix_veg_stock_tree(Pft *, Pft *, Real, Real,const Config *);
 extern void free_tree(Pft *);
 extern void light_tree(Litter *,Pft *,Real,const Config *);
 extern void adjust_tree(Litter *,Pft *,Real,Real,const Config *);

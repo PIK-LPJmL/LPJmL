@@ -38,10 +38,25 @@ Stocks turnover_grass(Litter *litter, /**< Litter pool */
   grass=pft->data;
   grasspar=getpftpar(pft,data);
   output=&pft->stand->cell->output;
+#ifdef CHECK_BALANCE
+  Real start,end,litter_alt,establish_alt,reprod1,vegsum_alt,bminc_alt,ecxess_carbon_alt;
+  Stocks stocks;
+  stocks=litterstocks(litter);
+  vegsum_alt= vegc_sum(pft);
+  start=vegc_sum(pft)+pft->bm_inc.carbon+stocks.carbon-pft->establish.carbon;
+  establish_alt=pft->establish.carbon;
+  bminc_alt=pft->bm_inc.carbon;
+  ecxess_carbon_alt=grass->excess_carbon;
+  //fprintf(stderr, "Start TURNOVER: turn_litt.leaf: %g  turn_litt.root: %g turn.root: %g turn.leaf: %g \n",grass->turn_litt.leaf.carbon,grass->turn_litt.root.carbon,grass->turn.root.carbon,grass->turn.leaf.carbon);
+#endif
+
   /* reproduction */
   if(pft->bm_inc.carbon>0)
   {
     reprod=pft->bm_inc.carbon*grasspar->reprod_cost*fraction;
+#ifdef CHECK_BALANCE
+    reprod1=reprod;
+#endif
     pft->bm_inc.carbon-=reprod;
     if(pft->establish.carbon<reprod)
     {
@@ -96,6 +111,27 @@ Stocks turnover_grass(Litter *litter, /**< Litter pool */
   }
   else
   {
+/*
+    gturn.root.carbon=grass->ind.root.carbon*grasspar->turnover.root*fraction;
+    gturn.root.nitrogen=grass->ind.root.nitrogen*grasspar->turnover.root*fraction;
+    gturn.leaf.carbon=grass->ind.leaf.carbon*grasspar->turnover.leaf*fraction;
+    gturn.leaf.nitrogen=grass->ind.leaf.nitrogen*grasspar->turnover.leaf*fraction;
+    litter->item[pft->litter].ag.leaf.carbon+=gturn.leaf.carbon*pft->nind;
+    getoutput(output,LITFALLC,config)+=gturn.leaf.carbon*pft->nind*pft->stand->frac;
+    litter->item[pft->litter].ag.leaf.nitrogen+=gturn.leaf.nitrogen*pft->nind*pft->par->fn_turnover;
+    getoutput(output,LITFALLN,config)+=gturn.leaf.nitrogen*pft->nind*pft->par->fn_turnover*pft->stand->frac;
+    update_fbd_grass(litter,pft->par->fuelbulkdensity,gturn.leaf.carbon*pft->nind);
+    litter->item[pft->litter].bg.carbon+=gturn.root.carbon*pft->nind;
+    getoutput(output,LITFALLC,config)+=gturn.root.carbon*pft->nind*pft->stand->frac;
+    litter->item[pft->litter].bg.nitrogen+=gturn.root.nitrogen*pft->nind*pft->par->fn_turnover;
+    getoutput(output,LITFALLN,config)+=gturn.root.nitrogen*pft->nind*pft->par->fn_turnover*pft->stand->frac;
+
+*/
+    grass->ind.root.carbon-=grass->turn.root.carbon;
+    grass->ind.leaf.carbon-=grass->turn.leaf.carbon;
+    grass->ind.root.nitrogen-=grass->turn.root.nitrogen;
+    grass->ind.leaf.nitrogen-=grass->turn.leaf.nitrogen;
+    pft->bm_inc.nitrogen+= (grass->turn.root.nitrogen+grass->turn.leaf.nitrogen)*pft->nind*(1-pft->par->fn_turnover);
     gturn.root.carbon=grass->ind.root.carbon*grasspar->turnover.root*fraction;
     gturn.root.nitrogen=grass->ind.root.nitrogen*grasspar->turnover.root*fraction;
     gturn.leaf.carbon=grass->ind.leaf.carbon*grasspar->turnover.leaf*fraction;
@@ -124,5 +160,15 @@ Stocks turnover_grass(Litter *litter, /**< Litter pool */
   grass->excess_carbon-=grass->excess_carbon*grasspar->turnover.root;
   gturn.leaf.carbon+=gturn.root.carbon;
   gturn.leaf.nitrogen+=gturn.root.nitrogen;
+#ifdef CHECK_BALANCE
+  litter_alt=stocks.carbon;
+  stocks=litterstocks(litter);
+  end = vegc_sum(pft)+pft->bm_inc.carbon+stocks.carbon-pft->establish.carbon;
+  if(fabs(end-start)>0.01)
+    fprintf(stderr, "C_ERROR turnover grass landusetype %s : %g start : %g end : %g  bm_inc.carbon: %g  bminc_alt: %g  PFT:%s nind: %g leaf_turn_litt: %g root_turn_litt: %g  root_turn: %g"
+        "  leaf_turn: %g reprod: %g litter_alt: %g  litter: %g est.carbon: %g est.carbon_alt: %g fraction: %g vegsum: %g vegsum_alt: %g excess_carbon: %g excess_carbon_alt: %g\n",
+        pft->stand->type->name,end-start, start,end,pft->bm_inc.carbon,bminc_alt,pft->par->name,pft->nind,grass->turn_litt.root.carbon,grass->turn_litt.leaf.carbon,
+        grass->turn.root.carbon,grass->turn.leaf.carbon,reprod1,litter_alt,stocks.carbon,pft->establish.carbon, establish_alt, fraction,vegc_sum(pft),vegsum_alt),grass->excess_carbon,ecxess_carbon_alt;
+#endif
   return gturn.leaf;
 } /* of 'turnover_grass' */

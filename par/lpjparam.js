@@ -14,9 +14,9 @@
 
 "param" :
 {
-  "k_litter10" : 0.4,        /* 0.3 k_litter10  (1/yr) */
+  "k_litter10" : 0.3,        /* 0.3 k_litter10  (1/yr) */
   "k_soil10" : { "fast" : 0.03, "slow":  0.001}, /* fast, slow k_soil10  (1/yr) */
-  "init_soiln" : { "fast" : 3500.0, "slow":  3500.0}, /* initial fast and slow soil nitrogen (gN/m2) 5500*/
+  "init_soiln" : { "fast" : 2500.0, "slow":  2500.0}, /* initial fast and slow soil nitrogen (gN/m2) 5500*/
   "maxsnowpack": 20000.0,    /* max. snow pack (mm) */
   "soildepth_evap" : 300.0,  /* depth of sublayer at top of upper soil layer (mm) */
   "soil_infil" : 2.0,        /* default soil infiltration */
@@ -36,12 +36,12 @@
   "ko25" : 3.0e4,            /* Michaelis constant for O2 (Pa) at 25 deg C */
   "kc25" : 30.0,              /* Michaelis constant for CO2 (Pa) at 25 deg C */
   "atmfrac" : 0.6,           /* atmfrac */
-  "fastfrac" : 0.98,         /* fastfrac */
+  "fastfrac" : 0.96,         /* fastfrac */
   "bioturbate" : 0.2,        /* bioturbation (0 = no bioturbation) */
   "veg_equil_year" : 2400,
   "k_max": 0.10,             /* k_max, maximum fraction of soil->NH4 assumed to be nitrified Parton, 2001*/
   "fpc_tree_max" : 0.95,     /* maximum foliage projective cover for trees */
-  "temp_response" : 60.02,   /* Parameter in temperature response function */
+  "temp_response" : 56.02,   /* Parameter in temperature response function */
   "percthres" : 1.0,
   "k_2": 0.01,               /* k_2, fraction of nitrified N lost as N20 flux Parton, 2001*/
   "p" : 25,                  /* Haxeltine & Prentice regression coefficient */
@@ -55,7 +55,7 @@
   "T_0" : -25.0,             /* parameter in N uptake temperature function */
   "T_r" : 15.0,              /* parameter in N uptake temperature function */
   "lsuha" : 0.0,             /* livestock density applied for daily or rotational grazing on mangement grasslands */
-  "k_mort" : 0.3,            /* coefficient of growth efficiency in mortality equation (k_mort2) */
+  "k_mort" : 0.2,            /* coefficient of growth efficiency in mortality equation (k_mort2) */
   "residue_rate": 200,       /* fixed residue rate in gC/m2/yr, ignored if <=0 and if pool >0  */
   "residue_pool" : 100,      /* fixed aboveground residue pool in gC/m2, ignored if <=0, overrules constant rate */
   "residue_cn": 20,         /* CN ratio of prescribed residues */

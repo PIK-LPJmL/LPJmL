@@ -46,6 +46,7 @@ typedef struct
   Real *data;            /**< storage for output */
   Real mpet;             /**< monthly PET (mm) */
   Real dcflux;           /**< daily carbon flux from LPJ to atmosphere (gC/m2/day) */
+  Real bm_inc;
   int *syear2;           /**< sowing year of second season, used for double_harvest */
   int *syear;            /**< sowing year of first season, used for double_harvest */
 #ifdef COUPLING_WITH_FMS
@@ -93,6 +94,9 @@ typedef struct
   Real litc;                  /**< litter carbon (gC) */
   Real vegc;                  /**< vegetation carbon (gC) */
   Real productc;              /**< product pool carbon (gC) */
+  Real soil_NO3;
+  Real soil_NH4;
+  Real soil_CH4;
   Real product_turnover;      /**< product pool carbon turnover (gC/yr) */
   Real neg_fluxes;
   Real area_agr;              /**< agriculture area (m2) */

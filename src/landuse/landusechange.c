@@ -32,7 +32,6 @@ typedef enum {PASTURE=1, BIOMASS_TREE_PLANTATION, BIOMASS_GRASS_PLANTATION, AGRI
 #else
 #define minnatfrac_luc 0.0
 #endif
-//#define CHECK_BALANCE
 
 void deforest(Cell *cell,          /**< pointer to cell */
               Real difffrac,       /**< stand fraction to deforest (0..1) */
@@ -47,24 +46,26 @@ void deforest(Cell *cell,          /**< pointer to cell */
               const Config *config /**< LPJmL configuration */
              )
 {
-  int s,pos;
+  int s,pos,p,j;
   Real difffrac_old=difffrac;
   Real difffrac_wetland=0;
   Real cropfrac=0;
   Bool DEL=FALSE;
   Stand *stand,*cutstand;
+  String line;
+  Pft* pft;
 #ifdef CHECK_BALANCE
   Real end=0;
-  Real start=0;
+  Real startC=cell->balance.deforest_emissions.carbon+cell->balance.timber_harvest.carbon-cell->balance.flux_estab.carbon;
+  Real start=startC;
   Stand *checkstand;
   foreachstand(checkstand,s,cell->standlist)
     start+=(standstocks(checkstand).carbon*checkstand->frac+soilmethane(&checkstand->soil)*checkstand->frac);
-//  foreachstand(checkstand,s,cell->standlist)
-//    fprintf(stdout,"type %d frac:%g diff:%g carbon:%g methan:%g\n",checkstand->type->landusetype,checkstand->frac,difffrac,standstocks(checkstand).carbon*checkstand->frac,soilmethane(&checkstand->soil)*checkstand->frac);
+//  if(year==2002) foreachstand(checkstand,s,cell->standlist)
+//    fprintf(stdout,"deforest: standNR: %d type %s frac:%g diff:%g carbon:%g methan:%g\n",s,checkstand->type->name,checkstand->frac,difffrac,standstocks(checkstand).carbon*checkstand->frac,soilmethane(&checkstand->soil)*checkstand->frac);
 #endif
 
   timberharvest=FALSE;
-  //fprintf(stdout,"DEFOREST\n\n\n");
   if(iswetland)
     s=findlandusetype(cell->standlist,WETLAND);
   else
@@ -72,9 +73,10 @@ void deforest(Cell *cell,          /**< pointer to cell */
   if(s!=NOT_FOUND)
   {
     stand=getstand(cell->standlist,s);
+//    if(year>=2002) fprintf(stderr,"FIND STAND: %s iswetland: %d\n",stand->type->name,iswetland);
     if(stand->frac>minnatfrac)
     {
-      //if(year>=1937) fprintf(stdout,"HIER DEFOREST 1 iswetland:%d  irrig:%d difffrac: %g stand->frac: %g \n",iswetland,timberharvest,irrig,difffrac,stand->frac);
+//      if(year>=2002) fprintf(stdout,"HIER DEFOREST 1 iswetland:%d  irrig:%d difffrac: %g stand->frac: %g \n",iswetland,timberharvest,irrig,difffrac,stand->frac);
       if(difffrac+epsilon>=stand->frac-minnatfrac)
         difffrac=stand->frac-minnatfrac;
       if(iswetland)
@@ -101,23 +103,23 @@ void deforest(Cell *cell,          /**< pointer to cell */
         else
           pos=findlandusetype(cell->standlist,NATURAL);
         //pos=s;
-        //if(year>=1955)
-        //fprintf(stdout,"HIER DEFOREST 1.1\n");
+//        if(year==2002)
+//         fprintf(stdout,"HIER DEFOREST 1.1\n");
       }
       else
       {
         stand->frac-=difffrac;
         difffrac=0;
-        //if(year>=1937) fprintf(stdout,"HIER DEFOREST 1.2\n");
+//        if(year==2002) fprintf(stdout,"HIER DEFOREST 1.2\n");
       }
       if(!timberharvest)
       {
         /* stand was already tilled, so put FALSE to tillage argument */
         if(setaside(cell,getstand(cell->standlist,pos),FALSE,intercrop,npft,irrig,iswetland,year,config))
           delstand(cell->standlist,pos);
-        //if(year>=1937)
-         //fprintf(stdout,"HIER DEFOREST 1.2 setaside : difffrac: %g \n", difffrac);
-        check_stand_fracs(cell,cell->lakefrac+cell->ml.reservoirfrac);
+//        if(year==2002)
+//         fprintf(stdout,"HIER DEFOREST 1.2 setaside : difffrac: %g \n", difffrac);
+        check_stand_fracs(cell,cell->lakefrac+cell->ml.reservoirfrac,1);
 
       }
     }
@@ -127,12 +129,13 @@ void deforest(Cell *cell,          /**< pointer to cell */
   if(difffrac>0)
   {
     DEL=FALSE;
-    //if(year>=1937) fprintf(stdout,"HIER DEFOREST iswetland:%d  irrig:%d difffrac:%g\n",iswetland,timberharvest,irrig,difffrac);
+//    if(year==2002) fprintf(stdout,"HIER DEFOREST iswetland: %d  irrig: %d difffrac: %g s: %d\n",iswetland,timberharvest,irrig,difffrac,s);
     difffrac_old=difffrac;
     if(iswetland)
       s=findlandusetype(cell->standlist,NATURAL); //now we search if natural is available
     else
       s=findlandusetype(cell->standlist,WETLAND);
+//    if(year==2002) fprintf(stdout,"HIER DEFOREST type: %s iswetland: %d  irrig: %d difffrac:%g s: %d\n",getstand(cell->standlist,s)->type->name,iswetland,timberharvest,irrig,difffrac,s);
     if(s!=NOT_FOUND){
       if(iswetland)
         pos=addstand(&natural_stand,cell)-1;
@@ -140,6 +143,10 @@ void deforest(Cell *cell,          /**< pointer to cell */
         pos=addstand(&wetland_stand,cell)-1;
       stand=getstand(cell->standlist,s);
       cutstand=getstand(cell->standlist,pos);
+      if(difffrac+epsilon>=stand->frac-minnatfrac)
+        difffrac=stand->frac-minnatfrac;
+//      if(difffrac+epsilon>=stand->frac)
+//        difffrac-=stand->frac;
       cutstand->frac=difffrac;
 
       reclaim_land(stand,cutstand,cell,config->istimber,npft+ncft,config);
@@ -154,7 +161,7 @@ void deforest(Cell *cell,          /**< pointer to cell */
         else
           pos=findlandusetype(cell->standlist,WETLAND);
         DEL=TRUE;
-        //fprintf(stdout,"HIER DEFOREST 2.1 setaside : difffrac: %g \n", difffrac);
+//        if(year==2002) fprintf(stdout,"HIER DEFOREST 2.1 setaside : difffrac: %g s: %d type: %s\n", difffrac,s,getstand(cell->standlist,pos)->type->name);
        //check_stand_fracs(cell,cell->lakefrac+cell->ml.reservoirfrac);
       }
       else
@@ -164,37 +171,63 @@ void deforest(Cell *cell,          /**< pointer to cell */
       }
       if(!timberharvest)
       {
-        if(setaside(cell,getstand(cell->standlist,pos),FALSE,intercrop,npft,irrig,iswetland,year,config))
+        if(setaside(cell,getstand(cell->standlist,pos),cell->ml.with_tillage,intercrop,npft,irrig,iswetland,year,config))
           delstand(cell->standlist,pos);
       }
     }
-    if(!iswetland)
+    if(iswetland)
       difffrac_wetland=difffrac_old-difffrac;
 
   }
-  check_stand_fracs(cell,cell->lakefrac+cell->ml.reservoirfrac);
+  check_stand_fracs(cell,cell->lakefrac+cell->ml.reservoirfrac,11);
   cell->hydrotopes.wetland_area-=difffrac_wetland;
   cell->hydrotopes.wetland_area_runmean-=difffrac_wetland;
 
   if(s==NOT_FOUND && difffrac>0.01)
   {
+#ifdef CHECK_BALANCE
+    Irrigation *data;
+    Pftcrop *crop;
     foreachstand(stand,s,cell->standlist)
     {
-       fprintf(stderr,"type %s frac:%g diff:%g irrig: %d carbon:%g methan:%g\n",
-               stand->type->name,stand->frac,difffrac,irrig,standstocks(stand).carbon,
-               soilmethane(&stand->soil));
+      data=stand->data;
+      foreachpft(pft,p,&stand->pftlist)
+      {
+        if(stand->type->landusetype!= NATURAL && stand->type->landusetype!= WETLAND)
+        {
+            crop=pft->data;
+            fprintf(stderr,"type %s frac: %g s: %d iswetland_stand: %d irrig: %d  stand_irrigation: %d carbon:%g methan: %g PFT: %s growingdays: %d\n",
+               stand->type->name,stand->frac,s,stand->soil.iswetland,irrig,data->irrigation,standstocks(stand).carbon,
+               soilmethane(&stand->soil),pft->par->name,crop->growingdays);
+        }
+        else
+          fprintf(stderr,"type %s frac: %g s: %d iswetland_stand: %d irrig: %d  carbon:%g methan: %g PFT: %s \n",
+             stand->type->name,stand->frac,s,stand->soil.iswetland,irrig,standstocks(stand).carbon,
+             soilmethane(&stand->soil),pft->par->name);
+
+      }
     }
-    fail(NO_NATURAL_STAND_ERR,TRUE,"No natural stand or wetland for deforest, difffrac=%g",difffrac);
+#endif
+   fprintf(stderr,"WARNING: No natural stand or wetland for deforest in (%s), difffrac= %g iswetland: %d  \n",sprintcoord(line,&cell->coord),difffrac, iswetland);
+#ifdef CHECK_BALANCE
+    for(j=0;j<ncft;j++)
+      fprintf(stderr,"landfrac_rainfed: %g landfrac_irr: %g\n", cell->ml.landfrac[0].crop[j],cell->ml.landfrac[1].crop[j]);
+    fprintf(stderr,"grassfrac_rainfed: %g grassfrac_irr: %g\n",(cell->ml.landfrac[0].grass[0]+cell->ml.landfrac[0].grass[1]),
+        (cell->ml.landfrac[1].grass[0]+cell->ml.landfrac[1].grass[1]));
+    fprintf(stderr,"ml.cropfrac_rf: %g ml.cropfrac_ir: %g  ml.cropfrac_wl: %g  ml.cropfrac_wl_irr: %g \n",
+        cell->ml.cropfrac_rf,cell->ml.cropfrac_ir,cell->ml.cropfrac_wl[0],cell->ml.cropfrac_wl[1]);
+#endif
   }
 #ifdef CHECK_BALANCE
+  end=cell->balance.deforest_emissions.carbon+cell->balance.timber_harvest.carbon-cell->balance.flux_estab.carbon;
   foreachstand(checkstand,s,cell->standlist)
     end+=(standstocks(checkstand).carbon*checkstand->frac+soilmethane(&checkstand->soil)*checkstand->frac);
-  if (fabs(start-end)>0.001)
+  if (fabs(start-end)>0.01)
   {
-     fprintf(stdout, "C-ERROR in deforest: %g start:%g  end:%g istimber: %d \n",
-             start-end,start, end,config->istimber);
+     fprintf(stderr, "C-ERROR in deforest: %g start: %g  end: %g istimber: %d intercrop: %d timber_harvest.carbon: %g deforest_emissions: %g  flux_estab.carbon %g startC: %g\n",
+             start-end,start-startC, end-(cell->balance.timber_harvest.carbon-cell->balance.flux_estab.carbon),config->istimber,intercrop,cell->balance.timber_harvest.carbon,cell->balance.flux_estab.carbon,cell->balance.deforest_emissions.carbon,startC);
      foreachstand(checkstand,s,cell->standlist)
-       fprintf(stdout,"type %d frac:%g diff:%g carbon:%g methan:%g\n",checkstand->type->landusetype,checkstand->frac,difffrac,standstocks(checkstand).carbon*checkstand->frac,soilmethane(&checkstand->soil)*checkstand->frac);
+       fprintf(stderr,"type %s frac:%g s: %d iswetland: %d diff_start:%g diff:%g carbon:%g methan:%g\n",checkstand->type->name,checkstand->frac,s,checkstand->soil.iswetland,difffrac_old,difffrac,standstocks(checkstand).carbon*checkstand->frac,soilmethane(&checkstand->soil)*checkstand->frac);
   }
 #endif
 
@@ -270,9 +303,10 @@ static void regrowth(Cell *cell, /* pointer to cell */
   //fprintf(stdout,"regrowth\n\n\n");
 #ifdef CHECK_BALANCE
   Real end=0;
-  Real start=0;
+  Real startC=cell->balance.deforest_emissions.carbon+cell->balance.timber_harvest.carbon-cell->balance.flux_estab.carbon;
+  Real start=startC;
+  Real frac=0;
   Stand *checkstand;
-  //fprintf(stdout,"regrowth\n\n");
   foreachstand(checkstand,s,cell->standlist)
     start+=(standstocks(checkstand).carbon*checkstand->frac+soilmethane(&checkstand->soil)*checkstand->frac);
 //  foreachstand(checkstand,s,cell->standlist)
@@ -361,21 +395,28 @@ static void regrowth(Cell *cell, /* pointer to cell */
     getoutput(&cell->output,FLUX_ESTABN,config)+=flux_estab.nitrogen*natstand->frac;
     cell->balance.flux_estab.carbon+=flux_estab.carbon*natstand->frac;
     cell->balance.flux_estab.nitrogen+=flux_estab.nitrogen*natstand->frac;
-    cell->output.dcflux-=flux_estab.carbon*natstand->frac;
+    //cell->output.dcflux-=flux_estab.carbon*natstand->frac;
   }
 #ifdef IMAGE
   }
 #endif
 
 #ifdef CHECK_BALANCE
+  end=cell->balance.deforest_emissions.carbon+cell->balance.timber_harvest.carbon-cell->balance.flux_estab.carbon;
   foreachstand(checkstand,s,cell->standlist)
     end+=(standstocks(checkstand).carbon*checkstand->frac+soilmethane(&checkstand->soil)*checkstand->frac);
-  if (fabs(start-end)>0.01)
+  s=findlandusetype(cell->standlist,NATURAL);
+  if(s!=NOT_FOUND)
+     {
+       natstand=getstand(cell->standlist,s);
+       frac=natstand->frac;
+     }
+  if (fabs(end-start)>0.01)
   {
-     fprintf(stdout, "C-ERROR in regrowth: %g start:%g  end:%g\n",
-             start-end,start, end);
-     foreachstand(checkstand,s,cell->standlist)
-       fprintf(stdout,"type %d frac:%g diff:%g carbon:%g methan:%g\n",checkstand->type->landusetype,checkstand->frac,difffrac,standstocks(checkstand).carbon*checkstand->frac,soilmethane(&checkstand->soil)*checkstand->frac);
+     fprintf(stderr, "C-ERROR in regrowth: %g start:%g  end:%g flux_estab:%g ntfrac: %g \n",
+         end-start,start, end,flux_estab.carbon,frac);
+//     foreachstand(checkstand,s,cell->standlist)
+//       fprintf(stderr,"type %d frac:%g diff:%g carbon:%g methan:%g\n",checkstand->type->landusetype,checkstand->frac,difffrac,standstocks(checkstand).carbon*checkstand->frac,soilmethane(&checkstand->soil)*checkstand->frac);
   }
 #endif
 
@@ -399,29 +440,29 @@ static void landexpansion(Cell *cell,            /* cell pointer */
   Pft *pft;
   Irrigation *data;
   Biomass_tree *biomass_tree;
-  Stand *setasidestand,*mixstand,*wetstand,*stand;
+  Stand *setasidestand,*mixstand,*mixstand2,*wetstand,*stand;
   Real frac_change=0;
   Real difffrac2=0;
   Real old_mixfrac=0;
+  mixstand=NULL;
+  mixstand2=NULL;
 #ifdef CHECK_BALANCE
   Real end=0;
-  Real start=0;
+  Real start=cell->balance.timber_harvest.carbon-cell->balance.flux_estab.carbon;
   Stand *checkstand;
   foreachstand(checkstand,s,cell->standlist)
     start+=(standstocks(checkstand).carbon*checkstand->frac+soilmethane(&checkstand->soil)*checkstand->frac);
-//  foreachstand(checkstand,s,cell->standlist)
-//    fprintf(stdout,"type %d frac:%g diff:%g carbon:%g methan:%g\n",checkstand->type->landusetype,checkstand->frac,difffrac,standstocks(checkstand).carbon*checkstand->frac,soilmethane(&checkstand->soil)*checkstand->frac);
+  if(year==2009)
+    foreachstand(stand,s,cell->standlist)
+    {
+      fprintf(stderr,"frac[%s]= %g difffrac:%g\n",stand->type->name,stand->frac,difffrac);
+      foreachpft(pft,p,&stand->pftlist) fprintf(stderr,"PFT: %s \n",pft->par->name);
+    }
 #endif
-  mixstand=NULL;
-//  if(year>1848)
-//  foreachstand(stand,s,cell->standlist)
-//  {
-//    fprintf(stderr,"frac[%s]=%g\n",stand->type->name,stand->frac);
-//    //foreachpft(pft,p,&stand->pftlist) fprintf(stderr,"PFT: %s \n",pft->par->name);
-//  }
+
   s=findlandusetype(cell->standlist,irrigation ? SETASIDE_IR : SETASIDE_RF);
   ws=findlandusetype(cell->standlist,SETASIDE_WETLAND);
-//  fprintf(stderr,"landexpansion   s= %d ws= %d difffrac2: %g difffrac: %g \n\n\n\n",s, ws,difffrac2,difffrac);
+  //if(year==2009)  fprintf(stderr,"landexpansion   s= %d ws= %d difffrac2: %g difffrac: %g \n\n\n\n",s, ws,difffrac2,difffrac);
 
   if(s!=NOT_FOUND || ws!=NOT_FOUND)
   {
@@ -446,18 +487,18 @@ static void landexpansion(Cell *cell,            /* cell pointer */
       if(setasidestand->frac<=epsilon-difffrac)
       {          /*setaside stand has not enough space for grassland expansion*/
         mixstand=getstand(cell->standlist,s);
-//        fprintf(stderr,"setasidestand to small mixfrac: %g diffrac: %g diffrac2: %g\n",mixstand->frac,difffrac,difffrac2);
+        //if(year==2009) fprintf(stderr,"setasidestand to small mixfrac: %g diffrac: %g diffrac2: %g\n",mixstand->frac,difffrac,difffrac2);
         cutpfts(mixstand,config);
         mixstand->type=&kill_stand;
         difffrac-=-mixstand->frac;
         difffrac2=-mixstand->frac;
-//        fprintf(stderr,"setasidestand to small mixfrac: %g diffrac: %g diffrac2: %g\n",mixstand->frac,difffrac,difffrac2);
+        //if(year==2009)  fprintf(stderr,"setasidestand to small mixfrac: %g diffrac: %g diffrac2: %g\n",mixstand->frac,difffrac,difffrac2);
         frac_change=-mixstand->frac;
         pos=s;
       }
       else
       {
-//        fprintf(stderr,"setasidestand big enough \n");
+        //if(year==2009) fprintf(stderr,"setasidestand big enough \n");
         pos=addstand(&natural_stand,cell)-1; /*setaside big enough for grassland expansion*/
         mixstand=getstand(cell->standlist,pos);
         mixstand->type=&kill_stand;
@@ -471,23 +512,40 @@ static void landexpansion(Cell *cell,            /* cell pointer */
     }
     if(difffrac<-epsilon)
     {
-//      fprintf(stderr,"teil 2 difffrac: %g difffrac2: %g  \n",difffrac,difffrac2);
+      //if(year==2009) fprintf(stderr,"part 2 difffrac: %g difffrac2: %g  \n",difffrac,difffrac2);
       s=findlandusetype(cell->standlist,SETASIDE_WETLAND);
       if(s!=NOT_FOUND)
       {
         wetstand=getstand(cell->standlist,s);
-//        fprintf(stderr,"s found wetfrac: %g difffrac:%g  difffrac2:%g \n", wetstand->frac,difffrac,difffrac2);
+        //if(year==2009)  fprintf(stderr,"s found wetfrac: %g difffrac:%g  difffrac2:%g \n", wetstand->frac,difffrac,difffrac2);
         if(wetstand->frac<=epsilon-difffrac)
         {                                                     /*setaside stand has not enough space for grassland expansion*/
-          if(mixstand==NULL)
+          if(mixstand==NULL || mixstand->type->landusetype==KILL)
           {
-            mixstand=getstand(cell->standlist,s);
-            mixstand->type=&kill_stand;
-            mixstand->soil.iswetland=FALSE;
-            cutpfts(mixstand,config);
-            difffrac=-mixstand->frac;
-            difffrac2+=-mixstand->frac;
-            //fprintf(stderr,"ADD MIXSTAND1\n");
+            if(mixstand==NULL)
+            {
+              mixstand=getstand(cell->standlist,s);
+              mixstand->type=&kill_stand;
+              mixstand->soil.iswetland=FALSE;
+              cutpfts(mixstand,config);
+              difffrac-=-mixstand->frac;
+              difffrac2=-mixstand->frac;
+              cell->hydrotopes.wetland_area-=mixstand->frac;
+              cell->hydrotopes.wetland_area_runmean-=mixstand->frac;
+            }
+            else
+            {
+              mixstand2=getstand(cell->standlist,s);
+              mixstand2->type=&kill_stand;
+              mixstand2->soil.iswetland=FALSE;
+              cutpfts(mixstand2,config);
+              cell->hydrotopes.wetland_area-=mixstand2->frac;
+              cell->hydrotopes.wetland_area_runmean-=mixstand2->frac;
+            }
+
+//            difffrac=-mixstand2->frac;
+//            difffrac2+=-mixstand2->frac;
+            //if(year==2009)  fprintf(stderr,"ADD MIXSTAND1: difffrac: %g difffrac2: %g \n",difffrac,difffrac2);
             pos=s;
           }
           else
@@ -503,32 +561,45 @@ static void landexpansion(Cell *cell,            /* cell pointer */
             difffrac2-=wetstand->frac;
             mixstand->soil.iswetland=FALSE;
             delstand(cell->standlist,s);
-//            fprintf(stderr,"teil 2.1 difffrac: %g difffrac2: %g mixfrac: %g  \n",difffrac,difffrac2,mixstand->frac);
+            //if(year==2009) fprintf(stderr,"part 2.1 difffrac: %g difffrac2: %g mixfrac: %g  \n",difffrac,difffrac2,mixstand->frac);
+            frac_change+=-(mixstand->frac-old_mixfrac);
+            cell->hydrotopes.wetland_area-=(mixstand->frac-old_mixfrac);
+            cell->hydrotopes.wetland_area_runmean-=(mixstand->frac-old_mixfrac);
           }
-          frac_change+=-(mixstand->frac-old_mixfrac);
-          cell->hydrotopes.wetland_area-=(mixstand->frac-old_mixfrac);
-          cell->hydrotopes.wetland_area_runmean-=(mixstand->frac-old_mixfrac);
         }
         else
         {
-          if(mixstand==NULL)
+          if(mixstand==NULL || mixstand->type->landusetype==KILL)
           {
-             pos=addstand(&wetland_stand,cell)-1; /*setaside big enough for grassland expansion*/
-             mixstand=getstand(cell->standlist,pos);
-             mixstand->frac=-difffrac;
-             reclaim_land(wetstand,mixstand,cell,config->istimber,npft+ncft,config);
-             //fprintf(stderr,"ADD MIXSTAND\n");
-             wetstand->frac+=difffrac;
-             mixstand->type=&kill_stand;
+            pos=addstand(&wetland_stand,cell)-1; /*setaside big enough for grassland expansion*/
+            if(mixstand==NULL)
+            {
+              mixstand=getstand(cell->standlist,pos);
+              mixstand->type=&kill_stand;
+              mixstand->soil.iswetland=FALSE;
+              mixstand->frac=-difffrac;
+              reclaim_land(wetstand,mixstand,cell,config->istimber,npft+ncft,config);
+              wetstand->frac+=difffrac;
+              //if(year==2009) fprintf(stderr,"ADD MIXSTAND\n");
+              cell->hydrotopes.wetland_area-=-difffrac;
+              cell->hydrotopes.wetland_area_runmean-=-difffrac;
+              difffrac2+=difffrac;
+              difffrac=0;
+            }
+            else
+            {
+              mixstand2=getstand(cell->standlist,pos);
+              mixstand2->type=&kill_stand;
+              mixstand2->soil.iswetland=FALSE;
+              mixstand2->frac=-difffrac;
+              reclaim_land(wetstand,mixstand2,cell,config->istimber,npft+ncft,config);
+              //if(year==2009) fprintf(stderr,"ADD MIXSTAND2\n");
+              wetstand->frac+=difffrac;
+            }
           }
           else
           {
-//            fprintf(stderr,"1 frac_change: %g wetfrac: %g difffrac: %g mixfrac: %g  difffrac2:%g istimber: %d\n",frac_change,wetstand->frac,difffrac,mixstand->frac,difffrac2,config->istimber);
-//            if(year==1990)
-//            {
-//              standstocks(wetstand);
-//              standstocks(mixstand);
-//            }
+            //if(year==2009) fprintf(stderr,"1 frac_change: %g wetfrac: %g difffrac: %g mixfrac: %g  difffrac2:%g istimber: %d\n",frac_change,wetstand->frac,difffrac,mixstand->frac,difffrac2,config->istimber);
             old_mixfrac=wetstand->frac;
             wetstand->frac=-difffrac;
             mixsoil(mixstand,wetstand,year,config);
@@ -536,45 +607,40 @@ static void landexpansion(Cell *cell,            /* cell pointer */
                 config->istimber,TRUE,config);
             wetstand->frac=old_mixfrac+difffrac;
             mixstand->frac-=difffrac;
-//            if(year==1990)
-//            {
-//              standstocks(wetstand);
-//              standstocks(mixstand);
-//            }
-
             mixstand->soil.iswetland=FALSE;
-          }
-          frac_change+=difffrac;
-          cell->hydrotopes.wetland_area+=difffrac;
-          cell->hydrotopes.wetland_area_runmean+=difffrac;
-          difffrac2+=difffrac;
-          difffrac=0;
-//          fprintf(stderr,"2 frac_change: %g wetfrac: %g difffrac: %g mixfrac: %g  difffrac2:%g \n",frac_change,wetstand->frac,difffrac,mixstand->frac,difffrac2);
+            cell->hydrotopes.wetland_area-=-difffrac;
+            cell->hydrotopes.wetland_area_runmean-=-difffrac;
+            difffrac2+=difffrac;
+            difffrac=0;
+         }
+          //if(year==2009)  fprintf(stderr,"2 frac_change: %g wetfrac: %g difffrac: %g mixfrac: %g  difffrac2:%g \n",frac_change,wetstand->frac,difffrac,mixstand->frac,difffrac2);
        }
       }
     }
-//    if(year>1848)
-//    foreachstand(stand,s,cell->standlist)
-//      fprintf(stderr,"frac[%s]=%g\n",stand->type->name,stand->frac);
+//    if(year==2009)
+//      foreachstand(stand,s,cell->standlist)
+//        fprintf(stderr,"frac[%s]=%g\n",stand->type->name,stand->frac);
 
     if(grassstand!=NULL)
     {
-      //fprintf(stdout,"GRASSSTAND1\n");
+      if(mixstand2!=NULL)
+      {
+        mixsoil(mixstand,mixstand2,year,config);
+        mixstand->frac+=mixstand2->frac;
+        difffrac2+=-mixstand2->frac;
+        difffrac=0;
+        delstand(cell->standlist,pos);
+      }
+//      if(year==2009)
+//        fprintf(stderr,"GRASSSTAND1\n");
       mixsoil(grassstand,mixstand,year,config);
-#ifdef IMAGE
-      data=grassstand->data;
-      data->irrig_stor*=grassstand->frac/(grassstand->frac-difffrac2);
-      data->irrig_amount*=grassstand->frac/(grassstand->frac-difffrac2);
-      foreachpft(pft,p,&grassstand->pftlist)
-        mix_veg(pft,grassstand->frac/(grassstand->frac-difffrac2));
-#else
       foreachpft(pft,p,&grassstand->pftlist)
         mix_veg(pft,grassstand->frac/(grassstand->frac-difffrac2));
       data=grassstand->data;
       data->irrig_stor*=grassstand->frac/(grassstand->frac-difffrac2);
       data->irrig_amount*=grassstand->frac/(grassstand->frac-difffrac2);
-#endif
       grassstand->frac+=mixstand->frac;
+      //if(year==2009) fprintf(stdout,"MIXSTAND grassfrac: %g difffrac: %g difffrac2: %g\n",grassstand->frac,mixstand->frac,difffrac, difffrac2);
       foreachstand(stand,s,cell->standlist)
         if(stand->type->landusetype==KILL)
         {
@@ -584,7 +650,7 @@ static void landexpansion(Cell *cell,            /* cell pointer */
     }
     else
     {
-      //fprintf(stdout,"GRASSSTAND12\n");
+      //if(year==2009) fprintf(stdout,"GRASSSTAND12\n");
       n_est=newvec(int,config->ntypes);
       check(n_est);
       for(t=0;t<config->ntypes;t++)
@@ -694,14 +760,15 @@ static void landexpansion(Cell *cell,            /* cell pointer */
   } /* if s or ws*/
 
 #ifdef CHECK_BALANCE
+  end=cell->balance.timber_harvest.carbon-cell->balance.flux_estab.carbon;
   foreachstand(checkstand,s,cell->standlist)
     end+=(standstocks(checkstand).carbon*checkstand->frac+soilmethane(&checkstand->soil)*checkstand->frac);
-  if (fabs(start-end)>0.001)
+  if (fabs(start-end)>0.01)
   {
-     fprintf(stdout, "C-ERROR in landexpansion: %g start:%g  end:%g\n",
-             start-end,start, end);
+     fprintf(stderr, "C-ERROR in landexpansion: %g start: %g  end: %g harvest: %g flux_estab: %g\n",
+             start-end,start, end, cell->balance.timber_harvest.carbon,flux_estab.carbon);
      foreachstand(checkstand,s,cell->standlist)
-       fprintf(stdout,"type %d frac:%g diff:%g carbon:%g methan:%g\n",checkstand->type->landusetype,checkstand->frac,difffrac,standstocks(checkstand).carbon*checkstand->frac,soilmethane(&checkstand->soil)*checkstand->frac);
+       fprintf(stderr,"frac[%s]: %g diff: %g carbon: %g methan: %g\n",checkstand->type->name,checkstand->frac,difffrac,standstocks(checkstand).carbon*checkstand->frac,soilmethane(&checkstand->soil)*checkstand->frac);
   }
 #endif
 
@@ -1133,7 +1200,7 @@ void landusechange(Cell *cell,          /**< pointer to cell */
 #endif
 #ifdef CHECK_BALANCE
   Real end=0;
-  Real start=0;
+  Real start=cell->balance.deforest_emissions.carbon+cell->balance.timber_harvest.carbon-cell->balance.flux_estab.carbon;
   Real water_before=0;
   Real water_after=0;
   Stand *checkstand;
@@ -1141,8 +1208,10 @@ void landusechange(Cell *cell,          /**< pointer to cell */
   foreachstand(checkstand,s,cell->standlist)
   {
     start+=(standstocks(checkstand).carbon*checkstand->frac+soilmethane(&checkstand->soil)*checkstand->frac);
-    water_before+=soilwater(&stand->soil)*stand->frac;
+    water_before+=soilwater(&checkstand->soil)*checkstand->frac;
+    //checkstand->soil.iswetland=FALSE;
   }
+  start-=cell->balance.flux_estab.carbon;
 //  foreachstand(checkstand,s,cell->standlist)
 //    fprintf(stdout,"type %d frac:%g diff:%g carbon:%g methan:%g\n",checkstand->type->landusetype,checkstand->frac,difffrac,standstocks(checkstand).carbon*checkstand->frac,soilmethane(&checkstand->soil)*checkstand->frac);
 #endif
@@ -1150,9 +1219,12 @@ void landusechange(Cell *cell,          /**< pointer to cell */
    if(cell->ml.dam)
     landusechange_for_reservoir(cell,npft,ncft,intercrop,year,config);
   /* test if land needs to be reallocated between setaside stands */
-  difffrac=crop_sum_frac(cell->ml.landfrac,ncft,config->nagtree,cell->ml.reservoirfrac+cell->lakefrac,FALSE)-cell->ml.cropfrac_rf;
-  difffrac2=crop_sum_frac(cell->ml.landfrac,ncft,config->nagtree,cell->ml.reservoirfrac+cell->lakefrac,TRUE)-cell->ml.cropfrac_ir;
-
+  difffrac=crop_sum_frac(cell->ml.landfrac,ncft,config->nagtree,cell->ml.reservoirfrac+cell->lakefrac,FALSE)-cell->ml.cropfrac_rf-cell->ml.landfrac[0].crop[RICE];
+  difffrac2=crop_sum_frac(cell->ml.landfrac,ncft,config->nagtree,cell->ml.reservoirfrac+cell->lakefrac,TRUE)-cell->ml.cropfrac_ir-cell->ml.landfrac[1].crop[RICE];
+//  if(year==2011)
+//  {
+//    difffrac=difffrac2=0;
+//  }
   if(difffrac*difffrac2<-epsilon*epsilon) /* if one increases while the other decreases */
   {
     s=findlandusetype(cell->standlist,SETASIDE_RF);
@@ -1216,8 +1288,13 @@ void landusechange(Cell *cell,          /**< pointer to cell */
     difffrac_rice[i]=cell->ml.landfrac[i].crop[RICE]-cell->ml.cropfrac_wl[i];
 
     grassfrac=cell->ml.landfrac[i].grass[0]+cell->ml.landfrac[i].grass[1]; /* pasture + others */
-    //difffrac_rice[i]=0;
-
+//    difffrac_rice[i]=0;
+//    difffrac=0;
+//
+//    if(year>=2009)
+//    {
+//      difffrac=difffrac_rice[i]=grassfrac=0;
+//    }
 
 
 //
@@ -1228,7 +1305,7 @@ void landusechange(Cell *cell,          /**< pointer to cell */
 //    if(year>1848)
 //    {
 //      foreachstand(stand,s,cell->standlist)
-//        fprintf(stderr,"LUC1 YEAR= %d standfrac: %g standtype: %d iswetland: %d cropfraction_rf: %g cropfraction_irr: %g grasfrac_rf: %g grasfrac_irr: %g\n",year,stand->frac, stand->type->landusetype,stand->soil.iswetland,
+//        fprintf(stderr,"LUC1 YEAR= %d standfrac: %g standtype: %s iswetland: %d cropfraction_rf: %g cropfraction_irr: %g grasfrac_rf: %g grasfrac_irr: %g\n",year,stand->frac, stand->type->name,stand->soil.iswetland,
 //                crop_sum_frac(cell->ml.landfrac,12,config->nagtree,cell->ml.reservoirfrac+cell->lakefrac,FALSE),crop_sum_frac(cell->ml.landfrac,12,config->nagtree,cell->ml.reservoirfrac+cell->lakefrac,TRUE),
 //                cell->ml.landfrac[0].grass[0]+cell->ml.landfrac[0].grass[1],cell->ml.landfrac[1].grass[0]+cell->ml.landfrac[1].grass[1]);
 //    }
@@ -1236,15 +1313,16 @@ void landusechange(Cell *cell,          /**< pointer to cell */
 
 
     // FIRST CONVERTION OF WETLANDS BECAUSE RICE SHOULD BE PREFERRED
-    if(difffrac_rice[i]>=epsilon && cell->lakefrac+cell->ml.reservoirfrac+cell->ml.cropfrac_rf+cell->ml.cropfrac_ir<(1-epsilon))
-      deforest(cell,difffrac_rice[i],intercrop,npft,FALSE,i,TRUE,ncft,year,minnatfrac_luc,config);  /*deforestation*/
-    else if(difffrac_rice[i]<=-epsilon)
-      regrowth(cell,difffrac_rice[i],npft,i,TRUE,ncft,year,config);        /*regrowth*/
-    if(difffrac>=epsilon && cell->lakefrac+cell->ml.reservoirfrac+cell->ml.cropfrac_rf+cell->ml.cropfrac_ir<(1-epsilon))
-      deforest(cell,difffrac,intercrop,npft,FALSE,i,FALSE,ncft,year,minnatfrac_luc,config);  /*deforestation*/
-    else if(difffrac<=-epsilon)
-      regrowth(cell,difffrac,npft,i,FALSE,ncft,year,config);        /*regrowth*/
 
+    if(difffrac_rice[i]<=-epsilon)
+      regrowth(cell,difffrac_rice[i],npft,i,TRUE,ncft,year,config);        /*regrowth*/
+    else if(difffrac_rice[i]>=epsilon && cell->lakefrac+cell->ml.reservoirfrac+cell->ml.cropfrac_rf+cell->ml.cropfrac_ir+cell->ml.cropfrac_wl[0]+cell->ml.cropfrac_wl[1]<(1-epsilon))
+      deforest(cell,difffrac_rice[i],intercrop,npft,FALSE,i,TRUE,ncft,year,minnatfrac_luc,config);  /*deforestation  letzte wieder TRUE"""""""!!!!!!!!!!!!*/
+
+    if(difffrac<=-epsilon)
+      regrowth(cell,difffrac,npft,i,FALSE,ncft,year,config);        /*regrowth*/
+    else if(difffrac>=epsilon && cell->lakefrac+cell->ml.reservoirfrac+cell->ml.cropfrac_rf+cell->ml.cropfrac_ir+cell->ml.cropfrac_wl[0]+cell->ml.cropfrac_wl[1]<(1-epsilon))
+      deforest(cell,difffrac,intercrop,npft,FALSE,i,FALSE,ncft,year,minnatfrac_luc,config);  /*deforestation*/
 //    if(year>1848)
 //    {
 //      foreachstand(stand,s,cell->standlist)
@@ -1385,13 +1463,13 @@ void landusechange(Cell *cell,          /**< pointer to cell */
                     irrigation,cultivation_type,0,ncft,year,config);
     }
   }
-  check_stand_fracs(cell,cell->lakefrac+cell->ml.reservoirfrac);
+  check_stand_fracs(cell,cell->lakefrac+cell->ml.reservoirfrac,4);
 
   foreachstand(stand,s,cell->standlist)
     if(stand->type->landusetype==GRASSLAND || stand->type->landusetype==BIOMASS_GRASS || stand->type->landusetype==BIOMASS_TREE || stand->type->landusetype==AGRICULTURE_TREE || stand->type->landusetype==AGRICULTURE_GRASS || stand->type->landusetype==WOODPLANTATION) /* do not update for crops, must be done in sowing functions */
       set_irrigsystem(stand,0,npft,ncft,config); /* no CFT index needed for non-agricultural stands */
 #ifdef SAFE
-  check_stand_fracs(cell,cell->lakefrac+cell->ml.reservoirfrac);
+  check_stand_fracs(cell,cell->lakefrac+cell->ml.reservoirfrac,7);
 #endif
   sum[0]=sum[1]=sum_wl[0]=sum_wl[1]=0.0;
   foreachstand(stand,s,cell->standlist)
@@ -1440,7 +1518,7 @@ void landusechange(Cell *cell,          /**< pointer to cell */
       cell->ml.image_data->timber_frac=0.0;
     }
   /* check that sum of fractions is 1.0 */
-  check_stand_fracs(cell,cell->lakefrac+cell->ml.reservoirfrac);
+  check_stand_fracs(cell,cell->lakefrac+cell->ml.reservoirfrac,8);
 
   /* check if there is more than 1 natural stand */
   nnat = 0;
@@ -1460,20 +1538,22 @@ void landusechange(Cell *cell,          /**< pointer to cell */
 #endif
 
 #ifdef CHECK_BALANCE
+  end=cell->balance.deforest_emissions.carbon+cell->balance.timber_harvest.carbon-cell->balance.flux_estab.carbon;
   foreachstand(checkstand,s,cell->standlist)
   {
     end+=(standstocks(checkstand).carbon*checkstand->frac+soilmethane(&checkstand->soil)*checkstand->frac);
     water_after+=soilwater(&stand->soil)*stand->frac;
   }
+
   if (fabs(start-end)>0.01)
   {
-     fprintf(stdout, "C-ERROR in landusechange: %g start:%g  end:%g\n",
+     fprintf(stderr, "C-ERROR in landusechange: %g start:%g  end:%g\n",
              start-end,start, end);
      foreachstand(checkstand,s,cell->standlist)
-       fprintf(stdout,"type %d frac:%g diff:%g carbon:%g methan:%g\n",checkstand->type->landusetype,checkstand->frac,difffrac,standstocks(checkstand).carbon*checkstand->frac,soilmethane(&checkstand->soil)*checkstand->frac);
+       fprintf(stderr,"standNr: %d type %s frac:%g diff:%g carbon:%g methane:%g flux_estab: %g\n",s,checkstand->type->name,checkstand->frac,difffrac,standstocks(checkstand).carbon*checkstand->frac,soilmethane(&checkstand->soil)*checkstand->frac,cell->balance.flux_estab.carbon);
   }
-  if (fabs(water_before - water_after)>0.001)
-    fprintf(stdout, "W-ERROR in landusechange: %g start:%g  ende:%g \n", water_before - water_after, water_before, water_after);
+//  if (fabs(water_before - water_after)>0.01)
+//    fprintf(stderr, "W-ERROR in landusechange: %g start:%g  end:%g \n", water_before - water_after, water_before, water_after);
 #endif
 //  if(year>=1940 && year<=1980)
 //  {

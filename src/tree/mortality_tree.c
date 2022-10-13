@@ -66,11 +66,12 @@ Bool mortality_tree(Litter *litter,   /**< Litter                              *
           heatstress=0;
 
 //inuntationstress
-      mort+=mort_max*pft->inun_stress;
+      mort+=max(0,mort_max*pft->inun_stress);
       nind_kill=(mort>1) ? pft->nind : pft->nind*mort;
       litter_update_tree(litter,pft,nind_kill,config);
       if(pft->nind>0)
           pft->bm_inc.nitrogen*=(pft->nind-nind_kill)/pft->nind;
+
       pft->nind-=nind_kill;
       fpc_tree(pft);
       if(pft->stand->type->landusetype==NATURAL || pft->stand->type->landusetype==WETLAND)

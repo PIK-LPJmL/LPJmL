@@ -83,7 +83,7 @@ void fprintflux(FILE *file,          /**< Output file pointer */
       fputs(" wd     ",file);
     if(config->river_routing)
       fputs(" discharge ",file);
-    fputs(" CH4 emiss. CH4 sink   CH4 fire   SoilC     slowSoilC  VegC     ",file);
+    fputs(" CH4 emiss. CH4 sink   CH4 fire   SoilC     slowSoilC   VegC     Soil CH4  Soil NO3  Soil NH4  ",file);
     if(config->with_nitrogen)
       fputs(" nuptake ndemand  nlosses ninflux",file);
     fputc('\n',file);
@@ -95,7 +95,7 @@ void fprintflux(FILE *file,          /**< Output file pointer */
       fputs(" -------",file);
     if(config->river_routing)
       fputs(" ----------",file);
-    fputs(" ---------- ---------- ---------- --------- ---------- ---------", file);
+    fputs(" ---------- ---------- ---------- --------- ---------- --------- --------- ---------- ---------", file);
     if(config->with_nitrogen)
       fputs(" ------- -------- ------- -------",file);
     fputc('\n',file);
@@ -120,6 +120,9 @@ void fprintflux(FILE *file,          /**< Output file pointer */
   fprintf(file, " %9.3f ", flux.soilc*convert);
   fprintf(file, " %9.3f ", flux.soilc_slow*convert);
   fprintf(file, " %9.3f", flux.vegc*convert);
+  fprintf(file, " %9.3f", flux.soil_CH4*convert);
+  fprintf(file, " %9.3f", flux.soil_NO3*convert);
+  fprintf(file, " %9.3f", flux.soil_NH4*convert);
   if(config->with_nitrogen)
     fprintf(file," %7.1f %8.1f %7.1f %7.1f",flux.n_uptake*convert*1000,flux.n_demand*convert*1000,flux.n_outflux*convert*1000,
     flux.n_influx*convert*1000);

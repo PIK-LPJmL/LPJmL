@@ -38,6 +38,10 @@ void initoutputdata(Output *output,      /**< output data */
     if(isinit(index))
       for(i=0;i<config->outputsize[index];i++)
         output->data[config->outputmap[index]+i]=0;
+  for(index=WPC;index<NOUT;index++)
+    if(isinit(index))
+      for(i=0;i<config->outputsize[index];i++)
+        output->data[config->outputmap[index]+i]=0;
    if(isinit(PFT_GCGP))
      for(i=0;i<config->outputsize[PFT_GCGP];i++)
        output->data[config->outputmap[PFT_GCGP_COUNT]+i]=0;

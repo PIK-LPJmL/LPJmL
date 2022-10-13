@@ -39,6 +39,7 @@ Stocks turnover_tree(Litter *litter, /**< Litter pool */
   Real reprod,cmass_excess,payback;
 #ifdef CHECK_BALANCE
   Stocks sum_before,sum_after;
+  Stocks turn_diff={0,0};
 #endif
   tree=pft->data;
   treepar=getpftpar(pft,data);
@@ -49,6 +50,7 @@ Stocks turnover_tree(Litter *litter, /**< Litter pool */
   sum_before=litterstocks(litter);
   sum_before.carbon+=vegc_sum_tree(pft)+pft->bm_inc.carbon;
   sum_before.nitrogen+=vegn_sum_tree(pft)+pft->bm_inc.nitrogen+tree->turn_nbminc;
+  turn_diff.carbon=tree->turn_nbminc;
 #endif
   cmass_excess=0;
   /* reproduction */
@@ -91,14 +93,22 @@ Stocks turnover_tree(Litter *litter, /**< Litter pool */
       }
     }
     payback=tree->ind.debt.carbon*pft->nind*CDEBT_PAYBACK_RATE>pft->bm_inc.carbon ? pft->bm_inc.carbon : tree->ind.debt.carbon*pft->nind*CDEBT_PAYBACK_RATE;
-    pft->bm_inc.carbon-=payback;
     if(pft->nind>0)
+    {
       tree->ind.debt.carbon-=payback/pft->nind;
+      pft->bm_inc.carbon-=payback;
+    }
   }
   /* turnover */
   turn.root=tree->turn.root;
   turn.leaf=tree->turn.leaf;
   /* update litter pools to prevent carbon balance error if pft->nind has been changed */
+#ifdef CHECK_BALANCE
+  turn_diff.carbon+=(turn.leaf.carbon*pft->nind-tree->turn_litt.leaf.carbon)+(turn.root.carbon*pft->nind-tree->turn_litt.root.carbon);
+  turn_diff.nitrogen+=(turn.leaf.nitrogen*pft->nind-tree->turn_litt.leaf.nitrogen)+(turn.root.nitrogen*pft->nind-tree->turn_litt.root.nitrogen);
+//  if(fabs(turn_diff.carbon)>0.1)
+//   fprintf(stderr,"diff.carbon: %g diff.nitrogen: %g\n",turn_diff.carbon,turn_diff.nitrogen);
+#endif
   litter->item[pft->litter].ag.leaf.carbon+=turn.leaf.carbon*pft->nind-tree->turn_litt.leaf.carbon;
   litter->item[pft->litter].ag.leaf.nitrogen+=turn.leaf.nitrogen*pft->nind-tree->turn_litt.leaf.nitrogen;
   update_fbd_tree(litter,pft->par->fuelbulkdensity,turn.leaf.carbon*pft->nind-tree->turn_litt.leaf.carbon,0);
@@ -160,10 +170,10 @@ Stocks turnover_tree(Litter *litter, /**< Litter pool */
   sum_after=litterstocks(litter);
   sum_after.carbon+=vegc_sum_tree(pft)+pft->bm_inc.carbon;
   sum_after.nitrogen+=vegn_sum_tree(pft)+pft->bm_inc.nitrogen;
-  if(fabs(sum_after.carbon-sum_before.carbon)>epsilon)
-    fprintf(stdout,"Carbon balance error %g!=%g in turnover_tree()",sum_after.carbon,sum_before.carbon);
+  if(fabs(sum_after.carbon-sum_before.carbon)>0.1)
+    fprintf(stderr,"Carbon balance error %g!=%g turn_diff: %g in turnover_tree() for %s\n",sum_after.carbon,sum_before.carbon,turn_diff.carbon,pft->par->name);
   if(fabs(sum_after.nitrogen-sum_before.nitrogen)>0.1)
-    fprintf(stdout,"Nitrogen balance error %g!=%g in turnover_tree() for %s",sum_after.nitrogen,sum_before.nitrogen,pft->par->name);
+    fprintf(stderr,"Nitrogen balance error %g!=%g turn_diff: %g in turnover_tree() for %s\n",sum_after.nitrogen,sum_before.nitrogen,turn_diff.nitrogen,pft->par->name);
 
 #endif
   return sum;

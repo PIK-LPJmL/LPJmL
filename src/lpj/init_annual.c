@@ -62,7 +62,7 @@ void init_annual(Cell *cell,          /**< Pointer to cell */
     stand->soil.maxthaw_depth=0;
     foreachpft(pft,p,&stand->pftlist)
     {
-      pft->inun_stress=0;
+      pft->inun_stress=pft->establish.carbon=pft->establish.nitrogen=0;
       init(pft);
     }
   } /* of foreachstand */

@@ -29,11 +29,24 @@ Stocks sowing_season(Cell *cell,          /**< pointer to cell */
   int i,cft,m,mm,dayofmonth,month;
   Stocks flux_estab={0,0};
   const Pftcroppar *croppar;
+#ifdef CHECK_BALANCE
+  Stand *stand;
+  const Pft *pft;
+  Real end, start;
+  Real flux_carbon=cell->balance.flux_estab.carbon;   //is added in cultivate as manure
+  int s,p;
+  start=end=0;
+  foreachstand(stand,s,cell->standlist)
+  {
+    start+=(standstocks(stand).carbon + soilmethane(&stand->soil))*stand->frac;
+  }
+#endif
 
   if(config->sdate_option==FIXED_SDATE || 
      findlandusetype(cell->standlist,SETASIDE_RF)!=NOT_FOUND ||
-     findlandusetype(cell->standlist,SETASIDE_IR)!=NOT_FOUND)
-  {
+     findlandusetype(cell->standlist,SETASIDE_IR)!=NOT_FOUND ||
+    findlandusetype(cell->standlist,SETASIDE_WETLAND)!=NOT_FOUND)
+ {
     for(cft=0; cft<ncft; cft++)
     {
       croppar=config->pftpar[npft+cft].data;
@@ -83,5 +96,21 @@ Stocks sowing_season(Cell *cell,          /**< pointer to cell */
       } /* of switch() */
     }  /* for(cft=...) */
   }
+
+#ifdef CHECK_BALANCE
+  flux_carbon=cell->balance.flux_estab.carbon-flux_carbon;
+  foreachstand(stand,s,cell->standlist)
+  {
+    end+=(standstocks(stand).carbon + soilmethane(&stand->soil))*stand->frac;
+  }
+  if (fabs(end-start-flux_estab.carbon-flux_carbon)>0.001)
+  {
+    fprintf(stdout, "C-ERROR-in sowing season: day: %d    %g start: %g  end: %g  flux_estab.carbon: %g flux_carbon: %g \n",
+         day,end-start-flux_estab.carbon-flux_carbon,start, end,flux_estab.carbon,flux_carbon);
+    foreachstand(stand,s,cell->standlist)
+      foreachpft(pft,p,&stand->pftlist)
+        fprintf(stderr,"sowing season year: %d day: %d frac[%s]= %g standNR: %d PFT: %s bm_in= %g landusetype: %d\n",year,day,stand->type->name,stand->frac,s,pft->par->name,pft->bm_inc,stand->type->landusetype);
+  }
+#endif
   return flux_estab;
 } /* of 'sowing_season' */

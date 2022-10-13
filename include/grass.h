@@ -78,7 +78,7 @@ extern Real vegc_sum_grass(const Pft *);
 extern Real vegn_sum_grass(const Pft *);
 extern Real agb_grass(const Pft *);
 extern void mix_veg_grass(Pft *,Real);
-extern void mix_veg_stock_grass(Pft *, Pft *, Real, Real);
+extern Bool mix_veg_stock_grass(Pft *, Pft *, Real, Real,const Config *);
 extern Stocks fire_grass(Pft *,Real *);
 extern void init_grass(Pft *);
 extern void free_grass(Pft *);

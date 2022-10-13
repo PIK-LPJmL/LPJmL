@@ -73,7 +73,7 @@ void check_fluxes(Cell *cell,          /**< cell pointer */
 #ifdef IMAGE
   balance.carbon-=cell->balance.deforest_emissions.carbon+cell->balance.prod_turnover.fast.carbon+cell->balance.prod_turnover.slow.carbon+cell->balance.trad_biofuel.carbon+cell->balance.timber_harvest.carbon;
 #else
-  balance.carbon-=cell->balance.deforest_emissions.carbon+cell->balance.prod_turnover.fast.carbon+cell->balance.prod_turnover.slow.carbon+cell->balance.trad_biofuel.carbon; // +cell->balance.timber_harvest.carbon;
+  balance.carbon-=(cell->balance.deforest_emissions.carbon+cell->balance.prod_turnover.fast.carbon+cell->balance.prod_turnover.slow.carbon+cell->balance.trad_biofuel.carbon); // +cell->balance.timber_harvest.carbon;
   balance.nitrogen-=cell->balance.prod_turnover.fast.nitrogen+cell->balance.prod_turnover.slow.nitrogen;
 #endif
   if(config->ischeckpoint)
@@ -81,8 +81,7 @@ void check_fluxes(Cell *cell,          /**< cell pointer */
   else
     startyear=config->firstyear-config->nspinup+1;
 
-  //if(year>startyear && fabs(balance.carbon)>1)
-  if(year>startyear && fabs(balance.carbon)>1)
+  if(year>startyear && fabs(balance.carbon)>0.1)
   {
 #if defined IMAGE && defined COUPLED
     if(config->sim_id==LPJML_IMAGE)
@@ -101,7 +100,8 @@ void check_fluxes(Cell *cell,          /**< cell pointer */
 #else
     fail(INVALID_CARBON_BALANCE_ERR,FALSE,
 #endif
-         "y: %d c: %d (%s) BALANCE_C-error %.10f nep: %.2f firec: %.2f flux_estab: %.2f flux_harvest: %.2f delta_totc: %.2f\ndeforest_emissions: %.2f product_turnover: %.2f trad_biofuel: %.2f product pools %.2f %.2f timber_harvest %.2f ftimber %.2f fburn %.2f\n",
+         "y: %d c: %d (%s) BALANCE_C-error %.10f nep: %.2f firec: %.2f flux_estab: %.2f flux_harvest: %.2f delta_totc: %.2f\ndeforest_emissions: %.2f product_turnover: %.2f "
+         "trad_biofuel: %.2f product pools %.2f %.2f timber_harvest %.2f ftimber %.2f fburn %.2f\n",
          year,cellid+config->startgrid,sprintcoord(line,&cell->coord),balance.carbon,cell->balance.anpp-cell->balance.arh,
          cell->balance.fire.carbon,
          cell->balance.flux_estab.carbon,cell->balance.flux_harvest.carbon,delta_tot.carbon,
@@ -114,21 +114,23 @@ void check_fluxes(Cell *cell,          /**< cell pointer */
 #else
     fail(INVALID_CARBON_BALANCE_ERR,FALSE,
 #endif
-         "y: %d c: %d (%s) BALANCE_C-error %.10f nep: %.2f\n"
-         "                            firec: %.2f flux_estab: %.2f \n"
-         "                            flux_harvest: %.2f delta_totc: %.2f biomass_yield: %.2f\n"
+         "y: %d c: %d (%s) BALANCE_C-error %.10f anpp: %.2f rh: %.2f\n"
+         "                            firec: %.2f flux_estab: %.2f flux_harvest: %.2f \n"
+         "                            delta_totc: %.2f tot.carbon: %.2f biomass_yield: %.2f\n"
          "                            estab_storage_grass: %.2f %.2f estab_storage_tree %.2f %.2f\n"
-         "                            deforest_emissions: %.2f product_turnover: %.2f\n",
-         year,cellid+config->startgrid,sprintcoord(line,&cell->coord),balance.carbon,cell->balance.anpp-cell->balance.arh,cell->balance.fire.carbon,
-         cell->balance.flux_estab.carbon,cell->balance.flux_harvest.carbon,delta_tot.carbon,cell->balance.biomass_yield.carbon,
+         "                            deforest_emissions: %.2f product_turnover: %.2f timber_harvest.carbon: %.2f\n",
+         year,cellid+config->startgrid,sprintcoord(line,&cell->coord),balance.carbon,cell->balance.anpp,cell->balance.arh,cell->balance.fire.carbon,
+         cell->balance.flux_estab.carbon,cell->balance.flux_harvest.carbon,delta_tot.carbon,tot.carbon,cell->balance.biomass_yield.carbon,
          cell->balance.estab_storage_grass[0].carbon,cell->balance.estab_storage_grass[1].carbon,cell->balance.estab_storage_tree[0].carbon,cell->balance.estab_storage_tree[1].carbon,
-         cell->balance.deforest_emissions.carbon,cell->balance.prod_turnover.fast.carbon+cell->balance.prod_turnover.slow.carbon);
-/*
+         cell->balance.deforest_emissions.carbon,cell->balance.prod_turnover.fast.carbon+cell->balance.prod_turnover.slow.carbon,cell->balance.timber_harvest.carbon);
+#ifdef CHECK_BALANCE
          foreachstand(stand,s,cell->standlist)
-             fprintf(stderr,"standfrac: %g standtype: %d iswetland: %d cropfraction_rf: %g cropfraction_irr: %g grasfrac_rf: %g grasfrac_irr: %g\n",stand->frac, stand->type->landusetype,stand->soil.iswetland,
-                     crop_sum_frac(cell->ml.landfrac,12,config->nagtree,cell->ml.reservoirfrac+cell->lakefrac,FALSE),crop_sum_frac(cell->ml.landfrac,12,config->nagtree,cell->ml.reservoirfrac+cell->lakefrac,TRUE),
+             fprintf(stderr,"standfrac: %g standtype: %s s= %d iswetland: %d cropfraction_rf: %g cropfraction_irr: %g grasfrac_rf: %g grasfrac_irr: %g\n",
+                     stand->frac, stand->type->name,s,stand->soil.iswetland, crop_sum_frac(cell->ml.landfrac,12,config->nagtree,cell->ml.reservoirfrac+cell->lakefrac,FALSE),
+                     crop_sum_frac(cell->ml.landfrac,12,config->nagtree,cell->ml.reservoirfrac+cell->lakefrac,TRUE),
                      cell->ml.landfrac[0].grass[0]+cell->ml.landfrac[0].grass[1],cell->ml.landfrac[1].grass[0]+cell->ml.landfrac[1].grass[1]);
-*/
+
+#endif
 
 #endif
   }

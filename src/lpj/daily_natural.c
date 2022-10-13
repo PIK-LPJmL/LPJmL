@@ -59,7 +59,7 @@ Real daily_natural(Stand *stand,                /**< [inout] stand pointer */
   Real transp;
 #ifdef CHECK_BALANCE
   Real start = 0;
-  Real ende = 0;
+  Real end = 0;
   Real methane_start=soilmethane(&stand->soil);
 #endif
 
@@ -70,7 +70,7 @@ Real daily_natural(Stand *stand,                /**< [inout] stand pointer */
   soil = &stand->soil;
   output=&stand->cell->output;
 #ifdef CHECK_BALANCE
-  start = standstocks(stand).carbon + soilmethane(&stand->soil);
+  start = standstocks(stand).carbon + soilmethane(&stand->soil);//+stand->cell->output.dcflux;
 #endif
   evap=evap_blue=cover_stand=intercep_stand=wet_all=0;
 
@@ -189,7 +189,7 @@ Real daily_natural(Stand *stand,                /**< [inout] stand pointer */
     getoutput(output,NPP,config)+=npp*stand->frac;
     getoutput(output,GPP,config)+=gpp*stand->frac;
     getoutput(output,FAPAR,config) += pft->fapar * stand->frac * (1.0/(1-stand->cell->lakefrac-stand->cell->ml.reservoirfrac));
-    if (stand->type->landusetype == SETASIDE_RF || stand->type->landusetype == SETASIDE_IR)
+    if (stand->type->landusetype == SETASIDE_RF || stand->type->landusetype == SETASIDE_IR || stand->type->landusetype == SETASIDE_WETLAND)
       getoutput(output,NPP_AGR,config) += npp*stand->frac / agrfrac;
 
     getoutput(output,PHEN_TMIN,config)  += pft->fpc * pft->phen_gsi.tmin * stand->frac * (1.0/(1-stand->cell->lakefrac-stand->cell->ml.reservoirfrac));
@@ -246,7 +246,7 @@ Real daily_natural(Stand *stand,                /**< [inout] stand pointer */
       getoutput(output,D_INTERC,config)=intercep_stand*stand->frac;
       /* only write to daily outputs if there are no values yet from the crop stand in order to record values from setaside stands */
       if(getoutput(output,D_NH4,config)==0 && getoutput(output,D_NO3,config)==0 && getoutput(output,D_NSOIL_FAST,config)==0 &&
-         (config->crop_irrigation && stand->type->landusetype==SETASIDE_IR) || (!config->crop_irrigation && stand->type->landusetype==SETASIDE_RF))
+         (config->crop_irrigation && stand->type->landusetype==SETASIDE_IR) || (!config->crop_irrigation && stand->type->landusetype==SETASIDE_RF) || (config->crop_irrigation && stand->type->landusetype==WETLAND))
         forrootsoillayer(l)
         {
           getoutput(output,D_NH4,config)+=stand->soil.NH4[l];
@@ -284,14 +284,14 @@ Real daily_natural(Stand *stand,                /**< [inout] stand pointer */
   getoutput(output,FLUX_ESTABN,config)+=flux_estab.nitrogen*stand->frac;
   stand->cell->balance.flux_estab.carbon+=flux_estab.carbon*stand->frac;
   stand->cell->balance.flux_estab.nitrogen+=flux_estab.nitrogen*stand->frac;
-  output->dcflux-=flux_estab.carbon*stand->frac;
+  //output->dcflux-=flux_estab.carbon*stand->frac;
 #endif
-#ifdef CHECK_BALANCE
-  ende = standstocks(stand).carbon + soilmethane(&stand->soil);
-  if (fabs(start - ende)>0.001)
+#ifdef CHECK_BALANCE1
+  end = standstocks(stand).carbon + soilmethane(&stand->soil);//+stand->cell->output.dcflux;
+  if (fabs(start - end)>0.01)
   {
-    fprintf(stderr, "C-ERROR daily: %.3f start:%.3f  ende:%.3f type:%d\n", start - ende, start, ende,stand->type->landusetype);
-    fprintf(stderr, "methane: start:%.3f  ende:%.3f \n",methane_start,soilmethane(&stand->soil));
+    fprintf(stderr, "C-ERROR dailyNAT: %.3f start: %.3f  ende: %.3f type: %d flux_estab: %.3f dcflux: %.3f \n", start - end, start, end,stand->type->landusetype,stand->cell->balance.flux_estab.carbon,stand->cell->output.dcflux);
+    fprintf(stderr, "methane: start: %.3f  ende: %.3f \n",methane_start,soilmethane(&stand->soil));
   }
 #endif
 

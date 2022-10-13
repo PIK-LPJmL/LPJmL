@@ -23,7 +23,18 @@ Stocks sowing(Cell *cell,          /**< cell pointer */
               const Config *config /**< LPJ configuration */
              )                     /** \return establishment flux (gC/m2,g/N/m2) */
 {
-  Stocks flux_estab;
+  Stocks flux_estab={0,0};
+#ifdef CHECK_BALANCE
+  Stand *stand;
+  Real end, start;
+  Real flux_carbon=cell->balance.flux_estab.carbon;   //is added in cultivate as manure
+  int s;
+  start=end=0;
+  foreachstand(stand,s,cell->standlist)
+  {
+    start+=(standstocks(stand).carbon + soilmethane(&stand->soil))*stand->frac;
+  }
+#endif
   if(config->sdate_option==NO_FIXED_SDATE ||
     (config->sdate_option==FIXED_SDATE && year<=config->sdate_fixyear))
   {
@@ -37,5 +48,16 @@ Stocks sowing(Cell *cell,          /**< cell pointer */
   else
     flux_estab=sowing_prescribe(cell,day,npft,ncft,year,config);
   getoutput(&cell->output,SEEDN_AGR,config)+=flux_estab.nitrogen;
+#ifdef CHECK_BALANCE
+  flux_carbon=cell->balance.flux_estab.carbon-flux_carbon;
+  foreachstand(stand,s,cell->standlist)
+  {
+    end+=(standstocks(stand).carbon + soilmethane(&stand->soil))*stand->frac;
+  }
+  if (fabs(end-start-flux_estab.carbon-flux_carbon)>0.001)
+         fprintf(stdout, "C-ERROR-in sowing: day: %d    %g start: %g  end: %g flux_estab.carbon: %g flux_carbon: %g \n",
+           day,end-start-flux_estab.carbon-flux_carbon,start, end,flux_estab.carbon,flux_carbon);
+
+#endif
   return flux_estab;
 } /* of 'sowing' */

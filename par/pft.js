@@ -598,7 +598,7 @@
     "temp_photos" : { "low" : 20.0, "high" : 25. },/* lower and upper limit of temperature optimum for photosynthesis(deg C) 25 26*/
     "b":  BC3, /* leaf respiration as fraction of Vmax for C3 plants */
     "temp" : { "low" : -17.0, "high" : 15.5 }, /* lower and upper coldest monthly mean temperature(deg C) 28 29*/
-    "soc_k" : 0.32880,     /* shape factor for soil organic matter vertical distribution*/
+    "soc_k" : 0.31880,     /* shape factor for soil organic matter vertical distribution*/
     "alpha_fuelp" : 0.0000667, /* scaling factor nesterov fire danger index */
     "vpd_par" : 6, /*scaling factor vpd fire danger index*/
     "fuelbulkdensity" : 22.0, /* fuel bulk density */
@@ -660,7 +660,7 @@
     "beta_root" : 0.955,    /* beta_root original 0.943*/
     "minwscal" : 0.00,      /* minwscal 3*/
     "gmin"  : 0.8,          /* gmin 4*/
-    "respcoeff" : 1.2,      /* respcoeff 5*/
+    "respcoeff" : 0.8,      /* respcoeff 5*/
     "nmax" : 100.0,          /* nmax 7*/
     "resist" : 0.12,        /* resist 8*/
     "longevity" : 4.0,      /* leaf longevity 10*/
@@ -674,14 +674,14 @@
     "twmax_daily" : 25.0,    /* twmax_daily 31*/
     "gddbase" : 5.0,        /* gddbase (deg C) 33*/
     "min_temprange" : -1000.0, /* min_temprange 34*/
-    "emax": 7.0, //7.0,            /* emax 35*/
+    "emax": 5.0, //7.0,            /* emax 35*/
     "intc" : 0.06,          /* intc 36*/
     "alphaa" : ALPHAA_NITROGEN, /* alphaa, fraction of PAR assimilated at ecosystem level, relative to leaf level */
     "albedo_leaf" : 0.18,   /* albedo of green leaves */
     "albedo_stem" : 0.1,    /* albedo of stems */
     "albedo_litter" : 0.1,  /* albedo of litter */
     "snowcanopyfrac" : 0.15, /* maximum snow coverage in green canopy */
-    "lightextcoeff" : 0.4,  /* lightextcoeff, light extinction coeffcient in Lambert-Beer equation */
+    "lightextcoeff" : 0.5,  /* lightextcoeff, light extinction coeffcient in Lambert-Beer equation */
     "tmin" :
     {
       "slope" : 0.1008,     /* new phenology: slope of cold-temperature limiting function */
@@ -713,7 +713,7 @@
     "temp_photos" : { "low" : 15.0, "high" : 25. },/* lower and upper limit of temperature optimum for photosynthesis(deg C) 25 26*/
     "b":  BC3, /* leaf respiration as fraction of Vmax for C3 plants */
     "temp" : { "low" : -32.5, "high" : -2. }, /* lower and upper coldest monthly mean temperature(deg C) 28 29*/
-    "soc_k" : 0.38670,     /* shape factor for soil organic matter vertical distribution*/
+    "soc_k" : 0.30670,     /* shape factor for soil organic matter vertical distribution*/
     "alpha_fuelp" : 0.0000667, /* scaling factor nesterov fire danger index */
     "vpd_par" : 6, /*scaling factor vpd fire danger index*/
     "fuelbulkdensity" : 25.0, /* fuel bulk density */
@@ -773,7 +773,7 @@
     "beta_root" : 0.955,    /* beta_root original 0.943*/
     "minwscal" : 0.00,      /* minwscal 3*/
     "gmin"  : 0.8,          /* gmin 4*/
-    "respcoeff" : 0.8,      /* respcoeff 5*/
+    "respcoeff" : 1.2,      /* respcoeff 5*/
     "nmax" : 100.0,          /* nmax 7*/
     "resist" : 0.3,         /* resist 8*/
     "longevity" : 0.5,      /* leaf longevity 10*/
@@ -826,7 +826,7 @@
     "temp_photos" : { "low" : 15.0, "high" : 25. },/* lower and upper limit of temperature optimum for photosynthesis(deg C) 25 26*/
     "b":  BC3, /* leaf respiration as fraction of Vmax for C3 plants */
     "temp" : { "low" : -1000, "high" : -2. }, /* lower and upper coldest monthly mean temperature(deg C) 28 29*/
-    "soc_k" : 0.38670,     /* shape factor for soil organic matter vertical distribution*/
+    "soc_k" : 0.30670,     /* shape factor for soil organic matter vertical distribution*/
     "alpha_fuelp" : 0.0000667, /* scaling factor nesterov fire danger index */
     "vpd_par" : 6, /*scaling factor vpd fire danger index*/
     "fuelbulkdensity" : 22.0, /* fuel bulk density */
@@ -887,7 +887,7 @@
     "cn" : [30.0, 55.0, 70.0, 77.0], /* curve number */
     "beta_root" : 0.965,     /* beta_root original 0.943*/
     "minwscal" : 0.00,      /* minwscal 3*/
-    "gmin"  : 0.3,          /* gmin 4*/
+    "gmin"  : 0.8,          /* gmin 4*/
     "respcoeff" : 0.6,      /* respcoeff 5*/
     "nmax" : 100.0,          /* nmax 7*/
     "resist" : 0.2,        /* resist 8*/
@@ -902,7 +902,7 @@
     "twmax_daily" : 25.0,    /* twmax_daily 31*/
     "gddbase" : 5.0,        /* gddbase (deg C) 33*/
     "min_temprange" : 30.0,  /* min_temprange 34*/
-    "emax": 6.0,            //7.0,            /* emax 35*/
+    "emax": 5.0,            //7.0,            /* emax 35*/
     "intc" : 0.06,          /* intc 36*/
     "alphaa" : ALPHAA_NITROGEN, /* alphaa, fraction of PAR assimilated at ecosystem level, relative to leaf level */
     "albedo_leaf" : 0.12,   /* albedo of green leaves */
@@ -941,7 +941,7 @@
     "temp_photos" : { "low" : 15.0, "high" : 25. },/* lower and upper limit of temperature optimum for photosynthesis(deg C) 25 26*/
     "b":  BC3, /* leaf respiration as fraction of Vmax for C3 plants */
     "temp" : { "low" : -46, "high" : -5.4 }, /* lower and upper coldest monthly mean temperature(deg C) 28 29*/
-    "soc_k" : 0.38670,     /* shape factor for soil organic matter vertical distribution*/
+    "soc_k" : 0.30670,     /* shape factor for soil organic matter vertical distribution*/
     "alpha_fuelp" : 0.0000667, /* scaling factor nesterov fire danger index */
     "vpd_par" : 6, /*scaling factor vpd fire danger index*/
     "fuelbulkdensity" : 22.0, /* fuel bulk density */
@@ -1151,8 +1151,8 @@
     "temp_co2" : { "low" : -4.0, "high" : 45.0 }, /* lower and upper temperature limit for co2 (deg C) 24 27*/
     "temp_photos" : { "low" : 10.0, "high" : 30. },/* lower and upper limit of temperature optimum for photosynthesis(deg C) 25 26*/
     "b":  BC3, /* leaf respiration as fraction of Vmax for C3 plants */
-    "temp" : { "low" : -39.0, "high" : 15.5 }, /* lower and upper coldest monthly mean temperature(deg C) 28 29*/
-    "soc_k" : 0.38184,     /* shape factor for soil organic matter vertical distribution*/
+    "temp" : { "low" : -30.0, "high" : 15.5 }, /* lower and upper coldest monthly mean temperature(deg C) 28 29*/
+    "soc_k" : 0.30184,     /* shape factor for soil organic matter vertical distribution*/
     "alpha_fuelp" : 0.0000667, /* scaling factor nesterov fire danger index 0.38184 */
     "vpd_par" : 6, /*scaling factor vpd fire danger index*/
     "fuelbulkdensity" : 4.0, /* fuel bulk density */
@@ -1248,7 +1248,7 @@
     "temp_photos" : { "low" : 10.0, "high" : 25. },/* lower and upper limit of temperature optimum for photosynthesis(deg C) 25 26*/
     "b":  BC3, /* leaf respiration as fraction of Vmax for C3 plants */
     "temp" : { "low" : -1000.0, "high" : -2.6 }, /* lower and upper coldest monthly mean temperature(deg C) 28 29*/
-    "soc_k" : 0.38184,     /* shape factor for soil organic matter vertical distribution*/
+    "soc_k" : 0.30184,     /* shape factor for soil organic matter vertical distribution*/
     "alpha_fuelp" : 0.0000667, /* scaling factor nesterov fire danger index */
     "vpd_par" : 6, /*scaling factor vpd fire danger index*/
     "fuelbulkdensity" : 4.0, /* fuel bulk density */

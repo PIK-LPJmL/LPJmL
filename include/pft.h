@@ -191,7 +191,7 @@ typedef struct Pft
     Real (*vegn_sum)(const struct Pft *);
     Real (*agb)(const struct Pft *);
     void (*mix_veg)(struct Pft *,Real);
-    void(*mix_veg_stock)(struct Pft *, struct Pft *, Real, Real);
+    Bool(*mix_veg_stock)(struct Pft *, struct Pft *, Real, Real,const Config *);
     void (*fprintpar)(FILE *,const struct Pftpar *,const Config *);
     //void (*output_daily)(Daily_outputs *,const struct Pft *);
     void (*turnover_monthly)(Litter *,struct Pft *,const Config *);
@@ -324,7 +324,7 @@ extern Stocks timber_harvest(Pft *,Soil *,Poolpar,Real,Real,Real *,Stocks *,cons
 #define vegn_sum(pft) pft->par->vegn_sum(pft)
 #define agb(pft) pft->par->agb(pft)
 #define mix_veg(pft,scaler) pft->par->mix_veg(pft,scaler)
-#define mix_veg_stock(pft1,pft2,frac1,frac2) pft->par->mix_veg_stock(pft1,pft2,frac1,frac2)
+#define mix_veg_stock(pft1,pft2,frac1,frac2,config) pft->par->mix_veg_stock(pft1,pft2,frac1,frac2,config)
 #define adjust(litter,pft,fpc,fpc_max,config) pft->par->adjust(litter,pft,fpc,fpc_max,config)
 #define reduce(litter,pft,fpc,config) pft->par->reduce(litter,pft,fpc,config)
 #define wdf(pft,demand,supply) pft->par->wdf(pft,demand,supply)

@@ -12,6 +12,7 @@
 /**                                                                                \n**/
 /**************************************************************************************/
 
+//"inpath" : "/home/sibylls/sfs/projects/lpjml/input/historical",
 "inpath" : "/p/projects/lpjml/input/historical",
 
 "soilmap" : [null,"clay", "silty clay", "sandy clay", "clay loam", "silty clay loam",

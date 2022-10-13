@@ -24,7 +24,6 @@
 #define kkk (1/365.)
 #define LEAF 0
 #define WOOD 1
-//#define CHECK_BALANCE
 
 void update_daily(Cell *cell,            /**< cell pointer           */
                   Real co2,              /**< atmospheric CO2 (ppmv) */
@@ -58,17 +57,6 @@ void update_daily(Cell *cell,            /**< cell pointer           */
   Real avgprec;
   Stand *stand;
   Real ebul;
-#ifdef CHECK_BALANCE
-  Real ende, start;
-  Real water_before=cell->lateral_water+(cell->discharge.dmass_lake+cell->discharge.dmass_river)/cell->coord.area;
-  Real water_after=0;
-  Real balanceW=0;
-  Real wfluxes_old=cell->balance.atransp+cell->balance.aevap+cell->balance.ainterc+cell->balance.aevap_lake+cell->balance.aevap_res-cell->balance.airrig-cell->balance.aMT_water;
-  Real exess_old=cell->balance.excess_water;
-  if(year==2002 && day >=360)
-    fprintf(stdout,"wfluxes_old: %g exess_old: %g prec: %g drunoff: %g \n",wfluxes_old,exess_old,climate.prec,cell->discharge.drunoff);
-  ende = start=0;
-#endif
   ebul = 0;
   Real bnf;
   Real nh3;
@@ -81,11 +69,23 @@ void update_daily(Cell *cell,            /**< cell pointer           */
   Real litsum_old_agr[2]={0,0},litsum_new_agr[2]={0,0};
 
 #ifdef CHECK_BALANCE
+  Real end, start,start1;
+  Real water_before=cell->lateral_water+(cell->discharge.dmass_lake+cell->discharge.dmass_river)/cell->coord.area;
+  Real water_after=0;
+  Real balanceW=0;
+  Real wfluxes_old=cell->balance.atransp+cell->balance.aevap+cell->balance.ainterc+cell->balance.aevap_lake+cell->balance.aevap_res-cell->balance.airrig-cell->balance.aMT_water;
+  Real exess_old=cell->balance.excess_water;
+  Real CH4_fluxes=cell->balance.aCH4_em+cell->balance.aCH4_sink;
+  Real flux_carbon=cell->balance.flux_estab.carbon;
+  end=start=start1=0;
   foreachstand(stand,s,cell->standlist)
   {
     water_before+=soilwater(&stand->soil)*stand->frac;
+    start1+=(standstocks(stand).carbon + soilmethane(&stand->soil))*stand->frac;
   }
+  start=start1;
 #endif
+
   forrootmoist(l)
     rootdepth+=soildepth[l];
 
@@ -100,6 +100,15 @@ void update_daily(Cell *cell,            /**< cell pointer           */
   if(config->withlanduse) /* landuse enabled? */
     flux_estab=sowing(cell,climate.prec,day,year,npft,ncft,config); 
   cell->discharge.drunoff=0.0;
+  killstand(cell,npft,cell->ml.with_tillage,intercrop,year,config);
+
+#ifdef CHECK_BALANCE
+    foreachstand(stand,s,cell->standlist)
+      end+=(standstocks(stand).carbon + soilmethane(&stand->soil))*stand->frac;
+    if (fabs(end-start-flux_estab.carbon-(cell->balance.flux_estab.carbon-flux_carbon))>0.001) fprintf(stdout, "C-ERROR1 in update_daily: %g start:%g  end:%g flux_estab: %g flux_carbon: %g\n",
+                 end-start-flux_estab.carbon-(cell->balance.flux_estab.carbon-flux_carbon), start, end, flux_estab.carbon,(cell->balance.flux_estab.carbon-flux_carbon));
+    start=end;
+#endif
 
   if(config->fire==SPITFIRE || config->fire==SPITFIRE_TMAX)
     update_nesterov(cell,&climate);
@@ -117,9 +126,9 @@ void update_daily(Cell *cell,            /**< cell pointer           */
       stand->soil.litter.item[l].ag.leaf.nitrogen *= (1 - param.bioturbate);
     }
 
-    if((stand->type->landusetype==NATURAL || stand->type->landusetype==WETLAND) && (config->black_fallow && (day==152 || day==335)))
+    if((stand->type->landusetype==NATURAL || stand->type->landusetype==WETLAND) && (config->black_fallow && (day==152 || day==335)))  // dont understand the meaning here
     {
-      if(config->prescribe_residues && param.residue_rate>0 && param.residue_pool<=0)
+      if(config->prescribe_residues && param.residue_rate>0 && param.residue_pool<=0)   //why param.residue_pool less than zero is defined in lpjparam.js to be 100
       {
         index=findlitter(&stand->soil.litter,config->pftpar+config->pft_residue);
         if(index==NOT_FOUND)
@@ -229,8 +238,8 @@ void update_daily(Cell *cell,            /**< cell pointer           */
     cell->balance.aCH4_em+=ebul*stand->frac;
     getoutput(&cell->output,CH4_EBULLITION,config) += ebul*stand->frac*WCH4/WC;
 #ifdef CHECK_BALANCE
-    ende = standstocks(stand).carbon + soilmethane(&stand->soil);
-    if (fabs(start - ende - ebul)>epsilon) fprintf(stdout, "C-ERROR: %g start:%g  ende:%g daily: %g\n", start - ende - ebul, start, ende, ebul);
+    end = standstocks(stand).carbon + soilmethane(&stand->soil);
+    if (fabs(start - end - ebul)>epsilon) fprintf(stdout, "C-ERROR2 in update_daily: %g start:%g  end:%g daily: %g\n", start - end - ebul, start, end, ebul);
 #endif
 
     /* update soil and litter properties to account for all changes since last call of littersom */
@@ -275,18 +284,18 @@ void update_daily(Cell *cell,            /**< cell pointer           */
           litsum_new_agr[WOOD]+=stand->soil.litter.item[l].ag.wood[i].carbon+stand->soil.litter.item[l].agsub.wood[i].carbon;
       }
 
-    if((stand->type->landusetype==NATURAL || stand->type->landusetype==WETLAND) && config->black_fallow && config->prescribe_residues && param.residue_pool>0)
-    {
-      index=findlitter(&stand->soil.litter,config->pftpar+config->pft_residue);
-      if(index==NOT_FOUND)
-        index=addlitter(&stand->soil.litter,config->pftpar+config->pft_residue)-1;
-      getoutput(&cell->output,FLUX_ESTABC,config)+=(param.residue_pool-stand->soil.litter.item[index].ag.leaf.carbon)*stand->frac;
-      cell->balance.flux_estab.carbon+=(param.residue_pool-stand->soil.litter.item[index].ag.leaf.carbon)*stand->frac;
-      stand->soil.litter.item[index].ag.leaf.carbon=param.residue_pool;
-      getoutput(&cell->output,FLUX_ESTABN,config)+=(param.residue_pool/param.residue_cn-stand->soil.litter.item[index].ag.leaf.nitrogen)*stand->frac;
-      cell->balance.flux_estab.nitrogen+=(param.residue_pool/param.residue_cn-stand->soil.litter.item[index].ag.leaf.nitrogen)*stand->frac;
-      stand->soil.litter.item[index].ag.leaf.nitrogen=param.residue_pool/param.residue_cn;
-    }
+//    if((stand->type->landusetype==NATURAL || stand->type->landusetype==WETLAND) && config->black_fallow && config->prescribe_residues && param.residue_pool>0)
+//    {
+//      index=findlitter(&stand->soil.litter,config->pftpar+config->pft_residue);
+//      if(index==NOT_FOUND)
+//        index=addlitter(&stand->soil.litter,config->pftpar+config->pft_residue)-1;
+//      getoutput(&cell->output,FLUX_ESTABC,config)+=(param.residue_pool-stand->soil.litter.item[index].ag.leaf.carbon)*stand->frac;
+//      cell->balance.flux_estab.carbon+=(param.residue_pool-stand->soil.litter.item[index].ag.leaf.carbon)*stand->frac;
+//      stand->soil.litter.item[index].ag.leaf.carbon=param.residue_pool;
+//      getoutput(&cell->output,FLUX_ESTABN,config)+=(param.residue_pool/param.residue_cn-stand->soil.litter.item[index].ag.leaf.nitrogen)*stand->frac;
+//      cell->balance.flux_estab.nitrogen+=(param.residue_pool/param.residue_cn-stand->soil.litter.item[index].ag.leaf.nitrogen)*stand->frac;
+//      stand->soil.litter.item[index].ag.leaf.nitrogen=param.residue_pool/param.residue_cn;
+//    }
 
     /* update soil and litter properties to account for all changes from littersom */
     if(config->soilpar_option==NO_FIXED_SOILPAR || (config->soilpar_option==FIXED_SOILPAR && year<config->soilpar_fixyear))
@@ -573,33 +582,50 @@ void update_daily(Cell *cell,            /**< cell pointer           */
   soilpar_output(cell,agrfrac,config);
   killstand(cell,npft, cell->ml.with_tillage,intercrop,year,config);
 #ifdef SAFE
-  check_stand_fracs(cell,cell->lakefrac+cell->ml.reservoirfrac);
+  check_stand_fracs(cell,cell->lakefrac+cell->ml.reservoirfrac,9);
 #endif
   /* Establishment fluxes are area weighted in subroutines */
   getoutput(&cell->output,FLUX_ESTABC,config)+=flux_estab.carbon;
   getoutput(&cell->output,FLUX_ESTABN,config)+=flux_estab.nitrogen;
   cell->balance.flux_estab.nitrogen+=flux_estab.nitrogen;
   cell->balance.flux_estab.carbon+=flux_estab.carbon;
-  cell->output.dcflux-=flux_estab.carbon;
 #ifdef CHECK_BALANCE
+  flux_carbon=(cell->balance.flux_estab.carbon-flux_carbon);
   water_after=(cell->discharge.dmass_lake+cell->discharge.dmass_river)/cell->coord.area;
+  CH4_fluxes-=(cell->balance.aCH4_em+cell->balance.aCH4_sink);                                 //will be negative, because emissions at the end are higher, thus we have to substract
+  end=cell->output.dcflux;
   foreachstand(stand,s,cell->standlist)
   {
-    water_after+=soilwater(&stand->soil)*stand->frac;
+    if(stand->type->landusetype!=KILL)
+    {
+      water_after+=soilwater(&stand->soil)*stand->frac;
+      end+=(standstocks(stand).carbon + soilmethane(&stand->soil))*stand->frac ;
+    }
 //    if(stand->type->landusetype!=WETLAND && stand->type->landusetype!=NATURAL && year>=1960)
 //      fprintf(stdout,"type: %d frac : %g irrig_stor: %g \n",stand->type->landusetype,stand->frac,(data->irrig_stor + data->irrig_amount) * stand->frac);
   }
   balanceW=water_after-water_before-climate.prec-melt_all+
           ((cell->balance.atransp+cell->balance.aevap+cell->balance.ainterc+cell->balance.aevap_lake+cell->balance.aevap_res-cell->balance.airrig-cell->balance.aMT_water)-wfluxes_old)+cell->discharge.drunoff+
           (exess_old-cell->balance.excess_water)+cell->lateral_water;
-
-  if(fabs(balanceW)>0.01 && year>=1940)
-    fprintf(stdout,"W-BALANCE-ERROR in update_daily: day %d balanceW: %g  exess_old: %g balance.excess_water: %g water_after: %g water_before: %g prec: %g melt: %g "
-        "atransp: %g  aevap %g ainterc %g aevap_lake  %g aevap_res: %g    airrig : %g aMT_water : %g flux_bal: %g runoff %g lateral_water %g mfin-mfout : %g dmass_lake : %g  dmassriver : %g  \n",day,balanceW,exess_old,cell->balance.excess_water,
-        water_after,water_before,climate.prec,melt_all,cell->balance.atransp,cell->balance.aevap,cell->balance.ainterc,cell->balance.aevap_lake,cell->balance.aevap_res,cell->balance.airrig,cell->balance.aMT_water,
-        ((cell->balance.atransp+cell->balance.aevap+cell->balance.ainterc+cell->balance.aevap_lake+cell->balance.aevap_res-cell->balance.airrig-cell->balance.aMT_water)-wfluxes_old),
-        cell->discharge.drunoff,cell->lateral_water,((cell->discharge.mfout-cell->discharge.mfin)/cell->coord.area),cell->discharge.dmass_lake/cell->coord.area,cell->discharge.dmass_river/cell->coord.area);
-
+  if (fabs(end-start1+ebul-CH4_fluxes-flux_carbon)>0.01)
+  {
+    fprintf(stdout, "C-ERROR-update_daily end: day: %d    %g start: %g  end: %g ebul: %g CH4_fluxes: %g flux_estab.carbon: %g flux_harvest.carbon: %g dcflux: %g flux_carbon: %g "
+           "bm_inc: %g rh: %g aCH4_sink: %g aCH4_em : %g \n",
+           day,end-start1+ebul-CH4_fluxes-flux_carbon,start1, end, ebul,CH4_fluxes,cell->balance.flux_estab.carbon,cell->balance.flux_harvest.carbon,
+           cell->output.dcflux, flux_carbon ,cell->output.bm_inc,cell->balance.arh,cell->balance.aCH4_sink,cell->balance.aCH4_em);
+//    foreachstand(stand,s,cell->standlist)
+//             fprintf(stderr,"update_daily: standfrac: %g standtype: %s s= %d iswetland: %d cropfraction_rf: %g cropfraction_irr: %g grasfrac_rf: %g grasfrac_irr: %g\n",
+//                     stand->frac, stand->type->name,s,stand->soil.iswetland, crop_sum_frac(cell->ml.landfrac,12,config->nagtree,cell->ml.reservoirfrac+cell->lakefrac,FALSE),
+//                     crop_sum_frac(cell->ml.landfrac,12,config->nagtree,cell->ml.reservoirfrac+cell->lakefrac,TRUE),
+//                     cell->ml.landfrac[0].grass[0]+cell->ml.landfrac[0].grass[1],cell->ml.landfrac[1].grass[0]+cell->ml.landfrac[1].grass[1]);
+  }
+//  if(fabs(balanceW)>0.01 && year>=1940)
+//    fprintf(stderr,"W-BALANCE-ERROR in update_daily: day %d balanceW: %g  exess_old: %g balance.excess_water: %g water_after: %g water_before: %g prec: %g melt: %g "
+//        "atransp: %g  aevap %g ainterc %g aevap_lake  %g aevap_res: %g    airrig : %g aMT_water : %g flux_bal: %g runoff %g lateral_water %g mfin-mfout : %g dmass_lake : %g  dmassriver : %g  \n",day,balanceW,exess_old,cell->balance.excess_water,
+//        water_after,water_before,climate.prec,melt_all,cell->balance.atransp,cell->balance.aevap,cell->balance.ainterc,cell->balance.aevap_lake,cell->balance.aevap_res,cell->balance.airrig,cell->balance.aMT_water,
+//        ((cell->balance.atransp+cell->balance.aevap+cell->balance.ainterc+cell->balance.aevap_lake+cell->balance.aevap_res-cell->balance.airrig-cell->balance.aMT_water)-wfluxes_old),
+//        cell->discharge.drunoff,cell->lateral_water,((cell->discharge.mfout-cell->discharge.mfin)/cell->coord.area),cell->discharge.dmass_lake/cell->coord.area,cell->discharge.dmass_river/cell->coord.area);
+  cell->output.dcflux-=flux_carbon;
 #endif
 
 

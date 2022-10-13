@@ -166,6 +166,7 @@ extern void fprintpar_crop(FILE *,const Pftpar *,const Config *);
 extern void output_daily_crop(Output *,const Pft *,Real,Real,const Config *);
 extern void calc_seasonality(Cell *,int,int,const Config *);
 extern void albedo_crop(Pft *,Real,Real);
+extern void copy_crop(Pft *, const Pft *);
 extern void double_harvest(int, Real *, Real *, Real);
 extern Real nuptake_crop(Pft *,Real *,Real *,int,int,const Config *);
 extern Real ndemand_crop(const Pft *,Real *,Real,Real,Real);

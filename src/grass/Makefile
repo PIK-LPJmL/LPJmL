@@ -20,7 +20,7 @@ OBJS    = lai_grass.$O npp_grass.$O turnover_grass.$O\
           phenology_grass.$O new_grass.$O light_grass.$O fpar_grass.$O\
           fwrite_grass.$O fscanpft_grass.$O fprint_grass.$O fread_grass.$O\
           establishment_grass.$O free_grass.$O fprintpar_grass.$O\
-          veg_sum_grass.$O init_grass.$O mix_veg_grass.$O fire_grass.$O\
+          veg_sum_grass.$O init_grass.$O mix_veg_grass.$O copy_grass.$O fire_grass.$O\
           alphaa_grass.$O livefuel_consum_grass.$O reduce_grass.$O\
           annual_grass.$O turnover_monthly_grass.$O albedo_grass.$O adjust_grass.$O\
           turnover_daily_grass.$O agb_grass.$O nuptake_grass.$O ndemand_grass.$O\

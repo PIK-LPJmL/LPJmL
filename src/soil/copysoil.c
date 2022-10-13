@@ -26,10 +26,10 @@ void copysoil(Soil *dst,       /**< destination */
   forrootsoillayer(l)
   {
     dst->pool[l]=src->pool[l];
-    dst->NH4[l]=src->NH4[l];
-    dst->NO3[l]=src->NO3[l];
     dst->k_mean[l].slow=src->k_mean[l].slow;
     dst->k_mean[l].fast=src->k_mean[l].fast;
+    dst->NO3[l]=src->NO3[l];
+    dst->NH4[l]=src->NH4[l];
     dst->CH4[l] = src->CH4[l];
     dst->O2[l] = src->O2[l];
     dst->layer_exists[l] = src->layer_exists[l];
@@ -45,6 +45,9 @@ void copysoil(Soil *dst,       /**< destination */
   dst->meanw1=src->meanw1;
   dst->snowpack=src->snowpack;
   dst->snowdens = src->snowdens;
+  dst->snowheight = src->snowheight;
+  dst->snowfraction = src->snowfraction;
+  dst->icefrac=src->icefrac;
   dst->maxthaw_depth=src->maxthaw_depth;
   dst->mean_maxthaw=src->mean_maxthaw;
   dst->decomp_litter_mean=src->decomp_litter_mean;

@@ -45,12 +45,13 @@ Bool annual_natural(Stand *stand,         /**< Pointer to stand */
   Real firec=0;
   Real bm_inc=0;
 #endif
-
   pft_len=getnpft(&stand->pftlist); /* get number of established PFTs */
   if(pft_len>0)
   {
 #ifdef CHECK_BALANCE
-    start = standstocks(stand).carbon + soilmethane(&stand->soil);
+    start = standstocks(stand).carbon + soilmethane(&stand->soil);//-stand->cell->balance.flux_estab.carbon;
+    foreachpft(pft,p,&stand->pftlist)
+      start-=pft->establish.carbon;
 #endif
     fpc_inc=newvec(Real,pft_len);
     check(fpc_inc);
@@ -63,9 +64,6 @@ Bool annual_natural(Stand *stand,         /**< Pointer to stand */
       printf("PFT:%s bm_inc=%g vegc=%g soil=%g\n",pft->par->name,
              pft->bm_inc.carbon,vegc_sum(pft),soilcarbon(&stand->soil));
 #endif
-#ifdef CHECK_BALANCE
-      bm_inc+=pft->bm_inc.nitrogen;            // BE CAREFUL gturn already added to soil carbon
-#endif
       
       if(annualpft(stand,pft,fpc_inc+p,isdaily,config) || config->black_fallow)
       {
@@ -74,13 +72,23 @@ Bool annual_natural(Stand *stand,         /**< Pointer to stand */
         litter_update(&stand->soil.litter,pft,pft->nind,config);
         delpft(&stand->pftlist,p);
         p--; /* adjust loop variable */ 
-      }      
+        //fprintf(stderr,"ANNUANL_NATURAL KILL PFT: %s \n",pft->par->name);
+      }
+#ifdef CHECK_BALANCE
+      bm_inc+=pft->bm_inc.carbon;            // BE CAREFUL gturn already added to soil carbon
+#endif
     } /* of foreachpft */
 #ifdef CHECK_BALANCE
-    end = standstocks(stand).carbon + soilmethane(&stand->soil);
-    if (fabs(end - start)>0.0001)
-      fprintf(stderr, "C-ERROR annual PFT: %g start:%g  end:%g annual: %g  type:%s\n",
-              end - start, start, end, bm_inc, stand->type->name);
+    end = standstocks(stand).carbon + soilmethane(&stand->soil);//-stand->cell->balance.flux_estab.carbon;
+    foreachpft(pft,p,&stand->pftlist)
+      end-=pft->establish.carbon;
+    if (fabs(end-start)>0.1)
+    {
+      fprintf(stderr, "C-ERROR annual PFT: %g start: %g  end: %g annual_bminc: %g  type:%s flux_estab: %g stand->frac: %g \n",
+              end-start, start, end, bm_inc, stand->type->name,stand->cell->balance.flux_estab.carbon,stand->frac );
+      foreachpft(pft,p,&stand->pftlist)
+        fprintf(stderr, "PFT: %s fpc: %g establish_pft:%g\n",pft->par->name, pft->fpc,pft->establish.carbon);
+    }
 #endif
 
     /* separate calculation of grass FPC after all grass PFTs have been updated */
@@ -89,7 +97,7 @@ Bool annual_natural(Stand *stand,         /**< Pointer to stand */
         fpc_inc[p]=fpc_grass(pft);
 
 #ifdef DEBUG2
-    printf("Number of updated pft: %d\n",stand->pftlist.n);
+    printf(" 1 Number of updated pft: %d\n",stand->pftlist.n);
 #endif
     if(year>=config->firstyear && config->firewood==FIREWOOD)
     {

@@ -15,36 +15,36 @@
 #include "natural.h"
 #include "wetland.h"
 
-//#define CHECK_BALANCE
 #define MINCHANGE 1.e-4
 #define MINSIZE 4.e-6
 #define ADJUST_CSHIFT
 
 void update_wetland(Cell *cell,          /**< pointer to cell */
-                    int ntotpft,         /**< total number of PFTs */
-                    int year,            /**< simulation year */
-                    const Config *config /**< LPJmL configuration */
-                   )
+    int ntotpft,         /**< total number of PFTs */
+    int year,            /**< simulation year */
+    const Config *config /**< LPJmL configuration */
+)
 {
   Stand *stand;
-  Pft *pft, *wetpft;
-  int p, l;
-  int s, pos;
+  Pft *pft, *wetpft, *pft_save;
+  int p,pn, l;
+  int s, pos,sn;
   int wetlandstandnum,natstandnum;
   int *position;
   Bool *present;
   Real wetlandarea_old, wetlandarea_new, delta_wetland,delta,natstandarea;
   Stand *natstand, *wetstand, *setasidestand;
   Real tmp, slope, slope_max;
-  Real wtable_use, lambda;
+  Real wtable_use, lambda,carbon1,carbon2;
   Real cti_min, cti_max, p_min, p_max;
   //Real cti_min_max, p_min_max;
-  Bool iswetland_change, iswetland;
+  Bool iswetland_change, iswetland,isdead;
   Pool ctotal;
   Poolpar kmean_pft, cshift;
   Real socfraction,crop_wetland;
-  Real frac;
+  Real frac,vegc_test;
 #ifdef CHECK_BALANCE
+  Stand *checkstand;
   Stocks st;
   Stocks start={0,0};
   Stocks end={0,0};
@@ -58,6 +58,7 @@ void update_wetland(Cell *cell,          /**< pointer to cell */
   for (p = 0; p<ntotpft; p++)
     present[p] = FALSE;
 #ifdef CHECK_BALANCE
+  water_before=cell->balance.excess_water;
   foreachstand(stand, s, cell->standlist)
   {
     st=standstocks(stand);
@@ -87,13 +88,13 @@ void update_wetland(Cell *cell,          /**< pointer to cell */
   //  modify this to use wtable wanted -> wtable_mean
   wtable_use = cell->hydrotopes.wtable_mean;        /*mean over stands, NEXT try should cell->hydrotopes.wtable_mean*/
   if (wtable_use>0) wtable_use = 0;
-//  if(year>=1940 && year<=1980)
-//  {
-//    foreachstand(stand,s,cell->standlist)
-//      fprintf(stderr,"UPADTE WETL YEAR= %d standfrac: %g standtype: %d iswetland: %d cropfraction_rf: %g cropfraction_irr: %g grasfrac_rf: %g grasfrac_irr: %g\n",year,stand->frac, stand->type->landusetype,stand->soil.iswetland,
-//              crop_sum_frac(cell->ml.landfrac,12,config->nagtree,cell->ml.reservoirfrac+cell->lakefrac,FALSE),crop_sum_frac(cell->ml.landfrac,12,config->nagtree,cell->ml.reservoirfrac+cell->lakefrac,TRUE),
-//              cell->ml.landfrac[0].grass[0]+cell->ml.landfrac[0].grass[1],cell->ml.landfrac[1].grass[0]+cell->ml.landfrac[1].grass[1]);
-//  }
+  //  if(year>=1940 && year<=1980)
+  //  {
+  //    foreachstand(stand,s,cell->standlist)
+  //      fprintf(stderr,"UPADTE WETL YEAR= %d standfrac: %g standtype: %d iswetland: %d cropfraction_rf: %g cropfraction_irr: %g grasfrac_rf: %g grasfrac_irr: %g\n",year,stand->frac, stand->type->landusetype,stand->soil.iswetland,
+  //              crop_sum_frac(cell->ml.landfrac,12,config->nagtree,cell->ml.reservoirfrac+cell->lakefrac,FALSE),crop_sum_frac(cell->ml.landfrac,12,config->nagtree,cell->ml.reservoirfrac+cell->lakefrac,TRUE),
+  //              cell->ml.landfrac[0].grass[0]+cell->ml.landfrac[0].grass[1],cell->ml.landfrac[1].grass[0]+cell->ml.landfrac[1].grass[1]);
+  //  }
 
   if (!cell->hydrotopes.skip_cell && wtable_use >= -4.5 && natstandnum!=NOT_FOUND)
   {
@@ -126,7 +127,7 @@ void update_wetland(Cell *cell,          /**< pointer to cell */
 
       //   determine CTI index at wetland area mean
       tmp = itersolve(p_min, p_max, cti_min, cti_max, (p_min + p_max) / 2., cell->hydrotopes.cti_phi,
-                      cell->hydrotopes.cti_chi, cell->hydrotopes.cti_mu, 0);
+          cell->hydrotopes.cti_chi, cell->hydrotopes.cti_mu, 0);
       //   running mean of cti in wetland area
       cell->hydrotopes.wetland_cti_runmean = runmean_add(cell->hydrotopes.wetland_cti_runmean, tmp, (Real)HYD_AV_TIME);
     }
@@ -163,12 +164,12 @@ void update_wetland(Cell *cell,          /**< pointer to cell */
         wetlandarea_new = cell->hydrotopes.wetland_area;
       }
     }
-//    s=findlandusetype(cell->standlist,SETASIDE_WETLAND);
-//    if(s!=NOT_FOUND)
-//    {
-//      setasidestand=getstand(cell->standlist,s);
-//      crop_wetland=setasidestand->frac;
-//    }
+    //    s=findlandusetype(cell->standlist,SETASIDE_WETLAND);
+    //    if(s!=NOT_FOUND)
+    //    {
+    //      setasidestand=getstand(cell->standlist,s);
+    //      crop_wetland=setasidestand->frac;
+    //    }
     foreachstand(stand,s,cell->standlist)
     {
       if(stand->soil.iswetland && stand->type->landusetype!=WETLAND)
@@ -176,7 +177,7 @@ void update_wetland(Cell *cell,          /**< pointer to cell */
     }
 
     delta_wetland = wetlandarea_new - wetlandarea_old-crop_wetland;
-
+    //iswetland_change = FALSE;
     // -----------------------------------------------------------------------------------------------
     //   Size actually changed? change C pools, stand size, etc.
     if (iswetland_change && (wetlandarea_new>crop_wetland))
@@ -190,13 +191,17 @@ void update_wetland(Cell *cell,          /**< pointer to cell */
         wetstand = getstand(cell->standlist, wetlandstandnum);
       // -----------------------------------------------------------------------------------------------
       //    wetland grows
-      // printf("delta_wetland=%g\n",delta_wetland);
       if (delta_wetland > 0)
       {
         //      currently no wetland stand
         if (wetlandstandnum == NOT_FOUND)
         {
-          //fprintf(stderr,"XXX update_wetland.c wetland not exist .\n");
+#ifdef CHECK_BALANCE2
+          fprintf(stderr,"XXX update_wetland.c wetland not exist .\n");
+          foreachstand(checkstand,s,cell->standlist)
+          fprintf(stderr,"type %s frac:%g s: %d iswetland: %d delta_wetland: %g wetlandnew: %g wetlandarea_new: %g crop_wetland: %g\n",
+              checkstand->type->name,checkstand->frac,s,checkstand->soil.iswetland,delta_wetland,wetlandarea_new-crop_wetland,wetlandarea_new,crop_wetland);
+#endif
           pos = addstand(&wetland_stand, cell) - 1;
           wetlandstandnum = pos;
           wetstand = getstand(cell->standlist, pos);
@@ -226,70 +231,113 @@ void update_wetland(Cell *cell,          /**< pointer to cell */
             wetstand->soil.pool[l].slow.carbon = 0.;
 
           } /* of forrootsoillayer() */
-            //        copy PFT list to wetland stand
+          //        copy PFT list to wetland stand
           foreachpft(pft, p, &natstand->pftlist)
           {
             wetpft = addpft(wetstand,pft->par,year,365,config);
-            mix_veg_stock(wetpft, pft, wetstand->frac, natstand->frac);
+            //mix_veg_stock(wetpft, pft, wetstand->frac, natstand->frac);
+            // mix_veg_stock(wetpft, pft, wetstand->frac, natstand->frac);
+            copypft(wetpft,pft);
           }
           natstand->frac = frac - delta_wetland;
+
           if(natstand->frac<0)
           {
-    //       remove stand
-             //printf("DELETE NATURAL STAND\n");
-             delstand(cell->standlist,natstandnum);
-             natstandnum = NOT_FOUND;
+            //       remove stand
+            //printf("DELETE NATURAL STAND\n");
+            delstand(cell->standlist,natstandnum);
+            natstandnum = NOT_FOUND;
           }
+#ifdef CHECK_BALANCE2
+          if(year==1801)
+            foreachstand(checkstand,s,cell->standlist)
+            fprintf(stderr,"type %s frac:%g s: %d iswetland: %d delta_wetland: %g wetlandarea_old: %g delta_wetland: %g\n",
+                checkstand->type->name,checkstand->frac,s,checkstand->soil.iswetland,delta_wetland,wetlandarea_old,delta_wetland);
+#endif
         }
         else
         {
           //        currently there is wetland stand
           wetstand = getstand(cell->standlist, wetlandstandnum);
-//          if(year>=1940)
-//          fprintf(stderr,"XXX update_wetland.c wetland expands delta_wetland= %g wetlandarea_new= %g wetfrac: %g natfrac: %g crop_wetland= %g.\n",
-//              delta_wetland,wetlandarea_new,wetstand->frac,natstand->frac,crop_wetland,wetlandstandnum);
+          //fprintf(stderr,"befor mixsoil: soilC:  %.4f \n",(soilstocks(&wetstand->soil).carbon*wetstand->frac)+(soilstocks(&natstand->soil).carbon*natstand->frac));
           frac = natstand->frac;
           //        modify soil C pools -> acrotelm C density mixture of wetland and non-wetland SOM
           natstand->frac = min(frac,delta_wetland); // make mixsoil and mix_veg_stock work correctly
-          mixsoil(wetstand, natstand,year,config);
+          delta_wetland=natstand->frac;
           pos = 0;
+          //          if(year==1801)
+          //            fprintf(stderr,"START wetcarbon: %.4f natcarbon: %.4f, totalC:: %.4f \n"
+          //                "natfrac: %.4f deltafrac: %.4f wetfrac: %.4f \n",
+          //                (standstocks(wetstand).carbon*wetstand->frac),standstocks(natstand).carbon*frac,
+          //                (standstocks(wetstand).carbon*wetstand->frac)+standstocks(natstand).carbon*frac,frac,delta_wetland,wetstand->frac);
+          //          if(year==1801)
+          //            fprintf(stderr,"before wetcarbon: %.4f natcarbon: %.4f\n",(standstocks(wetstand).carbon),standstocks(natstand).carbon);
+          mixsoil(wetstand, natstand,year,config);
           foreachpft(pft, p, &wetstand->pftlist)
           {
             present[pft->par->id] = TRUE;
             position[pft->par->id] = pos;
             pos++;
           }
-
           foreachpft(pft, p, &natstand->pftlist)
           {
 
             if (present[pft->par->id])
             {
               wetpft = getpft(&wetstand->pftlist, position[pft->par->id]);   //TODO
-              mix_veg_stock(wetpft, pft, wetstand->frac, natstand->frac);
+              if(mix_veg_stock(wetpft, pft, wetstand->frac, natstand->frac,config))
+              {
+                delpft(&wetstand->pftlist,position[pft->par->id]);
+                delpft(&natstand->pftlist,p);
+                p--;
+                pos=0;
+                foreachpft(pft_save, pn, &wetstand->pftlist)
+                {
+                  present[pft_save->par->id] = TRUE;
+                  position[pft_save->par->id] = pos;
+                  pos++;
+                }
+              }
             }
             else
             {
               wetpft = addpft(wetstand,pft->par,year,365,config);
-              mix_veg_stock(wetpft, pft, wetstand->frac, natstand->frac);
+              if(mix_veg_stock(wetpft, pft, wetstand->frac, natstand->frac,config))
+              {
+                delpft(&wetstand->pftlist,wetstand->pftlist.n-1);
+                delpft(&natstand->pftlist,p);
+                p--;
+                pos=0;
+                foreachpft(pft_save, pn, &wetstand->pftlist)
+                {
+                  present[pft_save->par->id] = TRUE;
+                  position[pft_save->par->id] = pos;
+                  pos++;
+                }
+              }
             }
           }
+
+          //          if(year==1801)
+          //fprintf(stderr,"wetcarbon: %.4f natcarbon: %.4f\n",(standstocks(wetstand).carbon),standstocks(natstand).carbon);
           for (p = 0; p<ntotpft; p++)
             present[p] = FALSE;
           foreachpft(pft, p, &natstand->pftlist)
-            present[pft->par->id] = TRUE;
+          present[pft->par->id] = TRUE;
           foreachpft(pft, p, &wetstand->pftlist)
-            if(!present[pft->par->id])
-              mix_veg(pft,wetstand->frac/(wetstand->frac+natstand->frac));
-          delta=delta_wetland;
-          if(frac<delta_wetland)
-            wetstand->frac+=frac;
-          else
-            wetstand->frac=wetlandarea_new-crop_wetland;
-          delta_wetland=wetstand->frac-wetlandarea_old;
-          natstand->frac=frac-delta_wetland;
+          if(!present[pft->par->id])
+            mix_veg(pft,wetstand->frac/(wetstand->frac+natstand->frac));
+          //          if(year==1801)
+          //fprintf(stderr,"after mix_veg wetcarbon: %.4f natcarbon: %.4f\n",(standstocks(wetstand).carbon),standstocks(natstand).carbon);
 
-          //        make sure there is no C in slow pool
+          delta=delta_wetland;
+          natstand->frac=frac-delta_wetland;
+          wetstand->frac+=delta_wetland;
+          //if(year==1801)
+          //            fprintf(stderr,"wetcarbon: %.4f natcarbon: %.4f, totalC:: %.4f \n",
+          //                (standstocks(wetstand).carbon*wetstand->frac),standstocks(natstand).carbon*natstand->frac,
+          //                (standstocks(wetstand).carbon*wetstand->frac)+standstocks(natstand).carbon*natstand->frac);
+          //    make sure there is no C in slow pool
           forrootsoillayer(l)
           {
             wetstand->soil.pool[l].fast.carbon+=wetstand->soil.pool[l].slow.carbon;
@@ -297,25 +345,32 @@ void update_wetland(Cell *cell,          /**< pointer to cell */
             wetstand->soil.pool[l].slow.carbon=wetstand->soil.pool[l].slow.nitrogen=0.;
 
           } /* of forrootsoillayer */
+#ifdef CHECK_BALANCE2
+          // if(year==1800)
+          foreachstand(checkstand,s,cell->standlist)
+          fprintf(stderr,"wetland exists type %s frac:%g s: %d iswetland: %d delta_wetland: %g wetlandarea_old: %g delta_wetland: %g\n",
+              checkstand->type->name,checkstand->frac,s,checkstand->soil.iswetland,delta_wetland,wetlandarea_old,delta_wetland);
+#endif
         }
 
 
         if(natstand->frac <= 0.)
         {
-  //       remove stand
-           //printf("DELETE NATURAL STAND\n");
-           delstand(cell->standlist,natstandnum);
-           natstandnum = NOT_FOUND;
+          //       remove stand
+          //printf("DELETE NATURAL STAND\n");
+          delstand(cell->standlist,natstandnum);
+          natstandnum = NOT_FOUND;
         }
         if(wetstand->frac <= 0.)
         {
-  //       remove stand
-           //printf("DELETE WETLAND STAND\n");
-           delstand(cell->standlist,wetlandstandnum);
-           wetlandstandnum = NOT_FOUND;
+          //       remove stand
+          //printf("DELETE WETLAND STAND\n");
+          delstand(cell->standlist,wetlandstandnum);
+          wetlandstandnum = NOT_FOUND;
         }
 
 #ifdef CHECK_BALANCE
+        water_after=cell->balance.excess_water;
         foreachstand(stand, s, cell->standlist)
         {
           st=standstocks(stand);
@@ -323,14 +378,14 @@ void update_wetland(Cell *cell,          /**< pointer to cell */
           end.nitrogen+=st.nitrogen*stand->frac;
           water_after+=soilwater(&stand->soil)*stand->frac;
         }
-        if (fabs(start.carbon - end.carbon)>0.1)
-          fprintf(stderr, "C-ERROR in update wetland 1: %g start:%g  ende:%g \n", start.carbon - end.carbon, start.carbon, end.carbon);
-        if (fabs(start.nitrogen - end.nitrogen)>0.1)
+        if (fabs(start.carbon - end.carbon)>0.01)
+          fprintf(stderr, "\n C-ERROR in update wetland 1: %g start:%g  ende:%g \n", start.carbon - end.carbon, start.carbon, end.carbon);
+        if (fabs(start.nitrogen - end.nitrogen)>0.01)
           fprintf(stderr, "N-ERROR in update wetland 1: %g start:%g  ende:%g \n", start.nitrogen - end.nitrogen, start.nitrogen, end.nitrogen);
         if (fabs(water_before - water_after)>0.1)
-          fprintf(stderr, "W-ERROR in update wetland 1: %g start:%g  ende:%g \n", water_before - water_after, water_before, water_after);
+          fprintf(stderr, "W-ERROR in update wetland 1: %g start:%g  ende:%g excess_water:%g\n", water_before - water_after, water_before, water_after,cell->balance.excess_water);
 #endif
-         check_stand_fracs(cell,cell->lakefrac+cell->ml.reservoirfrac);
+        check_stand_fracs(cell,cell->lakefrac+cell->ml.reservoirfrac,6);
 
       }
       // -----------------------------------------------------------------------------------------------
@@ -344,14 +399,14 @@ void update_wetland(Cell *cell,          /**< pointer to cell */
         else
         {
           wetstand = getstand(cell->standlist, wetlandstandnum);
-          //fprintf(stderr,"XXX update_wetland.c wants to shrink in %d.\n",year);
+          //fprintf(stderr,"XXX update_wetland.c wants to shrink in %d.   wetlandarea_new: %.4f wetlandarea_old: %.4f\n",year,wetlandarea_new,wetlandarea_old);
           if(-delta_wetland>wetstand->frac)
             delta_wetland = -wetstand->frac;
+          //fprintf(stderr,"wetfrac: %g natfrac: %g crop_wetland: %g delta_wetland: %g\n",wetstand->frac,natstand->frac,crop_wetland,delta_wetland);
 
           //        mix wetland soil carbon into non-wetland
           frac = wetstand->frac;
           wetstand->frac = -delta_wetland;  // trick to make mixsoil do it
-          mixsoil(natstand, wetstand,year,config);
           pos = 0;
           foreachpft(pft, p, &natstand->pftlist)
           {
@@ -359,44 +414,114 @@ void update_wetland(Cell *cell,          /**< pointer to cell */
             position[pft->par->id] = pos;
             pos++;
           }
+          mixsoil(natstand, wetstand,year,config);
 
           foreachpft(wetpft, p, &wetstand->pftlist)
           {
             if (present[wetpft->par->id])
             {
               pft = getpft(&natstand->pftlist, position[wetpft->par->id]);   //STODO
-              mix_veg_stock(pft, wetpft, natstand->frac, wetstand->frac);
+              vegc_test=vegc_sum(pft)*natstand->frac+vegc_sum(wetpft)*frac;
+              //              fprintf(stderr,"1 ispresent: pft: %s wetpft: %s vegc_test : %.4f\n",pft->par->name,wetpft->par->name,vegc_test);
+              //              fprintf(stderr,"vegcpft:  %.4f vegcwetpft:  %.4f \n",vegc_sum(pft),vegc_sum(wetpft));
+              if(mix_veg_stock(pft, wetpft, natstand->frac, wetstand->frac,config))
+              {
+                vegc_test=vegc_sum(pft)*(natstand->frac-delta_wetland)+vegc_sum(wetpft)*(frac+delta_wetland);
+                //                fprintf(stderr,"2 ispresent: pft: %s wetpft: %s vegc_test : %.4f\n",pft->par->name,wetpft->par->name,vegc_test);
+                //                fprintf(stderr,"vegcpft:  %.4f vegcwetpft:  %.4f \n",vegc_sum(pft),vegc_sum(wetpft));
+                delpft(&natstand->pftlist,position[wetpft->par->id]);
+                delpft(&wetstand->pftlist,p);
+                p--;
+                pos=0;
+                foreachpft(pft_save, pn, &natstand->pftlist)
+                {
+                  present[pft_save->par->id] = TRUE;
+                  position[pft_save->par->id] = pos;
+                  pos++;
+                }
+              }
+              vegc_test=vegc_sum(pft)*(natstand->frac-delta_wetland)+vegc_sum(wetpft)*(frac+delta_wetland);
+              //              fprintf(stderr,"3 ispresent: pft: %s wetpft: %s vegc_test : %.4f\n",pft->par->name,wetpft->par->name,vegc_test);
+              //              fprintf(stderr,"vegcpft:  %.4f vegcwetpft:  %.4f \n",vegc_sum(pft),vegc_sum(wetpft));
+
             }
             else
             {
               if (wetpft->par->peatland)
-                litter_update(&natstand->soil.litter, wetpft, -delta_wetland/(natstand->frac+wetstand->frac),config);
+              {
+                pft = addpft(natstand,wetpft->par,year,365,config);
+                vegc_test=vegc_sum(pft)*natstand->frac+vegc_sum(wetpft)*frac;
+                //                fprintf(stderr,"peatland: vegc_test : %.4f\n",vegc_test);
+                //                fprintf(stderr,"vegcpft:  %.4f vegcwetpft:  %.4f \n",vegc_sum(pft),vegc_sum(wetpft));
+                if(mix_veg_stock(pft, wetpft, natstand->frac, wetstand->frac,config))
+                {
+                  vegc_test=vegc_sum(pft)*(natstand->frac-delta_wetland)+vegc_sum(wetpft)*(frac+delta_wetland);
+                  //                  fprintf(stderr,"1 wetpft: %s natpft: %s\n",wetpft->par->name,pft->par->name);
+                  //                  fprintf(stderr,"notpresent: pft: %s wetpft: %s vegc: %.4f both small\n",pft->par->name,wetpft->par->name,vegc_test);
+                  //                  fprintf(stderr,"vegcpft:  %.4f vegcwetpft:  %.4f \n",vegc_sum(pft),vegc_sum(wetpft));
+                  delpft(&wetstand->pftlist,p);
+                  delpft(&natstand->pftlist,natstand->pftlist.n-1);
+                  p--;
+                  pos=0;
+                  foreachpft(pft_save, pn, &natstand->pftlist)
+                  {
+                    present[pft_save->par->id] = TRUE;
+                    position[pft_save->par->id] = pos;
+                    pos++;
+                  }
+
+                }
+                else
+                {
+                  vegc_test=vegc_sum(pft)*(natstand->frac-delta_wetland)+vegc_sum(wetpft)*(frac+delta_wetland);
+                  //                  fprintf(stderr,"2 wetpft: %s natpft: %s  vegc: %.4f cutfrac: %.4f\n",wetpft->par->name,pft->par->name,vegc_test,natstand->frac/(natstand->frac+wetstand->frac));
+                  //                  fprintf(stderr,"notpresent: pft: %s wetpft: %s\n",pft->par->name,wetpft->par->name);
+                  //                  fprintf(stderr,"vegcpft:  %.4f vegcwetpft:  %.4f \n",vegc_sum(pft),vegc_sum(wetpft));
+                  litter_update(&natstand->soil.litter, pft,pft->nind,config);
+                  delpft(&natstand->pftlist,natstand->pftlist.n-1);
+                }
+              }
               else
               {
                 pft = addpft(natstand,wetpft->par,year,365,config);
-                mix_veg_stock(pft, wetpft, natstand->frac, wetstand->frac);
+                if(mix_veg_stock(pft, wetpft, natstand->frac, wetstand->frac,config))
+                {
+                  delpft(&natstand->pftlist,natstand->pftlist.n-1);
+                  delpft(&wetstand->pftlist,p);
+                  p--;
+                  pos=0;
+                  foreachpft(pft_save, pn, &natstand->pftlist)
+                  {
+                    present[pft_save->par->id] = TRUE;
+                    position[pft_save->par->id] = pos;
+                    pos++;
+                  }
+                }
+
               }
             }
           }
+          //mixsoil(natstand, wetstand,year,config);
+
           for (p = 0; p<ntotpft; p++)
             present[p] = FALSE;
           foreachpft(pft, p, &wetstand->pftlist)
-            present[pft->par->id] = TRUE;
+          present[pft->par->id] = TRUE;
           foreachpft(pft, p, &natstand->pftlist)
-            if(!present[pft->par->id])
-              mix_veg(pft,natstand->frac/(natstand->frac+wetstand->frac));
+          if(!present[pft->par->id])
+            mix_veg(pft,natstand->frac/(natstand->frac+wetstand->frac));
 
           //        shrink wetland stand
           wetstand->frac=frac+delta_wetland;
           natstand->frac-= delta_wetland;
-//          if(year>=1513)
-//           fprintf(stderr,"wetfrac: %g natfrac: %g crop_wetland: %g delta_wetland: %g\n",wetstand->frac,natstand->frac,crop_wetland,delta_wetland);
+          //          if(year>=1513)
+          //          fprintf(stderr,"wetfrac: %g natfrac: %g crop_wetland: %g delta_wetland: %g\n",wetstand->frac,natstand->frac,crop_wetland,delta_wetland);
 
           //        no wetland left?
           if (wetstand->frac <= 0.)
           {
             //          remove stand
-            //printf("DELETE WETLAND STAND\n");
+            printf("DELETE WETLAND STAND\n");
             delstand(cell->standlist, wetlandstandnum);
             wetlandstandnum = NOT_FOUND;
           }
@@ -430,7 +555,7 @@ void update_wetland(Cell *cell,          /**< pointer to cell */
           //slope /= (-(exp(-lambda*slope_max) - (exp(-lambda*cell->slope_min))));                                                 //normalising the mean slope for a specific range
         }
         if(cell->slope<slope)
-           slope=cell->slope;
+          slope=cell->slope;
         wetstand->slope_mean = slope;
         wetstand->Hag_Beta = min(1, (0.09*log(slope + 0.1) + 0.22) / 0.43);
 
@@ -455,7 +580,7 @@ void update_wetland(Cell *cell,          /**< pointer to cell */
     }
   } /* of' if cell->hydrotopes.skip_cell*/
 
-    /* totc2=methane2=0;
+  /* totc2=methane2=0;
 
     foreachstand(stand,s,cell->standlist){
     totc2+=standstocks(stand).carbon*stand->frac;
@@ -469,7 +594,7 @@ void update_wetland(Cell *cell,          /**< pointer to cell */
     methane2+=standmethane(stand)*stand->frac;
     }
     printf("balanceC in update wetland: %g methane: %g toc: %g\n", totc_all-totc2-methane2, methane-methane2,totc-totc2);
-    */
+   */
 #ifdef ADJUST_CSHIFT
   foreachstand(stand, s, cell->standlist)
   {
@@ -531,26 +656,27 @@ void update_wetland(Cell *cell,          /**< pointer to cell */
         }
       } /* of for(p=0;p<stand->soil.litter.n;p++) */
       forrootsoillayer(l)
-        stand->soil.k_mean[l].slow = stand->soil.k_mean[l].fast = 0.0;
+      stand->soil.k_mean[l].slow = stand->soil.k_mean[l].fast = 0.0;
       stand->soil.count = 0;
       stand->soil.decomp_litter_mean.carbon = 0.0;
     }
   }
 #endif
-//  if(year>=1979)
-//    fprintf(stderr,"update_wetland2 YEAR: %d delta_wetland: %g\n",year,delta_wetland);
-//  if(year>=1979 && year<=1982)
-//  {
-//    foreachstand(stand,s,cell->standlist)
-//      fprintf(stderr,"UPADTE WETL YEAR= %d standfrac: %g standtype: %d iswetland: %d cropfraction_rf: %g cropfraction_irr: %g grasfrac_rf: %g grasfrac_irr: %g delta_wetland: %g wetlandarea_new: %g wetlandarea_old: %g\n",year,stand->frac, stand->type->landusetype,stand->soil.iswetland,
-//              crop_sum_frac(cell->ml.landfrac,12,config->nagtree,cell->ml.reservoirfrac+cell->lakefrac,FALSE),crop_sum_frac(cell->ml.landfrac,12,config->nagtree,cell->ml.reservoirfrac+cell->lakefrac,TRUE),
-//              cell->ml.landfrac[0].grass[0]+cell->ml.landfrac[0].grass[1],cell->ml.landfrac[1].grass[0]+cell->ml.landfrac[1].grass[1],delta_wetland,wetlandarea_new,wetlandarea_old);
-//  }
-  check_stand_fracs(cell,cell->lakefrac+cell->ml.reservoirfrac);
+  //  if(year>=1979)
+  //    fprintf(stderr,"update_wetland2 YEAR: %d delta_wetland: %g\n",year,delta_wetland);
+  //  if(year>=1979 && year<=1982)
+  //  {
+  //    foreachstand(stand,s,cell->standlist)
+  //      fprintf(stderr,"UPADTE WETL YEAR= %d standfrac: %g standtype: %d iswetland: %d cropfraction_rf: %g cropfraction_irr: %g grasfrac_rf: %g grasfrac_irr: %g delta_wetland: %g wetlandarea_new: %g wetlandarea_old: %g\n",year,stand->frac, stand->type->landusetype,stand->soil.iswetland,
+  //              crop_sum_frac(cell->ml.landfrac,12,config->nagtree,cell->ml.reservoirfrac+cell->lakefrac,FALSE),crop_sum_frac(cell->ml.landfrac,12,config->nagtree,cell->ml.reservoirfrac+cell->lakefrac,TRUE),
+  //              cell->ml.landfrac[0].grass[0]+cell->ml.landfrac[0].grass[1],cell->ml.landfrac[1].grass[0]+cell->ml.landfrac[1].grass[1],delta_wetland,wetlandarea_new,wetlandarea_old);
+  //  }
+  check_stand_fracs(cell,cell->lakefrac+cell->ml.reservoirfrac,10);
 
 
 #ifdef CHECK_BALANCE
-  end.carbon=end.nitrogen=water_after=0;
+  end.carbon=end.nitrogen=0;
+  water_after=cell->balance.excess_water;
   foreachstand(stand, s, cell->standlist)
   {
     st=standstocks(stand);
@@ -558,8 +684,8 @@ void update_wetland(Cell *cell,          /**< pointer to cell */
     end.nitrogen+=st.nitrogen*stand->frac;
     water_after+=soilwater(&stand->soil)*stand->frac;
   }
-  if (fabs(start.carbon - end.carbon)>0.1)
-    fprintf(stderr, "C-ERROR in update wetland 2: %g start:%g  ende:%g \n", start.carbon - end.carbon, start.carbon, end.carbon);
+  if (fabs(start.carbon - end.carbon)>0.01)
+    fprintf(stderr, "\n C-ERROR in update wetland 2: %g start:%g  ende:%g \n", start.carbon - end.carbon, start.carbon, end.carbon);
   if (fabs(start.nitrogen - end.nitrogen)>0.1)
     fprintf(stderr, "N-ERROR in update wetland 2: %g start:%g  ende:%g \n", start.nitrogen - end.nitrogen, start.nitrogen, end.nitrogen);
   if (fabs(water_before - water_after)>0.1)

@@ -13,7 +13,7 @@
 /**************************************************************************************/
 
 #include "lpj.h"
-#define CHECK_BALANCE
+
 void pedotransfer(Stand *stand,  /**< pointer to stand */
                   Real *abswmm,
                   Real *absimm,
@@ -66,6 +66,8 @@ void pedotransfer(Stand *stand,  /**< pointer to stand */
       om_layer = 2 * ((soil->pool[l].fast.carbon + soil->pool[l].slow.carbon) / ( (1 - soil->wsat[l])*MINERALDENS * soildepth[l]))*100;  /* calculation of soil organic matter in % */
       if (om_layer > 8)
         om_layer = 8;
+      if (om_layer < 0)
+        om_layer = 0;
       
       /* pedotransfer function following Saxton&Rawls 2006: */
       wpwpt = -0.024*soilpar->sand + 0.487*soilpar->clay + 0.006*om_layer + 0.005*(soilpar->sand*om_layer) - 0.013*(soilpar->clay*om_layer) + 0.068*(soilpar->sand*soilpar->clay) + 0.031;

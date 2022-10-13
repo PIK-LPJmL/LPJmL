@@ -18,7 +18,6 @@
 #include "lpj.h"
 
 #define N 5
-//#define CHECK_BALANCE
 
 void update_annual(Cell *cell,          /**< Pointer to cell */
                    int npft,            /**< number of natural pfts */
@@ -78,9 +77,10 @@ void update_annual(Cell *cell,          /**< Pointer to cell */
   foreachstand(stand, s, cell->standlist)
   {
     st=standstocks(stand);
-    anfang.carbon+=(st.carbon+ soilmethane(&stand->soil))*stand->frac;
-    anfang.nitrogen+=st.nitrogen*stand->frac;
+    anfang.carbon+=(st.carbon+ soilmethane(&stand->soil))*stand->frac-stand->cell->balance.flux_estab.carbon;
+    anfang.nitrogen+=st.nitrogen*stand->frac-stand->cell->balance.flux_estab.nitrogen;
     anfang_w += soilwater(&stand->soil)*stand->frac;
+
   }
 #endif
     if((year<config->firstyear && config->sdate_option!=PRESCRIBED_SDATE) ||
@@ -96,6 +96,7 @@ void update_annual(Cell *cell,          /**< Pointer to cell */
     if(!config->with_nitrogen)
       foreachpft(pft,p,&stand->pftlist)
         pft->vscal=NDAYYEAR;
+    //if(year<2011)
     if(annual_stand(stand,npft,ncft,popdens,year,isdaily,intercrop,config))
     {
       /* stand has to be deleted */
@@ -124,8 +125,8 @@ void update_annual(Cell *cell,          /**< Pointer to cell */
   foreachstand(stand,s,cell->standlist)
   {
     st=standstocks(stand);
-    ende.carbon+=(st.carbon+ soilmethane(&stand->soil))*stand->frac;
-    ende.nitrogen+=st.nitrogen*stand->frac;
+    ende.carbon+=(st.carbon+ soilmethane(&stand->soil))*stand->frac-stand->cell->balance.flux_estab.carbon;
+    ende.nitrogen+=st.nitrogen*stand->frac-stand->cell->balance.flux_estab.nitrogen;
     ende_w += soilwater(&stand->soil)*stand->frac;
     //fprintf(stdout,"update_annual: landusetype: %s stand.frac: %g NEP: %g\n\n",stand->type->name, stand->frac,cell->balance.nep);
   }
@@ -158,7 +159,7 @@ void update_annual(Cell *cell,          /**< Pointer to cell */
   foreachstand(stand,s,cell->standlist)
   {
     if (stand->type->landusetype == SETASIDE_RF || stand->type->landusetype == SETASIDE_IR ||
-         stand->type->landusetype == AGRICULTURE)
+         stand->type->landusetype == AGRICULTURE || stand->type->landusetype == SETASIDE_WETLAND)
     {
       stand_fracs += stand->frac;
       for (p = 0; p<stand->soil.litter.n; p++)
@@ -200,13 +201,13 @@ void update_annual(Cell *cell,          /**< Pointer to cell */
   foreachstand(stand, s, cell->standlist)
   {
     st=standstocks(stand);
-    ende.carbon+=(st.carbon+ soilmethane(&stand->soil))*stand->frac;
-    ende.nitrogen+=st.nitrogen*stand->frac;
+    ende.carbon+=(st.carbon+ soilmethane(&stand->soil))*stand->frac-stand->cell->balance.flux_estab.carbon;
+    ende.nitrogen+=st.nitrogen*stand->frac-stand->cell->balance.flux_estab.nitrogen;
     ende_w += soilwater(&stand->soil)*stand->frac;
    //fprintf(stdout,"update_annual: landusetype: %s stand.frac: %g NEP: %g\n\n",stand->type->name, stand->frac,cell->balance.nep);
   }
   //if (fabs(anfang.nitrogen - ende.nitrogen)>0.001) fprintf(stdout, "N_ERROR update annual - annual stand after update_wetland: year=%d: error=%g anfang : %g ende : %g neg_fluxes : %g\n", year, anfang.nitrogen - ende.nitrogen, anfang.nitrogen, ende.nitrogen,cell->balance.neg_fluxes.nitrogen);
-  if (fabs(anfang_w - ende_w)>0.001) fprintf(stdout, "W_ERROR update annual - annual stand: year=%d: W_ERROR=%g anfang : %g ende : %g\n", year, anfang_w - ende_w, anfang_w, ende_w);
+  //if (fabs(anfang_w - ende_w)>0.001) fprintf(stdout, "W_ERROR update annual - annual stand: year=%d: W_ERROR=%g anfang : %g ende : %g\n", year, anfang_w - ende_w, anfang_w, ende_w);
 #endif
 
 } /* of 'update_annual' */

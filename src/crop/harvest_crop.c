@@ -169,6 +169,8 @@ void harvest_crop(Output *output,      /**< Output data */
   stand->cell->balance.flux_harvest.nitrogen+=(harvest.harvest.nitrogen+harvest.residual.nitrogen+harvest.residuals_burnt.nitrogen+harvest.residuals_burntinfield.nitrogen)*stand->frac;
   getoutput(output,HARVESTN_AGR,config)+=(harvest.harvest.nitrogen+harvest.residual.nitrogen+harvest.residuals_burnt.nitrogen+harvest.residuals_burntinfield.nitrogen)*stand->frac;
   output->dcflux+=(harvest.harvest.carbon+harvest.residual.carbon+harvest.residuals_burnt.carbon+harvest.residuals_burntinfield.carbon)*stand->frac;
+//  fprintf(stdout,"harvest.carbon: %g residual.carbon: %g residuals_burnt: %g residuals_burntinfield: %g standfrac: %g standtype: %s\n",
+//      harvest.harvest.carbon,harvest.residual.carbon,harvest.residuals_burnt.carbon,harvest.residuals_burntinfield.carbon,stand->frac,stand->type->name);
   getoutput(output,RHARVEST_BURNTC,config)+=harvest.residuals_burnt.carbon*stand->frac;
   getoutput(output,RHARVEST_BURNTN,config)+=harvest.residuals_burnt.nitrogen*stand->frac;
   getoutput(output,RHARVEST_BURNT_IN_FIELDC,config)+=harvest.residuals_burntinfield.carbon*stand->frac;
