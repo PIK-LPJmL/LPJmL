@@ -52,6 +52,7 @@
   "const_climate" : false,
   "shuffle_climate" : true, /* shuffle spinup climate */
   "const_deposition" : false,
+  "depos_year_const" : 1901,
   "fix_climate" : false,
   "fix_landuse" : false,
 #ifdef FROM_RESTART

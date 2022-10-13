@@ -21,7 +21,7 @@ OBJS    = initclimate.$O getclimate.$O freeclimate.$O avgtemp.$O\
           getmprec.$O checkvalidclimate.$O readtracegas.$O\
           closeclimate.$O getch4.$O radiation.$O interpolate_climate.$O\
           addanomaly_climate.$O readdata.$O readintdata.$O opendata.$O\
-          openinputdata.$O readinputdata.$O readintinputdata.$O
+          openinputdata.$O readinputdata.$O readintinputdata.$O getdeposition.$O
 
 INC     = ../../include
 LIBDIR  = ../../lib
