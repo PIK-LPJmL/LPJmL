@@ -243,6 +243,7 @@ Bool annual_agriculture_tree(Stand *stand,         /**< Pointer to stand */
     }
 
   getoutputindex(&stand->cell->output,CFTFRAC,index,config)+=stand->frac;
+  getoutputindex(&stand->cell->output,CFT_NHARVEST,index,config)+=1.0;
 
   free(present);
   free(fpc_type);

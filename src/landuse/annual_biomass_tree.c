@@ -248,6 +248,7 @@ Bool annual_biomass_tree(Stand *stand,         /**< Pointer to stand */
     }
 
   getoutputindex(&stand->cell->output,CFTFRAC,rbtree(ncft)+biomass_tree->irrigation.irrigation*nirrig,config)+=stand->cell->ml.landfrac[biomass_tree->irrigation.irrigation].biomass_tree;
+  getoutputindex(&stand->cell->output,CFT_NHARVEST,rbtree(ncft)+biomass_tree->irrigation.irrigation*nirrig,config)+=1.0;
 
   free(present);
   free(fpc_type);

@@ -84,6 +84,7 @@
   { "id" : EVAP_LAKE, "name": "evap_lake", "timestep" : "monthly", "var" : "evap_lake", "descr" : "lake evaporation", "unit" : "mm/month", "scale" : 1.0, "offset" : 0.0},
   { "id" : ADISCHARGE, "name": "adischarge", "timestep" : "annual", "var" : "discharge", "descr" : "annual discharge", "unit" : "hm3/yr", "scale" : 1.0, "offset" : 0.0},
   { "id" : CFTFRAC, "name": "cftfrac", "timestep" : "annual", "var" : "CFTfrac", "descr" : "CFT fraction", "unit" : "", "scale" : 1.0, "offset" : 0.0},
+  { "id" : CFT_NHARVEST, "name": "cft_nharvest", "timestep" : "annual", "var" : "hevents", "descr" : "Number of harvests", "unit" : "", "scale" : 1.0, "offset" : 0.0},
   { "id" : CFT_CONSUMP_WATER_G, "name": "cft_consump_water_g", "timestep" : "annual", "var" : "consump_water_g", "descr" : "CFT specific green water consumption", "unit" : "mm/yr", "scale" : 1.0, "offset" : 0.0},
   { "id" : CFT_CONSUMP_WATER_B, "name": "cft_consump_water_b", "timestep" : "annual", "var" : "consump_water_b", "descr" : "CFT specific blue water consumption", "unit" : "mm/yr", "scale" : 1.0, "offset" : 0.0},
   { "id" : PROD_TURNOVER, "name": "prod_turnover", "timestep" : "annual", "var" : "prod_turnover", "descr" : "emissions from product turnover", "unit" : "gC/m2/yr", "scale" : 1.0, "offset" : 0.0},

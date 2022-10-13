@@ -501,6 +501,7 @@ Real daily_grassland(Stand *stand,                /**< stand pointer */
     }
     /* harvested area */
     getoutputindex(output,CFTFRAC,index,config)+=stand->frac;
+    getoutputindex(output,CFT_NHARVEST,index,config)+=1.0;
   } /* of if(isphen) */
 
   transp=0;

@@ -351,6 +351,7 @@ Real daily_biomass_grass(Stand *stand,                /**< stand pointer */
     }
     /* harvested area */
     getoutputindex(output,CFTFRAC,index,config)+=stand->cell->ml.landfrac[data->irrigation].biomass_grass;
+    getoutputindex(output,CFT_NHARVEST,index,config)+=1.0;
   } /* of if(isphen) */
 
   if(data->irrigation && stand->pftlist.n>0) /*second element to avoid irrigation on just harvested fields */
