@@ -62,7 +62,6 @@ Stand *freadstand(FILE *file, /**< File pointer to binary file */
   }
   freadreal1(&stand->frac,swap,file);
   stand->data=NULL;
-  printf("stand=%s\n",stand->type->name);
   /* read stand-specific data */
   if(stand->type->fread(file,stand,swap))
   {
