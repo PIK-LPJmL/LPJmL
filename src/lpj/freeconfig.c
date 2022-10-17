@@ -42,6 +42,12 @@ void freeconfig(Config *config /**< LPJmL configuration */
   free(config->pft_index);
   free(config->layer_index);
   free(config->json_suffix);
+  for(i=0;i<config->n_global;i++)
+  {
+    free(config->global_attrs[i].name);
+    free(config->global_attrs[i].value);
+  }
+  free(config->global_attrs);
   if(config->river_routing)
   {
     freefilename(&config->drainage_filename);

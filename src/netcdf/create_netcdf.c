@@ -130,19 +130,19 @@ Bool create_netcdf(Netcdf *cdf,
         break;
       case 1:
         for(i=0;i<nyear/timestep;i++)
-          year[i]=config->outputyear+i*timestep+timestep/2;
+          year[i]=config->outputyear-config->baseyear+i*timestep+timestep/2;
         break;
       case 12:
         for(i=0;i<nyear;i++)
           for(j=0;j<12;j++)
             if(i==0 && j==0)
-              year[0]=ndaymonth[j]-1;
+              year[0]=(config->outputyear-config->baseyear)*NDAYYEAR+ndaymonth[j]-1;
             else
               year[i*12+j]=year[i*12+j-1]+ndaymonth[j];
         break;
       case NDAYYEAR:
         for(i=0;i<nyear*n;i++)
-          year[i]=i;
+          year[i]=(config->outputyear-config->baseyear)*NDAYYEAR+i;
         break;
       default:
         fprintf(stderr,"ERROR425: Invalid value=%d for number of data points per year.\n",n);
@@ -195,20 +195,27 @@ Bool create_netcdf(Netcdf *cdf,
              getuser(),gethost(),strdate(&t),config->arglist);
     rc=nc_put_att_text(cdf->ncid,NC_GLOBAL,"history",strlen(s),s);
     error(rc);
+    for(i=0;i<config->n_global;i++)
+    {
+      rc=nc_put_att_text(cdf->ncid,NC_GLOBAL,config->global_attrs[i].name,strlen(config->global_attrs[i].value),config->global_attrs[i].value);
+      error(rc);
+    }
     rc=nc_def_var(cdf->ncid,LAT_NAME,NC_FLOAT,1,&cdf->lat_dim_id,&cdf->lat_var_id);
     error(rc);
     rc=nc_def_var(cdf->ncid,LON_NAME,NC_FLOAT,1,&cdf->lon_dim_id,&cdf->lon_var_id);
     error(rc);
     if(n==1)
-      rc=nc_put_att_text(cdf->ncid,cdf->time_var_id,"units",strlen(YEARS_NAME),YEARS_NAME);
+      snprintf(s,STRING_LEN,"years since %d-1-1 0:0:0",config->baseyear);
     else if(n>1)
     {
-      snprintf(s,STRING_LEN,"days since %d-1-1 0:0:0",config->outputyear);
-      rc=nc_put_att_text(cdf->ncid,cdf->time_var_id,"units",strlen(s),s);
-      error(rc);
-      rc=nc_put_att_text(cdf->ncid,cdf->time_var_id,"calendar",strlen("noleap"),
-                       "noleap");
+      snprintf(s,STRING_LEN,"days since %d-1-1 0:0:0",config->baseyear);
     }
+    rc=nc_put_att_text(cdf->ncid,cdf->time_var_id,"units",strlen(s),s);
+    error(rc);
+    rc=nc_put_att_text(cdf->ncid,cdf->time_var_id,"calendar",strlen("noleap"),
+                       "noleap");
+    error(rc);
+    rc=nc_put_att_text(cdf->ncid, cdf->time_var_id,"axis",strlen("T"),"T");
     error(rc);
     rc=nc_put_att_text(cdf->ncid,cdf->lon_var_id,"units",strlen("degrees_east"),
                      "degrees_east");

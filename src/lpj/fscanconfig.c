@@ -541,6 +541,13 @@ Bool fscanconfig(Config *config,    /**< LPJ configuration */
     config->countrypar=NULL;
     config->regionpar=NULL;
   }
+  config->global_attrs=NULL;
+  config->n_global=0;
+  if(iskeydefined(file,"global_attrs"))
+  {
+    if(fscanattrs(file,&config->global_attrs,&config->n_global,"global_attrs",verbose))
+      return TRUE;
+  }
   config->compress=0;
   if(fscanint(file,&config->compress,"compress",TRUE,verbose))
     return TRUE;
@@ -951,6 +958,11 @@ Bool fscanconfig(Config *config,    /**< LPJ configuration */
   }
   else
     config->outputyear=config->firstyear;
+  config->baseyear=config->outputyear;
+  if(config->n_out && iskeydefined(file,"baseyear"))
+  {
+    fscanint2(file,&config->baseyear,"baseyear");
+  }
   fscanbool2(file,&config->from_restart,"restart");
   config->new_seed=FALSE;
   config->equilsoil=FALSE;

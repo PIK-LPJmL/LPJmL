@@ -23,7 +23,7 @@
 static nc_type nctype[]={NC_BYTE,NC_SHORT,NC_INT,NC_FLOAT,NC_DOUBLE};
 #endif
 
-#define error(rc) if(rc) {free(lon);free(lat);free(layer);fprintf(stderr,"ERROR427: Cannot write '%s': %s.\n",filename,nc_strerror(rc)); nc_close(cdf->ncid); return TRUE;}
+#define error(rc) if(rc) {free(lon);free(lat);free(layer);free(bnds);fprintf(stderr,"ERROR427: Cannot write '%s': %s.\n",filename,nc_strerror(rc)); nc_close(cdf->ncid); return TRUE;}
 
 Bool create1_pft_netcdf(Netcdf *cdf,
                         const char *filename, /**< filename of NetCDF file */
@@ -45,10 +45,10 @@ Bool create1_pft_netcdf(Netcdf *cdf,
   time_t t;
   int i,rc,imiss=MISSING_VALUE_INT,size,*days;
   short smiss=MISSING_VALUE_SHORT;
-  float *lon,*lat,miss=config->missing_value,*layer;
+  float *lon,*lat,miss=config->missing_value,*layer,*bnds;
   int dim[4];
   int lon_dim_id,lat_dim_id,lon_var_id,lat_var_id,pft_dim_id,pft_var_id;
-  int time_dim_id,time_var_id;
+  int time_dim_id,time_var_id,bnds_var_id,bnds_dim_id;
   char **pftnames;
 #ifndef USE_NETCDF4
   int dimids[2],pft_len_id;
@@ -84,11 +84,26 @@ Bool create1_pft_netcdf(Netcdf *cdf,
       printallocerr("layer");
       return TRUE;
     }
-    layer[0]=0;
+    bnds=newvec(float,2*size);
+    if(bnds==NULL)
+    {
+      free(lon);
+      free(lat);
+      free(bnds);
+      printallocerr("bnds");
+      return TRUE;
+    }
+    bnds[0]=0;
+    bnds[1]=layerbound[0];
+    layer[0]=midlayer[0];
     for(i=1;i<size;i++)
-     layer[i]=(float)layerbound[i-1];
+    {
+      bnds[2*i]=layerbound[i-1];
+      bnds[2*i+1]=layerbound[i];
+      layer[i]=(float)midlayer[i];
+    }
   }
-  else layer=NULL;
+  else bnds=layer=NULL;
   for(i=0;i<array->nlon;i++)
     lon[i]=(float)(array->lon_min+i*config->resolution.lon);
   for(i=0;i<array->nlat;i++)
@@ -139,6 +154,7 @@ Bool create1_pft_netcdf(Netcdf *cdf,
     free(lon);
     free(lat);
     free(layer);
+    free(bnds);
     return TRUE;
   }
   error(rc);
@@ -165,11 +181,29 @@ Bool create1_pft_netcdf(Netcdf *cdf,
   }
   if(issoil(index))
   {
-    rc=nc_def_var(cdf->ncid,"layer",NC_FLOAT,1,&pft_dim_id,&pft_var_id);
+    rc=nc_def_var(cdf->ncid,DEPTH_NAME,NC_FLOAT,1,&pft_dim_id,&pft_var_id);
     error(rc);
     rc=nc_put_att_text(cdf->ncid,pft_var_id,"units",strlen("mm"),"mm");
     error(rc);
-    rc=nc_put_att_text(cdf->ncid,pft_var_id,"long_name",strlen("soil depth"),"soil depth");
+    rc=nc_put_att_text(cdf->ncid,pft_var_id,"long_name",strlen("Depth of Vertical Layer Center Below Surface"),"Depth of Vertical Layer Center Below Surface");
+    error(rc);
+    rc=nc_put_att_text(cdf->ncid,pft_var_id,"bounds",strlen(BNDS_NAME),BNDS_NAME);
+    error(rc);
+    rc=nc_put_att_text(cdf->ncid,pft_var_id,"positive",strlen("down"),"down");
+    error(rc);
+    rc=nc_put_att_text(cdf->ncid,pft_var_id,"axis",strlen("Z"),"Z");
+    error(rc);
+    rc=nc_def_dim(cdf->ncid,BNDS_NAME,2,&bnds_dim_id);
+    error(rc);
+    dimids[0]=pft_dim_id;
+    dimids[1]=bnds_dim_id;
+    rc=nc_def_var(cdf->ncid,BNDS_NAME,NC_FLOAT,2,dimids,&bnds_var_id);
+    error(rc);
+    rc=nc_put_att_text(cdf->ncid,bnds_var_id,"units",strlen("mm"),"mm");
+    error(rc);
+    rc=nc_put_att_text(cdf->ncid,bnds_var_id,"comment",strlen("bnds=0 for the top of the layer, and bnds=1 for the bottom of the layer"),
+                       "bnds=0 for the top of the layer, and bnds=1 for the bottom of the layer");
+    error(rc);
   }
   else
   {
@@ -179,6 +213,7 @@ Bool create1_pft_netcdf(Netcdf *cdf,
       free(lon);
       free(lat);
       free(layer);
+      free(bnds);
       printallocerr("pftnames");
       nc_close(cdf->ncid);
       return TRUE;
@@ -277,6 +312,11 @@ Bool create1_pft_netcdf(Netcdf *cdf,
            getuser(),gethost(),strdate(&t),config->arglist);
   rc=nc_put_att_text(cdf->ncid,NC_GLOBAL,"history",strlen(s),s);
   error(rc);
+  for(i=0;i<config->n_global;i++)
+  {
+    rc=nc_put_att_text(cdf->ncid,NC_GLOBAL,config->global_attrs[i].name,strlen(config->global_attrs[i].value),config->global_attrs[i].value);
+    error(rc);
+  }
   rc=nc_enddef(cdf->ncid);
   error(rc);
   if(n>1)
@@ -287,6 +327,8 @@ Bool create1_pft_netcdf(Netcdf *cdf,
   if(issoil(index))
   {
     rc=nc_put_var_float(cdf->ncid,pft_var_id,layer);
+    error(rc);
+    rc=nc_put_var_float(cdf->ncid,bnds_var_id,bnds);
     error(rc);
   }
   else
@@ -312,6 +354,7 @@ Bool create1_pft_netcdf(Netcdf *cdf,
   rc=nc_put_var_float(cdf->ncid,lon_var_id,lon);
   error(rc);
   free(layer);
+  free(bnds);
   free(lat);
   free(lon);
   free(days);

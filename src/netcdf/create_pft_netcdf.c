@@ -22,7 +22,7 @@
 static nc_type nctype[]={NC_BYTE,NC_SHORT,NC_INT,NC_FLOAT,NC_DOUBLE};
 #endif
 
-#define error(rc) if(rc) {free(lon);free(lat);free(year);free(layer);fprintf(stderr,"ERROR427: Cannot write '%s': %s.\n",filename,nc_strerror(rc)); nc_close(cdf->ncid); return TRUE;}
+#define error(rc) if(rc) {free(lon);free(lat);free(year);free(layer);free(bnds);fprintf(stderr,"ERROR427: Cannot write '%s': %s.\n",filename,nc_strerror(rc)); nc_close(cdf->ncid); return TRUE;}
 
 Bool create_pft_netcdf(Netcdf *cdf,
                        const char *filename, /**< filename of NetCDF file */
@@ -44,8 +44,8 @@ Bool create_pft_netcdf(Netcdf *cdf,
   time_t t;
   int i,j,rc,nyear,imiss=MISSING_VALUE_INT,size;
   short smiss=MISSING_VALUE_SHORT;
-  float *lon,*lat,miss=config->missing_value,*layer;
-  int *year,dim[4];
+  float *lon,*lat,miss=config->missing_value,*layer,*bnds;
+  int *year,dim[4],bnds_var_id,bnds_dim_id;
   char **pftnames;
 #ifndef USE_NETCDF4
   int dimids[2],pft_len_id;
@@ -122,11 +122,27 @@ Bool create_pft_netcdf(Netcdf *cdf,
       printallocerr("layer");
       return TRUE;
     }
-    layer[0]=0;
+    bnds=newvec(float,2*size);
+    if(bnds==NULL)
+    {
+      free(lon);
+      free(lat);
+      free(year);
+      free(bnds);
+      printallocerr("bnds");
+      return TRUE;
+    }
+    bnds[0]=0;
+    bnds[1]=layerbound[0];
+    layer[0]=midlayer[0];
     for(i=1;i<size;i++)
-     layer[i]=(float)layerbound[i-1];
+    {
+      bnds[2*i]=layerbound[i-1];
+      bnds[2*i+1]=layerbound[i];
+      layer[i]=(float)midlayer[i];
+    }
   }
-  else layer=NULL;
+  else bnds=layer=NULL;
   for(i=0;i<array->nlon;i++)
     lon[i]=(float)(array->lon_min+i*config->resolution.lon);
   for(i=0;i<array->nlat;i++)
@@ -135,19 +151,19 @@ Bool create_pft_netcdf(Netcdf *cdf,
   {
     case 1:
       for(i=0;i<nyear/timestep;i++)
-        year[i]=config->outputyear+i*timestep+timestep/2;
+        year[i]=config->outputyear-config->baseyear+i*timestep+timestep/2;
       break;
     case 12:
       for(i=0;i<nyear;i++)
         for(j=0;j<12;j++)
           if(i==0 && j==0)
-            year[0]=ndaymonth[j]-1;
+            year[0]=(config->outputyear-config->baseyear)*NDAYYEAR+ndaymonth[j]-1;
           else
             year[i*12+j]=year[i*12+j-1]+ndaymonth[j];
       break;
     case NDAYYEAR:
       for(i=0;i<nyear*n;i++)
-        year[i]=i;
+        year[i]==(config->outputyear-config->baseyear)*NDAYYEAR+i;
       break;
     default:
       fprintf(stderr,"ERROR425: Invalid value=%d for number of data points per year.\n",n);
@@ -169,6 +185,7 @@ Bool create_pft_netcdf(Netcdf *cdf,
     free(lat);
     free(year);
     free(layer);
+    free(bnds);
     return TRUE;
   }
   error(rc);
@@ -189,11 +206,29 @@ Bool create_pft_netcdf(Netcdf *cdf,
   dim[3]=lon_dim_id;
   if(issoil(index))
   {
-    rc=nc_def_var(cdf->ncid,"layer",NC_FLOAT,1,&pft_dim_id,&pft_var_id);
+    rc=nc_def_var(cdf->ncid,DEPTH_NAME,NC_FLOAT,1,&pft_dim_id,&pft_var_id);
     error(rc);
     rc=nc_put_att_text(cdf->ncid,pft_var_id,"units",strlen("mm"),"mm");
     error(rc);
-    rc=nc_put_att_text(cdf->ncid,pft_var_id,"long_name",strlen("soil depth"),"soil depth");
+    rc=nc_put_att_text(cdf->ncid,pft_var_id,"long_name",strlen("Depth of Vertical Layer Center Below Surface"),
+                       "Depth of Vertical Layer Center Below Surface");
+    error(rc);
+    rc=nc_put_att_text(cdf->ncid,pft_var_id,"bounds",strlen(BNDS_NAME),BNDS_NAME);
+    error(rc);
+    rc=nc_put_att_text(cdf->ncid,pft_var_id,"positive",strlen("down"),"down");
+    error(rc);
+    rc=nc_put_att_text(cdf->ncid,pft_var_id,"axis",strlen("Z"),"Z");
+    rc=nc_def_dim(cdf->ncid,BNDS_NAME,2,&bnds_dim_id);
+    error(rc);
+    dimids[0]=pft_dim_id;
+    dimids[1]=bnds_dim_id;
+    rc=nc_def_var(cdf->ncid,BNDS_NAME,NC_FLOAT,2,dimids,&bnds_var_id);
+    error(rc);
+    rc=nc_put_att_text(cdf->ncid,bnds_var_id,"units",strlen("mm"),"mm");
+    error(rc);
+    rc=nc_put_att_text(cdf->ncid,bnds_var_id,"comment",strlen("bnds=0 for the top of the layer, and bnds=1 for the bottom of the layer"),
+                       "bnds=0 for the top of the layer, and bnds=1 for the bottom of the layer");
+    error(rc);
   }
   else
   {
@@ -225,15 +260,15 @@ Bool create_pft_netcdf(Netcdf *cdf,
   rc=nc_def_var(cdf->ncid,TIME_NAME,NC_INT,1,&time_dim_id,&time_var_id);
   error(rc);
   if(n==1)
-    rc=nc_put_att_text(cdf->ncid,time_var_id,"units",strlen(YEARS_NAME),YEARS_NAME);
+    snprintf(s,STRING_LEN,"years since %d-1-1 0:0:0",config->baseyear);
   else
-  {
-    snprintf(s,STRING_LEN,"days since %d-1-1 0:0:0",config->outputyear);
-    rc=nc_put_att_text(cdf->ncid,time_var_id,"units",strlen(s),s);
-    error(rc);
-    rc=nc_put_att_text(cdf->ncid,time_var_id,"calendar",strlen("noleap"),
-                       "noleap");
-  }
+    snprintf(s,STRING_LEN,"days since %d-1-1 0:0:0",config->baseyear);
+  rc=nc_put_att_text(cdf->ncid,time_var_id,"units",strlen(s),s);
+  error(rc);
+  rc=nc_put_att_text(cdf->ncid,time_var_id,"calendar",strlen("noleap"),
+                    "noleap");
+  error(rc);
+  rc=nc_put_att_text(cdf->ncid, time_var_id,"axis",strlen("T"),"T");
   error(rc);
   /*rc=nc_def_var(cdf->ncid,"PFT",NC_INT,1,&pft_dim_id,&pft_var_id);
   error(rc); */
@@ -305,6 +340,11 @@ Bool create_pft_netcdf(Netcdf *cdf,
            getuser(),gethost(),strdate(&t),config->arglist);
   rc=nc_put_att_text(cdf->ncid,NC_GLOBAL,"history",strlen(s),s);
   error(rc);
+  for(i=0;i<config->n_global;i++)
+  {
+    rc=nc_put_att_text(cdf->ncid,NC_GLOBAL,config->global_attrs[i].name,strlen(config->global_attrs[i].value),config->global_attrs[i].value);
+    error(rc);
+  }
   rc=nc_enddef(cdf->ncid);
   error(rc);
   rc=nc_put_var_int(cdf->ncid,time_var_id,year);
@@ -312,6 +352,8 @@ Bool create_pft_netcdf(Netcdf *cdf,
   if(issoil(index))
   {
     rc=nc_put_var_float(cdf->ncid,pft_var_id,layer);
+    error(rc);
+    rc=nc_put_var_float(cdf->ncid,bnds_var_id,bnds);
     error(rc);
   }
   else
@@ -337,6 +379,7 @@ Bool create_pft_netcdf(Netcdf *cdf,
   rc=nc_put_var_float(cdf->ncid,lon_var_id,lon);
   error(rc);
   free(layer);
+  free(bnds);
   free(lat);
   free(lon);
   free(year);

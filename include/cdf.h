@@ -30,6 +30,8 @@
 #define TIME_DIM_NAME "time"
 #define YEARS_NAME "Years"
 #define NULL_NAME "(null)"
+#define DEPTH_NAME "depth"
+#define BNDS_NAME "depth_bnds"
 
 typedef enum { ONEFILE,CREATE,APPEND,CLOSE} State_nc;
 

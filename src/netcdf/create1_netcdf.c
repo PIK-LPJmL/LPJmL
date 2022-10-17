@@ -168,6 +168,11 @@ Bool create1_netcdf(Netcdf *cdf,
              getuser(),gethost(),strdate(&t),config->arglist);
     rc=nc_put_att_text(cdf->ncid,NC_GLOBAL,"history",strlen(s),s);
     error(rc);
+    for(i=0;i<config->n_global;i++)
+    {
+      rc=nc_put_att_text(cdf->ncid,NC_GLOBAL,config->global_attrs[i].name,strlen(config->global_attrs[i].value),config->global_attrs[i].value);
+      error(rc);
+    }
   }
   if(n>1)
   {

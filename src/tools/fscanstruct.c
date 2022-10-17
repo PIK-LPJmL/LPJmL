@@ -31,11 +31,16 @@ Bool fscanstruct(const LPJfile *file, /**< pointer to LPJ file               */
   struct json_object *item;
   if(file->isjson)
   {
-    if(!json_object_object_get_ex(file->file.obj,name,&item))
+    if(name==NULL)
+      item=file->file.obj;
+    else
     {
-      if(verb)
-        fprintf(stderr,"ERROR225: Name '%s' for object not found.\n",name);
-      return TRUE;
+      if(!json_object_object_get_ex(file->file.obj,name,&item))
+      {
+        if(verb)
+          fprintf(stderr,"ERROR225: Name '%s' for object not found.\n",name);
+        return TRUE;
+      }
     }
     if(json_object_get_type(item)!=json_type_object)
     {

@@ -105,6 +105,12 @@ typedef struct
   Real nitrogen;
 } Stocks;
 
+typedef struct
+{
+  char *name;
+  char *value;
+} Attr;
+
 /* Declaration of functions */
 
 extern void fail(int,Bool,const char *,...);
@@ -153,6 +159,7 @@ extern Bool fscanint(LPJfile *,int *,const char *,Bool,Verbosity);
 extern Bool fscansize(LPJfile *,size_t *,const char *,Bool,Verbosity);
 extern Bool fscanuint(LPJfile *,unsigned int *,const char *,Bool,Verbosity);
 extern Bool fscanfloat(LPJfile *,float *,const char *,Bool,Verbosity);
+extern Bool fscanattrs(LPJfile *,Attr **,int *,const char *,Verbosity);
 extern void fprinttime(FILE *,int);
 extern Bool readrealvec(FILE *,Real *,Real,Real,size_t,Bool,Type);
 extern Bool readfloatvec(FILE *,float *,float,size_t,Bool,Type);

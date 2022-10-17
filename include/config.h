@@ -41,6 +41,8 @@ struct config
   char *inputdir;             /**< input directory */
   char *outputdir;            /**< output directory */
   char *restartdir;           /**< restart directory */
+  int n_global;               /**< number of global attributes in output files */
+  Attr *global_attrs;         /**< array of global attributes */
   Filename temp_filename;
   Filename prec_filename;
   Filename cloud_filename;
@@ -198,6 +200,7 @@ struct config
   int lastyear;  /**< last simulation year (AD) */
   int firstyear; /**< first simulation year (AD) */
   int outputyear; /**< first year for output (AD) */
+  int baseyear; /**< base year for NETCDF output (AD) */
   Bool isfirstspinupyear; /**< set first year for climate in spinup (TRUE/FALSE) */
   int firstspinupyear;   /**< first year for climate in spinup */
   int total;     /**< total number of grid cells with valid soilcode */
