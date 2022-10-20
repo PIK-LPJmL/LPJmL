@@ -137,6 +137,12 @@ typedef struct
   Seed seed;           /**< Random seed */
 } Restartheader;
 
+typedef struct
+{
+  List *list;
+  Bool isfloat;
+} Map;
+
 /* Declaration of functions */
 
 extern Bool fwriteheader(FILE *,const Header *, const char *,int);
@@ -147,19 +153,21 @@ extern Bool freadanyheader(FILE *,Header *,Bool *,String,int *,Bool);
 extern size_t headersize(const char *,int);
 extern FILE *openinputfile(Header *, Bool *,const Filename *,
                            String, int *,size_t *,Bool,const Config *);
-extern FILE *openmetafile(Header *,List **,const char *,Bool *,size_t *,const char *,Bool);
+extern FILE *openmetafile(Header *,Map **,const char *,Bool *,size_t *,const char *,Bool);
 extern char *getfilefrommeta(const char *,Bool);
 extern void fprintheader(FILE *,const Header *);
-extern char *parse_json_metafile(LPJfile *,char *,Header *,List **,const char *,size_t *,Bool *,Verbosity);
-extern List *fscanstringarray(LPJfile *,const char *,Verbosity);
-extern void freemap(List *);
-extern void fprintmap(FILE *,List *);
-extern void fprintjson(FILE *,const char *,const char *,const Header *,List *,const char *,int,const char *,Bool,int);
+extern char *parse_json_metafile(LPJfile *,char *,Header *,Map **,const char *,size_t *,Bool *,Verbosity);
+extern Map *fscanmap(LPJfile *,const char *,Verbosity);
+extern void freemap(Map *);
+extern void fprintmap(FILE *,Map *);
+extern void fprintjson(FILE *,const char *,const char *,const Header *,Map *,const char *,int,const char *,Bool,int);
 
 /* Definition of macros */
 
 #define printheader(header) fprintheader(stdout,header)
 #define printmap(map) fprintmap(stdout,map)
 #define restartsize() (5*sizeof(int)+sizeof(Seed)) /* size of Restartheader without padding */
+#define getmapsize(map) getlistlen((map)->list)
+#define getmapitem(map,i) getlistitem((map)->list,i)
 
 #endif

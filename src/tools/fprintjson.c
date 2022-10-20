@@ -22,7 +22,7 @@ void fprintjson(FILE *file,           /**< pointer to text file */
                 const char *filename, /**< filename of clm file */
                 const char *arglist,  /**< argument string or NULL */
                 const Header *header, /**< file header */
-                List *map,            /**< pointer to string array or NULL */
+                Map *map,             /**< pointer to map array or NULL */
                 const char *map_name, /**< Name of string array or NULL */
                 int format,           /**< file format (RAW/CLM) */
                 const char *id,       /**< Id of clm file */
@@ -51,16 +51,18 @@ void fprintjson(FILE *file,           /**< pointer to text file */
   if(map!=NULL)
   {
     len=fprintf(file,"  \"%s\" : [",map_name);
-    for(i=0;i<getlistlen(map);i++)
+    for(i=0;i<getmapsize(map);i++)
     {
       if(i)
         len+=fprintf(file,",");
       if(len>LINE_LEN)
         len=fprintf(file,"\n    ")-1;
-      if(getlistitem(map,i)==NULL)
+      if(getmapitem(map,i)==NULL)
         len+=fprintf(file,"null");
+      else if(map->isfloat)
+        len+=fprintf(file,"%g",*((double *)getmapitem(map,i)));
       else
-        len+=fprintf(file,"\"%s\"",(char *)getlistitem(map,i));
+        len+=fprintf(file,"\"%s\"",(char *)getmapitem(map,i));
     }
     fputs("],\n",file);
   }

@@ -49,28 +49,31 @@
 
 const char *ordernames[]={"cellyear","yearcell","cellindex","cellseq"};
 
-void fprintmap(FILE *file,List *map)
+void fprintmap(FILE *file,Map *map)
 {
   int i;
   fputc('[',file);
-  foreachlistitem(i,map)
+  foreachlistitem(i,map->list)
   {
-    if(getlistitem(map,i)==NULL)
+    if(getmapitem(map,i)==NULL)
       fputs("null",file);
+    else if(map->isfloat)
+      fprintf(file,"%g",*((double *)getmapitem(map,i)));
     else
-      fprintf(file,"\"%s\"",(char *)getlistitem(map,i));
-    if(i<getlistlen(map)-1)
+      fprintf(file,"\"%s\"",(char *)getmapitem(map,i));
+    if(i<getmapsize(map)-1)
       fputc(',',file);
   }
   fputc(']',file);
 } /* of 'fprintmap' */
 
-void freemap(List *map)
+void freemap(Map *map)
 {
   int i;
-  foreachlistitem(i,map)
-    free(getlistitem(map,i));
-  freelist(map);
+  foreachlistitem(i,map->list)
+    free(getmapitem(map,i));
+  freelist(map->list);
+  free(map);
 } /* of 'freemap' */
 
 #ifdef USE_JSON
@@ -78,7 +81,7 @@ void freemap(List *map)
 char *parse_json_metafile(LPJfile *lpjfile,   /**< pointer to JSON file */
                           char *s,            /**< first string of JSON file */
                           Header *header,     /**< pointer to file header */
-                          List **map,         /**< map from json file or NULL */
+                          Map **map,         /**< map from json file or NULL */
                           const char *map_name, /**< name of map or NULL */
                           size_t *offset,     /**< offset in binary file */
                           Bool *swap,         /**< byte order has to be changed (TRUE/FALSE) */
@@ -98,7 +101,7 @@ char *parse_json_metafile(LPJfile *lpjfile,   /**< pointer to JSON file */
   if(map!=NULL)
   {
     if(iskeydefined(lpjfile,(map_name==NULL) ? MAP_NAME : map_name))
-      *map=fscanstringarray(lpjfile,(map_name==NULL) ? MAP_NAME : map_name,verbosity);
+      *map=fscanmap(lpjfile,(map_name==NULL) ? MAP_NAME : map_name,verbosity);
     else
       *map=NULL;
   }
@@ -266,7 +269,7 @@ char *parse_json_metafile(LPJfile *lpjfile,   /**< pointer to JSON file */
 #endif
 
 FILE *openmetafile(Header *header,       /**< pointer to file header */
-                   List **map,           /**< map from json file or NULL */
+                   Map **map,            /**< map from json file or NULL */
                    const char *map_name, /**< name of map or NULL */
                    Bool *swap,           /**< byte order has to be changed (TRUE/FALSE) */
                    size_t *offset,       /**< offset in binary file */

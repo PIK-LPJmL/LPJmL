@@ -22,16 +22,21 @@
 #define MISSING_VALUE_INT -999999
 #define MISSING_VALUE_BYTE 99
 #define NO_TIME -1
-#define LON_NAME "longitude"
-#define LAT_NAME "latitude"
+#define LON_NAME "lon"
+#define LON_LONG_NAME "Longitude"
+#define LAT_NAME "lat"
+#define LAT_LONG_NAME "Latitude"
 #define TIME_NAME "time"
-#define LON_DIM_NAME "longitude"
-#define LAT_DIM_NAME "latitude"
+#define TIME_LONG_NAME "Time"
+#define LON_DIM_NAME "lon"
+#define LAT_DIM_NAME "lat"
 #define TIME_DIM_NAME "time"
 #define YEARS_NAME "Years"
 #define NULL_NAME "(null)"
 #define DEPTH_NAME "depth"
+#define DEPTH_LONG_NAME "Depth of Vertical Layer Center Below Surface"
 #define BNDS_NAME "depth_bnds"
+#define BNDS_LONG_NAME "bnds=0 for the top of the layer, and bnds=1 for the bottom of the layer"
 
 typedef enum { ONEFILE,CREATE,APPEND,CLOSE} State_nc;
 
@@ -86,10 +91,10 @@ typedef struct
   Bool isleap;      /**< leap days in file (TRUE/FALSE) */
   Bool is360;       /**< lon coordinates are in [0,360] (TRUE/FALSE) */
   size_t nlon,nlat; /**< dimensions of longitude/latitude */
-  float lon_min;
-  float lat_min;
-  float lon_res;
-  float lat_res;
+  double lon_min;
+  double lat_min;
+  double lon_res;
+  double lat_res;
   union
   {
     short s;

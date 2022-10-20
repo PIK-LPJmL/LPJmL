@@ -1,6 +1,6 @@
 /**************************************************************************************/
 /**                                                                                \n**/
-/**             f  s  c  a  n  s  t  r  i  n  g  a  r  r  a  y  .  c               \n**/
+/**                     f  s  c  a  n  m  a  p  .  c                               \n**/
 /**                                                                                \n**/
 /**     C implementation of LPJmL                                                  \n**/
 /**                                                                                \n**/
@@ -22,13 +22,14 @@
 #endif
 #include "lpj.h"
 
-List *fscanstringarray(LPJfile *file,   /**< pointer to LPJ file */
-                        const char *key, /**< name of array */
-                        Verbosity verb   /**< verbosity level (NO_ERR,ERR,VERB) */
-                       )                 /** \return array of strings or NULL */ 
+Map *fscanmap(LPJfile *file,   /**< pointer to LPJ file */
+              const char *key, /**< name of array */
+              Verbosity verb   /**< verbosity level (NO_ERR,ERR,VERB) */
+             )                 /** \return array of strings or NULL */
 {
   String name;
-  List *list;
+  Map *map;
+  double *value;
   int i,size;
 #ifdef USE_JSON
   struct json_object *array,*item;
@@ -46,11 +47,13 @@ List *fscanstringarray(LPJfile *file,   /**< pointer to LPJ file */
         fprintf(stderr,"ERROR226: Type of '%s' is not an array.\n",key);
       return NULL;
     }
+    map=new(Map);
+    map->isfloat=FALSE;
     size=json_object_array_length(array);
     if (verb >= VERB)
       printf("\"%s\" : [",key);
-    list=newlist(size);
-    if(list==NULL)
+    map->list=newlist(size);
+    if(map->list==NULL)
     {
       printallocerr("array");
       return NULL;
@@ -59,35 +62,90 @@ List *fscanstringarray(LPJfile *file,   /**< pointer to LPJ file */
     {
       item =json_object_array_get_idx(array,i);
       if(json_object_get_type(item)==json_type_null)
-        getlistitem(list,i)=NULL;
+      {
+        if(map->isfloat)
+        {
+          if(verb)
+            fprintf(stderr,"ERROR226: Type of item %d in array '%s' is null, not float.\n",i,key);
+          return NULL;
+       }
+        getlistitem(map->list,i)=NULL;
+      }
       else if(json_object_get_type(item)==json_type_string)
       {
-        getlistitem(list,i)=strdup(json_object_get_string(item));
-        if(getlistitem(list,i)==NULL)
+        if(i && map->isfloat)
+        {
+          if(verb)
+            fprintf(stderr,"ERROR226: Type of item %d in array '%s' is not float.\n",i,key);
+          return NULL;
+        }
+        getlistitem(map->list,i)=strdup(json_object_get_string(item));
+        if(getlistitem(map->list,i)==NULL)
           printallocerr("array");
+      }
+      else if(json_object_get_type(item)==json_type_double)
+      {
+        if(i && !map->isfloat)
+        {
+          if(verb)
+            fprintf(stderr,"ERROR226: Type of item %d in array '%s' is not string.\n",i,key);
+          return NULL;
+        }
+        map->isfloat=TRUE;
+        value=new(double);
+        if(value==NULL)
+        {
+          printallocerr("value");
+          return NULL;
+        }
+        *value=json_object_get_double(item);
+        getlistitem(map->list,i)=value;
+      }
+      else if(json_object_get_type(item)==json_type_int)
+      {
+        if(i && !map->isfloat)
+        {
+          if(verb)
+            fprintf(stderr,"ERROR226: Type of item %d in array '%s' is not string.\n",i,key);
+          return NULL;
+        }
+        map->isfloat=TRUE;
+        value=new(double);
+        if(value==NULL)
+        {
+          printallocerr("value");
+          return NULL;
+        }
+        *value=json_object_get_int(item);
+        getlistitem(map->list,i)=value;
       }
       else
       {
         if(verb)
-          fprintf(stderr,"ERROR226: Type of item %d in array '%s' is not string.\n",i,key);
+          fprintf(stderr,"ERROR226: Type of item %d in array '%s' is not string or float.\n",i,key);
         return NULL;
       }
       if (verb >= VERB)
       {
-        printf(" \"%s\"",(getlistitem(list,i)==NULL) ? "null" : (char *)getlistitem(list,i));
+        if(map->isfloat)
+          printf(" %g",*((double *)getlistitem(map->list,i)));
+        else
+          printf(" \"%s\"",(getlistitem(map->list,i)==NULL) ? "null" : (char *)getlistitem(map->list,i));
         if(i<size-1)
           printf(",");
       }
     }
     if (verb >= VERB)
       printf("]\n");
-    return list;
+    return map;
   }
 #endif
+  map=new(Map);
   if(fscanint(file,&size,"size",FALSE,verb))
     return NULL;
-  list=newlist(size);
-  if(list==NULL)
+  map->list=newlist(size);
+  map->isfloat=FALSE;
+  if(map->list==NULL)
   {
     printallocerr("array");
     return NULL;
@@ -96,9 +154,9 @@ List *fscanstringarray(LPJfile *file,   /**< pointer to LPJ file */
   {
     if(fscanstring(file,name,key,FALSE,verb))
        return NULL;
-    getlistitem(list,i)=strdup(name);
-    if(getlistitem(list,i)==NULL)
+    getlistitem(map->list,i)=strdup(name);
+    if(getlistitem(map->list,i)==NULL)
       printallocerr("array");
   }
-  return list;
-} /* of 'fscanstringarray' */ 
+  return map;
+} /* of 'fscanstringarray' */

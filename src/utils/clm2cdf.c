@@ -30,7 +30,7 @@ typedef struct
 } Cdf;
 
 static Cdf *create_cdf(const char *filename,
-                       List *map,
+                       Map *map,
                        const char *name,
                        const char *units,
                        const char *descr,
@@ -89,12 +89,12 @@ static Cdf *create_cdf(const char *filename,
     }
     if(landuse)
       for(i=0;i<header->nyear;i++)
-        year[i]=header->firstyear+i;
+        year[i]=i;
     else switch(header->nbands)
     {
       case 1:
         for(i=0;i<header->nyear;i++)
-          year[i]=header->firstyear+i;
+          year[i]=i;
         break;
       case NMONTH:
         for(i=0;i<header->nyear;i++)
@@ -164,15 +164,14 @@ static Cdf *create_cdf(const char *filename,
   if(!notime)
   {
     if(landuse || header->nbands==1)
-      rc=nc_put_att_text(cdf->ncid,time_var_id,"units",strlen("years"),"years");
+      snprintf(s,STRING_LEN,"years since %d-1-1 0:0:0",header->firstyear);
     else if(header->nbands>1)
-    {
       snprintf(s,STRING_LEN,"days since %d-1-1 0:0:0",header->firstyear);
-      rc=nc_put_att_text(cdf->ncid,time_var_id,"units",strlen(s),s);
-      error(rc);
-      rc=nc_put_att_text(cdf->ncid,time_var_id,"calendar",strlen("noleap"),
-                         "noleap");
-    }
+    rc=nc_put_att_text(cdf->ncid,time_var_id,"units",strlen(s),s);
+    error(rc);
+    rc=nc_put_att_text(cdf->ncid,time_var_id,"calendar",strlen("noleap"),"noleap");
+    error(rc);
+    rc=nc_put_att_text(cdf->ncid, time_var_id,"axis",strlen("T"),"T");
     error(rc);
   }
   rc=nc_put_att_text(cdf->ncid,lon_var_id,"units",strlen("degrees_east"),
@@ -195,20 +194,28 @@ static Cdf *create_cdf(const char *filename,
   error(rc);
   if(map!=NULL)
   {
-    len=0;
-    for(i=0;i<getlistlen(map);i++)
-      if(getlistitem(map,i)==NULL)
-        len=max(len,strlen(NULL_NAME));
-      else
-        len=max(len,strlen(getlistitem(map,i)));
-    rc=nc_def_dim(cdf->ncid,"len",len+1,&len_dim_id);
+    rc=nc_def_dim(cdf->ncid,MAP_NAME,getmapsize(map),&map_dim_id);
     error(rc);
-    rc=nc_def_dim(cdf->ncid,MAP_NAME,getlistlen(map),&map_dim_id);
-    error(rc);
-    dim[0]=map_dim_id;
-    dim[1]=len_dim_id;
-    rc=nc_def_var(cdf->ncid,MAP_NAME,NC_CHAR,2,dim,&varid);
-    error(rc);
+    if(map->isfloat)
+    {
+      rc=nc_def_var(cdf->ncid,MAP_NAME,NC_FLOAT,1,&map_dim_id,&varid);
+      error(rc);
+    }
+    else
+    {
+      len=0;
+      for(i=0;i<getmapsize(map);i++)
+        if(getmapitem(map,i)==NULL)
+          len=max(len,strlen(NULL_NAME));
+        else
+          len=max(len,strlen(getmapitem(map,i)));
+      rc=nc_def_dim(cdf->ncid,"len",len+1,&len_dim_id);
+      error(rc);
+      dim[0]=map_dim_id;
+      dim[1]=len_dim_id;
+      rc=nc_def_var(cdf->ncid,MAP_NAME,NC_CHAR,2,dim,&varid);
+      error(rc);
+    }
   }
   if(notime)
     index=0;
@@ -278,20 +285,28 @@ static Cdf *create_cdf(const char *filename,
   {
     offset[1]=0;
     count[0]=1;
-    for(i=0;i<getlistlen(map);i++)
-    {
-      offset[0]=i;
-      if(getlistitem(map,i)==NULL)
+    if(map->isfloat)
+      for(i=0;i<getmapsize(map);i++)
       {
-        count[1]=strlen(NULL_NAME)+1;
-        rc=nc_put_vara_text(cdf->ncid,varid,offset,count,NULL_NAME);
+        offset[0]=i;
+        rc=nc_put_vara_float(cdf->ncid,varid,offset,count,(double *)getmapitem(map,i));
+        error(rc);
       }
-      else
+    else
+      for(i=0;i<getmapsize(map);i++)
       {
-        count[1]=strlen(getlistitem(map,i))+1;
-        rc=nc_put_vara_text(cdf->ncid,varid,offset,count,getlistitem(map,i));
-      }
-      error(rc);
+        offset[0]=i;
+        if(getmapitem(map,i)==NULL)
+        {
+          count[1]=strlen(NULL_NAME)+1;
+          rc=nc_put_vara_text(cdf->ncid,varid,offset,count,NULL_NAME);
+        }
+        else
+        {
+          count[1]=strlen(getmapitem(map,i))+1;
+          rc=nc_put_vara_text(cdf->ncid,varid,offset,count,getmapitem(map,i));
+        }
+        error(rc);
     }
   }
   free(lat);
@@ -427,7 +442,7 @@ int main(int argc,char **argv)
   float *data;
   Type type;
   size_t offset;
-  List *map=NULL;
+  Map *map=NULL;
   Attr *global_attrs=NULL;
   int i,j,k,ngrid,version,iarg,compress,nbands,setversion;
   Bool swap,landuse,notime,isglobal,istype,israw,ismeta,isint,n_global;

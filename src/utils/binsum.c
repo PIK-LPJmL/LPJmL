@@ -27,7 +27,7 @@ int main(int argc,char **argv)
   char *map_name=BAND_NAMES;
   char *arglist;
   char *out_json;
-  List *map=NULL;
+  Map *map=NULL;
   Header header;
   Bool swap,mean,isclm,floatgrid,ismeta;
   swap=mean=isclm=floatgrid=ismeta=FALSE;

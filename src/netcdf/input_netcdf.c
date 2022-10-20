@@ -29,7 +29,7 @@ struct input_netcdf
 {
   int ncid;
   int varid;
-  float lon_min,lat_min,lon_res,lat_res;
+  double lon_min,lat_min,lon_res,lat_res;
   double slope,intercept;
   size_t offset;
   size_t lon_len,lat_len;
@@ -342,7 +342,7 @@ Input_netcdf openinput_netcdf(const Filename *filename, /**< filename */
   Input_netcdf input;
   int rc,var_id,*dimids,ndims,index;
   char name[NC_MAX_NAME+1];
-  float *dim;
+  double *dim;
   if(filename==NULL)
   {
     fputs("ERROR424: Invalid filename in openinput_netcdf().\n",stderr);
@@ -408,7 +408,7 @@ Input_netcdf openinput_netcdf(const Filename *filename, /**< filename */
     return NULL;
   }
   nc_inq_dimlen(input->ncid,dimids[index+1],&input->lon_len);
-  dim=newvec(float,input->lon_len);
+  dim=newvec(double,input->lon_len);
   if(dim==NULL)
   {
     printallocerr("dim");
@@ -417,7 +417,7 @@ Input_netcdf openinput_netcdf(const Filename *filename, /**< filename */
     free(input);
     return NULL;
   }
-  rc=nc_get_var_float(input->ncid,var_id,dim);
+  rc=nc_get_var_double(input->ncid,var_id,dim);
   if(rc)
   {
     free(dim);
@@ -431,7 +431,7 @@ Input_netcdf openinput_netcdf(const Filename *filename, /**< filename */
   }
   input->lon_min=dim[0];
   if(input->lon_len==1)
-    input->lon_res=(float)config->resolution.lon;
+    input->lon_res=config->resolution.lon;
   else
     input->lon_res=(dim[input->lon_len-1]-dim[0])/(input->lon_len-1);
   if(fabs(input->lon_res-config->resolution.lon)/config->resolution.lon>1e-3)
@@ -461,7 +461,7 @@ Input_netcdf openinput_netcdf(const Filename *filename, /**< filename */
   }
   nc_inq_dimlen(input->ncid,dimids[index],&input->lat_len);
   free(dimids);
-  dim=newvec(float,input->lat_len);
+  dim=newvec(double,input->lat_len);
   if(dim==NULL)
   {
     printallocerr("dim");
@@ -469,7 +469,7 @@ Input_netcdf openinput_netcdf(const Filename *filename, /**< filename */
     free(input);
     return NULL;
   }
-  rc=nc_get_var_float(input->ncid,var_id,dim);
+  rc=nc_get_var_double(input->ncid,var_id,dim);
   if(rc)
   {
     free(dim);
@@ -483,7 +483,7 @@ Input_netcdf openinput_netcdf(const Filename *filename, /**< filename */
   if(input->lat_len==1)
   {
     input->lat_min=dim[0];
-    input->lat_res=(float)config->resolution.lat;
+    input->lat_res=config->resolution.lat;
     input->offset=0;
   }
   else if(dim[1]>dim[0])

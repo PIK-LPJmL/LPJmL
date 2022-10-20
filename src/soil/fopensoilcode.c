@@ -17,7 +17,7 @@
 #include "lpj.h"
 
 FILE *fopensoilcode(const Filename *filename, /**< filename  of soil code file */
-                    List **map,               /**< soilmap array or NULL */
+                    Map **map,               /**< soilmap array or NULL */
                     Bool *swap,           /**< byte order has to be changed */
                     size_t *offset,       /**< offset in binary file */
                     Type *type,           /**< data type in soilcode file */
