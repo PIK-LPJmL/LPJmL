@@ -72,7 +72,7 @@ int getnsoilcode(const Filename *filename, /**< filename of soil code file */
     header.datatype=LPJ_BYTE;
     header.nbands=1;
     header.nstep=1;
-    file=openmetafile(&header,NULL,NULL,&swap,&offset,filename->name,isout);
+    file=openmetafile(&header,NULL,NULL,NULL,NULL,NULL,NULL,&swap,&offset,filename->name,isout);
     if(file==NULL)
     {
       if(isout)

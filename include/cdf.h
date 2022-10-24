@@ -23,9 +23,11 @@
 #define MISSING_VALUE_BYTE 99
 #define NO_TIME -1
 #define LON_NAME "lon"
+#define LON_STANDARD_NAME "longitude"
 #define LON_LONG_NAME "Longitude"
 #define LAT_NAME "lat"
 #define LAT_LONG_NAME "Latitude"
+#define LAT_STANDARD_NAME "latitude"
 #define TIME_NAME "time"
 #define TIME_LONG_NAME "Time"
 #define LON_DIM_NAME "lon"

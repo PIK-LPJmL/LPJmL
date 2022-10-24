@@ -57,7 +57,7 @@ Extflow initextflow(const Config *config /**< LPJmL configuration */
     header.cellsize_lon=(float)config->resolution.lon;
     header.cellsize_lat=(float)config->resolution.lat;
     /* open description file */
-    extflow->file=openmetafile(&header,NULL,NULL,&extflow->swap,&offset,config->extflow_filename.name,isroot(*config));
+    extflow->file=openmetafile(&header,NULL,NULL,NULL,NULL,NULL,NULL,&extflow->swap,&offset,config->extflow_filename.name,isroot(*config));
     if(extflow->file==NULL)
     {
       free(extflow);

@@ -21,7 +21,7 @@
 #define error(rc) if(rc) {free(lon);free(lat);free(year);fprintf(stderr,"ERROR427: Cannot write '%s': %s.\n",filename,nc_strerror(rc)); nc_close(cdf->ncid); free(cdf);return NULL;}
 
 #define MISSING_VALUE -9999.99
-#define USAGE "Usage: %s [-clm] [-floatgrid] [-firstyear y] [-baseyear y] [-nbands n] [-nstep n] [-cellsize size] [-swap]\n       [[-attr name=value]..] [-global] [-short] [-compress level] [-units u] [-descr d] [-metafile] [-map name] varname gridfile\n       binfile netcdffile\n"
+#define USAGE "Usage: %s [-clm] [-floatgrid] [-doublegrid] [-firstyear y] [-baseyear y] [-nbands n] [-nstep n] [-cellsize size] [-swap]\n       [[-attr name=value]..] [-global] [-short] [-compress level] [-units u] [-descr d] [-metafile] [-map name] varname gridfile\n       binfile netcdffile\n"
 
 typedef struct
 {
@@ -29,6 +29,36 @@ typedef struct
   int ncid;
   int varid;
 } Cdf;
+
+static int findattr(const char *name,Attr *attrs,int n)
+{
+  int i;
+  for(i=0;i<n;i++)
+   if(!strcmp(name,attrs[i].name))
+     return i;
+  return NOT_FOUND;
+} /* of 'findattr' */
+
+static void mergeattrs(Attr **attrs,int *n,Attr *attrs2, int n2)
+{
+  int i,index;
+  for(i=0;i<n2;i++)
+  {
+    index=findattr(attrs2[i].name,*attrs,*n);
+    if(index==NOT_FOUND)
+    {
+      *attrs=realloc(*attrs,sizeof(Attr)*(*n+1));
+      (*attrs)[*n].name=strdup(attrs2[i].name);
+      (*attrs)[*n].value=strdup(attrs2[i].value);
+      (*n)++;
+    }
+    else
+    {
+      free((*attrs)[index].value);
+      (*attrs)[index].value=strdup(attrs2[i].value);
+    }
+  }
+} /* of 'mergeattrs' */
 
 static Cdf *create_cdf(const char *filename,
                        Map *map,
@@ -52,7 +82,7 @@ static Cdf *create_cdf(const char *filename,
   float miss=MISSING_VALUE;
   short miss_short=MISSING_VALUE_SHORT;
   double *year;
-  int i,j,rc,dim[4],dim2[2],dimids[2];
+  int i,rc,dim[4],dim2[2],dimids[2];
   size_t offset[2],count[2];
   String s;
   time_t t;
@@ -179,7 +209,7 @@ static Cdf *create_cdf(const char *filename,
   error(rc);
   rc=nc_put_att_text(cdf->ncid, lon_var_id,"long_name",strlen(LON_LONG_NAME),LON_LONG_NAME);
   error(rc);
-  rc=nc_put_att_text(cdf->ncid, lon_var_id,"standard_name",strlen("longitude"),"longitude");
+  rc=nc_put_att_text(cdf->ncid, lon_var_id,"standard_name",strlen(LON_STANDARD_NAME),LON_STANDARD_NAME);
   error(rc);
   rc=nc_put_att_text(cdf->ncid, lon_var_id,"axis",strlen("X"),"X");
   error(rc);
@@ -188,7 +218,7 @@ static Cdf *create_cdf(const char *filename,
   error(rc);
   rc=nc_put_att_text(cdf->ncid, lat_var_id,"long_name",strlen(LAT_LONG_NAME),LAT_LONG_NAME);
   error(rc);
-  rc=nc_put_att_text(cdf->ncid, lat_var_id,"standard_name",strlen("latitude"),"latitude");
+  rc=nc_put_att_text(cdf->ncid, lat_var_id,"standard_name",strlen(LAT_STANDARD_NAME),LAT_STANDARD_NAME);
   error(rc);
   rc=nc_put_att_text(cdf->ncid, lat_var_id,"axis",strlen("Y"),"Y");
   error(rc);
@@ -211,7 +241,7 @@ static Cdf *create_cdf(const char *filename,
     {
       rc=nc_def_var(cdf->ncid,DEPTH_NAME,NC_DOUBLE,1,dim2,&varid);
       error(rc);
-      rc=nc_put_att_text(cdf->ncid,varid,"units",strlen("mm"),"mm");
+      rc=nc_put_att_text(cdf->ncid,varid,"units",strlen("m"),"m");
       error(rc);
       rc=nc_put_att_text(cdf->ncid,varid,"long_name",strlen(DEPTH_LONG_NAME),DEPTH_LONG_NAME);
       error(rc);
@@ -227,7 +257,7 @@ static Cdf *create_cdf(const char *filename,
       dimids[1]=bnds_dim_id;
       rc=nc_def_var(cdf->ncid,BNDS_NAME,NC_DOUBLE,2,dimids,&bnds_var_id);
       error(rc);
-      rc=nc_put_att_text(cdf->ncid,bnds_var_id,"units",strlen("mm"),"mm");
+      rc=nc_put_att_text(cdf->ncid,bnds_var_id,"units",strlen("m"),"m");
       error(rc);
       rc=nc_put_att_text(cdf->ncid,bnds_var_id,"comment",strlen(BNDS_LONG_NAME),BNDS_LONG_NAME);
     }
@@ -324,7 +354,7 @@ static Cdf *create_cdf(const char *filename,
       bnds=newvec(double,2*getmapsize(map));
       check(bnds);
       for(i=0;i<getmapsize(map);i++)
-        layer[i]=*((double *)getmapitem(map,i));
+        layer[i]=*((double *)getmapitem(map,i))/1000;
       bnds[0]=0;
       bnds[1]=layer[0];
       midlayer[0]=0.5*layer[0];
@@ -485,17 +515,23 @@ int main(int argc,char **argv)
   Header header;
   float *data;
   short *data_short;
-  int i,j,k,ngrid,iarg,compress,version,n_global,baseyear;
-  Bool swap,ispft,isshort,isglobal,floatgrid,isclm,ismeta,isbaseyear;
+  int i,j,k,ngrid,iarg,compress,version,n_global,n_global2,baseyear;
+  Bool swap,ispft,isshort,isglobal,isclm,ismeta,isbaseyear;
+  Type gridtype;
   float cellsize,fcoord[2];
+  double dcoord[2];
   char *units,*descr,*endptr,*cmdline,*pos;
   Filename coord_filename;
   float cellsize_lon,cellsize_lat;
   Coordfile coordfile;
   Map *map=NULL;
   Attr *global_attrs=NULL;
+  Attr *global_attrs2=NULL;
   size_t offset;
   char *map_name;
+  String var_units,var_descr;
+  var_units[0]='\0';
+  var_descr[0]='\0';
   units=descr=NULL;
   compress=0;
   swap=isglobal=FALSE;
@@ -506,7 +542,7 @@ int main(int argc,char **argv)
   header.timestep=1;
   ispft=FALSE;
   isshort=FALSE;
-  floatgrid=FALSE;
+  gridtype=LPJ_SHORT;
   isclm=FALSE;
   ismeta=FALSE;
   isbaseyear=FALSE;
@@ -526,7 +562,9 @@ int main(int argc,char **argv)
         units=argv[++iarg];
       }
       else if(!strcmp(argv[iarg],"-floatgrid"))
-        floatgrid=TRUE;
+        gridtype=LPJ_FLOAT;
+      else if(!strcmp(argv[iarg],"-doublegrid"))
+        gridtype=LPJ_DOUBLE;
       else if(!strcmp(argv[iarg],"-ispft"))
         ispft=TRUE;
       else if(!strcmp(argv[iarg],"-clm"))
@@ -737,10 +775,24 @@ int main(int argc,char **argv)
               strerror(errno));
       return EXIT_FAILURE;
     }
-    if(floatgrid)
-      ngrid=getfilesizep(file)/sizeof(float)/2;
-    else
-      ngrid=getfilesizep(file)/sizeof(short)/2;
+    switch(gridtype)
+    {
+      case LPJ_SHORT:
+        ngrid=getfilesizep(file)/sizeof(short)/2;
+        if(getfilesizep(file) % (sizeof(short)/2))
+          fprintf(stderr,"Size of grid file '%s' is non multiple of coord size.\n",argv[iarg+1]);
+        break;
+      case LPJ_FLOAT:
+        ngrid=getfilesizep(file)/sizeof(float)/2;
+        if(getfilesizep(file) % (sizeof(float)/2))
+          fprintf(stderr,"Size of grid file '%s' is non multiple of coord size.\n",argv[iarg+1]);
+        break;
+      case LPJ_DOUBLE:
+        ngrid=getfilesizep(file)/sizeof(double)/2;
+        if(getfilesizep(file) % (sizeof(double)/2))
+          fprintf(stderr,"Size of grid file '%s' is non multiple of coord size.\n",argv[iarg+1]);
+        break;
+    }
     if(ngrid==0)
     {
        fprintf(stderr,"Error: Number of grid cells in '%s' is zero.\n",argv[iarg+1]);
@@ -752,28 +804,50 @@ int main(int argc,char **argv)
       printallocerr("grid");
       return EXIT_FAILURE;
     }
-    if(floatgrid)
-      for(i=0;i<ngrid;i++)
-      {
-        freadfloat(fcoord,2,swap,file);
-        grid[i].lon=fcoord[0];
-        grid[i].lat=fcoord[1];
-      }
-    else
-      for(i=0;i<ngrid;i++)
-      {
-        readintcoord(file,&intcoord,swap);
-        grid[i].lat=intcoord.lat*0.01;
-        grid[i].lon=intcoord.lon*0.01;
-      }
+    switch(gridtype)
+    {
+      case LPJ_FLOAT:
+        for(i=0;i<ngrid;i++)
+        {
+          freadfloat(fcoord,2,swap,file);
+          grid[i].lon=fcoord[0];
+          grid[i].lat=fcoord[1];
+        }
+        break;
+      case LPJ_DOUBLE:
+        for(i=0;i<ngrid;i++)
+        {
+          freaddouble(dcoord,2,swap,file);
+          grid[i].lon=dcoord[0];
+          grid[i].lat=dcoord[1];
+        }
+        break;
+      case LPJ_SHORT:
+        for(i=0;i<ngrid;i++)
+        {
+          readintcoord(file,&intcoord,swap);
+          grid[i].lat=intcoord.lat*0.01;
+          grid[i].lon=intcoord.lon*0.01;
+        }
+        break;
+    }
     fclose(file);
   }
   if(ismeta)
   {
     header.ncell=ngrid;
-    file=openmetafile(&header,&map,map_name,&swap,&offset,argv[iarg+2],TRUE);
+    file=openmetafile(&header,&map,map_name,&global_attrs2,&n_global2,var_units,var_descr,&swap,&offset,argv[iarg+2],TRUE);
     if(file==NULL)
       return EXIT_FAILURE;
+    if(units==NULL && strlen(var_units)>0)
+      units=var_units;
+    if(descr==NULL && strlen(var_descr)>0)
+      descr=var_descr;
+    if(global_attrs2!=NULL)
+    {
+      mergeattrs(&global_attrs,&n_global,global_attrs2,n_global2);
+      freeattrs(global_attrs2,n_global2);
+    }
     if(fseek(file,offset,SEEK_CUR))
     {
       fprintf(stderr,"Error seeking in '%s' to offset %lu.\n",argv[iarg+2],offset);

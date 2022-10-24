@@ -129,7 +129,7 @@ static int checkinputfile(const Config *config,const Filename *filename,const ch
   }
   else
   {
-    file=openinputfile(&header,&swap,filename,headername,&version,&offset,FALSE,config);
+    file=openinputfile(&header,&swap,filename,headername,unit,&version,&offset,FALSE,config);
     if(file==NULL)
       return 1;
     fclose(file);
@@ -161,7 +161,7 @@ static int checkdatafile(const Config *config,const Filename *filename,const cha
   }
   else
   {
-    file=openinputfile(&header,&swap,filename,headername,&version,&offset,FALSE,config);
+    file=openinputfile(&header,&swap,filename,headername,unit,&version,&offset,FALSE,config);
     if(file==NULL)
       return 1;
     fclose(file);
@@ -237,7 +237,7 @@ static int checkclmfile(const Config *config,const Filename *filename,const char
   }
   else
   {
-    file=openinputfile(&header,&swap,filename,headername,&version,&offset,FALSE,config);
+    file=openinputfile(&header,&swap,filename,headername,unit,&version,&offset,FALSE,config);
     if(file==NULL)
       return 1;
     fclose(file);

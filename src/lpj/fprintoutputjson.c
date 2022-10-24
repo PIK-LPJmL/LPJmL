@@ -57,8 +57,17 @@ Bool fprintoutputjson(int index,           /**< index in outputvars array */
   fprintf(file,"  \"sim_name\" : \"%s\",\n",config->sim_name);
   fprintf(file,"  \"source\" : \"LPJmL C Version " LPJ_VERSION"\",\n");
   fprintf(file,"  \"history\" : \"%s\",\n",config->arglist);
-  for(p=0;p<config->n_global;p++)
-    fprintf(file,"  \"%s\" : \"%s\",\n",config->global_attrs[p].name,config->global_attrs[p].value);
+  if(config->n_global)
+  {
+    fprintf(file,"  \"global_attrs\" : {");
+    for(p=0;p<config->n_global;p++)
+    {
+      fprintf(file,"\"%s\" : \"%s\"",config->global_attrs[p].name,config->global_attrs[p].value);
+      if(p<config->n_global-1)
+        fprintf(file,", ");
+    }
+    fprintf(file,"},\n");
+  }
   fprintf(file,"  \"variable\" : \"%s\",\n",config->outnames[config->outputvars[index].id].name);
   fprintf(file,"  \"firstcell\" : %d,\n",config->firstgrid);
   fprintf(file,"  \"ncell\" : %d,\n",(config->outputvars[index].id==ADISCHARGE) ? config->nall : config->total);

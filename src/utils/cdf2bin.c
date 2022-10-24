@@ -377,8 +377,8 @@ int main(int argc,char **argv)
     header.firstcell=0;
     fclose(file);
   }
-  header.cellsize_lat=config.resolution.lat;
-  header.cellsize_lon=config.resolution.lon;
+  header.cellsize_lat=(float)config.resolution.lat;
+  header.cellsize_lon=(float)config.resolution.lon;
   header.ncell=config.ngridcell;
   file=fopen(outname,"wb");
   if(file==NULL)
@@ -466,7 +466,7 @@ int main(int argc,char **argv)
       printfcreateerr(out_json);
       return EXIT_FAILURE;
     }
-    fprintjson(file,outname,arglist,&header,NULL,NULL,(isclm) ? CLM : RAW,LPJOUTPUT_HEADER,FALSE,LPJOUTPUT_VERSION);
+    fprintjson(file,outname,arglist,&header,NULL,NULL,NULL,0,NULL,NULL,(isclm) ? CLM : RAW,LPJOUTPUT_HEADER,FALSE,LPJOUTPUT_VERSION);
     fclose(file);
   }
   return EXIT_SUCCESS;

@@ -648,7 +648,7 @@ int main(int argc,char **argv)
     }
     if(version<4)
       header.nbands/=header.nstep;
-    fprintjson(file,outname,arglist,&header,NULL,NULL,CLM,id,FALSE,version);
+    fprintjson(file,outname,arglist,&header,NULL,NULL,NULL,0,units,NULL,CLM,id,FALSE,version);
     fclose(file);
   }
   return EXIT_SUCCESS;

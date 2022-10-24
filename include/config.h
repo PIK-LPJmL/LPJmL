@@ -202,6 +202,7 @@ struct config
   int firstyear; /**< first simulation year (AD) */
   int outputyear; /**< first year for output (AD) */
   int baseyear; /**< base year for NETCDF output (AD) */
+  Bool absyear; /**< set absolute years in NetCDF output */
   Bool isfirstspinupyear; /**< set first year for climate in spinup (TRUE/FALSE) */
   int firstspinupyear;   /**< first year for climate in spinup */
   int total;     /**< total number of grid cells with valid soilcode */

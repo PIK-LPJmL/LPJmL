@@ -34,10 +34,14 @@ static void printclm(const char *filename,int output,int nbands,int version,
   float fdata;
   double ddata;
   int year,cell,i,*index,rc,t;
+  String unit,descr;
   Bool swap,isrestart,isreservoir;
   size_t offset;
   Reservoir reservoir;
   Map *map=NULL;
+  Attr *attrs=NULL;
+  int n_attr;
+  unit[0]='\0';
   if(ismeta)
   {
     isrestart=isreservoir=FALSE;
@@ -51,7 +55,7 @@ static void printclm(const char *filename,int output,int nbands,int version,
     header.timestep=1;
     header.datatype=type;
     header.order=CELLYEAR;
-    file=openmetafile(&header,&map,map_name,&swap,&offset,filename,TRUE);
+    file=openmetafile(&header,&map,map_name,&attrs,&n_attr,unit,descr,&swap,&offset,filename,TRUE);
     if(file==NULL)
       return;
     if(fseek(file,offset,SEEK_CUR))
@@ -89,9 +93,11 @@ static void printclm(const char *filename,int output,int nbands,int version,
   }
   if(isjon)
   {
-    fprintjson(stdout,filename,NULL,&header,map,map_name,CLM,id,swap,version);
+    fprintjson(stdout,filename,NULL,&header,map,map_name,attrs,n_attr,unit,descr,CLM,id,swap,version);
     return;
   }
+  freemap(map);
+  freeattrs(attrs,n_attr);
   if((output & NO_HEADER)==0)
   {
     mod_date=getfiledate(filename);
@@ -113,6 +119,8 @@ static void printclm(const char *filename,int output,int nbands,int version,
       printf("\n");
       freemap(map);
     }
+    if(strlen(unit)>0)
+      printf("Unit:\t\t%s\n",unit);
     if(isrestart)
     {
       if(RESTART_VERSION==version)

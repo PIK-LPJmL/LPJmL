@@ -130,7 +130,7 @@ int main(int argc,char **argv)
     for(j=0;j<nvars;j++)
     {
       nc_inq_varname(ncid,j,name);
-      if(strcmp(name,LON_NAME) && strcmp(name,LAT_NAME) && strcmp(name,"time"))
+      if(strcmp(name,LON_NAME) && strcmp(name,LON_STANDARD_NAME) && strcmp(name,LAT_NAME) && strcmp(name,LAT_STANDARD_NAME) && strcmp(name,"time"))
       {
         var_id=j;
         break;

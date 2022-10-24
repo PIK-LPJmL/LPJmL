@@ -37,7 +37,7 @@ FILE *opencountrycode(const Filename *filename, /**< filename */
     header.ncell=0;
     header.nyear=1;
     header.cellsize_lon=header.cellsize_lat=0.5;
-    file=openmetafile(&header,NULL,NULL,swap,&h_offset,filename->name,isout);
+    file=openmetafile(&header,NULL,NULL,NULL,NULL,NULL,NULL,swap,&h_offset,filename->name,isout);
     if(file==NULL)
       return NULL;
     if(header.nbands!=2)

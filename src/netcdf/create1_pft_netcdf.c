@@ -97,13 +97,13 @@ Bool create1_pft_netcdf(Netcdf *cdf,
       return TRUE;
     }
     bnds[0]=0;
-    bnds[1]=layerbound[0];
-    layer[0]=midlayer[0];
+    bnds[1]=layerbound[0]/1000;
+    layer[0]=midlayer[0]/1000;
     for(i=1;i<size;i++)
     {
-      bnds[2*i]=layerbound[i-1];
-      bnds[2*i+1]=layerbound[i];
-      layer[i]=(float)midlayer[i];
+      bnds[2*i]=layerbound[i-1]/1000;
+      bnds[2*i+1]=layerbound[i]/1000;
+      layer[i]=(float)midlayer[i]/1000;
     }
   }
   else bnds=layer=NULL;
@@ -183,7 +183,7 @@ Bool create1_pft_netcdf(Netcdf *cdf,
   {
     rc=nc_def_var(cdf->ncid,DEPTH_NAME,NC_DOUBLE,1,&pft_dim_id,&pft_var_id);
     error(rc);
-    rc=nc_put_att_text(cdf->ncid,pft_var_id,"units",strlen("mm"),"mm");
+    rc=nc_put_att_text(cdf->ncid,pft_var_id,"units",strlen("m"),"m");
     error(rc);
     rc=nc_put_att_text(cdf->ncid,pft_var_id,"long_name",strlen(DEPTH_LONG_NAME),DEPTH_LONG_NAME);
     error(rc);
@@ -199,7 +199,7 @@ Bool create1_pft_netcdf(Netcdf *cdf,
     dimids[1]=bnds_dim_id;
     rc=nc_def_var(cdf->ncid,BNDS_NAME,NC_DOUBLE,2,dimids,&bnds_var_id);
     error(rc);
-    rc=nc_put_att_text(cdf->ncid,bnds_var_id,"units",strlen("mm"),"mm");
+    rc=nc_put_att_text(cdf->ncid,bnds_var_id,"units",strlen("m"),"m");
     error(rc);
     rc=nc_put_att_text(cdf->ncid,bnds_var_id,"comment",strlen(BNDS_LONG_NAME),BNDS_LONG_NAME);
     error(rc);
@@ -240,7 +240,7 @@ Bool create1_pft_netcdf(Netcdf *cdf,
   error(rc);
   rc=nc_put_att_text(cdf->ncid, lat_var_id,"long_name",strlen(LAT_LONG_NAME),LAT_LONG_NAME);
   error(rc);
-  rc=nc_put_att_text(cdf->ncid, lat_var_id,"standard_name",strlen("latitude"),"latitude");
+  rc=nc_put_att_text(cdf->ncid, lat_var_id,"standard_name",strlen(LAT_STANDARD_NAME),LAT_STANDARD_NAME);
   error(rc);
   rc=nc_put_att_text(cdf->ncid, lat_var_id,"axis",strlen("Y"),"Y");
   error(rc);
@@ -251,7 +251,7 @@ Bool create1_pft_netcdf(Netcdf *cdf,
   error(rc);
   rc=nc_put_att_text(cdf->ncid, lon_var_id,"long_name",strlen(LON_LONG_NAME),LON_LONG_NAME);
   error(rc);
-  rc=nc_put_att_text(cdf->ncid, lon_var_id,"standard_name",strlen("longitude"),"longitude");
+  rc=nc_put_att_text(cdf->ncid, lon_var_id,"standard_name",strlen(LON_STANDARD_NAME),LON_STANDARD_NAME);
   error(rc);
   rc=nc_put_att_text(cdf->ncid, lon_var_id,"axis",strlen("X"),"X");
   error(rc);

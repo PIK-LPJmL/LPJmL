@@ -257,7 +257,7 @@ static Bool initriver(Cell grid[],Config *config)
   {
 
     if((drainage.file=openinputfile(&header,&drainage.swap,&config->drainage_filename,
-                                    headername,&version,&offset,FALSE,config))==NULL)
+                                    headername,NULL,&version,&offset,FALSE,config))==NULL)
       return TRUE;
     if(version>=3 && header.datatype!=LPJ_INT)
     {

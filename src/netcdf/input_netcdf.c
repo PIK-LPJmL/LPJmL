@@ -124,7 +124,7 @@ static Bool setvarinput_netcdf(Input_netcdf input,const Filename *filename,
     for(i=0;i<nvars;i++)
     {
       nc_inq_varname(input->ncid,i,name);
-      if(strcmp(name,LON_NAME) && strcmp(name,LAT_NAME) && strcmp(name,TIME_NAME))
+      if(strcmp(name,LON_NAME) && strcmp(name,LON_STANDARD_NAME) && strcmp(name,LAT_NAME) && strcmp(name,LAT_STANDARD_NAME) && strcmp(name,TIME_NAME))
       {
         input->varid=i;
         break;

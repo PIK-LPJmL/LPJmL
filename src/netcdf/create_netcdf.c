@@ -131,8 +131,12 @@ Bool create_netcdf(Netcdf *cdf,
       case 0:
         break;
       case 1:
-        for(i=0;i<nyear/timestep;i++)
-          year[i]=config->outputyear-config->baseyear+i*timestep+timestep/2;
+        if(config->absyear)
+          for(i=0;i<nyear/timestep;i++)
+            year[i]=config->outputyear+i*timestep+timestep/2;
+        else
+          for(i=0;i<nyear/timestep;i++)
+            year[i]=config->outputyear-config->baseyear+i*timestep+timestep/2;
         break;
       case 12:
         for(i=0;i<nyear*12;i++)
@@ -205,15 +209,16 @@ Bool create_netcdf(Netcdf *cdf,
     rc=nc_def_var(cdf->ncid,LON_NAME,NC_DOUBLE,1,&cdf->lon_dim_id,&cdf->lon_var_id);
     error(rc);
     if(n==1)
-      snprintf(s,STRING_LEN,"years since %d-1-1 0:0:0",config->baseyear);
+    {
+      if(config->absyear)
+        strncpy(s,YEARS_NAME,STRING_LEN);
+      else
+        snprintf(s,STRING_LEN,"years since %d-1-1 0:0:0",config->baseyear);
+    }
     else if(n==12)
-    {
       snprintf(s,STRING_LEN,"months since %d-1-1 0:0:0",config->baseyear);
-    }
     else
-    {
       snprintf(s,STRING_LEN,"days since %d-1-1 0:0:0",config->baseyear);
-    }
     rc=nc_put_att_text(cdf->ncid,cdf->time_var_id,"units",strlen(s),s);
     error(rc);
     rc=nc_put_att_text(cdf->ncid,cdf->time_var_id,"calendar",strlen("noleap"),
@@ -226,7 +231,7 @@ Bool create_netcdf(Netcdf *cdf,
     error(rc);
     rc=nc_put_att_text(cdf->ncid, cdf->lon_var_id,"long_name",strlen(LON_LONG_NAME),LON_LONG_NAME);
     error(rc);
-    rc=nc_put_att_text(cdf->ncid, cdf->lon_var_id,"standard_name",strlen("longitude"),"longitude");
+    rc=nc_put_att_text(cdf->ncid, cdf->lon_var_id,"standard_name",strlen(LON_STANDARD_NAME),LON_STANDARD_NAME);
     error(rc);
     rc=nc_put_att_text(cdf->ncid, cdf->lon_var_id,"axis",strlen("X"),"X");
     error(rc);
@@ -235,7 +240,7 @@ Bool create_netcdf(Netcdf *cdf,
     error(rc);
     rc=nc_put_att_text(cdf->ncid, cdf->lat_var_id,"long_name",strlen(LAT_LONG_NAME),LAT_LONG_NAME);
     error(rc);
-    rc=nc_put_att_text(cdf->ncid, cdf->lat_var_id,"standard_name",strlen("latitude"),"latitude");
+    rc=nc_put_att_text(cdf->ncid, cdf->lat_var_id,"standard_name",strlen(LAT_STANDARD_NAME),LAT_STANDARD_NAME);
     error(rc);
     rc=nc_put_att_text(cdf->ncid, cdf->lat_var_id,"axis",strlen("Y"),"Y");
     error(rc);

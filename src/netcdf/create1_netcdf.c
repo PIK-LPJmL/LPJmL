@@ -39,7 +39,7 @@ Bool create1_netcdf(Netcdf *cdf,
 #if defined(USE_NETCDF) || defined(USE_NETCDF4)
   String s;
   time_t t;
-  int i,j,rc,imiss=MISSING_VALUE_INT;
+  int i,rc,imiss=MISSING_VALUE_INT;
   short smiss=MISSING_VALUE_SHORT;
   double *lon,*lat;
   float miss=config->missing_value;
@@ -102,7 +102,7 @@ Bool create1_netcdf(Netcdf *cdf,
         break;
       case 12:
         for(i=0;i<12;i++)
-          days[j]=i;
+          days[i]=i;
         break;
       case NDAYYEAR:
         for(i=0;i<max(n,cdf->n);i++)
@@ -213,7 +213,7 @@ Bool create1_netcdf(Netcdf *cdf,
     error(rc);
     rc=nc_put_att_text(cdf->ncid, cdf->lon_var_id,"long_name",strlen(LON_LONG_NAME),LON_LONG_NAME);
     error(rc);
-    rc=nc_put_att_text(cdf->ncid, cdf->lon_var_id,"standard_name",strlen("longitude"),"longitude");
+    rc=nc_put_att_text(cdf->ncid, cdf->lon_var_id,"standard_name",strlen(LON_STANDARD_NAME),LON_STANDARD_NAME);
     error(rc);
     rc=nc_put_att_text(cdf->ncid, cdf->lon_var_id,"axis",strlen("X"),"X");
     error(rc);
@@ -222,7 +222,7 @@ Bool create1_netcdf(Netcdf *cdf,
     error(rc);
     rc=nc_put_att_text(cdf->ncid, cdf->lat_var_id,"long_name",strlen(LAT_LONG_NAME),LAT_LONG_NAME);
     error(rc);
-    rc=nc_put_att_text(cdf->ncid, cdf->lat_var_id,"standard_name",strlen("latitude"),"latitude");
+    rc=nc_put_att_text(cdf->ncid, cdf->lat_var_id,"standard_name",strlen(LAT_STANDARD_NAME),LAT_STANDARD_NAME);
     error(rc);
     rc=nc_put_att_text(cdf->ncid, cdf->lat_var_id,"axis",strlen("Y"),"Y");
     error(rc);

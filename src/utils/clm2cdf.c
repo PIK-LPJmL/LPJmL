@@ -177,18 +177,18 @@ static Cdf *create_cdf(const char *filename,
   rc=nc_put_att_text(cdf->ncid,lon_var_id,"units",strlen("degrees_east"),
                      "degrees_east");
   error(rc);
-  rc=nc_put_att_text(cdf->ncid, lon_var_id,"long_name",strlen("longitude"),"longitude");
+  rc=nc_put_att_text(cdf->ncid, lon_var_id,"long_name",strlen(LON_LONG_NAME),LON_LONG_NAME);
   error(rc);
-  rc=nc_put_att_text(cdf->ncid, lon_var_id,"standard_name",strlen("longitude"),"longitude");
+  rc=nc_put_att_text(cdf->ncid, lon_var_id,"standard_name",strlen(LON_STANDARD_NAME),LON_STANDARD_NAME);
   error(rc);
   rc=nc_put_att_text(cdf->ncid, lon_var_id,"axis",strlen("X"),"X");
   error(rc);
   rc=nc_put_att_text(cdf->ncid,lat_var_id,"units",strlen("degrees_north"),
                    "degrees_north");
   error(rc);
-  rc=nc_put_att_text(cdf->ncid, lat_var_id,"long_name",strlen("latitude"),"latitude");
+  rc=nc_put_att_text(cdf->ncid, lat_var_id,"long_name",strlen(LAT_LONG_NAME),LAT_LONG_NAME);
   error(rc);
-  rc=nc_put_att_text(cdf->ncid, lat_var_id,"standard_name",strlen("latitude"),"latitude");
+  rc=nc_put_att_text(cdf->ncid, lat_var_id,"standard_name",strlen(LAT_STANDARD_NAME),LAT_STANDARD_NAME);
   error(rc);
   rc=nc_put_att_text(cdf->ncid, lat_var_id,"axis",strlen("Y"),"Y");
   error(rc);
@@ -289,7 +289,7 @@ static Cdf *create_cdf(const char *filename,
       for(i=0;i<getmapsize(map);i++)
       {
         offset[0]=i;
-        rc=nc_put_vara_float(cdf->ncid,varid,offset,count,(double *)getmapitem(map,i));
+        rc=nc_put_vara_double(cdf->ncid,varid,offset,count,(double *)getmapitem(map,i));
         error(rc);
       }
     else
@@ -453,7 +453,10 @@ int main(int argc,char **argv)
   const char *progname;
   Filename filename;
   size_t filesize;
+  String var_units,var_descr;
   units=descr=NULL;
+  var_units[0]='\0';
+  var_descr[0]='\0';
   scale=1.0;
   compress=0;
   cellsize_lon=cellsize_lat=0;
@@ -675,7 +678,7 @@ int main(int argc,char **argv)
     header.datatype=type;
     header.order=CELLYEAR;
 
-    file=openmetafile(&header,&map,map_name,&swap,&offset,argv[iarg+2],TRUE);
+    file=openmetafile(&header,&map,map_name,&global_attrs,&n_global,var_units,var_descr,&swap,&offset,argv[iarg+2],TRUE);
     if(file==NULL)
       return EXIT_FAILURE;
     if(fseek(file,offset,SEEK_CUR))
@@ -684,6 +687,10 @@ int main(int argc,char **argv)
       fclose(file);
       return EXIT_FAILURE;
     }
+    if(units==NULL && strlen(var_units)>0)
+      units=var_units;
+    if(descr==NULL && strlen(var_descr)>0)
+      descr=var_descr;
   }
   else
   {

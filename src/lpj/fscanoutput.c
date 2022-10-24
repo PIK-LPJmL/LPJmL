@@ -146,6 +146,9 @@ Bool fscanoutput(LPJfile *file,  /**< pointer to LPJ file */
     config->outputdir=strdup(outpath);
     checkptr(config->outputdir);
   }
+  config->absyear=FALSE;
+  if(fscanbool(file,&config->absyear,"absyear",TRUE,verbosity))
+    return TRUE;
   if(iskeydefined(file,"grid_scaled"))
   {
     fscanbool2(file,&config->pft_output_scaled,"grid_scaled");

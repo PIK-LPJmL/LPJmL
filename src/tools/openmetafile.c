@@ -70,9 +70,12 @@ void fprintmap(FILE *file,Map *map)
 void freemap(Map *map)
 {
   int i;
-  foreachlistitem(i,map->list)
-    free(getmapitem(map,i));
-  freelist(map->list);
+  if(map!=NULL)
+  {
+    foreachlistitem(i,map->list)
+      free(getmapitem(map,i));
+    freelist(map->list);
+  }
   free(map);
 } /* of 'freemap' */
 
@@ -83,6 +86,10 @@ char *parse_json_metafile(LPJfile *lpjfile,   /**< pointer to JSON file */
                           Header *header,     /**< pointer to file header */
                           Map **map,         /**< map from json file or NULL */
                           const char *map_name, /**< name of map or NULL */
+                          Attr **attrs,       /**< pointer to array of attributes */
+                          int *n_attr,        /**< size of array attribute */
+                          String unit,        /**< unit of variable or NULL */
+                          String descr,       /**< description of variable or NULL */
                           size_t *offset,     /**< offset in binary file */
                           Bool *swap,         /**< byte order has to be changed (TRUE/FALSE) */
                           Verbosity verbosity /**< verbosity level */
@@ -104,6 +111,51 @@ char *parse_json_metafile(LPJfile *lpjfile,   /**< pointer to JSON file */
       *map=fscanmap(lpjfile,(map_name==NULL) ? MAP_NAME : map_name,verbosity);
     else
       *map=NULL;
+  }
+  if(attrs!=NULL)
+  {
+    if(iskeydefined(lpjfile,"global_attrs"))
+    {
+      if(fscanattrs(lpjfile,attrs,n_attr,"global_attrs",verbosity))
+      {
+        closeconfig(lpjfile);
+        lpjfile->file.file=file;
+        return NULL;
+      }
+    }
+    else
+    {
+     *attrs=NULL;
+     *n_attr=0;
+    }
+  }
+  if(unit!=NULL)
+  {
+    if(iskeydefined(lpjfile,"unit"))
+    {
+      if(fscanstring(lpjfile,unit,"unit",FALSE,verbosity))
+      {
+        closeconfig(lpjfile);
+        lpjfile->file.file=file;
+        return NULL;
+      }
+    }
+    else
+      unit[0]='\0';
+  }
+  if(descr!=NULL)
+  {
+    if(iskeydefined(lpjfile,"descr"))
+    {
+      if(fscanstring(lpjfile,descr,"descr",FALSE,verbosity))
+      {
+        closeconfig(lpjfile);
+        lpjfile->file.file=file;
+        return NULL;
+      }
+    }
+    else
+      descr[0]='\0';
   }
   if(header!=NULL)
   {
@@ -271,6 +323,10 @@ char *parse_json_metafile(LPJfile *lpjfile,   /**< pointer to JSON file */
 FILE *openmetafile(Header *header,       /**< pointer to file header */
                    Map **map,            /**< map from json file or NULL */
                    const char *map_name, /**< name of map or NULL */
+                   Attr **attrs,         /**< pointer to array of attributes */
+                   int *n_attr,          /**< size of array attribute */
+                   String unit,          /**< unit of variable or NULL */
+                   String descr,         /**< description of variable or NULL */
                    Bool *swap,           /**< byte order has to be changed (TRUE/FALSE) */
                    size_t *offset,       /**< offset in binary file */
                    const char *filename, /**< file name */
@@ -301,7 +357,7 @@ FILE *openmetafile(Header *header,       /**< pointer to file header */
     if(key[0]=='{')
     {
 #ifdef USE_JSON
-      name=parse_json_metafile(&file,key,header,map,map_name,offset,swap,isout ? ERR : NO_ERR);
+      name=parse_json_metafile(&file,key,header,map,map_name,attrs,n_attr,unit,descr,offset,swap,isout ? ERR : NO_ERR);
       break;
 #else
       if(isout)

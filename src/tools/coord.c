@@ -60,7 +60,7 @@ Coordfile opencoord(const Filename *filename, /**< filename of coord file */
     header.nyear=1;
     header.order=CELLYEAR;
     header.cellsize_lon=header.cellsize_lat=0.5;
-    coordfile->file=openmetafile(&header,NULL,NULL,&coordfile->swap,&coordfile->offset,filename->name,isout);
+    coordfile->file=openmetafile(&header,NULL,NULL,NULL,NULL,NULL,NULL,&coordfile->swap,&coordfile->offset,filename->name,isout);
     if(coordfile->file==NULL)
     {
       free(coordfile);

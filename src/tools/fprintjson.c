@@ -24,6 +24,10 @@ void fprintjson(FILE *file,           /**< pointer to text file */
                 const Header *header, /**< file header */
                 Map *map,             /**< pointer to map array or NULL */
                 const char *map_name, /**< Name of string array or NULL */
+                const Attr *attrs,    /**< array of attributes */
+                int n_attr,           /**< size of array of attributes */
+                const char *unit,     /**< unit of variable or NULL */
+                const char *descr,    /**< description of variable or NULL */
                 int format,           /**< file format (RAW/CLM) */
                 const char *id,       /**< Id of clm file */
                 Bool swap,            /**< byte order has to be swapped (TRUE/FALSE) */
@@ -36,6 +40,17 @@ void fprintjson(FILE *file,           /**< pointer to text file */
           "  \"filename\" : \"%s\",\n",strippath(filename));
   if(arglist!=NULL)
     fprintf(file,"  \"source\" : \"%s\",\n",arglist);
+  if(n_attr)
+  {
+    fprintf(file,"  \"global_attrs\" : {");
+    for(i=0;i<n_attr;i++)
+    {
+      fprintf(file,"\"%s\" : \"%s\"",attrs[i].name,attrs[i].value);
+      if(i<n_attr-1)
+        fprintf(file,", ");
+    }
+    fprintf(file,"},\n");
+  }
   fprintf(file,"  \"firstcell\" : %d,\n",header->firstcell);
   fprintf(file,"  \"ncell\" : %d,\n",header->ncell);
   fprintf(file,"  \"cellsize_lon\" : %f,\n",header->cellsize_lon);
@@ -66,6 +81,10 @@ void fprintjson(FILE *file,           /**< pointer to text file */
     }
     fputs("],\n",file);
   }
+  if(unit!=NULL)
+    fprintf(file,"  \"unit\" : \"%s\",\n",unit);
+  if(descr!=NULL)
+    fprintf(file,"  \"descr\" : \"%s\",\n",descr);
   if(format>=0 && format<N_FMT)
     fprintf(file,"  \"format\" : \"%s\",\n",fmt[format]);
   fprintf(file,"  \"order\" : \"%s\",\n",ordernames[max(0,header->order-1)]);

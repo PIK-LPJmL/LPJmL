@@ -4,7 +4,7 @@
 /**                                                                                \n**/
 /**     C implementation of LPJmL                                                  \n**/
 /**                                                                                \n**/
-/**     Function reads a string array from a LPJ file                              \n**/
+/**     Function reads a string or double array from a LPJ file                    \n**/
 /**                                                                                \n**/
 /** (C) Potsdam Institute for Climate Impact Research (PIK), see COPYRIGHT file    \n**/
 /** authors, and contributors see AUTHORS file                                     \n**/
@@ -159,4 +159,4 @@ Map *fscanmap(LPJfile *file,   /**< pointer to LPJ file */
       printallocerr("array");
   }
   return map;
-} /* of 'fscanstringarray' */
+} /* of 'fscanmap' */

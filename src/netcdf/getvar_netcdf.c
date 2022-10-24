@@ -49,7 +49,7 @@ Bool getvar_netcdf(Climatefile *file,    /**< climate data file */
     for(i=0;i<nvars;i++)
     {
       nc_inq_varname(file->ncid,i,name);
-      if(strcmp(name,LON_NAME) && strcmp(name,LAT_NAME) && strcmp(name,TIME_NAME) && strcmp(name,"NamePFT"))
+      if(strcmp(name,LON_NAME) && strcmp(name,LON_STANDARD_NAME) && strcmp(name,LAT_NAME) && strcmp(name,LAT_STANDARD_NAME) && strcmp(name,TIME_NAME) && strcmp(name,"NamePFT"))
       {
         file->varid=i;
         break;
