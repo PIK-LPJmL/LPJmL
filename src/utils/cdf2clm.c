@@ -341,7 +341,7 @@ int main(int argc,char **argv)
   Coordfile coordfile;
   Climatefile climate;
   Config config;
-  char *units,*var,*outname,*endptr,*time_name,*arglist;
+  char *units,*var,*outname,*endptr,*time_name,*arglist,*descr;
   float scale,*data;
   Filename coord_filename;
   Coord *coords;
@@ -586,6 +586,9 @@ int main(int argc,char **argv)
         return EXIT_FAILURE;
       }
     }
+    if(units==NULL)
+      units=getattr_netcdf(&climate,"units");
+    descr=getattr_netcdf(&climate,"long_name");
     time=climate.time_step;
     var_len=climate.var_len;
     for(year=0;year<climate.nyear;year++)
@@ -648,7 +651,7 @@ int main(int argc,char **argv)
     }
     if(version<4)
       header.nbands/=header.nstep;
-    fprintjson(file,outname,arglist,&header,NULL,NULL,NULL,0,units,NULL,CLM,id,FALSE,version);
+    fprintjson(file,outname,arglist,&header,NULL,NULL,NULL,0,units,descr,argv[i],CLM,id,FALSE,version);
     fclose(file);
   }
   return EXIT_SUCCESS;

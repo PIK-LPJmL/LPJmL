@@ -224,7 +224,7 @@ int main(int argc,char **argv)
   Filename coord_filename;
   Climatefile data;
   Config config;
-  char *units,*var,*outname,*endptr,*out_json,*arglist;
+  char *units,*var,*outname,*endptr,*out_json,*arglist,*descr;
   Coord *grid;
   Intcoord intcoord;
   FILE *file;
@@ -395,6 +395,10 @@ int main(int argc,char **argv)
       fprintf(stderr,"Error opening '%s'.\n",argv[j]);
       return EXIT_FAILURE;
     }
+    if(units==NULL)
+      units=getattr_netcdf(&data,"units");
+    descr=getattr_netcdf(&data,"long_name");
+
     if(isclm || isjson)
     {
       if(j==i+1)
@@ -466,7 +470,7 @@ int main(int argc,char **argv)
       printfcreateerr(out_json);
       return EXIT_FAILURE;
     }
-    fprintjson(file,outname,arglist,&header,NULL,NULL,NULL,0,NULL,NULL,(isclm) ? CLM : RAW,LPJOUTPUT_HEADER,FALSE,LPJOUTPUT_VERSION);
+    fprintjson(file,outname,arglist,&header,NULL,NULL,NULL,0,units,descr,argv[i],(isclm) ? CLM : RAW,LPJOUTPUT_HEADER,FALSE,LPJOUTPUT_VERSION);
     fclose(file);
   }
   return EXIT_SUCCESS;

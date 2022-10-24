@@ -93,7 +93,7 @@ static void printclm(const char *filename,int output,int nbands,int version,
   }
   if(isjon)
   {
-    fprintjson(stdout,filename,NULL,&header,map,map_name,attrs,n_attr,unit,descr,CLM,id,swap,version);
+    fprintjson(stdout,filename,NULL,&header,map,map_name,attrs,n_attr,unit,descr,NULL,CLM,id,swap,version);
     return;
   }
   freemap(map);

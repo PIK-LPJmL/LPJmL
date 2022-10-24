@@ -160,7 +160,9 @@ extern char *parse_json_metafile(LPJfile *,char *,Header *,Map **,const char *,A
 extern Map *fscanmap(LPJfile *,const char *,Verbosity);
 extern void freemap(Map *);
 extern void fprintmap(FILE *,Map *);
-extern void fprintjson(FILE *,const char *,const char *,const Header *,Map *,const char *,const Attr *,int,const char *,const char *,int,const char *,Bool,int);
+extern void fprintjson(FILE *,const char *,const char *,const Header *,
+                       Map *,const char *,const Attr *,int,const char *,
+                       const char *,const char *,int,const char *,Bool,int);
 
 /* Definition of macros */
 

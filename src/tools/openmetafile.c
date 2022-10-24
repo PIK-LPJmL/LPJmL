@@ -353,6 +353,10 @@ FILE *openmetafile(Header *header,       /**< pointer to file header */
   name=NULL;
   if(map!=NULL)
     *map=NULL;
+  if(unit!=NULL)
+    unit[0]='\0';
+  if(descr!=NULL)
+    descr[0]='\0';
   while(!fscantoken(file.file.file,key))
     if(key[0]=='{')
     {
@@ -571,6 +575,28 @@ FILE *openmetafile(Header *header,       /**< pointer to file header */
       {
         if(isout)
           readstringerr("remark");
+        free(name);
+        fclose(file.file.file);
+        return NULL;
+      }
+    }
+    else if(unit!=NULL && !strcmp(key,"unit"))
+    {
+      if(fscanstring(&file,unit,"unit",FALSE,isout ? ERR : NO_ERR))
+      {
+        if(isout)
+          readstringerr("unit");
+        free(name);
+        fclose(file.file.file);
+        return NULL;
+      }
+    }
+    else if(descr!=NULL && !strcmp(key,"descr"))
+    {
+      if(fscanstring(&file,descr,"descr",FALSE,isout ? ERR : NO_ERR))
+      {
+        if(isout)
+          readstringerr("descr");
         free(name);
         fclose(file.file.file);
         return NULL;
