@@ -36,10 +36,10 @@ int fwritecell(FILE *file,        /**< File pointer of binary file */
     b=(Byte)grid[cell].skip;
     fwrite(&b,sizeof(b),1,file);
     fwrite(grid[cell].seed,sizeof(Seed),1,file);
+    if(fwrite(&grid[cell].discharge.dmass_lake,sizeof(Real),1,file)!=1)
+      break;
     if(config->river_routing)
     {
-      if(fwrite(&grid[cell].discharge.dmass_lake,sizeof(Real),1,file)!=1)
-        break;
 #ifdef IMAGE
     if(fwrite(&grid[cell].discharge.dmass_gw,sizeof(Real),1,file)!=1)
       break;
