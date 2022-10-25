@@ -272,8 +272,12 @@ Bool fscanoutput(LPJfile *file,  /**< pointer to LPJ file */
                     config->outnames[flag].name,
                     sprinttimestep(s2,getmintimestep(flag)));
           }
+          else if(verbosity && config->outputvars[count].filename.timestep!=ANNUAL && isannual_output(flag))
+            fprintf(stderr,"ERROR246: Only annual time step allowed for '%s' output, time step is %s.\n",
+                    config->outnames[flag].name,sprinttimestep(s2,config->outputvars[count].filename.timestep));
           config->outnames[flag].timestep=config->outputvars[count].filename.timestep;
         }
+
         if(config->outputvars[count].filename.unit!=NULL)
         {
           free(config->outnames[flag].unit);

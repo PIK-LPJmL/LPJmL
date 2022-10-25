@@ -125,7 +125,6 @@ void harvest_crop(Output *output,      /**< Output data */
       getoutputindex(output,SDATE2,pft->par->id-npft+data->irrigation*ncft,config)=crop->dh->sdate;
     else
       getoutputindex(output,SDATE,pft->par->id-npft+data->irrigation*ncft,config)=crop->dh->sdate;
-    getoutputindex(output,CFT_NHARVEST,index,config)+=1.0;
   }
   else
   {
@@ -150,7 +149,7 @@ void harvest_crop(Output *output,      /**< Output data */
       getoutputindex(output,PFT_RHARVESTN,index,config)+=(harvest.residual.nitrogen+harvest.residuals_burnt.nitrogen+harvest.residuals_burntinfield.nitrogen);
     }
     /* harvested area */
-    getoutputindex(output,CFTFRAC,index,config)+=stand->frac;
+    getoutputindex(output,CFTFRAC,index,config)=stand->frac;
     getoutputindex(output,CFT_NHARVEST,index,config)+=1.0;
   }
   if(isannual(PFT_NLEAF,config))

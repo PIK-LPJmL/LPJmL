@@ -500,7 +500,7 @@ Real daily_grassland(Stand *stand,                /**< stand pointer */
       getoutputindex(output,PFT_RHARVESTN,index,config)+=harvest.residual.nitrogen;
     }
     /* harvested area */
-    getoutputindex(output,CFTFRAC,index,config)+=stand->frac;
+    getoutputindex(output,CFTFRAC,index,config)=stand->frac;
     getoutputindex(output,CFT_NHARVEST,index,config)+=1.0;
   } /* of if(isphen) */
 

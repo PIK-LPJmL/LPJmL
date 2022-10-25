@@ -1,10 +1,8 @@
 /**************************************************************************************/
 /**                                                                                \n**/
-/**                g  e  t  m  i  n  t  i  m  e  s  t  e  p  .  c                  \n**/
+/**      i  s  n  a  n  n  u  a  l  _  o  u  t  p  u  t  .  c                      \n**/
 /**                                                                                \n**/
-/**     C implementation of LPJmL                                                  \n**/
-/**                                                                                \n**/
-/**     Function returns minimum time step allowed for output                      \n**/
+/** Function determines whether output is annual only output                       \n**/
 /**                                                                                \n**/
 /** (C) Potsdam Institute for Climate Impact Research (PIK), see COPYRIGHT file    \n**/
 /** authors, and contributors see AUTHORS file                                     \n**/
@@ -16,14 +14,15 @@
 
 #include "lpj.h"
 
-int getmintimestep(int index /**< Index of output file */
-                  )          /** \return minimum time step (DAILY, MONTHLY, ANNUAL) */
+Bool isannual_output(int index /**< index for output file */
+                    )          /** \return output is annual only output (TRUE/FALSE) */
 {
   switch(index)
   {
-    case VEGC: case VEGN: case GLOBALFLUX: case CFTFRAC: case CFTFRAC2: case SDATE: case SDATE2:
-      return ANNUAL;
+    case CFTFRAC: case SDATE : case SDATE2 : case HDATE : case HDATE2:
+    case SYEAR: case SYEAR2:
+      return TRUE;
     default:
-      return DAILY;
+      return FALSE;
   }
-} /* of 'getmintimestep' */
+} /* of 'isannual_output' */ 

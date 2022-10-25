@@ -350,7 +350,7 @@ Real daily_biomass_grass(Stand *stand,                /**< stand pointer */
       getoutputindex(output,PFT_HARVESTN,index,config)+=harvest.harvest.nitrogen;
     }
     /* harvested area */
-    getoutputindex(output,CFTFRAC,index,config)+=stand->cell->ml.landfrac[data->irrigation].biomass_grass;
+    getoutputindex(output,CFTFRAC,index,config)=stand->cell->ml.landfrac[data->irrigation].biomass_grass;
     getoutputindex(output,CFT_NHARVEST,index,config)+=1.0;
   } /* of if(isphen) */
 
