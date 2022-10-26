@@ -109,8 +109,12 @@ Bool create_netcdf(Netcdf *cdf,
     }
     for(i=0;i<array->nlon;i++)
       lon[i]=array->lon_min+i*config->resolution.lon;
-    for(i=0;i<array->nlat;i++)
-      lat[i]=array->lat_min+i*config->resolution.lat;
+    if(config->rev_lat)
+      for(i=0;i<array->nlat;i++)
+        lat[i]=array->lat_min+(array->nlat-1-i)*config->resolution.lat;
+    else
+      for(i=0;i<array->nlat;i++)
+        lat[i]=array->lat_min+i*config->resolution.lat;
     if(n)
     {
       if(n==1)

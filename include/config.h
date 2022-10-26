@@ -146,6 +146,7 @@ struct config
   int fertilizer_input;     /**< simulation with fertilizer input */
   Bool manure_input;       /**< simulation with manure input */
   Bool global_netcdf;     /**< enable global grid for NetCDF output */
+  Bool rev_lat;           /**< reverse lat coordinates in NetCDF output */
   Bool float_grid;        /**< enable float datatype for binary grid file */
   Bool landuse_restart;   /**< land use enabled in restart file */
   Bool double_harvest;

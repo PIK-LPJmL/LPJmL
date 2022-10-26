@@ -132,9 +132,10 @@
 #define SUFFIX pft.bin
 #endif
 
-  "output_metafile" : true, /* no json metafile created */
-  "float_grid" : false,      /* set datatype of grid file to float (TRUE/FALSE) */
-  "absyear" : false,         /* years relative to baseyear */
+  "output_metafile" : true,   /* json metafile created (TRUE/FALSE) */
+  "float_grid" : false,       /* set datatype of grid file to float (TRUE/FALSE) */
+  "absyear" : false,          /* years relative to baseyear (TRUE/FALSE) */
+  "rev_lat" : false,          /* reverse latitudes in NetCDF output (TRUE/FALSE) */
 
 #define mkstr(s) xstr(s) /* putting string in quotation marks */
 #define xstr(s) #s

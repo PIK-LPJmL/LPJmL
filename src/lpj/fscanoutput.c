@@ -132,6 +132,12 @@ Bool fscanoutput(LPJfile *file,  /**< pointer to LPJ file */
     if(fscanbool(file,&config->global_netcdf,"global_netcdf",FALSE,verbosity))
       return TRUE;
   }
+  config->rev_lat=FALSE;
+  if(iskeydefined(file,"rev_lat"))
+  {
+    if(fscanbool(file,&config->rev_lat,"rev_lat",FALSE,verbosity))
+      return TRUE;
+  }
   config->float_grid=FALSE;
   if(iskeydefined(file,"float_grid"))
   {

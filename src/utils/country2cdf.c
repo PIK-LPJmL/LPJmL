@@ -321,7 +321,7 @@ int main(int argc,char **argv)
     fclose(file);
     return EXIT_FAILURE;
   }
-  index=createindex(grid,ngrid,res,isglobal);
+  index=createindex(grid,ngrid,res,isglobal,FALSE);
   if(index==NULL)
     return EXIT_FAILURE;
   free(grid);
