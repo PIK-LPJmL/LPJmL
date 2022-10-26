@@ -50,8 +50,10 @@ Bool create_pft_netcdf(Netcdf *cdf,
   double *year;
   int dim[4],bnds_var_id,bnds_dim_id;
   char **pftnames;
+  size_t chunk[4];
+  int dimids[2];
 #ifndef USE_NETCDF4
-  int dimids[2],pft_len_id;
+  int pft_len_id;
   size_t offset[2],count[2],pft_len;
 #endif
   int time_dim_id,lon_dim_id,lat_dim_id,time_var_id,lon_var_id,lat_var_id,pft_dim_id,pft_var_id;
@@ -68,7 +70,7 @@ Bool create_pft_netcdf(Netcdf *cdf,
     {
       /* start from checkpoint file, output files exist and have to be opened */
 #ifdef USE_NETCDF4
-      rc=nc_open(filename,NC_WRITE|(config->compress) ? NC_CLOBBER|NC_NETCDF4 : NC_CLOBBER,&cdf->ncid);
+      rc=nc_open(filename,NC_WRITE|NC_CLOBBER|NC_NETCDF4,&cdf->ncid);
 #else
       rc=nc_open(filename,NC_WRITE|NC_CLOBBER,&cdf->ncid);
 #endif
@@ -207,6 +209,9 @@ Bool create_pft_netcdf(Netcdf *cdf,
   dim[1]=pft_dim_id;
   dim[2]=lat_dim_id;
   dim[3]=lon_dim_id;
+  chunk[0]=chunk[1]=1;
+  chunk[2]=array->nlat;
+  chunk[3]=array->nlon;
   if(issoil(index))
   {
     rc=nc_def_var(cdf->ncid,DEPTH_NAME,NC_DOUBLE,1,&pft_dim_id,&pft_var_id);
@@ -307,6 +312,8 @@ Bool create_pft_netcdf(Netcdf *cdf,
   rc=nc_def_var(cdf->ncid,name,nctype[type],4,dim,&cdf->varid);
   error(rc);
 #ifdef USE_NETCDF4
+  rc=nc_def_var_chunking(cdf->ncid, cdf->varid, NC_CHUNKED,chunk);
+  error(rc);
   if(config->compress)
   {
     rc=nc_def_var_deflate(cdf->ncid, cdf->varid, 0, 1, config->compress);

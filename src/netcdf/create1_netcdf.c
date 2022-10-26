@@ -45,6 +45,7 @@ Bool create1_netcdf(Netcdf *cdf,
   float miss=config->missing_value;
   double *days;
   int dim[3];
+  size_t chunk[3];
   if(array==NULL || name==NULL || filename==NULL)
   {
     fputs("ERROR424: Invalid array pointer in create1_netcdf().\n",stderr);
@@ -121,7 +122,7 @@ Bool create1_netcdf(Netcdf *cdf,
   if(cdf->state==ONEFILE || cdf->state==CREATE)
   {
 #ifdef USE_NETCDF4
-    rc=nc_create(filename,(config->compress) ? NC_CLOBBER|NC_NETCDF4 : NC_CLOBBER,&cdf->ncid);
+    rc=nc_create(filename,NC_CLOBBER|NC_NETCDF4,&cdf->ncid);
 #else
     rc=nc_create(filename,NC_CLOBBER,&cdf->ncid);
 #endif
@@ -182,11 +183,16 @@ Bool create1_netcdf(Netcdf *cdf,
     dim[0]=cdf->time_dim_id;
     dim[1]=cdf->lat_dim_id;
     dim[2]=cdf->lon_dim_id;
+    chunk[0]=1;
+    chunk[1]=array->nlat;
+    chunk[2]=array->nlon;
   }
   else
   {
     dim[0]=cdf->lat_dim_id;
     dim[1]=cdf->lon_dim_id;
+    chunk[0]=array->nlat;
+    chunk[1]=array->nlon;
   }
   if(cdf->state==ONEFILE || cdf->state==CREATE)
   {
@@ -230,6 +236,8 @@ Bool create1_netcdf(Netcdf *cdf,
   rc=nc_def_var(cdf->ncid,name,nctype[type],(n==1) ? 2 : 3,dim,&cdf->varid);
   error(rc);
 #ifdef USE_NETCDF4
+  rc=nc_def_var_chunking(cdf->ncid, cdf->varid, NC_CHUNKED,chunk);
+  error(rc);
   if(config->compress)
   {
     rc=nc_def_var_deflate(cdf->ncid, cdf->varid, 0, 1, config->compress);

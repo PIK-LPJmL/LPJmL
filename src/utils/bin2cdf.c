@@ -83,7 +83,7 @@ static Cdf *create_cdf(const char *filename,
   short miss_short=MISSING_VALUE_SHORT;
   double *year;
   int i,rc,dim[4],dim2[2],dimids[2];
-  size_t offset[2],count[2];
+  size_t chunk[4],offset[2],count[2];
   String s;
   time_t t;
   int time_var_id,lat_var_id,lon_var_id,time_dim_id,lat_dim_id,lon_dim_id,map_dim_id,len_dim_id,bnds_var_id,bnds_dim_id;
@@ -150,8 +150,8 @@ static Cdf *create_cdf(const char *filename,
       return NULL;
   }
   cdf->index=array;
-#ifdef USE_NETDF4
-  rc=nc_create(filename,(compress) ? NC_CLOBBER|NC_NETCDF4 : NC_CLOBBER,&cdf->ncid);
+#ifdef USE_NETCDF4
+  rc=nc_create(filename,NC_CLOBBER|NC_NETCDF4,&cdf->ncid);
 #else
   rc=nc_create(filename,NC_CLOBBER,&cdf->ncid);
 #endif
@@ -287,12 +287,18 @@ static Cdf *create_cdf(const char *filename,
     dim[1]=pft_dim_id;
     dim[2]=lat_dim_id;
     dim[3]=lon_dim_id;
+    chunk[0]=chunk[1]=1;
+    chunk[2]=array->nlat;
+    chunk[3]=array->nlon;
   }
   else
   {
     dim[0]=time_dim_id;
     dim[1]=lat_dim_id;
     dim[2]=lon_dim_id;
+    chunk[0]=1;
+    chunk[1]=array->nlat;
+    chunk[2]=array->nlon;
   }
   switch(type)
   {
@@ -305,6 +311,8 @@ static Cdf *create_cdf(const char *filename,
   }
   error(rc);
 #ifdef USE_NETCDF4
+  rc=nc_def_var_chunking(cdf->ncid, cdf->varid, NC_CHUNKED,chunk);
+  error(rc);
   if(compress)
   {
     rc=nc_def_var_deflate(cdf->ncid, cdf->varid, 0, 1,compress);
