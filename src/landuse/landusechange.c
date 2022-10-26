@@ -422,6 +422,8 @@ static void landexpansion(Cell *cell,            /* cell pointer */
           mixstand->type->freestand(mixstand);
           freequeue(mixstand->fires);
           mixstand->type = &urban_stand;
+          mixstand->fires=NULL;
+          mixstand->type->newstand(mixstand);
         break;
           default:
             fail(WRONG_CULTIVATION_TYPE_ERR,TRUE,

@@ -24,10 +24,11 @@
 #include "biomass_tree.h"
 #include "biomass_grass.h"
 #include "woodplantation.h"
+#include "urban.h"
 
 #define PRINTLPJ_VERSION "1.0.020"
 #define NTYPES 3
-#define NSTANDTYPES 12 /* number of stand types */
+#define NSTANDTYPES 13 /* number of stand types */
 
 #define USAGE "Usage: %s [-h] [-inpath dir] [-restartpath dir]\n"\
               "       [[-Dmacro[=value]] [-Idir] ...] [filename [-check] [start [end]]]\n"
@@ -192,6 +193,7 @@ int main(int argc,char **argv)
   standtype[AGRICULTURE_TREE]=&agriculture_tree_stand;
   standtype[AGRICULTURE_GRASS]=&agriculture_grass_stand;
   standtype[WOODPLANTATION]=&woodplantation_stand,
+  standtype[URBAN]=&urban_stand,
   standtype[KILL]=&kill_stand;
 
   progname=strippath(argv[0]);
