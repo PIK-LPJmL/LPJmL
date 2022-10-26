@@ -4,7 +4,7 @@ bin2cdf \- convert binary output files into NetCDF files
 .SH SYNOPSIS
 .B bin2cdf
 [\-clm] [\-floatgrid] [\-cellsize size] [\-compress level] [\-descr d] [[\-attr name=value] ...] [\-units u] [-global] [-swap] [\-short] [\-nbands n] [\-nstep n] [\-ispft] [\-firstyear y] [\-metafile] [\-map name]
-.I varname gridfile binfile netcdffile
+.I [varname gridfile] binfile netcdffile
 .SH DESCRIPTION
 Program converts binary output files into NetCDF file.
 .SH OPTIONS
@@ -58,10 +58,10 @@ set the innput format to JSON metafile instead of CLM
 name of map in JSON metafile, default is "band_names"
 .TP
 varname
-variable name in NetCDF file
+variable name in NetCDF file. If not specified variable name is read from metafile
 .TP
 .I gridfile    
-filename of grid data file
+filename of grid data file. If not specified filename is read from metafile
 .TP
 .I binfile
 filename of binary data file or JSON metafile

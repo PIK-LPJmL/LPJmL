@@ -26,6 +26,7 @@ void fprintjson(FILE *file,           /**< pointer to text file */
                 const char *map_name, /**< Name of string array or NULL */
                 const Attr *attrs,    /**< array of attributes */
                 int n_attr,           /**< size of array of attributes */
+                const char *variable, /**< name of variable of NULL */
                 const char *unit,     /**< unit of variable or NULL */
                 const char *descr,    /**< description of variable or NULL */
                 const char *gridfile, /**< filename of grid file or NULL */
@@ -52,6 +53,8 @@ void fprintjson(FILE *file,           /**< pointer to text file */
     }
     fprintf(file,"},\n");
   }
+  if(variable!=NULL)
+    fprintf(file,"  \"variable\" : \"%s\",\n",variable);
   fprintf(file,"  \"firstcell\" : %d,\n",header->firstcell);
   fprintf(file,"  \"ncell\" : %d,\n",header->ncell);
   fprintf(file,"  \"cellsize_lon\" : %f,\n",header->cellsize_lon);

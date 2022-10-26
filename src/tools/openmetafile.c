@@ -88,8 +88,10 @@ char *parse_json_metafile(LPJfile *lpjfile,   /**< pointer to JSON file */
                           const char *map_name, /**< name of map or NULL */
                           Attr **attrs,       /**< pointer to array of attributes */
                           int *n_attr,        /**< size of array attribute */
+                          String variable,    /**< name of variable or NULL */
                           String unit,        /**< unit of variable or NULL */
                           String descr,       /**< description of variable or NULL */
+                          String gridfile,    /**< name of grid file or NULL */
                           size_t *offset,     /**< offset in binary file */
                           Bool *swap,         /**< byte order has to be changed (TRUE/FALSE) */
                           Verbosity verbosity /**< verbosity level */
@@ -128,6 +130,34 @@ char *parse_json_metafile(LPJfile *lpjfile,   /**< pointer to JSON file */
      *attrs=NULL;
      *n_attr=0;
     }
+  }
+  if(variable!=NULL)
+  {
+    if(iskeydefined(lpjfile,"variable"))
+    {
+      if(fscanstring(lpjfile,variable,"variable",FALSE,verbosity))
+      {
+        closeconfig(lpjfile);
+        lpjfile->file.file=file;
+        return NULL;
+      }
+    }
+    else
+      variable[0]='\0';
+  }
+  if(gridfile!=NULL)
+  {
+    if(iskeydefined(lpjfile,"gridfile"))
+    {
+      if(fscanstring(lpjfile,gridfile,"gridfile",FALSE,verbosity))
+      {
+        closeconfig(lpjfile);
+        lpjfile->file.file=file;
+        return NULL;
+      }
+    }
+    else
+      gridfile[0]='\0';
   }
   if(unit!=NULL)
   {
@@ -325,8 +355,10 @@ FILE *openmetafile(Header *header,       /**< pointer to file header */
                    const char *map_name, /**< name of map or NULL */
                    Attr **attrs,         /**< pointer to array of attributes */
                    int *n_attr,          /**< size of array attribute */
+                   String variable,      /**< name of variable or NULL */
                    String unit,          /**< unit of variable or NULL */
                    String descr,         /**< description of variable or NULL */
+                   String gridfile,      /**< name of grid file or NULL */
                    Bool *swap,           /**< byte order has to be changed (TRUE/FALSE) */
                    size_t *offset,       /**< offset in binary file */
                    const char *filename, /**< file name */
@@ -361,7 +393,7 @@ FILE *openmetafile(Header *header,       /**< pointer to file header */
     if(key[0]=='{')
     {
 #ifdef USE_JSON
-      name=parse_json_metafile(&file,key,header,map,map_name,attrs,n_attr,unit,descr,offset,swap,isout ? ERR : NO_ERR);
+      name=parse_json_metafile(&file,key,header,map,map_name,attrs,n_attr,variable,unit,descr,gridfile,offset,swap,isout ? ERR : NO_ERR);
       break;
 #else
       if(isout)

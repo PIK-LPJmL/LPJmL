@@ -55,7 +55,7 @@ static void printclm(const char *filename,int output,int nbands,int version,
     header.timestep=1;
     header.datatype=type;
     header.order=CELLYEAR;
-    file=openmetafile(&header,&map,map_name,&attrs,&n_attr,unit,descr,&swap,&offset,filename,TRUE);
+    file=openmetafile(&header,&map,map_name,&attrs,&n_attr,NULL,unit,descr,NULL,&swap,&offset,filename,TRUE);
     if(file==NULL)
       return;
     if(fseek(file,offset,SEEK_CUR))
@@ -93,7 +93,7 @@ static void printclm(const char *filename,int output,int nbands,int version,
   }
   if(isjon)
   {
-    fprintjson(stdout,filename,NULL,&header,map,map_name,attrs,n_attr,unit,descr,NULL,CLM,id,swap,version);
+    fprintjson(stdout,filename,NULL,&header,map,map_name,attrs,n_attr,NULL,unit,descr,NULL,CLM,id,swap,version);
     return;
   }
   freemap(map);

@@ -164,7 +164,7 @@ int main(int argc,char **argv)
   }
   else if(ismeta)
   {
-    file=openmetafile(&header,&map,map_name,&attrs,&n_attr,units,descr,&swap,&offset,argv[iarg],TRUE);
+    file=openmetafile(&header,&map,map_name,&attrs,&n_attr,NULL,units,descr,NULL,&swap,&offset,argv[iarg],TRUE);
     if(file==NULL)
       return EXIT_FAILURE;
     if(header.order!=CELLSEQ)
@@ -254,7 +254,7 @@ int main(int argc,char **argv)
       printfcreateerr(out_json);
       return EXIT_FAILURE;
     }
-    fprintjson(file,argv[iarg+1],arglist,&header,map,map_name,attrs,n_attr,strlen(units)>0 ? units : NULL,strlen(descr)>0 ? descr : NULL,argv[iarg],RAW,LPJOUTPUT_HEADER,FALSE,LPJOUTPUT_VERSION);
+    fprintjson(file,argv[iarg+1],arglist,&header,map,map_name,attrs,n_attr,NULL,strlen(units)>0 ? units : NULL,strlen(descr)>0 ? descr : NULL,argv[iarg],RAW,LPJOUTPUT_HEADER,FALSE,LPJOUTPUT_VERSION);
     fclose(file);
   }
   return EXIT_SUCCESS;

@@ -21,7 +21,7 @@
 #define error(rc) if(rc) {free(lon);free(lat);free(year);fprintf(stderr,"ERROR427: Cannot write '%s': %s.\n",filename,nc_strerror(rc)); nc_close(cdf->ncid); free(cdf);return NULL;}
 
 #define MISSING_VALUE -9999.99
-#define USAGE "Usage: %s [-clm] [-floatgrid] [-doublegrid] [-firstyear y] [-baseyear y] [-nbands n] [-nstep n] [-cellsize size] [-swap]\n       [[-attr name=value]..] [-global] [-short] [-compress level] [-units u] [-descr d] [-metafile] [-map name] varname gridfile\n       binfile netcdffile\n"
+#define USAGE "Usage: %s [-clm] [-floatgrid] [-doublegrid] [-firstyear y] [-baseyear y] [-nbands n] [-nstep n] [-cellsize size] [-swap]\n       [[-attr name=value]..] [-global] [-short] [-compress level] [-units u] [-descr d] [-metafile] [-map name] [varname gridfile]\n       binfile netcdffile\n"
 
 typedef struct
 {
@@ -507,7 +507,7 @@ static void close_cdf(Cdf *cdf)
 int main(int argc,char **argv)
 {
 #if defined(USE_NETCDF) || defined(USE_NETCDF4)
-  FILE *file;
+  FILE *file,*gridfile;
   Intcoord intcoord;
   Coord_array *index;
   Coord *grid,res;
@@ -520,7 +520,7 @@ int main(int argc,char **argv)
   Type gridtype;
   float cellsize,fcoord[2];
   double dcoord[2];
-  char *units,*descr,*endptr,*cmdline,*pos;
+  char *units,*descr,*endptr,*cmdline,*pos,*outname;
   Filename coord_filename;
   float cellsize_lon,cellsize_lat;
   Coordfile coordfile;
@@ -528,10 +528,13 @@ int main(int argc,char **argv)
   Attr *global_attrs=NULL;
   Attr *global_attrs2=NULL;
   size_t offset;
-  char *map_name;
-  String var_units,var_descr;
+  char *map_name,*filename;
+  String var_units,var_descr,var_name,grid_name; 
+  char *variable,*grid_filename,*path;
   var_units[0]='\0';
   var_descr[0]='\0';
+  var_name[0]='\0';
+  grid_name[0]='\0';
   units=descr=NULL;
   compress=0;
   swap=isglobal=FALSE;
@@ -734,15 +737,68 @@ int main(int argc,char **argv)
     }
     else
       break;
-  if(argc<iarg+4)
+  if(ismeta && argc==iarg+2)
+  {
+    filename=argv[iarg];
+    outname=argv[iarg+1];
+  }
+  else if(argc<iarg+4)
   {
     fprintf(stderr,"Error: Missing argument(s).\n"
             USAGE,argv[0]);
     return EXIT_FAILURE;
   }
+  else
+  {
+    filename=argv[iarg+2];
+    outname=argv[iarg+3];
+  }
+  if(ismeta)
+  {
+    file=openmetafile(&header,&map,map_name,&global_attrs2,&n_global2,var_name,var_units,var_descr,grid_name,&swap,&offset,filename,TRUE);
+    if(file==NULL)
+      return EXIT_FAILURE;
+    if(units==NULL && strlen(var_units)>0)
+      units=var_units;
+    if(descr==NULL && strlen(var_descr)>0)
+      descr=var_descr;
+    if(global_attrs2!=NULL)
+    {
+      mergeattrs(&global_attrs,&n_global,global_attrs2,n_global2);
+      freeattrs(global_attrs2,n_global2);
+    }
+  } 
+  if(argc!=iarg+2)
+  {
+    variable=argv[iarg];
+    grid_filename=argv[iarg+1];
+  }
+  else
+  {
+    if(strlen(var_name)==0)
+    {
+      fprintf(stderr,"Error: variable name must be specified in '%s' metafile.\n",filename);
+      return EXIT_FAILURE;
+    }
+    if(strlen(grid_name)==0)
+    {
+      fprintf(stderr,"Error: grid filename must be specified in '%s' metafile.\n",filename);
+      return EXIT_FAILURE;
+    }
+    variable=var_name;
+    grid_filename=grid_name;
+    path=getpath(filename);
+    grid_filename=addpath(grid_name,path);
+    if(grid_filename==NULL)
+    {
+     printallocerr("name");
+      return EXIT_FAILURE;
+    }
+    free(path);
+  }
   if(isclm)
   {
-    coord_filename.name=argv[iarg+1];
+    coord_filename.name=grid_filename;
     coord_filename.fmt=CLM;
     coordfile=opencoord(&coord_filename,TRUE);
     if(coordfile==NULL)
@@ -756,7 +812,7 @@ int main(int argc,char **argv)
     ngrid=numcoord(coordfile);
     if(ngrid==0)
     {
-      fprintf(stderr,"Number of cells is zero in '%s'.\n",argv[iarg+1]);
+      fprintf(stderr,"Number of cells is zero in '%s'.\n",grid_filename);
       return EXIT_FAILURE;
     }
     getcellsizecoord(&cellsize_lon,&cellsize_lat,coordfile);
@@ -768,34 +824,34 @@ int main(int argc,char **argv)
   }
   else
   {
-    file=fopen(argv[iarg+1],"rb");
-    if(file==NULL)
+    gridfile=fopen(grid_filename,"rb");
+    if(gridfile==NULL)
     {
-      fprintf(stderr,"Error opening grid file '%s': %s.\n",argv[iarg+1],
+      fprintf(stderr,"Error opening grid file '%s': %s.\n",grid_filename,
               strerror(errno));
       return EXIT_FAILURE;
     }
     switch(gridtype)
     {
       case LPJ_SHORT:
-        ngrid=getfilesizep(file)/sizeof(short)/2;
-        if(getfilesizep(file) % (sizeof(short)/2))
-          fprintf(stderr,"Size of grid file '%s' is non multiple of coord size.\n",argv[iarg+1]);
+        ngrid=getfilesizep(gridfile)/sizeof(short)/2;
+        if(getfilesizep(gridfile) % (sizeof(short)/2))
+          fprintf(stderr,"Size of grid file '%s' is non multiple of coord size.\n",grid_filename);
         break;
       case LPJ_FLOAT:
-        ngrid=getfilesizep(file)/sizeof(float)/2;
-        if(getfilesizep(file) % (sizeof(float)/2))
-          fprintf(stderr,"Size of grid file '%s' is non multiple of coord size.\n",argv[iarg+1]);
+        ngrid=getfilesizep(gridfile)/sizeof(float)/2;
+        if(getfilesizep(gridfile) % (sizeof(float)/2))
+          fprintf(stderr,"Size of grid file '%s' is non multiple of coord size.\n",grid_filename);
         break;
       case LPJ_DOUBLE:
-        ngrid=getfilesizep(file)/sizeof(double)/2;
-        if(getfilesizep(file) % (sizeof(double)/2))
-          fprintf(stderr,"Size of grid file '%s' is non multiple of coord size.\n",argv[iarg+1]);
+        ngrid=getfilesizep(gridfile)/sizeof(double)/2;
+        if(getfilesizep(gridfile) % (sizeof(double)/2))
+          fprintf(stderr,"Size of grid file '%s' is non multiple of coord size.\n",grid_filename);
         break;
     }
     if(ngrid==0)
     {
-       fprintf(stderr,"Error: Number of grid cells in '%s' is zero.\n",argv[iarg+1]);
+       fprintf(stderr,"Error: Number of grid cells in '%s' is zero.\n",grid_filename);
        return EXIT_FAILURE;
     }
     grid=newvec(Coord,ngrid);
@@ -809,7 +865,7 @@ int main(int argc,char **argv)
       case LPJ_FLOAT:
         for(i=0;i<ngrid;i++)
         {
-          freadfloat(fcoord,2,swap,file);
+          freadfloat(fcoord,2,swap,gridfile);
           grid[i].lon=fcoord[0];
           grid[i].lat=fcoord[1];
         }
@@ -817,7 +873,7 @@ int main(int argc,char **argv)
       case LPJ_DOUBLE:
         for(i=0;i<ngrid;i++)
         {
-          freaddouble(dcoord,2,swap,file);
+          freaddouble(dcoord,2,swap,gridfile);
           grid[i].lon=dcoord[0];
           grid[i].lat=dcoord[1];
         }
@@ -825,45 +881,32 @@ int main(int argc,char **argv)
       case LPJ_SHORT:
         for(i=0;i<ngrid;i++)
         {
-          readintcoord(file,&intcoord,swap);
+          readintcoord(gridfile,&intcoord,swap);
           grid[i].lat=intcoord.lat*0.01;
           grid[i].lon=intcoord.lon*0.01;
         }
         break;
     }
-    fclose(file);
+    fclose(gridfile);
   }
   if(ismeta)
   {
-    header.ncell=ngrid;
-    file=openmetafile(&header,&map,map_name,&global_attrs2,&n_global2,var_units,var_descr,&swap,&offset,argv[iarg+2],TRUE);
-    if(file==NULL)
-      return EXIT_FAILURE;
-    if(units==NULL && strlen(var_units)>0)
-      units=var_units;
-    if(descr==NULL && strlen(var_descr)>0)
-      descr=var_descr;
-    if(global_attrs2!=NULL)
-    {
-      mergeattrs(&global_attrs,&n_global,global_attrs2,n_global2);
-      freeattrs(global_attrs2,n_global2);
-    }
     if(fseek(file,offset,SEEK_CUR))
     {
-      fprintf(stderr,"Error seeking in '%s' to offset %lu.\n",argv[iarg+2],offset);
+      fprintf(stderr,"Error seeking in '%s' to offset %lu.\n",filename,offset);
       fclose(file);
       return EXIT_FAILURE;
     }
     if(header.ncell!=ngrid)
     {
-      fprintf(stderr,"Number of cells=%d in '%s' does not match %d in grid file.\n",header.ncell,argv[iarg+2],ngrid);
+      fprintf(stderr,"Number of cells=%d in '%s' does not match %d in grid file '%s'.\n",header.ncell,filename,ngrid,grid_filename);
       return EXIT_FAILURE;
     }
     if(header.nbands>1)
       ispft=TRUE;
     if(header.order!=CELLSEQ)
     {
-      fprintf(stderr,"Error: Order in '%s' must be cellseq, order ",argv[iarg+2]);
+      fprintf(stderr,"Error: Order in '%s' must be cellseq, order ",filename);
       if(header.order>0 || header.order<=CELLSEQ)
         fprintf(stderr,"%s",ordernames[header.order-1]);
       else
@@ -874,77 +917,77 @@ int main(int argc,char **argv)
   }
   else
   {
-  file=fopen(argv[iarg+2],"rb");
-  if(file==NULL)
-  {
-    fprintf(stderr,"Error opening '%s': %s.\n",argv[iarg+2],strerror(errno));
-    return EXIT_FAILURE;
-  }
-  if(isclm)
-  {
-    version=READ_VERSION;
-    if(freadheader(file,&header,&swap,LPJOUTPUT_HEADER,&version,TRUE))
+    file=fopen(argv[iarg+2],"rb");
+    if(file==NULL)
     {
       fprintf(stderr,"Error opening '%s': %s.\n",argv[iarg+2],strerror(errno));
       return EXIT_FAILURE;
     }
-    if(header.ncell!=ngrid)
+    if(isclm)
     {
-      fprintf(stderr,"Number of cells=%d in '%s' does not match %d in grid file.\n",header.ncell,argv[iarg+2],ngrid);
-      return EXIT_FAILURE;
-    }
-    if(version<4)
-    {
-      if(!ispft)
+      version=READ_VERSION;
+      if(freadheader(file,&header,&swap,LPJOUTPUT_HEADER,&version,TRUE))
       {
-        header.nstep=header.nbands;
-        header.nbands=1;
+        fprintf(stderr,"Error opening '%s': %s.\n",argv[iarg+2],strerror(errno));
+        return EXIT_FAILURE;
       }
-    }
-    if(version>=3)
-      isshort=header.datatype==LPJ_SHORT;
-    if(header.nbands>1)
-      ispft=TRUE;
-    if(version>CLM_MAX_VERSION)
-    {
-      fprintf(stderr,"Error: Unsupported version %d in '%s', must be less than %d.\n",
-              version,argv[iarg+2],CLM_MAX_VERSION+1);
-      return EXIT_FAILURE;
-    }
-    if(header.cellsize_lat!=res.lat || header.cellsize_lon!=res.lon)
-    {
-      fprintf(stderr,"Resolution (%g,%g) in '%s' does not match (%g,%g) in grid file.\n",
-              header.cellsize_lon,header.cellsize_lat,argv[iarg+2],res.lon,res.lat);
-      return EXIT_FAILURE;
-    }
-    if(header.order!=CELLSEQ)
-    {
-      fprintf(stderr,"Error: Order in '%s' must be cellseq, order ",argv[iarg+2]);
-      if(header.order>0 || header.order<=CELLSEQ)
-        fprintf(stderr,"%s",ordernames[header.order-1]);
-      else
-        fprintf(stderr,"%d",header.order);
-      fprintf(stderr," is not supported.\n.");
-      return EXIT_FAILURE;
-    }
-  }
-  else
-  {
-    if(header.nbands>1)
-      ispft=TRUE;
-    if(isshort)
-    {
-      header.nyear=getfilesizep(file)/sizeof(short)/ngrid/header.nbands/header.nstep;
-      if(getfilesizep(file) % (sizeof(short)*ngrid*header.nbands*header.nstep))
-        fprintf(stderr,"Warning: file size of '%s' is not multiple of bands %d, steps %d and number of cells %d.\n",argv[iarg+2],header.nbands,header.nstep,ngrid);
+      if(header.ncell!=ngrid)
+      {
+        fprintf(stderr,"Number of cells=%d in '%s' does not match %d in grid file.\n",header.ncell,argv[iarg+2],ngrid);
+        return EXIT_FAILURE;
+      }
+      if(version<4)
+      {
+        if(!ispft)
+        {
+          header.nstep=header.nbands;
+          header.nbands=1;
+        }
+      }
+      if(version>=3)
+        isshort=header.datatype==LPJ_SHORT;
+      if(header.nbands>1)
+        ispft=TRUE;
+      if(version>CLM_MAX_VERSION)
+      {
+        fprintf(stderr,"Error: Unsupported version %d in '%s', must be less than %d.\n",
+                version,argv[iarg+2],CLM_MAX_VERSION+1);
+        return EXIT_FAILURE;
+      }
+      if(header.cellsize_lat!=res.lat || header.cellsize_lon!=res.lon)
+      {
+        fprintf(stderr,"Resolution (%g,%g) in '%s' does not match (%g,%g) in grid file.\n",
+                header.cellsize_lon,header.cellsize_lat,argv[iarg+2],res.lon,res.lat);
+        return EXIT_FAILURE;
+      }
+      if(header.order!=CELLSEQ)
+      {
+        fprintf(stderr,"Error: Order in '%s' must be cellseq, order ",argv[iarg+2]);
+        if(header.order>0 || header.order<=CELLSEQ)
+          fprintf(stderr,"%s",ordernames[header.order-1]);
+        else
+          fprintf(stderr,"%d",header.order);
+        fprintf(stderr," is not supported.\n.");
+        return EXIT_FAILURE;
+      }
     }
     else
     {
-      header.nyear=getfilesizep(file)/sizeof(float)/ngrid/header.nbands/header.nstep;
-      if(getfilesizep(file) % (sizeof(float)*ngrid*header.nbands*header.nstep))
-        fprintf(stderr,"Warning: file size of '%s' is not multiple of bands %d, steps %d  and number of cells %d.\n",argv[iarg+2],header.nbands,header.nstep,ngrid);
+      if(header.nbands>1)
+        ispft=TRUE;
+      if(isshort)
+      {
+        header.nyear=getfilesizep(file)/sizeof(short)/ngrid/header.nbands/header.nstep;
+        if(getfilesizep(file) % (sizeof(short)*ngrid*header.nbands*header.nstep))
+          fprintf(stderr,"Warning: file size of '%s' is not multiple of bands %d, steps %d and number of cells %d.\n",argv[iarg+2],header.nbands,header.nstep,ngrid);
+      }
+      else
+      {
+        header.nyear=getfilesizep(file)/sizeof(float)/ngrid/header.nbands/header.nstep;
+        if(getfilesizep(file) % (sizeof(float)*ngrid*header.nbands*header.nstep))
+          fprintf(stderr,"Warning: file size of '%s' is not multiple of bands %d, steps %d  and number of cells %d.\n",argv[iarg+2],header.nbands,header.nstep,ngrid);
+      }
     }
-  }
   }
   if(!isbaseyear)
      baseyear=header.firstyear;
@@ -953,7 +996,7 @@ int main(int argc,char **argv)
     return EXIT_FAILURE;
   free(grid);
   cmdline=catstrvec(argv,argc);
-  cdf=create_cdf(argv[iarg+3],map,map_name,cmdline,argv[iarg],units,descr,global_attrs,n_global,(isshort) ? LPJ_SHORT : LPJ_FLOAT,header,baseyear,ispft,compress,index);
+  cdf=create_cdf(outname,map,map_name,cmdline,variable,units,descr,global_attrs,n_global,(isshort) ? LPJ_SHORT : LPJ_FLOAT,header,baseyear,ispft,compress,index);
   free(cmdline);
   if(cdf==NULL)
     return EXIT_FAILURE;

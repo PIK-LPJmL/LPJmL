@@ -27,7 +27,9 @@ char *getattr_netcdf(const Climatefile *file, /**< climate data file */
 #if defined(USE_NETCDF) || defined(USE_NETCDF4)
   char *s;
   size_t len;
-  if(!nc_inq_attlen(file->ncid, file->varid, attr, &len))
+  if(nc_inq_attlen(file->ncid, file->varid, attr, &len))
+    s=NULL;
+  else
   {
     s=malloc(len+1);
     if(s==NULL)
@@ -38,8 +40,6 @@ char *getattr_netcdf(const Climatefile *file, /**< climate data file */
     nc_get_att_text(file->ncid, file->varid, attr,s);
     s[len]='\0';
   }
-  else 
-    s=NULL;
   return s;
 #else
   fputs("ERROR401: NetCDF input is not supported by this version of LPJmL.\n",stderr);
