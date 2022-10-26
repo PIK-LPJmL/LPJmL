@@ -31,6 +31,9 @@
   "sim_name" : "LPJmL Run", /* Simulation description */
   "sim_id"   : "lpjml",     /* LPJML Simulation type with managed land use */
   "version"  : "5.3",       /* LPJmL version expected */
+  "global_attrs" : {"institution" : "Potsdam Institute for Climate Impact Research",
+                    "contact" : "",
+                    "comment" : ""},
   "random_prec" : true,     /* Random weather generator for precipitation enabled */
   "random_seed" : 2,        /* seed for random number generator */
   "radiation" : "radiation",/* other options: "cloudiness", "radiation", "radiation_swonly", "radiation_lwdown" */
@@ -130,8 +133,9 @@
 #define SUFFIX pft.bin
 #endif
 
-  "output_metafile" : false, /* no json metafile created */
+  "output_metafile" : true, /* no json metafile created */
   "float_grid" : false,      /* set datatype of grid file to float (TRUE/FALSE) */
+  "absyear" : false,         /* years relative to baseyear */
 
 #define mkstr(s) xstr(s) /* putting string in quotation marks */
 #define xstr(s) #s
@@ -274,6 +278,7 @@ ID                               Fmt                        filename
   "firstyear": 1901, /* first year of simulation */
   "lastyear" : 2011, /* last year of simulation */
   "outputyear": 1901, /* first year output is written  */
+  "baseyear": 1901, /* base year for output  */
   "restart" :  true, /* start from restart file */
   "restart_filename" : "restart/restart_1840_nv_stdfire.lpj", /* filename of restart file */
   "write_restart" : true, /* create restart file */

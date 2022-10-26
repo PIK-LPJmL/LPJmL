@@ -3,8 +3,8 @@
 bin2cdf \- convert binary output files into NetCDF files
 .SH SYNOPSIS
 .B bin2cdf
-[\-clm] [\-floatgrid] [\-cellsize size] [\-compress level] [\-descr d] [\-units u] [-global] {-swap] [\-short] [\-nbands n} [\nstep n] [\-ispft] [\-firstyear y] [\-metafile] [\-map name]
-.I varname gridfile binfile netcdffile
+[\-clm] [\-floatgrid] [\-cellsize size] [\-compress level] [\-descr d] [[\-attr name=value] ...] [\-units u] [-global] [-swap] [\-short] [\-nbands n] [\-nstep n] [\-ispft] [\-firstyear y] [\-metafile] [\-map name]
+.I [varname gridfile] binfile netcdffile
 .SH DESCRIPTION
 Program converts binary output files into NetCDF file.
 .SH OPTIONS
@@ -23,6 +23,9 @@ compression level for NetCDF4 files
 .TP
 \-descr d
 set long name in NetCDF file
+.TP
+\-attr name=value
+set global attribute name in NETCDF file to value
 .TP
 \-units u
 set units in NetCDF file
@@ -49,19 +52,19 @@ output is PFT specific.
 set first year in NetCDF file. Default is 1901.
 .TP
 \-metafile
-set the innput format to metafile instead of CLM
+set the innput format to JSON metafile instead of CLM
 .TP
 \-map name
 name of map in JSON metafile, default is "band_names"
 .TP
 varname
-variable name in NetCDF file
+variable name in NetCDF file. If not specified variable name is read from metafile
 .TP
 .I gridfile    
-filename of grid data file
+filename of grid data file. If not specified filename is read from metafile
 .TP
 .I binfile
-filename of binary data file
+filename of binary data file or JSON metafile
 .TP
 .I netcdffile     
 filename of NetCDF file created
@@ -73,7 +76,7 @@ Create data file for vegetation carbon:
 .TP
 Convert monthly data:
 .B bin2cdf
--units gC/m2/month -descr "Net primary production" -nitem 12 npp output/grid.bin output/mnpp.bin mnpp.nc
+-units gC/m2/month -descr "Net primary production" -nstep 12 npp output/grid.bin output/mnpp.bin mnpp.nc
 .PP
 .SH EXIT STATUS
 .B bin2cdf

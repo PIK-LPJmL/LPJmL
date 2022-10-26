@@ -44,7 +44,7 @@ Bool openinputdata(Infile *file,             /**< pointer to file */
   else
   {
     if((file->file=openinputfile(&header,&file->swap,
-                                 filename,headername,
+                                 filename,headername,unit,
                                  &version,&offset,FALSE,config))==NULL)
     {
       if(isroot(*config))

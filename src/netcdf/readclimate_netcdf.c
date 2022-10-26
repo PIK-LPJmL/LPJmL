@@ -80,10 +80,10 @@ static Bool openfile(Climatefile *file,int year,const Config *config)
   MPI_Bcast(&file->nlon,sizeof(size_t),MPI_BYTE,0,config->comm);
   MPI_Bcast(&file->nlat,sizeof(size_t),MPI_BYTE,0,config->comm);
   MPI_Bcast(&file->is360,1,MPI_INT,0,config->comm);
-  MPI_Bcast(&file->lon_min,1,MPI_FLOAT,0,config->comm);
-  MPI_Bcast(&file->lat_min,1,MPI_FLOAT,0,config->comm);
-  MPI_Bcast(&file->lon_res,1,MPI_FLOAT,0,config->comm);
-  MPI_Bcast(&file->lat_res,1,MPI_FLOAT,0,config->comm);
+  MPI_Bcast(&file->lon_min,1,MPI_DOUBLE,0,config->comm);
+  MPI_Bcast(&file->lat_min,1,MPI_DOUBLE,0,config->comm);
+  MPI_Bcast(&file->lon_res,1,MPI_DOUBLE,0,config->comm);
+  MPI_Bcast(&file->lat_res,1,MPI_DOUBLE,0,config->comm);
   MPI_Bcast(&file->slope,1,MPI_DOUBLE,0,config->comm);
   MPI_Bcast(&file->intercept,1,MPI_DOUBLE,0,config->comm);
   MPI_Bcast(&file->offset,sizeof(size_t),MPI_BYTE,0,config->comm);

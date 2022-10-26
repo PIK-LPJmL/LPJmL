@@ -43,6 +43,7 @@ void freeconfig(Config *config /**< LPJmL configuration */
   free(config->layer_index);
   free(config->fuel_index);
   free(config->json_suffix);
+  freeattrs(config->global_attrs,config->n_global);
   if(config->river_routing)
   {
     freefilename(&config->drainage_filename);

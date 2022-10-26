@@ -187,6 +187,8 @@ int main(int argc,char **argv)
   header.firstyear=0;
   header.order=0;
   header.nyear=1;
+  header.nstep=1;
+  header.timestep=1;
   header.nbands=2;
   header.scalar=(isshort) ? 0.01 : 1;
   for(i=0;i<header.ncell;i++)

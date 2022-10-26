@@ -49,28 +49,34 @@
 
 const char *ordernames[]={"cellyear","yearcell","cellindex","cellseq"};
 
-void fprintmap(FILE *file,List *map)
+void fprintmap(FILE *file,Map *map)
 {
   int i;
   fputc('[',file);
-  foreachlistitem(i,map)
+  foreachlistitem(i,map->list)
   {
-    if(getlistitem(map,i)==NULL)
+    if(getmapitem(map,i)==NULL)
       fputs("null",file);
+    else if(map->isfloat)
+      fprintf(file,"%g",*((double *)getmapitem(map,i)));
     else
-      fprintf(file,"\"%s\"",(char *)getlistitem(map,i));
-    if(i<getlistlen(map)-1)
+      fprintf(file,"\"%s\"",(char *)getmapitem(map,i));
+    if(i<getmapsize(map)-1)
       fputc(',',file);
   }
   fputc(']',file);
 } /* of 'fprintmap' */
 
-void freemap(List *map)
+void freemap(Map *map)
 {
   int i;
-  foreachlistitem(i,map)
-    free(getlistitem(map,i));
-  freelist(map);
+  if(map!=NULL)
+  {
+    foreachlistitem(i,map->list)
+      free(getmapitem(map,i));
+    freelist(map->list);
+  }
+  free(map);
 } /* of 'freemap' */
 
 #ifdef USE_JSON
@@ -78,8 +84,14 @@ void freemap(List *map)
 char *parse_json_metafile(LPJfile *lpjfile,   /**< pointer to JSON file */
                           char *s,            /**< first string of JSON file */
                           Header *header,     /**< pointer to file header */
-                          List **map,         /**< map from json file or NULL */
+                          Map **map,         /**< map from json file or NULL */
                           const char *map_name, /**< name of map or NULL */
+                          Attr **attrs,       /**< pointer to array of attributes */
+                          int *n_attr,        /**< size of array attribute */
+                          String variable,    /**< name of variable or NULL */
+                          String unit,        /**< unit of variable or NULL */
+                          String descr,       /**< description of variable or NULL */
+                          String gridfile,    /**< name of grid file or NULL */
                           size_t *offset,     /**< offset in binary file */
                           Bool *swap,         /**< byte order has to be changed (TRUE/FALSE) */
                           Verbosity verbosity /**< verbosity level */
@@ -98,9 +110,82 @@ char *parse_json_metafile(LPJfile *lpjfile,   /**< pointer to JSON file */
   if(map!=NULL)
   {
     if(iskeydefined(lpjfile,(map_name==NULL) ? MAP_NAME : map_name))
-      *map=fscanstringarray(lpjfile,(map_name==NULL) ? MAP_NAME : map_name,verbosity);
+      *map=fscanmap(lpjfile,(map_name==NULL) ? MAP_NAME : map_name,verbosity);
     else
       *map=NULL;
+  }
+  if(attrs!=NULL)
+  {
+    if(iskeydefined(lpjfile,"global_attrs"))
+    {
+      if(fscanattrs(lpjfile,attrs,n_attr,"global_attrs",verbosity))
+      {
+        closeconfig(lpjfile);
+        lpjfile->file.file=file;
+        return NULL;
+      }
+    }
+    else
+    {
+     *attrs=NULL;
+     *n_attr=0;
+    }
+  }
+  if(variable!=NULL)
+  {
+    if(iskeydefined(lpjfile,"variable"))
+    {
+      if(fscanstring(lpjfile,variable,"variable",FALSE,verbosity))
+      {
+        closeconfig(lpjfile);
+        lpjfile->file.file=file;
+        return NULL;
+      }
+    }
+    else
+      variable[0]='\0';
+  }
+  if(gridfile!=NULL)
+  {
+    if(iskeydefined(lpjfile,"gridfile"))
+    {
+      if(fscanstring(lpjfile,gridfile,"gridfile",FALSE,verbosity))
+      {
+        closeconfig(lpjfile);
+        lpjfile->file.file=file;
+        return NULL;
+      }
+    }
+    else
+      gridfile[0]='\0';
+  }
+  if(unit!=NULL)
+  {
+    if(iskeydefined(lpjfile,"unit"))
+    {
+      if(fscanstring(lpjfile,unit,"unit",FALSE,verbosity))
+      {
+        closeconfig(lpjfile);
+        lpjfile->file.file=file;
+        return NULL;
+      }
+    }
+    else
+      unit[0]='\0';
+  }
+  if(descr!=NULL)
+  {
+    if(iskeydefined(lpjfile,"descr"))
+    {
+      if(fscanstring(lpjfile,descr,"descr",FALSE,verbosity))
+      {
+        closeconfig(lpjfile);
+        lpjfile->file.file=file;
+        return NULL;
+      }
+    }
+    else
+      descr[0]='\0';
   }
   if(header!=NULL)
   {
@@ -266,8 +351,14 @@ char *parse_json_metafile(LPJfile *lpjfile,   /**< pointer to JSON file */
 #endif
 
 FILE *openmetafile(Header *header,       /**< pointer to file header */
-                   List **map,           /**< map from json file or NULL */
+                   Map **map,            /**< map from json file or NULL */
                    const char *map_name, /**< name of map or NULL */
+                   Attr **attrs,         /**< pointer to array of attributes */
+                   int *n_attr,          /**< size of array attribute */
+                   String variable,      /**< name of variable or NULL */
+                   String unit,          /**< unit of variable or NULL */
+                   String descr,         /**< description of variable or NULL */
+                   String gridfile,      /**< name of grid file or NULL */
                    Bool *swap,           /**< byte order has to be changed (TRUE/FALSE) */
                    size_t *offset,       /**< offset in binary file */
                    const char *filename, /**< file name */
@@ -294,11 +385,15 @@ FILE *openmetafile(Header *header,       /**< pointer to file header */
   name=NULL;
   if(map!=NULL)
     *map=NULL;
+  if(unit!=NULL)
+    unit[0]='\0';
+  if(descr!=NULL)
+    descr[0]='\0';
   while(!fscantoken(file.file.file,key))
     if(key[0]=='{')
     {
 #ifdef USE_JSON
-      name=parse_json_metafile(&file,key,header,map,map_name,offset,swap,isout ? ERR : NO_ERR);
+      name=parse_json_metafile(&file,key,header,map,map_name,attrs,n_attr,variable,unit,descr,gridfile,offset,swap,isout ? ERR : NO_ERR);
       break;
 #else
       if(isout)
@@ -512,6 +607,28 @@ FILE *openmetafile(Header *header,       /**< pointer to file header */
       {
         if(isout)
           readstringerr("remark");
+        free(name);
+        fclose(file.file.file);
+        return NULL;
+      }
+    }
+    else if(unit!=NULL && !strcmp(key,"unit"))
+    {
+      if(fscanstring(&file,unit,"unit",FALSE,isout ? ERR : NO_ERR))
+      {
+        if(isout)
+          readstringerr("unit");
+        free(name);
+        fclose(file.file.file);
+        return NULL;
+      }
+    }
+    else if(descr!=NULL && !strcmp(key,"descr"))
+    {
+      if(fscanstring(&file,descr,"descr",FALSE,isout ? ERR : NO_ERR))
+      {
+        if(isout)
+          readstringerr("descr");
         free(name);
         fclose(file.file.file);
         return NULL;

@@ -201,7 +201,7 @@ ulimit -c unlimited
 
 export I_MPI_PMI_LIBRARY=/p/system/slurm/lib/libpmi.so
 
-srun --propagate  \$LPJROOT/bin/lpjml $args
+srun \$LPJROOT/bin/lpjml $args
 
 rc=\$?  # save return code of srun
 exit \$rc # exit with return code

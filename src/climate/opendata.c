@@ -44,7 +44,7 @@ Bool opendata(Climatefile *file,        /**< pointer to file */
   else
   {
     if((file->file=openinputfile(&header,&file->swap,
-                                 filename,headername,
+                                 filename,headername,unit,
                                  &version,&offset,TRUE,config))==NULL)
     {
       if(isroot(*config))

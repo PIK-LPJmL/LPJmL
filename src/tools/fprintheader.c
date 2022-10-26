@@ -32,7 +32,7 @@ void fprintheader(FILE *file, /**< pointer to text file */
           "Number of cells:%6d\n"
           "Number of bands:%6d\n"
           "Number of steps:%6d\n"
-          "Time step:%6d\n"
+          "Time step:      %6d\n"
           "cellsize:\t%10.6f %10.6f\n"
           "conversion factor:\t%g\n",
           header->firstyear,header->firstyear+(header->nyear-1)*header->timestep,

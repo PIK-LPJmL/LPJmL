@@ -22,8 +22,14 @@ void fprintjson(FILE *file,           /**< pointer to text file */
                 const char *filename, /**< filename of clm file */
                 const char *arglist,  /**< argument string or NULL */
                 const Header *header, /**< file header */
-                List *map,            /**< pointer to string array or NULL */
+                Map *map,             /**< pointer to map array or NULL */
                 const char *map_name, /**< Name of string array or NULL */
+                const Attr *attrs,    /**< array of attributes */
+                int n_attr,           /**< size of array of attributes */
+                const char *variable, /**< name of variable of NULL */
+                const char *unit,     /**< unit of variable or NULL */
+                const char *descr,    /**< description of variable or NULL */
+                const char *gridfile, /**< filename of grid file or NULL */
                 int format,           /**< file format (RAW/CLM) */
                 const char *id,       /**< Id of clm file */
                 Bool swap,            /**< byte order has to be swapped (TRUE/FALSE) */
@@ -36,6 +42,19 @@ void fprintjson(FILE *file,           /**< pointer to text file */
           "  \"filename\" : \"%s\",\n",strippath(filename));
   if(arglist!=NULL)
     fprintf(file,"  \"source\" : \"%s\",\n",arglist);
+  if(n_attr)
+  {
+    fprintf(file,"  \"global_attrs\" : {");
+    for(i=0;i<n_attr;i++)
+    {
+      fprintf(file,"\"%s\" : \"%s\"",attrs[i].name,attrs[i].value);
+      if(i<n_attr-1)
+        fprintf(file,", ");
+    }
+    fprintf(file,"},\n");
+  }
+  if(variable!=NULL)
+    fprintf(file,"  \"variable\" : \"%s\",\n",variable);
   fprintf(file,"  \"firstcell\" : %d,\n",header->firstcell);
   fprintf(file,"  \"ncell\" : %d,\n",header->ncell);
   fprintf(file,"  \"cellsize_lon\" : %f,\n",header->cellsize_lon);
@@ -51,19 +70,25 @@ void fprintjson(FILE *file,           /**< pointer to text file */
   if(map!=NULL)
   {
     len=fprintf(file,"  \"%s\" : [",map_name);
-    for(i=0;i<getlistlen(map);i++)
+    for(i=0;i<getmapsize(map);i++)
     {
       if(i)
         len+=fprintf(file,",");
       if(len>LINE_LEN)
         len=fprintf(file,"\n    ")-1;
-      if(getlistitem(map,i)==NULL)
+      if(getmapitem(map,i)==NULL)
         len+=fprintf(file,"null");
+      else if(map->isfloat)
+        len+=fprintf(file,"%g",*((double *)getmapitem(map,i)));
       else
-        len+=fprintf(file,"\"%s\"",(char *)getlistitem(map,i));
+        len+=fprintf(file,"\"%s\"",(char *)getmapitem(map,i));
     }
     fputs("],\n",file);
   }
+  if(unit!=NULL)
+    fprintf(file,"  \"unit\" : \"%s\",\n",unit);
+  if(descr!=NULL)
+    fprintf(file,"  \"descr\" : \"%s\",\n",descr);
   if(format>=0 && format<N_FMT)
     fprintf(file,"  \"format\" : \"%s\",\n",fmt[format]);
   fprintf(file,"  \"order\" : \"%s\",\n",ordernames[max(0,header->order-1)]);
@@ -72,6 +97,8 @@ void fprintjson(FILE *file,           /**< pointer to text file */
     fprintf(file,"  \"version\" : %d,\n",version);
     fprintf(file,"  \"offset\" : %zu,\n",headersize(id,version));
   }
+  if(gridfile!=NULL)
+    fprintf(file,"  \"gridfile\" : \"%s\",\n",strippath(gridfile));
   fprintf(file,"  \"bigendian\" : %s\n",bool2str((!swap && bigendian()) || (swap && !bigendian())));
   fprintf(file,"}\n");
 } /* of 'fprintjson' */

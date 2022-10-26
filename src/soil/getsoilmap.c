@@ -16,7 +16,7 @@
 
 #include "lpj.h"
 
-int *getsoilmap(List *map,           /**< pointer to String array */
+int *getsoilmap(Map *map,           /**< pointer to String array */
                 const Config *config /**< LPJ configuration */
                )                     /** \return soil map array or NULL on error */
 {
@@ -25,14 +25,21 @@ int *getsoilmap(List *map,           /**< pointer to String array */
   Verbosity verbose;
   Bool first;
   verbose=(isroot(*config)) ? config->scan_verbose : NO_ERR;
-  if(isempty(map))
+  if(isempty(map->list))
   {
     if(verbose)
       fprintf(stderr,"ERROR255: Size of '%s' array in '%s' must not be zero.\n",
               MAP_NAME,config->soil_filename.name);
     return NULL;
   }
-  soilmap=newvec(int,getlistlen(map));
+  if(map->isfloat)
+  {
+    if(verbose)
+      fprintf(stderr,"ERROR255: '%s' array in '%s' must be of type string, not float.\n",
+              MAP_NAME,config->soil_filename.name);
+    return NULL;
+  }
+  soilmap=newvec(int,getmapsize(map));
   if(soilmap==NULL)
   {
     printallocerr("soilmap");
@@ -47,20 +54,20 @@ int *getsoilmap(List *map,           /**< pointer to String array */
   }
   for(s=0;s<config->nsoil;s++)
     undef[s]=TRUE;
-  for(s=0;s<getlistlen(map);s++)
+  for(s=0;s<getmapsize(map);s++)
   {
-    if(getlistitem(map,s)==NULL)
+    if(getmapitem(map,s)==NULL)
     {
       soilmap[s]=0;
       continue;
     }
-    soilmap[s]=findsoilid(getlistitem(map,s),config->soilpar,config->nsoil);
+    soilmap[s]=findsoilid(getmapitem(map,s),config->soilpar,config->nsoil);
     if(soilmap[s]==NOT_FOUND)
     {
       if(verbose)
       {
         fprintf(stderr,"ERROR254: Soil type '%s' not in map in '%s', must be in [",
-                (char *)getlistitem(map,s),config->soil_filename.name);
+                (char *)getmapitem(map,s),config->soil_filename.name);
         for(s=0;s<config->nsoil;s++)
         {
           fprintf(stderr,"'%s'",config->soilpar[s].name);

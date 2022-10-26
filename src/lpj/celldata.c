@@ -41,7 +41,7 @@ Celldata opencelldata(Config *config /**< LPJmL configuration */
                      )               /** \return pointer to cell data or NULL */
 {
   Celldata celldata;
-  List *map;
+  Map *map;
   int *soilmap;
   float lon,lat;
   celldata=new(struct celldata);
@@ -104,10 +104,10 @@ Celldata opencelldata(Config *config /**< LPJmL configuration */
       else
       {
         if(isroot(*config) && config->soilmap!=NULL)
-           cmpsoilmap(soilmap,getlistlen(map),config);
+           cmpsoilmap(soilmap,getmapsize(map),config);
         free(config->soilmap);
         config->soilmap=soilmap;
-        config->soilmap_size=getlistlen(map);
+        config->soilmap_size=getmapsize(map);
       }
       freemap(map);
     }

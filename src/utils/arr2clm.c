@@ -33,6 +33,8 @@ int main(int argc,char **argv)
   header.firstyear=1901;
   header.firstcell=0;
   header.nbands=1;
+  header.nstep=1;
+  header.timestep=1;
   header.order=CELLYEAR;
   id=LPJ_CLIMATE_HEADER;
   version=LPJ_CLIMATE_VERSION;

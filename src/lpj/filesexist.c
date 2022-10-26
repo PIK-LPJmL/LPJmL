@@ -27,7 +27,7 @@ static int checksoilcode(Config *config)
   int cell,ncell;
   unsigned int i,soilcode;
   char *name;
-  List *map;
+  Map *map;
   int *soilmap;
   if(config->soil_filename.fmt!=CDF)
   {
@@ -41,10 +41,10 @@ static int checksoilcode(Config *config)
       if(soilmap!=NULL)
       {
         if(config->soilmap!=NULL)
-          cmpsoilmap(soilmap,getlistlen(map),config);
+          cmpsoilmap(soilmap,getmapsize(map),config);
         free(config->soilmap);
         config->soilmap=soilmap;
-        config->soilmap_size=getlistlen(map);
+        config->soilmap_size=getmapsize(map);
       }
       freemap(map);
     }
@@ -129,7 +129,7 @@ static int checkinputfile(const Config *config,const Filename *filename,const ch
   }
   else
   {
-    file=openinputfile(&header,&swap,filename,headername,&version,&offset,FALSE,config);
+    file=openinputfile(&header,&swap,filename,headername,unit,&version,&offset,FALSE,config);
     if(file==NULL)
       return 1;
     fclose(file);
@@ -161,7 +161,7 @@ static int checkdatafile(const Config *config,const Filename *filename,const cha
   }
   else
   {
-    file=openinputfile(&header,&swap,filename,headername,&version,&offset,FALSE,config);
+    file=openinputfile(&header,&swap,filename,headername,unit,&version,&offset,FALSE,config);
     if(file==NULL)
       return 1;
     fclose(file);
@@ -237,7 +237,7 @@ static int checkclmfile(const Config *config,const Filename *filename,const char
   }
   else
   {
-    file=openinputfile(&header,&swap,filename,headername,&version,&offset,FALSE,config);
+    file=openinputfile(&header,&swap,filename,headername,unit,&version,&offset,FALSE,config);
     if(file==NULL)
       return 1;
     fclose(file);
