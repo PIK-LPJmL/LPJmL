@@ -23,10 +23,11 @@
 #include "agriculture.h"
 #include "agriculture_grass.h"
 #include "agriculture_tree.h"
+#include "urban.h"
 
 #define LPJFILES_VERSION "1.0.003"
 #define NTYPES 3 /* number of PFT types: grass, tree, crop */
-#define NSTANDTYPES 12 /* number of stand types / land use types as defined in landuse.h*/
+#define NSTANDTYPES 13 /* number of stand types / land use types as defined in landuse.h*/
 
 
 #define USAGE "Usage: %s [-h] [-noinput] [-nooutput] [-outpath dir] [-inpath dir] [-restartpath dir]\n"\
@@ -61,6 +62,7 @@ int main(int argc,char **argv)
   standtype[AGRICULTURE_TREE]=&agriculture_tree_stand;
   standtype[AGRICULTURE_GRASS]=&agriculture_grass_stand;
   standtype[WOODPLANTATION]=&woodplantation_stand;
+  standtype[URBAN]=&urban_stand;
   standtype[KILL]=&kill_stand;
   initconfig(&config);
   progname=strippath(argv[0]);

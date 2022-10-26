@@ -26,9 +26,10 @@
 #include "agriculture.h"
 #include "agriculture_grass.h"
 #include "agriculture_tree.h"
+#include "urban.h"
 
 #define NTYPES 3
-#define NSTANDTYPES 12 /* number of stand types / land use types as defined in landuse.h*/
+#define NSTANDTYPES 13 /* number of stand types / land use types as defined in landuse.h*/
 #define LPJSERVER_VERSION "0.9.005"
 #define USAGE "%s [LPJargs ...]"
 #define dflt_filename "lpjml.conf"
@@ -71,6 +72,7 @@ int main(int argc,char **argv)
   standtype[AGRICULTURE_TREE]=&agriculture_tree_stand;
   standtype[AGRICULTURE_GRASS]=&agriculture_grass_stand;
   standtype[WOODPLANTATION]=&woodplantation_stand;
+  standtype[URBAN]=&urban_stand;
   standtype[KILL]=&kill_stand;
   progname=strippath(argv[0]);
   config.rank=0;

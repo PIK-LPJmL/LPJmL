@@ -21,8 +21,9 @@
 #include "biomass_grass.h"
 #include "biomass_tree.h"
 #include "woodplantation.h"
+#include "urban.h"
 
-typedef enum {PASTURE=1, BIOMASS_TREE_PLANTATION, BIOMASS_GRASS_PLANTATION, AGRICULTURE_TREE_PLANTATION, WOOD_PLANTATION } Cultivation_type;
+typedef enum {PASTURE=1, BIOMASS_TREE_PLANTATION, BIOMASS_GRASS_PLANTATION, AGRICULTURE_TREE_PLANTATION, WOOD_PLANTATION,URBANIZATION } Cultivation_type;
 
 #ifdef IMAGE
 #define minnatfrac_luc 0.0002
@@ -416,6 +417,11 @@ static void landexpansion(Cell *cell,            /* cell pointer */
           else
             mixstand->fires=NULL;
           mixstand->type->newstand(mixstand);
+          break;
+        case URBANIZATION:
+          mixstand->type->freestand(mixstand);
+          freequeue(mixstand->fires);
+          mixstand->type = &urban_stand;
         break;
           default:
             fail(WRONG_CULTIVATION_TYPE_ERR,TRUE,
@@ -1023,6 +1029,26 @@ void landusechange(Cell *cell,          /**< pointer to cell */
     else if (cell->ml.landfrac[i].woodplantation>epsilon)
     {
       difffrac= -cell->ml.landfrac[i].woodplantation;
+      landexpansion(cell,difffrac,npft,NULL,
+                    irrigation,cultivation_type,0,ncft,year,config);
+    }
+    cultivation_type=URBANIZATION;
+    irrigation=i;
+    s=findstand(cell->standlist,URBAN,irrigation);
+    if(s!=NOT_FOUND)
+    {
+      stand=getstand(cell->standlist,s);
+      difffrac=stand->frac-cell->ml.landfrac[i].urban;
+      stand->frac_change = -difffrac;
+      if(difffrac>epsilon)
+        grasslandreduction(cell,difffrac,intercrop,npft,s,stand,ncft,year,config);
+      else if(difffrac<-epsilon)
+        landexpansion(cell,difffrac,npft,stand,irrigation,
+                      cultivation_type,0,ncft,year,config);
+    }
+    else if (cell->ml.landfrac[i].urban>epsilon)
+    {
+      difffrac= -cell->ml.landfrac[i].urban;
       landexpansion(cell,difffrac,npft,NULL,
                     irrigation,cultivation_type,0,ncft,year,config);
     }

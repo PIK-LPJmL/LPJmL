@@ -83,9 +83,10 @@
 #include "agriculture.h"
 #include "agriculture_grass.h"
 #include "agriculture_tree.h"
+#include "urban.h"
 
 #define NTYPES 3 /* number of plant functional types: grass, tree, annual_crop */
-#define NSTANDTYPES 12 /* number of stand types / land use types as defined in landuse.h*/
+#define NSTANDTYPES 13 /* number of stand types / land use types as defined in landuse.h*/
 
 int main(int argc,char **argv)
 {
@@ -117,6 +118,7 @@ int main(int argc,char **argv)
   standtype[AGRICULTURE_TREE]=&agriculture_tree_stand;
   standtype[AGRICULTURE_GRASS]=&agriculture_grass_stand;
   standtype[WOODPLANTATION]=&woodplantation_stand;
+  standtype[URBAN]=&urban_stand;
   standtype[KILL]=&kill_stand;
 
 

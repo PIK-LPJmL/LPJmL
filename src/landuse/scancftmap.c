@@ -46,6 +46,7 @@ int *scancftmap(LPJfile *file,       /**< pointer to LPJ config file */
                 int *size,           /**< size of CFT map array */
                 const char *name,    /**< name of map */
                 Bool cftonly,        /**< scan only crop PFTs */
+                Bool urban,
                 int npft,            /**< number of natural PFTs */
                 int ncft,            /**< number of crop PFTs */
                 const Config *config /**< LPJ configuration */
@@ -69,7 +70,7 @@ int *scancftmap(LPJfile *file,       /**< pointer to LPJ config file */
       printallocerr(name);
       return NULL;
     }
-    undef=newvec(Bool,cftonly ? ncft : getnirrig(ncft,config));
+    undef=newvec(Bool,cftonly ? ncft : getnirrig(ncft,config)+urban);
     if(undef==NULL)
     {
       printallocerr(name);
@@ -79,7 +80,7 @@ int *scancftmap(LPJfile *file,       /**< pointer to LPJ config file */
       for(cft=0;cft<ncft;cft++)
         undef[cft]=TRUE;
     else
-      for(cft=0;cft<getnirrig(ncft,config);cft++)
+      for(cft=0;cft<getnirrig(ncft,config)+1;cft++)
         undef[cft]=TRUE;
     for(cft=0;cft<*size;cft++)
     {
@@ -133,6 +134,12 @@ int *scancftmap(LPJfile *file,       /**< pointer to LPJ config file */
             undef[cftmap[cft]]=FALSE;
             continue;
           }
+        }
+        if(urban && !strcmp(s,"urban"))
+        {
+          cftmap[cft]=ncft+NGRASS+NBIOMASSTYPE+config->nwptype+config->nagtree;
+          undef[cftmap[cft]]=FALSE;
+          continue;
         }
         if(config->nagtree)
         {
@@ -203,6 +210,17 @@ int *scancftmap(LPJfile *file,       /**< pointer to LPJ config file */
               fputc(',',stderr);
             fprintf(stderr," \"%s\"",woodplantation_names[cft]);
           }
+         if(urban && undef[ncft+NGRASS+NBIOMASSTYPE+config->nwptype+config->nagtree])
+          {
+            if(first && isroot(*config))
+            {
+              fprintf(stderr,"WARNING010: Map '%s' not defined for",name);
+              first=FALSE;
+            }
+            else
+              fputc(',',stderr);
+            fprintf(stderr," \"urban\"");
+          }
         for(cft=0;cft<config->nagtree;cft++)
           if(undef[cft+ncft+NGRASS+NBIOMASSTYPE+config->nwptype])
           {
@@ -245,6 +263,8 @@ int *scancftmap(LPJfile *file,       /**< pointer to LPJ config file */
           fprintf(stderr,",\"%s\"",biomass_names[cft]);
         for(cft=0;cft<config->nwft;cft++)
           fprintf(stderr,",\"%s\"",woodplantation_names[cft]);
+        if(urban)
+          fprintf(stderr,",\"urban\"");
         for(cft=0;cft<config->nagtree;cft++)
           fprintf(stderr,",\"%s\"",config->pftpar[npft-config->nagtree+cft].name);
       }

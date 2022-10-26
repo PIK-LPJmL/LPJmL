@@ -18,7 +18,7 @@
 /* Definitions of datatypes */
 
 typedef enum {NATURAL,SETASIDE_RF,SETASIDE_IR,AGRICULTURE,MANAGEDFOREST,
-              GRASSLAND,BIOMASS_TREE,BIOMASS_GRASS,AGRICULTURE_TREE,AGRICULTURE_GRASS,WOODPLANTATION,KILL} Landusetype;
+              GRASSLAND,BIOMASS_TREE,BIOMASS_GRASS,AGRICULTURE_TREE,AGRICULTURE_GRASS,URBAN,WOODPLANTATION,KILL} Landusetype;
 
 typedef struct landuse *Landuse;
 
@@ -30,6 +30,7 @@ typedef struct
   Real biomass_tree;
   Real *ag_tree;
   Real woodplantation;
+  Real urban;
 } Landfrac;
 
 typedef struct
@@ -119,8 +120,8 @@ extern void initlandfrac(Landfrac [2],int,int);
 extern void scalelandfrac(Landfrac [2],int,int,Real);
 extern void freelandfrac(Landfrac [2]);
 extern Bool fwritelandfrac(FILE *,const Landfrac [2],int,int);
-extern Bool freadlandfrac(FILE *,Landfrac [2],int,int,Bool);
-extern Bool readlandfracmap(Landfrac *,const int [],int,const Real [],int *,int,int);
+extern Bool freadlandfrac(FILE *,Landfrac [2],int,int,int);
+extern Bool readlandfracmap(Landfrac *,const int [],int,const Real [],int *,int,int,int);
 extern Real landfrac_sum(const Landfrac [2],int,int,Bool);
 extern Real crop_sum_frac(Landfrac *,int,int,Real,Bool);
 extern Stocks cultivate(Cell *,Bool,int,Bool,Stand *,
@@ -149,7 +150,7 @@ extern Bool fwrite_irrigation(FILE *,const Irrigation *);
 extern void fprint_irrigation(FILE *,const Irrigation *,const Pftpar *);
 extern Bool fread_irrigation(FILE *,Irrigation *,Bool);
 extern Harvest harvest_stand(Output *,Stand *,Real,const Config *);
-extern int *scancftmap(LPJfile *,int *,const char *,Bool,int,int,const Config *);
+extern int *scancftmap(LPJfile *,int *,const char *,Bool,Bool,int,int,const Config *);
 extern int *fscanagtreemap(LPJfile *,const char *,int,const Config *);
 extern Bool fscanmowingdays(LPJfile *,Config *);
 extern void tillage(Soil *, Real);

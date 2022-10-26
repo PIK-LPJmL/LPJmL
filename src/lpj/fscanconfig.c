@@ -609,20 +609,20 @@ Bool fscanconfig(Config *config,    /**< LPJ configuration */
   }
   if(config->withlanduse!=NO_LANDUSE)
   {
-    config->landusemap=scancftmap(file,&config->landusemap_size,"landusemap",FALSE,config->npft[GRASS]+config->npft[TREE],config->npft[CROP],config);
+    config->landusemap=scancftmap(file,&config->landusemap_size,"landusemap",FALSE,TRUE,config->npft[GRASS]+config->npft[TREE],config->npft[CROP],config);
     if(config->landusemap==NULL)
       return TRUE;
     if(config->withlanduse!=ALL_CROPS && !findcftmap("cotton",config->pftpar,config->landusemap,config->landusemap_size))
       config->iscotton=FALSE;
     if(config->fertilizer_input==FERTILIZER || config->manure_input || config->residue_treatment==READ_RESIDUE_DATA || config->tillage_type==READ_TILLAGE)
     {
-      config->fertilizermap=scancftmap(file,&config->fertilizermap_size,"fertilizermap",FALSE,config->npft[GRASS]+config->npft[TREE],config->npft[CROP],config);
+      config->fertilizermap=scancftmap(file,&config->fertilizermap_size,"fertilizermap",FALSE,FALSE,config->npft[GRASS]+config->npft[TREE],config->npft[CROP],config);
       if(config->fertilizermap==NULL)
         return TRUE;
     }
     if(config->sdate_option==PRESCRIBED_SDATE || config->crop_phu_option==PRESCRIBED_CROP_PHU)
     {
-      config->cftmap=scancftmap(file,&config->cftmap_size,"cftmap",TRUE,config->npft[GRASS]+config->npft[TREE],config->npft[CROP],config);
+      config->cftmap=scancftmap(file,&config->cftmap_size,"cftmap",TRUE,FALSE,config->npft[GRASS]+config->npft[TREE],config->npft[CROP],config);
       if(config->cftmap==NULL)
         return TRUE;
     }

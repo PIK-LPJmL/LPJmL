@@ -363,7 +363,7 @@ Bool getlanduse(Landuse landuse,     /**< Pointer to landuse data */
           grid[cell].ml.irrig_system->woodplantation = grid[cell].ml.manage.par->default_irrig_system;
         }
         if(readlandfracmap(grid[cell].ml.landfrac+i,config->landusemap,
-                        config->landusemap_size,data,&count,ncft,config->nwptype))
+                        config->landusemap_size,data,&count,ncft,config->nwptype,config->nagtree))
         {
           fprintf(stderr,"ERROR149: Land-use input=%g less than zero for cell %d (%s) in year %d.\n",
                   data[count],cell+config->startgrid,sprintcoord(line,&grid[cell].coord),max(yearl,landuse->landuse.firstyear));
@@ -718,7 +718,7 @@ Bool getlanduse(Landuse landuse,     /**< Pointer to landuse data */
         for(i=0; i<WIRRIG; i++)
         {
           if(readlandfracmap(grid[cell].ml.fertilizer_nr+i,config->fertilizermap,
-                             config->fertilizermap_size,data,&count,ncft,config->nwptype))
+                             config->fertilizermap_size,data,&count,ncft,config->nwptype,config->nagtree))
           {
             fprintf(stderr,"ERROR149: Fertilizer input=%g for band %d less than zero for cell %d (%s) in year %d.\n",
                     data[count],count % config->fertilizermap_size+i*config->fertilizermap_size,
@@ -744,7 +744,7 @@ Bool getlanduse(Landuse landuse,     /**< Pointer to landuse data */
         for(i=0; i<WIRRIG; i++)
         {
           if(readlandfracmap(grid[cell].ml.manure_nr+i,config->fertilizermap,
-                             config->fertilizermap_size,data,&count,ncft,config->nwptype))
+                             config->fertilizermap_size,data,&count,ncft,config->nwptype,config->nagtree))
           {
             fprintf(stderr,"ERROR149: Manure input=%g for band %d less than zero for cell %d (%s) in year %d.\n",
                     data[count],count % config->fertilizermap_size+i*config->fertilizermap_size,
@@ -821,7 +821,7 @@ Bool getlanduse(Landuse landuse,     /**< Pointer to landuse data */
     {
       initlandfrac(grid[cell].ml.residue_on_field,ncft,config->nagtree);
       if(readlandfracmap(grid[cell].ml.residue_on_field,config->fertilizermap,
-                         config->fertilizermap_size,data,&count,ncft,config->nwptype))
+                         config->fertilizermap_size,data,&count,ncft,config->nwptype,config->nagtree))
       {
         fprintf(stderr,"ERROR149: Residue rate input=%g for band %d less than zero for cell %d (%s) in year %d.\n",
                 data[count],count % config->fertilizermap_size,
@@ -830,7 +830,7 @@ Bool getlanduse(Landuse landuse,     /**< Pointer to landuse data */
       }
       count-=config->fertilizermap_size;
       readlandfracmap(grid[cell].ml.residue_on_field+1,config->fertilizermap,
-                      config->fertilizermap_size,data,&count,ncft,config->nwptype);
+                      config->fertilizermap_size,data,&count,ncft,config->nwptype,config->nagtree);
     }
     free(data);
   }
