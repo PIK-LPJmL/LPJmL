@@ -17,7 +17,7 @@
 #include "lpj.h"
 
 #define TXT2CLM_VERSION "1.0.002"
-#define USAGE "Usage: txt2clm [-h] [-version v] [-cellindex] [-scale s] [-float] [-int] [-nbands n] [-nstep n] [-cellsize size]\n               [-firstcell n] [-ncell n] [-firstyear f] [-header id] [-cvs c] txtfile clmfile\n"
+#define USAGE "Usage: txt2clm [-h] [-version v] [-cellindex] [-scale s] [-float] [-int] [-nbands n] [-nstep n] [-cellsize size]\n               [-firstcell n] [-ncell n] [-firstyear f] [-header id] [-csv c] txtfile clmfile\n"
 
 static int getfloat(FILE *file,char sep,float *value)
 {

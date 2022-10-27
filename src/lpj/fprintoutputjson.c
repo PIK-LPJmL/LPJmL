@@ -143,13 +143,13 @@ Bool fprintoutputjson(int index,           /**< index in outputvars array */
     fprintf(file,"  \"lastyear\" : %d,\n",config->outputvars[index].oneyear ? year : config->outputyear+max(1,config->outnames[config->outputvars[index].id].timestep)-1+((config->lastyear-config->outputyear+1)/max(1,config->outnames[config->outputvars[index].id].timestep)-1)*max(1,config->outnames[config->outputvars[index].id].timestep));
   }
   fprintf(file,"  \"nyear\" : %d,\n",(config->outputvars[index].oneyear || config->outputvars[index].id==GRID || config->outputvars[index].id==COUNTRY || config->outputvars[index].id==REGION) ? 1 : (config->lastyear-config->outputyear+1)/max(1,config->outnames[config->outputvars[index].id].timestep));
-  fprintf(file,"  \"datatype\" : \"%s\",\n",typenames[getoutputtype(config->outputvars[index].id,config->float_grid)]);
+  fprintf(file,"  \"datatype\" : \"%s\",\n",typenames[getoutputtype(config->outputvars[index].id,config->grid_type)]);
   if(config->outputvars[index].id==GRID)
   {
-    if(config->float_grid)
-      fprintf(file,"  \"scalar\" : 1.0,\n");
-    else
+    if(config->grid_type==LPJ_SHORT)
       fprintf(file,"  \"scalar\" : 0.01,\n");
+    else
+      fprintf(file,"  \"scalar\" : 1.0,\n");
     fprintf(file,"  \"order\" : \"cellyear\",\n");
   }
   else

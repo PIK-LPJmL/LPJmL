@@ -43,7 +43,7 @@ Bool create1_pft_netcdf(Netcdf *cdf,
 #if defined(USE_NETCDF) || defined(USE_NETCDF4)
   String s;
   time_t t;
-  int i,rc,imiss=MISSING_VALUE_INT,size;
+  int i,j,rc,imiss=MISSING_VALUE_INT,size;
   double *days;
   short smiss=MISSING_VALUE_SHORT;
   double *lon,*lat;
@@ -130,8 +130,15 @@ Bool create1_pft_netcdf(Netcdf *cdf,
     switch(n)
     {
       case 12:
-        for(i=0;i<12;i++)
-          days[i]=i;
+        if(config->with_days)
+        {
+          days[0]=ndaymonth[0]-1;
+          for(j=1;j<12;j++)
+            days[j]=days[j-1]+ndaymonth[j];
+        }
+        else
+          for(i=0;i<12;i++)
+            days[i]=i;
         break;
       case NDAYYEAR:
         for(i=0;i<n;i++)
@@ -274,7 +281,7 @@ Bool create1_pft_netcdf(Netcdf *cdf,
     rc=nc_def_var(cdf->ncid,TIME_NAME,NC_DOUBLE,1,&time_dim_id,&time_var_id);
     error(rc);
     if(n==NMONTH)
-      snprintf(s,STRING_LEN,"months since %d-1-1 0:0:0",year);
+      snprintf(s,STRING_LEN,"%s since %d-1-1 0:0:0",(config->with_days) ? "days" : "months",year);
     else
       snprintf(s,STRING_LEN,"days since %d-1-1 0:0:0",year);
     rc=nc_put_att_text(cdf->ncid,time_var_id,"units",strlen(s),s);

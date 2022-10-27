@@ -133,9 +133,10 @@
 #endif
 
   "output_metafile" : true,   /* json metafile created (TRUE/FALSE) */
-  "float_grid" : false,       /* set datatype of grid file to float (TRUE/FALSE) */
+  "grid_type" : "short",      /* set datatype of grid file ("short", "float", "double") */
   "absyear" : false,          /* years relative to baseyear (TRUE/FALSE) */
   "rev_lat" : false,          /* reverse latitudes in NetCDF output (TRUE/FALSE) */
+  "with_days" : true,         /* use days as units for monthly output in NetCDF files */
 
 #define mkstr(s) xstr(s) /* putting string in quotation marks */
 #define xstr(s) #s

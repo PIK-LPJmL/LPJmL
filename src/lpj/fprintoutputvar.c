@@ -95,7 +95,7 @@ void fprintoutputvar(FILE *file,              /**< pointer to text file */
               width_var,output[index].var,
               width_unit,strlen(output[index].unit)==0 ? "-" : output[index].unit,sprinttimestep(s,output[index].timestep),
               outputsize(index,npft,ncft,config),
-             typenames[getoutputtype(index,config->float_grid)],output[index].scale,sc,output[index].offset,output[index].descr);
+             typenames[getoutputtype(index,config->grid_type)],output[index].scale,sc,output[index].offset,output[index].descr);
     }
   }
   free(item);
