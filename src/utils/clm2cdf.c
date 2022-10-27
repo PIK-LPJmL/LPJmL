@@ -824,7 +824,7 @@ int main(int argc,char **argv)
     if(getfilesizep(file) % (typesizes[type]*ngrid*header.nbands))
       fprintf(stderr,"Warning: file size of '%s' is not multiple of bands %d and number of cells %d.\n",argv[iarg+2],header.nbands,ngrid);
   }
-  index=createindex(grid,ngrid,res,isglobal);
+  index=createindex(grid,ngrid,res,isglobal,FALSE);
   if(index==NULL)
     return EXIT_FAILURE;
   free(grid);

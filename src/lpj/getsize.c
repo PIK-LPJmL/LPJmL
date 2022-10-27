@@ -42,7 +42,7 @@ size_t getsize(int index,           /**< index of output file */
   size*=outputsize(config->outputvars[index].id,
                    config->npft[GRASS]+config->npft[TREE],
                    config->npft[CROP],config);
-  size*=typesizes[getoutputtype(config->outputvars[index].id,config->float_grid)];
+  size*=typesizes[getoutputtype(config->outputvars[index].id,config->grid_type)];
   if(config->outputvars[index].id==ADISCHARGE)
     size*=config->nall;
   else

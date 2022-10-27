@@ -137,13 +137,9 @@ static void openfile(Outputfile *output,const Cell grid[],
             header.scalar=1;
             if(config->outputvars[i].id==GRID)
             {
-              if(config->float_grid)
-                header.datatype=LPJ_FLOAT;
-              else
-              {
-                header.datatype=LPJ_SHORT;
+              header.datatype=config->grid_type;
+              if(header.datatype==LPJ_SHORT)
                 header.scalar=0.01;
-              }
               header.nbands=2;
               header.nstep=1;
               header.timestep=1;

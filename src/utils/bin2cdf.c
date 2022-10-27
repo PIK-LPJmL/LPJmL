@@ -21,7 +21,7 @@
 #define error(rc) if(rc) {free(lon);free(lat);free(year);fprintf(stderr,"ERROR427: Cannot write '%s': %s.\n",filename,nc_strerror(rc)); nc_close(cdf->ncid); free(cdf);return NULL;}
 
 #define MISSING_VALUE -9999.99
-#define USAGE "Usage: %s [-clm] [-floatgrid] [-doublegrid] [-firstyear y] [-baseyear y] [-nbands n] [-nstep n] [-cellsize size] [-swap]\n       [[-attr name=value]..] [-global] [-short] [-compress level] [-units u] [-descr d] [-metafile] [-map name] [varname gridfile]\n       binfile netcdffile\n"
+#define USAGE "Usage: %s [-clm] [-floatgrid] [-doublegrid] [-revlat] [-days] [-firstyear y] [-baseyear y] [-nbands n] [-nstep n] [-cellsize size] [-swap]\n       [[-attr name=value]..] [-global] [-short] [-compress level] [-units u] [-descr d] [-metafile] [-map name] [varname gridfile]\n       binfile netcdffile\n"
 
 typedef struct
 {
@@ -74,7 +74,9 @@ static Cdf *create_cdf(const char *filename,
                        int baseyear,
                        Bool ispft,
                        int compress,
-                       const Coord_array *array)
+                       const Coord_array *array,
+                       Bool revlat,
+                       Bool with_days)
 {
   Cdf *cdf;
   double *lon,*lat;
@@ -82,7 +84,7 @@ static Cdf *create_cdf(const char *filename,
   float miss=MISSING_VALUE;
   short miss_short=MISSING_VALUE_SHORT;
   double *year;
-  int i,rc,dim[4],dim2[2],dimids[2];
+  int i,j,rc,dim[4],dim2[2],dimids[2];
   size_t chunk[4],offset[2],count[2];
   String s;
   time_t t;
@@ -107,8 +109,12 @@ static Cdf *create_cdf(const char *filename,
   }
   for(i=0;i<array->nlon;i++)
     lon[i]=array->lon_min+i*header.cellsize_lon;
-  for(i=0;i<array->nlat;i++)
-    lat[i]=array->lat_min+i*header.cellsize_lat;
+  if(revlat)
+    for(i=0;i<array->nlat;i++)
+      lat[i]=array->lat_min+(array->nlat-1-i)*header.cellsize_lat;
+  else
+    for(i=0;i<array->nlat;i++)
+      lat[i]=array->lat_min+i*header.cellsize_lat;
   year=newvec(double,header.nyear*header.nstep);
   if(year==NULL)
   {
@@ -125,16 +131,18 @@ static Cdf *create_cdf(const char *filename,
         year[i]=header.firstyear-baseyear+i*header.timestep+header.timestep/2;
       break;
     case 12:
-#if 0
-      for(i=0;i<header.nyear;i++)
-        for(j=0;j<12;j++)
-          if(i==0 && j==0)
-            year[0]=ndaymonth[j]-1+(header.firstyear-baseyear)*NDAYYEAR;
-          else
-            year[i*12+j]=year[i*12+j-1]+ndaymonth[j];
-#endif
-      for(i=0;i<header.nyear*12;i++)
-         year[i]=i+(header.firstyear-baseyear)*12;
+      if(with_days)
+      {
+        for(i=0;i<header.nyear;i++)
+          for(j=0;j<12;j++)
+            if(i==0 && j==0)
+              year[0]=ndaymonth[j]-1+(header.firstyear-baseyear)*NDAYYEAR;
+            else
+              year[i*12+j]=year[i*12+j-1]+ndaymonth[j];
+      }
+      else
+        for(i=0;i<header.nyear*12;i++)
+           year[i]=i+(header.firstyear-baseyear)*12;
       break;
     case NDAYYEAR:
       for(i=0;i<header.nyear*NDAYYEAR;i++)
@@ -192,7 +200,7 @@ static Cdf *create_cdf(const char *filename,
   if(header.nstep==1)
     snprintf(s,STRING_LEN,"years since %d-1-1 0:0:0",baseyear);
   else if(header.nstep==12)
-    snprintf(s,STRING_LEN,"months since %d-1-1 0:0:0",baseyear);
+    snprintf(s,STRING_LEN,"%s since %d-1-1 0:0:0",(with_days) ? "days" : "months",baseyear);
   else if(header.nstep==1)
     snprintf(s,STRING_LEN,"days since %d-1-1 0:0:0",baseyear);
   rc=nc_put_att_text(cdf->ncid,time_var_id,"units",strlen(s),s);
@@ -524,7 +532,7 @@ int main(int argc,char **argv)
   float *data;
   short *data_short;
   int i,j,k,ngrid,iarg,compress,version,n_global,n_global2,baseyear;
-  Bool swap,ispft,isshort,isglobal,isclm,ismeta,isbaseyear;
+  Bool swap,ispft,isshort,isglobal,isclm,ismeta,isbaseyear,revlat,withdays;
   Type gridtype;
   float cellsize,fcoord[2];
   double dcoord[2];
@@ -557,6 +565,8 @@ int main(int argc,char **argv)
   isclm=FALSE;
   ismeta=FALSE;
   isbaseyear=FALSE;
+  revlat=FALSE;
+  withdays=FALSE;
   map_name=BAND_NAMES;
   n_global=0;
   for(iarg=1;iarg<argc;iarg++)
@@ -588,6 +598,10 @@ int main(int argc,char **argv)
         isglobal=TRUE;
       else if(!strcmp(argv[iarg],"-swap"))
         swap=TRUE;
+      else if(!strcmp(argv[iarg],"-revlat"))
+        revlat=TRUE;
+      else if(!strcmp(argv[iarg],"-days"))
+        withdays=TRUE;
       else if(!strcmp(argv[iarg],"-descr"))
       {
         if(iarg==argc-1)
@@ -999,12 +1013,12 @@ int main(int argc,char **argv)
   }
   if(!isbaseyear)
      baseyear=header.firstyear;
-  index=createindex(grid,ngrid,res,isglobal);
+  index=createindex(grid,ngrid,res,isglobal,revlat);
   if(index==NULL)
     return EXIT_FAILURE;
   free(grid);
   cmdline=catstrvec(argv,argc);
-  cdf=create_cdf(outname,map,map_name,cmdline,variable,units,descr,global_attrs,n_global,(isshort) ? LPJ_SHORT : LPJ_FLOAT,header,baseyear,ispft,compress,index);
+  cdf=create_cdf(outname,map,map_name,cmdline,variable,units,descr,global_attrs,n_global,(isshort) ? LPJ_SHORT : LPJ_FLOAT,header,baseyear,ispft,compress,index,revlat,withdays);
   free(cmdline);
   if(cdf==NULL)
     return EXIT_FAILURE;

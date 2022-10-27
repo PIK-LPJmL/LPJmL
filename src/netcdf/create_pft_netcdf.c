@@ -42,7 +42,7 @@ Bool create_pft_netcdf(Netcdf *cdf,
 #if defined(USE_NETCDF) || defined(USE_NETCDF4)
   String s;
   time_t t;
-  int i,rc,nyear,imiss=MISSING_VALUE_INT,size,fuel[NFUELCLASS];
+  int i,j,rc,nyear,imiss=MISSING_VALUE_INT,size,fuel[NFUELCLASS];
   short smiss=MISSING_VALUE_SHORT;
   double *lon,*lat;
   float miss=config->missing_value;
@@ -153,8 +153,12 @@ Bool create_pft_netcdf(Netcdf *cdf,
        fuel[i]=i;
   for(i=0;i<array->nlon;i++)
     lon[i]=array->lon_min+i*config->resolution.lon;
-  for(i=0;i<array->nlat;i++)
-    lat[i]=array->lat_min+i*config->resolution.lat;
+  if(config->rev_lat)
+    for(i=0;i<array->nlat;i++)
+      lat[i]=array->lat_min+(array->nlat-1-i)*config->resolution.lat;
+  else
+   for(i=0;i<array->nlat;i++)
+     lat[i]=array->lat_min+i*config->resolution.lat;
   switch(n)
   {
     case 1:
@@ -166,8 +170,18 @@ Bool create_pft_netcdf(Netcdf *cdf,
           year[i]=config->outputyear-config->baseyear+i*timestep+timestep/2;
       break;
     case 12:
-      for(i=0;i<nyear*12;i++)
-        year[i]=(config->outputyear-config->baseyear)*NMONTH+i;
+      if(config->with_days)
+      {
+        for(i=0;i<nyear;i++)
+          for(j=0;j<12;j++)
+            if(i==0 && j==0)
+              year[0]=ndaymonth[j]-1+(config->outputyear-config->baseyear)*NDAYYEAR;
+            else
+              year[i*12+j]=year[i*12+j-1]+ndaymonth[j];
+      }
+      else
+        for(i=0;i<nyear*12;i++)
+          year[i]=(config->outputyear-config->baseyear)*NMONTH+i;
       break;
     case NDAYYEAR:
       for(i=0;i<nyear*n;i++)
@@ -287,7 +301,7 @@ Bool create_pft_netcdf(Netcdf *cdf,
       snprintf(s,STRING_LEN,"years since %d-1-1 0:0:0",config->baseyear);
   }
   else if(n==12)
-    snprintf(s,STRING_LEN,"months since %d-1-1 0:0:0",config->baseyear);
+    snprintf(s,STRING_LEN,"%s since %d-1-1 0:0:0",(config->with_days) ? "days" : "months",config->baseyear);
   else
     snprintf(s,STRING_LEN,"days since %d-1-1 0:0:0",config->baseyear);
   rc=nc_put_att_text(cdf->ncid,time_var_id,"units",strlen(s),s);

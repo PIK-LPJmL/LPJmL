@@ -64,7 +64,7 @@ Bool fscanoutput(LPJfile *file,  /**< pointer to LPJ file */
 {
   LPJfile arr,item;
   int count,flag,size,index,ntotpft,version;
-  Bool isdaily,metafile;
+  Bool isdaily,metafile,b;
   String outpath,name;
   Verbosity verbosity;
   verbosity=isroot(*config) ? config->scan_verbose : NO_ERR;
@@ -132,11 +132,31 @@ Bool fscanoutput(LPJfile *file,  /**< pointer to LPJ file */
     if(fscanbool(file,&config->global_netcdf,"global_netcdf",FALSE,verbosity))
       return TRUE;
   }
-  config->float_grid=FALSE;
+  config->rev_lat=FALSE;
+  if(fscanbool(file,&config->rev_lat,"rev_lat",TRUE,verbosity))
+    return TRUE;
+  config->with_days=TRUE;
+  if(fscanbool(file,&config->with_days,"with_days",TRUE,verbosity))
+    return TRUE;
+  config->grid_type=LPJ_SHORT;
   if(iskeydefined(file,"float_grid"))
   {
-    if(fscanbool(file,&config->float_grid,"float_grid",FALSE,verbosity))
+    if(fscanbool(file,&b,"float_grid",FALSE,verbosity))
       return TRUE;
+    if(b)
+      config->grid_type=LPJ_FLOAT;
+  }
+  if(iskeydefined(file,"grid_type"))
+  {
+    if(fscankeywords(file,(int *)&config->grid_type,"grid_type",typenames,5,FALSE,verbosity))
+      return TRUE;
+    if(config->grid_type==LPJ_BYTE || config->grid_type==LPJ_INT)
+    {
+      if(verbosity)
+        fprintf(stderr,"ERROR229: Invalid datatype %s for grid, must be short, float or double.\n",
+                typenames[config->grid_type]);
+      return TRUE;
+    }
   }
   if(iskeydefined(file,"outpath"))
   {
