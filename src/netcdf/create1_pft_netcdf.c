@@ -105,7 +105,7 @@ Bool create1_pft_netcdf(Netcdf *cdf,
     {
       bnds[2*i]=layerbound[i-1]/1000;
       bnds[2*i+1]=layerbound[i]/1000;
-      layer[i]=(float)midlayer[i]/1000;
+      layer[i]=midlayer[i]/1000;
     }
   }
   else bnds=layer=NULL;
