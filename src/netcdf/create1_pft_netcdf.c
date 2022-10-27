@@ -286,8 +286,8 @@ Bool create1_pft_netcdf(Netcdf *cdf,
       snprintf(s,STRING_LEN,"days since %d-1-1 0:0:0",year);
     rc=nc_put_att_text(cdf->ncid,time_var_id,"units",strlen(s),s);
     error(rc);
-    rc=nc_put_att_text(cdf->ncid,time_var_id,"calendar",strlen("noleap"),
-                       "noleap");
+    rc=nc_put_att_text(cdf->ncid,time_var_id,"calendar",strlen(CALENDAR),
+                       CALENDAR);
     error(rc);
     rc=nc_put_att_text(cdf->ncid, time_var_id,"long_name",strlen(TIME_LONG_NAME),TIME_LONG_NAME);
     error(rc);
