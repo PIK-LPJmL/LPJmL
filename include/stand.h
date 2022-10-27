@@ -71,7 +71,7 @@ extern void freestand(Stand *);
 extern int delstand(Standlist,int);
 extern void freestandlist(Standlist);
 extern void mixsoil(Stand *,const Stand *,int,const Config *);
-extern Bool check_lu(const Standlist ,Real,int,Bool);
+extern Bool check_lu(const Standlist ,Real,int,Landusetype,Bool);
 extern void check_stand_fracs(const Cell *,Real);
 extern int findstand(const Standlist, Landusetype, Bool);
 extern int findstandpft(const Standlist,int,Bool);

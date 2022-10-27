@@ -162,8 +162,6 @@ static size_t isnetcdfinput(const Config *config)
   if(config->wateruse && config->wateruse_filename.fmt==CDF)
     width=max(width,strlen(config->wateruse_filename.var));
 #ifdef IMAGE
-  if(config->aquifer_irrig==AQUIFER_IRRIG && config->aquifer_filename.fmt==CDF)
-    width=max(width,strlen(config->aquifer_filename.var));
   if(config->wateruse_wd_filename.name!=NULL && config->wateruse_wd_filename.fmt==CDF)
     width=max(width,strlen(config->wateruse_wd_filename.var));
   if(config->aquifer_irrig==AQUIFER_IRRIG && config->aquifer_filename.fmt==CDF)
@@ -418,6 +416,13 @@ void fprintconfig(FILE *file,          /**< File pointer to text output file */
       len=fputstring(file,len,", ",78);
       count++;
       snprintf(s,STRING_LEN,"%s grazing",grazing_type[config->grazing]);
+      len=fputstring(file,len,s,78);
+    }
+    if(!config->others_to_crop)
+    {
+      len=fputstring(file,len,", ",78);
+      snprintf(s,STRING_LEN,"%s others grazing",grazing_type[config->grazing_others]);
+      count++;
       len=fputstring(file,len,s,78);
     }
     len=fputstring(file,len,", ",78);

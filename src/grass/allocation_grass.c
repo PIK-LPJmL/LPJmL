@@ -37,7 +37,7 @@ Bool allocation_grass(Litter *litter,   /**< litter pool */
   output=&pft->stand->cell->output;
   bm_inc_ind.carbon=pft->bm_inc.carbon/pft->nind;
   bm_inc_ind.nitrogen=pft->bm_inc.nitrogen/pft->nind;
-  if(pft->stand->type->landusetype!=GRASSLAND && pft->stand->type->landusetype!=BIOMASS_GRASS)
+  if(pft->stand->type->landusetype!=GRASSLAND && pft->stand->type->landusetype!=OTHERS && pft->stand->type->landusetype!=BIOMASS_GRASS && pft->stand->type->landusetype!=SETASIDE_RF && pft->stand->type->landusetype!=SETASIDE_IR)
     growing_days=NDAYYEAR;
   else
   {
@@ -60,7 +60,7 @@ Bool allocation_grass(Litter *litter,   /**< litter pool */
 
   pft->wscal_mean=pft->vscal=0;
   /* daily allocation for new grasslands */
-  if(pft->stand->type->landusetype==GRASSLAND || pft->stand->type->landusetype==BIOMASS_GRASS)
+  if(pft->stand->type->landusetype==GRASSLAND || pft->stand->type->landusetype==OTHERS || pft->stand->type->landusetype==BIOMASS_GRASS || pft->stand->type->landusetype==SETASIDE_IR || pft->stand->type->landusetype==SETASIDE_RF)
   {
     /* otherwise there wouldn't be any growth */
     lmtorm=max(lmtorm,0.25);

@@ -25,3 +25,9 @@ Standtype grassland_stand={GRASSLAND,"grassland",new_grassland,
                            fread_grassland,fprint_grassland,
                            daily_grassland,annual_grassland,dailyfire,
                            isdailyoutput_grassland};
+
+Standtype others_stand={OTHERS,"others",new_grassland,
+                        free_agriculture,fwrite_grassland,
+                        fread_grassland,fprint_grassland,
+                        daily_grassland,annual_grassland,dailyfire,
+                        isdailyoutput_grassland};

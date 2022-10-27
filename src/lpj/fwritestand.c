@@ -23,14 +23,14 @@ Bool fwritestand(FILE *file,        /**< pointer to binary file */
 {
   Byte b;
   /* write PFT list to file */
+  b=(Byte)stand->type->landusetype;
+  fwrite(&b,sizeof(b),1,file);
   if(fwritepftlist(file,&stand->pftlist)!=getnpft(&stand->pftlist))
     return TRUE;
   /* write soil data to file */
   if(fwritesoil(file,&stand->soil,ntotpft))
     return TRUE;
   fwrite1(&stand->frac,sizeof(Real),file);
-  b=(Byte)stand->type->landusetype;
-  fwrite(&b,sizeof(b),1,file);
   /* write stand-specific data */
   if(stand->type->fwrite(file,stand))
     return TRUE;

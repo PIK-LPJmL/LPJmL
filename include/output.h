@@ -119,10 +119,12 @@ extern int outputsize(int,int,int,const Config *);
 extern Type getoutputtype(int,Bool);
 extern int getnyear(const Variable *,int);
 extern Bool isnitrogen_output(int);
+extern Bool isannual_output(int);
 extern void fwriteoutputdata(FILE *,const Output *,const Config *);
 extern Bool freadoutputdata(FILE *,Output *,Bool,Config *);
 extern Bool isannual(int,const Config *);
 extern int outputindex(int,int,const Config *);
+extern int getmintimestep(int);
 extern Bool fprintoutputjson(int,int,const Config *);
 #ifdef USE_MPI
 extern int mpi_write(FILE *,void *,MPI_Datatype,int,int *,

@@ -62,10 +62,6 @@
   "manure_rate" : 0,          /* default: 20; fixed manure application rate in gN/m2/yr */
   "mixing_efficiency" : 0.9,  /* mixing efficiency of tillage */
   "aprec_lim" : 900,         /* annual prec limit for C3 threshold (mm) */
-  "irrig_threshold_c3_dry" : 0.95,     /* irrigation threshold C3, prec < aprec_lim */
-  "irrig_threshold_c3_humid" : 0.95,   /* irrigation threshold C3, prec >= aprec_lim */
-  "irrig_threshold_c4" : 0.95,         /* irrigation threshold C4 */
-  "irrig_threshold_rice" : 1.0,       /* irrigation threshold RICE */
   "irrig_soilfrac" : 1.0,             /* fraction of soil filled with water during irrigation event */
   "canal_conveyance_eff_sand" : 0.7,  /* open canal conveyance efficiency, soil type sand (Ks > 20)*/
   "canal_conveyance_eff_loam" : 0.75, /* open canal conveyance efficiency, soil type loam (10<=Ks<=20)*/
@@ -80,8 +76,10 @@
   "nfert_no3_frac" : 0.5,             /* fraction of NO3 in fertilizer input */
   "nmanure_nh4_frac" : 0.666667,      /* fraction of NH4 in manure input */
   "residues_in_soil" : 0.3,           /* minimum residues in soil*/
+  "residues_in_soil_notillage" : 0.1,  /* minimum residues in soil before till_startyear (only if tilled) */
   "fburnt" : 1.0,                     /* fraction of trees burnt at deforestation, refers to remainder after timber harvest */
   "ftimber" : 0.76,                   /* timber fraction at deforestation */
+  "ftimber_wp" : 0.76,                /* timber fraction for wood plantations */
   "harvest_fast_frac" : 0.34,         /* fraction of harvested wood going to fast pools */
   "product_turnover" : { "fast" : 0.1, "slow" : 0.01}, /* product turnover (1/yr) */
   "esoil_reduction" : 0.0,            /* reduction of soil evaporation */
@@ -92,6 +90,7 @@
   "yield_gap_bridge" : 0.0,           /* factor by which laimax value is closed (7 - country-value)*factor */
   "allocation_threshold" : 35.0,      /* allocation threshold for daily grassland allocation */
   "hfrac2" : 2500.0,
+  "hfrac_biomass" : 0.75,             /* harvest fraction of biomass grass */
   "firedura" : -11.06,                /* scaling factor for fire duration for the WVPD*/
   "hum_ign" : -0.50,		      /* a parameter for scaling the human ignintions within SPITFIRE */
   "fire_intens" : 0.000001,           /* threshold of fireintensity for which burnt area can be modeled */

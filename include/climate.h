@@ -106,6 +106,7 @@ typedef struct
 
 extern Climate *initclimate(const Cell *,const Config *);
 extern Bool getclimate(Climate *,const Cell *,int,const Config *);
+extern Bool getdeposition(Climate *,const Cell *,int,const Config *);
 extern Bool getco2(const Climate *,Real *,int);
 extern void freeclimate(Climate *,Bool);
 extern Bool storeclimate(Climatedata *,Climate *,const Cell *,int,int,
@@ -129,10 +130,14 @@ extern Bool readclimate(Climatefile *,Real *,Real,Real,const Cell *,int,
 extern Bool checkvalidclimate(Climate *,Cell *,Config *);
 extern Bool readco2(Co2data *,const Filename *,Bool);
 extern void radiation(Real *, Real *,Real *,Real,int,Dailyclimate *,Real,int);
-extern Real *readdata(Climatefile *,Real *data,const Cell [],const char *,int,const Config *);
-extern int *readintdata(Climatefile *,const Cell [],const char *,int,const Config *);
+extern Real *readdata(Climatefile *,Real *data,const Cell *,const char *,int,const Config *);
+extern int *readintdata(Climatefile *,const Cell *,const char *,int,const Config *);
+extern Bool openclmdata(Climatefile *,const Filename *,const char *,
+                     Type,Real,int,const Config *config);
 extern Bool opendata(Climatefile *,const Filename *,const char *,const char *,
                      Type,Real,int,Bool,const Config *config);
+extern Bool opendata_seq(Climatefile *,const Filename *,const char *,const char *,
+                         Type,Real,int,Bool,const Config *config);
 extern Bool openinputdata(Infile *,const Filename *,const char *,const char *,
                           Type,Real,const Config *config);
 extern Bool readinputdata(Infile *,Real *,const Coord *,int,const Filename *);

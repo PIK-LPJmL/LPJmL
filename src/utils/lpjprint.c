@@ -27,7 +27,7 @@
 
 #define PRINTLPJ_VERSION "1.0.020"
 #define NTYPES 3
-#define NSTANDTYPES 12 /* number of stand types */
+#define NSTANDTYPES 13 /* number of stand types */
 
 #define USAGE "Usage: %s [-h] [-inpath dir] [-restartpath dir]\n"\
               "       [[-Dmacro[=value]] [-Idir] ...] [filename [-check] [start [end]]]\n"
@@ -181,19 +181,6 @@ int main(int argc,char **argv)
 
   Standtype standtype[NSTANDTYPES];
 
-  standtype[NATURAL]=natural_stand;
-  standtype[SETASIDE_RF]=setaside_rf_stand;
-  standtype[SETASIDE_IR]=setaside_ir_stand;
-  standtype[AGRICULTURE]=agriculture_stand;
-  standtype[MANAGEDFOREST]=managedforest_stand;
-  standtype[GRASSLAND]=grassland_stand;
-  standtype[BIOMASS_TREE]=biomass_tree_stand;
-  standtype[BIOMASS_GRASS]=biomass_grass_stand;
-  standtype[AGRICULTURE_TREE]=agriculture_tree_stand;
-  standtype[AGRICULTURE_GRASS]=agriculture_grass_stand;
-  standtype[WOODPLANTATION]=woodplantation_stand,
-  standtype[KILL]=kill_stand;
-
   progname=strippath(argv[0]);
   if(argc>1 && !strcmp(argv[1],"-h"))
   {
@@ -279,6 +266,19 @@ int main(int argc,char **argv)
   if(startgrid>=config.startgrid)
     config.startgrid=startgrid;
   /*config.restart_filename=config.write_restart_filename; */
+  standtype[NATURAL]=natural_stand;
+  standtype[SETASIDE_RF]=setaside_rf_stand;
+  standtype[SETASIDE_IR]=setaside_ir_stand;
+  standtype[AGRICULTURE]=agriculture_stand;
+  standtype[MANAGEDFOREST]=managedforest_stand;
+  standtype[GRASSLAND]=grassland_stand;
+  standtype[OTHERS]=others_stand;
+  standtype[BIOMASS_TREE]=biomass_tree_stand;
+  standtype[BIOMASS_GRASS]=biomass_grass_stand;
+  standtype[AGRICULTURE_TREE]=agriculture_tree_stand;
+  standtype[AGRICULTURE_GRASS]=agriculture_grass_stand;
+  standtype[WOODPLANTATION]=woodplantation_stand,
+  standtype[KILL]=kill_stand;
   rc=printgrid(&config,standtype,config.npft[TREE]+config.npft[GRASS],config.npft[CROP],isout);
   return (rc) ? EXIT_FAILURE : EXIT_SUCCESS;
 } /* of 'main' */

@@ -13,8 +13,6 @@
 /**                                                                                \n**/
 /**************************************************************************************/
 
-#include "../include/pftpar.h" /* include constant definitions */
-
 #define CTON_LEAF 30.0
 #define CTON_ROOT 30.0
 #define CTON_POOL 100.0
@@ -72,6 +70,9 @@
 #define K_LATOSA 6e3      /* leaf area to sapwood area */
 #define BC3 0.015         /*leaf respiration as fraction of Vmax for C3 plants */
 #define BC4 0.035         /* leaf respiration as fraction of Vmax for C4 plants */
+#define IRRIG_THRESHOLD_C3_DRY   0.8 /* irrigation threshold C3, prec < aprec_lim */
+#define IRRIG_THRESHOLD_C3_HUMID 0.9 /* irrigation threshold C3, prec >= aprec_lim */
+#define IRRIG_THRESHOLD_C4       0.7 /* irrigation threshold C4 */
 #define TEMP_BNF_MIN 0.5
 #define TEMP_BNF_MAX 45.0
 #define SWC_BNF_LOW 0.0
@@ -79,8 +80,10 @@
 #define PHI_BNF_1 0.0
 #define PHI_BNF_2 2.0
 #define MAXBNFCOST 0.25
+#define MAXBNFCOSTTR 0.007 /* Fraction of NPP available for BNF multiplied by climates legume share */
+#define MAXBNFCOSTTE 0.0014
+#define MAXBNFCOSTBO 0.0056
 #define BNF_COST 6.0
-
 
 "pftpar" :
 [
@@ -164,6 +167,7 @@
     "fn_turnover" : FN_TURNOVER_EV_BR, /* fraction of N not recovered before turnover */
     "windspeed_dampening" : 0.4, /* windspeed dampening */
     "roughness_length" : 2.0,  /* roughness length */
+    "irrig_threshold" : { "dry" : IRRIG_THRESHOLD_C3_DRY, "humid" : IRRIG_THRESHOLD_C3_HUMID },
     "leaftype" : "broadleaved",  /* leaftype */
     "turnover" : {"leaf" : 2.0, "sapwood" : 30.0, "root" : 2.0}, /* turnover leaf  sapwood root 9 11 12*/
     "cn_ratio" : {"leaf" : CTON_LEAF, "sapwood" :  CTON_SAP, "root" : CTON_ROOT}, /* C:N mass ratio for leaf, sapwood, and root 13,14,15*/
@@ -189,8 +193,8 @@
     "temp_bnf_opt" : {"low" : 20, "high" : 35},  /* Yu and Zhuang 2020 tropical forest*/
     "swc_bnf" : {"low" : SWC_BNF_LOW, "high" : SWC_BNF_HIGH},
     "phi_bnf" : [PHI_BNF_1, PHI_BNF_2],
-    "nfixpot" : 0.8,  /* Yu and Zhuang 2020 tropical forest*/
-    "maxbnfcost" : MAXBNFCOST,
+    "nfixpot" : 0.01,  /* Yu and Zhuang 2020 minimum*/
+    "maxbnfcost" : MAXBNFCOSTTR,
     "bnf_cost" : BNF_COST
   },
 /*--------------------------------------------------------------------------*/
@@ -274,6 +278,7 @@
     "fn_turnover" : FN_TURNOVER, /* fraction of N not recovered before turnover */
     "windspeed_dampening" : 0.4,  /* windspeed dampening */
     "roughness_length" : 2.0,  /* roughness length */
+    "irrig_threshold" : { "dry" : IRRIG_THRESHOLD_C3_DRY, "humid" : IRRIG_THRESHOLD_C3_HUMID },
     "leaftype" : "broadleaved",  /* leaftype */
     "turnover" : {"leaf" : 1.0, "sapwood" : 30.0, "root" : 1.0}, /* turnover leaf  sapwood root 9 11 12*/
     "cn_ratio" : {"leaf" : CTON_LEAF, "sapwood" :  CTON_SAP, "root" : CTON_ROOT}, /* C:N mass ratio for leaf, sapwood, and root 13,14,15*/
@@ -299,8 +304,8 @@
     "temp_bnf_opt" : {"low" : 20, "high" : 35},  /* Yu and Zhuang 2020 tropical forest*/
     "swc_bnf" : {"low" : SWC_BNF_LOW, "high" : SWC_BNF_HIGH},
     "phi_bnf" : [PHI_BNF_1, PHI_BNF_2],
-    "nfixpot" : 0.8,  /* Yu and Zhuang 2020 tropical forest*/
-    "maxbnfcost" : MAXBNFCOST,
+    "nfixpot" : 0.01,  /* Yu and Zhuang 2020 minimum*/
+    "maxbnfcost" : MAXBNFCOSTTR,
     "bnf_cost" : BNF_COST 
   },
 /*---------------------------------------------------------------------------------------------*/
@@ -384,6 +389,7 @@
     "fn_turnover" : FN_TURNOVER_EV, /* fraction of N not recovered before turnover */
     "windspeed_dampening" : 0.4,  /* windspeed dampening */
     "roughness_length" : 1.0,     /* roughness length */
+    "irrig_threshold" : { "dry" : IRRIG_THRESHOLD_C3_DRY, "humid" : IRRIG_THRESHOLD_C3_HUMID },
     "leaftype" : "needleleaved",/* leaftype */
     "turnover" : {"leaf" : 4.0, "sapwood" : 25.0, "root" : 4.0}, /* turnover leaf  sapwood root 9 11 12*/
     "cn_ratio" : {"leaf" : CTON_LEAF, "sapwood" :  CTON_SAP, "root" : CTON_ROOT}, /* C:N mass ratio for leaf, sapwood, and root 13,14,15*/
@@ -409,8 +415,8 @@
     "temp_bnf_opt" : {"low" : 16, "high" : 35},  /* Yu and Zhuang 2020 temperate coniferous forest*/
     "swc_bnf" : {"low" : SWC_BNF_LOW, "high" : SWC_BNF_HIGH},
     "phi_bnf" : [PHI_BNF_1, PHI_BNF_2],
-    "nfixpot" : 0.55,  /* Yu and Zhuang 2020 temperate coniferous forest*/
-    "maxbnfcost" : MAXBNFCOST,
+    "nfixpot" : 0.01,  /* Yu and Zhuang 2020 minimum*/
+    "maxbnfcost" : MAXBNFCOSTTE,
     "bnf_cost" : BNF_COST 
  },
 /*--------------------------------------------------------------------------*/
@@ -494,6 +500,7 @@
     "fn_turnover" : FN_TURNOVER_EV, /* fraction of N not recovered before turnover */
     "windspeed_dampening" : 0.4,  /* windspeed dampening */
     "roughness_length" : 1.0, /* roughness length */
+    "irrig_threshold" : { "dry" : IRRIG_THRESHOLD_C3_DRY, "humid" : IRRIG_THRESHOLD_C3_HUMID },
     "leaftype" : "broadleaved",/* leaftype */
     "turnover" : {"leaf" : 1.0, "sapwood" : 25.0, "root" : 1.0}, /* turnover leaf  sapwood root 9 11 12*/
     "cn_ratio" : {"leaf" : CTON_LEAF, "sapwood" :  CTON_SAP, "root" : CTON_ROOT}, /* C:N mass ratio for leaf, sapwood, and root 13,14,15*/
@@ -519,8 +526,8 @@
     "temp_bnf_opt" : {"low" : 18, "high" : 35},  /* Yu and Zhuang 2020 temperate evergreen forest*/
     "swc_bnf" : {"low" : SWC_BNF_LOW, "high" : SWC_BNF_HIGH},
     "phi_bnf" : [PHI_BNF_1, PHI_BNF_2],
-    "nfixpot" : 0.55,  /* Yu and Zhuang 2020 temperate evergreen forest*/
-    "maxbnfcost" : MAXBNFCOST,
+    "nfixpot" : 0.01,  /* Yu and Zhuang 2020 minimum*/
+    "maxbnfcost" : MAXBNFCOSTTE,
     "bnf_cost" : BNF_COST 
   },
 /*--------------------------------------------------------------------------*/
@@ -604,6 +611,7 @@
     "fn_turnover" : FN_TURNOVER, /* fraction of N not recovered before turnover */
     "windspeed_dampening" : 0.4,  /* windspeed dampening */
     "roughness_length" : 1.0, /* roughness length */
+    "irrig_threshold" : { "dry" : IRRIG_THRESHOLD_C3_DRY, "humid" : IRRIG_THRESHOLD_C3_HUMID },
     "leaftype" : "broadleaved",/* leaftype */
     "turnover" : {"leaf" : 1.0, "sapwood" : 25.0, "root" : 1.0}, /* turnover leaf  sapwood root 9 11 12*/
     "cn_ratio" : {"leaf" : CTON_LEAF, "sapwood" :  CTON_SAP, "root" : CTON_ROOT}, /* C:N mass ratio for leaf, sapwood, and root 13,14,15*/
@@ -631,8 +639,8 @@
     "temp_bnf_opt" : {"low" : 18, "high" : 35},  /* Yu and Zhuang 2020 temperate deciduous forest*/
     "swc_bnf" : {"low" : SWC_BNF_LOW, "high" : SWC_BNF_HIGH},
     "phi_bnf" : [PHI_BNF_1, PHI_BNF_2],
-    "nfixpot" : 0.55,  /* Yu and Zhuang 2020 temperate deciduous forest*/
-    "maxbnfcost" : MAXBNFCOST,
+    "nfixpot" : 0.01,  /* Yu and Zhuang 2020 minimum*/
+    "maxbnfcost" : MAXBNFCOSTTE,
     "bnf_cost" : BNF_COST 
   },
 /*--------------------------------------------------------------------------*/
@@ -716,6 +724,7 @@
     "fn_turnover" : FN_TURNOVER_EV, /* fraction of N not recovered before turnover */
     "windspeed_dampening" : 0.4,  /* windspeed dampening */
     "roughness_length" : 1.0, /* roughness length */
+    "irrig_threshold" : { "dry" : IRRIG_THRESHOLD_C3_DRY, "humid" : IRRIG_THRESHOLD_C3_HUMID },
     "leaftype" : "needleleaved",/* leaftype */
     "turnover" : {"leaf" : 4.0, "sapwood" : 25.0, "root" : 4.0}, /* turnover leaf  sapwood root 9 11 12*/
     "cn_ratio" : {"leaf" : CTON_LEAF, "sapwood" :  CTON_SAP, "root" : CTON_ROOT}, /* C:N mass ratio for leaf, sapwood, and root 13,14,15*/
@@ -741,8 +750,8 @@
     "temp_bnf_opt" : {"low" : 12, "high" : 25},  /* Yu and Zhuang 2020 boreal forest*/
     "swc_bnf" : {"low" : SWC_BNF_LOW, "high" : SWC_BNF_HIGH},
     "phi_bnf" : [PHI_BNF_1, PHI_BNF_2],
-    "nfixpot" : 0.032,  /* Yu and Zhuang 2020 boreal forest*/
-    "maxbnfcost" : MAXBNFCOST,
+    "nfixpot" : 0.01,  /* Yu and Zhuang 2020 minimum*/
+    "maxbnfcost" : MAXBNFCOSTBO,
     "bnf_cost" : BNF_COST 
   },
 /*--------------------------------------------------------------------------*/
@@ -826,6 +835,7 @@
     "fn_turnover" : FN_TURNOVER, /* fraction of N not recovered before turnover */
     "windspeed_dampening" : 0.4,  /* windspeed dampening */
     "roughness_length" : 1.0,     /* roughness length */
+    "irrig_threshold" : { "dry" : IRRIG_THRESHOLD_C3_DRY, "humid" : IRRIG_THRESHOLD_C3_HUMID },
     "leaftype" : "broadleaved",/* leaftype */
     "turnover" : {"leaf" : 1.0, "sapwood" : 25.0, "root" : 1.0}, /* turnover leaf  sapwood root 9 11 12*/
     "cn_ratio" : {"leaf" : CTON_LEAF, "sapwood" :  CTON_SAP, "root" : CTON_ROOT}, /* C:N mass ratio for leaf, sapwood, and root 13,14,15*/
@@ -853,8 +863,8 @@
     "temp_bnf_opt" : {"low" : 12, "high" : 25},  /* Yu and Zhuang 2020 boreal forest*/
     "swc_bnf" : {"low" : SWC_BNF_LOW, "high" : SWC_BNF_HIGH},
     "phi_bnf" : [PHI_BNF_1, PHI_BNF_2],
-    "nfixpot" : 0.032,  /* Yu and Zhuang 2020 boreal forest*/
-    "maxbnfcost" : MAXBNFCOST,
+    "nfixpot" : 0.01,  /* Yu and Zhuang 2020 minimum*/
+    "maxbnfcost" : MAXBNFCOSTBO,
     "bnf_cost" : BNF_COST
   },
 /*--------------------------------------------------------------------------*/
@@ -938,6 +948,7 @@
     "fn_turnover" : FN_TURNOVER, /* fraction of N not recovered before turnover */
     "windspeed_dampening" : 0.4,  /* windspeed dampening */
     "roughness_length" : 1.0,     /* roughness length */
+    "irrig_threshold" : { "dry" : IRRIG_THRESHOLD_C3_DRY, "humid" : IRRIG_THRESHOLD_C3_HUMID },
     "leaftype" : "needleleaved",/* leaftype */
     "turnover" : {"leaf" : 1.0, "sapwood" : 25.0, "root" : 1.0}, /* turnover leaf  sapwood root 9 11 12*/
     "cn_ratio" : {"leaf" : CTON_LEAF, "sapwood" :  CTON_SAP, "root" : CTON_ROOT}, /* C:N mass ratio for leaf, sapwood, and root 13,14,15*/
@@ -965,8 +976,8 @@
     "temp_bnf_opt" : {"low" : 12, "high" : 25},  /* Yu and Zhuang 2020 boreal forest*/
     "swc_bnf" : {"low" : SWC_BNF_LOW, "high" : SWC_BNF_HIGH},
     "phi_bnf" : [PHI_BNF_1, PHI_BNF_2],
-    "nfixpot" : 0.032,  /* Yu and Zhuang 2020 boreal forest*/
-    "maxbnfcost" : MAXBNFCOST,
+    "nfixpot" : 0.01,  /* Yu and Zhuang 2020 minimum*/
+    "maxbnfcost" : MAXBNFCOSTBO,
     "bnf_cost" : BNF_COST
  },
 /*--------------------------------------------------------------------------*/
@@ -1050,6 +1061,7 @@
     "fn_turnover" : FN_TURNOVER_GR, /* fraction of N not recovered before turnover */
     "windspeed_dampening" : 0.6,/* windspeed dampening */
     "roughness_length" : 0.03,  /* roughness length */
+    "irrig_threshold" : { "dry" : IRRIG_THRESHOLD_C4, "humid" : IRRIG_THRESHOLD_C4 },
     "turnover" : {"leaf" : 1.0, "root" : 2.0}, /* turnover leaf  root 9 12*/
     "cn_ratio" : {"leaf" : CTON_LEAF, "root" : CTON_ROOT}, /* C:N mass ratio for leaf, and root 13,15*/
     "ratio" : 1.16,
@@ -1058,8 +1070,8 @@
     "temp_bnf_opt" : {"low" : 18, "high" : 35},  /* Yu and Zhuang 2020 grassland*/
     "swc_bnf" : {"low" : SWC_BNF_LOW, "high" : SWC_BNF_HIGH},
     "phi_bnf" : [PHI_BNF_1, PHI_BNF_2],
-    "nfixpot" : 0.05,  /* Yu and Zhuang 2020 grassland*/
-    "maxbnfcost" : MAXBNFCOST,
+    "nfixpot" : 0.01,  /* Yu and Zhuang 2020 minimum*/
+    "maxbnfcost" : MAXBNFCOSTTR,
     "bnf_cost" : BNF_COST 
   },
 /*--------------------------------------------------------------------------*/
@@ -1143,6 +1155,7 @@
     "fn_turnover" : FN_TURNOVER_GR, /* fraction of N not recovered before turnover */
     "windspeed_dampening" : 0.6, /* windspeed dampening */
     "roughness_length" : 0.03,   /* roughness length */
+    "irrig_threshold" : { "dry" : IRRIG_THRESHOLD_C3_DRY, "humid" : IRRIG_THRESHOLD_C3_HUMID },
     "turnover" : {"leaf" : 1.0, "root" : 2.0}, /* turnover leaf  root 9 12*/
     "cn_ratio" : {"leaf" : CTON_LEAF, "root" : CTON_ROOT}, /* C:N mass ratio for leaf, and root 13,15*/
     "ratio" : 1.16,
@@ -1151,8 +1164,8 @@
     "temp_bnf_opt" : {"low" : 18, "high" : 35},  /* Yu and Zhuang 2020 grassland*/
     "swc_bnf" : {"low" : SWC_BNF_LOW, "high" : SWC_BNF_HIGH},
     "phi_bnf" : [PHI_BNF_1, PHI_BNF_2],
-    "nfixpot" : 0.05,  /* Yu and Zhuang 2020 grassland*/
-    "maxbnfcost" : MAXBNFCOST,
+    "nfixpot" : 0.01,  /* Yu and Zhuang 2020 minimum*/
+    "maxbnfcost" : MAXBNFCOSTTE,
     "bnf_cost" : BNF_COST 
   },
 /*--------------------------------------------------------------------------*/
@@ -1236,6 +1249,7 @@
     "fn_turnover" : FN_TURNOVER_GR, /* fraction of N not recovered before turnover */
     "windspeed_dampening" : 0.6,  /* windspeed dampening */
     "roughness_length" : 0.03,    /* roughness length */
+    "irrig_threshold" : { "dry" : IRRIG_THRESHOLD_C3_DRY, "humid" : IRRIG_THRESHOLD_C3_HUMID },
     "turnover" : {"leaf" : 1.0, "root" : 2.0}, /* turnover leaf  root 9 12*/
     "cn_ratio" : {"leaf" : CTON_LEAF, "root" : CTON_ROOT}, /* C:N mass ratio for leaf, and root 13,15*/
     "ratio" : 1.16,
@@ -1244,8 +1258,8 @@
     "temp_bnf_opt" : {"low" : 18, "high" : 35},  /* Yu and Zhuang 2020 grassland*/
     "swc_bnf" : {"low" : SWC_BNF_LOW, "high" : SWC_BNF_HIGH},
     "phi_bnf" : [PHI_BNF_1, PHI_BNF_2],
-    "nfixpot" : 0.05,  /* Yu and Zhuang 2020 grassland*/
-    "maxbnfcost" : MAXBNFCOST,
+    "nfixpot" : 0.01,  /* Yu and Zhuang 2020 minimum*/
+    "maxbnfcost" : MAXBNFCOSTBO,
     "bnf_cost" : BNF_COST 
   },
 /*----------------------------------------------------------------------------------------*/
@@ -1328,6 +1342,7 @@
     "fn_turnover" : FN_TURNOVER, /* fraction of N not recovered before turnover */
     "windspeed_dampening" : 0.4, /* windspeed dampening */
     "roughness_length" : 1.0,/* roughness length */
+    "irrig_threshold" : { "dry" : IRRIG_THRESHOLD_C3_DRY, "humid" : IRRIG_THRESHOLD_C3_HUMID },
     "leaftype" : "broadleaved",/* leaftype */
     "turnover" : {"leaf" : 2.0, "sapwood" : 10.0, "root" : 2.0}, /* turnover leaf  sapwood root 9 11 12*/
     "cn_ratio" : {"leaf" : CTON_LEAF, "sapwood" :  CTON_SAP, "root" : CTON_ROOT}, /* C:N mass ratio for leaf, sapwood, and root 13,14,15*/
@@ -1432,6 +1447,7 @@
     "fn_turnover" : FN_TURNOVER, /* fraction of N not recovered before turnover */
     "windspeed_dampening" : 0.4,  /* windspeed dampening */
     "roughness_length" : 1.0,     /* roughness length */
+    "irrig_threshold" : { "dry" : IRRIG_THRESHOLD_C3_DRY, "humid" : IRRIG_THRESHOLD_C3_HUMID },
     "leaftype" : "broadleaved",/* leaftype */
     "turnover" : {"leaf" : 1.0, "sapwood" : 10.0, "root" : 1.0}, /* turnover leaf  sapwood root 9 11 12*/
     "cn_ratio" : {"leaf" : CTON_LEAF, "sapwood" :  CTON_SAP, "root" : CTON_ROOT}, /* C:N mass ratio for leaf, sapwood, and root 13,14,15*/
@@ -1461,8 +1477,8 @@
     "temp_bnf_opt" : {"low" : 18, "high" : 35},  /* Yu and Zhuang 2020 temperate deciduous forest*/
     "swc_bnf" : {"low" : SWC_BNF_LOW, "high" : SWC_BNF_HIGH},
     "phi_bnf" : [PHI_BNF_1, PHI_BNF_2],
-    "nfixpot" : 0.55,  /* Yu and Zhuang 2020 temperate deciduous forest*/
-    "maxbnfcost" : MAXBNFCOST,
+    "nfixpot" : 0.01,  /* Yu and Zhuang 2020 minimum*/
+    "maxbnfcost" : MAXBNFCOSTTE,
     "bnf_cost" : BNF_COST 
   },
 /*--------------------------------------------------------------------------*/
@@ -1545,6 +1561,7 @@
     "fn_turnover" : FN_TURNOVER_GR, /* fraction of N not recovered before turnover */
     "windspeed_dampening" : 0.6,/* windspeed dampening */
     "roughness_length" : 0.03,  /* roughness length */
+    "irrig_threshold" : { "dry" : IRRIG_THRESHOLD_C4, "humid" : IRRIG_THRESHOLD_C4 },
     "turnover" : {"leaf" : 1.0, "root" : 2.0}, /* turnover leaf  root 9 12*/
     "cn_ratio" : {"leaf" : CTON_LEAF, "root" : CTON_ROOT}, /* C:N mass ratio for leaf and root 13,15*/
     "ratio" : 1.16,
@@ -1553,8 +1570,8 @@
     "temp_bnf_opt" : {"low" : 18, "high" : 35},  /* Yu and Zhuang 2020 grassland*/
     "swc_bnf" : {"low" : SWC_BNF_LOW, "high" : SWC_BNF_HIGH},
     "phi_bnf" : [PHI_BNF_1, PHI_BNF_2],
-    "nfixpot" : 0.05,  /* Yu and Zhuang 2020 grassland*/
-    "maxbnfcost" : MAXBNFCOST,
+    "nfixpot" : 0.01,  /* Yu and Zhuang 2020 minimum*/
+    "maxbnfcost" : MAXBNFCOSTTR,
     "bnf_cost" : BNF_COST 
   },
 /*--------------------------------------------------------------------------*/
@@ -1637,6 +1654,7 @@
     "fn_turnover" : FN_TURNOVER, /* fraction of N not recovered before turnover */
     "windspeed_dampening" : 0.6, /* windspeed dampening */
     "roughness_length" : 0.03, /* roughness length */
+    "irrig_threshold" : { "dry" : IRRIG_THRESHOLD_C3_DRY, "humid" : IRRIG_THRESHOLD_C3_HUMID },
     "calcmethod_sdate" : "temp wtyp calc", /* calc_sdate: method to calculate the sowing date*/
     "sdatenh" : 258, "sdatesh" : 90, /* sdatenh,sdatesh: init sowing date for northern and southern hemisphere (julian day) */
     "hlimit" : 330,         /* hlimit: max length of crop cycle  */
@@ -1748,6 +1766,7 @@
     "fn_turnover" : FN_TURNOVER, /* fraction of N not recovered before turnover */
     "windspeed_dampening" : 0.6, /* windspeed dampening */
     "roughness_length" : 0.03,   /* roughness length */
+    "irrig_threshold" : { "dry" : 1.0, "humid" : 1.0 },
     "calcmethod_sdate" : "prec calc", /* calc_sdate: method to calculate the sowing date*/
     "sdatenh" : 100, "sdatesh" : 180, /* sdatenh,sdatesh: init sowing date for northern and southern hemisphere (julian day) */
     "hlimit" : 180,         /* hlimit: max length of crop cycle  */
@@ -1837,7 +1856,7 @@
     },
     "mort_max" : MORT_MAX,  /* asymptotic maximum mortality rate (1/year) */
     "phenology" : "cropgreen",/* phenology */
-    "path" : C4,            /* pathway */
+    "path" : "C4",            /* pathway */
     "temp_co2" : { "low" : 8.0, "high" : 42.0 }, /* lower and upper temperature limit for co2 (deg C) 24 27*/
     "temp_photos" : { "low" : 21.0, "high" : 26.0},/* lower and upper limit of temperature optimum for photosynthesis(deg C) 25 26*/
     "b":  BC4, /* leaf respiration as fraction of Vmax for C4 plants */
@@ -1859,6 +1878,7 @@
     "fn_turnover" : FN_TURNOVER, /* fraction of N not recovered before turnover */
     "windspeed_dampening" : 0.6,  /* windspeed dampening */
     "roughness_length" : 0.03,    /* roughness length */
+    "irrig_threshold" : { "dry" : IRRIG_THRESHOLD_C4, "humid" : IRRIG_THRESHOLD_C4 },
     "calcmethod_sdate" : "temp prec calc", /* calc_sdate: method to calculate the sowing date*/
     "sdatenh" : 1, "sdatesh" : 181, /* sdatenh,sdatesh: init sowing date for northern and southern hemisphere (julian day) */
     "hlimit" : 240,         /* hlimit: max length of crop cycle  */
@@ -1970,6 +1990,7 @@
     "fn_turnover" : FN_TURNOVER, /* fraction of N not recovered before turnover */
     "windspeed_dampening" : 0.6, /* windspeed dampening */
     "roughness_length" : 0.03,   /* roughness length */
+    "irrig_threshold" : { "dry" : IRRIG_THRESHOLD_C4, "humid" : IRRIG_THRESHOLD_C4 },
     "calcmethod_sdate" : "prec calc", /* calc_sdate: method to calculate the sowing date*/
     "sdatenh" : 80, "sdatesh" : 260, /* sdatenh,sdatesh: init sowing date for northern and southern hemisphere (julian day) */
     "hlimit" : 240,         /* hlimit: max length of crop cycle  */
@@ -2081,6 +2102,7 @@
     "fn_turnover" : FN_TURNOVER, /* fraction of N not recovered before turnover */
     "windspeed_dampening" : 0.6, /* windspeed dampening */
     "roughness_length" : 0.03,   /* roughness length */
+    "irrig_threshold" : { "dry" : IRRIG_THRESHOLD_C3_DRY, "humid" : IRRIG_THRESHOLD_C3_HUMID },
     "calcmethod_sdate" : "temp prec calc", /* calc_sdate: method to calculate the sowing date*/
     "sdatenh" : 1, "sdatesh" : 181, /* sdatenh,sdatesh: init sowing date for northern and southern hemisphere (julian day) */
     "hlimit" : 300,         /* hlimit: max length of crop cycle  */
@@ -2199,6 +2221,7 @@
     "fn_turnover" : FN_TURNOVER, /* fraction of N not recovered before turnover */
     "windspeed_dampening" : 0.6,   /* windspeed dampening */
     "roughness_length" : 0.03,     /* roughness length */
+    "irrig_threshold" : { "dry" : IRRIG_THRESHOLD_C3_DRY, "humid" : IRRIG_THRESHOLD_C3_HUMID },
     "calcmethod_sdate" : "temp styp calc", /* calc_sdate: method to calculate the sowing date*/
     "sdatenh" : 90, "sdatesh" : 270, /* sdatenh,sdatesh: init sowing date for northern and southern hemisphere (julian day) */
     "hlimit" : 260,         /* hlimit: max length of crop cycle  */
@@ -2310,6 +2333,7 @@
     "fn_turnover" : FN_TURNOVER, /* fraction of N not recovered before turnover */
     "windspeed_dampening" : 0.6, /* windspeed dampening */
     "roughness_length" : 0.03,   /* roughness length */
+    "irrig_threshold" : { "dry" : IRRIG_THRESHOLD_C3_DRY, "humid" : IRRIG_THRESHOLD_C3_HUMID },
     "calcmethod_sdate" : "prec calc", /* calc_sdate: method to calculate the sowing date*/
     "sdatenh" : 80, "sdatesh" :  180, /* sdatenh,sdatesh: init sowing date for northern and southern hemisphere (julian day) */
     "hlimit" : 330,         /* hlimit: max length of crop cycle  */
@@ -2421,6 +2445,7 @@
     "fn_turnover" : FN_TURNOVER, /* fraction of N not recovered before turnover */
     "windspeed_dampening" : 0.6, /* windspeed dampening */
     "roughness_length" : 0.03,   /* roughness length */
+    "irrig_threshold" : { "dry" : IRRIG_THRESHOLD_C3_DRY, "humid" : IRRIG_THRESHOLD_C3_HUMID },
     "calcmethod_sdate" : "temp styp calc", /* calc_sdate: method to calculate the sowing date*/
     "sdatenh" : 1, "sdatesh" :  181, /* sdatenh,sdatesh: init sowing date for northern and southern hemisphere (julian day) */
     "hlimit" : 240,         /* hlimit: max length of crop cycle  */
@@ -2532,6 +2557,7 @@
     "fn_turnover" : FN_TURNOVER, /* fraction of N not recovered before turnover */
     "windspeed_dampening" : 0.6, /* windspeed dampening */
     "roughness_length" : 0.03,   /* roughness length */
+    "irrig_threshold" : { "dry" : IRRIG_THRESHOLD_C3_DRY, "humid" : IRRIG_THRESHOLD_C3_HUMID },
     "calcmethod_sdate" : "prec calc", /* calc_sdate: method to calculate the sowing date*/
     "sdatenh" : 140, "sdatesh" :  320, /* sdatenh,sdatesh: init sowing date for northern and southern hemisphere (julian day) */
     "hlimit" : 240,         /* hlimit: max length of crop cycle  */
@@ -2650,6 +2676,7 @@
     "fn_turnover" : FN_TURNOVER, /* fraction of N not recovered before turnover */
     "windspeed_dampening" : 0.6, /* windspeed dampening */
     "roughness_length" : 0.03,   /* roughness length */
+    "irrig_threshold" : { "dry" : IRRIG_THRESHOLD_C3_DRY, "humid" : IRRIG_THRESHOLD_C3_HUMID },
     "calcmethod_sdate" : "prec calc", /* calc_sdate: method to calculate the sowing date*/
     "sdatenh" : 100, "sdatesh" :  280, /* sdatenh,sdatesh: init sowing date for northern and southern hemisphere (julian day) */
     "hlimit" : 240,         /* hlimit: max length of crop cycle  */
@@ -2761,6 +2788,7 @@
     "fn_turnover" : FN_TURNOVER, /* fraction of N not recovered before turnover */
     "windspeed_dampening" : 0.6, /* windspeed dampening */
     "roughness_length" : 0.03,   /* roughness length */
+    "irrig_threshold" : { "dry" : IRRIG_THRESHOLD_C3_DRY, "humid" : IRRIG_THRESHOLD_C3_HUMID },
     "calcmethod_sdate" : "temp wtyp calc", /* calc_sdate: method to calculate the sowing date*/
     "sdatenh" : 241, "sdatesh" :  61, /* sdatenh,sdatesh: init sowing date for northern and southern hemisphere (julian day) */
     "hlimit" : 210,         /* hlimit: max length of crop cycle  */
@@ -2872,6 +2900,7 @@
     "fn_turnover" : FN_TURNOVER, /* fraction of N not recovered before turnover */
     "windspeed_dampening" : 0.6, /* windspeed dampening */
     "roughness_length" : 0.03,   /* roughness length */
+    "irrig_threshold" : { "dry" : IRRIG_THRESHOLD_C4, "humid" : IRRIG_THRESHOLD_C4 },
     "calcmethod_sdate" : "temp prec calc", /* calc_sdate: method to calculate the sowing date*/
     "sdatenh" : 120, "sdatesh" : 300, /* sdatenh,sdatesh: init sowing date for northern and southern hemisphere (julian day) */
     "hlimit" : 360,         /* hlimit: max length of crop cycle  */

@@ -59,6 +59,7 @@ Real daily_biomass_grass(Stand *stand,                /**< stand pointer */
   Real gc_pft,gcgp;
   Real wdf; /* water deficit fraction */
   Real transp;
+  Real fertil;
   Bool isphen;
   Irrigation *data;
   Pftgrass *grass;
@@ -91,6 +92,31 @@ Real daily_biomass_grass(Stand *stand,                /**< stand pointer */
 
   for(l=0;l<LASTLAYER;l++)
     aet_stand[l]=green_transp[l]=0;
+  if (config->with_nitrogen)
+  {
+    if(stand->cell->ml.fertilizer_nr!=NULL) /* has to be adapted if fix_fertilization option is added */
+    {
+      if(day==fertday_biomass(stand->cell,config))
+      {
+        fertil = stand->cell->ml.fertilizer_nr[data->irrigation].biomass_grass;
+        stand->soil.NO3[0]+=fertil*param.nfert_no3_frac;
+        stand->soil.NH4[0]+=fertil*(1-param.nfert_no3_frac);
+        stand->cell->balance.n_influx+=fertil*stand->frac;
+        getoutput(output,NFERT_AGR,config)+=fertil*stand->frac;
+      } /* end fday==day */
+    }
+    if(stand->cell->ml.manure_nr!=NULL) /* has to be adapted if fix_fertilization option is added */
+    {
+      if(day==fertday_biomass(stand->cell,config))
+      {
+        fertil = stand->cell->ml.manure_nr[data->irrigation].biomass_grass;
+        stand->soil.NO3[0]+=fertil*param.nfert_no3_frac;
+        stand->soil.NH4[0]+=fertil*(1-param.nfert_no3_frac);
+        stand->cell->balance.n_influx+=fertil*stand->frac;
+        getoutput(output,NMANURE_AGR,config)+=fertil*stand->frac;
+      } /* end fday==day */
+    }
+  }
 
   /* green water inflow */
   rainmelt=climate->prec+melt;
@@ -212,48 +238,58 @@ Real daily_biomass_grass(Stand *stand,                /**< stand pointer */
                &frac_g_evap,config->rw_manage);
 
   /* allocation, turnover and harvest AFTER photosynthesis */
-  if(n_pft>0)
+  if(config->with_nitrogen)
   {
-    fpc_inc=newvec(Real,n_pft);
-    check(fpc_inc);
-
-    foreachpft(pft,p,&stand->pftlist)
+    if(n_pft>0)
     {
-      grass=pft->data;
-      grasspar=getpftpar(pft,data);
-      if (pft->bm_inc.carbon > 5.0|| day==NDAYYEAR)
+      fpc_inc=newvec(Real,n_pft);
+      check(fpc_inc);
+
+      foreachpft(pft,p,&stand->pftlist)
       {
-        turnover_grass(&stand->soil.litter,pft,(Real)grass->growing_days/NDAYYEAR,config);
-        if(allocation_grass(&stand->soil.litter,pft,fpc_inc+p,config))
+        grass=pft->data;
+        grasspar=pft->par->data;
+        if (pft->bm_inc.carbon > 5.0|| day==NDAYYEAR)
         {
-          /* kill PFT from list of established PFTs */
-          fpc_inc[p]=fpc_inc[getnpft(&stand->pftlist)-1]; /*moved here by W. von Bloh */
-          litter_update_grass(&stand->soil.litter,pft,pft->nind,config);
-          delpft(&stand->pftlist,p);
-          p--; /* adjust loop variable */
+          turnover_grass(&stand->soil.litter,pft,(Real)grass->growing_days/NDAYYEAR,config);
+          if(allocation_grass(&stand->soil.litter,pft,fpc_inc+p,config))
+          {
+            /* kill PFT from list of established PFTs */
+            fpc_inc[p]=fpc_inc[getnpft(&stand->pftlist)-1]; /*moved here by W. von Bloh */
+            litter_update_grass(&stand->soil.litter,pft,pft->nind,config);
+            delpft(&stand->pftlist,p);
+            p--; /* adjust loop variable */
+          }
+          else
+           // pft->bm_inc.carbon=pft->bm_inc.nitrogen=0;
+           pft->bm_inc.carbon=0;
         }
         else
-         // pft->bm_inc.carbon=pft->bm_inc.nitrogen=0;
-         pft->bm_inc.carbon=0;
-       }
-       else
-       {
-         grass->turn.leaf.carbon+=grass->ind.leaf.carbon*grasspar->turnover.leaf/NDAYYEAR;
-         grass->turn.leaf.nitrogen+=grass->ind.leaf.nitrogen*grasspar->turnover.leaf/NDAYYEAR;
-         grass->turn_litt.leaf.carbon+=grass->ind.leaf.carbon*grasspar->turnover.leaf/NDAYYEAR*pft->nind;
-         grass->turn_litt.leaf.nitrogen+=grass->ind.leaf.nitrogen*grasspar->turnover.leaf/NDAYYEAR*pft->nind;
+        {
+          grass->turn.leaf.carbon+=grass->ind.leaf.carbon*grasspar->turnover.leaf/NDAYYEAR;
+          grass->turn.leaf.nitrogen+=grass->ind.leaf.nitrogen*grasspar->turnover.leaf/NDAYYEAR;
+          grass->turn_litt.leaf.carbon+=grass->ind.leaf.carbon*grasspar->turnover.leaf/NDAYYEAR*pft->nind;
+          grass->turn_litt.leaf.nitrogen+=grass->ind.leaf.nitrogen*grasspar->turnover.leaf/NDAYYEAR*pft->nind;
 
-         grass->turn.root.carbon+=grass->ind.root.carbon*grasspar->turnover.root/NDAYYEAR;
-         grass->turn.root.nitrogen+=grass->ind.root.nitrogen*grasspar->turnover.root/NDAYYEAR;
-         grass->turn_litt.root.carbon+=grass->ind.root.carbon*grasspar->turnover.root/NDAYYEAR*pft->nind;
-         grass->turn_litt.root.nitrogen+=grass->ind.root.nitrogen*grasspar->turnover.root/NDAYYEAR*pft->nind;
-
-         grass->growing_days++;
-         fpc_inc[p]=0;
-       }
+          grass->turn.root.carbon+=grass->ind.root.carbon*grasspar->turnover.root/NDAYYEAR;
+          grass->turn.root.nitrogen+=grass->ind.root.nitrogen*grasspar->turnover.root/NDAYYEAR;
+          grass->turn_litt.root.carbon+=grass->ind.root.carbon*grasspar->turnover.root/NDAYYEAR*pft->nind;
+          grass->turn_litt.root.nitrogen+=grass->ind.root.nitrogen*grasspar->turnover.root/NDAYYEAR*pft->nind;
+          grass->growing_days++;
+          fpc_inc[p]=0;
+        }
+      }
+      light(stand,fpc_inc,config);
+      free(fpc_inc);
     }
-    light(stand,fpc_inc,config);
-    free(fpc_inc);
+  }
+  else
+  {
+    stand->growing_days = 1;
+    /* turnover must happen before allocation */
+    foreachpft(pft,p,&stand->pftlist)
+      turnover_grass(&stand->soil.litter,pft,(Real)stand->growing_days/NDAYYEAR,config);
+    allocation_today(stand,config);
   }
   /* daily turnover and harvest check*/
   isphen=FALSE;
@@ -267,7 +303,7 @@ Real daily_biomass_grass(Stand *stand,                /**< stand pointer */
 
   if(isphen)
   {
-    harvest=harvest_stand(output,stand,0.75,config);
+    harvest=harvest_stand(output,stand,param.hfrac_biomass,config);
     if(data->irrigation)
     {
       stand->cell->discharge.dmass_lake+=(data->irrig_stor+data->irrig_amount)*stand->cell->coord.area*stand->frac;
@@ -314,7 +350,8 @@ Real daily_biomass_grass(Stand *stand,                /**< stand pointer */
       getoutputindex(output,PFT_HARVESTN,index,config)+=harvest.harvest.nitrogen;
     }
     /* harvested area */
-    getoutputindex(output,CFTFRAC,index,config)+=stand->cell->ml.landfrac[data->irrigation].biomass_grass;
+    getoutputindex(output,CFTFRAC,index,config)=stand->cell->ml.landfrac[data->irrigation].biomass_grass;
+    getoutputindex(output,CFT_NHARVEST,index,config)+=1.0;
   } /* of if(isphen) */
 
   if(data->irrigation && stand->pftlist.n>0) /*second element to avoid irrigation on just harvested fields */
