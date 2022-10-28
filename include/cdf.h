@@ -39,6 +39,7 @@
 #define DEPTH_LONG_NAME "Depth of Vertical Layer Center Below Surface"
 #define BNDS_NAME "depth_bnds"
 #define BNDS_LONG_NAME "bnds=0 for the top of the layer, and bnds=1 for the bottom of the layer"
+#define CALENDAR "noleap"
 
 typedef enum { ONEFILE,CREATE,APPEND,CLOSE} State_nc;
 

@@ -29,7 +29,7 @@ int main(int argc,char **argv)
 
   double *lat,*lon;
   size_t lat_len,lon_len;
-  size_t offsets[3],counts[3]={1,1,1};
+  size_t offsets[4]={0,0,0,0},counts[4]={1,1,1,1};
   double missing_value,data;
   char name[NC_MAX_NAME+1],*endptr;
   Header header;
@@ -47,7 +47,6 @@ int main(int argc,char **argv)
   var=NULL;
   header.datatype=LPJ_SHORT;
   header.scalar=0.01;
-  offsets[0]=0;
   for(i=1;i<argc;i++)
     if(argv[i][0]=='-')
     {
@@ -156,10 +155,14 @@ int main(int argc,char **argv)
             ndims,argv[i]);
     return TRUE;
   }
-  else if(ndims==2)
-    first=0;
+  else if(ndims>4)
+  {
+    fprintf(stderr,"ERROR408: Invalid number of dimensions %d in '%s', must be <5.\n",
+            ndims,argv[i]);
+    return TRUE;
+  }
   else
-    first=1;
+    first=ndims-2;
   index=ndims-1;
   dimids=newvec(int,ndims);
   if(dimids==NULL)
@@ -255,7 +258,7 @@ int main(int argc,char **argv)
     {
       rc=nc_get_vara_double(ncid,var_id,offsets,counts,&data);
       error(rc);
-      if((!isnan(missing_value) && data!=missing_value) ||
+      if((!isnan(missing_value) && !isnan(data) && data!=missing_value) ||
           (isnan(missing_value) && !isnan(data)))
       {
         switch(header.datatype)

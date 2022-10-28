@@ -169,7 +169,7 @@ static Cdf *create_cdf(const char *filename,
       snprintf(s,STRING_LEN,"days since %d-1-1 0:0:0",header->firstyear);
     rc=nc_put_att_text(cdf->ncid,time_var_id,"units",strlen(s),s);
     error(rc);
-    rc=nc_put_att_text(cdf->ncid,time_var_id,"calendar",strlen("noleap"),"noleap");
+    rc=nc_put_att_text(cdf->ncid,time_var_id,"calendar",strlen(CALENDAR),CALENDAR);
     error(rc);
     rc=nc_put_att_text(cdf->ncid, time_var_id,"axis",strlen("T"),"T");
     error(rc);
@@ -198,7 +198,7 @@ static Cdf *create_cdf(const char *filename,
     error(rc);
     if(map->isfloat)
     {
-      rc=nc_def_var(cdf->ncid,MAP_NAME,NC_FLOAT,1,&map_dim_id,&varid);
+      rc=nc_def_var(cdf->ncid,MAP_NAME,NC_DOUBLE,1,&map_dim_id,&varid);
       error(rc);
     }
     else

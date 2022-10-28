@@ -335,10 +335,10 @@ int writecoords(Outputfile *output,  /**< output struct */
             }
             free(vec);
             break;
-        }
+        } /* of switch(config->grid_type) */
       }
       break;
-  }
+  } /* of switch(outputmethod) */
 #else
   if(output->method==LPJ_FILES)
   {
@@ -410,7 +410,7 @@ int writecoords(Outputfile *output,  /**< output struct */
             break;
         }
         break;
-    }
+    } /* of switch(config->grid_type) */
   }
   else
   {

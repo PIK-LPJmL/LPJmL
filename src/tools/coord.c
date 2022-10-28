@@ -349,12 +349,13 @@ Bool fscancoord(LPJfile *file, /**< pointer to text file */
 
 int findcoord(const Coord *c,      /**< coordinate */
               const Coord array[], /**< array of coordinates */
+              const Coord *res,
               int size             /**< size of array */
              )         /** \return index of coordinate found or NOT_FOUND */
 {
   int i;
   for(i=0;i<size;i++)
-    if(fabs(array[i].lon-c->lon)<epsilon && fabs(array[i].lat-c->lat)<epsilon)
+    if(fabs(array[i].lon-c->lon)<res->lon*0.5 && fabs(array[i].lat-c->lat)<res->lat*0.5)
       return i;
   return NOT_FOUND;
 } /* of 'findcoord' */
