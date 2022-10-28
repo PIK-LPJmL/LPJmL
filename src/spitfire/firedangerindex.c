@@ -31,7 +31,8 @@ Real firedangerindex(Real char_moist_factor,
                      const Stand *stand,           /**< pointer to stand */
                      const Dailyclimate  *climate, /**< daily climate data */
                      Real avgprec,                 /**< monthly averaged precipitation (mm/day) */
-                     int fid                       /**< fire danger index method (NESTEROV_INDEX,WVPD_INDEX) */
+                     int fid,                      /**< fire danger index method (NESTEROV_INDEX,WVPD_INDEX) */
+                     Bool relative_humidity        /**< humidity is relative humidity (TRUE/FALSE) */
                     )                              /** \return fire danger index (0..1) */
 {
   Real d_fdi,alpha_fuelp_ave,fpc_sum=0;
@@ -65,9 +66,11 @@ Real firedangerindex(Real char_moist_factor,
       /*Goff and Gratch: coefficient z of saturation vapor pressure*/
       temperature = climate->temp + 273.16;
       Z =( a * (Ts/temperature -1) + b * log(Ts/temperature)/log(10.0) + c * (pow(10,pow(d,(1-(temperature/Ts))))-1) + f * (pow(10,-pow(h,(Ts/temperature)-1))-1));
-  
-      /*conversion of specific humidity to relative humidity*/
-      rh= 0.263 * 1013.25 * climate->humid *1/(exp(17.67*climate->temp/(temperature-29.65)));
+      if(relative_humidity)
+        rh=climate->humid;
+      else
+        /*conversion of specific humidity to relative humidity*/
+        rh= 0.263 * 1013.25 * climate->humid *1/(exp(17.67*climate->temp/(temperature-29.65)));
   
       /* average precipitation over one month to avoid unrealistically high flammability fluctuations in time steps with very low or zero precipitation */
        R = avgprec;

@@ -73,7 +73,7 @@ void dailyfire(Stand *stand,            /**< pointer to stand */
   fuelload(stand, &fuel,&livefuel, stand->cell->ignition.nesterov_max,config);
   fire_danger_index=firedangerindex(fuel.char_moist_factor,
                                     stand,climate,
-                                    avgprec,config->fdi);
+                                    avgprec,config->fdi,config->relative_humidity);
   //printf("fdi(%s)=%g\n",stand->type->name,fire_danger_index);
   if(config->prescribe_ignition)
     num_fires=climate->ignition;

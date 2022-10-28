@@ -547,7 +547,7 @@ void fprintconfig(FILE *file,          /**< File pointer to text output file */
   if(config->fire==SPITFIRE || config->fire==SPITFIRE_TMAX)
   {
     if(config->fdi==WVPD_INDEX)
-      printinputfile(file,"humid",&config->humid_filename,width);
+      printinputfile(file,(config->relative_humidity) ? "rhumid" : "humid",&config->humid_filename,width);
     if(config->prescribe_ignition)
       printinputfile(file,"ignition",&config->ignition_filename,width);
     else

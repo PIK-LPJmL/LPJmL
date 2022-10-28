@@ -201,6 +201,12 @@ Bool fscanconfig(Config *config,    /**< LPJ configuration */
       return TRUE;
     if(config->fdi==WVPD_INDEX && verbose)
       fputs("WARNING029: VPD index only calibrated for South America.\n",stderr);
+    if(config->fdi==WVPD_INDEX)
+    {
+      config->relative_humidity=FALSE;
+      if(fscanbool(file,&config->relative_humidity,"relative_humidity",TRUE,verbose))
+        return TRUE;
+    }
     if(fscanbool(file,&config->prescribe_burntarea,"prescribe_burntarea",TRUE,verbose))
       return TRUE;
     if(fscanbool(file,&config->max_firesize,"max_firesize",TRUE,verbose))

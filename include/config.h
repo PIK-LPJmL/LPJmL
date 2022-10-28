@@ -155,6 +155,7 @@ struct config
   Bool landuse_restart;   /**< land use enabled in restart file */
   Bool river_routing_restart;   /**< river routing enabled in restart file */
   Bool double_harvest;
+  Bool relative_humidity;  /**< humidity is relative humidity */
   int wateruse;           /**< enable wateruse (NO_WATERUSE, WATERUSE, ALL_WATERUSE) */
   int sdate_option_restart;     /**< sdate option in restart file */
   int crop_option_restart;      /**< crop option in restart file */
