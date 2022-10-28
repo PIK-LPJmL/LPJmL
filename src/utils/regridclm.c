@@ -259,7 +259,7 @@ int main(int argc,char **argv)
   }
   for(i=0;i<ngrid2;i++)
   {
-    j=findcoord(c2+i,c,ngrid);
+    j=findcoord(c2+i,c,&res,ngrid);
     if(j==NOT_FOUND) /* coordinate not found? */
     {
       if(issearch)

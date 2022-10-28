@@ -194,7 +194,7 @@ int main(int argc,char **argv)
   for(i=0;i<header.ncell;i++)
   {
     //printf("find %g %g\n",cnew[i].lon,cnew[i].lat);
-    index=findcoord(cnew+i,c,n1);
+    index=findcoord(cnew+i,c,&res,n1);
     if(index==NOT_FOUND)
     {
       fprintf(stderr,"Coordinate %s not found.\n",sprintcoord(s,cnew+i));
@@ -206,7 +206,7 @@ int main(int argc,char **argv)
       if(from==NOT_FOUND)
         break;
       from+=j;
-      to=findcoord(c+from,cnew,header.ncell);
+      to=findcoord(c+from,cnew,&res,header.ncell);
       if(to==NOT_FOUND) 
       {
         /* add cell from upstream */
@@ -220,7 +220,7 @@ int main(int argc,char **argv)
       to=r[index].index;
       if(to>=0)
       {
-         index=findcoord(c+to,cnew,header.ncell);
+         index=findcoord(c+to,cnew,&res,header.ncell);
          if(index==NOT_FOUND)
          {
            cnew[header.ncell]=c[to];

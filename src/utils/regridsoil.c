@@ -124,6 +124,7 @@ int main(int argc,char **argv)
     return EXIT_FAILURE;
   }
   count=0;
+  printf("[     ");
   for(i=0;i<ngrid2;i++)
   {
     if(ngrid2>10 && (i %(ngrid2/10)==0))
@@ -136,7 +137,7 @@ int main(int argc,char **argv)
     printcoord(c2+i);
     fputs(":",stdout);
 #endif
-    j=findcoord(c2+i,c,ngrid);
+    j=findcoord(c2+i,c,&res,ngrid);
     if(j==NOT_FOUND)
     {
       count++;

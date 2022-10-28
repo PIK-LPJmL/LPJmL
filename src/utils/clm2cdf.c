@@ -198,7 +198,7 @@ static Cdf *create_cdf(const char *filename,
     error(rc);
     if(map->isfloat)
     {
-      rc=nc_def_var(cdf->ncid,MAP_NAME,NC_FLOAT,1,&map_dim_id,&varid);
+      rc=nc_def_var(cdf->ncid,MAP_NAME,NC_DOUBLE,1,&map_dim_id,&varid);
       error(rc);
     }
     else
