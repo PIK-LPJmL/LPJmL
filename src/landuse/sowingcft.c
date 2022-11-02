@@ -13,6 +13,7 @@
 /**************************************************************************************/
 
 #include "lpj.h"
+#include "grassland.h"
 #include "agriculture.h"
 #include "crop.h"
 
@@ -28,12 +29,13 @@ static void cultcftstand(Stocks *flux_estab,  /**< establishment flux */
                          int cft,             /**< index of CFT to establish */
                          int year,            /**< simulation year (AD) */
                          int day,             /**< day (1..365) */
+                         Bool isother,        /**< other stand (TRUE/FALSE) */
                          const Config *config /**< LPJmL settings */
                         )
 {
   Stocks stocks;
   if((nofallow || cell->ml.cropdates[cft].fallow[irrig]<=0) &&
-     check_lu(cell->standlist,cell->ml.landfrac[irrig].crop[cft],npft+cft,irrig))
+     check_lu(cell->standlist,(isother) ? cell->ml.landfrac[irrig].grass[0] : cell->ml.landfrac[irrig].crop[cft],npft+cft,(isother) ? OTHERS : AGRICULTURE,irrig))
   {
     if(!(*alloc_today))
     {
@@ -41,7 +43,7 @@ static void cultcftstand(Stocks *flux_estab,  /**< establishment flux */
       *alloc_today=TRUE;
     }
     stocks=cultivate(cell,irrig,day,wtype,setasidestand,
-                     npft,ncft,cft,year,config);
+                     npft,ncft,cft,year,isother,config);
     flux_estab->carbon+=stocks.carbon;
     flux_estab->nitrogen+=stocks.nitrogen;
     if(irrig)
@@ -64,39 +66,40 @@ void sowingcft(Stocks *flux_estab,  /**< establishment flux */
                int cft,             /**< index of CFT to establish */
                int year,            /**< simulation year (AD) */
                int day,             /**< day (1..365) */
+               Bool isother,        /**< other stand(TRUE/FALSE) */
                const Config *config /**< LPJmL configuration */
               )
 {
   Stand *stand,*cropstand,*setasidestand;
   Pft *pft;
-  Real difffrac;
+  Real difffrac,landfrac;
   int s,p,cft_id,pos;
   Irrigation *irrigation,*data;
   /* set sowing date for all CFTs not in the land-use data set */
   if(config->sdate_option==FIXED_SDATE && cell->ml.landfrac[irrig].crop[cft]==0)
     cell->ml.sdate_fixed[cft+irrig*ncft]=day;
   s=findlandusetype(cell->standlist,(irrig) ? SETASIDE_IR : SETASIDE_RF);
-
   if(s!=NOT_FOUND)
   {
     setasidestand=getstand(cell->standlist,s);
-    cultcftstand(flux_estab,alloc_today,cell,setasidestand,irrig,wtype,nofallow,npft,ncft,cft,year,day,config);
+    cultcftstand(flux_estab,alloc_today,cell,setasidestand,irrig,wtype,nofallow,npft,ncft,cft,year,day,isother,config);
   }
   else
   {
     difffrac=0;
     foreachstand(stand,s,cell->standlist)
     {
-      if(stand->type->landusetype==AGRICULTURE)
+      if(stand->type->landusetype==((isother) ? OTHERS : AGRICULTURE))
       {
         irrigation=stand->data;
         // determine PFT-ID of crop grown here (use last as there is only one crop per cropstand)
         foreachpft(pft,p,&stand->pftlist)
           cft_id=pft->par->id-npft;
-        if(irrigation->irrigation==irrig && stand->frac > (2*tinyfrac+epsilon) && stand->frac > (cell->ml.landfrac[irrig].crop[cft_id]+epsilon))
+        landfrac=(isother) ? cell->ml.landfrac[irrig].grass[0] : cell->ml.landfrac[irrig].crop[cft_id];
+        if(irrigation->irrigation==irrig && stand->frac > (2*tinyfrac+epsilon) && stand->frac > landfrac+epsilon)
         {
-          difffrac=min(stand->frac-tinyfrac,stand->frac-cell->ml.landfrac[irrig].crop[cft_id]);
-          pos=addstand(&agriculture_stand,cell);
+          difffrac=min(stand->frac-tinyfrac,stand->frac-landfrac);
+          pos=addstand((isother) ? &others_stand : &agriculture_stand,cell);
           cropstand=getstand(cell->standlist,pos-1);
           data=cropstand->data;
           cropstand->frac=difffrac;
@@ -107,7 +110,7 @@ void sowingcft(Stocks *flux_estab,  /**< establishment flux */
           set_irrigsystem(cropstand,cft,npft,ncft,config);
           setaside(cell,cropstand,cell->ml.with_tillage,config->intercrop,npft,irrig,year,config);
           setasidestand=getstand(cell->standlist,pos-1);
-          cultcftstand(flux_estab,alloc_today,cell,setasidestand,irrig,wtype,nofallow,npft,ncft,cft,year,day,config);
+          cultcftstand(flux_estab,alloc_today,cell,setasidestand,irrig,wtype,nofallow,npft,ncft,cft,year,day,isother,config);
         }//if too large stand->frac
       } // if AGRICULTURE
       if(difffrac>epsilon)

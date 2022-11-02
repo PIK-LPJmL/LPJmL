@@ -242,6 +242,7 @@ struct config
   int *soilmap;
   int soilmap_size;
   int grazing;
+  int grazing_others;
 #ifdef IMAGE
   Bool groundwater_irrig;   /**< Irrigation from groundwater reservoir */
   Bool aquifer_irrig;       /**< Aquifer irrigation possible?*/

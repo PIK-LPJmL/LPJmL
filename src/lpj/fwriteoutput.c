@@ -1356,6 +1356,7 @@ void fwriteoutput(Outputfile *output,  /**< output file array */
   writeoutputarray(CFT_CONV_LOSS_EVAP,1);
   writeoutputarray(CFT_CONV_LOSS_DRAIN,1);
   writeoutputarray(CFTFRAC,1);
+  writeoutputarray(CFT_NHARVEST,1);
   writeoutputarray(CFT_AIRRIG,1);
   writeoutputarray(CFT_FPAR,ndate1);
   writeoutputarray(LUC_IMAGE,1);

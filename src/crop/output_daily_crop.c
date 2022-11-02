@@ -19,7 +19,7 @@ void output_daily_crop(Output* output, /**< daily output data */
                        const  Pft* pft, /**< pointer to PFT data */
                        Real gpp,         /**< GPP (gC/m2/day) */
                        Real rd,          /**< leaf respiration (gC/m2/day) */
-                       const Config *config
+                       const Config *config /**< LPJmL configuration */
                       )
 {
   const Pftcrop *crop;

@@ -19,7 +19,7 @@ void phenology_gsi(Pft *pft,    /**< pointer to PFT variables */
                    Real light,  /**< light, i.e. shortwave-downward radiation (W m-2) */
                    int day,     /**< day of the year */
                    Bool isdaily, /**< daily temperature data (TRUE/FALSE) */
-                   const Config *config
+                   const Config *config /**< LPJmL configuration */
                   )
 {
   Pfttree *tree;
