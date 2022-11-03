@@ -45,7 +45,8 @@ static Cdf *create_cdf(const char *filename,
                        const Coord_array *array)
 {
   Cdf *cdf;
-  float *lon,*lat,miss=MISSING_VALUE;
+  double *lon,*lat;
+  float miss=MISSING_VALUE;
   int *year,i,j,rc,dim[4],imiss=MISSING_VALUE_INT,varid;
   String s;
   time_t t;
@@ -55,14 +56,14 @@ static Cdf *create_cdf(const char *filename,
   int index;
   int len;
   cdf=new(Cdf);
-  lon=newvec(float,array->nlon);
+  lon=newvec(double,array->nlon);
   if(lon==NULL)
   {
     printallocerr("lon");
     free(cdf);
     return NULL;
   }
-  lat=newvec(float,array->nlat);
+  lat=newvec(double,array->nlat);
   if(lat==NULL)
   {
     printallocerr("lat");
@@ -71,9 +72,9 @@ static Cdf *create_cdf(const char *filename,
     return NULL;
   }
   for(i=0;i<array->nlon;i++)
-    lon[i]=(float)(array->lon_min+i*header->cellsize_lon);
+    lon[i]=array->lon_min+i*header->cellsize_lon;
   for(i=0;i<array->nlat;i++)
-    lat[i]=(float)(array->lat_min+i*header->cellsize_lat);
+    lat[i]=array->lat_min+i*header->cellsize_lat;
   if(notime)
     year=NULL;
   else
@@ -157,9 +158,9 @@ static Cdf *create_cdf(const char *filename,
     rc=nc_put_att_text(cdf->ncid,NC_GLOBAL,global_attrs[i].name,strlen(global_attrs[i].value),global_attrs[i].value);
     error(rc);
   }
-  rc=nc_def_var(cdf->ncid,LAT_NAME,NC_FLOAT,1,&lat_dim_id,&lat_var_id);
+  rc=nc_def_var(cdf->ncid,LAT_NAME,NC_DOUBLE,1,&lat_dim_id,&lat_var_id);
   error(rc);
-  rc=nc_def_var(cdf->ncid,LON_NAME,NC_FLOAT,1,&lon_dim_id,&lon_var_id);
+  rc=nc_def_var(cdf->ncid,LON_NAME,NC_DOUBLE,1,&lon_dim_id,&lon_var_id);
   error(rc);
   if(!notime)
   {
@@ -285,9 +286,9 @@ static Cdf *create_cdf(const char *filename,
     error(rc);
     free(year);
   }
-  rc=nc_put_var_float(cdf->ncid,lat_var_id,lat);
+  rc=nc_put_var_double(cdf->ncid,lat_var_id,lat);
   error(rc);
-  rc=nc_put_var_float(cdf->ncid,lon_var_id,lon);
+  rc=nc_put_var_double(cdf->ncid,lon_var_id,lon);
   error(rc);
   if(map!=NULL)
   {

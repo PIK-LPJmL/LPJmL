@@ -38,20 +38,20 @@ static Cdf *create_cdf(const char *filename,
                        const Coord_array *array)
 {
   Cdf *cdf;
-  float *lon,*lat;
+  double *lon,*lat;
   short miss=MISSING_VALUE;
   int i,rc,dim[2];
   String s;
   time_t t;
   int lat_var_id,lon_var_id,lat_dim_id,lon_dim_id;
   cdf=new(Cdf);
-  lon=newvec(float,array->nlon);
+  lon=newvec(double,array->nlon);
   if(lon==NULL)
   {
     printallocerr("lon");
     return NULL;
   }
-  lat=newvec(float,array->nlat);
+  lat=newvec(double,array->nlat);
   if(lat==NULL)
   {
     printallocerr("lat");
@@ -60,12 +60,11 @@ static Cdf *create_cdf(const char *filename,
     return NULL;
   }
   cdf->index=array;
-  lon[0]=(float)array->lon_min;
-  for(i=1;i<array->nlon;i++)
-    lon[i]=lon[i-1]+(float)res.lon;
-  lat[0]=(float)array->lat_min;
-  for(i=1;i<array->nlat;i++)
-    lat[i]=lat[i-1]+(float)res.lat;
+  for(i=0;i<array->nlon;i++)
+    lon[i]=array->lon_min+i*res.lon;
+  for(i=0;i<array->nlat;i++)
+    lat[i]=array->lat_min+i*res.lat;
+
 #ifdef USE_NETCDF4
   rc=nc_create(filename,(compress) ? NC_CLOBBER|NC_NETCDF4 : NC_CLOBBER,&cdf->ncid);
 #else
@@ -93,9 +92,9 @@ static Cdf *create_cdf(const char *filename,
   s[strlen(s)-1]='\0';
   rc=nc_put_att_text(cdf->ncid,NC_GLOBAL,"history",strlen(s),s);
   error(rc);
-  rc=nc_def_var(cdf->ncid,LAT_NAME,NC_FLOAT,1,&lat_dim_id,&lat_var_id);
+  rc=nc_def_var(cdf->ncid,LAT_NAME,NC_DOUBLE,1,&lat_dim_id,&lat_var_id);
   error(rc);
-  rc=nc_def_var(cdf->ncid,LON_NAME,NC_FLOAT,1,&lon_dim_id,&lon_var_id);
+  rc=nc_def_var(cdf->ncid,LON_NAME,NC_DOUBLE,1,&lon_dim_id,&lon_var_id);
   error(rc);
   rc=nc_put_att_text(cdf->ncid,lon_var_id,"units",strlen("degrees_east"),
                      "degrees_east");
@@ -135,9 +134,9 @@ static Cdf *create_cdf(const char *filename,
   rc=nc_put_att_short(cdf->ncid, cdf->varid,"_FillValue",NC_SHORT,1,&miss);
   rc=nc_enddef(cdf->ncid);
   error(rc);
-  rc=nc_put_var_float(cdf->ncid,lat_var_id,lat);
+  rc=nc_put_var_double(cdf->ncid,lat_var_id,lat);
   error(rc);
-  rc=nc_put_var_float(cdf->ncid,lon_var_id,lon);
+  rc=nc_put_var_double(cdf->ncid,lon_var_id,lon);
   error(rc);
   free(lat);
   free(lon);

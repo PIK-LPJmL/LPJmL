@@ -349,7 +349,7 @@ Bool fscancoord(LPJfile *file, /**< pointer to text file */
 
 int findcoord(const Coord *c,      /**< coordinate */
               const Coord array[], /**< array of coordinates */
-              const Coord *res,
+              const Coord *res,    /**< resolution (deg) */
               int size             /**< size of array */
              )         /** \return index of coordinate found or NOT_FOUND */
 {
