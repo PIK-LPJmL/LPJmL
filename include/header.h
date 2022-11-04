@@ -153,10 +153,10 @@ extern Bool freadanyheader(FILE *,Header *,Bool *,String,int *,Bool);
 extern size_t headersize(const char *,int);
 extern FILE *openinputfile(Header *, Bool *,const Filename *,
                            String,const char *,int *,size_t *,Bool,const Config *);
-extern FILE *openmetafile(Header *,Map **,const char *,Attr **,int *,String,String,String,String,Bool *,size_t *,const char *,Bool);
+extern FILE *openmetafile(Header *,Map **,const char *,Attr **,int *,String,String,String,String,Type *,Bool *,size_t *,const char *,Bool);
 extern char *getfilefrommeta(const char *,Bool);
 extern void fprintheader(FILE *,const Header *);
-extern char *parse_json_metafile(LPJfile *,char *,Header *,Map **,const char *,Attr **,int *,String,String,String,String,size_t *,Bool *,Verbosity);
+extern char *parse_json_metafile(LPJfile *,char *,Header *,Map **,const char *,Attr **,int *,String,String,String,String,Type *,size_t *,Bool *,Verbosity);
 extern Map *fscanmap(LPJfile *,const char *,Verbosity);
 extern void freemap(Map *);
 extern void fprintmap(FILE *,Map *);

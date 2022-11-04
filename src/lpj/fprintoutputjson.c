@@ -170,6 +170,7 @@ Bool fprintoutputjson(int index,           /**< index in outputvars array */
     grid_filename=findgridfile(config);
     if(grid_filename!=NULL)
       fprintf(file,"  \"gridfile\" : \"%s\",\n",strippath(grid_filename));
+    fprintf(file,"  \"grid_type\" : \"%s\",\n",typenames[config->grid_type]);
   }
   fprintf(file,"  \"filename\" : \"%s\"\n",strippath(filename));
   fprintf(file,"}\n");

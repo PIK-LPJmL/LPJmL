@@ -687,7 +687,7 @@ int main(int argc,char **argv)
     header.datatype=type;
     header.order=CELLYEAR;
 
-    file=openmetafile(&header,&map,map_name,&global_attrs,&n_global,NULL,var_units,var_descr,NULL,&swap,&offset,argv[iarg+2],TRUE);
+    file=openmetafile(&header,&map,map_name,&global_attrs,&n_global,NULL,var_units,var_descr,NULL,NULL,&swap,&offset,argv[iarg+2],TRUE);
     if(file==NULL)
       return EXIT_FAILURE;
     if(fseek(file,offset,SEEK_CUR))

@@ -777,7 +777,7 @@ int main(int argc,char **argv)
   }
   if(ismeta)
   {
-    file=openmetafile(&header,&map,map_name,&global_attrs2,&n_global2,var_name,var_units,var_descr,grid_name,&swap,&offset,filename,TRUE);
+    file=openmetafile(&header,&map,map_name,&global_attrs2,&n_global2,var_name,var_units,var_descr,grid_name,&gridtype,&swap,&offset,filename,TRUE);
     if(file==NULL)
       return EXIT_FAILURE;
     if(units==NULL && strlen(var_units)>0)

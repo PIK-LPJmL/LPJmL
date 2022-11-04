@@ -385,7 +385,7 @@ Bool filesexist(Config config, /**< LPJmL configuration */
     if(config.fdi==WVPD_INDEX)
       bad+=checkclmfile(&config,&config.humid_filename,NULL,TRUE);
     if(config.prescribe_burntarea)
-      bad+=checkclmfile(&config,&config.burntarea_filename,NULL,TRUE);
+      bad+=checkclmfile(&config,&config.burntarea_filename,"hectare",TRUE);
     bad+=checkdatafile(&config,&config.lightning_filename,NULL);
     bad+=checkinputfile(&config,&config.human_ignition_filename,NULL,0);
   }

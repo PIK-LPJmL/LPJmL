@@ -164,7 +164,7 @@ int main(int argc,char **argv)
   }
   else if(ismeta)
   {
-    file=openmetafile(&header,&map,map_name,&attrs,&n_attr,NULL,units,descr,NULL,&swap,&offset,argv[iarg],TRUE);
+    file=openmetafile(&header,&map,map_name,&attrs,&n_attr,NULL,units,descr,NULL,NULL,&swap,&offset,argv[iarg],TRUE);
     if(file==NULL)
       return EXIT_FAILURE;
     if(header.order!=CELLSEQ)

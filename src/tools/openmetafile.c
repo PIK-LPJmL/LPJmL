@@ -92,6 +92,7 @@ char *parse_json_metafile(LPJfile *lpjfile,   /**< pointer to JSON file */
                           String unit,        /**< unit of variable or NULL */
                           String descr,       /**< description of variable or NULL */
                           String gridfile,    /**< name of grid file or NULL */
+                          Type *grid_type,    /**< datatype of grid or NULL */
                           size_t *offset,     /**< offset in binary file */
                           Bool *swap,         /**< byte order has to be changed (TRUE/FALSE) */
                           Verbosity verbosity /**< verbosity level */
@@ -158,6 +159,27 @@ char *parse_json_metafile(LPJfile *lpjfile,   /**< pointer to JSON file */
     }
     else
       gridfile[0]='\0';
+  }
+  if(grid_type!=NULL)
+  {
+    if(iskeydefined(lpjfile,"grid_type"))
+    {
+      if(fscankeywords(lpjfile,(int *)grid_type,"grid_type",typenames,5,FALSE,verbosity))
+      {
+        closeconfig(lpjfile);
+        lpjfile->file.file=file;
+        return NULL;
+      }
+      if(*grid_type==LPJ_BYTE || *grid_type==LPJ_INT)
+      {
+        if(verbosity)
+          fprintf(stderr,"ERROR229: Invalid datatype %s for grid, must be short, float or double.\n",
+                typenames[*grid_type]);
+        closeconfig(lpjfile);
+        lpjfile->file.file=file;
+        return NULL;
+      }
+    }
   }
   if(unit!=NULL)
   {
@@ -359,6 +381,7 @@ FILE *openmetafile(Header *header,       /**< pointer to file header */
                    String unit,          /**< unit of variable or NULL */
                    String descr,         /**< description of variable or NULL */
                    String gridfile,      /**< name of grid file or NULL */
+                   Type *grid_type,    /**< datatype of grid or NULL */
                    Bool *swap,           /**< byte order has to be changed (TRUE/FALSE) */
                    size_t *offset,       /**< offset in binary file */
                    const char *filename, /**< file name */
@@ -393,7 +416,7 @@ FILE *openmetafile(Header *header,       /**< pointer to file header */
     if(key[0]=='{')
     {
 #ifdef USE_JSON
-      name=parse_json_metafile(&file,key,header,map,map_name,attrs,n_attr,variable,unit,descr,gridfile,offset,swap,isout ? ERR : NO_ERR);
+      name=parse_json_metafile(&file,key,header,map,map_name,attrs,n_attr,variable,unit,descr,gridfile,grid_type,offset,swap,isout ? ERR : NO_ERR);
       break;
 #else
       if(isout)
