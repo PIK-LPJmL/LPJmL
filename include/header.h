@@ -162,7 +162,7 @@ extern void freemap(Map *);
 extern void fprintmap(FILE *,Map *);
 extern void fprintjson(FILE *,const char *,const char *,const Header *,
                        Map *,const char *,const Attr *,int,const char *,const char *,
-                       const char *,const char *,int,const char *,Bool,int);
+                       const char *,const char *,Type,int,const char *,Bool,int);
 
 /* Definition of macros */
 

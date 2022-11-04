@@ -3,7 +3,7 @@
 cdf2bin \- convert NetCDF files into raw binary data
 .SH SYNOPSIS
 .B cdf2bin
-[\-v] [\-swap] [\-units u] [\-var name] [\-clm] [\-byte] [\-cellsize size [\-json] [\-o binfile]
+[\-v] [\-swap] [\-units u] [\-var name] [\-clm] [\-byte] [\-cellsize size [\-floatgrid] [\-doublegrid] [\-json] [\-o binfile]
 gridfile netcdffile ...
 .SH DESCRIPTION
 Program converts NetCDF output data into raw binary output data.
@@ -19,6 +19,12 @@ units to convert data from NetCDF file
 .TP
 \-var name
 variable name in NetCDF file
+.TP
+\-floatgrid
+set datatype of grid file to float, default is short.
+.TP
+\-doublegrid
+set datatype of grid file to double, default is short.
 .TP
 \-clm
 gridfile is in CLM format, raw be default

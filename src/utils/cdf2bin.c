@@ -15,9 +15,9 @@
 #include "lpj.h"
 
 #ifdef USE_UDUNITS
-#define USAGE "Usage: %s [-swap] [-v] [-units unit] [-var name] [-clm] [-cellsize size] [-byte] [-o filename] [-json] gridfile netcdffile ...\n"
+#define USAGE "Usage: %s [-swap] [-v] [-units unit] [-var name] [-clm] [-cellsize size] [-byte] [-floatgrid] [-doublegrid]  [-o filename] [-json] gridfile netcdffile ...\n"
 #else
-#define USAGE "Usage: %s [-swap] [-v] [-var name] [-clm] [-cellsize size] [-byte] [-o filename] gridfile netcdffile ...\n"
+#define USAGE "Usage: %s [-swap] [-v] [-var name] [-clm] [-cellsize size] [-byte] [-floatgrid] [-doublegrid] [-o filename] gridfile netcdffile ...\n"
 #endif
 
 #if defined(USE_NETCDF) || defined(USE_NETCDF4)
@@ -227,15 +227,19 @@ int main(int argc,char **argv)
   char *units,*var,*outname,*endptr,*out_json,*arglist,*descr;
   Coord *grid;
   Intcoord intcoord;
+  float fcoord[2];
+  double dcoord[2];
   FILE *file;
   int i,j;
   float cellsize_lon,cellsize_lat;
   Bool swap,verbose,isclm,isbyte,isjson;
   Header header;
+  Type grid_type;
   isbyte=swap=verbose=isclm=isjson=FALSE;
   units=NULL;
   var=NULL;
   outname="out.bin"; /* default file name for output */
+  grid_type=LPJ_SHORT;
   cellsize_lon=cellsize_lat=0.5;      /* default cell size */
   initconfig(&config);
   for(i=1;i<argc;i++)
@@ -250,6 +254,10 @@ int main(int argc,char **argv)
         isclm=TRUE;
       else if(!strcmp(argv[i],"-byte"))
         isbyte=TRUE;
+      else if(!strcmp(argv[i],"-floatgrid"))
+        grid_type=LPJ_FLOAT;
+      else if(!strcmp(argv[i],"-floatgrid"))
+        grid_type=LPJ_DOUBLE;
       else if(!strcmp(argv[i],"-json"))
         isjson=TRUE;
       else if(!strcmp(argv[i],"-var"))
@@ -352,9 +360,24 @@ int main(int argc,char **argv)
               strerror(errno));
       return EXIT_FAILURE;
     }
-    if(getfilesizep(file) % (sizeof(short)*2)!=0)
-      fprintf(stderr,"Warning: File size of '%s' is not multiple of %d.\n",argv[i],(int)(sizeof(short)*2));
-    config.ngridcell=getfilesizep(file)/sizeof(short)/2;
+    switch(grid_type)
+    {
+       case LPJ_SHORT:
+         if(getfilesizep(file) % (sizeof(short)*2)!=0)
+           fprintf(stderr,"Warning: File size of '%s' is not multiple of %d.\n",argv[i],(int)(sizeof(short)*2));
+         config.ngridcell=getfilesizep(file)/sizeof(short)/2;
+         break;
+       case LPJ_FLOAT:
+         if(getfilesizep(file) % (sizeof(float)*2)!=0)
+           fprintf(stderr,"Warning: File size of '%s' is not multiple of %d.\n",argv[i],(int)(sizeof(float)*2));
+         config.ngridcell=getfilesizep(file)/sizeof(float)/2;
+         break;
+       case LPJ_DOUBLE:
+         if(getfilesizep(file) % (sizeof(double)*2)!=0)
+           fprintf(stderr,"Warning: File size of '%s' is not multiple of %d.\n",argv[i],(int)(sizeof(double)*2));
+         config.ngridcell=getfilesizep(file)/sizeof(double)/2;
+         break;
+    }
     if(config.ngridcell==0)
     {
       fprintf(stderr,"Number of cells is zero in '%s'.\n",argv[i]);
@@ -366,11 +389,32 @@ int main(int argc,char **argv)
       printallocerr("grid");
       return EXIT_FAILURE;
     }
-    for(j=0;j<config.ngridcell;j++)
+    switch(grid_type)
     {
-      readintcoord(file,&intcoord,swap);
-      grid[j].lat=intcoord.lat*0.01;
-      grid[j].lon=intcoord.lon*0.01;
+      case LPJ_SHORT:
+        for(j=0;j<config.ngridcell;j++)
+        {
+          readintcoord(file,&intcoord,swap);
+          grid[j].lat=intcoord.lat*0.01;
+          grid[j].lon=intcoord.lon*0.01;
+        }
+        break;
+      case LPJ_FLOAT:
+        for(j=0;j<config.ngridcell;j++)
+        {
+          freadfloat(fcoord,2,swap,file);
+          grid[j].lon=fcoord[0];
+          grid[j].lat=fcoord[1];
+        }
+        break;
+      case LPJ_DOUBLE:
+        for(j=0;j<config.ngridcell;j++)
+        {
+          freaddouble(dcoord,2,swap,file);
+          grid[j].lon=dcoord[0];
+          grid[j].lat=dcoord[1];
+        }
+        break;
     }
     config.resolution.lat=cellsize_lat;
     config.resolution.lon=cellsize_lon;
@@ -470,7 +514,7 @@ int main(int argc,char **argv)
       printfcreateerr(out_json);
       return EXIT_FAILURE;
     }
-    fprintjson(file,outname,arglist,&header,NULL,NULL,NULL,0,var,units,descr,argv[i],(isclm) ? CLM : RAW,LPJOUTPUT_HEADER,FALSE,LPJOUTPUT_VERSION);
+    fprintjson(file,outname,arglist,&header,NULL,NULL,NULL,0,var,units,descr,argv[i],grid_type,(isclm) ? CLM : RAW,LPJOUTPUT_HEADER,FALSE,LPJOUTPUT_VERSION);
     fclose(file);
   }
   return EXIT_SUCCESS;
