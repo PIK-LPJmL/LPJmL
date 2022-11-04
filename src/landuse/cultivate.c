@@ -13,6 +13,7 @@
 /**************************************************************************************/
 
 #include "lpj.h"
+#include "grassland.h"
 #include "agriculture.h"
 
 Stocks cultivate(Cell *cell,           /**< cell pointer */
@@ -24,6 +25,7 @@ Stocks cultivate(Cell *cell,           /**< cell pointer */
                  int ncft,             /**< number of crop PFTs */
                  int cft,              /**< cft index for set_irrigsystem */
                  int year,             /**< AD */
+                 Bool isother,         /**< other stand (TRUE/FALSE) */
                  const Config *config  /**< LPJmL configuration */
                 )                      /** \return establihment flux (gC/m2,gN/m2) */
 {
@@ -44,7 +46,7 @@ Stocks cultivate(Cell *cell,           /**< cell pointer */
   Stand *stand;
 #endif
   vern_date20=cell->ml.cropdates[cft].vern_date20;
-  landfrac=cell->ml.landfrac[irrigation].crop[cft];
+  landfrac=(isother) ? cell->ml.landfrac[irrigation].grass[0] : cell->ml.landfrac[irrigation].crop[cft];
 #ifdef IMAGE
   nagr=2*ncft;
   foreachstand(stand,s,cell->standlist)
@@ -62,7 +64,7 @@ Stocks cultivate(Cell *cell,           /**< cell pointer */
 #endif
   {
     setasidestand->type->freestand(setasidestand);
-    setasidestand->type=&agriculture_stand;
+    setasidestand->type=(isother) ? &others_stand : &agriculture_stand;
     setasidestand->type->newstand(setasidestand);
     /* delete all PFTs */
     cutpfts(setasidestand,config);
@@ -70,7 +72,7 @@ Stocks cultivate(Cell *cell,           /**< cell pointer */
   }
   else
   {
-    pos=addstand(&agriculture_stand,cell);
+    pos=addstand((isother) ? &others_stand : &agriculture_stand,cell);
     cropstand=getstand(cell->standlist,pos-1);
     cropstand->frac=landfrac;
     reclaim_land(setasidestand,cropstand,cell,config->istimber,npft+ncft,config);
@@ -92,7 +94,7 @@ Stocks cultivate(Cell *cell,           /**< cell pointer */
   bm_inc.nitrogen=pft->bm_inc.nitrogen*cropstand->frac;
   if (cell->ml.manure_nr != NULL)
   {
-    manure = cell->ml.manure_nr[irrigation].crop[cft];
+    manure = (isother) ? cell->ml.manure_nr[irrigation].grass[0] : cell->ml.manure_nr[irrigation].crop[cft];
     cropstand->soil.NH4[0] += manure*param.nmanure_nh4_frac*param.nfert_split_frac;
     cropstand->soil.litter.item->agsub.leaf.carbon += manure*param.manure_cn*param.nfert_split_frac;
     cropstand->soil.litter.item->agsub.leaf.nitrogen += manure*(1-param.nmanure_nh4_frac)*param.nfert_split_frac;
@@ -106,7 +108,7 @@ Stocks cultivate(Cell *cell,           /**< cell pointer */
   }
   if (cell->ml.fertilizer_nr != NULL)
   {
-    fertil = cell->ml.fertilizer_nr[irrigation].crop[cft];
+    fertil = (isother) ? cell->ml.fertilizer_nr[irrigation].grass[0] : cell->ml.fertilizer_nr[irrigation].crop[cft];
     cropstand->soil.NO3[0] += fertil*param.nfert_no3_frac*param.nfert_split_frac;
     cropstand->soil.NH4[0] += fertil*(1 - param.nfert_no3_frac)*param.nfert_split_frac;
     cell->balance.n_influx += fertil*param.nfert_split_frac*cropstand->frac;

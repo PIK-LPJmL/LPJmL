@@ -1,10 +1,8 @@
 /**************************************************************************************/
 /**                                                                                \n**/
-/**                f  r  e  a  d  o  u  t  p  u  t  d  a  t  a  .  c               \n**/
+/**      i  s  n  a  n  n  u  a  l  _  o  u  t  p  u  t  .  c                      \n**/
 /**                                                                                \n**/
-/**     C implementation of LPJmL                                                  \n**/
-/**                                                                                \n**/
-/**     Function reads output data from restart file                               \n**/
+/** Function determines whether output is annual only output                       \n**/
 /**                                                                                \n**/
 /** (C) Potsdam Institute for Climate Impact Research (PIK), see COPYRIGHT file    \n**/
 /** authors, and contributors see AUTHORS file                                     \n**/
@@ -16,19 +14,15 @@
 
 #include "lpj.h"
 
-Bool freadoutputdata(FILE *file,          /**< pointer to restart file */
-                     Output *output,      /**< output data */
-                     Bool swap,           /**< byte order has to be changed? */
-                     Config *config /**< LPJ configuration */
-                    )
+Bool isannual_output(int index /**< index for output file */
+                    )          /** \return output is annual only output (TRUE/FALSE) */
 {
-  if(freadint(&config->totalsize,1,swap,file)!=1)
-    return TRUE;
-  output->data=newvec(Real,config->totalsize);
-  if(output->data==NULL)
+  switch(index)
   {
-    printallocerr("data");
-    return TRUE;
+    case CFTFRAC: case SDATE : case SDATE2 : case HDATE : case HDATE2:
+    case SYEAR: case SYEAR2:
+      return TRUE;
+    default:
+      return FALSE;
   }
-  return freadreal(output->data,config->totalsize,swap,file)!=config->totalsize;
-} /* of 'freadoutputdata' */
+} /* of 'isannual_output' */

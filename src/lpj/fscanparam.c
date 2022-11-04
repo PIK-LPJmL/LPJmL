@@ -184,11 +184,6 @@ Bool fscanparam(LPJfile *file,       /**< File pointer to text file */
   {
     fscanparamreal(&f,&param.lsuha,"lsuha");
     fscanparamreal(&f,&param.aprec_lim,"aprec_lim");
-    fscanparamreal01(&f,&param.irrig_threshold_c3_dry,"irrig_threshold_c3_dry");
-    fscanparamreal01(&f,&param.irrig_threshold_c3_humid,
-                   "irrig_threshold_c3_humid");
-    fscanparamreal01(&f,&param.irrig_threshold_c4,"irrig_threshold_c4");
-    fscanparamreal01(&f,&param.irrig_threshold_rice,"irrig_threshold_rice");
     fscanparamreal01(&f,&param.irrigation_soilfrac,"irrig_soilfrac");
     fscanparamreal01(&f,&param.ec_canal[0],"canal_conveyance_eff_sand");
     fscanparamreal01(&f,&param.ec_canal[1],"canal_conveyance_eff_loam");
@@ -210,6 +205,7 @@ Bool fscanparam(LPJfile *file,       /**< File pointer to text file */
       fscanparamreal01(&f,&param.nfert_no3_frac,"nfert_no3_frac");
       fscanparamreal01(&f,&param.nmanure_nh4_frac,"nmanure_nh4_frac");
     }
+    fscanparamreal01(&f,&param.ftimber_wp,"ftimber_wp");
     if(config->istimber)
     {
       fscanparamreal01(&f,&param.fburnt,"fburnt");
@@ -241,6 +237,7 @@ Bool fscanparam(LPJfile *file,       /**< File pointer to text file */
     else
       param.nfrac_grassharvest=param.nfrac_grazing=0;
     fscanparamreal(&f,&param.hfrac2,"hfrac2");
+    fscanparamreal01(&f,&param.hfrac_biomass,"hfrac_biomass");
     fscanparamreal01(&f,&param.rootreduction,"rootreduction");
     fscanparamreal01(&f,&param.phen_limit,"phen_limit");
   }

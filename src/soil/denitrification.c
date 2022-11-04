@@ -17,10 +17,10 @@
 #include "crop.h"
 #include "agriculture.h"
 
-void denitrification(Stand *stand,  /**< pointer to stand */
-                     int npft,
-                     int ncft,
-                     const Config *config
+void denitrification(Stand *stand,        /**< pointer to stand */
+                     int npft,            /**< number of natural PFTs */
+                     int ncft,            /**< number of crop PFTs */
+                     const Config *config /**< LPJmL configuration */
                     )
 {
   /* determines NO2 and N2 from nitrate NO3 */

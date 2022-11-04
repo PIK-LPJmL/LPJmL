@@ -1,10 +1,10 @@
 /**************************************************************************************/
 /**                                                                                \n**/
-/**                f  r  e  a  d  o  u  t  p  u  t  d  a  t  a  .  c               \n**/
+/**                i  s  i  r  r  i  g  e  v  e  n  t  .  c                        \n**/
 /**                                                                                \n**/
 /**     C implementation of LPJmL                                                  \n**/
 /**                                                                                \n**/
-/**     Function reads output data from restart file                               \n**/
+/** Function determines whether irrigation is necessary                            \n**/
 /**                                                                                \n**/
 /** (C) Potsdam Institute for Climate Impact Research (PIK), see COPYRIGHT file    \n**/
 /** authors, and contributors see AUTHORS file                                     \n**/
@@ -16,19 +16,22 @@
 
 #include "lpj.h"
 
-Bool freadoutputdata(FILE *file,          /**< pointer to restart file */
-                     Output *output,      /**< output data */
-                     Bool swap,           /**< byte order has to be changed? */
-                     Config *config /**< LPJ configuration */
-                    )
+Bool isirrigevent(const Stand *stand /**< pointer to stand */
+                 )                   /** \return irrigation is necessary (TRUE/FALSE) */
 {
-  if(freadint(&config->totalsize,1,swap,file)!=1)
-    return TRUE;
-  output->data=newvec(Real,config->totalsize);
-  if(output->data==NULL)
+  const Pft *pft;
+  Real wr,irrig_threshold;
+  int p;
+  foreachpft(pft,p,&stand->pftlist)
   {
-    printallocerr("data");
-    return TRUE;
-  }
-  return freadreal(output->data,config->totalsize,swap,file)!=config->totalsize;
-} /* of 'freadoutputdata' */
+    wr=getwr(&stand->soil,pft->par->rootdist);
+    if(stand->cell->climbuf.aprec<param.aprec_lim)
+      irrig_threshold=pft->par->irrig_threshold.dry;
+    else
+      irrig_threshold=pft->par->irrig_threshold.humid;
+    if(wr<irrig_threshold)
+      return TRUE;
+      /* if one of possibly two (grass) pfts requests irrigation, both get irrigated */
+  } /* of foreachpft() */
+  return FALSE;
+} /* of 'isirrigevent' */

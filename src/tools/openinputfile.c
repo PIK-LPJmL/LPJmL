@@ -16,16 +16,16 @@
 
 #include "lpj.h"
 
-FILE *openinputfile(Header *header, /**< pointer to file header */
-                    Bool *swap, /**< byte order has to be changed (TRUE/FALSE) */
-                    const Filename *filename, /**< file name */
-                    String headername, /**< clm file header string */
-                    const char *unit, /**< unit expected or NULL */
-                    int *version, /**< clm file version */
-                    size_t *offset, /**< offset in binary file */
-                    Bool isyear,
-                    const Config *config /**< grid configuration */
-                   )           /** \return file pointer to open file or NULL */
+FILE *openinputfile(Header *header,           /**< [out] pointer to file header */
+                    Bool *swap,               /**< [out] byte order has to be changed (TRUE/FALSE) */
+                    const Filename *filename, /**< [in]  file name */
+                    String headername,        /**< [out] clm file header string */
+                    const char *unit,         /**< unit expected or NULL */
+                    int *version,             /**< [inout] clm file version */
+                    size_t *offset,           /**< [in] offset in binary file */
+                    Bool isyear,              /**< [in] check for first year (TRUE/FALSE) */
+                    const Config *config      /**< [in] LPJmL configuration */
+                   )                          /** \return file pointer to open file or NULL */
 {
   FILE *file;
   String var_unit;
