@@ -32,8 +32,9 @@
   "sim_id"   : "lpjml",     /* LPJML Simulation type with managed land use */
   "version"  : "5.3",       /* LPJmL version expected */
   "global_attrs" : {"institution" : "Potsdam Institute for Climate Impact Research",
-                    "contact" : "",
-                    "comment" : ""},
+                    "contact" : "", /* name and email address */
+                    "comment" : ""  /* additional comments */
+                   },       /* Global attributes for NetCDF output files */
   "random_prec" : true,     /* Random weather generator for precipitation enabled */
   "random_seed" : 2,        /* seed for random number generator */
   "radiation" : "radiation",/* other options: "cloudiness", "radiation", "radiation_swonly", "radiation_lwdown" */

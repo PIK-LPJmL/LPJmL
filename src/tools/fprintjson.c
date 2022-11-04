@@ -30,6 +30,7 @@ void fprintjson(FILE *file,           /**< pointer to text file */
                 const char *unit,     /**< unit of variable or NULL */
                 const char *descr,    /**< description of variable or NULL */
                 const char *gridfile, /**< filename of grid file or NULL */
+                Type grid_type,       /**< datatype of grid */
                 int format,           /**< file format (RAW/CLM) */
                 const char *id,       /**< Id of clm file */
                 Bool swap,            /**< byte order has to be swapped (TRUE/FALSE) */
@@ -98,7 +99,10 @@ void fprintjson(FILE *file,           /**< pointer to text file */
     fprintf(file,"  \"offset\" : %zu,\n",headersize(id,version));
   }
   if(gridfile!=NULL)
+  {
     fprintf(file,"  \"gridfile\" : \"%s\",\n",strippath(gridfile));
+    fprintf(file,"  \"grid_type\" : \"%s\",\n",typenames[grid_type]);
+  }
   fprintf(file,"  \"bigendian\" : %s\n",bool2str((!swap && bigendian()) || (swap && !bigendian())));
   fprintf(file,"}\n");
 } /* of 'fprintjson' */

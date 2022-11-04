@@ -14,7 +14,7 @@
 
 #include "lpj.h"
 
-#define USAGE "Usage: %s [-clm] [-nitem n] [-nsum n] [-month|day] [-swap] [-mean] [-floatgrid] [-metafile] [gridfile] binfile sumfile\n"
+#define USAGE "Usage: %s [-clm] [-nitem n] [-nsum n] [-month|day] [-swap] [-mean] [-floatgrid] [-doublegrid] [-metafile] [gridfile] binfile sumfile\n"
 
 int main(int argc,char **argv)
 {
@@ -32,19 +32,23 @@ int main(int argc,char **argv)
   int n_attr;
   String units,descr;
   Header header;
-  Bool swap,mean,isclm,floatgrid,ismeta;
-  swap=mean=isclm=floatgrid=ismeta=FALSE;
+  Type grid_type;
+  Bool swap,mean,isclm,ismeta;
+  swap=mean=isclm=ismeta=FALSE;
   nitem=1;
   nsum=NMONTH;
   units[0]='\0';
   descr[0]='\0';
+  grid_type=LPJ_SHORT;
   for(iarg=1;iarg<argc;iarg++)
     if(argv[iarg][0]=='-')
     {
       if(!strcmp(argv[iarg],"-swap"))
         swap=TRUE;
       else if(!strcmp(argv[iarg],"-floatgrid"))
-        floatgrid=TRUE;
+        grid_type=LPJ_FLOAT;
+      else if(!strcmp(argv[iarg],"-doublegrid"))
+        grid_type=LPJ_DOUBLE;
       else if(!strcmp(argv[iarg],"-clm"))
         isclm=TRUE;
       else if(!strcmp(argv[iarg],"-metafile"))
@@ -119,10 +123,18 @@ int main(int argc,char **argv)
               strerror(errno));
       return EXIT_FAILURE;
     }
-    if(floatgrid)
-      ngrid=getfilesizep(file)/sizeof(float)/2;
-    else
-      ngrid=getfilesizep(file)/sizeof(short)/2;
+    switch(grid_type)
+    {
+       case LPJ_SHORT:
+         ngrid=getfilesizep(file)/sizeof(short)/2;
+         break;
+       case LPJ_FLOAT:
+         ngrid=getfilesizep(file)/sizeof(float)/2;
+         break;
+       case LPJ_DOUBLE:
+         ngrid=getfilesizep(file)/sizeof(double)/2;
+         break;
+    }
     if(ngrid==0)
     {
        fprintf(stderr,"Error: Number of grid cells in '%s' is zero.\n",argv[iarg]);
@@ -254,7 +266,7 @@ int main(int argc,char **argv)
       printfcreateerr(out_json);
       return EXIT_FAILURE;
     }
-    fprintjson(file,argv[iarg+1],arglist,&header,map,map_name,attrs,n_attr,NULL,strlen(units)>0 ? units : NULL,strlen(descr)>0 ? descr : NULL,argv[iarg],RAW,LPJOUTPUT_HEADER,FALSE,LPJOUTPUT_VERSION);
+    fprintjson(file,argv[iarg+1],arglist,&header,map,map_name,attrs,n_attr,NULL,strlen(units)>0 ? units : NULL,strlen(descr)>0 ? descr : NULL,argv[iarg],grid_type,RAW,LPJOUTPUT_HEADER,FALSE,LPJOUTPUT_VERSION);
     fclose(file);
   }
   return EXIT_SUCCESS;
