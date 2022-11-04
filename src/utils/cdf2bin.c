@@ -439,6 +439,8 @@ int main(int argc,char **argv)
       fprintf(stderr,"Error opening '%s'.\n",argv[j]);
       return EXIT_FAILURE;
     }
+    if(var==NULL)
+      var=getvarname_netcdf(&data);
     if(units==NULL)
       units=getattr_netcdf(&data,"units");
     descr=getattr_netcdf(&data,"long_name");
