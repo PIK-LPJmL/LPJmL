@@ -91,7 +91,7 @@ char *parse_json_metafile(LPJfile *lpjfile,   /**< pointer to JSON file */
                           String variable,    /**< name of variable or NULL */
                           String unit,        /**< unit of variable or NULL */
                           String descr,       /**< description of variable or NULL */
-                          String gridfile,    /**< name of grid file or NULL */
+                          Filename *gridfile, /**< name of grid file or NULL */
                           Type *grid_type,    /**< datatype of grid or NULL */
                           size_t *offset,     /**< offset in binary file */
                           Bool *swap,         /**< byte order has to be changed (TRUE/FALSE) */
@@ -99,6 +99,7 @@ char *parse_json_metafile(LPJfile *lpjfile,   /**< pointer to JSON file */
                          )                    /** \return filename of binary file or NULL */
 {
   FILE *file;
+  LPJfile item;
   String filename;
   Bool endian;
   file=lpjfile->file.file;
@@ -148,38 +149,51 @@ char *parse_json_metafile(LPJfile *lpjfile,   /**< pointer to JSON file */
   }
   if(gridfile!=NULL)
   {
-    if(iskeydefined(lpjfile,"gridfile"))
+    if(iskeydefined(lpjfile,"grid"))
     {
-      if(fscanstring(lpjfile,gridfile,"gridfile",FALSE,verbosity))
+      if(fscanstruct(lpjfile,&item,"grid",verbosity))
       {
         closeconfig(lpjfile);
         lpjfile->file.file=file;
         return NULL;
+      }
+      if(fscanstring(&item,filename,"filename",FALSE,verbosity))
+      {
+        closeconfig(lpjfile);
+        lpjfile->file.file=file;
+        return NULL;
+      }
+      gridfile->name=strdup(filename);
+      if(fscankeywords(&item,&gridfile->fmt,"format",fmt,N_FMT,FALSE,verbosity))
+      {
+        closeconfig(lpjfile);
+        lpjfile->file.file=file;
+        return NULL;
+      }
+      if(grid_type!=NULL)
+      {
+        if(iskeydefined(&item,"datatype"))
+        {
+          if(fscankeywords(&item,(int *)grid_type,"datatype",typenames,5,FALSE,verbosity))
+          {
+            closeconfig(lpjfile);
+            lpjfile->file.file=file;
+            return NULL;
+          }
+          if(*grid_type==LPJ_BYTE || *grid_type==LPJ_INT)
+          {
+            if(verbosity)
+              fprintf(stderr,"ERROR229: Invalid datatype %s for grid, must be short, float or double.\n",
+                    typenames[*grid_type]);
+            closeconfig(lpjfile);
+            lpjfile->file.file=file;
+            return NULL;
+          }
+        }
       }
     }
     else
-      gridfile[0]='\0';
-  }
-  if(grid_type!=NULL)
-  {
-    if(iskeydefined(lpjfile,"grid_type"))
-    {
-      if(fscankeywords(lpjfile,(int *)grid_type,"grid_type",typenames,5,FALSE,verbosity))
-      {
-        closeconfig(lpjfile);
-        lpjfile->file.file=file;
-        return NULL;
-      }
-      if(*grid_type==LPJ_BYTE || *grid_type==LPJ_INT)
-      {
-        if(verbosity)
-          fprintf(stderr,"ERROR229: Invalid datatype %s for grid, must be short, float or double.\n",
-                typenames[*grid_type]);
-        closeconfig(lpjfile);
-        lpjfile->file.file=file;
-        return NULL;
-      }
-    }
+      gridfile->name=NULL;
   }
   if(unit!=NULL)
   {
@@ -380,8 +394,8 @@ FILE *openmetafile(Header *header,       /**< pointer to file header */
                    String variable,      /**< name of variable or NULL */
                    String unit,          /**< unit of variable or NULL */
                    String descr,         /**< description of variable or NULL */
-                   String gridfile,      /**< name of grid file or NULL */
-                   Type *grid_type,    /**< datatype of grid or NULL */
+                   Filename *gridfile,   /**< name of grid file or NULL */
+                   Type *grid_type,      /**< datatype of grid or NULL */
                    Bool *swap,           /**< byte order has to be changed (TRUE/FALSE) */
                    size_t *offset,       /**< offset in binary file */
                    const char *filename, /**< file name */

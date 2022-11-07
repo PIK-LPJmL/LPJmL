@@ -29,7 +29,7 @@ void fprintjson(FILE *file,           /**< pointer to text file */
                 const char *variable, /**< name of variable of NULL */
                 const char *unit,     /**< unit of variable or NULL */
                 const char *descr,    /**< description of variable or NULL */
-                const char *gridfile, /**< filename of grid file or NULL */
+                const Filename *gridfile, /**< filename of grid file or NULL */
                 Type grid_type,       /**< datatype of grid */
                 int format,           /**< file format (RAW/CLM) */
                 const char *id,       /**< Id of clm file */
@@ -100,8 +100,10 @@ void fprintjson(FILE *file,           /**< pointer to text file */
   }
   if(gridfile!=NULL)
   {
-    fprintf(file,"  \"gridfile\" : \"%s\",\n",strippath(gridfile));
-    fprintf(file,"  \"grid_type\" : \"%s\",\n",typenames[grid_type]);
+    fprintf(file,"  \"grid\" : {\"filename\" : \"%s\", \"format\" : \"%s\", \"datatype\" : \"%s\"},\n",
+            strippath(gridfile->name),
+            fmt[gridfile->fmt],
+            typenames[grid_type]);
   }
   fprintf(file,"  \"bigendian\" : %s\n",bool2str((!swap && bigendian()) || (swap && !bigendian())));
   fprintf(file,"}\n");

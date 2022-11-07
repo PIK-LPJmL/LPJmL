@@ -18,12 +18,12 @@
 
 #define LINE_LEN 80  /* line length of JSON file */
 
-static char *findgridfile(const Config *config)
+static const Filename *findgridfile(const Config *config)
 {
   int i;
   for(i=0;i<config->n_out;i++)
     if(config->outputvars[i].id==GRID)
-      return config->outputvars[i].filename.name;
+      return &config->outputvars[i].filename;
   return NULL;
 } /* of 'findgridfile' */
 
@@ -36,7 +36,7 @@ Bool fprintoutputjson(int index,           /**< index in outputvars array */
   String s;
   char *filename;
   char *json_filename;
-  char *grid_filename;
+  const Filename *grid_filename;
   char **pftnames;
   int p,nbands,len;
   if(config->outputvars[index].oneyear)
@@ -169,8 +169,10 @@ Bool fprintoutputjson(int index,           /**< index in outputvars array */
   {
     grid_filename=findgridfile(config);
     if(grid_filename!=NULL)
-      fprintf(file,"  \"gridfile\" : \"%s\",\n",strippath(grid_filename));
-    fprintf(file,"  \"grid_type\" : \"%s\",\n",typenames[config->grid_type]);
+      fprintf(file,"  \"grid\" : {\"filename\" : \"%s\", \"format\" : \"%s\", \"datatype\" : \"%s\"},\n",
+              strippath(grid_filename->name),
+              fmt[grid_filename->fmt],
+              typenames[config->grid_type]);
   }
   fprintf(file,"  \"filename\" : \"%s\"\n",strippath(filename));
   fprintf(file,"}\n");
