@@ -15,7 +15,7 @@
 #include "lpj.h"
 #include "agriculture.h"
 
-Bool isdailyoutput_agriculture(const Config *config, /**< Output data */
+Bool isdailyoutput_agriculture(const Config *config, /**< LPJmL configuration */
                                const Stand *stand    /**< stand pointer */
                               )
 {

@@ -44,9 +44,10 @@ OBJS    = cultivate.$O landuse.$O landusechange.$O\
           isdailyoutput_agriculture.$O isdailyoutput_grassland.$O scancftmap.$O\
           fscanmowingdays.$O getnsoil_agr.$O agriculture_tree.$O agriculture_grass.$O\
           daily_agriculture_tree.$O daily_agriculture_grass.$O fscantreedens.$O\
-          findstandpft.$O output_gbw_agriculture_tree.$O\
+          findstandpft.$O output_gbw_agriculture_tree.$O isirrigevent.$O\
           annual_agriculture_tree.$O annual_agriculture_grass.$O readcottondays.$O\
-          update_irrig.$O update_double_harvest.$O fscanagtreemap.$O sowingcft.$O
+          update_irrig.$O update_double_harvest.$O fscanagtreemap.$O sowingcft.$O\
+          fertday_biomass.$O fertilize_tree.$O setotherstocrop.$O
 
 INC     = ../../include
 LIBDIR  = ../../lib

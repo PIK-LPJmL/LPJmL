@@ -20,7 +20,7 @@ Real rw_irrigation(Stand *stand,     /**< Pointer to non-natural stand */
                    Real gp_stand,    /**< potential stomata conductance */
                    const Real wet[], /**< wet array for PFT list */
                    Real eeq,         /**< potential evapotranspiration (mm) */
-                   const Config *config
+                   const Config *config /**<  LPJmL configuration */
                   )                  /** \return irrigation applied (mm) */
 {
 

@@ -19,12 +19,12 @@
 #define CG 0.2   /* cloud to ground flashes ratio */
 #define LER 0.04 /* efficiency in starting fires */
 
-void dailyfire(Stand *stand,            /**< pointer to stand */
+void dailyfire(Stand *stand,                /**< pointer to stand */
                Livefuel *livefuel,
-               Real popdens, /**< population density (capita/km2) */
+               Real popdens,                /**< population density (capita/km2) */
                Real avgprec,                /**< monthly averaged precipitation (mm/day) */
                const Dailyclimate *climate, /**< daily climate data */
-               const Config *config /**< prescribed burnt area (TRUE/FALSE) */
+               const Config *config         /**< LPJmL configuration */
               )
 {
   Real fire_danger_index,human_ignition,num_fires,windsp_cover,ros_forward;

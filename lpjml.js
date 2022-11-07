@@ -51,6 +51,7 @@
   "const_climate" : false,
   "shuffle_climate" : true, /* shuffle spinup climate */
   "const_deposition" : false,
+  "depos_year_const" : 1901,
   "fix_climate" : false,
   "fix_landuse" : false,
 #ifdef FROM_RESTART
@@ -90,6 +91,7 @@
   "fix_fertilization" : false,          /* fix fertilizer input */
   "others_to_crop" : true,              /* move PFT type others into PFT crop, cft_tropic for tropical,  cft_temp for temperate */
   "grazing" : "default",                /* default grazing type, other options : "default", "mowing", "ext", "int", "none" */
+  "grazing_others" : "default",         /* default grazing type for others, other options : "default", "mowing", "ext", "int", "none" */
   "cft_temp" : "temperate cereals",
   "cft_tropic" : "maize",
   "grassonly" : false,                  /* set all cropland including others to zero but keep managed grasslands */

@@ -22,12 +22,19 @@ Bool getdeposition(Climate *climate,    /**< pointer to climate data */
                    const Config *config /**< LPJ configuration */
                   )                     /** \return TRUE on error */
 {
+  int year_depos;
   char *name;
   if(config->const_deposition)
-    year=climate->firstyear+(year-config->firstyear) % 30;
+    year=config->depos_year_const+(year-config->depos_year_const) % config->fix_climate_cycle;
   if(climate->data.no3deposition!=NULL)
   {
-    if(readclimate(&climate->file_no3deposition,climate->data.no3deposition,0,climate->file_no3deposition.scalar,grid,max(year,climate->file_no3deposition.firstyear),config))
+    if(year<climate->file_no3deposition.firstyear)
+      year_depos=climate->file_no3deposition.firstyear;
+    else if(year>climate->file_no3deposition.firstyear+climate->file_no3deposition.nyear-1)
+      year_depos=climate->file_no3deposition.firstyear+climate->file_no3deposition.nyear-1;
+    else
+      year_depos=year;
+    if(readclimate(&climate->file_no3deposition,climate->data.no3deposition,0,climate->file_no3deposition.scalar,grid,year_depos,config))
     {
       if(isroot(*config))
       {
@@ -41,7 +48,13 @@ Bool getdeposition(Climate *climate,    /**< pointer to climate data */
   }
   if(climate->data.nh4deposition!=NULL)
   {
-    if(readclimate(&climate->file_nh4deposition,climate->data.nh4deposition,0,climate->file_nh4deposition.scalar,grid,max(year,climate->file_nh4deposition.firstyear),config))
+    if(year<climate->file_nh4deposition.firstyear)
+      year_depos=climate->file_nh4deposition.firstyear;
+    else if(year>climate->file_nh4deposition.firstyear+climate->file_nh4deposition.nyear-1)
+      year_depos=climate->file_nh4deposition.firstyear+climate->file_nh4deposition.nyear-1;
+    else
+      year_depos=year;
+    if(readclimate(&climate->file_nh4deposition,climate->data.nh4deposition,0,climate->file_nh4deposition.scalar,grid,year_depos,config))
     {
       if(isroot(*config))
       {

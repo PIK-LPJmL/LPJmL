@@ -318,15 +318,25 @@ Bool fscanconfig(Config *config,    /**< LPJ configuration */
   if(config->fix_climate)
   {
     fscanint2(file,&config->fix_climate_year,"fix_climate_year");
-    fscanint2(file,&config->fix_climate_cycle,"fix_climate_cycle");
   }
   config->const_deposition=FALSE;
   if(config->with_nitrogen==LIM_NITROGEN)
   {
-    if(fscanbool(file,&config->const_deposition,"const_deposition",TRUE,verbose))
-      return TRUE;
     if(fscanbool(file,&config->no_ndeposition,"no_ndeposition",TRUE,verbose))
       return TRUE;
+    if(!config->no_ndeposition)
+    {
+      if(fscanbool(file,&config->const_deposition,"const_deposition",TRUE,verbose))
+        return TRUE;
+      if(config->const_deposition)
+      {
+        fscanint2(file,&config->depos_year_const,"depos_year_const");
+      }
+    }
+  }
+  if(config->fix_climate || config->const_deposition)
+  {
+    fscanint2(file,&config->fix_climate_cycle,"fix_climate_cycle");
   }
   config->fertilizer_input=NO_FERTILIZER;
   config->fire_on_grassland=FALSE;
@@ -431,6 +441,12 @@ Bool fscanconfig(Config *config,    /**< LPJ configuration */
         if(fscankeywords(file,&config->grazing,"grazing",grazing_type,5,TRUE,verbose))
           return TRUE;
       }
+      config->grazing_others=GS_DEFAULT;
+      if(!config->others_to_crop)
+      {
+        if(fscankeywords(file,&config->grazing_others,"grazing_others",grazing_type,5,TRUE,verbose))
+          return TRUE;
+      }
       if(fscanmowingdays(file,config))
         return TRUE;
       if(fscankeywords(file,&config->tillage_type,"tillage_type",tillage,3,TRUE,verbose))
@@ -520,6 +536,7 @@ Bool fscanconfig(Config *config,    /**< LPJ configuration */
   config->iscotton=findpftname("cotton",config->pftpar+config->npft[GRASS]+config->npft[TREE]-config->nagtree,config->nagtree)!=NOT_FOUND;
   if(config->others_to_crop)
   {
+    setotherstocrop();
     if(fscanstring(file,name,"cft_temp",FALSE,verbose))
       return TRUE;
     config->cft_temp=findpftname(name,config->pftpar+config->npft[GRASS]+config->npft[TREE],config->npft[CROP]);

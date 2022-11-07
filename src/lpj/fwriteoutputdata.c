@@ -16,20 +16,6 @@
 
 #include "lpj.h"
 
-#define iswrite(index) (config->outnames[index].timestep>1)
-
-#define writeoutputvar(index,name,type) if(iswrite(index))\
-   fwrite(&output->name,sizeof(type),1,file)
-
-#define writeoutputarray(index,name,n,type) if(iswrite(index))\
-   fwrite(output->name,sizeof(type),n,file)
-
-#define writeoutputarrayitem(index,name,item,n,type) if(iswrite(index))\
-  {\
-    for(i=0;i<n;i++)\
-     fwrite(&output->name[i].item,sizeof(type),1,file);\
-  }
-
 void fwriteoutputdata(FILE *file,           /**< pointer to restart file */
                       const Output *output, /**< output data */
                       const Config *config  /**< LPJ configuration */

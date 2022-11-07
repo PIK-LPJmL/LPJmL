@@ -18,7 +18,7 @@
 /* Definitions of datatypes */
 
 typedef enum {NATURAL,SETASIDE_RF,SETASIDE_IR,AGRICULTURE,MANAGEDFOREST,
-              GRASSLAND,BIOMASS_TREE,BIOMASS_GRASS,AGRICULTURE_TREE,AGRICULTURE_GRASS,WOODPLANTATION,KILL} Landusetype;
+              GRASSLAND,OTHERS,BIOMASS_TREE,BIOMASS_GRASS,AGRICULTURE_TREE,AGRICULTURE_GRASS,WOODPLANTATION,KILL} Landusetype;
 
 typedef struct landuse *Landuse;
 
@@ -125,7 +125,7 @@ extern Bool readlandfracmap(Landfrac *,const int [],int,const Real [],int *,int,
 extern Real landfrac_sum(const Landfrac [2],int,int,Bool);
 extern Real crop_sum_frac(Landfrac *,int,int,Real,Bool);
 extern Stocks cultivate(Cell *,Bool,int,Bool,Stand *,
-                        int,int,int,int,const Config *);
+                        int,int,int,int,Bool,const Config *);
 #ifdef IMAGE
 extern void deforest_for_timber(Cell *,Real,int,Bool,int,Real,int,const Config *);
 #endif
@@ -133,7 +133,7 @@ extern void reclaim_land(const Stand *, Stand *,Cell *,Bool,int,const Config *);
 extern Bool getlanduse(Landuse,Cell *,int,int,int,const Config *);
 extern void landusechange(Cell *,int,int,Bool,int,const Config *);
 extern Bool setaside(Cell *,Stand *,Bool,Bool,int,Bool,int,const Config *);
-extern void sowingcft(Stocks *,Bool *,Cell *,Bool,Bool,Bool,int,int,int,int,int,const Config *);
+extern void sowingcft(Stocks *,Bool *,Cell *,Bool,Bool,Bool,int,int,int,int,int,Bool,const Config *);
 extern Stocks sowing_season(Cell *,int,int,int,Real,int,const Config *);
 extern Stocks sowing_prescribe(Cell *,int,int,int,int,const Config *);
 extern Stocks sowing(Cell *,Real,int,int,int,int,const Config *);
@@ -158,6 +158,10 @@ extern void getnsoil_agr(Real *,Real *,Real *,const Cell *);
 extern Bool readcottondays(Cell *,const Config *);
 extern void update_irrig(Stand *,int,int,const Config *);
 extern void update_double_harvest(Output *,Pft *,Bool,int,int,int,const Config *);
+extern Bool isirrigevent(const Stand *);
+extern int fertday_biomass(const Cell *,const Config *);
+extern void fertilize_tree(Stand *,Real,Real,int,const Config *);
+extern void setotherstocrop(void);
 
 /* Declaration of variables */
 
