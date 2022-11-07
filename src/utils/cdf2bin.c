@@ -234,6 +234,7 @@ int main(int argc,char **argv)
   float cellsize_lon,cellsize_lat;
   Bool swap,verbose,isclm,isbyte,isjson;
   Header header;
+  Filename grid_name;
   Type grid_type;
   isbyte=swap=verbose=isclm=isjson=FALSE;
   units=NULL;
@@ -516,7 +517,9 @@ int main(int argc,char **argv)
       printfcreateerr(out_json);
       return EXIT_FAILURE;
     }
-    fprintjson(file,outname,arglist,&header,NULL,NULL,NULL,0,var,units,descr,argv[i],grid_type,(isclm) ? CLM : RAW,LPJOUTPUT_HEADER,FALSE,LPJOUTPUT_VERSION);
+    grid_name.name=argv[i];
+    grid_name.fmt=(isclm) ? CLM : RAW;
+    fprintjson(file,outname,arglist,&header,NULL,NULL,NULL,0,var,units,descr,&grid_name,grid_type,(isclm) ? CLM : RAW,LPJOUTPUT_HEADER,FALSE,LPJOUTPUT_VERSION);
     fclose(file);
   }
   return EXIT_SUCCESS;

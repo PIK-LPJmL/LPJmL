@@ -545,12 +545,13 @@ int main(int argc,char **argv)
   Attr *global_attrs2=NULL;
   size_t offset;
   char *map_name,*filename;
-  String var_units,var_descr,var_name,grid_name; 
+  String var_units,var_descr,var_name;
+  Filename grid_name;
   char *variable,*grid_filename,*path;
   var_units[0]='\0';
   var_descr[0]='\0';
   var_name[0]='\0';
-  grid_name[0]='\0';
+  grid_name.fmt=RAW;
   units=descr=NULL;
   compress=0;
   swap=isglobal=FALSE;
@@ -777,7 +778,7 @@ int main(int argc,char **argv)
   }
   if(ismeta)
   {
-    file=openmetafile(&header,&map,map_name,&global_attrs2,&n_global2,var_name,var_units,var_descr,grid_name,&gridtype,&swap,&offset,filename,TRUE);
+    file=openmetafile(&header,&map,map_name,&global_attrs2,&n_global2,var_name,var_units,var_descr,&grid_name,&gridtype,&swap,&offset,filename,TRUE);
     if(file==NULL)
       return EXIT_FAILURE;
     if(units==NULL && strlen(var_units)>0)
@@ -789,7 +790,7 @@ int main(int argc,char **argv)
       mergeattrs(&global_attrs,&n_global,global_attrs2,n_global2);
       freeattrs(global_attrs2,n_global2);
     }
-  } 
+  }
   if(argc!=iarg+2)
   {
     variable=argv[iarg];
@@ -802,23 +803,23 @@ int main(int argc,char **argv)
       fprintf(stderr,"Error: variable name must be specified in '%s' metafile.\n",filename);
       return EXIT_FAILURE;
     }
-    if(strlen(grid_name)==0)
+    if(grid_name.name==NULL)
     {
       fprintf(stderr,"Error: grid filename must be specified in '%s' metafile.\n",filename);
       return EXIT_FAILURE;
     }
     variable=var_name;
-    grid_filename=grid_name;
     path=getpath(filename);
-    grid_filename=addpath(grid_name,path);
+    grid_filename=addpath(grid_name.name,path);
     if(grid_filename==NULL)
     {
      printallocerr("name");
       return EXIT_FAILURE;
     }
+    free(grid_name.name);
     free(path);
   }
-  if(isclm)
+  if(isclm || grid_name.fmt==CLM)
   {
     coord_filename.name=grid_filename;
     coord_filename.fmt=CLM;
