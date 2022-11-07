@@ -175,7 +175,7 @@ static Cdf *create_cdf(const char *filename,
   }
   rc=nc_def_dim(cdf->ncid,TIME_DIM_NAME,header.nyear*header.nstep,&time_dim_id);
   error(rc);
-  rc=nc_def_var(cdf->ncid,"time",NC_DOUBLE,1,&time_dim_id,&time_var_id);
+  rc=nc_def_var(cdf->ncid,TIME_NAME,NC_DOUBLE,1,&time_dim_id,&time_var_id);
   error(rc);
   rc=nc_def_dim(cdf->ncid,LAT_DIM_NAME,array->nlat,&lat_dim_id);
   error(rc);

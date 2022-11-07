@@ -195,7 +195,7 @@ Bool create_netcdf(Netcdf *cdf,
       else
         rc=nc_def_dim(cdf->ncid,TIME_DIM_NAME,nyear*n,&cdf->time_dim_id);
       error(rc);
-      rc=nc_def_var(cdf->ncid,"time",NC_DOUBLE,1,&cdf->time_dim_id,&cdf->time_var_id);
+      rc=nc_def_var(cdf->ncid,TIME_NAME,NC_DOUBLE,1,&cdf->time_dim_id,&cdf->time_var_id);
       error(rc);
       rc=nc_put_att_text(cdf->ncid, cdf->time_var_id,"long_name",strlen(TIME_LONG_NAME),TIME_LONG_NAME);
       error(rc);
