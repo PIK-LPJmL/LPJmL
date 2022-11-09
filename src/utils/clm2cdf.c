@@ -19,7 +19,6 @@
 
 #define error(rc) if(rc) {free(lon);free(lat);free(year);fprintf(stderr,"ERROR427: Cannot write '%s': %s.\n",filename,nc_strerror(rc)); nc_close(cdf->ncid); free(cdf);return NULL;}
 
-#define MISSING_VALUE -9999.99
 #define USAGE "Usage: %s [-scale s] [-longheader] [-global] [-cellsize size] [-byte] [-int] [-float]\n       [[-attr name=value] ...] [-intnetcdf] [-metafile] [-raw] [-nbands n] [-landuse] [-notime] [-compress level] [-units u]\n       [-map name] [-descr d] [name gridfile] clmfile netcdffile\n"
 
 typedef struct
@@ -46,7 +45,7 @@ static Cdf *create_cdf(const char *filename,
 {
   Cdf *cdf;
   double *lon,*lat;
-  float miss=MISSING_VALUE;
+  float miss=MISSING_VALUE_FLOAT;
   int *year,i,j,rc,dim[4],imiss=MISSING_VALUE_INT,varid;
   String s;
   time_t t;
@@ -340,7 +339,7 @@ static Bool write_float_cdf(const Cdf *cdf,const float vec[],int year,
     return TRUE;
   }
   for(i=0;i<cdf->index->nlon*cdf->index->nlat;i++)
-    grid[i]=MISSING_VALUE;
+    grid[i]=MISSING_VALUE_FLOAT;
   for(i=0;i<size;i++)
     grid[cdf->index->index[i]]=vec[i];
   if(year==NO_TIME)
