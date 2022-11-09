@@ -3,7 +3,7 @@
 bin2cdf \- convert binary output files into NetCDF files
 .SH SYNOPSIS
 .B bin2cdf
-[\-clm] [\-floatgrid] [\-doublegrid] [\-revlat] [\-days] [\-cellsize size] [\-compress level] [\-descr d] [[\-attr name=value] ...] [\-units u] [-global] [-swap] [\-short] [\-nbands n] [\-nstep n] [\-ispft] [\-firstyear y] [\-metafile] [\-map name]
+[\-clm] [\-floatgrid] [\-doublegrid] [\-revlat] [\-days] [\-cellsize size] [\-compress level] [\-descr d] [\-missing_value val] [[\-attr name=value] ...] [\-units u] [-global] [-swap] [\-short] [\-nbands n] [\-nstep n] [\-ispft] [\-firstyear y] [\-metafile] [\-map name]
 .I [varname gridfile] binfile netcdffile
 .SH DESCRIPTION
 Program converts binary output files into NetCDF file.
@@ -32,6 +32,9 @@ compression level for NetCDF4 files
 .TP
 \-descr d
 set long name in NetCDF file
+.TP
+\-missing_value val
+set missing value in NetCDF file to val
 .TP
 \-attr name=value
 set global attribute name in NETCDF file to value

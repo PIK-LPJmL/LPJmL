@@ -19,8 +19,7 @@
 
 #define error(rc) if(rc) {free(lon);free(lat);free(year);fprintf(stderr,"ERROR427: Cannot write '%s': %s.\n",filename,nc_strerror(rc)); nc_close(cdf->ncid); free(cdf);return NULL;}
 
-#define MISSING_VALUE -9999.99
-#define USAGE "Usage: %s [-scale s] [-longheader] [-global] [-cellsize size] [-byte] [-int] [-float]\n       [[-attr name=value] ...] [-intnetcdf] [-metafile] [-raw] [-nbands n] [-landuse] [-notime] [-compress level] [-units u]\n       [-map name] [-descr d] [name gridfile] clmfile netcdffile\n"
+#define USAGE "Usage: %s [-scale s] [-longheader] [-global] [-cellsize size] [-byte] [-int] [-float]\n       [[-attr name=value] ...] [-intnetcdf] [-metafile] [-raw] [-nbands n] [-landuse] [-notime] [-compress level] [-units u]\n       [-map name] [-descr d] [-missing_value val] [name gridfile] clmfile netcdffile\n"
 
 typedef struct
 {
@@ -34,6 +33,7 @@ static Cdf *create_cdf(const char *filename,
                        const char *name,
                        const char *units,
                        const char *descr,
+                       const char *missing_value,
                        const char *args,
                        const Attr *global_attrs,
                        int n_global,
@@ -46,8 +46,9 @@ static Cdf *create_cdf(const char *filename,
 {
   Cdf *cdf;
   double *lon,*lat;
-  float miss=MISSING_VALUE;
+  float miss=MISSING_VALUE_FLOAT;
   int *year,i,j,rc,dim[4],imiss=MISSING_VALUE_INT,varid;
+  char *endptr;
   String s;
   time_t t;
   size_t chunk[4],offset[2],count[2];
@@ -274,11 +275,29 @@ static Cdf *create_cdf(const char *filename,
   }
   if(isint)
   {
+    if(missing_value!=NULL)
+    {
+      imiss=strtol(missing_value,&endptr,10);
+      if(*endptr!='\0')
+      {
+        fprintf(stderr,"Inavlid number '%s' for missing value.\n",missing_value);
+        return NULL;
+      }
+    }
     nc_put_att_int(cdf->ncid, cdf->varid,"missing_value",NC_INT,1,&imiss);
     rc=nc_put_att_int(cdf->ncid, cdf->varid,"_FillValue",NC_INT,1,&imiss);
   }
   else
   {
+    if(missing_value!=NULL)
+    {
+      miss=strtod(missing_value,&endptr);
+      if(*endptr!='\0')
+      {
+        fprintf(stderr,"Inavlid number '%s' for missing value.\n",missing_value);
+        return NULL;
+      }
+    }
     nc_put_att_float(cdf->ncid, cdf->varid,"missing_value",NC_FLOAT,1,&miss);
     rc=nc_put_att_float(cdf->ncid, cdf->varid,"_FillValue",NC_FLOAT,1,&miss);
   }
@@ -340,7 +359,7 @@ static Bool write_float_cdf(const Cdf *cdf,const float vec[],int year,
     return TRUE;
   }
   for(i=0;i<cdf->index->nlon*cdf->index->nlat;i++)
-    grid[i]=MISSING_VALUE;
+    grid[i]=MISSING_VALUE_FLOAT;
   for(i=0;i<size;i++)
     grid[cdf->index->index[i]]=vec[i];
   if(year==NO_TIME)
@@ -461,7 +480,7 @@ int main(int argc,char **argv)
   Bool swap,landuse,notime,isglobal,istype,israw,ismeta,isint,n_global;
   float *f,scale,cellsize_lon,cellsize_lat;
   int *idata,*iarr;
-  char *units,*descr,*endptr,*arglist;
+  char *units,*descr,*endptr,*arglist,*missing_value;
   char *map_name,*pos;
   const char *progname;
   char *grid_filename,*path;
@@ -489,6 +508,7 @@ int main(int argc,char **argv)
   map_name=MAP_NAME;
   grid_name.fmt=CLM;
   n_global=0;
+  missing_value=NULL;
   progname=strippath(argv[0]);
   for(iarg=1;iarg<argc;iarg++)
     if(argv[iarg][0]=='-')
@@ -544,6 +564,16 @@ int main(int argc,char **argv)
           return EXIT_FAILURE;
         }
         descr=argv[++iarg];
+      }
+      else if(!strcmp(argv[iarg],"-missing_value"))
+      {
+        if(argc==iarg+1)
+        {
+          fprintf(stderr,"Error: Missing argument after option '-missing_value'.\n"
+                 USAGE,progname);
+          return EXIT_FAILURE;
+        }
+        missing_value=argv[++iarg];
       }
       else if(!strcmp(argv[iarg],"-attr"))
       {
@@ -882,7 +912,7 @@ int main(int argc,char **argv)
     return EXIT_FAILURE;
   free(grid);
   arglist=catstrvec(argv,argc);
-  cdf=create_cdf(outname,map,variable,units,descr,arglist,global_attrs,n_global,&header,compress,landuse,notime,isint || ((header.datatype==LPJ_INT || header.datatype==LPJ_BYTE) && header.scalar==1),index);
+  cdf=create_cdf(outname,map,variable,units,descr,missing_value,arglist,global_attrs,n_global,&header,compress,landuse,notime,isint || ((header.datatype==LPJ_INT || header.datatype==LPJ_BYTE) && header.scalar==1),index);
   free(arglist);
   if(cdf==NULL)
     return EXIT_FAILURE;
