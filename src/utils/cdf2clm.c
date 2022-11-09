@@ -354,6 +354,7 @@ int main(int argc,char **argv)
   size_t var_len;
   char *id,*out_json;
   Filename grid_name;
+  Type grid_type;
   /* set default values */
   units=NULL;
   var=NULL;
@@ -491,6 +492,7 @@ int main(int argc,char **argv)
     printallocerr("coords");
     return EXIT_FAILURE;
   }
+  grid_type=getcoordtype(coordfile);
   config.ngridcell=numcoord(coordfile);
   getcellsizecoord(&header.cellsize_lon,&header.cellsize_lat,coordfile);
   config.resolution.lat=header.cellsize_lat;
@@ -654,7 +656,7 @@ int main(int argc,char **argv)
       header.nbands/=header.nstep;
     grid_name.name=argv[i];
     grid_name.fmt=CLM;
-    fprintjson(file,outname,arglist,&header,NULL,NULL,NULL,0,var,units,descr,&grid_name,LPJ_SHORT,CLM,id,FALSE,version);
+    fprintjson(file,outname,arglist,&header,NULL,NULL,NULL,0,var,units,descr,&grid_name,grid_type,CLM,id,FALSE,version);
     fclose(file);
   }
   return EXIT_SUCCESS;
