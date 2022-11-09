@@ -91,7 +91,7 @@ void dailyfire(Stand *stand,            /**< pointer to stand */
     }
   }
   windsp_cover=windspeed_fpc(climate->windspeed,&stand->pftlist);
-  ros_forward=rateofspread(windsp_cover,&fuel);
+  ros_forward=rateofspread(windsp_cover,&fuel,&livefuel);
   /* use prescribed burnt area or calculate burnt area */
   if (config->prescribe_burntarea)
     burnt_area = climate->burntarea;
