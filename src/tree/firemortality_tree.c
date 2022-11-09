@@ -38,12 +38,8 @@ Real firemortality_tree(Pft *pft,const Fuel *fuel, Livefuel *livefuel,
 
   scorch_height=treepar->scorchheight_f_param*pow(surface_fi,0.667);
 
-  /* post-fire mortality from cambial damage */
-  /*     tau_r=cf/Gamma, tau_l=tau_r, if not tau_l=2*tau_r */
-  if (fuel->gamma <= 0)
-    tau_l = 0;
-  else
-    tau_l=2.0*(fuel->cf/fuel->gamma);
+  /* residence time calculated as in Albini 1976 */
+  tau_l=(fuel->char_sigma>0) ? 384/30.48/fuel->char_sigma : 0;
 
   /* crown kill in [%] assuming the crown shape being a cylinder
    * crown height as a fraction of tree height definded per PFT
