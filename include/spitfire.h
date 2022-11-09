@@ -62,7 +62,7 @@ extern Bool initmax_firesize(Cell *,const Config *);
 extern Popdens initpopdens(const Config *);          
 extern Stocks litter_update_fire(Litter *,Tracegas *,const Fuel *);
 extern Real rateofspread(Real,Fuel *,Livefuel *);
-extern Real surface_fire_intensity(Real, Real, Real,Fuel *);
+extern Real surface_fire_intensity(Real,Fuel *);
 extern void update_fbd_tree(Litter*,Real,Real,int);
 extern void update_fbd_grass(Litter*,Real,Real);
 extern Real wildfire_ignitions(Real,Real,Real);
