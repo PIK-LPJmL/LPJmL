@@ -208,6 +208,8 @@ static Cdf *create_cdf(const char *filename,
   rc=nc_put_att_text(cdf->ncid,time_var_id,"calendar",strlen(CALENDAR),
                      CALENDAR);
   error(rc);
+  rc=nc_put_att_text(cdf->ncid, time_var_id,"standard_name",strlen(TIME_STANDARD_NAME),TIME_STANDARD_NAME);
+  error(rc);
   rc=nc_put_att_text(cdf->ncid, time_var_id,"long_name",strlen(TIME_LONG_NAME),TIME_LONG_NAME);
   error(rc);
   rc=nc_put_att_text(cdf->ncid, time_var_id,"axis",strlen("T"),"T");

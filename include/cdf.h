@@ -29,6 +29,7 @@
 #define LAT_LONG_NAME "Latitude"
 #define LAT_STANDARD_NAME "latitude"
 #define TIME_NAME "time"
+#define TIME_STANDARD_NAME "time"
 #define TIME_LONG_NAME "Time"
 #define LON_DIM_NAME "lon"
 #define LAT_DIM_NAME "lat"
