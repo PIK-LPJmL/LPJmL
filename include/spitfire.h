@@ -49,7 +49,6 @@ extern Real area_burnt(Real *,Real *,Real *,Real,Real,Real,Real,Real, int,Stand 
 extern Real deadfuel_consumption(const Litter *,Fuel *, Real);
 extern Real firedangerindex(Real,const Stand *,const Dailyclimate *,Real,int,Bool);
 extern Real firemortality_tree(Pft *,const Fuel *,Livefuel *,Real,Real);
-extern void fraction_of_consumption(Fuel *);
 extern Real fuel_consumption_1hr(Real, Real);
 extern void fuelload(const Stand*,Fuel*,Livefuel *,Real,const Config *);
 extern void initfuel(Fuel *);

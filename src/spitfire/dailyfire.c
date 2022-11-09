@@ -135,7 +135,6 @@ void dailyfire(Stand *stand,            /**< pointer to stand */
     deadfuel_consump=litter_update_fire(&stand->soil.litter,&emission,&fuel);
   }
 
-  fraction_of_consumption(&fuel);
 
   livefuel_consump.carbon=livefuel_consump.nitrogen=0;
   foreachpft(pft,p,&stand->pftlist)
