@@ -37,7 +37,7 @@ typedef struct
   Real cf;
   Real daily_litter_moist; /**< fuel moisture */
   Real deadfuel_consum[NFUELCLASS+1];
-  Real gamma;
+  Real ir;
   Real moist_1hr;
   Real moist_10_100hr;
   Real mw_weight;
