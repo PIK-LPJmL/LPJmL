@@ -20,7 +20,7 @@
 Real rateofspread(Real windsp_cover,Fuel *fuel,Livefuel *livefuel)
 {
   Real beta_fire, beta_op, bet;
-  Real q_ig, eps, a, b, c, e;
+  Real a, b, c, e;
   Real wind_forward;
   Real phi_wind, xi, dummy, gamma_max, gamma_aptr;
   Real moist_damp_live,moist_damp_dead, ir, U_front;
@@ -107,7 +107,7 @@ Real rateofspread(Real windsp_cover,Fuel *fuel,Livefuel *livefuel)
   ir=gamma_aptr*(wndead*heat_content_fuel*moist_damp_dead*MINER_DAMP
                  +wnlive*heat_content_fuel*moist_damp_live*MINER_DAMP);
   /* For use in post fire mortality */
-  fuel->gamma =ir;
+  fuel->ir =ir;
   /* Heat sink term */
   hs_sum_dead=0;
   for(i=0;i<NFUELCLASS;i++)
