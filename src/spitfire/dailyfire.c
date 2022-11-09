@@ -39,7 +39,7 @@ void dailyfire(Stand *stand,            /**< pointer to stand */
   int p;
   Output *output;
   Pft *pft;
-  Livefuel livefuel={0,0,0,0,0};
+  Livefuel livefuel={0,0,0,0,0,0,0,0,0,0,0,0,0,0,0};
   Tracegas emission={0,0,0,0,0,0};
   output=&stand->cell->output;
   initfuel(&fuel);
@@ -120,7 +120,7 @@ void dailyfire(Stand *stand,            /**< pointer to stand */
   }
   /*fuel consumption in gBiomass/m2 for calculation of surface fire intensity*/
   fuel_consump=deadfuel_consumption(&stand->soil.litter,&fuel,fire_frac);
-  surface_fi=surface_fire_intensity(fuel_consump, fire_frac, ros_forward);
+  surface_fi=surface_fire_intensity(fuel_consump, fire_frac, ros_forward,&fuel);
   /* if not enough surface fire energy to sustain burning */
   if(surface_fi<50)  //&& !prescribe_burntarea)
   {
