@@ -339,6 +339,7 @@ int main(int argc,char **argv)
       return EXIT_FAILURE;
     }
     config.ngridcell=numcoord(coordfile);
+    grid_type=getcoordtype(coordfile);
     if(config.ngridcell==0)
     {
       fprintf(stderr,"Number of cells is zero in '%s'.\n",argv[i]);

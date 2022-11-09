@@ -426,6 +426,8 @@ FILE *openmetafile(Header *header,       /**< pointer to file header */
     unit[0]='\0';
   if(descr!=NULL)
     descr[0]='\0';
+  if(gridfile!=NULL)
+    gridfile->name=NULL;
   while(!fscantoken(file.file.file,key))
     if(key[0]=='{')
     {
