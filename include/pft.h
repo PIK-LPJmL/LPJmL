@@ -33,7 +33,6 @@ typedef struct
 {
   Real char_moist_factor;
   Real char_alpha_fuel;    /**< parameter to calculate fuel moisture */
-  Real char_net_fuel;
   Real char_dens_fuel_ave; /**< average fbd */
   Real cf;
   Real daily_litter_moist; /**< fuel moisture */
@@ -42,18 +41,29 @@ typedef struct
   Real moist_1hr;
   Real moist_10_100hr;
   Real mw_weight;
-  Real sigma;
   Real CME;
+  Real char_moisture;
+  Real fi;
+  Real f[NFUELCLASS];
+  Real g[NFUELCLASS];
+  Real w[NFUELCLASS];
+  Real M[NFUELCLASS];
+  Real char_sigma;
 } Fuel;
 
 typedef struct
 {
   Real disturb;
-  Real dlm_livegrass;
   Real non_combust;
   Real pot_fc_lg_c3; /**< Biomass of C3 grass in g/m2 */
   Real pot_fc_lg_c4; /**< Biomass of C4 grass in g/m2 */
   Real CME;
+  Real char_moisture;
+  Real fi;
+  Real f[2];
+  Real g[2];
+  Real w[2];
+  Real M[2];
 } Livefuel;
 
 typedef struct

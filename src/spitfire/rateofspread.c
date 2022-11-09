@@ -15,34 +15,64 @@
 #include "lpj.h"
 
 #define MINER_DAMP 0.41739 //0.17*pow(Se,-0.19), Se=1% (effective mineral content)
-#define PART_DENS 513.0
 #define heat_content_fuel 18000.0
   
-Real rateofspread(Real windsp_cover,Fuel *fuel)
+Real rateofspread(Real windsp_cover,Fuel *fuel,Livefuel *livefuel)
 {
   Real beta_fire, beta_op, bet;
   Real q_ig, eps, a, b, c, e;
   Real wind_forward;
   Real phi_wind, xi, dummy, gamma_max, gamma_aptr;
-  Real moist_damp, ir, U_front;
-
+  Real moist_damp_live,moist_damp_dead, ir, U_front;
+  Real char_sigma_dead,char_sigma_live,wndead,wnlive,char_sigma;
+  Real w,wsum,msum,wsum_live,mfdead,mxlive,Mdead,Mlive;
+  Real hs_sum_live,hs_sum_dead,hs,mw_weight_live;
+  int i;
+  /* Calculate characteristic values */
+  char_sigma_dead=0;
+  wndead=0;
+  char_sigma_live=0;
+  wnlive=0;
+  Mdead=0;
+  for(i=0;i<NFUELCLASS;++i)
+  {
+    char_sigma_dead += fuel->f[i]*sigma_dead[i];
+    wndead+=fuel->g[i]*fuel->w[i]*(1-MINER_TOT);
+    Mdead += fuel->f[i]*fuel->M[i];
+  }
+  Mlive=0;
+  for(i=0;i<2;++i)
+  {
+    char_sigma_live += livefuel->f[i]*sigma_live[i];
+    wnlive+=livefuel->g[i]*livefuel->w[i]*(1-MINER_TOT);
+    Mlive += livefuel->f[i]*livefuel->M[i];
+  }
+  char_sigma=livefuel->fi*char_sigma_live+fuel->fi*char_sigma_dead;
+  wsum=msum=0;
+  for(i=0;i<NFUELCLASS;i++)
+  {
+    wsum+=fuel->w[i]*exp(-138./30.48/sigma_dead[i]);
+    msum+=fuel->M[i]*fuel->w[i]*exp(-138./30.48/sigma_dead[i]);
+  }
+  wsum_live=0;
+  for(i=0;i<2;i++)
+    wsum_live+=livefuel->w[i]*exp(-500./30.48/sigma_live[i]);
+  w=wsum/wsum_live;
+  mfdead=msum/wsum;
+  mxlive=max(2.9*w*(1-mfdead/fuel->char_moisture)-0.226,fuel->char_moisture);
+  
   /* Packing ratio*/
   beta_fire = fuel->char_dens_fuel_ave / PART_DENS;
 
   /* Optimum packing ratio */
-  beta_op = 0.200395*pow(fuel->sigma,-0.8189);
+  beta_op = 0.200395*pow(char_sigma,-0.8189);
   bet = (beta_op<=0) ? 0 : beta_fire / beta_op;
-  /* Heat of pre-ignition */
-  q_ig = 581.0 + 2594.0 * fuel->daily_litter_moist;
-
-  /* Effective heating number */
-  eps=(fuel->sigma <= 0.00001) ?  0 : exp(-4.528 / fuel->sigma);
 
   /* Parameters dependent of surface to volume ratio */
-  a=8.9033*pow(fuel->sigma, -0.7913);
-  b=0.15988*pow(fuel->sigma, 0.54);
-  c=7.47*exp(-0.8711 * pow(fuel->sigma, 0.55));
-  e=0.715*exp(-0.01094 * fuel->sigma);
+  a=8.9033*pow(char_sigma, -0.7913);
+  b=0.15988*pow(char_sigma, 0.54);
+  c=7.47*exp(-0.8711 * pow(char_sigma, 0.55));
+  e=0.715*exp(-0.01094 * char_sigma);
 
   /* converts wind_speed (m/min) to ft/min
    * for input into Rothermel's formula for phi_wind in the ROS S/R */
@@ -52,32 +82,46 @@ Real rateofspread(Real windsp_cover,Fuel *fuel)
   phi_wind=(bet <= 0) ?  0 : c*pow(wind_forward,b)*pow(bet,-e); 
     
   /* Propagating flux ratio */
-  if (fuel->sigma <= 0.00001)
+  if (char_sigma <= 0.00001)
     xi = 0.0;
-  else  if ((0.792 + 3.7597 * (pow(fuel->sigma,0.5))) * (beta_fire + 0.1)>100)
-    xi =exp(100) / (192 + 7.9095 * fuel->sigma);   /*TODO to avoid NAN*/
+  else  if ((0.792 + 3.7597 * (pow(char_sigma,0.5))) * (beta_fire + 0.1)>100)
+    xi =exp(100) / (192 + 7.9095 * char_sigma);   /*TODO to avoid NAN*/
   else
-    xi = (exp((0.792 + 3.7597 * (pow(fuel->sigma,0.5))) * (beta_fire + 0.1))) / (192 + 7.9095 * fuel->sigma);
+    xi = (exp((0.792 + 3.7597 * (pow(char_sigma,0.5))) * (beta_fire + 0.1))) / (192 + 7.9095 * char_sigma);
   /*printf( "xi= %.5f \n",xi);*/
 
   /* Optimum Reaction Velocity */
-  dummy=(fuel->sigma <= 0.0001) ?  0.0 : exp(a*(1.0-bet));
-  gamma_max = 1.0/(0.0591+2.926*(pow(fuel->sigma,-1.5)));
+  dummy=(char_sigma <= 0.0001) ?  0.0 : exp(a*(1.0-bet));
+  gamma_max = 1.0/(0.0591+2.926*(pow(char_sigma,-1.5)));
   gamma_aptr=(bet <= 0) ?  0 : gamma_max*pow(bet,a)*dummy;
 
   /* Moisture dampening coefficient */
-  moist_damp = (0.0 > (1.0-(2.59*fuel->mw_weight)+ (5.11*(pow(fuel->mw_weight,2.0)))-(3.52*(pow(fuel->mw_weight,3.0)))) ? 
+  fuel->mw_weight=min(Mdead/fuel->char_moisture,1);
+  moist_damp_dead = (0.0 > (1.0-(2.59*fuel->mw_weight)+ (5.11*(pow(fuel->mw_weight,2.0)))-(3.52*(pow(fuel->mw_weight,3.0)))) ? 
     0 : (1.0-(2.59*fuel->mw_weight)+ (5.11*(pow(fuel->mw_weight,2.0)))-(3.52*(pow(fuel->mw_weight,3.0)))));
+  mw_weight_live=min(Mlive/mxlive,1);
+  moist_damp_live = (0.0 > (1.0-(2.59*mw_weight_live)+ (5.11*(pow(mw_weight_live,2.0)))-(3.52*(pow(mw_weight_live,3.0)))) ? 
+    0 : (1.0-(2.59*mw_weight_live)+ (5.11*(pow(mw_weight_live,2.0)))-(3.52*(pow(mw_weight_live,3.0)))));
 
   /* Reaction intensity */
-  ir=gamma_aptr * fuel->char_net_fuel * heat_content_fuel * moist_damp * MINER_DAMP;
+  ir=gamma_aptr*(wndead*heat_content_fuel*moist_damp_dead*MINER_DAMP
+                 +wnlive*heat_content_fuel*moist_damp_live*MINER_DAMP);
   /* For use in post fire mortality */
-  fuel->gamma = gamma_aptr * moist_damp * MINER_DAMP;
-
+  fuel->gamma =ir;
+  /* Heat sink term */
+  hs_sum_dead=0;
+  for(i=0;i<NFUELCLASS;i++)
+    hs_sum_dead+=fuel->f[i]*exp(-138./30.48/sigma_dead[i])*(581.0 + 2594.0 * fuel->M[i]);
+  hs_sum_live=0;
+  for(i=0;i<2;i++)
+    hs_sum_live+=livefuel->f[i]*exp(-138./30.48/sigma_live[i])*(581.0 + 2594.0 * livefuel->M[i]);
+  hs = fuel->char_dens_fuel_ave*(fuel->fi*hs_sum_dead+livefuel->fi*hs_sum_live);
+  
   /* Forward Rate of Spread */
-  if (fuel->char_dens_fuel_ave <= 0 || eps <= 0 || q_ig <= 0)
+  if (hs <= 0)
     U_front = 0;
   else
-    U_front=(ir * xi * (1.0 + phi_wind)) / (fuel->char_dens_fuel_ave * eps * q_ig);
+    U_front=(ir * xi * (1.0 + phi_wind)) / hs;
+  fuel->char_sigma=char_sigma;
   return U_front;
 } /* of 'rateofspread' */

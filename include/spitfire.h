@@ -15,6 +15,11 @@
 #ifndef SPITFIRE_H /* Already included? */
 #define SPITFIRE_H
 
+#define PART_DENS 513.0
+
+extern Real sigma_dead[NFUELCLASS];
+extern Real sigma_live[2];
+
 /* Declaration of datatypes */
 
 typedef struct popdens *Popdens;
