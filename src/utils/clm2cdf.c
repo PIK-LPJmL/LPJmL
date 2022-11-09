@@ -857,6 +857,11 @@ int main(int argc,char **argv)
       fclose(file);
       return EXIT_FAILURE;
     }
+    if(ismeta)
+    {
+      header.cellsize_lon=res.lon;
+      header.cellsize_lat=res.lat;
+    }
   }
   else
   {

@@ -37,7 +37,7 @@ static Bool create(Netcdf *cdf,const char *filename,int index,
                          config->outnames[config->outputvars[index].id].descr,
                          (config->outputvars[index].id==GRID) ? "" :
                          config->outnames[config->outputvars[index].id].unit,
-                         getoutputtype(config->outputvars[index].id,FALSE),
+                         getoutputtype(config->outputvars[index].id,config->grid_type),
                          getnyear(config->outnames,config->outputvars[index].id),
                          (config->outnames[config->outputvars[index].id].timestep==ANNUAL) ? 1 : config->outnames[config->outputvars[index].id].timestep,array,config);
   else
@@ -48,7 +48,7 @@ static Bool create(Netcdf *cdf,const char *filename,int index,
                              config->outnames[config->outputvars[index].id].var,
                              config->outnames[config->outputvars[index].id].descr,
                              config->outnames[config->outputvars[index].id].unit,
-                             getoutputtype(config->outputvars[index].id,FALSE),
+                             getoutputtype(config->outputvars[index].id,config->grid_type),
                              getnyear(config->outnames,config->outputvars[index].id),
                              (config->outnames[config->outputvars[index].id].timestep==ANNUAL) ? 1 : config->outnames[config->outputvars[index].id].timestep,array,config);
 } /* of 'create' */
@@ -167,7 +167,7 @@ static void openfile(Outputfile *output,const Cell grid[],
               header.nbands=outputsize(config->outputvars[i].id,
                                        config->npft[GRASS]+config->npft[TREE],
                                        config->npft[CROP],config);
-              header.datatype=getoutputtype(config->outputvars[i].id,FALSE);
+              header.datatype=getoutputtype(config->outputvars[i].id,config->grid_type);
               fwriteheader(output->files[config->outputvars[i].id].fp.file,
                            &header,LPJOUTPUT_HEADER,config->outputvars[i].filename.version);
             }
@@ -420,7 +420,7 @@ void openoutput_yearly(Outputfile *output,int year,const Config *config)
                            config->outnames[config->outputvars[i].id].var,
                            config->outnames[config->outputvars[i].id].descr,
                            config->outnames[config->outputvars[i].id].unit,
-                           getoutputtype(config->outputvars[i].id,FALSE),
+                           getoutputtype(config->outputvars[i].id,config->grid_type),
                            getnyear(config->outnames,config->outputvars[i].id),
                            (config->outputvars[i].id==ADISCHARGE) ? output->index_all : output->index,year,config);
            else
@@ -431,7 +431,7 @@ void openoutput_yearly(Outputfile *output,int year,const Config *config)
                            config->outnames[config->outputvars[i].id].var,
                            config->outnames[config->outputvars[i].id].descr,
                            config->outnames[config->outputvars[i].id].unit,
-                           getoutputtype(config->outputvars[i].id,FALSE),
+                           getoutputtype(config->outputvars[i].id,config->grid_type),
                            getnyear(config->outnames,config->outputvars[i].id),year,
                                output->index,config);
 
