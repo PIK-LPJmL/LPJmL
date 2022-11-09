@@ -253,6 +253,8 @@ static Cdf *create_cdf(const char *filename,
       error(rc);
       rc=nc_put_att_text(cdf->ncid,varid,"units",strlen("m"),"m");
       error(rc);
+      rc=nc_put_att_text(cdf->ncid,varid,"standard_name",strlen(DEPTH_STANDARD_NAME),DEPTH_STANDARD_NAME);
+      error(rc);
       rc=nc_put_att_text(cdf->ncid,varid,"long_name",strlen(DEPTH_LONG_NAME),DEPTH_LONG_NAME);
       error(rc);
       rc=nc_put_att_text(cdf->ncid,varid,"bounds",strlen(BNDS_NAME),BNDS_NAME);

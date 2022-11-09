@@ -204,6 +204,8 @@ Bool create1_pft_netcdf(Netcdf *cdf,
     error(rc);
     rc=nc_put_att_text(cdf->ncid,pft_var_id,"units",strlen("m"),"m");
     error(rc);
+    rc=nc_put_att_text(cdf->ncid,pft_var_id,"standard_name",strlen(DEPTH_STANDARD_NAME),DEPTH_STANDARD_NAME);
+    error(rc);
     rc=nc_put_att_text(cdf->ncid,pft_var_id,"long_name",strlen(DEPTH_LONG_NAME),DEPTH_LONG_NAME);
     error(rc);
     rc=nc_put_att_text(cdf->ncid,pft_var_id,"bounds",strlen(BNDS_NAME),BNDS_NAME);
