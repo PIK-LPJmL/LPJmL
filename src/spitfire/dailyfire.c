@@ -120,7 +120,7 @@ void dailyfire(Stand *stand,            /**< pointer to stand */
   }
   /*fuel consumption in gBiomass/m2 for calculation of surface fire intensity*/
   fuel_consump=deadfuel_consumption(&stand->soil.litter,&fuel,fire_frac);
-  surface_fi=surface_fire_intensity(fuel_consump, fire_frac, ros_forward,&fuel);
+  surface_fi=surface_fire_intensity(ros_forward,&fuel);
   /* if not enough surface fire energy to sustain burning */
   if(surface_fi<50)  //&& !prescribe_burntarea)
   {
