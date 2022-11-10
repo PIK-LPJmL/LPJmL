@@ -33,7 +33,8 @@ static Cdf *create_cdf(const char *filename,
                        const char *name,
                        const char *units,
                        const char *descr,
-                       const char *missing_value,
+                       float miss,
+                       int imiss,
                        const char *args,
                        const Attr *global_attrs,
                        int n_global,
@@ -46,9 +47,7 @@ static Cdf *create_cdf(const char *filename,
 {
   Cdf *cdf;
   double *lon,*lat;
-  float miss=MISSING_VALUE_FLOAT;
-  int *year,i,j,rc,dim[4],imiss=MISSING_VALUE_INT,varid;
-  char *endptr;
+  int *year,i,j,rc,dim[4],varid;
   String s;
   time_t t;
   size_t chunk[4],offset[2],count[2];
@@ -275,29 +274,11 @@ static Cdf *create_cdf(const char *filename,
   }
   if(isint)
   {
-    if(missing_value!=NULL)
-    {
-      imiss=strtol(missing_value,&endptr,10);
-      if(*endptr!='\0')
-      {
-        fprintf(stderr,"Inavlid number '%s' for missing value.\n",missing_value);
-        return NULL;
-      }
-    }
     nc_put_att_int(cdf->ncid, cdf->varid,"missing_value",NC_INT,1,&imiss);
     rc=nc_put_att_int(cdf->ncid, cdf->varid,"_FillValue",NC_INT,1,&imiss);
   }
   else
   {
-    if(missing_value!=NULL)
-    {
-      miss=strtod(missing_value,&endptr);
-      if(*endptr!='\0')
-      {
-        fprintf(stderr,"Inavlid number '%s' for missing value.\n",missing_value);
-        return NULL;
-      }
-    }
     nc_put_att_float(cdf->ncid, cdf->varid,"missing_value",NC_FLOAT,1,&miss);
     rc=nc_put_att_float(cdf->ncid, cdf->varid,"_FillValue",NC_FLOAT,1,&miss);
   }
@@ -347,7 +328,7 @@ static Cdf *create_cdf(const char *filename,
 } /* of 'create_cdf' */
 
 static Bool write_float_cdf(const Cdf *cdf,const float vec[],int year,
-                            int size,Bool landuse,Bool notime,int nband)
+                            int size,Bool landuse,Bool notime,int nband,float miss)
 {
   int i,rc,index;
   size_t offsets[4],counts[4];
@@ -359,7 +340,7 @@ static Bool write_float_cdf(const Cdf *cdf,const float vec[],int year,
     return TRUE;
   }
   for(i=0;i<cdf->index->nlon*cdf->index->nlat;i++)
-    grid[i]=MISSING_VALUE_FLOAT;
+    grid[i]=miss;
   for(i=0;i<size;i++)
     grid[cdf->index->index[i]]=vec[i];
   if(year==NO_TIME)
@@ -401,7 +382,7 @@ static Bool write_float_cdf(const Cdf *cdf,const float vec[],int year,
 } /* of 'write_float_cdf' */
 
 static Bool write_int_cdf(const Cdf *cdf,const int vec[],int year,
-                          int size,Bool landuse,Bool notime,int nband)
+                          int size,Bool landuse,Bool notime,int nband,int imiss)
 {
   int i,rc,index;
   size_t offsets[4],counts[4];
@@ -413,7 +394,7 @@ static Bool write_int_cdf(const Cdf *cdf,const int vec[],int year,
     return TRUE;
   }
   for(i=0;i<cdf->index->nlon*cdf->index->nlat;i++)
-    grid[i]=MISSING_VALUE_INT;
+    grid[i]=imiss;
   for(i=0;i<size;i++)
     grid[cdf->index->index[i]]=vec[i];
   if(year==NO_TIME)
@@ -489,6 +470,8 @@ int main(int argc,char **argv)
   String var_name;
   size_t filesize;
   String var_units,var_descr;
+  float miss=MISSING_VALUE_FLOAT;
+  int imiss=MISSING_VALUE_INT;
   units=descr=NULL;
   var_units[0]='\0';
   var_descr[0]='\0';
@@ -912,7 +895,28 @@ int main(int argc,char **argv)
     return EXIT_FAILURE;
   free(grid);
   arglist=catstrvec(argv,argc);
-  cdf=create_cdf(outname,map,variable,units,descr,missing_value,arglist,global_attrs,n_global,&header,compress,landuse,notime,isint || ((header.datatype==LPJ_INT || header.datatype==LPJ_BYTE) && header.scalar==1),index);
+  if(missing_value!=NULL)
+  {
+    if(isint)
+    {
+      imiss=strtol(missing_value,&endptr,10);
+      if(*endptr!='\0')
+      {
+        fprintf(stderr,"Invalid number '%s' for missing value.\n",missing_value);
+        return NULL;
+      }
+    }
+    else
+    {
+      miss=strtod(missing_value,&endptr);
+      if(*endptr!='\0')
+      {
+        fprintf(stderr,"Inavlid number '%s' for missing value.\n",missing_value);
+        return EXIT_FAILURE;
+      }
+    }
+  }
+  cdf=create_cdf(outname,map,variable,units,descr,miss,imiss,arglist,global_attrs,n_global,&header,compress,landuse,notime,isint || ((header.datatype==LPJ_INT || header.datatype==LPJ_BYTE) && header.scalar==1),index);
   free(arglist);
   if(cdf==NULL)
     return EXIT_FAILURE;
@@ -941,7 +945,7 @@ int main(int argc,char **argv)
       {
         for(k=0;k<ngrid;k++)
           iarr[k]=idata[k*header.nbands+j];
-        if(write_int_cdf(cdf,iarr,(landuse) ? i : i*header.nbands+j,ngrid,landuse,notime,j))
+        if(write_int_cdf(cdf,iarr,(landuse) ? i : i*header.nbands+j,ngrid,landuse,notime,j,imiss))
           return EXIT_FAILURE;
       }
     }
@@ -973,7 +977,7 @@ int main(int argc,char **argv)
       {
         for(k=0;k<ngrid;k++)
           f[k]=data[k*header.nbands+j];
-        if(write_float_cdf(cdf,f,(landuse) ? i : i*header.nbands+j,ngrid,landuse,notime,j))
+        if(write_float_cdf(cdf,f,(landuse) ? i : i*header.nbands+j,ngrid,landuse,notime,j,miss))
           return EXIT_FAILURE;
       }
     }
