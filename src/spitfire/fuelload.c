@@ -153,10 +153,10 @@ void fuelload(const Stand *stand, /**< pointer to stand */
   {
     /*TODO*/
      mean_w=((stand->soil.w[0]*stand->soil.whcs[0]+stand->soil.w_fw[0]+stand->soil.wpwps[0]+
-               stand->soil.ice_depth[0]+stand->soil.ice_fw[0])+
+               stand->soil.ice_depth[0]+stand->soil.ice_fw[0])/stand->soil.wsats[0]+
                (stand->soil.w[1]*stand->soil.whcs[1]+stand->soil.w_fw[1]+stand->soil.wpwps[1]+
-               stand->soil.ice_depth[1]+stand->soil.ice_fw[1]))/2 ;
-    mean_w=mean_w/((stand->soil.bulkdens[0]*soildepth[0]+stand->soil.bulkdens[1]*soildepth[1])*1e-3); /*converting mean_w to g water / g soil (numerator L to kg, denom mm to m)*/
+               stand->soil.ice_depth[1]+stand->soil.ice_fw[1])/stand->soil.wsats[1])/2 ;
+   //mean_w=mean_w/((stand->soil.bulkdens[0]*soildepth[0]+stand->soil.bulkdens[1]*soildepth[1])/2*1e-3); /*converting mean_w to g water / g soil (denom mm to m) RESULTED IN VERY LOW GRASS MOISTURE, RETURNING TO ORIGINAL DIVISION BY WSATS APPROACH NOW*/
     livefuel->M[0] = (0.0 > ((10.0/9.0) * mean_w -(1.0/9.0)) ?
                                 0 : ((10.0/9.0) * mean_w -(1.0/9.0)));
     ratio_c3_livegrass = livefuel->pot_fc_lg_c3 / livegrass;
