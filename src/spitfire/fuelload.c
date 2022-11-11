@@ -98,7 +98,7 @@ void fuelload(const Stand *stand, /**< pointer to stand */
   }
   getoutput(&stand->cell->output,LIVEGRASS,config)+=livegrass;
 
-  /* Calculate Rothermel's f factors */
+  /* Calculate Rothermel's f factors, neglecting unit conversions in a values since they cancel*/
   for(i=0;i<NFUELCLASS-1;++i) /* looping to second last value to exclude 1000 hour fuels */
   {
     fuel->w[i]=fuel_gBiomass[i];
@@ -117,11 +117,11 @@ void fuelload(const Stand *stand, /**< pointer to stand */
     alive_sum+=alive[i];
   }
   for(i=0;i<NFUELCLASS;++i)
-   fuel->f[i]=adead[i]/adead_sum; 
+   fuel->f[i]=(adead_sum>0) ? adead[i]/adead_sum : 0; 
   for(i=0;i<2;++i)
-   livefuel->f[i]=alive[i]/alive_sum;
-  fuel->fi=adead_sum/(adead_sum+alive_sum);
-  livefuel->fi=alive_sum/(adead_sum+alive_sum);
+   livefuel->f[i]=(alive_sum>0) ? alive[i]/alive_sum : 0;
+  fuel->fi=(adead_sum || alive_sum > 0) ? adead_sum/(adead_sum+alive_sum) : 0;
+  livefuel->fi=(adead_sum || alive_sum > 0) ? alive_sum/(adead_sum+alive_sum) : 0;
   /* calculating g factors from Albini 1976 */
   for(i=0;i<NGLIM+1;++i)
     fsum[i]=0;
@@ -169,7 +169,6 @@ void fuelload(const Stand *stand, /**< pointer to stand */
     ratio_c4_livegrass = 0;
   }
   livefuel->M[1] = 9999; /* placeholder value for live woody */
-
   /* Livegrass weighted average fbd - OLD METHOD, SHOULD BE REPLACED*/
 
   /*   NEED TO STORE C3/C4 FBD and STORE GRASS FBD AVE -???*/

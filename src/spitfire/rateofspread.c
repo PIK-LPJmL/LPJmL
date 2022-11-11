@@ -116,7 +116,6 @@ Real rateofspread(Real windsp_cover,Fuel *fuel,Livefuel *livefuel)
   for(i=0;i<2;i++)
     hs_sum_live+=livefuel->f[i]*exp(-138./30.48/sigma_live[i])*(581.0 + 2594.0 * livefuel->M[i]);
   hs = fuel->char_dens_fuel_ave*(fuel->fi*hs_sum_dead+livefuel->fi*hs_sum_live);
-  
   /* Forward Rate of Spread */
   if (hs <= 0)
     U_front = 0;
