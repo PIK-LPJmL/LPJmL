@@ -59,7 +59,7 @@ Real rateofspread(Real windsp_cover,Fuel *fuel,Livefuel *livefuel)
     wsum_live+=livefuel->w[i]*exp(-500./30.48/sigma_live[i]);
   w=wsum/wsum_live;
   mfdead=msum/wsum;
-  mxlive=max(2.9*w*(1-mfdead/fuel->char_moisture)-0.226,fuel->char_moisture);
+  mxlive=max(2.9*w*(1-mfdead/fuel->char_moist_factor)-0.226,fuel->char_moist_factor);
   
   /* Packing ratio*/
   beta_fire = fuel->char_dens_fuel_ave / PART_DENS;
@@ -67,7 +67,6 @@ Real rateofspread(Real windsp_cover,Fuel *fuel,Livefuel *livefuel)
   /* Optimum packing ratio */
   beta_op = 0.200395*pow(char_sigma,-0.8189);
   bet = (beta_op<=0) ? 0 : beta_fire / beta_op;
-
   /* Parameters dependent of surface to volume ratio */
   a=8.9033*pow(char_sigma, -0.7913);
   b=0.15988*pow(char_sigma, 0.54);
@@ -96,7 +95,7 @@ Real rateofspread(Real windsp_cover,Fuel *fuel,Livefuel *livefuel)
   gamma_aptr=(bet <= 0) ?  0 : gamma_max*pow(bet,a)*dummy;
 
   /* Moisture dampening coefficient */
-  fuel->mw_weight=min(Mdead/fuel->char_moisture,1);
+  fuel->mw_weight=min(Mdead/fuel->char_moist_factor,1);
   moist_damp_dead = (0.0 > (1.0-(2.59*fuel->mw_weight)+ (5.11*(pow(fuel->mw_weight,2.0)))-(3.52*(pow(fuel->mw_weight,3.0)))) ? 
     0 : (1.0-(2.59*fuel->mw_weight)+ (5.11*(pow(fuel->mw_weight,2.0)))-(3.52*(pow(fuel->mw_weight,3.0)))));
   mw_weight_live=min(Mlive/mxlive,1);
@@ -104,8 +103,8 @@ Real rateofspread(Real windsp_cover,Fuel *fuel,Livefuel *livefuel)
     0 : (1.0-(2.59*mw_weight_live)+ (5.11*(pow(mw_weight_live,2.0)))-(3.52*(pow(mw_weight_live,3.0)))));
 
   /* Reaction intensity */
-  ir=gamma_aptr*(wndead*heat_content_fuel*moist_damp_dead*MINER_DAMP
-                 +wnlive*heat_content_fuel*moist_damp_live*MINER_DAMP);
+  ir=gamma_aptr*(wndead*1e-3*heat_content_fuel*moist_damp_dead*MINER_DAMP
+                 +wnlive*1e-3*heat_content_fuel*moist_damp_live*MINER_DAMP);
   /* For use in post fire mortality */
   fuel->ir =ir;
   /* Heat sink term */

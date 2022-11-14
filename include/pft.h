@@ -42,7 +42,6 @@ typedef struct
   Real moist_10_100hr;
   Real mw_weight;
   Real CME;
-  Real char_moisture;
   Real fi;
   Real f[NFUELCLASS];
   Real g[NFUELCLASS];

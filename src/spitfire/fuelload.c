@@ -210,8 +210,9 @@ void fuelload(const Stand *stand, /**< pointer to stand */
     alpha_fuel /= dead_fuel;
   }
 /* dead litter moisture calculation */
-  fuel->daily_litter_moist =  (dead_fuel>0) ? stand->soil.litter.agtop_moist*1e3/dead_fuel : 999; /* new version making use of new litter moisture calculation from tillage version */
-  /* setting litter moisture values for all classes to the same value until this can be replaced with a new system */
+  fuel->daily_litter_moist = exp(-(alpha_fuel) * nesterov_accum); /* old setup using the nesterov index, corrected here to use only dead fuels */
+//  fuel->daily_litter_moist =  (dead_fuel>0) ? stand->soil.litter.agtop_moist*1e3/dead_fuel : 999; /* new version making use of new litter moisture calculation from tillage version */
+ /* setting litter moisture values for all classes to the same value until this can be replaced with a new system */
   fuel->M[0]=fuel->daily_litter_moist;
   fuel->M[1]=fuel->daily_litter_moist;
   fuel->M[2]=fuel->daily_litter_moist;
