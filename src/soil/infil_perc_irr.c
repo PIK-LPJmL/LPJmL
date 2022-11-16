@@ -251,7 +251,7 @@ Real infil_perc_irr(Stand *stand,        /**< Stand pointer */
                   if(config->double_harvest)
                   {
                     crop=pft->data;
-                    crop->dh->leachingsum+=NO3perc_ly;
+                    crop->dh->leachingsum+=NO3surf + NO3lat;
                   }
                   else
                     getoutputindex(&stand->cell->output,CFT_LEACHING,pft->par->id-npft+data_irrig->irrigation*ncft,config)+=NO3surf + NO3lat;
