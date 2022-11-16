@@ -249,7 +249,7 @@ Real infil_perc_rain(Stand *stand,        /**< Stand pointer */
                   crop->dh->leachingsum+=NO3perc_ly;
                 }
                 else
-                  getoutputindex(&stand->cell->output,CFT_LEACHING,pft->par->id-npft+data_irrig->irrigation*ncft,config)+=NO3perc_ly;
+                  getoutputindex(&stand->cell->output,CFT_LEACHING,pft->par->id-npft+data_irrig->irrigation*ncft,config)+=NO3surf + NO3lat;
               }
             }
           } /* end of if(config->with_nitrogen) */
@@ -270,6 +270,19 @@ Real infil_perc_rain(Stand *stand,        /**< Stand pointer */
         {
           getoutput(&stand->cell->output,D_LEACHING,config)=NO3perc_ly;
         }
+      }
+    }
+    if(stand->type->landusetype==AGRICULTURE)
+    {
+      foreachpft(pft,p,&stand->pftlist)
+      {
+        if(config->double_harvest)
+        {
+          crop=pft->data;
+          crop->dh->leachingsum+=NO3perc_ly;
+        }
+        else
+          getoutputindex(&stand->cell->output,CFT_LEACHING,pft->par->id-npft+data_irrig->irrigation*ncft,config)+=NO3perc_ly;
       }
     }
   } /* while infil > 0 */
