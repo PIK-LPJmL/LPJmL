@@ -19,13 +19,12 @@
 
 #define fbd_c3_livegrass 4.0
 #define fbd_c4_livegrass 4.0
-#define NGLIM 4
+#define NGLIM 5
 
 static Real alpha[NFUELCLASS]={0.001,0.00005424,0.00001485,0};
-static Real SIGMA[NFUELCLASS]={66.0,3.58,0.98,0};
 Real sigma_dead[NFUELCLASS]={66.0,3.58,0.98,66.0};
 Real sigma_live[2]={66.0,0};
-static Real glim[NGLIM]={16,48,96,1200};
+static Real glim[NGLIM]={16,48,96,1200,1000000};
 
 void fuelload(const Stand *stand, /**< pointer to stand */
               Fuel *fuel,
@@ -109,7 +108,7 @@ void fuelload(const Stand *stand, /**< pointer to stand */
     adead[i]=sigma_dead[i]*fuel->w[i]/PART_DENS;
     adead_sum+=adead[i];
   }
-  livefuel->w[0]=livegrass;
+  livefuel->w[0]=livegrass; 
   livefuel->w[1]=0; /* setting to 0 as placeholder for live woody component*/
   for(i=0;i<2;++i)
   {
@@ -117,33 +116,51 @@ void fuelload(const Stand *stand, /**< pointer to stand */
     alive_sum+=alive[i];
   }
   for(i=0;i<NFUELCLASS;++i)
-   fuel->f[i]=(adead_sum>0) ? adead[i]/adead_sum : 0; 
+   {
+    fuel->f[i]=(adead_sum>0) ? adead[i]/adead_sum : 0;
+   } 
   for(i=0;i<2;++i)
+   {
    livefuel->f[i]=(alive_sum>0) ? alive[i]/alive_sum : 0;
+   }
   fuel->fi=(adead_sum || alive_sum > 0) ? adead_sum/(adead_sum+alive_sum) : 0;
   livefuel->fi=(adead_sum || alive_sum > 0) ? alive_sum/(adead_sum+alive_sum) : 0;
-  /* calculating g factors from Albini 1976 */
+  /* calculating g factors from Albini 1976 (loop to find sum of f factors in sigma bin and then second loop to assign the sum to each fuel class)*/
   for(i=0;i<NGLIM+1;++i)
     fsum[i]=0;
-  for(i=0;i<NFUELCLASS;i++)
+  for(i=0;i<NFUELCLASS;++i)
   {
-    for(index=0;index<NGLIM;index++)
-      if(SIGMA[i]<glim[index]/30.48) /*conversion from ft^-1 to cm^-1*/
+    for(index=0;index<NGLIM;++index)
+      if(sigma_dead[i]<glim[index]/30.48) /*conversion from ft^-1 to cm^-1*/
         break;
     fsum[index]+=fuel->f[i];
   }
       /* assume nothing falls in class 0 (surface area to volume ratio < 16 ft^-1)*/ 
-  for(i=0;i<NFUELCLASS;i++)
+  for(i=0;i<NFUELCLASS;++i)
   {
-    for(index=0;index<NGLIM;index++)
-      if(SIGMA[i]<glim[index]/30.48)
+    for(index=0;index<NGLIM;++index)
+      if(sigma_dead[i]<glim[index]/30.48)
         break;
     fuel->g[i]=fsum[index];
   }
-      /* asssume herb and woody fall into different classes */
+   /* live fuels calculation of g factors */ 
+  for(i=0;i<NGLIM+1;++i)
+    fsum[i]=0;
   for(i=0;i<2;++i)
-    livefuel->g[i]=livefuel->f[i];
-    
+  {
+    for(index=0;index<NGLIM;++index)
+      if(sigma_live[i]<glim[index]/30.48) /*conversion from ft^-1 to cm^-1*/
+        break;
+    fsum[index]+=livefuel->f[i];
+  }
+      /* assume nothing falls in class 0 (surface area to volume ratio < 16 ft^-1)*/ 
+  for(i=0;i<2;++i)
+  {
+    for(index=0;index<NGLIM;++index)
+      if(sigma_live[i]<glim[index]/30.48)
+        break;
+    livefuel->g[i]=fsum[index];
+  }
  /*calculating live and dead moisture and fbd as in standard 5.3 spitfire*/ 
  dlm_1hr=ratio_dead_fuel=ratio_live_fuel=fbd_deadfuel=mean_w=0;
 
@@ -190,7 +207,6 @@ void fuelload(const Stand *stand, /**< pointer to stand */
   }
   else
     fuel->char_dens_fuel_ave = 0;
-
 #if 0
   if(fuel->sigma_dead > 2*SIGMA[0])
   {
