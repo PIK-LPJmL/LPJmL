@@ -15,7 +15,7 @@
 #include "lpj.h"
 
 #define MINER_DAMP 0.41739 //0.17*pow(Se,-0.19), Se=1% (effective mineral content)
-#define heat_content_fuel 18000.0
+#define heat_content_fuel 18608.0
   
 Real rateofspread(Real windsp_cover,Fuel *fuel,Livefuel *livefuel)
 {
@@ -28,6 +28,7 @@ Real rateofspread(Real windsp_cover,Fuel *fuel,Livefuel *livefuel)
   Real w,wsum,msum,wsum_live,mfdead,mxlive,Mdead,Mlive;
   Real hs_sum_live,hs_sum_dead,hs,mw_weight_live;
   int i;
+
   /* Calculate characteristic values */
   char_sigma_dead=0;
   wndead=0;
@@ -60,7 +61,6 @@ Real rateofspread(Real windsp_cover,Fuel *fuel,Livefuel *livefuel)
   w=wsum/wsum_live;
   mfdead=msum/wsum;
   mxlive=max(2.9*w*(1-mfdead/fuel->char_moist_factor)-0.226,fuel->char_moist_factor);
-  
   /* Packing ratio*/
   beta_fire = fuel->char_dens_fuel_ave / PART_DENS;
 
@@ -76,10 +76,8 @@ Real rateofspread(Real windsp_cover,Fuel *fuel,Livefuel *livefuel)
   /* converts wind_speed (m/min) to ft/min
    * for input into Rothermel's formula for phi_wind in the ROS S/R */
   wind_forward=3.281*windsp_cover;
-
   /* Effect of wind speed */
   phi_wind=(bet <= 0) ?  0 : c*pow(wind_forward,b)*pow(bet,-e); 
-    
   /* Propagating flux ratio */
   if (char_sigma <= 0.00001)
     xi = 0.0;
@@ -101,7 +99,6 @@ Real rateofspread(Real windsp_cover,Fuel *fuel,Livefuel *livefuel)
   mw_weight_live=min(Mlive/mxlive,1);
   moist_damp_live = (0.0 > (1.0-(2.59*mw_weight_live)+ (5.11*(pow(mw_weight_live,2.0)))-(3.52*(pow(mw_weight_live,3.0)))) ? 
     0 : (1.0-(2.59*mw_weight_live)+ (5.11*(pow(mw_weight_live,2.0)))-(3.52*(pow(mw_weight_live,3.0)))));
-
   /* Reaction intensity */
   ir=gamma_aptr*(wndead*1e-3*heat_content_fuel*moist_damp_dead*MINER_DAMP
                  +wnlive*1e-3*heat_content_fuel*moist_damp_live*MINER_DAMP);
