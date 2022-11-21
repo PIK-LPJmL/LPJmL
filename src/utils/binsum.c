@@ -160,25 +160,9 @@ int main(int argc,char **argv)
     fprintf(stderr,"Error creating '%s': %s.\n",argv[iarg+1],strerror(errno));
     return EXIT_FAILURE;
   }
-  if(isclm)
+  if(ismeta)
   {
-    version=READ_VERSION;
-    if(freadheader(file,&header,&swap,LPJOUTPUT_HEADER,&version,TRUE))
-    {
-      return EXIT_FAILURE;
-    }
-    ngrid=header.ncell;
-    nsum=header.nstep;
-    nyear=header.nyear*nsum;
-    nitem=header.nbands;
-    if(getfilesizep(file)!=headersize(LPJOUTPUT_HEADER,version)+typesizes[header.datatype]*header.nyear*header.nstep*header.nbands*header.ncell)
-      fprintf(stderr,"Warning: file size of '%s' does not match header.\n",argv[iarg]);
-    header.nstep=1;
-    fwriteheader(out,&header,LPJOUTPUT_HEADER,version);
-  }
-  else if(ismeta)
-  {
-    file=openmetafile(&header,&map,map_name,&attrs,&n_attr,NULL,units,descr,NULL,NULL,&swap,&offset,argv[iarg],TRUE);
+    file=openmetafile(&header,&map,map_name,&attrs,&n_attr,NULL,units,descr,&grid_name,&grid_type,&swap,&offset,argv[iarg],TRUE);
     if(file==NULL)
       return EXIT_FAILURE;
     if(header.order!=CELLSEQ)
@@ -195,6 +179,23 @@ int main(int argc,char **argv)
     nsum=header.nstep;
     nyear=header.nyear*nsum;
     nitem=header.nbands;
+    header.nstep=1;
+    if(isclm)
+      fwriteheader(out,&header,LPJOUTPUT_HEADER,LPJOUTPUT_VERSION);
+  }
+  else if(isclm)
+  {
+    version=READ_VERSION;
+    if(freadheader(file,&header,&swap,LPJOUTPUT_HEADER,&version,TRUE))
+    {
+      return EXIT_FAILURE;
+    }
+    ngrid=header.ncell;
+    nsum=header.nstep;
+    nyear=header.nyear*nsum;
+    nitem=header.nbands;
+    if(getfilesizep(file)!=headersize(LPJOUTPUT_HEADER,version)+typesizes[header.datatype]*header.nyear*header.nstep*header.nbands*header.ncell)
+      fprintf(stderr,"Warning: file size of '%s' does not match header.\n",argv[iarg]);
     header.nstep=1;
     fwriteheader(out,&header,LPJOUTPUT_HEADER,version);
   }
@@ -268,7 +269,6 @@ int main(int argc,char **argv)
       printfcreateerr(out_json);
       return EXIT_FAILURE;
     }
-    grid_name.name=argv[iarg];
     fprintjson(file,argv[iarg+1],arglist,&header,map,map_name,attrs,n_attr,NULL,strlen(units)>0 ? units : NULL,strlen(descr)>0 ? descr : NULL,&grid_name,grid_type,RAW,LPJOUTPUT_HEADER,FALSE,LPJOUTPUT_VERSION);
     fclose(file);
   }
