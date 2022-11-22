@@ -1272,7 +1272,7 @@
     "cn" : [30.0, 55.0, 70.0, 77.0], /* curve number */
     "beta_root" : 0.975,    /* beta_root */
     "minwscal" : 0.00,      /* minwscal 3*/
-    "gmin"  : 0.64,          /* gmin 4; increase for N-version acc. to proportion in LPJmL4 difference PFT1*/
+    "gmin"  : 0.2,          /* gmin 4*/
     "respcoeff" : 0.2,      /* respcoeff 5*/
     "nmax" : 100.0,          /* nmax 7*/
     "resist" : 1.0,         /* resist 8*/
@@ -1286,7 +1286,7 @@
     "twmax_daily" : 1000.0,  /* twmax_daily 31*/
     "gddbase" : 5.0,        /* gddbase (deg C) 33*/
     "min_temprange" : -1000.0,/* min_temprange 34*/
-    "emax": 10.0,            /* emax 35; increase for N-version acc. to proportion in LPJmL4 difference PFT1*/
+    "emax": 7.0,            /* emax 35*/
     "intc" : 0.02,          /* intc 36*/
     "alphaa" : 0.8,         /* alphaa, fraction of PAR assimilated at ecosystem level, relative to leaf level */
     "albedo_leaf" : 0.13,   /* albedo of green leaves */
@@ -1338,8 +1338,8 @@
     "kNmin": 0.05,                /* kNmin, Rate of N uptake not associated with Michaelis-Menten Kinetics, Zaehle&Friend 2000 */
     "KNmin" : 1.48,               /* KNmin, Half saturation concentration of fine root N uptake, Smith et al. 2014 */
     "cnratio_leaf": {"low": CN_BL_EG_MN, "median" : CN_BL_EG_MD, "high" : CN_BL_EG_MX}, /* 10.7 79.4 cnleaf min max, based on TRY data, prepared by Boris Sakschewski */
-    "knstore" : 0.15,       /* knstore */
-    "fn_turnover" : FN_TURNOVER_EV_BR, /* fraction of N not recovered before turnover */
+    "knstore" : 0.1,       /* knstore, Smith et al. 2014 */
+    "fn_turnover" : FN_TURNOVER, /* fraction of N not recovered before turnover */
     "windspeed_dampening" : 0.4, /* windspeed dampening */
     "roughness_length" : 1.0,/* roughness length */
     "irrig_threshold" : { "dry" : IRRIG_THRESHOLD_C3_DRY, "humid" : IRRIG_THRESHOLD_C3_HUMID },
@@ -1354,7 +1354,7 @@
     "allom2" : 35,
     "allom3" : 0.75,
     "allom4" : ALLOM4,
-    "k_latosa" : 4000,      /* represent species investing in biomass (wood) production */
+    "k_latosa" : K_LATOSA,
     "height_max" : 8,       /* maximum height of tree */
     "scorchheight_f_param" : 0.061,/* scorch height (F) */
     "crownlength" : 0.10 , /* crown length (CL) */
@@ -1377,7 +1377,7 @@
     "cn" : [30.0, 55.0, 70.0, 77.0], /* curve number */
     "beta_root" : 0.966,    /* beta_root */
     "minwscal" : 0.00,      /* minwscal 3*/
-    "gmin"  : 0.4,          /* gmin 4; increase for N-version acc. to proportion in LPJmL4 difference PFT5*/
+    "gmin"  : 0.2,          /* gmin 4*/
     "respcoeff" : 1.0,      /* respcoeff 5*/
     "nmax" : 120.0,          /* nmax 7*/
     "resist" : 0.95,        /* resist 8*/
@@ -1391,7 +1391,7 @@
     "twmax_daily" : 1000.0,  /* twmax_daily 31*/
     "gddbase" : 5.0,        /* gddbase (deg C) 33*/
     "min_temprange" : -1000.0,/* min_temprange 34*/
-    "emax": 7.0,            /* emax 35; increase for N-version acc. to proportion in LPJmL4 difference PFT5*/
+    "emax": 5.0,            /* emax 35*/
     "intc" : 0.02,          /* intc 36*/
     "alphaa" : 0.8,         /* alphaa, fraction of PAR assimilated at ecosystem level, relative to leaf level */
     "albedo_leaf" : 0.14,   /* albedo of green leaves */
@@ -1443,7 +1443,7 @@
     "kNmin": 0.05,                /* kNmin, Rate of N uptake not associated with Michaelis-Menten Kinetics, Zaehle&Friend 2000 */
     "KNmin" : 1.48,               /* KNmin, Half saturation concentration of fine root N uptake, Smith et al. 2014 */
     "cnratio_leaf": {"low": CN_BL_DC_MN, "median" : CN_BL_DC_MD, "high" : CN_BL_DC_MX}, /* 10.7 79.4 cnleaf min max, based on TRY data, prepared by Boris Sakschewski */
-    "knstore" : 0.15,       /* knstore */
+    "knstore" : 0.1,       /* knstore, Smith et al. 2014 */
     "fn_turnover" : FN_TURNOVER, /* fraction of N not recovered before turnover */
     "windspeed_dampening" : 0.4,  /* windspeed dampening */
     "roughness_length" : 1.0,     /* roughness length */
@@ -1461,7 +1461,7 @@
     "allom2" : 35,
     "allom3" : 0.75,
     "allom4" : ALLOM4,
-    "k_latosa" : 4000,    /* represent species investing in biomass (wood) production */
+    "k_latosa" : K_LATOSA,
     "height_max" : 8,       /* maximum height of tree */
     "scorchheight_f_param" : 0.0940, /* scorch height (F) */
     "crownlength" : 0.3334, /* crown length (CL) */
@@ -1491,7 +1491,7 @@
     "cn" : [39.0, 61.0, 74.0, 80.0], /* curve number */
     "beta_root" : 0.972,    /* beta_root */
     "minwscal" : 0.20,      /* minwscal 3*/
-    "gmin"  : 1.5,          /* gmin 4; acc. to PFT 9*/
+    "gmin"  : 0.5,          /* gmin 4*/
     "respcoeff" : 0.2,      /* respcoeff 5*/
     "nmax" : 100.0,          /* nmax 7*/
     "resist" : 1.0,         /* resist 8*/
@@ -1499,15 +1499,15 @@
     "lmro_ratio" : 0.75,   /* lmro_ratio 18*/
     "lmro_offset" : 0.5,     /* lmro_ratio 18*/
     "ramp" : 100.0,          /* ramp 19*/
-    "lai_sapl" : 0.1,     /* lai_sapl 21; acc. to PFT 9*/
+    "lai_sapl" : 0.001,     /* lai_sapl 21*/
     "gdd5min" : 0.0,        /* gdd5min 30*/
     "twmax" : 1000.0,        /* twmax 31*/
     "twmax_daily" : 1000.0,  /* twmax_daily 31*/
     "gddbase" : 5.0,        /* gddbase (deg C) 33*/
     "min_temprange" : -1000.0,/* min_temprange 34*/
-    "emax": 10.0,            /* emax 35; acc. to PFT 9*/
+    "emax": 7.0,            /* emax 35*/
     "intc" : 0.01,          /* intc 36*/
-    "alphaa" : 0.8, /* alphaa; extremely homogenous plantation*/
+    "alphaa" : ALPHAA_NITROGEN, /* alphaa, fraction of PAR assimilated at ecosystem level, relative to leaf level */
     "albedo_leaf" : 0.21,   /* albedo of green leaves */
     "albedo_stem" : 0.15,   /* albedo of stems */
     "albedo_litter" : 0.1,  /* albedo of litter */
@@ -1557,7 +1557,7 @@
     "kNmin": 0.05,                /* kNmin, Rate of N uptake not associated with Michaelis-Menten Kinetics, Zaehle&Friend 2000 */
     "KNmin" : 1.19,               /* KNmin, Half saturation concentration of fine root N uptake, Smith et al. 2014 */
     "cnratio_leaf": {"low": CN_GC4_MN, "median" : CN_GC4_MD, "high" : CN_GC4_MX}, /* 10.7 79.4 cnleaf min max, based on TRY data, prepared by Boris Sakschewski */
-    "knstore" : 0.05,       /* knstore, acc. to PFT 9 */
+    "knstore" : 0.1,       /* knstore, Smith et al. 2014 */
     "fn_turnover" : FN_TURNOVER_GR, /* fraction of N not recovered before turnover */
     "windspeed_dampening" : 0.6,/* windspeed dampening */
     "roughness_length" : 0.03,  /* roughness length */
