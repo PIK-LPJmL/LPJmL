@@ -244,6 +244,19 @@ Real infil_perc_irr(Stand *stand,        /**< Stand pointer */
               stand->cell->balance.n_outflux+=(NO3surf + NO3lat)*stand->frac;
               if(isagriculture(stand->type->landusetype))
                 getoutput(&stand->cell->output,NLEACHING_AGR,config)+=(NO3surf + NO3lat)*stand->frac;
+              if(stand->type->landusetype==AGRICULTURE)
+              {
+                foreachpft(pft,p,&stand->pftlist)
+                {
+                  if(config->double_harvest)
+                  {
+                    crop=pft->data;
+                    crop->dh->leachingsum+=NO3surf + NO3lat;
+                  }
+                  else
+                    getoutputindex(&stand->cell->output,CFT_LEACHING,pft->par->id-npft+data_irrig->irrigation*ncft,config)+=NO3surf + NO3lat;
+                }
+              }
             } /* end of if(config->with_nitrogen) */
           } /*end percolation*/
         } /* if soil depth > freeze_depth */

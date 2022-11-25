@@ -390,7 +390,7 @@ Real daily_grassland(Stand *stand,                /**< stand pointer */
 
   if (stand->type->landusetype != SETASIDE_RF && stand->type->landusetype != SETASIDE_IR) 
   {
-    switch(stand->cell->ml.grass_scenario)
+    switch(stand->type->landusetype==GRASSLAND ? stand->cell->ml.grass_scenario : config->grazing_others)
     {
       case GS_DEFAULT: // default
         if(cleaf>cleaf_max && ((config->with_nitrogen && stand->growing_days>=20) ||
