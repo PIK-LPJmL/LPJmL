@@ -39,7 +39,7 @@ void dailyfire(Stand *stand,                /**< pointer to stand */
   Output *output;
   Pft *pft;
   Tracegas emission={0,0,0,0,0,0};
-  if(stand->type->landusetype==GRASSLAND && !config->fire_on_grassland)
+  if((stand->type->landusetype==GRASSLAND || stand->type->landusetype==OTHERS) && !config->fire_on_grassland)
     return;
   output=&stand->cell->output;
   initfuel(&fuel);
