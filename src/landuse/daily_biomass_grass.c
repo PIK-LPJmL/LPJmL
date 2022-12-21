@@ -60,6 +60,7 @@ Real daily_biomass_grass(Stand *stand,                /**< stand pointer */
   Real wdf; /* water deficit fraction */
   Real transp;
   Real fertil;
+  Real manure;
   Bool isphen;
   Irrigation *data;
   Pftgrass *grass;
@@ -109,11 +110,13 @@ Real daily_biomass_grass(Stand *stand,                /**< stand pointer */
     {
       if(day==fertday_biomass(stand->cell,config))
       {
-        fertil = stand->cell->ml.manure_nr[data->irrigation].biomass_grass;
-        stand->soil.NO3[0]+=fertil*param.nfert_no3_frac;
-        stand->soil.NH4[0]+=fertil*(1-param.nfert_no3_frac);
-        stand->cell->balance.n_influx+=fertil*stand->frac;
-        getoutput(output,NMANURE_AGR,config)+=fertil*stand->frac;
+        manure = stand->cell->ml.manure_nr[data->irrigation].biomass_grass;
+        stand->soil.NH4[0] += manure*param.nmanure_nh4_frac;
+        stand->soil.litter.item->agsub.leaf.carbon += manure*param.manure_cn;
+        stand->soil.litter.item->agsub.leaf.nitrogen += manure*(1-param.nmanure_nh4_frac);
+        stand->cell->balance.c_influx += manure*param.manure_cn*stand->frac;
+        stand->cell->balance.n_influx += manure*stand->frac;
+        getoutput(&stand->cell->output,NMANURE_AGR,config)+=manure*stand->frac;
       } /* end fday==day */
     }
   }

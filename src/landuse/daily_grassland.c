@@ -78,6 +78,7 @@ Real daily_grassland(Stand *stand,                /**< stand pointer */
   Real cleaf=0.0;
   Real cleaf_max=0.0;
   Real fertil;
+  Real manure;
   int n_pft,index,nnat;
   Real *fpc_inc;
 #ifdef PERMUTE
@@ -139,11 +140,13 @@ Real daily_grassland(Stand *stand,                /**< stand pointer */
     {
       if(day==fertday_biomass(stand->cell,config))
       {
-        fertil = stand->cell->ml.manure_nr[data->irrigation.irrigation].grass[stand->type->landusetype==GRASSLAND];
-        stand->soil.NO3[0]+=fertil*param.nfert_no3_frac;
-        stand->soil.NH4[0]+=fertil*(1-param.nfert_no3_frac);
-        stand->cell->balance.n_influx+=fertil*stand->frac;
-        getoutput(output,NMANURE_AGR,config)+=fertil*stand->frac;
+        manure = stand->cell->ml.manure_nr[data->irrigation.irrigation].grass[stand->type->landusetype==GRASSLAND];
+        stand->soil.NH4[0] += manure*param.nmanure_nh4_frac;
+        stand->soil.litter.item->agsub.leaf.carbon += manure*param.manure_cn;
+        stand->soil.litter.item->agsub.leaf.nitrogen += manure*(1-param.nmanure_nh4_frac);
+        stand->cell->balance.c_influx += manure*param.manure_cn*stand->frac;
+        stand->cell->balance.n_influx += manure*stand->frac;
+        getoutput(&stand->cell->output,NMANURE_AGR,config)+=manure*stand->frac;
       } /* end fday==day */
     }
   }

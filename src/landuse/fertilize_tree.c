@@ -66,8 +66,7 @@ void fertilize_tree(Stand *stand,        /**< pointer to stand */
           stand->soil.NH4[0] += manure*param.nmanure_nh4_frac*param.nfert_split_frac;
           stand->soil.litter.item->agsub.leaf.carbon += manure*param.manure_cn*param.nfert_split_frac;
           stand->soil.litter.item->agsub.leaf.nitrogen += manure*(1-param.nmanure_nh4_frac)*param.nfert_split_frac;
-          getoutput(&stand->cell->output,FLUX_ESTABC,config) += manure*param.manure_cn*stand->frac*param.nfert_split_frac;
-          stand->cell->balance.flux_estab.carbon += manure*param.manure_cn*stand->frac*param.nfert_split_frac;
+          stand->cell->balance.c_influx += manure*param.manure_cn*stand->frac*param.nfert_split_frac;
           stand->cell->balance.n_influx += manure*stand->frac*param.nfert_split_frac;
           getoutput(&stand->cell->output,NMANURE_AGR,config)+=manure*stand->frac*param.nfert_split_frac; 
           
@@ -93,7 +92,7 @@ void fertilize_tree(Stand *stand,        /**< pointer to stand */
           stand->soil.litter.item->agsub.leaf.carbon += manure*param.manure_cn;
           stand->soil.litter.item->agsub.leaf.nitrogen += manure*(1-param.nmanure_nh4_frac);
           getoutput(output,NMANURE_AGR,config)+=manure*stand->frac;
-          stand->cell->balance.flux_estab.carbon += manure*param.manure_cn*stand->frac;
+          stand->cell->balance.c_influx += manure*param.manure_cn*stand->frac;
           stand->cell->balance.n_influx += manure*stand->frac;
           getoutput(&stand->cell->output,NMANURE_AGR,config)+=manure*stand->frac; 
           tree->nmanure = 0; 
