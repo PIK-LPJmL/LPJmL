@@ -99,11 +99,11 @@ Real daily_agriculture_grass(Stand *stand,                /**< stand pointer */
       fertil = stand->cell->ml.fertilizer_nr[data->irrigation].ag_tree[data->pft_id-npft+config->nagtree];
       stand->soil.NO3[0]+=fertil*param.nfert_no3_frac;
       stand->soil.NH4[0]+=fertil*(1-param.nfert_no3_frac);
-      stand->cell->balance.n_influx+=fertil*stand->frac;
+      stand->cell->balance.influx.nitrogen+=fertil*stand->frac;
       getoutput(output,NFERT_AGR,config)+=fertil*stand->frac;
     } /* end fday==day */
   }
-  if (config->with_nitrogen && stand->cell->ml.manure_nr!=NULL) 
+  if (config->with_nitrogen && stand->cell->ml.manure_nr!=NULL)
   {
     if(day==fertday_biomass(stand->cell,config))
     {
@@ -111,8 +111,8 @@ Real daily_agriculture_grass(Stand *stand,                /**< stand pointer */
       stand->soil.NH4[0] += manure*param.nmanure_nh4_frac;
       stand->soil.litter.item->agsub.leaf.carbon += manure*param.manure_cn;
       stand->soil.litter.item->agsub.leaf.nitrogen += manure*(1-param.nmanure_nh4_frac);
-      stand->cell->balance.c_influx += manure*param.manure_cn*stand->frac;
-      stand->cell->balance.n_influx += manure*stand->frac;
+      stand->cell->balance.influx.carbon += manure*param.manure_cn*stand->frac;
+      stand->cell->balance.influx.nitrogen += manure*stand->frac;
       getoutput(&stand->cell->output,NMANURE_AGR,config)+=manure*stand->frac;
     } /* end fday==day */
   }

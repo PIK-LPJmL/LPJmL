@@ -140,7 +140,7 @@ Real nuptake_crop(Pft *pft,             /**< pointer to PFT data */
         n_uptake += fixed_n;
         pft->bm_inc.nitrogen = *n_plant_demand;
         getoutput(&pft->stand->cell->output,BNF,config) += fixed_n*pft->stand->frac;
-        pft->stand->cell->balance.n_influx += fixed_n*pft->stand->frac;
+        pft->stand->cell->balance.influx.nitrogen += fixed_n*pft->stand->frac;
         getoutput(&pft->stand->cell->output,BNF_AGR,config) += fixed_n*pft->stand->frac;
         pft->vscal = 1;
       }
@@ -152,7 +152,7 @@ Real nuptake_crop(Pft *pft,             /**< pointer to PFT data */
           fixed_n=ma_biological_n_fixation(pft, soil, n_deficit, config);
           pft->bm_inc.nitrogen+=fixed_n;
           getoutput(&pft->stand->cell->output,BNF,config)+=fixed_n*pft->stand->frac;
-          pft->stand->cell->balance.n_influx+=fixed_n*pft->stand->frac;
+          pft->stand->cell->balance.influx.nitrogen+=fixed_n*pft->stand->frac;
           getoutput(&pft->stand->cell->output,BNF_AGR,config) += fixed_n*pft->stand->frac;
         }
         else
@@ -172,7 +172,7 @@ Real nuptake_crop(Pft *pft,             /**< pointer to PFT data */
           crop->dh->nfertsum+=autofert_n*pft->stand->frac;
         else
           getoutputindex(&pft->stand->cell->output,CFT_NFERT,index+data->irrigation*nirrig,config)+=autofert_n;
-        pft->stand->cell->balance.n_influx += autofert_n*pft->stand->frac;
+        pft->stand->cell->balance.influx.nitrogen += autofert_n*pft->stand->frac;
         getoutput(&pft->stand->cell->output,FLUX_AUTOFERT,config)+=autofert_n*pft->stand->frac;
       }
       else

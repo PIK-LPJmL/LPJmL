@@ -87,8 +87,7 @@ typedef struct
   Real excess_water;        /**< excess water (mm) */
   Real total_reservoir_out; /**< total water extracted from reservoirs (dm3) */
   Real total_irrig_from_reservoir; /**< total water added to fields from reservoirs (dm3)*/
-  Real n_influx;            /**< all N inputs: deposition, fertilizer, BNF */
-  Real c_influx;            /**< all C inputs: currently only manure */
+  Stocks influx;            /**< all C,N inputs: deposition, fertilizer, manure, BNF */
   Real n_outflux;           /**< all N outputs: n2onit, n2odenit, n2denit, leaching */
   Real n_demand;            /**< N demand by plants (gN)*/
   Real n_uptake;            /**< N uptake by plants (gN) */

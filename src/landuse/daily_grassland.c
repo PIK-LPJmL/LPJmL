@@ -132,7 +132,7 @@ Real daily_grassland(Stand *stand,                /**< stand pointer */
         fertil = stand->cell->ml.fertilizer_nr[data->irrigation.irrigation].grass[stand->type->landusetype==GRASSLAND];
         stand->soil.NO3[0]+=fertil*param.nfert_no3_frac;
         stand->soil.NH4[0]+=fertil*(1-param.nfert_no3_frac);
-        stand->cell->balance.n_influx+=fertil*stand->frac;
+        stand->cell->balance.influx.nitrogen+=fertil*stand->frac;
       } /* end fday==day */
     }
     if(stand->cell->ml.manure_nr!=NULL) /* has to be adapted if fix_fertilization option is added */
@@ -143,8 +143,8 @@ Real daily_grassland(Stand *stand,                /**< stand pointer */
         stand->soil.NH4[0] += manure*param.nmanure_nh4_frac;
         stand->soil.litter.item->agsub.leaf.carbon += manure*param.manure_cn;
         stand->soil.litter.item->agsub.leaf.nitrogen += manure*(1-param.nmanure_nh4_frac);
-        stand->cell->balance.c_influx += manure*param.manure_cn*stand->frac;
-        stand->cell->balance.n_influx += manure*stand->frac;
+        stand->cell->balance.influx.carbon += manure*param.manure_cn*stand->frac;
+        stand->cell->balance.influx.nitrogen += manure*stand->frac;
       } /* end fday==day */
     }
   }
