@@ -12,7 +12,10 @@
 /** Contact: https://github.com/PIK-LPJmL/LPJmL                                    \n**/
 /**                                                                                \n**/
 /**************************************************************************************/
+
 #include "lpj.h"
+
+#define UNDEFINED -99999
 
 int main(int argc,char **argv)
 {
@@ -24,7 +27,7 @@ int main(int argc,char **argv)
   int *index,*index2;
   FILE *file;
   Header header;
-  String headername;
+  String headername,line,line2;
   Bool swap;
   Routing *r,r2;
   if(argc<5)
@@ -79,7 +82,7 @@ int main(int argc,char **argv)
     return EXIT_FAILURE;
   }
   for(i=0;i<ngrid;i++)
-    index[i]=NOT_FOUND;
+    index[i]=UNDEFINED;
   index2=newvec(int,ngrid2);
   if(index2==NULL)
   {
@@ -157,12 +160,17 @@ int main(int argc,char **argv)
   for(i=0;i<ngrid2;i++)
   {
     r2.len=r[index2[i]].len;
-    r2.index=index[r[index2[i]].index];
-    if(r2.index==NOT_FOUND)
+    if(r[index2[i]].index<0)
+      r2.len=r[index2[i]].index;
+    else
     {
-      fprintf(stderr,"Index not found for cell %d in '%s'.\n",
-              i,argv[2]);
-      return EXIT_FAILURE;
+      r2.index=index[r[index2[i]].index];
+      if(r2.index==UNDEFINED)
+      {
+        fprintf(stderr,"Index not found for cell %d (%s) in '%s' mapped to %s.\n",
+                i,sprintcoord(line,c+index2[i]),argv[2],sprintcoord(line2,c+r[index2[i]].index));
+        return EXIT_FAILURE;
+      }
     }
     fwrite(&r2,sizeof(r2),1,file);
   } 
