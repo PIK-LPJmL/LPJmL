@@ -68,7 +68,7 @@ int main(int argc,char **argv)
   if(res.lon!=lon || res.lat!=lat)
   {
     fprintf(stderr,"Cell size (%g,%g) in '%s' differs from (%g,%g) in '%s'.\n",
-            lon,lat,argv[2],resl.lon,res.lat,argv[1]);
+            lon,lat,argv[2],res.lon,res.lat,argv[1]);
     return EXIT_FAILURE;
   }
   index=newvec(int,ngrid);
@@ -122,7 +122,7 @@ int main(int argc,char **argv)
   if(res.lon!=header.cellsize_lon || res.lat!=header.cellsize_lat)
   {
     fprintf(stderr,"Cell size (%g,%g) in '%s' differs from (%g,%g) in '%s'.\n",
-            header.cellsize_lon,header.cellsize_lat,argv[4],resl.lon,res.lat,argv[1]);
+            header.cellsize_lon,header.cellsize_lat,argv[4],res.lon,res.lat,argv[1]);
     return EXIT_FAILURE;
   }
   if(header.ncell!=ngrid)
