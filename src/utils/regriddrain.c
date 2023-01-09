@@ -167,9 +167,9 @@ int main(int argc,char **argv)
       r2.index=index[r[index2[i]].index];
       if(r2.index==UNDEFINED)
       {
-        fprintf(stderr,"Index not found for cell %d (%s) in '%s' mapped to %s.\n",
+        fprintf(stderr,"Index not found for cell %d (%s) in '%s' mapped to %s, set to -1.\n",
                 i,sprintcoord(line,c+index2[i]),argv[2],sprintcoord(line2,c+r[index2[i]].index));
-        return EXIT_FAILURE;
+        r2.index= -1;
       }
     }
     fwrite(&r2,sizeof(r2),1,file);
