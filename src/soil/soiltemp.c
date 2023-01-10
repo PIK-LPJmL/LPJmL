@@ -227,7 +227,7 @@ void soiltemp(Soil *soil,          /**< pointer to soil data */
               moisture2soilice(soil, &heat, l);
             soil->state[l]=FREEZING;
           }
-          dT=(1-z0/soildepth[l])*dT+soildepth[l]/z0*heat/heatcap[l]/(soildepth[l]*1e-3);
+          dT=(1-z0/soildepth[l])*dT+heat/heatcap[l]/(soildepth[l]*1e-3);
         }
         else
         { /*whole layer is heated*/
