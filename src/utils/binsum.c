@@ -162,6 +162,17 @@ int main(int argc,char **argv)
   }
   if(ismeta)
   {
+    /* set default values */
+    header.datatype=LPJ_FLOAT;
+    header.timestep=1;
+    header.nbands=nitem;
+    header.nstep=nsum;
+    header.order=CELLSEQ;
+    header.firstcell=0;
+    header.firstyear=1901;
+    header.cellsize_lon=header.cellsize_lat=0.5;
+    header.ncell=1;
+    header.nyear=1;
     file=openmetafile(&header,&map,map_name,&attrs,&n_attr,NULL,units,descr,&grid_name,&grid_type,&swap,&offset,argv[iarg],TRUE);
     if(file==NULL)
       return EXIT_FAILURE;
@@ -175,6 +186,11 @@ int main(int argc,char **argv)
       fprintf(stderr," is not supported.\n.");
       return EXIT_FAILURE;
     }
+    if(header.datatype!=LPJ_FLOAT)
+    {
+       fprintf(stderr,"Datatype of file '%s' is %s, must be float.\n",argv[iarg],typenames[header.datatype]);
+       return EXIT_FAILURE;
+    }
     ngrid=header.ncell;
     nsum=header.nstep;
     nyear=header.nyear*nsum;
@@ -186,6 +202,7 @@ int main(int argc,char **argv)
   else if(isclm)
   {
     version=READ_VERSION;
+    header.datatype=LPJ_FLOAT;
     if(freadheader(file,&header,&swap,LPJOUTPUT_HEADER,&version,TRUE))
     {
       return EXIT_FAILURE;
@@ -194,6 +211,11 @@ int main(int argc,char **argv)
     nsum=header.nstep;
     nyear=header.nyear*nsum;
     nitem=header.nbands;
+    if(header.datatype!=LPJ_FLOAT)
+    {
+       fprintf(stderr,"Datatype of of file '%s' is %s, must be float.\n",argv[iarg],typenames[header.datatype]);
+       return EXIT_FAILURE;
+    }
     if(getfilesizep(file)!=headersize(LPJOUTPUT_HEADER,version)+typesizes[header.datatype]*header.nyear*header.nstep*header.nbands*header.ncell)
       fprintf(stderr,"Warning: file size of '%s' does not match header.\n",argv[iarg]);
     header.nstep=1;
@@ -201,6 +223,7 @@ int main(int argc,char **argv)
   }
   else
   {
+    /* raw binary format, get numnber of years from file size */
     nyear=getfilesizep(file)/sizeof(float)/ngrid/nitem;
     if(getfilesizep(file) % (sizeof(float)*ngrid*nitem))
       fprintf(stderr,"Warning: file size of '%s' is not multiple of bands %d and number of cells %d.\n",argv[iarg],nitem,ngrid);
