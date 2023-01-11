@@ -341,7 +341,7 @@ Real daily_agriculture(Stand *stand,                /**< [inout] stand pointer *
     }
     else
     {
-      index=(stand->type->landusetype==OTHERS) ? data->irrigation*(ncft+NGRASS)+rothers(ncft) : pft->par->id-npft+data->irrigation*(npft+NGRASS);
+      index=(stand->type->landusetype==OTHERS) ? data->irrigation*(ncft+NGRASS)+rothers(ncft) : pft->par->id-npft+data->irrigation*(ncft+NGRASS);
       getoutputindex(output,GROWING_PERIOD,index,config)+=1.;
       getoutputindex(output,CFT_PET,index,config)+=eeq*PRIESTLEY_TAYLOR;
       getoutputindex(output,CFT_TEMP,index,config)+= climate->temp >= 5 ? climate->temp : 0;
