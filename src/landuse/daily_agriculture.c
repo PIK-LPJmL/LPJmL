@@ -451,7 +451,7 @@ Real daily_agriculture(Stand *stand,                /**< [inout] stand pointer *
 
   /* calculate net irrigation requirements (NIR) for next days irrigation */
   if(data->irrigation && stand->pftlist.n>0) /* second element to avoid irrigation on just harvested fields */
-    calc_nir(stand,data,gp_stand,wet,eeq);
+    calc_nir(stand,data,gp_stand,wet,eeq,config->others_to_crop);
 
   getoutput(output,TRANSP,config)+=transp;
   stand->cell->balance.atransp+=transp;
