@@ -34,7 +34,7 @@ Real rw_irrigation(Stand *stand,     /**< Pointer to non-natural stand */
   {
     wr=getwr(&stand->soil,pft->par->rootdist);
 
-    if(pft->stand->type->landusetype==AGRICULTURE)
+    if(pft->stand->type->landusetype==AGRICULTURE || (pft->stand->type->landusetype==OTHERS && config->others_to_crop))
     {
       supply=pft->par->emax*wr*(1-exp(-1.0*pft->par->sla*((Pftcrop *)pft->data)->ind.root.carbon));
       //demand=(gp_stand>0 && pft->phen>0 && fpar(pft)>0) ? (1.0-wet[p])*eeq*param.ALPHAM/(1+param.GM/(gp_stand/pft->phen*fpar(pft))) : 0;
