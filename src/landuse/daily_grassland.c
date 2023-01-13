@@ -122,7 +122,7 @@ Real daily_grassland(Stand *stand,                /**< stand pointer */
 
   for(l=0;l<LASTLAYER;l++)
     aet_stand[l]=green_transp[l]=0;
-  if (config->with_nitrogen)
+  if (config->with_nitrogen && (stand->type->landusetype==GRASSLAND  || stand->type->landusetype==OTHERS))
   {
     if(stand->cell->ml.fertilizer_nr!=NULL) /* has to be adapted if fix_fertilization option is added */
     {

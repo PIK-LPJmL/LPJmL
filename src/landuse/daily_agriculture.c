@@ -226,9 +226,9 @@ Real daily_agriculture(Stand *stand,                /**< [inout] stand pointer *
       if(getnpft(&stand->pftlist)>0)
       {
         pft=getpft(&stand->pftlist,0);
+        crop=pft->data;
         if(crop->dh!=NULL)
         {
-          crop=pft->data;
           if(config->pft_output_scaled)
             crop->dh->irrig_apply+=irrig_apply*stand->frac;
           else
