@@ -3,7 +3,6 @@
 /**                    r  e  g  r  i  d  d  r  a  i  n  .  c                       \n**/
 /**                                                                                \n**/
 /**     Drainage file is regridded to a new grid file                              \n**/
-/**     resolution.                                                                \n**/
 /**                                                                                \n**/
 /** (C) Potsdam Institute for Climate Impact Research (PIK), see COPYRIGHT file    \n**/
 /** authors, and contributors see AUTHORS file                                     \n**/
@@ -33,7 +32,7 @@ int main(int argc,char **argv)
   if(argc<5)
   {
     fprintf(stderr,"Missing argument(s)\n"
-            "Usage: %s coord_all.clm coord.clm drainage_all.cl, drainage.clm\n",
+            "Usage: %s coord_all.clm coord.clm drainage_all.clm drainage.clm\n",
             argv[0]);
     return EXIT_FAILURE;
   }
@@ -143,7 +142,7 @@ int main(int argc,char **argv)
   for(i=0;i<header.ncell;i++)
   {
     if(getroute(file,r+i,swap))
-    { 
+    {
       fprintf(stderr,"Error reading route %d in '%s'.\n",i,argv[3]);
       return EXIT_FAILURE;
     }
@@ -173,7 +172,7 @@ int main(int argc,char **argv)
       }
     }
     fwrite(&r2,sizeof(r2),1,file);
-  } 
+  }
   fclose(file);
   return EXIT_SUCCESS;
 } /* of 'main' */
