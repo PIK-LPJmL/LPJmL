@@ -235,6 +235,7 @@ typedef struct
   short state[NSOILLAYER];
   Real maxthaw_depth;
   Real mean_maxthaw;
+  Real fastfrac;
   Real layer_exists[LASTLAYER]; /* allows variable soil depth */
   Stocks decomp_litter_mean;
   int count;

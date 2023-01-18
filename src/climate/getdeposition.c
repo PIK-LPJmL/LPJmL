@@ -26,7 +26,7 @@ Bool getdeposition(Climate *climate,    /**< pointer to climate data */
   char *name;
   if(config->const_deposition)
     year=config->depos_year_const+(year-config->depos_year_const) % config->fix_climate_cycle;
-  if(climate->data.no3deposition!=NULL)
+  if(climate->data[0].no3deposition!=NULL)
   {
     if(year<climate->file_no3deposition.firstyear)
       year_depos=climate->file_no3deposition.firstyear;
@@ -34,7 +34,7 @@ Bool getdeposition(Climate *climate,    /**< pointer to climate data */
       year_depos=climate->file_no3deposition.firstyear+climate->file_no3deposition.nyear-1;
     else
       year_depos=year;
-    if(readclimate(&climate->file_no3deposition,climate->data.no3deposition,0,climate->file_no3deposition.scalar,grid,year_depos,config))
+    if(readclimate(&climate->file_no3deposition,climate->data[0].no3deposition,0,climate->file_no3deposition.scalar,grid,year_depos,1,config))
     {
       if(isroot(*config))
       {
@@ -46,7 +46,7 @@ Bool getdeposition(Climate *climate,    /**< pointer to climate data */
       return TRUE;
     }
   }
-  if(climate->data.nh4deposition!=NULL)
+  if(climate->data[0].nh4deposition!=NULL)
   {
     if(year<climate->file_nh4deposition.firstyear)
       year_depos=climate->file_nh4deposition.firstyear;
@@ -54,7 +54,7 @@ Bool getdeposition(Climate *climate,    /**< pointer to climate data */
       year_depos=climate->file_nh4deposition.firstyear+climate->file_nh4deposition.nyear-1;
     else
       year_depos=year;
-    if(readclimate(&climate->file_nh4deposition,climate->data.nh4deposition,0,climate->file_nh4deposition.scalar,grid,year_depos,config))
+    if(readclimate(&climate->file_nh4deposition,climate->data[0].nh4deposition,0,climate->file_nh4deposition.scalar,grid,year_depos,1,config))
     {
       if(isroot(*config))
       {

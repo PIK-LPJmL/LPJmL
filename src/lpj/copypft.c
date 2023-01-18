@@ -30,6 +30,15 @@ void copypft(Pft *dst, const Pft *src)
   dst->aphen = src->aphen;
   dst->phen_gsi = src->phen_gsi;
   dst->npp_bnf = src->npp_bnf;
-  /* call PFT-specific copy function */
+  dst->vscal = src->vscal;
+  dst->vmax = src->vmax;
+  dst->nlimit = src->nlimit;
+  dst->fapar = src->fapar;
+  dst->nleaf = src->nleaf;
+  dst->albedo = src->albedo;
+  dst->snowcover = src->snowcover;
+  dst->inun_count = src->inun_count;
+  dst->inun_stress = src->inun_stress;
+/* call PFT-specific copy function */
   src->par->copy(dst, src);
 } /* of 'copypft' */

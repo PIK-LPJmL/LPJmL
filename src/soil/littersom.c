@@ -34,7 +34,7 @@
 
 #define MOIST_DENOM 0.63212055882855767841 /* (1.0-exp(-1.0)) */
 #define K10_YEDOMA 0.025/NDAYYEAR
-#define k_red 1                           /*anoxic decomposition is much smaller than oxic decomposition Khovorostyanov et al., 2008*/
+#define k_red 10                           /*anoxic decomposition is much smaller than oxic decomposition Khovorostyanov et al., 2008*/
 #define k_red_litter 1
 #define INTERCEPT 0.10021601               /* changed from 0.04021601*/
 #define MOIST_3 -5.00505434
@@ -55,7 +55,7 @@ static Real f_wfps(const Soil *soil,      /* Soil data */
   Real x;
   x=(soil->w[l]*soil->whcs[l]+soil->wpwps[l]+soil->w_fw[l]+soil->ice_fw[l])/soil->wsats[l];
   return pow((x-soil->par->b_nit)/soil->par->n_nit,soil->par->z_nit)*
-    pow((x-soil->par->c_nit)/soil->par->m_nit,soil->par->d_nit);
+      pow((x-soil->par->c_nit)/soil->par->m_nit,soil->par->d_nit);
 } /* of 'f_wfps' */
 
 static Real f_ph(Real ph)
@@ -80,7 +80,8 @@ Stocks littersom(Stand *stand,                      /**< [inout] pointer to stan
   Real response_agtop_leaves,response_agtop_wood,response_agsub_leaves,response_agsub_wood,response_bg_litter,w_agtop;
   Real decay_litter, oxidation, litter_flux;
   Pool flux_soil[LASTLAYER];
-  Real decom,soil_cflux;
+  Real decom,soil_cflux,fastfrac;
+  Stocks decom_fast,decom_slow;
   Stocks decom_litter;
   Stocks decom_sum,flux;
   Real moist[NSOILLAYER],soil_moist[NSOILLAYER];
@@ -127,7 +128,7 @@ Stocks littersom(Stand *stand,                      /**< [inout] pointer to stan
   flux.nitrogen=0;
   foreachsoillayer(l)
     response[l]=0.0;
-  decom_litter.carbon=decom_litter.nitrogen=soil_cflux=yedoma_flux=decom_sum.carbon=decom_sum.nitrogen=0.0;
+  decom_litter.carbon=decom_litter.nitrogen=soil_cflux=yedoma_flux=decom_sum.carbon=decom_sum.nitrogen=decom_fast.carbon=decom_slow.carbon=decom_fast.nitrogen=decom_slow.nitrogen=0.0;
   CH4_air = p_s / R_gas / (airtemp + 273.15)*pch4*1e-6*WCH4;    /*g/m3 methane concentration*/
 
   K_vdiff[0][0]=2./(midlayer[0]*(midlayer[0]+(midlayer[1]-midlayer[0])));
@@ -163,13 +164,6 @@ Stocks littersom(Stand *stand,                      /**< [inout] pointer to stan
     }
   foreachsoillayer(l)
     soil_moist[l] = (soil->w[l] * soil->whcs[l] + soil->wpwps[l] + soil->w_fw[l]) / soil->wsats[l];
-
-  /* forrootsoillayer(l)
-  if(soil->O2[l]>1000 ||soil->O2[l]< 0  ){
-
-  //	  fprintf(stdout,"BL WA O2[%d]: %g\n",l,soil->O2[l]);
-  //         abort();
-  }*/
 
   foreachsoillayer(l)
   {
@@ -252,13 +246,11 @@ Stocks littersom(Stand *stand,                      /**< [inout] pointer to stan
         soil->k_mean[l].slow+=(param.k_soil10.slow*response[l]);
         if (soil->O2[l]<0)
         {
-          //fprintf(stderr,"\t\t methanogenese layer[%d] O2: %g CH4: %g C_max: %g\n",l,soil->O2[l],soil->CH4[l],C_max[l]);
           soil->O2[l] = 0;
         }
         /*Methane production (Rprod) (anoxic decomposition rate is taken from Khovorostyanov et al., 2008) C6H12O6 -> 3CO2 + 3CH4*/
         methaneflux_soil=soil->pool[l].fast.carbon*param.k_soil10.fast/k_red*gtemp_soil[l]*exp(-(soil->O2[l]/soildepth[l]*1000)/O2star);
         if(methaneflux_soil<0) methaneflux_soil=0;
-        //fprintf(stdout,"\t\t Methane production: layer:%d methane-flux: %g\n",l,methaneflux_soil[l]);
         soil->pool[l].fast.carbon-=methaneflux_soil;
         soil->CH4[l]+=methaneflux_soil;
 
@@ -273,9 +265,7 @@ Stocks littersom(Stand *stand,                      /**< [inout] pointer to stan
         if((soil_moist[l]<0.8) && layerbound[l]<=soil->wtable && soil->CH4[l]/soildepth[l]/epsilon_O2*1000>CH4_air)
         {
            /*maybe calculating during diffusivity */
-          //fprintf(stdout,"\t\t oxidation layer[%d] O2: %g CH4: %g\n",l,soil->O2[l],soil->CH4[l]);
           oxidation=(Vmax_CH4*1e-3*24*WCH4*soil->CH4[l]/soildepth[l]/epsilon_O2*1000)/(km_CH4*1e-3*WCH4+soil->CH4[l]/soildepth[l]/epsilon_O2*1000)*gtemp_soil[l]*soildepth[l]*epsilon_O2/1000;   // gCH4/m3/h*24 = gCH4/m3/d ->g/layer/m2
-          //oxidation=oxidation*(soil->O2[l]/soildepth[l]/epsilon_O2*1000)/(km_O2*1e-3*WO2+soil->O2[l]/soildepth[l]/epsilon_O2*1000); //SEGERS 1997 if ----- >> CH4 + 2O2 -> CO2 + 2H2O
           O2_need=min(oxidation*soildepth[l]*epsilon_O2/1000*2*WO2/WCH4,soil->O2[l]*oxid_frac);
           oxidation=O2_need/(2*WO2)*WCH4;
           oxidation=min(oxidation,soil->CH4[l]*WCH4/WC);
@@ -289,9 +279,6 @@ Stocks littersom(Stand *stand,                      /**< [inout] pointer to stan
           soil->micro_heating[l]+=oxidation*m_heat_ox;
 #endif
           h2o_mt+=oxidation*2*WH2O/WCH4/1000;                               // water produced during methane oxidation CH4 + 2O2 -> CO2 + 2H2O
-         /*if(soil->O2[l]>1000  ||soil->O2[l]< 0 ||soil->CH4[l]< 0 ){*/
-        // fprintf(stdout,"\t\t oxidation: %g %g O2: %g CH4: %g\n",oxidation,oxidation*WO2/WCH4,soil->O2[l],soil->CH4[l]);
-           /*}*/
         }
         if (h2o_mt>0)
         {
@@ -352,7 +339,7 @@ Stocks littersom(Stand *stand,                      /**< [inout] pointer to stan
       //response_agtop_leaves=temp_response(soil->amean_temp[0],soil->amean_temp[0])*(INTERC+MOIST_3*(moist[0]*moist[0]*moist[0])+MOIST_2*(moist[0]*moist[0])+MOIST*moist[0]);
       //response_agtop_wood=pow(soil->litter.item[p].pft->k_litter10.q10_wood,(soil->temp[0]-10)/10.0)*(INTERCEPT+MOIST_3*(moist[0]*moist[0]*moist[0])+MOIST_2*(moist[0]*moist[0])+MOIST*moist[0]);
 
-      decom_sum.carbon=decom_sum.nitrogen=0;
+      decom_slow.carbon=decom_fast.nitrogen=decom_slow.nitrogen=decom_sum.carbon=decom_sum.nitrogen=0;
       /* agtop leaves */
 #ifdef LINEAR_DECAY
       decay_litter=soil->litter.item[p].pft->k_litter10.leaf*response_agtop_leaves;
@@ -368,9 +355,11 @@ Stocks littersom(Stand *stand,                      /**< [inout] pointer to stan
       decom=soil->litter.item[p].ag.leaf.carbon*decay_litter;
       soil->litter.item[p].ag.leaf.carbon-=decom;
       decom_sum.carbon+=decom;
+      decom_fast.carbon+=decom;
       decom=soil->litter.item[p].ag.leaf.nitrogen*decay_litter;
       soil->litter.item[p].ag.leaf.nitrogen-=decom;
       decom_sum.nitrogen+=decom;
+      decom_fast.nitrogen+=decom;
       if (soil->wtable<=20 && soil->litter.item[p].ag.leaf.carbon>0)
       {
         litter_flux=soil->litter.item[p].ag.leaf.carbon*soil->litter.item[p].pft->k_litter10.leaf / k_red_litter*gtemp_soil[0];   // * exp((-soil->O2[0] / soildepth[0] * 1000) / O2star);
@@ -390,10 +379,11 @@ Stocks littersom(Stand *stand,                      /**< [inout] pointer to stan
         decom=soil->litter.item[p].ag.wood[i].carbon*decay_litter;
         soil->litter.item[p].ag.wood[i].carbon-=decom;
         decom_sum.carbon+=decom;
+        decom_slow.carbon+=decom;
         decom=soil->litter.item[p].ag.wood[i].nitrogen*decay_litter;
-//      if(decom=epsilon) fprintf(stdout,"decom %g litter.item[%d].ag.wood[%d].nit %g decay_litter %g\n",decom,p,i,soil->litter.item[p].ag.wood[i].nitrogen,decay_litter);
         soil->litter.item[p].ag.wood[i].nitrogen-=decom;
         decom_sum.nitrogen+=decom;
+        decom_slow.nitrogen+=decom;
         if (soil->wtable<=20 && soil->litter.item[p].ag.wood[i].carbon>0)
         {
           litter_flux = soil->litter.item[p].ag.wood[i].carbon*soil->litter.item[p].pft->k_litter10.wood/k_red_litter*gtemp_soil[0];     // *exp((-soil->O2[0]/soildepth[0]*1000)/O2star);
@@ -412,10 +402,12 @@ Stocks littersom(Stand *stand,                      /**< [inout] pointer to stan
       decom=soil->litter.item[p].agsub.leaf.carbon*decay_litter;
       soil->litter.item[p].agsub.leaf.carbon-=decom;
       decom_sum.carbon+=decom;
+      decom_fast.carbon+=decom;
       decom=soil->litter.item[p].agsub.leaf.nitrogen*decay_litter;
       soil->litter.item[p].agsub.leaf.nitrogen-=decom;
       decom_sum.nitrogen+=decom;
-      if (soil->wtable<=20 && soil->litter.item[p].agsub.leaf.carbon>0)
+      decom_fast.nitrogen+=decom;
+     if (soil->wtable<=20 && soil->litter.item[p].agsub.leaf.carbon>0)
       {
         litter_flux = soil->litter.item[p].agsub.leaf.carbon * soil->litter.item[p].pft->k_litter10.leaf/ k_red_litter*gtemp_soil[0]; //* exp((-soil->O2[0] / soildepth[0] * 1000) / O2star);
         soil->litter.item[p].agsub.leaf.carbon -= litter_flux;
@@ -434,16 +426,11 @@ Stocks littersom(Stand *stand,                      /**< [inout] pointer to stan
         decom=soil->litter.item[p].agsub.wood[i].carbon*decay_litter;
         soil->litter.item[p].agsub.wood[i].carbon-=decom;
         decom_sum.carbon+=decom;
+        decom_slow.carbon+=decom;
         decom=soil->litter.item[p].agsub.wood[i].nitrogen*decay_litter;
         soil->litter.item[p].agsub.wood[i].nitrogen-=decom;
         decom_sum.nitrogen+=decom;
-        // here agsub metahne routine is missing
-        if (soil->wtable<=20 && soil->litter.item[p].agsub.wood[i].carbon>0)
-        {
-          litter_flux = soil->litter.item[p].agsub.wood[i].carbon * soil->litter.item[p].pft->k_litter10.wood / k_red_litter*gtemp_soil[0]; // * exp((-soil->O2[0] / soildepth[0] * 1000) / O2star);
-          soil->litter.item[p].agsub.wood[i].carbon -= litter_flux;
-          *methaneflux_litter += litter_flux;
-        }
+        decom_slow.nitrogen+=decom;
       }
 
       /* bg litter */
@@ -456,9 +443,11 @@ Stocks littersom(Stand *stand,                      /**< [inout] pointer to stan
       decom=soil->litter.item[p].bg.carbon*decay_litter;
       soil->litter.item[p].bg.carbon-=decom;
       decom_sum.carbon+=decom;
+      decom_fast.carbon+=decom;
       decom=soil->litter.item[p].bg.nitrogen*decay_litter;
       soil->litter.item[p].bg.nitrogen-=decom;
       decom_sum.nitrogen+=decom;
+      decom_fast.nitrogen+=decom;
       decom_litter.carbon+=decom_sum.carbon;
       decom_litter.nitrogen+=decom_sum.nitrogen;
       if (soil->wtable<=200 && soil->litter.item[p].bg.carbon>0)
@@ -467,14 +456,16 @@ Stocks littersom(Stand *stand,                      /**< [inout] pointer to stan
         soil->litter.item[p].bg.carbon-=litter_flux;
         *methaneflux_litter+=litter_flux;
       }
+      fastfrac=param.fastfrac;
+      soil->fastfrac=param.fastfrac;
       forrootsoillayer(l)
       {
         soil->pool[l].fast.carbon+=param.fastfrac*(1-param.atmfrac)*decom_sum.carbon*soil->c_shift[l][soil->litter.item[p].pft->id].fast;
         soil->pool[l].slow.carbon+=(1-param.fastfrac)*(1-param.atmfrac)*decom_sum.carbon*soil->c_shift[l][soil->litter.item[p].pft->id].slow;
         if(decom_sum.carbon>0 && (stand->type->landusetype==NATURAL || stand->type->landusetype==WETLAND))
         {
-          getoutputindex(&stand->cell->output,CSHIFT_FAST_NV,l,config)+=param.fastfrac*(1-param.atmfrac)*decom_sum.carbon*soil->c_shift[l][soil->litter.item[p].pft->id].fast;
-          getoutputindex(&stand->cell->output,CSHIFT_SLOW_NV,l,config)+=(1-param.fastfrac)*(1-param.atmfrac)*decom_sum.carbon*soil->c_shift[l][soil->litter.item[p].pft->id].slow;
+          getoutputindex(&stand->cell->output,CSHIFT_FAST_NV,l,config)+=soil->fastfrac*(1-param.atmfrac)*decom_sum.carbon*soil->c_shift[l][soil->litter.item[p].pft->id].fast;
+          getoutputindex(&stand->cell->output,CSHIFT_SLOW_NV,l,config)+=(1-soil->fastfrac)*(1-param.atmfrac)*decom_sum.carbon*soil->c_shift[l][soil->litter.item[p].pft->id].slow;
         }
         if(config->with_nitrogen)
         {
@@ -483,8 +474,8 @@ Stocks littersom(Stand *stand,                      /**< [inout] pointer to stan
             soil->pool[l].slow.nitrogen+=(1-param.fastfrac)*(1-param.atmfrac)*decom_sum.nitrogen*soil->c_shift[l][soil->litter.item[p].pft->id].slow;
             soil->pool[l].fast.nitrogen+=param.fastfrac*(1-param.atmfrac)*decom_sum.nitrogen*soil->c_shift[l][soil->litter.item[p].pft->id].fast;
             /* NO3 and N2O from mineralization of organic matter */
-            F_Nmineral=max(0,decom_sum.nitrogen*param.atmfrac*(param.fastfrac*soil->c_shift[l][soil->litter.item[p].pft->id].fast+(1-param.fastfrac)*soil->c_shift[l][soil->litter.item[p].pft->id].slow));
-            soil->NH4[l]+=F_Nmineral*(1-k_l);
+            F_Nmineral=max(0,decom_sum.nitrogen*param.atmfrac*(soil->fastfrac*soil->c_shift[l][soil->litter.item[p].pft->id].fast+(1-soil->fastfrac)*soil->c_shift[l][soil->litter.item[p].pft->id].slow));
+           soil->NH4[l]+=F_Nmineral*(1-k_l);
 #ifdef SAFE
             if(soil->NH4[l]<-epsilon)
               fail(NEGATIVE_SOIL_NH4_ERR,TRUE,"2 Negative soil NH4=%g in layer %d in cell (%s) at mineralization",soil->NH4[l],l,sprintcoord(line,&stand->cell->coord));
@@ -497,7 +488,7 @@ Stocks littersom(Stand *stand,                      /**< [inout] pointer to stan
           N_sum=soil->NH4[l]+soil->NO3[l];
           if(N_sum>0 && decom_sum.carbon>epsilon) /* immobilization of N */
           {
-            n_immo=(1-param.fastfrac)*(1-param.atmfrac)*(decom_sum.carbon/soil->par->cn_ratio-decom_sum.nitrogen)*soil->c_shift[l][soil->litter.item[p].pft->id].slow*N_sum/soildepth[l]*1e3/(k_N+N_sum/soildepth[l]*1e3);
+            n_immo=(1-soil->fastfrac)*(1-param.atmfrac)*(decom_sum.carbon/soil->par->cn_ratio-decom_sum.nitrogen)*soil->c_shift[l][soil->litter.item[p].pft->id].slow*N_sum/soildepth[l]*1e3/(k_N+N_sum/soildepth[l]*1e3);
             if(n_immo>epsilon)
             {
               n_immo=min(N_sum,n_immo);
@@ -553,12 +544,6 @@ Stocks littersom(Stand *stand,                      /**< [inout] pointer to stan
       }
       else
         F_NO3=0;
-
-/*
-       fprintf(stdout,"layer %d K_v[0]=%g ,K_v[[1]=%g \n",l, K_v[l][0],K_v[l][1]);
-     fprintf(stdout,"soilold: %g soilall: %g fastcarbon: %g\n",soilold[l].fast.carbon,soilall[l].carbon,soil->pool[l].fast.carbon);
-*/
-
 
 #ifdef SAFE
       if(soil->NO3[l]<-epsilon)
@@ -696,14 +681,11 @@ Stocks littersom(Stand *stand,                      /**< [inout] pointer to stan
   end = soilstocks(soil);
   end.carbon+=soilmethane(soil);
   if (fabs(start.carbon - end.carbon - (flux.carbon + *methaneflux_litter))>0.0001){
-    //fail(INVALID_CARBON_BALANCE_ERR,TRUE,
-        fprintf(stdout,
-            "C-ERROR in littersom: iswetland: %d type: %s %.5f start:%.5f  ende:%.5f decomCO2: %g methane_em: %.5f\n", soil->iswetland, stand->type->name,start.carbon - end.carbon - (flux.carbon + *methaneflux_litter), start.carbon, end.carbon, flux.carbon, *methaneflux_litter);
-//    forrootsoillayer(l)
-//      fprintf(stdout, "kv_1[%d]=%.5f kv_0[%d]=%.5f \n",l, K_v[l][1],l,K_v[l][0]);
+        fprintf(stderr,
+            "C_ERROR in littersom: iswetland: %d type: %s %.5f start:%.5f  ende:%.5f decomCO2: %g methane_em: %.5f\n", soil->iswetland, stand->type->name,start.carbon - end.carbon - (flux.carbon + *methaneflux_litter), start.carbon, end.carbon, flux.carbon, *methaneflux_litter);
   }
-//    if (fabs(start.nitrogen - end.nitrogen - flux.nitrogen)>0.00001)
-//    fprintf(stdout, "N-ERROR in littersom: iswetland: %d %.5f start:%.5f  end:%.5f decomCO2: %g\n", soil->iswetland, start.nitrogen - end.nitrogen - flux.nitrogen, start.nitrogen, end.nitrogen, flux.nitrogen);
+  if (fabs(start.nitrogen - end.nitrogen - flux.nitrogen)>0.00001)
+    fprintf(stderr, "N_ERROR in littersom: iswetland: %d %.5f start:%.5f  end:%.5f decomCO2: %g\n", soil->iswetland, start.nitrogen - end.nitrogen - flux.nitrogen, start.nitrogen, end.nitrogen, flux.nitrogen);
 #endif
   return flux;
 } /* of 'littersom' */

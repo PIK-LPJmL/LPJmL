@@ -1101,6 +1101,7 @@ void fwriteoutput(Outputfile *output,  /**< output file array */
   writeoutputvar(GW_OUTFLUX,1);
   writeoutputvar(GW_STORAGE,ndate1);
   writeoutputvar(CH4_EMISSIONS,1);
+  writeoutputvar(CH4_RICE_EM,1);
   writeoutputvar(CH4_EBULLITION,1);
   writeoutputvar(CH4_SINK,1);
   writeoutputvar(CH4_PLANT_GAS,1);

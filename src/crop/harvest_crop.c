@@ -46,8 +46,11 @@ void harvest_crop(Output *output,      /**< Output data */
     res_onfield = config->residue_treatment==FIXED_RESIDUE_REMOVE ? param.residues_in_soil : 1 ;
   else
     res_onfield=stand->cell->ml.residue_on_field[data->irrigation].crop[pft->par->id-npft];
-  if (year<config->till_startyear)
-    res_onfield=0.1;
+
+  if(pft->par->id-npft==TEMPERATE_CEREALS || pft->par->id-npft==TROPICAL_CEREALS)
+    res_onfield=max(1,res_onfield*0.5);  //residues from cereals are often used for straw and thus used as fodder
+//  if (year<config->till_startyear)   TODO PLEASE EXPLAIN: WHY SHOULD THIS BE RELATED TO THE TILLAGE YEAR????
+//    res_onfield=0.1;
   res_remove = (1-res_onfield);
   stand->soil.litter.item[pft->litter].ag.leaf.carbon += (crop->ind.leaf.carbon + crop->ind.pool.carbon)*res_onfield;
   getoutput(output,LITFALLC,config)+=(crop->ind.leaf.carbon + crop->ind.pool.carbon)*res_onfield*stand->frac;
@@ -169,8 +172,6 @@ void harvest_crop(Output *output,      /**< Output data */
   stand->cell->balance.flux_harvest.nitrogen+=(harvest.harvest.nitrogen+harvest.residual.nitrogen+harvest.residuals_burnt.nitrogen+harvest.residuals_burntinfield.nitrogen)*stand->frac;
   getoutput(output,HARVESTN_AGR,config)+=(harvest.harvest.nitrogen+harvest.residual.nitrogen+harvest.residuals_burnt.nitrogen+harvest.residuals_burntinfield.nitrogen)*stand->frac;
   output->dcflux+=(harvest.harvest.carbon+harvest.residual.carbon+harvest.residuals_burnt.carbon+harvest.residuals_burntinfield.carbon)*stand->frac;
-//  fprintf(stdout,"harvest.carbon: %g residual.carbon: %g residuals_burnt: %g residuals_burntinfield: %g standfrac: %g standtype: %s\n",
-//      harvest.harvest.carbon,harvest.residual.carbon,harvest.residuals_burnt.carbon,harvest.residuals_burntinfield.carbon,stand->frac,stand->type->name);
   getoutput(output,RHARVEST_BURNTC,config)+=harvest.residuals_burnt.carbon*stand->frac;
   getoutput(output,RHARVEST_BURNTN,config)+=harvest.residuals_burnt.nitrogen*stand->frac;
   getoutput(output,RHARVEST_BURNT_IN_FIELDC,config)+=harvest.residuals_burntinfield.carbon*stand->frac;

@@ -83,7 +83,10 @@ void fprintflux(FILE *file,          /**< Output file pointer */
       fputs(" wd     ",file);
     if(config->river_routing)
       fputs(" discharge ",file);
-    fputs(" CH4 emiss. CH4 sink   CH4 fire   SoilC     slowSoilC   VegC     Soil CH4  Soil NO3  Soil NH4  ",file);
+    fputs(" CH4 emiss.  CH4 sink   CH4 fire",file);
+    if(config->withlanduse!=NO_LANDUSE)
+      fputs("CH4 rice  ",file);
+    fputs("SoilC     slowSoilC   VegC     Soil CH4  Soil NO3  Soil NH4  ",file);
     if(config->with_nitrogen)
       fputs(" nuptake ndemand  nlosses ninflux",file);
     fputc('\n',file);
@@ -95,7 +98,10 @@ void fprintflux(FILE *file,          /**< Output file pointer */
       fputs(" -------",file);
     if(config->river_routing)
       fputs(" ----------",file);
-    fputs(" ---------- ---------- ---------- --------- ---------- --------- --------- ---------- ---------", file);
+    fputs(" ---------- ---------- ----------", file);
+    if(config->withlanduse!=NO_LANDUSE)
+      fputs(" ---------", file);
+    fputs(" ----------  ---------- --------- --------- ---------- ---------", file);
     if(config->with_nitrogen)
       fputs(" ------- -------- ------- -------",file);
     fputc('\n',file);
@@ -117,6 +123,8 @@ void fprintflux(FILE *file,          /**< Output file pointer */
   fprintf(file, " %9.3f ", flux.aCH4_emissions*convert*1000);
   fprintf(file, " %9.3f ", flux.aCH4_sink*convert*1000);
   fprintf(file, " %9.3f ", flux.aCH4_fire*convert*1000);
+  if(config->withlanduse!=NO_LANDUSE)
+    fprintf(file, " %9.3f ", flux.aCH4_rice*convert*1000);
   fprintf(file, " %9.3f ", flux.soilc*convert);
   fprintf(file, " %9.3f ", flux.soilc_slow*convert);
   fprintf(file, " %9.3f", flux.vegc*convert);

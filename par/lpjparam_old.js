@@ -14,43 +14,42 @@
 
 "param" :
 {
-  "k_litter10" : 0.7,        /* 0.3 k_litter10 only for belowground litter  (1/yr) */
-  "k_soil10" : { "fast" : 0.03, "slow":  0.001}, /* fast, slow k_soil10  (1/yr) */
-  "init_soiln" : { "fast" : 2000.0, "slow":  1000.0}, /* initial fast and slow soil nitrogen (gN/m2) 2500 2500*/
+  "k_litter10" : 0.3,        /* k_litter10  (1/yr) */
+  "k_soil10" : { "fast" : 0.05, "slow":  0.001}, /* fast, slow k_soil10  (1/yr) */
+  "init_soiln" : { "fast" : 3000.0, "slow":  3000.0}, /* initial fast and slow soil nitrogen (gN/m2) 5500*/
   "maxsnowpack": 20000.0,    /* max. snow pack (mm) */
   "soildepth_evap" : 300.0,  /* depth of sublayer at top of upper soil layer (mm) */
   "soil_infil" : 2.0,        /* default soil infiltration */
-  "soil_infil_litter" : 2.0, /* soil infiltration intensification by litter cover*/
   "co2_p" : 278.0,           /* pre-industrial CO2 (ppmv) */
   "lgm_co2" : 180,           /* LGM CO2 (ppmv) */
-  "pch4" :  801,             /* pre-industrial atmospheric CH4 (801 ppb) */
+  "pch4" :  801,            /* pre-industrial atmospheric CH4 (ppb) */
   "lgm_ch4" : 460,           /* Eemian (460) LGM (466) atmospheric CH4 (ppb) */
   "ch4_ip" : 1790,           /* initial  pre-industrial amount of atmospheric CH4 (ppb) */
   "k" : 0.0548,              /* k    k = 7.4e-7 * atomic_mass_C / atomic_mass_N * seconds_per_day = 0.0548 Sprugel et al. 1996, Eqn 7*/
-  "theta" : 0.9,             /* theta */
+  "theta" : 0.8,             /* theta */
   "alphac3" : 0.06,          /* alphac3 Intrinsic quantum efficiency of CO2 uptake in C3 plants 0.08 */
-  "alphac4" : 0.043,          /* alphac4 Intrinsic quantum efficiency of CO2 uptake in C4 plants 0.04 0.053*/
-  "r_growth" : 0.25,         /* r_growthgrowth respiration per unit NPP 0.3*/
-  "GM" : 3.26,               /* GM empirical parameter in demand function */
+  "alphac4" : 0.04,          /* alphac4 Intrinsic quantum efficiency of CO2 uptake in C4 plants 0.053*/
+  "r_growth" : 0.30,         /* r_growthgrowth respiration per unit NPP 0.25*/
+  "GM" : 2.41,               /* GM empirical parameter in demand function */
   "ALPHAM" : 1.485,          /* ALPHAM Priestley-Taylor coefficient*/
   "ko25" : 3.0e4,            /* Michaelis constant for O2 (Pa) at 25 deg C */
-  "kc25" : 30.0,              /* Michaelis constant for CO2 (Pa) at 25 deg C */
+  "kc25" : 30.,              /* Michaelis constant for CO2 (Pa) at 25 deg C */
   "atmfrac" : 0.6,           /* atmfrac */
-  "fastfrac" : 0.97,         /* fastfrac */
+  "fastfrac" : 0.98,         /* fastfrac */
   "bioturbate" : 0.5,        /* bioturbation (0 = no bioturbation) */
-  "veg_equil_year" : 2400,
+  "veg_equil_year" : 1600,
   "k_max": 0.10,             /* k_max, maximum fraction of soil->NH4 assumed to be nitrified Parton, 2001*/
   "fpc_tree_max" : 0.95,     /* maximum foliage projective cover for trees */
-  "temp_response" : 66.02,   /* Parameter in temperature response function */
+  "temp_response" : 56.02,   /* Parameter in temperature response function */
   "percthres" : 1.0,
-  "k_2": 0.01,               /* k_2, fraction of nitrified N lost as N20 flux Parton, 2001*/
+  "k_2": 0.02,               /* k_2, fraction of nitrified N lost as N20 flux Parton, 2001*/
   "p" : 25,                  /* Haxeltine & Prentice regression coefficient */
   "n0" : 7.15,               /* Haxeltine & Prentice regression coefficient */
   "k_temp" : 0.02,           /* factor of temperature dependence of nitrogen demand for Rubisco activity */
   "min_c_bnf" : 20,          /* threshold C root content for BNF */
   "par_sink_limit" : 0.2,    /* Michaelis-Menten scaler of sink limitation */
   "q_ash" : 0.45,            /* fraction of nitrogen going to litter after fire */
-  "sapwood_recovery" : 0.2,  /* recovery of sapwood nitrogen */
+  "sapwood_recovery" : 0.3,  /* recovery of sapwood nitrogen */
   "T_m" : 15.0,              /* parameter in N uptake temperature function */
   "T_0" : -25.0,             /* parameter in N uptake temperature function */
   "T_r" : 15.0,              /* parameter in N uptake temperature function */
@@ -75,7 +74,7 @@
   "canal_conveyance_eff_loam" : 0.75, /* open canal conveyance efficiency, soil type loam (10<=Ks<=20)*/
   "canal_conveyance_eff_clay" : 0.8,  /* open canal conveyance efficiency, soil type clay (Ks<10) */
   "pipe_conveyance_eff" : 0.95,       /* pressurized conveyance efficiency*/
-  "saturation_level_surf" : 1.2,      /* saturation level surface irrigation 1.0 */
+  "saturation_level_surf" : 1.0,      /* saturation level surface irrigation*/
   "saturation_level_sprink" : 0.55,   /* saturation level sprinkler irrigation*/
   "saturation_level_drip" : 0.05,     /* saturation level drip irrigation*/
   "drip_evap_reduction" : 0.6,        /* reduction of drip soil evap */
@@ -83,11 +82,11 @@
   "nfert_split_frac" : 0.2,           /* fraction of fertilizer input at sowing */
   "nfert_no3_frac" : 0.5,             /* fraction of NO3 in fertilizer input */
   "nmanure_nh4_frac" : 0.666667,      /* fraction of NH4 in manure input */
-  "residues_in_soil" : 0.8,           /* minimum residues in soil*/
+  "residues_in_soil" : 0.3,           /* minimum residues in soil*/
   "fburnt" : 1.0,                     /* fraction of trees burnt at deforestation, refers to remainder after timber harvest */
   "ftimber" : 0.76,                   /* timber fraction at deforestation */
   "harvest_fast_frac" : 0.34,         /* fraction of harvested wood going to fast pools */
-  "product_turnover" : { "fast" : 0.2, "slow" : 0.002}, /* product turnover (1/yr) */
+  "product_turnover" : { "fast" : 0.1, "slow" : 0.01}, /* product turnover (1/yr) */
   "esoil_reduction" : 0.0,            /* reduction of soil evaporation */
   "rw_buffer_max" : 0.0,              /* size of rainwater harvesting tank [mm] */
   "frac_ro_stored" : 0.0,             /* fraction of surface runoff stored in tank */

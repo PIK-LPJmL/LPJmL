@@ -72,7 +72,6 @@ Bool annual_natural(Stand *stand,         /**< Pointer to stand */
         litter_update(&stand->soil.litter,pft,pft->nind,config);
         delpft(&stand->pftlist,p);
         p--; /* adjust loop variable */ 
-        //fprintf(stderr,"ANNUANL_NATURAL KILL PFT: %s \n",pft->par->name);
       }
 #ifdef CHECK_BALANCE
       bm_inc+=pft->bm_inc.carbon;            // BE CAREFUL gturn already added to soil carbon
@@ -84,7 +83,7 @@ Bool annual_natural(Stand *stand,         /**< Pointer to stand */
       end-=pft->establish.carbon;
     if (fabs(end-start)>0.1)
     {
-      fprintf(stderr, "C-ERROR annual PFT: %g start: %g  end: %g annual_bminc: %g  type:%s flux_estab: %g stand->frac: %g \n",
+      fprintf(stderr, "C_ERROR annual PFT: %g start: %g  end: %g annual_bminc: %g  type:%s flux_estab: %g stand->frac: %g \n",
               end-start, start, end, bm_inc, stand->type->name,stand->cell->balance.flux_estab.carbon,stand->frac );
       foreachpft(pft,p,&stand->pftlist)
         fprintf(stderr, "PFT: %s fpc: %g establish_pft:%g\n",pft->par->name, pft->fpc,pft->establish.carbon);
@@ -123,7 +122,7 @@ Bool annual_natural(Stand *stand,         /**< Pointer to stand */
 #ifdef CHECK_BALANCE
     end = standstocks(stand).carbon + soilmethane(&stand->soil);
     if (fabs(end - start)>epsilon)
-      fprintf(stderr, "C-ERROR light: %g start:%g  end:%g light:\n",
+      fprintf(stderr, "C_ERROR light: %g start:%g  end:%g light:\n",
               end - start, start, end);
 #endif
   }
@@ -173,7 +172,7 @@ Bool annual_natural(Stand *stand,         /**< Pointer to stand */
 #ifdef CHECK_BALANCE
   end = standstocks(stand).carbon + soilmethane(&stand->soil);
   if (fabs(start - end + flux_estab.carbon - firec)>epsilon)
-     fprintf(stderr, "C-ERROR: %g start:%g  end:%g estab: %g fire: %g bm_inc: %g\n",
+     fprintf(stderr, "C_ERROR: %g start:%g  end:%g estab: %g fire: %g bm_inc: %g\n",
              start - end + flux_estab.carbon - firec + bm_inc, start, end,
              flux_estab.carbon, firec, bm_inc);
 #endif

@@ -138,7 +138,7 @@ Real infil_perc(Stand *stand,        /**< Stand pointer */
     icefrac[l]=(soil->ice_depth[l]+soil->ice_fw[l]+soil->wpwps[l]*soil->ice_pwp[l])/soil->wsats[l];
   Theta_ice=pow(10,-OMEGA*icefrac[jwt]);
 
-#ifdef CHECK_BALANCE1
+#ifdef CHECK_BALANCE
   start=soil->wa;
   n_before=soilstocks(soil);
   n_before.nitrogen=n_before.nitrogen*stand->frac+getoutput(&stand->cell->output,LEACHING,config);
@@ -936,14 +936,14 @@ Real infil_perc(Stand *stand,        /**< Stand pointer */
   getoutput(&stand->cell->output,RUNOFF_LAT,config)+=runoff*stand->frac;
   getoutput(&stand->cell->output,RUNOFF_SURF,config)+=runoff_surface*stand->frac;
 
-#ifdef CHECK_BALANCE1
+#ifdef CHECK_BALANCE
 
   if(fabs(start-end+test-runoff_out-runoff_surface-drain_perched_out-rsub_top)>epsilon)
-    fprintf(stdout,"in infil1 Pixel: lat:%g lon:%g Bilanz:%g\n",stand->cell->coord.lat,stand->cell->coord.lon,start-end+test-runoff_out-runoff_surface-drain_perched_out-rsub_top);
+    fprintf(stderr,"W_error in infil1 Pixel: lat:%g lon:%g Bilanz:%g\n",stand->cell->coord.lat,stand->cell->coord.lon,start-end+test-runoff_out-runoff_surface-drain_perched_out-rsub_top);
   n_after=soilstocks(soil);
   n_after.nitrogen=n_after.nitrogen*stand->frac+stand->cell->output.mn_leaching;
   if(fabs(n_after.nitrogen-n_before.nitrogen)>0.0001)
-     fprintf(stdout,"in infil Pixel: lat:%g lon:%g N balance:%g\n",stand->cell->coord.lat,stand->cell->coord.lon,n_after.nitrogen-n_before.nitrogen);
+     fprintf(stdout,"N_error in infil Pixel: lat:%g lon:%g N balance:%g\n",stand->cell->coord.lat,stand->cell->coord.lon,n_after.nitrogen-n_before.nitrogen);
 
 #endif
 

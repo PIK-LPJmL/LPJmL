@@ -37,7 +37,7 @@ void equilsoil(Soil *soil,           /**< pointer to soil data */
               )                      /** \return void         */
 {
   int l,p,f;
-  Real sumlitter,pftlitter,wood=0,socfraction;
+  Real sumlitter,pftlitter,wood=0,socfraction,fastfrac;
   Real epsilon_gas, soilmoist, V;
   Poolpar *k_mean, *c0, *sum,*k_mean_layer;
   Poolpar nc_ratio[LASTLAYER];
@@ -181,12 +181,15 @@ void equilsoil(Soil *soil,           /**< pointer to soil data */
           socfraction=pow(10,pftpar[p].soc_k*logmidlayer[l])
                         -(l>0 ? pow(10,pftpar[p].soc_k*logmidlayer[l-1]): 0);
 
+          fastfrac=soil->fastfrac;
+          if(fastfrac>1 || fastfrac<0.5)
+            fastfrac=param.fastfrac;
 #ifdef LINEAR_DECAY
-          c0[p].fast+=k_mean_layer[l].fast>epsilon ? (1-param.atmfrac)*param.fastfrac*soil->decomp_litter_mean.carbon/k_mean_layer[l].fast*soil->c_shift[l][p].fast : 0;
-          c0[p].slow+=k_mean_layer[l].slow>epsilon ? (1-param.atmfrac)*(1.0-param.fastfrac)*soil->decomp_litter_mean.carbon/k_mean_layer[l].slow*soil->c_shift[l][p].slow : 0;
+          c0[p].fast+=k_mean_layer[l].fast>epsilon ? (1-param.atmfrac)*fastfrac*soil->decomp_litter_mean.carbon/k_mean_layer[l].fast*soil->c_shift[l][p].fast : 0;
+          c0[p].slow+=k_mean_layer[l].slow>epsilon ? (1-param.atmfrac)*(1.0-fastfrac)*soil->decomp_litter_mean.carbon/k_mean_layer[l].slow*soil->c_shift[l][p].slow : 0;
 #else
-          c0[p].fast+=k_mean_layer[l].fast>epsilon ? (1-param.atmfrac)*param.fastfrac*soil->decomp_litter_mean.carbon*soil->c_shift[l][p].fast/(1.0-exp(-k_mean_layer[l].fast)) : 0; 
-          c0[p].slow+=k_mean_layer[l].slow>epsilon ? (1-param.atmfrac)*(1.0-param.fastfrac)*soil->decomp_litter_mean.carbon*soil->c_shift[l][p].slow/(1.0-exp(-k_mean_layer[l].slow)) : 0; 
+          c0[p].fast+=k_mean_layer[l].fast>epsilon ? (1-param.atmfrac)*fastfrac*soil->decomp_litter_mean.carbon*soil->c_shift[l][p].fast/(1.0-exp(-k_mean_layer[l].fast)) : 0;
+          c0[p].slow+=k_mean_layer[l].slow>epsilon ? (1-param.atmfrac)*(1.0-fastfrac)*soil->decomp_litter_mean.carbon*soil->c_shift[l][p].slow/(1.0-exp(-k_mean_layer[l].slow)) : 0;
 #endif
         }
       }

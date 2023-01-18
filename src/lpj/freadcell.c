@@ -128,6 +128,7 @@ Bool freadcell(FILE *file,             /**< File pointer to binary file */
     if(freadint(cell->ml.gs,2*ncft,swap,file)!=2*ncft)
       return TRUE;
     if (freadhydrotope(file, &cell->hydrotopes, swap))
+      return TRUE;
     if(cell->ml.landfrac!=NULL && config->landuse_restart)
     {
       freadlandfrac(file,cell->ml.landfrac,ncft,config->nagtree,swap);

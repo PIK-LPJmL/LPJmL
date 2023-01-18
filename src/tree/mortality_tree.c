@@ -14,6 +14,7 @@
 
 #include "lpj.h"
 #include "tree.h"
+#define inun_mort 0.5
 
 #define ramp_gddtw 400.0 /* ramp for heat damage function. Above 200      */
                          /* growing degree days above the upper limit tw, */
@@ -66,7 +67,7 @@ Bool mortality_tree(Litter *litter,   /**< Litter                              *
           heatstress=0;
 
 //inuntationstress
-      mort+=max(0,mort_max*pft->inun_stress);
+      mort+=mort_max*max(0,(1-pow(inun_mort,pft->inun_stress)));
       nind_kill=(mort>1) ? pft->nind : pft->nind*mort;
       litter_update_tree(litter,pft,nind_kill,config);
       if(pft->nind>0)

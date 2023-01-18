@@ -33,8 +33,6 @@ Stocks cultivate(Cell *cell,           /**< cell pointer */
   Stand *cropstand, *stand;
   Irrigation *data;
   Stocks bm_inc;
-  //Real split_fert=0.5;
-  //Real fmanure_NH4=2/3;
   Pftcrop *crop;
   Real manure=0;
   Real fertil;
@@ -77,7 +75,6 @@ Stocks cultivate(Cell *cell,           /**< cell pointer */
     cutpfts(setasidestand,config);
     cropstand=setasidestand;
     cropstand->soil.iswetland=setasidestand->soil.iswetland;
-    //if(year>=1511) fprintf(stderr,"cultivate: landfrac: %g > setasidefrac: %g cropfrac: %g cft: %d irrig: %d\n",landfrac,setasidestand->frac,cropstand->frac,cft,irrigation);
   }
   else
   {
@@ -86,7 +83,6 @@ Stocks cultivate(Cell *cell,           /**< cell pointer */
     cropstand->frac=landfrac;
     reclaim_land(setasidestand,cropstand,cell,config->istimber,npft+ncft,config);
     setasidestand->frac-=landfrac;
-    //if(year>=1511) fprintf(stderr,"cultivate: landfrac: %g < newsetasidefrac: %g newcropstand: %g istimber:%d cft: %d irrig: %d\n",landfrac,setasidestand->frac,cropstand->frac,config->istimber,cft,irrigation);
   }
   if(cell->ml.with_tillage && year>=config->till_startyear)
   {
@@ -114,7 +110,6 @@ Stocks cultivate(Cell *cell,           /**< cell pointer */
     getoutput(&cell->output,NMANURE_AGR,config)+=manure*cropstand->frac*param.nfert_split_frac;
     /* store remainder of manure for second application */
     crop = pft->data;
-    //if(year==1546) fprintf(stderr,"MANURE IN CULTIVATE: %.3f \n",manure*param.manure_cn*cropstand->frac*param.nfert_split_frac);
     crop->nmanure=manure*(1-param.nfert_split_frac);
   }
   if (cell->ml.fertilizer_nr != NULL)
@@ -136,7 +131,7 @@ Stocks cultivate(Cell *cell,           /**< cell pointer */
   }
   if (fabs(end-start-bm_inc.carbon-manure*param.manure_cn*cropstand->frac*param.nfert_split_frac)>0.01)
   {
-    fprintf(stdout, "C-ERROR-cultivate: day: %d    %g start: %.3f  end: %.3f  bm_inc.carbon: %.3f manure: %.3f\n",
+    fprintf(stderr "C_ERROR-cultivate: day: %d    %g start: %.3f  end: %.3f  bm_inc.carbon: %.3f manure: %.3f\n",
            day,end-start-bm_inc.carbon,start, end,bm_inc.carbon,manure*param.manure_cn*cropstand->frac*param.nfert_split_frac );
     fprintf(stderr,"cropstand->frac: %g cropstand.carbon: %g setasidestand->frac: %g setasidestand.carbon: %g\n ",
       cropstand->frac,(standstocks(cropstand).carbon + soilmethane(&cropstand->soil)),setasidestand->frac,(standstocks(setasidestand).carbon + soilmethane(&setasidestand->soil)));

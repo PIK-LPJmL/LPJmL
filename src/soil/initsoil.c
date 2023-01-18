@@ -29,6 +29,7 @@ Bool initsoil(Stand *stand,           /**< Pointer to stand data */
   int l,p;
   soil=&stand->soil;
   soil->par=soilpar;
+  soil->fastfrac=param.fastfrac;
   forrootsoillayer(l)
   {
     soil->pool[l].fast.carbon=soil->pool[l].slow.carbon=soil->k_mean[l].fast=soil->k_mean[l].slow=0.0;
@@ -42,7 +43,7 @@ Bool initsoil(Stand *stand,           /**< Pointer to stand data */
       -(l>0 ? pow(10,0.35*logmidlayer[l-1]): 0));
       soil->pool[l].slow.carbon=soil->pool[l].slow.nitrogen*soil->par->cn_ratio;
       soil->pool[l].fast.carbon=soil->pool[l].fast.nitrogen*soil->par->cn_ratio;
-      soil->NH4[l]=soil->NO3[l]=soil->pool[l].slow.nitrogen/10;
+      soil->NH4[l]=soil->NO3[l]=soil->pool[l].slow.nitrogen/100;
     }
     soil->c_shift[l]=newvec(Poolpar,ntotpft);
     checkptr(soil->c_shift[l]);

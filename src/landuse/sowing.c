@@ -55,7 +55,7 @@ Stocks sowing(Cell *cell,          /**< cell pointer */
     end+=(standstocks(stand).carbon + soilmethane(&stand->soil))*stand->frac;
   }
   if (fabs(end-start-flux_estab.carbon-flux_carbon)>0.001)
-         fprintf(stdout, "C-ERROR-in sowing: day: %d    %g start: %g  end: %g flux_estab.carbon: %g flux_carbon: %g \n",
+         fprintf(stdout, "C_ERROR-in sowing: day: %d    %g start: %g  end: %g flux_estab.carbon: %g flux_carbon: %g \n",
            day,end-start-flux_estab.carbon-flux_carbon,start, end,flux_estab.carbon,flux_carbon);
 
 #endif

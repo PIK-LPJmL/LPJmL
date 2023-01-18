@@ -21,6 +21,10 @@ Bool establish(Real gdd,              /**< growing degree days */
               )                       /** \return if established */ 
 {
   Real temp_min20;
+/*
+  if(!pftpar->peatland && peatland)
+	return FALSE;
+*/
   if (pftpar->peatland && !peatland)
     return FALSE;
   if(isemptybuffer(climbuf->min)) /* check to avoid division by zero */

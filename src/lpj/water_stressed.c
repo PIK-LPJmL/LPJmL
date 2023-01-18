@@ -95,9 +95,7 @@ Real water_stressed(Pft *pft,                  /**< [inout] pointer to PFT varia
   if(istress>1 || istress<0)
     fail(INVALID_CARBON_BALANCE_ERR,TRUE,"stress> 1 %g isstress inun_count %d inun_dur %d  \n",pft->nind,istress,pft->inun_count,pft->par->inun_dur);
   pft->inun_stress+=istress/NDAYYEAR;
-//  if(istress!=0)
- // fprintf(stderr,"istress: %g inun_stress: %g inun_count: %g \n",istress,pft->inun_stress,pft->inun_count);
-    wr=gpd=agd=*rd=layer=root_u=root_nu=aet_cor=0.0;
+  wr=gpd=agd=*rd=layer=root_u=root_nu=aet_cor=0.0;
   aet_frac=1.;
   forrootsoillayer(l)
     rootdist_n[l]=pft->par->rootdist[l];

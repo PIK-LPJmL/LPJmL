@@ -164,7 +164,6 @@ Real daily_grassland(Stand *stand,                /**< stand pointer */
       }
     }
   }
-  //if(year>=2002 && year<2004) fprintf(stdout,"daily_grasl: irrig_stor= %g irrig_amount= %g irrig_apply= %g rainmelt= %g\n\n ",data->irrigation.irrig_stor,data->irrigation.irrig_amount,irrig_apply,rainmelt);
 
   /* INTERCEPTION */
 #ifdef PERMUTE

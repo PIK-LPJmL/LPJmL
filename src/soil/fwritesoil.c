@@ -71,5 +71,6 @@ Bool fwritesoil(FILE *file, /**< pointer to binary file */
   fwrite1(&soil->wa, sizeof(Real), file);
   fwrite1(&soil->iswetland, sizeof(int), file);
   fwrite1(&soil->snowdens, sizeof(Real), file);
-  return FALSE;
+  fwrite1(&soil->fastfrac, sizeof(Real), file);
+ return FALSE;
 } /* of 'fwritesoil' */

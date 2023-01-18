@@ -286,11 +286,11 @@ Real daily_natural(Stand *stand,                /**< [inout] stand pointer */
   stand->cell->balance.flux_estab.nitrogen+=flux_estab.nitrogen*stand->frac;
   //output->dcflux-=flux_estab.carbon*stand->frac;
 #endif
-#ifdef CHECK_BALANCE1
+#ifdef CHECK_BALANCE
   end = standstocks(stand).carbon + soilmethane(&stand->soil);//+stand->cell->output.dcflux;
   if (fabs(start - end)>0.01)
   {
-    fprintf(stderr, "C-ERROR dailyNAT: %.3f start: %.3f  ende: %.3f type: %d flux_estab: %.3f dcflux: %.3f \n", start - end, start, end,stand->type->landusetype,stand->cell->balance.flux_estab.carbon,stand->cell->output.dcflux);
+    fprintf(stderr, "C_ERROR dailyNAT: %.3f start: %.3f  ende: %.3f type: %d flux_estab: %.3f dcflux: %.3f \n", start - end, start, end,stand->type->landusetype,stand->cell->balance.flux_estab.carbon,stand->cell->output.dcflux);
     fprintf(stderr, "methane: start: %.3f  ende: %.3f \n",methane_start,soilmethane(&stand->soil));
   }
 #endif

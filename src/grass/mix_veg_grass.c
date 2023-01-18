@@ -40,8 +40,6 @@ void mix_veg_grass(Pft *pft,Real scaler)
   pft->establish.carbon*=scaler;
   pft->establish.nitrogen*=scaler;
   grass->excess_carbon*=scaler;
-  //fprintf(stderr,"mix_grass; scaler: %g pft->nind: %g \n\n",scaler,pft->nind);
-  //fprintpft(stderr,pft,TRUE);
 } /* of 'mix_veg_grass' */
 
 Bool mix_veg_stock_grass(Pft *pft1, Pft *pft2, Real frac1, Real frac2,const Config *config)  /*mix pft1 into pft2*/
@@ -77,28 +75,12 @@ Bool mix_veg_stock_grass(Pft *pft1, Pft *pft2, Real frac1, Real frac2,const Conf
     grass1->turn_litt.leaf.nitrogen=(grass1->turn_litt.leaf.nitrogen*frac1+grass2->turn_litt.leaf.nitrogen*frac2)/(frac1+frac2);
     grass1->turn_litt.root.nitrogen=(grass1->turn_litt.root.nitrogen*frac1+grass2->turn_litt.root.nitrogen*frac2)/(frac1+frac2);
     pft1->nind=nind;
-    //fprintf(stderr,"mix pft: %s pft2t: %s\n ",pft1->par->name,pft2->par->name);
-    //fprintpft(stderr,pft1,TRUE);
-    //fprintpft(stderr,pft2,TRUE);
   }
   else
   {
-//    foreachpft(pft,p,&pft1->stand->pftlist)
-//      fprintpft(stderr,pft,TRUE);
-//    foreachpft(pft,p,&pft2->stand->pftlist)
-//      fprintpft(stderr,pft,TRUE);
-    //fprintf(stderr," isdead: %d \n\n",isdead);
-//    fprintpft(stderr,pft1,TRUE);
-//    fprintpft(stderr,pft2,TRUE);
-//    fprintf(stderr,"1 soilC1: %.4f soilC2: %.4f \n",standstocks(pft1->stand).carbon,standstocks(pft2->stand).carbon);
     litter_update(&pft1->stand->soil.litter,pft1,pft1->nind,config);
     litter_update(&pft2->stand->soil.litter,pft2,pft2->nind,config);
-    //fprintf(stderr,"2 soilC1: %.4f soilC2: %.4f \n",standstocks(pft1->stand).carbon,standstocks(pft2->stand).carbon);
     isdead=TRUE;
-//    foreachpft(pft,p,&pft1->stand->pftlist)
-//      fprintpft(stderr,pft,TRUE);
-//    foreachpft(pft,p,&pft2->stand->pftlist)
-//      fprintpft(stderr,pft,TRUE);
   }
   return isdead;
   //fpc_grass(pft1);

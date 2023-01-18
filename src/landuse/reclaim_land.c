@@ -34,7 +34,6 @@ void remove_vegetation_copy(Soil *soil, /* soil pointer */
   Stocks trad_biofuel;
   if(usefrac==TRUE)
     sfrac=standfrac;
-  //fprintf(stderr,"REMOVE VEG sfrac: %g standfrac: %g\n", sfrac,standfrac);
 #if defined IMAGE && defined COUPLED
   Bool tharvest=FALSE;
   if(istimber)
@@ -51,7 +50,6 @@ void remove_vegetation_copy(Soil *soil, /* soil pointer */
   foreachpft(pft,p,&stand->pftlist)
   {
     nind = pft->nind;
-    //if(pft->bm_inc.carbon>0) fprintf(stderr,"PFT: %s remove vegetation: BM_inc= %g \n",pft->par->name, pft->bm_inc.carbon);
     /* if plot is deforested, wood is returned to litter, harvested or burnt
     * allows for mixed use, first harvesting a fraction of the stand,
     * then burning a fraction, then returning the rest to the litter pools

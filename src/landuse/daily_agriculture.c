@@ -245,7 +245,6 @@ Real daily_agriculture(Stand *stand,                /**< [inout] stand pointer *
       }
     }
   }
-  //if(year>=2002 && year<2005) fprintf(stdout,"daily_agriculture: irrig_stor= %g irrig_amount= %g irrig_apply= %g rainmelt= %g\n\n ",data->irrig_stor,data->irrig_amount,irrig_apply,rainmelt);
 
   /* INTERCEPTION */
   sprink_interc=(data->irrig_system==SPRINK) ? 1 : 0;

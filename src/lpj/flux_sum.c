@@ -25,7 +25,7 @@ Real flux_sum(Flux *flux_global,   /**< global carbon and water fluxes */
   int s, p, l;
   Stand *stand;
   Pft *pft;
-  Flux flux={0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0};
+  Flux flux={0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0};
   for(cell=0;cell<config->ngridcell;cell++)
   {
     if(!grid[cell].skip)
@@ -62,8 +62,9 @@ Real flux_sum(Flux *flux_global,   /**< global carbon and water fluxes */
       flux.n_influx+=grid[cell].balance.n_influx*grid[cell].coord.area;
       flux.n_outflux+=grid[cell].balance.n_outflux*grid[cell].coord.area;
       flux.excess_water+=grid[cell].balance.excess_water*grid[cell].coord.area;
-      flux.aCH4_emissions+=grid[cell].balance.aCH4_em*grid[cell].coord.area*WCH4/WC;
+      flux.aCH4_emissions+=grid[cell].balance.aCH4_em*grid[cell].coord.area;
       flux.aCH4_sink+=grid[cell].balance.aCH4_sink*grid[cell].coord.area;
+      flux.aCH4_rice+=grid[cell].balance.aCH4_rice*grid[cell].coord.area;
       flux.aCH4_fire+=grid[cell].balance.aCH4_fire*grid[cell].coord.area;
       flux.productc+=(grid[cell].ml.product.fast.carbon+grid[cell].ml.product.slow.carbon)*grid[cell].coord.area;
       flux.product_turnover+=(grid[cell].balance.prod_turnover.fast.carbon+grid[cell].balance.prod_turnover.slow.carbon)*grid[cell].coord.area;

@@ -27,7 +27,7 @@
 
 #define e0 268.56 /* parameter in Arrhenius temp response function 308.56 (Sitch)  268.56 (neu) */
 #define Q10 1.8
-#define USE_Q10
+//#define USE_Q10
 
 Real temp_response(Real temp, /**< air or soil temperature (deg C) */
                    Real temp_mean

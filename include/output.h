@@ -88,6 +88,7 @@ typedef struct
   Real aCH4_emissions;         /* Total Emissions (gCH4/yr)) positive and negative*/
   Real aCH4_sink;
   Real aCH4_fire;
+  Real aCH4_rice;
   Real soilc;                 /**< soil carbon (gC) */
   Real temp;                  /**< global average temperature (celsius) */
   Real soilc_slow;            /**< slow soil carbon (gC) */

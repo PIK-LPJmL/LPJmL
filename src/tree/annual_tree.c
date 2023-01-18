@@ -25,36 +25,15 @@ Bool annual_tree(Stand *stand,       /**< pointer to stand */
 {
   Stocks turnover_ind={0,0};
   Bool isdead;
-  Real mort_max,nind_kill,nind_alt;
-  Real stress;
 #ifdef CHECK_BALANCE
   Real end = 0;
   Real start = 0;
   Real estab=pft->establish.carbon;
   Real bm_inc_carbon=pft->bm_inc.carbon;
   start = standstocks(stand).carbon + soilmethane(&stand->soil)-pft->establish.carbon;
-//  fprintf(stderr, "1:C_ERROR annaul_tree: %g start : %g end : %g bm_inc.carbon: %g  bm_inc.carbon.start: %g estab: %g flux_estab.carbon: %g  stand.frac:%g type:%s PFT:%s nind: %g \n\n",
-//      ende-anfang, anfang, ende,pft->bm_inc.carbon,bm_inc_carbon, estab,pft->establish.carbon,stand->frac,stand->type->name,pft->par->name,pft->nind);
 #endif
   turnover_ind=turnover_tree(&stand->soil.litter,pft,config);
-  //start = standstocks(stand).carbon + soilmethane(&stand->soil)-pft->establish.carbon;
   isdead=allocation_tree(&stand->soil.litter,pft,fpc_inc,config);
-  nind_alt=pft->nind;
-
-/*
-  if(pft->inun_count>pft->par->inun_dur)
-  {*/
-    stress=pft->inun_count/pft->par->inun_dur;
-/*    if(stress>2)
-      isdead=TRUE;
-  }
-*/
-  mort_max=inun_mort_max;                           /*should be an global parameter*/
-  nind_kill=pft->nind*(1-pow(mort_max,stress));
-  litter_update_tree(&stand->soil.litter,pft,nind_kill,config);
-  if(pft->nind>0)
-    pft->bm_inc.nitrogen*=(pft->nind-nind_kill)/pft->nind;
-  pft->nind-=nind_kill;
   fpc_tree(pft);
 
   if(!isdead)

@@ -127,7 +127,6 @@ Real daily_biomass_grass(Stand *stand,                /**< stand pointer */
         getoutputindex(output,CFT_AIRRIG,index,config)+=irrig_apply;
     }
   }
-  fprintf(stdout,"irrig_stor: %g irrig_amount: %g \n",data->irrig_stor,data->irrig_amount);
 
   /* INTERCEPTION */
   foreachpft(pft,p,&stand->pftlist)

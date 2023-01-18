@@ -119,7 +119,7 @@
 #define NO_FERTILIZER 0
 #define FERTILIZER 1
 #define AUTO_FERTILIZER 2
-#define NOUT 369            /* number of output files */
+#define NOUT 370            /* number of output files */
 #define END -1              /* end marker for output files */
 #define GRIDBASED 1         /* pft-specific outputs scaled by stand->frac */
 #define PFTBASED 0          /* pft-specific outputs not scaled by stand->frac */
@@ -506,6 +506,8 @@
 #define KS_NAT 366
 #define KS_GRASS 367
 #define KS_AGR 368
+#define CH4_RICE_EM 369
+
 #define PFT_GCGP_COUNT 0
 #define NDAY_MONTH 1
 

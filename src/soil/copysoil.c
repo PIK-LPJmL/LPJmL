@@ -48,6 +48,7 @@ void copysoil(Soil *dst,       /**< destination */
   dst->snowheight = src->snowheight;
   dst->snowfraction = src->snowfraction;
   dst->icefrac=src->icefrac;
+  dst->fastfrac=src->fastfrac;
   dst->maxthaw_depth=src->maxthaw_depth;
   dst->mean_maxthaw=src->mean_maxthaw;
   dst->decomp_litter_mean=src->decomp_litter_mean;

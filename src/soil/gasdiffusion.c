@@ -198,17 +198,13 @@ void gasdiffusion(Soil *soil,    /**< [inout] pointer to soil data */
           soil->CH4[l-1]-=dCH4*(soildepth[l] * epsilon_CH4[l]) / 1000;
 
         soil->CH4[l]+= dCH4*(soildepth[l] * epsilon_CH4[l]) / 1000;
-#ifdef CHECK_BALANCE2
+#ifdef CHECK_BALANCE
         if(dCH4<0 && l==0)
           out+=dCH4*(soildepth[l] * epsilon_CH4[l]) / 1000;
         else if(l==0)
           in+=dCH4*(soildepth[l] * epsilon_CH4[l]) / 1000;
 #endif
         if (soil->CH4[l]< 0) {
-
-//          if(soil->CH4[l]< -epsilon)
-//            fprintf(stderr,"1 CH4 gasdiffusion layer[%d] diffussion:%g CH4:%g CH4_upper:%g CH4_lower:%g\n",
-//                l,dCH4*(soildepth[l]*epsilon_CH4[l])/1000,soil->CH4[l],CH4_upper,CH4_lower);
           if (l>0) soil->CH4[l-1]-=soil->CH4[l];
           soil->CH4[l] = 0;
         }
@@ -229,29 +225,18 @@ void gasdiffusion(Soil *soil,    /**< [inout] pointer to soil data */
 
         if (soil->CH4[l]< 0)
         {
-//          if(soil->CH4[l]< -epsilon)
-//            fprintf(stderr,"2 CH4 gasdiffusion layer[%d] diffussion:%g CH4:%g  DCH4: %g CH4_lower:%g CH4_upper:%g epsilon_CH4:%g epsilon_CH4_lower:%g  epsilon_CH4_upper:%g steps:%lu\n",
-//              l, dCH4*(soildepth[l] * epsilon_CH4[l]) / 1000, soil->CH4[l], D_CH4[l], CH4_lower, CH4_upper, epsilon_CH4[l], epsilon_CH4[l+1], epsilon_CH4[l-1], steps);
           if (l != BOTTOMLAYER - 1) soil->CH4[l+1]-=soil->CH4[l];
           soil->CH4[l]=0;
         }
-
-//        if (soil->CH4[l + 1]< 0 && l != (BOTTOMLAYER - 1))
-//        {
-//          if(soil->CH4[l+1]< -epsilon)
-//            fprintf(stderr, "2.1 CH4 gasdiffusion layer[%d] diffussion:%g CH4[l]:%g  CH4[l+1]:%g  DCH4: %g CH4_lower:%g CH4_upper:%g epsilon_CH4:%g epsilon_CH4_lower:%g  epsilon_CH4_upper:%g steps:%lu\n",
-//              l, dCH4*(soildepth[l] * epsilon_CH4[l]) / 1000, soil->CH4[l], soil->CH4[l + 1], D_CH4[l], CH4_lower, CH4_upper, epsilon_CH4[l], epsilon_CH4[l+1], epsilon_CH4[l-1], steps);
-//        }
         if (fabs(dCH4)<1e-18 || t == maxheatsteps)
           break;
       }
     }
   }
   end = soilmethane(soil);
-#ifdef CHECK_BALANCE2
+#ifdef CHECK_BALANCE
   if (fabs(start-end+out+in)>0.1)
-    fprintf(stderr, "C-ERROR: %g start:%g  ende:%g gasdiff-in: %g gasdiff-out: %g\n",start-end+out+in, start, end, in,out);
+    fprintf(stderr, "C_ERROR: %g start:%g  ende:%g gasdiff-in: %g gasdiff-out: %g\n",start-end+out+in, start, end, in,out);
 #endif
   *CH4_out = start - end;
-  //fprintf(stdout,"CH4 emmsisions from gasdiffusion %.4f\n",*CH4_out);
 } /* of 'gasdiffusion' */

@@ -19,9 +19,7 @@ void hydrotopes(Cell *cell /**< Pointer to cell */
 {
   Real wtable,wtable_h;
   Stand *stand;
-  Bool iswetland;
   int s,w=0;
-  iswetland=FALSE;
 
   wtable=wtable_h=0;
   // 	determine mean water table position
@@ -36,7 +34,7 @@ void hydrotopes(Cell *cell /**< Pointer to cell */
   // 	determine hydrotope water level
       if (!cell->hydrotopes.skip_cell)
       {
-        wtable_h+= (iswetland) ? stand->soil.wtable/-1000 : -99;
+        wtable_h+=stand->soil.wtable/-1000;
         w++;
       }
     }

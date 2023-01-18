@@ -128,7 +128,8 @@ void mixsoil(Stand *stand1,const Stand *stand2,int year,const Config *config)
           stand1->frac,stand2->frac);
   mixpool(stand1->soil.decomp_litter_mean.nitrogen,stand2->soil.decomp_litter_mean.nitrogen,
           stand1->frac,stand2->frac);
-
+  mixpool(stand1->soil.fastfrac,stand2->soil.fastfrac,stand1->frac,
+          stand2->frac);
   mixpool(stand1->soil.snowpack,stand2->soil.snowpack,stand1->frac,
           stand2->frac);
   mixpool(stand1->soil.snowfraction,stand2->soil.snowfraction,stand1->frac,stand2->frac);
@@ -268,9 +269,9 @@ Bool setaside(Cell *cell,          /**< Pointer to LPJ cell */
     start+=(standstocks(checkstand).carbon*checkstand->frac+soilmethane(&checkstand->soil)*checkstand->frac);
 //  foreachstand(checkstand,s,cell->standlist)
 //  {
-//    fprintf(stdout,"SETASIDE type %d frac:%g id:%d carbon:%g methan:%g\n",checkstand->type->landusetype,checkstand->frac,s,standstocks(checkstand).carbon*checkstand->frac,soilmethane(&checkstand->soil)*checkstand->frac);
+//    fprintf(stderr,"SETASIDE type %d frac:%g id:%d carbon:%g methan:%g\n",checkstand->type->landusetype,checkstand->frac,s,standstocks(checkstand).carbon*checkstand->frac,soilmethane(&checkstand->soil)*checkstand->frac);
 //     foreachpft(pft,p,&checkstand->pftlist)
-//        fprintf(stdout,"name:%s vegc:%g\n", pft->par->name,vegc_sum(pft));
+//        fprintf(stderr,"name:%s vegc:%g\n", pft->par->name,vegc_sum(pft));
 //  }
 #endif
   if(cropstand<0)
@@ -296,7 +297,7 @@ Bool setaside(Cell *cell,          /**< Pointer to LPJ cell */
   }
   if (fabs(start-end)>0.01)
   {
-     fprintf(stderr, "C-ERROR in SETASIDE: %g start:%g  end:%g s;%d \n",
+     fprintf(stderr, "C_ERROR in SETASIDE: %g start:%g  end:%g s;%d \n",
              start-end,start, end,s);
      foreachstand(checkstand,k,cell->standlist)
        fprintf(stderr,"type %d frac:%g id:%d carbon:%g methan:%g\n",checkstand->type->landusetype,checkstand->frac,k,standstocks(checkstand).carbon*checkstand->frac,soilmethane(&checkstand->soil)*checkstand->frac);
@@ -352,11 +353,10 @@ Bool setaside(Cell *cell,          /**< Pointer to LPJ cell */
   end=-flux_estab.carbon*cropstand->frac;
   foreachstand(checkstand,s,cell->standlist)
     end+=(standstocks(checkstand).carbon*checkstand->frac+soilmethane(&checkstand->soil)*checkstand->frac);
-  //fprintf(stdout, "flux_estab:%g \n",flux_estab.carbon*cropstand->frac)  ;
 
   if (fabs(start-end)>0.01)
   {
-     fprintf(stderr, "C-ERROR in SETASIDE: %g start:%g  end:%g\n",
+     fprintf(stderr, "C_ERROR in SETASIDE: %g start:%g  end:%g\n",
              start-end,start, end);
      foreachstand(checkstand,s,cell->standlist)
        fprintf(stderr,"type %d frac:%g carbon:%g flux_estab:%g \n",checkstand->type->landusetype,checkstand->frac,

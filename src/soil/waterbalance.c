@@ -167,9 +167,7 @@ void waterbalance(Stand *stand,           /**< Stand pointer */
     /* reallocate water above field capacity to freewater; needed here since thawing permafrost can increase soil->w */
     if (soil->w[l]+soil->ice_depth[l]/soil->whcs[l]>(1+epsilon))
     {
-      //fprintf(stderr,"w[%d] %3.12f,soil->ice_depth[%d] %3.12f  fw[%d] %3.12f in line 133 waterbalance\n", l, soil->w[l], l, soil->ice_depth[l],l,soil->w_fw[l]);
       soil->w_fw[l]+=(soil->w[l]+soil->ice_depth[l]/soil->whcs[l]-1)*soil->whcs[l];
-      //fprintf(stderr,"w[%d] %3.12f,soil->ice_depth[%d] %3.12f  fw[%d] %3.12f in line 133 waterbalance\n", l, soil->w[l], l, soil->ice_depth[l],l,soil->w_fw[l]);
 #ifdef DEBUG
 fprintf(stderr,"w[%d] %3.12f, fw[%d] %3.12f, icedepth[%d] %3.12f, whcs[%d] %3.12f in line 135 waterbalance\n", l, soil->w[l], l, soil->w_fw[l], l,soil->ice_depth[l],l, soil->whcs[l]);
 #endif
@@ -266,13 +264,11 @@ fprintf(stderr,"w[%d] %3.12f, fw[%d] %3.12f, icedepth[%d] %3.12f, whcs[%d] %3.12
   stand->cell->discharge.drunoff+=marginal*stand->frac;
   if(marginal>2)
     fprintf(stdout,"MARGINAL: %g\n",marginal*stand->frac);
-
-  //*evap=evap_test;
   } /* soil layer loop */
 #ifdef CHECK_BALANCE
   water_after=soilwater(&stand->soil);
   balancew=water_after-water_before+marginal+aet+*evap;
-  if(fabs(balancew)>0.01) fprintf(stdout,"W-BALANCE-ERROR in waterbalance:  balanceW: %g water_before: %g water_after: %g marginal: %g aet: %g evap: %g evap_test: %g rw_buff: %g wa: %g evap_ratio: %g\n",
+  if(fabs(balancew)>0.01) fprintf(stderr,"W_BALANCE-ERROR in waterbalance:  balanceW: %g water_before: %g water_after: %g marginal: %g aet: %g evap: %g evap_test: %g rw_buff: %g wa: %g evap_ratio: %g\n",
       balancew,water_before,water_after,marginal,aet,*evap,evap_test,soil->rw_buffer,soil->wa,evap_ratio);
 #endif
 

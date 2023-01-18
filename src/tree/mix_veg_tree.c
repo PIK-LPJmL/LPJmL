@@ -47,9 +47,6 @@ void mix_veg_tree(Pft *pft,Real scaler)
   tree->turn_litt.leaf.nitrogen*=scaler;
   tree->turn_litt.root.carbon*=scaler;
   tree->turn_litt.root.nitrogen*=scaler;
-
-  //fprintf(stderr,"mix_tree; scaler: %g\n\n",scaler);
-  //fprintpft(stderr,pft,TRUE);
 } /* of 'mix_veg_tree' */
 
 Bool mix_veg_stock_tree(Pft *pft1,Pft *pft2,Real frac1, Real frac2,const Config *config)
@@ -64,8 +61,6 @@ Bool mix_veg_stock_tree(Pft *pft1,Pft *pft2,Real frac1, Real frac2,const Config 
   tree2=pft2->data;
   nind=(pft1->nind*frac1+pft2->nind*frac2)/(frac1+frac2);
   test=pft1->nind*frac1+pft2->nind*frac2;
-  //fprintpft(stderr,pft1,TRUE);
-  //fprintpft(stderr,pft2,TRUE);
   if (test>epsilon)
   {
     tree1->ind.leaf.carbon=(pft1->nind*frac1*tree1->ind.leaf.carbon+pft2->nind*frac2*tree2->ind.leaf.carbon)/(pft1->nind*frac1+pft2->nind*frac2);
@@ -94,32 +89,15 @@ Bool mix_veg_stock_tree(Pft *pft1,Pft *pft2,Real frac1, Real frac2,const Config 
     pft1->establish.nitrogen=(pft1->establish.nitrogen*frac1+pft2->establish.nitrogen*frac2)/(frac1+frac2);
     tree1->fruit.carbon=(frac1*tree1->fruit.carbon+frac2*tree2->fruit.carbon)/(frac1+frac2);
     tree1->fruit.nitrogen=(frac1*tree1->fruit.nitrogen+frac2*tree2->fruit.nitrogen)/(frac1+frac2);
-//    fprintf(stderr,"NICHT NULL isdead: %d \n\n",isdead);
-//    fprintf(stderr,"PFT1: %s PFT2: %s\n\n",pft1->par->name,pft2->par->name);
   }
   else
   {
-//    foreachpft(pft,p,&pft1->stand->pftlist)
-//      fprintpft(stderr,pft,TRUE);
-//    foreachpft(pft,p,&pft2->stand->pftlist)
-//      fprintpft(stderr,pft,TRUE);
     Soil *soil1, *soil2;
     soil1=&pft1->stand->soil;
     soil2=&pft2->stand->soil;
-//    fprintf(stderr," NULL isdead: %d \n\n",isdead);
-//
-//    fprintpft(stderr,pft1,TRUE);
-//    fprintpft(stderr,pft2,TRUE);
-//    fprintf(stderr,"1 stockC1: %.4f stockC2: %.4f \n",standstocks(pft1->stand).carbon,standstocks(pft2->stand).carbon);
-//    fprintf(stderr,"1 soilC1: %.4f soilC2: %.4f \n",soilstocks(soil1).carbon,soilstocks(soil2).carbon);
     litter_update(&pft1->stand->soil.litter,pft1,pft1->nind,config);
     litter_update(&pft2->stand->soil.litter,pft2,pft2->nind,config);
-//    fprintf(stderr,"2 soilC1: %.4f soilC2: %.4f \n",soilstocks(soil1).carbon,soilstocks(soil2).carbon);
     isdead=TRUE;
-//    foreachpft(pft,p,&pft1->stand->pftlist)
-//      fprintpft(stderr,pft,TRUE);
-//    foreachpft(pft,p,&pft2->stand->pftlist)
-//      fprintpft(stderr,pft,TRUE);
   }
   return isdead;
   //fpc_tree(pft1);

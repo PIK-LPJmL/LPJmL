@@ -56,7 +56,7 @@ void plant_gas_transport(Stand *stand,        /**< pointer to soil data */
   Real O2_air, ScO2, kO2;
   Real soil_moist, V, epsilon_CH4, epsilon_O2;                /*in mm*/
   Real tillers, tiller_area, tiller_frac;
-  Real CH4, CH4_plant, CH4_plant_all;
+  Real CH4, CH4_plant, CH4_plant_all,CH4_rice;
   Real O2, O2_plant;
   Real Conc_new, soil_water_vol;
   int l, p;
@@ -100,7 +100,7 @@ void plant_gas_transport(Stand *stand,        /**< pointer to soil data */
   /*convert cm h-1 to m d-1*/
   kCH4 = kCH4/100*24;
   kO2 = kO2/100*24;
-
+  CH4_rice=0;
   foreachpft(pft, p, &stand->pftlist)
   {
     if (!istree(pft))
@@ -133,6 +133,8 @@ void plant_gas_transport(Stand *stand,        /**< pointer to soil data */
             }
             CH4_plant_all+=CH4_plant;
           }
+          if(!strcmp(pft->par->name,"rice") && CH4_plant>0)
+            CH4_rice+=CH4_plant;
           /*OXYGEN*/
           Conc_new = 0;
           O2=stand->soil.O2[l]/soildepth[l]/epsilon_O2*1000;
@@ -149,15 +151,17 @@ void plant_gas_transport(Stand *stand,        /**< pointer to soil data */
   }
   if (CH4_plant_all>0)
   {
-    getoutput(&stand->cell->output,CH4_EMISSIONS,config)+=CH4_plant_all*stand->frac*WCH4/WC;
+    getoutput(&stand->cell->output,CH4_EMISSIONS,config)+=CH4_plant_all*stand->frac;
     stand->cell->balance.aCH4_em+=CH4_plant_all*stand->frac;
+    if(CH4_rice>0) stand->cell->balance.aCH4_rice+=CH4_rice*stand->frac;
+    getoutput(&stand->cell->output,CH4_PLANT_GAS,config)+=CH4_plant_all*stand->frac;
+    if(CH4_rice>0) getoutput(&stand->cell->output,CH4_RICE_EM,config)+=CH4_rice*stand->frac;
   }
   else
   {
-    getoutput(&stand->cell->output,CH4_SINK,config)+=CH4_plant_all*stand->frac*WCH4/WC;
+    getoutput(&stand->cell->output,CH4_SINK,config)+=CH4_plant_all*stand->frac;
     stand->cell->balance.aCH4_sink+=CH4_plant_all*stand->frac;
   }
-  getoutput(&stand->cell->output,CH4_PLANT_GAS,config)+=CH4_plant_all*stand->frac*WCH4/WC;
 #ifdef DEBUG
   printf("plantgas after");
   printch4(stand->soil.CH4);
@@ -165,7 +169,7 @@ void plant_gas_transport(Stand *stand,        /**< pointer to soil data */
 #endif
 #ifdef CHECK_BALANCE
   end = standstocks(stand).carbon + soilmethane(&stand->soil);
-  if (fabs(start - end - CH4_plant_all)>epsilon) fprintf(stdout, "C-ERROR: %g start:%g  end:%g Plant_gas_transp: %g\n", start - end - CH4_plant_all, start, end, CH4_plant_all);
+  if (fabs(start - end - CH4_plant_all)>epsilon) fprintf(stderr, "C_ERROR: %g start:%g  end:%g Plant_gas_transp: %g\n", start - end - CH4_plant_all, start, end, CH4_plant_all);
 #endif
 
 } /* of 'plant_gas_transport' */

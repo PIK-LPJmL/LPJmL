@@ -105,7 +105,7 @@ void update_daily(Cell *cell,            /**< cell pointer           */
 #ifdef CHECK_BALANCE
     foreachstand(stand,s,cell->standlist)
       end+=(standstocks(stand).carbon + soilmethane(&stand->soil))*stand->frac;
-    if (fabs(end-start-flux_estab.carbon-(cell->balance.flux_estab.carbon-flux_carbon))>0.001) fprintf(stdout, "C-ERROR1 in update_daily: %g start:%g  end:%g flux_estab: %g flux_carbon: %g\n",
+    if (fabs(end-start-flux_estab.carbon-(cell->balance.flux_estab.carbon-flux_carbon))>0.001) fprintf(stderr, "C_ERROR1 in update_daily: %g start:%g  end:%g flux_estab: %g flux_carbon: %g\n",
                  end-start-flux_estab.carbon-(cell->balance.flux_estab.carbon-flux_carbon), start, end, flux_estab.carbon,(cell->balance.flux_estab.carbon-flux_carbon));
     start=end;
 #endif
@@ -218,28 +218,41 @@ void update_daily(Cell *cell,            /**< cell pointer           */
     cell->discharge.drunoff += runoff*stand->frac;
     if (CH4_em>0)
     {
-      getoutput(&cell->output,CH4_EMISSIONS,config) += CH4_em*stand->frac*WCH4/WC;
+      getoutput(&cell->output,CH4_EMISSIONS,config) += CH4_em*stand->frac;
       cell->balance.aCH4_em+=CH4_em*stand->frac;
     }
     else
     {
-      getoutput(&cell->output,CH4_SINK,config)+= CH4_em*stand->frac*WCH4/WC;
+      getoutput(&cell->output,CH4_SINK,config)+= CH4_em*stand->frac;
       cell->balance.aCH4_sink+=CH4_em*stand->frac;
     }
     fpc_total_stand = 0;
     foreachpft(pft, p, &stand->pftlist)
+    {
       fpc_total_stand += pft->fpc;
+      if(!strcmp(pft->par->name,"rice") && CH4_em>0)       //only one time rice per stand
+      {
+        getoutput(&stand->cell->output,CH4_RICE_EM,config)+=CH4_em*stand->frac;
+        stand->cell->balance.aCH4_rice+=CH4_em*stand->frac;
+      }
+    }
 #ifdef CHECK_BALANCE
     start = standstocks(stand).carbon + soilmethane(&stand->soil);
 #endif
     ebul = ebullition(&stand->soil, fpc_total_stand);
     //cell->output.mCH4_em+=ebullition(&stand->soil,fpc_total_stand)*stand->frac;
-    getoutput(&cell->output,CH4_EMISSIONS,config) += ebul*stand->frac*WCH4/WC;
+    getoutput(&cell->output,CH4_EMISSIONS,config) += ebul*stand->frac;
     cell->balance.aCH4_em+=ebul*stand->frac;
-    getoutput(&cell->output,CH4_EBULLITION,config) += ebul*stand->frac*WCH4/WC;
+    getoutput(&cell->output,CH4_EBULLITION,config) += ebul*stand->frac;
+    foreachpft(pft, p, &stand->pftlist)
+      if(!strcmp(pft->par->name,"rice") && ebul>0)
+      {
+        getoutput(&stand->cell->output,CH4_RICE_EM,config)+=ebul*stand->frac;
+        stand->cell->balance.aCH4_rice+=ebul*stand->frac;
+      }
 #ifdef CHECK_BALANCE
     end = standstocks(stand).carbon + soilmethane(&stand->soil);
-    if (fabs(start - end - ebul)>epsilon) fprintf(stdout, "C-ERROR2 in update_daily: %g start:%g  end:%g daily: %g\n", start - end - ebul, start, end, ebul);
+    if (fabs(start - end - ebul)>epsilon) fprintf(stderr, "C_ERROR2 in update_daily: %g start:%g  end:%g daily: %g\n", start - end - ebul, start, end, ebul);
 #endif
 
     /* update soil and litter properties to account for all changes since last call of littersom */
@@ -302,7 +315,7 @@ void update_daily(Cell *cell,            /**< cell pointer           */
       pedotransfer(stand,NULL,NULL,stand->frac);
     updatelitterproperties(stand,stand->frac);
 
-    getoutput(&cell->output,CH4_EMISSIONS,config) += CH4_em*stand->frac*WCH4/WC;
+    getoutput(&cell->output,CH4_EMISSIONS,config) += CH4_em*stand->frac;
     cell->balance.aCH4_em+=CH4_em*stand->frac;
     //cell->balance.aMT_water += MT_water*stand->frac;
     getoutput(&cell->output,MT_WATER,config) += MT_water*stand->frac;
@@ -492,7 +505,8 @@ void update_daily(Cell *cell,            /**< cell pointer           */
 
   hydrotopes(cell);
   getoutput(&cell->output,MWATER,config) += cell->hydrotopes.meanwater;
-  getoutput(&cell->output,WTAB,config) += cell->hydrotopes.wetland_wtable_current;
+  if(stand->soil.iswetland)
+   getoutput(&cell->output,WTAB,config) += cell->hydrotopes.wetland_wtable_current;
   cell->hydrotopes.wetland_wtable_monthly+= cell->hydrotopes.wetland_wtable_current;
   cell->hydrotopes.wtable_monthly+= cell->hydrotopes.meanwater;
 #ifdef IMAGE
@@ -602,29 +616,29 @@ void update_daily(Cell *cell,            /**< cell pointer           */
       end+=(standstocks(stand).carbon + soilmethane(&stand->soil))*stand->frac ;
     }
 //    if(stand->type->landusetype!=WETLAND && stand->type->landusetype!=NATURAL && year>=1960)
-//      fprintf(stdout,"type: %d frac : %g irrig_stor: %g \n",stand->type->landusetype,stand->frac,(data->irrig_stor + data->irrig_amount) * stand->frac);
+//      fprintf(stderr,"type: %d frac : %g irrig_stor: %g \n",stand->type->landusetype,stand->frac,(data->irrig_stor + data->irrig_amount) * stand->frac);
   }
   balanceW=water_after-water_before-climate.prec-melt_all+
           ((cell->balance.atransp+cell->balance.aevap+cell->balance.ainterc+cell->balance.aevap_lake+cell->balance.aevap_res-cell->balance.airrig-cell->balance.aMT_water)-wfluxes_old)+cell->discharge.drunoff+
           (exess_old-cell->balance.excess_water)+cell->lateral_water;
   if (fabs(end-start1+ebul-CH4_fluxes-flux_carbon)>0.01)
   {
-    fprintf(stdout, "C-ERROR-update_daily end: day: %d    %g start: %g  end: %g ebul: %g CH4_fluxes: %g flux_estab.carbon: %g flux_harvest.carbon: %g dcflux: %g flux_carbon: %g "
+    fprintf(stderr, "C_ERROR-update_daily end: day: %d    %g start: %g  end: %g ebul: %g CH4_fluxes: %g flux_estab.carbon: %g flux_harvest.carbon: %g dcflux: %g flux_carbon: %g "
            "bm_inc: %g rh: %g aCH4_sink: %g aCH4_em : %g \n",
            day,end-start1+ebul-CH4_fluxes-flux_carbon,start1, end, ebul,CH4_fluxes,cell->balance.flux_estab.carbon,cell->balance.flux_harvest.carbon,
            cell->output.dcflux, flux_carbon ,cell->output.bm_inc,cell->balance.arh,cell->balance.aCH4_sink,cell->balance.aCH4_em);
-//    foreachstand(stand,s,cell->standlist)
-//             fprintf(stderr,"update_daily: standfrac: %g standtype: %s s= %d iswetland: %d cropfraction_rf: %g cropfraction_irr: %g grasfrac_rf: %g grasfrac_irr: %g\n",
-//                     stand->frac, stand->type->name,s,stand->soil.iswetland, crop_sum_frac(cell->ml.landfrac,12,config->nagtree,cell->ml.reservoirfrac+cell->lakefrac,FALSE),
-//                     crop_sum_frac(cell->ml.landfrac,12,config->nagtree,cell->ml.reservoirfrac+cell->lakefrac,TRUE),
-//                     cell->ml.landfrac[0].grass[0]+cell->ml.landfrac[0].grass[1],cell->ml.landfrac[1].grass[0]+cell->ml.landfrac[1].grass[1]);
+    foreachstand(stand,s,cell->standlist)
+             fprintf(stderr,"update_daily: standfrac: %g standtype: %s s= %d iswetland: %d cropfraction_rf: %g cropfraction_irr: %g grasfrac_rf: %g grasfrac_irr: %g\n",
+                     stand->frac, stand->type->name,s,stand->soil.iswetland, crop_sum_frac(cell->ml.landfrac,12,config->nagtree,cell->ml.reservoirfrac+cell->lakefrac,FALSE),
+                     crop_sum_frac(cell->ml.landfrac,12,config->nagtree,cell->ml.reservoirfrac+cell->lakefrac,TRUE),
+                     cell->ml.landfrac[0].grass[0]+cell->ml.landfrac[0].grass[1],cell->ml.landfrac[1].grass[0]+cell->ml.landfrac[1].grass[1]);
   }
-//  if(fabs(balanceW)>0.01 && year>=1940)
-//    fprintf(stderr,"W-BALANCE-ERROR in update_daily: day %d balanceW: %g  exess_old: %g balance.excess_water: %g water_after: %g water_before: %g prec: %g melt: %g "
-//        "atransp: %g  aevap %g ainterc %g aevap_lake  %g aevap_res: %g    airrig : %g aMT_water : %g flux_bal: %g runoff %g lateral_water %g mfin-mfout : %g dmass_lake : %g  dmassriver : %g  \n",day,balanceW,exess_old,cell->balance.excess_water,
-//        water_after,water_before,climate.prec,melt_all,cell->balance.atransp,cell->balance.aevap,cell->balance.ainterc,cell->balance.aevap_lake,cell->balance.aevap_res,cell->balance.airrig,cell->balance.aMT_water,
-//        ((cell->balance.atransp+cell->balance.aevap+cell->balance.ainterc+cell->balance.aevap_lake+cell->balance.aevap_res-cell->balance.airrig-cell->balance.aMT_water)-wfluxes_old),
-//        cell->discharge.drunoff,cell->lateral_water,((cell->discharge.mfout-cell->discharge.mfin)/cell->coord.area),cell->discharge.dmass_lake/cell->coord.area,cell->discharge.dmass_river/cell->coord.area);
+  if(fabs(balanceW)>0.01)
+    fprintf(stderr,"W-BALANCE-ERROR in update_daily: day %d balanceW: %g  exess_old: %g balance.excess_water: %g water_after: %g water_before: %g prec: %g melt: %g "
+        "atransp: %g  aevap %g ainterc %g aevap_lake  %g aevap_res: %g    airrig : %g aMT_water : %g flux_bal: %g runoff %g lateral_water %g mfin-mfout : %g dmass_lake : %g  dmassriver : %g  \n",day,balanceW,exess_old,cell->balance.excess_water,
+        water_after,water_before,climate.prec,melt_all,cell->balance.atransp,cell->balance.aevap,cell->balance.ainterc,cell->balance.aevap_lake,cell->balance.aevap_res,cell->balance.airrig,cell->balance.aMT_water,
+        ((cell->balance.atransp+cell->balance.aevap+cell->balance.ainterc+cell->balance.aevap_lake+cell->balance.aevap_res-cell->balance.airrig-cell->balance.aMT_water)-wfluxes_old),
+        cell->discharge.drunoff,cell->lateral_water,((cell->discharge.mfout-cell->discharge.mfin)/cell->coord.area),cell->discharge.dmass_lake/cell->coord.area,cell->discharge.dmass_river/cell->coord.area);
   cell->output.dcflux-=flux_carbon;
 #endif
 

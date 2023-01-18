@@ -153,7 +153,7 @@ Bool annual_grassland(Stand *stand,         /**< Pointer to stand */
 #ifdef CHECK_BALANCE
     end = standstocks(stand).carbon + soilmethane(&stand->soil);
     if (fabs(end-start-flux_estab.carbon)>0.1)
-      fprintf(stderr, "C-ERROR annual grassland: %g start:%g  end:%g flux_estab.carbon: %g  type:%s\n",
+      fprintf(stderr, "C_ERROR annual grassland: %g start:%g  end:%g flux_estab.carbon: %g  type:%s\n",
               end-start, start, end, flux_estab.carbon, stand->type->name);
 #endif
   free(present);

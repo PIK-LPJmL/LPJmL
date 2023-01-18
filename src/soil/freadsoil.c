@@ -88,5 +88,6 @@ Bool freadsoil(FILE *file,             /**< pointer to binary file */
   freadreal1(&soil->wtable, swap, file);
   freadreal1(&soil->wa, swap, file);
   freadint1(&soil->iswetland, swap, file);
-  return (freadreal1(&soil->snowdens, swap, file) != 1);
+  freadreal1(&soil->snowdens, swap, file);
+  return (freadreal1(&soil->fastfrac, swap, file) != 1);
 } /* of 'freadsoil' */

@@ -22,7 +22,7 @@ void irrig_amount(Stand *stand,        /**< pointer to non-natural stand */
                   const Config *config /**< LPJmL configuration */
                  )
 {
-  int p,nirrig;
+  int p,nirrig,l;
   Pft *pft;
   Real conv_loss,irrig_stand,irrig_threshold;
   Real wr;
@@ -38,11 +38,16 @@ void irrig_amount(Stand *stand,        /**< pointer to non-natural stand */
   {
     foreachpft(pft,p,&stand->pftlist)
     {
-      wr=getwr(&stand->soil,pft->par->rootdist);
       if(!strcmp(pft->par->name,"rice"))
+      {
+        wr=0;
         irrig_threshold=param.irrig_threshold_rice;
+        for(l=0;l<LASTLAYER;l++)
+          wr+=pft->par->rootdist[l]*((stand->soil.w[l]*stand->soil.whcs[l]+stand->soil.ice_depth[l]+stand->soil.w_fw[l]+stand->soil.ice_fw[l])/(stand->soil.wsats[l]+stand->soil.wpwps[l]));
+      }
       else
       {
+        wr=getwr(&stand->soil,pft->par->rootdist);
         if(pft->par->path==C3)
         {
           if(stand->cell->climbuf.aprec<param.aprec_lim)

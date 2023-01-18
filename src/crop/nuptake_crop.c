@@ -33,7 +33,7 @@ Real nuptake_crop(Pft *pft,             /**< pointer to PFT data */
   Real NCplant=0;
   Real f_NCplant=0;
   Real up_temp_f=0;
-  Real totn,nsum;
+  Real totn,nsum,NC_leaf;
   Real wscaler;
   Real n_uptake=0;
   Real n_upfail=0; /**< track n_uptake that is not available from soil for output reporting */
@@ -58,9 +58,10 @@ Real nuptake_crop(Pft *pft,             /**< pointer to PFT data */
   //fprintcropphys2(stdout,crop->ind,pft->nind);
 
   NCplant = (crop->ind.leaf.nitrogen + crop->ind.root.nitrogen) / (crop->ind.leaf.carbon + crop->ind.root.carbon); /* Plant's mobile nitrogen concentration, Eq.9, Zaehle&Friend 2010 Supplementary */
-  f_NCplant = min(max(((NCplant-pft->par->ncleaf.high)/(pft->par->ncleaf.low-pft->par->ncleaf.high)),0),1); /*Eq.10, Zaehle&Friend 2010 Supplementary*/
-  /* disabling N uptake response to plant C:N ratio status */
-  f_NCplant=1;
+  NC_leaf=crop->ind.leaf.nitrogen/crop->ind.leaf.carbon;
+  f_NCplant = min(max(((NC_leaf-pft->par->ncleaf.high)/(pft->par->ncleaf.low-pft->par->ncleaf.high)),0),1);/*Eq.10, Zaehle&Friend 2010 Supplementary*/
+  /* TODO disabling N uptake response to plant C:N ratio status */
+  //f_NCplant=1;
 #ifdef DEBUG_N
   printf("f_NCplant=%g\n",f_NCplant);
 #endif
