@@ -78,6 +78,7 @@ Real daily_grassland(Stand *stand,                /**< stand pointer */
   Real cleaf=0.0;
   Real cleaf_max=0.0;
   Real fertil;
+  Real manure;
   int n_pft,index,nnat;
   Real *fpc_inc;
 #ifdef PERMUTE
@@ -122,7 +123,7 @@ Real daily_grassland(Stand *stand,                /**< stand pointer */
 
   for(l=0;l<LASTLAYER;l++)
     aet_stand[l]=green_transp[l]=0;
-  if (config->with_nitrogen)
+  if (config->with_nitrogen && (stand->type->landusetype==GRASSLAND  || stand->type->landusetype==OTHERS))
   {
     if(stand->cell->ml.fertilizer_nr!=NULL) /* has to be adapted if fix_fertilization option is added */
     {
@@ -131,19 +132,19 @@ Real daily_grassland(Stand *stand,                /**< stand pointer */
         fertil = stand->cell->ml.fertilizer_nr[data->irrigation.irrigation].grass[stand->type->landusetype==GRASSLAND];
         stand->soil.NO3[0]+=fertil*param.nfert_no3_frac;
         stand->soil.NH4[0]+=fertil*(1-param.nfert_no3_frac);
-        stand->cell->balance.n_influx+=fertil*stand->frac;
-        getoutput(output,NFERT_AGR,config)+=fertil*stand->frac;
+        stand->cell->balance.influx.nitrogen+=fertil*stand->frac;
       } /* end fday==day */
     }
     if(stand->cell->ml.manure_nr!=NULL) /* has to be adapted if fix_fertilization option is added */
     {
       if(day==fertday_biomass(stand->cell,config))
       {
-        fertil = stand->cell->ml.manure_nr[data->irrigation.irrigation].grass[stand->type->landusetype==GRASSLAND];
-        stand->soil.NO3[0]+=fertil*param.nfert_no3_frac;
-        stand->soil.NH4[0]+=fertil*(1-param.nfert_no3_frac);
-        stand->cell->balance.n_influx+=fertil*stand->frac;
-        getoutput(output,NMANURE_AGR,config)+=fertil*stand->frac;
+        manure = stand->cell->ml.manure_nr[data->irrigation.irrigation].grass[stand->type->landusetype==GRASSLAND];
+        stand->soil.NH4[0] += manure*param.nmanure_nh4_frac;
+        stand->soil.litter.item->agsub.leaf.carbon += manure*param.manure_cn;
+        stand->soil.litter.item->agsub.leaf.nitrogen += manure*(1-param.nmanure_nh4_frac);
+        stand->cell->balance.influx.carbon += manure*param.manure_cn*stand->frac;
+        stand->cell->balance.influx.nitrogen += manure*stand->frac;
       } /* end fday==day */
     }
   }
@@ -536,7 +537,7 @@ Real daily_grassland(Stand *stand,                /**< stand pointer */
   }
 
   if(data->irrigation.irrigation && stand->pftlist.n>0) /*second element to avoid irrigation on just harvested fields */
-    calc_nir(stand,&data->irrigation,gp_stand,wet,eeq);
+    calc_nir(stand,&data->irrigation,gp_stand,wet,eeq,config->others_to_crop);
 
   getoutput(output,TRANSP,config)+=transp;
   stand->cell->balance.atransp+=transp;

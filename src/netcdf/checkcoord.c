@@ -22,6 +22,7 @@ Bool checkcoord(const size_t offsets[], /**< offsets in NetCDF file */
                 const Climatefile *file /**< climate data file */
                )                        /** \return cell is within NetCDF data (TRUE/FALSE) */
 {
+#if defined(USE_NETCDF) || defined(USE_NETCDF4)
   String line;
   if(offsets[0]>=file->nlat)
   {
@@ -51,5 +52,6 @@ Bool checkcoord(const size_t offsets[], /**< offsets in NetCDF file */
       fprintf(stderr,"%.6gE].\n",file->lon_min+file->lon_res*(file->nlon-1));
      return TRUE;
   }
+#endif
   return FALSE;
 } /* of 'checkcoord' */

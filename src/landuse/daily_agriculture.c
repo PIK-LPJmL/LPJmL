@@ -114,7 +114,7 @@ Real daily_agriculture(Stand *stand,                /**< [inout] stand pointer *
       {
         stand->soil.NO3[0]+=crop->nfertilizer*param.nfert_no3_frac;
         stand->soil.NH4[0]+=crop->nfertilizer*(1-param.nfert_no3_frac);
-        stand->cell->balance.n_influx+=crop->nfertilizer*stand->frac;
+        stand->cell->balance.influx.nitrogen+=crop->nfertilizer*stand->frac;
         getoutput(output,NFERT_AGR,config)+=crop->nfertilizer*pft->stand->frac;
         crop->nfertilizer=0;
       }
@@ -124,9 +124,8 @@ Real daily_agriculture(Stand *stand,                /**< [inout] stand pointer *
         /* no tillage at second application, so manure goes to ag litter not agsub as at cultivation */
         stand->soil.litter.item->ag.leaf.carbon += crop->nmanure*param.manure_cn;
         stand->soil.litter.item->ag.leaf.nitrogen += crop->nmanure*(1-param.nmanure_nh4_frac);
-        getoutput(output,FLUX_ESTABC,config) += crop->nmanure*param.manure_cn*stand->frac;
-        stand->cell->balance.flux_estab.carbon += crop->nmanure*param.manure_cn*stand->frac;
-        stand->cell->balance.n_influx += crop->nmanure*stand->frac;
+        stand->cell->balance.influx.carbon += crop->nmanure*param.manure_cn*stand->frac;
+        stand->cell->balance.influx.nitrogen += crop->nmanure*stand->frac;
         getoutput(output,NMANURE_AGR,config)+=crop->nmanure*pft->stand->frac;
         crop->nmanure=0;
       }
@@ -226,9 +225,9 @@ Real daily_agriculture(Stand *stand,                /**< [inout] stand pointer *
       if(getnpft(&stand->pftlist)>0)
       {
         pft=getpft(&stand->pftlist,0);
+        crop=pft->data;
         if(crop->dh!=NULL)
         {
-          crop=pft->data;
           if(config->pft_output_scaled)
             crop->dh->irrig_apply+=irrig_apply*stand->frac;
           else
@@ -341,7 +340,7 @@ Real daily_agriculture(Stand *stand,                /**< [inout] stand pointer *
     }
     else
     {
-      index=(stand->type->landusetype==OTHERS) ? data->irrigation*(ncft+NGRASS)+rothers(ncft) : pft->par->id-npft+data->irrigation*(npft+NGRASS);
+      index=(stand->type->landusetype==OTHERS) ? data->irrigation*(ncft+NGRASS)+rothers(ncft) : pft->par->id-npft+data->irrigation*(ncft+NGRASS);
       getoutputindex(output,GROWING_PERIOD,index,config)+=1.;
       getoutputindex(output,CFT_PET,index,config)+=eeq*PRIESTLEY_TAYLOR;
       getoutputindex(output,CFT_TEMP,index,config)+= climate->temp >= 5 ? climate->temp : 0;
@@ -451,7 +450,7 @@ Real daily_agriculture(Stand *stand,                /**< [inout] stand pointer *
 
   /* calculate net irrigation requirements (NIR) for next days irrigation */
   if(data->irrigation && stand->pftlist.n>0) /* second element to avoid irrigation on just harvested fields */
-    calc_nir(stand,data,gp_stand,wet,eeq);
+    calc_nir(stand,data,gp_stand,wet,eeq,config->others_to_crop);
 
   getoutput(output,TRANSP,config)+=transp;
   stand->cell->balance.atransp+=transp;
