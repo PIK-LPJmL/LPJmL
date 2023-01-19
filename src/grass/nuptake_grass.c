@@ -120,7 +120,7 @@ Real nuptake_grass(Pft *pft,             /**< pointer to PFT data */
     n_uptake += autofert_n;
     pft->bm_inc.nitrogen += autofert_n;
     pft->vscal+=1;
-    pft->stand->cell->balance.n_influx += autofert_n*pft->stand->frac;
+    pft->stand->cell->balance.influx.nitrogen += autofert_n*pft->stand->frac;
     getoutput(&pft->stand->cell->output,FLUX_AUTOFERT,config)+=autofert_n*pft->stand->frac;
     switch(pft->stand->type->landusetype)
     {
@@ -146,7 +146,7 @@ Real nuptake_grass(Pft *pft,             /**< pointer to PFT data */
        n_fixed=ma_biological_n_fixation(pft, soil, n_deficit, config);
        pft->bm_inc.nitrogen+=n_fixed;
        getoutput(&pft->stand->cell->output,BNF,config)+=n_fixed*pft->stand->frac;
-       pft->stand->cell->balance.n_influx+=n_fixed*pft->stand->frac;
+       pft->stand->cell->balance.influx.nitrogen+=n_fixed*pft->stand->frac;
     }
     else
       pft->npp_bnf=0.0;
