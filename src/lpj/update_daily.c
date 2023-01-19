@@ -118,7 +118,7 @@ void update_daily(Cell *cell,            /**< cell pointer           */
       {
         stand->soil.NO3[0]+=param.fertilizer_rate*0.25;
         stand->soil.NH4[0]+=param.fertilizer_rate*0.25;
-        cell->balance.n_influx+=param.fertilizer_rate*0.5*stand->frac;
+        cell->balance.influx.nitrogen+=param.fertilizer_rate*0.5*stand->frac;
       }
       if(config->till_fallow)
       {
@@ -297,7 +297,7 @@ void update_daily(Cell *cell,            /**< cell pointer           */
           stand->soil.NH4[0]+=1000;
           stand->soil.NO3[0]+=1000;
         }
-        cell->balance.n_influx+=2000*stand->frac;
+        cell->balance.influx.nitrogen+=2000*stand->frac;
         if (isagriculture(stand->type->landusetype))
           getoutput(&cell->output,NDEPO_AGR,config)+=2000*stand->frac;
       }
@@ -316,7 +316,7 @@ void update_daily(Cell *cell,            /**< cell pointer           */
           stand->soil.NH4[0]+=climate.nh4deposition;
           stand->soil.NO3[0]+=climate.no3deposition;
         }
-        cell->balance.n_influx+=(climate.nh4deposition+climate.no3deposition)*stand->frac;
+        cell->balance.influx.nitrogen+=(climate.nh4deposition+climate.no3deposition)*stand->frac;
         if (isagriculture(stand->type->landusetype))
           getoutput(&cell->output,NDEPO_AGR,config)+=(climate.nh4deposition+climate.no3deposition)*stand->frac;
       }
@@ -340,7 +340,7 @@ void update_daily(Cell *cell,            /**< cell pointer           */
       bnf=biologicalnfixation(stand);
       stand->soil.NH4[0]+=bnf;
       getoutput(&cell->output,BNF,config)+=bnf*stand->frac;
-      cell->balance.n_influx+=bnf*stand->frac;
+      cell->balance.influx.nitrogen+=bnf*stand->frac;
     }
 
     runoff=daily_stand(stand,co2,&climate,day,month,daylength,

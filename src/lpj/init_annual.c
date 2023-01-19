@@ -29,7 +29,8 @@ void init_annual(Cell *cell,          /**< Pointer to cell */
   cell->balance.aprec=cell->balance.anpp=cell->balance.arh=cell->balance.awater_flux=0.0;
   cell->afire_frac=cell->balance.biomass_yield.carbon=cell->balance.biomass_yield.nitrogen=0.0;
   cell->balance.total_irrig_from_reservoir=cell->balance.total_reservoir_out=0.0;
-  cell->balance.n_influx=cell->balance.n_outflux=cell->balance.n_demand=cell->balance.n_uptake=0.0;
+  cell->balance.influx.nitrogen=cell->balance.influx.carbon=
+  cell->balance.n_outflux=cell->balance.n_demand=cell->balance.n_uptake=0.0;
   cell->balance.ainterc=cell->balance.atransp=cell->balance.aevap=cell->balance.aevap_lake=
   cell->balance.aevap_res=cell->balance.soil_storage=cell->balance.airrig=cell->balance.awateruse_hil=0;
   cell->balance.adischarge= cell->balance.awd_unsustainable=0;
