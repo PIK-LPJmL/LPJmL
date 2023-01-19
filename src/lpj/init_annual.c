@@ -33,7 +33,7 @@ void init_annual(Cell *cell,          /**< Pointer to cell */
   cell->balance.n_outflux=cell->balance.n_demand=cell->balance.n_uptake=0.0;
   cell->balance.ainterc=cell->balance.atransp=cell->balance.aevap=cell->balance.aevap_lake=
   cell->balance.aevap_res=cell->balance.soil_storage=cell->balance.airrig=cell->balance.awateruse_hil=0;
-  cell->balance.adischarge= cell->balance.awd_unsustainable=0;
+  cell->balance.awd_unsustainable=0;
   cell->balance.aconv_loss_evap=cell->balance.aconv_loss_drain=0;
   cell->balance.trad_biofuel.carbon=cell->balance.trad_biofuel.nitrogen=0;
   cell->balance.fire.carbon=cell->balance.fire.nitrogen=0;
