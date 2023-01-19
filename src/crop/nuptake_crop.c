@@ -61,8 +61,6 @@ Real nuptake_crop(Pft *pft,             /**< pointer to PFT data */
 
   NCplant = (crop->ind.leaf.nitrogen + crop->ind.root.nitrogen) / (crop->ind.leaf.carbon + crop->ind.root.carbon); /* Plant's mobile nitrogen concentration, Eq.9, Zaehle&Friend 2010 Supplementary */
   f_NCplant = min(max(((NCplant-pft->par->ncleaf.high)/(pft->par->ncleaf.low-pft->par->ncleaf.high)),0),1); /*Eq.10, Zaehle&Friend 2010 Supplementary*/
-  /* disabling N uptake response to plant C:N ratio status */
-  f_NCplant=1;
 #ifdef DEBUG_N
   printf("f_NCplant=%g\n",f_NCplant);
 #endif
@@ -140,7 +138,7 @@ Real nuptake_crop(Pft *pft,             /**< pointer to PFT data */
         n_uptake += fixed_n;
         pft->bm_inc.nitrogen = *n_plant_demand;
         getoutput(&pft->stand->cell->output,BNF,config) += fixed_n*pft->stand->frac;
-        pft->stand->cell->balance.n_influx += fixed_n*pft->stand->frac;
+        pft->stand->cell->balance.influx.nitrogen += fixed_n*pft->stand->frac;
         getoutput(&pft->stand->cell->output,BNF_AGR,config) += fixed_n*pft->stand->frac;
         pft->vscal = 1;
       }
@@ -152,7 +150,7 @@ Real nuptake_crop(Pft *pft,             /**< pointer to PFT data */
           fixed_n=ma_biological_n_fixation(pft, soil, n_deficit, config);
           pft->bm_inc.nitrogen+=fixed_n;
           getoutput(&pft->stand->cell->output,BNF,config)+=fixed_n*pft->stand->frac;
-          pft->stand->cell->balance.n_influx+=fixed_n*pft->stand->frac;
+          pft->stand->cell->balance.influx.nitrogen+=fixed_n*pft->stand->frac;
           getoutput(&pft->stand->cell->output,BNF_AGR,config) += fixed_n*pft->stand->frac;
         }
         else
@@ -172,7 +170,7 @@ Real nuptake_crop(Pft *pft,             /**< pointer to PFT data */
           crop->dh->nfertsum+=autofert_n*pft->stand->frac;
         else
           getoutputindex(&pft->stand->cell->output,CFT_NFERT,index+data->irrigation*nirrig,config)+=autofert_n;
-        pft->stand->cell->balance.n_influx += autofert_n*pft->stand->frac;
+        pft->stand->cell->balance.influx.nitrogen += autofert_n*pft->stand->frac;
         getoutput(&pft->stand->cell->output,FLUX_AUTOFERT,config)+=autofert_n*pft->stand->frac;
       }
       else

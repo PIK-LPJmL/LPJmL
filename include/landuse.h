@@ -106,7 +106,7 @@ typedef struct
 #define agtree(ncft,nwpt) (ncft+4+nwpt)
 #define getnnat(npft,config) (npft-config->nbiomass-config->nagtree-config->nwft)
 #define getnirrig(ncft,config) (ncft+NGRASS+NBIOMASSTYPE+config->nagtree+config->nwptype)
-#define isagriculture(type) (type==AGRICULTURE || type==SETASIDE_RF || type==SETASIDE_IR || type==AGRICULTURE_TREE || type==AGRICULTURE_GRASS)
+#define isagriculture(type) (type==AGRICULTURE || type==OTHERS || type==SETASIDE_RF || type==SETASIDE_IR || type==AGRICULTURE_TREE || type==AGRICULTURE_GRASS)
 
 /* Declaration of functions */
 
@@ -139,7 +139,7 @@ extern Stocks sowing_prescribe(Cell *,int,int,int,int,const Config *);
 extern Stocks sowing(Cell *,Real,int,int,int,int,const Config *);
 extern void deforest(Cell *,Real,Bool,int,Bool,Bool,int,int,Real,const Config *);
 extern Stocks woodconsum(Stand*,Real);
-extern void calc_nir(Stand *,Irrigation *,Real,Real [],Real);
+extern void calc_nir(Stand *,Irrigation *,Real,Real [],Real,Bool);
 extern Real rw_irrigation(Stand *,Real,const Real [],Real,const Config *);
 extern void irrig_amount_river(Cell *,const Config *);
 extern void irrig_amount(Stand *,Irrigation *,int,int,int,const Config *);

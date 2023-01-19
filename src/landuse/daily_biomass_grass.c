@@ -60,6 +60,7 @@ Real daily_biomass_grass(Stand *stand,                /**< stand pointer */
   Real wdf; /* water deficit fraction */
   Real transp;
   Real fertil;
+  Real manure;
   Bool isphen;
   Irrigation *data;
   Pftgrass *grass;
@@ -101,7 +102,7 @@ Real daily_biomass_grass(Stand *stand,                /**< stand pointer */
         fertil = stand->cell->ml.fertilizer_nr[data->irrigation].biomass_grass;
         stand->soil.NO3[0]+=fertil*param.nfert_no3_frac;
         stand->soil.NH4[0]+=fertil*(1-param.nfert_no3_frac);
-        stand->cell->balance.n_influx+=fertil*stand->frac;
+        stand->cell->balance.influx.nitrogen+=fertil*stand->frac;
         getoutput(output,NFERT_AGR,config)+=fertil*stand->frac;
       } /* end fday==day */
     }
@@ -109,11 +110,13 @@ Real daily_biomass_grass(Stand *stand,                /**< stand pointer */
     {
       if(day==fertday_biomass(stand->cell,config))
       {
-        fertil = stand->cell->ml.manure_nr[data->irrigation].biomass_grass;
-        stand->soil.NO3[0]+=fertil*param.nfert_no3_frac;
-        stand->soil.NH4[0]+=fertil*(1-param.nfert_no3_frac);
-        stand->cell->balance.n_influx+=fertil*stand->frac;
-        getoutput(output,NMANURE_AGR,config)+=fertil*stand->frac;
+        manure = stand->cell->ml.manure_nr[data->irrigation].biomass_grass;
+        stand->soil.NH4[0] += manure*param.nmanure_nh4_frac;
+        stand->soil.litter.item->agsub.leaf.carbon += manure*param.manure_cn;
+        stand->soil.litter.item->agsub.leaf.nitrogen += manure*(1-param.nmanure_nh4_frac);
+        stand->cell->balance.influx.carbon += manure*param.manure_cn*stand->frac;
+        stand->cell->balance.influx.nitrogen += manure*stand->frac;
+        getoutput(&stand->cell->output,NMANURE_AGR,config)+=manure*stand->frac;
       } /* end fday==day */
     }
   }
@@ -251,7 +254,7 @@ Real daily_biomass_grass(Stand *stand,                /**< stand pointer */
         grasspar=pft->par->data;
         if (pft->bm_inc.carbon > 5.0|| day==NDAYYEAR)
         {
-          turnover_grass(&stand->soil.litter,pft,(Real)grass->growing_days/NDAYYEAR,config);
+          turnover_grass(&stand->soil.litter,pft,1.0/NDAYYEAR,config);
           if(allocation_grass(&stand->soil.litter,pft,fpc_inc+p,config))
           {
             /* kill PFT from list of established PFTs */
@@ -267,14 +270,24 @@ Real daily_biomass_grass(Stand *stand,                /**< stand pointer */
         else
         {
           grass->turn.leaf.carbon+=grass->ind.leaf.carbon*grasspar->turnover.leaf/NDAYYEAR;
-          grass->turn.leaf.nitrogen+=grass->ind.leaf.nitrogen*grasspar->turnover.leaf/NDAYYEAR;
+          stand->soil.litter.item[pft->litter].ag.leaf.carbon+=grass->ind.leaf.carbon*grasspar->turnover.leaf/NDAYYEAR*pft->nind;
+          update_fbd_grass(&stand->soil.litter,pft->par->fuelbulkdensity,grass->ind.leaf.carbon*grasspar->turnover.leaf/NDAYYEAR*pft->nind);
+          getoutput(output,LITFALLC,config)+=grass->ind.leaf.carbon*grasspar->turnover.leaf/NDAYYEAR*pft->nind*stand->frac;
           grass->turn_litt.leaf.carbon+=grass->ind.leaf.carbon*grasspar->turnover.leaf/NDAYYEAR*pft->nind;
+          grass->turn.leaf.nitrogen+=grass->ind.leaf.nitrogen*grasspar->turnover.leaf/NDAYYEAR;
+          stand->soil.litter.item[pft->litter].ag.leaf.nitrogen+=grass->ind.leaf.nitrogen*grasspar->turnover.leaf/NDAYYEAR*pft->nind*pft->par->fn_turnover;
+          getoutput(output,LITFALLN,config)+=grass->ind.leaf.nitrogen*grasspar->turnover.leaf/NDAYYEAR*pft->nind*pft->par->fn_turnover*stand->frac;
           grass->turn_litt.leaf.nitrogen+=grass->ind.leaf.nitrogen*grasspar->turnover.leaf/NDAYYEAR*pft->nind;
 
           grass->turn.root.carbon+=grass->ind.root.carbon*grasspar->turnover.root/NDAYYEAR;
-          grass->turn.root.nitrogen+=grass->ind.root.nitrogen*grasspar->turnover.root/NDAYYEAR;
+          stand->soil.litter.item[pft->litter].bg.carbon+=grass->ind.root.carbon*grasspar->turnover.root/NDAYYEAR*pft->nind;
+          getoutput(output,LITFALLC,config)+=grass->ind.root.carbon*grasspar->turnover.root/NDAYYEAR*pft->nind*stand->frac;
           grass->turn_litt.root.carbon+=grass->ind.root.carbon*grasspar->turnover.root/NDAYYEAR*pft->nind;
+          grass->turn.root.nitrogen+=grass->ind.root.nitrogen*grasspar->turnover.root/NDAYYEAR;
+          stand->soil.litter.item[pft->litter].bg.nitrogen+=grass->ind.root.nitrogen*grasspar->turnover.root/NDAYYEAR*pft->nind*pft->par->fn_turnover;
+          getoutput(output,LITFALLN,config)+=grass->ind.root.nitrogen*grasspar->turnover.root/NDAYYEAR*pft->nind*pft->par->fn_turnover*stand->frac;
           grass->turn_litt.root.nitrogen+=grass->ind.root.nitrogen*grasspar->turnover.root/NDAYYEAR*pft->nind;
+
           grass->growing_days++;
           fpc_inc[p]=0;
         }
@@ -355,7 +368,7 @@ Real daily_biomass_grass(Stand *stand,                /**< stand pointer */
   } /* of if(isphen) */
 
   if(data->irrigation && stand->pftlist.n>0) /*second element to avoid irrigation on just harvested fields */
-    calc_nir(stand,data,gp_stand,wet,eeq);
+    calc_nir(stand,data,gp_stand,wet,eeq,config->others_to_crop);
   transp=0;
   forrootsoillayer(l)
   {
