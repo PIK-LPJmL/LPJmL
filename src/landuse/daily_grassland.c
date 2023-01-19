@@ -123,7 +123,7 @@ Real daily_grassland(Stand *stand,                /**< stand pointer */
 
   for(l=0;l<LASTLAYER;l++)
     aet_stand[l]=green_transp[l]=0;
-  if (config->with_nitrogen)
+  if (config->with_nitrogen && (stand->type->landusetype==GRASSLAND  || stand->type->landusetype==OTHERS))
   {
     if(stand->cell->ml.fertilizer_nr!=NULL) /* has to be adapted if fix_fertilization option is added */
     {
@@ -537,7 +537,7 @@ Real daily_grassland(Stand *stand,                /**< stand pointer */
   }
 
   if(data->irrigation.irrigation && stand->pftlist.n>0) /*second element to avoid irrigation on just harvested fields */
-    calc_nir(stand,&data->irrigation,gp_stand,wet,eeq);
+    calc_nir(stand,&data->irrigation,gp_stand,wet,eeq,config->others_to_crop);
 
   getoutput(output,TRANSP,config)+=transp;
   stand->cell->balance.atransp+=transp;

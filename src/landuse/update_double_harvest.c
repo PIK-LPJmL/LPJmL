@@ -138,7 +138,10 @@ void update_double_harvest(Output *output,      /**< pointer to output */
       (crop->ind.leaf.carbon+crop->ind.pool.carbon+crop->ind.so.carbon)*pft->nind;
     getoutputindex(output,CFT_ABOVEGBMN,index+irrigation*(ncft+NGRASS),config)=
       (crop->ind.leaf.nitrogen+crop->ind.pool.nitrogen+crop->ind.so.nitrogen)*pft->nind;
-    getoutputindex(output,HDATE,pft->par->id-npft+irrigation*ncft,config)=day;
-    getoutputindex(output,HUSUM,pft->par->id-npft+irrigation*ncft,config)=crop->husum;
+    if(pft->stand->type->landusetype==AGRICULTURE)
+    {
+      getoutputindex(output,HDATE,pft->par->id-npft+irrigation*ncft,config)=day;
+      getoutputindex(output,HUSUM,pft->par->id-npft+irrigation*ncft,config)=crop->husum;
+    }
   }
 } /* of 'update_double_harvest' */
