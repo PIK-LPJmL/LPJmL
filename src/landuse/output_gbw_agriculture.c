@@ -51,7 +51,10 @@ void output_gbw_agriculture(Output *output,      /**< output data */
   foreachpft(pft,p,&stand->pftlist)
   {
     crop=pft->data;
-    index=pft->par->id-npft+data->irrigation*getnirrig(ncft,config);
+    if(stand->type->landusetype==OTHERS)
+      index=data->irrigation*getnirrig(ncft,config)+rothers(ncft);
+    else
+      index=pft->par->id-npft+data->irrigation*getnirrig(ncft,config);
     if(config->pft_output_scaled)
     {
       getoutputindex(output,CFT_CONSUMP_WATER_G,index,config)+=total_g*stand->frac;

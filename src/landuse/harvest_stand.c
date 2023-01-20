@@ -265,9 +265,9 @@ Harvest harvest_stand(Output *output, /**< Output data */
                      )                /** \return harvested carbon (gC/m2) */
 {
   Harvest harvest;
-  if (stand->type->landusetype == GRASSLAND)
+  if (stand->type->landusetype == GRASSLAND || stand->type->landusetype==OTHERS)
   {
-    switch (stand->cell->ml.grass_scenario)
+    switch (stand->type->landusetype == GRASSLAND ? stand->cell->ml.grass_scenario : config->grazing_others)
     {
       case GS_DEFAULT: // default
         harvest=harvest_grass(stand,hfrac,config);

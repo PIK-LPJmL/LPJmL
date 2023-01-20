@@ -58,7 +58,7 @@ void iterateyear(Outputfile *output,  /**< Output file data */
   for(cell=0;cell<config->ngridcell;cell++)
   {
     initoutputdata(&grid[cell].output,ANNUAL,year,config);
-    grid[cell].balance.surface_storage=0;
+    grid[cell].balance.surface_storage=grid[cell].balance.adischarge=0;
     grid[cell].discharge.afin_ext=0;
     if(!grid[cell].skip)
     {

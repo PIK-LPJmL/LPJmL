@@ -106,7 +106,7 @@ Real water_stressed(Pft *pft,                  /**< [inout] pointer to PFT varia
   if(*wet>0.99)
     *wet=0.99;
 
-  if(pft->stand->type->landusetype==AGRICULTURE)
+  if(pft->stand->type->landusetype==AGRICULTURE || (pft->stand->type->landusetype==OTHERS && config->others_to_crop))
     supply=pft->par->emax*wr*(1-exp(-0.04*((Pftcrop *)pft->data)->ind.root.carbon));
   else
     supply=pft->par->emax*wr*pft->phen;

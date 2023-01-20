@@ -396,6 +396,12 @@ Bool fscanconfig(Config *config,    /**< LPJ configuration */
         if(fscankeywords(file,&config->grazing,"grazing",grazing_type,5,TRUE,verbose))
           return TRUE;
       }
+      config->grazing_others=GS_DEFAULT;
+      if(!config->others_to_crop)
+      {
+        if(fscankeywords(file,&config->grazing_others,"grazing_others",grazing_type,5,TRUE,verbose))
+          return TRUE;
+      }
       if(fscanmowingdays(file,config))
         return TRUE;
       if(fscankeywords(file,&config->tillage_type,"tillage_type",tillage,3,TRUE,verbose))
@@ -498,6 +504,7 @@ Bool fscanconfig(Config *config,    /**< LPJ configuration */
     standtypes[NATURAL]->dailyfire=NULL;
   if(config->others_to_crop)
   {
+    setotherstocrop();
     if(fscanstring(file,name,"cft_temp",FALSE,verbose))
       return TRUE;
     config->cft_temp=findpftname(name,config->pftpar+config->npft[GRASS]+config->npft[TREE],config->npft[CROP]);

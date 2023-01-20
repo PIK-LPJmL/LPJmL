@@ -51,7 +51,7 @@ void new_crop(Pft *pft, /**< pointer to PFT data */
   crop->supplysum=0;
   crop->frostkill=FALSE;
   pft->vmax=0;
-  if(config->double_harvest)
+  if(pft->stand->type->landusetype==AGRICULTURE && config->double_harvest)
   {
     crop->dh=new(Double_harvest);
     check(crop->dh);

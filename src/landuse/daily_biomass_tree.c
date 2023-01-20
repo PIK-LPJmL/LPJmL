@@ -58,6 +58,7 @@ Real daily_biomass_tree(Stand *stand,                /**< stand pointer */
   Real wdf; /* water deficit fraction */
   Real transp;
   Real gc_pft;
+  Real fertil;
   Biomass_tree *data;
   Soil *soil;
   irrig_apply=0.0;
@@ -86,6 +87,13 @@ Real daily_biomass_tree(Stand *stand,                /**< stand pointer */
   nirrig=getnirrig(ncft,config);
   for(l=0;l<LASTLAYER;l++)
     aet_stand[l]=green_transp[l]=0;
+
+  /* Apply fertilizers */
+  if (config->with_nitrogen)
+      fertilize_tree(stand,
+                    (stand->cell->ml.fertilizer_nr==NULL) ? 0.0 : stand->cell->ml.fertilizer_nr[data->irrigation.irrigation].biomass_tree,
+                    (stand->cell->ml.manure_nr==NULL) ? 0.0 : stand->cell->ml.manure_nr[data->irrigation.irrigation].biomass_tree,
+                    day,config);
 
   /* green water inflow */
   rainmelt=climate->prec+melt;
@@ -206,7 +214,7 @@ Real daily_biomass_tree(Stand *stand,                /**< stand pointer */
                &frac_g_evap,config->rw_manage);
 
   if(data->irrigation.irrigation && stand->pftlist.n>0) /*second element to avoid irrigation on just harvested fields */
-    calc_nir(stand,&data->irrigation,gp_stand,wet,eeq);
+    calc_nir(stand,&data->irrigation,gp_stand,wet,eeq,config->others_to_crop);
   transp=0;
   forrootsoillayer(l)
   {

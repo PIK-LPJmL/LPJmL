@@ -27,7 +27,7 @@
 #include "urban.h"
 
 #define NTYPES 3 /* number of PFT types: grass, tree, crop */
-#define NSTANDTYPES 13 /* number of stand types / land use types as defined in landuse.h*/
+#define NSTANDTYPES 14 /* number of stand types / land use types as defined in landuse.h*/
 
 #define USAGE "Usage: %s [-h] [-outpath dir] [-inpath dir] [[-Dmacro[=value]] [-Idir] ...] [filename]\n"
 
@@ -83,6 +83,7 @@ int main(int argc,char **argv)
   standtype[AGRICULTURE]=&agriculture_stand;
   standtype[MANAGEDFOREST]=&managedforest_stand;
   standtype[GRASSLAND]=&grassland_stand;
+  standtype[OTHERS]=&others_stand;
   standtype[BIOMASS_TREE]=&biomass_tree_stand;
   standtype[BIOMASS_GRASS]=&biomass_grass_stand;
   standtype[AGRICULTURE_TREE]=&agriculture_tree_stand;

@@ -21,7 +21,7 @@ void update_monthly(Cell *cell,  /**< Pointer to cell */
                     Real mtemp,  /**< monthly average temperature (deg C) */
                     Real mprec,  /**< monthly average precipitation (mm) */
                     int month,   /**< month (0..11) */
-                    const Config *config
+                    const Config *config /**< LPJmL configuration */
                    )
 {
   int p;

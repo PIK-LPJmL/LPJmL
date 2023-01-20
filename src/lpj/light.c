@@ -20,7 +20,7 @@
 
 void light(Stand *stand,        /**< Pointer to stand */
            const Real fpc_inc[], /**< FPC increment for each established PFT */
-           const Config *config
+           const Config *config  /**< LPJmL configuration */
           )
 
 {

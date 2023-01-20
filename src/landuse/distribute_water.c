@@ -35,10 +35,9 @@ void distribute_water(Cell *cell,            /**< pointer to LPJ cell */
                       const Config *config   /**< LPJmL configuration */
                      )
 {
-  int s,p,count,nirrig;
-  Real wr;
+  int s,nirrig;
   Real conv_loss,irrig_stand;
-  Real frac_irrig_amount,frac_unsustainable,irrig_threshold;
+  Real frac_irrig_amount,frac_unsustainable;
 #ifdef IMAGE
   Real frac_sw;
 #endif
@@ -46,7 +45,6 @@ void distribute_water(Cell *cell,            /**< pointer to LPJ cell */
   Pft *pft;
   Irrigation *data;
   Pftcrop *crop;
-  irrig_threshold=0.0;
   conv_loss=0.0;
   nirrig=getnirrig(ncft,config);
 #ifdef IMAGE
@@ -91,7 +89,7 @@ void distribute_water(Cell *cell,            /**< pointer to LPJ cell */
   cell->discharge.withdrawal_gw=0.0;
 #endif
   foreachstand(stand,s,cell->standlist)
-    if(stand->type->landusetype==AGRICULTURE || stand->type->landusetype==GRASSLAND || stand->type->landusetype==BIOMASS_GRASS || stand->type->landusetype==BIOMASS_TREE || stand->type->landusetype==WOODPLANTATION || stand->type->landusetype==AGRICULTURE_TREE || stand->type->landusetype==AGRICULTURE_GRASS)
+    if(stand->type->landusetype==AGRICULTURE || stand->type->landusetype==GRASSLAND || stand->type->landusetype==OTHERS || stand->type->landusetype==BIOMASS_GRASS || stand->type->landusetype==BIOMASS_TREE || stand->type->landusetype==WOODPLANTATION || stand->type->landusetype==AGRICULTURE_TREE || stand->type->landusetype==AGRICULTURE_GRASS)
     {
       data=stand->data;
       data->irrig_event=FALSE;
@@ -100,25 +98,7 @@ void distribute_water(Cell *cell,            /**< pointer to LPJ cell */
       if(data->irrigation)
       {
         /* determine if irrigation today */
-        count=0;
-        foreachpft(pft,p,&stand->pftlist)
-        {
-          wr=getwr(&stand->soil,pft->par->rootdist);
-          if(pft->par->path==C3)
-          {
-            if(cell->climbuf.aprec<param.aprec_lim)
-              irrig_threshold=param.irrig_threshold_c3_dry;
-            else
-              irrig_threshold=param.irrig_threshold_c3_humid;
-          }
-          else
-            irrig_threshold=param.irrig_threshold_c4;
-          if(!strcmp(pft->par->name,"rice"))
-            irrig_threshold=param.irrig_threshold_rice;
-
-          count+=(wr>irrig_threshold) ? 0 : 1; /* if single grass pft needs irrigation both grass pft are irrigated */
-        } /*for each pft*/
-        data->irrig_event=(count>0);
+        data->irrig_event=isirrigevent(stand);
 
         irrig_stand=max(data->net_irrig_amount+data->dist_irrig_amount-data->irrig_stor,0)*frac_irrig_amount;
 
@@ -151,13 +131,21 @@ void distribute_water(Cell *cell,            /**< pointer to LPJ cell */
             case GRASSLAND:
               if(config->pft_output_scaled)
               {
-                getoutputindex(&cell->output,CFT_NIR,rothers(ncft)+nirrig,config)+=data->net_irrig_amount*cell->ml.landfrac[1].grass[0];
                 getoutputindex(&cell->output,CFT_NIR,rmgrass(ncft)+nirrig,config)+=data->net_irrig_amount*cell->ml.landfrac[1].grass[1];
               }
               else
               {
-                getoutputindex(&cell->output,CFT_NIR,rothers(ncft)+nirrig,config)+=data->net_irrig_amount;
                 getoutputindex(&cell->output,CFT_NIR,rmgrass(ncft)+nirrig,config)+=data->net_irrig_amount;
+              }
+              break;
+            case OTHERS:
+              if(config->pft_output_scaled)
+              {
+                getoutputindex(&cell->output,CFT_NIR,rothers(ncft)+nirrig,config)+=data->net_irrig_amount*cell->ml.landfrac[1].grass[0];
+              }
+              else
+              {
+                getoutputindex(&cell->output,CFT_NIR,rothers(ncft)+nirrig,config)+=data->net_irrig_amount;
               }
               break;
             case BIOMASS_GRASS:
@@ -237,17 +225,25 @@ void distribute_water(Cell *cell,            /**< pointer to LPJ cell */
           case GRASSLAND:
             if(config->pft_output_scaled)
             {
-              getoutputindex(&cell->output, CFT_CONV_LOSS_EVAP ,rothers(ncft)+nirrig,config)+=conv_loss*data->conv_evap*cell->ml.landfrac[1].grass[0];
               getoutputindex(&cell->output, CFT_CONV_LOSS_EVAP ,rmgrass(ncft)+nirrig,config)+=conv_loss*data->conv_evap*cell->ml.landfrac[1].grass[1];
-              getoutputindex(&cell->output, CFT_CONV_LOSS_DRAIN ,rothers(ncft)+nirrig,config)+=conv_loss*(1-data->conv_evap)*cell->ml.landfrac[1].grass[0];
               getoutputindex(&cell->output, CFT_CONV_LOSS_DRAIN ,rmgrass(ncft)+nirrig,config)+=conv_loss*(1-data->conv_evap)*cell->ml.landfrac[1].grass[1];
             }
             else
             {
-              getoutputindex(&cell->output, CFT_CONV_LOSS_EVAP ,rothers(ncft)+nirrig,config)+=conv_loss*data->conv_evap;
               getoutputindex(&cell->output, CFT_CONV_LOSS_EVAP ,rmgrass(ncft)+nirrig,config)+=conv_loss*data->conv_evap;
-              getoutputindex(&cell->output, CFT_CONV_LOSS_DRAIN ,rothers(ncft)+nirrig,config)+=conv_loss*(1-data->conv_evap);
               getoutputindex(&cell->output, CFT_CONV_LOSS_DRAIN ,rmgrass(ncft)+nirrig,config)+=conv_loss*(1-data->conv_evap);
+            }
+            break;
+          case OTHERS:
+            if(config->pft_output_scaled)
+            {
+              getoutputindex(&cell->output, CFT_CONV_LOSS_EVAP ,rothers(ncft)+nirrig,config)+=conv_loss*data->conv_evap*cell->ml.landfrac[1].grass[0];
+              getoutputindex(&cell->output, CFT_CONV_LOSS_DRAIN ,rothers(ncft)+nirrig,config)+=conv_loss*(1-data->conv_evap)*cell->ml.landfrac[1].grass[0];
+            }
+            else
+            {
+              getoutputindex(&cell->output, CFT_CONV_LOSS_EVAP ,rothers(ncft)+nirrig,config)+=conv_loss*data->conv_evap;
+              getoutputindex(&cell->output, CFT_CONV_LOSS_DRAIN ,rothers(ncft)+nirrig,config)+=conv_loss*(1-data->conv_evap);
             }
             break;
           case BIOMASS_GRASS:
