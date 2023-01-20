@@ -16,6 +16,6 @@
 #include "par/soil.js"          /* Soil parameter file */
 #include "par/pft.js"           /* PFT parameter file*/
 
-#include "par/manage_laimax_alphaa_fao_rev4453_20180507.js" /* Management parameter file */
+#include "par/manage_irrig_systems_with_dummy_laimax_data.js" /* Management parameter file */
 #include "par/manage_reg.js"    /* Management parameter file for regions*/
 #include "par/outputvars.js"
