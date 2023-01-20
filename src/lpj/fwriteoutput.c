@@ -1383,6 +1383,7 @@ void fwriteoutput(Outputfile *output,  /**< output file array */
     }
     writeoutputarray(PFT_LAIMAX,1);
   }
+  writeoutputarray(PFT_LAI,ndate1); /* FS 2022-12-06: added since this output was never written out */
   if(isopen(output,PFT_NROOT))
   {
     if(iswrite2(PFT_NROOT,timestep,year,config) || (timestep==ANNUAL && config->outnames[PFT_NROOT].timestep>0))
