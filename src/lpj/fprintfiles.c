@@ -118,6 +118,8 @@ void fprintfiles(FILE *file,          /**< pointer to text output file */
       fprintfilename(file,&config->lightning_filename,FALSE);
       fprintfilename(file,&config->human_ignition_filename,FALSE);
     }
+    if(config->prescribe_burntarea)
+      fprintfilename(file,&config->burntarea_filename,TRUE);
   }
   if(config->ispopulation)
     fprintfilename(file,&config->popdens_filename,TRUE);

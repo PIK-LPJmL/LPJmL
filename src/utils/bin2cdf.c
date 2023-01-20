@@ -20,8 +20,7 @@
 
 #define error(rc) if(rc) {free(lon);free(lat);free(year);fprintf(stderr,"ERROR427: Cannot write '%s': %s.\n",filename,nc_strerror(rc)); nc_close(cdf->ncid); free(cdf);return NULL;}
 
-#define MISSING_VALUE -9999.99
-#define USAGE "Usage: %s [-clm] [-floatgrid] [-doublegrid] [-revlat] [-days] [-firstyear y] [-baseyear y] [-nbands n] [-nstep n] [-cellsize size] [-swap]\n       [[-attr name=value]..] [-global] [-short] [-compress level] [-units u] [-descr d] [-metafile] [-map name] [varname gridfile]\n       binfile netcdffile\n"
+#define USAGE "Usage: %s [-clm] [-floatgrid] [-doublegrid] [-revlat] [-days] [-firstyear y] [-baseyear y] [-nbands n] [-nstep n] [-cellsize size] [-swap]\n       [[-attr name=value]..] [-global] [-short] [-compress level] [-units u] [-descr d] [-missing_value val] [-metafile] [-map name] [varname gridfile]\n       binfile netcdffile\n"
 
 typedef struct
 {
@@ -67,6 +66,8 @@ static Cdf *create_cdf(const char *filename,
                        const char *name,
                        const char *units,
                        const char *descr,
+                       float miss,
+                       short miss_short,
                        const Attr *global_attrs,
                        int n_global,
                        Type type,
@@ -81,8 +82,6 @@ static Cdf *create_cdf(const char *filename,
   Cdf *cdf;
   double *lon,*lat;
   double *layer=NULL,*bnds=NULL,*midlayer=NULL;
-  float miss=MISSING_VALUE;
-  short miss_short=MISSING_VALUE_SHORT;
   double *year;
   int i,j,rc,dim[4],dim2[2],dimids[2];
   size_t chunk[4],offset[2],count[2];
@@ -175,7 +174,7 @@ static Cdf *create_cdf(const char *filename,
   }
   rc=nc_def_dim(cdf->ncid,TIME_DIM_NAME,header.nyear*header.nstep,&time_dim_id);
   error(rc);
-  rc=nc_def_var(cdf->ncid,"time",NC_DOUBLE,1,&time_dim_id,&time_var_id);
+  rc=nc_def_var(cdf->ncid,TIME_NAME,NC_DOUBLE,1,&time_dim_id,&time_var_id);
   error(rc);
   rc=nc_def_dim(cdf->ncid,LAT_DIM_NAME,array->nlat,&lat_dim_id);
   error(rc);
@@ -207,6 +206,8 @@ static Cdf *create_cdf(const char *filename,
   error(rc);
   rc=nc_put_att_text(cdf->ncid,time_var_id,"calendar",strlen(CALENDAR),
                      CALENDAR);
+  error(rc);
+  rc=nc_put_att_text(cdf->ncid, time_var_id,"standard_name",strlen(TIME_STANDARD_NAME),TIME_STANDARD_NAME);
   error(rc);
   rc=nc_put_att_text(cdf->ncid, time_var_id,"long_name",strlen(TIME_LONG_NAME),TIME_LONG_NAME);
   error(rc);
@@ -250,6 +251,8 @@ static Cdf *create_cdf(const char *filename,
       rc=nc_def_var(cdf->ncid,DEPTH_NAME,NC_DOUBLE,1,dim2,&varid);
       error(rc);
       rc=nc_put_att_text(cdf->ncid,varid,"units",strlen("m"),"m");
+      error(rc);
+      rc=nc_put_att_text(cdf->ncid,varid,"standard_name",strlen(DEPTH_STANDARD_NAME),DEPTH_STANDARD_NAME);
       error(rc);
       rc=nc_put_att_text(cdf->ncid,varid,"long_name",strlen(DEPTH_LONG_NAME),DEPTH_LONG_NAME);
       error(rc);
@@ -416,7 +419,7 @@ static Cdf *create_cdf(const char *filename,
 } /* of 'create_cdf' */
 
 static Bool write_float_cdf(const Cdf *cdf,const float vec[],int year,
-                            int size,Bool ispft,int nband)
+                            int size,Bool ispft,int nband,float miss)
 {
   int i,rc;
   size_t offsets[4],counts[4];
@@ -428,7 +431,7 @@ static Bool write_float_cdf(const Cdf *cdf,const float vec[],int year,
     return TRUE;
   }
   for(i=0;i<cdf->index->nlon*cdf->index->nlat;i++)
-    grid[i]=MISSING_VALUE;
+    grid[i]=miss;
   for(i=0;i<size;i++)
     grid[cdf->index->index[i]]=vec[i];
   if(year==NO_TIME)
@@ -464,7 +467,7 @@ static Bool write_float_cdf(const Cdf *cdf,const float vec[],int year,
 } /* of 'write_float_cdf' */
 
 static Bool write_short_cdf(const Cdf *cdf,const short vec[],int year,
-                            int size,Bool ispft,int nband)
+                            int size,Bool ispft,int nband,short miss)
 {
   int i,rc;
   size_t offsets[4],counts[4];
@@ -476,7 +479,7 @@ static Bool write_short_cdf(const Cdf *cdf,const short vec[],int year,
     return TRUE;
   }
   for(i=0;i<cdf->index->nlon*cdf->index->nlat;i++)
-    grid[i]=MISSING_VALUE_SHORT;
+    grid[i]=miss;
   for(i=0;i<size;i++)
     grid[cdf->index->index[i]]=vec[i];
   if(year==NO_TIME)
@@ -536,21 +539,24 @@ int main(int argc,char **argv)
   Type gridtype;
   float cellsize,fcoord[2];
   double dcoord[2];
-  char *units,*descr,*endptr,*cmdline,*pos,*outname;
+  char *units,*descr,*endptr,*cmdline,*pos,*outname,*missing_value;
   Filename coord_filename;
   float cellsize_lon,cellsize_lat;
+  float miss=MISSING_VALUE_FLOAT;
+  short miss_short=MISSING_VALUE_SHORT;
   Coordfile coordfile;
   Map *map=NULL;
   Attr *global_attrs=NULL;
   Attr *global_attrs2=NULL;
   size_t offset;
   char *map_name,*filename;
-  String var_units,var_descr,var_name,grid_name; 
+  String var_units,var_descr,var_name;
+  Filename grid_name;
   char *variable,*grid_filename,*path;
   var_units[0]='\0';
   var_descr[0]='\0';
   var_name[0]='\0';
-  grid_name[0]='\0';
+  grid_name.fmt=RAW;
   units=descr=NULL;
   compress=0;
   swap=isglobal=FALSE;
@@ -569,6 +575,7 @@ int main(int argc,char **argv)
   withdays=FALSE;
   map_name=BAND_NAMES;
   n_global=0;
+  missing_value=NULL;
   for(iarg=1;iarg<argc;iarg++)
     if(argv[iarg][0]=='-')
     {
@@ -611,6 +618,16 @@ int main(int argc,char **argv)
           return EXIT_FAILURE;
         }
         descr=argv[++iarg];
+      }
+      else if(!strcmp(argv[iarg],"-missing_value"))
+      {
+        if(iarg==argc-1)
+        {
+          fprintf(stderr,"Error: Missing argument after option '-missing_value'.\n"
+                 USAGE,argv[0]);
+          return EXIT_FAILURE;
+        }
+        missing_value=argv[++iarg];
       }
       else if(!strcmp(argv[iarg],"-attr"))
       {
@@ -777,7 +794,7 @@ int main(int argc,char **argv)
   }
   if(ismeta)
   {
-    file=openmetafile(&header,&map,map_name,&global_attrs2,&n_global2,var_name,var_units,var_descr,grid_name,&swap,&offset,filename,TRUE);
+    file=openmetafile(&header,&map,map_name,&global_attrs2,&n_global2,var_name,var_units,var_descr,&grid_name,&gridtype,&swap,&offset,filename,TRUE);
     if(file==NULL)
       return EXIT_FAILURE;
     if(units==NULL && strlen(var_units)>0)
@@ -789,7 +806,7 @@ int main(int argc,char **argv)
       mergeattrs(&global_attrs,&n_global,global_attrs2,n_global2);
       freeattrs(global_attrs2,n_global2);
     }
-  } 
+  }
   if(argc!=iarg+2)
   {
     variable=argv[iarg];
@@ -802,23 +819,23 @@ int main(int argc,char **argv)
       fprintf(stderr,"Error: variable name must be specified in '%s' metafile.\n",filename);
       return EXIT_FAILURE;
     }
-    if(strlen(grid_name)==0)
+    if(grid_name.name==NULL)
     {
       fprintf(stderr,"Error: grid filename must be specified in '%s' metafile.\n",filename);
       return EXIT_FAILURE;
     }
     variable=var_name;
-    grid_filename=grid_name;
     path=getpath(filename);
-    grid_filename=addpath(grid_name,path);
+    grid_filename=addpath(grid_name.name,path);
     if(grid_filename==NULL)
     {
      printallocerr("name");
       return EXIT_FAILURE;
     }
+    free(grid_name.name);
     free(path);
   }
-  if(isclm)
+  if(isclm || grid_name.fmt==CLM)
   {
     coord_filename.name=grid_filename;
     coord_filename.fmt=CLM;
@@ -1018,7 +1035,29 @@ int main(int argc,char **argv)
     return EXIT_FAILURE;
   free(grid);
   cmdline=catstrvec(argv,argc);
-  cdf=create_cdf(outname,map,map_name,cmdline,variable,units,descr,global_attrs,n_global,(isshort) ? LPJ_SHORT : LPJ_FLOAT,header,baseyear,ispft,compress,index,revlat,withdays);
+  if(missing_value!=NULL)
+  {
+    if(isshort)
+    {
+      miss_short=strtol(missing_value,&endptr,10);
+      if(*endptr!='\0')
+      {
+        fprintf(stderr,"Inavlid number '%s' for missing value.\n",missing_value);
+        return EXIT_FAILURE;
+      }
+    }
+    else
+    {
+      miss=strtod(missing_value,&endptr);
+      if(*endptr!='\0')
+      {
+        fprintf(stderr,"Inavlid number '%s' for missing value.\n",missing_value);
+        return EXIT_FAILURE;
+      }
+    }
+  }
+
+  cdf=create_cdf(outname,map,map_name,cmdline,variable,units,descr,miss,miss_short,global_attrs,n_global,(isshort) ? LPJ_SHORT : LPJ_FLOAT,header,baseyear,ispft,compress,index,revlat,withdays);
   free(cmdline);
   if(cdf==NULL)
     return EXIT_FAILURE;
@@ -1051,7 +1090,7 @@ int main(int argc,char **argv)
             fprintf(stderr,"Error reading data in year %d.\n",i+header.firstyear);
             return EXIT_FAILURE;
           }
-          if(write_short_cdf(cdf,data_short,i*header.nstep+j,ngrid,ispft,k))
+          if(write_short_cdf(cdf,data_short,i*header.nstep+j,ngrid,ispft,k,miss_short))
             return EXIT_FAILURE;
         }
         else
@@ -1061,7 +1100,7 @@ int main(int argc,char **argv)
             fprintf(stderr,"Error reading data in year %d.\n",i+header.firstyear);
             return EXIT_FAILURE;
           }
-          if(write_float_cdf(cdf,data,i*header.nstep+j,ngrid,ispft,k))
+          if(write_float_cdf(cdf,data,i*header.nstep+j,ngrid,ispft,k,miss))
             return EXIT_FAILURE;
         }
       }

@@ -19,8 +19,7 @@
 
 #define error(rc) if(rc) {free(lon);free(lat);free(year);fprintf(stderr,"ERROR427: Cannot write '%s': %s.\n",filename,nc_strerror(rc)); nc_close(cdf->ncid); free(cdf);return NULL;}
 
-#define MISSING_VALUE -9999.99
-#define USAGE "Usage: %s [-scale s] [-longheader] [-global] [-cellsize size] [-byte] [-int] [-float]\n       [[-attr name=value] ...] [-intnetcdf] [-metafile] [-raw] [-nbands n] [-landuse] [-notime] [-compress level] [-units u]\n       [-map name] [-descr d] name gridfile clmfile netcdffile\n"
+#define USAGE "Usage: %s [-scale s] [-longheader] [-global] [-cellsize size] [-byte] [-int] [-float]\n       [[-attr name=value] ...] [-intnetcdf] [-metafile] [-raw] [-nbands n] [-landuse] [-notime] [-compress level] [-units u]\n       [-map name] [-descr d] [-missing_value val] [name gridfile] clmfile netcdffile\n"
 
 typedef struct
 {
@@ -34,6 +33,8 @@ static Cdf *create_cdf(const char *filename,
                        const char *name,
                        const char *units,
                        const char *descr,
+                       float miss,
+                       int imiss,
                        const char *args,
                        const Attr *global_attrs,
                        int n_global,
@@ -45,8 +46,8 @@ static Cdf *create_cdf(const char *filename,
                        const Coord_array *array)
 {
   Cdf *cdf;
-  float *lon,*lat,miss=MISSING_VALUE;
-  int *year,i,j,rc,dim[4],imiss=MISSING_VALUE_INT,varid;
+  double *lon,*lat;
+  int *year,i,j,rc,dim[4],varid;
   String s;
   time_t t;
   size_t chunk[4],offset[2],count[2];
@@ -55,14 +56,14 @@ static Cdf *create_cdf(const char *filename,
   int index;
   int len;
   cdf=new(Cdf);
-  lon=newvec(float,array->nlon);
+  lon=newvec(double,array->nlon);
   if(lon==NULL)
   {
     printallocerr("lon");
     free(cdf);
     return NULL;
   }
-  lat=newvec(float,array->nlat);
+  lat=newvec(double,array->nlat);
   if(lat==NULL)
   {
     printallocerr("lat");
@@ -71,9 +72,9 @@ static Cdf *create_cdf(const char *filename,
     return NULL;
   }
   for(i=0;i<array->nlon;i++)
-    lon[i]=(float)(array->lon_min+i*header->cellsize_lon);
+    lon[i]=array->lon_min+i*header->cellsize_lon;
   for(i=0;i<array->nlat;i++)
-    lat[i]=(float)(array->lat_min+i*header->cellsize_lat);
+    lat[i]=array->lat_min+i*header->cellsize_lat;
   if(notime)
     year=NULL;
   else
@@ -138,7 +139,7 @@ static Cdf *create_cdf(const char *filename,
   {
     rc=nc_def_dim(cdf->ncid,TIME_DIM_NAME,(landuse) ? header->nyear : header->nyear*header->nbands,&time_dim_id);
     error(rc);
-    rc=nc_def_var(cdf->ncid,"time",NC_INT,1,&time_dim_id,&time_var_id);
+    rc=nc_def_var(cdf->ncid,TIME_NAME,NC_INT,1,&time_dim_id,&time_var_id);
     error(rc);
   }
   rc=nc_def_dim(cdf->ncid,LAT_DIM_NAME,array->nlat,&lat_dim_id);
@@ -157,9 +158,9 @@ static Cdf *create_cdf(const char *filename,
     rc=nc_put_att_text(cdf->ncid,NC_GLOBAL,global_attrs[i].name,strlen(global_attrs[i].value),global_attrs[i].value);
     error(rc);
   }
-  rc=nc_def_var(cdf->ncid,LAT_NAME,NC_FLOAT,1,&lat_dim_id,&lat_var_id);
+  rc=nc_def_var(cdf->ncid,LAT_NAME,NC_DOUBLE,1,&lat_dim_id,&lat_var_id);
   error(rc);
-  rc=nc_def_var(cdf->ncid,LON_NAME,NC_FLOAT,1,&lon_dim_id,&lon_var_id);
+  rc=nc_def_var(cdf->ncid,LON_NAME,NC_DOUBLE,1,&lon_dim_id,&lon_var_id);
   error(rc);
   if(!notime)
   {
@@ -172,6 +173,10 @@ static Cdf *create_cdf(const char *filename,
     rc=nc_put_att_text(cdf->ncid,time_var_id,"calendar",strlen(CALENDAR),CALENDAR);
     error(rc);
     rc=nc_put_att_text(cdf->ncid, time_var_id,"axis",strlen("T"),"T");
+    error(rc);
+    rc=nc_put_att_text(cdf->ncid, time_var_id,"standard_name",strlen(TIME_STANDARD_NAME),TIME_STANDARD_NAME);
+    error(rc);
+    rc=nc_put_att_text(cdf->ncid, time_var_id,"long_name",strlen(TIME_LONG_NAME),TIME_LONG_NAME);
     error(rc);
   }
   rc=nc_put_att_text(cdf->ncid,lon_var_id,"units",strlen("degrees_east"),
@@ -285,9 +290,9 @@ static Cdf *create_cdf(const char *filename,
     error(rc);
     free(year);
   }
-  rc=nc_put_var_float(cdf->ncid,lat_var_id,lat);
+  rc=nc_put_var_double(cdf->ncid,lat_var_id,lat);
   error(rc);
-  rc=nc_put_var_float(cdf->ncid,lon_var_id,lon);
+  rc=nc_put_var_double(cdf->ncid,lon_var_id,lon);
   error(rc);
   if(map!=NULL)
   {
@@ -323,7 +328,7 @@ static Cdf *create_cdf(const char *filename,
 } /* of 'create_cdf' */
 
 static Bool write_float_cdf(const Cdf *cdf,const float vec[],int year,
-                            int size,Bool landuse,Bool notime,int nband)
+                            int size,Bool landuse,Bool notime,int nband,float miss)
 {
   int i,rc,index;
   size_t offsets[4],counts[4];
@@ -335,7 +340,7 @@ static Bool write_float_cdf(const Cdf *cdf,const float vec[],int year,
     return TRUE;
   }
   for(i=0;i<cdf->index->nlon*cdf->index->nlat;i++)
-    grid[i]=MISSING_VALUE;
+    grid[i]=miss;
   for(i=0;i<size;i++)
     grid[cdf->index->index[i]]=vec[i];
   if(year==NO_TIME)
@@ -377,7 +382,7 @@ static Bool write_float_cdf(const Cdf *cdf,const float vec[],int year,
 } /* of 'write_float_cdf' */
 
 static Bool write_int_cdf(const Cdf *cdf,const int vec[],int year,
-                          int size,Bool landuse,Bool notime,int nband)
+                          int size,Bool landuse,Bool notime,int nband,int imiss)
 {
   int i,rc,index;
   size_t offsets[4],counts[4];
@@ -389,7 +394,7 @@ static Bool write_int_cdf(const Cdf *cdf,const int vec[],int year,
     return TRUE;
   }
   for(i=0;i<cdf->index->nlon*cdf->index->nlat;i++)
-    grid[i]=MISSING_VALUE_INT;
+    grid[i]=imiss;
   for(i=0;i<size;i++)
     grid[cdf->index->index[i]]=vec[i];
   if(year==NO_TIME)
@@ -456,15 +461,21 @@ int main(int argc,char **argv)
   Bool swap,landuse,notime,isglobal,istype,israw,ismeta,isint,n_global;
   float *f,scale,cellsize_lon,cellsize_lat;
   int *idata,*iarr;
-  char *units,*descr,*endptr,*arglist;
+  char *units,*descr,*endptr,*arglist,*missing_value;
   char *map_name,*pos;
   const char *progname;
-  Filename filename;
+  char *grid_filename,*path;
+  Filename grid_name;
+  char *filename,*outname,*variable;
+  String var_name;
   size_t filesize;
   String var_units,var_descr;
+  float miss=MISSING_VALUE_FLOAT;
+  int imiss=MISSING_VALUE_INT;
   units=descr=NULL;
   var_units[0]='\0';
   var_descr[0]='\0';
+  var_name[0]='\0';
   scale=1.0;
   compress=0;
   cellsize_lon=cellsize_lat=0;
@@ -478,7 +489,9 @@ int main(int argc,char **argv)
   nbands=1;
   setversion=READ_VERSION;
   map_name=MAP_NAME;
+  grid_name.fmt=CLM;
   n_global=0;
+  missing_value=NULL;
   progname=strippath(argv[0]);
   for(iarg=1;iarg<argc;iarg++)
     if(argv[iarg][0]=='-')
@@ -534,6 +547,16 @@ int main(int argc,char **argv)
           return EXIT_FAILURE;
         }
         descr=argv[++iarg];
+      }
+      else if(!strcmp(argv[iarg],"-missing_value"))
+      {
+        if(argc==iarg+1)
+        {
+          fprintf(stderr,"Error: Missing argument after option '-missing_value'.\n"
+                 USAGE,progname);
+          return EXIT_FAILURE;
+        }
+        missing_value=argv[++iarg];
       }
       else if(!strcmp(argv[iarg],"-attr"))
       {
@@ -646,15 +669,87 @@ int main(int argc,char **argv)
     }
     else
       break;
-  if(argc<iarg+4)
+  if(ismeta && argc==iarg+2)
+  {
+    filename=argv[iarg];
+    outname=argv[iarg+1];
+  }
+  else if(argc<iarg+4)
   {
     fprintf(stderr,"Error: Missing arguments.\n"
             USAGE,progname);
     return EXIT_FAILURE;
   }
-  filename.fmt=CLM;
-  filename.name=argv[iarg+1];
-  coordfile=opencoord(&filename,TRUE);
+  else
+  {
+    filename=argv[iarg+2];
+    outname=argv[iarg+3];
+  }
+  if(ismeta)
+  {
+    header.cellsize_lon=header.cellsize_lat=0.5;
+    header.firstyear=1901;
+    header.firstcell=0;
+    header.nyear=1;
+    header.nbands=nbands;
+    header.nstep=1;
+    header.datatype=type;
+    header.order=CELLYEAR;
+
+    file=openmetafile(&header,&map,map_name,&global_attrs,&n_global,var_name,var_units,var_descr,&grid_name,NULL,&swap,&offset,filename,TRUE);
+    if(file==NULL)
+      return EXIT_FAILURE;
+    if(fseek(file,offset,SEEK_CUR))
+    {
+      fprintf(stderr,"Error seeking in '%s' to offset %lu.\n",filename,offset);
+      fclose(file);
+      return EXIT_FAILURE;
+    }
+    if(units==NULL && strlen(var_units)>0)
+      units=var_units;
+    if(descr==NULL && strlen(var_descr)>0)
+      descr=var_descr;
+  }
+  else
+  {
+    file=fopen(filename,"rb");
+    if(file==NULL)
+    {
+      fprintf(stderr,"Error opening '%s': %s.\n",filename,strerror(errno));
+      return EXIT_FAILURE;
+    }
+  }
+  if(argc!=iarg+2)
+  {
+    variable=argv[iarg];
+    grid_filename=argv[iarg+1];
+  }
+  else
+  {
+    if(strlen(var_name)==0)
+    {
+      fprintf(stderr,"Error: variable name must be specified in '%s' metafile.\n",filename);
+      return EXIT_FAILURE;
+    }
+    if(grid_name.name==NULL)
+    {
+      fprintf(stderr,"Error: grid filename must be specified in '%s' metafile.\n",filename);
+      return EXIT_FAILURE;
+    }
+    variable=var_name;
+    path=getpath(filename);
+    grid_filename=addpath(grid_name.name,path);
+    if(grid_filename==NULL)
+    {
+     printallocerr("name");
+      return EXIT_FAILURE;
+    }
+    free(grid_name.name);
+    free(path);
+  }
+  /* Open and read grid file */
+  grid_name.name=grid_filename;
+  coordfile=opencoord(&grid_name,TRUE);
   if(coordfile==NULL)
     return EXIT_FAILURE;
   ngrid=numcoord(coordfile);
@@ -675,40 +770,6 @@ int main(int argc,char **argv)
   for(i=0;i<numcoord(coordfile);i++)
     readcoord(coordfile,grid+i,&res);
   closecoord(coordfile);
-  if(ismeta)
-  {
-    header.cellsize_lon=header.cellsize_lat=0.5;
-    header.firstyear=1901;
-    header.firstcell=0;
-    header.nyear=1;
-    header.nbands=nbands;
-    header.nstep=1;
-    header.datatype=type;
-    header.order=CELLYEAR;
-
-    file=openmetafile(&header,&map,map_name,&global_attrs,&n_global,NULL,var_units,var_descr,NULL,&swap,&offset,argv[iarg+2],TRUE);
-    if(file==NULL)
-      return EXIT_FAILURE;
-    if(fseek(file,offset,SEEK_CUR))
-    {
-      fprintf(stderr,"Error seeking in '%s' to offset %lu.\n",argv[iarg+2],offset);
-      fclose(file);
-      return EXIT_FAILURE;
-    }
-    if(units==NULL && strlen(var_units)>0)
-      units=var_units;
-    if(descr==NULL && strlen(var_descr)>0)
-      descr=var_descr;
-  }
-  else
-  {
-    file=fopen(argv[iarg+2],"rb");
-    if(file==NULL)
-    {
-      fprintf(stderr,"Error opening '%s': %s.\n",argv[iarg+2],strerror(errno));
-      return EXIT_FAILURE;
-    }
-  }
   if(!israw)
   {
     if(ismeta)
@@ -721,7 +782,7 @@ int main(int argc,char **argv)
         if(header.nbands>1)
         {
           fprintf(stderr,"Error: Number of bands %d and number of steps %d >1 in '%s' not supported.\n",
-                  header.nbands,header.nstep,argv[iarg+2]);
+                  header.nbands,header.nstep,filename);
           fclose(file);
           return EXIT_FAILURE;
         }
@@ -733,14 +794,14 @@ int main(int argc,char **argv)
     version=setversion;
     if(freadanyheader(file,&header,&swap,headername,&version,TRUE))
     {
-      fprintf(stderr,"Error reading header of '%s'.\n",argv[iarg+2]);
+      fprintf(stderr,"Error reading header of '%s'.\n",filename);
       fclose(file);
       return EXIT_FAILURE;
     }
     if(version>CLM_MAX_VERSION)
     {
       fprintf(stderr,"Error: Unsupported version %d in '%s', must be less than %d.\n",
-              version,argv[iarg+2],CLM_MAX_VERSION+1);
+              version,filename,CLM_MAX_VERSION+1);
       fclose(file);
       return EXIT_FAILURE;
     }
@@ -758,7 +819,7 @@ int main(int argc,char **argv)
         if(header.nbands>1)
         {
           fprintf(stderr,"Error: Number of bands %d and number of steps %d >1 in '%s' not supported.\n",
-                  header.nbands,header.nstep,argv[iarg+2]);
+                  header.nbands,header.nstep,filename);
           fclose(file);
           return EXIT_FAILURE;
         }
@@ -766,11 +827,11 @@ int main(int argc,char **argv)
       }
     }
     if(filesize!=(long long)header.nyear*header.ncell*header.nbands*typesizes[header.datatype])
-      fprintf(stderr,"Warning: File size of '%s' does not match nbands*ncell*nyear.\n",argv[iarg+2]);
+      fprintf(stderr,"Warning: File size of '%s' does not match nbands*ncell*nyear.\n",filename);
     }
     if(header.order!=CELLYEAR)
     {
-      fprintf(stderr,"Error: Order in '%s' must be cellyear, order ",argv[iarg+2]);
+      fprintf(stderr,"Error: Order in '%s' must be cellyear, order ",filename);
       if(header.order>0 || header.order<=CELLSEQ)
         fprintf(stderr,"%s",ordernames[header.order-1]);
       else
@@ -780,15 +841,15 @@ int main(int argc,char **argv)
     if(notime && (header.nyear>1 || (!landuse && header.nbands>1)))
     {
       fprintf(stderr,"No time axis set, but number of time steps>1 in '%s'.\n",
-              argv[iarg+2]);
+              filename);
       fclose(file);
       return EXIT_FAILURE;
     }
 
     if(header.ncell!=ngrid)
     {
-      fprintf(stderr,"Number of cells in '%s' is different from %d in '%s'.\n",
-              argv[iarg+2],ngrid,argv[iarg+1]);
+      fprintf(stderr,"Number of cells=%d in '%s' is different from %d in '%s'.\n",
+              header.ncell,filename,ngrid,grid_filename);
       fclose(file);
       return EXIT_FAILURE;
     }
@@ -797,19 +858,24 @@ int main(int argc,char **argv)
       header.cellsize_lon=cellsize_lon;
       header.cellsize_lat=cellsize_lat;
     }
-    if(header.cellsize_lon!=res.lon)
+    if(fabs(header.cellsize_lon-res.lon)>min(res.lon,header.cellsize_lon)*0.5)
     {
-      fprintf(stderr,"Cell size in '%s' differs from '%s'.\n",
-              argv[iarg+2],argv[iarg+1]);
+      fprintf(stderr,"Longitudinal cell size=%g in '%s' differs from %g in '%s'.\n",
+              header.cellsize_lon,filename,res.lon,grid_filename);
       fclose(file);
       return EXIT_FAILURE;
     }
-    if(header.cellsize_lat!=res.lat)
+    if(fabs(header.cellsize_lon-res.lon)>min(res.lat,header.cellsize_lat)*0.5)
     {
-      fprintf(stderr,"Cell size in '%s' differs from '%s'.\n",
-              argv[iarg+2],argv[iarg+1]);
+      fprintf(stderr,"Latitudinal cell size=%g in '%s' differs from %g in '%s'.\n",
+              header.cellsize_lat,filename,res.lat,grid_filename);
       fclose(file);
       return EXIT_FAILURE;
+    }
+    if(ismeta)
+    {
+      header.cellsize_lon=res.lon;
+      header.cellsize_lat=res.lat;
     }
   }
   else
@@ -822,14 +888,35 @@ int main(int argc,char **argv)
     header.scalar=scale;
     header.nyear=getfilesizep(file)/typesizes[type]/ngrid/header.nbands;
     if(getfilesizep(file) % (typesizes[type]*ngrid*header.nbands))
-      fprintf(stderr,"Warning: file size of '%s' is not multiple of bands %d and number of cells %d.\n",argv[iarg+2],header.nbands,ngrid);
+      fprintf(stderr,"Warning: file size of '%s' is not multiple of bands %d and number of cells %d.\n",filename,header.nbands,ngrid);
   }
   index=createindex(grid,ngrid,res,isglobal,FALSE);
   if(index==NULL)
     return EXIT_FAILURE;
   free(grid);
   arglist=catstrvec(argv,argc);
-  cdf=create_cdf(argv[iarg+3],map,argv[iarg],units,descr,arglist,global_attrs,n_global,&header,compress,landuse,notime,isint || ((header.datatype==LPJ_INT || header.datatype==LPJ_BYTE) && header.scalar==1),index);
+  if(missing_value!=NULL)
+  {
+    if(isint)
+    {
+      imiss=strtol(missing_value,&endptr,10);
+      if(*endptr!='\0')
+      {
+        fprintf(stderr,"Invalid number '%s' for missing value.\n",missing_value);
+        return NULL;
+      }
+    }
+    else
+    {
+      miss=strtod(missing_value,&endptr);
+      if(*endptr!='\0')
+      {
+        fprintf(stderr,"Inavlid number '%s' for missing value.\n",missing_value);
+        return EXIT_FAILURE;
+      }
+    }
+  }
+  cdf=create_cdf(outname,map,variable,units,descr,miss,imiss,arglist,global_attrs,n_global,&header,compress,landuse,notime,isint || ((header.datatype==LPJ_INT || header.datatype==LPJ_BYTE) && header.scalar==1),index);
   free(arglist);
   if(cdf==NULL)
     return EXIT_FAILURE;
@@ -858,7 +945,7 @@ int main(int argc,char **argv)
       {
         for(k=0;k<ngrid;k++)
           iarr[k]=idata[k*header.nbands+j];
-        if(write_int_cdf(cdf,iarr,(landuse) ? i : i*header.nbands+j,ngrid,landuse,notime,j))
+        if(write_int_cdf(cdf,iarr,(landuse) ? i : i*header.nbands+j,ngrid,landuse,notime,j,imiss))
           return EXIT_FAILURE;
       }
     }
@@ -890,7 +977,7 @@ int main(int argc,char **argv)
       {
         for(k=0;k<ngrid;k++)
           f[k]=data[k*header.nbands+j];
-        if(write_float_cdf(cdf,f,(landuse) ? i : i*header.nbands+j,ngrid,landuse,notime,j))
+        if(write_float_cdf(cdf,f,(landuse) ? i : i*header.nbands+j,ngrid,landuse,notime,j,miss))
           return EXIT_FAILURE;
       }
     }

@@ -29,6 +29,7 @@
 #define LAT_LONG_NAME "Latitude"
 #define LAT_STANDARD_NAME "latitude"
 #define TIME_NAME "time"
+#define TIME_STANDARD_NAME "time"
 #define TIME_LONG_NAME "Time"
 #define LON_DIM_NAME "lon"
 #define LAT_DIM_NAME "lat"
@@ -36,6 +37,7 @@
 #define YEARS_NAME "Years"
 #define NULL_NAME "(null)"
 #define DEPTH_NAME "depth"
+#define DEPTH_STANDARD_NAME "depth_below_surface"
 #define DEPTH_LONG_NAME "Depth of Vertical Layer Center Below Surface"
 #define BNDS_NAME "depth_bnds"
 #define BNDS_LONG_NAME "bnds=0 for the top of the layer, and bnds=1 for the bottom of the layer"
@@ -189,6 +191,7 @@ extern int open_netcdf(const char *,int *,Bool *);
 extern void free_netcdf(int);
 extern Bool checkcoord(const size_t *,int,const Coord *,const Climatefile *);
 extern char *getattr_netcdf(const Climatefile *,const char *);
+extern char *getvarname_netcdf(const Climatefile *);
 
 #ifdef USE_MPI
 extern Bool mpi_write_netcdf(const Netcdf *,void *,MPI_Datatype,int,int,

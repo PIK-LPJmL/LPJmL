@@ -411,6 +411,8 @@ Bool filesexist(Config config, /**< LPJmL configuration */
       bad+=checkdatafile(&config,&config.lightning_filename,"lightning",NULL,LPJ_INT,12);
       bad+=checkinputdata(&config,&config.human_ignition_filename,"human iginition","yr-1",LPJ_SHORT);
     }
+    if(config.prescribe_burntarea)
+      bad+=checkclmfile(&config,&config.burntarea_filename,"hectare",TRUE);
   }
   if(config.cropsheatfrost || config.fire==SPITFIRE_TMAX)
   {
