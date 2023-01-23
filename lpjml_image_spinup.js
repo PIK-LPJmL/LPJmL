@@ -83,11 +83,12 @@
   "black_fallow" : false,
   "grassland_fixed_pft" : false,
   "grass_harvest_options" : false,
+  "prescribe_lsuha" : false,
   "mowing_days" : [152, 335],          /* Mowing days for grassland if grass harvest options are ser */
   "groundwater_irrigation": false,
   "aquifer_irrigation": false,
   "others_to_crop" : false,
-  "grazing" : "default",                /* default grazing type, other options : "default", "mowing", "ext", "int", "none" */
+  "grazing" : "default",                /* default grazing type, other options : "default", "mowing", "ext", "int", "livestock", "none" */
   "istimber" : false,
   "grassonly" : false,                  /* set all cropland including others to zero but keep managed grasslands */
   "crop_phu_option" : "new",

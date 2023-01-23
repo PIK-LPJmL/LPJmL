@@ -85,9 +85,10 @@
   "istimber" : false,
   "grassland_fixed_pft" : false,
   "grass_harvest_options" : false,
+  "prescribe_lsuha" : false,
   "grassonly" : false,
   "others_to_crop" : false,             /* move PFT type others into PFT crop, maize for tropical, wheat for temperate */
-  "grazing" : "default",                /* default grazing type, other options : "default", "mowing", "ext", "int", "none" */
+  "grazing" : "default",                /* default grazing type, other options : "default", "mowing", "ext", "int", "livestock", "none" */
   "crop_phu_option" : "new",
   "cropsheatfrost" : false,
   "double_harvest" : false,

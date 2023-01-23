@@ -47,7 +47,7 @@
 #define checkptr(ptr) if(ptr==NULL) { printallocerr(#ptr); return TRUE; }
 
 const char *crop_phu_options[]={"old","new","prescribed"};
-const char *grazing_type[]={"default","mowing","ext","int","none"};
+const char *grazing_type[]={"default","mowing","ext","int","livestock","none"};
 
 static Bool readfilename2(LPJfile *file,Filename *name,const char *key,const char *path,Verbosity verbose)
 {
@@ -239,6 +239,7 @@ Bool fscanconfig(Config *config,    /**< LPJ configuration */
   config->double_harvest=FALSE;
   config->others_to_crop = FALSE;
   config->ma_bnf = FALSE;
+  config->prescribe_lsuha=FALSE;
   if(config->with_nitrogen)
   {
     if(fscanbool(file,&config->ma_bnf,"ma_bnf",TRUE,verbose))
@@ -385,16 +386,18 @@ Bool fscanconfig(Config *config,    /**< LPJ configuration */
       if(!grassharvest)
       {
         config->grazing=GS_DEFAULT;
-        if(fscankeywords(file,&config->grazing,"grazing",grazing_type,5,TRUE,verbose))
+        if(fscankeywords(file,&config->grazing,"grazing",grazing_type,6,TRUE,verbose))
           return TRUE;
       }
       config->grazing_others=GS_DEFAULT;
       if(!config->others_to_crop)
       {
-        if(fscankeywords(file,&config->grazing_others,"grazing_others",grazing_type,5,TRUE,verbose))
+        if(fscankeywords(file,&config->grazing_others,"grazing_others",grazing_type,6,TRUE,verbose))
           return TRUE;
       }
       if(fscanmowingdays(file,config))
+        return TRUE;
+      if(fscanbool(file,&config->prescribe_lsuha,"prescribe_lsuha", TRUE, verbose))
         return TRUE;
       if(fscankeywords(file,&config->tillage_type,"tillage_type",tillage,3,TRUE,verbose))
         return TRUE;
@@ -654,6 +657,8 @@ Bool fscanconfig(Config *config,    /**< LPJ configuration */
       scanclimatefilename(&input,&config->with_tillage_filename,config->inputdir,FALSE,"with_tillage");
     if (config->residue_treatment == READ_RESIDUE_DATA)
       scanclimatefilename(&input,&config->residue_data_filename,config->inputdir,FALSE,"residue_on_field");
+    if(config->prescribe_lsuha)
+      scanclimatefilename(&input,&config->lsuha_filename,config->inputdir,FALSE,"grassland_lsuha");
     if(grassfix == GRASS_FIXED_PFT)
     {
       scanclimatefilename(&input,&config->grassfix_filename,config->inputdir,FALSE,"grassland_fixed_pft");
@@ -671,6 +676,7 @@ Bool fscanconfig(Config *config,    /**< LPJ configuration */
   {
     config->grassfix_filename.name = NULL;
     config->grassharvest_filename.name = NULL;
+    config->lsuha_filename.name = NULL;
   }
   if(config->river_routing)
   {

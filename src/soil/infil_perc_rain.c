@@ -239,6 +239,8 @@ Real infil_perc_rain(Stand *stand,        /**< Stand pointer */
             stand->cell->balance.n_outflux+=(NO3surf + NO3lat)*stand->frac;
             if(isagriculture(stand->type->landusetype))
               getoutput(&stand->cell->output,NLEACHING_AGR,config)+=(NO3surf + NO3lat)*stand->frac;
+            if(stand->type->landusetype==GRASSLAND)
+              getoutput(&stand->cell->output,NO3_LEACHING_MGRASS,config)+=(NO3surf+NO3lat)*stand->frac;
             if(stand->type->landusetype==AGRICULTURE)
             {
               foreachpft(pft,p,&stand->pftlist)
@@ -260,6 +262,8 @@ Real infil_perc_rain(Stand *stand,        /**< Stand pointer */
     stand->cell->balance.n_outflux+=NO3perc_ly*stand->frac;
     if(isagriculture(stand->type->landusetype))
       getoutput(&stand->cell->output,NLEACHING_AGR,config)+=NO3perc_ly*stand->frac;
+    if(stand->type->landusetype==GRASSLAND)
+      getoutput(&stand->cell->output,NO3_LEACHING_MGRASS,config)+=NO3perc_ly*stand->frac;
     if(config->withdailyoutput && (stand->type->landusetype==NATURAL && ALLNATURAL==config->crop_index))
       getoutput(&stand->cell->output,D_LEACHING,config)+=NO3perc_ly;
     if(config->withdailyoutput && (stand->type->landusetype==AGRICULTURE || stand->type->landusetype==GRASSLAND))

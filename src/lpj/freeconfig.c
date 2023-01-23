@@ -142,6 +142,8 @@ void freeconfig(Config *config /**< LPJmL configuration */
     }
     if(config->sdate_option==PRESCRIBED_SDATE)
       freefilename(&config->sdate_filename);
+    if(config->prescribe_lsuha)
+      freefilename(&config->lsuha_filename);
   }
   if(config->with_nitrogen)
   {

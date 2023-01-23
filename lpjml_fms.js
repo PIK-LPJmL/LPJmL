@@ -57,6 +57,7 @@
 "grassland_fixed_pft" : false,
 "wateruse" : "no",
 "grass_harvest_options" : false,
+"prescribe_lsuha" : false,
 "rw_manage" : false,
 "shuffle_climate" : true,
 "fix_climate" : false,
