@@ -1698,9 +1698,7 @@
     "name" : "woodplantation tropical tree",
     "type" : "tree",
     "cultivation_type" : "wp",/* cultivation_type */
-    "nfixing" : true,           /* no N fixing */
     "nfixing" : true,           /* N fixing */
->>>>>>> 1bd98bbe0967e35a1e87d95fe2edba7a92b0780d
     "cn" : [30.0, 55.0, 70.0, 77.0], /* curve number */
     "beta_root" : 0.962,    /* beta_root */
     "minwscal" : 0.00,      /* minwscal 3*/
