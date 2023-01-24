@@ -35,7 +35,7 @@ struct standtype
                 Real,Real,int,int,int,Bool,Real,const Config *);
   Bool (*annual)(Stand *,int,int,
                  Real,int,Bool,Bool,const Config *);
-  void (*dailyfire)(Stand *,Real,Real,const Dailyclimate *,const Config *);
+  void (*dailyfire)(Stand *,Real,Real,Real,const Dailyclimate *,const Config *);
   Bool (*isdaily_output)(const Config *,const Stand *);
 };
 
@@ -113,7 +113,7 @@ extern void freelandcover(Landcover,Bool);
 
 #define daily_stand(stand,co2,climate,day,month,daylength,gtemp_air,gtemp_soil,eeq,par,melt,npft,ncft,year,intercrop,agrfrac,config) stand->type->daily(stand,co2,climate,day,month,daylength,gtemp_air,gtemp_soil,eeq,par,melt,npft,ncft,year,intercrop,agrfrac,config)
 #define annual_stand(stand,npft,ncft,popdens,year,isdaily,intercrop,config) stand->type->annual(stand,npft,ncft,popdens,year,isdaily,intercrop,config)
-#define dailyfire_stand(stand,popdens,avgprec,climate,config) if(stand->type->dailyfire!=NULL) stand->type->dailyfire(stand,popdens,avgprec,climate,config)
+#define dailyfire_stand(stand,popdens,hign,avgprec,climate,config) if(stand->type->dailyfire!=NULL) stand->type->dailyfire(stand,popdens,hign,avgprec,climate,config)
 #define isdailyoutput_stand(output,stand) ((stand->type->isdaily_output==NULL) ? FALSE : stand->type->isdaily_output(output,stand))
 
 #endif

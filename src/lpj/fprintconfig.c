@@ -116,6 +116,8 @@ static size_t isnetcdfinput(const Config *config)
   }
   if(config->ispopulation && config->popdens_filename.fmt==CDF)
     width=max(width,strlen(config->popdens_filename.var));
+  if(config->ishuman_ign_prob && config->human_ign_prob_filename.fmt==CDF)
+    width=max(width,strlen(config->human_ign_prob_filename.var));
   if(config->grassfix_filename.name!=NULL && config->grassfix_filename.fmt==CDF)
     width=max(width,strlen(config->grassfix_filename.var));
   if(config->grassharvest_filename.name!=NULL && config->grassharvest_filename.fmt==CDF)
@@ -255,6 +257,8 @@ void fprintconfig(FILE *file,          /**< File pointer to text output file */
       len=printsim(file,len,&count,"and population");
     if((config->fire==SPITFIRE || config->fire==SPITFIRE_TMAX) && config->prescribe_burntarea)
       len=printsim(file,len,&count,"prescribed burntarea");
+    if(config->ishuman_ign_prob)
+      len=printsim(file,len,&count,"human ignition probabilities");
     if(config->prescribe_ignition)
       len=printsim(file,len,&count,"prescribed ignitions");
     if(config->fire==SPITFIRE || config->fire==SPITFIRE_TMAX)
@@ -567,6 +571,8 @@ void fprintconfig(FILE *file,          /**< File pointer to text output file */
   }
   if(config->ispopulation)
     printinputfile(file,"pop. dens",&config->popdens_filename,width);
+  if(config->ishuman_ign_prob)
+    printinputfile(file,"h ign prob",&config->human_ign_prob_filename,width);
   if(config->prescribe_burntarea)
     printinputfile(file,"burntarea",&config->burntarea_filename,width);
   if(config->prescribe_landcover)

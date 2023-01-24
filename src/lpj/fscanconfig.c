@@ -195,6 +195,7 @@ Bool fscanconfig(Config *config,    /**< LPJ configuration */
   config->prescribe_burntarea=FALSE;
   config->prescribe_ignition=FALSE;
   config->max_firesize=FALSE;
+  config->ishuman_ign_prob=FALSE;
   if(config->fire==SPITFIRE  || config->fire==SPITFIRE_TMAX)
   {
     if(fscankeywords(file,&config->fdi,"fdi",fdi,2,FALSE,verbose))
@@ -212,6 +213,8 @@ Bool fscanconfig(Config *config,    /**< LPJ configuration */
     if(fscanbool(file,&config->max_firesize,"max_firesize",TRUE,verbose))
       return TRUE;
     if(fscanbool(file,&config->prescribe_ignition,"prescribe_ignition",TRUE,verbose))
+      return TRUE;
+    if(fscanbool(file,&config->ishuman_ign_prob,"human_ign_prob",TRUE,verbose))
       return TRUE;
   }
   fscanbool2(file,&config->ispopulation,"population");

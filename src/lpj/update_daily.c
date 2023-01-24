@@ -27,6 +27,7 @@
 void update_daily(Cell *cell,            /**< cell pointer           */
                   Real co2,              /**< atmospheric CO2 (ppmv) */
                   Real popdensity,       /**< population density (capita/km2) */
+                  Real human_ign_prob,   /**< human ignition probability */
                   Dailyclimate climate,  /**< Daily climate values */
                   int day,               /**< day (1..365)           */
                   int npft,              /**< number of natural PFTs */
@@ -134,7 +135,7 @@ void update_daily(Cell *cell,            /**< cell pointer           */
     getoutput(&cell->output,ALBEDO,config) += beta * stand->frac;
 
     if((config->fire==SPITFIRE  || config->fire==SPITFIRE_TMAX)&& stand->afire_frac<1)
-      dailyfire_stand(stand,popdensity,avgprec,&climate,config);
+      dailyfire_stand(stand,popdensity,human_ign_prob,avgprec,&climate,config);
     if(config->permafrost)
     {
       snowrunoff=snow(&stand->soil,&climate.prec,&melt,

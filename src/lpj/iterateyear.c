@@ -53,6 +53,7 @@ void iterateyear(Outputfile *output,  /**< Output file data */
   int month,dayofmonth,day;
   int cell;
   Real popdens=0; /* population density (capita/km2) */
+  Real human_ign_prob=0;
   Real norg_soil_agr,nmin_soil_agr,nveg_soil_agr;
   intercrop=getintercrop(input.landuse);
   for(cell=0;cell<config->ngridcell;cell++)
@@ -135,6 +136,8 @@ void iterateyear(Outputfile *output,  /**< Output file data */
         {
           if(config->ispopulation)
             popdens=getpopdens(input.popdens,cell);
+          if(config->ishuman_ign_prob)
+            human_ign_prob=gethuman_ign_prob(input.human_ign_prob,cell);
           grid[cell].output.dcflux=0;
           initoutputdata(&((grid+cell)->output),DAILY,year,config);
           /* get daily values for temperature, precipitation and sunshine */
@@ -171,7 +174,7 @@ void iterateyear(Outputfile *output,  /**< Output file data */
           printf("day=%d cell=%d\n",day,cell);
           fflush(stdout);
 #endif
-          update_daily(grid+cell,co2,popdens,daily,day,npft,
+          update_daily(grid+cell,co2,popdens,human_ign_prob,daily,day,npft,
                        ncft,year,month,intercrop,config);
         }
       }

@@ -20,6 +20,7 @@
 
 void dailyfire(Stand *stand,                /**< pointer to stand */
                Real popdens,                /**< population density (capita/km2) */
+               Real human_ign_prob,
                Real avgprec,                /**< monthly averaged precipitation (mm/day) */
                const Dailyclimate *climate, /**< daily climate data */
                const Config *config         /**< LPJmL configuration */
@@ -79,7 +80,7 @@ void dailyfire(Stand *stand,                /**< pointer to stand */
     num_fires=climate->ignition;
   else
   {
-    human_ignition=humanignition(popdens,&stand->cell->ignition);
+    human_ignition=(config->ishuman_ign_prob) ? human_ign_prob/365*param.k_ign_prob : humanignition(popdens,&stand->cell->ignition);
     num_fires=wildfire_ignitions(fire_danger_index,
                                  human_ignition+climate->lightning*param.cg_ratio*param.ler,
                                  stand->cell->coord.area*stand->frac);
@@ -87,7 +88,7 @@ void dailyfire(Stand *stand,                /**< pointer to stand */
     if(stand->type->landusetype==NATURAL)
     {
       getoutput(output,LIGHTNING,config) +=climate->lightning*param.cg_ratio*param.ler*fire_danger_index*stand->cell->coord.area*stand->frac*1e-4;
-      getoutput(output,HUMAN_IGNITION,config) +=human_ignition*fire_danger_index*stand->cell->coord.area*stand->frac*1e-4;
+      getoutput(output,HUMAN_IGNITION,config) +=human_ignition*stand->cell->coord.area*stand->frac*1e-4;
     }
   }
   windsp_cover=windspeed_fpc(climate->windspeed,&stand->pftlist);

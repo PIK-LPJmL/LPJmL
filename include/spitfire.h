@@ -18,6 +18,7 @@
 /* Declaration of datatypes */
 
 typedef struct popdens *Popdens;
+typedef struct human_ign_prob *Human_ign_prob;
 
 typedef struct
 {
@@ -51,10 +52,14 @@ extern void initfuel(Fuel *);
 extern void freepopdens(Popdens,Bool);
 extern Real getpopdens(const Popdens,int);
 extern Bool readpopdens(Popdens,int,const Cell *,const Config *);
+extern void freehuman_ign_prob(Human_ign_prob,Bool);
+extern Real gethuman_ign_prob(const Human_ign_prob,int);
+extern Bool readhuman_ign_prob(Human_ign_prob,int,const Cell *,const Config *);
 extern Real humanignition(Real,Ignition *);
 extern Bool initignition(Cell *,const Config *);
 extern Bool initmax_firesize(Cell *,const Config *);
 extern Popdens initpopdens(const Config *);          
+extern Human_ign_prob inithuman_ign_prob(const Config *);
 extern Stocks litter_update_fire(Litter *,Tracegas *,const Fuel *);
 extern Real rateofspread(Real,Fuel *);
 extern Real surface_fire_intensity(Real, Real, Real);
@@ -62,7 +67,7 @@ extern void update_fbd_tree(Litter*,Real,Real,int);
 extern void update_fbd_grass(Litter*,Real,Real);
 extern Real wildfire_ignitions(Real,Real,Real);
 extern Real windspeed_fpc(Real,const Pftlist *);
-extern void dailyfire(Stand *,Real,Real,const Dailyclimate *,const Config *);
+extern void dailyfire(Stand *,Real,Real,Real,const Dailyclimate *,const Config *);
 extern void update_nesterov(Cell *,const Dailyclimate *);
 extern Bool fwriteignition(FILE *,const Ignition *);
 extern Bool freadignition(FILE *,Ignition *,Bool);

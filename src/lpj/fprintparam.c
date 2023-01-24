@@ -68,6 +68,8 @@ void fprintparam(FILE *file,    /**< pointer to text file */
             "max fire:\t%g (min)\n"
             "max ndayfire:\t%d (days)\n",
             param.firedura,param.fire_intens,param.hum_ign,param.cg_ratio,param.ler,param.max_fireduration,param.max_ndayfire);
+    if(config->ishuman_ign_prob)
+      fprintf(file,"k_ign_prob:\t%g\n",param.k_ign_prob);
     fprintfireduration(file,standtypes,nstand);
   }
   if(config->with_nitrogen)

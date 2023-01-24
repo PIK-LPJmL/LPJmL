@@ -383,6 +383,8 @@ Bool filesexist(Config config, /**< LPJmL configuration */
   }
   if(config.ispopulation)
     bad+=checkdatafile(&config,&config.popdens_filename,"popdens","km-2",LPJ_SHORT,1);
+  if(config.ishuman_ign_prob)
+    bad+=checkdatafile(&config,&config.human_ign_prob_filename,"human ign prob",NULL,LPJ_SHORT,1);
   if(config.with_nitrogen)
   {
     if(config.with_nitrogen==LIM_NITROGEN && !config.no_ndeposition)

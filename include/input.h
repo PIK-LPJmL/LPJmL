@@ -26,6 +26,7 @@ typedef struct
   Wateruse wateruse_wd;
 #endif
   Popdens popdens;
+  Human_ign_prob human_ign_prob;
   Extflow extflow;
   Landcover landcover;
 } Input;
