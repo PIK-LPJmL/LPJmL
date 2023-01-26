@@ -171,7 +171,7 @@ Landuse initlanduse(const Config *config /**< LPJ configuration */
 
   if(config->prescribe_lsuha)
   {
-    if(opendata(&landuse->grassland_lsuha,&config->lsuha_filename,"livestock density","LSU/ha",LPJ_SHORT,1.0,1,TRUE,config))
+    if(opendata(&landuse->grassland_lsuha,&config->lsuha_filename,"livestock density","LSU/ha",LPJ_SHORT,0.001,1,TRUE,config))
     {
       freelanduse(landuse,config);
       return NULL;
@@ -834,8 +834,7 @@ Bool getlanduse(Landuse landuse,     /**< Pointer to landuse data */
 
   if(config->prescribe_lsuha)
   {
-    /* read in tillage data */
-    dates=readintdata(&landuse->grassland_lsuha,grid,"livestock density",yeart,config);
+    dates=readintdata(&landuse->grassland_lsuha,grid,"livestock density",year,config);
     if(dates==NULL)
       return TRUE;
     count=0;
