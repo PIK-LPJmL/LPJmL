@@ -38,28 +38,25 @@ int writecoords(Outputfile *output,  /**< output struct */
 #endif
   Bool rc;
   int cell,count;
-  short *soilcode;
+  int *cellid;
   Intcoord *vec;
   Floatcoord *fvec;
   if((output->method==LPJ_GATHER || output->method==LPJ_FILES) &&
      output->files[index].fmt==CDF)
   {
-    soilcode=newvec(short,config->ngridcell);
-    if(soilcode==NULL)
+    cellid=newvec(int,config->ngridcell);
+    if(cellid==NULL)
     {
-      printallocerr("soilcode");
+      printallocerr("cellid");
       rc=TRUE;
     }
     else
     {
-      count=0;
       for(cell=0;cell<config->ngridcell;cell++)
         if(grid[cell].skip)
-          soilcode[cell]=0;
-        else if(isempty(grid[cell].standlist))
-          soilcode[cell]=MISSING_VALUE_SHORT;
+          cellid[cell]=-1;
         else
-          soilcode[cell]=(short)(getstand(grid[cell].standlist,0)->soil.par->type+1);
+          cellid[cell]=cell+config->startgrid;
       rc=FALSE;
     }
   }
@@ -145,18 +142,18 @@ int writecoords(Outputfile *output,  /**< output struct */
         }
         if(iserror(rc,config))
         {
-          free(soilcode);
+          free(cellid);
           free(counts);
           free(offsets);
           return 0;
         }
         getcounts(counts,offsets,config->nall,1,config->ntask);
-        mpi_write_netcdf(&output->files[index].fp.cdf,soilcode,MPI_SHORT,
+        mpi_write_netcdf(&output->files[index].fp.cdf,cellid,MPI_INT,
                          config->nall,NO_TIME,
                          counts,offsets,config->rank,config->comm);
         free(counts);
         free(offsets);
-        free(soilcode);
+        free(cellid);
       }
       else
       {
@@ -277,8 +274,8 @@ int writecoords(Outputfile *output,  /**< output struct */
           free(fvec);
           break;
         case CDF:
-          write_short_netcdf(&output->files[index].fp.cdf,soilcode,NO_TIME,config->nall);
-          free(soilcode);
+          write_int_netcdf(&output->files[index].fp.cdf,cellid,NO_TIME,config->nall);
+          free(cellid);
           break;
       }
     else
@@ -298,8 +295,8 @@ int writecoords(Outputfile *output,  /**< output struct */
           free(vec);
           break;
         case CDF:
-          write_short_netcdf(&output->files[index].fp.cdf,soilcode,NO_TIME,config->nall);
-          free(soilcode);
+          write_int_netcdf(&output->files[index].fp.cdf,cellid,NO_TIME,config->nall);
+          free(cellid);
           break;
       }
   }
