@@ -350,6 +350,7 @@ Error code Description                                   Error type
         40 Boundary check error                          Internal
         41 Invalid time step in soiltemp()               Internal
         42 Cannot read external flow                     External
+        43 Error initializing output data                External
 ---------- --------------------------------------------- ----------
 
 External errors are caused by invalid or missing input files while internal
