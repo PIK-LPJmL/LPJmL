@@ -25,7 +25,7 @@ int main(int argc,char **argv)
   long long size;
   Coord res,res2;
   Coordfile grid;
-  int i,index,data_version,setversion,ngrid,ngrid2;
+  int i,index,index2,data_version,setversion,ngrid,ngrid2;
   float lon,lat;
   String id;
   Filename filename;
@@ -175,8 +175,8 @@ int main(int argc,char **argv)
       fprintf(stderr,") found, must be in [0,%d].\n",ngrid-1);
       return EXIT_FAILURE;
     }
-    index=findcoord(c+index,c2,&res,ngrid2);
-    if(index==NOT_FOUND)
+    index2=findcoord(c+index,c2,&res,ngrid2);
+    if(index2==NOT_FOUND)
     {
       fputs("Coordinate ",stderr);
       fprintcoord(stderr,c+index);
@@ -185,7 +185,7 @@ int main(int argc,char **argv)
       fprintf(stderr," not found in '%s', set to itself.\n",argv[2]);
       index=i;
     }
-    fwrite(&index,1,sizeof(int),file);
+    fwrite(&index2,1,sizeof(int),file);
   }
   fclose(file);
   return EXIT_SUCCESS;
