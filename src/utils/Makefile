@@ -28,7 +28,7 @@ OBJS    = cru2clm.$O cvrtsoil.$O grid2clm.$O cfts26_lu2clm.$O drainage.$O\
           cvrtclm.$O manage2js.$O getheadersize.$O regridirrig.$O mergeclm.$O\
           printglobal.$O binsum.$O arr2clm.$O copan_demo.$O
 
-SRC    = cru2clm.c cvrtsoil.c grid2clm.c cfts26_lu2clm.c drainage.c\
+SRC    =  cru2clm.c cvrtsoil.c grid2clm.c cfts26_lu2clm.c drainage.c\
           river_sections_input_grid.c river_sections_input_soil.c\
           river_sections_input_climate.c river_sections_input_landuse.c\
           river_sections_input_countrycode.c river_sections_input_irrig.c\
@@ -40,7 +40,7 @@ SRC    = cru2clm.c cvrtsoil.c grid2clm.c cfts26_lu2clm.c drainage.c\
           cdf2clm.c bin2cdf.c adddrain.c txt2grid.c getcellindex.c\
           copyheader.c addheader.c mathclm.c cutclm.c cdf2bin.c cvrtclm.c\
           manage2js.c getheadersize.c regridirrig.c mergeclm.c printglobal.c\
-          arr2clm.c copan_demo.$O
+          arr2clm.c copan_demo.c
 
 INC     = ../../include
 
