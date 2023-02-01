@@ -153,10 +153,13 @@ char **createpftnames(int index,           /**< output index */
       if(addpfts(pftnames,&incr,FALSE,0,config->pftpar,nnat))
         return NULL;
       break;
-    case PFT_MORT: case NV_LAI:
+    case PFT_MORT: case NV_LAI: case PFT_HEIGHT:
       if(addpfts(pftnames,&incr,FALSE,0,config->pftpar,nnat))
         return NULL;
       break;
+    case PFT_LITTERC:
+      if(addpfts(pftnames,&incr,FALSE,0,config->pftpar,npft+ncft))
+        return NULL;
     case WFT_VEGC:
       incr=0;
       for (j=0;j<npft;j++)

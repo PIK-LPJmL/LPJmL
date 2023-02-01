@@ -23,8 +23,8 @@ struct human_ign_prob
 }; /* Definition of opaque datatype Human_ign_prob */
 
 Human_ign_prob inithuman_ign_prob(const Config *config /**< LPJ configuration */
-                   )                     /** \return pointer to human ignition probability
-                                            struct or NULL */
+                                 )                     /** \return pointer to human ignition probability
+                                                            struct or NULL */
 {
   Human_ign_prob human_ign_prob;
   int i;

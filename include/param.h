@@ -69,7 +69,7 @@ typedef struct
   Real cg_ratio;         /**< cloud to ground flashes ratio */
   Real fire_intens;     /**< threshold of fireintensity for which burnt area can be modeled */
   Real hum_ign;         /**< a parameter for scaling the human ignintions within SPITFIRE */
-  Real k_ign_prob;
+  Real k_ign_prob;      /**< scaling factor for human ignition probabilities */
   Real residues_in_soil;  /**< minimum residues in soil*/
   Real residues_in_soil_notillage;  /**< minimum residues in soil*/
   Real nfert_split;     /**< threshold fertilizer input for split application */

@@ -20,7 +20,7 @@
 
 void dailyfire(Stand *stand,                /**< pointer to stand */
                Real popdens,                /**< population density (capita/km2) */
-               Real human_ign_prob,
+               Real human_ign_prob,         /**< human ignition probability */
                Real avgprec,                /**< monthly averaged precipitation (mm/day) */
                const Dailyclimate *climate, /**< daily climate data */
                const Config *config         /**< LPJmL configuration */
