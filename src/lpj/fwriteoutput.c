@@ -807,6 +807,7 @@ void fwriteoutput(Outputfile *output,  /**< output file array */
     if(iswrite2(PFT_LITTERC,timestep,year,config) || (timestep==ANNUAL && config->outnames[PFT_LITTERC].timestep>0))
     {
       litter=newvec(Real,npft+ncft);
+      check(litter);
       for(cell=0;cell<config->ngridcell;cell++)
         if(!grid[cell].skip)
         {

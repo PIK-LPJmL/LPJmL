@@ -14,7 +14,7 @@
 
 #include "lpj.h"
 
-void pftlitter_ag(Real carbon[],
+void pftlitter_ag(Real carbon[],       /**< PFT-specfic litter carbon (gC/m2) */
                   const Litter *litter /**< pointer to litter data */
                  )
 {
