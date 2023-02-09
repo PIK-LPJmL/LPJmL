@@ -37,6 +37,7 @@ Variable *fscanoutputvar(LPJfile *file, /**< pointer to LPJ file */
 {
   LPJfile *arr,*item;
   const char *name;
+  String s,s2;
   Variable *outnames;
   int index,i,size;
   if (verb>=VERB) puts("// Output parameters");
@@ -114,6 +115,13 @@ Variable *fscanoutputvar(LPJfile *file, /**< pointer to LPJ file */
       if(verb)
         fprintf(stderr,"ERROR229: Cannot read int 'timestep' for output '%s'.\n",outnames[index].name);
       return NULL;
+    }
+    if(verb && outnames[index].timestep<getmintimestep(index))
+    {
+      fprintf(stderr,"ERROR246: Time step %s for '%s' output in 'outputvar' too short, must be %s.\n",
+              sprinttimestep(s,outnames[index].timestep),
+              outnames[index].name,
+              sprinttimestep(s2,getmintimestep(index)));
     }
   }
   for(i=0;i<nout_max;i++)

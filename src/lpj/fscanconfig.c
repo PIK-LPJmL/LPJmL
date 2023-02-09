@@ -239,8 +239,11 @@ Bool fscanconfig(Config *config,    /**< LPJ configuration */
   config->double_harvest=FALSE;
   config->others_to_crop = FALSE;
   config->ma_bnf = FALSE;
-  if(fscanbool(file,&config->ma_bnf,"ma_bnf",TRUE,verbose))
-    return TRUE;
+  if(config->with_nitrogen)
+  {
+    if(fscanbool(file,&config->ma_bnf,"ma_bnf",TRUE,verbose))
+      return TRUE;
+  }
   config->soilpar_option=NO_FIXED_SOILPAR;
   if(fscankeywords(file,&config->soilpar_option,"soilpar_option",soilpar_option,3,TRUE,verbose))
     return TRUE;
@@ -262,15 +265,25 @@ Bool fscanconfig(Config *config,    /**< LPJ configuration */
   if(config->fix_climate)
   {
     fscanint2(file,&config->fix_climate_year,"fix_climate_year");
-    fscanint2(file,&config->fix_climate_cycle,"fix_climate_cycle");
   }
   config->const_deposition=FALSE;
   if(config->with_nitrogen==LIM_NITROGEN)
   {
-    if(fscanbool(file,&config->const_deposition,"const_deposition",TRUE,verbose))
-      return TRUE;
     if(fscanbool(file,&config->no_ndeposition,"no_ndeposition",TRUE,verbose))
       return TRUE;
+    if(!config->no_ndeposition)
+    {
+      if(fscanbool(file,&config->const_deposition,"const_deposition",TRUE,verbose))
+        return TRUE;
+      if(config->const_deposition)
+      {
+        fscanint2(file,&config->depos_year_const,"depos_year_const");
+      }
+    }
+  }
+  if(config->fix_climate || config->const_deposition)
+  {
+    fscanint2(file,&config->fix_climate_cycle,"fix_climate_cycle");
   }
   config->fertilizer_input=NO_FERTILIZER;
   config->fire_on_grassland=FALSE;
@@ -308,14 +321,16 @@ Bool fscanconfig(Config *config,    /**< LPJ configuration */
       if(fscankeywords(file,&config->crop_phu_option,"crop_phu_option",crop_phu_options,3,TRUE,verbose))
         return TRUE;
       fscanbool2(file,&config->intercrop,"intercrop");
-      config->crop_resp_fix=FALSE;
       config->manure_input=FALSE;
       config->fix_fertilization=FALSE;
       if(config->with_nitrogen)
       {
+        config->crop_resp_fix=FALSE;
         if(fscanbool(file,&config->crop_resp_fix,"crop_resp_fix",TRUE,verbose))
           return TRUE;
       }
+      else
+        config->crop_resp_fix=TRUE;
       if(config->with_nitrogen==LIM_NITROGEN)
       {
         if(fscanbool(file,&config->fix_fertilization,"fix_fertilization",TRUE,verbose))
@@ -371,6 +386,12 @@ Bool fscanconfig(Config *config,    /**< LPJ configuration */
       {
         config->grazing=GS_DEFAULT;
         if(fscankeywords(file,&config->grazing,"grazing",grazing_type,5,TRUE,verbose))
+          return TRUE;
+      }
+      config->grazing_others=GS_DEFAULT;
+      if(!config->others_to_crop)
+      {
+        if(fscankeywords(file,&config->grazing_others,"grazing_others",grazing_type,5,TRUE,verbose))
           return TRUE;
       }
       if(fscanmowingdays(file,config))
@@ -465,6 +486,7 @@ Bool fscanconfig(Config *config,    /**< LPJ configuration */
     name=fscanstring(file,NULL,"cft_temp",verbose);
     if(name==NULL)
       return TRUE;
+    setotherstocrop();
     config->cft_temp=findpftname(name,config->pftpar+config->npft[GRASS]+config->npft[TREE],config->npft[CROP]);
     if(config->cft_temp==NOT_FOUND)
     {

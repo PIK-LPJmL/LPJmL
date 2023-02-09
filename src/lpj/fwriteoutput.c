@@ -937,6 +937,41 @@ void fwriteoutput(Outputfile *output,  /**< output file array */
     }
     writeoutputvar(MG_LITC,1);
   }
+  if(isopen(output,SOILC_AGR))
+  {
+    if(iswrite2(SOILC_AGR,timestep,year,config) || (timestep==ANNUAL && config->outnames[SOILC_AGR].timestep>0))
+    {
+      for(cell=0;cell<config->ngridcell;cell++)
+        if(!grid[cell].skip)
+        {
+          foreachstand(stand,s,grid[cell].standlist)
+          {
+            if(isagriculture(stand->type->landusetype))
+            {
+              for(p=0;p<stand->soil.litter.n;p++)
+                getoutput(&grid[cell].output,SOILC_AGR,config)+=stand->soil.litter.item[p].bg.carbon*stand->frac;
+              forrootsoillayer(l)
+                getoutput(&grid[cell].output,SOILC_AGR,config)+=(stand->soil.pool[l].slow.carbon+stand->soil.pool[l].fast.carbon)*stand->frac;
+            }
+          }
+        }
+    }
+    writeoutputvar(SOILC_AGR,1);
+  }
+  if(isopen(output,LITC_AGR))
+  {
+    if(iswrite2(LITC_AGR,timestep,year,config) || (timestep==ANNUAL && config->outnames[LITC_AGR].timestep>0))
+    {
+      for(cell=0;cell<config->ngridcell;cell++)
+        if(!grid[cell].skip)
+        {
+          foreachstand(stand,s,grid[cell].standlist)
+            if(isagriculture(stand->type->landusetype))
+              getoutput(&grid[cell].output,LITC_AGR,config)+=litter_ag_sum(&stand->soil.litter)*stand->frac;
+        }
+    }
+    writeoutputvar(LITC_AGR,1);
+  }
   writeoutputvar(INPUT_LAKE,1e-9);
   if(iswrite(output,ADISCHARGE))
   {
@@ -1321,6 +1356,7 @@ void fwriteoutput(Outputfile *output,  /**< output file array */
   writeoutputarray(CFT_CONV_LOSS_EVAP,1);
   writeoutputarray(CFT_CONV_LOSS_DRAIN,1);
   writeoutputarray(CFTFRAC,1);
+  writeoutputarray(CFT_NHARVEST,1);
   writeoutputarray(CFT_AIRRIG,1);
   writeoutputarray(CFT_FPAR,ndate1);
   writeoutputarray(LUC_IMAGE,1);
@@ -1347,6 +1383,7 @@ void fwriteoutput(Outputfile *output,  /**< output file array */
     }
     writeoutputarray(PFT_LAIMAX,1);
   }
+  writeoutputarray(PFT_LAI,ndate1); /* FS 2022-12-06: added since this output was never written out */
   if(isopen(output,PFT_NROOT))
   {
     if(iswrite2(PFT_NROOT,timestep,year,config) || (timestep==ANNUAL && config->outnames[PFT_NROOT].timestep>0))

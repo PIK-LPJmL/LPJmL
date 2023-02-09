@@ -226,6 +226,7 @@ char *parse_json_metafile(FILE *file,         /**< pointer to JSON file */
   return ret;
 } /* of 'parse_json_metafile' */
 
+
 FILE *openmetafile(Header *header,       /**< pointer to file header */
                    List **map,           /**< map from json file or NULL */
                    const char *map_name, /**< name of map or NULL */
@@ -235,7 +236,7 @@ FILE *openmetafile(Header *header,       /**< pointer to file header */
                    Bool isout            /**< error output (TRUE/FALSE) */
                   )                      /** \return file pointer to open file or NULL */
 {
-  FILE *file;  
+  FILE *file;
   char *name,*path,*fullname;
   /* open description file */
   if((file=fopen(filename,"r"))==NULL)

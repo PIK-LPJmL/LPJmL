@@ -25,6 +25,7 @@ Stocks establishment_tree(Pft *pft,               /**< pointer to tree PFT */
   Real nind_old;
   Stocks flux_est={0,0};
   Real est_pft, frac_old;
+  String line;
   /* establishment rate for a particular PFT on modelled area
    * basis (for trees, indiv/m2; for grasses, fraction of
    * modelled area colonised establishment rate for a particular
@@ -62,6 +63,8 @@ Stocks establishment_tree(Pft *pft,               /**< pointer to tree PFT */
       // and the change.
       // NB: Reduction of existing plantation density due to expansion is done in landexpansion()->mix_veg_tree()
       frac_old = pft->stand->frac - pft->stand->frac_change;
+      if(frac_old<0)
+        frac_old=0;
       est_nind = (frac_old * treepar->k_est + pft->stand->frac_change * treepar->P_init) / pft->stand->frac;
     }
   else
@@ -72,7 +75,8 @@ Stocks establishment_tree(Pft *pft,               /**< pointer to tree PFT */
 #ifdef SAFE
   if (est_pft<0.0)
     fail(NEGATIVE_ESTABLISHMENT_ERR,TRUE,
-         "establishment_area: negative establishment rate=%g, fpc_type=%g",est_pft,fpc_type);
+         "establishment_area: negative establishment rate=%g, fpc_type=%g in cell (%s)",
+         est_pft,fpc_type,sprintcoord(line,&pft->stand->cell->coord));
 #endif
 
   nind_old=pft->nind;
