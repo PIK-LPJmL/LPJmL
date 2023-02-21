@@ -307,7 +307,7 @@ int iterate(Outputfile *output, /**< Output file data */
         fprintcsvflux(output->files[GLOBALFLUX].fp.file,flux,cflux_total,
                       config->outnames[GLOBALFLUX].scale,year,config);
       if(output->files[GLOBALFLUX].issocket)
-        send_flux_copan(&flux,config->outnames[GLOBALFLUX].scale,year,config);
+        send_flux_coupler(&flux,config->outnames[GLOBALFLUX].scale,year,config);
       fflush(stdout); /* force output to console */
 #ifdef SAFE
       check_balance(flux,year,config);

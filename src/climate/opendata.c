@@ -31,7 +31,7 @@ Bool opendata(Climatefile *file,        /**< pointer to file */
   file->fmt=filename->fmt;
   if(file->fmt==SOCK)
   {
-    if(openinput_copan(filename->id,datatype,config->nall,&nbands_socket,config))
+    if(openinput_coupler(filename->id,datatype,config->nall,&nbands_socket,config))
     {
       if(isroot(*config))
         fprintf(stderr,"ERROR147: Cannot initialize %s data socket stream.\n",name);

@@ -1,9 +1,9 @@
 /**************************************************************************************/
 /**                                                                                \n**/
-/**               c  o  n  n  e  c  t   _  c  o  p  a  n  .  c                     \n**/
+/**               c  o  n  n  e  c  t   _  c  o  u  p  l  e  r  .  c               \n**/
 /**                                                                                \n**/
-/**     extension of LPJ to couple LPJ online with COPAN                           \n**/
-/**     Connects COPAN model to LPJML                                              \n**/
+/**     extension of LPJ to couple LPJ online                                      \n**/
+/**     Connects coupled model to LPJML                                            \n**/
 /**                                                                                \n**/
 /** (C) Potsdam Institute for Climate Impact Research (PIK), see COPYRIGHT file    \n**/
 /** authors, and contributors see AUTHORS file                                     \n**/
@@ -15,12 +15,12 @@
 
 #include "lpj.h"
 
-Socket *connect_copan(int port, /**< socket port */
-                      int wait  /**< time to wait (sec) */
-                     )          /** \return pointer to open socket or NULL */
+Socket *connect_coupler(int port, /**< socket port */
+                        int wait  /**< time to wait (sec) */
+                       )          /** \return pointer to open socket or NULL */
 {
   Socket *socket;
-  int version,my_version=COPAN_COUPLER_VERSION;
+  int version,my_version=COUPLER_VERSION;
   socket=opentdt_socket(port,wait);
   if(socket==NULL)
   {
@@ -32,12 +32,12 @@ Socket *connect_copan(int port, /**< socket port */
   readint_socket(socket,&version,1);
   if(version>3)
     writeint_socket(socket,&my_version,1);
-  if(version!=COPAN_COUPLER_VERSION)
+  if(version!=COUPLER_VERSION)
   {
     fprintf(stderr,"Unsupported coupler version %d, must be %d.\n",
-            version,COPAN_COUPLER_VERSION);
+            version,COUPLER_VERSION);
     close_socket(socket);
     return NULL;
   }
   return socket;
-} /* of 'connect_copan' */
+} /* of 'connect_coupler' */

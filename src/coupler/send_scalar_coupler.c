@@ -1,6 +1,6 @@
 /**************************************************************************************/
 /**                                                                                \n**/
-/**             s  e  n  d  _  s  c  a  l  a  r  _  c  o  p  a  n  .  c            \n**/
+/**             s  e  n  d  _  s  c  a  l  a  r  _  c  o  u  p  l  e  r  .  c      \n**/
 /**                                                                                \n**/
 /**     C implementation of LPJmL                                                  \n**/
 /**                                                                                \n**/
@@ -16,21 +16,21 @@
 
 #include "lpj.h"
 
-Bool send_scalar_copan(int index,           /**< index of output stream */
-                       const void *data,    /**< data sent */
-                       Type type,           /**< datatype of stream */
-                       int size,            /**< number of items */
-                       int year,            /**< Simulation year (AD) */
-                       const Config *config /**< LPJ configuration */
-                      )                     /** \return TRUE on error */
+Bool send_scalar_coupler(int index,           /**< index of output stream */
+                         const void *data,    /**< data sent */
+                         Type type,           /**< datatype of stream */
+                         int size,            /**< number of items */
+                         int year,            /**< Simulation year (AD) */
+                         const Config *config /**< LPJ configuration */
+                        )                     /** \return TRUE on error */
 {
-#if COPAN_COUPLER_VERSION == 4
+#if COUPLER_VERSION == 4
   int date=0;
 #endif
-  send_token_copan(PUT_DATA,index,config);
+  send_token_coupler(PUT_DATA,index,config);
   writeint_socket(config->socket,&year,1);
-#if COPAN_COUPLER_VERSION == 4
+#if COUPLER_VERSION == 4
   writeint_socket(config->socket,&date,1);
 #endif
   return write_socket(config->socket,data,typesizes[type]*size);
-} /* of 'send_scalar_copan' */
+} /* of 'send_scalar_coupler' */

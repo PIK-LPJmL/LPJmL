@@ -1,9 +1,9 @@
 /**************************************************************************************/
 /**                                                                                \n**/
-/**                  c  h  e  c  k  _  c  o  p  a  n  .  c                         \n**/
+/**                  c  l  o  s  e  _  c  o  u  p  l  e  r  .  c                   \n**/
 /**                                                                                \n**/
-/**     extension of LPJ to couple LPJ online with COPAN                           \n**/
-/**     Check status of COPAN model                                                \n**/
+/**     extension of LPJ to couple LPJ online                                      \n**/
+/**     Closes connection to coupled model                                         \n**/
 /**                                                                                \n**/
 /** (C) Potsdam Institute for Climate Impact Research (PIK), see COPYRIGHT file    \n**/
 /** authors, and contributors see AUTHORS file                                     \n**/
@@ -15,29 +15,23 @@
 
 #include "lpj.h"
 
-int check_copan(Config *config /**< LPJmL configuration */
-               )               /** \return error code from COPAN */
+#ifndef _WIN32
+#include <signal.h>
+#endif
+
+void close_coupler(Bool errorcode,      /**< error code (0= no error) */
+                   const Config *config /**< LPJmL configuration */
+                  )
 {
-  int status;
   if(isroot(*config))
   {
-    send_token_copan(GET_STATUS,0,config);
-#ifdef DEBUG_COPAN
-    printf("Getting status");
-    fflush(stdout);
-#endif
-    readint_socket(config->socket,&status,1);
-#ifdef DEBUG_COPAN
-    printf(", %d received.\n",status);
-    fflush(stdout);
-#endif
-    if(status)
+    if(config->socket!=NULL) /* already closed? */
     {
-      /* error occurred, close socket */
+      send_token_coupler((errorcode) ? FAIL_DATA : END_DATA,errorcode,config);
       close_socket(config->socket);
-      config->socket=NULL;
+#ifndef _WIN32
+      signal(SIGPIPE,SIG_DFL);
+#endif
     }
-    return status;
   }
-  return COPAN_OK;
-} /* of 'check_copan' */
+} /* of 'close_coupler' */

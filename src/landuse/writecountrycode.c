@@ -58,7 +58,7 @@ int writecountrycode(Outputfile *output,  /**< output file array */
   if(output->files[index].issocket)
   {
     if(isroot(*config))
-      send_token_copan(PUT_DATA,index,config);
+      send_token_coupler(PUT_DATA,index,config);
     mpi_write_socket(config->socket,vec,MPI_SHORT,config->total,
                      output->counts,output->offsets,config->rank,config->comm);
   }
@@ -81,7 +81,7 @@ int writecountrycode(Outputfile *output,  /**< output file array */
     }
   if(output->files[index].issocket)
   {
-    send_token_copan(PUT_DATA,index,config);
+    send_token_coupler(PUT_DATA,index,config);
     writeshort_socket(config->socket,vec,count);
   }
 #endif

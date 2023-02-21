@@ -26,7 +26,7 @@ OBJS    = cru2clm.$O cvrtsoil.$O grid2clm.$O cfts26_lu2clm.$O drainage.$O\
           joingrid.$O clm2cdf.$O cdf2clm.$O bin2cdf.$O adddrain.$O\
           getcellindex.$O copyheader.$O addheader.$O mathclm.$O cutclm.$O\
           cvrtclm.$O manage2js.$O getheadersize.$O regridirrig.$O mergeclm.$O\
-          printglobal.$O binsum.$O arr2clm.$O copan_demo.$O
+          printglobal.$O binsum.$O arr2clm.$O coupler_demo.$O
 
 SRC    =  cru2clm.c cvrtsoil.c grid2clm.c cfts26_lu2clm.c drainage.c\
           river_sections_input_grid.c river_sections_input_soil.c\
@@ -40,7 +40,7 @@ SRC    =  cru2clm.c cvrtsoil.c grid2clm.c cfts26_lu2clm.c drainage.c\
           cdf2clm.c bin2cdf.c adddrain.c txt2grid.c getcellindex.c\
           copyheader.c addheader.c mathclm.c cutclm.c cdf2bin.c cvrtclm.c\
           manage2js.c getheadersize.c regridirrig.c mergeclm.c printglobal.c\
-          arr2clm.c copan_demo.c
+          arr2clm.c coupler_demo.c
 
 INC     = ../../include
 
@@ -54,7 +54,7 @@ HDRS    = $(INC)/buffer.h $(INC)/coord.h $(INC)/lpj.h $(INC)/pftlist.h\
           $(INC)/config.h $(INC)/intlist.h $(INC)/queue.h $(INC)/pnet.h\
           $(INC)/discharge.h $(INC)/channel.h $(INC)/reservoir.h $(INC)/soil.h\
           $(INC)/tree.h $(INC)/cdf.h $(INC)/spitfire.h $(INC)/climbuf.h\
-          $(INC)/copan.h $(INC)/copanpar.h
+          $(INC)/coupler.h $(INC)/couplerpar.h
 
 LIBDIR  = ../../lib
 BIN     = ../../bin
@@ -67,7 +67,7 @@ LPJLIBS = $(LIBDIR)/liblpj.$A $(LIBDIR)/libtree.$A\
           $(LIBDIR)/liblpj.$A $(LIBDIR)/libnum.$A\
           $(LIBDIR)/libgrass.$A $(LIBDIR)/libtree.$A\
           $(LIBDIR)/libspitfire.$A $(LIBDIR)/libsoil.$A\
-          $(LIBDIR)/libcdf.$A $(LIBDIR)/libtools.$A $(LIBDIR)/libcopan.$A
+          $(LIBDIR)/libcdf.$A $(LIBDIR)/libtools.$A $(LIBDIR)/libcoupler.$A
 
 all: $(BIN)/cru2clm$E $(BIN)/grid2clm$E $(BIN)/cfts26_lu2clm$E\
      $(BIN)/river_sections_input_grid$E $(BIN)/river_sections_input_soil$E\
@@ -87,7 +87,7 @@ all: $(BIN)/cru2clm$E $(BIN)/grid2clm$E $(BIN)/cfts26_lu2clm$E\
      $(BIN)/mathclm$E $(BIN)/cutclm$E $(BIN)/cvrtclm$E $(BIN)/manage2js$E\
      $(BIN)/headersize$E $(BIN)/regridirrig$E $(BIN)/mergeclm$E\
      $(BIN)/country2cdf$E $(BIN)/printglobal$E $(BIN)/binsum$E\
-     $(BIN)/arr2clm$E $(BIN)/copan_demo$E
+     $(BIN)/arr2clm$E $(BIN)/coupler_demo$E
 
 clean:
 	$(RM) $(RMFLAGS) $(OBJS)
@@ -103,7 +103,7 @@ clean:
             cdf2clm$E bin2cdf$E adddrain$E txt2grid$E getcellindex$E\
             copyheader$E addheader$E mathclm$E cutclm$E cdf2bin$E cvrtclm$E\
             manage2js$E headersize$E regridirrig$E mergeclm$E country2cdf$E\
-            printglobal$E binsum$E copan_demo$E)
+            printglobal$E binsum$E coupler_demo$E)
 
 $(OBJS): $(HDRS)
 
@@ -203,8 +203,8 @@ $(BIN)/mergeclm$E: mergeclm.$O $(LIBDIR)/libtools.$A
 $(BIN)/catclm$E: catclm.$O $(LIBDIR)/libtools.$A
 	$(LINK) $(LNOPTS)$(BIN)/catclm$E catclm.$O $(LIBDIR)/libtools.$A
 
-$(BIN)/copan_demo$E: copan_demo.$O $(LIBDIR)/libsocket.$A $(LPJLIBS)
-	$(LINK) $(LNOPTS)$(BIN)/copan_demo$E copan_demo.$O $(LPJLIBS)\
+$(BIN)/coupler_demo$E: coupler_demo.$O $(LIBDIR)/libsocket.$A $(LPJLIBS)
+	$(LINK) $(LNOPTS)$(BIN)/coupler_demo$E coupler_demo.$O $(LPJLIBS)\
 	        $(LIBDIR)/libsocket.$A $(LIBS) $(LIBDIR)/libtools.$A
 
 $(BIN)/adddrain$E: adddrain.$O $(LIBDIR)/libtools.$A

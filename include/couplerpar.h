@@ -1,9 +1,8 @@
 /**************************************************************************************/
 /**                                                                                \n**/
-/**                  c  l  o  s  e  _  c  o  p  a  n  .  c                         \n**/
+/**                      c  o  u  p  l  e  r  p  a  r  .  h                        \n**/
 /**                                                                                \n**/
-/**     extension of LPJ to couple LPJ online with COPAN                           \n**/
-/**     Closes connection to COPAN model                                           \n**/
+/**     Definition of coupler input indices                                        \n**/
 /**                                                                                \n**/
 /** (C) Potsdam Institute for Climate Impact Research (PIK), see COPYRIGHT file    \n**/
 /** authors, and contributors see AUTHORS file                                     \n**/
@@ -13,25 +12,37 @@
 /**                                                                                \n**/
 /**************************************************************************************/
 
-#include "lpj.h"
 
-#ifndef _WIN32
-#include <signal.h>
-#endif
+#ifndef COUPLERPAR_H /* already included? */
+#define COUPLERPAR_H
 
-void close_copan(Bool errorcode,        /**< error code (0= no error) */
-                 const Config *config /**< LPJmL configuration */
-                )
-{
-  if(isroot(*config))
-  {
-    if(config->socket!=NULL) /* already closed? */
-    {
-      send_token_copan((errorcode) ? FAIL_DATA : END_DATA,errorcode,config);
-      close_socket(config->socket);
-#ifndef _WIN32
-      signal(SIGPIPE,SIG_DFL);
-#endif
-    }
-  }
-} /* of 'close_copan' */
+/* List of input data streams */
+
+#define N_IN 24         /* Number of available input data streams */
+
+#define CLOUD_DATA 0
+#define TEMP_DATA 1
+#define PREC_DATA 2
+#define SWDOWN_DATA 3
+#define LWNET_DATA 4
+#define CO2_DATA 5
+#define LANDUSE_DATA 6
+#define TILLAGE_DATA 7
+#define RESIDUE_DATA 8
+#define TMIN_DATA 9
+#define TMAX_DATA 10
+#define TAMP_DATA 11
+#define WET_DATA 12
+#define BURNTAREA_DATA 13
+#define HUMID_DATA 14
+#define WIND_DATA 15
+#define NH4_DATA 16
+#define NO3_DATA 17
+#define FERTILIZER_DATA 18
+#define MANURE_DATA 19
+#define WATERUSE_DATA 20
+#define POPDENS_DATA 21
+#define HUMAN_IGNITION_DATA 22
+#define LIGHTNING_DATA 23
+
+#endif /* COUPLERPAR_H */

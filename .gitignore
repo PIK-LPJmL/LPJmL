@@ -166,4 +166,4 @@ bin/mergeclm
 bin/country2cdf
 bin/binsum
 bin/arr2clm
-bin/copan_demo
+bin/coupler_demo

@@ -1,8 +1,9 @@
 /**************************************************************************************/
 /**                                                                                \n**/
-/**          r e c e i v e _ r e a l _ s c a l a r _ c o p a n . c                 \n**/
+/**            s  e  n  d  _  o  u  t  p  u  t  _  c  o  u  p  l  e  r  .  c       \n**/
 /**                                                                                \n**/
-/**     extension of LPJ to couple LPJ online with COPAN                           \n**/
+/**     extension of LPJ to couple LPJ online                                      \n**/
+/**     Send output stream header to coupled model                                 \n**/
 /**                                                                                \n**/
 /** (C) Potsdam Institute for Climate Impact Research (PIK), see COPYRIGHT file    \n**/
 /** authors, and contributors see AUTHORS file                                     \n**/
@@ -14,24 +15,18 @@
 
 #include "lpj.h"
 
-Bool receive_real_scalar_copan(int index,           /**< index of input stream */
-                               Real *data,          /**< data read from socket */
-                               int size,            /**< size of data array */
-                               int year,            /**< year */
-                               const Config *config /**< LPJmL configuration */
-                              )                     /** \return TRUE on error */
+void send_output_coupler(int index,           /**< index of output stream */
+                         int year,            /**< year */
+                         int step,            /**< time step within year */
+                         const Config *config /**< LPJmL configuration */
+                        )
 {
-  float *f;
-  int i;
-  f=newvec(float,size);
-  check(f);
-  if(receive_scalar_copan(index,f,LPJ_FLOAT,size,year,config))
+  if(isroot(*config))
   {
-    free(f);
-    return TRUE;
+    send_token_coupler(PUT_DATA,index,config);
+    writeint_socket(config->socket,&year,1);
+#if COUPLER_VERSION == 4
+    writeint_socket(config->socket,&step,1);
+#endif
   }
-  for(i=0;i<size;i++)
-    data[i]=f[i];
-  free(f);
-  return FALSE;
-} /* of 'receive_real_scalar_copan' */
+} /* of 'send_output_coupler' */

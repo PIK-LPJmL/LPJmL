@@ -87,7 +87,7 @@ Directory tree after extracting the tar files:
      |
      +--socket    : socket communication library
      |
-     +--copan     : coupler to COPAN model
+     +--coupler   : coupler code
      |
      +--image     : coupler to IMAGE model
      |
@@ -151,7 +151,7 @@ CHECK_BOUNDARY      check array boundaries of output
 COUPLING_WITH_FMS   enable coupling to FMS
 DAILY_ESTABLISHMENT Enable daily establishment
 DEBUG               diagnostic output is generated for debugging purposes
-DEBUG_COPAN         diagnostic output is generated for the COPAN coupler
+DEBUG_COUPLER       diagnostic output is generated for the coupler
 IMAGE               include coupler to IMAGE model
 LINEAR_DECAY        use linearized functions for litter decay
 MICRO_HEATING       Enable microbial heating
@@ -212,8 +212,8 @@ LPJPREP        - defines preprocessor command for LPJmL configuration  file, def
 LPJROOT        - defines the root directory for LPJmL. This directory is added to the
                  include directories of the preprocessor
 LPJIMAGE       - sets host where IMAGE is running
-LPJCOPAN       - sets host where the COPAN model is running
-LPJWAIT        - sets time to wait for connection to IMAGE/COPAN model
+LPJCOUPLEDHOST - sets host where the coupled model is running
+LPJWAIT        - sets time to wait for connection to IMAGE/coupled model
 LPJINPATH      - Path append to the input filenames. Only done for filenames
                  without absolute path.
 LPJRESTARTPATH - Path append to the restart filenames. Only done for filenames
@@ -272,22 +272,22 @@ Runtime options of lpjml
 
 The following runtime options are defined:
 
--Iincludepath     - Adds include path for LPJmL configuration file
--Dmacro[=value]   - Defines macro
--h                - print usage of lpjml
--l                - print license
--v                - print compiler used and LPJmL flags set
--vv               - verbosely print the actual values during reading of the
-                    configuration files
--param            - print LPJmL parameter for soils and PFTs
--fpe              - enable floating point exceptions
--image host       - set host where IMAGE model is running. Option is only
+-Iincludepath      - Adds include path for LPJmL configuration file
+-Dmacro[=value]    - Defines macro
+-h                 - print usage of lpjml
+-l                 - print license
+-v                 - print compiler used and LPJmL flags set
+-vv                - verbosely print the actual values during reading of the
+                     configuration files
+-param             - print LPJmL parameter for soils and PFTs
+-fpe               - enable floating point exceptions
+-image host        - set host where IMAGE model is running. Option is only
                     available for the IMAGE version
--copan host[:port]- set host and port where the COPAN model is running
--wait time        - set time to wait for connection to IMAGE/COPAN model
--inpath dir       - input directory path
--outpath dir      - output directory path
--restartpath dir  - restart directory path
+-couple host[:port]- set host and port where the coupled model is running
+-wait time         - set time to wait for connection to IMAGE/coupled model
+-inpath dir        - input directory path
+-outpath dir       - output directory path
+-restartpath dir   - restart directory path
 
 The first two options will be sent to the preprocessor.
 
@@ -351,7 +351,7 @@ Error code Description                                   Error type
         40 Boundary check error                          Internal
         41 Invalid time step in soiltemp()               Internal
         42 Cannot read external flow                     External
-        43 Opening connection to COPAN model failed      External
+        43 Opening connection to coupled model failed    External
 ---------- --------------------------------------------- ----------
 
 External errors are caused by invalid or missing input files while internal

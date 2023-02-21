@@ -32,7 +32,7 @@ int *readintdata(Climatefile *file,   /**< Pointer to data file */
   }
   if(file->fmt==SOCK)
   {
-    if(receive_int_copan(file->id,data,file->var_len,year,config))
+    if(receive_int_coupler(file->id,data,file->var_len,year,config))
     {
       fprintf(stderr,"ERROR149: Cannot receive %s of year %d in readintdata().\n",
               name,year);

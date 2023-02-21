@@ -184,7 +184,7 @@ int writecoords(Outputfile *output,  /**< output struct */
           }
         if(output->files[index].issocket)
         {
-          send_token_copan(PUT_DATA,index,config);
+          send_token_coupler(PUT_DATA,index,config);
           writefloat_socket(config->socket,fdst,config->total*2);
         }
         free(fdst);
@@ -234,7 +234,7 @@ int writecoords(Outputfile *output,  /**< output struct */
           }
         if(output->files[index].issocket)
         {
-          send_token_copan(PUT_DATA,index,config);
+          send_token_coupler(PUT_DATA,index,config);
           writeshort_socket(config->socket,dst,config->total*2);
         }
         free(dst);
@@ -265,7 +265,7 @@ int writecoords(Outputfile *output,  /**< output struct */
       }
     if(output->files[index].issocket)
     {
-      send_token_copan(PUT_DATA,index,config);
+      send_token_coupler(PUT_DATA,index,config);
       writefloat_socket(config->socket,fvec,count*2);
     }
     free(fvec);
@@ -293,7 +293,7 @@ int writecoords(Outputfile *output,  /**< output struct */
       }
       if(output->files[index].issocket)
       {
-        send_token_copan(PUT_DATA,index,config);
+        send_token_coupler(PUT_DATA,index,config);
         writeshort_socket(config->socket,vec,count*2);
       }
       free(vec);

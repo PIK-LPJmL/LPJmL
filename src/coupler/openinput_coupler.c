@@ -1,9 +1,9 @@
 /**************************************************************************************/
 /**                                                                                \n**/
-/**            o  p  e  n  i  n  p  u  t  _  c  o  p  a  n  .  c                   \n**/
+/**            o  p  e  n  i  n  p  u  t  _  c  o  u  p  l  e  r  .  c             \n**/
 /**                                                                                \n**/
-/**     extension of LPJ to couple LPJ online with COPAN                           \n**/
-/**     Opens input stream to COPAN model                                          \n**/
+/**     extension of LPJ to couple LPJ online                                      \n**/
+/**     Opens input stream to coupled model                                        \n**/
 /**                                                                                \n**/
 /** (C) Potsdam Institute for Climate Impact Research (PIK), see COPYRIGHT file    \n**/
 /** authors, and contributors see AUTHORS file                                     \n**/
@@ -15,41 +15,41 @@
 
 #include "lpj.h"
 
-Bool openinput_copan(int id,              /**< id of input stream */
-                     Type type,           /**< datatype of stream */
-                     int ncell,           /**< number of cells */
-                     int *nbands,         /**< number of bands */
-                     const Config *config /**< LPJmL configuration */
-                    )                     /** \return TRUE on error */
+Bool openinput_coupler(int id,              /**< id of input stream */
+                       Type type,           /**< datatype of stream */
+                       int ncell,           /**< number of cells */
+                       int *nbands,         /**< number of bands */
+                       const Config *config /**< LPJmL configuration */
+                      )                     /** \return TRUE on error */
 {
   if(isroot(*config))
   {
-    send_token_copan(GET_DATA_SIZE,id,config);
-#ifdef DEBUG_COPAN
+    send_token_coupler(GET_DATA_SIZE,id,config);
+#ifdef DEBUG_COUPLER
     printf("Sending type=%s",typenames[type]);
     fflush(stdout);
 #endif
     writeint_socket(config->socket,&type,1);
-#ifdef DEBUG_COPAN
+#ifdef DEBUG_COUPLER
     printf(", done.\n");
     fflush(stdout);
 #endif
-#if COPAN_COUPLER_VERSION == 4
-#ifdef DEBUG_COPAN
+#if COUPLER_VERSION == 4
+#ifdef DEBUG_COUPLER
     printf("Sending ncell=%d",ncell);
 #endif
     writeint_socket(config->socket,&ncell,1);
-#ifdef DEBUG_COPAN
+#ifdef DEBUG_COUPLER
     printf(", done.\n");
     fflush(stdout);
 #endif
 #endif
-#ifdef DEBUG_COPAN
+#ifdef DEBUG_COUPLER
     printf("Receiving nbands");
     fflush(stdout);
 #endif
     readint_socket(config->socket,nbands,1);
-#ifdef DEBUG_COPAN
+#ifdef DEBUG_COUPLER
     printf(", %d, received.\n",*nbands);
     fflush(stdout);
 #endif
@@ -57,7 +57,7 @@ Bool openinput_copan(int id,              /**< id of input stream */
 #ifdef USE_MPI
   MPI_Bcast(nbands,1,MPI_INT,0,config->comm);
 #endif
-  if(isroot(*config) && *nbands==COPAN_ERR)
+  if(isroot(*config) && *nbands==COUPLER_ERR)
     fputs("ERROR311: Cannot open input socket stream.\n",stderr);
-  return *nbands==COPAN_ERR;
-} /* of 'openinput_copan' */
+  return *nbands==COUPLER_ERR;
+} /* of 'openinput_coupler' */

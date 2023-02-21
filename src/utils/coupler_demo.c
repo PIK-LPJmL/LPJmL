@@ -1,8 +1,8 @@
 /**************************************************************************************/
 /**                                                                                \n**/
-/**                c  o  p  a  n  _  d  e  m  o  .  c                              \n**/
+/**                c  o  u  p  l  e  r  _  d  e  m  o  .  c                        \n**/
 /**                                                                                \n**/
-/**     Demonstration program for coupling LPJmL to COPAN                          \n**/
+/**     Demonstration program for coupling LPJmL to external program               \n**/
 /**                                                                                \n**/
 /** (C) Potsdam Institute for Climate Impact Research (PIK), see COPYRIGHT file    \n**/
 /** authors, and contributors see AUTHORS file                                     \n**/
@@ -14,7 +14,7 @@
 
 #include "lpj.h"
 
-#define COPANDEMO_VERSION "0.9.003"
+#define COUPLERDEMO_VERSION "0.9.003"
 
 #define USAGE "Usage: %s [-port n] [-wait n] [landusefile]\n"
 
@@ -31,7 +31,7 @@ static Bool readsocket(Socket *socket,int day,int sizes[],int count[],Type type[
   int j,k;
   float *data;
   short *sdata;
-  if(receive_token_copan(socket,&token,&index))
+  if(receive_token_coupler(socket,&token,&index))
     return TRUE;
   if(token==END_DATA)
     return TRUE;
@@ -51,7 +51,7 @@ static Bool readsocket(Socket *socket,int day,int sizes[],int count[],Type type[
     return TRUE;
   }
   readint_socket(socket,&year,1);
-#if COPAN_COUPLER_VERSION == 4
+#if COUPLER_VERSION == 4
   readint_socket(socket,&step,1);
 #endif
   if(sizes[index]==0)
@@ -163,7 +163,7 @@ int main(int argc,char **argv)
   {
     float lon,lat;
   } *fcoords;
-  port=DEFAULT_COPAN_PORT;
+  port=DEFAULT_COUPLER_PORT;
   wait=0;
   progname=strippath(argv[0]);
   filename=DFLT_FILENAME;
@@ -224,9 +224,9 @@ int main(int argc,char **argv)
   if(i<argc)
     filename=argv[i];
   snprintf(line,STRING_LEN,
-           "%s C Version %s (" __DATE__ ")",progname,COPANDEMO_VERSION);
+           "%s C Version %s (" __DATE__ ")",progname,COUPLERDEMO_VERSION);
   title[0]=line;
-  title[1]="COPAN demo for LPJmL";
+  title[1]="Coupler demo for LPJmL";
   title[2]="(c) Potsdam Institute for Climate Impact Research (PIK),";
   title[3]="see COPYRIGHT file";
   banner(title,4,78);
@@ -235,11 +235,11 @@ int main(int argc,char **argv)
   else
     printf("Waiting for LPJmL model...\n");
   /* Establish the connection */
-  socket=connect_copan(port,wait);
+  socket=connect_coupler(port,wait);
   if(socket==NULL)
     return EXIT_FAILURE;
-#if COPAN_COUPLER_VERSION == 4
-  if(receive_token_copan(socket,&token,&index))
+#if COUPLER_VERSION == 4
+  if(receive_token_coupler(socket,&token,&index))
   {
     close_socket(socket);
     return EXIT_FAILURE;
@@ -270,7 +270,7 @@ int main(int argc,char **argv)
   landuse=fertilizer=NULL;
   for(i=0;i<n_in;i++)
   {
-    if(receive_token_copan(socket,&token,&index))
+    if(receive_token_coupler(socket,&token,&index))
     {
       close_socket(socket);
       return EXIT_FAILURE;
@@ -284,12 +284,12 @@ int main(int argc,char **argv)
     {
       fprintf(stderr,"Invalid index %d of input, must be in [0,%d].\n",index,N_IN-1);
       readint_socket(socket,&index,1);
-      index=COPAN_ERR;
+      index=COUPLER_ERR;
       writeint_socket(socket,&index,1);
       return EXIT_FAILURE;
     }
     readint_socket(socket,(int *)(type_in+index),1);
-#if COPAN_COUPLER_VERSION == 4
+#if COUPLER_VERSION == 4
     readint_socket(socket,sizes_in+index,1);
 #else
     sizes_in[index]=ncell;
@@ -301,14 +301,14 @@ int main(int argc,char **argv)
         if(file==NULL)
         {
           fprintf(stderr,"Error opening landuse file '%s': %s.\n",filename,strerror(errno));
-          nbands=COPAN_ERR;
+          nbands=COUPLER_ERR;
           break;
         }
         version=READ_VERSION;
         if(freadheader(file,&header,&swap,LPJ_LANDUSE_HEADER,&version,TRUE))
         {
           fprintf(stderr,"Error reading header of landuse file '%s'.\n",filename);
-          nbands=COPAN_ERR;
+          nbands=COUPLER_ERR;
           break;
         }
         nbands=header.nbands;
@@ -316,7 +316,7 @@ int main(int argc,char **argv)
         if(landuse==NULL)
         {
           printallocerr("landuse");
-          nbands=COPAN_ERR;
+          nbands=COUPLER_ERR;
         }
         break;
       case FERTILIZER_DATA:
@@ -325,7 +325,7 @@ int main(int argc,char **argv)
         if(fertilizer==NULL)
         {
           printallocerr("fertilizer");
-          nbands=COPAN_ERR;
+          nbands=COUPLER_ERR;
         }
         break;
       case CO2_DATA:
@@ -333,11 +333,11 @@ int main(int argc,char **argv)
         break;
       default:
         fprintf(stderr,"Unsupported index %d of input\n",index);
-        nbands=COPAN_ERR;
+        nbands=COUPLER_ERR;
     }
     /* send number of bands */
     writeint_socket(socket,&nbands,1);
-    if(nbands==COPAN_ERR)
+    if(nbands==COUPLER_ERR)
       return EXIT_FAILURE;
   }
   /* Get number of items per cell for each output data stream */
@@ -349,7 +349,7 @@ int main(int argc,char **argv)
   n_err=0;
   for(i=0;i<n_out;i++)
   {
-    if(receive_token_copan(socket,&token,&index))
+    if(receive_token_coupler(socket,&token,&index))
     {
       close_socket(socket);
       return EXIT_FAILURE;
@@ -369,18 +369,18 @@ int main(int argc,char **argv)
     if(index<0 || index>=NOUT)
     {
       fprintf(stderr,"Invalid index %d of output, must be in [0,%d].\n",index,NOUT-1);
-#if COPAN_COUPLER_VERSION == 4
+#if COUPLER_VERSION == 4
       readint_socket(socket,&index,1);
 #endif
       readint_socket(socket,&index,1);
       readint_socket(socket,&index,1);
       readint_socket(socket,&index,1);
-      index=COPAN_ERR;
+      index=COUPLER_ERR;
       writeint_socket(socket,&index,1);
       n_err++;
       continue;
     }
-#if COPAN_COUPLER_VERSION == 4
+#if COUPLER_VERSION == 4
     /* get number of cells per year for output */
     readint_socket(socket,sizes+index,1);
 #else
@@ -402,23 +402,23 @@ int main(int argc,char **argv)
       {
         case NMONTH:
           nmonth_out++;
-          index=COPAN_OK;
+          index=COUPLER_OK;
           break;
         case NDAYYEAR:
           nday_out++;
-          index=COPAN_OK;
+          index=COUPLER_OK;
           break;
         case 1:
-          index=COPAN_OK;
+          index=COUPLER_OK;
           break;
         default:
-          index=COPAN_ERR;
+          index=COUPLER_ERR;
           n_err++;
           fprintf(stderr,"Invalid number of steps %d for index %d, must be 1, 12, or 365.\n",nstep[index],index);
       }
     writeint_socket(socket,&index,1);
   }
-  if(receive_token_copan(socket,&token,&index))
+  if(receive_token_coupler(socket,&token,&index))
   {
     close_socket(socket);
     return EXIT_FAILURE;
@@ -436,10 +436,10 @@ int main(int argc,char **argv)
     return EXIT_FAILURE;
   }
   if(landuse!=NULL)
-    index=COPAN_OK;
+    index=COUPLER_OK;
   else
   {
-    index=COPAN_ERR;
+    index=COUPLER_ERR;
     writeint_socket(socket,&index,1);
     fprintf(stderr,"Landuse output is missing from LPJmL.\n");
     close_socket(socket);
@@ -453,7 +453,7 @@ int main(int argc,char **argv)
   fcoords=NULL;
   for(i=0;i<n_out_1;i++)
   {
-    if(receive_token_copan(socket,&token,&index))
+    if(receive_token_coupler(socket,&token,&index))
     {
       close_socket(socket);
       return EXIT_FAILURE;
@@ -509,7 +509,7 @@ int main(int argc,char **argv)
     /* send input to LPJmL */
     for(i=0;i<n_in;i++)
     {
-      if(receive_token_copan(socket,&token,&index))
+      if(receive_token_coupler(socket,&token,&index))
       {
         close_socket(socket);
         return EXIT_FAILURE;
@@ -526,8 +526,8 @@ int main(int argc,char **argv)
       if(index<0 || index>=N_IN)
       {
         fprintf(stderr,"Invalid index %d of input.\n",index);
-#if COPAN_COUPLER_VERSION == 4
-        status=COPAN_ERR;
+#if COUPLER_VERSION == 4
+        status=COUPLER_ERR;
         writeint_socket(socket,&status,1);
 #else
         close_socket(socket);
@@ -546,8 +546,8 @@ int main(int argc,char **argv)
           if(readfloatvec(file,landuse,header.scalar,sizes_in[index]*header.nbands,swap,header.datatype))
           {
             fprintf(stderr,"Error reading landuse file '%s': %s.\n",filename,strerror(errno));
-#if COPAN_COUPLER_VERSION == 4
-            status=COPAN_ERR;
+#if COUPLER_VERSION == 4
+            status=COUPLER_ERR;
             writeint_socket(socket,&status,1);
 #else
             close_socket(socket);
@@ -556,8 +556,8 @@ int main(int argc,char **argv)
           }
           else
           {
-#if COPAN_COUPLER_VERSION == 4
-            status=COPAN_OK;
+#if COUPLER_VERSION == 4
+            status=COUPLER_OK;
             writeint_socket(socket,&status,1);
 #endif
 #ifdef DEBUG
@@ -575,24 +575,24 @@ int main(int argc,char **argv)
         case FERTILIZER_DATA:
           for(j=0;j<sizes_in[index]*FERTILIZER_NBANDS;j++)
             fertilizer[j]=1;
-#if COPAN_COUPLER_VERSION == 4
-          status=COPAN_OK;
+#if COUPLER_VERSION == 4
+          status=COUPLER_OK;
           writeint_socket(socket,&status,1);
 #endif
           writefloat_socket(socket,fertilizer,sizes_in[index]*FERTILIZER_NBANDS);
           break;
         case CO2_DATA:
           co2=288.0;
-#if COPAN_COUPLER_VERSION == 4
-          status=COPAN_OK;
+#if COUPLER_VERSION == 4
+          status=COUPLER_OK;
           writeint_socket(socket,&status,1);
 #endif
           writefloat_socket(socket,&co2,1);
           break;
         default:
           fprintf(stderr,"Unsupported index %d of input.\n",index);
-#if COPAN_COUPLER_VERSION == 4
-          status=COPAN_ERR;
+#if COUPLER_VERSION == 4
+          status=COUPLER_ERR;
           writeint_socket(socket,&status,1);
 #else
           close_socket(socket);

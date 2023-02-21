@@ -273,7 +273,7 @@ Outputfile *fopenoutput(const Cell grid[],   /**< LPJ grid */
           size=outputsize(config->outputvars[i].id,
                           config->npft[GRASS]+config->npft[TREE],
                           config->npft[CROP],config);
-        if(openoutput_copan(config->outputvars[i].id,ncell,getnyear(config->outnames,config->outputvars[i].id),size,getoutputtype(config->outputvars[i].id,config->float_grid),config))
+        if(openoutput_coupler(config->outputvars[i].id,ncell,getnyear(config->outnames,config->outputvars[i].id),size,getoutputtype(config->outputvars[i].id,config->float_grid),config))
         {
           output->files[config->outputvars[i].id].issocket=FALSE;
           fprintf(stderr,"ERROR100: Cannot open socket stream for output '%s'.\n",

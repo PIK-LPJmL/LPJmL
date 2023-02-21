@@ -38,7 +38,7 @@ Bool openclimate(Climatefile *file,        /**< pointer to climate file */
   }
   if(filename->fmt==SOCK)
   {
-    if(openinput_copan(filename->id,LPJ_FLOAT,config->nall,&nbands,config))
+    if(openinput_coupler(filename->id,LPJ_FLOAT,config->nall,&nbands,config))
       return TRUE;
     if(nbands==NDAYYEAR)
     {

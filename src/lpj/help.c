@@ -27,7 +27,7 @@
 #define IMAGE_OPT ""
 #endif
 #define USAGE "\nUsage: %s [-h] [-l] [-v] [-vv] [-param] [-pp cmd] " FPE_OPT "\n" IMAGE_OPT\
-                "       [-copan host[:port]] [-wait time]\n"\
+                "       [-couple host[:port]] [-wait time]\n"\
                 "       [-outpath dir] [-inpath dir] [-restartpath dir]\n"\
                 "       [[-Dmacro[=value]] [-Idir] ...] [filename]\n"
 
@@ -55,27 +55,27 @@ void help(const char *progname, /**< program filename */
 #endif
   fprintf(file,lpj_usage,progname);
   fprintf(file,"\nArguments:\n"
-          "-h                 print this help text\n"
-          "-l                 print license file\n"
-          "-v                 print version, compiler and compile flags\n"
-          "-vv                verbosely print the actual values during reading of the\n"
-          "                   configuration files\n"
-          "-param             print LPJmL parameter\n"
-          "-pp cmd            set preprocessor program. Default is 'cpp'\n"
+          "-h                  print this help text\n"
+          "-l                  print license file\n"
+          "-v                  print version, compiler and compile flags\n"
+          "-vv                 verbosely print the actual values during reading of the\n"
+          "                    configuration files\n"
+          "-param              print LPJmL parameter\n"
+          "-pp cmd             set preprocessor program. Default is 'cpp'\n"
 #ifdef WITH_FPE
-          "-fpe               enable floating point exceptions\n"
+          "-fpe                enable floating point exceptions\n"
 #endif
 #if defined IMAGE && defined COUPLED
           "-image host[:inport[,outport]] set host where IMAGE model is running\n"
 #endif
-          "-copan host[:port] set host and port where COPAN model is running\n"
-          "-wait time         time to wait for connection to COPAN/IMAGE model (sec)\n"
-          "-outpath dir       directory appended to output filenames\n"
-          "-inpath dir        directory appended to input filenames\n"
-          "-restartpath dir   directory appended to restart filename\n"
-          "-Dmacro[=value]    define macro for preprocessor of configuration file\n"
-          "-Idir              directory to search for include files\n"
-          "filename           configuration filename. Default is '%s'\n\n"
+          "-couple host[:port] set host and port where coupled model is running\n"
+          "-wait time          time to wait for connection to coupled/IMAGE model (sec)\n"
+          "-outpath dir        directory appended to output filenames\n"
+          "-inpath dir         directory appended to input filenames\n"
+          "-restartpath dir    directory appended to restart filename\n"
+          "-Dmacro[=value]     define macro for preprocessor of configuration file\n"
+          "-Idir               directory to search for include files\n"
+          "filename            configuration filename. Default is '%s'\n\n"
           "(C) Potsdam Institute for Climate Impact Research (PIK), see COPYRIGHT file\n",filename);
   if(file!=stdout)
     pclose(file);

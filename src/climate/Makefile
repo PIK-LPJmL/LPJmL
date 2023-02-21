@@ -30,7 +30,7 @@ LIB     = libclimate.$A
 HDRS    = $(INC)/buffer.h $(INC)/lpj.h\
           $(INC)/climate.h $(INC)/date.h\
           $(INC)/pftpar.h $(INC)/types.h $(INC)/header.h\
-          $(INC)/errmsg.h $(INC)/numeric.h $(INC)/copan.h\
+          $(INC)/errmsg.h $(INC)/numeric.h $(INC)/coupler.h\
           $(INC)/conf.h $(INC)/swap.h $(INC)/soilpar.h\
           $(INC)/list.h $(INC)/cell.h  $(INC)/units.h\
           $(INC)/config.h $(INC)/param.h $(INC)/cdf.h

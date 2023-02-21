@@ -135,22 +135,22 @@ FILE *openconfig(Config *config,      /**< configuration struct */
     }
   }
 #else
-  config->copan_port=DEFAULT_COPAN_PORT;
-  config->copan_host=getenv(LPJCOPAN);
-  if(config->copan_host==NULL)
-    config->copan_host=DEFAULT_COPAN_HOST;
+  config->coupler_port=DEFAULT_COUPLER_PORT;
+  config->coupled_host=getenv(LPJCOUPLEDHOST);
+  if(config->coupled_host==NULL)
+    config->coupled_host=DEFAULT_COUPLED_HOST;
   else
   {
-    pos=strchr(config->copan_host,':');
+    pos=strchr(config->coupled_host,':');
     if(pos!=NULL)
     {
       *pos='\0';
-       config->copan_port=strtol(pos+1,&endptr,10);
-       if(pos+1==endptr || config->copan_port<1 || config->copan_port>USHRT_MAX)
+       config->coupler_port=strtol(pos+1,&endptr,10);
+       if(pos+1==endptr || config->coupler_port<1 || config->coupler_port>USHRT_MAX)
        {
          if(isroot(*config))
-           fprintf(stderr,"ERROR193: Invalid number %d for COPAN port.\n",
-                   config->copan_port);
+           fprintf(stderr,"ERROR193: Invalid number %d for coupled port.\n",
+                   config->coupler_port);
          return NULL;
        }
     }
@@ -259,13 +259,13 @@ FILE *openconfig(Config *config,      /**< configuration struct */
         }
       }
 #else
-      else if(!strcmp((*argv)[i],"-copan"))
+      else if(!strcmp((*argv)[i],"-couple"))
       {
         if(i==*argc-1)
         {
           if(isroot(*config))
           {
-            fprintf(stderr,"ERROR164: Argument missing for '-copan' option.\n");
+            fprintf(stderr,"ERROR164: Argument missing for '-couple' option.\n");
             if(usage!=NULL)
               fprintf(stderr,usage,(*argv)[0]);
           }
@@ -274,19 +274,19 @@ FILE *openconfig(Config *config,      /**< configuration struct */
         }
         else
         {
-           config->copan_host=(*argv)[++i];
-           pos=strchr(config->copan_host,':');
+           config->coupled_host=(*argv)[++i];
+           pos=strchr(config->coupled_host,':');
            if(pos!=NULL)
            {
              *pos='\0';
-             config->copan_port=strtol(pos+1,&endptr,10);
-             if(pos+1==endptr || config->copan_port<1
-                              || config->copan_port>USHRT_MAX)
+             config->coupler_port=strtol(pos+1,&endptr,10);
+             if(pos+1==endptr || config->coupler_port<1
+                              || config->coupler_port>USHRT_MAX)
              {
                if(isroot(*config))
                  fprintf(stderr,
-                         "ERROR193: Invalid number %d for COPAN port.\n",
-                         config->copan_port);
+                         "ERROR193: Invalid number %d for coupled port.\n",
+                         config->coupler_port);
                free(options);
                return NULL;
              }

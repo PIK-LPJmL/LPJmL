@@ -1,8 +1,8 @@
 /**************************************************************************************/
 /**                                                                                \n**/
-/**           r  e  c  e  i  v  e  _  c  o  p  a  n  .  c                          \n**/
+/**           r  e  c  e  i  v  e  _  c  o  u  p  l  e  r  .  c                    \n**/
 /**                                                                                \n**/
-/**     extension of LPJ to couple LPJ online with COPAN                           \n**/
+/**     extension of LPJ to couple LPJ online                                      \n**/
 /**     Receive data from socket and distribute to all tasks                       \n**/
 /**                                                                                \n**/
 /** (C) Potsdam Institute for Climate Impact Research (PIK), see COPYRIGHT file    \n**/
@@ -19,55 +19,55 @@
 static MPI_Datatype mpi_types[]={MPI_BYTE,MPI_SHORT,MPI_INT,MPI_FLOAT,MPI_DOUBLE};
 #endif
 
-Bool receive_copan(int index,           /**< index of input file */
-                   void *data,          /**< data received from socket */
-                   Type type,           /**< type of data */
-                   int size,            /**< number of items per cell */
-                   int year,            /**< year (AD) */
-                   const Config *config /**< LPJmL configuration */
-                  )                     /** \return TRUE on error */
+Bool receive_coupler(int index,           /**< index of input file */
+                     void *data,          /**< data received from socket */
+                     Type type,           /**< type of data */
+                     int size,            /**< number of items per cell */
+                     int year,            /**< year (AD) */
+                     const Config *config /**< LPJmL configuration */
+                    )                     /** \return TRUE on error */
 {
 #ifdef USE_MPI
   int *counts;
   int *offsets;
 #endif
-#if COPAN_COUPLER_VERSION == 4
+#if COUPLER_VERSION == 4
   int rc;
 #endif
   if(isroot(*config))
   {
-    send_token_copan(GET_DATA,index,config);
-#ifdef DEBUG_COPAN
+    send_token_coupler(GET_DATA,index,config);
+#ifdef DEBUG_COUPLER
     printf("Sending year %d",year);
     fflush(stdout);
 #endif
     writeint_socket(config->socket,&year,1);
-#ifdef DEBUG_COPAN
+#ifdef DEBUG_COUPLER
     printf(", done.\n");
     fflush(stdout);
 #endif
-#if COPAN_COUPLER_VERSION == 4
-#ifdef DEBUG_COPAN
+#if COUPLER_VERSION == 4
+#ifdef DEBUG_COUPLER
     printf("Receiving status");
     fflush(stdout);
 #endif
     readint_socket(config->socket,&rc,1);
-#ifdef DEBUG_COPAN
+#ifdef DEBUG_COUPLER
     printf(", %d received.\n",rc);
     fflush(stdout);
 #endif
-    if(rc!=COPAN_OK)
+    if(rc!=COUPLER_OK)
       fprintf(stderr,"ERROR312: Cannot receive data from socket.\n");
 #endif
   }
-#if COPAN_COUPLER_VERSION == 4
+#if COUPLER_VERSION == 4
 #ifdef USE_MPI
   MPI_Bcast(&rc,1,MPI_INT,0,config->comm);
 #endif
-  if(rc!=COPAN_OK)
+  if(rc!=COUPLER_OK)
     return TRUE;
 #endif
-#ifdef DEBUG_COPAN
+#ifdef DEBUG_COUPLER
   if(isroot(*config))
   {
     printf("Receiving %d %s values",config->nall*size,typenames[type]);
@@ -89,7 +89,7 @@ Bool receive_copan(int index,           /**< index of input file */
   }
   free(offsets);
   free(counts);
-#ifdef DEBUG_COPAN
+#ifdef DEBUG_COUPLER
   if(isroot(*config))
   {
     printf(", received.\n");
@@ -115,10 +115,10 @@ Bool receive_copan(int index,           /**< index of input file */
       rc=readdouble_socket(config->socket,data,config->nall*size);
       break;
   }
-#ifdef DEBUG_COPAN
+#ifdef DEBUG_COUPLER
   printf(", received.\n");
   fflush(stdout);
 #endif
   return rc;
 #endif
-} /* of 'receive_copan' */
+} /* of 'receive_coupler' */

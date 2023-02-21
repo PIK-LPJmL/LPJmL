@@ -205,9 +205,9 @@ int main(int argc,char **argv)
   failonerror(&config,rc,INIT_GRID_ERR,"Initialization of LPJ grid failed");
   if(iscoupled(config))
   {
-    rc=open_copan(&config);
+    rc=open_coupler(&config);
     snprintf(s,STRING_LEN,"Cannot couple to %s model",config.coupled_model);
-    failonerror(&config,rc,OPEN_COPAN_ERR,s);
+    failonerror(&config,rc,OPEN_COUPLER_ERR,s);
   }
   rc=initinput(&input,grid,config.npft[GRASS]+config.npft[TREE],&config);
   failonerror(&config,rc,INIT_INPUT_ERR,
@@ -224,9 +224,9 @@ int main(int argc,char **argv)
               "Initialization of output data failed");
   if(iscoupled(config))
   {
-    rc=check_copan(&config);
+    rc=check_coupler(&config);
     snprintf(s,STRING_LEN,"Cannot initialize %s model",config.coupled_model);
-    failonerror(&config,rc,OPEN_COPAN_ERR,s);
+    failonerror(&config,rc,OPEN_COUPLER_ERR,s);
   }
   if(isopen(output,GRID))
     writecoords(output,GRID,grid,&config);
@@ -268,7 +268,7 @@ int main(int argc,char **argv)
     close_image(&config);
 #endif
   if(iscoupled(config))
-    close_copan(year<=config.lastyear,&config);
+    close_coupler(year<=config.lastyear,&config);
   freeconfig(&config);
 #ifdef USE_MPI
   /* Wait until all tasks have finished to measure total wall clock time */

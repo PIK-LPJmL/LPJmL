@@ -70,7 +70,7 @@ static Bool iswrite2(int index,int timestep,int year,const Config *config)
 static void outindex(Outputfile *output,int index,int year,int date,const Config *config)
 {
   if(output->files[index].issocket)
-    send_output_copan(index,year,date,config);
+    send_output_coupler(index,year,date,config);
 } /* of 'outindex' */
 
 static Real getscale(int date,int ndata,int timestep,Time time)
@@ -153,7 +153,7 @@ static void writedata(Outputfile *output,int index,float data[],int year,int dat
     }
   if(output->files[index].issocket)
   {
-    send_output_copan(index,year,date,config);
+    send_output_coupler(index,year,date,config);
     mpi_write_socket(config->socket,data,MPI_FLOAT,config->total,
                      output->counts,output->offsets,config->rank,config->comm);
   }
@@ -187,7 +187,7 @@ static void writedata(Outputfile *output,int index,float data[],int year,int dat
     }
   if(output->files[index].issocket)
   {
-    send_output_copan(index,year,date,config);
+    send_output_coupler(index,year,date,config);
     writefloat_socket(config->socket,data,config->count);
   }
 #endif
@@ -226,7 +226,7 @@ static void writeshortdata(Outputfile *output,int index,short data[],int year,in
     }
   if(output->files[index].issocket)
   {
-    send_output_copan(index,year,date,config);
+    send_output_coupler(index,year,date,config);
     mpi_write_socket(config->socket,data,MPI_SHORT,config->total,
                      output->counts,output->offsets,config->rank,config->comm);
   }
@@ -260,7 +260,7 @@ static void writeshortdata(Outputfile *output,int index,short data[],int year,in
     }
   if(output->files[index].issocket)
   {
-    send_output_copan(index,year,date,config);
+    send_output_coupler(index,year,date,config);
     writeshort_socket(config->socket,data,config->count);
   }
 #endif
@@ -311,7 +311,7 @@ static void writealldata(Outputfile *output,int index,float data[],int year,int 
     }
   if(output->files[index].issocket)
   {
-    send_output_copan(index,year,date,config);
+    send_output_coupler(index,year,date,config);
     mpi_write_socket(config->socket,data,MPI_FLOAT,config->nall,counts,
                      offsets,config->rank,config->comm);
   }
@@ -346,7 +346,7 @@ static void writealldata(Outputfile *output,int index,float data[],int year,int 
     }
   if(output->files[index].issocket)
   {
-    send_output_copan(index,year,date,config);
+    send_output_coupler(index,year,date,config);
     writefloat_socket(config->socket,data,config->ngridcell);
   }
 #endif

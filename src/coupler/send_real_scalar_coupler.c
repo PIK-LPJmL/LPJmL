@@ -1,6 +1,6 @@
 /**************************************************************************************/
 /**                                                                                \n**/
-/**   s  e  n  d  _  r  e  a  l  _  s  c  a  l  a  r  _  c  o  p  a  n  .  c       \n**/
+/**   s  e  n  d  _  r  e  a  l  _  s  c  a  l  a  r  _  c  o  u  p  l  e  r  .  c \n**/
 /**                                                                                \n**/
 /**     C implementation of LPJmL                                                  \n**/
 /**                                                                                \n**/
@@ -16,13 +16,13 @@
 
 #include "lpj.h"
 
-Bool send_real_scalar_copan(int index,           /**< index of output stream */
-                            const Real *data,    /**< data sent */
-                            int size,            /**< size of data */
-                            Real scale,          /**< scaling factor */
-                            int year,            /**< Simulation year (AD) */
-                            const Config *config /**< LPJ configuration */
-                           )                     /** \return TRUE on error */
+Bool send_real_scalar_coupler(int index,           /**< index of output stream */
+                              const Real *data,    /**< data sent */
+                              int size,            /**< size of data */
+                              Real scale,          /**< scaling factor */
+                              int year,            /**< Simulation year (AD) */
+                              const Config *config /**< LPJ configuration */
+                             )                     /** \return TRUE on error */
 {
   float *vec;
   int i;
@@ -35,7 +35,7 @@ Bool send_real_scalar_copan(int index,           /**< index of output stream */
   }
   for(i=0;i<size;i++)
     vec[i]=(float)(data[i]*scale);
-  rc=send_scalar_copan(index,vec,LPJ_FLOAT,size,year,config);
+  rc=send_scalar_coupler(index,vec,LPJ_FLOAT,size,year,config);
   free(vec);
   return rc;
-} /* of 'send_real_scalar_copan' */
+} /* of 'send_real_scalar_coupler' */

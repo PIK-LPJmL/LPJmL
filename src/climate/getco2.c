@@ -24,7 +24,7 @@ Bool getco2(const Climate *climate, /**< Pointer to climate data */
 {
   if(config->co2_filename.fmt==SOCK)
   {
-    if(receive_real_scalar_copan(climate->co2.id,pco2,1,year,config))
+    if(receive_real_scalar_coupler(climate->co2.id,pco2,1,year,config))
       return TRUE;
     if(*pco2<0)
     {

@@ -1,9 +1,9 @@
 /**************************************************************************************/
 /**                                                                                \n**/
-/**                  o  p  e  n  _  c  o  p  a  n  .  c                            \n**/
+/**                  o  p  e  n  _  c  o  u  p  l  e  r  .  c                      \n**/
 /**                                                                                \n**/
-/**     extension of LPJ to couple LPJ online with COPAN                           \n**/
-/**     Opens connection to COPAN model using TDT compliant socket                 \n**/
+/**     extension of LPJ to couple LPJ online                                      \n**/
+/**     Opens connection to coupled model using TDT compliant socket               \n**/
 /**                                                                                \n**/
 /** (C) Potsdam Institute for Climate Impact Research (PIK), see COPYRIGHT file    \n**/
 /** authors, and contributors see AUTHORS file                                     \n**/
@@ -29,13 +29,13 @@ static void handler(int UNUSED(num))
 
 static void alarmhandler(int UNUSED(num))
 {
-  fail(OPEN_COPAN_ERR,FALSE,"Timeout in connection to %s",coupled_model);
+  fail(OPEN_COUPLER_ERR,FALSE,"Timeout in connection to %s",coupled_model);
 } /* of 'alarmhandler' */
 
-Bool open_copan(Config *config /**< LPJmL configuration */
-               )               /** \return TRUE on error */
+Bool open_coupler(Config *config /**< LPJmL configuration */
+                 )               /** \return TRUE on error */
 {
-  int version=COPAN_COUPLER_VERSION;
+  int version=COUPLER_VERSION;
   Type type=LPJ_INT;
   if(isroot(*config))
   {
@@ -52,7 +52,7 @@ Bool open_copan(Config *config /**< LPJmL configuration */
       alarm(config->wait);
 #endif
     }
-    config->socket=connecttdt_socket(config->copan_host,config->copan_port);
+    config->socket=connecttdt_socket(config->coupled_host,config->coupler_port);
 #ifndef _WIN32
     if(config->wait)
     {
@@ -70,16 +70,16 @@ Bool open_copan(Config *config /**< LPJmL configuration */
     writeint_socket(config->socket,&version,1);
     if(version>3)
     {
-      /* receive version from COPAN */
+      /* receive version from coupled model */
       readint_socket(config->socket,&version,1);
-      if(version!=COPAN_COUPLER_VERSION)
+      if(version!=COUPLER_VERSION)
       {
         fprintf(stderr,"ERROR312: Invalid coupler version %d received from %s, must be %d.\n",
-                version,config->coupled_model,COPAN_COUPLER_VERSION);
+                version,config->coupled_model,COUPLER_VERSION);
         return TRUE;
       }
       /* send 5 integer values */
-      send_token_copan(PUT_INIT_DATA,5,config);
+      send_token_coupler(PUT_INIT_DATA,5,config);
       writeint_socket(config->socket,&type,1);
       /* send first index of cell */
       writeint_socket(config->socket,&config->firstgrid,1);
@@ -89,8 +89,8 @@ Bool open_copan(Config *config /**< LPJmL configuration */
     /* send number of cells with valid soil code */
     writeint_socket(config->socket,&config->total,1);
     /* send number of input and output streams */
-    writeint_socket(config->socket,&config->copan_in,1);
-    writeint_socket(config->socket,&config->copan_out,1);
+    writeint_socket(config->socket,&config->coupler_in,1);
+    writeint_socket(config->socket,&config->coupler_out,1);
   }
   return FALSE;
-} /* of 'open_copan' */
+} /* of 'open_coupler' */

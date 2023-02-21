@@ -263,10 +263,10 @@ struct config
   Socket *out; /**< socket for outgoing data */
 #endif
   Socket *socket;         /**< socket for in- and outgoing data */
-  char *copan_host;       /**< hostname for computer running the IMAGE model */
-  int copan_port;         /**< port number for in- and outgoing data */
-  int copan_out;          /**< number of outgoing data streams */
-  int copan_in;           /**< number of ingoing data streams */
+  char *coupled_host;     /**< hostname for computer running the IMAGE model */
+  int coupler_port;       /**< port number for in- and outgoing data */
+  int coupler_out;        /**< number of outgoing data streams */
+  int coupler_in;         /**< number of ingoing data streams */
   int totalsize;          /**< size of shared output storage */
   int outputmap[NOUT];    /**< index into output storage */
   int outputsize[NOUT];   /**< number of bands for each output */

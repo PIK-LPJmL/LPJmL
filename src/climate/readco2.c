@@ -34,7 +34,7 @@ Bool readco2(Co2data *co2,             /**< pointer to co2 data */
     co2->firstyear=0;
     if(filename->fmt==SOCK)
     {
-      if(openinput_copan(filename->id,LPJ_FLOAT,0,&size,config))
+      if(openinput_coupler(filename->id,LPJ_FLOAT,0,&size,config))
         return TRUE;
       co2->id=filename->id;
       if(size!=1)

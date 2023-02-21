@@ -35,8 +35,8 @@
       printf("%s %s\n", what, (var)->name);                             \
   }
 
-#define scanclimatefilename(file,var,isfms,iscopan,what) {                 \
-    if(readclimatefilename(file,var,what,def,FALSE,isfms,iscopan,config)) {      \
+#define scanclimatefilename(file,var,isfms,iscoupled,what) {                 \
+    if(readclimatefilename(file,var,what,def,FALSE,isfms,iscoupled,config)) {      \
       if(verbose) fprintf(stderr,"ERROR209: Cannot read filename for '%s' input.\n",what); \
       return TRUE;                                                      \
     }                                                                   \
@@ -68,7 +68,7 @@ static Bool readfilename2(LPJfile *file,Filename *name,const char *key,const cha
   return FALSE;
 } /* of 'readfilename2' */
 
-static Bool readclimatefilename(LPJfile *file,Filename *name,const char *key,Bool def[N_IN],Bool istxt,Bool isfms,Bool iscopan,Config *config)
+static Bool readclimatefilename(LPJfile *file,Filename *name,const char *key,Bool def[N_IN],Bool istxt,Bool isfms,Bool iscoupled,Config *config)
 {
   Verbosity verbose;
   verbose=(isroot(*config)) ? config->scan_verbose : NO_ERR;
@@ -80,7 +80,7 @@ static Bool readclimatefilename(LPJfile *file,Filename *name,const char *key,Boo
       fprintf(stderr,"ERROR197: FMS coupler not allowed for input '%s'.\n",key);
     return TRUE;
   }
-  if(!(iscopan && config->coupled_model!=NULL) && name->fmt==SOCK)
+  if(!(iscoupled && config->coupled_model!=NULL) && name->fmt==SOCK)
   {
     if(verbose)
       fprintf(stderr,"ERROR197: File format 'sock' not allowed for input '%s'.\n",key);
@@ -88,7 +88,7 @@ static Bool readclimatefilename(LPJfile *file,Filename *name,const char *key,Boo
   }
   if(name->fmt==SOCK)
   {
-    config->copan_in++;
+    config->coupler_in++;
     if(name->id<0 || name->id>=N_IN)
     {
       if(verbose)
@@ -180,7 +180,7 @@ Bool fscanconfig(Config *config,    /**< LPJ configuration */
   /*=================================================================*/
   /* I. Reading type section                                         */
   /*=================================================================*/
-  config->copan_in=0;
+  config->coupler_in=0;
   config->socket=NULL;
   if (verbose>=VERB) puts("// I. type section");
   config->coupled_model=NULL;

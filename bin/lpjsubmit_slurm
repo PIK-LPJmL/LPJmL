@@ -8,7 +8,7 @@
 ##                                                                             ##
 ##    Usage: lpjsubmit [-class c] [-group g] [-wtime time] [-blocking n]       ##
 ##                     [-o output] [-e error] [-q] [-nocheck] [-norun]         ##
-##                     [-copan program] ntask [LPJargs...]                     ##
+##                     [-couple program] ntask [LPJargs...]                    ##
 ##                                                                             ##
 ## (C) Potsdam Institute for Climate Impact Research (PIK), see COPYRIGHT file ##
 ## authors, and contributors see AUTHORS file                                  ##
@@ -33,7 +33,7 @@ blocking="unlimited"
 output="lpjml.%j.out"
 error="lpjml.%j.err"
 norun=0
-copan=""
+couple=""
 
 while(( "$#" )); do
   case "$1" in
@@ -41,7 +41,7 @@ while(( "$#" )); do
     if [ $# -lt 2 ]
     then
       echo >&2 Error: class missing
-      echo >&2 Usage: $0 [-class c] [-group g] [-wtime time] [-blocking n] [-o output] [-e error] [-q] [-nocheck] [-norun] [-dependency id] [-copan program] ntasks [args ...]
+      echo >&2 Usage: $0 [-class c] [-group g] [-wtime time] [-blocking n] [-o output] [-e error] [-q] [-nocheck] [-norun] [-dependency id] [-couple program] ntasks [args ...]
       exit 1
     fi
     shift 1
@@ -52,7 +52,7 @@ while(( "$#" )); do
       if [ $# -lt 2 ]
       then
         echo >&2 Error: group missing
-        echo >&2 Usage: $0 [-class c] [-group g] [-wtime time] [-blocking n] [-o output] [-e error] [-q] [-nocheck] [-norun] [-dependency id] [-copan program] ntasks [args ...]
+        echo >&2 Usage: $0 [-class c] [-group g] [-wtime time] [-blocking n] [-o output] [-e error] [-q] [-nocheck] [-norun] [-dependency id] [-couple program] ntasks [args ...]
         exit 1
       fi
       shift 1
@@ -63,7 +63,7 @@ while(( "$#" )); do
       if [ $# -lt 2 ]
       then
         echo >&2 Error: wall clock time missing
-        echo >&2 Usage: $0 [-class c] [-group g] [-wtime time] [-blocking n] [-o output] [-e error] [-q] [-nocheck] [-norun] [-dependency id] [-copan program] ntasks [args ...]
+        echo >&2 Usage: $0 [-class c] [-group g] [-wtime time] [-blocking n] [-o output] [-e error] [-q] [-nocheck] [-norun] [-dependency id] [-couple program] ntasks [args ...]
         exit 1
       fi
       shift 1
@@ -74,7 +74,7 @@ while(( "$#" )); do
       if [ $# -lt 2 ]
       then
         echo >&2 Error: blocking factor missing
-        echo >&2 Usage: $0 [-class c] [-group g] [-wtime time] [-blocking n] [-o output] [-e error] [-q] [-nocheck] [-norun] [-dependency id] [-copan program] ntasks [args ...]
+        echo >&2 Usage: $0 [-class c] [-group g] [-wtime time] [-blocking n] [-o output] [-e error] [-q] [-nocheck] [-norun] [-dependency id] [-couple program] ntasks [args ...]
         exit 1
       fi
       shift 1
@@ -85,7 +85,7 @@ while(( "$#" )); do
      if [ $# -lt 2 ]
      then
        echo >&2 Error: output filename missing
-       echo >&2 Usage: $0 [-class c] [-group g] [-wtime time] [-blocking n] [-o output] [-e error] [-q] [-nocheck] [-norun] [-dependency id] [-copan program] ntasks [args ...]
+       echo >&2 Usage: $0 [-class c] [-group g] [-wtime time] [-blocking n] [-o output] [-e error] [-q] [-nocheck] [-norun] [-dependency id] [-couple program] ntasks [args ...]
        exit 1
      fi
      shift 1
@@ -96,7 +96,7 @@ while(( "$#" )); do
      if [ $# -lt 2 ]
      then
        echo >&2 Error: error filename  missing
-       echo >&2 Usage: $0 [-class c] [-group g] [-wtime time] [-blocking n] [-o output] [-e error] [-q] [-nocheck] [-norun] [-dependency id] [-copan program] ntasks [args ...]
+       echo >&2 Usage: $0 [-class c] [-group g] [-wtime time] [-blocking n] [-o output] [-e error] [-q] [-nocheck] [-norun] [-dependency id] [-couple program] ntasks [args ...]
        exit 1
      fi
      shift 1
@@ -111,22 +111,22 @@ while(( "$#" )); do
      if [ $# -lt 2 ]
      then
        echo >&2 Error: jobid missing
-       echo >&2 Usage: $0 [-class c] [-group g] [-wtime time] [-blocking n] [-o output] [-e error] [-q] [-nocheck] [-norun] [-dependency id] [-copan program] ntasks [args ...]
+       echo >&2 Usage: $0 [-class c] [-group g] [-wtime time] [-blocking n] [-o output] [-e error] [-q] [-nocheck] [-norun] [-dependency id] [-couple program] ntasks [args ...]
        exit 1
      fi
      shift 1
      depend="--dependency=afterok:"$1
      shift 1
      ;;
-   -copan)
+   -couple)
      if [ $# -lt 2 ]
      then
        echo >&2 Error: program name missing
-       echo >&2 Usage: $0 [-class c] [-group g] [-wtime time] [-blocking n] [-o output] [-e error] [-q] [-nocheck] [-norun] [-dependency id] [-copan program] ntasks [args ...]
+       echo >&2 Usage: $0 [-class c] [-group g] [-wtime time] [-blocking n] [-o output] [-e error] [-q] [-nocheck] [-norun] [-dependency id] [-couple program] ntasks [args ...]
        exit 1
      fi
      shift 1
-     copan=$1
+     couple=$1
      shift 1
      ;;
    -nocheck)
@@ -139,7 +139,7 @@ while(( "$#" )); do
      ;;
    -*)
      echo >&2 Invalid option $1
-     echo >&2 Usage: $0 [-class c] [-group g] [-wtime time] [-blocking n] [-o output] [-e error] [-q] [-nocheck] [-norun] [-dependency id] [-copan program] ntasks [args ...]
+     echo >&2 Usage: $0 [-class c] [-group g] [-wtime time] [-blocking n] [-o output] [-e error] [-q] [-nocheck] [-norun] [-dependency id] [-couple program] ntasks [args ...]
      exit 1
      ;;
    *)
@@ -151,7 +151,7 @@ done
 if [ $# -lt 1 ]
 then
   echo >&2 Error: Number of tasks missing
-  echo >&2 Usage: $0 [-class c] [-group g] [-wtime time] [-blocking n] [-o output] [-e error] [-q] [-nocheck] [-norun] [-dependency id] [-copan program] ntasks [args ...]
+  echo >&2 Usage: $0 [-class c] [-group g] [-wtime time] [-blocking n] [-o output] [-e error] [-q] [-nocheck] [-norun] [-dependency id] [-couple program] ntasks [args ...]
   exit 1
 fi
 
@@ -214,9 +214,9 @@ ulimit -c unlimited
 export I_MPI_PMI_LIBRARY=/p/system/slurm/lib/libpmi.so
 
 EOF
-if [ "$copan" != "" ]
+if [ "$couple" != "" ]
 then
-  echo $copan " &" >>slurm.jcf
+  echo $couple " &" >>slurm.jcf
   echo >>slurm.jcf
 fi
 cat <<EOF >>slurm.jcf

@@ -1,9 +1,9 @@
 /**************************************************************************************/
 /**                                                                                \n**/
-/**            s  e  n  d  _  o  u  t  p  u  t  _  c  o  p  a  n  .  c             \n**/
+/**                  c  h  e  c  k  _  c  o  u  p  l  e  r  .  c                   \n**/
 /**                                                                                \n**/
-/**     extension of LPJ to couple LPJ online with COPAN                           \n**/
-/**     Send output stream header to COPAN model                                   \n**/
+/**     extension of LPJ to couple LPJ online                                      \n**/
+/**     Check status of coupled model                                              \n**/
 /**                                                                                \n**/
 /** (C) Potsdam Institute for Climate Impact Research (PIK), see COPYRIGHT file    \n**/
 /** authors, and contributors see AUTHORS file                                     \n**/
@@ -15,18 +15,29 @@
 
 #include "lpj.h"
 
-void send_output_copan(int index,           /**< index of output stream */
-                       int year,            /**< year */
-                       int step,            /**< time step within year */
-                       const Config *config /**< LPJmL configuration */
-                      )
+int check_coupler(Config *config /**< LPJmL configuration */
+                 )               /** \return error code from coupled model */
 {
+  int status;
   if(isroot(*config))
   {
-    send_token_copan(PUT_DATA,index,config);
-    writeint_socket(config->socket,&year,1);
-#if COPAN_COUPLER_VERSION == 4
-    writeint_socket(config->socket,&step,1);
+    send_token_coupler(GET_STATUS,0,config);
+#ifdef DEBUG_COUPLER
+    printf("Getting status");
+    fflush(stdout);
 #endif
+    readint_socket(config->socket,&status,1);
+#ifdef DEBUG_COUPLER
+    printf(", %d received.\n",status);
+    fflush(stdout);
+#endif
+    if(status)
+    {
+      /* error occurred, close socket */
+      close_socket(config->socket);
+      config->socket=NULL;
+    }
+    return status;
   }
-} /* of 'send_output_copan' */
+  return COUPLER_OK;
+} /* of 'check_coupler' */

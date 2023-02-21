@@ -41,7 +41,7 @@ Real *readdata(Climatefile *file,   /**< Pointer to data file */
     isalloc=FALSE; /* allocation is not necessary */
   if(file->fmt==SOCK)
   {
-    if(receive_real_copan(file->id,data,file->var_len,year,config))
+    if(receive_real_coupler(file->id,data,file->var_len,year,config))
     {
       fprintf(stderr,"ERROR149: Cannot receive %s of year %d in readdata().\n",
               name,year);

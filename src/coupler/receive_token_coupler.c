@@ -1,6 +1,6 @@
 /**************************************************************************************/
 /**                                                                                \n**/
-/**        r  e  c  e  i  v  e    _  t  o  k  e  n  _  c  o  p  a  n  .  c         \n**/
+/**        r  e  c  e  i  v  e    _  t  o  k  e  n  _  c  o  u  p  l  e  r  .  c   \n**/
 /**                                                                                \n**/
 /**     C implementation of LPJmL                                                  \n**/
 /**                                                                                \n**/
@@ -15,12 +15,12 @@
 /**************************************************************************************/
 #include "lpj.h"
 
-Bool receive_token_copan(Socket *socket, /**< pointer to open socket */
-                         Token *token,   /**< token received */
-                         int *index      /**< index received */
-                        )                /** \return TRUE on error */
+Bool receive_token_coupler(Socket *socket, /**< pointer to open socket */
+                           Token *token,   /**< token received */
+                           int *index      /**< index received */
+                          )                /** \return TRUE on error */
 {
-#ifdef DEBUG_COPAN
+#ifdef DEBUG_COUPLER
   printf("Receiving token");
   fflush(stdout);
 #endif
@@ -30,20 +30,20 @@ Bool receive_token_copan(Socket *socket, /**< pointer to open socket */
     fprintf(stderr,"Invalid token %d.\n",(int)*token);
     return TRUE;
   }
-#ifdef DEBUG_COPAN
+#ifdef DEBUG_COUPLER
   printf(", token %s received.\n",token_names[*token]);
   fflush(stdout);
 #endif
   if(*token==FAIL_DATA)
   {
-#if COPAN_COUPLER_VERSION == 4
+#if COUPLER_VERSION == 4
     /* get LPJmL error code */
-#ifdef DEBUG_COPAN
+#ifdef DEBUG_COUPLER
     printf("Receiving error code");
     fflush(stdout);
 #endif
     readint_socket(socket,index,1);
-#ifdef DEBUG_COPAN
+#ifdef DEBUG_COUPLER
     printf(", %d received.\n",*index);
     fflush(stdout);
 #endif
@@ -55,15 +55,15 @@ Bool receive_token_copan(Socket *socket, /**< pointer to open socket */
   }
   if(*token!=END_DATA && *token!=GET_STATUS) 
   {
-#ifdef DEBUG_COPAN
+#ifdef DEBUG_COUPLER
     printf("Receiving index");
     fflush(stdout);
 #endif
     readint_socket(socket,index,1);
-#ifdef DEBUG_COPAN
+#ifdef DEBUG_COUPLER
     printf(", index %d received.\n",*index);
     fflush(stdout);
 #endif
   }
   return FALSE;
-} /* of 'receive_token_copan' */
+} /* of 'receive_token_coupler' */

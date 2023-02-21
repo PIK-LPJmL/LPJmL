@@ -178,7 +178,7 @@ static void printoutname(FILE *file,const Filename *filename,int index,Bool ison
   char *fmt;
   char *pos;
   if(filename->fmt==SOCK)
-    fprintf(file,"%d -> %s:%d",index,config->copan_host,config->copan_port);
+    fprintf(file,"%d -> %s:%d",index,config->coupled_host,config->coupler_port);
   else if(isoneyear)
   {
     fmt=malloc(strlen(filename->name)+6);
@@ -206,7 +206,7 @@ static void printinputfile(FILE *file,const char *descr,const Filename *filename
   else
     fprintf(file,"%-12s %-4s ",descr,fmt[filename->fmt]);
   if(filename->fmt==SOCK)
-    fprintf(file,"%d <- %s:%d\n",filename->id,config->copan_host,config->copan_port);
+    fprintf(file,"%d <- %s:%d\n",filename->id,config->coupled_host,config->coupler_port);
   else
     fprintf(file,"%s\n",notnull(filename->name));
 } /* of 'printinputfile' */
@@ -630,12 +630,13 @@ void fprintconfig(FILE *file,          /**< File pointer to text output file */
   if(iscoupled(*config))
   {
     fprintf(file,"Coupled to %s model running on host %s using port %d.\n",
-            config->coupled_model,config->copan_host,config->copan_port);
+            config->coupled_model,config->coupled_host,config->coupler_port);
     if(config->wait)
       fprintf(file,"Time to wait for connection: %5d sec\n",config->wait);
     fprintf(file,"Number of inputs from %s: %5d\n"
             "Number of outputs to %s:  %5d\n",
-            config->coupled_model,config->copan_in,config->coupled_model,config->copan_out);
+            config->coupled_model,config->coupler_in,config->coupled_model,config->coupler_out);
+
   }
 #endif
 
@@ -673,7 +674,7 @@ void fprintconfig(FILE *file,          /**< File pointer to text output file */
     fprintf(file,"Number of output files:       %d\n"
                  "Output written in year:       %d\n"
                  "Byte order in output files:   %s\n",
-            config->n_out-config->copan_out,config->outputyear,
+            config->n_out-config->coupler_out,config->outputyear,
             bigendian() ? "big endian" : "little endian");
     fputc('\n',file);
     isnetcdf=FALSE;

@@ -84,7 +84,7 @@ Directory tree after extracting the tar files:</p>
    |
    +--socket    : socket communication library
    |
-   +--copan     : Coupler to COPAN model
+   +--coupler   : coupler code
    |
    +--image     : Coupler to IMAGE model
    |
@@ -735,9 +735,9 @@ LPJIMAGE
 sets host where IMAGE model is running
 </td></tr>
 <tr><td>
-LPJCOPAN
+LPJCOUPLEDHOST
 </td><td>
-sets host where the COPAN model is running
+sets host where the coupled model is running
 </td></tr>
 <tr><td>
 LPJINPATH
@@ -824,7 +824,7 @@ set host where IMAGE model is running. Default is 'localhost'. Option is only av
 <tr><td>
 -copan host[:port]
 </td><td>
-set host and port where COPAN model is running. Default is 'localhost'.
+set host and port where coupled model is running. Default is 'localhost'.
 </td></tr>
 <tr><td>
 -output method
@@ -1358,7 +1358,7 @@ External
 <td align="right">
 43
 </td><td>
-Opening connection to COPAN model failed
+Opening connection to coupled model failed
 </td><td>
 External
 </td></tr>

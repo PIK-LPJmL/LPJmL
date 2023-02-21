@@ -33,7 +33,7 @@ HDRS    = $(INC)/buffer.h $(INC)/coord.h $(INC)/lpj.h $(INC)/pftlist.h\
           $(INC)/biomass_tree.h $(INC)/biomass_grass.h $(INC)/cdf.h\
           $(INC)/agriculture.h $(INC)/reservoir.h $(INC)/spitfire.h\
           $(INC)/cpl.h $(INC)/woodplantation.h $(INC)/agriculture_tree.h\
-          $(INC)/agriculture_grass.h $(INC)/copan.h
+          $(INC)/agriculture_grass.h $(INC)/coupler.h
 
 LIBDIR  = ../lib
 BINDIR  = ../bin
@@ -41,7 +41,7 @@ BINDIR  = ../bin
 LPJLIBS = $(LIBDIR)/liblpj.$A $(LIBDIR)/libgrass.$A $(LIBDIR)/liblanduse.$A $(LIBDIR)/libtree.$A $(LIBDIR)/libimage.$A\
           $(LIBDIR)/libspitfire.$A $(LIBDIR)/libsoil.$A\
           $(LIBDIR)/libclimate.$A $(LIBDIR)/libnum.$A $(LIBDIR)/libtools.$A\
-          $(LIBDIR)/libcrop.$A $(LIBDIR)/libreservoir.$A $(LIBDIR)/libpnet.$A $(LIBDIR)/libcopan.$A\
+          $(LIBDIR)/libcrop.$A $(LIBDIR)/libreservoir.$A $(LIBDIR)/libpnet.$A $(LIBDIR)/libcoupler.$A\
           $(LIBDIR)/libsocket.$A $(LIBDIR)/liblpj.$A $(LIBDIR)/libcdf.$A $(LIBDIR)/liblpj.$A\
           $(LIBDIR)/libtools.$A $(LIBDIR)/libcpl.$A $(LIBDIR)/libsoil.$A
 
@@ -68,7 +68,7 @@ libs:
 	(cd spitfire && $(MAKE))
 	(cd netcdf && $(MAKE))
 	(cd cpl && $(MAKE))
-	(cd copan && $(MAKE))
+	(cd coupler && $(MAKE))
 
 clean:
 	(cd climate && $(MAKE) clean)
@@ -88,7 +88,7 @@ clean:
 	(cd spitfire && $(MAKE) clean)
 	(cd netcdf && $(MAKE) clean)
 	(cd cpl && $(MAKE) clean)
-	(cd copan && $(MAKE) clean)
+	(cd coupler && $(MAKE) clean)
 	$(RM) $(RMFLAGS) $(OBJ) getbuild.$O $(EXE)
 
 $(OBJ): $(HDRS)

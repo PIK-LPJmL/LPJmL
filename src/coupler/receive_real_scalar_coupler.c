@@ -1,8 +1,8 @@
 /**************************************************************************************/
 /**                                                                                \n**/
-/**                      c  o  p  a  n  p  a  r  .  h                              \n**/
+/**          r e c e i v e _ r e a l _ s c a l a r _ c o u p l e r . c             \n**/
 /**                                                                                \n**/
-/**     Definition of COPAN input indices                                          \n**/
+/**     extension of LPJ to couple LPJ online                                      \n**/
 /**                                                                                \n**/
 /** (C) Potsdam Institute for Climate Impact Research (PIK), see COPYRIGHT file    \n**/
 /** authors, and contributors see AUTHORS file                                     \n**/
@@ -12,37 +12,26 @@
 /**                                                                                \n**/
 /**************************************************************************************/
 
+#include "lpj.h"
 
-#ifndef COPANPAR_H /* already included? */
-#define COPANPAR_H
-
-/* List of input data streams */
-
-#define N_IN 24         /* Number of available input data streams */
-
-#define CLOUD_DATA 0
-#define TEMP_DATA 1
-#define PREC_DATA 2
-#define SWDOWN_DATA 3
-#define LWNET_DATA 4
-#define CO2_DATA 5
-#define LANDUSE_DATA 6
-#define TILLAGE_DATA 7
-#define RESIDUE_DATA 8
-#define TMIN_DATA 9
-#define TMAX_DATA 10
-#define TAMP_DATA 11
-#define WET_DATA 12
-#define BURNTAREA_DATA 13
-#define HUMID_DATA 14
-#define WIND_DATA 15
-#define NH4_DATA 16
-#define NO3_DATA 17
-#define FERTILIZER_DATA 18
-#define MANURE_DATA 19
-#define WATERUSE_DATA 20
-#define POPDENS_DATA 21
-#define HUMAN_IGNITION_DATA 22
-#define LIGHTNING_DATA 23
-
-#endif /* COPANPAR_H */
+Bool receive_real_scalar_coupler(int index,           /**< index of input stream */
+                                 Real *data,          /**< data read from socket */
+                                 int size,            /**< size of data array */
+                                 int year,            /**< year */
+                                 const Config *config /**< LPJmL configuration */
+                                )                     /** \return TRUE on error */
+{
+  float *f;
+  int i;
+  f=newvec(float,size);
+  check(f);
+  if(receive_scalar_coupler(index,f,LPJ_FLOAT,size,year,config))
+  {
+    free(f);
+    return TRUE;
+  }
+  for(i=0;i<size;i++)
+    data[i]=f[i];
+  free(f);
+  return FALSE;
+} /* of 'receive_real_scalar_coupler' */

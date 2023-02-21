@@ -3,7 +3,7 @@
 lpjcheck \- Checks syntax of LPJmL configuration files 
 .SH SYNOPSIS
 .B lpjcheck
-[\-h] [\-q] [\-nocheck] [-vv] [\-param] [-pp cmd] [\-copan host[:port]] [\-output {write|gather|mpi2}] [\-outpath \fIdir\fP]
+[\-h] [\-q] [\-nocheck] [-vv] [\-param] [-pp cmd] [\-couple host[:port]] [\-outpath \fIdir\fP]
 [\-inpath \fIdir\fP] [\-restartpath \fIdir\fP] [[\-Dmacro[=value]] [\-I\fIdir\fP] ...]
 [\fIfilename\fP]
 .SH DESCRIPTION
@@ -29,8 +29,8 @@ Print LPJmL parameter.
 \-pp cmd
 Set preprocessor program to cmd. Default is \fBcpp -P\fP.
 .TP
-\-copan host[:port]
-set host where the COPAN model is running. Default is localhost. Port is the port number for ingoing and outgoing data. Default port number is 2224.
+\-couple host[:port]
+set host where the coupled model is running. Default is localhost. Port is the port number for ingoing and outgoing data. Default port number is 2224.
 .TP
 \-output {gather|mpi2}
 use the given output method to write data to disk. Valid output methods are
@@ -80,10 +80,6 @@ Path appended to the output filenames. Only done for filenames without absolute 
 .TP
 LPJRESTARTPATH
 Path appended to the restart filenames. Only done for filenames without absolute path.
-.TP
-LPJOUTPUT 
-Default method for generating output files. Valid values
-are write, mpi2, gather, and socket.
 
 .SH EXIT STATUS
 .B

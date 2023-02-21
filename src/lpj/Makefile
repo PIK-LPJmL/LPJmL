@@ -65,7 +65,7 @@ HDRS    = $(INC)/buffer.h $(INC)/coord.h $(INC)/lpj.h $(INC)/pftlist.h\
           $(INC)/config.h $(INC)/pnet.h $(INC)/channel.h $(INC)/param.h\
           $(INC)/natural.h $(INC)/reservoir.h $(INC)/spitfire.h $(INC)/grass.h\
           $(INC)/cropdates.h $(INC)/tree.h $(INC)/outfile.h $(INC)/cdf.h\
-          $(INC)/copan.h $(INC)/copanpar.h
+          $(INC)/coupler.h $(INC)/couplerpar.h
 
 
 $(LIBDIR)/$(LIB): $(OBJS)

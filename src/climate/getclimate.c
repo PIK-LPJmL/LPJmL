@@ -34,7 +34,7 @@ Bool readclimate(Climatefile *file,   /**< climate data file */
     return FALSE;
   if(file->fmt==SOCK)
   {
-    if(receive_real_copan(file->id,data,(file->time_step==DAY) ? NDAYYEAR : NMONTH,year,config))
+    if(receive_real_coupler(file->id,data,(file->time_step==DAY) ? NDAYYEAR : NMONTH,year,config))
     {
       if(isroot(*config))
       {
