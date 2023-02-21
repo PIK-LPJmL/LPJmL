@@ -39,5 +39,6 @@ int check_coupler(Config *config /**< LPJmL configuration */
     }
     return status;
   }
-  return COUPLER_OK;
+  else
+    return COUPLER_OK;
 } /* of 'check_coupler' */

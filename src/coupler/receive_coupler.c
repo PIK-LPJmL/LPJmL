@@ -31,9 +31,7 @@ Bool receive_coupler(int index,           /**< index of input file */
   int *counts;
   int *offsets;
 #endif
-#if COUPLER_VERSION == 4
   int rc;
-#endif
   if(isroot(*config))
   {
     send_token_coupler(GET_DATA,index,config);
