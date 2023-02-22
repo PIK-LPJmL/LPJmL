@@ -32,11 +32,6 @@ Set preprocessor program to cmd. Default is \fBcpp -P\fP.
 \-couple host[:port]
 set host where the coupled model is running. Default is localhost. Port is the port number for ingoing and outgoing data. Default port number is 2224.
 .TP
-\-output {gather|mpi2}
-use the given output method to write data to disk. Valid output methods are
-write, mpi2, gather. The default output method for the MPI version is gather sending all output to the root task, while the default method for the sequential code is write. 
-The methods gather and mpi2 are only valid for the MPI version of the code.
-.TP
 \-outpath \fIdir\fP
 set the output directory path. The path is added to the output filenames if they do not contain an absolute path.
 .TP

@@ -53,7 +53,7 @@ Bool receive_token_coupler(Socket *socket, /**< pointer to open socket */
 #endif
     return TRUE;
   }
-  if(*token!=END_DATA && *token!=GET_STATUS) 
+  if(*token!=END_DATA && *token!=GET_STATUS)
   {
 #ifdef DEBUG_COUPLER
     printf("Receiving index");
