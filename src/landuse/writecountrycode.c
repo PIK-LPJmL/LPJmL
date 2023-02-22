@@ -81,7 +81,7 @@ int writecountrycode(Outputfile *output,  /**< output file array */
     }
   if(output->files[index].issocket)
   {
-    send_token_coupler(PUT_DATA,index,config);
+    send_token_coupler(PUT_DATA,output->files[index].id,config);
     writeshort_socket(config->socket,vec,count);
   }
 #endif

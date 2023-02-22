@@ -70,7 +70,7 @@ static Bool iswrite2(int index,int timestep,int year,const Config *config)
 static void outindex(Outputfile *output,int index,int year,int date,const Config *config)
 {
   if(output->files[index].issocket)
-    send_output_coupler(index,year,date,config);
+    send_output_coupler(output->files[index].id,year,date,config);
 } /* of 'outindex' */
 
 static Real getscale(int date,int ndata,int timestep,Time time)

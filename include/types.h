@@ -85,6 +85,7 @@ typedef struct
   int fmt;    /* format (TXT/RAW/CLM/CDF) */
   int id;     /* id for input socket */
   Bool meta; /* meta file output enabled */
+  Bool issocket; /* socket output enabled */
   int version; /* version of clm file */
 } Filename;
 

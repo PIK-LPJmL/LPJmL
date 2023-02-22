@@ -27,7 +27,7 @@ static Bool isopenoutput(int id,const Outputvar output[],int n)
   int i;
   for(i=0;i<n;i++)
     if(id==output[i].id) /* id already set? */
-      return (output[n].filename.fmt==SOCK && output[i].filename.fmt==SOCK) || (output[n].filename.fmt!=SOCK && output[i].filename.fmt!=SOCK);
+      return TRUE; /* yes, return TRUE */
   return FALSE; /* not found */
 } /* of 'isopenoutput' */
 
@@ -93,7 +93,8 @@ Bool fscanoutput(LPJfile *file,  /**< pointer to LPJ file */
     return TRUE;
   }
   config->csv_delimit=name[0];
-  config->outputvars=NULL;
+  config->outputvars=newvec(Outputvar,nout_max);
+  checkptr(config->outputvars);
   count=index=0;
   config->withdailyoutput=FALSE;
   size=nout_max;
@@ -111,8 +112,6 @@ Bool fscanoutput(LPJfile *file,  /**< pointer to LPJ file */
     config->n_out=0;
     return file->isjson;
   }
-  config->outputvars=newvec(Outputvar,size);
-  checkptr(config->outputvars);
   metafile=FALSE;
   if(fscanbool(file,&metafile,"output_metafile",TRUE,verbosity))
     return TRUE;
@@ -162,7 +161,7 @@ Bool fscanoutput(LPJfile *file,  /**< pointer to LPJ file */
   config->json_suffix=strdup(name);
   checkptr(config->json_suffix);
   isdaily=FALSE;
-  for(index=0;index<size;index++)
+  while(count<=nout_max && index<size)
   {
     fscanarrayindex(&arr,&item,index,verbosity);
     if(isstring(&item,"id"))
@@ -183,129 +182,63 @@ Bool fscanoutput(LPJfile *file,  /**< pointer to LPJ file */
     }
     if(flag==END)  /* end marker read? */
       break;
-    config->outputvars[count].filename.meta=metafile;
-    if(version>0)
-      config->outputvars[count].filename.version=version;
-    else
-      config->outputvars[count].filename.version=(flag==GRID) ? LPJGRID_VERSION : LPJOUTPUT_VERSION;
-    if(readfilename(&item,&config->outputvars[count].filename,"file",config->outputdir,FALSE,FALSE,verbosity))
+    else if(count==nout_max)
     {
       if(verbosity)
-        fprintf(stderr,"ERROR231: Cannot read filename for output '%s'.\n",
-                (flag<0 || flag>=nout_max) ?"N/A" : config->outnames[flag].name);
-      return TRUE;
-    }
-    if(flag<0 || flag>=nout_max)
-    {
-      if(verbosity)
-        fprintf(stderr,
-                "ERROR161: Invalid value=%d for index of output file '%s', must be in [0,%d].\n",
-                flag,config->outputvars[count].filename.name,nout_max-1);
-    }
-    else if(isopenoutput(flag,config->outputvars,count))
-    {
-      if(verbosity)
-        fprintf(stderr,"WARNING006: Output file for '%s' is opened twice, will be ignored.\n",
-              config->outnames[flag].name);
-    }
-    else if(outputsize(flag,npft,ncft,config)==0)
-    {
-      if(verbosity)
-        fprintf(stderr,"WARNING006: Number of bands in output file for '%s' is zero, will be ignored.\n",
-              config->outnames[flag].name);
-    }
-    else if(!config->with_nitrogen && isnitrogen_output(flag))
-    {
-      if(verbosity)
-        fprintf(stderr,"WARNING006: Output file for '%s' is nitrogen output but nitrogen is not enabled, will be ignored.\n",
-              config->outnames[flag].name);
-    }
-    else if(config->outputvars[count].filename.fmt==CLM2)
-    {
-      if(verbosity)
-        fprintf(stderr,"ERROR223: File format CLM2 is not supported for output file '%s'.\n",
-                config->outputvars[count].filename.name);
-      return TRUE;
-    }
-    else if(config->outputvars[count].filename.fmt==SOCK && !iscoupled(*config))
-    {
-      if(verbosity)
-        fprintf(stderr,"ERROR223: File format 'sock' not allowed without model coupling for '%s' output.\n",
-                config->outnames[flag].name);
+        fprintf(stderr,"ERROR160: Maximum number %d of output files reached.\n",
+                count);
       return TRUE;
     }
     else
     {
-      if(flag>=D_LAI && flag<=D_PET)
-        isdaily=TRUE;
-      config->outputvars[count].id=flag;
-      if(flag==GLOBALFLUX && config->outputvars[count].filename.fmt!=TXT && config->outputvars[count].filename.fmt!=SOCK && !iscoupled(*config))
-      {
-        if(verbosity)
-         fprintf(stderr,"ERROR224: Invalid format '%s' for 'globalflux' output, only 'txt' allowed.\n",
-                   fmt[config->outputvars[count].filename.fmt]);
-         return TRUE;
-      }
-      if(config->outputvars[count].filename.var!=NULL)
-      {
-        free(config->outnames[flag].var);
-        config->outnames[flag].var=strdup(config->outputvars[count].filename.var);
-        checkptr(config->outnames[flag].var);
-      }
-      if(config->outputvars[count].filename.timestep!=NOT_FOUND)
-      {
-        if(verbosity && config->outputvars[count].filename.timestep<getmintimestep(flag))
-        {
-          fprintf(stderr,"ERROR246: Time step %s for '%s' output too short, must be %s.\n",
-                  sprinttimestep(s,config->outputvars[count].filename.timestep),
-                  config->outnames[flag].name,
-                   sprinttimestep(s2,getmintimestep(flag)));
-        }
-        else if(verbosity && config->outputvars[count].filename.timestep!=ANNUAL && isannual_output(flag))
-          fprintf(stderr,"ERROR246: Only annual time step allowed for '%s' output, time step is %s.\n",
-                  config->outnames[flag].name,sprinttimestep(s2,config->outputvars[count].filename.timestep));
-
-        config->outnames[flag].timestep=config->outputvars[count].filename.timestep;
-      }
-      if(config->outputvars[count].filename.unit!=NULL)
-      {
-        free(config->outnames[flag].unit);
-        config->outnames[flag].unit=strdup(config->outputvars[count].filename.unit);
-        checkptr(config->outnames[flag].unit);
-        if(config->outnames[flag].unit!=NULL)
-        {
-          if(strstr(config->outnames[flag].unit,"/month")!=NULL)
-            config->outnames[flag].time=MONTH;
-          else if(strstr(config->outnames[flag].unit,"/yr")!=NULL)
-            config->outnames[flag].time=YEAR;
-          else if(strstr(config->outnames[flag].unit,"/day")!=NULL || strstr(config->outnames[flag].unit,"d-1")!=NULL)
-            config->outnames[flag].time=DAY;
-          else if(strstr(config->outnames[flag].unit,"/sec")!=NULL || strstr(config->outnames[flag].unit,"s-1")!=NULL)
-            config->outnames[flag].time=SECOND;
-          else
-            config->outnames[flag].time=MISSING_TIME;
-        }
-      }
-      if(config->outputvars[count].filename.isscale)
-        config->outnames[flag].scale=(float)config->outputvars[count].filename.scale;
-      if(config->outputvars[count].filename.fmt==SOCK)
-      {
-        config->outputvars[count].oneyear=FALSE;
-        config->coupler_out++;
-      }
+      config->outputvars[count].filename.meta=metafile;
+      config->outputvars[count].filename.issocket=FALSE;
+      config->outputvars[count].filename.id=flag;
+      if(version>0)
+        config->outputvars[count].filename.version=version;
       else
-        config->outputvars[count].oneyear=(strstr(config->outputvars[count].filename.name,"%d")!=NULL);
-      if(config->outputvars[count].oneyear && checkfmt(config->outputvars[count].filename.name,'d'))
+        config->outputvars[count].filename.version=(flag==GRID) ? LPJGRID_VERSION : LPJOUTPUT_VERSION;
+      if(readfilename(&item,&config->outputvars[count].filename,"file",config->outputdir,FALSE,FALSE,verbosity))
       {
         if(verbosity)
-          fprintf(stderr,"ERROR224: Invalid format specifier in filename '%s'.\n",
-                  config->outputvars[count].filename.name);
+          fprintf(stderr,"ERROR231: Cannot read filename for output '%s'.\n",
+                  (flag<0 || flag>=nout_max) ?"N/A" : config->outnames[flag].name);
+        return TRUE;
+      }
+      if(flag<0 || flag>=nout_max)
+      {
+        if(verbosity)
+          fprintf(stderr,
+                  "ERROR161: Invalid value=%d for index of output file '%s', must be in [0,%d].\n",
+                  flag,config->outputvars[count].filename.name,nout_max-1);
         freefilename(&config->outputvars[count].filename);
       }
-      else if(config->outputvars[count].oneyear && (flag==GRID || flag==COUNTRY || flag==REGION || flag==GLOBALFLUX))
+      else if(isopenoutput(flag,config->outputvars,count))
       {
         if(verbosity)
-          fprintf(stderr,"ERROR225: One year output not allowed for grid, globalflux, country or region.\n");
+          fprintf(stderr,"WARNING006: Output file for '%s' is opened twice, will be ignored.\n",
+                config->outnames[flag].name);
+        freefilename(&config->outputvars[count].filename);
+      }
+      else if(outputsize(flag,npft,ncft,config)==0)
+      {
+        if(verbosity)
+          fprintf(stderr,"WARNING006: Number of bands in output file for '%s' is zero, will be ignored.\n",
+                config->outnames[flag].name);
+        freefilename(&config->outputvars[count].filename);
+      }
+      else if(!config->with_nitrogen && isnitrogen_output(flag))
+      {
+        if(verbosity)
+          fprintf(stderr,"WARNING006: Output file for '%s' is nitrogen output but nitrogen is not enabled, will be ignored.\n",
+                config->outnames[flag].name);
+        freefilename(&config->outputvars[count].filename);
+      }
+      else if(config->outputvars[count].filename.fmt==CLM2)
+      {
+        if(verbosity)
+          fprintf(stderr,"ERROR223: File format CLM2 is not supported for output file '%s'.\n",
+                  config->outputvars[count].filename.name);
         freefilename(&config->outputvars[count].filename);
       }
       else if(config->outputvars[count].filename.fmt==META)
@@ -317,11 +250,83 @@ Bool fscanoutput(LPJfile *file,  /**< pointer to LPJ file */
       }
       else
       {
+        if(flag>=D_LAI && flag<=D_PET)
+          isdaily=TRUE;
+        config->outputvars[count].id=flag;
+        if(flag==GLOBALFLUX && config->outputvars[count].filename.fmt!=TXT)
+        {
+          if(verbosity)
+            fprintf(stderr,"ERROR224: Invalid format '%s' for 'globalflux' output, only 'txt' allowed.\n",
+                    fmt[config->outputvars[count].filename.fmt]);
+          return TRUE;
+        }
+        if(config->outputvars[count].filename.issocket)
+          config->coupler_out++;
+        if(config->outputvars[count].filename.var!=NULL)
+        {
+          free(config->outnames[flag].var);
+          config->outnames[flag].var=strdup(config->outputvars[count].filename.var);
+          checkptr(config->outnames[flag].var);
+        }
+        if(config->outputvars[count].filename.timestep!=NOT_FOUND)
+        {
+          if(verbosity && config->outputvars[count].filename.timestep<getmintimestep(flag))
+          {
+            fprintf(stderr,"ERROR246: Time step %s for '%s' output too short, must be %s.\n",
+                    sprinttimestep(s,config->outputvars[count].filename.timestep),
+                    config->outnames[flag].name,
+                    sprinttimestep(s2,getmintimestep(flag)));
+          }
+          else if(verbosity && config->outputvars[count].filename.timestep!=ANNUAL && isannual_output(flag))
+            fprintf(stderr,"ERROR246: Only annual time step allowed for '%s' output, time step is %s.\n",
+                    config->outnames[flag].name,sprinttimestep(s2,config->outputvars[count].filename.timestep));
+          config->outnames[flag].timestep=config->outputvars[count].filename.timestep;
+        }
+
+        if(config->outputvars[count].filename.unit!=NULL)
+        {
+          free(config->outnames[flag].unit);
+          config->outnames[flag].unit=strdup(config->outputvars[count].filename.unit);
+          checkptr(config->outnames[flag].unit);
+          if(config->outnames[flag].unit!=NULL)
+          {
+            if(strstr(config->outnames[flag].unit,"/month")!=NULL)
+              config->outnames[flag].time=MONTH;
+            else if(strstr(config->outnames[flag].unit,"/yr")!=NULL)
+              config->outnames[flag].time=YEAR;
+            else if(strstr(config->outnames[flag].unit,"/day")!=NULL || strstr(config->outnames[flag].unit,"d-1")!=NULL)
+              config->outnames[flag].time=DAY;
+            else if(strstr(config->outnames[flag].unit,"/sec")!=NULL || strstr(config->outnames[flag].unit,"s-1")!=NULL)
+              config->outnames[flag].time=SECOND;
+            else
+              config->outnames[flag].time=MISSING_TIME;
+          }
+        }
+        if(config->outputvars[count].filename.isscale)
+          config->outnames[flag].scale=(float)config->outputvars[count].filename.scale;
+        if(config->outputvars[count].filename.fmt!=SOCK)
+        {
+          config->outputvars[count].oneyear=(strstr(config->outputvars[count].filename.name,"%d")!=NULL);
+          if(config->outputvars[count].oneyear && checkfmt(config->outputvars[count].filename.name,'d'))
+          {
+            if(verbosity)
+              fprintf(stderr,"ERROR224: Invalid format specifier in filename '%s'.\n",
+                      config->outputvars[count].filename.name);
+          }
+          else if(config->outputvars[count].oneyear && (flag==GRID || flag==COUNTRY || flag==REGION || flag==GLOBALFLUX))
+          {
+            if(verbosity)
+              fprintf(stderr,"ERROR225: One year output not allowed for grid, globalflux, country or region.\n");
+          }
+        }
+        else
+          config->outputvars[count].oneyear=FALSE;
         if(config->outnames[flag].timestep==DAILY)
           config->withdailyoutput=TRUE;
         count++;
       }
     }
+    index++;
   }
   if(isdaily)
   {

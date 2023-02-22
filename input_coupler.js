@@ -12,7 +12,7 @@
 /**                                                                                \n**/
 /**************************************************************************************/
 
-#include "include/copanpar.h"
+#include "include/couplerpar.h"
 
 "inpath" : "/p/projects/lpjml/input/historical",
 

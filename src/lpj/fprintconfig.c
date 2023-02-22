@@ -177,24 +177,33 @@ static void printoutname(FILE *file,const Filename *filename,int index,Bool ison
 {
   char *fmt;
   char *pos;
-  if(filename->fmt==SOCK)
-    fprintf(file,"%d -> %s:%d",index,config->coupled_host,config->coupler_port);
-  else if(isoneyear)
+  if(filename->fmt!=SOCK)
   {
-    fmt=malloc(strlen(filename->name)+6);
-    if(fmt!=NULL)
+    if(isoneyear)
     {
-      pos=strstr(filename->name,"%d");
-      strncpy(fmt,filename->name,pos-filename->name);
-      fmt[pos-filename->name]='\0';
-      strcat(fmt,"[%d-%d]");
-      strcat(fmt,pos+2);
-      fprintf(file,fmt,config->firstyear,config->lastyear);
-      free(fmt);
+      fmt=malloc(strlen(filename->name)+6);
+      if(fmt!=NULL)
+      {
+        pos=strstr(filename->name,"%d");
+        strncpy(fmt,filename->name,pos-filename->name);
+        fmt[pos-filename->name]='\0';
+        strcat(fmt,"[%d-%d]");
+        strcat(fmt,pos+2);
+        fprintf(file,fmt,config->firstyear,config->lastyear);
+        free(fmt);
+      }
     }
+    else
+      fputs(filename->name,file);
+    if(filename->fmt!=CDF && filename->meta)
+      fprintf(file," + %s",config->json_suffix);
   }
-  else
-    fputs(filename->name,file);
+  if(filename->issocket)
+  {
+    if(filename->fmt!=SOCK)
+      fputs(", ",file);
+    fprintf(file,"%d -> %s:%d",filename->id,config->coupled_host,config->coupler_port);
+  }
 } /* of printoutname' */
 
 static void printinputfile(FILE *file,const char *descr,const Filename *filename,
@@ -674,7 +683,7 @@ void fprintconfig(FILE *file,          /**< File pointer to text output file */
     fprintf(file,"Number of output files:       %d\n"
                  "Output written in year:       %d\n"
                  "Byte order in output files:   %s\n",
-            config->n_out-config->coupler_out,config->outputyear,
+            config->n_out,config->outputyear,
             bigendian() ? "big endian" : "little endian");
     fputc('\n',file);
     isnetcdf=FALSE;

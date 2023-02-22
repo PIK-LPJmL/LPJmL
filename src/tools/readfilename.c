@@ -24,7 +24,7 @@ Bool readfilename(LPJfile *file,      /**< pointer to text file read */
                   const char *key,    /**< name of json object */
                   const char *path,   /**< path added to filename or NULL */
                   Bool isvar,         /**< variable name supplied */
-                  Bool isid,          /**< if for socket supplied */
+                  Bool isid,          /**< id for socket supplied */
                   Verbosity verb      /**< verbosity level (NO_ERR,ERR,VERB) */
                  )                    /** \return TRUE on error */
 {
@@ -151,8 +151,17 @@ Bool readfilename(LPJfile *file,      /**< pointer to text file read */
       if(fscanint(&f,&filename->id,"id",FALSE,verb))
         return TRUE;
     }
+    else
+    {
+      if(iskeydefined(&f,"id"))
+      {
+        if(fscanint(&f,&filename->id,"id",FALSE,verb))
+          return TRUE;
+      }
+    }
     filename->name=NULL;
     filename->meta=FALSE;
+    filename->issocket=TRUE;
   }
   else
   {
@@ -176,6 +185,19 @@ Bool readfilename(LPJfile *file,      /**< pointer to text file read */
       {
         free(filename->var);
         return TRUE;
+      }
+    }
+    if(iskeydefined(&f,"socket"))
+    {
+      if(fscanbool(&f,&filename->issocket,"socket",FALSE,verb))
+      {
+        free(filename->var);
+        return TRUE;
+      }
+      if(filename->issocket && iskeydefined(&f,"id"))
+      {
+        if(fscanint(&f,&filename->id,"id",FALSE,verb))
+          return TRUE;
       }
     }
     if(iskeydefined(&f,"version"))

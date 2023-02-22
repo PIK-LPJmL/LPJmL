@@ -52,7 +52,6 @@ static void openfile(Outputfile *output,const Cell grid[],
                      const Config *config)
 {
   Header header;
-  output->files[config->outputvars[i].id].fmt=config->outputvars[i].filename.fmt;
   if(config->outputvars[i].filename.fmt==CDF)
   {
     switch(config->outputvars[i].id)
@@ -254,11 +253,11 @@ Outputfile *fopenoutput(const Cell grid[],   /**< LPJ grid */
       filename=config->outputvars[i].filename.name;
     }
     output->files[config->outputvars[i].id].filename=config->outputvars[i].filename.name;
-    if(config->outputvars[i].filename.fmt==SOCK)
+    output->files[config->outputvars[i].id].fmt=config->outputvars[i].filename.fmt;
+    if(config->outputvars[i].filename.issocket)
     {
-      if(!output->files[config->outputvars[i].id].isopen)
-        output->files[config->outputvars[i].id].fmt=SOCK;
       output->files[config->outputvars[i].id].issocket=TRUE;
+      output->files[config->outputvars[i].id].id=config->outputvars[i].filename.id;
       if(isroot(*config))
       {
         if(config->outputvars[i].id==GLOBALFLUX)
@@ -273,7 +272,7 @@ Outputfile *fopenoutput(const Cell grid[],   /**< LPJ grid */
           size=outputsize(config->outputvars[i].id,
                           config->npft[GRASS]+config->npft[TREE],
                           config->npft[CROP],config);
-        if(openoutput_coupler(config->outputvars[i].id,ncell,getnyear(config->outnames,config->outputvars[i].id),size,getoutputtype(config->outputvars[i].id,config->float_grid),config))
+        if(openoutput_coupler(config->outputvars[i].filename.id,ncell,getnyear(config->outnames,config->outputvars[i].id),size,getoutputtype(config->outputvars[i].id,config->float_grid),config))
         {
           output->files[config->outputvars[i].id].issocket=FALSE;
           fprintf(stderr,"ERROR100: Cannot open socket stream for output '%s'.\n",
@@ -285,7 +284,7 @@ Outputfile *fopenoutput(const Cell grid[],   /**< LPJ grid */
                 0,config->comm);
 #endif
     }
-    else
+    else if(config->outputvars[i].filename.fmt!=SOCK)
       openfile(output,grid,filename,i,config);
 #ifdef USE_MPI
     MPI_Bcast(&output->files[config->outputvars[i].id].isopen,1,MPI_INT,
