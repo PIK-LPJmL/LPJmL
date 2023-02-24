@@ -705,10 +705,9 @@ void fwriteoutput(Outputfile *output,  /**< output file array */
         {
           foreachstand(stand,s,grid[cell].standlist)
           {
-            foreachstand(stand,s,grid[cell].standlist)
-              /*if(stand->type->landusetype==NATURAL) */
-              foreachpft(pft,p,&stand->pftlist)
-                getoutput(&grid[cell].output,VEGC,config)+=vegc_sum(pft)*stand->frac;
+            /*if(stand->type->landusetype==NATURAL) */
+            foreachpft(pft,p,&stand->pftlist)
+              getoutput(&grid[cell].output,VEGC,config)+=vegc_sum(pft)*stand->frac;
           }
         }
     }
@@ -723,10 +722,9 @@ void fwriteoutput(Outputfile *output,  /**< output file array */
         {
           foreachstand(stand,s,grid[cell].standlist)
           {
-            foreachstand(stand,s,grid[cell].standlist)
-              /*if(stand->type->landusetype==NATURAL) */
-              foreachpft(pft,p,&stand->pftlist)
-                getoutput(&grid[cell].output,VEGN,config)+=(vegn_sum(pft)+pft->bm_inc.nitrogen)*stand->frac;
+            /*if(stand->type->landusetype==NATURAL) */
+            foreachpft(pft,p,&stand->pftlist)
+              getoutput(&grid[cell].output,VEGN,config)+=(vegn_sum(pft)+pft->bm_inc.nitrogen)*stand->frac;
           }
         }
     }

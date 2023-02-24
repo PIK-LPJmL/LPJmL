@@ -94,7 +94,6 @@ void fertilize_tree(Stand *stand,        /**< pointer to stand */
           getoutput(output,NMANURE_AGR,config)+=manure*stand->frac;
           stand->cell->balance.influx.carbon += manure*param.manure_cn*stand->frac;
           stand->cell->balance.influx.nitrogen += manure*stand->frac;
-          getoutput(&stand->cell->output,NMANURE_AGR,config)+=manure*stand->frac; 
           tree->nmanure = 0; 
 
           tree->nfert_event++;
