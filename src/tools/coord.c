@@ -60,7 +60,7 @@ Coordfile opencoord(const Filename *filename, /**< filename of coord file */
     header.nyear=1;
     header.order=CELLYEAR;
     header.cellsize_lon=header.cellsize_lat=0.5;
-    coordfile->file=openmetafile(&header,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,&coordfile->swap,&coordfile->offset,filename->name,isout);
+    coordfile->file=openmetafile(&header,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,&coordfile->swap,&coordfile->offset,filename->name,isout);
     if(coordfile->file==NULL)
     {
       free(coordfile);
@@ -335,6 +335,12 @@ Real cellarea(const Coord *coord, /**< cell coordinate */
   return (111194.9*resol->lat)*(111194.9*resol->lon)*cos(deg2rad(coord->lat));
 } /* of 'cellarea' */
 
+Type getcoordtype(const Coordfile coordfile /**< open coord file */
+                 )                          /** \return datatype of coordinates */
+{
+  return  coordfile->datatype;
+} /* of 'getcoordtype' */
+
 Bool fscancoord(LPJfile *file, /**< pointer to text file */
                 Coord *coord,  /**< cell coordinate read */
                 Verbosity verb /**< verbosity level (NO_ERR,ERR,VERB) */
@@ -349,7 +355,7 @@ Bool fscancoord(LPJfile *file, /**< pointer to text file */
 
 int findcoord(const Coord *c,      /**< coordinate */
               const Coord array[], /**< array of coordinates */
-              const Coord *res,
+              const Coord *res,    /**< resolution (deg) */
               int size             /**< size of array */
              )         /** \return index of coordinate found or NOT_FOUND */
 {

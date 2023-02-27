@@ -237,6 +237,7 @@ extern int getnsoilcode(const Filename *,unsigned int,Bool);
 extern Soilstate getstate(Real *); /*temperature above/below/at T_zero?*/
 extern Bool initsoil(Stand *soil,const Soilpar *,int,const Config *);
 extern Real litter_ag_sum(const Litter *);
+extern void pftlitter_ag(Real *,const Litter *);
 extern Real litter_ag_sum_n(const Litter *);
 extern Real litter_agsub_sum(const Litter *);
 extern Real litter_agsub_sum_n(const Litter *);

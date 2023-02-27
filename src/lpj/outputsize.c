@@ -47,14 +47,16 @@ int outputsize(int index,     /**< output index */
     case CFT_EVAP: case CFT_EVAP_B: case CFT_IRRIG_EVENTS:
     case PFT_HARVESTC2: case PFT_RHARVESTC2:
     case PFT_HARVESTN2: case PFT_RHARVESTN2:
-    case CFT_INTERC2:
+    case CFT_INTERC2: case CFT_NHARVEST:
     case CFTFRAC2: case CFT_AIRRIG2:
     case CFT_TRANSP2: case CFT_NIR2:
     case CFT_EVAP2: case CFT_NFERT: case CFT_NFERT2:
       return 2*getnirrig(ncft,config);
     case FPC:
       return getnnat(npft,config)+1;
-    case PFT_MORT: case NV_LAI:
+    case PFT_LITTERC:
+      return npft+ncft;
+    case PFT_MORT: case NV_LAI: case PFT_HEIGHT:
       return getnnat(npft,config);
     case SOILTEMP: case SWC: case PERC: case WHC_NAT: case WHC_GRASS: case WHC_AGR:
     case KS_NAT: case KS_GRASS: case KS_AGR:

@@ -87,7 +87,7 @@ typedef struct
   Real excess_water;        /**< excess water (mm) */
   Real total_reservoir_out; /**< total water extracted from reservoirs (dm3) */
   Real total_irrig_from_reservoir; /**< total water added to fields from reservoirs (dm3)*/
-  Real n_influx;            /**< all N inputs: deposition, fertilizer, BNF */
+  Stocks influx;            /**< all C,N inputs: deposition, fertilizer, manure, BNF */
   Real n_outflux;           /**< all N outputs: n2onit, n2odenit, n2denit, leaching */
   Real n_demand;            /**< N demand by plants (gN)*/
   Real n_uptake;            /**< N uptake by plants (gN) */
@@ -142,7 +142,7 @@ Received 19 November 1997; accepted 15 January 1999*/
 
 extern void freegrid(Cell [],int,const Config *);
 extern void freecell(Cell *,int,const Config *);
-extern void update_daily(Cell *,Real,Real,Dailyclimate,int,
+extern void update_daily(Cell *,Real,Real,Real,Dailyclimate,int,
                          int,int,int,int,Bool,const Config *);
 extern void update_annual(Cell *,int,int,
                           Real,int,Bool,Bool,const Config *);

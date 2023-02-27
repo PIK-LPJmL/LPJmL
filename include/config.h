@@ -57,6 +57,7 @@ struct config
   Filename lwnet_filename;
   Filename swdown_filename;
   Filename popdens_filename;
+  Filename human_ign_prob_filename;
   Filename human_ignition_filename;
   Filename max_firesize_filename;
   Filename co2_filename;
@@ -224,6 +225,7 @@ struct config
   Bool new_seed;
   Coord resolution;    /**< size of grid cell (deg) */
   Bool ispopulation;
+  Bool ishuman_ign_prob;
   Bool river_routing;  /**< river routing enabled */
   Bool extflow;        /** external flow enabled */
   Bool permafrost;     /**< permafrost module enabled */
@@ -254,6 +256,7 @@ struct config
   int *soilmap;
   int soilmap_size;
   int grazing;
+  int grazing_others;
 #ifdef IMAGE
   Bool groundwater_irrig;   /**< Irrigation from groundwater reservoir */
   Bool aquifer_irrig;       /**< Aquifer irrigation possible?*/

@@ -86,7 +86,7 @@
 #include "urban.h"
 
 #define NTYPES 3 /* number of plant functional types: grass, tree, annual_crop */
-#define NSTANDTYPES 13 /* number of stand types / land use types as defined in landuse.h*/
+#define NSTANDTYPES 14 /* number of stand types / land use types as defined in landuse.h*/
 
 int main(int argc,char **argv)
 {
@@ -113,6 +113,7 @@ int main(int argc,char **argv)
   standtype[AGRICULTURE]=&agriculture_stand;
   standtype[MANAGEDFOREST]=&managedforest_stand;
   standtype[GRASSLAND]=&grassland_stand;
+  standtype[OTHERS]=&others_stand;
   standtype[BIOMASS_TREE]=&biomass_tree_stand;
   standtype[BIOMASS_GRASS]=&biomass_grass_stand;
   standtype[AGRICULTURE_TREE]=&agriculture_tree_stand;
@@ -218,7 +219,7 @@ int main(int argc,char **argv)
   /* open output files */  
   output=fopenoutput(grid,NOUT,&config);
   rc=initoutput(output,grid,config.npft[GRASS]+config.npft[TREE],config.npft[CROP],&config);
-  failonerror(&config,rc,INIT_INPUT_ERR,
+  failonerror(&config,rc,INIT_OUTPUT_ERR,
               "Initialization of output data failed");
   if(isopen(output,GRID))
     writecoords(output,GRID,grid,&config);

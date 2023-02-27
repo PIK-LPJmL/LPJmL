@@ -36,6 +36,19 @@ Stand *freadstand(FILE *file, /**< File pointer to binary file */
     return NULL;
   }
   stand->cell=cell;
+  if(fread(&landusetype,sizeof(landusetype),1,file)!=1)
+  {
+    free(stand);
+    return NULL;
+  }
+  if(landusetype>=nstand)
+  {
+    fprintf(stderr,"ERROR196: Invalid value %d for stand type, must be in [0,%d].\n",
+            landusetype,nstand-1);
+    free(stand);
+    return NULL;
+  }
+  stand->type=standtype[landusetype];
   if(freadpftlist(file,stand,&stand->pftlist,pftpar,ntotpft,double_harvest,swap))
   {
     free(stand);
@@ -48,24 +61,7 @@ Stand *freadstand(FILE *file, /**< File pointer to binary file */
     return NULL;
   }
   freadreal1(&stand->frac,swap,file);
-  if(fread(&landusetype,sizeof(landusetype),1,file)!=1)
-  {
-    freepftlist(&stand->pftlist);
-    freesoil(&stand->soil);
-    free(stand);
-    return NULL;
-  }
-  if(landusetype>=nstand)
-  {
-    fprintf(stderr,"ERROR196: Invalid value %d for stand type, must be in [0,%d].\n",
-            landusetype,nstand-1);
-    freepftlist(&stand->pftlist);
-    freesoil(&stand->soil);
-    free(stand);
-    return NULL;
-  }
   stand->data=NULL;
-  stand->type=standtype[landusetype];
   fread(&isfire,sizeof(isfire),1,file);
   if(stand->type->dailyfire!=NULL && stand->type->max_ndayfire>0)
   {

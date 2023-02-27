@@ -29,7 +29,7 @@
 #include "urban.h"
 
 #define NTYPES 3
-#define NSTANDTYPES 13 /* number of stand types / land use types as defined in landuse.h*/
+#define NSTANDTYPES 14 /* number of stand types / land use types as defined in landuse.h*/
 #define LPJSERVER_VERSION "0.9.005"
 #define USAGE "%s [LPJargs ...]"
 #define dflt_filename "lpjml.conf"
@@ -67,6 +67,7 @@ int main(int argc,char **argv)
   standtype[AGRICULTURE]=&agriculture_stand;
   standtype[MANAGEDFOREST]=&managedforest_stand;
   standtype[GRASSLAND]=&grassland_stand;
+  standtype[OTHERS]=&others_stand;
   standtype[BIOMASS_TREE]=&biomass_tree_stand;
   standtype[BIOMASS_GRASS]=&biomass_grass_stand;
   standtype[AGRICULTURE_TREE]=&agriculture_tree_stand;

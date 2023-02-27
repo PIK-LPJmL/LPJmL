@@ -19,7 +19,7 @@
 /* Definition of constants */
 
 #define RESTART_HEADER "LPJRESTART"
-#define RESTART_VERSION 26
+#define RESTART_VERSION 28
 #define LPJ_CLIMATE_HEADER "LPJCLIM"
 #define LPJ_CLIMATE_VERSION 3
 #define LPJ_LANDUSE_HEADER "LPJLUSE"
@@ -153,16 +153,16 @@ extern Bool freadanyheader(FILE *,Header *,Bool *,String,int *,Bool);
 extern size_t headersize(const char *,int);
 extern FILE *openinputfile(Header *, Bool *,const Filename *,
                            String,const char *,int *,size_t *,Bool,const Config *);
-extern FILE *openmetafile(Header *,Map **,const char *,Attr **,int *,String,String,String,String,Bool *,size_t *,const char *,Bool);
+extern FILE *openmetafile(Header *,Map **,const char *,Attr **,int *,String,String,String,Filename *,Type *,Bool *,size_t *,const char *,Bool);
 extern char *getfilefrommeta(const char *,Bool);
 extern void fprintheader(FILE *,const Header *);
-extern char *parse_json_metafile(LPJfile *,char *,Header *,Map **,const char *,Attr **,int *,String,String,String,String,size_t *,Bool *,Verbosity);
+extern char *parse_json_metafile(LPJfile *,char *,Header *,Map **,const char *,Attr **,int *,String,String,String,Filename *,Type *,size_t *,Bool *,Verbosity);
 extern Map *fscanmap(LPJfile *,const char *,Verbosity);
 extern void freemap(Map *);
 extern void fprintmap(FILE *,Map *);
 extern void fprintjson(FILE *,const char *,const char *,const Header *,
                        Map *,const char *,const Attr *,int,const char *,const char *,
-                       const char *,const char *,int,const char *,Bool,int);
+                       const char *,const Filename *,Type,int,const char *,Bool,int);
 
 /* Definition of macros */
 

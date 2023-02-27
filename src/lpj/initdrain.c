@@ -116,10 +116,10 @@ static int *getindex(const Input_netcdf input,const Cell grid[],
   return index;
 } /* of 'getindex' */
 
-static Bool getroute(FILE *file, /**< pointer to binary file */
-                     Routing *r, /**< River route read */
-                     Bool swap   /**< Byte order has to be changed */
-                    )            /** \return TRUE on error */
+Bool getroute(FILE *file, /**< pointer to binary file */
+              Routing *r, /**< River route read */
+              Bool swap   /**< Byte order has to be changed */
+             )            /** \return TRUE on error */
 {
   /* Function reads river route from file */
   if(fread(r,sizeof(Routing),1,file)!=1)

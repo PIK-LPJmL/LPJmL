@@ -27,6 +27,7 @@
 void update_daily(Cell *cell,            /**< cell pointer           */
                   Real co2,              /**< atmospheric CO2 (ppmv) */
                   Real popdensity,       /**< population density (capita/km2) */
+                  Real human_ign_prob,   /**< human ignition probability */
                   Dailyclimate climate,  /**< Daily climate values */
                   int day,               /**< day (1..365)           */
                   int npft,              /**< number of natural PFTs */
@@ -117,7 +118,7 @@ void update_daily(Cell *cell,            /**< cell pointer           */
       {
         stand->soil.NO3[0]+=param.fertilizer_rate*0.25;
         stand->soil.NH4[0]+=param.fertilizer_rate*0.25;
-        cell->balance.n_influx+=param.fertilizer_rate*0.5*stand->frac;
+        cell->balance.influx.nitrogen+=param.fertilizer_rate*0.5*stand->frac;
       }
       if(config->till_fallow)
       {
@@ -134,7 +135,7 @@ void update_daily(Cell *cell,            /**< cell pointer           */
     getoutput(&cell->output,ALBEDO,config) += beta * stand->frac;
 
     if((config->fire==SPITFIRE  || config->fire==SPITFIRE_TMAX)&& stand->afire_frac<1)
-      dailyfire_stand(stand,popdensity,avgprec,&climate,config);
+      dailyfire_stand(stand,popdensity,human_ign_prob,avgprec,&climate,config);
     if(config->permafrost)
     {
       snowrunoff=snow(&stand->soil,&climate.prec,&melt,
@@ -299,7 +300,7 @@ void update_daily(Cell *cell,            /**< cell pointer           */
           stand->soil.NH4[0]+=1000;
           stand->soil.NO3[0]+=1000;
         }
-        cell->balance.n_influx+=2000*stand->frac;
+        cell->balance.influx.nitrogen+=2000*stand->frac;
         if (isagriculture(stand->type->landusetype))
           getoutput(&cell->output,NDEPO_AGR,config)+=2000*stand->frac;
       }
@@ -318,7 +319,7 @@ void update_daily(Cell *cell,            /**< cell pointer           */
           stand->soil.NH4[0]+=climate.nh4deposition;
           stand->soil.NO3[0]+=climate.no3deposition;
         }
-        cell->balance.n_influx+=(climate.nh4deposition+climate.no3deposition)*stand->frac;
+        cell->balance.influx.nitrogen+=(climate.nh4deposition+climate.no3deposition)*stand->frac;
         if (isagriculture(stand->type->landusetype))
           getoutput(&cell->output,NDEPO_AGR,config)+=(climate.nh4deposition+climate.no3deposition)*stand->frac;
       }
@@ -342,7 +343,7 @@ void update_daily(Cell *cell,            /**< cell pointer           */
       bnf=biologicalnfixation(stand);
       stand->soil.NH4[0]+=bnf;
       getoutput(&cell->output,BNF,config)+=bnf*stand->frac;
-      cell->balance.n_influx+=bnf*stand->frac;
+      cell->balance.influx.nitrogen+=bnf*stand->frac;
     }
 
     runoff=daily_stand(stand,co2,&climate,day,month,daylength,

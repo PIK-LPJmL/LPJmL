@@ -586,6 +586,7 @@ void fwriteoutput(Outputfile *output,  /**< output file array */
   const Irrigation *data;
   float *vec;
   short *svec;
+  Real *litter;
   nirrig=2*getnirrig(ncft,config);
   nnat=getnnat(npft,config);
   switch(timestep)
@@ -704,10 +705,9 @@ void fwriteoutput(Outputfile *output,  /**< output file array */
         {
           foreachstand(stand,s,grid[cell].standlist)
           {
-            foreachstand(stand,s,grid[cell].standlist)
-              /*if(stand->type->landusetype==NATURAL) */
-              foreachpft(pft,p,&stand->pftlist)
-                getoutput(&grid[cell].output,VEGC,config)+=vegc_sum(pft)*stand->frac;
+            /*if(stand->type->landusetype==NATURAL) */
+            foreachpft(pft,p,&stand->pftlist)
+              getoutput(&grid[cell].output,VEGC,config)+=vegc_sum(pft)*stand->frac;
           }
         }
     }
@@ -722,10 +722,9 @@ void fwriteoutput(Outputfile *output,  /**< output file array */
         {
           foreachstand(stand,s,grid[cell].standlist)
           {
-            foreachstand(stand,s,grid[cell].standlist)
-              /*if(stand->type->landusetype==NATURAL) */
-              foreachpft(pft,p,&stand->pftlist)
-                getoutput(&grid[cell].output,VEGN,config)+=(vegn_sum(pft)+pft->bm_inc.nitrogen)*stand->frac;
+            /*if(stand->type->landusetype==NATURAL) */
+            foreachpft(pft,p,&stand->pftlist)
+              getoutput(&grid[cell].output,VEGN,config)+=(vegn_sum(pft)+pft->bm_inc.nitrogen)*stand->frac;
           }
         }
     }
@@ -735,6 +734,7 @@ void fwriteoutput(Outputfile *output,  /**< output file array */
   {
     if(iswrite2(SOILC,timestep,year,config) || (timestep==ANNUAL && config->outnames[SOILC].timestep>0))
     {
+      litter=newvec(Real,npft);
       for(cell=0;cell<config->ngridcell;cell++)
         if(!grid[cell].skip)
         {
@@ -800,6 +800,28 @@ void fwriteoutput(Outputfile *output,  /**< output file array */
     }
     writeoutputvar(SOILN_SLOW,1);
   }
+  if(isopen(output,PFT_LITTERC))
+  {
+    if(iswrite2(PFT_LITTERC,timestep,year,config) || (timestep==ANNUAL && config->outnames[PFT_LITTERC].timestep>0))
+    {
+      litter=newvec(Real,npft+ncft);
+      check(litter);
+      for(cell=0;cell<config->ngridcell;cell++)
+        if(!grid[cell].skip)
+        {
+          foreachstand(stand,s,grid[cell].standlist)
+            if(stand->type->landusetype==NATURAL)
+            {
+              pftlitter_ag(litter,&stand->soil.litter);
+              for(p=0;p<npft+ncft;p++)
+                getoutputindex(&grid[cell].output,PFT_LITTERC,p,config)+=litter[p];
+            }
+        }
+      free(litter);
+    }
+    writeoutputarray(PFT_LITTERC,1);
+  }
+
   if(isopen(output,LITC))
   {
     if(iswrite2(LITC,timestep,year,config) || (timestep==ANNUAL && config->outnames[LITC].timestep>0))
@@ -1246,6 +1268,7 @@ void fwriteoutput(Outputfile *output,  /**< output file array */
   writeoutputarray(CFT_CONSUMP_WATER_B,1);
   writeoutputarray(GROWING_PERIOD,1);
   writeoutputarray(PFT_MORT,1);
+  writeoutputarray(PFT_HEIGHT,1);
   writeoutputarray(FPC_BFT,1);
   writeoutputarray(NV_LAI,ndate1);
   if(isopen(output,SOILC_LAYER))
@@ -1371,6 +1394,7 @@ void fwriteoutput(Outputfile *output,  /**< output file array */
   writeoutputarray(CFT_CONV_LOSS_EVAP,1);
   writeoutputarray(CFT_CONV_LOSS_DRAIN,1);
   writeoutputarray(CFTFRAC,1);
+  writeoutputarray(CFT_NHARVEST,1);
   writeoutputarray(CFT_AIRRIG,1);
   writeoutputarray(CFT_FPAR,ndate1);
   writeoutputarray(LUC_IMAGE,1);
@@ -1397,6 +1421,7 @@ void fwriteoutput(Outputfile *output,  /**< output file array */
     }
     writeoutputarray(PFT_LAIMAX,1);
   }
+  writeoutputarray(PFT_LAI,ndate1); /* FS 2022-12-06: added since this output was never written out */
   if(isopen(output,PFT_NROOT))
   {
     if(iswrite2(PFT_NROOT,timestep,year,config) || (timestep==ANNUAL && config->outnames[PFT_NROOT].timestep>0))

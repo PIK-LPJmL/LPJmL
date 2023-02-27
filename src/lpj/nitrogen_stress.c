@@ -33,7 +33,7 @@ Real nitrogen_stress(Pft *pft,             /**< PFT */
 #endif
   nplant_demand=0;
   nup=0;
-  if(pft->bm_inc.carbon>0 || ((pft->stand->type->landusetype==GRASSLAND || pft->stand->type->landusetype==SETASIDE_RF || pft->stand->type->landusetype==SETASIDE_IR) && pft->bm_inc.carbon>=0))
+  if(pft->bm_inc.carbon>0 || ((pft->stand->type->landusetype==GRASSLAND || (pft->stand->type->landusetype==OTHERS && !config->others_to_crop) || pft->stand->type->landusetype==BIOMASS_GRASS|| pft->stand->type->landusetype==SETASIDE_RF || pft->stand->type->landusetype==SETASIDE_IR) && pft->bm_inc.carbon>=0))
   {
     nplant_demand=ndemand(pft,&ndemand_leaf,pft->vmax,daylength,temp)*(1+pft->par->knstore);
     ndemand_leaf_opt=ndemand_leaf;
@@ -47,7 +47,7 @@ Real nitrogen_stress(Pft *pft,             /**< PFT */
         pft->npp_bnf=npp;
       nup=nuptake(pft,&nplant_demand,&ndemand_leaf,npft,ncft,config);
     }
-    else if(pft->stand->type->landusetype!=AGRICULTURE)
+    else if(pft->stand->type->landusetype!=AGRICULTURE  && (pft->stand->type->landusetype!=OTHERS || !config->others_to_crop))
       pft->vscal+=1;
     getoutput(&pft->stand->cell->output,NUPTAKE,config)+=nup*pft->stand->frac;
     if(isagriculture(pft->stand->type->landusetype))
@@ -61,7 +61,7 @@ Real nitrogen_stress(Pft *pft,             /**< PFT */
 #endif
     }
   }
-  else if(pft->stand->type->landusetype!=AGRICULTURE)
+  else if(pft->stand->type->landusetype!=AGRICULTURE  && (pft->stand->type->landusetype!=OTHERS || !config->others_to_crop))
     pft->vscal+=1;
   return nplant_demand;
 } /* of 'nitrogen_stress' */

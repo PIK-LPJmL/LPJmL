@@ -15,7 +15,7 @@
 #include "lpj.h"
 #include "grassland.h"
 
-Bool isdailyoutput_grassland(const Config *config, /**< Output data */
+Bool isdailyoutput_grassland(const Config *config, /**< LPJmL configuration */
                              const Stand *stand    /**< stand pointer */
                            )
 {

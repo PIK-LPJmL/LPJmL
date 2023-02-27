@@ -60,6 +60,13 @@ Bool initinput(Input *input,        /**< Input data */
   }
   else
     input->popdens=NULL;
+  if(config->ishuman_ign_prob)
+  {
+    if((input->human_ign_prob=inithuman_ign_prob(config))==NULL)
+      return TRUE;
+  }
+  else
+    input->human_ign_prob=NULL;
   if(config->prescribe_landcover != NO_LANDCOVER)
   {
     if((input->landcover=initlandcover(npft,config))==NULL)

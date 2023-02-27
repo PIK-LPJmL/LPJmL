@@ -91,13 +91,15 @@ char *parse_json_metafile(LPJfile *lpjfile,   /**< pointer to JSON file */
                           String variable,    /**< name of variable or NULL */
                           String unit,        /**< unit of variable or NULL */
                           String descr,       /**< description of variable or NULL */
-                          String gridfile,    /**< name of grid file or NULL */
+                          Filename *gridfile, /**< name of grid file or NULL */
+                          Type *grid_type,    /**< datatype of grid or NULL */
                           size_t *offset,     /**< offset in binary file */
                           Bool *swap,         /**< byte order has to be changed (TRUE/FALSE) */
                           Verbosity verbosity /**< verbosity level */
                          )                    /** \return filename of binary file or NULL */
 {
   FILE *file;
+  LPJfile item;
   String filename;
   Bool endian;
   file=lpjfile->file.file;
@@ -147,17 +149,51 @@ char *parse_json_metafile(LPJfile *lpjfile,   /**< pointer to JSON file */
   }
   if(gridfile!=NULL)
   {
-    if(iskeydefined(lpjfile,"gridfile"))
+    if(iskeydefined(lpjfile,"grid"))
     {
-      if(fscanstring(lpjfile,gridfile,"gridfile",FALSE,verbosity))
+      if(fscanstruct(lpjfile,&item,"grid",verbosity))
       {
         closeconfig(lpjfile);
         lpjfile->file.file=file;
         return NULL;
       }
+      if(fscanstring(&item,filename,"filename",FALSE,verbosity))
+      {
+        closeconfig(lpjfile);
+        lpjfile->file.file=file;
+        return NULL;
+      }
+      gridfile->name=strdup(filename);
+      if(fscankeywords(&item,&gridfile->fmt,"format",fmt,N_FMT,FALSE,verbosity))
+      {
+        closeconfig(lpjfile);
+        lpjfile->file.file=file;
+        return NULL;
+      }
+      if(grid_type!=NULL)
+      {
+        if(iskeydefined(&item,"datatype"))
+        {
+          if(fscankeywords(&item,(int *)grid_type,"datatype",typenames,5,FALSE,verbosity))
+          {
+            closeconfig(lpjfile);
+            lpjfile->file.file=file;
+            return NULL;
+          }
+          if(*grid_type==LPJ_BYTE || *grid_type==LPJ_INT)
+          {
+            if(verbosity)
+              fprintf(stderr,"ERROR229: Invalid datatype %s for grid, must be short, float or double.\n",
+                    typenames[*grid_type]);
+            closeconfig(lpjfile);
+            lpjfile->file.file=file;
+            return NULL;
+          }
+        }
+      }
     }
     else
-      gridfile[0]='\0';
+      gridfile->name=NULL;
   }
   if(unit!=NULL)
   {
@@ -358,7 +394,8 @@ FILE *openmetafile(Header *header,       /**< pointer to file header */
                    String variable,      /**< name of variable or NULL */
                    String unit,          /**< unit of variable or NULL */
                    String descr,         /**< description of variable or NULL */
-                   String gridfile,      /**< name of grid file or NULL */
+                   Filename *gridfile,   /**< name of grid file or NULL */
+                   Type *grid_type,      /**< datatype of grid or NULL */
                    Bool *swap,           /**< byte order has to be changed (TRUE/FALSE) */
                    size_t *offset,       /**< offset in binary file */
                    const char *filename, /**< file name */
@@ -389,11 +426,13 @@ FILE *openmetafile(Header *header,       /**< pointer to file header */
     unit[0]='\0';
   if(descr!=NULL)
     descr[0]='\0';
+  if(gridfile!=NULL)
+    gridfile->name=NULL;
   while(!fscantoken(file.file.file,key))
     if(key[0]=='{')
     {
 #ifdef USE_JSON
-      name=parse_json_metafile(&file,key,header,map,map_name,attrs,n_attr,variable,unit,descr,gridfile,offset,swap,isout ? ERR : NO_ERR);
+      name=parse_json_metafile(&file,key,header,map,map_name,attrs,n_attr,variable,unit,descr,gridfile,grid_type,offset,swap,isout ? ERR : NO_ERR);
       break;
 #else
       if(isout)

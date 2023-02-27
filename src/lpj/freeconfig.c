@@ -99,6 +99,8 @@ void freeconfig(Config *config /**< LPJmL configuration */
   free(config->npft);
   if(config->ispopulation)
     freefilename(&config->popdens_filename);
+  if(config->ishuman_ign_prob)
+    freefilename(&config->human_ign_prob_filename);
   if(config->grassfix_filename.name!=NULL)
     freefilename(&config->grassfix_filename);
   if(config->grassharvest_filename.name!=NULL)

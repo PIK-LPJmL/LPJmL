@@ -22,10 +22,14 @@ Bool annual_tree(Stand *stand,       /**< pointer to stand */
                  const Config *config /**< LPJmL configuration */
                 )                    /** \return TRUE on death */
 {
+  Pfttree *tree;
   Stocks turnover_ind;
   Bool isdead;
+  tree=pft->data;
   turnover_ind=turnover_tree(&stand->soil.litter,pft,config);
   isdead=allocation_tree(&stand->soil.litter,pft,fpc_inc,config);
+  if(stand->type->landusetype==NATURAL)
+     getoutputindex(&pft->stand->cell->output,PFT_HEIGHT,pft->par->id,config)+=tree->height;
   if(!isdead)
   {
     isdead=mortality_tree(&stand->soil.litter,pft,turnover_ind.carbon,

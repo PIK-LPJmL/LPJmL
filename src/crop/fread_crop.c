@@ -63,7 +63,7 @@ Bool fread_crop(FILE *file,          /**< file pointer */
   freadreal1(&crop->nmanure,swap,file);
   freadreal1(&crop->vscal_sum,swap,file);
   freadint1(&crop->frostkill,swap,file);
-  if(double_harvest)
+  if(pft->stand->type->landusetype==AGRICULTURE && double_harvest)
   {
     crop->dh=new(Double_harvest);
     if(crop->dh==NULL)

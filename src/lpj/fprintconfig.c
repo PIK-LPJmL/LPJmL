@@ -116,6 +116,8 @@ static size_t isnetcdfinput(const Config *config)
   }
   if(config->ispopulation && config->popdens_filename.fmt==CDF)
     width=max(width,strlen(config->popdens_filename.var));
+  if(config->ishuman_ign_prob && config->human_ign_prob_filename.fmt==CDF)
+    width=max(width,strlen(config->human_ign_prob_filename.var));
   if(config->grassfix_filename.name!=NULL && config->grassfix_filename.fmt==CDF)
     width=max(width,strlen(config->grassfix_filename.var));
   if(config->grassharvest_filename.name!=NULL && config->grassharvest_filename.fmt==CDF)
@@ -255,6 +257,8 @@ void fprintconfig(FILE *file,          /**< File pointer to text output file */
       len=printsim(file,len,&count,"and population");
     if((config->fire==SPITFIRE || config->fire==SPITFIRE_TMAX) && config->prescribe_burntarea)
       len=printsim(file,len,&count,"prescribed burntarea");
+    if(config->ishuman_ign_prob)
+      len=printsim(file,len,&count,"human ignition probabilities");
     if(config->prescribe_ignition)
       len=printsim(file,len,&count,"prescribed ignitions");
     if(config->fire==SPITFIRE || config->fire==SPITFIRE_TMAX)
@@ -446,6 +450,13 @@ void fprintconfig(FILE *file,          /**< File pointer to text output file */
       snprintf(s,STRING_LEN,"%s grazing",grazing_type[config->grazing]);
       len=fputstring(file,len,s,78);
     }
+    if(!config->others_to_crop)
+    {
+      len=fputstring(file,len,", ",78);
+      snprintf(s,STRING_LEN,"%s others grazing",grazing_type[config->grazing_others]);
+      count++;
+      len=fputstring(file,len,s,78);
+    }
     len=fputstring(file,len,", ",78);
     count++;
     snprintf(s,STRING_LEN,"%s crop PHU option",crop_phu_options[config->crop_phu_option]);
@@ -560,6 +571,8 @@ void fprintconfig(FILE *file,          /**< File pointer to text output file */
   }
   if(config->ispopulation)
     printinputfile(file,"pop. dens",&config->popdens_filename,width);
+  if(config->ishuman_ign_prob)
+    printinputfile(file,"h ign prob",&config->human_ign_prob_filename,width);
   if(config->prescribe_burntarea)
     printinputfile(file,"burntarea",&config->burntarea_filename,width);
   if(config->prescribe_landcover)
@@ -716,12 +729,12 @@ void fprintconfig(FILE *file,          /**< File pointer to text output file */
               config->missing_value,config->baseyear,
               config->global_netcdf ? "global" : "local");
     }
-    fprintf(file,"%*s Fmt %*s Type  dt  nbd Filename\n",-width,"Variable",-width_unit,"Unit");
+    fprintf(file,"%*s Fmt %*s Type   dt  nbd Filename\n",-width,"Variable",-width_unit,"Unit");
     frepeatch(file,'-',width);
     fputs(" --- ",file);
     frepeatch(file,'-',width_unit);
-    fputs(" ----- --- --- ",file);
-    frepeatch(file,'-',77-width-4-width_unit-7-3-4);
+    fputs(" ------ --- --- ",file);
+    frepeatch(file,'-',77-width-4-width_unit-7-3-5);
     putc('\n',file);
     for(i=0;i<config->n_out;i++)
     {
@@ -730,7 +743,7 @@ void fprintconfig(FILE *file,          /**< File pointer to text output file */
         fprintf(file,"%*d",-width,config->outputvars[index].id);
       else
         fprintf(file,"%*s",-width,config->outnames[config->outputvars[index].id].name);
-      fprintf(file," %-3s %*s %-5s %-3s %3d ",fmt[config->outputvars[index].filename.fmt],
+      fprintf(file," %-3s %*s %-6s %-3s %3d ",fmt[config->outputvars[index].filename.fmt],
               -width_unit,strlen(config->outnames[config->outputvars[index].id].unit)==0 ? "-" : config->outnames[config->outputvars[index].id].unit,
               typenames[getoutputtype(config->outputvars[index].id,config->grid_type)],
               sprinttimestep(s,config->outnames[config->outputvars[index].id].timestep),outputsize(config->outputvars[index].id,npft,ncft,config));
@@ -743,8 +756,8 @@ void fprintconfig(FILE *file,          /**< File pointer to text output file */
     frepeatch(file,'-',width);
     fputs(" --- ",file);
     frepeatch(file,'-',width_unit);
-    fputs(" ----- --- --- ",file);
-    frepeatch(file,'-',77-width-4-width_unit-7-3-4);
+    fputs(" ------ --- --- ",file);
+    frepeatch(file,'-',77-width-4-width_unit-7-3-5);
     putc('\n',file);
     switch(config->crop_index)
     {

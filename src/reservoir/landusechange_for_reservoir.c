@@ -23,7 +23,7 @@ static void deforest_for_reservoir(Cell *cell,    /**< pointer to cell */
                                    Real difffrac, /**< fraction to deforest */
                                    Bool istimber, /**< setting istimber */
                                    int ntotpft,   /**< total number of PFTs */
-                                   const Config *config
+                                   const Config *config /**< LPJmL configuration */
                                   )               /** \return void */
 {
   int s,pos;

@@ -29,21 +29,34 @@ Stocks sowing_prescribe(Cell *cell,          /**< pointer to cell */
   const Pftcroppar *croppar;
   int cft,s,s2;
   int earliest_sdate;
+  int cft_other;
   Bool wtype;
 
   s=findlandusetype(cell->standlist,SETASIDE_RF);
   s2=findlandusetype(cell->standlist,SETASIDE_IR);
   if (s!=NOT_FOUND||s2!=NOT_FOUND)
   {
+    if(config->others_to_crop)
+       cft_other=(fabs(cell->coord.lat)>30) ? config->cft_temp : config->cft_tropic;
+    else
+       cft_other=-1;
     for (cft=0; cft<ncft; cft++)
     {
       croppar=config->pftpar[npft+cft].data;
       earliest_sdate=(cell->coord.lat>=0)?croppar->initdate.sdatenh:croppar->initdate.sdatesh;
       wtype = (croppar->calcmethod_sdate==TEMP_WTYP_CALC_SDATE && day>earliest_sdate);
       if(day==cell->ml.sdate_fixed[cft])
-        sowingcft(&flux_estab,alloc_today,cell,FALSE,wtype,TRUE,npft,ncft,cft,year,day,config);
+      {
+        sowingcft(&flux_estab,alloc_today,cell,FALSE,wtype,TRUE,npft,ncft,cft,year,day,FALSE,config);
+        if(cft==cft_other)
+          sowingcft(&flux_estab,alloc_today,cell,FALSE,wtype,TRUE,npft,ncft,cft,year,day,TRUE,config);
+      }
       if(day==cell->ml.sdate_fixed[cft+ncft])
-        sowingcft(&flux_estab,alloc_today+1,cell,TRUE,wtype,TRUE,npft,ncft,cft,year,day,config);
+      {
+        sowingcft(&flux_estab,alloc_today+1,cell,TRUE,wtype,TRUE,npft,ncft,cft,year,day,FALSE,config);
+        if(cft==cft_other)
+          sowingcft(&flux_estab,alloc_today+1,cell,TRUE,wtype,TRUE,npft,ncft,cft,year,day,TRUE,config);
+      }
     }
   }
   return flux_estab;

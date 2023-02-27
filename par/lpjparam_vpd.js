@@ -61,11 +61,11 @@
   "fertilizer_rate" : 10,     /* default: 20; fixed fertilizer application rate in gN/m2/yr */
   "manure_rate" : 0,          /* default: 20; fixed manure application rate in gN/m2/yr */
   "mixing_efficiency" : 0.9,  /* mixing efficiency of tillage */
-  "aprec_lim" : 900,         /* annual prec limit for C3 threshold (mm) */
-  "irrig_threshold_c3_dry" : 0.95,     /* irrigation threshold C3, prec < aprec_lim */
-  "irrig_threshold_c3_humid" : 0.95,   /* irrigation threshold C3, prec >= aprec_lim */
-  "irrig_threshold_c4" : 0.95,         /* irrigation threshold C4 */
-  "irrig_threshold_rice" : 1.0,       /* irrigation threshold RICE */
+  "fpc_tree_max" : 0.95,     /* maximum foliage projective cover for trees */
+  "temp_response" : 46.02,   /* Parameter in temperature response function */
+  "percthres" : 1.0,
+  "lsuha" : 0.0,             /* livestock density */
+  "aprec_lim" : 900,         /* annual prec limit for C3 threshold*/
   "irrig_soilfrac" : 1.0,             /* fraction of soil filled with water during irrigation event */
   "canal_conveyance_eff_sand" : 0.7,  /* open canal conveyance efficiency, soil type sand (Ks > 20)*/
   "canal_conveyance_eff_loam" : 0.75, /* open canal conveyance efficiency, soil type loam (10<=Ks<=20)*/
@@ -75,7 +75,6 @@
   "saturation_level_sprink" : 0.55,   /* saturation level sprinkler irrigation*/
   "saturation_level_drip" : 0.05,     /* saturation level drip irrigation*/
   "drip_evap_reduction" : 0.6,        /* reduction of drip soil evap */
-  "nfert_split" : 0,                  /* threshold fertilizer input for split application */
   "nfert_split_frac" : 0.2,           /* fraction of fertilizer input at sowing */
   "nfert_no3_frac" : 0.5,             /* fraction of NO3 in fertilizer input */
   "nmanure_nh4_frac" : 0.666667,      /* fraction of NH4 in manure input */
@@ -91,8 +90,6 @@
   "rw_irrig_thres" : 0.0,             /* threshold to apply rw_irrigation */
   "soil_infil_rw" : 2.0,              /* values > 2 (default) increase soil infiltration on rainfed and irrigated managed land */
   "yield_gap_bridge" : 0.0,           /* factor by which laimax value is closed (7 - country-value)*factor */
-  "allocation_threshold" : 35.0,      /* allocation threshold for daily grassland allocation */
-  "hfrac2" : 2500.0,
   "firedura" : -11.06,//-8.79,//-8.79,                 /* scaling factor for fire duration for the WVPD*/
   "hum_ign" : -0.53,                  /* a parameter for scaling the human ignintions within SPITFIRE */
   "fire_intens" : 0.000001,           /* threshold of fireintensity for which burnt area can be modeled */
@@ -100,6 +97,13 @@
   "cg_ratio" : 0.2,                   /*cloud to ground ratio for lightning flashes */
   "max_fireduration" : 1320,          /* maximum fire duration (min) */
   "max_ndayfire" : 15,                /* maximum fire days (days) */
+  "nfert_split" : 5,                  /* threshold fertilizer input for split application */
+  "residues_in_soil" : 0.1,           /* minimum residues in soil*/
+  "fburnt" : 1.0,                     /* fraction of trees burnt at deforestation, refers to remainder after timber harvest */
+  "ftimber_wp" : 0.76,                /* timber fraction for wood plantations */
+  "allocation_threshold" : 35.0,      /* allocation threshold for daily grassland allocation */
+  "hfrac2" : 2500.0,
+  "hfrac_biomass" : 0.75,             /* harvest fraction of biomass grass */
   "rootreduction" : 0.5,              /* fraction used to calculate amount of roots dying at harvest in managed grasslands */
   "phen_limit" : 0.5,                 /* phen. limit for agricultural trees */
   "nfrac_grassharvest" : 0.5,         /* fraction of nitrogen from grass harvest not returned to NH4 pool via manure after mowing*/

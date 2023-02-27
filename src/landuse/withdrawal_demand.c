@@ -49,6 +49,7 @@ void withdrawal_demand(Cell *grid,          /**< LPJ grid */
       foreachstand(stand,s,grid[cell].standlist)
         if(stand->type->landusetype==AGRICULTURE ||
            stand->type->landusetype==GRASSLAND ||
+           stand->type->landusetype==OTHERS ||
            stand->type->landusetype==BIOMASS_GRASS ||
            stand->type->landusetype==BIOMASS_TREE ||
            stand->type->landusetype==AGRICULTURE_GRASS ||
