@@ -128,6 +128,8 @@ void fprintparam(FILE *file,    /**< pointer to text file */
       fprintf(file,"nfrac grazing:\t%g\n",param.nfrac_grazing);
       fprintf(file,"nfrac grassharvest:\t%g\n",param.nfrac_grassharvest);
     }
+    fprintf(file,"harvest date biomass grass NH:\t%g\n",param.bmgr_harvest_day_nh);    
+    fprintf(file,"harvest date biomass grass SH:\t%g\n",param.bmgr_harvest_day_sh); 
     fprintf(file,"timber fraction wp:\t%g\n",param.ftimber_wp);
     if(config->istimber)
     {

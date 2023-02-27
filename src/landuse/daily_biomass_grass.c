@@ -269,16 +269,6 @@ Real daily_biomass_grass(Stand *stand,                /**< stand pointer */
         }
         else
         {
-          grass->turn.leaf.carbon+=grass->ind.leaf.carbon*grasspar->turnover.leaf/NDAYYEAR;
-          stand->soil.litter.item[pft->litter].agtop.leaf.carbon+=grass->ind.leaf.carbon*grasspar->turnover.leaf/NDAYYEAR*pft->nind;
-          update_fbd_grass(&stand->soil.litter,pft->par->fuelbulkdensity,grass->ind.leaf.carbon*grasspar->turnover.leaf/NDAYYEAR*pft->nind);
-          getoutput(output,LITFALLC,config)+=grass->ind.leaf.carbon*grasspar->turnover.leaf/NDAYYEAR*pft->nind*stand->frac;
-          grass->turn_litt.leaf.carbon+=grass->ind.leaf.carbon*grasspar->turnover.leaf/NDAYYEAR*pft->nind;
-          grass->turn.leaf.nitrogen+=grass->ind.leaf.nitrogen*grasspar->turnover.leaf/NDAYYEAR;
-          stand->soil.litter.item[pft->litter].agtop.leaf.nitrogen+=grass->ind.leaf.nitrogen*grasspar->turnover.leaf/NDAYYEAR*pft->nind*pft->par->fn_turnover;
-          getoutput(output,LITFALLN,config)+=grass->ind.leaf.nitrogen*grasspar->turnover.leaf/NDAYYEAR*pft->nind*pft->par->fn_turnover*stand->frac;
-          grass->turn_litt.leaf.nitrogen+=grass->ind.leaf.nitrogen*grasspar->turnover.leaf/NDAYYEAR*pft->nind;
-
           grass->turn.root.carbon+=grass->ind.root.carbon*grasspar->turnover.root/NDAYYEAR;
           stand->soil.litter.item[pft->litter].bg.carbon+=grass->ind.root.carbon*grasspar->turnover.root/NDAYYEAR*pft->nind;
           getoutput(output,LITFALLC,config)+=grass->ind.root.carbon*grasspar->turnover.root/NDAYYEAR*pft->nind*stand->frac;
@@ -287,7 +277,7 @@ Real daily_biomass_grass(Stand *stand,                /**< stand pointer */
           stand->soil.litter.item[pft->litter].bg.nitrogen+=grass->ind.root.nitrogen*grasspar->turnover.root/NDAYYEAR*pft->nind*pft->par->fn_turnover;
           getoutput(output,LITFALLN,config)+=grass->ind.root.nitrogen*grasspar->turnover.root/NDAYYEAR*pft->nind*pft->par->fn_turnover*stand->frac;
           grass->turn_litt.root.nitrogen+=grass->ind.root.nitrogen*grasspar->turnover.root/NDAYYEAR*pft->nind;
-
+          
           grass->growing_days++;
           fpc_inc[p]=0;
         }
@@ -310,7 +300,8 @@ Real daily_biomass_grass(Stand *stand,                /**< stand pointer */
   {
     grass=pft->data;
     grass->max_leaf=max(grass->max_leaf,grass->ind.leaf.carbon);
-    if (grass->ind.leaf.carbon >= 350 || (grass->ind.leaf.carbon>1 && grass->ind.leaf.carbon<(0.75*grass->max_leaf))) //changed from 100 to 350
+    if ((pft->stand->cell->coord.lat>=0.0 && (day==param.bmgr_harvest_day_nh)) || /* northern hemisphere */
+        (pft->stand->cell->coord.lat<0.0 && (day==param.bmgr_harvest_day_sh)))    /* southern hemisphere */
       isphen=TRUE;
   } /* of foreachpft() */
 
