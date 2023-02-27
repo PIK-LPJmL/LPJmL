@@ -116,23 +116,6 @@ static int *getindex(const Input_netcdf input,const Cell grid[],
   return index;
 } /* of 'getindex' */
 
-Bool getroute(FILE *file, /**< pointer to binary file */
-              Routing *r, /**< River route read */
-              Bool swap   /**< Byte order has to be changed */
-             )            /** \return TRUE on error */
-{
-  /* Function reads river route from file */
-  if(fread(r,sizeof(Routing),1,file)!=1)
-    return TRUE;
-  if(swap)
-  {
-    /* byte order has to be changed */
-    r->index=swapint(r->index);
-    r->len=swapint(r->len);
-  }
-  return FALSE;
-} /* of 'getroute' */
-
 static Bool initirrig(Cell grid[],    /**< Cell grid             */
                       Config *config  /**< LPJ configuration     */
               )                       /** \return TRUE on error */
