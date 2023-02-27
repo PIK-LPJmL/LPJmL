@@ -834,16 +834,16 @@ Bool getlanduse(Landuse landuse,     /**< Pointer to landuse data */
 
   if(config->prescribe_lsuha)
   {
-    dates=readintdata(&landuse->grassland_lsuha,grid,"livestock density",year,config);
-    if(dates==NULL)
+    data=readdata(&landuse->grassland_lsuha,NULL,grid,"livestock density",year,config);
+    if(data==NULL)
       return TRUE;
     count=0;
     for(cell=0; cell<config->ngridcell; cell++)
       if(!grid[cell].skip)
-        grid[cell].ml.grassland_lsuha=dates[count++];
+        grid[cell].ml.grassland_lsuha=data[count++];
       else
         count++;
-    free(dates);
+    free(data);
   }
   else
   {
