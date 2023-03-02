@@ -23,6 +23,8 @@ static void fprintfilename(FILE *file,               /**< pointer to text file *
 {
   char *s;
   int first,last,year;
+  if(filename->fmt==FMS || filename->fmt==SOCK)
+    return;
   if(filename->fmt==CDF && isyear)
   {
     s=strchr(filename->name,'[');
@@ -165,22 +167,25 @@ void fprintfiles(FILE *file,          /**< pointer to text output file */
     if(iswriterestart(config))
       fprintf(file,"%s\n",config->write_restart_filename);
     for(i=0;i<config->n_out;i++)
-      if(config->outputvars[i].oneyear)
-        for(j=config->firstyear;j<=config->lastyear;j++)
-        {
-          fprintf(file,config->outputvars[i].filename.name,j);
-          fputc('\n',file);
-          if(config->outputvars[i].filename.fmt!=CDF && config->outputvars[i].filename.meta)
+      if(config->outputvars[i].filename.fmt!=SOCK)
+      {
+        if(config->outputvars[i].oneyear)
+          for(j=config->firstyear;j<=config->lastyear;j++)
           {
             fprintf(file,config->outputvars[i].filename.name,j);
-            fprintf(file,"%s\n",config->json_suffix);
+            fputc('\n',file);
+            if(config->outputvars[i].filename.fmt!=CDF && config->outputvars[i].filename.meta)
+            {
+              fprintf(file,config->outputvars[i].filename.name,j);
+              fprintf(file,"%s\n",config->json_suffix);
+            }
           }
+        else
+        {
+          fprintf(file,"%s\n",config->outputvars[i].filename.name);
+          if(config->outputvars[i].filename.fmt!=CDF && config->outputvars[i].filename.meta)
+            fprintf(file,"%s%s\n",config->outputvars[i].filename.name,config->json_suffix);
         }
-      else
-      {
-        fprintf(file,"%s\n",config->outputvars[i].filename.name);
-        if(config->outputvars[i].filename.fmt!=CDF && config->outputvars[i].filename.meta)
-          fprintf(file,"%s%s\n",config->outputvars[i].filename.name,config->json_suffix);
-      }
+     }
   }
 } /* of 'fprintfiles' */
