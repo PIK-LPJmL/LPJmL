@@ -25,7 +25,7 @@
 #include "biomass_grass.h"
 #include "woodplantation.h"
 
-#define PRINTLPJ_VERSION "1.0.020"
+#define PRINTLPJ_VERSION "1.0.021"
 #define NTYPES 3
 #define NSTANDTYPES 13 /* number of stand types */
 

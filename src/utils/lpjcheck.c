@@ -18,7 +18,7 @@
 #include "tree.h"
 #include "crop.h"
 
-#define LPJCHECK_VERSION "1.0.004"
+#define LPJCHECK_VERSION "1.0.005"
 #define NTYPES 3 /* number of PFT types: grass, tree, crop */
 #define USAGE "Usage: %s [-h] [-q] [-nocheck] [-param] [-vv]\n"\
               "       [-couple hostname[:port]]\n"\
