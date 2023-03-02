@@ -99,7 +99,7 @@ int main(int argc,char **argv)
   }
   else
   {
-    printincludes(argc_save,argv_save);
+    printincludes(config.filename,argc_save,argv_save);
     printfiles(input,output,&config);
   }
   return EXIT_SUCCESS;

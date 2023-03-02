@@ -304,7 +304,7 @@ extern Bool fscanconfig(Config *,LPJfile *,Pfttype [],int,int);
 extern void fprintparam(FILE *,int,int,const Config *);
 extern void fprintfiles(FILE *,Bool,Bool,const Config *);
 extern Bool getextension(Extension *,const Config *);
-extern void fprintincludes(FILE *,int,char **);
+extern void fprintincludes(FILE *,const char *,int,char **);
 extern size_t getsize(int,const Config *);
 extern void closeconfig(LPJfile *);
 
@@ -322,6 +322,6 @@ extern void closeconfig(LPJfile *);
 #endif
 #define printparam(config,npft,ncft) fprintparam(stdout,config,npft,ncft)
 #define printfiles(isinput,isoutput,config) fprintfiles(stdout,isinput,isoutput,config)
-#define printincludes(argc,argv) fprintincludes(stdout,argc,argv)
+#define printincludes(name,argc,argv) fprintincludes(stdout,name,argc,argv)
 
 #endif /* CONFIG_H */
