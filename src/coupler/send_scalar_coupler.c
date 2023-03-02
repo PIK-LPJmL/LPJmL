@@ -1,10 +1,10 @@
 /**************************************************************************************/
 /**                                                                                \n**/
-/**            i  n  i  t  i  g  n  i  t  i  o  n  .  c                            \n**/
+/**             s  e  n  d  _  s  c  a  l  a  r  _  c  o  u  p  l  e  r  .  c      \n**/
 /**                                                                                \n**/
-/**     C implementation of LPJ                                                    \n**/
+/**     C implementation of LPJmL                                                  \n**/
 /**                                                                                \n**/
-/**     Function reads human ignitions from file                                   \n**/
+/**     Function writes global values into socket                                  \n**/
 /**                                                                                \n**/
 /** (C) Potsdam Institute for Climate Impact Research (PIK), see COPYRIGHT file    \n**/
 /** authors, and contributors see AUTHORS file                                     \n**/
@@ -16,25 +16,21 @@
 
 #include "lpj.h"
 
-Bool initignition(Cell grid[],         /* LPJ grid */
-                  const Config *config /* LPJ configuration */
-                 )                     /* returns TRUE on error */
+Bool send_scalar_coupler(int index,           /**< index of output stream */
+                         const void *data,    /**< data sent */
+                         Type type,           /**< datatype of stream */
+                         int size,            /**< number of items */
+                         int year,            /**< Simulation year (AD) */
+                         const Config *config /**< LPJ configuration */
+                        )                     /** \return TRUE on error */
 {
-  int cell;
-  Infile input;
-  if(openinputdata(&input,&config->human_ignition_filename,"human ignition","yr-1",LPJ_SHORT,0.001,config))
-    return TRUE;
-  for(cell=0;cell<config->ngridcell;cell++)
-  {
-    if(readinputdata(&input,&grid[cell].ignition.human,&grid[cell].coord,cell+config->startgrid,&config->human_ignition_filename))
-    {
-      closeinput(&input);
-      return TRUE;
-    }
-    if(grid[cell].ignition.human<0)
-      grid[cell].ignition.human=0;
-    grid[cell].ignition.human/=365;
-  }
-  closeinput(&input);
-  return FALSE;
-} /* of 'initignition' */
+#if COUPLER_VERSION == 4
+  int date=0;
+#endif
+  send_token_coupler(PUT_DATA,index,config);
+  writeint_socket(config->socket,&year,1);
+#if COUPLER_VERSION == 4
+  writeint_socket(config->socket,&date,1);
+#endif
+  return write_socket(config->socket,data,typesizes[type]*size);
+} /* of 'send_scalar_coupler' */

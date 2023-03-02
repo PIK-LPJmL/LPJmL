@@ -32,9 +32,9 @@ Bool open_image(Config *config /**< LPJmL configuration */
   if(isroot(*config))
   {
     /* Establish the TDT connection */
-    printf("Connecting IMAGE model...  image_inport %d, wait %d host %s outport %d\n",config->image_inport,config->wait_image,config->image_host,config->image_outport);
+    printf("Connecting IMAGE model...  image_inport %d, wait %d host %s outport %d\n",config->image_inport,config->wait,config->image_host,config->image_outport);
     fflush(stdout);
-    config->in=opentdt_socket(config->image_inport,config->wait_image);
+    config->in=opentdt_socket(config->image_inport,config->wait);
     if(config->in==NULL)
       return TRUE;
 #ifdef DEBUG_IMAGE

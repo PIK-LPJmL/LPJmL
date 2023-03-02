@@ -39,6 +39,7 @@
 
   "sim_name" : mkstr(LPJmL run with constant climate from MODEL), /* Simulation description */
   "sim_id"   : "lpjml",       /* LPJML Simulation type with managed land use */
+  "coupled_model" : null,   /* no model coupling */
   "version"  : "5.3",       /* LPJmL version expected */
   "random_prec" : false,    /* Random weather generator for precipitation enabled */
   "random_seed" : "random_seed",        /* seed for random number generator */

@@ -27,7 +27,28 @@ Bool opendata(Climatefile *file,        /**< pointer to file */
               const Config *config      /**< LPJ configuration */
              )                          /** \return TRUE on error */
 {
+  int nbands_socket;
   file->fmt=filename->fmt;
+  if(file->fmt==SOCK)
+  {
+    if(openinput_coupler(filename->id,datatype,config->nall,&nbands_socket,config))
+    {
+      if(isroot(*config))
+        fprintf(stderr,"ERROR147: Cannot initialize %s data socket stream.\n",name);
+      return TRUE;
+    }
+    file->id=filename->id;
+    file->var_len=nbands_socket;
+    file->datatype=datatype;
+    if(ischeck && file->var_len!=nbands)
+    {
+      if(isroot(*config))
+        fprintf(stderr,"ERROR147: Invalid number of bands=%zu in %s socket stream, must be %d.\n",
+                file->var_len,name,nbands);
+      return TRUE;
+    }
+    return FALSE;
+  }
   if(file->fmt==CDF)
   {
     if(opendata_netcdf(file,filename,unit,config))
