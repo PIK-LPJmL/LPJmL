@@ -16,7 +16,7 @@
 
 #include "lpj.h"
 
-const char *fmt[N_FMT]={"raw","clm","clm2","txt","fms","meta","cdf"};
+const char *fmt[N_FMT]={"raw","clm","clm2","txt","fms","meta","cdf","sock"};
 const char *time_step[]={"annual","monthly","daily"};
 
 Bool readfilename(LPJfile *file,      /**< pointer to text file read */
@@ -24,6 +24,7 @@ Bool readfilename(LPJfile *file,      /**< pointer to text file read */
                   const char *key,    /**< name of json object */
                   const char *path,   /**< path added to filename or NULL */
                   Bool isvar,         /**< variable name supplied */
+                  Bool isid,          /**< id for socket supplied */
                   Verbosity verb      /**< verbosity level (NO_ERR,ERR,VERB) */
                  )                    /** \return TRUE on error */
 {
@@ -35,6 +36,7 @@ Bool readfilename(LPJfile *file,      /**< pointer to text file read */
     return TRUE;
   if(filename->fmt==FMS)
   {
+    filename->timestep=NOT_FOUND;
     filename->var=NULL;
     filename->map=NULL;
     filename->name=NULL;
@@ -142,44 +144,78 @@ Bool readfilename(LPJfile *file,      /**< pointer to text file read */
       filename->isscale=FALSE;
     filename->time=NULL;
   }
-  if(fscanstring(&f,name,"name",FALSE,verb))
+  if(filename->fmt==SOCK)
   {
-    if(verb)
-      readstringerr("filename");
-    free(filename->var);
-    return TRUE;
-  }
-  filename->name=addpath(name,path); /* add path to filename */
-  if(filename->name==NULL)
-  {
-    printallocerr("name");
-    free(filename->var);
-    return TRUE;
-  }
-  if(iskeydefined(&f,"metafile"))
-  {
-    if(fscanbool(&f,&filename->meta,"metafile",FALSE,verb))
+    if(isid)
     {
-      free(filename->var);
-      return TRUE;
+      if(fscanint(&f,&filename->id,"id",FALSE,verb))
+        return TRUE;
     }
-  }
-  if(iskeydefined(&f,"version"))
-  {
-    if(fscanint(&f,&filename->version,"version",FALSE,verb))
+    else
     {
-      free(filename->var);
-      return TRUE;
+      if(iskeydefined(&f,"id"))
+      {
+        if(fscanint(&f,&filename->id,"id",FALSE,verb))
+          return TRUE;
+      }
     }
-    if(filename->version<1 || filename->version>CLM_MAX_VERSION)
+    filename->name=NULL;
+    filename->meta=FALSE;
+    filename->issocket=TRUE;
+  }
+  else
+  {
+    if(fscanstring(&f,name,"name",FALSE,verb))
     {
       if(verb)
-       fprintf(stderr,"ERROR229: Invalid version %d, must be in [1,%d].\n",
-               filename->version,CLM_MAX_VERSION);
+        readstringerr("filename");
       free(filename->var);
       return TRUE;
     }
-
+    filename->name=addpath(name,path); /* add path to filename */
+    if(filename->name==NULL)
+    {
+      printallocerr("name");
+      free(filename->var);
+      return TRUE;
+    }
+    if(iskeydefined(&f,"metafile"))
+    {
+      if(fscanbool(&f,&filename->meta,"metafile",FALSE,verb))
+      {
+        free(filename->var);
+        return TRUE;
+      }
+    }
+    if(iskeydefined(&f,"socket"))
+    {
+      if(fscanbool(&f,&filename->issocket,"socket",FALSE,verb))
+      {
+        free(filename->var);
+        return TRUE;
+      }
+      if(filename->issocket && iskeydefined(&f,"id"))
+      {
+        if(fscanint(&f,&filename->id,"id",FALSE,verb))
+          return TRUE;
+      }
+    }
+    if(iskeydefined(&f,"version"))
+    {
+      if(fscanint(&f,&filename->version,"version",FALSE,verb))
+      {
+        free(filename->var);
+        return TRUE;
+      }
+      if(filename->version<1 || filename->version>CLM_MAX_VERSION)
+      {
+        if(verb)
+          fprintf(stderr,"ERROR229: Invalid version %d, must be in [1,%d].\n",
+                  filename->version,CLM_MAX_VERSION);
+        free(filename->var);
+        return TRUE;
+      }
+    }
   }
   if(iskeydefined(&f,"unit"))
   {
