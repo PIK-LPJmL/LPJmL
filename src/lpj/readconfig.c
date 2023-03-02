@@ -18,7 +18,6 @@
 #include "lpj.h"
 
 Bool readconfig(Config *config,        /**< LPJ configuration */
-                const char *filename,  /**< Default configuration filename */
                 Pfttype scanfcn[],     /**< array of PFT-specific scan
                                              functions */
                 int ntypes,            /**< Number of PFT classes */
@@ -34,7 +33,7 @@ Bool readconfig(Config *config,        /**< LPJ configuration */
   Verbosity verbosity;
   const char *sim_id[]={"lpj","lpjml","lpjml_image","lpjml_fms"};
   config->arglist=catstrvec(*argv,*argc); /* store command line in arglist */
-  file=openconfig(config,filename,argc,argv,usage);
+  file=openconfig(config,argc,argv,usage);
   if(file==NULL)
     return TRUE;
   verbosity=(isroot(*config)) ? config->scan_verbose : NO_ERR;

@@ -284,7 +284,7 @@ extern const char *grazing_type[];
 extern void initmpiconfig(Config *,MPI_Comm);
 #endif
 extern void initconfig(Config *);
-extern FILE* openconfig(Config *,const char *,int *,char***,const char*);
+extern FILE* openconfig(Config *,int *,char***,const char*);
 extern void freeconfig(Config *);
 extern void fprintconfig(FILE *,int,int,const Config *);
 extern Bool filesexist(Config,Bool);
@@ -295,13 +295,13 @@ extern void fprintpftpar(FILE *,const Pftpar [],const Config *);
 extern void fprintoutputvar(FILE *,const Variable *,int,int,int,const Config *);
 extern void freeoutputvar(Variable *,int);
 extern Bool fscanoutput(LPJfile *,int,int,Config *,int);
-extern Bool readconfig(Config *,const char *,Pfttype [],int,int,int *,
+extern Bool readconfig(Config *,Pfttype [],int,int,int *,
                        char ***,const char *);
 extern Bool fscanconfig(Config *,LPJfile *,Pfttype [],int,int);
 extern void fprintparam(FILE *,int,int,const Config *);
 extern void fprintfiles(FILE *,Bool,Bool,const Config *);
 extern Bool getextension(Extension *,const Config *);
-extern void fprintincludes(FILE *,const char *,int,char **);
+extern void fprintincludes(FILE *,int,char **);
 extern size_t getsize(int,const Config *);
 extern void closeconfig(LPJfile *);
 
@@ -318,6 +318,6 @@ extern void closeconfig(LPJfile *);
 #endif
 #define printparam(config,npft,ncft) fprintparam(stdout,config,npft,ncft)
 #define printfiles(isinput,isoutput,config) fprintfiles(stdout,isinput,isoutput,config)
-#define printincludes(name,argc,argv) fprintincludes(stdout,name,argc,argv)
+#define printincludes(argc,argv) fprintincludes(stdout,argc,argv)
 
 #endif /* CONFIG_H */

@@ -34,7 +34,6 @@ static int findname(List *list,const char *s)
 #define checkptr(ptr) if(ptr==NULL) { printallocerr(#ptr); return; }
 
 void fprintincludes(FILE *out,                 /**< pointer to text file */
-                    const char *dflt_filename, /**< default name of configuration file */
                     int argc,                  /**< number of arguments */
                     char **argv                /**< argument vector  */
                    )
@@ -101,11 +100,7 @@ void fprintincludes(FILE *out,                 /**< pointer to text file */
     else
       break;
   }
-  lpjpath=getenv(LPJCONFIG);
-  if(lpjpath==NULL)
-    filename=(i==argc)  ? dflt_filename : argv[i];
-  else
-    filename=(i==argc)  ? lpjpath : argv[i];
+  filename=argv[i];
   lpjpath=getenv(LPJROOT);
   if(lpjpath==NULL || !iscpp) /* Is LPJROOT environment variable defined? */
   { /* no */

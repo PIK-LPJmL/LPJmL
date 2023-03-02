@@ -124,8 +124,7 @@ int main(int argc,char **argv)
     {
       if(isroot(config))
       {
-        help(progname,
-             (strcmp(progname,"lpj")) ? dflt_conf_filename_ml : dflt_conf_filename);
+        help(progname);
       }
 #ifdef USE_MPI
       MPI_Finalize();
@@ -163,10 +162,7 @@ int main(int argc,char **argv)
    * in light and establishment
    * crops must have last id-number */
   /* Read configuration file */
-  rc=readconfig(&config,
-                (strcmp(progname,"lpj")) ? dflt_conf_filename_ml :
-                                           dflt_conf_filename,
-                scanfcn,NTYPES,NOUT,&argc,&argv,lpj_usage);
+  rc=readconfig(&config,scanfcn,NTYPES,NOUT,&argc,&argv,lpj_usage);
   failonerror(&config,rc,READ_CONFIG_ERR,"Cannot read configuration");
   if(isroot(config) && argc)
     fputs("WARNING018: Arguments listed after configuration filename, will be ignored.\n",stderr);

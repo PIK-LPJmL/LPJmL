@@ -30,18 +30,17 @@
 #define USAGE "\nUsage: %s [-h] [-l] [-v] [-vv] [-param] [-pp cmd] " FPE_OPT "\n" IMAGE_OPT\
                 "       [-output {gather|mpi2|socket=hostname[:port]}]\n"\
                 "       [-outpath dir] [-inpath dir] [-restartpath dir]\n"\
-                "       [[-Dmacro[=value]] [-Idir] ...] [filename]\n"
+                "       [[-Dmacro[=value]] [-Idir] ...] filename\n"
 #else
 #define USAGE "\nUsage: %s [-h] [-l] [-v] [-vv] [-param] [-pp cmd] " FPE_OPT "\n" IMAGE_OPT\
                 "       [-output {write|socket=hostname[:port]}]\n"\
                 "       [-outpath dir] [-inpath dir] [-restartpath dir]\n"\
-                "       [[-Dmacro[=value]] [-Idir] ...] [filename]\n"
+                "       [[-Dmacro[=value]] [-Idir] ...] filename\n"
 #endif
 
 char *lpj_usage=USAGE;
 
-void help(const char *progname, /**< program filename */
-          const char *filename  /**< default LPJmL configuration filename */
+void help(const char *progname /**< program filename */
          )
 {
   FILE *file;
@@ -87,8 +86,8 @@ void help(const char *progname, /**< program filename */
           "-restartpath dir directory appended to restart filename\n"
           "-Dmacro[=value]  define macro for preprocessor of configuration file\n"
           "-Idir            directory to search for include files\n"
-          "filename         configuration filename. Default is '%s'\n\n"
-          "(C) Potsdam Institute for Climate Impact Research (PIK), see COPYRIGHT file\n",filename);
+          "filename         configuration filename\n\n"
+          "(C) Potsdam Institute for Climate Impact Research (PIK), see COPYRIGHT file\n");
   if(file!=stdout)
     pclose(file);
 } /* of 'help' */
