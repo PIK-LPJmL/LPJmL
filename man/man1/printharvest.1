@@ -1,9 +1,9 @@
-.TH printharvest 1  "March 13, 2009" "version 3.5.002" "USER COMMANDS"
+.TH printharvest 1  "March 2, 20cw2309" "version 5.4.001" "USER COMMANDS"
 .SH NAME
 printharvest \- Print global harvested carbon for crops and managed grasslands 
 .SH SYNOPSIS
 .B printharvest
-[\-h] [\-inpath \fIdir\fP] [\-outpath \fIdir\fP] [[\-Dmacro[=value]] [\-I\fIdir\fP] ...] [\fIfilename\fP]
+[\-h] [\-inpath \fIdir\fP] [\-outpath \fIdir\fP] [[\-Dmacro[=value]] [\-I\fIdir\fP] ...] \fIfilename\fP
 .SH DESCRIPTION
 Program prints total harvested carbon of a LPJmL model run. The LPJmL configuration file is read in in order to find the location and name of the harvest data file.
 .SH OPTIONS
@@ -24,18 +24,15 @@ define macro for the preprocessor of the configuration file
 define include directory for the preprocessor of the configuration file
 .TP
 .I filename
-name of configuration file, default is \fIlpjml.conf\fP.
+name of configuration file
 
 .SH EXAMPLE
 .TP
-Print harvest carbon with default configuration file.
-.B printharvest
+Print harvest carbon with configuration file \fIlpjml.js\fP.
+.B printharvest lpjml.js
 \-D FROM_RESTART
 .PP
 .SH ENVIRONMENT
-.TP
-LPJCONFIG
-default LPJmL configuration filename
 .TP
 LPJPREP 
 defines preprocessor command for LPJmL configuration file, default is \fBcpp -P\fP.

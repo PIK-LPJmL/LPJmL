@@ -2,11 +2,11 @@
 <HEAD>
 <LINK REL="stylesheet" HREF="style.css" TYPE="text/css">
 <TITLE>
-Installing and running LPJmL C Version 5.3.001
+Installing and running LPJmL C Version 5.4.001
 </TITLE>
 </HEAD>
 <BODY>
-<H1>Installing and running  LPJmL C Version 5.3.001</H1>
+<H1>Installing and running  LPJmL C Version 5.4.001</H1>
 
 <H2>Installation for Unix-like systems</h2>
 
@@ -29,7 +29,7 @@ cd lpjml
 
 untar source files</p>
 <pre class="example">
-gzip -cd lpjml-5.3.001.tar.gz|tar -xf -
+gzip -cd lpjml-5.4.001.tar.gz|tar -xf -
 </pre>
 
 Directory tree after extracting the tar files:</p>
@@ -118,7 +118,7 @@ Then LPJmL can be configured via
 
 <pre class="example">
 % ./configure.sh
-Configuring LPJmL 5.3.001...
+Configuring LPJmL 5.4.001...
 Operating system is Linux
 Intel MPI found
 Create executables with make all
@@ -694,9 +694,9 @@ yields list of man pages related to LPJmL.</p>
 Sequential version can be started by invoking:</p>
 
 <pre class="example">
-./bin/lpjml
+./bin/lpjml lpjml.js
 </pre>
-By default the configuration file <tt>lpjml.js</tt> is read. The contents of this file can be viewed <A HREF="lpjml_example.html">here</A>.
+The contents of file lpjml.js can be viewed <A HREF="lpjml_example.html">here</A>.
 If you run <tt>lpjml</tt> outside the root directory of LPJmL, the following environment
 variable should be set (done by <tt>lpj_paths.sh</tt>):</p>
 
