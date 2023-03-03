@@ -21,26 +21,26 @@ OBJS    = cru2clm.$O cvrtsoil.$O grid2clm.$O cfts26_lu2clm.$O drainage.$O\
           txt2clm.$O water_use_input.$O catclm.$O asc2clm.$O\
           lpjprint.$O lpjcat.$O cat2bsq.$O grd2bsq.$O cft2clm.$O txt2grid.$O\
           printdrain.$O lpjcheck.$O printclm.$O cdf2bin.$O country2cdf.$O\
-          printharvest.$O printreservoir.$O lpjserver.$O setclm.$O getcountry.$O\
+          printharvest.$O printreservoir.$O setclm.$O getcountry.$O\
           regridclm.$O regridsoil.$O cdf2coord.$O cdf2soil.$O lpjfiles.$O\
           joingrid.$O clm2cdf.$O cdf2clm.$O bin2cdf.$O adddrain.$O\
           getcellindex.$O copyheader.$O addheader.$O mathclm.$O cutclm.$O\
           cvrtclm.$O manage2js.$O getheadersize.$O regridirrig.$O mergeclm.$O\
-          printglobal.$O binsum.$O arr2clm.$O regriddrain.$O
+          printglobal.$O binsum.$O arr2clm.$O regriddrain.$O coupler_demo.$O
 
-SRC    = cru2clm.c cvrtsoil.c grid2clm.c cfts26_lu2clm.c drainage.c\
+SRC    =  cru2clm.c cvrtsoil.c grid2clm.c cfts26_lu2clm.c drainage.c\
           river_sections_input_grid.c river_sections_input_soil.c\
           river_sections_input_climate.c river_sections_input_landuse.c\
           river_sections_input_countrycode.c river_sections_input_irrig.c\
           txt2clm.c water_use_input.c catclm.c cdf2coord.c country2cdf.c\
           lpjprint.c lpjcat.c cat2bsq.c grd2bsq.c cft2clm.c regridsoil.c\
           printdrain.c lpjcheck.c printclm.c printharvest.c binsum.c\
-          printreservoir.c lpjserver.c setclm.c getcountry.c regridclm.c\
+          printreservoir.c setclm.c getcountry.c regridclm.c\
           cdf2soil.c lpjfiles.c asc2clm.c joingrid.c clm2cdf.c\
           cdf2clm.c bin2cdf.c adddrain.c txt2grid.c getcellindex.c\
           copyheader.c addheader.c mathclm.c cutclm.c cdf2bin.c cvrtclm.c\
           manage2js.c getheadersize.c regridirrig.c mergeclm.c printglobal.c\
-          arr2clm.c regriddrain.c
+          arr2clm.c regriddrain.c coupler_demo.c
 
 INC     = ../../include
 
@@ -53,7 +53,8 @@ HDRS    = $(INC)/buffer.h $(INC)/coord.h $(INC)/lpj.h $(INC)/pftlist.h\
           $(INC)/list.h $(INC)/cell.h  $(INC)/units.h $(INC)/output.h\
           $(INC)/config.h $(INC)/intlist.h $(INC)/queue.h $(INC)/pnet.h\
           $(INC)/discharge.h $(INC)/channel.h $(INC)/reservoir.h $(INC)/soil.h\
-          $(INC)/tree.h $(INC)/cdf.h $(INC)/spitfire.h $(INC)/climbuf.h
+          $(INC)/tree.h $(INC)/cdf.h $(INC)/spitfire.h $(INC)/climbuf.h\
+          $(INC)/coupler.h $(INC)/couplerpar.h
 
 LIBDIR  = ../../lib
 BIN     = ../../bin
@@ -66,7 +67,7 @@ LPJLIBS = $(LIBDIR)/liblpj.$A $(LIBDIR)/libtree.$A\
           $(LIBDIR)/liblpj.$A $(LIBDIR)/libnum.$A\
           $(LIBDIR)/libgrass.$A $(LIBDIR)/libtree.$A\
           $(LIBDIR)/libspitfire.$A $(LIBDIR)/libsoil.$A\
-          $(LIBDIR)/libcdf.$A $(LIBDIR)/libtools.$A 
+          $(LIBDIR)/libcdf.$A $(LIBDIR)/libtools.$A $(LIBDIR)/libcoupler.$A
 
 all: $(BIN)/cru2clm$E $(BIN)/grid2clm$E $(BIN)/cfts26_lu2clm$E\
      $(BIN)/river_sections_input_grid$E $(BIN)/river_sections_input_soil$E\
@@ -79,14 +80,14 @@ all: $(BIN)/cru2clm$E $(BIN)/grid2clm$E $(BIN)/cfts26_lu2clm$E\
      $(BIN)/water_use_input$E $(BIN)/getcountry$E $(BIN)/clm2cdf$E\
      $(BIN)/cft2clm$E $(BIN)/printdrain$E $(BIN)/lpjcheck$E\
      $(BIN)/printreservoir$E $(BIN)/regridclm$E $(BIN)/asc2clm$E\
-     $(BIN)/$(VIEWPRG)$E $(BIN)/catclm$E $(BIN)/printclm$E $(BIN)/joingrid$E\
+     $(BIN)/catclm$E $(BIN)/printclm$E $(BIN)/joingrid$E\
      $(BIN)/printharvest$E $(BIN)/lpjprint$E $(BIN)/regridsoil$E\
      $(BIN)/cdf2clm$E $(BIN)/bin2cdf$E $(BIN)/adddrain$E $(BIN)/txt2grid$E\
      $(BIN)/getcellindex$E $(BIN)/copyheader$E $(BIN)/addheader$E\
      $(BIN)/mathclm$E $(BIN)/cutclm$E $(BIN)/cvrtclm$E $(BIN)/manage2js$E\
      $(BIN)/headersize$E $(BIN)/regridirrig$E $(BIN)/mergeclm$E\
      $(BIN)/country2cdf$E $(BIN)/printglobal$E $(BIN)/binsum$E $(BIN)/arr2clm$E\
-     $(BIN)/regriddrain$E
+     $(BIN)/regriddrain$E $(BIN)/coupler_demo$E
 
 clean:
 	$(RM) $(RMFLAGS) $(OBJS)
@@ -96,13 +97,13 @@ clean:
             river_sections_input_countrycode$E txt2clm$E catclm$E cdf2coord$E\
             lpjcat$E cat2bsq$E grd2bsq$E lpjprint$E printclm$E arr2clm$E\
             cvrtsoil$E river_sections_input_irrig$E water_use_input$E\
-            cft2clm$E printdrain$E lpjcheck$E $(VIEWPRG)$E printharvest$E\
+            cft2clm$E printdrain$E lpjcheck$E printharvest$E\
             printreservoir$E setclm$E getcountry$E regridclm$E regridsoil$E\
             cdf2soil$E lpjfiles$E asc2clm$E joingrid$E clm2cdf$E\
             cdf2clm$E bin2cdf$E adddrain$E txt2grid$E getcellindex$E\
             copyheader$E addheader$E mathclm$E cutclm$E cdf2bin$E cvrtclm$E\
             manage2js$E headersize$E regridirrig$E mergeclm$E country2cdf$E\
-            printglobal$E binsum$E regriddrain$E)
+            printglobal$E binsum$E regriddrain$E coupler_demo$E)
 
 $(OBJS): $(HDRS)
 
@@ -202,9 +203,9 @@ $(BIN)/mergeclm$E: mergeclm.$O $(LIBDIR)/libtools.$A
 $(BIN)/catclm$E: catclm.$O $(LIBDIR)/libtools.$A
 	$(LINK) $(LNOPTS)$(BIN)/catclm$E catclm.$O $(LIBDIR)/libtools.$A
 
-$(BIN)/lpjserver$E: lpjserver.$O $(LIBDIR)/libsocket.$A $(LPJLIBS)
-	$(LINK) $(LNOPTS)$(BIN)/lpjserver$E lpjserver.$O $(LPJLIBS)\
-	        $(LIBDIR)/libsocket.$A $(LIBS) 
+$(BIN)/coupler_demo$E: coupler_demo.$O $(LIBDIR)/libsocket.$A $(LPJLIBS)
+	$(LINK) $(LNOPTS)$(BIN)/coupler_demo$E coupler_demo.$O $(LPJLIBS)\
+	        $(LIBDIR)/libsocket.$A $(LIBS) $(LIBDIR)/libtools.$A
 
 $(BIN)/adddrain$E: adddrain.$O $(LIBDIR)/libtools.$A
 	$(LINK) $(LNOPTS)$(BIN)/adddrain$E adddrain.$O $(LIBDIR)/libtools.$A $(LIBS)

@@ -19,7 +19,6 @@
 /* Definition of constants for biomass pools used in IMAGE */
 
 #define LPJIMAGE "LPJIMAGE"  /* Environment variable for IMAGE coupler */
-#define LPJWAITIMAGE "LPJWAITIMAGE"  /* time to wait for IMAGE connection */
 #define DEFAULT_IMAGE_HOST "localhost" /* Default host for IMAGE model */
 #define DEFAULT_IMAGE_INPORT 2225  /* Default port for ingoing connection */
 #define DEFAULT_IMAGE_OUTPORT 2224 /* Default port for outgoing connection */

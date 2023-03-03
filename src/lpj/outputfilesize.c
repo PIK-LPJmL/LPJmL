@@ -60,7 +60,7 @@ long long outputfilesize(const Config *config /**< LPJ configuration */
         }
         sum+=size_cdf*(size/config->total);
       }
-      else
+      else if(config->outputvars[i].filename.fmt!=SOCK)
         sum+=size;
     }
   }

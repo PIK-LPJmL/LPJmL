@@ -34,7 +34,7 @@ OBJS    = swap.$O freadheader.$O coord.$O openinputfile.$O\
           isboolean.$O fscanreal01.$O fscankeywords.$O isstring.$O\
           sprinttimestep.$O fscantimestep.$O isnull.$O fwriterestartheader.$O\
           getfilefrommeta.$O isint.$O parse_json.$O closeconfig.$O isdir.$O\
-          fscanmap.$O fprintjson.$O fscanattrs.$O
+          fscanmap.$O fscanattrs.$O fprintjson.$O mrun.$O
 
 INC     = ../../include
 LIBDIR  = ../../lib
@@ -46,7 +46,7 @@ HDRS    = $(INC)/buffer.h $(INC)/coord.h $(INC)/lpj.h\
           $(INC)/errmsg.h $(INC)/numeric.h $(INC)/channel.h\
           $(INC)/conf.h $(INC)/swap.h $(INC)/soilpar.h\
           $(INC)/list.h $(INC)/cell.h $(INC)/units.h\
-          $(INC)/config.h $(INC)/queue.h $(INC)/output.h
+          $(INC)/config.h $(INC)/queue.h $(INC)/output.h $(INC)/coupler.h
 
 
 $(LIBDIR)/$(LIB): $(OBJS)

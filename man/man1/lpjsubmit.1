@@ -3,7 +3,7 @@
 lpjsubmit \- Submit parallel SLURM/LoadLeveler job for LPJmL simulations 
 .SH SYNOPSIS
 .B lpjsubmit
-[\-class c] [\-group g] [\-wtime time] [\-blocking n] [\-o output] [\-e error] [\-q] [\-nocheck] [\-norun] [\- dependency id] ntasks [args ...]
+[\-class c] [\-group g] [\-wtime time] [\-blocking n] [\-o output] [\-e error] [\-q] [\-nocheck] [\-norun] [\- dependency id] [-couple program] ntasks [args ...]
 .SH DESCRIPTION
 Script creates SLURM/LoadLeveler job control file \fIjob.jcf\fP and submits the job to the LoadLeveler queue via
 .B
@@ -49,6 +49,9 @@ does not submit job to batch queue, creates \fIslurm.jcf\fP file only.
 .TP
 \-dependency id
 slurm job will be scheduled after job with job id id finished successfully.
+.TP
+\-couple program
+Start couple program in the background before starting LPJmL.
 .TP
 ntasks
 set the number of parallel MPI tasks.

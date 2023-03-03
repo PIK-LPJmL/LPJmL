@@ -28,7 +28,7 @@
 #ifndef LPJ_H /* Already included? */
 #define LPJ_H
 
-#define LPJ_VERSION  "5.3.109"
+#define LPJ_VERSION  "5.4.004"
 
 /* Necessary header files */
 
@@ -77,6 +77,7 @@ typedef struct config Config; /* forward declaration of stand */
 #include "param.h"
 #include "climate.h"
 #include "image.h"
+#include "coupler.h"
 #include "cropdates.h"
 #include "reservoir.h"
 #include "landuse.h"
@@ -118,7 +119,6 @@ typedef struct config Config; /* forward declaration of stand */
 #define LPJINPUT "LPJINPATH"         /* path for input files */
 #define LPJOUTPUT "LPJOUTPATH"       /* path for output files */
 #define LPJRESTART "LPJRESTARTPATH"  /* path for restart file */
-#define LPJOUTPUTMETHOD "LPJOUTPUT"  /* default output method */
 
 /* Declaration of variables */
 
@@ -134,11 +134,10 @@ extern void printlicense(void);
 extern void help(const char *,const char *);
 extern void fprintflux(FILE *file,Flux,Real,int,const Config *);
 extern void fprintcsvflux(FILE *file,Flux,Real,Real,int,const Config *);
-#ifdef USE_MPI
 extern void failonerror(const Config *,int,int,const char *);
+#ifdef USE_MPI
 extern Bool iserror(int,const Config *);
 #else
-#define failonerror(config,rc,errorcode,msg) if(rc) fail(errorcode,FALSE,msg)
 #define iserror(rc,config) rc
 #endif
 

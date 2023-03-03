@@ -40,17 +40,15 @@ int writecoords(Outputfile *output,  /**< output struct */
   Floatcoord *fdst=NULL;
   Doublecoord *ddst=NULL;
   MPI_Datatype type;
-  MPI_Status status;
   int *offsets,*counts;
 #endif
   Bool rc;
   int cell,count;
-  short *soilcode;
-  Intcoord *vec;
-  Floatcoord *fvec;
-  Doublecoord *dvec;
-  if((output->method==LPJ_GATHER || output->method==LPJ_FILES) &&
-     output->files[index].fmt==CDF)
+  short *soilcode=NULL;
+  Intcoord *vec=NULL;
+  Floatcoord *fvec=NULL;
+  Doublecoord *dvec=NULL;
+  if(output->files[index].isopen && output->files[index].fmt==CDF)
   {
     soilcode=newvec(short,config->ngridcell);
     if(soilcode==NULL)
@@ -71,7 +69,7 @@ int writecoords(Outputfile *output,  /**< output struct */
       rc=FALSE;
     }
   }
-  else
+  if(output->files[index].fmt!=CDF || output->files[index].issocket)
   {
     switch(config->grid_type)
     {
@@ -135,222 +133,204 @@ int writecoords(Outputfile *output,  /**< output struct */
           rc=FALSE;
         }
         break;
-    } /* of switch */
+    }
   }
   if(iserror(rc,config))
     return 0;
 #ifdef USE_MPI
-  switch(output->method)
+  if(output->files[index].isopen && output->files[index].fmt==CDF)
   {
-    case LPJ_MPI2:
-      switch(config->grid_type)
-      {
-        case LPJ_FLOAT:
-          MPI_File_write_at(output->files[index].fp.mpi_file,2*config->offset,
-                             fvec,2*count,MPI_FLOAT,&status);
-          free(fvec);
-          break;
-        case LPJ_DOUBLE:
-          MPI_File_write_at(output->files[index].fp.mpi_file,2*config->offset,
-                             dvec,2*count,MPI_DOUBLE,&status);
-          free(dvec);
-          break;
-        case LPJ_SHORT:
-          MPI_File_write_at(output->files[index].fp.mpi_file,2*config->offset,
-                            vec,2*count,MPI_SHORT,&status);
-          free(vec);
-          break;
-      }
-      break;
-    case LPJ_GATHER: case LPJ_SOCKET:
-      if(output->method==LPJ_GATHER && output->files[index].fmt==CDF)
-      {
-        rc=FALSE;
-        counts=newvec(int,config->ntask);
-        if(counts==NULL)
-        {
-          printallocerr("counts");
-          rc=TRUE;
-        }
-        offsets=newvec(int,config->ntask);
-        if(offsets==NULL)
-        {
-          printallocerr("offsets");
-          rc=TRUE;
-        }
-        if(iserror(rc,config))
-        {
-          free(soilcode);
-          free(counts);
-          free(offsets);
-          return 0;
-        }
-        getcounts(counts,offsets,config->nall,1,config->ntask);
-        mpi_write_netcdf(&output->files[index].fp.cdf,soilcode,MPI_SHORT,
-                         config->nall,NO_TIME,
-                         counts,offsets,config->rank,config->comm);
-        free(counts);
-        free(offsets);
-        free(soilcode);
-      }
-      else
-      {
-        switch(config->grid_type)
-        {
-          case LPJ_FLOAT:
-            MPI_Type_contiguous(2,MPI_FLOAT,&type);
-            MPI_Type_commit(&type);
-            if(isroot(*config))
-            {
-              fdst=newvec(Floatcoord,config->total);
-              if(fdst==NULL)
-              {
-                printallocerr("fdst");
-                rc=TRUE;
-              }
-              else
-                rc=FALSE;
-            }
-            MPI_Bcast(&rc,1,MPI_INT,0,config->comm);
-            if(rc)
-            {
-              free(fvec);
-              return 0;
-            }
-            MPI_Gatherv(fvec,config->count,type,fdst,output->counts,output->offsets,
-                        type,0,config->comm);
-            MPI_Type_free(&type);
-            if(isroot(*config))
-            {
-              if(output->method==LPJ_SOCKET)
-                writefloat_socket(output->socket,fdst,config->total*2);
-              else
-                switch(output->files[index].fmt)
-                {
-                  case RAW: case CLM:
-                    if(fwrite(fdst,sizeof(Floatcoord),config->total,output->files[index].fp.file)!=config->total)
-                      fprintf(stderr,"ERROR204: Cannot write output: %s.\n",strerror(errno));
-                    break;
-                  case TXT:
-                    for(cell=0;cell<config->total-1;cell++)
-                      fprintf(output->files[index].fp.file,"%g%c%g%c",
-                              fdst[cell].lon,config->csv_delimit,fdst[cell].lat,config->csv_delimit);
-                    fprintf(output->files[index].fp.file,"%g%c%g\n",
-                            fdst[config->total-1].lon,config->csv_delimit,fdst[config->total-1].lat);
-                    break;
-                }
-              free(fdst);
-            }
-            free(fvec);
-            break;
-         case LPJ_DOUBLE:
-            MPI_Type_contiguous(2,MPI_DOUBLE,&type);
-            MPI_Type_commit(&type);
-            if(isroot(*config))
-            {
-              ddst=newvec(Doublecoord,config->total);
-              if(ddst==NULL)
-              {
-                printallocerr("ddst");
-                rc=TRUE;
-              }
-              else
-                rc=FALSE;
-            }
-            MPI_Bcast(&rc,1,MPI_INT,0,config->comm);
-            if(rc)
-            {
-              free(dvec);
-              return 0;
-            }
-            MPI_Gatherv(dvec,config->count,type,ddst,output->counts,output->offsets,
-                        type,0,config->comm);
-            MPI_Type_free(&type);
-            if(isroot(*config))
-            {
-              if(output->method==LPJ_SOCKET)
-                writedouble_socket(output->socket,ddst,config->total*2);
-              else
-                switch(output->files[index].fmt)
-                {
-                  case RAW: case CLM:
-                    if(fwrite(ddst,sizeof(Doublecoord),config->total,output->files[index].fp.file)!=config->total)
-                      fprintf(stderr,"ERROR204: Cannot write output: %s.\n",strerror(errno));
-                    break;
-                  case TXT:
-                    for(cell=0;cell<config->total-1;cell++)
-                      fprintf(output->files[index].fp.file,"%g%c%g%c",
-                              ddst[cell].lon,config->csv_delimit,ddst[cell].lat,config->csv_delimit);
-                    fprintf(output->files[index].fp.file,"%g%c%g\n",
-                            ddst[config->total-1].lon,config->csv_delimit,ddst[config->total-1].lat);
-                    break;
-                }
-              free(ddst);
-            }
-            free(dvec);
-            break;
-          case LPJ_SHORT:
-            MPI_Type_contiguous(2,MPI_SHORT,&type);
-            MPI_Type_commit(&type);
-            if(isroot(*config))
-            {
-              dst=newvec(Intcoord,config->total);
-              if(dst==NULL)
-              {
-                printallocerr("dst");
-                rc=TRUE;
-              }
-              else
-                rc=FALSE;
-            }
-            MPI_Bcast(&rc,1,MPI_INT,0,config->comm);
-            if(rc)
-            {
-              free(vec);
-              return 0;
-            }
-            MPI_Gatherv(vec,config->count,type,dst,output->counts,output->offsets,
-                        type,0,config->comm);
-            MPI_Type_free(&type);
-            if(isroot(*config))
-            {
-              if(output->method==LPJ_SOCKET)
-                writeshort_socket(output->socket,dst,config->total*2);
-              else
-                switch(output->files[index].fmt)
-                {
-                  case RAW: case CLM:
-                    if(fwrite(dst,sizeof(Intcoord),config->total,output->files[index].fp.file)!=config->total)
-                      fprintf(stderr,"ERROR204: Cannot write output: %s.\n",strerror(errno));
-                    break;
-                  case TXT:
-                    for(cell=0;cell<config->total-1;cell++)
-                      fprintf(output->files[index].fp.file,"%g%c%g%c",
-                              dst[cell].lon*0.01,config->csv_delimit,dst[cell].lat*0.01,config->csv_delimit);
-                    fprintf(output->files[index].fp.file,"%g%c%g\n",
-                            dst[config->total-1].lon*0.01,config->csv_delimit,dst[config->total-1].lat*0.01);
-                    break;
-                }
-              free(dst);
-            }
-            free(vec);
-            break;
-        } /* of switch(config->grid_type) */
-      }
-      break;
-  } /* of switch(outputmethod) */
-#else
-  if(output->method==LPJ_FILES)
+    rc=FALSE;
+    counts=newvec(int,config->ntask);
+    if(counts==NULL)
+    {
+      printallocerr("counts");
+      rc=TRUE;
+    }
+    offsets=newvec(int,config->ntask);
+    if(offsets==NULL)
+    {
+      printallocerr("offsets");
+      rc=TRUE;
+    }
+    if(iserror(rc,config))
+    {
+      free(soilcode);
+      free(counts);
+      free(offsets);
+      return 0;
+    }
+    getcounts(counts,offsets,config->nall,1,config->ntask);
+    mpi_write_netcdf(&output->files[index].fp.cdf,soilcode,MPI_SHORT,
+                     config->nall,NO_TIME,
+                     counts,offsets,config->rank,config->comm);
+    free(counts);
+    free(offsets);
+    free(soilcode);
+  }
+  if(output->files[index].issocket || output->files[index].fmt!=CDF)
   {
     switch(config->grid_type)
     {
       case LPJ_FLOAT:
+        MPI_Type_contiguous(2,MPI_FLOAT,&type);
+        MPI_Type_commit(&type);
+        if(isroot(*config))
+        {
+          fdst=newvec(Floatcoord,config->total);
+          if(fdst==NULL)
+          {
+            printallocerr("fdst");
+            rc=TRUE;
+          }
+          else
+            rc=FALSE;
+        }
+        MPI_Bcast(&rc,1,MPI_INT,0,config->comm);
+        if(rc)
+        {
+          free(fvec);
+          return 0;
+        }
+        MPI_Gatherv(fvec,config->count,type,fdst,output->counts,output->offsets,
+                    type,0,config->comm);
+        MPI_Type_free(&type);
+        if(isroot(*config))
+        {
+          if(output->files[index].isopen)
+            switch(output->files[index].fmt)
+            {
+              case RAW: case CLM:
+                if(fwrite(fdst,sizeof(Floatcoord),config->total,output->files[index].fp.file)!=config->total)
+                  fprintf(stderr,"ERROR204: Cannot write output: %s.\n",strerror(errno));
+                break;
+              case TXT:
+                for(cell=0;cell<config->total-1;cell++)
+                  fprintf(output->files[index].fp.file,"%g%c%g%c",
+                          fdst[cell].lon,config->csv_delimit,fdst[cell].lat,config->csv_delimit);
+                fprintf(output->files[index].fp.file,"%g%c%g\n",
+                        fdst[config->total-1].lon,config->csv_delimit,fdst[config->total-1].lat);
+                break;
+            }
+          if(output->files[index].issocket)
+          {
+            send_token_coupler(PUT_DATA,index,config);
+            writefloat_socket(config->socket,fdst,config->total*2);
+          }
+          free(fdst);
+        }
+        free(fvec);
+        break;
+      case LPJ_DOUBLE:
+        MPI_Type_contiguous(2,MPI_DOUBLE,&type);
+        MPI_Type_commit(&type);
+        if(isroot(*config))
+        {
+          ddst=newvec(Doublecoord,config->total);
+          if(ddst==NULL)
+          {
+            printallocerr("fdst");
+            rc=TRUE;
+          }
+          else
+            rc=FALSE;
+        }
+        MPI_Bcast(&rc,1,MPI_INT,0,config->comm);
+        if(rc)
+        {
+          free(dvec);
+          return 0;
+        }
+        MPI_Gatherv(dvec,config->count,type,ddst,output->counts,output->offsets,
+                    type,0,config->comm);
+        MPI_Type_free(&type);
+        if(isroot(*config))
+        {
+          if(output->files[index].isopen)
+            switch(output->files[index].fmt)
+            {
+              case RAW: case CLM:
+                if(fwrite(ddst,sizeof(Doublecoord),config->total,output->files[index].fp.file)!=config->total)
+                  fprintf(stderr,"ERROR204: Cannot write output: %s.\n",strerror(errno));
+                break;
+              case TXT:
+                for(cell=0;cell<config->total-1;cell++)
+                  fprintf(output->files[index].fp.file,"%g%c%g%c",
+                          ddst[cell].lon,config->csv_delimit,ddst[cell].lat,config->csv_delimit);
+                fprintf(output->files[index].fp.file,"%g%c%g\n",
+                        ddst[config->total-1].lon,config->csv_delimit,ddst[config->total-1].lat);
+                break;
+            }
+          if(output->files[index].issocket)
+          {
+            send_token_coupler(PUT_DATA,index,config);
+            writedouble_socket(config->socket,ddst,config->total*2);
+          }
+          free(ddst);
+        }
+        free(fvec);
+        break;
+      case LPJ_SHORT:
+        MPI_Type_contiguous(2,MPI_SHORT,&type);
+        MPI_Type_commit(&type);
+        if(isroot(*config))
+        {
+          dst=newvec(Intcoord,config->total);
+          if(dst==NULL)
+          {
+            printallocerr("dst");
+            rc=TRUE;
+          }
+          else
+            rc=FALSE;
+        }
+        MPI_Bcast(&rc,1,MPI_INT,0,config->comm);
+        if(rc)
+        {
+          free(vec);
+          return 0;
+        }
+        MPI_Gatherv(vec,config->count,type,dst,output->counts,output->offsets,
+                    type,0,config->comm);
+        MPI_Type_free(&type);
+        if(isroot(*config))
+        {
+          if(output->files[index].isopen)
+            switch(output->files[index].fmt)
+            {
+              case RAW: case CLM:
+                if(fwrite(dst,sizeof(Intcoord),config->total,output->files[index].fp.file)!=config->total)
+                  fprintf(stderr,"ERROR204: Cannot write output: %s.\n",strerror(errno));
+                break;
+              case TXT:
+                for(cell=0;cell<config->total-1;cell++)
+                  fprintf(output->files[index].fp.file,"%g%c%g%c",
+                          dst[cell].lon*0.01,config->csv_delimit,dst[cell].lat*0.01,config->csv_delimit);
+                fprintf(output->files[index].fp.file,"%g%c%g\n",
+                        dst[config->total-1].lon*0.01,config->csv_delimit,dst[config->total-1].lat*0.01);
+                break;
+            }
+          if(output->files[index].issocket)
+          {
+            send_token_coupler(PUT_DATA,index,config);
+            writeshort_socket(config->socket,dst,config->total*2);
+          }
+          free(dst);
+        }
+        free(vec);
+        break;
+    }
+  }
+#else
+  switch(config->grid_type)
+  {
+    case LPJ_FLOAT:
+      if(output->files[index].isopen)
         switch(output->files[index].fmt)
         {
           case RAW: case CLM:
             if(fwrite(fvec,sizeof(Floatcoord),count,output->files[index].fp.file)!=count)
               fprintf(stderr,"ERROR204: Cannot write output: %s.\n",strerror(errno));
-            free(fvec);
             break;
           case TXT:
             for(cell=0;cell<count-1;cell++)
@@ -358,21 +338,26 @@ int writecoords(Outputfile *output,  /**< output struct */
                       fvec[cell].lon,config->csv_delimit,fvec[cell].lat,config->csv_delimit);
             fprintf(output->files[index].fp.file,"%g%c%g\n",
                     fvec[count-1].lon,config->csv_delimit,fvec[count-1].lat);
-            free(fvec);
             break;
           case CDF:
             write_short_netcdf(&output->files[index].fp.cdf,soilcode,NO_TIME,config->nall);
-            free(soilcode);
             break;
-        }
-        break;
-      case LPJ_DOUBLE:
+      }
+      if(output->files[index].issocket)
+      {
+        send_token_coupler(PUT_DATA,output->files[index].id,config);
+        writefloat_socket(config->socket,fvec,count*2);
+      }
+      free(fvec);
+      free(soilcode);
+      break;
+    case LPJ_DOUBLE:
+      if(output->files[index].isopen)
         switch(output->files[index].fmt)
         {
           case RAW: case CLM:
             if(fwrite(dvec,sizeof(Doublecoord),count,output->files[index].fp.file)!=count)
               fprintf(stderr,"ERROR204: Cannot write output: %s.\n",strerror(errno));
-            free(dvec);
             break;
           case TXT:
             for(cell=0;cell<count-1;cell++)
@@ -380,21 +365,26 @@ int writecoords(Outputfile *output,  /**< output struct */
                       dvec[cell].lon,config->csv_delimit,dvec[cell].lat,config->csv_delimit);
             fprintf(output->files[index].fp.file,"%g%c%g\n",
                     dvec[count-1].lon,config->csv_delimit,dvec[count-1].lat);
-            free(dvec);
             break;
           case CDF:
             write_short_netcdf(&output->files[index].fp.cdf,soilcode,NO_TIME,config->nall);
-            free(soilcode);
             break;
         }
-        break;
-      case LPJ_SHORT:
+      if(output->files[index].issocket)
+      {
+        send_token_coupler(PUT_DATA,output->files[index].id,config);
+        writefloat_socket(config->socket,fvec,count*2);
+      }
+      free(fvec);
+      free(soilcode);
+      break;
+    case LPJ_SHORT:
+      if(output->files[index].isopen)
         switch(output->files[index].fmt)
         {
           case RAW: case CLM:
             if(fwrite(vec,sizeof(Intcoord),count,output->files[index].fp.file)!=count)
               fprintf(stderr,"ERROR204: Cannot write output: %s.\n",strerror(errno));
-            free(vec);
             break;
           case TXT:
             for(cell=0;cell<count-1;cell++)
@@ -402,33 +392,19 @@ int writecoords(Outputfile *output,  /**< output struct */
                       vec[cell].lon*0.01,config->csv_delimit,vec[cell].lat*0.01,config->csv_delimit);
             fprintf(output->files[index].fp.file,"%g%c%g\n",
                     vec[count-1].lon*0.01,config->csv_delimit,vec[count-1].lat*0.01);
-            free(vec);
             break;
           case CDF:
             write_short_netcdf(&output->files[index].fp.cdf,soilcode,NO_TIME,config->nall);
-            free(soilcode);
             break;
         }
-        break;
-    } /* of switch(config->grid_type) */
-  }
-  else
-  {
-    switch(config->grid_type)
-    {
-      case LPJ_FLOAT:
-        writefloat_socket(output->socket,fvec,count*2);
-        free(fvec);
-        break;
-      case LPJ_DOUBLE:
-        writedouble_socket(output->socket,dvec,count*2);
-        free(dvec);
-        break;
-      case LPJ_SHORT:
-        writeshort_socket(output->socket,vec,count*2);
+        if(output->files[index].issocket)
+        {
+          send_token_coupler(PUT_DATA,index,config);
+          writeshort_socket(config->socket,vec,count*2);
+        }
         free(vec);
+        free(soilcode);
         break;
-    }
   }
 #endif
   return count;

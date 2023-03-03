@@ -185,7 +185,7 @@ Bool create_pft_netcdf(Netcdf *cdf,
         year[i]=(config->outputyear-config->baseyear)*NDAYYEAR+i;
       break;
     default:
-      fprintf(stderr,"ERROR425: Invalid value=%d for number of data points per year.\n",n);
+      fprintf(stderr,"ERROR425: Invalid value=%d for number of data points per year in '%s'.\n",n,filename);
       free(year);
       free(lon);
       free(lat);

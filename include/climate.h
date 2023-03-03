@@ -63,6 +63,7 @@ typedef struct
 {
   int firstyear;    /**< first year of CO2 data (AD) */
   int nyear;        /**< number of years of climate data */
+  int id;           /**< id for socket communication */
   Real *data;       /**< atmospheric CO2 (ppmv) */
 } Co2data;
 
@@ -106,8 +107,8 @@ typedef struct
 
 extern Climate *initclimate(const Cell *,const Config *);
 extern Bool getclimate(Climate *,const Cell *,int,const Config *);
+extern Bool getco2(const Climate *,Real *,int,const Config *);
 extern Bool getdeposition(Climate *,const Cell *,int,const Config *);
-extern Bool getco2(const Climate *,Real *,int);
 extern void freeclimate(Climate *,Bool);
 extern Bool storeclimate(Climatedata *,Climate *,const Cell *,int,int,
                          const Config *);
@@ -128,7 +129,7 @@ extern void closeclimatefile(Climatefile *,Bool);
 extern Bool readclimate(Climatefile *,Real *,Real,Real,const Cell *,int,
                         const Config *);
 extern Bool checkvalidclimate(Climate *,Cell *,Config *);
-extern Bool readco2(Co2data *,const Filename *,Bool);
+extern Bool readco2(Co2data *,const Filename *,const Config *);
 extern void radiation(Real *, Real *,Real *,Real,int,Dailyclimate *,Real,int);
 extern Real *readdata(Climatefile *,Real *data,const Cell *,const char *,int,const Config *);
 extern int *readintdata(Climatefile *,const Cell *,const char *,int,const Config *);

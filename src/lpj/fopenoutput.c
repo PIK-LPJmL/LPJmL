@@ -14,13 +14,7 @@
 /**                                                                                \n**/
 /**************************************************************************************/
 
-#include <signal.h>
 #include "lpj.h"
-
-static void handler(int UNUSED(num))
-{
-  fail(SOCKET_ERR,FALSE,"Output channel is broken"); 
-} /* of 'handler' */
 
 static Bool create(Netcdf *cdf,const char *filename,int index,
                    Coord_array *array,const Config *config)
@@ -58,7 +52,6 @@ static void openfile(Outputfile *output,const Cell grid[],
                      const Config *config)
 {
   Header header;
-  output->files[config->outputvars[i].id].fmt=config->outputvars[i].filename.fmt;
   if(config->outputvars[i].filename.fmt==CDF)
   {
     switch(config->outputvars[i].id)
@@ -213,69 +206,34 @@ Outputfile *fopenoutput(const Cell grid[],   /**< LPJ grid */
                         const Config *config /**< LPJmL configuration */
                        )                     /** \return output file data or NULL */
 {
-  int i;
+  int i,size;
 #ifdef USE_MPI
   int count;
 #endif
-  Bool isopen;
+  int ncell;
   char *filename;
   Outputfile *output;
   output=new(Outputfile);
   check(output);
-  output->method=config->outputmethod;
   output->files=newvec(File,n);
   check(output->files);
   output->n=n;
   output->index=output->index_all=NULL; 
   for(i=0;i<n;i++)
-    output->files[i].isopen=FALSE;
+    output->files[i].isopen=output->files[i].issocket=FALSE;
 #ifdef USE_MPI
-  if(output->method!=LPJ_MPI2)
-  {
-    output->counts=newvec(int,config->ntask);
-    check(output->counts);
-    output->offsets=newvec(int,config->ntask);
-    check(output->offsets);
-    count=config->count;
-    MPI_Allgather(&count,1,MPI_INT,output->counts,1,MPI_INT,
-                  config->comm);
-    /* calculate array offsets */
-    output->offsets[0]=0;
-    for(i=1;i<config->ntask;i++)
-      output->offsets[i]=output->offsets[i-1]+output->counts[i-1];
-  }
+  output->counts=newvec(int,config->ntask);
+  check(output->counts);
+  output->offsets=newvec(int,config->ntask);
+  check(output->offsets);
+  count=config->count;
+  MPI_Allgather(&count,1,MPI_INT,output->counts,1,MPI_INT,
+                config->comm);
+  /* calculate array offsets */
+  output->offsets[0]=0;
+  for(i=1;i<config->ntask;i++)
+    output->offsets[i]=output->offsets[i-1]+output->counts[i-1];
 #endif
-  if(output->method==LPJ_SOCKET)
-  {
-    if(isroot(*config))
-    {
-      output->socket=connect_socket(config->hostname,config->port,0);
-      if(output->socket==NULL)
-      {
-        fputs("ERROR167: Cannot establish connection.\n",stderr);
-        isopen=FALSE;
-      }
-      else
-      {
-#ifndef _WIN32
-        signal(SIGPIPE,handler);
-#endif
-        isopen=TRUE;
-        write_socket(output->socket,"LPJ",3);
-        writeint_socket(output->socket,&config->total,1);
-      }
-    }
-#ifdef USE_MPI
-    MPI_Bcast(&isopen,1,MPI_INT,0,config->comm);
-#endif
-    if(!isopen)
-    {
-#ifdef USE_MPI
-      output->counts=output->offsets=NULL;
-#endif
-      return output; 
-    }
-  }
   outputnames(output,config);
   for(i=0;i<config->n_out;i++)
   {
@@ -291,54 +249,42 @@ Outputfile *fopenoutput(const Cell grid[],   /**< LPJ grid */
       filename=config->outputvars[i].filename.name;
     }
     output->files[config->outputvars[i].id].filename=config->outputvars[i].filename.name;
-#ifdef USE_MPI
-    switch(output->method)
+    output->files[config->outputvars[i].id].fmt=config->outputvars[i].filename.fmt;
+    if(config->outputvars[i].filename.issocket)
     {
-      case LPJ_MPI2:
-        if(MPI_File_open(config->comm,filename,
-                         MPI_MODE_CREATE|MPI_MODE_WRONLY,MPI_INFO_NULL,
-                         &output->files[config->outputvars[i].id].fp.mpi_file))
-        {
-          if(isroot(*config))
-            fprintf(stderr,"ERROR100: Cannot open output file '%s'.\n",
-                    filename);
-        }
+      output->files[config->outputvars[i].id].issocket=TRUE;
+      output->files[config->outputvars[i].id].id=config->outputvars[i].filename.id;
+      if(isroot(*config))
+      {
+        if(config->outputvars[i].id==GLOBALFLUX)
+          ncell=0;
         else
+          ncell=(config->outputvars[i].id==ADISCHARGE) ? config->nall : config->total;
+        if(config->outputvars[i].id==GLOBALFLUX)
+          size=sizeof(Flux)/sizeof(Real);
+        else if(config->outputvars[i].id==GRID)
+          size=2;
+        else
+          size=outputsize(config->outputvars[i].id,
+                          config->npft[GRASS]+config->npft[TREE],
+                          config->npft[CROP],config);
+        if(openoutput_coupler(config->outputvars[i].filename.id,ncell,getnyear(config->outnames,config->outputvars[i].id),size,getoutputtype(config->outputvars[i].id,config->grid_type),config))
         {
-          switch(config->outputvars[i].id)
-          {
-            case SDATE: case HDATE: case GRID: case COUNTRY: case REGION: case SEASONALITY:
-              MPI_File_set_view(output->files[config->outputvars[i].id].fp.mpi_file,
-                                0, MPI_SHORT, 
-                                MPI_SHORT,"native", MPI_INFO_NULL);
-              break;
-            default:
-              MPI_File_set_view(output->files[config->outputvars[i].id].fp.mpi_file,
-                                0, MPI_FLOAT,
-                                MPI_FLOAT,"native", MPI_INFO_NULL);
-          }
-          output->files[config->outputvars[i].id].isopen=TRUE;
+          output->files[config->outputvars[i].id].issocket=FALSE;
+          fprintf(stderr,"ERROR100: Cannot open socket stream for output '%s'.\n",
+                  config->outnames[config->outputvars[i].id].name);
         }
-        break;
-      case LPJ_SOCKET:
-        output->files[config->outputvars[i].id].isopen=TRUE;
-        break;
-      case LPJ_GATHER:
-        openfile(output,grid,filename,i,config);
-        MPI_Bcast(&output->files[config->outputvars[i].id].isopen,1,MPI_INT,
-                  0,config->comm);
-        break;
-    } /* of 'switch' */
-#else
-    switch(output->method)
-    {
-      case LPJ_FILES:
-        openfile(output,grid,filename,i,config);
-        break;
-      case LPJ_SOCKET:
-        output->files[config->outputvars[i].id].isopen=TRUE;
-        break;
-    } /* of 'switch' */
+      }
+#ifdef USE_MPI
+      MPI_Bcast(&output->files[config->outputvars[i].id].issocket,1,MPI_INT,
+                0,config->comm);
+#endif
+    }
+    else if(config->outputvars[i].filename.fmt!=SOCK)
+      openfile(output,grid,filename,i,config);
+#ifdef USE_MPI
+    MPI_Bcast(&output->files[config->outputvars[i].id].isopen,1,MPI_INT,
+              0,config->comm);
 #endif
     if(output->files[config->outputvars[i].id].compress)
       free(filename);
