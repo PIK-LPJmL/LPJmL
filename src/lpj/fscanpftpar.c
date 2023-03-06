@@ -125,7 +125,7 @@ Bool fscanpftpar(LPJfile *file,       /**< pointer to LPJ file */
                  Config *config       /**< LPJ configuration */
                 )                     /** \return TRUE on error */
 {
-  int n,l,count;
+  int n,l,count,npft;
   LPJfile arr,item,subitem;
   String s;
   Pftpar *pft;
@@ -157,11 +157,12 @@ Bool fscanpftpar(LPJfile *file,       /**< pointer to LPJ file */
   for(n=0;n<count;n++)
     config->pftpar[n].id=UNDEF;
   isbiomass=isagtree=iscrop=iswp=FALSE;
+  npft=0;
   for(n=0;n<count;n++)
   {
     fscanarrayindex(&arr,&item,n,verb);
-    pft=config->pftpar+n;
-    pft->id=n;
+    pft=config->pftpar+npft;
+    pft->id=npft;
 
     /* Read pft->name */
     if(fscanstring(&item,s,"name",FALSE,verb))
@@ -185,6 +186,7 @@ Bool fscanpftpar(LPJfile *file,       /**< pointer to LPJ file */
      if(findint(pft->cultivation_type,config->cult_types,config->ncult_types)==NOT_FOUND)
        continue;
     }
+    npft++;
     if(fscankeywords(&item,&pft->type,"type",config->pfttypes,config->ntypes,FALSE,verb))
     {
       if(verb)
