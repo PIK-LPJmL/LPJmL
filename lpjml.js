@@ -69,6 +69,7 @@
   "reservoir" : false,
   "wateruse" : "no",
 #endif
+  "cultivation_types" : ["none","biomass","annual crop"], /* cultivation types to read from pft.js */
   "prescribe_burntarea" : false,
   "prescribe_landcover" : "no_landcover", /* NO_LANDCOVER, LANDCOVERFPC, LANDCOVEREST */
   "sowing_date_option" : "fixed_sdate",   /* NO_FIXED_SDATE, FIXED_SDATE, PRESCRIBED_SDATE */

@@ -24,7 +24,7 @@
 
 Bool fscankeywords(LPJfile *file,    /**< pointer to LPJ file */
                    int *value,       /**< integer to be read from file */
-                   const char *name, /**< variable name */
+                   const char *name, /**< variable name or NULL */
                    const char *const *array, /**< array of keywords defined */
                    int size,          /**< size of array */
                    Bool with_default, /**< allow default value */
@@ -40,20 +40,25 @@ Bool fscankeywords(LPJfile *file,    /**< pointer to LPJ file */
   struct json_object *item;
   if(file->isjson)
   {
-    if(!json_object_object_get_ex(file->file.obj,name,&item))
+    if(name==NULL)
+      item=file->file.obj;
+    else
     {
-      if(with_default)
+      if(!json_object_object_get_ex(file->file.obj,name,&item))
       {
-        if(verb)
-          fprintf(stderr,"WARNING027: Name '%s' for keyword not found, set to \"%s\".\n",
-                  name,array[*value]);
-        return FALSE;
-      }
-      else
-      {
-        if(verb)
-          fprintf(stderr,"ERROR225: Name '%s' for keyword not found.\n",name);
-        return TRUE;
+        if(with_default)
+        {
+          if(verb)
+            fprintf(stderr,"WARNING027: Name '%s' for keyword not found, set to \"%s\".\n",
+                    name,array[*value]);
+          return FALSE;
+        }
+        else
+        {
+          if(verb)
+            fprintf(stderr,"ERROR225: Name '%s' for keyword not found.\n",name);
+          return TRUE;
+        }
       }
     }
     if(json_object_get_type(item)==json_type_string)
@@ -64,7 +69,7 @@ Bool fscankeywords(LPJfile *file,    /**< pointer to LPJ file */
       {
         if(verb)
         {
-          fprintf(stderr,"ERROR166: Keyword '%s' not defined for name '%s', must be",str,name);
+          fprintf(stderr,"ERROR166: Keyword '%s' not defined for name '%s', must be",str,(name==NULL) ? "N/A" : name);
           for(i=0;i<size;i++)
           {
             fprintf(stderr," \"%s\"",array[i]);
@@ -80,7 +85,7 @@ Bool fscankeywords(LPJfile *file,    /**< pointer to LPJ file */
     if(json_object_get_type(item)!=json_type_int)
     {
       if(verb)
-        fprintf(stderr,"ERROR226: Name '%s' not of type int.\n",name);
+        fprintf(stderr,"ERROR226: Name '%s' not of type int.\n",(name==NULL) ? "N/A" : NULL);
       return TRUE;
     }
     *value=json_object_get_int(item);
@@ -88,7 +93,7 @@ Bool fscankeywords(LPJfile *file,    /**< pointer to LPJ file */
     {
       if(verb)
       {
-        fprintf(stderr,"ERROR226: Invalid value %d for name '%s', must be in [0,%d] or",*value,name,size-1);
+        fprintf(stderr,"ERROR226: Invalid value %d for name '%s', must be in [0,%d] or",*value,(name==NULL) ?  "N/A" : name,size-1);
         for(i=0;i<size;i++)
         {
           fprintf(stderr," \"%s\"",array[i]);
