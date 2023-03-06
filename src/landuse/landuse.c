@@ -176,7 +176,7 @@ Landuse initlanduse(const Config *config /**< LPJ configuration */
       freelanduse(landuse,config);
       return NULL;
     }
-    checkyear("tillage",&landuse->grassland_lsuha,config);
+    checkyear("livestock density",&landuse->grassland_lsuha,config);
   }
 
   landuse->intercrop=config->intercrop;
