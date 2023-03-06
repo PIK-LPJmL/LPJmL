@@ -243,7 +243,7 @@ Real infil_perc_irr(Stand *stand,        /**< Stand pointer */
               getoutput(&stand->cell->output,LEACHING,config)+=(NO3surf + NO3lat)*stand->frac;
               stand->cell->balance.n_outflux+=(NO3surf + NO3lat)*stand->frac;
               if(isagriculture(stand->type->landusetype))
-                getoutput(&stand->cell->output,NLEACHING_AGR,config)+=(NO3surf + NO3lat)*stand->frac;            
+                getoutput(&stand->cell->output,NLEACHING_AGR,config)+=(NO3surf + NO3lat)*stand->frac;
               if(stand->type->landusetype==GRASSLAND)
                 getoutput(&stand->cell->output,NO3_LEACHING_MGRASS,config)+=(NO3surf+NO3lat)*stand->frac;
               if(stand->type->landusetype==AGRICULTURE)

@@ -122,6 +122,24 @@ Bool fwritelandfrac(FILE *file,                 /**< pointer to binary file */
   return FALSE;
 } /* of 'fwritelandfrac' */
 
+void fprintlandfrac(FILE *file,               /**< pointer to text file */
+                    const Landfrac *landfrac, /**< land fractions */
+                    int ncft,                 /**< number of crop PFTs */
+                    int nagtree               /**< number of agriculture tree PFTs */
+                   )
+{
+  int i;
+  for(i=0;i<ncft;i++)
+    fprintf(file," %g",landfrac->crop[i]);
+  for(i=0;i<nagtree;i++)
+    fprintf(file," %g",landfrac->ag_tree[i]);
+  for(i=0;i<NGRASS;i++)
+    fprintf(file," %g",landfrac->grass[i]);
+  fprintf(file," %g",landfrac->woodplantation);
+  fprintf(file," %g",landfrac->biomass_grass);
+  fprintf(file," %g",landfrac->biomass_tree);
+} /* of 'fprintlandfrac' */
+
 Bool freadlandfrac(FILE *file,           /**< pointer to binary file */
                    Landfrac landfrac[2], /**< land fractions (non-irrig., irrig.) */
                    int ncft,             /**< number of crop PFTs */

@@ -100,10 +100,11 @@ struct config
   char *image_host;       /**< hostname for computer running the IMAGE model */
   int image_inport;       /**< port numbert for ingoing data */
   int image_outport;      /**< port number for outgoing data */
-  int wait_image;         /**< time to wait for image connection (sec) */
 #endif
 #endif
+  int wait;               /**< time to wait for connection (sec) */
   char *sim_name;         /**< Desciption of LPJ simulation */
+  char *coupled_model;    /**< name of coupled model or NULL */
   int sim_id;             /**< Simulation type */
   int *npft;              /**< number of PFTs in each PFT class */
   int nbiomass;           /**< number of biomass PFTs */
@@ -178,9 +179,6 @@ struct config
   int compress;           /**< compress NetCDF output (0: no compression) */
   float missing_value;    /**< Missing value in NetCDF files */
   Variable *outnames;
-  Outputmethod outputmethod;
-  char *hostname;               /**< hostname to send data */
-  int port;                     /**< port of socket connection */
 #ifdef USE_MPI
   MPI_Comm comm; /**< MPI communicator */
   int offset;
@@ -266,6 +264,11 @@ struct config
   Socket *in;  /**< socket for ingoing data */
   Socket *out; /**< socket for outgoing data */
 #endif
+  Socket *socket;         /**< socket for in- and outgoing data */
+  char *coupled_host;     /**< hostname for computer running the IMAGE model */
+  int coupler_port;       /**< port number for in- and outgoing data */
+  int coupler_out;        /**< number of outgoing data streams */
+  int coupler_in;         /**< number of ingoing data streams */
   int totalsize;          /**< size of shared output storage */
   int outputmap[NOUT];    /**< index into output storage */
   int outputsize[NOUT];   /**< number of bands for each output */
@@ -313,6 +316,7 @@ extern void closeconfig(LPJfile *);
 #define ischeckpointrestart(config) ((config)->checkpoint_restart_filename!=NULL)
 #define iswriterestart(config) ((config)->write_restart_filename!=NULL)
 #define isreadrestart(config) ((config)->restart_filename!=NULL)
+#define iscoupled(config) ((config).coupled_model!=NULL)
 #ifdef USE_MPI
 #define isroot(config) ((config).rank==0)
 #else

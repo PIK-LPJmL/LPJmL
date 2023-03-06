@@ -86,6 +86,7 @@
 #define FMS 4
 #define META 5
 #define CDF 6
+#define SOCK 7
 #define RESTART 1
 #define NO_RESTART 0
 #define NO_FIRE 0

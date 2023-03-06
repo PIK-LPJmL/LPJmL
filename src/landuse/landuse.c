@@ -51,7 +51,7 @@ struct landuse
   Climatefile residue_on_field; /**< file pointer to residue extraction file */
   Climatefile sdate;            /**< file pointer to prescribed sdates */
   Climatefile crop_phu;         /**< file pointer to prescribed crop phus */
-  Climatefile grassland_lsuha;         /**< file pointer to prescribed livestock density */
+  Climatefile grassland_lsuha;  /**< file pointer to prescribed livestock density */
 };                              /**< definition of opaque datatype Landuse */
 
 static void checkyear(const char *name,const Climatefile *file,const Config *config)
@@ -86,7 +86,7 @@ Landuse initlanduse(const Config *config /**< LPJ configuration */
   landuse->landuse.isopen=landuse->fertilizer_nr.isopen=landuse->manure_nr.isopen=landuse->with_tillage.isopen=
   landuse->residue_on_field.isopen=landuse->sdate.isopen=landuse->crop_phu.isopen=landuse->grassland_lsuha.isopen=FALSE;
   /* open landuse input data */
-  if(opendata(&landuse->landuse,&config->landuse_filename,"landuse","1",LPJ_SHORT,0.001,2*config->landusemap_size,FALSE,config))
+  if(opendata(&landuse->landuse,&config->landuse_filename,"landuse","1",(config->landuse_filename.fmt==SOCK) ? LPJ_FLOAT : LPJ_SHORT,0.001,2*config->landusemap_size,FALSE,config))
   {
     freelanduse(landuse,config);
     return NULL;
@@ -102,11 +102,12 @@ Landuse initlanduse(const Config *config /**< LPJ configuration */
   }
   if(isroot(*config) && landuse->landuse.var_len!=4*config->landusemap_size)
     fputs("WARNING024: Land-use input does not include irrigation systems, suboptimal country values are used.\n",stderr);
-  checkyear("land-use",&landuse->landuse,config);
+  if(config->landuse_filename.fmt!=SOCK)
+    checkyear("land-use",&landuse->landuse,config);
   if(config->sdate_option==PRESCRIBED_SDATE)
   {
     /* open sdate input data */
-    if(opendata(&landuse->sdate,&config->sdate_filename,"sowing",NULL,LPJ_SHORT,1.0,2*config->cftmap_size,TRUE,config))
+    if(opendata(&landuse->sdate,&config->sdate_filename,"sowing",NULL,(config->sdate_filename.fmt==SOCK) ? LPJ_INT : LPJ_SHORT,1.0,2*config->cftmap_size,TRUE,config))
     {
       freelanduse(landuse,config);
       return NULL;
@@ -118,7 +119,7 @@ Landuse initlanduse(const Config *config /**< LPJ configuration */
   if(config->crop_phu_option==PRESCRIBED_CROP_PHU)
   {
     /* open sdate input data */
-    if(opendata(&landuse->crop_phu,&config->crop_phu_filename,"crop phu",NULL,LPJ_SHORT,1.0,2*config->cftmap_size,TRUE,config))
+    if(opendata(&landuse->crop_phu,&config->crop_phu_filename,"crop phu",NULL,(config->crop_phu_filename.fmt==SOCK) ? LPJ_FLOAT : LPJ_SHORT,1.0,2*config->cftmap_size,TRUE,config))
     {
       freelanduse(landuse,config);
       return NULL;
@@ -129,44 +130,48 @@ Landuse initlanduse(const Config *config /**< LPJ configuration */
   if(config->fertilizer_input==FERTILIZER)
   {
     /* open fertilizer data */
-    if(opendata(&landuse->fertilizer_nr,&config->fertilizer_nr_filename,"fertilizer","g/m2",LPJ_SHORT,1.0,2*config->fertilizermap_size,TRUE,config))
+    if(opendata(&landuse->fertilizer_nr,&config->fertilizer_nr_filename,"fertilizer","g/m2",(config->fertilizer_nr_filename.fmt==SOCK) ? LPJ_FLOAT : LPJ_SHORT,1.0,2*config->fertilizermap_size,TRUE,config))
     {
       freelanduse(landuse,config);
       return NULL;
     }
-    checkyear("fertilizer",&landuse->fertilizer_nr,config);
+    if(config->fertilizer_nr_filename.fmt!=SOCK)
+      checkyear("fertilizer",&landuse->fertilizer_nr,config);
   }
 
   if(config->manure_input)
   {
     /* open manure fertilizer data */
-    if(opendata(&landuse->manure_nr,&config->manure_nr_filename,"manure","g/m2",LPJ_SHORT,1.0,2*config->fertilizermap_size,TRUE,config))
+    if(opendata(&landuse->manure_nr,&config->manure_nr_filename,"manure","g/m2",(config->manure_nr_filename.fmt==SOCK) ? LPJ_FLOAT : LPJ_SHORT,1.0,2*config->fertilizermap_size,TRUE,config))
     {
       freelanduse(landuse,config);
       return NULL;
     }
-    checkyear("manure",&landuse->manure_nr,config);
+    if(config->manure_nr_filename.fmt!=SOCK)
+      checkyear("manure",&landuse->manure_nr,config);
   }
 
   if(config->tillage_type==READ_TILLAGE)
   {
-    if(opendata(&landuse->with_tillage,&config->with_tillage_filename,"tillage",NULL,LPJ_SHORT,1.0,1,TRUE,config))
+    if(opendata(&landuse->with_tillage,&config->with_tillage_filename,"tillage",NULL,(config->with_tillage_filename.fmt==SOCK) ? LPJ_INT : LPJ_SHORT,1.0,1,TRUE,config))
     {
       freelanduse(landuse,config);
       return NULL;
     }
-    checkyear("tillage",&landuse->with_tillage,config);
+    if(config->with_tillage_filename.fmt!=SOCK)
+      checkyear("tillage",&landuse->with_tillage,config);
   }
 
   if(config->residue_treatment==READ_RESIDUE_DATA)
   {
     /* open residue data */
-    if(opendata(&landuse->residue_on_field,&config->residue_data_filename,"residue extraction",NULL,LPJ_SHORT,1.0,config->fertilizermap_size,TRUE,config))
+    if(opendata(&landuse->residue_on_field,&config->residue_data_filename,"residue extraction",NULL,(config->residue_data_filename.fmt==SOCK) ? LPJ_FLOAT : LPJ_SHORT,1.0,config->fertilizermap_size,TRUE,config))
     {
       freelanduse(landuse,config);
       return NULL;
     }
-    checkyear("residue extraction",&landuse->residue_on_field,config);
+    if(config->residue_data_filename.fmt!=SOCK)
+      checkyear("residue extraction",&landuse->residue_on_field,config);
   }
 
   if(config->prescribe_lsuha)
@@ -378,7 +383,7 @@ Bool getlanduse(Landuse landuse,     /**< Pointer to landuse data */
                         config->landusemap_size,data,&count,ncft,config->nwptype))
         {
           fprintf(stderr,"ERROR149: Land-use input=%g less than zero for cell %d (%s) in year %d.\n",
-                  data[count],cell+config->startgrid,sprintcoord(line,&grid[cell].coord),max(yearl,landuse->landuse.firstyear));
+                  data[count],cell+config->startgrid,sprintcoord(line,&grid[cell].coord),yearl);
           return TRUE;
         }
       }
@@ -636,9 +641,11 @@ Bool getlanduse(Landuse landuse,     /**< Pointer to landuse data */
       }
       sum=reducelanduse(grid+cell,sum-1,ncft,config->nagtree);
       if(sum>0.00001)
-        fail(CROP_FRACTION_ERR,FALSE,
-             "crop fraction greater 1: %f, cell: %d, managed grass is 0",
-             sum+1,cell+config->startgrid);
+      {
+        fprintf(stderr,"ERROR016: Crop fraction=%g greater than 1 in cell %d (%s), managed grass is 0.\n",
+                sum+1,cell+config->startgrid,sprintcoord(line,&grid[cell].coord));
+        return TRUE;
+      }
     }
     if (config->withlanduse==ONLY_CROPS)
     {
@@ -719,7 +726,7 @@ Bool getlanduse(Landuse landuse,     /**< Pointer to landuse data */
           {
             fprintf(stderr,"ERROR149: Fertilizer input=%g for band %d less than zero for cell %d (%s) in year %d.\n",
                     data[count],count % config->fertilizermap_size+i*config->fertilizermap_size,
-                    cell+config->startgrid,sprintcoord(line,&grid[cell].coord),max(yearf,landuse->fertilizer_nr.firstyear));
+                    cell+config->startgrid,sprintcoord(line,&grid[cell].coord),yearf);
             return TRUE;
           }
         }
@@ -745,7 +752,7 @@ Bool getlanduse(Landuse landuse,     /**< Pointer to landuse data */
           {
             fprintf(stderr,"ERROR149: Manure input=%g for band %d less than zero for cell %d (%s) in year %d.\n",
                     data[count],count % config->fertilizermap_size+i*config->fertilizermap_size,
-                    cell+config->startgrid,sprintcoord(line,&grid[cell].coord),max(yearm,landuse->manure_nr.firstyear));
+                    cell+config->startgrid,sprintcoord(line,&grid[cell].coord),yearm);
             return TRUE;
           }
         }
@@ -822,7 +829,7 @@ Bool getlanduse(Landuse landuse,     /**< Pointer to landuse data */
       {
         fprintf(stderr,"ERROR149: Residue rate input=%g for band %d less than zero for cell %d (%s) in year %d.\n",
                 data[count],count % config->fertilizermap_size,
-                cell+config->startgrid,sprintcoord(line,&grid[cell].coord),max(yearr,landuse->residue_on_field.firstyear));
+                cell+config->startgrid,sprintcoord(line,&grid[cell].coord),yearr);
         return TRUE;
       }
       count-=config->fertilizermap_size;
@@ -850,7 +857,6 @@ Bool getlanduse(Landuse landuse,     /**< Pointer to landuse data */
     for(cell=0; cell<config->ngridcell; cell++)
       grid[cell].ml.grassland_lsuha=param.lsuha;
   }
-  
   return FALSE;
 } /* of 'getlanduse' */
 

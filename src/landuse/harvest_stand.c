@@ -35,7 +35,7 @@ static Harvest harvest_grass(Stand *stand, /**< pointer to stand */
   {
     grass=pft->data;
     harvest.harvest.carbon=grass->ind.leaf.carbon*hfrac;
-    harvest.harvest.nitrogen=grass->ind.leaf.nitrogen*hfrac*param.nfrac_grassharvest; 
+    harvest.harvest.nitrogen=grass->ind.leaf.nitrogen*hfrac*param.nfrac_grassharvest;
     stand->soil.NH4[0]+=grass->ind.leaf.nitrogen*hfrac*(1-param.nfrac_grassharvest)*pft->nind;
     grass->ind.leaf.carbon*=(1-hfrac);
     grass->ind.leaf.nitrogen*=(1-hfrac);
@@ -275,7 +275,7 @@ static Harvest harvest_grass_grazing_live(Stand *stand,const Config *config)
   foreachpft(pft,p,&stand->pftlist)
   {
     grass=pft->data;
-    bm_tot.carbon += grass->ind.leaf.carbon*pft->nind; 
+    bm_tot.carbon += grass->ind.leaf.carbon*pft->nind;
     bm_tot.nitrogen+= grass->ind.leaf.nitrogen*pft->nind;
     sum_lai += actual_lai_grass(pft);
   }
@@ -296,7 +296,7 @@ static Harvest harvest_grass_grazing_live(Stand *stand,const Config *config)
   cfrac_milk = w_FA_in_milk * w_C_in_FA + w_CP_in_milk * w_C_in_CP + w_CHO_in_milk * w_C_in_CHO; // mass fraction of carbon in milk kg kg-1
   cfrac_methane = 12.0 / 16.0; // mass fraction of carbon in methane kg kg-1
   n2c_urine = 1; // ratio of N to C in urine; urea=2/1, purine=5/4, creatine=3/4, hippuric_acid=9/1
-  K = 0.229 * pow(Wone,0.36); // LAI forh half maximum dmi  
+  K = 0.229 * pow(Wone,0.36); // LAI forh half maximum dmi
 
   /* carbon fraction */
   fcfrac = 0.424;
@@ -306,12 +306,12 @@ static Harvest harvest_grass_grazing_live(Stand *stand,const Config *config)
   dign = 0.914 - 0.494 * exp(-59.559 * n2cn);
   /* Fraction of digestible carbon */
   digc = 0.561 + 2.190 * n2cn;
-  
+
    /* carbon fraction */
   fnfrac = fcfrac * n2cn / (1 - n2cn);
   /* crude protein */
   cp = fnfrac / w_N_in_CP;
-  
+
   /* dry matter intake */
   dmi_max = max(Wone * 1.33 * (2.35 - 3.85 * exp(-0.32 * cp * 100)) / 100, 0);
   /* fraction that can be fulfilled */
@@ -364,14 +364,14 @@ static Harvest harvest_grass_grazing_live(Stand *stand,const Config *config)
   /* all N for maintenance and all unused N is excreted */
   n_urine = n_intake - n_feces - n_milk;
   c_urine = n_urine/n2c_urine;
-  
+
   c_methane = dmi * 18.4 * 0.065 / 55.6 * cfrac_methane;
   /* the remainder is respired */
   c_co2 = c_intake - c_feces - c_milk - c_urine - c_methane;
   /* end of calculation of uptake and transformation for 1 LSU */
-  
+
   /* conversion from kg/LSU to g/m2 */
-  c_intake *= lsu2area; 
+  c_intake *= lsu2area;
   c_methane *= lsu2area;
   c_feces *= lsu2area;
   c_milk *= lsu2area;
@@ -386,7 +386,7 @@ static Harvest harvest_grass_grazing_live(Stand *stand,const Config *config)
 
   if(c_intake>epsilon)
   {
-    hfrac = c_intake / bm_tot.carbon; 
+    hfrac = c_intake / bm_tot.carbon;
     foreachpft(pft,p,&stand->pftlist)
     {
       grass=pft->data;
@@ -398,11 +398,11 @@ static Harvest harvest_grass_grazing_live(Stand *stand,const Config *config)
       stand->soil.litter.item[pft->litter].bg.nitrogen+=grass->ind.root.nitrogen*hfrac*param.rootreduction*pft->nind*pft->par->fn_turnover;
       getoutput(output,LITFALLN,config)+=grass->ind.root.nitrogen*hfrac*param.rootreduction*pft->nind*stand->frac*pft->par->fn_turnover;
       pft->bm_inc.nitrogen+=grass->ind.root.nitrogen*hfrac*param.rootreduction*pft->nind*pft->nind*(1-pft->par->fn_turnover);
-      
+
       grass->ind.root.carbon*=(1-hfrac*param.rootreduction);
       grass->ind.root.nitrogen*=(1-hfrac*param.rootreduction);
       // grass leaves after grazing
-      bm_gra.carbon += grass->ind.leaf.carbon*pft->nind; 
+      bm_gra.carbon += grass->ind.leaf.carbon*pft->nind;
       bm_gra.nitrogen+= grass->ind.leaf.nitrogen*pft->nind;
     }
 
@@ -433,7 +433,7 @@ static Harvest harvest_grass_grazing_live(Stand *stand,const Config *config)
     getoutput(output,RESPC_MGRASS,config)+=c_co2*stand->frac;
     getoutput(output,METHANEC_MGRASS,config)+=c_methane*stand->frac;
   }
-  
+
   return sum;
 } /* of 'harvest_grass_grazing_live' */
 
