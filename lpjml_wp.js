@@ -2,7 +2,7 @@
 /**                                                                                \n**/
 /**                   l  p  j  m  l  _  w  p  .  j  s                              \n**/
 /**                                                                                \n**/
-/** Configuration file for LPJmL C Version 5.3.001 with wood plantations           \n**/
+/** Configuration file for LPJmL C Version 5.4.001 with wood plantations           \n**/
 /**                                                                                \n**/
 /** Configuration file is divided into five sections:                              \n**/
 /**                                                                                \n**/
@@ -33,7 +33,7 @@
   "sim_name" : "LPJmL run with wood plantations", /* Simulation description */
   "sim_id"   : "lpjml",     /* LPJML Simulation type with managed land use */
   "coupled_model" : null,   /* no model coupling */
-  "version"  : "5.3",       /* LPJmL version expected */
+  "version"  : "5.4",       /* LPJmL version expected */
   "random_prec" : true,     /* Random weather generator for precipitation enabled */
   "random_seed" : 2,        /* seed for random number generator */
   "radiation" : "radiation",/* other options: "cloudiness", "radiation", "radiation_swonly", "radiation_lwdown" */
@@ -70,6 +70,7 @@
   "reservoir" : false,
   "wateruse" : "no",
 #endif
+  "cultivation_types" : ["none","biomass","annual crop","wp"], /* cultivation types to read from pft.js */
   "prescribe_burntarea" : false,
   "prescribe_landcover" : "no_landcover", /* NO_LANDCOVER, LANDCOVERFPC, LANDCOVEREST */
   "sowing_date_option" : "fixed_sdate",   /* NO_FIXED_SDATE, FIXED_SDATE, PRESCRIBED_SDATE */
@@ -116,7 +117,7 @@
 /*  II. Input parameter section                                      */
 /*===================================================================*/
 
-#include "param_wp.js"    /* Input parameter file */
+#include "param.js"    /* Input parameter file */
 
 /*===================================================================*/
 /*  III. Input data section                                          */
