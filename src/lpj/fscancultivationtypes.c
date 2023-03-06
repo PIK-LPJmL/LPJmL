@@ -17,6 +17,7 @@
 #include "lpj.h"
 
 Bool fscancultivationtypes(LPJfile *lpjfile, /**< pointer to LPJ file */
+                           const char *name, /**< keyword */
                            int **cult_types, /**< cultivation type array */
                            int *ncult_types, /**< size of array */
                            Verbosity verb    /**< verbosity level (NO_ERR,ERR,VERB) */
@@ -24,24 +25,34 @@ Bool fscancultivationtypes(LPJfile *lpjfile, /**< pointer to LPJ file */
 {
   LPJfile arr,item;
   int i;
-  if(fscanarray(lpjfile,&arr,ncult_types,TRUE,"cultivation_types",verb))
-    return TRUE;
-  *cult_types=newvec(int,*ncult_types);
-  if(*cult_types==NULL)
+  if(iskeydefined(lpjfile,"cultivation_types"))
   {
-    printallocerr("cult_types");
-    return TRUE; 
-  }
-  for(i=0;i<*ncult_types;i++)
-  {
-    fscanarrayindex(&arr,&item,i,verb);
-    if(fscankeywords(&item,(*cult_types)+i,NULL,cultivation_type,5,FALSE,verb))
-    {
-      if(verb)
-        fprintf(stderr,"ERROR201: Invalid value for cultivation type of item %d in 'cultivation_types'.\n",i+1);
-      free(*cult_types);
+    if(fscanarray(lpjfile,&arr,ncult_types,TRUE,"cultivation_types",verb))
       return TRUE;
+    *cult_types=newvec(int,*ncult_types);
+    if(*cult_types==NULL)
+    {
+      printallocerr("cult_types");
+      return TRUE; 
     }
+    if(verb && *ncult_types==0)
+      fprintf(stderr,"WARNING012: Size of '%s' array is zero, ignored.\n",name);
+    for(i=0;i<*ncult_types;i++)
+    {
+      fscanarrayindex(&arr,&item,i,verb);
+      if(fscankeywords(&item,(*cult_types)+i,NULL,cultivation_type,5,FALSE,verb))
+      {
+        if(verb)
+          fprintf(stderr,"ERROR201: Invalid value for cultivation type of item %d in '%s'.\n",i+1,name);
+        free(*cult_types);
+        return TRUE;
+      }
+    }
+  }
+  else
+  {
+    *cult_types=NULL;
+    *ncult_types=0;
   }
   return FALSE;
 } /* of 'fscancultivationtypes' */

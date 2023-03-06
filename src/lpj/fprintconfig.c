@@ -476,8 +476,16 @@ void fprintconfig(FILE *file,          /**< File pointer to text output file */
     fprintf(file,"Mowing days for grassland:");
     for(i=0;i<config->mowingdays_size;i++)
       fprintf(file," %d",config->mowingdays[i]);
+    fputc('\n',file);
   }
-  fprintf(file,"\nWorking directory: %s\n",getdir());
+  if(config->ncult_types)
+  {
+    fprintf(file,"Cultivation types:");
+    for(i=0;i<config->ncult_types-1;i++)
+      fprintf(file," %s,",cultivation_type[config->cult_types[i]]);
+    fprintf(file," %s\n",cultivation_type[config->cult_types[config->ncult_types-1]]);
+  }
+  fprintf(file,"Working directory: %s\n",getdir());
   if(isreadrestart(config))
     fprintf(file,"Starting from restart file '%s'.\n",config->restart_filename);
   else

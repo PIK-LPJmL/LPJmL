@@ -303,7 +303,7 @@ extern Bool fscanoutput(LPJfile *,int,int,Config *,int);
 extern Bool readconfig(Config *,const char *,Pfttype [],int,int,int *,
                        char ***,const char *);
 extern Bool fscanconfig(Config *,LPJfile *,Pfttype [],int,int);
-extern Bool fscancultivationtypes(LPJfile *,int **,int *,Verbosity);
+extern Bool fscancultivationtypes(LPJfile *,const char *,int **,int *,Verbosity);
 extern void fprintparam(FILE *,int,int,const Config *);
 extern void fprintfiles(FILE *,Bool,Bool,const Config *);
 extern Bool getextension(Extension *,const Config *);

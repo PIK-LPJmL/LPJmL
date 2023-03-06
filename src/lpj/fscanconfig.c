@@ -522,20 +522,18 @@ Bool fscanconfig(Config *config,    /**< LPJ configuration */
     config->soilmap_size=0;
   }
   config->ntypes=ntypes;
-  if(iskeydefined(file,"cultivation_types"))
-  {
-    if(fscancultivationtypes(file,&config->cult_types,&config->ncult_types,verbose))
-      return TRUE;
-  }
-  else
-  {
-    config->cult_types=NULL;
-    config->ncult_types=0;
-  }
+  if(fscancultivationtypes(file,"cultivation_types",&config->cult_types,&config->ncult_types,verbose))
+    return TRUE;
   if(fscanpftpar(file,scanfcn,config))
   {
     if(verbose)
       fputs("ERROR230: Cannot read PFT parameter 'pftpar'.\n",stderr);
+    return TRUE;
+  }
+  if(config->npft[CROP]==0 && config->withlanduse)
+  {
+    if(verbose)
+      fputs("ERROR230: No crop PFTs defined in 'pftpar' and land use enabled.\n",stderr);
     return TRUE;
   }
   config->nbiomass=getnculttype(config->pftpar,config->npft[GRASS]+config->npft[TREE],BIOMASS);
