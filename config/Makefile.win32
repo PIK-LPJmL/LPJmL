@@ -32,5 +32,4 @@ LNOPTS	= "/libpath:$(VCINSTALLDIR)\lib" "/libpath:c:\program files\Microsoft Pla
 MAKE	= nmake  
 LM	= -lm
 SLASH	= \ 
-VIEWPRG	= lpjserver
 .SUFFIXES: .c. .obj

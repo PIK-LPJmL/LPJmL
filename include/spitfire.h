@@ -19,6 +19,8 @@
 
 typedef struct popdens *Popdens;
 
+typedef struct human_ignition *Human_ignition;
+
 typedef struct
 {
   Real human;
@@ -41,8 +43,10 @@ extern void freepopdens(Popdens,Bool);
 extern Real getpopdens(const Popdens,int);
 extern Bool readpopdens(Popdens,int,const Cell *,const Config *);
 extern Real humanignition(Real,Ignition *);
-extern Bool initignition(Cell *,const Config *);
-extern Popdens initpopdens(const Config *);          
+extern Popdens initpopdens(const Config *);
+extern Human_ignition inithumanignition(const Config *);
+extern Bool gethumanignition(Human_ignition,int,Cell *,const Config *);
+extern void freehumanignition(Human_ignition,Bool);
 extern Stocks litter_update_fire(Litter *,Tracegas *,const Fuel *);
 extern Real rateofspread(Real,Fuel *);
 extern Real surface_fire_intensity(Real, Real, Real);
