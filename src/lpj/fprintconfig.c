@@ -220,6 +220,23 @@ static void printinputfile(FILE *file,const char *descr,const Filename *filename
     fprintf(file,"%s\n",notnull(filename->name));
 } /* of 'printinputfile' */
 
+static void fprintcultivations(FILE *file,const Pftpar *pftpar,int ntotpft)
+{
+  int p;
+  int cult;
+  cult=pftpar[0].cultivation_type;
+  fprintf(file,"Cultivation types: %s",cultivation_type[cult]);
+  for(p=1;p<ntotpft;p++)
+  {
+    if(cult!=pftpar[p].cultivation_type)
+    {
+      cult=pftpar[p].cultivation_type;
+      fprintf(file,", %s",cultivation_type[cult]);
+    }
+  }
+  fputc('\n',file);
+} /* of 'fprintcultivations' */
+
 void fprintconfig(FILE *file,          /**< File pointer to text output file */
                   int npft,            /**< Number of natural PFTs */
                   int ncft,            /**< Number of crop PFTs */
@@ -478,13 +495,7 @@ void fprintconfig(FILE *file,          /**< File pointer to text output file */
       fprintf(file," %d",config->mowingdays[i]);
     fputc('\n',file);
   }
-  if(config->ncult_types)
-  {
-    fprintf(file,"Cultivation types:");
-    for(i=0;i<config->ncult_types-1;i++)
-      fprintf(file," %s,",cultivation_type[config->cult_types[i]]);
-    fprintf(file," %s\n",cultivation_type[config->cult_types[config->ncult_types-1]]);
-  }
+  fprintcultivations(file,config->pftpar,npft+ncft);
   fprintf(file,"Working directory: %s\n",getdir());
   if(isreadrestart(config))
     fprintf(file,"Starting from restart file '%s'.\n",config->restart_filename);
