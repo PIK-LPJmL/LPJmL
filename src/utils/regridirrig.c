@@ -183,7 +183,7 @@ int main(int argc,char **argv)
       fputs(" for cell ",stderr);
       fprintcoord(stderr,c2+i);
       fprintf(stderr," not found in '%s', set to itself.\n",argv[2]);
-      index=i;
+      index2=i;
     }
     fwrite(&index2,1,sizeof(int),file);
   }

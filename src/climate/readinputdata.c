@@ -17,7 +17,7 @@
 #include "lpj.h"
 
 Bool readinputdata(Infile *file,            /**< Pointer to data file */
-                   Real *data,              /**< data to read from file */ 
+                   Real *data,              /**< data to read from file */
                    const Coord *coord,      /**< coordinate of cell */
                    int cell,                /**< cell id */
                    const Filename *filename /**< filename of data */

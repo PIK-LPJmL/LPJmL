@@ -32,6 +32,7 @@
 
   "sim_name" : "LPJmL run with wood plantations", /* Simulation description */
   "sim_id"   : "lpjml",     /* LPJML Simulation type with managed land use */
+  "coupled_model" : null,   /* no model coupling */
   "version"  : "5.3",       /* LPJmL version expected */
   "random_prec" : true,     /* Random weather generator for precipitation enabled */
   "random_seed" : 2,        /* seed for random number generator */
@@ -135,8 +136,11 @@
 #define SUFFIX pft.bin
 #endif
 
-  "output_metafile" : false, /* no json metafile created */
-  "float_grid" : false, /* set datatype of grid file to float (TRUE/FALSE) */
+  "output_metafile" : true,   /* json metafile created (TRUE/FALSE) */
+  "grid_type" : "short",      /* set datatype of grid file ("short", "float", "double") */
+  "absyear" : false,          /* years relative to baseyear (TRUE/FALSE) */
+  "rev_lat" : false,          /* reverse latitudes in NetCDF output (TRUE/FALSE) */
+  "with_days" : true,         /* use days as units for monthly output in NetCDF files */
 
 #define mkstr(s) xstr(s) /* putting string in quotation marks */
 #define xstr(s) #s

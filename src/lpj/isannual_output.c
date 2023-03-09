@@ -25,4 +25,4 @@ Bool isannual_output(int index /**< index for output file */
     default:
       return FALSE;
   }
-} /* of 'isannual_output' */ 
+} /* of 'isannual_output' */

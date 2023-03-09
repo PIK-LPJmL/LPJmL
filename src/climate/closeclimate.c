@@ -20,7 +20,7 @@ void closeclimatefile(Climatefile *file, /**< pointer to climate data file */
                       Bool isroot        /**< task is root task (TRUE/FALSE) */
                      )                   /** \return void */
 {
-  if(file->isopen && file->fmt!=FMS)
+  if(file->isopen && file->fmt!=FMS && file->fmt!=SOCK)
   {
     if(file->fmt==CDF)
       closeclimate_netcdf(file,isroot);

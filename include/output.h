@@ -19,10 +19,11 @@
 
 /* Definition of datatypes */
 
-#define DEFAULT_PORT 2222 /* default port for socket connection */
 #define issoil(index) (index==KS_NAT || index==KS_GRASS || index==KS_AGR ||index==WHC_NAT || index==WHC_GRASS || index==WHC_AGR ||\
                        index==SOILC_LAYER || index == SOILC_AGR_LAYER || index==SOILN_LAYER || index==SOILNO3_LAYER || index==SOILNH4_LAYER || index==SOILTEMP || index==SWC || \
                        index==RESPONSE_LAYER_AGR || index==RESPONSE_LAYER_NV || index==CSHIFT_FAST_NV || index==CSHIFT_SLOW_NV || index == SOILC_AGR_LAYER || index==PERC)
+
+#define DEFAULT_PORT 2222 /* default port for socket connection */
 
 #define getoutput(output,index,config) (output)->data[(config)->outputmap[index]]
 #ifdef CHECK_BOUNDARY
@@ -94,8 +95,6 @@ typedef struct
   Real area_agr;              /**< agriculture area (m2) */
 } Flux;
 
-typedef enum {LPJ_FILES,LPJ_MPI2,LPJ_GATHER,LPJ_SOCKET} Outputmethod;
-
 typedef enum { MISSING_TIME,SECOND,DAY,MONTH,YEAR } Time;
 
 typedef struct
@@ -135,7 +134,6 @@ extern int mpi_write_txt(FILE *,void *,MPI_Datatype,int,int *,
 
 /* Definition of macros */
 
-#define isopen(output,index) output->files[index].isopen
-#define output_flux(output,flux) writedouble_socket(output->socket,(Real *)&flux,sizeof(Flux)/sizeof(Real))
+#define isopen(output,index) (output->files[index].isopen || output->files[index].issocket)
 
 #endif

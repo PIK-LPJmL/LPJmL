@@ -29,6 +29,7 @@ void freeconfig(Config *config /**< LPJmL configuration */
                )
 {
   int i;
+  free(config->coupled_model);
   free(config->compress_cmd);
   free(config->compress_suffix);
   if(config->soil_filename.fmt!=CDF)

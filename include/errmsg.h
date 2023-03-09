@@ -60,7 +60,8 @@
 #define INVALID_BOUNDARY_ERR 40
 #define INVALID_TIMESTEP_ERR 41
 #define INVALID_EXTFLOW_ERR 42
-#define INIT_OUTPUT_ERR 43
+#define OPEN_COUPLER_ERR 43
+#define INIT_OUTPUT_ERR 44
 
 /* Definition of macros */
 

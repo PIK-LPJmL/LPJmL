@@ -156,6 +156,8 @@ static int checkinputfile(const Config *config,const Filename *filename,const ch
 static int checklanduse(const Config *config)
 {
   Climatefile landuse;
+  if(config->landuse_filename.fmt==SOCK)
+    return 0;
  /* open landuse input data */
   if(opendata_seq(&landuse,&config->landuse_filename,"landuse","1",LPJ_SHORT,0.001,2*config->landusemap_size,FALSE,config))
   {
@@ -196,7 +198,7 @@ static int checkclmfile(const Config *config,const Filename *filename,const char
   Climatefile input;
   size_t offset;
   int first,last,year,count;
-  if(filename->fmt==FMS)
+  if(filename->fmt==FMS || filename->fmt==SOCK)
     return 0;
   if(filename->fmt==CDF)
   {
@@ -441,7 +443,7 @@ Bool filesexist(Config config, /**< LPJmL configuration */
   }
   else
     bad+=checkclmfile(&config,&config.cloud_filename,"%",TRUE);
-   if(config.co2_filename.fmt!=FMS)
+   if(config.co2_filename.fmt!=FMS && config.co2_filename.fmt!=SOCK)
     bad+=checkfile(config.co2_filename.name);
   if(config.wet_filename.name!=NULL)
     bad+=checkclmfile(&config,&config.wet_filename,"day",FALSE);
@@ -518,18 +520,21 @@ Bool filesexist(Config config, /**< LPJmL configuration */
     size=outputfilesize(&config);
   for(i=0;i<config.n_out;i++)
   {
-    path=getpath(config.outputvars[i].filename.name);
-    if(strcmp(path,oldpath))
+    if(config.outputvars[i].filename.fmt!=SOCK)
     {
-      if(checkdir(path))
-        badout++;
-      else if(config.nall!=-1 && diskfree(path)<size)
-        fprintf(stderr,"WARNING033: Disk space on '%s' is insufficient for output files.\n",path);
-      free(oldpath);
-      oldpath=path;
+      path=getpath(config.outputvars[i].filename.name);
+      if(strcmp(path,oldpath))
+      {
+        if(checkdir(path))
+          badout++;
+        else if(config.nall!=-1 && diskfree(path)<size)
+          fprintf(stderr,"WARNING033: Disk space on '%s' is insufficient for output files.\n",path);
+        free(oldpath);
+        oldpath=path;
+      }
+      else
+        free(path);
     }
-    else
-      free(path);
   }
   free(oldpath);
   if(config.write_restart_filename!=NULL)

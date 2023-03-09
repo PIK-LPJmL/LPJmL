@@ -167,3 +167,4 @@ bin/country2cdf
 bin/binsum
 bin/arr2clm
 bin/regriddrain
+bin/coupler_demo

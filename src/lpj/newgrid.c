@@ -615,11 +615,6 @@ Cell *newgrid(Config *config,          /**< Pointer to LPJ configuration */
     if(initreservoir(grid,config))
       return NULL;
   }
-  if((config->fire==SPITFIRE || config->fire==SPITFIRE_TMAX) && !config->prescribe_ignition)
-  {
-    if(initignition(grid,config))
-      return NULL;
-  }
   if(config->max_firesize)
   {
     if(initmax_firesize(grid,config))

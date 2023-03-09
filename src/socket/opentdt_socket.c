@@ -28,6 +28,10 @@
 #include "types.h"
 #include "channel.h"
 
+#ifdef USE_TIMING
+double timing; /**< stores time spent in socket I/O (sec) */
+#endif
+
 Socket *opentdt_socket(int port, /* port of TCP/IP connection */
                        int wait  /* maximum time for connection (sec)
                                     if zero unlimited */
@@ -35,7 +39,6 @@ Socket *opentdt_socket(int port, /* port of TCP/IP connection */
 {
   Socket *sock;
   struct sockaddr_in name;
-  struct sockaddr fsin;
   int known_int,array,opt=TRUE;
   char check='1';
   fd_set rfds;
@@ -46,6 +49,9 @@ Socket *opentdt_socket(int port, /* port of TCP/IP connection */
   WORD version;
   WSADATA data;
   SOCKET my_socket;
+#ifdef USE_TIMING
+  timing=0;
+#endif
   version=MAKEWORD(1,1);
   if(WSAStartup(version,&data))
   {
@@ -55,6 +61,9 @@ Socket *opentdt_socket(int port, /* port of TCP/IP connection */
 #else
   int my_socket;
   socklen_t len;
+#ifdef USE_TIMING
+  timing=0;
+#endif
 #endif
   if(isinvalid_socket(my_socket=socket(AF_INET,SOCK_STREAM,0)))
   {
@@ -120,7 +129,7 @@ Socket *opentdt_socket(int port, /* port of TCP/IP connection */
     fputs("ERROR304: Cannot allocate memory for socket.\n",stderr);
     return NULL;
   }
-  sock->channel=accept(my_socket,&fsin,&len);
+  sock->channel=accept(my_socket,NULL,NULL);
   if(isinvalid_socket(sock->channel))
   {
 #ifdef _WIN32

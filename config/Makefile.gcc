@@ -30,4 +30,3 @@ LINK	= gcc
 LINKMAIN= gcc
 MKDIR	= mkdir -p
 SLASH	= /
-VIEWPRG	= lpjserver

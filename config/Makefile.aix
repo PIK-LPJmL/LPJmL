@@ -32,4 +32,3 @@ LINKMAIN= cc
 MKDIR	= mkdir -p
 LIBS	= -lm -lmass -bmaxdata:0x80000000 -L$(NETCDF_LIB) -lnetcdf
 SLASH	= /
-VIEWPRG	= lpjserver
