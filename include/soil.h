@@ -26,6 +26,7 @@
 #define NFUELCLASS 4 /* Number of fuel classes */
 #define TOPLAYER 0
 #define NTILLLAYER 1 /* number of layers to be tilled */
+#define NHEATGRIDP 3 /* Number of gridpoints per soillayer for the heatflow scheme */
 
 #define SNOWLAYER NSOILLAYER
 
