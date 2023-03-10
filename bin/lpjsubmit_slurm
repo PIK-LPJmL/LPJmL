@@ -8,7 +8,7 @@
 ##                                                                             ##
 ##    Usage: lpjsubmit [-class c] [-group g] [-wtime time] [-blocking n]       ##
 ##                     [-o output] [-e error] [-q] [-nocheck] [-norun]         ##
-##                     [-couple program] ntask [LPJargs...]                    ##
+##                     [-constraint c] ntask [LPJargs...]                      ##
 ##                                                                             ##
 ## (C) Potsdam Institute for Climate Impact Research (PIK), see COPYRIGHT file ##
 ## authors, and contributors see AUTHORS file                                  ##
@@ -17,6 +17,8 @@
 ## Contact: https://github.com/PIK-LPJmL/LPJmL                                 ##
 ##                                                                             ##
 #################################################################################
+
+USAGE="Usage: $0 [-class c] [-group g] [-wtime time] [-blocking n] [-o output] [-e error] [-q] [-nocheck] [-norun] [-dependency id] [-couple program] [-constraint c] ntasks [args ...]"
 
 if [ "$LPJROOT" = "" ]
 then
@@ -29,6 +31,7 @@ class=short
 group=""
 wtime=""
 depend=""
+constraint=""
 blocking="unlimited"
 output="lpjml.%j.out"
 error="lpjml.%j.err"
@@ -41,7 +44,7 @@ while(( "$#" )); do
     if [ $# -lt 2 ]
     then
       echo >&2 Error: class missing
-      echo >&2 Usage: $0 [-class c] [-group g] [-wtime time] [-blocking n] [-o output] [-e error] [-q] [-nocheck] [-norun] [-dependency id] [-couple program] ntasks [args ...]
+      echo >&2 $USAGE
       exit 1
     fi
     shift 1
@@ -52,7 +55,7 @@ while(( "$#" )); do
       if [ $# -lt 2 ]
       then
         echo >&2 Error: group missing
-        echo >&2 Usage: $0 [-class c] [-group g] [-wtime time] [-blocking n] [-o output] [-e error] [-q] [-nocheck] [-norun] [-dependency id] [-couple program] ntasks [args ...]
+        echo >&2 $USAGE
         exit 1
       fi
       shift 1
@@ -63,7 +66,7 @@ while(( "$#" )); do
       if [ $# -lt 2 ]
       then
         echo >&2 Error: wall clock time missing
-        echo >&2 Usage: $0 [-class c] [-group g] [-wtime time] [-blocking n] [-o output] [-e error] [-q] [-nocheck] [-norun] [-dependency id] [-couple program] ntasks [args ...]
+        echo >&2 $USAGE
         exit 1
       fi
       shift 1
@@ -74,7 +77,7 @@ while(( "$#" )); do
       if [ $# -lt 2 ]
       then
         echo >&2 Error: blocking factor missing
-        echo >&2 Usage: $0 [-class c] [-group g] [-wtime time] [-blocking n] [-o output] [-e error] [-q] [-nocheck] [-norun] [-dependency id] [-couple program] ntasks [args ...]
+        echo >&2 $USAGE
         exit 1
       fi
       shift 1
@@ -85,7 +88,7 @@ while(( "$#" )); do
      if [ $# -lt 2 ]
      then
        echo >&2 Error: output filename missing
-       echo >&2 Usage: $0 [-class c] [-group g] [-wtime time] [-blocking n] [-o output] [-e error] [-q] [-nocheck] [-norun] [-dependency id] [-couple program] ntasks [args ...]
+       echo >&2 $USAGE
        exit 1
      fi
      shift 1
@@ -96,7 +99,7 @@ while(( "$#" )); do
      if [ $# -lt 2 ]
      then
        echo >&2 Error: error filename  missing
-       echo >&2 Usage: $0 [-class c] [-group g] [-wtime time] [-blocking n] [-o output] [-e error] [-q] [-nocheck] [-norun] [-dependency id] [-couple program] ntasks [args ...]
+       echo >&2 $USAGE
        exit 1
      fi
      shift 1
@@ -111,7 +114,7 @@ while(( "$#" )); do
      if [ $# -lt 2 ]
      then
        echo >&2 Error: jobid missing
-       echo >&2 Usage: $0 [-class c] [-group g] [-wtime time] [-blocking n] [-o output] [-e error] [-q] [-nocheck] [-norun] [-dependency id] [-couple program] ntasks [args ...]
+       echo >&2 $USAGE
        exit 1
      fi
      shift 1
@@ -122,11 +125,22 @@ while(( "$#" )); do
      if [ $# -lt 2 ]
      then
        echo >&2 Error: program name missing
-       echo >&2 Usage: $0 [-class c] [-group g] [-wtime time] [-blocking n] [-o output] [-e error] [-q] [-nocheck] [-norun] [-dependency id] [-couple program] ntasks [args ...]
+       echo >&2 $USAGE
        exit 1
      fi
      shift 1
      couple=$1
+     shift 1
+     ;;
+   -constraint)
+     if [ $# -lt 2 ]
+     then
+       echo >&2 Error: constraint missing
+       echo >&2 $USAGE
+       exit 1
+     fi
+     shift 1
+     constraint=$1
      shift 1
      ;;
    -nocheck)
@@ -139,7 +153,7 @@ while(( "$#" )); do
      ;;
    -*)
      echo >&2 Invalid option $1
-     echo >&2 Usage: $0 [-class c] [-group g] [-wtime time] [-blocking n] [-o output] [-e error] [-q] [-nocheck] [-norun] [-dependency id] [-couple program] ntasks [args ...]
+     echo >&2 $USAGE
      exit 1
      ;;
    *)
@@ -151,7 +165,7 @@ done
 if [ $# -lt 1 ]
 then
   echo >&2 Error: Number of tasks missing
-  echo >&2 Usage: $0 [-class c] [-group g] [-wtime time] [-blocking n] [-o output] [-e error] [-q] [-nocheck] [-norun] [-dependency id] [-couple program] ntasks [args ...]
+  echo >&2 $USAGE
   exit 1
 fi
 
@@ -200,6 +214,10 @@ fi
 if [ "$blocking" != "unlimited" ]
 then
   echo "#SBATCH --tasks-per-node="$blocking >>slurm.jcf
+fi
+if [ "$constraint" != "" ]
+then
+  echo "#SBATCH --constraint="$constraint >>slurm.jcf
 fi
 cat <<EOF >>slurm.jcf
 #SBATCH -o  $output
