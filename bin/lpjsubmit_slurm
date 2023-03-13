@@ -8,7 +8,7 @@
 ##                                                                             ##
 ##    Usage: lpjsubmit [-class c] [-group g] [-wtime time] [-blocking n]       ##
 ##                     [-o output] [-e error] [-q] [-nocheck] [-norun]         ##
-##                     [-constraint c] ntask [LPJargs...]                      ##
+##                     [-constraint c] [-option a=b] ntask [LPJargs...]        ##
 ##                                                                             ##
 ## (C) Potsdam Institute for Climate Impact Research (PIK), see COPYRIGHT file ##
 ## authors, and contributors see AUTHORS file                                  ##
@@ -18,7 +18,7 @@
 ##                                                                             ##
 #################################################################################
 
-USAGE="Usage: $0 [-class c] [-group g] [-wtime time] [-blocking n] [-o output] [-e error] [-q] [-nocheck] [-norun] [-dependency id] [-couple program] [-constraint c] ntasks [args ...]"
+USAGE="Usage: $0 [-class c] [-group g] [-wtime time] [-blocking n] [-o output] [-e error] [-q] [-nocheck] [-norun] [-dependency id] [-couple program] [-constraint c] [[-option a=b] ...] ntasks [args ...]"
 
 if [ "$LPJROOT" = "" ]
 then
@@ -37,6 +37,7 @@ output="lpjml.%j.out"
 error="lpjml.%j.err"
 norun=0
 couple=""
+options=""
 
 while(( "$#" )); do
   case "$1" in
@@ -143,6 +144,17 @@ while(( "$#" )); do
      constraint=$1
      shift 1
      ;;
+   -option)
+     if [ $# -lt 2 ]
+     then
+       echo >&2 Error: option missing
+       echo >&2 $USAGE
+       exit 1
+     fi
+     shift 1
+     options="$options $1"
+     shift 1
+     ;;
    -nocheck)
      shift 1
      nocheck="-nocheck"
@@ -219,6 +231,10 @@ if [ "$constraint" != "" ]
 then
   echo "#SBATCH --constraint="$constraint >>slurm.jcf
 fi
+for o in $options
+do
+  echo "#SBATCH --$o" >>slurm.jcf
+done
 cat <<EOF >>slurm.jcf
 #SBATCH -o  $output
 #SBATCH -e  $error
