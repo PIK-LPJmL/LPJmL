@@ -45,7 +45,7 @@ Bool readco2(Co2data *co2,             /**< pointer to co2 data */
       }
     }
   }
-  else if(filename->fmt==TXT)
+  if(filename->fmt==TXT)
   {
     if(iscoupled(*config) && config->start_coupling<=config->firstyear-config->nspinup)
       return FALSE;

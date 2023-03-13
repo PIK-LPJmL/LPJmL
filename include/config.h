@@ -256,8 +256,7 @@ struct config
   int mowingdays_size;     /**< size of mowing days array */
   Bool ma_bnf;             /**< biological nitrogen fixation folowing Ma et al., 2022 */
   Seed seed;
-  int start_coupling;      /**< year in which coupling to IMAGE starts
-                              (e.g. 1970), set to 9999 if IMAGE is not used */
+  int start_coupling;      /**< year in which coupling to IMAGE/coupler starts */
 #ifdef IMAGE
   Socket *in;  /**< socket for ingoing data */
   Socket *out; /**< socket for outgoing data */
