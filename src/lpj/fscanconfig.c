@@ -80,7 +80,7 @@ static Bool readclimatefilename(LPJfile *file,Filename *name,const char *key,Boo
       fprintf(stderr,"ERROR197: FMS coupler not allowed for input '%s'.\n",key);
     return TRUE;
   }
-  if(!(iscoupled && config->coupled_model!=NULL) && name->fmt==SOCK)
+  if(!iscoupled && name->issocket)
   {
     if(verbose)
       fprintf(stderr,"ERROR197: File format 'sock' not allowed for input '%s'.\n",key);
@@ -88,20 +88,33 @@ static Bool readclimatefilename(LPJfile *file,Filename *name,const char *key,Boo
   }
   if(name->issocket)
   {
-    config->coupler_in++;
-    if(name->id<0 || name->id>=N_IN)
+    if(iscoupled(*config))
     {
-      if(verbose)
-        fprintf(stderr,"ERROR197: Invalid index %d for %s input, must be in [0,%d].\n",name->id,config->coupled_model,N_IN-1);
-      return TRUE;
-    }
-    if(def[name->id])
-    {
-      if(verbose)
+      config->coupler_in++;
+      if(name->id<0 || name->id>=N_IN)
+      {
+        if(verbose)
+          fprintf(stderr,"ERROR197: Invalid index %d for %s input, must be in [0,%d].\n",name->id,config->coupled_model,N_IN-1);
+        return TRUE;
+      }
+      if(def[name->id])
+      {
+        if(verbose)
         fprintf(stderr,"ERROR197: Index %d already defined for %s input.\n",name->id,config->coupled_model);
-      return TRUE;
+          return TRUE;
+      }
+      def[name->id]=TRUE;
     }
-    def[name->id]=TRUE;
+    else
+    {
+      name->issocket=FALSE;
+      if(name->fmt==SOCK)
+      {
+        if(verbose)
+          fprintf(stderr,"ERROR197: Socket %s input not allowed without coupled model.\n",key);
+        return TRUE;
+      }
+    }
   }
   if(istxt && name->fmt!=TXT && name->fmt!=FMS && name->fmt!=SOCK)
   {
@@ -990,7 +1003,7 @@ Bool fscanconfig(Config *config,    /**< LPJ configuration */
 #else
   if(iscoupled(*config))
   {
-    config->start_coupling=config->firstyear-config->nspinup; 
+    config->start_coupling=config->firstyear-config->nspinup;
     if(fscanint(file,&config->start_coupling,"start_coupling",TRUE,verbose))
       return TRUE;
   }
