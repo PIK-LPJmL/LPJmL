@@ -32,7 +32,7 @@ Wateruse initwateruse(const Filename *filename, /**< filename of wateruse file *
     printallocerr("wateruse");
     return NULL;
   }
-  if(opendata(&wateruse->file,filename,"wateruse",NULL,(filename->fmt==SOCK) ? LPJ_FLOAT : LPJ_INT,1000.0,1,TRUE,config))
+  if(opendata(&wateruse->file,filename,"wateruse",NULL,LPJ_FLOAT,LPJ_INT,1000.0,1,TRUE,config))
   {
     free(wateruse);
     return NULL;

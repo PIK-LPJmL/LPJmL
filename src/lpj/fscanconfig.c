@@ -86,7 +86,7 @@ static Bool readclimatefilename(LPJfile *file,Filename *name,const char *key,Boo
       fprintf(stderr,"ERROR197: File format 'sock' not allowed for input '%s'.\n",key);
     return TRUE;
   }
-  if(name->fmt==SOCK)
+  if(name->issocket)
   {
     config->coupler_in++;
     if(name->id<0 || name->id>=N_IN)
@@ -983,10 +983,17 @@ Bool fscanconfig(Config *config,    /**< LPJ configuration */
 #if defined IMAGE && defined COUPLED
   if(config->sim_id==LPJML_IMAGE)
   {
-    fscanint2(file,&config->start_imagecoupling,"start_imagecoupling");
+    fscanint2(file,&config->start_coupling,"start_coupling");
   }
   else
-    config->start_imagecoupling=INT_MAX;
+    config->start_coupling=INT_MAX;
+#else
+  if(iscoupled(*config))
+  {
+    config->start_coupling=config->firstyear-config->nspinup; 
+    if(fscanint(file,&config->start_coupling,"start_coupling",TRUE,verbose))
+      return TRUE;
+  }
 #endif
   if(config->firstyear-config->nspinup>config->lastyear)
   {

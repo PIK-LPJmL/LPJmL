@@ -284,7 +284,7 @@ Outputfile *fopenoutput(const Cell grid[],   /**< LPJ grid */
                 0,config->comm);
 #endif
     }
-    else if(config->outputvars[i].filename.fmt!=SOCK)
+    if(config->outputvars[i].filename.fmt!=SOCK)
       openfile(output,grid,filename,i,config);
 #ifdef USE_MPI
     MPI_Bcast(&output->files[config->outputvars[i].id].isopen,1,MPI_INT,

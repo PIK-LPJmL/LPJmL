@@ -90,7 +90,7 @@ int iterate(Outputfile *output, /**< Output file data */
   for(year=startyear;year<=config->lastyear;year++)
   {
 #if defined IMAGE && defined COUPLED
-    if(year>=config->start_imagecoupling)
+    if(year>=config->start_coupling)
       co2=receive_image_co2(config);
     else
 #endif
@@ -128,7 +128,7 @@ int iterate(Outputfile *output, /**< Output file data */
       }
       /* read climate from files */
 #if defined IMAGE && defined COUPLED
-      if(year>=config->start_imagecoupling)
+      if(year>=config->start_coupling)
       {
         if(receive_image_climate(input.climate,grid,year,config))
         {
@@ -195,7 +195,7 @@ int iterate(Outputfile *output, /**< Output file data */
       else
         wateruse_year=year;
 #if defined IMAGE && defined COUPLED
-      if(year>=config->start_imagecoupling)
+      if(year>=config->start_coupling)
       {
         if(receive_image_data(grid,npft,ncft,config))
         {
@@ -314,14 +314,14 @@ int iterate(Outputfile *output, /**< Output file data */
 #endif
     }
 #if defined IMAGE && defined COUPLED
-    if(year>=config->start_imagecoupling)
+    if(year>=config->start_coupling)
     {
       /* send data to IMAGE */
 #ifdef DEBUG_IMAGE
       if(isroot(*config))
       {
         printf("sending data to image? year %d startimagecoupling %d\n",
-               year,config->start_imagecoupling);
+               year,config->start_coupling);
         fflush(stdout);
       }
 #endif
