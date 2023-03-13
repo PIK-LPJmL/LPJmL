@@ -34,7 +34,11 @@
   "atmfrac" : 0.6,           /* atmfrac */
   "fastfrac" : 0.98,         /* fastfrac */
   "bioturbate" : 0.5,        /* bioturbation (0 = no bioturbation) */
-  "veg_equil_year" : 2400,
+  "veg_equil_year" : 2400,    /* number of years to get vegetation into equilibrium (before forst call of equisoil) */
+  "veg_equil_unlim" : false,  /* enable vegetation spinup without nitrogen limitation */
+  "nequilsoil" : 120,         /* number of equisoil calls */
+  "equisoil_interval" : 50, /* time interval between equisoil calls */
+  "equisoil_years": 45,      /* number of years used in calculation fo equisoil */
   "k_max": 0.10,             /* k_max, maximum fraction of soil->NH4 assumed to be nitrified Parton, 2001*/
   "fpc_tree_max" : 0.95,     /* maximum foliage projective cover for trees */
   "temp_response" : 56.02,   /* Parameter in temperature response function */

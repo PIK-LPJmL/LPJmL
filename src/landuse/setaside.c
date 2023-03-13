@@ -43,6 +43,10 @@ void mixsoil(Stand *stand1,const Stand *stand2,int year,const Config *config)
             stand1->frac,stand2->frac);
     mixpool(stand1->soil.k_mean[l].slow,stand2->soil.k_mean[l].slow,
             stand1->frac,stand2->frac);
+    mixpool(stand1->soil.decay_rate[l].fast,stand2->soil.decay_rate[l].fast,
+            stand1->frac,stand2->frac);
+    mixpool(stand1->soil.decay_rate[l].slow,stand2->soil.decay_rate[l].slow,
+            stand1->frac,stand2->frac);
   }
   for(l=0;l<stand2->soil.litter.n;l++)
   {
@@ -115,7 +119,13 @@ void mixsoil(Stand *stand1,const Stand *stand2,int year,const Config *config)
           stand1->frac,stand2->frac);
   mixpool(stand1->soil.decomp_litter_mean.nitrogen,stand2->soil.decomp_litter_mean.nitrogen,
           stand1->frac,stand2->frac);
-
+  for(i=0;i<=(config->npft[GRASS]+config->npft[TREE]+config->npft[CROP]);i++)
+  {
+     mixpool(stand1->soil.decomp_litter_pft[i].carbon,stand2->soil.decomp_litter_pft[i].carbon,
+             stand1->frac,stand2->frac);
+     mixpool(stand1->soil.decomp_litter_pft[i].nitrogen,stand2->soil.decomp_litter_pft[i].nitrogen,
+             stand1->frac,stand2->frac);
+  }
   mixpool(stand1->soil.snowpack,stand2->soil.snowpack,stand1->frac,
           stand2->frac);
   mixpool(stand1->soil.snowfraction,stand2->soil.snowfraction,stand1->frac,stand2->frac);

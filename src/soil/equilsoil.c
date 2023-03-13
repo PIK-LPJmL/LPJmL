@@ -191,3 +191,96 @@ void equilsoil(Soil *soil,           /**< pointer to soil data */
   free(c0);
   free(sum);
 } /* of 'equilsoil' */
+
+
+
+void equilsoil2(Soil *soil,           /**< pointer to soil data */
+               int ntotpft,          /**< total number of PFTs */
+               const Pftpar pftpar[], /**< PFT parameter array */
+               Bool nremove
+              )                      /** \return void         */
+{
+  int l,p;
+  Real socfraction;
+  Poolpar *sum;
+  sum=newvec(Poolpar,ntotpft);
+  check(sum);
+  
+  for(p=0;p<ntotpft;p++)
+    sum[p].fast=sum[p].slow=0.0;
+
+  /* calculate c_shift */
+  forrootsoillayer(l)
+  {
+    //soil->decay_rate[l].fast/=soil->count;
+    //soil->decay_rate[l].slow/=soil->count;
+    for(p=0;p<ntotpft;p++)
+    {
+      socfraction=pow(10,pftpar[p].soc_k*logmidlayer[l])
+                  - (l>0 ? pow(10,pftpar[p].soc_k*logmidlayer[l-1]): 0);
+      soil->c_shift[l][p].fast=soil->decay_rate[l].fast*socfraction;
+      soil->c_shift[l][p].slow=soil->decay_rate[l].slow*socfraction;
+      sum[p].fast+=soil->c_shift[l][p].fast;
+      sum[p].slow+=soil->c_shift[l][p].slow;
+    }
+  }
+  for(p=0;p<ntotpft;p++)
+  {
+    if(sum[p].fast>=epsilon)
+      for (l=0;l<LASTLAYER;l++) 
+        soil->c_shift[l][p].fast/=sum[p].fast;
+    else
+    {
+      soil->c_shift[0][p].fast=1.0;
+      for (l=1;l<LASTLAYER;l++) 
+        soil->c_shift[l][p].fast=0;
+    }
+    if(sum[p].slow>=epsilon)
+      for (l=0;l<LASTLAYER;l++) 
+        soil->c_shift[l][p].slow/=sum[p].slow;
+    else
+    {
+      soil->c_shift[0][p].slow=1.0;
+      for (l=1;l<LASTLAYER;l++) 
+        soil->c_shift[l][p].slow=0;
+    }
+  }
+
+  /* resest soil C and N pools*/
+  forrootsoillayer(l)
+  {
+    soil->pool[l].slow.carbon=soil->pool[l].fast.carbon=0;
+    soil->pool[l].slow.nitrogen=soil->pool[l].fast.nitrogen=0;
+  }
+     
+  /* caluclate equilibrium C and N pools for given C and N from litter and decay rates */
+  forrootsoillayer(l)
+  {
+    if(soil->decay_rate[l].fast>epsilon)
+    {
+      for(p=0;p<ntotpft;p++)
+      {
+        //soil->decomp_litter_pft[p].carbon/=soil->count;
+        //soil->decomp_litter_pft[p].nitrogen/=soil->count;
+        soil->pool[l].fast.carbon+=param.fastfrac*soil->decomp_litter_pft[p].carbon*soil->c_shift[l][p].fast/soil->decay_rate[l].fast;
+        soil->pool[l].fast.nitrogen+=param.fastfrac*soil->decomp_litter_pft[p].nitrogen*soil->c_shift[l][p].fast/soil->decay_rate[l].fast;
+      }
+    }
+    if(soil->decay_rate[l].slow>epsilon)
+    {
+      for(p=0;p<ntotpft;p++)
+      {
+        //soil->decomp_litter_pft[p].carbon/=soil->count;
+        //soil->decomp_litter_pft[p].nitrogen/=soil->count;
+        soil->pool[l].slow.carbon+=(1-param.fastfrac)*soil->decomp_litter_pft[p].carbon*soil->c_shift[l][p].slow/soil->decay_rate[l].slow;
+        soil->pool[l].slow.nitrogen+=(1-param.fastfrac)*soil->decomp_litter_pft[p].nitrogen*soil->c_shift[l][p].slow/soil->decay_rate[l].slow;
+      }
+    }
+  }
+
+  if(nremove)
+    forrootsoillayer(l)
+      soil->NH4[l]=soil->NO3[l]=0.0;
+
+  free(sum);
+}
