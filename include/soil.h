@@ -26,7 +26,8 @@
 #define NFUELCLASS 4 /* Number of fuel classes */
 #define TOPLAYER 0
 #define NTILLLAYER 1 /* number of layers to be tilled */
-#define NHEATGRIDP 3 /* Number of gridpoints per soillayer for the heatflow scheme */
+#define GPLHEAT 3 /* Gripoints per soil layer for the heat conduction scheme  */
+#define NHEATGRIDP NSOILLAYER*GPLHEAT /* Total number of gridpoints for the heatflow scheme */
 
 #define SNOWLAYER NSOILLAYER
 
@@ -179,6 +180,7 @@ typedef struct
   Real snowheight; /**< height of snow */
   Real snowfraction;  /**< fraction of snow-covered ground */
   Real temp[NSOILLAYER+1];      /**< [deg C]; last layer=snow*/
+  Real enth[NHEATGRIDP]; /*< volumetric enthalpy (i.e. thermal energy/heat) [J/m^3] */
   Real Ks[NSOILLAYER];    /**< saturated hydraulic conductivity (mm/h) per layer*/
   Real wpwp[NSOILLAYER];  /**< relative water content at wilting point */
   Real wfc[NSOILLAYER];   /**< relative water content at field capacity */
@@ -204,6 +206,18 @@ typedef struct
   Litter litter;     /**< Litter pool */
   Real rw_buffer;    /**< available rain water amount in buffer (mm) */
 } Soil;
+
+typedef struct{
+    double lam_frozen[NHEATGRIDP];    /* conductivity of soil in frozen state [W/K/m] */
+    double lam_unfrozen[NHEATGRIDP];  /* conductivity of soil in unfrozen state [W/K/m]*/
+    double c_frozen[NHEATGRIDP];      /* heat capacity of soil in frozen state [J/m3/K]*/
+    double c_unfrozen[NHEATGRIDP];    /* heat capacity of soil in unfrozen state [J/m3/K]*/
+    double latent_heat[NHEATGRIDP];   /* latent heat of fusion of soil [J/m3]*/
+    /* lamFrozen and lamNormal define thermal conductivities for each interval of the grid 
+      (e.g. lamFrozen[0] <-> interval directly below the surface), while the other variables define 
+      their properties only at the gridpoints, (e.g. cFrozen[0] <-> first point below surface) */
+}Soil_thermal_prop;
+
 
 struct Pftpar; /* forward declaration */
 struct Dailyclimate; /* forward declaration */

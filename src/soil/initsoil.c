@@ -82,6 +82,8 @@ Bool initsoil(Stand *stand,           /**< Pointer to stand data */
   soil->mean_maxthaw=layerbound[BOTTOMLAYER];
   for(l=0;l<NSOILLAYER+1;++l)
     soil->temp[l]=0.0;
+  for(l=0;l<NHEATGRIDP;++l)
+    soil->enth[l]=0.0;
   for (l=0;l<=NFUELCLASS;l++)
     soil->litter.avg_fbd[l]=0.0;
   soil->snowheight=soil->snowfraction=soil->rw_buffer=0;

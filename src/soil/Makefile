@@ -30,7 +30,8 @@ OBJS    = initsoil.$O waterbalance.$O equilsoil.$O littersom.$O\
           litter_ag_nitrogen_tree.$O soilstocks.$O litterstocks.$O fscansoilmap.$O\
           checklitter.$O getrootdist.$O nuptake_temp_fcn.$O volatilization.$O\
           getwr.$O updatelitterproperties.$O pedotransfer.$O tillage.$O\
-          soilpar_output.$O getsoilmap.$O defaultsoilmap.$O cmpsoilmap.$O
+          soilpar_output.$O getsoilmap.$O defaultsoilmap.$O cmpsoilmap.$O\
+          soil_therm_prop.$O daily_heatcond.$O
 
 INC     = ../../include
 LIBDIR  = ../../lib
