@@ -192,6 +192,12 @@ void mixsoil(Stand *stand1,const Stand *stand2,int year,const Config *config)
   mixpool(stand1->soil.alag,stand2->soil.alag,stand1->frac,stand2->frac);
   mixpool(stand1->soil.amp,stand2->soil.amp,stand1->frac,stand2->frac);
   mixpool(stand1->soil.rw_buffer,stand2->soil.rw_buffer,stand1->frac,stand2->frac);
+  for(l=0;l<NHEATGRIDP;++l)
+    mixpool(stand1->soil.enth[l],stand2->soil.enth[l],stand1->frac,stand2->frac);
+  /* update soil thermal properties */
+  Soil_thermal_prop therm;
+  soil_therm_prop(&therm, &(stand1->soil), config->johansen);
+  derive_T_from_e(stand1->soil.temp,stand1->soil.enth,therm);
 #ifdef CHECK_BALANCE
   water_after=soilwater(&stand1->soil)*(stand1->frac+stand2->frac)+stand1->cell->balance.excess_water;
   if(fabs(water_before-water_after)>epsilon*1e-2)

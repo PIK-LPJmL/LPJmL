@@ -208,11 +208,11 @@ typedef struct
 } Soil;
 
 typedef struct{
-    double lam_frozen[NHEATGRIDP];    /* conductivity of soil in frozen state [W/K/m] */
-    double lam_unfrozen[NHEATGRIDP];  /* conductivity of soil in unfrozen state [W/K/m]*/
-    double c_frozen[NHEATGRIDP];      /* heat capacity of soil in frozen state [J/m3/K]*/
-    double c_unfrozen[NHEATGRIDP];    /* heat capacity of soil in unfrozen state [J/m3/K]*/
-    double latent_heat[NHEATGRIDP];   /* latent heat of fusion of soil [J/m3]*/
+    Real lam_frozen[NHEATGRIDP];    /* conductivity of soil in frozen state [W/K/m] */
+    Real lam_unfrozen[NHEATGRIDP];  /* conductivity of soil in unfrozen state [W/K/m]*/
+    Real c_frozen[NHEATGRIDP];      /* heat capacity of soil in frozen state [J/m3/K]*/
+    Real c_unfrozen[NHEATGRIDP];    /* heat capacity of soil in unfrozen state [J/m3/K]*/
+    Real latent_heat[NHEATGRIDP];   /* latent heat of fusion of soil [J/m3]*/
     /* lamFrozen and lamNormal define thermal conductivities for each interval of the grid 
       (e.g. lamFrozen[0] <-> interval directly below the surface), while the other variables define 
       their properties only at the gridpoints, (e.g. cFrozen[0] <-> first point below surface) */
@@ -277,6 +277,9 @@ extern Stocks soilstocks(const Soil *);
 extern Real soilwater(const Soil *);
 extern Real soilconduct(const Soil *,int,Bool);
 extern Real soilheatcap(const Soil *,int);
+extern void daily_heatcond(Real *, const int, const Real *, const Real, const Soil_thermal_prop);
+extern void soil_therm_prop(Soil_thermal_prop *, const Soil *, Bool);
+extern void derive_T_from_e(Real *, const Real *, Soil_thermal_prop);
 extern void soilice2moisture(Soil *, Real *,int);
 extern Real temp_response(Real);
 extern Real litter_ag_tree(const Litter *,int);

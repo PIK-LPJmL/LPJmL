@@ -17,15 +17,15 @@ void soil_therm_prop(Soil_thermal_prop *th, /*< Soil thermal property structure 
                      ) 
 {
   int    layer, j;
-  double c_froz, c_unfroz;             /* frozen and unfrozen heat capacities */
-  double lam_froz, lam_unfroz;         /* frozen and unfrozen conductivities */
-  double latent_heat;                  /* latent heat of fusion depending on water content */
-  double lam_sat_froz, lam_sat_unfroz; /* frozen and unfrozen conductivities for saturated soil */
-  double watercontent_abs;             /* total absolute water content of soil */
-  double solidcontent_abs;             /* total absolute solid content of soil */
-  double sat;                          /* saturation of soil */
-  double ke_unfroz, ke_froz;           /* kersten number for unfrozen and frozen soil */
-  double por;                          /* porosity of the soil */
+  Real c_froz, c_unfroz;             /* frozen and unfrozen heat capacities */
+  Real lam_froz, lam_unfroz;         /* frozen and unfrozen conductivities */
+  Real latent_heat;                  /* latent heat of fusion depending on water content */
+  Real lam_sat_froz, lam_sat_unfroz; /* frozen and unfrozen conductivities for saturated soil */
+  Real watercontent_abs;             /* total absolute water content of soil */
+  Real solidcontent_abs;             /* total absolute solid content of soil */
+  Real sat;                          /* saturation of soil */
+  Real ke_unfroz, ke_froz;           /* kersten number for unfrozen and frozen soil */
+  Real por;                          /* porosity of the soil */
 
   for (layer = 0; layer < NSOILLAYER; ++layer) {
 

@@ -20,7 +20,7 @@
 /**                                                                                \n**/
 /**************************************************************************************/
 
-//#define DAILY_OUTPUT  /* enables daily output */
+#define DAILY_OUTPUT  /* enables daily output */
 
 {   /* LPJmL configuration in JSON format */
 
@@ -41,7 +41,7 @@
   "firewood" : false,
   "new_phenology" : true,   /* GSI phenology enabled */
   "new_trf" : false,        /* new transpiration reduction function disabled */
-  "river_routing" : true,
+  "river_routing" : false,
   "extflow" : false,
   "permafrost" : true,
   "johansen" : true,
@@ -221,9 +221,12 @@ ID                               Fmt                        filename
     { "id" : "albedo",           "file" : { "fmt" : "raw", "name" : "output/malbedo.bin"}},
     { "id" : "maxthaw_depth",    "file" : { "fmt" : "raw", "name" : "output/maxthaw_depth.bin"}},
     { "id" : "perc",             "file" : { "fmt" : "raw", "name" : "output/mperc.bin"}},
-    { "id" : "soiltemp1",        "file" : { "fmt" : "raw", "name" : "output/msoiltemp1.bin"}},
-    { "id" : "soiltemp2",        "file" : { "fmt" : "raw", "name" : "output/msoiltemp2.bin"}},
-    { "id" : "soiltemp3",        "file" : { "fmt" : "raw", "name" : "output/msoiltemp3.bin"}},
+    { "id" : "soiltemp1",        "file" : { "fmt" : "txt", "name" : "output/msoiltemp1.txt"}},
+    { "id" : "soiltemp2",        "file" : { "fmt" : "txt", "name" : "output/msoiltemp2.txt"}},
+    { "id" : "soiltemp3",        "file" : { "fmt" : "txt", "name" : "output/msoiltemp3.txt"}},
+    { "id" : "soiltemp4",        "file" : { "fmt" : "txt", "name" : "output/msoiltemp4.txt"}},
+    { "id" : "soiltemp5",        "file" : { "fmt" : "txt", "name" : "output/msoiltemp5.txt"}},
+    { "id" : "soiltemp6",        "file" : { "fmt" : "txt", "name" : "output/msoiltemp6.txt"}},
     { "id" : "soilc_layer",      "file" : { "fmt" : "raw", "name" : "output/soilc_layer.bin"}},
     { "id" : "agb",              "file" : { "fmt" : "raw", "name" : "output/agb.bin"}},
     { "id" : "agb_tree",         "file" : { "fmt" : "raw", "name" : "output/agb_tree.bin"}},
@@ -250,15 +253,15 @@ ID                               Fmt                        filename
 /*  V. Run settings section                                          */
 /*===================================================================*/
 
-  "startgrid" : "all", /* 27410, 67208 60400 47284 47293 47277 all grid cells */
-  "endgrid"   : "all",
+  "startgrid" : 47284, /* 27410, 67208 60400 47284 47293 47277 all grid cells */
+  "endgrid"   : 47284,
 #ifdef CHECKPOINT
   "checkpoint_filename" : "restart/restart_checkpoint.lpj", /* filename of checkpoint file */
 #endif
 
 #ifndef FROM_RESTART
 
-  "nspinup" : 10000,  /* spinup years */
+  "nspinup" : 4,  /* spinup years */
   "nspinyear" : 30,  /* cycle length during spinup (yr) */
   "firstyear": 1901, /* first year of simulation */
   "lastyear" : 1901, /* last year of simulation */
@@ -266,14 +269,14 @@ ID                               Fmt                        filename
   "outputyear" : -8099,
   "write_restart" : true, /* create restart file: the last year of simulation=restart-year */
   "write_restart_filename" : "restart/restart_1840_nv_stdfire.lpj", /* filename of restart file */
-  "restart_year": 1840 /* write restart at year */
+  "restart_year": 1901 /* write restart at year */
 
 #else
 
-  "nspinup" : 390,   /* spinup years */
+  "nspinup" : 1,   /* spinup years */
   "nspinyear" : 30,  /* cycle length during spinup (yr)*/
   "firstyear": 1901, /* first year of simulation */
-  "lastyear" : 2011, /* last year of simulation */
+  "lastyear" : 1905, /* last year of simulation */
   "outputyear": 1901, /* first year output is written  */
   "restart" :  true, /* start from restart file */
   "restart_filename" : "restart/restart_1840_nv_stdfire.lpj", /* filename of restart file */

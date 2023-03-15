@@ -12,29 +12,27 @@ Note that the function works with an enthalpy vector but a temperature boundary 
 #include <math.h>
 
 
-void daily_heatcond(double * enth,             /*< enthalpy vector that the method is updating */
+void daily_heatcond(Real * enth,             /*< enthalpy vector that the method is updating */
                     const int N,               /*< number of gridpoints with free values */
-                    const double * h,          /*< distances between gridpoints  */
-                    const double temp_top,     /*< temperature of the soil surface (dirichlet bound) */
+                    const Real * h,          /*< distances between gridpoints  */
+                    const Real temp_top,     /*< temperature of the soil surface (dirichlet bound) */
                     const Soil_thermal_prop th /*< thermal properties of soil */
                     ) 
 {
-  int steps = 0;              /* number of timesteps */
-  int steps_temp = 0;         /* temp number of timesteps  */
-  double temp[N + 1], lam[N]; /* temperature and thermal conducitivity */
-  double upper_flux = 0.0;    /* heat fluxes for each gridpoint */
-  double lower_flux = 0.0;
-  double weight = 0.0;        /* weight for conductivity of partly frozen elements */
-  double FF = 0.0;            /* enthalpy update */
-  double dt = 0.0;            /* timestep */
-  double dt_temp = 0.0; 
-  double t_cur = 0.0;         /* curent time */
-  int i, j;
+  Real temp[N + 1], lam[N]; /* temperature and thermal conducitivity */
+  Real upper_flux = 0.0;    /* heat fluxes for each gridpoint */
+  Real lower_flux = 0.0;
+  Real weight = 0.0;        /* weight for conductivity of partly frozen elements */
+  Real FF = 0.0;            /* enthalpy update */
+  Real dt = 0.0;            /* timestep */
+  Real dt_temp = 0.0; 
+  Real t_cur = 0.0;         /* curent time */
+  int j;
 
   /* initialise thermal conductivity and temperature */
   temp[0] = temp_top; // dirichlet boundary condition
   for (j=0; j < N; ++j) {
-    lam[j] = (enth[j] < 0 ? th.lam_frozen[j] : th.lam_unfrozen[j]);
+    lam[j] = 0;
     temp[j + 1] = 0;
   }
 

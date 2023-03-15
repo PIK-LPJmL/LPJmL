@@ -123,5 +123,27 @@ Bool initsoiltemp(Climate* climate,    /**< pointer to climate data */
             stand->soil.ice_pwp[l]=1;
           }   
         }
+  /* initialse the enthalpy vectors based on temperature */
+  Soil_thermal_prop therm; /* thermal properties of soil for calculation of enthalpy */
+  int i,gridpoint;
+  for(cell=0;cell<config->ngridcell;cell++)
+    if(!grid[cell].skip)
+      foreachstand(stand,s,grid[cell].standlist)
+      {
+        soil_therm_prop(&therm,&(stand->soil),config->johansen); /* get thermal properties of soil; dep on water content */
+        foreachsoillayer(l)
+        {
+          for(i=0; i<GPLHEAT; ++i){ /* iterate through gridpoints of the refined heatgrid */
+            gridpoint = GPLHEAT*l+i; 
+            /* Get the enthalpy corresponding to the temperature.   
+               when $temp=0$, we only know that $enth in [0,latent_heat]$,
+               hence there is some freedom in choosing inital enth         */
+            stand->soil.enth[gridpoint] = 
+               (stand->soil.temp[l]<0 ? 
+                stand->soil.temp[l]*therm.c_frozen[l]  : 
+                stand->soil.temp[l]*therm.c_unfrozen[l]+therm.latent_heat[l]);
+          }
+        }
+      }
   return FALSE;
 } /* of 'initsoiltemp' */
