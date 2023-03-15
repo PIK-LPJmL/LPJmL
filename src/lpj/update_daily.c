@@ -485,7 +485,7 @@ void update_daily(Cell *cell,            /**< cell pointer           */
   } /* of 'if(river_routing)' */
   getoutput(&cell->output,DAYLENGTH,config)+=daylength;
   soilpar_output(cell,agrfrac,config);
-  killstand(cell,npft, cell->ml.with_tillage,intercrop,year,config);
+  killstand(cell,npft, ncft,cell->ml.with_tillage,intercrop,year,config);
 #ifdef SAFE
   check_stand_fracs(cell,cell->lakefrac+cell->ml.reservoirfrac);
 #endif

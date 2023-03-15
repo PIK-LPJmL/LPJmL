@@ -176,7 +176,7 @@ extern Wateruse initwateruse(const Filename *,const Config *);
 extern Bool getwateruse_wd(Wateruse, Cell[], int, const Config *);
 #endif
 extern void freewateruse(Wateruse,Bool);
-extern void killstand(Cell *,int,Bool,Bool,int,const Config *);
+extern void killstand(Cell *,int,Bool,Bool,int,int,const Config *);
 extern Bool initsoiltemp(Climate *, Cell*,const Config *);
 extern Celldata opencelldata(Config *);
 extern Bool seekcelldata(Celldata,int);

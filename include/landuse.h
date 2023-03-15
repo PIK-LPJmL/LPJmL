@@ -131,7 +131,7 @@ extern void deforest_for_timber(Cell *,Real,int,Bool,int,Real,int,const Config *
 extern void reclaim_land(const Stand *, Stand *,Cell *,Bool,int,const Config *);
 extern Bool getlanduse(Landuse,Cell *,int,int,int,const Config *);
 extern void landusechange(Cell *,int,int,Bool,int,const Config *);
-extern Bool setaside(Cell *,Stand *,Bool,Bool,int,Bool,int,const Config *);
+extern Bool setaside(Cell *,Stand *,Bool,Bool,int,Bool,int,int,const Config *);
 extern void sowingcft(Stocks *,Bool *,Cell *,Bool,Bool,Bool,int,int,int,int,int,Bool,const Config *);
 extern Stocks sowing_season(Cell *,int,int,int,Real,int,const Config *);
 extern Stocks sowing_prescribe(Cell *,int,int,int,int,const Config *);
@@ -142,7 +142,7 @@ extern void calc_nir(Stand *,Irrigation *,Real,Real [],Real,Bool);
 extern Real rw_irrigation(Stand *,Real,const Real [],Real,const Config *);
 extern void irrig_amount_river(Cell *,const Config *);
 extern void irrig_amount(Stand *,Irrigation *,int,int,int,const Config *);
-extern void mixsetaside(Stand *,Stand *,Bool,int,const Config *);
+extern void mixsetaside(Stand *,Stand *,Bool,int,int,const Config *);
 extern void set_irrigsystem(Stand *,int,int,int,const Config *);
 extern void init_irrigation(Irrigation *);
 extern Bool fwrite_irrigation(FILE *,const Irrigation *);
