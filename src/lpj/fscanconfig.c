@@ -711,9 +711,9 @@ Bool fscanconfig(Config *config,    /**< LPJ configuration */
     if (config->tillage_type==READ_TILLAGE)
       scanclimatefilename(&input,&config->with_tillage_filename,FALSE,TRUE,"with_tillage");
     if (config->residue_treatment == READ_RESIDUE_DATA)
-      scanclimatefilename(&input,&config->residue_data_filename,config->inputdir,FALSE,TRUE,"residue_on_field");
+      scanclimatefilename(&input,&config->residue_data_filename,FALSE,TRUE,"residue_on_field");
     if(config->prescribe_lsuha)
-      scanclimatefilename(&input,&config->lsuha_filename,config->inputdir,FALSE,TRUE,"grassland_lsuha");
+      scanclimatefilename(&input,&config->lsuha_filename,FALSE,TRUE,"grassland_lsuha");
     if(grassfix == GRASS_FIXED_PFT)
     {
       scanclimatefilename(&input,&config->grassfix_filename,FALSE,FALSE,"grassland_fixed_pft");
