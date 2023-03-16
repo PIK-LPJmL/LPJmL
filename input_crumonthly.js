@@ -59,7 +59,7 @@
   /* insert prescribed sdate file name here */
   "grassland_fixed_pft" : { "id" : 30, "fmt" : "raw", "name" : "/p/projects/landuse/users/rolinski/Newinput/scenario_MO0.bin"},
   "grass_harvest_options" : { "id" : 31, "fmt" : "raw", "name": "/p/projects/landuse/users/rolinski/Newinput/scenario_MO2.bin"},
-  "grassland_lsuha" : { "id" : 24, "fmt" : "clm",  "name" : "/p/projects/elis/heinke/Grazing/analysis/grassland_lsuha_2000-2000.clm"},
+  "grassland_lsuha" : { "id" : 24, "fmt" : "clm",  "name" : "/p/projects/lpjml/input/Grazing/grassland_lsuha_2000-2000.clm"},
   "sowing_ag_tree_rf" :   { "id" : 32, "fmt" : "cdf", "var" : "planting day", "name" : "/p/projects/landuse/users/cmueller/GGCMI/crop_calendar/Cotton_rf_growing_season_dates_v1.25.nc4"},
   "harvest_ag_tree_rf" :  { "id" : 33, "fmt" : "cdf", "var" : "harvest day", "name" : "/p/projects/landuse/users/cmueller/GGCMI/crop_calendar/Cotton_rf_growing_season_dates_v1.25.nc4"},
   "sowing_ag_tree_ir" :   { "id" : 34, "fmt" : "cdf", "var" : "planting day", "name" : "/p/projects/landuse/users/cmueller/GGCMI/crop_calendar/Cotton_ir_growing_season_dates_v1.25.nc4"},
