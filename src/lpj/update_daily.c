@@ -150,8 +150,9 @@ void update_daily(Cell *cell,            /**< cell pointer           */
 
       if(config->crop_index==ALLSTAND)
         getoutput(&cell->output,D_EVAP,config)+=evap*stand->frac;
-      prec_energy = ((climate.temp-stand->soil.temp[TOPLAYER])*climate.prec*1e-3
-                    +melt*1e-3*(T_zero-stand->soil.temp[TOPLAYER]))*c_water;
+      /* get enthalpy of precipitation (sensible + latent heat) */  
+      prec_energy = (climate.temp*c_water+c_water2ice)* climate.prec*1e-3
+                    + c_water2ice*melt*1e-3;   
       stand->soil.perc_energy[TOPLAYER]=prec_energy;
 #ifdef MICRO_HEATING
       /*THIS IS DEDICATED TO MICROBIOLOGICAL HEATING*/

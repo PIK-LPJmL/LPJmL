@@ -191,7 +191,8 @@ Real infil_perc_rain(Stand *stand,        /**< Stand pointer */
           {
             influx=perc;
             frac_g_influx=stand->frac_g[l];
-            soil->perc_energy[l+1]=((soil->temp[l]-soil->temp[l+1])*perc*1e-3)*c_water;
+            /* get percolation enthalpy which is sensible + latent heat */
+            soil->perc_energy[l+1]=(soil->temp[l]*c_water+c_water2ice)*perc*1e-3; 
           }
           if(config->with_nitrogen && l<BOTTOMLAYER)
           {
