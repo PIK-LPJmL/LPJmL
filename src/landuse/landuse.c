@@ -176,7 +176,7 @@ Landuse initlanduse(const Config *config /**< LPJ configuration */
 
   if(config->prescribe_lsuha)
   {
-    if(opendata(&landuse->grassland_lsuha,&config->lsuha_filename,"livestock density","LSU/ha",LPJ_SHORT,0.001,1,TRUE,config))
+    if(opendata(&landuse->grassland_lsuha,&config->lsuha_filename,"livestock density","LSU/ha",(config->lsuha_filename.fmt==SOCK) ? LPJ_FLOAT : LPJ_SHORT,0.001,1,TRUE,config))
     {
       freelanduse(landuse,config);
       return NULL;
