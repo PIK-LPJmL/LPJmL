@@ -33,6 +33,7 @@ Bool readconfig(Config *config,        /**< LPJ configuration */
   Verbosity verbosity;
   const char *sim_id[]={"lpj","lpjml","lpjml_image","lpjml_fms"};
   config->arglist=catstrvec(*argv,*argc); /* store command line in arglist */
+  config->coupled_model=NULL;
   file=openconfig(config,argc,argv,usage);
   if(file==NULL)
     return TRUE;
