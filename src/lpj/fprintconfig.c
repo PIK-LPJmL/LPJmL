@@ -584,7 +584,7 @@ void fprintconfig(FILE *file,          /**< File pointer to text output file */
     if(config->tillage_type==READ_TILLAGE)
       printinputfile(file,"tillage",&config->with_tillage_filename,width,config);
     if(config->prescribe_lsuha)
-      printinputfile(file,"livestock density",&config->lsuha_filename,width,config);
+      printinputfile(file,"livestock",&config->lsuha_filename,width,config);
   }
   if(config->reservoir)
   {
