@@ -27,7 +27,7 @@ cd lpjml
 
 untar source files
 
-gzip -cd lpjml-5.4.004.tar.gz|tar -xf -
+gzip -cd lpjml-5.5.001.tar.gz|tar -xf -
 
 Directory tree after extracting the tar files:
 
