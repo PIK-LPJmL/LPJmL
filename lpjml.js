@@ -54,6 +54,7 @@
   "johansen" : true,
   "soilpar_option" : "no_fixed_soilpar", /* other options "no_fixed_soilpar", "fixed_soilpar", "prescribed_soilpar" */
   "with_nitrogen" : "lim", /* other options: "no", "lim", "unlim" */
+  "nitrogen_coupled" : false, /* nitrogen stress coupled to water stress */
   "store_climate" : true, /* store climate data in spin-up phase */
   "const_climate" : false,
   "shuffle_climate" : true, /* shuffle spinup climate */
@@ -200,6 +201,7 @@ ID                               Fmt                        filename
     { "id" : "bnf",              "file" : { "fmt" : "raw", "name" : "output/mbnf.bin"}},
     { "id" : "n_immo",           "file" : { "fmt" : "raw", "name" : "output/mn_immo.bin"}},
     { "id" : "pft_ndemand",      "file" : { "fmt" : "raw", "name" : "output/pft_ndemand.bin"}},
+    { "id" : "nfert_agr",      "file" : { "fmt" : "raw", "name" : "output/nfert_agr.bin"}},
     { "id" : "firen",            "file" : { "fmt" : "raw", "name" : "output/firen.bin"}},
     { "id" : "n_mineralization", "file" : { "fmt" : "raw", "name" : "output/mn_mineralization.bin"}},
     { "id" : "n_volatilization", "file" : { "fmt" : "raw", "name" : "output/mn_volatilization.bin"}},
