@@ -88,8 +88,9 @@
   "grassonly" : false,
   "grassland_fixed_pft" : false,
   "grass_harvest_options" : false,
+  "prescribe_lsuha" : false,
   "others_to_crop" : false,
-  "grazing" : "default",                  /* default grazing type, other options : "default", "mowing", "ext", "int", "none" */
+  "grazing" : "default",                  /* default grazing type, other options : "default", "mowing", "ext", "int", "livestock", "none" */
   "istimber" : true,
   "crop_phu_option" : "new",
   "cropsheatfrost" : false,

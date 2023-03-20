@@ -344,6 +344,7 @@ static Cell *newgrid2(Config *config,          /* Pointer to LPJ configuration *
     }
 #endif
     /* Init cells */
+    grid[i].ml.grassland_lsuha=param.lsuha;
     grid[i].ml.dam=FALSE;
     grid[i].ml.seasonality_type=NO_SEASONALITY;
     grid[i].ml.cropfrac_rf=grid[i].ml.cropfrac_ir=grid[i].ml.reservoirfrac=0;
