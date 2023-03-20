@@ -45,13 +45,32 @@ void soiltemp(Soil *soil,          /**< pointer to soil data */
              )
 {
   Soil_thermal_prop th;
-  soil_therm_prop(&th,soil, config->johansen);
+  Real waterdiff[NSOILLAYER];
+  Real new_totalwater;
   Real h[NHEATGRIDP];
   int l,j;
-  for(l=0;l<NSOILLAYER;++l)
-    for(j=0;j<GPLHEAT;++j)
-      h[l*GPLHEAT+j]=soildepth[l]/GPLHEAT/1000;
 
-  daily_heatcond(soil->enth, NHEATGRIDP,h, temp_bs,th );
+
+  for(l=0;l<NSOILLAYER;++l)
+     for(j=0;j<GPLHEAT;++j)
+       h[l*GPLHEAT+j]=soildepth[l]/GPLHEAT/1000;
+
+
+  /* apply enthalpy changes coming from water flow */
+  soil_therm_prop(&th,soil, soil->old_totalwater ,config->johansen);
+  for(l=0;l<NSOILLAYER;++l)
+  {
+    new_totalwater =allwater(soil,l)+allice(soil,l);
+    waterdiff[l]=new_totalwater-soil->old_totalwater[l];
+    waterdiff[l]=waterdiff[l]/soildepth[l];
+    soil->old_totalwater[l]=new_totalwater;
+  }
+  update_e_from_wf(soil->enth, waterdiff, th);
+
+
+  soil_therm_prop(&th,soil, soil->old_totalwater ,config->johansen);
+  //daily_heatcond(soil->enth, NHEATGRIDP,h, temp_bs,th );
   derive_T_from_e(soil->temp,soil->enth,th);
+
+  printf("top temp: %0.8f, top water: %0.2f, soil: %p \n",ENTH2TEMP(soil->enth,th,1), allwater(soil,0)+allice(soil,0), soil );
 } /* of 'soiltemp' */
