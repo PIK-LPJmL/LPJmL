@@ -162,6 +162,7 @@ typedef struct
   const Soilpar *par; /**< pointer to soil parameters */
   Pool pool[LASTLAYER];          /**< fast and slow carbon pool for all layers*/
   Poolpar k_mean[LASTLAYER];     /**< fast and slow decay constant */
+  Poolpar decay_rate[LASTLAYER]; /**< fast and slow decay rate */
   Poolpar *c_shift[LASTLAYER];   /**< shifting rate of carbon matter to the different layer*/
   Real NO3[LASTLAYER];           /**< NO3 per soillayer (gN/m2) */
   Real NH4[LASTLAYER];           /**< NH4 per soillayer (gN/m2) */
@@ -198,6 +199,7 @@ typedef struct
   Real maxthaw_depth;
   Real mean_maxthaw;
   Stocks decomp_litter_mean;
+  Stocks *decomp_litter_pft;
   int count;
   Real YEDOMA;       /**< g/m2 */
   Litter litter;     /**< Litter pool */

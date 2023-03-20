@@ -39,7 +39,11 @@ typedef struct
   Real atmfrac;      /**< fraction of decomposed litter emitted as CO2 to the atmosphere */
   Real fastfrac;     /**< fraction of soil-bound decomposed litter entering the intermediate soil carbon pool */
   Real bioturbate;   /**< bioturbation [0..1) */
-  int veg_equil_year;
+  int veg_equil_year; /**< number of years to get vegetation into equilibrium (before forst call of equisoil) */
+  Bool veg_equil_unlim; /**< enable vegetation spinup without nitrogen limitation */
+  int nequilsoil;         /**< number of equisoil calls */
+  int equisoil_interval;  /**< time interval between equisoil calls */
+  int equisoil_years;     /**< number of years used in calculation fo equisoil */
   Real k_max;        /**< maximum fraction of soil->NH4 assumed to be nitrified Parton, 2001*/
   Real k_2;          /**< fraction of nitrified N lost as N20 flux Parton, 2001*/
 

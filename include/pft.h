@@ -274,6 +274,7 @@ extern Bool fscanphenparam(LPJfile *,Phen_param *,const char *,Verbosity);
 extern Real fire_sum(const Litter *,Real);
 extern void output_daily(const Pft *,Real,Real,const Config *);
 extern void equilsoil(Soil *, int, const Pftpar [],Bool);
+extern void equilsoil2(Soil *, int, const Pftpar [],Bool);
 extern void noturnover_monthly(Litter *,Pft *,const Config *);
 extern char **createpftnames(int,int,int,const Config *);
 extern void freepftnames(char **,int,int,int,const Config *);
