@@ -276,7 +276,7 @@ Real daily_grassland(Stand *stand,                /**< stand pointer */
     getoutput(output,PHEN_LIGHT,config)+= pft->fpc * pft->phen_gsi.light * stand->frac * (1.0/(1-stand->cell->lakefrac-stand->cell->ml.reservoirfrac));
     getoutput(output,PHEN_WATER,config)+= pft->fpc * pft->phen_gsi.wscal * stand->frac * (1.0/(1-stand->cell->lakefrac-stand->cell->ml.reservoirfrac));
     getoutput(output,WSCAL,config)+= pft->fpc * pft->wscal * stand->frac * (1.0/(1-stand->cell->lakefrac-stand->cell->ml.reservoirfrac));
-
+    getoutput(output,RA_MGRASS,config)+=(gpp-npp)*stand->frac;
 
     getoutputindex(output,CFT_FPAR,index,config)+=(fpar(pft)*stand->frac*(1.0/(1-stand->cell->lakefrac-stand->cell->ml.reservoirfrac)));
 
@@ -431,16 +431,16 @@ Real daily_grassland(Stand *stand,                /**< stand pointer */
         {
           isphen=TRUE;
           data->rotation.mode = RM_GRAZING;
-          data->nr_of_lsus_ext = param.lsuha;
         }
         break;
       case GS_GRAZING_INT: /* int. grazing */
-        data->nr_of_lsus_int = 0.0;
         if ((cleaf > STUBBLE_HEIGHT_GRAZING_INT) || (data->rotation.mode > RM_UNDEFINED)) // 7-8 cm or 40 g.C.m-2 threshold
         {
           isphen=TRUE;
-          data->nr_of_lsus_int = param.lsuha;
         }
+        break;
+      case GS_GRAZING_LIVE: /* livestock grazing */
+        isphen=TRUE;
         break;
     } /* of switch */
   }
