@@ -373,9 +373,9 @@ int writecoords(Outputfile *output,  /**< output struct */
       if(output->files[index].issocket)
       {
         send_token_coupler(PUT_DATA,output->files[index].id,config);
-        writefloat_socket(config->socket,fvec,count*2);
+        writedouble_socket(config->socket,fvec,count*2);
       }
-      free(fvec);
+      free(dvec);
       free(soilcode);
       break;
     case LPJ_SHORT:
