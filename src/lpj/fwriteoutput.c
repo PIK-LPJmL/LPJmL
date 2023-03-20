@@ -585,6 +585,24 @@ void fwriteoutput(Outputfile *output,  /**< output file array */
   writeoutputvar(CELLFRAC_AGR,ndate1);
   writeoutputvar(LITFALLC_WOOD,1);
   writeoutputvar(LITFALLN_WOOD,1);
+  writeoutputvar(UPTAKEN_MGRASS,1);
+  writeoutputvar(FECESN_MGRASS,1);
+  writeoutputvar(URINEN_MGRASS,1);
+  writeoutputvar(YIELDN_MGRASS,1);
+  writeoutputvar(NH3_MGRASS,1);
+  writeoutputvar(NO3_LEACHING_MGRASS,1);
+  writeoutputvar(N2_MGRASS,1);
+  writeoutputvar(N2O_NIT_MGRASS,1);
+  writeoutputvar(N2O_DENIT_MGRASS,1);
+  writeoutputvar(UPTAKEC_MGRASS,1);
+  writeoutputvar(FECESC_MGRASS,1);
+  writeoutputvar(URINEC_MGRASS,1);
+  writeoutputvar(YIELDC_MGRASS,1);
+  writeoutputvar(RESPC_MGRASS,1);
+  writeoutputvar(METHANEC_MGRASS,1);
+  writeoutputvar(DELTAC_MGRASS,1);
+  writeoutputvar(RA_MGRASS,1);
+  writeoutputvar(RH_MGRASS,1);
   if(iswrite(output,DECAY_WOOD_AGR))
   {
     count=0;

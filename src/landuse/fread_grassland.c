@@ -33,8 +33,8 @@ Bool fread_grassland(FILE *file,   /**< pointer to binary file */
   if(fread_irrigation(file,&grassland->irrigation,swap))
     return TRUE;
   freadint1(&stand->growing_days,swap,file);
-  freadreal1(&grassland->nr_of_lsus_ext,swap,file);
-  freadreal1(&grassland->nr_of_lsus_int,swap,file);
+  freadreal1(&grassland->deficit_lsu_ne,swap,file);
+  freadreal1(&grassland->deficit_lsu_mp,swap,file);
   freadint1(&grassland->rotation.grazing_days,swap,file);
   freadint1(&grassland->rotation.recovery_days,swap,file);
   freadint1(&grassland->rotation.paddocks,swap,file);

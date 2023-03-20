@@ -51,6 +51,7 @@ struct landuse
   Climatefile residue_on_field; /**< file pointer to residue extraction file */
   Climatefile sdate;            /**< file pointer to prescribed sdates */
   Climatefile crop_phu;         /**< file pointer to prescribed crop phus */
+  Climatefile grassland_lsuha;  /**< file pointer to prescribed livestock density */
 };                              /**< definition of opaque datatype Landuse */
 
 static void checkyear(const char *name,const Climatefile *file,const Config *config)
@@ -83,7 +84,7 @@ Landuse initlanduse(const Config *config /**< LPJ configuration */
     return NULL;
   }
   landuse->landuse.isopen=landuse->fertilizer_nr.isopen=landuse->manure_nr.isopen=landuse->with_tillage.isopen=
-  landuse->residue_on_field.isopen=landuse->sdate.isopen=landuse->crop_phu.isopen=FALSE;
+  landuse->residue_on_field.isopen=landuse->sdate.isopen=landuse->crop_phu.isopen=landuse->grassland_lsuha.isopen=FALSE;
   /* open landuse input data */
   if(opendata(&landuse->landuse,&config->landuse_filename,"landuse","1",LPJ_FLOAT,LPJ_SHORT,0.001,2*config->landusemap_size,FALSE,config))
   {
@@ -172,6 +173,17 @@ Landuse initlanduse(const Config *config /**< LPJ configuration */
     if(config->residue_data_filename.fmt!=SOCK)
       checkyear("residue extraction",&landuse->residue_on_field,config);
   }
+
+  if(config->prescribe_lsuha)
+  {
+    if(opendata(&landuse->grassland_lsuha,&config->lsuha_filename,"livestock density","LSU/ha",(config->lsuha_filename.fmt==SOCK) ? LPJ_FLOAT : LPJ_SHORT,0.001,1,TRUE,config))
+    {
+      freelanduse(landuse,config);
+      return NULL;
+    }
+    checkyear("livestock density",&landuse->grassland_lsuha,config);
+  }
+
   landuse->intercrop=config->intercrop;
   return landuse;
 } /* of 'initlanduse' */
@@ -826,6 +838,25 @@ Bool getlanduse(Landuse landuse,     /**< Pointer to landuse data */
     }
     free(data);
   }
+
+  if(config->prescribe_lsuha)
+  {
+    data=readdata(&landuse->grassland_lsuha,NULL,grid,"livestock density",year,config);
+    if(data==NULL)
+      return TRUE;
+    count=0;
+    for(cell=0; cell<config->ngridcell; cell++)
+      if(!grid[cell].skip)
+        grid[cell].ml.grassland_lsuha=data[count++];
+      else
+        count++;
+    free(data);
+  }
+  else
+  {
+    for(cell=0; cell<config->ngridcell; cell++)
+      grid[cell].ml.grassland_lsuha=param.lsuha;
+  }
   return FALSE;
 } /* of 'getlanduse' */
 
@@ -848,6 +879,7 @@ void freelanduse(Landuse landuse,     /**< pointer to landuse data */
     closeclimatefile(&landuse->manure_nr,isroot(*config));
     closeclimatefile(&landuse->with_tillage,isroot(*config));
     closeclimatefile(&landuse->residue_on_field,isroot(*config));
+    closeclimatefile(&landuse->grassland_lsuha,isroot(*config));
     free(landuse);
   }
 } /* of 'freelanduse' */
