@@ -207,6 +207,7 @@ typedef struct
   Real rw_buffer;    /**< available rain water amount in buffer (mm) */
 } Soil;
 
+#ifndef TESTSCENARIO_HEAT
 typedef struct{
     Real lam_frozen[NHEATGRIDP];    /* conductivity of soil in frozen state [W/K/m] */
     Real lam_unfrozen[NHEATGRIDP];  /* conductivity of soil in unfrozen state [W/K/m]*/
@@ -217,7 +218,7 @@ typedef struct{
       (e.g. lamFrozen[0] <-> interval directly below the surface), while the other variables define 
       their properties only at the gridpoints, (e.g. cFrozen[0] <-> first point below surface) */
 }Soil_thermal_prop;
-
+#endif
 
 struct Pftpar; /* forward declaration */
 struct Dailyclimate; /* forward declaration */
