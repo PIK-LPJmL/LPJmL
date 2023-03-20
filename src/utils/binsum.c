@@ -30,7 +30,7 @@ int main(int argc,char **argv)
   Map *map=NULL;
   Attr *attrs;
   int n_attr;
-  String units,descr;
+  String units,descr,variable;
   Header header;
   Type grid_type;
   Filename grid_name;
@@ -40,6 +40,7 @@ int main(int argc,char **argv)
   nsum=NMONTH;
   units[0]='\0';
   descr[0]='\0';
+  variable[0]='\0';
   grid_name.fmt=RAW;
   grid_type=LPJ_SHORT;
   for(iarg=1;iarg<argc;iarg++)
@@ -173,7 +174,7 @@ int main(int argc,char **argv)
     header.cellsize_lon=header.cellsize_lat=0.5;
     header.ncell=1;
     header.nyear=1;
-    file=openmetafile(&header,&map,map_name,&attrs,&n_attr,NULL,units,descr,&grid_name,&grid_type,&swap,&offset,argv[iarg],TRUE);
+    file=openmetafile(&header,&map,map_name,&attrs,&n_attr,variable,units,descr,&grid_name,&grid_type,&swap,&offset,argv[iarg],TRUE);
     if(file==NULL)
       return EXIT_FAILURE;
     if(header.order!=CELLSEQ)
@@ -292,7 +293,7 @@ int main(int argc,char **argv)
       printfcreateerr(out_json);
       return EXIT_FAILURE;
     }
-    fprintjson(file,argv[iarg+1],arglist,&header,map,map_name,attrs,n_attr,NULL,strlen(units)>0 ? units : NULL,strlen(descr)>0 ? descr : NULL,&grid_name,grid_type,RAW,LPJOUTPUT_HEADER,FALSE,LPJOUTPUT_VERSION);
+    fprintjson(file,argv[iarg+1],arglist,&header,map,map_name,attrs,n_attr,(strlen(variable)>0) ? variable : NULL,strlen(units)>0 ? units : NULL,strlen(descr)>0 ? descr : NULL,(grid_name.name==NULL) ? NULL : &grid_name,grid_type,RAW,LPJOUTPUT_HEADER,FALSE,LPJOUTPUT_VERSION);
     fclose(file);
   }
   return EXIT_SUCCESS;

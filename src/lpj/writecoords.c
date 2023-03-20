@@ -268,7 +268,7 @@ int writecoords(Outputfile *output,  /**< output struct */
           }
           free(ddst);
         }
-        free(fvec);
+        free(dvec);
         break;
       case LPJ_SHORT:
         MPI_Type_contiguous(2,MPI_SHORT,&type);
@@ -373,7 +373,7 @@ int writecoords(Outputfile *output,  /**< output struct */
       if(output->files[index].issocket)
       {
         send_token_coupler(PUT_DATA,output->files[index].id,config);
-        writedouble_socket(config->socket,fvec,count*2);
+        writedouble_socket(config->socket,dvec,count*2);
       }
       free(dvec);
       free(soilcode);
