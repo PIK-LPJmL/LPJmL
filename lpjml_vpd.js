@@ -2,7 +2,7 @@
 /**                                                                                \n**/
 /**                   l  p  j  m  l  _  v  p  d  .  j  s                           \n**/
 /**                                                                                \n**/
-/** Configuration file for LPJmL C Version 5.3.001                                 \n**/
+/** Configuration file for LPJmL C Version 5.4.001                                 \n**/
 /**                                                                                \n**/
 /** Configuration file is divided into five sections:                              \n**/
 /**                                                                                \n**/
@@ -33,7 +33,7 @@
   "sim_name" : "LPJmL run with SPITFIRE and VPD fire danger index", /* Simulation description */
   "sim_id"   : "lpjml",     /* LPJML Simulation type with managed land use */
   "coupled_model" : null,   /* no model coupling */
-  "version"  : "5.3",       /* LPJmL version expected */
+  "version"  : "5.4",       /* LPJmL version expected */
   "random_prec" : false,    /* Random weather generator for precipitation enabled */
   "random_seed" : 2,        /* seed for random number generator */
   "radiation" : "radiation",/* other options: CLOUDINESS, RADIATION, RADIATION_SWONLY, RADIATION_LWDOWN */
