@@ -130,7 +130,7 @@ Bool initsoiltemp(Climate* climate,    /**< pointer to climate data */
     if(!grid[cell].skip)
       foreachstand(stand,s,grid[cell].standlist)
       {
-        soil_therm_prop(&therm,&(stand->soil),NULL,config->johansen); /* get thermal properties of soil; dep on water content */
+        soil_therm_prop(&therm,&(stand->soil),NULL,NULL,config->johansen); /* get thermal properties of soil; dep on water content */
         foreachsoillayer(l)
         {
           for(i=0; i<GPLHEAT; ++i){ /* iterate through gridpoints of the refined heatgrid */
@@ -144,6 +144,7 @@ Bool initsoiltemp(Climate* climate,    /**< pointer to climate data */
                 stand->soil.temp[l]*therm.c_unfrozen[l]+therm.latent_heat[l]);
           }
           stand->soil.old_totalwater[l]=allwater((&(stand->soil)),l)+allice((&(stand->soil)),l);
+          stand->soil.old_wsat[l]=stand->soil.wsat[l];
         }
       }
   return FALSE;

@@ -206,6 +206,7 @@ typedef struct
   Litter litter;     /**< Litter pool */
   Real rw_buffer;    /**< available rain water amount in buffer (mm) */
   Real old_totalwater[NSOILLAYER];
+  Real old_wsat[NSOILLAYER];
 } Soil;
 
 #ifndef TESTSCENARIO_HEAT
@@ -280,9 +281,9 @@ extern Real soilwater(const Soil *);
 extern Real soilconduct(const Soil *,int,Bool);
 extern Real soilheatcap(const Soil *,int);
 extern void daily_heatcond(Real *, const int, const Real *, const Real, const Soil_thermal_prop);
-extern void soil_therm_prop(Soil_thermal_prop *, const Soil *, const Real * ,Bool);
+extern void soil_therm_prop(Soil_thermal_prop *, const Soil *, const Real *, const Real * ,Bool);
 extern void derive_T_from_e(Real *, const Real *, Soil_thermal_prop);
-extern void update_e_from_wf(Real *, Real *, Soil_thermal_prop);
+extern void daily_mass2heatflow(Real *, Real *, Real *, Soil_thermal_prop);
 extern void soilice2moisture(Soil *, Real *,int);
 extern Real temp_response(Real);
 extern Real litter_ag_tree(const Litter *,int);

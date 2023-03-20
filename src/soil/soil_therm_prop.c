@@ -14,6 +14,7 @@ For the conductivity it uses the approach described by Johansen (1977)
 void soil_therm_prop(Soil_thermal_prop *th, /*< Soil thermal property structure that is set or modified */
                      const Soil *soil,      /*< Soil structure from which water content etc is obtained  */
                      const Real *waterc_abs,
+                     const Real *porosity_rel,
                      Bool johansen          /*< Shell the johansen method be used for thermal conductivities? */
                      ) 
 {
@@ -41,8 +42,12 @@ void soil_therm_prop(Soil_thermal_prop *th, /*< Soil thermal property structure 
       waterc_abs_layer = allwater(soil,layer)+allice(soil,layer);
     else 
       waterc_abs_layer = waterc_abs[layer];
-    
-    solidc_abs_layer = soildepth[layer] - soil->wsats[layer]; 
+
+    if(porosity_rel == NULL)
+      solidc_abs_layer = soildepth[layer] - soil->wsats[layer];
+    else 
+      solidc_abs_layer = soildepth[layer] - soildepth[layer]*porosity_rel[layer];    
+     
 
     /* get frozen and unfrozen conductivity with johansens approach */
     por            = soil -> wsat[layer];

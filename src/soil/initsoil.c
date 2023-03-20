@@ -84,6 +84,7 @@ Bool initsoil(Stand *stand,           /**< Pointer to stand data */
   {
     soil->temp[l]=0.0;
     soil->old_totalwater[l]=0.0;
+    soil->old_wsat[l]=0.0;
   }
   for(l=0;l<NHEATGRIDP;++l)
     soil->enth[l]=0.0;

@@ -253,8 +253,8 @@ ID                               Fmt                        filename
 /*  V. Run settings section                                          */
 /*===================================================================*/
 
-  "startgrid" : 47284, /* 27410, 67208 60400 47284 47293 47277 all grid cells */
-  "endgrid"   : 47284,
+  "startgrid" : 57284, /* 27410, 67208 60400 47284 47293 47277 all grid cells */
+  "endgrid"   : 57284,
 #ifdef CHECKPOINT
   "checkpoint_filename" : "restart/restart_checkpoint.lpj", /* filename of checkpoint file */
 #endif
