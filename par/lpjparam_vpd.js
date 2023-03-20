@@ -80,6 +80,7 @@ bisco activity */
   "saturation_level_drip" : 0.05,     /* saturation level drip irrigation*/
   "drip_evap_reduction" : 0.6,        /* reduction of drip soil evap */
   "residues_in_soil" : 0.1,           /* minimum residues in soil*/
+  "residues_in_soil_notillage" : 0.1,  /* minimum residues in soil before till_startyear (only if tilled) */
   "esoil_reduction" : 0.0,            /* reduction of soil evaporation */
   "rw_buffer_max" : 0.0,              /* size of rainwater harvesting tank [mm] */
   "frac_ro_stored" : 0.0,             /* fraction of surface runoff stored in tank */
@@ -87,7 +88,6 @@ bisco activity */
   "soil_infil_rw" : 2.0,              /* values > 2 (default) increase soil infiltration on rainfed and irrigated managed land */
   "yield_gap_bridge" : 0.0,           /* factor by which laimax value is closed (7 - country-value)*factor */
   "nfert_split" : 5,                  /* threshold fertilizer input for split application */
-  "residues_in_soil" : 0.1,           /* minimum residues in soil*/
   "fburnt" : 1.0,                     /* fraction of trees burnt at deforestation, refers to remainder after timber harvest */
   "ftimber" : 0.76,                   /* timber fraction at deforestation */
   "ftimber_wp" : 0.76,                /* timber fraction for wood plantations */

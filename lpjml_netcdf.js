@@ -2,7 +2,7 @@
 /**                                                                                \n**/
 /**                   l  p  j  m  l  _  n  e  t  c  d  f  .  j  s                  \n**/
 /**                                                                                \n**/
-/** Configuration file for LPJmL C Version 5.3.001                                 \n**/
+/** Configuration file for LPJmL C Version 5.4.001                                 \n**/
 /**                                                                                \n**/
 /** Configuration file is divided into five sections:                              \n**/
 /**                                                                                \n**/
@@ -33,7 +33,7 @@
 "sim_name" : "LPJmL Run", /* Simulation description */
 "sim_id"   : "lpjml",     /* LPJML Simulation type with managed land use */
 "coupled_model" : null,   /* no model coupling */
-"version"  : "5.3",       /* LPJmL version expected */
+"version"  : "5.4",       /* LPJmL version expected */
 "random_prec" : true,     /* Random weather generator for precipitation enabled */
 "random_seed" : 2,        /* seed for random number generator */
 "radiation" : "cloudiness",
@@ -51,6 +51,7 @@
 "population" : false,
 "landuse" : "no",
 #endif
+"cultivation_types" : ["none","biomass","annual crop"], /* cultivation types to read from pft.js */
 "prescribe_burntarea" : false,
 "prescribe_landcover" : "no_landcover",
 "new_phenology": false,
@@ -58,10 +59,12 @@
 "river_routing": false,
 "permafrost" : true,
 "johansen" : true,
+"soilpar_option" : "no_fixed_soilpar", /* other options "no_fixed_soilpar", "fixed_soilpar", "prescribed_soilpar" */
 "with_nitrogen": "lim",
 "store_climate" : true, /* store climate data in spin-up phase */
 "const_climate" : false,
 "fix_climate" : false,
+"fix_landuse" : false,
 "const_deposition" : false,
 "fertilizer_input" : "yes",
 "fix_fertilization" : false,          /* fix fertilizer input */
@@ -87,6 +90,8 @@
 "istimber": false,
 "rw_manage" : false,                  /* rain water management */
 "manure_input" : false,               /* enable manure input */
+"grazing" : "default",                /* default grazing type, other options : "default", "mowing", "ext", "int", "none" */
+"grazing_others" : "default",         /* default grazing type for others, other options : "default", "mowing", "ext", "int", "none" */
 "others_to_crop" : true,
 "cft_temp" : "temperate cereals",
 "cft_tropic" : "maize",
@@ -95,6 +100,7 @@
 "crop_phu_option" : "new",
 "cropsheatfrost" : false,
 "double_harvest" : true,
+"ma_bnf" : true,
 
 /*===================================================================*/
 /*  II. Input parameter section                                      */
@@ -120,6 +126,7 @@
 #define SUFFIX "pft.nc"
 #endif
 
+"output_metafile" : false,
 "float_grid" : false, /* set datatype of grid file to float (TRUE/FALSE) */
 
 #ifdef FROM_RESTART

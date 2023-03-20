@@ -2,7 +2,7 @@
 /**                                                                                \n**/
 /**                   l  p  j  m  l  _  n  o  n  .  j  s                           \n**/
 /**                                                                                \n**/
-/** Configuration file for LPJmL C Version 5.3.001 without nitrogen limitation     \n**/
+/** Configuration file for LPJmL C Version 5.4.001 without nitrogen limitation     \n**/
 /**                                                                                \n**/
 /** Configuration file is divided into five sections:                              \n**/
 /**                                                                                \n**/
@@ -33,7 +33,7 @@
   "sim_name" : "LPJmL run without nitrogen", /* Simulation description */
   "sim_id"   : "lpjml",       /* LPJML Simulation type with managed land use */
   "coupled_model" : null,     /* no model coupling */
-  "version"  : "5.3",         /* LPJmL version expected */
+  "version"  : "5.4",         /* LPJmL version expected */
   "random_prec" : true,       /* Random weather generator for precipitation enabled */
   "random_seed" : 2,          /* seed for random number generator */
   "radiation" : "radiation",  /* other options: CLOUDINESS, RADIATION, RADIATION_SWONLY, RADIATION_LWDOWN */
@@ -68,6 +68,7 @@
   "reservoir" : false,
   "wateruse" : "no",
 #endif
+  "cultivation_types" : ["none","biomass","annual crop"], /* cultivation types to read from pft.js */
   "prescribe_burntarea" : false,
   "prescribe_landcover" : "no_landcover", /* NO_LANDCOVER, LANDCOVERFPC, LANDCOVEREST */
   "sowing_date_option" : "fixed_sdate",   /* NO_FIXED_SDATE, FIXED_SDATE, PRESCRIBED_SDATE */
@@ -89,6 +90,7 @@
   "grassonly" : false,
   "others_to_crop" : false,             /* move PFT type others into PFT crop, maize for tropical, wheat for temperate */
   "grazing" : "default",                /* default grazing type, other options : "default", "mowing", "ext", "int", "none" */
+  "grazing_others" : "default",         /* default grazing type for others, other options : "default", "mowing", "ext", "int", "none" */
   "crop_phu_option" : "new",
   "cropsheatfrost" : false,
   "double_harvest" : false,

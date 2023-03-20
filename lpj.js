@@ -31,7 +31,7 @@
 "sim_name" : "LPJ run with PNV",   /* Simulation description */
 "sim_id"   : "lpj",       /* LPJML Simulation with natural vegetation only */
 "coupled_model" : null,   /* no model coupling */
-"version"  : "5.3",       /* LPJmL version expected */
+"version"  : "5.4",       /* LPJmL version expected */
 "random_prec" : true,     /* Random weather generator for precipitation enabled */
 "random_seed" : 2,        /* seed for random number generator */
 "radiation" : "radiation",  /* other options: CLOUDINESS, RADIATION, RADIATION_SWONLY, RADIATION_LWDOWN */
@@ -44,6 +44,7 @@
 "equilsoil" : true,
 "population" : false,
 #endif
+"cultivation_types" : ["none"],
 "prescribe_burntarea" : false,
 "prescribe_landcover" : "no_landcover",
 "new_phenology": true,
@@ -59,6 +60,7 @@
 "shuffle_climate" : true, /* shuffle spinup climate */
 "fix_climate" : false,
 "no_ndeposition" : false,             /* turn off atmospheric N deposition */
+"ma_bnf" : true,
 
 /*===================================================================*/
 /*  II. Input parameter section                                      */
