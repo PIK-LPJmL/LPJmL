@@ -118,7 +118,7 @@
 #define NO_FERTILIZER 0
 #define FERTILIZER 1
 #define AUTO_FERTILIZER 2
-#define NOUT 370            /* number of output files */
+#define NOUT 388            /* number of output files */
 #define END -1              /* end marker for output files */
 #define GRIDBASED 1         /* pft-specific outputs scaled by stand->frac */
 #define PFTBASED 0          /* pft-specific outputs not scaled by stand->frac */
@@ -506,6 +506,24 @@
 #define CFT_NHARVEST 367
 #define PFT_LITTERC 368
 #define PFT_HEIGHT 369
+#define UPTAKEN_MGRASS 370
+#define FECESN_MGRASS 371
+#define URINEN_MGRASS 372
+#define YIELDN_MGRASS 373
+#define NH3_MGRASS 374
+#define NO3_LEACHING_MGRASS 375
+#define N2_MGRASS 376
+#define N2O_NIT_MGRASS 377
+#define N2O_DENIT_MGRASS 378
+#define UPTAKEC_MGRASS 379
+#define FECESC_MGRASS 380
+#define URINEC_MGRASS 381
+#define YIELDC_MGRASS 382
+#define RESPC_MGRASS 383
+#define METHANEC_MGRASS 384
+#define DELTAC_MGRASS 385
+#define RA_MGRASS 386
+#define RH_MGRASS 387
 #define PFT_GCGP_COUNT 0
 #define NDAY_MONTH 1
 #define RANDOM_SEED 0
