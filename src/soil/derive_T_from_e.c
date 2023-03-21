@@ -27,7 +27,7 @@ void derive_T_from_e(Real *temp,        /*< temperature vector that is written t
   for(layer=0; layer<NSOILLAYER; ++layer)
   {
     /* gridpoint at the upper layer border */
-    gp=(layer>0 ? layer*GPLHEAT-1 : 0); /* for layer=0 take the first gridpoint inside the layer */
+    gp=(layer>0 ? layer*GPLHEAT-1 : 0); /* Exception for layer=0: take first gridpoint inside the layer */
     T = ENTH2TEMP(enth,th,gp);          /* get corresponding temperature */
     Tmean += T/(GPLHEAT*2);             /* Contribution of the first gridpoint to Tmean */
     for(j=0; j<GPLHEAT-1; ++j)
