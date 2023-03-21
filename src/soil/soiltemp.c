@@ -45,6 +45,7 @@ void soiltemp(Soil *soil,          /**< pointer to soil data */
   Real soliddiff[NSOILLAYER];
   Real new_totalwater;
   Real h[NHEATGRIDP];
+  Real freezefrac[NSOILLAYER];
   int l,j;
 
   /*****  Prognostic Part  ****/
@@ -79,6 +80,9 @@ void soiltemp(Soil *soil,          /**< pointer to soil data */
 
   /* derive the layer temperatures based on the enthalpy vector and thermal properties  */
   derive_T_from_e(soil->temp,soil->enth,th);
+  enth2freezefrac(freezefrac, soil->enth, th);
+  freezefrac2soil(soil,freezefrac);
   printf("top temp: %0.8f, top water: %0.2f, soil: %p \n",
           ENTH2TEMP(soil->enth,th,1), allwater(soil,0)+allice(soil,0), soil );
+  
 } /* of 'soiltemp' */
