@@ -180,7 +180,7 @@ typedef struct
   Real snowheight; /**< height of snow */
   Real snowfraction;  /**< fraction of snow-covered ground */
   Real temp[NSOILLAYER+1];      /**< [deg C]; last layer=snow*/
-  Real enth[NHEATGRIDP]; /*< volumetric enthalpy (i.e. thermal energy/heat) [J/m^3] */
+  Real enth[NHEATGRIDP];  /**< volumetric enthalpy (i.e. thermal energy/heat) [J/m^3] */
   Real Ks[NSOILLAYER];    /**< saturated hydraulic conductivity (mm/h) per layer*/
   Real wpwp[NSOILLAYER];  /**< relative water content at wilting point */
   Real wfc[NSOILLAYER];   /**< relative water content at field capacity */
@@ -205,6 +205,8 @@ typedef struct
   Real YEDOMA;       /**< g/m2 */
   Litter litter;     /**< Litter pool */
   Real rw_buffer;    /**< available rain water amount in buffer (mm) */
+  Real old_totalwater[NSOILLAYER];
+  Real old_wsat[NSOILLAYER];
 } Soil;
 
 #ifndef TESTSCENARIO_HEAT
@@ -279,8 +281,9 @@ extern Real soilwater(const Soil *);
 extern Real soilconduct(const Soil *,int,Bool);
 extern Real soilheatcap(const Soil *,int);
 extern void daily_heatcond(Real *, const int, const Real *, const Real, const Soil_thermal_prop);
-extern void soil_therm_prop(Soil_thermal_prop *, const Soil *, Bool);
+extern void soil_therm_prop(Soil_thermal_prop *, const Soil *, const Real *, const Real * ,Bool);
 extern void derive_T_from_e(Real *, const Real *, Soil_thermal_prop);
+extern void daily_mass2heatflow(Real *, Real *, Real *, Soil_thermal_prop);
 extern void soilice2moisture(Soil *, Real *,int);
 extern Real temp_response(Real);
 extern Real litter_ag_tree(const Litter *,int);
@@ -312,4 +315,9 @@ extern void cmpsoilmap(const int*,int,const Config *);
 #define f_temp(soiltemp) exp(-(soiltemp-18.79)*(soiltemp-18.79)/(2*5.26*5.26)) /* Parton et al 2001*/
 #define f_NH4(nh4) (1-exp(-0.0105*(nh4))) /* Parton et al 1996 */
 #define getsoilmoist(soil,l) (((soil)->w[l] * (soil)->whcs[l] + ((soil)->wpwps[l] * (1 - (soil)->ice_pwp[l])) + (soil)->w_fw[l]) / (soil)->wsats[l])
+/* The macro computes the temperature at a gridpoint (gp) 
+given an enthalpy vector (enth) and a Soil_thermal_prop (th)*/
+#define ENTH2TEMP(e, th, gp)\
+ (((e)[(gp)]<0                      ?  (e)[(gp)]                           / (th).c_frozen[(gp)]   : 0) +\
+  ((e)[(gp)]>(th).latent_heat[(gp)] ? ((e)[(gp)] - (th).latent_heat[(gp)]) / (th).c_unfrozen[(gp)] : 0))
 #endif /* SOIL_H */

@@ -33,11 +33,7 @@ Real soiltemp_lag(const Soil *soil,      /**< Soil data */
   return climbuf->atemp_mean+soil->amp*(temp_lag-climbuf->atemp_mean);
 } /* of 'soiltemp_lag' */
 
-/* heat conduction equation: dT/dt = th_diff*d2T/dz2
- * is solved with a finite-difference solution
- * algorithm and stability criterion are taken from:
- * Y.Bayazitoglu / M.N.Oezisik: Elements of Heat Transfer (1988)
- */
+
 
 void soiltemp(Soil *soil,          /**< pointer to soil data */
               Real temp_bs,        /**< temperature below snow (deg C) */
@@ -45,13 +41,44 @@ void soiltemp(Soil *soil,          /**< pointer to soil data */
              )
 {
   Soil_thermal_prop th;
-  soil_therm_prop(&th,soil, config->johansen);
+  Real waterdiff[NSOILLAYER];
+  Real soliddiff[NSOILLAYER];
+  Real new_totalwater;
   Real h[NHEATGRIDP];
   int l,j;
-  for(l=0;l<NSOILLAYER;++l)
-    for(j=0;j<GPLHEAT;++j)
-      h[l*GPLHEAT+j]=soildepth[l]/GPLHEAT/1000;
 
+  /*****  Prognostic Part  ****/
+
+  /* set up the refined heatgrid */
+  for(l=0;l<NSOILLAYER;++l)
+     for(j=0;j<GPLHEAT;++j)
+       h[l*GPLHEAT+j]=soildepth[l]/GPLHEAT/1000;
+
+
+  /* apply enthalpy changes coming from water flow and porosity changed */
+  soil_therm_prop(&th,soil, soil->old_totalwater, soil->old_wsat, config->johansen);
+  /* track the changes made to the watercontent and to porosity by other LPJmL methods */
+  for(l=0;l<NSOILLAYER;++l) 
+  {
+    new_totalwater =allwater(soil,l)+allice(soil,l);
+    waterdiff[l]=new_totalwater-soil->old_totalwater[l];
+    waterdiff[l]=waterdiff[l]/soildepth[l];
+    soliddiff[l]= -(soil->wsat[l]-soil->old_wsat[l]);
+    soil->old_totalwater[l]=new_totalwater;
+    soil->old_wsat[l]=soil->wsat[l];
+  }
+  daily_mass2heatflow(soil->enth, waterdiff, soliddiff, th);
+
+  /* apply enthalpy changes due to heatconduction */
+  soil_therm_prop(&th,soil, NULL,NULL ,config->johansen);
   daily_heatcond(soil->enth, NHEATGRIDP,h, temp_bs,th );
+
+
+
+  /*****  Diagnostic Part  ****/
+
+  /* derive the layer temperatures based on the enthalpy vector and thermal properties  */
   derive_T_from_e(soil->temp,soil->enth,th);
+  printf("top temp: %0.8f, top water: %0.2f, soil: %p \n",
+          ENTH2TEMP(soil->enth,th,1), allwater(soil,0)+allice(soil,0), soil );
 } /* of 'soiltemp' */

@@ -13,6 +13,8 @@ For the conductivity it uses the approach described by Johansen (1977)
 
 void soil_therm_prop(Soil_thermal_prop *th, /*< Soil thermal property structure that is set or modified */
                      const Soil *soil,      /*< Soil structure from which water content etc is obtained  */
+                     const Real *waterc_abs,
+                     const Real *porosity_rel,
                      Bool johansen          /*< Shell the johansen method be used for thermal conductivities? */
                      ) 
 {
@@ -21,8 +23,8 @@ void soil_therm_prop(Soil_thermal_prop *th, /*< Soil thermal property structure 
   Real lam_froz, lam_unfroz;         /* frozen and unfrozen conductivities */
   Real latent_heat;                  /* latent heat of fusion depending on water content */
   Real lam_sat_froz, lam_sat_unfroz; /* frozen and unfrozen conductivities for saturated soil */
-  Real watercontent_abs;             /* total absolute water content of soil */
-  Real solidcontent_abs;             /* total absolute solid content of soil */
+  Real waterc_abs_layer;             /* total absolute water content of soil */
+  Real solidc_abs_layer;             /* total absolute solid content of soil */
   Real sat;                          /* saturation of soil */
   Real ke_unfroz, ke_froz;           /* kersten number for unfrozen and frozen soil */
   Real por;                          /* porosity of the soil */
@@ -36,25 +38,33 @@ void soil_therm_prop(Soil_thermal_prop *th, /*< Soil thermal property structure 
     }
 
     /* get absolute water and solid content of soil */
-    watercontent_abs = allwater(soil,layer)+allice(soil,layer);
-    solidcontent_abs = soildepth[layer] - soil->wsats[layer]; 
+    if(waterc_abs == NULL)
+      waterc_abs_layer = allwater(soil,layer)+allice(soil,layer);
+    else 
+      waterc_abs_layer = waterc_abs[layer];
+
+    if(porosity_rel == NULL)
+      solidc_abs_layer = soildepth[layer] - soil->wsats[layer];
+    else 
+      solidc_abs_layer = soildepth[layer] - soildepth[layer]*porosity_rel[layer];    
+     
 
     /* get frozen and unfrozen conductivity with johansens approach */
     por            = soil -> wsat[layer];
     lam_sat_froz   = pow(K_SOLID, (1 - por)) * pow(K_ICE, por); /* geometric mean  */
     lam_sat_unfroz = pow(K_SOLID, (1 - por)) * pow(K_WATER, por);
-    sat        =  watercontent_abs / soil->wsats[layer];
+    sat        =  waterc_abs_layer / soil->wsats[layer];
     ke_unfroz  = (sat < 0.1 ? 0 : log10(sat) + 1); /* fine soil parametrisation of Johansen */
     ke_froz    =  sat;
     lam_froz   = (lam_sat_froz   - soil->k_dry[layer]) * ke_froz   + soil->k_dry[layer]; 
     lam_unfroz = (lam_sat_unfroz - soil->k_dry[layer]) * ke_unfroz + soil->k_dry[layer];
 
     /* get frozen and unfrozen volumetric heat capacity */
-    c_froz   = (c_mineral * solidcontent_abs + c_ice   * watercontent_abs) / soildepth[layer];
-    c_unfroz = (c_mineral * solidcontent_abs + c_water * watercontent_abs) / soildepth[layer];
+    c_froz   = (c_mineral * solidc_abs_layer + c_ice   * waterc_abs_layer) / soildepth[layer];
+    c_unfroz = (c_mineral * solidc_abs_layer + c_water * waterc_abs_layer) / soildepth[layer];
 
     /* get volumetric latent heat   */
-    latent_heat = watercontent_abs / soildepth[layer] * c_water2ice;
+    latent_heat = waterc_abs_layer / soildepth[layer] * c_water2ice;
 
     for (j = 0; j < GPLHEAT; ++j) { /* iterate through gridpoints of the layer */
 

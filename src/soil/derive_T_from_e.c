@@ -8,12 +8,6 @@ Schematically it does this in two steps:
 The second step uses linear interpolation between the temperature at the gridpoints of 1.
 */
 
-/* The macro computes the temperature at a gridpoint (gp) 
-given an enthalpy vector (enth) and a Soil_thermal_prop (th)*/
-#define ENTH2TEMP(e, th, gp)\
- (((e)[(gp)]<0                      ?  (e)[(gp)]                           / (th).c_frozen[(gp)]   : 0) +\
-  ((e)[(gp)]>(th).latent_heat[(gp)] ? ((e)[(gp)] - (th).latent_heat[(gp)]) / (th).c_unfrozen[(gp)] : 0))
-
 #include "lpj.h"
 
 void derive_T_from_e(Real *temp,        /*< temperature vector that is written to N=NSOILLAYER */
