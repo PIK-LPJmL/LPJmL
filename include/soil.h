@@ -281,7 +281,7 @@ extern Real soilwater(const Soil *);
 extern Real soilconduct(const Soil *,int,Bool);
 extern Real soilheatcap(const Soil *,int);
 extern void daily_heatcond(Real *, const int, const Real *, const Real, const Soil_thermal_prop);
-extern void soil_therm_prop(Soil_thermal_prop *, const Soil *, const Real *, const Real * ,Bool);
+extern void soil_therm_prop(Soil_thermal_prop *, const Soil *, const Real *, const Real * , Bool, Bool);
 extern void derive_T_from_e(Real *, const Real *, Soil_thermal_prop);
 extern void daily_mass2heatflow(Real *, Real *, Real *, Soil_thermal_prop);
 extern void freezefrac2soil(Soil *, const Real *);

@@ -11,11 +11,12 @@ For the conductivity it uses the approach described by Johansen (1977)
 
 #include "lpj.h"
 
-void soil_therm_prop(Soil_thermal_prop *th, /*< Soil thermal property structure that is set or modified */
-                     const Soil *soil,      /*< Soil structure from which water content etc is obtained  */
+void soil_therm_prop(Soil_thermal_prop *th,    /*< Soil thermal property structure that is set or modified */
+                     const Soil *soil,         /*< Soil structure from which water content etc is obtained  */
                      const Real *waterc_abs,
                      const Real *porosity_rel,
-                     Bool johansen          /*< Shell the johansen method be used for thermal conductivities? */
+                     Bool johansen,            /*< Flag to activate johansen method */
+                     Bool with_conductivity    /*< Flag to activate conductivity update  */
                      ) 
 {
   int    layer, j;
@@ -48,17 +49,18 @@ void soil_therm_prop(Soil_thermal_prop *th, /*< Soil thermal property structure 
     else 
       solidc_abs_layer = soildepth[layer] - soildepth[layer]*porosity_rel[layer];    
      
-
-    /* get frozen and unfrozen conductivity with johansens approach */
-    por            = soil -> wsat[layer];
-    lam_sat_froz   = pow(K_SOLID, (1 - por)) * pow(K_ICE, por); /* geometric mean  */
-    lam_sat_unfroz = pow(K_SOLID, (1 - por)) * pow(K_WATER, por);
-    sat        =  waterc_abs_layer / soil->wsats[layer];
-    ke_unfroz  = (sat < 0.1 ? 0 : log10(sat) + 1); /* fine soil parametrisation of Johansen */
-    ke_froz    =  sat;
-    lam_froz   = (lam_sat_froz   - soil->k_dry[layer]) * ke_froz   + soil->k_dry[layer]; 
-    lam_unfroz = (lam_sat_unfroz - soil->k_dry[layer]) * ke_unfroz + soil->k_dry[layer];
-
+    if(with_conductivity)
+    {
+      /* get frozen and unfrozen conductivity with johansens approach */
+      por            = soil -> wsat[layer];
+      lam_sat_froz   = pow(K_SOLID, (1 - por)) * pow(K_ICE, por); /* geometric mean  */
+      lam_sat_unfroz = pow(K_SOLID, (1 - por)) * pow(K_WATER, por);
+      sat        =  waterc_abs_layer / soil->wsats[layer];
+      ke_unfroz  = (sat < 0.1 ? 0 : log10(sat) + 1); /* fine soil parametrisation of Johansen */
+      ke_froz    =  sat;
+      lam_froz   = (lam_sat_froz   - soil->k_dry[layer]) * ke_froz   + soil->k_dry[layer]; 
+      lam_unfroz = (lam_sat_unfroz - soil->k_dry[layer]) * ke_unfroz + soil->k_dry[layer];
+    }
     /* get frozen and unfrozen volumetric heat capacity */
     c_froz   = (c_mineral * solidc_abs_layer + c_ice   * waterc_abs_layer) / soildepth[layer];
     c_unfroz = (c_mineral * solidc_abs_layer + c_water * waterc_abs_layer) / soildepth[layer];
@@ -68,11 +70,13 @@ void soil_therm_prop(Soil_thermal_prop *th, /*< Soil thermal property structure 
 
     for (j = 0; j < GPLHEAT; ++j) { /* iterate through gridpoints of the layer */
 
-      /* set properties of j-th layer element */
-      /* maximum element refernced = GPLHEAT*(NSOILLAYER-1)+GPLHEAT-1 = NHEATGRIDP-1 */
-      th->lam_frozen[GPLHEAT * layer + j]   = lam_froz;
-      th->lam_unfrozen[GPLHEAT * layer + j] = lam_unfroz;
-
+      if(with_conductivity)
+      {
+        /* set properties of j-th layer element */
+        /* maximum element refernced = GPLHEAT*(NSOILLAYER-1)+GPLHEAT-1 = NHEATGRIDP-1 */
+        th->lam_frozen[GPLHEAT * layer + j]   = lam_froz;
+        th->lam_unfrozen[GPLHEAT * layer + j] = lam_unfroz;
+      }
       /* set properties of j-th layer gridpoint */
       th->c_frozen [GPLHEAT * layer + j]    = c_froz;
       th->c_unfrozen[GPLHEAT * layer + j]   = c_unfroz;

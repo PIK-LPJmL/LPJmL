@@ -18,8 +18,6 @@ void freezefrac2soil(Soil *soil,
 
   for(layer=0;layer<NSOILLAYER;++layer){
 
-    printf("layer %d \n", layer);
-
     soil->freeze_depth[layer] = freezfrac[layer] * soildepth[layer];
 
     /* get the absolute quantities */
@@ -46,7 +44,6 @@ void freezefrac2soil(Soil *soil,
       soil->ice_depth[layer] = n_wi;
       soil->w[layer] = 0;
       soil->ice_pwp[layer] = 1;
-      printf("completly freeze wp_wi and n_wi\n");
     }
     else
     { /* wp_wi and n_wi will be partly ice */
@@ -57,7 +54,6 @@ void freezefrac2soil(Soil *soil,
       soil->ice_pwp[layer]=frac;
       soil->ice_fw[layer] = 0;
       soil->w_fw[layer]   = f_wi;
-      printf("partly freeze wp_wi and n_wi\n");
     }
 
     /* Only freeze f_wi if still needed */
@@ -66,7 +62,6 @@ void freezefrac2soil(Soil *soil,
       frac = tar_ice/f_wi;
       soil->ice_fw[layer] = frac     * f_wi;
       soil->w_fw[layer]   = (1-frac) * f_wi;
-      printf("also freeze f_wi \n");
     }
 
     /* Check if the target was met */
@@ -76,10 +71,6 @@ void freezefrac2soil(Soil *soil,
       printf("ERROR, Target ice content was not met.\n" );
       exit(1);
     }
-    printf("soildepth: %f, target ice content: %f, actual ice contetn: %f \n",soildepth[layer] ,tar_ice_o, 
-      (soil->ice_fw[layer]+soil->ice_depth[layer]+soil->ice_pwp[layer]*soil->wpwps[layer]));
-    printf("\n");
-    
     /* Check if no water is lost */
     if(fabs(soil->ice_fw[layer]+soil->w_fw[layer]-f_wi)>0.00001 ||
        fabs(soil->w[layer]*soil->whcs[layer]+soil->ice_depth[layer]-n_wi)>0.00001 ){

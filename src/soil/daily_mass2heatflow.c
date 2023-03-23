@@ -30,9 +30,9 @@ void daily_mass2heatflow(Real *enth,             /*< enthalpy vector that is upd
 
             /* water transport */
             /* get volumetric enthalpy of current water at the gridpoint */
-            gp_water_energy=(enth[gp] > th.latent_heat[gp] ? c_water*T + c_water2ice :0)+
-                            (enth[gp] < 0                  ? c_ice*T                 :0)+
-                            (enth[gp] <=th.latent_heat[gp] && enth[gp] >=0 ? 
+            gp_water_energy=(enth[gp] >= th.latent_heat[gp] ? c_water*T + c_water2ice :0)+
+                            (enth[gp] <= 0                  ? c_ice*T                 :0)+
+                            (enth[gp] <th.latent_heat[gp] && enth[gp] >0 ? 
                                 enth[gp]/th.latent_heat[gp] * c_water2ice : 0);
             /* add the energy from the inflowing water assuming is has the 
                the same volumetric enthalpy as the water already there  */

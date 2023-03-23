@@ -32,7 +32,7 @@ OBJS    = initsoil.$O waterbalance.$O equilsoil.$O littersom.$O\
           getwr.$O updatelitterproperties.$O pedotransfer.$O tillage.$O\
           soilpar_output.$O getsoilmap.$O defaultsoilmap.$O cmpsoilmap.$O\
           soil_therm_prop.$O daily_heatcond.$O derive_T_from_e.$O\
-          daily_mass2heatflow.$O\ freezefrac2soil.$O\ enth2freezefrac.$O
+          daily_mass2heatflow.$O freezefrac2soil.$O enth2freezefrac.$O
 
 INC     = ../../include
 LIBDIR  = ../../lib

@@ -11,7 +11,6 @@
 /** Contact: https://github.com/PIK-LPJmL/LPJmL                                    \n**/
 /**                                                                                \n**/
 /**************************************************************************************/
-
 #include "lpj.h"
 
 /*#define USE_LINEAR_CONTACT_T  */ /*linear interpolation between temperatures seems to give a reasonable approximation of contact temperatures between layers*/
@@ -34,7 +33,6 @@ Real soiltemp_lag(const Soil *soil,      /**< Soil data */
 } /* of 'soiltemp_lag' */
 
 
-
 void soiltemp(Soil *soil,          /**< pointer to soil data */
               Real temp_bs,        /**< temperature below snow (deg C) */
               const Config *config /**< LPJmL configuration */
@@ -46,18 +44,17 @@ void soiltemp(Soil *soil,          /**< pointer to soil data */
   Real new_totalwater;
   Real h[NHEATGRIDP];
   Real freezefrac[NSOILLAYER];
+  Real upDiBound;
   int l,j;
-
+  
   /*****  Prognostic Part  ****/
-
   /* set up the refined heatgrid */
   for(l=0;l<NSOILLAYER;++l)
      for(j=0;j<GPLHEAT;++j)
        h[l*GPLHEAT+j]=soildepth[l]/GPLHEAT/1000;
 
-
-  /* apply enthalpy changes coming from water flow and porosity changed */
-  soil_therm_prop(&th,soil, soil->old_totalwater, soil->old_wsat, config->johansen);
+  /* apply enthalpy changes coming from water flow and porosity changes */
+  soil_therm_prop(&th,soil, soil->old_totalwater, soil->old_wsat, config->johansen, FALSE);
   /* track the changes made to the watercontent and to porosity by other LPJmL methods */
   for(l=0;l<NSOILLAYER;++l) 
   {
@@ -71,18 +68,16 @@ void soiltemp(Soil *soil,          /**< pointer to soil data */
   daily_mass2heatflow(soil->enth, waterdiff, soliddiff, th);
 
   /* apply enthalpy changes due to heatconduction */
-  soil_therm_prop(&th,soil, NULL,NULL ,config->johansen);
-  daily_heatcond(soil->enth, NHEATGRIDP,h, temp_bs,th );
-
-
+  soil_therm_prop(&th,soil, NULL,NULL ,config->johansen,TRUE);
+  soil->litter.agtop_temp=(temp_bs+ENTH2TEMP(soil->enth,th,0))/2;
+  upDiBound=temp_bs*(1-soil->litter.agtop_cover)+soil->litter.agtop_temp*soil->litter.agtop_cover;
+  daily_heatcond(soil->enth, NHEATGRIDP,h, upDiBound,th );
 
   /*****  Diagnostic Part  ****/
-
   /* derive the layer temperatures based on the enthalpy vector and thermal properties  */
   derive_T_from_e(soil->temp,soil->enth,th);
   enth2freezefrac(freezefrac, soil->enth, th);
   freezefrac2soil(soil,freezefrac);
-  printf("top temp: %0.8f, top water: %0.2f, soil: %p \n",
-          ENTH2TEMP(soil->enth,th,1), allwater(soil,0)+allice(soil,0), soil );
+
   
 } /* of 'soiltemp' */
