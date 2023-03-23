@@ -81,6 +81,7 @@
 "grassland_fixed_pft" : false,
 "wateruse" : "no",
 "grass_harvest_options" : false,
+"prescribe_lsuha" : false,
 "intercrop" : true,                   /* intercrops on setaside */
 "landuse_year_const" : 2000, /* set landuse year for CONST_LANDUSE case */
 "residues_fire" : false,              /* fire in residuals */

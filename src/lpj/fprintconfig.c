@@ -136,6 +136,8 @@ static size_t isnetcdfinput(const Config *config)
       width=max(width, strlen(config->residue_data_filename.var));
     if(config->tillage_type==READ_TILLAGE && config->with_tillage_filename.fmt==CDF)
       width=max(width, strlen(config->with_tillage_filename.var));
+    if(config->prescribe_lsuha && config->lsuha_filename.fmt==CDF)
+      width=max(width,strlen(config->lsuha_filename.var));
   }
   if(config->reservoir)
   {
@@ -453,6 +455,8 @@ void fprintconfig(FILE *file,          /**< File pointer to text output file */
     len=printsim(file,len,&count,"grassland fixed PFT");
   if(config->grassharvest_filename.name!=NULL)
     len=printsim(file,len,&count,"grassland harvest options");
+  if(config->prescribe_lsuha)
+    len=printsim(file,len,&count,"prescribed livestock density");
   if(config->firewood)
     len=printsim(file,len,&count,"wood fires");
   if(config->reservoir)
@@ -582,6 +586,8 @@ void fprintconfig(FILE *file,          /**< File pointer to text output file */
       printinputfile(file,"residue",&config->residue_data_filename,width,config);
     if(config->tillage_type==READ_TILLAGE)
       printinputfile(file,"tillage",&config->with_tillage_filename,width,config);
+    if(config->prescribe_lsuha)
+      printinputfile(file,"livestock",&config->lsuha_filename,width,config);
   }
   if(config->reservoir)
   {
