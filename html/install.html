@@ -2,19 +2,19 @@
 <HEAD>
 <LINK REL="stylesheet" HREF="style.css" TYPE="text/css">
 <TITLE>
-Installing and running LPJmL C Version 5.3.001
+Installing and running LPJmL C Version 5.5.001
 </TITLE>
 </HEAD>
 <BODY>
-<H1>Installing and running  LPJmL C Version 5.3.001</H1>
+<H1>Installing and running  LPJmL C Version 5.5.001</H1>
 
 <H2>Installation for Unix-like systems</h2>
 
-This text describes how to install and run  LPJmL on your system. 
-The code has been tested for AIX, Linux, Mac OS X, and Windows 
-with cygwin and Microsoft C compiler (sequential version without MPI). 
+This text describes how to install and run  LPJmL on your system.
+The code has been tested for AIX, Linux, Mac OS X, and Windows
+with cygwin and Microsoft C compiler (sequential version without MPI).
 Cygwin is a Linux-like environment for Windows (<A HREF="http://www.cygwin.com">http://www.cygwin.com</A>)
-On Mac OS the xcode suite must be installed in order to have the gcc 
+On Mac OS the xcode suite must be installed in order to have the gcc
 compiler.</p>
 
 create lpj directory:</p>
@@ -29,7 +29,7 @@ cd lpjml
 
 untar source files</p>
 <pre class="example">
-gzip -cd lpjml-5.3.001.tar.gz|tar -xf -
+gzip -cd lpjml-5.5.001.tar.gz|tar -xf -
 </pre>
 
 Directory tree after extracting the tar files:</p>
@@ -64,7 +64,7 @@ Directory tree after extracting the tar files:</p>
    |
    +--pnet      : source for library for distributed networks
    |
-   +--climate   : climate code 
+   +--climate   : climate code
    |
    +--lpj       : lpj functions
    |
@@ -83,6 +83,8 @@ Directory tree after extracting the tar files:</p>
    +--reservoir : reservoir code
    |
    +--socket    : socket communication library
+   |
+   +--coupler   : coupler code
    |
    +--image     : Coupler to IMAGE model
    |
@@ -116,7 +118,7 @@ Then LPJmL can be configured via
 
 <pre class="example">
 % ./configure.sh
-Configuring LPJmL 5.3.001...
+Configuring LPJmL 5.5.001...
 Operating system is Linux
 Intel MPI found
 Create executables with make all
@@ -128,7 +130,7 @@ The configure script creates scripts <tt>lpj_paths.sh</tt>/<tt>lpj_paths.csh</tt
 </pre>
 from the LPJmL root directory. It is recommended to put this statement into your <tt>~./.profile</tt>.
 If configure script exits with message "Unsupported operating system",
-<tt>Makefile.$osname</tt> is created from <tt>Makefile.gcc</tt> and probably has to be 
+<tt>Makefile.$osname</tt> is created from <tt>Makefile.gcc</tt> and probably has to be
 modified for your operating system/compiler.
 If the configure script finds a MPI environment a parallel version of <tt>lpjml</tt> is built. This is done by checking for <tt>mpicc</tt>/<tt>mpiicc</tt> in the search path for commands.
 The configure script creates a copy of the following OS-specific makefiles from
@@ -351,7 +353,7 @@ floating point exceptions are enabled for debugging purposes
 
 Create executables:</p>
 <pre class="example">
-make    
+make
 </pre>
 
 One executable in directory <tt>bin</tt> is created:</p>
@@ -533,7 +535,7 @@ Concatenates restart files from distributed LPJmL simulations.
 </A>
 </td>
 <td>
-Checks syntax of LPJmL configuration files 
+Checks syntax of LPJmL configuration files
 <br></td>
 </tr>
 <tr>
@@ -573,7 +575,7 @@ Dynamic global vegetation model with managed landuse and river routing
 </A>
 </td>
 <td>
-Print contents of restart file of LPJmL model runs 
+Print contents of restart file of LPJmL model runs
 <br></td>
 </tr>
 <tr>
@@ -603,7 +605,7 @@ Convert management  *.par files to JSON file
 </A>
 </td>
 <td>
-Print contents of clm files for LPJmL                   
+Print contents of clm files for LPJmL
 <br></td>
 </tr>
 <tr>
@@ -613,7 +615,7 @@ Print contents of clm files for LPJmL
 </A>
 </td>
 <td>
-Print header of clm files for LPJmL                   
+Print header of clm files for LPJmL
 <br></td>
 </tr>
 <tr>
@@ -629,7 +631,7 @@ Convert CRU ASCII files to clm data files for LPJmL
 <tr>
 <td>
 <A HREF="txt2grid.html">
-<tt>txt2grid</tt> 
+<tt>txt2grid</tt>
 </A>
 </td>
 <td>
@@ -649,7 +651,7 @@ Concatenates output files from distributed LPJmL simulations
 </table>
 An installation directory can be defined during configuration:
 <pre class="example">
-./configure.sh -prefix /data/biosx/lpjml-5.1.001
+./configure.sh -prefix /data/biosx/lpjml-5.5.001
 </pre>
 Then the binaries can be copied in the installation directory by invoking</p>
 <pre class="example">
@@ -664,7 +666,7 @@ Create output and restart directory:</p>
 make test
 </pre>
 
-On the compute cluster at PIK it is better to create symbolic links of the 
+On the compute cluster at PIK it is better to create symbolic links of the
 input, output, and restart directory to the parallel GPFS filesystem <tt>/scratch</tt>.
 This improves performance in particular for the parallel code. </p>
 <pre class="example">
@@ -692,7 +694,7 @@ yields list of man pages related to LPJmL.</p>
 Sequential version can be started by invoking:</p>
 
 <pre class="example">
-./bin/lpjml 
+./bin/lpjml
 </pre>
 By default the configuration file <tt>lpjml.js</tt> is read. The contents of this file can be viewed <A HREF="lpjml_example.html">here</A>.
 If you run <tt>lpjml</tt> outside the root directory of LPJmL, the following environment
@@ -722,9 +724,9 @@ defines preprocessor command for LPJmL configuration  file, default
 is <tt>cpp -P</tt>
 </td></tr>
 <tr><td>
-LPJROOT        
+LPJROOT
 </td><td>
-defines the root directory for LPJmL. This directory is added to the 
+defines the root directory for LPJmL. This directory is added to the
  include directories of the preprocessor. Is usually set by <tt>lpj_paths.sh</tt>.
 </td></tr>
 <tr><td>
@@ -733,24 +735,24 @@ LPJIMAGE
 sets host where IMAGE model is running
 </td></tr>
 <tr><td>
-LPJWAITIMAGE
+LPJCOUPLEDHOST
 </td><td>
-sets time to wait for connection to  IMAGE model
+sets host where the coupled model is running
 </td></tr>
 <tr><td>
-LPJINPATH   
+LPJINPATH
 </td><td>
 Path append to the input filenames. Only done for filenames
  without absolute path.
 </td></tr>
 <tr><td>
-LPJRESTARTPATH 
+LPJRESTARTPATH
 </td><td>
 Path append to the restart filenames. Only done for filenames
  without absolute path.
 </td></tr>
 <tr><td>
-LPJOPTIONS  
+LPJOPTIONS
 </td><td>
 preprocessor runtime options for LPJmL
 </td></tr>
@@ -780,12 +782,12 @@ The following runtime options are defined for <tt>lpjml</tt>: </p>
 Adds include path for LPJmL configuration file
 </td></tr>
 <tr><td>
--Dmacro[=value]   
+-Dmacro[=value]
 </td><td>
 Defines macro
 </td></tr>
 <tr><td>
--h          
+-h
 </td><td>
 print usage of lpjml
 </td></tr>
@@ -795,7 +797,7 @@ print usage of lpjml
 print license
 </td></tr>
 <tr><td>
--v         
+-v
 </td><td>
 print compiler used and LPJmL flags set
 </td></tr>
@@ -808,9 +810,9 @@ print LPJmL parameter for soils and PFTs
 -pp cmd
 </td><td>
 set preprocessor program to cmd. Default is cpp -P.
-</td></tr> 
+</td></tr>
 <tr><td>
--fpe     
+-fpe
 </td><td>
 enable floating point exceptions
 </td></tr>
@@ -820,29 +822,29 @@ enable floating point exceptions
 set host where IMAGE model is running. Default is 'localhost'. Option is only available for the IMAGE version.
 </td></tr>
 <tr><td>
--wait time
+-copan host[:port]
 </td><td>
-set time to wait for connection to IMAGE model measured in sec. Default is 10 sec.
+set host and port where coupled model is running. Default is 'localhost'.
 </td></tr>
 <tr><td>
--output method 
+-output method
 </td><td>
-Method for generating output files. Valid values for 
-    are write, mpi2, gather, and socket. Methods mpi2 and gather are only available for the
+Method for generating output files. Valid values for
+    are write, mpi2 and gather. Methods mpi2 and gather are only available for the
     MPI version
 </td></tr>
 <tr><td>
--inpath dir  
+-inpath dir
 </td><td>
 input directory path
 </td></tr>
 <tr><td>
--outpath dir  
+-outpath dir
 </td><td>
 output directory path
 </td></tr>
 <tr><td>
--restartpath dir 
+-restartpath dir
 </td><td>
 restart directory path
 </td></tr>
@@ -860,13 +862,13 @@ Depending on your MPI version installed the program can be started interactively
 <pre class="example">
 % mpirun -np 256 $LPJROOT/bin/lpjml
 ******************************************************************************
-****         _     ____     _           _       ____        _____         ****
-****        | |   |  _ \   | |_ __ ___ | |     | ___|      |___ /         ****
-****        | |   | |_) |  | | '_ ` _ \| |     |___ \        |_ \         ****
+****         _     ____     _           _       ____        ____          ****
+****        | |   |  _ \   | |_ __ ___ | |     | ___|      | ___|         ****
+****        | |   | |_) |  | | '_ ` _ \| |     |___ \      |___ \         ****
 ****        | |___|  __/ |_| | | | | | | |___   ___) |  _   ___) |        ****
 ****        |_____|_|   \___/|_| |_| |_|_____| |____/  (_) |____/         ****
 ****                                                                      ****
-****                lpjml C Version 5.2.002 (Jan 25 2021)                 ****
+****                lpjml C Version 5.5.001 (Mar 17 2023)                 ****
 ****    Dynamic global vegetation model with natural and managed land     ****
 ****                          Compiled for Linux                          ****
 ****       (C) Potsdam Institute for Climate Impact Research (PIK),       ****
@@ -879,7 +881,7 @@ Depending on your MPI version installed the program can be started interactively
 ****                                                                      ****
 ******************************************************************************
 
-Running for user bloh on cs-e14c02b03 at Mon Jun 17 13:30:15 2019
+Running for user user on cs-e14c02b03 at Mon Jun 17 13:30:15 2019
 Reading configuration from 'lpjml.js'.
 ==============================================================================
 Simulation "LPJmL Run" running on 256 tasks
@@ -1008,7 +1010,7 @@ Simulation begins...
        --------------------------------------- ---------------------------------------------
 Spinup NEP     estab   fire    harvest total   transp     evap    interc  wd      discharge
 ------ ------- ------- ------- ------- ------- ---------- ------- ------- ------- ----------
-  1511   2.088   0.004   3.620   0.000  -1.528    47957.3  9976.7  6895.2     0.0    51348.1
+  1511   2.088   0.005   3.620   0.000  -1.528    47957.3  9976.7  6895.2     0.0    51348.1
   1512  -1.062   0.036   3.629   0.095  -4.750    45776.6 11529.4  6555.8    20.8    50481.0
   1513   2.715   0.035   3.613   0.458  -1.321    47354.0 11195.4  6634.2    22.1    50551.0
   1514   4.357   0.035   3.229   0.739   0.423    48562.6 10554.8  6682.2    23.1    50039.0
@@ -1054,7 +1056,7 @@ External
 <td align="right">
 3
 </td><td>
-Error initializing grid    
+Error initializing grid
 </td><td>
 External
 </td></tr>
@@ -1062,7 +1064,7 @@ External
 <td align="right">
 4
 </td><td>
-Invalid carbon balance   
+Invalid carbon balance
 </td><td>
 Internal
 </td></tr>
@@ -1070,7 +1072,7 @@ Internal
 <td align="right">
 5
 </td><td>
-Invalid water balance    
+Invalid water balance
 </td><td>
 Internal
 </td></tr>
@@ -1078,7 +1080,7 @@ Internal
 <td align="right">
 6
 </td><td>
-Negative discharge    
+Negative discharge
 </td><td>
 Internal
 </td></tr>
@@ -1086,7 +1088,7 @@ Internal
 <td align="right">
 7
 </td><td>
-Negative fire probability 
+Negative fire probability
 </td><td>
 Internal
 </td></tr>
@@ -1094,7 +1096,7 @@ Internal
 <td align="right">
 8
 </td><td>
-Negative soil moisture   
+Negative soil moisture
 </td><td>
 Internal
 </td></tr>
@@ -1102,7 +1104,7 @@ Internal
 <td align="right">
 9
 </td><td>
-Error allocating memory 
+Error allocating memory
 </td><td>
 External
 </td></tr>
@@ -1118,7 +1120,7 @@ Internal
 <td align="right">
 11
 </td><td>
-Stand fraction sum error  
+Stand fraction sum error
 </td><td>
 Internal
 </td></tr>
@@ -1149,7 +1151,7 @@ External
 <td align="right">
 16
 </td><td>
-Crop fraction >1     
+Crop fraction >1
 </td><td>
 Internal
 </td></tr>
@@ -1173,7 +1175,7 @@ Internal
 <td align="right">
 19
 </td><td>
-Floating point error 
+Floating point error
 </td><td>
 Internal
 </td></tr>
@@ -1198,7 +1200,7 @@ Internal
 </td><td>
 Output channel is broken in socket connection
 </td><td>
-External 
+External
 </td></tr>
 <tr>
 <td align="right">
@@ -1238,7 +1240,7 @@ Internal
 </td><td>
 Outflow reservoir error
 </td><td>
-       Internal
+Internal
 </td></tr>
 <tr>
 <td align="right">
@@ -1246,7 +1248,7 @@ Outflow reservoir error
 </td><td>
 Permafrost error
 </td><td>
-	      Internal
+Internal
 </td></tr>
 <tr>
 <td align="right">
@@ -1254,7 +1256,7 @@ Permafrost error
 </td><td>
 Global waterbalance error
 </td><td>
-     Internal
+Internal
 </td></tr>
 <tr>
 <td align="right">
@@ -1262,7 +1264,7 @@ Global waterbalance error
 </td><td>
 Cannot store climate data
 </td><td>
-     External
+External
 </td></tr>
 <tr>
 <td align="right">
@@ -1270,13 +1272,13 @@ Cannot store climate data
 </td><td>
 NO FMS coupler
 </td><td>
-		External
+External
 </td></tr>
 <tr>
 <td align="right">
 33
 </td><td>
-Cannot initialize soil temperature  
+Cannot initialize soil temperature
 </td><td>
 External
 </td></tr>
@@ -1284,7 +1286,7 @@ External
 <td align="right">
 34
 </td><td>
-Invalid radiation model  
+Invalid radiation model
 </td><td>
 Internal
 </td></tr>
@@ -1292,7 +1294,7 @@ Internal
 <td align="right">
 35
 </td><td>
-Negative soil NO3  
+Negative soil NO3
 </td><td>
 Internal
 </td></tr>
@@ -1300,7 +1302,7 @@ Internal
 <td align="right">
 36
 </td><td>
-Negative soil NH4 
+Negative soil NH4
 </td><td>
 Internal
 </td></tr>
@@ -1352,15 +1354,23 @@ Cannot read external flow
 </td><td>
 External
 </td></tr>
+<tr>
+<td align="right">
+43
+</td><td>
+Opening connection to coupled model failed
+</td><td>
+External
+</td></tr>
 </table>
 
-External errors are caused by invalid or missing input files while internal 
+External errors are caused by invalid or missing input files while internal
 errors are caused by problems inside the LPJmL code. The latter will cause a core
 dump and have to be fixed by program changes. Some errors will only be generated
 if -DSAFE is set in the compile options of <tt>Makefile.inc</tt>. The options set at compile time can be obtained by invoking
 <pre class="example">
 % lpjml -v
-lpjml C Version 5.1.001 (Nov  7 2018)
+lpjml C Version 5.5.001 (Mar  2 2023)
 Operating system: Linux, little endian
 Compiler:         Intel C version 15.00, 64 bit
 Compile flags:    "-DUSE_RAND48 -DUSE_MPI -DSAFE -DWITH_FPE -DSTORECLIMATE -DUSE_NETCDF -DUSE_UDUNITS -DUSE_JSON "

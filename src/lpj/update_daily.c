@@ -247,6 +247,11 @@ void update_daily(Cell *cell,            /**< cell pointer           */
       getoutput(&cell->output,RH_AGR,config)+=hetres.carbon*stand->frac/agrfrac;
       getoutput(&cell->output,N2O_NIT_AGR,config)+=hetres.nitrogen*stand->frac;
     }
+    if(stand->type->landusetype==GRASSLAND)
+    {
+      getoutput(&cell->output,N2O_NIT_MGRASS,config)+=hetres.nitrogen*stand->frac;
+      getoutput(&cell->output,RH_MGRASS,config)+=hetres.carbon*stand->frac;
+    }
     getoutput(&cell->output,N2O_NIT,config)+=hetres.nitrogen*stand->frac;
     cell->output.dcflux+=hetres.carbon*stand->frac;
 #if defined IMAGE && defined COUPLED
@@ -359,6 +364,9 @@ void update_daily(Cell *cell,            /**< cell pointer           */
       getoutput(&cell->output,N_VOLATILIZATION,config)+=nh3*stand->frac;
       if (isagriculture(stand->type->landusetype))
         getoutput(&cell->output,NH3_AGR,config)+=nh3*stand->frac;
+      if(stand->type->landusetype==GRASSLAND)
+        getoutput(&cell->output,NH3_MGRASS,config)+=nh3*stand->frac;
+
       cell->balance.n_outflux+=nh3*stand->frac;
     }
 

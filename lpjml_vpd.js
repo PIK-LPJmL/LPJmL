@@ -32,6 +32,7 @@
 
   "sim_name" : "LPJmL run with SPITFIRE and VPD fire danger index", /* Simulation description */
   "sim_id"   : "lpjml",     /* LPJML Simulation type with managed land use */
+  "coupled_model" : null,   /* no model coupling */
   "version"  : "5.3",       /* LPJmL version expected */
   "random_prec" : false,    /* Random weather generator for precipitation enabled */
   "random_seed" : 2,        /* seed for random number generator */
@@ -87,8 +88,9 @@
   "grassonly" : false,
   "grassland_fixed_pft" : false,
   "grass_harvest_options" : false,
+  "prescribe_lsuha" : false,
   "others_to_crop" : false,
-  "grazing" : "default",                  /* default grazing type, other options : "default", "mowing", "ext", "int", "none" */
+  "grazing" : "default",                  /* default grazing type, other options : "default", "mowing", "ext", "int", "livestock", "none" */
   "istimber" : true,
   "crop_phu_option" : "new",
   "cropsheatfrost" : false,

@@ -31,13 +31,15 @@ HDRS    = $(INC)/buffer.h $(INC)/cell.h $(INC)/climate.h $(INC)/conf.h\
           $(INC)/natural.h $(INC)/grassland.h $(INC)/agriculture.h\
           $(INC)/reservoir.h $(INC)/spitfire.h $(INC)/biomass_tree.h\
           $(INC)/biomass_grass.h $(INC)/cdf.h $(INC)/outfile.h $(INC)/cpl.h\
-          $(INC)/agriculture_tree.h $(INC)/agriculture_grass.h
+          $(INC)/agriculture_tree.h $(INC)/agriculture_grass.h $(INC)/coupler.h\
+          $(INC)/couplerpar.h
 
 DATA    = par/*.js
 
 JSON	= lpjml.js input_crumonthly.js param.js lpj.js input_GSWP3-ERA5.js\
           lpjml_netcdf.js input_netcdf.js lpjml_fms.js input_fms.js\
-          lpjml_vpd.js input_GLDAS.js param_vpd.js param_non.js lpjml_non.js
+          lpjml_vpd.js input_GLDAS.js param_vpd.js param_non.js lpjml_non.js\
+          input_coupler.js
 
 SCRIPTS	= configure.bat configure.sh\
           bin/output_bsq bin/lpjsubmit_aix bin/lpjsubmit_intel\
@@ -91,7 +93,7 @@ clean:
 	(cd src  && $(MAKE) clean)
 
 tar: 
-	tar -cf lpjml-5.3.001.tar $(FILES) src/Makefile src/*.c\
+	tar -cf lpjml-5.5.001.tar $(FILES) src/Makefile src/*.c\
 	    src/climate/Makefile src/climate/*.c\
             man/man1/*.1 man/man3/*.3 man/man5/*.5 man/whatis\
             man/man1/Makefile man/man3/Makefile man/man5/Makefile man/Makefile\
@@ -105,11 +107,11 @@ tar:
             src/image/Makefile src/image/*.c src/reservoir/*.c\
             src/pnet/Makefile REFERENCES COPYRIGHT src/utils/*.c src/utils/Makefile\
             src/spitfire/Makefile src/spitfire/*.c src/netcdf/Makefile src/netcdf/*.c\
-            src/cpl/Makefile src/cpl/*.c
-	    gzip -f lpjml-5.3.001.tar
+            src/cpl/Makefile src/cpl/*.c src/coupler/Makefile src/coupler/*.c
+	    gzip -f lpjml-5.5.001.tar
 
 zipfile: 
-	zip -l lpjml-5.3.001.zip $(FILES) src/Makefile src/*.c\
+	zip -l lpjml-5.5.001.zip $(FILES) src/Makefile src/*.c\
 	    src/climate/Makefile src/climate/*.c config/* man/* man/man1/*.1\
             man/man3/*.3 man/man5/*.5\
 	    src/crop/*.c src/crop/Makefile src/grass/*.c src/grass/Makefile\
@@ -122,4 +124,4 @@ zipfile:
             src/image/*.c src/image/Makefile src/reservoir/*.c\
             src/pnet/Makefile REFERENCES COPYRIGHT src/utils/*.c src/utils/Makefile\
             src/spitfire/Makefile src/spitfire/*.c src/netcdf/Makefile src/netcdf/*.c\
-            src/cpl/Makefile src/cpl/*.c
+            src/cpl/Makefile src/cpl/*.c src/coupler/Makefile src/coupler/*.c

@@ -29,6 +29,7 @@ void freeconfig(Config *config /**< LPJmL configuration */
                )
 {
   int i;
+  free(config->coupled_model);
   free(config->compress_cmd);
   free(config->compress_suffix);
   if(config->soil_filename.fmt!=CDF)
@@ -142,6 +143,8 @@ void freeconfig(Config *config /**< LPJmL configuration */
     }
     if(config->sdate_option==PRESCRIBED_SDATE)
       freefilename(&config->sdate_filename);
+    if(config->prescribe_lsuha)
+      freefilename(&config->lsuha_filename);
   }
   if(config->with_nitrogen)
   {
