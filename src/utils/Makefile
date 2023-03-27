@@ -26,7 +26,8 @@ OBJS    = cru2clm.$O cvrtsoil.$O grid2clm.$O cfts26_lu2clm.$O drainage.$O\
           joingrid.$O clm2cdf.$O cdf2clm.$O bin2cdf.$O adddrain.$O\
           getcellindex.$O copyheader.$O addheader.$O mathclm.$O cutclm.$O\
           cvrtclm.$O manage2js.$O getheadersize.$O regridirrig.$O mergeclm.$O\
-          printglobal.$O binsum.$O arr2clm.$O regriddrain.$O coupler_demo.$O
+          printglobal.$O binsum.$O arr2clm.$O regriddrain.$O coupler_demo.$O\
+          statclm.$O
 
 SRC    =  cru2clm.c cvrtsoil.c grid2clm.c cfts26_lu2clm.c drainage.c\
           river_sections_input_grid.c river_sections_input_soil.c\
@@ -40,7 +41,7 @@ SRC    =  cru2clm.c cvrtsoil.c grid2clm.c cfts26_lu2clm.c drainage.c\
           cdf2clm.c bin2cdf.c adddrain.c txt2grid.c getcellindex.c\
           copyheader.c addheader.c mathclm.c cutclm.c cdf2bin.c cvrtclm.c\
           manage2js.c getheadersize.c regridirrig.c mergeclm.c printglobal.c\
-          arr2clm.c regriddrain.c coupler_demo.c
+          arr2clm.c regriddrain.c coupler_demo.c cmpbin.$O statclm.$O
 
 INC     = ../../include
 
@@ -87,7 +88,7 @@ all: $(BIN)/cru2clm$E $(BIN)/grid2clm$E $(BIN)/cfts26_lu2clm$E\
      $(BIN)/mathclm$E $(BIN)/cutclm$E $(BIN)/cvrtclm$E $(BIN)/manage2js$E\
      $(BIN)/headersize$E $(BIN)/regridirrig$E $(BIN)/mergeclm$E\
      $(BIN)/country2cdf$E $(BIN)/printglobal$E $(BIN)/binsum$E $(BIN)/arr2clm$E\
-     $(BIN)/regriddrain$E $(BIN)/coupler_demo$E
+     $(BIN)/regriddrain$E $(BIN)/coupler_demo$E $(BIN)/cmpbin$E $(BIN)/statclm$E
 
 clean:
 	$(RM) $(RMFLAGS) $(OBJS)
@@ -103,7 +104,7 @@ clean:
             cdf2clm$E bin2cdf$E adddrain$E txt2grid$E getcellindex$E\
             copyheader$E addheader$E mathclm$E cutclm$E cdf2bin$E cvrtclm$E\
             manage2js$E headersize$E regridirrig$E mergeclm$E country2cdf$E\
-            printglobal$E binsum$E regriddrain$E coupler_demo$E)
+            printglobal$E binsum$E regriddrain$E coupler_demo$E cmpbin$E statclm$E)
 
 $(OBJS): $(HDRS)
 
@@ -154,6 +155,12 @@ $(BIN)/cdf2coord$E: cdf2coord.$O $(LPJLIBS)
 
 $(BIN)/binsum$E: binsum.$O $(LPJLIBS)
 	$(LINK) $(LNOPTS)$(BIN)/binsum$E binsum.$O $(LPJLIBS) $(LIBS)
+
+$(BIN)/statclm$E: statclm.$O $(LPJLIBS)
+	$(LINK) $(LNOPTS)$(BIN)/statclm$E statclm.$O $(LPJLIBS) $(LIBS)
+
+$(BIN)/cmpbin$E: cmpbin.$O $(LPJLIBS)
+	$(LINK) $(LNOPTS)$(BIN)/cmpbin$E cmpbin.$O $(LPJLIBS) $(LIBS)
 
 $(BIN)/joingrid$E: joingrid.$O $(LIBDIR)/libtools.$A
 	$(LINK) $(LNOPTS)$(BIN)/joingrid$E joingrid.$O $(LIBDIR)/libtools.$A $(LIBS)
