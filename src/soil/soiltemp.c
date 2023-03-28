@@ -39,12 +39,10 @@ void soiltemp(Soil *soil,          /**< pointer to soil data */
              )
 {
 
-  Soil_thermal_prop th;
-  Real waterdiff[NSOILLAYER];
-  Real soliddiff[NSOILLAYER];
-  Real h[NHEATGRIDP];
-  Real freezefrac[NSOILLAYER];
-  Real upDiBound;
+  Soil_thermal_prop th;                                /* thermal properties of soil */
+  Real waterdiff[NSOILLAYER], soliddiff[NSOILLAYER];   /* change in water and solid contents, since last call */
+  Real h[NHEATGRIDP], upDiBound;                       /* gridpoimt distances, upper dirichlet boundary condition */
+  Real freezefrac[NSOILLAYER];                         /* fraction of each layer that is frozen */
   int l,j;
   
   /*****  Prognostic Part  ****/
@@ -54,7 +52,7 @@ void soiltemp(Soil *soil,          /**< pointer to soil data */
        h[l*GPLHEAT+j]=soildepth[l]/GPLHEAT/1000;
 
   /* apply enthalpy changes coming from water flow and porosity changes */
-  for(l=0;l<NSOILLAYER;++l)   /* track changes of other methods */
+  for(l=0;l<NSOILLAYER;++l)   /* track water flow and porosity changes of other methods */
   {
     waterdiff[l] = (allwater(soil,l)+allice(soil,l) - soil->old_totalwater[l]) / soildepth[l];
     soliddiff[l] = -(soil->wsat[l] - soil->old_wsat[l]);
@@ -66,13 +64,13 @@ void soiltemp(Soil *soil,          /**< pointer to soil data */
 
   /* apply enthalpy changes due to heatconduction */
   soil->litter.agtop_temp = (temp_bs + ENTH2TEMP(soil->enth,th,0)) / 2;
-  upDiBound = temp_bs                 * (1 - soil->litter.agtop_cover)+
-              soil->litter.agtop_temp * soil->litter.agtop_cover;
+  upDiBound               =  temp_bs                 * (1 - soil->litter.agtop_cover) +
+                             soil->litter.agtop_temp * soil->litter.agtop_cover; 
   soil_therm_prop(&th,soil, NULL,NULL ,config->johansen,TRUE);
   daily_heatcond(soil->enth, NHEATGRIDP,h, upDiBound,th );
 
   /*****  Diagnostic Part  ****/
-  enth2layertemp(soil->temp,soil->enth,th);    /* get temperture layer averages */
+  enth2layertemp(soil->temp,soil->enth,th);    /* get layer temperture averages */
   enth2freezefrac(freezefrac, soil->enth, th); /* get frozen fraction of each layer */
   freezefrac2soil(soil,freezefrac);            /* apply frozen fraction to soil variables */
 
