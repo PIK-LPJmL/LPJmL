@@ -68,7 +68,7 @@ Real ma_biological_n_fixation(Pft *pft,             /**< PFT */
   if(bnf > n_deficit)
     bnf = n_deficit;
   npp_requ = pft->par->bnf_cost*bnf;
-  max_cost = pft->npp_bnf*pft->par->maxbnfcost*(iscrop(pft) ? 1-((Pftcrop *)pft->data)->fphu : 1);
+  max_cost = pft->npp_bnf*pft->par->maxbnfcost;
   if(npp_requ > max_cost)
   {
     npp_requ = max_cost;

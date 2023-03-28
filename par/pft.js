@@ -2137,7 +2137,7 @@
     "temp_bnf_opt" : {"low" : 16, "high" : 25},  /* Ma et al., 2022 faba bean*/
     "swc_bnf" : {"low" : SWC_BNF_LOW, "high" : SWC_BNF_HIGH},  /* Ma et al., 2022 faba bean*/
     "phi_bnf" : [PHI_BNF_1, PHI_BNF_2],  /* Ma et al., 2022 faba bean*/
-    "nfixpot" : 0.05,  /* Yu and Zhuang 2020 grassland*/
+    "nfixpot" : 0.5,  /* Yu and Zhuang 2020 grassland*/
     "maxbnfcost" : MAXBNFCOST,
     "bnf_cost" : BNF_COST 
   },
@@ -2592,7 +2592,7 @@
     "temp_bnf_opt" : {"low" : 20, "high" : 35},  /* Ma et al., 2022 soy bean*/
     "swc_bnf" : {"low" : 0.2, "high" : 0.8},  /* Ma et al., 2022 soy bean*/
     "phi_bnf" : [-0.33, 1.67],  /* Ma et al., 2022 soy bean*/
-    "nfixpot" : 0.05,  /* Yu and Zhuang 2020 grassland*/
+    "nfixpot" : 0.5,  /* Yu and Zhuang 2020 grassland*/
     "maxbnfcost" : MAXBNFCOST,
     "bnf_cost" : BNF_COST 
   },
