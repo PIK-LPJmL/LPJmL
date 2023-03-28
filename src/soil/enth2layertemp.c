@@ -10,10 +10,10 @@ The second step uses linear interpolation between the temperature at the gridpoi
 
 #include "lpj.h"
 
-void derive_T_from_e(Real *temp,        /*< temperature vector that is written to N=NSOILLAYER */
-                     const Real *enth,  /*< input enthalpy vector N=NHEATGRID */
-                     Soil_thermal_prop th /*< soil thermal properties */
-                     )
+void enth2layertemp(Real *temp,          /*< temperature vector that is written to N=NSOILLAYER */
+                    const Real *enth,    /*< input enthalpy vector N=NHEATGRID */
+                    Soil_thermal_prop th /*< soil thermal properties */
+                    )
 {
   int layer, j;
   int gp; /* gridpoint */
