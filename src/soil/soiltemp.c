@@ -32,26 +32,16 @@ Real soiltemp_lag(const Soil *soil,      /**< Soil data */
   return climbuf->atemp_mean+soil->amp*(temp_lag-climbuf->atemp_mean);
 } /* of 'soiltemp_lag' */
 
-
-void soiltemp(Soil *soil,          /**< pointer to soil data */
-              Real temp_bs,        /**< temperature below snow (deg C) */
-              const Config *config /**< LPJmL configuration */
-             )
-{
-
-  Soil_thermal_prop th;                                /* thermal properties of soil */
-  Real waterdiff[NSOILLAYER], soliddiff[NSOILLAYER];   /* change in water and solid contents, since last call */
-  Real h[NHEATGRIDP], upDiBound;                       /* gridpoimt distances, upper dirichlet boundary condition */
-  Real freezefrac[NSOILLAYER];                         /* fraction of each layer that is frozen */
+void setup_heatgrid(Real *h){
   int l,j;
-  
-  /*****  Prognostic Part  ****/
-  /* set up the refined heatgrid */
   for(l=0;l<NSOILLAYER;++l)
      for(j=0;j<GPLHEAT;++j)
        h[l*GPLHEAT+j]=soildepth[l]/GPLHEAT/1000;
+}
 
-  /* apply enthalpy changes coming from water flow and porosity changes */
+void get_soilcontent_change(Real *waterdiff, Real *soliddiff, Soil *soil)
+{
+  int l;
   for(l=0;l<NSOILLAYER;++l)   /* track water flow and porosity changes of other methods */
   {
     waterdiff[l] = (allwater(soil,l)+allice(soil,l) - soil->old_totalwater[l]) / soildepth[l];
@@ -59,19 +49,39 @@ void soiltemp(Soil *soil,          /**< pointer to soil data */
     soil->old_totalwater[l] = allwater(soil,l) + allice(soil,l);
     soil->old_wsat[l]       = soil->wsat[l];
   }
-  soil_therm_prop(&th,soil, soil->old_totalwater, soil->old_wsat, config->johansen, FALSE);
-  daily_mass2heatflow(soil->enth, waterdiff, soliddiff, th);
+}
 
-  /* apply enthalpy changes due to heatconduction */
+Real calc_surface_temp(Real temp_bs, Soil *soil, Soil_thermal_prop th){
   soil->litter.agtop_temp = (temp_bs + ENTH2TEMP(soil->enth,th,0)) / 2;
-  upDiBound               =  temp_bs                 * (1 - soil->litter.agtop_cover) +
-                             soil->litter.agtop_temp * soil->litter.agtop_cover; 
-  soil_therm_prop(&th,soil, NULL,NULL ,config->johansen,TRUE);
-  daily_heatcond(soil->enth, NHEATGRIDP,h, upDiBound,th );
+  return temp_bs  * (1 - soil->litter.agtop_cover) +
+         soil->litter.agtop_temp * soil->litter.agtop_cover; 
+}
+
+void soiltemp(Soil *soil,          /**< pointer to soil data */
+              Real temp_bs,        /**< temperature below snow (deg C) */
+              const Config *config /**< LPJmL configuration */
+             )
+{
+  Soil_thermal_prop therm_prop;                        /* thermal properties of soil */
+  Real waterdiff[NSOILLAYER], soliddiff[NSOILLAYER];   /* change in water and solid contents, since last call */
+  Real h[NHEATGRIDP], top_dirichlet_BC;                /* gridpoint distances, upper dirichlet boundary condition */
+  Real freezefrac[NSOILLAYER];                         /* fraction of each layer that is frozen */
+  
+  /*****  Prognostic Part  ****/
+  /* enthalpy update from water flow and other changes in soil content */
+  soil_therm_prop(&therm_prop, soil, soil->old_totalwater,                  /* get thermal properties assuming old soil contents */
+                  soil->old_wsat, config->johansen, FALSE); 
+  get_soilcontent_change(waterdiff, soliddiff, soil);                       /* track changes to soilcontent made by other methods */
+  daily_mass2heatflow(soil->enth, waterdiff, soliddiff, therm_prop);        /* apply resulting enthalpy changes */
+  /* enthalpy update from heatconduction */
+  soil_therm_prop(&therm_prop, soil, NULL, NULL, config->johansen, TRUE);   /* get thermal properties with new soil content */
+  top_dirichlet_BC = calc_surface_temp(temp_bs, soil, therm_prop);          /* calculate surface litter and soil temperatures */
+  setup_heatgrid(&h);
+  daily_heatcond(soil->enth, NHEATGRIDP, h, top_dirichlet_BC, therm_prop ); /* apply heat conduction happening in a day */
 
   /*****  Diagnostic Part  ****/
-  enth2layertemp(soil->temp,soil->enth,th);    /* get layer temperture averages */
-  enth2freezefrac(freezefrac, soil->enth, th); /* get frozen fraction of each layer */
-  freezefrac2soil(soil,freezefrac);            /* apply frozen fraction to soil variables */
-
+  enth2layertemp(soil->temp, soil->enth, therm_prop);  /* get layer temperture averages */
+  enth2freezefrac(freezefrac, soil->enth, therm_prop); /* get frozen fraction of each layer */
+  freezefrac2soil(soil, freezefrac);                   /* apply frozen fraction to soil variables */
 } /* of 'soiltemp' */
+

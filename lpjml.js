@@ -148,7 +148,7 @@
 /*
 ID                               Fmt                        filename
 -------------------------------- ------------------------- ----------------------------- */
-    { "id" : "grid",             "file" : { "fmt" : "raw", "name" : "output/grid.bin" }},
+    { "id" : "grid",             "file" : { "fmt" : "txt", "name" : "output/grid.txt" }},
     { "id" : "temp",             "file" : { "fmt" : "txt", "name" : "output/temp.txt"}},
     
 #ifdef WITH_SPITFIRE
@@ -180,7 +180,7 @@ ID                               Fmt                        filename
   /*
   ID                               Fmt                        filename
   -------------------------------- ------------------------- ----------------------------- */
-    { "id" : "grid",             "file" : { "fmt" : "raw", "name" : "output/grid.bin" }},
+    { "id" : "grid",             "file" : { "fmt" : "txt", "name" : "output/grid.txt" }},
     { "id" : "temp",             "file" : { "fmt" : "txt", "name" : "output/temp.txt"}},
     
   #ifdef WITH_SPITFIRE
