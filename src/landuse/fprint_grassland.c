@@ -26,14 +26,10 @@ void fprint_grassland(FILE *file,          /**< pointer to text file */
   const Grassland *grassland;
   grassland=stand->data;
   fprint_irrigation(file,&grassland->irrigation,pftpar);
-  fprintf(file,"Nr. of lsus ext:\t%g\n"
-          "Nr. of lsus int:\t%g\n"
-          "grazing days:\t%d\n"
+  fprintf(file,"grazing days:\t%d\n"
           "recovery_day:\t%d\n"
           "paddocks:\t%d\n"
           "rotation mode:\t%s\n",
-          grassland->nr_of_lsus_ext,
-          grassland->nr_of_lsus_int,
           grassland->rotation.grazing_days,
           grassland->rotation.recovery_days,
           grassland->rotation.paddocks,
