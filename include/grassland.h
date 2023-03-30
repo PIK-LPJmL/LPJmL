@@ -55,8 +55,8 @@ typedef struct
 {
   Irrigation irrigation;
   Rotation rotation;
-  Real nr_of_lsus_ext;   /**< nr of livestock units for extensive grazing */
-  Real nr_of_lsus_int;   /**< nr of livestock units for intensive grazing */
+  Real deficit_lsu_ne;   /**< NE deficit per livestock unit */
+  Real deficit_lsu_mp;   /**< MP deficit per livestock unit */
 } Grassland;
 
 /* Declaration of functions */

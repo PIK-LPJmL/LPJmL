@@ -32,6 +32,7 @@
 
 "sim_name" : "LPJmL coupled to POEM", /* Simulation description */
 "sim_id"   : "lpjml_fms",       /* LPJML Simulation type coupled to POEM */
+"coupled_model" : null,         /* no model coupling */
 "random_prec" : false,       /* Random weather generator for precipitation disabled */
 "random_seed" : 2,
 "radiation" : "radiation",
@@ -57,6 +58,7 @@
 "grassland_fixed_pft" : false,
 "wateruse" : "no",
 "grass_harvest_options" : false,
+"prescribe_lsuha" : false,
 "rw_manage" : false,
 "shuffle_climate" : true,
 "fix_climate" : false,

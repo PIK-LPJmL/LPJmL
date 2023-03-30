@@ -272,7 +272,7 @@ Climate *initclimate(const Config *config /**< pointer to LPJ configuration */
     freeclimate(climate,isroot(*config));
     return NULL;
   }
-  if(readco2(&climate->co2,&config->co2_filename,isroot(*config)))
+  if(readco2(&climate->co2,&config->co2_filename,config))
   {
     freeclimate(climate,isroot(*config));
     return NULL;
@@ -370,17 +370,15 @@ Climate *initclimate(const Config *config /**< pointer to LPJ configuration */
     }
     if(config->prescribe_ignition)
     {
-      climate->data.lightning=NULL;
       if((climate->data.ignition=newvec(Real,climate->file_ignition.n))==NULL)
       {
-        printallocerr("lightning");
+        printallocerr("ignition");
         freeclimate(climate,isroot(*config));
         return NULL;
       }
     }
     else
     {
-      climate->data.ignition=NULL;
       if((climate->data.lightning=newvec(Real,climate->file_lightning.n))==NULL)
       {
         printallocerr("lightning");

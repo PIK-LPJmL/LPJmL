@@ -162,7 +162,7 @@ extern void iterateyear(Outputfile *,Cell [],Input,
 extern void initoutputdata(Output *,int,int,const Config *);
 extern void fwriteoutput(Outputfile *,Cell [],int,int,int,int,int,const Config *);
 extern void equilsom(Cell *,int, const Pftpar [],Bool);
-extern void equilveg(Cell *);
+extern void equilveg(Cell *,int);
 extern void check_fluxes(Cell *,int,int,const Config *);
 extern void check_balance(Flux,int,const Config *);
 extern Bool initdrain(Cell [],Config *);
@@ -176,7 +176,7 @@ extern Wateruse initwateruse(const Filename *,const Config *);
 extern Bool getwateruse_wd(Wateruse, Cell[], int, const Config *);
 #endif
 extern void freewateruse(Wateruse,Bool);
-extern void killstand(Cell *,int,Bool,Bool,int,const Config *);
+extern void killstand(Cell *,int,Bool,Bool,int,int,const Config *);
 extern Bool initsoiltemp(Climate *, Cell*,const Config *);
 extern Celldata opencelldata(Config *);
 extern Bool seekcelldata(Celldata,int);

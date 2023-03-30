@@ -81,6 +81,7 @@ typedef struct
   Bool swap;        /**< byte order has to be changed (TRUE/FALSE) */
   FILE *file;       /**< file pointer */
   int fmt;          /**< file format (RAW/CLM/CDF) */
+  int id;           /**< id for sockets */
   int version;      /**< file version number */
   Real scalar;      /**< conversion factor */
   Type datatype;    /**< datatype */

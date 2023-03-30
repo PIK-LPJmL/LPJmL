@@ -30,6 +30,7 @@
 
 "sim_name" : "LPJ run with PNV",   /* Simulation description */
 "sim_id"   : "lpj",       /* LPJML Simulation with natural vegetation only */
+"coupled_model" : null,   /* no model coupling */
 "version"  : "5.3",       /* LPJmL version expected */
 "random_prec" : true,     /* Random weather generator for precipitation enabled */
 "random_seed" : 2,        /* seed for random number generator */

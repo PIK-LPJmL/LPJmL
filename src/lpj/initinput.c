@@ -67,6 +67,13 @@ Bool initinput(Input *input,        /**< Input data */
   }
   else
     input->human_ign_prob=NULL;
+  if(!config->prescribe_ignition && (config->fire==SPITFIRE || config->fire==SPITFIRE_TMAX))
+  {
+    if((input->human_ignition=inithumanignition(config))==NULL)
+      return TRUE;
+  }
+  else
+    input->human_ignition=NULL;
   if(config->prescribe_landcover != NO_LANDCOVER)
   {
     if((input->landcover=initlandcover(npft,config))==NULL)

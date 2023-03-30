@@ -32,6 +32,7 @@
 
   "sim_name" : "LPJmL run without nitrogen", /* Simulation description */
   "sim_id"   : "lpjml",       /* LPJML Simulation type with managed land use */
+  "coupled_model" : null,     /* no model coupling */
   "version"  : "5.3",         /* LPJmL version expected */
   "random_prec" : true,       /* Random weather generator for precipitation enabled */
   "random_seed" : 2,          /* seed for random number generator */
@@ -85,9 +86,10 @@
   "istimber" : false,
   "grassland_fixed_pft" : false,
   "grass_harvest_options" : false,
+  "prescribe_lsuha" : false,
   "grassonly" : false,
   "others_to_crop" : false,             /* move PFT type others into PFT crop, maize for tropical, wheat for temperate */
-  "grazing" : "default",                /* default grazing type, other options : "default", "mowing", "ext", "int", "none" */
+  "grazing" : "default",                /* default grazing type, other options : "default", "mowing", "ext", "int", "livestock", "none" */
   "crop_phu_option" : "new",
   "cropsheatfrost" : false,
   "double_harvest" : false,

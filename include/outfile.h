@@ -22,15 +22,14 @@
 typedef struct
 {
   Bool isopen;       /**< file is open for output (TRUE/FALSE) */
+  Bool issocket;     /**< socket stream is open */
   int fmt;           /**< file format (TXT/RAW/CDF) */
+  int id;            /**< id for socket communication */
   Bool oneyear;      /**< separate output files for each year (TRUE/FALSE) */
   Bool compress;     /**< compress file after write (TRUE/FALSE) */
   const char *filename;
   union
   { 
-#ifdef USE_MPI
-    MPI_File mpi_file; /**< MPI-2 file descriptor */
-#endif
     FILE *file;        /**< file pointer */
     Netcdf cdf;
   } fp;
@@ -42,8 +41,6 @@ typedef struct
   int *counts;         /**< sizes for MPI_Gatherv */
   int *offsets;        /**< offsets for MPI_Gatherv */
 #endif
-  Outputmethod method;
-  Socket *socket;
   File *files;
   int n;          /**< size of File array */
   Coord_array *index;

@@ -250,6 +250,11 @@ void update_daily(Cell *cell,            /**< cell pointer           */
       getoutput(&cell->output,RH_AGR,config)+=hetres.carbon*stand->frac/agrfrac;
       getoutput(&cell->output,N2O_NIT_AGR,config)+=hetres.nitrogen*stand->frac;
     }
+    if(stand->type->landusetype==GRASSLAND)
+    {
+      getoutput(&cell->output,N2O_NIT_MGRASS,config)+=hetres.nitrogen*stand->frac;
+      getoutput(&cell->output,RH_MGRASS,config)+=hetres.carbon*stand->frac;
+    }
     getoutput(&cell->output,N2O_NIT,config)+=hetres.nitrogen*stand->frac;
     cell->output.dcflux+=hetres.carbon*stand->frac;
 #if defined IMAGE && defined COUPLED
@@ -286,7 +291,8 @@ void update_daily(Cell *cell,            /**< cell pointer           */
 
     if(config->with_nitrogen)
     {
-      if(config->with_nitrogen==UNLIM_NITROGEN)
+      if(config->with_nitrogen==UNLIM_NITROGEN || 
+         (!config->from_restart && param.veg_equil_unlim && year<=(config->firstyear-config->nspinup+param.veg_equil_year)))
       {
         if(stand->soil.par->type==ROCK)
         {
@@ -361,6 +367,9 @@ void update_daily(Cell *cell,            /**< cell pointer           */
       getoutput(&cell->output,N_VOLATILIZATION,config)+=nh3*stand->frac;
       if (isagriculture(stand->type->landusetype))
         getoutput(&cell->output,NH3_AGR,config)+=nh3*stand->frac;
+      if(stand->type->landusetype==GRASSLAND)
+        getoutput(&cell->output,NH3_MGRASS,config)+=nh3*stand->frac;
+
       cell->balance.n_outflux+=nh3*stand->frac;
     }
 
@@ -487,7 +496,7 @@ void update_daily(Cell *cell,            /**< cell pointer           */
   } /* of 'if(river_routing)' */
   getoutput(&cell->output,DAYLENGTH,config)+=daylength;
   soilpar_output(cell,agrfrac,config);
-  killstand(cell,npft, cell->ml.with_tillage,intercrop,year,config);
+  killstand(cell,npft, ncft,cell->ml.with_tillage,intercrop,year,config);
 #ifdef SAFE
   check_stand_fracs(cell,TRUE);
 #endif

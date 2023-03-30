@@ -27,6 +27,7 @@ typedef struct
 #endif
   Popdens popdens;
   Human_ign_prob human_ign_prob;
+  Human_ignition human_ignition;
   Extflow extflow;
   Landcover landcover;
 } Input;

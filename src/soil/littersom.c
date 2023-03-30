@@ -146,6 +146,8 @@ Stocks littersom(Stand *stand,                /**< pointer to stand data */
         {
           fnlim=max(0,(soil->NH4[l]+flux_soil[l].fast.nitrogen+flux_soil[l].slow.nitrogen)/fn_som);
         }*/
+        soil->decay_rate[l].slow+=flux_soil[l].slow.carbon/soil->pool[l].slow.carbon;
+        soil->decay_rate[l].fast+=flux_soil[l].fast.carbon/soil->pool[l].fast.carbon;
 
         soil->pool[l].slow.carbon-=flux_soil[l].slow.carbon;
         soil->pool[l].fast.carbon-=flux_soil[l].fast.carbon;
@@ -273,6 +275,8 @@ Stocks littersom(Stand *stand,                /**< pointer to stand data */
       decom_sum.nitrogen+=decom;
       decom_litter.carbon+=decom_sum.carbon;
       decom_litter.nitrogen+=decom_sum.nitrogen;
+      soil->decomp_litter_pft[soil->litter.item[p].pft->id].carbon+=(1-param.atmfrac)*decom_sum.carbon;
+      soil->decomp_litter_pft[soil->litter.item[p].pft->id].nitrogen+=(1-param.atmfrac)*decom_sum.nitrogen;
       forrootsoillayer(l)
       {
         soil->pool[l].fast.carbon+=param.fastfrac*(1-param.atmfrac)*decom_sum.carbon*soil->c_shift[l][soil->litter.item[p].pft->id].fast;
@@ -309,6 +313,7 @@ Stocks littersom(Stand *stand,                /**< pointer to stand data */
               if(n_immo>N_sum)
                 n_immo=N_sum;
               soil->pool[l].fast.nitrogen+=n_immo;
+              soil->decomp_litter_pft[soil->litter.item[p].pft->id].nitrogen+=n_immo;
               getoutput(&stand->cell->output,N_IMMO,config)+=n_immo*stand->frac;
               if(isagriculture(stand->type->landusetype))
                 getoutput(&stand->cell->output,NIMMOBILIZATION_AGR,config)+=n_immo*stand->frac;
@@ -331,6 +336,7 @@ Stocks littersom(Stand *stand,                /**< pointer to stand data */
               if(n_immo>N_sum)
                 n_immo=N_sum;
               soil->pool[l].slow.nitrogen+=n_immo;
+              soil->decomp_litter_pft[soil->litter.item[p].pft->id].nitrogen+=n_immo;
               getoutput(&stand->cell->output,N_IMMO,config)+=n_immo*stand->frac;
               if(isagriculture(stand->type->landusetype))
                 getoutput(&stand->cell->output,NIMMOBILIZATION_AGR,config)+=n_immo*stand->frac;

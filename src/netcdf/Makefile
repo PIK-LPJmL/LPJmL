@@ -32,7 +32,7 @@ INC     = ../../include
 LIBDIR  = ../../lib
 LIB     = libcdf.$A
 
-HDRS    = $(INC)/buffer.h $(INC)/coord.h $(INC)/lpj.h\
+HDRS    = $(INC)/buffer.h $(INC)/coord.h $(INC)/lpj.h $(INC)/outfile.h\
           $(INC)/climate.h $(INC)/date.h $(INC)/swap.h\
           $(INC)/pftpar.h $(INC)/types.h $(INC)/header.h $(INC)/pftlist.h\
           $(INC)/errmsg.h $(INC)/numeric.h $(INC)/channel.h $(INC)/stand.h\

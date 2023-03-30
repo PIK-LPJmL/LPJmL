@@ -31,4 +31,3 @@ LINKMAIN= mpicc
 LINK	= cc -m64
 MKDIR	= mkdir -p
 SLASH	= /
-VIEWPRG	= lpjserver

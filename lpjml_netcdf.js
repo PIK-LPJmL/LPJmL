@@ -32,6 +32,7 @@
 
 "sim_name" : "LPJmL Run", /* Simulation description */
 "sim_id"   : "lpjml",     /* LPJML Simulation type with managed land use */
+"coupled_model" : null,   /* no model coupling */
 "version"  : "5.3",       /* LPJmL version expected */
 "random_prec" : true,     /* Random weather generator for precipitation enabled */
 "random_seed" : 2,        /* seed for random number generator */
@@ -80,6 +81,7 @@
 "grassland_fixed_pft" : false,
 "wateruse" : "no",
 "grass_harvest_options" : false,
+"prescribe_lsuha" : false,
 "intercrop" : true,                   /* intercrops on setaside */
 "landuse_year_const" : 2000, /* set landuse year for CONST_LANDUSE case */
 "residues_fire" : false,              /* fire in residuals */

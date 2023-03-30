@@ -53,7 +53,7 @@
 /* #pragma warning ( disable : 869 )*/ /* disable warning about unused parameter */
 #endif
 
-#define N_FMT 7 /* number of format types for input/output files */
+#define N_FMT 8 /* number of format types for input/output files */
 
 /* Definition of datatypes */
 
@@ -83,7 +83,9 @@ typedef struct
   Bool isscale; /* scale factor defined? */
   int timestep; /* time step for output (ANNUAL,MONTHLY,DAILY) */
   int fmt;    /* format (TXT/RAW/CLM/CDF) */
+  int id;     /* id for input socket */
   Bool meta; /* meta file output enabled */
+  Bool issocket; /* socket output enabled */
   int version; /* version of clm file */
 } Filename;
 
@@ -130,7 +132,7 @@ extern char *fscanline(FILE *);
 extern Bool fscantoken(FILE *,String);
 extern Bool fscankeywords(LPJfile *,int *,const char *,const char *const *,
                           int,Bool,Verbosity);
-extern Bool isnull(const LPJfile *);
+extern Bool isnull(const LPJfile *,const char *);
 extern char *sysname(void);
 extern char *getpath(const char *);
 extern char *gethost(void);
@@ -166,7 +168,7 @@ extern Bool readrealvec(FILE *,Real *,Real,Real,size_t,Bool,Type);
 extern Bool readfloatvec(FILE *,float *,float,size_t,Bool,Type);
 extern Bool readintvec(FILE *,int *,size_t,Bool,Type);
 extern Bool readuintvec(FILE *,unsigned int *,size_t,Bool,Type);
-extern Bool readfilename(LPJfile *,Filename *,const char *,const char *,Bool,Verbosity);
+extern Bool readfilename(LPJfile *,Filename *,const char *,const char *,Bool,Bool,Verbosity);
 extern void freefilename(Filename *);
 extern void **newmat(size_t,int,int);
 extern void freemat(void **);
@@ -182,6 +184,7 @@ extern Bool fscantimestep(LPJfile *,int *,Verbosity);
 extern char *getrealfilename(const Filename *);
 extern Bool parse_json(FILE *,LPJfile *,char *,Verbosity);
 extern Bool isdir(const char *);
+extern double mrun(void);
 #ifdef WITH_FPE
 extern void enablefpe(void);
 #endif

@@ -95,6 +95,7 @@
   "istimber" : true,
   "grassland_fixed_pft" : false,
   "grass_harvest_options" : false,
+  "prescribe_lsuha" : false,
 
 /*===================================================================*/
 /*  II. Input parameter section                                      */

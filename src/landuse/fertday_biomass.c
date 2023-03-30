@@ -34,6 +34,6 @@ int fertday_biomass(const Cell *cell,    /**< pointer to cell */
       fday=cell->ml.cropdates[MAIZE].spring_sdate20;  /* maize sowing date */
   }
   if (fday==0)
-    fday=(cell->coord.lat >= 0.0) ? fday=91 /* 1st of April */ : 274; /* 1st of October */
+    fday=(cell->coord.lat >= 0.0) ? 91 /* 1st of April */ : 274; /* 1st of October */
   return fday;
 } /* of 'fertday_biomass' */

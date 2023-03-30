@@ -12,9 +12,9 @@
 
      <B>SYNOPSIS</B>
           <B>lpjcheck</B> [-h] [-q] [-nocheck] [-vv] [-param] [-pp cmd]
-          [-output {write|gather|mpi2|socket=hostname[:port]}]
-          [-outpath <I>dir</I>] [-inpath <I>dir</I>] [-restartpath <I>dir</I>]
-          [[-Dmacro[=value]] [-I<I>dir</I>] ...]  [<I>filename</I>]
+          [-copan host[:port]] [-output {write|gather|mpi2}] [-outpath
+          <I>dir</I>] [-inpath <I>dir</I>] [-restartpath <I>dir</I>] [[-Dmacro[=value]]
+          [-I<I>dir</I>] ...]  [<I>filename</I>]
 
      <B>DESCRIPTION</B>
           Program checks the syntax of LPJmL configuration files. It
@@ -40,14 +40,19 @@
           -pp cmd
                Set preprocessor program to cmd. Default is <B>cpp</B> <B>-P</B>.
 
-          -output {gather|mpi2|socket=hostname[:port]}
+          -copan host[:port]
+               set host where the COPAN model is running. Default is
+               localhost. Port is the port number for ingoing and
+               outgoing data. Default port number is 2224.
+
+          -output {gather|mpi2}
                use the given output method to write data to disk.
-               Valid output methods are write, mpi2, gather, and
-               socket. The default output method for the MPI version
-               is gather sending all output to the root task, while
-               the default method for the sequential code is write.
-               The methods gather and mpi2 are only valid for the MPI
-               version of the code.
+               Valid output methods are write, mpi2, gather. The
+               default output method for the MPI version is gather
+               sending all output to the root task, while the default
+               method for the sequential code is write. The methods
+               gather and mpi2 are only valid for the MPI version of
+               the code.
 
           -outpath <I>dir</I>
                set the output directory path. The path is added to the
@@ -73,7 +78,7 @@
      <B>EXAMPLES</B>
      scratch file system
           Check default configuration file with input files located in the
-               <B>lpjcheck</B> -input /scratch/02/lpj
+               <B>lpjcheck</B> -inpath /scratch/02/lpj
 
      <B>ENVIRONMENT</B>
           LPJCONFIG
@@ -107,7 +112,6 @@
                Default method for generating output files. Valid
                values are write, mpi2, gather, and socket.
 
-
      <B>EXIT</B> <B>STATUS</B>
           <B>lpjcheck</B> returns a zero exit status if the configuration
           file has no syntax errors and all input files and output
@@ -125,9 +129,6 @@
 
      <B>SEE</B> <B>ALSO</B>
           <B><A HREF="lpjml.html">lpjml(1)</A></B>, <B><A HREF="lpjfiles.html">lpjfiles(1)</A></B>, <B><A HREF="lpjsubmit.html">lpjsubmit(1)</A></B>, <B><A HREF="lpjml.conf.html">lpjml.conf(5)</A></B>
-
-
-
 
 
 

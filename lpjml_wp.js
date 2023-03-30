@@ -32,6 +32,7 @@
 
   "sim_name" : "LPJmL run with wood plantations", /* Simulation description */
   "sim_id"   : "lpjml",     /* LPJML Simulation type with managed land use */
+  "coupled_model" : null,   /* no model coupling */
   "version"  : "5.3",       /* LPJmL version expected */
   "random_prec" : true,     /* Random weather generator for precipitation enabled */
   "random_seed" : 2,        /* seed for random number generator */
@@ -90,16 +91,17 @@
   "manure_input" : true,                /* enable manure input */
   "fix_fertilization" : false,          /* fix fertilizer input */
   "others_to_crop" : true,              /* move PFT type others into PFT crop, cft_tropic for tropical, cft_temp for temperate */
-  "grazing" : "default",                /* default grazing type, other options : "default", "mowing", "ext", "int", "none" */
+  "grazing" : "default",                /* default grazing type, other options : "default", "mowing", "ext", "int", "livestock", "none" */
   "cft_temp" : "temperate cereals",
   "cft_tropic" : "maize",
   "grassonly" : false,                  /* set all cropland including others to zero but keep managed grasslands */
   "istimber" : true,
   "grassland_fixed_pft" : false,
   "grass_harvest_options" : false,
+  "prescribe_lsuha" : false,
   "others_to_crop" : false,              /* move PFT type others into PFT crop, cft_tropic for tropical, cft_temp for temperate */
-  "grazing" : "default",                 /* default grazing type, other options : "default", "mowing", "ext", "int", "none" */
-  "grazing_others" : "default",          /* default other grazing type, other options : "default", "mowing", "ext", "int", "none" */
+  "grazing" : "default",                 /* default grazing type, other options : "default", "mowing", "ext", "int", "livestock", "none" */
+  "grazing_others" : "default",          /* default other grazing type, other options : "default", "mowing", "ext", "int", "livestock", "none" */
   "cft_temp" : "temperate cereals",
   "cft_tropic" : "maize",
   "mowing_days" : [152, 335],          /* Mowing days for grassland if grass harvest options are ser */
@@ -135,8 +137,11 @@
 #define SUFFIX pft.bin
 #endif
 
-  "output_metafile" : false, /* no json metafile created */
-  "float_grid" : false, /* set datatype of grid file to float (TRUE/FALSE) */
+  "output_metafile" : true,   /* json metafile created (TRUE/FALSE) */
+  "grid_type" : "short",      /* set datatype of grid file ("short", "float", "double") */
+  "absyear" : false,          /* years relative to baseyear (TRUE/FALSE) */
+  "rev_lat" : false,          /* reverse latitudes in NetCDF output (TRUE/FALSE) */
+  "with_days" : true,         /* use days as units for monthly output in NetCDF files */
 
 #define mkstr(s) xstr(s) /* putting string in quotation marks */
 #define xstr(s) #s

@@ -32,23 +32,39 @@ Bool readclimate(Climatefile *file,   /**< climate data file */
   long long index;
   if(file->fmt==FMS)
     return FALSE;
-  index=year-file->firstyear;
-  if(index<0 || index>=file->nyear)
+  if(file->fmt==SOCK)
   {
-    if(isroot(*config))
-      fprintf(stderr,"ERROR130: Invalid year %d in readclimate(), must be in [%d,%d].\n",
-              year,file->firstyear,file->firstyear+file->nyear-1);
-    return TRUE;
+    if(receive_real_coupler(file->id,data,(file->time_step==DAY) ? NDAYYEAR : NMONTH,year,config))
+    {
+      if(isroot(*config))
+      {
+        fprintf(stderr,"ERROR149: Cannot receive climate of year %d in readclimate().\n",year);
+        fflush(stderr);
+      }
+      rc=TRUE;
+    }
+    rc=FALSE;
   }
-  if(file->fmt==CDF)
-    rc=readclimate_netcdf(file,data,grid,index,config);
   else
   {
-    if(fseek(file->file,index*file->size+file->offset,SEEK_SET))
-      rc=TRUE;
+    index=year-file->firstyear;
+    if(index<0 || index>=file->nyear)
+    {
+      if(isroot(*config))
+        fprintf(stderr,"ERROR130: Invalid year %d in readclimate(), must be in [%d,%d].\n",
+                year,file->firstyear,file->firstyear+file->nyear-1);
+      return TRUE;
+    }
+    if(file->fmt==CDF)
+      rc=readclimate_netcdf(file,data,grid,index,config);
     else
-      rc=readrealvec(file->file,data,intercept,slope,file->n,file->swap,
-                     file->datatype);
+    {
+      if(fseek(file->file,index*file->size+file->offset,SEEK_SET))
+        rc=TRUE;
+      else
+        rc=readrealvec(file->file,data,intercept,slope,file->n,file->swap,
+                       file->datatype);
+    }
   }
   return iserror(rc,config);
 } /* of'readclimate' */
