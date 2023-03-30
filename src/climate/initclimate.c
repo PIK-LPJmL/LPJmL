@@ -370,20 +370,21 @@ Climate *initclimate(const Config *config /**< pointer to LPJ configuration */
     }
     if(config->prescribe_ignition)
     {
-      climate->data.lightning=NULL;
       if((climate->data.ignition=newvec(Real,climate->file_ignition.n))==NULL)
       {
-        printallocerr("lightning");
+        printallocerr("ignition");
         freeclimate(climate,isroot(*config));
         return NULL;
       }
     }
     else
     {
-      if(isroot(*config))
-        fprintf(stderr,"ERROR192: Cannot read lightning.\n");
-      freeclimate(climate,isroot(*config));
-      return NULL;
+      if((climate->data.lightning=newvec(Real,climate->file_lightning.n))==NULL)
+      {
+        printallocerr("lightning");
+        freeclimate(climate,isroot(*config));
+        return NULL;
+      }
     }
   }
   if(config->with_radiation)

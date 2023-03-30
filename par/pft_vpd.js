@@ -2,7 +2,7 @@
 /**                                                                                \n**/
 /**              p  f  t  _  v  p  d  .  j  s                                      \n**/
 /**                                                                                \n**/
-/**  PFT and CFT parameter file for LPJmL version 5.3.001                          \n**/
+/**  PFT and CFT parameter file for LPJmL version 5.5.001                          \n**/
 /**  CFTs parameters must be put after PFTs                                        \n**/
 /**                                                                                \n**/
 /** (C) Potsdam Institute for Climate Impact Research (PIK), see COPYRIGHT file    \n**/
@@ -12,8 +12,6 @@
 /** Contact: https://github.com/PIK-LPJmL/LPJmL                                    \n**/
 /**                                                                                \n**/
 /**************************************************************************************/
-
-#include "../include/pftpar.h" /* include constant definitions */
 
 #define CTON_LEAF 30.0
 #define CTON_ROOT 30.0
@@ -72,6 +70,9 @@
 #define K_LATOSA 6e3      /* leaf area to sapwood area */
 #define BC3 0.015         /*leaf respiration as fraction of Vmax for C3 plants */
 #define BC4 0.035         /* leaf respiration as fraction of Vmax for C4 plants */
+#define IRRIG_THRESHOLD_C3_DRY   0.8 /* irrigation threshold C3, prec < aprec_lim */
+#define IRRIG_THRESHOLD_C3_HUMID 0.9 /* irrigation threshold C3, prec >= aprec_lim */
+#define IRRIG_THRESHOLD_C4       0.7 /* irrigation threshold C4 */
 #define TEMP_BNF_MIN 0.5
 #define TEMP_BNF_MAX 45.0
 #define SWC_BNF_LOW 0.0
@@ -79,11 +80,10 @@
 #define PHI_BNF_1 0.0
 #define PHI_BNF_2 2.0
 #define MAXBNFCOST 0.25
+#define MAXBNFCOSTTR 0.007 /* Fraction of NPP available for BNF multiplied by climates legume share */
+#define MAXBNFCOSTTE 0.0014
+#define MAXBNFCOSTBO 0.0056
 #define BNF_COST 6.0
-#define IRRIG_THRESHOLD_C3_DRY   0.8 /* irrigation threshold C3, prec < aprec_lim */
-#define IRRIG_THRESHOLD_C3_HUMID 0.9 /* irrigation threshold C3, prec >= aprec_lim */
-#define IRRIG_THRESHOLD_C4       0.7 /* irrigation threshold C4 */
-#define LMTORM_OFFSET 0.5
 
 "pftpar" :
 [
@@ -152,7 +152,7 @@
     "temp" : { "low" : 15.5, "high" : 1000.0}, /* lower and upper coldest monthly mean temperature(deg C) 28 29*/
     "soc_k" : 0.38009,     /* shape factor for soil organic matter vertical distribution*/
     "alpha_fuelp" : 0.0000334, /* scaling factor nesterov fire danger index */
-    "vpd_par" : 25, //47.22296, /*scaling factor vpd fire danger index*/
+    "vpd_par" : 25, /*scaling factor vpd fire danger index*/
     "fuelbulkdensity" : 24.5, /* fuel bulk density */
     "emission_factor" : { "co2" : 1580.0, "co" :  103.0, "ch4" : 6.80, "voc" : 8.10, "tpm" : 8.50, "nox" : 1.999}, /* emission factors */
     "aprec_min" : APREC_MIN,  /* minimum annual precipitation to establish */
@@ -185,7 +185,7 @@
     "crownlength" : 0.3334, /* crown length (CL) */
     "barkthick_par1" : 0.0301, /* bark thickness par1 */
     "barkthick_par2" : 0.0281, /* bark thickness par2 */
-    "crown_mort_rck" : 0.985,//985, /* crown damage (rCK) */
+    "crown_mort_rck" : 0.985, /* crown damage (rCK) */
     "crown_mort_p" : 3.00,  /* crown damage (p)     */
     "fuelfraction" : [0.045,0.075,0.21,0.67], /* fuel fraction */
     "k_est": K_EST,         /* k_est */
@@ -193,8 +193,8 @@
     "temp_bnf_opt" : {"low" : 20, "high" : 35},  /* Yu and Zhuang 2020 tropical forest*/
     "swc_bnf" : {"low" : SWC_BNF_LOW, "high" : SWC_BNF_HIGH},
     "phi_bnf" : [PHI_BNF_1, PHI_BNF_2],
-    "nfixpot" : 0.8,  /* Yu and Zhuang 2020 tropical forest*/
-    "maxbnfcost" : MAXBNFCOST,
+    "nfixpot" : 0.01,  /* Yu and Zhuang 2020 minimum*/
+    "maxbnfcost" : MAXBNFCOSTTR,
     "bnf_cost" : BNF_COST
   },
 /*--------------------------------------------------------------------------*/
@@ -263,7 +263,7 @@
     "temp" : { "low" : 15.5, "high" : 1000.0}, /* lower and upper coldest monthly mean temperature(deg C) 28 29*/
     "soc_k" : 0.51395,     /* shape factor for soil organic matter vertical distribution*/
     "alpha_fuelp" : 0.0000334, /* scaling factor nesterov fire danger index */
-    "vpd_par" : 10,//15.43195, /*scaling factor vpd fire danger index*/
+    "vpd_par" : 10, /*scaling factor vpd fire danger index*/
     "fuelbulkdensity" : 12.38, /* fuel bulk density */
     "emission_factor" : { "co2" : 1664.0, "co" :  63.0, "ch4" : 2.20, "voc" : 3.40, "tpm" : 8.50, "nox" : 2.540}, /* emission factors */
     "aprec_min" : APREC_MIN,/* minimum annual precipitation to establish */
@@ -292,7 +292,7 @@
     "allom4" : ALLOM4,
     "k_latosa" : K_LATOSA,
     "height_max" : HEIGHT_MAX, /* maximum height of tree */
-    "scorchheight_f_param" : 0.1,//0.4146, /* scorch height (F) */
+    "scorchheight_f_param" : 0.1, /* scorch height (F) */
     "crownlength" : 0.10, /* crown length (CL) */
     "barkthick_par1" : 0.1085, /* bark thickness par1 */
     "barkthick_par2" : 0.2120, /* bark thickness par2 */
@@ -304,8 +304,8 @@
     "temp_bnf_opt" : {"low" : 20, "high" : 35},  /* Yu and Zhuang 2020 tropical forest*/
     "swc_bnf" : {"low" : SWC_BNF_LOW, "high" : SWC_BNF_HIGH},
     "phi_bnf" : [PHI_BNF_1, PHI_BNF_2],
-    "nfixpot" : 0.8,  /* Yu and Zhuang 2020 tropical forest*/
-    "maxbnfcost" : MAXBNFCOST,
+    "nfixpot" : 0.01,  /* Yu and Zhuang 2020 minimum*/
+    "maxbnfcost" : MAXBNFCOSTTR,
     "bnf_cost" : BNF_COST 
   },
 /*---------------------------------------------------------------------------------------------*/
@@ -374,7 +374,7 @@
     "temp" : { "low" : -2.0, "high" : 22.0 }, /* lower and upper coldest monthly mean temperature(deg C) 28 29*/
     "soc_k" : 0.32198,     /* shape factor for soil organic matter vertical distribution*/
     "alpha_fuelp" : 0.0000667, /*scaling factor nesterov fire danger index */
-    "vpd_par" : 50,//6, /*scaling factor vpd fire danger index*/
+    "vpd_par" : 50, /*scaling factor vpd fire danger index*/
     "fuelbulkdensity" : 25.0, /* fuel bulk density */
     "emission_factor" : { "co2" : 1568.0, "co" :  106.0, "ch4" : 4.80, "voc" : 5.70, "tpm" : 17.60, "nox" : 3.240}, /* emission factors */
     "aprec_min" : APREC_MIN,/* minimum annual precipitation to establish */
@@ -415,8 +415,8 @@
     "temp_bnf_opt" : {"low" : 16, "high" : 35},  /* Yu and Zhuang 2020 temperate coniferous forest*/
     "swc_bnf" : {"low" : SWC_BNF_LOW, "high" : SWC_BNF_HIGH},
     "phi_bnf" : [PHI_BNF_1, PHI_BNF_2],
-    "nfixpot" : 0.55,  /* Yu and Zhuang 2020 temperate coniferous forest*/
-    "maxbnfcost" : MAXBNFCOST,
+    "nfixpot" : 0.01,  /* Yu and Zhuang 2020 minimum*/
+    "maxbnfcost" : MAXBNFCOSTTE,
     "bnf_cost" : BNF_COST 
  },
 /*--------------------------------------------------------------------------*/
@@ -485,7 +485,7 @@
     "temp" : { "low" : 3.0, "high" : 18.8 }, /* lower and upper coldest monthly mean temperature(deg C) 28 29*/
     "soc_k" : 0.43740,     /* shape factor for soil organic matter vertical distribution*/
     "alpha_fuelp" : 0.0000334, /* scaling factor nesterov fire danger index */
-    "vpd_par" : 50,//6, /*scaling factor vpd fire danger index*/
+    "vpd_par" : 50, /*scaling factor vpd fire danger index*/
     "fuelbulkdensity" : 22.0, /* fuel bulk density */
     "emission_factor" : { "co2" : 1568.0, "co" :  106.0, "ch4" : 4.80, "voc" : 5.70, "tpm" : 17.60, "nox" : 3.240}, /* emission factors */
     "aprec_min" : APREC_MIN,/* minimum annual precipitation to establish */
@@ -526,8 +526,8 @@
     "temp_bnf_opt" : {"low" : 18, "high" : 35},  /* Yu and Zhuang 2020 temperate evergreen forest*/
     "swc_bnf" : {"low" : SWC_BNF_LOW, "high" : SWC_BNF_HIGH},
     "phi_bnf" : [PHI_BNF_1, PHI_BNF_2],
-    "nfixpot" : 0.55,  /* Yu and Zhuang 2020 temperate evergreen forest*/
-    "maxbnfcost" : MAXBNFCOST,
+    "nfixpot" : 0.01,  /* Yu and Zhuang 2020 minimum*/
+    "maxbnfcost" : MAXBNFCOSTTE,
     "bnf_cost" : BNF_COST 
   },
 /*--------------------------------------------------------------------------*/
@@ -596,7 +596,7 @@
     "temp" : { "low" : -17.0, "high" : 15.5 }, /* lower and upper coldest monthly mean temperature(deg C) 28 29*/
     "soc_k" : 0.28880,     /* shape factor for soil organic matter vertical distribution*/
     "alpha_fuelp" : 0.0000667, /* scaling factor nesterov fire danger index */
-    "vpd_par" : 50,//6, /*scaling factor vpd fire danger index*/
+    "vpd_par" : 50, /*scaling factor vpd fire danger index*/
     "fuelbulkdensity" : 22.0, /* fuel bulk density */
     "emission_factor" : { "co2" : 1568.0, "co" :  106.0, "ch4" : 4.80, "voc" : 5.70, "tpm" : 17.60, "nox" : 3.240}, /* emission factors */
     "aprec_min" : APREC_MIN,/* minimum annual precipitation to establish */
@@ -639,8 +639,8 @@
     "temp_bnf_opt" : {"low" : 18, "high" : 35},  /* Yu and Zhuang 2020 temperate deciduous forest*/
     "swc_bnf" : {"low" : SWC_BNF_LOW, "high" : SWC_BNF_HIGH},
     "phi_bnf" : [PHI_BNF_1, PHI_BNF_2],
-    "nfixpot" : 0.55,  /* Yu and Zhuang 2020 temperate deciduous forest*/
-    "maxbnfcost" : MAXBNFCOST,
+    "nfixpot" : 0.01,  /* Yu and Zhuang 2020 minimum*/
+    "maxbnfcost" : MAXBNFCOSTTE,
     "bnf_cost" : BNF_COST 
   },
 /*--------------------------------------------------------------------------*/
@@ -709,7 +709,7 @@
     "temp" : { "low" : -32.5, "high" : -2.0}, /* lower and upper coldest monthly mean temperature(deg C) 28 29*/
     "soc_k" : 0.28670,     /* shape factor for soil organic matter vertical distribution*/
     "alpha_fuelp" : 0.0000667, /* scaling factor nesterov fire danger index */
-    "vpd_par" : 80,//6, /*scaling factor vpd fire danger index*/
+    "vpd_par" : 80, /*scaling factor vpd fire danger index*/
     "fuelbulkdensity" : 25.0, /* fuel bulk density */
     "emission_factor" : { "co2" : 1568.0, "co" :  106.0, "ch4" : 4.80, "voc" : 5.70, "tpm" : 17.60, "nox" : 3.240}, /* emission factors */
     "aprec_min" : APREC_MIN,/* minimum annual precipitation to establish */
@@ -750,8 +750,8 @@
     "temp_bnf_opt" : {"low" : 12, "high" : 25},  /* Yu and Zhuang 2020 boreal forest*/
     "swc_bnf" : {"low" : SWC_BNF_LOW, "high" : SWC_BNF_HIGH},
     "phi_bnf" : [PHI_BNF_1, PHI_BNF_2],
-    "nfixpot" : 0.032,  /* Yu and Zhuang 2020 boreal forest*/
-    "maxbnfcost" : MAXBNFCOST,
+    "nfixpot" : 0.01,  /* Yu and Zhuang 2020 minimum*/
+    "maxbnfcost" : MAXBNFCOSTBO,
     "bnf_cost" : BNF_COST 
   },
 /*--------------------------------------------------------------------------*/
@@ -820,7 +820,7 @@
     "temp" : { "low" : -1000, "high" : -2.0}, /* lower and upper coldest monthly mean temperature(deg C) 28 29*/
     "soc_k" : 0.28670,     /* shape factor for soil organic matter vertical distribution*/
     "alpha_fuelp" : 0.0000667, /* scaling factor nesterov fire danger index */
-    "vpd_par" : 80,//6, /*scaling factor vpd fire danger index*/
+    "vpd_par" : 80, /*scaling factor vpd fire danger index*/
     "fuelbulkdensity" : 22.0, /* fuel bulk density */
     "emission_factor" : { "co2" : 1568.0, "co" :  106.0, "ch4" : 4.80, "voc" : 5.70, "tpm" : 17.60, "nox" : 3.240}, /* emission factors */
     "aprec_min" : APREC_MIN,/* minimum annual precipitation to establish */
@@ -863,8 +863,8 @@
     "temp_bnf_opt" : {"low" : 12, "high" : 25},  /* Yu and Zhuang 2020 boreal forest*/
     "swc_bnf" : {"low" : SWC_BNF_LOW, "high" : SWC_BNF_HIGH},
     "phi_bnf" : [PHI_BNF_1, PHI_BNF_2],
-    "nfixpot" : 0.032,  /* Yu and Zhuang 2020 boreal forest*/
-    "maxbnfcost" : MAXBNFCOST,
+    "nfixpot" : 0.01,  /* Yu and Zhuang 2020 minimum*/
+    "maxbnfcost" : MAXBNFCOSTBO,
     "bnf_cost" : BNF_COST
   },
 /*--------------------------------------------------------------------------*/
@@ -933,7 +933,7 @@
     "temp" : { "low" : -46, "high" : -5.4 }, /* lower and upper coldest monthly mean temperature(deg C) 28 29*/
     "soc_k" : 0.28670,     /* shape factor for soil organic matter vertical distribution*/
     "alpha_fuelp" : 0.0000667, /* scaling factor nesterov fire danger index */
-    "vpd_par" : 80,//6, /*scaling factor vpd fire danger index*/
+    "vpd_par" : 80, /*scaling factor vpd fire danger index*/
     "fuelbulkdensity" : 22.0, /* fuel bulk density */
     "emission_factor" : { "co2" : 1568.0, "co" :  106.0, "ch4" : 4.80, "voc" : 5.70, "tpm" : 17.60, "nox" : 3.240}, /* emission factors */
     "aprec_min" : APREC_MIN,/* minimum annual precipitation to establish */
@@ -945,7 +945,7 @@
     "KNmin" : 1.48,               /* KNmin, Half saturation concentration of fine root N uptake, Smith et al. 2014 */
     "cnratio_leaf": {"low": CN_NL_DC_MN, "median": CN_NL_DC_MD, "high" : CN_NL_DC_MX}, /* 10.7 79.4 cnleaf min max, based on TRY data, prepared by Boris Sakschewski */
     "knstore" : 0.1,       /* knstore, Smith et al. 2014 */
-    "fn_turnover": FN_TURNOVER, /* fraction of N not recovered before turnover */
+    "fn_turnover" : FN_TURNOVER, /* fraction of N not recovered before turnover */
     "windspeed_dampening" : 0.4,  /* windspeed dampening */
     "roughness_length" : 1.0,     /* roughness length */
     "irrig_threshold" : { "dry" : IRRIG_THRESHOLD_C3_DRY, "humid" : IRRIG_THRESHOLD_C3_HUMID },
@@ -976,8 +976,8 @@
     "temp_bnf_opt" : {"low" : 12, "high" : 25},  /* Yu and Zhuang 2020 boreal forest*/
     "swc_bnf" : {"low" : SWC_BNF_LOW, "high" : SWC_BNF_HIGH},
     "phi_bnf" : [PHI_BNF_1, PHI_BNF_2],
-    "nfixpot" : 0.032,  /* Yu and Zhuang 2020 boreal forest*/
-    "maxbnfcost" : MAXBNFCOST,
+    "nfixpot" : 0.01,  /* Yu and Zhuang 2020 minimum*/
+    "maxbnfcost" : MAXBNFCOSTBO,
     "bnf_cost" : BNF_COST
  },
 /*--------------------------------------------------------------------------*/
@@ -1070,8 +1070,8 @@
     "temp_bnf_opt" : {"low" : 18, "high" : 35},  /* Yu and Zhuang 2020 grassland*/
     "swc_bnf" : {"low" : SWC_BNF_LOW, "high" : SWC_BNF_HIGH},
     "phi_bnf" : [PHI_BNF_1, PHI_BNF_2],
-    "nfixpot" : 0.05,  /* Yu and Zhuang 2020 grassland*/
-    "maxbnfcost" : MAXBNFCOST,
+    "nfixpot" : 0.01,  /* Yu and Zhuang 2020 minimum*/
+    "maxbnfcost" : MAXBNFCOSTTR,
     "bnf_cost" : BNF_COST 
   },
 /*--------------------------------------------------------------------------*/
@@ -1140,7 +1140,7 @@
     "temp" : { "low" : -39.0, "high" : 15.5 }, /* lower and upper coldest monthly mean temperature(deg C) 28 29*/
     "soc_k" : 0.38184,     /* shape factor for soil organic matter vertical distribution*/
     "alpha_fuelp" : 0.0000667, /* scaling factor nesterov fire danger index */
-    "vpd_par" : 4.0, /*scaling factor vpd fire danger index*/
+    "vpd_par" : 4, /*scaling factor vpd fire danger index*/
     "fuelbulkdensity" : 4.0, /* fuel bulk density */
     "emission_factor" : { "co2" : 1568.0, "co" :  106.0, "ch4" : 4.80, "voc" : 5.70, "tpm" : 17.60, "nox" : 3.240}, /* emission factors */
     "aprec_min" : 100,       /* minimum annual precipitation to establish */
@@ -1164,8 +1164,8 @@
     "temp_bnf_opt" : {"low" : 18, "high" : 35},  /* Yu and Zhuang 2020 grassland*/
     "swc_bnf" : {"low" : SWC_BNF_LOW, "high" : SWC_BNF_HIGH},
     "phi_bnf" : [PHI_BNF_1, PHI_BNF_2],
-    "nfixpot" : 0.05,  /* Yu and Zhuang 2020 grassland*/
-    "maxbnfcost" : MAXBNFCOST,
+    "nfixpot" : 0.01,  /* Yu and Zhuang 2020 minimum*/
+    "maxbnfcost" : MAXBNFCOSTTE,
     "bnf_cost" : BNF_COST 
   },
 /*--------------------------------------------------------------------------*/
@@ -1258,8 +1258,8 @@
     "temp_bnf_opt" : {"low" : 18, "high" : 35},  /* Yu and Zhuang 2020 grassland*/
     "swc_bnf" : {"low" : SWC_BNF_LOW, "high" : SWC_BNF_HIGH},
     "phi_bnf" : [PHI_BNF_1, PHI_BNF_2],
-    "nfixpot" : 0.05,  /* Yu and Zhuang 2020 grassland*/
-    "maxbnfcost" : MAXBNFCOST,
+    "nfixpot" : 0.01,  /* Yu and Zhuang 2020 minimum*/
+    "maxbnfcost" : MAXBNFCOSTBO,
     "bnf_cost" : BNF_COST 
   },
 /*----------------------------------------------------------------------------------------*/
@@ -1272,7 +1272,7 @@
     "cn" : [30.0, 55.0, 70.0, 77.0], /* curve number */
     "beta_root" : 0.975,    /* beta_root */
     "minwscal" : 0.00,      /* minwscal 3*/
-    "gmin"  : 0.2,          /* gmin 4*/
+    "gmin"  : 0.64,          /* gmin 4; increase for N-version acc. to proportion in LPJmL4 difference PFT1*/
     "respcoeff" : 0.2,      /* respcoeff 5*/
     "nmax" : 100.0,          /* nmax 7*/
     "resist" : 1.0,         /* resist 8*/
@@ -1286,7 +1286,7 @@
     "twmax_daily" : 1000.0,  /* twmax_daily 31*/
     "gddbase" : 5.0,        /* gddbase (deg C) 33*/
     "min_temprange" : -1000.0,/* min_temprange 34*/
-    "emax": 7.0,            /* emax 35*/
+    "emax": 10.0,            /* emax 35; increase for N-version acc. to proportion in LPJmL4 difference PFT1*/
     "intc" : 0.02,          /* intc 36*/
     "alphaa" : 0.8,         /* alphaa, fraction of PAR assimilated at ecosystem level, relative to leaf level */
     "albedo_leaf" : 0.13,   /* albedo of green leaves */
@@ -1338,8 +1338,8 @@
     "kNmin": 0.05,                /* kNmin, Rate of N uptake not associated with Michaelis-Menten Kinetics, Zaehle&Friend 2000 */
     "KNmin" : 1.48,               /* KNmin, Half saturation concentration of fine root N uptake, Smith et al. 2014 */
     "cnratio_leaf": {"low": CN_BL_EG_MN, "median" : CN_BL_EG_MD, "high" : CN_BL_EG_MX}, /* 10.7 79.4 cnleaf min max, based on TRY data, prepared by Boris Sakschewski */
-    "knstore" : 0.1,       /* knstore, Smith et al. 2014 */
-    "fn_turnover" : FN_TURNOVER, /* fraction of N not recovered before turnover */
+    "knstore" : 0.15,       /* knstore */
+    "fn_turnover" : FN_TURNOVER_EV_BR, /* fraction of N not recovered before turnover */
     "windspeed_dampening" : 0.4, /* windspeed dampening */
     "roughness_length" : 1.0,/* roughness length */
     "irrig_threshold" : { "dry" : IRRIG_THRESHOLD_C3_DRY, "humid" : IRRIG_THRESHOLD_C3_HUMID },
@@ -1354,7 +1354,7 @@
     "allom2" : 35,
     "allom3" : 0.75,
     "allom4" : ALLOM4,
-    "k_latosa" : K_LATOSA,
+    "k_latosa" : 4000,      /* represent species investing in biomass (wood) production */
     "height_max" : 8,       /* maximum height of tree */
     "scorchheight_f_param" : 0.061,/* scorch height (F) */
     "crownlength" : 0.10 , /* crown length (CL) */
@@ -1377,7 +1377,7 @@
     "cn" : [30.0, 55.0, 70.0, 77.0], /* curve number */
     "beta_root" : 0.966,    /* beta_root */
     "minwscal" : 0.00,      /* minwscal 3*/
-    "gmin"  : 0.2,          /* gmin 4*/
+    "gmin"  : 0.4,          /* gmin 4; increase for N-version acc. to proportion in LPJmL4 difference PFT5*/
     "respcoeff" : 1.0,      /* respcoeff 5*/
     "nmax" : 120.0,          /* nmax 7*/
     "resist" : 0.95,        /* resist 8*/
@@ -1391,7 +1391,7 @@
     "twmax_daily" : 1000.0,  /* twmax_daily 31*/
     "gddbase" : 5.0,        /* gddbase (deg C) 33*/
     "min_temprange" : -1000.0,/* min_temprange 34*/
-    "emax": 5.0,            /* emax 35*/
+    "emax": 7.0,            /* emax 35; increase for N-version acc. to proportion in LPJmL4 difference PFT5*/
     "intc" : 0.02,          /* intc 36*/
     "alphaa" : 0.8,         /* alphaa, fraction of PAR assimilated at ecosystem level, relative to leaf level */
     "albedo_leaf" : 0.14,   /* albedo of green leaves */
@@ -1443,7 +1443,7 @@
     "kNmin": 0.05,                /* kNmin, Rate of N uptake not associated with Michaelis-Menten Kinetics, Zaehle&Friend 2000 */
     "KNmin" : 1.48,               /* KNmin, Half saturation concentration of fine root N uptake, Smith et al. 2014 */
     "cnratio_leaf": {"low": CN_BL_DC_MN, "median" : CN_BL_DC_MD, "high" : CN_BL_DC_MX}, /* 10.7 79.4 cnleaf min max, based on TRY data, prepared by Boris Sakschewski */
-    "knstore" : 0.1,       /* knstore, Smith et al. 2014 */
+    "knstore" : 0.15,       /* knstore */
     "fn_turnover" : FN_TURNOVER, /* fraction of N not recovered before turnover */
     "windspeed_dampening" : 0.4,  /* windspeed dampening */
     "roughness_length" : 1.0,     /* roughness length */
@@ -1461,7 +1461,7 @@
     "allom2" : 35,
     "allom3" : 0.75,
     "allom4" : ALLOM4,
-    "k_latosa" : K_LATOSA,
+    "k_latosa" : 4000,    /* represent species investing in biomass (wood) production */
     "height_max" : 8,       /* maximum height of tree */
     "scorchheight_f_param" : 0.0940, /* scorch height (F) */
     "crownlength" : 0.3334, /* crown length (CL) */
@@ -1477,8 +1477,8 @@
     "temp_bnf_opt" : {"low" : 18, "high" : 35},  /* Yu and Zhuang 2020 temperate deciduous forest*/
     "swc_bnf" : {"low" : SWC_BNF_LOW, "high" : SWC_BNF_HIGH},
     "phi_bnf" : [PHI_BNF_1, PHI_BNF_2],
-    "nfixpot" : 0.55,  /* Yu and Zhuang 2020 temperate deciduous forest*/
-    "maxbnfcost" : MAXBNFCOST,
+    "nfixpot" : 0.01,  /* Yu and Zhuang 2020 minimum*/
+    "maxbnfcost" : MAXBNFCOSTTE,
     "bnf_cost" : BNF_COST 
   },
 /*--------------------------------------------------------------------------*/
@@ -1491,7 +1491,7 @@
     "cn" : [39.0, 61.0, 74.0, 80.0], /* curve number */
     "beta_root" : 0.972,    /* beta_root */
     "minwscal" : 0.20,      /* minwscal 3*/
-    "gmin"  : 0.5,          /* gmin 4*/
+    "gmin"  : 1.5,          /* gmin 4; acc. to PFT 9*/
     "respcoeff" : 0.2,      /* respcoeff 5*/
     "nmax" : 100.0,          /* nmax 7*/
     "resist" : 1.0,         /* resist 8*/
@@ -1499,15 +1499,15 @@
     "lmro_ratio" : 0.75,   /* lmro_ratio 18*/
     "lmro_offset" : 0.5,     /* lmro_ratio 18*/
     "ramp" : 100.0,          /* ramp 19*/
-    "lai_sapl" : 0.001,     /* lai_sapl 21*/
+    "lai_sapl" : 0.1,     /* lai_sapl 21; acc. to PFT 9*/
     "gdd5min" : 0.0,        /* gdd5min 30*/
     "twmax" : 1000.0,        /* twmax 31*/
     "twmax_daily" : 1000.0,  /* twmax_daily 31*/
     "gddbase" : 5.0,        /* gddbase (deg C) 33*/
     "min_temprange" : -1000.0,/* min_temprange 34*/
-    "emax": 7.0,            /* emax 35*/
+    "emax": 10.0,            /* emax 35; acc. to PFT 9*/
     "intc" : 0.01,          /* intc 36*/
-    "alphaa" : ALPHAA_NITROGEN, /* alphaa, fraction of PAR assimilated at ecosystem level, relative to leaf level */
+    "alphaa" : 0.8, /* alphaa; extremely homogenous plantation*/
     "albedo_leaf" : 0.21,   /* albedo of green leaves */
     "albedo_stem" : 0.15,   /* albedo of stems */
     "albedo_litter" : 0.1,  /* albedo of litter */
@@ -1557,7 +1557,7 @@
     "kNmin": 0.05,                /* kNmin, Rate of N uptake not associated with Michaelis-Menten Kinetics, Zaehle&Friend 2000 */
     "KNmin" : 1.19,               /* KNmin, Half saturation concentration of fine root N uptake, Smith et al. 2014 */
     "cnratio_leaf": {"low": CN_GC4_MN, "median" : CN_GC4_MD, "high" : CN_GC4_MX}, /* 10.7 79.4 cnleaf min max, based on TRY data, prepared by Boris Sakschewski */
-    "knstore" : 0.1,       /* knstore, Smith et al. 2014 */
+    "knstore" : 0.05,       /* knstore, acc. to PFT 9 */
     "fn_turnover" : FN_TURNOVER_GR, /* fraction of N not recovered before turnover */
     "windspeed_dampening" : 0.6,/* windspeed dampening */
     "roughness_length" : 0.03,  /* roughness length */
@@ -1570,8 +1570,8 @@
     "temp_bnf_opt" : {"low" : 18, "high" : 35},  /* Yu and Zhuang 2020 grassland*/
     "swc_bnf" : {"low" : SWC_BNF_LOW, "high" : SWC_BNF_HIGH},
     "phi_bnf" : [PHI_BNF_1, PHI_BNF_2],
-    "nfixpot" : 0.05,  /* Yu and Zhuang 2020 grassland*/
-    "maxbnfcost" : MAXBNFCOST,
+    "nfixpot" : 0.01,  /* Yu and Zhuang 2020 minimum*/
+    "maxbnfcost" : MAXBNFCOSTTR,
     "bnf_cost" : BNF_COST 
   },
 /*--------------------------------------------------------------------------*/
@@ -1856,7 +1856,7 @@
     },
     "mort_max" : MORT_MAX,  /* asymptotic maximum mortality rate (1/year) */
     "phenology" : "cropgreen",/* phenology */
-    "path" : C4,            /* pathway */
+    "path" : "C4",            /* pathway */
     "temp_co2" : { "low" : 8.0, "high" : 42.0 }, /* lower and upper temperature limit for co2 (deg C) 24 27*/
     "temp_photos" : { "low" : 21.0, "high" : 26.0},/* lower and upper limit of temperature optimum for photosynthesis(deg C) 25 26*/
     "b":  BC4, /* leaf respiration as fraction of Vmax for C4 plants */
