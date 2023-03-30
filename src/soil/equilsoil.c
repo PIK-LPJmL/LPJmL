@@ -7,10 +7,8 @@
 /**     SOIL DECOMPOSITION EQUILIBRIUM CALCULATION                                 \n**/
 /**                                                                                \n**/
 /**     Analytical solution of differential flux equations for fast and            \n**/
-/**     slow soil carbon pools.  Implemented after (soil_equil_year)               \n**/
-/**     simulation years, when annual litter inputs should be close to             \n**/
-/**     equilibrium.  Assumes average climate (temperature and soil                \n**/
-/**     moisture) from all years up to soil_equil_year.                            \n**/
+/**     slow soil carbon pools.  Needs be to called several times to reach         \n**/
+/**     equilibrium.                                                               \n**/
 /**                                                                                \n**/
 /**       Rate of change of soil pool size = litter input - decomposition          \n**/
 /**         (5) dc/dt = litter_decom - kc                                          \n**/

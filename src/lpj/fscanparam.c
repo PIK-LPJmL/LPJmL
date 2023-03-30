@@ -127,6 +127,7 @@ Bool fscanparam(LPJfile *file,       /**< File pointer to text file */
   fscanparamint(&f,&param.nequilsoil,"nequilsoil");
   fscanparamint(&f,&param.equisoil_interval,"equisoil_interval");
   fscanparamint(&f,&param.equisoil_years,"equisoil_years");
+  fscanparamint(&f,&param.equisoil_fadeout,"equisoil_fadeout");
   fscanparamreal(&f,&param.k_mort,"k_mort");
   fscanparamreal01(&f,&param.fpc_tree_max,"fpc_tree_max");
   fscanparamreal(&f,&param.temp_response,"temp_response");

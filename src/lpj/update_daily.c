@@ -289,7 +289,7 @@ void update_daily(Cell *cell,            /**< cell pointer           */
     if(config->with_nitrogen)
     {
       if(config->with_nitrogen==UNLIM_NITROGEN || 
-         (!config->from_restart && param.veg_equil_unlim && year<=(config->firstyear-config->nspinup+param.veg_equil_year)))
+         (config->equilsoil && param.veg_equil_unlim && year<=(config->firstyear-config->nspinup+param.veg_equil_year)))
       {
         if(stand->soil.par->type==ROCK)
         {

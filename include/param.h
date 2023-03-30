@@ -43,7 +43,8 @@ typedef struct
   Bool veg_equil_unlim; /**< enable vegetation spinup without nitrogen limitation */
   int nequilsoil;         /**< number of equisoil calls */
   int equisoil_interval;  /**< time interval between equisoil calls */
-  int equisoil_years;     /**< number of years used in calculation fo equisoil */
+  int equisoil_years;     /**< number of years used in calculation for equisoil */
+  int equisoil_fadeout;   /**< number of years for equisoil fadeout (for final call of equisoil) */
   Real k_max;        /**< maximum fraction of soil->NH4 assumed to be nitrified Parton, 2001*/
   Real k_2;          /**< fraction of nitrified N lost as N20 flux Parton, 2001*/
 
