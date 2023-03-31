@@ -45,7 +45,7 @@ typedef struct
 
 typedef enum {NO_SEASONALITY, PRECIP, PRECIPTEMP, TEMPERATURE, TEMPPRECIP} Seasonality;
 
-typedef enum {GS_DEFAULT, GS_MOWING, GS_GRAZING_EXT, GS_GRAZING_INT, GS_NONE} GrassScenarioType;
+typedef enum {GS_DEFAULT, GS_MOWING, GS_GRAZING_EXT, GS_GRAZING_INT, GS_GRAZING_LIVE, GS_NONE} GrassScenarioType;
 
 typedef struct
 {
@@ -89,6 +89,7 @@ typedef struct
   Bool with_tillage;      /* simulation with tillage implementation */
   int fixed_grass_pft;              /**< fix C3 or C4 for GRASS pft */
   GrassScenarioType grass_scenario; /**< 0=default, 1=mowing, 2=ext.grazing, 3=int.grazing */
+  Real grassland_lsuha;             /**< livestock density on grassland in LSU/ha */
 #if defined IMAGE && defined COUPLED
   Image_data *image_data; /**< pointer to IMAGE data structure */
 #endif
