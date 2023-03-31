@@ -52,10 +52,16 @@ Bool readconfig(Config *config,        /**< LPJ configuration */
 #ifdef USE_JSON
     if(parse_json(file,&lpjfile,s,verbosity))
     {
-      pclose(file);
+      if(config->nopp)
+        fclose(file);
+      else
+        pclose(file);
       return TRUE;
     }
-    pclose(file);
+    if(config->nopp)
+      fclose(file);
+    else
+      pclose(file);
     if(fscanstring(&lpjfile,s,"sim_name",FALSE,verbosity))
     {
       if(verbosity)
