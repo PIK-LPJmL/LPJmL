@@ -32,5 +32,5 @@ void equilsom(Cell *cell,           /**< pointer to cell */
   Stand *stand;
   
   foreachstand(stand,s,cell->standlist)
-    equilsoil2(&stand->soil,ntotpft,pftpar,shift);
+    equilsoil(&stand->soil,ntotpft,pftpar,shift);
 } /* of 'equilsom' */
