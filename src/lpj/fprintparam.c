@@ -57,7 +57,7 @@ void fprintparam(FILE *file,    /**< pointer to text file */
   if(config->equilsoil)
   {
     fprintf(file,"veg_equil_year:\t%d\n",param.veg_equil_year);
-    fprintf(file,"veg_equil_unlim:\t%d\n",param.veg_equil_unlim);
+    fprintf(file,"veg_equil_unlim:\t%s\n",bool2str(param.veg_equil_unlim));
     fprintf(file,"nequilsoil:\t%d\n",param.nequilsoil);
     fprintf(file,"equisoil_interval:\t%d\n",param.equisoil_interval);
     fprintf(file,"equisoil_years:\t%d\n",param.equisoil_years);
