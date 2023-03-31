@@ -21,8 +21,14 @@
 #include <json-c/json.h>
 #include "types.h"
 
-Bool isnull(const LPJfile *file /**< pointer to a LPJ file             */
-           )                    /** \return TRUE if JSON object is null */
+Bool isnull(const LPJfile *file, /**< pointer to a LPJ file             */
+            const char *key      /**< key or NULL */
+           )                     /** \return TRUE if JSON object is null */
 {
-  return json_object_get_type(file)==json_type_null;
+  struct json_object *item;
+  if(key==NULL)
+    return json_object_get_type(file)==json_type_null;
+  if(!json_object_object_get_ex(file,key,&item))
+    return FALSE;
+  return json_object_get_type(item)==json_type_null;
 } /* of 'isnull' */

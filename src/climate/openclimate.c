@@ -26,13 +26,38 @@ Bool openclimate(Climatefile *file,        /**< pointer to climate file */
 {
   Header header;
   String headername;
-  int last,version,count;
+  int last,version,count,nbands;
   char *s;
   size_t offset,filesize;
   file->fmt=filename->fmt;
   if(filename->fmt==FMS)
   {
     file->time_step=DAY;
+    file->firstyear=config->firstyear;
+    return FALSE;
+  }
+  if(filename->fmt==SOCK)
+  {
+    if(openinput_coupler(filename->id,LPJ_FLOAT,config->nall,&nbands,config))
+      return TRUE;
+    if(nbands==NDAYYEAR)
+    {
+      file->time_step=DAY;
+      file->n=NDAYYEAR*config->ngridcell;
+    }
+    else if(nbands==NMONTH)
+    {
+      file->time_step=MONTH;
+      file->n=NMONTH*config->ngridcell;
+    }
+    else
+    {
+      if(isroot(*config))
+        fprintf(stderr,"ERROR127: Invalid number of bands %d received from socket, must be 12 or 365.\n",
+                nbands);
+      return TRUE;
+    }
+    file->id=filename->id;
     file->firstyear=config->firstyear;
     return FALSE;
   }

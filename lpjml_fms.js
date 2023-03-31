@@ -32,6 +32,7 @@
 
 "sim_name" : "LPJmL coupled to POEM", /* Simulation description */
 "sim_id"   : "lpjml_fms",       /* LPJML Simulation type coupled to POEM */
+"coupled_model" : null,         /* no model coupling */
 "random_prec" : false,       /* Random weather generator for precipitation disabled */
 "random_seed" : 2,
 "radiation" : "radiation",

@@ -104,9 +104,9 @@ static Bool fscanpftirrig(LPJfile *file,Irrig_threshold *irrig_threshold,const c
   f=fscanstruct(file,name,verb);
   if(f==NULL)
     return TRUE;
-  if(fscanreal(f,&irrig_threshold->dry,"dry",FALSE,verb))
+  if(fscanreal01(f,&irrig_threshold->dry,"dry",FALSE,verb))
     return TRUE;
-  if(fscanreal(f,&irrig_threshold->humid,"humid",FALSE,verb))
+  if(fscanreal01(f,&irrig_threshold->humid,"humid",FALSE,verb))
     return TRUE;
   return FALSE;
 } /* of 'fscanpftirrig' */
