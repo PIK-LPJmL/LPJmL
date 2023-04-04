@@ -124,7 +124,7 @@ void fuelload(const Stand *stand, /**< pointer to stand */
     ratio_c3_livegrass = 0;
     ratio_c4_livegrass = 0;
   }
-
+  getoutput(&stand->cell->output,DLM_LIVEGRASS,config)+=livefuel->dlm_livegrass;
   /* Livegrass weighted average fbd */
 
   /*   NEED TO STORE C3/C4 FBD and STORE GRASS FBD AVE -???*/

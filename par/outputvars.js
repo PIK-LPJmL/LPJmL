@@ -65,6 +65,7 @@
   { "id" : FIREF, "name": "firef", "timestep" : "annual", "var" : "Firef", "descr" : "fire interval", "unit" : "yr", "scale" : 1.0, "offset" : 0.0},
   { "id" : FUEL, "name": "fuel", "timestep" : "monthly", "var" : "fuel", "descr" : "class-specific fire fuel", "unit" : "g/m2", "scale" : 1.0, "offset" : 0.0},
   { "id" : LIVEGRASS, "name": "livegrass", "timestep" : "monthly", "var" : "livegrass", "descr" : "live grass fuel", "unit" : "g/m2", "scale" : 1.0, "offset" : 0.0},
+   { "id" : DLM_LIVEGRASS, "name": "dlm_livegrass", "timestep" : "monthly", "var" : "dlm_livegrass", "descr" : "litter moisture live grass", "unit" : "", "scale" : 1.0, "offset" : 0.0},
   { "id" : VEGC, "name": "vegc", "timestep" : "annual", "var" : "VegC", "descr" : "vegetation carbon", "unit" : "gC/m2", "scale" : 1.0, "offset" : 0.0},
   { "id" : SOILC, "name": "soilc", "timestep" : "annual", "var" : "SoilC", "descr" : "total soil carbon density", "unit" : "gC/m2", "scale" : 1.0, "offset" : 0.0},
   { "id" : LITC, "name": "litc", "timestep" : "annual", "var" : "LitC", "descr" : "litter carbon", "unit" : "gC/m2", "scale" : 1.0, "offset" : 0.0},
