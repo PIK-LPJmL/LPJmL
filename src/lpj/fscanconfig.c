@@ -291,11 +291,11 @@ Bool fscanconfig(Config *config,    /**< LPJ configuration */
   config->black_fallow=FALSE;
   config->double_harvest=FALSE;
   config->others_to_crop = FALSE;
-  config->ma_bnf = FALSE;
+  config->npp_controlled_bnf = FALSE;
   config->prescribe_lsuha=FALSE;
   if(config->with_nitrogen)
   {
-    if(fscanbool(file,&config->ma_bnf,"ma_bnf",TRUE,verbose))
+    if(fscanbool(file,&config->npp_controlled_bnf,"npp_controlled_bnf",TRUE,verbose))
       return TRUE;
   }
   config->soilpar_option=NO_FIXED_SOILPAR;

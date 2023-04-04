@@ -340,7 +340,7 @@ void update_daily(Cell *cell,            /**< cell pointer           */
 
     } /* of if(config->with_nitrogen) */
 
-    if(config->with_nitrogen && !config->ma_bnf)
+    if(config->with_nitrogen && !config->npp_controlled_bnf)
     {
       bnf=biologicalnfixation(stand);
       stand->soil.NH4[0]+=bnf;

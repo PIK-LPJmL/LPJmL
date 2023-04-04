@@ -106,7 +106,7 @@
   "crop_phu_option" : "new",
   "cropsheatfrost" : false,
   "double_harvest" : true,
-  "ma_bnf" : true,
+  "npp_controlled_bnf" : true,
 
 /*===================================================================*/
 /*  II. Input parameter section                                      */
