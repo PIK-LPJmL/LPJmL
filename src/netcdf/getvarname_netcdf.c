@@ -21,7 +21,7 @@
 #endif
 
 char *getvarname_netcdf(const Climatefile *file /**< climate data file */
-                    )                           /** \return name or NULL */
+                       )                        /** \return name or NULL */
 {
 #if defined(USE_NETCDF) || defined(USE_NETCDF4)
   char name[NC_MAX_NAME];
