@@ -187,6 +187,8 @@ void fuelload(const Stand *stand, /**< pointer to stand */
   }
   livefuel->M[1] = 9999; /* placeholder value for live woody */
   /* Livegrass weighted average fbd - OLD METHOD, SHOULD BE REPLACED*/
+  getoutput(&stand->cell->output,DLM_LIVEGRASS,config)+=livefuel->M[0];
+  /* Livegrass weighted average fbd */
 
   /*   NEED TO STORE C3/C4 FBD and STORE GRASS FBD AVE -???*/
   /* average fuel bulk density for live and dead fuel*/

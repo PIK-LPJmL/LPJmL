@@ -1050,6 +1050,7 @@ void fwriteoutput(Outputfile *output,  /**< output file array */
   writeoutputarray(SOILTEMP,ndate1);
   writeoutputarray(FUEL,ndate1);
   writeoutputvar(LIVEGRASS,ndate1);
+  writeoutputvar(DLM_LIVEGRASS,ndate1);
   writeoutputvar(SOILTEMP1,ndate1);
   writeoutputvar(SOILTEMP2,ndate1);
   writeoutputvar(SOILTEMP3,ndate1);
