@@ -77,7 +77,7 @@ extern Bool fwriteignition(FILE *,const Ignition *);
 extern Bool freadignition(FILE *,Ignition *,Bool);
 extern void fprintignition(FILE *,const Ignition *);
 extern Real getvpd(const Dailyclimate *,Bool);
-extern Real growing_season_index(Real,const Dailyclimate *,Bool,Real);
+extern Real growing_season_index(Real,Real *,const Dailyclimate *,Bool,Real);
 
 /* Definition of constants */
 
