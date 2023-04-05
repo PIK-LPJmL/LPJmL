@@ -220,6 +220,7 @@ struct config
   int ntask;     /**< number of parallel tasks */
   int count;     /**< number of grid cells with valid soilcode */
   int fire;      /**< fire disturbance enabled */
+  Bool gsilivefuel; /**< GSI livefuel enabled (TRUE/FALSE) */
   int firewood;  /**< fire wood usage */
   int seed_start;      /**< initial seed for random number generator */
   Bool new_seed;

@@ -132,7 +132,11 @@ void fprintcell(FILE *file,            /**< file pointer to text file */
 #endif
       }
       if(config->fire==SPITFIRE || config->fire==SPITFIRE_TMAX)
+      {
         fprintignition(file,&grid[cell].ignition);
+        if(config->gsilivefuel)
+          fprintf(file,"GSI livefuel:\t%g\n",grid[cell].gsi_cum);
+      }
       fprintf(file,"excess water:\t%g (mm)\n",grid[cell].balance.excess_water);
       fprintstandlist(file,grid[cell].standlist,config->pftpar,npft+ncft,config->with_nitrogen);
     }

@@ -130,6 +130,8 @@ void update_daily(Cell *cell,            /**< cell pointer           */
     }
     beta=albedo_stand(stand);
     radiation(&daylength,&par,&eeq,cell->coord.lat,day,&climate,beta,config->with_radiation);
+    if(config->gsilivefuel)
+      cell->gsi_cum=growing_season_index(cell->gsi_cum,&climate,config->relative_humidity,daylength);
     getoutput(&cell->output,PET,config)+=eeq*PRIESTLEY_TAYLOR*stand->frac;
     cell->output.mpet+=eeq*PRIESTLEY_TAYLOR*stand->frac;
     getoutput(&cell->output,ALBEDO,config) += beta * stand->frac;

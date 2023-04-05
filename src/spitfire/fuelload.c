@@ -105,16 +105,23 @@ void fuelload(const Stand *stand, /**< pointer to stand */
   /* Compute dry litter moisture for livegrass from soil moisture */
   if(livegrass > 0)
   {
-    /*TODO*/
-    if(stand->soil.litter.agtop_cover<epsilon)
-       mean_w=((stand->soil.w[0]*stand->soil.whcs[0]+stand->soil.w_fw[0]+stand->soil.wpwps[0]+
-               stand->soil.ice_depth[0]+stand->soil.ice_fw[0])/stand->soil.wsats[0]+
-               (stand->soil.w[1]*stand->soil.whcs[1]+stand->soil.w_fw[1]+stand->soil.wpwps[1]+
-               stand->soil.ice_depth[1]+stand->soil.ice_fw[1])/stand->soil.wsats[1])/2 ;
+    if(config->gsilivefuel)
+    {
+      livefuel->dlm_livegrass=max(0.3,min(2.5,4.4*stand->cell->gsi_cum-1.9));
+    }
     else
-      mean_w=stand->soil.litter.agtop_moist;
-    livefuel->dlm_livegrass = (0.0 > ((10.0/9.0) * mean_w -(1.0/9.0)) ?
-                                0 : ((10.0/9.0) * mean_w -(1.0/9.0)));
+    {
+      /*TODO*/
+      if(stand->soil.litter.agtop_cover<epsilon)
+         mean_w=((stand->soil.w[0]*stand->soil.whcs[0]+stand->soil.w_fw[0]+stand->soil.wpwps[0]+
+                 stand->soil.ice_depth[0]+stand->soil.ice_fw[0])/stand->soil.wsats[0]+
+                 (stand->soil.w[1]*stand->soil.whcs[1]+stand->soil.w_fw[1]+stand->soil.wpwps[1]+
+                 stand->soil.ice_depth[1]+stand->soil.ice_fw[1])/stand->soil.wsats[1])/2 ;
+      else
+        mean_w=stand->soil.litter.agtop_moist;
+      livefuel->dlm_livegrass = (0.0 > ((10.0/9.0) * mean_w -(1.0/9.0)) ?
+                                  0 : ((10.0/9.0) * mean_w -(1.0/9.0)));
+    }
     ratio_c3_livegrass = livefuel->pot_fc_lg_c3 / livegrass;
     ratio_c4_livegrass = livefuel->pot_fc_lg_c4 / livegrass;
   }

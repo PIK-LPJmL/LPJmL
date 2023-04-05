@@ -124,6 +124,7 @@ Received 19 November 1997; accepted 15 January 1999*/
   const Real *landcover;    /**< prescribed landcover or NULL */
   Balance balance;          /**< balance checks */
   Real max_firesize;        /**< maximum fire size (hectare) */
+  Real gsi_cum;             /**< cumulative GSI */
   Seed seed;                /**< seed for random generator */
 #if defined IMAGE && defined COUPLED
   Real npp_nat;             /**< NPP natural stand */

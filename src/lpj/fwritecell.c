@@ -110,6 +110,7 @@ int fwritecell(FILE *file,        /**< File pointer of binary file */
         fwrite(&grid[cell].ml.product,sizeof(Pool),1,file);
 #endif
       }
+      fwrite(&grid[cell].gsi_cum,sizeof(Real),1,file);
       if(grid[cell].ml.fertilizer_nr!=NULL)
         fwritelandfrac(file,grid[cell].ml.fertilizer_nr,ncft,config->nagtree);
       if(ischeckpoint && config->n_out)
