@@ -40,6 +40,7 @@
   "random_seed" : 2,        /* seed for random number generator */
   "radiation" : "radiation",/* other options: "cloudiness", "radiation", "radiation_swonly", "radiation_lwdown" */
   "fire" : "fire",          /* fire disturbance enabled, other options: NO_FIRE, FIRE, SPITFIRE, SPITFIRE_TMAX (for GLDAS input data) */
+  "gsilivefuel" : true,
   "fdi" : "nesterov",       /* different fire danger index formulations: "wvpd" (needs GLDAS input data), "nesterov" */
   "human_ign_prob" : false,
   "max_fireduration" : [{"stand" : "grassland", "duration" : 60.0, "ndayfire" : 0}], /* max fire duration for specfic stands */

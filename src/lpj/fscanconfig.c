@@ -256,8 +256,11 @@ Bool fscanconfig(Config *config,    /**< LPJ configuration */
   config->prescribe_ignition=FALSE;
   config->max_firesize=FALSE;
   config->ishuman_ign_prob=FALSE;
+  config->gsilivefuel=FALSE;
   if(config->fire==SPITFIRE  || config->fire==SPITFIRE_TMAX)
   {
+    if(fscanbool(file,&config->gsilivefuel,"gsilivefuel",TRUE,verbose))
+      return TRUE;
     if(fscankeywords(file,&config->fdi,"fdi",fdi,2,FALSE,verbose))
       return TRUE;
     if(config->fdi==WVPD_INDEX && verbose)

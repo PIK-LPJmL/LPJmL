@@ -279,6 +279,8 @@ void fprintconfig(FILE *file,          /**< File pointer to text output file */
     if(config->fire==SPITFIRE || config->fire==SPITFIRE_TMAX)
       len=printsim(file,len,&count,fdi[config->fdi]);
   }
+  if(config->gsilivefuel)
+    len=printsim(file,len,&count,"GSI livefuel");
   if(config->const_climate)
     len=printsim(file,len,&count,"const. climate");
   if(config->shuffle_climate)

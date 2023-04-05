@@ -143,6 +143,7 @@ Bool freadcell(FILE *file,             /**< File pointer to binary file */
     checkptr(cell->ml.gs);
     if(freadint(cell->ml.gs,2*ncft,swap,file)!=2*ncft)
       return TRUE;
+    freadreal1(&cell->gsi_cum,swap,file);
     if(cell->ml.landfrac!=NULL && config->landuse_restart)
     {
       freadlandfrac(file,cell->ml.landfrac,ncft,config->nagtree,swap);
