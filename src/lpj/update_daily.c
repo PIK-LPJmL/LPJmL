@@ -15,6 +15,7 @@
 /**************************************************************************************/
 
 #include "lpj.h"
+#include "grass.h"
 
 #define length 1.0 /* characteristic length (m) */
 #ifdef IMAGE
@@ -60,6 +61,7 @@ void update_daily(Cell *cell,            /**< cell pointer           */
   Real rootdepth=0.0;
   const Real prec_save=climate.prec;
   Real agrfrac;
+  Real gsi;
   Real litsum_old_nv[2]={0,0},litsum_new_nv[2]={0,0};
   Real litsum_old_agr[2]={0,0},litsum_new_agr[2]={0,0};
 
@@ -131,7 +133,16 @@ void update_daily(Cell *cell,            /**< cell pointer           */
     beta=albedo_stand(stand);
     radiation(&daylength,&par,&eeq,cell->coord.lat,day,&climate,beta,config->with_radiation);
     if(config->gsilivefuel)
-      cell->gsi_cum=growing_season_index(cell->gsi_cum,&climate,config->relative_humidity,daylength);
+    {
+      if(s==0)
+      {
+        cell->gsi_cum=growing_season_index(cell->gsi_cum,&gsi,&climate,config->relative_humidity,daylength);
+        getoutput(&cell->output,GSI_CUM,config)+=cell->gsi_cum;
+      }
+      foreachpft(pft, p, &stand->pftlist)
+        if(isgrass(pft))
+          getoutput(&cell->output,GSI_DIFF,config)+=(gsi-pft->phen)*(gsi-pft->phen);
+    }
     getoutput(&cell->output,PET,config)+=eeq*PRIESTLEY_TAYLOR*stand->frac;
     cell->output.mpet+=eeq*PRIESTLEY_TAYLOR*stand->frac;
     getoutput(&cell->output,ALBEDO,config) += beta * stand->frac;

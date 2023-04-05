@@ -65,6 +65,8 @@
   { "id" : FIREF, "name": "firef", "timestep" : "annual", "var" : "Firef", "descr" : "fire interval", "unit" : "yr", "scale" : 1.0, "offset" : 0.0},
   { "id" : FUEL, "name": "fuel", "timestep" : "monthly", "var" : "fuel", "descr" : "class-specific fire fuel", "unit" : "g/m2", "scale" : 1.0, "offset" : 0.0},
   { "id" : LIVEGRASS, "name": "livegrass", "timestep" : "monthly", "var" : "livegrass", "descr" : "live grass fuel", "unit" : "g/m2", "scale" : 1.0, "offset" : 0.0},
+  { "id" : GSI_CUM, "name": "gsi_cum", "timestep" : "monthly", "var" : "gsicum", "descr" : "cumulative GSI live fuel", "unit" : "", "scale" : 1.0, "offset" : 0.0},
+  { "id" : GSI_DIFF, "name": "gsi_diff", "timestep" : "monthly", "var" : "gsidiff", "descr" : "mean square difference between GSI and grass phenology", "unit" : "", "scale" : 1.0, "offset" : 0.0},
    { "id" : DLM_LIVEGRASS, "name": "dlm_livegrass", "timestep" : "monthly", "var" : "dlm_livegrass", "descr" : "litter moisture live grass", "unit" : "", "scale" : 1.0, "offset" : 0.0},
   { "id" : VEGC, "name": "vegc", "timestep" : "annual", "var" : "VegC", "descr" : "vegetation carbon", "unit" : "gC/m2", "scale" : 1.0, "offset" : 0.0},
   { "id" : SOILC, "name": "soilc", "timestep" : "annual", "var" : "SoilC", "descr" : "total soil carbon density", "unit" : "gC/m2", "scale" : 1.0, "offset" : 0.0},
