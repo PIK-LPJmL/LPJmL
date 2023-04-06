@@ -1,22 +1,28 @@
-.TH statclm 1  "March 24, 2023" "version 5.5.001" "USER COMMANDS"
+.TH statclm 1  "April 6, 2023" "version 5.5.001" "USER COMMANDS"
 .SH NAME
 statclm \- print statistics of clm files
 .SH SYNOPSIS
 .B statclm
-[-scale s] [-verbose] \fIfile.clm\fP
+[-scale s] [-verbose] [-csv] [-type {byte|short|int|float|double}] \fIfile.clm ...\fP
 
 .SH DESCRIPTION
-Program prints minimum, maximaum and average of all data in a clm file.
+Program prints minimum, maximum and average of all data in a clm file.
 .SH OPTIONS
 .TP
 -scale s
 Values are scaled by a factor s if version of clm file is less than 2
 .TP
+-type {byte|short|int|float|double}
+Set datatype of clm file if version of clm file is less than 3. Default is short.
+.TP
 -verbose
 Print statistics for each year
 .TP
-.I file.cl
-filenames of clm fuile
+-csv
+Print statistics in a comma-separated format
+.TP
+.I file.clm
+filename(s) of clm files
 .SH EXAMPLE
 .TP
 Print statistics for each year:

@@ -14,7 +14,7 @@
 
 #include "lpj.h"
 
-#define USAGE "Usage: %s [-metafile] [-verbose] file1.bin file2.bin\n"
+#define USAGE "Usage: %s [-metafile] [-verbose] [-csv] file1.bin file2.bin\n"
 
 int main(int argc,char **argv)
 {
@@ -25,9 +25,9 @@ int main(int argc,char **argv)
   float val1,val2;
   double diff,max;
   Header header1,header2;
-  Bool ismeta,swap1,swap2,verbose;
+  Bool ismeta,swap1,swap2,verbose,iscsv;
   int iarg;
-  ismeta=swap1=swap2=verbose=FALSE;
+  ismeta=swap1=swap2=verbose=iscsv=FALSE;
   for(iarg=1;iarg<argc;iarg++)
     if(argv[iarg][0]=='-')
     {
@@ -35,6 +35,8 @@ int main(int argc,char **argv)
         ismeta=TRUE;
       else if(!strcmp(argv[iarg],"-verbose"))
         verbose=TRUE;
+      else if(!strcmp(argv[iarg],"-csv"))
+        iscsv=TRUE;
       else
       {
         fprintf(stderr,"Invalid option '%s'.\n",argv[iarg]);
@@ -174,11 +176,16 @@ int main(int argc,char **argv)
     diff+=fabs(val1-val2);
   }
   if(max==0)
-    printf("Files are identical.\n");
+  {
+    if(iscsv)
+      printf((ismeta) ? "0,0,0,0,0,0,0\n" : "0,0,0,0\n");
+    else
+      printf("Files are identical.\n");
+  }
   else
   {
     if(ismeta)
-      printf("max=%g at year=%ld,nstep=%ld,nbands=%ld, cell=%ld, sum=%g,avg=%g\n",
+      printf((iscsv) ? "%g,%ld,%ld,%ld,%ld,%g,%g\n" : "max=%g at year=%ld,nstep=%ld,nbands=%ld, cell=%ld, sum=%g,avg=%g\n",
              max,
              nmax/header1.ncell/header1.nstep/header1.nbands+header1.firstyear,
              (nmax/header1.ncell/header1.nbands) % header1.nstep,
@@ -186,7 +193,7 @@ int main(int argc,char **argv)
              nmax % header1.ncell,
              diff,diff/n);
     else
-      printf("max=%g at %ld, sum=%g,avg=%g\n",max,nmax,diff,diff/n);
+      printf((iscsv) ? "%g,%ld,%g,%g\n" : "max=%g at %ld, sum=%g,avg=%g\n",max,nmax,diff,diff/n);
   }
   return EXIT_SUCCESS;
 } /* of 'main' */
