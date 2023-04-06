@@ -26,9 +26,13 @@ Bool hasanysuffix(const char *name /**< filename */
     return FALSE;
 #endif
   for(i=strlen(name)-1;i>=0;i--)
+#ifdef _WIN32
+    if(name[i]=='/' || name[i]=='\\')
+#else
     if(name[i]=='/')
+#endif
       return FALSE;
-    if(name[i]=='.')
+    else if(name[i]=='.')
       return TRUE;
   return FALSE;
 } /* of 'hasanysuffix' */
