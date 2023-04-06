@@ -241,6 +241,7 @@ void fprintconfig(FILE *file,          /**< File pointer to text output file */
     fprintf(file," running on %d tasks\n",config->ntask);
   else
     putc('\n',file);
+  fprintattrs(file,config->global_attrs,config->n_global);
   len=0;
 #if defined IMAGE && defined COUPLED
   if(config->sim_id==LPJML_IMAGE)
@@ -482,7 +483,6 @@ void fprintconfig(FILE *file,          /**< File pointer to text output file */
       fprintf(file," %d",config->mowingdays[i]);
     fputc('\n',file);
   }
-  fprintattrs(file,config->global_attrs,config->n_global);
   fprintf(file,"Working directory: %s\n",getdir());
   if(isreadrestart(config))
     fprintf(file,"Starting from restart file '%s'.\n",config->restart_filename);
