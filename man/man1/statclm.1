@@ -1,0 +1,40 @@
+.TH statclm 1  "March 24, 2023" "version 5.5.001" "USER COMMANDS"
+.SH NAME
+statclm \- print statistics of clm files
+.SH SYNOPSIS
+.B statclm
+[-scale s] [-verbose] \fIfile.clm\fP
+
+.SH DESCRIPTION
+Program prints minimum, maximaum and average of all data in a clm file.
+.SH OPTIONS
+.TP
+-scale s
+Values are scaled by a factor s if version of clm file is less than 2
+.TP
+-verbose
+Print statistics for each year
+.TP
+.I file.cl
+filenames of clm fuile
+.SH EXAMPLE
+.TP
+Print statistics for each year:
+.B statclm
+-verbose temp.clm
+.PP
+.SH EXIT STATUS
+.B cmpbin
+return a zero exit status if statistics of clm file could be printed.
+Non zero is returned in case of failure.
+
+.SH AUTHORS
+
+For authors and contributors see AUTHORS file
+
+.SH COPYRIGHT
+
+(C) Potsdam Institute for Climate Impact Research (PIK), see COPYRIGHT file
+
+.SH SEE ALSO
+setclm(1), headersize(1), lpjml(1), cru2clm(1), grid2clm(1), cft2clm(1), clm(5)

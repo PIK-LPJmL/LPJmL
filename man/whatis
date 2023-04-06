@@ -12,6 +12,7 @@ cdf2coord(1) - extract CLM grid file form NetCDF file
 cdf2soil (1) - convert NetCDF file into binary file
 cft2clm (1) - convert binary landuse data files to clm data files for LPJmL
 clm2cdf (1) - convert CLM files into NetCDF files
+cmpbin (1) - compares two binary output files
 configure.sh (1) - Configure LPJmL
 country2cdf (1) - convert country/region code file into NetCDF file
 cru2clm (1) - convert raw binary data files to clm data files for LPJmL
@@ -97,6 +98,7 @@ readpopdens (3) - read population density data
 regridlpj (1) - regrid CRU input data set for selected countries
 setclm (1) - set value in header of clm files for LPJmL
 soil2cdf (1) - convert binary files into NetCDF files
+statclm (1) - print statistics of clm files
 txt2grid (1) - convert text files to clm grid data files for LPJ
 txt2clm (1) - convert CRU ASCII files to clm data files for LPJmL
 writecoords (3) - write coordinate file

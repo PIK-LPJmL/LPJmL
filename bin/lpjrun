@@ -16,10 +16,37 @@
 ##                                                                             ##
 #################################################################################
 
+hosts=""
+
+USAGE="Usage $0 -hostfile hosts num [lpjargs...]"
+
+while(( "$#" )); do
+  case "$1" in
+  -hostfile)
+    if [ $# -lt 2 ]
+    then
+      echo >&2 Error: hostfile missing
+      echo >&2 $USAGE
+      exit 1
+    fi
+    shift 1
+    hosts=$1
+    shift 1
+    ;;
+  -*)
+     echo >&2 Invalid option $1
+     echo >&2 $USAGE
+     exit 1
+     ;;
+   *)
+     break
+     ;;
+  esac
+done
 if [ $# -lt 1 ]
 then
   echo >&2 Error: Number of tasks missing
-  echo >&2 Usage: $0 ntasks [args...]
+  echo >&2 $USAGE
   exit 1
 fi
 if [ "$LPJROOT" = "" ]
@@ -31,4 +58,11 @@ fi
 ntasks=$1
 shift 1
 args=$*
-mpirun -np $ntasks $LPJROOT/bin/lpjml $args
+if [ "$hosts" != "" ]
+then
+  mpirun -np $ntasks -hostfile $hosts $LPJROOT/bin/lpjml $args
+else
+  mpirun -np $ntasks $LPJROOT/bin/lpjml $args
+fi
+rc=$?
+exit $rc
