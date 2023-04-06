@@ -1,9 +1,9 @@
-.TH cmpbin 1  "March 24, 2023" "version 5.5.001" "USER COMMANDS"
+.TH cmpbin 1  "Aprile 6, 2023" "version 5.5.001" "USER COMMANDS"
 .SH NAME
 cmpbin \- compares two binary output files
 .SH SYNOPSIS
 .B cmpbin
-[-metafile] [-verbose] \fIfile1.bin\fP \fIfile2.bin\fP
+[-metafile] [-verbose] [-csv] \fIfile1.bin\fP \fIfile2.bin\fP
 
 .SH DESCRIPTION
 Program compares two binary output files. The maximum difference and its location, the sum of all absolute differences and the average difference are printed.
@@ -14,6 +14,9 @@ Output files are JSON metafiles describing the structure of the raw binary file
 .TP
 -verbose
 Print values and absolute difference for each different data item
+.TP
+-csv
+Print output in comma-separated format
 .TP
 .I file1.bin file2.bin
 filenames of binary output data files to compare
@@ -41,4 +44,4 @@ For authors and contributors see AUTHORS file
 (C) Potsdam Institute for Climate Impact Research (PIK), see COPYRIGHT file
 
 .SH SEE ALSO
-setclm(1), headersize(1), lpjml(1), cru2clm(1), grid2clm(1), cft2clm(1), clm(5)
+setclm(1), headersize(1), lpjml(1), cru2clm(1), grid2clm(1), cft2clm(1), statclm(5), clm(5)
