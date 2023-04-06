@@ -1,14 +1,14 @@
-.TH lpjml 1  "December 10, 2021" "version 5.3.001" "USER COMMANDS"
+.TH lpjml 1  "March 31, 2023" "version 5.5.001" "USER COMMANDS"
 .SH NAME
 lpj, lpjml \- Dynamic global vegetation model with managed land and river routing
 .SH SYNOPSIS
 .B lpjml
-[\-h] [\-l] [\-v] [-vv] [-param] [-pp cmd] [-fpe] [-image host[:inport[,outport]]] [-couple host[:port]] [\-wait time] [\-outpath \fIdir\fP]
+[\-h] [\-l] [\-v] [-vv] [-param] [-nopp] [-pp cmd] [-fpe] [-image host[:inport[,outport]]] [-couple host[:port]] [\-wait time] [\-outpath \fIdir\fP]
 [\-inpath \fIdir\fP] [\-restartpath \fIdir\fP]
 [[\-Dmacro[=value]] [\-I\fIdir\fP] ...] [\fIfilename\fP]
 
 .B lpj
-[\-h] [\-l] [\-v] [-vv] [-param] [-pp cmd] [-fpe] [-image host[:inport[,outport]]] [-couple host[:port]] [\-wait time] [\-outpath \fIdir\fP]
+[\-h] [\-l] [\-v] [-vv] [-param] [-nopp] [-pp cmd] [-fpe] [-image host[:inport[,outport]]] [-couple host[:port]] [\-wait time] [\-outpath \fIdir\fP]
 [\-inpath \fIdir\fP] [\-restartpath \fIdir\fP]
 [[\-Dmacro[=value]] [\-I\fIdir\fP] ...] [\fIfilename\fP]
 .SH DESCRIPTION
@@ -38,8 +38,11 @@ verbosely print the actual values during reading of the configuration files.
 \-param
 print LPJmL parameter for soils and PFTs and list of all available output files.
 .TP
+\-nopp
+disable preprocessing of configuration file by cpp or command specified by -pp option.
+.TP
 \-pp cmd
-set preprocessor program to cmd. Default is \fBcpp -P\fP.
+set preprocessor program to cmd. Default is \fBcpp\fP.
 .TP
 \-fpe
 enable floating point exceptions. A core file is generated in case of an arithmetic error. Option is only available if \fBlpjml\fP has been compiled with -DWITH_FPE flag.

@@ -26,7 +26,7 @@
 #else
 #define IMAGE_OPT ""
 #endif
-#define USAGE "\nUsage: %s [-h] [-l] [-v] [-vv] [-param] [-pp cmd] " FPE_OPT "\n" IMAGE_OPT\
+#define USAGE "\nUsage: %s [-h] [-l] [-v] [-vv] [-param] [-nopp] [-pp cmd] " FPE_OPT "\n" IMAGE_OPT\
                 "       [-couple host[:port]] [-wait time]\n"\
                 "       [-outpath dir] [-inpath dir] [-restartpath dir]\n"\
                 "       [[-Dmacro[=value]] [-Idir] ...] [filename]\n"
@@ -61,6 +61,7 @@ void help(const char *progname, /**< program filename */
           "-vv                 verbosely print the actual values during reading of the\n"
           "                    configuration files\n"
           "-param              print LPJmL parameter\n"
+          "-nopp               disable preprocessing\n"
           "-pp cmd             set preprocessor program. Default is 'cpp'\n"
 #ifdef WITH_FPE
           "-fpe                enable floating point exceptions\n"

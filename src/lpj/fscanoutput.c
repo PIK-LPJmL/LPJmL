@@ -63,11 +63,12 @@ Bool fscanoutput(LPJfile *file,  /**< pointer to LPJ file */
                 )                /** \return TRUE on error */
 {
   LPJfile arr,item;
-  int count,flag,size,index,ntotpft,version;
+  int count,flag,size,index,ntotpft,version,default_fmt;
   Bool isdaily,metafile,b;
   String outpath,name;
   Verbosity verbosity;
   String s,s2;
+  String default_suffix;
   verbosity=isroot(*config) ? config->scan_verbose : NO_ERR;
   if(fscanstring(file,name,"compress_cmd",FALSE,verbosity))
     return TRUE;
@@ -114,6 +115,12 @@ Bool fscanoutput(LPJfile *file,  /**< pointer to LPJ file */
   }
   metafile=FALSE;
   if(fscanbool(file,&metafile,"output_metafile",TRUE,verbosity))
+    return TRUE;
+  default_fmt=RAW;
+  if(fscankeywords(file,&default_fmt,"default_fmt",fmt,N_FMT,TRUE,verbosity))
+    return TRUE;
+  strcpy(default_suffix,"");
+  if(fscanstring(file,default_suffix,"default_suffix",TRUE,verbosity))
     return TRUE;
   version=0;
   if(iskeydefined(file,"output_version"))
@@ -221,12 +228,19 @@ Bool fscanoutput(LPJfile *file,  /**< pointer to LPJ file */
         config->outputvars[count].filename.version=version;
       else
         config->outputvars[count].filename.version=(flag==GRID) ? LPJGRID_VERSION : LPJOUTPUT_VERSION;
-      if(readfilename(&item,&config->outputvars[count].filename,"file",config->outputdir,FALSE,FALSE,verbosity))
+      config->outputvars[count].filename.fmt=default_fmt;
+      if(readfilename(&item,&config->outputvars[count].filename,"file",config->outputdir,FALSE,FALSE,FALSE,verbosity))
       {
         if(verbosity)
           fprintf(stderr,"ERROR231: Cannot read filename for output '%s'.\n",
                   (flag<0 || flag>=nout_max) ?"N/A" : config->outnames[flag].name);
         return TRUE;
+      }
+      if(strlen(default_suffix)>0 && !hasanysuffix(config->outputvars[count].filename.name))
+      {
+        config->outputvars[count].filename.name=realloc(config->outputvars[count].filename.name,strlen(config->outputvars[count].filename.name)+strlen(default_suffix)+1);
+        checkptr(config->outputvars[count].filename.name);
+        strcat(config->outputvars[count].filename.name,default_suffix);
       }
       if(flag<0 || flag>=nout_max)
       {
