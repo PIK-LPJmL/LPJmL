@@ -2,7 +2,7 @@
 /**                                                                                \n**/
 /**                   l  p  j  m  l  .  j  s                                       \n**/
 /**                                                                                \n**/
-/** Default configuration file for LPJmL C Version 5.4.003                         \n**/
+/** Default configuration file for LPJmL C Version 5.6.001                         \n**/
 /**                                                                                \n**/
 /** Configuration file is divided into five sections:                              \n**/
 /**                                                                                \n**/
@@ -31,7 +31,7 @@
   "sim_name" : "LPJmL Run", /* Simulation description */
   "sim_id"   : "lpjml",     /* LPJML Simulation type with managed land use */
   "coupled_model" : null,   /* no model coupling */
-  "version"  : "5.4",       /* LPJmL version expected */
+  "version"  : "5.6",       /* LPJmL version expected */
   "random_prec" : true,     /* Random weather generator for precipitation enabled */
   "random_seed" : 2,        /* seed for random number generator */
   "radiation" : "radiation",/* other options: "cloudiness", "radiation", "radiation_swonly", "radiation_lwdown" */
@@ -91,14 +91,15 @@
   "manure_input" : true,                /* enable manure input */
   "fix_fertilization" : false,          /* fix fertilizer input */
   "others_to_crop" : true,              /* move PFT type others into PFT crop, cft_tropic for tropical,  cft_temp for temperate */
-  "grazing" : "default",                /* default grazing type, other options : "default", "mowing", "ext", "int", "none" */
-  "grazing_others" : "default",         /* default grazing type for others, other options : "default", "mowing", "ext", "int", "none" */
+  "grazing" : "default",                /* default grazing type, other options : "default", "mowing", "ext", "int", "livestock", "none" */
+  "grazing_others" : "default",         /* default grazing type for others, other options : "default", "mowing", "ext", "int", "livestock", "none" */
   "cft_temp" : "temperate cereals",
   "cft_tropic" : "maize",
   "grassonly" : false,                  /* set all cropland including others to zero but keep managed grasslands */
   "istimber" : true,
   "grassland_fixed_pft" : false,
   "grass_harvest_options" : false,
+  "prescribe_lsuha" : false,
   "mowing_days" : [152, 335],          /* Mowing days for grassland if grass harvest options are ser */
   "crop_resp_fix" : false,             /* variable C:N ratio for crop respiration */
                                        /* for MAgPIE runs, turn off dynamic C:N ratio dependent respiration,
@@ -260,12 +261,12 @@ ID                               Fmt                        filename
 
 #ifndef FROM_RESTART
 
-  "nspinup" : 10000,  /* spinup years */
+  "nspinup" : 3500,  /* spinup years */
   "nspinyear" : 30,  /* cycle length during spinup (yr) */
   "firstyear": 1901, /* first year of simulation */
   "lastyear" : 1901, /* last year of simulation */
   "restart" :  false, /* start from restart file */
-  "outputyear" : -8099,
+  "outputyear" : -1599,
   "write_restart" : true, /* create restart file: the last year of simulation=restart-year */
   "write_restart_filename" : "restart/restart_1840_nv_stdfire.lpj", /* filename of restart file */
   "restart_year": 1840 /* write restart at year */

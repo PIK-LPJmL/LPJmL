@@ -2,7 +2,7 @@
 /**                                                                                \n**/
 /**       i  n  p  u  t  _  c  r  u  m  o  n  t  h  l  y  .  j  s                  \n**/
 /**                                                                                \n**/
-/** Configuration file for input dataset for LPJ C Version 5.3.001                 \n**/
+/** Configuration file for input dataset for LPJ C Version 5.6.001                 \n**/
 /**                                                                                \n**/
 /** (C) Potsdam Institute for Climate Impact Research (PIK), see COPYRIGHT file    \n**/
 /** authors, and contributors see AUTHORS file                                     \n**/
@@ -39,7 +39,7 @@
 "input" :
 {
   "soil" :         { "id" : 41, "fmt" : "meta", "name" : "input_VERSION2/soil.json"},
-  "coord" :        { "id" : 24, "fmt" : "clm",  "name" : "input_VERSION2/grid.bin"},
+  "coord" :        { "id" : 43, "fmt" : "clm",  "name" : "input_VERSION2/grid.bin"},
   "countrycode" :  { "id" : 25, "fmt" : "clm",  "name" : "input_VERSION2/cow_full_2018.bin"},
   "no3deposition" : { "id" : 17, "fmt" : "clm",  "name" : "input_VERSION2/no3_deposition_rcp8p5.clm"},
   "nh4deposition" : { "id" : 16, "fmt" : "clm",  "name" : "input_VERSION2/nh4_deposition_rcp8p5.clm"},
@@ -59,6 +59,7 @@
   /* insert prescribed sdate file name here */
   "grassland_fixed_pft" : { "id" : 30, "fmt" : "raw", "name" : "/p/projects/landuse/users/rolinski/Newinput/scenario_MO0.bin"},
   "grass_harvest_options" : { "id" : 31, "fmt" : "raw", "name": "/p/projects/landuse/users/rolinski/Newinput/scenario_MO2.bin"},
+  "grassland_lsuha" : { "id" : 24, "fmt" : "clm",  "name" : "/p/projects/lpjml/input/Grazing/grassland_lsuha_2000-2000.clm"},
   "sowing_ag_tree_rf" :   { "id" : 32, "fmt" : "cdf", "var" : "planting day", "name" : "/p/projects/landuse/users/cmueller/GGCMI/crop_calendar/Cotton_rf_growing_season_dates_v1.25.nc4"},
   "harvest_ag_tree_rf" :  { "id" : 33, "fmt" : "cdf", "var" : "harvest day", "name" : "/p/projects/landuse/users/cmueller/GGCMI/crop_calendar/Cotton_rf_growing_season_dates_v1.25.nc4"},
   "sowing_ag_tree_ir" :   { "id" : 34, "fmt" : "cdf", "var" : "planting day", "name" : "/p/projects/landuse/users/cmueller/GGCMI/crop_calendar/Cotton_ir_growing_season_dates_v1.25.nc4"},
