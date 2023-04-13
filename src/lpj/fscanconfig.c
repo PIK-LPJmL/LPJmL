@@ -80,7 +80,7 @@ static Bool readclimatefilename(LPJfile *file,Filename *name,const char *key,Boo
       fprintf(stderr,"ERROR197: FMS coupler not allowed for input '%s'.\n",key);
     return TRUE;
   }
-  if(!(iscoupled && config->coupled_model!=NULL) && name->fmt==SOCK)
+  if(!iscoupled && name->fmt==SOCK)
   {
     if(verbose)
       fprintf(stderr,"ERROR197: File format 'sock' not allowed for input '%s'.\n",key);
@@ -88,6 +88,12 @@ static Bool readclimatefilename(LPJfile *file,Filename *name,const char *key,Boo
   }
   if(name->fmt==SOCK)
   {
+    if(!iscoupled(*config))
+    {
+      if(verbose)
+        fprintf(stderr,"ERROR197: Socket %s input not allowed without coupled model.\n",key);
+      return TRUE;
+    }
     config->coupler_in++;
     if(name->id<0 || name->id>=N_IN)
     {
