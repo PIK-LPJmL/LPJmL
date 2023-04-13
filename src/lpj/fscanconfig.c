@@ -1062,7 +1062,11 @@ Bool fscanconfig(Config *config,    /**< LPJ configuration */
   }
   else
     config->write_restart_filename=NULL;
-  if(config->equilsoil && verbose && config->nspinup<soil_equil_year)
-    fprintf(stderr,"WARNING031: Number of spinup years less than %d necessary for soil equilibration.\n",soil_equil_year);
+  if(config->equilsoil && config->nspinup<(param.veg_equil_year+param.nequilsoil*param.equisoil_interval+param.equisoil_fadeout))
+  {
+    fprintf(stderr,"ERROR230: Number of spinup years=%d insuffficient for selected spinup settings, must be at least %d.\n",
+            config->nspinup,param.veg_equil_year+param.nequilsoil*param.equisoil_interval+param.equisoil_fadeout); 
+    return TRUE;
+  }
   return FALSE;
 } /* of 'fscanconfig' */

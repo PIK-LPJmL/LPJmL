@@ -96,7 +96,7 @@ static Real from_setaside_for_reservoir(Cell *cell,          /**< pointer to cel
         {
           /* remove all vegetation on irrigated setaside */
           cutpfts(setasidestand_ir,config);
-          mixsetaside(setasidestand,setasidestand_ir,intercrop,year,config);
+          mixsetaside(setasidestand,setasidestand_ir,intercrop,year,npft+ncft,config);
           delstand(cell->standlist,s2);
         }
         else{
@@ -105,7 +105,7 @@ static Real from_setaside_for_reservoir(Cell *cell,          /**< pointer to cel
           cutstand->frac=difffrac-setasidestand->frac;
           reclaim_land(setasidestand_ir,cutstand,cell,config->istimber,npft+ncft,config);
           setasidestand_ir->frac-=difffrac-setasidestand->frac;
-          mixsetaside(setasidestand,cutstand,intercrop,year,config);
+          mixsetaside(setasidestand,cutstand,intercrop,year,npft+ncft,config);
           delstand(cell->standlist,pos);
         }
       }
@@ -131,7 +131,7 @@ static Real from_setaside_for_reservoir(Cell *cell,          /**< pointer to cel
           cell->discharge.dmass_lake+=(data->irrig_stor+data->irrig_amount+cutstand->soil.litter.agtop_moist)*cell->coord.area*cutstand->frac;
           cell->balance.awater_flux-=(data->irrig_stor+data->irrig_amount+cutstand->soil.litter.agtop_moist)*cutstand->frac;
 
-          if(setaside(cell,getstand(cell->standlist,pos),cell->ml.with_tillage,intercrop,npft,FALSE,year,config))
+          if(setaside(cell,getstand(cell->standlist,pos),cell->ml.with_tillage,intercrop,npft,ncft,FALSE,year,config))
             delstand(cell->standlist,pos);
         }
       }
@@ -155,7 +155,7 @@ static Real from_setaside_for_reservoir(Cell *cell,          /**< pointer to cel
         cell->discharge.dmass_lake+=(data->irrig_stor+data->irrig_amount+cutstand->soil.litter.agtop_moist)*cell->coord.area*cutstand->frac;
         cell->balance.awater_flux-=(data->irrig_stor+data->irrig_amount+cutstand->soil.litter.agtop_moist)*cutstand->frac;
 
-        if(setaside(cell,getstand(cell->standlist,pos),cell->ml.with_tillage,intercrop,npft,FALSE,year,config))
+        if(setaside(cell,getstand(cell->standlist,pos),cell->ml.with_tillage,intercrop,npft,ncft,FALSE,year,config))
           delstand(cell->standlist,pos);
       }
 
