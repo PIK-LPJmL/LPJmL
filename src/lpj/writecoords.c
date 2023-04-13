@@ -255,7 +255,7 @@ int writecoords(Outputfile *output,  /**< output struct */
         case TXT:
           for(cell=0;cell<count-1;cell++)
             fprintf(output->files[index].fp.file,"%g%c%g%c",
-                    fvec[cell].lon,config->csv_delimit,fvec[cell].lat*0.01,config->csv_delimit);
+                    fvec[cell].lon,config->csv_delimit,fvec[cell].lat,config->csv_delimit);
           fprintf(output->files[index].fp.file,"%g%c%g\n",
                   fvec[count-1].lon,config->csv_delimit,fvec[count-1].lat);
           break;

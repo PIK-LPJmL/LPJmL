@@ -29,8 +29,6 @@
 
 #define SNOWLAYER NSOILLAYER
 
-#define soil_equil_year (param.veg_equil_year+1320)
-#define cshift_year 300
 #define snow_skin_depth 40.0 /* snow skin layer depth (mm water equivalent)*/
 #define c_water 4.2e6 /* J/m3/K */
 #define c_ice   2.1e6 /* J/m3/K */
@@ -162,6 +160,7 @@ typedef struct
   const Soilpar *par; /**< pointer to soil parameters */
   Pool pool[LASTLAYER];          /**< fast and slow carbon pool for all layers*/
   Poolpar k_mean[LASTLAYER];     /**< fast and slow decay constant */
+  Poolpar decay_rate[LASTLAYER]; /**< fast and slow decay rate */
   Poolpar *c_shift[LASTLAYER];   /**< shifting rate of carbon matter to the different layer*/
   Real NO3[LASTLAYER];           /**< NO3 per soillayer (gN/m2) */
   Real NH4[LASTLAYER];           /**< NH4 per soillayer (gN/m2) */
@@ -198,6 +197,7 @@ typedef struct
   Real maxthaw_depth;
   Real mean_maxthaw;
   Stocks decomp_litter_mean;
+  Stocks *decomp_litter_pft;
   int count;
   Real YEDOMA;       /**< g/m2 */
   Litter litter;     /**< Litter pool */
