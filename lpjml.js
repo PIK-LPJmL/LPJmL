@@ -2,7 +2,7 @@
 /**                                                                                \n**/
 /**                   l  p  j  m  l  .  j  s                                       \n**/
 /**                                                                                \n**/
-/** Default configuration file for LPJmL C Version 5.5.001                         \n**/
+/** Default configuration file for LPJmL C Version 5.5.002                         \n**/
 /**                                                                                \n**/
 /** Configuration file is divided into five sections:                              \n**/
 /**                                                                                \n**/
