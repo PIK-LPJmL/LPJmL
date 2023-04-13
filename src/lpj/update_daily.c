@@ -288,7 +288,8 @@ void update_daily(Cell *cell,            /**< cell pointer           */
 
     if(config->with_nitrogen)
     {
-      if(config->with_nitrogen==UNLIM_NITROGEN)
+      if(config->with_nitrogen==UNLIM_NITROGEN || 
+         (config->equilsoil && param.veg_equil_unlim && year<=(config->firstyear-config->nspinup+param.veg_equil_year)))
       {
         if(stand->soil.par->type==ROCK)
         {
@@ -492,7 +493,7 @@ void update_daily(Cell *cell,            /**< cell pointer           */
   } /* of 'if(river_routing)' */
   getoutput(&cell->output,DAYLENGTH,config)+=daylength;
   soilpar_output(cell,agrfrac,config);
-  killstand(cell,npft, cell->ml.with_tillage,intercrop,year,config);
+  killstand(cell,npft, ncft,cell->ml.with_tillage,intercrop,year,config);
 #ifdef SAFE
   check_stand_fracs(cell,cell->lakefrac+cell->ml.reservoirfrac);
 #endif

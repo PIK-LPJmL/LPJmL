@@ -228,6 +228,7 @@ Bool fscanconfig(Config *config,    /**< LPJ configuration */
     config->seed_start=time(NULL);
   setseed(config->seed,config->seed_start);
   config->with_nitrogen=NO_NITROGEN;
+  config->nitrogen_coupled=FALSE;
   if(fscankeywords(file,&config->with_nitrogen,"with_nitrogen",nitrogen,3,TRUE,verbose))
     return TRUE;
   if(fscankeywords(file,&config->with_radiation,"radiation",radiation,4,FALSE,verbose))
@@ -302,6 +303,9 @@ Bool fscanconfig(Config *config,    /**< LPJ configuration */
   if(config->with_nitrogen)
   {
     if(fscanbool(file,&config->ma_bnf,"ma_bnf",TRUE,verbose))
+      return TRUE;
+    config->nitrogen_coupled=TRUE;
+    if(fscanbool(file,&config->nitrogen_coupled,"nitrogen_coupled",TRUE,verbose))
       return TRUE;
   }
   config->soilpar_option=NO_FIXED_SOILPAR;
@@ -1068,7 +1072,11 @@ Bool fscanconfig(Config *config,    /**< LPJ configuration */
   }
   else
     config->write_restart_filename=NULL;
-  if(config->equilsoil && verbose && config->nspinup<soil_equil_year)
-    fprintf(stderr,"WARNING031: Number of spinup years less than %d necessary for soil equilibration.\n",soil_equil_year);
+  if(config->equilsoil && config->nspinup<(param.veg_equil_year+param.nequilsoil*param.equisoil_interval+param.equisoil_fadeout))
+  {
+    fprintf(stderr,"ERROR230: Number of spinup years=%d insuffficient for selected spinup settings, must be at least %d.\n",
+            config->nspinup,param.veg_equil_year+param.nequilsoil*param.equisoil_interval+param.equisoil_fadeout); 
+    return TRUE;
+  }
   return FALSE;
 } /* of 'fscanconfig' */
