@@ -1064,7 +1064,8 @@ Bool fscanconfig(Config *config,    /**< LPJ configuration */
     config->write_restart_filename=NULL;
   if(config->equilsoil && config->nspinup<(param.veg_equil_year+param.nequilsoil*param.equisoil_interval+param.equisoil_fadeout))
   {
-    fputs("ERROR230: Number of spinup years insuffficient for selected spinup settings.\n",stderr);
+    fprintf(stderr,"ERROR230: Number of spinup years=%d insuffficient for selected spinup settings, must be at least %d.\n",
+            config->nspinup,param.veg_equil_year+param.nequilsoil*param.equisoil_interval+param.equisoil_fadeout); 
     return TRUE;
   }
   return FALSE;
