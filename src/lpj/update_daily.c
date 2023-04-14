@@ -64,7 +64,7 @@ void update_daily(Cell *cell,            /**< cell pointer           */
   Real gsi;
   Real litsum_old_nv[2]={0,0},litsum_new_nv[2]={0,0};
   Real litsum_old_agr[2]={0,0},litsum_new_agr[2]={0,0};
-
+  Livefuel *livefuel;
 
   forrootmoist(l)
     rootdepth+=soildepth[l];
@@ -148,7 +148,11 @@ void update_daily(Cell *cell,            /**< cell pointer           */
     getoutput(&cell->output,ALBEDO,config) += beta * stand->frac;
 
     if((config->fire==SPITFIRE  || config->fire==SPITFIRE_TMAX)&& stand->afire_frac<1)
+      {
       dailyfire_stand(stand,popdensity,human_ign_prob,avgprec,&climate,config);
+      if(s==0)
+         getoutput(&stand->cell->output,DLM_LIVEGRASS,config)+=livefuel->M[0];
+      }
     if(config->permafrost)
     {
       snowrunoff=snow(&stand->soil,&climate.prec,&melt,
