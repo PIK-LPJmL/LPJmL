@@ -26,16 +26,18 @@ static nc_type nctype[]={NC_BYTE,NC_SHORT,NC_INT,NC_FLOAT,NC_DOUBLE};
 #define error(rc) if(rc) {if(cdf->state==ONEFILE || cdf->state==CLOSE) {free(lon);free(lat);free(year);}fprintf(stderr,"ERROR427: Cannot write '%s': %s.\n",filename,nc_strerror(rc)); nc_close(cdf->ncid); return TRUE;}
 
 Bool create_netcdf(Netcdf *cdf,
-                   const char *filename, /**< filename of NetCDF file */
-                   const char *name, /**< name of output variable */
-                   const char *descr, /**< description of output variable */
-                   const char *units, /**< unit of output variable */
-                   Type type, /**< Type of output variable */
-                   int n, /**< number of samples per year (0/1/12/365) */
-                   int timestep, /**< time step for annual output (yrs) */
+                   const char *filename,     /**< filename of NetCDF file */
+                   const char *name,         /**< name of output variable */
+                   const char *descr,        /**< description of output variable */
+                   const char *units,        /**< unit of output variable */
+                   Type type,                /**< Type of output variable */
+                   int n,                    /**< number of samples per year (0/1/12/365) */
+                   int timestep,             /**< time step for annual output (yrs) */
+                   int actualyear,           /**< actual year for oneyear output */
+                   Bool oneyear,             /**< one file for each year (TRUE/FALSE) */
                    const Coord_array *array, /**< coordinate array */
-                   const Config *config /**< LPJ configuration */
-                  ) /** \return TRUE on error */
+                   const Config *config      /**< LPJ configuration */
+                  )                          /** \return TRUE on error */
 {
 #if defined(USE_NETCDF) || defined(USE_NETCDF4)
   String s;
@@ -54,7 +56,6 @@ Bool create_netcdf(Netcdf *cdf,
   }
   cdf->missing_value=config->missing_value;
   cdf->index=array;
-  nyear=config->lastyear-config->outputyear+1;
   if(cdf->state==APPEND || cdf->state==CLOSE)
   {
      cdf->ncid=cdf->root->ncid;
@@ -65,32 +66,38 @@ Bool create_netcdf(Netcdf *cdf,
      cdf->lat_var_id=cdf->root->lat_var_id;
      cdf->lon_var_id=cdf->root->lon_var_id;
   }
-  if(config->ischeckpoint)
+  if(oneyear)
+    nyear=1;
+  else
   {
-    if(cdf->state==ONEFILE || cdf->state==CREATE)
+    nyear=config->lastyear-config->outputyear+1;
+    if(config->ischeckpoint)
     {
-      /* start from checkpoint file, output files exist and have to be opened */
+      if(cdf->state==ONEFILE || cdf->state==CREATE)
+      {
+        /* start from checkpoint file, output files exist and have to be opened */
 #ifdef USE_NETCDF4
-      rc=nc_open(filename,NC_WRITE|NC_CLOBBER|NC_NETCDF4,&cdf->ncid);
+        rc=nc_open(filename,NC_WRITE|NC_CLOBBER|NC_NETCDF4,&cdf->ncid);
 #else
-      rc=nc_open(filename,NC_WRITE|NC_CLOBBER,&cdf->ncid);
+        rc=nc_open(filename,NC_WRITE|NC_CLOBBER,&cdf->ncid);
 #endif
+        if(rc)
+        {
+          fprintf(stderr,"ERROR426: Cannot open file '%s': %s.\n",
+                  filename,nc_strerror(rc));
+          return TRUE;
+        }
+      }
+      /* get id of output variable */
+      rc=nc_inq_varid(cdf->ncid,name,&cdf->varid);
       if(rc)
       {
-        fprintf(stderr,"ERROR426: Cannot open file '%s': %s.\n",
-                filename,nc_strerror(rc));
+        fprintf(stderr,"ERROR426: Cannot get variable '%s': %s.\n",
+                name,nc_strerror(rc));
         return TRUE;
       }
+      return FALSE;
     }
-    /* get id of output variable */
-    rc=nc_inq_varid(cdf->ncid,name,&cdf->varid);
-    if(rc)
-    {
-      fprintf(stderr,"ERROR426: Cannot get variable '%s': %s.\n",
-              name,nc_strerror(rc));
-      return TRUE;
-    }
-    return FALSE;
   }
   if(cdf->state==ONEFILE || cdf->state==CLOSE)
   {
@@ -117,16 +124,21 @@ Bool create_netcdf(Netcdf *cdf,
         lat[i]=array->lat_min+i*config->resolution.lat;
     if(n)
     {
-      if(n==1)
-        year=newvec(double,nyear/timestep);
+      if(n==1 && oneyear)
+        year=NULL;
       else
-        year=newvec(double,nyear*n);
-      if(year==NULL)
       {
-        printallocerr("year");
-        free(lon);
-        free(lat);
-        return TRUE;
+        if(n==1)
+          year=newvec(double,nyear/timestep);
+        else
+          year=newvec(double,nyear*n);
+        if(year==NULL)
+        {
+          printallocerr("year");
+          free(lon);
+          free(lat);
+          return TRUE;
+        }
       }
     }
     else
@@ -136,12 +148,15 @@ Bool create_netcdf(Netcdf *cdf,
       case 0:
         break;
       case 1:
-        if(config->absyear)
-          for(i=0;i<nyear/timestep;i++)
-            year[i]=config->outputyear+i*timestep+timestep/2;
-        else
-          for(i=0;i<nyear/timestep;i++)
-            year[i]=config->outputyear-config->baseyear+i*timestep+timestep/2;
+        if(year!=NULL)
+        {
+          if(config->absyear)
+            for(i=0;i<nyear/timestep;i++)
+              year[i]=config->outputyear+i*timestep+timestep/2;
+          else
+            for(i=0;i<nyear/timestep;i++)
+              year[i]=config->outputyear-config->baseyear+i*timestep+timestep/2;
+        }
         break;
       case 12:
         if(config->with_days)
@@ -149,17 +164,32 @@ Bool create_netcdf(Netcdf *cdf,
           for(i=0;i<nyear;i++)
             for(j=0;j<12;j++)
               if(i==0 && j==0)
-                year[0]=ndaymonth[j]-1+(config->outputyear-config->baseyear)*NDAYYEAR;
+              {
+                if(oneyear)
+                  year[0]=ndaymonth[j]-1;
+                else
+                  year[0]=ndaymonth[j]-1+(config->outputyear-config->baseyear)*NDAYYEAR;
+              }
               else
                 year[i*12+j]=year[i*12+j-1]+ndaymonth[j];
         }
         else
-          for(i=0;i<nyear*12;i++)
-            year[i]=(config->outputyear-config->baseyear)*NMONTH+i;
+        {
+          if(oneyear)
+            for(i=0;i<12;i++)
+              year[i]=i;
+          else
+            for(i=0;i<nyear*12;i++)
+              year[i]=(config->outputyear-config->baseyear)*NMONTH+i;
+        }
         break;
       case NDAYYEAR:
-        for(i=0;i<nyear*n;i++)
-          year[i]=(config->outputyear-config->baseyear)*NDAYYEAR+i;
+        if(oneyear)
+          for(i=0;i<n;i++)
+            year[i]=i;
+        else
+          for(i=0;i<nyear*n;i++)
+            year[i]=(config->outputyear-config->baseyear)*NDAYYEAR+i;
         break;
       default:
         fprintf(stderr,"ERROR425: Invalid value=%d for number of data points per year in '%s'.\n",n,filename);
@@ -188,7 +218,7 @@ Bool create_netcdf(Netcdf *cdf,
       }
       return TRUE;
     }
-    if(n)
+    if(year!=NULL)
     {
       if(n==1)
         rc=nc_def_dim(cdf->ncid,TIME_DIM_NAME,nyear/timestep,&cdf->time_dim_id);
@@ -225,24 +255,27 @@ Bool create_netcdf(Netcdf *cdf,
     error(rc);
     rc=nc_def_var(cdf->ncid,LON_NAME,NC_DOUBLE,1,&cdf->lon_dim_id,&cdf->lon_var_id);
     error(rc);
-    if(n==1)
+    if(year!=NULL)
     {
-      if(config->absyear)
-        strncpy(s,YEARS_NAME,STRING_LEN);
+      if(n==1)
+      {
+        if(config->absyear)
+          strncpy(s,YEARS_NAME,STRING_LEN);
+        else
+          snprintf(s,STRING_LEN,"years since %d-1-1 0:0:0",(oneyear) ? actualyear : config->baseyear);
+      }
+      else if(n==12)
+        snprintf(s,STRING_LEN,"%s since %d-1-1 0:0:0",(config->with_days) ? "days" : "months",(oneyear) ? actualyear : config->baseyear);
       else
-        snprintf(s,STRING_LEN,"years since %d-1-1 0:0:0",config->baseyear);
+        snprintf(s,STRING_LEN,"days since %d-1-1 0:0:0",(oneyear) ? actualyear : config->baseyear);
+      rc=nc_put_att_text(cdf->ncid,cdf->time_var_id,"units",strlen(s),s);
+      error(rc);
+      rc=nc_put_att_text(cdf->ncid,cdf->time_var_id,"calendar",strlen(CALENDAR),
+                         CALENDAR);
+      error(rc);
+      rc=nc_put_att_text(cdf->ncid, cdf->time_var_id,"axis",strlen("T"),"T");
+      error(rc);
     }
-    else if(n==12)
-      snprintf(s,STRING_LEN,"%s since %d-1-1 0:0:0",(config->with_days) ? "days" : "months",config->baseyear);
-    else
-      snprintf(s,STRING_LEN,"days since %d-1-1 0:0:0",config->baseyear);
-    rc=nc_put_att_text(cdf->ncid,cdf->time_var_id,"units",strlen(s),s);
-    error(rc);
-    rc=nc_put_att_text(cdf->ncid,cdf->time_var_id,"calendar",strlen(CALENDAR),
-                       CALENDAR);
-    error(rc);
-    rc=nc_put_att_text(cdf->ncid, cdf->time_var_id,"axis",strlen("T"),"T");
-    error(rc);
     rc=nc_put_att_text(cdf->ncid,cdf->lon_var_id,"units",strlen("degrees_east"),
                      "degrees_east");
     error(rc);
@@ -262,7 +295,7 @@ Bool create_netcdf(Netcdf *cdf,
     rc=nc_put_att_text(cdf->ncid, cdf->lat_var_id,"axis",strlen("Y"),"Y");
     error(rc);
   }
-  if(n)
+  if(year!=NULL)
   {
     dim[0]=cdf->time_dim_id;
     dim[1]=cdf->lat_dim_id;
@@ -278,7 +311,7 @@ Bool create_netcdf(Netcdf *cdf,
     chunk[0]=array->nlat;
     chunk[1]=array->nlon;
   } 
-  rc=nc_def_var(cdf->ncid,name,nctype[type],(n==0) ? 2 : 3,dim,&cdf->varid);
+  rc=nc_def_var(cdf->ncid,name,nctype[type],(year==NULL) ? 2 : 3,dim,&cdf->varid);
   error(rc);
 #ifdef USE_NETCDF4
   rc=nc_def_var_chunking(cdf->ncid, cdf->varid, NC_CHUNKED,chunk);
@@ -321,7 +354,7 @@ Bool create_netcdf(Netcdf *cdf,
   {
     rc=nc_enddef(cdf->ncid);
     error(rc);
-    if(n)
+    if(year!=NULL)
     {
       rc=nc_put_var_double(cdf->ncid,cdf->time_var_id,year);
       error(rc);

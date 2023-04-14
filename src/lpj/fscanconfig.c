@@ -51,7 +51,7 @@ const char *grazing_type[]={"default","mowing","ext","int","livestock","none"};
 
 static Bool readfilename2(LPJfile *file,Filename *name,const char *key,const char *path,Verbosity verbose)
 {
-  if(readfilename(file,name,key,path,FALSE,FALSE,verbose))
+  if(readfilename(file,name,key,path,TRUE,FALSE,FALSE,verbose))
     return TRUE;
   if(name->fmt==CDF)
   {
@@ -72,7 +72,7 @@ static Bool readclimatefilename(LPJfile *file,Filename *name,const char *key,Boo
 {
   Verbosity verbose;
   verbose=(isroot(*config)) ? config->scan_verbose : NO_ERR;
-  if(readfilename(file,name,key,config->inputdir,TRUE,TRUE,verbose))
+  if(readfilename(file,name,key,config->inputdir,TRUE,TRUE,TRUE,verbose))
     return TRUE;
   if(!(isfms && config->sim_id==LPJML_FMS) && name->fmt==FMS)
   {

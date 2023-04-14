@@ -33,7 +33,8 @@ static Bool create(Netcdf *cdf,const char *filename,int index,
                          config->outnames[config->outputvars[index].id].unit,
                          getoutputtype(config->outputvars[index].id,config->grid_type),
                          getnyear(config->outnames,config->outputvars[index].id),
-                         (config->outnames[config->outputvars[index].id].timestep==ANNUAL) ? 1 : config->outnames[config->outputvars[index].id].timestep,array,config);
+                         (config->outnames[config->outputvars[index].id].timestep==ANNUAL) ? 1 : config->outnames[config->outputvars[index].id].timestep,
+                         0,FALSE,array,config);
   else
     return create_pft_netcdf(cdf,filename,
                              config->outputvars[index].id,
@@ -44,7 +45,7 @@ static Bool create(Netcdf *cdf,const char *filename,int index,
                              config->outnames[config->outputvars[index].id].unit,
                              getoutputtype(config->outputvars[index].id,config->grid_type),
                              getnyear(config->outnames,config->outputvars[index].id),
-                             (config->outnames[config->outputvars[index].id].timestep==ANNUAL) ? 1 : config->outnames[config->outputvars[index].id].timestep,array,config);
+                             (config->outnames[config->outputvars[index].id].timestep==ANNUAL) ? 1 : config->outnames[config->outputvars[index].id].timestep,0,FALSE,array,config);
 } /* of 'create' */
 
 static void openfile(Outputfile *output,const Cell grid[],
@@ -362,15 +363,15 @@ void openoutput_yearly(Outputfile *output,int year,const Config *config)
                             config->npft[GRASS]+config->npft[TREE],
                             config->npft[CROP],config);
            if(size==1)
-             output->files[config->outputvars[i].id].isopen=!create1_netcdf(&output->files[config->outputvars[i].id].fp.cdf,filename,
+             output->files[config->outputvars[i].id].isopen=!create_netcdf(&output->files[config->outputvars[i].id].fp.cdf,filename,
                            config->outnames[config->outputvars[i].id].var,
                            config->outnames[config->outputvars[i].id].descr,
                            config->outnames[config->outputvars[i].id].unit,
                            getoutputtype(config->outputvars[i].id,config->grid_type),
-                           getnyear(config->outnames,config->outputvars[i].id),
-                           (config->outputvars[i].id==ADISCHARGE) ? output->index_all : output->index,year,config);
+                           getnyear(config->outnames,config->outputvars[i].id),1,year,TRUE,
+                           (config->outputvars[i].id==ADISCHARGE) ? output->index_all : output->index,config);
            else
-             output->files[config->outputvars[i].id].isopen=!create1_pft_netcdf(&output->files[config->outputvars[i].id].fp.cdf,filename,
+             output->files[config->outputvars[i].id].isopen=!create_pft_netcdf(&output->files[config->outputvars[i].id].fp.cdf,filename,
                            config->outputvars[i].id,
                            config->npft[GRASS]+config->npft[TREE],
                            config->npft[CROP],
@@ -378,7 +379,7 @@ void openoutput_yearly(Outputfile *output,int year,const Config *config)
                            config->outnames[config->outputvars[i].id].descr,
                            config->outnames[config->outputvars[i].id].unit,
                            getoutputtype(config->outputvars[i].id,config->grid_type),
-                           getnyear(config->outnames,config->outputvars[i].id),year,
+                           getnyear(config->outnames,config->outputvars[i].id),1,year,TRUE,
                                output->index,config);
 
         }

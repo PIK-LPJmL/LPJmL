@@ -14,12 +14,20 @@
 
 #include "lpj.h"
 
-Real growing_season_index(Real gsi_old,Real *gsi,const Dailyclimate *climate,Bool relative_humidity,Real daylength)
+Real growing_season_index(Real gsi_old,                /**< old cumulative GSI (0..1) */
+                          Real *gsi,                   /**< actual GSI (0..1) */
+                          const Dailyclimate *climate, /**< daily climate data */
+                          Bool relative_humidity,      /**< humidity is relative humidity (TRUE/FALSE) */
+                          Real daylength               /**< day length (h) */
+                         )                             /** \return updated cumulative GSI */
 {
   Real itmin,iphoto,ivpd;
   itmin=max(0,min(1.,1./7*climate->tmin+2./7));
   iphoto=max(0,min(1.,daylength-10));
-  ivpd=max(0,min(1,getvpd(climate,relative_humidity)/3200-9./32.));
+  ivpd=max(0,min(1,1-getvpd(climate,relative_humidity)/3200+9./32.));
   *gsi=itmin*iphoto*ivpd;
+#ifdef DEBUG
+  printf("gsi_old=%g,itmin=%g,iphoto=%g,ivpd=%g,vpd=%g\n",gsi_old,itmin,iphoto,ivpd,getvpd(climate,relative_humidity));
+#endif
   return gsi_old*20/21.0+*gsi/21.0;
 } /* of 'growing_season_index' */
