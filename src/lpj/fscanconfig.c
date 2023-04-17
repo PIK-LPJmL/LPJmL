@@ -80,7 +80,7 @@ static Bool readclimatefilename(LPJfile *file,Filename *name,const char *key,Boo
       fprintf(stderr,"ERROR197: FMS coupler not allowed for input '%s'.\n",key);
     return TRUE;
   }
-  if(!(iscoupled && config->coupled_model!=NULL) && name->fmt==SOCK)
+  if(!iscoupled && name->fmt==SOCK)
   {
     if(verbose)
       fprintf(stderr,"ERROR197: File format 'sock' not allowed for input '%s'.\n",key);
@@ -88,6 +88,12 @@ static Bool readclimatefilename(LPJfile *file,Filename *name,const char *key,Boo
   }
   if(name->fmt==SOCK)
   {
+    if(!iscoupled(*config))
+    {
+      if(verbose)
+        fprintf(stderr,"ERROR197: Socket %s input not allowed without coupled model.\n",key);
+      return TRUE;
+    }
     config->coupler_in++;
     if(name->id<0 || name->id>=N_IN)
     {
@@ -222,6 +228,7 @@ Bool fscanconfig(Config *config,    /**< LPJ configuration */
     config->seed_start=time(NULL);
   setseed(config->seed,config->seed_start);
   config->with_nitrogen=NO_NITROGEN;
+  config->nitrogen_coupled=FALSE;
   if(fscankeywords(file,&config->with_nitrogen,"with_nitrogen",nitrogen,3,TRUE,verbose))
     return TRUE;
   if(fscankeywords(file,&config->with_radiation,"radiation",radiation,4,FALSE,verbose))
@@ -291,11 +298,14 @@ Bool fscanconfig(Config *config,    /**< LPJ configuration */
   config->black_fallow=FALSE;
   config->double_harvest=FALSE;
   config->others_to_crop = FALSE;
-  config->ma_bnf = FALSE;
+  config->npp_controlled_bnf = FALSE;
   config->prescribe_lsuha=FALSE;
   if(config->with_nitrogen)
   {
-    if(fscanbool(file,&config->ma_bnf,"ma_bnf",TRUE,verbose))
+    if(fscanbool(file,&config->npp_controlled_bnf,"npp_controlled_bnf",TRUE,verbose))
+      return TRUE;
+    config->nitrogen_coupled=TRUE;
+    if(fscanbool(file,&config->nitrogen_coupled,"nitrogen_coupled",TRUE,verbose))
       return TRUE;
   }
   config->soilpar_option=NO_FIXED_SOILPAR;
@@ -763,7 +773,7 @@ Bool fscanconfig(Config *config,    /**< LPJ configuration */
       if(config->reservoir)
       {
         scanclimatefilename(input,&config->elevation_filename,FALSE,FALSE,"elevation");
-        scanfilename(&input,&config->reservoir_filename,config->inputdir,"reservoir");
+        scanfilename(input,&config->reservoir_filename,config->inputdir,"reservoir");
       }
 #ifdef IMAGE
       if(config->aquifer_irrig==AQUIFER_IRRIG)
@@ -1068,7 +1078,11 @@ Bool fscanconfig(Config *config,    /**< LPJ configuration */
   }
   else
     config->write_restart_filename=NULL;
-  if(config->equilsoil && verbose && config->nspinup<soil_equil_year)
-    fprintf(stderr,"WARNING031: Number of spinup years less than %d necessary for soil equilibration.\n",soil_equil_year);
+  if(config->equilsoil && config->nspinup<(param.veg_equil_year+param.nequilsoil*param.equisoil_interval+param.equisoil_fadeout))
+  {
+    fprintf(stderr,"ERROR230: Number of spinup years=%d insuffficient for selected spinup settings, must be at least %d.\n",
+            config->nspinup,param.veg_equil_year+param.nequilsoil*param.equisoil_interval+param.equisoil_fadeout); 
+    return TRUE;
+  }
   return FALSE;
 } /* of 'fscanconfig' */
