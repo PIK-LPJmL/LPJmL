@@ -11,13 +11,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
-- changelog.md added #298
-- categories to include are
+- CHANGELOG.md added #298
+- if applicable, categories to include are
   - Added
   - Changed
   - Deprecated
   - Removed
   - Fixed
+  - Security
 
 ### Changed 
 
