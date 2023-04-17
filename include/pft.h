@@ -285,7 +285,7 @@ extern Real f_lai(Real);
 extern int findpftname(const char *,const Pftpar[],int);
 extern Bool findcftmap(const char *,const Pftpar[],const int[],int);
 extern void fprintpftnames(FILE *,const Pftpar[],int);
-extern Real ma_biological_n_fixation(Pft *,Soil *,Real,const Config *);
+extern Real npp_contr_biol_n_fixation(Pft *,Soil *,Real,const Config *);
 
 
 /* needed for IMAGE, but can also be used otherwise */
