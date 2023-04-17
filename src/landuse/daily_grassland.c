@@ -139,7 +139,7 @@ Real daily_grassland(Stand *stand,                /**< stand pointer */
     }
     if(stand->cell->ml.manure_nr!=NULL) /* has to be adapted if fix_fertilization option is added */
     {
-      if(day==fertday_biomass(stand->cell,config))
+      if(day==fertday_biomass(stand->cell,config) && stand->soil.litter.n>0)
       {
         manure = stand->cell->ml.manure_nr[data->irrigation.irrigation].grass[stand->type->landusetype==GRASSLAND];
         stand->soil.NH4[0] += manure*param.nmanure_nh4_frac;

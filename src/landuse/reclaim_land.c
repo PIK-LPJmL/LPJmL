@@ -173,7 +173,8 @@ void reclaim_land(const Stand *stand1,Stand *stand2,Cell *cell,Bool istimber,int
       soil->c_shift[l][p].fast=0;
       soil->c_shift[l][p].slow=0;
     }
-
+  soil->decomp_litter_pft=newvec(Stocks,ntotpft);
+  check(soil->decomp_litter_pft);
   copysoil(&stand2->soil,&stand1->soil,ntotpft);
   for(l=0;l<NSOILLAYER;l++)
     stand2->frac_g[l]=stand1->frac_g[l];

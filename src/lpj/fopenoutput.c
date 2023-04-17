@@ -251,7 +251,7 @@ Outputfile *fopenoutput(const Cell grid[],   /**< LPJ grid */
     }
     output->files[config->outputvars[i].id].filename=config->outputvars[i].filename.name;
     output->files[config->outputvars[i].id].fmt=config->outputvars[i].filename.fmt;
-    if(config->outputvars[i].filename.issocket)
+    if(iscoupled(*config) && config->outputvars[i].filename.issocket)
     {
       output->files[config->outputvars[i].id].issocket=TRUE;
       output->files[config->outputvars[i].id].id=config->outputvars[i].filename.id;
@@ -281,7 +281,7 @@ Outputfile *fopenoutput(const Cell grid[],   /**< LPJ grid */
                 0,config->comm);
 #endif
     }
-    else if(config->outputvars[i].filename.fmt!=SOCK)
+    if(config->outputvars[i].filename.fmt!=SOCK)
       openfile(output,grid,filename,i,config);
 #ifdef USE_MPI
     MPI_Bcast(&output->files[config->outputvars[i].id].isopen,1,MPI_INT,
