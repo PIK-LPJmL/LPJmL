@@ -17,7 +17,7 @@
 #include "tree.h"
 #include "agriculture.h"
 
-void mixsoil(Stand *stand1,const Stand *stand2,int year,const Config *config)
+void mixsoil(Stand *stand1,const Stand *stand2,int year,int ntotpft,const Config *config)
 {
   int l,index,i;
   Real water1,water2;
@@ -42,6 +42,10 @@ void mixsoil(Stand *stand1,const Stand *stand2,int year,const Config *config)
     mixpool(stand1->soil.k_mean[l].fast,stand2->soil.k_mean[l].fast,
             stand1->frac,stand2->frac);
     mixpool(stand1->soil.k_mean[l].slow,stand2->soil.k_mean[l].slow,
+            stand1->frac,stand2->frac);
+    mixpool(stand1->soil.decay_rate[l].fast,stand2->soil.decay_rate[l].fast,
+            stand1->frac,stand2->frac);
+    mixpool(stand1->soil.decay_rate[l].slow,stand2->soil.decay_rate[l].slow,
             stand1->frac,stand2->frac);
   }
   for(l=0;l<stand2->soil.litter.n;l++)
@@ -115,7 +119,13 @@ void mixsoil(Stand *stand1,const Stand *stand2,int year,const Config *config)
           stand1->frac,stand2->frac);
   mixpool(stand1->soil.decomp_litter_mean.nitrogen,stand2->soil.decomp_litter_mean.nitrogen,
           stand1->frac,stand2->frac);
-
+  for(i=0;i<ntotpft;i++)
+  {
+     mixpool(stand1->soil.decomp_litter_pft[i].carbon,stand2->soil.decomp_litter_pft[i].carbon,
+             stand1->frac,stand2->frac);
+     mixpool(stand1->soil.decomp_litter_pft[i].nitrogen,stand2->soil.decomp_litter_pft[i].nitrogen,
+             stand1->frac,stand2->frac);
+  }
   mixpool(stand1->soil.snowpack,stand2->soil.snowpack,stand1->frac,
           stand2->frac);
   mixpool(stand1->soil.snowfraction,stand2->soil.snowfraction,stand1->frac,stand2->frac);
@@ -207,14 +217,14 @@ void mixsoil(Stand *stand1,const Stand *stand2,int year,const Config *config)
 #endif
 } /* of 'mixsoil' */
 
-void mixsetaside(Stand *setasidestand,Stand *cropstand,Bool intercrop,int year,const Config *config)
+void mixsetaside(Stand *setasidestand,Stand *cropstand,Bool intercrop,int year,int ntotpft,const Config *config)
 {
   /*assumes that all vegetation carbon pools are zero after harvest*/
   int p, p2;
   Pft *pft, *pft2;
   Pftgrass *grass, *grass2;
   Bool found;
-  mixsoil(setasidestand, cropstand, year, config);
+  mixsoil(setasidestand, cropstand, year, ntotpft,config);
   if(intercrop)
   {
     if (isempty(&cropstand->pftlist)) /* should not happen as establishment of cover crops now happens on all stands after tillage */
@@ -321,6 +331,7 @@ Bool setaside(Cell *cell,            /**< Pointer to LPJ cell */
               Bool with_tillage,     /**< tillage  (TRUE/FALSE) */
               Bool intercrop,        /**< intercropping possible (TRUE/FALSE) */
               int npft,              /**< number of natural PFTs */
+              int ncft,              /**< number of crop PFTs */
               Bool irrig,            /**< irrigated stand (TRUE/FALSE) */
               int year,               /**< simulation year */
               const Config *config /**< LPJmL configuration */
@@ -391,7 +402,7 @@ Bool setaside(Cell *cell,            /**< Pointer to LPJ cell */
   s=findlandusetype(cell->standlist,irrig? SETASIDE_IR : SETASIDE_RF);
   if(s!=NOT_FOUND)
   {
-    mixsetaside(getstand(cell->standlist,s),cropstand,intercrop,year,config);
+    mixsetaside(getstand(cell->standlist,s),cropstand,intercrop,year,npft+ncft,config);
     return TRUE;
   }
   else

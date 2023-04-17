@@ -55,7 +55,14 @@ void fprintparam(FILE *file,    /**< pointer to text file */
           param.ko25,param.kc25,param.atmfrac,param.fastfrac,1-pow(1-param.bioturbate,NDAYYEAR),param.k_mort,
           param.fpc_tree_max,param.temp_response,param.percthres);
   if(config->equilsoil)
+  {
     fprintf(file,"veg_equil_year:\t%d\n",param.veg_equil_year);
+    fprintf(file,"veg_equil_unlim:\t%s\n",bool2str(param.veg_equil_unlim));
+    fprintf(file,"nequilsoil:\t%d\n",param.nequilsoil);
+    fprintf(file,"equisoil_interval:\t%d\n",param.equisoil_interval);
+    fprintf(file,"equisoil_years:\t%d\n",param.equisoil_years);
+    fprintf(file,"equisoil_fadeout:\t%d\n",param.equisoil_fadeout);
+  }
   if(config->fire==SPITFIRE || config->fire==SPITFIRE_TMAX)
     fprintf(file,"firedura:\t%g\n"
             "fire_intens:\t%g\n"

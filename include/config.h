@@ -235,6 +235,7 @@ struct config
   Pnet *irrig_res_back;
   int withlanduse;
   Bool reservoir;
+  Bool nitrogen_coupled;
   int *landusemap;          /**< mapping of bands in land-use file to CFTs */
   int landusemap_size;      /**< size of landusmap */
   int *fertilizermap;
@@ -258,7 +259,7 @@ struct config
   int prescribe_landcover; /**< use input to prescribe land cover ? */
   int* mowingdays;         /**< mowing days for grassland */
   int mowingdays_size;     /**< size of mowing days array */
-  Bool ma_bnf;             /**< biological nitrogen fixation folowing Ma et al., 2022 */
+  Bool npp_controlled_bnf;             /**< biological nitrogen fixation folowing Ma et al., 2022 */
   Seed seed;
 #ifdef IMAGE
   int start_imagecoupling; /**< year in which coupling to IMAGE starts

@@ -174,7 +174,7 @@ static size_t isnetcdfinput(const Config *config)
   return width;
 } /* of 'isnetcdfinput' */
 
-static void printoutname(FILE *file,const Filename *filename,int index,Bool isoneyear,
+static void printoutname(FILE *file,const Filename *filename,Bool isoneyear,
                          const Config *config)
 {
   char *fmt;
@@ -200,7 +200,7 @@ static void printoutname(FILE *file,const Filename *filename,int index,Bool ison
     if(filename->fmt!=CDF && filename->meta)
       fprintf(file," + %s",config->json_suffix);
   }
-  if(filename->issocket)
+  if(filename->fmt==SOCK || (iscoupled(*config) && filename->issocket))
   {
     if(filename->fmt!=SOCK)
       fputs(", ",file);
@@ -310,6 +310,8 @@ void fprintconfig(FILE *file,          /**< File pointer to text output file */
     len=printsim(file,len,&count,(config->with_nitrogen==UNLIM_NITROGEN) ? "unlimited nitrogen" : "nitrogen limitation");
   if(config->permafrost)
     len=printsim(file,len,&count,"permafrost");
+  if(config->nitrogen_coupled)
+    len=printsim(file,len,&count,"water and nitrogen limitations coupled");
   if(config->johansen)
     len=printsim(file,len,&count,"Johansen conductivity");
   if(config->black_fallow)
@@ -342,8 +344,8 @@ void fprintconfig(FILE *file,          /**< File pointer to text output file */
     count++;
     len=fputstring(file,len,"prescribed soil parameter",78);
   }
-  if(config->ma_bnf)
-      len=printsim(file,len,&count,"Ma et al., 2022 BNF");
+  if(config->npp_controlled_bnf)
+      len=printsim(file,len,&count,"NPP controlled BNF");
   if(config->withlanduse)
   {
     switch(config->withlanduse)
@@ -752,9 +754,7 @@ void fprintconfig(FILE *file,          /**< File pointer to text output file */
               -width_unit,strlen(config->outnames[config->outputvars[index].id].unit)==0 ? "-" : config->outnames[config->outputvars[index].id].unit,
               typenames[getoutputtype(config->outputvars[index].id,config->float_grid)],
               sprinttimestep(s,config->outnames[config->outputvars[index].id].timestep),outputsize(config->outputvars[index].id,npft,ncft,config));
-      printoutname(file,&config->outputvars[index].filename,config->outputvars[index].id,config->outputvars[index].oneyear,config);
-      if(config->outputvars[index].filename.fmt!=CDF && config->outputvars[index].filename.meta)
-        fprintf(file," + %s",config->json_suffix);
+      printoutname(file,&config->outputvars[index].filename,config->outputvars[index].oneyear,config);
       putc('\n',file);
     }
     free(item);

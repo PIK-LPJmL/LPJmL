@@ -140,7 +140,7 @@ Real nuptake_tree(Pft *pft,             /**< pointer to PFT data */
     n_deficit = *n_plant_demand/(1+pft->par->knstore)-(vegn_sum_tree(pft)+pft->bm_inc.nitrogen-tree->ind.heartwood.nitrogen*pft->nind);
     if(n_deficit>0 && pft->npp_bnf>0)
     {
-       n_fixed=ma_biological_n_fixation(pft, soil, n_deficit, config);
+       n_fixed=npp_contr_biol_n_fixation(pft, soil, n_deficit, config);
        pft->bm_inc.nitrogen+=n_fixed;
        getoutput(&pft->stand->cell->output,BNF,config)+=n_fixed*pft->stand->frac;
        pft->stand->cell->balance.influx.nitrogen+=n_fixed*pft->stand->frac;
