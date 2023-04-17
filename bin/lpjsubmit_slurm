@@ -208,8 +208,8 @@ then
 #SBATCH --ntasks=$ntask
 #SBATCH --qos=$class
 #SBATCH --signal=15@180
-#SBATCH -J LPJmL54
 EOF
+echo "#SBATCH -J LPJmL$(cat $LPJROOT/VERSION)" >>slurm.jcf
 echo "#SBATCH --comment=\"LPJmL Version" $(cat $LPJROOT/VERSION) "args:" $args"\"" >>slurm.jcf
 cat <<EOF >>slurm.jcf
 #SBATCH --mail-user=$(whoami)
