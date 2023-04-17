@@ -412,7 +412,7 @@ Bool filesexist(Config config, /**< LPJmL configuration */
       bad+=checkclmfile(&config,&config.ignition_filename,NULL,TRUE);
     else
     {
-      bad+=checkclmfile(&config,&config.lightning_filename,NULL,TRUE);
+      bad+=checkclmfile(&config,&config.lightning_filename,NULL,FALSE);
       bad+=checkinputdata(&config,&config.human_ignition_filename,"human iginition","yr-1",LPJ_SHORT);
     }
     if(config.prescribe_burntarea)
