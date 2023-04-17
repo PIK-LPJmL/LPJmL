@@ -258,7 +258,7 @@ Bool annual_biomass_tree(Stand *stand,         /**< Pointer to stand */
   if(isdead)
   {
     update_irrig(stand,rbtree(ncft),ncft,config);
-    if(setaside(stand->cell,stand,stand->cell->ml.with_tillage,intercrop,npft,biomass_tree->irrigation.irrigation,year,config))
+    if(setaside(stand->cell,stand,stand->cell->ml.with_tillage,intercrop,npft,biomass_tree->irrigation.irrigation,year,npft+ncft,config))
       return TRUE;
   }
   else

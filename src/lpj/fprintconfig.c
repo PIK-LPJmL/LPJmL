@@ -293,6 +293,8 @@ void fprintconfig(FILE *file,          /**< File pointer to text output file */
     len=printsim(file,len,&count,(config->with_nitrogen==UNLIM_NITROGEN) ? "unlimited nitrogen" : "nitrogen limitation");
   if(config->permafrost)
     len=printsim(file,len,&count,"permafrost");
+  if(config->nitrogen_coupled)
+    len=printsim(file,len,&count,"water and nitrogen limitations coupled");
   if(config->johansen)
     len=printsim(file,len,&count,"Johansen conductivity");
   if(config->black_fallow)
@@ -325,8 +327,8 @@ void fprintconfig(FILE *file,          /**< File pointer to text output file */
     count++;
     len=fputstring(file,len,"prescribed soil parameter",78);
   }
-  if(config->ma_bnf)
-      len=printsim(file,len,&count,"Ma et al., 2022 BNF");
+  if(config->npp_controlled_bnf)
+      len=printsim(file,len,&count,"NPP controlled BNF");
   if(config->withlanduse)
   {
     switch(config->withlanduse)

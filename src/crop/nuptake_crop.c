@@ -132,7 +132,7 @@ Real nuptake_crop(Pft *pft,             /**< pointer to PFT data */
     /* no N limitation for N-fixing crops */
     if (pft->par->nfixing)
     {
-      if(!config->ma_bnf)
+      if(!config->npp_controlled_bnf)
       {
         fixed_n = *n_plant_demand - pft->bm_inc.nitrogen;
         n_uptake += fixed_n;
@@ -147,7 +147,7 @@ Real nuptake_crop(Pft *pft,             /**< pointer to PFT data */
         n_deficit = *n_plant_demand-pft->bm_inc.nitrogen;
         if(n_deficit>0 && pft->npp_bnf>0)
         {
-          fixed_n=ma_biological_n_fixation(pft, soil, n_deficit, config);
+          fixed_n=npp_contr_biol_n_fixation(pft, soil, n_deficit, config);
           pft->bm_inc.nitrogen+=fixed_n;
           getoutput(&pft->stand->cell->output,BNF,config)+=fixed_n*pft->stand->frac;
           pft->stand->cell->balance.influx.nitrogen+=fixed_n*pft->stand->frac;
