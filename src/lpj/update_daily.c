@@ -64,7 +64,6 @@ void update_daily(Cell *cell,            /**< cell pointer           */
   Real gsi;
   Real litsum_old_nv[2]={0,0},litsum_new_nv[2]={0,0};
   Real litsum_old_agr[2]={0,0},litsum_new_agr[2]={0,0};
-  Livefuel *livefuel;
 
   forrootmoist(l)
     rootdepth+=soildepth[l];
@@ -139,20 +138,18 @@ void update_daily(Cell *cell,            /**< cell pointer           */
         cell->gsi_cum=growing_season_index(cell->gsi_cum,&gsi,&climate,config->relative_humidity,daylength);
         getoutput(&cell->output,GSI_CUM,config)+=cell->gsi_cum;
       }
-      foreachpft(pft, p, &stand->pftlist)
-        if(isgrass(pft))
-          getoutput(&cell->output,GSI_DIFF,config)+=(gsi-pft->phen)*(gsi-pft->phen);
+      if(stand->type->landusetype==NATURAL)
+        foreachpft(pft, p, &stand->pftlist)
+            getoutputindex(&cell->output,GSI_DIFF,pft->par->id,config)+=(cell->gsi_cum-pft->phen)*(cell->gsi_cum-pft->phen);
     }
     getoutput(&cell->output,PET,config)+=eeq*PRIESTLEY_TAYLOR*stand->frac;
     cell->output.mpet+=eeq*PRIESTLEY_TAYLOR*stand->frac;
     getoutput(&cell->output,ALBEDO,config) += beta * stand->frac;
 
     if((config->fire==SPITFIRE  || config->fire==SPITFIRE_TMAX)&& stand->afire_frac<1)
-      {
+    {
       dailyfire_stand(stand,popdensity,human_ign_prob,avgprec,&climate,config);
-      if(s==0)
-         getoutput(&stand->cell->output,DLM_LIVEGRASS,config)+=livefuel->M[0];
-      }
+    }
     if(config->permafrost)
     {
       snowrunoff=snow(&stand->soil,&climate.prec,&melt,

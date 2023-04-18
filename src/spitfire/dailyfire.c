@@ -203,6 +203,8 @@ void dailyfire(Stand *stand,                /**< pointer to stand */
     getoutput(output,ROS,config) += ros_forward;
     if (num_fires>0)
       getoutput(output,FIRESIZE,config) += burnt_area*1e4/num_fires;
+    getoutput(&stand->cell->output,DLM_LIVEGRASS,config)+=livefuel->M[0];
+
   }
   stand->cell->balance.fire.carbon+=total_fire.carbon;
   getoutput(output,FIREN,config)+=total_fire.nitrogen*(1-param.q_ash)*stand->frac;

@@ -1052,7 +1052,7 @@ void fwriteoutput(Outputfile *output,  /**< output file array */
   writeoutputvar(LIVEGRASS,ndate1);
   writeoutputvar(DLM_LIVEGRASS,ndate1);
   writeoutputvar(GSI_CUM,ndate1);
-  writeoutputvar(GSI_DIFF,ndate1);
+  writeoutputarray(GSI_DIFF,ndate1);
   writeoutputvar(SOILTEMP1,ndate1);
   writeoutputvar(SOILTEMP2,ndate1);
   writeoutputvar(SOILTEMP3,ndate1);
