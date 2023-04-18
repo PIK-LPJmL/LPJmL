@@ -181,6 +181,8 @@ static int checkdatafile(const Config *config,const Filename *filename,char *nam
 {
   Climatefile input;
   /* open input data */
+  if(filename->fmt==SOCK)
+    return 0;
   if(opendata_seq(&input,filename,name,unit,datatype,1,nbands,TRUE,config))
     return 1;
   closeclimatefile(&input,TRUE);
