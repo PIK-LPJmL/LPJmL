@@ -197,6 +197,7 @@ void dailyfire(Stand *stand,                /**< pointer to stand */
   getoutput(output,FIREC,config) += total_fire.carbon;
   if(stand->type->landusetype==NATURAL)
   {
+    getoutput(&stand->cell->output,DLM_LIVEGRASS,config)+=livefuel.dlm_livegrass;
     if (burnt_area>0)
       getoutput(output,FIREDAYS,config) += 1;
     getoutput(output,SURFACE_FI,config) += surface_fi;
