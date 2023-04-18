@@ -56,7 +56,7 @@ int outputsize(int index,     /**< output index */
       return getnnat(npft,config)+1;
     case PFT_LITTERC:
       return npft+ncft;
-    case PFT_MORT: case NV_LAI: case PFT_HEIGHT: case GSI_DIFF:
+    case PFT_MORT: case NV_LAI: case PFT_HEIGHT: case GSI_DIFF: case PFT_PHEN:
       return getnnat(npft,config);
     case SOILTEMP: case SWC: case PERC: case WHC_NAT: case WHC_GRASS: case WHC_AGR:
     case KS_NAT: case KS_GRASS: case KS_AGR:

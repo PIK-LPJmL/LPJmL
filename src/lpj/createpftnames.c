@@ -153,7 +153,7 @@ char **createpftnames(int index,           /**< output index */
       if(addpfts(pftnames,&incr,FALSE,0,config->pftpar,nnat))
         return NULL;
       break;
-    case PFT_MORT: case NV_LAI: case PFT_HEIGHT: case GSI_DIFF:
+    case PFT_MORT: case NV_LAI: case PFT_HEIGHT: case GSI_DIFF: case PFT_PHEN:
       if(addpfts(pftnames,&incr,FALSE,0,config->pftpar,nnat))
         return NULL;
       break;

@@ -345,6 +345,7 @@
   { "id" : WFT_VEGC, "name": "wft_vegc", "timestep" : "annual", "var": "wft_vegc", "descr": "Vegetation carbon for wood plantation trees (WFTs)", "unit": "gC/m2", "scale" : 1.0, "offset" : 0.0},
   { "id" : PFT_MORT, "name": "pft_mort", "timestep" : "annual","var": "mortality", "descr": "Annual mortality", "unit": "1/yr", "scale": 1.0, "offset" : 0.0},
   { "id" : PFT_HEIGHT, "name": "pft_height", "timestep" : "annual","var": "heigt", "descr": "tree height", "unit": "m", "scale": 1.0, "offset" : 0.0},
+  { "id" : PFT_PHEN, "name": "pft_phen", "timestep" : "monthly","var": "phenology", "descr": "PFT-specific phenology", "unit": "1", "scale": 1.0, "offset" : 0.0},
   { "id" : VEGC_AVG, "name": "vegc_avg", "timestep" : "annual", "var" : "VegC", "descr" : "average vegetation carbon", "unit" : "gC/m2", "scale" : 1.0, "offset" : 0.0},
   { "id" : NV_LAI, "name": "nv_lai", "timestep" : "annual", "var" : "LAI", "descr" : "mean LAI from natural vegetation", "unit" : "m2/m2", "scale" : 1.0, "offset" : 0.0},
   { "id" : FPC_BFT, "name": "fpc_bft", "timestep" : "annual", "var" : "FPC", "descr" : "FPC for bioenergy PFTs and managed grassland", "unit" : "", "scale" : 1.0, "offset" : 0.0},

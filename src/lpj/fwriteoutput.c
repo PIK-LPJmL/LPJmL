@@ -1218,6 +1218,7 @@ void fwriteoutput(Outputfile *output,  /**< output file array */
   writeoutputarray(GROWING_PERIOD,1);
   writeoutputarray(PFT_MORT,1);
   writeoutputarray(PFT_HEIGHT,1);
+  writeoutputarray(PFT_PHEN,ndate1);
   writeoutputarray(FPC_BFT,1);
   writeoutputarray(NV_LAI,ndate1);
   if(isopen(output,SOILC_LAYER))
