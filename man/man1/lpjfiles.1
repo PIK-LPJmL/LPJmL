@@ -1,4 +1,4 @@
-.TH lpjfiles 1  "March 30, 2023" "version 1.0.003" "USER COMMANDS"
+.TH lpjfiles 1  "April 21, 2023" "version 1.0.004" "USER COMMANDS"
 .SH NAME
 lpjfiles \- Prints list of input/output files of LPJmL 
 .SH SYNOPSIS
@@ -35,9 +35,9 @@ define include directory for the preprocessor of the configuration file
 name of configuration file
 .SH EXAMPLES
 .TP
-Archive files for configuration file lpjml.js with input files located in the scratch file system
+Archive files for configuration file lpjml.js with input files located in the /p/projects/lpjml file system
 .B lpjfiles
-\-input /scratch/01/lpj lpjml.js | tail -n +2 | tar -cf files.tar -T -
+\-input /p/projects/lpjml lpjml.js | tail -n +2 | tar -cf files.tar -T -
 .PP
 .SH ENVIRONMENT
 .TP
