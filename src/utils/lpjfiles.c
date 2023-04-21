@@ -17,7 +17,7 @@
 #include "tree.h"
 #include "crop.h"
 
-#define LPJFILES_VERSION "1.0.003"
+#define LPJFILES_VERSION "1.0.004"
 #define NTYPES 3 /* number of PFT types: grass, tree, crop */
 
 #define USAGE "Usage: %s [-h] [-noinput] [-nooutput] [-outpath dir] [-inpath dir] [-restartpath dir]\n"\
