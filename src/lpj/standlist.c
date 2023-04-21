@@ -74,7 +74,10 @@ Standlist freadstandlist(FILE *file,            /**< File pointer to binary file
   for(s=0;s<standlist->n;s++)
     if((getlistitem(standlist,s)=freadstand(file,cell,pftpar,ntotpft,soilpar,
                                             standtype,nstand,double_harvest,swap))==NULL)
+    {
+      fprintf(stderr,"ERROR254: Cannot read stand %d.\n",s);
       return NULL;
+    }
   return standlist;
 } /* of 'freadstandlist' */
 
