@@ -1,9 +1,9 @@
 /**************************************************************************************/
 /**                                                                                \n**/
-/**             manage_laimax_alphaa_fao_rev4453_20180507.js                       \n**/
+/**             manage_irrig_systems_with_dummy_laimax_data.js                     \n**/
 /**                                                                                \n**/
 /**     management parameter data with maximum LAI values for all crops            \n**/
-/**               LPJmL Version 5.6.004                                            \n**/
+/**               LPJmL Version 5.6.005                                            \n**/
 /**                                                                                \n**/
 /** (C) Potsdam Institute for Climate Impact Research (PIK), see COPYRIGHT file    \n**/
 /** authors, and contributors see AUTHORS file                                     \n**/
