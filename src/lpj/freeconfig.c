@@ -128,6 +128,8 @@ void freeconfig(Config *config /**< LPJmL configuration */
     free(config->mowingdays);
     if(config->sdate_option==PRESCRIBED_SDATE || config->crop_phu_option==PRESCRIBED_CROP_PHU)
       free(config->cftmap);
+    if(config->tillage_type==READ_TILLAGE)
+      freefilename(&config->with_tillage_filename);
     freecountrypar(config->countrypar,config->ncountries);
     freeregionpar(config->regionpar,config->nregions);
     freefilename(&config->landuse_filename);
