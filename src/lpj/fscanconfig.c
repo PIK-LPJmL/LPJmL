@@ -1014,8 +1014,11 @@ Bool fscanconfig(Config *config,    /**< LPJ configuration */
   if(iscoupled(*config))
   {
     config->start_coupling=config->firstyear-config->nspinup;
-    if(fscanint(file,&config->start_coupling,"start_coupling",TRUE,verbose))
-      return TRUE;
+    if(!isnull(file,"start_coupling"))
+    {
+      if(fscanint(file,&config->start_coupling,"start_coupling",TRUE,verbose))
+        return TRUE;
+    }
   }
 #endif
   if(config->firstyear-config->nspinup>config->lastyear)
