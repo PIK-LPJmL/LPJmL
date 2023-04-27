@@ -30,7 +30,8 @@
 
   "sim_name" : "LPJmL Run", /* Simulation description */
   "sim_id"   : "lpjml",     /* LPJML Simulation type with managed land use */
-  "coupled_model" : null,   /* no model coupling */
+  "coupled_model" : null,   /* Coupled model: null (no model coupled), str (name of coupled model) */
+  "start_coupling": null,   /* Start year of model coupling: null (start_coupling is set to firstyear if coupled_model != null), int (start year of coupling) */
   "version"  : "5.5",       /* LPJmL version expected */
   "random_prec" : true,     /* Random weather generator for precipitation enabled */
   "random_seed" : 2,        /* seed for random number generator */
