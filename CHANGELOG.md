@@ -3,16 +3,13 @@
 All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
-and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
+and this project follows a [GNU standard version numbering](https://www.gnu.org/prep/standards/html_node/Releases.html#index-version-numbers_002c-for-releases)
+of `major.minor.patch` with
+- `major` for substantial changes to code functionality,
+- `minor` for additions of modules and functionality, and
+- `patch` for technical changes and bugfixes without extending the functionality of the code.
 
-## [Unreleased]
-
-## [5.6.xxx] - 2023-04-13
-
-### Added
-
-- CHANGELOG.md added #298
-- if applicable, categories to include are
+- if applicable, categories to include in the CHANGELOG.md are:
   - Added
   - Changed
   - Deprecated
@@ -20,11 +17,19 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - Fixed
   - Security
 
-### Changed 
+## [Unreleased]
 
-- version number
+## [5.6.7] - 2023-04-27
+
+### Added
+
+- CHANGELOG.md added see issue [#298](https://gitlab.pik-potsdam.de/lpjml/LPJmL_internal/-/issues/298)
+
+### Changed
+
+- leading zeros removed in `patch` identifier of the version number
 
 ## History
 
-- all versions prior to 5.6.xxx have not been documented by a changelog or similar but in the respective [merge requests](https://gitlab.pik-potsdam.de/lpjml/LPJmL_internal/-/merge_requests) (internal link accessible at PIK only)
+- all versions prior to 5.6.7 have not been documented by a changelog or similar but in the respective [merge requests](https://gitlab.pik-potsdam.de/lpjml/LPJmL_internal/-/merge_requests) (internal link accessible at PIK only)
 
