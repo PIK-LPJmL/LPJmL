@@ -2,11 +2,11 @@
 <HEAD>
 <LINK REL="stylesheet" HREF="style.css" TYPE="text/css">
 <TITLE>
-Installing and running LPJmL C Version 5.6.004
+Installing and running LPJmL C Version 5.6.7
 </TITLE>
 </HEAD>
 <BODY>
-<H1>Installing and running  LPJmL C Version 5.6.004</H1>
+<H1>Installing and running  LPJmL C Version 5.6.7</H1>
 
 <H2>Installation for Unix-like systems</h2>
 
@@ -29,7 +29,7 @@ cd lpjml
 
 untar source files</p>
 <pre class="example">
-gzip -cd lpjml-5.6.004.tar.gz|tar -xf -
+gzip -cd lpjml-5.6.7.tar.gz|tar -xf -
 </pre>
 
 Directory tree after extracting the tar files:</p>
@@ -118,7 +118,7 @@ Then LPJmL can be configured via
 
 <pre class="example">
 % ./configure.sh
-Configuring LPJmL 5.6.004...
+Configuring LPJmL 5.6.7...
 Operating system is Linux
 Intel MPI found
 Create executables with make all
@@ -651,7 +651,7 @@ Concatenates output files from distributed LPJmL simulations
 </table>
 An installation directory can be defined during configuration:
 <pre class="example">
-./configure.sh -prefix /data/biosx/lpjml-5.6.004
+./configure.sh -prefix /data/biosx/lpjml-5.6.7
 </pre>
 Then the binaries can be copied in the installation directory by invoking</p>
 <pre class="example">
@@ -694,9 +694,9 @@ yields list of man pages related to LPJmL.</p>
 Sequential version can be started by invoking:</p>
 
 <pre class="example">
-./bin/lpjml
+./bin/lpjml lpjml.js
 </pre>
-By default the configuration file <tt>lpjml.js</tt> is read. The contents of this file can be viewed <A HREF="lpjml_example.html">here</A>.
+The contents of file lpjml.js can be viewed <A HREF="lpjml_example.html">here</A>.
 If you run <tt>lpjml</tt> outside the root directory of LPJmL, the following environment
 variable should be set (done by <tt>lpj_paths.sh</tt>):</p>
 
@@ -868,7 +868,7 @@ Depending on your MPI version installed the program can be started interactively
 ****        | |___|  __/ |_| | | | | | | |___   ___) |  _  | (_) |        ****
 ****        |_____|_|   \___/|_| |_| |_|_____| |____/  (_)  \___/         ****
 ****                                                                      ****
-****                lpjml C Version 5.6.004 (Apr 13 2023)                 ****
+****                lpjml C Version 5.6.7   (Apr 27 2023)                 ****
 ****    Dynamic global vegetation model with natural and managed land     ****
 ****                          Compiled for Linux                          ****
 ****       (C) Potsdam Institute for Climate Impact Research (PIK),       ****
@@ -1370,7 +1370,7 @@ dump and have to be fixed by program changes. Some errors will only be generated
 if -DSAFE is set in the compile options of <tt>Makefile.inc</tt>. The options set at compile time can be obtained by invoking
 <pre class="example">
 % lpjml -v
-lpjml C Version 5.6.004 (Apr  13 2023)
+lpjml C Version 5.6.7 (Apr 27 2023)
 Operating system: Linux, little endian
 Compiler:         Intel C version 15.00, 64 bit
 Compile flags:    "-DUSE_RAND48 -DUSE_MPI -DSAFE -DWITH_FPE -DSTORECLIMATE -DUSE_NETCDF -DUSE_UDUNITS -DUSE_JSON "
