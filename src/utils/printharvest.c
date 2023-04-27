@@ -20,7 +20,7 @@
 
 #define NTYPES 3 /* number of PFT types: grass, tree, crop */
 
-#define USAGE "Usage: %s [-h] [-outpath dir] [-inpath dir] [[-Dmacro[=value]] [-Idir] ...] [filename]\n"
+#define USAGE "Usage: %s [-h] [-outpath dir] [-inpath dir] [[-Dmacro[=value]] [-Idir] ...] filename\n"
 
 #define fread_harvest(file,harvest) if(fread(harvest,sizeof(float),1,file)!=1) \
   { \
@@ -68,7 +68,7 @@ int main(int argc,char **argv)
   Real harvest_total;
   Landfrac *harvest_sum;
   initconfig(&config);
-  if(readconfig(&config,dflt_conf_filename_ml,scanfcn,NTYPES,NOUT,&argc,&argv,USAGE))
+  if(readconfig(&config,scanfcn,NTYPES,NOUT,&argc,&argv,USAGE))
   {
     fputs("Error occurred in processing configuration file.\n",stderr);
     return EXIT_FAILURE;

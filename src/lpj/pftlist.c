@@ -104,6 +104,7 @@ Bool freadpftlist(FILE *file,            /**< file pointer of a binary file */
     for(p=0;p<pftlist->n;p++)
       if(freadpft(file,stand,pftlist->pft+p,pftpar,ntotpft,double_harvest,swap))
       {
+        fprintf(stderr,"ERROR254: Cannot read PFT %d.\n",p);
         pftlist->n=p;
         return TRUE;
       }

@@ -28,7 +28,7 @@
 #ifndef LPJ_H /* Already included? */
 #define LPJ_H
 
-#define LPJ_VERSION  "5.6.003"
+#define LPJ_VERSION  "5.6.006"
 
 /* Necessary header files */
 
@@ -98,23 +98,10 @@ typedef struct config Config; /* forward declaration of stand */
 
 /* Definition of constants */
 
-#ifdef USE_JSON
-#define dflt_conf_filename_ml "lpjml.js"   /* Default LPJ configuration file
-                                              if called by lpjml */
-#define dflt_conf_filename "lpj.js"        /* Default LPJ configuration file
-                                              if called by lpj */
-#else
-#define dflt_conf_filename_ml "lpjml.conf" /* Default LPJ configuration file
-                                              if called by lpjml */
-#define dflt_conf_filename "lpj.conf"      /* Default LPJ configuration file
-                                              if called by lpj */
-#endif
-
 /* Environment variables */
 
 #define LPJROOT "LPJROOT"            /* LPJ root directory */
 #define LPJPREP "LPJPREP"            /* preprocessor command */
-#define LPJCONFIG "LPJCONFIG"        /* default LPJ configuration filename */
 #define LPJOPTIONS "LPJOPTIONS"      /* LPJ runtime options */
 #define LPJINPUT "LPJINPATH"         /* path for input files */
 #define LPJOUTPUT "LPJOUTPATH"       /* path for output files */
@@ -131,7 +118,7 @@ extern Bool fwriterestart(const Cell[],int,int,int,const char *,Bool,const Confi
 extern FILE *openrestart(const char *,Config *,int,Bool *);
 extern void copyright(const char *);
 extern void printlicense(void);
-extern void help(const char *,const char *);
+extern void help(const char *);
 extern void fprintflux(FILE *file,Flux,Real,int,const Config *);
 extern void fprintcsvflux(FILE *file,Flux,Real,Real,int,const Config *);
 extern void failonerror(const Config *,int,int,const char *);
