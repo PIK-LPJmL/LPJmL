@@ -43,7 +43,7 @@ Real nitrogen_stress(Pft *pft,             /**< PFT */
     /* calculation of limitation in ndemad_leaf is missing */
     if(nplant_demand>pft->bm_inc.nitrogen || pft->bm_inc.nitrogen<2)  //nuptake happens always if nitrogen bm_inc< 2
     {
-      if(pft->par->nfixing && config->ma_bnf)
+      if(pft->par->nfixing && config->npp_controlled_bnf)
         pft->npp_bnf=npp;
       nup=nuptake(pft,&nplant_demand,&ndemand_leaf,npft,ncft,config);
     }

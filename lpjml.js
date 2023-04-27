@@ -2,7 +2,7 @@
 /**                                                                                \n**/
 /**                   l  p  j  m  l  .  j  s                                       \n**/
 /**                                                                                \n**/
-/** Default configuration file for LPJmL C Version 5.5.001                         \n**/
+/** Default configuration file for LPJmL C Version 5.6.003                         \n**/
 /**                                                                                \n**/
 /** Configuration file is divided into five sections:                              \n**/
 /**                                                                                \n**/
@@ -30,9 +30,9 @@
 
   "sim_name" : "LPJmL Run", /* Simulation description */
   "sim_id"   : "lpjml",     /* LPJML Simulation type with managed land use */
-  "coupled_model" : null,   /* Coupled model: null (no model coupled), str (name of coupled model) */
+  "coupled_model" : null,   /* Coupled model: null (no model coupled), string (name of coupled model) */
   "start_coupling": null,   /* Start year of model coupling: null (start_coupling is set to firstyear if coupled_model != null), int (start year of coupling) */
-  "version"  : "5.5",       /* LPJmL version expected */
+  "version"  : "5.6",       /* LPJmL version expected */
   "random_prec" : true,     /* Random weather generator for precipitation enabled */
   "random_seed" : 2,        /* seed for random number generator */
   "radiation" : "radiation",/* other options: "cloudiness", "radiation", "radiation_swonly", "radiation_lwdown" */
@@ -48,6 +48,7 @@
   "johansen" : true,
   "soilpar_option" : "no_fixed_soilpar", /* other options "no_fixed_soilpar", "fixed_soilpar", "prescribed_soilpar" */
   "with_nitrogen" : "lim", /* other options: "no", "lim", "unlim" */
+  "nitrogen_coupled" : false, /* nitrogen stress coupled to water stress */
   "store_climate" : true, /* store climate data in spin-up phase */
   "const_climate" : false,
   "shuffle_climate" : true, /* shuffle spinup climate */
@@ -107,7 +108,7 @@
   "crop_phu_option" : "new",
   "cropsheatfrost" : false,
   "double_harvest" : true,
-  "ma_bnf" : true,
+  "npp_controlled_bnf" : true,
 
 /*===================================================================*/
 /*  II. Input parameter section                                      */
@@ -133,7 +134,7 @@
 #define SUFFIX pft.bin
 #endif
 
-  "output_metafile" : false, /* no json metafile created */
+  "output_metafile" : true, /* no json metafile created */
   "float_grid" : false,      /* set datatype of grid file to float (TRUE/FALSE) */
 
 #define mkstr(s) xstr(s) /* putting string in quotation marks */
@@ -191,6 +192,7 @@ ID                               Fmt                        filename
     { "id" : "bnf",              "file" : { "fmt" : "raw", "name" : "output/mbnf.bin"}},
     { "id" : "n_immo",           "file" : { "fmt" : "raw", "name" : "output/mn_immo.bin"}},
     { "id" : "pft_ndemand",      "file" : { "fmt" : "raw", "name" : "output/pft_ndemand.bin"}},
+    { "id" : "nfert_agr",      "file" : { "fmt" : "raw", "name" : "output/nfert_agr.bin"}},
     { "id" : "firen",            "file" : { "fmt" : "raw", "name" : "output/firen.bin"}},
     { "id" : "n_mineralization", "file" : { "fmt" : "raw", "name" : "output/mn_mineralization.bin"}},
     { "id" : "n_volatilization", "file" : { "fmt" : "raw", "name" : "output/mn_volatilization.bin"}},
@@ -260,12 +262,12 @@ ID                               Fmt                        filename
 
 #ifndef FROM_RESTART
 
-  "nspinup" : 10000,  /* spinup years */
+  "nspinup" : 3500,  /* spinup years */
   "nspinyear" : 30,  /* cycle length during spinup (yr) */
   "firstyear": 1901, /* first year of simulation */
   "lastyear" : 1901, /* last year of simulation */
   "restart" :  false, /* start from restart file */
-  "outputyear" : -8099,
+  "outputyear" : -1599,
   "write_restart" : true, /* create restart file: the last year of simulation=restart-year */
   "write_restart_filename" : "restart/restart_1840_nv_stdfire.lpj", /* filename of restart file */
   "restart_year": 1840 /* write restart at year */
