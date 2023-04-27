@@ -31,7 +31,6 @@
 #define checkptr(ptr) if(ptr==NULL) { printallocerr(#ptr); return NULL; }
 
 FILE *openconfig(Config *config,      /**< configuration struct */
-                 const char *dflt_filename, /**< default name of configuration file */
                  int *argc,           /**< pointer to the number of arguments */
                  char ***argv,        /**< pointer to the argument vector  */
                  const char *usage    /**< usage information string or NULL */
@@ -399,7 +398,18 @@ FILE *openconfig(Config *config,      /**< configuration struct */
     else
       break;
   }
-  config->filename=(i==*argc)  ? dflt_filename : (*argv)[i++];
+  if(i==*argc)
+  {
+    if(isroot(*config))
+    {
+      fprintf(stderr,"ERROR164: Configuration filename missing.\n");
+      if(usage!=NULL)
+        fprintf(stderr,usage,(*argv)[0]);
+    }
+    free(options);
+    return NULL;
+  }
+  config->filename=(*argv)[i++];
   /* check whether config file exists */
   if(getfilesize(config->filename)==-1)
   {

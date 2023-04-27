@@ -1,16 +1,16 @@
-.TH lpjml 1  "March 31, 2023" "version 5.5.001" "USER COMMANDS"
+.TH lpjml 1  "April 24, 2023" "version 5.6.006" "USER COMMANDS"
 .SH NAME
 lpj, lpjml \- Dynamic global vegetation model with managed land and river routing
 .SH SYNOPSIS
 .B lpjml
 [\-h] [\-l] [\-v] [-vv] [-param] [-nopp] [-pp cmd] [-fpe] [-image host[:inport[,outport]]] [-couple host[:port]] [\-wait time] [\-outpath \fIdir\fP]
 [\-inpath \fIdir\fP] [\-restartpath \fIdir\fP]
-[[\-Dmacro[=value]] [\-I\fIdir\fP] ...] [\fIfilename\fP]
+[[\-Dmacro[=value]] [\-I\fIdir\fP] ...] \fIfilename\fP
 
 .B lpj
 [\-h] [\-l] [\-v] [-vv] [-param] [-nopp] [-pp cmd] [-fpe] [-image host[:inport[,outport]]] [-couple host[:port]] [\-wait time] [\-outpath \fIdir\fP]
 [\-inpath \fIdir\fP] [\-restartpath \fIdir\fP]
-[[\-Dmacro[=value]] [\-I\fIdir\fP] ...] [\fIfilename\fP]
+[[\-Dmacro[=value]] [\-I\fIdir\fP] ...] \fIfilename\fP
 .SH DESCRIPTION
 The model simulates vegetation dynamics, hydrology and soil
 organic matter dynamics on an area-averaged grid cell basis using
@@ -72,12 +72,12 @@ define macro for the preprocessor of the configuration file
 define include directory for the preprocessor of the configuration file
 .TP
 .I filename
-name of configuration file, default is \fIlpjml.js\fP for \fBlpjml\fP and \fIlpj.js\fP for \fBlpj\fP.
+name of configuration file
 .SH EXAMPLES
 .TP
-Perform simulation with input from the /scratch file system:
+Perform simulation with input from the /p/projects/lpjml file system:
 .B lpjml
-\-inpath /scratch/02/lpj
+\-inpath /p/projects/lpjml lpjml.js
 .PP
 .TP
 Start simulation from restart file with floating point exceptions enabled:
@@ -88,9 +88,6 @@ For running the MPI version of the program on more than one task the
 .B lpjsubmit
 script has to be used.
 .SH ENVIRONMENT
-.TP
-LPJCONFIG
-default LPJmL configuration filename
 .TP
 LPJPREP
 defines preprocessor command for LPJmL configuration file, default is \fBcpp -P\fP. Same as '-pp' option.
