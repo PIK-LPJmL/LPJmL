@@ -38,6 +38,8 @@ of `major.minor.patch` with
 
 - lpjcheck and lpjml checks for specified filenames if they are necessary for the coupled run
 
+- JSON metafiles are also created for NetCDF output
+
 ## [5.6.7] - 2023-04-27
 
 ### Added

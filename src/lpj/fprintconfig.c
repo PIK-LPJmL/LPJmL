@@ -197,7 +197,7 @@ static void printoutname(FILE *file,const Filename *filename,Bool isoneyear,
     }
     else
       fputs(filename->name,file);
-    if(filename->fmt!=CDF && filename->meta)
+    if(filename->meta)
       fprintf(file," + %s",config->json_suffix);
   }
   if(iscoupled(*config) && filename->issocket)
