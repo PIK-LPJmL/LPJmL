@@ -113,7 +113,12 @@ Bool readco2(Co2data *co2,             /**< pointer to co2 data */
     }
     fclose(file.file.file);
   }
-  else
+  else if(filename->fmt==SOCK && config->start_coupling>config->firstyear-config->nspinup)
+  {
+    if(verbose)
+      fprintf(stderr,"ERROR149: No filename specified for CO2 data required for socket connection before coupling year %d, first simulatiomn year=%d.\n",
+             config->start_coupling,config->firstyear-config->nspinup);
     return TRUE;
+  }
   return FALSE;
 } /* of 'readco2' */

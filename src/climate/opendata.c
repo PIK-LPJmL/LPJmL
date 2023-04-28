@@ -49,7 +49,17 @@ Bool opendata(Climatefile *file,        /**< pointer to file */
       return TRUE;
     }
     if(file->fmt==SOCK)
-      return FALSE;
+    {
+      if(config->start_coupling>config->firstyear-config->nspinup)
+      {
+        if(isroot(*config))
+          fprintf(stderr,"ERROR149: No filename specified for %s data required for socket connection before coupling year %d, first simulatiomn year=%d.\n",
+                  name,config->start_coupling,config->firstyear-config->nspinup);
+        return TRUE;
+      }
+      else
+        return FALSE;
+    }
   }
   if(file->fmt==CDF)
   {
