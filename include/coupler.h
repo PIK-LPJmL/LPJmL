@@ -19,7 +19,7 @@
 
 /* Definition of constants */
 
-#define COUPLER_VERSION 3                /* Protocol version */
+#define COUPLER_VERSION 4                /* Protocol version */
 #define LPJCOUPLEDHOST "LPJCOUPLEDHOST"  /* Environment variable for coupled host */
 #define LPJWAIT "LPJWAIT"                /* Time to wait for connection */
 #define DEFAULT_COUPLED_HOST "localhost" /* Default host for coupled model */
