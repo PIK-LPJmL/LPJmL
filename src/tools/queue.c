@@ -93,6 +93,8 @@ Queue freadqueue(FILE *file, /**< pointer to binary file */
   }
   if(queue->first<0 || queue->first>=queue->size)
   {
+    fprintf(stderr,"ERROR253: Invalid first pointer %d in queue, must be in [0,%d].\n",
+            queue->first,queue->size-1);
     free(queue);
     return NULL;
   }
