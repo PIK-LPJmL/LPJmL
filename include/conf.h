@@ -116,7 +116,7 @@
 #define NO_FERTILIZER 0
 #define FERTILIZER 1
 #define AUTO_FERTILIZER 2
-#define NOUT 371            /* number of output files */
+#define NOUT 372            /* number of output files */
 #define END -1              /* end marker for output files */
 #define GRIDBASED 1         /* pft-specific outputs scaled by stand->frac */
 #define PFTBASED 0          /* pft-specific outputs not scaled by stand->frac */
@@ -505,6 +505,7 @@
 #define DELTAC_MGRASS 368
 #define RA_MGRASS 369
 #define RH_MGRASS 370
+#define PFT_BNF 371
 #define PFT_GCGP_COUNT 0
 #define NDAY_MONTH 1
 #define RANDOM_SEED 0
