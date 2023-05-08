@@ -2,10 +2,10 @@
 | |   |  _ \   | |_ __ ___ | |
 | |   | |_) |  | | '_ ` _ \| |
 | |___|  __/ |_| | | | | | | |___
-|_____|_|   \___/|_| |_| |_|_____| Version 5.6.004
+|_____|_|   \___/|_| |_| |_|_____| Version 5.6.7
 
 
-Installation of LPJmL C Version 5.6.004
+Installation of LPJmL C Version 5.6.7
 
 Installation for Unix-like systems
 ----------------------------------
@@ -27,7 +27,7 @@ cd lpjml
 
 untar source files
 
-gzip -cd lpjml-5.6.004.tar.gz|tar -xf -
+gzip -cd lpjml-5.6.7.tar.gz|tar -xf -
 
 Directory tree after extracting the tar files:
 
@@ -206,7 +206,6 @@ Environment variables
 
 The following environment variables are used by LPJmL:
 
-LPJCONFIG      - default LPJmL configuration filename
 LPJPREP        - defines preprocessor command for LPJmL configuration  file, default
                  is "cpp"
 LPJROOT        - defines the root directory for LPJmL. This directory is added to the
@@ -298,7 +297,7 @@ bin/lpjsubmit ntasks LPJmL_args...
 
 Depending on your MPI version installed the program can be started interactively:
 
-mpirun -np 32 ./bin/lpjml
+mpirun -np 32 ./bin/lpjml lpjml.js
 
 Error codes
 -----------

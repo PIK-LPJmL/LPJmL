@@ -1,11 +1,11 @@
-.TH lpjcheck 1  "December 10, 2021" "version 1.0.004" "USER COMMANDS"
+.TH lpjcheck 1  "March 2, 2023" "version 1.0.005" "USER COMMANDS"
 .SH NAME
 lpjcheck \- Checks syntax of LPJmL configuration files 
 .SH SYNOPSIS
 .B lpjcheck
 [\-h] [\-q] [\-nocheck] [-vv] [\-param] [-pp cmd] [\-couple host[:port]] [\-outpath \fIdir\fP]
 [\-inpath \fIdir\fP] [\-restartpath \fIdir\fP] [[\-Dmacro[=value]] [\-I\fIdir\fP] ...]
-[\fIfilename\fP]
+\fIfilename\fP
 .SH DESCRIPTION
 Program checks the syntax of LPJmL configuration files. It is checked additionally whether all input files and output directories are present. 
 \fBlpjcheck\fP will print the total amount of disk space used for the output files.
@@ -45,17 +45,14 @@ define macro for the preprocessor of the configuration file
 define include directory for the preprocessor of the configuration file
 .TP
 .I filename
-name of configuration file, default is \fIlpjml.js\fP.
+name of configuration file
 .SH EXAMPLES
 .TP
-Check default configuration file with input files located in the scratch file system
+Check configuration file lpjml.js with input files located in the /p/projects/lpjml file system
 .B lpjcheck
-\-inpath /scratch/02/lpj
+\-inpath /p/projects/lpjml lpjml.js
 .PP
 .SH ENVIRONMENT
-.TP
-LPJCONFIG
-default LPJmL configuration filename
 .TP
 LPJPREP 
 defines preprocessor command for LPJmL configuration file, default is \fBcpp -P\fP. Same as '-pp' option.
