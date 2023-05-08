@@ -116,7 +116,7 @@
 #define NO_FERTILIZER 0
 #define FERTILIZER 1
 #define AUTO_FERTILIZER 2
-#define NOUT 371            /* number of output files */
+#define NOUT 370            /* number of output files */
 #define END -1              /* end marker for output files */
 #define GRIDBASED 1         /* pft-specific outputs scaled by stand->frac */
 #define PFTBASED 0          /* pft-specific outputs not scaled by stand->frac */
@@ -416,7 +416,8 @@
 #define WATERUSEDEM 279
 #define WD_GW 280
 #define LITC_ALL 281
-#define LITC_AG 282
+#define RH_MGRASS 282
+#define LITC_AG LITC
 #define NPP_AGR 283
 #define RH_AGR 284
 #define SOILC_AGR 285
@@ -504,7 +505,6 @@
 #define METHANEC_MGRASS 367
 #define DELTAC_MGRASS 368
 #define RA_MGRASS 369
-#define RH_MGRASS 370
 #define PFT_GCGP_COUNT 0
 #define NDAY_MONTH 1
 #define RANDOM_SEED 0

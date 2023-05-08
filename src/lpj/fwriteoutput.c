@@ -758,6 +758,20 @@ void fwriteoutput(Outputfile *output,  /**< output file array */
     }
     writeoutputvar(LITC,1);
   }
+  if(isopen(output,LITC_ALL))
+  {
+    if(iswrite2(LITC,timestep,year,config) || (timestep==ANNUAL && config->outnames[LITC].timestep>0))
+    {
+      for(cell=0;cell<config->ngridcell;cell++)
+        if(!grid[cell].skip)
+        {
+          foreachstand(stand,s,grid[cell].standlist)
+          /* if(stand->type->landusetype==NATURAL) */
+            getoutput(&grid[cell].output,LITC_ALL,config)+=littercarbon(&stand->soil.litter)*stand->frac;
+        }
+    }
+    writeoutputvar(LITC_ALL,1);
+  }
   if(isopen(output,LITN))
   {
     if(iswrite2(LITN,timestep,year,config) || (timestep==ANNUAL && config->outnames[LITN].timestep>0))
