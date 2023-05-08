@@ -196,8 +196,15 @@ Real nuptake_crop(Pft *pft,             /**< pointer to PFT data */
     crop->nuptakesum += n_uptake;
   else
     getoutputindex(&pft->stand->cell->output,PFT_NUPTAKE,nnat+index+data->irrigation*nirrig,config)+=n_uptake;
+<<<<<<< HEAD
 
   getoutputindex(&pft->stand->cell->output,PFT_BNF,nnat+index+data->irrigation*nirrig,config)+=fixed_n;
+=======
+  if(config->pft_output_scaled)
+    getoutputindex(&pft->stand->cell->output,PFT_BNF,nnat+index+data->irrigation*nirrig,config)+=fixed_n*pft->stand->frac;
+  else
+    getoutputindex(&pft->stand->cell->output,PFT_BNF,nnat+index+data->irrigation*nirrig,config)+=fixed_n;
+>>>>>>> 325ce116... grid based scaling added to PFT_BNF output
   getoutputindex(&pft->stand->cell->output,PFT_NDEMAND,nnat+index+data->irrigation*nirrig,config)+=max(0,*n_plant_demand-pft->bm_inc.nitrogen)/365;
   pft->stand->cell->balance.n_uptake+=n_uptake*pft->stand->frac;
   pft->stand->cell->balance.n_demand+=max(0,(*n_plant_demand-pft->bm_inc.nitrogen))*pft->stand->frac/365;
