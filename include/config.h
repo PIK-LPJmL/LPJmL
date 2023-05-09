@@ -307,7 +307,7 @@ extern const char *grazing_type[];
 extern void initmpiconfig(Config *,MPI_Comm);
 #endif
 extern void initconfig(Config *);
-extern FILE* openconfig(Config *,const char *,int *,char***,const char*);
+extern FILE* openconfig(Config *,int *,char***,const char*);
 extern void freeconfig(Config *);
 extern void fprintconfig(FILE *,Standtype **,int,int,int,const Config *);
 extern Bool filesexist(Config,Bool);
@@ -318,7 +318,7 @@ extern void fprintpftpar(FILE *,const Pftpar [],const Config *);
 extern void fprintoutputvar(FILE *,const Variable *,int,int,int,const Config *);
 extern void freeoutputvar(Variable *,int);
 extern Bool fscanoutput(LPJfile *,int,int,Config *,int);
-extern Bool readconfig(Config *,const char *,Pfttype [],int,Standtype **,int,int,int *,
+extern Bool readconfig(Config *,Pfttype [],int,Standtype **,int,int,int *,
                        char ***,const char *);
 extern Bool fscanconfig(Config *,LPJfile *,Pfttype [],int,Standtype **,int,int);
 extern void fprintparam(FILE *,Standtype **,int,int,int,const Config *);

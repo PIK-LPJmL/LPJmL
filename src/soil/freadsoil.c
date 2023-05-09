@@ -38,7 +38,10 @@ Bool freadsoil(FILE *file,             /**< pointer to binary file */
     freadreal((Real *)soil->c_shift[l],ntotpft*sizeof(Poolpar)/sizeof(Real),swap,file);
   }
   if(freadlitter(file,&soil->litter,pftpar,ntotpft,swap))
+  {
+    fprintf(stderr,"ERROR254: Cannot read litter data.\n");
     return TRUE;
+  }
   freadreal(soil->NO3,LASTLAYER,swap,file);
   freadreal(soil->NH4,LASTLAYER,swap,file);
   freadreal(soil->wsat, NSOILLAYER, swap, file);
