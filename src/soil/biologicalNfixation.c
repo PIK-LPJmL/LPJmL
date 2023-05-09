@@ -61,35 +61,59 @@ Real biologicalnfixation(const Stand *stand, /**< pointer to stand */
     switch(pft->stand->type->landusetype)
     {
     case NATURAL: case SETASIDE_RF: case SETASIDE_IR:
-      getoutputindex(&pft->stand->cell->output,PFT_BNF,pft->par->id,config)+=pft_bnf;
+      if(config->pft_output_scaled)
+         getoutputindex(&pft->stand->cell->output,PFT_BNF,pft->par->id,config)+=n_fixed*pft->stand->frac;
+      else
+        getoutputindex(&pft->stand->cell->output,PFT_BNF,pft->par->id,config)+=pft_bnf;
     break;
     case BIOMASS_TREE:
       data=pft->stand->data;
-      getoutputindex(&pft->stand->cell->output,PFT_BNF,nnat+rbtree(ncft)+data->irrigation*nirrig,config)+=pft_bnf; /* stand->cell->ml.landfrac[data->irrigation].biomass_tree; */
+      if(config->pft_output_scaled)
+        getoutputindex(&pft->stand->cell->output,PFT_BNF,nnat+rbtree(ncft)+data->irrigation*nirrig,config)+=pft_bnf*pft->stand->frac;
+      else
+        getoutputindex(&pft->stand->cell->output,PFT_BNF,nnat+rbtree(ncft)+data->irrigation*nirrig,config)+=pft_bnf; /* stand->cell->ml.landfrac[data->irrigation].biomass_tree; */
     break;
     case AGRICULTURE_TREE:
       data=pft->stand->data;
-      getoutputindex(&pft->stand->cell->output,PFT_BNF,nnat+data->pft_id-npft+config->nagtree+agtree(ncft,config->nwptype)+data->irrigation*nirrig,config)+=pft_bnf; /* stand->cell->ml.landfrac[data->irrigation].biomass_tree; */
+      if(config->pft_output_scaled)
+        getoutputindex(&pft->stand->cell->output,PFT_BNF,nnat+data->pft_id-npft+config->nagtree+agtree(ncft,config->nwptype)+data->irrigation*nirrig,config)+=pft_bnf*pft->stand->frac;
+      else
+        getoutputindex(&pft->stand->cell->output,PFT_BNF,nnat+data->pft_id-npft+config->nagtree+agtree(ncft,config->nwptype)+data->irrigation*nirrig,config)+=pft_bnf; /* stand->cell->ml.landfrac[data->irrigation].biomass_tree; */
     break;
     case WOODPLANTATION:
       data=pft->stand->data;
-      getoutputindex(&pft->stand->cell->output,PFT_BNF,nnat+rwp(ncft)+data->irrigation*nirrig,config)+=pft_bnf; /* stand->cell->ml.landfrac[data->irrigation].biomass_tree; */
+      if(config->pft_output_scaled)
+        getoutputindex(&pft->stand->cell->output,PFT_BNF,nnat+rwp(ncft)+data->irrigation*nirrig,config)+=pft_bnf*pft->stand->frac;
+      else
+        getoutputindex(&pft->stand->cell->output,PFT_BNF,nnat+rwp(ncft)+data->irrigation*nirrig,config)+=pft_bnf; /* stand->cell->ml.landfrac[data->irrigation].biomass_tree; */
     break;
     case BIOMASS_GRASS:
       data=pft->stand->data;
-      getoutputindex(&pft->stand->cell->output,PFT_BNF,nnat+rbgrass(ncft)+data->irrigation*nirrig,config)+=pft_bnf; /* *stand->cell->ml.landfrac[data->irrigation].biomass_grass; */
+      if(config->pft_output_scaled)
+        getoutputindex(&pft->stand->cell->output,PFT_BNF,nnat+rbgrass(ncft)+data->irrigation*nirrig,config)+=pft_bnf*pft->stand->frac;
+      else
+        getoutputindex(&pft->stand->cell->output,PFT_BNF,nnat+rbgrass(ncft)+data->irrigation*nirrig,config)+=pft_bnf; /* *stand->cell->ml.landfrac[data->irrigation].biomass_grass; */
     break;
     case AGRICULTURE_GRASS:
       data=pft->stand->data;
-      getoutputindex(&pft->stand->cell->output,PFT_BNF,nnat+data->pft_id-npft+config->nagtree+agtree(ncft,config->nwptype)+data->irrigation*nirrig,config)+=pft_bnf; /* stand->cell->ml.landfrac[data->irrigation].biomass_tree; */
+      if(config->pft_output_scaled)
+        getoutputindex(&pft->stand->cell->output,PFT_BNF,nnat+data->pft_id-npft+config->nagtree+agtree(ncft,config->nwptype)+data->irrigation*nirrig,config)+=pft_bnf*pft->stand->frac;
+      else
+        getoutputindex(&pft->stand->cell->output,PFT_BNF,nnat+data->pft_id-npft+config->nagtree+agtree(ncft,config->nwptype)+data->irrigation*nirrig,config)+=pft_bnf; /* stand->cell->ml.landfrac[data->irrigation].biomass_tree; */
     break;
     case GRASSLAND:
       data=pft->stand->data;
-      getoutputindex(&pft->stand->cell->output,PFT_BNF,nnat+rmgrass(ncft)+data->irrigation*nirrig,config)+=pft_bnf;/*pft->stand->cell->ml.landfrac[data->irrigation].grass[1];*/
+      if(config->pft_output_scaled)
+        getoutputindex(&pft->stand->cell->output,PFT_BNF,nnat+rmgrass(ncft)+data->irrigation*nirrig,config)+=pft_bnf*pft->stand->frac;
+      else
+        getoutputindex(&pft->stand->cell->output,PFT_BNF,nnat+rmgrass(ncft)+data->irrigation*nirrig,config)+=pft_bnf;/*pft->stand->cell->ml.landfrac[data->irrigation].grass[1];*/
     break;
     case OTHERS:
       data=pft->stand->data;
-      getoutputindex(&pft->stand->cell->output,PFT_BNF,nnat+rothers(ncft)+data->irrigation*nirrig,config)+=pft_bnf;/*pft->stand->cell->ml.landfrac[data->irrigation].grass[0];*/
+      if(config->pft_output_scaled)
+        getoutputindex(&pft->stand->cell->output,PFT_BNF,nnat+rothers(ncft)+data->irrigation*nirrig,config)+=pft_bnf*pft->stand->frac;
+      else
+        getoutputindex(&pft->stand->cell->output,PFT_BNF,nnat+rothers(ncft)+data->irrigation*nirrig,config)+=pft_bnf;/*pft->stand->cell->ml.landfrac[data->irrigation].grass[0];*/
     break;
     }
   
