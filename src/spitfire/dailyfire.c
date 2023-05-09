@@ -87,7 +87,7 @@ void dailyfire(Stand *stand,                /**< pointer to stand */
 
     if(stand->type->landusetype==NATURAL)
     {
-      getoutput(output,LIGHTNING,config) +=climate->lightning*param.cg_ratio*param.ler*fire_danger_index*stand->cell->coord.area*stand->frac*1e-4;
+      getoutput(output,LIGHTNING,config) +=climate->lightning*param.cg_ratio*param.ler*stand->cell->coord.area*stand->frac*1e-4;
       getoutput(output,HUMAN_IGNITION,config) +=human_ignition*stand->cell->coord.area*stand->frac*1e-4;
     }
   }

@@ -1,6 +1,6 @@
- /**************************************************************************************/
+/**************************************************************************************/
 /**                                                                                \n**/
-/**     m  a  _  b  i  o  l  o  g  i  c  a  l  _  n  _  f  i  x  a  t  i  o  n     \n**/
+/**    n  p  p  _  c  o  n  t  r  _  b  i  o  l  _  n  _  f  i  x  a  t  i  o  n   \n**/
 /**                                                                                \n**/
 /**     C implementation of LPJmL                                                  \n**/
 /**                                                                                \n**/
@@ -46,7 +46,7 @@ return(f_water);
 }
 
 
-Real ma_biological_n_fixation(Pft *pft,             /**< PFT */
+Real npp_contr_biol_n_fixation(Pft *pft,             /**< PFT */
                               Soil *soil,           /**< Soil */
                               Real n_deficit,       /**< nitrogen deficit of today */
                               const Config *config  /**< LPJmL configuration  */
@@ -68,7 +68,7 @@ Real ma_biological_n_fixation(Pft *pft,             /**< PFT */
   if(bnf > n_deficit)
     bnf = n_deficit;
   npp_requ = pft->par->bnf_cost*bnf;
-  max_cost = pft->npp_bnf*pft->par->maxbnfcost*(iscrop(pft) ? 1-((Pftcrop *)pft->data)->fphu : 1);
+  max_cost = pft->npp_bnf*pft->par->maxbnfcost;
   if(npp_requ > max_cost)
   {
     npp_requ = max_cost;
