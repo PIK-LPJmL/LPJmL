@@ -184,7 +184,7 @@ Real daily_grassland(Stand *stand,                /**< stand pointer */
 #endif
       if(config->pft_output_scaled)
       {
-        getoutputindex(output,CFT_AIRRIG,index,config)+=irrig_apply*stand->cell->ml.landfrac[data->irrigation.irrigation].grass[0];
+        getoutputindex(output,CFT_AIRRIG,index,config)+=irrig_apply*stand->frac;
       }
       else
       {
