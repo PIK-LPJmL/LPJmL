@@ -903,7 +903,7 @@ int main(int argc,char **argv)
       if(*endptr!='\0')
       {
         fprintf(stderr,"Invalid number '%s' for missing value.\n",missing_value);
-        return NULL;
+        return EXIT_FAILURE;
       }
     }
     else
