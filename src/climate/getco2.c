@@ -22,7 +22,7 @@ Bool getco2(const Climate *climate, /**< Pointer to climate data */
             const Config *config    /**< LPJmL configuration */
            )                        /** \return TRUE on error */
 {
-  if(config->co2_filename.fmt==SOCK)
+  if(iscoupled(*config) && config->co2_filename.issocket && year>=config->start_coupling)
   {
     if(receive_real_scalar_coupler(climate->co2.id,pco2,1,year,config))
       return TRUE;

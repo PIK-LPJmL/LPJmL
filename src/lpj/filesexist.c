@@ -100,11 +100,21 @@ static int checksoilcode(Config *config)
   return 0;
 } /* of 'checksoilcode' */
 
-static int checkfile(const char *filename)
+static int checkfile(const Config *config,const char *name,const Filename *filename)
 {
-  if(getfilesize(filename)==-1)
+  if(filename->fmt==FMS)
+    return 0;
+  if(filename->fmt==SOCK)
   {
-    printfopenerr(filename);
+    if(config->start_coupling<=config->firstyear-config->nspinup)
+      return 0;
+    fprintf(stderr,"ERROR149: No filename specified for %s data required for socket connection before coupling year %d, first simulatiomn year=%d.\n",
+            name,config->start_coupling,config->firstyear-config->nspinup);
+    return 1;
+  }
+  if(getfilesize(filename->name)==-1)
+  {
+    printfopenerr(filename->name);
     return 1;
   }
   else
@@ -157,7 +167,13 @@ static int checklanduse(const Config *config)
 {
   Climatefile landuse;
   if(config->landuse_filename.fmt==SOCK)
-    return 0;
+  {
+    if(config->start_coupling<=config->firstyear-config->nspinup)
+      return 0;
+    fprintf(stderr,"ERROR149: No filename specified for landuse data required for socket connection before coupling year %d, first simulatiomn year=%d.\n",
+            config->start_coupling,config->firstyear-config->nspinup);
+    return 1;
+  }
  /* open landuse input data */
   if(opendata_seq(&landuse,&config->landuse_filename,"landuse","1",LPJ_SHORT,0.001,2*config->landusemap_size,FALSE,config))
   {
@@ -187,7 +203,7 @@ static int checkdatafile(const Config *config,const Filename *filename,char *nam
   return 0;
 } /* of 'checkdatafile' */
 
-static int checkclmfile(const Config *config,const Filename *filename,const char *unit,Bool check)
+static int checkclmfile(const Config *config,const char *data_name,const Filename *filename,const char *unit,Bool check)
 {
   FILE *file;
   Header header;
@@ -198,8 +214,16 @@ static int checkclmfile(const Config *config,const Filename *filename,const char
   Climatefile input;
   size_t offset;
   int first,last,year,count;
-  if(filename->fmt==FMS || filename->fmt==SOCK)
+  if(filename->fmt==FMS)
     return 0;
+  if(filename->fmt==SOCK)
+  {
+    if(config->start_coupling<=config->firstyear-config->nspinup)
+      return 0;
+    fprintf(stderr,"ERROR149: No filename specified for %s data required for socket connection before coupling year %d, first simulatiomn year=%d.\n",
+            data_name,config->start_coupling,config->firstyear-config->nspinup);
+    return 1;
+  }
   if(filename->fmt==CDF)
   {
     input.oneyear=FALSE;
@@ -375,7 +399,7 @@ Bool filesexist(Config config, /**< LPJmL configuration */
   if(config.river_routing)
   {
     if(config.extflow)
-      bad+=checkclmfile(&config,&config.extflow_filename,NULL,0);
+      bad+=checkclmfile(&config,"extflow",&config.extflow_filename,NULL,0);
     bad+=checkinputfile(&config,&config.drainage_filename,NULL,(config.drainage_filename.fmt==CDF) ? 0 : 2);
     bad+=checkinputdata(&config,&config.lakes_filename,"lakes","1",LPJ_SHORT);
     if(config.withlanduse!=NO_LANDUSE)
@@ -387,8 +411,8 @@ Bool filesexist(Config config, /**< LPJmL configuration */
   {
     if(config.with_nitrogen==LIM_NITROGEN && !config.no_ndeposition)
     {
-      bad+=checkclmfile(&config,&config.no3deposition_filename,"g/m2/day",FALSE);
-      bad+=checkclmfile(&config,&config.nh4deposition_filename,"g/m2/day",FALSE);
+      bad+=checkclmfile(&config,"NO3 deposition",&config.no3deposition_filename,"g/m2/day",FALSE);
+      bad+=checkclmfile(&config,"NH4 deposition",&config.nh4deposition_filename,"g/m2/day",FALSE);
     }
     bad+=checkinputdata(&config,&config.soilph_filename,"soilPH",NULL,LPJ_SHORT);
   }
@@ -397,27 +421,27 @@ Bool filesexist(Config config, /**< LPJmL configuration */
   if(config.grassharvest_filename.name!=NULL)
     bad+=checkinputdata(&config,&config.grassharvest_filename,"grassharvest",NULL,LPJ_SHORT);
   if(config.with_nitrogen || config.fire==SPITFIRE || config.fire==SPITFIRE_TMAX)
-    bad+=checkclmfile(&config,&config.wind_filename,"m/s",TRUE);
+    bad+=checkclmfile(&config,"wind speed",&config.wind_filename,"m/s",TRUE);
   if(config.fire==SPITFIRE || config.fire==SPITFIRE_TMAX)
   {
     if(config.fdi==WVPD_INDEX)
-      bad+=checkclmfile(&config,&config.humid_filename,NULL,TRUE);
+      bad+=checkclmfile(&config,"humidity",&config.humid_filename,NULL,TRUE);
     bad+=checkdatafile(&config,&config.lightning_filename,"lightning",NULL,LPJ_INT,12);
-    bad+=checkclmfile(&config,&config.human_ignition_filename,"yr-1",TRUE);
+    bad+=checkclmfile(&config,"human ignition",&config.human_ignition_filename,"yr-1",TRUE);
   }
   if(config.cropsheatfrost || config.fire==SPITFIRE_TMAX)
   {
-    bad+=checkclmfile(&config,&config.tmin_filename,"celsius",TRUE);
-    bad+=checkclmfile(&config,&config.tmax_filename,"celsius",TRUE);
+    bad+=checkclmfile(&config,"tmin",&config.tmin_filename,"celsius",TRUE);
+    bad+=checkclmfile(&config,"tmax",&config.tmax_filename,"celsius",TRUE);
   }
   if(config.fire==SPITFIRE)
   {
-    bad+=checkclmfile(&config,&config.tamp_filename,NULL,TRUE);
+    bad+=checkclmfile(&config,"tamp",&config.tamp_filename,NULL,TRUE);
   }
   if(config.wateruse)
     bad+=checkdatafile(&config,&config.wateruse_filename,"wateruse","dm3/yr",LPJ_INT,1);
-  bad+=checkclmfile(&config,&config.temp_filename,"celsius",TRUE);
-  bad+=checkclmfile(&config,&config.prec_filename,"kg/m2/day",TRUE);
+  bad+=checkclmfile(&config,"temp",&config.temp_filename,"celsius",TRUE);
+  bad+=checkclmfile(&config,"precipitation",&config.prec_filename,"kg/m2/day",TRUE);
 #ifdef IMAGE
   if (config.wateruse_wd_filename.name != NULL)
     bad += checkdatafile(&config, &config.wateruse_wd_filename,"wateruse_wd","dm3/yr",LPJ_INT,1);
@@ -425,21 +449,20 @@ Bool filesexist(Config config, /**< LPJmL configuration */
   if(config.with_radiation)
   {
     if(config.with_radiation==RADIATION || config.with_radiation==RADIATION_LWDOWN)
-      bad+=checkclmfile(&config,&config.lwnet_filename,"W/m2",TRUE);
-    bad+=checkclmfile(&config,&config.swdown_filename,"W/m2",TRUE);
+      bad+=checkclmfile(&config,"lwnet",&config.lwnet_filename,"W/m2",TRUE);
+    bad+=checkclmfile(&config,"swdown",&config.swdown_filename,"W/m2",TRUE);
   }
   else
-    bad+=checkclmfile(&config,&config.cloud_filename,"%",TRUE);
-   if(config.co2_filename.fmt!=FMS && config.co2_filename.fmt!=SOCK)
-    bad+=checkfile(config.co2_filename.name);
+    bad+=checkclmfile(&config,"cloudiness",&config.cloud_filename,"%",TRUE);
+  bad+=checkfile(&config,"co2",&config.co2_filename);
   if(config.wet_filename.name!=NULL)
-    bad+=checkclmfile(&config,&config.wet_filename,"day",FALSE);
+    bad+=checkclmfile(&config,"wet days",&config.wet_filename,"day",FALSE);
 #ifdef IMAGE
   if(config.sim_id==LPJML_IMAGE)
   {
-    bad+=checkclmfile(&config,&config.temp_var_filename,NULL,FALSE);
-    bad+=checkclmfile(&config,&config.prec_var_filename,NULL,FALSE);
-    bad+=checkclmfile(&config,&config.prodpool_init_filename,NULL,FALSE);
+    bad+=checkclmfile(&config,"temp var",&config.temp_var_filename,NULL,FALSE);
+    bad+=checkclmfile(&config,"prec var",&config.prec_var_filename,NULL,FALSE);
+    bad+=checkclmfile(&config,"prodpool",&config.prodpool_init_filename,NULL,FALSE);
   }
 #endif
   if(ischeckpointrestart(&config) && getfilesize(config.checkpoint_restart_filename)!=-1)
