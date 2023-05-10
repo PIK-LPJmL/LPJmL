@@ -20,6 +20,7 @@ Bool opendata(Climatefile *file,        /**< pointer to file */
               const Filename *filename, /**< filename */
               const char *name,         /**< name of data */
               const char *unit,         /**< unit or NULL */
+              Type datatype_sock,       /**< datatype for socket */
               Type datatype,            /**< datatype for version 2 files */
               Real scalar,              /**< scalar for version 1 files */
               int nbands,               /**< number of bands */
@@ -29,9 +30,10 @@ Bool opendata(Climatefile *file,        /**< pointer to file */
 {
   int nbands_socket;
   file->fmt=filename->fmt;
-  if(file->fmt==SOCK)
+  file->issocket=filename->issocket;
+  if(iscoupled(*config) && file->issocket)
   {
-    if(openinput_coupler(filename->id,datatype,config->nall,&nbands_socket,config))
+    if(openinput_coupler(filename->id,datatype_sock,config->nall,&nbands_socket,config))
     {
       if(isroot(*config))
         fprintf(stderr,"ERROR147: Cannot initialize %s data socket stream.\n",name);
@@ -39,7 +41,6 @@ Bool opendata(Climatefile *file,        /**< pointer to file */
     }
     file->id=filename->id;
     file->var_len=nbands_socket;
-    file->datatype=datatype;
     if(ischeck && file->var_len!=nbands)
     {
       if(isroot(*config))
@@ -47,7 +48,18 @@ Bool opendata(Climatefile *file,        /**< pointer to file */
                 file->var_len,name,nbands);
       return TRUE;
     }
-    return FALSE;
+    if(file->fmt==SOCK)
+    {
+      if(config->start_coupling>config->firstyear-config->nspinup)
+      {
+        if(isroot(*config))
+          fprintf(stderr,"ERROR149: No filename specified for %s data required for socket connection before coupling year %d, first simulatiomn year=%d.\n",
+                  name,config->start_coupling,config->firstyear-config->nspinup);
+        return TRUE;
+      }
+      else
+        return FALSE;
+    }
   }
   if(file->fmt==CDF)
   {

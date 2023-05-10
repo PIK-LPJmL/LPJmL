@@ -2,7 +2,7 @@
 /**                                                                                \n**/
 /**                   l  p  j  m  l  .  j  s                                       \n**/
 /**                                                                                \n**/
-/** Default configuration file for LPJmL C Version 5.6.7                           \n**/
+/** Default configuration file for LPJmL C Version 5.6.9                           \n**/
 /**                                                                                \n**/
 /** Configuration file is divided into five sections:                              \n**/
 /**                                                                                \n**/
@@ -36,6 +36,7 @@
                     "comment" : ""  /* additional comments */
                    },       /* Global attributes for NetCDF output files */
   "coupled_model" : null,   /* no model coupling */
+  "start_coupling": null,   /* Start year of model coupling: null (start_coupling is set to firstyear if coupled_model != null), int (start year of coupling) */
   "random_prec" : true,     /* Random weather generator for precipitation enabled */
   "random_seed" : 2,        /* seed for random number generator or "random_seed" */
   "radiation" : "radiation",/* other options: "cloudiness", "radiation", "radiation_swonly", "radiation_lwdown" */
