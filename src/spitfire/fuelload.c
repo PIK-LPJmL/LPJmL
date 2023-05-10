@@ -45,6 +45,7 @@ void fuelload(const Stand *stand, /**< pointer to stand */
   Real fsum[NGLIM+1];
   Real alive_sum=0;
   Real adead_sum=0;
+  Real cured_frac=0;
   Pft *pft;
   Pftgrass *grass;
   Pftcrop *crop;
@@ -72,25 +73,28 @@ void fuelload(const Stand *stand, /**< pointer to stand */
   dead_fuel = c2biomass(litter_ag_sum_quick(&stand->soil.litter));
   /* Calculate livegrass biomass [g/m2]*/
   livegrass = 0;
+  livefuel->pot_fc_lg_c3 = 0;
+  livefuel->pot_fc_lg_c4 = 0;
+
   foreachpft(pft,p,&stand->pftlist)
   {
     if(isgrass(pft))
     {
       grass=pft->data;
-      livegrass += c2biomass((grass->ind.leaf.carbon * pft->nind )* pft->phen);
+      livegrass += c2biomass((grass->ind.leaf.carbon * pft->nind ));
       if(pft->par->path==C3)
-        livefuel->pot_fc_lg_c3 = c2biomass(grass->ind.leaf.carbon*pft->nind*pft->phen);
+        livefuel->pot_fc_lg_c3 += c2biomass(grass->ind.leaf.carbon*pft->nind);
       else
-        livefuel->pot_fc_lg_c4 = c2biomass(grass->ind.leaf.carbon*pft->nind*pft->phen);
+        livefuel->pot_fc_lg_c4 += c2biomass(grass->ind.leaf.carbon*pft->nind);
     }
     else if(iscrop(pft))
     {
       crop=pft->data;
       livegrass += c2biomass((crop->ind.leaf.carbon+crop->ind.so.carbon+crop->ind.pool.carbon) * pft->nind );
       if(pft->par->path==C3)
-        livefuel->pot_fc_lg_c3 = c2biomass((crop->ind.leaf.carbon+crop->ind.so.carbon+crop->ind.pool.carbon)*pft->nind);
+        livefuel->pot_fc_lg_c3 += c2biomass((crop->ind.leaf.carbon+crop->ind.so.carbon+crop->ind.pool.carbon)*pft->nind);
       else
-        livefuel->pot_fc_lg_c4 = c2biomass((crop->ind.leaf.carbon+crop->ind.so.carbon+crop->ind.pool.carbon)*pft->nind);
+        livefuel->pot_fc_lg_c4 += c2biomass((crop->ind.leaf.carbon+crop->ind.so.carbon+crop->ind.pool.carbon)*pft->nind);
     }
 
   }
@@ -101,14 +105,12 @@ void fuelload(const Stand *stand, /**< pointer to stand */
   {
     fuel->w[i]=fuel_gBiomass[i];
   }
-  fuel->w[NFUELCLASS-1]=0; /*cured grass weight, setting to 0 as placeholder until curing can be included */
+  /* -> last fuel compound is caculated below, cured grass weight, setting to 0 as placeholder until curing can be included */
   for(i=0;i<NFUELCLASS;++i)
   {
     adead[i]=sigma_dead[i]*fuel->w[i]/PART_DENS;
     adead_sum+=adead[i];
   }
-  livefuel->w[0]=livegrass; 
-  livefuel->w[1]=0; /* setting to 0 as placeholder for live woody component*/
   for(i=0;i<2;++i)
   {
     alive[i]=sigma_live[i]*livefuel->w[i]/PART_DENS;
@@ -196,6 +198,12 @@ void fuelload(const Stand *stand, /**< pointer to stand */
   livefuel->M[1] = 9999; /* placeholder value for live woody */
   /* Livegrass weighted average fbd - OLD METHOD, SHOULD BE REPLACED*/
   /* Livegrass weighted average fbd */
+
+  /*accounting for cured grass in fuel loads */
+  cured_frac=max(0,min(1,-1/0.9*livefuel->M[0]+4/3));
+  fuel->w[NFUELCLASS-1]=livegrass*cured_frac;
+  livefuel->w[0]=livegrass*(1-cured_frac);
+  livefuel->w[1]=0; /* setting to 0 as placeholder for live woody component*/
 
   /*   NEED TO STORE C3/C4 FBD and STORE GRASS FBD AVE -???*/
   /* average fuel bulk density for live and dead fuel*/

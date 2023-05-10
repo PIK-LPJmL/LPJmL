@@ -29,7 +29,7 @@
 #define NTYPES 3 /* number of PFT types: grass, tree, crop */
 #define NSTANDTYPES 14 /* number of stand types / land use types as defined in landuse.h*/
 
-#define USAGE "Usage: %s [-h] [-outpath dir] [-inpath dir] [[-Dmacro[=value]] [-Idir] ...] [filename]\n"
+#define USAGE "Usage: %s [-h] [-outpath dir] [-inpath dir] [[-Dmacro[=value]] [-Idir] ...] filename\n"
 
 #define fread_harvest(file,harvest) if(fread(harvest,sizeof(float),1,file)!=1) \
   { \
@@ -92,7 +92,7 @@ int main(int argc,char **argv)
   standtype[WOODPLANTATION]=&woodplantation_stand;
   standtype[KILL]=&kill_stand;
   initconfig(&config);
-  if(readconfig(&config,dflt_conf_filename_ml,scanfcn,NTYPES,standtype,NSTANDTYPES,NOUT,&argc,&argv,USAGE))
+  if(readconfig(&config,scanfcn,NTYPES,standtype,NSTANDTYPES,NOUT,&argc,&argv,USAGE))
   {
     fputs("Error occurred in processing configuration file.\n",stderr);
     return EXIT_FAILURE;

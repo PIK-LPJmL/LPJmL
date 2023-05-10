@@ -1,9 +1,9 @@
-.TH lpjprint 1  "February 4, 2009" "version 1.0.018" "USER COMMANDS"
+.TH lpjprint 1  "March 2, 2023" "version 1.0.021" "USER COMMANDS"
 .SH NAME
 lpjprint \- Print contents of restart file of LPJmL model runs 
 .SH SYNOPSIS
 .B lpjprint
-[\-h] [\-inpath \fIdir\fP] [\-restartpath \fIdir\fP] [[\-Dmacro[=value]] [\-I\fIdir\fP] ...] [\fIfilename\fP [start [end]]]
+[\-h] [\-inpath \fIdir\fP] [\-restartpath \fIdir\fP] [[\-Dmacro[=value]] [\-I\fIdir\fP] ...] \fIfilename\fP [start [end]]
 .SH DESCRIPTION
 Program prints contents of restart file of a LPJmL model run. The LPJmL configuration file is read in in order to find the location and name of the restart file.
 .SH OPTIONS
@@ -24,7 +24,7 @@ define macro for the preprocessor of the configuration file
 define include directory for the preprocessor of the configuration file
 .TP
 .I filename
-name of configuration file, default is \fIlpjml.conf\fP.
+name of configuration file
 .TP
 .I start
 Index of first grid cell to be printed.
@@ -34,14 +34,11 @@ Index of last grid cell to be printed.
 
 .SH EXAMPLE
 .TP
-Print restart file with default configuration file with restart file located in the scratch file system
+Print restart file with configuration file lpjml.js with restart file located in the /p/tmp file system
 .B lpjprint
-\-restartpath /scratch/02/lpj
+\-restartpath /p/tmp/user/lpj lpjml.js
 .PP
 .SH ENVIRONMENT
-.TP
-LPJCONFIG
-default LPJmL configuration filename
 .TP
 LPJPREP 
 defines preprocessor command for LPJmL configuration file, default is \fBcpp -P\fP.
