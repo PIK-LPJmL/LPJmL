@@ -62,7 +62,7 @@ Real biologicalnfixation(const Stand *stand, /**< pointer to stand */
     {
     case NATURAL: case SETASIDE_RF: case SETASIDE_IR:
       if(config->pft_output_scaled)
-         getoutputindex(&pft->stand->cell->output,PFT_BNF,pft->par->id,config)+=n_fixed*pft->stand->frac;
+         getoutputindex(&pft->stand->cell->output,PFT_BNF,pft->par->id,config)+=pft_bnf*pft->stand->frac;
       else
         getoutputindex(&pft->stand->cell->output,PFT_BNF,pft->par->id,config)+=pft_bnf;
     break;
