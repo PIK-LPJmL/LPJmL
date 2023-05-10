@@ -23,6 +23,7 @@
 
 #include "../include/conf.h" /* include constant definitions */
 
+"nofill" : false,        /* do not fill NetCDF files at creation (true/false) */
 "compress" : 0,          /* compression level (1-9, 0= no compression) */
 "missing_value" : -1e32, /* missing value in NetCDF files */
 "pft_index" : "npft",    /* name of index variable for PFT output */
