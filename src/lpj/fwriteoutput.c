@@ -753,10 +753,24 @@ void fwriteoutput(Outputfile *output,  /**< output file array */
         {
           foreachstand(stand,s,grid[cell].standlist)
           /* if(stand->type->landusetype==NATURAL) */
-            getoutput(&grid[cell].output,LITC,config)+=litter_ag_sum(&stand->soil.litter)*stand->frac;
+            getoutput(&grid[cell].output,LITC,config)+=(litter_ag_sum(&stand->soil.litter)+litter_agsub_sum(&stand->soil.litter))*stand->frac;
         }
     }
     writeoutputvar(LITC,1);
+  }
+  if(isopen(output,LITC_AG))
+  {
+    if(iswrite2(LITC_AG,timestep,year,config) || (timestep==ANNUAL && config->outnames[LITC].timestep>0))
+    {
+      for(cell=0;cell<config->ngridcell;cell++)
+        if(!grid[cell].skip)
+        {
+          foreachstand(stand,s,grid[cell].standlist)
+          /* if(stand->type->landusetype==NATURAL) */
+            getoutput(&grid[cell].output,LITC_AG,config)+=litter_ag_sum(&stand->soil.litter)*stand->frac;
+        }
+    }
+    writeoutputvar(LITC_AG,1);
   }
   if(isopen(output,LITC_ALL))
   {
