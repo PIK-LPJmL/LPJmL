@@ -78,7 +78,7 @@ Bool readlandcover(Landcover landcover, /**< landcover data */
     for(j=0;j<config->landcovermap_size;j++)
     {
       if(data[count]!=NOT_FOUND)
-        landcover->frac[i*landcover->size/config->ngridcell+config->landusemap[j]]+=data[count];
+        landcover->frac[i*landcover->size/config->ngridcell+config->landcovermap[j]]+=data[count];
       count++;
     }
   free(data);
