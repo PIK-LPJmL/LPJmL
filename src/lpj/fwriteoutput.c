@@ -760,7 +760,7 @@ void fwriteoutput(Outputfile *output,  /**< output file array */
   }
   if(isopen(output,LITC_AG))
   {
-    if(iswrite2(LITC_AG,timestep,year,config) || (timestep==ANNUAL && config->outnames[LITC].timestep>0))
+    if(iswrite2(LITC_AG,timestep,year,config) || (timestep==ANNUAL && config->outnames[LITC_AG].timestep>0))
     {
       for(cell=0;cell<config->ngridcell;cell++)
         if(!grid[cell].skip)
@@ -774,7 +774,7 @@ void fwriteoutput(Outputfile *output,  /**< output file array */
   }
   if(isopen(output,LITC_ALL))
   {
-    if(iswrite2(LITC,timestep,year,config) || (timestep==ANNUAL && config->outnames[LITC].timestep>0))
+    if(iswrite2(LITC_ALL,timestep,year,config) || (timestep==ANNUAL && config->outnames[LITC_ALL].timestep>0))
     {
       for(cell=0;cell<config->ngridcell;cell++)
         if(!grid[cell].skip)
