@@ -27,12 +27,12 @@ Bool readco2(Co2data *co2,             /**< pointer to co2 data */
   Verbosity verbose;
   verbose=(isroot(*config)) ? config->scan_verbose : NO_ERR;
   file.isjson=FALSE;
-  if(filename->fmt==FMS || filename->fmt==SOCK)
+  if(filename->fmt==FMS || (iscoupled(*config) && filename->issocket))
   {
     co2->data=NULL;
     co2->nyear=0;
     co2->firstyear=0;
-    if(filename->fmt==SOCK)
+    if(filename->issocket)
     {
       if(openinput_coupler(filename->id,LPJ_FLOAT,0,&size,config))
         return TRUE;
@@ -45,8 +45,10 @@ Bool readco2(Co2data *co2,             /**< pointer to co2 data */
       }
     }
   }
-  else if(filename->fmt==TXT)
+  if(filename->fmt==TXT)
   {
+    if(iscoupled(*config) && config->start_coupling<=config->firstyear-config->nspinup)
+      return FALSE;
     if((file.file.file=fopen(filename->name,"r"))==NULL)
     {
       if(verbose)
@@ -111,7 +113,12 @@ Bool readco2(Co2data *co2,             /**< pointer to co2 data */
     }
     fclose(file.file.file);
   }
-  else
+  else if(filename->fmt==SOCK && config->start_coupling>config->firstyear-config->nspinup)
+  {
+    if(verbose)
+      fprintf(stderr,"ERROR149: No filename specified for CO2 data required for socket connection before coupling year %d, first simulatiomn year=%d.\n",
+             config->start_coupling,config->firstyear-config->nspinup);
     return TRUE;
+  }
   return FALSE;
 } /* of 'readco2' */

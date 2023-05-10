@@ -197,10 +197,10 @@ static void printoutname(FILE *file,const Filename *filename,Bool isoneyear,
     }
     else
       fputs(filename->name,file);
-    if(filename->fmt!=CDF && filename->meta)
+    if(filename->meta)
       fprintf(file," + %s",config->json_suffix);
   }
-  if(filename->fmt==SOCK || (iscoupled(*config) && filename->issocket))
+  if(iscoupled(*config) && filename->issocket)
   {
     if(filename->fmt!=SOCK)
       fputs(", ",file);
@@ -216,10 +216,15 @@ static void printinputfile(FILE *file,const char *descr,const Filename *filename
             width,notnull(filename->var));
   else
     fprintf(file,"%-12s %-4s ",descr,fmt[filename->fmt]);
-  if(filename->fmt==SOCK)
-    fprintf(file,"%d <- %s:%d\n",filename->id,config->coupled_host,config->coupler_port);
-  else
-    fprintf(file,"%s\n",notnull(filename->name));
+  if(filename->fmt!=SOCK)
+  {
+    fprintf(file,"%s",notnull(filename->name));
+    if(iscoupled(*config) && filename->issocket)
+      fputs(", ",file);
+  }
+  if(iscoupled(*config) && filename->issocket)
+    fprintf(file,"%d <- %s:%d",filename->id,config->coupled_host,config->coupler_port);
+  fputc('\n',file);
 } /* of 'printinputfile' */
 
 void fprintconfig(FILE *file,          /**< File pointer to text output file */
@@ -788,7 +793,11 @@ void fprintconfig(FILE *file,          /**< File pointer to text output file */
 #if defined IMAGE && defined COUPLED
   if(config->sim_id==LPJML_IMAGE)
     fprintf(file,"Start IMAGE coupling:        %6d\n",
-            config->start_imagecoupling);
+            config->start_coupling);
+#else
+  if(iscoupled(*config))
+    fprintf(file,"Start coupling:              %6d\n",
+            config->start_coupling);
 #endif
   if(config->nall==-1)
     fprintf(file,"Number of grid cells:       N/A\n");

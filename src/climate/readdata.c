@@ -39,7 +39,7 @@ Real *readdata(Climatefile *file,   /**< Pointer to data file */
   }
   else
     isalloc=FALSE; /* allocation is not necessary */
-  if(file->fmt==SOCK)
+  if(iscoupled(*config) && file->issocket && year>=config->start_coupling)
   {
     if(receive_real_coupler(file->id,data,file->var_len,year,config))
     {
