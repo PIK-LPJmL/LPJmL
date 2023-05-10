@@ -343,7 +343,7 @@ void update_daily(Cell *cell,            /**< cell pointer           */
 
     if(config->with_nitrogen && !config->npp_controlled_bnf)
     {
-      bnf=biologicalnfixation(stand);
+      bnf=biologicalnfixation(stand, npft, ncft, config);
       stand->soil.NH4[0]+=bnf;
       getoutput(&cell->output,BNF,config)+=bnf*stand->frac;
       cell->balance.influx.nitrogen+=bnf*stand->frac;

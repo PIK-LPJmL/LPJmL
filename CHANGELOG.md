@@ -19,6 +19,18 @@ of `major.minor.patch` with
 
 ## [Unreleased]
 
+## [5.6.10] - 2023-05-10
+
+### Added
+
+- PFT specific output for biological nitrogen fixation with grid and PFT scaling in `npp_contr_biol_n_fixation.c` and `biologicalNfixation.c`.
+
+
+### Changed
+
+- Adjusted optimum temperature limits (`"temp_bnf_opt"`) of herbaceous PFTs for NPP controled biological nitrogen fixation in `pft.js`.
+
+
 ## [5.6.9] - 2023-05-10
 
 ### Added
