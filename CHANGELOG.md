@@ -23,7 +23,7 @@ of `major.minor.patch` with
 
 ### Added
 
-- Missing `break` statement added in `harvest_stand.c`.
+- Missing `break` statement added in `harvest_stand.c`. See issue [#302](https://gitlab.pik-potsdam.de/lpjml/LPJmL_internal/-/issues/302)
 
 - Missing deallocation of `decomp_litter_pft` added in `freesoil.c`.
 
