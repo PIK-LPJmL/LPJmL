@@ -36,7 +36,8 @@ Bool openclimate(Climatefile *file,        /**< pointer to climate file */
     file->firstyear=config->firstyear;
     return FALSE;
   }
-  if(filename->fmt==SOCK)
+  file->issocket=filename->issocket;
+  if(iscoupled(*config) && filename->issocket)
   {
     if(openinput_coupler(filename->id,LPJ_FLOAT,config->nall,&nbands,config))
       return TRUE;
@@ -58,8 +59,11 @@ Bool openclimate(Climatefile *file,        /**< pointer to climate file */
       return TRUE;
     }
     file->id=filename->id;
-    file->firstyear=config->firstyear;
-    return FALSE;
+    if(filename->fmt==SOCK)
+    {
+      file->firstyear=config->firstyear;
+      return FALSE;
+    }
   }
   file->oneyear=FALSE;
   if(filename->fmt==CDF) /** file is in NetCDF format? */
