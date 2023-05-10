@@ -241,6 +241,8 @@ struct config
   int withlanduse;
   Bool reservoir;
   Bool nitrogen_coupled;
+  int *landcovermap;        /**< landcover map */
+  int landcovermap_size;    /**< size landcover map */
   int *landusemap;          /**< mapping of bands in land-use file to CFTs */
   int landusemap_size;      /**< size of landusmap */
   int *fertilizermap;
@@ -316,6 +318,7 @@ extern void fprintfiles(FILE *,Bool,Bool,const Config *);
 extern Bool getextension(Extension *,const Config *);
 extern void fprintincludes(FILE *,const char *,int,char **);
 extern size_t getsize(int,const Config *);
+extern int *fscanlandcovermap(LPJfile *,int *,const char *,int,const Config *);
 extern void closeconfig(LPJfile *);
 
 /* Definition of macros */

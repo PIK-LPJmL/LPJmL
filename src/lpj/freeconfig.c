@@ -95,6 +95,7 @@ void freeconfig(Config *config /**< LPJmL configuration */
   free(config->pfttypes);
   freepftpar(config->pftpar,ivec_sum(config->npft,config->ntypes));
   freesoilpar(config->soilpar,config->nsoil);
+  free(config->landcovermap);
   free(config->soilmap);
   free(config->npft);
   if(config->ispopulation)
