@@ -181,7 +181,7 @@ Real nuptake_grass(Pft *pft,             /**< pointer to PFT data */
       break;
     case BIOMASS_GRASS:
       if(config->pft_output_scaled)
-        getoutputindex(&pft->stand->cell->output,PFT_BNF,pft->par->id,config)+=n_fixed*pft->stand->frac;
+        getoutputindex(&pft->stand->cell->output,PFT_BNF,nnat+rbgrass(ncft)+data->irrigation*nirrig,config)+=n_fixed*pft->stand->frac;
       else
         getoutputindex(&pft->stand->cell->output,PFT_BNF,nnat+rbgrass(ncft)+data->irrigation*nirrig,config)+=n_fixed; /* *stand->cell->ml.landfrac[data->irrigation].biomass_grass; */
       getoutputindex(&pft->stand->cell->output,PFT_NUPTAKE,nnat+rbgrass(ncft)+data->irrigation*nirrig,config)+=n_uptake; /* *stand->cell->ml.landfrac[data->irrigation].biomass_grass; */
@@ -189,7 +189,7 @@ Real nuptake_grass(Pft *pft,             /**< pointer to PFT data */
       break;
     case AGRICULTURE_GRASS:
       if(config->pft_output_scaled)
-        getoutputindex(&pft->stand->cell->output,PFT_BNF,pft->par->id,config)+=n_fixed*pft->stand->frac;
+        getoutputindex(&pft->stand->cell->output,PFT_BNF,nnat+data->pft_id-npft+config->nagtree+agtree(ncft,config->nwptype)+data->irrigation*nirrig,config)+=n_fixed*pft->stand->frac;
       else
         getoutputindex(&pft->stand->cell->output,PFT_BNF,nnat+data->pft_id-npft+config->nagtree+agtree(ncft,config->nwptype)+data->irrigation*nirrig,config)+=n_fixed; /* stand->cell->ml.landfrac[data->irrigation].biomass_tree; */
       getoutputindex(&pft->stand->cell->output,PFT_NUPTAKE,nnat+data->pft_id-npft+config->nagtree+agtree(ncft,config->nwptype)+data->irrigation*nirrig,config)+=n_uptake; /* stand->cell->ml.landfrac[data->irrigation].biomass_tree; */
@@ -197,7 +197,7 @@ Real nuptake_grass(Pft *pft,             /**< pointer to PFT data */
       break;
     case GRASSLAND:
       if(config->pft_output_scaled)
-        getoutputindex(&pft->stand->cell->output,PFT_BNF,pft->par->id,config)+=n_fixed*pft->stand->frac;
+        getoutputindex(&pft->stand->cell->output,PFT_BNF,nnat+rmgrass(ncft)+data->irrigation*nirrig,config)+=n_fixed*pft->stand->frac;
       else
         getoutputindex(&pft->stand->cell->output,PFT_BNF,nnat+rmgrass(ncft)+data->irrigation*nirrig,config)+=n_fixed;/*pft->stand->cell->ml.landfrac[data->irrigation].grass[1];*/
       getoutputindex(&pft->stand->cell->output,PFT_NUPTAKE,nnat+rmgrass(ncft)+data->irrigation*nirrig,config)+=n_uptake;/*pft->stand->cell->ml.landfrac[data->irrigation].grass[1];*/
@@ -205,7 +205,7 @@ Real nuptake_grass(Pft *pft,             /**< pointer to PFT data */
       break;
     case OTHERS:
       if(config->pft_output_scaled)
-        getoutputindex(&pft->stand->cell->output,PFT_BNF,pft->par->id,config)+=n_fixed;
+        getoutputindex(&pft->stand->cell->output,PFT_BNF,nnat+rothers(ncft)+data->irrigation*nirrig,config)+=n_fixed*pft->stand->frac;
       else
         getoutputindex(&pft->stand->cell->output,PFT_BNF,nnat+rothers(ncft)+data->irrigation*nirrig,config)+=n_fixed;/*pft->stand->cell->ml.landfrac[data->irrigation].grass[0];*/
       getoutputindex(&pft->stand->cell->output,PFT_NUPTAKE,nnat+rothers(ncft)+data->irrigation*nirrig,config)+=n_uptake;/*pft->stand->cell->ml.landfrac[data->irrigation].grass[0];*/
