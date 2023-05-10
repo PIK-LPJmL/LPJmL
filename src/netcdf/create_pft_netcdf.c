@@ -86,7 +86,8 @@ Bool create_pft_netcdf(Netcdf *cdf,
                   filename,nc_strerror(rc));
           return TRUE;
         }
-        ncsetfill(cdf->ncid,NC_NOFILL);
+        if(config->nofill)
+          ncsetfill(cdf->ncid,NC_NOFILL);
       }
       rc=nc_inq_varid(cdf->ncid,name,&cdf->varid);
       if(rc)
@@ -238,8 +239,11 @@ Bool create_pft_netcdf(Netcdf *cdf,
     free(bnds);
     return TRUE;
   }
-  ncsetfill(cdf->ncid,NC_NOFILL);
-  error(rc);
+  if(config->nofill)
+  {
+    ncsetfill(cdf->ncid,NC_NOFILL);
+    error(rc);
+  }
   if(year!=NULL)
   {
     if(n==1)
