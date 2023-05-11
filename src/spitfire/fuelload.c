@@ -46,8 +46,10 @@ void fuelload(const Stand *stand, /**< pointer to stand */
   Real alive_sum=0;
   Real adead_sum=0;
   Real cured_frac=0;
+  Real fpc_grass_sum=0;
   Pft *pft;
   Pftgrass *grass;
+  Pftgrasspar *grasspar;
   Pftcrop *crop;
   int p,i,index;
   /* for alpha_fuel calculation */
@@ -165,13 +167,29 @@ void fuelload(const Stand *stand, /**< pointer to stand */
  /*calculating live and dead moisture and fbd as in standard 5.3 spitfire*/ 
  dlm_1hr=ratio_dead_fuel=ratio_live_fuel=fbd_deadfuel=mean_w=0;
 
-
   /* Compute live fuel moisture, including livegrass moisture from soil moisture (average of top 2 layers rather than 1st layer as in Thonicke 2010)*/
   if(livegrass > 0)
   {
     if(config->gsilivefuel)
     {
-      livefuel->M[0]=max(0.3,min(2.5,4.4*stand->cell->gsi_cum-1.9));
+      //livefuel->M[0]=max(0.3,min(2.5,4.4*stand->cell->gsi_cum-1.9)); //Luke's approach
+      
+      /*compute live fuel moisture based on phen-LFMC empirical relation for each grass PFT, weighted by FPC */ 
+      fpc_grass_sum=0;
+      livefuel->M[0]=0;
+
+      foreachpft(pft,p,&stand->pftlist)
+      {
+        if(isgrass(pft))
+        {
+        grasspar=pft->par->data;
+        livefuel->M[0] += max(grasspar->lfmc_a, min(2.5, grasspar->lfmc_b + grasspar->lfmc_c*pft->phen)) * pft->fpc; 
+        fpc_grass_sum += pft->fpc;
+        }
+      }
+      if(fpc_grass_sum>0) 
+        livefuel->M[0] = livefuel->M[0]/fpc_grass_sum;  
+      
     }
     else
     {

@@ -41,6 +41,10 @@ typedef struct
   Grassphyspar sapl;     /**< sapling */
   Real sapling_C;  /**< sapling C (gC/m2) */
   Real reprod_cost;      /**< reproduction cost */
+  Real lfmc_a;
+  Real lfmc_b;
+  Real lfmc_c;
+  Real lfmc_d;
 } Pftgrasspar;
 
 typedef struct
