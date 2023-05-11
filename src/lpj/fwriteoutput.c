@@ -1111,6 +1111,7 @@ void fwriteoutput(Outputfile *output,  /**< output file array */
   }
   writeoutputarray(PFT_NPP,1);
   writeoutputarray(PFT_NUPTAKE,1);
+  writeoutputarray(PFT_BNF,1);
   writeoutputarray(PFT_NDEMAND,1);
   writeoutputarray(HUSUM,1);
   writeoutputarray(CFT_RUNOFF,1);

@@ -2,7 +2,7 @@
 /**                                                                                \n**/
 /**               o  u  t  p  u  t  v  a  r  s  .  j  s                            \n**/
 /**                                                                                \n**/
-/**  Defines array of output variables for LPJmL 5.6.7                             \n**/
+/**  Defines array of output variables for LPJmL 5.6.10                            \n**/
 /**                                                                                \n**/
 /**  Monthly output rates can be rescaled to 1/day or 1/second by setting the unit \n**/
 /**  to day-1 or sec-1, e.g.:                                                      \n**/
@@ -295,6 +295,7 @@
   { "id" : N2O_NIT, "name": "n2o_nit", "timestep" : "monthly", "var": "N2O_nitrification", "descr": "monthly N2O emissions from nitrification", "unit": "gN/m2/month", "scale": 1.0, "offset" : 0.0},
   { "id" : N2_EMIS, "name": "n2_emis", "timestep" : "monthly", "var": "N2_emissions", "descr": "monthly N2 emissions", "unit": "gN/m2/month", "scale": 1.0, "offset" : 0.0},
   { "id" : BNF, "name": "bnf", "timestep" : "monthly", "var": "bnf", "descr": "monthly biological N fixation", "unit": "gN/m2/month", "scale": 1.0, "offset" : 0.0},
+  { "id" : PFT_BNF, "name": "pft_bnf", "timestep" : "annual", "var": "bnf", "descr": "annual PFT-specific biological N fixation", "unit": "gN/m2/year", "scale": 1.0, "offset" : 0.0},
   { "id" : PFT_NDEMAND, "name": "pft_ndemand", "timestep" : "annual", "var": "N_demand", "descr": "nitrogen demand per PFT", "unit": "gN/yr", "scale": 1.0, "offset" : 0.0},
   { "id" : N_MINERALIZATION, "name": "n_mineralization", "timestep" : "monthly", "var": "N_mineralization", "descr": "N mineralized", "unit": "gN/m2/month", "scale": 1.0, "offset" : 0.0},
   { "id" : N_VOLATILIZATION, "name": "n_volatilization", "timestep" : "monthly", "var": "N_volatilization", "descr": "N volatilized", "unit": "gN/m2/month", "scale": 1.0, "offset" : 0.0},

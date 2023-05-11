@@ -266,7 +266,7 @@ extern void soilice2moisture(Soil *, Real *,int);
 extern Real temp_response(Real);
 extern Real litter_agtop_tree(const Litter *,int);
 extern Real litter_agtop_nitrogen_tree(const Litter *,int);
-extern Real biologicalnfixation(const Stand *);
+extern Real biologicalnfixation(const Stand *,int,int,const Config *);
 extern void leaching(Soil *,const Real);
 extern Real volatilization(Real,Real,Real,Real,Real);
 extern Real nuptake_temp_fcn(Real);
