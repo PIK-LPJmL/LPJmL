@@ -22,16 +22,16 @@ Stocks litter_update_fire(Litter *litter,Tracegas *emission,const Fuel *fuel)
   fuel_consum.carbon=fuel_consum.nitrogen=0;
   for(i=0;i<litter->n;i++)
   {
-    fuel_consum_pft.carbon=litter->item[i].ag.leaf.carbon*fuel->deadfuel_consum[0];
-    fuel_consum_pft.nitrogen=litter->item[i].ag.leaf.nitrogen*fuel->deadfuel_consum[0];
-    litter->item[i].ag.leaf.carbon*=(1-fuel->deadfuel_consum[0]);
-    litter->item[i].ag.leaf.nitrogen*=(1-fuel->deadfuel_consum[0]);
+    fuel_consum_pft.carbon=litter->item[i].agtop.leaf.carbon*fuel->deadfuel_consum[0];
+    fuel_consum_pft.nitrogen=litter->item[i].agtop.leaf.nitrogen*fuel->deadfuel_consum[0];
+    litter->item[i].agtop.leaf.carbon*=(1-fuel->deadfuel_consum[0]);
+    litter->item[i].agtop.leaf.nitrogen*=(1-fuel->deadfuel_consum[0]);
     for(j=0;j<NFUELCLASS;j++)
     {
-      fuel_consum_pft.carbon+=litter->item[i].ag.wood[j].carbon*fuel->deadfuel_consum[j];
-      fuel_consum_pft.nitrogen+=litter->item[i].ag.wood[j].nitrogen*fuel->deadfuel_consum[j];
-      litter->item[i].ag.wood[j].carbon*=(1-fuel->deadfuel_consum[j]);
-      litter->item[i].ag.wood[j].nitrogen*=(1-fuel->deadfuel_consum[j]);
+      fuel_consum_pft.carbon+=litter->item[i].agtop.wood[j].carbon*fuel->deadfuel_consum[j];
+      fuel_consum_pft.nitrogen+=litter->item[i].agtop.wood[j].nitrogen*fuel->deadfuel_consum[j];
+      litter->item[i].agtop.wood[j].carbon*=(1-fuel->deadfuel_consum[j]);
+      litter->item[i].agtop.wood[j].nitrogen*=(1-fuel->deadfuel_consum[j]);
     }
 #ifdef WITH_FIRE_MOISTURE
     emission->co2+=c2biomass(fuel_consum_pft.carbon)*litter->item[i].pft->emissionfactor.co2 * (fuel->CME/0.94);

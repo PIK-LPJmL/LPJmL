@@ -122,8 +122,8 @@ Real daily_agriculture(Stand *stand,                /**< [inout] stand pointer *
       {
         stand->soil.NH4[0] += crop->nmanure*param.nmanure_nh4_frac;
         /* no tillage at second application, so manure goes to ag litter not agsub as at cultivation */
-        stand->soil.litter.item->ag.leaf.carbon += crop->nmanure*param.manure_cn;
-        stand->soil.litter.item->ag.leaf.nitrogen += crop->nmanure*(1-param.nmanure_nh4_frac);
+        stand->soil.litter.item->agtop.leaf.carbon += crop->nmanure*param.manure_cn;
+        stand->soil.litter.item->agtop.leaf.nitrogen += crop->nmanure*(1-param.nmanure_nh4_frac);
         stand->cell->balance.influx.carbon += crop->nmanure*param.manure_cn*stand->frac;
         stand->cell->balance.influx.nitrogen += crop->nmanure*stand->frac;
         getoutput(output,NMANURE_AGR,config)+=crop->nmanure*pft->stand->frac;

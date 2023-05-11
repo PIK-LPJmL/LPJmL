@@ -53,10 +53,10 @@ void mixsoil(Stand *stand1,const Stand *stand2,int year,int ntotpft,const Config
     index=findlitter(&stand1->soil.litter,stand2->soil.litter.item[l].pft);
     if(index==NOT_FOUND)
       index=addlitter(&stand1->soil.litter,stand2->soil.litter.item[l].pft)-1;
-    mixpool(stand1->soil.litter.item[index].ag.leaf.carbon,
-            stand2->soil.litter.item[l].ag.leaf.carbon,stand1->frac,stand2->frac);
-    mixpool(stand1->soil.litter.item[index].ag.leaf.nitrogen,
-            stand2->soil.litter.item[l].ag.leaf.nitrogen,stand1->frac,stand2->frac);
+    mixpool(stand1->soil.litter.item[index].agtop.leaf.carbon,
+            stand2->soil.litter.item[l].agtop.leaf.carbon,stand1->frac,stand2->frac);
+    mixpool(stand1->soil.litter.item[index].agtop.leaf.nitrogen,
+            stand2->soil.litter.item[l].agtop.leaf.nitrogen,stand1->frac,stand2->frac);
     mixpool(stand1->soil.litter.item[index].agsub.leaf.carbon,
             stand2->soil.litter.item[l].agsub.leaf.carbon,stand1->frac,stand2->frac);
     mixpool(stand1->soil.litter.item[index].agsub.leaf.nitrogen,
@@ -67,10 +67,10 @@ void mixsoil(Stand *stand1,const Stand *stand2,int year,int ntotpft,const Config
           stand1->frac,stand2->frac);
     for(i=0;i<NFUELCLASS;i++)
     {
-      mixpool(stand1->soil.litter.item[index].ag.wood[i].carbon,
-              stand2->soil.litter.item[l].ag.wood[i].carbon,stand1->frac,stand2->frac);
-      mixpool(stand1->soil.litter.item[index].ag.wood[i].nitrogen,
-              stand2->soil.litter.item[l].ag.wood[i].nitrogen,stand1->frac,stand2->frac);
+      mixpool(stand1->soil.litter.item[index].agtop.wood[i].carbon,
+              stand2->soil.litter.item[l].agtop.wood[i].carbon,stand1->frac,stand2->frac);
+      mixpool(stand1->soil.litter.item[index].agtop.wood[i].nitrogen,
+              stand2->soil.litter.item[l].agtop.wood[i].nitrogen,stand1->frac,stand2->frac);
       mixpool(stand1->soil.litter.item[index].agsub.wood[i].carbon,
               stand2->soil.litter.item[l].agsub.wood[i].carbon,stand1->frac,stand2->frac);
       mixpool(stand1->soil.litter.item[index].agsub.wood[i].nitrogen,
@@ -80,9 +80,9 @@ void mixsoil(Stand *stand1,const Stand *stand2,int year,int ntotpft,const Config
   for(l=0;l<stand1->soil.litter.n;l++)
     if(findlitter(&stand2->soil.litter,stand1->soil.litter.item[l].pft)==NOT_FOUND)
     {
-      mixpool(stand1->soil.litter.item[l].ag.leaf.carbon,0,
+      mixpool(stand1->soil.litter.item[l].agtop.leaf.carbon,0,
               stand1->frac,stand2->frac);
-      mixpool(stand1->soil.litter.item[l].ag.leaf.nitrogen,0,
+      mixpool(stand1->soil.litter.item[l].agtop.leaf.nitrogen,0,
               stand1->frac,stand2->frac);
       mixpool(stand1->soil.litter.item[l].agsub.leaf.carbon,0,
               stand1->frac,stand2->frac);
@@ -94,9 +94,9 @@ void mixsoil(Stand *stand1,const Stand *stand2,int year,int ntotpft,const Config
               stand1->frac,stand2->frac);
       for(i=0;i<NFUELCLASS;i++)
       {
-        mixpool(stand1->soil.litter.item[l].ag.wood[i].carbon,0,
+        mixpool(stand1->soil.litter.item[l].agtop.wood[i].carbon,0,
                 stand1->frac,stand2->frac);
-        mixpool(stand1->soil.litter.item[l].ag.wood[i].nitrogen,0,
+        mixpool(stand1->soil.litter.item[l].agtop.wood[i].nitrogen,0,
                 stand1->frac,stand2->frac);
         mixpool(stand1->soil.litter.item[l].agsub.wood[i].carbon,0,
                 stand1->frac,stand2->frac);
@@ -370,22 +370,22 @@ Bool setaside(Cell *cell,            /**< Pointer to LPJ cell */
       /* to avoid artificial fertilization of setaside stands with small grass saplings planted as cover crops
          instead of sowing seeds, we take the biomass for the cover crop sapling from the litter pools */
       
-      cropstand->soil.litter.item->ag.leaf.carbon -= stocks.carbon;
-      if (cropstand->soil.litter.item->ag.leaf.carbon < 0)
+      cropstand->soil.litter.item->agtop.leaf.carbon -= stocks.carbon;
+      if (cropstand->soil.litter.item->agtop.leaf.carbon < 0)
       {
-        cropstand->soil.litter.item->agsub.leaf.carbon += cropstand->soil.litter.item->ag.leaf.carbon;
-        cropstand->soil.litter.item->ag.leaf.carbon = 0;
+        cropstand->soil.litter.item->agsub.leaf.carbon += cropstand->soil.litter.item->agtop.leaf.carbon;
+        cropstand->soil.litter.item->agtop.leaf.carbon = 0;
         if (cropstand->soil.litter.item->agsub.leaf.carbon < 0)
         {
           flux_estab.carbon -= cropstand->soil.litter.item->agsub.leaf.carbon;
           cropstand->soil.litter.item->agsub.leaf.carbon = 0;
         }
       }
-      cropstand->soil.litter.item->ag.leaf.nitrogen -= stocks.nitrogen;
-      if (cropstand->soil.litter.item->ag.leaf.nitrogen < 0)
+      cropstand->soil.litter.item->agtop.leaf.nitrogen -= stocks.nitrogen;
+      if (cropstand->soil.litter.item->agtop.leaf.nitrogen < 0)
       {
-        cropstand->soil.litter.item->agsub.leaf.nitrogen += cropstand->soil.litter.item->ag.leaf.nitrogen;
-        cropstand->soil.litter.item->ag.leaf.nitrogen = 0;
+        cropstand->soil.litter.item->agsub.leaf.nitrogen += cropstand->soil.litter.item->agtop.leaf.nitrogen;
+        cropstand->soil.litter.item->agtop.leaf.nitrogen = 0;
         if (cropstand->soil.litter.item->agsub.leaf.nitrogen < 0)
         {
           flux_estab.nitrogen -= cropstand->soil.litter.item->agsub.leaf.nitrogen;
