@@ -76,6 +76,8 @@ void fuelload(const Stand *stand, /**< pointer to stand */
 
   /* Calculate livegrass biomass [g/m2]*/
   livegrass = 0;
+  livefuel->pot_fc_lg_c3 = 0;
+  livefuel->pot_fc_lg_c4 = 0;
   foreachpft(pft,p,&stand->pftlist)
   {
     if(isgrass(pft))
@@ -83,18 +85,18 @@ void fuelload(const Stand *stand, /**< pointer to stand */
       grass=pft->data;
       livegrass += c2biomass((grass->ind.leaf.carbon * pft->nind )* pft->phen);
       if(pft->par->path==C3)
-        livefuel->pot_fc_lg_c3 = c2biomass(grass->ind.leaf.carbon*pft->nind*pft->phen);
+        livefuel->pot_fc_lg_c3 += c2biomass(grass->ind.leaf.carbon*pft->nind*pft->phen);
       else
-        livefuel->pot_fc_lg_c4 = c2biomass(grass->ind.leaf.carbon*pft->nind*pft->phen);
+        livefuel->pot_fc_lg_c4 += c2biomass(grass->ind.leaf.carbon*pft->nind*pft->phen);
     }
     else if(iscrop(pft))
     {
       crop=pft->data;
       livegrass += c2biomass((crop->ind.leaf.carbon+crop->ind.so.carbon+crop->ind.pool.carbon) * pft->nind );
       if(pft->par->path==C3)
-        livefuel->pot_fc_lg_c3 = c2biomass((crop->ind.leaf.carbon+crop->ind.so.carbon+crop->ind.pool.carbon)*pft->nind);
+        livefuel->pot_fc_lg_c3 += c2biomass((crop->ind.leaf.carbon+crop->ind.so.carbon+crop->ind.pool.carbon)*pft->nind);
       else
-        livefuel->pot_fc_lg_c4 = c2biomass((crop->ind.leaf.carbon+crop->ind.so.carbon+crop->ind.pool.carbon)*pft->nind);
+        livefuel->pot_fc_lg_c4 += c2biomass((crop->ind.leaf.carbon+crop->ind.so.carbon+crop->ind.pool.carbon)*pft->nind);
     }
 
   }
