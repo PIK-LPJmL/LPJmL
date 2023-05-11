@@ -176,7 +176,7 @@ void fprintfiles(FILE *file,          /**< pointer to text output file */
           {
             fprintf(file,config->outputvars[i].filename.name,j);
             fputc('\n',file);
-            if(config->outputvars[i].filename.fmt!=CDF && config->outputvars[i].filename.meta)
+            if(config->outputvars[i].filename.meta)
             {
               fprintf(file,config->outputvars[i].filename.name,j);
               fprintf(file,"%s\n",config->json_suffix);
@@ -185,7 +185,7 @@ void fprintfiles(FILE *file,          /**< pointer to text output file */
         else
         {
           fprintf(file,"%s\n",config->outputvars[i].filename.name);
-          if(config->outputvars[i].filename.fmt!=CDF && config->outputvars[i].filename.meta)
+          if(config->outputvars[i].filename.meta)
             fprintf(file,"%s%s\n",config->outputvars[i].filename.name,config->json_suffix);
         }
      }

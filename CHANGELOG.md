@@ -19,6 +19,55 @@ of `major.minor.patch` with
 
 ## [Unreleased]
 
+## [5.6.10] - 2023-05-10
+
+### Added
+
+- PFT specific output for biological nitrogen fixation with grid and PFT scaling in `npp_contr_biol_n_fixation.c` and `biologicalNfixation.c`.
+
+
+### Changed
+
+- Adjusted optimum temperature limits (`"temp_bnf_opt"`) of herbaceous PFTs for NPP controled biological nitrogen fixation in `pft.js`.
+
+
+## [5.6.9] - 2023-05-10
+
+### Added
+
+- Missing `break` statement added in `harvest_stand.c`. See issue [#302](https://gitlab.pik-potsdam.de/lpjml/LPJmL_internal/-/issues/302)
+
+- Missing deallocation of `decomp_litter_pft` added in `freesoil.c`.
+
+- Missing deallocation of `with_tillage_filename` added in `freeconfig.c`.
+
+### Changed
+
+- If input comes from socket connection the existence of the file is not checked anymore.
+
+- The memcpy arguments in `cpl.h` are now in the right order.
+
+## [5.6.8] - 2023-04-28
+
+### Added
+
+- flag `"start_coupling"` added in configuration file. If lpjml is coupled to an external model via
+```
+  "coupled_model" : "model",
+```
+  this flag allows so set a year when input is received from the external model. Before that year input is read from input file.
+  If flag is omitted or set to `null` coupling starts at the first year.
+
+### Changed
+
+- For input received from an external model a file name can additionally be specified where input is read from before the specified coupling year:
+```
+  "with_tillage" : { "fmt" : "clm", "socket" : true, "name" : "tillage.clm"},
+```
+- lpjcheck and lpjml checks for specified filenames if they are necessary for the coupled run
+
+- JSON metafiles are also created for NetCDF output
+
 ## [5.6.7] - 2023-04-27
 
 ### Added
