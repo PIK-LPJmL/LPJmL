@@ -19,6 +19,23 @@ of `major.minor.patch` with
 
 ## [Unreleased]
 
+## [5.6.12] - 2023-05-12
+
+### Added
+
+- Missing agsub litter pool added to `"litc"`, `"litn"`, `"mg_litc"`, `"litc_agr"`, `"mgrass_litc"`, `"mgrass_litn"` outputs and in global flux of `litc`.
+
+- Output of `"litc_ag"` and `"litc_all"` now written to output file.
+
+### Changed
+
+- Item `ag` in struct `Litter` renamed to `agtop`.
+
+- Functions  `litter_ag_grass()`, `litter_ag_nitrogen_tree()`, `litter_ag_sum()`, `litter_ag_sum_quick()`, `litter_ag_tree()`
+  renamed to `litter_agtop_grass()`, `litter_agtop_nitrogen_tree()`, `litter_agtop_sum()`, `litter_agtop_sum_quick()`, `litter_agtop_tree()`.
+
+- Index in `outnames` array in `fwriteoutput.c` corrected for `"mgrass_soilc"`, `"mgrass_soiln"`, `"mgrass_litc"`, `"mgrass_litn"`outputs.
+
 ## [5.6.11] - 2023-05-11
 
 ### Fixed
