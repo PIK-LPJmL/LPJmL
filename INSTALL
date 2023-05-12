@@ -2,10 +2,10 @@
 | |   |  _ \   | |_ __ ___ | |
 | |   | |_) |  | | '_ ` _ \| |
 | |___|  __/ |_| | | | | | | |___
-|_____|_|   \___/|_| |_| |_|_____| Version 5.6.11
+|_____|_|   \___/|_| |_| |_|_____| Version 5.6.12
 
 
-Installation of LPJmL C Version 5.6.11
+Installation of LPJmL C Version 5.6.12
 
 Installation for Unix-like systems
 ----------------------------------
@@ -27,7 +27,7 @@ cd lpjml
 
 untar source files
 
-gzip -cd lpjml-5.6.11.tar.gz|tar -xf -
+gzip -cd lpjml-5.6.12.tar.gz|tar -xf -
 
 Directory tree after extracting the tar files:
 
