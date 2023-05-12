@@ -2,7 +2,7 @@
 /**                                                                                \n**/
 /**               o  u  t  p  u  t  v  a  r  s  .  j  s                            \n**/
 /**                                                                                \n**/
-/**  Defines array of output variables for LPJmL 5.6.10                            \n**/
+/**  Defines array of output variables for LPJmL 5.6.12                            \n**/
 /**                                                                                \n**/
 /**  Monthly output rates can be rescaled to 1/day or 1/second by setting the unit \n**/
 /**  to day-1 or sec-1, e.g.:                                                      \n**/
@@ -63,7 +63,7 @@
   { "id" : FIREF, "name": "firef", "timestep" : "annual", "var" : "Firef", "descr" : "fire interval", "unit" : "yr", "scale" : 1.0, "offset" : 0.0},
   { "id" : VEGC, "name": "vegc", "timestep" : "annual", "var" : "VegC", "descr" : "vegetation carbon", "unit" : "gC/m2", "scale" : 1.0, "offset" : 0.0},
   { "id" : SOILC, "name": "soilc", "timestep" : "annual", "var" : "SoilC", "descr" : "total soil carbon density", "unit" : "gC/m2", "scale" : 1.0, "offset" : 0.0},
-  { "id" : LITC, "name": "litc", "timestep" : "annual", "var" : "LitC", "descr" : "litter carbon", "unit" : "gC/m2", "scale" : 1.0, "offset" : 0.0},
+  { "id" : LITC, "name": "litc", "timestep" : "annual", "var" : "LitC", "descr" : "above-ground and sub litter carbon", "unit" : "gC/m2", "scale" : 1.0, "offset" : 0.0},
   { "id" : LITFALLC, "name": "litfallc", "timestep" : "annual", "var" : "litfallc", "descr" : "litter fall carbon", "unit" : "gC/m2/yr", "scale" : 1.0, "offset" : 0.0},
   { "id" : LITFALLN, "name": "litfalln", "timestep" : "annual", "var" : "litfalln", "descr" : "litter fall nitrogen", "unit" : "gN/m2/yr", "scale" : 1.0, "offset" : 0.0},
   { "id" : FLUX_ESTABC, "name": "flux_estabc", "timestep" : "annual", "var" : "estabc", "descr" : "establishment flux", "unit" : "gC/m2/yr", "scale" : 1.0, "offset" : 0.0},

@@ -103,7 +103,7 @@ typedef struct
 typedef struct
 {
   const struct Pftpar *pft; /**< PFT id for litter */
-  Trait ag;                 /**< above-ground leaf and wood litter */
+  Trait agtop;              /**< above-ground leaf and wood litter */
   Trait agsub;              /**< above-ground leaf and wood litter incorporated to first layer through tillage */
   Stocks bg;                /**< below-ground litter (gC/m2, gN/m2) */
 } Litteritem;
@@ -236,12 +236,12 @@ extern void getlag(Soil *,int);
 extern int getnsoilcode(const Filename *,unsigned int,Bool);
 extern Soilstate getstate(Real *); /*temperature above/below/at T_zero?*/
 extern Bool initsoil(Stand *soil,const Soilpar *,int,const Config *);
-extern Real litter_ag_sum(const Litter *);
-extern Real litter_ag_sum_n(const Litter *);
+extern Real litter_agtop_sum(const Litter *);
+extern Real litter_agtop_sum_n(const Litter *);
 extern Real litter_agsub_sum(const Litter *);
 extern Real litter_agsub_sum_n(const Litter *);
-extern Real litter_ag_grass(const Litter *);
-extern Real litter_ag_sum_quick(const Litter *);
+extern Real litter_agtop_grass(const Litter *);
+extern Real litter_agtop_sum_quick(const Litter *);
 extern Stocks littersom(Stand *,const Real [NSOILLAYER],Real,int,int,const Config *);
 extern Real littercarbon(const Litter *);
 extern Stocks litterstocks(const Litter *);
@@ -264,8 +264,8 @@ extern Real soilconduct(const Soil *,int,Bool);
 extern Real soilheatcap(const Soil *,int);
 extern void soilice2moisture(Soil *, Real *,int);
 extern Real temp_response(Real);
-extern Real litter_ag_tree(const Litter *,int);
-extern Real litter_ag_nitrogen_tree(const Litter *,int);
+extern Real litter_agtop_tree(const Litter *,int);
+extern Real litter_agtop_nitrogen_tree(const Litter *,int);
 extern Real biologicalnfixation(const Stand *,int,int,const Config *);
 extern void leaching(Soil *,const Real);
 extern Real volatilization(Real,Real,Real,Real,Real);

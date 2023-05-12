@@ -50,8 +50,8 @@ static Stocks woodconsum_tree(Pft *pft,Real restconsum,Litter *litter)
   litter->item[pft->litter].bg.nitrogen+=(disturb*tree->ind.root.nitrogen+disturb*tree->ind.sapwood.nitrogen/3.0);
   litter->item[pft->litter].bg.carbon+=(1-max_frac)*flux.carbon;
   litter->item[pft->litter].bg.nitrogen+=(1-max_frac)*flux.nitrogen;
-  litter->item[pft->litter].ag.leaf.carbon+=disturb*tree->ind.leaf.carbon; /* cannot be burned, send to litter*/
-  litter->item[pft->litter].ag.leaf.nitrogen+=disturb*tree->ind.leaf.nitrogen; /* cannot be burned, send to litter*/
+  litter->item[pft->litter].agtop.leaf.carbon+=disturb*tree->ind.leaf.carbon; /* cannot be burned, send to litter*/
+  litter->item[pft->litter].agtop.leaf.nitrogen+=disturb*tree->ind.leaf.nitrogen; /* cannot be burned, send to litter*/
   update_fbd_tree(litter,pft->par->fuelbulkdensity,disturb*tree->ind.leaf.carbon,0);
   pft->nind-=disturb;
   flux.carbon*=max_frac;
@@ -91,8 +91,8 @@ Stocks woodconsum(Stand *stand, /**< pointer to stand */
 
   for(i=1;i<NFUELCLASS;++i)
   {
-    sum_litter.carbon+=litter_ag_tree(&stand->soil.litter,i);
-    sum_litter.nitrogen+=litter_ag_nitrogen_tree(&stand->soil.litter,i);
+    sum_litter.carbon+=litter_agtop_tree(&stand->soil.litter,i);
+    sum_litter.nitrogen+=litter_agtop_nitrogen_tree(&stand->soil.litter,i);
   }
   /* calculate litter flux and reduce the litter */
   if(sum_litter.carbon>=0.00001 && stand->frac>=0.00001)
@@ -103,8 +103,8 @@ Stocks woodconsum(Stand *stand, /**< pointer to stand */
     for(i=0;i<stand->soil.litter.n;i++)
       for(j=1;j<NFUELCLASS;j++)
       {
-        stand->soil.litter.item[i].ag.wood[j].carbon*=(1-litter_frac);
-        stand->soil.litter.item[i].ag.wood[j].nitrogen*=(1-litter_frac);
+        stand->soil.litter.item[i].agtop.wood[j].carbon*=(1-litter_frac);
+        stand->soil.litter.item[i].agtop.wood[j].nitrogen*=(1-litter_frac);
       }
   }
   restconsum=woodconsumption-flux_litter.carbon;
