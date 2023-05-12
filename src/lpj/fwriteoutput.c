@@ -1731,7 +1731,7 @@ void fwriteoutput(Outputfile *output,  /**< output file array */
   }
   if(isopen(output,MGRASS_SOILC))
   {
-    if(iswrite2(MGRASS_SOILC,timestep,year,config) || (timestep==ANNUAL && config->outnames[SOILC].timestep>0))
+    if(iswrite2(MGRASS_SOILC,timestep,year,config) || (timestep==ANNUAL && config->outnames[MGRASS_SOILC].timestep>0))
     {
       for(cell=0;cell<config->ngridcell;cell++)
         if(!grid[cell].skip)
@@ -1756,7 +1756,7 @@ void fwriteoutput(Outputfile *output,  /**< output file array */
   }
   if(isopen(output,MGRASS_SOILN))
   {
-    if(iswrite2(MGRASS_SOILN,timestep,year,config) || (timestep==ANNUAL && config->outnames[SOILC].timestep>0))
+    if(iswrite2(MGRASS_SOILN,timestep,year,config) || (timestep==ANNUAL && config->outnames[MGRASS_SOILN].timestep>0))
     {
       for(cell=0;cell<config->ngridcell;cell++)
         if(!grid[cell].skip)
@@ -1781,7 +1781,7 @@ void fwriteoutput(Outputfile *output,  /**< output file array */
   }
   if(isopen(output,MGRASS_LITC))
   {
-    if(iswrite2(MGRASS_LITC,timestep,year,config) || (timestep==ANNUAL && config->outnames[SOILC].timestep>0))
+    if(iswrite2(MGRASS_LITC,timestep,year,config) || (timestep==ANNUAL && config->outnames[MGRASS_LITC].timestep>0))
     {
       for(cell=0;cell<config->ngridcell;cell++)
         if(!grid[cell].skip)
@@ -1801,7 +1801,7 @@ void fwriteoutput(Outputfile *output,  /**< output file array */
   }
   if(isopen(output,MGRASS_LITN))
   {
-    if(iswrite2(MGRASS_LITN,timestep,year,config) || (timestep==ANNUAL && config->outnames[SOILC].timestep>0))
+    if(iswrite2(MGRASS_LITN,timestep,year,config) || (timestep==ANNUAL && config->outnames[MGRASS_LITN].timestep>0))
     {
       for(cell=0;cell<config->ngridcell;cell++)
         if(!grid[cell].skip)
