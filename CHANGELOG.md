@@ -23,7 +23,7 @@ of `major.minor.patch` with
 
 ### Added
 
-- Missing agsub litter pool added to `"litc"`, `"litn"`, `"mg_litc`", "`litc_agr`", `"mgrass_litc"`, `"mgrass_litn"` outputs and in global flux of `litc`.
+- Missing agsub litter pool added to `"litc"`, `"litn"`, `"mg_litc"`, `"litc_agr"`, `"mgrass_litc"`, `"mgrass_litn"` outputs and in global flux of `litc`.
 
 - Output of `"litc_ag"` and `"litc_all"` now written to output file.
 

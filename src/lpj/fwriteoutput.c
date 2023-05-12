@@ -1228,7 +1228,7 @@ void fwriteoutput(Outputfile *output,  /**< output file array */
   }
   if(isopen(output,SOILC_AGR_LAYER))
   {
-    if(iswrite2(SOILC_AGR_LAYER,timestep,year,config) || (timestep==ANNUAL && config->outnames[SOILC_LAYER].timestep>0))
+    if(iswrite2(SOILC_AGR_LAYER,timestep,year,config) || (timestep==ANNUAL && config->outnames[SOILC_AGR_LAYER].timestep>0))
     {
       for(cell=0;cell<config->ngridcell;cell++)
       {
