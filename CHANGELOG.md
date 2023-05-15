@@ -19,6 +19,42 @@ of `major.minor.patch` with
 
 ## [Unreleased]
 
+## [5.6.12] - 2023-05-12
+
+### Added
+
+- Missing agsub litter pool added to `"litc"`, `"litn"`, `"mg_litc"`, `"litc_agr"`, `"mgrass_litc"`, `"mgrass_litn"` outputs and in global flux of `litc`.
+
+- Output of `"litc_ag"` and `"litc_all"` now written to output file.
+
+### Changed
+
+- Item `ag` in struct `Litter` renamed to `agtop`.
+
+- Functions  `litter_ag_grass()`, `litter_ag_nitrogen_tree()`, `litter_ag_sum()`, `litter_ag_sum_quick()`, `litter_ag_tree()`
+  renamed to `litter_agtop_grass()`, `litter_agtop_nitrogen_tree()`, `litter_agtop_sum()`, `litter_agtop_sum_quick()`, `litter_agtop_tree()`.
+
+- Index in `outnames` array in `fwriteoutput.c` corrected for `"mgrass_soilc"`, `"mgrass_soiln"`, `"mgrass_litc"`, `"mgrass_litn"`outputs.
+
+## [5.6.11] - 2023-05-11
+
+### Fixed
+
+- Invalid access to pointers `soil->wsat-soil->wpwp` has been replaced by access to layer specific data `soil->wsat[l]-soil->wpwp[l]` in `infil_perc_rain.c` and `infil_perc_irr.c`. See issue [#303](https://gitlab.pik-potsdam.de/lpjml/LPJmL_internal/-/issues/303).
+
+
+## [5.6.10] - 2023-05-10
+
+### Added
+
+- PFT specific output for biological nitrogen fixation with grid and PFT scaling in `npp_contr_biol_n_fixation.c` and `biologicalNfixation.c`.
+
+
+### Changed
+
+- Adjusted optimum temperature limits (`"temp_bnf_opt"`) of herbaceous PFTs for NPP controled biological nitrogen fixation in `pft.js`.
+
+
 ## [5.6.9] - 2023-05-10
 
 ### Added

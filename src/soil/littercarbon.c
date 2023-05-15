@@ -23,9 +23,9 @@ Real littercarbon(const Litter *litter /**< pointer to litter data */
   sum=0;
   for(l=0;l<litter->n;l++)
   {
-    sum+=litter->item[l].ag.leaf.carbon+litter->item[l].agsub.leaf.carbon;
+    sum+=litter->item[l].agtop.leaf.carbon+litter->item[l].agsub.leaf.carbon;
     for(i=0;i<NFUELCLASS;i++)
-      sum+=litter->item[l].ag.wood[i].carbon+litter->item[l].agsub.wood[i].carbon;
+      sum+=litter->item[l].agtop.wood[i].carbon+litter->item[l].agsub.wood[i].carbon;
     sum+=litter->item[l].bg.carbon;
   }
   return sum;

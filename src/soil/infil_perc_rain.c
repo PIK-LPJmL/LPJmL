@@ -128,9 +128,9 @@ Real infil_perc_rain(Stand *stand,        /**< Stand pointer */
       }
 
       /* lateral runoff of water above saturation */
-      if ((soil->w[l]*soil->whcs[l])>(soildepth[l]-soil->freeze_depth[l])*(soil->wsat-soil->wpwp))
+      if ((soil->w[l]*soil->whcs[l])>(soildepth[l]-soil->freeze_depth[l])*(soil->wsat[l]-soil->wpwp[l]))
       {
-        grunoff=(soil->w[l]*soil->whcs[l])-((soildepth[l]-soil->freeze_depth[l])*(soil->wsat-soil->wpwp));
+        grunoff=(soil->w[l]*soil->whcs[l])-((soildepth[l]-soil->freeze_depth[l])*(soil->wsat[l]-soil->wpwp[l]));
         soil->w[l]-=grunoff/soil->whcs[l];
         runoff+=grunoff;
         lrunoff+=grunoff;

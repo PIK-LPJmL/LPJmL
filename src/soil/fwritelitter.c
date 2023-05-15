@@ -29,7 +29,7 @@ Bool fwritelitter(FILE *file, /**< pointer to binary file */
   {
     b=(Byte)litter->item[l].pft->id;
     fwrite1(&b,sizeof(b),file);
-    fwrite1(&litter->item[l].ag,sizeof(Trait),file);
+    fwrite1(&litter->item[l].agtop,sizeof(Trait),file);
     fwrite1(&litter->item[l].agsub,sizeof(Trait),file);
     fwrite1(&litter->item[l].bg,sizeof(Stocks),file);
   }
