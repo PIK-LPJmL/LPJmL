@@ -2,7 +2,7 @@
 /**                                                                                \n**/
 /**               o  u  t  p  u  t  v  a  r  s  .  j  s                            \n**/
 /**                                                                                \n**/
-/**  Defines array of output variables for LPJmL 5.6.12                            \n**/
+/**  Defines array of output variables for LPJmL 5.6.12-FIRE                       \n**/
 /**                                                                                \n**/
 /**  Monthly output rates can be rescaled to 1/day or 1/second by setting the unit \n**/
 /**  to day-1 or sec-1, e.g.:                                                      \n**/
@@ -23,6 +23,7 @@
 
 #include "../include/conf.h" /* include constant definitions */
 
+"nofill" : false,        /* do not fill NetCDF files at creation (true/false) */
 "compress" : 0,          /* compression level (1-9, 0= no compression) */
 "missing_value" : -1e32, /* missing value in NetCDF files */
 "pft_index" : "npft",    /* name of index variable for PFT output */
