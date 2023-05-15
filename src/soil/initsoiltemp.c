@@ -140,8 +140,8 @@ Bool initsoiltemp(Climate* climate,    /**< pointer to climate data */
                hence there is some freedom in choosing inital enth         */
             stand->soil.enth[gridpoint] = 
                (stand->soil.temp[l]<0 ? 
-                stand->soil.temp[l]*therm.c_frozen[l]  : 
-                stand->soil.temp[l]*therm.c_unfrozen[l]+therm.latent_heat[l]);
+                stand->soil.temp[l]*therm.c_frozen[gridpoint]  : 
+                stand->soil.temp[l]*therm.c_unfrozen[gridpoint]+therm.latent_heat[gridpoint]);
           }
           stand->soil.old_totalwater[l]=allwater((&(stand->soil)),l)+allice((&(stand->soil)),l);
           stand->soil.old_wsat[l]=stand->soil.wsat[l];

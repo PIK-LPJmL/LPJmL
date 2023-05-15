@@ -22,6 +22,8 @@ void freezefrac2soil(Soil *soil,
 
     /* get the absolute quantities */
     t_wi  = allwater(soil,layer) + allice(soil,layer);
+    if(t_wi<epsilon)
+      continue; /* Without any water there is nothing to do */
     n_wi  = soil->w[layer] * soil->whcs[layer] + soil->ice_depth[layer];
     wp_wi = soil->wpwps[layer];
     f_wi  = soil->w_fw[layer] + soil->ice_fw[layer];
@@ -57,7 +59,7 @@ void freezefrac2soil(Soil *soil,
     }
 
     /* Only freeze f_wi if still needed */
-    if(tar_ice>0)
+    if(tar_ice>epsilon)
     {
       if(f_wi>0){
         frac = tar_ice/f_wi;

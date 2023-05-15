@@ -58,7 +58,10 @@ void calc_soil_thermal_properties(Soil_thermal_prop *th,    /*< Soil thermal pro
       por            = soil -> wsat[layer];
       lam_sat_froz   = pow(K_SOLID, (1 - por)) * pow(K_ICE, por); /* geometric mean  */
       lam_sat_unfroz = pow(K_SOLID, (1 - por)) * pow(K_WATER, por);
-      sat        =  waterc_abs_layer / soil->wsats[layer];
+      if(soil->wsats[layer]<epsilon)
+        sat=0;
+      else
+        sat        =  waterc_abs_layer / soil->wsats[layer];
       ke_unfroz  = (sat < 0.1 ? 0 : log10(sat) + 1); /* fine soil parametrisation of Johansen */
       ke_froz    =  sat;
       lam_froz   = (lam_sat_froz   - soil->k_dry[layer]) * ke_froz   + soil->k_dry[layer]; 
