@@ -149,6 +149,8 @@ Bool annual_biomass_tree(Stand *stand,         /**< Pointer to stand */
 #endif
         stand->cell->balance.biomass_yield.carbon+=yield.carbon*stand->frac;
         stand->cell->balance.biomass_yield.nitrogen+=yield.nitrogen*stand->frac;
+        getoutput(&stand->cell->output,HARVESTC,config)+=yield.carbon*stand->frac;
+        getoutput(&stand->cell->output,HARVESTN,config)+=yield.nitrogen*stand->frac;
         if(config->pft_output_scaled)
         {
           getoutputindex(&stand->cell->output,PFT_HARVESTC,rbtree(ncft)+biomass_tree->irrigation.irrigation*nirrig,config)+=yield.carbon*stand->frac;
