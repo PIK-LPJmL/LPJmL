@@ -58,7 +58,7 @@ void soiltemp(Soil *soil,          /**< pointer to soil data */
   printf("%f ", temp_bs);
 
   /* apply enthalpy changes coming from water flow and porosity changes */
-  soil_therm_prop(&th,soil, soil->old_totalwater, soil->old_wsat, config->johansen, FALSE);
+  calc_soil_thermal_properties(&th,soil, soil->old_totalwater, soil->old_wsat, config->johansen, FALSE);
   /* track the changes made to the watercontent and to porosity by other LPJmL methods */
   for(l=0;l<NSOILLAYER;++l) 
   {
@@ -74,7 +74,7 @@ void soiltemp(Soil *soil,          /**< pointer to soil data */
   upDiBound=temp_bs*(1-soil->litter.agtop_cover)+soil->litter.agtop_temp*soil->litter.agtop_cover;
 
   /* apply enthalpy changes due to heatconduction */
-    soil_therm_prop(&th,soil, NULL,NULL ,config->johansen,TRUE);
+    calc_soil_thermal_properties(&th,soil, NULL,NULL ,config->johansen,TRUE);
   daily_heatcond(soil->enth, NHEATGRIDP,h, upDiBound,th );
   
   // for(j=0;j<NHEATGRIDP;++j)

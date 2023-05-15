@@ -36,30 +36,36 @@ void freezefrac2soil(Soil *soil,
     /* set the target */
     tar_ice   = t_wi * freezfrac[layer];
     tar_ice_o = tar_ice;
-
+    
     /* Freeze n_wi and wp_wi first*/
     if((wp_wi+n_wi)<tar_ice )
     { /* wp_wi and n_wi will be completly ice */
       tar_ice -= wp_wi+n_wi;
       soil->ice_depth[layer] = n_wi;
-      soil->w[layer] = 0;
-      soil->ice_pwp[layer] = 1;
+      soil->w[layer] = 0.0;
+      soil->ice_pwp[layer] = 1.0;
     }
     else
     { /* wp_wi and n_wi will be partly ice */
       frac = tar_ice/(wp_wi+n_wi);
-      tar_ice = 0; 
+      tar_ice = 0.0; 
       soil->ice_depth[layer] = frac     * n_wi;
       soil->w[layer]         = (1-frac) * n_wi / soil->whcs[layer];
       soil->ice_pwp[layer]=frac;
-      soil->ice_fw[layer] = 0;
+      soil->ice_fw[layer] = 0.0;
       soil->w_fw[layer]   = f_wi;
     }
 
     /* Only freeze f_wi if still needed */
     if(tar_ice>0)
     {
-      frac = tar_ice/f_wi;
+      if(f_wi>0){
+        frac = tar_ice/f_wi;
+      }
+      else{
+        printf("ERROR, target ice not yet met, but there is no more water to freeze.\n");
+        exit(1);
+      }
       soil->ice_fw[layer] = frac     * f_wi;
       soil->w_fw[layer]   = (1-frac) * f_wi;
     }

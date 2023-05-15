@@ -31,7 +31,7 @@ OBJS    = initsoil.$O waterbalance.$O equilsoil.$O littersom.$O\
           checklitter.$O getrootdist.$O nuptake_temp_fcn.$O volatilization.$O\
           getwr.$O updatelitterproperties.$O pedotransfer.$O tillage.$O\
           soilpar_output.$O getsoilmap.$O defaultsoilmap.$O cmpsoilmap.$O\
-          soil_therm_prop.$O daily_heatcond.$O enth2layertemp.$O\
+          calc_soil_thermal_properties.$O daily_heatcond.$O enth2layertemp.$O\
           daily_mass2heatflow.$O freezefrac2soil.$O enth2freezefrac.$O
 
 INC     = ../../include

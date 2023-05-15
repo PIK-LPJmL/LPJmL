@@ -26,7 +26,9 @@
 #define NFUELCLASS 4 /* Number of fuel classes */
 #define TOPLAYER 0
 #define NTILLLAYER 1 /* number of layers to be tilled */
-#define GPLHEAT 3 /* Gripoints per soil layer for the heat conduction scheme  */
+#ifndef TESTSCENARIO_HEAT2
+  #define GPLHEAT 3 /* Gripoints per soil layer for the heat conduction scheme  */
+#endif
 #define NHEATGRIDP NSOILLAYER*GPLHEAT /* Total number of gridpoints for the heatflow scheme */
 
 #define SNOWLAYER NSOILLAYER
@@ -281,9 +283,9 @@ extern Real soilwater(const Soil *);
 extern Real soilconduct(const Soil *,int,Bool);
 extern Real soilheatcap(const Soil *,int);
 extern void daily_heatcond(Real *, const int, const Real *, const Real, const Soil_thermal_prop);
-extern void soil_therm_prop(Soil_thermal_prop *, const Soil *, const Real *, const Real * , Bool, Bool);
+extern void calc_soil_thermal_properties(Soil_thermal_prop *, const Soil *, const Real *, const Real * , Bool, Bool);
 extern void enth2layertemp(Real *, const Real *, Soil_thermal_prop);
-extern void daily_mass2heatflow(Real *, Real *, Real *, Soil_thermal_prop);
+extern void daily_mass2heatflow(Real *, const Real *, const Real *, Soil_thermal_prop);
 extern void freezefrac2soil(Soil *, const Real *);
 extern void enth2freezefrac(Real *, const Real * , Soil_thermal_prop);
 extern void soilice2moisture(Soil *, Real *,int);

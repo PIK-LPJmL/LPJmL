@@ -69,14 +69,14 @@ void soiltemp(Soil *soil,          /**< pointer to soil data */
   
   /*****  Prognostic Part  ****/
   /* enthalpy update from water flow and other changes in soil content */
-  soil_therm_prop(&therm_prop, soil, soil->old_totalwater,                  /* get thermal properties assuming old soil contents */
+  calc_soil_thermal_properties(&therm_prop, soil, soil->old_totalwater,                  /* get thermal properties assuming old soil contents */
                   soil->old_wsat, config->johansen, FALSE); 
   get_soilcontent_change(waterdiff, soliddiff, soil);                       /* track changes to soilcontent made by other methods */
   daily_mass2heatflow(soil->enth, waterdiff, soliddiff, therm_prop);        /* apply resulting enthalpy changes */
   /* enthalpy update from heatconduction */
-  soil_therm_prop(&therm_prop, soil, NULL, NULL, config->johansen, TRUE);   /* get thermal properties with new soil content */
+  calc_soil_thermal_properties(&therm_prop, soil, NULL, NULL, config->johansen, TRUE);   /* get thermal properties with new soil content */
   top_dirichlet_BC = calc_surface_temp(temp_bs, soil, therm_prop);          /* calculate surface litter and soil temperatures */
-  setup_heatgrid(&h);
+  setup_heatgrid(h);
   daily_heatcond(soil->enth, NHEATGRIDP, h, top_dirichlet_BC, therm_prop ); /* apply heat conduction happening in a day */
 
   /*****  Diagnostic Part  ****/
