@@ -36,7 +36,7 @@ Landcover initlandcover(int npft,            /**< number of natural PFTs */
     printallocerr("landcover");
     return NULL;
   }
-  if(opendata(&landcover->file,&config->landcover_filename,"landcover","1",LPJ_SHORT,0.01,config->landcovermap_size,TRUE,config))
+  if(opendata(&landcover->file,&config->landcover_filename,"landcover","1",LPJ_FLOAT,LPJ_SHORT,0.01,config->landcovermap_size,TRUE,config))
   {
     free(landcover);
     return NULL;

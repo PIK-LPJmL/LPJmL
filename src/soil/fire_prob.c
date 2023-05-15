@@ -29,6 +29,6 @@ Real fire_prob(const Litter *litter, /**< pointer to litter */
     fail(INVALID_FIRE_PROB_ERR,TRUE,"fire: probability of fire=%g >1.0",
          fire_frac);
 #endif
-  return (fire_frac<0.001 ||(litter_ag_sum(litter)<minfuel)) ?
+  return (fire_frac<0.001 ||(litter_agtop_sum(litter)<minfuel)) ?
             0.001 : fire_frac;
 } /* of 'fire_prob' */

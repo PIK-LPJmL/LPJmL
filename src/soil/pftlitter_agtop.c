@@ -1,6 +1,6 @@
 /**************************************************************************************/
 /**                                                                                \n**/
-/**                p  f  t  l  i  t  t  e  r  _  a  g  .  c                        \n**/
+/**                p  f  t  l  i  t  t  e  r  _  a  g  t  o  p  .  c               \n**/
 /**                                                                                \n**/
 /**     C implementation of LPJmL                                                  \n**/
 /**                                                                                \n**/
@@ -14,15 +14,15 @@
 
 #include "lpj.h"
 
-void pftlitter_ag(Real carbon[],       /**< PFT-specfic litter carbon (gC/m2) */
-                  const Litter *litter /**< pointer to litter data */
-                 )
+void pftlitter_agtop(Real carbon[],       /**< PFT-specfic litter carbon (gC/m2) */
+                     const Litter *litter /**< pointer to litter data */
+                    )
 {
   int i,l;
   for(l=0;l<litter->n;l++)
   {
-    carbon[litter->item[l].pft->id]=litter->item[l].ag.leaf.carbon;
+    carbon[litter->item[l].pft->id]=litter->item[l].agtop.leaf.carbon;
     for(i=0;i<NFUELCLASS;i++)
-      carbon[litter->item[l].pft->id]+=litter->item[l].ag.wood[i].carbon;
+      carbon[litter->item[l].pft->id]+=litter->item[l].agtop.wood[i].carbon;
   }
-} /* of 'pft_litterag' */
+} /* of 'pft_litteragtop' */

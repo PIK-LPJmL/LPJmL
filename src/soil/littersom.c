@@ -209,11 +209,11 @@ Stocks littersom(Stand *stand,                /**< pointer to stand data */
 #else
       decay_litter=1.0-exp(-(soil->litter.item[p].pft->k_litter10.leaf*response_agtop_leaves));
 #endif
-      decom=soil->litter.item[p].ag.leaf.carbon*decay_litter;
-      soil->litter.item[p].ag.leaf.carbon-=decom;
+      decom=soil->litter.item[p].agtop.leaf.carbon*decay_litter;
+      soil->litter.item[p].agtop.leaf.carbon-=decom;
       decom_sum.carbon+=decom;
-      decom=soil->litter.item[p].ag.leaf.nitrogen*decay_litter;
-      soil->litter.item[p].ag.leaf.nitrogen-=decom;
+      decom=soil->litter.item[p].agtop.leaf.nitrogen*decay_litter;
+      soil->litter.item[p].agtop.leaf.nitrogen-=decom;
       decom_sum.nitrogen+=decom;
 
       /* agtop wood */
@@ -224,11 +224,11 @@ Stocks littersom(Stand *stand,                /**< pointer to stand data */
 #endif
       for(i=0;i<NFUELCLASS;i++)
       {
-        decom=soil->litter.item[p].ag.wood[i].carbon*decay_litter;
-        soil->litter.item[p].ag.wood[i].carbon-=decom;
+        decom=soil->litter.item[p].agtop.wood[i].carbon*decay_litter;
+        soil->litter.item[p].agtop.wood[i].carbon-=decom;
         decom_sum.carbon+=decom;
-        decom=soil->litter.item[p].ag.wood[i].nitrogen*decay_litter;
-        soil->litter.item[p].ag.wood[i].nitrogen-=decom;
+        decom=soil->litter.item[p].agtop.wood[i].nitrogen*decay_litter;
+        soil->litter.item[p].agtop.wood[i].nitrogen-=decom;
         decom_sum.nitrogen+=decom;
       }
 

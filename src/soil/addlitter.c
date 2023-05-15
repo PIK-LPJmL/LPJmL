@@ -24,16 +24,16 @@ int addlitter(Litter *litter,    /**< pointer to litter */
                                      sizeof(Litteritem)*(litter->n+1));
   check(litter->item);
   litter->item[litter->n].pft=pft;
-  litter->item[litter->n].ag.leaf.carbon=0;
-  litter->item[litter->n].ag.leaf.nitrogen=0;
+  litter->item[litter->n].agtop.leaf.carbon=0;
+  litter->item[litter->n].agtop.leaf.nitrogen=0;
   litter->item[litter->n].agsub.leaf.carbon=0;
   litter->item[litter->n].agsub.leaf.nitrogen=0;
   litter->item[litter->n].bg.carbon=0;
   litter->item[litter->n].bg.nitrogen=0;
   for(i=0;i<NFUELCLASS;i++)
   {
-    litter->item[litter->n].ag.wood[i].carbon=0;
-    litter->item[litter->n].ag.wood[i].nitrogen=0;
+    litter->item[litter->n].agtop.wood[i].carbon=0;
+    litter->item[litter->n].agtop.wood[i].nitrogen=0;
     litter->item[litter->n].agsub.wood[i].carbon=0;
     litter->item[litter->n].agsub.wood[i].nitrogen=0;
   }

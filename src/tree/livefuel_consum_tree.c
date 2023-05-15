@@ -60,7 +60,7 @@ Stocks livefuel_consum_tree(Litter *litter,
   tree->ind.heartwood.nitrogen -= livefuel->disturb*heartwood_consum.nitrogen;
   if(fabs(pft->bm_inc.carbon)>epsilon)
   { 
-    litter->item[pft->litter].ag.leaf.carbon+=pft->bm_inc.carbon*fire_nind_kill/pft->nind;
+    litter->item[pft->litter].agtop.leaf.carbon+=pft->bm_inc.carbon*fire_nind_kill/pft->nind;
     update_fbd_tree(litter,pft->par->fuelbulkdensity,pft->bm_inc.carbon*fire_nind_kill/pft->nind,0);
     pft->bm_inc.carbon*=(pft->nind-fire_nind_kill)/pft->nind;
   }
@@ -70,7 +70,7 @@ Stocks livefuel_consum_tree(Litter *litter,
   {
     if(pft->bm_inc.carbon>0)
     {
-      litter->item[pft->litter].ag.wood[0].carbon+=pft->bm_inc.carbon;
+      litter->item[pft->litter].agtop.wood[0].carbon+=pft->bm_inc.carbon;
       update_fbd_tree(litter,pft->par->fuelbulkdensity,pft->bm_inc.carbon,0);
     }
     else
@@ -78,7 +78,7 @@ Stocks livefuel_consum_tree(Litter *litter,
     *isdead=TRUE;
     if(pft->bm_inc.nitrogen>0)
     {
-      litter->item[pft->litter].ag.wood[0].nitrogen+=pft->bm_inc.nitrogen;
+      litter->item[pft->litter].agtop.wood[0].nitrogen+=pft->bm_inc.nitrogen;
     }
     else
       live_consum_tree.nitrogen+=pft->bm_inc.nitrogen;

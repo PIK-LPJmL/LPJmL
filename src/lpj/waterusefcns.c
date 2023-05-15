@@ -32,7 +32,7 @@ Wateruse initwateruse(const Filename *filename, /**< filename of wateruse file *
     printallocerr("wateruse");
     return NULL;
   }
-  if(opendata(&wateruse->file,filename,"wateruse",NULL,(filename->fmt==SOCK) ? LPJ_FLOAT : LPJ_INT,1000.0,1,TRUE,config))
+  if(opendata(&wateruse->file,filename,"wateruse",NULL,LPJ_FLOAT,LPJ_INT,1000.0,1,TRUE,config))
   {
     free(wateruse);
     return NULL;
@@ -48,7 +48,12 @@ static Real *readwateruse(Wateruse wateruse,   /**< Pointer to wateruse data */
 {
   int cell;
   Real *data;
-  if(wateruse->file.fmt!=SOCK && config->wateruse==ALL_WATERUSE)
+  if(iscoupled(*config) && wateruse->file.issocket && year>=config->start_coupling)
+  {
+    data=readdata(&wateruse->file,NULL,grid,"wateruse",year,config);
+    return data;
+  }
+  if(config->wateruse==ALL_WATERUSE)
   {
     /* first and last wateruse data is used outside available wateruse data */
     if(year<=wateruse->file.firstyear)
@@ -56,7 +61,7 @@ static Real *readwateruse(Wateruse wateruse,   /**< Pointer to wateruse data */
     else if(year>=wateruse->file.firstyear+wateruse->file.nyear)
       year=wateruse->file.firstyear+wateruse->file.nyear-1;
   }
-  if(wateruse->file.fmt==SOCK || (year>=wateruse->file.firstyear && year<wateruse->file.firstyear+wateruse->file.nyear))
+  if(year>=wateruse->file.firstyear && year<wateruse->file.firstyear+wateruse->file.nyear)
     data=readdata(&wateruse->file,NULL,grid,"wateruse",year,config);
   else
   {

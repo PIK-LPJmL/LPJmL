@@ -21,8 +21,8 @@ void free_tree(Pft *pft)
 {
   Pfttree *tree;
   tree=pft->data;
-  pft->stand->soil.litter.item[pft->litter].ag.leaf.carbon+=tree->turn.leaf.carbon*pft->nind-tree->turn_litt.leaf.carbon;
-  pft->stand->soil.litter.item[pft->litter].ag.leaf.nitrogen+=tree->turn.leaf.nitrogen*pft->nind-tree->turn_litt.leaf.nitrogen;
+  pft->stand->soil.litter.item[pft->litter].agtop.leaf.carbon+=tree->turn.leaf.carbon*pft->nind-tree->turn_litt.leaf.carbon;
+  pft->stand->soil.litter.item[pft->litter].agtop.leaf.nitrogen+=tree->turn.leaf.nitrogen*pft->nind-tree->turn_litt.leaf.nitrogen;
   update_fbd_tree(&pft->stand->soil.litter,pft->par->fuelbulkdensity,tree->turn.leaf.carbon*pft->nind-tree->turn_litt.leaf.carbon,0);
   pft->stand->soil.litter.item[pft->litter].bg.carbon+=tree->turn.root.carbon*pft->nind-tree->turn_litt.root.carbon;
   pft->stand->soil.litter.item[pft->litter].bg.nitrogen+=tree->turn.root.nitrogen*pft->nind-tree->turn_litt.root.nitrogen;

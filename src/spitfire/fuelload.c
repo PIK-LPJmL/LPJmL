@@ -58,14 +58,14 @@ void fuelload(const Stand *stand, /**< pointer to stand */
       fuel_gBiomass[j]+=c2biomass(litter->ag[i].trait.wood[j]);
   } */
   /*TODO: simplify loop with new function litter_ag_tree.c!! */
-  fuel_gBiomass[0]=c2biomass(litter_ag_grass(&stand->soil.litter)+litter_ag_tree(&stand->soil.litter,0));
+  fuel_gBiomass[0]=c2biomass(litter_agtop_grass(&stand->soil.litter)+litter_agtop_tree(&stand->soil.litter,0));
   getoutputindex(&stand->cell->output,FUEL,0,config)+=fuel_gBiomass[0];
   for (i=1; i<NFUELCLASS;++i) /* 1hr fuel consumption not included*/
   {
-    fuel_gBiomass[i]=c2biomass(litter_ag_tree(&stand->soil.litter,i));
+    fuel_gBiomass[i]=c2biomass(litter_agtop_tree(&stand->soil.litter,i));
     getoutputindex(&stand->cell->output,FUEL,i,config)+=fuel_gBiomass[i];
   }
-  dead_fuel = c2biomass(litter_ag_sum_quick(&stand->soil.litter));
+  dead_fuel = c2biomass(litter_agtop_sum_quick(&stand->soil.litter));
 
 
   /* Net fuel load (kg biomass)*/
@@ -138,12 +138,12 @@ void fuelload(const Stand *stand, /**< pointer to stand */
   /* average fuel bulk density for live and dead fuel*/
   fbd_livefuel = fbd_c3_livegrass * ratio_c3_livegrass +
                  fbd_c4_livegrass * ratio_c4_livegrass;
-  fbd_deadfuel = stand->soil.litter.avg_fbd[NFUELCLASS]*litter_ag_grass(&stand->soil.litter);
+  fbd_deadfuel = stand->soil.litter.avg_fbd[NFUELCLASS]*litter_agtop_grass(&stand->soil.litter);
   for (i=0; i<NFUELCLASS-1;++i)
-    fbd_deadfuel += stand->soil.litter.avg_fbd[i]*litter_ag_tree(&stand->soil.litter,i)*fbd_fac[i]; /*fbd_fac replaces FBD_A + FBD_B*/
+    fbd_deadfuel += stand->soil.litter.avg_fbd[i]*litter_agtop_tree(&stand->soil.litter,i)*fbd_fac[i]; /*fbd_fac replaces FBD_A + FBD_B*/
   if(dead_fuel > epsilon)
     fbd_deadfuel /= biomass2c(dead_fuel);
-    /*fbd_deadfuel /= litter_ag_sum_quick(&stand->soil.litter); */
+    /*fbd_deadfuel /= litter_agtop_sum_quick(&stand->soil.litter); */
 
   if (dead_fuel > epsilon && livegrass > epsilon)
   {
