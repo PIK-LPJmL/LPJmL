@@ -15,6 +15,8 @@
 #ifndef SPITFIRE_H /* Already included? */
 #define SPITFIRE_H
 
+#define SPITFIRE_VERSION "1.8.0"
+
 /* Declaration of datatypes */
 
 typedef struct popdens *Popdens;

@@ -273,7 +273,7 @@ void fprintconfig(FILE *file,          /**< File pointer to text output file */
     len=printsim(file,len,&count,"random precipitation");
   if(config->fire)
   {
-    len=printsim(file,len,&count,(config->fire==SPITFIRE  || config->fire==SPITFIRE_TMAX)  ? "spitfire" : "fire");
+    len=printsim(file,len,&count,(config->fire==SPITFIRE  || config->fire==SPITFIRE_TMAX)  ? "spitfire version " SPITFIRE_VERSION : "fire");
     if((config->fire==SPITFIRE || config->fire==SPITFIRE_TMAX) && config->ispopulation)
       len=printsim(file,len,&count,"and population");
     if((config->fire==SPITFIRE || config->fire==SPITFIRE_TMAX) && config->prescribe_burntarea)
