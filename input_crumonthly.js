@@ -18,6 +18,14 @@
              "sandy clay loam", "loam", "silt loam", "sandy loam", "silt",
              "loamy sand", "sand", "rock and ice"],
 
+/* The following array is used for mapping prescribed FPC */
+
+"landcovermap" : ["tropical broadleaved evergreen tree", "tropical broadleaved raingreen tree",
+                  "temperate needleleaved evergreen tree", "temperate broadleaved evergreen tree",
+                  "temperate broadleaved summergreen tree", "boreal needleleaved evergreen tree",
+                  "boreal broadleaved summergreen tree", "boreal needleleaved summergreen tree",
+                  "Tropical C4 grass", "Temperate C3 grass", "Polar C3 grass"],
+
 /* the following array describes the order of the CFT bands in the land use file */
 
 
