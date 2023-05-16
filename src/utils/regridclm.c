@@ -275,7 +275,7 @@ int main(int argc,char **argv)
       {
         fputs("Coordinate ",stderr);
         fprintcoord(stderr,c2+i);
-        fputs(" not found.\n",stderr);
+        fprintf(stderr," at index %d not found.\n",i);
         index[i]=-1;
         if(!iszero)
           return EXIT_FAILURE;
