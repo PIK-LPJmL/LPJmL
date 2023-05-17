@@ -30,6 +30,8 @@ void calc_soil_thermal_properties(Soil_thermal_prop *th,    /*< Soil thermal pro
   Real ke_unfroz, ke_froz;           /* kersten number for unfrozen and frozen soil */
   Real por;                          /* porosity of the soil */
 
+  Real tmp;                          /* temporary variable */
+
   for (layer = 0; layer < NSOILLAYER; ++layer) {
 
     if (!johansen)
@@ -56,8 +58,9 @@ void calc_soil_thermal_properties(Soil_thermal_prop *th,    /*< Soil thermal pro
     {
       /* get frozen and unfrozen conductivity with johansens approach */
       por            = soil -> wsat[layer];
-      lam_sat_froz   = pow(K_SOLID, (1 - por)) * pow(K_ICE, por); /* geometric mean  */
-      lam_sat_unfroz = pow(K_SOLID, (1 - por)) * pow(K_WATER, por);
+      tmp = pow( K_SOLID, (1 - por));
+      lam_sat_froz   =  tmp * pow(K_ICE, por); /* geometric mean  */
+      lam_sat_unfroz =  tmp * pow(K_WATER, por);
       if(soil->wsats[layer]<epsilon)
         sat=0;
       else

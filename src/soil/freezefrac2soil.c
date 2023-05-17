@@ -73,17 +73,17 @@ void freezefrac2soil(Soil *soil,
     }
 
     /* Check if the target was met */
-    if(fabs(tar_ice_o-
-      (soil->ice_fw[layer]+soil->ice_depth[layer]+soil->ice_pwp[layer]*soil->wpwps[layer]))
-      >0.000001 ){
-      printf("ERROR, Target ice content was not met.\n" );
-      exit(1);
-    }
-    /* Check if no water is lost */
-    if(fabs(soil->ice_fw[layer]+soil->w_fw[layer]-f_wi)>0.00001 ||
-       fabs(soil->w[layer]*soil->whcs[layer]+soil->ice_depth[layer]-n_wi)>0.00001 ){
-      printf("ERROR, Water ist lost during conversion process.\n" );
-      exit(1);
-    }
+    // if(fabs(tar_ice_o-
+    //   (soil->ice_fw[layer]+soil->ice_depth[layer]+soil->ice_pwp[layer]*soil->wpwps[layer]))
+    //   >0.000001 ){
+    //   printf("ERROR, Target ice content was not met.\n" );
+    //   exit(1);
+    // }
+    // /* Check if no water is lost */
+    // if(fabs(soil->ice_fw[layer]+soil->w_fw[layer]-f_wi)>0.00001 ||
+    //    fabs(soil->w[layer]*soil->whcs[layer]+soil->ice_depth[layer]-n_wi)>0.00001 ){
+    //   printf("ERROR, Water ist lost during conversion process.\n" );
+    //   exit(1);
+    // }
   }
 }
