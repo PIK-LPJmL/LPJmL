@@ -10,7 +10,7 @@ The second step uses linear interpolation between the temperature at the gridpoi
 
 #include "lpj.h"
 
-void enth2layertemp(Real *temp,          /*< temperature vector that is written to N=NSOILLAYER */
+void compute_mean_layer_temps_from_enth(Real *temp,          /*< temperature vector that is written to N=NSOILLAYER */
                     const Real *enth,    /*< input enthalpy vector N=NHEATGRID */
                     Soil_thermal_prop th /*< soil thermal properties */
                     )
