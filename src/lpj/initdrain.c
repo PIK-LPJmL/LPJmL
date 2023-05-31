@@ -383,6 +383,25 @@ static Bool initriver(Cell grid[],Config *config)
         return TRUE;
       }
     }
+    else if(queuesize(grid[cell].discharge.queue)!=ncoeff) /* check whether queue size in restart file has the same length as ncoeff */
+    {
+      /* no, free queue and allocate new queue with length ncoeff */
+      fprintf(stderr,"ERROR256: Size of discharge queue=%d of cell %d in restart file differs from %d, queue is resized and set to zero.\n",
+             queuesize(grid[cell].discharge.queue),cell+config->startgrid,ncoeff);
+      freequeue(grid[cell].discharge.queue);
+      grid[cell].discharge.queue=newqueue(ncoeff);
+      if(grid[cell].discharge.queue==NULL)
+      {
+        printallocerr("queue");
+        closeinput(&drainage);
+        if(config->drainage_filename.fmt==CDF)
+        {
+          closeinput_netcdf(river.cdf);
+          free(index);
+        }
+        return TRUE;
+      }
+    }
 
     if(r.index>=0)
     {
