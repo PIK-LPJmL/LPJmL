@@ -45,8 +45,6 @@ Directory tree after extracting the tar files:
   | |
   | +-man5        : Manual pages for file formats
   |
-  +--html         : Documentation and man pages in HTML format
-  |
   +--par          : Parameter files for PFTs and soils
   |
   +--input        : input data set for climate
