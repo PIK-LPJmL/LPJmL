@@ -20,7 +20,6 @@
 
 #include "lpj.h"
 
-#define TXT2GRID_VERSION "1.0.004"
 #define USAGE "Usage: txt2grid [-h] [-v] [-map file] [-fmt s] [-skip n] [-cellsize size] [-float] [-latlon] gridfile clmfile\n"
 
 typedef  struct
@@ -87,8 +86,8 @@ int main(int argc,char **argv)
     {
       if(!strcmp(argv[iarg],"-h"))
       {
-        printf("txt2grid " TXT2GRID_VERSION " (" __DATE__ ") - convert text file to\n"
-             "         clm grid file for lpj C version\n\n"
+        printf("txt2grid (" __DATE__ ") - convert text file to\n"
+             "         clm grid file for LPJmL version " LPJ_VERSION "\n\n"
              USAGE
              "\nArguments:\n"
              "-h             print this help text\n"

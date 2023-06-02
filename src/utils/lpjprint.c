@@ -25,7 +25,6 @@
 #include "biomass_grass.h"
 #include "woodplantation.h"
 
-#define PRINTLPJ_VERSION "1.0.021"
 #define NTYPES 3
 #define NSTANDTYPES 13 /* number of stand types */
 
@@ -185,7 +184,7 @@ int main(int argc,char **argv)
   if(argc>1 && !strcmp(argv[1],"-h"))
   {
     fputs("     ",stdout);
-    rc=printf("%s Version " PRINTLPJ_VERSION " (" __DATE__ ") Help",
+    rc=printf("%s (" __DATE__ ") Help",
               progname);
     fputs("\n     ",stdout);
     repeatch('=',rc);
@@ -205,7 +204,7 @@ int main(int argc,char **argv)
     return EXIT_SUCCESS;
   }
   snprintf(line,78-10,
-           "%s Version " PRINTLPJ_VERSION " (" __DATE__ ")",progname);
+           "%s (" __DATE__ ")",progname);
   title[0]=line;
   title[1]="Printing restart file for LPJmL Version " LPJ_VERSION;
   title[2]="(C) Potsdam Institute for Climate Impact Research (PIK),";

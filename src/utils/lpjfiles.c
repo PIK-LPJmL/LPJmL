@@ -17,7 +17,6 @@
 #include "tree.h"
 #include "crop.h"
 
-#define LPJFILES_VERSION "1.0.004"
 #define NTYPES 3 /* number of PFT types: grass, tree, crop */
 
 #define USAGE "Usage: %s [-h] [-noinput] [-nooutput] [-outpath dir] [-inpath dir] [-restartpath dir]\n"\
@@ -50,11 +49,11 @@ int main(int argc,char **argv)
       if(file==NULL)
         file=stdout;
       fputs("     ",file);
-      rc=fprintf(file,"%s Version " LPJFILES_VERSION " (" __DATE__ ") Help",
+      rc=fprintf(file,"%s (" __DATE__ ") Help",
               progname);
       fputs("\n     ",file);
       frepeatch(file,'=',rc);
-      fputs("\n\nPrint input/output files of LPJmL " LPJ_VERSION "\n\n",file);
+      fputs("\n\nPrint input/output files of LPJmL version " LPJ_VERSION "\n\n",file);
       fprintf(file,USAGE,progname);
       fprintf(file,"\nArguments:\n"
              "-h               print this help text\n"
