@@ -32,7 +32,7 @@ Bool readclimate(Climatefile *file,   /**< climate data file */
   long long index;
   if(file->fmt==FMS)
     return FALSE;
-  if(file->fmt==SOCK)
+  if(iscoupled(*config) && file->issocket && year>=config->start_coupling)
   {
     if(receive_real_coupler(file->id,data,(file->time_step==DAY) ? NDAYYEAR : NMONTH,year,config))
     {

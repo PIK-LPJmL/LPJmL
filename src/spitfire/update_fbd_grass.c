@@ -20,7 +20,7 @@ void update_fbd_grass(Litter* litter,Real fuelbulkdensity,Real carbon)
   Real ratio,fuel;
   if(carbon<=0)
     return; /* no change in fbd, if carbon is lost */
-  fuel=litter_ag_grass(litter);
+  fuel=litter_agtop_grass(litter);
 
   if(fuel>carbon)
   {

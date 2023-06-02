@@ -25,12 +25,12 @@
 #include "biomass_grass.h"
 #include "woodplantation.h"
 
-#define PRINTLPJ_VERSION "1.0.020"
+#define PRINTLPJ_VERSION "1.0.021"
 #define NTYPES 3
 #define NSTANDTYPES 13 /* number of stand types */
 
 #define USAGE "Usage: %s [-h] [-inpath dir] [-restartpath dir]\n"\
-              "       [[-Dmacro[=value]] [-Idir] ...] [filename [-check] [start [end]]]\n"
+              "       [[-Dmacro[=value]] [-Idir] ...] filename [-check] [start [end]]\n"
 
 
 static Bool printgrid(Config *config, /* Pointer to LPJ configuration */
@@ -197,12 +197,11 @@ int main(int argc,char **argv)
            "-restartpath dir directory appended to restart filename\n"
            "-Dmacro[=value]  define macro for preprocessor of configuration file\n"
            "-Idir            directory to search for include files\n"
-           "filename         configuration filename. Default is '%s'\n"
+           "filename         configuration filename\n"
            "-check           check only restart file\n"
            "start            index of first grid cell to print\n"
            "end              index of last grid cell to print\n\n"
-           "(C) Potsdam Institute for Climate Impact Research (PIK), see COPYRIGHT file\n",
-           dflt_conf_filename_ml);
+           "(C) Potsdam Institute for Climate Impact Research (PIK), see COPYRIGHT file\n");
     return EXIT_SUCCESS;
   }
   snprintf(line,78-10,
@@ -213,7 +212,7 @@ int main(int argc,char **argv)
   title[3]="see COPYRIGHT file";
   banner(title,4,78);
   initconfig(&config);
-  if(readconfig(&config,dflt_conf_filename_ml,scanfcn,NTYPES,NOUT,&argc,&argv,USAGE))
+  if(readconfig(&config,scanfcn,NTYPES,NOUT,&argc,&argv,USAGE))
     fail(READ_CONFIG_ERR,FALSE,"Error opening config");
   printf("Simulation: %s\n",config.sim_name);
   config.ischeckpoint=ischeckpointrestart(&config) && getfilesize(config.checkpoint_restart_filename)!=-1;

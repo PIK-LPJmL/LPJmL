@@ -261,9 +261,8 @@ struct config
   int mowingdays_size;     /**< size of mowing days array */
   Bool npp_controlled_bnf;             /**< biological nitrogen fixation folowing Ma et al., 2022 */
   Seed seed;
+  int start_coupling;      /**< year in which coupling to IMAGE/coupler starts */
 #ifdef IMAGE
-  int start_imagecoupling; /**< year in which coupling to IMAGE starts
-                              (e.g. 1970), set to 9999 if IMAGE is not used */
   Socket *in;  /**< socket for ingoing data */
   Socket *out; /**< socket for outgoing data */
 #endif
@@ -292,7 +291,7 @@ extern const char *grazing_type[];
 extern void initmpiconfig(Config *,MPI_Comm);
 #endif
 extern void initconfig(Config *);
-extern FILE* openconfig(Config *,const char *,int *,char***,const char*);
+extern FILE* openconfig(Config *,int *,char***,const char*);
 extern void freeconfig(Config *);
 extern void fprintconfig(FILE *,int,int,const Config *);
 extern Bool filesexist(Config,Bool);
@@ -303,7 +302,7 @@ extern void fprintpftpar(FILE *,const Pftpar [],const Config *);
 extern void fprintoutputvar(FILE *,const Variable *,int,int,int,const Config *);
 extern void freeoutputvar(Variable *,int);
 extern Bool fscanoutput(LPJfile *,int,int,Config *,int);
-extern Bool readconfig(Config *,const char *,Pfttype [],int,int,int *,
+extern Bool readconfig(Config *,Pfttype [],int,int,int *,
                        char ***,const char *);
 extern Bool fscanconfig(Config *,LPJfile *,Pfttype [],int,int);
 extern Bool fscancultivationtypes(LPJfile *,const char *,int **,int *,Verbosity);
