@@ -18,5 +18,4 @@
 
 #include "par/manage_irrig_systems_with_dummy_laimax_data.js" /* Management parameter file */
 #include "par/manage_reg.js"    /* Management parameter file for regions*/
-#include "par/manage_treedens.js"  /* Management parameter file for agricultural trees */
 #include "par/outputvars.js"
