@@ -28,7 +28,7 @@
 #define NTYPES 3
 #define NSTANDTYPES 13 /* number of stand types */
 
-#define USAGE "Usage: %s [-h] [-inpath dir] [-restartpath dir]\n"\
+#define USAGE "Usage: %s [-h] [-pp cmd] [-inpath dir] [-restartpath dir]\n"\
               "       [[-Dmacro[=value]] [-Idir] ...] filename [-check] [start [end]]\n"
 
 
@@ -192,12 +192,13 @@ int main(int argc,char **argv)
     printf(USAGE,progname);
     printf("\nArguments:\n"
            "-h               print this help text\n"
+           "-pp cmd          set preprocessor program. Default is 'cpp -P'\n"
            "-inpath dir      directory appended to input filenames\n"
            "-restartpath dir directory appended to restart filename\n"
            "-Dmacro[=value]  define macro for preprocessor of configuration file\n"
            "-Idir            directory to search for include files\n"
            "filename         configuration filename\n"
-           "-check           check only restart file\n"
+           "-check           check only restart file, do not print\n"
            "start            index of first grid cell to print\n"
            "end              index of last grid cell to print\n\n"
            "(C) Potsdam Institute for Climate Impact Research (PIK), see COPYRIGHT file\n");

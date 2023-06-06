@@ -3,13 +3,13 @@
 printharvest \- Print global harvested carbon for crops and managed grasslands 
 .SH SYNOPSIS
 .B printharvest
-[\-h] [\-inpath \fIdir\fP] [\-outpath \fIdir\fP] [[\-Dmacro[=value]] [\-I\fIdir\fP] ...] \fIfilename\fP
+[\-pp cmd] [\-inpath \fIdir\fP] [\-outpath \fIdir\fP] [[\-Dmacro[=value]] [\-I\fIdir\fP] ...] \fIfilename\fP
 .SH DESCRIPTION
 Program prints total harvested carbon of a LPJmL model run. The LPJmL configuration file is read in order to find the location and name of the harvest data file.
 .SH OPTIONS
 .TP
-\-h
-display a short help text
+\-pp cmd
+Set preprocessor program to cmd. Default is \fBcpp -P\fP.
 .TP
 \-inpath \fIdir\fP
 set the input directory path. The path is added to the input filenames if they do not contain an absolute path.

@@ -93,7 +93,7 @@ int main(int argc,char **argv)
   argv_save=argv;
   if(readconfig(&config,scanfcn,NTYPES,NOUT,&argc,&argv,USAGE))
   {
-    fputs("Syntax error found in configuration file.\n",stderr);
+    fputs("Cannot process configuration file.\n",stderr);
     return EXIT_FAILURE;
   }
   else

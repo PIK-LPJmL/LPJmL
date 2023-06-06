@@ -20,7 +20,7 @@
 
 #define NTYPES 3 /* number of PFT types: grass, tree, crop */
 
-#define USAGE "Usage: %s [-h] [-outpath dir] [-inpath dir] [[-Dmacro[=value]] [-Idir] ...] filename\n"
+#define USAGE "Usage: %s [-pp cmd] [-outpath dir] [-inpath dir] [[-Dmacro[=value]] [-Idir] ...] filename\n"
 
 #define fread_harvest(file,harvest) if(fread(harvest,sizeof(float),1,file)!=1) \
   { \
