@@ -385,7 +385,7 @@ static Bool initriver(Cell grid[],Config *config)
     }
     else if(queuesize(grid[cell].discharge.queue)!=ncoeff) /* check whether queue size in restart file has the same length as ncoeff */
     {
-      /* no, free queue and allocate new queue with length ncoeff */
+      /* The queue size is different, so resize the queue and set it to zero */
       fprintf(stderr,"ERROR256: Size of discharge queue=%d of cell %d in restart file differs from %d, queue is resized and set to zero.\n",
              queuesize(grid[cell].discharge.queue),cell+config->startgrid,ncoeff);
       freequeue(grid[cell].discharge.queue);
