@@ -550,12 +550,9 @@ int main(int argc,char **argv)
   Attr *global_attrs2=NULL;
   size_t offset;
   char *map_name,*filename;
-  String var_units,var_descr,var_name;
+  char *var_units=NULL,*var_descr=NULL,*var_name=NULL;
   Filename grid_name;
   char *variable,*grid_filename,*path;
-  var_units[0]='\0';
-  var_descr[0]='\0';
-  var_name[0]='\0';
   grid_name.fmt=RAW;
   units=descr=NULL;
   compress=0;
@@ -794,12 +791,12 @@ int main(int argc,char **argv)
   }
   if(ismeta)
   {
-    file=openmetafile(&header,&map,map_name,&global_attrs2,&n_global2,var_name,var_units,var_descr,&grid_name,&gridtype,&swap,&offset,filename,TRUE);
+    file=openmetafile(&header,&map,map_name,&global_attrs2,&n_global2,&var_name,&var_units,&var_descr,&grid_name,&gridtype,&swap,&offset,filename,TRUE);
     if(file==NULL)
       return EXIT_FAILURE;
-    if(units==NULL && strlen(var_units)>0)
+    if(units==NULL && var_units!=NULL)
       units=var_units;
-    if(descr==NULL && strlen(var_descr)>0)
+    if(descr==NULL && var_descr!=NULL)
       descr=var_descr;
     if(global_attrs2!=NULL)
     {
@@ -814,7 +811,7 @@ int main(int argc,char **argv)
   }
   else
   {
-    if(strlen(var_name)==0)
+    if(var_name==NULL)
     {
       fprintf(stderr,"Error: variable name must be specified in '%s' metafile.\n",filename);
       return EXIT_FAILURE;

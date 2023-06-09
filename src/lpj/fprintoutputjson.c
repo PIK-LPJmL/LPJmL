@@ -33,16 +33,23 @@ Bool fprintoutputjson(int index,           /**< index in outputvars array */
                      )                     /** \return TRUE on error */
 {
   FILE *file;
-  String s;
   char *filename;
   char *json_filename;
   const Filename *grid_filename;
   char **pftnames;
-  int p,nbands,len;
+  int p,nbands,len,count;
   if(config->outputvars[index].oneyear)
   {
-    snprintf(s,STRING_LEN,config->outputvars[index].filename.name,year);
-    filename=s;
+    count=snprintf(NULL,0,config->outputvars[index].filename.name,year);
+    if(count==-1)
+      return TRUE;
+    filename=malloc(count+1);
+    if(filename==NULL)
+    {
+      printallocerr("filename");
+      return TRUE;
+    }
+    snprintf(filename,count+1,config->outputvars[index].filename.name,year);
   }
   else
     filename=config->outputvars[index].filename.name;
@@ -50,6 +57,8 @@ Bool fprintoutputjson(int index,           /**< index in outputvars array */
   json_filename=malloc(strlen(filename)+strlen(config->json_suffix)+1);
   if(json_filename==NULL)
   {
+    if(config->outputvars[index].oneyear)
+      free(filename);
     printallocerr("json_filename");
     return TRUE;
   }
@@ -60,6 +69,8 @@ Bool fprintoutputjson(int index,           /**< index in outputvars array */
   if(file==NULL)
   {
     printfcreateerr(json_filename);
+    if(config->outputvars[index].oneyear)
+      free(filename);
     free(json_filename);
     return TRUE;
   }
@@ -177,6 +188,8 @@ Bool fprintoutputjson(int index,           /**< index in outputvars array */
   fprintf(file,"  \"filename\" : \"%s\"\n",strippath(filename));
   fprintf(file,"}\n");
   fclose(file);
+  if(config->outputvars[index].oneyear)
+    free(filename);
   free(json_filename);
   return FALSE;
 } /* of 'fprintoutputjson' */

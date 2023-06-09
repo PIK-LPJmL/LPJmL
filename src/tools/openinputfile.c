@@ -28,7 +28,7 @@ FILE *openinputfile(Header *header,           /**< [out] pointer to file header 
                    )                          /** \return file pointer to open file or NULL */
 {
   FILE *file;
-  String var_unit;
+  char *var_unit=NULL;
   if(filename->fmt==META)
   {
     *version=CLM_MAX_VERSION+1;
@@ -46,16 +46,17 @@ FILE *openinputfile(Header *header,           /**< [out] pointer to file header 
     header->cellsize_lon=(float)config->resolution.lon;
     header->cellsize_lat=(float)config->resolution.lat;
     /* open description file */
-    file=openmetafile(header,NULL,NULL,NULL,NULL,NULL,var_unit,NULL,NULL,NULL,swap,offset,filename->name,isroot(*config));
+    file=openmetafile(header,NULL,NULL,NULL,NULL,NULL,&var_unit,NULL,NULL,NULL,swap,offset,filename->name,isroot(*config));
     if(file==NULL)
     {
       if(isroot(*config))
         fprintf(stderr,"ERROR224: Cannot read description file '%s'.\n",filename->name);
       return NULL;
     }
-    if(isroot(*config) && unit!=NULL && strlen(var_unit) && strcmp(unit,var_unit))
+    if(isroot(*config) && unit!=NULL && var_unit!=NULL && strcmp(unit,var_unit))
       fprintf(stderr,"WARNING408: Unit '%s' in '%s' differs from unit '%s' in configuration file.\n",
                       var_unit,filename->name,unit);
+    free(var_unit);
 
   /*  if(fabs(header->cellsize_lon-config->resolution.lon)>epsilon)
     {

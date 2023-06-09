@@ -4,23 +4,8 @@
 /**                                                                                \n**/
 /**     C implementation of LPJmL                                                  \n**/
 /**                                                                                \n**/
-/**     Functions opens input desription file and opens specified binary           \n**/
-/**     file. Description file has the following format:                           \n**/
-/**                                                                                \n**/
-/**     remark "metafile for LPJmL input"                                          \n**/
-/**     file inputfile.bin                                                         \n**/
-/**     firstyear 1901                                                             \n**/
-/**     nyear 109                                                                  \n**/
-/**     nbands 12                                                                  \n**/
-/**     endian little                                                              \n**/
-/**     firstcell 0                                                                \n**/
-/**     ncell 67420                                                                \n**/
-/**     scalar 0.1                                                                 \n**/
-/**     cellsize 0.5 0.5                                                           \n**/
-/**     offset 0                                                                   \n**/
-/**     datatype short                                                             \n**/
-/**                                                                                \n**/
-/**     JSON file format is also supported:                                        \n**/
+/**     Functions opens JSON desription file and returns filename of specified     \n**/
+/**     binary file. Description file has the following format:                    \n**/
 /**                                                                                \n**/
 /**     {                                                                          \n**/
 /**       "filename" : "inputfile.bin",                                            \n**/
@@ -79,18 +64,15 @@ void freemap(Map *map)
   free(map);
 } /* of 'freemap' */
 
-#ifdef USE_JSON
-
-char *parse_json_metafile(LPJfile *lpjfile,   /**< pointer to JSON file */
-                          char *s,            /**< first string of JSON file */
+char *parse_json_metafile(FILE *file,         /**< pointer to JSON file */
                           Header *header,     /**< pointer to file header */
                           Map **map,         /**< map from json file or NULL */
                           const char *map_name, /**< name of map or NULL */
                           Attr **attrs,       /**< pointer to array of attributes */
                           int *n_attr,        /**< size of array attribute */
-                          String variable,    /**< name of variable or NULL */
-                          String unit,        /**< unit of variable or NULL */
-                          String descr,       /**< description of variable or NULL */
+                          char **variable,    /**< name of variable or NULL */
+                          char **unit,        /**< unit of variable or NULL */
+                          char **descr,       /**< description of variable or NULL */
                           Filename *gridfile, /**< name of grid file or NULL */
                           Type *grid_type,    /**< datatype of grid or NULL */
                           size_t *offset,     /**< offset in binary file */
@@ -98,17 +80,13 @@ char *parse_json_metafile(LPJfile *lpjfile,   /**< pointer to JSON file */
                           Verbosity verbosity /**< verbosity level */
                          )                    /** \return filename of binary file or NULL */
 {
-  FILE *file;
-  LPJfile item;
-  String filename;
+  LPJfile *lpjfile,*item;
+  const char *filename,*val;
+  char *ret;
   Bool endian;
-  file=lpjfile->file.file;
-  if(parse_json(file,lpjfile,s,verbosity))
-  {
-    closeconfig(lpjfile);
-    lpjfile->file.file=file;
+  lpjfile=parse_json(file,verbosity);
+  if(lpjfile==NULL)
     return NULL;
-  }
   if(map!=NULL)
   {
     if(iskeydefined(lpjfile,(map_name==NULL) ? MAP_NAME : map_name))
@@ -123,7 +101,6 @@ char *parse_json_metafile(LPJfile *lpjfile,   /**< pointer to JSON file */
       if(fscanattrs(lpjfile,attrs,n_attr,"global_attrs",verbosity))
       {
         closeconfig(lpjfile);
-        lpjfile->file.file=file;
         return NULL;
       }
     }
@@ -137,47 +114,46 @@ char *parse_json_metafile(LPJfile *lpjfile,   /**< pointer to JSON file */
   {
     if(iskeydefined(lpjfile,"variable"))
     {
-      if(fscanstring(lpjfile,variable,"variable",FALSE,verbosity))
+      val=fscanstring(lpjfile,NULL,"variable",verbosity);
+      if(val==NULL)
       {
         closeconfig(lpjfile);
-        lpjfile->file.file=file;
         return NULL;
       }
+      *variable=strdup(val);
     }
     else
-      variable[0]='\0';
+      *variable=NULL;
   }
   if(gridfile!=NULL)
   {
     if(iskeydefined(lpjfile,"grid"))
     {
-      if(fscanstruct(lpjfile,&item,"grid",verbosity))
+      item=fscanstruct(lpjfile,"grid",verbosity);
+      if(item==NULL)
       {
         closeconfig(lpjfile);
-        lpjfile->file.file=file;
         return NULL;
       }
-      if(fscanstring(&item,filename,"filename",FALSE,verbosity))
+      filename=fscanstring(item,NULL,"filename",verbosity);
+      if(filename==NULL)
       {
         closeconfig(lpjfile);
-        lpjfile->file.file=file;
         return NULL;
       }
       gridfile->name=strdup(filename);
-      if(fscankeywords(&item,&gridfile->fmt,"format",fmt,N_FMT,FALSE,verbosity))
+      if(fscankeywords(item,&gridfile->fmt,"format",fmt,N_FMT,FALSE,verbosity))
       {
         closeconfig(lpjfile);
-        lpjfile->file.file=file;
         return NULL;
       }
       if(grid_type!=NULL)
       {
-        if(iskeydefined(&item,"datatype"))
+        if(iskeydefined(item,"datatype"))
         {
-          if(fscankeywords(&item,(int *)grid_type,"datatype",typenames,5,FALSE,verbosity))
+          if(fscankeywords(item,(int *)grid_type,"datatype",typenames,5,FALSE,verbosity))
           {
             closeconfig(lpjfile);
-            lpjfile->file.file=file;
             return NULL;
           }
           if(*grid_type==LPJ_BYTE || *grid_type==LPJ_INT)
@@ -186,7 +162,6 @@ char *parse_json_metafile(LPJfile *lpjfile,   /**< pointer to JSON file */
               fprintf(stderr,"ERROR229: Invalid datatype %s for grid, must be short, float or double.\n",
                     typenames[*grid_type]);
             closeconfig(lpjfile);
-            lpjfile->file.file=file;
             return NULL;
           }
         }
@@ -199,29 +174,31 @@ char *parse_json_metafile(LPJfile *lpjfile,   /**< pointer to JSON file */
   {
     if(iskeydefined(lpjfile,"unit"))
     {
-      if(fscanstring(lpjfile,unit,"unit",FALSE,verbosity))
+      val=fscanstring(lpjfile,NULL,"unit",verbosity);
+      if(val==NULL)
       {
         closeconfig(lpjfile);
-        lpjfile->file.file=file;
         return NULL;
       }
+      *unit=strdup(val);
     }
     else
-      unit[0]='\0';
+      *unit=NULL;
   }
   if(descr!=NULL)
   {
     if(iskeydefined(lpjfile,"descr"))
     {
-      if(fscanstring(lpjfile,descr,"descr",FALSE,verbosity))
+      val=fscanstring(lpjfile,NULL,"descr",verbosity);
+      if(val==NULL)
       {
         closeconfig(lpjfile);
-        lpjfile->file.file=file;
         return NULL;
       }
+      *descr=strdup(val);
     }
     else
-      descr[0]='\0';
+      *descr=NULL;
   }
   if(header!=NULL)
   {
@@ -230,7 +207,6 @@ char *parse_json_metafile(LPJfile *lpjfile,   /**< pointer to JSON file */
       if(fscanint(lpjfile,&header->firstcell,"firstcell",FALSE,verbosity))
       {
         closeconfig(lpjfile);
-        lpjfile->file.file=file;
         return NULL;
       }
     }
@@ -239,7 +215,6 @@ char *parse_json_metafile(LPJfile *lpjfile,   /**< pointer to JSON file */
       if(fscanint(lpjfile,&header->ncell,"ncell",FALSE,verbosity))
       {
         closeconfig(lpjfile);
-        lpjfile->file.file=file;
         return NULL;
       }
     }
@@ -248,7 +223,6 @@ char *parse_json_metafile(LPJfile *lpjfile,   /**< pointer to JSON file */
       if(fscanint(lpjfile,&header->firstyear,"firstyear",FALSE,verbosity))
       {
         closeconfig(lpjfile);
-        lpjfile->file.file=file;
         return NULL;
       }
     }
@@ -257,7 +231,6 @@ char *parse_json_metafile(LPJfile *lpjfile,   /**< pointer to JSON file */
       if(fscanint(lpjfile,&header->nyear,"lastyear",FALSE,verbosity))
       {
         closeconfig(lpjfile);
-        lpjfile->file.file=file;
         return NULL;
       }
       header->nyear-=header->firstyear-1;
@@ -267,7 +240,6 @@ char *parse_json_metafile(LPJfile *lpjfile,   /**< pointer to JSON file */
       if(fscanint(lpjfile,&header->nyear,"nyear",FALSE,verbosity))
       {
         closeconfig(lpjfile);
-        lpjfile->file.file=file;
         return NULL;
       }
     }
@@ -276,7 +248,6 @@ char *parse_json_metafile(LPJfile *lpjfile,   /**< pointer to JSON file */
       if(fscanint(lpjfile,&header->nstep,"nstep",FALSE,verbosity))
       {
         closeconfig(lpjfile);
-        lpjfile->file.file=file;
         return NULL;
       }
     }
@@ -285,7 +256,6 @@ char *parse_json_metafile(LPJfile *lpjfile,   /**< pointer to JSON file */
       if(fscanint(lpjfile,&header->timestep,"timestep",FALSE,verbosity))
       {
         closeconfig(lpjfile);
-        lpjfile->file.file=file;
         return NULL;
       }
       if(header->timestep<1)
@@ -294,7 +264,6 @@ char *parse_json_metafile(LPJfile *lpjfile,   /**< pointer to JSON file */
           fprintf(stderr,"ERROR221: Invalid time step %d, must be >0.\n",
                   header->timestep);
         closeconfig(lpjfile);
-        lpjfile->file.file=file;
         return NULL;
       }
     }
@@ -303,7 +272,6 @@ char *parse_json_metafile(LPJfile *lpjfile,   /**< pointer to JSON file */
       if(fscanint(lpjfile,&header->nbands,"nbands",FALSE,verbosity))
       {
         closeconfig(lpjfile);
-        lpjfile->file.file=file;
         return NULL;
       }
     }
@@ -312,7 +280,6 @@ char *parse_json_metafile(LPJfile *lpjfile,   /**< pointer to JSON file */
       if(fscankeywords(lpjfile,&header->order,"order",ordernames,4,FALSE,verbosity))
       {
         closeconfig(lpjfile);
-        lpjfile->file.file=file;
         return NULL;
       }
       header->order++;
@@ -322,7 +289,6 @@ char *parse_json_metafile(LPJfile *lpjfile,   /**< pointer to JSON file */
       if(fscanfloat(lpjfile,&header->scalar,"scalar",FALSE,verbosity))
       {
         closeconfig(lpjfile);
-        lpjfile->file.file=file;
         return NULL;
       }
     }
@@ -331,7 +297,6 @@ char *parse_json_metafile(LPJfile *lpjfile,   /**< pointer to JSON file */
       if(fscankeywords(lpjfile,(int *)&header->datatype,"datatype",typenames,5,FALSE,verbosity))
       {
         closeconfig(lpjfile);
-        lpjfile->file.file=file;
         return NULL;
       }
     }
@@ -340,7 +305,6 @@ char *parse_json_metafile(LPJfile *lpjfile,   /**< pointer to JSON file */
       if(fscanfloat(lpjfile,&header->cellsize_lon,"cellsize_lon",FALSE,verbosity))
       {
         closeconfig(lpjfile);
-        lpjfile->file.file=file;
         return NULL;
       }
     }
@@ -349,7 +313,6 @@ char *parse_json_metafile(LPJfile *lpjfile,   /**< pointer to JSON file */
       if(fscanfloat(lpjfile,&header->cellsize_lat,"cellsize_lat",FALSE,verbosity))
       {
         closeconfig(lpjfile);
-        lpjfile->file.file=file;
         return NULL;
       }
     }
@@ -359,7 +322,6 @@ char *parse_json_metafile(LPJfile *lpjfile,   /**< pointer to JSON file */
     if(fscansize(lpjfile,offset,"offset",FALSE,verbosity))
     {
       closeconfig(lpjfile);
-      lpjfile->file.file=file;
       return NULL;
     }
   }
@@ -368,32 +330,30 @@ char *parse_json_metafile(LPJfile *lpjfile,   /**< pointer to JSON file */
     if(fscanbool(lpjfile,&endian,"bigendian",FALSE,verbosity))
     {
       closeconfig(lpjfile);
-      lpjfile->file.file=file;
       return NULL;
     }
     *swap=(endian) ? !bigendian() : bigendian();
   }
-  if(fscanstring(lpjfile,filename,"filename",FALSE,verbosity))
+  filename=fscanstring(lpjfile,NULL,"filename",verbosity);
+  if(filename==NULL)
   {
     closeconfig(lpjfile);
-    lpjfile->file.file=file;
     return NULL;
   }
+  ret=strdup(filename);
   closeconfig(lpjfile);
-  lpjfile->file.file=file;
-  return strdup(filename);
+  return ret;
 } /* of 'parse_json_metafile' */
 
-#endif
 
 FILE *openmetafile(Header *header,       /**< pointer to file header */
                    Map **map,            /**< map from json file or NULL */
                    const char *map_name, /**< name of map or NULL */
                    Attr **attrs,         /**< pointer to array of attributes */
                    int *n_attr,          /**< size of array attribute */
-                   String variable,      /**< name of variable or NULL */
-                   String unit,          /**< unit of variable or NULL */
-                   String descr,         /**< description of variable or NULL */
+                   char **variable,      /**< name of variable or NULL */
+                   char **unit,          /**< unit of variable or NULL */
+                   char **descr,         /**< description of variable or NULL */
                    Filename *gridfile,   /**< name of grid file or NULL */
                    Type *grid_type,      /**< datatype of grid or NULL */
                    Bool *swap,           /**< byte order has to be changed (TRUE/FALSE) */
@@ -402,14 +362,10 @@ FILE *openmetafile(Header *header,       /**< pointer to file header */
                    Bool isout            /**< error output (TRUE/FALSE) */
                   )                      /** \return file pointer to open file or NULL */
 {
-  LPJfile file;
-  FILE *data;
-  String key,value;
+  FILE *file;
   char *name,*path,*fullname;
-  int index;
-  file.isjson=FALSE;
   /* open description file */
-  if((file.file.file=fopen(filename,"r"))==NULL)
+  if((file=fopen(filename,"r"))==NULL)
   {
     if(isout)
       printfopenerr(filename);
@@ -422,325 +378,35 @@ FILE *openmetafile(Header *header,       /**< pointer to file header */
   name=NULL;
   if(map!=NULL)
     *map=NULL;
-  if(unit!=NULL)
-    unit[0]='\0';
-  if(descr!=NULL)
-    descr[0]='\0';
-  if(gridfile!=NULL)
-    gridfile->name=NULL;
-  while(!fscantoken(file.file.file,key))
-    if(key[0]=='{')
-    {
-#ifdef USE_JSON
-      name=parse_json_metafile(&file,key,header,map,map_name,attrs,n_attr,variable,unit,descr,gridfile,grid_type,offset,swap,isout ? ERR : NO_ERR);
-      break;
-#else
-      if(isout)
-        fprintf(stderr,"ERROR229: JSON format not supported for metafile '%s' in this version of LPJmL.\n",
-                filename);
-      free(name);
-      fclose(file.file.file);
-      return NULL;
-#endif
-    }
-    else if(!strcmp(key,"firstcell"))
-    {
-      if(fscanint(&file,&header->firstcell,"firstcell",FALSE,isout ? ERR : NO_ERR))
-      {
-        free(name);
-        fclose(file.file.file);
-        return NULL;
-      }
-    }
-    else if(!strcmp(key,"ncell"))
-    {
-      if(fscanint(&file,&header->ncell,"ncell",FALSE,isout ? ERR : NO_ERR))
-      {
-        free(name);
-        fclose(file.file.file);
-        return NULL;
-      }
-    }
-    else if(!strcmp(key,"firstyear"))
-    {
-      if(fscanint(&file,&header->firstyear,"firstyear",FALSE,isout ? ERR : NO_ERR))
-      {
-        free(name);
-        fclose(file.file.file);
-        return NULL;
-      }
-    }
-    else if(!strcmp(key,"lastyear"))
-    {
-      if(fscanint(&file,&header->nyear,"lastyear",FALSE,isout ? ERR : NO_ERR))
-      {
-        free(name);
-        fclose(file.file.file);
-        return NULL;
-      }
-      header->nyear-=header->firstyear-1;
-    }
-    else if(!strcmp(key,"nyear"))
-    {
-      if(fscanint(&file,&header->nyear,"nyear",FALSE,isout ? ERR : NO_ERR))
-      {
-        free(name);
-        fclose(file.file.file);
-        return NULL;
-      }
-    }
-    else if(!strcmp(key,"nbands"))
-    {
-      if(fscanint(&file,&header->nbands,"nbands",FALSE,isout ? ERR : NO_ERR))
-      {
-        free(name);
-        fclose(file.file.file);
-        return NULL;
-      }
-    }
-    else if(!strcmp(key,"nstep"))
-    {
-      if(fscanint(&file,&header->nstep,"nstep",FALSE,isout ? ERR : NO_ERR))
-      {
-        free(name);
-        fclose(file.file.file);
-        return NULL;
-      }
-    }
-    else if(!strcmp(key,"timestep"))
-    {
-      if(fscanint(&file,&header->timestep,"timestep",FALSE,isout ? ERR : NO_ERR))
-      {
-        free(name);
-        fclose(file.file.file);
-        return NULL;
-      }
-      if(header->timestep<1)
-      {
-        if(isout)
-          fprintf(stderr,"ERROR221: Invalid time step %d in '%s', must be >0.\n",
-                  header->timestep,filename);
-        free(name);
-        fclose(file.file.file);
-        return NULL;
-      }
-    }
-    else if(!strcmp(key,"order"))
-    {
-      if(fscanstring(&file,value,"order",FALSE,isout ? ERR : NO_ERR))
-      {
-        if(isout)
-          readstringerr("order");
-        free(name);
-        fclose(file.file.file);
-        return NULL;
-      }
-      index=findstr(value,ordernames,4);
-      if(index==NOT_FOUND)
-      {
-        if(isout)
-          fprintf(stderr,"ERROR221: Invalid order '%s' in '%s'.\n",value,filename);
-        free(name);
-        fclose(file.file.file);
-        return NULL;
-      }
-      header->order=index+1;
-    }
-    else if(!strcmp(key,"offset"))
-    {
-      if(fscansize(&file,offset,"offset",FALSE,isout ? ERR : NO_ERR))
-      {
-        free(name);
-        fclose(file.file.file);
-        return NULL;
-      }
-    }
-    else if(!strcmp(key,"scalar"))
-    {
-      if(fscanfloat(&file,&header->scalar,"scalar",FALSE,isout ? ERR : NO_ERR))
-      {
-        free(name);
-        fclose(file.file.file);
-        return NULL;
-      }
-    }
-    else if(!strcmp(key,"cellsize"))
-    {
-      if(fscanfloat(&file,&header->cellsize_lon,"cellsize_lon",FALSE,isout ? ERR : NO_ERR))
-      {
-        free(name);
-        fclose(file.file.file);
-        return NULL;
-      }
-      if(fscanfloat(&file,&header->cellsize_lat,"cellsize_lat",FALSE,isout ? ERR : NO_ERR))
-      {
-        free(name);
-        fclose(file.file.file);
-        return NULL;
-      }
-    }
-    else if(!strcmp(key,"datatype"))
-    {
-      if(fscanstring(&file,value,"datatype",FALSE,isout ? ERR : NO_ERR))
-      {
-        if(isout)
-          readstringerr("datatype");
-        free(name);
-        fclose(file.file.file);
-        return NULL;
-      }
-      index=findstr(value,typenames,5);
-      if(index==NOT_FOUND)
-      {
-        if(isout)
-          fprintf(stderr,"ERROR221: Invalid datatype '%s' in '%s'.\n",value,filename);
-        free(name);
-        fclose(file.file.file);
-        return NULL;
-      }
-      header->datatype=(Type)index;
-    }
-    else if(!strcmp(key,"endian"))
-    {
-      if(fscanstring(&file,value,"endian",FALSE,isout ? ERR : NO_ERR))
-      {
-        if(isout)
-          readstringerr("endian");
-        free(name);
-        fclose(file.file.file);
-        return NULL;
-      }
-      if(!strcmp(value,"little"))
-        *swap=bigendian();
-      else if(!strcmp(value,"big"))
-        *swap=!bigendian();
-      else
-      {
-        if(isout)
-          fprintf(stderr,"ERROR221: Invalid endianness '%s' in line %d of '%s'.\n",value,getlinecount(),filename);
-        free(name);
-        fclose(file.file.file);
-        return NULL;
-      }
-    }
-    else if(!strcmp(key,"file"))
-    {
-      if(fscanstring(&file,value,"file",FALSE,isout ? ERR : NO_ERR))
-      {
-        if(isout)
-          readstringerr("file");
-        free(name);
-        fclose(file.file.file);
-        return NULL;
-      }
-      name=strdup(value);
-      if(name==NULL)
-      {
-        printallocerr("name");
-        return NULL;
-      }
-    }
-    else if(!strcmp(key,"remark"))
-    {
-      if(fscanstring(&file,value,"remark",FALSE,isout ? ERR : NO_ERR))
-      {
-        if(isout)
-          readstringerr("remark");
-        free(name);
-        fclose(file.file.file);
-        return NULL;
-      }
-    }
-    else if(unit!=NULL && !strcmp(key,"unit"))
-    {
-      if(fscanstring(&file,unit,"unit",FALSE,isout ? ERR : NO_ERR))
-      {
-        if(isout)
-          readstringerr("unit");
-        free(name);
-        fclose(file.file.file);
-        return NULL;
-      }
-    }
-    else if(descr!=NULL && !strcmp(key,"descr"))
-    {
-      if(fscanstring(&file,descr,"descr",FALSE,isout ? ERR : NO_ERR))
-      {
-        if(isout)
-          readstringerr("descr");
-        free(name);
-        fclose(file.file.file);
-        return NULL;
-      }
-    }
-    else
-    {
-      if(isout)
-      {
-        fputs("ERROR222: Invalid key word '",stderr);
-        fputprintable(stderr,key);
-        fprintf(stderr,"' in line %d of '%s'.\n",getlinecount(),filename);
-      }
-      free(name);
-      fclose(file.file.file);
-      return NULL;
-    }
-  fclose(file.file.file);
+  name=parse_json_metafile(file,header,map,map_name,attrs,n_attr,variable,unit,descr,gridfile,grid_type,offset,swap,isout ? ERR : NO_ERR);
+  fclose(file);
   if(name==NULL)
   {
     if(isout)
       fprintf(stderr,"ERROR223: No filename specified in '%s'.\n",filename);
     return NULL;
   }
-  if(name[0]=='^')
+  path=getpath(filename);
+  fullname=addpath(name,path);
+  if(fullname==NULL)
   {
-    /* if filename starts with a '^' then path of description file is added to filename */
-    path=getpath(filename);
-    if(path==NULL)
-    {
-      printallocerr("path");
-      free(name);
-      return NULL;
-    }
-    fullname=malloc(strlen(path)+strlen(name)+1);
-    if(fullname==NULL)
-    {
-      printallocerr("name");
-      free(path);
-      free(name);
-      return NULL;
-    }
-    strcpy(fullname,path);
-    strcat(fullname,"/");
-    strcat(fullname,name+1);
-    free(name);
+    printallocerr("name");
     free(path);
-    name=fullname;
-  }
-  else
-  {
-    path=getpath(filename);
-    fullname=addpath(name,path);
-    if(fullname==NULL)
-    {
-     printallocerr("name");
-     free(path);
-     free(name);
-     return NULL;
-    }
     free(name);
-    free(path);
-    name=fullname;
+    return NULL;
   }
+  free(name);
+  free(path);
+  name=fullname;
   /* open data file */
-  if((data=fopen(name,"rb"))==NULL  && isout)
+  if((file=fopen(name,"rb"))==NULL  && isout)
     printfopenerr(name);
   /* check file size of binary file */
-  if(isout && data!=NULL)
+  if(isout && file!=NULL)
   {
-    if((header->order==CELLINDEX  && getfilesizep(data)!=sizeof(int)*header->ncell+typesizes[header->datatype]*header->ncell*header->nbands*header->nstep*header->nyear+*offset) || (header->order!=CELLINDEX && getfilesizep(data)!=typesizes[header->datatype]*header->ncell*header->nbands*header->nyear*header->nstep+*offset))
+    if((header->order==CELLINDEX  && getfilesizep(file)!=sizeof(int)*header->ncell+typesizes[header->datatype]*header->ncell*header->nbands*header->nstep*header->nyear+*offset) || (header->order!=CELLINDEX && getfilesizep(file)!=typesizes[header->datatype]*header->ncell*header->nbands*header->nyear*header->nstep+*offset))
       fprintf(stderr,"WARNING032: File size of '%s' does not match settings in description file '%s'.\n",name,filename);
   }
   free(name);
-  return data;
+  return file;
 } /* of 'openmetafile' */

@@ -158,7 +158,6 @@ MICRO_HEATING       Enable microbial heating
 NO_FAIL_BALANCE     lpjml does not terminate on balance errors
 PERMUTE             random permutation of PFT list
 SAFE                code is compiled with additional checks
-USE_JSON            enable JSON format for LPJmL configuration files
 USE_MPI             compile parallel version of LPJmL
 USE_NETCDF          enable NetCDF input/output
 USE_NETCDF4         enable NetCDF version 4 input/output

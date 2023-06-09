@@ -467,15 +467,12 @@ int main(int argc,char **argv)
   char *grid_filename,*path;
   Filename grid_name;
   char *filename,*outname,*variable;
-  String var_name;
+  char *var_name=NULL;
   size_t filesize;
-  String var_units,var_descr;
+  char *var_units=NULL,*var_descr=NULL;
   float miss=MISSING_VALUE_FLOAT;
   int imiss=MISSING_VALUE_INT;
   units=descr=NULL;
-  var_units[0]='\0';
-  var_descr[0]='\0';
-  var_name[0]='\0';
   scale=1.0;
   compress=0;
   cellsize_lon=cellsize_lat=0;
@@ -696,7 +693,7 @@ int main(int argc,char **argv)
     header.datatype=type;
     header.order=CELLYEAR;
 
-    file=openmetafile(&header,&map,map_name,&global_attrs,&n_global,var_name,var_units,var_descr,&grid_name,NULL,&swap,&offset,filename,TRUE);
+    file=openmetafile(&header,&map,map_name,&global_attrs,&n_global,&var_name,&var_units,&var_descr,&grid_name,NULL,&swap,&offset,filename,TRUE);
     if(file==NULL)
       return EXIT_FAILURE;
     if(fseek(file,offset,SEEK_CUR))
@@ -705,9 +702,9 @@ int main(int argc,char **argv)
       fclose(file);
       return EXIT_FAILURE;
     }
-    if(units==NULL && strlen(var_units)>0)
+    if(units==NULL && var_units!=NULL)
       units=var_units;
-    if(descr==NULL && strlen(var_descr)>0)
+    if(descr==NULL && var_descr!=NULL)
       descr=var_descr;
   }
   else
@@ -726,7 +723,7 @@ int main(int argc,char **argv)
   }
   else
   {
-    if(strlen(var_name)==0)
+    if(var_name==NULL)
     {
       fprintf(stderr,"Error: variable name must be specified in '%s' metafile.\n",filename);
       return EXIT_FAILURE;
