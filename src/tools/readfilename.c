@@ -201,7 +201,7 @@ Bool readfilename(LPJfile *file,      /**< pointer to text file read */
         free(filename->var);
         return TRUE;
       }
-      if(filename->issocket && iskeydefined(&f,"id"))
+      if(filename->issocket && iskeydefined(f,"id"))
       {
         if(fscanint(f,&filename->id,"id",FALSE,verb))
           return TRUE;
