@@ -123,7 +123,7 @@ Real daily_biomass_tree(Stand *stand,                /**< stand pointer */
       }
 #endif
       if(config->pft_output_scaled)
-        getoutputindex(output,CFT_AIRRIG,rbtree(ncft)+data->irrigation.irrigation*nirrig,config)+=irrig_apply*stand->cell->ml.landfrac[1].biomass_tree;
+        getoutputindex(output,CFT_AIRRIG,rbtree(ncft)+data->irrigation.irrigation*nirrig,config)+=irrig_apply*stand->frac;
       else
         getoutputindex(output,CFT_AIRRIG,rbtree(ncft)+data->irrigation.irrigation*nirrig,config)+=irrig_apply;
     }
@@ -198,10 +198,10 @@ Real daily_biomass_tree(Stand *stand,                /**< stand pointer */
    getoutput(output,PHEN_LIGHT,config) += pft->fpc * pft->phen_gsi.light * stand->frac * (1.0/(1-stand->cell->lakefrac-stand->cell->ml.reservoirfrac));
    getoutput(output,PHEN_WATER,config) += pft->fpc * pft->phen_gsi.wscal * stand->frac * (1.0/(1-stand->cell->lakefrac-stand->cell->ml.reservoirfrac));
    getoutput(output,WSCAL,config) += pft->fpc * pft->wscal * stand->frac * (1.0/(1-stand->cell->lakefrac-stand->cell->ml.reservoirfrac));
-   getoutputindex(output,CFT_FPAR,rbtree(ncft)+data->irrigation.irrigation*nirrig,config)+=(fpar(pft)*stand->cell->ml.landfrac[data->irrigation.irrigation].biomass_tree*(1.0/(1-stand->cell->lakefrac-stand->cell->ml.reservoirfrac)));
+   getoutputindex(output,CFT_FPAR,rbtree(ncft)+data->irrigation.irrigation*nirrig,config)+=(fpar(pft)*stand->frac*(1.0/(1-stand->cell->lakefrac-stand->cell->ml.reservoirfrac)));
 
    if(config->pft_output_scaled)
-     getoutputindex(output,PFT_NPP,nnat+rbtree(ncft)+data->irrigation.irrigation*nirrig,config)+=npp*stand->cell->ml.landfrac[data->irrigation.irrigation].biomass_tree;
+     getoutputindex(output,PFT_NPP,nnat+rbtree(ncft)+data->irrigation.irrigation*nirrig,config)+=npp*stand->frac;
    else
      getoutputindex(output,PFT_NPP,nnat+rbtree(ncft)+data->irrigation.irrigation*nirrig,config)+=npp;
    getoutputindex(output,PFT_LAI,nnat+rbtree(ncft)+data->irrigation.irrigation*nirrig,config)+=actual_lai(pft);
