@@ -1,6 +1,6 @@
 /**************************************************************************************/
 /**                                                                                \n**/
-/**                l  i  t  t  e  r  _  a  g  _  s  u  m  .  c                     \n**/
+/**                l  i  t  t  e  r  _  a  g  t  o  p  _  s  u  m  .  c            \n**/
 /**                                                                                \n**/
 /**     C implementation of LPJmL                                                  \n**/
 /**                                                                                \n**/
@@ -16,37 +16,37 @@
 
 #include "lpj.h"
 
-Real litter_ag_sum(const Litter *litter /**< pointer to litter data */
-                  )                     /** \return aboveground litter (gC/m2) */
+Real litter_agtop_sum(const Litter *litter /**< pointer to litter data */
+                  )                        /** \return aboveground litter (gC/m2) */
 {
   int i,l;
   Real sum;
   sum=0;
   for(l=0;l<litter->n;l++)
   {
-    sum+=litter->item[l].ag.leaf.carbon;
+    sum+=litter->item[l].agtop.leaf.carbon;
     for(i=0;i<NFUELCLASS;i++)
-      sum+=litter->item[l].ag.wood[i].carbon;
+      sum+=litter->item[l].agtop.wood[i].carbon;
   }
   return sum;
-} /* of litter_ag_sum */
+} /* of litter_agtop_sum */
 
-Real litter_ag_sum_n(const Litter *litter)
+Real litter_agtop_sum_n(const Litter *litter)
 {
   int i,l;
   Real sum;
   sum=0;
   for(l=0;l<litter->n;l++)
   {
-    sum+=litter->item[l].ag.leaf.nitrogen;
+    sum+=litter->item[l].agtop.leaf.nitrogen;
     for(i=0;i<NFUELCLASS;i++)
-      sum+=litter->item[l].ag.wood[i].nitrogen;
+      sum+=litter->item[l].agtop.wood[i].nitrogen;
   }
   return sum;
-} /* of litter_ag_sum_n */
+} /* of litter_agtop_sum_n */
 
 Real litter_agsub_sum(const Litter *litter /**< pointer to litter data */
-                  )                     /** \return aboveground litter (gC/m2) */
+                     )                     /** \return aboveground litter (gC/m2) */
 {
   int i,l;
   Real sum;
