@@ -36,6 +36,17 @@ void addanomaly_climate(Climate *climate, int index)
   add_data(climate->data[0].prec, climate->data[index].prec, climate->file_prec.n);
   add_data(climate->data[0].lwnet, climate->data[index].lwnet, climate->file_lwnet.n);
   add_data(climate->data[0].swdown, climate->data[index].swdown, climate->file_swdown.n);
+  for(i=0;i<climate->file_wet.n;i++)
+    climate->data[0].wet[i]= climate->data[index].wet[i];
+  if(climate->data[0].wind!=NULL)
+    for(i=0;i<climate->file_wind.n;i++)
+      climate->data[0].wind[i]= climate->data[index].wind[i];
+  if(climate->data[0].no3deposition!=NULL)
+    for(i=0;i<climate->file_no3deposition.n;i++)
+      climate->data[0].no3deposition[i]= climate->data[index].no3deposition[i];
+  if(climate->data[0].nh4deposition!=NULL)
+    for(i=0;i<climate->file_no3deposition.n;i++)
+      climate->data[0].nh4deposition[i]= climate->data[index].nh4deposition[i];
   if(climate->data[0].tmax!=NULL)
   {
     for(i=0;i<climate->file_temp.n;i++)

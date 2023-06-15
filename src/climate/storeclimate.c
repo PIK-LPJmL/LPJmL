@@ -323,16 +323,16 @@ void moveclimate(Climate *climate,  /**< Pointer to climate data */
     climate->data[index].lwnet=store->lwnet+climate->file_lwnet.n*year;
   if(climate->data[index].swdown!=NULL)
     climate->data[index].swdown=store->swdown+climate->file_swdown.n*year;
-  if(climate->data[index].wet!=NULL)
+  if(climate->data[0].wet!=NULL)
     climate->data[index].wet=store->wet+climate->file_wet.n*year;
-  if(climate->data[index].wind!=NULL)
+  if(climate->data[0].wind!=NULL)
     climate->data[index].wind=store->wind+climate->file_wind.n*year;
-  if(climate->data[index].tamp!=NULL)
+  if(climate->data[0].tamp!=NULL)
     climate->data[index].tamp=store->tamp+climate->file_tamp.n*year;
-  if(climate->data[index].burntarea!=NULL)
+  if(climate->data[0].burntarea!=NULL)
     climate->data[index].burntarea=store->burntarea+climate->file_burntarea.n*year;
-  if(climate->data[index].no3deposition!=NULL)
+  if(climate->data[0].no3deposition!=NULL)
     climate->data[index].no3deposition=store->no3deposition+climate->file_no3deposition.n*year;
-  if(climate->data[index].nh4deposition!=NULL)
+  if(climate->data[0].nh4deposition!=NULL)
     climate->data[index].nh4deposition=store->nh4deposition+climate->file_nh4deposition.n*year;
 } /* of 'moveclimate' */

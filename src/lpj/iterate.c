@@ -121,7 +121,7 @@ int iterate(Outputfile *output, /**< Output file data */
       pch4=ch4*1e-3; /*convert to ppm*/
      }
     
-    if(year<input.climate->firstyear) /* are we in spinup phase? */
+    if(year<config->firstyear) /* are we in spinup phase? */
     {
       /* yes, let climate data point to stored data */
       if(config->shuffle_climate || config->isanomaly)
@@ -147,7 +147,7 @@ int iterate(Outputfile *output, /**< Output file data */
     }
     else
     {
-      if(config->storeclimate && !config->isanomaly && year==input.climate->firstyear && config->nspinup)
+      if(config->storeclimate && !config->isanomaly && year==config->firstyear && config->nspinup)
       {
         /* restore climate data pointers to initial data */
         input.climate->data[0]=data_save;
