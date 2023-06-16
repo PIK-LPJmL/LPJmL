@@ -254,8 +254,8 @@ Real daily_woodplantation(Stand *stand,       /**< stand pointer */
   getoutput(output,RETURN_FLOW_B,config) += return_flow_b*stand->frac; /* now only changed in waterbalance_new.c*/
 
   /* output for green and blue water for evaporation, transpiration and interception */
-  output_gbw_woodplantation(output, stand, frac_g_evap, evap, evap_blue, return_flow_b, aet_stand, green_transp,
-                            intercep_stand, intercep_stand_blue, ncft, config);
+  output_gbw(output, stand, frac_g_evap, evap, evap_blue, return_flow_b, aet_stand, green_transp,
+             intercep_stand, intercep_stand_blue, index, data->irrigation.irrigation,config);
   free(wet);
   return runoff;
 } /* of 'daily_woodplantation' */

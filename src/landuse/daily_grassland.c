@@ -600,8 +600,8 @@ Real daily_grassland(Stand *stand,                /**< stand pointer */
   }
 
   /* output for green and blue water for evaporation, transpiration and interception */
-  output_gbw_grassland(output,stand,frac_g_evap,evap,evap_blue,return_flow_b,aet_stand,green_transp,
-                       intercep_stand,intercep_stand_blue,ncft,config);
+  output_gbw(output,stand,frac_g_evap,evap,evap_blue,return_flow_b,aet_stand,green_transp,
+             intercep_stand,intercep_stand_blue,index,data->irrigation.irrigation,config);
   free(wet);
 #ifdef PERMUTE
   free(pvec);

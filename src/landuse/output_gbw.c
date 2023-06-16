@@ -1,6 +1,6 @@
 /**************************************************************************************/
 /**                                                                                \n**/
-/**  o  u  t  p  u  t  _  g  b  w  _  g  r  a  s  s  l  a  n  d  .  c              \n**/
+/**                         o u t p u t _ g b w . c                                \n**/
 /**                                                                                \n**/
 /**     C implementation of LPJmL                                                  \n**/
 /**                                                                                \n**/
@@ -13,27 +13,24 @@
 /**************************************************************************************/
 
 #include "lpj.h"
-#include "grassland.h"
 
-void output_gbw_grassland(Output *output,      /**< output data */
-                          const Stand *stand,  /**< stand pointer */
-                          Real frac_g_evap,
-                          Real evap,           /**< evaporation (mm) */
-                          Real evap_blue,      /**< evaporation of irrigation water (mm) */
-                          Real return_flow_b,  /**< irrigation return flows from surface runoff, lateral runoff and percolation (mm) */
-                          const Real aet_stand[LASTLAYER],
-                          const Real green_transp[LASTLAYER],
-                          Real intercep_stand, /**< stand interception (mm) */
-                          Real intercep_stand_blue, /**< stand interception from irrigation (mm) */
-                          int ncft,            /**< number of CROPS */
-                          const Config *config /**< LPJmL configuration */
-                         )
+void output_gbw(Output *output,      /**< output data */
+                const Stand *stand,  /**< stand pointer */
+                Real frac_g_evap,
+                Real evap,           /**< evaporation (mm) */
+                Real evap_blue,      /**< evaporation of irrigation water (mm) */
+                Real return_flow_b,  /**< irrigation return flows from surface runoff, lateral runoff and percolation (mm) */
+                const Real aet_stand[LASTLAYER],
+                const Real green_transp[LASTLAYER],
+                Real intercep_stand,  /**< stand interception (mm) */
+                Real intercep_stand_blue, /**< stand interception from irrigation (mm) */
+                int index,            /**< index of output */
+                Bool irrigation,      /**< stand is irrigated (TRUE/FALSE) */
+                const Config *config /**< LPJmL configuration */
+               )
 {
-  int l,irrigation,index;
+  int l;
   Real total_g,total_b;
-  Grassland *data;
-  data=stand->data;
-  irrigation=data->irrigation.irrigation;
   total_g=total_b=0;
 
   total_g+=intercep_stand-intercep_stand_blue;
@@ -46,7 +43,6 @@ void output_gbw_grassland(Output *output,      /**< output data */
     total_g+=green_transp[l];
     total_b+=aet_stand[l]-green_transp[l];
   }
-  index=irrigation*getnirrig(ncft,config)+(stand->type->landusetype==GRASSLAND ? rmgrass(ncft) : rothers(ncft));
   if(config->pft_output_scaled)
   {
     getoutputindex(output,CFT_CONSUMP_WATER_G,index,config)+=total_g*stand->frac;
@@ -56,6 +52,7 @@ void output_gbw_grassland(Output *output,      /**< output data */
       getoutputindex(output,CFT_TRANSP,index,config)+=aet_stand[l]*stand->frac;
       getoutputindex(output,CFT_TRANSP_B,index,config)+=(aet_stand[l]-green_transp[l])*stand->frac;
     }
+
     getoutputindex(output,CFT_EVAP,index,config)+=evap*stand->frac;
     getoutputindex(output,CFT_EVAP_B,index,config)+=evap_blue*stand->frac;
     getoutputindex(output,CFT_INTERC,index,config)+=intercep_stand*stand->frac;
@@ -71,6 +68,7 @@ void output_gbw_grassland(Output *output,      /**< output data */
       getoutputindex(output,CFT_TRANSP,index,config)+=aet_stand[l];
       getoutputindex(output,CFT_TRANSP_B,index,config)+=aet_stand[l]-green_transp[l];
     }
+
     getoutputindex(output,CFT_EVAP,index,config)+=evap;
     getoutputindex(output,CFT_EVAP_B,index,config)+=evap_blue;
     getoutputindex(output,CFT_INTERC,index,config)+=intercep_stand;
@@ -88,4 +86,4 @@ void output_gbw_grassland(Output *output,      /**< output data */
     getoutput(output,GCONS_RF,config)+=total_g*stand->frac;
     getoutput(output,GCONS_RF,config)+=total_b*stand->frac;
   }
-} /* of 'output_gbw_grassland' */
+} /* of 'output_gbw' */

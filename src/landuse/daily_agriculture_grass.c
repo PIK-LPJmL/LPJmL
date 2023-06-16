@@ -347,10 +347,10 @@ Real daily_agriculture_grass(Stand *stand,                /**< stand pointer */
     getoutputindex(output,CFTFRAC,index,config) += stand->frac;
     getoutputindex(output,CFT_NHARVEST,index,config) += 1.0;
   }
-  output_gbw_agriculture_tree(output, stand, frac_g_evap, evap, evap_blue,
-                               return_flow_b, aet_stand, green_transp,
-                               intercep_stand, intercep_stand_blue, npft,
-                               ncft, config);
+  output_gbw(output, stand, frac_g_evap, evap, evap_blue,
+             return_flow_b, aet_stand, green_transp,
+             intercep_stand, intercep_stand_blue,
+             index, data->irrigation, config);
   free(wet);
   return runoff;
 } /* of 'daily_agriculture_grass' */
