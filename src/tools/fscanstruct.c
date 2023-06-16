@@ -19,10 +19,10 @@
 #include <json-c/json.h>
 #include "types.h"
 
-LPJfile *fscanstruct(const LPJfile *file, /**< pointer to LPJ file               */
-                     const char *name,    /**< name of variable                  */
-                     Verbosity verb       /**< verbosity level (NO_ERR,ERR,VERB) */
-                    )                     /** \return pointer to object or NULL on error */
+LPJfile *fscanstruct(LPJfile *file,    /**< pointer to LPJ file               */
+                     const char *name, /**< name of variable                  */
+                     Verbosity verb    /**< verbosity level (NO_ERR,ERR,VERB) */
+                    )                  /** \return pointer to object or NULL on error */
 {
   struct json_object *item;
   if(name==NULL)
