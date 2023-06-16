@@ -22,7 +22,7 @@
 #define USAGE "Usage: %s [-h] [-q] [-nocheck] [-param] [-vv]\n"\
               "       [-couple hostname[:port]]\n"\
               "       [-outpath dir] [-inpath dir] [-restartpath dir]\n"\
-              "       [[-Dmacro[=value]] [-Idir] ...] filename\n"
+              "       [-pp cmd] [[-Dmacro[=value]] [-Idir] ...] filename\n"
 
 int main(int argc,char **argv)
 {
@@ -102,8 +102,7 @@ int main(int argc,char **argv)
 
   if(readconfig(&config,scanfcn,NTYPES,NOUT,&argc,&argv,USAGE))
   {
-    fputs("ERROR001: Cannot process configuration file.\n",stderr);
-    rc=EXIT_FAILURE;
+    fail(READ_CONFIG_ERR,FALSE,"Cannot process configuration file");
   }
   else
   {

@@ -20,7 +20,7 @@
 #define NTYPES 3 /* number of PFT types: grass, tree, crop */
 
 #define USAGE "Usage: %s [-h] [-noinput] [-nooutput] [-outpath dir] [-inpath dir] [-restartpath dir]\n"\
-              "       [[-Dmacro[=value]] [-Idir] ...] filename\n"
+              "       [-pp cmd] [[-Dmacro[=value]] [-Idir] ...] filename\n"
 
 int main(int argc,char **argv)
 {
@@ -93,8 +93,7 @@ int main(int argc,char **argv)
   argv_save=argv;
   if(readconfig(&config,scanfcn,NTYPES,NOUT,&argc,&argv,USAGE))
   {
-    fputs("Cannot process configuration file.\n",stderr);
-    return EXIT_FAILURE;
+    fail(READ_CONFIG_ERR,FALSE,"Cannot process configuration file");
   }
   else
   {

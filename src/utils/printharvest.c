@@ -70,8 +70,7 @@ int main(int argc,char **argv)
   initconfig(&config);
   if(readconfig(&config,scanfcn,NTYPES,NOUT,&argc,&argv,USAGE))
   {
-    fputs("Error occurred in processing configuration file.\n",stderr);
-    return EXIT_FAILURE;
+    fail(READ_CONFIG_ERR,FALSE,"Cannot process configuration file");
   }
   printf("Simulation: %s\n",config.sim_name);
   if(config.soil_filename.fmt==CDF)
