@@ -82,10 +82,14 @@ static void openfile(Outputfile *output,const Cell grid[],
     }
     if(isroot(*config))
     {
-      if(!config->outputvars[i].oneyear && 
-       !create(&output->files[config->outputvars[i].id].fp.cdf,filename,i,
-                (config->outputvars[i].id==ADISCHARGE || config->outputvars[i].id==GRID) ? output->index_all : output->index,config))
-      output->files[config->outputvars[i].id].isopen=TRUE;
+      if(!config->outputvars[i].oneyear)
+      {
+        if(!config->ischeckpoint && config->outputvars[i].filename.meta)
+          fprintoutputjson(i,0,config);
+        if(!create(&output->files[config->outputvars[i].id].fp.cdf,filename,i,
+                   (config->outputvars[i].id==ADISCHARGE || config->outputvars[i].id==GRID) ? output->index_all : output->index,config))
+          output->files[config->outputvars[i].id].isopen=TRUE;
+      }
     }
   }
   else if(isroot(*config) && !config->outputvars[i].oneyear)

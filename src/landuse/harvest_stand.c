@@ -465,6 +465,7 @@ Harvest harvest_stand(Output *output, /**< Output data */
         break;
       case GS_GRAZING_INT: // int. grazing
         harvest=harvest_grass_grazing_int(stand,config);
+        break;
       case GS_GRAZING_LIVE: // livestock grazing
         harvest=harvest_grass_grazing_live(stand,config);
         break;

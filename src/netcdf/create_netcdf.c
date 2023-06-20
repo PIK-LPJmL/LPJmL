@@ -88,6 +88,8 @@ Bool create_netcdf(Netcdf *cdf,
           return TRUE;
         }
       }
+      if(config->nofill)
+         ncsetfill(cdf->ncid,NC_NOFILL);
       /* get id of output variable */
       rc=nc_inq_varid(cdf->ncid,name,&cdf->varid);
       if(rc)
@@ -218,6 +220,8 @@ Bool create_netcdf(Netcdf *cdf,
       }
       return TRUE;
     }
+    if(config->nofill)
+      ncsetfill(cdf->ncid,NC_NOFILL);
     if(year!=NULL)
     {
       if(n==1)

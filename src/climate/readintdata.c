@@ -30,7 +30,7 @@ int *readintdata(Climatefile *file,   /**< Pointer to data file */
     printallocerr("data");
     return NULL;
   }
-  if(file->fmt==SOCK)
+  if(iscoupled(*config) && file->issocket && year>=config->start_coupling)
   {
     if(receive_int_coupler(file->id,data,file->var_len,year,config))
     {

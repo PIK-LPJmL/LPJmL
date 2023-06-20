@@ -151,6 +151,8 @@ Bool annual_woodplantation(Stand *stand,         /**< Pointer to stand */
         getoutput(&stand->cell->output,TRAD_BIOFUEL,config)+=biofuel.carbon;
         stand->cell->balance.trad_biofuel.carbon+=biofuel.carbon;
         stand->cell->balance.trad_biofuel.nitrogen+=biofuel.nitrogen;
+        getoutput(&stand->cell->output,HARVESTC,config)+=yield.carbon*stand->frac;
+        getoutput(&stand->cell->output,HARVESTN,config)+=yield.nitrogen*stand->frac;
         if(config->pft_output_scaled)
         {
           stand->cell->pft_harvest[index]+=yield.carbon*stand->frac;
@@ -188,6 +190,8 @@ Bool annual_woodplantation(Stand *stand,         /**< Pointer to stand */
           stand->cell->balance.timber_harvest.carbon+=yield.carbon;
           stand->cell->balance.timber_harvest.nitrogen+=yield.nitrogen;
           getoutput(&stand->cell->output,TIMBER_HARVESTC,config)+=yield.carbon;
+          getoutput(&stand->cell->output,HARVESTC,config)+=yield.carbon;
+          getoutput(&stand->cell->output,HARVESTN,config)+=yield.nitrogen;
           if(config->pft_output_scaled)
           {
             getoutputindex(&stand->cell->output,PFT_HARVESTC,index,config)+=yield.carbon;

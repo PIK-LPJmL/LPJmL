@@ -43,13 +43,13 @@ void fprintlitter(FILE *file,           /**< pointer to file */
   for(p=0;p<litter->n;p++)
   {
     fprintf(file,"\t%-40s %7.2f %7.2f",litter->item[p].pft->name,
-            litter->item[p].bg.carbon,litter->item[p].ag.leaf.carbon);
+            litter->item[p].bg.carbon,litter->item[p].agtop.leaf.carbon);
     sum.carbon+=litter->item[p].bg.carbon;
-    trait_sum.leaf.carbon+=litter->item[p].ag.leaf.carbon;
+    trait_sum.leaf.carbon+=litter->item[p].agtop.leaf.carbon;
     for(i=0;i<NFUELCLASS;i++)
     {
-      fprintf(file," %7.2f",litter->item[p].ag.wood[i].carbon);
-      trait_sum.wood[i].carbon+=litter->item[p].ag.wood[i].carbon;
+      fprintf(file," %7.2f",litter->item[p].agtop.wood[i].carbon);
+      trait_sum.wood[i].carbon+=litter->item[p].agtop.wood[i].carbon;
     }
     fprintf(file," %7.2f",litter->item[p].agsub.leaf.carbon);
     trait_sum_sub.leaf.carbon+=litter->item[p].agsub.leaf.carbon;
@@ -97,13 +97,13 @@ void fprintlitter(FILE *file,           /**< pointer to file */
     for(p=0;p<litter->n;p++)
     {
       fprintf(file,"\t%-40s %7.2f %7.2f",litter->item[p].pft->name,
-              litter->item[p].bg.nitrogen,litter->item[p].ag.leaf.nitrogen);
+              litter->item[p].bg.nitrogen,litter->item[p].agtop.leaf.nitrogen);
       sum.nitrogen+=litter->item[p].bg.nitrogen;
-      trait_sum.leaf.nitrogen+=litter->item[p].ag.leaf.nitrogen;
+      trait_sum.leaf.nitrogen+=litter->item[p].agtop.leaf.nitrogen;
       for(i=0;i<NFUELCLASS;i++)
       {
-        fprintf(file," %7.2f",litter->item[p].ag.wood[i].nitrogen);
-        trait_sum.wood[i].nitrogen+=litter->item[p].ag.wood[i].nitrogen;
+        fprintf(file," %7.2f",litter->item[p].agtop.wood[i].nitrogen);
+        trait_sum.wood[i].nitrogen+=litter->item[p].agtop.wood[i].nitrogen;
       }
       fprintf(file," %7.2f",litter->item[p].agsub.leaf.nitrogen);
       trait_sum_sub.leaf.nitrogen+=litter->item[p].agsub.leaf.nitrogen;

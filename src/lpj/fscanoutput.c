@@ -135,6 +135,7 @@ Bool fscanoutput(LPJfile *file,  /**< pointer to LPJ file */
       return TRUE;
     }
   }
+  fscanbool2(file,&config->nofill,"nofill");
   config->global_netcdf=FALSE;
   if(iskeydefined(file,"global_netcdf"))
   {

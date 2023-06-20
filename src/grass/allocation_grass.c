@@ -98,9 +98,9 @@ Bool allocation_grass(Litter *litter,   /**< litter pool */
         inc_ind.root.carbon=bm_inc_ind.carbon;
         inc_ind.leaf.carbon=(grass->ind.root.carbon+inc_ind.root.carbon)*lmtorm-grass->ind.leaf.carbon;
         /* put negative carbon only into litter if litter is large enough otherwise into estab flux */
-        if(litter->item[pft->litter].ag.leaf.carbon>=inc_ind.leaf.carbon*pft->nind)
+        if(litter->item[pft->litter].agtop.leaf.carbon>=inc_ind.leaf.carbon*pft->nind)
         {
-          litter->item[pft->litter].ag.leaf.carbon-=inc_ind.leaf.carbon*pft->nind;
+          litter->item[pft->litter].agtop.leaf.carbon-=inc_ind.leaf.carbon*pft->nind;
           getoutput(output,LITFALLC,config)-=inc_ind.leaf.carbon*pft->nind*pft->stand->frac;
         }
         else
@@ -164,7 +164,7 @@ Bool allocation_grass(Litter *litter,   /**< litter pool */
         {
           lastday.leaf.carbon = grass->ind.leaf.carbon;
           grass->ind.leaf.carbon = grass->ind.leaf.nitrogen / pft->par->ncleaf.low;
-          litter->item[pft->litter].ag.leaf.carbon += (lastday.leaf.carbon - grass->ind.leaf.carbon)*pft->nind;
+          litter->item[pft->litter].agtop.leaf.carbon += (lastday.leaf.carbon - grass->ind.leaf.carbon)*pft->nind;
           getoutput(output,LITFALLC,config) += (lastday.leaf.carbon - grass->ind.leaf.carbon)*pft->nind*pft->stand->frac;
           update_fbd_grass(litter, pft->par->fuelbulkdensity,
             (lastday.leaf.carbon - grass->ind.leaf.carbon)*pft->nind);
@@ -196,7 +196,7 @@ Bool allocation_grass(Litter *litter,   /**< litter pool */
       {
         lastday.leaf.carbon = grass->ind.leaf.carbon;
         grass->ind.leaf.carbon = grass->ind.leaf.nitrogen / pft->par->ncleaf.low;
-        litter->item[pft->litter].ag.leaf.carbon += (lastday.leaf.carbon - grass->ind.leaf.carbon)*pft->nind;
+        litter->item[pft->litter].agtop.leaf.carbon += (lastday.leaf.carbon - grass->ind.leaf.carbon)*pft->nind;
         getoutput(output,LITFALLC,config) += (lastday.leaf.carbon - grass->ind.leaf.carbon)*pft->nind*pft->stand->frac;
         update_fbd_grass(litter, pft->par->fuelbulkdensity,
           (lastday.leaf.carbon - grass->ind.leaf.carbon)*pft->nind);

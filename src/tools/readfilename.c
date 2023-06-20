@@ -48,6 +48,7 @@ Bool readfilename(LPJfile *file,      /**< pointer to text file read */
     filename->unit=NULL;
     return FALSE;
   }
+  filename->issocket=FALSE;
   if(iskeydefined(&f,"map"))
   {
     if(fscanstring(&f,name,"map",FALSE,verb))
