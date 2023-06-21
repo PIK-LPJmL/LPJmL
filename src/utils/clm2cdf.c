@@ -458,7 +458,7 @@ int main(int argc,char **argv)
                "-h          print this help text\n"
                "-global     use global grid for NetCDF file\n"
                "-longheader force version of CLM file to 2\n"
-               "-scale s    set scaling factior for CL version 1 files, default is 1\n"
+               "-scale s    set scaling factor for CLM version 1 files, default is 1\n"
                "-cellsize s set cell size, default is 0.5\n"
                "-byte       set data type in CLM file to byte, default is short\n"
                "-int        set data type in CLM file to int, default is short\n"
