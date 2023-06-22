@@ -16,4 +16,6 @@ augroup filetype
         au!
         au! BufRead,BufNewFile *.conf  set filetype=c
         au! BufRead,BufNewFile *.par   set filetype=c
+        au! BufRead,BufNewFile *.cjson set filetype=json
+
 augroup END

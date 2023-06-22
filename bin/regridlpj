@@ -72,10 +72,10 @@ then
   regridclm $LPJINPATH/input_VERSION2/grid.bin $dir/grid_$name.clm $LPJINPATH/input_VERSION2/soil_ph.clm $dir/soil_ph_$name.clm
   regridclm $LPJINPATH/input_VERSION2/grid.bin $dir/grid_$name.clm $LPJINPATH/input_VERSION2/fertilizer_ggcmi.clm2 $dir/fertilizer_ggcmi_$name.clm
 
-  cat << EOF >input_$name.js
+  cat << EOF >input_$name.cjson
 /*********************************************************************/
 /*                                                                   */
-/*                 i  n  p  u  t  .  j  s                            */
+/*                 i  n  p  u  t  .  c  j  s  o  n                   */
 /*                                                                   */
 /* Configuration file for input dataset for LPJ C Version 5.1.001    */
 /*                                                                   */

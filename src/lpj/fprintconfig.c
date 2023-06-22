@@ -422,7 +422,7 @@ void fprintconfig(FILE *file,          /**< File pointer to text output file */
     else if(config->laimax_interpolate==LAIMAX_PAR)
     {
       len+=fprintf(file,", ");
-      len=fputstring(file,len,"pft.js LAImax",78);
+      len=fputstring(file,len,"pft.cjson LAImax",78);
     }
     if(config->sdate_option==FIXED_SDATE)
     {

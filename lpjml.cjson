@@ -1,6 +1,6 @@
 /**************************************************************************************/
 /**                                                                                \n**/
-/**                   l  p  j  m  l  .  j  s                                       \n**/
+/**                   l  p  j  m  l  .  c  j  s  o  n                              \n**/
 /**                                                                                \n**/
 /** Default configuration file for LPJmL C Version 5.6.13                          \n**/
 /**                                                                                \n**/
@@ -83,7 +83,7 @@
   "residue_treatment" : "fixed_residue_remove", /* residue options: "read_residue_data" (requires input dataset on fraction to remain on field), "no_residue_remove" (all non-harvested plant components to litter), "fixed_residue_remove" (fraction of non-harvested above ground biomass to remain in soil according to param residues_in_soil) */
   "residues_fire" : false,              /* enables burning of residuals on cropland - non-functional? */
   "irrigation" : "lim",                 /* options: "no", "lim", "pot", "all" */
-  "laimax_interpolate" : "laimax_par",  /* laimax settings, options:  "laimax_par" (values from pft.js), "laimax_cft" (values from manage_irrig_*.js), "const_lai_max" (constant values set in flag laimax), "laimax_interpolate" (interpolates laimin and laimax based on values from pft.js - non-functional?) */
+  "laimax_interpolate" : "laimax_par",  /* laimax settings, options:  "laimax_par" (values from pft.cjson), "laimax_cft" (values from manage_irrig_*.cjson), "const_lai_max" (constant values set in flag laimax), "laimax_interpolate" (interpolates laimin and laimax based on values from pft.cjson - non-functional?) */
   "laimax" : 5,                         /* maximum LAI for laimax_interpolate = "const_lai_max" */
   "tillage_type" : "all",               /* Options: "all" (all agr. cells tilled), "no" (no cells tilled) and "read" (tillage dataset used) */
   "till_startyear" : 1850,              /* year in which tillage should start (currently only for tillage_type="read") */
@@ -91,13 +91,13 @@
   "black_fallow" : false,               /* simulation with black fallow on PNV */
   "pft_residue" : "temperate cereals",  /* ?  */
   "no_ndeposition" : false,             /* turn off atmospheric N deposition */
-  "rw_manage" : false,                  /* enable rain water management; specific parameters in lpjparam.js */
+  "rw_manage" : false,                  /* enable rain water management; specific parameters in lpjparam.cjson */
   "fertilizer_input" : "yes",           /* fertilizer input setting, options: "no" (crops only depend on N in soils and from deposition), "yes", "auto" (applies exact N demand required by managed vegetation directly to plants - removes any N stress) */
   "manure_input" : true,                /* enable manure input */
-  "fix_fertilization" : false,          /* fertilizer and manure input setting, options: "false" (prescribed time/cell/cft specific input), "true" (global constant rates from lpjmlparam.js) */
+  "fix_fertilization" : false,          /* fertilizer and manure input setting, options: "false" (prescribed time/cell/cft specific input), "true" (global constant rates from lpjmlparam.cjson) */
   "others_to_crop" : true,              /* true: cultivate others as a separate stand of cft according to setting "cft_temp"/"cft_trop"; false: simulate others as grassland with setting "grazing_others" */
-  "cft_temp" : "temperate cereals",     /* cft name (see pft.js) to simulate others in temperate regions (abs(lat)>30°), if others_to_crop is true  */
-  "cft_tropic" : "maize",               /* cft name (see pft.js) to simulate others in tropical regions (abs(lat)<30°), if others_to_crop is true  */
+  "cft_temp" : "temperate cereals",     /* cft name (see pft.cjson) to simulate others in temperate regions (abs(lat)>30°), if others_to_crop is true  */
+  "cft_tropic" : "maize",               /* cft name (see pft.cjson) to simulate others in tropical regions (abs(lat)<30°), if others_to_crop is true  */
   "grazing_others" : "default",         /* default grazing type for others, options : "default", "mowing", "ext", "int", "livestock", "none" */
   "grazing" : "default",                /* default grazing type, options : "default", "mowing", "ext", "int", "livestock", "none" */
   "grassonly" : false,                  /* set all cropland including others to zero but keep managed grasslands */
@@ -116,13 +116,13 @@
 /*  II. Input parameter section                                      */
 /*===================================================================*/
 
-#include "param.js"    /* Input parameter file */
+#include "param.cjson"    /* Input parameter file */
 
 /*===================================================================*/
 /*  III. Input data section                                          */
 /*===================================================================*/
 
-#include "input_crumonthly.js"    /* Input files of CRU dataset */
+#include "input_crumonthly.cjson"    /* Input files of CRU dataset */
 
 /*===================================================================*/
 /*  IV. Output data section                                          */

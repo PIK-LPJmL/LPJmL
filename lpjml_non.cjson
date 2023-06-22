@@ -1,6 +1,6 @@
 /**************************************************************************************/
 /**                                                                                \n**/
-/**                   l  p  j  m  l  _  n  o  n  .  j  s                           \n**/
+/**                   l  p  j  m  l  _  n  o  n  .  c  j  s  o  n                  \n**/
 /**                                                                                \n**/
 /** Configuration file for LPJmL C Version 5.3.001 without nitrogen limitation     \n**/
 /**                                                                                \n**/
@@ -98,13 +98,13 @@
 /*  II. Input parameter section                                      */
 /*===================================================================*/
 
-#include "param_non.js"    /* Input parameter file without nitrogen */
+#include "param_non.cjson"    /* Input parameter file without nitrogen */
 
 /*===================================================================*/
 /*  III. Input data section                                          */
 /*===================================================================*/
 
-#include "input_crumonthly.js"    /* Input files of CRU dataset */
+#include "input_crumonthly.cjson"    /* Input files of CRU dataset */
 
 /*===================================================================*/
 /*  IV. Output data section                                          */

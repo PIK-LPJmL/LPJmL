@@ -297,7 +297,7 @@ bin/lpjsubmit ntasks LPJmL_args...
 
 Depending on your MPI version installed the program can be started interactively:
 
-mpirun -np 32 ./bin/lpjml lpjml.js
+mpirun -np 32 ./bin/lpjml lpjml.cjson
 
 Error codes
 -----------
