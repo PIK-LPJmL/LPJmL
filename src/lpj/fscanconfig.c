@@ -274,7 +274,7 @@ Bool fscanconfig(Config *config,    /**< LPJ configuration */
   config->prescribe_landcover=NO_LANDCOVER;
   if(fscankeywords(file,&config->prescribe_landcover,"prescribe_landcover",prescribe_landcover,3,TRUE,verbose))
     return TRUE;
-  fscanbool2(file,&config->new_phenology,"new_phenology");
+  fscanbool2(file,&config->gsi_phenology,"gsi_phenology");
   config->new_trf=FALSE;
   if(fscanbool(file,&config->new_trf,"new_trf",TRUE,verbose))
     return TRUE;

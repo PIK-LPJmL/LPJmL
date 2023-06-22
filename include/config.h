@@ -216,7 +216,7 @@ struct config
   Bool extflow;        /** external flow enabled */
   Bool permafrost;     /**< permafrost module enabled */
   Bool johansen;       /**< johansen enabled */
-  Bool new_phenology;	/**< new phenology enabled */
+  Bool gsi_phenology;	/**< GSI phenology enabled (TRUE/FALSE) */
   Bool new_trf;         /**< new transpiration reduction function enabled */
   Bool equilsoil;      /**< equilsoil is called */
   Bool from_restart;   /**< reading from restart */

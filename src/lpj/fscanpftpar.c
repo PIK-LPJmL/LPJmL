@@ -314,7 +314,7 @@ Bool fscanpftpar(LPJfile *file,       /**< pointer to LPJ file */
     fscanpftreal01(verb,&item,&pft->albedo_litter,pft->name,"albedo_litter");
     fscanpftreal01(verb,&item,&pft->snowcanopyfrac,pft->name,"snowcanopyfrac");
     fscanpftreal(verb,&item,&pft->lightextcoeff,pft->name,"lightextcoeff");
-    if(config->new_phenology)
+    if(config->gsi_phenology)
     {
       /* read new phenology parameters */
       fscanpftphenpar(verb,&item,&pft->tmin,pft->name,"tmin");

@@ -133,7 +133,7 @@ Real daily_biomass_tree(Stand *stand,                /**< stand pointer */
   foreachpft(pft,p,&stand->pftlist)
   {
     /* calculate old or new phenology */
-    if (config->new_phenology)
+    if (config->gsi_phenology)
       phenology_gsi(pft, climate->temp, climate->swdown, day,climate->isdailytemp,config);
     else
       leaf_phenology(pft,climate->temp,day,climate->isdailytemp,config);
