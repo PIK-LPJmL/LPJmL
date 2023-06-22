@@ -156,7 +156,7 @@ struct config
   int landuse_year_const;       /**< year landuse is fixed for LANDUSE_CONST case */
   Bool intercrop;               /**< intercropping (TRUE/FALSE) */
   Bool grassonly;               /**< set all cropland including others to zero but keep managed grasslands */
-  Bool istimber;
+  Bool luc_timber;              /***< land-use change timber */
   Bool storeclimate;           /**< store climate data in spin-up phase */
   Bool const_climate;           /**< constant climate */
   Bool shuffle_climate;         /**< shuffle spinup climate */

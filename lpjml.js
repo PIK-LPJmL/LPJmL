@@ -97,7 +97,7 @@
   "cft_temp" : "temperate cereals",
   "cft_tropic" : "maize",
   "grassonly" : false,                  /* set all cropland including others to zero but keep managed grasslands */
-  "istimber" : true,
+  "luc_timber" : true,                  /* land-use change timber */
   "grassland_fixed_pft" : false,
   "grass_harvest_options" : false,
   "prescribe_lsuha" : false,

@@ -383,10 +383,10 @@ void fprintconfig(FILE *file,          /**< File pointer to text output file */
       len += fprintf(file, ", ");
       len = fputstring(file, len, "grassonly", 78);
     }
-    if(config->istimber)
+    if(config->luc_timber)
     {
       len+=fprintf(file,", ");
-      len=fputstring(file,len,"timber",78);
+      len=fputstring(file,len,"land-use change timber",78);
     }
     if(config->tillage_type)
     {

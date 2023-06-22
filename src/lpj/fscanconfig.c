@@ -425,8 +425,8 @@ Bool fscanconfig(Config *config,    /**< LPJ configuration */
       config->grassonly = FALSE;
       if (fscanbool(file, &config->grassonly, "grassonly", TRUE, verbose))
         return TRUE;
-      config->istimber=FALSE;
-      if(fscanbool(file,&config->istimber,"istimber",TRUE,verbose))
+      config->luc_timber=FALSE;
+      if(fscanbool(file,&config->luc_timber,"luc_timber",TRUE,verbose))
         return TRUE;
       config->residues_fire=FALSE;
       if(fscanbool(file,&config->residues_fire,"residues_fire",TRUE,verbose))
