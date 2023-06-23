@@ -50,12 +50,19 @@
   "with_nitrogen" : "lim", /* other options: "no", "lim", "unlim" */
   "nitrogen_coupled" : false, /* nitrogen stress coupled to water stress */
   "store_climate" : true, /* store climate data in spin-up phase */
-  "const_climate" : false,
-  "shuffle_climate" : true, /* shuffle spinup climate */
-  "const_deposition" : false,
-  "depos_year_const" : 1901,
-  "fix_climate" : false,
-  "fix_landuse" : false,
+  "shuffle_spinup_climate" : true, /* shuffle spinup climate */
+  "fix_climate" : false,                /* fix climate after specified year */
+  "fix_climate_year" : 1901,            /* year after climate is fixed */
+  "fix_climate_interval" : [1901,1930],
+  "fix_climate_shuffle" : true,          /* randomly shuffle climate in the interval */
+  "fix_deposition" : false,              /* fix N deposition after specified year */
+  "fix_deposition_year" : 1901,          /* year after deposition is fixed */
+  "fix_deposition_interval" : [1901,1930],
+  "fix_deposition_shuffle" : true,       /* randomly shuffle depositions in the interval */
+  "fix_landuse" : false,                 /* fix land use after specfied year */
+  "fix_landuse_year" : 1901,             /* year after land use is fixed */
+  "fix_co2" : false,                     /* fix atmospheric CO2  after specfied year */
+  "fix_co2_year" : 1901,                 /* year after CO2 is fixed */
 #ifdef FROM_RESTART
   "new_seed" : false, /* read random seed from restart file */
   "population" : false,

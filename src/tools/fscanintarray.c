@@ -1,10 +1,10 @@
 /**************************************************************************************/
 /**                                                                                \n**/
-/**                   f  s  c  a  n  r  e  a  l  a  r  r  a  y  .  c               \n**/
+/**                   f  s  c  a  n  i  n  t  a  r  r  a  y  .  c                  \n**/
 /**                                                                                \n**/
 /**     C implementation of LPJmL                                                  \n**/
 /**                                                                                \n**/
-/**     Function reads a real array from a LPJ file                                \n**/
+/**     Function reads an integer array from a LPJ file                            \n**/
 /**                                                                                \n**/
 /** (C) Potsdam Institute for Climate Impact Research (PIK), see COPYRIGHT file    \n**/
 /** authors, and contributors see AUTHORS file                                     \n**/
@@ -23,12 +23,12 @@
 #endif
 #include "types.h"
 
-Bool fscanrealarray(LPJfile *file,    /**< pointer to LPJ file */
-                    Real value[],     /**< real array to read */
-                    int size,         /**< size of array */
-                    const char *key,  /**< name of array */
-                    Verbosity verb    /**< verbosity level (NO_ERR,ERR,VERB) */
-                   )
+Bool fscanintarray(LPJfile *file,    /**< pointer to LPJ file */
+                   int value[],      /**< integer array to read */
+                   int size,         /**< size of array */
+                   const char *key,  /**< name of array */
+                   Verbosity verb    /**< verbosity level (NO_ERR,ERR,VERB) */
+                  )
 {
   int i;
 #ifdef USE_JSON
@@ -59,21 +59,16 @@ Bool fscanrealarray(LPJfile *file,    /**< pointer to LPJ file */
   for(i=0;i<size;i++)
   {
     item =json_object_array_get_idx(array,i);
-    if(json_object_get_type(item)!=json_type_double)
+    if(json_object_get_type(item)!=json_type_int)
     {
-      if(json_object_get_type(item)!=json_type_int)
-      {
-        if(verb)
-          fprintf(stderr,"ERROR226: Type of item %d in array %s is not double or int.\n",i,key);
-        return TRUE;
-      }
-      value[i]=json_object_get_int(item);
+      if(verb)
+        fprintf(stderr,"ERROR226: Type of item %d in array %s is not int.\n",i,key);
+      return TRUE;
     }
-    else
-      value[i]=json_object_get_double(item);
+    value[i]=json_object_get_int(item);
     if (verb >= VERB)
     {
-      printf(" %g",value[i]);
+      printf(" %d",value[i]);
       if(i<size-1)
         printf(",");
     }
@@ -84,7 +79,7 @@ Bool fscanrealarray(LPJfile *file,    /**< pointer to LPJ file */
   }
 #endif
   for(i=0;i<size;i++)
-    if(fscanreal(file,value+i,key,FALSE,verb))
+    if(fscanint(file,value+i,key,FALSE,verb))
        return TRUE;
   return FALSE;
-} /* of 'fscanrealarray' */ 
+} /* of 'fscanintarray' */ 

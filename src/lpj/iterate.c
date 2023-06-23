@@ -94,8 +94,8 @@ int iterate(Outputfile *output, /**< Output file data */
       co2=receive_image_co2(config);
     else
 #endif
-    if(config->fix_climate && year>config->fix_climate_year)
-      year_co2=config->fix_climate_year;
+    if(config->fix_co2 && year>config->fix_co2_year)
+      year_co2=config->fix_co2_year;
     else
       year_co2=year;
     if(getco2(input.climate,&co2,year_co2,config)) /* get atmospheric CO2 concentration */
@@ -103,7 +103,7 @@ int iterate(Outputfile *output, /**< Output file data */
     if(year<input.climate->firstyear) /* are we in spinup phase? */
     {
       /* yes, let climate data point to stored data */
-      if(config->shuffle_climate)
+      if(config->shuffle_spinup_climate)
       {
         if(isroot(*config))
           spinup_year=(int)(erand48(config->seed)*config->nspinyear);
@@ -142,16 +142,16 @@ int iterate(Outputfile *output, /**< Output file data */
       {
         if(config->fix_climate && year>config->fix_climate_year)
         {
-          if(config->shuffle_climate)
+          if(config->fix_climate_shuffle)
           {
             if(isroot(*config))
-              climate_year=config->fix_climate_year-config->fix_climate_cycle/2+(int)(erand48(config->seed)*config->fix_climate_cycle);
+              climate_year=config->fix_climate_interval[0]+(config->fix_climate_interval[1]-config->fix_climate_interval[0]+1)*erand48(config->seed);
 #ifdef USE_MPI
-            MPI_Bcast(&climate_year,1,MPI_INT,0,config->comm);
+            MPI_Bcast(&year,1,MPI_INT,0,config->comm);
 #endif
           }
           else
-            climate_year=config->fix_climate_year-config->fix_climate_cycle/2+(year-config->fix_climate_year+config->fix_climate_cycle/2) % config->fix_climate_cycle;
+            climate_year=config->fix_climate_interval[0]+(year-config->fix_climate_year) % (config->fix_climate_interval[1]-config->fix_climate_interval[0]+1);
         }
         else
           climate_year=year;

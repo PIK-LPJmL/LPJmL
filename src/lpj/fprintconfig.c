@@ -265,14 +265,13 @@ void fprintconfig(FILE *file,          /**< File pointer to text output file */
     if(config->fire_on_grassland)
       len=printsim(file,len,&count,"fire on grassland");
   }
-  if(config->const_climate)
-    len=printsim(file,len,&count,"const. climate");
-  if(config->shuffle_climate)
-    len=printsim(file,len,&count,"shuffle climate");
+  if(config->shuffle_spinup_climate)
+    len=printsim(file,len,&count,"shuffle spinup climate");
   if(config->fix_climate)
   {
-    snprintf(s,STRING_LEN,"fix climate after year %d cycling %d years",
-             config->fix_climate_year, config->fix_climate_cycle);
+    snprintf(s,STRING_LEN,"fix climate after year %d %s years %d-%d",
+             config->fix_climate_year,(config->fix_climate_shuffle) ? "shuffling" : "cycling",
+             config->fix_climate_interval[0],config->fix_climate_interval[1]);
     len=printsim(file,len,&count,s);
   }
   if(config->withlanduse!=CONST_LANDUSE && config->withlanduse!=NO_LANDUSE && config->fix_landuse)
@@ -280,10 +279,16 @@ void fprintconfig(FILE *file,          /**< File pointer to text output file */
     snprintf(s,STRING_LEN,"fix landuse after year %d",config->fix_landuse_year);
     len=printsim(file,len,&count,s);
   }
-  if(config->const_deposition)
+  if(config->fix_co2)
   {
-    snprintf(s,STRING_LEN,"const N deposition after year %d cycling %d years",
-             config->depos_year_const,config->fix_climate_cycle);
+    snprintf(s,STRING_LEN,"fix CO2 after year %d",config->fix_co2_year);
+    len=printsim(file,len,&count,s);
+  }
+  if(config->fix_deposition)
+  {
+    snprintf(s,STRING_LEN,"fix N deposition after year %d %s years %d-%d",
+             config->fix_deposition_year,(config->fix_deposition_shuffle) ? "shuffling" : "cycling",
+             config->fix_deposition_interval[0],config->fix_deposition_interval[1]);
     len=printsim(file,len,&count,s);
   }
   if(config->no_ndeposition)

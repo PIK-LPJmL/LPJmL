@@ -149,9 +149,9 @@ Climate *initclimate(const Cell grid[],   /**< LPJ grid */
       freeclimate(climate,isroot(*config));
       return NULL;
     }
-    if(isroot(*config) && !config->const_deposition)
+    if(isroot(*config))
     {
-      lastyear=(config->const_deposition) ? config->depos_year_const+config->fix_climate_cycle-1 : config->lastyear;
+      lastyear=(config->fix_deposition) ? max(config->fix_deposition_year,config->fix_deposition_interval[1]) : config->lastyear;
       if(climate->file_no3deposition.firstyear+climate->file_no3deposition.nyear-1<lastyear)
         fprintf(stderr,"WARNING024: Last year in '%s'=%d is less than last simulation year %d, data from last year used.\n",
                 config->no3deposition_filename.name,climate->file_no3deposition.firstyear+climate->file_nh4deposition.nyear-1,lastyear);
