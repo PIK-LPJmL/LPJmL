@@ -53,6 +53,7 @@ void fprintcell(FILE *file,            /**< file pointer to text file */
       fputs("Invalid soil\n",file);
     else
     {
+      fprintclimbuf(file,&grid[cell].climbuf,ncft);
       fputs("GDD:\t\t",file);
       for(cft=0;cft<npft;cft++)
         fprintf(file," %6.1f",grid[cell].gdd[cft]);

@@ -80,6 +80,21 @@ Bool fwritebuffer(FILE *file,         /**< file pointer */
   return (fwrite(buffer->data,sizeof(Real),buffer->n,file)!=buffer->n);
 } /* of 'fwritebuffer' */
 
+void fprintbuffer(FILE *file,         /**< file pointer */
+                  const Buffer buffer /**< pointer to buffer */
+                 )
+{
+  int i;
+  fprintf(file,"Size:  %d\n",buffer->size);
+  fprintf(file,"n:     %d\n",buffer->n);
+  fprintf(file,"Index: %d\n",buffer->index);
+  fprintf(file,"Sum:   %g\n",buffer->sum);
+  fputs("Data: ",file);
+  for(i=0;i<buffer->n;i++)
+    fprintf(file," %g",buffer->data[i]);
+  fputc('\n',file);
+} /* of 'fprintbuffer' */
+
 Buffer freadbuffer(FILE *file, /**< file pointer */
                    Bool swap   /**< byte order has to be changed */
                   )            /** \return allocated buffer or NULL */

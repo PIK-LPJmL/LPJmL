@@ -1,8 +1,8 @@
 /**************************************************************************************/
 /**                                                                                \n**/
-/**                       b  u  f  f  e  r  .  h                                   \n**/
+/**                       g  e  t  a  v  g  .  c                                   \n**/
 /**                                                                                \n**/
-/**     C implementation of LPJmL                                                  \n**/
+/**     Function computes average of all real vector elements                      \n**/
 /**                                                                                \n**/
 /** (C) Potsdam Institute for Climate Impact Research (PIK), see COPYRIGHT file    \n**/
 /** authors, and contributors see AUTHORS file                                     \n**/
@@ -12,22 +12,20 @@
 /**                                                                                \n**/
 /**************************************************************************************/
 
-#ifndef BUFFER_H
-#define BUFFER_H
+#include <stdlib.h>
+#include <stdio.h>
+#include "types.h"
+#include "numeric.h"
 
-/* Definitions of datatypes */
+Real getavg(const Real vec[], /**< array of real values */
+            int size          /**< array size */
+           )                  /** \return average of array elements */
+{
+  int i;
+  Real sum=0;
 
-typedef struct buffer *Buffer;
-
-/* Declaration of functions */
-
-extern Buffer newbuffer(int);
-extern void updatebuffer(Buffer,Real); 
-extern Bool fwritebuffer(FILE *,const Buffer);
-extern void fprintbuffer(FILE *,const Buffer);
-extern Buffer freadbuffer(FILE *,Bool);
-extern void freebuffer(Buffer);
-extern Real getbufferavg(const Buffer);
-extern Bool isemptybuffer(const Buffer);
-
-#endif
+  for(i=0;i<size;i++) 
+    sum+=vec[i];
+   
+  return sum/size;
+} /* of 'getavg' */
