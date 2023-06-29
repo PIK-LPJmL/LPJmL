@@ -261,9 +261,12 @@ void fuelload(const Stand *stand, /**< pointer to stand */
     alpha_fuel /= dead_fuel;
   }
 /* dead litter moisture calculation */
-  fuel->daily_litter_moist = exp(-(alpha_fuel) * nesterov_accum); /* old setup using the nesterov index, corrected here to use only dead fuels */
-//  fuel->daily_litter_moist =  (dead_fuel>0) ? stand->soil.litter.agtop_moist*1e3/dead_fuel : 999; /* new version making use of new litter moisture calculation from tillage version */
+//  fuel->daily_litter_moist = exp(-(alpha_fuel) * nesterov_accum); /* old setup using the nesterov index, corrected here to use only dead fuels */
+  fuel->daily_litter_moist =  (dead_fuel>0) ? stand->soil.litter.agtop_moist*1e3/dead_fuel : 999; /* new version making use of new litter moisture calculation from tillage version */
  /* setting litter moisture values for all classes to the same value until this can be replaced with a new system */
+  //fuel moisture never smaller than 2.5%:
+  fuel->daily_litter_moist = max(0.025,fuel->daily_litter_moist);
+  
   fuel->M[0]=fuel->daily_litter_moist;
   fuel->M[1]=fuel->daily_litter_moist;
   fuel->M[2]=fuel->daily_litter_moist;
@@ -274,14 +277,15 @@ void fuelload(const Stand *stand, /**< pointer to stand */
 
   /* moisture of extinction (as PFT param.) weighted over litter amount */
   fuel->char_moist_factor= moistfactor(&stand->soil.litter);
-
-  /* influence of livefuel on 1hr fuel moisture content RE-EXAMINE WITH NEW MOISTURE CALCULATIONS*/
+  
+  /*
+  // influence of livefuel on 1hr fuel moisture content RE-EXAMINE WITH NEW MOISTURE CALCULATIONS
   if (livegrass <= epsilon || fuel_gBiomass[0] <= epsilon)
     moist_livegrass_1hr = 1.0;
   else
     moist_livegrass_1hr=(fuel->daily_litter_moist*livegrass + dlm_1hr*fuel_gBiomass[0])
                             / (livegrass + fuel_gBiomass[0]);
-
+  
   if(fuel->char_moist_factor <= epsilon)
   {
     fuel->moist_1hr=1.0;
@@ -293,5 +297,6 @@ void fuelload(const Stand *stand, /**< pointer to stand */
     fuel->moist_10_100hr=fuel->daily_litter_moist/fuel->char_moist_factor;
   }
   livefuel->CME = 0.0005*pow(fuel->moist_10_100hr*100,2)-0.02*fuel->moist_10_100hr*100+0.94;
+  */
 
 } /* of 'fuelload' */

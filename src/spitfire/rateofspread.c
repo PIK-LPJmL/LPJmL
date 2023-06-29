@@ -25,7 +25,7 @@ Real rateofspread(Real windsp_cover,Fuel *fuel,Livefuel *livefuel)
   Real phi_wind, xi, dummy, gamma_max, gamma_aptr;
   Real moist_damp_live,moist_damp_dead, ir, U_front;
   Real char_sigma_dead,char_sigma_live,wndead,wnlive,char_sigma;
-  Real w,wsum,msum,wsum_live,mfdead,mxlive,Mdead,Mlive;
+  Real w,wsum,msum,wsum_live,mfdead,Mdead,Mlive;
   Real hs_sum_live,hs_sum_dead,hs,mw_weight_live;
   int i;
 
@@ -60,7 +60,7 @@ Real rateofspread(Real windsp_cover,Fuel *fuel,Livefuel *livefuel)
     wsum_live+=livefuel->w[i]*exp(-500./30.48/sigma_live[i]);
   w=wsum/wsum_live;
   mfdead=msum/wsum;
-  mxlive=max(2.9*w*(1-mfdead/fuel->char_moist_factor)-0.226,fuel->char_moist_factor);
+  livefuel->char_moisture=max(2.9*w*(1-mfdead/fuel->char_moist_factor)-0.226,fuel->char_moist_factor);
   /* Packing ratio*/
   beta_fire = fuel->char_dens_fuel_ave / PART_DENS;
 
@@ -73,11 +73,6 @@ Real rateofspread(Real windsp_cover,Fuel *fuel,Livefuel *livefuel)
   c=7.47*exp(-0.8711 * pow(char_sigma, 0.55));
   e=0.715*exp(-0.01094 * char_sigma);
 
-  /* converts wind_speed (m/min) to ft/min
-   * for input into Rothermel's formula for phi_wind in the ROS S/R */
-  wind_forward=3.281*windsp_cover;
-  /* Effect of wind speed */
-  phi_wind=(bet <= 0) ?  0 : c*pow(wind_forward,b)*pow(bet,-e); 
   /* Propagating flux ratio */
   if (char_sigma <= 0.00001)
     xi = 0.0;
@@ -96,7 +91,7 @@ Real rateofspread(Real windsp_cover,Fuel *fuel,Livefuel *livefuel)
   fuel->mw_weight=min(Mdead/fuel->char_moist_factor,1);
   moist_damp_dead = (0.0 > (1.0-(2.59*fuel->mw_weight)+ (5.11*(pow(fuel->mw_weight,2.0)))-(3.52*(pow(fuel->mw_weight,3.0)))) ? 
     0 : (1.0-(2.59*fuel->mw_weight)+ (5.11*(pow(fuel->mw_weight,2.0)))-(3.52*(pow(fuel->mw_weight,3.0)))));
-  mw_weight_live=min(Mlive/mxlive,1);
+  mw_weight_live=min(Mlive/livefuel->char_moisture,1);
   moist_damp_live = (0.0 > (1.0-(2.59*mw_weight_live)+ (5.11*(pow(mw_weight_live,2.0)))-(3.52*(pow(mw_weight_live,3.0)))) ? 
     0 : (1.0-(2.59*mw_weight_live)+ (5.11*(pow(mw_weight_live,2.0)))-(3.52*(pow(mw_weight_live,3.0)))));
   /* Reaction intensity */
@@ -104,6 +99,18 @@ Real rateofspread(Real windsp_cover,Fuel *fuel,Livefuel *livefuel)
                  +wnlive*1e-3*heat_content_fuel*moist_damp_live*MINER_DAMP);
   /* For use in post fire mortality */
   fuel->ir =ir;
+  
+  /* converts wind_speed (m/min) to ft/min
+  * for input into Rothermel's formula for phi_wind in the ROS S/R */
+  wind_forward=3.281*windsp_cover;
+  
+  /* wind speed limit according to Patricia L. Andrews et al. 2012 */
+  if(wind_forward > 96.8*pow(ir,1/3))
+    wind_forward = 96.8*pow(ir,1/3);
+
+  /* Effect of wind speed */
+  phi_wind=(bet <= 0) ?  0 : c*pow(wind_forward,b)*pow(bet,-e);
+
   /* Heat sink term */
   hs_sum_dead=0;
   for(i=0;i<NFUELCLASS;i++)

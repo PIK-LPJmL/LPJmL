@@ -95,13 +95,15 @@
   "rw_irrig_thres" : 0.0,             /* threshold to apply rw_irrigation */
   "soil_infil_rw" : 2.0,              /* values > 2 (default) increase soil infiltration on rainfed and irrigated managed land */
   "yield_gap_bridge" : 0.0,           /* factor by which laimax value is closed (7 - country-value)*factor */
-  "firedura" : -11.06,//-8.79,//-8.79,                 /* scaling factor for fire duration for the WVPD*/
+  "firedura" : -30,//-11.06,//-35,//-11.06,//-8.79,//-8.79,                 /* scaling factor for fire duration for the WVPD*/
   "hum_ign" : -0.53,                  /* a parameter for scaling the human ignintions within SPITFIRE */
+  "k_ign_prob" :  0.3,//0.215,//0.05, //0.0115, 
   "fire_intens" : 0.000001,           /* threshold of fireintensity for which burnt area can be modeled */
   "ler" : 0.04,                       /* efficiency in starting fires */
   "cg_ratio" : 0.2,                   /*cloud to ground ratio for lightning flashes */
-  "max_fireduration" : 1320,          /* maximum fire duration (min) */
-  "max_ndayfire" : 15,                /* maximum fire days (days) */
+  "max_fireduration" : 480,//1320,    /*default maximum fire duration (min) */
+  "min_fireduration" : 120,           /*default minium fire duration (min) */
+  "max_ndayfire" : 5,                /* maximum fire days (days) */
   "nfert_split" : 5,                  /* threshold fertilizer input for split application */
   "residues_in_soil" : 0.1,           /* minimum residues in soil*/
   "fburnt" : 1.0,                     /* fraction of trees burnt at deforestation, refers to remainder after timber harvest */

@@ -39,26 +39,27 @@ Real firemortality_tree(Pft *pft,const Fuel *fuel, Livefuel *livefuel,
   scorch_height=treepar->scorchheight_f_param*pow(surface_fi,0.667);
 
   /* residence time calculated as in Albini 1976 */
-  tau_l=(fuel->char_sigma>0) ? 384/30.48/fuel->char_sigma : 0;
+  tau_l=(fuel->char_sigma>0) ? 5*384/30.48/fuel->char_sigma : 0;
 
   /* crown kill in [%] assuming the crown shape being a cylinder
    * crown height as a fraction of tree height definded per PFT
    * propn of canopy burnt = (SH - (height - cl))/cl = (SH - height + cl)/cl
    */
-
+  
   if (scorch_height < (tree->height - crown_length_tree))
     ck=0.0;
   else if(scorch_height < tree->height)
-    ck=(scorch_height - tree->height + crown_length_tree) / crown_length_tree;
+    ck=((scorch_height - tree->height + crown_length_tree)*(tree->height - scorch_height + crown_length_tree))/pow(crown_length_tree,2); 
+    //ck=(scorch_height - tree->height + crown_length_tree) / crown_length_tree; //old formulation
   else
     ck=1.0;
-
+  
   /*post-fire mortality from crown scorching */
-  postfire_mort_ck = treepar->crown_mort_rck*pow(ck,treepar->crown_mort_p);
+  /*postfire_mort_ck = treepar->crown_mort_rck*pow(ck,treepar->crown_mort_p);
 
-  /* post-fire mortality from cambial damage */
+  //post-fire mortality from cambial damage */
   /* Allan's version after Peterson&Ryan */
-  if(tau_c>0)
+  /*if(tau_c>0)
   {
     if(tau_l/tau_c>=1.9)
       postfire_mort_camb=1.0;
@@ -78,13 +79,19 @@ Real firemortality_tree(Pft *pft,const Fuel *fuel, Livefuel *livefuel,
   }
 #endif
 
-  /*Calculate total post-fire mortality from crown scorching AND cambial kill*/
+  //Calculate total post-fire mortality from crown scorching AND cambial kill in old SPITFIRE version
   postfire_mort_total=postfire_mort_camb+postfire_mort_ck-(postfire_mort_camb*postfire_mort_ck);
+  i*/
+
+  /*Peterson & Ryan mortality*/
+  postfire_mort_total= (tau_l > 0 && ck > 0) ? pow(ck,tau_c/tau_l-0.5) : 0;
+  if(postfire_mort_total > 1)
+    postfire_mort_total = 1; 
   /*number of indivs affected by fire in grid cell */
 #ifdef SAFE
   if(postfire_mort_total > 1)
   {
-    printf("postfire_mort_total = %f in firemortality_tree.c\n",postfire_mort_total);
+    printf("postfire_mort_total = %f, ck = %f, tau_c = %f, tau_l = %f in firemortality_tree.c\n",postfire_mort_total, ck, tau_c, tau_l);
     fflush(stdout);
   }
 #endif

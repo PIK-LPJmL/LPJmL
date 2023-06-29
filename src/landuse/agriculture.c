@@ -20,7 +20,7 @@
 #include "grassland.h"
 
 
-Standtype setaside_rf_stand={SETASIDE_RF,"setaside_rf",0.0,0,new_agriculture,
+Standtype setaside_rf_stand={SETASIDE_RF,"setaside_rf",0.0,0.0,0,new_agriculture,
                              free_agriculture,fwrite_agriculture,
                              fread_agriculture,fprint_agriculture,
 #ifdef DAILY_ESTABLISHMENT
@@ -30,7 +30,7 @@ Standtype setaside_rf_stand={SETASIDE_RF,"setaside_rf",0.0,0,new_agriculture,
 #endif
                              annual_setaside,NULL,isdailyoutput_agriculture};
 
-Standtype setaside_ir_stand={SETASIDE_IR,"setaside_ir",0.0,0,new_agriculture,
+Standtype setaside_ir_stand={SETASIDE_IR,"setaside_ir",0.0,0.0,0,new_agriculture,
                              free_agriculture,fwrite_agriculture,
                              fread_agriculture,fprint_agriculture,
 #ifdef DAILY_ESTABLISHMENT
@@ -40,13 +40,13 @@ Standtype setaside_ir_stand={SETASIDE_IR,"setaside_ir",0.0,0,new_agriculture,
 #endif
                              annual_setaside,NULL,isdailyoutput_agriculture};
 
-Standtype managedforest_stand={MANAGEDFOREST,"managed forest",0.0,0,NULL,NULL,NULL,
+Standtype managedforest_stand={MANAGEDFOREST,"managed forest",0.0,0.0,0,NULL,NULL,NULL,
                                NULL,NULL,NULL,NULL,NULL,NULL};
 
-Standtype kill_stand={KILL,"kill",0.0,0,NULL,free_agriculture,NULL,NULL,NULL,NULL,NULL,
+Standtype kill_stand={KILL,"kill",0.0,0.0,0,NULL,free_agriculture,NULL,NULL,NULL,NULL,NULL,
                       NULL,NULL};
 
-Standtype agriculture_stand={AGRICULTURE,"agriculture",0.0,0,new_agriculture,
+Standtype agriculture_stand={AGRICULTURE,"agriculture",0.0,0.0,0,new_agriculture,
                              free_agriculture,fwrite_agriculture,
                              fread_agriculture,fprint_agriculture,
                              daily_agriculture,annual_agriculture,

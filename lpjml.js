@@ -39,6 +39,7 @@
   "random_prec" : true,     /* Random weather generator for precipitation enabled */
   "random_seed" : 2,        /* seed for random number generator or "random_seed" */
   "radiation" : "radiation",/* other options: "cloudiness", "radiation", "radiation_swonly", "radiation_lwdown" */
+  "isswnet" : false,
   "fire" : "fire",          /* fire disturbance enabled, other options: "no_fire", "fire", "spitfire", "spitfire_tmax" (for GLDAS input data) */
   "gsilivefuel" : true,
   "fdi" : "nesterov",       /* different fire danger index formulations: "wvpd" (needs GLDAS input data), "nesterov" */

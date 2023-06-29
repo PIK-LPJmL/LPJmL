@@ -26,25 +26,25 @@ Real deadfuel_consumption(const Litter *litter, /* litter pools */
     fuel->deadfuel_consum[i]=0;
     
     /* 1hr dead fuel consumption [gC/m2]*/
-  fuel->deadfuel_consum[0] = fuel_consumption_1hr(fuel->moist_1hr,fire_frac);
+  fuel->deadfuel_consum[0] = fuel_consumption_1hr(fuel->M[0]/fuel->char_moist_factor,fire_frac);
 
    /*  10hr fuel consumption */
-  if(fuel->moist_10_100hr <= 0.12)
+  if(fuel->M[1]/fuel->char_moist_factor <= 0.12)
     fuel->deadfuel_consum[1]=1.0*(1.0-MINER_TOT)*fire_frac;
-  else if(fuel->moist_10_100hr <= 0.51) 
-    fuel->deadfuel_consum[1]=(1.09-0.72* fuel->moist_10_100hr)*
+  else if(fuel->M[1]/fuel->char_moist_factor <= 0.51) 
+    fuel->deadfuel_consum[1]=(1.09-0.72* fuel->M[1]/fuel->char_moist_factor)*
                              (1.0-MINER_TOT)*fire_frac;
-  else if(fuel->moist_10_100hr<1.0) 
-    fuel->deadfuel_consum[1]=(1.47-1.47* fuel->moist_10_100hr)*
+  else if(fuel->M[1]/fuel->char_moist_factor<1.0) 
+    fuel->deadfuel_consum[1]=(1.47-1.47* fuel->M[1]/fuel->char_moist_factor)*
                                (1.0-MINER_TOT)*fire_frac;
   else
     fuel->deadfuel_consum[1]=0;
 
   /* 100hr fuel consumption */
-  if(fuel->moist_10_100hr <= 0.38) 
-    fuel->deadfuel_consum[2]=(0.98-0.85*fuel->moist_10_100hr)*(1.0-MINER_TOT)*fire_frac;
-  else if(fuel->moist_10_100hr<1.0) 
-    fuel->deadfuel_consum[2]=(1.06-1.06*fuel->moist_10_100hr)*(1.0-MINER_TOT)*fire_frac;
+  if(fuel->M[2]/fuel->char_moist_factor <= 0.38) 
+    fuel->deadfuel_consum[2]=(0.98-0.85*fuel->M[2]/fuel->char_moist_factor)*(1.0-MINER_TOT)*fire_frac;
+  else if(fuel->M[2]/fuel->char_moist_factor<1.0) 
+    fuel->deadfuel_consum[2]=(1.06-1.06*fuel->M[2]/fuel->char_moist_factor)*(1.0-MINER_TOT)*fire_frac;
   else
     fuel->deadfuel_consum[2]=0.0;
 
@@ -62,5 +62,5 @@ Real deadfuel_consumption(const Litter *litter, /* litter pools */
     for (i=0; i<NFUELCLASS-1;i++)
       fuel_consum += fuel->deadfuel_consum[i]*litter->item[l].ag.wood[i].carbon;
   }   
-  return c2biomass(fuel_consum);   
+  return c2biomass(fuel_consum);
 } /* of 'deadfuel_consumption' */

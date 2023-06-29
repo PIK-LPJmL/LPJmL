@@ -38,6 +38,7 @@ Real area_burnt(Real *fire_durat,       /**< fire duration (min) */
                 Real *ndayfire,         /**< number of days with fire */
                 Real *burnt_area_max,   /**< size of fires in the largest active fire class (ha)*/
                 Real max_fireduration,  /**< maximum fire duration */
+                Real min_fireduration,  /**< minium fire duration */
                 Real fire_danger_index, /**< fire danger index (0..1) */
                 Real num_fires,         /**< number of fires */
                 Real windsp_cover,      /**< windspeed cover (m/min) */
@@ -77,7 +78,7 @@ Real area_burnt(Real *fire_durat,       /**< fire duration (min) */
     /* check the parameter value!!
      *  fire duration as a function of daily fire danger index
      */
-    *fire_durat=(max_fireduration+1)/(1.0+((max_fireduration-1)*exp(param.firedura*fire_danger_index)));
+    *fire_durat=(max_fireduration+1)/(1.0+((max_fireduration/min_fireduration-1)*exp(param.firedura*fire_danger_index)));
     dbf = (ros_backward+ros_forward) * *fire_durat;  /* in min , dbf in m*/
     d_area_burnt = (num_fires * M_PI_4/length_breath_ratio * dbf*dbf)*1e-4;
     burnt_area_sum = d_area_burnt;
@@ -92,7 +93,7 @@ Real area_burnt(Real *fire_durat,       /**< fire duration (min) */
   else
   {
     *ndayfire=0;
-    if (fire_danger_index < 0.005)
+    if (fire_danger_index < 0.015) // condition for fire extinction
       for(i=0;i<stand->type->max_ndayfire;i++)
         setqueue(stand->fires,(Real *)&fire,i);
     else

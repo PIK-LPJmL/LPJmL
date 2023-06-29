@@ -1,0 +1,787 @@
+image/send_image_data.c:                ((tree->ind.heartwood.carbon+tree->ind.sapwood.carbon*0.66667)*0.84)
+image/send_image_data.c:                ((tree->ind.heartwood.carbon+tree->ind.sapwood.carbon*0.66667)*0.16)
+image/send_image_data.c:                tree->ind.leaf.carbon*(float)stand->frac*(float)pft->nind;
+image/send_image_data.c:                (tree->ind.root.carbon+tree->ind.sapwood.carbon*0.33333)*(float)stand->frac*(float)pft->nind;
+image/send_image_data.c:                  ((tree->ind.heartwood.carbon+tree->ind.sapwood.carbon*0.66667)*0.84)
+image/send_image_data.c:                  ((tree->ind.heartwood.carbon+tree->ind.sapwood.carbon*0.66667)*0.16)
+image/send_image_data.c:                  tree->ind.leaf.carbon*(float)stand->frac*(float)pft->nind;
+image/send_image_data.c:                   (tree->ind.root.carbon+tree->ind.sapwood.carbon*0.33333)*(float)stand->frac*(float)pft->nind;
+image/send_image_data.c:                   ((tree->ind.heartwood.carbon + tree->ind.sapwood.carbon*0.66667)*0.84)
+image/send_image_data.c:                   ((tree->ind.heartwood.carbon + tree->ind.sapwood.carbon*0.66667)*0.16)
+image/send_image_data.c:                   tree->ind.leaf.carbon*(float)stand->frac*(float)pft->nind;
+image/send_image_data.c:                    (tree->ind.root.carbon + tree->ind.sapwood.carbon*0.33333)*(float)stand->frac*(float)pft->nind;
+image/send_image_data.c:                ((tree->ind.heartwood.carbon+tree->ind.sapwood.carbon*0.66667)*0.84)
+image/send_image_data.c:                ((tree->ind.heartwood.carbon+tree->ind.sapwood.carbon*0.66667)*0.16)
+image/send_image_data.c:                tree->ind.leaf.carbon*(float)stand->frac*(float)pft->nind;
+image/send_image_data.c:                (tree->ind.root.carbon+tree->ind.sapwood.carbon*0.33333)*(float)stand->frac*(float)pft->nind;
+landuse/annual_agriculture_tree.c:        //printf("PFT:%s height:%g lai %g fpc %g stemdiam %g leafC %g sapC %g heartC %g crownarea %g debt %g\n",pft->par->name, tree->height,
+landuse/annual_agriculture_tree.c:        //       lai_tree(pft), pft->fpc, pow(tree->height/20,1.0/4), tree->ind.leaf.carbon, tree->ind.sapwood.carbon, tree->ind.heartwood.carbon, tree->crownarea, tree->ind.debt.carbon);
+landuse/annual_agriculture_tree.c:      getoutputindex(&stand->cell->output,PFT_CROOT,nnat+index,config)+=tree->ind.root.carbon;
+landuse/annual_agriculture_tree.c:      getoutputindex(&stand->cell->output,PFT_NROOT,nnat+index,config)+=tree->ind.root.nitrogen;
+landuse/annual_agriculture_tree.c:      getoutputindex(&stand->cell->output,PFT_CLEAF,nnat+index,config)+=tree->ind.leaf.carbon;
+landuse/annual_agriculture_tree.c:      getoutputindex(&stand->cell->output,PFT_NLEAF,nnat+index,config)+=tree->ind.leaf.nitrogen;
+landuse/annual_biomass_tree.c:        if(biomass_tree->growing_time >= treepar->rotation && biomass_tree->growing_time%treepar->rotation==0)
+landuse/annual_biomass_tree.c:        if (stand->cell->balance.estab_storage_tree[biomass_tree->irrigation.irrigation].carbon<treepar->sapling_C*stand->frac && pft->bm_inc.carbon>100)
+landuse/annual_biomass_tree.c:          stand->cell->balance.estab_storage_tree[biomass_tree->irrigation.irrigation].carbon+=estab_store.carbon*stand->frac;
+landuse/annual_biomass_tree.c:          stand->cell->balance.estab_storage_tree[biomass_tree->irrigation.irrigation].nitrogen+=estab_store.nitrogen*stand->frac;
+landuse/annual_biomass_tree.c:      if(biomass_tree->growing_time>=treepar->rotation && biomass_tree->growing_time%treepar->rotation==0)
+landuse/annual_biomass_tree.c:        if(stand->cell->balance.estab_storage_tree[biomass_tree->irrigation.irrigation].carbon<0)
+landuse/annual_biomass_tree.c:          yield.carbon+=stand->cell->balance.estab_storage_tree[biomass_tree->irrigation.irrigation].carbon;
+landuse/annual_biomass_tree.c:          yield.nitrogen+=stand->cell->balance.estab_storage_tree[biomass_tree->irrigation.irrigation].nitrogen;
+landuse/annual_biomass_tree.c:          stand->cell->balance.estab_storage_tree[biomass_tree->irrigation.irrigation].carbon-=stand->cell->balance.estab_storage_tree[biomass_tree->irrigation.irrigation].carbon*stand->frac;
+landuse/annual_biomass_tree.c:          stand->cell->balance.estab_storage_tree[biomass_tree->irrigation.irrigation].nitrogen-=stand->cell->balance.estab_storage_tree[biomass_tree->irrigation.irrigation].nitrogen*stand->frac;
+landuse/annual_biomass_tree.c:          getoutputindex(&stand->cell->output,PFT_HARVESTC,rbtree(ncft)+biomass_tree->irrigation.irrigation*nirrig,config)+=yield.carbon*stand->frac;
+landuse/annual_biomass_tree.c:          getoutputindex(&stand->cell->output,PFT_HARVESTN,rbtree(ncft)+biomass_tree->irrigation.irrigation*nirrig,config)+=yield.nitrogen*stand->frac;
+landuse/annual_biomass_tree.c:          getoutputindex(&stand->cell->output,PFT_HARVESTC,rbtree(ncft)+biomass_tree->irrigation.irrigation*nirrig,config)+=yield.carbon;
+landuse/annual_biomass_tree.c:          getoutputindex(&stand->cell->output,PFT_HARVESTN,rbtree(ncft)+biomass_tree->irrigation.irrigation*nirrig,config)+=yield.nitrogen;
+landuse/annual_biomass_tree.c:        biomass_tree->growing_time=0;
+landuse/annual_biomass_tree.c:        if(pft->nind<treepar->k_est && biomass_tree->age<treepar->max_rotation_length)
+landuse/annual_biomass_tree.c:  stand->cell->balance.estab_storage_tree[biomass_tree->irrigation.irrigation].carbon-=flux_estab.carbon*stand->frac;
+landuse/annual_biomass_tree.c:  stand->cell->balance.estab_storage_tree[biomass_tree->irrigation.irrigation].nitrogen-=flux_estab.nitrogen*stand->frac;
+landuse/annual_biomass_tree.c:      if (biomass_tree->age>=treepar->max_rotation_length)
+landuse/annual_biomass_tree.c:  getoutputindex(&stand->cell->output,CFTFRAC,rbtree(ncft)+biomass_tree->irrigation.irrigation*nirrig,config)=stand->cell->ml.landfrac[biomass_tree->irrigation.irrigation].biomass_tree;
+landuse/annual_biomass_tree.c:  getoutputindex(&stand->cell->output,CFT_NHARVEST,rbtree(ncft)+biomass_tree->irrigation.irrigation*nirrig,config)+=1.0;
+landuse/annual_biomass_tree.c:    if(setaside(stand->cell,stand,stand->cell->ml.with_tillage,intercrop,npft,biomass_tree->irrigation.irrigation,year,npft+ncft,config))
+landuse/annual_biomass_tree.c:    stand->cell->balance.soil_storage+=(biomass_tree->irrigation.irrig_stor+biomass_tree->irrigation.irrig_amount)*stand->frac*stand->cell->coord.area;
+landuse/annual_biomass_tree.c:    biomass_tree->age++;
+landuse/annual_biomass_tree.c:    biomass_tree->growing_time++;
+landuse/annual_biomass_tree.c:      getoutputindex(&stand->cell->output,PFT_VEGC,npft-config->nbiomass-config->nagtree-config->nwft+rbtree(ncft)+biomass_tree->irrigation.irrigation*nirrig,config)+=vegc_sum(pft);
+landuse/annual_biomass_tree.c:      getoutputindex(&stand->cell->output,PFT_VEGN,npft-config->nbiomass-config->nagtree-config->nwft+rbtree(ncft)+biomass_tree->irrigation.irrigation*nirrig,config)+=vegn_sum(pft)+pft->bm_inc.nitrogen;
+landuse/annual_biomass_tree.c:      getoutputindex(&stand->cell->output,FPC_BFT,getpftpar(pft, id)-npft+config->nbiomass+config->nagtree+config->nwft+2*config->ngrass+biomass_tree->irrigation.irrigation*(config->nbiomass+2*config->ngrass),config)+=pft->fpc;
+landuse/annual_woodplantation.c:  index=rwp(ncft)+biomass_tree->irrigation.irrigation*getnirrig(ncft,config);
+landuse/annual_woodplantation.c:        if (stand->cell->balance.estab_storage_tree[biomass_tree->irrigation.irrigation].carbon<treepar->sapling_C*stand->frac && pft->bm_inc.carbon>100)
+landuse/annual_woodplantation.c:          stand->cell->balance.estab_storage_tree[biomass_tree->irrigation.irrigation].carbon+=estab_store.carbon*stand->frac;
+landuse/annual_woodplantation.c:          stand->cell->balance.estab_storage_tree[biomass_tree->irrigation.irrigation].nitrogen+=estab_store.nitrogen*stand->frac;
+landuse/annual_woodplantation.c:        biomass_tree->growing_time=0;
+landuse/annual_woodplantation.c:        if(biomass_tree->growing_time>=treepar->rotation && biomass_tree->growing_time%treepar->rotation==0)
+landuse/annual_woodplantation.c:          biomass_tree->growing_time=0;
+landuse/annual_woodplantation.c:        if(pft->nind<treepar->k_est && biomass_tree->age<treepar->max_rotation_length)
+landuse/annual_woodplantation.c:  stand->cell->balance.estab_storage_tree[biomass_tree->irrigation.irrigation].carbon-=flux_estab.carbon*stand->frac;
+landuse/annual_woodplantation.c:  stand->cell->balance.estab_storage_tree[biomass_tree->irrigation.irrigation].nitrogen-=flux_estab.nitrogen*stand->frac;
+landuse/annual_woodplantation.c:      if (biomass_tree->age>=treepar->max_rotation_length)
+landuse/annual_woodplantation.c:  getoutputindex(&stand->cell->output,CFTFRAC,index,config)=stand->cell->ml.landfrac[biomass_tree->irrigation.irrigation].woodplantation;
+landuse/annual_woodplantation.c:    biomass_tree->age=biomass_tree->growing_time=0;
+landuse/annual_woodplantation.c:    stand->cell->discharge.dmass_lake+=(biomass_tree->irrigation.irrig_stor+biomass_tree->irrigation.irrig_amount)*stand->cell->coord.area*stand->frac;
+landuse/annual_woodplantation.c:    stand->cell->balance.awater_flux-=(biomass_tree->irrigation.irrig_stor+biomass_tree->irrigation.irrig_amount)*stand->frac;
+landuse/annual_woodplantation.c:    if(setaside(stand->cell,stand,stand->cell->ml.with_tillage,intercrop,npft,biomass_tree->irrigation.irrigation,year,npft+ncft,config))
+landuse/annual_woodplantation.c:    stand->cell->balance.soil_storage+=(biomass_tree->irrigation.irrig_stor+biomass_tree->irrigation.irrig_amount)*stand->frac*stand->cell->coord.area;
+landuse/annual_woodplantation.c:    biomass_tree->age++;
+landuse/annual_woodplantation.c:    biomass_tree->growing_time++;
+landuse/daily_agriculture_tree.c:    printf("day=%d, irrig=%d, npp=%g, c_fruit=%g,phen=%g\n",day,data->irrigation.irrigation,npp,tree->fruit.carbon,pft->phen);
+landuse/daily_agriculture_tree.c:      treepar=tree->data;
+landuse/daily_agriculture_tree.c:              if(tree->boll_age<45)
+landuse/daily_agriculture_tree.c:                tree->boll_age++;
+landuse/daily_agriculture_tree.c:              cnratio_fruit=0.0054*tree->boll_age*tree->boll_age-0.3984*tree->boll_age+9.4091;
+landuse/daily_agriculture_tree.c:            tree->fruit.carbon+=treepar->harvest_ratio*npp;
+landuse/daily_agriculture_tree.c:            tree->fruit.nitrogen+=treepar->harvest_ratio*npp/cnratio_fruit;
+landuse/daily_agriculture_tree.c:              printf("PFT %s summergreen fruit are growing at month %d, phen=%g, aphen=%g, gdd=%g, temp %.2f, harvest=%g t/ha\n",pft->par->name,day/30+1,pft->phen,pft->aphen,pft->gdd,climate->temp, tree->fruit.carbon*1e4/0.45*1e-6);
+landuse/daily_agriculture_tree.c:             printf("PFT %s evergreen fruit are growing at month %d, harvest=%g,gdd=%g,ramp:%g t/ha\n",pft->par->name,day/30+1,tree->fruit.carbon*1e4/0.45*1e-6, pft->gdd,pft->par->ramp);
+landuse/daily_agriculture_tree.c:            tree->fruit.carbon+=treepar->harvest_ratio*npp;
+landuse/daily_agriculture_tree.c:            tree->fruit.nitrogen+=treepar->harvest_ratio*npp/treepar->cnratio_fruit;
+landuse/daily_agriculture_tree.c:        getoutput(output,D_CSO,config)=tree->fruit.carbon;
+landuse/daily_agriculture_tree.c:      tree->boll_age=0;
+landuse/daily_agriculture_tree.c:      getoutputindex(&stand->cell->output,PFT_CROOT,nnat+index,config)+=tree->ind.root.carbon;
+landuse/daily_agriculture_tree.c:      getoutputindex(&stand->cell->output,PFT_NROOT,nnat+index,config)+=tree->ind.root.nitrogen;
+landuse/daily_agriculture_tree.c:      getoutputindex(&stand->cell->output,PFT_CLEAF,nnat+index,config)+=tree->ind.leaf.carbon;
+landuse/daily_agriculture_tree.c:      getoutputindex(&stand->cell->output,PFT_NLEAF,nnat+index,config)+=tree->ind.leaf.nitrogen;
+landuse/daily_agriculture_tree.c:      getoutputindex(&stand->cell->output,PFT_CSAPW,nnat+index,config)+=tree->ind.sapwood.carbon;
+landuse/daily_agriculture_tree.c:      getoutputindex(&stand->cell->output,PFT_NSAPW,nnat+index,config)+=tree->ind.sapwood.nitrogen;
+landuse/daily_agriculture_tree.c:      getoutputindex(&stand->cell->output,PFT_CHAWO,nnat+index,config)+=tree->ind.heartwood.carbon;
+landuse/daily_agriculture_tree.c:      getoutputindex(&stand->cell->output,PFT_NHAWO,nnat+index,config)+=tree->ind.heartwood.nitrogen;
+landuse/fertilize_tree.c:        tree->nfert_event = 0;
+landuse/fertilize_tree.c:        if (pft->aphen>30 && tree->nfert_event==0)
+landuse/fertilize_tree.c:          tree->nfertilizer = fertil * (1 - param.nfert_split_frac);
+landuse/fertilize_tree.c:          tree->nmanure=manure*(1-param.nfert_split_frac);
+landuse/fertilize_tree.c:          tree->nfert_event++;
+landuse/fertilize_tree.c:        else if (pft->aphen>50 && tree->nfert_event==1)
+landuse/fertilize_tree.c:          fertil = tree->nfertilizer;
+landuse/fertilize_tree.c:          tree->nfertilizer = 0;
+landuse/fertilize_tree.c:          manure = tree->nmanure;
+landuse/fertilize_tree.c:          tree->nmanure = 0;
+landuse/fertilize_tree.c:          tree->nfert_event++;
+landuse/fprint_biomass_tree.c:  fprint_irrigation(file,&biomass_tree->irrigation,pftpar);
+landuse/fprint_biomass_tree.c:          biomass_tree->growing_time,
+landuse/fprint_biomass_tree.c:          biomass_tree->age);
+landuse/fread_biomass_tree.c:  if(fread_irrigation(file,&biomass_tree->irrigation,swap))
+landuse/fread_biomass_tree.c:  freadint1(&biomass_tree->growing_time,swap,file);
+landuse/fread_biomass_tree.c:  return freadint1(&biomass_tree->age,swap,file)!=1;
+landuse/fscantreedens.c:    /*printf("country tree density in %s: %f\n",country->name,country->k_est[nagtree-1]);*/
+landuse/fwrite_biomass_tree.c:  fwrite_irrigation(file,&biomass_tree->irrigation);
+landuse/fwrite_biomass_tree.c:  fwrite(&biomass_tree->growing_time,sizeof(int),1,file);
+landuse/fwrite_biomass_tree.c:  return (fwrite(&biomass_tree->age,sizeof(int),1,file)!=1);
+landuse/landuse.c:      cell->ml.landfrac[j].biomass_tree-=sum;
+landuse/landusechange.c:          biomass_tree->irrigation.pft_id=pft_id;
+landuse/new_biomass_tree.c:  biomass_tree->growing_time=biomass_tree->age=1;
+landuse/new_biomass_tree.c:  init_irrigation(&biomass_tree->irrigation);
+landuse/timber_burn.c:    litter->item[pft->litter].ag.wood[i].carbon-=(tree->ind.heartwood.carbon+tree->ind.sapwood.carbon*2.0/3.0+tree->excess_carbon)*fburnt*nind*treepar->fuelfrac[i];
+landuse/timber_burn.c:    getoutput(output,LITFALLC,config)-=(tree->ind.heartwood.carbon+tree->ind.sapwood.carbon*2.0/3.0+tree->excess_carbon)*fburnt*nind*treepar->fuelfrac[i]*pft->stand->frac;
+landuse/timber_burn.c:    getoutput(output,LITFALLC_WOOD,config)-=(tree->ind.heartwood.carbon+tree->ind.sapwood.carbon*2.0/3.0+tree->excess_carbon)*fburnt*nind*treepar->fuelfrac[i]*pft->stand->frac;
+landuse/timber_burn.c:    litter->item[pft->litter].ag.wood[i].nitrogen-=(tree->ind.heartwood.nitrogen+tree->ind.sapwood.nitrogen*2.0/3.0)*fburnt*nind*treepar->fuelfrac[i];
+landuse/timber_burn.c:    getoutput(output,LITFALLC,config)-=(tree->ind.heartwood.nitrogen+tree->ind.sapwood.nitrogen*2.0/3.0)*fburnt*nind*treepar->fuelfrac[i]*pft->stand->frac;
+landuse/timber_burn.c:    getoutput(output,LITFALLN_WOOD,config)-=(tree->ind.heartwood.nitrogen+tree->ind.sapwood.nitrogen*2.0/3.0)*fburnt*nind*treepar->fuelfrac[i]*pft->stand->frac;
+landuse/timber_burn.c:  burn.carbon=(tree->ind.heartwood.carbon+tree->ind.sapwood.carbon*2.0/3.0+tree->excess_carbon)*fburnt*nind;
+landuse/timber_burn.c:  burn.nitrogen=(tree->ind.heartwood.nitrogen+tree->ind.sapwood.nitrogen*2.0/3.0)*fburnt*nind;
+landuse/timber_harvest.c:  harvest.carbon=(tree->ind.heartwood.carbon+tree->ind.sapwood.carbon*2.0/3.0)*
+landuse/timber_harvest.c:  harvest.nitrogen=(tree->ind.heartwood.nitrogen+tree->ind.sapwood.nitrogen*2.0/3.0)*
+landuse/timber_harvest.c:  harvestleaves.carbon=tree->ind.leaf.carbon*ftimber*(*nind)*standfrac*takeAway[2];
+landuse/timber_harvest.c:  harvestleaves.nitrogen=tree->ind.leaf.nitrogen*ftimber*(*nind)*standfrac*takeAway[2];
+landuse/timber_harvest.c:  harvestroots.carbon=(tree->ind.root.carbon+(tree->ind.sapwood.carbon/3.0))*ftimber*(*nind)*standfrac*takeAway[3];
+landuse/timber_harvest.c:  harvestroots.nitrogen=(tree->ind.root.nitrogen+(tree->ind.sapwood.nitrogen/3.0))*ftimber*(*nind)*standfrac*takeAway[3];
+landuse/timber_harvest.c:  soil->litter.item[pft->litter].ag.leaf.carbon+=tree->ind.leaf.carbon*ftimber*(*nind)*(1-takeAway[2]);
+landuse/timber_harvest.c:  getoutput(output,LITFALLC,config)+=tree->ind.leaf.carbon*ftimber*(*nind)*(1-takeAway[2])*standfrac;
+landuse/timber_harvest.c:  soil->litter.item[pft->litter].ag.leaf.nitrogen+=tree->ind.leaf.nitrogen*ftimber*(*nind)*(1-takeAway[2]);
+landuse/timber_harvest.c:  getoutput(output,LITFALLN,config)+=tree->ind.leaf.nitrogen*ftimber*(*nind)*(1-takeAway[2])*standfrac;
+landuse/timber_harvest.c:    soil->litter.item[pft->litter].ag.wood[i].carbon+=(tree->ind.sapwood.carbon/3.0-tree->ind.debt.carbon)*
+landuse/timber_harvest.c:    getoutput(output,LITFALLC,config)+=(tree->ind.sapwood.carbon/3.0-tree->ind.debt.carbon)*
+landuse/timber_harvest.c:    soil->litter.item[pft->litter].ag.wood[i].nitrogen+=(tree->ind.sapwood.nitrogen/3.0-tree->ind.debt.nitrogen)*
+landuse/timber_harvest.c:    getoutput(output,LITFALLN,config)+=(tree->ind.sapwood.nitrogen/3.0-tree->ind.debt.nitrogen)*
+landuse/timber_harvest.c:    soil->litter.item[pft->litter].ag.wood[i].carbon+=(tree->ind.heartwood.carbon+tree->ind.sapwood.carbon*2.0/3.0)*
+landuse/timber_harvest.c:    getoutput(output,LITFALLC,config)+=(tree->ind.heartwood.carbon+tree->ind.sapwood.carbon*2.0/3.0)*
+landuse/timber_harvest.c:    soil->litter.item[pft->litter].ag.wood[i].nitrogen+=(tree->ind.heartwood.nitrogen+tree->ind.sapwood.nitrogen*2.0/3.0)*
+landuse/timber_harvest.c:    getoutput(output,LITFALLN,config)+=(tree->ind.heartwood.nitrogen+tree->ind.sapwood.nitrogen*2.0/3.0)*
+landuse/timber_harvest.c:  soil->litter.item[pft->litter].bg.carbon+=tree->ind.root.carbon*ftimber*(*nind)*(1-takeAway[3]); //*(1-takeAway_roots)
+landuse/timber_harvest.c:  getoutput(output,LITFALLC,config)+=tree->ind.root.carbon*ftimber*(*nind)*(1-takeAway[3])*standfrac; //*(1-takeAway_roots)
+landuse/timber_harvest.c:  soil->litter.item[pft->litter].bg.nitrogen+=tree->ind.root.nitrogen*ftimber*(*nind)*(1-takeAway[3]); //*(1-takeAway_roots)
+landuse/timber_harvest.c:  getoutput(output,LITFALLN,config)+=tree->ind.root.nitrogen*ftimber*(*nind)*(1-takeAway[3])*standfrac; //*(1-takeAway_roots)
+landuse/timber_harvest.c:  harvest.carbon=(tree->ind.heartwood.carbon+tree->ind.sapwood.carbon*2.0/3.0)*
+landuse/timber_harvest.c:  harvest.nitrogen=(tree->ind.heartwood.nitrogen+tree->ind.sapwood.nitrogen*2.0/3.0)*
+landuse/timber_harvest.c:  soil->litter.item[pft->litter].ag.leaf.carbon+=tree->ind.leaf.carbon*ftimber*(*nind);
+landuse/timber_harvest.c:  getoutput(output,LITFALLC,config)+=tree->ind.leaf.carbon*ftimber*(*nind)*standfrac;
+landuse/timber_harvest.c:  soil->litter.item[pft->litter].ag.leaf.nitrogen+=tree->ind.leaf.nitrogen*ftimber*(*nind);
+landuse/timber_harvest.c:  getoutput(output,LITFALLN,config)+=tree->ind.leaf.nitrogen*ftimber*(*nind)*standfrac;
+landuse/timber_harvest.c:    soil->litter.item[pft->litter].ag.wood[i].carbon+=(tree->ind.sapwood.carbon/3.0-tree->ind.debt.carbon+tree->excess_carbon)*
+landuse/timber_harvest.c:    getoutput(output,LITFALLC,config)+=(tree->ind.sapwood.carbon/3.0-tree->ind.debt.carbon+tree->excess_carbon)*
+landuse/timber_harvest.c:    getoutput(output,LITFALLC_WOOD,config)+=(tree->ind.sapwood.carbon/3.0-tree->ind.debt.carbon+tree->excess_carbon)*
+landuse/timber_harvest.c:    soil->litter.item[pft->litter].ag.wood[i].nitrogen+=(tree->ind.sapwood.nitrogen/3.0-tree->ind.debt.nitrogen)*
+landuse/timber_harvest.c:    getoutput(output,LITFALLN,config)+=(tree->ind.sapwood.nitrogen/3.0-tree->ind.debt.nitrogen)*
+landuse/timber_harvest.c:    getoutput(output,LITFALLN_WOOD,config)+=(tree->ind.sapwood.nitrogen/3.0-tree->ind.debt.nitrogen)*
+landuse/timber_harvest.c:  soil->litter.item[pft->litter].bg.carbon+=tree->ind.root.carbon*ftimber*(*nind);
+landuse/timber_harvest.c:  getoutput(output,LITFALLC,config)+=tree->ind.root.carbon*ftimber*(*nind)*standfrac;
+landuse/timber_harvest.c:  soil->litter.item[pft->litter].bg.nitrogen+=tree->ind.root.nitrogen*ftimber*(*nind);
+landuse/timber_harvest.c:  getoutput(output,LITFALLN,config)+=tree->ind.root.nitrogen*ftimber*(*nind)*standfrac;
+landuse/update_irrig.c:  biomass_tree->age=biomass_tree->growing_time=0;
+landuse/update_irrig.c:  if(biomass_tree->irrigation.irrigation)
+landuse/update_irrig.c:    stand->cell->discharge.dmass_lake+=(biomass_tree->irrigation.irrig_stor+biomass_tree->irrigation.irrig_amount)*stand->cell->coord.area*stand->frac;
+landuse/update_irrig.c:    stand->cell->balance.awater_flux-=(biomass_tree->irrigation.irrig_stor+biomass_tree->irrigation.irrig_amount)*stand->frac;
+landuse/update_irrig.c:    stand->cell->discharge.dmass_lake+=(biomass_tree->irrigation.irrig_stor+biomass_tree->irrigation.irrig_amount)*(1/biomass_tree->irrigation.ec-1)*biomass_tree->irrigation.conv_evap*stand->cell->coord.area*stand->frac;
+landuse/update_irrig.c:    stand->cell->balance.awater_flux-=(biomass_tree->irrigation.irrig_stor+biomass_tree->irrigation.irrig_amount)*(1/biomass_tree->irrigation.ec-1)*biomass_tree->irrigation.conv_evap*stand->frac;
+landuse/update_irrig.c:    getoutput(&stand->cell->output,STOR_RETURN,config)+=(biomass_tree->irrigation.irrig_stor+biomass_tree->irrigation.irrig_amount)*stand->frac;
+landuse/update_irrig.c:    getoutput(&stand->cell->output,CONV_LOSS_EVAP,config)-=(biomass_tree->irrigation.irrig_stor+biomass_tree->irrigation.irrig_amount)*(1/biomass_tree->irrigation.ec-1)*biomass_tree->irrigation.conv_evap*stand->frac;
+landuse/update_irrig.c:    getoutput(&stand->cell->output,CONV_LOSS_DRAIN,config)-=(biomass_tree->irrigation.irrig_stor+biomass_tree->irrigation.irrig_amount)*(1/biomass_tree->irrigation.ec-1)*(1-biomass_tree->irrigation.conv_evap)*stand->frac;
+landuse/update_irrig.c:    stand->cell->balance.aconv_loss_evap-=(biomass_tree->irrigation.irrig_stor+biomass_tree->irrigation.irrig_amount)*(1/biomass_tree->irrigation.ec-1)*biomass_tree->irrigation.conv_evap*stand->frac;
+landuse/update_irrig.c:    stand->cell->balance.aconv_loss_drain-=(biomass_tree->irrigation.irrig_stor+biomass_tree->irrigation.irrig_amount)*(1/biomass_tree->irrigation.ec-1)*(1-biomass_tree->irrigation.conv_evap)*stand->frac;
+landuse/update_irrig.c:      stand->cell->ml.image_data->mirrwatdem[NMONTH-1]-=(biomass_tree->irrigation.irrig_stor+biomass_tree->irrigation.irrig_amount)*(1/biomass_tree->irrigation.ec-1)*stand->frac;
+landuse/update_irrig.c:      stand->cell->ml.image_data->mevapotr[NMONTH-1]-=(biomass_tree->irrigation.irrig_stor+biomass_tree->irrigation.irrig_amount)*(1/biomass_tree->irrigation.ec-1)*stand->frac;
+landuse/update_irrig.c:      getoutputindex(&stand->cell->output,CFT_CONV_LOSS_EVAP,index+biomass_tree->irrigation.irrigation*nirrig,config)-=(biomass_tree->irrigation.irrig_stor+biomass_tree->irrigation.irrig_amount)*(1/biomass_tree->irrigation.ec-1)*biomass_tree->irrigation.conv_evap*stand->frac;
+landuse/update_irrig.c:      getoutputindex(&stand->cell->output,CFT_CONV_LOSS_DRAIN,index+biomass_tree->irrigation.irrigation*nirrig,config)-=(biomass_tree->irrigation.irrig_stor+biomass_tree->irrigation.irrig_amount)*(1/biomass_tree->irrigation.ec-1)*(1-biomass_tree->irrigation.conv_evap)*stand->frac;
+landuse/update_irrig.c:      getoutputindex(&stand->cell->output,CFT_CONV_LOSS_EVAP,index+biomass_tree->irrigation.irrigation*nirrig,config)-=(biomass_tree->irrigation.irrig_stor+biomass_tree->irrigation.irrig_amount)*(1/biomass_tree->irrigation.ec-1)*biomass_tree->irrigation.conv_evap;
+landuse/update_irrig.c:      getoutputindex(&stand->cell->output,CFT_CONV_LOSS_DRAIN,index+biomass_tree->irrigation.irrigation*nirrig,config)-=(biomass_tree->irrigation.irrig_stor+biomass_tree->irrigation.irrig_amount)*(1/biomass_tree->irrigation.ec-1)*(1-biomass_tree->irrigation.conv_evap);
+landuse/update_irrig.c:    biomass_tree->irrigation.irrig_stor=0;
+landuse/update_irrig.c:    biomass_tree->irrigation.irrig_amount=0;
+landuse/woodconsum.c:  vegc_tree.carbon=tree->ind.sapwood.carbon*2.0/3.0*pft->nind+(tree->ind.heartwood.carbon-tree->ind.debt.carbon)*pft->nind;  /* [gC/m2] */
+landuse/woodconsum.c:  vegc_tree.nitrogen=tree->ind.sapwood.nitrogen*2.0/3.0*pft->nind+(tree->ind.heartwood.nitrogen-tree->ind.debt.nitrogen)*pft->nind;  /* [gC/m2] */
+landuse/woodconsum.c:  litter->item[pft->litter].bg.carbon+=(disturb*tree->ind.root.carbon+disturb*tree->ind.sapwood.carbon/3.0);
+landuse/woodconsum.c:  litter->item[pft->litter].bg.nitrogen+=(disturb*tree->ind.root.nitrogen+disturb*tree->ind.sapwood.nitrogen/3.0);
+landuse/woodconsum.c:  litter->item[pft->litter].ag.leaf.carbon+=disturb*tree->ind.leaf.carbon; /* cannot be burned, send to litter*/
+landuse/woodconsum.c:  litter->item[pft->litter].ag.leaf.nitrogen+=disturb*tree->ind.leaf.nitrogen; /* cannot be burned, send to litter*/
+landuse/woodconsum.c:  update_fbd_tree(litter,pft->par->fuelbulkdensity,disturb*tree->ind.leaf.carbon,0);
+lpj/equilveg.c:        tree->excess_carbon=0.0;
+lpj/fwriteoutput.c:                    getoutputindex(&grid[cell].output,PFT_NROOT,pft->par->id,config)+=tree->ind.root.nitrogen;
+lpj/fwriteoutput.c:                    getoutputindex(&grid[cell].output,PFT_CROOT,pft->par->id,config)+=tree->ind.root.carbon;
+lpj/fwriteoutput.c:                    getoutputindex(&grid[cell].output,PFT_CLEAF,pft->par->id,config)+=tree->ind.leaf.carbon;
+lpj/fwriteoutput.c:                    getoutputindex(&grid[cell].output,PFT_NLEAF,pft->par->id,config)+=tree->ind.leaf.nitrogen;
+lpj/fwriteoutput.c:                    getoutputindex(&grid[cell].output,PFT_CSAPW,nnat+rwp(ncft)+data->irrigation*getnirrig(ncft,config),config)+=tree->ind.sapwood.carbon;
+lpj/fwriteoutput.c:                    getoutputindex(&grid[cell].output,PFT_CSAPW,nnat+rbtree(ncft)+data->irrigation*getnirrig(ncft,config),config)+=tree->ind.sapwood.carbon;
+lpj/fwriteoutput.c:                    getoutputindex(&grid[cell].output,PFT_CSAPW,nnat+agtree(ncft,config->nwptype)+data->pft_id-npft+config->nagtree+data->irrigation*getnirrig(ncft,config),config)+=tree->ind.sapwood.carbon;
+lpj/fwriteoutput.c:                    getoutputindex(&grid[cell].output,PFT_CSAPW,pft->par->id,config)+=tree->ind.sapwood.carbon;
+lpj/fwriteoutput.c:                    getoutputindex(&grid[cell].output,PFT_NSAPW,nnat+rwp(ncft)+data->irrigation*getnirrig(ncft,config),config)+=tree->ind.sapwood.nitrogen;
+lpj/fwriteoutput.c:                    getoutputindex(&grid[cell].output,PFT_NSAPW,nnat+rbtree(ncft)+data->irrigation*getnirrig(ncft,config),config)+=tree->ind.sapwood.nitrogen;
+lpj/fwriteoutput.c:                    getoutputindex(&grid[cell].output,PFT_NSAPW,nnat+agtree(ncft,config->nwptype)+data->pft_id-npft+config->nagtree+data->irrigation*getnirrig(ncft,config),config)+=tree->ind.sapwood.nitrogen;
+lpj/fwriteoutput.c:                    getoutputindex(&grid[cell].output,PFT_NSAPW,pft->par->id,config)+=tree->ind.sapwood.nitrogen;
+lpj/fwriteoutput.c:                    getoutputindex(&grid[cell].output,PFT_CHAWO,nnat+rwp(ncft)+data->irrigation*getnirrig(ncft,config),config)+=tree->ind.heartwood.carbon;
+lpj/fwriteoutput.c:                    getoutputindex(&grid[cell].output,PFT_CHAWO,nnat+rbtree(ncft)+data->irrigation*getnirrig(ncft,config),config)+=tree->ind.heartwood.carbon;
+lpj/fwriteoutput.c:                    getoutputindex(&grid[cell].output,PFT_CHAWO,nnat+agtree(ncft,config->nwptype)+data->pft_id-npft+config->nagtree+data->irrigation*getnirrig(ncft,config),config)+=tree->ind.heartwood.carbon;
+lpj/fwriteoutput.c:                    getoutputindex(&grid[cell].output,PFT_CHAWO,pft->par->id,config)+=tree->ind.heartwood.carbon;
+lpj/fwriteoutput.c:                    getoutputindex(&grid[cell].output,PFT_NHAWO,nnat+rwp(ncft)+data->irrigation*getnirrig(ncft,config),config)+=tree->ind.heartwood.nitrogen;
+lpj/fwriteoutput.c:                    getoutputindex(&grid[cell].output,PFT_NHAWO,nnat+rbtree(ncft)+data->irrigation*getnirrig(ncft,config),config)+=tree->ind.heartwood.nitrogen;
+lpj/fwriteoutput.c:                    getoutputindex(&grid[cell].output,PFT_NHAWO,nnat+agtree(ncft,config->nwptype)+data->pft_id-npft+config->nagtree+data->irrigation*getnirrig(ncft,config),config)+=tree->ind.heartwood.nitrogen;
+lpj/fwriteoutput.c:                    getoutputindex(&grid[cell].output,PFT_NHAWO,pft->par->id,config)+=tree->ind.heartwood.nitrogen;
+lpj/phenology_gsi.c:      tree->isphen=FALSE;
+lpj/roughnesslength.c: * For tree-class PFTs / stands, a height is contained in the PFT-specific data,
+lpj/roughnesslength.c: * For non-tree-PFTs a PFT-specific roughness length is taken from a table.
+lpj/roughnesslength.c:        const Real height = tree->height;
+soil/biologicalNfixation.c:        if(tree->ind.root.carbon>param.min_c_bnf &&
+soil/biologicalNfixation.c:            ((tree->ind.leaf.nitrogen+pft->bm_inc.nitrogen/pft->nind*tree->falloc.leaf)/(tree->ind.leaf.carbon+pft->bm_inc.carbon/pft->nind*tree->falloc.leaf)<(pft->par->ncleaf.high)))
+tree/agb_tree.c:  return (agb_tree_sum(tree->ind)-tree->ind.debt.carbon+tree->excess_carbon)*pft->nind-tree->turn_litt.leaf.carbon;
+tree/albedo_tree.c:  if (tree->height>height_min)
+tree/albedo_tree.c:    htop = tree->height;
+tree/albedo_tree.c:    hbot = c_hbot*tree->height;
+tree/allocation_tree.c:  pft->bm_inc.carbon+=tree->excess_carbon*pft->nind;
+tree/allocation_tree.c:  tree->excess_carbon=0;
+tree/allocation_tree.c:      tree->ind.root.carbon+=bm_inc_ind.carbon;
+tree/allocation_tree.c:    tinc_ind.sapwood.carbon=-tree->ind.sapwood.carbon;
+tree/allocation_tree.c:    if (tree->height>0.0) 
+tree/allocation_tree.c:      if (pft->stand->type->landusetype==BIOMASS_TREE && tree->ind.root.carbon>=tree->ind.leaf.carbon/lmtorm &&
+tree/allocation_tree.c:    		  treepar->k_latosa*tree->ind.sapwood.carbon/(wooddens*tree->height*pft->par->sla)-tree->ind.leaf.carbon>=0.0)
+tree/allocation_tree.c:    	  tinc_ind_min.leaf.carbon=treepar->k_latosa*tree->ind.sapwood.carbon/(wooddens*tree->height*
+tree/allocation_tree.c:                        pft->par->sla)-tree->ind.leaf.carbon;
+tree/allocation_tree.c:    	  tinc_ind_min.root.carbon=treepar->k_latosa*tree->ind.sapwood.carbon/(wooddens*tree->height*
+tree/allocation_tree.c:                        pft->par->sla*lmtorm)-tree->ind.root.carbon;
+tree/allocation_tree.c:                 tree->ind.sapwood.carbon-tree->ind.debt.carbon)*CDEBT_MAXLOAN_MASS,0.0);
+tree/allocation_tree.c:      data.b= tree->ind.sapwood.carbon+bm_inc_ind.carbon-tree->ind.leaf.carbon/lmtorm+
+tree/allocation_tree.c:              tree->ind.root.carbon;
+tree/allocation_tree.c:      data.ind_leaf=tree->ind.leaf.carbon;
+tree/allocation_tree.c:      data.ind_heart=tree->ind.heartwood.carbon;
+tree/allocation_tree.c:      x2=(bm_inc_ind.carbon-(tree->ind.leaf.carbon/lmtorm-tree->ind.root.carbon))/data.lm;
+tree/allocation_tree.c:      x1= (tree->ind.leaf.carbon<1.0e-10)  ? x2/NSEG : 0;
+tree/allocation_tree.c:        tinc_ind.root.carbon=(tinc_ind.leaf.carbon+tree->ind.leaf.carbon)/lmtorm-tree->ind.root.carbon;
+tree/allocation_tree.c:      tinc_ind.leaf.carbon=(bm_inc_ind.carbon+tree->ind.root.carbon-tree->ind.leaf.carbon/lmtorm)/
+tree/allocation_tree.c:        tinc_ind.leaf.carbon=(tree->ind.root.carbon+tinc_ind.root.carbon)*lmtorm-tree->ind.leaf.carbon;
+tree/allocation_tree.c:      tinc_ind.sapwood.carbon=(tinc_ind.leaf.carbon+tree->ind.leaf.carbon)*wooddens*tree->height*
+tree/allocation_tree.c:                       pft->par->sla/treepar->k_latosa-tree->ind.sapwood.carbon;
+tree/allocation_tree.c:  if(bm_inc_ind.carbon>0 && tinc_ind.leaf.carbon>0 && tinc_ind.sapwood.carbon>0 && tree->ind.root.carbon>0)
+tree/allocation_tree.c:    tree->falloc.leaf=tinc_ind.leaf.carbon/bm_inc_ind.carbon;
+tree/allocation_tree.c:    tree->falloc.root=tinc_ind.root.carbon/bm_inc_ind.carbon;
+tree/allocation_tree.c:    tree->falloc.sapwood=tinc_ind.sapwood.carbon/bm_inc_ind.carbon;
+tree/allocation_tree.c:  tree->ind.leaf.carbon+=tinc_ind.leaf.carbon;
+tree/allocation_tree.c:  tree->ind.root.carbon+=tinc_ind.root.carbon;
+tree/allocation_tree.c:  tree->ind.sapwood.carbon+=tinc_ind.sapwood.carbon;
+tree/allocation_tree.c:  tree->ind.heartwood.carbon+=tinc_ind.heartwood.carbon;
+tree/allocation_tree.c:  tree->ind.debt.carbon+=tinc_ind.debt.carbon;
+tree/allocation_tree.c:    if(tree->ind.leaf.carbon>0 && bm_inc_ind.nitrogen>0)
+tree/allocation_tree.c:      nitrogen_allocation_tree(&a,&b,&c,tree->ind.leaf,tree->ind.root,tree->ind.sapwood,
+tree/allocation_tree.c:      if((tree->ind.leaf.nitrogen+a*bm_inc_ind.nitrogen)/tree->ind.leaf.carbon>pft->par->ncleaf.high)
+tree/allocation_tree.c:        nitrogen_before=tree->ind.leaf.nitrogen;
+tree/allocation_tree.c:        tree->ind.leaf.nitrogen=tree->ind.leaf.carbon*pft->par->ncleaf.high;
+tree/allocation_tree.c:        bm_inc_ind.nitrogen-=tree->ind.leaf.nitrogen-nitrogen_before;
+tree/allocation_tree.c:        if(bm_inc_ind.nitrogen>=tree->ind.root.carbon*pft->par->ncleaf.high/treepar->ratio.root-tree->ind.root.nitrogen)
+tree/allocation_tree.c:          nitrogen_before=tree->ind.root.nitrogen;
+tree/allocation_tree.c:          tree->ind.root.nitrogen=tree->ind.root.carbon*pft->par->ncleaf.high/treepar->ratio.root;
+tree/allocation_tree.c:          bm_inc_ind.nitrogen-=tree->ind.root.nitrogen-nitrogen_before;
+tree/allocation_tree.c:          tree->ind.root.nitrogen+= bm_inc_ind.nitrogen;
+tree/allocation_tree.c:        if( bm_inc_ind.nitrogen>=tree->ind.sapwood.carbon*pft->par->ncleaf.high/treepar->ratio.sapwood-tree->ind.sapwood.nitrogen)
+tree/allocation_tree.c:          nitrogen_before=tree->ind.sapwood.nitrogen;
+tree/allocation_tree.c:          tree->ind.sapwood.nitrogen=tree->ind.sapwood.carbon*pft->par->ncleaf.high/treepar->ratio.sapwood;
+tree/allocation_tree.c:          bm_inc_ind.nitrogen-=tree->ind.sapwood.nitrogen-nitrogen_before;
+tree/allocation_tree.c:          tree->ind.sapwood.nitrogen+= bm_inc_ind.nitrogen;
+tree/allocation_tree.c:        tree->ind.leaf.nitrogen+=a*bm_inc_ind.nitrogen;
+tree/allocation_tree.c:        tree->ind.root.nitrogen+=b*bm_inc_ind.nitrogen;
+tree/allocation_tree.c:        tree->ind.sapwood.nitrogen+=c*bm_inc_ind.nitrogen;
+tree/allocation_tree.c:        if(tree->ind.leaf.nitrogen/tree->ind.leaf.carbon<pft->par->ncleaf.low)
+tree/allocation_tree.c:          cleaf=tree->ind.leaf.nitrogen/pft->par->ncleaf.low;
+tree/allocation_tree.c:          //litter->item[pft->litter].ag.leaf.carbon+=(tree->ind.leaf.carbon-cleaf)*pft->nind;
+tree/allocation_tree.c:          tree->excess_carbon+=(tree->ind.leaf.carbon-cleaf);
+tree/allocation_tree.c:          tree->ind.leaf.carbon=cleaf;
+tree/allocation_tree.c:        if(tree->ind.root.nitrogen/tree->ind.root.carbon<pft->par->ncleaf.low/treepar->ratio.root)
+tree/allocation_tree.c:          croot=tree->ind.root.nitrogen/pft->par->ncleaf.low*treepar->ratio.root;
+tree/allocation_tree.c:          //litter->bg[pft->litter].carbon+=(tree->ind.root.carbon-croot)*pft->nind;
+tree/allocation_tree.c:          tree->excess_carbon+=(tree->ind.root.carbon-croot);
+tree/allocation_tree.c:          tree->ind.root.carbon=croot;
+tree/allocation_tree.c:        if(tree->ind.sapwood.carbon>0 && tree->ind.sapwood.nitrogen/tree->ind.sapwood.carbon<pft->par->ncleaf.low/treepar->ratio.sapwood)
+tree/allocation_tree.c:          csapwood=tree->ind.sapwood.nitrogen/pft->par->ncleaf.low*treepar->ratio.sapwood;
+tree/allocation_tree.c:            litter->item[pft->litter].ag.wood[i].carbon+=(tree->ind.sapwood.carbon-csapwood)*pft->nind*treepar->fuelfrac[i];
+tree/allocation_tree.c:                            (tree->ind.sapwood.carbon-csapwood)*pft->nind*treepar->fuelfrac[i],i);
+tree/allocation_tree.c:          tree->excess_carbon+=(tree->ind.sapwood.carbon-csapwood);
+tree/allocation_tree.c:          tree->ind.sapwood.carbon=csapwood;
+tree/allometry_tree.c:  tree->height=(tree->ind.sapwood.carbon<=0.0 || tree->ind.leaf.carbon<=0.0) ? 0 : 
+tree/allometry_tree.c:               treepar->k_latosa*tree->ind.sapwood.carbon/(tree->ind.leaf.carbon*pft->par->sla* wooddens);
+tree/allometry_tree.c:  if(tree->height>treepar->height_max)
+tree/allometry_tree.c:    tree->height=treepar->height_max;
+tree/allometry_tree.c:    sm_ind_temp=tree->ind.sapwood.carbon;
+tree/allometry_tree.c:    tree->ind.sapwood.carbon=tree->ind.leaf.carbon*treepar->height_max*wooddens*pft->par->sla/
+tree/allometry_tree.c:    tree->ind.heartwood.carbon+=sm_ind_temp-tree->ind.sapwood.carbon;
+tree/allometry_tree.c:  allometry=treepar->allom1*pow(tree->height/treepar->allom2,reinickerp/treepar->allom3);
+tree/allometry_tree.c:  stemdiam=pow(tree->height/treepar->allom2,1.0/treepar->allom3);
+tree/allometry_tree.c:  tree->barkthickness=treepar->barkthick_par1*(stemdiam*100.0)+treepar->barkthick_par2;
+tree/allometry_tree.c:  tree->crownarea=min(allometry,treepar->crownarea_max);
+tree/alphaa_tree.c:    if((tree->ind.leaf.carbon+tree->excess_carbon*tree->falloc.leaf)>10)
+tree/alphaa_tree.c:      scaler=tree->ind.leaf.nitrogen/(tree->ind.leaf.carbon+tree->excess_carbon*tree->falloc.leaf) /
+tree/annual_tree.c:     getoutputindex(&pft->stand->cell->output,PFT_HEIGHT,pft->par->id,config)+=tree->height;
+tree/coppice_tree.c:  harvest.carbon=(((tree->ind.sapwood.carbon*HARVEST_EFFICIENCY_SAP+tree->ind.heartwood.carbon*HARVEST_EFFICIENCY)-tree->ind.debt.carbon)*pft->nind);
+tree/coppice_tree.c:  harvest.nitrogen=(((tree->ind.sapwood.nitrogen*HARVEST_EFFICIENCY_SAP+tree->ind.heartwood.nitrogen*HARVEST_EFFICIENCY)-tree->ind.debt.nitrogen)*pft->nind);
+tree/coppice_tree.c:  leaf_old.carbon=tree->ind.leaf.carbon;
+tree/coppice_tree.c:  leaf_old.nitrogen=tree->ind.leaf.nitrogen;
+tree/coppice_tree.c:  tree->ind.heartwood.carbon*=1-HARVEST_EFFICIENCY;
+tree/coppice_tree.c:  tree->ind.sapwood.carbon*=1-HARVEST_EFFICIENCY_SAP;
+tree/coppice_tree.c:  tree->ind.debt.carbon=0;
+tree/coppice_tree.c:  tree->height=tree->height*(1-(HARVEST_EFFICIENCY_SAP-0.01)); /* for a reduction in ind.leaf.carbon, reduce height less (-0.01) than ind.sapwood.carbon */
+tree/coppice_tree.c:  allometry=treepar->allom1*pow(tree->height/treepar->allom2,reinickerp/treepar->allom3); /* calculate crownarea within coppice routine instead of calling allometry at the end */
+tree/coppice_tree.c:  tree->crownarea=min(allometry,treepar->crownarea_max);
+tree/coppice_tree.c:  tree->ind.leaf.carbon=treepar->k_latosa*tree->ind.sapwood.carbon/(wooddens*tree->height*pft->par->sla);
+tree/coppice_tree.c:  harvest.carbon+=(leaf_old.carbon-tree->ind.leaf.carbon)*pft->nind;
+tree/coppice_tree.c:  tree->ind.heartwood.nitrogen*=1-HARVEST_EFFICIENCY;
+tree/coppice_tree.c:  tree->ind.sapwood.nitrogen*=1-HARVEST_EFFICIENCY_SAP;
+tree/coppice_tree.c:  tree->ind.debt.nitrogen=0;
+tree/coppice_tree.c:  tree->ind.leaf.nitrogen=leaf_old.nitrogen*(tree->ind.leaf.carbon/leaf_old.carbon);
+tree/coppice_tree.c:  harvest.nitrogen+=(leaf_old.nitrogen-tree->ind.leaf.nitrogen)*pft->nind;
+tree/establishment_tree.c:  tree->ind.leaf.carbon=(tree->ind.leaf.carbon*nind_old+treepar->sapl.leaf.carbon*est_pft)/pft->nind;
+tree/establishment_tree.c:  tree->ind.root.carbon=(tree->ind.root.carbon*nind_old+treepar->sapl.root.carbon*est_pft)/pft->nind;
+tree/establishment_tree.c:  tree->ind.sapwood.carbon=(tree->ind.sapwood.carbon*nind_old+treepar->sapl.sapwood.carbon*est_pft)/pft->nind;
+tree/establishment_tree.c:  tree->ind.heartwood.carbon=(tree->ind.heartwood.carbon*nind_old+treepar->sapl.heartwood.carbon*est_pft)/pft->nind;
+tree/establishment_tree.c:  tree->ind.debt.carbon=tree->ind.debt.carbon*nind_old/pft->nind;
+tree/establishment_tree.c:  tree->excess_carbon*=nind_old/pft->nind;
+tree/establishment_tree.c:    tree->turn.leaf.carbon+=treepar->sapl.leaf.carbon*treepar->turnover.leaf;
+tree/establishment_tree.c:    tree->turn_litt.leaf.carbon+=treepar->sapl.leaf.carbon*treepar->turnover.leaf*pft->nind;
+tree/establishment_tree.c:    tree->turn.leaf.nitrogen+=treepar->sapl.leaf.nitrogen*treepar->turnover.leaf;
+tree/establishment_tree.c:    tree->turn_litt.leaf.nitrogen+=treepar->sapl.leaf.nitrogen*treepar->turnover.leaf*pft->nind;
+tree/establishment_tree.c:  tree->ind.leaf.nitrogen=(tree->ind.leaf.nitrogen*nind_old+treepar->sapl.leaf.nitrogen*est_pft)/pft->nind;
+tree/establishment_tree.c:  tree->ind.root.nitrogen=(tree->ind.root.nitrogen*nind_old+treepar->sapl.root.nitrogen*est_pft)/pft->nind;
+tree/establishment_tree.c:  tree->ind.sapwood.nitrogen=(tree->ind.sapwood.nitrogen*nind_old+treepar->sapl.sapwood.nitrogen*est_pft)/pft->nind;
+tree/establishment_tree.c:  tree->ind.heartwood.nitrogen=(tree->ind.heartwood.nitrogen*nind_old+treepar->sapl.heartwood.nitrogen*est_pft)/pft->nind;
+tree/establishment_tree.c:  tree->ind.debt.nitrogen=tree->ind.debt.nitrogen*nind_old/pft->nind;
+tree/fire_tree.c:  flux.carbon=disturb*pft->nind*(tree->ind.leaf.carbon+tree->ind.sapwood.carbon+
+tree/fire_tree.c:                          tree->ind.heartwood.carbon-tree->ind.debt.carbon+tree->ind.root.carbon+tree->excess_carbon);
+tree/fire_tree.c:  flux.nitrogen=disturb*pft->nind*(tree->ind.leaf.nitrogen+tree->ind.sapwood.nitrogen+
+tree/fire_tree.c:                          tree->ind.heartwood.nitrogen-tree->ind.debt.nitrogen+tree->ind.root.nitrogen);
+tree/firemortality_tree.c:  tau_c=2.9 * tree->barkthickness * tree->barkthickness;
+tree/firemortality_tree.c:  crown_length_tree=tree->height*treepar->crownlength;
+tree/firemortality_tree.c:  if (scorch_height < (tree->height - crown_length_tree))
+tree/firemortality_tree.c:  else if(scorch_height < tree->height)
+tree/firemortality_tree.c:    ck=(scorch_height - tree->height + crown_length_tree) / crown_length_tree;
+tree/fpc_tree.c:  pft->fpc=(tree->crownarea>0.0) ? tree->crownarea*pft->nind*
+tree/fprint_tree.c:/**     Function prints tree-specific state variables in ASCII file                \n**/
+tree/fprint_tree.c:               tree->height,tree->crownarea,tree->barkthickness,bool2str(tree->isphen),
+tree/fprint_tree.c:               tree->gddtw);
+tree/fprint_tree.c:    fprintf(file,"Aphen raingreen:\t%g\n",tree->aphen_raingreen);
+tree/fprint_tree.c:    fprinttreephys2(file,tree->ind,pft->nind);
+tree/fprint_tree.c:            tree->turn.leaf.carbon,tree->turn.root.carbon,tree->turn.leaf.nitrogen,tree->turn.root.nitrogen);
+tree/fprint_tree.c:            tree->turn_litt.leaf.carbon,tree->turn_litt.root.carbon,tree->turn_litt.leaf.nitrogen,tree->turn_litt.root.nitrogen);
+tree/fprint_tree.c:              tree->fruit.carbon,tree->fruit.nitrogen);
+tree/fprint_tree.c:    fprintf(file,"Excess carbon:\t%g (gC/m2)\n",tree->excess_carbon*pft->nind);
+tree/fprint_tree.c:      fprintf(file,"N fertilizer:\t%g (gN/m2)\n",tree->nfertilizer);
+tree/fprint_tree.c:      fprintf(file,"N manure:\t%g (gN/m2)\n",tree->nmanure);
+tree/fprint_tree.c:      fprintf(file,"Nfert event:\t%d\n",tree->nfert_event);
+tree/fprint_tree.c:    fprintf(file,"falloc:\t\t%g %g %g\n",tree->falloc.leaf,tree->falloc.root,tree->falloc.sapwood);
+tree/fprint_tree.c:    fprinttreephys2carbon(file,tree->ind,pft->nind);
+tree/fprint_tree.c:            tree->turn.leaf.carbon,tree->turn.root.carbon);
+tree/fprint_tree.c:            tree->turn_litt.leaf.carbon,tree->turn_litt.root.carbon);
+tree/fprint_tree.c:      fprintf(file,"Fruit:\t\t%g (gC/m2)\n",tree->fruit.carbon);
+tree/fprint_tree.c:    fprintf(file,"Boll age:\t%d (d)\n",tree->boll_age);
+tree/fprintpar_tree.c:/**     Function prints tree-specific PFT parameter                                \n**/
+tree/fprintpar_tree.c:          leaftype[partree->leaftype],
+tree/fprintpar_tree.c:          1/partree->turnover.leaf,1/partree->turnover.sapwood,1/partree->turnover.root,
+tree/fprintpar_tree.c:          1/partree->nc_ratio.leaf,1/partree->nc_ratio.sapwood,1/partree->nc_ratio.root,
+tree/fprintpar_tree.c:          partree->crownarea_max,
+tree/fprintpar_tree.c:          partree->sapl.leaf.carbon,partree->sapl.sapwood.carbon,
+tree/fprintpar_tree.c:          partree->sapl.heartwood.carbon,partree->sapl.root.carbon,partree->k_latosa,
+tree/fprintpar_tree.c:          partree->allom1,partree->allom2,partree->allom3,partree->allom4);
+tree/fprintpar_tree.c:            partree->ratio.sapwood,partree->ratio.root);
+tree/fprintpar_tree.c:    fprintf(file,"aphen:\t\t%g %g\n",partree->aphen_min,partree->aphen_max);
+tree/fprintpar_tree.c:          partree->height_max,partree->reprod_cost,
+tree/fprintpar_tree.c:          partree->k_est,partree->barkthick_par1,partree->barkthick_par2);
+tree/fprintpar_tree.c:            partree->scorchheight_f_param,partree->crownlength,
+tree/fprintpar_tree.c:            partree->crown_mort_rck,partree->crown_mort_p);
+tree/fprintpar_tree.c:    fprintf(file,"%g ",partree->fuelfrac[i]);
+tree/fprintpar_tree.c:            partree->rotation,partree->max_rotation_length);
+tree/fprintpar_tree.c:            partree->harvest_ratio,partree->cnratio_fruit,bool2str(partree->with_grass));
+tree/fprintpar_tree.c:    fprintf(file,"P_init:\t\t%g (1/m2)\n",partree->P_init);
+tree/fread_tree.c:/**     Function reads tree-specific PFT variables from restart file               \n**/
+tree/fread_tree.c:  freadreal1(&tree->height,swap,file);
+tree/fread_tree.c:  freadreal1(&tree->crownarea,swap,file);
+tree/fread_tree.c:  freadreal1(&tree->barkthickness,swap,file);
+tree/fread_tree.c:  freadreal1(&tree->gddtw,swap,file);
+tree/fread_tree.c:  freadreal1(&tree->aphen_raingreen,swap,file);
+tree/fread_tree.c:  freadint1(&tree->isphen,swap,file);
+tree/fread_tree.c:  freadreal((Real *)&tree->turn,sizeof(Treeturn)/sizeof(Real),swap,file);
+tree/fread_tree.c:  freadreal((Real *)&tree->turn_litt,sizeof(Treeturn)/sizeof(Real),swap,file);
+tree/fread_tree.c:  freadreal1(&tree->turn_nbminc,swap,file);
+tree/fread_tree.c:  freadreal((Real *)&tree->ind,sizeof(Treephys2)/sizeof(Real),swap,file);
+tree/fread_tree.c:    freadreal((Real *)&tree->fruit,sizeof(Stocks)/sizeof(Real),swap,file);
+tree/fread_tree.c:    freadint1(&tree->boll_age,swap,file);
+tree/fread_tree.c:    tree->fruit.carbon=tree->fruit.nitrogen=0;
+tree/fread_tree.c:  freadreal1(&tree->excess_carbon,swap,file);
+tree/fread_tree.c:  freadreal1(&tree->nfertilizer,swap,file);
+tree/fread_tree.c:  freadreal1(&tree->nmanure,swap,file);
+tree/fread_tree.c:  freadint1(&tree->nfert_event,swap,file);
+tree/fread_tree.c:  return freadreal((Real *)&tree->falloc,sizeof(Treephyspar)/sizeof(Real),swap,file)!=sizeof(Treephyspar)/sizeof(Real);
+tree/free_tree.c:/**     Function deallocates tree-specific variables                               \n**/
+tree/free_tree.c:  pft->stand->soil.litter.item[pft->litter].ag.leaf.carbon+=tree->turn.leaf.carbon*pft->nind-tree->turn_litt.leaf.carbon;
+tree/free_tree.c:  pft->stand->soil.litter.item[pft->litter].ag.leaf.nitrogen+=tree->turn.leaf.nitrogen*pft->nind-tree->turn_litt.leaf.nitrogen;
+tree/free_tree.c:  update_fbd_tree(&pft->stand->soil.litter,pft->par->fuelbulkdensity,tree->turn.leaf.carbon*pft->nind-tree->turn_litt.leaf.carbon,0);
+tree/free_tree.c:  pft->stand->soil.litter.item[pft->litter].bg.carbon+=tree->turn.root.carbon*pft->nind-tree->turn_litt.root.carbon;
+tree/free_tree.c:  pft->stand->soil.litter.item[pft->litter].bg.nitrogen+=tree->turn.root.nitrogen*pft->nind-tree->turn_litt.root.nitrogen;
+tree/fscanpft_tree.c:/**     Function reads tree-specific parameter from text file                      \n**/
+tree/fscanpft_tree.c:  if(fscankeywords(file,&tree->leaftype,"leaftype",leaftype,3,FALSE,verb))
+tree/fscanpft_tree.c:  fscantreephys2(verb,file,&tree->turnover,pft->name,"turnover");
+tree/fscanpft_tree.c:    if(tree->leaftype==BROADLEAVED)
+tree/fscanpft_tree.c:  tree->turnover.root=1.0/tree->turnover.root;
+tree/fscanpft_tree.c:  tree->turnover.sapwood=1.0/tree->turnover.sapwood;
+tree/fscanpft_tree.c:  tree->turnover.leaf=1.0/tree->turnover.leaf;
+tree/fscanpft_tree.c:  fscantreephys2(verb,file,&tree->nc_ratio,pft->name,"cn_ratio");
+tree/fscanpft_tree.c:  tree->nc_ratio.leaf=1/tree->nc_ratio.leaf;
+tree/fscanpft_tree.c:  tree->nc_ratio.sapwood=1/tree->nc_ratio.sapwood;
+tree/fscanpft_tree.c:  tree->nc_ratio.root=1/tree->nc_ratio.root;
+tree/fscanpft_tree.c:    fscanratio2(verb,file,&tree->ratio,pft->name,"ratio");
+tree/fscanpft_tree.c:  fscanreal2(verb,file,&tree->crownarea_max,pft->name,"crownarea_max");
+tree/fscanpft_tree.c:    fscanreal2(verb,file,&tree->aphen_min,pft->name,"aphen_min");
+tree/fscanpft_tree.c:    fscanreal2(verb,file,&tree->aphen_max,pft->name,"aphen_max");
+tree/fscanpft_tree.c:  fscanreal2(verb,file,&tree->reprod_cost,pft->name,"reprod_cost");
+tree/fscanpft_tree.c:  fscanreal2(verb,file,&tree->allom1,pft->name,"allom1");
+tree/fscanpft_tree.c:  fscanreal2(verb,file,&tree->allom2,pft->name,"allom2");
+tree/fscanpft_tree.c:  fscanreal2(verb,file,&tree->allom3,pft->name,"allom3");
+tree/fscanpft_tree.c:  fscanreal2(verb,file,&tree->allom4,pft->name,"allom4");
+tree/fscanpft_tree.c:  fscanreal2(verb,file,&tree->height_max,pft->name,"height_max");
+tree/fscanpft_tree.c:  fscanreal2(verb,file,&tree->k_latosa,pft->name,"k_latosa");
+tree/fscanpft_tree.c:  if(tree->k_latosa<=0)
+tree/fscanpft_tree.c:              tree->k_latosa,pft->name);
+tree/fscanpft_tree.c:    fscanreal2(verb,file,&tree->scorchheight_f_param,pft->name,"scorchheight_f_param");
+tree/fscanpft_tree.c:    fscanreal2(verb,file,&tree->crownlength,pft->name,"crownlength");
+tree/fscanpft_tree.c:    fscanreal2(verb,file,&tree->crown_mort_rck,pft->name,"crown_mort_rck");
+tree/fscanpft_tree.c:    fscanreal2(verb,file,&tree->crown_mort_p,pft->name,"crown_mort_p");
+tree/fscanpft_tree.c:  fscanreal2(verb,file,&tree->barkthick_par1,pft->name,"barkthick_par1");
+tree/fscanpft_tree.c:  fscanreal2(verb,file,&tree->barkthick_par2,pft->name,"barkthick_par2");
+tree/fscanpft_tree.c:  if(fscanrealarray(file,tree->fuelfrac,NFUELCLASS,"fuelfraction",verb))
+tree/fscanpft_tree.c:    sum+=tree->fuelfrac[i];
+tree/fscanpft_tree.c:  fscanreal2(verb,file,&tree->k_est,pft->name,"k_est");
+tree/fscanpft_tree.c:    fscanint2(verb,file,&tree->rotation,pft->name,"rotation");
+tree/fscanpft_tree.c:    fscanint2(verb,file,&tree->max_rotation_length,pft->name,"max_rotation_length");
+tree/fscanpft_tree.c:    fscanreal012(verb,file,&tree->harvest_ratio,pft->name,"harvest_ratio");
+tree/fscanpft_tree.c:    fscanreal2(verb,file,&tree->cnratio_fruit,pft->name,"cnratio_fruit");
+tree/fscanpft_tree.c:    if(tree->cnratio_fruit<=0)
+tree/fscanpft_tree.c:        fprintf(stderr,"ERROR112: Invalid value for 'cnratio_fruit'=%g of PFT '%s', must be >0.\n",tree->cnratio_fruit,pft->name);
+tree/fscanpft_tree.c:    fscanbool2(verb,file,&tree->with_grass,pft->name,"with_grass");
+tree/fscanpft_tree.c:    fscanreal2(verb,file,&tree->P_init,pft->name,"P_init");
+tree/fscanpft_tree.c:  tree->sapl.leaf.carbon=pow(pft->lai_sapl*tree->allom1*pow(wood_sapl,reinickerp)*
+tree/fscanpft_tree.c:                  pow(4*pft->sla/M_PI/tree->k_latosa,reinickerp*0.5)/pft->sla,
+tree/fscanpft_tree.c:  stemdiam=wood_sapl*sqrt(4*tree->sapl.leaf.carbon*pft->sla/M_PI/tree->k_latosa);
+tree/fscanpft_tree.c:  height_sapl=tree->allom2*pow(stemdiam,tree->allom3);
+tree/fscanpft_tree.c:  tree->sapl.sapwood.carbon=wooddens*height_sapl*tree->sapl.leaf.carbon*pft->sla/tree->k_latosa;
+tree/fscanpft_tree.c:  tree->sapl.heartwood.carbon=(wood_sapl-1)*tree->sapl.sapwood.carbon;
+tree/fscanpft_tree.c:  tree->sapl.root.carbon=(1.0/pft->lmro_ratio)*tree->sapl.leaf.carbon;
+tree/fscanpft_tree.c:  tree->sapling_C=phys_sum_tree(tree->sapl)*tree->k_est;
+tree/fscanpft_tree.c:  tree->sapl.leaf.nitrogen=tree->sapl.leaf.carbon*tree->nc_ratio.leaf;
+tree/fscanpft_tree.c:  tree->sapl.heartwood.nitrogen=tree->sapl.heartwood.carbon*tree->nc_ratio.sapwood;
+tree/fscanpft_tree.c:  tree->sapl.sapwood.nitrogen=tree->sapl.sapwood.carbon*tree->nc_ratio.sapwood;
+tree/fscanpft_tree.c:  tree->sapl.root.nitrogen=tree->sapl.root.carbon*tree->nc_ratio.root;
+tree/fwrite_tree.c:  fwrite1(&tree->height,sizeof(Real),file);
+tree/fwrite_tree.c:  fwrite1(&tree->crownarea,sizeof(Real),file);
+tree/fwrite_tree.c:  fwrite1(&tree->barkthickness,sizeof(Real),file);
+tree/fwrite_tree.c:  fwrite1(&tree->gddtw,sizeof(Real),file);
+tree/fwrite_tree.c:  fwrite1(&tree->aphen_raingreen,sizeof(Real),file);
+tree/fwrite_tree.c:  fwrite1(&tree->isphen,sizeof(int),file);
+tree/fwrite_tree.c:  fwrite1(&tree->turn,sizeof(Treeturn),file);
+tree/fwrite_tree.c:  fwrite1(&tree->turn_litt,sizeof(Treeturn),file);
+tree/fwrite_tree.c:  fwrite1(&tree->turn_nbminc,sizeof(Real),file);
+tree/fwrite_tree.c:  fwrite1(&tree->ind,sizeof(Treephys2),file);
+tree/fwrite_tree.c:    fwrite1(&tree->fruit,sizeof(Stocks),file);
+tree/fwrite_tree.c:    fwrite1(&tree->boll_age,sizeof(int),file);
+tree/fwrite_tree.c:  fwrite1(&tree->excess_carbon,sizeof(Real),file);
+tree/fwrite_tree.c:  fwrite1(&tree->nfertilizer,sizeof(Real),file);
+tree/fwrite_tree.c:  fwrite1(&tree->nmanure,sizeof(Real),file);
+tree/fwrite_tree.c:  fwrite1(&tree->nfert_event,sizeof(int),file);
+tree/fwrite_tree.c:  fwrite1(&tree->falloc,sizeof(Treephyspar),file);
+tree/harvest_tree.c:    harvest.carbon=tree->ind.leaf.carbon*treepar->harvest_ratio*pft->nind;
+tree/harvest_tree.c:    harvest.nitrogen=tree->ind.leaf.nitrogen*treepar->harvest_ratio*pft->nind;
+tree/harvest_tree.c:    tree->ind.leaf.carbon*=(1-treepar->harvest_ratio);
+tree/harvest_tree.c:    tree->ind.leaf.nitrogen*=(1-treepar->harvest_ratio);
+tree/harvest_tree.c:    harvest=tree->fruit;
+tree/harvest_tree.c:    tree->fruit.carbon=tree->fruit.nitrogen=0;
+tree/init_tree.c:  tree->gddtw=tree->aphen_raingreen=0;
+tree/isneg_tree.c:  printf("isneg: %g %g %g %g %g %g %g %g\n",tree->ind.leaf.carbon*pft->nind,tree->ind.root.carbon*pft->nind,
+tree/isneg_tree.c:         tree->ind.sapwood.carbon*pft->nind,tree->ind.heartwood.carbon*pft->nind,tree->ind.debt.carbon*pft->nind,pft->fpc,pft->nind,pft->bm_inc.carbon);
+tree/isneg_tree.c:  return ((tree->ind.leaf.carbon+tree->ind.root.carbon+tree->ind.sapwood.carbon+tree->ind.heartwood.carbon-tree->ind.debt.carbon)<0.0 
+tree/isneg_tree.c:         || tree->ind.root.carbon<0.0 || tree->ind.leaf.carbon<0.0 || tree->ind.sapwood.carbon<0.0 || tree->ind.heartwood.carbon<0.0
+tree/lai_tree.c:  return (tree->crownarea>0.0) ? 
+tree/lai_tree.c:         tree->ind.leaf.carbon*getpftpar(pft,sla)/tree->crownarea : 0;
+tree/lai_tree.c:  return (tree->crownarea>0.0) ? 
+tree/lai_tree.c:    tree->ind.leaf.carbon*getpftpar(pft,sla)/tree->crownarea*pft->phen : 0;
+tree/litter_update_fire_tree.c:  litter->item[pft->litter].ag.leaf.carbon+=tree->ind.leaf.carbon*frac;
+tree/litter_update_fire_tree.c:  getoutput(output,LITFALLC,config)+=tree->ind.leaf.carbon*frac*pft->stand->frac;
+tree/litter_update_fire_tree.c:  litter->item[pft->litter].ag.leaf.nitrogen+=tree->ind.leaf.nitrogen*frac;
+tree/litter_update_fire_tree.c:  getoutput(output,LITFALLN,config)+=tree->ind.leaf.nitrogen*frac*pft->stand->frac;
+tree/litter_update_fire_tree.c:    litter->item[pft->litter].ag.leaf.nitrogen+=(pft->bm_inc.nitrogen+tree->fruit.nitrogen)/pft->nind*frac;
+tree/litter_update_fire_tree.c:    litter->item[pft->litter].ag.leaf.carbon+=tree->fruit.carbon/pft->nind*frac;
+tree/litter_update_fire_tree.c:    getoutput(output,LITFALLN,config)+=(pft->bm_inc.nitrogen+tree->fruit.nitrogen)/pft->nind*frac*pft->stand->frac;
+tree/litter_update_fire_tree.c:    getoutput(output,LITFALLC,config)+=tree->fruit.carbon/pft->nind*frac*pft->stand->frac;
+tree/litter_update_fire_tree.c:    tree->fruit.carbon*=(pft->nind-frac)/pft->nind;
+tree/litter_update_fire_tree.c:    tree->fruit.nitrogen*=(pft->nind-frac)/pft->nind;
+tree/litter_update_fire_tree.c:    litter->item[pft->litter].ag.wood[i].carbon+=(tree->ind.sapwood.carbon+tree->ind.heartwood.carbon-
+tree/litter_update_fire_tree.c:                                  tree->ind.debt.carbon+tree->excess_carbon)*frac*treepar->fuelfrac[i];
+tree/litter_update_fire_tree.c:    getoutput(output,LITFALLC,config)+=(tree->ind.sapwood.carbon+tree->ind.heartwood.carbon-
+tree/litter_update_fire_tree.c:                                  tree->ind.debt.carbon+tree->excess_carbon)*frac*treepar->fuelfrac[i]*pft->stand->frac;
+tree/litter_update_fire_tree.c:    getoutput(output,LITFALLC_WOOD,config)+=(tree->ind.sapwood.carbon+tree->ind.heartwood.carbon-
+tree/litter_update_fire_tree.c:                                  tree->ind.debt.carbon+tree->excess_carbon)*frac*treepar->fuelfrac[i]*pft->stand->frac;
+tree/litter_update_fire_tree.c:    litter->item[pft->litter].ag.wood[i].nitrogen+=(tree->ind.sapwood.nitrogen+tree->ind.heartwood.nitrogen-
+tree/litter_update_fire_tree.c:                                  tree->ind.debt.nitrogen)*frac*treepar->fuelfrac[i];
+tree/litter_update_fire_tree.c:    getoutput(output,LITFALLN,config)+=(tree->ind.sapwood.nitrogen+tree->ind.heartwood.nitrogen-
+tree/litter_update_fire_tree.c:                                  tree->ind.debt.nitrogen)*frac*treepar->fuelfrac[i]*pft->stand->frac;
+tree/litter_update_fire_tree.c:    getoutput(output,LITFALLN_WOOD,config)+=(tree->ind.sapwood.nitrogen+tree->ind.heartwood.nitrogen-
+tree/litter_update_fire_tree.c:                                  tree->ind.debt.nitrogen)*frac*treepar->fuelfrac[i]*pft->stand->frac;
+tree/litter_update_fire_tree.c:                    (tree->ind.sapwood.carbon+tree->ind.heartwood.carbon-tree->ind.debt.carbon)
+tree/litter_update_fire_tree.c:  litter->item[pft->litter].bg.carbon+=tree->ind.root.carbon*frac;
+tree/litter_update_fire_tree.c:  getoutput(output,LITFALLC,config)+=tree->ind.root.carbon*frac*pft->stand->frac;
+tree/litter_update_fire_tree.c:  litter->item[pft->litter].bg.nitrogen+=tree->ind.root.nitrogen*frac;
+tree/litter_update_fire_tree.c:  getoutput(output,LITFALLN,config)+=tree->ind.root.nitrogen*frac*pft->stand->frac;
+tree/litter_update_fire_tree.c:  update_fbd_tree(&pft->stand->soil.litter,pft->par->fuelbulkdensity,tree->ind.leaf.carbon*treepar->turnover.leaf*frac,0); //CHECK
+tree/litter_update_tree.c:  tree->ind.leaf.carbon-= tree->turn.leaf.carbon;
+tree/litter_update_tree.c:  tree->ind.root.carbon-= tree->turn.root.carbon;
+tree/litter_update_tree.c:  tree->ind.leaf.nitrogen-= tree->turn.leaf.nitrogen;
+tree/litter_update_tree.c:  tree->ind.root.nitrogen-= tree->turn.root.nitrogen;
+tree/litter_update_tree.c:  litter->item[pft->litter].ag.leaf.carbon+=tree->turn.leaf.carbon*pft->nind-tree->turn_litt.leaf.carbon;
+tree/litter_update_tree.c:  litter->item[pft->litter].ag.leaf.nitrogen+=tree->turn.leaf.nitrogen*pft->nind-tree->turn_litt.leaf.nitrogen;
+tree/litter_update_tree.c:  update_fbd_tree(litter,pft->par->fuelbulkdensity,tree->turn.leaf.carbon*pft->nind-tree->turn_litt.leaf.carbon,0);
+tree/litter_update_tree.c:  litter->item[pft->litter].bg.carbon+=tree->turn.root.carbon*pft->nind-tree->turn_litt.root.carbon;
+tree/litter_update_tree.c:  litter->item[pft->litter].bg.nitrogen+=tree->turn.root.nitrogen*pft->nind-tree->turn_litt.root.nitrogen;
+tree/litter_update_tree.c:  tree->turn.root.carbon=tree->turn.leaf.carbon=tree->turn_litt.leaf.carbon=tree->turn_litt.root.carbon=0.0;
+tree/litter_update_tree.c:  tree->turn.root.nitrogen=tree->turn.leaf.nitrogen=tree->turn_litt.leaf.nitrogen=tree->turn_litt.root.nitrogen=0.0;
+tree/litter_update_tree.c:    litter->item[pft->litter].ag.leaf.carbon+=tree->fruit.carbon/pft->nind*frac;
+tree/litter_update_tree.c:    litter->item[pft->litter].ag.leaf.nitrogen+=(pft->bm_inc.nitrogen+tree->fruit.nitrogen)/pft->nind*frac;
+tree/litter_update_tree.c:    getoutput(output,LITFALLN,config)+=(pft->bm_inc.nitrogen+tree->fruit.nitrogen)/pft->nind*frac*pft->stand->frac;
+tree/litter_update_tree.c:    getoutput(output,LITFALLC,config)+=tree->fruit.carbon/pft->nind*frac*pft->stand->frac;
+tree/litter_update_tree.c:  litter->item[pft->litter].ag.leaf.carbon+=tree->ind.leaf.carbon*frac;
+tree/litter_update_tree.c:  getoutput(output,LITFALLC,config)+=tree->ind.leaf.carbon*frac*pft->stand->frac;
+tree/litter_update_tree.c:  litter->item[pft->litter].ag.leaf.nitrogen+=tree->ind.leaf.nitrogen*frac;
+tree/litter_update_tree.c:  getoutput(output,LITFALLN,config)+=tree->ind.leaf.nitrogen*frac*pft->stand->frac;
+tree/litter_update_tree.c:    litter->item[pft->litter].ag.wood[i].carbon+=(tree->ind.sapwood.carbon+tree->ind.heartwood.carbon-
+tree/litter_update_tree.c:                                  tree->ind.debt.carbon+tree->excess_carbon)*frac*treepar->fuelfrac[i];
+tree/litter_update_tree.c:    getoutput(output,LITFALLC,config)+=(tree->ind.sapwood.carbon+tree->ind.heartwood.carbon-
+tree/litter_update_tree.c:                                  tree->ind.debt.carbon+tree->excess_carbon)*frac*treepar->fuelfrac[i]*pft->stand->frac;
+tree/litter_update_tree.c:    getoutput(output,LITFALLC_WOOD,config)+=(tree->ind.sapwood.carbon+tree->ind.heartwood.carbon-
+tree/litter_update_tree.c:                                  tree->ind.debt.carbon+tree->excess_carbon)*frac*treepar->fuelfrac[i]*pft->stand->frac;
+tree/litter_update_tree.c:    litter->item[pft->litter].ag.wood[i].nitrogen+=(tree->ind.sapwood.nitrogen+tree->ind.heartwood.nitrogen-
+tree/litter_update_tree.c:                                  tree->ind.debt.nitrogen)*frac*treepar->fuelfrac[i];
+tree/litter_update_tree.c:    getoutput(output,LITFALLN,config)+=(tree->ind.sapwood.nitrogen+tree->ind.heartwood.nitrogen-
+tree/litter_update_tree.c:                                  tree->ind.debt.nitrogen)*frac*treepar->fuelfrac[i]*pft->stand->frac;
+tree/litter_update_tree.c:    getoutput(output,LITFALLN_WOOD,config)+=(tree->ind.sapwood.nitrogen+tree->ind.heartwood.nitrogen-
+tree/litter_update_tree.c:                                  tree->ind.debt.nitrogen)*frac*treepar->fuelfrac[i]*pft->stand->frac;
+tree/litter_update_tree.c:                    (tree->ind.sapwood.carbon+tree->ind.heartwood.carbon-tree->ind.debt.carbon)
+tree/litter_update_tree.c:  litter->item[pft->litter].bg.carbon+=tree->ind.root.carbon*frac;
+tree/litter_update_tree.c:  getoutput(output,LITFALLC,config)+=tree->ind.root.carbon*frac*pft->stand->frac;
+tree/litter_update_tree.c:  litter->item[pft->litter].bg.nitrogen+=tree->ind.root.nitrogen*frac;
+tree/litter_update_tree.c:  getoutput(output,LITFALLN,config)+=tree->ind.root.nitrogen*frac*pft->stand->frac;
+tree/litter_update_tree.c:  update_fbd_tree(&pft->stand->soil.litter,pft->par->fuelbulkdensity,tree->ind.leaf.carbon*treepar->turnover.leaf*frac,0); //CHECK
+tree/livefuel_consum_tree.c:  sapwood_consum.carbon = tree->ind.sapwood.carbon *(treepar->fuelfrac[0] + treepar->fuelfrac[1]  +
+tree/livefuel_consum_tree.c:  sapwood_consum.nitrogen = tree->ind.sapwood.nitrogen *(treepar->fuelfrac[0] + treepar->fuelfrac[1]  +
+tree/livefuel_consum_tree.c:  heartwood_consum.carbon = tree->ind.heartwood.carbon *(treepar->fuelfrac[0] + treepar->fuelfrac[1] +
+tree/livefuel_consum_tree.c:  heartwood_consum.nitrogen = tree->ind.heartwood.nitrogen *(treepar->fuelfrac[0] + treepar->fuelfrac[1] +
+tree/livefuel_consum_tree.c:  live_consum_tree.carbon = livefuel->disturb * (tree->ind.leaf.carbon + sapwood_consum.carbon + heartwood_consum.carbon)*pft->nind;  /*gC/m2*/
+tree/livefuel_consum_tree.c:  live_consum_tree.nitrogen = livefuel->disturb * (tree->ind.leaf.nitrogen + sapwood_consum.nitrogen + heartwood_consum.nitrogen)*pft->nind;  /*gC/m2*/
+tree/livefuel_consum_tree.c:  tree->ind.leaf.carbon *= (1-livefuel->disturb);
+tree/livefuel_consum_tree.c:  tree->ind.sapwood.carbon -= livefuel->disturb*sapwood_consum.carbon;
+tree/livefuel_consum_tree.c:  tree->ind.heartwood.carbon -= livefuel->disturb*heartwood_consum.carbon;
+tree/livefuel_consum_tree.c:  tree->ind.leaf.nitrogen *= (1-livefuel->disturb);
+tree/livefuel_consum_tree.c:  tree->ind.sapwood.nitrogen -= livefuel->disturb*sapwood_consum.nitrogen;
+tree/livefuel_consum_tree.c:  tree->ind.heartwood.nitrogen -= livefuel->disturb*heartwood_consum.nitrogen;
+tree/mix_veg_tree.c:  tree->fruit.carbon*=scaler;
+tree/mix_veg_tree.c:  tree->fruit.nitrogen*=scaler;
+tree/mix_veg_tree.c:  tree->turn_litt.leaf.carbon*=scaler;
+tree/mix_veg_tree.c:  tree->turn_litt.leaf.nitrogen*=scaler;
+tree/mortality_tree.c:    mort=mort_max/(1+param.k_mort*bm_delta/tree->ind.leaf.carbon/pft->par->sla);
+tree/mortality_tree.c:    heatstress=tree->gddtw/ramp_gddtw;
+tree/ndemand_tree.c:  //*ndemand_leaf=((daylength==0) ?  0: param.p*0.02314815/daylength*vmax*exp(-param.k_temp*(temp-25))*f_lai(lai_tree(pft)))+param.n0*0.001*(pft->bm_inc.carbon*tree->falloc.leaf+tree->ind.leaf.carbon*pft->nind);
+tree/ndemand_tree.c:  //*ndemand_leaf=((daylength==0) ?  0: param.p*0.02314815/daylength*vmax*exp(-param.k_temp*(temp-25))*f_lai(lai_tree(pft)))+pft->par->ncleaf.low*(pft->bm_inc.carbon*tree->falloc.leaf+tree->ind.leaf.carbon*pft->nind);
+tree/ndemand_tree.c:  //*ndemand_leaf=((daylength==0) ?  0: param.p*0.02314815/daylength*vmax*exp(-param.k_temp*(temp-25))*f_lai(lai_tree(pft)))+pft->par->ncleaf.low*(tree->ind.leaf.carbon*pft->nind);
+tree/ndemand_tree.c:  //*ndemand_leaf=((daylength==0) ?  0: param.p*0.02314815/daylength*vmax*exp(-param.k_temp*(temp-25))*f_lai(lai_tree(pft)))+pft->par->ncleaf.median*(tree->ind.leaf.carbon*pft->nind);
+tree/ndemand_tree.c:  *ndemand_leaf=((daylength==0) ?  0: param.p*0.02314815/daylength*vmax*exp(-param.k_temp*(temp-25))*f_lai(lai_tree(pft)))+pft->par->ncleaf.median*(pft->bm_inc.carbon*tree->falloc.leaf+tree->ind.leaf.carbon*pft->nind-tree->turn_litt.leaf.carbon);
+tree/ndemand_tree.c: if(tree->ind.leaf.carbon==0)
+tree/ndemand_tree.c:    nc_ratio=(tree->ind.leaf.nitrogen-tree->turn.leaf.nitrogen+pft->bm_inc.nitrogen*tree->falloc.leaf/pft->nind)/(tree->ind.leaf.carbon-tree->turn.leaf.carbon+pft->bm_inc.carbon*tree->falloc.leaf/pft->nind);
+tree/ndemand_tree.c:  ndemand_tot=*ndemand_leaf+(tree->ind.root.nitrogen+tree->ind.sapwood.nitrogen-tree->turn.root.nitrogen)*pft->nind+nc_ratio*(tree->excess_carbon*pft->nind+pft->bm_inc.carbon)*(tree->falloc.root/treepar->ratio.root+tree->falloc.sapwood/treepar->ratio.sapwood);
+tree/ndemand_tree.c:  fprinttreephys2(stdout,tree->ind,pft->nind);
+tree/ndemand_tree.c:  printf("ndemand_to = %g vegn %g vegc %g ndemand_leaf %g nc_ratio %g %g \n",ndemand_tot,vegn_sum_tree(pft)+pft->bm_inc.nitrogen-tree->ind.heartwood.nitrogen*pft->nind,vegc_sum_tree(pft),*ndemand_leaf,nc_ratio,*ndemand_leaf/(tree->ind.leaf.carbon*pft->nind+pft->bm_inc.carbon*tree->falloc.leaf));
+tree/new_tree.c:/**     Function allocates and initializes tree-specific variables                 \n**/
+tree/new_tree.c:  tree->excess_carbon=0.0;
+tree/new_tree.c:  tree->ind.root.carbon=tree->ind.sapwood.carbon=tree->ind.heartwood.carbon=tree->ind.leaf.carbon=0.0;
+tree/new_tree.c:  tree->ind.root.nitrogen=tree->ind.sapwood.nitrogen=tree->ind.heartwood.nitrogen=tree->ind.leaf.nitrogen=0.0;
+tree/new_tree.c:  tree->turn.root.carbon=tree->turn.leaf.carbon=tree->turn_litt.leaf.carbon=tree->turn_litt.root.carbon=0.0;
+tree/new_tree.c:  tree->turn.root.nitrogen=tree->turn.leaf.nitrogen=tree->turn_litt.leaf.nitrogen=tree->turn_litt.root.nitrogen=0.0;
+tree/new_tree.c:  tree->turn_nbminc=0.0;
+tree/new_tree.c:  tree->falloc.leaf=treepar->sapl.leaf.carbon/sum;
+tree/new_tree.c:  tree->falloc.root=treepar->sapl.root.carbon/sum;
+tree/new_tree.c:  tree->falloc.sapwood=treepar->sapl.sapwood.carbon/sum;
+tree/new_tree.c:  tree->ind.debt.carbon=tree->ind.debt.nitrogen=tree->gddtw=tree->aphen_raingreen=0.0;
+tree/new_tree.c:  tree->height=tree->crownarea=0.0;
+tree/new_tree.c:  tree->isphen=FALSE;
+tree/new_tree.c:  tree->fruit.carbon=tree->fruit.nitrogen=0;
+tree/new_tree.c:  tree->nfertilizer=tree->nmanure=0;
+tree/new_tree.c:  tree->nfert_event=0;
+tree/new_tree.c:  tree->boll_age=0;
+tree/npp_tree.c:    if(tree->ind.sapwood.carbon>epsilon)
+tree/npp_tree.c:      nc_sapwood=tree->ind.sapwood.nitrogen/tree->ind.sapwood.carbon;
+tree/npp_tree.c:    if(tree->ind.root.carbon>epsilon)
+tree/npp_tree.c:      nc_root=tree->ind.root.nitrogen/tree->ind.root.carbon;
+tree/npp_tree.c:    mresp=pft->nind*(tree->ind.sapwood.carbon*pft->par->respcoeff*param.k*nc_sapwood*gtemp_air+
+tree/npp_tree.c:          tree->ind.root.carbon*pft->par->respcoeff*param.k*nc_root*gtemp_soil*pft->phen);
+tree/npp_tree.c:    mresp=pft->nind*(tree->ind.sapwood.carbon*pft->par->respcoeff*param.k*par->nc_ratio.sapwood*gtemp_air+tree->ind.root.carbon*pft->par->respcoeff*param.k*par->nc_ratio.root*gtemp_soil*pft->phen);
+tree/nuptake_tree.c: // NCplant = (vegn_sum_tree(pft)-(tree->ind.sapwood.nitrogen+tree->ind.heartwood.nitrogen)*pft->nind+pft->bm_inc.nitrogen*(tree->falloc.leaf+tree->falloc.leaf))/(vegc_sum_tree(pft)-(tree->ind.sapwood.carbon+tree->ind.heartwood.carbon)*pft->nind+pft->bm_inc.carbon*(tree->falloc.leaf+tree->falloc.leaf)); /* Plant's mobile nitrogen concentration, Eq.9, Zaehle&Friend 2010 Supplementary */
+tree/nuptake_tree.c:  NCplant = (tree->ind.leaf.nitrogen+ tree->ind.root.nitrogen) / (tree->ind.leaf.carbon+ tree->ind.root.carbon); /* Plant's mobile nitrogen concentration, Eq.9, Zaehle&Friend 2010 Supplementary */
+tree/nuptake_tree.c:  NC_leaf=(tree->ind.leaf.nitrogen-tree->turn.leaf.nitrogen+pft->bm_inc.nitrogen*tree->falloc.leaf/pft->nind)/(tree->ind.leaf.carbon-tree->turn.leaf.carbon+pft->bm_inc.carbon*tree->falloc.leaf/pft->nind);
+tree/nuptake_tree.c:            f_NCplant * (tree->ind.root.carbon*pft->nind+pft->bm_inc.carbon*tree->falloc.root-tree->turn_litt.root.nitrogen)*rootdist_n[l]/1000;  //Smith et al. Eq. C14-C15, Navail=totn
+tree/nuptake_tree.c:  printf("TREE n_uptake=%g, nplant_demand=%g vegn=%g\n",n_uptake,*n_plant_demand,(vegn_sum_tree(pft)-tree->ind.heartwood.nitrogen*pft->nind));
+tree/nuptake_tree.c:    if (n_uptake>*n_plant_demand-(vegn_sum_tree(pft)+pft->bm_inc.nitrogen-tree->ind.heartwood.nitrogen*pft->nind))
+tree/nuptake_tree.c:      n_uptake=*n_plant_demand-(vegn_sum_tree(pft)+pft->bm_inc.nitrogen-tree->ind.heartwood.nitrogen*pft->nind);
+tree/nuptake_tree.c:    autofert_n=*n_plant_demand-(vegn_sum_tree(pft)+pft->bm_inc.nitrogen-tree->ind.heartwood.nitrogen*pft->nind);
+tree/nuptake_tree.c:    n_deficit = *n_plant_demand/(1+pft->par->knstore)-(vegn_sum_tree(pft)+pft->bm_inc.nitrogen-tree->ind.heartwood.nitrogen*pft->nind);
+tree/nuptake_tree.c:    if(*n_plant_demand/(1+pft->par->knstore)>(vegn_sum_tree(pft)+pft->bm_inc.nitrogen-tree->ind.heartwood.nitrogen*pft->nind))   /*HERE RECALCULATION OF N-demand TO N-supply*/
+tree/nuptake_tree.c:      NC_actual=(vegn_sum_tree(pft)+pft->bm_inc.nitrogen-tree->ind.heartwood.nitrogen*pft->nind)/(vegc_sum_tree(pft)+pft->bm_inc.carbon-tree->ind.heartwood.carbon*pft->nind);
+tree/nuptake_tree.c:      NC_leaf=(tree->ind.leaf.nitrogen-tree->turn.leaf.nitrogen+pft->bm_inc.nitrogen*tree->falloc.leaf/pft->nind)/(tree->ind.leaf.carbon-tree->turn.leaf.carbon+pft->bm_inc.carbon*tree->falloc.leaf/pft->nind);
+tree/nuptake_tree.c:      *ndemand_leaf=tree->ind.leaf.nitrogen*pft->nind+pft->bm_inc.nitrogen*tree->falloc.leaf-tree->turn_litt.leaf.nitrogen;
+tree/nuptake_tree.c:      *ndemand_leaf=max(tree->ind.leaf.nitrogen*pft->nind-tree->turn_litt.leaf.nitrogen,*ndemand_leaf);
+tree/nuptake_tree.c:      *n_plant_demand=*ndemand_leaf+(tree->ind.root.nitrogen+tree->ind.sapwood.nitrogen-tree->turn.root.nitrogen)*pft->nind+NC_leaf*(tree->excess_carbon*pft->nind+pft->bm_inc.carbon)*(tree->falloc.root/treepar->ratio.root+tree->falloc.sapwood/treepar->ratio.sapwood);
+tree/nuptake_tree.c:    getoutputindex(&pft->stand->cell->output,PFT_NDEMAND,nnat+rbtree(ncft)+data->irrigation*nirrig,config)+=max(0,ndemand_all-(vegn_sum_tree(pft)+pft->bm_inc.nitrogen-tree->ind.heartwood.nitrogen*pft->nind))/365; /* stand->cell->ml.landfrac[data->irrigation].biomass_tree; */
+tree/nuptake_tree.c:    getoutputindex(&pft->stand->cell->output,PFT_NDEMAND,nnat+data->pft_id-npft+config->nagtree+agtree(ncft,config->nwptype)+data->irrigation*nirrig,config)+=max(0,ndemand_all-(vegn_sum_tree(pft)+pft->bm_inc.nitrogen-tree->ind.heartwood.nitrogen*pft->nind))/365; /* stand->cell->ml.landfrac[data->irrigation].biomass_tree; */
+tree/nuptake_tree.c:    getoutputindex(&pft->stand->cell->output,PFT_NDEMAND,nnat+rwp(ncft)+data->irrigation*nirrig,config)+=max(0,ndemand_all-(vegn_sum_tree(pft)+pft->bm_inc.nitrogen-tree->ind.heartwood.nitrogen*pft->nind))/365; /* stand->cell->ml.landfrac[data->irrigation].biomass_tree; */
+tree/nuptake_tree.c:    getoutputindex(&pft->stand->cell->output,PFT_NDEMAND,pft->par->id,config)+=max(0,ndemand_all-(vegn_sum_tree(pft)+pft->bm_inc.nitrogen-tree->ind.heartwood.nitrogen*pft->nind))/365;
+tree/nuptake_tree.c:  pft->stand->cell->balance.n_demand+=max(0,(ndemand_all-(vegn_sum_tree(pft)+pft->bm_inc.nitrogen-tree->ind.heartwood.nitrogen*pft->nind)))*pft->stand->frac/365;
+tree/phenology_tree.c:  tree->gddtw+= (gddtw>0.0) ? gddtw : 0.0;
+tree/phenology_tree.c:         if(!tree->isphen)
+tree/phenology_tree.c:           if (tree->turn.leaf.carbon!=treepar->sapl.leaf.carbon*treepar->turnover.leaf)
+tree/phenology_tree.c:             tree->turn.leaf.carbon+=tree->ind.leaf.carbon*treepar->turnover.leaf;
+tree/phenology_tree.c:             tree->turn.leaf.nitrogen+=tree->ind.leaf.nitrogen*treepar->turnover.leaf;
+tree/phenology_tree.c:             tree->turn_litt.leaf.carbon+=tree->ind.leaf.carbon*treepar->turnover.leaf*pft->nind;
+tree/phenology_tree.c:             tree->turn_litt.leaf.nitrogen+=tree->ind.leaf.nitrogen*treepar->turnover.leaf*pft->nind;
+tree/phenology_tree.c:             pft->stand->soil.litter.item[pft->litter].ag.leaf.carbon+=tree->ind.leaf.carbon*treepar->turnover.leaf*pft->nind;
+tree/phenology_tree.c:             getoutput(output,LITFALLC,config)+=tree->ind.leaf.carbon*treepar->turnover.leaf*pft->nind*pft->stand->frac;
+tree/phenology_tree.c:             pft->stand->soil.litter.item[pft->litter].ag.leaf.nitrogen+=tree->ind.leaf.nitrogen*treepar->turnover.leaf*pft->nind*pft->par->fn_turnover;
+tree/phenology_tree.c:             getoutput(output,LITFALLN,config)+=tree->ind.leaf.nitrogen*treepar->turnover.leaf*pft->nind*pft->par->fn_turnover*pft->stand->frac;
+tree/phenology_tree.c:             tree->turn_nbminc+= tree->ind.leaf.nitrogen*treepar->turnover.leaf*pft->nind*(1-pft->par->fn_turnover);
+tree/phenology_tree.c:             update_fbd_tree(&pft->stand->soil.litter,pft->par->fuelbulkdensity,tree->ind.leaf.carbon*treepar->turnover.leaf*pft->nind,0);
+tree/phenology_tree.c:         tree->isphen=TRUE;
+tree/phenology_tree.c:      if(dtemp<0 && pft->aphen>treepar->aphen_min && !tree->isphen && tree->turn.leaf.carbon<epsilon)
+tree/phenology_tree.c:        tree->isphen=TRUE;
+tree/phenology_tree.c:        if (tree->turn.leaf.carbon!=treepar->sapl.leaf.carbon*treepar->turnover.leaf)
+tree/phenology_tree.c:          tree->turn.leaf.carbon+=tree->ind.leaf.carbon*treepar->turnover.leaf;
+tree/phenology_tree.c:          tree->turn.leaf.nitrogen+=tree->ind.leaf.nitrogen*treepar->turnover.leaf;
+tree/phenology_tree.c:          tree->turn_litt.leaf.carbon+=tree->ind.leaf.carbon*treepar->turnover.leaf*pft->nind;
+tree/phenology_tree.c:          tree->turn_litt.leaf.nitrogen+=tree->ind.leaf.nitrogen*treepar->turnover.leaf*pft->nind;
+tree/phenology_tree.c:          pft->stand->soil.litter.item[pft->litter].ag.leaf.carbon+=tree->ind.leaf.carbon*treepar->turnover.leaf*pft->nind;
+tree/phenology_tree.c:          getoutput(output,LITFALLC,config)+=tree->ind.leaf.carbon*treepar->turnover.leaf*pft->nind*pft->stand->frac;
+tree/phenology_tree.c:          pft->stand->soil.litter.item[pft->litter].ag.leaf.nitrogen+=tree->ind.leaf.nitrogen*treepar->turnover.leaf*pft->nind*pft->par->fn_turnover;
+tree/phenology_tree.c:          getoutput(output,LITFALLN,config)+=tree->ind.leaf.nitrogen*treepar->turnover.leaf*pft->nind*pft->par->fn_turnover*pft->stand->frac;
+tree/phenology_tree.c:          tree->turn_nbminc+= tree->ind.leaf.nitrogen*treepar->turnover.leaf*pft->nind*(1-pft->par->fn_turnover);
+tree/phenology_tree.c:          update_fbd_tree(&pft->stand->soil.litter,pft->par->fuelbulkdensity,tree->ind.leaf.carbon*treepar->turnover.leaf*pft->nind,0);
+tree/phenology_tree.c:      if(tree->aphen_raingreen>80 && !tree->isphen && tree->turn.leaf.carbon<epsilon && pft->phen<epsilon)
+tree/phenology_tree.c:        tree->isphen=TRUE;
+tree/phenology_tree.c:        if (tree->turn.leaf.carbon!=treepar->sapl.leaf.carbon*treepar->turnover.leaf)
+tree/phenology_tree.c:          tree->turn.leaf.carbon+=tree->ind.leaf.carbon*treepar->turnover.leaf;
+tree/phenology_tree.c:          tree->turn.leaf.nitrogen+=tree->ind.leaf.nitrogen*treepar->turnover.leaf;
+tree/phenology_tree.c:          tree->turn_litt.leaf.carbon+=tree->ind.leaf.carbon*treepar->turnover.leaf*pft->nind;
+tree/phenology_tree.c:          tree->turn_litt.leaf.nitrogen+=tree->ind.leaf.nitrogen*treepar->turnover.leaf*pft->nind;
+tree/phenology_tree.c:          pft->stand->soil.litter.item[pft->litter].ag.leaf.carbon+=tree->ind.leaf.carbon*treepar->turnover.leaf*pft->nind;
+tree/phenology_tree.c:          getoutput(output,LITFALLC,config)+=tree->ind.leaf.carbon*treepar->turnover.leaf*pft->nind*pft->stand->frac;
+tree/phenology_tree.c:          pft->stand->soil.litter.item[pft->litter].ag.leaf.nitrogen+=tree->ind.leaf.nitrogen*treepar->turnover.leaf*pft->nind*pft->par->fn_turnover;
+tree/phenology_tree.c:          getoutput(output,LITFALLN,config)+=tree->ind.leaf.nitrogen*treepar->turnover.leaf*pft->nind*pft->par->fn_turnover*pft->stand->frac;
+tree/phenology_tree.c:          tree->turn_nbminc+= tree->ind.leaf.nitrogen*treepar->turnover.leaf*pft->nind*(1-pft->par->fn_turnover);
+tree/phenology_tree.c:          update_fbd_tree(&pft->stand->soil.litter,pft->par->fuelbulkdensity,tree->ind.leaf.carbon*treepar->turnover.leaf*pft->nind,0);
+tree/phenology_tree.c:        tree->aphen_raingreen++;
+tree/phenology_tree.c:      tree->turn.leaf.carbon+=tree->ind.leaf.carbon*treepar->turnover.leaf/NDAYYEAR;
+tree/phenology_tree.c:      tree->turn.leaf.nitrogen+=tree->ind.leaf.nitrogen*treepar->turnover.leaf/NDAYYEAR;
+tree/phenology_tree.c:      tree->turn_litt.leaf.carbon+=tree->ind.leaf.carbon*treepar->turnover.leaf/NDAYYEAR*pft->nind;
+tree/phenology_tree.c:      tree->turn_litt.leaf.nitrogen+=tree->ind.leaf.nitrogen*treepar->turnover.leaf/NDAYYEAR*pft->nind;
+tree/phenology_tree.c:      pft->stand->soil.litter.item[pft->litter].ag.leaf.carbon+=tree->ind.leaf.carbon*treepar->turnover.leaf/NDAYYEAR*pft->nind;
+tree/phenology_tree.c:      getoutput(output,LITFALLC,config)+=tree->ind.leaf.carbon*treepar->turnover.leaf/NDAYYEAR*pft->nind*pft->stand->frac;
+tree/phenology_tree.c:      pft->stand->soil.litter.item[pft->litter].ag.leaf.nitrogen+=tree->ind.leaf.nitrogen*treepar->turnover.leaf/NDAYYEAR*pft->nind*pft->par->fn_turnover;
+tree/phenology_tree.c:      getoutput(output,LITFALLN,config)+=tree->ind.leaf.nitrogen*treepar->turnover.leaf/NDAYYEAR*pft->nind*pft->par->fn_turnover*pft->stand->frac;
+tree/phenology_tree.c:      tree->turn_nbminc+= tree->ind.leaf.nitrogen*treepar->turnover.leaf*pft->nind*(1-pft->par->fn_turnover)/NDAYYEAR;
+tree/phenology_tree.c:      update_fbd_tree(&pft->stand->soil.litter,pft->par->fuelbulkdensity,tree->ind.leaf.carbon*treepar->turnover.leaf/NDAYYEAR*pft->nind,0);
+tree/phenology_tree.c:    tree->isphen=FALSE;
+tree/turnover_daily_tree.c:  tree->gddtw+= (gddtw>0.0) ? gddtw : 0.0;
+tree/turnover_daily_tree.c:      if(pft->aphen>treepar->aphen_max && !tree->isphen && tree->turn.leaf.carbon<epsilon)
+tree/turnover_daily_tree.c:        tree->turn.leaf.carbon+=tree->ind.leaf.carbon*treepar->turnover.leaf;
+tree/turnover_daily_tree.c:        tree->turn.leaf.nitrogen+=tree->ind.leaf.nitrogen*treepar->turnover.leaf;
+tree/turnover_daily_tree.c:        tree->turn_litt.leaf.carbon+=tree->ind.leaf.carbon*treepar->turnover.leaf*pft->nind;
+tree/turnover_daily_tree.c:        tree->turn_litt.leaf.nitrogen+=tree->ind.leaf.nitrogen*treepar->turnover.leaf*pft->nind;
+tree/turnover_daily_tree.c:        pft->stand->soil.litter.item[pft->litter].ag.leaf.carbon+=tree->ind.leaf.carbon*treepar->turnover.leaf*pft->nind;
+tree/turnover_daily_tree.c:        getoutput(output,LITFALLC,config)+=tree->ind.leaf.carbon*treepar->turnover.leaf*pft->nind*pft->stand->frac;
+tree/turnover_daily_tree.c:        pft->stand->soil.litter.item[pft->litter].ag.leaf.nitrogen+=tree->ind.leaf.nitrogen*treepar->turnover.leaf*pft->nind*pft->par->fn_turnover;
+tree/turnover_daily_tree.c:        getoutput(output,LITFALLN,config)+=tree->ind.leaf.nitrogen*treepar->turnover.leaf*pft->nind*pft->stand->frac*pft->par->fn_turnover;
+tree/turnover_daily_tree.c:        tree->turn_nbminc+= tree->ind.leaf.nitrogen*treepar->turnover.leaf*pft->nind*(1-pft->par->fn_turnover);
+tree/turnover_daily_tree.c:        update_fbd_tree(&pft->stand->soil.litter,pft->par->fuelbulkdensity,tree->ind.leaf.carbon*treepar->turnover.leaf*pft->nind,0);
+tree/turnover_daily_tree.c:        tree->isphen=TRUE;
+tree/turnover_daily_tree.c:      else if(dtemp<0 && pft->aphen>treepar->aphen_min && !tree->isphen && tree->turn.leaf.carbon<epsilon)
+tree/turnover_daily_tree.c:        tree->isphen=TRUE;
+tree/turnover_daily_tree.c:        tree->turn.leaf.carbon+=tree->ind.leaf.carbon*treepar->turnover.leaf;
+tree/turnover_daily_tree.c:        tree->turn.leaf.nitrogen+=tree->ind.leaf.nitrogen*treepar->turnover.leaf;
+tree/turnover_daily_tree.c:        tree->turn_litt.leaf.carbon+=tree->ind.leaf.carbon*treepar->turnover.leaf*pft->nind;
+tree/turnover_daily_tree.c:        tree->turn_litt.leaf.nitrogen+=tree->ind.leaf.nitrogen*treepar->turnover.leaf*pft->nind;
+tree/turnover_daily_tree.c:        litter->item[pft->litter].ag.leaf.carbon+=tree->ind.leaf.carbon*treepar->turnover.leaf*pft->nind;
+tree/turnover_daily_tree.c:        getoutput(output,LITFALLC,config)+=tree->ind.leaf.carbon*treepar->turnover.leaf*pft->nind*pft->stand->frac;
+tree/turnover_daily_tree.c:        litter->item[pft->litter].ag.leaf.nitrogen+=tree->ind.leaf.nitrogen*treepar->turnover.leaf*pft->nind*pft->par->fn_turnover;
+tree/turnover_daily_tree.c:        getoutput(output,LITFALLN,config)+=tree->ind.leaf.nitrogen*treepar->turnover.leaf*pft->nind*pft->stand->frac*pft->par->fn_turnover;
+tree/turnover_daily_tree.c:        tree->turn_nbminc+= tree->ind.leaf.nitrogen*treepar->turnover.leaf*pft->nind*(1-pft->par->fn_turnover);
+tree/turnover_daily_tree.c:        update_fbd_tree(litter,pft->par->fuelbulkdensity,tree->ind.leaf.carbon*treepar->turnover.leaf*pft->nind,0);
+tree/turnover_daily_tree.c:			  && pft->aphen>treepar->aphen_min && !tree->isphen && tree->turn.leaf.carbon<epsilon)
+tree/turnover_daily_tree.c:        tree->isphen=TRUE;
+tree/turnover_daily_tree.c:        tree->turn.leaf.carbon+=tree->ind.leaf.carbon*treepar->turnover.leaf;
+tree/turnover_daily_tree.c:        tree->turn.leaf.nitrogen+=tree->ind.leaf.nitrogen*treepar->turnover.leaf;
+tree/turnover_daily_tree.c:        tree->turn_litt.leaf.carbon+=tree->ind.leaf.carbon*treepar->turnover.leaf*pft->nind;
+tree/turnover_daily_tree.c:        tree->turn_litt.leaf.nitrogen+=tree->ind.leaf.nitrogen*treepar->turnover.leaf*pft->nind;
+tree/turnover_daily_tree.c:        litter->item[pft->litter].ag.leaf.carbon+=tree->ind.leaf.carbon*treepar->turnover.leaf*pft->nind;
+tree/turnover_daily_tree.c:        getoutput(output,LITFALLC,config)+=tree->ind.leaf.carbon*treepar->turnover.leaf*pft->nind*pft->stand->frac;
+tree/turnover_daily_tree.c:        litter->item[pft->litter].ag.leaf.nitrogen+=tree->ind.leaf.nitrogen*treepar->turnover.leaf*pft->nind;
+tree/turnover_daily_tree.c:        getoutput(output,LITFALLN,config)+=tree->ind.leaf.nitrogen*treepar->turnover.leaf*pft->nind*pft->stand->frac;
+tree/turnover_daily_tree.c:        update_fbd_tree(litter,pft->par->fuelbulkdensity,tree->ind.leaf.carbon*treepar->turnover.leaf*pft->nind,0);
+tree/turnover_daily_tree.c:      tree->turn.leaf.carbon+=tree->ind.leaf.carbon*treepar->turnover.leaf/NDAYYEAR;
+tree/turnover_daily_tree.c:      tree->turn.leaf.nitrogen+=tree->ind.leaf.nitrogen*treepar->turnover.leaf/NDAYYEAR;
+tree/turnover_daily_tree.c:      tree->turn_litt.leaf.carbon+=tree->ind.leaf.carbon*treepar->turnover.leaf/NDAYYEAR*pft->nind;
+tree/turnover_daily_tree.c:      tree->turn_litt.leaf.nitrogen+=tree->ind.leaf.nitrogen*treepar->turnover.leaf/NDAYYEAR*pft->nind;
+tree/turnover_daily_tree.c:      litter->item[pft->litter].ag.leaf.carbon+=tree->ind.leaf.carbon*treepar->turnover.leaf/NDAYYEAR*pft->nind;
+tree/turnover_daily_tree.c:      getoutput(output,LITFALLC,config)+=tree->ind.leaf.carbon*treepar->turnover.leaf/NDAYYEAR*pft->nind*pft->stand->frac;
+tree/turnover_daily_tree.c:      litter->item[pft->litter].ag.leaf.nitrogen+=tree->ind.leaf.nitrogen*treepar->turnover.leaf/NDAYYEAR*pft->nind*pft->par->fn_turnover;
+tree/turnover_daily_tree.c:      getoutput(output,LITFALLN,config)+=tree->ind.leaf.nitrogen*treepar->turnover.leaf/NDAYYEAR*pft->nind*pft->stand->frac*pft->par->fn_turnover;
+tree/turnover_daily_tree.c:      tree->turn_nbminc+= tree->ind.leaf.nitrogen*treepar->turnover.leaf/NDAYYEAR*pft->nind*(1-pft->par->fn_turnover);
+tree/turnover_daily_tree.c:      update_fbd_tree(litter,pft->par->fuelbulkdensity,tree->ind.leaf.carbon*treepar->turnover.leaf/NDAYYEAR*pft->nind,0);
+tree/turnover_monthly_tree.c:  tree->turn.root.carbon+=tree->ind.root.carbon*treepar->turnover.root/NMONTH;
+tree/turnover_monthly_tree.c:  tree->turn_litt.root.carbon+=tree->ind.root.carbon*treepar->turnover.root/NMONTH*pft->nind;
+tree/turnover_monthly_tree.c:  litter->item[pft->litter].bg.carbon+=tree->ind.root.carbon*treepar->turnover.root/NMONTH*pft->nind;
+tree/turnover_monthly_tree.c:  getoutput(output,LITFALLC,config)+=tree->ind.root.carbon*treepar->turnover.root/NMONTH*pft->nind*pft->stand->frac;
+tree/turnover_monthly_tree.c:  tree->turn.root.nitrogen+=tree->ind.root.nitrogen*treepar->turnover.root/NMONTH;
+tree/turnover_monthly_tree.c:  tree->turn_litt.root.nitrogen+=tree->ind.root.nitrogen*treepar->turnover.root/NMONTH*pft->nind;
+tree/turnover_monthly_tree.c:  litter->item[pft->litter].bg.nitrogen+=tree->ind.root.nitrogen*treepar->turnover.root/NMONTH*pft->nind*pft->par->fn_turnover;
+tree/turnover_monthly_tree.c:  getoutput(output,LITFALLN,config)+=tree->ind.root.nitrogen*treepar->turnover.root/NMONTH*pft->nind*pft->par->fn_turnover*pft->stand->frac;
+tree/turnover_monthly_tree.c:  tree->turn_nbminc+= tree->ind.root.nitrogen*treepar->turnover.root/NMONTH*pft->nind*(1-pft->par->fn_turnover);
+tree/turnover_tree.c:  sum_before.nitrogen+=vegn_sum_tree(pft)+pft->bm_inc.nitrogen+tree->turn_nbminc;
+tree/turnover_tree.c:      //cmass_excess=tree->aphen_raingreen/(pft->par->longevity*NDAYYEAR)*pft->bm_inc-pft->bm_inc;
+tree/turnover_tree.c:    payback=tree->ind.debt.carbon*pft->nind*CDEBT_PAYBACK_RATE>pft->bm_inc.carbon ? pft->bm_inc.carbon : tree->ind.debt.carbon*pft->nind*CDEBT_PAYBACK_RATE;
+tree/turnover_tree.c:      tree->ind.debt.carbon-=payback/pft->nind;
+tree/turnover_tree.c:  turn.root=tree->turn.root;
+tree/turnover_tree.c:  turn.leaf=tree->turn.leaf;
+tree/turnover_tree.c:  litter->item[pft->litter].ag.leaf.carbon+=turn.leaf.carbon*pft->nind-tree->turn_litt.leaf.carbon;
+tree/turnover_tree.c:  litter->item[pft->litter].ag.leaf.nitrogen+=turn.leaf.nitrogen*pft->nind-tree->turn_litt.leaf.nitrogen;
+tree/turnover_tree.c:  update_fbd_tree(litter,pft->par->fuelbulkdensity,turn.leaf.carbon*pft->nind-tree->turn_litt.leaf.carbon,0);
+tree/turnover_tree.c:  litter->item[pft->litter].bg.carbon+=turn.root.carbon*pft->nind-tree->turn_litt.root.carbon;
+tree/turnover_tree.c:  litter->item[pft->litter].bg.nitrogen+=turn.root.nitrogen*pft->nind-tree->turn_litt.root.nitrogen;
+tree/turnover_tree.c:  litter->item[pft->litter].bg.carbon+=tree->excess_carbon*pft->nind*treepar->turnover.root;
+tree/turnover_tree.c:  getoutput(output,LITFALLC,config)+=tree->excess_carbon*pft->nind*treepar->turnover.root*pft->stand->frac;
+tree/turnover_tree.c:  tree->excess_carbon-=tree->excess_carbon*treepar->turnover.root;
+tree/turnover_tree.c:  tree->turn.root.carbon=tree->turn.leaf.carbon=tree->turn_litt.leaf.carbon=tree->turn_litt.root.carbon=0.0;
+tree/turnover_tree.c:  tree->turn.root.nitrogen=tree->turn.leaf.nitrogen=tree->turn_litt.leaf.nitrogen=tree->turn_litt.root.nitrogen=0.0;
+tree/turnover_tree.c:  turn.sapwood.carbon=tree->ind.sapwood.carbon*treepar->turnover.sapwood;
+tree/turnover_tree.c:  tree->ind.leaf.carbon-= turn.leaf.carbon;
+tree/turnover_tree.c:  tree->ind.sapwood.carbon-= turn.sapwood.carbon;
+tree/turnover_tree.c:  tree->ind.root.carbon-= turn.root.carbon;
+tree/turnover_tree.c:  tree->ind.heartwood.carbon+=turn.sapwood.carbon;
+tree/turnover_tree.c:  if (tree->ind.leaf.carbon<epsilon)
+tree/turnover_tree.c:    litter->item[pft->litter].ag.leaf.carbon+=tree->ind.leaf.carbon*pft->nind;
+tree/turnover_tree.c:    getoutput(output,LITFALLC,config)+=tree->ind.leaf.carbon*pft->nind*pft->stand->frac;
+tree/turnover_tree.c:    update_fbd_tree(litter,pft->par->fuelbulkdensity,tree->ind.leaf.carbon*pft->nind,0);
+tree/turnover_tree.c:    tree->ind.leaf.carbon=0.0;
+tree/turnover_tree.c:  if (tree->ind.root.carbon<epsilon)
+tree/turnover_tree.c:    litter->item[pft->litter].bg.carbon+=tree->ind.root.carbon*pft->nind;
+tree/turnover_tree.c:    getoutput(output,LITFALLC,config)+=tree->ind.root.carbon*pft->nind*pft->stand->frac;
+tree/turnover_tree.c:    tree->ind.root.carbon=0.0;
+tree/turnover_tree.c:  turn.sapwood.nitrogen=tree->ind.sapwood.nitrogen*treepar->turnover.sapwood*(1-param.sapwood_recovery);   /*0.7 is a bit arbitrary (check for literature values), but not all nitrogen of the sapwood should go to heartwood*/
+tree/turnover_tree.c:  tree->ind.leaf.nitrogen-= turn.leaf.nitrogen;
+tree/turnover_tree.c:  tree->ind.sapwood.nitrogen-= turn.sapwood.nitrogen;
+tree/turnover_tree.c:  tree->ind.root.nitrogen-= turn.root.nitrogen;
+tree/turnover_tree.c:  pft->bm_inc.nitrogen+=tree->turn_nbminc;
+tree/turnover_tree.c:  tree->turn_nbminc=0;
+tree/turnover_tree.c:  tree->ind.heartwood.nitrogen+=turn.sapwood.nitrogen;
+tree/turnover_tree.c:  if (tree->ind.leaf.nitrogen<epsilon)
+tree/turnover_tree.c:    litter->item[pft->litter].ag.leaf.nitrogen+=tree->ind.leaf.nitrogen*pft->nind;
+tree/turnover_tree.c:    getoutput(output,LITFALLN,config)+=tree->ind.leaf.nitrogen*pft->nind*pft->stand->frac;
+tree/turnover_tree.c:    tree->ind.leaf.nitrogen=0.0;
+tree/turnover_tree.c:  if (tree->ind.root.nitrogen<epsilon)
+tree/turnover_tree.c:    litter->item[pft->litter].bg.nitrogen+=tree->ind.root.nitrogen*pft->nind;
+tree/turnover_tree.c:    getoutput(output,LITFALLN,config)+=tree->ind.root.nitrogen*pft->nind*pft->stand->frac;
+tree/turnover_tree.c:    tree->ind.root.nitrogen=0.0;
+tree/turnover_tree.c:  printf("turn: %s %g %g %g %g %g %g %g %g %g %g\n",pft->par->name,tree->ind.leaf.carbon,tree->ind.root.carbon,
+tree/turnover_tree.c:         tree->ind.sapwood.carbon,tree->ind.heartwood.carbon,tree->ind.debt.carbon,pft->fpc,
+tree/turnover_tree.c:         pft->nind,tree->height,tree->crownarea,pft->bm_inc.carbon);
+tree/veg_sum_tree.c:  return (phys_sum_tree(tree->ind)-tree->ind.debt.carbon+tree->excess_carbon)*pft->nind-tree->turn_litt.leaf.carbon-tree->turn_litt.root.carbon+tree->fruit.carbon;
+tree/veg_sum_tree.c:  return (phys_sum_tree_n(tree->ind)-tree->ind.debt.nitrogen)*pft->nind-tree->turn_litt.leaf.nitrogen-tree->turn_litt.root.nitrogen+tree->fruit.nitrogen;
+tree/vmaxlimit_tree.c:  NC_leaf=(pft->nleaf)/(tree->ind.leaf.carbon*pft->nind+pft->bm_inc.carbon*tree->falloc.leaf);
+tree/vmaxlimit_tree.c:  //vmax=((tree->ind.leaf.nitrogen-pft->par->ncleaf.low*tree->ind.leaf.carbon)*pft->nind)/exp(-param.k_temp*(temp-25))/f_lai(lai_tree(pft))/param.p/0.02314815*daylength;
+tree/vmaxlimit_tree.c:  //vmax=(pft->nleaf-pft->par->ncleaf.low*tree->ind.leaf.carbon*pft->nind)/exp(-param.k_temp*(temp-25))/f_lai(lai_tree(pft))/param.p/0.02314815*daylength;
+tree/vmaxlimit_tree.c:  //vmax=(pft->nleaf-pft->par->ncleaf.median*(pft->bm_inc.carbon*tree->falloc.leaf+tree->ind.leaf.carbon*pft->nind))/exp(-param.k_temp*(temp-25))/f_lai(lai_tree(pft))/param.p/0.02314815*daylength;
+tree/vmaxlimit_tree.c:  //vmax=(pft->nleaf-param.n0*0.001*(pft->bm_inc.carbon*tree->falloc.leaf+tree->ind.leaf.carbon*pft->nind))/exp(-param.k_temp*(temp-25))/f_lai(lai_tree(pft))/param.p/0.02314815*daylength;
+tree/vmaxlimit_tree.c:  vmax=(pft->nleaf-pft->par->ncleaf.low*(pft->bm_inc.carbon*tree->falloc.leaf+tree->ind.leaf.carbon*pft->nind-tree->turn_litt.leaf.carbon))/exp(-param.k_temp*(temp-25))/f_lai(lai_tree(pft))/param.p/0.02314815*daylength;

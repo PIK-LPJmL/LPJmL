@@ -98,7 +98,7 @@ void dailyfire(Stand *stand,                /**< pointer to stand */
     burnt_area = climate->burntarea;
   else
   {
-    burnt_area = area_burnt(&fireduration,&ndayfire,&burnt_area_max,stand->type->max_fireduration,fire_danger_index, num_fires, windsp_cover, ros_forward, config->ntypes, stand,config->max_firesize);
+    burnt_area = area_burnt(&fireduration,&ndayfire,&burnt_area_max,stand->type->max_fireduration,stand->type->min_fireduration,fire_danger_index, num_fires, windsp_cover, ros_forward, config->ntypes, stand,config->max_firesize);
     if(stand->type->landusetype==NATURAL)
     {
       getoutput(output,FIREDURATION,config)+=fireduration;
@@ -175,22 +175,26 @@ void dailyfire(Stand *stand,                /**< pointer to stand */
   getoutputindex(output,STAND_BURNTAREA,0,config) += burnt_area; /*ha*/
   getoutputindex(output,STAND_FDI,0,config) += fire_danger_index;
   getoutputindex(output,STAND_SURFACE_FI,0,config) += surface_fi;
+  getoutputindex(output,STAND_FIREDURATION,0,config) += fireduration;
   switch(stand->type->landusetype)
   {
     case NATURAL:
       getoutputindex(output,STAND_BURNTAREA,1,config) += burnt_area; /*ha*/
       getoutputindex(output,STAND_FDI,1,config) += fire_danger_index;
       getoutputindex(output,STAND_SURFACE_FI,1,config) += surface_fi;
+      getoutputindex(output,STAND_FIREDURATION,1,config) += fireduration;
       break;
     case GRASSLAND:
       getoutputindex(output,STAND_BURNTAREA,2,config) += burnt_area; /*ha*/
       getoutputindex(output,STAND_FDI,2,config) += fire_danger_index;
       getoutputindex(output,STAND_SURFACE_FI,2,config) += surface_fi;
+      getoutputindex(output,STAND_FIREDURATION,2,config) += fireduration;
       break;
     case AGRICULTURE:
       getoutputindex(output,STAND_BURNTAREA,3,config) += burnt_area; /*ha*/
       getoutputindex(output,STAND_FDI,3,config) += fire_danger_index;
       getoutputindex(output,STAND_SURFACE_FI,3,config) += surface_fi;
+      getoutputindex(output,STAND_FIREDURATION,3,config) += fireduration;
       break;
   }
   getoutput(output,FIREC,config) += total_fire.carbon;
@@ -204,6 +208,7 @@ void dailyfire(Stand *stand,                /**< pointer to stand */
     if (num_fires>0)
       getoutput(output,FIRESIZE,config) += burnt_area*1e4/num_fires;
     getoutput(&stand->cell->output,DLM_LIVEGRASS,config)+=livefuel.M[0];
+    getoutput(&stand->cell->output,DFMC,config)+=fuel.M[0];
 
   }
   stand->cell->balance.fire.carbon+=total_fire.carbon;

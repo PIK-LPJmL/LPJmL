@@ -39,6 +39,7 @@ void petpar2(Real *daylength, /**< daylength (h) */
              Real lw,         /**< longwave net/downward flux (W m-2) */
              Real swdown,     /**< shortwave downward flux (W m-2) */
              Bool islwdown,   /**< LW radiation is downward (TRUE/FALSE) */
+             Bool isswnet,     /**< shorwave net radiation (TRUE/FALSE) */
              Real beta        /**< Albedo */
             )
 {
@@ -58,7 +59,11 @@ void petpar2(Real *daylength, /**< daylength (h) */
     hh=acos(-u/v);
     *daylength=24*hh*M_1_PI;
   }
-  swnet=(1-beta)*swdown;  /* shortwave net flux, downward positive (W m-2) */
+  
+  if(isswnet)
+    swnet=swdown;  /* shortwave net flux, downward positive (W m-2) */
+  else
+    swnet=(1-beta)*swdown;  /* shortwave net flux, downward positive (W m-2) */
   /* *par=dayseconds*swnet/2;*/
   *par=dayseconds*swdown/2; /* MPAR based on SWdown instead of SWnet because albedo will be removed with PFT-dependent leaf albedo in water_stressed */
 

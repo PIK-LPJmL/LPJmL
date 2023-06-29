@@ -20,7 +20,7 @@ Real surface_fire_intensity(Real ros_forward,
                             Fuel *fuel)
 {
   Real surface_intens;
-  ros_forward/=60.0;
-  surface_intens=384/30.48/fuel->char_sigma*fuel->ir*ros_forward; /* calculated using Albini 1976 approach */
+  //ros_forward/=60.0;
+  surface_intens=(384/30.48)/fuel->char_sigma*fuel->ir*ros_forward; /* calculated using Albini 1976 approach */
   return surface_intens;   
 } /* of 'surface_fire_intensity' */

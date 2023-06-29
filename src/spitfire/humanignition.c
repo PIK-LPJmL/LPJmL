@@ -21,6 +21,6 @@ Real humanignition(Real popdens,
 
   a_nd = ignition->human;
   k_pd = exp(param.hum_ign*sqrt(popdens));
-  human_ign = k_pd * a_nd * popdens/100;
+  human_ign = 100 * k_pd * a_nd * popdens/100;
   return human_ign;
 } /* of 'humanignition' */
