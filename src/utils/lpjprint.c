@@ -192,7 +192,7 @@ int main(int argc,char **argv)
     printf(USAGE,progname);
     printf("\nArguments:\n"
            "-h               print this help text\n"
-           "-pp cmd          set preprocessor program. Default is 'cpp -P'\n"
+           "-pp cmd          set preprocessor program. Default is '" cpp_cmd "'\n"
            "-inpath dir      directory appended to input filenames\n"
            "-restartpath dir directory appended to restart filename\n"
            "-Dmacro[=value]  define macro for preprocessor of configuration file\n"

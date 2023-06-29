@@ -59,7 +59,7 @@ int main(int argc,char **argv)
              "-h               print this help text\n"
              "-noinput         does not list input data files\n"
              "-nooutput        does not list output files\n"
-             "-pp cmd          set preprocessor program. Default is 'cpp -P'\n"
+             "-pp cmd          set preprocessor program. Default is '" cpp_cmd "'\n"
              "-outpath dir     directory appended to output filenames\n"
              "-inpath dir      directory appended to input filenames\n"
              "-restartpath dir directory appended to restart filename\n"

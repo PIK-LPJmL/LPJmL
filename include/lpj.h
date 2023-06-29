@@ -98,6 +98,16 @@ typedef struct config Config; /* forward declaration of stand */
 
 /* Definition of constants */
 
+#ifdef _WIN32              /* are we on a Windows machine? */
+#ifdef IMAGE
+#define cpp_cmd "cl /E /DIMAGE /nologo"  /* C preprocessor command for Windows */
+#else
+#define cpp_cmd "cl /E /nologo"  /* C preprocessor command for Windows */
+#endif
+#else
+#define cpp_cmd "cpp"  /* C preprocessor command for Unix */
+#endif
+
 /* Environment variables */
 
 #define LPJROOT "LPJROOT"            /* LPJ root directory */
