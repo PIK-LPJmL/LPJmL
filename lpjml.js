@@ -2,7 +2,7 @@
 /**                                                                                \n**/
 /**                   l  p  j  m  l  .  j  s                                       \n**/
 /**                                                                                \n**/
-/** Default configuration file for LPJmL C Version 5.6.7                           \n**/
+/** Default configuration file for LPJmL C Version 5.6.13-FIRE                     \n**/
 /**                                                                                \n**/
 /** Configuration file is divided into five sections:                              \n**/
 /**                                                                                \n**/
@@ -30,12 +30,13 @@
 
   "sim_name" : "LPJmL Run", /* Simulation description */
   "sim_id"   : "lpjml",     /* LPJML Simulation type with managed land use */
+  "coupled_model" : null,   /* Coupled model: null (no model coupled), string (name of coupled model) */
+  "start_coupling": null,   /* Start year of model coupling: null (start_coupling is set to firstyear if coupled_model != null), int (start year of coupling) */
   "version"  : "5.6",       /* LPJmL version expected */
   "global_attrs" : {"institution" : "Potsdam Institute for Climate Impact Research",
                     "contact" : "", /* name and email address */
                     "comment" : ""  /* additional comments */
                    },       /* Global attributes for NetCDF output files */
-  "coupled_model" : null,   /* no model coupling */
   "random_prec" : true,     /* Random weather generator for precipitation enabled */
   "random_seed" : 2,        /* seed for random number generator or "random_seed" */
   "radiation" : "radiation",/* other options: "cloudiness", "radiation", "radiation_swonly", "radiation_lwdown" */

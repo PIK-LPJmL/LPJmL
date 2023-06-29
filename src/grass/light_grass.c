@@ -51,8 +51,8 @@ void light_grass(Litter *litter, /**< pointer to litter pools */
     m_kill.root.nitrogen=0;
   grass->ind.root.carbon-=m_kill.root.carbon;
   grass->ind.root.nitrogen-=m_kill.root.nitrogen;
-  litter->item[pft->litter].ag.leaf.carbon+=m_kill.leaf.carbon*pft->nind;
-  litter->item[pft->litter].ag.leaf.nitrogen+=m_kill.leaf.nitrogen*pft->nind;
+  litter->item[pft->litter].agtop.leaf.carbon+=m_kill.leaf.carbon*pft->nind;
+  litter->item[pft->litter].agtop.leaf.nitrogen+=m_kill.leaf.nitrogen*pft->nind;
   update_fbd_grass(litter,pft->par->fuelbulkdensity,m_kill.leaf.carbon*pft->nind);
   litter->item[pft->litter].bg.carbon+=m_kill.root.carbon*pft->nind;
   litter->item[pft->litter].bg.nitrogen+=m_kill.root.nitrogen*pft->nind;

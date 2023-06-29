@@ -1,6 +1,6 @@
 /**************************************************************************************/
 /**                                                                                \n**/
-/**             l  i  t  t  e  r  _  a  g  _  t  r  e  e  .  c                     \n**/
+/**             l  i  t  t  e  r  _  a  g  t  o  p  _  t  r  e  e  .  c            \n**/
 /**                                                                                \n**/
 /**     C implementation of LPJmL                                                  \n**/
 /**                                                                                \n**/
@@ -16,9 +16,9 @@
 
 #include "lpj.h"
 
-Real litter_ag_tree(const Litter *litter, /**< pointer to litter data */
-                    int fuel              /**< fuel class */
-                   )                      /** \return aboveground litter in fuel class (gC/m2) */
+Real litter_agtop_tree(const Litter *litter, /**< pointer to litter data */
+                       int fuel              /**< fuel class */
+                      )                      /** \return aboveground litter in fuel class (gC/m2) */
 {
   int l;
   Real sum;
@@ -27,13 +27,13 @@ Real litter_ag_tree(const Litter *litter, /**< pointer to litter data */
   {
     for(l=0;l<litter->n;l++)
       if(litter->item[l].pft->type==TREE)
-        sum+=litter->item[l].ag.leaf.carbon+litter->item[l].ag.wood[0].carbon;
+        sum+=litter->item[l].agtop.leaf.carbon+litter->item[l].agtop.wood[0].carbon;
   }
   else
   {
     for(l=0;l<litter->n;l++)
       if(litter->item[l].pft->type==TREE)
-        sum+=litter->item[l].ag.wood[fuel].carbon;
+        sum+=litter->item[l].agtop.wood[fuel].carbon;
   }
   return sum;
-} /* of litter_ag_tree */
+} /* of litter_agtop_tree */

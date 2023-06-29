@@ -1,10 +1,10 @@
 /**************************************************************************************/
 /**                                                                                \n**/
-/**             l i t t e r _ a g _ n i t r o g e n _ t r e e . c                  \n**/
+/**               i  n  i  t  f  w  i  .  c                                        \n**/
+/**                                                                                \n**/
+/**     Function initializes Canadian fire danger index                            \n**/
 /**                                                                                \n**/
 /**     C implementation of LPJmL                                                  \n**/
-/**                                                                                \n**/
-/** Function computes sum of all above-ground nitrogen litter pools for trees      \n**/
 /**                                                                                \n**/
 /** (C) Potsdam Institute for Climate Impact Research (PIK), see COPYRIGHT file    \n**/
 /** authors, and contributors see AUTHORS file                                     \n**/
@@ -13,25 +13,11 @@
 /** Contact: https://github.com/PIK-LPJmL/LPJmL                                    \n**/
 /**                                                                                \n**/
 /**************************************************************************************/
-
 #include "lpj.h"
 
-Real litter_ag_nitrogen_tree(const Litter *litter,int fuel)
+void initfwi(FWIdata *fwi)
 {
-  int l;
-  Real sum;
-  sum=0;
-  if(fuel==0)
-  {
-    for(l=0;l<litter->n;l++)
-      if(litter->item[l].pft->type==TREE)
-        sum+=litter->item[l].ag.leaf.nitrogen+litter->item[l].ag.wood[0].nitrogen;
-  }
-  else
-  {
-    for(l=0;l<litter->n;l++)
-      if(litter->item[l].pft->type==TREE)
-        sum+=litter->item[l].ag.wood[fuel].nitrogen;
-  }
-  return sum;
-} /* of litter_ag_nitrogen_tree */
+  fwi->ffmc=85;
+  fwi->dmc=6;
+  fwi->dc=15;
+} /* of 'initfwi' */

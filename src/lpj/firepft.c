@@ -35,20 +35,20 @@ Stocks firepft(Stand *stand,   /**< Litter pool */
   }
   for(p=0;p<litter->n;p++)
   {
-    flux_litter.carbon+=litter->item[p].ag.leaf.carbon;
-    flux_litter.nitrogen+=litter->item[p].ag.leaf.nitrogen;
+    flux_litter.carbon+=litter->item[p].agtop.leaf.carbon;
+    flux_litter.nitrogen+=litter->item[p].agtop.leaf.nitrogen;
     for(i=0;i<NFUELCLASS;i++)
     {
-      flux_litter.carbon+=litter->item[p].ag.wood[i].carbon;
-      flux_litter.nitrogen+=litter->item[p].ag.wood[i].nitrogen;
+      flux_litter.carbon+=litter->item[p].agtop.wood[i].carbon;
+      flux_litter.nitrogen+=litter->item[p].agtop.wood[i].nitrogen;
     }
-    litter->item[p].ag.leaf.carbon*=(1-fire_frac);
-    litter->item[p].ag.leaf.nitrogen*=(1-fire_frac);
+    litter->item[p].agtop.leaf.carbon*=(1-fire_frac);
+    litter->item[p].agtop.leaf.nitrogen*=(1-fire_frac);
     for(i=0;i<NFUELCLASS;i++)
     {
-      getoutput(&stand->cell->output,LITBURNC_WOOD,config)+=litter->item[p].ag.wood[i].carbon*fire_frac;
-      litter->item[p].ag.wood[i].carbon*=(1-fire_frac);
-      litter->item[p].ag.wood[i].nitrogen*=(1-fire_frac);
+      getoutput(&stand->cell->output,LITBURNC_WOOD,config)+=litter->item[p].agtop.wood[i].carbon*fire_frac;
+      litter->item[p].agtop.wood[i].carbon*=(1-fire_frac);
+      litter->item[p].agtop.wood[i].nitrogen*=(1-fire_frac);
     }
   } /* of 'for(p=0;...)' */
   getoutput(&stand->cell->output,LITBURNC,config)+=flux_litter.carbon*fire_frac;

@@ -2,7 +2,7 @@
 /**                                                                                \n**/
 /**               o  u  t  p  u  t  v  a  r  s  .  j  s                            \n**/
 /**                                                                                \n**/
-/**  Defines array of output variables for LPJmL 5.6.7                             \n**/
+/**  Defines array of output variables for LPJmL 5.6.13-FIRE                       \n**/
 /**                                                                                \n**/
 /**  Monthly output rates can be rescaled to 1/day or 1/second by setting the unit \n**/
 /**  to day-1 or sec-1, e.g.:                                                      \n**/
@@ -23,6 +23,7 @@
 
 #include "../include/conf.h" /* include constant definitions */
 
+"nofill" : false,        /* do not fill NetCDF files at creation (true/false) */
 "compress" : 0,          /* compression level (1-9, 0= no compression) */
 "missing_value" : -1e32, /* missing value in NetCDF files */
 "pft_index" : "npft",    /* name of index variable for PFT output */
@@ -71,8 +72,8 @@
    { "id" : DFMC, "name": "dfmc", "timestep" : "monthly", "var" : "dfmc", "descr" : "dead fuel moisture content", "unit" : "", "scale" : 1.0, "offset" : 0.0},
   { "id" : VEGC, "name": "vegc", "timestep" : "annual", "var" : "VegC", "descr" : "vegetation carbon", "unit" : "gC/m2", "scale" : 1.0, "offset" : 0.0},
   { "id" : SOILC, "name": "soilc", "timestep" : "annual", "var" : "SoilC", "descr" : "total soil carbon density", "unit" : "gC/m2", "scale" : 1.0, "offset" : 0.0},
-  { "id" : LITC, "name": "litc", "timestep" : "annual", "var" : "LitC", "descr" : "litter carbon", "unit" : "gC/m2", "scale" : 1.0, "offset" : 0.0},
   { "id" : PFT_LITTERC, "name": "pft_litterc", "timestep" : "daily", "var" : "litterc", "descr" : "PFT-specific above-ground litter carbon", "unit" : "gC/m2", "scale" : 1.0, "offset" : 0.0},
+  { "id" : LITC, "name": "litc", "timestep" : "annual", "var" : "LitC", "descr" : "above-ground and sub litter carbon", "unit" : "gC/m2", "scale" : 1.0, "offset" : 0.0},
   { "id" : LITFALLC, "name": "litfallc", "timestep" : "annual", "var" : "litfallc", "descr" : "litter fall carbon", "unit" : "gC/m2/yr", "scale" : 1.0, "offset" : 0.0},
   { "id" : LITFALLN, "name": "litfalln", "timestep" : "annual", "var" : "litfalln", "descr" : "litter fall nitrogen", "unit" : "gN/m2/yr", "scale" : 1.0, "offset" : 0.0},
   { "id" : FLUX_ESTABC, "name": "flux_estabc", "timestep" : "annual", "var" : "estabc", "descr" : "establishment flux", "unit" : "gC/m2/yr", "scale" : 1.0, "offset" : 0.0},
@@ -223,10 +224,11 @@
   { "id" : SEEPAGE, "name": "seepage",  "timestep" : "monthly", "var" :  "seepage", "descr" :  "seepage water", "unit" : "mm/month", "scale" : 1.0, "offset" : 0.0},
   { "id" : BURNTAREA, "name": "burntarea", "timestep" : "monthly", "var" :  "burntarea", "descr" :  "monthly area burnt", "unit" : "hectare", "scale" : 1.0, "offset" : 0.0},
   { "id" : MAX_FIRESIZE, "name": "max_firesize", "timestep" : "monthly", "var" :  "max_firesize", "descr" :  "maximum fire size", "unit" : "hectare", "scale" : 1.0, "offset" : 0.0},
-  { "id" : STAND_FIREDURATION, "name": "stand_fireduration", "timestep" : "monthly", "var" :  "fireduration", "descr" :  "stand-specific fire duration", "unit" : "h", "scale" : 1.0, "offset" : 0.0},
+  { "id" : STAND_FIREDURATION, "name": "stand_fireduration", "timestep" : "monthly", "var" :  "fireduration", "descr" :  "stand-specific fire duration", "unit" : "min", "scale" : 1.0, "offset" : 0.0},
   { "id" : STAND_BURNTAREA, "name": "stand_burntarea", "timestep" : "annual", "var" :  "burntarea", "descr" :  "stand-specific area burnt", "unit" : "hectare", "scale" : 1.0, "offset" : 0.0},
   { "id" : STAND_FDI, "name": "stand_fdi", "timestep" : "annual", "var" :  "fdi", "descr" :  "stand-specific fire danger index", "unit" : "", "scale" : 1.0, "offset" : 0.0},
   { "id" : STAND_SURFACE_FI, "name": "stand_surface_fi", "timestep" : "annual", "var" :  "surface_fi", "descr" :  "stand-specific average surface fire intensity", "unit" : "kW/m2", "scale" : 1.0e-3, "offset" : 0.0},
+  { "id" : FWI, "name": "fwi", "timestep" : "monthly", "var" :  "fwi", "descr" :  "Canadian forest fire weather index", "unit" : "", "scale" : 1.0, "offset" : 0.0},
   { "id" : HUMAN_IGNITION, "name": "human_ignition", "timestep" : "monthly", "var" :  "human_ign", "descr" :  "human ignition", "unit" : "", "scale" : 1.0, "offset" : 0.0},
   { "id" : LIGHTNING, "name": "lightning", "timestep" : "monthly", "var" :  "lightning_ign", "descr" :  "lightnings causing fires", "unit" : "", "scale" : 1.0, "offset" : 0.0},
   { "id" : SURFACE_FI, "name": "surface_fi", "timestep" : "monthly", "var" :  "surface_fi", "descr" :  "average surface fire intensity", "unit" : "kW/m2", "scale" : 1.0e-3, "offset" : 0.0},
@@ -317,6 +319,7 @@
   { "id" : N2O_NIT, "name": "n2o_nit", "timestep" : "monthly", "var": "N2O_nitrification", "descr": "monthly N2O emissions from nitrification", "unit": "gN/m2/month", "scale": 1.0, "offset" : 0.0},
   { "id" : N2_EMIS, "name": "n2_emis", "timestep" : "monthly", "var": "N2_emissions", "descr": "monthly N2 emissions", "unit": "gN/m2/month", "scale": 1.0, "offset" : 0.0},
   { "id" : BNF, "name": "bnf", "timestep" : "monthly", "var": "bnf", "descr": "monthly biological N fixation", "unit": "gN/m2/month", "scale": 1.0, "offset" : 0.0},
+  { "id" : PFT_BNF, "name": "pft_bnf", "timestep" : "annual", "var": "bnf", "descr": "annual PFT-specific biological N fixation", "unit": "gN/m2/year", "scale": 1.0, "offset" : 0.0},
   { "id" : PFT_NDEMAND, "name": "pft_ndemand", "timestep" : "annual", "var": "N_demand", "descr": "nitrogen demand per PFT", "unit": "gN/yr", "scale": 1.0, "offset" : 0.0},
   { "id" : N_MINERALIZATION, "name": "n_mineralization", "timestep" : "monthly", "var": "N_mineralization", "descr": "N mineralized", "unit": "gN/m2/month", "scale": 1.0, "offset" : 0.0},
   { "id" : N_VOLATILIZATION, "name": "n_volatilization", "timestep" : "monthly", "var": "N_volatilization", "descr": "N volatilized", "unit": "gN/m2/month", "scale": 1.0, "offset" : 0.0},

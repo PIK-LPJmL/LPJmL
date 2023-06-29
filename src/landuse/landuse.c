@@ -86,7 +86,7 @@ Landuse initlanduse(const Config *config /**< LPJ configuration */
   landuse->landuse.isopen=landuse->fertilizer_nr.isopen=landuse->manure_nr.isopen=landuse->with_tillage.isopen=
   landuse->residue_on_field.isopen=landuse->sdate.isopen=landuse->crop_phu.isopen=landuse->grassland_lsuha.isopen=FALSE;
   /* open landuse input data */
-  if(opendata(&landuse->landuse,&config->landuse_filename,"landuse","1",(config->landuse_filename.fmt==SOCK) ? LPJ_FLOAT : LPJ_SHORT,0.001,2*config->landusemap_size,FALSE,config))
+  if(opendata(&landuse->landuse,&config->landuse_filename,"landuse","1",LPJ_FLOAT,LPJ_SHORT,0.001,2*config->landusemap_size,FALSE,config))
   {
     freelanduse(landuse,config);
     return NULL;
@@ -107,7 +107,7 @@ Landuse initlanduse(const Config *config /**< LPJ configuration */
   if(config->sdate_option==PRESCRIBED_SDATE)
   {
     /* open sdate input data */
-    if(opendata(&landuse->sdate,&config->sdate_filename,"sowing",NULL,(config->sdate_filename.fmt==SOCK) ? LPJ_INT : LPJ_SHORT,1.0,2*config->cftmap_size,TRUE,config))
+    if(opendata(&landuse->sdate,&config->sdate_filename,"sowing",NULL,LPJ_INT,LPJ_SHORT,1.0,2*config->cftmap_size,TRUE,config))
     {
       freelanduse(landuse,config);
       return NULL;
@@ -119,7 +119,7 @@ Landuse initlanduse(const Config *config /**< LPJ configuration */
   if(config->crop_phu_option==PRESCRIBED_CROP_PHU)
   {
     /* open sdate input data */
-    if(opendata(&landuse->crop_phu,&config->crop_phu_filename,"crop phu",NULL,(config->crop_phu_filename.fmt==SOCK) ? LPJ_FLOAT : LPJ_SHORT,1.0,2*config->cftmap_size,TRUE,config))
+    if(opendata(&landuse->crop_phu,&config->crop_phu_filename,"crop phu",NULL,LPJ_FLOAT,LPJ_SHORT,1.0,2*config->cftmap_size,TRUE,config))
     {
       freelanduse(landuse,config);
       return NULL;
@@ -130,7 +130,7 @@ Landuse initlanduse(const Config *config /**< LPJ configuration */
   if(config->fertilizer_input==FERTILIZER)
   {
     /* open fertilizer data */
-    if(opendata(&landuse->fertilizer_nr,&config->fertilizer_nr_filename,"fertilizer","g/m2",(config->fertilizer_nr_filename.fmt==SOCK) ? LPJ_FLOAT : LPJ_SHORT,1.0,2*config->fertilizermap_size,TRUE,config))
+    if(opendata(&landuse->fertilizer_nr,&config->fertilizer_nr_filename,"fertilizer","g/m2",LPJ_FLOAT,LPJ_SHORT,1.0,2*config->fertilizermap_size,TRUE,config))
     {
       freelanduse(landuse,config);
       return NULL;
@@ -142,7 +142,7 @@ Landuse initlanduse(const Config *config /**< LPJ configuration */
   if(config->manure_input)
   {
     /* open manure fertilizer data */
-    if(opendata(&landuse->manure_nr,&config->manure_nr_filename,"manure","g/m2",(config->manure_nr_filename.fmt==SOCK) ? LPJ_FLOAT : LPJ_SHORT,1.0,2*config->fertilizermap_size,TRUE,config))
+    if(opendata(&landuse->manure_nr,&config->manure_nr_filename,"manure","g/m2",LPJ_FLOAT,LPJ_SHORT,1.0,2*config->fertilizermap_size,TRUE,config))
     {
       freelanduse(landuse,config);
       return NULL;
@@ -153,7 +153,7 @@ Landuse initlanduse(const Config *config /**< LPJ configuration */
 
   if(config->tillage_type==READ_TILLAGE)
   {
-    if(opendata(&landuse->with_tillage,&config->with_tillage_filename,"tillage",NULL,(config->with_tillage_filename.fmt==SOCK) ? LPJ_INT : LPJ_SHORT,1.0,1,TRUE,config))
+    if(opendata(&landuse->with_tillage,&config->with_tillage_filename,"tillage",NULL, LPJ_INT,LPJ_SHORT,1.0,1,TRUE,config))
     {
       freelanduse(landuse,config);
       return NULL;
@@ -165,7 +165,7 @@ Landuse initlanduse(const Config *config /**< LPJ configuration */
   if(config->residue_treatment==READ_RESIDUE_DATA)
   {
     /* open residue data */
-    if(opendata(&landuse->residue_on_field,&config->residue_data_filename,"residue extraction",NULL,(config->residue_data_filename.fmt==SOCK) ? LPJ_FLOAT : LPJ_SHORT,1.0,config->fertilizermap_size,TRUE,config))
+    if(opendata(&landuse->residue_on_field,&config->residue_data_filename,"residue extraction",NULL,LPJ_FLOAT,LPJ_SHORT,1.0,config->fertilizermap_size,TRUE,config))
     {
       freelanduse(landuse,config);
       return NULL;
@@ -176,7 +176,7 @@ Landuse initlanduse(const Config *config /**< LPJ configuration */
 
   if(config->prescribe_lsuha)
   {
-    if(opendata(&landuse->grassland_lsuha,&config->lsuha_filename,"livestock density","LSU/ha",(config->lsuha_filename.fmt==SOCK) ? LPJ_FLOAT : LPJ_SHORT,0.001,1,TRUE,config))
+    if(opendata(&landuse->grassland_lsuha,&config->lsuha_filename,"livestock density","LSU/ha",LPJ_FLOAT,LPJ_SHORT,0.001,1,TRUE,config))
     {
       freelanduse(landuse,config);
       return NULL;

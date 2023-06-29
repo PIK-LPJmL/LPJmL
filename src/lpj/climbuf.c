@@ -57,6 +57,9 @@ Bool new_climbuf(Climbuf *climbuf, /**< pointer to climate buffer */
     climbuf->prec[d]=0;
   for(m=0;m<NMONTH;m++)
     climbuf->mpet20[m]=climbuf->mprec20[m]=climbuf->mtemp20[m]=-9999;
+  for(m=0;m<NMEAN;m++)
+    climbuf->gpp[m]=0;
+  climbuf->gpp_index=0;
   return FALSE;
 } /* of 'new_climbuf' */
 
@@ -70,6 +73,7 @@ void init_climbuf(Climbuf *climbuf, /**< pointer to climate buffer */
   climbuf->gdd5=0;
   climbuf->mprec=0;
   climbuf->mpet=0;
+  climbuf->gpp_avg=getavg(climbuf->gpp,NMEAN);
   for(c=0;c<ncft;c++)
     climbuf->V_req_a[c]=0;
 } /* of 'init_climbuf' */
@@ -144,6 +148,7 @@ void monthly_climbuf(Climbuf *climbuf, /**< pointer to climate buffer */
 
 void annual_climbuf(Climbuf *climbuf,    /**< pointer to climate buffer */
                     Real aetp,           /**< annual evapotranspiration (mm) */
+                    Real gpp,            /**< annual GPP (gC/m2/yr) */
                     int ncft,            /**< number of crop pfts */
                     Bool update_v_req    /**< update V_req vector (TRUE/FALSE) */
                    )
@@ -164,6 +169,8 @@ void annual_climbuf(Climbuf *climbuf,    /**< pointer to climate buffer */
     for(cft=0;cft<ncft;cft++)
       climbuf->V_req[cft]= (climbuf->V_req[cft]< -9998) ? climbuf->V_req_a[cft] : (1-kk)*climbuf->V_req[cft]+kk*climbuf->V_req_a[cft];
   }
+  climbuf->gpp[climbuf->gpp_index]=gpp;
+  climbuf->gpp_index=(climbuf->gpp_index+1) % NMEAN;
 } /* of 'annual_climbuf' */
 
 Bool fwriteclimbuf(FILE *file,             /**< pointer to binary file */
@@ -186,6 +193,8 @@ Bool fwriteclimbuf(FILE *file,             /**< pointer to binary file */
   fwrite(climbuf->mtemp20,sizeof(Real),NMONTH,file);
   fwrite(climbuf->V_req,sizeof(Real),ncft,file);
   fwrite(climbuf->V_req_a,sizeof(Real),ncft,file);
+  fwrite(climbuf->gpp,sizeof(Real),NMEAN,file);
+  fwrite(&climbuf->gpp_index,sizeof(int),1,file);
   fwritebuffer(file,climbuf->min);
   return fwritebuffer(file,climbuf->max);
 } /* of 'fwriteclimbuf' */
@@ -218,6 +227,8 @@ Bool freadclimbuf(FILE *file,       /**< pointer to binary file */
   if(climbuf->V_req_a==NULL)
     return TRUE;
   freadreal(climbuf->V_req_a,ncft,swap,file);
+  freadreal(climbuf->gpp,NMEAN,swap,file);
+  freadint1(&climbuf->gpp_index,swap,file);
   climbuf->min=freadbuffer(file,swap);
   if(climbuf->min==NULL)
   {
@@ -232,6 +243,52 @@ Bool freadclimbuf(FILE *file,       /**< pointer to binary file */
     climbuf->aprec+=climbuf->mprec20[m];
   return (climbuf->max==NULL);
 } /* of 'freadclimbuf' */
+
+void fprintclimbuf(FILE *file,             /**< pointer to text file */
+                   const Climbuf *climbuf, /**< pointer to climate buffer */
+                   int ncft                /**< number of crop pfts */
+                  )
+{
+  int m;
+
+  fprintf(file,"temp_max: %g\n",climbuf->temp_max);
+  fprintf(file,"temp_min: %g\n",climbuf->temp_min);
+  fprintf(file,"atemp_mean: %g\n",climbuf->atemp_mean);
+  fprintf(file,"aetp_mean: %g\n",climbuf->aetp_mean);
+  fprintf(file,"atemp_mean20: %g\n",climbuf->atemp_mean20);
+  fprintf(file,"atemp_mean20_fix: %g\n",climbuf->atemp_mean20_fix);
+  fprintf(file,"gdd5: %g\n",climbuf->gdd5);
+  fprintf(file,"dval_prec: %g\n",climbuf->dval_prec[0]);
+  fputs("temp:",file);
+  for(m=0;m<NDAYS;m++)
+    fprintf(file," %g",climbuf->temp[m]);
+  fputs("\nprec:",file);
+  for(m=0;m<NDAYS;m++)
+    fprintf(file," %g",climbuf->prec[m]);
+  fputs("\nmpet20:",file);
+  for(m=0;m<NMONTH;m++)
+    fprintf(file," %g",climbuf->mpet20[m]);
+  fputs("\nmprec20:",file);
+  for(m=0;m<NMONTH;m++)
+    fprintf(file," %g",climbuf->mprec20[m]);
+  fputs("\nmtemp20:",file);
+  for(m=0;m<NMONTH;m++)
+    fprintf(file," %g",climbuf->mtemp20[m]);
+  fputs("\nV_req:",file);
+  for(m=0;m<ncft;m++)
+    fprintf(file," %g",climbuf->V_req[m]);
+  fputs("\nV_req_a:",file);
+  for(m=0;m<ncft;m++)
+    fprintf(file," %g",climbuf->V_req_a[m]);
+  fputs("\nGPP:",file);
+  for(m=0;m<NMEAN;m++)
+    fprintf(file," %g",climbuf->gpp[m]);
+  fprintf(file,"\nGPP index:\t%d\n",climbuf->gpp_index);
+  fputs("Min buffer\n",file);
+  fprintbuffer(file,climbuf->min);
+  fputs("Max buffer\n",file);
+  fprintbuffer(file,climbuf->max);
+} /* of 'fprintclimbuf' */
 
 void freeclimbuf(Climbuf *climbuf /**< pointer to binary file */
                 )

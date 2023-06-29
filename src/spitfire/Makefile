@@ -25,7 +25,7 @@ OBJS    = area_burnt.$O firedangerindex.$O fscanfireduration.$O\
           windspeed_fpc.$O update_fbd_tree.$O\
           update_fbd_grass.$O dailyfire.$O fwriteignition.$O freadignition.$O\
           fprintignition.$O initmax_firesize.$O human_ign_prob.$O getvpd.$O\
-          growing_season_index.$O
+          growing_season_index.$O getfwi.$O initfwi.$O
          
 INC     = ../../include
 LIBDIR  = ../../lib

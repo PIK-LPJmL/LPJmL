@@ -70,6 +70,7 @@ int fwritecell(FILE *file,        /**< File pointer of binary file */
         break;
       if(fwrite(grid[cell].balance.estab_storage_grass,sizeof(Stocks),2,file)!=2)
         break;
+      fwritefwi(file,&grid[cell].fwi_data);
       if(fwriteignition(file,&grid[cell].ignition))
         break;
       if(fwrite(&grid[cell].balance.excess_water,sizeof(Real),1,file)!=1)

@@ -1,10 +1,8 @@
 /**************************************************************************************/
 /**                                                                                \n**/
-/**                   f  r  e  e  s  o  i  l  .  c                                 \n**/
+/**                       g  e  t  a  v  g  .  c                                   \n**/
 /**                                                                                \n**/
-/**     C implementation of LPJmL                                                  \n**/
-/**                                                                                \n**/
-/**     Function deallocates memory for soil                                       \n**/
+/**     Function computes average of all real vector elements                      \n**/
 /**                                                                                \n**/
 /** (C) Potsdam Institute for Climate Impact Research (PIK), see COPYRIGHT file    \n**/
 /** authors, and contributors see AUTHORS file                                     \n**/
@@ -14,14 +12,20 @@
 /**                                                                                \n**/
 /**************************************************************************************/
 
-#include "lpj.h"
+#include <stdlib.h>
+#include <stdio.h>
+#include "types.h"
+#include "numeric.h"
 
-void freesoil(Soil *soil /**< pointer to soil data */
-             )
+Real getavg(const Real vec[], /**< array of real values */
+            int size          /**< array size */
+           )                  /** \return average of array elements */
 {
-  int l;
-  freelitter(&soil->litter);
-  for (l=0;l<LASTLAYER;l++)
-    free(soil->c_shift[l]);
-  free(soil->decomp_litter_pft);
-} /* of 'freesoil' */
+  int i;
+  Real sum=0;
+
+  for(i=0;i<size;i++) 
+    sum+=vec[i];
+   
+  return sum/size;
+} /* of 'getavg' */

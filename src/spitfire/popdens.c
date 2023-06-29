@@ -37,7 +37,7 @@ Popdens initpopdens(const Config *config /**< LPJ configuration */
     printallocerr("popdens");
     return NULL;
   }
-  if(opendata(&popdens->file,&config->popdens_filename,"population density","km-2",(config->popdens_filename.fmt==SOCK) ? LPJ_FLOAT : LPJ_SHORT,1.0,1,TRUE,config))
+  if(opendata(&popdens->file,&config->popdens_filename,"population density","km-2",LPJ_FLOAT,LPJ_SHORT,1.0,1,TRUE,config))
   {
     free(popdens);
     return NULL;

@@ -15,6 +15,9 @@
 #ifndef SPITFIRE_H /* Already included? */
 #define SPITFIRE_H
 
+
+#define SPITFIRE_VERSION "1.9.0"
+
 #define PART_DENS 513.0
 
 extern Real sigma_dead[NFUELCLASS];
@@ -42,6 +45,13 @@ typedef struct
   Real dbf;
   Real wind_cover;
 } Fire;
+
+typedef struct
+{
+  Real ffmc;
+  Real dmc;
+  Real dc;
+} FWIdata;
 
 /* Declaration of functions */
 
@@ -82,9 +92,17 @@ extern Bool freadignition(FILE *,Ignition *,Bool);
 extern void fprintignition(FILE *,const Ignition *);
 extern Real getvpd(const Dailyclimate *,Bool);
 extern Real growing_season_index(Real,Real *,const Dailyclimate *,Bool,Real);
+extern Real getfwi(FWIdata *,const Coord *,const Dailyclimate  *,int);
+extern void initfwi(FWIdata *);
 
 /* Definition of constants */
 
 #define MINER_TOT 0.055
+
+/* Definition of macros */
+
+#define fwritefwi(file,fwi)  fwrite(fwi,sizeof(FWIdata),1,file)
+#define freadfwi(file,fwi,swap) freadreal((Real *)fwi,sizeof(FWIdata)/sizeof(Real),swap,file)
+#define fprintfwi(file,fwi) fprintf(file,"ffmc:\t\t%g\ndmc:\t\t%g\ndc:\t\t%g\n",(fwi)->ffmc,(fwi)->dmc,(fwi)->dc)
 
 #endif

@@ -1,8 +1,9 @@
 /**************************************************************************************/
 /**                                                                                \n**/
-/**                p  f  t  l  i  t  t  e  r  _  a  g  .  c                        \n**/
+/**                l  i  t  t  e  r  _  a  g  t  o  p  _  g  r  a  s  s  .  c      \n**/
 /**                                                                                \n**/
 /**     C implementation of LPJmL                                                  \n**/
+/**     Function computes sum of all above-ground litter pools for grass           \n**/
 /**                                                                                \n**/
 /** (C) Potsdam Institute for Climate Impact Research (PIK), see COPYRIGHT file    \n**/
 /** authors, and contributors see AUTHORS file                                     \n**/
@@ -14,15 +15,14 @@
 
 #include "lpj.h"
 
-void pftlitter_ag(Real carbon[],       /**< PFT-specfic litter carbon (gC/m2) */
-                  const Litter *litter /**< pointer to litter data */
-                 )
+Real litter_agtop_grass(const Litter *litter /**< pointer to litter data */
+                    )                        /** \return aboveground grass litter (gC/m2) */
 {
-  int i,l;
+  int l;
+  Real sum;
+  sum=0;
   for(l=0;l<litter->n;l++)
-  {
-    carbon[litter->item[l].pft->id]=litter->item[l].ag.leaf.carbon;
-    for(i=0;i<NFUELCLASS;i++)
-      carbon[litter->item[l].pft->id]+=litter->item[l].ag.wood[i].carbon;
-  }
-} /* of 'pft_litterag' */
+    if(litter->item[l].pft->type==GRASS || litter->item[l].pft->type==CROP)
+      sum+=litter->item[l].agtop.leaf.carbon;
+  return sum;
+} /* of 'litter_agtop_grass' */

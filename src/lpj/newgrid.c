@@ -385,6 +385,7 @@ static Cell *newgrid2(Config *config,          /* Pointer to LPJ configuration *
     grid[i].landcover=NULL;
     grid[i].output.data=NULL;
     grid[i].gsi_cum=1;
+    initfwi(&grid[i].fwi_data);
 #ifdef COUPLING_WITH_FMS
     grid[i].laketemp=0;
 #endif
