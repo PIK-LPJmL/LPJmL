@@ -125,6 +125,8 @@ Received 19 November 1997; accepted 15 January 1999*/
   Balance balance;          /**< balance checks */
   Real max_firesize;        /**< maximum fire size (hectare) */
   Real gsi_cum;             /**< cumulative GSI */
+  FWIdata fwi_data;         /**< Canadian fire index data */
+  Real fwi;                 /**< Candian fire index */
   Seed seed;                /**< seed for random generator */
 #if defined IMAGE && defined COUPLED
   Real npp_nat;             /**< NPP natural stand */

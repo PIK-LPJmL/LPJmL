@@ -75,14 +75,15 @@ void update_daily(Cell *cell,            /**< cell pointer           */
   avgprec=getavgprec(&cell->climbuf);
   getoutput(&cell->output,SNOWF,config)+=climate.temp<tsnow ? climate.prec : 0;
   getoutput(&cell->output,RAIN,config)+=climate.temp<tsnow ? 0 : climate.prec;
-
   if(config->withlanduse) /* landuse enabled? */
     flux_estab=sowing(cell,climate.prec,day,year,npft,ncft,config); 
   cell->discharge.drunoff=0.0;
 
   if(config->fire==SPITFIRE || config->fire==SPITFIRE_TMAX)
+  {
     update_nesterov(cell,&climate);
-
+    cell->fwi=getfwi(&cell->fwi_data,&cell->coord,&climate,month);
+  }
   agrfrac=0;
   foreachstand(stand,s,cell->standlist)
     if(isagriculture(stand->type->landusetype))

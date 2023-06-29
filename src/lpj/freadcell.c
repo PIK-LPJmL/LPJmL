@@ -93,6 +93,7 @@ Bool freadcell(FILE *file,             /**< File pointer to binary file */
   {
     freadreal((Real *)cell->balance.estab_storage_tree,2*sizeof(Stocks)/sizeof(Real),swap,file);
     freadreal((Real *)cell->balance.estab_storage_grass,2*sizeof(Stocks)/sizeof(Real),swap,file);
+    freadfwi(file,&cell->fwi_data,swap);
     if(freadignition(file,&cell->ignition,swap))
     {
       fprintf(stderr,"ERROR254: Cannot read ignition data.\n");

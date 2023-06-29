@@ -227,6 +227,7 @@
   { "id" : STAND_BURNTAREA, "name": "stand_burntarea", "timestep" : "annual", "var" :  "burntarea", "descr" :  "stand-specific area burnt", "unit" : "hectare", "scale" : 1.0, "offset" : 0.0},
   { "id" : STAND_FDI, "name": "stand_fdi", "timestep" : "annual", "var" :  "fdi", "descr" :  "stand-specific fire danger index", "unit" : "", "scale" : 1.0, "offset" : 0.0},
   { "id" : STAND_SURFACE_FI, "name": "stand_surface_fi", "timestep" : "annual", "var" :  "surface_fi", "descr" :  "stand-specific average surface fire intensity", "unit" : "kW/m2", "scale" : 1.0e-3, "offset" : 0.0},
+  { "id" : FWI, "name": "fwi", "timestep" : "monthly", "var" :  "fwi", "descr" :  "Canadian forest fire weather index", "unit" : "", "scale" : 1.0, "offset" : 0.0},
   { "id" : HUMAN_IGNITION, "name": "human_ignition", "timestep" : "monthly", "var" :  "human_ign", "descr" :  "human ignition", "unit" : "", "scale" : 1.0, "offset" : 0.0},
   { "id" : LIGHTNING, "name": "lightning", "timestep" : "monthly", "var" :  "lightning_ign", "descr" :  "lightnings causing fires", "unit" : "", "scale" : 1.0, "offset" : 0.0},
   { "id" : SURFACE_FI, "name": "surface_fi", "timestep" : "monthly", "var" :  "surface_fi", "descr" :  "average surface fire intensity", "unit" : "kW/m2", "scale" : 1.0e-3, "offset" : 0.0},

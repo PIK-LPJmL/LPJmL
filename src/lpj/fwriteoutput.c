@@ -1163,6 +1163,7 @@ void fwriteoutput(Outputfile *output,  /**< output file array */
   writeoutputarray(STAND_BURNTAREA,1);
   writeoutputarray(STAND_FDI,ndate1);
   writeoutputarray(STAND_SURFACE_FI,ndate1);
+  writeoutputarray(FWI,ndate1);
 
   if(isopen(output,PFT_NLIMIT))
   {
