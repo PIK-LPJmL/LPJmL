@@ -14,17 +14,10 @@
 /**                                                                                \n**/
 /**************************************************************************************/
 
-#ifdef USE_JSON
 #include <json-c/json.h>
-#endif
 #include "lpj.h"
 
 void closeconfig(LPJfile *file)
 {
-#ifdef USE_JSON
-  if(file->isjson)
-    json_object_put(file->file.obj);
-  else
-#endif
-    pclose(file->file.file);
+  json_object_put(file);
 } /* of 'closeconfig' */

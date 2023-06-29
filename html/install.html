@@ -2,11 +2,11 @@
 <HEAD>
 <LINK REL="stylesheet" HREF="style.css" TYPE="text/css">
 <TITLE>
-Installing and running LPJmL C Version 5.6.13
+Installing and running LPJmL C Version 5.6.14
 </TITLE>
 </HEAD>
 <BODY>
-<H1>Installing and running  LPJmL C Version 5.6.13</H1>
+<H1>Installing and running  LPJmL C Version 5.6.14</H1>
 
 <H2>Installation for Unix-like systems</h2>
 
@@ -29,7 +29,7 @@ cd lpjml
 
 untar source files</p>
 <pre class="example">
-gzip -cd lpjml-5.6.13.tar.gz|tar -xf -
+gzip -cd lpjml-5.6.14.tar.gz|tar -xf -
 </pre>
 
 Directory tree after extracting the tar files:</p>
@@ -118,7 +118,7 @@ Then LPJmL can be configured via
 
 <pre class="example">
 % ./configure.sh
-Configuring LPJmL 5.6.13...
+Configuring LPJmL 5.6.14...
 Operating system is Linux
 Intel MPI found
 Create executables with make all
@@ -292,14 +292,6 @@ PERMUTE
 </td>
 <td>
 	Random permutation of PFT list
-</td>
-</tr>
-<tr>
-<td>
-USE_JSON
-</td>
-<td>
-enable JSON format for LPJmL configuration files
 </td>
 </tr>
 <tr>
@@ -651,7 +643,7 @@ Concatenates output files from distributed LPJmL simulations
 </table>
 An installation directory can be defined during configuration:
 <pre class="example">
-./configure.sh -prefix /data/biosx/lpjml-5.6.13
+./configure.sh -prefix /data/biosx/lpjml-5.6.14
 </pre>
 Then the binaries can be copied in the installation directory by invoking</p>
 <pre class="example">
@@ -868,7 +860,7 @@ Depending on your MPI version installed the program can be started interactively
 ****        | |___|  __/ |_| | | | | | | |___   ___) |  _  | (_) |        ****
 ****        |_____|_|   \___/|_| |_| |_|_____| |____/  (_)  \___/         ****
 ****                                                                      ****
-****                lpjml C Version 5.6.13   (May 12 2023)                 ****
+****                lpjml C Version 5.6.14   (May 12 2023)                 ****
 ****    Dynamic global vegetation model with natural and managed land     ****
 ****                          Compiled for Linux                          ****
 ****       (C) Potsdam Institute for Climate Impact Research (PIK),       ****
@@ -1370,10 +1362,10 @@ dump and have to be fixed by program changes. Some errors will only be generated
 if -DSAFE is set in the compile options of <tt>Makefile.inc</tt>. The options set at compile time can be obtained by invoking
 <pre class="example">
 % lpjml -v
-lpjml C Version 5.6.13 (May 12 2023)
+lpjml C Version 5.6.14 (May 12 2023)
 Operating system: Linux, little endian
 Compiler:         Intel C version 15.00, 64 bit
-Compile flags:    "-DUSE_RAND48 -DUSE_MPI -DSAFE -DWITH_FPE -DSTORECLIMATE -DUSE_NETCDF -DUSE_UDUNITS -DUSE_JSON "
+Compile flags:    "-DUSE_RAND48 -DUSE_MPI -DSAFE -DWITH_FPE -DSTORECLIMATE -DUSE_NETCDF -DUSE_UDUNITS  "
 </pre>
 It is recommended to compile the code without optimization
 and inlining making the inspection of the core file easier.
