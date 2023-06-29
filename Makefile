@@ -53,9 +53,15 @@ SCRIPTS	= configure.bat configure.sh\
 FILES	= Makefile config/* README AUTHORS INSTALL VERSION LICENSE STYLESHEET\
           $(JSON) $(DATA) $(HDRS) $(SCRIPTS)
 
-main: 
+main:
 	$(MKDIR) lib
 	(cd src && $(MAKE))
+
+lpjcheck:
+	$(MKDIR) lib
+	(cd src && $(MAKE) libs)
+	(cd src/utils && $(MAKE) ../../bin/lpjcheck)
+
 utils:
 	(cd src && $(MAKE) libs)
 	(cd src/utils && $(MAKE) all)
@@ -93,7 +99,7 @@ test: main
 clean:
 	(cd src  && $(MAKE) clean)
 
-tar: 
+tar:
 	tar -cf $(TARFILE) $(FILES) src/Makefile src/*.c\
 	    src/climate/Makefile src/climate/*.c\
             man/man1/*.1 man/man3/*.3 man/man5/*.5 man/whatis\
@@ -111,7 +117,7 @@ tar:
             src/cpl/Makefile src/cpl/*.c src/coupler/Makefile src/coupler/*.c
 	    gzip -f $(TARFILE)
 
-zipfile: 
+zipfile:
 	zip -l $(ZIPFILE) $(FILES) src/Makefile src/*.c\
 	    src/climate/Makefile src/climate/*.c config/* man/* man/man1/*.1\
             man/man3/*.3 man/man5/*.5\

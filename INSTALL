@@ -175,7 +175,11 @@ One executable in directory bin is created:
 
 lpjml    - LPJmL simulation code
 
-Utility programs are compiled by
+make lpjcheck
+
+creates lpjcheck utility to check JSON configurtation files
+
+All utility programs are compiled by
 
 make utils
 
