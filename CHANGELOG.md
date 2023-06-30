@@ -19,6 +19,20 @@ of `major.minor.patch` with
 
 ## [Unreleased]
 
+## [5.6.16] - 2023-06-30
+
+### Fixed
+
+- Removed excess `pft->nind` in all harvest routines in `harvest_stand.c`.
+
+
+## [5.6.15] - 2023-06-30
+
+### Added
+
+- Check for matching size of discharge queues read from restart file added to `initriver()` function in `initdrain.c`. If the size differs from the value calculated from the river lengths the queues will be resized and initialized to zero. Error message is additionally printed.
+
+
 ## [5.6.14] - 2023-06-08
 
 ### Removed
