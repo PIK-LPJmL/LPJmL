@@ -89,17 +89,7 @@ typedef struct
   int version; /* version of clm file */
 } Filename;
 
-typedef struct
-{
-  union
-  {
-    FILE *file;              /* pointer to text file */
-#ifdef USE_JSON
-    struct json_object *obj; /* pointer to JSON object */
-#endif
-  } file;
-  Bool isjson;
-} LPJfile;
+typedef  struct json_object LPJfile; /* pointer to JSON object */
 
 typedef struct
 {
@@ -111,13 +101,14 @@ typedef struct
 
 extern void fail(int,Bool,const char *,...);
 extern Bool fscanreal(LPJfile *,Real *,const char *,Bool,Verbosity);
+extern Bool ffscanreal(FILE *,Real *,const char *,Verbosity);
 extern Bool fscanreal01(LPJfile *,Real *,const char *,Bool,Verbosity);
 extern Bool fscanbool(LPJfile *,Bool *,const char *,Bool,Verbosity);
 extern Bool fscanrealarray(LPJfile *,Real *,int,const char *,Verbosity);
-extern Bool fscanstring(LPJfile *,String,const char *,Bool,Verbosity);
-extern Bool fscanstruct(const LPJfile *,LPJfile *,const char *,Verbosity);
-extern Bool fscanarray(LPJfile *,LPJfile *,int *,Bool,const char *,Verbosity);
-extern Bool fscanarrayindex(const LPJfile *,LPJfile *,int,Verbosity);
+extern const char *fscanstring(LPJfile *,const char *,const char *,Verbosity);
+extern LPJfile *fscanstruct(const LPJfile *,const char *,Verbosity);
+extern LPJfile *fscanarray(LPJfile *,int *,const char *,Verbosity);
+extern LPJfile *fscanarrayindex(const LPJfile *,int);
 extern Bool iskeydefined(const LPJfile *,const char *);
 extern Bool isboolean(const LPJfile *,const char *);
 extern Bool isint(const LPJfile *,const char *);
@@ -152,6 +143,7 @@ extern int findstr(const char *,const char *const *,int);
 extern Bool checkfmt(const char *,char);
 extern int fputstring(FILE *,int,const char *,int);
 extern Bool fscanint(LPJfile *,int *,const char *,Bool,Verbosity);
+extern Bool ffscanint(FILE *,int *,const char *,Verbosity);
 extern Bool fscansize(LPJfile *,size_t *,const char *,Bool,Verbosity);
 extern Bool fscanuint(LPJfile *,unsigned int *,const char *,Bool,Verbosity);
 extern Bool fscanfloat(LPJfile *,float *,const char *,Bool,Verbosity);
@@ -174,7 +166,7 @@ extern Bool fscaninteof(FILE *,int *,const char *,Bool *,Bool);
 extern char *sprinttimestep(String,int);
 extern Bool fscantimestep(LPJfile *,int *,Verbosity);
 extern char *getrealfilename(const Filename *);
-extern Bool parse_json(FILE *,LPJfile *,char *,Verbosity);
+extern LPJfile *parse_json(FILE *,Verbosity);
 extern Bool isdir(const char *);
 extern double mrun(void);
 #ifdef WITH_FPE
