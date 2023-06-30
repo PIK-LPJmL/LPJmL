@@ -22,14 +22,15 @@ Bool fscanphenparam(LPJfile *file,       /**< pointer to LPJ file */
                     Verbosity verb       /**< verbosity level (NO_ERR,ERR,VERB) */
                    )                     /** \return TRUE on error */
 {
-  LPJfile f;
-  if(fscanstruct(file,&f,key,verb))
+  LPJfile *f;
+  f=fscanstruct(file,key,verb);
+  if(f==NULL)
     return TRUE;
-  if(fscanreal(&f,&phenpar->sl,"slope",FALSE,verb))
+  if(fscanreal(f,&phenpar->sl,"slope",FALSE,verb))
     return TRUE;
-  if(fscanreal(&f,&phenpar->base,"base",FALSE,verb))
+  if(fscanreal(f,&phenpar->base,"base",FALSE,verb))
     return TRUE;
-  if(fscanreal(&f,&phenpar->tau,"tau",FALSE,verb))
+  if(fscanreal(f,&phenpar->tau,"tau",FALSE,verb))
     return TRUE;
   return FALSE;
 } /* of 'fscanphenparam' */

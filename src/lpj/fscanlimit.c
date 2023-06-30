@@ -22,12 +22,13 @@ Bool fscanlimit(LPJfile *file,  /**< pointer to LPJ file */
                 Verbosity verb /**< verbosity level (NO_ERR,ERR,VERB) */
                )             /** \return TRUE on error */
 {
-  LPJfile f;
-  if(fscanstruct(file,&f,name,verb))
+  LPJfile *f;
+  f=fscanstruct(file,name,verb);
+  if(f==NULL)
     return TRUE;
-  if(fscanreal(&f,&limit->low,"low",FALSE,verb))
+  if(fscanreal(f,&limit->low,"low",FALSE,verb))
     return TRUE;
-  if(fscanreal(&f,&limit->high,"high",FALSE,verb))
+  if(fscanreal(f,&limit->high,"high",FALSE,verb))
     return TRUE;
   return FALSE;
 } /* of 'fscanlimit' */

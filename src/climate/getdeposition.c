@@ -29,7 +29,7 @@ Bool getdeposition(Climate *climate,    /**< pointer to climate data */
     if(config->fix_deposition_shuffle)
     {
       if(isroot(*config))
-        year=config->fix_deposition_interval[0]+(config->fix_deposition_interval[1]-config->fix_deposition_interval[0]+1)*erand48(config->seed);
+        year=config->fix_deposition_interval[0]+(int)((config->fix_deposition_interval[1]-config->fix_deposition_interval[0]+1)*erand48(config->seed));
 #ifdef USE_MPI
       MPI_Bcast(&year,1,MPI_INT,0,config->comm);
 #endif

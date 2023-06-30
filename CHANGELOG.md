@@ -19,6 +19,19 @@ of `major.minor.patch` with
 
 ## [Unreleased]
 
+## [5.6.14] - 2023-06-08
+
+### Removed
+
+- Support for the deprecated `*.conf` configuration file format has been removed. Only JSON files are allowed for configuration files and metafiles for input.
+
+- Man pages for the description of the `*.conf` file format removed.
+
+### Changed
+
+- Strings in JSON configuration files can now be longer than 256 characters.
+
+
 ## [5.6.13] - 2023-05-16
 
 ### Added
