@@ -18,9 +18,7 @@
 #include <string.h>
 #include <math.h>
 #include <ctype.h>
-#ifdef USE_JSON
 #include <json-c/json.h>
-#endif
 #include "types.h"
 #include "errmsg.h"
 
@@ -215,159 +213,42 @@ Bool fscantoken(FILE *file, /**< file pointer of a text file         */
   return FALSE;
 } /* of 'fscantoken' */
 
-Bool fscanstring(LPJfile *file,     /**< pointer to  a LPJ file         */
-                 String s,          /**< pointer to a char array of dimension
-                                         STRING_LEN+1                        */
-                 const char *name,  /**< name of string or NULL        */
-                 Bool with_default, /**< allow default value */
-                 Verbosity verb     /**< enable error output */
-                )                   /** \return TRUE on error                */
+const char *fscanstring(LPJfile *file,    /**< pointer to  a LPJ file         */
+                        const char *dflt, /**< pointer to a string or NULL */
+                        const char *name, /**< name of string or NULL        */
+                        Verbosity verb    /**< enable error output */
+                      )                   /** \return string or NULL on error */
 {
-  int c;
-  int len;
-#ifdef USE_JSON
-  struct json_object *item;
   const char *str;
-  if(file->isjson)
-  {
-    if(name==NULL)
-      item=file->file.obj;
-    else
-    {
-      if(!json_object_object_get_ex(file->file.obj,name,&item))
-      {
-        if(with_default)
-        {
-          if(verb)
-            fprintf(stderr,"WARNING027: Name '%s' for string not found, set to '%s'.\n",name,s);
-          return FALSE;
-        }
-        else
-        {
-          if(verb)
-            fprintf(stderr,"ERROR225: Name '%s' for string not found.\n",name);
-          return TRUE;
-        }
-      }
-    }
-    if(json_object_get_type(item)!=json_type_string)
-    {
-      if(verb)
-        fprintf(stderr,"ERROR226: Type of '%s' is not string.\n",(name==NULL) ? "N/A" : name);
-      return TRUE;
-    }
-    str=json_object_get_string(item);
-    if(strlen(str)>STRING_LEN && verb)
-      fprintf(stderr,"ERROR103: String too long for name '%s', truncated.\n",(name==NULL) ? "N/A" : name);
-    strncpy(s,str,STRING_LEN);
-    s[STRING_LEN]='\0';
-    if (verb >= VERB)
-      printf("\"%s\" : \"%s\"\n",(name==NULL) ? "N/A" : name,s);
-    return FALSE;
-  }
-#endif
-  /* searching for first occurrence of non-whitespace character  */
-  c=fscanspace(file->file.file);
-  if(c=='\"') /* opening '"' found? */
-  {
-    len=0;
-    while((c=fgetc(file->file.file))!=EOF)
-    {
-      line_pos++;
-      if(c=='\"') /* closing '"' found? */
-      {
-        s[len]='\0';  /* yes, return with success */
-        if(verb>=VERB)
-          printf("\"%s\" : \"%s\"\n",name,s);
-        return FALSE;
-      }
-      else if(len==STRING_LEN)  /* string too long? */
-      {
-        if(verb)
-          fprintf(stderr,"ERROR103: String too long in line %d of '%s'.\n",line_count,incfile);
-      
-        break;
-      }
-      else if(c=='\\') /* backslash found? */
-      {
-        if((c=fgetc(file->file.file))==EOF) /* yes, read next character */
-        {
-          if(verb)
-            fprintf(stderr,"ERROR103: EOF reached reading string in line %d of '%s'.\n",line_count,incfile);
-          s[len]='\0';
-          return TRUE;
-        }
-        else
-          switch(c)
-          {
-            case '"': case '\\':
-              s[len++]=(char)c;
-              line_pos++;
-              break;
-            case 'n':
-              s[len++]='\n';
-              line_pos++;
-              break;
-            case 't':
-              s[len++]='\t';
-              line_pos++;
-              break;
-            default:
-              if(verb)
-                fprintf(stderr,"ERROR103: Invalid control character '\\%c' reading string in line %d of '%s'.\n",(char)c,line_count,incfile);
-              s[len]='\0';
-              return TRUE;
-          }
-      }
-      else
-      {
-        s[len++]=(char)c;
-        line_pos++;
-      }
-    }
-  }
-  else if(c!=EOF)
-  {
-    s[0]=(char)c;
-    len=1;
-    while((c=fgetc(file->file.file))!=EOF)
-    {
-      if(isspace(c))
-      {
-        if(c=='\n')
-        {
-          line_count++;
-          line_pos=0;
-        }
-        else
-          line_pos++;
-        s[len]='\0';  /* yes, return with success */
-        if(verb>=VERB)
-          printf("\"%s\" : \"%s\"\n",name,s);
-        return FALSE;
-      }
-      else if(len==STRING_LEN)  /* string too long? */
-      {
-        if(verb)
-          fprintf(stderr,"ERROR103: String too long in line %d of '%s'.\n",line_count,incfile);
-        s[len]='\0';  /* terminate string */
-        return TRUE;
-      }
-      else
-      {
-        s[len++]=(char)c;
-        line_pos++;
-      }
-    }
-    s[len]='\0';
-    if(verb>=VERB)
-      printf("\"%s\" : \"%s\"\n",name,s);
-    return FALSE;
-  }
+  struct json_object *item;
+  if(name==NULL)
+    item=file;
   else
-    len=0;
-  if(c==EOF && verb)
-    fprintf(stderr,"ERROR103: EOF reached reading string in line %d of '%s'.\n",line_count,incfile);
-  s[len]='\0';  /* terminate string */
-  return TRUE;
+  {
+    if(!json_object_object_get_ex(file,name,&item))
+    {
+      if(dflt!=NULL)
+      {
+        if(verb)
+          fprintf(stderr,"WARNING027: Name '%s' for string not found, set to '%s'.\n",name,dflt);
+        return dflt;
+      }
+      else
+      {
+        if(verb)
+          fprintf(stderr,"ERROR225: Name '%s' for string not found.\n",name);
+        return NULL;
+      }
+    }
+  }
+  if(json_object_get_type(item)!=json_type_string)
+  {
+    if(verb)
+      fprintf(stderr,"ERROR226: Type of '%s' is not string.\n",(name==NULL) ? "N/A" : name);
+    return NULL;
+  }
+  str=json_object_get_string(item);
+  if (verb >= VERB)
+    printf("\"%s\" : \"%s\"\n",(name==NULL) ? "N/A" : name,str);
+  return str;
 } /* of 'fscanstring' */

@@ -13,7 +13,7 @@
 #################################################################################
 
 
-SRC	= clm.5 lpj.conf.5 lpjml.conf.5 lpjml_image.conf.5
+SRC	= clm.5
 
 HTMLDIR	= ../../html
 HTML	= $(SRC:%.5=$(HTMLDIR)/%.html)

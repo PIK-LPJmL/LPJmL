@@ -22,12 +22,13 @@ Bool fscanpoolpar(LPJfile *file,    /**< pointer to LPJ file */
                  Verbosity verb    /**< verbosity level (NO_ERR,ERR,VERB) */
                 )                  /** \return TRUE on error */
 {
-  LPJfile f;
-  if(fscanstruct(file,&f,name,verb))
+  LPJfile *f;
+  f=fscanstruct(file,name,verb);
+  if(f==NULL)
     return TRUE;
-  if(fscanreal(&f,&pool->fast,"fast",FALSE,verb))
+  if(fscanreal(f,&pool->fast,"fast",FALSE,verb))
     return TRUE;
-  if(fscanreal(&f,&pool->slow,"slow",FALSE,verb))
+  if(fscanreal(f,&pool->slow,"slow",FALSE,verb))
     return TRUE;
   return FALSE;
 } /* of 'fscanpoolpar' */
