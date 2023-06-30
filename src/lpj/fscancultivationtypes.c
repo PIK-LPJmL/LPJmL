@@ -23,11 +23,12 @@ Bool fscancultivationtypes(LPJfile *lpjfile, /**< pointer to LPJ file */
                            Verbosity verb    /**< verbosity level (NO_ERR,ERR,VERB) */
                           )                  /** \return TRUE on error */
 {
-  LPJfile arr,item;
+  LPJfile *arr,*item;
   int i;
   if(iskeydefined(lpjfile,"cultivation_types"))
   {
-    if(fscanarray(lpjfile,&arr,ncult_types,TRUE,"cultivation_types",verb))
+    arr=fscanarray(lpjfile,ncult_types,"cultivation_types",verb);
+    if(arr==NULL)
       return TRUE;
     *cult_types=newvec(int,*ncult_types);
     if(*cult_types==NULL)
@@ -39,8 +40,8 @@ Bool fscancultivationtypes(LPJfile *lpjfile, /**< pointer to LPJ file */
       fprintf(stderr,"WARNING012: Size of '%s' array is zero, ignored.\n",name);
     for(i=0;i<*ncult_types;i++)
     {
-      fscanarrayindex(&arr,&item,i,verb);
-      if(fscankeywords(&item,(*cult_types)+i,NULL,cultivation_type,5,FALSE,verb))
+      item=fscanarrayindex(arr,i);
+      if(fscankeywords(item,(*cult_types)+i,NULL,cultivation_type,5,FALSE,verb))
       {
         if(verb)
           fprintf(stderr,"ERROR201: Invalid value for cultivation type of item %d in '%s'.\n",i+1,name);

@@ -48,7 +48,7 @@ JSON	= lpjml.js input_crumonthly.js param.js lpj.js input_GSWP3-ERA5.js\
 SCRIPTS	= configure.bat configure.sh\
           bin/output_bsq bin/lpjsubmit_aix bin/lpjsubmit_intel\
           bin/lpjsubmit_mpich bin/lpjrun bin/backtrace\
-          bin/filetypes.vim bin/regridlpj bin/lpjsubmit_slurm
+          bin/regridlpj bin/lpjsubmit_slurm
 
 FILES	= Makefile config/* README AUTHORS INSTALL VERSION LICENSE STYLESHEET\
           $(JSON) $(DATA) $(HDRS) $(SCRIPTS)

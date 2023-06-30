@@ -31,19 +31,20 @@ int fscantreedens(LPJfile *file,          /**< pointer to LPJ file */
                   const Config *config    /**< LPJmL configuration */
                  )                        /** \return number of elements in array or 0 in case of error */
 {
-  LPJfile arr,item;
+  LPJfile *arr,*item;
   int n,size,i,*cftmap;
   Real *k_est;
 
   if (verb>=VERB) puts("// Tree densities");
-  if(fscanarray(file,&arr,&size,FALSE,"countrypar",verb))
+  arr=fscanarray(file,&size,"countrypar",verb);
+  if(arr==NULL)
     return 0;
   cftmap=fscanagtreemap(file,"treemap",npft,config);
   if(cftmap==NULL)
     return 0;
   for(n=0;n<size;n++)
   {
-    fscanarrayindex(&arr,&item,n,verb);
+    item=fscanarrayindex(arr,n);
     countrypar[n].k_est=newvec(Real,config->nagtree);
     if(countrypar[n].k_est==NULL)
     {
@@ -58,7 +59,7 @@ int fscantreedens(LPJfile *file,          /**< pointer to LPJ file */
       free(cftmap);
       return 0;
     }
-    if(fscanrealarray(&item,k_est,config->nagtree,"k_est",verb))
+    if(fscanrealarray(item,k_est,config->nagtree,"k_est",verb))
     {
       if(verb)
         fprintf(stderr,"ERROR102: Cannot read 'k_est' array for '%s'.\n",countrypar[n].name);

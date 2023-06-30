@@ -20,7 +20,7 @@
 #define fscanreal2(file,var,name) if(fscanreal(file,var,name,FALSE,verbose)) return TRUE;
 #define fscanbool2(file,var,name) if(fscanbool(file,var,name,FALSE,verbose)) return TRUE;
 #define fscanname(file,var,name) {              \
-    if(fscanstring(file,var,name,FALSE,verbose)) {                 \
+    if((var=fscanstring(file,NULL,name,verbose))==NULL) {                 \
       if(verbose) readstringerr(name);  \
       return TRUE;                              \
     }                                              \
@@ -169,8 +169,8 @@ Bool fscanconfig(Config *config,    /**< LPJ configuration */
                  int nout_max       /**< maximum number of output files */
                 )                   /** \return TRUE on error */
  {
-  String name;
-  LPJfile input;
+  const char *name;
+  LPJfile *input;
   int i,restart,endgrid,israndom,grassfix,grassharvest;
   Verbosity verbose;
   const char *landuse[]={"no","yes","const","all_crops","only_crops"};
@@ -219,7 +219,7 @@ Bool fscanconfig(Config *config,    /**< LPJ configuration */
   config->seed_start=RANDOM_SEED;
   if(isstring(file,"random_seed"))
   {
-    fscanstring(file,name,"random_seed",FALSE,verbose);
+    name=fscanstring(file,NULL,"random_seed",verbose);
     if(!strcmp(name,"random_seed"))
       config->seed_start=RANDOM_SEED;
     else
@@ -564,9 +564,10 @@ Bool fscanconfig(Config *config,    /**< LPJ configuration */
   config->iscotton=findpftname("cotton",config->pftpar+config->npft[GRASS]+config->npft[TREE]-config->nagtree,config->nagtree)!=NOT_FOUND;
   if(config->others_to_crop)
   {
-    setotherstocrop();
-    if(fscanstring(file,name,"cft_temp",FALSE,verbose))
+    name=fscanstring(file,NULL,"cft_temp",verbose);
+    if(name==NULL)
       return TRUE;
+    setotherstocrop();
     config->cft_temp=findpftname(name,config->pftpar+config->npft[GRASS]+config->npft[TREE],config->npft[CROP]);
     if(config->cft_temp==NOT_FOUND)
     {
@@ -578,7 +579,8 @@ Bool fscanconfig(Config *config,    /**< LPJ configuration */
       }
       return TRUE;
     }
-    if(fscanstring(file,name,"cft_tropic",FALSE,verbose))
+    name=fscanstring(file,NULL,"cft_tropic",verbose);
+    if(name==NULL)
       return TRUE;
     config->cft_tropic=findpftname(name,config->pftpar+config->npft[GRASS]+config->npft[TREE],config->npft[CROP]);
     if(config->cft_tropic==NOT_FOUND)
@@ -594,7 +596,8 @@ Bool fscanconfig(Config *config,    /**< LPJ configuration */
   }
   if(config->black_fallow && config->prescribe_residues)
   {
-    if(fscanstring(file,name,"residue_pft",FALSE,verbose))
+    name=fscanstring(file,NULL,"residue_pft",verbose);
+    if(name==NULL)
       return TRUE;
     config->pft_residue=findpftname(name,config->pftpar,config->npft[GRASS]+config->npft[TREE]+config->npft[CROP]);
     if(config->pft_residue==NOT_FOUND)
@@ -674,20 +677,22 @@ Bool fscanconfig(Config *config,    /**< LPJ configuration */
   }
   if(iskeydefined(file,"inpath"))
   {
-    if(fscanstring(file,name,"inpath",FALSE,verbose))
+    name=fscanstring(file,NULL,"inpath",verbose);
+    if(name==NULL)
       return TRUE;
     free(config->inputdir);
     config->inputdir=strdup(name);
     checkptr(config->inputdir);
   }
-  if(fscanstruct(file,&input,"input",verbose))
+  input=fscanstruct(file,"input",verbose);
+  if(input==NULL)
     return TRUE;
   for(i=0;i<N_IN;i++)
     def[i]=FALSE;
-  scanclimatefilename(&input,&config->soil_filename,FALSE,FALSE,"soil");
+  scanclimatefilename(input,&config->soil_filename,FALSE,FALSE,"soil");
   if(config->soil_filename.fmt!=CDF)
   {
-    scanfilename(&input,&config->coord_filename,config->inputdir,"coord");
+    scanfilename(input,&config->coord_filename,config->inputdir,"coord");
   }
   if(config->withlanduse!=NO_LANDUSE)
   {
@@ -708,46 +713,46 @@ Bool fscanconfig(Config *config,    /**< LPJ configuration */
       if(config->cftmap==NULL)
         return TRUE;
     }
-    scanclimatefilename(&input,&config->countrycode_filename,FALSE,FALSE,"countrycode");
+    scanclimatefilename(input,&config->countrycode_filename,FALSE,FALSE,"countrycode");
     if(config->countrycode_filename.fmt==CDF)
     {
-      scanclimatefilename(&input,&config->regioncode_filename,FALSE,FALSE,"regioncode");
+      scanclimatefilename(input,&config->regioncode_filename,FALSE,FALSE,"regioncode");
     }
-    scanclimatefilename(&input,&config->landuse_filename,FALSE,TRUE,"landuse");
+    scanclimatefilename(input,&config->landuse_filename,FALSE,TRUE,"landuse");
     if(config->iscotton)
     {
-      scanclimatefilename(&input,&config->sowing_cotton_rf_filename,FALSE,FALSE,"sowing_ag_tree_rf");
-      scanclimatefilename(&input,&config->harvest_cotton_rf_filename,FALSE,FALSE,"harvest_ag_tree_rf");
-      scanclimatefilename(&input,&config->sowing_cotton_ir_filename,FALSE,FALSE,"sowing_ag_tree_ir");
-      scanclimatefilename(&input,&config->harvest_cotton_ir_filename,FALSE,FALSE,"harvest_ag_tree_ir");
+      scanclimatefilename(input,&config->sowing_cotton_rf_filename,FALSE,FALSE,"sowing_ag_tree_rf");
+      scanclimatefilename(input,&config->harvest_cotton_rf_filename,FALSE,FALSE,"harvest_ag_tree_rf");
+      scanclimatefilename(input,&config->sowing_cotton_ir_filename,FALSE,FALSE,"sowing_ag_tree_ir");
+      scanclimatefilename(input,&config->harvest_cotton_ir_filename,FALSE,FALSE,"harvest_ag_tree_ir");
     }
     if(config->sdate_option==PRESCRIBED_SDATE)
     {
-      scanclimatefilename(&input,&config->sdate_filename,FALSE,TRUE,"sdate");
+      scanclimatefilename(input,&config->sdate_filename,FALSE,TRUE,"sdate");
     }
     if(config->crop_phu_option==PRESCRIBED_CROP_PHU)
     {
-      scanclimatefilename(&input,&config->crop_phu_filename,FALSE,TRUE,"crop_phu");
+      scanclimatefilename(input,&config->crop_phu_filename,FALSE,TRUE,"crop_phu");
     }
     if(config->with_nitrogen && config->fertilizer_input==FERTILIZER)
-      scanclimatefilename(&input,&config->fertilizer_nr_filename,FALSE,TRUE,"fertilizer_nr");
+      scanclimatefilename(input,&config->fertilizer_nr_filename,FALSE,TRUE,"fertilizer_nr");
     if (config->with_nitrogen && config->manure_input)
-      scanclimatefilename(&input,&config->manure_nr_filename,FALSE,TRUE,"manure_nr");
+      scanclimatefilename(input,&config->manure_nr_filename,FALSE,TRUE,"manure_nr");
     if (config->tillage_type==READ_TILLAGE)
-      scanclimatefilename(&input,&config->with_tillage_filename,FALSE,TRUE,"with_tillage");
+      scanclimatefilename(input,&config->with_tillage_filename,FALSE,TRUE,"with_tillage");
     if (config->residue_treatment == READ_RESIDUE_DATA)
-      scanclimatefilename(&input,&config->residue_data_filename,FALSE,TRUE,"residue_on_field");
+      scanclimatefilename(input,&config->residue_data_filename,FALSE,TRUE,"residue_on_field");
     if(config->prescribe_lsuha)
-      scanclimatefilename(&input,&config->lsuha_filename,FALSE,TRUE,"grassland_lsuha");
+      scanclimatefilename(input,&config->lsuha_filename,FALSE,TRUE,"grassland_lsuha");
     if(grassfix == GRASS_FIXED_PFT)
     {
-      scanclimatefilename(&input,&config->grassfix_filename,FALSE,FALSE,"grassland_fixed_pft");
+      scanclimatefilename(input,&config->grassfix_filename,FALSE,FALSE,"grassland_fixed_pft");
     }
     else
       config->grassfix_filename.name = NULL;
     if(grassharvest)
     {
-      scanclimatefilename(&input,&config->grassharvest_filename,FALSE,FALSE,"grass_harvest_options");
+      scanclimatefilename(input,&config->grassharvest_filename,FALSE,FALSE,"grass_harvest_options");
     }
     else
       config->grassharvest_filename.name = NULL;
@@ -760,15 +765,15 @@ Bool fscanconfig(Config *config,    /**< LPJ configuration */
   }
   if(config->river_routing)
   {
-    scanclimatefilename(&input,&config->lakes_filename,FALSE,FALSE,"lakes");
-    scanclimatefilename(&input,&config->drainage_filename,FALSE,FALSE,"drainage");
+    scanclimatefilename(input,&config->lakes_filename,FALSE,FALSE,"lakes");
+    scanclimatefilename(input,&config->drainage_filename,FALSE,FALSE,"drainage");
     if(config->drainage_filename.fmt==CDF)
     {
-      scanclimatefilename(&input,&config->river_filename,FALSE,FALSE,"river");
+      scanclimatefilename(input,&config->river_filename,FALSE,FALSE,"river");
     }
     if(config->extflow)
     {
-      scanclimatefilename(&input,&config->extflow_filename,FALSE,FALSE,"extflow");
+      scanclimatefilename(input,&config->extflow_filename,FALSE,FALSE,"extflow");
       if(config->extflow_filename.fmt!=META && config->extflow_filename.fmt!=CLM && config->extflow_filename.fmt!=CLM2)
       {
         if(isroot(*config))
@@ -779,35 +784,35 @@ Bool fscanconfig(Config *config,    /**< LPJ configuration */
     }
     if(config->withlanduse!=NO_LANDUSE)
     {
-      scanclimatefilename(&input,&config->neighb_irrig_filename,FALSE,FALSE,"neighb_irrig");
+      scanclimatefilename(input,&config->neighb_irrig_filename,FALSE,FALSE,"neighb_irrig");
       if(config->reservoir)
       {
-        scanclimatefilename(&input,&config->elevation_filename,FALSE,FALSE,"elevation");
-        scanfilename(&input,&config->reservoir_filename,config->inputdir,"reservoir");
+        scanclimatefilename(input,&config->elevation_filename,FALSE,FALSE,"elevation");
+        scanfilename(input,&config->reservoir_filename,config->inputdir,"reservoir");
       }
 #ifdef IMAGE
       if(config->aquifer_irrig==AQUIFER_IRRIG)
-        scanclimatefilename(file,&config->aquifer_filename,FALSE,FALSE,"aquifer");
+        scanclimatefilename(input,&config->aquifer_filename,FALSE,FALSE,"aquifer");
 #endif
     }
   }
-  scanclimatefilename(&input,&config->temp_filename,TRUE,TRUE,"temp");
-  scanclimatefilename(&input,&config->prec_filename,TRUE,TRUE,"prec");
+  scanclimatefilename(input,&config->temp_filename,TRUE,TRUE,"temp");
+  scanclimatefilename(input,&config->prec_filename,TRUE,TRUE,"prec");
   switch(config->with_radiation)
   {
     case RADIATION:
-      scanclimatefilename(&input,&config->lwnet_filename,TRUE,TRUE,"lwnet");
-      scanclimatefilename(&input,&config->swdown_filename,TRUE,TRUE,"swdown");
+      scanclimatefilename(input,&config->lwnet_filename,TRUE,TRUE,"lwnet");
+      scanclimatefilename(input,&config->swdown_filename,TRUE,TRUE,"swdown");
       break;
     case RADIATION_LWDOWN:
-      scanclimatefilename(&input,&config->lwnet_filename,TRUE,TRUE,"lwdown");
-      scanclimatefilename(&input,&config->swdown_filename,TRUE,TRUE,"swdown");
+      scanclimatefilename(input,&config->lwnet_filename,TRUE,TRUE,"lwdown");
+      scanclimatefilename(input,&config->swdown_filename,TRUE,TRUE,"swdown");
       break;
     case CLOUDINESS:
-      scanclimatefilename(&input,&config->cloud_filename,TRUE,TRUE,"cloud");
+      scanclimatefilename(input,&config->cloud_filename,TRUE,TRUE,"cloud");
       break;
     case RADIATION_SWONLY:
-      scanclimatefilename(&input,&config->swdown_filename,TRUE,TRUE,"swdown");
+      scanclimatefilename(input,&config->swdown_filename,TRUE,TRUE,"swdown");
       break;
     default:
       if(verbose)
@@ -818,55 +823,55 @@ Bool fscanconfig(Config *config,    /**< LPJ configuration */
   {
     if(config->with_nitrogen!=UNLIM_NITROGEN && !config->no_ndeposition)
     {
-      scanclimatefilename(&input,&config->no3deposition_filename,TRUE,TRUE,"no3deposition");
-      scanclimatefilename(&input,&config->nh4deposition_filename,TRUE,TRUE,"nh4deposition");
+      scanclimatefilename(input,&config->no3deposition_filename,TRUE,TRUE,"no3deposition");
+      scanclimatefilename(input,&config->nh4deposition_filename,TRUE,TRUE,"nh4deposition");
     }
     else
       config->no3deposition_filename.name=config->nh4deposition_filename.name=NULL;
-    scanclimatefilename(&input,&config->soilph_filename,FALSE,FALSE,"soilpH");
+    scanclimatefilename(input,&config->soilph_filename,FALSE,FALSE,"soilpH");
   }
   else
     config->no3deposition_filename.name=config->nh4deposition_filename.name=config->soilph_filename.name=NULL;
   if((config->fire==SPITFIRE || config->fire==SPITFIRE_TMAX) && config->fdi==WVPD_INDEX)
   {
-    scanclimatefilename(&input,&config->humid_filename,TRUE,TRUE,"humid");
+    scanclimatefilename(input,&config->humid_filename,TRUE,TRUE,"humid");
   }
   if(config->with_nitrogen || config->fire==SPITFIRE || config->fire==SPITFIRE_TMAX)
   {
-    scanclimatefilename(&input,&config->wind_filename,TRUE,TRUE,"wind");
+    scanclimatefilename(input,&config->wind_filename,TRUE,TRUE,"wind");
   }
   if(config->fire==SPITFIRE_TMAX || config->cropsheatfrost)
   {
-    scanclimatefilename(&input,&config->tmin_filename,TRUE,TRUE,"tmin");
-    scanclimatefilename(&input,&config->tmax_filename,TRUE,TRUE,"tmax");
+    scanclimatefilename(input,&config->tmin_filename,TRUE,TRUE,"tmin");
+    scanclimatefilename(input,&config->tmax_filename,TRUE,TRUE,"tmax");
   }
   else
     config->tmax_filename.name=config->tmin_filename.name=NULL;
   if(config->fire==SPITFIRE)
   {
-    scanclimatefilename(&input,&config->tamp_filename,TRUE,TRUE,"tamp");
+    scanclimatefilename(input,&config->tamp_filename,TRUE,TRUE,"tamp");
   }
   else
     config->tamp_filename.name=NULL;
   if(config->fire==SPITFIRE || config->fire==SPITFIRE_TMAX)
   {
-    scanclimatefilename(&input,&config->lightning_filename,FALSE,TRUE,"lightning");
-    scanclimatefilename(&input,&config->human_ignition_filename,
+    scanclimatefilename(input,&config->lightning_filename,FALSE,TRUE,"lightning");
+    scanclimatefilename(input,&config->human_ignition_filename,
                         FALSE,TRUE,"human_ignition");
   }
   if(config->ispopulation)
   {
-    scanclimatefilename(&input,&config->popdens_filename,FALSE,TRUE,"popdens");
+    scanclimatefilename(input,&config->popdens_filename,FALSE,TRUE,"popdens");
   }
   if(config->prescribe_burntarea)
   {
-    scanclimatefilename(&input,&config->burntarea_filename,FALSE,FALSE,"burntarea");
+    scanclimatefilename(input,&config->burntarea_filename,FALSE,FALSE,"burntarea");
   }
   if(config->prescribe_landcover!=NO_LANDCOVER)
   {
-    scanclimatefilename(&input,&config->landcover_filename,FALSE,FALSE,"landcover");
+    scanclimatefilename(input,&config->landcover_filename,FALSE,FALSE,"landcover");
   }
-  if(readclimatefilename(&input,&config->co2_filename,"co2",def,TRUE,TRUE,TRUE,config))
+  if(readclimatefilename(input,&config->co2_filename,"co2",def,TRUE,TRUE,TRUE,config))
   {
     if(verbose)
       fprintf(stderr,"ERROR209: Cannot read filename for CO2 input.\n");
@@ -874,7 +879,7 @@ Bool fscanconfig(Config *config,    /**< LPJ configuration */
   }
   if(israndom==RANDOM_PREC)
   {
-    scanclimatefilename(&input,&config->wet_filename,TRUE,TRUE,"wetdays");
+    scanclimatefilename(input,&config->wet_filename,TRUE,TRUE,"wetdays");
   }
 #if defined IMAGE && defined COUPLED
   else if(config->sim_id==LPJML_IMAGE)
@@ -888,9 +893,9 @@ Bool fscanconfig(Config *config,    /**< LPJ configuration */
     config->wet_filename.name=NULL;
   if(config->wateruse)
   {
-    scanclimatefilename(&input,&config->wateruse_filename,FALSE,TRUE,"wateruse");
+    scanclimatefilename(input,&config->wateruse_filename,FALSE,TRUE,"wateruse");
 #ifdef IMAGE
-    scanclimatefilename(&input,&config->wateruse_wd_filename,FALSE,FALSE,"wateruse_wd");
+    scanclimatefilename(input,&config->wateruse_wd_filename,FALSE,FALSE,"wateruse_wd");
 #endif
   }
   else
@@ -904,9 +909,9 @@ Bool fscanconfig(Config *config,    /**< LPJ configuration */
   if(config->sim_id==LPJML_IMAGE)
   {
     /* reading IMAGE-coupling specific information */
-    scanclimatefilename(&input,&config->temp_var_filename,FALSE,FALSE,"temp_var");
-    scanclimatefilename(&input,&config->prec_var_filename,FALSE,FALSE,"prec_var");
-    scanclimatefilename(&input,&config->prodpool_init_filename,FALSE,FALSE,"prodpool_init");
+    scanclimatefilename(input,&config->temp_var_filename,FALSE,FALSE,"temp_var");
+    scanclimatefilename(input,&config->prec_var_filename,FALSE,FALSE,"prec_var");
+    scanclimatefilename(input,&config->prodpool_init_filename,FALSE,FALSE,"prodpool_init");
   }
 #endif
 
@@ -929,7 +934,8 @@ Bool fscanconfig(Config *config,    /**< LPJ configuration */
   if (verbose>=VERB) puts("// V. run settings");
   if(iskeydefined(file,"restartpath"))
   {
-    if(fscanstring(file,name,"restartpath",FALSE,verbose))
+    name=fscanstring(file,NULL,"restartpath",verbose);
+    if(name==NULL)
       return TRUE;
     free(config->restartdir);
     config->restartdir=strdup(name);
@@ -938,7 +944,7 @@ Bool fscanconfig(Config *config,    /**< LPJ configuration */
   config->startgrid=ALL; /* set default value */
   if(isstring(file,"startgrid"))
   {
-    fscanstring(file,name,"startgrid",FALSE,verbose);
+    name=fscanstring(file,NULL,"startgrid",verbose);
     if(!strcmp(name,"all"))
       config->startgrid=ALL;
     else
