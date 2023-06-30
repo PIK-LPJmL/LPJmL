@@ -19,6 +19,13 @@ of `major.minor.patch` with
 
 ## [Unreleased]
 
+## [5.6.16] - 2023-06-30
+
+### Fixed
+
+- Removed excess `pft->nind` in all harvest routines in `harvest_stand.c`.
+
+
 ## [5.6.15] - 2023-06-30
 
 ### Added
