@@ -19,6 +19,13 @@ of `major.minor.patch` with
 
 ## [Unreleased]
 
+## [5.6.17] - 2023-06-30
+
+### Fixed
+
+- Replaced logical `or` by logical `and` in `survive.c`. This solves issue [#309](https://gitlab.pik-potsdam.de/lpjml/LPJmL_internal/-/issues/309).
+
+
 ## [5.6.16] - 2023-06-30
 
 ### Fixed
