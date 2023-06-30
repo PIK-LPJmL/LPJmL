@@ -2,10 +2,10 @@
 | |   |  _ \   | |_ __ ___ | |
 | |   | |_) |  | | '_ ` _ \| |
 | |___|  __/ |_| | | | | | | |___
-|_____|_|   \___/|_| |_| |_|_____| Version 5.6.13
+|_____|_|   \___/|_| |_| |_|_____| Version 5.6.14
 
 
-Installation of LPJmL C Version 5.6.13
+Installation of LPJmL C Version 5.6.14
 
 Installation for Unix-like systems
 ----------------------------------
@@ -27,7 +27,7 @@ cd lpjml
 
 untar source files
 
-gzip -cd lpjml-5.6.13.tar.gz|tar -xf -
+gzip -cd lpjml-5.6.14.tar.gz|tar -xf -
 
 Directory tree after extracting the tar files:
 
@@ -156,7 +156,6 @@ MICRO_HEATING       Enable microbial heating
 NO_FAIL_BALANCE     lpjml does not terminate on balance errors
 PERMUTE             random permutation of PFT list
 SAFE                code is compiled with additional checks
-USE_JSON            enable JSON format for LPJmL configuration files
 USE_MPI             compile parallel version of LPJmL
 USE_NETCDF          enable NetCDF input/output
 USE_NETCDF4         enable NetCDF version 4 input/output
