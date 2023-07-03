@@ -284,6 +284,5 @@ alias printheader "printclm -data"
 alias soil2cdf "clm2cdf -notime -raw -byte"
 alias lpjml 'lpjml.sh'
 EOF
-ln -sf lpjml bin/lpj
 chmod +x bin/lpj_paths.csh
 echo Put . $prefix/bin/lpj_paths.sh in your ~/.profile
