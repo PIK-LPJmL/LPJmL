@@ -2,7 +2,7 @@
 /**                                                                                \n**/
 /**                   l  p  j   .  j  s                                            \n**/
 /**                                                                                \n**/
-/** Configuration file for LPJmL C Version 5.3.001 without land use                \n**/
+/** Configuration file for LPJmL C Version 5.6.16 without land use                 \n**/
 /**                                                                                \n**/
 /** Configuration file is divided into five sections:                              \n**/
 /**                                                                                \n**/
@@ -31,7 +31,7 @@
 "sim_name" : "LPJ run with PNV",   /* Simulation description */
 "sim_id"   : "lpj",       /* LPJML Simulation with natural vegetation only */
 "coupled_model" : null,   /* no model coupling */
-"version"  : "5.4",       /* LPJmL version expected */
+"version"  : "5.6",       /* LPJmL version expected */
 "random_prec" : true,     /* Random weather generator for precipitation enabled */
 "random_seed" : 2,        /* seed for random number generator */
 "radiation" : "radiation",  /* other options: CLOUDINESS, RADIATION, RADIATION_SWONLY, RADIATION_LWDOWN */
@@ -53,14 +53,17 @@
 "extflow" : false,
 "permafrost" : true,
 "johansen" : true,
+"johansen" : true,
+"soilpar_option" : "no_fixed_soilpar", /* other options "no_fixed_soilpar", "fixed_soilpar", "prescribed_soilpar" */
 "with_nitrogen" : "lim", /* other options: "no", "lim", "unlim" */
+"nitrogen_coupled" : false, /* nitrogen stress coupled to water stress */
 "store_climate" : true,
 "const_climate" : false,
 "const_deposition" : false,
 "shuffle_climate" : true, /* shuffle spinup climate */
 "fix_climate" : false,
 "no_ndeposition" : false,             /* turn off atmospheric N deposition */
-"ma_bnf" : true,
+"npp_controlled_bnf" : true,
 
 /*===================================================================*/
 /*  II. Input parameter section                                      */

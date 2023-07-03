@@ -2,7 +2,7 @@
 /**                                                                                \n**/
 /**              l  p  j  p  a  r  a  m  _  n  o  n  .  j  s                       \n**/
 /**                                                                                \n**/
-/**     LPJ parameter file for LPJmL version 5.3.001 without nitrogen              \n**/
+/**     LPJ parameter file for LPJmL version 5.6.16 without nitrogen               \n**/
 /**                                                                                \n**/
 /** (C) Potsdam Institute for Climate Impact Research (PIK), see COPYRIGHT file    \n**/
 /** authors, and contributors see AUTHORS file                                     \n**/
@@ -33,6 +33,12 @@
   "atmfrac" : 0.7,           /* atmfrac */
   "fastfrac" : 0.98,         /* fastfrac */
   "bioturbate" : 0.5,        /* bioturbation (0 = no bioturbation) */
+  "veg_equil_year" : 300,    /* number of years to get vegetation into equilibrium (before forst call of equisoil) */
+  "veg_equil_unlim" : false, /* enable vegetation spinup without nitrogen limitation */
+  "nequilsoil" : 160,        /* number of equisoil calls */
+  "equisoil_interval" : 15,  /* time interval between equisoil calls */
+  "equisoil_years": 10,      /* number of years used in calculation for equisoil */
+  "equisoil_fadeout": 300,   /* number of years for equisoil fadeout (for final call of equisoil); set to zero for no fadeout  */
   "veg_equil_year" : 990,
   "temp_response" : 46.02,   /* Parameter in temperature response function */
   "percthres" : 1.0,
