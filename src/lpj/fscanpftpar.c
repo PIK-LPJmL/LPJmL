@@ -98,14 +98,14 @@ const char *phenology[]={"evergreen","raingreen","summergreen","any","cropgreen"
 const char *cultivation_type[]={"none","biomass","annual crop","annual tree","wp"};
 const char *path[]={"no pathway","C3","C4"};
 
-static int findint(int val,int *array,int size)
+static int findint(int val,const int *array,int size)
 {
   int i;
   for(i=0;i<size;i++)
     if(val==array[i])
       return i;
   return NOT_FOUND;
-}
+} /* of 'findint' */
 
 static Bool fscanpftirrig(LPJfile *file,Irrig_threshold *irrig_threshold,const char *name,Verbosity verb)
 {

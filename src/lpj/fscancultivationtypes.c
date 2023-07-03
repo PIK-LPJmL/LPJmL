@@ -34,7 +34,7 @@ Bool fscancultivationtypes(LPJfile *lpjfile, /**< pointer to LPJ file */
     if(*cult_types==NULL)
     {
       printallocerr("cult_types");
-      return TRUE; 
+      return TRUE;
     }
     if(verb && *ncult_types==0)
       fprintf(stderr,"WARNING012: Size of '%s' array is zero, ignored.\n",name);
