@@ -4,14 +4,29 @@ It returs volumetric heat capacity, and thermal conductivity for the soil in fro
 unfrozen state based on soil texture and water content.
 For the conductivity it uses the approach described by Johansen (1977)
 */
+ #define pow10f(x) exp(2.302585092994046*x)  
 
 #define K_SOLID 8       /* Thermal conductivity of solid components in saturated state */
 #define K_ICE   2.2     /* Thermal conductivity of ice */
 #define K_WATER 0.57    /* Thermal conductivity of liquid water*/
 
+#define K_SOLID_log 0.90308998699      /* Thermal conductivity of solid components in saturated state */
+#define K_ICE_log   0.34242268082     /* Thermal conductivity of ice */
+#define K_WATER_log -0.24412514432    /* Thermal conductivity of liquid water*/
+
 #include "lpj.h"
 
-void calc_soil_thermal_properties(Soil_thermal_prop *th,    /*< Soil thermal property structure that is set or modified */
+double fastPow(double a, double b) {
+  union {
+    double d;
+    int x[2];
+  } u = { a };
+  u.x[1] = (int)(b * (u.x[1] - 1072632447) + 1072632447);
+  u.x[0] = 0;
+  return u.d;
+}
+
+void calc_soil_thermal_props(Soil_thermal_prop *th,    /*< Soil thermal property structure that is set or modified */
                      const Soil *soil,         /*< Soil structure from which water content etc is obtained  */
                      const Real *waterc_abs,
                      const Real *porosity_rel,
@@ -58,9 +73,9 @@ void calc_soil_thermal_properties(Soil_thermal_prop *th,    /*< Soil thermal pro
     {
       /* get frozen and unfrozen conductivity with johansens approach */
       por            = soil -> wsat[layer];
-      tmp = pow( K_SOLID, (1 - por));
-      lam_sat_froz   =  tmp * pow(K_ICE, por); /* geometric mean  */
-      lam_sat_unfroz =  tmp * pow(K_WATER, por);
+      tmp =  K_SOLID_log* (1 - por);
+      lam_sat_froz   = pow(10, tmp + K_ICE_log * por); /* geometric mean  */
+      lam_sat_unfroz = pow(10, tmp + K_WATER_log * por);
       if(soil->wsats[layer]<epsilon)
         sat=0;
       else
