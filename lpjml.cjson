@@ -2,7 +2,7 @@
 /**                                                                                \n**/
 /**                   l  p  j  m  l  .  c  j  s  o  n                              \n**/
 /**                                                                                \n**/
-/** Default configuration file for LPJmL C Version 5.6.13                          \n**/
+/** Default configuration file for LPJmL C Version 5.6.16                          \n**/
 /**                                                                                \n**/
 /** Configuration file is divided into five sections:                              \n**/
 /**                                                                                \n**/
@@ -47,7 +47,7 @@
   "permafrost" : true,      /* enable permafrost */
   "johansen" : true,        /* enable johansen way of temp. conductivity in soils (see src/soil/soilconduct.c) */
   "soilpar_option" : "no_fixed_soilpar", /* calculation of soil parameters, options "no_fixed_soilpar", "fixed_soilpar", "prescribed_soilpar" */
-  "soilpar_fixyear" : 1900  /* year to fix soilpars for soilpar_option fixed_soilpar */
+  "soilpar_fixyear" : 1900, /* year to fix soilpars for soilpar_option fixed_soilpar */
   "with_nitrogen" : "lim",  /* options: "no", "lim", "unlim" */
   "nitrogen_coupled" : false, /* nitrogen stress coupled to water stress */
   "store_climate" : true,   /* store climate data in spin-up phase */

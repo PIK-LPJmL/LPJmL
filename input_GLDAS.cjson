@@ -41,7 +41,7 @@
   "landuse" :      { "fmt" : "clm",  "name" : "/p/projects/lpjml/input/GLDAS/INPUT/landuse_GLDAS.clm"},
   /* insert prescribed sdate file name here */
   "grassland_fixed_pft" : { "fmt" : "raw", "name" : "/home/rolinski/LPJ/Newinput/scenario_MO0.bin"},
-  "lakes" :        { "fmt" : "meta", "name" : "/p/projects/lpjml/input/historical/input_VERSION2/glwd_lakes_and_rivers.descr"},
+  "lakes" :        { "fmt" : "meta", "name" : "/p/projects/lpjml/input/historical/input_VERSION2/glwd_lakes_and_rivers.json"},
   "drainage" :     { "fmt" : "clm",  "name" : "/p/projects/lpjml/input/historical/input_VERSION2/drainagestn.bin"},
   "neighb_irrig" : { "fmt" : "clm",  "name" : "/p/projects/lpjml/input/historical/input_VERSION2/neighb_irrig_stn.bin"},
   "elevation" :    { "fmt" : "clm",  "name" : "/p/projects/lpjml/input/historical/input_VERSION2/elevation.bin"},

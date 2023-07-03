@@ -17,28 +17,17 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
-#ifdef USE_JSON
 #include <json-c/json.h>
-#endif
 #include "types.h"
 
 Bool isint(const LPJfile *file, /**< pointer to LPJ file */
            const char *name     /**< variable name or NULL */
           )                     /** \return TRUE if type is int */
 {
-#ifdef USE_JSON
   struct json_object *item;
-  if(file->isjson)
-  {
-    if(name==NULL)
-      return (json_object_get_type(file->file.obj)==json_type_int);
-    if(!json_object_object_get_ex(file->file.obj,name,&item))
-      return FALSE;
-    return (json_object_get_type(item)==json_type_int);
-  }
-  else
-   return FALSE;
-#else
-   return FALSE;
-#endif
+  if(name==NULL)
+    return (json_object_get_type(file)==json_type_int);
+  if(!json_object_object_get_ex(file,name,&item))
+    return FALSE;
+  return (json_object_get_type(item)==json_type_int);
 } /* of 'isint' */

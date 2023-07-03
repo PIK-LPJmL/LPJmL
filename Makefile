@@ -47,7 +47,7 @@ JSON	= lpjml.cjson lpjml_non.cjson\
 SCRIPTS	= configure.bat configure.sh\
           bin/output_bsq bin/lpjsubmit_aix bin/lpjsubmit_intel\
           bin/lpjsubmit_mpich bin/lpjrun bin/backtrace\
-          bin/filetypes.vim bin/regridlpj bin/lpjsubmit_slurm
+          bin/regridlpj bin/lpjsubmit_slurm
 
 FILES	= Makefile config/* README AUTHORS INSTALL VERSION LICENSE STYLESHEET\
           $(JSON) $(DATA) $(HDRS) $(SCRIPTS)
