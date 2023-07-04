@@ -19,6 +19,13 @@ of `major.minor.patch` with
 
 ## [Unreleased]
 
+## [5.6.18] - 2023-07-04
+
+### Fixed
+
+- Soil array `wpwp` is now correctly initialized with `soilpar->wpwp` for the `"prescribed_soilpar"` setting.
+
+
 ## [5.6.17] - 2023-06-30
 
 ### Fixed
