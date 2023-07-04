@@ -45,6 +45,10 @@ void calc_soil_thermal_props(Soil_thermal_prop *th,    /*< Soil thermal property
   Real ke_unfroz, ke_froz;           /* kersten number for unfrozen and frozen soil */
   Real por;                          /* porosity of the soil */
 
+  /* thermal resistance from last (resp first) layer to layer border*/
+  Real resistance_froz_prev=0, resistance_froz_cur=0,resistance_unfroz_prev=0,resistance_unfroz_cur=0;              
+  Real prev_length_to_border =0, cur_length_to_border;
+  Real soillayer_depth_m;
   Real tmp;                          /* temporary variable */
 
   for (layer = 0; layer < NSOILLAYER; ++layer) {
@@ -91,20 +95,35 @@ void calc_soil_thermal_props(Soil_thermal_prop *th,    /*< Soil thermal property
 
     /* get volumetric latent heat   */
     latent_heat = waterc_abs_layer / soildepth[layer] * c_water2ice;
-
+    cur_length_to_border = (soildepth[layer]/1000)/(GPLHEAT*2);
+    resistance_froz_cur =  cur_length_to_border/lam_froz;
+    resistance_unfroz_cur = cur_length_to_border/lam_unfroz;
     for (j = 0; j < GPLHEAT; ++j) { /* iterate through gridpoints of the layer */
 
       if(with_conductivity)
       {
         /* set properties of j-th layer element */
         /* maximum element refernced = GPLHEAT*(NSOILLAYER-1)+GPLHEAT-1 = NHEATGRIDP-1 */
-        th->lam_frozen[GPLHEAT * layer + j]   = lam_froz;
-        th->lam_unfrozen[GPLHEAT * layer + j] = lam_unfroz;
+
+
+        if(j==0){
+          th->lam_frozen[GPLHEAT * layer + j]   = 
+          (prev_length_to_border+cur_length_to_border)/(resistance_froz_cur+resistance_froz_prev);
+          th->lam_unfrozen[GPLHEAT * layer + j] =  
+          (prev_length_to_border+cur_length_to_border)/(resistance_unfroz_cur+resistance_unfroz_prev);
+        }else{
+          th->lam_frozen[GPLHEAT * layer + j]   = lam_froz;
+          th->lam_unfrozen[GPLHEAT * layer + j] = lam_unfroz;
+        }
+        
       }
       /* set properties of j-th layer gridpoint */
       th->c_frozen [GPLHEAT * layer + j]    = c_froz;
       th->c_unfrozen[GPLHEAT * layer + j]   = c_unfroz;
       th->latent_heat[GPLHEAT * layer + j]  = latent_heat;
     }
+    resistance_froz_prev=resistance_froz_cur;
+    resistance_unfroz_prev=resistance_unfroz_cur;
+    prev_length_to_border=cur_length_to_border;
   }
 }

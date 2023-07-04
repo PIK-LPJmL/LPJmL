@@ -83,6 +83,8 @@ void modify_enth_due_to_masschanges(Soil * soil,const Config * config){
   get_soilcontent_change(waterdiff, soliddiff, soil);                     
   daily_mass2heatflow(soil->enth, waterdiff, soliddiff, old_therm_storage_prop);      
 }
+
+
 void modify_enth_due_to_heatconduction(Soil * soil, Real temp_below_snow, Soil_thermal_prop therm_prop ,const Config * config){
   Real litter_agtop_temp;
   Real h[NHEATGRIDP], top_dirichlet_BC;          
@@ -106,9 +108,24 @@ void compute_litter_temp_from_enth(Soil * soil, Real temp_below_snow ,const Conf
 /* helper */
 void setup_heatgrid(Real *h){
   int l,j;
+  Real nodes[NSOILLAYER*GPLHEAT];
+  Real soillayer_depth_m=0;
+  Real layer_border_m=0;
+
+  for(l=0;l<NSOILLAYER;++l)
+  {
+     soillayer_depth_m= soildepth[l]/1000;
+     for(j=0;j<GPLHEAT;++j)
+     {
+        nodes[l*GPLHEAT+j]=layer_border_m+soillayer_depth_m/(GPLHEAT*2)+(soillayer_depth_m/GPLHEAT)*j;
+     }
+     layer_border_m+=soillayer_depth_m;
+  }
+
   for(l=0;l<NSOILLAYER;++l)
      for(j=0;j<GPLHEAT;++j)
-       h[l*GPLHEAT+j]=soildepth[l]/GPLHEAT/1000;
+       h[l*GPLHEAT+j] = nodes[l*GPLHEAT+j] - (l*GPLHEAT+j>0?nodes[l*GPLHEAT+j-1]:0);
+
 }
 void get_soilcontent_change(Real *waterdiff, Real *soliddiff, Soil *soil)
 {
@@ -120,6 +137,35 @@ void get_soilcontent_change(Real *waterdiff, Real *soliddiff, Soil *soil)
     soil->old_totalwater[l] = allwater(soil,l) + allice(soil,l);
     soil->old_wsat[l]       = soil->wsat[l];
   }
+}
+
+void get_soilcontent_change_abs(Real *waterdiff, Real *soliddiff, Soil *soil)
+{
+  int l;
+  for(l=0;l<NSOILLAYER;++l)   /* track water flow and porosity changes of other methods */
+  {
+    waterdiff[l] = (allwater(soil,l)+allice(soil,l) - soil->old_totalwater[l]);
+    soliddiff[l] = -(soil->wsat[l] - soil->old_wsat[l]);
+    soil->old_totalwater[l] = allwater(soil,l) + allice(soil,l);
+    soil->old_wsat[l]       = soil->wsat[l];
+  }
+}
+
+
+
+void apply_perc_energy(Real *enth,             /*< enthalpy vector that is updated*/
+                       const Real *perc_energy /*< vector absolute energy change of each layer */
+                      )
+{
+    int l,j;   /* l=layer, j is for sublayer */
+    int gp;    /* gridpoint */
+    double volumetric_energy_change;
+    for(l=0;l<NSOILLAYER;++l){
+      volumetric_energy_change = perc_energy[l]/(soildepth[l]/1000);
+      for(j=0;j<GPLHEAT;++j){
+        enth[j]+=volumetric_energy_change; 
+      }
+    }
 }
 
 
