@@ -25,7 +25,7 @@ Bool survive(const Pftpar *pftpar, /**< pointer to PFT parameter */
   
   temp_min20=getbufferavg(climbuf->min);
   temp_max20=getbufferavg(climbuf->max);
-  return (temp_min20>=pftpar->temp.low) || 
+  return (temp_min20>=pftpar->temp.low) &&
          (temp_max20-temp_min20>=pftpar->min_temprange);
 
 } /* of 'survive' */
