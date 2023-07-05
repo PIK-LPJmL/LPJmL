@@ -100,6 +100,7 @@ Bool initsoil(Stand *stand,           /**< Pointer to stand data */
     for(l=0;l<LASTLAYER;l++)
     {
       soil->wfc[l]=soilpar->wfc;
+      soil->wpwp[l]=soilpar->wpwp;
       soil->whc[l]=soilpar->wfc-soilpar->wpwp;
       soil->whcs[l]=soil->whc[l]*soildepth[l];
       soil->wpwps[l]=soilpar->wpwp*soildepth[l];
@@ -116,6 +117,7 @@ Bool initsoil(Stand *stand,           /**< Pointer to stand data */
     }
     /*assume last layer is bedrock in 6-layer version */
     soil->wfc[BOTTOMLAYER]=soilpar->wfc;
+    soil->wpwp[BOTTOMLAYER]=soilpar->wpwp;
     soil->whc[BOTTOMLAYER]=0.002;/*0.006 wsats - 0.002 whc - 0.001 wpwps = 0.003 for free water */
     soil->whcs[BOTTOMLAYER]=soil->whc[BOTTOMLAYER]*soildepth[BOTTOMLAYER];
     soil->wpwps[BOTTOMLAYER]=0.001*soildepth[BOTTOMLAYER];
