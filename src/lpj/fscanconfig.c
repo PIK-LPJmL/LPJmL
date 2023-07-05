@@ -629,7 +629,7 @@ Bool fscanconfig(Config *config,    /**< LPJ configuration */
     }
     if(config->nagtree)
     {
-      if (fscantreedens(file,config->countrypar,config->ncountries,config->npft[GRASS]+config->npft[TREE],verbose,config)==0)
+      if (fscantreedens(file,config->countrypar,config->npft[GRASS]+config->npft[TREE],verbose,config)==0)
       {
         if(verbose)
           fputs("ERROR230: Cannot read tree density (k_est) parameter 'treedens'.\n",stderr);

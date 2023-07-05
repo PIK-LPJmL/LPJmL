@@ -25,8 +25,7 @@
 
 int fscantreedens(LPJfile *file,          /**< pointer to LPJ file */
                   Countrypar *countrypar, /**< Pointer to countrypar array */
-                  int ncountries,         /**< number of countries */
-                  int npft,               /**< number of ntural PFTs */
+                  int npft,               /**< number of natural PFTs */
                   Verbosity verb,         /**< output on stderr (TRUE/FALSE)*/
                   const Config *config    /**< LPJmL configuration */
                  )                        /** \return number of elements in array or 0 in case of error */
