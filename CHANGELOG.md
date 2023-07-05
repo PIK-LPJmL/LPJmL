@@ -19,6 +19,47 @@ of `major.minor.patch` with
 
 ## [Unreleased]
 
+## [5.6.18] - 2023-07-04
+
+### Fixed
+
+- Soil array `wpwp` is now correctly initialized with `soilpar->wpwp` for the `"prescribed_soilpar"` setting.
+
+
+## [5.6.17] - 2023-06-30
+
+### Fixed
+
+- Replaced logical `or` by logical `and` in `survive.c`. This solves issue [#309](https://gitlab.pik-potsdam.de/lpjml/LPJmL_internal/-/issues/309).
+
+
+## [5.6.16] - 2023-06-30
+
+### Fixed
+
+- Removed excess `pft->nind` in all harvest routines in `harvest_stand.c`.
+
+
+## [5.6.15] - 2023-06-30
+
+### Added
+
+- Check for matching size of discharge queues read from restart file added to `initriver()` function in `initdrain.c`. If the size differs from the value calculated from the river lengths the queues will be resized and initialized to zero. Error message is additionally printed.
+
+
+## [5.6.14] - 2023-06-08
+
+### Removed
+
+- Support for the deprecated `*.conf` configuration file format has been removed. Only JSON files are allowed for configuration files and metafiles for input.
+
+- Man pages for the description of the `*.conf` file format removed.
+
+### Changed
+
+- Strings in JSON configuration files can now be longer than 256 characters.
+
+
 ## [5.6.13] - 2023-05-16
 
 ### Added
