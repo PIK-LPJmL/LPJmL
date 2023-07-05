@@ -2,7 +2,7 @@
 /**                                                                                \n**/
 /**              p  f  t  .  c  j  s  o  n                                         \n**/
 /**                                                                                \n**/
-/**  PFT and CFT parameter file for LPJmL version 5.6.16                           \n**/
+/**  PFT and CFT parameter file for LPJmL version 5.6.18                           \n**/
 /**  CFTs parameters must be put after PFTs                                        \n**/
 /**                                                                                \n**/
 /** (C) Potsdam Institute for Climate Impact Research (PIK), see COPYRIGHT file    \n**/
@@ -1573,6 +1573,683 @@
     "nfixpot" : 0.01,  /* Yu and Zhuang 2020 minimum*/
     "maxbnfcost" : MAXBNFCOSTTR,
     "bnf_cost" : BNF_COST 
+  },
+/*--------------------------------------------------------------------------*/
+/* 1. wft */
+  {
+    "name" : "woodplantation temperate tree",
+    "type" : "tree",
+    "cultivation_type" : "wp",/* cultivation_type */
+    "nfixing" : true,           /* N fixing */
+    "cn" : [30.0, 55.0, 70.0, 77.0], /* curve number */
+    "beta_root" : 0.966,    /* beta_root */
+    "minwscal" : 0.00,      /* minwscal 3*/
+    "gmin"  : 0.620513,     /* gmin 4*/
+    "respcoeff" : 1.47534,  /* respcoeff 5*/
+    "nmax" : 120.0,          /* nmax 7*/
+    "resist" : 0.95,        /* resist 8*/
+    "longevity" : 0.464605, /* leaf longevity 10*/
+    "lmro_ratio" : 1.16441, /* lmro_ratio 18*/
+    "lmro_offset" : 0.5,
+    "ramp" : 100.0,          /* ramp 19*/
+    "lai_sapl" : 1.3935,    /* lai_sapl 21*/
+    "gdd5min" : 300.0,      /* gdd5min 30*/
+    "twmax" : 1000.0,        /* twmax 31*/
+    "twmax_daily" : 1000.0,  /* twmax_daily 31*/
+    "gddbase" : 5.0,        /* gddbase (deg C) 33*/
+    "min_temprange" : -1000.0,/* min_temprange 34*/
+    "emax": 5.45822,        /* emax 35*/
+    "intc" : 0.02,          /* intc 36*/
+    "alphaa" : 0.614725,    /* alphaa, fraction of PAR assimilated at ecosystem level, relative to leaf level */
+    "albedo_leaf" : 0.139,  /* albedo of green leaves */
+    "albedo_stem" : 0.04,   /* albedo of stems */
+    "albedo_litter" : 0.1,  /* albedo of litter */
+    "snowcanopyfrac" : 0.25,/* maximum snow coverage in green canopy */
+    "lightextcoeff" : 0.5,  /* lightextcoeff, light extinction coeffcient in Lambert-Beer equation */
+    "tmin" :
+    {
+    "slope" : 0.216,          /* new phenology: slope of cold-temperature limiting function */
+    "base" : -1.407,          /* new phenology: inflection point of cold-temperature limiting function (deg C) */
+    "tau" : 0.2               /* new phenology: change rate of actual to previous day cold-temperature limiting fct */
+    },
+    "tmax" :
+    {
+        "slope" : 1.785,      /* new phenology: slope of warm-temperature limiting function tmax_sl */
+        "base" : 38.385,      /* new phenology: inflection point of warm-temperature limiting function (deg C) */
+        "tau" : 0.2           /* new phenology: change rate of actual to previous day warm-temperature limiting fct */
+    },
+    "light" :
+    {
+        "slope" : 39,         /* new phenology: slope of light limiting function */
+        "base" : 35.326,      /* new phenology: inflection point of light limiting function (Wm-2) */
+        "tau" : 0.2           /* new phenology: change rate of actual to previous day light limiting function */
+    },
+    "wscal" :
+    {
+        "slope" : 5.12,       /* new phenology: slope of water limiting function */
+        "base" : 14.787,      /* new phenology: inflection point of water limiting function (% water availability)  */
+        "tau" : 0.8           /* new phenology: change rate of actual to previous day water limiting function */
+    },
+    "mort_max" : 0.0635576,   /* asymptotic maximum mortality rate (1/year) */
+    "phenology" : "summergreen",/* phenology */
+    "path" : "C3",            /* pathway */
+    "temp_co2" : { "low" : -4.0, "high" : 38.0 }, /* lower and upper temperature limit for co2 (deg C) 24 27*/
+    "temp_photos" : { "low" : 15.0, "high" : 30.0 },/* lower and upper limit of temperature optimum for photosynthesis(deg C) 25 26*/
+    "b":  BC3, /* leaf respiration as fraction of Vmax for C3 plants */
+    "temp" : { "low" : -8.0, "high" : 11 }, /* lower and upper coldest monthly mean temperature(deg C) 28 29*/
+    "soc_k" : 0.28880,     /* shape factor for soil organic matter vertical distribution*/
+    "alpha_fuelp" : 0.0000667, /* scaling factor nesterov fire danger index */
+    "vpd_par" : 6, /*scaling factor vpd fire danger index*/
+    "fuelbulkdensity" : 22.0, /* fuel bulk density */
+    "emission_factor" : { "co2" : 1568.0, "co" :  106.0, "ch4" : 4.80, "voc" : 5.70, "tpm" : 17.60, "nox" : 3.240}, /* emission factors */
+    "aprec_min" : APREC_MIN,/* minimum annual precipitation to establish */
+    "flam" : FLAM_TREE,     /* flam */
+    "k_litter10" : { "leaf" : 0.825, "wood" : 0.073 }, /* K_LITTER10 turnover rate after Brovkin etal 2012*/
+    "k_litter10_q10_wood" : 1.67, /* Q10_wood */
+    "vmax_up" : 2.8,              /* vmax_up, Maximum N uptake capacity per unit fine root mass, Smith et al. 2014 */
+    "kNmin": 0.05,                /* kNmin, Rate of N uptake not associated with Michaelis-Menten Kinetics, Zaehle&Friend 2000 */
+    "KNmin" : 1.48,               /* KNmin, Half saturation concentration of fine root N uptake, Smith et al. 2014 */
+    "cnratio_leaf": {"low": CN_BL_DC_MN, "median" : CN_BL_DC_MD, "high" : CN_BL_DC_MX}, /* 10.7 79.4 cnleaf min max, based on TRY data, prepared by Boris Sakschewski */
+    "knstore" : 0.15,       /* knstore, Smith et al. 2014 */
+    "fn_turnover" : FN_TURNOVER, /* fraction of N not recovered before turnover */
+    "windspeed_dampening" : 0.4, /* windspeed dampening */
+    "roughness_length" : 1.0,/* roughness length */
+    "irrig_threshold" : { "dry" : IRRIG_THRESHOLD_C3_DRY, "humid" : IRRIG_THRESHOLD_C3_HUMID },
+    "leaftype" : "broadleaved",/* leaftype */
+    "turnover" : {"leaf" : 1.30942, "sapwood" : 20.0009, "root" : 1.30942}, /* turnover leaf  sapwood root 9 11 12*/
+    "cn_ratio" : {"leaf" : CTON_LEAF, "sapwood" :  CTON_SAP, "root" : CTON_ROOT}, /* C:N mass ratio for leaf, sapwood, and root 13,14,15*/
+    "ratio" : {"sapwood" :  RATIO_SAPW, "root" :  1.16}, /* relative C:N ratio of sapwood and root, Friend et al. 1997, Ecological Modeling, Table 4*/
+    "crownarea_max" : 15.0,  /* crownarea_max 20*/
+    "wood_sapl" : 1.02171,      /* sapwood sapling 22*/
+    "aphen_min" : APHEN_MIN,
+    "aphen_max" : APHEN_MAX,
+    "reprod_cost" : REPROD_COST, /* reproduction cost */
+    "allom1" : 125.823,         /* allometry */
+    "allom2" : 53.9572,
+    "allom3" : 1.02133,
+    "allom4" : ALLOM4,
+    "k_latosa" : K_LATOSA,
+    "height_max" : HEIGHT_MAX,   /* maximum height of tree */
+    "scorchheight_f_param" : 0.0940,/* scorch height (F) */
+    "crownlength" : 0.3334,      /* crown length (CL) */
+    "barkthick_par1" : 0.347,    /* bark thickness par1 */
+    "barkthick_par2" : 0.1086,   /* bark thickness par2 */
+    "crown_mort_rck" : 1.00,     /* crown damage (rCK) */
+    "crown_mort_p" : 3.00,       /* crown damage (p)     */
+    "fuelfraction" : [0.045,0.075,0.21,0.67], /* fuel fraction */
+    "k_est" : K_EST,             /* k_est,  Giardina, 2002 */
+    "temp_bnf_lim" : {"low" : TEMP_BNF_MIN, "high" : TEMP_BNF_MAX},
+    "temp_bnf_opt" : {"low" : 18, "high" : 35},  /* Yu and Zhuang 2020 temperate deciduous forest*/
+    "swc_bnf" : {"low" : SWC_BNF_LOW, "high" : SWC_BNF_HIGH},
+    "phi_bnf" : [PHI_BNF_1, PHI_BNF_2],
+    "nfixpot" : 0.01,  /* Yu and Zhuang 2020 minimum*/
+    "maxbnfcost" : MAXBNFCOSTTE,
+    "bnf_cost" : BNF_COST,
+    "rotation" : 500,            /* rotation */
+    "max_rotation_length" : 500, /* max_rotation_length */
+    "P_init" : 0.15394           /* Initial stand density (only used for wood plantations) */
+  },
+/*--------------------------------------------------------------------------*/
+/* 2. wft */
+  {
+    "name" : "woodplantation tropical tree",
+    "type" : "tree",
+    "cultivation_type" : "wp",/* cultivation_type */
+    "nfixing" : true,           /* N fixing */
+    "cn" : [30.0, 55.0, 70.0, 77.0], /* curve number */
+    "beta_root" : 0.962,    /* beta_root */
+    "minwscal" : 0.00,      /* minwscal 3*/
+    "gmin"  : 0.48295,      /* gmin 4*/
+    "respcoeff" : 0.162926, /* respcoeff 5*/
+    "nmax" : 100.0,          /* nmax 7*/
+    "resist" : 1.0,         /* resist 8*/
+    "longevity" : 1.42577,  /* leaf longevity 10*/
+    "lmro_ratio" : 1.54496, /* lmro_ratio 18*/
+    "lmro_offset" : 0.5,
+    "ramp" : 1000.0,         /* ramp 19*/
+    "lai_sapl" : 1.44744,   /* lai_sapl 21*/
+    "gdd5min" : 0.0,        /* gdd5min 30*/
+    "twmax" : 1000.0,        /* twmax 31*/
+    "twmax_daily" : 1000.0,  /* twmax_daily 31*/
+    "gddbase" : 5.0,        /* gddbase (deg C) 33*/
+    "min_temprange" : -1000.0,/* min_temprange 34*/
+    "emax": 11.7021,        /* emax 35*/
+    "intc" : 0.02,          /* intc 36*/
+    "alphaa" : 0.596536,    /* alphaa, fraction of PAR assimilated at ecosystem level, relative to leaf level */
+    "albedo_leaf" : 0.13,   /* albedo of green leaves */
+    "albedo_stem" : 0.04,   /* albedo of stems */
+    "albedo_litter" : 0.1,  /* albedo of litter */
+    "snowcanopyfrac" : 0.4, /* maximum snow coverage in green canopy */
+    "lightextcoeff" : 0.6,  /* lightextcoeff, light extinction coeffcient in Lambert-Beer equation */
+    "tmin" :
+    {
+      "slope" : 1.01,       /* new phenology: slope of cold-temperature limiting function */
+      "base" : 8.3,         /* new phenology: inflection point of cold-temperature limiting function (deg C) */
+      "tau" : 0.2           /* new phenology: change rate of actual to previous day cold-temperature limiting fct */
+    },
+    "tmax" :
+    {
+      "slope" : 1.86,       /* new phenology: slope of warm-temperature limiting function tmax_sl */
+      "base" : 38.64,       /* new phenology: inflection point of warm-temperature limiting function (deg C) */
+      "tau" : 0.2           /* new phenology: change rate of actual to previous day warm-temperature limiting fct */
+    },
+    "light" :
+    {
+      "slope" : 77.17,      /* new phenology: slope of light limiting function */
+      "base" : 55.53,       /* new phenology: inflection point of light limiting function (Wm-2) */
+      "tau" : 0.52          /* new phenology: change rate of actual to previous day light limiting function */
+    },
+    "wscal" :
+    {
+      "slope" : 5.14,       /* new phenology: slope of water limiting function */
+      "base" : 4.997,       /* new phenology: inflection point of water limiting function (% water availability)  */
+      "tau" : 0.44          /* new phenology: change rate of actual to previous day water limiting function */
+    },
+    "mort_max" : 0.0584912, /* asymptotic maximum mortality rate (1/year) */
+    "phenology" : "evergreen",/* phenology */
+    "path" : "C3",            /* pathway */
+    "temp_co2" : { "low" : 2.0, "high" : 55.0 }, /* lower and upper temperature limit for co2 (deg C) 24 27*/
+    "temp_photos" : { "low" : 25.0, "high" : 38.0 },/* lower and upper limit of temperature optimum for photosynthesis(deg C) 25 26*/
+    "b":  BC3, /* leaf respiration as fraction of Vmax for C3 plants */
+    "temp" : { "low" : 11.0, "high" : 1000 }, /* lower and upper coldest monthly mean temperature(deg C) 28 29*/
+    "soc_k" : 0.38009,     /* shape factor for soil organic matter vertical distribution*/
+    "alpha_fuelp" : 0.000034, /* scaling factor nesterov fire danger index */
+    "vpd_par" : 6, /*scaling factor vpd fire danger index*/
+    "fuelbulkdensity" : 13.0, /* fuel bulk density */
+    "emission_factor" : { "co2" : 1664.0, "co" :  63.0, "ch4" : 2.20, "voc" : 3.40, "tpm" : 8.50, "nox" : 2.540}, /* emission factors */
+    "aprec_min" : APREC_MIN,/* minimum annual precipitation to establish */
+    "flam" : FLAM_TREE,     /* flam */
+    "k_litter10" : { "leaf" : 0.93, "wood" : 0.039 }, /* K_LITTER10 turnover rate after Brovkin etal 2012*/
+    "k_litter10_q10_wood" : 2.75, /* Q10_wood */
+    "vmax_up" : 2.8,              /* vmax_up, Maximum N uptake capacity per unit fine root mass, Smith et al. 2014 */
+    "kNmin": 0.05,                /* kNmin, Rate of N uptake not associated with Michaelis-Menten Kinetics, Zaehle&Friend 2000 */
+    "KNmin" : 1.48,               /* KNmin, Half saturation concentration of fine root N uptake, Smith et al. 2014 */
+    "cnratio_leaf": {"low": CN_BL_EG_MN, "median" : CN_BL_EG_MD, "high" : CN_BL_EG_MX}, /* 10.7 79.4 cnleaf min max, based on TRY data, prepared by Boris Sakschewski */
+    "knstore" : 0.15,       /* knstore, Smith et al. 2014 */
+    "fn_turnover" : FN_TURNOVER, /* fraction of N not recovered before turnover */
+    "windspeed_dampening" : 0.4, /* windspeed dampening */
+    "roughness_length" : 1.0,/* roughness length */
+    "irrig_threshold" : { "dry" : IRRIG_THRESHOLD_C3_DRY, "humid" : IRRIG_THRESHOLD_C3_HUMID },
+    "leaftype" : "broadleaved",/* leaftype */
+    "turnover" : {"leaf" : 1.75095, "sapwood" : 46.2736, "root" : 1.75095}, /* turnover leaf  sapwood root 9 11 12*/
+    "cn_ratio" : {"leaf" : CTON_LEAF, "sapwood" :  CTON_SAP, "root" : CTON_ROOT}, /* C:N mass ratio for leaf, sapwood, and root 13,14,15*/
+    "ratio" : {"sapwood" :  RATIO_SAPW, "root" :  1.16}, /* relative C:N ratio of sapwood and root, Friend et al. 1997, Ecological Modeling, Table 4*/
+    "crownarea_max" : 15.0,        /* crownarea_max 20*/
+    "wood_sapl" : 1.22952,         /* sapwood sapling 22*/
+    "aphen_min" : APHEN_MIN,
+    "aphen_max" : APHEN_MAX,
+    "reprod_cost" : REPROD_COST,   /* reproduction cost */
+    "allom1" : 166.319,            /* allometry */
+    "allom2" : 41.1424,
+    "allom3" : 0.840484,
+    "allom4" : ALLOM4,
+    "k_latosa" : K_LATOSA,
+    "height_max" : HEIGHT_MAX,     /* maximum height of tree */
+    "scorchheight_f_param" : 0.061,/* scorch height (F) */
+    "crownlength" : 0.10 ,         /* crown length (CL) */
+    "barkthick_par1" : 0.1085,     /* bark thickness par1 */
+    "barkthick_par2" : 0.2120,     /* bark thickness par2 */
+    "crown_mort_rck" : 0.05,       /* crown damage (rCK) */
+    "crown_mort_p" : 3.00,         /* crown damage (p)     */
+    "fuelfraction" : [0.045,0.075,0.21,0.67], /* fuel fraction */
+    "k_est" : 0.5,                 /* k_est,  Giardina, 2002 */
+     "temp_bnf_lim" : {"low" : TEMP_BNF_MIN, "high" : TEMP_BNF_MAX},
+    "temp_bnf_opt" : {"low" : 20, "high" : 35},  /* Yu and Zhuang 2020 tropical forest*/
+    "swc_bnf" : {"low" : SWC_BNF_LOW, "high" : SWC_BNF_HIGH},
+    "phi_bnf" : [PHI_BNF_1, PHI_BNF_2],
+    "nfixpot" : 0.01,  /* Yu and Zhuang 2020 minimum*/
+    "maxbnfcost" : MAXBNFCOSTTR,
+    "bnf_cost" : BNF_COST,
+    "rotation" : 500,              /* rotation */
+    "max_rotation_length" : 500,   /* max_rotation_length */
+    "P_init" : 0.147257            /* Initial stand density (only used for wood plantations) */
+  },
+/*--------------------------------------------------------------------------*/
+/* 3. wft */
+  {
+    "name" : "woodplantation boreal tree",
+    "type" : "tree",
+    "cultivation_type" : "wp",/* cultivation_type */
+    "nfixing" : true,           /* no N fixing */
+    "cn" : [30.0, 55.0, 70.0, 77.0], /* curve number */
+    "beta_root" : 0.943,    /* beta_root */
+    "minwscal" : 0.00,      /* minwscal 3*/
+    "gmin"  : 0.279355,     /* gmin 4*/
+    "respcoeff" : 1.48852,  /* respcoeff 5*/
+    "nmax" : 100.0,          /* nmax 7*/
+    "resist" : 1.0,         /* resist 8*/
+    "longevity" : 3.95806,  /* leaf longevity 10*/
+    "lmro_ratio" : 1.48852, /* lmro_ratio 18*/
+    "lmro_offset" : 0.5,
+    "ramp" : 1000.0,         /* ramp 19*/
+    "lai_sapl" : 1.6676,    /* lai_sapl 21*/
+    "gdd5min" : 600.0,      /* gdd5min 30*/
+    "twmax" : 23.0,         /* twmax 31*/
+    "twmax_daily" : 25.0,   /* twmax_daily 31*/
+    "gddbase" : 5.0,        /* gddbase (deg C) 33*/
+    "min_temprange" : -1000.0,/* min_temprange 34*/
+    "emax": 6.07702,        /* emax 35*/
+    "intc" : 0.06,          /* intc 36*/
+    "alphaa" : 0.53296,     /* alphaa, fraction of PAR assimilated at ecosystem level, relative to leaf level */
+    "albedo_leaf" : 0.13,   /* albedo of green leaves */
+    "albedo_stem" : 0.1,    /* albedo of stems */
+    "albedo_litter" : 0.1,  /* albedo of litter */
+    "snowcanopyfrac" : 0.1, /* maximum snow coverage in green canopy */
+    "lightextcoeff" : 0.5,  /* lightextcoeff, light extinction coeffcient in Lambert-Beer equation */
+    "tmin" :
+    {
+      "slope" : 0.1008,     /* new phenology: slope of cold-temperature limiting function */
+      "base" : -7.516,      /* new phenology: inflection point of cold-temperature limiting function (deg C) */
+      "tau" : 0.2           /* new phenology: change rate of actual to previous day cold-temperature limiting fct */
+    },
+    "tmax" :
+    {
+      "slope" : 0.24,       /* new phenology: slope of warm-temperature limiting function tmax_sl */
+      "base" : 27.32,       /* new phenology: inflection point of warm-temperature limiting function (deg C) */
+      "tau" : 0.2           /* new phenology: change rate of actual to previous day warm-temperature limiting fct */
+    },
+    "light" :
+    {
+      "slope" : 14.0,       /* new phenology: slope of light limiting function */
+      "base" : 3.04,        /* new phenology: inflection point of light limiting function (Wm-2) */
+      "tau" : 0.2           /* new phenology: change rate of actual to previous day light limiting function */
+    },
+    "wscal" :
+    {
+      "slope" : 5.0,       /* new phenology: slope of water limiting function */
+      "base" : 0.007695,   /* new phenology: inflection point of water limiting function (% water availability)  */
+      "tau" : 0.8          /* new phenology: change rate of actual to previous day water limiting function */
+    },
+    "mort_max" : 0.0480544, /* asymptotic maximum mortality rate (1/year) */
+    "phenology" : "evergreen",/* phenology */
+    "path" : "C3",            /* pathway */
+    "temp_co2" : { "low" : -4.0, "high" : 38.0 }, /* lower and upper temperature limit for co2 (deg C) 24 27*/
+    "temp_photos" : { "low" : 15.0, "high" : 25.0 },/* lower and upper limit of temperature optimum for photosynthesis(deg C) 25 26*/
+    "b":  BC3, /* leaf respiration as fraction of Vmax for C3 plants */
+    "temp" : { "low" : -32.5, "high" : -8.0 }, /* lower and upper coldest monthly mean temperature(deg C) 28 29*/
+    "soc_k" : 0.28670,     /* shape factor for soil organic matter vertical distribution*/
+    "alpha_fuelp" : 0.0000667, /* scaling factor nesterov fire danger index */
+    "vpd_par" : 6, /*scaling factor vpd fire danger index*/
+    "fuelbulkdensity" : 25.0, /* fuel bulk density */
+    "emission_factor" : { "co2" : 1568.0, "co" :  106.0, "ch4" : 4.80, "voc" : 5.70, "tpm" : 17.60, "nox" : 3.240}, /* emission factors */
+    "aprec_min" : APREC_MIN,/* minimum annual precipitation to establish */
+    "flam" : FLAM_TREE,     /* flam */
+    "k_litter10" : { "leaf" : 0.76, "wood" : 0.041 }, /* K_LITTER10 turnover rate after Brovkin etal 2012*/
+    "k_litter10_q10_wood" : 1.97, /* Q10_wood */
+    "vmax_up" : 2.8,              /* vmax_up, Maximum N uptake capacity per unit fine root mass, Smith et al. 2014 */
+    "kNmin": 0.05,                /* kNmin, Rate of N uptake not associated with Michaelis-Menten Kinetics, Zaehle&Friend 2000 */
+    "KNmin" : 1.48,               /* KNmin, Half saturation concentration of fine root N uptake, Smith et al. 2014 */
+    "cnratio_leaf": {"low": CN_NL_EG_MN, "median" : CN_NL_EG_MD, "high" : CN_NL_EG_MX}, /* 10.7 79.4 cnleaf min max, based on TRY data, prepared by Boris Sakschewski */
+    "knstore" : 0.1,       /* knstore, Smith et al. 2014 */
+    "fn_turnover" : FN_TURNOVER_EV, /* fraction of N not recovered before turnover */
+    "windspeed_dampening" : 0.4, /* windspeed dampening */
+    "roughness_length" : 1.0,/* roughness length */
+    "irrig_threshold" : { "dry" : IRRIG_THRESHOLD_C3_DRY, "humid" : IRRIG_THRESHOLD_C3_HUMID },
+    "leaftype" : "needleleaved",/* leaftype */
+    "turnover" : {"leaf" : 4.74487, "sapwood" : 15.688, "root" : 4.74487}, /* turnover leaf  sapwood root 9 11 12*/
+    "cn_ratio" : {"leaf" : CTON_LEAF, "sapwood" :  CTON_SAP, "root" : CTON_ROOT}, /* C:N mass ratio for leaf, sapwood, and root 13,14,15*/
+    "ratio" : {"sapwood" :  RATIO_SAPW, "root" :  1.16}, /* relative C:N ratio of sapwood and root, Friend et al. 1997, Ecological Modeling, Table 4*/
+    "crownarea_max" : 15.0,  /* crownarea_max 20*/
+    "wood_sapl" : 1.37836,       /* sapwood sapling 22*/
+    "aphen_min" : APHEN_MIN,
+    "aphen_max" : APHEN_MAX,
+    "reprod_cost" : REPROD_COST, /* reproduction cost */
+    "allom1" : 86.4058,          /* allometry */
+    "allom2" : 36.5433,
+    "allom3" : 1.21058,
+    "allom4" : ALLOM4,
+    "k_latosa" : K_LATOSA,
+    "height_max" : HEIGHT_MAX,   /* maximum height of tree */
+    "scorchheight_f_param" : 0.1100,/* scorch height (F) */
+    "crownlength" : 0.3334 ,     /* crown length (CL) */
+    "barkthick_par1" : 0.0292,   /* bark thickness par1 */
+    "barkthick_par2" : 0.2632,   /* bark thickness par2 */
+    "crown_mort_rck" : 1.00,     /* crown damage (rCK) */
+    "crown_mort_p" : 3.00,       /* crown damage (p)     */
+    "fuelfraction" : [0.045,0.075,0.21,0.67], /* fuel fraction */
+    "k_est" : K_EST,             /* k_est,  Giardina, 2002 */
+    "temp_bnf_lim" : {"low" : TEMP_BNF_MIN, "high" : TEMP_BNF_MAX},
+    "temp_bnf_opt" : {"low" : 12, "high" : 25},  /* Yu and Zhuang 2020 boreal forest*/
+    "swc_bnf" : {"low" : SWC_BNF_LOW, "high" : SWC_BNF_HIGH},
+    "phi_bnf" : [PHI_BNF_1, PHI_BNF_2],
+    "nfixpot" : 0.01,  /* Yu and Zhuang 2020 minimum*/
+    "maxbnfcost" : MAXBNFCOSTBO,
+    "bnf_cost" : BNF_COST,
+    "rotation" : 500,            /* rotation */
+    "max_rotation_length" : 500, /* max_rotation_length */
+    "P_init" : 0.169781          /* Initial stand density (only used for wood plantations) */
+   },
+/*--------------------------------------------------------------------------*/
+/* 13. cft */
+  {
+    "name" : "oil palm",
+    "type" : "tree",
+    "cultivation_type" : "annual tree",/* cultivation_type */
+    "nfixing" : false,           /* no N fixing */
+    "cn" : [30.0, 55.0, 70.0, 77.0], /* curve number */
+    "beta_root" : 0.964,    /* beta_root */
+    "minwscal" : 0.00,      /* minwscal 3*/
+    "gmin"  : 0.5,          /* gmin 4*/
+    "respcoeff" : 0.2,      /* respcoeff 5*/
+    "nmax" : 100.0,          /* nmax 7*/
+    "resist" : 0.95,        /* resist 8*/
+    "longevity" : 0.6,     /* leaf longevity 10*/
+    "lmro_ratio" : 1.0,     /* lmro_ratio 18*/
+    "lmro_offset" : 0.5,
+    "ramp" : 1000.0,          /* ramp 19*/
+    "lai_sapl" : 1.6,       /* lai_sapl 2.1, larger sapling used for plantations, original value 1.5  */
+    "gdd5min" : 300.0,      /* gdd5min 30*/
+    "twmax" : 1000.0,        /* twmax 31*/
+    "twmax_daily" : 1000.0,  /* twmax_daily 31*/
+    "gddbase" : 18.0,        /* gddbase (deg C) 33*/
+    "min_temprange" : -1000.0,/* min_temprange 34*/
+    "emax": 5.0,            /* emax 35*/
+    "intc" : 0.02,          /* intc 36*/
+    "alphaa" : 0.9,         /* alphaa, fraction of PAR assimilated at ecosystem level, relative to leaf level */
+    "albedo_leaf" : 0.15,   /* albedo of green leaves */
+    "albedo_stem" : 0.04,   /* albedo of stems */
+    "albedo_litter" : 0.1,  /* albedo of litter */
+    "snowcanopyfrac" : 0.4, /* maximum snow coverage in green canopy */
+    "lightextcoeff" : 0.6,  /* lightextcoeff, light extinction coeffcient in Lambert-Beer equation */
+    "tmin" :
+    {
+      "slope" : 0.2591,     /* new phenology: slope of cold-temperature limiting function */
+      "base" : 13.69,           /* new phenology: inflection point of cold-temperature limiting function (deg C) */
+      "tau" : 0.2           /* new phenology: change rate of actual to previous day cold-temperature limiting fct */
+    },
+    "tmax" :
+    {
+      "slope" : 1.74,       /* new phenology: slope of warm-temperature limiting function tmax_sl */
+      "base" : 41.51,       /* new phenology: inflection point of warm-temperature limiting function (deg C) */
+      "tau" : 0.2           /* new phenology: change rate of actual to previous day warm-temperature limiting fct */
+    },
+    "light" :
+    {
+      "slope" : 58,         /* new phenology: slope of light limiting function */
+      "base" : 59.78,       /* new phenology: inflection point of light limiting function (Wm-2) */
+      "tau" : 0.2           /* new phenology: change rate of actual to previous day light limiting function */
+    },
+    "wscal" :
+    {
+      "slope" : 5.24,       /* new phenology: slope of water limiting function */
+      "base" : 20.96,       /* new phenology: inflection point of water limiting function (% water availability)  */
+      "tau" : 0.8           /* new phenology: change rate of actual to previous day water limiting function */
+    },
+    "mort_max" : MORT_MAX,     /* asymptotic maximum mortality rate (1/year) */
+    "phenology" : "evergreen", /* phenology */
+    "path" : "C3",            /* pathway */
+    "temp_co2" : { "low" : 0.0, "high" : 50.0 }, /* lower and upper temperature limit for co2 (deg C) 24 27*/
+    "temp_photos" : { "low" : 27.0, "high" : 33.0},/* lower and upper limit of temperature optimum for photosynthesis(deg C) 25 26*/
+    "b":  BC3, /* leaf respiration as fraction of Vmax for C3 plants */
+    "temp" : { "low" : -10.0, "high" : 40 }, /* lower and upper coldest monthly mean temperature(deg C) 28 29*/
+    "soc_k" : 0.4374,     /* shape factor for soil organic matter vertical distribution*/
+    "alpha_fuelp" : 0.0000334, /* scaling factor nesterov fire danger index */
+    "vpd_par" : 6, /*scaling factor vpd fire danger index*/
+    "fuelbulkdensity" : 13.0, /* fuel bulk density */
+    "emission_factor" : { "co2" : 1568.0, "co" :  106.0, "ch4" : 4.80, "voc" : 5.70, "tpm" : 17.60, "nox" : 3.240}, /* emission factors */
+    "aprec_min" : APREC_MIN,/* minimum annual precipitation to establish */
+    "flam" : FLAM_TREE,     /* flam */
+    "k_litter10" : { "leaf" : 0.95, "wood" : 0.104 }, /* K_LITTER10 turnover rate after Brovkin etal 2012*/
+    "k_litter10_q10_wood" : 1.37, /* Q10_wood */
+    "vmax_up" : 2.8,              /* vmax_up, Maximum N uptake capacity per unit fine root mass, Smith et al. 2014 */
+    "kNmin": 0.05,                /* kNmin, Rate of N uptake not associated with Michaelis-Menten Kinetics, Zaehle&Friend 2000 */
+    "KNmin" : 1.48,               /* KNmin, Half saturation concentration of fine root N uptake, Smith et al. 2014 */
+    "cnratio_leaf": {"low": CN_BL_EG_MN, "median" : CN_BL_EG_MD, "high" : CN_BL_EG_MX}, /* 10.7 79.4 cnleaf min max, based on TRY data, prepared by Boris Sakschewski */
+    "knstore" : 0.15,       /* knstore, Smith et al. 2014 */
+    "fn_turnover" : FN_TURNOVER_EV, /* fraction of N not recovered before turnover */
+    "windspeed_dampening" : 0.4,  /* windspeed dampening */
+    "roughness_length" : 1.0,     /* roughness length */
+    "irrig_threshold" : { "dry" : IRRIG_THRESHOLD_C3_DRY, "humid" : IRRIG_THRESHOLD_C3_HUMID },
+    "leaftype" : "broadleaved",/* leaftype */
+    "turnover" : {"leaf" : 5.0, "sapwood" : 20.0, "root" : 2.0}, /* turnover leaf  sapwood root 9 11 12*/
+    "cn_ratio" : {"leaf" : CTON_LEAF, "sapwood" :  CTON_SAP, "root" : CTON_ROOT}, /* C:N mass ratio for leaf, sapwood, and root 13,14,15*/
+    "ratio" : {"sapwood" :  RATIO_SAPW, "root" :  1.16}, /* relative C:N ratio of sapwood and root, Friend et al. 1997, Ecological Modeling, Table 4*/
+    "crownarea_max" : 90,  /* crownarea_max 20*/
+    "wood_sapl" : 1.6,      /* sapwood sapling 22*/
+    /*comment next two lines if EVERGREEN*/
+    /*"aphen_min" : APHEN_MIN,
+    "aphen_max" : APHEN_MAX,*/
+    "reprod_cost" : REPROD_COST, /* reproduction cost */
+    "allom1" : 100,         /* allometry */
+    "allom2" : 20,
+    "allom3" : 0.4,
+    "allom4" : ALLOM4,
+    "k_latosa" : K_LATOSA,
+    "height_max" : 20,       /* maximum height of tree */
+    "scorchheight_f_param" : 0.0940, /* scorch height (F) */
+    "crownlength" : 0.3334, /* crown length (CL) */
+    "barkthick_par1" : 0.0347, /* bark thickness par1 */
+    "barkthick_par2" : 0.1086, /* bark thickness par2 */
+    "crown_mort_rck" : 1.0, /* crown damage (rCK) */
+    "crown_mort_p" : 3.00,  /* crown damage (p)     */
+    "fuelfraction" : [0.045,0.075,0.21,0.67], /* fuel fraction */
+    "k_est" : 0.014,          /* k_est -> target value 0.014*/
+    "rotation" : 4,         /* rotation */
+    "max_rotation_length" : 25, /* max_rotation_length */
+    "harvest_ratio" : 0,        /* harvest ratio for cultural trees */
+    "cnratio_fruit" : 10,
+    "with_grass" : true   /* grass PFT allowed under agriculture tree? */
+  },
+/*--------------------------------------------------------------------------*/
+/* 14. cft */
+  {
+    "name" : "tea",
+    "type" : "tree",
+    "cultivation_type" : "annual tree",/* cultivation_type */
+    "nfixing" : false,           /* no N fixing */
+    "cn" : [30.0, 55.0, 70.0, 77.0], /* curve number */
+    "beta_root" : 0.962,    /* beta_root */
+    "minwscal" : 0.00,      /* minwscal 3*/
+    "gmin"  : 1.6,          /* gmin 4*/
+    "respcoeff" : 0.2,      /* respcoeff 5*/
+    "nmax" : 100.0,          /* nmax 7*/
+    "resist" : 1.0,        /* resist 8*/
+    "longevity" : 3.0,     /* leaf longevity 10*/
+    "lmro_ratio" : 1.3,     /* lmro_ratio 18*/
+    "lmro_offset" : 0.5,
+    "ramp" : 100.0,          /* ramp 19*/
+    "lai_sapl" : 1.500,       /* lai_sapl 2.1, larger sapling used for plantations, original value 1.5  */
+    "gdd5min" : 1200.0,      /* gdd5min 30*/
+    "twmax" : 1000.0,        /* twmax 31*/
+    "twmax_daily" : 1000.0,  /* twmax_daily 31*/
+    "gddbase" : 5.0,        /* gddbase (deg C) 33*/
+    "min_temprange" : -1000.0,/* min_temprange 34*/
+    "emax": 10.0,            /* emax 35*/
+    "intc" : 0.02,          /* intc 36*/
+    "alphaa" : 1.0,         /* alphaa, fraction of PAR assimilated at ecosystem level, relative to leaf level */
+    "albedo_leaf" : 0.15,   /* albedo of green leaves */
+    "albedo_stem" : 0.04,   /* albedo of stems */
+    "albedo_litter" : 0.1,  /* albedo of litter */
+    "snowcanopyfrac" : 0.4, /* maximum snow coverage in green canopy */
+    "lightextcoeff" : 0.6,  /* lightextcoeff, light extinction coeffcient in Lambert-Beer equation */
+    "tmin" :
+    {
+      "slope" : 0.2591,     /* new phenology: slope of cold-temperature limiting function */
+      "base" : 13.69,           /* new phenology: inflection point of cold-temperature limiting function (deg C) */
+      "tau" : 0.2           /* new phenology: change rate of actual to previous day cold-temperature limiting fct */
+    },
+    "tmax" :
+    {
+      "slope" : 1.74,       /* new phenology: slope of warm-temperature limiting function tmax_sl */
+      "base" : 41.51,       /* new phenology: inflection point of warm-temperature limiting function (deg C) */
+      "tau" : 0.2           /* new phenology: change rate of actual to previous day warm-temperature limiting fct */
+    },
+    "light" :
+    {
+      "slope" : 58,         /* new phenology: slope of light limiting function */
+      "base" : 59.78,       /* new phenology: inflection point of light limiting function (Wm-2) */
+      "tau" : 0.2           /* new phenology: change rate of actual to previous day light limiting function */
+    },
+    "wscal" :
+    {
+      "slope" : 5.24,       /* new phenology: slope of water limiting function */
+      "base" : 20.96,       /* new phenology: inflection point of water limiting function (% water availability)  */
+      "tau" : 0.8           /* new phenology: change rate of actual to previous day water limiting function */
+    },
+    "mort_max" : MORT_MAX,     /* asymptotic maximum mortality rate (1/year) */
+    "phenology" : "evergreen", /* phenology */
+    "path" : "C3",            /* pathway */
+    "temp_co2" : { "low" : -10.0, "high" : 42.0 }, /* lower and upper temperature limit for co2 (deg C) 24 27*/
+    "temp_photos" : { "low" : 20.0, "high" : 36.0},/* lower and upper limit of temperature optimum for photosynthesis(deg C) 25 26*/
+    "b":  BC3, /* leaf respiration as fraction of Vmax for C3 plants */
+    "temp" : { "low" : -17.0, "high" : 1000 }, /* lower and upper coldest monthly mean temperature(deg C) 28 29*/
+    "soc_k" : 0.38009,     /* shape factor for soil organic matter vertical distribution*/
+    "alpha_fuelp" : 0.0000667, /* scaling factor fire danger index */
+    "vpd_par" : 6, /*scaling factor vpd fire danger index*/
+    "fuelbulkdensity" : 22.0, /* fuel bulk density */
+    "emission_factor" : { "co2" : 1568.0, "co" :  106.0, "ch4" : 4.80, "voc" : 5.70, "tpm" : 17.60, "nox" : 3.240}, /* emission factors */
+    "aprec_min" : 1200,/* minimum annual precipitation to establish */
+    "flam" : FLAM_TREE,     /* flam */
+    "k_litter10" : { "leaf" : 0.95, "wood" : 0.104 }, /* K_LITTER10 turnover rate after Brovkin etal 2012*/
+    "k_litter10_q10_wood" : 1.37, /* Q10_wood */
+    "vmax_up" : 2.8,              /* vmax_up, Maximum N uptake capacity per unit fine root mass, Smith et al. 2014 */
+    "kNmin": 0.05,                /* kNmin, Rate of N uptake not associated with Michaelis-Menten Kinetics, Zaehle&Friend 2000 */
+    "KNmin" : 1.48,               /* KNmin, Half saturation concentration of fine root N uptake, Smith et al. 2014 */
+    "cnratio_leaf": {"low": CN_BL_EG_MN, "median" : CN_BL_EG_MD, "high" : CN_BL_EG_MX}, /* 10.7 79.4 cnleaf min max, based on TRY data, prepared by Boris Sakschewski */
+    "knstore" : 0.15,       /* knstore, Smith et al. 2014 */
+    "fn_turnover" : FN_TURNOVER_EV, /* fraction of N not recovered before turnover */
+    "windspeed_dampening" : 0.4,  /* windspeed dampening */
+    "roughness_length" : 1.0,     /* roughness length */
+    "irrig_threshold" : { "dry" : IRRIG_THRESHOLD_C3_DRY, "humid" : IRRIG_THRESHOLD_C3_HUMID },
+    "leaftype" : "broadleaved",/* leaftype */
+    "turnover" : {"leaf" : 3.0, "sapwood" : 20.0, "root" : 3.0}, /* turnover leaf  sapwood root 9 11 12*/
+    "cn_ratio" : {"leaf" : CTON_LEAF, "sapwood" :  CTON_SAP, "root" : CTON_ROOT}, /* C:N mass ratio for leaf, sapwood, and root 13,14,15*/
+    "ratio" : {"sapwood" :  RATIO_SAPW, "root" :  1.16}, /* relative C:N ratio of sapwood and root, Friend et al. 1997, Ecological Modeling, Table 4*/
+    "crownarea_max" : 1.0,  /* crownarea_max 20*/
+    "wood_sapl" : 2.2,      /* sapwood sapling 22*/
+    /* comment next two lines if EVERGREEN*/
+    /*"aphen_min" : APHEN_MIN,
+    "aphen_max" : APHEN_MAX,*/
+    "reprod_cost" : REPROD_COST, /* reproduction cost */
+    "allom1" : 60,         /* allometry */
+    "allom2" : 40,
+    "allom3" : 0.97,
+    "allom4" : ALLOM4,
+    "k_latosa" : K_LATOSA,
+    "height_max" : 1.3,       /* maximum height of tree */
+    "scorchheight_f_param" : 0.0940, /* scorch height (F) */
+    "crownlength" : 0.3334, /* crown length (CL) */
+    "barkthick_par1" : 0.0347, /* bark thickness par1 */
+    "barkthick_par2" : 0.1086, /* bark thickness par2 */
+    "crown_mort_rck" : 1.0, /* crown damage (rCK) */
+    "crown_mort_p" : 3.00,  /* crown damage (p)     */
+    "fuelfraction" : [0.045,0.075,0.21,0.67], /* fuel fraction */
+    "k_est" : 1.2,          /* k_est TIM 1.5*/
+    "rotation" : 0,         /* rotation */
+    "max_rotation_length" : 200, /* max_rotation_length */
+    "harvest_ratio" : 0.15,      /* harvest ratio for cultural trees */
+    "cnratio_fruit" : 10,
+    "with_grass" : true   /* grass PFT allowed under agriculture tree? */
+  },
+/*--------------------------------------------------------------------------*/
+/* 15. cft */
+  {
+    "name" : "cotton",
+    "type" : "tree",
+    "cultivation_type" : "annual tree",/* cultivation_type */
+    "nfixing" : false,           /* no N fixing */
+    "cn" : [30.0, 55.0, 70.0, 77.0], /* curve number */
+    "beta_root" : 0.966,    /* beta_root */
+    "minwscal" : 0.00,      /* minwscal 3*/
+    "gmin"  : 0.5,          /* gmin 4*/
+    "respcoeff" : 1.2,      /* respcoeff 5*/
+    "nmax" : 120.0,          /* nmax 7*/
+    "resist" : 0.95,        /* resist 8*/
+    "longevity" : 0.45,     /* leaf longevity 10*/
+    "lmro_ratio" : 1.0,     /* lmro_ratio 18*/
+    "lmro_offset" : 0.5,
+    "ramp" : 600.0,          /* ramp 19*/
+    "lai_sapl" : 1.6,       /* lai_sapl 2.1, larger sapling used for plantations, original value 1.5  */
+    "gdd5min" : 300.0,      /* gdd5min 30*/
+    "twmax" : 1000.0,        /* twmax 31*/
+    "twmax_daily" : 1000.0,  /* twmax_daily 31*/
+    "gddbase" : 15.0,        /* gddbase (deg C) 33*/
+    "min_temprange" : -1000.0,/* min_temprange 34*/
+    "emax": 5.0,            /* emax 35*/
+    "intc" : 0.02,          /* intc 36*/
+    "alphaa" : 0.8,         /* alphaa, fraction of PAR assimilated at ecosystem level, relative to leaf level */
+    "albedo_leaf" : 0.15,   /* albedo of green leaves */
+    "albedo_stem" : 0.04,   /* albedo of stems */
+    "albedo_litter" : 0.1,  /* albedo of litter */
+    "snowcanopyfrac" : 0.4, /* maximum snow coverage in green canopy */
+    "lightextcoeff" : 0.6,  /* lightextcoeff, light extinction coeffcient in Lambert-Beer equation */
+    "tmin" :
+    {
+      "slope" : 0.2591,     /* new phenology: slope of cold-temperature limiting function */
+      "base" : 13.69,           /* new phenology: inflection point of cold-temperature limiting function (deg C) */
+      "tau" : 0.2           /* new phenology: change rate of actual to previous day cold-temperature limiting fct */
+    },
+    "tmax" :
+    {
+      "slope" : 1.74,       /* new phenology: slope of warm-temperature limiting function tmax_sl */
+      "base" : 41.51,       /* new phenology: inflection point of warm-temperature limiting function (deg C) */
+      "tau" : 0.2           /* new phenology: change rate of actual to previous day warm-temperature limiting fct */
+    },
+    "light" :
+    {
+      "slope" : 58,         /* new phenology: slope of light limiting function */
+      "base" : 59.78,       /* new phenology: inflection point of light limiting function (Wm-2) */
+      "tau" : 0.2           /* new phenology: change rate of actual to previous day light limiting function */
+    },
+    "wscal" :
+    {
+      "slope" : 5.24,       /* new phenology: slope of water limiting function */
+      "base" : 20.96,       /* new phenology: inflection point of water limiting function (% water availability)  */
+      "tau" : 0.8           /* new phenology: change rate of actual to previous day water limiting function */
+    },
+    "mort_max" : MORT_MAX,     /* asymptotic maximum mortality rate (1/year) */
+    "phenology" : "summergreen", /* phenology */
+    "path" : "C3",            /* pathway */
+    "temp_co2" : { "low" : 0.0, "high" : 45.0 }, /* lower and upper temperature limit for co2 (deg C) 24 27*/
+    "temp_photos" : { "low" : 15.0, "high" : 35.0},/* lower and upper limit of temperature optimum for photosynthesis(deg C) 25 26*/
+    "b":  BC3, /* leaf respiration as fraction of Vmax for C3 plants */
+    "temp" : { "low" : -10.0, "high" : 40.0}, /* lower and upper coldest monthly mean temperature(deg C) 28 29*/
+    "soc_k" : 0.28880,     /* shape factor for soil organic matter vertical distribution*/
+    "alpha_fuelp" : 0.0000667, /* scaling factor fire danger index */
+    "vpd_par" : 6, /*scaling factor vpd fire danger index*/
+    "fuelbulkdensity" : 22.0, /* fuel bulk density */
+    "emission_factor" : { "co2" : 1568.0, "co" :  106.0, "ch4" : 4.80, "voc" : 5.70, "tpm" : 17.60, "nox" : 3.240}, /* emission factors */
+    "aprec_min" : APREC_MIN,/* minimum annual precipitation to establish */
+    "flam" : FLAM_TREE,     /* flam */
+    "k_litter10" : { "leaf" : 0.93, "wood" : 0.039 }, /* K_LITTER10 turnover rate after Brovkin etal 2012*/
+    "k_litter10_q10_wood" : 2.75, /* Q10_wood */
+    "vmax_up" : 2.8,              /* vmax_up, Maximum N uptake capacity per unit fine root mass, Smith et al. 2014 */
+    "kNmin": 0.05,                /* kNmin, Rate of N uptake not associated with Michaelis-Menten Kinetics, Zaehle&Friend 2000 */
+    "KNmin" : 1.48,               /* KNmin, Half saturation concentration of fine root N uptake, Smith et al. 2014 */
+    "cnratio_leaf": {"low": CN_BL_DC_MN, "median" : CN_BL_DC_MD, "high" : CN_BL_DC_MX}, /* 10.7 79.4 cnleaf min max, based on TRY data, prepared by Boris Sakschewski */
+    "knstore" : 0.15,       /* knstore, Smith et al. 2014 */
+    "fn_turnover" : FN_TURNOVER, /* fraction of N not recovered before turnover */
+    "windspeed_dampening" : 0.4,  /* windspeed dampening */
+    "roughness_length" : 1.0,     /* roughness length */
+    "irrig_threshold" : { "dry" : IRRIG_THRESHOLD_C3_DRY, "humid" : IRRIG_THRESHOLD_C3_HUMID },
+    "leaftype" : "broadleaved",/* leaftype */
+    "turnover" : {"leaf" : 1.0, "sapwood" : 20.0, "root" : 1.0}, /* turnover leaf  sapwood root 9 11 12*/
+    "cn_ratio" : {"leaf" : CTON_LEAF, "sapwood" :  CTON_SAP, "root" : CTON_ROOT}, /* C:N mass ratio for leaf, sapwood, and root 13,14,15*/
+    "ratio" : {"sapwood" :  RATIO_SAPW, "root" :  1.16}, /* relative C:N ratio of sapwood and root, Friend et al. 1997, Ecological Modeling, Table 4*/
+    "crownarea_max" : 2.0,  /* crownarea_max 20*/
+    "wood_sapl" : 2.2,      /* sapwood sapling 22*/
+    "aphen_min" : APHEN_MIN,
+    "aphen_max" : APHEN_MAX,
+    "reprod_cost" : REPROD_COST, /* reproduction cost */
+    "allom1" : ALLOM1,         /* allometry */
+    "allom2" : ALLOM2,
+    "allom3" : ALLOM3,
+    "allom4" : ALLOM4,
+    "k_latosa" : K_LATOSA,
+    "height_max" : 2,       /* maximum height of tree */
+    "scorchheight_f_param" : 0.0940, /* scorch height (F) */
+    "crownlength" : 0.3334, /* crown length (CL) */
+    "barkthick_par1" : 0.0347, /* bark thickness par1 */
+    "barkthick_par2" : 0.1086, /* bark thickness par2 */
+    "crown_mort_rck" : 1.0, /* crown damage (rCK) */
+    "crown_mort_p" : 3.00,  /* crown damage (p)     */
+    "fuelfraction" : [0.045,0.075,0.21,0.67], /* fuel fraction */
+    "k_est" : 8,          /* k_est TIM 1.5*/
+    "rotation" : 0,         /* rotation */
+    "max_rotation_length" : 1, /* max_rotation_length */
+    "harvest_ratio" : 0.19,    /* fraction of biomass increment put into fruits */
+    "cnratio_fruit" : 10,
+    "with_grass" : false   /* grass PFT allowed under agriculture tree? */
   },
 /*--------------------------------------------------------------------------*/
 /* 1. cft */

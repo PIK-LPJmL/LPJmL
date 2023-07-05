@@ -2,7 +2,7 @@
 /**                                                                                \n**/
 /**                   l  p  j  m  l  .  c  j  s  o  n                              \n**/
 /**                                                                                \n**/
-/** Default configuration file for LPJmL C Version 5.6.16                          \n**/
+/** Default configuration file for LPJmL C Version 5.6.18                          \n**/
 /**                                                                                \n**/
 /** Configuration file is divided into five sections:                              \n**/
 /**                                                                                \n**/
@@ -75,6 +75,7 @@
   "reservoir" : false,      /* enables reservoirs (changes discharge and allows for irrigation water source), requires river_routing=true and elevation and reservoir input files  */
   "wateruse" : "no",        /* HIL water withdrawals and return flows, requires wateruse input, options: "no", "yes" (only for years prescribed in input), "all" (use first year for years before and last year of input for years after period prescibed in input file) */
 #endif
+  "cultivation_types" : ["none","biomass","annual crop"], /* cultivation types to read from pft.cjson */
   "prescribe_burntarea" : false, /* prescribe burned area on nat vegetation (for spitfire)  */
   "prescribe_landcover" : "no_landcover", /* prescribe natural veg composition, options: "no_landcover", "landcoverfpc" (FPC), "landcoverest" (establishment) */
   "sowing_date_option" : "fixed_sdate",   /* options: no_fixed_sdate, fixed_sdate, prescribed_sdate */
@@ -96,8 +97,8 @@
   "manure_input" : true,                /* enable manure input */
   "fix_fertilization" : false,          /* fertilizer and manure input setting, options: "false" (prescribed time/cell/cft specific input), "true" (global constant rates from lpjmlparam.cjson) */
   "others_to_crop" : true,              /* true: cultivate others as a separate stand of cft according to setting "cft_temp"/"cft_trop"; false: simulate others as grassland with setting "grazing_others" */
-  "cft_temp" : "temperate cereals",     /* cft name (see pft.cjson) to simulate others in temperate regions (abs(lat)>30°), if others_to_crop is true  */
-  "cft_tropic" : "maize",               /* cft name (see pft.cjson) to simulate others in tropical regions (abs(lat)<30°), if others_to_crop is true  */
+  "cft_temp" : "temperate cereals",     /* cft name (see pft.cjson) to simulate others in temperate regions (abs(lat)>30 deg), if others_to_crop is true  */
+  "cft_tropic" : "maize",               /* cft name (see pft.cjson) to simulate others in tropical regions (abs(lat)<30 deg), if others_to_crop is true  */
   "grazing_others" : "default",         /* default grazing type for others, options : "default", "mowing", "ext", "int", "livestock", "none" */
   "grazing" : "default",                /* default grazing type, options : "default", "mowing", "ext", "int", "livestock", "none" */
   "grassonly" : false,                  /* set all cropland including others to zero but keep managed grasslands */
