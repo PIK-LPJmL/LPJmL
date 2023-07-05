@@ -99,10 +99,11 @@ typedef enum { MISSING_TIME,SECOND,DAY,MONTH,YEAR } Time;
 
 typedef struct
 {
-  char *name;  /**< variable name */
-  char *var;   /**< data name in NetCDF file */
-  char *descr; /**< description */
-  char *unit;  /**< units */
+  char *name;          /**< variable name */
+  char *var;           /**< data name in NetCDF file */
+  char *standard_name; /**< standard name of variable */
+  char *long_name;     /**< long name of variable */
+  char *unit;          /**< units */
   float scale;
   float offset;
   Time time;

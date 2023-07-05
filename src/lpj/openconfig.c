@@ -77,6 +77,7 @@ FILE *openconfig(Config *config,      /**< configuration struct */
     checkptr(config->restartdir);
   }
   config->param_out=FALSE;
+  config->ofiles=FALSE;
   config->scan_verbose=ERR; /* NO_ERR would suppress also error messages */
   pos=getenv(LPJWAIT);
   if(pos!=NULL)
@@ -314,6 +315,8 @@ FILE *openconfig(Config *config,      /**< configuration struct */
       }
       else if(!strcmp((*argv)[i],"-param"))
         config->param_out=TRUE;
+      else if(!strcmp((*argv)[i],"-ofiles"))
+        config->ofiles=TRUE;
       else if(!strcmp((*argv)[i],"-vv"))
         config->scan_verbose=VERB;
       else if(!strcmp((*argv)[i],"-inpath"))

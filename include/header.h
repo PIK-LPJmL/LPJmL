@@ -155,15 +155,15 @@ extern Bool freadanyheader(FILE *,Header *,Bool *,String,int *,Bool);
 extern size_t headersize(const char *,int);
 extern FILE *openinputfile(Header *, Bool *,const Filename *,
                            String,const char *,int *,size_t *,Bool,const Config *);
-extern FILE *openmetafile(Header *,Map **,const char *,Attr **,int *,char **,char **,char **,Filename *,Type *,Bool *,size_t *,const char *,Bool);
+extern FILE *openmetafile(Header *,Map **,const char *,Attr **,int *,char **,char **,char **,char **,char **,char **,Filename *,Type *,Bool *,size_t *,const char *,Bool);
 extern char *getfilefrommeta(const char *,Bool);
 extern void fprintheader(FILE *,const Header *);
-extern char *parse_json_metafile(FILE *,Header *,Map **,const char *,Attr **,int *,char **,char **,char **,Filename *,Type *,size_t *,Bool *,Verbosity);
+extern char *parse_json_metafile(FILE *,Header *,Map **,const char *,Attr **,int *,char **,char **,char **,char **,char **,char **,Filename *,Type *,size_t *,Bool *,Verbosity);
 extern Map *fscanmap(LPJfile *,const char *,Verbosity);
 extern void freemap(Map *);
 extern void fprintmap(FILE *,Map *);
 extern void fprintjson(FILE *,const char *,const char *,const Header *,
-                       Map *,const char *,const Attr *,int,const char *,const char *,
+                       Map *,const char *,const Attr *,int,const char *,const char *,const char *,
                        const char *,const Filename *,Type,int,const char *,Bool,int);
 
 /* Definition of macros */

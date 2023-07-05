@@ -70,9 +70,12 @@ char *parse_json_metafile(FILE *file,         /**< pointer to JSON file */
                           const char *map_name, /**< name of map or NULL */
                           Attr **attrs,       /**< pointer to array of attributes */
                           int *n_attr,        /**< size of array attribute */
+                          char **source,
+                          char **history,
                           char **variable,    /**< name of variable or NULL */
                           char **unit,        /**< unit of variable or NULL */
-                          char **descr,       /**< description of variable or NULL */
+                          char **standard_name, /**< standard name of variable or NULL */
+                          char **long_name,   /**< long name of variable or NULL */
                           Filename *gridfile, /**< name of grid file or NULL */
                           Type *grid_type,    /**< datatype of grid or NULL */
                           size_t *offset,     /**< offset in binary file */
@@ -124,6 +127,36 @@ char *parse_json_metafile(FILE *file,         /**< pointer to JSON file */
     }
     else
       *variable=NULL;
+  }
+  if(source!=NULL)
+  {
+    if(iskeydefined(lpjfile,"source"))
+    {
+      val=fscanstring(lpjfile,NULL,"source",verbosity);
+      if(val==NULL)
+      {
+        closeconfig(lpjfile);
+        return NULL;
+      }
+      *source=strdup(val);
+    }
+    else
+      *source=NULL;
+  }
+  if(history!=NULL)
+  {
+    if(iskeydefined(lpjfile,"history"))
+    {
+      val=fscanstring(lpjfile,NULL,"history",verbosity);
+      if(val==NULL)
+      {
+        closeconfig(lpjfile);
+        return NULL;
+      }
+      *history=strdup(val);
+    }
+    else
+      *history=NULL;
   }
   if(gridfile!=NULL)
   {
@@ -185,7 +218,22 @@ char *parse_json_metafile(FILE *file,         /**< pointer to JSON file */
     else
       *unit=NULL;
   }
-  if(descr!=NULL)
+  if(standard_name!=NULL)
+  {
+    if(iskeydefined(lpjfile,"standard_name"))
+    {
+      val=fscanstring(lpjfile,NULL,"standard_name",verbosity);
+      if(val==NULL)
+      {
+        closeconfig(lpjfile);
+        return NULL;
+      }
+      *standard_name=strdup(val);
+    }
+    else
+      *standard_name=NULL;
+  }
+  if(long_name!=NULL)
   {
     if(iskeydefined(lpjfile,"descr"))
     {
@@ -195,10 +243,20 @@ char *parse_json_metafile(FILE *file,         /**< pointer to JSON file */
         closeconfig(lpjfile);
         return NULL;
       }
-      *descr=strdup(val);
+      *long_name=strdup(val);
+    }
+    else if(iskeydefined(lpjfile,"long_name"))
+    {
+      val=fscanstring(lpjfile,NULL,"long_name",verbosity);
+      if(val==NULL)
+      {
+        closeconfig(lpjfile);
+        return NULL;
+      }
+      *long_name=strdup(val);
     }
     else
-      *descr=NULL;
+      *long_name=NULL;
   }
   if(header!=NULL)
   {
@@ -351,9 +409,12 @@ FILE *openmetafile(Header *header,       /**< pointer to file header */
                    const char *map_name, /**< name of map or NULL */
                    Attr **attrs,         /**< pointer to array of attributes */
                    int *n_attr,          /**< size of array attribute */
+                   char **source,
+                   char **history,
                    char **variable,      /**< name of variable or NULL */
                    char **unit,          /**< unit of variable or NULL */
-                   char **descr,         /**< description of variable or NULL */
+                   char **standard_name, /**< standard name of variable or NULL */
+                   char **long_name,     /**< long name of variable or NULL */
                    Filename *gridfile,   /**< name of grid file or NULL */
                    Type *grid_type,      /**< datatype of grid or NULL */
                    Bool *swap,           /**< byte order has to be changed (TRUE/FALSE) */
@@ -378,7 +439,7 @@ FILE *openmetafile(Header *header,       /**< pointer to file header */
   name=NULL;
   if(map!=NULL)
     *map=NULL;
-  name=parse_json_metafile(file,header,map,map_name,attrs,n_attr,variable,unit,descr,gridfile,grid_type,offset,swap,isout ? ERR : NO_ERR);
+  name=parse_json_metafile(file,header,map,map_name,attrs,n_attr,source,history,variable,unit,standard_name,long_name,gridfile,grid_type,offset,swap,isout ? ERR : NO_ERR);
   fclose(file);
   if(name==NULL)
   {

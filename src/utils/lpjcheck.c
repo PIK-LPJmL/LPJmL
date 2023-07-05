@@ -20,7 +20,7 @@
 
 #define LPJCHECK_VERSION "1.0.005"
 #define NTYPES 3 /* number of PFT types: grass, tree, crop */
-#define USAGE "Usage: %s [-h] [-q] [-nocheck] [-param] [-vv]\n"\
+#define USAGE "Usage: %s [-h] [-q] [-nocheck] [-ofiles] [-param] [-vv]\n"\
               "       [-couple hostname[:port]]\n"\
               "       [-outpath dir] [-inpath dir] [-restartpath dir]\n"\
               "       [[-Dmacro[=value]] [-Idir] ...] filename\n"
@@ -69,6 +69,7 @@ int main(int argc,char **argv)
              "-q                  print error messsages only\n"
              "-vv                 verbosely print the actual values during reading of the\n"
              "                    configuration files\n"
+             "-ofiles             list only all available output variables\n"
              "-param              print LPJ parameter\n"
              "-pp cmd             set preprocessor program. Default is 'cpp'\n"
              "-couple host[:port] set host and port where coupled model is running.\n"
@@ -110,6 +111,12 @@ int main(int argc,char **argv)
   {
     if(argc)
       fputs("WARNING018: Arguments listed after configuration filename, will be ignored.\n",stderr);
+    if(config.ofiles)
+    {
+      fprintoutputvar(stdout,config.outnames,NOUT,config.npft[GRASS]+config.npft[TREE],config.npft[CROP],&config);
+      return EXIT_SUCCESS;
+    }
+
     if(isout)
     {
       /* print LPJ configuration on stdout if '-q' option is not set */

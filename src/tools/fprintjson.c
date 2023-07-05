@@ -28,7 +28,8 @@ void fprintjson(FILE *file,           /**< pointer to text file */
                 int n_attr,           /**< size of array of attributes */
                 const char *variable, /**< name of variable of NULL */
                 const char *unit,     /**< unit of variable or NULL */
-                const char *descr,    /**< description of variable or NULL */
+                const char *standard_name,    /**< description of variable or NULL */
+                const char *long_name,    /**< description of variable or NULL */
                 const Filename *gridfile, /**< filename of grid file or NULL */
                 Type grid_type,       /**< datatype of grid */
                 int format,           /**< file format (RAW/CLM) */
@@ -39,10 +40,14 @@ void fprintjson(FILE *file,           /**< pointer to text file */
 
 {
   int i,len;
+  time_t t;
   fprintf(file,"{\n"
           "  \"filename\" : \"%s\",\n",strippath(filename));
   if(arglist!=NULL)
-    fprintf(file,"  \"source\" : \"%s\",\n",arglist);
+  {
+    time(&t);
+    fprintf(file,"  \"history\" : \"%s: %s\",\n",strdate(&t),arglist);
+  }
   if(n_attr)
   {
     fprintf(file,"  \"global_attrs\" : {");
@@ -88,8 +93,10 @@ void fprintjson(FILE *file,           /**< pointer to text file */
   }
   if(unit!=NULL)
     fprintf(file,"  \"unit\" : \"%s\",\n",unit);
-  if(descr!=NULL)
-    fprintf(file,"  \"descr\" : \"%s\",\n",descr);
+  if(standard_name!=NULL)
+    fprintf(file,"  \"standard_name\" : \"%s\",\n",standard_name);
+  if(long_name!=NULL)
+    fprintf(file,"  \"long_name\" : \"%s\",\n",long_name);
   if(format>=0 && format<N_FMT)
     fprintf(file,"  \"format\" : \"%s\",\n",fmt[format]);
   fprintf(file,"  \"order\" : \"%s\",\n",ordernames[max(0,header->order-1)]);

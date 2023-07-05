@@ -26,7 +26,7 @@
 #else
 #define IMAGE_OPT ""
 #endif
-#define USAGE "\nUsage: %s [-h] [-l] [-v] [-vv] [-param] [-nopp] [-pp cmd] " FPE_OPT "\n" IMAGE_OPT\
+#define USAGE "\nUsage: %s [-h] [-l] [-v] [-vv] [-ofiles] [-param] [-nopp] [-pp cmd] " FPE_OPT "\n" IMAGE_OPT\
                 "       [-couple host[:port]] [-wait time]\n"\
                 "       [-outpath dir] [-inpath dir] [-restartpath dir]\n"\
                 "       [[-Dmacro[=value]] [-Idir] ...] filename\n"
@@ -59,6 +59,7 @@ void help(const char *progname /**< program filename */
           "-v                  print version, compiler and compile flags\n"
           "-vv                 verbosely print the actual values during reading of the\n"
           "                    configuration files\n"
+          "-ofiles             list only all available output variables\n"
           "-param              print LPJmL parameter\n"
           "-nopp               disable preprocessing\n"
           "-pp cmd             set preprocessor program. Default is 'cpp'\n"

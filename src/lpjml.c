@@ -167,6 +167,15 @@ int main(int argc,char **argv)
   failonerror(&config,rc,READ_CONFIG_ERR,"Cannot read configuration");
   if(isroot(config) && argc)
     fputs("WARNING018: Arguments listed after configuration filename, will be ignored.\n",stderr);
+  if(config.ofiles)
+  {
+    if(isroot(config))
+      fprintoutputvar(stdout,config.outnames,NOUT,config.npft[GRASS]+config.npft[TREE],config.npft[CROP],&config);
+#ifdef USE_MPI
+    MPI_Finalize();
+#endif
+    return EXIT_SUCCESS;
+  }
   if(isroot(config))
     printconfig(config.npft[GRASS]+config.npft[TREE],
                 config.npft[CROP],&config);

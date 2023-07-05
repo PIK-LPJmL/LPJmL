@@ -37,6 +37,7 @@ Bool fprintoutputjson(int index,           /**< index in outputvars array */
   char *json_filename;
   const Filename *grid_filename;
   char **pftnames;
+  time_t t;
   int p,nbands,len,count;
   if(config->outputvars[index].oneyear)
   {
@@ -77,7 +78,8 @@ Bool fprintoutputjson(int index,           /**< index in outputvars array */
   fprintf(file,"{\n");
   fprintf(file,"  \"sim_name\" : \"%s\",\n",config->sim_name);
   fprintf(file,"  \"source\" : \"LPJmL C Version " LPJ_VERSION"\",\n");
-  fprintf(file,"  \"history\" : \"%s\",\n",config->arglist);
+  time(&t);
+  fprintf(file,"  \"history\" : \"%s: %s\",\n",strdate(&t),config->arglist);
   if(config->n_global)
   {
     fprintf(file,"  \"global_attrs\" : {");
@@ -89,7 +91,7 @@ Bool fprintoutputjson(int index,           /**< index in outputvars array */
     }
     fprintf(file,"},\n");
   }
-  fprintf(file,"  \"variable\" : \"%s\",\n",config->outnames[config->outputvars[index].id].name);
+  fprintf(file,"  \"variable\" : \"%s\",\n",config->outnames[config->outputvars[index].id].var);
   fprintf(file,"  \"firstcell\" : %d,\n",config->firstgrid);
   fprintf(file,"  \"ncell\" : %d,\n",(config->outputvars[index].id==ADISCHARGE) ? config->nall : config->total);
   fprintf(file,"  \"cellsize_lon\" : %f,\n",config->resolution.lon);
@@ -133,11 +135,16 @@ Bool fprintoutputjson(int index,           /**< index in outputvars array */
      }
    }
   }
-  fprintf(file,"  \"descr\" : ");
-  if(config->outnames[config->outputvars[index].id].descr==NULL)
+  fprintf(file,"  \"standard_name\" : ");
+  if(config->outnames[config->outputvars[index].id].standard_name==NULL)
+    fprintf(file,"\"%s\",\n",config->outnames[config->outputvars[index].id].name);
+  else
+    fprintf(file,"\"%s\",\n",config->outnames[config->outputvars[index].id].standard_name);
+  fprintf(file,"  \"long_name\" : ");
+  if(config->outnames[config->outputvars[index].id].long_name==NULL)
     fprintf(file,"null,\n");
   else
-    fprintf(file,"\"%s\",\n",config->outnames[config->outputvars[index].id].descr);
+    fprintf(file,"\"%s\",\n",config->outnames[config->outputvars[index].id].long_name);
   fprintf(file,"  \"unit\" : ");
   if(config->outnames[config->outputvars[index].id].unit==NULL)
     fprintf(file,"null,\n");

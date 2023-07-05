@@ -32,7 +32,7 @@ char *getfilefrommeta(const char *filename, /**< name of metafile */
     return NULL;
   }
   initscan(filename);
-  name=parse_json_metafile(file,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,&offset,&swap,isout ? ERR : NO_ERR);
+  name=parse_json_metafile(file,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,&offset,&swap,isout ? ERR : NO_ERR);
   fclose(file);
   if(name==NULL)
   {

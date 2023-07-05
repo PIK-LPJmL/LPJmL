@@ -63,9 +63,12 @@ static Cdf *create_cdf(const char *filename,
                        Map *map,
                        const char *map_name,
                        const char *cmdline,
+                       const char *source,
+                       const char *history,
                        const char *name,
                        const char *units,
-                       const char *descr,
+                       const char *standard_name,
+                       const char *long_name,
                        float miss,
                        short miss_short,
                        const Attr *global_attrs,
@@ -85,7 +88,7 @@ static Cdf *create_cdf(const char *filename,
   double *year;
   int i,j,rc,dim[4],dim2[2],dimids[2];
   size_t chunk[4],offset[2],count[2];
-  String s;
+  char *s;
   time_t t;
   int time_var_id,lat_var_id,lon_var_id,time_dim_id,lat_dim_id,lon_dim_id,map_dim_id,len_dim_id,bnds_var_id,bnds_dim_id;
   int pft_dim_id,varid;
@@ -180,13 +183,25 @@ static Cdf *create_cdf(const char *filename,
   error(rc);
   rc=nc_def_dim(cdf->ncid,LON_DIM_NAME,array->nlon,&lon_dim_id);
   error(rc);
-  rc=nc_put_att_text(cdf->ncid,NC_GLOBAL,"source",strlen(cmdline),cmdline);
-  error(rc);
+  if(source!=NULL)
+  {
+    rc=nc_put_att_text(cdf->ncid,NC_GLOBAL,"source",strlen(source),source);
+    error(rc);
+  }
   time(&t);
-  snprintf(s,STRING_LEN,"Created for user %s on %s at %s",getuser(),gethost(),
-          strdate(&t));
+  if(history!=NULL)
+  {
+    len=snprintf(NULL,0,"%s\n%s: %s",history,strdate(&t),cmdline);
+    s=malloc(len+1);
+    sprintf(s,"%s\n%s: %s",history,strdate(&t),cmdline);
+  }
+  else
+  {
+    len=snprintf(NULL,0,"%s: %s",strdate(&t),cmdline);
+    s=malloc(len+1);
+    sprintf(s,"%s: %s",strdate(&t),cmdline);
+  }
   rc=nc_put_att_text(cdf->ncid,NC_GLOBAL,"history",strlen(s),s);
-  error(rc);
   for(i=0;i<n_global;i++)
   {
     rc=nc_put_att_text(cdf->ncid,NC_GLOBAL,global_attrs[i].name,strlen(global_attrs[i].value),global_attrs[i].value);
@@ -335,11 +350,14 @@ static Cdf *create_cdf(const char *filename,
     rc=nc_put_att_text(cdf->ncid, cdf->varid,"units",strlen(units),units);
     error(rc);
   }
-  rc=nc_put_att_text(cdf->ncid, cdf->varid,"standard_name",strlen(name),name);
+  if(standard_name==NULL)
+    rc=nc_put_att_text(cdf->ncid, cdf->varid,"standard_name",strlen(name),name);
+  else
+    rc=nc_put_att_text(cdf->ncid, cdf->varid,"standard_name",strlen(standard_name),standard_name);
   error(rc);
-  if(descr!=NULL)
+  if(long_name!=NULL)
   {
-    rc=nc_put_att_text(cdf->ncid, cdf->varid,"long_name",strlen(descr),descr);
+    rc=nc_put_att_text(cdf->ncid, cdf->varid,"long_name",strlen(long_name),long_name);
     error(rc);
   }
   switch(type)
@@ -539,7 +557,7 @@ int main(int argc,char **argv)
   Type gridtype;
   float cellsize,fcoord[2];
   double dcoord[2];
-  char *units,*descr,*endptr,*cmdline,*pos,*outname,*missing_value;
+  char *units,*long_name,*endptr,*cmdline,*pos,*outname,*missing_value;
   Filename coord_filename;
   float cellsize_lon,cellsize_lat;
   float miss=MISSING_VALUE_FLOAT;
@@ -550,11 +568,12 @@ int main(int argc,char **argv)
   Attr *global_attrs2=NULL;
   size_t offset;
   char *map_name,*filename;
-  char *var_units=NULL,*var_descr=NULL,*var_name=NULL;
+  char *var_units=NULL,*var_long_name=NULL,*var_name=NULL,*var_standard_name=NULL;
+  char *source=NULL,*history=NULL;
   Filename grid_name;
   char *variable,*grid_filename,*path;
   grid_name.fmt=RAW;
-  units=descr=NULL;
+  units=long_name=NULL;
   compress=0;
   swap=isglobal=FALSE;
   res.lon=res.lat=header.cellsize_lon=header.cellsize_lat=0.5;
@@ -614,7 +633,7 @@ int main(int argc,char **argv)
                  USAGE,argv[0]);
           return EXIT_FAILURE;
         }
-        descr=argv[++iarg];
+        long_name=argv[++iarg];
       }
       else if(!strcmp(argv[iarg],"-missing_value"))
       {
@@ -791,13 +810,13 @@ int main(int argc,char **argv)
   }
   if(ismeta)
   {
-    file=openmetafile(&header,&map,map_name,&global_attrs2,&n_global2,&var_name,&var_units,&var_descr,&grid_name,&gridtype,&swap,&offset,filename,TRUE);
+    file=openmetafile(&header,&map,map_name,&global_attrs2,&n_global2,&source,&history,&var_name,&var_units,&var_standard_name,&var_long_name,&grid_name,&gridtype,&swap,&offset,filename,TRUE);
     if(file==NULL)
       return EXIT_FAILURE;
     if(units==NULL && var_units!=NULL)
       units=var_units;
-    if(descr==NULL && var_descr!=NULL)
-      descr=var_descr;
+    if(long_name==NULL && var_long_name!=NULL)
+      long_name=var_long_name;
     if(global_attrs2!=NULL)
     {
       mergeattrs(&global_attrs,&n_global,global_attrs2,n_global2);
@@ -1054,7 +1073,7 @@ int main(int argc,char **argv)
     }
   }
 
-  cdf=create_cdf(outname,map,map_name,cmdline,variable,units,descr,miss,miss_short,global_attrs,n_global,(isshort) ? LPJ_SHORT : LPJ_FLOAT,header,baseyear,ispft,compress,index,revlat,withdays);
+  cdf=create_cdf(outname,map,map_name,cmdline,source,history,variable,units,var_standard_name,long_name,miss,miss_short,global_attrs,n_global,(isshort) ? LPJ_SHORT : LPJ_FLOAT,header,baseyear,ispft,compress,index,revlat,withdays);
   free(cmdline);
   if(cdf==NULL)
     return EXIT_FAILURE;

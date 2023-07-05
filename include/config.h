@@ -177,6 +177,7 @@ struct config
   int depos_year_const;         /**< year deposition is fixed */
   Bool residues_fire;           /**< use parameters for agricultural fires */
   Bool param_out;               /**< print LPJmL parameter */
+  Bool ofiles;                  /**< list only all output files */
   Bool check_climate;           /**< check climate input data for NetCDF files */
   Bool others_to_crop;          /**< move PFT type others into PFT crop, cft_tropic for tropical, cft_temp for temperate */
   int cft_temp;

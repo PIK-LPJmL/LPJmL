@@ -3,12 +3,12 @@
 lpj, lpjml \- Dynamic global vegetation model with managed land and river routing
 .SH SYNOPSIS
 .B lpjml
-[\-h] [\-l] [\-v] [-vv] [-param] [-nopp] [-pp cmd] [-fpe] [-image host[:inport[,outport]]] [-couple host[:port]] [\-wait time] [\-outpath \fIdir\fP]
+[\-h] [\-l] [\-v] [-vv] [-ofiles] [-param] [-nopp] [-pp cmd] [-fpe] [-image host[:inport[,outport]]] [-couple host[:port]] [\-wait time] [\-outpath \fIdir\fP]
 [\-inpath \fIdir\fP] [\-restartpath \fIdir\fP]
 [[\-Dmacro[=value]] [\-I\fIdir\fP] ...] \fIfilename\fP
 
 .B lpj
-[\-h] [\-l] [\-v] [-vv] [-param] [-nopp] [-pp cmd] [-fpe] [-image host[:inport[,outport]]] [-couple host[:port]] [\-wait time] [\-outpath \fIdir\fP]
+[\-h] [\-l] [\-v] [-vv] [-ofiles] [-param] [-nopp] [-pp cmd] [-fpe] [-image host[:inport[,outport]]] [-couple host[:port]] [\-wait time] [\-outpath \fIdir\fP]
 [\-inpath \fIdir\fP] [\-restartpath \fIdir\fP]
 [[\-Dmacro[=value]] [\-I\fIdir\fP] ...] \fIfilename\fP
 .SH DESCRIPTION
@@ -34,6 +34,9 @@ print information about program version, operating system, compiler used, and co
 .TP
 \-vv
 verbosely print the actual values during reading of the configuration files.
+.TP
+\-ofiles
+list only all available output variables.
 .TP
 \-param
 print LPJmL parameter for soils and PFTs and list of all available output files.

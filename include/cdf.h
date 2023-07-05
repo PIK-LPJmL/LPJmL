@@ -127,14 +127,14 @@ typedef struct
   Input_netcdf cdf;
 } Infile;
 
-extern Bool create_netcdf(Netcdf *,const char *,const char *,
+extern Bool create_netcdf(Netcdf *,const char *,const char *,const char *,
                           const char *,const char *,Type,int,int,
                           int,Bool,const Coord_array *,const Config *);
 extern Bool openclimate_netcdf(Climatefile *,const char *,const char *,const char *,
                                const char *,const char *,const Config *);
 extern Bool mpi_openclimate_netcdf(Climatefile *,const Filename *,
                                    const char *,const Config *);
-extern Bool create_pft_netcdf(Netcdf *,const char *,int,int,int,const char *,
+extern Bool create_pft_netcdf(Netcdf *,const char *,int,int,int,const char *,const char *,
                               const char *,const char *,Type,int,int,
                               int,Bool,const Coord_array *,const Config *);
 extern Bool close_netcdf(Netcdf *);

@@ -30,7 +30,8 @@ Bool create_pft_netcdf(Netcdf *cdf,
                        int npft,             /**< number of natural PFTs */
                        int ncft,             /**< number of crop PFTs */
                        const char *name,     /**< name of output variable */
-                       const char *descr,    /**< description of output variable */
+                       const char *standard_name, /**< standard name of output variable */
+                       const char *long_name,/**< long name of output variable */
                        const char *units,    /**< unit of output variable */
                        Type type,            /**< type of output variable */
                        int n,                /**< number of samples per year (1/12/365) */
@@ -42,9 +43,9 @@ Bool create_pft_netcdf(Netcdf *cdf,
                       )                      /** \return TRUE on error */
 {
 #if defined(USE_NETCDF) || defined(USE_NETCDF4)
-  String s;
+  char *s;
   time_t t;
-  int i,j,rc,nyear,imiss=MISSING_VALUE_INT,size;
+  int i,j,rc,nyear,imiss=MISSING_VALUE_INT,size,len;
   short smiss=MISSING_VALUE_SHORT;
   double *lon,*lat;
   float miss=config->missing_value;
@@ -337,15 +338,28 @@ Bool create_pft_netcdf(Netcdf *cdf,
     if(n==1)
     {
       if(config->absyear)
-        strncpy(s,YEARS_NAME,STRING_LEN);
+        s=strdup(YEARS_NAME);
       else
-        snprintf(s,STRING_LEN,"years since %d-1-1 0:0:0",config->baseyear);
+      {
+        len=snprintf(NULL,0,"years since %d-1-1 0:0:0",config->baseyear);
+        s=malloc(len+1);
+        sprintf(s,"years since %d-1-1 0:0:0",config->baseyear);
+      }
     }
     else if(n==12)
-      snprintf(s,STRING_LEN,"%s since %d-1-1 0:0:0",(config->with_days) ? "days" : "months",(oneyear) ? actualyear : config->baseyear);
+    {
+      len=snprintf(NULL,0,"%s since %d-1-1 0:0:0",(config->with_days) ? "days" : "months",(oneyear) ? actualyear : config->baseyear);
+      s=malloc(len+1);
+      sprintf(s,"%s since %d-1-1 0:0:0",(config->with_days) ? "days" : "months",(oneyear) ? actualyear : config->baseyear);
+    }
     else
-      snprintf(s,STRING_LEN,"days since %d-1-1 0:0:0",(oneyear) ? actualyear : config->baseyear);
+    {
+      len=snprintf(NULL,0,"days since %d-1-1 0:0:0",(oneyear) ? actualyear : config->baseyear);
+      s=malloc(len+1);
+      sprintf(s,"days since %d-1-1 0:0:0",(oneyear) ? actualyear : config->baseyear);
+    }
     rc=nc_put_att_text(cdf->ncid,time_var_id,"units",strlen(s),s);
+    free(s);
     error(rc);
     rc=nc_put_att_text(cdf->ncid,time_var_id,"calendar",strlen(CALENDAR),
                        CALENDAR);
@@ -397,11 +411,14 @@ Bool create_pft_netcdf(Netcdf *cdf,
     rc=nc_put_att_text(cdf->ncid, cdf->varid,"units",strlen(units),units);
     error(rc);
   }
-  rc=nc_put_att_text(cdf->ncid, cdf->varid,"standard_name",strlen(name),name);
+  if(standard_name==NULL)
+    rc=nc_put_att_text(cdf->ncid, cdf->varid,"standard_name",strlen(name),name);
+  else
+    rc=nc_put_att_text(cdf->ncid, cdf->varid,"standard_name",strlen(standard_name),standard_name);
   error(rc);
-  if(descr!=NULL)
+  if(long_name!=NULL)
   {
-    rc=nc_put_att_text(cdf->ncid, cdf->varid,"long_name",strlen(descr),descr);
+    rc=nc_put_att_text(cdf->ncid, cdf->varid,"long_name",strlen(long_name),long_name);
     error(rc);
   }
   switch(type)
@@ -427,9 +444,11 @@ Bool create_pft_netcdf(Netcdf *cdf,
                      "LPJmL C Version " LPJ_VERSION);
   error(rc);
   time(&t);
-  snprintf(s,STRING_LEN,"Created for user %s on %s at %s: %s",
-           getuser(),gethost(),strdate(&t),config->arglist);
+  len=snprintf(NULL,0,"%s: %s",strdate(&t),config->arglist);
+  s=malloc(len+1);
+  sprintf(s,"%s: %s",strdate(&t),config->arglist);
   rc=nc_put_att_text(cdf->ncid,NC_GLOBAL,"history",strlen(s),s);
+  free(s);
   error(rc);
   for(i=0;i<config->n_global;i++)
   {

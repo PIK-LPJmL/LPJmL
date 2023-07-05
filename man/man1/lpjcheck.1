@@ -3,7 +3,7 @@
 lpjcheck \- Checks syntax of LPJmL configuration files 
 .SH SYNOPSIS
 .B lpjcheck
-[\-h] [\-q] [\-nocheck] [-vv] [\-param] [-pp cmd] [\-couple host[:port]] [\-outpath \fIdir\fP]
+[\-h] [\-q] [\-nocheck] [-vv] [\-ofiles] [\-param] [-pp cmd] [\-couple host[:port]] [\-outpath \fIdir\fP]
 [\-inpath \fIdir\fP] [\-restartpath \fIdir\fP] [[\-Dmacro[=value]] [\-I\fIdir\fP] ...]
 \fIfilename\fP
 .SH DESCRIPTION
@@ -22,6 +22,9 @@ Does not check for input/output files
 .TP
 \-vv
 verbosely print the actual values during reading of the configuration files.
+.TP
+\-ofiles
+List only all available output variables.
 .TP
 \-param
 Print LPJmL parameter.
