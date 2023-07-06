@@ -1,9 +1,8 @@
 /**************************************************************************************/
 /**                                                                                \n**/
-/**                l  i  t  t  e  r  _  a  g  _  g  r  a  s  s  .  c               \n**/
+/**                      c  o  u  p  l  e  r  p  a  r  .  h                        \n**/
 /**                                                                                \n**/
-/**     C implementation of LPJmL                                                  \n**/
-/**     Function computes sum of all above-ground litter pools for grass           \n**/
+/**     Definition of coupler input indices                                        \n**/
 /**                                                                                \n**/
 /** (C) Potsdam Institute for Climate Impact Research (PIK), see COPYRIGHT file    \n**/
 /** authors, and contributors see AUTHORS file                                     \n**/
@@ -13,16 +12,38 @@
 /**                                                                                \n**/
 /**************************************************************************************/
 
-#include "lpj.h"
 
-Real litter_ag_grass(const Litter *litter /**< pointer to litter data */
-                    )                     /** \return aboveground grass litter (gC/m2) */
-{
-  int l;
-  Real sum;
-  sum=0;
-  for(l=0;l<litter->n;l++)
-    if(litter->item[l].pft->type==GRASS || litter->item[l].pft->type==CROP)
-      sum+=litter->item[l].ag.leaf.carbon;
-  return sum;
-} /* of 'litter_ag_grass' */
+#ifndef COUPLERPAR_H /* already included? */
+#define COUPLERPAR_H
+
+/* List of input data streams */
+
+#define N_IN 25         /* Number of available input data streams */
+
+#define CLOUD_DATA 0
+#define TEMP_DATA 1
+#define PREC_DATA 2
+#define SWDOWN_DATA 3
+#define LWNET_DATA 4
+#define CO2_DATA 5
+#define LANDUSE_DATA 6
+#define TILLAGE_DATA 7
+#define RESIDUE_DATA 8
+#define TMIN_DATA 9
+#define TMAX_DATA 10
+#define TAMP_DATA 11
+#define WET_DATA 12
+#define BURNTAREA_DATA 13
+#define HUMID_DATA 14
+#define WIND_DATA 15
+#define NH4_DATA 16
+#define NO3_DATA 17
+#define FERTILIZER_DATA 18
+#define MANURE_DATA 19
+#define WATERUSE_DATA 20
+#define POPDENS_DATA 21
+#define HUMAN_IGNITION_DATA 22
+#define LIGHTNING_DATA 23
+#define GRASSLAND_LSUHA 24
+
+#endif /* COUPLERPAR_H */

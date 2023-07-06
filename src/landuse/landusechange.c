@@ -73,7 +73,7 @@ void deforest(Cell *cell,          /**< pointer to cell */
       if(!timberharvest)
       {
         /* stand was already tilled, so put FALSE to tillage argument */
-        if(setaside(cell,getstand(cell->standlist,pos),FALSE,intercrop,npft,irrig,year,config))
+        if(setaside(cell,getstand(cell->standlist,pos),FALSE,intercrop,npft,ncft,irrig,year,config))
           delstand(cell->standlist,pos);
       }
     }
@@ -123,7 +123,7 @@ void deforest_for_timber(Cell *cell,     /**< pointer to cell */
       {
         /* only part of original natural stand is cut so merge natstand and cutstand */
         natstand->frac -= difffrac;
-        mixsoil(natstand, cutstand,year,config);
+        mixsoil(natstand, cutstand,year,npft+ncft,config);
         foreachpft(pft, p, &natstand->pftlist)
           mix_veg(pft, natstand->frac / (natstand->frac + difffrac));  // PB + difffrac I presume...
         natstand->frac += cutstand->frac;
@@ -193,7 +193,7 @@ static void regrowth(Cell *cell, /* pointer to cell */
     if(s!=NOT_FOUND)
     {        /*mixing of natural vegetation with regrowth*/
       natstand=getstand(cell->standlist,s);
-      mixsoil(natstand,mixstand,year,config);
+      mixsoil(natstand,mixstand,year,npft+ncft,config);
       foreachpft(pft,p,&natstand->pftlist)
         mix_veg(pft,natstand->frac/(natstand->frac-difffrac));
       natstand->frac+=mixstand->frac;
@@ -275,7 +275,7 @@ static void landexpansion(Cell *cell,            /* cell pointer */
 
     if(grassstand!=NULL)
     {
-      mixsoil(grassstand,mixstand,year,config);
+      mixsoil(grassstand,mixstand,year,npft+ncft,config);
 #ifdef IMAGE
       data=grassstand->data;
       data->irrig_stor*=grassstand->frac/(grassstand->frac-difffrac);
@@ -475,7 +475,7 @@ static void grasslandreduction(Cell *cell,            /* cell pointer */
 
     cutpfts(grassstand,config);
     /*force one tillage event on new stand upon cultivation of previous grassland,  */
-    if(setaside(cell,getstand(cell->standlist,s),TRUE,intercrop,npft,data->irrigation,max(config->till_startyear,year),config))
+    if(setaside(cell,getstand(cell->standlist,s),TRUE,intercrop,npft,ncft,data->irrigation,max(config->till_startyear,year),config))
       delstand(cell->standlist,s);
   }
   else
@@ -519,7 +519,7 @@ static void grasslandreduction(Cell *cell,            /* cell pointer */
       getoutputindex(output,CFT_CONV_LOSS_DRAIN,index,config)-=(data->irrig_stor+data->irrig_amount)*(1/data->ec-1)*(1-data->conv_evap);
     }
 
-    if(setaside(cell,getstand(cell->standlist,pos),cell->ml.with_tillage,intercrop,npft,data->irrigation,year,config))
+    if(setaside(cell,getstand(cell->standlist,pos),cell->ml.with_tillage,intercrop,npft,ncft,data->irrigation,year,config))
       delstand(cell->standlist,pos);
   }
 
@@ -864,7 +864,7 @@ void landusechange(Cell *cell,          /**< pointer to cell */
         if(movefrac+epsilon>=irrigstand->frac)/* move all */
         {
           cutpfts(irrigstand,config);
-          mixsetaside(getstand(cell->standlist,s),irrigstand,intercrop,year,config);
+          mixsetaside(getstand(cell->standlist,s),irrigstand,intercrop,year,npft+ncft,config);
           delstand(cell->standlist,s2);
         }
         else
@@ -873,7 +873,7 @@ void landusechange(Cell *cell,          /**< pointer to cell */
           tempstand=getstand(cell->standlist,pos);
           tempstand->frac=movefrac;
           reclaim_land(irrigstand,tempstand,cell,FALSE,npft+ncft,config);
-          if(setaside(cell,getstand(cell->standlist,pos),cell->ml.with_tillage,intercrop,npft,TRUE,year,config))
+          if(setaside(cell,getstand(cell->standlist,pos),cell->ml.with_tillage,intercrop,npft,ncft,TRUE,year,config))
             delstand(cell->standlist,pos);
           irrigstand->frac-=movefrac;
         }
@@ -887,7 +887,7 @@ void landusechange(Cell *cell,          /**< pointer to cell */
         if(movefrac+epsilon>=stand->frac)/* move all */
         {
           cutpfts(stand,config);
-          mixsetaside(getstand(cell->standlist,s2),stand,intercrop,year,config);
+          mixsetaside(getstand(cell->standlist,s2),stand,intercrop,year,npft+ncft,config);
           delstand(cell->standlist,s);
         }
         else
@@ -896,7 +896,7 @@ void landusechange(Cell *cell,          /**< pointer to cell */
           tempstand=getstand(cell->standlist,pos);
           tempstand->frac=movefrac;
           reclaim_land(stand,tempstand,cell,FALSE,npft+ncft,config);
-          if(setaside(cell,getstand(cell->standlist,pos),cell->ml.with_tillage,intercrop,npft,TRUE,year,config))
+          if(setaside(cell,getstand(cell->standlist,pos),cell->ml.with_tillage,intercrop,npft,ncft,TRUE,year,config))
              delstand(cell->standlist,pos);
           stand->frac-=movefrac;
         }

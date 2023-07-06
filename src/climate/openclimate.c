@@ -26,7 +26,7 @@ Bool openclimate(Climatefile *file,        /**< pointer to climate file */
 {
   Header header;
   String headername;
-  int last,version;
+  int last,version,count,nbands;
   char *s;
   size_t offset,filesize;
   file->fmt=filename->fmt;
@@ -35,6 +35,35 @@ Bool openclimate(Climatefile *file,        /**< pointer to climate file */
     file->time_step=DAY;
     file->firstyear=config->firstyear;
     return FALSE;
+  }
+  file->issocket=filename->issocket;
+  if(iscoupled(*config) && filename->issocket)
+  {
+    if(openinput_coupler(filename->id,LPJ_FLOAT,config->nall,&nbands,config))
+      return TRUE;
+    if(nbands==NDAYYEAR)
+    {
+      file->time_step=DAY;
+      file->n=NDAYYEAR*config->ngridcell;
+    }
+    else if(nbands==NMONTH)
+    {
+      file->time_step=MONTH;
+      file->n=NMONTH*config->ngridcell;
+    }
+    else
+    {
+      if(isroot(*config))
+        fprintf(stderr,"ERROR127: Invalid number of bands %d received from socket, must be 12 or 365.\n",
+                nbands);
+      return TRUE;
+    }
+    file->id=filename->id;
+    if(filename->fmt==SOCK)
+    {
+      file->firstyear=config->firstyear;
+      return FALSE;
+    }
   }
   file->oneyear=FALSE;
   if(filename->fmt==CDF) /** file is in NetCDF format? */
@@ -54,9 +83,12 @@ Bool openclimate(Climatefile *file,        /**< pointer to climate file */
       }
       if(isroot(*config))
       {
-        s=malloc(strlen(file->filename)+12);
+        count=snprintf(NULL,0,file->filename,file->firstyear);
+        if(count==-1)
+          return TRUE;
+        s=malloc(count+1);
         check(s);
-        sprintf(s,file->filename,file->firstyear);
+        snprintf(s,count+1,file->filename,file->firstyear);
         openclimate_netcdf(file,s,filename->time,filename->var,filename->unit,units,config);
         free(s);
       }

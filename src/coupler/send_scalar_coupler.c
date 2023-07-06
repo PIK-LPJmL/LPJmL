@@ -1,10 +1,10 @@
 /**************************************************************************************/
 /**                                                                                \n**/
-/**             l  i  t  t  e  r  _  a  g  _  t  r  e  e  .  c                     \n**/
+/**             s  e  n  d  _  s  c  a  l  a  r  _  c  o  u  p  l  e  r  .  c      \n**/
 /**                                                                                \n**/
 /**     C implementation of LPJmL                                                  \n**/
 /**                                                                                \n**/
-/**     Function computes sum of all above-ground litter pools for trees           \n**/
+/**     Function writes global values into socket                                  \n**/
 /**                                                                                \n**/
 /** (C) Potsdam Institute for Climate Impact Research (PIK), see COPYRIGHT file    \n**/
 /** authors, and contributors see AUTHORS file                                     \n**/
@@ -16,24 +16,21 @@
 
 #include "lpj.h"
 
-Real litter_ag_tree(const Litter *litter, /**< pointer to litter data */
-                    int fuel              /**< fuel class */
-                   )                      /** \return aboveground litter in fuel class (gC/m2) */
+Bool send_scalar_coupler(int index,           /**< index of output stream */
+                         const void *data,    /**< data sent */
+                         Type type,           /**< datatype of stream */
+                         int size,            /**< number of items */
+                         int year,            /**< Simulation year (AD) */
+                         const Config *config /**< LPJ configuration */
+                        )                     /** \return TRUE on error */
 {
-  int l;
-  Real sum;
-  sum=0;
-  if(fuel==0)
-  {
-    for(l=0;l<litter->n;l++)
-      if(litter->item[l].pft->type==TREE)
-        sum+=litter->item[l].ag.leaf.carbon+litter->item[l].ag.wood[0].carbon;
-  }
-  else
-  {
-    for(l=0;l<litter->n;l++)
-      if(litter->item[l].pft->type==TREE)
-        sum+=litter->item[l].ag.wood[fuel].carbon;
-  }
-  return sum;
-} /* of litter_ag_tree */
+#if COUPLER_VERSION == 4
+  int date=0;
+#endif
+  send_token_coupler(PUT_DATA,index,config);
+  writeint_socket(config->socket,&year,1);
+#if COUPLER_VERSION == 4
+  writeint_socket(config->socket,&date,1);
+#endif
+  return write_socket(config->socket,data,typesizes[type]*size);
+} /* of 'send_scalar_coupler' */

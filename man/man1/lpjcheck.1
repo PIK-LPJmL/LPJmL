@@ -1,11 +1,11 @@
-.TH lpjcheck 1  "October 27, 2021" "version 1.0.004" "USER COMMANDS"
+.TH lpjcheck 1  "March 2, 2023" "version 1.0.005" "USER COMMANDS"
 .SH NAME
 lpjcheck \- Checks syntax of LPJmL configuration files 
 .SH SYNOPSIS
 .B lpjcheck
-[\-h] [\-q] [\-nocheck] [-vv] [\-param] [-pp cmd] [\-output {write|gather|mpi2|socket=hostname[:port]}] [\-outpath \fIdir\fP]
+[\-h] [\-q] [\-nocheck] [-vv] [\-param] [-pp cmd] [\-couple host[:port]] [\-outpath \fIdir\fP]
 [\-inpath \fIdir\fP] [\-restartpath \fIdir\fP] [[\-Dmacro[=value]] [\-I\fIdir\fP] ...]
-[\fIfilename\fP]
+\fIfilename\fP
 .SH DESCRIPTION
 Program checks the syntax of LPJmL configuration files. It is checked additionally whether all input files and output directories are present. 
 \fBlpjcheck\fP will print the total amount of disk space used for the output files.
@@ -29,10 +29,8 @@ Print LPJmL parameter.
 \-pp cmd
 Set preprocessor program to cmd. Default is \fBcpp -P\fP.
 .TP
-\-output {gather|mpi2|socket=hostname[:port]}
-use the given output method to write data to disk. Valid output methods are
-write, mpi2, gather, and socket. The default output method for the MPI version is gather sending all output to the root task, while the default method for the sequential code is write. 
-The methods gather and mpi2 are only valid for the MPI version of the code.
+\-couple host[:port]
+set host where the coupled model is running. Default is localhost. Port is the port number for ingoing and outgoing data. Default port number is 2224.
 .TP
 \-outpath \fIdir\fP
 set the output directory path. The path is added to the output filenames if they do not contain an absolute path.
@@ -47,17 +45,14 @@ define macro for the preprocessor of the configuration file
 define include directory for the preprocessor of the configuration file
 .TP
 .I filename
-name of configuration file, default is \fIlpjml.js\fP.
+name of configuration file
 .SH EXAMPLES
 .TP
-Check default configuration file with input files located in the scratch file system
+Check configuration file lpjml.js with input files located in the /p/projects/lpjml file system
 .B lpjcheck
-\-input /scratch/02/lpj
+\-inpath /p/projects/lpjml lpjml.js
 .PP
 .SH ENVIRONMENT
-.TP
-LPJCONFIG
-default LPJmL configuration filename
 .TP
 LPJPREP 
 defines preprocessor command for LPJmL configuration file, default is \fBcpp -P\fP. Same as '-pp' option.
@@ -77,10 +72,6 @@ Path appended to the output filenames. Only done for filenames without absolute 
 .TP
 LPJRESTARTPATH
 Path appended to the restart filenames. Only done for filenames without absolute path.
-.TP
-LPJOUTPUT 
-Default method for generating output files. Valid values
-are write, mpi2, gather, and socket.
 
 .SH EXIT STATUS
 .B
@@ -97,4 +88,4 @@ For authors and contributors see AUTHORS file
 (C) Potsdam Institute for Climate Impact Research (PIK), see COPYRIGHT file
 
 .SH SEE ALSO
-lpjml(1), lpjfiles(1), lpjsubmit(1), lpjml.conf(5)
+lpjml(1), lpjfiles(1), lpjsubmit(1)

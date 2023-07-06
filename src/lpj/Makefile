@@ -48,7 +48,7 @@ OBJS    = update_daily.$O update_annual.$O init_annual.$O\
           f_lai.$O getsize.$O fprintoutputvar.$O isdailyoutput_natural.$O\
           getngrassnat.$O fscancnratio.$O isnitrogen_output.$O initoutputdata.$O\
           fprintcsvflux.$O extflow.$O getmintimestep.$O isannual_output.$O\
-          ma_biological_n_fixation.$O fprintoutputjson.$O
+          npp_contr_biol_n_fixation.$O fprintoutputjson.$O
 
 INC     = ../../include
 LIBDIR  = ../../lib
@@ -64,7 +64,8 @@ HDRS    = $(INC)/buffer.h $(INC)/coord.h $(INC)/lpj.h $(INC)/pftlist.h\
           $(INC)/list.h $(INC)/cell.h  $(INC)/units.h $(INC)/output.h\
           $(INC)/config.h $(INC)/pnet.h $(INC)/channel.h $(INC)/param.h\
           $(INC)/natural.h $(INC)/reservoir.h $(INC)/spitfire.h $(INC)/grass.h\
-          $(INC)/cropdates.h $(INC)/tree.h $(INC)/outfile.h $(INC)/cdf.h
+          $(INC)/cropdates.h $(INC)/tree.h $(INC)/outfile.h $(INC)/cdf.h\
+          $(INC)/coupler.h $(INC)/couplerpar.h
 
 
 $(LIBDIR)/$(LIB): $(OBJS)

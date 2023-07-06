@@ -151,6 +151,8 @@ Bool annual_woodplantation(Stand *stand,         /**< Pointer to stand */
         getoutput(&stand->cell->output,TRAD_BIOFUEL,config)+=biofuel.carbon;
         stand->cell->balance.trad_biofuel.carbon+=biofuel.carbon;
         stand->cell->balance.trad_biofuel.nitrogen+=biofuel.nitrogen;
+        getoutput(&stand->cell->output,HARVESTC,config)+=yield.carbon*stand->frac;
+        getoutput(&stand->cell->output,HARVESTN,config)+=yield.nitrogen*stand->frac;
         if(config->pft_output_scaled)
         {
           stand->cell->pft_harvest[index]+=yield.carbon*stand->frac;
@@ -188,6 +190,8 @@ Bool annual_woodplantation(Stand *stand,         /**< Pointer to stand */
           stand->cell->balance.timber_harvest.carbon+=yield.carbon;
           stand->cell->balance.timber_harvest.nitrogen+=yield.nitrogen;
           getoutput(&stand->cell->output,TIMBER_HARVESTC,config)+=yield.carbon;
+          getoutput(&stand->cell->output,HARVESTC,config)+=yield.carbon;
+          getoutput(&stand->cell->output,HARVESTN,config)+=yield.nitrogen;
           if(config->pft_output_scaled)
           {
             getoutputindex(&stand->cell->output,PFT_HARVESTC,index,config)+=yield.carbon;
@@ -302,7 +306,7 @@ Bool annual_woodplantation(Stand *stand,         /**< Pointer to stand */
     biomass_tree->age=biomass_tree->growing_time=0;
     stand->cell->discharge.dmass_lake+=(biomass_tree->irrigation.irrig_stor+biomass_tree->irrigation.irrig_amount)*stand->cell->coord.area*stand->frac;
     stand->cell->balance.awater_flux-=(biomass_tree->irrigation.irrig_stor+biomass_tree->irrigation.irrig_amount)*stand->frac;
-    if(setaside(stand->cell,stand,stand->cell->ml.with_tillage,intercrop,npft,biomass_tree->irrigation.irrigation,year,config))
+    if(setaside(stand->cell,stand,stand->cell->ml.with_tillage,intercrop,npft,biomass_tree->irrigation.irrigation,year,npft+ncft,config))
       return TRUE;
   }
   else

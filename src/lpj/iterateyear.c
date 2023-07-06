@@ -51,7 +51,8 @@ void iterateyear(Outputfile *output,  /**< Output file data */
   Dailyclimate daily;
   Bool intercrop;
   int month,dayofmonth,day;
-  int cell;
+  int cell, s;
+  Stand *stand;
   Real popdens=0; /* population density (capita/km2) */
   Real norg_soil_agr,nmin_soil_agr,nveg_soil_agr;
   intercrop=getintercrop(input.landuse);
@@ -83,6 +84,9 @@ void iterateyear(Outputfile *output,  /**< Output file data */
         getoutput(&grid[cell].output,DELTA_NORG_SOIL_AGR,config)-=norg_soil_agr;
         getoutput(&grid[cell].output,DELTA_NMIN_SOIL_AGR,config)-=nmin_soil_agr;
         getoutput(&grid[cell].output,DELTA_NVEG_SOIL_AGR,config)-=nveg_soil_agr;
+        foreachstand(stand,s,(grid+cell)->standlist)
+          if(stand->type->landusetype==GRASSLAND)
+            getoutput(&grid[cell].output,DELTAC_MGRASS,config)-=standstocks(stand).carbon*stand->frac;
       }
       initgdd(grid[cell].gdd,npft);
     } /*gridcell skipped*/
@@ -229,20 +233,30 @@ void iterateyear(Outputfile *output,  /**< Output file data */
         printcell(grid+cell,1,npft,ncft,config);
       }
 #endif
-
       if(config->equilsoil)
       {
-        if(config->nspinup>param.veg_equil_year &&
-           (year==config->firstyear-config->nspinup+param.veg_equil_year))
-          equilveg(grid+cell);
+        if((year-(config->firstyear-config->nspinup+param.veg_equil_year-param.equisoil_years))%param.equisoil_interval==0 && 
+           (year-(config->firstyear-config->nspinup+param.veg_equil_year-param.equisoil_years))/param.equisoil_interval>=0 && 
+           (year-(config->firstyear-config->nspinup+param.veg_equil_year-param.equisoil_years))/param.equisoil_interval<param.nequilsoil)
+          equilveg(grid+cell,npft+ncft);
 
-        if(config->nspinup>soil_equil_year &&
-           (year==config->firstyear-config->nspinup+cshift_year))
+        if(year==(config->firstyear-config->nspinup+param.veg_equil_year))
           equilsom(grid+cell,npft+ncft,config->pftpar,TRUE);
-
-        if(config->nspinup>soil_equil_year &&
-           (year==config->firstyear-config->nspinup+soil_equil_year))
+ 
+        if((year-(config->firstyear-config->nspinup+param.veg_equil_year))%param.equisoil_interval==0 && 
+           (year-(config->firstyear-config->nspinup+param.veg_equil_year))/param.equisoil_interval>0 && 
+           (year-(config->firstyear-config->nspinup+param.veg_equil_year))/param.equisoil_interval<param.nequilsoil)
           equilsom(grid+cell,npft+ncft,config->pftpar,FALSE);
+
+        if(param.equisoil_fadeout>0)
+        {
+          if(year==(config->firstyear-config->nspinup+param.veg_equil_year+param.equisoil_interval*param.nequilsoil))
+            equilveg(grid+cell,npft+ncft);
+
+          if(year==(config->firstyear-config->nspinup+param.veg_equil_year+param.equisoil_interval*param.nequilsoil+param.equisoil_fadeout))
+            equilsom(grid+cell,npft+ncft,config->pftpar,FALSE);
+        }
+
       }
       if(config->withlanduse)
       {
@@ -250,6 +264,9 @@ void iterateyear(Outputfile *output,  /**< Output file data */
         getoutput(&grid[cell].output,DELTA_NORG_SOIL_AGR,config)+=norg_soil_agr;
         getoutput(&grid[cell].output,DELTA_NMIN_SOIL_AGR,config)+=nmin_soil_agr;
         getoutput(&grid[cell].output,DELTA_NVEG_SOIL_AGR,config)+=nveg_soil_agr;
+        foreachstand(stand,s,(grid+cell)->standlist)
+          if(stand->type->landusetype==GRASSLAND)
+            getoutput(&grid[cell].output,DELTAC_MGRASS,config)+=standstocks(stand).carbon*stand->frac;
       }
     }
     if(config->river_routing)

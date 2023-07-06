@@ -4,7 +4,7 @@
 /**                                                                                \n**/
 /**     C implementation of LPJmL                                                  \n**/
 /**                                                                                \n**/
-/**     Functions reads real data from clm or NetCDF file                          \n**/
+/**     Functions reads real data from socket, clm or NetCDF file                  \n**/
 /**                                                                                \n**/
 /** (C) Potsdam Institute for Climate Impact Research (PIK), see COPYRIGHT file    \n**/
 /** authors, and contributors see AUTHORS file                                     \n**/
@@ -25,11 +25,7 @@ Real *readdata(Climatefile *file,   /**< Pointer to data file */
               )                     /** \return data or NULL on error */
 {
   Bool isalloc;
-  year-=file->firstyear;
-  if(year>=file->nyear)
-    year=file->nyear-1;
-  else if(year<0)
-    year=0;
+
   if(data==NULL)
   {
     /* data is null, allocate data */
@@ -43,6 +39,24 @@ Real *readdata(Climatefile *file,   /**< Pointer to data file */
   }
   else
     isalloc=FALSE; /* allocation is not necessary */
+  if(iscoupled(*config) && file->issocket && year>=config->start_coupling)
+  {
+    if(receive_real_coupler(file->id,data,file->var_len,year,config))
+    {
+      fprintf(stderr,"ERROR149: Cannot receive %s of year %d in readdata().\n",
+              name,year);
+      fflush(stderr);
+      if(isalloc)
+        free(data);
+      return NULL;
+    }
+    return data;
+  }
+  year-=file->firstyear;
+  if(year>=file->nyear)
+    year=file->nyear-1;
+  else if(year<0)
+    year=0;
   if(file->fmt==CDF)
   {
     if(readdata_netcdf(file,data,grid,year,config))

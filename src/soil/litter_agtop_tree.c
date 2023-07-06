@@ -1,10 +1,10 @@
 /**************************************************************************************/
 /**                                                                                \n**/
-/**            i  n  i  t  i  g  n  i  t  i  o  n  .  c                            \n**/
+/**             l  i  t  t  e  r  _  a  g  t  o  p  _  t  r  e  e  .  c            \n**/
 /**                                                                                \n**/
-/**     C implementation of LPJ                                                    \n**/
+/**     C implementation of LPJmL                                                  \n**/
 /**                                                                                \n**/
-/**     Function reads human ignitions from file                                   \n**/
+/**     Function computes sum of all above-ground litter pools for trees           \n**/
 /**                                                                                \n**/
 /** (C) Potsdam Institute for Climate Impact Research (PIK), see COPYRIGHT file    \n**/
 /** authors, and contributors see AUTHORS file                                     \n**/
@@ -16,25 +16,24 @@
 
 #include "lpj.h"
 
-Bool initignition(Cell grid[],         /* LPJ grid */
-                  const Config *config /* LPJ configuration */
-                 )                     /* returns TRUE on error */
+Real litter_agtop_tree(const Litter *litter, /**< pointer to litter data */
+                       int fuel              /**< fuel class */
+                      )                      /** \return aboveground litter in fuel class (gC/m2) */
 {
-  int cell;
-  Infile input;
-  if(openinputdata(&input,&config->human_ignition_filename,"human ignition","yr-1",LPJ_SHORT,0.001,config))
-    return TRUE;
-  for(cell=0;cell<config->ngridcell;cell++)
+  int l;
+  Real sum;
+  sum=0;
+  if(fuel==0)
   {
-    if(readinputdata(&input,&grid[cell].ignition.human,&grid[cell].coord,cell+config->startgrid,&config->human_ignition_filename))
-    {
-      closeinput(&input);
-      return TRUE;
-    }
-    if(grid[cell].ignition.human<0)
-      grid[cell].ignition.human=0;
-    grid[cell].ignition.human/=365;
+    for(l=0;l<litter->n;l++)
+      if(litter->item[l].pft->type==TREE)
+        sum+=litter->item[l].agtop.leaf.carbon+litter->item[l].agtop.wood[0].carbon;
   }
-  closeinput(&input);
-  return FALSE;
-} /* of 'initignition' */
+  else
+  {
+    for(l=0;l<litter->n;l++)
+      if(litter->item[l].pft->type==TREE)
+        sum+=litter->item[l].agtop.wood[fuel].carbon;
+  }
+  return sum;
+} /* of litter_agtop_tree */

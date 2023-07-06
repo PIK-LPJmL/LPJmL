@@ -33,13 +33,16 @@ Popdens initpopdens(const Config *config /**< LPJ configuration */
     return NULL;
   popdens=new(struct popdens);
   if(popdens==NULL)
+  {
+    printallocerr("popdens");
     return NULL;
-  if(opendata(&popdens->file,&config->popdens_filename,"population density","km-2",LPJ_SHORT,1.0,1,TRUE,config))
+  }
+  if(opendata(&popdens->file,&config->popdens_filename,"population density","km-2",LPJ_FLOAT,LPJ_SHORT,1.0,1,TRUE,config))
   {
     free(popdens);
     return NULL;
   }
-  if(isroot(*config) && config->lastyear>popdens->file.firstyear+popdens->file.nyear-1)
+  if(isroot(*config) && config->popdens_filename.fmt!=SOCK && config->lastyear>popdens->file.firstyear+popdens->file.nyear-1)
     fprintf(stderr,"WARNING024: Last year in popdens data file=%d is less than last simulation year %d, data from last year used.\n",
             popdens->file.firstyear+popdens->file.nyear-1,config->lastyear);
 

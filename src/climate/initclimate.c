@@ -62,7 +62,6 @@ Climate *initclimate(const Cell grid[],   /**< LPJ grid */
                      const Config *config /**< pointer to LPJ configuration */
                     )                     /** \return allocated climate data struct or NULL on error */
 {
-  char *name;
   Climate *climate;
   int lastyear;
   climate=new(Climate);
@@ -257,7 +256,7 @@ Climate *initclimate(const Cell grid[],   /**< LPJ grid */
     freeclimate(climate,isroot(*config));
     return NULL;
   }
-  if(readco2(&climate->co2,&config->co2_filename,isroot(*config)))
+  if(readco2(&climate->co2,&config->co2_filename,config))
   {
     freeclimate(climate,isroot(*config));
     return NULL;
@@ -361,9 +360,8 @@ Climate *initclimate(const Cell grid[],   /**< LPJ grid */
     }
     if(readclimate(&climate->file_lightning,climate->data.lightning,0,climate->file_lightning.scalar,grid,climate->file_lightning.firstyear,config))
     {
-      name=getrealfilename(&config->lightning_filename);
-      fprintf(stderr,"ERROR192: Cannot read lightning from '%s'.\n",name);
-      free(name);
+      if(isroot(*config))
+        fprintf(stderr,"ERROR192: Cannot read lightning.\n");
       freeclimate(climate,isroot(*config));
       return NULL;
     }

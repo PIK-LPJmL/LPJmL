@@ -20,7 +20,7 @@
 #define error(rc) if(rc) {free(lon);free(lat);free(year);fprintf(stderr,"ERROR427: Cannot write '%s': %s.\n",filename,nc_strerror(rc)); nc_close(cdf->ncid); free(cdf);return NULL;}
 
 #define MISSING_VALUE -9999.99
-#define USAGE "Usage: %s [-scale s] [-longheader] [-global] [-cellsize size] [-byte] [-int] [-float]\n       [-metafile] [-raw] [-nbands n] [-landuse] [-notime] [-compress level] [-units u]\n       [-map name] [-descr d] name gridfile clmfile netcdffile\n"
+#define USAGE "Usage: %s [-scale s] [-longheader] [-global] [-cellsize size] [-byte] [-int] [-float]\n       [-intnetcdf] [-metafile] [-raw] [-nbands n] [-landuse] [-notime] [-compress level] [-units u]\n       [-map name] [-descr d] name gridfile clmfile netcdffile\n"
 
 typedef struct
 {
@@ -422,7 +422,7 @@ int main(int argc,char **argv)
   size_t offset;
   List *map=NULL;
   int i,j,k,ngrid,version,iarg,compress,nbands,setversion;
-  Bool swap,landuse,notime,isglobal,istype,israw,ismeta;
+  Bool swap,landuse,notime,isglobal,istype,israw,ismeta,isint;
   float *f,scale,cellsize_lon,cellsize_lat;
   int *idata,*iarr;
   char *units,*descr,*endptr,*arglist;
@@ -440,6 +440,7 @@ int main(int argc,char **argv)
   isglobal=FALSE;
   israw=FALSE;
   ismeta=FALSE;
+  isint=FALSE;
   nbands=1;
   setversion=READ_VERSION;
   map_name=MAP_NAME;
@@ -468,6 +469,11 @@ int main(int argc,char **argv)
       else if(!strcmp(argv[iarg],"-int"))
       {
         istype=TRUE;
+        type=LPJ_INT;
+      }
+      else if(!strcmp(argv[iarg],"-intnetcdf"))
+      {
+        isint=TRUE;
         type=LPJ_INT;
       }
       else if(!strcmp(argv[iarg],"-float"))
@@ -758,11 +764,11 @@ int main(int argc,char **argv)
     return EXIT_FAILURE;
   free(grid);
   arglist=catstrvec(argv,argc);
-  cdf=create_cdf(argv[iarg+3],map,argv[iarg],units,descr,arglist,&header,compress,landuse,notime,(header.datatype==LPJ_INT || header.datatype==LPJ_BYTE) && header.scalar==1,index);
+  cdf=create_cdf(argv[iarg+3],map,argv[iarg],units,descr,arglist,&header,compress,landuse,notime,isint || ((header.datatype==LPJ_INT || header.datatype==LPJ_BYTE) && header.scalar==1),index);
   free(arglist);
   if(cdf==NULL)
     return EXIT_FAILURE;
-  if((header.datatype==LPJ_INT || header.datatype==LPJ_BYTE) && header.scalar==1)
+  if((isint ||(header.datatype==LPJ_INT || header.datatype==LPJ_BYTE) && header.scalar==1))
   {
     idata=newvec(int,ngrid*header.nbands);
     if(idata==NULL)

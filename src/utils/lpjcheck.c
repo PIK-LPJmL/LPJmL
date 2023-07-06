@@ -18,19 +18,12 @@
 #include "tree.h"
 #include "crop.h"
 
-#define LPJCHECK_VERSION "1.0.004"
+#define LPJCHECK_VERSION "1.0.005"
 #define NTYPES 3 /* number of PFT types: grass, tree, crop */
-#ifdef USE_MPI
 #define USAGE "Usage: %s [-h] [-q] [-nocheck] [-param] [-vv]\n"\
-              "       [-output {mpi2|gather|socket=hostname[:port]}]\n"\
+              "       [-couple hostname[:port]]\n"\
               "       [-outpath dir] [-inpath dir] [-restartpath dir]\n"\
-              "       [[-Dmacro[=value]] [-Idir] ...] [filename]\n"
-#else
-#define USAGE "Usage: %s [-h] [-q] [-nocheck] [-param] [-vv]\n"\
-              "       [-output {write|socket=hostname[:port]}]\n"\
-              "       [-outpath dir] [-inpath dir] [-restartpath dir]\n"\
-              "       [[-Dmacro[=value]] [-Idir] ...] [filename]\n"
-#endif
+              "       [[-Dmacro[=value]] [-Idir] ...] filename\n"
 
 int main(int argc,char **argv)
 {
@@ -72,27 +65,20 @@ int main(int argc,char **argv)
       fprintf(file,"\n\nChecks syntax of LPJmL " LPJ_VERSION " configuration files\n\n");
       fprintf(file,USAGE,progname);
       fprintf(file,"Arguments:\n"
-             "-h               print this help text\n"
-             "-q               print error messsages only\n"
-             "-vv              verbosely print the actual values during reading of the\n"
-             "                 configuration files\n"
-             "-param           print LPJ parameter\n"
-             "-pp cmd          set preprocessor program. Default is 'cpp'\n"
-#ifdef USE_MPI
-             "-output method   output method. Must be mpi2, gather, socket.\n"
-             "                 Default is gather.\n"
-#else
-             "-output method   output method. Must be write or socket.\n"
-             "                 Default is write.\n"
-#endif
-             "-outpath dir     directory appended to output filenames\n"
-             "-inpath dir      directory appended to input filenames\n"
-             "-restartpath dir directory appended to restart filename\n"
-             "-Dmacro[=value]  define macro for preprocessor of configuration file\n"
-             "-Idir            directory to search for include files\n"
-             "filename         configuration filename. Default is '%s'\n\n"
-             "(C) Potsdam Institute for Climate Impact Research (PIK), see COPYRIGHT file\n",
-             dflt_conf_filename_ml);
+             "-h                  print this help text\n"
+             "-q                  print error messsages only\n"
+             "-vv                 verbosely print the actual values during reading of the\n"
+             "                    configuration files\n"
+             "-param              print LPJ parameter\n"
+             "-pp cmd             set preprocessor program. Default is 'cpp'\n"
+             "-couple host[:port] set host and port where coupled model is running.\n"
+             "-outpath dir        directory appended to output filenames\n"
+             "-inpath dir         directory appended to input filenames\n"
+             "-restartpath dir    directory appended to restart filename\n"
+             "-Dmacro[=value]     define macro for preprocessor of configuration file\n"
+             "-Idir               directory to search for include files\n"
+             "filename            configuration filename\n\n"
+             "(C) Potsdam Institute for Climate Impact Research (PIK), see COPYRIGHT file\n");
       if(file!=stdout)
         pclose(file);
       return EXIT_SUCCESS;
@@ -115,7 +101,7 @@ int main(int argc,char **argv)
     banner(title,4,78);
   }
 
-  if(readconfig(&config,dflt_conf_filename_ml,scanfcn,NTYPES,NOUT,&argc,&argv,USAGE))
+  if(readconfig(&config,scanfcn,NTYPES,NOUT,&argc,&argv,USAGE))
   {
     fputs("ERROR001: Cannot process configuration file.\n",stderr);
     rc=EXIT_FAILURE;

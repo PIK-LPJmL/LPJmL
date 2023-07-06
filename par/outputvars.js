@@ -2,7 +2,7 @@
 /**                                                                                \n**/
 /**               o  u  t  p  u  t  v  a  r  s  .  j  s                            \n**/
 /**                                                                                \n**/
-/**  Defines array of output variables for LPJmL 5.3.001                           \n**/
+/**  Defines array of output variables for LPJmL 5.6.18                            \n**/
 /**                                                                                \n**/
 /**  Monthly output rates can be rescaled to 1/day or 1/second by setting the unit \n**/
 /**  to day-1 or sec-1, e.g.:                                                      \n**/
@@ -63,7 +63,7 @@
   { "id" : FIREF, "name": "firef", "timestep" : "annual", "var" : "Firef", "descr" : "fire interval", "unit" : "yr", "scale" : 1.0, "offset" : 0.0},
   { "id" : VEGC, "name": "vegc", "timestep" : "annual", "var" : "VegC", "descr" : "vegetation carbon", "unit" : "gC/m2", "scale" : 1.0, "offset" : 0.0},
   { "id" : SOILC, "name": "soilc", "timestep" : "annual", "var" : "SoilC", "descr" : "total soil carbon density", "unit" : "gC/m2", "scale" : 1.0, "offset" : 0.0},
-  { "id" : LITC, "name": "litc", "timestep" : "annual", "var" : "LitC", "descr" : "litter carbon", "unit" : "gC/m2", "scale" : 1.0, "offset" : 0.0},
+  { "id" : LITC, "name": "litc", "timestep" : "annual", "var" : "LitC", "descr" : "above-ground and sub litter carbon", "unit" : "gC/m2", "scale" : 1.0, "offset" : 0.0},
   { "id" : LITFALLC, "name": "litfallc", "timestep" : "annual", "var" : "litfallc", "descr" : "litter fall carbon", "unit" : "gC/m2/yr", "scale" : 1.0, "offset" : 0.0},
   { "id" : LITFALLN, "name": "litfalln", "timestep" : "annual", "var" : "litfalln", "descr" : "litter fall nitrogen", "unit" : "gN/m2/yr", "scale" : 1.0, "offset" : 0.0},
   { "id" : FLUX_ESTABC, "name": "flux_estabc", "timestep" : "annual", "var" : "estabc", "descr" : "establishment flux", "unit" : "gC/m2/yr", "scale" : 1.0, "offset" : 0.0},
@@ -295,6 +295,7 @@
   { "id" : N2O_NIT, "name": "n2o_nit", "timestep" : "monthly", "var": "N2O_nitrification", "descr": "monthly N2O emissions from nitrification", "unit": "gN/m2/month", "scale": 1.0, "offset" : 0.0},
   { "id" : N2_EMIS, "name": "n2_emis", "timestep" : "monthly", "var": "N2_emissions", "descr": "monthly N2 emissions", "unit": "gN/m2/month", "scale": 1.0, "offset" : 0.0},
   { "id" : BNF, "name": "bnf", "timestep" : "monthly", "var": "bnf", "descr": "monthly biological N fixation", "unit": "gN/m2/month", "scale": 1.0, "offset" : 0.0},
+  { "id" : PFT_BNF, "name": "pft_bnf", "timestep" : "annual", "var": "bnf", "descr": "annual PFT-specific biological N fixation", "unit": "gN/m2/year", "scale": 1.0, "offset" : 0.0},
   { "id" : PFT_NDEMAND, "name": "pft_ndemand", "timestep" : "annual", "var": "N_demand", "descr": "nitrogen demand per PFT", "unit": "gN/yr", "scale": 1.0, "offset" : 0.0},
   { "id" : N_MINERALIZATION, "name": "n_mineralization", "timestep" : "monthly", "var": "N_mineralization", "descr": "N mineralized", "unit": "gN/m2/month", "scale": 1.0, "offset" : 0.0},
   { "id" : N_VOLATILIZATION, "name": "n_volatilization", "timestep" : "monthly", "var": "N_volatilization", "descr": "N volatilized", "unit": "gN/m2/month", "scale": 1.0, "offset" : 0.0},
@@ -391,5 +392,23 @@
   { "id" : CSHIFT_FAST_NV, "name" : "cshift_fast_nv", "timestep" : "annual", "var": "Cshift_fast", "descr": "annual sum of carbon to fast pools per layer on natural vegetation", "unit": "gC/m2/yr", "scale": 1.0, "offset" : 0.0},
   { "id" : CSHIFT_SLOW_NV, "name" : "cshift_slow_nv", "timestep" : "annual", "var": "Cshift_slow", "descr": "annual sum of carbon to slow pools per layer on natural vegetation", "unit": "gC/m2/yr", "scale": 1.0, "offset" : 0.0},
   { "id" : LITBURNC, "name": "litburnc", "timestep" : "annual", "var": "litburnc", "descr" : "litter carbon burnt", "unit" : "gC/m2/yr", "scale" : 1.0, "offset" : 0.0},
-  { "id" : LITBURNC_WOOD, "name": "litburnc_wood", "timestep" : "annual", "var": "litburnc_wood", "descr" : "woody litter carbon burnt", "unit" : "gC/m2/yr", "scale" : 1.0, "offset" : 0.0}
+  { "id" : LITBURNC_WOOD, "name": "litburnc_wood", "timestep" : "annual", "var": "litburnc_wood", "descr" : "woody litter carbon burnt", "unit" : "gC/m2/yr", "scale" : 1.0, "offset" : 0.0},
+  { "id" : UPTAKEN_MGRASS, "name": "uptaken_mgrass", "timestep" : "annual", "var": "UptakeN", "descr": "N uptake of managed grasslands", "unit": "gC/m2", "scale": 1.0, "offset" : 0.0},
+  { "id" : FECESN_MGRASS, "name": "fecesn_mgrass", "timestep" : "annual", "var": "FecesN", "descr": "N in feces of managed grasslands", "unit": "gN/m2", "scale": 1.0, "offset" : 0.0},
+  { "id" : URINEN_MGRASS, "name": "urinen_mgrass", "timestep" : "annual", "var": "UrineN", "descr": "N in urine of managed grasslands", "unit": "gN/m2", "scale": 1.0, "offset" : 0.0},
+  { "id" : YIELDN_MGRASS, "name": "yieldn_mgrass", "timestep" : "annual", "var": "YieldN", "descr": "N in milk yield of managed grasslands", "unit": "gN/m2", "scale": 1.0, "offset" : 0.0},
+  { "id" : NH3_MGRASS, "name": "nh3_mgrass", "timestep" : "annual", "var": "NH3", "descr" : "annual N loss through NH3 volatilization on managed grassland stands", "unit" : "gN/m2/yr", "scale" : 1.0, "offset" : 0.0},
+  { "id" : NO3_LEACHING_MGRASS, "name": "no3_leaching_mgrass", "timestep" : "annual", "var": "NO3_leaching", "descr" : "annual N loss through leaching on managed grassland stands", "unit" : "gN/m2/yr", "scale" : 1.0, "offset" : 0.0},
+  { "id" : N2_MGRASS, "name": "n2_mgrass", "timestep" : "annual", "var": "N2", "descr": "managed grassland N2 emissions from denitrificaiton", "unit" : "gN/m2/year","scale": 1.0, "offset" : 0.0},
+  { "id" : N2O_NIT_MGRASS, "name": "n2o_nit_mgrass", "timestep" : "annual", "var": "N2O_nit", "descr": "managed grassland N2O emissions from nitrificaiton", "unit" : "gN/m2/year","scale": 1.0, "offset" : 0.0},
+  { "id" : N2O_DENIT_MGRASS, "name": "n2o_denit_mgrass", "timestep" : "annual", "var": "N2O_denit", "descr": "managed grassland N2O emissions from denitrificaiton", "unit" : "gN/m2/year","scale": 1.0, "offset" : 0.0},
+  { "id" : UPTAKEC_MGRASS, "name": "uptakec_mgrass", "timestep" : "annual", "var": "UptakeC", "descr": "C uptake of managed grasslands", "unit": "gC/m2", "scale": 1.0, "offset" : 0.0},
+  { "id" : FECESC_MGRASS, "name": "fecesc_mgrass", "timestep" : "annual", "var": "FecesC", "descr": "C in feces of managed grasslands", "unit": "gC/m2", "scale": 1.0, "offset" : 0.0},
+  { "id" : URINEC_MGRASS, "name": "urinec_mgrass", "timestep" : "annual", "var": "UrineC", "descr": "C in urine of managed grasslands", "unit": "gC/m2", "scale": 1.0, "offset" : 0.0},
+  { "id" : YIELDC_MGRASS, "name": "yieldc_mgrass", "timestep" : "annual", "var": "YieldC", "descr": "C in milk yield of managed grasslands", "unit": "gC/m2", "scale": 1.0, "offset" : 0.0},
+  { "id" : RESPC_MGRASS, "name": "respc_mgrass", "timestep" : "annual", "var": "RespC", "descr": "C from respiration of managed grasslands", "unit": "gC/m2", "scale": 1.0, "offset" : 0.0},
+  { "id" : METHANEC_MGRASS, "name": "methanec_mgrass", "timestep" : "annual", "var": "MethaneC", "descr": "C in methane of managed grasslands", "unit": "gC/m2", "scale": 1.0, "offset" : 0.0},
+  { "id" : DELTAC_MGRASS, "name": "deltac_mgrass", "timestep" : "annual", "var": "deltac", "descr" : "annual change in carbon stocks on managed grassland stands", "unit" : "gC/m2/yr", "scale" : 1.0, "offset" : 0.0},
+  { "id" : RA_MGRASS, "name": "ra_mgrass", "timestep" : "annual", "var": "ra", "descr" : "annual autotrophic respiration on managed grassland stands", "unit" : "gC/m2/yr", "scale" : 1.0, "offset" : 0.0},
+  { "id" : RH_MGRASS, "name": "rh_mgrass", "timestep" : "annual", "var": "rh", "descr" : "annual heterotrophic respiration on managed grassland stands", "unit" : "gC/m2/yr", "scale" : 1.0, "offset" : 0.0}
 ],

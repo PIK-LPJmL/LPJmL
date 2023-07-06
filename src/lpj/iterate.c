@@ -90,7 +90,7 @@ int iterate(Outputfile *output, /**< Output file data */
   for(year=startyear;year<=config->lastyear;year++)
   {
 #if defined IMAGE && defined COUPLED
-    if(year>=config->start_imagecoupling)
+    if(year>=config->start_coupling)
       co2=receive_image_co2(config);
     else
 #endif
@@ -98,13 +98,8 @@ int iterate(Outputfile *output, /**< Output file data */
       year_co2=config->fix_climate_year;
     else
       year_co2=year;
-    if(getco2(input.climate,&co2,year_co2)) /* get atmospheric CO2 concentration */
-    {
-      if(isroot(*config))
-        fprintf(stderr,"ERROR015: Invalid year %d in getco2(), must be <%d.\n",
-                year_co2,input.climate->co2.firstyear+input.climate->co2.nyear);
+    if(getco2(input.climate,&co2,year_co2,config)) /* get atmospheric CO2 concentration */
       break;
-    }
     if(year<input.climate->firstyear) /* are we in spinup phase? */
     {
       /* yes, let climate data point to stored data */
@@ -133,7 +128,7 @@ int iterate(Outputfile *output, /**< Output file data */
       }
       /* read climate from files */
 #if defined IMAGE && defined COUPLED
-      if(year>=config->start_imagecoupling)
+      if(year>=config->start_coupling)
       {
         if(receive_image_climate(input.climate,grid,year,config))
         {
@@ -200,7 +195,7 @@ int iterate(Outputfile *output, /**< Output file data */
       else
         wateruse_year=year;
 #if defined IMAGE && defined COUPLED
-      if(year>=config->start_imagecoupling)
+      if(year>=config->start_coupling)
       {
         if(receive_image_data(grid,npft,ncft,config))
         {
@@ -270,6 +265,19 @@ int iterate(Outputfile *output, /**< Output file data */
         break; /* leave time loop */
       }
     }
+    if(config->fire==SPITFIRE || config->fire==SPITFIRE_TMAX)
+    {
+      rc=gethumanignition(input.human_ignition,year,grid,config);
+      if(iserror(rc,config))
+      {
+        if(isroot(*config))
+        {
+          fprintf(stderr,"ERROR104: Simulation stopped in gethumanignition().\n");
+          fflush(stderr);
+        }
+        break; /* leave time loop */
+      }
+    }
     if (config->prescribe_landcover != NO_LANDCOVER)
     {
       rc=readlandcover(input.landcover,grid,year,config);
@@ -295,26 +303,25 @@ int iterate(Outputfile *output, /**< Output file data */
     {
       /* output of total carbon flux and water on stdout on root task */
       printflux(flux,cflux_total,year,config);
-      if(isopen(output,GLOBALFLUX))
+      if(output->files[GLOBALFLUX].isopen)
         fprintcsvflux(output->files[GLOBALFLUX].fp.file,flux,cflux_total,
                       config->outnames[GLOBALFLUX].scale,year,config);
-      if(output->method==LPJ_SOCKET && output->socket!=NULL &&
-         year>=config->outputyear)
-        output_flux(output,flux);
+      if(output->files[GLOBALFLUX].issocket)
+        send_flux_coupler(&flux,config->outnames[GLOBALFLUX].scale,year,config);
       fflush(stdout); /* force output to console */
 #ifdef SAFE
       check_balance(flux,year,config);
 #endif
     }
 #if defined IMAGE && defined COUPLED
-    if(year>=config->start_imagecoupling)
+    if(year>=config->start_coupling)
     {
       /* send data to IMAGE */
 #ifdef DEBUG_IMAGE
       if(isroot(*config))
       {
         printf("sending data to image? year %d startimagecoupling %d\n",
-               year,config->start_imagecoupling);
+               year,config->start_coupling);
         fflush(stdout);
       }
 #endif

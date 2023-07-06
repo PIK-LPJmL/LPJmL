@@ -344,6 +344,7 @@ static Cell *newgrid2(Config *config,          /* Pointer to LPJ configuration *
     }
 #endif
     /* Init cells */
+    grid[i].ml.grassland_lsuha=param.lsuha;
     grid[i].ml.dam=FALSE;
     grid[i].ml.seasonality_type=NO_SEASONALITY;
     grid[i].ml.cropfrac_rf=grid[i].ml.cropfrac_ir=grid[i].ml.reservoirfrac=0;
@@ -610,11 +611,6 @@ Cell *newgrid(Config *config,          /**< Pointer to LPJ configuration */
   if(config->reservoir)
   {
     if(initreservoir(grid,config))
-      return NULL;
-  }
-  if(config->fire==SPITFIRE || config->fire==SPITFIRE_TMAX)
-  {
-    if(initignition(grid,config))
       return NULL;
   }
   if(config->withlanduse!=NO_LANDUSE && config->iscotton)

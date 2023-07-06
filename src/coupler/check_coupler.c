@@ -1,9 +1,9 @@
 /**************************************************************************************/
 /**                                                                                \n**/
-/**     l  i  t  t  e  r  _  a  g  _  s  u  m  _  q  u  i  c  k  .  c              \n**/
+/**                  c  h  e  c  k  _  c  o  u  p  l  e  r  .  c                   \n**/
 /**                                                                                \n**/
-/**     C implementation of LPJmL                                                  \n**/
-/**     Function computes sum of all above-ground litter pools                     \n**/
+/**     extension of LPJ to couple LPJ online                                      \n**/
+/**     Check status of coupled model                                              \n**/
 /**                                                                                \n**/
 /** (C) Potsdam Institute for Climate Impact Research (PIK), see COPYRIGHT file    \n**/
 /** authors, and contributors see AUTHORS file                                     \n**/
@@ -15,17 +15,30 @@
 
 #include "lpj.h"
 
-Real litter_ag_sum_quick(const Litter *litter /**< pointer to litter data */
-                        )                     /** \return aboveground fast litter (gC/m2) */
+int check_coupler(Config *config /**< LPJmL configuration */
+                 )               /** \return error code from coupled model */
 {
-  int i,l;
-  Real sum;
-  sum=0;
-  for(l=0;l<litter->n;l++)
+  int status;
+  if(isroot(*config))
   {
-    sum+=litter->item[l].ag.leaf.carbon;
-    for(i=0;i<NFUELCLASS-1;i++)
-      sum+=litter->item[l].ag.wood[i].carbon;
+    send_token_coupler(GET_STATUS,0,config);
+#ifdef DEBUG_COUPLER
+    printf("Getting status");
+    fflush(stdout);
+#endif
+    readint_socket(config->socket,&status,1);
+#ifdef DEBUG_COUPLER
+    printf(", %d received.\n",status);
+    fflush(stdout);
+#endif
+    if(status)
+    {
+      /* error occurred, close socket */
+      close_socket(config->socket);
+      config->socket=NULL;
+    }
+    return status;
   }
-  return sum;
-} /* of 'litter_ag_sum_quick' */
+  else
+    return COUPLER_OK;
+} /* of 'check_coupler' */

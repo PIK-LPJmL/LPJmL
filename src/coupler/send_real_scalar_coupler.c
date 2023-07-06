@@ -1,10 +1,10 @@
 /**************************************************************************************/
 /**                                                                                \n**/
-/**             l i t t e r _ a g _ n i t r o g e n _ t r e e . c                  \n**/
+/**   s  e  n  d  _  r  e  a  l  _  s  c  a  l  a  r  _  c  o  u  p  l  e  r  .  c \n**/
 /**                                                                                \n**/
 /**     C implementation of LPJmL                                                  \n**/
 /**                                                                                \n**/
-/** Function computes sum of all above-ground nitrogen litter pools for trees      \n**/
+/**     Function global real data into socket                                      \n**/
 /**                                                                                \n**/
 /** (C) Potsdam Institute for Climate Impact Research (PIK), see COPYRIGHT file    \n**/
 /** authors, and contributors see AUTHORS file                                     \n**/
@@ -16,22 +16,26 @@
 
 #include "lpj.h"
 
-Real litter_ag_nitrogen_tree(const Litter *litter,int fuel)
+Bool send_real_scalar_coupler(int index,           /**< index of output stream */
+                              const Real *data,    /**< data sent */
+                              int size,            /**< size of data */
+                              Real scale,          /**< scaling factor */
+                              int year,            /**< Simulation year (AD) */
+                              const Config *config /**< LPJ configuration */
+                             )                     /** \return TRUE on error */
 {
-  int l;
-  Real sum;
-  sum=0;
-  if(fuel==0)
+  float *vec;
+  int i;
+  Bool rc;
+  vec=newvec(float,size);
+  if(vec==NULL)
   {
-    for(l=0;l<litter->n;l++)
-      if(litter->item[l].pft->type==TREE)
-        sum+=litter->item[l].ag.leaf.nitrogen+litter->item[l].ag.wood[0].nitrogen;
+    printallocerr("vec");
+    return TRUE;
   }
-  else
-  {
-    for(l=0;l<litter->n;l++)
-      if(litter->item[l].pft->type==TREE)
-        sum+=litter->item[l].ag.wood[fuel].nitrogen;
-  }
-  return sum;
-} /* of litter_ag_nitrogen_tree */
+  for(i=0;i<size;i++)
+    vec[i]=(float)(data[i]*scale);
+  rc=send_scalar_coupler(index,vec,LPJ_FLOAT,size,year,config);
+  free(vec);
+  return rc;
+} /* of 'send_real_scalar_coupler' */
