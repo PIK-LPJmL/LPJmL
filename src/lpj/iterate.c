@@ -53,7 +53,7 @@ int iterate(Outputfile *output, /**< Output file data */
 {
   Real co2,cflux_total;
   Flux flux;
-  int year,landuse_year,wateruse_year,startyear,firstspinupyear,spinup_year,climate_year,year_co2;
+  int year,landuse_year,wateruse_year,startyear,firstspinupyear,spinup_year,climate_year,year_co2,depos_year;
   Bool rc;
   Climatedata store,data_save;
 
@@ -100,6 +100,7 @@ int iterate(Outputfile *output, /**< Output file data */
       year_co2=year;
     if(getco2(input.climate,&co2,year_co2,config)) /* get atmospheric CO2 concentration */
       break;
+    climate_year=year;
     if(year<input.climate->firstyear) /* are we in spinup phase? */
     {
       /* yes, let climate data point to stored data */
@@ -153,8 +154,6 @@ int iterate(Outputfile *output, /**< Output file data */
           else
             climate_year=config->fix_climate_interval[0]+(year-config->fix_climate_year) % (config->fix_climate_interval[1]-config->fix_climate_interval[0]+1);
         }
-        else
-          climate_year=year;
 
         rc=getclimate(input.climate,grid,climate_year,config);
         if(iserror(rc,config))
@@ -168,7 +167,29 @@ int iterate(Outputfile *output, /**< Output file data */
         }
       }
     }
-    rc=getdeposition(input.climate,grid,year,config);
+    if(config->fix_deposition)
+    {
+      if(config->fix_deposition_with_climate)
+        depos_year=climate_year;
+      else if(year>config->fix_deposition_year)
+      {
+        if(config->fix_deposition_shuffle)
+        {
+          if(isroot(*config))
+            depos_year=config->fix_deposition_interval[0]+(int)((config->fix_deposition_interval[1]-config->fix_deposition_interval[0]+1)*erand48(config->seed));
+#ifdef USE_MPI
+          MPI_Bcast(&depos_year,1,MPI_INT,0,config->comm);
+#endif
+        }
+        else
+          depos_year=config->fix_deposition_interval[0]+(year-config->fix_deposition_year) % (config->fix_deposition_interval[1]-config->fix_deposition_interval[0]+1);
+      }
+      else
+        depos_year=year;
+    }
+    else
+      depos_year=year;
+    rc=getdeposition(input.climate,grid,depos_year,config);
     if(iserror(rc,config))
     {
       if(isroot(*config))

@@ -55,6 +55,7 @@
   "fix_climate_year" : 1901,            /* year after climate is fixed */
   "fix_climate_interval" : [1901,1930],
   "fix_climate_shuffle" : true,          /* randomly shuffle climate in the interval */
+  "fix_deposition_with_climate" : false, /* fix N deposition same as climate  */
   "fix_deposition" : false,              /* fix N deposition after specified year */
   "fix_deposition_year" : 1901,          /* year after deposition is fixed */
   "fix_deposition_interval" : [1901,1930],

@@ -345,27 +345,43 @@ Bool fscanconfig(Config *config,    /**< LPJ configuration */
     fscanbool2(file,&config->fix_climate_shuffle,"fix_climate_shuffle");
   }
   config->fix_deposition=FALSE;
+  config->fix_deposition_with_climate=FALSE;
   if(config->with_nitrogen==LIM_NITROGEN)
   {
     if(fscanbool(file,&config->no_ndeposition,"no_ndeposition",TRUE,verbose))
       return TRUE;
     if(!config->no_ndeposition)
     {
-      if(fscanbool(file,&config->fix_deposition,"fix_deposition",TRUE,verbose))
-        return TRUE;
-      if(config->fix_deposition)
+      if(config->fix_climate)
       {
-        fscanint2(file,&config->fix_deposition_year,"fix_deposition_year");
-        if(fscanintarray(file,config->fix_deposition_interval,2,"fix_deposition_interval",verbose))
+        fscanbool2(file,&config->fix_deposition_with_climate,"fix_deposition_with_climate");
+      }
+      if(config->fix_deposition_with_climate)
+      {
+        config->fix_deposition=TRUE;
+        config->fix_deposition_year=config->fix_climate_year;
+        config->fix_deposition_interval[0]=config->fix_climate_interval[0];
+        config->fix_deposition_interval[1]=config->fix_climate_interval[1];
+        config->fix_deposition_shuffle=config->fix_climate_shuffle;
+      }
+      else
+      {
+        if(fscanbool(file,&config->fix_deposition,"fix_deposition",TRUE,verbose))
           return TRUE;
-        if(config->fix_deposition_interval[1]<config->fix_deposition_interval[0])
+        if(config->fix_deposition)
         {
-          if(isroot(*config))
-            fprintf(stderr,"ERROR255: Upper limit for fix N deposition interval=%d must be higher than lower limit=%d.\n",
-                    config->fix_deposition_interval[1],config->fix_deposition_interval[0]);
-          return TRUE;
+          fscanint2(file,&config->fix_deposition_year,"fix_deposition_year");
+          if(fscanintarray(file,config->fix_deposition_interval,2,"fix_deposition_interval",verbose))
+            return TRUE;
+          if(config->fix_deposition_interval[1]<config->fix_deposition_interval[0])
+          {
+            if(isroot(*config))
+              fprintf(stderr,"ERROR255: Upper limit for fix N deposition interval=%d must be higher than lower limit=%d.\n",
+                      config->fix_deposition_interval[1],config->fix_deposition_interval[0]);
+            return TRUE;
+          }
+          fscanbool2(file,&config->fix_deposition_shuffle,"fix_deposition_shuffle");
         }
-        fscanbool2(file,&config->fix_deposition_shuffle,"fix_deposition_shuffle");
       }
     }
   }

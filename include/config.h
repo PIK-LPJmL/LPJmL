@@ -167,6 +167,7 @@ struct config
   int fix_deposition_year;      /**< year at which deposition is fixed */
   int fix_deposition_interval[2]; /**< interval for fixed deposition */
   Bool fix_deposition_shuffle;  /**< randomly shuffle deposition */
+  Bool fix_deposition_with_climate; /**< fix deposition same as climate */
   Bool fix_landuse;             /**< fix land use after specified year */
   int fix_landuse_year;         /**< year at which land use is fixed */
   Bool fix_co2;                 /**< fix CO2 after specified year */

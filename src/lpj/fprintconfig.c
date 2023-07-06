@@ -286,10 +286,15 @@ void fprintconfig(FILE *file,          /**< File pointer to text output file */
   }
   if(config->fix_deposition)
   {
-    snprintf(s,STRING_LEN,"fix N deposition after year %d %s years %d-%d",
-             config->fix_deposition_year,(config->fix_deposition_shuffle) ? "shuffling" : "cycling",
-             config->fix_deposition_interval[0],config->fix_deposition_interval[1]);
-    len=printsim(file,len,&count,s);
+    if(config->fix_deposition_with_climate)
+      len=printsim(file,len,&count,"fix deposition with climate");
+    else
+    {
+      snprintf(s,STRING_LEN,"fix N deposition after year %d %s years %d-%d",
+               config->fix_deposition_year,(config->fix_deposition_shuffle) ? "shuffling" : "cycling",
+               config->fix_deposition_interval[0],config->fix_deposition_interval[1]);
+      len=printsim(file,len,&count,s);
+    }
   }
   if(config->no_ndeposition)
     len=printsim(file,len,&count,"no N deposition");
