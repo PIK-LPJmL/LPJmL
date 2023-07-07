@@ -279,6 +279,9 @@ Bool fscanconfig(Config *config,    /**< LPJ configuration */
   config->new_trf=FALSE;
   if(fscanbool(file,&config->new_trf,"new_trf",TRUE,verbose))
     return TRUE;
+  config->with_lakes=config->river_routing;
+  if(fscanbool(file,&config->with_lakes,"with_lakes",TRUE,verbose))
+    return TRUE;
   fscanbool2(file,&config->river_routing,"river_routing");
   config->extflow=FALSE;
   if(config->river_routing)
@@ -760,9 +763,12 @@ Bool fscanconfig(Config *config,    /**< LPJ configuration */
   {
     scanclimatefilename(input,&config->area_filename,FALSE,FALSE,"cellarea");
   }
-  if(config->river_routing)
+  if(config->with_lakes)
   {
     scanclimatefilename(input,&config->lakes_filename,FALSE,FALSE,"lakes");
+  }
+  if(config->river_routing)
+  {
     scanclimatefilename(input,&config->drainage_filename,FALSE,FALSE,"drainage");
     if(config->drainage_filename.fmt==CDF)
     {

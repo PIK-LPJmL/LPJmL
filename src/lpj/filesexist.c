@@ -400,12 +400,13 @@ Bool filesexist(Config config, /**< LPJmL configuration */
     bad+=checkcoordfile(&config,&config.soil_filename);
   if(config.cellarea_from_file)
     bad+=checkinputdata(&config,&config.area_filename,"cellarea","m2",LPJ_SHORT);
+  if(config.with_lakes)
+    bad+=checkinputdata(&config,&config.lakes_filename,"lakes","1",LPJ_SHORT);
   if(config.river_routing)
   {
     if(config.extflow)
       bad+=checkclmfile(&config,"extflow",&config.extflow_filename,NULL,0);
     bad+=checkinputfile(&config,&config.drainage_filename,NULL,(config.drainage_filename.fmt==CDF) ? 0 : 2);
-    bad+=checkinputdata(&config,&config.lakes_filename,"lakes","1",LPJ_SHORT);
     if(config.withlanduse!=NO_LANDUSE)
       bad+=checkinputdata(&config,&config.neighb_irrig_filename,"neigbour irrigation",NULL,LPJ_INT);
   }

@@ -147,7 +147,7 @@ static Cell *newgrid2(Config *config,          /* Pointer to LPJ configuration *
     }
   }
 
-  if(config->river_routing)
+  if(config->with_lakes)
   {
     /* Open file for lake fraction */
     if(openinputdata(&lakes,&config->lakes_filename,"lakes","1",LPJ_BYTE,0.01,config))
@@ -173,7 +173,7 @@ static Cell *newgrid2(Config *config,          /* Pointer to LPJ configuration *
     if(openinputdata(&aquifers,&config->aquifer_filename,"aquifer",NULL,LPJ_BYTE,1.0,config))
     {
       closecelldata(celldata);
-      if(config->river_routing)
+      if(config->with_lakes)
         closeinput(&lakes);
       if(config->countrypar!=NULL)
       {
@@ -215,7 +215,7 @@ static Cell *newgrid2(Config *config,          /* Pointer to LPJ configuration *
   {
     printallocerr("grid");
     closecelldata(celldata);
-    if(config->river_routing)
+    if(config->with_lakes)
       closeinput(&lakes);
 #ifdef IMAGE
     if(config->aquifer_irrig==AQUIFER_IRRIG)
@@ -249,7 +249,7 @@ static Cell *newgrid2(Config *config,          /* Pointer to LPJ configuration *
     {
       free(grid);
       closecelldata(celldata);
-      if(config->river_routing)
+      if(config->with_lakes)
         closeinput(&lakes);
       if(config->countrypar!=NULL)
       {
@@ -328,7 +328,7 @@ static Cell *newgrid2(Config *config,          /* Pointer to LPJ configuration *
 
     }
     grid[i].lakefrac=0.0;
-    if(config->river_routing)
+    if(config->with_lakes)
     {
       if(readinputdata(&lakes,&grid[i].lakefrac,&grid[i].coord,i+config->startgrid,&config->lakes_filename))
         return NULL;
@@ -532,7 +532,7 @@ static Cell *newgrid2(Config *config,          /* Pointer to LPJ configuration *
   if(file_restart!=NULL)
     fclose(file_restart);
   closecelldata(celldata);
-  if(config->river_routing)
+  if(config->with_lakes)
     closeinput(&lakes);
   if(config->grassfix_filename.name!=NULL)
     closeinput(&grassfix_file);

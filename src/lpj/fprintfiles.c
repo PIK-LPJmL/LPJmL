@@ -72,6 +72,8 @@ void fprintfiles(FILE *file,          /**< pointer to text output file */
   if(config->soil_filename.fmt!=CDF)
     fprintfilename(file,&config->coord_filename,FALSE);
   fprintfilename(file,&config->soil_filename,FALSE);
+  if(config->cellarea_from_file)
+     fprintfilename(file,&config->area_filename,FALSE);
   fprintfilename(file,&config->temp_filename,TRUE);
   fprintfilename(file,&config->prec_filename,TRUE);
 #if defined IMAGE && defined COUPLED
@@ -150,10 +152,11 @@ void fprintfiles(FILE *file,          /**< pointer to text output file */
 #endif
   if(config->wet_filename.name!=NULL)
     fprintfilename(file,&config->wet_filename,TRUE);
+  if(config->with_lakes)
+    fprintfilename(file,&config->lakes_filename,FALSE);
   if(config->river_routing)
   {
     fprintfilename(file,&config->drainage_filename,FALSE);
-    fprintfilename(file,&config->lakes_filename,FALSE);
     if(config->withlanduse!=NO_LANDUSE)
       fprintfilename(file,&config->neighb_irrig_filename,FALSE);
   }

@@ -34,13 +34,14 @@ void fprintcell(FILE *file,            /**< file pointer to text file */
     for(i=0;i<NSEED;i++)
       printf(" %d",grid[cell].seed[i]);
     fputc('\n',file);
+    if(config->with_lakes)
+      fprintf(file,"dmass_lake:\t%g (dm3)\n",grid[cell].discharge.dmass_lake);
     if(config->river_routing)
     {
-       fprintf(file,"dmass_lake:\t%g (dm3)\n"
-                    "dfout:\t\t%g (dm3/d)\n"
+       fprintf(file,"dfout:\t\t%g (dm3/d)\n"
                     "dmass_river:\t%g (dm3)\n"
                     "dmass_sum:\t%g (dm3)\n",
-               grid[cell].discharge.dmass_lake,grid[cell].discharge.dfout,
+               grid[cell].discharge.dfout,
                grid[cell].discharge.dmass_river,grid[cell].discharge.dmass_sum);
        fputs("Queue:\t\t",file);
        fprintqueue(file,grid[cell].discharge.queue);

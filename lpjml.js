@@ -42,6 +42,7 @@
   "firewood" : false,
   "new_phenology" : true,   /* GSI phenology enabled */
   "new_trf" : false,        /* new transpiration reduction function disabled */
+  "with_lakes" : true,
   "river_routing" : true,
   "extflow" : false,
   "permafrost" : true,

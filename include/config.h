@@ -215,6 +215,7 @@ struct config
   Coord resolution;    /**< size of grid cell (deg) */
   Bool ispopulation;
   Bool river_routing;  /**< river routing enabled */
+  Bool with_lakes;     /**< enable lakes (TRUE/FALSE) */
   Bool extflow;        /** external flow enabled */
   Bool permafrost;     /**< permafrost module enabled */
   Bool johansen;       /**< johansen enabled */
