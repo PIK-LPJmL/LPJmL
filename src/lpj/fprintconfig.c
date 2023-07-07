@@ -80,6 +80,11 @@ static size_t isnetcdfinput(const Config *config)
     if(config->soilph_filename.fmt==CDF)
       width=max(width,strlen(config->soilph_filename.var));
   }
+  if(config->cellarea_from_file)
+  {
+    if(config->area_filename.fmt==CDF)
+      width=max(width,strlen(config->area_filename.var));
+  }
   if(config->cropsheatfrost || config->fire==SPITFIRE_TMAX)
   {
     if(config->tmin_filename.fmt==CDF)
@@ -510,6 +515,8 @@ void fprintconfig(FILE *file,          /**< File pointer to text output file */
   printinputfile(file,"soil",&config->soil_filename,width,config);
   if(config->soil_filename.fmt!=CDF)
     printinputfile(file,"coord",&config->coord_filename,width,config);
+  if(config->cellarea_from_file)
+    printinputfile(file,"area",&config->area_filename,width,config);
   printinputfile(file,"temp",&config->temp_filename,width,config);
   printinputfile(file,"prec",&config->prec_filename,width,config);
 #if defined IMAGE && defined COUPLED

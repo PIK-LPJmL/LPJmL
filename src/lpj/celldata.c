@@ -21,6 +21,7 @@
 struct celldata
 {
   Bool with_nitrogen;
+  Bool with_cellarea;
   int soil_fmt;
   union
   {
@@ -35,6 +36,7 @@ struct celldata
     Coord_netcdf cdf;
   } soil;
   Infile soilph;
+  Infile cellarea;
 };
 
 Celldata opencelldata(Config *config /**< LPJmL configuration */
@@ -136,6 +138,27 @@ Celldata opencelldata(Config *config /**< LPJmL configuration */
   }
   else
     celldata->with_nitrogen=FALSE;
+  if(config->cellarea_from_file)
+  {
+    celldata->with_cellarea=TRUE;
+    if(openinputdata(&celldata->cellarea,&config->area_filename,"cellarea","m2",LPJ_SHORT,0.01,config))
+    {
+      if(config->soil_filename.fmt==CDF)
+        closecoord_netcdf(celldata->soil.cdf);
+      else
+      {
+        closecoord(celldata->soil.bin.file_coord);
+        fclose(celldata->soil.bin.file);
+      }
+      if(celldata->with_nitrogen)
+        closeinput(&celldata->soilph);
+      free(celldata);
+      return NULL;
+    }
+  }
+  else
+    celldata->with_cellarea=FALSE;
+
   return celldata;
 } /* of 'opencelldata' */
 
@@ -228,6 +251,11 @@ Bool readcelldata(Celldata celldata, /**< pointer to celldata */
     if(readinputdata(&celldata->soilph,soil_ph,coord,cell+config->startgrid,&config->soilph_filename))
       return TRUE;
   }
+  if(config->cellarea_from_file)
+  {
+    if(readinputdata(&celldata->cellarea,&coord->area,coord,cell+config->startgrid,&config->area_filename))
+      return TRUE;
+  }
   return FALSE;
 } /* of 'readcelldata' */
 
@@ -243,5 +271,7 @@ void closecelldata(Celldata celldata /**< pointer to celldata */
   }
   if(celldata->with_nitrogen)
     closeinput(&celldata->soilph);
+  if(celldata->with_cellarea)
+    closeinput(&celldata->cellarea);
   free(celldata);
 } /* of 'closecelldata' */

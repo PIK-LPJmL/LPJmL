@@ -56,6 +56,7 @@
   "depos_year_const" : 1901,
   "fix_climate" : false,
   "fix_landuse" : false,
+  "cellarea_from_file" : true, /* read cell area from file */
 #ifdef FROM_RESTART
   "new_seed" : false, /* read random seed from restart file */
   "population" : false,

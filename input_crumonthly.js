@@ -40,6 +40,7 @@
 {
   "soil" :         { "id" : 41, "fmt" : "meta", "name" : "input_VERSION2/soil.json"},
   "coord" :        { "id" : 43, "fmt" : "clm",  "name" : "input_VERSION2/grid.bin"},
+  "cellarea" :        { "id" : 44, "fmt" : "clm",  "name" : "input_VERSION2/area.clm"},
   "countrycode" :  { "id" : 25, "fmt" : "clm",  "name" : "input_VERSION2/cow_full_2018.bin"},
   "no3deposition" : { "id" : 17, "fmt" : "clm",  "name" : "input_VERSION2/no3_deposition_rcp8p5.clm"},
   "nh4deposition" : { "id" : 16, "fmt" : "clm",  "name" : "input_VERSION2/nh4_deposition_rcp8p5.clm"},

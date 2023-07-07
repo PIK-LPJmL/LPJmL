@@ -60,6 +60,7 @@ struct config
   Filename extflow_filename;
   Filename neighb_irrig_filename;
   Filename coord_filename;
+  Filename area_filename;
   Filename soil_filename;
   Filename soilph_filename;
   Filename river_filename;
@@ -164,6 +165,7 @@ struct config
   Bool fix_landuse;             /**< fix land use after specified year */
   Bool iscotton;                /**< cotton present in PFT parameter file */
   Bool fire_on_grassland;       /**< enable fires on grassland for Spitfire */
+  Bool cellarea_from_file;      /**< cell area read from file (TRUE/FALSE) */
   int fix_landuse_year;         /**< year at which land use is fixed */
   int fix_climate_year;         /**< year at which climate is fixed */
   int fix_climate_cycle;        /**< number of years for climate shuffle for fixed climate */
