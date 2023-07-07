@@ -21,13 +21,14 @@
 #endif
 
 char *getattr_netcdf(const Climatefile *file, /**< climate data file */
+                     int varid,               /**< variable id */
                      const char *attr         /**< name of attribute */
                     )                         /** \return attribute string or NULL */
 {
 #if defined(USE_NETCDF) || defined(USE_NETCDF4)
   char *s;
   size_t len;
-  if(nc_inq_attlen(file->ncid, file->varid, attr, &len))
+  if(nc_inq_attlen(file->ncid, varid, attr, &len))
     s=NULL;
   else
   {
@@ -37,7 +38,7 @@ char *getattr_netcdf(const Climatefile *file, /**< climate data file */
       printallocerr("s");
       return NULL;
     }
-    nc_get_att_text(file->ncid, file->varid, attr,s);
+    nc_get_att_text(file->ncid, varid, attr,s);
     s[len]='\0';
   }
   return s;

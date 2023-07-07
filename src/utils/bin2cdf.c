@@ -202,6 +202,7 @@ static Cdf *create_cdf(const char *filename,
     sprintf(s,"%s: %s",strdate(&t),cmdline);
   }
   rc=nc_put_att_text(cdf->ncid,NC_GLOBAL,"history",strlen(s),s);
+  free(s); 
   for(i=0;i<n_global;i++)
   {
     rc=nc_put_att_text(cdf->ncid,NC_GLOBAL,global_attrs[i].name,strlen(global_attrs[i].value),global_attrs[i].value);
@@ -212,12 +213,25 @@ static Cdf *create_cdf(const char *filename,
   rc=nc_def_var(cdf->ncid,LON_NAME,NC_DOUBLE,1,&lon_dim_id,&lon_var_id);
   error(rc);
   if(header.nstep==1)
-    snprintf(s,STRING_LEN,"years since %d-1-1 0:0:0",baseyear);
+  {
+    len=snprintf(NULL,0,"years since %d-1-1 0:0:0",baseyear);
+    s=malloc(len+1);
+    sprintf(s,"years since %d-1-1 0:0:0",baseyear);
+  }
   else if(header.nstep==12)
-    snprintf(s,STRING_LEN,"%s since %d-1-1 0:0:0",(with_days) ? "days" : "months",baseyear);
+  {
+    len=snprintf(NULL,0,"%s since %d-1-1 0:0:0",(with_days) ? "days" : "months",baseyear);
+    s=malloc(len+1);
+    sprintf(s,"%s since %d-1-1 0:0:0",(with_days) ? "days" : "months",baseyear);
+  }
   else if(header.nstep==1)
-    snprintf(s,STRING_LEN,"days since %d-1-1 0:0:0",baseyear);
+  {
+    len=snprintf(NULL,0,"days since %d-1-1 0:0:0",baseyear);
+    s=malloc(len+1);
+    sprintf(s,"days since %d-1-1 0:0:0",baseyear);
+  }
   rc=nc_put_att_text(cdf->ncid,time_var_id,"units",strlen(s),s);
+  free(s);
   error(rc);
   rc=nc_put_att_text(cdf->ncid,time_var_id,"calendar",strlen(CALENDAR),
                      CALENDAR);

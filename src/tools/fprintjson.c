@@ -18,8 +18,21 @@
 
 #define LINE_LEN 80
 
+static void cvrtnewline(FILE *file,const char *s)
+{
+  while(*s!='\0')
+  {
+    if(*s=='\n')
+      fputs("\\n",file);
+    else
+      fputc(*s,file);
+    s++;
+  } 
+}
+
 void fprintjson(FILE *file,           /**< pointer to text file */
                 const char *filename, /**< filename of clm file */
+                const char *history,  /**< history string or NULL */
                 const char *arglist,  /**< argument string or NULL */
                 const Header *header, /**< file header */
                 Map *map,             /**< pointer to map array or NULL */
@@ -43,10 +56,29 @@ void fprintjson(FILE *file,           /**< pointer to text file */
   time_t t;
   fprintf(file,"{\n"
           "  \"filename\" : \"%s\",\n",strippath(filename));
-  if(arglist!=NULL)
+  if(history==NULL)
   {
-    time(&t);
-    fprintf(file,"  \"history\" : \"%s: %s\",\n",strdate(&t),arglist);
+    if(arglist!=NULL)
+    {
+      time(&t);
+      fprintf(file,"  \"history\" : \"%s: %s\",\n",strdate(&t),arglist);
+    }
+  }
+  else
+  {
+    if(arglist!=NULL)
+    {
+      time(&t);
+      fprintf(file,"  \"history\" : \"");
+      cvrtnewline(file,history);
+      fprintf(file,"\\n%s: %s\",\n",strdate(&t),arglist);
+    }
+    else
+    {
+      fprintf(file,"  \"history\" : \"");
+      cvrtnewline(file,history);
+      fprintf(file,"\",\n");
+    }
   }
   if(n_attr)
   {

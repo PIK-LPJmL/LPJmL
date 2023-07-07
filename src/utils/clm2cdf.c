@@ -159,12 +159,14 @@ static Cdf *create_cdf(const char *filename,
   {
     len=snprintf(NULL,0,"%s\n%s: %s",history,strdate(&t),args);
     s=malloc(len+1);
+    check(s);
     sprintf(s,"%s\n%s: %s",history,strdate(&t),args);
   }
   else
   {
     len=snprintf(NULL,0,"%s: %s",strdate(&t),args);
     s=malloc(len+1);
+    check(s);
     sprintf(s,"%s: %s",strdate(&t),args);
   }
   rc=nc_put_att_text(cdf->ncid,NC_GLOBAL,"history",strlen(s),s);
@@ -182,10 +184,21 @@ static Cdf *create_cdf(const char *filename,
   if(!notime)
   {
     if(landuse || header->nbands==1)
-      snprintf(s,STRING_LEN,"years since %d-1-1 0:0:0",header->firstyear);
+    {
+      len=snprintf(NULL,0,"years since %d-1-1 0:0:0",header->firstyear);
+      s=malloc(len+1);
+      check(s);
+      sprintf(s,"years since %d-1-1 0:0:0",header->firstyear);
+    }
     else if(header->nbands>1)
-      snprintf(s,STRING_LEN,"days since %d-1-1 0:0:0",header->firstyear);
+    {
+      len=snprintf(NULL,len,"days since %d-1-1 0:0:0",header->firstyear);
+      s=malloc(len+1);
+      check(s);
+      sprintf(s,"days since %d-1-1 0:0:0",header->firstyear);
+    }
     rc=nc_put_att_text(cdf->ncid,time_var_id,"units",strlen(s),s);
+    free(s);
     error(rc);
     rc=nc_put_att_text(cdf->ncid,time_var_id,"calendar",strlen(CALENDAR),CALENDAR);
     error(rc);

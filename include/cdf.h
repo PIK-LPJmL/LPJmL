@@ -186,7 +186,7 @@ extern void closeinput(Infile *);
 extern int open_netcdf(const char *,int *,Bool *);
 extern void free_netcdf(int);
 extern Bool checkcoord(const size_t *,int,const Coord *,const Climatefile *);
-extern char *getattr_netcdf(const Climatefile *,const char *);
+extern char *getattr_netcdf(const Climatefile *,int,const char *);
 extern char *getvarname_netcdf(const Climatefile *);
 
 #ifdef USE_MPI
