@@ -215,7 +215,9 @@ Bool fscanconfig(Config *config,    /**< LPJ configuration */
   }
   else if(verbose)
     fprintf(stderr,"WARNING027: Name 'coupled_model' for string not found, set to null.\n");
-  fscanbool2(file,&config->cellarea_from_file,"cellarea_from_file");
+  config->cellarea_from_file=FALSE;
+  if(fscanbool(file,&config->cellarea_from_file,"cellarea_from_file",TRUE,verbose))
+    return TRUE;
   fscanbool2(file,&israndom,"random_prec");
   config->seed_start=RANDOM_SEED;
   if(isstring(file,"random_seed"))

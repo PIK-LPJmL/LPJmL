@@ -141,7 +141,7 @@ Celldata opencelldata(Config *config /**< LPJmL configuration */
   if(config->cellarea_from_file)
   {
     celldata->with_cellarea=TRUE;
-    if(openinputdata(&celldata->cellarea,&config->area_filename,"cellarea","m2",LPJ_SHORT,0.01,config))
+    if(openinputdata(&celldata->cellarea,&config->area_filename,"cellarea","m2",LPJ_SHORT,1e5,config))
     {
       if(config->soil_filename.fmt==CDF)
         closecoord_netcdf(celldata->soil.cdf);
