@@ -42,7 +42,7 @@
   "firewood" : false,
   "new_phenology" : true,   /* GSI phenology enabled */
   "new_trf" : false,        /* new transpiration reduction function disabled */
-  "with_lakes" : true,
+  "with_lakes" : true,      /* enable lakes (true/false) */
   "river_routing" : true,
   "extflow" : false,
   "permafrost" : true,
@@ -57,7 +57,7 @@
   "depos_year_const" : 1901,
   "fix_climate" : false,
   "fix_landuse" : false,
-  "cellarea_from_file" : true, /* read cell area from file */
+  "cellarea_from_file" : false, /* read cell area from file (true/false) */
 #ifdef FROM_RESTART
   "new_seed" : false, /* read random seed from restart file */
   "population" : false,
