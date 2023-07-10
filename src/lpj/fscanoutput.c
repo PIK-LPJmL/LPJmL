@@ -319,7 +319,7 @@ Bool fscanoutput(LPJfile *file,  /**< pointer to LPJ file */
               fprintf(stderr,"ERROR224: Invalid format specifier in filename '%s'.\n",
                       config->outputvars[count].filename.name);
           }
-          else if(config->outputvars[count].oneyear && (flag==GRID || flag==COUNTRY || flag==REGION || flag==GLOBALFLUX || flag==AREA))
+          else if(config->outputvars[count].oneyear && getnyear(config->outnames,flag)==0)
           {
             if(verbosity)
               fprintf(stderr,"ERROR225: One year output not allowed for grid, globalflux, country or region.\n");
