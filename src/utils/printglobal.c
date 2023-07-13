@@ -200,23 +200,25 @@ int main(int argc,char **argv)
               area_filename,strerror(errno));
       return EXIT_FAILURE;
     }
-    for(i=0;i<n;i++)
+    if(isclm)
     {
-      if(isclm)
+      version=READ_VERSION;
+      if(freadheader(areafile,&header,&swap,LPJOUTPUT_HEADER,&version,TRUE))
       {
-        version=READ_VERSION;
-        if(freadheader(areafile,&header,&swap,LPJOUTPUT_HEADER,&version,TRUE))
-        {
-          fprintf(stderr,"Error reading header in '%s.\n",area_filename);
-          return EXIT_FAILURE;
-        }
-        if(readrealvec(areafile,area,0,header.scalar,n,swap,header.datatype))
-        {
-          fprintf(stderr,"Error reading '%s': %s.\n",area_filename,strerror(errno));
-          return EXIT_FAILURE;
-        }
+        fprintf(stderr,"Error reading header in '%s'.\n",area_filename);
+        return EXIT_FAILURE;
       }
-      else
+      if(readrealvec(areafile,area,0,header.scalar,n,swap,header.datatype))
+      {
+        fprintf(stderr,"Error reading '%s': %s.\n",area_filename,strerror(errno));
+        return EXIT_FAILURE;
+      }
+      for(i=0;i<n;i++)
+        area_sum+=area[i];
+    }
+    else
+    {
+      for(i=0;i<n;i++)
       {
         if(fread(&val,sizeof(float),1,areafile)!=1)
         {
@@ -228,7 +230,7 @@ int main(int argc,char **argv)
       area_sum+=area[i];
     }
     fclose(areafile);
-  }
+  } /* of if(area_filename!=NULL) */
   file=newvec(FILE *,argc-iarg-1);
   for(i=iarg+1;i<argc;i++)
   {
