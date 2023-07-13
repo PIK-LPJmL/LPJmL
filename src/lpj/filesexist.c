@@ -271,9 +271,9 @@ static int checkclmfile(const Config *config,const char *data_name,const Filenam
           fprintf(stderr,"ERROR237: Last year=%d in '%s' is less than last simulation year %d.\n",input.firstyear+input.nyear-1,filename->name,config->lastyear);
           return 1;
         }
-        else if(config->fix_climate && input.firstyear+input.nyear-1<config->fix_climate_year+config->fix_climate_cycle/2)
+        else if(config->fix_climate && input.firstyear+input.nyear-1<max(config->fix_climate_year,config->fix_climate_interval[1]))
         {
-          fprintf(stderr,"ERROR237: Last year=%d in '%s' is less than last simulation year %d.\n",input.firstyear+input.nyear-1,filename->name,config->fix_climate_year+config->fix_climate_cycle/2);
+          fprintf(stderr,"ERROR237: Last year=%d in '%s' is less than last simulation year %d.\n",input.firstyear+input.nyear-1,filename->name,max(config->fix_climate_year,config->fix_climate_interval[1]));
           return 1;
         }
       }
@@ -297,11 +297,11 @@ static int checkclmfile(const Config *config,const char *data_name,const Filenam
         fprintf(stderr,"ERROR237: Last year=%d in '%s' is less than last simulation year %d.\n",header.firstyear+header.nyear-1,filename->name,config->lastyear);
         return 1;
       }
-        else if(config->fix_climate && header.firstyear+header.nyear-1<config->fix_climate_year+config->fix_climate_cycle/2)
-        {
-          fprintf(stderr,"ERROR237: Last year=%d in '%s' is less than last simulation year %d.\n",header.firstyear+header.nyear-1,filename->name,config->fix_climate_year+config->fix_climate_cycle/2);
-          return 1;
-        }
+      else if(config->fix_climate && header.firstyear+header.nyear-1<max(config->fix_climate_year,config->fix_climate_interval[1]))
+      {
+        fprintf(stderr,"ERROR237: Last year=%d in '%s' is less than last simulation year %d.\n",header.firstyear+header.nyear-1,filename->name,max(config->fix_climate_year,config->fix_climate_interval[1]));
+        return 1;
+      }
     }
   }
   return 0;

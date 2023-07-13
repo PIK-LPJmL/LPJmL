@@ -1,13 +1,16 @@
-.TH bin2cdf 1  "July 1, 2021" "version 1.0.001" "USER COMMANDS"
+.TH bin2cdf 1  "version 5.6.16" "USER COMMANDS"
 .SH NAME
 bin2cdf \- convert binary output files into NetCDF files
 .SH SYNOPSIS
 .B bin2cdf
-[\-clm] [\-floatgrid] [\-cellsize size] [\-compress level] [\-descr d] [\-units u] [-global] {-swap] [\-short] [\-nbands n} [\nstep n] [\-ispft] [\-firstyear y] [\-metafile] [\-map name]
+[\-h] [\-clm] [\-floatgrid] [\-cellsize size] [\-compress level] [\-descr d] [\-units u] [-global] {-swap] [\-short] [\-nbands n} [\nstep n] [\-ispft] [\-firstyear y] [\-metafile] [\-map name]
 .I varname gridfile binfile netcdffile
 .SH DESCRIPTION
 Program converts binary output files into NetCDF file.
 .SH OPTIONS
+.TP
+\-h
+Print help text
 .TP
 \-clm
 File is in clm format, default is raw.
@@ -49,7 +52,7 @@ output is PFT specific.
 set first year in NetCDF file. Default is 1901.
 .TP
 \-metafile
-set the innput format to metafile instead of CLM
+set the input format to metafile instead of raw
 .TP
 \-map name
 name of map in JSON metafile, default is "band_names"
@@ -73,7 +76,11 @@ Create data file for vegetation carbon:
 .TP
 Convert monthly data:
 .B bin2cdf
--units gC/m2/month -descr "Net primary production" -nitem 12 npp output/grid.bin output/mnpp.bin mnpp.nc
+-units gC/m2/month -descr "Net primary production" -nbands 12 npp output/grid.bin output/mnpp.bin mnpp.nca
+.TP
+Convert from JSON metafile:
+.B bin2cdf
+-metafile NPP grid.bin pft_npp.bin.json pft_npp.nc
 .PP
 .SH EXIT STATUS
 .B bin2cdf

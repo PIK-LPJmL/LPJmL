@@ -2,7 +2,7 @@
 /**                                                                                \n**/
 /**                   l  p  j  m  l  .  j  s                                       \n**/
 /**                                                                                \n**/
-/** Default configuration file for LPJmL C Version 5.6.18                          \n**/
+/** Default configuration file for LPJmL C Version 5.6.19                          \n**/
 /**                                                                                \n**/
 /** Configuration file is divided into five sections:                              \n**/
 /**                                                                                \n**/
@@ -40,7 +40,7 @@
   "fire_on_grassland" : false, /* enable fire on grassland for Spitfire */
   "fdi" : "nesterov",       /* different fire danger index formulations: "wvpd" (needs GLDAS input data), "nesterov" */
   "firewood" : false,
-  "new_phenology" : true,   /* GSI phenology enabled */
+  "gsi_phenology" : true,   /* GSI phenology enabled */
   "new_trf" : false,        /* new transpiration reduction function disabled */
   "with_lakes" : true,      /* enable lakes (true/false) */
   "river_routing" : true,
@@ -51,13 +51,22 @@
   "with_nitrogen" : "lim", /* other options: "no", "lim", "unlim" */
   "nitrogen_coupled" : false, /* nitrogen stress coupled to water stress */
   "store_climate" : true, /* store climate data in spin-up phase */
-  "const_climate" : false,
-  "shuffle_climate" : true, /* shuffle spinup climate */
-  "const_deposition" : false,
-  "depos_year_const" : 1901,
-  "fix_climate" : false,
-  "fix_landuse" : false,
   "cellarea_from_file" : false, /* read cell area from file (true/false) */
+  "shuffle_spinup_climate" : true, /* shuffle spinup climate */
+  "fix_climate" : false,                /* fix climate after specified year */
+  "fix_climate_year" : 1901,            /* year after climate is fixed */
+  "fix_climate_interval" : [1901,1930],
+  "fix_climate_shuffle" : true,          /* randomly shuffle climate in the interval */
+  "fix_deposition_with_climate" : false, /* fix N deposition same as climate  */
+  "fix_deposition" : false,              /* fix N deposition after specified year */
+  "fix_deposition_year" : 1901,          /* year after deposition is fixed */
+  "fix_deposition_interval" : [1901,1930],
+  "fix_deposition_shuffle" : true,       /* randomly shuffle depositions in the interval */
+  "fix_landuse" : false,                 /* fix land use after specfied year */
+  "fix_landuse_year" : 1901,             /* year after land use is fixed */
+  "fix_co2" : false,                     /* fix atmospheric CO2  after specfied year */
+  "fix_co2_year" : 1901,                 /* year after CO2 is fixed */
+>>>>>>> d634fdb0abe937370058e5acefdd02fd123e3b5c
 #ifdef FROM_RESTART
   "new_seed" : false, /* read random seed from restart file */
   "population" : false,
@@ -99,7 +108,7 @@
   "cft_temp" : "temperate cereals",
   "cft_tropic" : "maize",
   "grassonly" : false,                  /* set all cropland including others to zero but keep managed grasslands */
-  "istimber" : true,
+  "luc_timber" : true,                  /* land-use change timber */
   "grassland_fixed_pft" : false,
   "grass_harvest_options" : false,
   "prescribe_lsuha" : false,

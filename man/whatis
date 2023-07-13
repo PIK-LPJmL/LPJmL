@@ -53,7 +53,6 @@ iterate (3) - main time loop for LPJmL
 iterateyear (3) - year time loop for LPJmL
 lpjcat (1) - concatenate restart files from distributed LPJmL simulations.
 lpjcheck (1) - check syntax of LPJmL configuration files 
-lpj (1) - dynamic global vegetation model with river routing
 lpjfiles (1) - print list of input/output files of LPJmL
 lpjml (1) - dynamic global vegetation model with managed land and river routing
 lpjprint (1) - print contents of restart file of LPJmL model runs 

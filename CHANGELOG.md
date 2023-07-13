@@ -19,6 +19,27 @@ of `major.minor.patch` with
 
 ## [Unreleased]
 
+## [5.6.19] - 2023-07-06
+
+### Added
+
+- Help option `-h` added to `bin2cdf` and `clm2cdf` utility.
+
+- Target `lpjcheck` added to `Makefile` to create only the `lpjcheck` utility.
+
+### Changed
+
+- The version of all man pages has been set to the LPJmL version number, date of last modification removed.
+
+- The different versions of the utilities have been replaced by a reference to the LPJmL version.
+
+### Removed
+
+- All html files have been removed from the repository.
+
+- Obsolete link `lpj` to `lpjml` removed.
+
+
 ## [5.6.18] - 2023-07-04
 
 ### Fixed
