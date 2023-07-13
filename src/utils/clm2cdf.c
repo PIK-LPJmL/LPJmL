@@ -20,7 +20,7 @@
 #define error(rc) if(rc) {free(lon);free(lat);free(year);fprintf(stderr,"ERROR427: Cannot write '%s': %s.\n",filename,nc_strerror(rc)); nc_close(cdf->ncid); free(cdf);return NULL;}
 
 #define MISSING_VALUE -9999.99
-#define USAGE "Usage: %s [-scale s] [-longheader] [-global] [-cellsize size] [-byte] [-int] [-float]\n       [-intnetcdf] [-metafile] [-raw] [-nbands n] [-landuse] [-notime] [-compress level] [-units u]\n       [-map name] [-descr d] name gridfile clmfile netcdffile\n"
+#define USAGE "Usage: %s [-h] [-scale s] [-longheader] [-global] [-cellsize size] [-byte] [-int] [-float]\n       [-intnetcdf] [-metafile] [-raw] [-nbands n] [-landuse] [-notime] [-compress level] [-units u]\n       [-map name] [-descr d] name gridfile clmfile netcdffile\n"
 
 typedef struct
 {
@@ -448,7 +448,41 @@ int main(int argc,char **argv)
   for(iarg=1;iarg<argc;iarg++)
     if(argv[iarg][0]=='-')
     {
-      if(!strcmp(argv[iarg],"-units"))
+      if(!strcmp(argv[iarg],"-h"))
+      {
+        printf("   clm2cdf (" __DATE__ ") Help\n"
+               "   ==========================\n\n"
+               "Convert CLM input data into NetCDF input data for LPJmL version " LPJ_VERSION "\n\n");
+        printf(USAGE
+               "\nArguments:\n"
+               "-h          print this help text\n"
+               "-global     use global grid for NetCDF file\n"
+               "-longheader force version of CLM file to 2\n"
+               "-scale s    set scaling factor for CLM version 1 files, default is 1\n"
+               "-cellsize s set cell size, default is 0.5\n"
+               "-byte       set data type in CLM file to byte, default is short\n"
+               "-int        set data type in CLM file to int, default is short\n"
+               "-float      set data type in CLM file to float, default is short\n"
+               "-intnetcdf  set datatype in NetCDF file to int, default is float\n"
+               "-metafile   set the input format to JSON metafile instead of CLM\n"
+               "-map name   name of map in JSON metafile, default is \"map\"\n"
+               "-raw        set the input format to raw instead of CLM\n"
+               "-nbands n   number of bands for raw input, default is 1\n"
+               "-landuse    convert land-use input data\n"
+               "-notime     No time dimension in NetCDF file\n"
+               "-compress l set compression level for NetCDF4 files\n"
+               "-descr d    set long name in NetCDF file\n"
+               "-units u    set units in NetCDF file\n"
+               "name        variable name in NetCDF file\n"
+               "gridfile    filename of grid data file\n"
+               "clmfile     filename of CLM data file\n"
+               "netcdffile  filename of NetCDF file created\n\n"
+               "(C) Potsdam Institute for Climate Impact Research (PIK), see COPYRIGHT file\n",
+               progname);
+        return EXIT_SUCCESS;
+      }
+
+      else if(!strcmp(argv[iarg],"-units"))
       {
         if(argc==iarg+1)
         {

@@ -53,9 +53,15 @@ SCRIPTS	= configure.bat configure.sh\
 FILES	= Makefile config/* README AUTHORS INSTALL VERSION LICENSE STYLESHEET\
           $(JSON) $(DATA) $(HDRS) $(SCRIPTS)
 
-main: 
+main:
 	$(MKDIR) lib
 	(cd src && $(MAKE))
+
+lpjcheck:
+	$(MKDIR) lib
+	(cd src && $(MAKE) libs)
+	(cd src/utils && $(MAKE) ../../bin/lpjcheck)
+
 utils:
 	(cd src && $(MAKE) libs)
 	(cd src/utils && $(MAKE) all)
@@ -65,7 +71,6 @@ all: main utils
 install: all
 	$(MKDIR) $(LPJROOT)/bin
 	$(MKDIR) $(LPJROOT)/include
-	$(MKDIR) $(LPJROOT)/html
 	$(MKDIR) $(LPJROOT)/par
 	$(MKDIR) $(LPJROOT)/man/man1
 	$(MKDIR) $(LPJROOT)/man/man5
@@ -73,14 +78,12 @@ install: all
 	chmod 755 $(LPJROOT)
 	chmod 755 $(LPJROOT)/bin
 	chmod 755 $(LPJROOT)/include
-	chmod 755 $(LPJROOT)/html
 	chmod 755 $(LPJROOT)/par
 	chmod 755 $(LPJROOT)/man
 	chmod 755 $(LPJROOT)/man/man1
 	chmod 755 $(LPJROOT)/man/man5
 	chmod 755 $(LPJROOT)/man/man3
 	install bin/* $(LPJROOT)/bin
-	install -m 644 html/* $(LPJROOT)/html
 	install -m 644 $(HDRS) $(LPJROOT)/include
 	install -m 644 $(DATA) $(LPJROOT)/par
 	install -m 644 README INSTALL VERSION AUTHORS LICENSE COPYRIGHT $(JSON) $(LPJROOT)
@@ -96,7 +99,7 @@ test: main
 clean:
 	(cd src  && $(MAKE) clean)
 
-tar: 
+tar:
 	tar -cf $(TARFILE) $(FILES) src/Makefile src/*.c\
 	    src/climate/Makefile src/climate/*.c\
             man/man1/*.1 man/man3/*.3 man/man5/*.5 man/whatis\
@@ -107,14 +110,14 @@ tar:
 	    src/numeric/*.c src/numeric/Makefile src/soil/*.c src/soil/Makefile\
 	    src/tools/*.c src/tools/Makefile src/tree/*.c src/tree/Makefile\
             src/lpj/FILES src/pnet/*.c src/pnet/FILES src/socket/Makefile\
-            src/socket/*.c html/*.html html/*.css src/reservoir/Makefile\
+            src/socket/*.c src/reservoir/Makefile\
             src/image/Makefile src/image/*.c src/reservoir/*.c\
             src/pnet/Makefile REFERENCES COPYRIGHT src/utils/*.c src/utils/Makefile\
             src/spitfire/Makefile src/spitfire/*.c src/netcdf/Makefile src/netcdf/*.c\
             src/cpl/Makefile src/cpl/*.c src/coupler/Makefile src/coupler/*.c
 	    gzip -f $(TARFILE)
 
-zipfile: 
+zipfile:
 	zip -l $(ZIPFILE) $(FILES) src/Makefile src/*.c\
 	    src/climate/Makefile src/climate/*.c config/* man/* man/man1/*.1\
             man/man3/*.3 man/man5/*.5\
