@@ -162,7 +162,7 @@ extern char *parse_json_metafile(FILE *,Header *,Map **,const char *,Attr **,int
 extern Map *fscanmap(LPJfile *,const char *,Verbosity);
 extern void freemap(Map *);
 extern void fprintmap(FILE *,Map *);
-extern void fprintjson(FILE *,const char *,const char *,const char *,const Header *,
+extern void fprintjson(FILE *,const char *,const char *,const char *,const char *,const Header *,
                        Map *,const char *,const Attr *,int,const char *,const char *,const char *,
                        const char *,const Filename *,Type,int,const char *,Bool,int);
 

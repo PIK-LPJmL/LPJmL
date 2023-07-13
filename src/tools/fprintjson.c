@@ -27,11 +27,12 @@ static void cvrtnewline(FILE *file,const char *s)
     else
       fputc(*s,file);
     s++;
-  } 
-}
+  }
+} /* of 'cvrtnewline' */
 
 void fprintjson(FILE *file,           /**< pointer to text file */
                 const char *filename, /**< filename of clm file */
+                const char *source,   /**< source string or NULL */
                 const char *history,  /**< history string or NULL */
                 const char *arglist,  /**< argument string or NULL */
                 const Header *header, /**< file header */
@@ -56,6 +57,8 @@ void fprintjson(FILE *file,           /**< pointer to text file */
   time_t t;
   fprintf(file,"{\n"
           "  \"filename\" : \"%s\",\n",strippath(filename));
+  if(source!=NULL)
+    fprintf(file,"  \"source\" : \"%s\",\n",source);
   if(history==NULL)
   {
     if(arglist!=NULL)
