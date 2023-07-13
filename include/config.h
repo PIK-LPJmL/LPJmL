@@ -238,7 +238,9 @@ struct config
   Pnet *irrig_res_back;
   int withlanduse;
   Bool reservoir;
+#ifdef COUPLING_WITH_FMS
   Bool nitrogen_coupled;
+#endif
   int *landusemap;          /**< mapping of bands in land-use file to CFTs */
   int landusemap_size;      /**< size of landusmap */
   int *fertilizermap;

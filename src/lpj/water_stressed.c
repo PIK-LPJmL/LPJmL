@@ -205,7 +205,9 @@ Real water_stressed(Pft *pft,                  /**< [inout] pointer to PFT varia
 
       adtmm=photosynthesis(&agd,rd,&pft->vmax,data.path,lambda,data.tstress,data.b,data.co2,
                            temp,data.apar,daylength,FALSE);
+#ifdef COUPLING_WITH_FMS
       if(config->nitrogen_coupled)
+#endif
       {
         gc=(1.6*adtmm/(ppm2bar(co2)*(1.0-lambda)*hour2sec(daylength)))+
                       pft->par->gmin*fpar(pft);
