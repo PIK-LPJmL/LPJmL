@@ -19,6 +19,43 @@ of `major.minor.patch` with
 
 ## [Unreleased]
 
+## [5.6.20] - 2023-07-13
+
+### Added
+
+- New flags `"fix_co2"` and `"fix_co2_year"` added.
+
+### Changed
+
+- Flag `"istimber"` renamed to `"luc_timber"`.
+
+- Flag `"new_phenology"` renamed to `"gsi_phenology"`.
+
+- Flag `"shuffle_climate"` renamed to `"shuffle_spinup_climate"`.
+
+- The settings for fixed input data have been updated. For climate and N deposition input an interval can be specified from which data is taken after the specified year. In can specified whether random shuffling or cycling is used:
+
+```java
+"fix_climate" : false,                /* fix climate after specified year */
+"fix_climate_year" : 1901,            /* year after climate is fixed */
+"fix_climate_interval" : [1901,1930],
+"fix_climate_shuffle" : true,          /* randomly shuffle climate in the interval */
+"fix_deposition_with_climate" : false, /* fix N deposition same as climate */
+"fix_deposition" : false,              /* fix N deposition after specified year */
+"fix_deposition_year" : 1901,          /* year after deposition is fixed */
+"fix_deposition_interval" : [1901,1930],
+"fix_deposition_shuffle" : true,       /* randomly shuffle depositions in the interval */
+"fix_landuse" : false,                 /* fix land use after specfied year */
+"fix_landuse_year" : 1901,             /* year after land use is fixed */
+"fix_co2" : false,                     /* fix atmospheric CO2  after specfied year */
+"fix_co2_year" : 1901,                 /* year after CO2 is fixed */
+```
+
+### Removed
+
+- Obsolete flag `"const_climate"` removed.
+
+
 ## [5.6.19] - 2023-07-06
 
 ### Added
