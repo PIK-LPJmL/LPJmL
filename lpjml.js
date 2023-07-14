@@ -51,7 +51,7 @@
   "with_nitrogen" : "lim", /* other options: "no", "lim", "unlim" */
   "nitrogen_coupled" : false, /* nitrogen stress coupled to water stress */
   "store_climate" : true, /* store climate data in spin-up phase */
-  "cellarea_from_file" : false, /* read cell area from file (true/false) */
+  "landfrac_from_file" : true, /* read cell area from file (true/false) */
   "shuffle_spinup_climate" : true, /* shuffle spinup climate */
   "fix_climate" : false,                /* fix climate after specified year */
   "fix_climate_year" : 1901,            /* year after climate is fixed */
@@ -66,7 +66,6 @@
   "fix_landuse_year" : 1901,             /* year after land use is fixed */
   "fix_co2" : false,                     /* fix atmospheric CO2  after specfied year */
   "fix_co2_year" : 1901,                 /* year after CO2 is fixed */
->>>>>>> d634fdb0abe937370058e5acefdd02fd123e3b5c
 #ifdef FROM_RESTART
   "new_seed" : false, /* read random seed from restart file */
   "population" : false,
@@ -163,6 +162,7 @@
 ID                               Fmt                        filename
 -------------------------------- ------------------------- ----------------------------- */
     { "id" : "grid",             "file" : { "fmt" : "raw", "name" : "output/grid.bin" }},
+    { "id" : "landarea",         "file" : { "fmt" : "raw", "name" : "output/landarea.bin" }},
     { "id" : "fpc",              "file" : { "fmt" : "raw", "name" : "output/fpc.bin" }},
     { "id" : "globalflux",       "file" : { "fmt" : "txt", "name" : "output/globalflux.csv"}},
     { "id" : "npp",              "file" : { "fmt" : "raw", "name" : "output/mnpp.bin"}},

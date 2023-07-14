@@ -270,7 +270,7 @@ static Cell *newgrid2(Config *config,          /* Pointer to LPJ configuration *
   for(i=0;i<config->ngridcell;i++)
   {
     /* read cell coordinate and soil code from file */
-    if(readcelldata(celldata,&grid[i].coord,&soilcode,&grid[i].soilph,i,config))
+    if(readcelldata(celldata,grid+i,&soilcode,i,config))
       return NULL;
 
     if(config->countrypar!=NULL)
@@ -332,6 +332,9 @@ static Cell *newgrid2(Config *config,          /* Pointer to LPJ configuration *
     {
       if(readinputdata(&lakes,&grid[i].lakefrac,&grid[i].coord,i+config->startgrid,&config->lakes_filename))
         return NULL;
+      grid[i].lakefrac/=grid[i].landfrac;
+      if(grid[i].lakefrac>1)
+        fprintf(stderr,"WARNING035: Lake fraction in cell %d=%g greater than one, set to one.\n",i+config->startgrid,grid[i].lakefrac);
       if(grid[i].lakefrac>1-epsilon)
         grid[i].lakefrac=1;
     }

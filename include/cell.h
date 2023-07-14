@@ -101,6 +101,7 @@ struct cell
   Standlist standlist;      /**< Stand list */
   Climbuf climbuf;
   Ignition ignition;
+  Real landfrac;            /**< land fraction ((0..1]) */
   Real afire_frac;          /**< fraction of grid cell burnt this year */
   Real *gdd;                /**< Growing degree days array */
   Real lakefrac;            /**< lake fraction (0..1) */
@@ -181,7 +182,7 @@ extern void killstand(Cell *,int,Bool,Bool,int,int,const Config *);
 extern Bool initsoiltemp(Climate *, Cell*,const Config *);
 extern Celldata opencelldata(Config *);
 extern Bool seekcelldata(Celldata,int);
-extern Bool readcelldata(Celldata,Coord *,unsigned int *,Real *,int,Config *);
+extern Bool readcelldata(Celldata,Cell *,unsigned int *,int,Config *);
 extern void closecelldata(Celldata);
 extern Real albedo(Cell *, Real , Real );
 extern Bool initoutput(Outputfile *,Cell [],int,int,Config *);

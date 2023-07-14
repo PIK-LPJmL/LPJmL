@@ -84,7 +84,7 @@ static Bool printgrid(Config *config, /* Pointer to LPJ configuration */
            config->checkpoint_restart_filename,config->checkpointyear);
   for(i=0;i<config->ngridcell;i++)
   {
-    if(readcelldata(celldata,&grid.coord,&soilcode,&grid.soilph,i,config))
+    if(readcelldata(celldata,&grid.coord,&grid.landfrac,&soilcode,&grid.soilph,i,config))
       break;
     if(config->countrypar!=NULL)
     {

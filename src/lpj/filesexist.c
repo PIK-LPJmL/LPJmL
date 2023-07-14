@@ -398,8 +398,8 @@ Bool filesexist(Config config, /**< LPJmL configuration */
   }
   else
     bad+=checkcoordfile(&config,&config.soil_filename);
-  if(config.cellarea_from_file)
-    bad+=checkinputdata(&config,&config.area_filename,"cellarea","m2",LPJ_SHORT);
+  if(config.landfrac_from_file)
+    bad+=checkinputdata(&config,&config.landfrac_filename,"landfrac","1",LPJ_SHORT);
   if(config.with_lakes)
     bad+=checkinputdata(&config,&config.lakes_filename,"lakes","1",LPJ_SHORT);
   if(config.river_routing)

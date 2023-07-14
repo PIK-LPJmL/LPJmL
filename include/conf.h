@@ -131,7 +131,7 @@
 #define COUNTRY 1
 #define REGION 2
 #define GLOBALFLUX 3
-#define AREA 4
+#define LANDAREA 4
 #define FPC 5
 #define RUNOFF 6
 #define DISCHARGE 7

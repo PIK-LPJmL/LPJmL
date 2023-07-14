@@ -21,7 +21,7 @@
 struct celldata
 {
   Bool with_nitrogen;
-  Bool with_cellarea;
+  Bool with_landfrac;
   int soil_fmt;
   union
   {
@@ -36,7 +36,7 @@ struct celldata
     Coord_netcdf cdf;
   } soil;
   Infile soilph;
-  Infile cellarea;
+  Infile landfrac;
 };
 
 Celldata opencelldata(Config *config /**< LPJmL configuration */
@@ -138,10 +138,10 @@ Celldata opencelldata(Config *config /**< LPJmL configuration */
   }
   else
     celldata->with_nitrogen=FALSE;
-  if(config->cellarea_from_file)
+  if(config->landfrac_from_file)
   {
-    celldata->with_cellarea=TRUE;
-    if(openinputdata(&celldata->cellarea,&config->area_filename,"cellarea","m2",LPJ_SHORT,1e5,config))
+    celldata->with_landfrac=TRUE;
+    if(openinputdata(&celldata->landfrac,&config->landfrac_filename,"landfrac","1",LPJ_SHORT,0.01,config))
     {
       if(config->soil_filename.fmt==CDF)
         closecoord_netcdf(celldata->soil.cdf);
@@ -157,7 +157,7 @@ Celldata opencelldata(Config *config /**< LPJmL configuration */
     }
   }
   else
-    celldata->with_cellarea=FALSE;
+    celldata->with_landfrac=FALSE;
 
   return celldata;
 } /* of 'opencelldata' */
@@ -198,9 +198,8 @@ Bool seekcelldata(Celldata celldata, /**< pointer to celldata */
 } /* of 'seekcelldata' */
 
 Bool readcelldata(Celldata celldata, /**< pointer to celldata */
-                  Coord *coord,      /**< lon,lat coordinate */
+                  Cell *grid,            /**< pointer to grid cell */
                   unsigned int *soilcode,     /**< soil code */
-                  Real *soil_ph,                /**< soil pH */
                   int cell,          /**< cell index */
                   Config *config     /**< LPJmL configuration */
                  )                   /** \return TRUE on error */
@@ -208,7 +207,7 @@ Bool readcelldata(Celldata celldata, /**< pointer to celldata */
   char *name;
   if(celldata->soil_fmt==CDF)
   {
-    if(readcoord_netcdf(celldata->soil.cdf,coord,&config->resolution,soilcode))
+    if(readcoord_netcdf(celldata->soil.cdf,&grid->coord,&config->resolution,soilcode))
     {
       fprintf(stderr,"ERROR190: Unexpected end of file in '%s' for cell %d.\n",
               config->soil_filename.name,cell+config->startgrid);
@@ -217,7 +216,7 @@ Bool readcelldata(Celldata celldata, /**< pointer to celldata */
   }
   else
   {
-    if(readcoord(celldata->soil.bin.file_coord,coord,&config->resolution))
+    if(readcoord(celldata->soil.bin.file_coord,&grid->coord,&config->resolution))
     {
       name=getrealfilename(&config->coord_filename);
       fprintf(stderr,"ERROR190: Unexpected end of file in '%s' for cell %d.\n",
@@ -248,14 +247,29 @@ Bool readcelldata(Celldata celldata, /**< pointer to celldata */
   }
   if(config->with_nitrogen)
   {
-    if(readinputdata(&celldata->soilph,soil_ph,coord,cell+config->startgrid,&config->soilph_filename))
+    if(readinputdata(&celldata->soilph,&grid->soilph,&grid->coord,cell+config->startgrid,&config->soilph_filename))
       return TRUE;
   }
-  if(config->cellarea_from_file)
+  if(config->landfrac_from_file)
   {
-    if(readinputdata(&celldata->cellarea,&coord->area,coord,cell+config->startgrid,&config->area_filename))
+    if(readinputdata(&celldata->landfrac,&grid->landfrac,&grid->coord,cell+config->startgrid,&config->landfrac_filename))
       return TRUE;
+    if(grid->landfrac==0)
+    {
+      fprintf(stderr,"WARNING034: Land fraction of cell %d is zero, set to %g.\n",
+              cell+config->startgrid,tinyfrac);
+      grid->landfrac=tinyfrac;
+    }
+    else if(grid->landfrac>1 || grid->landfrac<0)
+    {
+      fprintf(stderr,"ERROR257: Land fraction of cell %d=%g not in (0,1].\n",
+              cell+config->startgrid,grid->landfrac);
+      return TRUE;
+    }
+    grid->coord.area*=grid->landfrac;
   }
+  else
+    grid->landfrac=1;
   return FALSE;
 } /* of 'readcelldata' */
 
@@ -271,7 +285,7 @@ void closecelldata(Celldata celldata /**< pointer to celldata */
   }
   if(celldata->with_nitrogen)
     closeinput(&celldata->soilph);
-  if(celldata->with_cellarea)
-    closeinput(&celldata->cellarea);
+  if(celldata->with_landfrac)
+    closeinput(&celldata->landfrac);
   free(celldata);
 } /* of 'closecelldata' */

@@ -80,10 +80,10 @@ static size_t isnetcdfinput(const Config *config)
     if(config->soilph_filename.fmt==CDF)
       width=max(width,strlen(config->soilph_filename.var));
   }
-  if(config->cellarea_from_file)
+  if(config->landfrac_from_file)
   {
-    if(config->area_filename.fmt==CDF)
-      width=max(width,strlen(config->area_filename.var));
+    if(config->landfrac_filename.fmt==CDF)
+      width=max(width,strlen(config->landfrac_filename.var));
   }
   if(config->cropsheatfrost || config->fire==SPITFIRE_TMAX)
   {
@@ -255,6 +255,8 @@ void fprintconfig(FILE *file,          /**< File pointer to text output file */
   else
     putc('\n',file);
   len=0;
+  if(config->landfrac_from_file)
+    len=printsim(file,len,&count,"land fraction read from file");
 #if defined IMAGE && defined COUPLED
   if(config->sim_id==LPJML_IMAGE)
     len=printsim(file,len,&count,"IMAGE coupling");
@@ -530,8 +532,8 @@ void fprintconfig(FILE *file,          /**< File pointer to text output file */
   printinputfile(file,"soil",&config->soil_filename,width,config);
   if(config->soil_filename.fmt!=CDF)
     printinputfile(file,"coord",&config->coord_filename,width,config);
-  if(config->cellarea_from_file)
-    printinputfile(file,"area",&config->area_filename,width,config);
+  if(config->landfrac_from_file)
+    printinputfile(file,"landfrac",&config->landfrac_filename,width,config);
   printinputfile(file,"temp",&config->temp_filename,width,config);
   printinputfile(file,"prec",&config->prec_filename,width,config);
 #if defined IMAGE && defined COUPLED

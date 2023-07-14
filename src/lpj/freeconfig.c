@@ -34,8 +34,8 @@ void freeconfig(Config *config /**< LPJmL configuration */
   free(config->compress_suffix);
   if(config->soil_filename.fmt!=CDF)
     freefilename(&config->coord_filename);
-  if(config->cellarea_from_file)
-    freefilename(&config->area_filename);
+  if(config->landfrac_from_file)
+    freefilename(&config->landfrac_filename);
   freefilename(&config->soil_filename);
   free(config->outputdir);
   free(config->inputdir);

@@ -60,7 +60,7 @@ struct config
   Filename extflow_filename;
   Filename neighb_irrig_filename;
   Filename coord_filename;
-  Filename area_filename;
+  Filename landfrac_filename;
   Filename soil_filename;
   Filename soilph_filename;
   Filename river_filename;
@@ -175,7 +175,7 @@ struct config
   int fix_co2_year;             /**< year at which CO2 is fixed */
   Bool iscotton;                /**< cotton present in PFT parameter file */
   Bool fire_on_grassland;       /**< enable fires on grassland for Spitfire */
-  Bool cellarea_from_file;      /**< cell area read from file (TRUE/FALSE) */
+  Bool landfrac_from_file;      /**< land fraction read from file (TRUE/FALSE) */
   Bool residues_fire;           /**< use parameters for agricultural fires */
   Bool param_out;               /**< print LPJmL parameter */
   Bool check_climate;           /**< check climate input data for NetCDF files */

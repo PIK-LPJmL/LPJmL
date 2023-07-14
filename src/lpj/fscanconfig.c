@@ -215,8 +215,8 @@ Bool fscanconfig(Config *config,    /**< LPJ configuration */
   }
   else if(verbose)
     fprintf(stderr,"WARNING027: Name 'coupled_model' for string not found, set to null.\n");
-  config->cellarea_from_file=FALSE;
-  if(fscanbool(file,&config->cellarea_from_file,"cellarea_from_file",TRUE,verbose))
+  config->landfrac_from_file=FALSE;
+  if(fscanbool(file,&config->landfrac_from_file,"landfrac_from_file",TRUE,verbose))
     return TRUE;
   fscanbool2(file,&israndom,"random_prec");
   config->seed_start=RANDOM_SEED;
@@ -790,9 +790,9 @@ Bool fscanconfig(Config *config,    /**< LPJ configuration */
     config->grassharvest_filename.name = NULL;
     config->lsuha_filename.name = NULL;
   }
-  if(config->cellarea_from_file)
+  if(config->landfrac_from_file)
   {
-    scanclimatefilename(input,&config->area_filename,FALSE,FALSE,"cellarea");
+    scanclimatefilename(input,&config->landfrac_filename,FALSE,FALSE,"landfrac");
   }
   if(config->with_lakes)
   {

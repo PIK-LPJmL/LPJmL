@@ -37,10 +37,6 @@
 
 #include "lpj.h"
 
-/* define a tiny fraction for allcrops that is always at least 10x epsilon */
-
-Real tinyfrac=max(epsilon*10,1e-6);
-
 struct landuse
 {
   Bool intercrop;               /**< intercropping possible (TRUE/FALSE) */
@@ -350,6 +346,10 @@ Bool getlanduse(Landuse landuse,     /**< Pointer to landuse data */
   data=readdata(&landuse->landuse,NULL,grid,"landuse",yearl,config);
   if(data==NULL)
     return TRUE;
+  count=0;
+  for(cell=0;cell<config->ngridcell;cell++)
+    for(i=0;i<landuse->landuse.var_len;i++)
+      data[count++]/=grid[cell].landfrac;
   count=0;
 
   for(cell=0;cell<config->ngridcell;cell++)
