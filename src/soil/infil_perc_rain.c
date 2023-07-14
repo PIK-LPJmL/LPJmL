@@ -22,6 +22,7 @@
 
 Real infil_perc_rain(Stand *stand,        /**< Stand pointer */
                      Real infil,          /**< rainfall + melting water - interception_stand (mm) + rw_irrig */
+                     Real infil_vol_enth, /**< volumetric enthalpy contained in infil */
                      Real *return_flow_b, /**< blue water return flow (mm) */
                      int npft,            /**< number of natural PFTs */
                      int ncft,            /**< number of crop PFTs */
@@ -104,6 +105,7 @@ Real infil_perc_rain(Stand *stand,        /**< Stand pointer */
     srunoff=slug-influx; /*surface runoff used for leaching */
     frac_g_influx=1; /* first layer has only green influx, but lower layers with percolation have mixed frac_g_influx */
 
+    soil->perc_energy[0]+=influx/1000*infil_vol_enth; /* calc energy of influx in top layer */
     for(l=0;l<NSOILLAYER;l++)
     {
       if(l<NTILLLAYER)
@@ -131,6 +133,7 @@ Real infil_perc_rain(Stand *stand,        /**< Stand pointer */
       if ((soil->w[l]*soil->whcs[l])>(soildepth[l]-soil->freeze_depth[l])*(soil->wsat-soil->wpwp))
       {
         grunoff=(soil->w[l]*soil->whcs[l])-((soildepth[l]-soil->freeze_depth[l])*(soil->wsat-soil->wpwp));
+        soil->perc_energy[l]-=grunoff/1000*((soil->temp[l]>0?c_water:c_ice)*soil->temp[l]+(soil->temp[l]>=0?c_water2ice:0));
         soil->w[l]-=grunoff/soil->whcs[l];
         runoff+=grunoff;
         lrunoff+=grunoff;
@@ -141,6 +144,7 @@ Real infil_perc_rain(Stand *stand,        /**< Stand pointer */
       {
         grunoff=(inactive_water[l]+soil->w[l]*soil->whcs[l])-soil->wsats[l];
         soil->w[l]-=grunoff/soil->whcs[l];
+        soil->perc_energy[l]-=grunoff/1000*((soil->temp[l]>=0?c_water:c_ice)*soil->temp[l]+(soil->temp[l]>=0?c_water2ice:0));
         runoff+=grunoff;
         lrunoff+=grunoff;
         *return_flow_b+=grunoff*(1-stand->frac_g[l]);
@@ -177,6 +181,7 @@ Real infil_perc_rain(Stand *stand,        /**< Stand pointer */
             perc+=(soil->w[l])*soil->whcs[l];
             soil->w[l]=0;
           }
+          soil->perc_energy[l]-= (perc/1000)*((soil->temp[l]>=0?c_water:c_ice)*soil->temp[l]+(soil->temp[l]>=0?c_water2ice:0));
           getoutputindex(&stand->cell->output,PERC,l,config)+=perc*stand->frac;
           if(l==BOTTOMLAYER)
           {
@@ -191,8 +196,7 @@ Real infil_perc_rain(Stand *stand,        /**< Stand pointer */
           {
             influx=perc;
             frac_g_influx=stand->frac_g[l];
-            /* get percolation enthalpy which is sensible + latent heat */
-            soil->perc_energy[l+1]=(soil->temp[l]*c_water+c_water2ice)*perc*1e-3; 
+            soil->perc_energy[l+1]+= perc/1000*((soil->temp[l]>=0?c_water:c_ice)*soil->temp[l]+(soil->temp[l]>=0?c_water2ice:0));//(soil->temp[l]*c_water+c_water2ice)*perc*1e-3;
           }
           if(config->with_nitrogen && l<BOTTOMLAYER)
           {

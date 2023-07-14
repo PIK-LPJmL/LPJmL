@@ -77,11 +77,17 @@ void update_soil_thermal_state(Soil *soil,           /**< pointer to soil data *
 
 
 void modify_enth_due_to_masschanges(Soil * soil,const Config * config){
-  Soil_thermal_prop old_therm_storage_prop;                      
-  Real waterdiff[NSOILLAYER], soliddiff[NSOILLAYER];  
-  calc_soil_thermal_props(&old_therm_storage_prop, soil, soil->old_totalwater,  soil->old_wsat, config->johansen, FALSE); 
-  get_soilcontent_change(waterdiff, soliddiff, soil);                     
-  daily_mass2heatflow(soil->enth, waterdiff, soliddiff, old_therm_storage_prop);      
+  #ifndef WITH_WATER_HEAT_TRANFER
+    Soil_thermal_prop old_therm_storage_prop;                      
+    Real waterdiff[NSOILLAYER], soliddiff[NSOILLAYER];  
+    calc_soil_thermal_props(&old_therm_storage_prop, soil, soil->old_totalwater,  soil->old_wsat, config->johansen, FALSE); 
+    
+    get_soilcontent_change(waterdiff, soliddiff, soil);                     
+    daily_mass2heatflow(soil->enth, waterdiff, soliddiff, old_therm_storage_prop);    
+   #else
+    apply_perc_energy(soil->enth,soil->perc_energy);
+   #endif  
+  //apply_perc_energy(soil->enth,soil->perc_energy);
 }
 
 
@@ -154,17 +160,64 @@ void get_soilcontent_change_abs(Real *waterdiff, Real *soliddiff, Soil *soil)
 
 
 void apply_perc_energy(Real *enth,             /*< enthalpy vector that is updated*/
-                       const Real *perc_energy /*< vector absolute energy change of each layer */
+                       Real *perc_energy /*< vector absolute energy change of each layer */
                       )
 {
     int l,j;   /* l=layer, j is for sublayer */
     int gp;    /* gridpoint */
-    double volumetric_energy_change;
-    for(l=0;l<NSOILLAYER;++l){
-      volumetric_energy_change = perc_energy[l]/(soildepth[l]/1000);
-      for(j=0;j<GPLHEAT;++j){
-        enth[j]+=volumetric_energy_change; 
-      }
+
+   
+    for(l=0;l<NSOILLAYER;l++){
+        Real energy_change = perc_energy[l]/(soildepth[l]/1000)*GPLHEAT;
+        if (energy_change>0) {
+            // distribute equally
+            Real change_per_point = energy_change/GPLHEAT ;
+            for (int j = 0; j < GPLHEAT; j++) {
+                enth[l*GPLHEAT + j] += change_per_point;
+            }
+                        // int num_pos_enth_points = 0;
+            //     for (int j = 0; j < GPLHEAT; ++j) {
+            //         if (enth[l*GPLHEAT + j] >= 0) {
+            //             ++num_pos_enth_points;
+            //         }
+            //     }
+            // Real change_per_point = energy_change/num_pos_enth_points ;
+            // for (int j = 0; j < GPLHEAT; j++) {
+            //   if(enth[l*GPLHEAT + j]>=0)
+            //     enth[l*GPLHEAT + j] += change_per_point;
+            // }
+        } else {
+            // distribute until reaching zero
+            while (energy_change < -1e-8) {
+                int num_pos_enth_points = 0;
+                for (int j = 0; j < GPLHEAT; ++j) {
+                    if (enth[l*GPLHEAT + j] > 0) {
+                        ++num_pos_enth_points;
+                    }
+                }
+
+                if (num_pos_enth_points == 0) {
+                    // all points are zero, can't distribute energy
+                    printf("ERROR CANT Distribute enrgy");
+                    break;
+                    
+                }
+
+                Real change_per_point = energy_change / num_pos_enth_points;
+                for (int j = 0; j < GPLHEAT; ++j) {
+                  if(enth[l*GPLHEAT + j]>0){
+                    if (enth[l*GPLHEAT + j] + change_per_point < 0) {
+                        energy_change += enth[l*GPLHEAT + j];  // remove this point's energy from the total
+                        enth[l*GPLHEAT + j] = 0;
+                    } else {
+                        enth[l*GPLHEAT + j] += change_per_point;
+                        energy_change -= change_per_point;
+                    }
+                  }
+                }
+            }
+        }
+        perc_energy[l]=0;
     }
 }
 
