@@ -58,6 +58,7 @@ Real daily_woodplantation(Stand *stand,       /**< stand pointer */
   Real wdf; /* water deficit fraction */
   Real gc_pft;
   Real transp;
+  Real vol_water_enth; /* volumetric enthalpy of water */
   Biomass_tree *data;
   Soil *soil;
   irrig_apply = 0;
@@ -157,12 +158,14 @@ Real daily_woodplantation(Stand *stand,       /**< stand pointer */
   /* soil inflow: infiltration and percolation */
   if (irrig_apply>epsilon)
   {
-    runoff+=infil_perc_irr(stand,irrig_apply,&return_flow_b,npft,ncft,config);
+    vol_water_enth = climate->temp*c_water+c_water2ice;
+    runoff+=infil_perc_irr(stand,irrig_apply,vol_water_enth,&return_flow_b,npft,ncft,config);
     /* count irrigation events*/
     getoutputindex(output,CFT_IRRIG_EVENTS,index,config)++;
   }
 
-  runoff+=infil_perc_rain(stand,rainmelt,&return_flow_b,npft,ncft,config);
+  vol_water_enth = climate->temp*c_water*climate->prec/(climate->prec+melt)+c_water2ice;
+  runoff+=infil_perc_rain(stand,rainmelt,vol_water_enth,&return_flow_b,npft,ncft,config);
 
   foreachpft(pft, p, &stand->pftlist)
   {
