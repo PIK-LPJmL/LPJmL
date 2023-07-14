@@ -18,16 +18,6 @@
 
 #include "lpj.h"
 
-#ifdef _WIN32              /* are we on a Windows machine? */
-#ifdef IMAGE
-#define cpp_cmd "cl /E /DIMAGE /nologo"  /* C preprocessor command for Windows */
-#else
-#define cpp_cmd "cl /E /nologo"  /* C preprocessor command for Windows */
-#endif
-#else
-#define cpp_cmd "cpp"  /* C preprocessor command for Unix */
-#endif
-
 #define checkptr(ptr) if(ptr==NULL) { printallocerr(#ptr); return NULL; }
 
 FILE *openconfig(Config *config,      /**< configuration struct */

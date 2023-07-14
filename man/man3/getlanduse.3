@@ -1,11 +1,11 @@
-.TH getlanduse 3  "January 9, 2013" "version 5.1.001" "LPJmL programmers manual"
+.TH getlanduse 3  "version 5.6.16" "LPJmL programmers manual"
 .SH NAME
 getlanduse \- Get land use data
 .SH SYNOPSIS
 .nf
 \fB#include "lpj.h"
 
-Bool getlanduse(Landuse \fIlanduse\fB,Cell \fIgrid[]\fB,int \fIyear\fB,int \fIncft\fB,const Config *\fIconfig\fB);\fP
+Bool getlanduse(Landuse \fIlanduse\fB,Cell \fIgrid[]\fB,int \fIyear\fB,int \fIactual_year\fB,int \fIncft\fB,const Config *\fIconfig\fB);\fP
 
 .fi
 .SH DESCRIPTION
@@ -20,6 +20,9 @@ Cell grid array allocated and initialized by \fBnewgrid()\fP.
 .TP
 .I year
 Sets year land use is read.
+.TP
+.I actual_year
+The actual year of simulation.
 .TP
 .I ncft
 Number of crop plant functional types.

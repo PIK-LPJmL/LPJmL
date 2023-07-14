@@ -162,19 +162,24 @@ struct config
   int landuse_year_const;       /**< year landuse is fixed for LANDUSE_CONST case */
   Bool intercrop;               /**< intercropping (TRUE/FALSE) */
   Bool grassonly;               /**< set all cropland including others to zero but keep managed grasslands */
-  Bool istimber;
+  Bool luc_timber;              /***< land-use change timber */
   Bool storeclimate;           /**< store climate data in spin-up phase */
-  Bool const_climate;           /**< constant climate */
-  Bool shuffle_climate;         /**< shuffle spinup climate */
+  Bool shuffle_spinup_climate;  /**< shuffle spinup climate */
   Bool fix_climate;             /**< fix climate after specified year */
+  int fix_climate_year;         /**< year at which climate is fixed */
+  int fix_climate_interval[2];  /**< interval for fixed climate */
+  Bool fix_climate_shuffle;     /**< randomly shuffle climate */
+  Bool fix_deposition;          /**< fix deposition after specified year */
+  int fix_deposition_year;      /**< year at which deposition is fixed */
+  int fix_deposition_interval[2]; /**< interval for fixed deposition */
+  Bool fix_deposition_shuffle;  /**< randomly shuffle deposition */
+  Bool fix_deposition_with_climate; /**< fix deposition same as climate */
   Bool fix_landuse;             /**< fix land use after specified year */
+  int fix_landuse_year;         /**< year at which land use is fixed */
+  Bool fix_co2;                 /**< fix CO2 after specified year */
+  int fix_co2_year;             /**< year at which CO2 is fixed */
   Bool iscotton;                /**< cotton present in PFT parameter file */
   Bool fire_on_grassland;       /**< enable fires on grassland for Spitfire */
-  int fix_landuse_year;         /**< year at which land use is fixed */
-  int fix_climate_year;         /**< year at which climate is fixed */
-  int fix_climate_cycle;        /**< number of years for climate shuffle for fixed climate */
-  Bool const_deposition;        /**< constant N deposition */
-  int depos_year_const;         /**< year deposition is fixed */
   Bool residues_fire;           /**< use parameters for agricultural fires */
   Bool param_out;               /**< print LPJmL parameter */
   Bool ofiles;                  /**< list only all output files */
@@ -225,7 +230,7 @@ struct config
   Bool extflow;        /** external flow enabled */
   Bool permafrost;     /**< permafrost module enabled */
   Bool johansen;       /**< johansen enabled */
-  Bool new_phenology;	/**< new phenology enabled */
+  Bool gsi_phenology;	/**< GSI phenology enabled (TRUE/FALSE) */
   Bool new_trf;         /**< new transpiration reduction function enabled */
   Bool equilsoil;      /**< equilsoil is called */
   Bool from_restart;   /**< reading from restart */

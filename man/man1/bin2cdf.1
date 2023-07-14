@@ -1,13 +1,16 @@
-.TH bin2cdf 1  "July 1, 2021" "version 1.0.001" "USER COMMANDS"
+.TH bin2cdf 1  "version 5.6.16" "USER COMMANDS"
 .SH NAME
 bin2cdf \- convert binary output files into NetCDF files
 .SH SYNOPSIS
 .B bin2cdf
-[\-clm] [\-floatgrid] [\-doublegrid] [\-revlat] [\-days] [\-cellsize size] [\-compress level] [\-descr d] [\-missing_value val] [[\-attr name=value] ...] [\-units u] [-global] [-swap] [\-short] [\-nbands n] [\-nstep n] [\-ispft] [\-firstyear y] [\-metafile] [\-map name]
+[\-h] [\-clm] [\-floatgrid] [\-doublegrid] [\-revlat] [\-days] [\-cellsize size] [\-compress level] [\-descr d] [\-missing_value val] [[\-attr name=value] ...] [\-units u] [-global] [-swap] [\-short] [\-nbands n] [\-nstep n] [\-ispft] [\-firstyear y] [\-metafile] [\-map name]
 .I [varname gridfile] binfile netcdffile
 .SH DESCRIPTION
 Program converts binary output files into NetCDF file.
 .SH OPTIONS
+.TP
+\-h
+Print help text
 .TP
 \-clm
 File is in clm format, default is raw.
@@ -64,7 +67,7 @@ output is PFT specific.
 set first year in NetCDF file. Default is 1901.
 .TP
 \-metafile
-set the input format to JSON metafile instead of CLM
+set the input format to JSON metafile instead of raw
 .TP
 \-map name
 name of map in JSON metafile, default is "band_names"

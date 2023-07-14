@@ -62,7 +62,7 @@ void help(const char *progname /**< program filename */
           "-ofiles             list only all available output variables\n"
           "-param              print LPJmL parameter\n"
           "-nopp               disable preprocessing\n"
-          "-pp cmd             set preprocessor program. Default is 'cpp'\n"
+          "-pp cmd             set preprocessor program. Default is '" cpp_cmd "'\n"
 #ifdef WITH_FPE
           "-fpe                enable floating point exceptions\n"
 #endif

@@ -1,4 +1,4 @@
-.TH lpjfiles 1  "April 21, 2023" "version 1.0.004" "USER COMMANDS"
+.TH lpjfiles 1  "version 5.6.16" "USER COMMANDS"
 .SH NAME
 lpjfiles \- Prints list of input/output files of LPJmL 
 .SH SYNOPSIS
@@ -17,7 +17,7 @@ display a short help text
 does not list input data files
 .TP
 \-pp cmd
-Set preprocessor program to cmd. Default is \fBcpp -P\fP.
+Set preprocessor program to cmd. Default is \fBcpp\fP.
 .TP
 \-outpath \fIdir\fP
 set the output directory path. The path is added to the output filenames if they do not contain an absolute path.
@@ -42,7 +42,7 @@ Archive files for configuration file lpjml.js with input files located in the /p
 .SH ENVIRONMENT
 .TP
 LPJPREP 
-defines preprocessor command for LPJmL configuration file, default is \fBcpp -P\fP. Same as '-pp' option.
+defines preprocessor command for LPJmL configuration file, default is \fBcpp\fP. Same as '-pp' option.
 .TP
 LPJROOT
 defines the root directory for LPJmL. This directory is added to the

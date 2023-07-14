@@ -1,4 +1,4 @@
-.TH cdf2bin 1  "March 29, 2022" "version 1.0.001" "USER COMMANDS"
+.TH cdf2bin 1  "version 5.6.16" "USER COMMANDS"
 .SH NAME
 cdf2bin \- convert NetCDF files into raw binary data
 .SH SYNOPSIS
@@ -27,7 +27,7 @@ set datatype of grid file to float, default is short.
 set datatype of grid file to double, default is short.
 .TP
 \-clm
-gridfile is in CLM format, raw be default
+gridfile is in CLM format, default is raw
 .TP
 \-byte
 output data is converted to byte
@@ -36,7 +36,11 @@ output data is converted to byte
 cell size in grid file, default is 0.5
 .TP
 \-json
+<<<<<<< HEAD
 JSON metafile is created with suffix '.json'
+=======
+JSON metafile is created with suffix '.json'.
+>>>>>>> d634fdb0abe937370058e5acefdd02fd123e3b5c
 .TP
 \-o binfile
 filename of raw binary data file written. Default is out.bin

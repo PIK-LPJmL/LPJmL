@@ -1,16 +1,22 @@
-.TH clm2cdf 1  "March 7, 2018" "version 1.0.001" "USER COMMANDS"
+.TH clm2cdf 1  "version 5.6.16" "USER COMMANDS"
 .SH NAME
 clm2cdf \- convert CLM files into NetCDF files
 .SH SYNOPSIS
 .B clm2cdf
-[\-global] [\-scale factor] [\-cellsize size] [\-byte] [\-int] [\-float] [[\-attr name=value] ...] [\-intnetcdf] [\-metafile] [\-map name] [\-raw] [\-nbands n] [\-landuse] [\-notime] [\-compress level] [\-units u] [\-descr d] [\-missing_value val]
+[\-h] [\-global] [\-scale factor] [\-cellsize size] [\-byte] [\-int] [\-float] [[\-attr name=value] ...] [\-intnetcdf] [\-metafile] [\-map name] [\-raw] [\-nbands n] [\-landuse] [\-notime] [\-compress level] [\-units u] [\-descr d] [\-missing_value val]
 .I [varname gridfile] clmfile netcdffile
 .SH DESCRIPTION
 Program converts CLM input data into NetCDF input data. 
 .SH OPTIONS
 .TP
+\-h
+print help text
+.TP
 \-global
 use global grid for NetCDF file
+.TP
+\-longheader
+force version of CLM file to 2
 .TP
 \-scale factor
 scaling factor for CLM version 1 files. Default is one
@@ -40,7 +46,7 @@ set the input format to JSON metafile instead of CLM.
 name of map in JSON metafile, default is "map"
 .TP
 \-raw
-set the innput format to raw instead of CLM
+set the input format to raw instead of CLM
 .TP
 \-nbands n
 set the number of bands to n. This is only active if raw format is set. Default is one

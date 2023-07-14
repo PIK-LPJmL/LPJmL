@@ -34,8 +34,8 @@ OBJS    = swap.$O freadheader.$O coord.$O openinputfile.$O\
           isboolean.$O fscanreal01.$O fscankeywords.$O isstring.$O\
           sprinttimestep.$O fscantimestep.$O isnull.$O fwriterestartheader.$O\
           getfilefrommeta.$O isint.$O parse_json.$O closeconfig.$O isdir.$O\
-          fscanmap.$O fscanattrs.$O fprintjson.$O mrun.$O hasanysuffix.$O\
-          fprintattrs.$O
+          fscanmap.$O fprintjson.$O mrun.$O fscanintarray.$O\
+          hasanysuffix.$O fprintattrs.$O
 
 INC     = ../../include
 LIBDIR  = ../../lib

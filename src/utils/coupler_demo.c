@@ -14,7 +14,6 @@
 
 #include "lpj.h"
 
-#define COUPLERDEMO_VERSION "0.9.003"
 
 #define USAGE "Usage: %s [-port n] [-wait n] [landusefile]\n"
 
@@ -224,9 +223,9 @@ int main(int argc,char **argv)
   if(i<argc)
     filename=argv[i];
   snprintf(line,STRING_LEN,
-           "%s C Version %s (" __DATE__ ")",progname,COUPLERDEMO_VERSION);
+           "%s (" __DATE__ ")",progname);
   title[0]=line;
-  title[1]="Coupler demo for LPJmL";
+  title[1]="Coupler demo for LPJmL version " LPJ_VERSION;
   title[2]="(c) Potsdam Institute for Climate Impact Research (PIK),";
   title[3]="see COPYRIGHT file";
   banner(title,4,78);
