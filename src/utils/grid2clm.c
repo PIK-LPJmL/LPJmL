@@ -15,7 +15,6 @@
 #undef USE_MPI
 #include "lpj.h"
 
-#define GRID2CLM_VERSION "1.0.002"
 #define USAGE "Usage: %s [-h] [-swap] [-scale s] [-cellsize c] gridfile outfile\n"
 
 int main(int argc,char **argv)
@@ -42,14 +41,16 @@ int main(int argc,char **argv)
     {
       if(!strcmp(argv[i],"-h"))
       {
-        printf("%s " GRID2CLM_VERSION " (" __DATE__ ") - adds header to gridfile for LPJmL C version\n",argv[0]);
+        printf("%s (" __DATE__ ") - adds header to gridfile for LPJmL version " LPJ_VERSION "\n\n",argv[0]);
         printf(USAGE
+               "\nArguments:\n"
                "-h             print this help text\n" 
                "-swap          change byte order in gridfile\n"
                "-scale s       set scale factor, default is %g\n"
                "-cellsize c    set cell size, default is %g\n"
                "gridfile       filename of binary grid data file\n"
-               "outfile        filename of CLM grid data file\n",
+               "outfile        filename of CLM grid data file\n\n"
+               "(C) Potsdam Institute for Climate Impact Research (PIK), see COPYRIGHT file\n",
                argv[0],header.scalar,header.cellsize_lon);
         return EXIT_SUCCESS;
       }

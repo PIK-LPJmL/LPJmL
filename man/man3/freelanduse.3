@@ -1,11 +1,11 @@
-.TH freelanduse 3  "January 9, 2013" "version 5.1.001" "LPJmL programmers manual"
+.TH freelanduse 3  "version 5.6.20" "LPJmL programmers manual"
 .SH NAME
 freelanduse \- Closes file and deallocates land use data
 .SH SYNOPSIS
 .nf
 \fB#include "lpj.h"
 
-void freelanduse(Landuse \fIlanduse\fB,Bool \fIisroot\fB);
+void freelanduse(Landuse \fIlanduse\fB,const Config *\fIconfig\fB));
 
 .fi
 .SH DESCRIPTION
@@ -15,8 +15,8 @@ The arguments of \fBfreelanduse\fP are:
 .I landuse
 Pointer to land use data.  Must be initialized by \fBinitlanduse()\fP.
 .TP
-.I isroot
-Task is root task.
+.I config
+LPJmL configuration data. Must be read by \fBreadconfig()\fP.
 .SH RETURN VALUE
 None.
 

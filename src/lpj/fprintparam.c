@@ -129,7 +129,7 @@ void fprintparam(FILE *file,    /**< pointer to text file */
       fprintf(file,"nfrac grassharvest:\t%g\n",param.nfrac_grassharvest);
     }
     fprintf(file,"timber fraction wp:\t%g\n",param.ftimber_wp);
-    if(config->istimber)
+    if(config->luc_timber)
     {
       fprintf(file,"fraction burnt:\t%g\n",param.fburnt);
       fprintf(file,"timber fraction:\t%g\n",param.ftimber);

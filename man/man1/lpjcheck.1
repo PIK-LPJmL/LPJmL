@@ -1,4 +1,4 @@
-.TH lpjcheck 1  "March 2, 2023" "version 1.0.005" "USER COMMANDS"
+.TH lpjcheck 1  "version 5.6.20" "USER COMMANDS"
 .SH NAME
 lpjcheck \- Checks syntax of LPJmL configuration files 
 .SH SYNOPSIS
@@ -27,7 +27,7 @@ verbosely print the actual values during reading of the configuration files.
 Print LPJmL parameter.
 .TP
 \-pp cmd
-Set preprocessor program to cmd. Default is \fBcpp -P\fP.
+Set preprocessor program to cmd. Default is \fBcpp\fP.
 .TP
 \-couple host[:port]
 set host where the coupled model is running. Default is localhost. Port is the port number for ingoing and outgoing data. Default port number is 2224.
@@ -55,7 +55,7 @@ Check configuration file lpjml.cjson with input files located in the /p/projects
 .SH ENVIRONMENT
 .TP
 LPJPREP 
-defines preprocessor command for LPJmL configuration file, default is \fBcpp -P\fP. Same as '-pp' option.
+defines preprocessor command for LPJmL configuration file, default is \fBcpp\fP. Same as '-pp' option.
 .TP
 LPJROOT
 defines the root directory for LPJmL. This directory is added to the

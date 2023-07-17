@@ -2,7 +2,7 @@
 /**                                                                                \n**/
 /**                   l  p  j  m  l  .  c  j  s  o  n                              \n**/
 /**                                                                                \n**/
-/** Default configuration file for LPJmL C Version 5.6.18                          \n**/
+/** Default configuration file for LPJmL C Version 5.6.20                          \n**/
 /**                                                                                \n**/
 /** Configuration file is divided into five sections:                              \n**/
 /**                                                                                \n**/
@@ -40,7 +40,7 @@
   "fire_on_grassland" : false, /* enable fire on grassland for Spitfire */
   "fdi" : "nesterov",       /* fire danger index formulations: "wvpd" (needs GLDAS input data), "nesterov" */
   "firewood" : false,       /* NOT TESTED - DO NOT ENABLE */
-  "new_phenology" : true,   /* enable GSI phenology */
+  "gsi_phenology" : true,   /* enable GSI phenology */
   "new_trf" : false,        /* enable new transpiration reduction function - NOT TESTED */
   "river_routing" : true,   /* enable river routing (requires input matching grid and lakes/reservoirs) */
   "extflow" : false,        /* enable discharge inflow for regional runs (requires extflow_filename) */
@@ -51,15 +51,19 @@
   "with_nitrogen" : "lim",  /* options: "no", "lim", "unlim" */
   "nitrogen_coupled" : false, /* nitrogen stress coupled to water stress */
   "store_climate" : true,   /* store climate data in spin-up phase */
-  "const_climate" : false,  /* reuse the first 30 years of the climate input */
-  "shuffle_climate" : true, /* shuffle spinup climate and/or climate in fix_climate run */
-  "const_deposition" : false,/* enable constant deposition; requires depos_year_const and fix_climate_cycle */
-  "depos_year_const" : 1901, /* startyear that is used from deposition input for const_deposition */
-  "fix_climate" : false,    /* enable a fixed climate input period, requires fix_climate_cycle and fix_climate_year, shuffe_climate also applies here */
-  "fix_climate_cycle" : 30, /* reuse fix_climate_year - fix_climate_year + x years of the climate and/or deposition input */
-  "fix_climate_year" : 30,  /* baseyear (start/middle -> noshuffle/shuffle) that is used from climate input for fix_climate */
+  "shuffle_spinup_climate" : true, /* shuffle spinup climate and/or climate in fix_climate run */
+  "fix_climate" : false,    /* enable a fixed climate input period, requires fix_climate_interval, fix_climate_year, fix_climate_shuffle */
+  "fix_climate_interval" : [1901,1930],
+  "fix_climate_shuffle" : true,          /* randomly shuffle climate in the interval */
+  "fix_deposition_with_climate" : false, /* fix N deposition same as climate  */
+  "fix_deposition" : false,              /* fix N deposition after specified year */
+  "fix_deposition_year" : 1901,          /* year after deposition is fixed */
+  "fix_deposition_interval" : [1901,1930],
+  "fix_deposition_shuffle" : true,       /* randomly shuffle depositions in the interval */
   "fix_landuse" : false,    /* fix landuse after fix_landuseyear; different than landuse = const - where all years are the same */
-  "fix_landuse_year" : false, /* year at which landuse is fixed */
+  "fix_landuse_year" : 1901,             /* year after land use is fixed */
+  "fix_co2" : false,                     /* fix atmospheric CO2  after specfied year */
+  "fix_co2_year" : 1901,                 /* year after CO2 is fixed */
 #ifdef FROM_RESTART
   "new_seed" : false,       /* read random seed from restart file */
   "population" : false,     /* use population input (for spitfire) */
@@ -102,7 +106,7 @@
   "grazing_others" : "default",         /* default grazing type for others, options : "default", "mowing", "ext", "int", "livestock", "none" */
   "grazing" : "default",                /* default grazing type, options : "default", "mowing", "ext", "int", "livestock", "none" */
   "grassonly" : false,                  /* set all cropland including others to zero but keep managed grasslands */
-  "istimber" : true,                    /* true: extract timber carbon (timber_harvest output) if natural vegetation is cleared for managed land, false: carbon is put in litter */
+  "luc_timber" : true,                  /* true: extract timber carbon (timber_harvest output) if natural vegetation is cleared for managed land, false: carbon is put in litter */
   "grassland_fixed_pft" : false,        /* prescribe per grid cell the grass pft to be grown, requires additional input - non-functional? */
   "grass_harvest_options" : false,      /* true: grid-specific grassland management, requires input file; false: default management (setting "grazing") everywhere */
   "prescribe_lsuha" : false,           /* prescribe livestock unit per hectare, input required (needed for "grazing" = "livestock") */

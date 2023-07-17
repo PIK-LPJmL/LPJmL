@@ -1,16 +1,12 @@
-.TH lpjml 1  "version 5.6.18" "USER COMMANDS"
+.TH lpjml 1  "version 5.6.20" "USER COMMANDS"
 .SH NAME
-lpj, lpjml \- Dynamic global vegetation model with managed land and river routing
+lpjml \- Dynamic global vegetation model with managed land and river routing
 .SH SYNOPSIS
 .B lpjml
 [\-h] [\-l] [\-v] [-vv] [-param] [-pp cmd] [-fpe] [-image host[:inport[,outport]]] [-couple host[:port]] [\-wait time] [\-outpath \fIdir\fP]
 [\-inpath \fIdir\fP] [\-restartpath \fIdir\fP]
 [[\-Dmacro[=value]] [\-I\fIdir\fP] ...] \fIfilename\fP
 
-.B lpj
-[\-h] [\-l] [\-v] [-vv] [-param] [-pp cmd] [-fpe] [-image host[:inport[,outport]]] [-couple host[:port]] [\-wait time] [\-outpath \fIdir\fP]
-[\-inpath \fIdir\fP] [\-restartpath \fIdir\fP]
-[[\-Dmacro[=value]] [\-I\fIdir\fP] ...] \fIfilename\fP
 .SH DESCRIPTION
 The model simulates vegetation dynamics, hydrology and soil
 organic matter dynamics on an area-averaged grid cell basis using
@@ -39,7 +35,7 @@ verbosely print the actual values during reading of the configuration files.
 print LPJmL parameter for soils and PFTs and list of all available output files.
 .TP
 \-pp cmd
-set preprocessor program to cmd. Default is \fBcpp -P\fP.
+set preprocessor program to cmd, default is \fBcpp\fP.
 .TP
 \-fpe
 enable floating point exceptions. A core file is generated in case of an arithmetic error. Option is only available if \fBlpjml\fP has been compiled with -DWITH_FPE flag.
@@ -87,7 +83,7 @@ script has to be used.
 .SH ENVIRONMENT
 .TP
 LPJPREP
-defines preprocessor command for LPJmL configuration file, default is \fBcpp -P\fP. Same as '-pp' option.
+defines preprocessor command for LPJmL configuration file, default is \fBcpp\fP. Same as '-pp' option.
 .TP
 LPJROOT
 defines the root directory for LPJmL. This directory is added to the
@@ -117,8 +113,6 @@ path appended to the restart filenames. Only done for filenames without absolute
 
 .SH EXIT STATUS
 .B lpjml
-and
-.B lpj
 returns a zero exit status if the simulation finishes successfully.
 Non zero is returned in case of failure.
 .SH DIAGNOSTICS
