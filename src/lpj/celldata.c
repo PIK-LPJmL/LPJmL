@@ -197,12 +197,12 @@ Bool seekcelldata(Celldata celldata, /**< pointer to celldata */
   return FALSE;
 } /* of 'seekcelldata' */
 
-Bool readcelldata(Celldata celldata, /**< pointer to celldata */
-                  Cell *grid,            /**< pointer to grid cell */
-                  unsigned int *soilcode,     /**< soil code */
-                  int cell,          /**< cell index */
-                  Config *config     /**< LPJmL configuration */
-                 )                   /** \return TRUE on error */
+Bool readcelldata(Celldata celldata,      /**< pointer to celldata */
+                  Cell *grid,             /**< pointer to grid cell */
+                  unsigned int *soilcode, /**< soil code */
+                  int cell,               /**< cell index */
+                  Config *config          /**< LPJmL configuration */
+                 )                        /** \return TRUE on error */
 {
   char *name;
   if(celldata->soil_fmt==CDF)
