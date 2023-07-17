@@ -30,7 +30,9 @@ void fprintcell(FILE *file,            /**< file pointer to text file */
   {
     fputs("Coord:\t\t",file);
     fprintcoord(file,&grid[cell].coord);
-    fprintf(file,"\nLandfrac:\t%g\n",grid[cell].landfrac);
+    fprintf(file,"\nLand fraction:\t%g\n",grid[cell].landfrac);
+    if(config->with_lakes)
+      fprintf(file,"Lake fraction:\t%g\n",grid[cell].lakefrac);
     fputs("Random seed:\t",file);
     for(i=0;i<NSEED;i++)
       printf(" %d",grid[cell].seed[i]);
