@@ -330,9 +330,6 @@ Bool fscanconfig(Config *config,    /**< LPJ configuration */
   config->storeclimate=TRUE;
   if(fscanbool(file,&config->storeclimate,"store_climate",TRUE,verbose))
     return TRUE;
-  config->shuffle_spinup_climate=FALSE;
-  if(fscanbool(file,&config->shuffle_spinup_climate,"shuffle_spinup_climate",TRUE,verbose))
-    return TRUE;
   config->fix_climate=FALSE;
   if(fscanbool(file,&config->fix_climate,"fix_climate",TRUE,verbose))
     return TRUE;
@@ -1047,8 +1044,11 @@ Bool fscanconfig(Config *config,    /**< LPJ configuration */
   }
   fscanint2(file,&config->nspinup,"nspinup");
   config->isfirstspinupyear=FALSE;
+  config->shuffle_spinup_climate=FALSE;
   if(config->nspinup)
   {
+    if(fscanbool(file,&config->shuffle_spinup_climate,"shuffle_spinup_climate",TRUE,verbose))
+      return TRUE;
     fscanint2(file,&config->nspinyear,"nspinyear");
     if(iskeydefined(file,"firstspinupyear"))
     {

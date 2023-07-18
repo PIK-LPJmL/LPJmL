@@ -493,8 +493,8 @@ void lpj_init_
 
   if(isopen(output,GRID))
     writecoords(output,GRID,grid,&config);
-  if(isopen(output,AREA))
-    writecellarea(output,AREA,grid,&config);
+  if(isopen(output,LANDAREA))
+    writecellarea(output,LANDAREA,grid,&config);
   if(isopen(output,COUNTRY) && config.withlanduse)
     writecountrycode(output,COUNTRY,grid,&config);
   if(isopen(output,REGION) && config.withlanduse)
