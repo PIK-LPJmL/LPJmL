@@ -183,7 +183,7 @@ extern Bool initsoiltemp(Climate *, Cell*,const Config *);
 extern Celldata opencelldata(Config *);
 extern Bool seekcelldata(Celldata,int);
 extern Bool readcelldata(Celldata,Cell *,unsigned int *,int,Config *);
-extern void closecelldata(Celldata);
+extern void closecelldata(Celldata,const Config *);
 extern Real albedo(Cell *, Real , Real );
 extern Bool initoutput(Outputfile *,Cell [],int,int,Config *);
 

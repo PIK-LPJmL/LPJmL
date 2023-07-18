@@ -20,8 +20,6 @@
 
 struct celldata
 {
-  Bool with_nitrogen;
-  Bool with_landfrac;
   int soil_fmt;
   union
   {
@@ -35,6 +33,7 @@ struct celldata
     } bin;
     Coord_netcdf cdf;
   } soil;
+  Infile lakes;
   Infile soilph;
   Infile landfrac;
 };
@@ -120,9 +119,24 @@ Celldata opencelldata(Config *config /**< LPJmL configuration */
         return NULL;
     }
   }
+  if(config->with_lakes)
+  {
+    /* Open file for lake fraction */
+    if(openinputdata(&celldata->lakes,&config->lakes_filename,"lakes","1",LPJ_BYTE,0.01,config))
+    {
+      if(config->soil_filename.fmt==CDF)
+        closecoord_netcdf(celldata->soil.cdf);
+      else
+      {
+        closecoord(celldata->soil.bin.file_coord);
+        fclose(celldata->soil.bin.file);
+      }
+      free(celldata);
+      return NULL;
+    }
+  }
   if(config->with_nitrogen)
   {
-    celldata->with_nitrogen=TRUE;
     if(openinputdata(&celldata->soilph,&config->soilph_filename,"soilph",NULL,LPJ_SHORT,0.01,config))
     {
       if(config->soil_filename.fmt==CDF)
@@ -132,15 +146,14 @@ Celldata opencelldata(Config *config /**< LPJmL configuration */
         closecoord(celldata->soil.bin.file_coord);
         fclose(celldata->soil.bin.file);
       }
+      if(config->with_lakes)
+        closeinput(&celldata->lakes);
       free(celldata);
       return NULL;
     }
   }
-  else
-    celldata->with_nitrogen=FALSE;
   if(config->landfrac_from_file)
   {
-    celldata->with_landfrac=TRUE;
     if(openinputdata(&celldata->landfrac,&config->landfrac_filename,"landfrac","1",LPJ_SHORT,0.01,config))
     {
       if(config->soil_filename.fmt==CDF)
@@ -150,15 +163,14 @@ Celldata opencelldata(Config *config /**< LPJmL configuration */
         closecoord(celldata->soil.bin.file_coord);
         fclose(celldata->soil.bin.file);
       }
-      if(celldata->with_nitrogen)
+      if(config->with_lakes)
+        closeinput(&celldata->lakes);
+      if(config->with_nitrogen)
         closeinput(&celldata->soilph);
       free(celldata);
       return NULL;
     }
   }
-  else
-    celldata->with_landfrac=FALSE;
-
   return celldata;
 } /* of 'opencelldata' */
 
@@ -270,10 +282,24 @@ Bool readcelldata(Celldata celldata,      /**< pointer to celldata */
   }
   else
     grid->landfrac=1;
+  if(config->with_lakes)
+  {
+    if(readinputdata(&celldata->lakes,&grid->lakefrac,&grid->coord,cell+config->startgrid,&config->lakes_filename))
+      return TRUE;
+    /* rescale to land fraction */
+    grid->lakefrac/=grid->landfrac;
+    if(grid->lakefrac>1)
+      fprintf(stderr,"WARNING035: Lake fraction in cell %d=%g greater than one, set to one.\n",cell+config->startgrid,grid->lakefrac);
+    if(grid->lakefrac>1-epsilon)
+      grid->lakefrac=1;
+  }
+  else
+    grid->lakefrac=0;
   return FALSE;
 } /* of 'readcelldata' */
 
-void closecelldata(Celldata celldata /**< pointer to celldata */
+void closecelldata(Celldata celldata,   /**< pointer to celldata */
+                   const Config *config /**< LPJmL configuration */
                   )
 {
   if(celldata->soil_fmt==CDF)
@@ -283,9 +309,11 @@ void closecelldata(Celldata celldata /**< pointer to celldata */
     closecoord(celldata->soil.bin.file_coord);
     fclose(celldata->soil.bin.file);
   }
-  if(celldata->with_nitrogen)
+  if(config->with_nitrogen)
     closeinput(&celldata->soilph);
-  if(celldata->with_landfrac)
+  if(config->landfrac_from_file)
     closeinput(&celldata->landfrac);
+  if(config->with_lakes)
+    closeinput(&celldata->lakes);
   free(celldata);
 } /* of 'closecelldata' */

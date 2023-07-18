@@ -48,7 +48,7 @@ static Bool printgrid(Config *config, /* Pointer to LPJ configuration */
   FILE *file_restart;
   char *name;
   Celldata celldata;
-  Infile lakes,countrycode,regioncode;
+  Infile countrycode,regioncode;
 
   /* Open coordinate file */
   celldata=opencelldata(config);
@@ -56,16 +56,8 @@ static Bool printgrid(Config *config, /* Pointer to LPJ configuration */
     return TRUE;
   if(seekcelldata(celldata,config->startgrid))
   {
-    closecelldata(celldata);
+    closecelldata(celldata,config);
     return TRUE;
-  }
-  if(config->with_lakes)
-  {
-     if(openinputdata(&lakes,&config->lakes_filename,"lakes","1",LPJ_BYTE,0.01,config))
-     {
-       closecelldata(celldata);
-       return TRUE;
-     }
   }
   /* Open countrycode file */
   if(config->withlanduse!=NO_LANDUSE)
@@ -76,7 +68,7 @@ static Bool printgrid(Config *config, /* Pointer to LPJ configuration */
       countrycode.cdf=openinput_netcdf(&config->countrycode_filename,NULL,0,config);
       if(countrycode.cdf==NULL)
       {
-        closecelldata(celldata);
+        closecelldata(celldata,config);
         return TRUE;
       }
       regioncode.fmt=config->regioncode_filename.fmt;
@@ -84,7 +76,7 @@ static Bool printgrid(Config *config, /* Pointer to LPJ configuration */
       if(regioncode.cdf==NULL)
       {
         closeinput_netcdf(countrycode.cdf);
-        closecelldata(celldata);
+        closecelldata(celldata,config);
         return TRUE;
       }
     }
@@ -95,7 +87,7 @@ static Bool printgrid(Config *config, /* Pointer to LPJ configuration */
                                        &countrycode.swap,&countrycode.type,&offset,isroot(*config));
       if(countrycode.file==NULL)
       {
-        closecelldata(celldata);
+        closecelldata(celldata,config);
         return TRUE;
       }
       if(seekcountrycode(countrycode.file,config->startgrid,countrycode.type,offset))
@@ -104,7 +96,7 @@ static Bool printgrid(Config *config, /* Pointer to LPJ configuration */
         fprintf(stderr,
                 "ERROR106: Cannot seek in countrycode file to position %d.\n",
                 config->startgrid);
-        closecelldata(celldata);
+        closecelldata(celldata,config);
         fclose(countrycode.file);
         return TRUE;
       }
@@ -123,12 +115,6 @@ static Bool printgrid(Config *config, /* Pointer to LPJ configuration */
   {
     if(readcelldata(celldata,&grid,&soilcode,i,config))
       break;
-    if(config->with_lakes)
-    {
-      if(readinputdata(&lakes,&grid.lakefrac,&grid.coord,i+config->startgrid,&config->lakes_filename))
-        break;
-      grid.lakefrac/=grid.landfrac;
-    }
     if(config->countrypar!=NULL)
     {
        if(config->countrycode_filename.fmt==CDF)
@@ -216,15 +202,13 @@ static Bool printgrid(Config *config, /* Pointer to LPJ configuration */
     freecell(&grid,npft,config);
   } /* of for(i=0;...) */
   fclose(file_restart);
-  closecelldata(celldata);
+  closecelldata(celldata,config);
   if(config->countrypar!=NULL)
   {
     closeinput(&countrycode);
     if(config->countrycode_filename.fmt==CDF)
       closeinput(&regioncode);
   }
-  if(config->with_lakes)
-    closeinput(&lakes);
   return FALSE;
 }
 int main(int argc,char **argv)
