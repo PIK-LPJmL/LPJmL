@@ -18,18 +18,6 @@
 
 #define LINE_LEN 80
 
-static void cvrtnewline(FILE *file,const char *s)
-{
-  while(*s!='\0')
-  {
-    if(*s=='\n')
-      fputs("\\n",file);
-    else
-      fputc(*s,file);
-    s++;
-  }
-} /* of 'cvrtnewline' */
-
 void fprintjson(FILE *file,           /**< pointer to text file */
                 const char *filename, /**< filename of clm file */
                 const char *source,   /**< source string or NULL */
@@ -73,13 +61,13 @@ void fprintjson(FILE *file,           /**< pointer to text file */
     {
       time(&t);
       fprintf(file,"  \"history\" : \"");
-      cvrtnewline(file,history);
+      fputprintable(file,history);
       fprintf(file,"\\n%s: %s\",\n",strdate(&t),arglist);
     }
     else
     {
       fprintf(file,"  \"history\" : \"");
-      cvrtnewline(file,history);
+      fputprintable(file,history);
       fprintf(file,"\",\n");
     }
   }
