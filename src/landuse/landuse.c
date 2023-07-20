@@ -346,10 +346,13 @@ Bool getlanduse(Landuse landuse,     /**< Pointer to landuse data */
   data=readdata(&landuse->landuse,NULL,grid,"landuse",yearl,config);
   if(data==NULL)
     return TRUE;
-  count=0;
-  for(cell=0;cell<config->ngridcell;cell++)
-    for(i=0;i<landuse->landuse.var_len;i++)
-      data[count++]/=grid[cell].landfrac;
+  if(config->landfrac_from_file)
+  {
+    count=0;
+    for(cell=0;cell<config->ngridcell;cell++)
+      for(i=0;i<landuse->landuse.var_len;i++)
+        data[count++]/=grid[cell].landfrac;
+  }
   count=0;
 
   for(cell=0;cell<config->ngridcell;cell++)

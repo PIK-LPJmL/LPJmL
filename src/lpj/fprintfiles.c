@@ -73,7 +73,7 @@ void fprintfiles(FILE *file,          /**< pointer to text output file */
     fprintfilename(file,&config->coord_filename,FALSE);
   fprintfilename(file,&config->soil_filename,FALSE);
   if(config->landfrac_from_file)
-     fprintfilename(file,&config->landfrac_filename,FALSE);
+    fprintfilename(file,&config->landfrac_filename,FALSE);
   fprintfilename(file,&config->temp_filename,TRUE);
   fprintfilename(file,&config->prec_filename,TRUE);
 #if defined IMAGE && defined COUPLED
