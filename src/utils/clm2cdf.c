@@ -19,7 +19,7 @@
 
 #define error(rc) if(rc) {free(lon);free(lat);free(year);fprintf(stderr,"ERROR427: Cannot write '%s': %s.\n",filename,nc_strerror(rc)); nc_close(cdf->ncid); free(cdf);return NULL;}
 
-#define USAGE "Usage: %s [-h] [-scale s] [-longheader] [-global] [-cellsize size] [-byte] [-int] [-float]\n       [[-attr name=value] ...] [-intnetcdf] [-metafile] [-raw] [-nbands n] [-landuse] [-notime] [-compress level] [-units u]\n       [-map name] [-descr d] [-missing_value val] [name gridfile] clmfile netcdffile\n"
+#define USAGE "Usage: %s [-h] [-v] [-scale s] [-longheader] [-global] [-cellsize size] [-byte] [-int] [-float]\n       [[-attr name=value] ...] [-intnetcdf] [-metafile] [-raw] [-nbands n] [-landuse] [-notime] [-compress level] [-units u]\n       [-map name] [-descr d] [-missing_value val] [name gridfile] clmfile netcdffile\n"
 
 typedef struct
 {
@@ -537,6 +537,7 @@ int main(int argc,char **argv)
         printf(USAGE
                "\nArguments:\n"
                "-h               print this help text\n"
+               "-v               print LPJmL version\n"
                "-global          use global grid for NetCDF file\n"
                "-longheader      force version of CLM file to 2\n"
                "-scale s         set scaling factor for CLM version 1 files, default is 1\n"
@@ -564,7 +565,11 @@ int main(int argc,char **argv)
                progname);
         return EXIT_SUCCESS;
       }
-
+      else if(!strcmp(argv[iarg],"-v"))
+      {
+        puts(LPJ_VERSION);
+        return EXIT_SUCCESS;
+      }
       else if(!strcmp(argv[iarg],"-units"))
       {
         if(argc==iarg+1)

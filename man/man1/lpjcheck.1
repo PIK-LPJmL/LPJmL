@@ -3,7 +3,7 @@
 lpjcheck \- Checks syntax of LPJmL configuration files 
 .SH SYNOPSIS
 .B lpjcheck
-[\-h] [\-q] [\-nocheck] [-vv] [\-ofiles] [\-param] [-pp cmd] [\-couple host[:port]] [\-outpath \fIdir\fP]
+[\-h] [\-v] [\-q] [\-nocheck] [-vv] [\-ofiles] [\-param] [-pp cmd] [\-couple host[:port]] [\-outpath \fIdir\fP]
 [\-inpath \fIdir\fP] [\-restartpath \fIdir\fP] [[\-Dmacro[=value]] [\-I\fIdir\fP] ...]
 \fIfilename\fP
 .SH DESCRIPTION
@@ -13,6 +13,9 @@ Program checks the syntax of LPJmL configuration files. It is checked additional
 .TP
 \-h
 display a short help text
+.TP
+\-v
+print LPJmL version
 .TP
 \-q
 Only error messages are displayed, other output is suppressed.

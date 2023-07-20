@@ -3,13 +3,16 @@
 lpjprint \- Print contents of restart file of LPJmL model runs 
 .SH SYNOPSIS
 .B lpjprint
-[\-h] [\-pp cmd] [\-inpath \fIdir\fP] [\-restartpath \fIdir\fP] [[\-Dmacro[=value]] [\-I\fIdir\fP] ...] \fIfilename\fP [-check] [start [end]]
+[\-h] [\-v] [\-pp cmd] [\-inpath \fIdir\fP] [\-restartpath \fIdir\fP] [[\-Dmacro[=value]] [\-I\fIdir\fP] ...] \fIfilename\fP [-check] [start [end]]
 .SH DESCRIPTION
 Program prints contents of restart file of a LPJmL model run. The LPJmL configuration file is read in in order to find the location and name of the restart file.
 .SH OPTIONS
 .TP
 \-h
 display a short help text
+.TP
+\-v
+print LPJmL version
 .TP
 \-pp cmd
 Set preprocessor program to cmd. Default is \fBcpp\fP.

@@ -3,7 +3,7 @@
 clm2cdf \- convert CLM files into NetCDF files
 .SH SYNOPSIS
 .B clm2cdf
-[\-h] [\-global] [\-scale factor] [\-cellsize size] [\-byte] [\-int] [\-float] [[\-attr name=value] ...] [\-intnetcdf] [\-metafile] [\-map name] [\-raw] [\-nbands n] [\-landuse] [\-notime] [\-compress level] [\-units u] [\-descr d] [\-missing_value val]
+[\-h] [\-v] [\-global] [\-scale factor] [\-cellsize size] [\-byte] [\-int] [\-float] [[\-attr name=value] ...] [\-intnetcdf] [\-metafile] [\-map name] [\-raw] [\-nbands n] [\-landuse] [\-notime] [\-compress level] [\-units u] [\-descr d] [\-missing_value val]
 .I [varname gridfile] clmfile netcdffile
 .SH DESCRIPTION
 Program converts CLM input data into NetCDF input data. 
@@ -11,6 +11,9 @@ Program converts CLM input data into NetCDF input data.
 .TP
 \-h
 print help text
+.TP
+\-v
+print LPJmL version
 .TP
 \-global
 use global grid for NetCDF file

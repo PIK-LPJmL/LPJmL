@@ -28,7 +28,7 @@
 #define NTYPES 3
 #define NSTANDTYPES 13 /* number of stand types */
 
-#define USAGE "Usage: %s [-h] [-pp cmd] [-inpath dir] [-restartpath dir]\n"\
+#define USAGE "Usage: %s [-h] [-v] [-pp cmd] [-inpath dir] [-restartpath dir]\n"\
               "       [[-Dmacro[=value]] [-Idir] ...] filename [-check] [start [end]]\n"
 
 
@@ -181,28 +181,37 @@ int main(int argc,char **argv)
   Standtype standtype[NSTANDTYPES];
 
   progname=strippath(argv[0]);
-  if(argc>1 && !strcmp(argv[1],"-h"))
+  if(argc>1)
   {
-    fputs("     ",stdout);
-    rc=printf("%s (" __DATE__ ") Help",
-              progname);
-    fputs("\n     ",stdout);
-    repeatch('=',rc);
-    fputs("\n\nPrint content of restart files for LPJmL " LPJ_VERSION "\n\n",stdout);
-    printf(USAGE,progname);
-    printf("\nArguments:\n"
-           "-h               print this help text\n"
-           "-pp cmd          set preprocessor program. Default is '" cpp_cmd "'\n"
-           "-inpath dir      directory appended to input filenames\n"
-           "-restartpath dir directory appended to restart filename\n"
-           "-Dmacro[=value]  define macro for preprocessor of configuration file\n"
-           "-Idir            directory to search for include files\n"
-           "filename         configuration filename\n"
-           "-check           check only restart file, do not print\n"
-           "start            index of first grid cell to print\n"
-           "end              index of last grid cell to print\n\n"
-           "(C) Potsdam Institute for Climate Impact Research (PIK), see COPYRIGHT file\n");
-    return EXIT_SUCCESS;
+    if(!strcmp(argv[1],"-h"))
+    {
+      fputs("     ",stdout);
+      rc=printf("%s (" __DATE__ ") Help",
+                progname);
+      fputs("\n     ",stdout);
+      repeatch('=',rc);
+      fputs("\n\nPrint content of restart files for LPJmL " LPJ_VERSION "\n\n",stdout);
+      printf(USAGE,progname);
+      printf("\nArguments:\n"
+             "-h               print this help text\n"
+             "-v               print LPJmL version\n"
+             "-pp cmd          set preprocessor program. Default is '" cpp_cmd "'\n"
+             "-inpath dir      directory appended to input filenames\n"
+             "-restartpath dir directory appended to restart filename\n"
+             "-Dmacro[=value]  define macro for preprocessor of configuration file\n"
+             "-Idir            directory to search for include files\n"
+             "filename         configuration filename\n"
+             "-check           check only restart file, do not print\n"
+             "start            index of first grid cell to print\n"
+             "end              index of last grid cell to print\n\n"
+             "(C) Potsdam Institute for Climate Impact Research (PIK), see COPYRIGHT file\n");
+      return EXIT_SUCCESS;
+    }
+    else if(!strcmp(argv[1],"-v"))
+    {
+      puts(LPJ_VERSION);
+      return EXIT_SUCCESS;
+    }
   }
   snprintf(line,78-10,
            "%s (" __DATE__ ")",progname);

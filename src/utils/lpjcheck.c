@@ -19,7 +19,7 @@
 #include "crop.h"
 
 #define NTYPES 3 /* number of PFT types: grass, tree, crop */
-#define USAGE "Usage: %s [-h] [-q] [-nocheck] [-ofiles] [-param] [-vv]\n"\
+#define USAGE "Usage: %s [-h] [-v] [-q] [-nocheck] [-ofiles] [-param] [-vv]\n"\
               "       [-couple hostname[:port]]\n"\
               "       [-outpath dir] [-inpath dir] [-restartpath dir]\n"\
               "       [-pp cmd] [[-Dmacro[=value]] [-Idir] ...] filename\n"
@@ -51,6 +51,11 @@ int main(int argc,char **argv)
       argv++;
       isout=FALSE; /* no output */
     }
+    else if(!strcmp(argv[1],"-v"))
+    {
+      puts(LPJ_VERSION);
+      return EXIT_SUCCESS;
+    }
     else if(!strcmp(argv[1],"-h"))
     {
       file=popen("more","w");
@@ -65,6 +70,7 @@ int main(int argc,char **argv)
       fprintf(file,USAGE,progname);
       fprintf(file,"Arguments:\n"
              "-h                  print this help text\n"
+             "-v                  print LPJmL version\n"
              "-q                  print error messsages only\n"
              "-vv                 verbosely print the actual values during reading of the\n"
              "                    configuration files\n"

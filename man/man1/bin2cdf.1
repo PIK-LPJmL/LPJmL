@@ -3,7 +3,7 @@
 bin2cdf \- convert binary output files into NetCDF files
 .SH SYNOPSIS
 .B bin2cdf
-[\-h] [\-clm] [\-floatgrid] [\-doublegrid] [\-revlat] [\-days] [\-cellsize size] [\-compress level] [\-descr d] [\-missing_value val] [[\-attr name=value] ...] [\-units u] [-global] [-swap] [\-short] [\-nbands n] [\-nstep n] [\-ispft] [\-firstyear y] [\-metafile] [\-map name]
+[\-h] [\-v] [\-clm] [\-floatgrid] [\-doublegrid] [\-revlat] [\-days] [\-cellsize size] [\-compress level] [\-descr d] [\-missing_value val] [[\-attr name=value] ...] [\-units u] [-global] [-swap] [\-short] [\-nbands n] [\-nstep n] [\-ispft] [\-firstyear y] [\-metafile] [\-map name]
 .I [varname gridfile] binfile netcdffile
 .SH DESCRIPTION
 Program converts binary output files into NetCDF file.
@@ -11,6 +11,9 @@ Program converts binary output files into NetCDF file.
 .TP
 \-h
 Print help text
+.TP
+\-v
+Print LPJmL version
 .TP
 \-clm
 File is in clm format, default is raw.

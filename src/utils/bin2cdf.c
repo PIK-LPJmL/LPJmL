@@ -20,7 +20,7 @@
 
 #define error(rc) if(rc) {free(lon);free(lat);free(year);fprintf(stderr,"ERROR427: Cannot write '%s': %s.\n",filename,nc_strerror(rc)); nc_close(cdf->ncid); free(cdf);return NULL;}
 
-#define USAGE "Usage: %s [-h] [-clm] [-floatgrid] [-doublegrid] [-revlat] [-days] [-firstyear y] [-baseyear y] [-nbands n] [-nstep n] [-cellsize size] [-swap]\n       [[-attr name=value]..] [-global] [-short] [-compress level] [-units u] [-descr d] [-missing_value val] [-metafile] [-map name] [varname gridfile]\n       binfile netcdffile\n"
+#define USAGE "Usage: %s [-h] [-v] [-clm] [-floatgrid] [-doublegrid] [-revlat] [-days] [-firstyear y] [-baseyear y] [-nbands n] [-nstep n] [-cellsize size] [-swap]\n       [[-attr name=value]..] [-global] [-short] [-compress level] [-units u] [-descr d] [-missing_value val] [-metafile] [-map name] [varname gridfile]\n       binfile netcdffile\n"
 
 typedef struct
 {
@@ -617,6 +617,7 @@ int main(int argc,char **argv)
         printf(USAGE
                "\nArguments:\n"
                "-h               print this help text\n"
+               "-v               print LPJmL version\n"
                "-clm             file is in CLM format, default is raw\n"
                "-floatgrid       set data type of grid file to float, default is short\n"
                "-doublegrid      set data type of grid file to double, default is short\n"
@@ -643,6 +644,11 @@ int main(int argc,char **argv)
                "netcdffile       filename of NetCDF file created\n\n"
                "(C) Potsdam Institute for Climate Impact Research (PIK), see COPYRIGHT file\n",
                argv[0],header.cellsize_lon,header.firstyear);
+        return EXIT_SUCCESS;
+      }
+      else if(!strcmp(argv[iarg],"-v"))
+      {
+        puts(LPJ_VERSION);
         return EXIT_SUCCESS;
       }
       else if(!strcmp(argv[iarg],"-units"))
