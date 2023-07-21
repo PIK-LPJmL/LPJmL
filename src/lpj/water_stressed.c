@@ -91,7 +91,7 @@ Real water_stressed(Pft *pft,                  /**< [inout] pointer to PFT varia
   wr=0;
   for(l=0;l<LASTLAYER;l++)
   {
-    if(config->new_trf)
+    if(config->transp_suction_fcn)
     {
       B=(log(1500) - log(33))/(log(pft->stand->soil.wfc[l]) - log(pft->stand->soil.wpwp[l]));
       A=exp(log(33) + B*log(pft->stand->soil.wfc[l]));

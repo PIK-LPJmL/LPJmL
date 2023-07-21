@@ -329,8 +329,8 @@ void fprintconfig(FILE *file,          /**< File pointer to text output file */
     len=printsim(file,len,&count,(config->prescribe_landcover==LANDCOVEREST) ? "prescribed establishment":"prescribed maximum FPC");
   if(config->gsi_phenology)
     len=printsim(file,len,&count,"GSI phenology");
-  if(config->new_trf)
-    len=printsim(file,len,&count,"new transpiration reduction function");
+  if(config->transp_suction_fcn)
+    len=printsim(file,len,&count,"transpiration suction function");
   if(config->soilpar_option==FIXED_SOILPAR)
   {
     len=fputstring(file,len,", ",78);

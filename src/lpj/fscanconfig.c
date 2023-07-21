@@ -277,8 +277,8 @@ Bool fscanconfig(Config *config,    /**< LPJ configuration */
   if(fscankeywords(file,&config->prescribe_landcover,"prescribe_landcover",prescribe_landcover,3,TRUE,verbose))
     return TRUE;
   fscanbool2(file,&config->gsi_phenology,"gsi_phenology");
-  config->new_trf=FALSE;
-  if(fscanbool(file,&config->new_trf,"new_trf",TRUE,verbose))
+  config->transp_suction_fcn=FALSE;
+  if(fscanbool(file,&config->transp_suction_fcn,"transp_suction_fcn",TRUE,verbose))
     return TRUE;
   fscanbool2(file,&config->river_routing,"river_routing");
   config->extflow=FALSE;
