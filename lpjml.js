@@ -162,7 +162,8 @@
 ID                               Fmt                        filename
 -------------------------------- ------------------------- ----------------------------- */
     { "id" : "grid",             "file" : { "fmt" : "raw", "name" : "output/grid.bin" }},
-    { "id" : "landarea",         "file" : { "fmt" : "raw", "name" : "output/landarea.bin" }},
+    { "id" : "terr_area",        "file" : { "fmt" : "raw", "name" : "output/terr_area.bin" }},
+    { "id" : "land_area",        "file" : { "fmt" : "raw", "name" : "output/land_area.bin" }},
     { "id" : "fpc",              "file" : { "fmt" : "raw", "name" : "output/fpc.bin" }},
     { "id" : "globalflux",       "file" : { "fmt" : "txt", "name" : "output/globalflux.csv"}},
     { "id" : "npp",              "file" : { "fmt" : "raw", "name" : "output/mnpp.bin"}},

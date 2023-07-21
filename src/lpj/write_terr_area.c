@@ -1,10 +1,10 @@
 /**************************************************************************************/
 /**                                                                                \n**/
-/**            w  r  i  t  e  c  e  l  l  a  r  e  a  .  c                         \n**/
+/**            w  r  i  t  e  _  t  e  r  r  _   a  r  e  a  .  c                  \n**/
 /**                                                                                \n**/
 /**     C implementation of LPJmL                                                  \n**/
 /**                                                                                \n**/
-/**     Function writes cell areas to output file                                  \n**/
+/**     Function writes terrestrial areas (land + lakes) to output file            \n**/
 /**                                                                                \n**/
 /** (C) Potsdam Institute for Climate Impact Research (PIK), see COPYRIGHT file    \n**/
 /** authors, and contributors see AUTHORS file                                     \n**/
@@ -16,11 +16,11 @@
 
 #include "lpj.h"
 
-int writecellarea(Outputfile *output,  /**< output file array */
-                  int index,           /**< output index */
-                  const Cell grid[]    /**< LPJ cell array */,
-                  const Config *config /**< LPJmL configuration*/
-                 )                     /** \return number of cell areas written */
+int write_terr_area(Outputfile *output,  /**< output file array */
+                    int index,           /**< output index */
+                    const Cell grid[]    /**< LPJ cell array */,
+                    const Config *config /**< LPJmL configuration*/
+                   )                     /** \return number of areas written */
 {
   int cell,count;
   Bool rc;
@@ -89,4 +89,4 @@ int writecellarea(Outputfile *output,  /**< output file array */
 #endif
   free(vec);
   return count;
-} /* of 'writecellarea' */
+} /* of 'write_terr_area' */
