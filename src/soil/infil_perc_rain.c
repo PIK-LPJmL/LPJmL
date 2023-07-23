@@ -19,6 +19,68 @@
 #include "crop.h"
 
 #define NPERCO 0.4  /*controls the amount of nitrate removed from the surface layer in runoff relative to the amount removed via percolation.  0.5 in Neitsch:SWAT MANUAL*/
+void apply_perc_energy2(Real *enth,             /*< enthalpy vector that is updated*/
+                       Real *perc_energy /*< vector absolute energy change of each layer */
+                      )
+{
+    int l,j;   /* l=layer, j is for sublayer */
+    int gp;    /* gridpoint */
+
+   
+    for(l=0;l<NSOILLAYER;l++){
+        Real energy_change = perc_energy[l]/(soildepth[l]/1000)*GPLHEAT;
+        if (energy_change>0) {
+            // distribute equally
+            Real change_per_point = energy_change/GPLHEAT ;
+            
+            for (j = 0; j < GPLHEAT; j++) {
+                enth[l*GPLHEAT + j] += change_per_point;
+            }
+                        // int num_pos_enth_points = 0;
+            //     for (int j = 0; j < GPLHEAT; ++j) {
+            //         if (enth[l*GPLHEAT + j] >= 0) {
+            //             ++num_pos_enth_points;
+            //         }
+            //     }
+            // Real change_per_point = energy_change/num_pos_enth_points ;
+            // for (int j = 0; j < GPLHEAT; j++) {
+            //   if(enth[l*GPLHEAT + j]>=0)
+            //     enth[l*GPLHEAT + j] += change_per_point;
+            // }
+        } else {
+            // distribute until reaching zero
+            while (energy_change < -1e-8) {
+                int num_pos_enth_points = 0;
+                for(j = 0; j < GPLHEAT; ++j) {
+                    if (enth[l*GPLHEAT + j] > 0) {
+                        ++num_pos_enth_points;
+                    }
+                }
+
+                if (num_pos_enth_points == 0) {
+                    // all points are zero, can't distribute energy
+                    printf("ERROR CANT Distribute enrgy");
+                    break;
+                    
+                }
+
+                Real change_per_point = energy_change / num_pos_enth_points;
+                for (j = 0; j < GPLHEAT; ++j) {
+                  if(enth[l*GPLHEAT + j]>0){
+                    if (enth[l*GPLHEAT + j] + change_per_point < 0) {
+                        energy_change += enth[l*GPLHEAT + j];  // remove this point's energy from the total
+                        enth[l*GPLHEAT + j] = 0;
+                    } else {
+                        enth[l*GPLHEAT + j] += change_per_point;
+                        energy_change -= change_per_point;
+                    }
+                  }
+                }
+            }
+        }
+        perc_energy[l]=0;
+    }
+}
 
 Real infil_perc_rain(Stand *stand,        /**< Stand pointer */
                      Real infil,          /**< rainfall + melting water - interception_stand (mm) + rw_irrig */
@@ -261,6 +323,7 @@ Real infil_perc_rain(Stand *stand,        /**< Stand pointer */
         } /*end percolation*/
       } /* if soil depth > freeze_depth */
     } /* soil layer loop */
+    apply_perc_energy2(soil->enth,soil->perc_energy);
     getoutput(&stand->cell->output,LEACHING,config)+=NO3perc_ly*stand->frac;
     stand->cell->balance.n_outflux+=NO3perc_ly*stand->frac;
     if(isagriculture(stand->type->landusetype))

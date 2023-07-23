@@ -201,7 +201,7 @@
   { "id" : CONV_LOSS_DRAIN, "name": "conv_loss_drain", "timestep" : "annual", "var" :  "conv_loss_drain", "descr" :  "drainage conveyance loss", "unit" : "mm/yr", "scale" : 1.0, "offset" : 0.0},
   { "id" : STOR_RETURN, "name": "stor_return", "timestep" : "monthly", "var" :  "stor_return", "descr" :  "irrig stor return", "unit" : "mm/month", "scale" : 1.0, "offset" : 0.0},
   { "id" : PREC, "name": "prec", "timestep" : "monthly", "var" :  "prec", "descr" :  "monthly precipitation", "unit" : "mm/month", "scale" : 1.0, "offset" : 0.0},
-  { "id" : RAIN, "name": "rain", "timestep" : "monthly", "var" :  "rain", "descr" :  "precipitation fallen as rain", "unit" : "mm/month", "scale" : 1.0, "offset" : 0.0},
+  { "id" : RAIN, "name": "rain", "timestep" : "daily", "var" :  "rain", "descr" :  "precipitation fallen as rain", "unit" : "mm/month", "scale" : 1.0, "offset" : 0.0},
   { "id" : SNOWF, "name": "snowf", "timestep" : "monthly", "var" :  "snowfall", "descr" :  "monthly snowfall", "unit" : "mm/month", "scale" : 1.0, "offset" : 0.0},
   { "id" : MELT, "name": "melt", "timestep" : "monthly", "var" :  "melt", "descr" :  "monthly snowmelt", "unit" : "mm/month", "scale" : 1.0, "offset" : 0.0},
   { "id" : SNOWRUNOFF, "name": "snowrunoff", "timestep" : "monthly", "var" :  "snowrunoff", "descr" :  "", "unit" : "mm/month", "scale" : 1.0, "offset" : 0.0},

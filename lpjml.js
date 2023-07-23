@@ -168,7 +168,8 @@ ID                               Fmt                        filename
     { "id" : "swc2",        "file" : { "fmt" : "txt", "name" : "output/water2.txt"}},
     { "id" : "swc3",        "file" : { "fmt" : "txt", "name" : "output/water3.txt"}},
     { "id" : "swc4",        "file" : { "fmt" : "txt", "name" : "output/water4.txt"}},
-    { "id" : "swc5",        "file" : { "fmt" : "txt", "name" : "output/water5.txt"}}
+    { "id" : "swc5",        "file" : { "fmt" : "txt", "name" : "output/water5.txt"}},
+    { "id" : "rain",        "file" : { "fmt" : "txt", "name" : "output/rain.txt"}}
 
 /*------------------------------ ------------------------- ------------------------------- */
   ],
@@ -201,7 +202,8 @@ ID                               Fmt                        filename
     { "id" : "swc3",        "file" : { "fmt" : "txt", "name" : "output/water3.txt"}},
     { "id" : "swc4",        "file" : { "fmt" : "txt", "name" : "output/water4.txt"}},
     { "id" : "swc5",        "file" : { "fmt" : "txt", "name" : "output/water5.txt"}},
-    { "id" : "swe",        "file" : { "fmt" : "txt", "name" : "output/snow.txt"}}
+    { "id" : "swe",        "file" : { "fmt" : "txt", "name" : "output/snow.txt"}},
+    { "id" : "rain",        "file" : { "fmt" : "txt", "name" : "output/rain.txt"}}
   /*------------------------------ ------------------------- ------------------------------- */
   ],
 #endif
@@ -210,8 +212,8 @@ ID                               Fmt                        filename
 /*  V. Run settings section                                          */
 /*===================================================================*/
 
-  "startgrid" : 57299, /* 27410, 67208 60400 47284 47293 47277 all grid cells */
-  "endgrid"   : 57299,
+  "startgrid" : 47284, /* 27410, 67208 60400 47284 47293 47277 all grid cells */
+  "endgrid"   : 47284,
 #ifdef CHECKPOINT
   "checkpoint_filename" : "restart/restart_checkpoint.lpj", /* filename of checkpoint file */
 #endif
@@ -220,10 +222,10 @@ ID                               Fmt                        filename
 
   "nspinup" : 4,  /* spinup years */
   "nspinyear" : 30,  /* cycle length during spinup (yr) */
-  "firstyear": 1901, /* first year of simulation */
-  "lastyear" : 1901, /* last year of simulation */
+  "firstyear": 1940, /* first year of simulation */
+  "lastyear" : 1980, /* last year of simulation */
   "restart" :  false, /* start from restart file */
-  "outputyear" : -8099,
+  "outputyear" : 1940,
   "write_restart" : true, /* create restart file: the last year of simulation=restart-year */
   "write_restart_filename" : "restart/restart_1840_nv_stdfire.lpj", /* filename of restart file */
   "restart_year": 1901 /* write restart at year */
@@ -232,9 +234,9 @@ ID                               Fmt                        filename
 
   "nspinup" : 0,   /* spinup years */
   "nspinyear" : 30,  /* cycle length during spinup (yr)*/
-  "firstyear": 1901, /* first year of simulation */
-  "lastyear" : 1901, /* last year of simulation */
-  "outputyear": 1901, /* first year output is written  */
+  "firstyear": 1950, /* first year of simulation */
+  "lastyear" : 1980, /* last year of simulation */
+  "outputyear": 1950, /* first year output is written  */
   "restart" :  true, /* start from restart file */
   "restart_filename" : "restart/restart_1840_nv_stdfire.lpj", /* filename of restart file */
   "write_restart" : true, /* create restart file */

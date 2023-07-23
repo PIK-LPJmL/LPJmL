@@ -19,7 +19,7 @@
 #define bd_leaves 20.0    /* bulk density of non-woody material, different values can be used (see Enrique et al. 1999 [kg/m3])*/
 #define  heatcap_om 2.5e6 /* volumetric heat capacity of organic matter [J/m3/K] */
 #define lambda_litter 0.1
-
+#define WITH_WATER_HEAT_TRANFER
 
 void setup_heatgrid(Real *);
 void get_soilcontent_change(Real *, Real *, Soil *);
@@ -172,7 +172,8 @@ void apply_perc_energy(Real *enth,             /*< enthalpy vector that is updat
         if (energy_change>0) {
             // distribute equally
             Real change_per_point = energy_change/GPLHEAT ;
-            for (int j = 0; j < GPLHEAT; j++) {
+            
+            for (j = 0; j < GPLHEAT; j++) {
                 enth[l*GPLHEAT + j] += change_per_point;
             }
                         // int num_pos_enth_points = 0;
@@ -190,7 +191,7 @@ void apply_perc_energy(Real *enth,             /*< enthalpy vector that is updat
             // distribute until reaching zero
             while (energy_change < -1e-8) {
                 int num_pos_enth_points = 0;
-                for (int j = 0; j < GPLHEAT; ++j) {
+                for(j = 0; j < GPLHEAT; ++j) {
                     if (enth[l*GPLHEAT + j] > 0) {
                         ++num_pos_enth_points;
                     }
@@ -204,7 +205,7 @@ void apply_perc_energy(Real *enth,             /*< enthalpy vector that is updat
                 }
 
                 Real change_per_point = energy_change / num_pos_enth_points;
-                for (int j = 0; j < GPLHEAT; ++j) {
+                for (j = 0; j < GPLHEAT; ++j) {
                   if(enth[l*GPLHEAT + j]>0){
                     if (enth[l*GPLHEAT + j] + change_per_point < 0) {
                         energy_change += enth[l*GPLHEAT + j];  // remove this point's energy from the total
