@@ -65,7 +65,13 @@ void modify_enth_due_to_masschanges(Soil * soil,const Config * config){
     get_soilcontent_change(waterdiff, soliddiff, soil);                     
     daily_mass2heatflow(soil->enth, waterdiff, soliddiff, old_therm_storage_prop);    
    #else
-    //apply_perc_energy(soil->enth,soil->perc_energy);
+    Real waterdiff[NSOILLAYER]={0};
+    Real zero[NSOILLAYER]={0};
+    Real soliddiff[NSOILLAYER]={0};  
+    Soil_thermal_prop old_therm_storage_prop;                      
+    calc_soil_thermal_props(&old_therm_storage_prop, soil, soil->old_totalwater,  soil->old_wsat, config->johansen, FALSE); 
+    get_soilcontent_change(waterdiff, soliddiff, soil);                     
+    daily_mass2heatflow(soil->enth, zero, soliddiff, old_therm_storage_prop);    
    #endif  
   //apply_perc_energy(soil->enth,soil->perc_energy);
 }
