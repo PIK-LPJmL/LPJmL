@@ -19,7 +19,7 @@
 #define bd_leaves 20.0    /* bulk density of non-woody material, different values can be used (see Enrique et al. 1999 [kg/m3])*/
 #define  heatcap_om 2.5e6 /* volumetric heat capacity of organic matter [J/m3/K] */
 #define lambda_litter 0.1
-#define WITH_WATER_HEAT_TRANFER
+//#define WITH_WATER_HEAT_TRANFER
 
 void setup_heatgrid(Real *);
 void get_soilcontent_change(Real *, Real *, Soil *);
@@ -41,7 +41,7 @@ void soiltemp(Soil *soil,          /**< pointer to soil data */
   calc_soil_thermal_props(&therm_prop, soil, NULL,  NULL, config->johansen, TRUE); 
   
   /* apply daily changes to soil enthalpy distribution */
-  modify_enth_due_to_masschanges(soil ,config);
+  //modify_enth_due_to_masschanges(soil ,config);
   modify_enth_due_to_heatconduction(soil,temp_below_snow, therm_prop, config);
 
   /* compute soil thermal attributes from enthalpy distribution */

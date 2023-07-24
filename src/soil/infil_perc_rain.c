@@ -82,6 +82,70 @@ void apply_perc_energy2(Real *enth,             /*< enthalpy vector that is upda
     }
 }
 
+update_soillayer_enth_and_temp_due_to_water_change(Soil * soil, int l, Real water_change_abs, Real vol_enth_of_water_change){
+  Real enth_change_abs = water_change_abs * vol_enth_of_water_change;
+  int j;
+  Real energy_change = enth_change_abs/(soildepth[l]/1000)*GPLHEAT;
+  if (energy_change>0) {
+            // distribute equally
+   Real change_per_point = energy_change/GPLHEAT ;
+            
+   for (j = 0; j < GPLHEAT; j++) {
+      soil->enth[l*GPLHEAT + j] += change_per_point;
+   }
+  } else {
+  // distribute until reaching zero
+    while (energy_change < -1e-8) {
+        int num_pos_enth_points = 0;
+        for(j = 0; j < GPLHEAT; ++j) {
+            if (soil->enth[l*GPLHEAT + j] > 0) {
+                ++num_pos_enth_points;
+            }
+         }
+
+         if (num_pos_enth_points == 0) {
+                      // all points are zero, can't distribute energy
+              printf("ERROR CANT Distribute enrgy");
+              break;
+                  
+         }
+
+         Real change_per_point = energy_change / num_pos_enth_points;
+         for (j = 0; j < GPLHEAT; ++j) {
+          if(soil->enth[l*GPLHEAT + j]>0){
+              if (soil->enth[l*GPLHEAT + j] + change_per_point < 0) {
+                energy_change += soil->enth[l*GPLHEAT + j];  // remove this point's energy from the total
+                  soil->enth[l*GPLHEAT + j] = 0;
+             } else {
+                soil->enth[l*GPLHEAT + j] += change_per_point;
+                 energy_change -= change_per_point;
+             }
+           }
+         }
+        }
+   }
+
+  
+     Real waterc_abs_layer = allwater(soil,l)+allice(soil,l);
+     Real solidc_abs_layer = soildepth[l] - soil->wsats[l];
+     Real c_froz   = (c_mineral * solidc_abs_layer + c_ice   * waterc_abs_layer) / soildepth[l];
+     Real c_unfroz = (c_mineral * solidc_abs_layer + c_water * waterc_abs_layer) / soildepth[l];
+     Real latent_heat = waterc_abs_layer / soildepth[l] * c_water2ice;
+     Real meantemp=0;
+     Soil_thermal_prop th;
+     int gp;
+     for (j = 0; j < GPLHEAT; j++)
+     {
+      gp=l*GPLHEAT+j;
+      th.c_frozen[gp]=c_froz;
+      th.c_unfrozen[gp]=c_unfroz;
+      th.latent_heat[gp]=latent_heat;
+      meantemp+=ENTH2TEMP(soil->enth, th,gp)/GPLHEAT;
+     }
+     soil->temp[l]=meantemp;
+}
+
+
 Real infil_perc_rain(Stand *stand,        /**< Stand pointer */
                      Real infil,          /**< rainfall + melting water - interception_stand (mm) + rw_irrig */
                      Real infil_vol_enth, /**< volumetric enthalpy contained in infil */
@@ -117,6 +181,7 @@ Real infil_perc_rain(Stand *stand,        /**< Stand pointer */
   String line;
   Irrigation *data_irrig;
   Pftcrop *crop;
+  Real vol_water_enth=0;
 
   if(stand->type->landusetype==AGRICULTURE || stand->type->landusetype==SETASIDE_RF || stand->type->landusetype==SETASIDE_IR || stand->type->landusetype==BIOMASS_GRASS || stand->type->landusetype==BIOMASS_TREE || stand->type->landusetype==GRASSLAND || stand->type->landusetype==OTHERS||  stand->type->landusetype==AGRICULTURE_TREE || stand->type->landusetype==AGRICULTURE_GRASS)
     data_irrig=stand->data;
@@ -167,7 +232,8 @@ Real infil_perc_rain(Stand *stand,        /**< Stand pointer */
     srunoff=slug-influx; /*surface runoff used for leaching */
     frac_g_influx=1; /* first layer has only green influx, but lower layers with percolation have mixed frac_g_influx */
 
-    soil->perc_energy[0]+=influx/1000*infil_vol_enth; /* calc energy of influx in top layer */
+    vol_water_enth= infil_vol_enth;
+    //soil->perc_energy[0]+=influx/1000*infil_vol_enth; /* calc energy of influx in top layer */
     for(l=0;l<NSOILLAYER;l++)
     {
       if(l<NTILLLAYER)
@@ -175,6 +241,7 @@ Real infil_perc_rain(Stand *stand,        /**< Stand pointer */
       previous_soil_water[l]=soil->w[l]*soil->whcs[l]+soil->ice_depth[l]+soil->w_fw[l]+soil->ice_fw[l];
       soil->w[l]+=(soil->w_fw[l]+influx)/soil->whcs[l];
       soil->w_fw[l]=0.0;
+      update_soillayer_enth_and_temp_due_to_water_change(soil,l,influx/1000,vol_water_enth);
       influx=0.0;
       lrunoff=0.0;
       inactive_water[l]=soil->ice_depth[l]+soil->wpwps[l]+soil->ice_fw[l];
@@ -195,8 +262,10 @@ Real infil_perc_rain(Stand *stand,        /**< Stand pointer */
       if ((soil->w[l]*soil->whcs[l])>(soildepth[l]-soil->freeze_depth[l])*(soil->wsat-soil->wpwp))
       {
         grunoff=(soil->w[l]*soil->whcs[l])-((soildepth[l]-soil->freeze_depth[l])*(soil->wsat-soil->wpwp));
-        soil->perc_energy[l]-=grunoff/1000*((soil->temp[l]>0?c_water:c_ice)*soil->temp[l]+(soil->temp[l]>=0?c_water2ice:0));
+        //soil->perc_energy[l]-=grunoff/1000*((soil->temp[l]>0?c_water:c_ice)*soil->temp[l]+(soil->temp[l]>=0?c_water2ice:0));
         soil->w[l]-=grunoff/soil->whcs[l];
+        vol_water_enth=(soil->temp[l]>0?c_water:c_ice)*soil->temp[l]+(soil->temp[l]>=0?c_water2ice:0);
+        update_soillayer_enth_and_temp_due_to_water_change(soil,l,-grunoff/1000,vol_water_enth);
         runoff+=grunoff;
         lrunoff+=grunoff;
         *return_flow_b+=grunoff*(1-stand->frac_g[l]);
@@ -206,7 +275,8 @@ Real infil_perc_rain(Stand *stand,        /**< Stand pointer */
       {
         grunoff=(inactive_water[l]+soil->w[l]*soil->whcs[l])-soil->wsats[l];
         soil->w[l]-=grunoff/soil->whcs[l];
-        soil->perc_energy[l]-=grunoff/1000*((soil->temp[l]>=0?c_water:c_ice)*soil->temp[l]+(soil->temp[l]>=0?c_water2ice:0));
+        vol_water_enth=(soil->temp[l]>0?c_water:c_ice)*soil->temp[l]+(soil->temp[l]>=0?c_water2ice:0);
+        update_soillayer_enth_and_temp_due_to_water_change(soil,l,-grunoff/1000,vol_water_enth);
         runoff+=grunoff;
         lrunoff+=grunoff;
         *return_flow_b+=grunoff*(1-stand->frac_g[l]);
@@ -237,13 +307,15 @@ Real infil_perc_rain(Stand *stand,        /**< Stand pointer */
                    sprintcoord(line,&stand->cell->coord),TT,HC,perc/soil->whcs[l],l,soil->w[l]);
 #endif
           soil->w[l]-=perc/soil->whcs[l];
-
+          vol_water_enth=(soil->temp[l]>0?c_water:c_ice)*soil->temp[l]+(soil->temp[l]>=0?c_water2ice:0);
+          update_soillayer_enth_and_temp_due_to_water_change(soil,l,-perc/1000,vol_water_enth);
           if (fabs(soil->w[l])< epsilon/soil->whcs[l])
           {
             perc+=(soil->w[l])*soil->whcs[l];
             soil->w[l]=0;
           }
-          soil->perc_energy[l]-= (perc/1000)*((soil->temp[l]>=0?c_water:c_ice)*soil->temp[l]+(soil->temp[l]>=0?c_water2ice:0));
+
+          //soil->perc_energy[l]-= (perc/1000)*((soil->temp[l]>=0?c_water:c_ice)*soil->temp[l]+(soil->temp[l]>=0?c_water2ice:0));
           getoutputindex(&stand->cell->output,PERC,l,config)+=perc*stand->frac;
           if(l==BOTTOMLAYER)
           {
@@ -258,7 +330,9 @@ Real infil_perc_rain(Stand *stand,        /**< Stand pointer */
           {
             influx=perc;
             frac_g_influx=stand->frac_g[l];
-            soil->perc_energy[l+1]+= perc/1000*((soil->temp[l]>=0?c_water:c_ice)*soil->temp[l]+(soil->temp[l]>=0?c_water2ice:0));//(soil->temp[l]*c_water+c_water2ice)*perc*1e-3;
+            //update_soillayer_enth_and_temp_due_to_water_change(soil,l+1,perc/1000,(soil->temp[l]>0?c_water:c_ice)*soil->temp[l]+(soil->temp[l]>=0?c_water2ice:0));
+  	        vol_water_enth= (soil->temp[l]>0?c_water:c_ice)*soil->temp[l]+(soil->temp[l]>=0?c_water2ice:0);
+            //soil->perc_energy[l+1]+= perc/1000*((soil->temp[l]>=0?c_water:c_ice)*soil->temp[l]+(soil->temp[l]>=0?c_water2ice:0));//(soil->temp[l]*c_water+c_water2ice)*perc*1e-3;
           }
           if(config->with_nitrogen && l<BOTTOMLAYER)
           {
@@ -323,7 +397,7 @@ Real infil_perc_rain(Stand *stand,        /**< Stand pointer */
         } /*end percolation*/
       } /* if soil depth > freeze_depth */
     } /* soil layer loop */
-    apply_perc_energy2(soil->enth,soil->perc_energy);
+    //apply_perc_energy2(soil->enth,soil->perc_energy);
     getoutput(&stand->cell->output,LEACHING,config)+=NO3perc_ly*stand->frac;
     stand->cell->balance.n_outflux+=NO3perc_ly*stand->frac;
     if(isagriculture(stand->type->landusetype))
