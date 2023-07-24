@@ -19,72 +19,91 @@
 #include "crop.h"
 
 #define NPERCO 0.4  /*controls the amount of nitrate removed from the surface layer in runoff relative to the amount removed via percolation.  0.5 in Neitsch:SWAT MANUAL*/
-void apply_perc_energy2(Real *enth,             /*< enthalpy vector that is updated*/
-                       Real *perc_energy /*< vector absolute energy change of each layer */
-                      )
-{
-    int l,j;   /* l=layer, j is for sublayer */
-    int gp;    /* gridpoint */
+// void apply_perc_energy2(Real *enth,             /*< enthalpy vector that is updated*/
+//                        Real *perc_energy /*< vector absolute energy change of each layer */
+//                       )
+// {
+//     int l,j;   /* l=layer, j is for sublayer */
+//     int gp;    /* gridpoint */
 
    
-    for(l=0;l<NSOILLAYER;l++){
-        Real energy_change = perc_energy[l]/(soildepth[l]/1000)*GPLHEAT;
-        if (energy_change>0) {
-            // distribute equally
-            Real change_per_point = energy_change/GPLHEAT ;
+//     for(l=0;l<NSOILLAYER;l++){
+//         Real energy_change = perc_energy[l]/(soildepth[l]/1000)*GPLHEAT;
+//         if (energy_change>0) {
+//             // distribute equally
+//             Real change_per_point = energy_change/GPLHEAT ;
             
-            for (j = 0; j < GPLHEAT; j++) {
-                enth[l*GPLHEAT + j] += change_per_point;
-            }
-                        // int num_pos_enth_points = 0;
-            //     for (int j = 0; j < GPLHEAT; ++j) {
-            //         if (enth[l*GPLHEAT + j] >= 0) {
-            //             ++num_pos_enth_points;
-            //         }
-            //     }
-            // Real change_per_point = energy_change/num_pos_enth_points ;
-            // for (int j = 0; j < GPLHEAT; j++) {
-            //   if(enth[l*GPLHEAT + j]>=0)
-            //     enth[l*GPLHEAT + j] += change_per_point;
-            // }
-        } else {
-            // distribute until reaching zero
-            while (energy_change < -1e-8) {
-                int num_pos_enth_points = 0;
-                for(j = 0; j < GPLHEAT; ++j) {
-                    if (enth[l*GPLHEAT + j] > 0) {
-                        ++num_pos_enth_points;
-                    }
-                }
+//             for (j = 0; j < GPLHEAT; j++) {
+//                 enth[l*GPLHEAT + j] += change_per_point;
+//             }
+//                         // int num_pos_enth_points = 0;
+//             //     for (int j = 0; j < GPLHEAT; ++j) {
+//             //         if (enth[l*GPLHEAT + j] >= 0) {
+//             //             ++num_pos_enth_points;
+//             //         }
+//             //     }
+//             // Real change_per_point = energy_change/num_pos_enth_points ;
+//             // for (int j = 0; j < GPLHEAT; j++) {
+//             //   if(enth[l*GPLHEAT + j]>=0)
+//             //     enth[l*GPLHEAT + j] += change_per_point;
+//             // }
+//         } else {
+//             // distribute until reaching zero
+//             while (energy_change < -1e-8) {
+//                 int num_pos_enth_points = 0;
+//                 for(j = 0; j < GPLHEAT; ++j) {
+//                     if (enth[l*GPLHEAT + j] > 0) {
+//                         ++num_pos_enth_points;
+//                     }
+//                 }
 
-                if (num_pos_enth_points == 0) {
-                    // all points are zero, can't distribute energy
-                    printf("ERROR CANT Distribute enrgy");
-                    break;
+//                 if (num_pos_enth_points == 0) {
+//                     // all points are zero, can't distribute energy
+//                     printf("ERROR CANT Distribute enrgy");
+//                     break;
                     
-                }
+//                 }
 
-                Real change_per_point = energy_change / num_pos_enth_points;
-                for (j = 0; j < GPLHEAT; ++j) {
-                  if(enth[l*GPLHEAT + j]>0){
-                    if (enth[l*GPLHEAT + j] + change_per_point < 0) {
-                        energy_change += enth[l*GPLHEAT + j];  // remove this point's energy from the total
-                        enth[l*GPLHEAT + j] = 0;
-                    } else {
-                        enth[l*GPLHEAT + j] += change_per_point;
-                        energy_change -= change_per_point;
-                    }
-                  }
-                }
-            }
-        }
-        perc_energy[l]=0;
-    }
-}
+//                 Real change_per_point = energy_change / num_pos_enth_points;
+//                 for (j = 0; j < GPLHEAT; ++j) {
+//                   if(enth[l*GPLHEAT + j]>0){
+//                     if (enth[l*GPLHEAT + j] + change_per_point < 0) {
+//                         energy_change += enth[l*GPLHEAT + j];  // remove this point's energy from the total
+//                         enth[l*GPLHEAT + j] = 0;
+//                     } else {
+//                         enth[l*GPLHEAT + j] += change_per_point;
+//                         energy_change -= change_per_point;
+//                     }
+//                   }
+//                 }
+//             }
+//         }
+//         perc_energy[l]=0;
+//     }
+// }
+void update_soillayer_enth_and_temp_due_to_water_change(Soil * soil, int l, Real water_change_abs, Real vol_enth_of_water_change){
+  Real waterc_abs_layer = allwater(soil,l)+allice(soil,l);
+  Real solidc_abs_layer = soildepth[l] - soil->wsats[l];
+  Real c_froz   = (c_mineral * solidc_abs_layer + c_ice   * waterc_abs_layer) / soildepth[l];
+  Real c_unfroz = (c_mineral * solidc_abs_layer + c_water * waterc_abs_layer) / soildepth[l];
+  Real latent_heat = waterc_abs_layer / soildepth[l] * c_water2ice;
+ 
 
-update_soillayer_enth_and_temp_due_to_water_change(Soil * soil, int l, Real water_change_abs, Real vol_enth_of_water_change){
   Real enth_change_abs = water_change_abs * vol_enth_of_water_change;
+  Real total_water_energy = waterc_abs_layer *(c_water* soil->temp[l]+c_water2ice);
+
+  Real total_cur_enth=0;
+
+
   int j;
+
+
+  for(j=0;j<GPLHEAT;j++){
+    total_cur_enth+=soil->enth[l*GPLHEAT+j];
+  }
+
+  total_cur_enth=total_cur_enth*(soildepth[l]/1000);
+
   Real energy_change = enth_change_abs/(soildepth[l]/1000)*GPLHEAT;
   if (energy_change>0) {
             // distribute equally
@@ -102,10 +121,15 @@ update_soillayer_enth_and_temp_due_to_water_change(Soil * soil, int l, Real wate
                 ++num_pos_enth_points;
             }
          }
-
          if (num_pos_enth_points == 0) {
                       // all points are zero, can't distribute energy
-              printf("ERROR CANT Distribute enrgy");
+              printf("ERROR CANT Distribute enrgy \n \
+                      abs Water content of soil %f \n \
+                      abs enth of that Water %f \n \
+                      abs water change %f \n  \
+                      abs enth change of that Water %f \n \
+                      total enth before %f \n", 
+                      waterc_abs_layer, total_water_energy, water_change_abs, enth_change_abs, total_cur_enth );
               break;
                   
          }
@@ -126,11 +150,7 @@ update_soillayer_enth_and_temp_due_to_water_change(Soil * soil, int l, Real wate
    }
 
   
-     Real waterc_abs_layer = allwater(soil,l)+allice(soil,l);
-     Real solidc_abs_layer = soildepth[l] - soil->wsats[l];
-     Real c_froz   = (c_mineral * solidc_abs_layer + c_ice   * waterc_abs_layer) / soildepth[l];
-     Real c_unfroz = (c_mineral * solidc_abs_layer + c_water * waterc_abs_layer) / soildepth[l];
-     Real latent_heat = waterc_abs_layer / soildepth[l] * c_water2ice;
+
      Real meantemp=0;
      Soil_thermal_prop th;
      int gp;
@@ -241,7 +261,9 @@ Real infil_perc_rain(Stand *stand,        /**< Stand pointer */
       previous_soil_water[l]=soil->w[l]*soil->whcs[l]+soil->ice_depth[l]+soil->w_fw[l]+soil->ice_fw[l];
       soil->w[l]+=(soil->w_fw[l]+influx)/soil->whcs[l];
       soil->w_fw[l]=0.0;
+      #ifdef WITH_WATER_HEAT_TRANSFER
       update_soillayer_enth_and_temp_due_to_water_change(soil,l,influx/1000,vol_water_enth);
+      #endif
       influx=0.0;
       lrunoff=0.0;
       inactive_water[l]=soil->ice_depth[l]+soil->wpwps[l]+soil->ice_fw[l];
@@ -264,8 +286,10 @@ Real infil_perc_rain(Stand *stand,        /**< Stand pointer */
         grunoff=(soil->w[l]*soil->whcs[l])-((soildepth[l]-soil->freeze_depth[l])*(soil->wsat-soil->wpwp));
         //soil->perc_energy[l]-=grunoff/1000*((soil->temp[l]>0?c_water:c_ice)*soil->temp[l]+(soil->temp[l]>=0?c_water2ice:0));
         soil->w[l]-=grunoff/soil->whcs[l];
+        #ifdef WITH_WATER_HEAT_TRANSFER
         vol_water_enth=(soil->temp[l]>0?c_water:c_ice)*soil->temp[l]+(soil->temp[l]>=0?c_water2ice:0);
         update_soillayer_enth_and_temp_due_to_water_change(soil,l,-grunoff/1000,vol_water_enth);
+        #endif
         runoff+=grunoff;
         lrunoff+=grunoff;
         *return_flow_b+=grunoff*(1-stand->frac_g[l]);
@@ -276,7 +300,9 @@ Real infil_perc_rain(Stand *stand,        /**< Stand pointer */
         grunoff=(inactive_water[l]+soil->w[l]*soil->whcs[l])-soil->wsats[l];
         soil->w[l]-=grunoff/soil->whcs[l];
         vol_water_enth=(soil->temp[l]>0?c_water:c_ice)*soil->temp[l]+(soil->temp[l]>=0?c_water2ice:0);
+        #ifdef WITH_WATER_HEAT_TRANSFER
         update_soillayer_enth_and_temp_due_to_water_change(soil,l,-grunoff/1000,vol_water_enth);
+        #endif
         runoff+=grunoff;
         lrunoff+=grunoff;
         *return_flow_b+=grunoff*(1-stand->frac_g[l]);
@@ -308,7 +334,9 @@ Real infil_perc_rain(Stand *stand,        /**< Stand pointer */
 #endif
           soil->w[l]-=perc/soil->whcs[l];
           vol_water_enth=(soil->temp[l]>0?c_water:c_ice)*soil->temp[l]+(soil->temp[l]>=0?c_water2ice:0);
+          #ifdef WITH_WATER_HEAT_TRANSFER
           update_soillayer_enth_and_temp_due_to_water_change(soil,l,-perc/1000,vol_water_enth);
+          #endif
           if (fabs(soil->w[l])< epsilon/soil->whcs[l])
           {
             perc+=(soil->w[l])*soil->whcs[l];
@@ -331,7 +359,9 @@ Real infil_perc_rain(Stand *stand,        /**< Stand pointer */
             influx=perc;
             frac_g_influx=stand->frac_g[l];
             //update_soillayer_enth_and_temp_due_to_water_change(soil,l+1,perc/1000,(soil->temp[l]>0?c_water:c_ice)*soil->temp[l]+(soil->temp[l]>=0?c_water2ice:0));
-  	        vol_water_enth= (soil->temp[l]>0?c_water:c_ice)*soil->temp[l]+(soil->temp[l]>=0?c_water2ice:0);
+  	        #ifdef WITH_WATER_HEAT_TRANSFER
+            vol_water_enth= (soil->temp[l]>0?c_water:c_ice)*soil->temp[l]+(soil->temp[l]>=0?c_water2ice:0);
+            #endif WITH_WATER_HEAT_TRANSFER
             //soil->perc_energy[l+1]+= perc/1000*((soil->temp[l]>=0?c_water:c_ice)*soil->temp[l]+(soil->temp[l]>=0?c_water2ice:0));//(soil->temp[l]*c_water+c_water2ice)*perc*1e-3;
           }
           if(config->with_nitrogen && l<BOTTOMLAYER)

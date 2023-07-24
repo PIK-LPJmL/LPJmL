@@ -19,7 +19,6 @@
 #define bd_leaves 20.0    /* bulk density of non-woody material, different values can be used (see Enrique et al. 1999 [kg/m3])*/
 #define  heatcap_om 2.5e6 /* volumetric heat capacity of organic matter [J/m3/K] */
 #define lambda_litter 0.1
-//#define WITH_WATER_HEAT_TRANFER
 
 void setup_heatgrid(Real *);
 void get_soilcontent_change(Real *, Real *, Soil *);
@@ -41,7 +40,7 @@ void soiltemp(Soil *soil,          /**< pointer to soil data */
   calc_soil_thermal_props(&therm_prop, soil, NULL,  NULL, config->johansen, TRUE); 
   
   /* apply daily changes to soil enthalpy distribution */
-  //modify_enth_due_to_masschanges(soil ,config);
+  modify_enth_due_to_masschanges(soil ,config);
   modify_enth_due_to_heatconduction(soil,temp_below_snow, therm_prop, config);
 
   /* compute soil thermal attributes from enthalpy distribution */
@@ -55,29 +54,10 @@ void soiltemp(Soil *soil,          /**< pointer to soil data */
 
 
 
-void update_soil_thermal_state(Soil *soil,           /**< pointer to soil data */
-                               Real temp_below_snow, /**< (deg C) */
-                               const Config *config  /**< LPJmL configuration */
-                              )
-{
-
-  Soil_thermal_prop therm_prop;                 
-  calc_soil_thermal_props(&therm_prop, soil, NULL,  NULL, config->johansen, TRUE); 
-  
-  /* apply daily changes to soil enthalpy distribution */
-  modify_enth_due_to_masschanges(soil, config);
-  modify_enth_due_to_heatconduction(soil, temp_below_snow, therm_prop, config);
-
-  /* compute soil thermal attributes from enthalpy distribution */
-  compute_mean_layer_temps_from_enth(soil->temp, soil->enth, therm_prop);
-  compute_water_ice_ratios_from_enth(soil,config, therm_prop);
-  compute_litter_temp_from_enth(soil, temp_below_snow, config, therm_prop);
-
-} 
 
 
 void modify_enth_due_to_masschanges(Soil * soil,const Config * config){
-  #ifndef WITH_WATER_HEAT_TRANFER
+  #ifndef WITH_WATER_HEAT_TRANSFER
     Soil_thermal_prop old_therm_storage_prop;                      
     Real waterdiff[NSOILLAYER], soliddiff[NSOILLAYER];  
     calc_soil_thermal_props(&old_therm_storage_prop, soil, soil->old_totalwater,  soil->old_wsat, config->johansen, FALSE); 
@@ -85,7 +65,7 @@ void modify_enth_due_to_masschanges(Soil * soil,const Config * config){
     get_soilcontent_change(waterdiff, soliddiff, soil);                     
     daily_mass2heatflow(soil->enth, waterdiff, soliddiff, old_therm_storage_prop);    
    #else
-    apply_perc_energy(soil->enth,soil->perc_energy);
+    //apply_perc_energy(soil->enth,soil->perc_energy);
    #endif  
   //apply_perc_energy(soil->enth,soil->perc_energy);
 }
