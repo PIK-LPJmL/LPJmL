@@ -16,8 +16,6 @@
 
 /* define a tiny fraction for allcrops that is always at least 10x epsilon */
 
-Real tinyfrac=max(epsilon*10,1e-6);
-
 Landfrac *newlandfrac(int ncft,   /**< number of crop PFTs */
                       int nagtree /**< number of agriculture tree PFTs */
                      )            /** \return allocated landfrac or NULL */

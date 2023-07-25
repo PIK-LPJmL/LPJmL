@@ -43,6 +43,10 @@ Bool fscanparam(LPJfile *file,       /**< File pointer to text file */
   f=fscanstruct(file,"param",verbosity);
   if(f==NULL)
     return TRUE;
+  if(config->landfrac_from_file)
+  {
+    fscanparamreal01(f,&param.minlandfrac,"minlandfrac");
+  }
   fscanparamreal(f,&param.k_litter10,"k_litter10");
   if(param.k_litter10<=0)
   {
@@ -188,6 +192,7 @@ Bool fscanparam(LPJfile *file,       /**< File pointer to text file */
   fscanparamreal01(f,&param.mixing_efficiency,"mixing_efficiency");
   if(config->withlanduse!=NO_LANDUSE)
   {
+    fscanparamreal01(f,&param.tinyfrac,"tinyfrac");
     fscanparamreal(f,&param.lsuha,"lsuha");
     fscanparamreal(f,&param.aprec_lim,"aprec_lim");
     fscanparamreal01(f,&param.irrigation_soilfrac,"irrig_soilfrac");

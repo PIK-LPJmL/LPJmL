@@ -19,6 +19,8 @@
 
 typedef struct
 {
+  Real minlandfrac; /**< minimum land area fraction */
+  Real tinyfrac;
   Real k_litter10;
   Poolpar k_soil10;
   Poolpar init_soiln; /**< initial soil nitrogen (gN/m2) */

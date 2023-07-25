@@ -269,8 +269,8 @@ Bool readcelldata(Celldata celldata,      /**< pointer to celldata */
     if(grid->landfrac==0)
     {
       fprintf(stderr,"WARNING034: Land fraction of cell %d is zero, set to %g.\n",
-              cell+config->startgrid,tinyfrac);
-      grid->landfrac=tinyfrac;
+              cell+config->startgrid,param.minlandfrac);
+      grid->landfrac=param.minlandfrac;
     }
     else if(grid->landfrac>1 || grid->landfrac<0)
     {

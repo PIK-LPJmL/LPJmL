@@ -554,51 +554,51 @@ Bool getlanduse(Landuse landuse,     /**< Pointer to landuse data */
     {
       for(j=0; j<ncft; j++)
       {
-        if (grid[cell].ml.landfrac[1].crop[j] < tinyfrac) 
+        if (grid[cell].ml.landfrac[1].crop[j] < param.tinyfrac)
         {
           grid[cell].ml.irrig_system->crop[j] = grid[cell].ml.manage.par->default_irrig_system;
-          grid[cell].ml.landfrac[1].crop[j] = tinyfrac;
+          grid[cell].ml.landfrac[1].crop[j] = param.tinyfrac;
         }
-        if (grid[cell].ml.landfrac[0].crop[j] < tinyfrac) grid[cell].ml.landfrac[0].crop[j] = tinyfrac;
+        if (grid[cell].ml.landfrac[0].crop[j] < param.tinyfrac) grid[cell].ml.landfrac[0].crop[j] = param.tinyfrac;
       }
       for(j=0; j<config->nagtree; j++)
       {
-        if (grid[cell].ml.landfrac[1].ag_tree[j] < tinyfrac) 
+        if (grid[cell].ml.landfrac[1].ag_tree[j] < param.tinyfrac)
         {
           grid[cell].ml.irrig_system->ag_tree[j] = grid[cell].ml.manage.par->default_irrig_system;
-          grid[cell].ml.landfrac[1].ag_tree[j] = tinyfrac;
+          grid[cell].ml.landfrac[1].ag_tree[j] = param.tinyfrac;
         }
-        if (grid[cell].ml.landfrac[0].ag_tree[j] < tinyfrac) grid[cell].ml.landfrac[0].ag_tree[j] = tinyfrac;
+        if (grid[cell].ml.landfrac[0].ag_tree[j] < param.tinyfrac) grid[cell].ml.landfrac[0].ag_tree[j] = param.tinyfrac;
       }
       for(j=0; j<NGRASS; j++)
       {
-        if (grid[cell].ml.landfrac[0].grass[j] < tinyfrac) grid[cell].ml.landfrac[0].grass[j] = tinyfrac;
-        if (grid[cell].ml.landfrac[1].grass[j] < tinyfrac) 
+        if (grid[cell].ml.landfrac[0].grass[j] < param.tinyfrac) grid[cell].ml.landfrac[0].grass[j] = param.tinyfrac;
+        if (grid[cell].ml.landfrac[1].grass[j] < param.tinyfrac)
         {
-          grid[cell].ml.landfrac[1].grass[j] = tinyfrac;
+          grid[cell].ml.landfrac[1].grass[j] = param.tinyfrac;
           grid[cell].ml.irrig_system->grass[j] = grid[cell].ml.manage.par->default_irrig_system;
         }
       }
-      if (grid[cell].ml.landfrac[1].biomass_tree < tinyfrac) 
+      if (grid[cell].ml.landfrac[1].biomass_tree < param.tinyfrac)
       {
-        grid[cell].ml.landfrac[1].biomass_tree = tinyfrac;
+        grid[cell].ml.landfrac[1].biomass_tree = param.tinyfrac;
         grid[cell].ml.irrig_system->biomass_tree = grid[cell].ml.manage.par->default_irrig_system;
       }
-      if (grid[cell].ml.landfrac[0].biomass_tree < tinyfrac) grid[cell].ml.landfrac[0].biomass_tree = tinyfrac;
-      if (grid[cell].ml.landfrac[1].biomass_grass < tinyfrac) 
+      if (grid[cell].ml.landfrac[0].biomass_tree < param.tinyfrac) grid[cell].ml.landfrac[0].biomass_tree = param.tinyfrac;
+      if (grid[cell].ml.landfrac[1].biomass_grass < param.tinyfrac)
       {
-        grid[cell].ml.landfrac[1].biomass_grass = tinyfrac;
+        grid[cell].ml.landfrac[1].biomass_grass = param.tinyfrac;
         grid[cell].ml.irrig_system->biomass_grass = grid[cell].ml.manage.par->default_irrig_system;
       }
-      if (grid[cell].ml.landfrac[0].biomass_grass < tinyfrac) grid[cell].ml.landfrac[0].biomass_grass = tinyfrac;
+      if (grid[cell].ml.landfrac[0].biomass_grass < param.tinyfrac) grid[cell].ml.landfrac[0].biomass_grass = param.tinyfrac;
       if(config->nwptype)
       {
-        if (grid[cell].ml.landfrac[1].woodplantation < tinyfrac)
+        if (grid[cell].ml.landfrac[1].woodplantation < param.tinyfrac)
         {
-          grid[cell].ml.landfrac[1].woodplantation = tinyfrac;
+          grid[cell].ml.landfrac[1].woodplantation = param.tinyfrac;
           grid[cell].ml.irrig_system->woodplantation = grid[cell].ml.manage.par->default_irrig_system;
         }
-        if (grid[cell].ml.landfrac[0].woodplantation < tinyfrac) grid[cell].ml.landfrac[0].woodplantation = tinyfrac;
+        if (grid[cell].ml.landfrac[0].woodplantation < param.tinyfrac) grid[cell].ml.landfrac[0].woodplantation = param.tinyfrac;
       }
 
     }
