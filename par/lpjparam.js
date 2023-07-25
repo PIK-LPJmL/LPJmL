@@ -14,8 +14,8 @@
 
 "param" :
 {
-  "minlandfrac" : 1e-6,      /* minium land fraction */
-  "tinyfrac" : 1e-6,
+  "minlandfrac" : 1e-6,      /* minimum land fraction used if landfrac=0 */
+  "tinyfrac" : 1e-6,         /* minimum land-use fraction used by all_crops */
   "k_litter10" : 0.3,        /* k_litter10  (1/yr) */
   "k_soil10" : { "fast" : 0.03, "slow":  0.001}, /* fast, slow k_soil10  (1/yr) */
   "init_soiln" : { "fast" : 3500.0, "slow":  3500.0}, /* initial fast and slow soil nitrogen (gN/m2) */
