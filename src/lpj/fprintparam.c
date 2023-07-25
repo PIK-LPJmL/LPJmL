@@ -24,7 +24,6 @@ void fprintparam(FILE *file,    /**< pointer to text file */
 {
   int p;
   fprintf(file,"Parameter settings\n"
-               "minlandfrac:\t%g\n"
                "k_litter10:\t%g (1/yr)\n"
                "k_soil10:\t%g %g (1/yr)\n"
                "max snow pack:\t%g (mm)\n"
