@@ -91,7 +91,7 @@ void update_soillayer_enth_and_temp_due_to_water_change(Soil * soil, int l, Real
  
 
   Real enth_change_abs = water_change_abs * vol_enth_of_water_change;
-  Real total_water_energy = waterc_abs_layer/1000 *(c_water* soil->temp[l]+c_water2ice);
+  Real total_water_energy = waterc_abs_layer/1000/1000 *(c_water* soil->temp[l]+c_water2ice);
 
   Real total_cur_enth=0;
 
@@ -154,14 +154,6 @@ void update_soillayer_enth_and_temp_due_to_water_change(Soil * soil, int l, Real
          }
         }
    }
-   #else
-              Real change_per_point = energy_change/GPLHEAT ;
-
-              for (j = 0; j < GPLHEAT; j++) {
-                  soil->enth[l*GPLHEAT + j] += change_per_point;
-                  //printf("ENTH: %f\, chpgp  %f \n  ", soil->enth[l*GPLHEAT + j], change_per_point);
-              }
-   #endif
 
   
 
