@@ -154,6 +154,14 @@ void update_soillayer_enth_and_temp_due_to_water_change(Soil * soil, int l, Real
          }
         }
    }
+   #else
+           Real change_per_point = energy_change/GPLHEAT ;
+            
+           for (j = 0; j < GPLHEAT; j++) {
+             soil->enth[l*GPLHEAT + j] += change_per_point;
+           }
+           energy_change=0;
+    #endif
 
   
 
