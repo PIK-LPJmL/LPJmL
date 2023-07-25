@@ -119,7 +119,11 @@ Real daily_natural(Stand *stand,                /**< [inout] stand pointer */
   }
 
   /* soil inflow: infiltration and percolation */
+  if(climate->prec+melt>0)
   vol_water_enth = climate->temp*c_water*climate->prec/(climate->prec+melt)+c_water2ice;
+  else
+  vol_water_enth=0;
+
   runoff+=infil_perc_rain(stand,climate->prec+melt-intercep_stand,vol_water_enth,&return_flow_b,npft,ncft,config);
 #ifdef PERMUTE
   for(p=0;p<getnpft(&stand->pftlist);p++)

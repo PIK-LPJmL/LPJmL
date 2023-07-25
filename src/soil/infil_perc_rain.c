@@ -17,7 +17,7 @@
 #include "lpj.h"
 #include "agriculture.h"
 #include "crop.h"
-
+#define GP_STATUS_DEPENDEND_WATER_HEAT_FLOW
 #define NPERCO 0.4  /*controls the amount of nitrate removed from the surface layer in runoff relative to the amount removed via percolation.  0.5 in Neitsch:SWAT MANUAL*/
 // void apply_perc_energy2(Real *enth,             /*< enthalpy vector that is updated*/
 //                        Real *perc_energy /*< vector absolute energy change of each layer */
@@ -82,6 +82,7 @@
 //     }
 // }
 void update_soillayer_enth_and_temp_due_to_water_change(Soil * soil, int l, Real water_change_abs, Real vol_enth_of_water_change){
+
   Real waterc_abs_layer = allwater(soil,l)+allice(soil,l);
   Real solidc_abs_layer = soildepth[l] - soil->wsats[l];
   Real c_froz   = (c_mineral * solidc_abs_layer + c_ice   * waterc_abs_layer) / soildepth[l];
@@ -90,7 +91,7 @@ void update_soillayer_enth_and_temp_due_to_water_change(Soil * soil, int l, Real
  
 
   Real enth_change_abs = water_change_abs * vol_enth_of_water_change;
-  Real total_water_energy = waterc_abs_layer *(c_water* soil->temp[l]+c_water2ice);
+  Real total_water_energy = waterc_abs_layer/1000 *(c_water* soil->temp[l]+c_water2ice);
 
   Real total_cur_enth=0;
 
@@ -105,13 +106,22 @@ void update_soillayer_enth_and_temp_due_to_water_change(Soil * soil, int l, Real
   total_cur_enth=total_cur_enth*(soildepth[l]/1000);
 
   Real energy_change = enth_change_abs/(soildepth[l]/1000)*GPLHEAT;
+
+  #ifdef GP_STATUS_DEPENDEND_WATER_HEAT_FLOW
   if (energy_change>0) {
-            // distribute equally
-   Real change_per_point = energy_change/GPLHEAT ;
-            
-   for (j = 0; j < GPLHEAT; j++) {
-      soil->enth[l*GPLHEAT + j] += change_per_point;
-   }
+        int num_pos_enth_points = 0;
+        for(j = 0; j < GPLHEAT; ++j) {
+            if (soil->enth[l*GPLHEAT + j] >= 0) {
+                ++num_pos_enth_points;
+            }
+         }
+
+         Real change_per_point = energy_change / num_pos_enth_points;
+         for (j = 0; j < GPLHEAT; ++j) {
+          if(soil->enth[l*GPLHEAT + j]>=0){
+              soil->enth[l*GPLHEAT + j] += change_per_point;
+          }
+        }
   } else {
   // distribute until reaching zero
     while (energy_change < -1e-8) {
@@ -122,16 +132,12 @@ void update_soillayer_enth_and_temp_due_to_water_change(Soil * soil, int l, Real
             }
          }
          if (num_pos_enth_points == 0) {
-                      // all points are zero, can't distribute energy
-              printf("ERROR CANT Distribute enrgy \n \
-                      abs Water content of soil %f \n \
-                      abs enth of that Water %f \n \
-                      abs water change %f \n  \
-                      abs enth change of that Water %f \n \
-                      total enth before %f \n", 
-                      waterc_abs_layer, total_water_energy, water_change_abs, enth_change_abs, total_cur_enth );
-              break;
-                  
+              Real change_per_point = energy_change/GPLHEAT ;
+            
+              for (j = 0; j < GPLHEAT; j++) {
+                  soil->enth[l*GPLHEAT + j] += change_per_point;
+              }
+              energy_change=0;
          }
 
          Real change_per_point = energy_change / num_pos_enth_points;
@@ -148,6 +154,14 @@ void update_soillayer_enth_and_temp_due_to_water_change(Soil * soil, int l, Real
          }
         }
    }
+   #else
+              Real change_per_point = energy_change/GPLHEAT ;
+
+              for (j = 0; j < GPLHEAT; j++) {
+                  soil->enth[l*GPLHEAT + j] += change_per_point;
+                  //printf("ENTH: %f\, chpgp  %f \n  ", soil->enth[l*GPLHEAT + j], change_per_point);
+              }
+   #endif
 
   
 
@@ -261,6 +275,7 @@ Real infil_perc_rain(Stand *stand,        /**< Stand pointer */
       previous_soil_water[l]=soil->w[l]*soil->whcs[l]+soil->ice_depth[l]+soil->w_fw[l]+soil->ice_fw[l];
       soil->w[l]+=(soil->w_fw[l]+influx)/soil->whcs[l];
       soil->w_fw[l]=0.0;
+
       #ifdef WITH_WATER_HEAT_TRANSFER
       update_soillayer_enth_and_temp_due_to_water_change(soil,l,influx/1000,vol_water_enth);
       #endif

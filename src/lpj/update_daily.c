@@ -165,7 +165,7 @@ void update_daily(Cell *cell,            /**< cell pointer           */
       soiltemp(&stand->soil,temp_bs,config);
       t = clock() - t;
       double time_taken = ((double)t)/CLOCKS_PER_SEC; // in seconds
-      printf("%f \n",time_taken);
+      //printf("%f \n",time_taken);
     }
     else
     {
