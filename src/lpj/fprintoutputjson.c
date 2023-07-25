@@ -122,7 +122,7 @@ Bool fprintoutputjson(int index,           /**< index in outputvars array */
     fprintf(file,"null,\n");
   else
     fprintf(file,"\"%s\",\n",config->outnames[config->outputvars[index].id].unit);
-  if(getnyear(config->outnames,index)==0)
+  if(getnyear(config->outnames,config->outputvars[index].id)==0)
   {
     fprintf(file,"  \"firstyear\" : %d,\n",config->outputyear);
     fprintf(file,"  \"lastyear\" : %d,\n"
