@@ -77,6 +77,10 @@ extern Real midlayer[NSOILLAYER];
 extern Real logmidlayer[NSOILLAYER];
 extern Real fbd_fac[NFUELCLASS];
 
+extern Bool no_water_heat_tranfer;
+extern Bool gp_status_dep_water_heat_flow;
+extern Bool full_gp_status_dep;
+
 #include "soilpar.h"
 
 /* Definition of datatypes */

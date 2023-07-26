@@ -28,7 +28,7 @@ void modify_enth_due_to_masschanges(Soil *, const Config *);
 void modify_enth_due_to_heatconduction(Soil *, Real, Soil_thermal_prop,const Config *);
 void compute_water_ice_ratios_from_enth(Soil *, const Config *, Soil_thermal_prop);
 void compute_litter_temp_from_enth(Soil * soil, Real temp_below_snow ,const Config * config,Soil_thermal_prop therm_prop);
- Bool no_water_heat_tranfer;
+//Bool no_water_heat_tranfer=0;
 
 void soiltemp(Soil *soil,          /**< pointer to soil data */
               Real temp_below_snow,        /**< (deg C) */

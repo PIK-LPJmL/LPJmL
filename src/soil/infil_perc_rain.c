@@ -18,10 +18,12 @@
 #include "agriculture.h"
 #include "crop.h"
 #define NPERCO 0.4  /*controls the amount of nitrate removed from the surface layer in runoff relative to the amount removed via percolation.  0.5 in Neitsch:SWAT MANUAL*/
-Bool no_water_heat_tranfer;
-Bool gp_status_dep_water_heat_flow;
-Bool full_gp_status_dep;
 
+#ifndef TESTSCENARIO_HEAT2
+Bool no_water_heat_tranfer=FALSE;
+Bool gp_status_dep_water_heat_flow=TRUE;
+Bool full_gp_status_dep=FALSE;
+#endif
 
 void apply_perc_energy2(Soil * soil
                       )
@@ -29,13 +31,14 @@ void apply_perc_energy2(Soil * soil
   int l,j;   /* l=layer, j is for sublayer */
   int gp;    /* gridpoint */
 
+
   for(l=0;l<NSOILLAYER;l++){
     Real energy_change = soil->perc_energy[l]/(soildepth[l]/1000)*GPLHEAT;
     if (gp_status_dep_water_heat_flow) {
       if (energy_change>0) {
         int num_pos_enth_points = 0;
         if (full_gp_status_dep) {
-          for (int j = 0; j < GPLHEAT; ++j) {
+          for ( j = 0; j < GPLHEAT; ++j) {
             if (soil->enth[l*GPLHEAT + j] >= 0) { 
               ++num_pos_enth_points;
             }
@@ -43,14 +46,14 @@ void apply_perc_energy2(Soil * soil
           if (num_pos_enth_points==0)
             num_pos_enth_points=GPLHEAT;
           Real change_per_point = energy_change/num_pos_enth_points ;
-          for (int j = 0; j < GPLHEAT; j++) {
+          for ( j = 0; j < GPLHEAT; j++) {
             if(soil->enth[l*GPLHEAT + j]>=0)
               soil->enth[l*GPLHEAT + j] += change_per_point;
           }
         }
         else {
           Real change_per_point = energy_change/GPLHEAT ;
-          for (int j = 0; j < GPLHEAT; j++) {
+          for ( j = 0; j < GPLHEAT; j++) {
             printf("CPP: %f, j %d \n ", change_per_point, j);
              soil->enth[l*GPLHEAT + j] += change_per_point;
           }
@@ -70,8 +73,8 @@ void apply_perc_energy2(Soil * soil
           if (num_pos_enth_points == 0) {
             num_pos_enth_points=GPLHEAT;
             Real change_per_point = energy_change/num_pos_enth_points ;
-            for (int j = 0; j < GPLHEAT; j++) {
-              if(soil->enth[l*GPLHEAT + j]>=0)
+            for (j = 0; j < GPLHEAT; j++) {
+              //if(soil->enth[l*GPLHEAT + j]>=0)
                 soil->enth[l*GPLHEAT + j] += change_per_point;
             }
             energy_change=0;
@@ -116,6 +119,8 @@ Real infil_perc_rain(Stand *stand,        /**< Stand pointer */
                      const Config *config /**< LPJ configuration */
                     )                     /** \return water runoff (mm) */
 {
+  //Bool no_water_heat_tranfer=0;
+
   Real runoff;
   Real perc,slug,tolitter;
   Real TT; /*traveltime in [mm/h]*/
