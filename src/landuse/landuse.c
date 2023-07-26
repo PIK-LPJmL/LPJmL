@@ -351,7 +351,10 @@ Bool getlanduse(Landuse landuse,     /**< Pointer to landuse data */
     count=0;
     for(cell=0;cell<config->ngridcell;cell++)
       for(i=0;i<landuse->landuse.var_len;i++)
-        data[count++]/=grid[cell].landfrac;
+        if(grid[cell].landfrac==0)
+          data[count++]=0;
+        else
+          data[count++]/=grid[cell].landfrac;
   }
   count=0;
 

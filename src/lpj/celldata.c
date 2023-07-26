@@ -287,7 +287,10 @@ Bool readcelldata(Celldata celldata,      /**< pointer to celldata */
     if(readinputdata(&celldata->lakes,&grid->lakefrac,&grid->coord,cell+config->startgrid,&config->lakes_filename))
       return TRUE;
     /* rescale to land fraction */
-    grid->lakefrac/=grid->landfrac;
+    if(grid->landfrac==0)
+      grid->lakefrac=1;
+    else
+      grid->lakefrac/=grid->landfrac;
     if(grid->lakefrac>1)
       fprintf(stderr,"WARNING035: Lake fraction in cell %d=%g greater than one, set to one.\n",cell+config->startgrid,grid->lakefrac);
     if(grid->lakefrac>1-epsilon)
