@@ -30,7 +30,7 @@
   #define GPLHEAT 3 /* Gripoints per soil layer for the heat conduction scheme  */
 #endif
 #ifndef NO_WATER_HEAT_TRANSFER
-#define WITH_WATER_HEAT_TRANSFER
+  #define WITH_WATER_HEAT_TRANSFER
 #endif
 #define NHEATGRIDP NSOILLAYER*GPLHEAT /* Total number of gridpoints for the heatflow scheme */
 //#define WITH_WATER_HEAT_TRANSFER

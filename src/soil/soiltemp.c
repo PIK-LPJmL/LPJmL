@@ -28,7 +28,7 @@ void modify_enth_due_to_masschanges(Soil *, const Config *);
 void modify_enth_due_to_heatconduction(Soil *, Real, Soil_thermal_prop,const Config *);
 void compute_water_ice_ratios_from_enth(Soil *, const Config *, Soil_thermal_prop);
 void compute_litter_temp_from_enth(Soil * soil, Real temp_below_snow ,const Config * config,Soil_thermal_prop therm_prop);
-
+ Bool no_water_heat_tranfer;
 
 void soiltemp(Soil *soil,          /**< pointer to soil data */
               Real temp_below_snow,        /**< (deg C) */
@@ -57,22 +57,23 @@ void soiltemp(Soil *soil,          /**< pointer to soil data */
 
 
 void modify_enth_due_to_masschanges(Soil * soil,const Config * config){
-  #ifndef WITH_WATER_HEAT_TRANSFER
+  if(no_water_heat_tranfer){
     Soil_thermal_prop old_therm_storage_prop;                      
     Real waterdiff[NSOILLAYER], soliddiff[NSOILLAYER];  
     calc_soil_thermal_props(&old_therm_storage_prop, soil, soil->old_totalwater,  soil->old_wsat, config->johansen, FALSE); 
-    
     get_soilcontent_change(waterdiff, soliddiff, soil);                     
     daily_mass2heatflow(soil->enth, waterdiff, soliddiff, old_therm_storage_prop);    
-   #else
+  }
+   else{
     Real waterdiff[NSOILLAYER]={0};
     Real zero[NSOILLAYER]={0};
     Real soliddiff[NSOILLAYER]={0};  
     Soil_thermal_prop old_therm_storage_prop;                      
     calc_soil_thermal_props(&old_therm_storage_prop, soil, soil->old_totalwater,  soil->old_wsat, config->johansen, FALSE); 
     get_soilcontent_change(waterdiff, soliddiff, soil);                     
-    daily_mass2heatflow(soil->enth, zero, soliddiff, old_therm_storage_prop);    
-   #endif  
+    daily_mass2heatflow(soil->enth, zero, soliddiff, old_therm_storage_prop);  
+    apply_perc_energy2(soil);  
+   }
   //apply_perc_energy(soil->enth,soil->perc_energy);
 }
 
