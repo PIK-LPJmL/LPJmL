@@ -220,7 +220,7 @@ struct config
   Bool permafrost;     /**< permafrost module enabled */
   Bool johansen;       /**< johansen enabled */
   Bool gsi_phenology;	/**< GSI phenology enabled (TRUE/FALSE) */
-  Bool new_trf;         /**< new transpiration reduction function enabled */
+  Bool transp_suction_fcn; /**< transpiration reduction function enabled */
   Bool equilsoil;      /**< equilsoil is called */
   Bool from_restart;   /**< reading from restart */
   int soilpar_option;  /**< soil parameter option (NO_FIXED_SOILPAR, FIXED_SOILPAR, PRESCRIBED_SOILPAR) */
@@ -236,7 +236,9 @@ struct config
   Pnet *irrig_res_back;
   int withlanduse;
   Bool reservoir;
+#ifdef COUPLING_WITH_FMS
   Bool nitrogen_coupled;
+#endif
   int *landusemap;          /**< mapping of bands in land-use file to CFTs */
   int landusemap_size;      /**< size of landusmap */
   int *fertilizermap;
