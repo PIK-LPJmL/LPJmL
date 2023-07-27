@@ -77,7 +77,6 @@ Real water_stressed(Pft *pft,                  /**< [inout] pointer to PFT varia
   Real gc_new;
   Real A,B,psi;
   Real trf[LASTLAYER];
-  Irrigation *irrig;
 
   gpd=agd=*rd=layer=root_u=root_nu=aet_cor=0.0;
   aet_frac=1.;
