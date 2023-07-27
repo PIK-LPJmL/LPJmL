@@ -308,8 +308,10 @@ void fprintconfig(FILE *file,          /**< File pointer to text output file */
     len=printsim(file,len,&count,(config->with_nitrogen==UNLIM_NITROGEN) ? "unlimited nitrogen" : "nitrogen limitation");
   if(config->permafrost)
     len=printsim(file,len,&count,"permafrost");
-  if(config->nitrogen_coupled)
-    len=printsim(file,len,&count,"water and nitrogen limitations coupled");
+#ifdef COUPLING_WITH_FMS
+  if(!config->nitrogen_coupled)
+    len=printsim(file,len,&count,"water and nitrogen limitations uncoupled");
+#endif
   if(config->johansen)
     len=printsim(file,len,&count,"Johansen conductivity");
   if(config->black_fallow)
@@ -327,8 +329,8 @@ void fprintconfig(FILE *file,          /**< File pointer to text output file */
     len=printsim(file,len,&count,(config->prescribe_landcover==LANDCOVEREST) ? "prescribed establishment":"prescribed maximum FPC");
   if(config->gsi_phenology)
     len=printsim(file,len,&count,"GSI phenology");
-  if(config->new_trf)
-    len=printsim(file,len,&count,"new transpiration reduction function");
+  if(config->transp_suction_fcn)
+    len=printsim(file,len,&count,"transpiration suction function");
   if(config->soilpar_option==FIXED_SOILPAR)
   {
     len=fputstring(file,len,", ",78);

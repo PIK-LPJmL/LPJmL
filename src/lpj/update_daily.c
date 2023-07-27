@@ -399,15 +399,6 @@ void update_daily(Cell *cell,            /**< cell pointer           */
   getoutput(&cell->output,DECAY_LEAF_AGR,config)*=litsum_old_agr[LEAF]>0 ? litsum_new_agr[LEAF]/litsum_old_agr[LEAF] : 1;
   getoutput(&cell->output,DECAY_WOOD_AGR,config)*=litsum_old_agr[WOOD]>0 ? litsum_new_agr[WOOD]/litsum_old_agr[WOOD] : 1;
 
-#ifdef COUPLING_WITH_FMS
-  if (cell->lakefrac > 0)
-  {
-    laketemp(cell, &climate);
-    cell->output.mlaketemp+=cell->laketemp;
-  }
-  else
-    getoutput(&cell->output,LAKETEMP,config)=config->missing_value;
-#endif
 
 #ifdef IMAGE
   // outflow from groundwater reservoir to river
