@@ -41,10 +41,6 @@ Real npp_crop(Pft *pft,           /**< [inout] PFT variables */
   Real npp;
   Real rosoresp,presp,gresp;
   Cropratio nc_ratio;
-  Irrigation *data;
-  Output *output;
-  output=&pft->stand->cell->output;
-  data=pft->stand->data;
   crop=pft->data;
   par=pft->par->data;
   if(!config->crop_resp_fix && crop->ind.root.carbon>epsilon)
@@ -76,7 +72,7 @@ Real npp_crop(Pft *pft,           /**< [inout] PFT variables */
     pft->bm_inc.carbon+=npp;
   }
   else
-    allocation_daily_crop(pft,npp,wdf,TRUE,config);
+    allocation_daily_crop(pft,npp,wdf,config);
   return npp;
 } /* of 'npp_crop' */
 

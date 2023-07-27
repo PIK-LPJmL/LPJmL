@@ -40,21 +40,6 @@ static int findid(const char *name,const Variable var[],int size)
   return NOT_FOUND;
 } /* of 'findid' */
 
-static int findpftid(const char *name,const Pftpar pftpar[],int ntotpft)
-{
-  int p;
-  if(!strcmp(name,"allnatural"))
-    return ALLNATURAL;
-  else if(!strcmp(name,"allgrassland"))
-    return ALLGRASSLAND;
-  else if(!strcmp(name,"allstand"))
-    return ALLSTAND;
-  for(p=0;p<ntotpft;p++)
-    if(!strcmp(name,pftpar[p].name))
-      return pftpar[p].id;
-  return NOT_FOUND;
-} /* of 'findpftid' */
-
 Bool fscanoutput(LPJfile *file,  /**< pointer to LPJ file */
                  int npft,       /**< number of natural PFTs */
                  int ncft,       /**< number of crop PFTs */
@@ -63,7 +48,7 @@ Bool fscanoutput(LPJfile *file,  /**< pointer to LPJ file */
                 )                /** \return TRUE on error */
 {
   LPJfile *arr,*item;
-  int count,flag,size,index,ntotpft,version;
+  int count,flag,size,index,version;
   Bool metafile;
   const char *outpath,*name;
   Verbosity verbosity;
