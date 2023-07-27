@@ -303,15 +303,6 @@ void allocation_daily_crop(Pft *pft,             /**< PFT variables */
     pft->bm_inc,crop->ind.leaf,crop->ind.pool,crop->ind.root,crop->ind.so,
     crop->ind_n.leaf,crop->ind_n.pool,crop->ind_n.root,crop->ind_n.so);*/
 #endif
-  if(isoutput && pft->par->id==config->crop_index &&
-     data->irrigation==config->crop_irrigation)
-  {
-    getoutput(output,D_FROOT,config)=froot;
-    getoutput(output,D_HI,config)=hi;
-    getoutput(output,D_HIMIND,config)=himind;
-    getoutput(output,D_FHIOPT,config)=fhiopt;
-    getoutput(output,D_LAINPPDEF,config)=crop->lai_nppdeficit;
-  }
 } /* of 'allocation_daily_crop' */
 
 /*

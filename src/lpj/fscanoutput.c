@@ -64,7 +64,7 @@ Bool fscanoutput(LPJfile *file,  /**< pointer to LPJ file */
 {
   LPJfile *arr,*item;
   int count,flag,size,index,ntotpft,version;
-  Bool isdaily,metafile;
+  Bool metafile;
   const char *outpath,*name;
   Verbosity verbosity;
   String s,s2;
@@ -105,8 +105,6 @@ Bool fscanoutput(LPJfile *file,  /**< pointer to LPJ file */
   {
     config->pft_output_scaled=FALSE;
     config->n_out=0;
-    config->crop_index=-1;
-    config->crop_irrigation=-1;
     config->json_suffix=NULL;
     return FALSE;
   }
@@ -166,7 +164,6 @@ Bool fscanoutput(LPJfile *file,  /**< pointer to LPJ file */
     return TRUE;
   config->json_suffix=strdup(name);
   checkptr(config->json_suffix);
-  isdaily=FALSE;
   while(count<=nout_max && index<size)
   {
     item=fscanarrayindex(arr,index);
@@ -256,8 +253,6 @@ Bool fscanoutput(LPJfile *file,  /**< pointer to LPJ file */
       }
       else
       {
-        if(flag>=D_LAI && flag<=D_PET)
-          isdaily=TRUE;
         config->outputvars[count].id=flag;
         if(flag==GLOBALFLUX && config->outputvars[count].filename.fmt!=TXT)
         {
@@ -333,40 +328,6 @@ Bool fscanoutput(LPJfile *file,  /**< pointer to LPJ file */
       }
     }
     index++;
-  }
-  if(isdaily)
-  {
-    ntotpft=config->npft[GRASS]+config->npft[TREE]+config->npft[CROP];
-    if(isstring(file,"crop_index"))
-    {
-      name=fscanstring(file,NULL,"crop_index",verbosity);
-      config->crop_index=findpftid(name,config->pftpar,ntotpft);
-      if(config->crop_index==NOT_FOUND)
-      {
-        if(verbosity)
-          fprintf(stderr,"ERROR166: Invalid crop index \"%s\" for daily output.\n",name);
-        return TRUE;
-      }
-    }
-    else
-    {
-      fscanint2(file,&config->crop_index,"crop_index");
-      if(config->crop_index>=0 && config->crop_index<config->npft[CROP])
-        config->crop_index+=config->npft[GRASS]+config->npft[TREE];
-      else if((config->crop_index!=ALLNATURAL && config->crop_index!=ALLGRASSLAND && config->crop_index!=ALLSTAND))
-      {
-        if(verbosity)
-          fprintf(stderr,"ERROR166: Invalid value for crop index=%d.\n",
-                  config->crop_index);
-        return TRUE;
-      }
-    }
-    fscanbool2(file,&config->crop_irrigation,"crop_irrigation");
-  }
-  else
-  {
-    config->crop_index=-1;
-    config->crop_irrigation=-1;
   }
   config->n_out=count;
   return FALSE;
