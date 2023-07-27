@@ -20,7 +20,7 @@
 #define NPERCO 0.4  /*controls the amount of nitrate removed from the surface layer in runoff relative to the amount removed via percolation.  0.5 in Neitsch:SWAT MANUAL*/
 
 #ifndef TESTSCENARIO_HEAT2
-Bool no_water_heat_tranfer=FALSE;
+Bool no_water_heat_tranfer=TRUE;
 Bool gp_status_dep_water_heat_flow=FALSE;
 Bool full_gp_status_dep=FALSE;
 #endif
@@ -207,10 +207,10 @@ Real infil_perc_rain(Stand *stand,        /**< Stand pointer */
       soil->w[l]+=(soil->w_fw[l]+influx)/soil->whcs[l];
       soil->w_fw[l]=0.0;
 
-      #ifdef WITH_WATER_HEAT_TRANSFER
+      if(!no_water_heat_tranfer){
       //update_soillayer_enth_and_temp_due_to_water_change(soil,l,influx/1000,vol_water_enth);
       soil->perc_energy[l]+=influx/1000*vol_water_enth; /* calc energy of influx in top layer */
-      #endif
+      }
       influx=0.0;
       lrunoff=0.0;
       inactive_water[l]=soil->ice_depth[l]+soil->wpwps[l]+soil->ice_fw[l];
@@ -232,11 +232,11 @@ Real infil_perc_rain(Stand *stand,        /**< Stand pointer */
       {
         grunoff=(soil->w[l]*soil->whcs[l])-((soildepth[l]-soil->freeze_depth[l])*(soil->wsat-soil->wpwp));
         soil->w[l]-=grunoff/soil->whcs[l];
-        #ifdef WITH_WATER_HEAT_TRANSFER
+        if(!no_water_heat_tranfer){
         vol_water_enth=(soil->temp[l]>0?c_water:c_ice)*soil->temp[l]+(soil->temp[l]>=0?c_water2ice:0);
         soil->perc_energy[l]-=grunoff/1000*vol_water_enth;
         //update_soillayer_enth_and_temp_due_to_water_change(soil,l,-grunoff/1000,vol_water_enth);
-        #endif
+        }
         runoff+=grunoff;
         lrunoff+=grunoff;
         *return_flow_b+=grunoff*(1-stand->frac_g[l]);
@@ -246,11 +246,11 @@ Real infil_perc_rain(Stand *stand,        /**< Stand pointer */
       {
         grunoff=(inactive_water[l]+soil->w[l]*soil->whcs[l])-soil->wsats[l];
         soil->w[l]-=grunoff/soil->whcs[l];
-        #ifdef WITH_WATER_HEAT_TRANSFER
+        if(!no_water_heat_tranfer){
         vol_water_enth=(soil->temp[l]>0?c_water:c_ice)*soil->temp[l]+(soil->temp[l]>=0?c_water2ice:0);
         soil->perc_energy[l]-=grunoff/1000*vol_water_enth;
         //update_soillayer_enth_and_temp_due_to_water_change(soil,l,-grunoff/1000,vol_water_enth);
-        #endif
+        }
         runoff+=grunoff;
         lrunoff+=grunoff;
         *return_flow_b+=grunoff*(1-stand->frac_g[l]);
@@ -281,11 +281,11 @@ Real infil_perc_rain(Stand *stand,        /**< Stand pointer */
                    sprintcoord(line,&stand->cell->coord),TT,HC,perc/soil->whcs[l],l,soil->w[l]);
 #endif
           soil->w[l]-=perc/soil->whcs[l];
-          #ifdef WITH_WATER_HEAT_TRANSFER
+          if(!no_water_heat_tranfer){
           vol_water_enth=(soil->temp[l]>0?c_water:c_ice)*soil->temp[l]+(soil->temp[l]>=0?c_water2ice:0);
           soil->perc_energy[l]-=perc/1000*vol_water_enth;
           //update_soillayer_enth_and_temp_due_to_water_change(soil,l,-perc/1000,vol_water_enth);
-          #endif
+          }
           if (fabs(soil->w[l])< epsilon/soil->whcs[l])
           {
             perc+=(soil->w[l])*soil->whcs[l];
