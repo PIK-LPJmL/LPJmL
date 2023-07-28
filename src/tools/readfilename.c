@@ -35,6 +35,7 @@ Bool readfilename(LPJfile *file,      /**< pointer to text file read */
     return TRUE;
   if(fscankeywords(f,&filename->fmt,"fmt",fmt,N_FMT,FALSE,verb))
     return TRUE;
+  filename->issocket=FALSE;
   if(filename->fmt==FMS)
   {
     filename->timestep=NOT_FOUND;
@@ -45,7 +46,6 @@ Bool readfilename(LPJfile *file,      /**< pointer to text file read */
     filename->unit=NULL;
     return FALSE;
   }
-  filename->issocket=FALSE;
   if(iskeydefined(f,"map"))
   {
     name=fscanstring(f,NULL,"map",verb);

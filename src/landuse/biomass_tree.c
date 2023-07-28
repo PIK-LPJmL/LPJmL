@@ -23,4 +23,4 @@ const char *biomass_names[NBIOMASSTYPE]={"biomass grass","biomass tree"};
 Standtype biomass_tree_stand={BIOMASS_TREE,"biomass_tree",new_biomass_tree,
                               free_agriculture,fwrite_biomass_tree,
                               fread_biomass_tree,fprint_biomass_tree,
-                              daily_biomass_tree,annual_biomass_tree,NULL,NULL};
+                              daily_biomass_tree,annual_biomass_tree,NULL};
