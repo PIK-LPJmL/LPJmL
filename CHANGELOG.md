@@ -19,6 +19,13 @@ of `major.minor.patch` with
 
 ## [Unreleased]
 
+## [5.6.23] - 2023-07-28
+
+### Changed
+
+- Instead of the soil code the index of the grid cell is written into the NetCDF file for `"grid"` output.
+
+
 ## [5.6.22] - 2023-07-27
 
 ### Changed
