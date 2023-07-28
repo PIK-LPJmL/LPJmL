@@ -19,6 +19,13 @@ of `major.minor.patch` with
 
 ## [Unreleased]
 
+## [5.6.xx] - 2023-07-28
+
+### Fixed
+
+-  The number of bands is now correctly checked for the `read_residue_data` input.
+
+
 ## [5.6.23] - 2023-07-28
 
 ### Changed
