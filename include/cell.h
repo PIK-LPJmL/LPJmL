@@ -154,7 +154,7 @@ extern void fprintcell(FILE *,const Cell [],int,int,int,const Config *);
 extern Bool freadcell(FILE *,Cell *,int,int,const Soilpar *,
                       const Standtype [],int,Bool,Config *);
 extern int writecoords(Outputfile *,int,const Cell [],const Config *);
-extern int write_terr_area(Outputfile *,int,const Cell [],const Config *);
+extern int writearea(Outputfile *,int,const Cell [],const Config *);
 extern int writecountrycode(Outputfile *,int,const Cell [],const Config *);
 extern int writeregioncode(Outputfile *,int,const Cell [],const Config *);
 extern int iterate(Outputfile *,Cell [],Input,

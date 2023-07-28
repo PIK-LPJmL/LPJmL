@@ -116,7 +116,7 @@
 #define NO_FERTILIZER 0
 #define FERTILIZER 1
 #define AUTO_FERTILIZER 2
-#define NOUT 374            /* number of output files */
+#define NOUT 375            /* number of output files */
 #define END -1              /* end marker for output files */
 #define GRIDBASED 1         /* pft-specific outputs scaled by stand->frac */
 #define PFTBASED 0          /* pft-specific outputs not scaled by stand->frac */
@@ -132,8 +132,8 @@
 #define REGION 2
 #define GLOBALFLUX 3
 #define TERR_AREA 4
-#define FPC 5
-#define RUNOFF 6
+#define LAKE_AREA 5
+#define FPC 6
 #define DISCHARGE 7
 #define EVAP 8
 #define INTERC 9
@@ -507,7 +507,8 @@
 #define RH_MGRASS 370
 #define PFT_BNF 371
 #define TRANSP 372
-#define LAND_AREA 373
+#define RUNOFF 373
+#define LAND_AREA 374
 #define PFT_GCGP_COUNT 0
 #define NDAY_MONTH 1
 #define RANDOM_SEED 0

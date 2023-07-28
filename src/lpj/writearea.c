@@ -1,10 +1,10 @@
 /**************************************************************************************/
 /**                                                                                \n**/
-/**            w  r  i  t  e  _  t  e  r  r  _   a  r  e  a  .  c                  \n**/
+/**                  w  r  i  t  e  a  r  e  a  .  c                               \n**/
 /**                                                                                \n**/
 /**     C implementation of LPJmL                                                  \n**/
 /**                                                                                \n**/
-/**     Function writes terrestrial areas (land + lakes) to output file            \n**/
+/**     Function writes terrestrial areas (land + lakes, lakes) to output file     \n**/
 /**                                                                                \n**/
 /** (C) Potsdam Institute for Climate Impact Research (PIK), see COPYRIGHT file    \n**/
 /** authors, and contributors see AUTHORS file                                     \n**/
@@ -16,11 +16,11 @@
 
 #include "lpj.h"
 
-int write_terr_area(Outputfile *output,  /**< output file array */
-                    int index,           /**< output index */
-                    const Cell grid[]    /**< LPJ cell array */,
-                    const Config *config /**< LPJmL configuration*/
-                   )                     /** \return number of areas written */
+int writearea(Outputfile *output,  /**< output file array */
+              int index,           /**< output index */
+              const Cell grid[]    /**< LPJ cell array */,
+              const Config *config /**< LPJmL configuration*/
+             )                     /** \return number of areas written */
 {
   int cell,count;
   Bool rc;
@@ -36,9 +36,24 @@ int write_terr_area(Outputfile *output,  /**< output file array */
   if(iserror(rc,config))
     return 0;
   count=0;
-  for(cell=0;cell<config->ngridcell;cell++)
-    if(!grid[cell].skip)
-      vec[count++]=(float)grid[cell].coord.area;
+  switch(index)
+  {
+    case TERR_AREA:
+      for(cell=0;cell<config->ngridcell;cell++)
+        if(!grid[cell].skip)
+          vec[count++]=(float)grid[cell].coord.area;
+      break;
+    case LAKE_AREA:
+      for(cell=0;cell<config->ngridcell;cell++)
+        if(!grid[cell].skip)
+          vec[count++]=(float)(grid[cell].coord.area*grid[cell].lakefrac);
+      break;
+    default:
+      if(isroot(*config))
+        fprintf(stderr,"ERROR258: Invalid index=%d in writearea().\n",index);
+      free(vec);
+      return 0;
+  }
 #ifdef USE_MPI
   if(output->files[index].isopen)
     switch(output->files[index].fmt)
@@ -89,4 +104,4 @@ int write_terr_area(Outputfile *output,  /**< output file array */
 #endif
   free(vec);
   return count;
-} /* of 'write_terr_area' */
+} /* of 'writearea' */
