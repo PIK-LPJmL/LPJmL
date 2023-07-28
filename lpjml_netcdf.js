@@ -192,9 +192,6 @@ ID                         Fmt                    filename
 /*------------------------ ---------------------- ------------------------------- */
 ],
 
-"crop_index" : "temperate cereals",  /* CFT for daily output_SPITFIRE-optpar */
-"crop_irrigation" : false, /* irrigation flag for daily output_SPITFIRE-optpar */
-
 #endif
 
 /*===================================================================*/
