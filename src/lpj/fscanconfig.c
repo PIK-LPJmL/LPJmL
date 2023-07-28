@@ -235,7 +235,9 @@ Bool fscanconfig(Config *config,    /**< LPJ configuration */
     config->seed_start=time(NULL);
   setseed(config->seed,config->seed_start);
   config->with_nitrogen=NO_NITROGEN;
+#ifdef COUPLING_WITH_FMS
   config->nitrogen_coupled=FALSE;
+#endif
   if(fscankeywords(file,&config->with_nitrogen,"with_nitrogen",nitrogen,3,TRUE,verbose))
     return TRUE;
   if(fscankeywords(file,&config->with_radiation,"radiation",radiation,4,FALSE,verbose))
@@ -274,9 +276,9 @@ Bool fscanconfig(Config *config,    /**< LPJ configuration */
   config->prescribe_landcover=NO_LANDCOVER;
   if(fscankeywords(file,&config->prescribe_landcover,"prescribe_landcover",prescribe_landcover,3,TRUE,verbose))
     return TRUE;
-  fscanbool2(file,&config->new_phenology,"new_phenology");
-  config->new_trf=FALSE;
-  if(fscanbool(file,&config->new_trf,"new_trf",TRUE,verbose))
+  fscanbool2(file,&config->gsi_phenology,"gsi_phenology");
+  config->transp_suction_fcn=FALSE;
+  if(fscanbool(file,&config->transp_suction_fcn,"transp_suction_fcn",TRUE,verbose))
     return TRUE;
   fscanbool2(file,&config->river_routing,"river_routing");
   config->extflow=FALSE;
@@ -297,7 +299,6 @@ Bool fscanconfig(Config *config,    /**< LPJ configuration */
   config->sdate_option=NO_FIXED_SDATE;
   config->crop_phu_option=NEW_CROP_PHU;
   config->rw_manage=FALSE;
-  config->const_climate=FALSE;
   config->tillage_type=NO_TILLAGE;
   config->residue_treatment=NO_RESIDUE_REMOVE;
   config->no_ndeposition=FALSE;
@@ -311,9 +312,11 @@ Bool fscanconfig(Config *config,    /**< LPJ configuration */
   {
     if(fscanbool(file,&config->npp_controlled_bnf,"npp_controlled_bnf",TRUE,verbose))
       return TRUE;
+#ifdef COUPLING_WITH_FMS
     config->nitrogen_coupled=TRUE;
     if(fscanbool(file,&config->nitrogen_coupled,"nitrogen_coupled",TRUE,verbose))
       return TRUE;
+#endif
   }
   config->soilpar_option=NO_FIXED_SOILPAR;
   if(fscankeywords(file,&config->soilpar_option,"soilpar_option",soilpar_option,3,TRUE,verbose))
@@ -322,13 +325,11 @@ Bool fscanconfig(Config *config,    /**< LPJ configuration */
   {
     fscanint2(file,&config->soilpar_fixyear,"soilpar_fixyear");
   }
-  if(fscanbool(file,&config->const_climate,"const_climate",TRUE,verbose))
-    return TRUE;
-  config->storeclimate=TRUE;;
+  config->storeclimate=TRUE;
   if(fscanbool(file,&config->storeclimate,"store_climate",TRUE,verbose))
     return TRUE;
-  config->shuffle_climate=FALSE;
-  if(fscanbool(file,&config->shuffle_climate,"shuffle_climate",TRUE,verbose))
+  config->shuffle_spinup_climate=FALSE;
+  if(fscanbool(file,&config->shuffle_spinup_climate,"shuffle_spinup_climate",TRUE,verbose))
     return TRUE;
   config->fix_climate=FALSE;
   if(fscanbool(file,&config->fix_climate,"fix_climate",TRUE,verbose))
@@ -336,25 +337,57 @@ Bool fscanconfig(Config *config,    /**< LPJ configuration */
   if(config->fix_climate)
   {
     fscanint2(file,&config->fix_climate_year,"fix_climate_year");
+    if(fscanintarray(file,config->fix_climate_interval,2,"fix_climate_interval",verbose))
+      return TRUE;
+    if(config->fix_climate_interval[1]<config->fix_climate_interval[0])
+    {
+      if(isroot(*config))
+        fprintf(stderr,"ERROR255: Upper limit for fix climate interval=%d must be higher than lower limit=%d.\n",
+                config->fix_climate_interval[1],config->fix_climate_interval[0]);
+      return TRUE;
+    }
+    fscanbool2(file,&config->fix_climate_shuffle,"fix_climate_shuffle");
   }
-  config->const_deposition=FALSE;
+  config->fix_deposition=FALSE;
+  config->fix_deposition_with_climate=FALSE;
   if(config->with_nitrogen==LIM_NITROGEN)
   {
     if(fscanbool(file,&config->no_ndeposition,"no_ndeposition",TRUE,verbose))
       return TRUE;
     if(!config->no_ndeposition)
     {
-      if(fscanbool(file,&config->const_deposition,"const_deposition",TRUE,verbose))
-        return TRUE;
-      if(config->const_deposition)
+      if(config->fix_climate)
       {
-        fscanint2(file,&config->depos_year_const,"depos_year_const");
+        fscanbool2(file,&config->fix_deposition_with_climate,"fix_deposition_with_climate");
+      }
+      if(config->fix_deposition_with_climate)
+      {
+        config->fix_deposition=TRUE;
+        config->fix_deposition_year=config->fix_climate_year;
+        config->fix_deposition_interval[0]=config->fix_climate_interval[0];
+        config->fix_deposition_interval[1]=config->fix_climate_interval[1];
+        config->fix_deposition_shuffle=config->fix_climate_shuffle;
+      }
+      else
+      {
+        if(fscanbool(file,&config->fix_deposition,"fix_deposition",TRUE,verbose))
+          return TRUE;
+        if(config->fix_deposition)
+        {
+          fscanint2(file,&config->fix_deposition_year,"fix_deposition_year");
+          if(fscanintarray(file,config->fix_deposition_interval,2,"fix_deposition_interval",verbose))
+            return TRUE;
+          if(config->fix_deposition_interval[1]<config->fix_deposition_interval[0])
+          {
+            if(isroot(*config))
+              fprintf(stderr,"ERROR255: Upper limit for fix N deposition interval=%d must be higher than lower limit=%d.\n",
+                      config->fix_deposition_interval[1],config->fix_deposition_interval[0]);
+            return TRUE;
+          }
+          fscanbool2(file,&config->fix_deposition_shuffle,"fix_deposition_shuffle");
+        }
       }
     }
-  }
-  if(config->fix_climate || config->const_deposition)
-  {
-    fscanint2(file,&config->fix_climate_cycle,"fix_climate_cycle");
   }
   config->fertilizer_input=NO_FERTILIZER;
   config->fire_on_grassland=FALSE;
@@ -425,8 +458,8 @@ Bool fscanconfig(Config *config,    /**< LPJ configuration */
       config->grassonly = FALSE;
       if (fscanbool(file, &config->grassonly, "grassonly", TRUE, verbose))
         return TRUE;
-      config->istimber=FALSE;
-      if(fscanbool(file,&config->istimber,"istimber",TRUE,verbose))
+      config->luc_timber=FALSE;
+      if(fscanbool(file,&config->luc_timber,"luc_timber",TRUE,verbose))
         return TRUE;
       config->residues_fire=FALSE;
       if(fscanbool(file,&config->residues_fire,"residues_fire",TRUE,verbose))
@@ -862,6 +895,13 @@ Bool fscanconfig(Config *config,    /**< LPJ configuration */
   if(config->prescribe_landcover!=NO_LANDCOVER)
   {
     scanclimatefilename(input,&config->landcover_filename,FALSE,FALSE,"landcover");
+  }
+  config->fix_co2=FALSE;
+  if(fscanbool(file,&config->fix_co2,"fix_co2",TRUE,verbose))
+    return TRUE;
+  if(config->fix_co2)
+  {
+    fscanint2(file,&config->fix_co2_year,"fix_co2_year");
   }
   if(readclimatefilename(input,&config->co2_filename,"co2",def,TRUE,TRUE,TRUE,config))
   {

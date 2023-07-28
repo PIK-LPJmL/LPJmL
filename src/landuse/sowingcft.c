@@ -106,7 +106,7 @@ void sowingcft(Stocks *flux_estab,  /**< establishment flux */
           stand->frac-=difffrac;
           //printf("taking %g from %g of %s\n",difffrac,stand->frac+difffrac,pft->par->name);
           data->irrigation=irrig;
-          reclaim_land(stand,cropstand,cell,config->istimber,npft+ncft,config);
+          reclaim_land(stand,cropstand,cell,config->luc_timber,npft+ncft,config);
           set_irrigsystem(cropstand,cft,npft,ncft,config);
           setaside(cell,cropstand,cell->ml.with_tillage,config->intercrop,npft,ncft,irrig,year,config);
           setasidestand=getstand(cell->standlist,pos-1);

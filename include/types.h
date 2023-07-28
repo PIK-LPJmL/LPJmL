@@ -105,6 +105,7 @@ extern Bool ffscanreal(FILE *,Real *,const char *,Verbosity);
 extern Bool fscanreal01(LPJfile *,Real *,const char *,Bool,Verbosity);
 extern Bool fscanbool(LPJfile *,Bool *,const char *,Bool,Verbosity);
 extern Bool fscanrealarray(LPJfile *,Real *,int,const char *,Verbosity);
+extern Bool fscanintarray(LPJfile *,int *,int,const char *,Verbosity);
 extern const char *fscanstring(LPJfile *,const char *,const char *,Verbosity);
 extern LPJfile *fscanstruct(const LPJfile *,const char *,Verbosity);
 extern LPJfile *fscanarray(LPJfile *,int *,const char *,Verbosity);

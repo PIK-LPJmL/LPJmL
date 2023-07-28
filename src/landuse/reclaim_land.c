@@ -20,7 +20,7 @@ static void remove_vegetation_copy(Soil *soil, /* soil pointer */
                                    const Stand *stand, /* stand pointer */
                                    Cell *cell, /* cell pointer */
                                    Real standfrac, /* stand fraction (0..1) */
-                                   Bool istimber,
+                                   Bool luc_timber,
                                    const Config *config
                                   )
 {
@@ -33,7 +33,7 @@ static void remove_vegetation_copy(Soil *soil, /* soil pointer */
   Stocks trad_biofuel;
 #if defined IMAGE && defined COUPLED
   Bool tharvest=FALSE;
-  if(istimber)
+  if(luc_timber)
     ftimber=min(1,cell->ml.image_data->timber_frac/standfrac);
 #else
   Poolpar frac;
@@ -52,7 +52,7 @@ static void remove_vegetation_copy(Soil *soil, /* soil pointer */
     * allows for mixed use, first harvesting a fraction of the stand,
     * then burning a fraction, then returning the rest to the litter pools
     */
-    if(istimber)
+    if(luc_timber)
     {
       if(pft->par->type==TREE)
       {
@@ -149,7 +149,7 @@ static void remove_vegetation_copy(Soil *soil, /* soil pointer */
 
 }/* of 'remove_vegetation_copy' */
 
-void reclaim_land(const Stand *stand1,Stand *stand2,Cell *cell,Bool istimber,int ntotpft,
+void reclaim_land(const Stand *stand1,Stand *stand2,Cell *cell,Bool luc_timber,int ntotpft,
                   const Config *config)
 {
   int l,p;
@@ -179,7 +179,7 @@ void reclaim_land(const Stand *stand1,Stand *stand2,Cell *cell,Bool istimber,int
   for(l=0;l<NSOILLAYER;l++)
     stand2->frac_g[l]=stand1->frac_g[l];
   remove_vegetation_copy(&stand2->soil,stand1,cell,stand2->frac,
-                         istimber,config);
+                         luc_timber,config);
 }/* of 'reclaim_land' */
 
 /*
