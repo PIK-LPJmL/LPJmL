@@ -2,7 +2,7 @@
 /**                                                                                \n**/
 /**                   l  p  j  m  l  _  n  o  n  .  j  s                           \n**/
 /**                                                                                \n**/
-/** Configuration file for LPJmL C Version 5.3.001 without nitrogen limitation     \n**/
+/** Configuration file for LPJmL C Version 5.6.21 without nitrogen limitation      \n**/
 /**                                                                                \n**/
 /** Configuration file is divided into five sections:                              \n**/
 /**                                                                                \n**/
@@ -20,10 +20,6 @@
 /**                                                                                \n**/
 /**************************************************************************************/
 
-#include "include/conf.h" /* include constant definitions */
-
-//#define DAILY_OUTPUT  /* enables daily output */
-
 {   /* LPJmL configuration in JSON format */
 
 /*===================================================================*/
@@ -33,14 +29,14 @@
   "sim_name" : "LPJmL run without nitrogen", /* Simulation description */
   "sim_id"   : "lpjml",       /* LPJML Simulation type with managed land use */
   "coupled_model" : null,     /* no model coupling */
-  "version"  : "5.3",         /* LPJmL version expected */
+  "version"  : "5.6",         /* LPJmL version expected */
   "random_prec" : true,       /* Random weather generator for precipitation enabled */
   "random_seed" : 2,          /* seed for random number generator */
   "radiation" : "radiation",  /* other options: CLOUDINESS, RADIATION, RADIATION_SWONLY, RADIATION_LWDOWN */
   "fire" : "fire",            /* fire disturbance enabled, other options: NO_FIRE, FIRE, SPITFIRE, SPITFIRE_TMAX */
   "firewood" : false,
-  "new_phenology": true,    /* GSI phenology enabled */
-  "new_trf" : false,        /* new transpiration reduction function disabled */
+  "gsi_phenology": true,    /* GSI phenology enabled */
+  "transp_suction_fcn" : false,        /* new transpiration reduction function disabled */
   "river_routing" : true,
   "permafrost" : true,
   "extflow" : false,
@@ -48,11 +44,10 @@
   "soilpar_option" : "no_fixed_soilpar", /* other options "no_fixed_soilpar", "fixed_soilpar", "prescribed_soilpar" */
   "with_nitrogen" : "no", /* other options: "no", "lim", "unlim" */
   "store_climate" : true, /* store climate data in spin-up phase */
-  "const_climate" : false,
-  "shuffle_climate" : false,
+  "shuffle_spinup_climate" : false,
   "fix_climate" : false,
   "fix_landuse" : false,
-  "const_deposition" : false,
+  "fix_co2" : false,
 #ifdef FROM_RESTART
   "new_seed" : false, /* read random seed from restart file */
   "equilsoil" : false,
@@ -83,13 +78,14 @@
                                         /* other options: LAIMAX_CFT, CONST_LAI_MAX, LAIMAX_INTERPOLATE, LAIMAX_PAR  */
   "rw_manage" : false,                  /* rain water management */
   "laimax" : 5,                         /* maximum LAI for CONST_LAI_MAX */
-  "istimber" : false,
+  "luc_timber" : false,
   "grassland_fixed_pft" : false,
   "grass_harvest_options" : false,
   "prescribe_lsuha" : false,
   "grassonly" : false,
   "others_to_crop" : false,             /* move PFT type others into PFT crop, maize for tropical, wheat for temperate */
   "grazing" : "default",                /* default grazing type, other options : "default", "mowing", "ext", "int", "livestock", "none" */
+  "grazing_others" : "default",         /* default grazing type for others, other options : "default", "mowing", "ext", "int", "livestock", "none" */
   "crop_phu_option" : "new",
   "cropsheatfrost" : false,
   "double_harvest" : false,
@@ -171,14 +167,6 @@ ID                         Fmt                    filename
     { "id" : "pft_harvestc",     "file" : { "fmt" : "raw", "name" : mkstr(output/pft_harvest.SUFFIX)}},
     { "id" : "cftfrac",          "file" : { "fmt" : "raw", "name" : "output/cftfrac.bin"}},
     { "id" : "seasonality",      "file" : { "fmt" : "raw", "name" : "output/seasonality.bin"}},
-#ifdef DAILY_OUTPUT
-    { "id" : "d_npp",            "file" : { "fmt" : "raw", "name" : "output/d_npp.bin"}},
-    { "id" : "d_gpp",            "file" : { "fmt" : "raw", "name" : "output/d_gpp.bin"}},
-    { "id" : "d_rh",             "file" : { "fmt" : "raw", "name" : "output/d_rh.bin"}},
-    { "id" : "d_trans",          "file" : { "fmt" : "raw", "name" : "output/d_trans.bin"}},
-    { "id" : "d_interc",         "file" : { "fmt" : "raw", "name" : "output/d_interc.bin"}},
-    { "id" : "d_evap",           "file" : { "fmt" : "raw", "name" : "output/d_evap.bin"}},
-#endif
     { "id" : "pet",              "file" : { "fmt" : "raw", "name" : "output/mpet.bin"}},
     { "id" : "albedo",           "file" : { "fmt" : "raw", "name" : "output/malbedo.bin"}},
     { "id" : "maxthaw_depth",    "file" : { "fmt" : "raw", "name" : "output/maxthaw_depth.bin"}},
