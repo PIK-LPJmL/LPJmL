@@ -1852,7 +1852,5 @@ void fwriteoutput(Outputfile *output,  /**< output file array */
     writeoutputarray(CFT_NFERT2,1);
     writeoutputarray(PFT_NUPTAKE2,1);
   }
-  for(i=D_LAI;i<=D_PET;i++)
-    writeoutputvar(i,1);
   free(vec);
 } /* of 'fwriteoutput' */

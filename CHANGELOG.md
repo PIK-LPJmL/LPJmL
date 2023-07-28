@@ -19,6 +19,23 @@ of `major.minor.patch` with
 
 ## [Unreleased]
 
+## [5.6.22] - 2023-07-27
+
+### Changed
+
+- Configuration files `lpjml_netcdf.js`, `lpjml_non.js`, `param_non.js`, and `lpjparam_non.js` updated to latest lpjml version.
+
+### Removed
+
+- Predefined daily outputs (`"d_lai"`-`"d_pet"`) and corresponding functions removed.
+
+- Version numbers removed from man pages.
+
+### Fixed
+
+- Variable `issocket` always initialized to `FALSE` in `readfilename.c`.
+
+
 ## [5.6.21] - 2023-07-21
 
 ### Changed

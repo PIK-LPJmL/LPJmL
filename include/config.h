@@ -126,12 +126,10 @@ struct config
   int laimax_interpolate;
   Real laimax;        /**< maximum LAI for benchmark */
   Bool withdailyoutput; /**< with daily output (TRUE/FALSE) */
-  int crop_index;
   int pft_residue;
   int fdi;
   char *pft_index;
   char *layer_index;
-  Bool crop_irrigation;
   int with_nitrogen;      /**< enable nitrogen cycle */
   Bool crop_resp_fix;      /**< with fixed crop respiration (TRUE/FALSE) */
   Bool cropsheatfrost;
