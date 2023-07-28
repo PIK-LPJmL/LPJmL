@@ -2,7 +2,7 @@
 /**                                                                                \n**/
 /**                   l  p  j  m  l  .  j  s                                       \n**/
 /**                                                                                \n**/
-/** Default configuration file for LPJmL C Version 5.6.20                          \n**/
+/** Default configuration file for LPJmL C Version 5.6.21                          \n**/
 /**                                                                                \n**/
 /** Configuration file is divided into five sections:                              \n**/
 /**                                                                                \n**/
@@ -41,7 +41,7 @@
   "fdi" : "nesterov",       /* different fire danger index formulations: "wvpd" (needs GLDAS input data), "nesterov" */
   "firewood" : false,
   "gsi_phenology" : true,   /* GSI phenology enabled */
-  "new_trf" : false,        /* new transpiration reduction function disabled */
+  "transp_suction_fcn" : false, /* enable transpiration suction function (true/false) */
   "with_lakes" : true,      /* enable lakes (true/false) */
   "river_routing" : true,
   "extflow" : false,
@@ -49,7 +49,6 @@
   "johansen" : true,
   "soilpar_option" : "no_fixed_soilpar", /* other options "no_fixed_soilpar", "fixed_soilpar", "prescribed_soilpar" */
   "with_nitrogen" : "lim", /* other options: "no", "lim", "unlim" */
-  "nitrogen_coupled" : false, /* nitrogen stress coupled to water stress */
   "store_climate" : true, /* store climate data in spin-up phase */
   "landfrac_from_file" : true, /* read cell area from file (true/false) */
   "shuffle_spinup_climate" : true, /* shuffle spinup climate */
