@@ -25,13 +25,13 @@ static Bool create(Netcdf *cdf,const char *filename,int index,
                   config->npft[CROP],config);
   if(size==1)
     return create_netcdf(cdf,filename,
-                         (config->outputvars[index].id==GRID) ? "soilcode" :
+                         (config->outputvars[index].id==GRID) ? "cellid" :
                          config->outnames[config->outputvars[index].id].var,
-                         (config->outputvars[index].id==GRID) ? "soil code" :
+                         (config->outputvars[index].id==GRID) ? "cell id" :
                          config->outnames[config->outputvars[index].id].descr,
                          (config->outputvars[index].id==GRID) ? "" :
                          config->outnames[config->outputvars[index].id].unit,
-                         getoutputtype(config->outputvars[index].id,FALSE),
+                         (config->outputvars[index].id==GRID) ? LPJ_INT : getoutputtype(config->outputvars[index].id,FALSE),
                          getnyear(config->outnames,config->outputvars[index].id),
                          (config->outnames[config->outputvars[index].id].timestep==ANNUAL) ? 1 : config->outnames[config->outputvars[index].id].timestep,array,config);
   else
