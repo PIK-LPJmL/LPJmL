@@ -16,7 +16,6 @@
 
 #include "lpj.h"
 
-#define TXT2CLM_VERSION "1.0.001"
 #define USAGE "Usage: txt2clm [-h] [-version v] [-cellindex] [-scale s] [-float] [-int] [-nbands n] [-nstep n] [-cellsize size]\n               [-firstcell n] [-ncell n] [-firstyear f] [-header id] txtfile clmfile\n"
 
 int main(int argc,char **argv)
@@ -50,9 +49,9 @@ int main(int argc,char **argv)
     {
       if(!strcmp(argv[iarg],"-h"))
       {
-        printf("txt2clm " TXT2CLM_VERSION " (" __DATE__ ") Help\n"
-               "==================================\n\n"
-               "Convert text files to clm data files\n\n");
+        printf("   txt2clm (" __DATE__ ") Help\n"
+               "   ==========================\n\n"
+               "Convert text files to clm data files for LPJmL version " LPJ_VERSION "\n\n");
         printf(USAGE
                "Arguments:\n"
                "-h           print this help text\n"
@@ -61,15 +60,16 @@ int main(int argc,char **argv)
                "-float       write data as float, default is short\n"
                "-int         write data as int, default is short\n"
                "-nbands n    number of bands, default is %d\n"
-               "-nstep n     number of bands, default is %d\n"
+               "-nstep n     number of steps, default is %d\n"
                "-firstcell n index of first cell\n"
                "-ncell n     number of cells, default is %d\n"
-               "-firstyear f first year,default is %d\n"
+               "-firstyear f first year, default is %d\n"
                "-scale s     scale data by a factor of s\n"
                "-cellsize s  cell size, default is %g\n"
                "-header id   clm header string, default is '%s'\n"
                "txtfile      filename of text file\n"
-               "clmfile      filename of clm data file\n",
+               "clmfile      filename of clm data file\n\n"
+               "(C) Potsdam Institute for Climate Impact Research (PIK), see COPYRIGHT file\n",
                version,header.nbands,header.nstep,header.ncell,header.firstyear,header.cellsize_lon,id);
         return EXIT_SUCCESS;
       }

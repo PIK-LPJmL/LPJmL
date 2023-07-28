@@ -1,15 +1,15 @@
-.TH printharvest 1  "April 27, 2023" "version 5.6.10" "USER COMMANDS"
+.TH printharvest 1  "USER COMMANDS"
 .SH NAME
 printharvest \- Print global harvested carbon for crops and managed grasslands 
 .SH SYNOPSIS
 .B printharvest
-[\-h] [\-inpath \fIdir\fP] [\-outpath \fIdir\fP] [[\-Dmacro[=value]] [\-I\fIdir\fP] ...] \fIfilename\fP
+[\-pp cmd] [\-inpath \fIdir\fP] [\-outpath \fIdir\fP] [[\-Dmacro[=value]] [\-I\fIdir\fP] ...] \fIfilename\fP
 .SH DESCRIPTION
 Program prints total harvested carbon of a LPJmL model run. The LPJmL configuration file is read in order to find the location and name of the harvest data file.
 .SH OPTIONS
 .TP
-\-h
-display a short help text
+\-pp cmd
+Set preprocessor program to cmd. Default is \fBcpp\fP.
 .TP
 \-inpath \fIdir\fP
 set the input directory path. The path is added to the input filenames if they do not contain an absolute path.
@@ -35,7 +35,7 @@ Print harvest carbon with configuration file \fIlpjml.js\fP.
 .SH ENVIRONMENT
 .TP
 LPJPREP 
-defines preprocessor command for LPJmL configuration file, default is \fBcpp -P\fP.
+defines preprocessor command for LPJmL configuration file, default is \fBcpp\fP.
 .TP
 LPJROOT
 defines the root directory for LPJmL. This directory is added to the
@@ -65,4 +65,4 @@ For authors and contributors see AUTHORS file
 (C) Potsdam Institute for Climate Impact Research (PIK), see COPYRIGHT file
 
 .SH SEE ALSO
-lpjml(1), lpjml.conf(5), printglobal(1)
+lpjml(1), printglobal(1)

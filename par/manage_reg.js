@@ -3,7 +3,7 @@
 /**       m a n a g e _ r e g .  j  s                                              \n**/
 /**                                                                                \n**/
 /**     management parameter data with maximum LAI values for all crops            \n**/
-/**     (subnational information is available) LPJmL Version 5.6.13                \n**/
+/**     (subnational information is available) LPJmL Version 5.6.23                \n**/
 /**                                                                                \n**/
 /** (C) Potsdam Institute for Climate Impact Research (PIK), see COPYRIGHT file    \n**/
 /** authors, and contributors see AUTHORS file                                     \n**/

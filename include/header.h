@@ -152,7 +152,7 @@ extern FILE *openinputfile(Header *, Bool *,const Filename *,
 extern FILE *openmetafile(Header *,List **,const char *,Bool *,size_t *,const char *,Bool);
 extern char *getfilefrommeta(const char *,Bool);
 extern void fprintheader(FILE *,const Header *);
-extern char *parse_json_metafile(LPJfile *,char *,Header *,List **,const char *,size_t *,Bool *,Verbosity);
+extern char *parse_json_metafile(FILE *,Header *,List **,const char *,size_t *,Bool *,Verbosity);
 extern List *fscanstringarray(LPJfile *,const char *,Verbosity);
 extern void freemap(List *);
 extern void fprintmap(FILE *,List *);

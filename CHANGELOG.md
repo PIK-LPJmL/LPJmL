@@ -19,6 +19,138 @@ of `major.minor.patch` with
 
 ## [Unreleased]
 
+## [5.6.23] - 2023-07-28
+
+### Changed
+
+- Instead of the soil code the index of the grid cell is written into the NetCDF file for `"grid"` output.
+
+
+## [5.6.22] - 2023-07-27
+
+### Changed
+
+- Configuration files `lpjml_netcdf.js`, `lpjml_non.js`, `param_non.js`, and `lpjparam_non.js` updated to latest lpjml version.
+
+### Removed
+
+- Predefined daily outputs (`"d_lai"`-`"d_pet"`) and corresponding functions removed.
+
+- Version numbers removed from man pages.
+
+### Fixed
+
+- Variable `issocket` always initialized to `FALSE` in `readfilename.c`.
+
+
+## [5.6.21] - 2023-07-21
+
+### Changed
+
+- Flag `"nitrogen_coupled"` disabled for lpjml offline runs. Water stress is always coupled with nitrogen stress. Only if lpjml is compiled with `-DCOUPLING_WITH_FMS` flag is enabled.
+
+- Flag `"new_trf"` renamed to `"transp_suction_fcn"`.
+
+
+## [5.6.20] - 2023-07-13
+
+### Added
+
+- New flags `"fix_co2"` and `"fix_co2_year"` added.
+
+### Changed
+
+- Flag `"istimber"` renamed to `"luc_timber"`.
+
+- Flag `"new_phenology"` renamed to `"gsi_phenology"`.
+
+- Flag `"shuffle_climate"` renamed to `"shuffle_spinup_climate"`.
+
+- The settings for fixed input data have been updated. For climate and N deposition input an interval can be specified from which data is taken after the specified year. In can specified whether random shuffling or cycling is used:
+
+```java
+"fix_climate" : false,                /* fix climate after specified year */
+"fix_climate_year" : 1901,            /* year after climate is fixed */
+"fix_climate_interval" : [1901,1930],
+"fix_climate_shuffle" : true,          /* randomly shuffle climate in the interval */
+"fix_deposition_with_climate" : false, /* fix N deposition same as climate */
+"fix_deposition" : false,              /* fix N deposition after specified year */
+"fix_deposition_year" : 1901,          /* year after deposition is fixed */
+"fix_deposition_interval" : [1901,1930],
+"fix_deposition_shuffle" : true,       /* randomly shuffle depositions in the interval */
+"fix_landuse" : false,                 /* fix land use after specfied year */
+"fix_landuse_year" : 1901,             /* year after land use is fixed */
+"fix_co2" : false,                     /* fix atmospheric CO2  after specfied year */
+"fix_co2_year" : 1901,                 /* year after CO2 is fixed */
+```
+
+### Removed
+
+- Obsolete flag `"const_climate"` removed.
+
+
+## [5.6.19] - 2023-07-06
+
+### Added
+
+- Help option `-h` added to `bin2cdf` and `clm2cdf` utility.
+
+- Target `lpjcheck` added to `Makefile` to create only the `lpjcheck` utility.
+
+### Changed
+
+- The version of all man pages has been set to the LPJmL version number, date of last modification removed.
+
+- The different versions of the utilities have been replaced by a reference to the LPJmL version.
+
+### Removed
+
+- All html files have been removed from the repository.
+
+- Obsolete link `lpj` to `lpjml` removed.
+
+
+## [5.6.18] - 2023-07-04
+
+### Fixed
+
+- Soil array `wpwp` is now correctly initialized with `soilpar->wpwp` for the `"prescribed_soilpar"` setting.
+
+
+## [5.6.17] - 2023-06-30
+
+### Fixed
+
+- Replaced logical `or` by logical `and` in `survive.c`. This solves issue [#309](https://gitlab.pik-potsdam.de/lpjml/LPJmL_internal/-/issues/309).
+
+
+## [5.6.16] - 2023-06-30
+
+### Fixed
+
+- Removed excess `pft->nind` in all harvest routines in `harvest_stand.c`.
+
+
+## [5.6.15] - 2023-06-30
+
+### Added
+
+- Check for matching size of discharge queues read from restart file added to `initriver()` function in `initdrain.c`. If the size differs from the value calculated from the river lengths the queues will be resized and initialized to zero. Error message is additionally printed.
+
+
+## [5.6.14] - 2023-06-08
+
+### Removed
+
+- Support for the deprecated `*.conf` configuration file format has been removed. Only JSON files are allowed for configuration files and metafiles for input.
+
+- Man pages for the description of the `*.conf` file format removed.
+
+### Changed
+
+- Strings in JSON configuration files can now be longer than 256 characters.
+
+
 ## [5.6.13] - 2023-05-16
 
 ### Added
