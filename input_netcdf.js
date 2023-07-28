@@ -3,7 +3,7 @@
 /**        i  n  p  u  t  _  n  e  t  c  d  f  .  j  s                             \n**/
 /**                                                                                \n**/
 /** Configuration file for NetCDF input dataset for LPJmL                          \n**/
-/** Version 5.3.001                                                                \n**/
+/** Version 5.6.22                                                                 \n**/
 /**                                                                                \n**/
 /** (C) Potsdam Institute for Climate Impact Research (PIK), see COPYRIGHT file    \n**/
 /** authors, and contributors see AUTHORS file                                     \n**/
@@ -34,6 +34,7 @@
 "input" :
 {
   "soil" : { "fmt" : "cdf", "var" : "soilcode", "name" : "cru_netcdf/soil_new_67420.nc"},
+  "landfrac" : { "fmt" : "cdf", "var" : "landfrac", "name" : "cru_netcdf/landfrac_gadm36.nc"},
   "no3deposition" : { "fmt" : "cdf", "var" : "no3dep",  "name" : "cru_netcdf/no3_deposition_rcp8p5.nc"},
   "nh4deposition" : { "fmt" : "cdf",  "var" : "nh4dep", "name" : "cru_netcdf/nh4_deposition_rcp8p5.nc"},
   "soilpH" :        { "fmt" : "cdf",  "var" : "soilph", "name" : "cru_netcdf/soil_ph.nc"},

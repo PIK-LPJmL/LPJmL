@@ -148,8 +148,6 @@ void update_daily(Cell *cell,            /**< cell pointer           */
     cell->ml.image_data->mevapotr[month] += evap*stand->frac;
 #endif
 
-      if(config->crop_index==ALLSTAND)
-        getoutput(&cell->output,D_EVAP,config)+=evap*stand->frac;
       prec_energy = ((climate.temp-stand->soil.temp[TOPLAYER])*climate.prec*1e-3
                     +melt*1e-3*(T_zero-stand->soil.temp[TOPLAYER]))*c_water;
       stand->soil.perc_energy[TOPLAYER]=prec_energy;
@@ -266,20 +264,6 @@ void update_daily(Cell *cell,            /**< cell pointer           */
 #endif
 
     getoutput(&cell->output,SWE,config)+=stand->soil.snowpack*stand->frac;
-    if(isdailyoutput_stand(config,stand))
-    {
-      if(config->crop_index==ALLSTAND)
-      {
-        getoutput(&cell->output,D_RH,config) += hetres.carbon*stand->frac;
-        getoutput(&cell->output,D_SWE,config)+= stand->soil.snowpack*stand->frac;
-      }
-      else
-      {
-        getoutput(&cell->output,D_RH,config)  += hetres.carbon;
-        getoutput(&cell->output,D_SWE,config) += stand->soil.snowpack;
-      }
-    }
-
     getoutput(&cell->output,SNOWRUNOFF,config)+=snowrunoff;
     getoutput(&cell->output,MELT,config)+=melt*stand->frac;
 
@@ -467,8 +451,6 @@ void update_daily(Cell *cell,            /**< cell pointer           */
 #endif
     {
     getoutput(&cell->output,EVAP_LAKE,config)+=min(cell->discharge.dmass_lake/cell->coord.area,eeq*PRIESTLEY_TAYLOR*cell->lakefrac);
-    if(config->crop_index==ALLSTAND)
-      getoutput(&cell->output,D_EVAP,config)+=min(cell->discharge.dmass_lake/cell->coord.area,eeq*PRIESTLEY_TAYLOR*cell->lakefrac);
     cell->balance.aevap_lake+=min(cell->discharge.dmass_lake/cell->coord.area,eeq*PRIESTLEY_TAYLOR*cell->lakefrac);
 #if defined IMAGE && defined COUPLED
      if(cell->ml.image_data!=NULL)

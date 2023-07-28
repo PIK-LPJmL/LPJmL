@@ -77,7 +77,6 @@ Real water_stressed(Pft *pft,                  /**< [inout] pointer to PFT varia
   Real gc_new;
   Real A,B,psi;
   Real trf[LASTLAYER];
-  Irrigation *irrig;
 
   gpd=agd=*rd=layer=root_u=root_nu=aet_cor=0.0;
   aet_frac=1.;
@@ -234,16 +233,6 @@ Real water_stressed(Pft *pft,                  /**< [inout] pointer to PFT varia
       if(vmax>epsilon)
       {
         pft->nlimit+=pft->vmax/vmax;
-        if(pft->stand->type->landusetype==AGRICULTURE)
-        {
-          irrig=pft->stand->data;
-          if( pft->par->id==config->crop_index &&
-             irrig->irrigation==config->crop_irrigation &&
-             vmax>0)
-          {
-            getoutput(&pft->stand->cell->output,D_NLIMIT,config)=pft->vmax/vmax;
-          }
-        }
       }
     } /* of if(config->with_nitrogen) */
     /* in rare occasions, agd(=GPP) can be negative, but shouldn't */

@@ -777,28 +777,6 @@ void fprintconfig(FILE *file,          /**< File pointer to text output file */
     fputs(" ----- --- --- ",file);
     frepeatch(file,'-',76-width-4-width_unit-7-3-4);
     putc('\n',file);
-    switch(config->crop_index)
-    {
-       case ALLNATURAL:
-         fputs("PFT for daily output: all natural\n",file);
-         break;
-       case ALLSTAND:
-         fputs("PFT for daily output: all stands\n",file);
-         break;
-       case ALLGRASSLAND:
-         fprintf(file,"PFT for daily output:        all grassland\n"
-                      "Irrigation for daily output: %s\n",
-                 (config->crop_irrigation) ? "irrigated" : "rain fed");
-         break;
-       default:
-         if(config->crop_index>=0)
-         {
-           fprintf(file,"CFT for daily output:        %s\n"
-                        "Irrigation for daily output: %s\n",
-                   config->pftpar[config->crop_index].name,
-                   (config->crop_irrigation) ? "irrigated" : "rain fed");
-         }
-    }
     if(config->pft_output_scaled)
       fputs("PFT-specific output is grid scaled.\n",file);
   }

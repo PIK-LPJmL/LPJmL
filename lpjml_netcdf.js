@@ -2,7 +2,7 @@
 /**                                                                                \n**/
 /**                   l  p  j  m  l  _  n  e  t  c  d  f  .  j  s                  \n**/
 /**                                                                                \n**/
-/** Configuration file for LPJmL C Version 5.3.001                                 \n**/
+/** Configuration file for LPJmL C Version 5.6.22                                  \n**/
 /**                                                                                \n**/
 /** Configuration file is divided into five sections:                              \n**/
 /**                                                                                \n**/
@@ -20,10 +20,6 @@
 /**                                                                                \n**/
 /**************************************************************************************/
 
-#include "include/conf.h" /* include constant definitions */
-
-// #define DAILY_OUTPUT
-
 {
 
 /*===================================================================*/
@@ -33,13 +29,13 @@
 "sim_name" : "LPJmL Run", /* Simulation description */
 "sim_id"   : "lpjml",     /* LPJML Simulation type with managed land use */
 "coupled_model" : null,   /* no model coupling */
-"version"  : "5.3",       /* LPJmL version expected */
+"version"  : "5.6",       /* LPJmL version expected */
 "random_prec" : true,     /* Random weather generator for precipitation enabled */
 "random_seed" : 2,        /* seed for random number generator */
 "radiation" : "cloudiness",
 "fire" : "fire",          /* fire disturbance enabled, other options: NO_FIRE, FIRE, SPITFIRE, SPITFIRE_TMAX (for GLDAS input data) */
 "fdi" : "nesterov_index",   /* different fire danger index formulations: WVPD_INDEX(needs GLDAS input data), NESTEROV_INDEX*/
-"shuffle_climate" : false,
+"shuffle_spinup_climate" : false,
 "firewood" : false,
 #ifdef FROM_RESTART
 "new_seed" : false,
@@ -53,16 +49,20 @@
 #endif
 "prescribe_burntarea" : false,
 "prescribe_landcover" : "no_landcover",
-"new_phenology": false,
-"new_trf" : false,        /* new transpiration reduction function disabled */
+"gsi_phenology": false,
+"transp_suction_fcn" : false,        /* new transpiration reduction function disabled */
 "river_routing": false,
+"with_lakes": false,
 "permafrost" : true,
 "johansen" : true,
+"soilpar_option" : "no_fixed_soilpar", /* other options "no_fixed_soilpar", "fixed_soilpar", "prescribed_soilpar" */
 "with_nitrogen": "lim",
 "store_climate" : true, /* store climate data in spin-up phase */
-"const_climate" : false,
+"landfrac_from_file" : true, /* read cell area from file (true/false) */
 "fix_climate" : false,
-"const_deposition" : false,
+"fix_deposition" : false,
+"fix_landuse" : false,
+"fix_co2" : false,
 "fertilizer_input" : "yes",
 "fix_fertilization" : false,          /* fix fertilizer input */
 "check_climate" : true,               /* check climate input before start */
@@ -85,10 +85,12 @@
 "intercrop" : true,                   /* intercrops on setaside */
 "landuse_year_const" : 2000, /* set landuse year for CONST_LANDUSE case */
 "residues_fire" : false,              /* fire in residuals */
-"istimber": false,
+"luc_timber": false,
 "rw_manage" : false,                  /* rain water management */
 "manure_input" : false,               /* enable manure input */
 "others_to_crop" : true,
+"grazing" : "default",                /* default grazing type, other options : "default", "mowing", "ext", "int", "livestock", "none" */
+"grazing_others" : "default",         /* default grazing type for others, other options : "default", "mowing", "ext", "int", "livestock", "none" */
 "cft_temp" : "temperate cereals",
 "cft_tropic" : "maize",
 "grassonly" : false,                  /* set all cropland including others to zero but keep managed grasslands */
@@ -96,6 +98,7 @@
 "crop_phu_option" : "new",
 "cropsheatfrost" : false,
 "double_harvest" : true,
+"npp_controlled_bnf" : true,
 
 /*===================================================================*/
 /*  II. Input parameter section                                      */
@@ -133,7 +136,8 @@
 /*
 ID                         Fmt                    filename
 -------------------------- ---------------------- ----------------------------- */
-{ "id" : "grid",             "file" : { "fmt" : "cdf", "name" : "output/grid.nc" }},
+{ "id" : "grid",             "file" : { "fmt" : "raw", "name" : "output/grid.bin" }},
+{ "id" : "terr_area",        "file" : { "fmt" : "cdf", "name" : "output/terr_area.nc" }},
 { "id" : "fpc",              "file" : { "fmt" : "cdf", "name" : "output/fpc.nc"}},
 { "id" : "npp",              "file" : { "fmt" : "cdf", "name" : "output/mnpp.nc"}},
 { "id" : "gpp",              "file" : { "fmt" : "cdf", "name" : "output/mgpp.nc"}},
@@ -149,7 +153,7 @@ ID                         Fmt                    filename
 { "id" : "vegc",             "file" : { "fmt" : "cdf", "name" : "output/vegc.nc"}},
 { "id" : "soilc",            "file" : { "fmt" : "cdf", "name" : "output/soilc.nc"}},
 { "id" : "litc",             "file" : { "fmt" : "cdf", "name" : "output/litc.nc"}},
-{ "id" : "flux_estabc",       "file" : { "fmt" : "cdf", "name" : "output/flux_estabc.nc"}},
+{ "id" : "flux_estabc",      "file" : { "fmt" : "cdf", "name" : "output/flux_estabc.nc"}},
 { "id" : "phen_tmin",        "file" : { "fmt" : "cdf", "name" : "output/mphen_tmin.nc"}},
 { "id" : "phen_tmax",        "file" : { "fmt" : "cdf", "name" : "output/mphen_tmax.nc"}},
 { "id" : "phen_light",       "file" : { "fmt" : "cdf", "name" : "output/mphen_light.nc"}},
@@ -175,14 +179,6 @@ ID                         Fmt                    filename
 #endif
 { "id" : "cftfrac",          "file" : { "fmt" : "cdf", "name" : "output/cftfrac.nc"}},
 { "id" : "seasonality",      "file" : { "fmt" : "cdf", "name" : "output/seasonality.nc"}},
-#endif
-#ifdef DAILY_OUTPUT
-{ "id" : "d_npp",            "file" : { "fmt" : "cdf", "name" : "output/d_npp.nc"}},
-{ "id" : "d_gpp",            "file" : { "fmt" : "cdf", "name" : "output/d_gpp.nc"}},
-{ "id" : "d_rh",             "file" : { "fmt" : "cdf", "name" : "output/d_rh.nc"}},
-{ "id" : "d_trans",          "file" : { "fmt" : "cdf", "name" : "output/d_trans.nc"}},
-{ "id" : "d_interc",         "file" : { "fmt" : "cdf", "name" : "output/d_interc.nc"}},
-{ "id" : "d_evap",           "file" : { "fmt" : "cdf", "name" : "output/d_evap.nc"}},
 #endif
 { "id" : "pet",              "file" : { "fmt" : "cdf", "name" : "output/mpet.nc"}},
 { "id" : "albedo",           "file" : { "fmt" : "cdf", "name" : "output/malbedo.nc"}},

@@ -2,7 +2,7 @@
 /**                                                                                \n**/
 /**                   l  p  j  m  l  .  j  s                                       \n**/
 /**                                                                                \n**/
-/** Default configuration file for LPJmL C Version 5.6.21                          \n**/
+/** Default configuration file for LPJmL C Version 5.6.22                          \n**/
 /**                                                                                \n**/
 /** Configuration file is divided into five sections:                              \n**/
 /**                                                                                \n**/
@@ -19,8 +19,6 @@
 /** Contact: https://github.com/PIK-LPJmL/LPJmL                                    \n**/
 /**                                                                                \n**/
 /**************************************************************************************/
-
-//#define DAILY_OUTPUT  /* enables daily output */
 
 {   /* LPJmL configuration in JSON format */
 
@@ -148,9 +146,6 @@
 
 #define mkstr(s) xstr(s) /* putting string in quotation marks */
 #define xstr(s) #s
-
-  "crop_index" : "temperate cereals", /* CFT for daily output */
-  "crop_irrigation" : false,          /* irrigation flag for daily output */
 
 #ifdef FROM_RESTART
 
