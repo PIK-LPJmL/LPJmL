@@ -19,6 +19,39 @@ of `major.minor.patch` with
 
 ## [Unreleased]
 
+## [5.6.23] - 2023-07-28
+
+### Changed
+
+- Instead of the soil code the index of the grid cell is written into the NetCDF file for `"grid"` output.
+
+
+## [5.6.22] - 2023-07-27
+
+### Changed
+
+- Configuration files `lpjml_netcdf.js`, `lpjml_non.js`, `param_non.js`, and `lpjparam_non.js` updated to latest lpjml version.
+
+### Removed
+
+- Predefined daily outputs (`"d_lai"`-`"d_pet"`) and corresponding functions removed.
+
+- Version numbers removed from man pages.
+
+### Fixed
+
+- Variable `issocket` always initialized to `FALSE` in `readfilename.c`.
+
+
+## [5.6.21] - 2023-07-21
+
+### Changed
+
+- Flag `"nitrogen_coupled"` disabled for lpjml offline runs. Water stress is always coupled with nitrogen stress. Only if lpjml is compiled with `-DCOUPLING_WITH_FMS` flag is enabled.
+
+- Flag `"new_trf"` renamed to `"transp_suction_fcn"`.
+
+
 ## [5.6.20] - 2023-07-13
 
 ### Added

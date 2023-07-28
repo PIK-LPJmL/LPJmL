@@ -235,7 +235,9 @@ Bool fscanconfig(Config *config,    /**< LPJ configuration */
     config->seed_start=time(NULL);
   setseed(config->seed,config->seed_start);
   config->with_nitrogen=NO_NITROGEN;
+#ifdef COUPLING_WITH_FMS
   config->nitrogen_coupled=FALSE;
+#endif
   if(fscankeywords(file,&config->with_nitrogen,"with_nitrogen",nitrogen,3,TRUE,verbose))
     return TRUE;
   if(fscankeywords(file,&config->with_radiation,"radiation",radiation,4,FALSE,verbose))
@@ -275,8 +277,8 @@ Bool fscanconfig(Config *config,    /**< LPJ configuration */
   if(fscankeywords(file,&config->prescribe_landcover,"prescribe_landcover",prescribe_landcover,3,TRUE,verbose))
     return TRUE;
   fscanbool2(file,&config->gsi_phenology,"gsi_phenology");
-  config->new_trf=FALSE;
-  if(fscanbool(file,&config->new_trf,"new_trf",TRUE,verbose))
+  config->transp_suction_fcn=FALSE;
+  if(fscanbool(file,&config->transp_suction_fcn,"transp_suction_fcn",TRUE,verbose))
     return TRUE;
   fscanbool2(file,&config->river_routing,"river_routing");
   config->extflow=FALSE;
@@ -310,9 +312,11 @@ Bool fscanconfig(Config *config,    /**< LPJ configuration */
   {
     if(fscanbool(file,&config->npp_controlled_bnf,"npp_controlled_bnf",TRUE,verbose))
       return TRUE;
+#ifdef COUPLING_WITH_FMS
     config->nitrogen_coupled=TRUE;
     if(fscanbool(file,&config->nitrogen_coupled,"nitrogen_coupled",TRUE,verbose))
       return TRUE;
+#endif
   }
   config->soilpar_option=NO_FIXED_SOILPAR;
   if(fscankeywords(file,&config->soilpar_option,"soilpar_option",soilpar_option,3,TRUE,verbose))

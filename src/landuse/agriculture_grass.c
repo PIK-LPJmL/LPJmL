@@ -23,4 +23,4 @@ Standtype agriculture_grass_stand={AGRICULTURE_GRASS,"agriculture_grass",
                                    new_agriculture,
                                    free_agriculture,fwrite_agriculture,
                                    fread_agriculture,fprint_agriculture,
-                                   daily_agriculture_grass,annual_agriculture_grass,NULL,isdailyoutput_agriculture};
+                                   daily_agriculture_grass,annual_agriculture_grass,NULL};

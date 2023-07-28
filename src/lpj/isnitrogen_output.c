@@ -19,9 +19,6 @@ Bool isnitrogen_output(int index /**< index for output file */
 {
   switch(index)
   {
-    case D_NUPTAKE: case D_N2O_DENIT: case D_N2O_NIT: case D_N2_DENIT: case D_LEACHING:
-    case D_BNF: case D_NLEAF: case D_NROOT: case D_NSO: case D_NPOOL: case D_NO3:
-    case D_NH4: case D_NSOIL_SLOW: case D_NSOIL_FAST: case D_NLIMIT: case D_VSCAL:
     case CFT_ABOVEGBMN: case PFT_HARVESTN: case PFT_RHARVESTN: case RHARVEST_BURNTN:
     case RHARVEST_BURNT_IN_FIELDN: case FLUX_ESTABN: case VEGN: case SOILN: case LITN:
     case SOILNH4: case SOILNO3: case HARVESTN: case SOILN_LAYER: case SOILN_SLOW:

@@ -325,8 +325,10 @@ void fprintconfig(FILE *file,          /**< File pointer to text output file */
     len=printsim(file,len,&count,(config->with_nitrogen==UNLIM_NITROGEN) ? "unlimited nitrogen" : "nitrogen limitation");
   if(config->permafrost)
     len=printsim(file,len,&count,"permafrost");
-  if(config->nitrogen_coupled)
-    len=printsim(file,len,&count,"water and nitrogen limitations coupled");
+#ifdef COUPLING_WITH_FMS
+  if(!config->nitrogen_coupled)
+    len=printsim(file,len,&count,"water and nitrogen limitations uncoupled");
+#endif
   if(config->johansen)
     len=printsim(file,len,&count,"Johansen conductivity");
   if(config->black_fallow)
@@ -344,8 +346,8 @@ void fprintconfig(FILE *file,          /**< File pointer to text output file */
     len=printsim(file,len,&count,(config->prescribe_landcover==LANDCOVEREST) ? "prescribed establishment":"prescribed maximum FPC");
   if(config->gsi_phenology)
     len=printsim(file,len,&count,"GSI phenology");
-  if(config->new_trf)
-    len=printsim(file,len,&count,"new transpiration reduction function");
+  if(config->transp_suction_fcn)
+    len=printsim(file,len,&count,"transpiration suction function");
   if(config->soilpar_option==FIXED_SOILPAR)
   {
     len=fputstring(file,len,", ",78);
@@ -779,28 +781,6 @@ void fprintconfig(FILE *file,          /**< File pointer to text output file */
     fputs(" ----- --- --- ",file);
     frepeatch(file,'-',76-width-4-width_unit-7-3-4);
     putc('\n',file);
-    switch(config->crop_index)
-    {
-       case ALLNATURAL:
-         fputs("PFT for daily output: all natural\n",file);
-         break;
-       case ALLSTAND:
-         fputs("PFT for daily output: all stands\n",file);
-         break;
-       case ALLGRASSLAND:
-         fprintf(file,"PFT for daily output:        all grassland\n"
-                      "Irrigation for daily output: %s\n",
-                 (config->crop_irrigation) ? "irrigated" : "rain fed");
-         break;
-       default:
-         if(config->crop_index>=0)
-         {
-           fprintf(file,"CFT for daily output:        %s\n"
-                        "Irrigation for daily output: %s\n",
-                   config->pftpar[config->crop_index].name,
-                   (config->crop_irrigation) ? "irrigated" : "rain fed");
-         }
-    }
     if(config->pft_output_scaled)
       fputs("PFT-specific output is grid scaled.\n",file);
   }

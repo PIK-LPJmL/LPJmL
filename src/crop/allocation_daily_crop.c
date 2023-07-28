@@ -36,7 +36,6 @@ static void solve(Real *a,Real *b,Real *c,Real *d,
 void allocation_daily_crop(Pft *pft,             /**< PFT variables */
                            Real npp,             /**< net primary production (gC/m2/day) */
                            Real wdf,             /**< water deficit fraction */
-                           Bool isoutput,        /**< daily output enabled? (TRUE/FALSE) */
                            const Config *config  /**< LPJmL configuration */
                           )
 {
@@ -48,15 +47,11 @@ void allocation_daily_crop(Pft *pft,             /**< PFT variables */
   /*Real ndf,ndemand_crop_max,sNO3,ndeficit;*/
   Real fhiopt,himind,hi,hiopt=0;
   /*Real leaf_nitrogen_lastday;*/
-  Irrigation *data;
-  Output *output;
   Real ndf=100; /* nitrogen deficit factor in percent, computed as wdf from accumulated n_demand and n_uptake */
   Real df;
   /*int l;*/
-  data=pft->stand->data;
   crop=pft->data;
   par=pft->par->data;
-  output=&pft->stand->cell->output;
   /* vegetation growth */
   pft->bm_inc.carbon+=npp;
 
@@ -303,15 +298,6 @@ void allocation_daily_crop(Pft *pft,             /**< PFT variables */
     pft->bm_inc,crop->ind.leaf,crop->ind.pool,crop->ind.root,crop->ind.so,
     crop->ind_n.leaf,crop->ind_n.pool,crop->ind_n.root,crop->ind_n.so);*/
 #endif
-  if(isoutput && pft->par->id==config->crop_index &&
-     data->irrigation==config->crop_irrigation)
-  {
-    getoutput(output,D_FROOT,config)=froot;
-    getoutput(output,D_HI,config)=hi;
-    getoutput(output,D_HIMIND,config)=himind;
-    getoutput(output,D_FHIOPT,config)=fhiopt;
-    getoutput(output,D_LAINPPDEF,config)=crop->lai_nppdeficit;
-  }
 } /* of 'allocation_daily_crop' */
 
 /*

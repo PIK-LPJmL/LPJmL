@@ -290,27 +290,6 @@ Real daily_grassland(Stand *stand,                /**< stand pointer */
     }
     getoutputindex(output,PFT_LAI,nnat+index,config)+=actual_lai_grass(pft);
     grass = pft->data;
-    if(isdailyoutput_grassland(config,stand))
-    {
-      if(config->crop_index==ALLSTAND)
-      {
-        getoutput(output,D_NPP,config) += npp*stand->frac;
-        getoutput(output,D_GPP,config) += gpp*stand->frac;
-      }
-      else
-      {
-        getoutput(output,D_NPP,config)+= npp;
-        getoutput(output,D_GPP,config)+= gpp;
-
-        getoutput(output,D_CROOT,config)+= grass->ind.root.carbon;
-        getoutput(output,D_CLEAF,config)+= grass->ind.leaf.carbon;
-        getoutput(output,D_NROOT,config)+= grass->ind.root.nitrogen;
-        getoutput(output,D_NLEAF,config)+= grass->ind.leaf.nitrogen;
-
-        getoutput(output,D_RD,config) += rd;
-        getoutput(output,D_ASSIM,config) += gpp-rd-pft->npp_bnf;
-      }
-    }
     pft->npp_bnf=0.0;
   }
   free(gp_pft);
@@ -514,30 +493,6 @@ Real daily_grassland(Stand *stand,                /**< stand pointer */
   {
     transp+=aet_stand[l]*stand->frac;
     getoutput(output,TRANSP_B,config)+=(aet_stand[l]-green_transp[l])*stand->frac;
-  }
-  if(isdailyoutput_grassland(config,stand))
-  {
-    if(config->crop_index==ALLSTAND)
-    {
-      getoutput(output,D_EVAP,config)+=evap*stand->frac;
-      getoutput(output,D_TRANS,config)+=transp;
-      getoutput(output,D_W0,config)+=stand->soil.w[1]*stand->frac;
-      getoutput(output,D_W1,config)+=stand->soil.w[2]*stand->frac;
-      getoutput(output,D_WEVAP,config)+=stand->soil.w[0]*stand->frac;
-      getoutput(output,D_INTERC,config)+=intercep_stand*stand->frac;
-    }
-    else
-    {
-      getoutput(output,D_EVAP,config)+=evap;
-      forrootsoillayer(l)
-        getoutput(output,D_TRANS,config)+=aet_stand[l];
-      getoutput(output,D_IRRIG,config)=irrig_apply;
-      getoutput(output,D_W0,config)+=stand->soil.w[1];
-      getoutput(output,D_W1,config)+=stand->soil.w[2];
-      getoutput(output,D_WEVAP,config)+=stand->soil.w[0];
-      getoutput(output,D_PAR,config)=par;
-      getoutput(output,D_PET,config)+=eeq*PRIESTLEY_TAYLOR;
-    }
   }
 
   if(data->irrigation.irrigation && stand->pftlist.n>0) /*second element to avoid irrigation on just harvested fields */

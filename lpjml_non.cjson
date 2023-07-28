@@ -2,7 +2,7 @@
 /**                                                                                \n**/
 /**                   l  p  j  m  l  _  n  o  n  .  c  j  s  o  n                  \n**/
 /**                                                                                \n**/
-/** Configuration file for LPJmL C Version 5.6.20 without nitrogen limitation      \n**/
+/** Configuration file for LPJmL C Version 5.6.23 without nitrogen limitation      \n**/
 /**                                                                                \n**/
 /** Configuration file is divided into five sections:                              \n**/
 /**                                                                                \n**/
@@ -19,10 +19,6 @@
 /** Contact: https://github.com/PIK-LPJmL/LPJmL                                    \n**/
 /**                                                                                \n**/
 /**************************************************************************************/
-
-#include "include/conf.h" /* include constant definitions */
-
-//#define DAILY_OUTPUT  /* enables daily output */
 
 {   /* LPJmL configuration in JSON format */
 
@@ -43,7 +39,7 @@
   "fdi" : "nesterov",       /* fire danger index formulations: "wvpd" (needs GLDAS input data), "nesterov" */
   "firewood" : false,       /* NOT TESTED - DO NOT ENABLE */
   "gsi_phenology" : true,   /* enable GSI phenology */
-  "new_trf" : false,        /* enable new transpiration reduction function - NOT TESTED */
+  "transp_suction_fcn" : false,  /* enable new transpiration reduction function - NOT TESTED */
   "river_routing" : true,   /* enable river routing (requires input matching grid and lakes/reservoirs) */
   "extflow" : false,        /* enable discharge inflow for regional runs (requires extflow_filename) */
   "permafrost" : true,      /* enable permafrost */
@@ -137,9 +133,6 @@
 #define mkstr(s) xstr(s) /* putting string in quotation marks */
 #define xstr(s) #s
 
-  "crop_index" : "temperate cereals",  /* CFT for daily output */
-  "crop_irrigation" : false, /* irrigation flag for daily output */
-
 #ifdef FROM_RESTART
 
   "output" :
@@ -184,14 +177,6 @@ ID                         Fmt                    filename
     { "id" : "pft_harvestc",     "file" : { "fmt" : "raw", "name" : mkstr(output/pft_harvest.SUFFIX)}},
     { "id" : "cftfrac",          "file" : { "fmt" : "raw", "name" : "output/cftfrac.bin"}},
     { "id" : "seasonality",      "file" : { "fmt" : "raw", "name" : "output/seasonality.bin"}},
-#ifdef DAILY_OUTPUT
-    { "id" : "d_npp",            "file" : { "fmt" : "raw", "name" : "output/d_npp.bin"}},
-    { "id" : "d_gpp",            "file" : { "fmt" : "raw", "name" : "output/d_gpp.bin"}},
-    { "id" : "d_rh",             "file" : { "fmt" : "raw", "name" : "output/d_rh.bin"}},
-    { "id" : "d_trans",          "file" : { "fmt" : "raw", "name" : "output/d_trans.bin"}},
-    { "id" : "d_interc",         "file" : { "fmt" : "raw", "name" : "output/d_interc.bin"}},
-    { "id" : "d_evap",           "file" : { "fmt" : "raw", "name" : "output/d_evap.bin"}},
-#endif
     { "id" : "pet",              "file" : { "fmt" : "raw", "name" : "output/mpet.bin"}},
     { "id" : "albedo",           "file" : { "fmt" : "raw", "name" : "output/malbedo.bin"}},
     { "id" : "maxthaw_depth",    "file" : { "fmt" : "raw", "name" : "output/maxthaw_depth.bin"}},
