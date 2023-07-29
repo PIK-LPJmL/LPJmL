@@ -19,6 +19,28 @@ of `major.minor.patch` with
 
 ## [Unreleased]
 
+## [5.6.25] - 2023-07-29
+
+### Added
+
+- New outputs added for N fluxes from timber extraction and for N pools in wood product pools
+- New outputs added for `estab_storage` C and N
+- Added missing N fluxes, `estab_storage`, and reservoirs to `globalflux` output
+- Added new fluxes to man pages
+
+### Fixed 
+
+- Corrected/added units in comments in output.h
+- Corrected units in `flux_sum` man page
+- Corrected `N2O_DENIT` output, which now no longer also includes `N2O_NIT` values
+- Corrected writing of mineral N pools to outputs, so that also mineral N in frozen soil layers is included
+- Corrected writing of `VEGN` for crops, so that `bm_inc.nitrogen` is no longer included to avoid double accounting
+
+### Removed
+
+- Removed unecessary initialization of output variables to zero in `update_annual.c`, which is done in `initoutputdata.c`
+
+
 ## [5.6.24] - 2023-07-29
 
 ### Fixed

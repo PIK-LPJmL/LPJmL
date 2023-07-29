@@ -116,7 +116,7 @@
 #define NO_FERTILIZER 0
 #define FERTILIZER 1
 #define AUTO_FERTILIZER 2
-#define NOUT 315            /* number of output files */
+#define NOUT 323            /* number of output files */
 #define END -1              /* end marker for output files */
 #define GRIDBASED 1         /* pft-specific outputs scaled by stand->frac */
 #define PFTBASED 0          /* pft-specific outputs not scaled by stand->frac */
@@ -442,6 +442,14 @@
 #define RA_MGRASS 312
 #define RH_MGRASS 313
 #define PFT_BNF 314
+#define TIMBER_HARVESTN 315
+#define PRODUCT_POOL_FAST_N 316
+#define PRODUCT_POOL_SLOW_N 317
+#define DEFOREST_EMIS_N 318
+#define PROD_TURNOVER_N 319
+#define FLUX_FIREWOOD_N 320
+#define ESTAB_STORAGE_C 321
+#define ESTAB_STORAGE_N 322
 #define PFT_GCGP_COUNT 0
 #define NDAY_MONTH 1
 #define RANDOM_SEED 0
