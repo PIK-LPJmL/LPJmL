@@ -2,7 +2,7 @@
 /**                                                                                \n**/
 /**                   l  p  j  m  l  _  n  e  t  c  d  f  .  j  s                  \n**/
 /**                                                                                \n**/
-/** Configuration file for LPJmL C Version 5.6.23                                  \n**/
+/** Configuration file for LPJmL C Version 5.6.24                                  \n**/
 /**                                                                                \n**/
 /** Configuration file is divided into five sections:                              \n**/
 /**                                                                                \n**/

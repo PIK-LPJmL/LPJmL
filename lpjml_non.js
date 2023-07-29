@@ -2,7 +2,7 @@
 /**                                                                                \n**/
 /**                   l  p  j  m  l  _  n  o  n  .  j  s                           \n**/
 /**                                                                                \n**/
-/** Configuration file for LPJmL C Version 5.6.23 without nitrogen limitation      \n**/
+/** Configuration file for LPJmL C Version 5.6.24 without nitrogen limitation      \n**/
 /**                                                                                \n**/
 /** Configuration file is divided into five sections:                              \n**/
 /**                                                                                \n**/
