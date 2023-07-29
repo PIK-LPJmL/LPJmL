@@ -38,19 +38,19 @@ void fprintflux(FILE *file,          /**< Output file pointer */
     if(config->withlanduse!=NO_LANDUSE)
       tabs+=2;
     fputs("\n       ",file);
-    frepeatch(file,' ',(tabs*8-16)/2-1);
-    fprintf(file,"Carbon flux (%ctC)",(convert==1e-15)  ? 'G' : 'k');
-    frepeatch(file,' ',(tabs*8-16)/2);
+    frepeatch(file,' ',(tabs*8-17)/2-1);
+    fprintf(file,"Carbon flux (%ctC/yr)",(convert==1e-15)  ? 'G' : 'k');
+    frepeatch(file,' ',(tabs*8-17)/2);
     if(config->river_routing)
-      frepeatch(file,' ',(config->withlanduse==NO_LANDUSE) ? 16 : 20);
+      frepeatch(file,' ',(config->withlanduse==NO_LANDUSE) ? 13 : 17);
     else
-      frepeatch(file,' ',(config->withlanduse==NO_LANDUSE) ? 8 : 12);
-    fprintf(file,"Water (%sm3)",(convert==1e-15)  ? "k" : "da");
+      frepeatch(file,' ',(config->withlanduse==NO_LANDUSE) ? 5 : 9);
+    fprintf(file,"Water (%sm3/yr)",(convert==1e-15)  ? "k" : "da");
     if(config->with_nitrogen)
     {
       if(config->river_routing)
-        frepeatch(file,' ',(config->withlanduse==NO_LANDUSE) ? 4 : 8);
-      fprintf(file,"                Nitrogen (%cgN)",(convert==1e-15)  ? 'T' : 'M');
+        frepeatch(file,' ',(config->withlanduse==NO_LANDUSE) ? 1 : 5);
+      fprintf(file,"                Nitrogen (%cgN/yr)",(convert==1e-15)  ? 'T' : 'M');
     }
     fputs("\n       ",file);
     frepeatch(file,'-',tabs*8-1);
@@ -94,11 +94,11 @@ void fprintflux(FILE *file,          /**< Output file pointer */
     fputc('\n',file);
   }
   /* print data */
-  fprintf(file,"%6d %7.3f %7.3f",year,(flux.npp-flux.rh)*convert,flux.estab*convert);
+  fprintf(file,"%6d %7.3f %7.3f",year,(flux.npp-flux.rh)*convert,flux.estab.carbon*convert);
   if(config->fire)
-    fprintf(file," %7.3f",flux.fire*convert);
+    fprintf(file," %7.3f",flux.fire.carbon*convert);
   if(config->withlanduse!=NO_LANDUSE)
-    fprintf(file," %7.3f %7.3f",flux.harvest*convert,flux.product_turnover*convert);
+    fprintf(file," %7.3f %7.3f",flux.harvest.carbon*convert,flux.product_turnover.carbon*convert);
   fprintf(file," %7.3f",cflux_total*convert);
   fprintf(file," %10.1f %7.1f %7.1f",
           flux.transp*convert*1000,flux.evap*convert*1000,flux.interc*convert*1000);

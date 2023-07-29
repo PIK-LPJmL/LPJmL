@@ -2,7 +2,7 @@
 /**                                                                                \n**/
 /**               o  u  t  p  u  t  v  a  r  s  .  j  s                            \n**/
 /**                                                                                \n**/
-/**  Defines array of output variables for LPJmL 5.6.24                            \n**/
+/**  Defines array of output variables for LPJmL 5.6.25                            \n**/
 /**                                                                                \n**/
 /**  Monthly output rates can be rescaled to 1/day or 1/second by setting the unit \n**/
 /**  to day-1 or sec-1, e.g.:                                                      \n**/
@@ -349,5 +349,13 @@
   { "id" : METHANEC_MGRASS, "name": "methanec_mgrass", "timestep" : "annual", "var": "MethaneC", "descr": "C in methane of managed grasslands", "unit": "gC/m2", "scale": 1.0, "offset" : 0.0},
   { "id" : DELTAC_MGRASS, "name": "deltac_mgrass", "timestep" : "annual", "var": "deltac", "descr" : "annual change in carbon stocks on managed grassland stands", "unit" : "gC/m2/yr", "scale" : 1.0, "offset" : 0.0},
   { "id" : RA_MGRASS, "name": "ra_mgrass", "timestep" : "annual", "var": "ra", "descr" : "annual autotrophic respiration on managed grassland stands", "unit" : "gC/m2/yr", "scale" : 1.0, "offset" : 0.0},
-  { "id" : RH_MGRASS, "name": "rh_mgrass", "timestep" : "annual", "var": "rh", "descr" : "annual heterotrophic respiration on managed grassland stands", "unit" : "gC/m2/yr", "scale" : 1.0, "offset" : 0.0}
+  { "id" : RH_MGRASS, "name": "rh_mgrass", "timestep" : "annual", "var": "rh", "descr" : "annual heterotrophic respiration on managed grassland stands", "unit" : "gC/m2/yr", "scale" : 1.0, "offset" : 0.0},
+  { "id" : TIMBER_HARVESTN,"name": "timber_harvestn", "timestep" : "annual", "var" : "timber_harvestn", "descr" : "nitrogen harvested as timber", "unit" : "gN/m2/yr", "scale" : 1.0, "offset" : 0.0},
+  { "id" : PRODUCT_POOL_FAST_N,"name": "product_pool_fast_n", "timestep" : "annual", "var" : "product_pool_fast_n", "descr" : "nitrogen in the fast product pool", "unit" : "gN/m2", "scale" : 1.0, "offset" : 0.0},
+  { "id" : PRODUCT_POOL_SLOW_N,"name": "product_pool_slow_n", "timestep" : "annual", "var" : "product_pool_slow_n", "descr" : "nitrogen in the slow product pool", "unit" : "gN/m2", "scale" : 1.0, "offset" : 0.0},
+  { "id" : DEFOREST_EMIS_N    ,"name": "deforest_emis_n", "timestep" : "annual", "var" : "deforest_emis_n", "descr" : "nitrogen emissions from deforestation", "unit" : "gN/m2/yr", "scale" : 1.0, "offset" : 0.0},
+  { "id" : PROD_TURNOVER_N    ,"name": "prod_turnover_n", "timestep" : "annual", "var" : "prod_turnover_n", "descr" : "nitrogen emissions from product turnover", "unit" : "gN/m2/yr", "scale" : 1.0, "offset" : 0.0},
+  { "id" : FLUX_FIREWOOD_N, "name": "flux_firewood_n", "timestep" : "annual", "var" :  "flux_firewood_n", "descr" :  "nitrogen wood fire emissions", "unit" : "gN/m2/yr", "scale" : 1.0, "offset" : 0.0},
+  { "id" : ESTAB_STORAGE_C, "name": "estab_storage_c", "timestep" : "annual", "var" :  "estab_storage_c", "descr" :  "Carbon storage for establishment of agriculture trees and grasses", "unit" : "gC/m2", "scale" : 1.0, "offset" : 0.0},
+  { "id" : ESTAB_STORAGE_N, "name": "estab_storage_n", "timestep" : "annual", "var" :  "estab_storage_n", "descr" :  "Nitrogen storage for establishment of agriculture trees and grasses", "unit" : "gC/m2", "scale" : 1.0, "offset" : 0.0}
 ],

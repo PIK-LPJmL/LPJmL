@@ -107,8 +107,6 @@ void update_annual(Cell *cell,          /**< Pointer to cell */
   {
     cell->ml.product.fast.carbon=cell->ml.product.fast.nitrogen=0;
     cell->ml.product.slow.carbon=cell->ml.product.slow.nitrogen=0;
-    getoutput(&cell->output,TIMBER_HARVESTC,config)=0;
-    getoutput(&cell->output,DEFOREST_EMIS,config)=0;
     cell->balance.deforest_emissions.carbon=cell->balance.deforest_emissions.nitrogen=0;
   }
   product_turnover(cell,config);

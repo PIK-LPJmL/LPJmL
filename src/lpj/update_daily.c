@@ -203,7 +203,7 @@ void update_daily(Cell *cell,            /**< cell pointer           */
     hetres=littersom(stand,gtemp_soil,agrfrac,npft,ncft,config);
     cell->balance.arh+=hetres.carbon*stand->frac;
     getoutput(&cell->output,RH,config)+=hetres.carbon*stand->frac;
-    getoutput(&cell->output,N2O_DENIT,config)+=hetres.nitrogen*stand->frac;
+    getoutput(&cell->output,N2O_NIT,config)+=hetres.nitrogen*stand->frac;
     cell->balance.n_outflux+=hetres.nitrogen*stand->frac;
 
     if(stand->type->landusetype==NATURAL)
@@ -250,7 +250,6 @@ void update_daily(Cell *cell,            /**< cell pointer           */
       getoutput(&cell->output,N2O_NIT_MGRASS,config)+=hetres.nitrogen*stand->frac;
       getoutput(&cell->output,RH_MGRASS,config)+=hetres.carbon*stand->frac;
     }
-    getoutput(&cell->output,N2O_NIT,config)+=hetres.nitrogen*stand->frac;
     cell->output.dcflux+=hetres.carbon*stand->frac;
 #if defined IMAGE && defined COUPLED
     if (stand->type->landusetype == NATURAL)

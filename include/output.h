@@ -56,42 +56,43 @@ typedef struct
 
 typedef struct
 {
-  Real npp;      /**< Total NPP (gC) */
-  Real gpp;      /**< Total GPP (gC) */
-  Real rh;       /**< Total heterotrophic respiration (gC) */
-  Real fire;     /**< Total fire (gC) */
-  Real estab;    /**< Total extablishment flux (gC) */
-  Real harvest;  /**< Total harvested carbon (gC) */
-  Real transp;   /**< Total transpiration (dm3) */
-  Real evap;     /**< Total evaporation (dm3) */
-  Real interc;   /**< Total interception (dm3) */
-  Real wd;       /**< Total irrigation water withdrawal (dm3) */
-  Real wd_unsustainable;      /**< Total irrigation water withdrawal from unsustainable source (dm3) */
-  Real wateruse;              /**< Total wateruse for household industry and livestock */
-  Real discharge;             /**< Total discharge (dm3) */
-  Real ext;                   /**< Total external flux (dm3) */
-  Real evap_lake;             /**< Total evaporation from lakes (dm3) */
-  Real evap_res;              /**< Total evaporation from reservoirs (dm3) */
-  Real irrig;                 /**< Total field irrigation (dm3) */
-  Real conv_loss_evap;        /**< Total evaporation during conveyance (dm3) */
-  Real prec;                  /**< Total precipitation (dm3) */
-  Real delta_surface_storage; /**< Total change of surface storage (dm3), increase positive */
-  Real delta_soil_storage;    /**< Total change of soil storage (dm3), increase positive */
+  Real npp;      /**< Total NPP (gC/yr) */
+  Real gpp;      /**< Total GPP (gC/yr) */
+  Real rh;       /**< Total heterotrophic respiration (gC/yr) */
+  Stocks fire;   /**< Total fire (gC/yr,gN/yr) */
+  Stocks estab;  /**< Total extablishment flux (gC/yr,gN/yr) */
+  Stocks harvest;/**< Total harvested carbon (gC/yr,gN/yr) */
+  Real transp;   /**< Total transpiration (dm3/yr) */
+  Real evap;     /**< Total evaporation (dm3/yr) */
+  Real interc;   /**< Total interception (dm3/yr) */
+  Real wd;       /**< Total irrigation water withdrawal (dm3/yr) */
+  Real wd_unsustainable;      /**< Total irrigation water withdrawal from unsustainable source (dm3/yr) */
+  Real wateruse;              /**< Total wateruse for household industry and livestock (dm3/yr) */
+  Real discharge;             /**< Total discharge (dm3/yr) */
+  Real ext;                   /**< Total external flux (dm3/yr) */
+  Real evap_lake;             /**< Total evaporation from lakes (dm3/yr) */
+  Real evap_res;              /**< Total evaporation from reservoirs (dm3/yr) */
+  Real irrig;                 /**< Total field irrigation (dm3/yr) */
+  Real conv_loss_evap;        /**< Total evaporation during conveyance (dm3/yr) */
+  Real prec;                  /**< Total precipitation (dm3/yr) */
+  Real delta_surface_storage; /**< Total change of surface storage (dm3/yr), increase positive */
+  Real delta_soil_storage;    /**< Total change of soil storage (dm3/yr), increase positive */
   Real area;                  /**< Total area (m2) */
   Real total_reservoir_out;   /**< Total water extracted from reservoirs for irrigation */
   Real total_irrig_from_reservoir; /*Total water added to fields from reservoirs */
-  Real n_demand;              /**< total N demand by plants */
-  Real n_uptake;              /**< total N uptake by plants */
-  Real n_influx;              /**< total N inputs */
-  Real n_outflux;             /**< total N losses */
+  Real n_demand;              /**< total N demand by plants (gN/yr) */
+  Real n_uptake;              /**< total N uptake by plants (gN/yr) */
+  Real n_influx;              /**< total N inputs (gN/yr) */
+  Real n_outflux;             /**< total N losses (gN/yr) */
   Real excess_water;          /**< Exess water (dm3) */
-  Real soilc;                 /**< soil carbon (gC) */
-  Real soilc_slow;            /**< slow soil carbon (gC) */
-  Real litc;                  /**< litter carbon (gC) */
-  Real vegc;                  /**< vegetation carbon (gC) */
-  Real productc;              /**< product pool carbon (gC) */
-  Real product_turnover;      /**< product pool carbon turnover (gC/yr) */
-  Real neg_fluxes;
+  Stocks soil;                /**< soil stocks (gC,gN) */
+  Stocks soil_slow;           /**< slow soil stocks (gC,gN) */
+  Stocks lit;                 /**< litter stocks (gC,gN) */
+  Stocks veg;                 /**< vegetation stocks (gC,gN) */
+  Stocks product;             /**< product pool (gC,gN) */
+  Stocks product_turnover;    /**< product pool turnover (gC/yr,gN/yr) */
+  Stocks neg_fluxes;
+  Stocks estab_storage;       /**< Storage for establishment (gC, gN) */
   Real area_agr;              /**< agriculture area (m2) */
 } Flux;
 
