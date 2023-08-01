@@ -705,7 +705,6 @@ void fwriteoutput(Outputfile *output,  /**< output file array */
         {
           foreachstand(stand,s,grid[cell].standlist)
           {
-            foreachstand(stand,s,grid[cell].standlist)
               /*if(stand->type->landusetype==NATURAL) */
               foreachpft(pft,p,&stand->pftlist)
                 getoutput(&grid[cell].output,VEGC,config)+=vegc_sum(pft)*stand->frac;
@@ -811,7 +810,7 @@ void fwriteoutput(Outputfile *output,  /**< output file array */
         {
           foreachstand(stand,s,grid[cell].standlist)
           /* if(stand->type->landusetype==NATURAL) */
-            getoutput(&grid[cell].output,LITC,config)+=(litter_ag_sum(&stand->soil.litter) + litter_agsub_sum(&stand->soil.litter))*stand->frac;
+            getoutput(&grid[cell].output,LITC,config)+=(litter_ag_sum(&stand->soil.litter)+litter_agsub_sum(&stand->soil.litter))*stand->frac;
         }
     }
     writeoutputvar(LITC,1);
@@ -825,7 +824,7 @@ void fwriteoutput(Outputfile *output,  /**< output file array */
         {
           foreachstand(stand,s,grid[cell].standlist)
           /* if(stand->type->landusetype==NATURAL) */
-            getoutput(&grid[cell].output,LITN,config)+=litter_ag_sum_n(&stand->soil.litter)*stand->frac;
+            getoutput(&grid[cell].output,LITN,config)+=(litter_ag_sum_n(&stand->soil.litter)+litter_agsub_sum_n(&stand->soil.litter))*stand->frac;
         }
     }
     writeoutputvar(LITN,1);
@@ -978,7 +977,7 @@ void fwriteoutput(Outputfile *output,  /**< output file array */
         {
           foreachstand(stand,s,grid[cell].standlist)
             if(stand->type->landusetype!=NATURAL)
-              getoutput(&grid[cell].output,MG_LITC,config)+=litter_ag_sum(&stand->soil.litter)*stand->frac;
+              getoutput(&grid[cell].output,MG_LITC,config)+=(litter_ag_sum(&stand->soil.litter) + litter_agsub_sum(&stand->soil.litter))*stand->frac;
         }
     }
     writeoutputvar(MG_LITC,1);

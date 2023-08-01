@@ -20,7 +20,7 @@
   "maxsnowpack": 20000.0,    /* max. snow pack (mm) */
   "soildepth_evap" : 300.0,  /* depth of sublayer at top of upper soil layer (mm) */
   "soil_infil" : 2.0,        /* default soil infiltration */
-  "soil_infil_litter" : 2.0, /* soil infiltration intensification by litter cover*/
+  "soil_infil_litter" : 0.6, /* soil infiltration intensification by litter cover was 2 but it had a really strong effect*/
   "co2_p" : 278.0,           /* pre-industrial CO2 (ppmv) */
   "lgm_co2" : 180,           /* LGM CO2 (ppmv) */
   "pch4" :  801,             /* pre-industrial atmospheric CH4 (801 ppb) */
@@ -38,7 +38,7 @@
   "atmfrac" : 0.6,           /* atmfrac */
   "fastfrac" : 0.97,         /* fastfrac */
   "bioturbate" : 0.5,        /* bioturbation (0 = no bioturbation) */
-  "veg_equil_year" : 2400,
+  "veg_equil_year" : 990,
   "k_max": 0.10,             /* k_max, maximum fraction of soil->NH4 assumed to be nitrified Parton, 2001*/
   "fpc_tree_max" : 0.95,     /* maximum foliage projective cover for trees */
   "temp_response" : 66.02,   /* Parameter in temperature response function */

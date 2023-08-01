@@ -95,22 +95,25 @@ Real nuptake_tree(Pft *pft,             /**< pointer to PFT data */
       pft->bm_inc.nitrogen+=n_uptake;
       forrootsoillayer(l)
       {
-         wscaler=soil->w[l]>epsilon ? 1 : 0;
+        wscaler=soil->w[l]>epsilon ? 1 : 0;
         soil->NO3[l]-=soil->NO3[l]*wscaler*rootdist_n[l]*n_uptake/nsum;
         if(soil->NO3[l]<0)
         {
-          pft->bm_inc.nitrogen+=soil->NO3[l];
+          //pft->bm_inc.nitrogen+=soil->NO3[l];
           n_upfail+=soil->NO3[l];
           soil->NO3[l]=0;
         }
-        soil->NH4[l]-=soil->NH4[l]*wscaler*rootdist_n[l]*n_uptake/nsum;
+        soil->NH4[l]-=soil->NH4[l]*wscaler*rootdist_n[l]*n_uptake/nsum-n_upfail*wscaler;
+        if(wscaler>0)
+         n_upfail=0;
         if(soil->NH4[l]<0)
         {
-          pft->bm_inc.nitrogen+=soil->NH4[l];
+          //pft->bm_inc.nitrogen+=soil->NH4[l];
           n_upfail+=soil->NH4[l];
           soil->NH4[l]=0;
         }
       }
+      pft->bm_inc.nitrogen+=n_upfail;
     }
   }
   if(config->fertilizer_input==AUTO_FERTILIZER && pft->stand->type->landusetype!=NATURAL && pft->stand->type->landusetype!=WETLAND)

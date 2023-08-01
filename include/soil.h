@@ -307,7 +307,7 @@ extern Real soilwater(const Soil *);
 extern Real soilconduct(const Soil *,int,Bool);
 extern Real soilheatcap(const Soil *,int);
 extern void soilice2moisture(Soil *, Real *,int);
-extern void gasdiffusion(Soil*, Real, Real, Real *, Real *);
+extern void gasdiffusion(Soil*, Real, Real, Real *, Real *, Real *);
 extern Real ebullition(Soil*, Real);
 extern Real temp_response(Real, Real);
 extern Real litter_ag_tree(const Litter *,int);

@@ -15,7 +15,7 @@
 #include "par/lpjparam.js"      /* LPJ parameter file */
 #include "par/soil.js"          /* Soil parameter file */
 #include "par/hydro.js"         /* wetland parameter file */
-#include "par/pft.js"           /* PFT parameter file*/
+#include "par/pft_woPoGr.js"           /* PFT parameter file*/
 
 #include "par/manage_laimax_alphaa_fao_rev4453_20180507.js" /* Management parameter file */
 #include "par/manage_reg.js"    /* Management parameter file for regions*/

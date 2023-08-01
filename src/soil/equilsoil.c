@@ -120,8 +120,8 @@ void equilsoil(Soil *soil,           /**< pointer to soil data */
       }
       soil->pool[l].slow.carbon=totalsum.slow.carbon*socfraction;
       soil->pool[l].fast.carbon=totalsum.fast.carbon*socfraction;
-      soil->pool[l].slow.nitrogen=totalsum.slow.nitrogen*socfraction;
-      soil->pool[l].fast.nitrogen=totalsum.fast.nitrogen*socfraction;
+      soil->pool[l].slow.nitrogen=soil->pool[l].slow.carbon/soil->par->cn_ratio;
+      soil->pool[l].fast.nitrogen=soil->pool[l].fast.carbon/soil->par->cn_ratio;
       soil->k_mean[l].slow=soil->k_mean[l].fast=0.0;
     }
     for(p=0;p<ntotpft;p++)
@@ -160,6 +160,16 @@ void equilsoil(Soil *soil,           /**< pointer to soil data */
         soil->count=0;
       }
     }
+/*
+    else
+    {
+      forrootsoillayer(l)
+      {
+        soil->NH4[l]*=0.8;
+        soil->NO3[l]*=0.89;
+      }
+    }
+*/
     soil->count=0;
     soil->decomp_litter_mean.carbon=soil->decomp_litter_mean.nitrogen=0.0;
   }//if(shift==TRUE)

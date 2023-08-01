@@ -274,8 +274,8 @@ ID                               Fmt                        filename
 /*  V. Run settings section                                          */
 /*===================================================================*/
 
-  "startgrid" : 58463, /*13580  4276 14310 18175 49217 39049 28854 27410, 67208 60400 47284 47293 47277 8097 all grid cells */
-  "endgrid" : 58463,      /*ALL*/ /*33803 output_pixel hohes soilc*/
+  "startgrid" : 14549, /*58463 13580  4276 14310 18175 49217 39049 28854 27410, 67208 60400 47284 47293 47277 8097 all grid cells */
+  "endgrid" : 14549,      /*ALL*/ /*33803 output_pixel hohes soilc*/
 
 #ifdef CHECKPOINT
   "checkpoint_filename" : "restart/restart_checkpoint.lpj", /* filename of checkpoint file */

@@ -18,7 +18,7 @@
 #include "agriculture.h"
 #include "crop.h"
 
-#define NPERCO 0.4  /* controls the amount of nitrate removed from the surface layer in runoff relative to the amount removed via percolation.  0.5 in Neitsch:SWAT MANUAL*/
+#define NPERCO 0.5  /* controls the amount of nitrate removed from the surface layer in runoff relative to the amount removed via percolation.  0.5 in Neitsch:SWAT MANUAL*/
 #define OMEGA  6    /* adjustable parameter for impedance factor*/
 #define maxWTP -500 /* max height of standing water [mm]*/
 
@@ -49,12 +49,12 @@ Real infil_perc(Stand *stand,        /**< Stand pointer */
   Real TT; /*traveltime in [mm/h]*/
   Real HC; /*hydraulic conductivity in [mm/h]*/
   Real influx,alpha;
-  Real frac_g_influx;
-  Real outflux,grunoff,inactive_water[NSOILLAYER],lat_runoff_last;
+  Real inactive_water[NSOILLAYER],frac_g_influx;
+  Real outflux,grunoff,lat_runoff_last;  // outflux from last layer
   Real runoff_surface,freewater,soil_infil;
   Real srunoff;
-  Real lrunoff[NSOILLAYER],nrsub_top[BOTTOMLAYER],ndrain_perched_out[BOTTOMLAYER]; /* intermediate variable for leaching of lateral runoff */
-  Real pperc[BOTTOMLAYER]; /* intermediate variable for leaching of via percolation */
+  Real lrunoff[NSOILLAYER],nrsub_top[BOTTOMLAYER],ndrain_perched_out[BOTTOMLAYER];                /* intermediate variable for leaching of lateral runoff */
+  Real pperc[BOTTOMLAYER];                                                                        /* intermediate variable for leaching of via percolation */
   Real NO3surf=0; /* amount of nitrate transported with surface runoff gN/m2 */
   Real NO3perc_ly=0; /* nitrate leached to next lower layer with percolation gN/m2 */
   Real NO3lat=0; /* amount of nitrate transported with lateral runoff gN/m2 */
@@ -103,8 +103,6 @@ Real infil_perc(Stand *stand,        /**< Stand pointer */
   if(config->rw_manage && (stand->type->landusetype==AGRICULTURE || stand->type->landusetype==GRASSLAND || stand->type->landusetype==BIOMASS_GRASS ||
       stand->type->landusetype==BIOMASS_TREE || stand->type->landusetype==AGRICULTURE_TREE || stand->type->landusetype==AGRICULTURE_GRASS))
     soil_infil=param.soil_infil_rw; /* parameter to increase soil infiltration rate */
-  if(soil_infil<2)
-    soil_infil=2;
   for(l=0;l<NTILLLAYER;l++)
     infil_layer[l]=0.0;
 
@@ -153,7 +151,7 @@ Real infil_perc(Stand *stand,        /**< Stand pointer */
       freewater+=(soil->w[l]+soil->ice_depth[l]/soil->whcs[l]-1)*soil->whcs[l];
   }
 
-  soil_infil *= (1 + soil->litter.agtop_cover*param.soil_infil_litter); /*soil_infil is scaled between 2 and 6, based on Jaegermeyr et al. 2016*/
+  soil_infil *= (1 + soil->litter.agtop_cover*param.soil_infil_litter);         /*soil_infil is scaled between 2 and 6, based on Jaegermeyr et al. 2016*/
   while(infil > epsilon || freewater > epsilon)
   {
     NO3perc_ly=0;
@@ -227,9 +225,9 @@ Real infil_perc(Stand *stand,        /**< Stand pointer */
         }
 
         /* lateral runoff of water above saturation */
-        if ((soil->w[l]*soil->whcs[l])>(soildepth[l]-soil->freeze_depth[l])*(soil->wsat-soil->wpwp))
+        if ((soil->w[l]*soil->whcs[l])>(soildepth[l]-soil->freeze_depth[l])*(soil->wsat[l]-soil->wpwp[l]))
         {
-          grunoff=(soil->w[l]*soil->whcs[l])-((soildepth[l]-soil->freeze_depth[l])*(soil->wsat-soil->wpwp));
+          grunoff=(soil->w[l]*soil->whcs[l])-((soildepth[l]-soil->freeze_depth[l])*(soil->wsat[l]-soil->wpwp[l]));
           soil->w[l]-=grunoff/soil->whcs[l];
           *return_flow_b+=grunoff*(1-stand->frac_g[l]);
           if (l<(BOTTOMLAYER-1) || l<jwt || l<icet)
@@ -304,6 +302,7 @@ Real infil_perc(Stand *stand,        /**< Stand pointer */
               frac_g_influx=stand->frac_g[l];
               soil->perc_energy[l+1]=((soil->temp[l]-soil->temp[l+1])*perc*1e-3)*c_water;
             }
+            pperc[l]+=perc;
           } /*end percolation*/
         } /* if soil depth > freeze_depth */
       } /* soil layer loop */
@@ -485,7 +484,7 @@ Real infil_perc(Stand *stand,        /**< Stand pointer */
   qcharge_tot1=outflux+lat_runoff_last+runoff;                              //runoff_out includes lateral runoff from layers
 
 
-  //*******************************qcharge_tot1 raise water table
+  //*******************************qcharge_tot1 raises water table
   if (soil->wtable>0)
     S=soil->wsat[jwt]*(1.-pow((1.+(soil->wtable/soil->par->psi_sat)),(-1./soil->par->b)));
   else
@@ -708,8 +707,6 @@ Real infil_perc(Stand *stand,        /**< Stand pointer */
     rsub_top_max=50*sin(stand->slope_mean*3.6*M_PI/180);                                        // 20 mm day-1 suggested by Karpouzas etal, 2006, Christen etal, 2006 ->50 mm day-1
     rsub_top=Theta_ice*rsub_top_max*exp(-fff*soil->wtable/1000);
     rsub_top=min(rsub_top,active_wa);
-    //rsub_top=max(0,rsub_top-outflux-lat_runoff_last);
-    //  rsub_top=min(rsub_top,0);
     //! use analytical expression for aquifer specific yield
     if(soil->wtable>=layerbound[BOTTOMLAYER-1])
     {
@@ -745,7 +742,6 @@ Real infil_perc(Stand *stand,        /**< Stand pointer */
       {                                         //deepening water table
         for(l=(jwt+1);l<BOTTOMLAYER-1;l++)
         {
-          //nrsub_top[l]=0.0;
           layerbound2=(layerbound[l]>soil->wtable) ?  layerbound[l] : layerbound[l+1];
           if (soil->wtable>0)
             S=soil->wsat[l]*(1.-pow((1.+(soil->wtable/soil->par->psi_sat)),(-1./soil->par->b)));
@@ -756,8 +752,6 @@ Real infil_perc(Stand *stand,        /**< Stand pointer */
           rsub_top_layer=max(min(0,rsub_top_layer),-soil->w_fw[l]);
           soil->w_fw[l]+=rsub_top_layer;
           rsub_top_tot-=rsub_top_layer;
-          //runoff-=rsub_top_layer;
-          //soil->wtable = soil->wtable- rsub_top_layer/S;
           if (rsub_top_tot>=-epsilon)
           {
             soil->wtable-=rsub_top_layer/S;
@@ -774,7 +768,6 @@ Real infil_perc(Stand *stand,        /**< Stand pointer */
             runoff_out+=rsub_top_tot;
           else
             soil->wa+=rsub_top_tot;
-          //rsub_top+=rsub_top_tot;
         }
       }
     }
@@ -822,6 +815,7 @@ Real infil_perc(Stand *stand,        /**< Stand pointer */
 
   if(config->with_nitrogen)
   {
+	srunoff=runoff_surface;
     forrootsoillayer(l)
       if (soildepth[l]>soil->freeze_depth[l])
       {
@@ -832,7 +826,6 @@ Real infil_perc(Stand *stand,        /**< Stand pointer */
         if (w_mobile>epsilon)
         {
           ww=-w_mobile/((1-soil->par->anion_excl)*soil->wsats[l]);  /* Eq 4:2.1.2 */
-          //ww = -w_mobile / (soil->wsats[l]-soil->wpwps[l]);
           vno3=soil->NO3[l]*(1-exp(ww));
           concNO3_mobile=max(vno3/w_mobile, 0);
         }
@@ -840,13 +833,12 @@ Real infil_perc(Stand *stand,        /**< Stand pointer */
         /* nitrate percolating from overlying layer */
 
         soil->NO3[l]+=NO3perc_ly;
-        NO3perc_ly=0;
+        NO3perc_ly=NO3surf=NO3lat=0;
         /* calculate nitrate in surface runoff */
         if(l==0 && srunoff>epsilon)
         {
           NO3surf=NPERCO*concNO3_mobile*srunoff; /* Eq. 4:2.1.5 */
           NO3surf=min(NO3surf,soil->NO3[l]);
-          soil->NO3[l]-=NO3surf;
         }
         else
           NO3surf=0;
@@ -859,10 +851,12 @@ Real infil_perc(Stand *stand,        /**< Stand pointer */
         if(NO3lat>epsilon)
         {
           NO3lat=min(NO3lat,soil->NO3[l]);
-          soil->NO3[l]-=NO3lat;
         }
         else
           NO3lat=0;
+
+        soil->NO3[l]-=min((NO3surf+NO3lat),soil->NO3[l]);
+
       /* nitrate percolating from this layer */
         NO3perc_ly=concNO3_mobile*(pperc[l]);  /*Eq 4:2.1.8*/
         if(NO3perc_ly>epsilon)

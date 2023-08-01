@@ -169,6 +169,7 @@ Bool fscanconfig(Config *config,    /**< LPJ configuration */
     config->seed_start=time(NULL);
   setseed(config->seed,config->seed_start);
   config->with_nitrogen=NO_NITROGEN;
+  config->nitrogen_coupled=FALSE;
   if(fscankeywords(file,&config->with_nitrogen,"with_nitrogen",nitrogen,3,TRUE,verbose))
     return TRUE;
   if(fscankeywords(file,&config->with_radiation,"radiation",radiation,4,FALSE,verbose))
@@ -249,8 +250,14 @@ Bool fscanconfig(Config *config,    /**< LPJ configuration */
   config->others_to_crop = FALSE;
   config->fertilizer_input=NO_FERTILIZER;
   config->ma_bnf = FALSE;
-  if(fscanbool(file,&config->ma_bnf,"ma_bnf",TRUE,verbose))
-    return TRUE;
+  if(config->with_nitrogen)
+  {
+    if(fscanbool(file,&config->ma_bnf,"ma_bnf",TRUE,verbose))
+      return TRUE;
+    config->nitrogen_coupled=TRUE;
+    if(fscanbool(file,&config->nitrogen_coupled,"nitrogen_coupled",TRUE,verbose))
+      return TRUE;
+  }
   config->soilpar_option=NO_FIXED_SOILPAR;
   if(fscankeywords(file,&config->soilpar_option,"soilpar_option",soilpar_option,3,TRUE,verbose))
     return TRUE;

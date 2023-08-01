@@ -41,7 +41,8 @@ void update_daily(Cell *cell,            /**< cell pointer           */
 {
   int s,p;
   Pft *pft;
-  Real melt=0,eeq,par,daylength,beta,gw_outflux,CH4_em;
+  Real melt=0,eeq,par,daylength,beta,gw_outflux;
+  Real CH4_em=0,CH4_sink=0;
   Real melt_all=0,runoff,snowrunoff,epsilon_gas,soilmoist,V;
 #ifdef IMAGE
   Real fout_gw; // local variable for groundwater outflow (baseflow)
@@ -214,18 +215,12 @@ void update_daily(Cell *cell,            /**< cell pointer           */
     foreachsoillayer(l)
       getoutputindex(&cell->output,SOILTEMP,l,config)+=stand->soil.temp[l]*stand->frac*(1.0/(1-stand->cell->lakefrac-stand->cell->ml.reservoirfrac));
     plant_gas_transport(stand,climate.temp,ch4,config);
-    gasdiffusion(&stand->soil,climate.temp,ch4,&CH4_em,&runoff);
+    gasdiffusion(&stand->soil,climate.temp,ch4,&CH4_sink,&CH4_em,&runoff);
     cell->discharge.drunoff += runoff*stand->frac;
-    if (CH4_em>0)
-    {
-      getoutput(&cell->output,CH4_EMISSIONS,config) += CH4_em*stand->frac;
-      cell->balance.aCH4_em+=CH4_em*stand->frac;
-    }
-    else
-    {
-      getoutput(&cell->output,CH4_SINK,config)+= CH4_em*stand->frac;
-      cell->balance.aCH4_sink+=CH4_em*stand->frac;
-    }
+    getoutput(&cell->output,CH4_EMISSIONS,config)+=CH4_em*stand->frac;
+    cell->balance.aCH4_em+=CH4_em*stand->frac;
+    getoutput(&cell->output,CH4_SINK,config)+=CH4_sink*stand->frac;
+    cell->balance.aCH4_sink+=CH4_sink*stand->frac;
     fpc_total_stand = 0;
     foreachpft(pft, p, &stand->pftlist)
     {

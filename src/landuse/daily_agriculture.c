@@ -37,7 +37,7 @@ Real daily_agriculture(Stand *stand,                /**< [inout] stand pointer *
                        const Config *config         /**< [in] LPJ config */
                       )                             /** \return runoff (mm/day) */
 {
-  int p,l,nnat,nirrig;
+  int p,l,nnat,nirrig,c;
   Pft *pft;
   Real *gp_pft;         /**< pot. canopy conductance for PFTs & CFTs (mm/s) */
   Real gp_stand;               /**< potential stomata conductance  (mm/s) */
@@ -64,12 +64,16 @@ Real daily_agriculture(Stand *stand,                /**< [inout] stand pointer *
   Output *output;
   Pftcrop *crop;
   irrig_apply=0.0;
+  Stocks flux_estab={0,0};
 
   data=stand->data;
   negbm=FALSE;
   output=&stand->cell->output;
   cover_stand=intercep_stand=intercep_stand_blue=wet_all=rw_apply=intercept=sprink_interc=rainmelt=irrig_apply=0.0;
   evap=evap_blue=runoff=return_flow_b=0.0;
+
+  stand->growing_days++;
+
   if(getnpft(&stand->pftlist)>0)
   {
     wet=newvec(Real,getnpft(&stand->pftlist)); /* wet from pftlist */
@@ -189,7 +193,26 @@ Real daily_agriculture(Stand *stand,                /**< [inout] stand pointer *
       delpft(&stand->pftlist,p);
       /* adjust index */
       p--;
-      stand->type=&kill_stand;
+//      if(!strcmp(pft->par->name,"rice") && stand->growing_days<300)
+//      {
+//    	  flux_estab=cultivate(stand->cell,data->irrigation,day,FALSE,stand,
+//    	                     npft,ncft,RICE,year,config);
+//    	    if(data->irrigation)
+//    	      c=ncft+RICE;
+//    	    if(!config->double_harvest)
+//    	      getoutputindex(&stand->cell->output,SDATE,c,config)=day;
+//    	    if(config->sdate_option==FIXED_SDATE)
+//    	    	stand->cell->ml.sdate_fixed[RICE]=day;
+//         getoutput(&stand->cell->output,FLUX_ESTABC,config)+=flux_estab.carbon;
+//         getoutput(&stand->cell->output,FLUX_ESTABN,config)+=flux_estab.nitrogen;
+//         stand->cell->balance.flux_estab.nitrogen+=flux_estab.nitrogen;
+//         stand->cell->balance.flux_estab.carbon+=flux_estab.carbon;
+//      }
+//      else
+//      {
+        stand->type=&kill_stand;
+        stand->growing_days=0;
+//      }
     }
   } /* of foreachpft() */
 

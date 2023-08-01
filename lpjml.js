@@ -48,6 +48,7 @@
   "anomaly" : false,
   "soilpar_option" : "no_fixed_soilpar", /* other options "no_fixed_soilpar", "fixed_soilpar", "prescribed_soilpar" */
   "with_nitrogen" : "lim", /* other options: "no", "lim", "unlim" */
+  "nitrogen_coupled" : true, /* nitrogen stress coupled to water stress */ 
   "store_climate" : true, /* store climate data in spin-up phase */
   "const_climate" : false,
   "shuffle_climate" : true, /* shuffle spinup climate */
@@ -151,6 +152,7 @@ ID                               Fmt                        filename
     { "id" : "grid",             "file" : { "fmt" : "cdf", "name" : "output/grid.nc" }},
     { "id" : "globalflux",       "file" : { "fmt" : "txt", "name" : "output/globalflux.csv"}},
     { "id" : "fpc",              "file" : { "fmt" : "cdf", "name" : "output/fpc.nc"}},
+    { "id" : "wpc",              "file" : { "fmt" : "cdf", "name" : "output/wpc.nc"}},
     { "id" : "npp",              "file" : { "fmt" : "cdf", "timestep" : "annual", "name" : "output/npp.nc"}},
     { "id" : "gpp",              "file" : { "fmt" : "cdf", "timestep" : "annual", "name" : "output/gpp.nc"}},
     { "id" : "rh",               "file" : { "fmt" : "cdf", "timestep" : "annual", "name" : "output/rh.nc"}},
@@ -174,13 +176,14 @@ ID                               Fmt                        filename
     { "id" : "soiln_slow",       "file" : { "fmt" : "cdf", "name" : "output/soiln_slow.nc"}},
     { "id" : "soilnh4",          "file" : { "fmt" : "cdf", "name" : "output/soilnh4.nc"}},
     { "id" : "soilno3",          "file" : { "fmt" : "cdf", "name" : "output/soilno3.nc"}},
+    { "id" : "bnf",              "file" : { "fmt" : "cdf", "timestep" : "annual", "name" : "output/bnf.nc"}},
+    { "id" : "leaching",         "file" : { "fmt" : "cdf", "timestep" : "annual", "name" : "output/leaching.nc"}},
+    { "id" : "nuptake",          "file" : { "fmt" : "cdf", "timestep" : "annual", "name" : "output/nuptake.nc"}}, 
+    { "id" : "cftfrac",          "file" : { "fmt" : "cdf", "timestep" : "annual", "name" : "output/cftfrac.nc"}}, 
 /*    { "id" : "pft_nuptake",      "file" : { "fmt" : "cdf", "name" : "output/pft_nuptake.nc"}},
-    { "id" : "nuptake",          "file" : { "fmt" : "cdf", "name" : "output/mnuptake.nc"}},
-    { "id" : "leaching",         "file" : { "fmt" : "cdf", "name" : "output/mleaching.nc"}},
     { "id" : "n2o_denit",        "file" : { "fmt" : "cdf", "name" : "output/mn2o_denit.nc"}},
     { "id" : "n2o_nit",          "file" : { "fmt" : "cdf", "name" : "output/mn2o_nit.nc"}},
     { "id" : "n2_emis",          "file" : { "fmt" : "cdf", "name" : "output/mn2_emis.nc"}},
-    { "id" : "bnf",              "file" : { "fmt" : "cdf", "name" : "output/mbnf.nc"}},
     { "id" : "n_immo",           "file" : { "fmt" : "cdf", "name" : "output/mn_immo.nc"}},
     { "id" : "pft_ndemand",      "file" : { "fmt" : "cdf", "name" : "output/pft_ndemand.nc"}},
     { "id" : "firen",            "file" : { "fmt" : "cdf", "name" : "output/firen.nc"}},
@@ -202,21 +205,15 @@ ID                               Fmt                        filename
     { "id" : "wtab",             "file" : { "fmt" : "cdf", "timestep" : "annual", "name" : "output/wtab.nc"}},
     { "id" : "mwater",           "file" : { "fmt" : "cdf", "timestep" : "annual", "name" : "output/mwater.nc"}},
     { "id" : "wetfrac",          "file" : { "fmt" : "cdf", "timestep" : "annual", "name" : "output/wetfrac.nc"}},
-/*    { "id" : "ch4_emissions",    "file" : { "fmt" : "cdf", "name" : "output/mch4_emissions.nc"}},
-    { "id" : "ch4_sink",         "file" : { "fmt" : "cdf", "name" : "output/mch4_sink.nc"}},
-    { "id" : "ch4_ebullition",   "file" : { "fmt" : "cdf", "name" : "output/mch4_ebullition.nc"}},
-    { "id" : "ch4_plant_gas",    "file" : { "fmt" : "cdf", "name" : "output/mch4_plant_gras.nc"}},
-    { "id" : "meansoilo2",       "file" : { "fmt" : "cdf", "name" : "output/mmeansoilo2.nc"}},
-    { "id" : "meansoilch4",      "file" : { "fmt" : "cdf", "name" : "output/mmeansoilch4.nc"}},
- */
-/*#ifdef WITH_SPITFIRE
+
+#ifdef WITH_SPITFIRE
     { "id" : "firec",            "file" : { "fmt" : "cdf", "timestep" : "monthly", "unit" : "gC/m2/month", "name" : "output/mfirec.nc"}},
     { "id" : "nfire",            "file" : { "fmt" : "cdf", "name" : "output/mnfire.nc"}},
     { "id" : "burntarea",        "file" : { "fmt" : "cdf", "name" : "output/mburnt_area.nc"}},
 #else
     { "id" : "firec",            "file" : { "fmt" : "cdf", "name" : "output/firec.nc"}},
 #endif
-*/
+
     { "id" : "discharge",        "file" : { "fmt" : "cdf", "timestep" : "annual", "name" : "output/discharge.nc"}},
     { "id" : "harvestc",         "file" : { "fmt" : "cdf", "name" : "output/flux_harvest.nc"}},
     { "id" : "pft_harvestc",     "file" : { "fmt" : "cdf", "name" : mkstr(output/pft_harvest.SUFFIX)}},
@@ -229,32 +226,33 @@ ID                               Fmt                        filename
     { "id" : "soilc_layer",      "file" : { "fmt" : "cdf", "name" : "output/soilc_layer.nc"}},
     { "id" : "agb",              "file" : { "fmt" : "cdf", "name" : "output/agb.nc"}},
     { "id" : "agb_tree",         "file" : { "fmt" : "cdf", "name" : "output/agb_tree.nc"}},
-    { "id" : "soilc",            "file" : { "fmt" : "cdf", "name" : "output/soilc.nc"}},
     { "id" : "soilc_slow",       "file" : { "fmt" : "cdf", "name" : "output/soilc_slow.nc"}},
     { "id" : "ch4_ebullition",   "file" : { "fmt" : "cdf", "timestep" : "annual", "name" : "output/ch4_ebullition.nc"}},
-    { "id" : "ch4_plant_gas",    "file" : { "fmt" : "cdf", "timestep" : "annual", "name" : "output/ch4_plant_gras.nc"}},
+    { "id" : "ch4_plant_gas",    "file" : { "fmt" : "cdf", "timestep" : "annual", "name" : "output/ch4_plant_gas.nc"}},
     { "id" : "ch4_emissions",    "file" : { "fmt" : "cdf", "timestep" : "annual", "name" : "output/ch4_emissions.nc"}},
     { "id" : "ch4_sink",         "file" : { "fmt" : "cdf", "timestep" : "annual", "name" : "output/ch4_sink.nc"}},
+    { "id" : "ch4_rice_em",      "file" : { "fmt" : "cdf", "timestep" : "annual", "name" : "output/ch4_rice_em.nc"}},
     { "id" : "meansoilo2",       "file" : { "fmt" : "cdf", "timestep" : "annual", "name" : "output/meansoilo2.nc"}},
-    { "id" : "meansoilch4",      "file" : { "fmt" : "cdf", "timestep" : "annual", "name" : "output/meansoilch4.nc"}},
-    { "id" : "globalflux",       "file" : { "fmt" : "txt", "name" : "output/globalflux2.csv"}}
+    { "id" : "meansoilch4",      "file" : { "fmt" : "cdf", "timestep" : "annual", "name" : "output/meansoilch4.nc"}}
     
 /*------------------------------ ------------------------- ------------------------------- */
   ],
 #else
   "output" :
   [
-    { "id" : "ch4_emissions",    "file" : { "fmt" : "cdf", "timestep" : 100, "name" : "output/ch4_emissions_spinup7.nc"}},
-    { "id" : "ch4_sink",         "file" : { "fmt" : "cdf", "timestep" : 100, "name" : "output/ch4_sink_spinup7.nc"}},
-    { "id" : "ch4_ebullition",   "file" : { "fmt" : "cdf", "timestep" : 100, "name" : "output/ch4_ebullition_spinup7.nc"}},
-    { "id" : "ch4_plant_gas",    "file" : { "fmt" : "cdf", "timestep" : 100, "name" : "output/ch4_plant_gas_spinup7.nc"}},
-    { "id" : "soilc",            "file" : { "fmt" : "cdf", "timestep" : 100, "name" : "output/soilc_spinup7.nc"}},
-    { "id" : "litc",             "file" : { "fmt" : "cdf", "timestep" : 100, "name" : "output/litc_spinup7.nc"}},
-    { "id" : "vegc",             "file" : { "fmt" : "cdf", "timestep" : 100, "name" : "output/vegc_spinup7.nc"}},
-    { "id" : "fpc",              "file" : { "fmt" : "cdf", "timestep" : 100, "name" : "output/fpc_spinup7.nc"}},
-    { "id" : "wpc",              "file" : { "fmt" : "cdf", "timestep" : 100, "name" : "output/wpc_spinup7.nc"}},
-    { "id" : "mwater",           "file" : { "fmt" : "cdf", "timestep" : 100, "name" : "output/mwater7.nc"}},
-    { "id" : "globalflux",       "file" : { "fmt" : "txt", "name" : "output/globalflux_spinup7.csv"}}
+    { "id" : "ch4_emissions",    "file" : { "fmt" : "cdf", "timestep" : 100, "name" : "output/ch4_emissions_spinup6.nc"}},
+    { "id" : "ch4_sink",         "file" : { "fmt" : "cdf", "timestep" : 100, "name" : "output/ch4_sink_spinup6.nc"}},
+    { "id" : "ch4_ebullition",   "file" : { "fmt" : "cdf", "timestep" : 100, "name" : "output/ch4_ebullition_spinup6.nc"}},
+    { "id" : "ch4_plant_gas",    "file" : { "fmt" : "cdf", "timestep" : 100, "name" : "output/ch4_plant_gas_spinup6.nc"}},
+    { "id" : "soilc",            "file" : { "fmt" : "cdf", "timestep" : 100, "name" : "output/soilc_spinup6.nc"}},
+    { "id" : "soilc_slow",       "file" : { "fmt" : "cdf", "timestep" : 100, "name" : "output/soilc_slow_spinup6.nc"}},
+    { "id" : "litc",             "file" : { "fmt" : "cdf", "timestep" : 100, "name" : "output/litc_spinup6.nc"}},
+    { "id" : "vegc",             "file" : { "fmt" : "cdf", "timestep" : 100, "name" : "output/vegc_spinup6.nc"}},
+    { "id" : "fpc",              "file" : { "fmt" : "cdf", "timestep" : 100, "name" : "output/fpc_spinup6.nc"}},
+    { "id" : "wpc",              "file" : { "fmt" : "cdf", "timestep" : 100, "name" : "output/wpc_spinup6.nc"}},
+    { "id" : "mwater",           "file" : { "fmt" : "cdf", "timestep" : 100, "name" : "output/mwater_spinup6.nc"}},
+    { "id" : "npp",              "file" : { "fmt" : "cdf", "timestep" : 100, "name" : "output/npp_spinup6.nc"}},
+    { "id" : "globalflux",       "file" : { "fmt" : "txt", "name" : "output/globalflux_spinup6.csv"}}
   ],
 #endif
 
@@ -270,14 +268,14 @@ ID                               Fmt                        filename
 
 #ifndef FROM_RESTART
 
-  "nspinup" : 5000,  /* spinup years */
+  "nspinup" : 10000,  /* spinup years */
   "nspinyear" : 30,  /* cycle length during spinup (yr) */
   "firstyear": 1901, /* first year of simulation */
   "lastyear" : 1901, /* last year of simulation */
   "restart" :  false, /* start from restart file */
   "outputyear" : -15599,
   "write_restart" : true, /* create restart file: the last year of simulation=restart-year */
-  "write_restart_filename" : "restart/restart_1840_nv_stdfire_6.lpj", /* filename of restart file */
+  "write_restart_filename" : "restart/restart_1840_nv_stdfire6.lpj", /* filename of restart file */
   "restart_year": 1840 /* write restart at year */
 
 #else
@@ -288,9 +286,9 @@ ID                               Fmt                        filename
   "lastyear" : 2009, /* last year of simulation */
   "outputyear": 1841, /* first year output is written  */
   "restart" :  true, /* start from restart file */
-  "restart_filename" : "restart/restart_1840_nv_stdfire_7.lpj", /* filename of restart file */
+  "restart_filename" : "restart/restart_1840_nv_stdfire6.lpj", /* filename of restart file */
   "write_restart" : true, /* create restart file */
-  "write_restart_filename" : "restart/restart_1840_crop_stdfire_7.lpj", /* filename of restart file */
+  "write_restart_filename" : "restart/restart_1840_crop_stdfire6.lpj", /* filename of restart file */
   "restart_year": 1840 /* write restart at year */
 
 #endif

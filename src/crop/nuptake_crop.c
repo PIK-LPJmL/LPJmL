@@ -102,13 +102,15 @@ Real nuptake_crop(Pft *pft,             /**< pointer to PFT data */
 
         wscaler=soil->w[l]>epsilon ? 1 : 0;
         soil->NO3[l]-=(soil->NO3[l]*wscaler*rootdist_n[l]*n_uptake)/nsum;
-        soil->NH4[l]-=soil->NH4[l]*wscaler*rootdist_n[l]*n_uptake/nsum;
         if(soil->NO3[l]<0)
         {
           pft->bm_inc.nitrogen+=soil->NO3[l];
           n_upfail+=soil->NO3[l];
           soil->NO3[l]=0;
         }
+        soil->NH4[l]-=soil->NH4[l]*wscaler*rootdist_n[l]*n_uptake/nsum; //-n_upfail*wscaler;
+//        if(wscaler>0)
+//          n_upfail=0;
         if(soil->NH4[l]<0)
         {
           pft->bm_inc.nitrogen+=soil->NH4[l];
@@ -125,7 +127,8 @@ Real nuptake_crop(Pft *pft,             /**< pointer to PFT data */
 
 #endif
       }
-    }
+      //pft->bm_inc.nitrogen+=n_upfail;
+   }
   }
   crop->ndemandsum += max(0, *n_plant_demand - pft->bm_inc.nitrogen);
   if(*n_plant_demand > pft->bm_inc.nitrogen)

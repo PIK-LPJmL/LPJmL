@@ -21,8 +21,8 @@ Bool getch4(const Climate *climate, /**< Pointer to climate data */
             int year                /**< year (AD) */
            )                        /** \return TRUE on error */
 {
-  if (year<-1300000)
-    year = -1300000;
+  if (year<-1280000)
+    year = -1280000;
   year -= climate->ch4.firstyear;
   if (year >= climate->ch4.nyear)
     return TRUE;

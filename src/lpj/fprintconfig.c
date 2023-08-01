@@ -290,6 +290,8 @@ void fprintconfig(FILE *file,          /**< File pointer to text output file */
     len=printsim(file,len,&count,(config->with_nitrogen==UNLIM_NITROGEN) ? "unlimited nitrogen" : "nitrogen limitation");
   if(config->permafrost)
     len=printsim(file,len,&count,"permafrost");
+  if(config->nitrogen_coupled)
+     len=printsim(file,len,&count,"water and nitrogen limitations coupled");
   if (config->isanomaly)
     len=printsim(file,len,&count,"anomalies");
   if(config->johansen)

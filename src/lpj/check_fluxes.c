@@ -50,7 +50,8 @@ void check_fluxes(Cell *cell,          /**< cell pointer */
     stocks=standstocks(stand);
     tot.carbon+=stocks.carbon*stand->frac;
     tot.nitrogen+=stocks.nitrogen*stand->frac;
-    tot.carbon += soilmethane(&stand->soil)*stand->frac;
+    ////// Soil->ch4 must be multiplied by WC/WCH4 as well as cell->balance.aCH4_em cell->balance.aCH4_sink
+    tot.carbon += soilmethane(&stand->soil)*stand->frac*WC/WCH4;
   }
   if(cell->ml.dam)
   {
@@ -64,8 +65,8 @@ void check_fluxes(Cell *cell,          /**< cell pointer */
   delta_tot.carbon=tot.carbon-cell->balance.tot.carbon;
   delta_tot.nitrogen=tot.nitrogen-cell->balance.tot.nitrogen;
   cell->balance.tot=tot;
-
-  balance.carbon=cell->balance.anpp-cell->balance.arh-cell->balance.aCH4_em+cell->balance.aCH4_sink-cell->balance.fire.carbon-cell->balance.flux_firewood.carbon+cell->balance.flux_estab.carbon-cell->balance.flux_harvest.carbon-cell->balance.biomass_yield.carbon-delta_tot.carbon-cell->balance.neg_fluxes.carbon;
+////// Soil->ch4 must be multiplied by WC/WCH4 as well as cell->balance.aCH4_em cell->balance.aCH4_sink, CH4 sink is defined to be negative
+  balance.carbon=cell->balance.anpp-cell->balance.arh-cell->balance.aCH4_em*WC/WCH4-cell->balance.aCH4_sink*WC/WCH4-cell->balance.fire.carbon-cell->balance.flux_firewood.carbon+cell->balance.flux_estab.carbon-cell->balance.flux_harvest.carbon-cell->balance.biomass_yield.carbon-delta_tot.carbon-cell->balance.neg_fluxes.carbon;
   balance.nitrogen=cell->balance.n_influx-cell->balance.fire.nitrogen-cell->balance.flux_firewood.nitrogen-cell->balance.n_outflux+cell->balance.flux_estab.nitrogen-
     cell->balance.biomass_yield.nitrogen-cell->balance.flux_harvest.nitrogen-delta_tot.nitrogen-cell->balance.neg_fluxes.nitrogen-
     cell->balance.deforest_emissions.nitrogen;//cell->balance.timber_harvest.nitrogen;

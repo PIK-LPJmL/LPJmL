@@ -90,6 +90,7 @@ typedef struct
   Real aCH4_fire;
   Real aCH4_rice;
   Real soilc;                 /**< soil carbon (gC) */
+  Real soiln;                 /**< soil organic nitrogen (gC) */
   Real temp;                  /**< global average temperature (celsius) */
   Real soilc_slow;            /**< slow soil carbon (gC) */
   Real litc;                  /**< litter carbon (gC) */

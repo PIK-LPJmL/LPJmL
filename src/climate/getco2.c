@@ -21,8 +21,8 @@ Bool getco2(const Climate *climate, /**< Pointer to climate data */
             int year                /**< year (AD) */
            )                        /** \return TRUE on error */
 {
-  if (year<-130000)
-    year = -130000;
+  if (year<-128000)
+    year = -128000;
   year-=climate->co2.firstyear;
   if(year>=climate->co2.nyear)
     return TRUE;

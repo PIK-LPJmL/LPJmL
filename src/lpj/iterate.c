@@ -103,6 +103,8 @@ int iterate(Outputfile *output, /**< Output file data */
       year_co2=config->fix_climate_year;
     else
       year_co2=year;
+    if(config->isanomaly)
+    	year_co2+=2000; //CLIMBER's year zero= year 2000
     if(getco2(input.climate,&co2,year_co2)) /* get atmospheric CO2 concentration */
     {
       if(isroot(*config))

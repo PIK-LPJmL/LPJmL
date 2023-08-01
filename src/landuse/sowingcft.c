@@ -105,7 +105,7 @@ void sowingcft(Stocks *flux_estab,  /**< establishment flux */
      if(pft->bm_inc.carbon>0) *alloc_today=FALSE;
     if(cft!=RICE)
       setasidestand->soil.iswetland=FALSE;
-      cultcftstand(flux_estab,alloc_today,cell,setasidestand,irrig,wtype,nofallow,npft,ncft,cft,year,day,config);
+    cultcftstand(flux_estab,alloc_today,cell,setasidestand,irrig,wtype,nofallow,npft,ncft,cft,year,day,config);
   }
 
 #ifdef CHECK_BALANCE

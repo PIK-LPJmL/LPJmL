@@ -37,9 +37,9 @@
 #define REPROD_COST 0.1 /* reproduction cost */
 #define K_EST 0.12 /* maximum overall sapling establishment rate (indiv/m2) */
 #ifdef WITH_SPITFIRE
-#define MORT_MAX 0.02
+#define MORT_MAX 0.01
 #else
-#define MORT_MAX 0.02
+#define MORT_MAX 0.01
 #endif
 #define MORT_MAX_GRASS 0.00
 #define FN_TURNOVER 0.2      /* fraction of N not recovered before turnover */
@@ -532,7 +532,7 @@
     "temp_bnf_opt" : {"low" : 16, "high" : 35},  /* Yu and Zhuang 2020 temperate coniferous forest*/
     "swc_bnf" : {"low" : SWC_BNF_LOW, "high" : SWC_BNF_HIGH},
     "phi_bnf" : [PHI_BNF_1, PHI_BNF_2],
-    "nfixpot" : 0.01,  /* Yu and Zhuang 2020 temperate coniferous forest*/
+    "nfixpot" : 0.02,  /* Yu and Zhuang 2020 temperate coniferous forest*/
     "maxbnfcost" : MAXBNFCOSTTE,
     "bnf_cost" : BNF_COST 
  },
@@ -645,7 +645,7 @@
     "temp_bnf_opt" : {"low" : 18, "high" : 35},  /* Yu and Zhuang 2020 temperate evergreen forest*/
     "swc_bnf" : {"low" : SWC_BNF_LOW, "high" : SWC_BNF_HIGH},
     "phi_bnf" : [PHI_BNF_1, PHI_BNF_2],
-    "nfixpot" : 0.02,  /* Yu and Zhuang 2020 temperate evergreen forest*/
+    "nfixpot" : 0.03,  /* Yu and Zhuang 2020 temperate evergreen forest*/
     "maxbnfcost" : MAXBNFCOSTTE,
     "bnf_cost" : BNF_COST 
   },
@@ -760,7 +760,7 @@
     "temp_bnf_opt" : {"low" : 18, "high" : 35},  /* Yu and Zhuang 2020 temperate deciduous forest*/
     "swc_bnf" : {"low" : SWC_BNF_LOW, "high" : SWC_BNF_HIGH},
     "phi_bnf" : [PHI_BNF_1, PHI_BNF_2],
-    "nfixpot" : 0.02,  /* Yu and Zhuang 2020 temperate deciduous forest*/
+    "nfixpot" : 0.03,  /* Yu and Zhuang 2020 temperate deciduous forest*/
     "maxbnfcost" : MAXBNFCOSTTE,
     "bnf_cost" : BNF_COST 
   },
@@ -873,7 +873,7 @@
     "temp_bnf_opt" : {"low" : 12, "high" : 25},  /* Yu and Zhuang 2020 boreal forest*/
     "swc_bnf" : {"low" : SWC_BNF_LOW, "high" : SWC_BNF_HIGH},
     "phi_bnf" : [PHI_BNF_1, PHI_BNF_2],
-    "nfixpot" : 0.032,  /* Yu and Zhuang 2020 boreal forest*/
+    "nfixpot" : 0.042,  /* Yu and Zhuang 2020 boreal forest*/
     "maxbnfcost" : MAXBNFCOSTBO,
     "bnf_cost" : BNF_COST 
   },
@@ -988,7 +988,7 @@
     "temp_bnf_opt" : {"low" : 12, "high" : 25},  /* Yu and Zhuang 2020 boreal forest*/
     "swc_bnf" : {"low" : SWC_BNF_LOW, "high" : SWC_BNF_HIGH},
     "phi_bnf" : [PHI_BNF_1, PHI_BNF_2],
-    "nfixpot" : 0.032,  /* Yu and Zhuang 2020 boreal forest*/
+    "nfixpot" : 0.042,  /* Yu and Zhuang 2020 boreal forest*/
     "maxbnfcost" : MAXBNFCOSTBO,
     "bnf_cost" : BNF_COST
   },
@@ -1103,7 +1103,7 @@
     "temp_bnf_opt" : {"low" : 12, "high" : 25},  /* Yu and Zhuang 2020 boreal forest*/
     "swc_bnf" : {"low" : SWC_BNF_LOW, "high" : SWC_BNF_HIGH},
     "phi_bnf" : [PHI_BNF_1, PHI_BNF_2],
-    "nfixpot" : 0.032,  /* Yu and Zhuang 2020 boreal forest*/
+    "nfixpot" : 0.042,  /* Yu and Zhuang 2020 boreal forest*/
     "maxbnfcost" : MAXBNFCOSTBO,
     "bnf_cost" : BNF_COST
  },
@@ -1696,7 +1696,7 @@
     "temp_bnf_opt" : {"low" : 20, "high" : 35},  /* Yu and Zhuang 2020 tropical forest*/     
     "swc_bnf" : {"low" : SWC_BNF_LOW, "high" : SWC_BNF_HIGH},     
     "phi_bnf" : [PHI_BNF_1, PHI_BNF_2],     
-    "nfixpot" : 0.01,  /* Yu and Zhuang 2020 minimum*/     
+    "nfixpot" : 0.015,  /* Yu and Zhuang 2020 minimum*/     
     "maxbnfcost" : MAXBNFCOSTTR,   
     "bnf_cost" : BNF_COST, 
     "rotation" : 8,         /* rotation */
@@ -1814,7 +1814,7 @@
     "temp_bnf_opt" : {"low" : 18, "high" : 35},  /* Yu and Zhuang 2020 temperate deciduous forest*/
     "swc_bnf" : {"low" : SWC_BNF_LOW, "high" : SWC_BNF_HIGH},
     "phi_bnf" : [PHI_BNF_1, PHI_BNF_2],
-    "nfixpot" : 0.01,  /* Yu and Zhuang 2020 temperate deciduous forest*/
+    "nfixpot" : 0.015,  /* Yu and Zhuang 2020 temperate deciduous forest*/
     "maxbnfcost" : MAXBNFCOSTTE,
     "bnf_cost" : BNF_COST 
   },
@@ -1909,7 +1909,7 @@
     "temp_bnf_opt" : {"low" : 18, "high" : 35},  /* Yu and Zhuang 2020 grassland*/
     "swc_bnf" : {"low" : SWC_BNF_LOW, "high" : SWC_BNF_HIGH},
     "phi_bnf" : [PHI_BNF_1, PHI_BNF_2],
-    "nfixpot" : 0.01,  /* Yu and Zhuang 2020 grassland*/
+    "nfixpot" : 0.015,  /* Yu and Zhuang 2020 grassland*/
     "maxbnfcost" : MAXBNFCOSTTR,
     "bnf_cost" : BNF_COST 
   },
@@ -2486,7 +2486,7 @@
     "temp_bnf_opt" : {"low" : 16, "high" : 25},  /* Ma et al., 2022 faba bean*/
     "swc_bnf" : {"low" : SWC_BNF_LOW, "high" : SWC_BNF_HIGH},  /* Ma et al., 2022 faba bean*/
     "phi_bnf" : [PHI_BNF_1, PHI_BNF_2],  /* Ma et al., 2022 faba bean*/
-    "nfixpot" : 0.05,  /* Yu and Zhuang 2020 grassland*/
+    "nfixpot" : 0.055,  /* Yu and Zhuang 2020 grassland*/
     "maxbnfcost" : MAXBNFCOST,
     "bnf_cost" : BNF_COST 
   },
@@ -2949,7 +2949,7 @@
     "temp_bnf_opt" : {"low" : 20, "high" : 35},  /* Ma et al., 2022 soy bean*/
     "swc_bnf" : {"low" : 0.2, "high" : 0.8},  /* Ma et al., 2022 soy bean*/
     "phi_bnf" : [-0.33, 1.67],  /* Ma et al., 2022 soy bean*/
-    "nfixpot" : 0.05,  /* Yu and Zhuang 2020 grassland*/
+    "nfixpot" : 0.055,  /* Yu and Zhuang 2020 grassland*/
     "maxbnfcost" : MAXBNFCOST,
     "bnf_cost" : BNF_COST 
   },
