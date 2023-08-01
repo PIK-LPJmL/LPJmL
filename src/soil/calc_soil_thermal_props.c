@@ -26,15 +26,15 @@ double fastPow(double a, double b) {
   return u.d;
 }
 
-void calc_soil_thermal_props(Soil_thermal_prop *th,    /*< Soil thermal property structure that is set or modified */
-                     const Soil *soil,         /*< Soil structure from which water content etc is obtained  */
-                     const Real *waterc_abs,
-                     const Real *porosity_rel,
-                     Bool johansen,            /*< Flag to activate johansen method */
-                     Bool with_conductivity    /*< Flag to activate conductivity update  */
+void calc_soil_thermal_props(Soil_thermal_prop *th,  /*< Soil thermal property structure that is set or modified */
+                     const Soil *soil,               /*< Soil structure from which water content etc is obtained  */
+                     const Real *waterc_abs,         /*< Absolute total water content of soillayers (including ice) */
+                     const Real *solc_abs,           /*< Absolute total content of solids of soillayers*/
+                     Bool johansen,                  /*< Flag to activate johansen method */
+                     Bool with_conductivity          /*< Flag to activate conductivity update  */
                      ) 
 {
-  int    layer, j;
+  int  layer, j;
   Real c_froz, c_unfroz;             /* frozen and unfrozen heat capacities */
   Real lam_froz, lam_unfroz;         /* frozen and unfrozen conductivities */
   Real latent_heat;                  /* latent heat of fusion depending on water content */
@@ -68,10 +68,10 @@ void calc_soil_thermal_props(Soil_thermal_prop *th,    /*< Soil thermal property
     else 
       waterc_abs_layer = waterc_abs[layer];
 
-    if(porosity_rel == NULL)
+    if(solc_abs == NULL)
       solidc_abs_layer = soildepth[layer] - soil->wsats[layer];
     else 
-      solidc_abs_layer = soildepth[layer] - soildepth[layer]*porosity_rel[layer];    
+      solidc_abs_layer = solc_abs[layer];    
      
     if(with_conductivity)
     {

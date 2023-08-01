@@ -77,7 +77,7 @@ extern Real midlayer[NSOILLAYER];
 extern Real logmidlayer[NSOILLAYER];
 extern Real fbd_fac[NFUELCLASS];
 
-extern Bool no_water_heat_tranfer;
+extern Bool no_water_heat_transfer;
 extern Bool gp_status_dep_water_heat_flow;
 extern Bool full_gp_status_dep;
 
@@ -214,8 +214,10 @@ typedef struct
   Real YEDOMA;       /**< g/m2 */
   Litter litter;     /**< Litter pool */
   Real rw_buffer;    /**< available rain water amount in buffer (mm) */
-  Real old_totalwater[NSOILLAYER];
-  Real old_wsat[NSOILLAYER];
+  Real wi_abs_enth_adj[NSOILLAYER];  /* = WaterIcecontent_Absolute_Enthalpy_Adjusted  
+                                        absolute water ice contents with computed corresponding enthalpies, 
+                                        allowing obervation of changes made without enthalpy adjustments */
+  Real sol_abs_enth_adj[NSOILLAYER]; /* = Solidcontent_Absolute_Enthalpy_Adjusted  */
 } Soil;
 
 #ifndef TESTSCENARIO_HEAT

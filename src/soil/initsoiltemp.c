@@ -143,8 +143,8 @@ Bool initsoiltemp(Climate* climate,    /**< pointer to climate data */
                 stand->soil.temp[l]*therm.c_frozen[gridpoint]  : 
                 stand->soil.temp[l]*therm.c_unfrozen[gridpoint]+therm.latent_heat[gridpoint]);
           }
-          stand->soil.old_totalwater[l]=allwater((&(stand->soil)),l)+allice((&(stand->soil)),l);
-          stand->soil.old_wsat[l]=stand->soil.wsat[l];
+          stand->soil.wi_abs_enth_adj[l]=allwater((&(stand->soil)),l)+allice((&(stand->soil)),l);
+          stand->soil.sol_abs_enth_adj[l]=soildepth[l]-stand->soil.wsats[l];
         }
       }
   return FALSE;

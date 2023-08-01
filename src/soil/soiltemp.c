@@ -28,7 +28,6 @@ void modify_enth_due_to_masschanges(Soil *, const Config *);
 void modify_enth_due_to_heatconduction(Soil *, Real, Soil_thermal_prop,const Config *);
 void compute_water_ice_ratios_from_enth(Soil *, const Config *, Soil_thermal_prop);
 void compute_litter_temp_from_enth(Soil * soil, Real temp_below_snow ,const Config * config,Soil_thermal_prop therm_prop);
-//Bool no_water_heat_tranfer=0;
 
 void soiltemp(Soil *soil,          /**< pointer to soil data */
               Real temp_below_snow,        /**< (deg C) */
@@ -57,24 +56,17 @@ void soiltemp(Soil *soil,          /**< pointer to soil data */
 
 
 void modify_enth_due_to_masschanges(Soil * soil,const Config * config){
-  if(no_water_heat_tranfer){
     Soil_thermal_prop old_therm_storage_prop;                      
     Real waterdiff[NSOILLAYER], soliddiff[NSOILLAYER];  
-    calc_soil_thermal_props(&old_therm_storage_prop, soil, soil->old_totalwater,  soil->old_wsat, config->johansen, FALSE); 
-    get_soilcontent_change(waterdiff, soliddiff, soil);                     
+    calc_soil_thermal_props(&old_therm_storage_prop, soil, soil->wi_abs_enth_adj,  soil->sol_abs_enth_adj, config->johansen, FALSE); 
+    get_soilcontent_change(waterdiff, soliddiff, soil);        
+    int l;
+    // printf("unaccounted tot water \n");
+    // foreachsoillayer(l){
+    //     printf(" %f ", waterdiff[l]);
+    // }     
+    // printf("\n");        
     daily_mass2heatflow(soil->enth, waterdiff, soliddiff, old_therm_storage_prop);    
-  }
-   else{
-    Real waterdiff[NSOILLAYER]={0};
-    Real zero[NSOILLAYER]={0};
-    Real soliddiff[NSOILLAYER]={0};  
-    Soil_thermal_prop old_therm_storage_prop;                      
-    calc_soil_thermal_props(&old_therm_storage_prop, soil, soil->old_totalwater,  soil->old_wsat, config->johansen, FALSE); 
-    get_soilcontent_change(waterdiff, soliddiff, soil);                     
-    daily_mass2heatflow(soil->enth, zero, soliddiff, old_therm_storage_prop);  
-    apply_perc_energy2(soil);  
-   }
-  //apply_perc_energy(soil->enth,soil->perc_energy);
 }
 
 
@@ -125,89 +117,77 @@ void get_soilcontent_change(Real *waterdiff, Real *soliddiff, Soil *soil)
   int l;
   for(l=0;l<NSOILLAYER;++l)   /* track water flow and porosity changes of other methods */
   {
-    waterdiff[l] = (allwater(soil,l)+allice(soil,l) - soil->old_totalwater[l]) / soildepth[l];
-    soliddiff[l] = -(soil->wsat[l] - soil->old_wsat[l]);
-    soil->old_totalwater[l] = allwater(soil,l) + allice(soil,l);
-    soil->old_wsat[l]       = soil->wsat[l];
-  }
-}
-
-void get_soilcontent_change_abs(Real *waterdiff, Real *soliddiff, Soil *soil)
-{
-  int l;
-  for(l=0;l<NSOILLAYER;++l)   /* track water flow and porosity changes of other methods */
-  {
-    waterdiff[l] = (allwater(soil,l)+allice(soil,l) - soil->old_totalwater[l]);
-    soliddiff[l] = -(soil->wsat[l] - soil->old_wsat[l]);
-    soil->old_totalwater[l] = allwater(soil,l) + allice(soil,l);
-    soil->old_wsat[l]       = soil->wsat[l];
+    waterdiff[l] = (allwater(soil,l)+allice(soil,l) - soil->wi_abs_enth_adj[l]);
+    soliddiff[l] = (soildepth[l]-soil->wsats[l])-soil->sol_abs_enth_adj[l];
+    soil->wi_abs_enth_adj[l]  = allwater(soil,l) + allice(soil,l);
+    soil->sol_abs_enth_adj[l] = soildepth[l]-soil->wsats[l];
   }
 }
 
 
 
-void apply_perc_energy(Real *enth,             /*< enthalpy vector that is updated*/
-                       Real *perc_energy /*< vector absolute energy change of each layer */
-                      )
-{
-    int l,j;   /* l=layer, j is for sublayer */
-    int gp;    /* gridpoint */
+// void apply_perc_energy(Real *enth,             /*< enthalpy vector that is updated*/
+//                        Real *perc_energy /*< vector absolute energy change of each layer */
+//                       )
+// {
+//     int l,j;   /* l=layer, j is for sublayer */
+//     int gp;    /* gridpoint */
 
    
-    for(l=0;l<NSOILLAYER;l++){
-        Real energy_change = perc_energy[l]/(soildepth[l]/1000)*GPLHEAT;
-        if (energy_change>0) {
-            // distribute equally
-            Real change_per_point = energy_change/GPLHEAT ;
+//     for(l=0;l<NSOILLAYER;l++){
+//         Real energy_change = perc_energy[l]/(soildepth[l]/1000)*GPLHEAT;
+//         if (energy_change>0) {
+//             // distribute equally
+//             Real change_per_point = energy_change/GPLHEAT ;
             
-            for (j = 0; j < GPLHEAT; j++) {
-                enth[l*GPLHEAT + j] += change_per_point;
-            }
-                        // int num_pos_enth_points = 0;
-            //     for (int j = 0; j < GPLHEAT; ++j) {
-            //         if (enth[l*GPLHEAT + j] >= 0) {
-            //             ++num_pos_enth_points;
-            //         }
-            //     }
-            // Real change_per_point = energy_change/num_pos_enth_points ;
-            // for (int j = 0; j < GPLHEAT; j++) {
-            //   if(enth[l*GPLHEAT + j]>=0)
-            //     enth[l*GPLHEAT + j] += change_per_point;
-            // }
-        } else {
-            // distribute until reaching zero
-            while (energy_change < -1e-8) {
-                int num_pos_enth_points = 0;
-                for(j = 0; j < GPLHEAT; ++j) {
-                    if (enth[l*GPLHEAT + j] > 0) {
-                        ++num_pos_enth_points;
-                    }
-                }
+//             for (j = 0; j < GPLHEAT; j++) {
+//                 enth[l*GPLHEAT + j] += change_per_point;
+//             }
+//                         // int num_pos_enth_points = 0;
+//             //     for (int j = 0; j < GPLHEAT; ++j) {
+//             //         if (enth[l*GPLHEAT + j] >= 0) {
+//             //             ++num_pos_enth_points;
+//             //         }
+//             //     }
+//             // Real change_per_point = energy_change/num_pos_enth_points ;
+//             // for (int j = 0; j < GPLHEAT; j++) {
+//             //   if(enth[l*GPLHEAT + j]>=0)
+//             //     enth[l*GPLHEAT + j] += change_per_point;
+//             // }
+//         } else {
+//             // distribute until reaching zero
+//             while (energy_change < -1e-8) {
+//                 int num_pos_enth_points = 0;
+//                 for(j = 0; j < GPLHEAT; ++j) {
+//                     if (enth[l*GPLHEAT + j] > 0) {
+//                         ++num_pos_enth_points;
+//                     }
+//                 }
 
-                if (num_pos_enth_points == 0) {
-                    // all points are zero, can't distribute energy
-                    printf("ERROR CANT Distribute enrgy");
-                    break;
+//                 if (num_pos_enth_points == 0) {
+//                     // all points are zero, can't distribute energy
+//                     printf("ERROR CANT Distribute enrgy");
+//                     break;
                     
-                }
+//                 }
 
-                Real change_per_point = energy_change / num_pos_enth_points;
-                for (j = 0; j < GPLHEAT; ++j) {
-                  if(enth[l*GPLHEAT + j]>0){
-                    if (enth[l*GPLHEAT + j] + change_per_point < 0) {
-                        energy_change += enth[l*GPLHEAT + j];  // remove this point's energy from the total
-                        enth[l*GPLHEAT + j] = 0;
-                    } else {
-                        enth[l*GPLHEAT + j] += change_per_point;
-                        energy_change -= change_per_point;
-                    }
-                  }
-                }
-            }
-        }
-        perc_energy[l]=0;
-    }
-}
+//                 Real change_per_point = energy_change / num_pos_enth_points;
+//                 for (j = 0; j < GPLHEAT; ++j) {
+//                   if(enth[l*GPLHEAT + j]>0){
+//                     if (enth[l*GPLHEAT + j] + change_per_point < 0) {
+//                         energy_change += enth[l*GPLHEAT + j];  // remove this point's energy from the total
+//                         enth[l*GPLHEAT + j] = 0;
+//                     } else {
+//                         enth[l*GPLHEAT + j] += change_per_point;
+//                         energy_change -= change_per_point;
+//                     }
+//                   }
+//                 }
+//             }
+//         }
+//         perc_energy[l]=0;
+//     }
+// }
 
 
 

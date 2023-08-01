@@ -58,16 +58,16 @@ void soiltemp(Soil *soil,          /**< pointer to soil data */
   printf("%f ", temp_bs);
 
   /* apply enthalpy changes coming from water flow and porosity changes */
-  calc_soil_thermal_props(&th,soil, soil->old_totalwater, soil->old_wsat, config->johansen, FALSE);
+  calc_soil_thermal_props(&th,soil, soil->wi_abs_enth_adj, soil->sol_abs_enth_adj, config->johansen, FALSE);
   /* track the changes made to the watercontent and to porosity by other LPJmL methods */
   for(l=0;l<NSOILLAYER;++l) 
   {
     new_totalwater =allwater(soil,l)+allice(soil,l);
-    waterdiff[l]=new_totalwater-soil->old_totalwater[l];
+    waterdiff[l]=new_totalwater-soil->wi_abs_enth_adj[l];
     waterdiff[l]=waterdiff[l]/soildepth[l];
-    soliddiff[l]= -(soil->wsat[l]-soil->old_wsat[l]);
-    soil->old_totalwater[l]=new_totalwater;
-    soil->old_wsat[l]=soil->wsat[l];
+    soliddiff[l]= -(soil->wsat[l]-soil->sol_abs_enth_adj[l]);
+    soil->wi_abs_enth_adj[l]=new_totalwater;
+    soil->sol_abs_enth_adj[l]=soil->wsat[l];
   }
   daily_mass2heatflow(soil->enth, waterdiff, soliddiff, th);
   soil->litter.agtop_temp=(temp_bs+ENTH2TEMP(soil->enth,th,0))/2;

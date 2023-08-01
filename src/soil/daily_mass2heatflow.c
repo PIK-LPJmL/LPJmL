@@ -15,8 +15,8 @@ same way as for the water.
 */
 
 void daily_mass2heatflow(Real *enth,             /*< enthalpy vector that is updated*/
-                         const Real *water_diff, /*< vector with change of volumetric water content per layer */
-                         const Real *solid_diff, /*< vector with change of solid components per layer */
+                         const Real *water_diff, /*< vector with absolute change of volumetric water content per layer */
+                         const Real *solid_diff, /*< vector with absolute change of solid components per layer */
                          Soil_thermal_prop th    /*< soil thermal properties */
                          )
 {
@@ -36,12 +36,12 @@ void daily_mass2heatflow(Real *enth,             /*< enthalpy vector that is upd
                                 enth[gp]/th.latent_heat[gp] * c_water2ice : 0);
             /* add the energy from the inflowing water assuming is has the 
                the same volumetric enthalpy as the water already there  */
-            enth[gp]+=gp_water_energy*water_diff[l]; 
+            enth[gp]+=gp_water_energy*water_diff[l]/soildepth[l]; 
 
             /* solid transport */
             /* assume that the incoming or outgoing solid mass has 
                the same temperature as the solid mass already there */
-            enth[gp]+=T*c_mineral*solid_diff[l]; 
+            enth[gp]+=T*c_mineral*solid_diff[l]/soildepth[l];
         }
     }
 }

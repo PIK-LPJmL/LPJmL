@@ -51,8 +51,8 @@ Bool fwritesoil(FILE *file, /**< pointer to binary file */
   fwrite1(&soil->snowfraction,sizeof(Real),file);
   fwriten(soil->temp,sizeof(Real),NSOILLAYER+1,file);
   fwriten(soil->enth,sizeof(Real),NHEATGRIDP,file);
-  fwriten(soil->old_totalwater,sizeof(Real),NSOILLAYER,file);
-  fwrite1(soil->old_wsat,sizeof(Real),file);
+  fwriten(soil->wi_abs_enth_adj,sizeof(Real),NSOILLAYER,file);
+  fwrite1(soil->sol_abs_enth_adj,sizeof(Real),file);
   fwriten(soil->ice_depth,sizeof(Real),NSOILLAYER,file);
   fwriten(soil->ice_fw,sizeof(Real),NSOILLAYER,file);
   fwriten(soil->freeze_depth,sizeof(Real),NSOILLAYER,file);

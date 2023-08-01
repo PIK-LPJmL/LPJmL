@@ -172,14 +172,17 @@ Real daily_agriculture_grass(Stand *stand,                /**< stand pointer */
   /* soil inflow: infiltration and percolation */
   if (irrig_apply > epsilon)
   {
-    vol_water_enth = climate->temp*c_water+c_water2ice;
+    vol_water_enth = climate->temp*c_water+c_water2ice; /* enthalpy of soil infiltration */
     runoff += infil_perc_irr(stand, irrig_apply, vol_water_enth ,&return_flow_b,npft,ncft,config);
     /* count irrigation events*/
     getoutputindex(output,CFT_IRRIG_EVENTS,index,config)++; /* id is consecutively counted over natural pfts, biomass, and the cfts; ids for cfts are from 12-23, that is why npft (=12) is distracted from id */
-    }
-
+  }
+    
+  if(climate->prec+melt>0) /* enthalpy of soil infiltration */
     vol_water_enth = climate->temp*c_water*climate->prec/(climate->prec+melt)+c_water2ice;
-    runoff += infil_perc_rain(stand, rainmelt, vol_water_enth ,&return_flow_b,npft,ncft,config);
+  else
+    vol_water_enth=0;
+  runoff += infil_perc_rain(stand, rainmelt, vol_water_enth ,&return_flow_b,npft,ncft,config);
 
   /* Version with daily allocation and grass management */
   /* #ifdef NEW_GRASS */

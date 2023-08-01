@@ -268,7 +268,7 @@ Real daily_agriculture(Stand *stand,                /**< [inout] stand pointer *
   /* INFILTRATION and PERCOLATION */
   if(irrig_apply>epsilon)
   {
-    vol_water_enth = climate->temp*c_water+c_water2ice;
+    vol_water_enth = climate->temp*c_water+c_water2ice; /* enthalpy of soil infiltration */
     runoff+=infil_perc_irr(stand,irrig_apply,vol_water_enth,&return_flow_b,npft,ncft,config);
     /* count irrigation events*/
     pft=getpft(&stand->pftlist,0);
@@ -276,7 +276,10 @@ Real daily_agriculture(Stand *stand,                /**< [inout] stand pointer *
     getoutputindex(output,CFT_IRRIG_EVENTS,index,config)++; /* id is consecutively counted over natural pfts, biomass, and the cfts; ids for cfts are from 12-23, that is why npft (=12) is distracted from id */
   }
 
-  vol_water_enth = climate->temp*c_water*climate->prec/(climate->prec+melt)+c_water2ice;
+  if(climate->prec+melt>0)  /* enthalpy of soil infiltration */
+    vol_water_enth = climate->temp*c_water*climate->prec/(climate->prec+melt)+c_water2ice;
+  else
+    vol_water_enth=0;
   runoff+=infil_perc_rain(stand,rainmelt+rw_apply, vol_water_enth, &return_flow_b,npft,ncft,config);
 
   foreachpft(pft,p,&stand->pftlist)
