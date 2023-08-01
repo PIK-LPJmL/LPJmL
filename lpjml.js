@@ -212,8 +212,8 @@ ID                               Fmt                        filename
 /*  V. Run settings section                                          */
 /*===================================================================*/
 
-  "startgrid" : 60400, /* 27410, 67208 60400 47284 47293 47277 all grid cells */
-  "endgrid"   : 60400,
+  "startgrid" : 47284, /* 27410, 67208 60400 47284 47293 47277 all grid cells */
+  "endgrid"   : 47284,
 #ifdef CHECKPOINT
   "checkpoint_filename" : "restart/restart_checkpoint.lpj", /* filename of checkpoint file */
 #endif
@@ -228,15 +228,15 @@ ID                               Fmt                        filename
   "outputyear" : 1940,
   "write_restart" : true, /* create restart file: the last year of simulation=restart-year */
   "write_restart_filename" : "restart/restart_1840_nv_stdfire.lpj", /* filename of restart file */
-  "restart_year": 1901 /* write restart at year */
+  "restart_year": 1946 /* write restart at year */
 
 #else
 
   "nspinup" : 0,   /* spinup years */
   "nspinyear" : 30,  /* cycle length during spinup (yr)*/
-  "firstyear": 1950, /* first year of simulation */
-  "lastyear" : 1955, /* last year of simulation */
-  "outputyear": 1950, /* first year output is written  */
+  "firstyear": 1940, /* first year of simulation */
+  "lastyear" : 1946, /* last year of simulation */
+  "outputyear": 1940, /* first year output is written  */
   "restart" :  true, /* start from restart file */
   "restart_filename" : "restart/restart_1840_nv_stdfire.lpj", /* filename of restart file */
   "write_restart" : true, /* create restart file */

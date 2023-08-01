@@ -13,6 +13,7 @@
 /**************************************************************************************/
 #include "lpj.h"
 
+
 /*#define USE_LINEAR_CONTACT_T  */ /*linear interpolation between temperatures seems to give a reasonable approximation of contact temperatures between layers*/
 
 #define rho_om 1300.9     /* density of organic matter [kg/m3]*/
@@ -23,11 +24,13 @@
 void setup_heatgrid(Real *);
 void get_soilcontent_change(Real *, Real *, Soil *);
 Real calc_surface_temp(Real, Soil *, Soil_thermal_prop);
+
 void soiltemp(Soil *, Real, const Config *);
 void modify_enth_due_to_masschanges(Soil *, const Config *);
 void modify_enth_due_to_heatconduction(Soil *, Real, Soil_thermal_prop,const Config *);
-void compute_water_ice_ratios_from_enth(Soil *, const Config *, Soil_thermal_prop);
 void compute_litter_temp_from_enth(Soil * soil, Real temp_below_snow ,const Config * config,Soil_thermal_prop therm_prop);
+void compute_water_ice_ratios_from_enth(Soil *, const Config *, Soil_thermal_prop);
+
 
 void soiltemp(Soil *soil,          /**< pointer to soil data */
               Real temp_below_snow,        /**< (deg C) */

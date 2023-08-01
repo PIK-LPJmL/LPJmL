@@ -19,11 +19,6 @@
 #include "crop.h"
 #define NPERCO 0.4  /*controls the amount of nitrate removed from the surface layer in runoff relative to the amount removed via percolation.  0.5 in Neitsch:SWAT MANUAL*/
 
-#ifndef TESTSCENARIO_HEAT2
-Bool no_water_heat_transfer=TRUE;
-Bool gp_status_dep_water_heat_flow=FALSE;
-Bool full_gp_status_dep=FALSE;
-#endif
 
 void apply_perc_energy2(Soil * soil
                       )
