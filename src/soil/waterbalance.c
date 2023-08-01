@@ -88,7 +88,7 @@ void waterbalance(Stand *stand,           /**< Stand pointer */
         evap_soil=evap_energy*(1-soil->litter.agtop_cover);     if above field cap then it's potential evap
      */
 
-    evap_soil=evap_energy/(1+exp(5-10*w_evap/whcs_evap))*min(0.05,(1-soil->litter.agtop_cover));
+    evap_soil=evap_energy/(1+exp(5-10*w_evap/whcs_evap))*max(0.05,(1-soil->litter.agtop_cover));
 
     if (evap_soil>(w_evap-w_evap_ice))
       evap_soil=w_evap-w_evap_ice;
