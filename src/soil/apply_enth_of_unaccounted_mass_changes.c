@@ -20,7 +20,7 @@ Bool gp_status_dep_water_heat_flow=FALSE;
 Bool full_gp_status_dep=FALSE;
 #endif
 
-void daily_mass2heatflow(Real *enth,             /*< enthalpy vector that is updated*/
+void apply_enth_of_unaccounted_mass_changes(Real *enth,             /*< enthalpy vector that is updated*/
                          const Real *water_diff, /*< vector with absolute change of volumetric water content per layer */
                          const Real *solid_diff, /*< vector with absolute change of solid components per layer */
                          Soil_thermal_prop th    /*< soil thermal properties */

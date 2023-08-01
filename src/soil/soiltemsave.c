@@ -69,13 +69,13 @@ void soiltemp(Soil *soil,          /**< pointer to soil data */
     soil->wi_abs_enth_adj[l]=new_totalwater;
     soil->sol_abs_enth_adj[l]=soil->wsat[l];
   }
-  daily_mass2heatflow(soil->enth, waterdiff, soliddiff, th);
+  apply_enth_of_unaccounted_mass_changes(soil->enth, waterdiff, soliddiff, th);
   soil->litter.agtop_temp=(temp_bs+ENTH2TEMP(soil->enth,th,0))/2;
   upDiBound=temp_bs*(1-soil->litter.agtop_cover)+soil->litter.agtop_temp*soil->litter.agtop_cover;
 
   /* apply enthalpy changes due to heatconduction */
     calc_soil_thermal_props(&th,soil, NULL,NULL ,config->johansen,TRUE);
-  daily_heatcond(soil->enth, NHEATGRIDP,h, upDiBound,th );
+  apply_heatconduction_of_a_day(soil->enth, NHEATGRIDP,h, upDiBound,th );
   
   // for(j=0;j<NHEATGRIDP;++j)
   //   printf("%0.3f, ", ENTH2TEMP(soil->enth, th,j));

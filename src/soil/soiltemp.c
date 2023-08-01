@@ -22,11 +22,11 @@
 #define lambda_litter 0.1
 
 void setup_heatgrid(Real *);
-void get_soilcontent_change(Real *, Real *, Soil *);
+void get_unaccounted_changes_in_water_and_solids(Real *, Real *, Soil *);
 Real calc_surface_temp(Real, Soil *, Soil_thermal_prop);
 
 void soiltemp(Soil *, Real, const Config *);
-void modify_enth_due_to_masschanges(Soil *, const Config *);
+void modify_enth_due_to_unaccounted_masschanges(Soil *, const Config *);
 void modify_enth_due_to_heatconduction(Soil *, Real, Soil_thermal_prop,const Config *);
 void compute_litter_temp_from_enth(Soil * soil, Real temp_below_snow ,const Config * config,Soil_thermal_prop therm_prop);
 void compute_water_ice_ratios_from_enth(Soil *, const Config *, Soil_thermal_prop);
@@ -42,7 +42,7 @@ void soiltemp(Soil *soil,          /**< pointer to soil data */
   calc_soil_thermal_props(&therm_prop, soil, NULL,  NULL, config->johansen, TRUE); 
   
   /* apply daily changes to soil enthalpy distribution */
-  modify_enth_due_to_masschanges(soil ,config);
+  modify_enth_due_to_unaccounted_masschanges(soil ,config);
   modify_enth_due_to_heatconduction(soil,temp_below_snow, therm_prop, config);
 
   /* compute soil thermal attributes from enthalpy distribution */
@@ -58,18 +58,12 @@ void soiltemp(Soil *soil,          /**< pointer to soil data */
 
 
 
-void modify_enth_due_to_masschanges(Soil * soil,const Config * config){
+void modify_enth_due_to_unaccounted_masschanges(Soil * soil,const Config * config){
     Soil_thermal_prop old_therm_storage_prop;                      
     Real waterdiff[NSOILLAYER], soliddiff[NSOILLAYER];  
     calc_soil_thermal_props(&old_therm_storage_prop, soil, soil->wi_abs_enth_adj,  soil->sol_abs_enth_adj, config->johansen, FALSE); 
-    get_soilcontent_change(waterdiff, soliddiff, soil);        
-    int l;
-    // printf("unaccounted tot water \n");
-    // foreachsoillayer(l){
-    //     printf(" %f ", waterdiff[l]);
-    // }     
-    // printf("\n");        
-    daily_mass2heatflow(soil->enth, waterdiff, soliddiff, old_therm_storage_prop);    
+    get_unaccounted_changes_in_water_and_solids(waterdiff, soliddiff, soil);        
+    apply_enth_of_unaccounted_mass_changes(soil->enth, waterdiff, soliddiff, old_therm_storage_prop);    
 }
 
 
@@ -80,7 +74,7 @@ void modify_enth_due_to_heatconduction(Soil * soil, Real temp_below_snow, Soil_t
   top_dirichlet_BC = temp_below_snow  * (1 - soil->litter.agtop_cover) +
          litter_agtop_temp * soil->litter.agtop_cover;      
   setup_heatgrid(h);
-  daily_heatcond(soil->enth, NHEATGRIDP, h, top_dirichlet_BC, therm_prop ); 
+  apply_heatconduction_of_a_day(soil->enth, NHEATGRIDP, h, top_dirichlet_BC, therm_prop ); 
 }
 
 
@@ -115,7 +109,8 @@ void setup_heatgrid(Real *h){
        h[l*GPLHEAT+j] = nodes[l*GPLHEAT+j] - (l*GPLHEAT+j>0?nodes[l*GPLHEAT+j-1]:0);
 
 }
-void get_soilcontent_change(Real *waterdiff, Real *soliddiff, Soil *soil)
+
+void get_unaccounted_changes_in_water_and_solids(Real *waterdiff, Real *soliddiff, Soil *soil)
 {
   int l;
   for(l=0;l<NSOILLAYER;++l)   /* track water flow and porosity changes of other methods */
@@ -126,72 +121,6 @@ void get_soilcontent_change(Real *waterdiff, Real *soliddiff, Soil *soil)
     soil->sol_abs_enth_adj[l] = soildepth[l]-soil->wsats[l];
   }
 }
-
-
-
-// void apply_perc_energy(Real *enth,             /*< enthalpy vector that is updated*/
-//                        Real *perc_energy /*< vector absolute energy change of each layer */
-//                       )
-// {
-//     int l,j;   /* l=layer, j is for sublayer */
-//     int gp;    /* gridpoint */
-
-   
-//     for(l=0;l<NSOILLAYER;l++){
-//         Real energy_change = perc_energy[l]/(soildepth[l]/1000)*GPLHEAT;
-//         if (energy_change>0) {
-//             // distribute equally
-//             Real change_per_point = energy_change/GPLHEAT ;
-            
-//             for (j = 0; j < GPLHEAT; j++) {
-//                 enth[l*GPLHEAT + j] += change_per_point;
-//             }
-//                         // int num_pos_enth_points = 0;
-//             //     for (int j = 0; j < GPLHEAT; ++j) {
-//             //         if (enth[l*GPLHEAT + j] >= 0) {
-//             //             ++num_pos_enth_points;
-//             //         }
-//             //     }
-//             // Real change_per_point = energy_change/num_pos_enth_points ;
-//             // for (int j = 0; j < GPLHEAT; j++) {
-//             //   if(enth[l*GPLHEAT + j]>=0)
-//             //     enth[l*GPLHEAT + j] += change_per_point;
-//             // }
-//         } else {
-//             // distribute until reaching zero
-//             while (energy_change < -1e-8) {
-//                 int num_pos_enth_points = 0;
-//                 for(j = 0; j < GPLHEAT; ++j) {
-//                     if (enth[l*GPLHEAT + j] > 0) {
-//                         ++num_pos_enth_points;
-//                     }
-//                 }
-
-//                 if (num_pos_enth_points == 0) {
-//                     // all points are zero, can't distribute energy
-//                     printf("ERROR CANT Distribute enrgy");
-//                     break;
-                    
-//                 }
-
-//                 Real change_per_point = energy_change / num_pos_enth_points;
-//                 for (j = 0; j < GPLHEAT; ++j) {
-//                   if(enth[l*GPLHEAT + j]>0){
-//                     if (enth[l*GPLHEAT + j] + change_per_point < 0) {
-//                         energy_change += enth[l*GPLHEAT + j];  // remove this point's energy from the total
-//                         enth[l*GPLHEAT + j] = 0;
-//                     } else {
-//                         enth[l*GPLHEAT + j] += change_per_point;
-//                         energy_change -= change_per_point;
-//                     }
-//                   }
-//                 }
-//             }
-//         }
-//         perc_energy[l]=0;
-//     }
-// }
-
 
 
 /* Old content of soiltemp */
