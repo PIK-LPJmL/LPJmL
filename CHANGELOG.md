@@ -19,6 +19,16 @@ of `major.minor.patch` with
 
 ## [Unreleased]
 
+## [5.7.xx] - 2023-08-xx
+
+### Removed
+
+- removed large chunks of code in `allocation_daily_crop.c` that was inactive
+
+### Fixed
+
+- fixed output `PFT_VEGC` to not include `bm_inc.nitrogen` for crops in `daily_agriculture.c`
+
 ## [5.6.25] - 2023-07-29
 
 ### Added
