@@ -19,6 +19,19 @@ of `major.minor.patch` with
 
 ## [Unreleased]
 
+## [5.6.26] - 2023-08-07
+
+### changed
+
+- avoid leaf turnover for biomass grass
+- add leaf turnover to harvest for biomass grass
+- introduce harvest dates depending on green/brown harvest instead of C threshold for biomass grass
+- literature-based C/N ratios and fn_turnover for biomass grass
+
+### Added
+
+- introduced `#define` flag to change from green harvest (default) to brown harvest: `#define BMGR_BROWN`
+
 ## [5.6.25] - 2023-07-29
 
 ### Added
