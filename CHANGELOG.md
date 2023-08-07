@@ -19,6 +19,126 @@ of `major.minor.patch` with
 
 ## [Unreleased]
 
+## [5.6.25] - 2023-07-29
+
+### Added
+
+- New outputs added for N fluxes from timber extraction and for N pools in wood product pools
+- New outputs added for `estab_storage` C and N
+- Added missing N fluxes, `estab_storage`, and reservoirs to `globalflux` output
+- Added new fluxes to man pages
+
+### Fixed 
+
+- Corrected/added units in comments in output.h
+- Corrected units in `flux_sum` man page
+- Corrected `N2O_DENIT` output, which now no longer also includes `N2O_NIT` values
+- Corrected writing of mineral N pools to outputs, so that also mineral N in frozen soil layers is included
+- Corrected writing of `VEGN` for crops, so that `bm_inc.nitrogen` is no longer included to avoid double accounting
+
+### Removed
+
+- Removed unecessary initialization of output variables to zero in `update_annual.c`, which is done in `initoutputdata.c`
+
+
+## [5.6.24] - 2023-07-29
+
+### Fixed
+
+-  The number of bands is now correctly checked for the `read_residue_data` input.
+
+
+## [5.6.23] - 2023-07-28
+
+### Changed
+
+- Instead of the soil code the index of the grid cell is written into the NetCDF file for `"grid"` output.
+
+
+## [5.6.22] - 2023-07-27
+
+### Changed
+
+- Configuration files `lpjml_netcdf.js`, `lpjml_non.js`, `param_non.js`, and `lpjparam_non.js` updated to latest lpjml version.
+
+### Removed
+
+- Predefined daily outputs (`"d_lai"`-`"d_pet"`) and corresponding functions removed.
+
+- Version numbers removed from man pages.
+
+### Fixed
+
+- Variable `issocket` always initialized to `FALSE` in `readfilename.c`.
+
+
+## [5.6.21] - 2023-07-21
+
+### Changed
+
+- Flag `"nitrogen_coupled"` disabled for lpjml offline runs. Water stress is always coupled with nitrogen stress. Only if lpjml is compiled with `-DCOUPLING_WITH_FMS` flag is enabled.
+
+- Flag `"new_trf"` renamed to `"transp_suction_fcn"`.
+
+
+## [5.6.20] - 2023-07-13
+
+### Added
+
+- New flags `"fix_co2"` and `"fix_co2_year"` added.
+
+### Changed
+
+- Flag `"istimber"` renamed to `"luc_timber"`.
+
+- Flag `"new_phenology"` renamed to `"gsi_phenology"`.
+
+- Flag `"shuffle_climate"` renamed to `"shuffle_spinup_climate"`.
+
+- The settings for fixed input data have been updated. For climate and N deposition input an interval can be specified from which data is taken after the specified year. In can specified whether random shuffling or cycling is used:
+
+```java
+"fix_climate" : false,                /* fix climate after specified year */
+"fix_climate_year" : 1901,            /* year after climate is fixed */
+"fix_climate_interval" : [1901,1930],
+"fix_climate_shuffle" : true,          /* randomly shuffle climate in the interval */
+"fix_deposition_with_climate" : false, /* fix N deposition same as climate */
+"fix_deposition" : false,              /* fix N deposition after specified year */
+"fix_deposition_year" : 1901,          /* year after deposition is fixed */
+"fix_deposition_interval" : [1901,1930],
+"fix_deposition_shuffle" : true,       /* randomly shuffle depositions in the interval */
+"fix_landuse" : false,                 /* fix land use after specfied year */
+"fix_landuse_year" : 1901,             /* year after land use is fixed */
+"fix_co2" : false,                     /* fix atmospheric CO2  after specfied year */
+"fix_co2_year" : 1901,                 /* year after CO2 is fixed */
+```
+
+### Removed
+
+- Obsolete flag `"const_climate"` removed.
+
+
+## [5.6.19] - 2023-07-06
+
+### Added
+
+- Help option `-h` added to `bin2cdf` and `clm2cdf` utility.
+
+- Target `lpjcheck` added to `Makefile` to create only the `lpjcheck` utility.
+
+### Changed
+
+- The version of all man pages has been set to the LPJmL version number, date of last modification removed.
+
+- The different versions of the utilities have been replaced by a reference to the LPJmL version.
+
+### Removed
+
+- All html files have been removed from the repository.
+
+- Obsolete link `lpj` to `lpjml` removed.
+
+
 ## [5.6.18] - 2023-07-04
 
 ### Fixed

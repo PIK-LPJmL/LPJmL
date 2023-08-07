@@ -18,12 +18,11 @@
 #include "tree.h"
 #include "crop.h"
 
-#define LPJCHECK_VERSION "1.0.005"
 #define NTYPES 3 /* number of PFT types: grass, tree, crop */
 #define USAGE "Usage: %s [-h] [-q] [-nocheck] [-param] [-vv]\n"\
               "       [-couple hostname[:port]]\n"\
               "       [-outpath dir] [-inpath dir] [-restartpath dir]\n"\
-              "       [[-Dmacro[=value]] [-Idir] ...] filename\n"
+              "       [-pp cmd] [[-Dmacro[=value]] [-Idir] ...] filename\n"
 
 int main(int argc,char **argv)
 {
@@ -58,11 +57,11 @@ int main(int argc,char **argv)
       if(file==NULL)
         file=stdout;
       fprintf(file,"     ");
-      rc=fprintf(file,"%s Version " LPJCHECK_VERSION " (" __DATE__ ") Help",
+      rc=fprintf(file,"%s (" __DATE__ ") Help",
               progname);
       fprintf(file,"\n     ");
       frepeatch(file,'=',rc);
-      fprintf(file,"\n\nChecks syntax of LPJmL " LPJ_VERSION " configuration files\n\n");
+      fprintf(file,"\n\nChecks syntax of LPJmL version " LPJ_VERSION " configuration files\n\n");
       fprintf(file,USAGE,progname);
       fprintf(file,"Arguments:\n"
              "-h                  print this help text\n"
@@ -70,8 +69,8 @@ int main(int argc,char **argv)
              "-vv                 verbosely print the actual values during reading of the\n"
              "                    configuration files\n"
              "-param              print LPJ parameter\n"
-             "-pp cmd             set preprocessor program. Default is 'cpp'\n"
-             "-couple host[:port] set host and port where coupled model is running.\n"
+             "-pp cmd             set preprocessor program. Default is '" cpp_cmd "'\n"
+             "-couple host[:port] set host and port where coupled model is running\n"
              "-outpath dir        directory appended to output filenames\n"
              "-inpath dir         directory appended to input filenames\n"
              "-restartpath dir    directory appended to restart filename\n"
@@ -93,9 +92,9 @@ int main(int argc,char **argv)
   if(isout)
   {
     snprintf(line,78-10,
-             "%s Version " LPJCHECK_VERSION " (" __DATE__ ")",progname);
+             "%s (" __DATE__ ")",progname);
     title[0]=line;
-    title[1]="Checking configuration file for LPJmL Version " LPJ_VERSION;
+    title[1]="Checking configuration file for LPJmL version " LPJ_VERSION;
     title[2]="(C) Potsdam Institute for Climate Impact Research (PIK),";
     title[3]="see COPYRIGHT file";
     banner(title,4,78);
@@ -103,8 +102,7 @@ int main(int argc,char **argv)
 
   if(readconfig(&config,scanfcn,NTYPES,NOUT,&argc,&argv,USAGE))
   {
-    fputs("ERROR001: Cannot process configuration file.\n",stderr);
-    rc=EXIT_FAILURE;
+    fail(READ_CONFIG_ERR,FALSE,"Cannot process configuration file");
   }
   else
   {

@@ -271,9 +271,9 @@ static int checkclmfile(const Config *config,const char *data_name,const Filenam
           fprintf(stderr,"ERROR237: Last year=%d in '%s' is less than last simulation year %d.\n",input.firstyear+input.nyear-1,filename->name,config->lastyear);
           return 1;
         }
-        else if(config->fix_climate && input.firstyear+input.nyear-1<config->fix_climate_year+config->fix_climate_cycle/2)
+        else if(config->fix_climate && input.firstyear+input.nyear-1<max(config->fix_climate_year,config->fix_climate_interval[1]))
         {
-          fprintf(stderr,"ERROR237: Last year=%d in '%s' is less than last simulation year %d.\n",input.firstyear+input.nyear-1,filename->name,config->fix_climate_year+config->fix_climate_cycle/2);
+          fprintf(stderr,"ERROR237: Last year=%d in '%s' is less than last simulation year %d.\n",input.firstyear+input.nyear-1,filename->name,max(config->fix_climate_year,config->fix_climate_interval[1]));
           return 1;
         }
       }
@@ -297,11 +297,11 @@ static int checkclmfile(const Config *config,const char *data_name,const Filenam
         fprintf(stderr,"ERROR237: Last year=%d in '%s' is less than last simulation year %d.\n",header.firstyear+header.nyear-1,filename->name,config->lastyear);
         return 1;
       }
-        else if(config->fix_climate && header.firstyear+header.nyear-1<config->fix_climate_year+config->fix_climate_cycle/2)
-        {
-          fprintf(stderr,"ERROR237: Last year=%d in '%s' is less than last simulation year %d.\n",header.firstyear+header.nyear-1,filename->name,config->fix_climate_year+config->fix_climate_cycle/2);
-          return 1;
-        }
+      else if(config->fix_climate && header.firstyear+header.nyear-1<max(config->fix_climate_year,config->fix_climate_interval[1]))
+      {
+        fprintf(stderr,"ERROR237: Last year=%d in '%s' is less than last simulation year %d.\n",header.firstyear+header.nyear-1,filename->name,max(config->fix_climate_year,config->fix_climate_interval[1]));
+        return 1;
+      }
     }
   }
   return 0;
@@ -524,7 +524,7 @@ Bool filesexist(Config config, /**< LPJmL configuration */
     if(config.tillage_type==READ_TILLAGE)
       bad+=checkdatafile(&config,&config.with_tillage_filename,"tillage",NULL,LPJ_SHORT,1);
     if(config.residue_treatment==READ_RESIDUE_DATA)
-      bad+=checkdatafile(&config,&config.residue_data_filename,"residue extraction",NULL,LPJ_SHORT,2*config.fertilizermap_size);
+      bad+=checkdatafile(&config,&config.residue_data_filename,"residue extraction",NULL,LPJ_SHORT,config.fertilizermap_size);
     if(config.prescribe_lsuha)
       bad+=checkinputdata(&config,&config.lsuha_filename,"livestock density","lsu/ha",LPJ_SHORT);
   }

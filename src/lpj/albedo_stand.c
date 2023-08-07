@@ -40,7 +40,7 @@ Real albedo_stand(const Stand *stand /**< pointer to stand */
   sfr = soil->snowfraction; /* snow fraction in the stand */
   albstot=fbare=albedo=0;
 #ifdef COUPLING_WITH_FMS
-  VolWatercontent = soil->w[0]*soil->par->whc[0];
+  VolWatercontent = max(0,soil->w[0]*soil->whc[0]);
   soil_albedo = c_albedo_wet_soil + c_albedo_bare_soil*exp(-decay_alb_moist*VolWatercontent);/*gives the moisture dependence of the bare soil*/
 #else
   soil_albedo=c_albsoil;

@@ -1,11 +1,11 @@
-.TH readconfig 3  "December 15, 2008" "version 5.1.001" "LPJmL programmers manual"
+.TH readconfig 3  "LPJmL programmers manual"
 .SH NAME
 readconfig \- Reads LPJmL configuration
 .SH SYNOPSIS
 .nf
 \fB#include "lpj.h"
 
-Bool readconfig(Config *\fIconfig\fB,const char *\fIfilename\fB,
+Bool readconfig(Config *\fIconfig\fB,
                 Fscanpftparfcn \fIscanfcns\fB[],int \fIntypes\fB,
                 int \fInout\fB,int *\fIargc\fB,char ***\fIargv\fB,
                 const char *\fIusage\fB);\fP
@@ -17,9 +17,6 @@ The arguments of \fBreadconfig\fP are:
 .TP
 .I config
 Pointer to LPJmL configuration data. Must be initialized by \fBinitmpiconfig()\fP or \fBinitconfig()\fP.
-.TP
-.I filename
-Default configuration filename if no filename is given as an argument.
 .TP 
 .I scanfcns
 Vector of scan functions for PFT-specific parameters.

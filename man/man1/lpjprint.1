@@ -1,15 +1,18 @@
-.TH lpjprint 1  "March 2, 2023" "version 1.0.021" "USER COMMANDS"
+.TH lpjprint 1  "USER COMMANDS"
 .SH NAME
 lpjprint \- Print contents of restart file of LPJmL model runs 
 .SH SYNOPSIS
 .B lpjprint
-[\-h] [\-inpath \fIdir\fP] [\-restartpath \fIdir\fP] [[\-Dmacro[=value]] [\-I\fIdir\fP] ...] \fIfilename\fP [start [end]]
+[\-h] [\-pp cmd] [\-inpath \fIdir\fP] [\-restartpath \fIdir\fP] [[\-Dmacro[=value]] [\-I\fIdir\fP] ...] \fIfilename\fP [-check] [start [end]]
 .SH DESCRIPTION
 Program prints contents of restart file of a LPJmL model run. The LPJmL configuration file is read in in order to find the location and name of the restart file.
 .SH OPTIONS
 .TP
 \-h
 display a short help text
+.TP
+\-pp cmd
+Set preprocessor program to cmd. Default is \fBcpp\fP.
 .TP
 \-inpath \fIdir\fP
 set the input directory path. The path is added to the input filenames if they do not contain an absolute path.
@@ -26,6 +29,9 @@ define include directory for the preprocessor of the configuration file
 .I filename
 name of configuration file
 .TP
+\-check
+check only restart file, do not print
+.TP
 .I start
 Index of first grid cell to be printed.
 .TP
@@ -41,7 +47,7 @@ Print restart file with configuration file lpjml.js with restart file located in
 .SH ENVIRONMENT
 .TP
 LPJPREP 
-defines preprocessor command for LPJmL configuration file, default is \fBcpp -P\fP.
+defines preprocessor command for LPJmL configuration file, default is \fBcpp\fP.
 .TP
 LPJROOT
 defines the root directory for LPJmL. This directory is added to the

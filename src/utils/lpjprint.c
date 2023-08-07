@@ -25,11 +25,10 @@
 #include "biomass_grass.h"
 #include "woodplantation.h"
 
-#define PRINTLPJ_VERSION "1.0.021"
 #define NTYPES 3
 #define NSTANDTYPES 13 /* number of stand types */
 
-#define USAGE "Usage: %s [-h] [-inpath dir] [-restartpath dir]\n"\
+#define USAGE "Usage: %s [-h] [-pp cmd] [-inpath dir] [-restartpath dir]\n"\
               "       [[-Dmacro[=value]] [-Idir] ...] filename [-check] [start [end]]\n"
 
 
@@ -185,7 +184,7 @@ int main(int argc,char **argv)
   if(argc>1 && !strcmp(argv[1],"-h"))
   {
     fputs("     ",stdout);
-    rc=printf("%s Version " PRINTLPJ_VERSION " (" __DATE__ ") Help",
+    rc=printf("%s (" __DATE__ ") Help",
               progname);
     fputs("\n     ",stdout);
     repeatch('=',rc);
@@ -193,19 +192,20 @@ int main(int argc,char **argv)
     printf(USAGE,progname);
     printf("\nArguments:\n"
            "-h               print this help text\n"
+           "-pp cmd          set preprocessor program. Default is '" cpp_cmd "'\n"
            "-inpath dir      directory appended to input filenames\n"
            "-restartpath dir directory appended to restart filename\n"
            "-Dmacro[=value]  define macro for preprocessor of configuration file\n"
            "-Idir            directory to search for include files\n"
            "filename         configuration filename\n"
-           "-check           check only restart file\n"
+           "-check           check only restart file, do not print\n"
            "start            index of first grid cell to print\n"
            "end              index of last grid cell to print\n\n"
            "(C) Potsdam Institute for Climate Impact Research (PIK), see COPYRIGHT file\n");
     return EXIT_SUCCESS;
   }
   snprintf(line,78-10,
-           "%s Version " PRINTLPJ_VERSION " (" __DATE__ ")",progname);
+           "%s (" __DATE__ ")",progname);
   title[0]=line;
   title[1]="Printing restart file for LPJmL Version " LPJ_VERSION;
   title[2]="(C) Potsdam Institute for Climate Impact Research (PIK),";
@@ -213,7 +213,7 @@ int main(int argc,char **argv)
   banner(title,4,78);
   initconfig(&config);
   if(readconfig(&config,scanfcn,NTYPES,NOUT,&argc,&argv,USAGE))
-    fail(READ_CONFIG_ERR,FALSE,"Error opening config");
+    fail(READ_CONFIG_ERR,FALSE,"Cannot process configuration file");
   printf("Simulation: %s\n",config.sim_name);
   config.ischeckpoint=ischeckpointrestart(&config) && getfilesize(config.checkpoint_restart_filename)!=-1;
   if(!config.ischeckpoint && config.write_restart_filename==NULL)
