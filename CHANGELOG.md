@@ -19,6 +19,17 @@ of `major.minor.patch` with
 
 ## [Unreleased]
 
+## [5.6.27] - 2023-08-08
+
+### Removed
+
+- removed large chunks of code in `allocation_daily_crop.c` that was inactive
+
+### Fixed
+
+- fixed output `PFT_VEGC` to not include `bm_inc.nitrogen` for crops in `daily_agriculture.c`
+- fixed global flux summation for `flux.soil.carbon` and `flux.soil.nitrogen` (`+=` instead of `=`), bug was introduced in version 5.6.25
+
 ## [5.6.26] - 2023-08-07
 
 ### changed

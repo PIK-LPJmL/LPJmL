@@ -6,7 +6,7 @@ rem  Configure batch file for Microsoft Windows
 rem
 rem  Last change: 03.03.2009
 rem
-echo Configuring LPJmL Version 5.6.26 ...
+echo Configuring LPJmL Version 5.6.27 ...
 copy config\Makefile.win32 Makefile.inc
 echo Create executables with nmake all
 set lpjroot=%cd%
