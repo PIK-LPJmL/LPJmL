@@ -544,6 +544,7 @@ void fwriteoutput(Outputfile *output,  /**< output file array */
   }
   vec=newvec(float,config->ngridcell);
   check(vec);
+  writeoutputvar(LAND_AREA,1);
   writeoutputarray(FPC,1);
   writeoutputvar(NPP,1);
   writeoutputvar(GPP,1);

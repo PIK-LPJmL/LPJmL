@@ -19,6 +19,24 @@ of `major.minor.patch` with
 
 ## [Unreleased]
 
+##[5.7.0] - 2023-08-10
+
+### Added
+
+- land fraction can now be read from file, with a new flag `"landfrac_from_file"` and a new input `"landfrac"`
+- If setting `"landfrac_from_file : true"` cell areas in LPJmL are scaled down by land fraction from input file. If land fraction is zero, land fraction is set to `minlandfrac` and a warning is printed.
+- new flag `"with_lakes"` defined
+- new outputs `"terr_area"`, `"land_area"` and `"lake_area"` defined writing the terrestrial area (land and lakes),  land area and lake area of each cell
+- new parameters `"minlandfrac"` and `"tinyfrac"` added to lpjparams.js
+- option `-area filename` added to the `printglobal` utility to scale with the cell areas read from the file specified.
+
+### Changed
+- Lake fraction and land-use fractions are rescaled by the reciprocal of land fraction. If lake fraction is greater than one, lake fraction is set to one and a warning is printed.
+- Lakes can be enabled without river routing by setting `"with_lakes" : true`. Variable `dmass_lake` is always written to restart file.
+- lake fraction is read in utility `lpjprint` and printed
+- flag `"shuffle_spinup_climate"` only read if `"nspinup"` is non-zero.
+- Terrestrial area and harvest fraction are read in utility `printharvest`. Output format changed to CSV.
+
 ## [5.6.27] - 2023-08-08
 
 ### Removed

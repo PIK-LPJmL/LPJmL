@@ -2,7 +2,7 @@
 /**                                                                                \n**/
 /**                   l  p  j  m  l  _  n  e  t  c  d  f  .  j  s                  \n**/
 /**                                                                                \n**/
-/** Configuration file for LPJmL C Version 5.6.27                                  \n**/
+/** Configuration file for LPJmL C Version 5.7.0                                   \n**/
 /**                                                                                \n**/
 /** Configuration file is divided into five sections:                              \n**/
 /**                                                                                \n**/
@@ -29,7 +29,7 @@
 "sim_name" : "LPJmL Run", /* Simulation description */
 "sim_id"   : "lpjml",     /* LPJML Simulation type with managed land use */
 "coupled_model" : null,   /* no model coupling */
-"version"  : "5.6",       /* LPJmL version expected */
+"version"  : "5.7",       /* LPJmL version expected */
 "random_prec" : true,     /* Random weather generator for precipitation enabled */
 "random_seed" : 2,        /* seed for random number generator */
 "radiation" : "cloudiness",
@@ -52,11 +52,13 @@
 "gsi_phenology": false,
 "transp_suction_fcn" : false,        /* new transpiration reduction function disabled */
 "river_routing": false,
+"with_lakes": false,
 "permafrost" : true,
 "johansen" : true,
 "soilpar_option" : "no_fixed_soilpar", /* other options "no_fixed_soilpar", "fixed_soilpar", "prescribed_soilpar" */
 "with_nitrogen": "lim",
 "store_climate" : true, /* store climate data in spin-up phase */
+"landfrac_from_file" : true, /* read cell area from file (true/false) */
 "fix_climate" : false,
 "fix_deposition" : false,
 "fix_landuse" : false,
@@ -134,7 +136,8 @@
 /*
 ID                         Fmt                    filename
 -------------------------- ---------------------- ----------------------------- */
-{ "id" : "grid",             "file" : { "fmt" : "cdf", "name" : "output/grid.nc" }},
+{ "id" : "grid",             "file" : { "fmt" : "raw", "name" : "output/grid.bin" }},
+{ "id" : "terr_area",        "file" : { "fmt" : "cdf", "name" : "output/terr_area.nc" }},
 { "id" : "fpc",              "file" : { "fmt" : "cdf", "name" : "output/fpc.nc"}},
 { "id" : "npp",              "file" : { "fmt" : "cdf", "name" : "output/mnpp.nc"}},
 { "id" : "gpp",              "file" : { "fmt" : "cdf", "name" : "output/mgpp.nc"}},
@@ -150,7 +153,7 @@ ID                         Fmt                    filename
 { "id" : "vegc",             "file" : { "fmt" : "cdf", "name" : "output/vegc.nc"}},
 { "id" : "soilc",            "file" : { "fmt" : "cdf", "name" : "output/soilc.nc"}},
 { "id" : "litc",             "file" : { "fmt" : "cdf", "name" : "output/litc.nc"}},
-{ "id" : "flux_estabc",       "file" : { "fmt" : "cdf", "name" : "output/flux_estabc.nc"}},
+{ "id" : "flux_estabc",      "file" : { "fmt" : "cdf", "name" : "output/flux_estabc.nc"}},
 { "id" : "phen_tmin",        "file" : { "fmt" : "cdf", "name" : "output/mphen_tmin.nc"}},
 { "id" : "phen_tmax",        "file" : { "fmt" : "cdf", "name" : "output/mphen_tmax.nc"}},
 { "id" : "phen_light",       "file" : { "fmt" : "cdf", "name" : "output/mphen_light.nc"}},

@@ -14,6 +14,8 @@
 
 #include "lpj.h"
 
+/* define a tiny fraction for allcrops that is always at least 10x epsilon */
+
 Landfrac *newlandfrac(int ncft,   /**< number of crop PFTs */
                       int nagtree /**< number of agriculture tree PFTs */
                      )            /** \return allocated landfrac or NULL */

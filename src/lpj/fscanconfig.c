@@ -216,6 +216,9 @@ Bool fscanconfig(Config *config,    /**< LPJ configuration */
   }
   else if(verbose)
     fprintf(stderr,"WARNING027: Name 'coupled_model' for string not found, set to null.\n");
+  config->landfrac_from_file=FALSE;
+  if(fscanbool(file,&config->landfrac_from_file,"landfrac_from_file",TRUE,verbose))
+    return TRUE;
   fscanbool2(file,&israndom,"random_prec");
   config->seed_start=RANDOM_SEED;
   if(isstring(file,"random_seed"))
@@ -281,6 +284,9 @@ Bool fscanconfig(Config *config,    /**< LPJ configuration */
   config->transp_suction_fcn=FALSE;
   if(fscanbool(file,&config->transp_suction_fcn,"transp_suction_fcn",TRUE,verbose))
     return TRUE;
+  config->with_lakes=config->river_routing;
+  if(fscanbool(file,&config->with_lakes,"with_lakes",TRUE,verbose))
+    return TRUE;
   fscanbool2(file,&config->river_routing,"river_routing");
   config->extflow=FALSE;
   if(config->river_routing)
@@ -328,9 +334,6 @@ Bool fscanconfig(Config *config,    /**< LPJ configuration */
   }
   config->storeclimate=TRUE;
   if(fscanbool(file,&config->storeclimate,"store_climate",TRUE,verbose))
-    return TRUE;
-  config->shuffle_spinup_climate=FALSE;
-  if(fscanbool(file,&config->shuffle_spinup_climate,"shuffle_spinup_climate",TRUE,verbose))
     return TRUE;
   config->fix_climate=FALSE;
   if(fscanbool(file,&config->fix_climate,"fix_climate",TRUE,verbose))
@@ -791,9 +794,16 @@ Bool fscanconfig(Config *config,    /**< LPJ configuration */
     config->grassharvest_filename.name = NULL;
     config->lsuha_filename.name = NULL;
   }
-  if(config->river_routing)
+  if(config->landfrac_from_file)
+  {
+    scanclimatefilename(input,&config->landfrac_filename,FALSE,FALSE,"landfrac");
+  }
+  if(config->with_lakes)
   {
     scanclimatefilename(input,&config->lakes_filename,FALSE,FALSE,"lakes");
+  }
+  if(config->river_routing)
+  {
     scanclimatefilename(input,&config->drainage_filename,FALSE,FALSE,"drainage");
     if(config->drainage_filename.fmt==CDF)
     {
@@ -1041,8 +1051,11 @@ Bool fscanconfig(Config *config,    /**< LPJ configuration */
   }
   fscanint2(file,&config->nspinup,"nspinup");
   config->isfirstspinupyear=FALSE;
+  config->shuffle_spinup_climate=FALSE;
   if(config->nspinup)
   {
+    if(fscanbool(file,&config->shuffle_spinup_climate,"shuffle_spinup_climate",TRUE,verbose))
+      return TRUE;
     fscanint2(file,&config->nspinyear,"nspinyear");
     if(iskeydefined(file,"firstspinupyear"))
     {

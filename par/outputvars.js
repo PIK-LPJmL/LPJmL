@@ -2,7 +2,7 @@
 /**                                                                                \n**/
 /**               o  u  t  p  u  t  v  a  r  s  .  j  s                            \n**/
 /**                                                                                \n**/
-/**  Defines array of output variables for LPJmL 5.6.27                            \n**/
+/**  Defines array of output variables for LPJmL 5.7.0                             \n**/
 /**                                                                                \n**/
 /**  Monthly output rates can be rescaled to 1/day or 1/second by setting the unit \n**/
 /**  to day-1 or sec-1, e.g.:                                                      \n**/
@@ -36,6 +36,9 @@
 [
   /* id           name   timestep       variable(NetCDF) description             unit               scale          offset */
   { "id" : GRID, "name" : "grid", "timestep" : "annual", "var" : "soil", "descr" : "coordinates", "unit" : "degree", "scale" : 1.0, "offset" : 0.0},
+  { "id" : TERR_AREA, "name" : "terr_area", "timestep" : "annual", "var" : "terr_area", "descr" : "terrestrial area including lakes", "unit" : "m2", "scale" : 1.0, "offset" : 0.0},
+  { "id" : LAND_AREA, "name" : "land_area", "timestep" : "annual", "var" : "land_area", "descr" : "land area", "unit" : "m2", "scale" : 1.0, "offset" : 0.0},
+  { "id" : LAKE_AREA, "name" : "lake_area", "timestep" : "annual", "var" : "lake_area", "descr" : "lake area", "unit" : "m2", "scale" : 1.0, "offset" : 0.0},
   { "id" : GLOBALFLUX, "name" : "globalflux", "timestep" : "annual", "var" : "globalflux", "descr" : "global fluxes", "unit" : "", "scale" : 1.0e-15, "offset" : 0.0},
   { "id" : FPC, "name" : "fpc", "timestep" : "annual", "var" : "FPC", "descr" : "foliage projected cover", "unit" : "", "scale" : 1.0, "offset" : 0.0},
   { "id" : NPP, "name": "npp", "timestep" : "monthly", "var" : "NPP", "descr" : "monthly NPP", "unit" : "gC/m2/month", "scale" : 1.0, "offset" : 0.0},

@@ -20,7 +20,7 @@ int getnyear(const Variable *variable,
              int index /**< index of output file */
             )          /** \return number of items per year */
 {
-  if(index==REGION || index==COUNTRY || index==GRID)
+  if(index==REGION || index==COUNTRY || index==GRID || index==TERR_AREA || index==LAKE_AREA)
     return 0;
   switch(variable[index].timestep)
   {
