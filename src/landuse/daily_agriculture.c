@@ -141,7 +141,7 @@ Real daily_agriculture(Stand *stand,                /**< [inout] stand pointer *
     if(!isannual(PFT_CROOT,config))
       getoutputindex(output,PFT_CROOT,nnat+index,config)=crop->ind.root.carbon;
     if(!isannual(PFT_VEGN,config))
-      getoutputindex(output,PFT_VEGN,nnat+index,config)=vegn_sum(pft)+pft->bm_inc.nitrogen;
+      getoutputindex(output,PFT_VEGN,nnat+index,config)=vegn_sum(pft);
     if(!isannual(PFT_VEGC,config))
       getoutputindex(output,PFT_VEGC,nnat+index,config)=vegc_sum(pft);
 

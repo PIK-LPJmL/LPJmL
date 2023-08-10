@@ -527,7 +527,7 @@ Bool filesexist(Config config, /**< LPJmL configuration */
     if(config.tillage_type==READ_TILLAGE)
       bad+=checkdatafile(&config,&config.with_tillage_filename,"tillage",NULL,LPJ_SHORT,1);
     if(config.residue_treatment==READ_RESIDUE_DATA)
-      bad+=checkdatafile(&config,&config.residue_data_filename,"residue extraction",NULL,LPJ_SHORT,2*config.fertilizermap_size);
+      bad+=checkdatafile(&config,&config.residue_data_filename,"residue extraction",NULL,LPJ_SHORT,config.fertilizermap_size);
     if(config.prescribe_lsuha)
       bad+=checkinputdata(&config,&config.lsuha_filename,"livestock density","lsu/ha",LPJ_SHORT);
   }

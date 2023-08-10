@@ -19,6 +19,62 @@ of `major.minor.patch` with
 
 ## [Unreleased]
 
+## [5.6.27] - 2023-08-08
+
+### Removed
+
+- removed large chunks of code in `allocation_daily_crop.c` that was inactive
+
+### Fixed
+
+- fixed output `PFT_VEGC` to not include `bm_inc.nitrogen` for crops in `daily_agriculture.c`
+- fixed global flux summation for `flux.soil.carbon` and `flux.soil.nitrogen` (`+=` instead of `=`), bug was introduced in version 5.6.25
+
+## [5.6.26] - 2023-08-07
+
+### changed
+
+- avoid daily leaf turnover for biomass grass and harvest leaf turnover as dead biomass at harvest event instead (reduces litter and increases harvest)
+- introduce harvest dates depending on green/brown harvest instead of C threshold for biomass grass
+- literature-based C/N ratios and fn_turnover for biomass grass depending on green/brown harvest configuration
+- results and literature references can be found in issue [#275](https://gitlab.pik-potsdam.de/lpjml/LPJmL_internal/-/issues/275).
+
+### Added
+
+- introduced `#define` flag to change from green harvest (default) to brown harvest: `#define BMGR_BROWN`
+- two options include green harvest (fresh biomass, high N content - usually used for biofuels) and brown harvest (dry biomass, high lignin content, low N content - usually used for combustion)
+- brown harvest uses later harvest dates (defined in lpjparam.js) and higher N recovery (as lower fn_turnover defined in pft.js) than green harvest
+- the `#define` flag is required to read the correct flag-specific parameter from the lpjparam.js and pft.js, see issue [#311](https://gitlab.pik-potsdam.de/lpjml/LPJmL_internal/-/issues/311)
+
+## [5.6.25] - 2023-07-29
+
+### Added
+
+- New outputs added for N fluxes from timber extraction and for N pools in wood product pools
+- New outputs added for `estab_storage` C and N
+- Added missing N fluxes, `estab_storage`, and reservoirs to `globalflux` output
+- Added new fluxes to man pages
+
+### Fixed 
+
+- Corrected/added units in comments in output.h
+- Corrected units in `flux_sum` man page
+- Corrected `N2O_DENIT` output, which now no longer also includes `N2O_NIT` values
+- Corrected writing of mineral N pools to outputs, so that also mineral N in frozen soil layers is included
+- Corrected writing of `VEGN` for crops, so that `bm_inc.nitrogen` is no longer included to avoid double accounting
+
+### Removed
+
+- Removed unecessary initialization of output variables to zero in `update_annual.c`, which is done in `initoutputdata.c`
+
+
+## [5.6.24] - 2023-07-29
+
+### Fixed
+
+-  The number of bands is now correctly checked for the `read_residue_data` input.
+
+
 ## [5.6.23] - 2023-07-28
 
 ### Changed

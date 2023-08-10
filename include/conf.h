@@ -74,6 +74,8 @@
 #define NO_RESIDUE_REMOVE 0
 #define FIXED_RESIDUE_REMOVE 1
 #define READ_RESIDUE_DATA 2
+#define BMGR_GREEN 0
+#define BMGR_BROWN 1
 #define RADIATION_LWDOWN 3
 #define RADIATION_SWONLY 2
 #define RADIATION 1
@@ -116,7 +118,7 @@
 #define NO_FERTILIZER 0
 #define FERTILIZER 1
 #define AUTO_FERTILIZER 2
-#define NOUT 318            /* number of output files */
+#define NOUT 326            /* number of output files */
 #define END -1              /* end marker for output files */
 #define GRIDBASED 1         /* pft-specific outputs scaled by stand->frac */
 #define PFTBASED 0          /* pft-specific outputs not scaled by stand->frac */
@@ -445,6 +447,14 @@
 #define RH_MGRASS 315
 #define PFT_BNF 316
 #define LAND_AREA 317
+#define TIMBER_HARVESTN 318
+#define PRODUCT_POOL_FAST_N 319
+#define PRODUCT_POOL_SLOW_N 320
+#define DEFOREST_EMIS_N 321
+#define PROD_TURNOVER_N 322
+#define FLUX_FIREWOOD_N 323
+#define ESTAB_STORAGE_C 324
+#define ESTAB_STORAGE_N 325
 #define PFT_GCGP_COUNT 0
 #define NDAY_MONTH 1
 #define RANDOM_SEED 0
