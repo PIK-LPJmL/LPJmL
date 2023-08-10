@@ -19,13 +19,13 @@ of `major.minor.patch` with
 
 ## [Unreleased]
 
-##[5.7.1] - 2023-08-10
+## [5.7.1] - 2023-08-10
 
 ### Fixed
 
-- wrong use of `&f` instead of `f`, in `fscanparam.c`. Bug was introduced in version 5.6.26 and caused that restart files could not be read properly
+- wrong use of `&f` instead of `f`, in `fscanparam.c`. Bug was introduced in version 5.6.26 and caused that parameter files could not be read properly
 
-##[5.7.0] - 2023-08-10
+## [5.7.0] - 2023-08-10
 
 ### Added
 
