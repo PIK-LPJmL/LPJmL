@@ -2,7 +2,7 @@
 /**                                                                                \n**/
 /**                   p  a  r  a  m  _  n  o  n  .  j  s                           \n**/
 /**                                                                                \n**/
-/** Input parameter file for LPJmL C Version 5.7.0 without nitrogen                \n**/
+/** Input parameter file for LPJmL C Version 5.7.1 without nitrogen                \n**/
 /**                                                                                \n**/
 /** (C) Potsdam Institute for Climate Impact Research (PIK), see COPYRIGHT file    \n**/
 /** authors, and contributors see AUTHORS file                                     \n**/

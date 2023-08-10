@@ -19,7 +19,13 @@ of `major.minor.patch` with
 
 ## [Unreleased]
 
-##[5.7.0] - 2023-08-10
+## [5.7.1] - 2023-08-10
+
+### Fixed
+
+- wrong use of `&f` instead of `f`, in `fscanparam.c`. Bug was introduced in version 5.6.26 and caused that parameter files could not be read properly
+
+## [5.7.0] - 2023-08-10
 
 ### Added
 
@@ -31,6 +37,7 @@ of `major.minor.patch` with
 - option `-area filename` added to the `printglobal` utility to scale with the cell areas read from the file specified.
 
 ### Changed
+
 - Lake fraction and land-use fractions are rescaled by the reciprocal of land fraction. If lake fraction is greater than one, lake fraction is set to one and a warning is printed.
 - Lakes can be enabled without river routing by setting `"with_lakes" : true`. Variable `dmass_lake` is always written to restart file.
 - lake fraction is read in utility `lpjprint` and printed
