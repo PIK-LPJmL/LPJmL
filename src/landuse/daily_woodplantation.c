@@ -179,8 +179,8 @@ Real daily_woodplantation(Stand *stand,       /**< stand pointer */
     gpp=water_stressed(pft,aet_stand,gp_stand,gp_stand_leafon,
                        gp_pft[getpftpar(pft,id)],&gc_pft,&rd,
                        &wet[p],eeq,co2,climate->temp,par,daylength,&wdf,
-                       npft,ncft,config);
-
+                       nnat+index,npft,ncft,config);
+    getoutput(output,AUTOTROPHIC_RESPIRATION,config)+=rd*stand->frac;
     if(stand->cell->ml.landfrac[data->irrigation.irrigation].woodplantation>0.0 &&
       gp_pft[getpftpar(pft,id)]>0.0)
    {

@@ -61,6 +61,7 @@ Real water_stressed(Pft *pft,                  /**< [inout] pointer to PFT varia
                     Real par,                  /**< [in] photosynthetic active radiation (J/m2/day) */
                     Real daylength,            /**< [in] Daylength (h) */
                     Real *wdf,                 /**< [out] water deficit fraction (0..100) */
+                    int index,                 /**< [in] pft index to write output array */
                     int npft,                  /**< [in] number of natural PFTs */
                     int ncft,                  /**< [in] number of crop PFTs */
                     const Config *config       /**< [in] LPJ configuration */
@@ -115,7 +116,8 @@ Real water_stressed(Pft *pft,                  /**< [inout] pointer to PFT varia
   demand_pft=(gp_pft>0) ? (1.0-*wet)*eeq*param.ALPHAM/(1+(param.GM*param.ALPHAM)/gp_pft) : 0;
   
   // output writing of pft_water_demand
-  getoutputindex(&pft->stand->cell->output,PFT_WATER_DEMAND,pft->par->id,config)+=demand_pft
+  if (pft->stand->type->landusetype!=SETASIDE_RF && pft->stand->type->landusetype!=SETASIDE_IR)
+    getoutputindex(&pft->stand->cell->output,PFT_WATER_DEMAND,index,config)+=demand_pft;
   
   *wdf=wdf(pft,demand,supply);
 

@@ -96,7 +96,7 @@ char **createpftnames(int index,           /**< output index */
     case PFT_VEGC: case PFT_VEGN: case PFT_CLEAF: case PFT_NLEAF:
     case PFT_CROOT: case PFT_NROOT: case PFT_CSAPW: case PFT_NSAPW:
     case PFT_CHAWO: case PFT_NHAWO: case PFT_LAIMAX: case PFT_NLIMIT:
-    case PFT_LAI: case PFT_NUPTAKE2:  case PFT_BNF:
+    case PFT_LAI: case PFT_NUPTAKE2:  case PFT_BNF: case PFT_WATER_DEMAND:
       if(addpfts(pftnames,&incr,FALSE,0,config->pftpar,nnat))
         return NULL;
       for(i=0;i<2;i++)
@@ -117,7 +117,7 @@ char **createpftnames(int index,           /**< output index */
     case CFT_CONSUMP_WATER_B: case CFTFRAC: case CFT_AIRRIG: case CFT_FPAR: case CFT_IRRIG_EVENTS:
     case CFT_TRANSP: case CFT_TRANSP_B: case CFT_INTERC: case CFT_INTERC_B: case CFT_RETURN_FLOW_B:
     case CFT_CONV_LOSS_EVAP: case CFT_CONV_LOSS_DRAIN: case CFT_NIR: case CFT_NHARVEST:
-    case PFT_HARVESTN: case PFT_RHARVESTN: case CFT_NFERT: case CFT_NFERT2: case PFT_WATER_DEMAND:
+    case PFT_HARVESTN: case PFT_RHARVESTN: case CFT_NFERT: case CFT_NFERT2:
     case PFT_HARVESTC2: case PFT_RHARVESTC2: case CFT_EVAP2: case CFT_TRANSP2: case CFT_INTERC2:
     case CFT_NIR2: case CFT_AIRRIG2: case CFTFRAC2: case PFT_HARVESTN2: case PFT_RHARVESTN2:
       for(i=0;i<2;i++)

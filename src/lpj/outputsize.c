@@ -35,6 +35,7 @@ int outputsize(int index,     /**< output index */
     case PFT_CLEAF: case PFT_NLEAF: case PFT_NUPTAKE2:
     case PFT_CROOT: case PFT_NROOT: case PFT_CSAPW: case PFT_NSAPW:
     case PFT_CHAWO: case PFT_NHAWO: case PFT_LAI: case PFT_BNF:
+    case PFT_WATER_DEMAND:
       return getnnat(npft,config)+2*getnirrig(ncft,config);
     case PFT_HARVESTC: case PFT_RHARVESTC:
     case PFT_HARVESTN: case PFT_RHARVESTN:
@@ -43,7 +44,7 @@ int outputsize(int index,     /**< output index */
     case CFT_CONSUMP_WATER_B: case CFTFRAC: case CFT_AIRRIG: case CFT_FPAR:
     case CFT_RETURN_FLOW_B:
     case LUC_IMAGE: case CFT_INTERC: case CFT_INTERC_B: case CFT_NIR:
-    case CFT_TRANSP: case CFT_TRANSP_B: case PFT_WATER_DEMAND:
+    case CFT_TRANSP: case CFT_TRANSP_B: 
     case CFT_EVAP: case CFT_EVAP_B: case CFT_IRRIG_EVENTS:
     case PFT_HARVESTC2: case PFT_RHARVESTC2:
     case PFT_HARVESTN2: case PFT_RHARVESTN2:

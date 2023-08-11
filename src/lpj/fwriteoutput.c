@@ -1858,45 +1858,17 @@ void fwriteoutput(Outputfile *output,  /**< output file array */
     }
     writeoutputvar(ESTAB_STORAGE_N,1);
   }
-  if(isopen(output,RA))
+  if(isopen(output,AUTOTROPHIC_RESPIRATION)) //updated in daily_* stand routines
   {
-    if(iswrite2(RA,timestep,year,config) || (timestep==ANNUAL && config->outnames[RA].timestep>0))
-    {
-      for(cell=0;cell<config->ngridcell;cell++)
-        if(!grid[cell].skip)
-        {
-          getoutput(&grid[cell].output,RA,config)+=grid[cell].balance.estab_storage_tree[0].carbon;
-        }
-    }
-    writeoutputvar(RA,1);
+    writeoutputvar(AUTOTROPHIC_RESPIRATION,1);
   }
   if(isopen(output,PFT_WATER_DEMAND)) // is updated in water_stressed
   {
-    writeoutputvar(PFT_WATER_DEMAND,1);
+    writeoutputarray(PFT_WATER_DEMAND,1);
   }
-  if(isopen(output,NDEPOS))
+  if(isopen(output,NDEPOS)) // updated in update_daily 
   {
-    if(iswrite2(NDEPOS,timestep,year,config) || (timestep==ANNUAL && config->outnames[NDEPOS].timestep>0))
-    {
-      for(cell=0;cell<config->ngridcell;cell++)
-        if(!grid[cell].skip)
-        {
-          getoutput(&grid[cell].output,NDEPOS,config)+=grid[cell].balance.estab_storage_tree[0].carbon;
-        }
-    }
     writeoutputvar(NDEPOS,1);
-  }
-  if(isopen(output,RHARVESTN))
-  {
-    if(iswrite2(RHARVESTN,timestep,year,config) || (timestep==ANNUAL && config->outnames[RHARVESTN].timestep>0))
-    {
-      for(cell=0;cell<config->ngridcell;cell++)
-        if(!grid[cell].skip)
-        {
-          getoutput(&grid[cell].output,RHARVESTN,config)+=grid[cell].balance.estab_storage_tree[0].carbon;
-        }
-    }
-    writeoutputvar(RHARVESTN,1);
   }
 
   if(config->double_harvest)

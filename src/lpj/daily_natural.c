@@ -135,7 +135,8 @@ Real daily_natural(Stand *stand,                /**< [inout] stand pointer */
 #endif
     gpp=water_stressed(pft,aet_stand,gp_stand,gp_stand_leafon,
                        gp_pft[getpftpar(pft,id)],&gc_pft,&rd,
-                       &wet[p],eeq,co2,climate->temp,par,daylength,&wdf,npft,ncft,config);
+                       &wet[p],eeq,co2,climate->temp,par,daylength,&wdf,pft->par->id,npft,ncft,config);
+    getoutput(output,AUTOTROPHIC_RESPIRATION,config)+=rd*stand->frac;
     if(gp_pft[getpftpar(pft,id)]>0.0)
     {
       getoutputindex(output,PFT_GCGP_COUNT,pft->par->id,config)++;
