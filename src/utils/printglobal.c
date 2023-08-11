@@ -14,16 +14,19 @@
 
 #include "lpj.h"
 
-#define USAGE "Usage: %s [-clm] [-firstyear year] [-nbands n] [-cellsize size] [-day|month] [-noheader] [-csv] [-mean] [-yearsum] grid.bin out.bin ...\n"
+#define USAGE "Usage: %s [-clm] [-firstyear year] [-nbands n] [-cellsize size] [-day|month] [-noheader] [-csv] [-mean] [-yearsum] [-area file.bin] grid.bin out.bin ...\n"
 
 int main(int argc,char **argv)
 {
   Real *area;
+  float val;
   Coord coord,resolution;
   Intcoord intcoord;
   FILE *gridfile;
+  FILE *areafile;
   FILE **file;
   int i,n,nyear,cell,year,iarg,firstyear,step,nstep,nbands,band,nyear_min,version;
+  char *area_filename;
   Bool isheader,ismean,csv,yearsum,isclm,swap;
   float data;
   Real sum,area_sum,*sum_array;
@@ -41,6 +44,7 @@ int main(int argc,char **argv)
   yearsum=FALSE;
   isclm=FALSE;
   swap=FALSE;
+  area_filename=NULL;
   resolution.lon=resolution.lat=0.5;
   for(iarg=1;iarg<argc;iarg++)
     if(argv[iarg][0]=='-')
@@ -89,6 +93,16 @@ int main(int argc,char **argv)
           fprintf(stderr,"Invalid number '%s' for '-cellsize' option.\n",argv[iarg]);
           return EXIT_FAILURE;
         }
+      }
+      else if(!strcmp(argv[iarg],"-area"))
+      {
+        if(iarg==argc-1)
+        {
+          fprintf(stderr,"Error: Missing argument after option '-area'.\n"
+                  USAGE,argv[0]);
+          return EXIT_FAILURE;
+        }
+        area_filename=argv[++iarg];
       }
       else if(!strcmp(argv[iarg],"-clm"))
         isclm=TRUE;
@@ -139,8 +153,11 @@ int main(int argc,char **argv)
         fprintf(stderr,"Error reading cell %d in '%s'.\n",i,argv[iarg]);
         return EXIT_FAILURE;
       }
-      area[i]=cellarea(&coord,&resolution);
-      area_sum+=area[i];
+      if(area_filename==NULL)
+      {
+        area[i]=cellarea(&coord,&resolution);
+        area_sum+=area[i];
+      }
     }
     closecoord(grid);
   }
@@ -166,11 +183,54 @@ int main(int argc,char **argv)
       fread(&intcoord,sizeof(Intcoord),1,gridfile);
       coord.lon=intcoord.lon*0.01;
       coord.lat=intcoord.lat*0.01;
-      area[i]=cellarea(&coord,&resolution);
-      area_sum+=area[i];
+      if(area_filename==NULL)
+      {
+        area[i]=cellarea(&coord,&resolution);
+        area_sum+=area[i];
+      }
     }
     fclose(gridfile);
   }
+  if(area_filename!=NULL)
+  {
+    areafile=fopen(area_filename,"rb");
+    if(areafile==NULL)
+    {
+      fprintf(stderr,"Error opening '%s': %s.\n",
+              area_filename,strerror(errno));
+      return EXIT_FAILURE;
+    }
+    if(isclm)
+    {
+      version=READ_VERSION;
+      if(freadheader(areafile,&header,&swap,LPJOUTPUT_HEADER,&version,TRUE))
+      {
+        fprintf(stderr,"Error reading header in '%s'.\n",area_filename);
+        return EXIT_FAILURE;
+      }
+      if(readrealvec(areafile,area,0,header.scalar,n,swap,header.datatype))
+      {
+        fprintf(stderr,"Error reading '%s': %s.\n",area_filename,strerror(errno));
+        return EXIT_FAILURE;
+      }
+      for(i=0;i<n;i++)
+        area_sum+=area[i];
+    }
+    else
+    {
+      for(i=0;i<n;i++)
+      {
+        if(fread(&val,sizeof(float),1,areafile)!=1)
+        {
+          fprintf(stderr,"Error reading '%s': %s.\n",area_filename,strerror(errno));
+          return EXIT_FAILURE;
+        }
+        area[i]=val;
+      }
+      area_sum+=area[i];
+    }
+    fclose(areafile);
+  } /* of if(area_filename!=NULL) */
   file=newvec(FILE *,argc-iarg-1);
   for(i=iarg+1;i<argc;i++)
   {

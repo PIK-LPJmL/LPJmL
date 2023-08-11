@@ -2,7 +2,7 @@
 /**                                                                                \n**/
 /**              l  p  j  p  a  r  a  m  _  n  o  n  .  j  s                       \n**/
 /**                                                                                \n**/
-/**     LPJ parameter file for LPJmL version 5.6.27 without nitrogen               \n**/
+/**     LPJ parameter file for LPJmL version 5.7.1 without nitrogen                \n**/
 /**                                                                                \n**/
 /** (C) Potsdam Institute for Climate Impact Research (PIK), see COPYRIGHT file    \n**/
 /** authors, and contributors see AUTHORS file                                     \n**/
@@ -14,6 +14,8 @@
 
 "param" :
 {
+  "minlandfrac" : 1e-6,      /* minimum land fraction used if landfrac=0 */
+  "tinyfrac" : 1e-6,         /* minimum land-use fraction used by all_crops */
   "k_litter10" : 0.3,        /* k_litter10  (1/yr) */
   "k_soil10" : { "fast" : 0.03, "slow":  0.001}, /* fast, slow k_soil10  (1/yr) */
   "maxsnowpack": 20000.0,    /* max. snow pack (mm) */

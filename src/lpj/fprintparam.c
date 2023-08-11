@@ -54,6 +54,8 @@ void fprintparam(FILE *file,    /**< pointer to text file */
           param.r_growth,param.GM,param.ALPHAM,
           param.ko25,param.kc25,param.atmfrac,param.fastfrac,1-pow(1-param.bioturbate,NDAYYEAR),param.k_mort,
           param.fpc_tree_max,param.temp_response,param.percthres);
+  if(config->landfrac_from_file)
+    fprintf(file,"minlandfrac:\t%g\n",param.minlandfrac);
   if(config->equilsoil)
   {
     fprintf(file,"veg_equil_year:\t%d\n",param.veg_equil_year);
@@ -90,6 +92,7 @@ void fprintparam(FILE *file,    /**< pointer to text file */
             param.fertilizer_rate,param.par_sink_limit);
   if(config->withlanduse!=NO_LANDUSE)
   {
+    fprintf(file,"tinyfrac:\t%g\n",param.tinyfrac);
     if(config->with_nitrogen)
     {
       fprintf(file,"nfert_split:\t%g\n",param.nfert_split);
