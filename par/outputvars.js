@@ -32,8 +32,8 @@
 "json_suffix" : ".json",    /* file suffix for JSON metafiles */
 "csv_delimit" : ",",        /* delimiter for CSV files */
 
-"outputvar" :
-[
+
+"outputvar" :[
   /* id           name   timestep       variable(NetCDF) description             unit               scale          offset */
   { "id" : GRID, "name" : "grid", "timestep" : "annual", "var" : "soil", "descr" : "coordinates", "unit" : "degree", "scale" : 1.0, "offset" : 0.0},
   { "id" : GLOBALFLUX, "name" : "globalflux", "timestep" : "annual", "var" : "globalflux", "descr" : "global fluxes", "unit" : "", "scale" : 1.0e-15, "offset" : 0.0},
@@ -41,6 +41,7 @@
   { "id" : NPP, "name": "npp", "timestep" : "monthly", "var" : "NPP", "descr" : "monthly NPP", "unit" : "gC/m2/month", "scale" : 1.0, "offset" : 0.0},
   { "id" : GPP, "name": "gpp", "timestep" : "monthly", "var" : "GPP", "descr" : "monthly GPP", "unit" : "gC/m2/month", "scale" : 1.0, "offset" : 0.0},
   { "id" : RH, "name": "rh", "timestep" : "monthly", "var" : "RH", "descr" : "monthly heterotrophic respiration", "unit" : "gC/m2/month", "scale" : 1.0, "offset" : 0.0},
+  { "id" : RA, "name": "ra", "timestep" : "monthly", "var" : "RA", "descr" : "monthly autotrophic respiration", "unit" : "gC/m2/month", "scale" : 1.0, "offset" : 0.0},
   { "id" : TRANSP, "name": "transp", "timestep" : "monthly", "var" : "transp", "descr" : "monthly transpiration", "unit" : "mm/month", "scale" : 1.0, "offset" : 0.0},
   { "id" : TRANSP_B, "name": "transp_b", "timestep" : "monthly", "var" : "transp_b", "descr" : "monthly transpired irrigation water", "unit" : "mm/month", "scale" : 1.0, "offset" : 0.0},
   { "id" : RUNOFF, "name": "runoff", "timestep" : "monthly", "var" : "runoff", "descr" :  "monthly runoff", "unit":  "mm/month", "scale" : 1.0, "offset" : 0.0},
@@ -93,6 +94,7 @@
   { "id" : HDATE, "name": "hdate", "timestep" : "annual", "var" : "hdate", "descr" : "harvesting date", "unit" : "", "scale" : 1.0, "offset" : 0.0},
   { "id" : GROWING_PERIOD, "name": "growing_period", "timestep" : "annual", "var" : "growing_period", "descr" : "", "unit" : "day", "scale" : 1.0, "offset" : 0.0},
   { "id" : CFT_PET, "name": "cft_pet", "timestep" : "annual", "var" : "pet", "descr" : "CFT-specific potential evapotranspiration", "unit" : "mm/yr", "scale" : 1.0, "offset" : 0.0},
+  { "id" : PFT_WATER_DEMAND, "name": "pft_water_demand", "timestep" : "annual", "var" : "pft_water_demand", "descr" : "PFT-specific water demand", "unit" : "mm/yr", "scale" : 1.0, "offset" : 0.0},
   { "id" : CFT_TRANSP, "name": "cft_transp", "timestep" : "annual", "var" : "transp", "descr" : "CFT-specific transpiration", "unit" : "mm/yr", "scale" : 1.0, "offset" : 0.0},
   { "id" : CFT_TRANSP_B, "name": "cft_transp_b", "timestep" : "annual", "var" : "transp_b", "descr" : "CFT-specific blue transpiration", "unit" : "mm/yr", "scale" : 1.0, "offset" : 0.0},
   { "id" : CFT_EVAP, "name": "cft_evap", "timestep" : "annual", "var" : "evap", "descr" : "CFT-specific evaporation", "unit" : "mm/yr", "scale" : 1.0, "offset" : 0.0},
@@ -217,7 +219,8 @@
   { "id" : FLUX_ESTABN, "name": "flux_estabn", "timestep" : "annual", "var": "estabn", "descr": "establishment flux", "unit": "gN/m2/yr", "scale": 1.0, "offset" : 0.0},
   { "id" : HARVESTN, "name": "harvestn", "timestep" : "annual", "var": "harvestn", "descr": "harvested nitrogen", "unit": "gN/m2/yr", "scale": 1.0, "offset" : 0.0},
   { "id" : PFT_HARVESTN, "name": "pft_harvestn", "timestep" : "annual", "var": "harvestn", "descr": "harvested nitrogen", "unit": "gN/m2/yr", "scale": 1.0, "offset" : 0.0},
-  { "id" : PFT_RHARVESTN, "name": "pft_rharvestn", "timestep" : "annual", "var": "rharvestn", "descr": "harvested residual nitrogen", "unit": "gN/m2/yr", "scale": 1.0, "offset" : 0.0},
+  { "id" : RHARVESTN, "name": "rharvestn", "timestep" : "annual", "var": "rharvestn_tot", "descr": "harvested residual nitrogen", "unit": "gN/m2/yr", "scale": 1.0, "offset" : 0.0},
+  { "id" : PFT_RHARVESTN, "name": "pft_rharvestn", "timestep" : "annual", "var": "rharvestn", "descr": "pft specific harvested residual nitrogen", "unit": "gN/m2/yr", "scale": 1.0, "offset" : 0.0},
   { "id" : RHARVEST_BURNTN, "name": "rharvest_burntn", "timestep" : "annual", "var": "rharvest_burntn", "descr": "residual burnt nitrogen", "unit": "gN/m2/yr", "scale": 1.0, "offset" : 0.0},
   { "id" : RHARVEST_BURNT_IN_FIELDN, "name": "rharvest_burnt_in_fieldn", "timestep" : "annual", "var": "rharvest_burntinfieldn", "descr": "", "unit": "gN/m2/yr", "scale": 1.0, "offset" : 0.0},
   { "id" : VEGN, "name": "vegn", "timestep" : "annual", "var": "VegN", "descr": "vegetation nitrogen", "unit": "gN/m2", "scale": 1.0, "offset" : 0.0},
@@ -296,6 +299,7 @@
   { "id" : NFERT_AGR, "name" : "nfert_agr" , "timestep" : "annual", "var" : "ANFERT_agr" , "descr" : "annual N input from fertilizer on agricultural stands", "unit" : "gN/m2/yr" , "scale" : 1.0, "offset" : 0.0},
   { "id" : NMANURE_AGR, "name" : "nmanure_agr" , "timestep" : "annual", "var" : "ANMANURE_agr" , "descr" : "annual N input from manure on  agricultural stands", "unit" : "gN/m2/yr" , "scale" : 1.0, "offset" : 0.0},
   { "id" : NDEPO_AGR, "name" : "ndepo_agr" , "timestep" : "annual", "var" : "ANDEPO_agr" , "descr" : "annual N input from atmospheric deposition on agricultural stands", "unit" : "gN/m2/yr" , "scale" : 1.0, "offset" : 0.0},
+  { "id" : NDEPO, "name" : "ndepo" , "timestep" : "annual", "var" : "andepo" , "descr" : "total annual N input from atmospheric deposition", "unit" : "gN/m2/yr" , "scale" : 1.0, "offset" : 0.0},
   { "id" : NMINERALIZATION_AGR, "name" : "nmineralization_agr" , "timestep" : "annual", "var" : "ANMINERALIZATION_agr" , "descr" : "annual N mineralization on agricultural stands", "unit" : "gN/m2/yr" , "scale" : 1.0, "offset" : 0.0},
   { "id" : NIMMOBILIZATION_AGR, "name" : "nimmobilization_agr" , "timestep" : "annual", "var" : "ANIMMOBILIZATION_agr" , "descr" : "annual N immobilization on agricultural stands", "unit" : "gN/m2/yr" , "scale" : 1.0, "offset" : 0.0},
   { "id" : NUPTAKE_AGR, "name" : "nuptake_agr" , "timestep" : "annual", "var" : "ANUPTAKE_agr" , "descr" : "annual N uptake on agricultural stands", "unit" : "gN/m2/yr" , "scale" : 1.0, "offset" : 0.0},

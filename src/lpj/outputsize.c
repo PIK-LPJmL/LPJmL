@@ -43,7 +43,7 @@ int outputsize(int index,     /**< output index */
     case CFT_CONSUMP_WATER_B: case CFTFRAC: case CFT_AIRRIG: case CFT_FPAR:
     case CFT_RETURN_FLOW_B:
     case LUC_IMAGE: case CFT_INTERC: case CFT_INTERC_B: case CFT_NIR:
-    case CFT_TRANSP: case CFT_TRANSP_B:
+    case CFT_TRANSP: case CFT_TRANSP_B: case PFT_WATER_DEMAND:
     case CFT_EVAP: case CFT_EVAP_B: case CFT_IRRIG_EVENTS:
     case PFT_HARVESTC2: case PFT_RHARVESTC2:
     case PFT_HARVESTN2: case PFT_RHARVESTN2:
