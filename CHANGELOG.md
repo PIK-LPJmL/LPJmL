@@ -19,6 +19,14 @@ of `major.minor.patch` with
 
 ## [Unreleased]
 
+## [5.7.2] - 2023-08-11
+
+### Added 
+- outputs:
+  - PFT_WATER_DEMAND: annual PFT specific water demand
+  - AUTOTROPHIC_RESPIRATION: total annual autotrophic respiration
+  - NDEPOS: total annual N deposition as sum of NH4 and NO3 deposition
+
 ## [5.7.1] - 2023-08-10
 
 ### Fixed
