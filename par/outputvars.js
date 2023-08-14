@@ -33,7 +33,8 @@
 "csv_delimit" : ",",        /* delimiter for CSV files */
 
 
-"outputvar" :[
+"outputvar" :
+[
   /* id           name   timestep       variable(NetCDF) description             unit               scale          offset */
   { "id" : GRID, "name" : "grid", "timestep" : "annual", "var" : "soil", "descr" : "coordinates", "unit" : "degree", "scale" : 1.0, "offset" : 0.0},
   { "id" : TERR_AREA, "name" : "terr_area", "timestep" : "annual", "var" : "terr_area", "descr" : "terrestrial area including lakes", "unit" : "m2", "scale" : 1.0, "offset" : 0.0},

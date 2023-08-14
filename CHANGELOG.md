@@ -20,6 +20,8 @@ of `major.minor.patch` with
 ## [Unreleased]
 
 ## [5.7.2] - 2023-08-11
+### Changed:
+- removed timestep attributes (monthly/annual) in all output description that are not timestep specific
 
 ### Added 
 - outputs:
