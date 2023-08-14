@@ -1859,15 +1859,15 @@ void fwriteoutput(Outputfile *output,  /**< output file array */
     }
     writeoutputvar(ESTAB_STORAGE_N,1);
   }
-  if(isopen(output,AUTOTROPHIC_RESPIRATION)) //updated in daily_* stand routines
+  if(isopen(output,RD))
   {
-    writeoutputvar(AUTOTROPHIC_RESPIRATION,1);
+    writeoutputvar(RD,1);
   }
-  if(isopen(output,PFT_WATER_DEMAND)) // is updated in water_stressed
+  if(isopen(output,PFT_WATER_DEMAND))
   {
     writeoutputarray(PFT_WATER_DEMAND,1);
   }
-  if(isopen(output,NDEPOS)) // updated in update_daily 
+  if(isopen(output,NDEPOS)) 
   {
     writeoutputvar(NDEPOS,1);
   }

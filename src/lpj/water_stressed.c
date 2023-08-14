@@ -115,7 +115,6 @@ Real water_stressed(Pft *pft,                  /**< [inout] pointer to PFT varia
   demand=(gp_stand>0) ? (1.0-*wet)*eeq*param.ALPHAM/(1+(param.GM*param.ALPHAM)/gp_stand) : 0;
   demand_pft=(gp_pft>0) ? (1.0-*wet)*eeq*param.ALPHAM/(1+(param.GM*param.ALPHAM)/gp_pft) : 0;
   
-  // output writing of pft_water_demand
   if (pft->stand->type->landusetype!=SETASIDE_RF && pft->stand->type->landusetype!=SETASIDE_IR)
     getoutputindex(&pft->stand->cell->output,PFT_WATER_DEMAND,index,config)+=demand_pft;
   

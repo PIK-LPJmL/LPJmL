@@ -174,7 +174,7 @@ Real daily_biomass_tree(Stand *stand,                /**< stand pointer */
                        gp_pft[getpftpar(pft,id)],&gc_pft,&rd,
                        &wet[p],eeq,co2,climate->temp,par,daylength,&wdf,
                        nnat+rbtree(ncft)+data->irrigation.irrigation*nirrig,npft,ncft,config);
-    getoutput(output,AUTOTROPHIC_RESPIRATION,config)+=rd*stand->frac;
+    getoutput(output,RD,config)+=rd*stand->frac;
    if(stand->cell->ml.landfrac[data->irrigation.irrigation].biomass_tree>0.0 &&
       gp_pft[getpftpar(pft,id)]>0.0)
    {
