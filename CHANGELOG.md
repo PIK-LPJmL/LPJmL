@@ -19,6 +19,16 @@ of `major.minor.patch` with
 
 ## [Unreleased]
 
+## [5.7.2] - 2023-08-11
+### Changed:
+- removed timestep attributes (monthly/annual) in all output descriptions that are not timestep specific
+
+### Added 
+- outputs:
+  - PFT_WATER_DEMAND: PFT specific water demand
+  - RD: dark respiration
+  - NDEPOS: total N deposition as sum of NH4 and NO3 deposition
+
 ## [5.7.1] - 2023-08-10
 
 ### Fixed

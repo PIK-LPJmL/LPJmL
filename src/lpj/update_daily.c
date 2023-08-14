@@ -289,6 +289,8 @@ void update_daily(Cell *cell,            /**< cell pointer           */
         cell->balance.influx.nitrogen+=2000*stand->frac;
         if (isagriculture(stand->type->landusetype))
           getoutput(&cell->output,NDEPO_AGR,config)+=2000*stand->frac;
+        
+        getoutput(&cell->output,NDEPOS,config)+=2000*stand->frac;
       }
       else if(!config->no_ndeposition)
       {
@@ -308,6 +310,8 @@ void update_daily(Cell *cell,            /**< cell pointer           */
         cell->balance.influx.nitrogen+=(climate.nh4deposition+climate.no3deposition)*stand->frac;
         if (isagriculture(stand->type->landusetype))
           getoutput(&cell->output,NDEPO_AGR,config)+=(climate.nh4deposition+climate.no3deposition)*stand->frac;
+        
+        getoutput(&cell->output,NDEPOS,config)+=(climate.nh4deposition+climate.no3deposition)*stand->frac;
       }
 #ifdef DEBUG_N
       printf("BEFORE_STRESS[%s], day %d: ",stand->type->name,day);
