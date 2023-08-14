@@ -25,9 +25,9 @@ of `major.minor.patch` with
 
 ### Added 
 - outputs:
-  - PFT_WATER_DEMAND: annual PFT specific water demand
-  - RD: monthly dark respiration
-  - NDEPOS: total annual N deposition as sum of NH4 and NO3 deposition
+  - PFT_WATER_DEMAND: PFT specific water demand
+  - RD: dark respiration
+  - NDEPOS: total N deposition as sum of NH4 and NO3 deposition
 
 ## [5.7.1] - 2023-08-10
 
