@@ -39,7 +39,7 @@ static Harvest harvest_grass(Stand *stand, /**< pointer to stand */
     if(pft->stand->type->landusetype==BIOMASS_GRASS)
     {
       pft->bm_inc.nitrogen+=(grass->ind.leaf.nitrogen)*(1-pft->par->fn_turnover)*hfrac*pft->nind;
-      harvest.harvest.nitrogen+=grass->ind.leaf.nitrogen*pft->par->fn_turnover*hfrac;
+      harvest.harvest.nitrogen=grass->ind.leaf.nitrogen*pft->par->fn_turnover*hfrac;
     } else {
       harvest.harvest.nitrogen=grass->ind.leaf.nitrogen*hfrac*param.nfrac_grassharvest; 
       stand->soil.NH4[0]+=grass->ind.leaf.nitrogen*hfrac*(1-param.nfrac_grassharvest)*pft->nind;

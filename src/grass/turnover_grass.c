@@ -34,7 +34,7 @@ Stocks turnover_grass(Litter *litter, /**< Litter pool */
   const Pftgrasspar *grasspar;
   Output *output;
   Real reprod;
-  Grassphys gturn;
+  Grassphys gturn={{0,0},{0,0}};
   grass=pft->data;
   grasspar=getpftpar(pft,data);
   output=&pft->stand->cell->output;
