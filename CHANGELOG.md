@@ -19,6 +19,15 @@ of `major.minor.patch` with
 
 ## [Unreleased]
 
+## [5.7.3] - 2023-08-16
+
+### Fixed
+
+- correct accounting of blue water transpiration on agriculture stands in outputs
+- missing variable initialization for bioenergy grass
+- landuse change from irrigated to rainfed setaside moved area to wrong target setaside
+
+
 ## [5.7.2] - 2023-08-11
 ### Changed:
 - removed timestep attributes (monthly/annual) in all output descriptions that are not timestep specific
