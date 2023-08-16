@@ -394,7 +394,7 @@ Real daily_agriculture(Stand *stand,                /**< [inout] stand pointer *
   forrootsoillayer(l)
   {
     transp+=aet_stand[l]*stand->frac;
-    getoutput(output,TRANSP,config)+=(aet_stand[l]-green_transp[l])*stand->frac;
+    getoutput(output,TRANSP_B,config)+=(aet_stand[l]-green_transp[l])*stand->frac;
   }
 
   /* calculate net irrigation requirements (NIR) for next days irrigation */
