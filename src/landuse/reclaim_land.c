@@ -75,6 +75,7 @@ static void remove_vegetation_copy(Soil *soil, /* soil pointer */
         cell->balance.timber_harvest.carbon+=harvest.carbon;
         cell->balance.timber_harvest.nitrogen+=harvest.nitrogen;
         getoutput(&cell->output,TIMBER_HARVESTC,config)+=harvest.carbon;
+        getoutput(&cell->output,TIMBER_HARVESTN,config)+=harvest.nitrogen;
         getoutput(&cell->output,TRAD_BIOFUEL,config)+=trad_biofuel.carbon;
         cell->balance.trad_biofuel.carbon+=trad_biofuel.carbon;
         cell->balance.trad_biofuel.nitrogen+=trad_biofuel.nitrogen;
@@ -98,6 +99,7 @@ static void remove_vegetation_copy(Soil *soil, /* soil pointer */
         cell->balance.timber_harvest.carbon+=harvest.carbon;
         cell->balance.timber_harvest.nitrogen+=harvest.nitrogen;
         getoutput(&cell->output,TIMBER_HARVESTC,config)+=harvest.carbon;
+        getoutput(&cell->output,TIMBER_HARVESTN,config)+=harvest.nitrogen;
 #if defined IMAGE && defined COUPLED
         /* burning wood */
         getoutput(&cell->output,FBURN,config)=cell->ml.image_data->fburnt;
@@ -111,6 +113,7 @@ static void remove_vegetation_copy(Soil *soil, /* soil pointer */
 #endif
         getoutput(&cell->output,DEFOREST_EMIS,config)+=stocks.carbon*standfrac;
         cell->balance.deforest_emissions.carbon+=stocks.carbon*standfrac;
+        getoutput(&cell->output,DEFOREST_EMIS_N,config)+=stocks.nitrogen*(1-param.q_ash)*standfrac;
         cell->balance.deforest_emissions.nitrogen+=stocks.nitrogen*(1-param.q_ash)*standfrac;
         soil->NO3[0]+=stocks.nitrogen*param.q_ash;
       } /* if tree */

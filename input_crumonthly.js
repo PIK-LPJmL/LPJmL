@@ -2,7 +2,7 @@
 /**                                                                                \n**/
 /**       i  n  p  u  t  _  c  r  u  m  o  n  t  h  l  y  .  j  s                  \n**/
 /**                                                                                \n**/
-/** Configuration file for input dataset for LPJ C Version 5.6.21                  \n**/
+/** Configuration file for input dataset for LPJ C Version 5.7.4                   \n**/
 /**                                                                                \n**/
 /** (C) Potsdam Institute for Climate Impact Research (PIK), see COPYRIGHT file    \n**/
 /** authors, and contributors see AUTHORS file                                     \n**/
@@ -40,6 +40,7 @@
 {
   "soil" :         { "id" : 41, "fmt" : "meta", "name" : "input_VERSION2/soil.json"},
   "coord" :        { "id" : 43, "fmt" : "clm",  "name" : "input_VERSION2/grid.bin"},
+  "landfrac" :     { "id" : 44, "fmt" : "clm",  "name" : "/p/projects/lpjml/inputs/grid/30min/landfrac_gadm36.bin"},
   "countrycode" :  { "id" : 25, "fmt" : "clm",  "name" : "input_VERSION2/cow_full_2018.bin"},
   "no3deposition" : { "id" : 17, "fmt" : "clm",  "name" : "input_VERSION2/no3_deposition_rcp8p5.clm"},
   "nh4deposition" : { "id" : 16, "fmt" : "clm",  "name" : "input_VERSION2/nh4_deposition_rcp8p5.clm"},
@@ -72,6 +73,7 @@
   "temp" :         { "id" : 1, "fmt" : "clm",  "name" : "CRUDATA_TS3_23/cru_ts3.23.1901.2014.tmp.dat.clm"},
   "prec" :         { "id" : 2, "fmt" : "clm",  "name" : "CRUDATA_TS3_23/gpcc_v7_cruts3_23_precip_1901_2013.clm"},
   "lwnet" :        { "id" : 4, "fmt" : "clm",  "name" : "input_VERSION2/lwnet_erainterim_1901-2011.clm"},
+  "lwdown" :       { "id" : 43, "fmt" : "clm",  "name" : "DUMMYLOCATION"},
   "swdown" :       { "id" : 3, "fmt" : "clm",  "name" : "input_VERSION2/swdown_erainterim_1901-2011.clm"},
   "cloud":         { "id" : 0, "fmt" : "clm",  "name" : "CRUDATA_TS3_23/cru_ts3.23.1901.2014.cld.dat.clm"},
   "wind":          { "id" : 15, "fmt" : "clm",  "name" : "input_VERSION2/mwindspeed_1860-2100_67420.clm"},

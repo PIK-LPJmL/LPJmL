@@ -1,8 +1,8 @@
-.TH printglobal 1  "version 5.6.21" "USER COMMANDS"
+.TH printglobal 1  "USER COMMANDS"
 .SH NAME
 printglobal \- print global values for raw binary output files
 .SH SYNOPSIS
-.B printglobal  [\-clm] [\-firstyear year] [\-nbands n] [\-cellsize size] [\-day|month] [\-noheader] [\-csv] [\-mean] [\-yearsum]
+.B printglobal  [\-clm] [\-firstyear year] [\-nbands n] [\-cellsize size] [\-day|month] [\-noheader] [\-csv] [\-mean] [\-yearsum] [\-area file.bin]
 \fIgridfile \fP \fIoutfile\fP ...
 .SH DESCRIPTION
 Program prints global area weighted sums or means of LPJmL binary output files.
@@ -34,6 +34,9 @@ Print global mean value instead of global sum
 .TP
 \-yearsum
 Print yearly sum of monthly or daily data
+.TP
+\-area file.bin
+Read cell area from file
 .TP
 .I gridfile
 Filename of binary grid file

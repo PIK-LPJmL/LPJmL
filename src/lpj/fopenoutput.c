@@ -25,13 +25,13 @@ static Bool create(Netcdf *cdf,const char *filename,int index,
                   config->npft[CROP],config);
   if(size==1)
     return create_netcdf(cdf,filename,
-                         (config->outputvars[index].id==GRID) ? "soilcode" :
+                         (config->outputvars[index].id==GRID) ? "cellid" :
                          config->outnames[config->outputvars[index].id].var,
-                         (config->outputvars[index].id==GRID) ? "soil code" :
+                         (config->outputvars[index].id==GRID) ? "cell id" :
                          config->outnames[config->outputvars[index].id].descr,
                          (config->outputvars[index].id==GRID) ? "" :
                          config->outnames[config->outputvars[index].id].unit,
-                         getoutputtype(config->outputvars[index].id,FALSE),
+                         (config->outputvars[index].id==GRID) ? LPJ_INT : getoutputtype(config->outputvars[index].id,FALSE),
                          getnyear(config->outnames,config->outputvars[index].id),
                          (config->outnames[config->outputvars[index].id].timestep==ANNUAL) ? 1 : config->outnames[config->outputvars[index].id].timestep,array,config);
   else
@@ -98,7 +98,7 @@ static void openfile(Outputfile *output,const Cell grid[],
     switch(config->outputvars[i].filename.fmt)
     {
        case CLM:
-        if(config->ischeckpoint && config->outputvars[i].id!=GRID  && config->outputvars[i].id!=COUNTRY && config->outputvars[i].id!=REGION)
+        if(config->ischeckpoint && getnyear(config->outnames,config->outputvars[i].id)!=0)
         {
           if((output->files[config->outputvars[i].id].fp.file=fopen(filename,"r+b"))==NULL)
             printfopenerr(config->outputvars[i].filename.name);
@@ -152,7 +152,7 @@ static void openfile(Outputfile *output,const Cell grid[],
             else
             {
               header.order=CELLSEQ;
-              if(config->outputvars[i].id==COUNTRY || config->outputvars[i].id==REGION)
+              if(getnyear(config->outnames,config->outputvars[i].id)==0)
               {
                 header.nstep=1;
                 header.timestep=1;
@@ -176,7 +176,7 @@ static void openfile(Outputfile *output,const Cell grid[],
         }
         break;
       case RAW:
-        if(config->ischeckpoint && config->outputvars[i].id!=GRID  && config->outputvars[i].id!=COUNTRY && config->outputvars[i].id!=REGION)
+        if(config->ischeckpoint && getnyear(config->outnames,config->outputvars[i].id)!=0)
         {
           if((output->files[config->outputvars[i].id].fp.file=fopen(filename,"r+b"))==NULL)
             printfopenerr(config->outputvars[i].filename.name);
@@ -199,7 +199,7 @@ static void openfile(Outputfile *output,const Cell grid[],
         }
         break;
       case TXT:
-        if((output->files[config->outputvars[i].id].fp.file=fopen(filename,(config->ischeckpoint && config->outputvars[i].id!=GRID  && config->outputvars[i].id!=COUNTRY && config->outputvars[i].id!=REGION) ? "a" : "w"))==NULL)
+        if((output->files[config->outputvars[i].id].fp.file=fopen(filename,(config->ischeckpoint && getnyear(config->outnames,config->outputvars[i].id)!=0) ? "a" : "w"))==NULL)
           printfcreateerr(config->outputvars[i].filename.name);
         else
           output->files[config->outputvars[i].id].isopen=TRUE;

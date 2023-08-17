@@ -148,8 +148,6 @@ void update_daily(Cell *cell,            /**< cell pointer           */
     cell->ml.image_data->mevapotr[month] += evap*stand->frac;
 #endif
 
-      if(config->crop_index==ALLSTAND)
-        getoutput(&cell->output,D_EVAP,config)+=evap*stand->frac;
       prec_energy = ((climate.temp-stand->soil.temp[TOPLAYER])*climate.prec*1e-3
                     +melt*1e-3*(T_zero-stand->soil.temp[TOPLAYER]))*c_water;
       stand->soil.perc_energy[TOPLAYER]=prec_energy;
@@ -205,7 +203,7 @@ void update_daily(Cell *cell,            /**< cell pointer           */
     hetres=littersom(stand,gtemp_soil,agrfrac,npft,ncft,config);
     cell->balance.arh+=hetres.carbon*stand->frac;
     getoutput(&cell->output,RH,config)+=hetres.carbon*stand->frac;
-    getoutput(&cell->output,N2O_DENIT,config)+=hetres.nitrogen*stand->frac;
+    getoutput(&cell->output,N2O_NIT,config)+=hetres.nitrogen*stand->frac;
     cell->balance.n_outflux+=hetres.nitrogen*stand->frac;
 
     if(stand->type->landusetype==NATURAL)
@@ -252,7 +250,6 @@ void update_daily(Cell *cell,            /**< cell pointer           */
       getoutput(&cell->output,N2O_NIT_MGRASS,config)+=hetres.nitrogen*stand->frac;
       getoutput(&cell->output,RH_MGRASS,config)+=hetres.carbon*stand->frac;
     }
-    getoutput(&cell->output,N2O_NIT,config)+=hetres.nitrogen*stand->frac;
     cell->output.dcflux+=hetres.carbon*stand->frac;
 #if defined IMAGE && defined COUPLED
     if (stand->type->landusetype == NATURAL)
@@ -266,20 +263,6 @@ void update_daily(Cell *cell,            /**< cell pointer           */
 #endif
 
     getoutput(&cell->output,SWE,config)+=stand->soil.snowpack*stand->frac;
-    if(isdailyoutput_stand(config,stand))
-    {
-      if(config->crop_index==ALLSTAND)
-      {
-        getoutput(&cell->output,D_RH,config) += hetres.carbon*stand->frac;
-        getoutput(&cell->output,D_SWE,config)+= stand->soil.snowpack*stand->frac;
-      }
-      else
-      {
-        getoutput(&cell->output,D_RH,config)  += hetres.carbon;
-        getoutput(&cell->output,D_SWE,config) += stand->soil.snowpack;
-      }
-    }
-
     getoutput(&cell->output,SNOWRUNOFF,config)+=snowrunoff;
     getoutput(&cell->output,MELT,config)+=melt*stand->frac;
 
@@ -306,6 +289,8 @@ void update_daily(Cell *cell,            /**< cell pointer           */
         cell->balance.influx.nitrogen+=2000*stand->frac;
         if (isagriculture(stand->type->landusetype))
           getoutput(&cell->output,NDEPO_AGR,config)+=2000*stand->frac;
+        
+        getoutput(&cell->output,NDEPOS,config)+=2000*stand->frac;
       }
       else if(!config->no_ndeposition)
       {
@@ -325,6 +310,8 @@ void update_daily(Cell *cell,            /**< cell pointer           */
         cell->balance.influx.nitrogen+=(climate.nh4deposition+climate.no3deposition)*stand->frac;
         if (isagriculture(stand->type->landusetype))
           getoutput(&cell->output,NDEPO_AGR,config)+=(climate.nh4deposition+climate.no3deposition)*stand->frac;
+        
+        getoutput(&cell->output,NDEPOS,config)+=(climate.nh4deposition+climate.no3deposition)*stand->frac;
       }
 #ifdef DEBUG_N
       printf("BEFORE_STRESS[%s], day %d: ",stand->type->name,day);
@@ -413,7 +400,7 @@ void update_daily(Cell *cell,            /**< cell pointer           */
 
   getoutput(&cell->output,RUNOFF,config)+=cell->discharge.drunoff;
   cell->balance.awater_flux+=cell->discharge.drunoff;
-  if(config->river_routing)
+  if(config->with_lakes)
   {
     radiation(&daylength,&par,&eeq,cell->coord.lat,day,&climate,c_albwater,config->with_radiation);
     getoutput(&cell->output,PET,config)+=eeq*PRIESTLEY_TAYLOR*(cell->lakefrac+cell->ml.reservoirfrac);
@@ -467,8 +454,6 @@ void update_daily(Cell *cell,            /**< cell pointer           */
 #endif
     {
     getoutput(&cell->output,EVAP_LAKE,config)+=min(cell->discharge.dmass_lake/cell->coord.area,eeq*PRIESTLEY_TAYLOR*cell->lakefrac);
-    if(config->crop_index==ALLSTAND)
-      getoutput(&cell->output,D_EVAP,config)+=min(cell->discharge.dmass_lake/cell->coord.area,eeq*PRIESTLEY_TAYLOR*cell->lakefrac);
     cell->balance.aevap_lake+=min(cell->discharge.dmass_lake/cell->coord.area,eeq*PRIESTLEY_TAYLOR*cell->lakefrac);
 #if defined IMAGE && defined COUPLED
      if(cell->ml.image_data!=NULL)

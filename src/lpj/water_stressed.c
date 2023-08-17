@@ -61,6 +61,7 @@ Real water_stressed(Pft *pft,                  /**< [inout] pointer to PFT varia
                     Real par,                  /**< [in] photosynthetic active radiation (J/m2/day) */
                     Real daylength,            /**< [in] Daylength (h) */
                     Real *wdf,                 /**< [out] water deficit fraction (0..100) */
+                    int index,                 /**< [in] pft index to write output array */
                     int npft,                  /**< [in] number of natural PFTs */
                     int ncft,                  /**< [in] number of crop PFTs */
                     const Config *config       /**< [in] LPJ configuration */
@@ -77,7 +78,6 @@ Real water_stressed(Pft *pft,                  /**< [inout] pointer to PFT varia
   Real gc_new;
   Real A,B,psi;
   Real trf[LASTLAYER];
-  Irrigation *irrig;
 
   gpd=agd=*rd=layer=root_u=root_nu=aet_cor=0.0;
   aet_frac=1.;
@@ -114,6 +114,10 @@ Real water_stressed(Pft *pft,                  /**< [inout] pointer to PFT varia
   supply_pft=supply*pft->fpc;
   demand=(gp_stand>0) ? (1.0-*wet)*eeq*param.ALPHAM/(1+(param.GM*param.ALPHAM)/gp_stand) : 0;
   demand_pft=(gp_pft>0) ? (1.0-*wet)*eeq*param.ALPHAM/(1+(param.GM*param.ALPHAM)/gp_pft) : 0;
+  
+  if (pft->stand->type->landusetype!=SETASIDE_RF && pft->stand->type->landusetype!=SETASIDE_IR)
+    getoutputindex(&pft->stand->cell->output,PFT_WATER_DEMAND,index,config)+=demand_pft;
+  
   *wdf=wdf(pft,demand,supply);
 
   if(eeq>0 && gp_stand_leafon>0 && pft->fpc>0)
@@ -234,16 +238,6 @@ Real water_stressed(Pft *pft,                  /**< [inout] pointer to PFT varia
       if(vmax>epsilon)
       {
         pft->nlimit+=pft->vmax/vmax;
-        if(pft->stand->type->landusetype==AGRICULTURE)
-        {
-          irrig=pft->stand->data;
-          if( pft->par->id==config->crop_index &&
-             irrig->irrigation==config->crop_irrigation &&
-             vmax>0)
-          {
-            getoutput(&pft->stand->cell->output,D_NLIMIT,config)=pft->vmax/vmax;
-          }
-        }
       }
     } /* of if(config->with_nitrogen) */
     /* in rare occasions, agd(=GPP) can be negative, but shouldn't */
