@@ -23,9 +23,9 @@ of `major.minor.patch` with
 
 ### Added
 - outputs:
-  - IRRIG_STOR:
-  - RIVERVOL:
-  - SWC_VOL:
+  - IRRIG_STOR
+  - RIVERVOL
+  - SWC_VOL
  
 ### Changed:
 - unit of output RES_STORAGE changed from hm3 to dm3 to be in line with IRRIG_STOR, RIVERVOL, LAKEVOL, SWC_VOL

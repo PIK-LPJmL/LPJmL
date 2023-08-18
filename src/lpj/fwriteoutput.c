@@ -1102,7 +1102,7 @@ void fwriteoutput(Outputfile *output,  /**< output file array */
   writeoutputvar(IRRIG_RW,1);
   writeoutputvar(LAKEVOL,ndate1);  
   writeoutputvar(RIVERVOL,ndate1);
-  writeoutputvar(SWC_VOL,ndate1);
+  writeoutputarray(SWC_VOL,ndate1);
   writeoutputvar(IRRIG_STOR,ndate1);
   writeoutputvar(LAKETEMP,ndate1);
   writeoutputshortvar(SDATE);

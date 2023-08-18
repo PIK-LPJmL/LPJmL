@@ -56,7 +56,7 @@
   { "id" : INTERC, "name": "interc", "timestep" : "monthly", "var" : "interc", "descr" : "interception", "unit" : "mm/month", "scale" : 1.0, "offset" : 0.0},
   { "id" : INTERC_B, "name": "interc_b", "timestep" : "monthly", "var" : "interc_b", "descr" : "blue interception", "unit" :  "mm/month", "scale" : 1.0, "offset" : 0.0},
   { "id" : SWC, "name": "swc", "timestep" : "monthly", "var" : "SWC", "descr" : "fractional saturation of soil water content", "unit" : "", "scale" : 1.0, "offset" : 0.0},  
-  { "id" : SWC_VOL, "name": "swc_vol", "timestep" : "monthly", "var" : "swc_vol", "descr" : "soil water content", "unit" : "dm3", "scale" : 1.0, "offset" : 0.0},
+  { "id" : SWC_VOL, "name": "swc_vol", "timestep" : "monthly", "var" : "swc_vol", "descr" : "soil water content for each of the top 5 soillayers", "unit" : "dm3", "scale" : 1.0, "offset" : 0.0},
   { "id" : WHC_NAT, "name": "whc_nat", "timestep" : "monthly", "var" : "whc_nat", "descr" : "water holding capacity for natural vegetation", "unit" : "", "scale" : 1.0, "offset" : 0.0},
   { "id" : WHC_GRASS, "name": "whc_grass", "timestep" : "monthly", "var" : "whc_grass", "descr" : "water holding capacity for grassland", "unit" : "", "scale" : 1.0, "offset" : 0.0},
   { "id" : WHC_AGR, "name": "whc_agr", "timestep" : "monthly", "var" : "whc_agr", "descr" : "water holding capacity for agriculture", "unit" : "", "scale" : 1.0, "offset" : 0.0},
