@@ -62,7 +62,7 @@ void update_daily(Cell *cell,            /**< cell pointer           */
   Real agrfrac;
   Real litsum_old_nv[2]={0,0},litsum_new_nv[2]={0,0};
   Real litsum_old_agr[2]={0,0},litsum_new_agr[2]={0,0};
-
+  Irrigation *data;
 
   forrootmoist(l)
     rootdepth+=soildepth[l];
