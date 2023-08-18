@@ -374,11 +374,27 @@ void update_daily(Cell *cell,            /**< cell pointer           */
     foreachsoillayer(l)
       getoutputindex(&cell->output,SWC,l,config)+=(stand->soil.w[l]*stand->soil.whcs[l]+stand->soil.w_fw[l]+stand->soil.wpwps[l]+
                      stand->soil.ice_depth[l]+stand->soil.ice_fw[l])/stand->soil.wsats[l]*stand->frac*(1.0/(1-stand->cell->lakefrac-stand->cell->ml.reservoirfrac));
+      /* imported from ISIMIP3 version: absolute water amount and averaged over whole cell, not just land part */
+      getoutputindex(&cell->output,SWC_VOL,l,config)+=(stand->soil.w[l]*stand->soil.whcs[l]+stand->soil.w_fw[l]+stand->soil.wpwps[l]+
+                     stand->soil.ice_depth[l]+stand->soil.ice_fw[l])*stand->frac*cell->coord.area;
+
     forrootmoist(l)
       getoutput(&cell->output,ROOTMOIST,config)+=stand->soil.w[l]*stand->soil.whcs[l]*stand->frac*(1.0/(1-stand->cell->lakefrac-stand->cell->ml.reservoirfrac)); /* absolute soil water content between wilting point and field capacity (mm) */
       /*cell->output.mrootmoist+=stand->soil.w[l]*soildepth[l]/rootdepth*stand->frac*(1.0/(1-stand->cell->lakefrac-stand->cell->ml.reservoirfrac)); previous implementation that doesn't make sense to me, because the sum of soildepth[l]/rootdepth over the first 3 layers equals 1 (JJ, June 25, 2020)*/
     //getoutput(&cell->output,SOILC1,config)+=(stand->soil.pool[l].slow.carbon+stand->soil.pool[l].fast.carbon)*stand->frac;
-  } /* of foreachstand */
+/* imported from ISIMIP3 version: new irrig_stor output */
+    if(stand->type->landusetype==GRASSLAND || stand->type->landusetype==OTHERS ||
+       stand->type->landusetype==AGRICULTURE || stand->type->landusetype==AGRICULTURE_GRASS || stand->type->landusetype==AGRICULTURE_TREE ||
+       stand->type->landusetype==BIOMASS_TREE || stand->type->landusetype==BIOMASS_GRASS || stand->type->landusetype==WOODPLANTATION)
+    {
+      data = stand->data;
+      if(data->irrigation)
+        getoutput(&cell->output,IRRIG_STOR,config)+=data->irrig_stor*stand->frac*cell->coord.area;
+    }
+  
+} /* of foreachstand */
+
+// 
 
   getoutput(&cell->output,CELLFRAC_AGR,config)+=agrfrac;
   getoutput(&cell->output,DECAY_LEAF_NV,config)*=litsum_old_nv[LEAF]>0 ? litsum_new_nv[LEAF]/litsum_old_nv[LEAF] : 1;
@@ -466,6 +482,7 @@ void update_daily(Cell *cell,            /**< cell pointer           */
     }
 
     getoutput(&cell->output,LAKEVOL,config)+=cell->discharge.dmass_lake;
+    getoutput(&cell->output,RIVERVOL,config)+=cell->discharge.dmass_river;
   } /* of 'if(river_routing)' */
   getoutput(&cell->output,DAYLENGTH,config)+=daylength;
   soilpar_output(cell,agrfrac,config);

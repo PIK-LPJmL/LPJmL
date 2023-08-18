@@ -19,6 +19,17 @@ of `major.minor.patch` with
 
 ## [Unreleased]
 
+## [5.7.X] - 2023-08-18
+
+### Added
+- outputs:
+  - IRRIG_STOR:
+  - RIVERVOL:
+  - SWC_VOL:
+ 
+### Changed:
+- unit of output RES_STORAGE changed from hm3 to dm3 to be in line with IRRIG_STOR, RIVERVOL, LAKEVOL, SWC_VOL
+
 ## [5.7.3] - 2023-08-16
 
 ### Fixed
