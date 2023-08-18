@@ -384,13 +384,13 @@ void update_daily(Cell *cell,            /**< cell pointer           */
       if(data->irrigation)
         getoutput(&cell->output,IRRIG_STOR,config)+=data->irrig_stor*stand->frac*cell->coord.area;
     }
-      /* ISIMIP3 only first 5 layers for soil water outputs */
+    /* only first 5 layers for SWC_VOL output */
     forrootsoillayer(l)
     {
       getoutputindex(&cell->output,SWC_VOL,l,config)+=(stand->soil.w[l]*stand->soil.whcs[l]+stand->soil.w_fw[l]+stand->soil.wpwps[l]+
                      stand->soil.ice_depth[l]+stand->soil.ice_fw[l])*stand->frac*cell->coord.area;
     }
-} /* of foreachstand */
+  } /* of foreachstand */
 
   getoutput(&cell->output,CELLFRAC_AGR,config)+=agrfrac;
   getoutput(&cell->output,DECAY_LEAF_NV,config)*=litsum_old_nv[LEAF]>0 ? litsum_new_nv[LEAF]/litsum_old_nv[LEAF] : 1;
