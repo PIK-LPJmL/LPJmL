@@ -375,8 +375,6 @@ void update_daily(Cell *cell,            /**< cell pointer           */
       getoutputindex(&cell->output,SWC,l,config)+=(stand->soil.w[l]*stand->soil.whcs[l]+stand->soil.w_fw[l]+stand->soil.wpwps[l]+
                      stand->soil.ice_depth[l]+stand->soil.ice_fw[l])/stand->soil.wsats[l]*stand->frac*(1.0/(1-stand->cell->lakefrac-stand->cell->ml.reservoirfrac));
       /* imported from ISIMIP3 version: absolute water amount and averaged over whole cell, not just land part */
-      getoutputindex(&cell->output,SWC_VOL,l,config)+=(stand->soil.w[l]*stand->soil.whcs[l]+stand->soil.w_fw[l]+stand->soil.wpwps[l]+
-                     stand->soil.ice_depth[l]+stand->soil.ice_fw[l])*stand->frac*cell->coord.area;
 
     forrootmoist(l)
       getoutput(&cell->output,ROOTMOIST,config)+=stand->soil.w[l]*stand->soil.whcs[l]*stand->frac*(1.0/(1-stand->cell->lakefrac-stand->cell->ml.reservoirfrac)); /* absolute soil water content between wilting point and field capacity (mm) */
@@ -391,7 +389,12 @@ void update_daily(Cell *cell,            /**< cell pointer           */
       if(data->irrigation)
         getoutput(&cell->output,IRRIG_STOR,config)+=data->irrig_stor*stand->frac*cell->coord.area;
     }
-  
+      /* ISIMIP3 only first 5 layers for soil water outputs */
+    forrootsoillayer(l)
+    {
+      getoutputindex(&cell->output,SWC_VOL,l,config)+=(stand->soil.w[l]*stand->soil.whcs[l]+stand->soil.w_fw[l]+stand->soil.wpwps[l]+
+                     stand->soil.ice_depth[l]+stand->soil.ice_fw[l])*stand->frac*cell->coord.area;
+    }
 } /* of foreachstand */
 
 // 

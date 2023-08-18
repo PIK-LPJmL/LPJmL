@@ -58,10 +58,10 @@ int outputsize(int index,     /**< output index */
     case PFT_MORT: case NV_LAI:
       return getnnat(npft,config);
     case SOILTEMP: case SWC: case PERC: case WHC_NAT: case WHC_GRASS: case WHC_AGR:
-    case KS_NAT: case KS_GRASS: case KS_AGR: case SWC_VOL:
+    case KS_NAT: case KS_GRASS: case KS_AGR:
       return NSOILLAYER;
     case SOILC_LAYER: case SOILN_LAYER: case SOILNO3_LAYER: case SOILNH4_LAYER: case SOILC_AGR_LAYER:
-   case RESPONSE_LAYER_AGR: case RESPONSE_LAYER_NV: case CSHIFT_FAST_NV: case CSHIFT_SLOW_NV:
+   case RESPONSE_LAYER_AGR: case RESPONSE_LAYER_NV: case CSHIFT_FAST_NV: case CSHIFT_SLOW_NV: case SWC_VOL:
       return LASTLAYER;
     case GROWING_PERIOD: case CFT_TEMP:case CFT_PREC:
     case CFT_SRAD: case CFT_ABOVEGBMC: case CFT_ABOVEGBMN:
