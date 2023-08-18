@@ -220,7 +220,7 @@
   { "id" : AGB_TREE, "name": "agb_tree", "timestep" : "annual", "var" :  "agb_tree", "descr" :  "above ground tree biomass", "unit" : "gC/m2", "scale" : 1.0, "offset" : 0.0},
   { "id" : LAKEVOL, "name": "lakevol", "timestep" : "monthly", "var" :  "lakevol", "descr" :  "lake content volume", "unit" : "dm3", "scale" : 1.0, "offset" : 0.0},
   { "id" : RIVERVOL, "name": "rivervol", "timestep" : "monthly", "var" :  "rivervol", "descr" :  "river content volume", "unit" : "dm3", "scale" : 1.0, "offset" : 0.0},
-  { "id" : IRRIG_STOR, "name": "irrig_stor", "timestep" : "monthly", "var" :  "irrig_stor", "descr" :  "water content in irrigation storage", "unit" : "dm3", "scale" : 1.0, "offset" : 0.0}, /* ISIMIP3 new output */
+  { "id" : IRRIG_STOR, "name": "irrig_stor", "timestep" : "monthly", "var" :  "irrig_stor", "descr" :  "water content in irrigation storage", "unit" : "dm3", "scale" : 1.0, "offset" : 0.0}, 
   { "id" : LAKETEMP, "name": "laketemp", "timestep" : "monthly", "var" :  "laketemp", "descr" :  "lake surface temperature", "unit" : "Celsius", "scale" : 1.0, "offset" : 0.0},
   { "id" : FIREN, "name": "firen", "timestep" : "annual", "var": "FireN", "descr": "fire nitrogen emission", "unit": "gN/m2/yr", "scale": 1.0, "offset" : 0.0},
   { "id" : FLUX_ESTABN, "name": "flux_estabn", "timestep" : "annual", "var": "estabn", "descr": "establishment flux", "unit": "gN/m2/yr", "scale": 1.0, "offset" : 0.0},
