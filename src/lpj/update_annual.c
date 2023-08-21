@@ -96,6 +96,7 @@ void update_annual(Cell *cell,          /**< Pointer to cell */
     }
     stand->cell->balance.soil_storage+=soilwater(&stand->soil)*stand->frac*stand->cell->coord.area;
   }
+  getoutput(&cell->output,LAND_AREA,config)+=cell->coord.area*(1-cell->lakefrac-cell->ml.reservoirfrac);
   //cell->output.soil_storage+=cell->balance.excess_water*cell->coord.area; /* now tracked in separate flux */
   getoutputindex(&cell->output,FPC,0,config) += 1-cell->ml.cropfrac_rf-cell->ml.cropfrac_ir-cell->lakefrac-cell->ml.reservoirfrac;
 #if defined IMAGE && defined COUPLED
@@ -107,8 +108,6 @@ void update_annual(Cell *cell,          /**< Pointer to cell */
   {
     cell->ml.product.fast.carbon=cell->ml.product.fast.nitrogen=0;
     cell->ml.product.slow.carbon=cell->ml.product.slow.nitrogen=0;
-    getoutput(&cell->output,TIMBER_HARVESTC,config)=0;
-    getoutput(&cell->output,DEFOREST_EMIS,config)=0;
     cell->balance.deforest_emissions.carbon=cell->balance.deforest_emissions.nitrogen=0;
   }
   product_turnover(cell,config);

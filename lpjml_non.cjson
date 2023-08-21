@@ -2,7 +2,7 @@
 /**                                                                                \n**/
 /**                   l  p  j  m  l  _  n  o  n  .  c  j  s  o  n                  \n**/
 /**                                                                                \n**/
-/** Configuration file for LPJmL C Version 5.6.23 without nitrogen limitation      \n**/
+/** Configuration file for LPJmL C Version 5.7.4 without nitrogen limitation       \n**/
 /**                                                                                \n**/
 /** Configuration file is divided into five sections:                              \n**/
 /**                                                                                \n**/
@@ -30,7 +30,7 @@
   "sim_id"   : "lpjml",     /* LPJML Simulation type with managed land use */
   "coupled_model" : null,   /* Coupled model: null (no model coupled), string (name of coupled model) */
   "start_coupling": null,   /* Start year of model coupling: null (start_coupling is set to firstyear if coupled_model != null), int (start year of coupling) */
-  "version"  : "5.6",       /* LPJmL version expected */
+  "version"  : "5.7",       /* LPJmL version expected */
   "random_prec" : true,     /* Random weather generator for precipitation enabled */
   "random_seed" : 2,        /* seed for random number generator */
   "radiation" : "radiation",/* type of radiation input to be used, options: "cloudiness", "radiation", "radiation_swonly", "radiation_lwdown" */
@@ -40,6 +40,7 @@
   "firewood" : false,       /* NOT TESTED - DO NOT ENABLE */
   "gsi_phenology" : true,   /* enable GSI phenology */
   "transp_suction_fcn" : false,  /* enable new transpiration reduction function - NOT TESTED */
+  "with_lakes" : true,
   "river_routing" : true,   /* enable river routing (requires input matching grid and lakes/reservoirs) */
   "extflow" : false,        /* enable discharge inflow for regional runs (requires extflow_filename) */
   "permafrost" : true,      /* enable permafrost */
@@ -48,6 +49,7 @@
   "soilpar_fixyear" : 1900, /* year to fix soilpars for soilpar_option fixed_soilpar */
   "with_nitrogen" : "no",  /* options: "no", "lim", "unlim" */
   "store_climate" : true, /* store climate data in spin-up phase */
+  "landfrac_from_file" : true, /* read cell area from file (true/false) */
   "shuffle_spinup_climate" : true, /* shuffle spinup climate and/or climate in fix_climate run */
   "fix_climate" : false,    /* enable a fixed climate input period, requires fix_climate_inzterval, fix_climate_year, and fix_climate_shuffle */
   "fix_climate_interval" : [1901,1930],
@@ -142,6 +144,7 @@
 ID                         Fmt                    filename
 -------------------------- ---------------------- ----------------------------- */
     { "id" : "grid",             "file" : { "fmt" : "raw", "name" : "output/grid.bin" }},
+    { "id" : "terr_area",        "file" : { "fmt" : "raw", "name" : "output/terr_area.bin" }},
     { "id" : "fpc",              "file" : { "fmt" : "raw", "name" : "output/fpc.bin"}},
     { "id" : "npp",              "file" : { "fmt" : "raw", "name" : "output/mnpp.bin"}},
     { "id" : "gpp",              "file" : { "fmt" : "raw", "name" : "output/mgpp.bin"}},

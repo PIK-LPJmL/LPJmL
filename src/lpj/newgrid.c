@@ -51,7 +51,7 @@ static Cell *newgrid2(Config *config,          /* Pointer to LPJ configuration *
 #endif
   Code code;
   FILE *file_restart;
-  Infile lakes,countrycode,regioncode;
+  Infile countrycode,regioncode;
 
   /* Open coordinate and soil file */
   celldata=opencelldata(config);
@@ -70,7 +70,7 @@ static Cell *newgrid2(Config *config,          /* Pointer to LPJ configuration *
 #endif
   if(seekcelldata(celldata,config->startgrid))
   {
-    closecelldata(celldata);
+    closecelldata(celldata,config);
     return NULL;
   }
   if(config->countrypar!=NULL) /*does country file exist*/
@@ -81,7 +81,7 @@ static Cell *newgrid2(Config *config,          /* Pointer to LPJ configuration *
       countrycode.cdf=openinput_netcdf(&config->countrycode_filename,NULL,0,config);
       if(countrycode.cdf==NULL)
       {
-        closecelldata(celldata);
+        closecelldata(celldata,config);
         return NULL;
       }
       regioncode.fmt=config->regioncode_filename.fmt;
@@ -89,7 +89,7 @@ static Cell *newgrid2(Config *config,          /* Pointer to LPJ configuration *
       if(regioncode.cdf==NULL)
       {
         closeinput_netcdf(countrycode.cdf);
-        closecelldata(celldata);
+        closecelldata(celldata,config);
         return NULL;
       }
     }
@@ -100,7 +100,7 @@ static Cell *newgrid2(Config *config,          /* Pointer to LPJ configuration *
                                        &countrycode.swap,&countrycode.type,&offset,isroot(*config));
       if(countrycode.file==NULL)
       {
-        closecelldata(celldata);
+        closecelldata(celldata,config);
         return NULL;
       }
       if(seekcountrycode(countrycode.file,config->startgrid,countrycode.type,offset))
@@ -109,7 +109,7 @@ static Cell *newgrid2(Config *config,          /* Pointer to LPJ configuration *
         fprintf(stderr,
                 "ERROR106: Cannot seek in countrycode file to position %d.\n",
                 config->startgrid);
-        closecelldata(celldata);
+        closecelldata(celldata,config);
         fclose(countrycode.file);
         return NULL;
       }
@@ -118,7 +118,7 @@ static Cell *newgrid2(Config *config,          /* Pointer to LPJ configuration *
     {
       if(openinputdata(&grassfix_file,&config->grassfix_filename,"grassfix",NULL,LPJ_BYTE,1.0,config))
       {
-        closecelldata(celldata);
+        closecelldata(celldata,config);
         if(config->countrypar!=NULL)
         {
           closeinput(&countrycode);
@@ -133,7 +133,7 @@ static Cell *newgrid2(Config *config,          /* Pointer to LPJ configuration *
       // SR, grass management options: here choosing the grass harvest regime on the managed grassland
       if(openinputdata(&grassharvest_file,&config->grassharvest_filename,"grass harvest",NULL,LPJ_BYTE,1.0,config))
       {
-        closecelldata(celldata);
+        closecelldata(celldata,config);
         if(config->countrypar!=NULL)
         {
           closeinput(&countrycode);
@@ -147,34 +147,13 @@ static Cell *newgrid2(Config *config,          /* Pointer to LPJ configuration *
     }
   }
 
-  if(config->river_routing)
-  {
-    /* Open file for lake fraction */
-    if(openinputdata(&lakes,&config->lakes_filename,"lakes","1",LPJ_BYTE,0.01,config))
-    {
-      closecelldata(celldata);
-      if(config->countrypar!=NULL)
-      {
-        closeinput(&countrycode);
-        if(config->countrycode_filename.fmt==CDF)
-          closeinput(&regioncode);
-      }
-      if(config->grassfix_filename.name!=NULL)
-        closeinput(&grassfix_file);
-      if(config->grassharvest_filename.name!=NULL)
-        closeinput(&grassharvest_file);
-      return NULL;
-    }
-  }
 #if defined IMAGE
   if(config->aquifer_irrig==AQUIFER_IRRIG)
   {
     /* Open file with aquifer locations */
     if(openinputdata(&aquifers,&config->aquifer_filename,"aquifer",NULL,LPJ_BYTE,1.0,config))
     {
-      closecelldata(celldata);
-      if(config->river_routing)
-        closeinput(&lakes);
+      closecelldata(celldata,config);
       if(config->countrypar!=NULL)
       {
         closeinput(&countrycode);
@@ -214,9 +193,7 @@ static Cell *newgrid2(Config *config,          /* Pointer to LPJ configuration *
   if((grid=newvec(Cell,config->ngridcell))==NULL)
   {
     printallocerr("grid");
-    closecelldata(celldata);
-    if(config->river_routing)
-      closeinput(&lakes);
+    closecelldata(celldata,config);
 #ifdef IMAGE
     if(config->aquifer_irrig==AQUIFER_IRRIG)
       closeinput(&aquifers);
@@ -248,9 +225,7 @@ static Cell *newgrid2(Config *config,          /* Pointer to LPJ configuration *
     if(file_restart==NULL)
     {
       free(grid);
-      closecelldata(celldata);
-      if(config->river_routing)
-        closeinput(&lakes);
+      closecelldata(celldata,config);
       if(config->countrypar!=NULL)
       {
         closeinput(&countrycode);
@@ -270,7 +245,7 @@ static Cell *newgrid2(Config *config,          /* Pointer to LPJ configuration *
   for(i=0;i<config->ngridcell;i++)
   {
     /* read cell coordinate and soil code from file */
-    if(readcelldata(celldata,&grid[i].coord,&soilcode,&grid[i].soilph,i,config))
+    if(readcelldata(celldata,grid+i,&soilcode,i,config))
       return NULL;
 
     if(config->countrypar!=NULL)
@@ -326,14 +301,6 @@ static Cell *newgrid2(Config *config,          /* Pointer to LPJ configuration *
       else
         grid[i].ml.grass_scenario=(GrassScenarioType)config->grazing;
 
-    }
-    grid[i].lakefrac=0.0;
-    if(config->river_routing)
-    {
-      if(readinputdata(&lakes,&grid[i].lakefrac,&grid[i].coord,i+config->startgrid,&config->lakes_filename))
-        return NULL;
-      if(grid[i].lakefrac>1-epsilon)
-        grid[i].lakefrac=1;
     }
 #ifdef IMAGE
     grid[i].discharge.aquifer=0;
@@ -531,9 +498,7 @@ static Cell *newgrid2(Config *config,          /* Pointer to LPJ configuration *
   } /* of for(i=0;...) */
   if(file_restart!=NULL)
     fclose(file_restart);
-  closecelldata(celldata);
-  if(config->river_routing)
-    closeinput(&lakes);
+  closecelldata(celldata,config);
   if(config->grassfix_filename.name!=NULL)
     closeinput(&grassfix_file);
   if(config->grassharvest_filename.name!=NULL)

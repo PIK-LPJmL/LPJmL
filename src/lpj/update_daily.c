@@ -203,7 +203,7 @@ void update_daily(Cell *cell,            /**< cell pointer           */
     hetres=littersom(stand,gtemp_soil,agrfrac,npft,ncft,config);
     cell->balance.arh+=hetres.carbon*stand->frac;
     getoutput(&cell->output,RH,config)+=hetres.carbon*stand->frac;
-    getoutput(&cell->output,N2O_DENIT,config)+=hetres.nitrogen*stand->frac;
+    getoutput(&cell->output,N2O_NIT,config)+=hetres.nitrogen*stand->frac;
     cell->balance.n_outflux+=hetres.nitrogen*stand->frac;
 
     if(stand->type->landusetype==NATURAL)
@@ -250,7 +250,6 @@ void update_daily(Cell *cell,            /**< cell pointer           */
       getoutput(&cell->output,N2O_NIT_MGRASS,config)+=hetres.nitrogen*stand->frac;
       getoutput(&cell->output,RH_MGRASS,config)+=hetres.carbon*stand->frac;
     }
-    getoutput(&cell->output,N2O_NIT,config)+=hetres.nitrogen*stand->frac;
     cell->output.dcflux+=hetres.carbon*stand->frac;
 #if defined IMAGE && defined COUPLED
     if (stand->type->landusetype == NATURAL)
@@ -290,6 +289,8 @@ void update_daily(Cell *cell,            /**< cell pointer           */
         cell->balance.influx.nitrogen+=2000*stand->frac;
         if (isagriculture(stand->type->landusetype))
           getoutput(&cell->output,NDEPO_AGR,config)+=2000*stand->frac;
+        
+        getoutput(&cell->output,NDEPOS,config)+=2000*stand->frac;
       }
       else if(!config->no_ndeposition)
       {
@@ -309,6 +310,8 @@ void update_daily(Cell *cell,            /**< cell pointer           */
         cell->balance.influx.nitrogen+=(climate.nh4deposition+climate.no3deposition)*stand->frac;
         if (isagriculture(stand->type->landusetype))
           getoutput(&cell->output,NDEPO_AGR,config)+=(climate.nh4deposition+climate.no3deposition)*stand->frac;
+        
+        getoutput(&cell->output,NDEPOS,config)+=(climate.nh4deposition+climate.no3deposition)*stand->frac;
       }
 #ifdef DEBUG_N
       printf("BEFORE_STRESS[%s], day %d: ",stand->type->name,day);
@@ -397,7 +400,7 @@ void update_daily(Cell *cell,            /**< cell pointer           */
 
   getoutput(&cell->output,RUNOFF,config)+=cell->discharge.drunoff;
   cell->balance.awater_flux+=cell->discharge.drunoff;
-  if(config->river_routing)
+  if(config->with_lakes)
   {
     radiation(&daylength,&par,&eeq,cell->coord.lat,day,&climate,c_albwater,config->with_radiation);
     getoutput(&cell->output,PET,config)+=eeq*PRIESTLEY_TAYLOR*(cell->lakefrac+cell->ml.reservoirfrac);

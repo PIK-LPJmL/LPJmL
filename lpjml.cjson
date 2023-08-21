@@ -2,7 +2,7 @@
 /**                                                                                \n**/
 /**                   l  p  j  m  l  .  c  j  s  o  n                              \n**/
 /**                                                                                \n**/
-/** Default configuration file for LPJmL C Version 5.6.23                          \n**/
+/** Default configuration file for LPJmL C Version 5.7.4                           \n**/
 /**                                                                                \n**/
 /** Configuration file is divided into five sections:                              \n**/
 /**                                                                                \n**/
@@ -20,6 +20,8 @@
 /**                                                                                \n**/
 /**************************************************************************************/
 
+//#define BMGR_BROWN    /* enables brown harvest of biomass grass, instead of green harvest (default) */
+
 {   /* LPJmL configuration in JSON format */
 
 /*===================================================================*/
@@ -30,7 +32,7 @@
   "sim_id"   : "lpjml",     /* LPJML Simulation type with managed land use */
   "coupled_model" : null,   /* Coupled model: null (no model coupled), string (name of coupled model) */
   "start_coupling": null,   /* Start year of model coupling: null (start_coupling is set to firstyear if coupled_model != null), int (start year of coupling) */
-  "version"  : "5.6",       /* LPJmL version expected */
+  "version"  : "5.7",       /* LPJmL version expected */
   "random_prec" : true,     /* Random weather generator for precipitation enabled */
   "random_seed" : 2,        /* seed for random number generator */
   "radiation" : "radiation",/* type of radiation input to be used, options: "cloudiness", "radiation", "radiation_swonly", "radiation_lwdown" */
@@ -40,6 +42,7 @@
   "firewood" : false,       /* NOT TESTED - DO NOT ENABLE */
   "gsi_phenology" : true,   /* enable GSI phenology */
   "transp_suction_fcn" : false, /* enable new transpiration reduction function - NOT TESTED */
+  "with_lakes" : true,      /* enable lakes (true/false) */
   "river_routing" : true,   /* enable river routing (requires input matching grid and lakes/reservoirs) */
   "extflow" : false,        /* enable discharge inflow for regional runs (requires extflow_filename) */
   "permafrost" : true,      /* enable permafrost */
@@ -48,6 +51,7 @@
   "soilpar_fixyear" : 1900, /* year to fix soilpars for soilpar_option fixed_soilpar */
   "with_nitrogen" : "lim",  /* options: "no", "lim", "unlim" */
   "store_climate" : true,   /* store climate data in spin-up phase */
+  "landfrac_from_file" : true, /* read cell area from file (true/false) */
   "shuffle_spinup_climate" : true, /* shuffle spinup climate and/or climate in fix_climate run */
   "fix_climate" : false,    /* enable a fixed climate input period, requires fix_climate_interval, fix_climate_year, fix_climate_shuffle */
   "fix_climate_year" : 1901,            /* year after climate is fixed */
@@ -107,8 +111,13 @@
   "luc_timber" : true,                  /* true: extract timber carbon (timber_harvest output) if natural vegetation is cleared for managed land, false: carbon is put in litter */
   "grassland_fixed_pft" : false,        /* prescribe per grid cell the grass pft to be grown, requires additional input - non-functional? */
   "grass_harvest_options" : false,      /* true: grid-specific grassland management, requires input file; false: default management (setting "grazing") everywhere */
-  "prescribe_lsuha" : false,           /* prescribe livestock unit per hectare, input required (needed for "grazing" = "livestock") */
-  "mowing_days" : [152, 335],          /* Mowing days (day-of-year) for grassland if "grazing" = "mowing" */
+  "prescribe_lsuha" : false,            /* prescribe livestock unit per hectare, input required (needed for "grazing" = "livestock") */
+  "mowing_days" : [152, 335],           /* Mowing days (day-of-year) for grassland if "grazing" = "mowing" */
+#ifdef BMGR_BROWN
+  "biomass_grass_harvest" : "brown",   /* define brown harvest of biomass grass at top; imapcts harvest event and fn_turnover of biomass grass */
+#else
+ "biomass_grass_harvest" : "green",    /* comment out define of brown harvest of biomass grass for green harvest (default) */
+#endif
   "crop_resp_fix" : false,             /* C:N ratio setting affecting crop respiration - options: true (fixed - avoids yield reductions at high n inputs); false (variable/dynamic) */
   "crop_phu_option" : "new",           /* defines setting for phenological heat unit and vernalization requirements for crops; options: "old", "new", "prescribed" */
   "cropsheatfrost" : false,            /* enable extreme temperature crop damages - requires tmin/tmax inputs - NOT TESTED */
@@ -154,11 +163,15 @@
 ID                               Fmt                        filename
 -------------------------------- ------------------------- ----------------------------- */
     { "id" : "grid",             "file" : { "fmt" : "raw", "name" : "output/grid.bin" }},
+    { "id" : "terr_area",        "file" : { "fmt" : "raw", "name" : "output/terr_area.bin" }},
+    { "id" : "land_area",        "file" : { "fmt" : "raw", "name" : "output/land_area.bin" }},
+    { "id" : "lake_area",        "file" : { "fmt" : "raw", "name" : "output/lake_area.bin" }},
     { "id" : "fpc",              "file" : { "fmt" : "raw", "name" : "output/fpc.bin" }},
     { "id" : "globalflux",       "file" : { "fmt" : "txt", "name" : "output/globalflux.csv"}},
     { "id" : "npp",              "file" : { "fmt" : "raw", "name" : "output/mnpp.bin"}},
     { "id" : "gpp",              "file" : { "fmt" : "raw", "name" : "output/mgpp.bin"}},
     { "id" : "rh",               "file" : { "fmt" : "raw", "name" : "output/mrh.bin"}},
+    { "id" : "rd",               "file" : { "fmt" : "raw", "name" : "output/rd.bin"}},
     { "id" : "fapar",            "file" : { "fmt" : "raw", "name" : "output/mfapar.bin"}},
     { "id" : "transp",           "file" : { "fmt" : "raw", "name" : "output/mtransp.bin"}},
     { "id" : "runoff",           "file" : { "fmt" : "raw", "name" : "output/mrunoff.bin"}},
@@ -194,10 +207,11 @@ ID                               Fmt                        filename
     { "id" : "bnf",              "file" : { "fmt" : "raw", "name" : "output/mbnf.bin"}},
     { "id" : "n_immo",           "file" : { "fmt" : "raw", "name" : "output/mn_immo.bin"}},
     { "id" : "pft_ndemand",      "file" : { "fmt" : "raw", "name" : "output/pft_ndemand.bin"}},
-    { "id" : "nfert_agr",      "file" : { "fmt" : "raw", "name" : "output/nfert_agr.bin"}},
+    { "id" : "nfert_agr",        "file" : { "fmt" : "raw", "name" : "output/nfert_agr.bin"}},
     { "id" : "firen",            "file" : { "fmt" : "raw", "name" : "output/firen.bin"}},
     { "id" : "n_mineralization", "file" : { "fmt" : "raw", "name" : "output/mn_mineralization.bin"}},
     { "id" : "n_volatilization", "file" : { "fmt" : "raw", "name" : "output/mn_volatilization.bin"}},
+    { "id" : "ndepos",           "file" : { "fmt" : "raw", "name" : "output/ndepos.bin"}},
     { "id" : "pft_nlimit",       "file" : { "fmt" : "raw", "name" : "output/pft_nlimit.bin"}},
     { "id" : "pft_vegn",         "file" : { "fmt" : "raw", "name" : "output/pft_vegn.bin"}},
     { "id" : "pft_cleaf",        "file" : { "fmt" : "raw", "name" : "output/pft_cleaf.bin"}},
@@ -209,6 +223,7 @@ ID                               Fmt                        filename
     { "id" : "pft_nsapw",        "file" : { "fmt" : "raw", "name" : "output/pft_nsapw.bin"}},
     { "id" : "pft_chawo",        "file" : { "fmt" : "raw", "name" : "output/pft_chawo.bin"}},
     { "id" : "pft_nhawo",        "file" : { "fmt" : "raw", "name" : "output/pft_nhawo.bin"}},
+    { "id" : "pft_water_demand", "file" : { "fmt" : "raw", "name" : "output/pft_water_demand.bin"}},
 #ifdef WITH_SPITFIRE
     { "id" : "firec",            "file" : { "fmt" : "raw", "timestep" : "monthly" , "unit" : "gC/m2/month", "name" : "output/mfirec.bin"}},
     { "id" : "nfire",            "file" : { "fmt" : "raw", "name" : "output/mnfire.bin"}},

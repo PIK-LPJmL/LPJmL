@@ -19,6 +19,8 @@
 
 typedef struct
 {
+  Real minlandfrac; /**< minimum land area fraction */
+  Real tinyfrac;    /**< minimum land-use fraction used by all_crops */
   Real k_litter10;
   Poolpar k_soil10;
   Poolpar init_soiln; /**< initial soil nitrogen (gN/m2) */
@@ -106,6 +108,8 @@ typedef struct
   Real phen_limit; /* limit for agricultural trees */
   Real nfrac_grassharvest; /**< fraction of nitrogen from grass harvest not returned to NH4 pool via manure after mowing*/
   Real nfrac_grazing; /**< fraction of nitrogen from grass harvest not returned to NH4 pool via manure from livestock*/
+  Real bmgr_harvest_day_nh; /**< harvest date of biomass grass harvest in northern hemisphere (green/brown)*/
+  Real bmgr_harvest_day_sh; /**< harvest date of biomass grass harvest in southern hemisphere (green/brown)*/
 } Param;
 
 /* Declaration of global variable */
