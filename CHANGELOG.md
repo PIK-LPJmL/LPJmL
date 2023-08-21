@@ -19,6 +19,12 @@ of `major.minor.patch` with
 
 ## [Unreleased]
 
+## [5.7.4] - 2023-08-17
+
+### Changed
+
+- changed quadratic soil evaporation function to sigmoid form and a minimum amount of evaporation of 5% of the available energy, following [Sun et al. 2013](http://dx.doi.org/10.1080/17538947.2013.783635), as described in [!168](https://gitlab.pik-potsdam.de/lpjml/LPJmL_internal/-/merge_requests/168)
+
 ## [5.7.3] - 2023-08-16
 
 ### Fixed
@@ -29,10 +35,13 @@ of `major.minor.patch` with
 
 
 ## [5.7.2] - 2023-08-11
+
 ### Changed:
+
 - removed timestep attributes (monthly/annual) in all output descriptions that are not timestep specific
 
 ### Added 
+
 - outputs:
   - PFT_WATER_DEMAND: PFT specific water demand
   - RD: dark respiration
