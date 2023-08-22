@@ -19,7 +19,7 @@
 
 #define error(rc) if(rc) {free(lon);free(lat);free(year);fprintf(stderr,"ERROR427: Cannot write '%s': %s.\n",filename,nc_strerror(rc)); nc_close(cdf->ncid); free(cdf);return NULL;}
 
-#define USAGE "Usage: %s [-scale s] [-longheader] [-global] [-cellsize size] [-byte] [-int] [-float]\n       [[-attr name=value] ...] [-intnetcdf] [-metafile] [-raw] [-nbands n] [-landuse] [-notime] [-compress level] [-units u]\n       [-map name] [-descr d] [-missing_value val] [name gridfile] clmfile netcdffile\n"
+#define USAGE "Usage: %s [-h] [-v] [-scale s] [-longheader] [-global] [-cellsize size] [-byte] [-int] [-float]\n       [[-attr name=value] ...] [-intnetcdf] [-metafile] [-raw] [-nbands n] [-landuse] [-notime] [-compress level] [-units u]\n       [-map name] [-descr d] [-missing_value val] [name gridfile] clmfile netcdffile\n"
 
 typedef struct
 {
@@ -30,9 +30,12 @@ typedef struct
 
 static Cdf *create_cdf(const char *filename,
                        Map *map,
+                       const char *source,
+                       const char *history,
                        const char *name,
                        const char *units,
-                       const char *descr,
+                       const char *standard_name,
+                       const char *long_name,
                        float miss,
                        int imiss,
                        const char *args,
@@ -48,7 +51,7 @@ static Cdf *create_cdf(const char *filename,
   Cdf *cdf;
   double *lon,*lat;
   int *year,i,j,rc,dim[4],varid;
-  String s;
+  char *s;
   time_t t;
   size_t chunk[4],offset[2],count[2];
   int time_var_id,lat_var_id,lon_var_id,time_dim_id,lat_dim_id,lon_dim_id,map_dim_id,len_dim_id;
@@ -146,12 +149,28 @@ static Cdf *create_cdf(const char *filename,
   error(rc);
   rc=nc_def_dim(cdf->ncid,LON_DIM_NAME,array->nlon,&lon_dim_id);
   error(rc);
-  rc=nc_put_att_text(cdf->ncid,NC_GLOBAL,"source",strlen(args),args);
-  error(rc);
+  if(source!=NULL)
+  {
+    rc=nc_put_att_text(cdf->ncid,NC_GLOBAL,"source",strlen(source),source);
+    error(rc);
+  }
   time(&t);
-  snprintf(s,STRING_LEN,"Created for user %s on %s at %s",getuser(),gethost(),
-           strdate(&t));
+  if(history!=NULL)
+  {
+    len=snprintf(NULL,0,"%s\n%s: %s",history,strdate(&t),args);
+    s=malloc(len+1);
+    check(s);
+    sprintf(s,"%s\n%s: %s",history,strdate(&t),args);
+  }
+  else
+  {
+    len=snprintf(NULL,0,"%s: %s",strdate(&t),args);
+    s=malloc(len+1);
+    check(s);
+    sprintf(s,"%s: %s",strdate(&t),args);
+  }
   rc=nc_put_att_text(cdf->ncid,NC_GLOBAL,"history",strlen(s),s);
+  free(s);
   error(rc);
   for(i=0;i<n_global;i++)
   {
@@ -165,10 +184,21 @@ static Cdf *create_cdf(const char *filename,
   if(!notime)
   {
     if(landuse || header->nbands==1)
-      snprintf(s,STRING_LEN,"years since %d-1-1 0:0:0",header->firstyear);
+    {
+      len=snprintf(NULL,0,"years since %d-1-1 0:0:0",header->firstyear);
+      s=malloc(len+1);
+      check(s);
+      sprintf(s,"years since %d-1-1 0:0:0",header->firstyear);
+    }
     else if(header->nbands>1)
-      snprintf(s,STRING_LEN,"days since %d-1-1 0:0:0",header->firstyear);
+    {
+      len=snprintf(NULL,len,"days since %d-1-1 0:0:0",header->firstyear);
+      s=malloc(len+1);
+      check(s);
+      sprintf(s,"days since %d-1-1 0:0:0",header->firstyear);
+    }
     rc=nc_put_att_text(cdf->ncid,time_var_id,"units",strlen(s),s);
+    free(s);
     error(rc);
     rc=nc_put_att_text(cdf->ncid,time_var_id,"calendar",strlen(CALENDAR),CALENDAR);
     error(rc);
@@ -267,9 +297,14 @@ static Cdf *create_cdf(const char *filename,
     rc=nc_put_att_text(cdf->ncid, cdf->varid,"units",strlen(units),units);
     error(rc);
   }
-  if(descr!=NULL)
+  if(standard_name!=NULL)
   {
-    rc=nc_put_att_text(cdf->ncid, cdf->varid,"long_name",strlen(descr),descr);
+    rc=nc_put_att_text(cdf->ncid, cdf->varid,"standard_name",strlen(standard_name),standard_name);
+    error(rc);
+  }
+  if(long_name!=NULL)
+  {
+    rc=nc_put_att_text(cdf->ncid, cdf->varid,"long_name",strlen(long_name),long_name);
     error(rc);
   }
   if(isint)
@@ -461,21 +496,19 @@ int main(int argc,char **argv)
   Bool swap,landuse,notime,isglobal,istype,israw,ismeta,isint,n_global;
   float *f,scale,cellsize_lon,cellsize_lat;
   int *idata,*iarr;
-  char *units,*descr,*endptr,*arglist,*missing_value;
+  char *units,*long_name,*endptr,*arglist,*missing_value;
   char *map_name,*pos;
   const char *progname;
   char *grid_filename,*path;
   Filename grid_name;
   char *filename,*outname,*variable;
-  String var_name;
+  char *var_name=NULL;
   size_t filesize;
-  String var_units,var_descr;
+  char *var_units=NULL,*var_long_name=NULL,*var_standard_name=NULL;
+  char *source=NULL,*history=NULL;
   float miss=MISSING_VALUE_FLOAT;
   int imiss=MISSING_VALUE_INT;
-  units=descr=NULL;
-  var_units[0]='\0';
-  var_descr[0]='\0';
-  var_name[0]='\0';
+  units=long_name=NULL;
   scale=1.0;
   compress=0;
   cellsize_lon=cellsize_lat=0;
@@ -496,7 +529,48 @@ int main(int argc,char **argv)
   for(iarg=1;iarg<argc;iarg++)
     if(argv[iarg][0]=='-')
     {
-      if(!strcmp(argv[iarg],"-units"))
+      if(!strcmp(argv[iarg],"-h"))
+      {
+        printf("   clm2cdf (" __DATE__ ") Help\n"
+               "   ==========================\n\n"
+               "Convert CLM input data into NetCDF input data for LPJmL version " LPJ_VERSION "\n\n");
+        printf(USAGE
+               "\nArguments:\n"
+               "-h               print this help text\n"
+               "-v               print LPJmL version\n"
+               "-global          use global grid for NetCDF file\n"
+               "-longheader      force version of CLM file to 2\n"
+               "-scale s         set scaling factor for CLM version 1 files, default is 1\n"
+               "-cellsize s      set cell size, default is 0.5\n"
+               "-byte            set data type in CLM file to byte, default is short\n"
+               "-int             set data type in CLM file to int, default is short\n"
+               "-float           set data type in CLM file to float, default is short\n"
+               "-intnetcdf       set datatype in NetCDF file to int, default is float\n"
+               "-metafile        set the input format to JSON metafile instead of CLM\n"
+               "-map name        name of map in JSON metafile, default is \"map\"\n"
+               "-raw             set the input format to raw instead of CLM\n"
+               "-nbands n        number of bands for raw input, default is 1\n"
+               "-landuse         convert land-use input data\n"
+               "-notime          No time dimension in NetCDF file\n"
+               "-compress l      set compression level for NetCDF4 files\n"
+               "-attr name=value set global attribute name to value in NetCDF file\n"
+               "-descr d         set long name in NetCDF file\n"
+               "-units u         set units in NetCDF file\n"
+               "-missing_value v set missing value to v\n"
+               "name             variable name in NetCDF file\n"
+               "gridfile         filename of grid data file\n"
+               "clmfile          filename of CLM data file\n"
+               "netcdffile       filename of NetCDF file created\n\n"
+               "(C) Potsdam Institute for Climate Impact Research (PIK), see COPYRIGHT file\n",
+               progname);
+        return EXIT_SUCCESS;
+      }
+      else if(!strcmp(argv[iarg],"-v"))
+      {
+        puts(LPJ_VERSION);
+        return EXIT_SUCCESS;
+      }
+      else if(!strcmp(argv[iarg],"-units"))
       {
         if(argc==iarg+1)
         {
@@ -546,7 +620,7 @@ int main(int argc,char **argv)
                  USAGE,progname);
           return EXIT_FAILURE;
         }
-        descr=argv[++iarg];
+        long_name=argv[++iarg];
       }
       else if(!strcmp(argv[iarg],"-missing_value"))
       {
@@ -696,7 +770,7 @@ int main(int argc,char **argv)
     header.datatype=type;
     header.order=CELLYEAR;
 
-    file=openmetafile(&header,&map,map_name,&global_attrs,&n_global,var_name,var_units,var_descr,&grid_name,NULL,&swap,&offset,filename,TRUE);
+    file=openmetafile(&header,&map,map_name,&global_attrs,&n_global,&source,&history,&var_name,&var_units,&var_standard_name,&var_long_name,&grid_name,NULL,&swap,&offset,filename,TRUE);
     if(file==NULL)
       return EXIT_FAILURE;
     if(fseek(file,offset,SEEK_CUR))
@@ -705,10 +779,10 @@ int main(int argc,char **argv)
       fclose(file);
       return EXIT_FAILURE;
     }
-    if(units==NULL && strlen(var_units)>0)
+    if(units==NULL && var_units!=NULL)
       units=var_units;
-    if(descr==NULL && strlen(var_descr)>0)
-      descr=var_descr;
+    if(long_name==NULL && var_long_name==NULL)
+      long_name=var_long_name;
   }
   else
   {
@@ -726,7 +800,7 @@ int main(int argc,char **argv)
   }
   else
   {
-    if(strlen(var_name)==0)
+    if(var_name==NULL)
     {
       fprintf(stderr,"Error: variable name must be specified in '%s' metafile.\n",filename);
       return EXIT_FAILURE;
@@ -916,7 +990,7 @@ int main(int argc,char **argv)
       }
     }
   }
-  cdf=create_cdf(outname,map,variable,units,descr,miss,imiss,arglist,global_attrs,n_global,&header,compress,landuse,notime,isint || ((header.datatype==LPJ_INT || header.datatype==LPJ_BYTE) && header.scalar==1),index);
+  cdf=create_cdf(outname,map,source,history,variable,units,var_standard_name,long_name,miss,imiss,arglist,global_attrs,n_global,&header,compress,landuse,notime,isint || ((header.datatype==LPJ_INT || header.datatype==LPJ_BYTE) && header.scalar==1),index);
   free(arglist);
   if(cdf==NULL)
     return EXIT_FAILURE;

@@ -26,6 +26,7 @@ static Harvest harvest_grass(Stand *stand, /**< pointer to stand */
   Harvest harvest;
   Harvest sum={{0,0},{0,0},{0,0},{0,0}};
   Pftgrass *grass;
+  Pftgrasspar *grasspar;
   Pft *pft;
   int p;
   Output *output;
@@ -34,16 +35,23 @@ static Harvest harvest_grass(Stand *stand, /**< pointer to stand */
   foreachpft(pft,p,&stand->pftlist)
   {
     grass=pft->data;
+    grasspar=pft->par->data; //grasspar=getpftpar(pft,data);
+    if(pft->stand->type->landusetype==BIOMASS_GRASS)
+    {
+      pft->bm_inc.nitrogen+=(grass->ind.leaf.nitrogen)*(1-pft->par->fn_turnover)*hfrac*pft->nind;
+      harvest.harvest.nitrogen=grass->ind.leaf.nitrogen*pft->par->fn_turnover*hfrac;
+    } else {
+      harvest.harvest.nitrogen=grass->ind.leaf.nitrogen*hfrac*param.nfrac_grassharvest; 
+      stand->soil.NH4[0]+=grass->ind.leaf.nitrogen*hfrac*(1-param.nfrac_grassharvest)*pft->nind;
+    }
     harvest.harvest.carbon=grass->ind.leaf.carbon*hfrac;
-    harvest.harvest.nitrogen=grass->ind.leaf.nitrogen*hfrac*param.nfrac_grassharvest;
-    stand->soil.NH4[0]+=grass->ind.leaf.nitrogen*hfrac*(1-param.nfrac_grassharvest)*pft->nind;
     grass->ind.leaf.carbon*=(1-hfrac);
     grass->ind.leaf.nitrogen*=(1-hfrac);
     stand->soil.litter.item[pft->litter].bg.carbon+=grass->ind.root.carbon*hfrac*param.rootreduction*pft->nind;
     getoutput(output,LITFALLC,config)+=grass->ind.root.carbon*hfrac*param.rootreduction*pft->nind*stand->frac;
     stand->soil.litter.item[pft->litter].bg.nitrogen+=grass->ind.root.nitrogen*hfrac*param.rootreduction*pft->nind*pft->par->fn_turnover;
     getoutput(output,LITFALLN,config)+=grass->ind.root.nitrogen*hfrac*param.rootreduction*pft->nind*stand->frac*pft->par->fn_turnover;
-    pft->bm_inc.nitrogen+=grass->ind.root.nitrogen*hfrac*param.rootreduction*pft->nind*pft->nind*(1-pft->par->fn_turnover);
+    pft->bm_inc.nitrogen+=grass->ind.root.nitrogen*hfrac*param.rootreduction*pft->nind*(1-pft->par->fn_turnover);
     grass->ind.root.carbon*=(1-hfrac*param.rootreduction);
     grass->ind.root.nitrogen*=(1-hfrac*param.rootreduction);
     sum.harvest.carbon+=harvest.harvest.carbon*pft->nind;
@@ -82,7 +90,7 @@ static Harvest harvest_grass_mowing(Stand *stand,const Config *config)
     getoutput(output,LITFALLC,config)+=grass->ind.root.carbon*hfrac*param.rootreduction*pft->nind*stand->frac;
     stand->soil.litter.item[pft->litter].bg.nitrogen+=grass->ind.root.nitrogen*hfrac*param.rootreduction*pft->nind*pft->par->fn_turnover;
     getoutput(output,LITFALLN,config)+=grass->ind.root.nitrogen*hfrac*param.rootreduction*pft->nind*stand->frac*pft->par->fn_turnover;
-    pft->bm_inc.nitrogen+=grass->ind.root.nitrogen*hfrac*param.rootreduction*pft->nind*pft->nind*(1-pft->par->fn_turnover);
+    pft->bm_inc.nitrogen+=grass->ind.root.nitrogen*hfrac*param.rootreduction*pft->nind*(1-pft->par->fn_turnover);
 
     grass->ind.root.carbon*=(1-hfrac*param.rootreduction);
     grass->ind.root.nitrogen*=(1-hfrac*param.rootreduction);
@@ -151,7 +159,7 @@ static Harvest harvest_grass_grazing_ext(Stand *stand,const Config *config)
     getoutput(output,LITFALLC,config)+=grass->ind.root.carbon*hfrac*param.rootreduction*pft->nind*stand->frac;
     stand->soil.litter.item[pft->litter].bg.nitrogen+=grass->ind.root.nitrogen*hfrac*param.rootreduction*pft->nind*pft->par->fn_turnover;
     getoutput(output,LITFALLN,config)+=grass->ind.root.nitrogen*hfrac*param.rootreduction*pft->nind*stand->frac*pft->par->fn_turnover;
-    pft->bm_inc.nitrogen+=grass->ind.root.nitrogen*hfrac*param.rootreduction*pft->nind*pft->nind*(1-pft->par->fn_turnover);
+    pft->bm_inc.nitrogen+=grass->ind.root.nitrogen*hfrac*param.rootreduction*pft->nind*(1-pft->par->fn_turnover);
 
     grass->ind.root.carbon*=(1-hfrac*param.rootreduction);
     grass->ind.root.nitrogen*=(1-hfrac*param.rootreduction);
@@ -233,7 +241,7 @@ static Harvest harvest_grass_grazing_int(Stand *stand,const Config *config)
       getoutput(output,LITFALLC,config)+=grass->ind.root.carbon*hfrac*param.rootreduction*pft->nind*stand->frac;
       stand->soil.litter.item[pft->litter].bg.nitrogen+=grass->ind.root.nitrogen*hfrac*param.rootreduction*pft->nind*pft->par->fn_turnover;
       getoutput(output,LITFALLN,config)+=grass->ind.root.nitrogen*hfrac*param.rootreduction*pft->nind*stand->frac*pft->par->fn_turnover;
-      pft->bm_inc.nitrogen+=grass->ind.root.nitrogen*hfrac*param.rootreduction*pft->nind*pft->nind*(1-pft->par->fn_turnover);
+      pft->bm_inc.nitrogen+=grass->ind.root.nitrogen*hfrac*param.rootreduction*pft->nind*(1-pft->par->fn_turnover);
 
       grass->ind.root.carbon*=(1-hfrac*param.rootreduction);
       grass->ind.root.nitrogen*=(1-hfrac*param.rootreduction);
@@ -397,7 +405,7 @@ static Harvest harvest_grass_grazing_live(Stand *stand,const Config *config)
       getoutput(output,LITFALLC,config)+=grass->ind.root.carbon*hfrac*param.rootreduction*pft->nind*stand->frac;
       stand->soil.litter.item[pft->litter].bg.nitrogen+=grass->ind.root.nitrogen*hfrac*param.rootreduction*pft->nind*pft->par->fn_turnover;
       getoutput(output,LITFALLN,config)+=grass->ind.root.nitrogen*hfrac*param.rootreduction*pft->nind*stand->frac*pft->par->fn_turnover;
-      pft->bm_inc.nitrogen+=grass->ind.root.nitrogen*hfrac*param.rootreduction*pft->nind*pft->nind*(1-pft->par->fn_turnover);
+      pft->bm_inc.nitrogen+=grass->ind.root.nitrogen*hfrac*param.rootreduction*pft->nind*(1-pft->par->fn_turnover);
 
       grass->ind.root.carbon*=(1-hfrac*param.rootreduction);
       grass->ind.root.nitrogen*=(1-hfrac*param.rootreduction);

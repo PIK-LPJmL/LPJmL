@@ -25,4 +25,4 @@ Standtype agriculture_tree_stand={AGRICULTURE_TREE,"agriculture_tree",0.0,0,
                                   free_agriculture,fwrite_biomass_tree,
                                   fread_biomass_tree,fprint_biomass_tree,
                                   daily_agriculture_tree,
-                                  annual_agriculture_tree,NULL,isdailyoutput_agriculture};
+                                  annual_agriculture_tree,NULL};

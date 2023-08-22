@@ -24,7 +24,6 @@
 #include "lpj.h"
 #include <sys/stat.h>
 
-#define ASC2CLM "1.0.003"
 #define USAGE "Usage: asc2clm [-h] [-f] [-firstyear y] [-grid file] [-nbands n] [-nstep n] [-header s]\n       [-version v] [-{int|float}] [-scale s] infile ... clmfile\n"
 #define FIRSTYEAR 1901
 
@@ -68,9 +67,9 @@ int main(int argc,char **argv)
     {
       if(!strcmp(argv[i],"-h"))
       {
-        printf("   asc2clm version " ASC2CLM " (" __DATE__ ") help\n"
-               "   ==========================================\n\n"
-               "Convert gridded ASCII files to clm data files for LPJ C version\n\n"
+        printf("   asc2clm (" __DATE__ ") help\n"
+               "   ==========================\n\n"
+               "Convert gridded ASCII files to clm data files for LPJmL version " LPJ_VERSION "\n\n"
                USAGE
                "\nArguments:\n"
                "-h           print this help text\n"
@@ -85,7 +84,9 @@ int main(int argc,char **argv)
                "-int         write integer data into clm file\n"
                "-float       write float data into clm file\n"
                "infile       filename(s) of gridded data file\n"
-               "clmfile      filename of clm data file\n",FIRSTYEAR,LPJ_CLIMATE_VERSION);
+               "clmfile      filename of clm data file\n\n"
+                "(C) Potsdam Institute for Climate Impact Research (PIK), see COPYRIGHT file\n",
+                FIRSTYEAR,LPJ_CLIMATE_VERSION);
         return EXIT_SUCCESS;
       }
       else if(!strcmp(argv[i],"-firstyear"))

@@ -34,14 +34,13 @@ static void printclm(const char *filename,int output,int nbands,int version,
   float fdata;
   double ddata;
   int year,cell,i,*index,rc,t;
-  String unit,descr;
+  char *unit=NULL,*long_name=NULL,*standard_name=NULL;
   Bool swap,isrestart,isreservoir;
   size_t offset;
   Reservoir reservoir;
   Map *map=NULL;
   Attr *attrs=NULL;
   int n_attr;
-  unit[0]='\0';
   if(ismeta)
   {
     isrestart=isreservoir=FALSE;
@@ -55,7 +54,7 @@ static void printclm(const char *filename,int output,int nbands,int version,
     header.timestep=1;
     header.datatype=type;
     header.order=CELLYEAR;
-    file=openmetafile(&header,&map,map_name,&attrs,&n_attr,NULL,unit,descr,NULL,NULL,&swap,&offset,filename,TRUE);
+    file=openmetafile(&header,&map,map_name,&attrs,&n_attr,NULL,NULL,NULL,&unit,&standard_name,&long_name,NULL,NULL,&swap,&offset,filename,TRUE);
     if(file==NULL)
       return;
     if(fseek(file,offset,SEEK_CUR))
@@ -70,6 +69,9 @@ static void printclm(const char *filename,int output,int nbands,int version,
   }
   else
   {
+    unit=NULL;
+    standard_name=NULL;
+    long_name=NULL;
     file=fopen(filename,"rb");
     if(file==NULL)
     {
@@ -93,9 +95,11 @@ static void printclm(const char *filename,int output,int nbands,int version,
   }
   if(isjon)
   {
-    fprintjson(stdout,filename,NULL,&header,map,map_name,attrs,n_attr,NULL,unit,descr,NULL,LPJ_SHORT,CLM,id,swap,version);
+    fprintjson(stdout,filename,NULL,NULL,NULL,&header,map,map_name,attrs,n_attr,NULL,unit,standard_name,long_name,NULL,LPJ_SHORT,CLM,id,swap,version);
     return;
   }
+  free(unit);
+  free(long_name);
   freemap(map);
   freeattrs(attrs,n_attr);
   if((output & NO_HEADER)==0)

@@ -75,14 +75,15 @@ static Bool fscancropdate(LPJfile *file,Initdate *initdate,Verbosity verb)
 
 static Bool fscancropphys(LPJfile *file,Cropphys *phys,const char *name,Verbosity verb)
 {
-  LPJfile item;
-  if(fscanstruct(file,&item,name,verb))
+  LPJfile *item;
+  item=fscanstruct(file,name,verb);
+  if(item==NULL)
     return TRUE;
-  if(fscanreal(&item,&phys->root,"root",FALSE,verb))
+  if(fscanreal(item,&phys->root,"root",FALSE,verb))
     return TRUE;
-  if(fscanreal(&item,&phys->so,"so",FALSE,verb))
+  if(fscanreal(item,&phys->so,"so",FALSE,verb))
     return TRUE;
-  if(fscanreal(&item,&phys->pool,"pool",FALSE,verb))
+  if(fscanreal(item,&phys->pool,"pool",FALSE,verb))
     return TRUE;
   if(phys->root<=0 || phys->so<=0 || phys->pool<=0)
   {
@@ -95,14 +96,15 @@ static Bool fscancropphys(LPJfile *file,Cropphys *phys,const char *name,Verbosit
 
 static Bool fscancropratio(LPJfile *file,Cropratio *ratio,const char *name,Verbosity verb)
 {
-  LPJfile item;
-  if(fscanstruct(file,&item,name,verb))
+  LPJfile *item;
+  item=fscanstruct(file,name,verb);
+  if(item==NULL)
     return TRUE;
-  if(fscanreal(&item,&ratio->root,"root",FALSE,verb))
+  if(fscanreal(item,&ratio->root,"root",FALSE,verb))
     return TRUE;
-  if(fscanreal(&item,&ratio->so,"so",FALSE,verb))
+  if(fscanreal(item,&ratio->so,"so",FALSE,verb))
     return TRUE;
-  if(fscanreal(&item,&ratio->pool,"pool",FALSE,verb))
+  if(fscanreal(item,&ratio->pool,"pool",FALSE,verb))
     return TRUE;
   if(ratio->root<=0 || ratio->so<=0 || ratio->pool<=0)
   {

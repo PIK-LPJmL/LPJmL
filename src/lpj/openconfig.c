@@ -18,16 +18,6 @@
 
 #include "lpj.h"
 
-#ifdef _WIN32              /* are we on a Windows machine? */
-#ifdef IMAGE
-#define cpp_cmd "cl /E /DIMAGE /nologo"  /* C preprocessor command for Windows */
-#else
-#define cpp_cmd "cl /E /nologo"  /* C preprocessor command for Windows */
-#endif
-#else
-#define cpp_cmd "cpp"  /* C preprocessor command for Unix */
-#endif
-
 #define checkptr(ptr) if(ptr==NULL) { printallocerr(#ptr); return NULL; }
 
 FILE *openconfig(Config *config,      /**< configuration struct */
@@ -77,6 +67,7 @@ FILE *openconfig(Config *config,      /**< configuration struct */
     checkptr(config->restartdir);
   }
   config->param_out=FALSE;
+  config->ofiles=FALSE;
   config->scan_verbose=ERR; /* NO_ERR would suppress also error messages */
   pos=getenv(LPJWAIT);
   if(pos!=NULL)
@@ -314,6 +305,8 @@ FILE *openconfig(Config *config,      /**< configuration struct */
       }
       else if(!strcmp((*argv)[i],"-param"))
         config->param_out=TRUE;
+      else if(!strcmp((*argv)[i],"-ofiles"))
+        config->ofiles=TRUE;
       else if(!strcmp((*argv)[i],"-vv"))
         config->scan_verbose=VERB;
       else if(!strcmp((*argv)[i],"-inpath"))

@@ -24,4 +24,4 @@ Standtype urban_stand={URBAN,"urban",0.0,0,new_agriculture,
                              free_agriculture,fwrite_agriculture,
                              fread_agriculture,fprint_agriculture,
                              daily_natural,annual_agriculture,
-                             NULL,isdailyoutput_agriculture};
+                             NULL};

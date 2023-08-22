@@ -26,14 +26,13 @@
 #include "agriculture_tree.h"
 #include "urban.h"
 
-#define LPJCHECK_VERSION "1.0.005"
 #define NTYPES 3 /* number of PFT types: grass, tree, crop */
 #define NSTANDTYPES 14 /* number of stand types / land use types as defined in landuse.h*/
 
-#define USAGE "Usage: %s [-h] [-q] [-nocheck] [-param] [-vv]\n"\
+#define USAGE "Usage: %s [-h] [-v] [-q] [-nocheck] [-ofiles] [-param] [-vv]\n"\
               "       [-couple hostname[:port]]\n"\
               "       [-outpath dir] [-inpath dir] [-restartpath dir]\n"\
-              "       [[-Dmacro[=value]] [-Idir] ...] filename\n"
+              "       [-pp cmd] [[-Dmacro[=value]] [-Idir] ...] filename\n"
 
 int main(int argc,char **argv)
 {
@@ -77,26 +76,33 @@ int main(int argc,char **argv)
       argv++;
       isout=FALSE; /* no output */
     }
+    else if(!strcmp(argv[1],"-v"))
+    {
+      puts(LPJ_VERSION);
+      return EXIT_SUCCESS;
+    }
     else if(!strcmp(argv[1],"-h"))
     {
       file=popen("more","w");
       if(file==NULL)
         file=stdout;
       fprintf(file,"     ");
-      rc=fprintf(file,"%s Version " LPJCHECK_VERSION " (" __DATE__ ") Help",
+      rc=fprintf(file,"%s (" __DATE__ ") Help",
               progname);
       fprintf(file,"\n     ");
       frepeatch(file,'=',rc);
-      fprintf(file,"\n\nChecks syntax of LPJmL " LPJ_VERSION " configuration files\n\n");
+      fprintf(file,"\n\nChecks syntax of LPJmL version " LPJ_VERSION " configuration files\n\n");
       fprintf(file,USAGE,progname);
       fprintf(file,"Arguments:\n"
              "-h                  print this help text\n"
+             "-v                  print LPJmL version\n"
              "-q                  print error messsages only\n"
              "-vv                 verbosely print the actual values during reading of the\n"
              "                    configuration files\n"
+             "-ofiles             list only all available output variables\n"
              "-param              print LPJ parameter\n"
-             "-pp cmd             set preprocessor program. Default is 'cpp'\n"
-             "-couple host[:port] set host and port where coupled model is running.\n"
+             "-pp cmd             set preprocessor program. Default is '" cpp_cmd "'\n"
+             "-couple host[:port] set host and port where coupled model is running\n"
              "-outpath dir        directory appended to output filenames\n"
              "-inpath dir         directory appended to input filenames\n"
              "-restartpath dir    directory appended to restart filename\n"
@@ -118,9 +124,9 @@ int main(int argc,char **argv)
   if(isout)
   {
     snprintf(line,78-10,
-             "%s Version " LPJCHECK_VERSION " (" __DATE__ ")",progname);
+             "%s (" __DATE__ ")",progname);
     title[0]=line;
-    title[1]="Checking configuration file for LPJmL Version " LPJ_VERSION;
+    title[1]="Checking configuration file for LPJmL version " LPJ_VERSION;
     title[2]="(C) Potsdam Institute for Climate Impact Research (PIK),";
     title[3]="see COPYRIGHT file";
     banner(title,4,78);
@@ -128,13 +134,18 @@ int main(int argc,char **argv)
 
   if(readconfig(&config,scanfcn,NTYPES,standtype,NSTANDTYPES,NOUT,&argc,&argv,USAGE))
   {
-    fputs("ERROR001: Cannot process configuration file.\n",stderr);
-    rc=EXIT_FAILURE;
+    fail(READ_CONFIG_ERR,FALSE,"Cannot process configuration file");
   }
   else
   {
     if(argc)
       fputs("WARNING018: Arguments listed after configuration filename, will be ignored.\n",stderr);
+    if(config.ofiles)
+    {
+      fprintoutputvar(stdout,config.outnames,NOUT,config.npft[GRASS]+config.npft[TREE],config.npft[CROP],&config);
+      return EXIT_SUCCESS;
+    }
+
     if(isout)
     {
       /* print LPJ configuration on stdout if '-q' option is not set */

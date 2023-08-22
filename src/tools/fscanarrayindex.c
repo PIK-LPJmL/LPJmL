@@ -4,7 +4,7 @@
 /**                                                                                \n**/
 /**     C implementation of LPJmL                                                  \n**/
 /**                                                                                \n**/
-/**     Function reads a real value from a text file                               \n**/
+/**     Function gets array element from json object                               \n**/
 /**                                                                                \n**/
 /** (C) Potsdam Institute for Climate Impact Research (PIK), see COPYRIGHT file    \n**/
 /** authors, and contributors see AUTHORS file                                     \n**/
@@ -18,27 +18,12 @@
 #include <stdio.h>
 #include <string.h>
 #include <math.h>
-#ifdef USE_JSON
 #include <json-c/json.h>
-#endif
 #include "types.h"
 
-Bool fscanarrayindex(const LPJfile *file, /**< pointer to a LPJ file             */
-                     LPJfile  *s,   /**< real value read from file         */
-                     int index,     /**< index in array                    */
-                     Verbosity verb /**< verbosity level (NO_ERR,ERR,VERB) */
-                    )               /** \return TRUE on error              */
+LPJfile *fscanarrayindex(const LPJfile *file, /**< pointer to a LPJ file */
+                         int index            /**< index in array */
+                        )                     /** \return array element or NULL on error */
 {
-#ifdef USE_JSON
-  struct json_object *item;
-  if(file->isjson)
-  {
-    item =json_object_array_get_idx(file->file.obj,index);
-    s->isjson=TRUE;
-    s->file.obj=item;
-    return (item==NULL);
-  }
-#endif
-  *s=*file;
-  return FALSE;
+  return json_object_array_get_idx(file,index);
 } /* of 'fscanarrayindex' */

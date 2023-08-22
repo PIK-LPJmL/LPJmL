@@ -29,8 +29,8 @@ Bool fscanfireduration(LPJfile *file,          /**< pointer to LPJ file */
                        Verbosity verbose
                       )                        /** \return TRUE on error */
 {
-  String name;
-  LPJfile array,item,s;
+  const char* name;
+  LPJfile *array,*item,*s;
   int i,size,index;
   for(i=0;i<nstand;i++)
   {
@@ -39,14 +39,17 @@ Bool fscanfireduration(LPJfile *file,          /**< pointer to LPJ file */
   }
   if(iskeydefined(file,"max_fireduration"))
   {
-    if(fscanarray(file,&array,&size,FALSE,"max_fireduration",verbose))
+    array=fscanarray(file,&size,"max_fireduration",verbose);
+    if(array==NULL)
       return TRUE;
     for(i=0;i<size;i++)
     {
-      fscanarrayindex(&array,&item,i,verbose);
-      if(fscanstruct(&item,&s,NULL,verbose))
+      item=fscanarrayindex(array,i);
+      s=fscanstruct(item,NULL,verbose);
+      if(s==NULL)
         return TRUE;
-      if(fscanstring(&s,name,"stand",FALSE,verbose))
+      name=fscanstring(s,NULL,"stand",verbose);
+      if(name==NULL)
         return TRUE;
       index=findstandname(name,standtypes,nstand);
       if(index==NOT_FOUND)
@@ -64,9 +67,9 @@ Bool fscanfireduration(LPJfile *file,          /**< pointer to LPJ file */
         }
         return TRUE;
       }
-      if(fscanreal(&s,&standtypes[index]->max_fireduration,"duration",FALSE,verbose))
+      if(fscanreal(s,&standtypes[index]->max_fireduration,"duration",FALSE,verbose))
         return TRUE;
-      if(fscanint(&s,&standtypes[index]->max_ndayfire,"ndayfire",FALSE,verbose))
+      if(fscanint(s,&standtypes[index]->max_ndayfire,"ndayfire",FALSE,verbose))
         return TRUE;
       standtypes[index]->dailyfire=dailyfire;
     }
@@ -80,19 +83,19 @@ Bool fscanfirestand(LPJfile *file,          /**< pointer to LPJ file */
                     Verbosity verbose
                    )                        /** \return TRUE on error */
 {
-  String name;
-  LPJfile array,item;
+  const char*name;
+  LPJfile *array,*item;
   int i,size,index;
   if(iskeydefined(file,"firestand"))
   {
-    if(fscanarray(file,&array,&size,FALSE,"firestand",verbose))
-      return TRUE;
-    if(fscanarray(file,&array,&size,FALSE,"firestand",verbose))
+    array=fscanarray(file,&size,"firestand",verbose);
+    if(array==NULL)
       return TRUE;
     for(i=0;i<size;i++)
     {
-      fscanarrayindex(&array,&item,i,verbose);
-      if(fscanstring(&item,name,NULL,FALSE,verbose))
+      item=fscanarrayindex(array,i);
+      name=fscanstring(item,NULL,NULL,verbose);
+      if(name==NULL)
         return TRUE;
       index=findstandname(name,standtypes,nstand);
       if(index==NOT_FOUND)

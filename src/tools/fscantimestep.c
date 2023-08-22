@@ -17,9 +17,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
-#ifdef USE_JSON
 #include <json-c/json.h>
-#endif
 #include "conf.h"
 #include "types.h"
 

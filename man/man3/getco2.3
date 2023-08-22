@@ -1,11 +1,11 @@
-.TH getco2 3  "January 27, 2008" "version 5.1.001" "LPJmL programmers manual"
+.TH getco2 3  "LPJmL programmers manual"
 .SH NAME
 getco2 \- get atmospheric CO2 concentration
 .SH SYNOPSIS
 .nf
 \fB#include "lpj.h"
 
-Real getco2(const Climate *\fIclimate\fB,int \fI year\fB);\fP
+Bool getco2(const Climate *\fIclimate\fB,Real *\fIco2\fB,int \fI year\fB);\fP
 
 .fi
 .SH DESCRIPTION
@@ -15,10 +15,13 @@ The arguments of \fBgetco2\fP are:
 .I climate
 Pointer to climate data. Must be initialized by \fBinitclimate()\fP.
 .TP
+.I pco2
+pointer to real where atmospheric CO2 concentration (ppmv) is stored.
+.TP
 .I year
 year CO2 data is read.
 .SH RETURN VALUE
-Atmospheric CO2 concentration (ppmv) is returned.
+Upon successful completion FALSE is returned and TRUE in case of error.
 
 .SH AUTHORS
 

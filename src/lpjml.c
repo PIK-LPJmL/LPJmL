@@ -186,6 +186,15 @@ int main(int argc,char **argv)
   failonerror(&config,rc,READ_CONFIG_ERR,"Cannot read configuration");
   if(isroot(config) && argc)
     fputs("WARNING018: Arguments listed after configuration filename, will be ignored.\n",stderr);
+  if(config.ofiles)
+  {
+    if(isroot(config))
+      fprintoutputvar(stdout,config.outnames,NOUT,config.npft[GRASS]+config.npft[TREE],config.npft[CROP],&config);
+#ifdef USE_MPI
+    MPI_Finalize();
+#endif
+    return EXIT_SUCCESS;
+  }
   if(isroot(config))
     printconfig(standtype,NSTANDTYPES,config.npft[GRASS]+config.npft[TREE],
                 config.npft[CROP],&config);
@@ -232,6 +241,10 @@ int main(int argc,char **argv)
   }
   if(isopen(output,GRID))
     writecoords(output,GRID,grid,&config);
+  if(isopen(output,TERR_AREA))
+    writearea(output,TERR_AREA,grid,&config);
+  if(isopen(output,LAKE_AREA))
+    writearea(output,LAKE_AREA,grid,&config);
   if(isopen(output,COUNTRY) && config.withlanduse)
     writecountrycode(output,COUNTRY,grid,&config);
   if(isopen(output,REGION) && config.withlanduse)

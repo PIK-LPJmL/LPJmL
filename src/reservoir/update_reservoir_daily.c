@@ -30,8 +30,6 @@ void update_reservoir_daily(Cell *cell, /**< pointer to cell */
     cell->ml.resdata->dmass=cell->ml.resdata->reservoir.capacity;
   }
   getoutput(&cell->output,EVAP_RES,config)+=min(cell->ml.resdata->dmass/cell->coord.area,eeq*PRIESTLEY_TAYLOR*cell->ml.reservoirfrac);
-  if(config->crop_index==ALLSTAND)
-    getoutput(&cell->output,D_EVAP,config)+=min(cell->ml.resdata->dmass/cell->coord.area,eeq*PRIESTLEY_TAYLOR*cell->ml.reservoirfrac);
   cell->balance.aevap_res+=min(cell->ml.resdata->dmass/cell->coord.area,eeq*PRIESTLEY_TAYLOR*cell->ml.reservoirfrac);
 #if defined(IMAGE) && defined(COUPLED)
   if(cell->ml.image_data!=NULL)

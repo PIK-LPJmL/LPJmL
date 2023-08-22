@@ -65,14 +65,15 @@
 static Bool fscantreephyspar(LPJfile *file,Treephyspar *phys,const char *name,
                              Verbosity verb)
 {
-  LPJfile s;
-  if(fscanstruct(file,&s,name,verb))
+  LPJfile *s;
+  s=fscanstruct(file,name,verb);
+  if(s==NULL)
     return TRUE;
-  if(fscanreal(&s,&phys->leaf,"leaf",FALSE,verb))
+  if(fscanreal(s,&phys->leaf,"leaf",FALSE,verb))
     return TRUE;
-  if(fscanreal(&s,&phys->sapwood,"sapwood",FALSE,verb))
+  if(fscanreal(s,&phys->sapwood,"sapwood",FALSE,verb))
     return TRUE;
-  if(fscanreal(&s,&phys->root,"root",FALSE,verb))
+  if(fscanreal(s,&phys->root,"root",FALSE,verb))
     return TRUE;
   if(phys->leaf<=0 || phys->sapwood<=0 || phys->root<=0)
   {
@@ -86,12 +87,13 @@ static Bool fscantreephyspar(LPJfile *file,Treephyspar *phys,const char *name,
 static Bool fscanratio(LPJfile *file,Treeratio *ratio,const char *name,
                        Verbosity verb)
 {
-  LPJfile s;
-  if(fscanstruct(file,&s,name,verb))
+  LPJfile *s;
+  s=fscanstruct(file,name,verb);
+  if(s==NULL)
     return TRUE;
-  if(fscanreal(&s,&ratio->sapwood,"sapwood",FALSE,verb))
+  if(fscanreal(s,&ratio->sapwood,"sapwood",FALSE,verb))
     return TRUE;
-  if(fscanreal(&s,&ratio->root,"root",FALSE,verb))
+  if(fscanreal(s,&ratio->root,"root",FALSE,verb))
     return TRUE;
   if(ratio->sapwood<=0 || ratio->root<=0)
   {

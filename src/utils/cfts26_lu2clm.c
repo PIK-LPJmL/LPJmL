@@ -15,7 +15,6 @@
 #include "lpj.h"
 #include <sys/stat.h>
 
-#define CFTS26_LUC2CLM_VERSION "1.0.001"
 #define ORDER CELLYEAR
 #define NYEAR 103  /* default value for number of years */
 #define FIRSTYEAR 1901 /* default value for first year */
@@ -57,9 +56,10 @@ int main(int argc,char **argv)
     {
       if(!strcmp(argv[i],"-h"))
       {
-        printf("cfts26_luc2clm " CFTS26_LUC2CLM_VERSION " (" __DATE__ ") - convert cfts26 and lu5 data files to\n"
-               "       clm data files for lpj C version\n");
+        printf("cfts26_luc2clm (" __DATE__ ") - convert cfts26 and lu5 data files to\n"
+               "       clm data files for LPJmL version " LPJ_VERSION "\n\n");
         printf(USAGE
+               "\nArguments:\n"
                "-h               print this help text\n" 
                "-firstyear first first year in data file (default is %d)\n"
                "-lastyear last   last year in data file\n"
@@ -71,7 +71,8 @@ int main(int argc,char **argv)
                "-yearcell        does not revert order in data file\n"
                "cfts26-file      filename of cfts26 data file\n"
                "lu5-file         filename of lu5 data file\n"
-               "clmfile          filename of clm data file\n",
+               "clmfile          filename of clm data file\n\n"
+               "(C) Potsdam Institute for Climate Impact Research (PIK), see COPYRIGHT file\n",
                FIRSTYEAR,NYEAR,FIRSTCELL,NCELL,NBANDS_CFT);
         return EXIT_SUCCESS;
       }

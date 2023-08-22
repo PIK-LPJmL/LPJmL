@@ -190,6 +190,7 @@ Bool annual_woodplantation(Stand *stand,         /**< Pointer to stand */
           stand->cell->balance.timber_harvest.carbon+=yield.carbon;
           stand->cell->balance.timber_harvest.nitrogen+=yield.nitrogen;
           getoutput(&stand->cell->output,TIMBER_HARVESTC,config)+=yield.carbon;
+          getoutput(&stand->cell->output,TIMBER_HARVESTN,config)+=yield.nitrogen;
           getoutput(&stand->cell->output,HARVESTC,config)+=yield.carbon;
           getoutput(&stand->cell->output,HARVESTN,config)+=yield.nitrogen;
           if(config->pft_output_scaled)

@@ -86,7 +86,7 @@ void new_crop(Pft *pft, /**< pointer to PFT data */
   crop->nfertilizer=0;
   crop->nmanure=0;
 
-  allocation_daily_crop(pft,0,NO_WDF,FALSE,config); 
+  allocation_daily_crop(pft,0,NO_WDF,config);
 } /* of 'new_crop' */
 
 /*

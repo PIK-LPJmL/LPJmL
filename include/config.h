@@ -65,6 +65,7 @@ struct config
   Filename extflow_filename;
   Filename neighb_irrig_filename;
   Filename coord_filename;
+  Filename landfrac_filename;
   Filename soil_filename;
   Filename soilph_filename;
   Filename river_filename;
@@ -133,13 +134,11 @@ struct config
   Real laimax;        /**< maximum LAI for benchmark */
   Bool withdailyoutput; /**< with daily output (TRUE/FALSE) */
   Bool nofill;          /**< do not fille NetCDF files at creation (TRUE/FALSE) */
-  int crop_index;
   int pft_residue;
   int fdi;
   char *pft_index;
   char *layer_index;
   char *fuel_index;
-  Bool crop_irrigation;
   int with_nitrogen;      /**< enable nitrogen cycle */
   Bool crop_resp_fix;      /**< with fixed crop respiration (TRUE/FALSE) */
   Bool cropsheatfrost;
@@ -168,24 +167,30 @@ struct config
   int landuse_year_const;       /**< year landuse is fixed for LANDUSE_CONST case */
   Bool intercrop;               /**< intercropping (TRUE/FALSE) */
   Bool grassonly;               /**< set all cropland including others to zero but keep managed grasslands */
-  Bool istimber;
+  Bool luc_timber;              /***< land-use change timber */
   Bool storeclimate;           /**< store climate data in spin-up phase */
-  Bool const_climate;           /**< constant climate */
-  Bool shuffle_climate;         /**< shuffle spinup climate */
+  Bool shuffle_spinup_climate;  /**< shuffle spinup climate */
   Bool fix_climate;             /**< fix climate after specified year */
-  Bool fix_landuse;             /**< fix land use after specified year */
-  Bool iscotton;                /**< cotton present in PFT parameter file */
-  int fix_landuse_year;         /**< year at which land use is fixed */
   int fix_climate_year;         /**< year at which climate is fixed */
-  int fix_climate_cycle;        /**< number of years for climate shuffle for fixed climate */
-  Bool const_deposition;        /**< constant N deposition */
-  int depos_year_const;         /**< year deposition is fixed */
+  int fix_climate_interval[2];  /**< interval for fixed climate */
+  Bool fix_climate_shuffle;     /**< randomly shuffle climate */
+  Bool fix_deposition;          /**< fix deposition after specified year */
+  int fix_deposition_year;      /**< year at which deposition is fixed */
+  int fix_deposition_interval[2]; /**< interval for fixed deposition */
+  Bool fix_deposition_shuffle;  /**< randomly shuffle deposition */
+  Bool fix_deposition_with_climate; /**< fix deposition same as climate */
+  Bool fix_landuse;             /**< fix land use after specified year */
+  int fix_landuse_year;         /**< year at which land use is fixed */
+  Bool fix_co2;                 /**< fix CO2 after specified year */
+  int fix_co2_year;             /**< year at which CO2 is fixed */
+  Bool iscotton;                /**< cotton present in PFT parameter file */
+  Bool landfrac_from_file;      /**< land fraction read from file (TRUE/FALSE) */
   Bool residues_fire;           /**< use parameters for agricultural fires */
   Bool param_out;               /**< print LPJmL parameter */
+  Bool ofiles;                  /**< list only all output files */
   Bool check_climate;           /**< check climate input data for NetCDF files */
   Bool others_to_crop;          /**< move PFT type others into PFT crop, cft_tropic for tropical, cft_temp for temperate */
   Bool max_firesize;
-  Bool with_lakes;              /**< enable lakes (TRUE/FALSE) */
   int cft_temp;
   int cft_tropic;
   Verbosity scan_verbose;       /**< option -vv 2: verbosely print the read values during fscanconfig. default 1; 0 would supress even error messages */
@@ -230,11 +235,12 @@ struct config
   Bool ispopulation;
   Bool ishuman_ign_prob;
   Bool river_routing;  /**< river routing enabled */
+  Bool with_lakes;     /**< enable lakes (TRUE/FALSE) */
   Bool extflow;        /** external flow enabled */
   Bool permafrost;     /**< permafrost module enabled */
   Bool johansen;       /**< johansen enabled */
-  Bool new_phenology;	/**< new phenology enabled */
-  Bool new_trf;         /**< new transpiration reduction function enabled */
+  Bool gsi_phenology;	/**< GSI phenology enabled (TRUE/FALSE) */
+  Bool transp_suction_fcn; /**< transpiration reduction function enabled */
   Bool equilsoil;      /**< equilsoil is called */
   Bool from_restart;   /**< reading from restart */
   int soilpar_option;  /**< soil parameter option (NO_FIXED_SOILPAR, FIXED_SOILPAR, PRESCRIBED_SOILPAR) */
@@ -250,7 +256,9 @@ struct config
   Pnet *irrig_res_back;
   int withlanduse;
   Bool reservoir;
+#ifdef COUPLING_WITH_FMS
   Bool nitrogen_coupled;
+#endif
   int *landcovermap;        /**< landcover map */
   int landcovermap_size;    /**< size landcover map */
   int *landusemap;          /**< mapping of bands in land-use file to CFTs */
@@ -277,6 +285,7 @@ struct config
   int prescribe_landcover; /**< use input to prescribe land cover ? */
   int* mowingdays;         /**< mowing days for grassland */
   int mowingdays_size;     /**< size of mowing days array */
+  int biomass_grass_harvest;           /**< green or brown harvest of biomass grass */
   Bool npp_controlled_bnf;             /**< biological nitrogen fixation folowing Ma et al., 2022 */
   Seed seed;
   int start_coupling;      /**< year in which coupling to IMAGE/coupler starts */

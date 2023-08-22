@@ -72,7 +72,7 @@ Stocks cultivate(Cell *cell,           /**< cell pointer */
     pos=addstand((isother) ? &others_stand : &agriculture_stand,cell);
     cropstand=getstand(cell->standlist,pos-1);
     cropstand->frac=landfrac;
-    reclaim_land(setasidestand,cropstand,cell,config->istimber,npft+ncft,config);
+    reclaim_land(setasidestand,cropstand,cell,config->luc_timber,npft+ncft,config);
     setasidestand->frac-=landfrac;
   }
   if(cell->ml.with_tillage && year>=config->till_startyear)

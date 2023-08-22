@@ -167,7 +167,6 @@ extern void setotherstocrop(void);
 
 /* Declaration of variables */
 
-extern Real tinyfrac;
 extern const char *biomass_names[NBIOMASSTYPE];
 
 #endif

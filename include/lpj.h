@@ -28,7 +28,7 @@
 #ifndef LPJ_H /* Already included? */
 #define LPJ_H
 
-#define LPJ_VERSION  "5.6.13-FIRE"
+#define LPJ_VERSION  "5.7.4-FIRE"
 
 /* Necessary header files */
 
@@ -98,6 +98,16 @@ typedef struct standtype Standtype; /* forward declaration of standtype */
 #include "biomes.h"
 
 /* Definition of constants */
+
+#ifdef _WIN32              /* are we on a Windows machine? */
+#ifdef IMAGE
+#define cpp_cmd "cl /E /DIMAGE /nologo"  /* C preprocessor command for Windows */
+#else
+#define cpp_cmd "cl /E /nologo"  /* C preprocessor command for Windows */
+#endif
+#else
+#define cpp_cmd "cpp"  /* C preprocessor command for Unix */
+#endif
 
 /* Environment variables */
 

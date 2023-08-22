@@ -40,21 +40,6 @@ static int findid(const char *name,const Variable var[],int size)
   return NOT_FOUND;
 } /* of 'findid' */
 
-static int findpftid(const char *name,const Pftpar pftpar[],int ntotpft)
-{
-  int p;
-  if(!strcmp(name,"allnatural"))
-    return ALLNATURAL;
-  else if(!strcmp(name,"allgrassland"))
-    return ALLGRASSLAND;
-  else if(!strcmp(name,"allstand"))
-    return ALLSTAND;
-  for(p=0;p<ntotpft;p++)
-    if(!strcmp(name,pftpar[p].name))
-      return pftpar[p].id;
-  return NOT_FOUND;
-} /* of 'findpftid' */
-
 Bool fscanoutput(LPJfile *file,  /**< pointer to LPJ file */
                  int npft,       /**< number of natural PFTs */
                  int ncft,       /**< number of crop PFTs */
@@ -62,19 +47,21 @@ Bool fscanoutput(LPJfile *file,  /**< pointer to LPJ file */
                  int nout_max    /**< maximum number of output files */
                 )                /** \return TRUE on error */
 {
-  LPJfile arr,item;
-  int count,flag,size,index,ntotpft,version,default_fmt;
-  Bool isdaily,metafile,b;
-  String outpath,name;
+  LPJfile *arr,*item;
+  int count,flag,size,index,version,default_fmt;
+  Bool metafile,b;
+  const char *outpath,*name;
   Verbosity verbosity;
   String s,s2;
-  String default_suffix;
+  char *default_suffix;
   verbosity=isroot(*config) ? config->scan_verbose : NO_ERR;
-  if(fscanstring(file,name,"compress_cmd",FALSE,verbosity))
+  name=fscanstring(file,NULL,"compress_cmd",verbosity);
+  if(name==NULL)
     return TRUE;
   config->compress_cmd=strdup(name);
   checkptr(config->compress_cmd);
-  if(fscanstring(file,name,"compress_suffix",FALSE,verbosity))
+  name=fscanstring(file,NULL,"compress_suffix",verbosity);
+  if(name==NULL)
     return TRUE;
   config->compress_suffix=strdup(name);
   checkptr(config->compress_suffix);
@@ -85,7 +72,8 @@ Bool fscanoutput(LPJfile *file,  /**< pointer to LPJ file */
       fprintf(stderr,"ERROR251: Suffix '%s' must start with '.'.\n",config->compress_suffix);
     return TRUE;
   }
-  if(fscanstring(file,name,"csv_delimit",FALSE,verbosity))
+  name=fscanstring(file,NULL,"csv_delimit",verbosity);
+  if(name==NULL)
     return TRUE;
   if(strlen(name)!=1)
   {
@@ -99,19 +87,18 @@ Bool fscanoutput(LPJfile *file,  /**< pointer to LPJ file */
   count=index=0;
   config->withdailyoutput=FALSE;
   size=nout_max;
-  if(file->isjson && !iskeydefined(file,"output"))
+  if(!iskeydefined(file,"output"))
   {
     config->pft_output_scaled=FALSE;
     config->n_out=0;
-    config->crop_index=-1;
-    config->crop_irrigation=-1;
     config->json_suffix=NULL;
     return FALSE;
   }
-  if(fscanarray(file,&arr,&size,FALSE,"output",verbosity))
+  arr=fscanarray(file,&size,"output",verbosity);
+  if(arr==NULL)
   {
     config->n_out=0;
-    return file->isjson;
+    return TRUE;
   }
   metafile=FALSE;
   if(fscanbool(file,&metafile,"output_metafile",TRUE,verbosity))
@@ -119,9 +106,10 @@ Bool fscanoutput(LPJfile *file,  /**< pointer to LPJ file */
   default_fmt=RAW;
   if(fscankeywords(file,&default_fmt,"default_fmt",fmt,N_FMT,TRUE,verbosity))
     return TRUE;
-  strcpy(default_suffix,"");
-  if(fscanstring(file,default_suffix,"default_suffix",TRUE,verbosity))
+  name=fscanstring(file,"","default_suffix",verbosity);
+  if(name==NULL)
     return TRUE;
+  default_suffix=strdup(name);
   version=0;
   if(iskeydefined(file,"output_version"))
   {
@@ -170,7 +158,8 @@ Bool fscanoutput(LPJfile *file,  /**< pointer to LPJ file */
   }
   if(iskeydefined(file,"outpath"))
   {
-    if(fscanstring(file,outpath,"outpath",FALSE,verbosity))
+    outpath=fscanstring(file,NULL,"outpath",verbosity);
+    if(outpath==NULL)
       return TRUE;
     free(config->outputdir);
     config->outputdir=strdup(outpath);
@@ -187,17 +176,17 @@ Bool fscanoutput(LPJfile *file,  /**< pointer to LPJ file */
   {
     fscanint2(file,&config->pft_output_scaled,"pft_output_scaled");
   }
-  if(fscanstring(file,name,"json_suffix",FALSE,verbosity))
+  name=fscanstring(file,NULL,"json_suffix",verbosity);
+  if(name==NULL)
     return TRUE;
   config->json_suffix=strdup(name);
   checkptr(config->json_suffix);
-  isdaily=FALSE;
   while(count<=nout_max && index<size)
   {
-    fscanarrayindex(&arr,&item,index,verbosity);
-    if(isstring(&item,"id"))
+    item=fscanarrayindex(arr,index);
+    if(isstring(item,"id"))
     {
-      fscanstring(&item,name,"id",FALSE,verbosity);
+      name=fscanstring(item,NULL,"id",verbosity);
       flag=findid(name,config->outnames,nout_max);
       if(flag==NOT_FOUND)
       {
@@ -209,7 +198,7 @@ Bool fscanoutput(LPJfile *file,  /**< pointer to LPJ file */
     }
     else
     {
-      fscanint2(&item,&flag,"id");
+      fscanint2(item,&flag,"id");
     }
     if(flag==END)  /* end marker read? */
       break;
@@ -230,7 +219,7 @@ Bool fscanoutput(LPJfile *file,  /**< pointer to LPJ file */
       else
         config->outputvars[count].filename.version=(flag==GRID) ? LPJGRID_VERSION : LPJOUTPUT_VERSION;
       config->outputvars[count].filename.fmt=default_fmt;
-      if(readfilename(&item,&config->outputvars[count].filename,"file",config->outputdir,FALSE,FALSE,FALSE,verbosity))
+      if(readfilename(item,&config->outputvars[count].filename,"file",config->outputdir,FALSE,FALSE,FALSE,verbosity))
       {
         if(verbosity)
           fprintf(stderr,"ERROR231: Cannot read filename for output '%s'.\n",
@@ -288,8 +277,6 @@ Bool fscanoutput(LPJfile *file,  /**< pointer to LPJ file */
       }
       else
       {
-        if(flag>=D_LAI && flag<=D_PET)
-          isdaily=TRUE;
         config->outputvars[count].id=flag;
         if(flag==GLOBALFLUX && config->outputvars[count].filename.fmt!=TXT)
         {
@@ -351,7 +338,7 @@ Bool fscanoutput(LPJfile *file,  /**< pointer to LPJ file */
               fprintf(stderr,"ERROR224: Invalid format specifier in filename '%s'.\n",
                       config->outputvars[count].filename.name);
           }
-          else if(config->outputvars[count].oneyear && (flag==GRID || flag==COUNTRY || flag==REGION || flag==GLOBALFLUX))
+          else if(config->outputvars[count].oneyear && getnyear(config->outnames,flag)==0)
           {
             if(verbosity)
               fprintf(stderr,"ERROR225: One year output not allowed for grid, globalflux, country or region.\n");
@@ -366,40 +353,7 @@ Bool fscanoutput(LPJfile *file,  /**< pointer to LPJ file */
     }
     index++;
   }
-  if(isdaily)
-  {
-    ntotpft=config->npft[GRASS]+config->npft[TREE]+config->npft[CROP];
-    if(isstring(file,"crop_index"))
-    {
-      fscanstring(file,name,"crop_index",FALSE,verbosity);
-      config->crop_index=findpftid(name,config->pftpar,ntotpft);
-      if(config->crop_index==NOT_FOUND)
-      {
-        if(verbosity)
-          fprintf(stderr,"ERROR166: Invalid crop index \"%s\" for daily output.\n",name);
-        return TRUE;
-      }
-    }
-    else
-    {
-      fscanint2(file,&config->crop_index,"crop_index");
-      if(config->crop_index>=0 && config->crop_index<config->npft[CROP])
-        config->crop_index+=config->npft[GRASS]+config->npft[TREE];
-      else if((config->crop_index!=ALLNATURAL && config->crop_index!=ALLGRASSLAND && config->crop_index!=ALLSTAND))
-      {
-        if(verbosity)
-          fprintf(stderr,"ERROR166: Invalid value for crop index=%d.\n",
-                  config->crop_index);
-        return TRUE;
-      }
-    }
-    fscanbool2(file,&config->crop_irrigation,"crop_irrigation");
-  }
-  else
-  {
-    config->crop_index=-1;
-    config->crop_irrigation=-1;
-  }
+  free(default_suffix);
   config->n_out=count;
   return FALSE;
 } /* of 'fscanoutput' */

@@ -16,7 +16,6 @@
 
 #include "lpj.h"
 
-#define CRU2CLM_VERSION "1.0.003"
 #define NYEAR 103  /* default value for number of years */
 #define FIRSTYEAR 1901 /* default value for first year */
 #define FIRSTCELL 0
@@ -51,10 +50,10 @@ int main(int argc,char **argv)
     {
       if(!strcmp(argv[i],"-h"))
       {
-        printf("cru2clm " CRU2CLM_VERSION " (" __DATE__ ") - convert cru data files to\n"
-               "       clm data files for lpj C version\n");
+        printf("cru2clm (" __DATE__ ") - convert cru data files to\n"
+               "       clm data files for LPJmL version " LPJ_VERSION "\n\n");
         printf(USAGE
-               "Arguments:\n"
+               "\nArguments:\n"
                "-h               print this help text\n" 
                "-firstyear first first year in cru file (default is %d)\n"
                "-lastyear last   last year in cru file\n"
@@ -66,7 +65,8 @@ int main(int argc,char **argv)
                "-swap            change byte order in cru file\n"
                "-yearcell        does not revert order in cru file\n"
                "crufile          filename of cru data file\n"
-               "clmfile          filename of clm data file\n",
+               "clmfile          filename of clm data file\n\n"
+               "(C) Potsdam Institute for Climate Impact Research (PIK), see COPYRIGHT file\n",
                FIRSTYEAR,NYEAR,FIRSTCELL,NCELL,NMONTH);
         return EXIT_SUCCESS;
       }

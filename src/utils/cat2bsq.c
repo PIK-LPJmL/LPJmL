@@ -36,7 +36,7 @@ int main(int argc,char **argv)
   k=LPJ_FLOAT;
   bands=103;
   outfile=NULL;
-  for(i=0;i<argc;i++)
+  for(i=1;i<argc;i++)
     if(argv[i][0]=='-')
     {
       if(!strcmp(argv[i],"-type"))
@@ -104,7 +104,7 @@ int main(int argc,char **argv)
   runs=argc-i;
   if(runs==0)
   {
-    fprintf(stderr,"Argument is missing\n" USAGE);
+    fprintf(stderr,"Filename is missing.\n" USAGE);
     return EXIT_FAILURE;
   }
   if(outfile==NULL)
@@ -120,6 +120,7 @@ int main(int argc,char **argv)
   }
   ifp=newvec(FILE *,runs);
   n=(int *)malloc(runs*sizeof(int));
+  check(n);
   for(j=0;j<runs;j++)
   {
 

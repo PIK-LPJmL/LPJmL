@@ -36,7 +36,6 @@ struct standtype
   Bool (*annual)(Stand *,int,int,
                  Real,int,Bool,Bool,const Config *);
   void (*dailyfire)(Stand *,Real,Real,Real,const Dailyclimate *,const Config *);
-  Bool (*isdaily_output)(const Config *,const Stand *);
 };
 
 struct stand
@@ -91,7 +90,7 @@ extern void waterbalance(Stand *,Real [BOTTOMLAYER],Real [BOTTOMLAYER],Real *,Re
                          Real,Real *,Bool);
 extern Real water_stressed(Pft *,Real [LASTLAYER],Real,Real,
                            Real,Real *,Real *,Real *,Real,Real,
-                           Real,Real,Real,Real *,int,int,const Config *);
+                           Real,Real,Real,Real *,int,int,int,const Config *);
 
 extern Real infil_perc_irr(Stand *,Real,Real *,int,int,const Config *);
 extern Real infil_perc_rain(Stand *,Real,Real *,int,int,const Config *);
@@ -114,6 +113,5 @@ extern void freelandcover(Landcover,Bool);
 #define daily_stand(stand,co2,climate,day,month,daylength,gtemp_air,gtemp_soil,eeq,par,melt,npft,ncft,year,intercrop,agrfrac,config) stand->type->daily(stand,co2,climate,day,month,daylength,gtemp_air,gtemp_soil,eeq,par,melt,npft,ncft,year,intercrop,agrfrac,config)
 #define annual_stand(stand,npft,ncft,popdens,year,isdaily,intercrop,config) stand->type->annual(stand,npft,ncft,popdens,year,isdaily,intercrop,config)
 #define dailyfire_stand(stand,popdens,hign,avgprec,climate,config) if(stand->type->dailyfire!=NULL) stand->type->dailyfire(stand,popdens,hign,avgprec,climate,config)
-#define isdailyoutput_stand(output,stand) ((stand->type->isdaily_output==NULL) ? FALSE : stand->type->isdaily_output(output,stand))
 
 #endif

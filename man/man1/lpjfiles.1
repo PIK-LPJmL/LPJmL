@@ -1,9 +1,9 @@
-.TH lpjfiles 1  "April 21, 2023" "version 1.0.004" "USER COMMANDS"
+.TH lpjfiles 1  "USER COMMANDS"
 .SH NAME
 lpjfiles \- Prints list of input/output files of LPJmL 
 .SH SYNOPSIS
 .B lpjfiles
-[\-h] [\-noinput] [-pp cmd] [\-outpath \fIdir\fP]
+[\-h] [\-v] [\-noinput] [-pp cmd] [\-outpath \fIdir\fP]
 [\-inpath \fIdir\fP] [\-restartpath \fIdir\fP] [[\-Dmacro[=value]] [\-I\fIdir\fP] ...]
 \fIfilename\fP
 .SH DESCRIPTION
@@ -13,11 +13,14 @@ Program prints list of all input and output files of LPJmL configuration files. 
 \-h
 display a short help text
 .TP
+\-v
+print LPJmL version
+.TP
 \-noinput
 does not list input data files
 .TP
 \-pp cmd
-Set preprocessor program to cmd. Default is \fBcpp -P\fP.
+Set preprocessor program to cmd. Default is \fBcpp\fP.
 .TP
 \-outpath \fIdir\fP
 set the output directory path. The path is added to the output filenames if they do not contain an absolute path.
@@ -42,7 +45,7 @@ Archive files for configuration file lpjml.js with input files located in the /p
 .SH ENVIRONMENT
 .TP
 LPJPREP 
-defines preprocessor command for LPJmL configuration file, default is \fBcpp -P\fP. Same as '-pp' option.
+defines preprocessor command for LPJmL configuration file, default is \fBcpp\fP. Same as '-pp' option.
 .TP
 LPJROOT
 defines the root directory for LPJmL. This directory is added to the
@@ -75,4 +78,4 @@ For authors and contributors see AUTHORS file
 (C) Potsdam Institute for Climate Impact Research (PIK), see COPYRIGHT file
 
 .SH SEE ALSO
-lpjml(1), lpjcheck(1), lpjml.conf(5)
+lpjml(1), lpjcheck(1)

@@ -22,11 +22,11 @@
 
 "input" :
 {
-  "soil" :         { "fmt" : "meta", "name" : "soil.descr"},
+  "soil" :         { "fmt" : "meta", "name" : "soil.json"},
   "coord" :        { "fmt" : "clm",  "name" : "grid_cru2000_image.clm"},
   "countrycode" :  { "fmt" : "clm",  "name" : "cow_coast_2006_image.bin"},
   "landuse" :      { "fmt" : "clm",  "name" : "landuse4spinup_IM32_C38.bin"},
-  "lakes" :        { "fmt" : "meta", "name" : "sealakefrac_image.descr"},
+  "lakes" :        { "fmt" : "meta", "name" : "sealakefrac_image.json"},
   "drainage" :     { "fmt" : "clm",  "name" : "drainage_image.bin"},
   "neighb_irrig" : { "fmt" : "clm",  "name" : "neighb_irrig_image2.bin"},
   "elevation" :    { "fmt" : "clm",  "name" : "elevation_image.bin"},

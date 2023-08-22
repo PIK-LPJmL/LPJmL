@@ -41,10 +41,6 @@ Real npp_crop(Pft *pft,           /**< [inout] PFT variables */
   Real npp;
   Real rosoresp,presp,gresp;
   Cropratio nc_ratio;
-  Irrigation *data;
-  Output *output;
-  output=&pft->stand->cell->output;
-  data=pft->stand->data;
   crop=pft->data;
   par=pft->par->data;
   if(!config->crop_resp_fix && crop->ind.root.carbon>epsilon)
@@ -76,27 +72,7 @@ Real npp_crop(Pft *pft,           /**< [inout] PFT variables */
     pft->bm_inc.carbon+=npp;
   }
   else
-    allocation_daily_crop(pft,npp,wdf,TRUE,config);
-  if(config->crop_index==ALLSTAND)
-    getoutput(output,D_NPP,config)+=npp*pft->stand->frac;
-  else if(config->crop_index==pft->par->id && config->crop_irrigation==data->irrigation)
-  {
-    getoutput(output,D_RROOT,config)+=crop->ind.root.carbon*pft->par->respcoeff*param.k*nc_ratio.root*gtemp_soil;
-    getoutput(output,D_RSO,config)+=crop->ind.so.carbon*pft->par->respcoeff*param.k*nc_ratio.so*gtemp_air;
-    getoutput(output,D_RPOOL,config)+=presp;
-    getoutput(output,D_GRESP,config)+=gresp;
-    getoutput(output,D_NPP,config)+=npp;
-    getoutput(output,D_CLEAF,config)=crop->ind.leaf.carbon;
-    getoutput(output,D_CROOT,config)=crop->ind.root.carbon;
-    getoutput(output,D_CSO,config)=crop->ind.so.carbon;
-    getoutput(output,D_CPOOL,config)=crop->ind.pool.carbon;
-    getoutput(output,D_NLEAF,config)=crop->ind.leaf.nitrogen;
-    getoutput(output,D_NPOOL,config)=crop->ind.pool.nitrogen;
-    getoutput(output,D_NSO,config)=crop->ind.so.nitrogen;
-    getoutput(output,D_CROOT,config)=crop->ind.root.nitrogen;
-    getoutput(output,D_WDF,config)=wdf;
-    getoutput(output,D_WSCAL,config)=pft->wscal;
-  }
+    allocation_daily_crop(pft,npp,wdf,config);
   return npp;
 } /* of 'npp_crop' */
 

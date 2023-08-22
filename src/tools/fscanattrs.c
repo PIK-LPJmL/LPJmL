@@ -18,9 +18,7 @@
 #include <stdio.h>
 #include <string.h>
 #include <math.h>
-#ifdef USE_JSON
 #include <json-c/json.h>
-#endif
 #include "types.h"
 #include "errmsg.h"
 
@@ -33,34 +31,31 @@ Bool fscanattrs(LPJfile *file,    /**< pointer to a LPJ file */
                 Verbosity verb    /**< verbosity level (NO_ERR,ERR,VERB) */
                )                  /** \return TRUE on error */
 {
-#ifdef USE_JSON
-  LPJfile item;
+  LPJfile *item;
   struct json_object_iterator it,it_end;
   const char *name2;
-  String s;
+  const char *s;
   int i;
-  if(fscanstruct(file,&item,name,verb))
+  item=fscanstruct(file,name,verb);
+  if(item==NULL)
     return TRUE;
-  *n=json_object_object_length(item.file.obj);
+  *n=json_object_object_length(item);
   *attrs=newvec(Attr,*n);
   checkptr(*attrs);
-  it_end=json_object_iter_end(item.file.obj);
+  it_end=json_object_iter_end(item);
   i=0;
-  for(it=json_object_iter_begin(item.file.obj);!json_object_iter_equal(&it,&it_end);json_object_iter_next(&it))
+  for(it=json_object_iter_begin(item);!json_object_iter_equal(&it,&it_end);json_object_iter_next(&it))
   {
     name2=json_object_iter_peek_name(&it);
     (*attrs)[i].name=strdup(name2);
     checkptr((*attrs)[i].name);
-    if(fscanstring(&item,s,name2,FALSE,verb))
+    s=fscanstring(item,NULL,name2,verb);
+    if(s==NULL)
       return TRUE;
     (*attrs)[i].value=strdup(s);
     checkptr((*attrs)[i].value);
     i++;
   }
-#else
-  *attrs=NULL;
-  *n=0;
-#endif
   return FALSE;
 } /* of 'fscanattrs' */
 

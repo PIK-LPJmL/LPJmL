@@ -186,7 +186,7 @@ Real daily_agriculture_grass(Stand *stand,                /**< stand pointer */
   foreachpft(pft, p, &stand->pftlist)
   {
     // pft->phen = 1.0; /* phenology is calculated from biomass */
-    if (config->new_phenology)
+    if (config->gsi_phenology)
       phenology_gsi(pft, climate->temp, climate->swdown, day,climate->isdailytemp,config);
     else
       leaf_phenology(pft, climate->temp, day,climate->isdailytemp,config);
@@ -204,8 +204,8 @@ Real daily_agriculture_grass(Stand *stand,                /**< stand pointer */
     gpp = water_stressed(pft, aet_stand, gp_stand, gp_stand_leafon,
                        gp_pft[getpftpar(pft, id)], &gc_pft, &rd,
                        &wet[p], eeq, co2, climate->temp, par, daylength,
-                       &wdf,npft,ncft,config);
-
+                       &wdf,nnat+index,npft,ncft,config);
+    getoutput(output,RD,config)+=rd*stand->frac;
     if (gp_pft[getpftpar(pft, id)] > 0.0)
     {
       gcgp = gc_pft / gp_pft[getpftpar(pft, id)];

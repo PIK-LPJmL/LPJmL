@@ -141,14 +141,12 @@ Real daily_agriculture(Stand *stand,                /**< [inout] stand pointer *
     if(!isannual(PFT_CROOT,config))
       getoutputindex(output,PFT_CROOT,nnat+index,config)=crop->ind.root.carbon;
     if(!isannual(PFT_VEGN,config))
-      getoutputindex(output,PFT_VEGN,nnat+index,config)=vegn_sum(pft)+pft->bm_inc.nitrogen;
+      getoutputindex(output,PFT_VEGN,nnat+index,config)=vegn_sum(pft);
     if(!isannual(PFT_VEGC,config))
       getoutputindex(output,PFT_VEGC,nnat+index,config)=vegc_sum(pft);
 
     if(phenology_crop(pft,climate->temp,climate->tmax,daylength,npft,config))
     {
-      if(pft->par->id==config->crop_index && data->irrigation==config->crop_irrigation)
-        output_daily_crop(output,pft,0.0,0.0,config);
       update_double_harvest(output,pft,data->irrigation,day,npft,ncft,config);
       harvest_crop(output,stand,pft,npft,ncft,year,config);
       /* return irrig_stor and irrig_amount */
@@ -240,8 +238,6 @@ Real daily_agriculture(Stand *stand,                /**< [inout] stand pointer *
           else
             getoutputindex(output,CFT_AIRRIG,index,config)+=irrig_apply;
         }
-        if(pft->par->id==config->crop_index && data->irrigation==config->crop_irrigation)
-          getoutput(output,D_IRRIG,config)=irrig_apply;
       }
     }
   }
@@ -291,10 +287,8 @@ Real daily_agriculture(Stand *stand,                /**< [inout] stand pointer *
     gpp=water_stressed(pft,aet_stand,gp_stand,gp_stand_leafon,
                        gp_pft[getpftpar(pft,id)],&gc_pft,&rd,
                        &wet[p],eeq,co2,climate->temp,par,daylength,&wdf,
-                       npft,ncft,config);
-    if(pft->par->id==config->crop_index && data->irrigation==config->crop_irrigation)
-      output_daily_crop(output,pft,gpp,rd,config);
-
+                       nnat+index,npft,ncft,config);
+    getoutput(output,RD,config)+=rd*stand->frac;
     if(gp_pft[getpftpar(pft,id)]>0.0)
     {
       getoutputindex(output,PFT_GCGP_COUNT,nnat+index,config)++;
@@ -400,52 +394,7 @@ Real daily_agriculture(Stand *stand,                /**< [inout] stand pointer *
   forrootsoillayer(l)
   {
     transp+=aet_stand[l]*stand->frac;
-    getoutput(output,TRANSP,config)+=(aet_stand[l]-green_transp[l])*stand->frac;
-  }
-  if(isdailyoutput_agriculture(config,stand))
-  {
-    if(config->crop_index==ALLSTAND)
-    {
-      getoutput(output,D_EVAP,config)+=evap*stand->frac;
-      getoutput(output,D_TRANS,config)+=transp;
-      getoutput(output,D_W0,config)+=stand->soil.w[1]*stand->frac;
-      getoutput(output,D_W1,config)+=stand->soil.w[2]*stand->frac;
-      getoutput(output,D_WEVAP,config)+=stand->soil.w[0]*stand->frac;
-      getoutput(output,D_INTERC,config)+=intercep_stand*stand->frac;
-    }
-    else
-    {
-      getoutput(output,D_EVAP,config)=evap;
-      forrootsoillayer(l)
-        getoutput(output,D_TRANS,config)+=aet_stand[l];
-      getoutput(output,D_PET,config)=eeq*PRIESTLEY_TAYLOR;
-      /* if there are already values from the setaside stand, which does not know if there's the cropstand of interest
-         these values are overwritten here */
-      if(getoutput(output,D_NH4,config)>0) getoutput(output,D_NH4,config)=0;
-      if(getoutput(output,D_NO3,config)>0) getoutput(output,D_NO3,config)=0;
-      if(getoutput(output,D_NSOIL_FAST,config)>0) getoutput(output,D_NSOIL_FAST,config)=0;
-      if(getoutput(output,D_NSOIL_SLOW,config)>0) getoutput(output,D_NSOIL_SLOW,config)=0;
-      forrootsoillayer(l)
-      {
-        getoutput(output,D_NH4,config)+=stand->soil.NH4[l];
-        getoutput(output,D_NO3,config)+=stand->soil.NO3[l];
-        getoutput(output,D_NSOIL_FAST,config)+=stand->soil.pool[l].fast.nitrogen;
-        getoutput(output,D_NSOIL_SLOW,config)+=stand->soil.pool[l].slow.nitrogen;
-        getoutput(output,D_TRANS,config)+=aet_stand[l];
-      }
-      /*output->daily.w0=stand->soil.w[1];
-      output->daily.w1=stand->soil.w[2];
-      output->daily.wevap=stand->soil.w[0];*/
-      /* output in mm including ice, free water and dead water */
-      getoutput(output,D_W0,config) = stand->soil.w[1] * stand->soil.whcs[1] + stand->soil.w_fw[1] +
-        stand->soil.ice_depth[1] + stand->soil.ice_fw[1] + stand->soil.wpwps[1];
-      getoutput(output,D_W1,config) = stand->soil.w[2] * stand->soil.whcs[2] + stand->soil.w_fw[2] +
-        stand->soil.ice_depth[2] + stand->soil.ice_fw[2] + stand->soil.wpwps[2];
-      getoutput(output,D_WEVAP,config) = stand->soil.w[0] * stand->soil.whcs[0] + stand->soil.w_fw[0] +
-        stand->soil.ice_depth[0] + stand->soil.ice_fw[0] + stand->soil.wpwps[0];
-
-      getoutput(output,D_PAR,config)=par;
-    }
+    getoutput(output,TRANSP_B,config)+=(aet_stand[l]-green_transp[l])*stand->frac;
   }
 
   /* calculate net irrigation requirements (NIR) for next days irrigation */

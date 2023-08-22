@@ -25,13 +25,12 @@
 #include "agriculture_tree.h"
 #include "urban.h"
 
-#define LPJFILES_VERSION "1.0.004"
 #define NTYPES 3 /* number of PFT types: grass, tree, crop */
 #define NSTANDTYPES 14 /* number of stand types / land use types as defined in landuse.h*/
 
 
-#define USAGE "Usage: %s [-h] [-noinput] [-nooutput] [-outpath dir] [-inpath dir] [-restartpath dir]\n"\
-              "       [[-Dmacro[=value]] [-Idir] ...] filename\n"
+#define USAGE "Usage: %s [-h] [-v] [-noinput] [-nooutput] [-outpath dir] [-inpath dir] [-restartpath dir]\n"\
+              "       [-pp cmd] [[-Dmacro[=value]] [-Idir] ...] filename\n"
 
 int main(int argc,char **argv)
 {
@@ -75,17 +74,18 @@ int main(int argc,char **argv)
       if(file==NULL)
         file=stdout;
       fputs("     ",file);
-      rc=fprintf(file,"%s Version " LPJFILES_VERSION " (" __DATE__ ") Help",
+      rc=fprintf(file,"%s (" __DATE__ ") Help",
               progname);
       fputs("\n     ",file);
       frepeatch(file,'=',rc);
-      fputs("\n\nPrint input/output files of LPJmL " LPJ_VERSION "\n\n",file);
+      fputs("\n\nPrint input/output files of LPJmL version " LPJ_VERSION "\n\n",file);
       fprintf(file,USAGE,progname);
       fprintf(file,"\nArguments:\n"
              "-h               print this help text\n"
+             "-h               print LPJmL version\n"
              "-noinput         does not list input data files\n"
              "-nooutput        does not list output files\n"
-             "-pp cmd          set preprocessor program. Default is 'cpp -P'\n"
+             "-pp cmd          set preprocessor program. Default is '" cpp_cmd "'\n"
              "-outpath dir     directory appended to output filenames\n"
              "-inpath dir      directory appended to input filenames\n"
              "-restartpath dir directory appended to restart filename\n"
@@ -95,6 +95,11 @@ int main(int argc,char **argv)
              "(C) Potsdam Institute for Climate Impact Research (PIK), see COPYRIGHT file\n");
       if(file!=stdout)
         pclose(file);
+      return EXIT_SUCCESS;
+    }
+    else if(!strcmp(argv[1],"-v"))
+    {
+      puts(LPJ_VERSION);
       return EXIT_SUCCESS;
     }
   }
@@ -119,8 +124,7 @@ int main(int argc,char **argv)
   argv_save=argv;
   if(readconfig(&config,scanfcn,NTYPES,standtype,NSTANDTYPES,NOUT,&argc,&argv,USAGE))
   {
-    fputs("Syntax error found in configuration file.\n",stderr);
-    return EXIT_FAILURE;
+    fail(READ_CONFIG_ERR,FALSE,"Cannot process configuration file");
   }
   else
   {

@@ -66,6 +66,12 @@ int main(int argc,char **argv)
       break;
   item=(Item *)malloc(sizeof(Item)*(argc-i));
   ncell=count=0;
+  if(i==argc)
+  {
+    fprintf(stderr,"Filename missing.\n"
+            USAGE,argv[0]);
+    return EXIT_FAILURE;
+  }
   for(;i<argc;i++)
   {
     item[count].file=fopen(argv[i],"rb");
@@ -107,6 +113,11 @@ int main(int argc,char **argv)
   }
   qsort(item,count,sizeof(Item),(int(*)(const void *,const void *))compare);
   header.firstyear=item[0].header.firstyear;
+  if(count==0)
+  {
+    fprintf(stderr,"No restart file successfully read.\n");
+    return EXIT_FAILURE;
+  }
   for(i=1;i<count;i++)
   {
     if(item[i-1].header.firstcell+item[i-1].header.ncell!=item[i].header.firstcell) 

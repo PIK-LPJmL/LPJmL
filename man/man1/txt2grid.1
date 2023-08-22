@@ -1,4 +1,4 @@
-.TH txt2grid 1  "November 05, 2020" "version 1.0.004" "USER COMMANDS"
+.TH txt2grid 1  "USER COMMANDS"
 .SH NAME
 txt2grid \- convert text files to clm grid data files for LPJ
 .SH SYNOPSIS
@@ -40,7 +40,7 @@ skip first n lines in text file, default is one
 set cell size, default is 0.5
 .TP
 \-float
-float lon, lat values written to clm file, default is short
+longitude/latitude values written in float format to clm file, default is short
 .TP
 .I textfile    
 filename of text file to convert
@@ -49,9 +49,9 @@ filename of text file to convert
 filename of clm grid data file written
 .SH EXAMPLES
 .TP
-Create clm grid data file:
+Create clm grid data file from text file containing longitude/latitude values in each line:
 .B txt2grid
-grid.txt grid.clm
+-skip 0 -fmt "%f %f" grid.txt grid.clm
 .PP
 .SH EXIT STATUS
 .B txt2grid
