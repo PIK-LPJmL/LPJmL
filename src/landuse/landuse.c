@@ -273,6 +273,7 @@ Bool getlanduse(Landuse landuse,     /**< Pointer to landuse data */
                )                     /** \return TRUE on error */
 {
   int i,j,count,cell;
+  int start;
   IrrigationType p;
   Real sum,*data;
   int *dates;
@@ -350,11 +351,21 @@ Bool getlanduse(Landuse landuse,     /**< Pointer to landuse data */
   {
     count=0;
     for(cell=0;cell<config->ngridcell;cell++)
+    {
+      sum = 0;
+      start = count;
       for(i=0;i<landuse->landuse.var_len;i++)
         if(grid[cell].landfrac==0)
           data[count++]=0;
         else
-          data[count++]/=grid[cell].landfrac;
+        {
+          data[count]/=grid[cell].landfrac;
+          sum+=data[count++];
+        }
+      if(sum > 1.0)
+        for(i=0;i<landuse->landuse.var_len;i++)
+          data[start++]/=sum;
+    }    
   }
   count=0;
 
