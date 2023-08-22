@@ -2,7 +2,7 @@
 /**                                                                                \n**/
 /**               o  u  t  p  u  t  v  a  r  s  .  j  s                            \n**/
 /**                                                                                \n**/
-/**  Defines array of output variables for LPJmL 5.7.4                             \n**/
+/**  Defines array of output variables for LPJmL 5.7.5                             \n**/
 /**                                                                                \n**/
 /**  Monthly output rates can be rescaled to 1/day or 1/second by setting the unit \n**/
 /**  to day-1 or sec-1, e.g.:                                                      \n**/
@@ -55,7 +55,8 @@
   { "id" : EVAP_B, "name": "evap_b", "timestep" : "monthly", "var" : "evap_b", "descr" : "evaporation of irrigation water", "unit" : "mm/month", "scale" : 1.0, "offset" : 0.0},
   { "id" : INTERC, "name": "interc", "timestep" : "monthly", "var" : "interc", "descr" : "interception", "unit" : "mm/month", "scale" : 1.0, "offset" : 0.0},
   { "id" : INTERC_B, "name": "interc_b", "timestep" : "monthly", "var" : "interc_b", "descr" : "blue interception", "unit" :  "mm/month", "scale" : 1.0, "offset" : 0.0},
-  { "id" : SWC, "name": "swc", "timestep" : "monthly", "var" : "SWC", "descr" : "fractional saturation of soil water content", "unit" : "", "scale" : 1.0, "offset" : 0.0},
+  { "id" : SWC, "name": "swc", "timestep" : "monthly", "var" : "SWC", "descr" : "fractional saturation of soil water content", "unit" : "", "scale" : 1.0, "offset" : 0.0},  
+  { "id" : SWC_VOL, "name": "swc_vol", "timestep" : "monthly", "var" : "swc_vol", "descr" : "soil water content for each of the top 5 soillayers", "unit" : "dm3", "scale" : 1.0, "offset" : 0.0},
   { "id" : WHC_NAT, "name": "whc_nat", "timestep" : "monthly", "var" : "whc_nat", "descr" : "water holding capacity for natural vegetation", "unit" : "", "scale" : 1.0, "offset" : 0.0},
   { "id" : WHC_GRASS, "name": "whc_grass", "timestep" : "monthly", "var" : "whc_grass", "descr" : "water holding capacity for grassland", "unit" : "", "scale" : 1.0, "offset" : 0.0},
   { "id" : WHC_AGR, "name": "whc_agr", "timestep" : "monthly", "var" : "whc_agr", "descr" : "water holding capacity for agriculture", "unit" : "", "scale" : 1.0, "offset" : 0.0},
@@ -148,7 +149,7 @@
   { "id" : SOILTEMP4, "name": "soiltemp4", "timestep" : "monthly", "var" :  "soiltemp4", "descr" :  "soil temperature in layer 4", "unit" : "Celsius", "scale" : 1.0, "offset" : 0.0},
   { "id" : SOILTEMP5, "name": "soiltemp5", "timestep" : "monthly", "var" :  "soiltemp5", "descr" :  "soil temperature in layer 5", "unit" : "Celsius", "scale" : 1.0, "offset" : 0.0},
   { "id" : SOILTEMP6, "name": "soiltemp6", "timestep" : "monthly", "var" :  "soiltemp6", "descr" :  "soil temperature in layer 6", "unit" : "Celsius", "scale" : 1.0, "offset" : 0.0},
-  { "id" : RES_STORAGE, "name": "res_storage", "timestep" : "monthly", "var" :  "res_storage", "descr" :  "mean reservoir storage", "unit" : "hm3", "scale" : 1.0, "offset" : 0.0},
+  { "id" : RES_STORAGE, "name": "res_storage", "timestep" : "monthly", "var" :  "res_storage", "descr" :  "mean reservoir storage", "unit" : "dm3", "scale" : 1.0, "offset" : 0.0},
   { "id" : RES_DEMAND, "name": "res_demand", "timestep" : "monthly", "var" :  "res_demand", "descr" :  "reservoir demand", "unit" : "hm3/month", "scale" : 1.0, "offset" : 0.0},
   { "id" : TARGET_RELEASE, "name": "target_release","timestep" : "monthly",  "var" :  "target_release", "descr" :  "target release", "unit" : "hm3/month", "scale" : 1.0, "offset" : 0.0},
   { "id" : RES_CAP, "name": "res_cap", "timestep" : "monthly", "var" :  "res_cap", "descr" :  "output of reservoir capacity", "unit" : "hm3/month", "scale" : 1.0, "offset" : 0.0},
@@ -218,6 +219,8 @@
   { "id" : AGB, "name": "agb", "timestep" : "annual", "var" :  "AGB", "descr" :  "above ground biomass", "unit" : "gC/m2", "scale" : 1.0, "offset" : 0.0},
   { "id" : AGB_TREE, "name": "agb_tree", "timestep" : "annual", "var" :  "agb_tree", "descr" :  "above ground tree biomass", "unit" : "gC/m2", "scale" : 1.0, "offset" : 0.0},
   { "id" : LAKEVOL, "name": "lakevol", "timestep" : "monthly", "var" :  "lakevol", "descr" :  "lake content volume", "unit" : "dm3", "scale" : 1.0, "offset" : 0.0},
+  { "id" : RIVERVOL, "name": "rivervol", "timestep" : "monthly", "var" :  "rivervol", "descr" :  "river content volume", "unit" : "dm3", "scale" : 1.0, "offset" : 0.0},
+  { "id" : IRRIG_STOR, "name": "irrig_stor", "timestep" : "monthly", "var" :  "irrig_stor", "descr" :  "water content in irrigation storage", "unit" : "dm3", "scale" : 1.0, "offset" : 0.0}, 
   { "id" : LAKETEMP, "name": "laketemp", "timestep" : "monthly", "var" :  "laketemp", "descr" :  "lake surface temperature", "unit" : "Celsius", "scale" : 1.0, "offset" : 0.0},
   { "id" : FIREN, "name": "firen", "timestep" : "annual", "var": "FireN", "descr": "fire nitrogen emission", "unit": "gN/m2/yr", "scale": 1.0, "offset" : 0.0},
   { "id" : FLUX_ESTABN, "name": "flux_estabn", "timestep" : "annual", "var": "estabn", "descr": "establishment flux", "unit": "gN/m2/yr", "scale": 1.0, "offset" : 0.0},
