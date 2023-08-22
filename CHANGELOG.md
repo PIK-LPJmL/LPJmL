@@ -19,7 +19,7 @@ of `major.minor.patch` with
 
 ## [Unreleased]
 
-## [5.7.5] - 2023-08-18
+## [5.7.5] - 2023-08-22
 
 ### Added
 - outputs:
@@ -29,6 +29,10 @@ of `major.minor.patch` with
  
 ### Changed:
 - unit of output RES_STORAGE changed from hm3 to dm3 to be in line with IRRIG_STOR, RIVERVOL, LAKEVOL, SWC_VOL
+
+### Fixed
+
+- check for land-use fractions to not exceed 100% after scaling with `landfrac`, re-scale to 100%, print warning see [!173](https://gitlab.pik-potsdam.de/lpjml/LPJmL_internal/-/merge_requests/173)
 
 ## [5.7.4] - 2023-08-17
 
