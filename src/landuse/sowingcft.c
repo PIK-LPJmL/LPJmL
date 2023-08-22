@@ -96,9 +96,9 @@ void sowingcft(Stocks *flux_estab,  /**< establishment flux */
         foreachpft(pft,p,&stand->pftlist)
           cft_id=pft->par->id-npft;
         landfrac=(isother) ? cell->ml.landfrac[irrig].grass[0] : cell->ml.landfrac[irrig].crop[cft_id];
-        if(irrigation->irrigation==irrig && stand->frac > (2*tinyfrac+epsilon) && stand->frac > landfrac+epsilon)
+        if(irrigation->irrigation==irrig && stand->frac > (2*param.tinyfrac+epsilon) && stand->frac > landfrac+epsilon)
         {
-          difffrac=min(stand->frac-tinyfrac,stand->frac-landfrac);
+          difffrac=min(stand->frac-param.tinyfrac,stand->frac-landfrac);
           pos=addstand((isother) ? &others_stand : &agriculture_stand,cell);
           cropstand=getstand(cell->standlist,pos-1);
           data=cropstand->data;

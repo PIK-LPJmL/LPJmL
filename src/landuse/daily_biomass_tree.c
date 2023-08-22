@@ -173,7 +173,8 @@ Real daily_biomass_tree(Stand *stand,                /**< stand pointer */
     gpp=water_stressed(pft,aet_stand,gp_stand,gp_stand_leafon,
                        gp_pft[getpftpar(pft,id)],&gc_pft,&rd,
                        &wet[p],eeq,co2,climate->temp,par,daylength,&wdf,
-                       npft,ncft,config);
+                       nnat+rbtree(ncft)+data->irrigation.irrigation*nirrig,npft,ncft,config);
+    getoutput(output,RD,config)+=rd*stand->frac;
    if(stand->cell->ml.landfrac[data->irrigation.irrigation].biomass_tree>0.0 &&
       gp_pft[getpftpar(pft,id)]>0.0)
    {
@@ -182,11 +183,6 @@ Real daily_biomass_tree(Stand *stand,                /**< stand pointer */
    }
    npp=npp(pft,gtemp_air,gtemp_soil,gpp-rd-pft->npp_bnf,config->with_nitrogen);
    pft->npp_bnf=0.0;
-   if(config->crop_index==ALLSTAND)
-   {
-     getoutput(output,D_NPP,config)+=npp*stand->frac;
-     getoutput(output,D_GPP,config)+=gpp*stand->frac;
-   }
    getoutput(output,NPP,config)+=npp*stand->frac;
    stand->cell->balance.anpp+=npp*stand->frac;
    stand->cell->balance.agpp+=gpp*stand->frac;
@@ -221,16 +217,6 @@ Real daily_biomass_tree(Stand *stand,                /**< stand pointer */
     transp+=aet_stand[l]*stand->frac;
     getoutput(output,TRANSP_B,config)+=(aet_stand[l]-green_transp[l])*stand->frac;
   }
-  if(config->crop_index==ALLSTAND)
-  {
-    getoutput(output,D_EVAP,config)+=evap*stand->frac;
-    getoutput(output,D_TRANS,config)+=transp;
-    getoutput(output,D_W0,config)+=stand->soil.w[1]*stand->frac;
-    getoutput(output,D_W1,config)+=stand->soil.w[2]*stand->frac;
-    getoutput(output,D_WEVAP,config)+=stand->soil.w[0]*stand->frac;
-    getoutput(output,D_INTERC,config)+=intercep_stand*stand->frac;
-  }
-
   getoutput(output,TRANSP,config)+=transp;
   stand->cell->balance.atransp+=transp;
   getoutput(output,INTERC,config)+=intercep_stand*stand->frac; /* Note: including blue fraction*/

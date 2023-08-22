@@ -2,7 +2,7 @@
 /**                                                                                \n**/
 /**              l  p  j  p  a  r  a  m  .  j  s                                   \n**/
 /**                                                                                \n**/
-/**     LPJ parameter file for LPJmL version 5.6.20                                \n**/
+/**     LPJ parameter file for LPJmL version 5.7.4                                 \n**/
 /**                                                                                \n**/
 /** (C) Potsdam Institute for Climate Impact Research (PIK), see COPYRIGHT file    \n**/
 /** authors, and contributors see AUTHORS file                                     \n**/
@@ -14,6 +14,8 @@
 
 "param" :
 {
+  "minlandfrac" : 1e-6,      /* minimum land fraction used if landfrac=0 */
+  "tinyfrac" : 1e-6,         /* minimum land-use fraction used by all_crops */
   "k_litter10" : 0.3,        /* k_litter10  (1/yr) */
   "k_soil10" : { "fast" : 0.03, "slow":  0.001}, /* fast, slow k_soil10  (1/yr) */
   "init_soiln" : { "fast" : 3500.0, "slow":  3500.0}, /* initial fast and slow soil nitrogen (gN/m2) */
@@ -101,6 +103,13 @@
   "fire_intens" : 0.000001,           /* threshold of fireintensity for which burnt area can be modeled */
   "rootreduction" : 0.5,              /* fraction used to calculate amount of roots dying at harvest in managed grasslands */
   "phen_limit" : 0.5,                 /* phen. limit for agricultural trees */
+  #ifdef BMGR_BROWN
+    "bmgr_harvest_day_nh" : 32.0,     /* harvest date (doy) of brown biomass grass harvest; NH 1.Feb */
+    "bmgr_harvest_day_sh" : 213.0,    /* harvest date (doy) of brown biomass grass harvest; SH 1.Aug */
+  #else
+    "bmgr_harvest_day_nh" : 275.0,    /* harvest date (doy) of green biomass grass harvest; NH 1.Oct */
+    "bmgr_harvest_day_sh" : 92.0,     /* harvest date (doy) of green biomass grass harvest; SH 1.Apr */
+  #endif
   "nfrac_grassharvest" : 0.5,         /* fraction of nitrogen from grass harvest not returned to NH4 pool via manure after mowing*/
   "nfrac_grazing" : 0.5               /* fraction of nitrogen from grass harvest not returned to NH4 pool via manure from livestock*/
 },

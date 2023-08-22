@@ -19,6 +19,148 @@ of `major.minor.patch` with
 
 ## [Unreleased]
 
+## [5.7.4] - 2023-08-17
+
+### Changed
+
+- changed quadratic soil evaporation function to sigmoid form and a minimum amount of evaporation of 5% of the available energy, following [Sun et al. 2013](http://dx.doi.org/10.1080/17538947.2013.783635), as described in [!168](https://gitlab.pik-potsdam.de/lpjml/LPJmL_internal/-/merge_requests/168)
+
+## [5.7.3] - 2023-08-16
+
+### Fixed
+
+- correct accounting of blue water transpiration on agriculture stands in outputs
+- missing variable initialization for bioenergy grass
+- landuse change from irrigated to rainfed setaside moved area to wrong target setaside
+
+
+## [5.7.2] - 2023-08-11
+
+### Changed:
+
+- removed timestep attributes (monthly/annual) in all output descriptions that are not timestep specific
+
+### Added 
+
+- outputs:
+  - PFT_WATER_DEMAND: PFT specific water demand
+  - RD: dark respiration
+  - NDEPOS: total N deposition as sum of NH4 and NO3 deposition
+
+## [5.7.1] - 2023-08-10
+
+### Fixed
+
+- wrong use of `&f` instead of `f`, in `fscanparam.c`. Bug was introduced in version 5.6.26 and caused that parameter files could not be read properly
+
+## [5.7.0] - 2023-08-10
+
+### Added
+
+- land fraction can now be read from file, with a new flag `"landfrac_from_file"` and a new input `"landfrac"`
+- If setting `"landfrac_from_file : true"` cell areas in LPJmL are scaled down by land fraction from input file. If land fraction is zero, land fraction is set to `minlandfrac` and a warning is printed.
+- new flag `"with_lakes"` defined
+- new outputs `"terr_area"`, `"land_area"` and `"lake_area"` defined writing the terrestrial area (land and lakes),  land area and lake area of each cell
+- new parameters `"minlandfrac"` and `"tinyfrac"` added to lpjparams.js
+- option `-area filename` added to the `printglobal` utility to scale with the cell areas read from the file specified.
+
+### Changed
+
+- Lake fraction and land-use fractions are rescaled by the reciprocal of land fraction. If lake fraction is greater than one, lake fraction is set to one and a warning is printed.
+- Lakes can be enabled without river routing by setting `"with_lakes" : true`. Variable `dmass_lake` is always written to restart file.
+- lake fraction is read in utility `lpjprint` and printed
+- flag `"shuffle_spinup_climate"` only read if `"nspinup"` is non-zero.
+- Terrestrial area and harvest fraction are read in utility `printharvest`. Output format changed to CSV.
+
+## [5.6.27] - 2023-08-08
+
+### Removed
+
+- removed large chunks of code in `allocation_daily_crop.c` that was inactive
+
+### Fixed
+
+- fixed output `PFT_VEGC` to not include `bm_inc.nitrogen` for crops in `daily_agriculture.c`
+- fixed global flux summation for `flux.soil.carbon` and `flux.soil.nitrogen` (`+=` instead of `=`), bug was introduced in version 5.6.25
+
+## [5.6.26] - 2023-08-07
+
+### changed
+
+- avoid daily leaf turnover for biomass grass and harvest leaf turnover as dead biomass at harvest event instead (reduces litter and increases harvest)
+- introduce harvest dates depending on green/brown harvest instead of C threshold for biomass grass
+- literature-based C/N ratios and fn_turnover for biomass grass depending on green/brown harvest configuration
+- results and literature references can be found in issue [#275](https://gitlab.pik-potsdam.de/lpjml/LPJmL_internal/-/issues/275).
+
+### Added
+
+- introduced `#define` flag to change from green harvest (default) to brown harvest: `#define BMGR_BROWN`
+- two options include green harvest (fresh biomass, high N content - usually used for biofuels) and brown harvest (dry biomass, high lignin content, low N content - usually used for combustion)
+- brown harvest uses later harvest dates (defined in lpjparam.js) and higher N recovery (as lower fn_turnover defined in pft.js) than green harvest
+- the `#define` flag is required to read the correct flag-specific parameter from the lpjparam.js and pft.js, see issue [#311](https://gitlab.pik-potsdam.de/lpjml/LPJmL_internal/-/issues/311)
+
+## [5.6.25] - 2023-07-29
+
+### Added
+
+- New outputs added for N fluxes from timber extraction and for N pools in wood product pools
+- New outputs added for `estab_storage` C and N
+- Added missing N fluxes, `estab_storage`, and reservoirs to `globalflux` output
+- Added new fluxes to man pages
+
+### Fixed 
+
+- Corrected/added units in comments in output.h
+- Corrected units in `flux_sum` man page
+- Corrected `N2O_DENIT` output, which now no longer also includes `N2O_NIT` values
+- Corrected writing of mineral N pools to outputs, so that also mineral N in frozen soil layers is included
+- Corrected writing of `VEGN` for crops, so that `bm_inc.nitrogen` is no longer included to avoid double accounting
+
+### Removed
+
+- Removed unecessary initialization of output variables to zero in `update_annual.c`, which is done in `initoutputdata.c`
+
+
+## [5.6.24] - 2023-07-29
+
+### Fixed
+
+-  The number of bands is now correctly checked for the `read_residue_data` input.
+
+
+## [5.6.23] - 2023-07-28
+
+### Changed
+
+- Instead of the soil code the index of the grid cell is written into the NetCDF file for `"grid"` output.
+
+
+## [5.6.22] - 2023-07-27
+
+### Changed
+
+- Configuration files `lpjml_netcdf.js`, `lpjml_non.js`, `param_non.js`, and `lpjparam_non.js` updated to latest lpjml version.
+
+### Removed
+
+- Predefined daily outputs (`"d_lai"`-`"d_pet"`) and corresponding functions removed.
+
+- Version numbers removed from man pages.
+
+### Fixed
+
+- Variable `issocket` always initialized to `FALSE` in `readfilename.c`.
+
+
+## [5.6.21] - 2023-07-21
+
+### Changed
+
+- Flag `"nitrogen_coupled"` disabled for lpjml offline runs. Water stress is always coupled with nitrogen stress. Only if lpjml is compiled with `-DCOUPLING_WITH_FMS` flag is enabled.
+
+- Flag `"new_trf"` renamed to `"transp_suction_fcn"`.
+
+
 ## [5.6.20] - 2023-07-13
 
 ### Added

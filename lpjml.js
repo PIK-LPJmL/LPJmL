@@ -2,7 +2,7 @@
 /**                                                                                \n**/
 /**                   l  p  j  m  l  .  j  s                                       \n**/
 /**                                                                                \n**/
-/** Default configuration file for LPJmL C Version 5.6.20                          \n**/
+/** Default configuration file for LPJmL C Version 5.7.4                           \n**/
 /**                                                                                \n**/
 /** Configuration file is divided into five sections:                              \n**/
 /**                                                                                \n**/
@@ -20,7 +20,7 @@
 /**                                                                                \n**/
 /**************************************************************************************/
 
-//#define DAILY_OUTPUT  /* enables daily output */
+//#define BMGR_BROWN    /* enables brown harvest of biomass grass, instead of green harvest (default) */
 
 {   /* LPJmL configuration in JSON format */
 
@@ -30,7 +30,7 @@
 
   "sim_name" : "LPJmL Run", /* Simulation description */
   "sim_id"   : "lpjml",     /* LPJML Simulation type with managed land use */
-  "version"  : "5.6",       /* LPJmL version expected */
+  "version"  : "5.7",       /* LPJmL version expected */
   "global_attrs" : {"institution" : "Potsdam Institute for Climate Impact Research",
                     "contact" : "", /* name and email address */
                     "comment" : ""  /* additional comments */
@@ -45,15 +45,16 @@
   "fdi" : "nesterov",       /* different fire danger index formulations: "wvpd" (needs GLDAS input data), "nesterov" */
   "firewood" : false,
   "gsi_phenology" : true,   /* GSI phenology enabled */
-  "new_trf" : false,        /* new transpiration reduction function disabled */
+  "transp_suction_fcn" : false, /* enable transpiration suction function (true/false) */
+  "with_lakes" : true,      /* enable lakes (true/false) */
   "river_routing" : true,
   "extflow" : false,
   "permafrost" : true,
   "johansen" : true,
   "soilpar_option" : "no_fixed_soilpar", /* other options "no_fixed_soilpar", "fixed_soilpar", "prescribed_soilpar" */
   "with_nitrogen" : "lim", /* other options: "no", "lim", "unlim" */
-  "nitrogen_coupled" : false, /* nitrogen stress coupled to water stress */
   "store_climate" : true, /* store climate data in spin-up phase */
+  "landfrac_from_file" : true, /* read cell area from file (true/false) */
   "shuffle_spinup_climate" : true, /* shuffle spinup climate */
   "fix_climate" : false,                /* fix climate after specified year */
   "fix_climate_year" : 1901,            /* year after climate is fixed */
@@ -114,6 +115,11 @@
   "grass_harvest_options" : false,
   "prescribe_lsuha" : false,
   "mowing_days" : [152, 335],          /* Mowing days for grassland if grass harvest options are ser */
+  #ifdef BMGR_BROWN
+    "biomass_grass_harvest" : "brown",   /* define brown harvest of biomass grass at top; imapcts harvest event and fn_turnover of biomass grass */
+  #else
+    "biomass_grass_harvest" : "green",   /* comment out define of brown harvest of biomass grass for green harvest (default) */
+  #endif
   "crop_resp_fix" : false,             /* variable C:N ratio for crop respiration */
                                        /* for MAgPIE runs, turn off dynamic C:N ratio dependent respiration,
                                           which reduces yields at high N inputs */
@@ -157,9 +163,6 @@
 #define mkstr(s) xstr(s) /* putting string in quotation marks */
 #define xstr(s) #s
 
-  "crop_index" : "temperate cereals", /* CFT for daily output */
-  "crop_irrigation" : false,          /* irrigation flag for daily output */
-
 #ifdef FROM_RESTART
 
   "output" :
@@ -169,11 +172,15 @@
 ID                               Fmt                        filename
 -------------------------------- ------------------------- ----------------------------- */
     { "id" : "grid",             "file" : { "fmt" : "raw", "name" : "output/grid.bin" }},
+    { "id" : "terr_area",        "file" : { "name" : "output/terr_area" }},
+    { "id" : "land_area",        "file" : { "name" : "output/land_area" }},
+    { "id" : "lake_area",        "file" : { "name" : "output/lake_area" }},
     { "id" : "fpc",              "file" : { "name" : "output/fpc" }},
     { "id" : "globalflux",       "file" : { "fmt" : "txt", "name" : "output/globalflux.csv"}},
     { "id" : "npp",              "file" : { "name" : "output/mnpp"}},
     { "id" : "gpp",              "file" : { "name" : "output/mgpp"}},
     { "id" : "rh",               "file" : { "name" : "output/mrh"}},
+    { "id" : "rd",               "file" : { "name" : "output/rd"}},
     { "id" : "fapar",            "file" : { "name" : "output/mfapar"}},
     { "id" : "transp",           "file" : { "name" : "output/mtransp"}},
     { "id" : "runoff",           "file" : { "name" : "output/mrunoff"}},
@@ -213,6 +220,7 @@ ID                               Fmt                        filename
     { "id" : "firen",            "file" : { "name" : "output/firen"}},
     { "id" : "n_mineralization", "file" : { "name" : "output/mn_mineralization"}},
     { "id" : "n_volatilization", "file" : { "name" : "output/mn_volatilization"}},
+    { "id" : "ndepos",           "file" : { "name" : "output/ndepos"}},
     { "id" : "pft_nlimit",       "file" : { "name" : "output/pft_nlimit"}},
     { "id" : "pft_vegn",         "file" : { "name" : "output/pft_vegn"}},
     { "id" : "pft_cleaf",        "file" : { "name" : "output/pft_cleaf"}},
@@ -224,6 +232,7 @@ ID                               Fmt                        filename
     { "id" : "pft_nsapw",        "file" : { "name" : "output/pft_nsapw"}},
     { "id" : "pft_chawo",        "file" : { "name" : "output/pft_chawo"}},
     { "id" : "pft_nhawo",        "file" : { "name" : "output/pft_nhawo"}},
+    { "id" : "pft_water_demand", "file" : { "name" : "output/pft_water_demand"}},
 #ifdef WITH_SPITFIRE
     { "id" : "firec",            "file" : { "timestep" : "monthly" , "unit" : "gC/m2/month", "name" : "output/mfirec"}},
     { "id" : "nfire",            "file" : { "name" : "output/mnfire"}},

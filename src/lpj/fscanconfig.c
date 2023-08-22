@@ -187,6 +187,7 @@ Bool fscanconfig(Config *config,    /**< LPJ configuration */
   const char *nitrogen[]={"no","lim","unlim"};
   const char *tillage[]={"no","all","read"};
   const char *residue_treatment[]={"no_residue_remove","fixed_residue_remove","read_residue_data"};
+  const char *biomass_grass_harvest[]={"green","brown"};
   Bool def[N_IN];
   verbose=(isroot(*config)) ? config->scan_verbose : NO_ERR;
 
@@ -215,6 +216,9 @@ Bool fscanconfig(Config *config,    /**< LPJ configuration */
   }
   else if(verbose)
     fprintf(stderr,"WARNING027: Name 'coupled_model' for string not found, set to null.\n");
+  config->landfrac_from_file=FALSE;
+  if(fscanbool(file,&config->landfrac_from_file,"landfrac_from_file",TRUE,verbose))
+    return TRUE;
   fscanbool2(file,&israndom,"random_prec");
   config->seed_start=RANDOM_SEED;
   if(isstring(file,"random_seed"))
@@ -235,7 +239,9 @@ Bool fscanconfig(Config *config,    /**< LPJ configuration */
     config->seed_start=time(NULL);
   setseed(config->seed,config->seed_start);
   config->with_nitrogen=NO_NITROGEN;
+#ifdef COUPLING_WITH_FMS
   config->nitrogen_coupled=FALSE;
+#endif
   if(fscankeywords(file,&config->with_nitrogen,"with_nitrogen",nitrogen,3,TRUE,verbose))
     return TRUE;
   if(fscankeywords(file,&config->with_radiation,"radiation",radiation,4,FALSE,verbose))
@@ -275,8 +281,11 @@ Bool fscanconfig(Config *config,    /**< LPJ configuration */
   if(fscankeywords(file,&config->prescribe_landcover,"prescribe_landcover",prescribe_landcover,3,TRUE,verbose))
     return TRUE;
   fscanbool2(file,&config->gsi_phenology,"gsi_phenology");
-  config->new_trf=FALSE;
-  if(fscanbool(file,&config->new_trf,"new_trf",TRUE,verbose))
+  config->transp_suction_fcn=FALSE;
+  if(fscanbool(file,&config->transp_suction_fcn,"transp_suction_fcn",TRUE,verbose))
+    return TRUE;
+  config->with_lakes=config->river_routing;
+  if(fscanbool(file,&config->with_lakes,"with_lakes",TRUE,verbose))
     return TRUE;
   fscanbool2(file,&config->river_routing,"river_routing");
   config->extflow=FALSE;
@@ -310,9 +319,11 @@ Bool fscanconfig(Config *config,    /**< LPJ configuration */
   {
     if(fscanbool(file,&config->npp_controlled_bnf,"npp_controlled_bnf",TRUE,verbose))
       return TRUE;
+#ifdef COUPLING_WITH_FMS
     config->nitrogen_coupled=TRUE;
     if(fscanbool(file,&config->nitrogen_coupled,"nitrogen_coupled",TRUE,verbose))
       return TRUE;
+#endif
   }
   config->soilpar_option=NO_FIXED_SOILPAR;
   if(fscankeywords(file,&config->soilpar_option,"soilpar_option",soilpar_option,3,TRUE,verbose))
@@ -323,9 +334,6 @@ Bool fscanconfig(Config *config,    /**< LPJ configuration */
   }
   config->storeclimate=TRUE;
   if(fscanbool(file,&config->storeclimate,"store_climate",TRUE,verbose))
-    return TRUE;
-  config->shuffle_spinup_climate=FALSE;
-  if(fscanbool(file,&config->shuffle_spinup_climate,"shuffle_spinup_climate",TRUE,verbose))
     return TRUE;
   config->fix_climate=FALSE;
   if(fscanbool(file,&config->fix_climate,"fix_climate",TRUE,verbose))
@@ -505,6 +513,8 @@ Bool fscanconfig(Config *config,    /**< LPJ configuration */
         fscanint2(file,&config->till_startyear,"till_startyear");
       }
       if(fscankeywords(file,&config->residue_treatment,"residue_treatment",residue_treatment,3,TRUE,verbose))
+        return TRUE;
+      if(fscankeywords(file,&config->biomass_grass_harvest,"biomass_grass_harvest",biomass_grass_harvest,2,TRUE,verbose))
         return TRUE;
     }
     if(fscanbool(file,&config->black_fallow,"black_fallow",TRUE,verbose))
@@ -791,9 +801,16 @@ Bool fscanconfig(Config *config,    /**< LPJ configuration */
     config->grassharvest_filename.name = NULL;
     config->lsuha_filename.name = NULL;
   }
-  if(config->river_routing)
+  if(config->landfrac_from_file)
+  {
+    scanclimatefilename(input,&config->landfrac_filename,FALSE,FALSE,"landfrac");
+  }
+  if(config->with_lakes)
   {
     scanclimatefilename(input,&config->lakes_filename,FALSE,FALSE,"lakes");
+  }
+  if(config->river_routing)
+  {
     scanclimatefilename(input,&config->drainage_filename,FALSE,FALSE,"drainage");
     if(config->drainage_filename.fmt==CDF)
     {
@@ -1046,8 +1063,11 @@ Bool fscanconfig(Config *config,    /**< LPJ configuration */
   }
   fscanint2(file,&config->nspinup,"nspinup");
   config->isfirstspinupyear=FALSE;
+  config->shuffle_spinup_climate=FALSE;
   if(config->nspinup)
   {
+    if(fscanbool(file,&config->shuffle_spinup_climate,"shuffle_spinup_climate",TRUE,verbose))
+      return TRUE;
     fscanint2(file,&config->nspinyear,"nspinyear");
     if(iskeydefined(file,"firstspinupyear"))
     {

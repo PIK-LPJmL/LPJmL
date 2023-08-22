@@ -398,12 +398,15 @@ Bool filesexist(Config config, /**< LPJmL configuration */
   }
   else
     bad+=checkcoordfile(&config,&config.soil_filename);
+  if(config.landfrac_from_file)
+    bad+=checkinputdata(&config,&config.landfrac_filename,"landfrac","1",LPJ_SHORT);
+  if(config.with_lakes)
+    bad+=checkinputdata(&config,&config.lakes_filename,"lakes","1",LPJ_SHORT);
   if(config.river_routing)
   {
     if(config.extflow)
       bad+=checkclmfile(&config,"extflow",&config.extflow_filename,NULL,0);
     bad+=checkinputfile(&config,&config.drainage_filename,NULL,(config.drainage_filename.fmt==CDF) ? 0 : 2);
-    bad+=checkinputdata(&config,&config.lakes_filename,"lakes","1",LPJ_SHORT);
     if(config.withlanduse!=NO_LANDUSE)
       bad+=checkinputdata(&config,&config.neighb_irrig_filename,"neigbour irrigation",NULL,LPJ_INT);
   }
@@ -526,7 +529,7 @@ Bool filesexist(Config config, /**< LPJmL configuration */
     if(config.tillage_type==READ_TILLAGE)
       bad+=checkdatafile(&config,&config.with_tillage_filename,"tillage",NULL,LPJ_SHORT,1);
     if(config.residue_treatment==READ_RESIDUE_DATA)
-      bad+=checkdatafile(&config,&config.residue_data_filename,"residue extraction",NULL,LPJ_SHORT,2*config.fertilizermap_size);
+      bad+=checkdatafile(&config,&config.residue_data_filename,"residue extraction",NULL,LPJ_SHORT,config.fertilizermap_size);
     if(config.prescribe_lsuha)
       bad+=checkinputdata(&config,&config.lsuha_filename,"livestock density","lsu/ha",LPJ_SHORT);
   }
