@@ -33,6 +33,7 @@ of `major.minor.patch` with
 ### Fixed
 
 - check for land-use fractions to not exceed 100% after scaling with `landfrac`, re-scale to 100%, print warning see [!173](https://gitlab.pik-potsdam.de/lpjml/LPJmL_internal/-/merge_requests/173)
+- add turnover before allocation in cultcftstand to prevent sporadic C balance errors when running with intercrops, see[!175](https://gitlab.pik-potsdam.de/lpjml/LPJmL_internal/-/merge_requests/175)
 
 ## [5.7.4] - 2023-08-17
 
