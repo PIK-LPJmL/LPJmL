@@ -19,6 +19,12 @@ of `major.minor.patch` with
 
 ## [Unreleased]
 
+## [5.7.x] - 2023-08-xx
+
+### Fixed
+
+- check for land-use fractions to not exceed 100% after scaling with `landfrac`, re-scale to 100%, print warning see [!173](https://gitlab.pik-potsdam.de/lpjml/LPJmL_internal/-/merge_requests/173)
+
 ## [5.7.4] - 2023-08-17
 
 ### Changed
