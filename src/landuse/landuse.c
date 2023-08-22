@@ -365,7 +365,7 @@ Bool getlanduse(Landuse landuse,     /**< Pointer to landuse data */
       if(sum > 1.0)
         for(i=0;i<landuse->landuse.var_len;i++)
           data[start++]/=sum;
-    }    
+    }
   }
   count=0;
 
