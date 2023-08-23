@@ -52,6 +52,7 @@ Real infil_perc_irr(Stand *stand,        /**< Stand pointer */
   Real vol_water_enth=0; /*volumetric enthalpy of inflowing or outflowing water */
 
   int l,p;
+  int infil_loop_count=1;
   Real updated_soil_water=0,previous_soil_water[NSOILLAYER];
   Irrigation *data_irrig;
   Pft *pft;
@@ -305,8 +306,14 @@ Real infil_perc_irr(Stand *stand,        /**< Stand pointer */
       }
 
     } /* if not drip */
-    if(config->water_heattransfer)
-        apply_perc_enthalpy(soil);
+    /* recompute the soil temperature in cases of strong percolation, to allow temperature changes to affect further percolation energy transfer */
+    if(infil_loop_count%8 == 0 && config->percolation_heattransfer ){ 
+      apply_perc_enthalpy(soil);
+      Soil_thermal_prop th;
+      calc_soil_thermal_props(&th,soil,soil->wi_abs_enth_adj, soil->sol_abs_enth_adj, TRUE,FALSE);
+      compute_mean_layer_temps_from_enth(soil->temp, soil->enth, th);
+    }
+    infil_loop_count+=1;
   } /* while infil > 0 */
 
   for(l=0;l<NSOILLAYER;l++)

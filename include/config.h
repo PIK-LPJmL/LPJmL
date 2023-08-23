@@ -213,7 +213,7 @@ struct config
   Bool river_routing;  /**< river routing enabled */
   Bool extflow;        /** external flow enabled */
   Bool permafrost;     /**< permafrost module enabled */
-  Bool water_heattransfer; /**< water heat transfer enabled */
+  Bool percolation_heattransfer; /**< water heat transfer enabled */
   Bool johansen;       /**< johansen enabled */
   Bool new_phenology;	/**< new phenology enabled */
   Bool new_trf;         /**< new transpiration reduction function enabled */

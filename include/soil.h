@@ -330,7 +330,7 @@ given an enthalpy vector (enth) and a Soil_thermal_prop (th)*/
  (((e)[(gp)]<0                      ?  (e)[(gp)]                           / (th).c_frozen[(gp)]   : 0) +\
   ((e)[(gp)]>(th).latent_heat[(gp)] ? ((e)[(gp)] - (th).latent_heat[(gp)]) / (th).c_unfrozen[(gp)] : 0))
 #define reconcile_layer_energy_with_water_shift(soil, layer, amount, vol_enthalpy, config) ({\
-        if(config->water_heattransfer)\
+        if(config->percolation_heattransfer)\
         {\
           /* printf("reconcile_layer_energy_with_water_shift: layer %d, amount %f, vol_enthalpy %f\n", layer, amount, vol_enthalpy);*/ \
           soil->perc_energy[layer]+=amount/1000*vol_enthalpy; /* add enthalpy of water coming from above */ \

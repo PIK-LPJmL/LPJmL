@@ -61,6 +61,7 @@ void soiltemp(Soil *soil,          /**< pointer to soil data */
 void modify_enth_due_to_unaccounted_masschanges(Soil * soil,const Config * config){
     Soil_thermal_prop old_therm_storage_prop;                      
     Real waterdiff[NSOILLAYER], soliddiff[NSOILLAYER];  
+    apply_perc_enthalpy(soil);
     calc_soil_thermal_props(&old_therm_storage_prop, soil, soil->wi_abs_enth_adj,  soil->sol_abs_enth_adj, config->johansen, FALSE); 
     get_unaccounted_changes_in_water_and_solids(waterdiff, soliddiff, soil);        
     apply_enth_of_unaccounted_mass_changes(soil->enth, waterdiff, soliddiff, old_therm_storage_prop);    

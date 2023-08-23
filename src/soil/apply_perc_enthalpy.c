@@ -15,7 +15,4 @@ void apply_perc_enthalpy(Soil * soil
         }
     soil->perc_energy[l]=0;
   }
-  Soil_thermal_prop therm;
-  calc_soil_thermal_props(&therm,soil,soil->wi_abs_enth_adj,soil->sol_abs_enth_adj,TRUE,FALSE);
-  compute_mean_layer_temps_from_enth(soil->temp, soil->enth, therm);
 }

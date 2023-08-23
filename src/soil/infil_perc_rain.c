@@ -51,7 +51,7 @@ Real infil_perc_rain(Stand *stand,        /**< Stand pointer */
   Real infil_layer[NTILLLAYER];
   Soil *soil;
   int l,p;
-  int infil_loop_count=0;
+  int infil_loop_count=1;
   Real updated_soil_water=0,previous_soil_water[NSOILLAYER];
   Pft *pft;
   String line;
@@ -266,8 +266,6 @@ Real infil_perc_rain(Stand *stand,        /**< Stand pointer */
         } /*end percolation*/
       } /* if soil depth > freeze_depth */
     } /* soil layer loop */
-    if(infil_loop_count%5 == 0 && config->water_heattransfer )
-      apply_perc_enthalpy(soil);
     getoutput(&stand->cell->output,LEACHING,config)+=NO3perc_ly*stand->frac;
     stand->cell->balance.n_outflux+=NO3perc_ly*stand->frac;
     if(isagriculture(stand->type->landusetype))
@@ -297,10 +295,15 @@ Real infil_perc_rain(Stand *stand,        /**< Stand pointer */
           getoutputindex(&stand->cell->output,CFT_LEACHING,pft->par->id-npft+data_irrig->irrigation*ncft,config)+=NO3perc_ly;
       }
     }
+    /* recompute the soil temperature in cases of strong percolation, to allow temperature changes to affect further percolation energy transfer */
+    if(infil_loop_count%8 == 0 && config->percolation_heattransfer ){
+      apply_perc_enthalpy(soil);
+      Soil_thermal_prop th;
+      calc_soil_thermal_props(&th,soil,soil->wi_abs_enth_adj, soil->sol_abs_enth_adj, TRUE,FALSE);
+      compute_mean_layer_temps_from_enth(soil->temp, soil->enth, th);
+    }
     infil_loop_count+=1;
   } /* while infil > 0 */
-  if(config->water_heattransfer)
-    apply_perc_enthalpy(soil);
   for(l=0;l<NSOILLAYER;l++)
   {
     /*reallocate water above field capacity to freewater */
