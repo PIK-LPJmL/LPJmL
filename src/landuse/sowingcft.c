@@ -34,11 +34,15 @@ static void cultcftstand(Stocks *flux_estab,  /**< establishment flux */
                         )
 {
   Stocks stocks;
+  Pft *pft;
+  int p;
   if((nofallow || cell->ml.cropdates[cft].fallow[irrig]<=0) &&
      check_lu(cell->standlist,(isother) ? cell->ml.landfrac[irrig].grass[0] : cell->ml.landfrac[irrig].crop[cft],npft+cft,(isother) ? OTHERS : AGRICULTURE,irrig))
   {
     if(!(*alloc_today))
     {
+      foreachpft(pft, p, &setasidestand->pftlist)
+        turnover_grass(&setasidestand->soil.litter, pft,1.0/NDAYYEAR,config);
       allocation_today(setasidestand,config);
       *alloc_today=TRUE;
     }
@@ -75,6 +79,7 @@ void sowingcft(Stocks *flux_estab,  /**< establishment flux */
   Real difffrac,landfrac;
   int s,p,cft_id,pos;
   Irrigation *irrigation,*data;
+
   /* set sowing date for all CFTs not in the land-use data set */
   if(config->sdate_option==FIXED_SDATE && cell->ml.landfrac[irrig].crop[cft]==0)
     cell->ml.sdate_fixed[cft+irrig*ncft]=day;
