@@ -273,6 +273,7 @@ Bool getlanduse(Landuse landuse,     /**< Pointer to landuse data */
                )                     /** \return TRUE on error */
 {
   int i,j,count,cell;
+  int start;
   IrrigationType p;
   Real sum,*data;
   int *dates;
@@ -350,11 +351,32 @@ Bool getlanduse(Landuse landuse,     /**< Pointer to landuse data */
   {
     count=0;
     for(cell=0;cell<config->ngridcell;cell++)
+    {
+      sum = 0;
+      start = count;
       for(i=0;i<landuse->landuse.var_len;i++)
         if(grid[cell].landfrac==0)
           data[count++]=0;
         else
-          data[count++]/=grid[cell].landfrac;
+        {
+          data[count]/=grid[cell].landfrac;
+          sum+=data[count++];
+        }
+      if(sum > 1.0)
+      {
+        if(sum*grid[cell].landfrac>1)
+        {
+          fprintf(stderr,"WARNING013: Sum of land-use fractions in cell %d at year %d greater 1: %f even before scaling with landfrac\n",
+                  cell+config->startgrid,yearl,sum*grid[cell].landfrac);
+        }
+        else
+          fprintf(stderr,"WARNING013: Sum of land-use fractions in cell %d at year %d greater 1: %f after scaling with landfrac of %f\n",
+                  cell+config->startgrid,yearl,sum,grid[cell].landfrac);
+        fflush(stderr);
+        for(i=0;i<landuse->landuse.var_len;i++)
+          data[start++]/=sum;
+      }
+    }
   }
   count=0;
 

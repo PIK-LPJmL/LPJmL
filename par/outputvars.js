@@ -2,7 +2,7 @@
 /**                                                                                \n**/
 /**               o  u  t  p  u  t  v  a  r  s  .  j  s                            \n**/
 /**                                                                                \n**/
-/**  Defines array of output variables for LPJmL 5.7.4-FIRE                        \n**/
+/**  Defines array of output variables for LPJmL 5.7.5-FIRE                        \n**/
 /**                                                                                \n**/
 /**  Monthly output rates can be rescaled to 1/day or 1/second by setting the unit \n**/
 /**  to day-1 or sec-1, e.g.:                                                      \n**/
@@ -331,12 +331,12 @@
   { "id" : FLUX_AUTOFERT, "name": "flux_autofert", "timestep" : "annual", "var" : "nfert", "long_name" : "flux of automated fertilizer application", "unit" : "gN/m2/yr", "scale" : 1.0, "offset" : 0.0},
   { "id" : LITFALLC_WOOD, "name": "litfallc_wood", "timestep" : "annual", "var": "litfallc_wood", "long_name" : "woody litter fall carbon", "unit" : "gC/m2/yr", "scale" : 1.0, "offset" : 0.0},
   { "id" : LITFALLN_WOOD, "name": "litfalln_wood", "timestep" : "annual", "var": "litfalln_wood", "long_name" : "woody litter fall nitrogen", "unit" : "gN/m2/yr", "scale" : 1.0, "offset" : 0.0},
-  { "id" : RESPONSE_LAYER_AGR, "name" : "response_layer_agr" , "timestep" : "annual", "var" : "response_layer" , "long_name" : "sum of response function in layer on agricultural stands", "unit" : "-" , "scale" : 1.0, "offset" : 0.0}, 
-  { "id" : RESPONSE_LAYER_NV, "name" : "response_layer_nv" , "timestep" : "annual", "var" : "response_layer" , "long_name" : "sum of response function in layer on natural vegetation", "unit" : "-" , "scale" : 1.0, "offset" : 0.0}, 
+  { "id" : RESPONSE_LAYER_AGR, "name" : "response_layer_agr" , "timestep" : "annual", "var" : "response_layer" , "long_name" : "sum of response function in layer on agricultural stands", "unit" : "-" , "scale" : 1.0, "offset" : 0.0},
+  { "id" : RESPONSE_LAYER_NV, "name" : "response_layer_nv" , "timestep" : "annual", "var" : "response_layer" , "long_name" : "sum of response function in layer on natural vegetation", "unit" : "-" , "scale" : 1.0, "offset" : 0.0},
   { "id" : DECAY_WOOD_AGR, "name" : "decay_wood_agr", "timestep" : "annual", "var": "decay_wood", "long_name": "decay rate of woody litter on agricultural stands", "unit": "-", "scale": 1.0, "offset" : 0.0},
-  { "id" : DECAY_WOOD_NV, "name" : "decay_wood_nv", "timestep" : "annual", "var": "decay_wood", "long_name": "decay rate of woody litter on natural vegetation", "unit": "-", "scale": 1.0, "offset" : 0.0}, 
+  { "id" : DECAY_WOOD_NV, "name" : "decay_wood_nv", "timestep" : "annual", "var": "decay_wood", "long_name": "decay rate of woody litter on natural vegetation", "unit": "-", "scale": 1.0, "offset" : 0.0},
   { "id" : DECAY_LEAF_AGR, "name" : "decay_leaf_agr", "timestep" : "annual", "var": "decay_leaf", "long_name": "decay rate of leaf litter on agricultural stands", "unit": "-", "scale": 1.0, "offset" : 0.0},
-  { "id" : DECAY_LEAF_NV, "name" : "decay_leaf_nv", "timestep" : "annual", "var": "decay_leaf", "long_name": "decay rate of leaf litter on natural vegetation", "unit": "-", "scale": 1.0, "offset" : 0.0}, 
+  { "id" : DECAY_LEAF_NV, "name" : "decay_leaf_nv", "timestep" : "annual", "var": "decay_leaf", "long_name": "decay rate of leaf litter on natural vegetation", "unit": "-", "scale": 1.0, "offset" : 0.0},
   { "id" : CSHIFT_FAST_NV, "name" : "cshift_fast_nv", "timestep" : "annual", "var": "Cshift_fast", "long_name": "sum of carbon to fast pools per layer on natural vegetation", "unit": "gC/m2/yr", "scale": 1.0, "offset" : 0.0},
   { "id" : CSHIFT_SLOW_NV, "name" : "cshift_slow_nv", "timestep" : "annual", "var": "Cshift_slow", "long_name": "sum of carbon to slow pools per layer on natural vegetation", "unit": "gC/m2/yr", "scale": 1.0, "offset" : 0.0},
   { "id" : LITBURNC, "name": "litburnc", "timestep" : "annual", "var": "litburnc", "long_name" : "litter carbon burnt", "unit" : "gC/m2/yr", "scale" : 1.0, "offset" : 0.0},
@@ -389,4 +389,7 @@
   { "id" : ROS, "name": "ros", "timestep" : "monthly", "var" :  "ros", "long_name" :  "rate of spread", "unit" : "m/s", "scale" : 1.0, "offset" : 0.0},
   { "id" : FIRESIZE, "name": "firesize", "timestep" : "monthly", "var" :  "firesize", "long_name" :  "average size of fire", "unit" : "km2", "scale" : 1.0e-6, "offset" : 0.0},
   { "id" : FIREDAYS, "name": "firedays", "timestep" : "monthly", "var" :  "firedays", "long_name" :  "number of days with fire", "unit" : "days", "scale" : 1.0, "offset" : 0.0},
+  { "id" : RIVERVOL, "name": "rivervol", "timestep" : "monthly", "var" :  "rivervol", "long_name" :  "river content volume", "unit" : "dm3", "scale" : 1.0, "offset" : 0.0},
+  { "id" : SWC_VOL, "name": "swc_vol", "timestep" : "monthly", "var" : "swc_vol", "long_name" : "soil water content for each of the top 5 soillayers", "unit" : "dm3", "scale" : 1.0, "offset" : 0.0},
+  { "id" : IRRIG_STOR, "name": "irrig_stor", "timestep" : "monthly", "var" :  "irrig_stor", "long_name" :  "water content in irrigation storage", "unit" : "dm3", "scale" : 1.0, "offset" : 0.0}
 ],
