@@ -72,6 +72,8 @@ void fprintfiles(FILE *file,          /**< pointer to text output file */
   if(config->soil_filename.fmt!=CDF)
     fprintfilename(file,&config->coord_filename,FALSE);
   fprintfilename(file,&config->soil_filename,FALSE);
+  if(config->landfrac_from_file)
+    fprintfilename(file,&config->landfrac_filename,FALSE);
   fprintfilename(file,&config->temp_filename,TRUE);
   fprintfilename(file,&config->prec_filename,TRUE);
 #if defined IMAGE && defined COUPLED
@@ -136,6 +138,8 @@ void fprintfiles(FILE *file,          /**< pointer to text output file */
       fprintfilename(file,&config->manure_nr_filename,TRUE);
     if(config->residue_treatment==READ_RESIDUE_DATA)
       fprintfilename(file,&config->residue_data_filename,TRUE);
+    if(config->prescribe_lsuha)
+      fprintfilename(file,&config->lsuha_filename,FALSE);
   }
   if(config->reservoir)
   {
@@ -148,10 +152,11 @@ void fprintfiles(FILE *file,          /**< pointer to text output file */
 #endif
   if(config->wet_filename.name!=NULL)
     fprintfilename(file,&config->wet_filename,TRUE);
+  if(config->with_lakes)
+    fprintfilename(file,&config->lakes_filename,FALSE);
   if(config->river_routing)
   {
     fprintfilename(file,&config->drainage_filename,FALSE);
-    fprintfilename(file,&config->lakes_filename,FALSE);
     if(config->withlanduse!=NO_LANDUSE)
       fprintfilename(file,&config->neighb_irrig_filename,FALSE);
   }
@@ -174,7 +179,7 @@ void fprintfiles(FILE *file,          /**< pointer to text output file */
           {
             fprintf(file,config->outputvars[i].filename.name,j);
             fputc('\n',file);
-            if(config->outputvars[i].filename.fmt!=CDF && config->outputvars[i].filename.meta)
+            if(config->outputvars[i].filename.meta)
             {
               fprintf(file,config->outputvars[i].filename.name,j);
               fprintf(file,"%s\n",config->json_suffix);
@@ -183,7 +188,7 @@ void fprintfiles(FILE *file,          /**< pointer to text output file */
         else
         {
           fprintf(file,"%s\n",config->outputvars[i].filename.name);
-          if(config->outputvars[i].filename.fmt!=CDF && config->outputvars[i].filename.meta)
+          if(config->outputvars[i].filename.meta)
             fprintf(file,"%s%s\n",config->outputvars[i].filename.name,config->json_suffix);
         }
      }

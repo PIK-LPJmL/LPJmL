@@ -1,11 +1,11 @@
-.TH lpjsubmit 1  "June 25, 2019" "version 5.1.001" "USER COMMANDS"
+.TH lpjsubmit 1  "USER COMMANDS"
 .SH NAME
 lpjsubmit \- Submit parallel SLURM/LoadLeveler job for LPJmL simulations 
 .SH SYNOPSIS
 .B lpjsubmit
-[\-class c] [\-group g] [\-wtime time] [\-blocking n] [\-o output] [\-e error] [\-q] [\-nocheck] [\-norun] [\- dependency id] [-couple program] ntasks [args ...]
+[\-class c] [\-group g] [\-wtime time] [\-blocking n] [\-o output] [\-e error] [\-q] [\-nocheck] [\-norun] [\-dependency id] [-couple program] [-constraint c][[-option op=text] ...] ntasks [args ...]
 .SH DESCRIPTION
-Script creates SLURM/LoadLeveler job control file \fIjob.jcf\fP and submits the job to the LoadLeveler queue via
+Script creates SLURM/LoadLeveler job control file \fIjob.jcf\fP and submits the job to the SLURM/LoadLeveler queue via
 .B
 llsubmit
 or to SLURM via
@@ -50,6 +50,12 @@ does not submit job to batch queue, creates \fIslurm.jcf\fP file only.
 \-dependency id
 slurm job will be scheduled after job with job id id finished successfully.
 .TP
+\-constraint c
+Defines constraint c for slurm job.
+.TP
+\-option op=test
+Set option op to test for slurm job. This option can be repeated multiple times.
+.TP
 \-couple program
 Start couple program in the background before starting LPJmL.
 .TP
@@ -65,7 +71,7 @@ program.
 .TP
 Submit job with 32 parallel MPI tasks starting from a restart file with a wall clock limit of 1h:
 .B lpjsubmit
--wtime 1:00:00 32 -DFROM_RESTART
+-wtime 1:00:00 32 -DFROM_RESTART lpjml.js
 .PP
 .SH ENVIRONMENT
 .TP
@@ -87,4 +93,4 @@ For authors and contributors see AUTHORS file
 (C) Potsdam Institute for Climate Impact Research (PIK), see COPYRIGHT file
 
 .SH SEE ALSO
-lpjml(1), lpjcheck(1), lpj_paths.sh(1), lpjml.conf(5)
+lpjml(1), lpjcheck(1), lpj_paths.sh(1)

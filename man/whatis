@@ -53,7 +53,6 @@ iterate (3) - main time loop for LPJmL
 iterateyear (3) - year time loop for LPJmL
 lpjcat (1) - concatenate restart files from distributed LPJmL simulations.
 lpjcheck (1) - check syntax of LPJmL configuration files 
-lpj (1) - dynamic global vegetation model with river routing
 lpjfiles (1) - print list of input/output files of LPJmL
 lpjml (1) - dynamic global vegetation model with managed land and river routing
 lpjprint (1) - print contents of restart file of LPJmL model runs 
@@ -65,9 +64,6 @@ output_bsq (1) - concatenate all output files from distributed LPJmL simulations
 lpj_paths.sh (1) - set environmental variables used by LPJmL
 lpj_paths.csh (1) - set environmental variables used by LPJmL for C shell
 clm (5) - input data files for LPJmL runs
-lpjml.conf (5) - configuration file for LPJmL runs
-lpjml_image.conf(5) - configuration file for LPJmL runs with IMAGE coupling
-lpj.conf (5) - configuration file for LPJmL runs with natural vegetation
 manage2js (1) - convert management  *.par files to JSON file
 mergeclm (1) - merge LPJmL climate data files
 newgrid (3) - allocate LPJ grid cells

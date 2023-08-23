@@ -20,7 +20,6 @@
 
 struct celldata
 {
-  Bool with_nitrogen;
   int soil_fmt;
   union
   {
@@ -34,7 +33,9 @@ struct celldata
     } bin;
     Coord_netcdf cdf;
   } soil;
+  Infile lakes;
   Infile soilph;
+  Infile landfrac;
 };
 
 Celldata opencelldata(Config *config /**< LPJmL configuration */
@@ -99,7 +100,7 @@ Celldata opencelldata(Config *config /**< LPJmL configuration */
       if(soilmap==NULL)
       {
         if(isroot(*config))
-          fprintf(stderr,"ERROR249: Invalid soilmap in '%s'.\n",config->soil_filename.name);
+          fprintf(stderr,"ERROR250: Invalid soilmap in '%s'.\n",config->soil_filename.name);
       }
       else
       {
@@ -118,10 +119,10 @@ Celldata opencelldata(Config *config /**< LPJmL configuration */
         return NULL;
     }
   }
-  if(config->with_nitrogen)
+  if(config->with_lakes)
   {
-    celldata->with_nitrogen=TRUE;
-    if(openinputdata(&celldata->soilph,&config->soilph_filename,"soilph",NULL,LPJ_SHORT,0.01,config))
+    /* Open file for lake fraction */
+    if(openinputdata(&celldata->lakes,&config->lakes_filename,"lakes","1",LPJ_BYTE,0.01,config))
     {
       if(config->soil_filename.fmt==CDF)
         closecoord_netcdf(celldata->soil.cdf);
@@ -134,8 +135,42 @@ Celldata opencelldata(Config *config /**< LPJmL configuration */
       return NULL;
     }
   }
-  else
-    celldata->with_nitrogen=FALSE;
+  if(config->with_nitrogen)
+  {
+    if(openinputdata(&celldata->soilph,&config->soilph_filename,"soilph",NULL,LPJ_SHORT,0.01,config))
+    {
+      if(config->soil_filename.fmt==CDF)
+        closecoord_netcdf(celldata->soil.cdf);
+      else
+      {
+        closecoord(celldata->soil.bin.file_coord);
+        fclose(celldata->soil.bin.file);
+      }
+      if(config->with_lakes)
+        closeinput(&celldata->lakes);
+      free(celldata);
+      return NULL;
+    }
+  }
+  if(config->landfrac_from_file)
+  {
+    if(openinputdata(&celldata->landfrac,&config->landfrac_filename,"landfrac","1",LPJ_SHORT,0.01,config))
+    {
+      if(config->soil_filename.fmt==CDF)
+        closecoord_netcdf(celldata->soil.cdf);
+      else
+      {
+        closecoord(celldata->soil.bin.file_coord);
+        fclose(celldata->soil.bin.file);
+      }
+      if(config->with_lakes)
+        closeinput(&celldata->lakes);
+      if(config->with_nitrogen)
+        closeinput(&celldata->soilph);
+      free(celldata);
+      return NULL;
+    }
+  }
   return celldata;
 } /* of 'opencelldata' */
 
@@ -174,18 +209,17 @@ Bool seekcelldata(Celldata celldata, /**< pointer to celldata */
   return FALSE;
 } /* of 'seekcelldata' */
 
-Bool readcelldata(Celldata celldata, /**< pointer to celldata */
-                  Coord *coord,      /**< lon,lat coordinate */
-                  unsigned int *soilcode,     /**< soil code */
-                  Real *soil_ph,                /**< soil pH */
-                  int cell,          /**< cell index */
-                  Config *config     /**< LPJmL configuration */
-                 )                   /** \return TRUE on error */
+Bool readcelldata(Celldata celldata,      /**< pointer to celldata */
+                  Cell *grid,             /**< pointer to grid cell */
+                  unsigned int *soilcode, /**< soil code */
+                  int cell,               /**< cell index */
+                  Config *config          /**< LPJmL configuration */
+                 )                        /** \return TRUE on error */
 {
   char *name;
   if(celldata->soil_fmt==CDF)
   {
-    if(readcoord_netcdf(celldata->soil.cdf,coord,&config->resolution,soilcode))
+    if(readcoord_netcdf(celldata->soil.cdf,&grid->coord,&config->resolution,soilcode))
     {
       fprintf(stderr,"ERROR190: Unexpected end of file in '%s' for cell %d.\n",
               config->soil_filename.name,cell+config->startgrid);
@@ -194,7 +228,7 @@ Bool readcelldata(Celldata celldata, /**< pointer to celldata */
   }
   else
   {
-    if(readcoord(celldata->soil.bin.file_coord,coord,&config->resolution))
+    if(readcoord(celldata->soil.bin.file_coord,&grid->coord,&config->resolution))
     {
       name=getrealfilename(&config->coord_filename);
       fprintf(stderr,"ERROR190: Unexpected end of file in '%s' for cell %d.\n",
@@ -225,13 +259,50 @@ Bool readcelldata(Celldata celldata, /**< pointer to celldata */
   }
   if(config->with_nitrogen)
   {
-    if(readinputdata(&celldata->soilph,soil_ph,coord,cell+config->startgrid,&config->soilph_filename))
+    if(readinputdata(&celldata->soilph,&grid->soilph,&grid->coord,cell+config->startgrid,&config->soilph_filename))
       return TRUE;
   }
+  if(config->landfrac_from_file)
+  {
+    if(readinputdata(&celldata->landfrac,&grid->landfrac,&grid->coord,cell+config->startgrid,&config->landfrac_filename))
+      return TRUE;
+    if(grid->landfrac==0)
+    {
+      fprintf(stderr,"WARNING034: Land fraction of cell %d is zero, set to %g.\n",
+              cell+config->startgrid,param.minlandfrac);
+      grid->landfrac=param.minlandfrac;
+    }
+    else if(grid->landfrac>1 || grid->landfrac<0)
+    {
+      fprintf(stderr,"ERROR257: Land fraction of cell %d=%g not in (0,1].\n",
+              cell+config->startgrid,grid->landfrac);
+      return TRUE;
+    }
+    grid->coord.area*=grid->landfrac;
+  }
+  else
+    grid->landfrac=1;
+  if(config->with_lakes)
+  {
+    if(readinputdata(&celldata->lakes,&grid->lakefrac,&grid->coord,cell+config->startgrid,&config->lakes_filename))
+      return TRUE;
+    /* rescale to land fraction */
+    if(grid->landfrac==0)
+      grid->lakefrac=1;
+    else
+      grid->lakefrac/=grid->landfrac;
+    if(grid->lakefrac>1)
+      fprintf(stderr,"WARNING035: Lake fraction in cell %d=%g greater than one, set to one.\n",cell+config->startgrid,grid->lakefrac);
+    if(grid->lakefrac>1-epsilon)
+      grid->lakefrac=1;
+  }
+  else
+    grid->lakefrac=0;
   return FALSE;
 } /* of 'readcelldata' */
 
-void closecelldata(Celldata celldata /**< pointer to celldata */
+void closecelldata(Celldata celldata,   /**< pointer to celldata */
+                   const Config *config /**< LPJmL configuration */
                   )
 {
   if(celldata->soil_fmt==CDF)
@@ -241,7 +312,11 @@ void closecelldata(Celldata celldata /**< pointer to celldata */
     closecoord(celldata->soil.bin.file_coord);
     fclose(celldata->soil.bin.file);
   }
-  if(celldata->with_nitrogen)
+  if(config->with_nitrogen)
     closeinput(&celldata->soilph);
+  if(config->landfrac_from_file)
+    closeinput(&celldata->landfrac);
+  if(config->with_lakes)
+    closeinput(&celldata->lakes);
   free(celldata);
 } /* of 'closecelldata' */

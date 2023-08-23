@@ -77,7 +77,6 @@ Real water_stressed(Pft *pft,                  /**< [inout] pointer to PFT varia
   Real gc_new;
   Real A,B,psi;
   Real trf[LASTLAYER];
-  Irrigation *irrig;
 
   gpd=agd=*rd=layer=root_u=root_nu=aet_cor=0.0;
   aet_frac=1.;
@@ -91,7 +90,7 @@ Real water_stressed(Pft *pft,                  /**< [inout] pointer to PFT varia
   wr=0;
   for(l=0;l<LASTLAYER;l++)
   {
-    if(config->new_trf)
+    if(config->transp_suction_fcn)
     {
       B=(log(1500) - log(33))/(log(pft->stand->soil.wfc[l]) - log(pft->stand->soil.wpwp[l]));
       A=exp(log(33) + B*log(pft->stand->soil.wfc[l]));
@@ -205,40 +204,35 @@ Real water_stressed(Pft *pft,                  /**< [inout] pointer to PFT varia
 
       adtmm=photosynthesis(&agd,rd,&pft->vmax,data.path,lambda,data.tstress,data.b,data.co2,
                            temp,data.apar,daylength,FALSE);
-      gc=(1.6*adtmm/(ppm2bar(co2)*(1.0-lambda)*hour2sec(daylength)))+
-                    pft->par->gmin*fpar(pft);
-      demand=(gc>0) ? (1-*wet)*eeq*param.ALPHAM/(1+(param.GM*param.ALPHAM)/gc) :0;
-      data.compvm=FALSE;
-      if(gc_new-gc>0.01 &&  demand-supply_pft>0.1)
+#ifdef COUPLING_WITH_FMS
+      if(config->nitrogen_coupled)
+#endif
       {
-        gc=(param.GM*param.ALPHAM)*supply_pft/((1.0-*wet)*eeq*param.ALPHAM-supply_pft);
-        if(gc<0)
-          gc=0;
-        gpd=hour2sec(daylength)*(gc-pft->par->gmin*fpar(pft));
-        data.fac=gpd/1.6*ppm2bar(co2);
-        data.vmax=pft->vmax;
-        lambda=bisect((Bisectfcn)fcn,0.02,lambda,&data,0,EPSILON,20,&iter);
-        adtmm=photosynthesis(&agd,rd,&pft->vmax,data.path,lambda,data.tstress,data.b,data.co2,
-                             temp,data.apar,daylength,FALSE);
         gc=(1.6*adtmm/(ppm2bar(co2)*(1.0-lambda)*hour2sec(daylength)))+
                       pft->par->gmin*fpar(pft);
         demand=(gc>0) ? (1-*wet)*eeq*param.ALPHAM/(1+(param.GM*param.ALPHAM)/gc) :0;
+        data.compvm=FALSE;
+        if(gc_new-gc>0.01 &&  demand-supply_pft>0.1)
+        {
+          gc=(param.GM*param.ALPHAM)*supply_pft/((1.0-*wet)*eeq*param.ALPHAM-supply_pft);
+          if(gc<0)
+            gc=0;
+          gpd=hour2sec(daylength)*(gc-pft->par->gmin*fpar(pft));
+          data.fac=gpd/1.6*ppm2bar(co2);
+          data.vmax=pft->vmax;
+          lambda=bisect((Bisectfcn)fcn,0.02,lambda,&data,0,EPSILON,20,&iter);
+          adtmm=photosynthesis(&agd,rd,&pft->vmax,data.path,lambda,data.tstress,data.b,data.co2,
+                               temp,data.apar,daylength,FALSE);
+          gc=(1.6*adtmm/(ppm2bar(co2)*(1.0-lambda)*hour2sec(daylength)))+
+                        pft->par->gmin*fpar(pft);
+          demand=(gc>0) ? (1-*wet)*eeq*param.ALPHAM/(1+(param.GM*param.ALPHAM)/gc) :0;
+        }
+        aet=(wr>0) ? demand*fpar(pft)/wr :0 ;
       }
-      aet=(wr>0) ? demand*fpar(pft)/wr :0 ;
 
       if(vmax>epsilon)
       {
         pft->nlimit+=pft->vmax/vmax;
-        if(pft->stand->type->landusetype==AGRICULTURE)
-        {
-          irrig=pft->stand->data;
-          if( pft->par->id==config->crop_index &&
-             irrig->irrigation==config->crop_irrigation &&
-             vmax>0)
-          {
-            getoutput(&pft->stand->cell->output,D_NLIMIT,config)=pft->vmax/vmax;
-          }
-        }
       }
     } /* of if(config->with_nitrogen) */
     /* in rare occasions, agd(=GPP) can be negative, but shouldn't */

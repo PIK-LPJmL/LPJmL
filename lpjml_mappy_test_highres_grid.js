@@ -170,6 +170,7 @@
   "istimber" : true,
   "grassland_fixed_pft" : false,
   "grass_harvest_options" : false,      /* defines which grassland management scenario to use, if false scenario_MO0.bin, else change file in grassland_fixed_pft in input.js)*/
+  "prescribe_lsuha" : false,
 
 /*===================================================================*/
 /*  II. Input parameter section                                      */

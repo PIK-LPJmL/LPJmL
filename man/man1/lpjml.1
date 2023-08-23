@@ -1,16 +1,12 @@
-.TH lpjml 1  "December 10, 2021" "version 5.3.001" "USER COMMANDS"
+.TH lpjml 1  "USER COMMANDS"
 .SH NAME
-lpj, lpjml \- Dynamic global vegetation model with managed land and river routing
+lpjml \- Dynamic global vegetation model with managed land and river routing
 .SH SYNOPSIS
 .B lpjml
 [\-h] [\-l] [\-v] [-vv] [-param] [-pp cmd] [-fpe] [-image host[:inport[,outport]]] [-couple host[:port]] [\-wait time] [\-outpath \fIdir\fP]
 [\-inpath \fIdir\fP] [\-restartpath \fIdir\fP]
-[[\-Dmacro[=value]] [\-I\fIdir\fP] ...] [\fIfilename\fP]
+[[\-Dmacro[=value]] [\-I\fIdir\fP] ...] \fIfilename\fP
 
-.B lpj
-[\-h] [\-l] [\-v] [-vv] [-param] [-pp cmd] [-fpe] [-image host[:inport[,outport]]] [-couple host[:port]] [\-wait time] [\-outpath \fIdir\fP]
-[\-inpath \fIdir\fP] [\-restartpath \fIdir\fP]
-[[\-Dmacro[=value]] [\-I\fIdir\fP] ...] [\fIfilename\fP]
 .SH DESCRIPTION
 The model simulates vegetation dynamics, hydrology and soil
 organic matter dynamics on an area-averaged grid cell basis using
@@ -39,7 +35,7 @@ verbosely print the actual values during reading of the configuration files.
 print LPJmL parameter for soils and PFTs and list of all available output files.
 .TP
 \-pp cmd
-set preprocessor program to cmd. Default is \fBcpp -P\fP.
+set preprocessor program to cmd, default is \fBcpp\fP.
 .TP
 \-fpe
 enable floating point exceptions. A core file is generated in case of an arithmetic error. Option is only available if \fBlpjml\fP has been compiled with -DWITH_FPE flag.
@@ -69,12 +65,12 @@ define macro for the preprocessor of the configuration file
 define include directory for the preprocessor of the configuration file
 .TP
 .I filename
-name of configuration file, default is \fIlpjml.js\fP for \fBlpjml\fP and \fIlpj.js\fP for \fBlpj\fP.
+name of configuration file
 .SH EXAMPLES
 .TP
-Perform simulation with input from the /scratch file system:
+Perform simulation with input from the /p/projects/lpjml file system:
 .B lpjml
-\-inpath /scratch/02/lpj
+\-inpath /p/projects/lpjml lpjml.js
 .PP
 .TP
 Start simulation from restart file with floating point exceptions enabled:
@@ -86,11 +82,8 @@ For running the MPI version of the program on more than one task the
 script has to be used.
 .SH ENVIRONMENT
 .TP
-LPJCONFIG
-default LPJmL configuration filename
-.TP
 LPJPREP
-defines preprocessor command for LPJmL configuration file, default is \fBcpp -P\fP. Same as '-pp' option.
+defines preprocessor command for LPJmL configuration file, default is \fBcpp\fP. Same as '-pp' option.
 .TP
 LPJROOT
 defines the root directory for LPJmL. This directory is added to the
@@ -120,8 +113,6 @@ path appended to the restart filenames. Only done for filenames without absolute
 
 .SH EXIT STATUS
 .B lpjml
-and
-.B lpj
 returns a zero exit status if the simulation finishes successfully.
 Non zero is returned in case of failure.
 .SH DIAGNOSTICS
@@ -289,6 +280,6 @@ For authors and contributors see AUTHORS file
 (C) Potsdam Institute for Climate Impact Research (PIK), see COPYRIGHT file
 
 .SH SEE ALSO
-lpjsubmit(1), lpjcheck(1), configure.sh(1), backtrace(1), cru2clm(1), txt2clm(1), grid2clm(1), cft2clm(1), lpjcat(1), lpjprint(1), printharvest(1), printclm(1), printheader(1), cat2bsq(1), output_bsq(1), lpj_paths.sh(1), lpj_paths.csh(1), lpjml.conf(5), lpj.conf(5), lpjml_image.conf(5), clm(5)
+lpjsubmit(1), lpjcheck(1), configure.sh(1), backtrace(1), cru2clm(1), txt2clm(1), grid2clm(1), cft2clm(1), lpjcat(1), lpjprint(1), printharvest(1), printclm(1), printheader(1), cat2bsq(1), output_bsq(1), lpj_paths.sh(1), lpj_paths.csh(1), clm(5)
 .TP
 Contact: https://github.com/PIK-LPJmL/LPJmL /lpjml

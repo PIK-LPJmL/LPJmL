@@ -194,7 +194,7 @@ Real daily_agriculture_tree(Stand *stand,                /**< stand pointer */
   foreachpft(pft,p,&stand->pftlist)
   {
     /* calculate old or new phenology */
-    if (config->new_phenology)
+    if (config->gsi_phenology)
       phenology_gsi(pft, climate->temp, climate->swdown, day,climate->isdailytemp,config);
     else
       leaf_phenology(pft,climate->temp,day,climate->isdailytemp,config);
@@ -319,36 +319,11 @@ Real daily_agriculture_tree(Stand *stand,                /**< stand pointer */
     else
       getoutputindex(output,PFT_NPP,nnat+index,config)+=npp;
       getoutputindex(output,PFT_LAI,nnat+index,config)+=actual_lai(pft);
-    if(config->withdailyoutput &&
-       pft->par->id==config->crop_index && data->irrigation.irrigation==config->crop_irrigation)
-      {
-        tree=pft->data;
-        getoutput(output,D_NPP,config)+=npp;
-        getoutput(output,D_GPP,config)+=gpp;
-        getoutput(output,D_CSO,config)=tree->fruit.carbon;
-      }
   } /* of foreachpft */
   free(gp_pft);
   /* soil outflow: evap and transpiration */
   waterbalance(stand,aet_stand,green_transp,&evap,&evap_blue,wet_all,eeq,cover_stand,
                &frac_g_evap,config->rw_manage);
-
-  if(config->withdailyoutput)
-  {
-    foreachpft(pft,p,&stand->pftlist)
-      if(pft->par->id==config->crop_index && data->irrigation.irrigation==config->crop_irrigation)
-      {
-        getoutput(output,D_EVAP,config)+=evap;
-        getoutput(output,D_INTERC,config)+=intercep_stand;
-        forrootsoillayer(l)
-          getoutput(output,D_TRANS,config)+=aet_stand[l];
-        /*output->daily.w0=stand->soil.w[1];
-          output->daily.w1=stand->soil.w[2];
-          output->daily.wevap=stand->soil.w[0];*/
-        getoutput(output,D_PAR,config)+=par;
-        getoutput(output,D_PHEN,config)+=pft->phen;
-      }
-  }
 
   transp=0;
   forrootsoillayer(l)
@@ -396,6 +371,8 @@ Real daily_agriculture_tree(Stand *stand,                /**< stand pointer */
       printf("index=%d\n",index);
       printf("harvest(%s) %d: %g %g\n",config->pftpar[data->irrigation.pft_id].name,data->irrigation.irrigation,yield.carbon,yield.nitrogen);
 #endif
+      getoutput(output,HARVESTC,config)+=yield.carbon*stand->frac;
+      getoutput(output,HARVESTN,config)+=yield.nitrogen*stand->frac;
       if(config->pft_output_scaled)
       {
 #if defined IMAGE && defined COUPLED

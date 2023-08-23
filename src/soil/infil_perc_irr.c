@@ -148,9 +148,9 @@ Real infil_perc_irr(Stand *stand,        /**< Stand pointer */
           stand->frac_g[l]=(previous_soil_water[l]*stand->frac_g[l] + (updated_soil_water - previous_soil_water[l])*frac_g_influx)/updated_soil_water; /* new green fraction equals old green amount + new green amount divided by total water */
 
         /* lateral runoff of water above saturation */
-        if ((soil->w[l]*soil->whcs[l])>(soildepth[l]-soil->freeze_depth[l])*(soil->wsat-soil->wpwp))
+        if ((soil->w[l]*soil->whcs[l])>(soildepth[l]-soil->freeze_depth[l])*(soil->wsat[l]-soil->wpwp[l]))
         {
-          grunoff=(soil->w[l]*soil->whcs[l])-((soildepth[l]-soil->freeze_depth[l])*(soil->wsat-soil->wpwp));
+          grunoff=(soil->w[l]*soil->whcs[l])-((soildepth[l]-soil->freeze_depth[l])*(soil->wsat[l]-soil->wpwp[l]));
           soil->w[l]-=grunoff/soil->whcs[l];
           reconcile_layer_energy_with_water_shift(soil,l,-grunoff,vol_water_enth, config); /* substract enthalpy of runoff water */
           runoff+=grunoff;
@@ -258,6 +258,8 @@ Real infil_perc_irr(Stand *stand,        /**< Stand pointer */
               stand->cell->balance.n_outflux+=(NO3surf + NO3lat)*stand->frac;
               if(isagriculture(stand->type->landusetype))
                 getoutput(&stand->cell->output,NLEACHING_AGR,config)+=(NO3surf + NO3lat)*stand->frac;
+              if(stand->type->landusetype==GRASSLAND)
+                getoutput(&stand->cell->output,NO3_LEACHING_MGRASS,config)+=(NO3surf+NO3lat)*stand->frac;
               if(stand->type->landusetype==AGRICULTURE)
               {
                 foreachpft(pft,p,&stand->pftlist)
@@ -278,19 +280,9 @@ Real infil_perc_irr(Stand *stand,        /**< Stand pointer */
       getoutput(&stand->cell->output,LEACHING,config)+=NO3perc_ly*stand->frac;
       stand->cell->balance.n_outflux+=NO3perc_ly*stand->frac;
       if(isagriculture(stand->type->landusetype))
-         getoutput(&stand->cell->output,NLEACHING_AGR,config)+=NO3perc_ly*stand->frac;
-      if(config->withdailyoutput && (stand->type->landusetype==NATURAL && ALLNATURAL==config->crop_index))
-        getoutput(&stand->cell->output,D_LEACHING,config)+=NO3perc_ly;
-      if(config->withdailyoutput && (stand->type->landusetype==AGRICULTURE || stand->type->landusetype==GRASSLAND))
-      {
-        foreachpft(pft,p,&stand->pftlist)
-        {
-          if(pft->par->id==config->crop_index && config->crop_irrigation)
-          {
-            getoutput(&stand->cell->output,D_LEACHING,config)=NO3perc_ly;
-          }
-        }
-      }
+        getoutput(&stand->cell->output,NLEACHING_AGR,config)+=NO3perc_ly*stand->frac;
+      if(stand->type->landusetype==GRASSLAND)
+        getoutput(&stand->cell->output,NO3_LEACHING_MGRASS,config)+=NO3perc_ly*stand->frac;
       if(stand->type->landusetype==AGRICULTURE)
       {
         foreachpft(pft,p,&stand->pftlist)

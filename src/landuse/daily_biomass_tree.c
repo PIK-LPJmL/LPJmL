@@ -134,7 +134,7 @@ Real daily_biomass_tree(Stand *stand,                /**< stand pointer */
   foreachpft(pft,p,&stand->pftlist)
   {
     /* calculate old or new phenology */
-    if (config->new_phenology)
+    if (config->gsi_phenology)
       phenology_gsi(pft, climate->temp, climate->swdown, day,climate->isdailytemp,config);
     else
       leaf_phenology(pft,climate->temp,day,climate->isdailytemp,config);
@@ -188,11 +188,6 @@ Real daily_biomass_tree(Stand *stand,                /**< stand pointer */
    }
    npp=npp(pft,gtemp_air,gtemp_soil,gpp-rd-pft->npp_bnf,config->with_nitrogen);
    pft->npp_bnf=0.0;
-   if(config->crop_index==ALLSTAND)
-   {
-     getoutput(output,D_NPP,config)+=npp*stand->frac;
-     getoutput(output,D_GPP,config)+=gpp*stand->frac;
-   }
    getoutput(output,NPP,config)+=npp*stand->frac;
    stand->cell->balance.anpp+=npp*stand->frac;
    stand->cell->balance.agpp+=gpp*stand->frac;
@@ -227,16 +222,6 @@ Real daily_biomass_tree(Stand *stand,                /**< stand pointer */
     transp+=aet_stand[l]*stand->frac;
     getoutput(output,TRANSP_B,config)+=(aet_stand[l]-green_transp[l])*stand->frac;
   }
-  if(config->crop_index==ALLSTAND)
-  {
-    getoutput(output,D_EVAP,config)+=evap*stand->frac;
-    getoutput(output,D_TRANS,config)+=transp;
-    getoutput(output,D_W0,config)+=stand->soil.w[1]*stand->frac;
-    getoutput(output,D_W1,config)+=stand->soil.w[2]*stand->frac;
-    getoutput(output,D_WEVAP,config)+=stand->soil.w[0]*stand->frac;
-    getoutput(output,D_INTERC,config)+=intercep_stand*stand->frac;
-  }
-
   getoutput(output,TRANSP,config)+=transp;
   stand->cell->balance.atransp+=transp;
   getoutput(output,INTERC,config)+=intercep_stand*stand->frac; /* Note: including blue fraction*/

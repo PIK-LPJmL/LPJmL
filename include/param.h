@@ -19,6 +19,8 @@
 
 typedef struct
 {
+  Real minlandfrac; /**< minimum land area fraction */
+  Real tinyfrac;    /**< minimum land-use fraction used by all_crops */
   Real k_litter10;
   Poolpar k_soil10;
   Poolpar init_soiln; /**< initial soil nitrogen (gN/m2) */
@@ -39,7 +41,12 @@ typedef struct
   Real atmfrac;      /**< fraction of decomposed litter emitted as CO2 to the atmosphere */
   Real fastfrac;     /**< fraction of soil-bound decomposed litter entering the intermediate soil carbon pool */
   Real bioturbate;   /**< bioturbation [0..1) */
-  int veg_equil_year;
+  int veg_equil_year; /**< number of years to get vegetation into equilibrium (before forst call of equisoil) */
+  Bool veg_equil_unlim; /**< enable vegetation spinup without nitrogen limitation */
+  int nequilsoil;         /**< number of equisoil calls */
+  int equisoil_interval;  /**< time interval between equisoil calls */
+  int equisoil_years;     /**< number of years used in calculation for equisoil */
+  int equisoil_fadeout;   /**< number of years for equisoil fadeout (for final call of equisoil) */
   Real k_max;        /**< maximum fraction of soil->NH4 assumed to be nitrified Parton, 2001*/
   Real k_2;          /**< fraction of nitrified N lost as N20 flux Parton, 2001*/
 
@@ -101,6 +108,8 @@ typedef struct
   Real phen_limit; /* limit for agricultural trees */
   Real nfrac_grassharvest; /**< fraction of nitrogen from grass harvest not returned to NH4 pool via manure after mowing*/
   Real nfrac_grazing; /**< fraction of nitrogen from grass harvest not returned to NH4 pool via manure from livestock*/
+  Real bmgr_harvest_day_nh; /**< harvest date of biomass grass harvest in northern hemisphere (green/brown)*/
+  Real bmgr_harvest_day_sh; /**< harvest date of biomass grass harvest in southern hemisphere (green/brown)*/
 } Param;
 
 /* Declaration of global variable */

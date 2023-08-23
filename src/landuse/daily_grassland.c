@@ -140,7 +140,7 @@ Real daily_grassland(Stand *stand,                /**< stand pointer */
     }
     if(stand->cell->ml.manure_nr!=NULL) /* has to be adapted if fix_fertilization option is added */
     {
-      if(day==fertday_biomass(stand->cell,config))
+      if(day==fertday_biomass(stand->cell,config) && stand->soil.litter.n>0)
       {
         manure = stand->cell->ml.manure_nr[data->irrigation.irrigation].grass[stand->type->landusetype==GRASSLAND];
         stand->soil.NH4[0] += manure*param.nmanure_nh4_frac;
@@ -282,7 +282,7 @@ Real daily_grassland(Stand *stand,                /**< stand pointer */
     getoutput(output,PHEN_LIGHT,config)+= pft->fpc * pft->phen_gsi.light * stand->frac * (1.0/(1-stand->cell->lakefrac-stand->cell->ml.reservoirfrac));
     getoutput(output,PHEN_WATER,config)+= pft->fpc * pft->phen_gsi.wscal * stand->frac * (1.0/(1-stand->cell->lakefrac-stand->cell->ml.reservoirfrac));
     getoutput(output,WSCAL,config)+= pft->fpc * pft->wscal * stand->frac * (1.0/(1-stand->cell->lakefrac-stand->cell->ml.reservoirfrac));
-
+    getoutput(output,RA_MGRASS,config)+=(gpp-npp)*stand->frac;
 
     getoutputindex(output,CFT_FPAR,index,config)+=(fpar(pft)*stand->frac*(1.0/(1-stand->cell->lakefrac-stand->cell->ml.reservoirfrac)));
 
@@ -296,27 +296,6 @@ Real daily_grassland(Stand *stand,                /**< stand pointer */
     }
     getoutputindex(output,PFT_LAI,nnat+index,config)+=actual_lai_grass(pft);
     grass = pft->data;
-    if(isdailyoutput_grassland(config,stand))
-    {
-      if(config->crop_index==ALLSTAND)
-      {
-        getoutput(output,D_NPP,config) += npp*stand->frac;
-        getoutput(output,D_GPP,config) += gpp*stand->frac;
-      }
-      else
-      {
-        getoutput(output,D_NPP,config)+= npp;
-        getoutput(output,D_GPP,config)+= gpp;
-
-        getoutput(output,D_CROOT,config)+= grass->ind.root.carbon;
-        getoutput(output,D_CLEAF,config)+= grass->ind.leaf.carbon;
-        getoutput(output,D_NROOT,config)+= grass->ind.root.nitrogen;
-        getoutput(output,D_NLEAF,config)+= grass->ind.leaf.nitrogen;
-
-        getoutput(output,D_RD,config) += rd;
-        getoutput(output,D_ASSIM,config) += gpp-rd-pft->npp_bnf;
-      }
-    }
     pft->npp_bnf=0.0;
   }
   free(gp_pft);
@@ -353,12 +332,12 @@ Real daily_grassland(Stand *stand,                /**< stand pointer */
          else
          {
            grass->turn.leaf.carbon+=grass->ind.leaf.carbon*grasspar->turnover.leaf/NDAYYEAR;
-           stand->soil.litter.item[pft->litter].ag.leaf.carbon+=grass->ind.leaf.carbon*grasspar->turnover.leaf/NDAYYEAR*pft->nind;
+           stand->soil.litter.item[pft->litter].agtop.leaf.carbon+=grass->ind.leaf.carbon*grasspar->turnover.leaf/NDAYYEAR*pft->nind;
            update_fbd_grass(&stand->soil.litter,pft->par->fuelbulkdensity,grass->ind.leaf.carbon*grasspar->turnover.leaf/NDAYYEAR*pft->nind);
            getoutput(output,LITFALLC,config)+=grass->ind.leaf.carbon*grasspar->turnover.leaf/NDAYYEAR*pft->nind*stand->frac;
            grass->turn_litt.leaf.carbon+=grass->ind.leaf.carbon*grasspar->turnover.leaf/NDAYYEAR*pft->nind;
            grass->turn.leaf.nitrogen+=grass->ind.leaf.nitrogen*grasspar->turnover.leaf/NDAYYEAR;
-           stand->soil.litter.item[pft->litter].ag.leaf.nitrogen+=grass->ind.leaf.nitrogen*grasspar->turnover.leaf/NDAYYEAR*pft->nind*pft->par->fn_turnover;
+           stand->soil.litter.item[pft->litter].agtop.leaf.nitrogen+=grass->ind.leaf.nitrogen*grasspar->turnover.leaf/NDAYYEAR*pft->nind*pft->par->fn_turnover;
            getoutput(output,LITFALLN,config)+=grass->ind.leaf.nitrogen*grasspar->turnover.leaf/NDAYYEAR*pft->nind*pft->par->fn_turnover*stand->frac;
            grass->turn_litt.leaf.nitrogen+=grass->ind.leaf.nitrogen*grasspar->turnover.leaf/NDAYYEAR*pft->nind;
 
@@ -437,16 +416,16 @@ Real daily_grassland(Stand *stand,                /**< stand pointer */
         {
           isphen=TRUE;
           data->rotation.mode = RM_GRAZING;
-          data->nr_of_lsus_ext = param.lsuha;
         }
         break;
       case GS_GRAZING_INT: /* int. grazing */
-        data->nr_of_lsus_int = 0.0;
         if ((cleaf > STUBBLE_HEIGHT_GRAZING_INT) || (data->rotation.mode > RM_UNDEFINED)) // 7-8 cm or 40 g.C.m-2 threshold
         {
           isphen=TRUE;
-          data->nr_of_lsus_int = param.lsuha;
         }
+        break;
+      case GS_GRAZING_LIVE: /* livestock grazing */
+        isphen=TRUE;
         break;
     } /* of switch */
   }
@@ -520,30 +499,6 @@ Real daily_grassland(Stand *stand,                /**< stand pointer */
   {
     transp+=aet_stand[l]*stand->frac;
     getoutput(output,TRANSP_B,config)+=(aet_stand[l]-green_transp[l])*stand->frac;
-  }
-  if(isdailyoutput_grassland(config,stand))
-  {
-    if(config->crop_index==ALLSTAND)
-    {
-      getoutput(output,D_EVAP,config)+=evap*stand->frac;
-      getoutput(output,D_TRANS,config)+=transp;
-      getoutput(output,D_W0,config)+=stand->soil.w[1]*stand->frac;
-      getoutput(output,D_W1,config)+=stand->soil.w[2]*stand->frac;
-      getoutput(output,D_WEVAP,config)+=stand->soil.w[0]*stand->frac;
-      getoutput(output,D_INTERC,config)+=intercep_stand*stand->frac;
-    }
-    else
-    {
-      getoutput(output,D_EVAP,config)+=evap;
-      forrootsoillayer(l)
-        getoutput(output,D_TRANS,config)+=aet_stand[l];
-      getoutput(output,D_IRRIG,config)=irrig_apply;
-      getoutput(output,D_W0,config)+=stand->soil.w[1];
-      getoutput(output,D_W1,config)+=stand->soil.w[2];
-      getoutput(output,D_WEVAP,config)+=stand->soil.w[0];
-      getoutput(output,D_PAR,config)=par;
-      getoutput(output,D_PET,config)+=eeq*PRIESTLEY_TAYLOR;
-    }
   }
 
   if(data->irrigation.irrigation && stand->pftlist.n>0) /*second element to avoid irrigation on just harvested fields */

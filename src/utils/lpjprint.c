@@ -25,12 +25,11 @@
 #include "biomass_grass.h"
 #include "woodplantation.h"
 
-#define PRINTLPJ_VERSION "1.0.020"
 #define NTYPES 3
 #define NSTANDTYPES 13 /* number of stand types */
 
-#define USAGE "Usage: %s [-h] [-inpath dir] [-restartpath dir]\n"\
-              "       [[-Dmacro[=value]] [-Idir] ...] [filename [-check] [start [end]]]\n"
+#define USAGE "Usage: %s [-h] [-pp cmd] [-inpath dir] [-restartpath dir]\n"\
+              "       [[-Dmacro[=value]] [-Idir] ...] filename [-check] [start [end]]\n"
 
 
 static Bool printgrid(Config *config, /* Pointer to LPJ configuration */
@@ -41,14 +40,15 @@ static Bool printgrid(Config *config, /* Pointer to LPJ configuration */
              )
 {
   Cell grid;
-  int i,soil_id;
-  Bool swap,swap_cow;
+  int i,soil_id,data;
+  Bool swap,missing;
   unsigned int soilcode;
   Code code;
   size_t offset;
-  FILE *file_restart,*file_countrycode;
-  Type cow_type;
+  FILE *file_restart;
+  char *name;
   Celldata celldata;
+  Infile countrycode,regioncode;
 
   /* Open coordinate file */
   celldata=opencelldata(config);
@@ -56,22 +56,50 @@ static Bool printgrid(Config *config, /* Pointer to LPJ configuration */
     return TRUE;
   if(seekcelldata(celldata,config->startgrid))
   {
-    closecelldata(celldata);
+    closecelldata(celldata,config);
     return TRUE;
   }
-
   /* Open countrycode file */
   if(config->withlanduse!=NO_LANDUSE)
   {
-    file_countrycode=opencountrycode(&config->countrycode_filename,
-                                     &swap_cow,&cow_type,&offset,TRUE);
-    if(file_countrycode==NULL)
-      return TRUE;
-    if(seekcountrycode(file_countrycode,config->startgrid,cow_type,offset))
+    countrycode.fmt=config->countrycode_filename.fmt;
+    if(config->countrycode_filename.fmt==CDF)
     {
-      fclose(file_countrycode);
-      closecelldata(celldata);
-      return TRUE;
+      countrycode.cdf=openinput_netcdf(&config->countrycode_filename,NULL,0,config);
+      if(countrycode.cdf==NULL)
+      {
+        closecelldata(celldata,config);
+        return TRUE;
+      }
+      regioncode.fmt=config->regioncode_filename.fmt;
+      regioncode.cdf=openinput_netcdf(&config->regioncode_filename,NULL,0,config);
+      if(regioncode.cdf==NULL)
+      {
+        closeinput_netcdf(countrycode.cdf);
+        closecelldata(celldata,config);
+        return TRUE;
+      }
+    }
+    else
+    {
+      /* Open countrycode file */
+      countrycode.file=opencountrycode(&config->countrycode_filename,
+                                       &countrycode.swap,&countrycode.type,&offset,isroot(*config));
+      if(countrycode.file==NULL)
+      {
+        closecelldata(celldata,config);
+        return TRUE;
+      }
+      if(seekcountrycode(countrycode.file,config->startgrid,countrycode.type,offset))
+      {
+        /* seeking to position of first grid cell failed */
+        fprintf(stderr,
+                "ERROR106: Cannot seek in countrycode file to position %d.\n",
+                config->startgrid);
+        closecelldata(celldata,config);
+        fclose(countrycode.file);
+        return TRUE;
+      }
     }
   }
   /* If FROM_RESTART open restart file */
@@ -85,15 +113,31 @@ static Bool printgrid(Config *config, /* Pointer to LPJ configuration */
            config->checkpoint_restart_filename,config->checkpointyear);
   for(i=0;i<config->ngridcell;i++)
   {
-    if(readcelldata(celldata,&grid.coord,&soilcode,&grid.soilph,i,config))
+    if(readcelldata(celldata,&grid,&soilcode,i,config))
       break;
     if(config->countrypar!=NULL)
     {
-      if(readcountrycode(file_countrycode,&code,cow_type,swap_cow))
+       if(config->countrycode_filename.fmt==CDF)
       {
-        fprintf(stderr,"WARNING008: Unexpected end of file in '%s', number of gridcells truncated to %d.\n",config->countrycode_filename.name,i);
-        config->ngridcell=i;
-        break;
+        if(readintinput_netcdf(countrycode.cdf,&data,&grid.coord,&missing) || missing)
+          code.country=-1;
+        else
+          code.country=(short)data;
+        if(readintinput_netcdf(regioncode.cdf,&data,&grid.coord,&missing) || missing)
+          code.region=-1;
+        else
+          code.region=(short)data;
+      }
+      else
+      {
+        if(readcountrycode(countrycode.file,&code,countrycode.type,countrycode.swap))
+        {
+          name=getrealfilename(&config->countrycode_filename);
+          fprintf(stderr,"ERROR190: Unexpected end of file in '%s' for cell %d.\n",
+                  name,i+config->startgrid);
+          free(name);
+          break;
+        }
       }
       if(code.country<0 || code.country>=config->ncountries ||
          code.region<0 || code.region>=config->nregions)
@@ -158,9 +202,13 @@ static Bool printgrid(Config *config, /* Pointer to LPJ configuration */
     freecell(&grid,npft,config);
   } /* of for(i=0;...) */
   fclose(file_restart);
-  closecelldata(celldata);
-  if(config->withlanduse!=NO_LANDUSE)
-    fclose(file_countrycode);
+  closecelldata(celldata,config);
+  if(config->countrypar!=NULL)
+  {
+    closeinput(&countrycode);
+    if(config->countrycode_filename.fmt==CDF)
+      closeinput(&regioncode);
+  }
   return FALSE;
 }
 int main(int argc,char **argv)
@@ -185,7 +233,7 @@ int main(int argc,char **argv)
   if(argc>1 && !strcmp(argv[1],"-h"))
   {
     fputs("     ",stdout);
-    rc=printf("%s Version " PRINTLPJ_VERSION " (" __DATE__ ") Help",
+    rc=printf("%s (" __DATE__ ") Help",
               progname);
     fputs("\n     ",stdout);
     repeatch('=',rc);
@@ -193,28 +241,28 @@ int main(int argc,char **argv)
     printf(USAGE,progname);
     printf("\nArguments:\n"
            "-h               print this help text\n"
+           "-pp cmd          set preprocessor program. Default is '" cpp_cmd "'\n"
            "-inpath dir      directory appended to input filenames\n"
            "-restartpath dir directory appended to restart filename\n"
            "-Dmacro[=value]  define macro for preprocessor of configuration file\n"
            "-Idir            directory to search for include files\n"
-           "filename         configuration filename. Default is '%s'\n"
-           "-check           check only restart file\n"
+           "filename         configuration filename\n"
+           "-check           check only restart file, do not print\n"
            "start            index of first grid cell to print\n"
            "end              index of last grid cell to print\n\n"
-           "(C) Potsdam Institute for Climate Impact Research (PIK), see COPYRIGHT file\n",
-           dflt_conf_filename_ml);
+           "(C) Potsdam Institute for Climate Impact Research (PIK), see COPYRIGHT file\n");
     return EXIT_SUCCESS;
   }
   snprintf(line,78-10,
-           "%s Version " PRINTLPJ_VERSION " (" __DATE__ ")",progname);
+           "%s (" __DATE__ ")",progname);
   title[0]=line;
   title[1]="Printing restart file for LPJmL Version " LPJ_VERSION;
   title[2]="(C) Potsdam Institute for Climate Impact Research (PIK),";
   title[3]="see COPYRIGHT file";
   banner(title,4,78);
   initconfig(&config);
-  if(readconfig(&config,dflt_conf_filename_ml,scanfcn,NTYPES,NOUT,&argc,&argv,USAGE))
-    fail(READ_CONFIG_ERR,FALSE,"Error opening config");
+  if(readconfig(&config,scanfcn,NTYPES,NOUT,&argc,&argv,USAGE))
+    fail(READ_CONFIG_ERR,FALSE,"Cannot process configuration file");
   printf("Simulation: %s\n",config.sim_name);
   config.ischeckpoint=ischeckpointrestart(&config) && getfilesize(config.checkpoint_restart_filename)!=-1;
   if(!config.ischeckpoint && config.write_restart_filename==NULL)

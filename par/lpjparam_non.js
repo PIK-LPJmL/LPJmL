@@ -2,7 +2,7 @@
 /**                                                                                \n**/
 /**              l  p  j  p  a  r  a  m  _  n  o  n  .  j  s                       \n**/
 /**                                                                                \n**/
-/**     LPJ parameter file for LPJmL version 5.3.001 without nitrogen              \n**/
+/**     LPJ parameter file for LPJmL version 5.7.1 without nitrogen                \n**/
 /**                                                                                \n**/
 /** (C) Potsdam Institute for Climate Impact Research (PIK), see COPYRIGHT file    \n**/
 /** authors, and contributors see AUTHORS file                                     \n**/
@@ -14,6 +14,8 @@
 
 "param" :
 {
+  "minlandfrac" : 1e-6,      /* minimum land fraction used if landfrac=0 */
+  "tinyfrac" : 1e-6,         /* minimum land-use fraction used by all_crops */
   "k_litter10" : 0.3,        /* k_litter10  (1/yr) */
   "k_soil10" : { "fast" : 0.03, "slow":  0.001}, /* fast, slow k_soil10  (1/yr) */
   "maxsnowpack": 20000.0,    /* max. snow pack (mm) */
@@ -33,7 +35,12 @@
   "atmfrac" : 0.7,           /* atmfrac */
   "fastfrac" : 0.98,         /* fastfrac */
   "bioturbate" : 0.5,        /* bioturbation (0 = no bioturbation) */
-  "veg_equil_year" : 990,
+  "veg_equil_year" : 300,    /* number of years to get vegetation into equilibrium (before forst call of equisoil) */
+  "veg_equil_unlim" : false, /* enable vegetation spinup without nitrogen limitation */
+  "nequilsoil" : 160,        /* number of equisoil calls */
+  "equisoil_interval" : 15,  /* time interval between equisoil calls */
+  "equisoil_years": 10,      /* number of years used in calculation for equisoil */
+  "equisoil_fadeout": 300,   /* number of years for equisoil fadeout (for final call of equisoil); set to zero for no fadeout  */
   "temp_response" : 46.02,   /* Parameter in temperature response function */
   "percthres" : 1.0,
   "fpc_tree_max" : 0.95,     /* maximum foliage projective cover for trees */

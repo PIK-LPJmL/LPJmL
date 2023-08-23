@@ -38,7 +38,10 @@ Bool freadsoil(FILE *file,             /**< pointer to binary file */
     freadreal((Real *)soil->c_shift[l],ntotpft*sizeof(Poolpar)/sizeof(Real),swap,file);
   }
   if(freadlitter(file,&soil->litter,pftpar,ntotpft,swap))
+  {
+    fprintf(stderr,"ERROR254: Cannot read litter data.\n");
     return TRUE;
+  }
   freadreal(soil->NO3,LASTLAYER,swap,file);
   freadreal(soil->NH4,LASTLAYER,swap,file);
   freadreal(soil->wsat, NSOILLAYER, swap, file);
@@ -77,7 +80,15 @@ Bool freadsoil(FILE *file,             /**< pointer to binary file */
   foreachsoillayer(l) soil->decomC[l]=soil->micro_heating[l]=0;
 #endif
   freadreal((Real *)soil->k_mean,LASTLAYER*sizeof(Poolpar)/sizeof(Real),swap,file);
+  freadreal((Real *)soil->decay_rate,LASTLAYER*sizeof(Poolpar)/sizeof(Real),swap,file);
   freadreal((Real *)&soil->decomp_litter_mean,sizeof(Stocks)/sizeof(Real),swap,file);
+  soil->decomp_litter_pft=newvec(Stocks,ntotpft);
+  if(soil->decomp_litter_pft==NULL)
+  {
+    printallocerr("decomp_litter_pft");
+    return TRUE;
+  }
+  freadreal((Real *)soil->decomp_litter_pft,ntotpft*sizeof(Stocks)/sizeof(Real),swap,file);
   freadint1(&soil->count,swap,file);
 #ifdef MICRO_HEATING
   soil->litter.decomC=0;

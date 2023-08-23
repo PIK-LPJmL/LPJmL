@@ -26,7 +26,7 @@ void new_grassland(Stand *stand)
   stand->growing_days=0;
   stand->data=grassland;
   init_irrigation(&grassland->irrigation);
-  grassland->nr_of_lsus_ext= grassland->nr_of_lsus_int=0.0;
+  grassland->deficit_lsu_ne=grassland->deficit_lsu_mp=0.0;
   grassland->rotation.grazing_days=grassland->rotation.paddocks=0;
   grassland->rotation.recovery_days=0;
   grassland->rotation.mode=RM_UNDEFINED;

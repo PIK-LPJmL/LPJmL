@@ -60,6 +60,7 @@ struct config
   Filename extflow_filename;
   Filename neighb_irrig_filename;
   Filename coord_filename;
+  Filename landfrac_filename;
   Filename soil_filename;
   Filename soilph_filename;
   Filename river_filename;
@@ -87,6 +88,7 @@ struct config
 #endif
   Filename grassfix_filename;
   Filename grassharvest_filename;
+  Filename lsuha_filename;
   Filename sowing_cotton_rf_filename;
   Filename harvest_cotton_rf_filename;
   Filename sowing_cotton_ir_filename;
@@ -125,12 +127,10 @@ struct config
   int laimax_interpolate;
   Real laimax;        /**< maximum LAI for benchmark */
   Bool withdailyoutput; /**< with daily output (TRUE/FALSE) */
-  int crop_index;
   int pft_residue;
   int fdi;
   char *pft_index;
   char *layer_index;
-  Bool crop_irrigation;
   int with_nitrogen;      /**< enable nitrogen cycle */
   Bool crop_resp_fix;      /**< with fixed crop respiration (TRUE/FALSE) */
   Bool cropsheatfrost;
@@ -144,6 +144,7 @@ struct config
   Bool prescribe_residues;  /**< simulation with prescribed residue rate on black fallow */
   int fertilizer_input;     /**< simulation with fertilizer input */
   Bool manure_input;       /**< simulation with manure input */
+  Bool prescribe_lsuha;    /**< simulation with prescribed grassland livestock density from file */
   Bool global_netcdf;     /**< enable global grid for NetCDF output */
   Bool float_grid;        /**< enable float datatype for binary grid file */
   Bool landuse_restart;   /**< land use enabled in restart file */
@@ -154,19 +155,25 @@ struct config
   int landuse_year_const;       /**< year landuse is fixed for LANDUSE_CONST case */
   Bool intercrop;               /**< intercropping (TRUE/FALSE) */
   Bool grassonly;               /**< set all cropland including others to zero but keep managed grasslands */
-  Bool istimber;
+  Bool luc_timber;              /***< land-use change timber */
   Bool storeclimate;           /**< store climate data in spin-up phase */
-  Bool const_climate;           /**< constant climate */
-  Bool shuffle_climate;         /**< shuffle spinup climate */
+  Bool shuffle_spinup_climate;  /**< shuffle spinup climate */
   Bool fix_climate;             /**< fix climate after specified year */
+  int fix_climate_year;         /**< year at which climate is fixed */
+  int fix_climate_interval[2];  /**< interval for fixed climate */
+  Bool fix_climate_shuffle;     /**< randomly shuffle climate */
+  Bool fix_deposition;          /**< fix deposition after specified year */
+  int fix_deposition_year;      /**< year at which deposition is fixed */
+  int fix_deposition_interval[2]; /**< interval for fixed deposition */
+  Bool fix_deposition_shuffle;  /**< randomly shuffle deposition */
+  Bool fix_deposition_with_climate; /**< fix deposition same as climate */
   Bool fix_landuse;             /**< fix land use after specified year */
+  int fix_landuse_year;         /**< year at which land use is fixed */
+  Bool fix_co2;                 /**< fix CO2 after specified year */
+  int fix_co2_year;             /**< year at which CO2 is fixed */
   Bool iscotton;                /**< cotton present in PFT parameter file */
   Bool fire_on_grassland;       /**< enable fires on grassland for Spitfire */
-  int fix_landuse_year;         /**< year at which land use is fixed */
-  int fix_climate_year;         /**< year at which climate is fixed */
-  int fix_climate_cycle;        /**< number of years for climate shuffle for fixed climate */
-  Bool const_deposition;        /**< constant N deposition */
-  int depos_year_const;         /**< year deposition is fixed */
+  Bool landfrac_from_file;      /**< land fraction read from file (TRUE/FALSE) */
   Bool residues_fire;           /**< use parameters for agricultural fires */
   Bool param_out;               /**< print LPJmL parameter */
   Bool check_climate;           /**< check climate input data for NetCDF files */
@@ -211,12 +218,13 @@ struct config
   Coord resolution;    /**< size of grid cell (deg) */
   Bool ispopulation;
   Bool river_routing;  /**< river routing enabled */
+  Bool with_lakes;     /**< enable lakes (TRUE/FALSE) */
   Bool extflow;        /** external flow enabled */
   Bool permafrost;     /**< permafrost module enabled */
   Bool percolation_heattransfer; /**< water heat transfer enabled */
   Bool johansen;       /**< johansen enabled */
-  Bool new_phenology;	/**< new phenology enabled */
-  Bool new_trf;         /**< new transpiration reduction function enabled */
+  Bool gsi_phenology;	/**< GSI phenology enabled (TRUE/FALSE) */
+  Bool transp_suction_fcn; /**< transpiration reduction function enabled */
   Bool equilsoil;      /**< equilsoil is called */
   Bool from_restart;   /**< reading from restart */
   int soilpar_option;  /**< soil parameter option (NO_FIXED_SOILPAR, FIXED_SOILPAR, PRESCRIBED_SOILPAR) */
@@ -232,6 +240,9 @@ struct config
   Pnet *irrig_res_back;
   int withlanduse;
   Bool reservoir;
+#ifdef COUPLING_WITH_FMS
+  Bool nitrogen_coupled;
+#endif
   int *landusemap;          /**< mapping of bands in land-use file to CFTs */
   int landusemap_size;      /**< size of landusmap */
   int *fertilizermap;
@@ -255,11 +266,11 @@ struct config
   int prescribe_landcover; /**< use input to prescribe land cover ? */
   int* mowingdays;         /**< mowing days for grassland */
   int mowingdays_size;     /**< size of mowing days array */
-  Bool ma_bnf;             /**< biological nitrogen fixation folowing Ma et al., 2022 */
+  int biomass_grass_harvest;           /**< green or brown harvest of biomass grass */
+  Bool npp_controlled_bnf;             /**< biological nitrogen fixation folowing Ma et al., 2022 */
   Seed seed;
+  int start_coupling;      /**< year in which coupling to IMAGE/coupler starts */
 #ifdef IMAGE
-  int start_imagecoupling; /**< year in which coupling to IMAGE starts
-                              (e.g. 1970), set to 9999 if IMAGE is not used */
   Socket *in;  /**< socket for ingoing data */
   Socket *out; /**< socket for outgoing data */
 #endif
@@ -288,7 +299,7 @@ extern const char *grazing_type[];
 extern void initmpiconfig(Config *,MPI_Comm);
 #endif
 extern void initconfig(Config *);
-extern FILE* openconfig(Config *,const char *,int *,char***,const char*);
+extern FILE* openconfig(Config *,int *,char***,const char*);
 extern void freeconfig(Config *);
 extern void fprintconfig(FILE *,int,int,const Config *);
 extern Bool filesexist(Config,Bool);
@@ -299,7 +310,7 @@ extern void fprintpftpar(FILE *,const Pftpar [],const Config *);
 extern void fprintoutputvar(FILE *,const Variable *,int,int,int,const Config *);
 extern void freeoutputvar(Variable *,int);
 extern Bool fscanoutput(LPJfile *,int,int,Config *,int);
-extern Bool readconfig(Config *,const char *,Pfttype [],int,int,int *,
+extern Bool readconfig(Config *,Pfttype [],int,int,int *,
                        char ***,const char *);
 extern Bool fscanconfig(Config *,LPJfile *,Pfttype [],int,int);
 extern void fprintparam(FILE *,int,int,const Config *);

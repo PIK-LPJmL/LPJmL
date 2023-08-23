@@ -21,18 +21,17 @@ Bool readco2(Co2data *co2,             /**< pointer to co2 data */
              const Config *config      /**< LPJmL configuration */
             )                          /** \return TRUE on error */
 {
-  LPJfile file;
+  FILE *file;
   int yr,yr_old,size;
   Bool iseof;
   Verbosity verbose;
   verbose=(isroot(*config)) ? config->scan_verbose : NO_ERR;
-  file.isjson=FALSE;
-  if(filename->fmt==FMS || filename->fmt==SOCK)
+  if(filename->fmt==FMS || (iscoupled(*config) && filename->issocket))
   {
     co2->data=NULL;
     co2->nyear=0;
     co2->firstyear=0;
-    if(filename->fmt==SOCK)
+    if(filename->issocket)
     {
       if(openinput_coupler(filename->id,LPJ_FLOAT,0,&size,config))
         return TRUE;
@@ -45,9 +44,11 @@ Bool readco2(Co2data *co2,             /**< pointer to co2 data */
       }
     }
   }
-  else if(filename->fmt==TXT)
+  if(filename->fmt==TXT)
   {
-    if((file.file.file=fopen(filename->name,"r"))==NULL)
+    if(iscoupled(*config) && config->start_coupling<=config->firstyear-config->nspinup)
+      return FALSE;
+    if((file=fopen(filename->name,"r"))==NULL)
     {
       if(verbose)
         printfopenerr(filename->name);
@@ -58,34 +59,34 @@ Bool readco2(Co2data *co2,             /**< pointer to co2 data */
     if(co2->data==NULL)
     {
       printallocerr("co2");
-      fclose(file.file.file);
+      fclose(file);
       return TRUE;
     }
     /**
     * find start year in co2-file
     **/
-    if(fscanint(&file,&yr,"year",FALSE,verbose) || fscanreal(&file,co2->data,"co2",FALSE,verbose))
+    if(ffscanint(file,&yr,"year",verbose) || ffscanreal(file,co2->data,"co2",verbose))
     {
       if(verbose)
         fprintf(stderr,"ERROR129: Cannot read CO2 data in first line of '%s'.\n",
                 filename->name);
       free(co2->data);
-      fclose(file.file.file);
+      fclose(file);
       return TRUE;
     }
     co2->firstyear=yr;
     co2->nyear=1;
     yr_old=yr;
-    while(!feof(file.file.file))
+    while(!feof(file))
     {
       co2->data=(Real *)realloc(co2->data,sizeof(Real)*(co2->nyear+1));
       if(co2->data==NULL)
       {
         printallocerr("co2");
-        fclose(file.file.file);
+        fclose(file);
         return TRUE;
       }
-      if(fscaninteof(file.file.file,&yr,"year",&iseof,verbose) || fscanreal(&file,co2->data+co2->nyear,"co2",FALSE,verbose))
+      if(fscaninteof(file,&yr,"year",&iseof,isroot(*config)) || ffscanreal(file,co2->data+co2->nyear,"co2",verbose))
 
       {
         if(iseof)
@@ -94,7 +95,7 @@ Bool readco2(Co2data *co2,             /**< pointer to co2 data */
           fprintf(stderr,"ERROR129: Cannot read CO2 data in line %d of '%s'.\n",
                   getlinecount(),filename->name);
         free(co2->data);
-        fclose(file.file.file);
+        fclose(file);
         return TRUE;
       }
       if(yr!=yr_old+1)
@@ -103,15 +104,20 @@ Bool readco2(Co2data *co2,             /**< pointer to co2 data */
           fprintf(stderr,"ERROR157: Invalid year=%d in line %d of '%s', must be %d.\n",
                   yr,getlinecount(),filename->name,yr_old+1);
         free(co2->data);
-        fclose(file.file.file);
+        fclose(file);
         return TRUE;
       }
       co2->nyear++;
       yr_old=yr;
     }
-    fclose(file.file.file);
+    fclose(file);
   }
-  else
+  else if(filename->fmt==SOCK && config->start_coupling>config->firstyear-config->nspinup)
+  {
+    if(verbose)
+      fprintf(stderr,"ERROR149: No filename specified for CO2 data required for socket connection before coupling year %d, first simulatiomn year=%d.\n",
+             config->start_coupling,config->firstyear-config->nspinup);
     return TRUE;
+  }
   return FALSE;
 } /* of 'readco2' */

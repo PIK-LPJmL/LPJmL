@@ -192,7 +192,7 @@ Real daily_agriculture_grass(Stand *stand,                /**< stand pointer */
   foreachpft(pft, p, &stand->pftlist)
   {
     // pft->phen = 1.0; /* phenology is calculated from biomass */
-    if (config->new_phenology)
+    if (config->gsi_phenology)
       phenology_gsi(pft, climate->temp, climate->swdown, day,climate->isdailytemp,config);
     else
       leaf_phenology(pft, climate->temp, day,climate->isdailytemp,config);

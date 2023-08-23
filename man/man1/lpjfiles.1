@@ -1,11 +1,11 @@
-.TH lpjfiles 1  "October 20, 2011" "version 1.0.002" "USER COMMANDS"
+.TH lpjfiles 1  "USER COMMANDS"
 .SH NAME
 lpjfiles \- Prints list of input/output files of LPJmL 
 .SH SYNOPSIS
 .B lpjfiles
 [\-h] [\-noinput] [-pp cmd] [\-outpath \fIdir\fP]
 [\-inpath \fIdir\fP] [\-restartpath \fIdir\fP] [[\-Dmacro[=value]] [\-I\fIdir\fP] ...]
-[\fIfilename\fP]
+\fIfilename\fP
 .SH DESCRIPTION
 Program prints list of all input and output files of LPJmL configuration files. It can be used to get a list of files to be archived.
 .SH OPTIONS
@@ -17,7 +17,7 @@ display a short help text
 does not list input data files
 .TP
 \-pp cmd
-Set preprocessor program to cmd. Default is \fBcpp -P\fP.
+Set preprocessor program to cmd. Default is \fBcpp\fP.
 .TP
 \-outpath \fIdir\fP
 set the output directory path. The path is added to the output filenames if they do not contain an absolute path.
@@ -32,20 +32,17 @@ define macro for the preprocessor of the configuration file
 define include directory for the preprocessor of the configuration file
 .TP
 .I filename
-name of configuration file, default is \fIlpjml.conf\fP.
+name of configuration file
 .SH EXAMPLES
 .TP
-Archive files for default configuration file with input files located in the scratch file system
+Archive files for configuration file lpjml.js with input files located in the /p/projects/lpjml file system
 .B lpjfiles
-\-input /scratch/01/lpj | tail -n +2 | tar -cf files.tar -T -
+\-input /p/projects/lpjml lpjml.js | tail -n +2 | tar -cf files.tar -T -
 .PP
 .SH ENVIRONMENT
 .TP
-LPJCONFIG
-default LPJmL configuration filename
-.TP
 LPJPREP 
-defines preprocessor command for LPJmL configuration file, default is \fBcpp -P\fP. Same as '-pp' option.
+defines preprocessor command for LPJmL configuration file, default is \fBcpp\fP. Same as '-pp' option.
 .TP
 LPJROOT
 defines the root directory for LPJmL. This directory is added to the
@@ -78,4 +75,4 @@ For authors and contributors see AUTHORS file
 (C) Potsdam Institute for Climate Impact Research (PIK), see COPYRIGHT file
 
 .SH SEE ALSO
-lpjml(1), lpjcheck(1), lpjml.conf(5)
+lpjml(1), lpjcheck(1)

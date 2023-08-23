@@ -96,9 +96,9 @@ void sowingcft(Stocks *flux_estab,  /**< establishment flux */
         foreachpft(pft,p,&stand->pftlist)
           cft_id=pft->par->id-npft;
         landfrac=(isother) ? cell->ml.landfrac[irrig].grass[0] : cell->ml.landfrac[irrig].crop[cft_id];
-        if(irrigation->irrigation==irrig && stand->frac > (2*tinyfrac+epsilon) && stand->frac > landfrac+epsilon)
+        if(irrigation->irrigation==irrig && stand->frac > (2*param.tinyfrac+epsilon) && stand->frac > landfrac+epsilon)
         {
-          difffrac=min(stand->frac-tinyfrac,stand->frac-landfrac);
+          difffrac=min(stand->frac-param.tinyfrac,stand->frac-landfrac);
           pos=addstand((isother) ? &others_stand : &agriculture_stand,cell);
           cropstand=getstand(cell->standlist,pos-1);
           data=cropstand->data;
@@ -106,9 +106,9 @@ void sowingcft(Stocks *flux_estab,  /**< establishment flux */
           stand->frac-=difffrac;
           //printf("taking %g from %g of %s\n",difffrac,stand->frac+difffrac,pft->par->name);
           data->irrigation=irrig;
-          reclaim_land(stand,cropstand,cell,config->istimber,npft+ncft,config);
+          reclaim_land(stand,cropstand,cell,config->luc_timber,npft+ncft,config);
           set_irrigsystem(cropstand,cft,npft,ncft,config);
-          setaside(cell,cropstand,cell->ml.with_tillage,config->intercrop,npft,irrig,year,config);
+          setaside(cell,cropstand,cell->ml.with_tillage,config->intercrop,npft,ncft,irrig,year,config);
           setasidestand=getstand(cell->standlist,pos-1);
           cultcftstand(flux_estab,alloc_today,cell,setasidestand,irrig,wtype,nofallow,npft,ncft,cft,year,day,isother,config);
         }//if too large stand->frac

@@ -1,4 +1,4 @@
-.TH clm 5  "December 14, 2018" "version 5.1.001" "FILE FORMATS"
+.TH clm 5  "FILE FORMATS"
 .SH NAME
 clm \- Input data files for LPJmL runs
 .SH DESCRIPTION
@@ -33,13 +33,19 @@ cellsize_lon
 (4 byte float, longitude cellsize in deg)
 .TP
 scalar
-(4 byte float conversion factor)
+(4 byte float conversion factor,only stored if version >1)
 .TP
 cellsize_lat
-(4 byte float, latitude cellsize in deg)
+(4 byte float, latitude cellsize in deg, only stored if version >1)
 .TP
 datatype
-(4 byte int, 0 for byte, 1 for short, 2 for int, 3 for float, 4 for double)
+(4 byte int, 0 for byte, 1 for short, 2 for int, 3 for float, 4 for double, only stored if version >2)
+.TP
+nstep
+(4 byte int,int for time steps per year, only stored if version >3)
+.TP
+timestep
+(4 byte int, time interval in years, only stored if version >3)
 
 .SS Sorting of the climate data
 The sorting of the monthly climate data and of the land use data does not correspond to a standard file format but is a mixture of BSQ (band sequential) and BIP (band interleaved by pixel). You start with 12 monthly values (or with 24 land use-fractions) of the first year and first grid cell. After that, the first twelve monthly values of the second cell follow and so on. Once you are done with all grid cells, you continue with the first grid cell's monthly data of the second year. This format is called "cellyear" in the LPJmL vocabulary and is the only format that is supported from LPJmL-version 3.2 and above ("YEARCELL" = BIP has been used in previous LPJ-versions).

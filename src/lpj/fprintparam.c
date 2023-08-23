@@ -54,8 +54,17 @@ void fprintparam(FILE *file,    /**< pointer to text file */
           param.r_growth,param.GM,param.ALPHAM,
           param.ko25,param.kc25,param.atmfrac,param.fastfrac,1-pow(1-param.bioturbate,NDAYYEAR),param.k_mort,
           param.fpc_tree_max,param.temp_response,param.percthres);
+  if(config->landfrac_from_file)
+    fprintf(file,"minlandfrac:\t%g\n",param.minlandfrac);
   if(config->equilsoil)
+  {
     fprintf(file,"veg_equil_year:\t%d\n",param.veg_equil_year);
+    fprintf(file,"veg_equil_unlim:\t%s\n",bool2str(param.veg_equil_unlim));
+    fprintf(file,"nequilsoil:\t%d\n",param.nequilsoil);
+    fprintf(file,"equisoil_interval:\t%d\n",param.equisoil_interval);
+    fprintf(file,"equisoil_years:\t%d\n",param.equisoil_years);
+    fprintf(file,"equisoil_fadeout:\t%d\n",param.equisoil_fadeout);
+  }
   if(config->fire==SPITFIRE || config->fire==SPITFIRE_TMAX)
     fprintf(file,"firedura:\t%g\n"
             "fire_intens:\t%g\n"
@@ -83,6 +92,7 @@ void fprintparam(FILE *file,    /**< pointer to text file */
             param.fertilizer_rate,param.par_sink_limit);
   if(config->withlanduse!=NO_LANDUSE)
   {
+    fprintf(file,"tinyfrac:\t%g\n",param.tinyfrac);
     if(config->with_nitrogen)
     {
       fprintf(file,"nfert_split:\t%g\n",param.nfert_split);
@@ -121,8 +131,10 @@ void fprintparam(FILE *file,    /**< pointer to text file */
       fprintf(file,"nfrac grazing:\t%g\n",param.nfrac_grazing);
       fprintf(file,"nfrac grassharvest:\t%g\n",param.nfrac_grassharvest);
     }
+    fprintf(file,"harvest date biomass grass NH:\t%g\n",param.bmgr_harvest_day_nh);    
+    fprintf(file,"harvest date biomass grass SH:\t%g\n",param.bmgr_harvest_day_sh); 
     fprintf(file,"timber fraction wp:\t%g\n",param.ftimber_wp);
-    if(config->istimber)
+    if(config->luc_timber)
     {
       fprintf(file,"fraction burnt:\t%g\n",param.fburnt);
       fprintf(file,"timber fraction:\t%g\n",param.ftimber);

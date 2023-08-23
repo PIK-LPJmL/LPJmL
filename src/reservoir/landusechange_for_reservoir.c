@@ -21,7 +21,7 @@
 
 static void deforest_for_reservoir(Cell *cell,    /**< pointer to cell */
                                    Real difffrac, /**< fraction to deforest */
-                                   Bool istimber, /**< setting istimber */
+                                   Bool luc_timber, /**< setting land-use change timber */
                                    int ntotpft,   /**< total number of PFTs */
                                    const Config *config /**< LPJmL configuration */
                                   )               /** \return void */
@@ -36,7 +36,7 @@ static void deforest_for_reservoir(Cell *cell,    /**< pointer to cell */
     natstand=getstand(cell->standlist,s);
     cutstand=getstand(cell->standlist,pos);
     cutstand->frac=difffrac;
-    reclaim_land(natstand,cutstand,cell,istimber,ntotpft,config);
+    reclaim_land(natstand,cutstand,cell,luc_timber,ntotpft,config);
     if(difffrac+epsilon>=natstand->frac)
     {
       difffrac=natstand->frac;
@@ -96,16 +96,16 @@ static Real from_setaside_for_reservoir(Cell *cell,          /**< pointer to cel
         {
           /* remove all vegetation on irrigated setaside */
           cutpfts(setasidestand_ir,config);
-          mixsetaside(setasidestand,setasidestand_ir,intercrop,year,config);
+          mixsetaside(setasidestand,setasidestand_ir,intercrop,year,npft+ncft,config);
           delstand(cell->standlist,s2);
         }
         else{
           pos=addstand(&natural_stand,cell)-1;
           cutstand=getstand(cell->standlist,pos);
           cutstand->frac=difffrac-setasidestand->frac;
-          reclaim_land(setasidestand_ir,cutstand,cell,config->istimber,npft+ncft,config);
+          reclaim_land(setasidestand_ir,cutstand,cell,config->luc_timber,npft+ncft,config);
           setasidestand_ir->frac-=difffrac-setasidestand->frac;
-          mixsetaside(setasidestand,cutstand,intercrop,year,config);
+          mixsetaside(setasidestand,cutstand,intercrop,year,npft+ncft,config);
           delstand(cell->standlist,pos);
         }
       }
@@ -125,13 +125,13 @@ static Real from_setaside_for_reservoir(Cell *cell,          /**< pointer to cel
           pos=addstand(&natural_stand,cell)-1;
           cutstand=getstand(cell->standlist,pos);
           cutstand->frac=factor*stand->frac;
-          reclaim_land(stand,cutstand,cell,config->istimber,npft+ncft,config);
+          reclaim_land(stand,cutstand,cell,config->luc_timber,npft+ncft,config);
           stand->frac-=cutstand->frac;
 
           cell->discharge.dmass_lake+=(data->irrig_stor+data->irrig_amount+cutstand->soil.litter.agtop_moist)*cell->coord.area*cutstand->frac;
           cell->balance.awater_flux-=(data->irrig_stor+data->irrig_amount+cutstand->soil.litter.agtop_moist)*cutstand->frac;
 
-          if(setaside(cell,getstand(cell->standlist,pos),cell->ml.with_tillage,intercrop,npft,FALSE,year,config))
+          if(setaside(cell,getstand(cell->standlist,pos),cell->ml.with_tillage,intercrop,npft,ncft,FALSE,year,config))
             delstand(cell->standlist,pos);
         }
       }
@@ -149,13 +149,13 @@ static Real from_setaside_for_reservoir(Cell *cell,          /**< pointer to cel
         pos=addstand(&natural_stand,cell)-1;
         cutstand=getstand(cell->standlist,pos);
         cutstand->frac=factor*stand->frac;
-        reclaim_land(stand,cutstand,cell,config->istimber,npft+ncft,config);
+        reclaim_land(stand,cutstand,cell,config->luc_timber,npft+ncft,config);
         stand->frac-=cutstand->frac;
 
         cell->discharge.dmass_lake+=(data->irrig_stor+data->irrig_amount+cutstand->soil.litter.agtop_moist)*cell->coord.area*cutstand->frac;
         cell->balance.awater_flux-=(data->irrig_stor+data->irrig_amount+cutstand->soil.litter.agtop_moist)*cutstand->frac;
 
-        if(setaside(cell,getstand(cell->standlist,pos),cell->ml.with_tillage,intercrop,npft,FALSE,year,config))
+        if(setaside(cell,getstand(cell->standlist,pos),cell->ml.with_tillage,intercrop,npft,ncft,FALSE,year,config))
           delstand(cell->standlist,pos);
       }
 
@@ -172,7 +172,7 @@ static Real from_setaside_for_reservoir(Cell *cell,          /**< pointer to cel
     pos=addstand(&natural_stand,cell)-1;
     cutstand=getstand(cell->standlist,pos);
     cutstand->frac=difffrac;
-    reclaim_land(setasidestand,cutstand,cell,config->istimber,npft+ncft,config);
+    reclaim_land(setasidestand,cutstand,cell,config->luc_timber,npft+ncft,config);
     setasidestand->frac-=difffrac;
 
     /* all the water from the cutstand goes in the reservoir */
@@ -267,7 +267,7 @@ void landusechange_for_reservoir(Cell *cell,          /**< pointer to cell */
     {  /* deforestation to built the reservoir */
        s=findlandusetype(cell->standlist,NATURAL);
        if(s!=NOT_FOUND)
-         deforest_for_reservoir(cell,difffrac,config->istimber,npft+ncft,config);
+         deforest_for_reservoir(cell,difffrac,config->luc_timber,npft+ncft,config);
     }
     /* if this is not possible: deforest all the natural land and then reduce crops  */
     if(difffrac>epsilon && 1-cell->lakefrac-cell->ml.cropfrac_rf-cell->ml.cropfrac_ir-minnatfrac_res<difffrac)

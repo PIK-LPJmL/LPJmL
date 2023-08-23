@@ -18,7 +18,8 @@
 #include "grass.h"
 #include "tree.h"
 
-void equilveg(Cell *cell /**< pointer to cell */
+void equilveg(Cell *cell,  /**< pointer to cell */
+              int ntotpft  /**< total number of PFTs */
              )
 {
   int s,l,p;
@@ -33,6 +34,8 @@ void equilveg(Cell *cell /**< pointer to cell */
     {
       stand->soil.k_mean[l].fast=0.0;
       stand->soil.k_mean[l].slow=0.0;
+      stand->soil.decay_rate[l].fast=0.0;
+      stand->soil.decay_rate[l].slow=0.0;
     }
     foreachpft(pft,p,&stand->pftlist)
     {
@@ -48,5 +51,10 @@ void equilveg(Cell *cell /**< pointer to cell */
       }
     }
     stand->soil.decomp_litter_mean.carbon=stand->soil.decomp_litter_mean.nitrogen=stand->soil.count=0;
+    for (p=0;p<ntotpft;p++)
+    {
+      stand->soil.decomp_litter_pft[p].carbon=0.0;
+      stand->soil.decomp_litter_pft[p].nitrogen=0.0;
+    }
   }
 } /* of 'equilveg' */

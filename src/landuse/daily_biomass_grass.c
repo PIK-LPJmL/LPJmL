@@ -109,7 +109,7 @@ Real daily_biomass_grass(Stand *stand,                /**< stand pointer */
     }
     if(stand->cell->ml.manure_nr!=NULL) /* has to be adapted if fix_fertilization option is added */
     {
-      if(day==fertday_biomass(stand->cell,config))
+      if(day==fertday_biomass(stand->cell,config) && stand->soil.litter.n>0)
       {
         manure = stand->cell->ml.manure_nr[data->irrigation].biomass_grass;
         stand->soil.NH4[0] += manure*param.nmanure_nh4_frac;
@@ -215,11 +215,6 @@ Real daily_biomass_grass(Stand *stand,                /**< stand pointer */
     }
     npp=npp_grass(pft,gtemp_air,gtemp_soil,gpp-rd-pft->npp_bnf,config->with_nitrogen);
     pft->npp_bnf=0.0;
-    if(config->crop_index==ALLSTAND)
-    {
-      getoutput(output,D_NPP,config)+=npp*stand->frac;
-      getoutput(output,D_GPP,config)+=gpp*stand->frac;
-    }
     getoutput(output,NPP,config)+=npp*stand->frac;
     stand->cell->balance.anpp+=npp*stand->frac;
     stand->cell->balance.agpp+=gpp*stand->frac;
@@ -275,16 +270,6 @@ Real daily_biomass_grass(Stand *stand,                /**< stand pointer */
         }
         else
         {
-          grass->turn.leaf.carbon+=grass->ind.leaf.carbon*grasspar->turnover.leaf/NDAYYEAR;
-          stand->soil.litter.item[pft->litter].ag.leaf.carbon+=grass->ind.leaf.carbon*grasspar->turnover.leaf/NDAYYEAR*pft->nind;
-          update_fbd_grass(&stand->soil.litter,pft->par->fuelbulkdensity,grass->ind.leaf.carbon*grasspar->turnover.leaf/NDAYYEAR*pft->nind);
-          getoutput(output,LITFALLC,config)+=grass->ind.leaf.carbon*grasspar->turnover.leaf/NDAYYEAR*pft->nind*stand->frac;
-          grass->turn_litt.leaf.carbon+=grass->ind.leaf.carbon*grasspar->turnover.leaf/NDAYYEAR*pft->nind;
-          grass->turn.leaf.nitrogen+=grass->ind.leaf.nitrogen*grasspar->turnover.leaf/NDAYYEAR;
-          stand->soil.litter.item[pft->litter].ag.leaf.nitrogen+=grass->ind.leaf.nitrogen*grasspar->turnover.leaf/NDAYYEAR*pft->nind*pft->par->fn_turnover;
-          getoutput(output,LITFALLN,config)+=grass->ind.leaf.nitrogen*grasspar->turnover.leaf/NDAYYEAR*pft->nind*pft->par->fn_turnover*stand->frac;
-          grass->turn_litt.leaf.nitrogen+=grass->ind.leaf.nitrogen*grasspar->turnover.leaf/NDAYYEAR*pft->nind;
-
           grass->turn.root.carbon+=grass->ind.root.carbon*grasspar->turnover.root/NDAYYEAR;
           stand->soil.litter.item[pft->litter].bg.carbon+=grass->ind.root.carbon*grasspar->turnover.root/NDAYYEAR*pft->nind;
           getoutput(output,LITFALLC,config)+=grass->ind.root.carbon*grasspar->turnover.root/NDAYYEAR*pft->nind*stand->frac;
@@ -293,7 +278,7 @@ Real daily_biomass_grass(Stand *stand,                /**< stand pointer */
           stand->soil.litter.item[pft->litter].bg.nitrogen+=grass->ind.root.nitrogen*grasspar->turnover.root/NDAYYEAR*pft->nind*pft->par->fn_turnover;
           getoutput(output,LITFALLN,config)+=grass->ind.root.nitrogen*grasspar->turnover.root/NDAYYEAR*pft->nind*pft->par->fn_turnover*stand->frac;
           grass->turn_litt.root.nitrogen+=grass->ind.root.nitrogen*grasspar->turnover.root/NDAYYEAR*pft->nind;
-
+          
           grass->growing_days++;
           fpc_inc[p]=0;
         }
@@ -316,7 +301,8 @@ Real daily_biomass_grass(Stand *stand,                /**< stand pointer */
   {
     grass=pft->data;
     grass->max_leaf=max(grass->max_leaf,grass->ind.leaf.carbon);
-    if (grass->ind.leaf.carbon >= 350 || (grass->ind.leaf.carbon>1 && grass->ind.leaf.carbon<(0.75*grass->max_leaf))) //changed from 100 to 350
+    if ((pft->stand->cell->coord.lat>=0.0 && (day==param.bmgr_harvest_day_nh)) || /* northern hemisphere */
+        (pft->stand->cell->coord.lat<0.0 && (day==param.bmgr_harvest_day_sh)))    /* southern hemisphere */
       isphen=TRUE;
   } /* of foreachpft() */
 
@@ -381,16 +367,6 @@ Real daily_biomass_grass(Stand *stand,                /**< stand pointer */
     transp+=aet_stand[l]*stand->frac;
     getoutput(output,TRANSP_B,config)+=(aet_stand[l]-green_transp[l])*stand->frac;
   }
-  if(config->crop_index==ALLSTAND)
-  {
-    getoutput(output,D_EVAP,config)+=evap*stand->frac;
-    getoutput(output,D_TRANS,config)+=transp;
-    getoutput(output,D_W0,config)+=stand->soil.w[1]*stand->frac;
-    getoutput(output,D_W1,config)+=stand->soil.w[2]*stand->frac;
-    getoutput(output,D_WEVAP,config)+=stand->soil.w[0]*stand->frac;
-    getoutput(output,D_INTERC,config)+=intercep_stand*stand->frac;
-  }
-
   getoutput(output,TRANSP,config)+=transp;
   stand->cell->balance.atransp+=transp;
   getoutput(output,EVAP,config)+=evap*stand->frac;

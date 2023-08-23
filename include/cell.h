@@ -101,6 +101,7 @@ struct cell
   Standlist standlist;      /**< Stand list */
   Climbuf climbuf;
   Ignition ignition;
+  Real landfrac;            /**< land fraction ((0..1]) */
   Real afire_frac;          /**< fraction of grid cell burnt this year */
   Real *gdd;                /**< Growing degree days array */
   Real lakefrac;            /**< lake fraction (0..1) */
@@ -153,6 +154,7 @@ extern void fprintcell(FILE *,const Cell [],int,int,int,const Config *);
 extern Bool freadcell(FILE *,Cell *,int,int,const Soilpar *,
                       const Standtype [],int,Bool,Config *);
 extern int writecoords(Outputfile *,int,const Cell [],const Config *);
+extern int writearea(Outputfile *,int,const Cell [],const Config *);
 extern int writecountrycode(Outputfile *,int,const Cell [],const Config *);
 extern int writeregioncode(Outputfile *,int,const Cell [],const Config *);
 extern int iterate(Outputfile *,Cell [],Input,
@@ -162,7 +164,7 @@ extern void iterateyear(Outputfile *,Cell [],Input,
 extern void initoutputdata(Output *,int,int,const Config *);
 extern void fwriteoutput(Outputfile *,Cell [],int,int,int,int,int,const Config *);
 extern void equilsom(Cell *,int, const Pftpar [],Bool);
-extern void equilveg(Cell *);
+extern void equilveg(Cell *,int);
 extern void check_fluxes(Cell *,int,int,const Config *);
 extern void check_balance(Flux,int,const Config *);
 extern Bool initdrain(Cell [],Config *);
@@ -176,12 +178,12 @@ extern Wateruse initwateruse(const Filename *,const Config *);
 extern Bool getwateruse_wd(Wateruse, Cell[], int, const Config *);
 #endif
 extern void freewateruse(Wateruse,Bool);
-extern void killstand(Cell *,int,Bool,Bool,int,const Config *);
+extern void killstand(Cell *,int,Bool,Bool,int,int,const Config *);
 extern Bool initsoiltemp(Climate *, Cell*,const Config *);
 extern Celldata opencelldata(Config *);
 extern Bool seekcelldata(Celldata,int);
-extern Bool readcelldata(Celldata,Coord *,unsigned int *,Real *,int,Config *);
-extern void closecelldata(Celldata);
+extern Bool readcelldata(Celldata,Cell *,unsigned int *,int,Config *);
+extern void closecelldata(Celldata,const Config *);
 extern Real albedo(Cell *, Real , Real );
 extern Bool initoutput(Outputfile *,Cell [],int,int,Config *);
 

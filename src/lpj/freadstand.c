@@ -51,12 +51,14 @@ Stand *freadstand(FILE *file, /**< File pointer to binary file */
   stand->type=standtype+landusetype;
   if(freadpftlist(file,stand,&stand->pftlist,pftpar,ntotpft,double_harvest,swap))
   {
+    fprintf(stderr,"ERROR254: Cannot read PFT list.\n");
     free(stand);
     return NULL;
   }
   initstand(stand);
   if(freadsoil(file,&stand->soil,soilpar,pftpar,ntotpft,swap))
   {
+    fprintf(stderr,"ERROR254: Cannot read soil data.\n");
     free(stand);
     return NULL;
   }
@@ -65,6 +67,7 @@ Stand *freadstand(FILE *file, /**< File pointer to binary file */
   /* read stand-specific data */
   if(stand->type->fread(file,stand,swap))
   {
+    fprintf(stderr,"ERROR254: Cannot read stand-specific data.\n");
     freestand(stand);
     return NULL;
   }

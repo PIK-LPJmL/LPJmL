@@ -24,15 +24,23 @@ Bool fprintoutputjson(int index,           /**< index in outputvars array */
                      )                     /** \return TRUE on error */
 {
   FILE *file;
-  String s;
   char *filename;
   char *json_filename;
   char **pftnames;
-  int p,nbands,len;
+  int p,nbands,len,count,id;
+  id=config->outputvars[index].id;
   if(config->outputvars[index].oneyear)
   {
-    snprintf(s,STRING_LEN,config->outputvars[index].filename.name,year);
-    filename=s;
+    count=snprintf(NULL,0,config->outputvars[index].filename.name,year);
+    if(count==-1)
+      return TRUE;
+    filename=malloc(count+1);
+    if(filename==NULL)
+    {
+      printallocerr("filename");
+      return TRUE;
+    }
+    snprintf(filename,count+1,config->outputvars[index].filename.name,year);
   }
   else
     filename=config->outputvars[index].filename.name;
@@ -40,6 +48,8 @@ Bool fprintoutputjson(int index,           /**< index in outputvars array */
   json_filename=malloc(strlen(filename)+strlen(config->json_suffix)+1);
   if(json_filename==NULL)
   {
+    if(config->outputvars[index].oneyear)
+      free(filename);
     printallocerr("json_filename");
     return TRUE;
   }
@@ -50,6 +60,8 @@ Bool fprintoutputjson(int index,           /**< index in outputvars array */
   if(file==NULL)
   {
     printfcreateerr(json_filename);
+    if(config->outputvars[index].oneyear)
+      free(filename);
     free(json_filename);
     return TRUE;
   }
@@ -57,20 +69,20 @@ Bool fprintoutputjson(int index,           /**< index in outputvars array */
   fprintf(file,"  \"sim_name\" : \"%s\",\n",config->sim_name);
   fprintf(file,"  \"source\" : \"LPJmL C Version " LPJ_VERSION"\",\n");
   fprintf(file,"  \"history\" : \"%s\",\n",config->arglist);
-  fprintf(file,"  \"variable\" : \"%s\",\n",config->outnames[config->outputvars[index].id].name);
+  fprintf(file,"  \"variable\" : \"%s\",\n",config->outnames[id].name);
   fprintf(file,"  \"firstcell\" : %d,\n",config->firstgrid);
-  fprintf(file,"  \"ncell\" : %d,\n",(config->outputvars[index].id==ADISCHARGE) ? config->nall : config->total);
+  fprintf(file,"  \"ncell\" : %d,\n",(id==ADISCHARGE) ? config->nall : config->total);
   fprintf(file,"  \"cellsize_lon\" : %f,\n",config->resolution.lon);
   fprintf(file,"  \"cellsize_lat\" : %f,\n",config->resolution.lat);
-  fprintf(file,"  \"nstep\" : %d,\n",max(1,getnyear(config->outnames,config->outputvars[index].id)));
+  fprintf(file,"  \"nstep\" : %d,\n",max(1,getnyear(config->outnames,id)));
   fprintf(file,"  \"timestep\" : %d,\n",max(1,config->outputvars[index].filename.timestep));
-  nbands=outputsize(config->outputvars[index].id,
+  nbands=outputsize(id,
                     config->npft[GRASS]+config->npft[TREE],
                     config->npft[CROP],config);
-  fprintf(file,"  \"nbands\" : %d,\n",config->outputvars[index].id==GRID ? 2 : nbands);
+  fprintf(file,"  \"nbands\" : %d,\n",id==GRID ? 2 : nbands);
   if(nbands>1)
   {
-   if(issoil(config->outputvars[index].id))
+   if(issoil(id))
    {
      fprintf(file,"  \"" BAND_NAMES "\" : [%f",layerbound[0]);
      for(p=1;p<nbands;p++)
@@ -79,7 +91,7 @@ Bool fprintoutputjson(int index,           /**< index in outputvars array */
    }
    else
    {
-     pftnames=createpftnames(config->outputvars[index].id,config->npft[GRASS]+config->npft[TREE],config->npft[CROP],config);
+     pftnames=createpftnames(id,config->npft[GRASS]+config->npft[TREE],config->npft[CROP],config);
      if(pftnames==NULL)
        printallocerr(BAND_NAMES);
      else
@@ -97,32 +109,33 @@ Bool fprintoutputjson(int index,           /**< index in outputvars array */
          len+=fprintf(file,"\"%s\"",pftnames[p]);
        }
        fprintf(file,"],\n");
-       freepftnames(pftnames,config->outputvars[index].id,config->npft[GRASS]+config->npft[TREE],config->npft[CROP],config);
+       freepftnames(pftnames,id,config->npft[GRASS]+config->npft[TREE],config->npft[CROP],config);
      }
    }
   }
   fprintf(file,"  \"descr\" : ");
-  if(config->outnames[config->outputvars[index].id].descr==NULL)
+  if(config->outnames[id].descr==NULL)
     fprintf(file,"null,\n");
   else
-    fprintf(file,"\"%s\",\n",config->outnames[config->outputvars[index].id].descr);
+    fprintf(file,"\"%s\",\n",config->outnames[id].descr);
   fprintf(file,"  \"unit\" : ");
-  if(config->outnames[config->outputvars[index].id].unit==NULL)
+  if(config->outnames[id].unit==NULL)
     fprintf(file,"null,\n");
   else
-    fprintf(file,"\"%s\",\n",config->outnames[config->outputvars[index].id].unit);
-  if(config->outputvars[index].id==GRID || config->outputvars[index].id==COUNTRY || config->outputvars[index].id==REGION)
+    fprintf(file,"\"%s\",\n",config->outnames[id].unit);
+  if(getnyear(config->outnames,id)==0)
   {
     fprintf(file,"  \"firstyear\" : %d,\n",config->outputyear);
-    fprintf(file,"  \"lastyear\" : %d,\n",config->outputyear);
+    fprintf(file,"  \"lastyear\" : %d,\n"
+            "  \"nyear\" : 1,\n",config->outputyear);
   }
   else
   {
-    fprintf(file,"  \"firstyear\" : %d,\n",config->outputvars[index].oneyear ? year : config->outputyear+max(1,config->outnames[config->outputvars[index].id].timestep)-1);
-    fprintf(file,"  \"lastyear\" : %d,\n",config->outputvars[index].oneyear ? year : config->outputyear+max(1,config->outnames[config->outputvars[index].id].timestep)-1+((config->lastyear-config->outputyear+1)/max(1,config->outnames[config->outputvars[index].id].timestep)-1)*max(1,config->outnames[config->outputvars[index].id].timestep));
+    fprintf(file,"  \"firstyear\" : %d,\n",config->outputvars[index].oneyear ? year : config->outputyear+max(1,config->outnames[id].timestep)-1);
+    fprintf(file,"  \"lastyear\" : %d,\n",config->outputvars[index].oneyear ? year : config->outputyear+max(1,config->outnames[id].timestep)-1+((config->lastyear-config->outputyear+1)/max(1,config->outnames[id].timestep)-1)*max(1,config->outnames[id].timestep));
+    fprintf(file,"  \"nyear\" : %d,\n",(config->outputvars[index].oneyear) ? 1 : (config->lastyear-config->outputyear+1)/max(1,config->outnames[id].timestep));
   }
-  fprintf(file,"  \"nyear\" : %d,\n",(config->outputvars[index].oneyear || config->outputvars[index].id==GRID || config->outputvars[index].id==COUNTRY || config->outputvars[index].id==REGION) ? 1 : (config->lastyear-config->outputyear+1)/max(1,config->outnames[config->outputvars[index].id].timestep));
-  fprintf(file,"  \"datatype\" : \"%s\",\n",typenames[getoutputtype(config->outputvars[index].id,config->float_grid)]);
+  fprintf(file,"  \"datatype\" : \"%s\",\n",typenames[getoutputtype(id,config->float_grid)]);
   if(config->outputvars[index].id==GRID)
   {
     if(config->float_grid)
@@ -138,7 +151,7 @@ Bool fprintoutputjson(int index,           /**< index in outputvars array */
   }
   fprintf(file,"  \"bigendian\" : %s,\n",bool2str(bigendian()));
   if(config->outputvars[index].filename.fmt==CLM)
-    fprintf(file,"  \"offset\" : %zu,\n",config->outputvars[index].id==GRID ? headersize(LPJGRID_HEADER,config->outputvars[index].filename.version) : headersize(LPJOUTPUT_HEADER,config->outputvars[index].filename.version));
+    fprintf(file,"  \"offset\" : %zu,\n",id==GRID ? headersize(LPJGRID_HEADER,config->outputvars[index].filename.version) : headersize(LPJOUTPUT_HEADER,config->outputvars[index].filename.version));
   else if(config->outputvars[index].filename.fmt==TXT)
     fprintf(file,"  \"delimiter\" : \"%c\",\n",config->csv_delimit);
   fprintf(file,"  \"format\" : \"%s\",\n",fmt[config->outputvars[index].filename.fmt]);
@@ -147,6 +160,8 @@ Bool fprintoutputjson(int index,           /**< index in outputvars array */
   fprintf(file,"  \"filename\" : \"%s\"\n",strippath(filename));
   fprintf(file,"}\n");
   fclose(file);
+  if(config->outputvars[index].oneyear)
+    free(filename);
   free(json_filename);
   return FALSE;
 } /* of 'fprintoutputjson' */

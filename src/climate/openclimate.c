@@ -26,7 +26,7 @@ Bool openclimate(Climatefile *file,        /**< pointer to climate file */
 {
   Header header;
   String headername;
-  int last,version,nbands;
+  int last,version,count,nbands;
   char *s;
   size_t offset,filesize;
   file->fmt=filename->fmt;
@@ -36,7 +36,8 @@ Bool openclimate(Climatefile *file,        /**< pointer to climate file */
     file->firstyear=config->firstyear;
     return FALSE;
   }
-  if(filename->fmt==SOCK)
+  file->issocket=filename->issocket;
+  if(iscoupled(*config) && filename->issocket)
   {
     if(openinput_coupler(filename->id,LPJ_FLOAT,config->nall,&nbands,config))
       return TRUE;
@@ -58,8 +59,11 @@ Bool openclimate(Climatefile *file,        /**< pointer to climate file */
       return TRUE;
     }
     file->id=filename->id;
-    file->firstyear=config->firstyear;
-    return FALSE;
+    if(filename->fmt==SOCK)
+    {
+      file->firstyear=config->firstyear;
+      return FALSE;
+    }
   }
   file->oneyear=FALSE;
   if(filename->fmt==CDF) /** file is in NetCDF format? */
@@ -79,9 +83,12 @@ Bool openclimate(Climatefile *file,        /**< pointer to climate file */
       }
       if(isroot(*config))
       {
-        s=malloc(strlen(file->filename)+12);
+        count=snprintf(NULL,0,file->filename,file->firstyear);
+        if(count==-1)
+          return TRUE;
+        s=malloc(count+1);
         check(s);
-        sprintf(s,file->filename,file->firstyear);
+        snprintf(s,count+1,file->filename,file->firstyear);
         openclimate_netcdf(file,s,filename->time,filename->var,filename->unit,units,config);
         free(s);
       }

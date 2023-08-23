@@ -95,7 +95,7 @@ Real daily_setaside(Stand *stand, /**< stand pointer */
   {
     present[pft->par->id]=TRUE;
     /* calculate old or new phenology */
-    if (config->new_phenology)
+    if (config->gsi_phenology)
       phenology_gsi(pft, climate->temp,climate->swdown,day,climate->isdailytemp);
     else
       leaf_phenology(pft,climate->temp,day,climate->isdailytemp);

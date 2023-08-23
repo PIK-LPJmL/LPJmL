@@ -16,6 +16,10 @@
 
 include Makefile.inc
 
+TARFILE = lpjml-$(shell cat VERSION).tar
+
+ZIPFILE = lpjml-$(shell cat VERSION).zip
+
 INC     = include
 
 HDRS    = $(INC)/buffer.h $(INC)/cell.h $(INC)/climate.h $(INC)/conf.h\
@@ -44,14 +48,20 @@ JSON	= lpjml.js input_crumonthly.js param.js lpj.js input_GSWP3-ERA5.js\
 SCRIPTS	= configure.bat configure.sh\
           bin/output_bsq bin/lpjsubmit_aix bin/lpjsubmit_intel\
           bin/lpjsubmit_mpich bin/lpjrun bin/backtrace\
-          bin/filetypes.vim bin/regridlpj bin/lpjsubmit_slurm
+          bin/regridlpj bin/lpjsubmit_slurm
 
 FILES	= Makefile config/* README AUTHORS INSTALL VERSION LICENSE STYLESHEET\
           $(JSON) $(DATA) $(HDRS) $(SCRIPTS)
 
-main: 
+main:
 	$(MKDIR) lib
 	(cd src && $(MAKE))
+
+lpjcheck:
+	$(MKDIR) lib
+	(cd src && $(MAKE) libs)
+	(cd src/utils && $(MAKE) ../../bin/lpjcheck)
+
 utils:
 	(cd src && $(MAKE) libs)
 	(cd src/utils && $(MAKE) all)
@@ -61,7 +71,6 @@ all: main utils
 install: all
 	$(MKDIR) $(LPJROOT)/bin
 	$(MKDIR) $(LPJROOT)/include
-	$(MKDIR) $(LPJROOT)/html
 	$(MKDIR) $(LPJROOT)/par
 	$(MKDIR) $(LPJROOT)/man/man1
 	$(MKDIR) $(LPJROOT)/man/man5
@@ -69,14 +78,12 @@ install: all
 	chmod 755 $(LPJROOT)
 	chmod 755 $(LPJROOT)/bin
 	chmod 755 $(LPJROOT)/include
-	chmod 755 $(LPJROOT)/html
 	chmod 755 $(LPJROOT)/par
 	chmod 755 $(LPJROOT)/man
 	chmod 755 $(LPJROOT)/man/man1
 	chmod 755 $(LPJROOT)/man/man5
 	chmod 755 $(LPJROOT)/man/man3
 	install bin/* $(LPJROOT)/bin
-	install -m 644 html/* $(LPJROOT)/html
 	install -m 644 $(HDRS) $(LPJROOT)/include
 	install -m 644 $(DATA) $(LPJROOT)/par
 	install -m 644 README INSTALL VERSION AUTHORS LICENSE COPYRIGHT $(JSON) $(LPJROOT)
@@ -92,8 +99,8 @@ test: main
 clean:
 	(cd src  && $(MAKE) clean)
 
-tar: 
-	tar -cf lpjml-5.4.003.tar $(FILES) src/Makefile src/*.c\
+tar:
+	tar -cf $(TARFILE) $(FILES) src/Makefile src/*.c\
 	    src/climate/Makefile src/climate/*.c\
             man/man1/*.1 man/man3/*.3 man/man5/*.5 man/whatis\
             man/man1/Makefile man/man3/Makefile man/man5/Makefile man/Makefile\
@@ -103,15 +110,15 @@ tar:
 	    src/numeric/*.c src/numeric/Makefile src/soil/*.c src/soil/Makefile\
 	    src/tools/*.c src/tools/Makefile src/tree/*.c src/tree/Makefile\
             src/lpj/FILES src/pnet/*.c src/pnet/FILES src/socket/Makefile\
-            src/socket/*.c html/*.html html/*.css src/reservoir/Makefile\
+            src/socket/*.c src/reservoir/Makefile\
             src/image/Makefile src/image/*.c src/reservoir/*.c\
             src/pnet/Makefile REFERENCES COPYRIGHT src/utils/*.c src/utils/Makefile\
             src/spitfire/Makefile src/spitfire/*.c src/netcdf/Makefile src/netcdf/*.c\
             src/cpl/Makefile src/cpl/*.c src/coupler/Makefile src/coupler/*.c
-	    gzip -f lpjml-5.4.003.tar
+	    gzip -f $(TARFILE)
 
-zipfile: 
-	zip -l lpjml-5.4.003.zip $(FILES) src/Makefile src/*.c\
+zipfile:
+	zip -l $(ZIPFILE) $(FILES) src/Makefile src/*.c\
 	    src/climate/Makefile src/climate/*.c config/* man/* man/man1/*.1\
             man/man3/*.3 man/man5/*.5\
 	    src/crop/*.c src/crop/Makefile src/grass/*.c src/grass/Makefile\

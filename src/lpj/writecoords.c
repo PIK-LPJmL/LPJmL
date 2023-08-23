@@ -23,6 +23,53 @@ typedef struct
   float lat; /**< latitude */
 } Floatcoord;
 
+
+#ifdef USE_MPI
+static Bool mpi_write_coords(const Netcdf *cdf, /* Pointer to Netcdf */
+                             void *data,        /* data to be written to file */
+                             int size,
+                             int counts[],
+                             int offsets[],
+                             int rank,          /* MPI rank */
+                             MPI_Comm comm      /* MPI communicator */
+                            )                   /* returns TRUE on error */
+{
+  Bool rc;
+  int i,count;
+  int *vec=NULL;
+  if(rank==0)
+  {
+    vec=newvec(int,size); /* allocate receive buffer */
+    if(vec==NULL)
+    {
+      printallocerr("vec");
+      rc=TRUE;
+    }
+    else
+      rc=FALSE;
+  }
+  MPI_Bcast(&rc,1,MPI_INT,0,comm);
+  if(rc)
+    return TRUE;
+  MPI_Gatherv(data,counts[rank],MPI_INT,vec,counts,offsets,MPI_INT,0,comm);
+  if(rank==0)
+  {
+    count=0;
+    for(i=0;i<size;i++)
+      if(vec[i]==-1)
+        vec[i]=MISSING_VALUE_INT;
+      else
+        vec[i]=count++;
+    rc=write_int_netcdf(cdf,vec,NO_TIME,size); /* write data to file */
+    free(vec);
+  }
+  /* broadcast return code to all other tasks */
+  MPI_Bcast(&rc,1,MPI_INT,0,comm);
+  MPI_Barrier(comm);
+  return rc;
+} /* of 'mpi_write_coords' */
+#endif
+
 int writecoords(Outputfile *output,  /**< output struct */
                 int index,           /**< index in output file array */
                 const Cell grid[],   /**< LPJ grid */
@@ -37,27 +84,24 @@ int writecoords(Outputfile *output,  /**< output struct */
 #endif
   Bool rc;
   int cell,count;
-  short *soilcode=NULL;
+  int *cellid;
   Intcoord *vec=NULL;
   Floatcoord *fvec=NULL;
   if(output->files[index].isopen && output->files[index].fmt==CDF)
   {
-    soilcode=newvec(short,config->ngridcell);
-    if(soilcode==NULL)
+    cellid=newvec(int,config->ngridcell);
+    if(cellid==NULL)
     {
-      printallocerr("soilcode");
+      printallocerr("cellid");
       rc=TRUE;
     }
     else
     {
-      count=0;
       for(cell=0;cell<config->ngridcell;cell++)
         if(grid[cell].skip)
-          soilcode[cell]=0;
-        else if(isempty(grid[cell].standlist))
-          soilcode[cell]=MISSING_VALUE_SHORT;
+          cellid[cell]= -1;
         else
-          soilcode[cell]=(short)(getstand(grid[cell].standlist,0)->soil.par->type+1);
+          cellid[cell]=cell+config->startgrid;
       rc=FALSE;
     }
   }
@@ -126,18 +170,18 @@ int writecoords(Outputfile *output,  /**< output struct */
     }
     if(iserror(rc,config))
     {
-      free(soilcode);
+      free(cellid);
       free(counts);
       free(offsets);
       return 0;
     }
     getcounts(counts,offsets,config->nall,1,config->ntask);
-    mpi_write_netcdf(&output->files[index].fp.cdf,soilcode,MPI_SHORT,
-                     config->nall,NO_TIME,
+    mpi_write_coords(&output->files[index].fp.cdf,cellid,
+                     config->nall,
                      counts,offsets,config->rank,config->comm);
     free(counts);
     free(offsets);
-    free(soilcode);
+    free(cellid);
   }
   if(output->files[index].issocket || output->files[index].fmt!=CDF)
   {
@@ -255,12 +299,13 @@ int writecoords(Outputfile *output,  /**< output struct */
         case TXT:
           for(cell=0;cell<count-1;cell++)
             fprintf(output->files[index].fp.file,"%g%c%g%c",
-                    fvec[cell].lon,config->csv_delimit,fvec[cell].lat*0.01,config->csv_delimit);
+                    fvec[cell].lon,config->csv_delimit,fvec[cell].lat,config->csv_delimit);
           fprintf(output->files[index].fp.file,"%g%c%g\n",
                   fvec[count-1].lon,config->csv_delimit,fvec[count-1].lat);
           break;
         case CDF:
-          write_short_netcdf(&output->files[index].fp.cdf,soilcode,NO_TIME,config->nall);
+          write_int_netcdf(&output->files[index].fp.cdf,cellid,NO_TIME,config->nall);
+          free(cellid);
           break;
       }
     if(output->files[index].issocket)
@@ -269,7 +314,6 @@ int writecoords(Outputfile *output,  /**< output struct */
       writefloat_socket(config->socket,fvec,count*2);
     }
     free(fvec);
-    free(soilcode);
   }
   else
   {
@@ -288,7 +332,14 @@ int writecoords(Outputfile *output,  /**< output struct */
                   vec[count-1].lon*0.01,config->csv_delimit,vec[count-1].lat*0.01);
           break;
         case CDF:
-          write_short_netcdf(&output->files[index].fp.cdf,soilcode,NO_TIME,config->nall);
+          count=0;
+          for(cell=0;cell<config->nall;cell++)
+            if(cellid[cell]==-1)
+              cellid[cell]=MISSING_VALUE_INT;
+            else
+              cellid[cell]=count++;
+          write_int_netcdf(&output->files[index].fp.cdf,cellid,NO_TIME,config->nall);
+          free(cellid);
           break;
       }
       if(output->files[index].issocket)
@@ -297,7 +348,6 @@ int writecoords(Outputfile *output,  /**< output struct */
         writeshort_socket(config->socket,vec,count*2);
       }
       free(vec);
-      free(soilcode);
   }
 #endif
   return count;
