@@ -75,7 +75,7 @@ Bool annual_biomass_tree(Stand *stand,         /**< Pointer to stand */
       printf("PFT:%s bm_inc=%g vegc=%g soil=%g\n",pft->par->name,
              pft->bm_inc.carbon,vegc_sum(pft),soilcarbon(&stand->soil));
 #endif
-      
+
       if(istree(pft))
       {
         treepar=pft->par->data;
@@ -105,9 +105,9 @@ Bool annual_biomass_tree(Stand *stand,         /**< Pointer to stand */
         litter_update(&stand->soil.litter,pft,pft->nind,config);
         pft->nind=0;
         delpft(&stand->pftlist,p);
-        p--; /* adjust loop variable */ 
+        p--; /* adjust loop variable */
       }
-        
+
     } /* of foreachpft */
 #ifdef DEBUG2
     printf("Number of updated pft: %d\n",stand->pftlist.n);
@@ -223,7 +223,7 @@ Bool annual_biomass_tree(Stand *stand,         /**< Pointer to stand */
   fpc_total=fpc_sum(fpc_type,config->ntypes,&stand->pftlist);
   if(fpc_total>1.0)
     light(stand,fpc_inc2,config);
-  fpc_total=fpc_sum(fpc_type,config->ntypes,&stand->pftlist);  
+  fpc_total=fpc_sum(fpc_type,config->ntypes,&stand->pftlist);
 
   if (fpc_total>1.0)
     foreachpft(pft,p,&stand->pftlist)
@@ -260,7 +260,7 @@ Bool annual_biomass_tree(Stand *stand,         /**< Pointer to stand */
   if(isdead)
   {
     update_irrig(stand,rbtree(ncft),ncft,config);
-    if(setaside(stand->cell,stand,stand->cell->ml.with_tillage,intercrop,npft,biomass_tree->irrigation.irrigation,year,npft+ncft,config))
+    if(setaside(stand->cell,stand,stand->cell->ml.with_tillage,intercrop,npft,ncft,biomass_tree->irrigation.irrigation,year,config))
       return TRUE;
   }
   else
