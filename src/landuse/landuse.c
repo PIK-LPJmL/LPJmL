@@ -362,7 +362,7 @@ Bool getlanduse(Landuse landuse,     /**< Pointer to landuse data */
           data[count]/=grid[cell].landfrac;
           sum+=data[count++];
         }
-      if(sum > 1.0)
+      if(sum > 1.0+epsilon)
       {
         if(sum*grid[cell].landfrac>1)
         {
@@ -573,7 +573,7 @@ Bool getlanduse(Landuse landuse,     /**< Pointer to landuse data */
       grid[cell].ml.landfrac[0].biomass_tree=grid[cell].ml.landfrac[1].biomass_tree=0;
       grid[cell].ml.landfrac[0].woodplantation=grid[cell].ml.landfrac[1].woodplantation=0;
     }
-    
+
     /* force tinyfrac for all crops only on pixels with valid soil */
     if (config->withlanduse==ALL_CROPS && !grid[cell].skip && soiltype!=ROCK && soiltype!=ICE && soiltype >= 0)
     {
