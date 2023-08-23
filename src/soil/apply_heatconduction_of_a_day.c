@@ -15,25 +15,30 @@ void apply_heatconduction_of_a_day(Real * enth,             /*< enthalpy vector 
                     const int N,               /*< number of gridpoints with free values */
                     const Real * h,          /*< distances between gridpoints  */
                     const Real temp_top,     /*< temperature of the soil surface (dirichlet bound) */
-                    const Soil_thermal_prop th /*< thermal properties of soil */
+                    Soil_thermal_prop th /*< thermal properties of soil */
                     ) 
 {
   Real temp[N + 1], lam[N]; /* temperature and thermal conducitivity */
   Real FF[N+1];           /* fluxes  */
   Real dt = 0.0;            /* timestep */
+
   int j;
   int timesteps;
 
-  /* precompute reciprocal values for better performance */
+  /* precompute values for better performance */
   Real h_inv[N];
-  Real hph_inv[N];
-  Real c_frozen_inv[N], c_unfrozen_inv[N];
+  Real multi_purp[N]; /* a variable with multiple purpouses  */
+
   for (j = 0; j < N; j++)
   {
+    multi_purp[j] = 1/( h[j] + (j<N-1 ? h[j+1] : 0.0));
     h_inv[j] = 1/h[j]; 
-    hph_inv[j] = 1/( h[j] + (j<N-1 ? h[j+1] : 0.0));
-    c_frozen_inv[j]= 1/ th.c_frozen[j] ;
-    c_unfrozen_inv[j]= 1/ th.c_unfrozen[j] ;
+    /* the following lines change the meaning of th.lam_(un)frozen, which no longer contains thermal conductivities but the thermal conductivities divided by the respective elemt size */
+    th.lam_frozen[j] = th.lam_frozen[j] * h_inv[j]; 
+    th.lam_unfrozen[j] = th.lam_unfrozen[j] * h_inv[j];
+    /* the following lines change the meaning of th.c_(un)frozen, which no longer contains heat capacities but reciprocal heat capacities */
+    th.c_frozen[j]= 1/ th.c_frozen[j] ;
+    th.c_unfrozen[j]= 1/ th.c_unfrozen[j] ;
   }
 
   FF[N]=0;
@@ -43,13 +48,19 @@ void apply_heatconduction_of_a_day(Real * enth,             /*< enthalpy vector 
   float dt_inv_temporary;
   float dt_inv=0;
   for (j=0; j<N; ++j) {
-       dt_inv_temporary = max( th.lam_unfrozen[j]*c_unfrozen_inv[j] , th.lam_frozen[j]*c_frozen_inv[j])* h_inv[j]*h_inv[j]  * 2;
+      //  dt_inv_temporary = max( th.lam_unfrozen[j]*c_unfrozen_inv[j] , th.lam_frozen[j]*c_frozen_inv[j])* h_inv[j]*h_inv[j]  * 2;
+       dt_inv_temporary = max( (th.lam_unfrozen[j] + (j<N-1 ? th.lam_unfrozen[j+1]:0.0) )   *th.c_unfrozen[j],
+                               (th.lam_frozen[j] + (j<N-1 ? th.lam_frozen[j+1]:0.0) )    *th.c_frozen[j]    )
+                               * multi_purp[j]*2;
        if (dt_inv < dt_inv_temporary)
            dt_inv = dt_inv_temporary;
   }
   timesteps= (int)(dayLength* dt_inv) +1;
   dt = dayLength/ timesteps;
 
+  for(j=0; j<N; ++j) {
+    multi_purp[j] = multi_purp[j] * dt * 2;
+  }
   /*******main timestepping loop*******/
   int timestp;
     
@@ -57,23 +68,22 @@ void apply_heatconduction_of_a_day(Real * enth,             /*< enthalpy vector 
 
     /* calculate temperature distribution from enthalpy */
     for (j=0; j<N; ++j){
-      temp[j+1] = (enth[j] < 0 ? enth[j] *c_frozen_inv[j] : 0) + /* enthalpy-temperature relation */
-        (enth[j] > th.latent_heat[j] ? (enth[j] - th.latent_heat[j]) * c_unfrozen_inv[j] : 0); /* T=0 when 0<enth[j]<latent_heat */
+      temp[j+1] = (enth[j] < 0 ? enth[j] *th.c_frozen[j] : 0) + /* enthalpy-temperature relation */
+                  (enth[j] > th.latent_heat[j] ? (enth[j] - th.latent_heat[j]) * th.c_unfrozen[j] : 0); /* T=0 when 0<enth[j]<latent_heat */
     }
 
-    /* calculate energy update from temperature differnces */
+    /* calculate fluxes from temperature difference */
     for (j=0; j<N; ++j) {
-      FF[j] = (temp[j+1] - temp[j]) * 
-              ((temp[j+1] + temp[j]) < 0 ? th.lam_frozen[j] : th.lam_unfrozen[j]) * h_inv[j];
-    }
-    // for (j=0; j<N; ++j) {
-    //   FF[j] = (temp[j+1] *(temp[j+1]  < 0 ? th.lam_frozen[j] : th.lam_unfrozen[j]) - 
-    //            temp[j] *(temp[j] < 0 ? th.lam_frozen[j] : th.lam_unfrozen[j])) 
-    //            * h_inv[j];
-    // }
+      // FF[j] = (temp[j+1] - temp[j]) * 
+      //         ((temp[j+1] + temp[j]) < 0 ? th.lam_frozen[j] : th.lam_unfrozen[j]);
 
+      FF[j] = (temp[j+1] *(temp[j+1]  < 0 ? th.lam_frozen[j] : th.lam_unfrozen[j]) - 
+               temp[j]   *(temp[j] < 0 ? th.lam_frozen[j] : th.lam_unfrozen[j])) ;
+    }
+    
+    /* apply fluxes to enthalpy */
     for (j=0; j<N; ++j) {
-      enth[j] = enth[j]+ dt * (FF[j+1] - FF[j]) * hph_inv[j] * 2;
+      enth[j] = enth[j]+ (FF[j+1] - FF[j]) * multi_purp[j];
     }
 
   }

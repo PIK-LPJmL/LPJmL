@@ -27,11 +27,9 @@
 #define TOPLAYER 0
 #define NTILLLAYER 1 /* number of layers to be tilled */
 #ifndef TESTSCENARIO_HEAT2
-  #define GPLHEAT 10 /* Gripoints per soil layer for the heat conduction scheme  */
+  #define GPLHEAT 3 /* Gripoints per soil layer for the heat conduction scheme  */
 #endif
-#ifndef NO_WATER_HEAT_TRANSFER
-  #define WITH_WATER_HEAT_TRANSFER
-#endif
+
 #define NHEATGRIDP NSOILLAYER*GPLHEAT /* Total number of gridpoints for the heatflow scheme */
 //#define WITH_WATER_HEAT_TRANSFER
 #define SNOWLAYER NSOILLAYER
@@ -77,9 +75,6 @@ extern Real midlayer[NSOILLAYER];
 extern Real logmidlayer[NSOILLAYER];
 extern Real fbd_fac[NFUELCLASS];
 
-extern Bool no_water_heat_transfer;
-extern Bool gp_status_dep_water_heat_flow;
-extern Bool full_gp_status_dep;
 
 #include "soilpar.h"
 
@@ -334,4 +329,12 @@ given an enthalpy vector (enth) and a Soil_thermal_prop (th)*/
 #define ENTH2TEMP(e, th, gp)\
  (((e)[(gp)]<0                      ?  (e)[(gp)]                           / (th).c_frozen[(gp)]   : 0) +\
   ((e)[(gp)]>(th).latent_heat[(gp)] ? ((e)[(gp)] - (th).latent_heat[(gp)]) / (th).c_unfrozen[(gp)] : 0))
+#define reconcile_layer_energy_with_water_shift(soil, layer, amount, vol_enthalpy, config) ({\
+        if(config->water_heattransfer)\
+        {\
+          /* printf("reconcile_layer_energy_with_water_shift: layer %d, amount %f, vol_enthalpy %f\n", layer, amount, vol_enthalpy);*/ \
+          soil->perc_energy[layer]+=amount/1000*vol_enthalpy; /* add enthalpy of water coming from above */ \
+          soil->wi_abs_enth_adj[layer]+=amount; /* update enth adjusted water ice content */ \
+        }\
+        })
 #endif /* SOIL_H */

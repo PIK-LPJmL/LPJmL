@@ -280,6 +280,9 @@ Bool fscanconfig(Config *config,    /**< LPJ configuration */
   config->johansen = TRUE;
   if(fscanbool(file,&config->johansen,"johansen",TRUE,verbose))
     return TRUE;
+  config->water_heattransfer = TRUE;
+  if(fscanbool(file, &config->water_heattransfer, "water_heattransfer", TRUE, verbose))
+    return TRUE;
   config->sdate_option=NO_FIXED_SDATE;
   config->crop_phu_option=NEW_CROP_PHU;
   config->rw_manage=FALSE;
