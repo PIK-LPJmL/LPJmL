@@ -16,15 +16,6 @@ For the conductivity it uses the approach described by Johansen (1977)
 
 #include "lpj.h"
 
-double fastPow(double a, double b) {
-  union {
-    double d;
-    int x[2];
-  } u = { a };
-  u.x[1] = (int)(b * (u.x[1] - 1072632447) + 1072632447);
-  u.x[0] = 0;
-  return u.d;
-}
 
 void calc_soil_thermal_props(Soil_thermal_prop *th,  /*< Soil thermal property structure that is set or modified */
                      const Soil *soil,               /*< Soil structure from which water content etc is obtained  */

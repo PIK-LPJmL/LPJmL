@@ -132,7 +132,6 @@ Real infil_perc_irr(Stand *stand,        /**< Stand pointer */
         soil->w[l]+=(soil->w_fw[l]+influx)/soil->whcs[l];
         soil->w_fw[l]=0.0;
         reconcile_layer_energy_with_water_shift(soil,l,influx,vol_water_enth, config); /* account for enthalpy of water inflow  */
-        vol_water_enth=(soil->temp[l]>=0?c_water:c_ice)*soil->temp[l]+(soil->temp[l]>=0?c_water2ice:0);
         influx=0.0;
         lrunoff=0;
         inactive_water[l]=soil->ice_depth[l]+soil->wpwps[l]+soil->ice_fw[l];
@@ -166,6 +165,7 @@ Real infil_perc_irr(Stand *stand,        /**< Stand pointer */
           lrunoff+=grunoff;
           *return_flow_b+=grunoff*(1-stand->frac_g[l]);
         }
+        vol_water_enth=(soil->temp[l]>=0?c_water:c_ice)*soil->temp[l]+(soil->temp[l]>=0?c_water2ice:0);
 
         if (soildepth[l]>soil->freeze_depth[l])
         {
@@ -299,7 +299,7 @@ Real infil_perc_irr(Stand *stand,        /**< Stand pointer */
 
     } /* if not drip */
     /* recompute the soil temperature in cases of strong percolation, to allow temperature changes to affect further percolation energy transfer */
-    if(infil_loop_count%8 == 0 && config->percolation_heattransfer ){ 
+    if(infil_loop_count%2 == 0 && config->percolation_heattransfer ){ 
       apply_perc_enthalpy(soil);
       Soil_thermal_prop th;
       calc_soil_thermal_props(&th,soil,soil->wi_abs_enth_adj, soil->sol_abs_enth_adj, TRUE,FALSE);
