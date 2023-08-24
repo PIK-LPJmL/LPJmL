@@ -52,7 +52,8 @@ void freezefrac2soil(Soil *soil,
       frac = tar_ice/(wp_wi+n_wi);
       tar_ice = 0.0; 
       soil->ice_depth[layer] = frac     * n_wi;
-      soil->w[layer]         = (1-frac) * n_wi / soil->whcs[layer];
+      if(soil->whcs[layer]>epsilon)
+        soil->w[layer]         = (1-frac) * n_wi / soil->whcs[layer];
       soil->ice_pwp[layer]=frac;
       soil->ice_fw[layer] = 0.0;
       soil->w_fw[layer]   = f_wi;

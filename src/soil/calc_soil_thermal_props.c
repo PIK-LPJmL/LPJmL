@@ -4,7 +4,6 @@ It returs volumetric heat capacity, and thermal conductivity for the soil in fro
 unfrozen state based on soil texture and water content.
 For the conductivity it uses the approach described by Johansen (1977)
 */
- #define pow10f(x) exp(2.302585092994046*x)  
 
 #define K_SOLID 8       /* Thermal conductivity of solid components in saturated state */
 #define K_ICE   2.2     /* Thermal conductivity of ice */
