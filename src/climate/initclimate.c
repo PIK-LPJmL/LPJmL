@@ -74,7 +74,6 @@ Climate *initclimate(const Cell grid[],   /**< LPJ grid */
   int i, ndata; 
   int lastyear;
   Climate *climate;
-  int lastyear;
   climate=new(Climate);
   if(climate==NULL)
   {
@@ -324,7 +323,7 @@ Climate *initclimate(const Cell grid[],   /**< LPJ grid */
 #endif
   if (!config->with_dynamic_ch4)
   {
-    if (readtracegas(&climate->ch4, &config->ch4_filename, isroot(*config)))
+    if (readtracegas(&climate->ch4, &config->ch4_filename,config, isroot(*config)))
     {
       freeclimate(climate,isroot(*config));
       return NULL;
@@ -441,23 +440,11 @@ Climate *initclimate(const Cell grid[],   /**< LPJ grid */
     for (i = 0; i<ndata; i++)
       if(readclimate(&climate->file_lightning,climate->data[i].lightning,0.0,climate->file_lightning.scalar,grid,climate->file_lightning.firstyear,1,config))
       {
+        if(isroot(*config))
+          fprintf(stderr,"ERROR192: Cannot read lightning.\n");
         freeclimate(climate,isroot(*config));
         return NULL;
       }
-    if((climate->data.lightning=newvec(Real,climate->file_lightning.n))==NULL)
-    {
-      printallocerr("lightning");
-      freeclimate(climate,isroot(*config));
-      return NULL;
-    }
-    if(readclimate(&climate->file_lightning,climate->data.lightning,0,climate->file_lightning.scalar,grid,climate->file_lightning.firstyear,config))
-    {
-      if(isroot(*config))
-        fprintf(stderr,"ERROR192: Cannot read lightning.\n");
-      freeclimate(climate,isroot(*config));
-      return NULL;
-    }
-    closeclimatefile(&climate->file_lightning,isroot(*config));
   } /* of if(config->fire==SPITFIRE || config->fire==SPITFIRE_TMAX) */
   if(config->with_radiation)
   {
