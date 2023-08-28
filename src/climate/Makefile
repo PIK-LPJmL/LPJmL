@@ -18,10 +18,17 @@ include ../../Makefile.inc
 OBJS    = initclimate.$O getclimate.$O freeclimate.$O avgtemp.$O\
           prdaily.$O getco2.$O storeclimate.$O dailyclimate.$O\
           getmtemp.$O initclimate_monthly.$O openclimate.$O\
+<<<<<<< HEAD
           getmprec.$O checkvalidclimate.$O readtracegas.$O\
           closeclimate.$O getch4.$O radiation.$O interpolate_climate.$O\
           addanomaly_climate.$O readdata.$O readintdata.$O opendata.$O\
           openinputdata.$O readinputdata.$O readintinputdata.$O getdeposition.$O
+=======
+          getmprec.$O checkvalidclimate.$O readco2.$O opendata.$O\
+          closeclimate.$O radiation.$O readdata.$O readintdata.$O\
+          openinputdata.$O readinputdata.$O readintinputdata.$O getdeposition.$O\
+          opendata_seq.$O openclmdata.$O
+>>>>>>> master
 
 INC     = ../../include
 LIBDIR  = ../../lib
@@ -30,7 +37,11 @@ LIB     = libclimate.$A
 HDRS    = $(INC)/buffer.h $(INC)/lpj.h\
           $(INC)/climate.h $(INC)/date.h\
           $(INC)/pftpar.h $(INC)/types.h $(INC)/header.h\
+<<<<<<< HEAD
           $(INC)/errmsg.h $(INC)/numeric.h $(INC)/hydrotope.h\
+=======
+          $(INC)/errmsg.h $(INC)/numeric.h $(INC)/coupler.h\
+>>>>>>> master
           $(INC)/conf.h $(INC)/swap.h $(INC)/soilpar.h\
           $(INC)/list.h $(INC)/cell.h  $(INC)/units.h\
           $(INC)/config.h $(INC)/param.h $(INC)/cdf.h

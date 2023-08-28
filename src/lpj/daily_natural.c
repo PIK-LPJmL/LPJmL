@@ -112,7 +112,7 @@ Real daily_natural(Stand *stand,                /**< [inout] stand pointer */
     pft=getpft(&stand->pftlist,pvec[p]);
 #endif
     /* calculate old or new phenology*/
-    if (config->new_phenology)
+    if (config->gsi_phenology)
       phenology_gsi(pft, climate->temp, climate->swdown, day,climate->isdailytemp,config);
     else
       leaf_phenology(pft,climate->temp,day,climate->isdailytemp,config);
@@ -164,19 +164,6 @@ Real daily_natural(Stand *stand,                /**< [inout] stand pointer */
 
     npp=npp(pft,gtemp_air,gtemp_soil,gpp-rd-pft->npp_bnf,config->with_nitrogen);
     pft->npp_bnf=0.0;
-    if(isdailyoutput_stand(config,stand))
-    {
-      if(config->crop_index==ALLSTAND)
-      {
-        getoutput(output,D_NPP,config)+=npp*stand->frac;
-        getoutput(output,D_GPP,config)+=gpp*stand->frac;
-      }
-      else
-      {
-        getoutput(output,D_NPP,config)+=npp;
-        getoutput(output,D_GPP,config)+=gpp;
-      }
-    }
     output->dcflux-=npp*stand->frac;
 #if defined IMAGE && defined COUPLED
     if(stand->type->landusetype==NATURAL || stand->type->landusetype==WETLAND)
@@ -218,44 +205,6 @@ Real daily_natural(Stand *stand,                /**< [inout] stand pointer */
   {
     transp+=aet_stand[l]*stand->frac;
     getoutput(output,TRANSP_B,config)+=(aet_stand[l]-green_transp[l])*stand->frac;
-  }
-  if(isdailyoutput_stand(config,stand))
-  {
-    if(config->crop_index==ALLSTAND)
-    {
-      getoutput(output,D_EVAP,config)+=evap*stand->frac;
-      getoutput(output,D_TRANS,config)+=transp;
-      getoutput(output,D_INTERC,config)+=intercep_stand*stand->frac;
-      getoutput(output,D_W0,config)+=stand->soil.w[1]*stand->frac;
-      getoutput(output,D_W1,config)+=stand->soil.w[2]*stand->frac;
-      getoutput(output,D_WEVAP,config)+=stand->soil.w[0]*stand->frac;
-      getoutput(output,D_PAR,config)=par;
-      getoutput(output,D_PET,config)=eeq*PRIESTLEY_TAYLOR;
-    }
-    else
-    {
-      getoutput(output,D_EVAP,config)=evap;
-      forrootsoillayer(l)
-        getoutput(output,D_TRANS,config)+=aet_stand[l];
-      getoutput(output,D_IRRIG,config)=0;
-      getoutput(output,D_W0,config)=stand->soil.w[1];
-      getoutput(output,D_W1,config)=stand->soil.w[2];
-      getoutput(output,D_WEVAP,config)=stand->soil.w[0];
-      getoutput(output,D_PAR,config)=par;
-      getoutput(output,D_PET,config)=eeq*PRIESTLEY_TAYLOR;
-      getoutput(output,D_INTERC,config)=intercep_stand*stand->frac;
-      /* only write to daily outputs if there are no values yet from the crop stand in order to record values from setaside stands */
-      if(getoutput(output,D_NH4,config)==0 && getoutput(output,D_NO3,config)==0 && getoutput(output,D_NSOIL_FAST,config)==0 &&
-         (config->crop_irrigation && stand->type->landusetype==SETASIDE_IR) || (!config->crop_irrigation && stand->type->landusetype==SETASIDE_RF) || (config->crop_irrigation && stand->type->landusetype==WETLAND))
-        forrootsoillayer(l)
-        {
-          getoutput(output,D_NH4,config)+=stand->soil.NH4[l];
-          getoutput(output,D_NO3,config)+=stand->soil.NO3[l];
-          getoutput(output,D_NSOIL_FAST,config)+=stand->soil.pool[l].fast.nitrogen;
-          getoutput(output,D_NSOIL_SLOW,config)+=stand->soil.pool[l].slow.nitrogen;
-        }
-    }
-
   }
   getoutput(output,TRANSP,config)+=transp;
   stand->cell->balance.atransp+=transp;

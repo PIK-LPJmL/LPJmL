@@ -86,7 +86,7 @@
 #include "wetland.h"
 
 #define NTYPES 3 /* number of plant functional types: grass, tree, annual_crop */
-#define NSTANDTYPES 14 /* number of stand types / land use types as defined in landuse.h*/
+#define NSTANDTYPES 15  /* number of stand types / land use types as defined in landuse.h*/
 
 int main(int argc,char **argv)
 {
@@ -97,6 +97,7 @@ int main(int argc,char **argv)
   Input input;        /* input data */
   time_t tstart,tend,tbegin,tfinal;   /* variables for timing */
   Standtype standtype[NSTANDTYPES];
+  String s;
   Config config;         /* LPJ configuration */
 
   /* Create array of functions, uses the typedef of Pfttype in config.h */
@@ -106,21 +107,6 @@ int main(int argc,char **argv)
     {name_tree,fscanpft_tree},
     {name_crop,fscanpft_crop}
   };
-
-  standtype[NATURAL]=natural_stand;
-  standtype[WETLAND]=wetland_stand;
-  standtype[SETASIDE_RF]=setaside_rf_stand;
-  standtype[SETASIDE_IR]=setaside_ir_stand;
-  standtype[SETASIDE_WETLAND]=setaside_wetland_stand;
-  standtype[AGRICULTURE]=agriculture_stand;
-  standtype[MANAGEDFOREST]=managedforest_stand;
-  standtype[GRASSLAND]=grassland_stand;
-  standtype[BIOMASS_TREE]=biomass_tree_stand;
-  standtype[BIOMASS_GRASS]=biomass_grass_stand;
-  standtype[AGRICULTURE_TREE]=agriculture_tree_stand;
-  standtype[AGRICULTURE_GRASS]=agriculture_grass_stand;
-  standtype[WOODPLANTATION]=woodplantation_stand;
-  standtype[KILL]=kill_stand;
   time(&tbegin);         /* Start timing for total wall clock time */
 #ifdef USE_MPI
   MPI_Init(&argc,&argv); /* Initialize MPI */
@@ -140,8 +126,7 @@ int main(int argc,char **argv)
     {
       if(isroot(config))
       {
-        help(progname,
-             (strcmp(progname,"lpj")) ? dflt_conf_filename_ml : dflt_conf_filename);
+        help(progname);
       }
 #ifdef USE_MPI
       MPI_Finalize();
@@ -179,10 +164,7 @@ int main(int argc,char **argv)
    * in light and establishment
    * crops must have last id-number */
   /* Read configuration file */
-  rc=readconfig(&config,
-                (strcmp(progname,"lpj")) ? dflt_conf_filename_ml :
-                                           dflt_conf_filename,
-                scanfcn,NTYPES,NOUT,&argc,&argv,lpj_usage);
+  rc=readconfig(&config,scanfcn,NTYPES,NOUT,&argc,&argv,lpj_usage);
   failonerror(&config,rc,READ_CONFIG_ERR,"Cannot read configuration");
   if(isroot(config) && argc)
     fputs("WARNING018: Arguments listed after configuration filename, will be ignored.\n",stderr);
@@ -202,10 +184,30 @@ int main(int argc,char **argv)
     failonerror(&config,rc,OPEN_IMAGE_ERR,"Cannot open IMAGE coupler");
   }
 #endif
+  standtype[NATURAL]=natural_stand;
+  standtype[WETLAND]=wetland_stand;
+  standtype[SETASIDE_RF]=setaside_rf_stand;
+  standtype[SETASIDE_IR]=setaside_ir_stand;
+  standtype[SETASIDE_WETLAND]=setaside_wetland_stand;
+  standtype[AGRICULTURE]=agriculture_stand;
+  standtype[MANAGEDFOREST]=managedforest_stand;
+  standtype[GRASSLAND]=grassland_stand;
+  standtype[OTHERS]=others_stand;
+  standtype[BIOMASS_TREE]=biomass_tree_stand;
+  standtype[BIOMASS_GRASS]=biomass_grass_stand;
+  standtype[AGRICULTURE_TREE]=agriculture_tree_stand;
+  standtype[AGRICULTURE_GRASS]=agriculture_grass_stand;
+  standtype[WOODPLANTATION]=woodplantation_stand;
+  standtype[KILL]=kill_stand;
   /* Allocation and initialization of grid */
   rc=((grid=newgrid(&config,standtype,NSTANDTYPES,config.npft[GRASS]+config.npft[TREE],config.npft[CROP]))==NULL);
   failonerror(&config,rc,INIT_GRID_ERR,"Initialization of LPJ grid failed");
-  
+  if(iscoupled(config))
+  {
+    rc=open_coupler(&config);
+    snprintf(s,STRING_LEN,"Cannot couple to %s model",config.coupled_model);
+    failonerror(&config,rc,OPEN_COUPLER_ERR,s);
+  }
   rc=initinput(&input,grid,config.npft[GRASS]+config.npft[TREE],&config);
   failonerror(&config,rc,INIT_INPUT_ERR,
               "Initialization of input data failed");
@@ -219,6 +221,12 @@ int main(int argc,char **argv)
   rc=initoutput(output,grid,config.npft[GRASS]+config.npft[TREE],config.npft[CROP],&config);
   failonerror(&config,rc,INIT_INPUT_ERR,
               "Initialization of output data failed");
+  if(iscoupled(config))
+  {
+    rc=check_coupler(&config);
+    snprintf(s,STRING_LEN,"Cannot initialize %s model",config.coupled_model);
+    failonerror(&config,rc,OPEN_COUPLER_ERR,s);
+  }
   if(isopen(output,GRID))
     writecoords(output,GRID,grid,&config);
   if(isopen(output,COUNTRY) && config.withlanduse)
@@ -246,13 +254,20 @@ int main(int argc,char **argv)
     printf(" terminated, %d grid cells processed.\n"
            "Wall clock time:\t%d sec, %.2g sec/cell/year.\n",
            config.total,(int)(tend-tstart),
-           (double)(tend-tstart)/config.total/(year-config.firstyear+
-                                                   config.nspinup));
+           (double)(tend-tstart)/config.total/max(year-config.firstyear+
+                                                   config.nspinup,1));
+#ifdef USE_TIMING
+    if(iscoupled(config))
+      printf("Time spent in communication to %s model: %.2g sec.\n",
+             config.coupled_model,timing);
+#endif
   }
 #if defined IMAGE && defined COUPLED
   if(config.sim_id==LPJML_IMAGE)
     close_image(&config);
 #endif
+  if(iscoupled(config))
+    close_coupler(year<=config.lastyear,&config);
   freeconfig(&config);
 #ifdef USE_MPI
   /* Wait until all tasks have finished to measure total wall clock time */

@@ -43,7 +43,7 @@ Bool allocation_grass(Litter *litter,   /**< litter pool */
   output=&pft->stand->cell->output;
   bm_inc_ind.carbon=pft->bm_inc.carbon/pft->nind;
   bm_inc_ind.nitrogen=pft->bm_inc.nitrogen/pft->nind;
-  if(pft->stand->type->landusetype!=GRASSLAND && pft->stand->type->landusetype!=BIOMASS_GRASS)
+  if(pft->stand->type->landusetype!=GRASSLAND && pft->stand->type->landusetype!=OTHERS && pft->stand->type->landusetype!=BIOMASS_GRASS && pft->stand->type->landusetype!=SETASIDE_RF && pft->stand->type->landusetype!=SETASIDE_IR)
     growing_days=NDAYYEAR;
   else
   {
@@ -66,7 +66,7 @@ Bool allocation_grass(Litter *litter,   /**< litter pool */
 
   pft->wscal_mean=pft->vscal=0;
   /* daily allocation for new grasslands */
-  if(pft->stand->type->landusetype==GRASSLAND || pft->stand->type->landusetype==BIOMASS_GRASS)
+  if(pft->stand->type->landusetype==GRASSLAND || pft->stand->type->landusetype==OTHERS || pft->stand->type->landusetype==BIOMASS_GRASS || pft->stand->type->landusetype==SETASIDE_IR || pft->stand->type->landusetype==SETASIDE_RF)
   {
     /* otherwise there wouldn't be any growth */
     lmtorm=max(lmtorm,0.25);
@@ -106,9 +106,9 @@ Bool allocation_grass(Litter *litter,   /**< litter pool */
         inc_ind.root.carbon=bm_inc_ind.carbon;
         inc_ind.leaf.carbon=(grass->ind.root.carbon+inc_ind.root.carbon)*lmtorm-grass->ind.leaf.carbon;
         /* put negative carbon only into litter if litter is large enough otherwise into estab flux */
-        if(litter->item[pft->litter].ag.leaf.carbon>=inc_ind.leaf.carbon*pft->nind)
+        if(litter->item[pft->litter].agtop.leaf.carbon>=inc_ind.leaf.carbon*pft->nind)
         {
-          litter->item[pft->litter].ag.leaf.carbon-=inc_ind.leaf.carbon*pft->nind;
+          litter->item[pft->litter].agtop.leaf.carbon-=inc_ind.leaf.carbon*pft->nind;
           getoutput(output,LITFALLC,config)-=inc_ind.leaf.carbon*pft->nind*pft->stand->frac;
         }
         else
@@ -174,7 +174,7 @@ Bool allocation_grass(Litter *litter,   /**< litter pool */
         {
           lastday.leaf.carbon = grass->ind.leaf.carbon;
           grass->ind.leaf.carbon = grass->ind.leaf.nitrogen / pft->par->ncleaf.low;
-          litter->item[pft->litter].ag.leaf.carbon += (lastday.leaf.carbon - grass->ind.leaf.carbon)*pft->nind;
+          litter->item[pft->litter].agtop.leaf.carbon += (lastday.leaf.carbon - grass->ind.leaf.carbon)*pft->nind;
           getoutput(output,LITFALLC,config) += (lastday.leaf.carbon - grass->ind.leaf.carbon)*pft->nind*pft->stand->frac;
           update_fbd_grass(litter, pft->par->fuelbulkdensity,
             (lastday.leaf.carbon - grass->ind.leaf.carbon)*pft->nind);
@@ -206,7 +206,7 @@ Bool allocation_grass(Litter *litter,   /**< litter pool */
       {
         lastday.leaf.carbon = grass->ind.leaf.carbon;
         grass->ind.leaf.carbon = grass->ind.leaf.nitrogen / pft->par->ncleaf.low;
-        litter->item[pft->litter].ag.leaf.carbon += (lastday.leaf.carbon - grass->ind.leaf.carbon)*pft->nind;
+        litter->item[pft->litter].agtop.leaf.carbon += (lastday.leaf.carbon - grass->ind.leaf.carbon)*pft->nind;
         getoutput(output,LITFALLC,config) += (lastday.leaf.carbon - grass->ind.leaf.carbon)*pft->nind*pft->stand->frac;
         update_fbd_grass(litter, pft->par->fuelbulkdensity,
           (lastday.leaf.carbon - grass->ind.leaf.carbon)*pft->nind);

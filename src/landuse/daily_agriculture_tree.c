@@ -80,15 +80,17 @@ Real daily_agriculture_tree(Stand *stand,                /**< stand pointer */
   Biomass_tree *data;
   Soil *soil;
   String line;
+  Bool iscotton;
   irrig_apply=0.0;
 
   soil = &stand->soil;
   data=stand->data;
   output=&stand->cell->output;
-  if(strcmp(config->pftpar[data->irrigation.pft_id].name,"cotton")  || getnpft(&stand->pftlist)>0)
+  iscotton=!strcmp(config->pftpar[data->irrigation.pft_id].name,"cotton");
+  if(!iscotton  || getnpft(&stand->pftlist)>0)
     stand->growing_days++;
   evap=evap_blue=cover_stand=intercep_stand=intercep_stand_blue=runoff=return_flow_b=wet_all=intercept=sprink_interc=rainmelt=irrig_apply=0.0;
-  if(!strcmp(config->pftpar[data->irrigation.pft_id].name,"cotton") && day==stand->cell->ml.sowing_day_cotton[data->irrigation.irrigation])
+  if(iscotton && day==stand->cell->ml.sowing_day_cotton[data->irrigation.irrigation])
   {
     pft=addpft(stand,config->pftpar+data->irrigation.pft_id,year,0,config);
     flux_estab=establishment(pft,0,0,1);
@@ -140,9 +142,23 @@ Real daily_agriculture_tree(Stand *stand,                /**< stand pointer */
   if(rainmelt<0)
     rainmelt=0.0;
 
+  /* The index for ag_tree in ml.fertilizer_nr.ag_tree structure (fertil)
+     takes PFT id (according to pft.js or similar),
+     subtracts the number of all non-crop PFTs (npft),
+     adds the number of ag_trees (config->nagtree),
+     so that the first element in ag_tree fertilizer vector (indexed as 0)
+     is read for the first ag_tree in pftpar list */
   nnat=getnnat(npft,config);
   index=agtree(ncft,config->nwptype)+data->irrigation.pft_id-npft+config->nagtree+data->irrigation.irrigation*getnirrig(ncft,config);
 
+  /* Apply fertilizers */
+  if(config->with_nitrogen)
+    fertilize_tree(stand,
+                   (stand->cell->ml.fertilizer_nr==NULL) ? 0.0 : stand->cell->ml.fertilizer_nr[data->irrigation.irrigation].ag_tree[data->irrigation.pft_id-npft+config->nagtree],
+                   (stand->cell->ml.manure_nr==NULL) ? 0.0 : stand->cell->ml.manure_nr[data->irrigation.irrigation].ag_tree[data->irrigation.pft_id-npft+config->nagtree],
+                   day, config);
+
+  /* Apply irrigation */
   if(data->irrigation.irrigation && data->irrigation.irrig_amount>epsilon)
   {
     irrig_apply=max(data->irrigation.irrig_amount-rainmelt,0);  /*irrigate only missing deficit after rain, remainder goes to stor */
@@ -177,7 +193,7 @@ Real daily_agriculture_tree(Stand *stand,                /**< stand pointer */
   foreachpft(pft,p,&stand->pftlist)
   {
     /* calculate old or new phenology */
-    if (config->new_phenology)
+    if (config->gsi_phenology)
       phenology_gsi(pft, climate->temp, climate->swdown, day,climate->isdailytemp,config);
     else
       leaf_phenology(pft,climate->temp,day,climate->isdailytemp,config);
@@ -243,7 +259,7 @@ Real daily_agriculture_tree(Stand *stand,                /**< stand pointer */
         case SUMMERGREEN:
           if(pft->phen>param.phen_limit)
           {
-            if(!strcmp(pft->par->name,"cotton"))
+            if(iscotton)
             {
               if(tree->boll_age<45)
                 tree->boll_age++;
@@ -297,36 +313,11 @@ Real daily_agriculture_tree(Stand *stand,                /**< stand pointer */
     else
       getoutputindex(output,PFT_NPP,nnat+index,config)+=npp;
       getoutputindex(output,PFT_LAI,nnat+index,config)+=actual_lai(pft);
-    if(config->withdailyoutput &&
-       pft->par->id==config->crop_index && data->irrigation.irrigation==config->crop_irrigation)
-      {
-        tree=pft->data;
-        getoutput(output,D_NPP,config)+=npp;
-        getoutput(output,D_GPP,config)+=gpp;
-        getoutput(output,D_CSO,config)=tree->fruit.carbon;
-      }
   } /* of foreachpft */
   free(gp_pft);
   /* soil outflow: evap and transpiration */
   waterbalance(stand,aet_stand,green_transp,&evap,&evap_blue,wet_all,eeq,cover_stand,
                &frac_g_evap,config->rw_manage);
-
-  if(config->withdailyoutput)
-  {
-    foreachpft(pft,p,&stand->pftlist)
-      if(pft->par->id==config->crop_index && data->irrigation.irrigation==config->crop_irrigation)
-      {
-        getoutput(output,D_EVAP,config)+=evap;
-        getoutput(output,D_INTERC,config)+=intercep_stand;
-        forrootsoillayer(l)
-          getoutput(output,D_TRANS,config)+=aet_stand[l];
-        /*output->daily.w0=stand->soil.w[1];
-          output->daily.w1=stand->soil.w[2];
-          output->daily.wevap=stand->soil.w[0];*/
-        getoutput(output,D_PAR,config)+=par;
-        getoutput(output,D_PHEN,config)+=pft->phen;
-      }
-  }
 
   transp=0;
   forrootsoillayer(l)
@@ -356,10 +347,10 @@ Real daily_agriculture_tree(Stand *stand,                /**< stand pointer */
                               intercep_stand,intercep_stand_blue,npft,
                               ncft,config);
 #ifdef DEBUG
-  if(!strcmp(config->pftpar[data->irrigation.pft_id].name,"cotton"))
+  if(iscotton)
     printf("growing_day: %d %d %d\n",stand->growing_days,data->irrigation.irrigation,stand->cell->ml.growing_season_cotton[data->irrigation.irrigation]);
 #endif
-  if(!strcmp(config->pftpar[data->irrigation.pft_id].name,"cotton") && stand->growing_days==stand->cell->ml.growing_season_cotton[data->irrigation.irrigation])
+  if(iscotton && stand->growing_days==stand->cell->ml.growing_season_cotton[data->irrigation.irrigation])
   {
     /* find cotton in PFT list */
     p=findagtree(&stand->pftlist,data->irrigation.pft_id);
@@ -374,6 +365,8 @@ Real daily_agriculture_tree(Stand *stand,                /**< stand pointer */
       printf("index=%d\n",index);
       printf("harvest(%s) %d: %g %g\n",config->pftpar[data->irrigation.pft_id].name,data->irrigation.irrigation,yield.carbon,yield.nitrogen);
 #endif
+      getoutput(output,HARVESTC,config)+=yield.carbon*stand->frac;
+      getoutput(output,HARVESTN,config)+=yield.nitrogen*stand->frac;
       if(config->pft_output_scaled)
       {
 #if defined IMAGE && defined COUPLED
@@ -415,7 +408,7 @@ Real daily_agriculture_tree(Stand *stand,                /**< stand pointer */
     // return TRUE;
   }
   if(data->irrigation.irrigation && stand->pftlist.n>0) /*second element to avoid irrigation on just harvested fields */
-    calc_nir(stand,&data->irrigation,gp_stand,wet,eeq);
+    calc_nir(stand,&data->irrigation,gp_stand,wet,eeq,config->others_to_crop);
   free(wet);
 
   return runoff;

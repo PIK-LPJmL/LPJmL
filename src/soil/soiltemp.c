@@ -210,7 +210,7 @@ void soiltemp(Soil *soil,          /**< pointer to soil data */
         {
           /* phase transition in this layer */
           /* use part of available energy for water conversion*/
-          //heat=z0/soildepth[l]*lambda[l]*dT/soildepth[l]*1000*timestep2sec(1.0,heat_steps); //TODO
+
           heat=z0/soildepth[l]*heatcap[l]*dT*soildepth[l]*1e-3;
           if (dT>0 && allice(soil,l)>epsilon)
           {
@@ -228,17 +228,14 @@ void soiltemp(Soil *soil,          /**< pointer to soil data */
               moisture2soilice(soil, &heat, l);
             soil->state[l]=FREEZING;
           }
-          //dT=(1-z0/soildepth[l])*dT+heat/lambda[l]*(soildepth[l]*1e-3)/timestep2sec(1.0,heat_steps); //TODO
-          dT=(1-z0/soildepth[l])*dT+heat/heatcap[l]/soildepth[l]*1e3;
+          dT=(1-z0/soildepth[l])*dT+heat/heatcap[l]/(soildepth[l]*1e-3);
         }
         else
         { /*whole layer is heated*/
           /* energy corresponding to dT*/
-          //heat=lambda[l]*dT/soildepth[l]*1000*timestep2sec(1.0,heat_steps); //TODO
           heat=heatcap[l]*dT*soildepth[l]*1e-3;
           convert_water(soil,l,&heat);
           /*energy left after water conversion changes temperature*/
-          //dT=heat*(soildepth[l]*1e-3)/lambda[l]/timestep2sec(1.0,heat_steps); //TODO
           dT=heat/(soildepth[l]*1e-3)/heatcap[l];
           soil->state[l]=(short)getstate(soil->temp+l);
         }

@@ -33,6 +33,8 @@ void copysoil(Soil *dst,       /**< destination */
     dst->CH4[l] = src->CH4[l];
     dst->O2[l] = src->O2[l];
     dst->layer_exists[l] = src->layer_exists[l];
+    dst->decay_rate[l].slow=src->decay_rate[l].slow;
+    dst->decay_rate[l].fast=src->decay_rate[l].fast;
     for(p=0;p<ntotpft;p++)
       dst->c_shift[l][p]=src->c_shift[l][p];
   }
@@ -51,8 +53,14 @@ void copysoil(Soil *dst,       /**< destination */
   dst->fastfrac=src->fastfrac;
   dst->maxthaw_depth=src->maxthaw_depth;
   dst->mean_maxthaw=src->mean_maxthaw;
-  dst->decomp_litter_mean=src->decomp_litter_mean;
   dst->whcs_all=src->whcs_all;
+  dst->decomp_litter_mean.carbon=src->decomp_litter_mean.carbon;
+  dst->decomp_litter_mean.nitrogen=src->decomp_litter_mean.nitrogen;
+  for(p=0;p<ntotpft;p++)
+  {
+    dst->decomp_litter_pft[p].carbon=src->decomp_litter_pft[p].carbon;
+    dst->decomp_litter_pft[p].nitrogen=src->decomp_litter_pft[p].nitrogen;
+  }
   dst->litter.agtop_wcap=src->litter.agtop_wcap;
   dst->litter.agtop_moist=src->litter.agtop_moist;
   dst->litter.agtop_cover=src->litter.agtop_cover;

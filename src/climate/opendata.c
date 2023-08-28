@@ -20,6 +20,7 @@ Bool opendata(Climatefile *file,        /**< pointer to file */
               const Filename *filename, /**< filename */
               const char *name,         /**< name of data */
               const char *unit,         /**< unit or NULL */
+              Type datatype_sock,       /**< datatype for socket */
               Type datatype,            /**< datatype for version 2 files */
               Real scalar,              /**< scalar for version 1 files */
               int nbands,               /**< number of bands */
@@ -27,11 +28,39 @@ Bool opendata(Climatefile *file,        /**< pointer to file */
               const Config *config      /**< LPJ configuration */
              )                          /** \return TRUE on error */
 {
-  Header header;
-  String headername;
-  int version;
-  size_t offset,filesize;
+  int nbands_socket;
   file->fmt=filename->fmt;
+  file->issocket=filename->issocket;
+  if(iscoupled(*config) && file->issocket)
+  {
+    if(openinput_coupler(filename->id,datatype_sock,config->nall,&nbands_socket,config))
+    {
+      if(isroot(*config))
+        fprintf(stderr,"ERROR147: Cannot initialize %s data socket stream.\n",name);
+      return TRUE;
+    }
+    file->id=filename->id;
+    file->var_len=nbands_socket;
+    if(ischeck && file->var_len!=nbands)
+    {
+      if(isroot(*config))
+        fprintf(stderr,"ERROR147: Invalid number of bands=%zu in %s socket stream, must be %d.\n",
+                file->var_len,name,nbands);
+      return TRUE;
+    }
+    if(file->fmt==SOCK)
+    {
+      if(config->start_coupling>config->firstyear-config->nspinup)
+      {
+        if(isroot(*config))
+          fprintf(stderr,"ERROR149: No filename specified for %s data required for socket connection before coupling year %d, first simulatiomn year=%d.\n",
+                  name,config->start_coupling,config->firstyear-config->nspinup);
+        return TRUE;
+      }
+      else
+        return FALSE;
+    }
+  }
   if(file->fmt==CDF)
   {
     if(opendata_netcdf(file,filename,unit,config))
@@ -43,54 +72,8 @@ Bool opendata(Climatefile *file,        /**< pointer to file */
   }
   else
   {
-    if((file->file=openinputfile(&header,&file->swap,
-                                 filename,headername,
-                                 &version,&offset,TRUE,config))==NULL)
-    {
-      if(isroot(*config))
-        fprintf(stderr,"ERROR236: Cannot open %s data file.\n",name);
+    if(openclmdata(file,filename,name,datatype,scalar,nbands,config))
       return TRUE;
-    }
-    file->isopen=TRUE;
-    if(file->fmt==RAW)
-    {
-      header.nbands=nbands;
-      file->datatype=datatype;
-      file->offset=config->startgrid*header.nbands*typesizes[datatype];
-    }
-    else
-    {
-      file->datatype=(version<=2) ? datatype : header.datatype;
-      file->offset=(config->startgrid-header.firstcell)*header.nbands*typesizes[file->datatype]+headersize(headername,version)+offset;
-      if(isroot(*config) && filename->fmt!=META)
-      {
-        filesize=getfilesizep(file->file)-headersize(headername,version)-offset;
-        if(filesize!=typesizes[file->datatype]*header.nyear*header.nbands*header.ncell*header.nstep)
-          fprintf(stderr,"WARNING032: File size of '%s' does not match nyear*ncell*nbands.\n",filename->name);
-      }
-    }
-    file->firstyear=header.firstyear;
-    file->nyear=header.nyear;
-    file->size=header.ncell*header.nbands*typesizes[file->datatype];
-    file->n=config->ngridcell*header.nbands;
-    file->var_len=header.nbands;
-    file->scalar=(version<=1) ? scalar : header.scalar;
-    if(header.nstep!=1)
-    {
-      if(isroot(*config))
-        fprintf(stderr,"ERROR147: Invalid number of steps=%d in %s data file '%s', must be 1.\n",
-                header.nstep,name,filename->name);
-      closeclimatefile(file,isroot(*config));
-      return TRUE;
-    }
-    if(header.timestep!=1)
-    {
-      if(isroot(*config))
-        fprintf(stderr,"ERROR147: Invalid time step=%d in %s data file '%s', must be 1.\n",
-                header.timestep,name,filename->name);
-      closeclimatefile(file,isroot(*config));
-      return TRUE;
-    }
   }
   if(ischeck && file->var_len!=nbands)
   {

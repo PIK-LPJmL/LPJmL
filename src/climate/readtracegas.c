@@ -18,18 +18,34 @@
 
 Bool readtracegas(Tracedata *trace,         /**< trace gas data read */
                   const Filename *filename, /**< filename of trace gas file */
+                  const Config *config,     /**< LPJmL configuration */
                   Bool isout                /**< error output? */
                  )                          /** \return TRUE on error */
 {
   LPJfile file;
-  int yr, yr_old;
+  int yr, yr_old,size;
   Bool iseof;
   file.isjson = FALSE;
-  if (filename->fmt == FMS)
+  Verbosity verbose;
+  verbose=(isroot(*config)) ? config->scan_verbose : NO_ERR;
+
+  if (filename->fmt == FMS || (iscoupled(*config) && filename->issocket))
   {
     trace->data = NULL;
     trace->nyear = 0;
     trace->firstyear = 0;
+    if(filename->issocket)
+    {
+      if(openinput_coupler(filename->id,LPJ_FLOAT,0,&size,config))
+        return TRUE;
+      trace->id=filename->id;
+      if(size!=1)
+      {
+        if(verbose)
+          fprintf(stderr,"ERROR149: Invalid number of bands=%d received from socket, must be 1.\n",size);
+        return TRUE;
+      }
+    }
   }
   else if (filename->fmt == TXT)
   {
@@ -92,6 +108,13 @@ Bool readtracegas(Tracedata *trace,         /**< trace gas data read */
       yr_old = yr;
     } /* of while */
     fclose(file.file.file);
+  }
+  else if(filename->fmt==SOCK && config->start_coupling>config->firstyear-config->nspinup)
+  {
+    if(verbose)
+      fprintf(stderr,"ERROR149: No filename specified for trace data required for socket connection before coupling year %d, first simulatiomn year=%d.\n",
+             config->start_coupling,config->firstyear-config->nspinup);
+    return TRUE;
   }
   else
     return TRUE;

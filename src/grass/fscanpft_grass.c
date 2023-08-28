@@ -44,12 +44,13 @@
 
 static Bool fscangrassphys(LPJfile *file,Grassphyspar *phys,const char *name,Verbosity verb)
 {
-  LPJfile item;
-  if(fscanstruct(file,&item,name,verb))
+  LPJfile *item;
+  item=fscanstruct(file,name,verb);
+  if(item==NULL)
     return TRUE;
-  if(fscanreal(&item,&phys->leaf,"leaf",FALSE,verb))
+  if(fscanreal(item,&phys->leaf,"leaf",FALSE,verb))
     return TRUE;
-  if(fscanreal(&item,&phys->root,"root",FALSE,verb))
+  if(fscanreal(item,&phys->root,"root",FALSE,verb))
     return TRUE;
   if(phys->leaf<=0 || phys->root<=0)
   {

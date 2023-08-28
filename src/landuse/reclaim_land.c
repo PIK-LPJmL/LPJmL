@@ -20,7 +20,7 @@ void remove_vegetation_copy(Soil *soil, /* soil pointer */
                                    const Stand *stand, /* stand pointer */
                                    Cell *cell, /* cell pointer */
                                    Real standfrac, /* stand fraction (0..1) */
-                                   Bool istimber,
+                                   Bool luc_timber,
                                    Bool usefrac,
                                    const Config *config
                                   )
@@ -36,7 +36,7 @@ void remove_vegetation_copy(Soil *soil, /* soil pointer */
     sfrac=standfrac;
 #if defined IMAGE && defined COUPLED
   Bool tharvest=FALSE;
-  if(istimber)
+  if(luc_timber)
     ftimber=min(1,cell->ml.image_data->timber_frac/standfrac);
 #else
   Poolpar frac;
@@ -54,7 +54,7 @@ void remove_vegetation_copy(Soil *soil, /* soil pointer */
     * allows for mixed use, first harvesting a fraction of the stand,
     * then burning a fraction, then returning the rest to the litter pools
     */
-    if(istimber)
+    if(luc_timber)
     {
       if(pft->par->type==TREE)
       {
@@ -77,6 +77,7 @@ void remove_vegetation_copy(Soil *soil, /* soil pointer */
         cell->balance.timber_harvest.carbon+=harvest.carbon;
         cell->balance.timber_harvest.nitrogen+=harvest.nitrogen;
         getoutput(&cell->output,TIMBER_HARVESTC,config)+=harvest.carbon;
+        getoutput(&cell->output,TIMBER_HARVESTN,config)+=harvest.nitrogen;
         getoutput(&cell->output,TRAD_BIOFUEL,config)+=trad_biofuel.carbon;
         cell->balance.trad_biofuel.carbon+=trad_biofuel.carbon;
         cell->balance.trad_biofuel.nitrogen+=trad_biofuel.nitrogen;
@@ -100,6 +101,7 @@ void remove_vegetation_copy(Soil *soil, /* soil pointer */
         cell->balance.timber_harvest.carbon+=harvest.carbon;
         cell->balance.timber_harvest.nitrogen+=harvest.nitrogen;
         getoutput(&cell->output,TIMBER_HARVESTC,config)+=harvest.carbon;
+        getoutput(&cell->output,TIMBER_HARVESTN,config)+=harvest.nitrogen;
 #if defined IMAGE && defined COUPLED
         /* burning wood */
         getoutput(&cell->output,FBURN,config)=cell->ml.image_data->fburnt;
@@ -122,8 +124,7 @@ void remove_vegetation_copy(Soil *soil, /* soil pointer */
         {
           cell->balance.deforest_emissions.nitrogen+=stocks.nitrogen*standfrac;
         }
-
-
+        getoutput(&cell->output,DEFOREST_EMIS_N,config)+=stocks.nitrogen*(1-param.q_ash)*standfrac;
       } /* if tree */
     } /* is timber */
 #if defined DEBUG_IMAGE && defined COUPLED
@@ -161,7 +162,7 @@ void remove_vegetation_copy(Soil *soil, /* soil pointer */
 
 }/* of 'remove_vegetation_copy' */
 
-void reclaim_land(const Stand *stand1,Stand *stand2,Cell *cell,Bool istimber,int ntotpft,
+void reclaim_land(const Stand *stand1,Stand *stand2,Cell *cell,Bool luc_timber,int ntotpft,
                   const Config *config)
 {
   int l,p;
@@ -187,12 +188,13 @@ void reclaim_land(const Stand *stand1,Stand *stand2,Cell *cell,Bool istimber,int
       soil->c_shift[l][p].fast=0;
       soil->c_shift[l][p].slow=0;
     }
-
+  soil->decomp_litter_pft=newvec(Stocks,ntotpft);
+  check(soil->decomp_litter_pft);
   copysoil(&stand2->soil,&stand1->soil,ntotpft);
   for(l=0;l<NSOILLAYER;l++)
     stand2->frac_g[l]=stand1->frac_g[l];
   remove_vegetation_copy(&stand2->soil,stand1,cell,stand2->frac,
-                         istimber,FALSE,config);
+                         luc_timber,FALSE,config);
 }/* of 'reclaim_land' */
 
 /*

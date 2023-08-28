@@ -87,7 +87,7 @@ typedef struct
   Real excess_water;        /**< excess water (mm) */
   Real total_reservoir_out; /**< total water extracted from reservoirs (dm3) */
   Real total_irrig_from_reservoir; /**< total water added to fields from reservoirs (dm3)*/
-  Real n_influx;            /**< all N inputs: deposition, fertilizer, BNF */
+  Stocks influx;            /**< all C,N inputs: deposition, fertilizer, manure, BNF */
   Real n_outflux;           /**< all N outputs: n2onit, n2odenit, n2denit, leaching */
   Real n_demand;            /**< N demand by plants (gN)*/
   Real n_uptake;            /**< N uptake by plants (gN) */
@@ -181,7 +181,7 @@ extern void fwriteoutput_ch4(Outputfile *,Real,Real,const Config *);
 extern void initoutputdata(Output *,int,int,const Config *);
 extern void fwriteoutput(Outputfile *,Cell [],int,int,int,int,int,const Config *);
 extern void equilsom(Cell *,int, const Pftpar [],Bool);
-extern void equilveg(Cell *);
+extern void equilveg(Cell *,int);
 extern void check_fluxes(Cell *,int,int,const Config *);
 extern void check_balance(Flux,int,const Config *);
 extern Bool initdrain(Cell [],Config *);
@@ -196,7 +196,7 @@ extern Wateruse initwateruse(const Filename *,const Config *);
 extern Bool getwateruse_wd(Wateruse, Cell[], int, const Config *);
 #endif
 extern void freewateruse(Wateruse,Bool);
-extern void killstand(Cell *,int,Bool,Bool,int,const Config *);
+extern void killstand(Cell *,int,Bool,Bool,int,int,const Config *);
 extern Bool initsoiltemp(Climate *, Cell*,const Config *);
 extern Celldata opencelldata(Config *);
 extern Bool seekcelldata(Celldata,int);

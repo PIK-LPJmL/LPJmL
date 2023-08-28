@@ -123,6 +123,8 @@ Bool annual_agriculture_tree(Stand *stand,         /**< Pointer to stand */
           yield=harvest_tree(pft);
           //printf("%s yield %s=%g t/ha, %g indiv/ha, wstress=%g, fpc=%g\n",(data->irrigation.irrigation) ? "irrigated" :"",pft->par->name,yield.carbon*1e4/1e6/0.45,pft->nind*1e4,pft->wscal_mean/365,pft->fpc);
           //printf("index=%d, yield=%g\n",index,yield);
+          getoutput(&stand->cell->output,HARVESTC,config)+=yield.carbon*stand->frac;
+          getoutput(&stand->cell->output,HARVESTN,config)+=yield.nitrogen*stand->frac;
           if(config->pft_output_scaled)
           {
 #if defined IMAGE && defined COUPLED
@@ -242,7 +244,8 @@ Bool annual_agriculture_tree(Stand *stand,         /**< Pointer to stand */
         isdead=TRUE;
     }
 
-  getoutputindex(&stand->cell->output,CFTFRAC,index,config)+=stand->frac;
+  getoutputindex(&stand->cell->output,CFTFRAC,index,config)=stand->frac;
+  getoutputindex(&stand->cell->output,CFT_NHARVEST,index,config)+=1.0;
 
   free(present);
   free(fpc_type);
@@ -252,7 +255,7 @@ Bool annual_agriculture_tree(Stand *stand,         /**< Pointer to stand */
   if(isdead)
   {
     update_irrig(stand,agtree(ncft,config->nwptype)+data->irrigation.pft_id-npft,ncft,config);
-    if(setaside(stand->cell,stand,stand->cell->ml.with_tillage,intercrop,npft,data->irrigation.irrigation,stand->soil.iswetland,year,config))
+    if(setaside(stand->cell,stand,stand->cell->ml.with_tillage,intercrop,npft,ncft,data->irrigation.irrigation,stand->soil.iswetland,year,config))
       return TRUE;
   }
   else

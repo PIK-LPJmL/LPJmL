@@ -32,7 +32,7 @@ Bool annual_grass(Stand *stand,        /**< pointer to stand */
 #ifdef CHECK_BALANCE
   start = standstocks(stand).carbon + soilmethane(&stand->soil)-pft->establish.carbon;
 #endif
-  if(stand->type->landusetype!=GRASSLAND && stand->type->landusetype!=BIOMASS_GRASS)
+  if(stand->type->landusetype!=GRASSLAND && stand->type->landusetype!=OTHERS && stand->type->landusetype!=BIOMASS_GRASS && stand->type->landusetype != SETASIDE_IR && stand->type->landusetype != SETASIDE_RF)
   {
     turnover_grass(&stand->soil.litter,pft,(Real)stand->growing_days/NDAYYEAR,config);
     isdead=allocation_grass(&stand->soil.litter,pft,fpc_inc,config);

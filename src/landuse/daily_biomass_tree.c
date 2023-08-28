@@ -58,6 +58,7 @@ Real daily_biomass_tree(Stand *stand,                /**< stand pointer */
   Real wdf; /* water deficit fraction */
   Real transp;
   Real gc_pft;
+  Real fertil;
   Biomass_tree *data;
   Soil *soil;
   irrig_apply=0.0;
@@ -86,6 +87,13 @@ Real daily_biomass_tree(Stand *stand,                /**< stand pointer */
   nirrig=getnirrig(ncft,config);
   for(l=0;l<LASTLAYER;l++)
     aet_stand[l]=green_transp[l]=0;
+
+  /* Apply fertilizers */
+  if (config->with_nitrogen)
+      fertilize_tree(stand,
+                    (stand->cell->ml.fertilizer_nr==NULL) ? 0.0 : stand->cell->ml.fertilizer_nr[data->irrigation.irrigation].biomass_tree,
+                    (stand->cell->ml.manure_nr==NULL) ? 0.0 : stand->cell->ml.manure_nr[data->irrigation.irrigation].biomass_tree,
+                    day,config);
 
   /* green water inflow */
   rainmelt=climate->prec+melt;
@@ -125,7 +133,7 @@ Real daily_biomass_tree(Stand *stand,                /**< stand pointer */
   foreachpft(pft,p,&stand->pftlist)
   {
     /* calculate old or new phenology */
-    if (config->new_phenology)
+    if (config->gsi_phenology)
       phenology_gsi(pft, climate->temp, climate->swdown, day,climate->isdailytemp,config);
     else
       leaf_phenology(pft,climate->temp,day,climate->isdailytemp,config);
@@ -174,11 +182,6 @@ Real daily_biomass_tree(Stand *stand,                /**< stand pointer */
    }
    npp=npp(pft,gtemp_air,gtemp_soil,gpp-rd-pft->npp_bnf,config->with_nitrogen);
    pft->npp_bnf=0.0;
-   if(config->crop_index==ALLSTAND)
-   {
-     getoutput(output,D_NPP,config)+=npp*stand->frac;
-     getoutput(output,D_GPP,config)+=gpp*stand->frac;
-   }
    getoutput(output,NPP,config)+=npp*stand->frac;
    stand->cell->balance.anpp+=npp*stand->frac;
    stand->cell->balance.agpp+=gpp*stand->frac;
@@ -206,23 +209,13 @@ Real daily_biomass_tree(Stand *stand,                /**< stand pointer */
                &frac_g_evap,config->rw_manage);
 
   if(data->irrigation.irrigation && stand->pftlist.n>0) /*second element to avoid irrigation on just harvested fields */
-    calc_nir(stand,&data->irrigation,gp_stand,wet,eeq);
+    calc_nir(stand,&data->irrigation,gp_stand,wet,eeq,config->others_to_crop);
   transp=0;
   forrootsoillayer(l)
   {
     transp+=aet_stand[l]*stand->frac;
     getoutput(output,TRANSP_B,config)+=(aet_stand[l]-green_transp[l])*stand->frac;
   }
-  if(config->crop_index==ALLSTAND)
-  {
-    getoutput(output,D_EVAP,config)+=evap*stand->frac;
-    getoutput(output,D_TRANS,config)+=transp;
-    getoutput(output,D_W0,config)+=stand->soil.w[1]*stand->frac;
-    getoutput(output,D_W1,config)+=stand->soil.w[2]*stand->frac;
-    getoutput(output,D_WEVAP,config)+=stand->soil.w[0]*stand->frac;
-    getoutput(output,D_INTERC,config)+=intercep_stand*stand->frac;
-  }
-
   getoutput(output,TRANSP,config)+=transp;
   stand->cell->balance.atransp+=transp;
   getoutput(output,INTERC,config)+=intercep_stand*stand->frac; /* Note: including blue fraction*/

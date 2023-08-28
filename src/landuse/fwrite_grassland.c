@@ -25,7 +25,7 @@ Bool fwrite_grassland(FILE *file,        /**< pointer to binary file */
   grassland=stand->data;
   fwrite_irrigation(file,&grassland->irrigation);
   fwrite(&stand->growing_days,sizeof(int),1,file);
-  fwrite(&grassland->nr_of_lsus_ext,sizeof(Real),1,file);
-  fwrite(&grassland->nr_of_lsus_int,sizeof(Real),1,file);
+  fwrite(&grassland->deficit_lsu_ne,sizeof(Real),1,file);
+  fwrite(&grassland->deficit_lsu_mp,sizeof(Real),1,file);
   return (fwrite(&grassland->rotation,sizeof(Rotation),1,file)!=1);
 } /* of 'fwrite_grassland' */

@@ -2,7 +2,7 @@
 /**                                                                                \n**/
 /**                   p  a  r  a  m  _  n  o  n  .  j  s                           \n**/
 /**                                                                                \n**/
-/** Input parameter file for LPJmL C Version 5.3.001 without nitrogen              \n**/
+/** Input parameter file for LPJmL C Version 5.6.25 without nitrogen               \n**/
 /**                                                                                \n**/
 /** (C) Potsdam Institute for Climate Impact Research (PIK), see COPYRIGHT file    \n**/
 /** authors, and contributors see AUTHORS file                                     \n**/
@@ -16,6 +16,6 @@
 #include "par/soil.js"          /* Soil parameter file */
 #include "par/pft_non.js"       /* PFT parameter file without nitrogen */
 
-#include "par/manage_laimax_alphaa_fao_rev4453_20180507.js" /* Management parameter file */
+#include "par/manage_irrig_systems_with_dummy_laimax_data.js" /* Management parameter file */
 #include "par/manage_reg.js"    /* Management parameter file for regions*/
 #include "par/outputvars.js"

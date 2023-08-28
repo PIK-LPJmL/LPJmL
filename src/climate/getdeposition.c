@@ -19,13 +19,11 @@
 Bool getdeposition(Climate *climate,    /**< pointer to climate data */
                    const Cell grid[],   /**< LPJ grid */
                    int year,            /**< year of climate data to be read */
-                   const Config *config /**< LPJ configuration */
+                   Config *config       /**< LPJ configuration */
                   )                     /** \return TRUE on error */
 {
   int year_depos;
   char *name;
-  if(config->const_deposition)
-    year=config->depos_year_const+(year-config->depos_year_const) % config->fix_climate_cycle;
   if(climate->data[0].no3deposition!=NULL)
   {
     if(year<climate->file_no3deposition.firstyear)

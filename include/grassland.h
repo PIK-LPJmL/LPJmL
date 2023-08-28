@@ -55,13 +55,14 @@ typedef struct
 {
   Irrigation irrigation;
   Rotation rotation;
-  Real nr_of_lsus_ext;   /**< nr of livestock units for extensive grazing */
-  Real nr_of_lsus_int;   /**< nr of livestock units for intensive grazing */
+  Real deficit_lsu_ne;   /**< NE deficit per livestock unit */
+  Real deficit_lsu_mp;   /**< MP deficit per livestock unit */
 } Grassland;
 
 /* Declaration of functions */
 
 extern Standtype grassland_stand;
+extern Standtype others_stand;
 extern const char *grassland_names[NGRASS];
 
 extern Real daily_grassland(Stand *,Real,const Dailyclimate *, int,int,
@@ -69,7 +70,6 @@ extern Real daily_grassland(Stand *,Real,const Dailyclimate *, int,int,
                             Real,Real,Real,Real,
                             Real ,int, int, int,Bool,Real,const Config *);
 extern Bool annual_grassland(Stand *,int,int,Real,int,Bool,Bool,const Config *);
-extern Bool isdailyoutput_grassland(const Config *,const Stand *);
 extern void output_gbw_grassland(Output *,const Stand *,Real,Real,Real,Real,
                                  const Real [LASTLAYER],const Real [LASTLAYER],Real,Real,int,
                                  const Config *);

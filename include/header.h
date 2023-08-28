@@ -19,7 +19,7 @@
 /* Definition of constants */
 
 #define RESTART_HEADER "LPJRESTART"
-#define RESTART_VERSION 27
+#define RESTART_VERSION 30
 #define LPJ_CLIMATE_HEADER "LPJCLIM"
 #define LPJ_CLIMATE_VERSION 3
 #define LPJ_LANDUSE_HEADER "LPJLUSE"
@@ -72,6 +72,8 @@
 #define LPJ_SLOPE_MIN_VERSION 2
 #define LPJ_KBF_HEADER "LPJ_KBF"
 #define LPJ_KBF_VERSION 2
+#define LPJ_LSUHA_HEADER "LPJLIVE"
+#define LPJ_LSUHA_VERSION 2
 #define CELLYEAR 1
 #define YEARCELL 2
 #define CELLINDEX 3
@@ -160,7 +162,7 @@ extern FILE *openinputfile(Header *, Bool *,const Filename *,
 extern FILE *openmetafile(Header *,List **,const char *,Bool *,size_t *,const char *,Bool);
 extern char *getfilefrommeta(const char *,Bool);
 extern void fprintheader(FILE *,const Header *);
-extern char *parse_json_metafile(LPJfile *,char *,Header *,List **,const char *,size_t *,Bool *,Verbosity);
+extern char *parse_json_metafile(FILE *,Header *,List **,const char *,size_t *,Bool *,Verbosity);
 extern List *fscanstringarray(LPJfile *,const char *,Verbosity);
 extern void freemap(List *);
 extern void fprintmap(FILE *,List *);

@@ -26,12 +26,11 @@
 #include "woodplantation.h"
 #include "wetland.h"
 
-#define PRINTLPJ_VERSION "1.0.020"
 #define NTYPES 3
-#define NSTANDTYPES 14 /* number of stand types */
+#define NSTANDTYPES 15 /* number of stand types */
 
-#define USAGE "Usage: %s [-h] [-inpath dir] [-restartpath dir]\n"\
-              "       [[-Dmacro[=value]] [-Idir] ...] [filename [-check] [start [end]]]\n"
+#define USAGE "Usage: %s [-h] [-pp cmd] [-inpath dir] [-restartpath dir]\n"\
+              "       [[-Dmacro[=value]] [-Idir] ...] filename [-check] [start [end]]\n"
 
 
 static Bool printgrid(Config *config, /* Pointer to LPJ configuration */
@@ -181,27 +180,11 @@ int main(int argc,char **argv)
   };
 
   Standtype standtype[NSTANDTYPES];
-
-  standtype[NATURAL]=natural_stand;
-  standtype[WETLAND]=wetland_stand;
-  standtype[SETASIDE_RF]=setaside_rf_stand;
-  standtype[SETASIDE_IR]=setaside_ir_stand;
-  standtype[SETASIDE_WETLAND]=setaside_wetland_stand;
-  standtype[AGRICULTURE]=agriculture_stand;
-  standtype[MANAGEDFOREST]=managedforest_stand;
-  standtype[GRASSLAND]=grassland_stand;
-  standtype[BIOMASS_TREE]=biomass_tree_stand;
-  standtype[BIOMASS_GRASS]=biomass_grass_stand;
-  standtype[AGRICULTURE_TREE]=agriculture_tree_stand;
-  standtype[AGRICULTURE_GRASS]=agriculture_grass_stand;
-  standtype[WOODPLANTATION]=woodplantation_stand;
-  standtype[KILL]=kill_stand;
-
   progname=strippath(argv[0]);
   if(argc>1 && !strcmp(argv[1],"-h"))
   {
     fputs("     ",stdout);
-    rc=printf("%s Version " PRINTLPJ_VERSION " (" __DATE__ ") Help",
+    rc=printf("%s (" __DATE__ ") Help",
               progname);
     fputs("\n     ",stdout);
     repeatch('=',rc);
@@ -209,28 +192,28 @@ int main(int argc,char **argv)
     printf(USAGE,progname);
     printf("\nArguments:\n"
            "-h               print this help text\n"
+           "-pp cmd          set preprocessor program. Default is '" cpp_cmd "'\n"
            "-inpath dir      directory appended to input filenames\n"
            "-restartpath dir directory appended to restart filename\n"
            "-Dmacro[=value]  define macro for preprocessor of configuration file\n"
            "-Idir            directory to search for include files\n"
-           "filename         configuration filename. Default is '%s'\n"
-           "-check           check only restart file\n"
+           "filename         configuration filename\n"
+           "-check           check only restart file, do not print\n"
            "start            index of first grid cell to print\n"
            "end              index of last grid cell to print\n\n"
-           "(C) Potsdam Institute for Climate Impact Research (PIK), see COPYRIGHT file\n",
-           dflt_conf_filename_ml);
+           "(C) Potsdam Institute for Climate Impact Research (PIK), see COPYRIGHT file\n");
     return EXIT_SUCCESS;
   }
   snprintf(line,78-10,
-           "%s Version " PRINTLPJ_VERSION " (" __DATE__ ")",progname);
+           "%s (" __DATE__ ")",progname);
   title[0]=line;
   title[1]="Printing restart file for LPJmL Version " LPJ_VERSION;
   title[2]="(C) Potsdam Institute for Climate Impact Research (PIK),";
   title[3]="see COPYRIGHT file";
   banner(title,4,78);
   initconfig(&config);
-  if(readconfig(&config,dflt_conf_filename_ml,scanfcn,NTYPES,NOUT,&argc,&argv,USAGE))
-    fail(READ_CONFIG_ERR,FALSE,"Error opening config");
+  if(readconfig(&config,scanfcn,NTYPES,NOUT,&argc,&argv,USAGE))
+    fail(READ_CONFIG_ERR,FALSE,"Cannot process configuration file");
   printf("Simulation: %s\n",config.sim_name);
   config.ischeckpoint=ischeckpointrestart(&config) && getfilesize(config.checkpoint_restart_filename)!=-1;
   if(!config.ischeckpoint && config.write_restart_filename==NULL)
@@ -282,6 +265,21 @@ int main(int argc,char **argv)
   if(startgrid>=config.startgrid)
     config.startgrid=startgrid;
   /*config.restart_filename=config.write_restart_filename; */
+  standtype[NATURAL]=natural_stand;
+  standtype[WETLAND]=wetland_stand;
+  standtype[SETASIDE_RF]=setaside_rf_stand;
+  standtype[SETASIDE_IR]=setaside_ir_stand;
+  standtype[SETASIDE_WETLAND]=setaside_wetland_stand;
+  standtype[AGRICULTURE]=agriculture_stand;
+  standtype[MANAGEDFOREST]=managedforest_stand;
+  standtype[GRASSLAND]=grassland_stand;
+  standtype[OTHERS]=others_stand;
+  standtype[BIOMASS_TREE]=biomass_tree_stand;
+  standtype[BIOMASS_GRASS]=biomass_grass_stand;
+  standtype[AGRICULTURE_TREE]=agriculture_tree_stand;
+  standtype[AGRICULTURE_GRASS]=agriculture_grass_stand;
+  standtype[WOODPLANTATION]=woodplantation_stand,
+  standtype[KILL]=kill_stand;
   rc=printgrid(&config,standtype,config.npft[TREE]+config.npft[GRASS],config.npft[CROP],isout);
   return (rc) ? EXIT_FAILURE : EXIT_SUCCESS;
 } /* of 'main' */

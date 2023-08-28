@@ -53,7 +53,7 @@
 /* #pragma warning ( disable : 869 )*/ /* disable warning about unused parameter */
 #endif
 
-#define N_FMT 7 /* number of format types for input/output files */
+#define N_FMT 8 /* number of format types for input/output files */
 
 /* Definition of datatypes */
 
@@ -83,21 +83,13 @@ typedef struct
   Bool isscale; /* scale factor defined? */
   int timestep; /* time step for output (ANNUAL,MONTHLY,DAILY) */
   int fmt;    /* format (TXT/RAW/CLM/CDF) */
+  int id;     /* id for input socket */
   Bool meta; /* meta file output enabled */
+  Bool issocket; /* socket output enabled */
   int version; /* version of clm file */
 } Filename;
 
-typedef struct
-{
-  union
-  {
-    FILE *file;              /* pointer to text file */
-#ifdef USE_JSON
-    struct json_object *obj; /* pointer to JSON object */
-#endif
-  } file;
-  Bool isjson;
-} LPJfile;
+typedef  struct json_object LPJfile; /* pointer to JSON object */
 
 typedef struct
 {
@@ -109,13 +101,15 @@ typedef struct
 
 extern void fail(int,Bool,const char *,...);
 extern Bool fscanreal(LPJfile *,Real *,const char *,Bool,Verbosity);
+extern Bool ffscanreal(FILE *,Real *,const char *,Verbosity);
 extern Bool fscanreal01(LPJfile *,Real *,const char *,Bool,Verbosity);
 extern Bool fscanbool(LPJfile *,Bool *,const char *,Bool,Verbosity);
 extern Bool fscanrealarray(LPJfile *,Real *,int,const char *,Verbosity);
-extern Bool fscanstring(LPJfile *,String,const char *,Bool,Verbosity);
-extern Bool fscanstruct(const LPJfile *,LPJfile *,const char *,Verbosity);
-extern Bool fscanarray(LPJfile *,LPJfile *,int *,Bool,const char *,Verbosity);
-extern Bool fscanarrayindex(const LPJfile *,LPJfile *,int,Verbosity);
+extern Bool fscanintarray(LPJfile *,int *,int,const char *,Verbosity);
+extern const char *fscanstring(LPJfile *,const char *,const char *,Verbosity);
+extern LPJfile *fscanstruct(const LPJfile *,const char *,Verbosity);
+extern LPJfile *fscanarray(LPJfile *,int *,const char *,Verbosity);
+extern LPJfile *fscanarrayindex(const LPJfile *,int);
 extern Bool iskeydefined(const LPJfile *,const char *);
 extern Bool isboolean(const LPJfile *,const char *);
 extern Bool isint(const LPJfile *,const char *);
@@ -124,7 +118,7 @@ extern char *fscanline(FILE *);
 extern Bool fscantoken(FILE *,String);
 extern Bool fscankeywords(LPJfile *,int *,const char *,const char *const *,
                           int,Bool,Verbosity);
-extern Bool isnull(const LPJfile *);
+extern Bool isnull(const LPJfile *,const char *);
 extern char *sysname(void);
 extern char *getpath(const char *);
 extern char *gethost(void);
@@ -150,6 +144,7 @@ extern int findstr(const char *,const char *const *,int);
 extern Bool checkfmt(const char *,char);
 extern int fputstring(FILE *,int,const char *,int);
 extern Bool fscanint(LPJfile *,int *,const char *,Bool,Verbosity);
+extern Bool ffscanint(FILE *,int *,const char *,Verbosity);
 extern Bool fscansize(LPJfile *,size_t *,const char *,Bool,Verbosity);
 extern Bool fscanuint(LPJfile *,unsigned int *,const char *,Bool,Verbosity);
 extern Bool fscanfloat(LPJfile *,float *,const char *,Bool,Verbosity);
@@ -158,7 +153,7 @@ extern Bool readrealvec(FILE *,Real *,Real,Real,size_t,Bool,Type);
 extern Bool readfloatvec(FILE *,float *,float,size_t,Bool,Type);
 extern Bool readintvec(FILE *,int *,size_t,Bool,Type);
 extern Bool readuintvec(FILE *,unsigned int *,size_t,Bool,Type);
-extern Bool readfilename(LPJfile *,Filename *,const char *,const char *,Bool,Verbosity);
+extern Bool readfilename(LPJfile *,Filename *,const char *,const char *,Bool,Bool,Verbosity);
 extern void freefilename(Filename *);
 extern void **newmat(size_t,int,int);
 extern void freemat(void **);
@@ -172,8 +167,9 @@ extern Bool fscaninteof(FILE *,int *,const char *,Bool *,Bool);
 extern char *sprinttimestep(String,int);
 extern Bool fscantimestep(LPJfile *,int *,Verbosity);
 extern char *getrealfilename(const Filename *);
-extern Bool parse_json(FILE *,LPJfile *,char *,Verbosity);
+extern LPJfile *parse_json(FILE *,Verbosity);
 extern Bool isdir(const char *);
+extern double mrun(void);
 #ifdef WITH_FPE
 extern void enablefpe(void);
 #endif

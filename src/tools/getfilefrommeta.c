@@ -20,102 +20,38 @@ char *getfilefrommeta(const char *filename, /**< name of metafile */
                       Bool isout            /**< error output (TRUE/FALSE) */
                      )                      /** \return file name or NULL */
 {
-  LPJfile file;
-  String key,value;
+  FILE *file;
   char *name,*path,*fullname;
   size_t offset;
   Bool swap;
-  file.isjson=FALSE;
   /* open description file */
-  if((file.file.file=fopen(filename,"r"))==NULL)
+  if((file=fopen(filename,"r"))==NULL)
   {
     if(isout)
       printfopenerr(filename);
     return NULL;
   }
   initscan(filename);
-  name=NULL;
-  while(!fscantoken(file.file.file,key))
-    if(key[0]=='{')
-    {
-#ifdef USE_JSON
-      name=parse_json_metafile(&file,key,NULL,NULL,NULL,&offset,&swap,isout ? ERR : NO_ERR);
-      break;
-#else
-      if(isout)
-        printf(stderr,"ERROR229: JSON format not supported for metafile '%s' in this version of LPJmL.\n",
-               filename);
-      free(name);
-      fclose(file.file.file);
-      return NULL;
-#endif
-    }
-    else if(!strcmp(key,"file"))
-    {
-      if(fscanstring(&file,value,"file",FALSE,isout ? ERR : NO_ERR))
-      {
-        if(isout)
-          readstringerr("file");
-        free(name);
-        fclose(file.file.file);
-        return NULL;
-      }
-      name=strdup(value);
-      if(name==NULL)
-      {
-        printallocerr("name");
-        fclose(file.file.file);
-        return NULL;
-      }
-      break;
-    }
-  fclose(file.file.file);
+  name=parse_json_metafile(file,NULL,NULL,NULL,&offset,&swap,isout ? ERR : NO_ERR);
+  fclose(file);
   if(name==NULL)
   {
     if(isout)
       fprintf(stderr,"ERROR223: No filename specified in '%s'.\n",filename);
     return NULL;
   }
-  if(name[0]=='^')
+  path=getpath(filename);
+  fullname=addpath(name,path);
+  if(fullname==NULL)
   {
-     /* if filename starts with a '^' then path of description file is added to filename */
-     path=getpath(filename);
-     if(path==NULL)
-     {
-       printallocerr("path");
-       free(name);
-       return NULL;
-     }
-     fullname=malloc(strlen(path)+strlen(name)+1);
-     if(fullname==NULL)
-     {
-       printallocerr("name");
-       free(path);
-       free(name);
-       return NULL;
-     }
-     strcpy(fullname,path);
-     strcat(fullname,"/");
-     strcat(fullname,name+1);
-     free(name);
-     free(path);
-     name=fullname;
-  }
-  else
-  {
-    path=getpath(filename);
-    fullname=addpath(name,path);
-    if(fullname==NULL)
-    {
-     printallocerr("name");
-     free(path);
-     free(name);
-     return NULL;
-    }
-    free(name);
+    printallocerr("name");
     free(path);
-    name=fullname;
+    free(name);
+     return NULL;
   }
+  free(name);
+  free(path);
+  name=fullname;
   return name;
 } /* of 'getfilefrommeta' */
 

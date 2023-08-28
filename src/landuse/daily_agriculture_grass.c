@@ -62,6 +62,8 @@ Real daily_agriculture_grass(Stand *stand,                /**< stand pointer */
   Real npp; /* net primary productivity (gC/m2) */
   Real gc_pft, gcgp;
   Real wdf; /* water deficit fraction */
+  Real fertil;
+  Real manure;
   Bool isphen;
   Irrigation* data;
   Pftgrass* grass;
@@ -90,6 +92,30 @@ Real daily_agriculture_grass(Stand *stand,                /**< stand pointer */
 
   for (l = 0; l < LASTLAYER; l++)
     aet_stand[l] = green_transp[l] = 0;
+  if (config->with_nitrogen && stand->cell->ml.fertilizer_nr!=NULL) /* has to be adapted if fix_fertilization option is added */
+  {
+    if(day==fertday_biomass(stand->cell,config))
+    {
+      fertil = stand->cell->ml.fertilizer_nr[data->irrigation].ag_tree[data->pft_id-npft+config->nagtree];
+      stand->soil.NO3[0]+=fertil*param.nfert_no3_frac;
+      stand->soil.NH4[0]+=fertil*(1-param.nfert_no3_frac);
+      stand->cell->balance.influx.nitrogen+=fertil*stand->frac;
+      getoutput(output,NFERT_AGR,config)+=fertil*stand->frac;
+    } /* end fday==day */
+  }
+  if (config->with_nitrogen && stand->cell->ml.manure_nr!=NULL)
+  {
+    if(day==fertday_biomass(stand->cell,config))
+    {
+      manure = stand->cell->ml.manure_nr[data->irrigation].ag_tree[data->pft_id-npft+config->nagtree];
+      stand->soil.NH4[0] += manure*param.nmanure_nh4_frac;
+      stand->soil.litter.item->agsub.leaf.carbon += manure*param.manure_cn;
+      stand->soil.litter.item->agsub.leaf.nitrogen += manure*(1-param.nmanure_nh4_frac);
+      stand->cell->balance.influx.carbon += manure*param.manure_cn*stand->frac;
+      stand->cell->balance.influx.nitrogen += manure*stand->frac;
+      getoutput(&stand->cell->output,NMANURE_AGR,config)+=manure*stand->frac;
+    } /* end fday==day */
+  }
 
   /* green water inflow */
   rainmelt = climate->prec + melt;
@@ -160,7 +186,7 @@ Real daily_agriculture_grass(Stand *stand,                /**< stand pointer */
   foreachpft(pft, p, &stand->pftlist)
   {
     // pft->phen = 1.0; /* phenology is calculated from biomass */
-    if (config->new_phenology)
+    if (config->gsi_phenology)
       phenology_gsi(pft, climate->temp, climate->swdown, day,climate->isdailytemp,config);
     else
       leaf_phenology(pft, climate->temp, day,climate->isdailytemp,config);
@@ -274,7 +300,7 @@ Real daily_agriculture_grass(Stand *stand,                /**< stand pointer */
   }
 
   if (data->irrigation && stand->pftlist.n > 0) /*second element to avoid irrigation on just harvested fields */
-    calc_nir(stand,data,gp_stand, wet, eeq);
+    calc_nir(stand,data,gp_stand, wet, eeq,config->others_to_crop);
   transp=0;
   forrootsoillayer(l)
   {
@@ -317,7 +343,10 @@ Real daily_agriculture_grass(Stand *stand,                /**< stand pointer */
 
   /* harvested area */
   if (isphen)
-    getoutputindex(output,CFTFRAC,index,config) = stand->frac;
+  {
+    getoutputindex(output,CFTFRAC,index,config) += stand->frac;
+    getoutputindex(output,CFT_NHARVEST,index,config) += 1.0;
+  }
   output_gbw_agriculture_tree(output, stand, frac_g_evap, evap, evap_blue,
                                return_flow_b, aet_stand, green_transp,
                                intercep_stand, intercep_stand_blue, npft,

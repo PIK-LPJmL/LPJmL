@@ -33,6 +33,7 @@ Bool initsoil(Stand *stand,           /**< Pointer to stand data */
   forrootsoillayer(l)
   {
     soil->pool[l].fast.carbon=soil->pool[l].slow.carbon=soil->k_mean[l].fast=soil->k_mean[l].slow=0.0;
+    soil->decay_rate[l].fast=soil->decay_rate[l].slow=0.0;
     if(!config->with_nitrogen || soilpar->type==ROCK || soilpar->type==ICE)
       soil->pool[l].slow.nitrogen=soil->pool[l].fast.nitrogen=soil->NH4[l]=soil->NO3[l]=0.0;
     else
@@ -50,6 +51,13 @@ Bool initsoil(Stand *stand,           /**< Pointer to stand data */
   }
   soil->YEDOMA=soil->alag=soil->amp=soil->meanw1=soil->decomp_litter_mean.carbon=soil->decomp_litter_mean.nitrogen=0.0;
   soil->snowpack=soil->icefrac = 0.0;
+  soil->decomp_litter_pft=newvec(Stocks,ntotpft);
+  checkptr(soil->decomp_litter_pft);
+  for (p=0;p<ntotpft;p++)
+  {
+    soil->decomp_litter_pft[p].carbon=0.0;
+    soil->decomp_litter_pft[p].nitrogen=0.0;
+  }
 #ifdef MICRO_HEATING
   soil->litter.decomC=0.0;
 #endif
@@ -100,6 +108,7 @@ Bool initsoil(Stand *stand,           /**< Pointer to stand data */
     for(l=0;l<LASTLAYER;l++)
     {
       soil->wfc[l]=soilpar->wfc;
+      soil->wpwp[l]=soilpar->wpwp;
       soil->whc[l]=soilpar->wfc-soilpar->wpwp;
       soil->whcs[l]=soil->whc[l]*soildepth[l];
       soil->wpwps[l]=soilpar->wpwp*soildepth[l];
@@ -114,6 +123,18 @@ Bool initsoil(Stand *stand,           /**< Pointer to stand data */
         soil->k_dry[l]=(0.135*soil->bulkdens[l]+64.7)/
                (MINERALDENS-0.947*soil->bulkdens[l]);
     }
+    /*assume last layer is bedrock in 6-layer version */
+    soil->wfc[BOTTOMLAYER]=soilpar->wfc;
+    soil->wpwp[BOTTOMLAYER]=soilpar->wpwp;
+    soil->whc[BOTTOMLAYER]=0.002;/*0.006 wsats - 0.002 whc - 0.001 wpwps = 0.003 for free water */
+    soil->whcs[BOTTOMLAYER]=soil->whc[BOTTOMLAYER]*soildepth[BOTTOMLAYER];
+    soil->wpwps[BOTTOMLAYER]=0.001*soildepth[BOTTOMLAYER];
+    soil->wsat[BOTTOMLAYER]=soilpar->wsat;
+    soil->wsats[BOTTOMLAYER]=0.006*soildepth[BOTTOMLAYER];
+    soil->bulkdens[BOTTOMLAYER]=(1-soil->wsats[BOTTOMLAYER]/soildepth[BOTTOMLAYER])*MINERALDENS;
+    soil->k_dry[BOTTOMLAYER]=0.039*pow(soil->wsats[BOTTOMLAYER]/soildepth[BOTTOMLAYER],-2.2);
+    soil->beta_soil[BOTTOMLAYER]=-2.655/log10(soilpar->wfc/soilpar->wsat);
+    soil->Ks[BOTTOMLAYER] = soilpar->Ks;
   }
   else
   {

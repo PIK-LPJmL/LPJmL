@@ -2,7 +2,7 @@
 /**                                                                                \n**/
 /**                   l  p  j  m  l  _  n  e  t  c  d  f  .  j  s                  \n**/
 /**                                                                                \n**/
-/** Configuration file for LPJmL C Version 5.3.001                                 \n**/
+/** Configuration file for LPJmL C Version 5.6.25                                  \n**/
 /**                                                                                \n**/
 /** Configuration file is divided into five sections:                              \n**/
 /**                                                                                \n**/
@@ -20,10 +20,6 @@
 /**                                                                                \n**/
 /**************************************************************************************/
 
-#include "include/conf.h" /* include constant definitions */
-
-// #define DAILY_OUTPUT
-
 {
 
 /*===================================================================*/
@@ -32,13 +28,14 @@
 
 "sim_name" : "LPJmL Run", /* Simulation description */
 "sim_id"   : "lpjml",     /* LPJML Simulation type with managed land use */
-"version"  : "5.3",       /* LPJmL version expected */
+"coupled_model" : null,   /* no model coupling */
+"version"  : "5.6",       /* LPJmL version expected */
 "random_prec" : true,     /* Random weather generator for precipitation enabled */
 "random_seed" : 2,        /* seed for random number generator */
 "radiation" : "cloudiness",
 "fire" : "fire",          /* fire disturbance enabled, other options: NO_FIRE, FIRE, SPITFIRE, SPITFIRE_TMAX (for GLDAS input data) */
 "fdi" : "nesterov_index",   /* different fire danger index formulations: WVPD_INDEX(needs GLDAS input data), NESTEROV_INDEX*/
-"shuffle_climate" : false,
+"shuffle_spinup_climate" : false,
 "firewood" : false,
 #ifdef FROM_RESTART
 "new_seed" : false,
@@ -52,16 +49,18 @@
 #endif
 "prescribe_burntarea" : false,
 "prescribe_landcover" : "no_landcover",
-"new_phenology": false,
-"new_trf" : false,        /* new transpiration reduction function disabled */
+"gsi_phenology": false,
+"transp_suction_fcn" : false,        /* new transpiration reduction function disabled */
 "river_routing": false,
 "permafrost" : true,
 "johansen" : true,
+"soilpar_option" : "no_fixed_soilpar", /* other options "no_fixed_soilpar", "fixed_soilpar", "prescribed_soilpar" */
 "with_nitrogen": "lim",
 "store_climate" : true, /* store climate data in spin-up phase */
-"const_climate" : false,
 "fix_climate" : false,
-"const_deposition" : false,
+"fix_deposition" : false,
+"fix_landuse" : false,
+"fix_co2" : false,
 "fertilizer_input" : "yes",
 "fix_fertilization" : false,          /* fix fertilizer input */
 "check_climate" : true,               /* check climate input before start */
@@ -80,13 +79,16 @@
 "grassland_fixed_pft" : false,
 "wateruse" : "no",
 "grass_harvest_options" : false,
+"prescribe_lsuha" : false,
 "intercrop" : true,                   /* intercrops on setaside */
 "landuse_year_const" : 2000, /* set landuse year for CONST_LANDUSE case */
 "residues_fire" : false,              /* fire in residuals */
-"istimber": false,
+"luc_timber": false,
 "rw_manage" : false,                  /* rain water management */
 "manure_input" : false,               /* enable manure input */
 "others_to_crop" : true,
+"grazing" : "default",                /* default grazing type, other options : "default", "mowing", "ext", "int", "livestock", "none" */
+"grazing_others" : "default",         /* default grazing type for others, other options : "default", "mowing", "ext", "int", "livestock", "none" */
 "cft_temp" : "temperate cereals",
 "cft_tropic" : "maize",
 "grassonly" : false,                  /* set all cropland including others to zero but keep managed grasslands */
@@ -94,6 +96,7 @@
 "crop_phu_option" : "new",
 "cropsheatfrost" : false,
 "double_harvest" : true,
+"npp_controlled_bnf" : true,
 
 /*===================================================================*/
 /*  II. Input parameter section                                      */
@@ -174,14 +177,6 @@ ID                         Fmt                    filename
 { "id" : "cftfrac",          "file" : { "fmt" : "cdf", "name" : "output/cftfrac.nc"}},
 { "id" : "seasonality",      "file" : { "fmt" : "cdf", "name" : "output/seasonality.nc"}},
 #endif
-#ifdef DAILY_OUTPUT
-{ "id" : "d_npp",            "file" : { "fmt" : "cdf", "name" : "output/d_npp.nc"}},
-{ "id" : "d_gpp",            "file" : { "fmt" : "cdf", "name" : "output/d_gpp.nc"}},
-{ "id" : "d_rh",             "file" : { "fmt" : "cdf", "name" : "output/d_rh.nc"}},
-{ "id" : "d_trans",          "file" : { "fmt" : "cdf", "name" : "output/d_trans.nc"}},
-{ "id" : "d_interc",         "file" : { "fmt" : "cdf", "name" : "output/d_interc.nc"}},
-{ "id" : "d_evap",           "file" : { "fmt" : "cdf", "name" : "output/d_evap.nc"}},
-#endif
 { "id" : "pet",              "file" : { "fmt" : "cdf", "name" : "output/mpet.nc"}},
 { "id" : "albedo",           "file" : { "fmt" : "cdf", "name" : "output/malbedo.nc"}},
 { "id" : "maxthaw_depth",    "file" : { "fmt" : "cdf", "name" : "output/maxthaw_depth.nc"}},
@@ -196,9 +191,6 @@ ID                         Fmt                    filename
 { "id" : "conv_loss_drain",  "file" : { "fmt" : "cdf", "name" : "output/aconv_loss_drain.nc"}}
 /*------------------------ ---------------------- ------------------------------- */
 ],
-
-"crop_index" : "temperate cereals",  /* CFT for daily output_SPITFIRE-optpar */
-"crop_irrigation" : false, /* irrigation flag for daily output_SPITFIRE-optpar */
 
 #endif
 

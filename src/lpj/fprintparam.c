@@ -56,7 +56,14 @@ void fprintparam(FILE *file,    /**< pointer to text file */
           param.ko25,param.kc25,param.atmfrac,param.fastfrac,1-pow(1-param.bioturbate,NDAYYEAR),param.k_mort,
           param.fpc_tree_max,param.temp_response,param.percthres);
   if(config->equilsoil)
+  {
     fprintf(file,"veg_equil_year:\t%d\n",param.veg_equil_year);
+    fprintf(file,"veg_equil_unlim:\t%s\n",bool2str(param.veg_equil_unlim));
+    fprintf(file,"nequilsoil:\t%d\n",param.nequilsoil);
+    fprintf(file,"equisoil_interval:\t%d\n",param.equisoil_interval);
+    fprintf(file,"equisoil_years:\t%d\n",param.equisoil_years);
+    fprintf(file,"equisoil_fadeout:\t%d\n",param.equisoil_fadeout);
+  }
   if(config->fire==SPITFIRE || config->fire==SPITFIRE_TMAX)
     fprintf(file,"firedura:\t%g\n"
             "fire_intens:\t%g\n"
@@ -106,11 +113,6 @@ void fprintparam(FILE *file,    /**< pointer to text file */
     fprintf(file,"livestock density on grassland:\t%g\n",
             param.lsuha);
     fprintf(file,"annual prec lim:\t%g (mm)\n",param.aprec_lim);
-    fprintf(file,"irrig. threshold C3 dry:\t%g\n",param.irrig_threshold_c3_dry);
-    fprintf(file,"irrig. threshold C3 humid:\t%g\n",
-            param.irrig_threshold_c3_humid);
-    fprintf(file,"irrig. threshold C4:\t%g\n",param.irrig_threshold_c4);
-    fprintf(file,"irrig. threshold Rice:\t%g\n",param.irrig_threshold_rice);
     fprintf(file,"irrigation soilfrac:\t%g\n",param.irrigation_soilfrac);
     fprintf(file,"canal conveyance eff. sand:\t%g\n",param.ec_canal[0]);
     fprintf(file,"canal conveyance eff. loam:\t%g\n",param.ec_canal[1]);
@@ -120,13 +122,15 @@ void fprintparam(FILE *file,    /**< pointer to text file */
     fprintf(file,"saturation level drip:\t%g\n",param.sat_level[3]);
     fprintf(file,"drip evap. reduction:\t%g\n",param.drip_evap);
     fprintf(file,"residues in soil:\t%g\n",param.residues_in_soil);
+    fprintf(file,"residues in soil before till_startyear:\t%g\n",param.residues_in_soil_notillage);
     if(config->with_nitrogen)
     {
       fprintf(file,"nfert split:\t%g\n",param.nfert_split);
       fprintf(file,"nfrac grazing:\t%g\n",param.nfrac_grazing);
       fprintf(file,"nfrac grassharvest:\t%g\n",param.nfrac_grassharvest);
     }
-    if(config->istimber)
+    fprintf(file,"timber fraction wp:\t%g\n",param.ftimber_wp);
+    if(config->luc_timber)
     {
       fprintf(file,"fraction burnt:\t%g\n",param.fburnt);
       fprintf(file,"timber fraction:\t%g\n",param.ftimber);
@@ -146,6 +150,7 @@ void fprintparam(FILE *file,    /**< pointer to text file */
     if(config->with_nitrogen)
       fprintf(file,"allocation threshold:\t%g\n",param.allocation_threshold);
     fprintf(file,"hfrac2:\t\t%g (gC/m2)\n",param.hfrac2);
+    fprintf(file,"hfrac biomass:\t%g\n",param.hfrac_biomass);
     fprintf(file,"rootreduction:\t%g\n",param.rootreduction);
     fprintf(file,"Phen limit:\t%g\n",param.phen_limit);
   }

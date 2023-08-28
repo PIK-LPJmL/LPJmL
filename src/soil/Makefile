@@ -19,18 +19,22 @@ OBJS    = initsoil.$O waterbalance.$O equilsoil.$O littersom.$O\
           getlag.$O temp_response.$O fscansoilpar.$O soiltemp.$O laketemp.$O snow.$O\
           fire_sum.$O fire_prob.$O freadsoil.$O fwritesoil.$O fprintsoil.$O\
           freesoilpar.$O seeksoilcode.$O freadsoilcode.$O getnsoilcode.$O\
+<<<<<<< HEAD
           fopensoilcode.$O litter_ag_sum.$O littercarbon.$O fprintlitter.$O\
           hydrotopes.$O inithydro.$O update_wetland.$O\
           freadhydrotope.$O fscanhydropar.$O fwritehydrotope.$O \
+=======
+          fopensoilcode.$O litter_agtop_sum.$O littercarbon.$O fprintlitter.$O\
+>>>>>>> master
           freadlitter.$O fwritelitter.$O newsoil.$O freesoil.$O copysoil.$O\
           findlitter.$O addlitter.$O freelitter.$O fprintsoilpar.$O\
-          soilwater.$O soilcarbon.$O litter_ag_tree.$O litter_ag_grass.$O\
-          moistfactor.$O litter_ag_sum_quick.$O freesoilpar.$O moisture2soilice.$O\
+          soilwater.$O soilcarbon.$O litter_agtop_tree.$O litter_agtop_grass.$O\
+          moistfactor.$O litter_agtop_sum_quick.$O freesoilpar.$O moisture2soilice.$O\
           soilconduct.$O soilheatcap.$O soilice2moisture.$O getlag.$O convert_water.$O\
           gasdiffusion.$O getstate.$O initsoiltemp.$O infil_perc.$O\
           ebullition.$O fprinthydrotope.$O fprinthydropar.$O soilmethane.$O\
           fscanpoolpar.$O denitrification.$O biologicalNfixation.$O\
-          litter_ag_nitrogen_tree.$O soilstocks.$O litterstocks.$O fscansoilmap.$O\
+          litter_agtop_nitrogen_tree.$O soilstocks.$O litterstocks.$O fscansoilmap.$O\
           checklitter.$O getrootdist.$O nuptake_temp_fcn.$O volatilization.$O\
           getwr.$O updatelitterproperties.$O pedotransfer.$O tillage.$O\
           soilpar_output.$O getsoilmap.$O defaultsoilmap.$O cmpsoilmap.$O

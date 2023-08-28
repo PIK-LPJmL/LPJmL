@@ -17,10 +17,10 @@
 #include "crop.h"
 #include "agriculture.h"
 
-void denitrification(Stand *stand,  /**< pointer to stand */
-                     int npft,
-                     int ncft,
-                     const Config *config
+void denitrification(Stand *stand,        /**< pointer to stand */
+                     int npft,            /**< number of natural PFTs */
+                     int ncft,            /**< number of crop PFTs */
+                     const Config *config /**< LPJmL configuration */
                     )
 {
   /* determines NO2 and N2 from nitrate NO3 */
@@ -89,15 +89,18 @@ void denitrification(Stand *stand,  /**< pointer to stand */
     N2O_denit = 0.11 * N_denit;
     N_denit -= N2O_denit;
 
-    getoutput(&stand->cell->output,D_N2_DENIT,config) += N_denit;
-    getoutput(&stand->cell->output,D_N2O_DENIT,config) += N2O_denit;
     getoutput(&stand->cell->output,N2O_DENIT,config)+=N2O_denit*stand->frac;
     getoutput(&stand->cell->output,N2_EMIS,config)+=N_denit*stand->frac;
     stand->cell->balance.n_outflux+=(N_denit+N2O_denit)*stand->frac;
     if(isagriculture(stand->type->landusetype))
     {
-      getoutput(&stand->cell->output,N2O_DENIT_AGR,config)+=N2O_denit*stand->frac;
+      getoutput(&stand->cell->output,N2O_DENIT_MGRASS,config)+=N2O_denit*stand->frac;
       getoutput(&stand->cell->output,N2_AGR,config)+=N_denit*stand->frac;
+    }
+    if(stand->type->landusetype==GRASSLAND)
+    {
+      getoutput(&stand->cell->output,N2O_DENIT_AGR,config)+=N2O_denit*stand->frac;
+      getoutput(&stand->cell->output,N2_MGRASS,config)+=N_denit*stand->frac;
     }
     if(stand->type->landusetype==AGRICULTURE)
     {

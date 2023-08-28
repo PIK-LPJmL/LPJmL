@@ -75,6 +75,7 @@ void fprintpftpar(FILE *file,           /**< pointer to text file */
                "wind damp.:\t%g\n"
                "roughness length:\t%g\n"
                "emis. factor:\t%g %g %g %g %g %g\n",
+               "irrig threshold:\t%g %g\n",
           pftpar->beta_root,
           pftpar->minwscal,pftpar->gmin,pftpar->respcoeff,pftpar->nmax,
           pftpar->resist,
@@ -94,13 +95,15 @@ void fprintpftpar(FILE *file,           /**< pointer to text file */
           pftpar->emissionfactor.voc,pftpar->emissionfactor.tpm,
           pftpar->emissionfactor.nox);
   if(config->new_phenology)
+          pftpar->irrig_threshold.dry,pftpar->irrig_threshold.humid);
+  if(config->gsi_phenology)
     fprintf(file,"tmin_sl:\t%g\n"
                 "tmin_base:\t%g (deg C)\n"
                 "tmin_tau:\t%g\n"
-                "tmax_sl:\t%g\n"
+                "tmax_sl:\t%g (1/(deg c))\n"
                 "tmax_base:\t%g (deg C)\n"
                 "tmax_tau:\t%g\n"
-                "light_sl:\t%g\n"
+                "light_sl:\t%g (1/(W/m2))\n"
                 "light_base:\t%g (W/m2)\n"
                 "light_tau:\t%g\n"
                 "wscal_sl:\t%g\n"
@@ -130,15 +133,15 @@ void fprintpftpar(FILE *file,           /**< pointer to text file */
             pftpar->vmax_up,pftpar->kNmin,pftpar->KNmin,1/pftpar->ncleaf.high,
             1/pftpar->ncleaf.median,1/pftpar->ncleaf.low,pftpar->knstore,
             pftpar->fn_turnover,bool2str(pftpar->nfixing));
-  if(pftpar->nfixing)
+  if(config->npp_controlled_bnf && pftpar->nfixing)
   {
     fprintf(file,"temp_bnf_lim:\t%g %g\n"
                  "temp_bnf_opt:\t%g %g\n"
                  "swc_bnf:\t%g %g\n"
                  "phi_bnf:\t%g %g\n"
-                 "nfixpot:\t%g\n"
-                 "maxbnfcost:\t%g\n"
-                 "bnf_cost:\t%g\n",
+                 "nfixpot:\t%g (gN/m2/day)\n"
+                 "maxbnfcost:\t%g (gC/m2/day)\n"
+                 "bnf_cost:\t%g (gC/gN)\n",
             pftpar->temp_bnf_lim.low, pftpar->temp_bnf_lim.high,
             pftpar->temp_bnf_opt.low, pftpar->temp_bnf_opt.high,
             pftpar->swc_bnf.low, pftpar->swc_bnf.high,

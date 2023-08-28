@@ -53,7 +53,7 @@ int iterate(Outputfile *output, /**< Output file data */
 {
   Real co2, ch4, pch4,cflux_total;
   Flux flux;
-  int year,landuse_year,wateruse_year,startyear,firstspinupyear,spinup_year,climate_year,year_co2,index,data_index,rnd_year;
+  int year,landuse_year,wateruse_year,startyear,firstspinupyear,spinup_year,climate_year,year_co2,index,data_index,rnd_year,depos_year;
   Bool rc;
   Climatedata store,data_save;
 
@@ -95,16 +95,17 @@ int iterate(Outputfile *output, /**< Output file data */
   for(year=startyear;year<=config->lastyear;year++)
   {
 #if defined IMAGE && defined COUPLED
-    if(year>=config->start_imagecoupling)
+    if(year>=config->start_coupling)
       co2=receive_image_co2(config);
     else
 #endif
-    if(config->fix_climate && year>config->fix_climate_year)
-      year_co2=config->fix_climate_year;
+    if(config->fix_co2 && year>config->fix_co2_year)
+      year_co2=config->fix_co2_year;
     else
       year_co2=year;
     if(config->isanomaly)
-    	year_co2+=2000; //CLIMBER's year zero= year 2000
+      year_co2+=2000; //CLIMBER's year zero= year 2000
+
     if(getco2(input.climate,&co2,year_co2)) /* get atmospheric CO2 concentration */
     {
       if(isroot(*config))
@@ -122,11 +123,11 @@ int iterate(Outputfile *output, /**< Output file data */
       }
       pch4=ch4*1e-3; /*convert to ppm*/
      }
-    
-    if(year<config->firstyear) /* are we in spinup phase? */
+    climate_year=year;
+    if(year<input.climate->firstyear) /* are we in spinup phase? */
     {
       /* yes, let climate data point to stored data */
-      if(config->shuffle_climate || config->isanomaly)
+      if(config->shuffle_spinup_climate|| config->isanomaly)
       {
         if(isroot(*config))
           spinup_year=(int)(erand48(config->seed)*config->nspinyear);
@@ -157,7 +158,7 @@ int iterate(Outputfile *output, /**< Output file data */
       }
       /* read climate from files */
 #if defined IMAGE && defined COUPLED
-      if(year>=config->start_imagecoupling)
+      if(year>=config->start_coupling)
       {
         if(receive_image_climate(input.climate,grid,year,config))
         {
@@ -242,18 +243,18 @@ int iterate(Outputfile *output, /**< Output file data */
       }
       else
       {
-    	if(config->fix_climate && year>config->fix_climate_year)
-    	{
-          if(config->shuffle_climate)
+      	if(config->fix_climate && year>config->fix_climate_year)
+      	{
+          if(config->fix_climate_shuffle)
           {
             if(isroot(*config))
-              climate_year=config->fix_climate_year-config->fix_climate_cycle/2+(int)(erand48(config->seed)*config->fix_climate_cycle);
+              climate_year=config->fix_climate_interval[0]+(int)((config->fix_climate_interval[1]-config->fix_climate_interval[0]+1)*erand48(config->seed));
 #ifdef USE_MPI
             MPI_Bcast(&climate_year,1,MPI_INT,0,config->comm);
 #endif
           }
           else
-            climate_year=config->fix_climate_year-config->fix_climate_cycle/2+(year-config->fix_climate_year+config->fix_climate_cycle/2) % config->fix_climate_cycle;
+            climate_year=config->fix_climate_interval[0]+(year-config->fix_climate_year) % (config->fix_climate_interval[1]-config->fix_climate_interval[0]+1);
         }
         else
           climate_year=year;
@@ -268,6 +269,38 @@ int iterate(Outputfile *output, /**< Output file data */
           break; /* leave time loop */
         }
       }
+    }
+    if(config->fix_deposition)
+    {
+      if(config->fix_deposition_with_climate)
+        depos_year=climate_year;
+      else if(year>config->fix_deposition_year)
+      {
+        if(config->fix_deposition_shuffle)
+        {
+          if(isroot(*config))
+            depos_year=config->fix_deposition_interval[0]+(int)((config->fix_deposition_interval[1]-config->fix_deposition_interval[0]+1)*erand48(config->seed));
+#ifdef USE_MPI
+          MPI_Bcast(&depos_year,1,MPI_INT,0,config->comm);
+#endif
+        }
+        else
+          depos_year=config->fix_deposition_interval[0]+(year-config->fix_deposition_year) % (config->fix_deposition_interval[1]-config->fix_deposition_interval[0]+1);
+      }
+      else
+        depos_year=year;
+    }
+    else
+      depos_year=year;
+    rc=getdeposition(input.climate,grid,depos_year,config);
+    if(iserror(rc,config))
+    {
+      if(isroot(*config))
+      {
+        fprintf(stderr,"ERROR104: Simulation stopped in getdeposition().\n");
+        fflush(stderr);
+      }
+      break; /* leave time loop */
     }
     if(input.landuse!=NULL)
     {
@@ -286,7 +319,7 @@ int iterate(Outputfile *output, /**< Output file data */
       else
         wateruse_year=year;
 #if defined IMAGE && defined COUPLED
-      if(year>=config->start_imagecoupling)
+      if(year>=config->start_coupling)
       {
         if(receive_image_data(grid,npft,ncft,config))
         {
@@ -356,6 +389,19 @@ int iterate(Outputfile *output, /**< Output file data */
         break; /* leave time loop */
       }
     }
+    if(config->fire==SPITFIRE || config->fire==SPITFIRE_TMAX)
+    {
+      rc=gethumanignition(input.human_ignition,year,grid,config);
+      if(iserror(rc,config))
+      {
+        if(isroot(*config))
+        {
+          fprintf(stderr,"ERROR104: Simulation stopped in gethumanignition().\n");
+          fflush(stderr);
+        }
+        break; /* leave time loop */
+      }
+    }
     if (config->prescribe_landcover != NO_LANDCOVER)
     {
       rc=readlandcover(input.landcover,grid,year,config);
@@ -381,17 +427,16 @@ int iterate(Outputfile *output, /**< Output file data */
     {
       if (config->with_dynamic_ch4)
       {
-        ch4 += flux.aCH4_emissions - flux.aCH4_sink + flux.aCH4_fire - 1 / tau_CH4*ch4;
+        ch4 += flux.CH4_emissions - flux.CH4_sink + flux.CH4_fire - 1 / tau_CH4*ch4;
         pch4 = ch4*1e-15 / 2.123;
       }
       /* output of total carbon flux and water on stdout on root task */
       printflux(flux,cflux_total,year,config);
-      if(isopen(output,GLOBALFLUX))
+      if(output->files[GLOBALFLUX].isopen)
         fprintcsvflux(output->files[GLOBALFLUX].fp.file,flux,cflux_total,
                       config->outnames[GLOBALFLUX].scale,year,config);
-      if(output->method==LPJ_SOCKET && output->socket!=NULL &&
-         year>=config->outputyear)
-        output_flux(output,flux);
+      if(output->files[GLOBALFLUX].issocket)
+        send_flux_coupler(&flux,config->outnames[GLOBALFLUX].scale,year,config);
       fflush(stdout); /* force output to console */
 #ifdef SAFE
       check_balance(flux,year,config);
@@ -402,14 +447,14 @@ int iterate(Outputfile *output, /**< Output file data */
       MPI_Bcast(&pch4, sizeof(Real), MPI_BYTE, 0, config->comm);
 #endif
 #if defined IMAGE && defined COUPLED
-    if(year>=config->start_imagecoupling)
+    if(year>=config->start_coupling)
     {
       /* send data to IMAGE */
 #ifdef DEBUG_IMAGE
       if(isroot(*config))
       {
         printf("sending data to image? year %d startimagecoupling %d\n",
-               year,config->start_imagecoupling);
+               year,config->start_coupling);
         fflush(stdout);
       }
 #endif

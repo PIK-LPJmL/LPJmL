@@ -36,24 +36,8 @@ Stand *freadstand(FILE *file, /**< File pointer to binary file */
     return NULL;
   }
   stand->cell=cell;
-  if(freadpftlist(file,stand,&stand->pftlist,pftpar,ntotpft,double_harvest,swap))
-  {
-    free(stand);
-    return NULL;
-  }
-  initstand(stand);
-  if(freadsoil(file,&stand->soil,soilpar,pftpar,ntotpft,swap))
-  {
-    free(stand);
-    return NULL;
-  }
-  freadreal1(&stand->Hag_Beta, swap, file);
-  freadreal1(&stand->slope_mean, swap, file);
-  freadreal1(&stand->frac,swap,file);
   if(fread(&landusetype,sizeof(landusetype),1,file)!=1)
   {
-    freepftlist(&stand->pftlist);
-    freesoil(&stand->soil);
     free(stand);
     return NULL;
   }
@@ -61,16 +45,31 @@ Stand *freadstand(FILE *file, /**< File pointer to binary file */
   {
     fprintf(stderr,"ERROR196: Invalid value %d for stand type, must be in [0,%d].\n",
             landusetype,nstand-1);
-    freepftlist(&stand->pftlist);
-    freesoil(&stand->soil);
     free(stand);
     return NULL;
   }
-  stand->data=NULL;
   stand->type=standtype+landusetype;
+  if(freadpftlist(file,stand,&stand->pftlist,pftpar,ntotpft,double_harvest,swap))
+  {
+    fprintf(stderr,"ERROR254: Cannot read PFT list.\n");
+    free(stand);
+    return NULL;
+  }
+  initstand(stand);
+  if(freadsoil(file,&stand->soil,soilpar,pftpar,ntotpft,swap))
+  {
+    fprintf(stderr,"ERROR254: Cannot read soil data.\n");
+    free(stand);
+    return NULL;
+  }
+  freadreal1(&stand->Hag_Beta, swap, file);
+  freadreal1(&stand->slope_mean, swap, file);
+  freadreal1(&stand->frac,swap,file);
+  stand->data=NULL;
   /* read stand-specific data */
   if(stand->type->fread(file,stand,swap))
   {
+    fprintf(stderr,"ERROR254: Cannot read stand-specific data.\n");
     freestand(stand);
     return NULL;
   }

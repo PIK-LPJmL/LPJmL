@@ -32,10 +32,16 @@
 
   "sim_name" : "LPJmL run with SPITFIRE and VPD fire danger index", /* Simulation description */
   "sim_id"   : "lpjml",     /* LPJML Simulation type with managed land use */
+<<<<<<< HEAD
   "version"  : "6.0",       /* LPJmL version expected */
+=======
+  "coupled_model" : null,   /* no model coupling */
+  "version"  : "5.3",       /* LPJmL version expected */
+>>>>>>> master
   "random_prec" : false,    /* Random weather generator for precipitation enabled */
   "random_seed" : 2,        /* seed for random number generator */
   "radiation" : "radiation",/* other options: CLOUDINESS, RADIATION, RADIATION_SWONLY, RADIATION_LWDOWN */
+  "fire_on_grassland" : true, /* enable fire on grassland for Spitfire */
   "fire" : "spitfire_tmax", /* fire disturbance enabled, other options: NO_FIRE, FIRE, SPITFIRE, SPITFIRE_TMAX (for GLDAS input data) */
   "fdi" : "wvpd",           /* different fire danger index formulations: WVPD_INDEX, NESTEROV_INDEX*/
   "firewood" : false,
@@ -88,8 +94,9 @@
   "grassonly" : false,
   "grassland_fixed_pft" : false,
   "grass_harvest_options" : false,
+  "prescribe_lsuha" : false,
   "others_to_crop" : false,
-  "grazing" : "default",                  /* default grazing type, other options : "default", "mowing", "ext", "int", "none" */
+  "grazing" : "default",                  /* default grazing type, other options : "default", "mowing", "ext", "int", "livestock", "none" */
   "istimber" : true,
   "crop_phu_option" : "new",
   "cropsheatfrost" : false,

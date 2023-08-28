@@ -48,7 +48,10 @@ Bool freadpft(FILE *file,            /**< pointer to binary file */
   freadreal1(&pft->inun_stress, swap, file);
   /* read class-dependent PFT variables */
   if(pft->par->fread(file,pft,double_harvest,swap))
+  {
+    fprintf(stderr,"ERROR254: Cannot read PFT-specific data.\n");
     return TRUE;
+  }
   freadreal((Real *)&pft->bm_inc,sizeof(Stocks)/sizeof(Real),swap,file);
   freadreal1(&pft->nind,swap,file);
   freadreal1(&pft->gdd,swap,file);

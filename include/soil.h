@@ -31,8 +31,6 @@
 
 #define SNOWLAYER NSOILLAYER
 
-#define soil_equil_year (param.veg_equil_year+1320)
-#define cshift_year 300
 #define snow_skin_depth 40.0 /* snow skin layer depth (mm water equivalent)*/
 #define c_water 4.2e6 /* J/m3/K */
 #define c_ice   2.1e6 /* J/m3/K */
@@ -134,7 +132,7 @@ typedef struct
 typedef struct
 {
   const struct Pftpar *pft; /**< PFT id for litter */
-  Trait ag;                 /**< above-ground leaf and wood litter */
+  Trait agtop;              /**< above-ground leaf and wood litter */
   Trait agsub;              /**< above-ground leaf and wood litter incorporated to first layer through tillage */
   Stocks bg;                /**< below-ground litter (gC/m2, gN/m2) */
 } Litteritem;
@@ -195,6 +193,7 @@ typedef struct
   const Soilpar *par; /**< pointer to soil parameters */
   Pool pool[LASTLAYER];          /**< fast and slow carbon pool for all layers*/
   Poolpar k_mean[LASTLAYER];     /**< fast and slow decay constant */
+  Poolpar decay_rate[LASTLAYER]; /**< fast and slow decay rate */
   Poolpar *c_shift[LASTLAYER];   /**< shifting rate of carbon matter to the different layer*/
   Real NO3[LASTLAYER];           /**< NO3 per soillayer (gN/m2) */
   Real NH4[LASTLAYER];           /**< NH4 per soillayer (gN/m2) */
@@ -238,6 +237,7 @@ typedef struct
   Real fastfrac;
   Real layer_exists[LASTLAYER]; /* allows variable soil depth */
   Stocks decomp_litter_mean;
+  Stocks *decomp_litter_pft;
   int count;
   Real YEDOMA;       /**< g/m2 */
   Litter litter;     /**< Litter pool */
@@ -280,12 +280,12 @@ extern void getlag(Soil *,int);
 extern int getnsoilcode(const Filename *,unsigned int,Bool);
 extern Soilstate getstate(Real *); /*temperature above/below/at T_zero?*/
 extern Bool initsoil(Stand *soil,const Soilpar *,int,const Config *);
-extern Real litter_ag_sum(const Litter *);
-extern Real litter_ag_sum_n(const Litter *);
+extern Real litter_agtop_sum(const Litter *);
+extern Real litter_agtop_sum_n(const Litter *);
 extern Real litter_agsub_sum(const Litter *);
 extern Real litter_agsub_sum_n(const Litter *);
-extern Real litter_ag_grass(const Litter *);
-extern Real litter_ag_sum_quick(const Litter *);
+extern Real litter_agtop_grass(const Litter *);
+extern Real litter_agtop_sum_quick(const Litter *);
 extern Stocks littersom(Stand *,const Real [NSOILLAYER],Real,Real *,Real,Real,Real *,Real *,int,int,const Config *);
 extern Real littercarbon(const Litter *);
 extern Stocks litterstocks(const Litter *);
@@ -309,11 +309,11 @@ extern Real soilheatcap(const Soil *,int);
 extern void soilice2moisture(Soil *, Real *,int);
 extern void gasdiffusion(Soil*, Real, Real, Real *, Real *, Real *);
 extern Real ebullition(Soil*, Real);
-extern Real temp_response(Real, Real);
-extern Real litter_ag_tree(const Litter *,int);
 extern Real soilmethane(const Soil *);
-extern Real litter_ag_nitrogen_tree(const Litter *,int);
-extern Real biologicalnfixation(const Stand *);
+extern Real temp_response(Real, Real);
+extern Real litter_agtop_tree(const Litter *,int);
+extern Real litter_agtop_nitrogen_tree(const Litter *,int);
+extern Real biologicalnfixation(const Stand *,int,int,const Config *);
 extern void leaching(Soil *,const Real);
 extern Real volatilization(Real,Real,Real,Real,Real);
 extern Real nuptake_temp_fcn(Real);

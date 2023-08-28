@@ -22,7 +22,7 @@
     if(verb) fprintf(stderr,"ERROR229: Cannot read float '%s' for output '%s'.\n",name,out);\
     return NULL;}
 #define fscanname(file,var,name,out) {              \
-    if(fscanstring(file,var,name,FALSE,verb)) {                 \
+    if((var=fscanstring(file,NULL,name,verb))==NULL) {                 \
     if(verb) fprintf(stderr,"ERROR229: Cannot read string '%s' for output '%s'.\n",name,out==NULL ? "N/A" : out);\
       return NULL;                              \
     }                                              \
@@ -35,13 +35,15 @@ Variable *fscanoutputvar(LPJfile *file, /**< pointer to LPJ file */
                          Verbosity verb /**< verbosity level (NO_ERR,ERR,VERB) */
                         )               /** \return TRUE on error */
 {
-  LPJfile arr,item;
-  String name;
+  LPJfile *arr,*item;
+  const char *name;
+  String s,s2;
   Variable *outnames;
   int index,i,size;
   if (verb>=VERB) puts("// Output parameters");
   size=nout_max;
-  if(fscanarray(file,&arr,&size,FALSE,"outputvar",verb))
+  arr=fscanarray(file,&size,"outputvar",verb);
+  if(arr==NULL)
     return NULL;
   if(size!=nout_max)
   {
@@ -54,9 +56,10 @@ Variable *fscanoutputvar(LPJfile *file, /**< pointer to LPJ file */
     outnames[i].name=NULL;
   for(i=0;i<size;i++)
   {
-    fscanarrayindex(&arr,&item,i,verb);
-    fscanint2(&item,&index,"id");
-    if(fscanstring(&item,name,"name",FALSE,verb))
+    item=fscanarrayindex(arr,i);
+    fscanint2(item,&index,"id");
+    name=fscanstring(item,NULL,"name",verb);
+    if(name==NULL)
     {
       if(verb)
         fprintf(stderr,"ERROR233: No name defined for output index %d.\n",index);
@@ -78,13 +81,13 @@ Variable *fscanoutputvar(LPJfile *file, /**< pointer to LPJ file */
     }
     outnames[index].name=strdup(name);
     checkptr(outnames[index].name);
-    fscanname(&item,name,"var",outnames[index].name);
+    fscanname(item,name,"var",outnames[index].name);
     outnames[index].var=strdup(name);
     checkptr(outnames[index].var);
-    fscanname(&item,name,"descr",outnames[index].name);
+    fscanname(item,name,"descr",outnames[index].name);
     outnames[index].descr=strdup(name);
     checkptr(outnames[index].descr);
-    fscanname(&item,name,"unit",outnames[index].name);
+    fscanname(item,name,"unit",outnames[index].name);
     if(strstr(name,"/month")!=NULL)
       outnames[index].time=MONTH;
     else if(strstr(name,"/yr")!=NULL)
@@ -98,7 +101,7 @@ Variable *fscanoutputvar(LPJfile *file, /**< pointer to LPJ file */
     outnames[index].unit=strdup(name);
     checkptr(outnames[index].unit);
     outnames[index].scale=1.0;
-    fscanfloat2(&item,&outnames[index].scale,"scale",outnames[index].name);
+    fscanfloat2(item,&outnames[index].scale,"scale",outnames[index].name);
     if(outnames[index].scale==0)
     {
       if(verb)
@@ -106,12 +109,19 @@ Variable *fscanoutputvar(LPJfile *file, /**< pointer to LPJ file */
       return NULL;
     }
     outnames[index].offset=0.0;
-    fscanfloat2(&item,&outnames[index].offset,"offset",outnames[index].name);
-    if(fscantimestep(&item,&outnames[index].timestep,verb))
+    fscanfloat2(item,&outnames[index].offset,"offset",outnames[index].name);
+    if(fscantimestep(item,&outnames[index].timestep,verb))
     {
       if(verb)
         fprintf(stderr,"ERROR229: Cannot read int 'timestep' for output '%s'.\n",outnames[index].name);
       return NULL;
+    }
+    if(verb && outnames[index].timestep<getmintimestep(index))
+    {
+      fprintf(stderr,"ERROR246: Time step %s for '%s' output in 'outputvar' too short, must be %s.\n",
+              sprinttimestep(s,outnames[index].timestep),
+              outnames[index].name,
+              sprinttimestep(s2,getmintimestep(index)));
     }
   }
   for(i=0;i<nout_max;i++)

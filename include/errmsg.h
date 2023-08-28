@@ -63,6 +63,7 @@
 #define WETL_ERR 43
 #define HAG_BETA_ERR 44
 #define INVALID_EXTFLOW_ERR 45
+#define OPEN_COUPLER_ERR 46
 
 /* Definition of macros */
 

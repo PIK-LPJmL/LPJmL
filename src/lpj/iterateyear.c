@@ -52,14 +52,15 @@ void iterateyear(Outputfile *output,  /**< Output file data */
   Dailyclimate daily;
   Bool intercrop;
   int month,dayofmonth,day;
-  int cell;
+  int cell, s;
+  Stand *stand;
   Real popdens=0; /* population density (capita/km2) */
   Real norg_soil_agr,nmin_soil_agr,nveg_soil_agr;
   intercrop=getintercrop(input.landuse);
   for(cell=0;cell<config->ngridcell;cell++)
   {
     initoutputdata(&grid[cell].output,ANNUAL,year,config);
-    grid[cell].balance.surface_storage=0;
+    grid[cell].balance.surface_storage=grid[cell].balance.adischarge=0;
     grid[cell].discharge.afin_ext=0;
     if(!grid[cell].skip)
     {
@@ -84,11 +85,13 @@ void iterateyear(Outputfile *output,  /**< Output file data */
 #if defined IMAGE && defined COUPLED
           setoutput_image(grid+cell,ncft,config);
 #endif
-          getnsoil_agr(&norg_soil_agr,&nmin_soil_agr,&nveg_soil_agr,grid+cell);
-          getoutput(&grid[cell].output,DELTA_NORG_SOIL_AGR,config)-=norg_soil_agr;
-          getoutput(&grid[cell].output,DELTA_NMIN_SOIL_AGR,config)-=nmin_soil_agr;
-          getoutput(&grid[cell].output,DELTA_NVEG_SOIL_AGR,config)-=nveg_soil_agr;
-        }
+        getnsoil_agr(&norg_soil_agr,&nmin_soil_agr,&nveg_soil_agr,grid+cell);
+        getoutput(&grid[cell].output,DELTA_NORG_SOIL_AGR,config)-=norg_soil_agr;
+        getoutput(&grid[cell].output,DELTA_NMIN_SOIL_AGR,config)-=nmin_soil_agr;
+        getoutput(&grid[cell].output,DELTA_NVEG_SOIL_AGR,config)-=nveg_soil_agr;
+        foreachstand(stand,s,(grid+cell)->standlist)
+          if(stand->type->landusetype==GRASSLAND)
+            getoutput(&grid[cell].output,DELTAC_MGRASS,config)-=standstocks(stand).carbon*stand->frac;
       }
       initgdd(grid[cell].gdd,npft);
     } /*gridcell skipped*/
@@ -246,7 +249,7 @@ void iterateyear(Outputfile *output,  /**< Output file data */
 #endif
 
 
-      if(config->nspinup>param.veg_equil_year &&
+ /*     if(config->nspinup>param.veg_equil_year &&
          (year==config->firstyear-config->nspinup+param.veg_equil_year))
         equilveg(grid+cell);
       //if(!config->from_restart)
@@ -258,9 +261,31 @@ void iterateyear(Outputfile *output,  /**< Output file data */
          if(config->nspinup>soil_equil_year &&
             (year==config->firstyear-config->nspinup+soil_equil_year) && !config->from_restart)
            equilsom(grid+cell,npft+ncft,config->pftpar,FALSE);
+      }*/
+      if(config->equilsoil)
+      {
+        if((year-(config->firstyear-config->nspinup+param.veg_equil_year-param.equisoil_years))%param.equisoil_interval==0 && 
+           (year-(config->firstyear-config->nspinup+param.veg_equil_year-param.equisoil_years))/param.equisoil_interval>=0 && 
+           (year-(config->firstyear-config->nspinup+param.veg_equil_year-param.equisoil_years))/param.equisoil_interval<param.nequilsoil)
+          equilveg(grid+cell,npft+ncft);
+
+        if(year==(config->firstyear-config->nspinup+param.veg_equil_year))
+          equilsom(grid+cell,npft+ncft,config->pftpar,TRUE);
+ 
+        if((year-(config->firstyear-config->nspinup+param.veg_equil_year))%param.equisoil_interval==0 && 
+           (year-(config->firstyear-config->nspinup+param.veg_equil_year))/param.equisoil_interval>0 && 
+           (year-(config->firstyear-config->nspinup+param.veg_equil_year))/param.equisoil_interval<param.nequilsoil)
+          equilsom(grid+cell,npft+ncft,config->pftpar,FALSE);
+
+        if(param.equisoil_fadeout>0)
+        {
+          if(year==(config->firstyear-config->nspinup+param.veg_equil_year+param.equisoil_interval*param.nequilsoil))
+            equilveg(grid+cell,npft+ncft);
+
+          if(year==(config->firstyear-config->nspinup+param.veg_equil_year+param.equisoil_interval*param.nequilsoil+param.equisoil_fadeout))
+            equilsom(grid+cell,npft+ncft,config->pftpar,FALSE);
+        }
       }
-
-
 
       if(config->withlanduse)
       {
@@ -268,6 +293,9 @@ void iterateyear(Outputfile *output,  /**< Output file data */
         getoutput(&grid[cell].output,DELTA_NORG_SOIL_AGR,config)+=norg_soil_agr;
         getoutput(&grid[cell].output,DELTA_NMIN_SOIL_AGR,config)+=nmin_soil_agr;
         getoutput(&grid[cell].output,DELTA_NVEG_SOIL_AGR,config)+=nveg_soil_agr;
+        foreachstand(stand,s,(grid+cell)->standlist)
+          if(stand->type->landusetype==GRASSLAND)
+            getoutput(&grid[cell].output,DELTAC_MGRASS,config)+=standstocks(stand).carbon*stand->frac;
       }
     }
     if(config->river_routing)

@@ -8,7 +8,7 @@
 ##                                                                             ##
 ##    Usage: lpjsubmit [-class c] [-group g] [-wtime time] [-blocking n]       ##
 ##                     [-o output] [-e error] [-q] [-nocheck] [-norun]         ##
-##                     ntask [LPJargs...]                                      ##
+##                     [-constraint c] [-option a=b] ntask [LPJargs...]        ##
 ##                                                                             ##
 ## (C) Potsdam Institute for Climate Impact Research (PIK), see COPYRIGHT file ##
 ## authors, and contributors see AUTHORS file                                  ##
@@ -17,6 +17,8 @@
 ## Contact: https://github.com/PIK-LPJmL/LPJmL                                 ##
 ##                                                                             ##
 #################################################################################
+
+USAGE="Usage: $0 [-class c] [-group g] [-wtime time] [-blocking n] [-o output] [-e error] [-q] [-nocheck] [-norun] [-dependency id] [-couple program] [-constraint c] [[-option a=b] ...] ntasks [args ...]"
 
 if [ "$LPJROOT" = "" ]
 then
@@ -29,10 +31,13 @@ class=short
 group=""
 wtime=""
 depend=""
+constraint=""
 blocking="unlimited"
 output="lpjml.%j.out"
 error="lpjml.%j.err"
 norun=0
+couple=""
+options=""
 
 while(( "$#" )); do
   case "$1" in
@@ -40,7 +45,7 @@ while(( "$#" )); do
     if [ $# -lt 2 ]
     then
       echo >&2 Error: class missing
-      echo >&2 Usage: $0 [-class c] [-group g] [-wtime time] [-blocking n] [-o output] [-e error] [-q] [-nocheck] [-norun] [-dependency id] ntasks [args ...]
+      echo >&2 $USAGE
       exit 1
     fi
     shift 1
@@ -51,7 +56,7 @@ while(( "$#" )); do
       if [ $# -lt 2 ]
       then
         echo >&2 Error: group missing
-        echo >&2 Usage: $0 [-class c] [-group g] [-wtime time] [-blocking n] [-o output] [-e error] [-q] [-nocheck] [-norun] [-dependency id] ntasks [args ...]
+        echo >&2 $USAGE
         exit 1
       fi
       shift 1
@@ -62,7 +67,7 @@ while(( "$#" )); do
       if [ $# -lt 2 ]
       then
         echo >&2 Error: wall clock time missing
-        echo >&2 Usage: $0 [-class c] [-group g] [-wtime time] [-blocking n] [-o output] [-e error] [-q] [-nocheck] [-norun] [-dependency id] ntasks [args ...]
+        echo >&2 $USAGE
         exit 1
       fi
       shift 1
@@ -73,7 +78,7 @@ while(( "$#" )); do
       if [ $# -lt 2 ]
       then
         echo >&2 Error: blocking factor missing
-        echo >&2 Usage: $0 [-class c] [-group g] [-wtime time] [-blocking n] [-o output] [-e error] [-q] [-nocheck] [-norun] [-dependency id] ntasks [args ...]
+        echo >&2 $USAGE
         exit 1
       fi
       shift 1
@@ -84,7 +89,7 @@ while(( "$#" )); do
      if [ $# -lt 2 ]
      then
        echo >&2 Error: output filename missing
-       echo >&2 Usage: $0 [-class c] [-group g] [-wtime time] [-blocking n] [-o output] [-e error] [-q] [-nocheck] [-norun] n[-dependency id] tasks [args ...]
+       echo >&2 $USAGE
        exit 1
      fi
      shift 1
@@ -95,7 +100,7 @@ while(( "$#" )); do
      if [ $# -lt 2 ]
      then
        echo >&2 Error: error filename  missing
-       echo >&2 Usage: $0 [-class c] [-group g] [-wtime time] [-blocking n] [-o output] [-e error] [-q] [-nocheck] [-norun] n[-dependency id] tasks [args ...]
+       echo >&2 $USAGE
        exit 1
      fi
      shift 1
@@ -110,11 +115,44 @@ while(( "$#" )); do
      if [ $# -lt 2 ]
      then
        echo >&2 Error: jobid missing
-       echo >&2 Usage: $0 [-class c] [-group g] [-wtime time] [-blocking n] [-o output] [-e error] [-q] [-nocheck] [-norun] n[-dependency id] tasks [args ...]
+       echo >&2 $USAGE
        exit 1
      fi
      shift 1
      depend="--dependency=afterok:"$1
+     shift 1
+     ;;
+   -couple)
+     if [ $# -lt 2 ]
+     then
+       echo >&2 Error: program name missing
+       echo >&2 $USAGE
+       exit 1
+     fi
+     shift 1
+     couple=$1
+     shift 1
+     ;;
+   -constraint)
+     if [ $# -lt 2 ]
+     then
+       echo >&2 Error: constraint missing
+       echo >&2 $USAGE
+       exit 1
+     fi
+     shift 1
+     constraint=$1
+     shift 1
+     ;;
+   -option)
+     if [ $# -lt 2 ]
+     then
+       echo >&2 Error: option missing
+       echo >&2 $USAGE
+       exit 1
+     fi
+     shift 1
+     options="$options $1"
      shift 1
      ;;
    -nocheck)
@@ -127,7 +165,7 @@ while(( "$#" )); do
      ;;
    -*)
      echo >&2 Invalid option $1
-     echo >&2 Usage: $0 [-class c] [-group g] [-wtime time] [-blocking n] [-o output] [-e error] [-q] [-nocheck] [-norun] [-dependency id] ntasks [args ...]
+     echo >&2 $USAGE
      exit 1
      ;;
    *)
@@ -139,7 +177,7 @@ done
 if [ $# -lt 1 ]
 then
   echo >&2 Error: Number of tasks missing
-  echo >&2 Usage: $0 [-class c] [-group g] [-wtime time] [-blocking n] [-o output] [-e error] [-q] [-nocheck] [-norun] [-dependency id] ntasks [args ...]
+  echo >&2 $USAGE
   exit 1
 fi
 
@@ -172,6 +210,7 @@ then
 #SBATCH --signal=15@180
 #SBATCH -J LPJmL60
 EOF
+echo "#SBATCH -J LPJmL$(cat $LPJROOT/VERSION)" >>slurm.jcf
 echo "#SBATCH --comment=\"LPJmL Version" $(cat $LPJROOT/VERSION) "args:" $args"\"" >>slurm.jcf
 cat <<EOF >>slurm.jcf
 #SBATCH --mail-user=$(whoami)
@@ -189,6 +228,14 @@ if [ "$blocking" != "unlimited" ]
 then
   echo "#SBATCH --tasks-per-node="$blocking >>slurm.jcf
 fi
+if [ "$constraint" != "" ]
+then
+  echo "#SBATCH --constraint="$constraint >>slurm.jcf
+fi
+for o in $options
+do
+  echo "#SBATCH --$o" >>slurm.jcf
+done
 cat <<EOF >>slurm.jcf
 #SBATCH -o  $output
 #SBATCH -e  $error
@@ -201,6 +248,13 @@ ulimit -c unlimited
 
 export I_MPI_PMI_LIBRARY=/p/system/slurm/lib/libpmi.so
 
+EOF
+if [ "$couple" != "" ]
+then
+  echo $couple " &" >>slurm.jcf
+  echo >>slurm.jcf
+fi
+cat <<EOF >>slurm.jcf
 srun --propagate  \$LPJROOT/bin/lpjml $args
 
 rc=\$?  # save return code of srun

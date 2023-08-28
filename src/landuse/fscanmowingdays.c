@@ -20,13 +20,14 @@ Bool fscanmowingdays(LPJfile *file, /**< pointer to LPJ configuration file */
                      Config *config /**< LPJ configuration */
                     )               /** \return TRUE on error */
 {
-  LPJfile array,item;
+  LPJfile *array,*item;
   Verbosity verbose;
   int i;
   if(iskeydefined(file,"mowing_days"))
   {
     verbose=(isroot(*config)) ? config->scan_verbose : NO_ERR;
-    if(fscanarray(file,&array,&config->mowingdays_size,FALSE,"mowing_days",verbose))
+    array=fscanarray(file,&config->mowingdays_size,"mowing_days",verbose);
+    if(array==NULL)
       return TRUE;
     config->mowingdays=newvec(int,config->mowingdays_size);
     if(config->mowingdays==NULL)
@@ -36,8 +37,8 @@ Bool fscanmowingdays(LPJfile *file, /**< pointer to LPJ configuration file */
     }
     for(i=0;i<config->mowingdays_size;i++)
     {
-      fscanarrayindex(&array,&item,i,verbose);
-      if(fscanint(&item,config->mowingdays+i,NULL,FALSE,verbose))
+      item=fscanarrayindex(array,i);
+      if(fscanint(item,config->mowingdays+i,NULL,FALSE,verbose))
       {
         free(config->mowingdays);
         return TRUE;

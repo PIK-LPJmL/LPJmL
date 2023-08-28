@@ -29,6 +29,7 @@ void freeconfig(Config *config /**< LPJmL configuration */
                )
 {
   int i;
+  free(config->coupled_model);
   free(config->compress_cmd);
   free(config->compress_suffix);
   if(config->soil_filename.fmt!=CDF)
@@ -133,6 +134,8 @@ void freeconfig(Config *config /**< LPJmL configuration */
     free(config->mowingdays);
     if(config->sdate_option==PRESCRIBED_SDATE || config->crop_phu_option==PRESCRIBED_CROP_PHU)
       free(config->cftmap);
+    if(config->tillage_type==READ_TILLAGE)
+      freefilename(&config->with_tillage_filename);
     freecountrypar(config->countrypar,config->ncountries);
     freeregionpar(config->regionpar,config->nregions);
     freefilename(&config->landuse_filename);
@@ -148,6 +151,8 @@ void freeconfig(Config *config /**< LPJmL configuration */
     }
     if(config->sdate_option==PRESCRIBED_SDATE)
       freefilename(&config->sdate_filename);
+    if(config->prescribe_lsuha)
+      freefilename(&config->lsuha_filename);
   }
   if(config->with_nitrogen)
   {

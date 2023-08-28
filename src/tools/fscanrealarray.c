@@ -18,24 +18,19 @@
 #include <stdio.h>
 #include <string.h>
 #include <math.h>
-#ifdef USE_JSON
 #include <json-c/json.h>
-#endif
 #include "types.h"
 
 Bool fscanrealarray(LPJfile *file,    /**< pointer to LPJ file */
                     Real value[],     /**< real array to read */
-                    int size,         /**< size of aray */
+                    int size,         /**< size of array */
                     const char *key,  /**< name of array */
                     Verbosity verb    /**< verbosity level (NO_ERR,ERR,VERB) */
                    )
 {
   int i;
-#ifdef USE_JSON
   struct json_object *array,*item;
-  if(file->isjson)
-  {
-  if(!json_object_object_get_ex(file->file.obj,key,&array))
+  if(!json_object_object_get_ex(file,key,&array))
   {
     if(verb)
       fprintf(stderr,"ERROR225: Name '%s' for array not found.\n",key);
@@ -80,11 +75,5 @@ Bool fscanrealarray(LPJfile *file,    /**< pointer to LPJ file */
   }
   if (verb >= VERB)
     printf("]\n");
-  return FALSE;
-  }
-#endif
-  for(i=0;i<size;i++)
-    if(fscanreal(file,value+i,key,FALSE,verb))
-       return TRUE;
   return FALSE;
 } /* of 'fscanrealarray' */ 

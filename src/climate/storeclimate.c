@@ -37,6 +37,8 @@ Bool storeclimate(Climatedata *store,  /**< pointer to climate data to be stored
   checkptr(store->temp);
   store->prec=newvec(Real,climate->file_prec.n*nyear);
   checkptr(store->prec);
+  store->no3deposition=NULL;
+  store->nh4deposition=NULL;
   if(climate->data[0].tmax!=NULL)
   {
     store->tmax=newvec(Real,climate->file_tmax.n*nyear);

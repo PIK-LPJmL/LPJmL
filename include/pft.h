@@ -84,6 +84,12 @@ typedef struct
   Real tau;  /**< rate of change of function to actual value */
 } Phen_param;
 
+typedef struct
+{
+  Real dry;       /**< irrigation threshold for dry conditions (0..1) */
+  Real humid;     /**< irrigation threshold for humid conditions (0..1) */
+} Irrig_threshold;
+
 typedef struct Pft
 {
   const struct Pftpar
@@ -151,9 +157,9 @@ typedef struct Pft
     Limit temp_bnf_opt;
     Limit swc_bnf;
     Real phi_bnf[2];
-    Real nfixpot;
-    Real maxbnfcost;
-    Real bnf_cost;
+    Real nfixpot;               /**< maximum N fixation potential (gN/m2/day) */
+    Real maxbnfcost;            /**< maximum cost for N fixation (gC/m2/day) */
+    Real bnf_cost;              /**< cost for N fixation (gC/gN) */
     Real windspeed;             /**< windspeed dampening */
     Real roughness;             /**< roughness length */
     Real inun_thres;            /**< inund_height: max WTP tolerated [m]*/
@@ -162,6 +168,7 @@ typedef struct Pft
     Real vpd_par;               /**< scaling factor for VPD fire danger index  */
     Real fuelbulkdensity;       /**< fuel bulk density*/
     Tracegas emissionfactor;    /**< trace gas emission factors */
+    Irrig_threshold irrig_threshold; /**< threshold for irrigation */
     void *data;                 /**< pointer for PFT specific extensions */
 
     /* list of pointers for PFT specific functions */
@@ -287,7 +294,7 @@ extern Real f_lai(Real);
 extern int findpftname(const char *,const Pftpar[],int);
 extern Bool findcftmap(const char *,const Pftpar[],const int[],int);
 extern void fprintpftnames(FILE *,const Pftpar[],int);
-extern Real ma_biological_n_fixation(Pft *,Soil *,Real,const Config *);
+extern Real npp_contr_biol_n_fixation(Pft *,Soil *,Real,const Config *);
 
 
 /* needed for IMAGE, but can also be used otherwise */

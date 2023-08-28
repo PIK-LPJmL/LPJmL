@@ -34,7 +34,6 @@ typedef struct
   Bool (*annual)(Stand *,int,int,
                  Real,int,Bool,Bool,const Config *);
   void (*dailyfire)(Stand *,Livefuel *,Real,Real,const Dailyclimate *,const Config *);
-  Bool (*isdaily_output)(const Config *,const Stand *);
 } Standtype;
 
 struct stand
@@ -73,8 +72,8 @@ extern void initstand (Stand *);
 extern void freestand(Stand *);
 extern int delstand(Standlist,int);
 extern void freestandlist(Standlist);
-extern void mixsoil(Stand *,const Stand *,int,const Config *);
-extern Bool check_lu(const Standlist ,Real,int,Bool);
+extern void mixsoil(Stand *,const Stand *,int,int,const Config *);
+extern Bool check_lu(const Standlist ,Real,int,Landusetype,Bool);
 extern void check_stand_fracs(const Cell *,Real,int);
 extern int findstand(const Standlist, Landusetype, Bool);
 extern int findstandpft(const Standlist,int,Bool);
@@ -112,6 +111,5 @@ extern void freelandcover(Landcover,Bool);
 #define daily_stand(stand,co2,climate,day,month,daylength,gtemp_air,gtemp_soil,eeq,par,melt,npft,ncft,year,intercrop,agrfrac,config) stand->type->daily(stand,co2,climate,day,month,daylength,gtemp_air,gtemp_soil,eeq,par,melt,npft,ncft,year,intercrop,agrfrac,config)
 #define annual_stand(stand,npft,ncft,popdens,year,isdaily,intercrop,config) stand->type->annual(stand,npft,ncft,popdens,year,isdaily,intercrop,config)
 #define dailyfire_stand(stand,livefuel,popdens,avgprec,climate,config) if(stand->type->dailyfire!=NULL) stand->type->dailyfire(stand,livefuel,popdens,avgprec,climate,config)
-#define isdailyoutput_stand(output,stand) ((stand->type->isdaily_output==NULL) ? FALSE : stand->type->isdaily_output(output,stand))
 
 #endif

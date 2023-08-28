@@ -78,6 +78,7 @@ typedef struct config Config; /* forward declaration of stand */
 #include "header.h"
 #include "climate.h"
 #include "image.h"
+#include "coupler.h"
 #include "cropdates.h"
 #include "reservoir.h"
 #include "landuse.h"
@@ -99,28 +100,24 @@ typedef struct config Config; /* forward declaration of stand */
 
 /* Definition of constants */
 
-#ifdef USE_JSON
-#define dflt_conf_filename_ml "lpjml.js"   /* Default LPJ configuration file
-                                              if called by lpjml */
-#define dflt_conf_filename "lpj.js"        /* Default LPJ configuration file
-                                              if called by lpj */
+#ifdef _WIN32              /* are we on a Windows machine? */
+#ifdef IMAGE
+#define cpp_cmd "cl /E /DIMAGE /nologo"  /* C preprocessor command for Windows */
 #else
-#define dflt_conf_filename_ml "lpjml.conf" /* Default LPJ configuration file
-                                              if called by lpjml */
-#define dflt_conf_filename "lpj.conf"      /* Default LPJ configuration file
-                                              if called by lpj */
+#define cpp_cmd "cl /E /nologo"  /* C preprocessor command for Windows */
+#endif
+#else
+#define cpp_cmd "cpp"  /* C preprocessor command for Unix */
 #endif
 
 /* Environment variables */
 
 #define LPJROOT "LPJROOT"            /* LPJ root directory */
 #define LPJPREP "LPJPREP"            /* preprocessor command */
-#define LPJCONFIG "LPJCONFIG"        /* default LPJ configuration filename */
 #define LPJOPTIONS "LPJOPTIONS"      /* LPJ runtime options */
 #define LPJINPUT "LPJINPATH"         /* path for input files */
 #define LPJOUTPUT "LPJOUTPATH"       /* path for output files */
 #define LPJRESTART "LPJRESTARTPATH"  /* path for restart file */
-#define LPJOUTPUTMETHOD "LPJOUTPUT"  /* default output method */
 
 /* Declaration of variables */
 
@@ -133,14 +130,13 @@ extern Bool fwriterestart(const Cell[],int,int,int,const char *,Bool,const Confi
 extern FILE *openrestart(const char *,Config *,int,Bool *);
 extern void copyright(const char *);
 extern void printlicense(void);
-extern void help(const char *,const char *);
+extern void help(const char *);
 extern void fprintflux(FILE *file,Flux,Real,int,const Config *);
 extern void fprintcsvflux(FILE *file,Flux,Real,Real,int,const Config *);
-#ifdef USE_MPI
 extern void failonerror(const Config *,int,int,const char *);
+#ifdef USE_MPI
 extern Bool iserror(int,const Config *);
 #else
-#define failonerror(config,rc,errorcode,msg) if(rc) fail(errorcode,FALSE,msg)
 #define iserror(rc,config) rc
 #endif
 

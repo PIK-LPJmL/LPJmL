@@ -36,7 +36,7 @@ void waterbalance(Stand *stand,           /**< Stand pointer */
   Real w_evap=0,w_evap_ice=0,whcs_evap=0,soildepth_evap=param.soildepth_evap,evap_ratio,green_evap=0,marginal;
   Real evap_energy,evap_litter,evap_soil, litter_depth,evap_test;
   Soil *soil;
-  int l,p;
+  int l;
   Real aet=0,updated_soil_water=0,previous_soil_water[NSOILLAYER],evap_out[BOTTOMLAYER];
   Irrigation *data_irrig;
 #ifdef CHECK_BALANCE
@@ -44,7 +44,7 @@ void waterbalance(Stand *stand,           /**< Stand pointer */
   water_before=soilwater(&stand->soil);
 #endif
   if(stand->type->landusetype==AGRICULTURE || stand->type->landusetype==SETASIDE_RF || stand->type->landusetype==SETASIDE_IR || stand->type->landusetype==SETASIDE_WETLAND || stand->type->landusetype==BIOMASS_GRASS ||
-      stand->type->landusetype==BIOMASS_TREE || stand->type->landusetype==GRASSLAND || stand->type->landusetype==AGRICULTURE_TREE || stand->type->landusetype==AGRICULTURE_GRASS)
+      stand->type->landusetype==BIOMASS_TREE || stand->type->landusetype==GRASSLAND || stand->type->landusetype==OTHERS || stand->type->landusetype==AGRICULTURE_TREE || stand->type->landusetype==AGRICULTURE_GRASS)
     data_irrig=stand->data;
   else
     data_irrig=NULL;
@@ -54,12 +54,7 @@ void waterbalance(Stand *stand,           /**< Stand pointer */
   for(l=0;l<LASTLAYER;l++)
     evap_out[l]=0;
   *frac_g_evap=0;
-  evap_litter=evap_soil=litter_depth=0;
-  for(p=0;p<soil->litter.n;p++)
-    litter_depth+=soil->litter.item[p].ag.leaf.carbon/soil->litter.item[p].pft->fuelbulkdensity;       // units g/m2  / (kg/m3*1000) = m -> *1000 = mm
-
-  if(litter_depth<0) litter_depth=0;
-  soildepth_evap=max(soildepth_evap-litter_depth,0);
+  evap_litter=evap_soil=0;
 
   forrootsoillayer(l)
     aet+=aet_stand[l];
@@ -73,10 +68,8 @@ void waterbalance(Stand *stand,           /**< Stand pointer */
       evap_litter=evap_energy*soil->litter.agtop_moist/soil->litter.agtop_wcap*soil->litter.agtop_moist/soil->litter.agtop_wcap*soil->litter.agtop_cover; /* same as for evap_soil */
       evap_litter=min(evap_litter,soil->litter.agtop_moist); /* for very small agtop_meist the result of the above line can be larger than agtop_moist */
       evap_litter=min(evap_litter,eeq*PRIESTLEY_TAYLOR*(1-wet_all)-aet); /* close energy balance */
-      evap_energy-=evap_litter;
     }
-//    if((1-soil->litter.agtop_cover)>epsilon)
-    if(evap_energy>0 && soildepth_evap>0)
+    if((1-soil->litter.agtop_cover)>epsilon)
     {
       l=0;
       whcs_evap=0;
@@ -96,9 +89,9 @@ void waterbalance(Stand *stand,           /**< Stand pointer */
 
 //      whcs_evap=param.soildepth_evap*soil->whc[0];
       if(w_evap/whcs_evap<1)
-        evap_soil=evap_energy*w_evap/whcs_evap*w_evap/whcs_evap; //*(1-soil->litter.agtop_cover);
+        evap_soil=evap_energy*w_evap/whcs_evap*w_evap/whcs_evap*(1-soil->litter.agtop_cover);
       else
-        evap_soil=evap_energy; //*(1-soil->litter.agtop_cover);    /* if above field cap then it's potential evap*/
+        evap_soil=evap_energy*(1-soil->litter.agtop_cover);    /* if above field cap then it's potential evap*/
 
       if (evap_soil>(w_evap-w_evap_ice))
         evap_soil=w_evap-w_evap_ice;
@@ -107,7 +100,7 @@ void waterbalance(Stand *stand,           /**< Stand pointer */
 
     //if(stand->type->landusetype!=NATURAL)
     if(stand->type->landusetype==AGRICULTURE || stand->type->landusetype==SETASIDE_RF || stand->type->landusetype==SETASIDE_IR || stand->type->landusetype==SETASIDE_WETLAND || stand->type->landusetype==BIOMASS_GRASS ||
-        stand->type->landusetype==BIOMASS_TREE || stand->type->landusetype==GRASSLAND || stand->type->landusetype==AGRICULTURE_TREE || stand->type->landusetype==AGRICULTURE_GRASS)
+        stand->type->landusetype==BIOMASS_TREE || stand->type->landusetype==GRASSLAND || stand->type->landusetype==OTHERS || stand->type->landusetype==AGRICULTURE_TREE || stand->type->landusetype==AGRICULTURE_GRASS)
       if(data_irrig->irrigation && data_irrig->irrig_system==DRIP)
         evap_soil*=(1-(param.drip_evap*(1-*frac_g_evap))); /*reduced blue soil evaporation in case of DRIP irrigation */
 
@@ -133,7 +126,6 @@ void waterbalance(Stand *stand,           /**< Stand pointer */
 
 
   soildepth_evap=param.soildepth_evap;
-  soildepth_evap=max(soildepth_evap-litter_depth,0);
 
   for (l=0;l<NSOILLAYER;l++)
   {

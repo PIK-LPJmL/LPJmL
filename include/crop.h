@@ -138,7 +138,7 @@ extern const char *calcmethod[];
 /* Declaration of functions */
 
 extern void new_crop(Pft *,int,int,const Config *);
-extern void allocation_daily_crop(Pft *,Real, Real,Bool,const Config *);
+extern void allocation_daily_crop(Pft *,Real, Real,const Config *);
 extern Real npp_crop(Pft *,Real,Real,Real,Bool *,Real,const Config *);
 extern Real fpc_crop(Pft *);
 extern Real fpar_crop(const Pft *);

@@ -20,7 +20,7 @@
 #define fscanreal2(file,var,name) if(fscanreal(file,var,name,FALSE,verbose)) return TRUE;
 #define fscanbool2(file,var,name) if(fscanbool(file,var,name,FALSE,verbose)) return TRUE;
 #define fscanname(file,var,name) {              \
-    if(fscanstring(file,var,name,FALSE,verbose)) {                 \
+    if((var=fscanstring(file,NULL,name,verbose))==NULL) {                 \
       if(verbose) readstringerr(name);  \
       return TRUE;                              \
     }                                              \
@@ -35,8 +35,8 @@
       printf("%s %s\n", what, (var)->name);                             \
   }
 
-#define scanclimatefilename(file,var,path,isfms,what) {                 \
-    if(readclimatefilename(file,var,what,path,isfms,verbose)) {      \
+#define scanclimatefilename(file,var,isfms,iscoupled,what) {                 \
+    if(readclimatefilename(file,var,what,def,FALSE,isfms,iscoupled,config)) {      \
       if(verbose) fprintf(stderr,"ERROR209: Cannot read filename for '%s' input.\n",what); \
       return TRUE;                                                      \
     }                                                                   \
@@ -47,11 +47,11 @@
 #define checkptr(ptr) if(ptr==NULL) { printallocerr(#ptr); return TRUE; }
 
 const char *crop_phu_options[]={"old","new","prescribed"};
-const char *grazing_type[]={"default","mowing","ext","int","none"};
+const char *grazing_type[]={"default","mowing","ext","int","livestock","none"};
 
 static Bool readfilename2(LPJfile *file,Filename *name,const char *key,const char *path,Verbosity verbose)
 {
-  if(readfilename(file,name,key,path,FALSE,verbose))
+  if(readfilename(file,name,key,path,FALSE,FALSE,verbose))
     return TRUE;
   if(name->fmt==CDF)
   {
@@ -68,17 +68,62 @@ static Bool readfilename2(LPJfile *file,Filename *name,const char *key,const cha
   return FALSE;
 } /* of 'readfilename2' */
 
-static Bool readclimatefilename(LPJfile *file,Filename *name,const char *key,const char *path,Bool isfms,Verbosity verbose)
+static Bool readclimatefilename(LPJfile *file,Filename *name,const char *key,Bool def[N_IN],Bool istxt,Bool isfms,Bool iscoupled,Config *config)
 {
-  if(readfilename(file,name,key,path,TRUE,verbose))
+  Verbosity verbose;
+  verbose=(isroot(*config)) ? config->scan_verbose : NO_ERR;
+  if(readfilename(file,name,key,config->inputdir,TRUE,TRUE,verbose))
     return TRUE;
-  if(!isfms && name->fmt==FMS)
+  if(!(isfms && config->sim_id==LPJML_FMS) && name->fmt==FMS)
   {
     if(verbose)
       fprintf(stderr,"ERROR197: FMS coupler not allowed for input '%s'.\n",key);
     return TRUE;
   }
-  if(name->fmt==TXT)
+  if(!iscoupled && name->issocket)
+  {
+    if(verbose)
+      fprintf(stderr,"ERROR197: File format 'sock' not allowed for input '%s'.\n",key);
+    return TRUE;
+  }
+  if(name->issocket)
+  {
+    if(iscoupled(*config))
+    {
+      config->coupler_in++;
+      if(name->id<0 || name->id>=N_IN)
+      {
+        if(verbose)
+          fprintf(stderr,"ERROR197: Invalid index %d for %s input, must be in [0,%d].\n",name->id,config->coupled_model,N_IN-1);
+        return TRUE;
+      }
+      if(def[name->id])
+      {
+        if(verbose)
+        fprintf(stderr,"ERROR197: Index %d already defined for %s input.\n",name->id,config->coupled_model);
+          return TRUE;
+      }
+      def[name->id]=TRUE;
+    }
+    else
+    {
+      name->issocket=FALSE;
+      if(name->fmt==SOCK)
+      {
+        if(verbose)
+          fprintf(stderr,"ERROR197: Socket %s input not allowed without coupled model.\n",key);
+        return TRUE;
+      }
+    }
+  }
+  if(istxt && name->fmt!=TXT && name->fmt!=FMS && name->fmt!=SOCK)
+  {
+    if(verbose)
+      fprintf(stderr,"ERROR197: Only txt format is supported for input '%s' in this version of LPJmL, %s not allowed.\n",
+              name->name,fmt[name->fmt]);
+    return TRUE;
+  }
+  if(!istxt && name->fmt==TXT)
   {
     if(verbose)
       fprintf(stderr,"ERROR197: text file is not supported for input '%s' in this version of LPJmL.\n",name->name);
@@ -124,9 +169,9 @@ Bool fscanconfig(Config *config,    /**< LPJ configuration */
                  int nout_max       /**< maximum number of output files */
                 )                   /** \return TRUE on error */
  {
-  String name;
-  LPJfile input;
-  int restart,endgrid,israndom,grassfix,grassharvest;
+  const char *name;
+  LPJfile *input;
+  int i,restart,endgrid,israndom,grassfix,grassharvest;
   Verbosity verbose;
   const char *landuse[]={"no","yes","const","all_crops","only_crops"};
   const char *fertilizer[]={"no","yes","auto"};
@@ -142,18 +187,39 @@ Bool fscanconfig(Config *config,    /**< LPJ configuration */
   const char *nitrogen[]={"no","lim","unlim"};
   const char *tillage[]={"no","all","read"};
   const char *residue_treatment[]={"no_residue_remove","fixed_residue_remove","read_residue_data"};
+  Bool def[N_IN];
   verbose=(isroot(*config)) ? config->scan_verbose : NO_ERR;
 
   /*=================================================================*/
   /* I. Reading type section                                         */
   /*=================================================================*/
-
+  config->coupler_in=0;
+  config->socket=NULL;
   if (verbose>=VERB) puts("// I. type section");
+  config->coupled_model=NULL;
+  if(iskeydefined(file,"coupled_model"))
+  {
+    if(!isnull(file,"coupled_model"))
+    {
+      fscanname(file,name,"coupled_model");
+      if(config->sim_id==LPJML_IMAGE)
+      {
+        if(verbose)
+          fprintf(stderr,"ERROR123: Coupling to '%s' model not allowed with image coupling enabled.\n",
+                  name);
+        return TRUE;
+      }
+      config->coupled_model=strdup(name);
+      checkptr(name);
+    }
+  }
+  else if(verbose)
+    fprintf(stderr,"WARNING027: Name 'coupled_model' for string not found, set to null.\n");
   fscanbool2(file,&israndom,"random_prec");
   config->seed_start=RANDOM_SEED;
   if(isstring(file,"random_seed"))
   {
-    fscanstring(file,name,"random_seed",FALSE,verbose);
+    name=fscanstring(file,NULL,"random_seed",verbose);
     if(!strcmp(name,"random_seed"))
       config->seed_start=RANDOM_SEED;
     else
@@ -169,7 +235,9 @@ Bool fscanconfig(Config *config,    /**< LPJ configuration */
     config->seed_start=time(NULL);
   setseed(config->seed,config->seed_start);
   config->with_nitrogen=NO_NITROGEN;
+#ifdef COUPLING_WITH_FMS
   config->nitrogen_coupled=FALSE;
+#endif
   if(fscankeywords(file,&config->with_nitrogen,"with_nitrogen",nitrogen,3,TRUE,verbose))
     return TRUE;
   if(fscankeywords(file,&config->with_radiation,"radiation",radiation,4,FALSE,verbose))
@@ -208,9 +276,9 @@ Bool fscanconfig(Config *config,    /**< LPJ configuration */
   config->prescribe_landcover=NO_LANDCOVER;
   if(fscankeywords(file,&config->prescribe_landcover,"prescribe_landcover",prescribe_landcover,3,TRUE,verbose))
     return TRUE;
-  fscanbool2(file,&config->new_phenology,"new_phenology");
-  config->new_trf=FALSE;
-  if(fscanbool(file,&config->new_trf,"new_trf",TRUE,verbose))
+  fscanbool2(file,&config->gsi_phenology,"gsi_phenology");
+  config->transp_suction_fcn=FALSE;
+  if(fscanbool(file,&config->transp_suction_fcn,"transp_suction_fcn",TRUE,verbose))
     return TRUE;
   fscanbool2(file,&config->river_routing,"river_routing");
   config->extflow=FALSE;
@@ -240,7 +308,6 @@ Bool fscanconfig(Config *config,    /**< LPJ configuration */
   config->sdate_option=NO_FIXED_SDATE;
   config->crop_phu_option=NEW_CROP_PHU;
   config->rw_manage=FALSE;
-  config->const_climate=FALSE;
   config->tillage_type=NO_TILLAGE;
   config->residue_treatment=NO_RESIDUE_REMOVE;
   config->no_ndeposition=FALSE;
@@ -249,14 +316,17 @@ Bool fscanconfig(Config *config,    /**< LPJ configuration */
   config->double_harvest=FALSE;
   config->others_to_crop = FALSE;
   config->fertilizer_input=NO_FERTILIZER;
-  config->ma_bnf = FALSE;
+  config->npp_controlled_bnf = FALSE;
+  config->prescribe_lsuha=FALSE;
   if(config->with_nitrogen)
   {
-    if(fscanbool(file,&config->ma_bnf,"ma_bnf",TRUE,verbose))
+    if(fscanbool(file,&config->npp_controlled_bnf,"npp_controlled_bnf",TRUE,verbose))
       return TRUE;
+#ifdef COUPLING_WITH_FMS
     config->nitrogen_coupled=TRUE;
     if(fscanbool(file,&config->nitrogen_coupled,"nitrogen_coupled",TRUE,verbose))
       return TRUE;
+#endif
   }
   config->soilpar_option=NO_FIXED_SOILPAR;
   if(fscankeywords(file,&config->soilpar_option,"soilpar_option",soilpar_option,3,TRUE,verbose))
@@ -265,13 +335,11 @@ Bool fscanconfig(Config *config,    /**< LPJ configuration */
   {
     fscanint2(file,&config->soilpar_fixyear,"soilpar_fixyear");
   }
-  if(fscanbool(file,&config->const_climate,"const_climate",TRUE,verbose))
-    return TRUE;
-  config->storeclimate=TRUE;;
+  config->storeclimate=TRUE;
   if(fscanbool(file,&config->storeclimate,"store_climate",TRUE,verbose))
     return TRUE;
-  config->shuffle_climate=FALSE;
-  if(fscanbool(file,&config->shuffle_climate,"shuffle_climate",TRUE,verbose))
+  config->shuffle_spinup_climate=FALSE;
+  if(fscanbool(file,&config->shuffle_spinup_climate,"shuffle_spinup_climate",TRUE,verbose))
     return TRUE;
   config->fix_climate=FALSE;
   if(fscanbool(file,&config->fix_climate,"fix_climate",TRUE,verbose))
@@ -279,27 +347,58 @@ Bool fscanconfig(Config *config,    /**< LPJ configuration */
   if(config->fix_climate)
   {
     fscanint2(file,&config->fix_climate_year,"fix_climate_year");
+    if(fscanintarray(file,config->fix_climate_interval,2,"fix_climate_interval",verbose))
+      return TRUE;
+    if(config->fix_climate_interval[1]<config->fix_climate_interval[0])
+    {
+      if(isroot(*config))
+        fprintf(stderr,"ERROR255: Upper limit for fix climate interval=%d must be higher than lower limit=%d.\n",
+                config->fix_climate_interval[1],config->fix_climate_interval[0]);
+      return TRUE;
+    }
+    fscanbool2(file,&config->fix_climate_shuffle,"fix_climate_shuffle");
   }
-  config->const_deposition=FALSE;
+  config->fix_deposition=FALSE;
+  config->fix_deposition_with_climate=FALSE;
   if(config->with_nitrogen==LIM_NITROGEN)
   {
     if(fscanbool(file,&config->no_ndeposition,"no_ndeposition",TRUE,verbose))
       return TRUE;
     if(!config->no_ndeposition)
     {
-      if(fscanbool(file,&config->const_deposition,"const_deposition",TRUE,verbose))
-        return TRUE;
-      if(config->const_deposition)
+      if(config->fix_climate)
       {
-        fscanint2(file,&config->depos_year_const,"depos_year_const");
+        fscanbool2(file,&config->fix_deposition_with_climate,"fix_deposition_with_climate");
+      }
+      if(config->fix_deposition_with_climate)
+      {
+        config->fix_deposition=TRUE;
+        config->fix_deposition_year=config->fix_climate_year;
+        config->fix_deposition_interval[0]=config->fix_climate_interval[0];
+        config->fix_deposition_interval[1]=config->fix_climate_interval[1];
+        config->fix_deposition_shuffle=config->fix_climate_shuffle;
+      }
+      else
+      {
+        if(fscanbool(file,&config->fix_deposition,"fix_deposition",TRUE,verbose))
+          return TRUE;
+        if(config->fix_deposition)
+        {
+          fscanint2(file,&config->fix_deposition_year,"fix_deposition_year");
+          if(fscanintarray(file,config->fix_deposition_interval,2,"fix_deposition_interval",verbose))
+            return TRUE;
+          if(config->fix_deposition_interval[1]<config->fix_deposition_interval[0])
+          {
+            if(isroot(*config))
+              fprintf(stderr,"ERROR255: Upper limit for fix N deposition interval=%d must be higher than lower limit=%d.\n",
+                      config->fix_deposition_interval[1],config->fix_deposition_interval[0]);
+            return TRUE;
+          }
+          fscanbool2(file,&config->fix_deposition_shuffle,"fix_deposition_shuffle");
+        }
       }
     }
   }
-  if(config->fix_climate || config->const_deposition)
-  {
-    fscanint2(file,&config->fix_climate_cycle,"fix_climate_cycle");
-  }
-  config->fertilizer_input=NO_FERTILIZER;
   config->fire_on_grassland=FALSE;
   if(config->sim_id!=LPJ)
   {
@@ -335,14 +434,16 @@ Bool fscanconfig(Config *config,    /**< LPJ configuration */
       if(fscankeywords(file,&config->crop_phu_option,"crop_phu_option",crop_phu_options,3,TRUE,verbose))
         return TRUE;
       fscanbool2(file,&config->intercrop,"intercrop");
-      config->crop_resp_fix=FALSE;
       config->manure_input=FALSE;
       config->fix_fertilization=FALSE;
       if(config->with_nitrogen)
       {
+        config->crop_resp_fix=FALSE;
         if(fscanbool(file,&config->crop_resp_fix,"crop_resp_fix",TRUE,verbose))
           return TRUE;
       }
+      else
+        config->crop_resp_fix=TRUE;
       if(config->with_nitrogen==LIM_NITROGEN)
       {
         if(fscanbool(file,&config->fix_fertilization,"fix_fertilization",TRUE,verbose))
@@ -366,8 +467,8 @@ Bool fscanconfig(Config *config,    /**< LPJ configuration */
       config->grassonly = FALSE;
       if (fscanbool(file, &config->grassonly, "grassonly", TRUE, verbose))
         return TRUE;
-      config->istimber=FALSE;
-      if(fscanbool(file,&config->istimber,"istimber",TRUE,verbose))
+      config->luc_timber=FALSE;
+      if(fscanbool(file,&config->luc_timber,"luc_timber",TRUE,verbose))
         return TRUE;
       config->residues_fire=FALSE;
       if(fscanbool(file,&config->residues_fire,"residues_fire",TRUE,verbose))
@@ -397,10 +498,18 @@ Bool fscanconfig(Config *config,    /**< LPJ configuration */
       if(!grassharvest)
       {
         config->grazing=GS_DEFAULT;
-        if(fscankeywords(file,&config->grazing,"grazing",grazing_type,5,TRUE,verbose))
+        if(fscankeywords(file,&config->grazing,"grazing",grazing_type,6,TRUE,verbose))
+          return TRUE;
+      }
+      config->grazing_others=GS_DEFAULT;
+      if(!config->others_to_crop)
+      {
+        if(fscankeywords(file,&config->grazing_others,"grazing_others",grazing_type,6,TRUE,verbose))
           return TRUE;
       }
       if(fscanmowingdays(file,config))
+        return TRUE;
+      if(fscanbool(file,&config->prescribe_lsuha,"prescribe_lsuha", TRUE, verbose))
         return TRUE;
       if(fscankeywords(file,&config->tillage_type,"tillage_type",tillage,3,TRUE,verbose))
         return TRUE;
@@ -495,8 +604,10 @@ Bool fscanconfig(Config *config,    /**< LPJ configuration */
   config->iscotton=findpftname("cotton",config->pftpar+config->npft[GRASS]+config->npft[TREE]-config->nagtree,config->nagtree)!=NOT_FOUND;
   if(config->others_to_crop)
   {
-    if(fscanstring(file,name,"cft_temp",FALSE,verbose))
+    name=fscanstring(file,NULL,"cft_temp",verbose);
+    if(name==NULL)
       return TRUE;
+    setotherstocrop();
     config->cft_temp=findpftname(name,config->pftpar+config->npft[GRASS]+config->npft[TREE],config->npft[CROP]);
     if(config->cft_temp==NOT_FOUND)
     {
@@ -508,7 +619,8 @@ Bool fscanconfig(Config *config,    /**< LPJ configuration */
       }
       return TRUE;
     }
-    if(fscanstring(file,name,"cft_tropic",FALSE,verbose))
+    name=fscanstring(file,NULL,"cft_tropic",verbose);
+    if(name==NULL)
       return TRUE;
     config->cft_tropic=findpftname(name,config->pftpar+config->npft[GRASS]+config->npft[TREE],config->npft[CROP]);
     if(config->cft_tropic==NOT_FOUND)
@@ -524,7 +636,8 @@ Bool fscanconfig(Config *config,    /**< LPJ configuration */
   }
   if(config->black_fallow && config->prescribe_residues)
   {
-    if(fscanstring(file,name,"residue_pft",FALSE,verbose))
+    name=fscanstring(file,NULL,"residue_pft",verbose);
+    if(name==NULL)
       return TRUE;
     config->pft_residue=findpftname(name,config->pftpar,config->npft[GRASS]+config->npft[TREE]+config->npft[CROP]);
     if(config->pft_residue==NOT_FOUND)
@@ -556,13 +669,135 @@ Bool fscanconfig(Config *config,    /**< LPJ configuration */
     }
     if(config->nagtree)
     {
-      if (fscantreedens(file,config->countrypar,config->ncountries,config->npft[GRASS]+config->npft[TREE],verbose,config)==0)
+      if (fscantreedens(file,config->countrypar,config->ncountries,config->npft[GRASS]+config->npft[TR
+                                                                                                    Verbosity verbose;
+                                                                                                    verbose=(isroot(*config)) ? config->scan_verbose : NO_ERR;
+                                                                                                    if(readfilename(file,name,key,config->inputdir,TRUE,TRUE,verbose))
+                                                                                                      return TRUE;
+                                                                                                    if(!(isfms && config->sim_id==LPJML_FMS) && name->fmt==FMS)
+                                                                                                    {
+                                                                                                      if(verbose)
+                                                                                                        fprintf(stderr,"ERROR197: FMS coupler not allowed for input '%s'.\n",key);
+                                                                                                      return TRUE;
+                                                                                                    }
+                                                                                                    if(!iscoupled && name->issocket)
+                                                                                                    {
+                                                                                                      if(verbose)
+                                                                                                        fprintf(stderr,"ERROR197: File format 'sock' not allowed for input '%s'.\n",key);
+                                                                                                      return TRUE;
+                                                                                                    }
+                                                                                                    if(name->issocket)
+                                                                                                    {
+                                                                                                      if(iscoupled(*config))
+                                                                                                      {
+                                                                                                        config->coupler_in++;
+                                                                                                        if(name->id<0 || name->id>=N_IN)
+                                                                                                        {
+                                                                                                          if(verbose)
+                                                                                                            fprintf(stderr,"ERROR197: Invalid index %d for %s input, must be in [0,%d].\n",name->id,config->coupled_model,N_IN-1);
+                                                                                                          return TRUE;
+                                                                                                        }
+                                                                                                        if(def[name->id])
+                                                                                                        {
+                                                                                                          if(verbose)
+                                                                                                          fprintf(stderr,"ERROR197: Index %d already defined for %s input.\n",name->id,config->coupled_model);
+                                                                                                            return TRUE;
+                                                                                                        }
+                                                                                                        def[name->id]=TRUE;
+                                                                                                      }
+                                                                                                      else
+                                                                                                      {
+                                                                                                        name->issocket=FALSE;
+                                                                                                        if(name->fmt==SOCK)
+                                                                                                        {
+                                                                                                          if(verbose)
+                                                                                                            fprintf(stderr,"ERROR197: Socket %s input not allowed without coupled model.\n",key);
+                                                                                                          return TRUE;
+                                                                                                        }
+                                                                                                      }
+                                                                                                    }
+                                                                                                    if(istxt && name->fmt!=TXT && name->fmt!=FMS && name->fmt!=SOCK)
+                                                                                                    {
+                                                                                                      if(verbose)
+                                                                                                        fprintf(stderr,"ERROR197: Only txt format is supported for input '%s' in this version of LPJmL, %s not allowed.\n",
+                                                                                                                name->name,fmt[name->fmt]);
+                                                                                                      return TRUE;
+                                                                                                    }
+                                                                                                    if(!istxt && name->fmt==TXT)
+                                                                                                    {
+                                                                                                      if(verbose)
+                                                                                                        fprintf(stderr,"ERROR197: text file is not supported for input '%s' in this version of LPJmL.\n",name->name);
+                                                                                                      return TRUE;
+                                                                                                    }
+                                                                                                    return FALSE;
+EE],verbose,config)==0)
       {
         if(verbose)
           fputs("ERROR230: Cannot read tree density (k_est) parameter 'treedens'.\n",stderr);
         return TRUE;
       }
     }
+    Verbosity verbose;
+    verbose=(isroot(*config)) ? config->scan_verbose : NO_ERR;
+    if(readfilename(file,name,key,config->inputdir,TRUE,TRUE,verbose))
+      return TRUE;
+    if(!(isfms && config->sim_id==LPJML_FMS) && name->fmt==FMS)
+    {
+      if(verbose)
+        fprintf(stderr,"ERROR197: FMS coupler not allowed for input '%s'.\n",key);
+      return TRUE;
+    }
+    if(!iscoupled && name->issocket)
+    {
+      if(verbose)
+        fprintf(stderr,"ERROR197: File format 'sock' not allowed for input '%s'.\n",key);
+      return TRUE;
+    }
+    if(name->issocket)
+    {
+      if(iscoupled(*config))
+      {
+        config->coupler_in++;
+        if(name->id<0 || name->id>=N_IN)
+        {
+          if(verbose)
+            fprintf(stderr,"ERROR197: Invalid index %d for %s input, must be in [0,%d].\n",name->id,config->coupled_model,N_IN-1);
+          return TRUE;
+        }
+        if(def[name->id])
+        {
+          if(verbose)
+          fprintf(stderr,"ERROR197: Index %d already defined for %s input.\n",name->id,config->coupled_model);
+            return TRUE;
+        }
+        def[name->id]=TRUE;
+      }
+      else
+      {
+        name->issocket=FALSE;
+        if(name->fmt==SOCK)
+        {
+          if(verbose)
+            fprintf(stderr,"ERROR197: Socket %s input not allowed without coupled model.\n",key);
+          return TRUE;
+        }
+      }
+    }
+    if(istxt && name->fmt!=TXT && name->fmt!=FMS && name->fmt!=SOCK)
+    {
+      if(verbose)
+        fprintf(stderr,"ERROR197: Only txt format is supported for input '%s' in this version of LPJmL, %s not allowed.\n",
+                name->name,fmt[name->fmt]);
+      return TRUE;
+    }
+    if(!istxt && name->fmt==TXT)
+    {
+      if(verbose)
+        fprintf(stderr,"ERROR197: text file is not supported for input '%s' in this version of LPJmL.\n",name->name);
+      return TRUE;
+    }
+    return FALSE;
+
   }
   else
   {
@@ -604,13 +839,15 @@ Bool fscanconfig(Config *config,    /**< LPJ configuration */
   }
   if(iskeydefined(file,"inpath"))
   {
-    if(fscanstring(file,name,"inpath",FALSE,verbose))
+    name=fscanstring(file,NULL,"inpath",verbose);
+    if(name==NULL)
       return TRUE;
     free(config->inputdir);
     config->inputdir=strdup(name);
     checkptr(config->inputdir);
   }
-  if(fscanstruct(file,&input,"input",verbose))
+  input=fscanstruct(file,"input",verbose);
+  if(input==NULL)
     return TRUE;
   if (config->isanomaly)
   {
@@ -625,15 +862,18 @@ Bool fscanconfig(Config *config,    /**< LPJ configuration */
   }
   else
     config->delta_year = 1;
-  scanclimatefilename(&input,&config->soil_filename,config->inputdir,FALSE,"soil");
+  for(i=0;i<N_IN;i++)
+    def[i]=FALSE;
+  scanclimatefilename(input,&config->soil_filename,FALSE,FALSE,"soil");
   if(config->soil_filename.fmt!=CDF)
   {
-    scanfilename(&input,&config->coord_filename,config->inputdir,"coord");
+    scanfilename(input,&config->coord_filename,config->inputdir,"coord");
   }
-  scanclimatefilename(&input, &config->kbf_filename, config->inputdir, FALSE, "kbf");
-  scanclimatefilename(&input, &config->slope_filename, config->inputdir, FALSE, "slope_mean");
-  scanclimatefilename(&input, &config->slope_min_filename, config->inputdir, FALSE, "slope_min");
-  scanclimatefilename(&input, &config->slope_max_filename, config->inputdir, FALSE, "slope_max");
+  scanclimatefilename(input, &config->kbf_filename,FALSE, FALSE, "kbf");
+  scanclimatefilename(input, &config->slope_filename, FALSE, FALSE, "slope_mean");
+  scanclimatefilename(input, &config->slope_min_filename,FALSE, FALSE, "slope_min");
+  scanclimatefilename(input, &config->slope_max_filename, FALSE, FALSE, "slope_max");
+
   if(config->withlanduse!=NO_LANDUSE)
   {
     config->landusemap=scancftmap(file,&config->landusemap_size,"landusemap",FALSE,config->npft[GRASS]+config->npft[TREE],config->npft[CROP],config);
@@ -653,44 +893,46 @@ Bool fscanconfig(Config *config,    /**< LPJ configuration */
       if(config->cftmap==NULL)
         return TRUE;
     }
-    scanclimatefilename(&input,&config->countrycode_filename,config->inputdir,FALSE,"countrycode");
+    scanclimatefilename(input,&config->countrycode_filename,FALSE,FALSE,"countrycode");
     if(config->countrycode_filename.fmt==CDF)
     {
-      scanclimatefilename(&input,&config->regioncode_filename,config->inputdir,FALSE,"regioncode");
+      scanclimatefilename(input,&config->regioncode_filename,FALSE,FALSE,"regioncode");
     }
-    scanclimatefilename(&input,&config->landuse_filename,config->inputdir,FALSE,"landuse");
+    scanclimatefilename(input,&config->landuse_filename,FALSE,TRUE,"landuse");
     if(config->iscotton)
     {
-      scanclimatefilename(&input,&config->sowing_cotton_rf_filename,config->inputdir,FALSE,"sowing_ag_tree_rf");
-      scanclimatefilename(&input,&config->harvest_cotton_rf_filename,config->inputdir,FALSE,"harvest_ag_tree_rf");
-      scanclimatefilename(&input,&config->sowing_cotton_ir_filename,config->inputdir,FALSE,"sowing_ag_tree_ir");
-      scanclimatefilename(&input,&config->harvest_cotton_ir_filename,config->inputdir,FALSE,"harvest_ag_tree_ir");
+      scanclimatefilename(input,&config->sowing_cotton_rf_filename,FALSE,FALSE,"sowing_ag_tree_rf");
+      scanclimatefilename(input,&config->harvest_cotton_rf_filename,FALSE,FALSE,"harvest_ag_tree_rf");
+      scanclimatefilename(input,&config->sowing_cotton_ir_filename,FALSE,FALSE,"sowing_ag_tree_ir");
+      scanclimatefilename(input,&config->harvest_cotton_ir_filename,FALSE,FALSE,"harvest_ag_tree_ir");
     }
     if(config->sdate_option==PRESCRIBED_SDATE)
     {
-      scanclimatefilename(&input,&config->sdate_filename,config->inputdir,FALSE,"sdate");
+      scanclimatefilename(input,&config->sdate_filename,FALSE,TRUE,"sdate");
     }
     if(config->crop_phu_option==PRESCRIBED_CROP_PHU)
     {
-      scanclimatefilename(&input,&config->crop_phu_filename,config->inputdir,FALSE,"crop_phu");
+      scanclimatefilename(input,&config->crop_phu_filename,FALSE,TRUE,"crop_phu");
     }
     if(config->with_nitrogen && config->fertilizer_input==FERTILIZER)
-      scanclimatefilename(&input,&config->fertilizer_nr_filename,config->inputdir,FALSE,"fertilizer_nr");
+      scanclimatefilename(input,&config->fertilizer_nr_filename,FALSE,TRUE,"fertilizer_nr");
     if (config->with_nitrogen && config->manure_input)
-      scanclimatefilename(&input,&config->manure_nr_filename,config->inputdir,FALSE,"manure_nr");
+      scanclimatefilename(input,&config->manure_nr_filename,FALSE,TRUE,"manure_nr");
     if (config->tillage_type==READ_TILLAGE)
-      scanclimatefilename(&input,&config->with_tillage_filename,config->inputdir,FALSE,"with_tillage");
+      scanclimatefilename(input,&config->with_tillage_filename,FALSE,TRUE,"with_tillage");
     if (config->residue_treatment == READ_RESIDUE_DATA)
-      scanclimatefilename(&input,&config->residue_data_filename,config->inputdir,FALSE,"residue_on_field");
+      scanclimatefilename(input,&config->residue_data_filename,FALSE,TRUE,"residue_on_field");
+    if(config->prescribe_lsuha)
+      scanclimatefilename(input,&config->lsuha_filename,FALSE,TRUE,"grassland_lsuha");
     if(grassfix == GRASS_FIXED_PFT)
     {
-      scanclimatefilename(&input,&config->grassfix_filename,config->inputdir,FALSE,"grassland_fixed_pft");
+      scanclimatefilename(input,&config->grassfix_filename,FALSE,FALSE,"grassland_fixed_pft");
     }
     else
       config->grassfix_filename.name = NULL;
     if(grassharvest)
     {
-      scanclimatefilename(&input,&config->grassharvest_filename,config->inputdir,FALSE,"grass_harvest_options");
+      scanclimatefilename(input,&config->grassharvest_filename,FALSE,FALSE,"grass_harvest_options");
     }
     else
       config->grassharvest_filename.name = NULL;
@@ -699,18 +941,19 @@ Bool fscanconfig(Config *config,    /**< LPJ configuration */
   {
     config->grassfix_filename.name = NULL;
     config->grassharvest_filename.name = NULL;
+    config->lsuha_filename.name = NULL;
   }
   if(config->river_routing)
   {
-    scanclimatefilename(&input,&config->lakes_filename,config->inputdir,FALSE,"lakes");
-    scanclimatefilename(&input,&config->drainage_filename,config->inputdir,FALSE,"drainage");
+    scanclimatefilename(input,&config->lakes_filename,FALSE,FALSE,"lakes");
+    scanclimatefilename(input,&config->drainage_filename,FALSE,FALSE,"drainage");
     if(config->drainage_filename.fmt==CDF)
     {
-      scanclimatefilename(&input,&config->river_filename,config->inputdir,FALSE,"river");
+      scanclimatefilename(input,&config->river_filename,FALSE,FALSE,"river");
     }
     if(config->extflow)
     {
-      scanclimatefilename(&input,&config->extflow_filename,config->inputdir,FALSE,"extflow");
+      scanclimatefilename(input,&config->extflow_filename,FALSE,FALSE,"extflow");
       if(config->extflow_filename.fmt!=META && config->extflow_filename.fmt!=CLM && config->extflow_filename.fmt!=CLM2)
       {
         if(isroot(*config))
@@ -721,51 +964,51 @@ Bool fscanconfig(Config *config,    /**< LPJ configuration */
     }
     if(config->withlanduse!=NO_LANDUSE)
     {
-      scanclimatefilename(&input,&config->neighb_irrig_filename,config->inputdir,FALSE,"neighb_irrig");
+      scanclimatefilename(input,&config->neighb_irrig_filename,FALSE,FALSE,"neighb_irrig");
       if(config->reservoir)
       {
-        scanclimatefilename(&input,&config->elevation_filename,config->inputdir,FALSE,"elevation");
-        scanfilename(&input,&config->reservoir_filename,config->inputdir,"reservoir");
+        scanclimatefilename(input,&config->elevation_filename,FALSE,FALSE,"elevation");
+        scanfilename(input,&config->reservoir_filename,config->inputdir,"reservoir");
       }
 #ifdef IMAGE
       if(config->aquifer_irrig==AQUIFER_IRRIG)
-        scanclimatefilename(file,&config->aquifer_filename,config->inputdir,FALSE,"aquifer");
+        scanclimatefilename(input,&config->aquifer_filename,FALSE,FALSE,"aquifer");
 #endif
     }
   }
   if (config->isanomaly)
-    scanclimatefilename(&input, &config->icefrac_filename, config->inputdir, config->sim_id == LPJML_FMS, "icefrac");
-  scanclimatefilename(&input,&config->temp_filename,config->inputdir,config->sim_id==LPJML_FMS,"temp");
+    scanclimatefilename(input,&config->icefrac_filename,TRUE,TRUE,"icefrac");
+  scanclimatefilename(input,&config->temp_filename,TRUE,TRUE,"temp");
   if (config->isanomaly)
-    scanclimatefilename(&input, &config->delta_temp_filename, config->inputdir, config->sim_id == LPJML_FMS, "delta_temp");
-  scanclimatefilename(&input,&config->prec_filename,config->inputdir,config->sim_id==LPJML_FMS,"prec");
+    scanclimatefilename(input, &config->delta_temp_filename,FALSE,TRUE,"delta_temp");
+  scanclimatefilename(input,&config->prec_filename,TRUE,TRUE,"prec");
   if (config->isanomaly)
-    scanclimatefilename(&input, &config->delta_prec_filename, config->inputdir, config->sim_id == LPJML_FMS, "delta_prec");
+    scanclimatefilename(input, &config->delta_prec_filename,FALSE,TRUE, "delta_prec");
   switch(config->with_radiation)
   {
     case RADIATION:
-      scanclimatefilename(&input,&config->lwnet_filename,config->inputdir,config->sim_id==LPJML_FMS,"lwnet");
+      scanclimatefilename(input,&config->lwnet_filename,TRUE,TRUE,"lwnet");
       if (config->isanomaly)
-        scanclimatefilename(&input, &config->delta_lwnet_filename, config->inputdir, config->sim_id == LPJML_FMS, "delta_lwnet");
-      scanclimatefilename(&input,&config->swdown_filename,config->inputdir,config->sim_id==LPJML_FMS,"swdown");
-      if (config->isanomaly)
-        scanclimatefilename(&input, &config->delta_swdown_filename, config->inputdir, config->sim_id == LPJML_FMS, "delta_swdown");
+        scanclimatefilename(input, &config->delta_lwnet_filename,FALSE,FALSE, "delta_lwnet");
+     scanclimatefilename(input,&config->swdown_filename,TRUE,TRUE,"swdown");
+     if (config->isanomaly)
+       scanclimatefilename(input, &config->delta_swdown_filename,FALSE,FALSE, "delta_swdown");
       break;
     case RADIATION_LWDOWN:
-      scanclimatefilename(&input,&config->lwnet_filename,config->inputdir,config->sim_id==LPJML_FMS,"lwdown");
+      scanclimatefilename(input,&config->lwnet_filename,TRUE,TRUE,"lwdown");
       if (config->isanomaly)
-        scanclimatefilename(&input, &config->delta_lwnet_filename, config->inputdir, config->sim_id == LPJML_FMS, "delta_lwnet");
-      scanclimatefilename(&input,&config->swdown_filename,config->inputdir,config->sim_id==LPJML_FMS,"swdown");
+        scanclimatefilename(input, &config->delta_lwnet_filename,FALSE,FALSE, "delta_lwdown");
+      scanclimatefilename(input,&config->swdown_filename,TRUE,TRUE,"swdown");
       if (config->isanomaly)
-        scanclimatefilename(&input, &config->delta_swdown_filename, config->inputdir, config->sim_id == LPJML_FMS, "delta_swdown");
+        scanclimatefilename(input, &config->delta_swdown_filename,FALSE,FALSE, "delta_swdown");
       break;
     case CLOUDINESS:
-      scanclimatefilename(&input,&config->cloud_filename,config->inputdir,config->sim_id==LPJML_FMS,"cloud");
+      scanclimatefilename(input,&config->cloud_filename,TRUE,TRUE,"cloud");
       break;
     case RADIATION_SWONLY:
-      scanclimatefilename(&input,&config->swdown_filename,config->inputdir,config->sim_id==LPJML_FMS,"swdown");
+      scanclimatefilename(input,&config->swdown_filename,config->inputdir,config->sim_id==LPJML_FMS,"swdown");
       if (config->isanomaly)
-        scanclimatefilename(&input, &config->delta_swdown_filename, config->inputdir, config->sim_id == LPJML_FMS, "delta_swdown");
+        scanclimatefilename(input, &config->delta_swdown_filename,FALSE,TRUE, "delta_swdown");
      break;
     default:
       if(verbose)
@@ -776,86 +1019,80 @@ Bool fscanconfig(Config *config,    /**< LPJ configuration */
   {
     if(config->with_nitrogen!=UNLIM_NITROGEN && !config->no_ndeposition)
     {
-      scanclimatefilename(&input,&config->no3deposition_filename,config->inputdir,config->sim_id==LPJML_FMS,"no3deposition");
-      scanclimatefilename(&input,&config->nh4deposition_filename,config->inputdir,config->sim_id==LPJML_FMS,"nh4deposition");
+      scanclimatefilename(input,&config->no3deposition_filename,TRUE,TRUE,"no3deposition");
+      scanclimatefilename(input,&config->nh4deposition_filename,TRUE,TRUE,"nh4deposition");
     }
     else
       config->no3deposition_filename.name=config->nh4deposition_filename.name=NULL;
-    scanclimatefilename(&input,&config->soilph_filename,config->inputdir,config->sim_id==LPJML_FMS,"soilpH");
+    scanclimatefilename(input,&config->soilph_filename,FALSE,FALSE,"soilpH");
   }
   else
     config->no3deposition_filename.name=config->nh4deposition_filename.name=config->soilph_filename.name=NULL;
   if((config->fire==SPITFIRE || config->fire==SPITFIRE_TMAX) && config->fdi==WVPD_INDEX)
   {
-    scanclimatefilename(&input,&config->humid_filename,config->inputdir,config->sim_id==LPJML_FMS,"humid");
+    scanclimatefilename(input,&config->humid_filename,TRUE,TRUE,"humid");
   }
   if(config->with_nitrogen || config->fire==SPITFIRE || config->fire==SPITFIRE_TMAX)
   {
-    scanclimatefilename(&input,&config->wind_filename,config->inputdir,config->sim_id==LPJML_FMS,"wind");
+    scanclimatefilename(input,&config->wind_filename,TRUE,TRUE,"wind");
   }
   if(config->fire==SPITFIRE_TMAX || config->cropsheatfrost)
   {
-    scanclimatefilename(&input,&config->tmin_filename,config->inputdir,config->sim_id==LPJML_FMS,"tmin");
-    scanclimatefilename(&input,&config->tmax_filename,config->inputdir,config->sim_id==LPJML_FMS,"tmax");
+    scanclimatefilename(input,&config->tmin_filename,TRUE,TRUE,"tmin");
+    scanclimatefilename(input,&config->tmax_filename,TRUE,TRUE,"tmax");
   }
   else
     config->tmax_filename.name=config->tmin_filename.name=NULL;
   if(config->fire==SPITFIRE)
   {
-    scanclimatefilename(&input,&config->tamp_filename,config->inputdir,config->sim_id==LPJML_FMS,"tamp");
+    scanclimatefilename(input,&config->tamp_filename,TRUE,TRUE,"tamp");
   }
   else
     config->tamp_filename.name=NULL;
   if(config->fire==SPITFIRE || config->fire==SPITFIRE_TMAX)
   {
-    scanclimatefilename(&input,&config->lightning_filename,config->inputdir,FALSE,"lightning");
-    scanclimatefilename(&input,&config->human_ignition_filename,
-                        config->inputdir,FALSE,"human_ignition");
+    scanclimatefilename(input,&config->lightning_filename,FALSE,TRUE,"lightning");
+    scanclimatefilename(input,&config->human_ignition_filename,
+                        FALSE,TRUE,"human_ignition");
   }
   if(config->ispopulation)
   {
-    scanclimatefilename(&input,&config->popdens_filename,config->inputdir,FALSE,"popdens");
+    scanclimatefilename(input,&config->popdens_filename,FALSE,TRUE,"popdens");
   }
   if(config->prescribe_burntarea)
   {
-    scanclimatefilename(&input,&config->burntarea_filename,config->inputdir,FALSE,"burntarea");
+    scanclimatefilename(input,&config->burntarea_filename,FALSE,FALSE,"burntarea");
   }
   if(config->prescribe_landcover!=NO_LANDCOVER)
   {
-    scanclimatefilename(&input,&config->landcover_filename,config->inputdir,FALSE,"landcover");
+    scanclimatefilename(input,&config->landcover_filename,FALSE,FALSE,"landcover");
   }
-  if(readfilename(&input,&config->co2_filename,"co2",config->inputdir,FALSE,verbose))
-  {
-    if(verbose)
-      fputs("ERROR209: Cannot read filename for 'co2' input.\n",stderr);
+  config->fix_co2=FALSE;
+  if(fscanbool(file,&config->fix_co2,"fix_co2",TRUE,verbose))
     return TRUE;
+  if(config->fix_co2)
+  {
+    fscanint2(file,&config->fix_co2_year,"fix_co2_year");
   }
-  if(config->co2_filename.fmt!=TXT &&  (config->sim_id!=LPJML_FMS || config->co2_filename.fmt!=FMS))
+  if(readclimatefilename(input,&config->co2_filename,"co2",def,TRUE,TRUE,TRUE,config))
   {
     if(verbose)
-      fprintf(stderr,"ERROR197: Only txt format is supported for CO2 input in this version of LPJmL, %s not allowed.\n",
-              fmt[config->co2_filename.fmt]);
+      fprintf(stderr,"ERROR209: Cannot read filename for CO2 input.\n");
     return TRUE;
   }
   if (!config->with_dynamic_ch4)
   {
-    if (readfilename(&input, &config->ch4_filename, "ch4", config->inputdir, FALSE, verbose))
+    if (readfilename(input, &config->ch4_filename, "ch4",def,TRUE,TRUE,TRUE,config))
     {
       if (verbose)
         fputs("ERROR209: Cannot read input filename for 'ch4'.\n", stderr);
       return TRUE;
     }
-    if (config->ch4_filename.fmt != TXT && (config->sim_id != LPJML_FMS || config->ch4_filename.fmt != FMS))
-    {
-      if (verbose)
-        fputs("ERROR197: Only text file is supported for CH4 input in this version of LPJmL.\n", stderr);
-      return TRUE;
-    }
   }
-  scanclimatefilename(&input, &config->hydrotopes_filename, config->inputdir, FALSE, "hydrotopes");
+  scanclimatefilename(input,&config->hydrotopes_filename,FALSE,FALSE,"hydrotopes");
   if(israndom==RANDOM_PREC)
   {
-    scanclimatefilename(&input,&config->wet_filename,config->inputdir,config->sim_id==LPJML_FMS,"wetdays");
+    scanclimatefilename(input,&config->wet_filename,TRUE,TRUE,"wetdays");
   }
 #if defined IMAGE && defined COUPLED
   else if(config->sim_id==LPJML_IMAGE)
@@ -869,9 +1106,9 @@ Bool fscanconfig(Config *config,    /**< LPJ configuration */
     config->wet_filename.name=NULL;
   if(config->wateruse)
   {
-    scanclimatefilename(&input,&config->wateruse_filename,config->inputdir,FALSE,"wateruse");
+    scanclimatefilename(input,&config->wateruse_filename,FALSE,TRUE,"wateruse");
 #ifdef IMAGE
-    scanclimatefilename(&input,&config->wateruse_wd_filename,config->inputdir,FALSE,"wateruse_wd");
+    scanclimatefilename(input,&config->wateruse_wd_filename,FALSE,FALSE,"wateruse_wd");
 #endif
   }
   else
@@ -885,9 +1122,9 @@ Bool fscanconfig(Config *config,    /**< LPJ configuration */
   if(config->sim_id==LPJML_IMAGE)
   {
     /* reading IMAGE-coupling specific information */
-    scanclimatefilename(&input,&config->temp_var_filename,config->inputdir,FALSE,"temp_var");
-    scanclimatefilename(&input,&config->prec_var_filename,config->inputdir,FALSE,"prec_var");
-    scanclimatefilename(&input,&config->prodpool_init_filename,config->inputdir,FALSE,"prodpool_init");
+    scanclimatefilename(input,&config->temp_var_filename,FALSE,FALSE,"temp_var");
+    scanclimatefilename(input,&config->prec_var_filename,FALSE,FALSE,"prec_var");
+    scanclimatefilename(input,&config->prodpool_init_filename,FALSE,FALSE,"prodpool_init");
   }
 #endif
 
@@ -910,7 +1147,8 @@ Bool fscanconfig(Config *config,    /**< LPJ configuration */
   if (verbose>=VERB) puts("// V. run settings");
   if(iskeydefined(file,"restartpath"))
   {
-    if(fscanstring(file,name,"restartpath",FALSE,verbose))
+    name=fscanstring(file,NULL,"restartpath",verbose);
+    if(name==NULL)
       return TRUE;
     free(config->restartdir);
     config->restartdir=strdup(name);
@@ -919,7 +1157,7 @@ Bool fscanconfig(Config *config,    /**< LPJ configuration */
   config->startgrid=ALL; /* set default value */
   if(isstring(file,"startgrid"))
   {
-    fscanstring(file,name,"startgrid",FALSE,verbose);
+    name=fscanstring(file,NULL,"startgrid",verbose);
     if(!strcmp(name,"all"))
       config->startgrid=ALL;
     else
@@ -995,10 +1233,20 @@ Bool fscanconfig(Config *config,    /**< LPJ configuration */
 #if defined IMAGE && defined COUPLED
   if(config->sim_id==LPJML_IMAGE)
   {
-    fscanint2(file,&config->start_imagecoupling,"start_imagecoupling");
+    fscanint2(file,&config->start_coupling,"start_coupling");
   }
   else
-    config->start_imagecoupling=INT_MAX;
+    config->start_coupling=INT_MAX;
+#else
+  if(iscoupled(*config))
+  {
+    config->start_coupling=config->firstyear-config->nspinup;
+    if(!isnull(file,"start_coupling"))
+    {
+      if(fscanint(file,&config->start_coupling,"start_coupling",TRUE,verbose))
+        return TRUE;
+    }
+  }
 #endif
   if(config->firstyear-config->nspinup>config->lastyear)
   {
@@ -1068,7 +1316,11 @@ Bool fscanconfig(Config *config,    /**< LPJ configuration */
   }
   else
     config->write_restart_filename=NULL;
-  if(config->equilsoil && verbose && config->nspinup<soil_equil_year)
-    fprintf(stderr,"WARNING031: Number of spinup years less than %d necessary for soil equilibration.\n",soil_equil_year);
+  if(config->equilsoil && config->nspinup<(param.veg_equil_year+param.nequilsoil*param.equisoil_interval+param.equisoil_fadeout))
+  {
+    fprintf(stderr,"ERROR230: Number of spinup years=%d insuffficient for selected spinup settings, must be at least %d.\n",
+            config->nspinup,param.veg_equil_year+param.nequilsoil*param.equisoil_interval+param.equisoil_fadeout); 
+    return TRUE;
+  }
   return FALSE;
 } /* of 'fscanconfig' */

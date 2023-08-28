@@ -63,6 +63,7 @@ typedef struct
 {
   int firstyear;    /**< first year of CO2 data (AD) */
   int nyear;        /**< number of years of climate data */
+  int id;           /**< id for socket communication */
   Real *data;       /**< atmospheric CO2 (ppmv) */
 } Tracedata;
 
@@ -108,7 +109,7 @@ typedef struct
 
 extern Climate *initclimate(const Cell *,const Config *);
 extern Bool getclimate(Climate *,const Cell *,int,int,const Config *);
-extern Bool getdeposition(Climate *,const Cell *,int,const Config *);
+extern Bool getdeposition(Climate *,const Cell *,int,Config *);
 extern Bool getco2(const Climate *,Real *,int);
 extern Bool getch4(const Climate *,Real *,int);
 extern void closeclimateanomalies(Climate *,const Config *);
@@ -133,14 +134,20 @@ extern void closeclimatefile(Climatefile *,Bool);
 extern Bool readclimate(Climatefile *,Real *,Real,Real,const Cell *,int,int,
                         const Config *);
 extern Bool checkvalidclimate(Climate *,Cell *,Config *);
-extern Bool readtracegas(Tracedata *,const Filename *,Bool);
+extern Bool readtracegas(Tracedata *,const Filename *,const Config *,Bool);
 extern void radiation(Real *, Real *,Real *,Real,int,Dailyclimate *,Real,int);
 extern void interpolate_climate(Climate *, int, Real);
 extern void addanomaly_climate(Climate *, int);
 extern Real *readdata(Climatefile *,Real *data,const Cell *,const char *,int,const Config *);
 extern int *readintdata(Climatefile *,const Cell *,const char *,int,const Config *);
+extern Real *readdata(Climatefile *,Real *data,const Cell *,const char *,int,const Config *);
+extern int *readintdata(Climatefile *,const Cell *,const char *,int,const Config *);
+extern Bool openclmdata(Climatefile *,const Filename *,const char *,
+                     Type,Real,int,const Config *config);
 extern Bool opendata(Climatefile *,const Filename *,const char *,const char *,
-                     Type,Real,int,Bool,const Config *config);
+                     Type,Type,Real,int,Bool,const Config *config);
+extern Bool opendata_seq(Climatefile *,const Filename *,const char *,const char *,
+                         Type,Real,int,Bool,const Config *config);
 extern Bool openinputdata(Infile *,const Filename *,const char *,const char *,
                           Type,Real,const Config *config);
 extern Bool readinputdata(Infile *,Real *,const Coord *,int,const Filename *);

@@ -74,6 +74,7 @@ Climate *initclimate(const Cell grid[],   /**< LPJ grid */
   int i, ndata; 
   int lastyear;
   Climate *climate;
+  int lastyear;
   climate=new(Climate);
   if(climate==NULL)
   {
@@ -195,9 +196,9 @@ Climate *initclimate(const Cell grid[],   /**< LPJ grid */
       freeclimate(climate,isroot(*config));
       return NULL;
     }
-    if(isroot(*config) && !config->const_deposition)
+    if(isroot(*config))
     {
-      lastyear=(config->const_deposition) ? config->depos_year_const+config->fix_climate_cycle-1 : config->lastyear;
+      lastyear=(config->fix_deposition) ? max(config->fix_deposition_year,config->fix_deposition_interval[1]) : config->lastyear;
       if(climate->file_no3deposition.firstyear+climate->file_no3deposition.nyear-1<lastyear)
         fprintf(stderr,"WARNING024: Last year in '%s'=%d is less than last simulation year %d, data from last year used.\n",
                 config->no3deposition_filename.name,climate->file_no3deposition.firstyear+climate->file_nh4deposition.nyear-1,lastyear);
@@ -308,7 +309,7 @@ Climate *initclimate(const Cell grid[],   /**< LPJ grid */
     freeclimate(climate,isroot(*config));
     return NULL;
   }
-  if(readtracegas(&climate->co2,&config->co2_filename,isroot(*config)))
+  if(readtracegas(&climate->co2,&config->co2_filename,config,isroot(*config)))
   {
     freeclimate(climate,isroot(*config));
     return NULL;
@@ -443,6 +444,19 @@ Climate *initclimate(const Cell grid[],   /**< LPJ grid */
         freeclimate(climate,isroot(*config));
         return NULL;
       }
+    if((climate->data.lightning=newvec(Real,climate->file_lightning.n))==NULL)
+    {
+      printallocerr("lightning");
+      freeclimate(climate,isroot(*config));
+      return NULL;
+    }
+    if(readclimate(&climate->file_lightning,climate->data.lightning,0,climate->file_lightning.scalar,grid,climate->file_lightning.firstyear,config))
+    {
+      if(isroot(*config))
+        fprintf(stderr,"ERROR192: Cannot read lightning.\n");
+      freeclimate(climate,isroot(*config));
+      return NULL;
+    }
     closeclimatefile(&climate->file_lightning,isroot(*config));
   } /* of if(config->fire==SPITFIRE || config->fire==SPITFIRE_TMAX) */
   if(config->with_radiation)

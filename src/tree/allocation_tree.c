@@ -183,10 +183,20 @@ Bool allocation_tree(Litter *litter,   /**< litter pool */
   {
     if (tree->height>0.0) 
     {
-      tinc_ind_min.leaf.carbon=treepar->k_latosa*tree->ind.sapwood.carbon/(wooddens*tree->height*
+      if (pft->stand->type->landusetype==BIOMASS_TREE && tree->ind.root.carbon>=tree->ind.leaf.carbon/lmtorm &&
+    		  treepar->k_latosa*tree->ind.sapwood.carbon/(wooddens*tree->height*pft->par->sla)-tree->ind.leaf.carbon>=0.0)
+      {
+    	  tinc_ind_min.leaf.carbon=0.1;
+    	  tinc_ind_min.root.carbon=0.1;
+
+      }
+      else
+      {
+    	  tinc_ind_min.leaf.carbon=treepar->k_latosa*tree->ind.sapwood.carbon/(wooddens*tree->height*
                         pft->par->sla)-tree->ind.leaf.carbon;
-      tinc_ind_min.root.carbon=treepar->k_latosa*tree->ind.sapwood.carbon/(wooddens*tree->height*
+    	  tinc_ind_min.root.carbon=treepar->k_latosa*tree->ind.sapwood.carbon/(wooddens*tree->height*
                         pft->par->sla*lmtorm)-tree->ind.root.carbon;
+      }
     }
     else 
     {
@@ -255,7 +265,7 @@ Bool allocation_tree(Litter *litter,   /**< litter pool */
       {
         tinc_ind.root.carbon=bm_inc_ind.carbon;
         tinc_ind.leaf.carbon=(tree->ind.root.carbon+tinc_ind.root.carbon)*lmtorm-tree->ind.leaf.carbon;
-        litter->item[pft->litter].ag.leaf.carbon+=-tinc_ind.leaf.carbon*pft->nind;
+        litter->item[pft->litter].agtop.leaf.carbon+=-tinc_ind.leaf.carbon*pft->nind;
         getoutput(&pft->stand->cell->output,LITFALLC,config)+=-tinc_ind.leaf.carbon*pft->nind*pft->stand->frac;
       }
       tinc_ind.sapwood.carbon=(tinc_ind.leaf.carbon+tree->ind.leaf.carbon)*wooddens*tree->height*

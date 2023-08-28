@@ -103,7 +103,7 @@ Celldata opencelldata(Config *config /**< LPJmL configuration */
       if(soilmap==NULL)
       {
         if(isroot(*config))
-          fprintf(stderr,"ERROR249: Invalid soilmap in '%s'.\n",config->soil_filename.name);
+          fprintf(stderr,"ERROR250: Invalid soilmap in '%s'.\n",config->soil_filename.name);
       }
       else
       {

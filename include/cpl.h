@@ -61,8 +61,8 @@ extern void cpl_free(Cpl *);
 #define cpl_toarr(cpl,src,dst,type) MPI_Alltoallv(src,cpl->inlen,cpl->indisp,type,dst,cpl->outlen,cpl->outdisp,type,cpl->comm)
 #define cpl_togrid(cpl,src,dst,type) MPI_Alltoallv(src,cpl->outlen,cpl->outdisp,type,dst,cpl->inlen,cpl->indisp,type,cpl->comm)
 #else
-#define cpl_toarr(cpl,src,dst,size) memcpy(src,dst,cpl->outsize*(size))
-#define cpl_togrid(cpl,src,dst,size) memcpy(src,dst,cpl->outsize*(size))
+#define cpl_toarr(cpl,src,dst,size) memcpy(dst,src,cpl->outsize*(size))
+#define cpl_togrid(cpl,src,dst,size) memcpy(dst,src,cpl->outsize*(size))
 #endif
 #define cpl_index(cpl,i) cpl->index[i]
 #define cpl_src_index(cpl,i) cpl->src_index[i]

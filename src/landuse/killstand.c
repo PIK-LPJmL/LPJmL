@@ -18,6 +18,7 @@
 
 void killstand(Cell *cell,          /**< cell pointer */
                int npft,            /**< number of natural PFTs */
+               int ncft,            /**< number of crop PFTs */
                Bool with_tillage,   /**< tillage possible */
                Bool intercrop,      /**< intercropping possible */
                int year,            /**< simulation year (AD) */
@@ -40,7 +41,7 @@ void killstand(Cell *cell,          /**< cell pointer */
         irrig=FALSE;
       if(stand->frac>0)
         check_stand_fracs(cell,cell->lakefrac+cell->ml.reservoirfrac,2);
-      if(setaside(cell,stand,with_tillage,intercrop,npft,irrig,stand->soil.iswetland,year,config))
+      if(setaside(cell,stand,with_tillage,intercrop,npft,ncft,irrig,stand->soil.iswetland,year,config))
       {
         delstand(cell->standlist,s);
         s--; /* stand has been killed, adjust stand index */

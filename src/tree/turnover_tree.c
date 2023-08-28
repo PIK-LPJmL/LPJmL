@@ -72,12 +72,14 @@ Stocks turnover_tree(Litter *litter, /**< Litter pool */
       pft->establish.carbon-=reprod;
       reprod=0;
     }
-    litter->item[pft->litter].ag.leaf.carbon+=reprod;
+    litter->item[pft->litter].agtop.leaf.carbon+=reprod;
     getoutput(output,LITFALLC,config)+=reprod*pft->stand->frac;
     update_fbd_tree(litter,pft->par->fuelbulkdensity,reprod,0);
     reprod=pft->bm_inc.nitrogen*treepar->reprod_cost;
-    //litter->item[pft->litter].ag.leaf.nitrogen+=reprod;
+    //litter->item[pft->litter].agtop.leaf.nitrogen+=reprod;
     //pft->bm_inc.nitrogen-=reprod;
+
+//TODO with the Methane Version I removed this because it is for competition not longer needed but had already no effect in master
 //    if(israingreen(pft))
 //    {
 //      /* TODO what to do about N here? */
@@ -107,8 +109,8 @@ Stocks turnover_tree(Litter *litter, /**< Litter pool */
   turn_diff.carbon+=(turn.leaf.carbon*pft->nind-tree->turn_litt.leaf.carbon)+(turn.root.carbon*pft->nind-tree->turn_litt.root.carbon);
   turn_diff.nitrogen+=(turn.leaf.nitrogen*pft->nind-tree->turn_litt.leaf.nitrogen)+(turn.root.nitrogen*pft->nind-tree->turn_litt.root.nitrogen);
 #endif
-  litter->item[pft->litter].ag.leaf.carbon+=turn.leaf.carbon*pft->nind-tree->turn_litt.leaf.carbon;
-  litter->item[pft->litter].ag.leaf.nitrogen+=turn.leaf.nitrogen*pft->nind-tree->turn_litt.leaf.nitrogen;
+  litter->item[pft->litter].agtop.leaf.carbon+=turn.leaf.carbon*pft->nind-tree->turn_litt.leaf.carbon;
+  litter->item[pft->litter].agtop.leaf.nitrogen+=turn.leaf.nitrogen*pft->nind-tree->turn_litt.leaf.nitrogen;
   update_fbd_tree(litter,pft->par->fuelbulkdensity,turn.leaf.carbon*pft->nind-tree->turn_litt.leaf.carbon,0);
   litter->item[pft->litter].bg.carbon+=turn.root.carbon*pft->nind-tree->turn_litt.root.carbon;
   litter->item[pft->litter].bg.nitrogen+=turn.root.nitrogen*pft->nind-tree->turn_litt.root.nitrogen;
@@ -125,7 +127,7 @@ Stocks turnover_tree(Litter *litter, /**< Litter pool */
   tree->ind.heartwood.carbon+=turn.sapwood.carbon;
   if (tree->ind.leaf.carbon<epsilon)
   {
-    litter->item[pft->litter].ag.leaf.carbon+=tree->ind.leaf.carbon*pft->nind;
+    litter->item[pft->litter].agtop.leaf.carbon+=tree->ind.leaf.carbon*pft->nind;
     getoutput(output,LITFALLC,config)+=tree->ind.leaf.carbon*pft->nind*pft->stand->frac;
     update_fbd_tree(litter,pft->par->fuelbulkdensity,tree->ind.leaf.carbon*pft->nind,0);
     tree->ind.leaf.carbon=0.0;
@@ -145,7 +147,7 @@ Stocks turnover_tree(Litter *litter, /**< Litter pool */
   tree->ind.heartwood.nitrogen+=turn.sapwood.nitrogen;
   if (tree->ind.leaf.nitrogen<epsilon)
   {
-    litter->item[pft->litter].ag.leaf.nitrogen+=tree->ind.leaf.nitrogen*pft->nind;
+    litter->item[pft->litter].agtop.leaf.nitrogen+=tree->ind.leaf.nitrogen*pft->nind;
     getoutput(output,LITFALLN,config)+=tree->ind.leaf.nitrogen*pft->nind*pft->stand->frac;
     tree->ind.leaf.nitrogen=0.0;
   }

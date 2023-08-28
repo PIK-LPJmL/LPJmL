@@ -21,7 +21,7 @@ void new_tree(Pft *pft, /**< Parameter of pft */
               int UNUSED(year),
               int UNUSED(day),
               const Config *UNUSED(config)
-             )         
+             )
 {
   Pfttree *tree;
   Pfttreepar *treepar;
@@ -45,6 +45,8 @@ void new_tree(Pft *pft, /**< Parameter of pft */
   tree->height=tree->crownarea=0.0;
   tree->isphen=FALSE;
   tree->fruit.carbon=tree->fruit.nitrogen=0;
+  tree->nfertilizer=tree->nmanure=0;
+  tree->nfert_event=0;
   tree->boll_age=0;
   pft->vmax=0;
 } /* of 'new_tree' */

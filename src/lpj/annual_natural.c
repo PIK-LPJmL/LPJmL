@@ -102,6 +102,7 @@ Bool annual_natural(Stand *stand,         /**< Pointer to stand */
     {
       firewood=woodconsum(stand,popdens);
       getoutput(&stand->cell->output,FLUX_FIREWOOD,config)+=firewood.carbon*stand->frac;
+      getoutput(&stand->cell->output,FLUX_FIREWOOD_N,config)+=firewood.nitrogen*stand->frac;
       stand->cell->balance.flux_firewood.carbon+=firewood.carbon*stand->frac;
       stand->cell->balance.flux_firewood.nitrogen+=firewood.nitrogen*stand->frac;
       foreachpft(pft,p,&stand->pftlist)

@@ -24,10 +24,8 @@ void irrig_amount(Stand *stand,        /**< pointer to non-natural stand */
 {
   int p,nirrig,l;
   Pft *pft;
-  Real conv_loss,irrig_stand,irrig_threshold;
-  Real wr;
+  Real conv_loss,irrig_stand;
   Pftcrop *crop;
-  irrig_threshold=0.0;
 
   /* determine if today irrigation dependent on threshold */
   data->irrig_event=FALSE;
@@ -36,33 +34,7 @@ void irrig_amount(Stand *stand,        /**< pointer to non-natural stand */
 
   if(data->irrigation && stand->pftlist.n>0)
   {
-    foreachpft(pft,p,&stand->pftlist)
-    {
-      if(!strcmp(pft->par->name,"rice"))
-      {
-        wr=0;
-        irrig_threshold=param.irrig_threshold_rice;
-        for(l=0;l<LASTLAYER;l++)
-          wr+=pft->par->rootdist[l]*((stand->soil.w[l]*stand->soil.whcs[l]+stand->soil.ice_depth[l]+stand->soil.w_fw[l]+stand->soil.ice_fw[l])/(stand->soil.wsats[l]+stand->soil.wpwps[l]));
-      }
-      else
-      {
-        wr=getwr(&stand->soil,pft->par->rootdist);
-        if(pft->par->path==C3)
-        {
-          if(stand->cell->climbuf.aprec<param.aprec_lim)
-            irrig_threshold=param.irrig_threshold_c3_dry;
-          else
-            irrig_threshold=param.irrig_threshold_c3_humid;
-        }
-        else
-          irrig_threshold=param.irrig_threshold_c4;
-      }
-
-      if(wr<irrig_threshold)
-        data->irrig_event=TRUE; /* if one of possibly two (grass) pfts requests irrigation, both get irrigated */
-    } /*for each pft*/
-
+    data->irrig_event=isirrigevent(stand);
     irrig_stand=max(data->net_irrig_amount+data->dist_irrig_amount-data->irrig_stor,0);
 
     /* conveyance losses */
@@ -107,13 +79,21 @@ void irrig_amount(Stand *stand,        /**< pointer to non-natural stand */
         case GRASSLAND:
           if(config->pft_output_scaled)
           {
-            getoutputindex(&stand->cell->output,CFT_NIR,rothers(ncft)+nirrig,config)+=data->net_irrig_amount*stand->cell->ml.landfrac[1].grass[0];
             getoutputindex(&stand->cell->output,CFT_NIR,rmgrass(ncft)+nirrig,config)+=data->net_irrig_amount*stand->cell->ml.landfrac[1].grass[1];
           }
           else
           {
-            getoutputindex(&stand->cell->output,CFT_NIR,rothers(ncft)+nirrig,config)+=data->net_irrig_amount;
             getoutputindex(&stand->cell->output,CFT_NIR,rmgrass(ncft)+nirrig,config)+=data->net_irrig_amount;
+          }
+          break;
+        case OTHERS:
+          if(config->pft_output_scaled)
+          {
+            getoutputindex(&stand->cell->output,CFT_NIR,rothers(ncft)+nirrig,config)+=data->net_irrig_amount*stand->cell->ml.landfrac[1].grass[0];
+          }
+          else
+          {
+            getoutputindex(&stand->cell->output,CFT_NIR,rothers(ncft)+nirrig,config)+=data->net_irrig_amount;
           }
           break;
         case WOODPLANTATION:
@@ -189,17 +169,25 @@ void irrig_amount(Stand *stand,        /**< pointer to non-natural stand */
       case GRASSLAND:
         if(config->pft_output_scaled)
         {
-          getoutputindex(&stand->cell->output, CFT_CONV_LOSS_EVAP ,rothers(ncft)+nirrig,config)+=conv_loss*data->conv_evap*stand->cell->ml.landfrac[1].grass[0];
           getoutputindex(&stand->cell->output, CFT_CONV_LOSS_EVAP ,rmgrass(ncft)+nirrig,config)+=conv_loss*data->conv_evap*stand->cell->ml.landfrac[1].grass[1];
-          getoutputindex(&stand->cell->output, CFT_CONV_LOSS_DRAIN ,rothers(ncft)+nirrig,config)+=conv_loss*(1-data->conv_evap)*stand->cell->ml.landfrac[1].grass[0];
           getoutputindex(&stand->cell->output, CFT_CONV_LOSS_DRAIN ,rmgrass(ncft)+nirrig,config)+=conv_loss*(1-data->conv_evap)*stand->cell->ml.landfrac[1].grass[1];
         }
         else
         {
-          getoutputindex(&stand->cell->output, CFT_CONV_LOSS_EVAP ,rothers(ncft)+nirrig,config)+=conv_loss*data->conv_evap;
           getoutputindex(&stand->cell->output, CFT_CONV_LOSS_EVAP ,rmgrass(ncft)+nirrig,config)+=conv_loss*data->conv_evap;
-          getoutputindex(&stand->cell->output, CFT_CONV_LOSS_DRAIN ,rothers(ncft)+nirrig,config)+=conv_loss*(1-data->conv_evap);
           getoutputindex(&stand->cell->output, CFT_CONV_LOSS_DRAIN ,rmgrass(ncft)+nirrig,config)+=conv_loss*(1-data->conv_evap);
+        }
+        break;
+      case OTHERS:
+        if(config->pft_output_scaled)
+        {
+          getoutputindex(&stand->cell->output, CFT_CONV_LOSS_EVAP ,rothers(ncft)+nirrig,config)+=conv_loss*data->conv_evap*stand->cell->ml.landfrac[1].grass[0];
+          getoutputindex(&stand->cell->output, CFT_CONV_LOSS_DRAIN ,rothers(ncft)+nirrig,config)+=conv_loss*(1-data->conv_evap)*stand->cell->ml.landfrac[1].grass[0];
+        }
+        else
+        {
+          getoutputindex(&stand->cell->output, CFT_CONV_LOSS_EVAP ,rothers(ncft)+nirrig,config)+=conv_loss*data->conv_evap;
+          getoutputindex(&stand->cell->output, CFT_CONV_LOSS_DRAIN ,rothers(ncft)+nirrig,config)+=conv_loss*(1-data->conv_evap);
         }
         break;
       case BIOMASS_GRASS:

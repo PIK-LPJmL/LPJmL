@@ -30,7 +30,7 @@ Bool annual_grassland(Stand *stand,         /**< Pointer to stand */
                       const Config *config  /**< LPJ configuration */
                      )                      /** \return stand has to be killed */
 {
-  int p,nirrig,nnat;
+  int p,nirrig,nnat,index;
   Bool *present;
   Pft *pft;
   Pftgrass *grass;
@@ -61,6 +61,7 @@ Bool annual_grassland(Stand *stand,         /**< Pointer to stand */
   grassland=stand->data;
 
   nnat=getnnat(npft,config);
+  index=(stand->type->landusetype==GRASSLAND) ? rmgrass(ncft) : rothers(ncft);
   nirrig=getnirrig(ncft,config);
   foreachpft(pft,p,&stand->pftlist)
   {
@@ -117,37 +118,34 @@ Bool annual_grassland(Stand *stand,         /**< Pointer to stand */
   foreachpft(pft,p,&stand->pftlist)
   {
     grass=pft->data;
-    if(isannual(FPC_BFT,config))
-      getoutputindex(&stand->cell->output,FPC_BFT,getpftpar(pft, id)-(nnat-config->ngrass)+grassland->irrigation.irrigation*(config->nbiomass+2*config->ngrass),config)+=pft->fpc;
+    if(stand->type->landusetype==GRASSLAND)
+    {
+      if(isannual(FPC_BFT,config))
+        getoutputindex(&stand->cell->output,FPC_BFT,getpftpar(pft, id)-(nnat-config->ngrass)+grassland->irrigation.irrigation*(config->nbiomass+2*config->ngrass),config)+=pft->fpc;
+    }
     if(isannual(PFT_VEGC,config))
     {
-      getoutputindex(&stand->cell->output,PFT_VEGC,nnat+rothers(ncft)+grassland->irrigation.irrigation*nirrig,config)+=vegc_sum(pft);
-      getoutputindex(&stand->cell->output,PFT_VEGC,nnat+rmgrass(ncft)+grassland->irrigation.irrigation*nirrig,config)+=vegc_sum(pft);
+      getoutputindex(&stand->cell->output,PFT_VEGC,nnat+index+grassland->irrigation.irrigation*nirrig,config)+=vegc_sum(pft);
     }
     if(isannual(PFT_VEGN,config))
     {
-      getoutputindex(&stand->cell->output,PFT_VEGN,nnat+rothers(ncft)+grassland->irrigation.irrigation*nirrig,config)+=vegn_sum(pft)+pft->bm_inc.nitrogen;
-      getoutputindex(&stand->cell->output,PFT_VEGN,nnat+rmgrass(ncft)+grassland->irrigation.irrigation*nirrig,config)+=vegn_sum(pft)+pft->bm_inc.nitrogen;
+      getoutputindex(&stand->cell->output,PFT_VEGN,nnat+index+grassland->irrigation.irrigation*nirrig,config)+=vegn_sum(pft)+pft->bm_inc.nitrogen;
     }
     if(isannual(PFT_CROOT,config))
     {
-      getoutputindex(&stand->cell->output,PFT_CROOT,nnat+rothers(ncft)+grassland->irrigation.irrigation*nirrig,config)+=grass->ind.root.carbon;
-      getoutputindex(&stand->cell->output,PFT_CROOT,nnat+rmgrass(ncft)+grassland->irrigation.irrigation*nirrig,config)+=grass->ind.root.carbon;
+      getoutputindex(&stand->cell->output,PFT_CROOT,nnat+index+grassland->irrigation.irrigation*nirrig,config)+=grass->ind.root.carbon;
     } 
     if(isannual(PFT_NROOT,config))
     {
-      getoutputindex(&stand->cell->output,PFT_NROOT,nnat+rothers(ncft)+grassland->irrigation.irrigation*nirrig,config)+=grass->ind.root.nitrogen;
-      getoutputindex(&stand->cell->output,PFT_NROOT,nnat+rmgrass(ncft)+grassland->irrigation.irrigation*nirrig,config)+=grass->ind.root.nitrogen;
+      getoutputindex(&stand->cell->output,PFT_NROOT,nnat+index+grassland->irrigation.irrigation*nirrig,config)+=grass->ind.root.nitrogen;
     } 
     if(isannual(PFT_CLEAF,config))
     {
-      getoutputindex(&stand->cell->output,PFT_CLEAF,nnat+rothers(ncft)+grassland->irrigation.irrigation*nirrig,config)+=grass->ind.leaf.carbon;
-      getoutputindex(&stand->cell->output,PFT_CLEAF,nnat+rmgrass(ncft)+grassland->irrigation.irrigation*nirrig,config)+=grass->ind.root.carbon;
+      getoutputindex(&stand->cell->output,PFT_CLEAF,nnat+index+grassland->irrigation.irrigation*nirrig,config)+=grass->ind.leaf.carbon;
     } 
     if(isannual(PFT_NLEAF,config))
     {
-      getoutputindex(&stand->cell->output,PFT_NLEAF,nnat+rothers(ncft)+grassland->irrigation.irrigation*nirrig,config)+=grass->ind.leaf.nitrogen;
-      getoutputindex(&stand->cell->output,PFT_NLEAF,nnat+rmgrass(ncft)+grassland->irrigation.irrigation*nirrig,config)+=grass->ind.leaf.nitrogen;
+      getoutputindex(&stand->cell->output,PFT_NLEAF,nnat+index+grassland->irrigation.irrigation*nirrig,config)+=grass->ind.leaf.nitrogen;
     } 
   }
 #ifdef CHECK_BALANCE

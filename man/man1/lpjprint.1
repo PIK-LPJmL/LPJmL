@@ -1,15 +1,18 @@
-.TH lpjprint 1  "February 4, 2009" "version 1.0.018" "USER COMMANDS"
+.TH lpjprint 1  "USER COMMANDS"
 .SH NAME
 lpjprint \- Print contents of restart file of LPJmL model runs 
 .SH SYNOPSIS
 .B lpjprint
-[\-h] [\-inpath \fIdir\fP] [\-restartpath \fIdir\fP] [[\-Dmacro[=value]] [\-I\fIdir\fP] ...] [\fIfilename\fP [start [end]]]
+[\-h] [\-pp cmd] [\-inpath \fIdir\fP] [\-restartpath \fIdir\fP] [[\-Dmacro[=value]] [\-I\fIdir\fP] ...] \fIfilename\fP [-check] [start [end]]
 .SH DESCRIPTION
 Program prints contents of restart file of a LPJmL model run. The LPJmL configuration file is read in in order to find the location and name of the restart file.
 .SH OPTIONS
 .TP
 \-h
 display a short help text
+.TP
+\-pp cmd
+Set preprocessor program to cmd. Default is \fBcpp\fP.
 .TP
 \-inpath \fIdir\fP
 set the input directory path. The path is added to the input filenames if they do not contain an absolute path.
@@ -24,7 +27,10 @@ define macro for the preprocessor of the configuration file
 define include directory for the preprocessor of the configuration file
 .TP
 .I filename
-name of configuration file, default is \fIlpjml.conf\fP.
+name of configuration file
+.TP
+\-check
+check only restart file, do not print
 .TP
 .I start
 Index of first grid cell to be printed.
@@ -34,17 +40,14 @@ Index of last grid cell to be printed.
 
 .SH EXAMPLE
 .TP
-Print restart file with default configuration file with restart file located in the scratch file system
+Print restart file with configuration file lpjml.js with restart file located in the /p/tmp file system
 .B lpjprint
-\-restartpath /scratch/02/lpj
+\-restartpath /p/tmp/user/lpj lpjml.js
 .PP
 .SH ENVIRONMENT
 .TP
-LPJCONFIG
-default LPJmL configuration filename
-.TP
 LPJPREP 
-defines preprocessor command for LPJmL configuration file, default is \fBcpp -P\fP.
+defines preprocessor command for LPJmL configuration file, default is \fBcpp\fP.
 .TP
 LPJROOT
 defines the root directory for LPJmL. This directory is added to the
@@ -74,4 +77,4 @@ For authors and contributors see AUTHORS file
 (C) Potsdam Institute for Climate Impact Research (PIK), see COPYRIGHT file
 
 .SH SEE ALSO
-lpjml(1), lpjcheck(1), lpjfiles(1), lpjml.conf(5)
+lpjml(1), lpjcheck(1), lpjfiles(1)

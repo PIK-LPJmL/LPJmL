@@ -19,10 +19,11 @@
 
 /* Definition of datatypes */
 
-#define DEFAULT_PORT 2222 /* default port for socket connection */
 #define issoil(index) (index==KS_NAT || index==KS_GRASS || index==KS_AGR ||index==WHC_NAT || index==WHC_GRASS || index==WHC_AGR ||\
                        index==SOILC_LAYER || index == SOILC_AGR_LAYER || index==SOILN_LAYER || index==SOILNO3_LAYER || index==SOILNH4_LAYER || index==SOILTEMP || index==SWC || \
                        index==RESPONSE_LAYER_AGR || index==RESPONSE_LAYER_NV || index==CSHIFT_FAST_NV || index==CSHIFT_SLOW_NV || index == SOILC_AGR_LAYER || index==PERC)
+
+#define DEFAULT_PORT 2222 /* default port for socket connection */
 
 #define getoutput(output,index,config) (output)->data[(config)->outputmap[index]]
 #ifdef CHECK_BOUNDARY
@@ -56,55 +57,54 @@ typedef struct
 
 typedef struct
 {
-  Real npp;      /**< Total NPP (gC) */
-  Real gpp;      /**< Total GPP (gC) */
-  Real rh;       /**< Total heterotrophic respiration (gC) */
-  Real fire;     /**< Total fire (gC) */
-  Real estab;    /**< Total extablishment flux (gC) */
-  Real harvest;  /**< Total harvested carbon (gC) */
-  Real transp;   /**< Total transpiration (dm3) */
-  Real evap;     /**< Total evaporation (dm3) */
-  Real interc;   /**< Total interception (dm3) */
-  Real wd;       /**< Total irrigation water withdrawal (dm3) */
-  Real wd_unsustainable;      /**< Total irrigation water withdrawal from unsustainable source (dm3) */
-  Real wateruse;              /**< Total wateruse for household industry and livestock */
-  Real discharge;             /**< Total discharge (dm3) */
-  Real ext;                   /**< Total external flux (dm3) */
-  Real evap_lake;             /**< Total evaporation from lakes (dm3) */
-  Real evap_res;              /**< Total evaporation from reservoirs (dm3) */
-  Real irrig;                 /**< Total field irrigation (dm3) */
-  Real conv_loss_evap;        /**< Total evaporation during conveyance (dm3) */
-  Real prec;                  /**< Total precipitation (dm3) */
-  Real delta_surface_storage; /**< Total change of surface storage (dm3), increase positive */
-  Real delta_soil_storage;    /**< Total change of soil storage (dm3), increase positive */
+  Real npp;      /**< Total NPP (gC/yr) */
+  Real gpp;      /**< Total GPP (gC/yr) */
+  Real rh;       /**< Total heterotrophic respiration (gC/yr) */
+  Stocks fire;   /**< Total fire (gC/yr,gN/yr) */
+  Stocks estab;  /**< Total extablishment flux (gC/yr,gN/yr) */
+  Stocks harvest;/**< Total harvested carbon (gC/yr,gN/yr) */
+  Real transp;   /**< Total transpiration (dm3/yr) */
+  Real evap;     /**< Total evaporation (dm3/yr) */
+  Real interc;   /**< Total interception (dm3/yr) */
+  Real wd;       /**< Total irrigation water withdrawal (dm3/yr) */
+  Real wd_unsustainable;      /**< Total irrigation water withdrawal from unsustainable source (dm3/yr) */
+  Real wateruse;              /**< Total wateruse for household industry and livestock (dm3/yr) */
+  Real discharge;             /**< Total discharge (dm3/yr) */
+  Real ext;                   /**< Total external flux (dm3/yr) */
+  Real evap_lake;             /**< Total evaporation from lakes (dm3/yr) */
+  Real evap_res;              /**< Total evaporation from reservoirs (dm3/yr) */
+  Real irrig;                 /**< Total field irrigation (dm3/yr) */
+  Real conv_loss_evap;        /**< Total evaporation during conveyance (dm3/yr) */
+  Real prec;                  /**< Total precipitation (dm3/yr) */
+  Real delta_surface_storage; /**< Total change of surface storage (dm3/yr), increase positive */
+  Real delta_soil_storage;    /**< Total change of soil storage (dm3/yr), increase positive */
   Real area;                  /**< Total area (m2) */
   Real total_reservoir_out;   /**< Total water extracted from reservoirs for irrigation */
   Real total_irrig_from_reservoir; /*Total water added to fields from reservoirs */
-  Real n_demand;              /**< total N demand by plants */
-  Real n_uptake;              /**< total N uptake by plants */
-  Real n_influx;              /**< total N inputs */
-  Real n_outflux;             /**< total N losses */
+  Real n_demand;              /**< total N demand by plants (gN/yr) */
+  Real n_uptake;              /**< total N uptake by plants (gN/yr) */
+  Real n_influx;              /**< total N inputs (gN/yr) */
+  Real n_outflux;             /**< total N losses (gN/yr) */
   Real excess_water;          /**< Exess water (dm3) */
-  Real aCH4_emissions;         /* Total Emissions (gCH4/yr)) positive and negative*/
-  Real aCH4_sink;
-  Real aCH4_fire;
-  Real aCH4_rice;
-  Real soilc;                 /**< soil carbon (gC) */
-  Real soiln;                 /**< soil organic nitrogen (gC) */
-  Real temp;                  /**< global average temperature (celsius) */
-  Real soilc_slow;            /**< slow soil carbon (gC) */
-  Real litc;                  /**< litter carbon (gC) */
-  Real vegc;                  /**< vegetation carbon (gC) */
-  Real productc;              /**< product pool carbon (gC) */
+  Real CH4_emissions;         /* Total Emissions (gCH4/yr)) positive and negative*/
+  Real CH4_sink;
+  Real CH4_fire;
+  Real CH4_rice;
+  Real soil_CH4;
   Real soil_NO3;
   Real soil_NH4;
-  Real soil_CH4;
-  Real product_turnover;      /**< product pool carbon turnover (gC/yr) */
-  Real neg_fluxes;
+  Real temp;                  /**< global average temperature (celsius) */
+  Stocks soil;                /**< soil stocks (gC,gN) */
+  Stocks soil_slow;           /**< slow soil stocks (gC,gN) */
+  Stocks lit;                 /**< litter stocks (gC,gN) */
+  Stocks veg;                 /**< vegetation stocks (gC,gN) */
+  Stocks product;             /**< product pool (gC,gN) */
+  Stocks product_turnover;    /**< product pool turnover (gC/yr,gN/yr) */
+  Stocks neg_fluxes;
+  Stocks estab_storage;       /**< Storage for establishment (gC, gN) */
   Real area_agr;              /**< agriculture area (m2) */
-} Flux;
 
-typedef enum {LPJ_FILES,LPJ_MPI2,LPJ_GATHER,LPJ_SOCKET} Outputmethod;
+} Flux;
 
 typedef enum { MISSING_TIME,SECOND,DAY,MONTH,YEAR } Time;
 
@@ -129,10 +129,12 @@ extern int outputsize(int,int,int,const Config *);
 extern Type getoutputtype(int,Bool);
 extern int getnyear(const Variable *,int);
 extern Bool isnitrogen_output(int);
+extern Bool isannual_output(int);
 extern void fwriteoutputdata(FILE *,const Output *,const Config *);
 extern Bool freadoutputdata(FILE *,Output *,Bool,Config *);
 extern Bool isannual(int,const Config *);
 extern int outputindex(int,int,const Config *);
+extern int getmintimestep(int);
 extern Bool fprintoutputjson(int,int,const Config *);
 #ifdef USE_MPI
 extern int mpi_write(FILE *,void *,MPI_Datatype,int,int *,
@@ -143,7 +145,6 @@ extern int mpi_write_txt(FILE *,void *,MPI_Datatype,int,int *,
 
 /* Definition of macros */
 
-#define isopen(output,index) output->files[index].isopen
-#define output_flux(output,flux) writedouble_socket(output->socket,(Real *)&flux,sizeof(Flux)/sizeof(Real))
+#define isopen(output,index) (output->files[index].isopen || output->files[index].issocket)
 
 #endif

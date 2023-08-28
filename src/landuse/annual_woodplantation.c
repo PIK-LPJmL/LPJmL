@@ -39,15 +39,14 @@ Bool annual_woodplantation(Stand *stand,         /**< Pointer to stand */
   Stocks flux_return;
   Stocks flux_estab={0,0};
   Stocks estab_store={0,0};
-#ifdef COUPLED
   Stocks biofuel;
-#endif
   Pfttreepar *treepar;
   Biomass_tree *biomass_tree;
-
+  Stocks yield={0.0,0.0};
 #ifdef COUPLED
   Real ftimber;
-  Stocks yield={0.0,0.0};
+#else
+  Poolpar frac;
 #endif
 
   biomass_tree=stand->data;
@@ -152,6 +151,8 @@ Bool annual_woodplantation(Stand *stand,         /**< Pointer to stand */
         getoutput(&stand->cell->output,TRAD_BIOFUEL,config)+=biofuel.carbon;
         stand->cell->balance.trad_biofuel.carbon+=biofuel.carbon;
         stand->cell->balance.trad_biofuel.nitrogen+=biofuel.nitrogen;
+        getoutput(&stand->cell->output,HARVESTC,config)+=yield.carbon*stand->frac;
+        getoutput(&stand->cell->output,HARVESTN,config)+=yield.nitrogen*stand->frac;
         if(config->pft_output_scaled)
         {
           stand->cell->pft_harvest[index]+=yield.carbon*stand->frac;
@@ -166,6 +167,45 @@ Bool annual_woodplantation(Stand *stand,         /**< Pointer to stand */
         }
         biomass_tree->growing_time=0;
         fpc_tree(pft);
+      } /* of if(istree) */
+    } /* of foreachpft */
+  }
+#else
+  if(param.ftimber_wp>0)
+  {
+    frac.fast=param.harvest_fast_frac;
+    frac.slow=1-param.harvest_fast_frac;
+    foreachpft(pft,p,&stand->pftlist)
+    {
+      if(istree(pft))
+      {
+        treepar=pft->par->data;
+        if(biomass_tree->growing_time>=treepar->rotation && biomass_tree->growing_time%treepar->rotation==0)
+        {
+          yield=timber_harvest(pft,&stand->soil,frac,param.ftimber_wp,stand->frac,&pft->nind,&biofuel,config);
+          pft->bm_inc.nitrogen*=(1-param.ftimber_wp);
+          getoutput(&stand->cell->output,TRAD_BIOFUEL,config)+=biofuel.carbon;
+          stand->cell->balance.trad_biofuel.carbon+=biofuel.carbon;
+          stand->cell->balance.trad_biofuel.nitrogen+=biofuel.nitrogen;
+          stand->cell->balance.timber_harvest.carbon+=yield.carbon;
+          stand->cell->balance.timber_harvest.nitrogen+=yield.nitrogen;
+          getoutput(&stand->cell->output,TIMBER_HARVESTC,config)+=yield.carbon;
+          getoutput(&stand->cell->output,TIMBER_HARVESTN,config)+=yield.nitrogen;
+          getoutput(&stand->cell->output,HARVESTC,config)+=yield.carbon;
+          getoutput(&stand->cell->output,HARVESTN,config)+=yield.nitrogen;
+          if(config->pft_output_scaled)
+          {
+            getoutputindex(&stand->cell->output,PFT_HARVESTC,index,config)+=yield.carbon;
+            getoutputindex(&stand->cell->output,PFT_HARVESTN,index,config)+=yield.nitrogen;
+          }
+          else
+          {
+            getoutputindex(&stand->cell->output,PFT_HARVESTC,index,config)+=yield.carbon/stand->frac;
+            getoutputindex(&stand->cell->output,PFT_HARVESTN,index,config)+=yield.nitrogen/stand->frac;
+          }
+          biomass_tree->growing_time=0;
+          fpc_tree(pft);
+        }
       } /* of if(istree) */
     } /* of foreachpft */
   }
@@ -253,7 +293,8 @@ Bool annual_woodplantation(Stand *stand,         /**< Pointer to stand */
         isdead=TRUE;
     }
 
-  getoutputindex(&stand->cell->output,CFTFRAC,index,config)+=stand->cell->ml.landfrac[biomass_tree->irrigation.irrigation].woodplantation;
+  getoutputindex(&stand->cell->output,CFTFRAC,index,config)=stand->cell->ml.landfrac[biomass_tree->irrigation.irrigation].woodplantation;
+  getoutputindex(&stand->cell->output,CFT_NHARVEST,index,config)+=1.0;
 
   free(present);
   free(fpc_type);
@@ -266,7 +307,7 @@ Bool annual_woodplantation(Stand *stand,         /**< Pointer to stand */
     biomass_tree->age=biomass_tree->growing_time=0;
     stand->cell->discharge.dmass_lake+=(biomass_tree->irrigation.irrig_stor+biomass_tree->irrigation.irrig_amount)*stand->cell->coord.area*stand->frac;
     stand->cell->balance.awater_flux-=(biomass_tree->irrigation.irrig_stor+biomass_tree->irrigation.irrig_amount)*stand->frac;
-    if(setaside(stand->cell,stand,stand->cell->ml.with_tillage,intercrop,npft,biomass_tree->irrigation.irrigation,stand->soil.iswetland,year,config))
+    if(setaside(stand->cell,stand,stand->cell->ml.with_tillage,intercrop,npft,npft+ncft,biomass_tree->irrigation.irrigation,stand->soil.iswetland,year,config))
       return TRUE;
   }
   else

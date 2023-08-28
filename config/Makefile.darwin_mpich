@@ -31,4 +31,3 @@ LINK	= cc -m64
 MKDIR	= mkdir -p
 LIBS	= -lm
 SLASH	= /
-VIEWPRG	= lpjserver

@@ -40,7 +40,12 @@ typedef struct
   Real atmfrac;      /**< fraction of decomposed litter emitted as CO2 to the atmosphere */
   Real fastfrac;     /**< fraction of soil-bound decomposed litter entering the intermediate soil carbon pool */
   Real bioturbate;   /**< bioturbation [0..1) */
-  int veg_equil_year;
+  int veg_equil_year; /**< number of years to get vegetation into equilibrium (before forst call of equisoil) */
+  Bool veg_equil_unlim; /**< enable vegetation spinup without nitrogen limitation */
+  int nequilsoil;         /**< number of equisoil calls */
+  int equisoil_interval;  /**< time interval between equisoil calls */
+  int equisoil_years;     /**< number of years used in calculation for equisoil */
+  int equisoil_fadeout;   /**< number of years for equisoil fadeout (for final call of equisoil) */
   Real k_max;        /**< maximum fraction of soil->NH4 assumed to be nitrified Parton, 2001*/
   Real k_2;          /**< fraction of nitrified N lost as N20 flux Parton, 2001*/
 
@@ -58,10 +63,6 @@ typedef struct
   Real lsuha;       /**< livestock density for grassland management (lsuha) */
   /* IRRIGATION */
   Real aprec_lim;    /**< annual precipitation limit for C3 irrigation threshold */
-  Real irrig_threshold_c3_dry; /**< soil moisture irrigation threshold for C3 crops, annual precip < aprec_lim */
-  Real irrig_threshold_c3_humid; /**< soil moisture irrigation threshold for C3 crops, annual precip >= aprec_lim */
-  Real irrig_threshold_c4; /**< soil moisture irrigation threshold for C4 crops*/
-  Real irrig_threshold_rice; /**< soil moisture irrigation threshold for RICE */
   Real irrigation_soilfrac; /**< fraction of soil filled with water during irrigation event */
   Real ec_canal[3];     /**< conveyance efficiency for open canal irrigation systems for soil types sand, loam, clay */
   Real ec_pipe;      /**< conveyance efficiency for pressurized irrigation systems */
@@ -71,6 +72,7 @@ typedef struct
   Real fire_intens;     /**< threshold of fireintensity for which burnt area can be modeled */
   Real hum_ign;         /**< a parameter for scaling the human ignintions within SPITFIRE */
   Real residues_in_soil;  /**< minimum residues in soil*/
+  Real residues_in_soil_notillage;  /**< minimum residues in soil*/
   Real nfert_split;     /**< threshold fertilizer input for split application */
   Real manure_cn;       /* CN ratio of applied manure gC/gN */
   Real nfert_split_frac;       /* fraction of fertilizer to be applied at sowing */
@@ -89,6 +91,7 @@ typedef struct
   Real k_temp;          /**< factor of temperature dependence of nitrogen demand for Rubisco activity */
   Real fburnt;          /**< fraction of trees burnt at deforestation */
   Real ftimber;         /**< timber fraction at deforestation */
+  Real ftimber_wp;      /**< timber fraction for wood plantations */
   Real harvest_fast_frac;  /**< fraction of harvested wood going to fast pools */
   Real esoil_reduction; /**< reduction of soil evaporation */
   Poolpar product_turnover; /**< fast and slow product turnover (1/yr) */
@@ -99,6 +102,7 @@ typedef struct
   Real yield_gap_bridge; /**< yield-gap bridge: factor by which laimax value is closed (7 - country-value)*factor */
   Real allocation_threshold; /**< allocation threshold for daily grassland allocation */
   Real hfrac2;
+  Real hfrac_biomass;     /**< harvest fraction of biomass grass */
   Real rootreduction;     /**< fraction used to calculate amount of roots dying at harvest in managed grasslands */
   Real phen_limit; /* limit for agricultural trees */
   Real nfrac_grassharvest; /**< fraction of nitrogen from grass harvest not returned to NH4 pool via manure after mowing*/

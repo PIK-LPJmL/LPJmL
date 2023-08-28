@@ -18,20 +18,9 @@
 
 #include "lpj.h"
 
-#ifdef _WIN32              /* are we on a Windows machine? */
-#ifdef IMAGE
-#define cpp_cmd "cl /E /DIMAGE /nologo"  /* C preprocessor command for Windows */
-#else
-#define cpp_cmd "cl /E /nologo"  /* C preprocessor command for Windows */
-#endif
-#else
-#define cpp_cmd "cpp"  /* C preprocessor command for Unix */
-#endif
-
 #define checkptr(ptr) if(ptr==NULL) { printallocerr(#ptr); return NULL; }
 
 FILE *openconfig(Config *config,      /**< configuration struct */
-                 const char *dflt_filename, /**< default name of configuration file */
                  int *argc,           /**< pointer to the number of arguments */
                  char ***argv,        /**< pointer to the argument vector  */
                  const char *usage    /**< usage information string or NULL */
@@ -76,27 +65,32 @@ FILE *openconfig(Config *config,      /**< configuration struct */
     config->restartdir=strdup(pos);
     checkptr(config->restartdir);
   }
-  env_options=getenv(LPJOUTPUTMETHOD);
-  config->port=DEFAULT_PORT;
   config->param_out=FALSE;
   config->scan_verbose=ERR; /* NO_ERR would suppress also error messages */
-#if defined IMAGE && defined COUPLED
-  config->image_inport=DEFAULT_IMAGE_INPORT;
-  config->image_outport=DEFAULT_IMAGE_OUTPORT;
-  config->image_host=getenv(LPJIMAGE);
-  pos=getenv(LPJWAITIMAGE);
+  pos=getenv(LPJWAIT);
   if(pos!=NULL)
   {
-    config->wait_image=strtol(pos,&endptr,10);
+    config->wait=strtol(pos,&endptr,10);
     if(*endptr!='\0')
     {
       if(isroot(*config))
-        fprintf(stderr,"ERROR193: Invalid number '%s' for IMAGE wait in environment variable.\n",pos);
+        fprintf(stderr,"ERROR193: Invalid number '%s' for wait in environment variable.\n",pos);
+      return NULL;
+    }
+    if(config->wait<0)
+    {
+      if(isroot(*config))
+        fprintf(stderr,"ERROR193: Invalid number %d for wait in environment variable, must be >=0.\n",config->wait);
       return NULL;
     }
   }
   else
-    config->wait_image=WAIT_IMAGE;
+    config->wait=DEFAULT_WAIT;
+
+#if defined IMAGE && defined COUPLED
+  config->image_inport=DEFAULT_IMAGE_INPORT;
+  config->image_outport=DEFAULT_IMAGE_OUTPORT;
+  config->image_host=getenv(LPJIMAGE);
   if(config->image_host==NULL)
     config->image_host=DEFAULT_IMAGE_HOST;
   else
@@ -129,64 +123,29 @@ FILE *openconfig(Config *config,      /**< configuration struct */
        }
     }
   }
-#endif
-  if(env_options==NULL)
-#ifdef USE_MPI
-    config->outputmethod=LPJ_GATHER;
 #else
-    config->outputmethod=LPJ_FILES;
-#endif
-#ifdef USE_MPI
-  else if(!strcmp(env_options,"mpi2"))
-    config->outputmethod=LPJ_MPI2;
-  else if(!strcmp(env_options,"gather"))
-    config->outputmethod=LPJ_GATHER;
-#else
-  else if(!strcmp(env_options,"write"))
-    config->outputmethod=LPJ_FILES;
-#endif
-  else if(!strncmp(env_options,"socket",6))
-  {
-    config->outputmethod=LPJ_SOCKET;
-    if(env_options[6]=='=')
-    {
-      config->hostname=env_options+7;
-      pos=strchr(config->hostname,':');
-      if(pos!=NULL)
-      {
-        *pos='\0';
-        config->port=strtol(pos+1,&endptr,10);
-        if(endptr==pos+1 || *endptr!='\0' || config->port<1  || config->port>USHRT_MAX)
-        {
-          if(isroot(*config))
-            fprintf(stderr,
-                    "ERROR169: Invalid port number for output method socket.\n");
-          return NULL;
-        }
-      }
-    }
-    else 
-    {
-      if(isroot(*config))
-      {
-        fprintf(stderr,
-                "ERROR168: Hostname missing for output method socket.\n");
-        if(usage!=NULL)
-          fprintf(stderr,usage,(*argv)[0]);
-      }
-      return NULL;
-    }
-  }
+  config->coupler_port=DEFAULT_COUPLER_PORT;
+  config->coupled_host=getenv(LPJCOUPLEDHOST);
+  if(config->coupled_host==NULL)
+    config->coupled_host=DEFAULT_COUPLED_HOST;
   else
   {
-    if(isroot(*config))
+    pos=strchr(config->coupled_host,':');
+    if(pos!=NULL)
     {
-      fprintf(stderr,"ERROR163: Invalid output method '%s'.\n",env_options);
-      if(usage!=NULL)
-        fprintf(stderr,usage,(*argv)[0]);
+      *pos='\0';
+       config->coupler_port=strtol(pos+1,&endptr,10);
+       if(pos+1==endptr || config->coupler_port<1 || config->coupler_port>USHRT_MAX)
+       {
+         if(isroot(*config))
+           fprintf(stderr,"ERROR193: Invalid number %d for coupled port.\n",
+                   config->coupler_port);
+         return NULL;
+       }
     }
-    return NULL;
   }
+#endif
+
   env_options=getenv(LPJOPTIONS);
   options=newvec(char *,(env_options==NULL) ? *argc : *argc+1);
   if(options==NULL)
@@ -207,7 +166,6 @@ FILE *openconfig(Config *config,      /**< configuration struct */
         options[dcount++]=(*argv)[i];
         len+=strlen((*argv)[i])+1;
       }
-#if defined IMAGE && defined COUPLED
       else if(!strcmp((*argv)[i],"-wait"))
       {
         if(i==*argc-1)
@@ -223,16 +181,24 @@ FILE *openconfig(Config *config,      /**< configuration struct */
         }
         else
         {
-          config->wait_image=strtol((*argv)[++i],&endptr,10);
+          config->wait=strtol((*argv)[++i],&endptr,10);
           if(*endptr!='\0')
           {
             if(isroot(*config))
-              fprintf(stderr,"ERROR193: Invalid number '%s' for IMAGE wait in option.\n",(*argv)[i]);
+              fprintf(stderr,"ERROR193: Invalid number '%s' for wait in option.\n",(*argv)[i]);
+            free(options);
+            return NULL;
+          }
+          if(config->wait<0)
+          {
+            if(isroot(*config))
+              fprintf(stderr,"ERROR193: Invalid number %d for wait in option, must be >=0.\n",config->wait);
             free(options);
             return NULL;
           }
         }
       }
+#if defined IMAGE && defined COUPLED
       else if(!strcmp((*argv)[i],"-image"))
       {
         if(i==*argc-1)
@@ -277,6 +243,41 @@ FILE *openconfig(Config *config,      /**< configuration struct */
                  free(options);
                  return NULL;
                }
+             }
+           }
+        }
+      }
+#else
+      else if(!strcmp((*argv)[i],"-couple"))
+      {
+        if(i==*argc-1)
+        {
+          if(isroot(*config))
+          {
+            fprintf(stderr,"ERROR164: Argument missing for '-couple' option.\n");
+            if(usage!=NULL)
+              fprintf(stderr,usage,(*argv)[0]);
+          }
+          free(options);
+          return NULL;
+        }
+        else
+        {
+           config->coupled_host=(*argv)[++i];
+           pos=strchr(config->coupled_host,':');
+           if(pos!=NULL)
+           {
+             *pos='\0';
+             config->coupler_port=strtol(pos+1,&endptr,10);
+             if(pos+1==endptr || config->coupler_port<1
+                              || config->coupler_port>USHRT_MAX)
+             {
+               if(isroot(*config))
+                 fprintf(stderr,
+                         "ERROR193: Invalid number %d for coupled port.\n",
+                         config->coupler_port);
+               free(options);
+               return NULL;
              }
            }
         }
@@ -369,77 +370,6 @@ FILE *openconfig(Config *config,      /**< configuration struct */
         /* enable floating point exceptions, core file will be generated */
         enablefpe();
 #endif
-      else if(!strcmp((*argv)[i],"-output"))
-      {
-        if(i==*argc-1)
-        {
-          if(isroot(*config))
-          {
-            fprintf(stderr,
-                    "ERROR164: Argument missing for '-output' option.\n");
-            if(usage!=NULL)
-              fprintf(stderr,usage,(*argv)[0]);
-          }
-          free(options);
-          return NULL;
-        }
-#ifdef USE_MPI
-        else if(!strcmp((*argv)[i+1],"mpi2"))
-          config->outputmethod=LPJ_MPI2;
-        else if(!strcmp((*argv)[i+1],"gather"))
-          config->outputmethod=LPJ_GATHER;
-#else
-        else if(!strcmp((*argv)[i+1],"write"))
-          config->outputmethod=LPJ_FILES;
-#endif
-        else if(!strncmp((*argv)[i+1],"socket",6))
-        {
-          config->outputmethod=LPJ_SOCKET;
-          if((*argv)[i+1][6]=='=')
-          {
-            config->hostname=&((*argv)[i+1][7]);
-            pos=strchr(config->hostname,':');
-            if(pos!=NULL)
-            {
-              *pos='\0';
-              config->port=strtol(pos+1,&endptr,10);
-              if(endptr==pos+1 || *endptr!='\0' || config->port<1
-                               || config->port>USHRT_MAX)
-              {
-                if(isroot(*config))
-                  fprintf(stderr,"ERROR169: Invalid port number %d for output method socket.\n",
-                          config->port);
-                free(options);
-                return NULL;
-              }
-            }
-          }
-          else 
-          {
-            if(isroot(*config))
-            {
-              fprintf(stderr,"ERROR168: Hostname missing for output method socket.\n");
-              if(usage!=NULL)
-                fprintf(stderr,usage,(*argv)[0]);
-            }
-            free(options);
-            return NULL;
-          }
-        }
-        else
-        {
-          if(isroot(*config))
-          {
-            fprintf(stderr,"ERROR163: Invalid output method '%s'.\n",
-                    (*argv)[i+1]);
-            if(usage!=NULL)
-              fprintf(stderr,usage,(*argv)[0]);
-          }
-          free(options);
-          return NULL;
-        }
-        i++;
-      }
       else
       {
         if(isroot(*config))
@@ -455,7 +385,18 @@ FILE *openconfig(Config *config,      /**< configuration struct */
     else
       break;
   }
-  config->filename=(i==*argc)  ? dflt_filename : (*argv)[i++];
+  if(i==*argc)
+  {
+    if(isroot(*config))
+    {
+      fprintf(stderr,"ERROR164: Configuration filename missing.\n");
+      if(usage!=NULL)
+        fprintf(stderr,usage,(*argv)[0]);
+    }
+    free(options);
+    return NULL;
+  }
+  config->filename=(*argv)[i++];
   /* check whether config file exists */
   if(getfilesize(config->filename)==-1)
   {

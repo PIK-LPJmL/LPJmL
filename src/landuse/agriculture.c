@@ -17,6 +17,8 @@
 #include "lpj.h"
 #include "natural.h"
 #include "agriculture.h"
+#include "grassland.h"
+
 
 Standtype setaside_rf_stand={SETASIDE_RF,"setaside_rf",new_agriculture,
                              free_agriculture,fwrite_agriculture,
@@ -24,9 +26,9 @@ Standtype setaside_rf_stand={SETASIDE_RF,"setaside_rf",new_agriculture,
 #ifdef DAILY_ESTABLISHMENT
                              daily_setaside,
 #else
-                             daily_natural,
+                             daily_grassland,
 #endif
-                             annual_setaside,NULL,isdailyoutput_agriculture};
+                             annual_setaside,NULL};
 
 Standtype setaside_ir_stand={SETASIDE_IR,"setaside_ir",new_agriculture,
                              free_agriculture,fwrite_agriculture,
@@ -34,9 +36,9 @@ Standtype setaside_ir_stand={SETASIDE_IR,"setaside_ir",new_agriculture,
 #ifdef DAILY_ESTABLISHMENT
                              daily_setaside,
 #else
-                             daily_natural,
+                             daily_grassland,
 #endif
-                             annual_setaside,NULL,isdailyoutput_agriculture};
+                             annual_setaside,NULL};
 
 Standtype setaside_wetland_stand={SETASIDE_WETLAND,"setaside_wetland_stand",new_agriculture,
                              free_agriculture,fwrite_agriculture,
@@ -49,13 +51,13 @@ Standtype setaside_wetland_stand={SETASIDE_WETLAND,"setaside_wetland_stand",new_
                              annual_setaside,NULL,isdailyoutput_agriculture};
 
 Standtype managedforest_stand={MANAGEDFOREST,"managed forest",NULL,NULL,NULL,
-                               NULL,NULL,NULL,NULL,NULL,NULL};
+                               NULL,NULL,NULL,NULL,NULL};
 
 Standtype kill_stand={KILL,"kill",NULL,free_agriculture,NULL,NULL,NULL,NULL,NULL,
-                      NULL,NULL};
+                      NULL};
 
 Standtype agriculture_stand={AGRICULTURE,"agriculture",new_agriculture,
                              free_agriculture,fwrite_agriculture,
                              fread_agriculture,fprint_agriculture,
                              daily_agriculture,annual_agriculture,
-                             NULL,isdailyoutput_agriculture};
+                             NULL};
