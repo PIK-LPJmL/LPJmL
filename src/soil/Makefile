@@ -19,13 +19,9 @@ OBJS    = initsoil.$O waterbalance.$O equilsoil.$O littersom.$O\
           getlag.$O temp_response.$O fscansoilpar.$O soiltemp.$O laketemp.$O snow.$O\
           fire_sum.$O fire_prob.$O freadsoil.$O fwritesoil.$O fprintsoil.$O\
           freesoilpar.$O seeksoilcode.$O freadsoilcode.$O getnsoilcode.$O\
-<<<<<<< HEAD
-          fopensoilcode.$O litter_ag_sum.$O littercarbon.$O fprintlitter.$O\
+          fopensoilcode.$O litter_agtop_sum.$O littercarbon.$O fprintlitter.$O\
           hydrotopes.$O inithydro.$O update_wetland.$O\
           freadhydrotope.$O fscanhydropar.$O fwritehydrotope.$O \
-=======
-          fopensoilcode.$O litter_agtop_sum.$O littercarbon.$O fprintlitter.$O\
->>>>>>> master
           freadlitter.$O fwritelitter.$O newsoil.$O freesoil.$O copysoil.$O\
           findlitter.$O addlitter.$O freelitter.$O fprintsoilpar.$O\
           soilwater.$O soilcarbon.$O litter_agtop_tree.$O litter_agtop_grass.$O\

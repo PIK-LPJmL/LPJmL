@@ -32,12 +32,8 @@
 
   "sim_name" : "LPJmL run with SPITFIRE and VPD fire danger index", /* Simulation description */
   "sim_id"   : "lpjml",     /* LPJML Simulation type with managed land use */
-<<<<<<< HEAD
-  "version"  : "6.0",       /* LPJmL version expected */
-=======
   "coupled_model" : null,   /* no model coupling */
-  "version"  : "5.3",       /* LPJmL version expected */
->>>>>>> master
+  "version"  : "6.0",       /* LPJmL version expected */
   "random_prec" : false,    /* Random weather generator for precipitation enabled */
   "random_seed" : 2,        /* seed for random number generator */
   "radiation" : "radiation",/* other options: CLOUDINESS, RADIATION, RADIATION_SWONLY, RADIATION_LWDOWN */

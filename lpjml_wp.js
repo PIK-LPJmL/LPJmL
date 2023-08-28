@@ -32,12 +32,8 @@
 
   "sim_name" : "LPJmL run with wood plantations", /* Simulation description */
   "sim_id"   : "lpjml",     /* LPJML Simulation type with managed land use */
-<<<<<<< HEAD
-  "version"  : "6.0",       /* LPJmL version expected */
-=======
   "coupled_model" : null,   /* no model coupling */
-  "version"  : "5.3",       /* LPJmL version expected */
->>>>>>> master
+  "version"  : "6.0",       /* LPJmL version expected */
   "random_prec" : true,     /* Random weather generator for precipitation enabled */
   "random_seed" : 2,        /* seed for random number generator */
   "radiation" : "radiation",/* other options: "cloudiness", "radiation", "radiation_swonly", "radiation_lwdown" */
@@ -52,13 +48,9 @@
   "permafrost" : true,
   "johansen" : true,
   "soilpar_option" : "no_fixed_soilpar", /* other options "no_fixed_soilpar", "fixed_soilpar", "prescribed_soilpar" */
-<<<<<<< HEAD
   "with_nitrogen" : "lim",  /* other options: "no", "lim", "unlim" */
   "dynamic_CH4" : false,
   "anomaly" : false,
-=======
-  "with_nitrogen" : "lim", /* other options: "no", "lim", "unlim" */
->>>>>>> master
   "store_climate" : true, /* store climate data in spin-up phase */
   "const_climate" : false,
   "shuffle_climate" : true, /* shuffle spinup climate */

@@ -53,12 +53,8 @@ HDRS    = $(INC)/buffer.h $(INC)/coord.h $(INC)/lpj.h $(INC)/pftlist.h\
           $(INC)/list.h $(INC)/cell.h  $(INC)/units.h $(INC)/output.h\
           $(INC)/config.h $(INC)/intlist.h $(INC)/queue.h $(INC)/pnet.h\
           $(INC)/discharge.h $(INC)/channel.h $(INC)/reservoir.h $(INC)/soil.h\
-<<<<<<< HEAD
-          $(INC)/tree.h $(INC)/cdf.h $(INC)/spitfire.h $(INC)/climbuf.h $(INC)/hydrotope.h
-=======
-          $(INC)/tree.h $(INC)/cdf.h $(INC)/spitfire.h $(INC)/climbuf.h\
+          $(INC)/tree.h $(INC)/cdf.h $(INC)/spitfire.h $(INC)/climbuf.h $(INC)/hydrotope.h\
           $(INC)/coupler.h $(INC)/couplerpar.h
->>>>>>> master
 
 LIBDIR  = ../../lib
 BIN     = ../../bin
@@ -103,11 +99,7 @@ clean:
             cvrtsoil$E river_sections_input_irrig$E water_use_input$E\
             cft2clm$E printdrain$E lpjcheck$E printharvest$E\
             printreservoir$E setclm$E getcountry$E regridclm$E regridsoil$E\
-<<<<<<< HEAD
-            cdf2soil$E lpjfiles$E asc2clm$E joingrid$E clm2cdf$E soil2cdf$E\
-=======
             cdf2soil$E lpjfiles$E asc2clm$E joingrid$E clm2cdf$E\
->>>>>>> master
             cdf2clm$E bin2cdf$E adddrain$E txt2grid$E getcellindex$E\
             copyheader$E addheader$E mathclm$E cutclm$E cdf2bin$E cvrtclm$E\
             manage2js$E headersize$E regridirrig$E mergeclm$E country2cdf$E\
