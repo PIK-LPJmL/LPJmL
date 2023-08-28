@@ -61,8 +61,6 @@ void deforest(Cell *cell,          /**< pointer to cell */
   Stand *checkstand;
   foreachstand(checkstand,s,cell->standlist)
     start+=(standstocks(checkstand).carbon*checkstand->frac+soilmethane(&checkstand->soil)*checkstand->frac);
-//  if(year==2002) foreachstand(checkstand,s,cell->standlist)
-//    fprintf(stderr,"deforest: standNR: %d type %s frac:%g diff:%g carbon:%g methan:%g\n",s,checkstand->type->name,checkstand->frac,difffrac,standstocks(checkstand).carbon*checkstand->frac,soilmethane(&checkstand->soil)*checkstand->frac);
 #endif
 
   timberharvest=FALSE;
