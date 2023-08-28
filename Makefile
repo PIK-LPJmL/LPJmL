@@ -35,13 +35,9 @@ HDRS    = $(INC)/buffer.h $(INC)/cell.h $(INC)/climate.h $(INC)/conf.h\
           $(INC)/natural.h $(INC)/grassland.h $(INC)/agriculture.h\
           $(INC)/reservoir.h $(INC)/spitfire.h $(INC)/biomass_tree.h\
           $(INC)/biomass_grass.h $(INC)/cdf.h $(INC)/outfile.h $(INC)/cpl.h\
-<<<<<<< HEAD
           $(INC)/wetland.h  $(INC)/hydrotope.h $(INC)/icefrac.h\
-          $(INC)/agriculture_tree.h $(INC)/agriculture_grass.h
-=======
           $(INC)/agriculture_tree.h $(INC)/agriculture_grass.h $(INC)/coupler.h\
           $(INC)/couplerpar.h
->>>>>>> master
 
 DATA    = par/*.js
 
@@ -104,13 +100,8 @@ test: main
 clean:
 	(cd src  && $(MAKE) clean)
 
-<<<<<<< HEAD
-tar: 
-	tar -cf lpjml-6.0.001.tar $(FILES) src/Makefile src/*.c\
-=======
 tar:
 	tar -cf $(TARFILE) $(FILES) src/Makefile src/*.c\
->>>>>>> master
 	    src/climate/Makefile src/climate/*.c\
             man/man1/*.1 man/man3/*.3 man/man5/*.5 man/whatis\
             man/man1/Makefile man/man3/Makefile man/man5/Makefile man/Makefile\
@@ -124,19 +115,11 @@ tar:
             src/image/Makefile src/image/*.c src/reservoir/*.c\
             src/pnet/Makefile REFERENCES COPYRIGHT src/utils/*.c src/utils/Makefile\
             src/spitfire/Makefile src/spitfire/*.c src/netcdf/Makefile src/netcdf/*.c\
-<<<<<<< HEAD
-            src/cpl/Makefile src/cpl/*.c
-	    gzip -f lpjml-6.0.001.tar
-
-zipfile: 
-	zip -l lpjml-6.0.001.zip $(FILES) src/Makefile src/*.c\
-=======
             src/cpl/Makefile src/cpl/*.c src/coupler/Makefile src/coupler/*.c
 	    gzip -f $(TARFILE)
 
 zipfile:
 	zip -l $(ZIPFILE) $(FILES) src/Makefile src/*.c\
->>>>>>> master
 	    src/climate/Makefile src/climate/*.c config/* man/* man/man1/*.1\
             man/man3/*.3 man/man5/*.5\
 	    src/crop/*.c src/crop/Makefile src/grass/*.c src/grass/Makefile\

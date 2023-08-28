@@ -2,17 +2,10 @@
 | |   |  _ \   | |_ __ ___ | |
 | |   | |_) |  | | '_ ` _ \| |
 | |___|  __/ |_| | | | | | | |___
-<<<<<<< HEAD
 |_____|_|   \___/|_| |_| |_|_____| Version 6.0.001
 
 
 Installation of LPJmL C Version 6.0.001
-=======
-|_____|_|   \___/|_| |_| |_|_____| Version 5.6.25
-
-
-Installation of LPJmL C Version 5.6.25
->>>>>>> master
 
 Installation for Unix-like systems
 ----------------------------------
@@ -34,11 +27,7 @@ cd lpjml
 
 untar source files
 
-<<<<<<< HEAD
 gzip -cd lpjml-6.0.001.tar.gz|tar -xf -
-=======
-gzip -cd lpjml-5.6.25.tar.gz|tar -xf -
->>>>>>> master
 
 Directory tree after extracting the tar files:
 
@@ -361,15 +350,12 @@ Error code Description                                   Error type
         39 Invalid FPC value                             Internal
         40 Boundary check error                          Internal
         41 Invalid time step in soiltemp()               Internal
-<<<<<<< HEAD
         42 Gamma function error                          Internal
         43 Wetland error                                 Internal
         44 Imvalid hag_beta error                        External
         45 Cannot read external flow                     External
-=======
-        42 Cannot read external flow                     External
-        43 Opening connection to coupled model failed    External
->>>>>>> master
+        46 Cannot read external flow                     External
+        47 Opening connection to coupled model failed    External
 ---------- --------------------------------------------- ----------
 
 External errors are caused by invalid or missing input files while internal
