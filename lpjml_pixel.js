@@ -30,7 +30,9 @@
 
   "sim_name" : "LPJmL Run", /* Simulation description */
   "sim_id"   : "lpjml",     /* LPJML Simulation type with managed land use */
-  "version"  : "5.3",       /* LPJmL version expected */
+  "coupled_model" : null,   /* Coupled model: null (no model coupled), string (name of coupled model) */
+  "start_coupling": null,   /* Start year of model coupling: null (start_coupling is set to firstyear if coupled_model != null), int (start year of coupling) */
+  "version"  : "6.0",       /* LPJmL version expected */
   "random_prec" : true,     /* Random weather generator for precipitation enabled */
   "random_seed" : 2,        /* seed for random number generator */
   "radiation" : "radiation",/* other options: "cloudiness", "radiation", "radiation_swonly", "radiation_lwdown" */
@@ -38,8 +40,8 @@
   "fire_on_grassland" : false, /* enable fire on grassland for Spitfire */
   "fdi" : "nesterov",       /* different fire danger index formulations: "wvpd" (needs GLDAS input data), "nesterov" */
   "firewood" : false,
-  "new_phenology" : true,   /* GSI phenology enabled */
-  "new_trf" : false,        /* new transpiration reduction function disabled */
+  "gsi_phenology" : true,   /* GSI phenology enabled */
+  "transp_suction_fcn" : false, /* enable transpiration suction function (true/false) */
   "river_routing" : false,
   "extflow" : false,
   "permafrost" : true,
@@ -50,11 +52,20 @@
   "soilpar_fixyear" : 1900,
   "with_nitrogen" : "lim", /* other options: "no", "lim", "unlim" */
   "store_climate" : true, /* store climate data in spin-up phase */
-  "const_climate" : false,
-  "shuffle_climate" : true, /* shuffle spinup climate */
-  "const_deposition" : false,
-  "fix_climate" : false,
-  "fix_landuse" : false,
+  "shuffle_spinup_climate" : true, /* shuffle spinup climate */
+  "fix_climate" : false,                /* fix climate after specified year */
+  "fix_climate_year" : 1901,            /* year after climate is fixed */
+  "fix_climate_interval" : [1901,1930],
+  "fix_climate_shuffle" : true,          /* randomly shuffle climate in the interval */
+  "fix_deposition_with_climate" : false, /* fix N deposition same as climate  */
+  "fix_deposition" : false,              /* fix N deposition after specified year */
+  "fix_deposition_year" : 1901,          /* year after deposition is fixed */
+  "fix_deposition_interval" : [1901,1930],
+  "fix_deposition_shuffle" : true,       /* randomly shuffle depositions in the interval */
+  "fix_landuse" : false,                 /* fix land use after specfied year */
+  "fix_landuse_year" : 1901,             /* year after land use is fixed */
+  "fix_co2" : false,                     /* fix atmospheric CO2  after specfied year */
+  "fix_co2_year" : 1901,                 /* year after CO2 is fixed */
 #ifdef FROM_RESTART
   "new_seed" : false, /* read random seed from restart file */
   "population" : false,
@@ -95,7 +106,7 @@
   "cft_temp" : "temperate cereals",
   "cft_tropic" : "maize",
   "grassonly" : false,                  /* set all cropland including others to zero but keep managed grasslands */
-  "istimber" : true,
+  "luc_timber" : true,
   "grassland_fixed_pft" : false,
   "grass_harvest_options" : false,
   "prescribe_lsuha" : false,
@@ -106,7 +117,7 @@
   "crop_phu_option" : "new",
   "cropsheatfrost" : false,
   "double_harvest" : true,
-  "ma_bnf" : true,                    /* Biological N fixation using Cleveland, 1999 (false) or Ma et al., 2022 (true) approach*/
+  "npp_controlled_bnf" : true,                    /* Biological N fixation using Cleveland, 1999 (false) or Ma et al., 2022 (true) approach*/
 
 /*===================================================================*/
 /*  II. Input parameter section                                      */
@@ -291,7 +302,7 @@ ID                               Fmt                        filename
   "outputyear" : -28099,
   "restart" :  false, /* start from restart file */
   "write_restart" : true, /* create restart file: the last year of simulation=restart-year */
-  "write_restart_filename" : "restart/restart_1840_nv_stdfire_p.lpj", /* filename of restart file */
+  "write_restart_filename" : "restart_pixel/restart_1840_nv_stdfire_p.lpj", /* filename of restart file */
   "restart_year": 1840 /* write restart at year */
 
 #else
@@ -302,9 +313,9 @@ ID                               Fmt                        filename
   "lastyear" : 2011, /* last year of simulation */
   "outputyear": 1841, /* first year output is written  */
   "restart" :  true, /* start from restart file */
-  "restart_filename" : "restart/restart_1840_nv_stdfire_7.lpj", /* filename of restart file */
+  "restart_filename" : "restart_pixel/restart_1840_nv_stdfire_p.lpj", /* filename of restart file */
   "write_restart" : true, /* create restart file */
-  "write_restart_filename" : "restart/restart_1900_crop_stdfire_p.lpj", /* filename of restart file */
+  "write_restart_filename" : "restart_pixel/restart_1900_crop_stdfire_p.lpj", /* filename of restart file */
   "restart_year": 1841 /* write restart at year */
 
 #endif
