@@ -242,8 +242,10 @@ Stocks littersom(Stand *stand,                      /**< [inout] pointer to stan
         }*/
         h2o_mt=(flux_soil[l].slow.carbon+flux_soil[l].fast.carbon)*WH2O/WCO2/1000; // water produced during oxic decomposition C6H12O6 + O2 -> CO2 + H2O
         soil->O2[l]-=(flux_soil[l].slow.carbon + flux_soil[l].fast.carbon)*WO2/WC;
-        soil->decay_rate[l].slow+=flux_soil[l].slow.carbon/soil->pool[l].slow.carbon;
-        soil->decay_rate[l].fast+=flux_soil[l].fast.carbon/soil->pool[l].fast.carbon;
+        if(soil->pool[l].slow.carbon>0)
+          soil->decay_rate[l].slow+=flux_soil[l].slow.carbon/soil->pool[l].slow.carbon;
+        if(soil->pool[l].fast.carbon>0)
+          soil->decay_rate[l].fast+=flux_soil[l].fast.carbon/soil->pool[l].fast.carbon;
         soil->pool[l].slow.carbon-=flux_soil[l].slow.carbon;
         soil->pool[l].fast.carbon-=flux_soil[l].fast.carbon;
         soil->pool[l].slow.nitrogen-=flux_soil[l].slow.nitrogen;

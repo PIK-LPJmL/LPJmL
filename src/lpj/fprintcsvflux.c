@@ -26,7 +26,10 @@ void fprintcsvflux(FILE *file,          /**< Output file pointer */
 {
   char d;
   d=config->csv_delimit;
-  scale=1e-15;
+  if(config->ngridcell<20)
+    scale=1/flux.area;
+  else
+    scale=1e-15;
   if(year==config->firstyear-config->nspinup)
   {
     fprintf(file,"Year%cNEP%cGPP%cNPP%cRH%cestabc%cnegc_fluxes",d,d,d,d,d,d);
@@ -115,6 +118,7 @@ void fprintcsvflux(FILE *file,          /**< Output file pointer */
   fprintf(file,"%c%g",d,flux.CH4_fire*scale);
   if(config->withlanduse!=NO_LANDUSE)
     fprintf(file,"%c%g",d,flux.CH4_rice*scale);
+  fprintf(file,"%c%g",d,flux.prec*scale);
   fprintf(file,"%c%g",d,flux.soil.carbon*scale);
   fprintf(file,"%c%g",d,flux.soil_slow.carbon*scale);
   fprintf(file,"%c%g",d,flux.lit.carbon*scale);
