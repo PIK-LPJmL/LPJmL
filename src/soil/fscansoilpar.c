@@ -205,9 +205,9 @@ Bool fscansoilpar(LPJfile *file, /**< pointer to LPJ file */
         return TRUE;
       }
     }
-    fscanreal2(verb, &item, &soil->b, soil->name, "b");
-    fscanreal2(verb, &item, &soil->efold, soil->name, "efold");
-    fscanreal2(verb, &item, &soil->ctimax, soil->name, "ctimax");
+    fscanreal2(verb, item, &soil->b, soil->name, "b");
+    fscanreal2(verb, item, &soil->efold, soil->name, "efold");
+    fscanreal2(verb, item, &soil->ctimax, soil->name, "ctimax");
   } /* of 'for(n=0;...)' */
   return FALSE;
 } /* of 'fscansoilpar' */

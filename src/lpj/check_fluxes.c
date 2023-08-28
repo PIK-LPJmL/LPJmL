@@ -136,6 +136,7 @@ void check_fluxes(Cell *cell,          /**< cell pointer */
                      cell->ml.landfrac[0].grass[0]+cell->ml.landfrac[0].grass[1],cell->ml.landfrac[1].grass[0]+cell->ml.landfrac[1].grass[1]);
 
 #endif
+#endif
   } /* end carbon balance error */
 
 

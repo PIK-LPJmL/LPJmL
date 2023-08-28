@@ -153,7 +153,7 @@ void update_annual(Cell *cell,          /**< Pointer to cell */
         soilc_agr+=stand->soil.litter.item[p].bg.carbon*stand->frac;
       forrootsoillayer(l)
         soilc_agr+=(stand->soil.pool[l].slow.carbon + stand->soil.pool[l].fast.carbon)*stand->frac;
-      litc_agr +=(litter_ag_sum(&stand->soil.litter) + litter_agsub_sum(&stand->soil.litter))*stand->frac;
+      litc_agr +=(litter_agtop_sum(&stand->soil.litter) + litter_agsub_sum(&stand->soil.litter))*stand->frac;
     }
     else if(stand->type->landusetype==WETLAND)
       getoutput(&cell->output,WETFRAC,config)+=stand->frac;

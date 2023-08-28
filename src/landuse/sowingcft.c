@@ -133,7 +133,7 @@ void sowingcft(Stocks *flux_estab,  /**< establishment flux */
           data->irrigation=irrig;
           reclaim_land(stand,cropstand,cell,config->luc_timber,npft+ncft,config);
           set_irrigsystem(cropstand,cft,npft,ncft,config);
-          setaside(cell,cropstand,cell->ml.with_tillage,config->intercrop,npft,ncft,irrig,year,config);
+          setaside(cell,cropstand,cell->ml.with_tillage,config->intercrop,npft,ncft,irrig,cropstand->soil.iswetland,year,config);
           setasidestand=getstand(cell->standlist,pos-1);
           cultcftstand(flux_estab,alloc_today,cell,setasidestand,irrig,wtype,nofallow,npft,ncft,cft,year,day,isother,config);
         }//if too large stand->frac

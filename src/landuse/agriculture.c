@@ -48,7 +48,7 @@ Standtype setaside_wetland_stand={SETASIDE_WETLAND,"setaside_wetland_stand",new_
 #else
                              daily_natural,
 #endif
-                             annual_setaside,NULL,isdailyoutput_agriculture};
+                             annual_setaside,NULL};
 
 Standtype managedforest_stand={MANAGEDFOREST,"managed forest",NULL,NULL,NULL,
                                NULL,NULL,NULL,NULL,NULL};

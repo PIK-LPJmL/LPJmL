@@ -308,7 +308,7 @@ Climate *initclimate(const Cell grid[],   /**< LPJ grid */
     freeclimate(climate,isroot(*config));
     return NULL;
   }
-  if(readtracegas(&climate->co2,&config->co2_filename,config,isroot(*config)))
+  if(readtracegas(&climate->co2,&config->co2_filename,config))
   {
     freeclimate(climate,isroot(*config));
     return NULL;
@@ -323,7 +323,7 @@ Climate *initclimate(const Cell grid[],   /**< LPJ grid */
 #endif
   if (!config->with_dynamic_ch4)
   {
-    if (readtracegas(&climate->ch4, &config->ch4_filename,config, isroot(*config)))
+    if (readtracegas(&climate->ch4, &config->ch4_filename,config))
     {
       freeclimate(climate,isroot(*config));
       return NULL;

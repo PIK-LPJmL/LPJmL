@@ -106,7 +106,7 @@ int iterate(Outputfile *output, /**< Output file data */
     if(config->isanomaly)
       year_co2+=2000; //CLIMBER's year zero= year 2000
 
-    if(getco2(input.climate,&co2,year_co2)) /* get atmospheric CO2 concentration */
+    if(getco2(input.climate,&co2,year_co2,config)) /* get atmospheric CO2 concentration */
     {
       if(isroot(*config))
         fprintf(stderr,"ERROR015: Invalid year %d in getco2(), must be <%d.\n",
@@ -115,7 +115,7 @@ int iterate(Outputfile *output, /**< Output file data */
     }
     if(!config->with_dynamic_ch4  && config->from_restart)
     {
-      if(getch4(input.climate,&ch4,year_co2)) /* get atmospheric CH4 concentration */
+      if(getch4(input.climate,&ch4,year_co2,config)) /* get atmospheric CH4 concentration */
       {
         if(isroot(*config))
           fprintf(stderr,"ERROR015: Invalid year %d in getch4().\n",year);

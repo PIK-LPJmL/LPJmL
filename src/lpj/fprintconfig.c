@@ -535,14 +535,14 @@ void fprintconfig(FILE *file,          /**< File pointer to text output file */
           "------------ ---- -------------------------------------------------------------\n",file);
   printinputfile(file,"soil",&config->soil_filename,width,config);
   if(config->soil_filename.fmt!=CDF)
-    printinputfile(file,"coord",&config->coord_filename,width,config));
-  printinputfile(file, "kbf", &config->kbf_filename, width,config));
-  printinputfile(file, "slope", &config->slope_filename, width,config));
-  printinputfile(file, "slope_min", &config->slope_min_filename, width,config));
-  printinputfile(file, "slope_max", &config->slope_max_filename, width,config));
-  printinputfile(file,"temp",&config->temp_filename,width,config));
-  printinputfile(file,"prec",&config->prec_filename,width,config));
-  printinputfile(file, "hydrotopes", &config->hydrotopes_filename, width,config));
+    printinputfile(file,"coord",&config->coord_filename,width,config);
+  printinputfile(file, "kbf", &config->kbf_filename, width,config);
+  printinputfile(file, "slope", &config->slope_filename, width,config);
+  printinputfile(file, "slope_min", &config->slope_min_filename, width,config);
+  printinputfile(file, "slope_max", &config->slope_max_filename, width,config);
+  printinputfile(file,"temp",&config->temp_filename,width,config);
+  printinputfile(file,"prec",&config->prec_filename,width,config);
+  printinputfile(file, "hydrotopes", &config->hydrotopes_filename, width,config);
 #if defined IMAGE && defined COUPLED
   if(config->sim_id==LPJML_IMAGE)
   {
@@ -590,11 +590,11 @@ void fprintconfig(FILE *file,          /**< File pointer to text output file */
   }
   if (config->isanomaly)
   {
-    printinputfile(file, "icefrac", &config->icefrac_filename, width);
-    printinputfile(file, "delta temp", &config->delta_temp_filename, width);
-    printinputfile(file, "delta prec", &config->delta_prec_filename, width);
-    printinputfile(file, "delta lwnet", &config->delta_lwnet_filename, width);
-    printinputfile(file, "delta swdown", &config->delta_swdown_filename, width);
+    printinputfile(file, "icefrac", &config->icefrac_filename, width,config);
+    printinputfile(file, "delta temp", &config->delta_temp_filename, width,config);
+    printinputfile(file, "delta prec", &config->delta_prec_filename, width,config);
+    printinputfile(file, "delta lwnet", &config->delta_lwnet_filename, width,config);
+    printinputfile(file, "delta swdown", &config->delta_swdown_filename, width,config);
   }
   if(config->ispopulation)
     printinputfile(file,"pop. dens",&config->popdens_filename,width,config);

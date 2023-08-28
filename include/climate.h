@@ -110,8 +110,8 @@ typedef struct
 extern Climate *initclimate(const Cell *,const Config *);
 extern Bool getclimate(Climate *,const Cell *,int,int,const Config *);
 extern Bool getdeposition(Climate *,const Cell *,int,Config *);
-extern Bool getco2(const Climate *,Real *,int);
-extern Bool getch4(const Climate *,Real *,int);
+extern Bool getco2(const Climate *,Real *,int,const Config *);
+extern Bool getch4(const Climate *,Real *,int,const Config *);
 extern void closeclimateanomalies(Climate *,const Config *);
 extern void closeclimatefiles(Climate *,const Config *);
 extern void freeclimate(Climate *,Bool);
@@ -134,7 +134,7 @@ extern void closeclimatefile(Climatefile *,Bool);
 extern Bool readclimate(Climatefile *,Real *,Real,Real,const Cell *,int,int,
                         const Config *);
 extern Bool checkvalidclimate(Climate *,Cell *,Config *);
-extern Bool readtracegas(Tracedata *,const Filename *,const Config *,Bool);
+extern Bool readtracegas(Tracedata *,const Filename *,const Config *);
 extern void radiation(Real *, Real *,Real *,Real,int,Dailyclimate *,Real,int);
 extern void interpolate_climate(Climate *, int, Real);
 extern void addanomaly_climate(Climate *, int);

@@ -20,9 +20,9 @@
 #define ADJUST_CSHIFT
 
 void update_wetland(Cell *cell,          /**< pointer to cell */
-    int ntotpft,         /**< total number of PFTs */
-    int year,            /**< simulation year */
-    const Config *config /**< LPJmL configuration */
+                    int ntotpft,         /**< total number of PFTs */
+                    int year,            /**< simulation year */
+                    const Config *config /**< LPJmL configuration */
 )
 {
   Stand *stand;
@@ -264,7 +264,7 @@ void update_wetland(Cell *cell,          /**< pointer to cell */
           natstand->frac = min(frac,delta_wetland); // make mixsoil and mix_veg_stock work correctly
           delta_wetland=natstand->frac;
           pos = 0;
-          mixsoil(wetstand, natstand,year,config);
+          mixsoil(wetstand, natstand,year,ntotpft,config);
           foreachpft(pft, p, &wetstand->pftlist)
           {
             present[pft->par->id] = TRUE;
@@ -396,7 +396,7 @@ void update_wetland(Cell *cell,          /**< pointer to cell */
             position[pft->par->id] = pos;
             pos++;
           }
-          mixsoil(natstand, wetstand,year,config);
+          mixsoil(natstand, wetstand,year,ntotpft,config);
 
           foreachpft(wetpft, p, &wetstand->pftlist)
           {

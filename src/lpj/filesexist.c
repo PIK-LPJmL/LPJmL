@@ -292,9 +292,9 @@ static int checkclmfile(const Config *config,const char *data_name,const Filenam
         fprintf(stderr,"ERROR237: First year=%d in '%s' is greater than first simulation year %d.\n",header.firstyear,filename->name,config->firstyear);
         return 1;
       }
-      if(!config->fix_climate && header.firstyear+(header.nyear-1)*delta_year<config->lastyear)
+      if(!config->fix_climate && header.firstyear+(header.nyear-1)*config->delta_year<config->lastyear)
       {
-        fprintf(stderr,"ERROR237: Last year=%d in '%s' is less than last simulation year %d.\n",header.firstyear+(header.nyear-1)*delta_year,filename->name,config->lastyear);
+        fprintf(stderr,"ERROR237: Last year=%d in '%s' is less than last simulation year %d.\n",header.firstyear+(header.nyear-1)*config->delta_year,filename->name,config->lastyear);
         return 1;
       }
       else if(config->fix_climate && header.firstyear+header.nyear-1<max(config->fix_climate_year,config->fix_climate_interval[1]))

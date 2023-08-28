@@ -120,7 +120,7 @@
 #define NO_FERTILIZER 0
 #define FERTILIZER 1
 #define AUTO_FERTILIZER 2
-#define NOUT 348            /* number of output files */
+#define NOUT 350            /* number of output files */
 #define END -1              /* end marker for output files */
 #define GRIDBASED 1         /* pft-specific outputs scaled by stand->frac */
 #define PFTBASED 0          /* pft-specific outputs not scaled by stand->frac */
@@ -137,9 +137,9 @@
 #define GLOBALFLUX 3
 #define TERR_AREA 4
 #define LAKE_AREA 5
-#define FPC 6
-#define TRANSP 7
-#define RUNOFF 8
+#define PCH4 6
+#define PCO2 7
+#define FPC 8
 #define DISCHARGE 9
 #define EVAP 10
 #define INTERC 11
@@ -479,6 +479,8 @@
 #define GW_STORAGE 345
 #define GW_OUTFLUX 346
 #define CH4_RICE_EM 347
+#define TRANSP 348
+#define RUNOFF 349
 
 #define PFT_GCGP_COUNT 0
 #define NDAY_MONTH 1

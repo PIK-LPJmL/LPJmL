@@ -37,7 +37,7 @@ Stocks firepft(Stand *stand,        /**< pointer to stand */
   }
   for(p=0;p<litter->n;p++)
   {
-    stand->cell->balance.aCH4_fire+=litter->item[p].ag.leaf.carbon*fire_frac*litter->item[p].pft->emissionfactor.ch4*stand->frac;
+    stand->cell->balance.aCH4_fire+=litter->item[p].agtop.leaf.carbon*fire_frac*litter->item[p].pft->emissionfactor.ch4*stand->frac;
     flux_litter.carbon+=litter->item[p].agtop.leaf.carbon;
     flux_litter.nitrogen+=litter->item[p].agtop.leaf.nitrogen;
     for(i=0;i<NFUELCLASS;i++)

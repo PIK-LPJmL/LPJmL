@@ -46,7 +46,7 @@ OBJS    = update_daily.$O update_annual.$O init_annual.$O\
           getnculttype.$O getextension.$O albedo_stand.$O phenology_gsi.$O\
           fscanphenparam.$O landcover.$O standstocks.$O nitrogen_stress.$O\
           f_lai.$O getsize.$O  wetland.$O copypft.$O plant_gas_transport.$O\
-          fprintoutputvar.$O isdailyoutput_natural.$O check_glaciated.$O fwriteoutput_ch4.$O\
+          fprintoutputvar.$O check_glaciated.$O fwriteoutput_ch4.$O\
           getngrassnat.$O fscancnratio.$O isnitrogen_output.$O initoutputdata.$O\
           fprintcsvflux.$O extflow.$O getmintimestep.$O isannual_output.$O\
           npp_contr_biol_n_fixation.$O fprintoutputjson.$O

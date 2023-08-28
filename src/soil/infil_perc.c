@@ -889,16 +889,6 @@ Real infil_perc(Stand *stand,        /**< Stand pointer */
     stand->cell->balance.n_outflux+=NO3perc_ly*stand->frac;
     if(isagriculture(stand->type->landusetype))
       getoutput(&stand->cell->output,NLEACHING_AGR,config)+=NO3perc_ly*stand->frac;
-    if(config->withdailyoutput && ((stand->type->landusetype==NATURAL || stand->type->landusetype==WETLAND) && ALLNATURAL==config->crop_index))
-      getoutput(&stand->cell->output,D_LEACHING,config)+=NO3perc_ly;
-    if(config->withdailyoutput && (stand->type->landusetype==AGRICULTURE || stand->type->landusetype==GRASSLAND))
-    {
-      foreachpft(pft,p,&stand->pftlist)
-      {
-        if(pft->par->id==config->crop_index && config->crop_irrigation==data_irrig->irrigation)
-          getoutput(&stand->cell->output,D_LEACHING,config)=NO3perc_ly;
-      }
-    }
 #ifdef SAFE
     forrootsoillayer(l)
       if (soil->NO3[l]<-epsilon)

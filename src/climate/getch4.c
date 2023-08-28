@@ -18,14 +18,29 @@
 
 Bool getch4(const Climate *climate, /**< Pointer to climate data */
             Real *pch4,             /**< atmospheric CH4 (ppm) */
-            int year                /**< year (AD) */
+            int year,               /**< year (AD) */
+            const Config *config    /**< LPJmL configuration */
            )                        /** \return TRUE on error */
 {
   if (year<-1280000)
     year = -1280000;
-  year -= climate->ch4.firstyear;
-  if (year >= climate->ch4.nyear)
-    return TRUE;
-  *pch4=(year<0) ? climate->ch4.data[0] : climate->ch4.data[year];
+  if(iscoupled(*config) && config->ch4_filename.issocket && year>=config->start_coupling)
+  {
+    if(receive_real_scalar_coupler(climate->ch4.id,pch4,1,year,config))
+      return TRUE;
+    if(*pch4<0)
+    {
+      if(isroot(*config))
+        fprintf(stderr,"ERROR246: Atmospheric CH4=%g less than zero in year %d.\n",*pch4,year);
+      return TRUE;
+    }
+  }
+  else
+  {
+    year -= climate->ch4.firstyear;
+    if (year >= climate->ch4.nyear)
+      return TRUE;
+    *pch4=(year<0) ? climate->ch4.data[0] : climate->ch4.data[year];
+  }
   return FALSE;
 } /* of 'getch4' */

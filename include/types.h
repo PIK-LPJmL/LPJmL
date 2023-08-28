@@ -89,19 +89,7 @@ typedef struct
   int version; /* version of clm file */
 } Filename;
 
-//typedef  struct json_object LPJfile; /* pointer to JSON object */
-typedef struct
-{
-  union
-  {
-    FILE *file;              /* pointer to text file */
-#ifdef USE_JSON
-    struct json_object *obj; /* pointer to JSON object */
-#endif
-  } file;
-  Bool isjson;
-} LPJfile;
-
+typedef  struct json_object LPJfile; /* pointer to JSON object */
 
 typedef struct
 {

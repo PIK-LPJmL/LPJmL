@@ -168,7 +168,7 @@ Bool fscanconfig(Config *config,    /**< LPJ configuration */
                  int ntypes,        /**< Number of PFT classes */
                  int nout_max       /**< maximum number of output files */
                 )                   /** \return TRUE on error */
- {
+{
   const char *name;
   LPJfile *input;
   int i,restart,endgrid,israndom,grassfix,grassharvest;
@@ -669,135 +669,13 @@ Bool fscanconfig(Config *config,    /**< LPJ configuration */
     }
     if(config->nagtree)
     {
-      if (fscantreedens(file,config->countrypar,config->ncountries,config->npft[GRASS]+config->npft[TR
-                                                                                                    Verbosity verbose;
-                                                                                                    verbose=(isroot(*config)) ? config->scan_verbose : NO_ERR;
-                                                                                                    if(readfilename(file,name,key,config->inputdir,TRUE,TRUE,verbose))
-                                                                                                      return TRUE;
-                                                                                                    if(!(isfms && config->sim_id==LPJML_FMS) && name->fmt==FMS)
-                                                                                                    {
-                                                                                                      if(verbose)
-                                                                                                        fprintf(stderr,"ERROR197: FMS coupler not allowed for input '%s'.\n",key);
-                                                                                                      return TRUE;
-                                                                                                    }
-                                                                                                    if(!iscoupled && name->issocket)
-                                                                                                    {
-                                                                                                      if(verbose)
-                                                                                                        fprintf(stderr,"ERROR197: File format 'sock' not allowed for input '%s'.\n",key);
-                                                                                                      return TRUE;
-                                                                                                    }
-                                                                                                    if(name->issocket)
-                                                                                                    {
-                                                                                                      if(iscoupled(*config))
-                                                                                                      {
-                                                                                                        config->coupler_in++;
-                                                                                                        if(name->id<0 || name->id>=N_IN)
-                                                                                                        {
-                                                                                                          if(verbose)
-                                                                                                            fprintf(stderr,"ERROR197: Invalid index %d for %s input, must be in [0,%d].\n",name->id,config->coupled_model,N_IN-1);
-                                                                                                          return TRUE;
-                                                                                                        }
-                                                                                                        if(def[name->id])
-                                                                                                        {
-                                                                                                          if(verbose)
-                                                                                                          fprintf(stderr,"ERROR197: Index %d already defined for %s input.\n",name->id,config->coupled_model);
-                                                                                                            return TRUE;
-                                                                                                        }
-                                                                                                        def[name->id]=TRUE;
-                                                                                                      }
-                                                                                                      else
-                                                                                                      {
-                                                                                                        name->issocket=FALSE;
-                                                                                                        if(name->fmt==SOCK)
-                                                                                                        {
-                                                                                                          if(verbose)
-                                                                                                            fprintf(stderr,"ERROR197: Socket %s input not allowed without coupled model.\n",key);
-                                                                                                          return TRUE;
-                                                                                                        }
-                                                                                                      }
-                                                                                                    }
-                                                                                                    if(istxt && name->fmt!=TXT && name->fmt!=FMS && name->fmt!=SOCK)
-                                                                                                    {
-                                                                                                      if(verbose)
-                                                                                                        fprintf(stderr,"ERROR197: Only txt format is supported for input '%s' in this version of LPJmL, %s not allowed.\n",
-                                                                                                                name->name,fmt[name->fmt]);
-                                                                                                      return TRUE;
-                                                                                                    }
-                                                                                                    if(!istxt && name->fmt==TXT)
-                                                                                                    {
-                                                                                                      if(verbose)
-                                                                                                        fprintf(stderr,"ERROR197: text file is not supported for input '%s' in this version of LPJmL.\n",name->name);
-                                                                                                      return TRUE;
-                                                                                                    }
-                                                                                                    return FALSE;
-EE],verbose,config)==0)
+      if (fscantreedens(file,config->countrypar,config->ncountries,config->npft[GRASS]+config->npft[TREE],verbose,config)==0)
       {
         if(verbose)
           fputs("ERROR230: Cannot read tree density (k_est) parameter 'treedens'.\n",stderr);
         return TRUE;
       }
     }
-    Verbosity verbose;
-    verbose=(isroot(*config)) ? config->scan_verbose : NO_ERR;
-    if(readfilename(file,name,key,config->inputdir,TRUE,TRUE,verbose))
-      return TRUE;
-    if(!(isfms && config->sim_id==LPJML_FMS) && name->fmt==FMS)
-    {
-      if(verbose)
-        fprintf(stderr,"ERROR197: FMS coupler not allowed for input '%s'.\n",key);
-      return TRUE;
-    }
-    if(!iscoupled && name->issocket)
-    {
-      if(verbose)
-        fprintf(stderr,"ERROR197: File format 'sock' not allowed for input '%s'.\n",key);
-      return TRUE;
-    }
-    if(name->issocket)
-    {
-      if(iscoupled(*config))
-      {
-        config->coupler_in++;
-        if(name->id<0 || name->id>=N_IN)
-        {
-          if(verbose)
-            fprintf(stderr,"ERROR197: Invalid index %d for %s input, must be in [0,%d].\n",name->id,config->coupled_model,N_IN-1);
-          return TRUE;
-        }
-        if(def[name->id])
-        {
-          if(verbose)
-          fprintf(stderr,"ERROR197: Index %d already defined for %s input.\n",name->id,config->coupled_model);
-            return TRUE;
-        }
-        def[name->id]=TRUE;
-      }
-      else
-      {
-        name->issocket=FALSE;
-        if(name->fmt==SOCK)
-        {
-          if(verbose)
-            fprintf(stderr,"ERROR197: Socket %s input not allowed without coupled model.\n",key);
-          return TRUE;
-        }
-      }
-    }
-    if(istxt && name->fmt!=TXT && name->fmt!=FMS && name->fmt!=SOCK)
-    {
-      if(verbose)
-        fprintf(stderr,"ERROR197: Only txt format is supported for input '%s' in this version of LPJmL, %s not allowed.\n",
-                name->name,fmt[name->fmt]);
-      return TRUE;
-    }
-    if(!istxt && name->fmt==TXT)
-    {
-      if(verbose)
-        fprintf(stderr,"ERROR197: text file is not supported for input '%s' in this version of LPJmL.\n",name->name);
-      return TRUE;
-    }
-    return FALSE;
-
   }
   else
   {
@@ -851,7 +729,7 @@ EE],verbose,config)==0)
     return TRUE;
   if (config->isanomaly)
   {
-    fscanint2(&input, &config->delta_year, "delta_year");
+    fscanint2(input, &config->delta_year, "delta_year");
     if(config->delta_year<1)
     {
       if(isroot(*config))
@@ -976,14 +854,14 @@ EE],verbose,config)==0)
 #endif
     }
   }
-  if (config->isanomaly)
-    scanclimatefilename(input,&config->icefrac_filename,TRUE,TRUE,"icefrac");
   scanclimatefilename(input,&config->temp_filename,TRUE,TRUE,"temp");
   if (config->isanomaly)
+  {
     scanclimatefilename(input, &config->delta_temp_filename,FALSE,TRUE,"delta_temp");
-  scanclimatefilename(input,&config->prec_filename,TRUE,TRUE,"prec");
-  if (config->isanomaly)
+    scanclimatefilename(input,&config->icefrac_filename,TRUE,TRUE,"icefrac");
     scanclimatefilename(input, &config->delta_prec_filename,FALSE,TRUE, "delta_prec");
+  }
+  scanclimatefilename(input,&config->prec_filename,TRUE,TRUE,"prec");
   switch(config->with_radiation)
   {
     case RADIATION:
@@ -1006,7 +884,7 @@ EE],verbose,config)==0)
       scanclimatefilename(input,&config->cloud_filename,TRUE,TRUE,"cloud");
       break;
     case RADIATION_SWONLY:
-      scanclimatefilename(input,&config->swdown_filename,config->inputdir,config->sim_id==LPJML_FMS,"swdown");
+      scanclimatefilename(input,&config->swdown_filename,TRUE,TRUE,"swdown");
       if (config->isanomaly)
         scanclimatefilename(input, &config->delta_swdown_filename,FALSE,TRUE, "delta_swdown");
      break;
@@ -1082,10 +960,10 @@ EE],verbose,config)==0)
   }
   if (!config->with_dynamic_ch4)
   {
-    if (readfilename(input, &config->ch4_filename, "ch4",def,TRUE,TRUE,TRUE,config))
+    if (readclimatefilename(input, &config->ch4_filename, "ch4",def,TRUE,TRUE,TRUE,config))
     {
       if (verbose)
-        fputs("ERROR209: Cannot read input filename for 'ch4'.\n", stderr);
+        fputs("ERROR209: Cannot read filename for CH4 input.\n", stderr);
       return TRUE;
     }
   }

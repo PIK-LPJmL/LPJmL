@@ -99,9 +99,9 @@ Bool freadcell(FILE *file,             /**< File pointer to binary file */
     {
       fprintf(stderr,"ERROR254: Cannot read stand list.\n");
       return TRUE;
+    }
     freadreal1(&cell->ground_st, swap, file);
     freadreal1(&cell->ground_st_am, swap, file);
-    }
     freadreal1(&cell->ml.cropfrac_rf,swap,file);
     freadreal(cell->ml.cropfrac_wl,2,swap,file);
     freadreal1(&cell->ml.cropfrac_ir,swap,file);
@@ -169,9 +169,9 @@ Bool freadcell(FILE *file,             /**< File pointer to binary file */
     {
       fprintf(stderr,"ERROR254: Cannot read gs data.\n");
       return TRUE;
+    } 
     if (freadhydrotope(file, &cell->hydrotopes, swap))
       return TRUE;
-    }
     if(cell->ml.landfrac!=NULL && config->landuse_restart)
     {
       if(freadlandfrac(file,cell->ml.landfrac,ncft,config->nagtree,swap))

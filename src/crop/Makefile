@@ -23,7 +23,7 @@ OBJS    = lai_crop.$O npp_crop.$O phenology_crop.$O fwritecropdates.$O\
           laimax_manage.$O init_cropdates.$O fprintcropdates.$O\
           update_cropdates.$O allocation_daily_crop.$O double_harvest.$O\
           wdf_crop.$O harvest_crop.$O fprintpar_crop.$O copy_crop.$O alphaa_crop.$O\
-          output_daily_crop.$O calc_seasonality.$O update_fallowdays.$O\
+          calc_seasonality.$O update_fallowdays.$O\
           albedo_crop.$O agb_crop.$O nuptake_crop.$O ndemand_crop.$O vmaxlimit_crop.$O
 
 INC     = ../../include

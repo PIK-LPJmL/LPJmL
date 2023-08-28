@@ -134,7 +134,7 @@ void deforest(Cell *cell,          /**< pointer to cell */
         difffrac=stand->frac-minnatfrac;
       cutstand->frac=difffrac;
 
-      reclaim_land(stand,cutstand,cell,config->istimber,npft+ncft,config);
+      reclaim_land(stand,cutstand,cell,config->luc_timber,npft+ncft,config);
       if(difffrac+epsilon>=stand->frac)
       {
         difffrac-=stand->frac;
@@ -153,7 +153,7 @@ void deforest(Cell *cell,          /**< pointer to cell */
       }
       if(!timberharvest)
       {
-        if(setaside(cell,getstand(cell->standlist,pos),cell->ml.with_tillage,intercrop,npft,irrig,iswetland,year,config))
+        if(setaside(cell,getstand(cell->standlist,pos),cell->ml.with_tillage,intercrop,npft,ncft,irrig,iswetland,year,config))
           delstand(cell->standlist,pos);
       }
     }
@@ -512,7 +512,7 @@ static void landexpansion(Cell *cell,            /* cell pointer */
           else
           {
             old_mixfrac=mixstand->frac;
-            mixsoil(mixstand,wetstand,year,config);
+            mixsoil(mixstand,wetstand,year,npft+ncft,config);
             mixstand->slope_mean=(mixstand->slope_mean*mixstand->frac+wetstand->slope_mean*wetstand->frac)/(mixstand->frac+wetstand->frac);
             mixstand->Hag_Beta=min(1,(0.06*log(mixstand->slope_mean+0.1)+0.22)/0.43);
             foreachpft(pft,p,&mixstand->pftlist)
@@ -559,7 +559,7 @@ static void landexpansion(Cell *cell,            /* cell pointer */
           {
             old_mixfrac=wetstand->frac;
             wetstand->frac=-difffrac;
-            mixsoil(mixstand,wetstand,year,config);
+            mixsoil(mixstand,wetstand,year,npft+ncft,config);
             remove_vegetation_copy(&mixstand->soil,wetstand,cell,-difffrac/(mixstand->frac-difffrac),
                 config->luc_timber,TRUE,config);
             wetstand->frac=old_mixfrac+difffrac;
@@ -577,13 +577,12 @@ static void landexpansion(Cell *cell,            /* cell pointer */
     {
       if(mixstand2!=NULL)
       {
-        mixsoil(mixstand,mixstand2,year,config);
+        mixsoil(mixstand,mixstand2,year,npft+ncft,config);
         mixstand->frac+=mixstand2->frac;
         difffrac2+=-mixstand2->frac;
         difffrac=0;
         delstand(cell->standlist,pos);
       }
-      mixsoil(grassstand,mixstand,year,config);
       mixsoil(grassstand,mixstand,year,npft+ncft,config);
       foreachpft(pft,p,&grassstand->pftlist)
         mix_veg(pft,grassstand->frac/(grassstand->frac-difffrac2));
@@ -622,7 +621,7 @@ static void landexpansion(Cell *cell,            /* cell pointer */
           if(!config->others_to_crop)
           {
             for(p=0;p<npft;p++)
-              if(establish(cell->gdd[p],config->pftpar+p,&cell->climbuf) &&
+              if(establish(cell->gdd[p],config->pftpar+p,&cell->climbuf,mixstand->type->landusetype==WETLAND || mixstand->type->landusetype==SETASIDE_WETLAND) &&
                 config->pftpar[p].type==GRASS && config->pftpar[p].cultivation_type==NONE)
               {
                 addpft(mixstand,config->pftpar+p,year,0,config);

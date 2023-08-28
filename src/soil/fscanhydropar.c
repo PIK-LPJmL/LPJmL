@@ -26,13 +26,14 @@ Bool fscanhydropar(LPJfile *file,  /**< file  pointer */
                    Verbosity verb  /**< generate error output */
                   )                /**< returns TRUE on error */
 {
-  LPJfile f;
-  if(fscanstruct(file,&f,"hydropar",verb))
+  LPJfile *f;
+  f=fscanstruct(file,"hydropar",verb);
+  if(f==NULL)
     return TRUE;
-  fscanhydroreal(verb,&f,&hydropar.wland_min,"wland_min");
-  fscanhydroreal(verb,&f,&hydropar.cti_max,"cti_max");
-  fscanhydroreal(verb,&f,&hydropar.lat_min,"lat_min");
-  fscanhydroreal(verb,&f,&hydropar.wtab_thres,"wtab_thres");
-  fscanhydroreal(verb,&f,&hydropar.cti_thres,"cti_thres");
+  fscanhydroreal(verb,f,&hydropar.wland_min,"wland_min");
+  fscanhydroreal(verb,f,&hydropar.cti_max,"cti_max");
+  fscanhydroreal(verb,f,&hydropar.lat_min,"lat_min");
+  fscanhydroreal(verb,f,&hydropar.wtab_thres,"wtab_thres");
+  fscanhydroreal(verb,f,&hydropar.cti_thres,"cti_thres");
   return FALSE;
 } /* of 'fscanhydropar' */

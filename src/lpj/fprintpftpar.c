@@ -74,7 +74,7 @@ void fprintpftpar(FILE *file,           /**< pointer to text file */
                "fuel bulk dens.:\t%g (kg/m3)\n"
                "wind damp.:\t%g\n"
                "roughness length:\t%g\n"
-               "emis. factor:\t%g %g %g %g %g %g\n",
+               "emis. factor:\t%g %g %g %g %g %g\n"
                "irrig threshold:\t%g %g\n",
           pftpar->beta_root,
           pftpar->minwscal,pftpar->gmin,pftpar->respcoeff,pftpar->nmax,
@@ -93,8 +93,7 @@ void fprintpftpar(FILE *file,           /**< pointer to text file */
           pftpar->emissionfactor.co2,
           pftpar->emissionfactor.co,pftpar->emissionfactor.ch4,
           pftpar->emissionfactor.voc,pftpar->emissionfactor.tpm,
-          pftpar->emissionfactor.nox);
-  if(config->new_phenology)
+          pftpar->emissionfactor.nox,
           pftpar->irrig_threshold.dry,pftpar->irrig_threshold.humid);
   if(config->gsi_phenology)
     fprintf(file,"tmin_sl:\t%g\n"

@@ -392,7 +392,7 @@ Bool setaside(Cell *cell,          /**< Pointer to LPJ cell */
     n_est = 0;
     for (p = 0; p < npft; p++)
     {
-      if(establish(cell->gdd[p],config->pftpar+p,&cell->climbuf) &&
+      if(establish(cell->gdd[p],config->pftpar+p,&cell->climbuf,cropstand->type->landusetype==WETLAND || cropstand->type->landusetype==SETASIDE_WETLAND) &&
          config->pftpar[p].type==GRASS && config->pftpar[p].cultivation_type==NONE)
       {
         addpft(cropstand,config->pftpar+p,year,0,config);

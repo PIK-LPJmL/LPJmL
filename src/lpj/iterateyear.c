@@ -85,13 +85,14 @@ void iterateyear(Outputfile *output,  /**< Output file data */
 #if defined IMAGE && defined COUPLED
           setoutput_image(grid+cell,ncft,config);
 #endif
-        getnsoil_agr(&norg_soil_agr,&nmin_soil_agr,&nveg_soil_agr,grid+cell);
-        getoutput(&grid[cell].output,DELTA_NORG_SOIL_AGR,config)-=norg_soil_agr;
-        getoutput(&grid[cell].output,DELTA_NMIN_SOIL_AGR,config)-=nmin_soil_agr;
-        getoutput(&grid[cell].output,DELTA_NVEG_SOIL_AGR,config)-=nveg_soil_agr;
-        foreachstand(stand,s,(grid+cell)->standlist)
+          getnsoil_agr(&norg_soil_agr,&nmin_soil_agr,&nveg_soil_agr,grid+cell);
+          getoutput(&grid[cell].output,DELTA_NORG_SOIL_AGR,config)-=norg_soil_agr;
+          getoutput(&grid[cell].output,DELTA_NMIN_SOIL_AGR,config)-=nmin_soil_agr;
+          getoutput(&grid[cell].output,DELTA_NVEG_SOIL_AGR,config)-=nveg_soil_agr;
+          foreachstand(stand,s,(grid+cell)->standlist)
           if(stand->type->landusetype==GRASSLAND)
             getoutput(&grid[cell].output,DELTAC_MGRASS,config)-=standstocks(stand).carbon*stand->frac;
+        }
       }
       initgdd(grid[cell].gdd,npft);
     } /*gridcell skipped*/
