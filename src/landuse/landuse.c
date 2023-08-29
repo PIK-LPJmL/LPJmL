@@ -362,7 +362,7 @@ Bool getlanduse(Landuse landuse,     /**< Pointer to landuse data */
           data[count]/=grid[cell].landfrac;
           sum+=data[count++];
         }
-      if(sum > 1)
+      if(sum > 1+epsilon)
       {
         if(sum*grid[cell].landfrac>1+epsilon)
         {
