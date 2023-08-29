@@ -64,10 +64,6 @@ Stocks cultivate(Cell *cell,           /**< cell pointer */
   {
     landfrac=max(setasidestand->frac-nagr*1e-7,1e-8);
   }
-
-  if(landfrac>=setasidestand->frac-epsilon)
-#else
-  if(landfrac>=setasidestand->frac-0.000001)
 #endif
   if(landfrac>=setasidestand->frac-epsilon)
   {

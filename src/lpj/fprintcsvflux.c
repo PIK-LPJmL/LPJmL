@@ -123,7 +123,8 @@ void fprintcsvflux(FILE *file,          /**< Output file pointer */
   fprintf(file,"%c%g",d,flux.soil_slow.carbon*scale);
   fprintf(file,"%c%g",d,flux.lit.carbon*scale);
   fprintf(file,"%c%g",d,flux.veg.carbon*scale);
-  if(config->withlanduse!=NO_LANDUSE)
+  fprintf(file,"%c%g",d,flux.soil_CH4*scale);
+ if(config->withlanduse!=NO_LANDUSE)
     fprintf(file,"%c%g",d,flux.product.carbon*scale);
   if(config->with_nitrogen)
   {
