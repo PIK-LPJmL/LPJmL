@@ -69,34 +69,36 @@ void waterbalance(Stand *stand,           /**< Stand pointer */
       evap_litter=min(evap_litter,soil->litter.agtop_moist); /* for very small agtop_meist the result of the above line can be larger than agtop_moist */
       evap_litter=min(evap_litter,eeq*PRIESTLEY_TAYLOR*(1-wet_all)-aet); /* close energy balance */
     }
-    if((1-soil->litter.agtop_cover)>epsilon)
+    l=0;
+    whcs_evap=0;
+    do
     {
-      l=0;
-      whcs_evap=0;
-      do
-      {
-        /*w_evap is water content in soildepth_evap, i.e. that can evaporate */
-        w_evap+=(soil->w[l]*soil->whcs[l]+soil->ice_depth[l]+soil->w_fw[l]+soil->ice_fw[l]-aet_stand[l])*min(1,soildepth_evap/soildepth[l]);
-        w_evap_ice+=(soil->ice_depth[l]+soil->ice_fw[l])*min(1,soildepth_evap/soildepth[l]);
+      /*w_evap is water content in soildepth_evap, i.e. that can evaporate */
+      w_evap+=(soil->w[l]*soil->whcs[l]+soil->ice_depth[l]+soil->w_fw[l]+soil->ice_fw[l]-aet_stand[l])*min(1,soildepth_evap/soildepth[l]);
+      w_evap_ice+=(soil->ice_depth[l]+soil->ice_fw[l])*min(1,soildepth_evap/soildepth[l]);
 
-        /* here frag_g_evap is AMOUNT of green soil water after transpiration in upper 30cm */
-        *frac_g_evap+=stand->frac_g[l]*(soil->w[l]*soil->whcs[l]+soil->ice_depth[l]+soil->w_fw[l]+soil->ice_fw[l]-aet_stand[l])*min(1,soildepth_evap/soildepth[l]);
-        l++;
-        whcs_evap+=soil->whcs[l]*min(1,soildepth_evap/soildepth[l]);
-      }while((soildepth_evap-=soildepth[l-1])>0);
-      /* here frag_g_evap becomes FRACTION of green water in upper 30cm */
-      *frac_g_evap = w_evap>0 ? *frac_g_evap/w_evap : 1;
+      /* here frag_g_evap is AMOUNT of green soil water after transpiration in upper 30cm */
+      *frac_g_evap+=stand->frac_g[l]*(soil->w[l]*soil->whcs[l]+soil->ice_depth[l]+soil->w_fw[l]+soil->ice_fw[l]-aet_stand[l])*min(1,soildepth_evap/soildepth[l]);
+      l++;
+      whcs_evap+=soil->whcs[l]*min(1,soildepth_evap/soildepth[l]);
+    }while((soildepth_evap-=soildepth[l-1])>0);
+    /* here frag_g_evap becomes FRACTION of green water in upper 30cm */
+    *frac_g_evap = w_evap>0 ? *frac_g_evap/w_evap : 1;
 
-//      whcs_evap=param.soildepth_evap*soil->whc[0];
+    //      whcs_evap=param.soildepth_evap*soil->whc[0];
+    /*
       if(w_evap/whcs_evap<1)
         evap_soil=evap_energy*w_evap/whcs_evap*w_evap/whcs_evap*(1-soil->litter.agtop_cover);
       else
-        evap_soil=evap_energy*(1-soil->litter.agtop_cover);    /* if above field cap then it's potential evap*/
+        evap_soil=evap_energy*(1-soil->litter.agtop_cover);     if above field cap then it's potential evap
+     */
 
-      if (evap_soil>(w_evap-w_evap_ice))
-        evap_soil=w_evap-w_evap_ice;
-    }
-    //*evap=min(*evap,eeq*PRIESTLEY_TAYLOR*(1-wet_all)-aet); /*close the energy balance*/
+    evap_soil=evap_energy/(1+exp(5-10*w_evap/whcs_evap))*max(0.05,(1-soil->litter.agtop_cover));
+
+    if (evap_soil>(w_evap-w_evap_ice))
+      evap_soil=w_evap-w_evap_ice;
+
+  //*evap=min(*evap,eeq*PRIESTLEY_TAYLOR*(1-wet_all)-aet); /*close the energy balance*/
 
     //if(stand->type->landusetype!=NATURAL)
     if(stand->type->landusetype==AGRICULTURE || stand->type->landusetype==SETASIDE_RF || stand->type->landusetype==SETASIDE_IR || stand->type->landusetype==SETASIDE_WETLAND || stand->type->landusetype==BIOMASS_GRASS ||

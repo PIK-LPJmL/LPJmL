@@ -49,7 +49,7 @@ OBJS    = update_daily.$O update_annual.$O init_annual.$O\
           fprintoutputvar.$O check_glaciated.$O fwriteoutput_ch4.$O\
           getngrassnat.$O fscancnratio.$O isnitrogen_output.$O initoutputdata.$O\
           fprintcsvflux.$O extflow.$O getmintimestep.$O isannual_output.$O\
-          npp_contr_biol_n_fixation.$O fprintoutputjson.$O
+          npp_contr_biol_n_fixation.$O fprintoutputjson.$O writearea.$O
 
 INC     = ../../include
 LIBDIR  = ../../lib

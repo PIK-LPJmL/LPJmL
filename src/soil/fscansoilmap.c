@@ -88,7 +88,7 @@ int *fscansoilmap(LPJfile *file,       /**< pointer to LPJ config file */
         {
           if(verbose)
           {
-            fprintf(stderr,"ERROR254: Soil type '%s' not in soil parameter array, must be in [",name);
+            fprintf(stderr,"ERROR254: Soil type '%s' in `soilmap` not in soil parameter array, must be in [",name);
             for(s=0;s<config->nsoil;s++)
             {
               fprintf(stderr,"'%s'",config->soilpar[s].name);

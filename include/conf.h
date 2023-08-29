@@ -78,6 +78,8 @@
 #define NO_ANOMALY 0
 #define PRESCRIBE_CH4 0
 #define DYNAMIC_CH4 1
+#define BMGR_GREEN 0
+#define BMGR_BROWN 1
 #define RADIATION_LWDOWN 3
 #define RADIATION_SWONLY 2
 #define RADIATION 1
@@ -481,7 +483,6 @@
 #define CH4_RICE_EM 347
 #define TRANSP 348
 #define RUNOFF 349
-
 #define PFT_GCGP_COUNT 0
 #define NDAY_MONTH 1
 

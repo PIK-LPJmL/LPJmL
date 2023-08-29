@@ -76,6 +76,8 @@ void fprintfiles(FILE *file,          /**< pointer to text output file */
   fprintfilename(file,&config->slope_filename,FALSE);
   fprintfilename(file,&config->slope_min_filename,FALSE);
   fprintfilename(file,&config->slope_max_filename,FALSE);
+  if(config->landfrac_from_file)
+    fprintfilename(file,&config->landfrac_filename,FALSE);
   fprintfilename(file,&config->temp_filename,TRUE);
   fprintfilename(file,&config->prec_filename,TRUE);
   if(config->isanomaly)
@@ -168,10 +170,11 @@ void fprintfiles(FILE *file,          /**< pointer to text output file */
 #endif
   if(config->wet_filename.name!=NULL)
     fprintfilename(file,&config->wet_filename,TRUE);
+  if(config->with_lakes)
+    fprintfilename(file,&config->lakes_filename,FALSE);
   if(config->river_routing)
   {
     fprintfilename(file,&config->drainage_filename,FALSE);
-    fprintfilename(file,&config->lakes_filename,FALSE);
     if(config->withlanduse!=NO_LANDUSE)
       fprintfilename(file,&config->neighb_irrig_filename,FALSE);
   }

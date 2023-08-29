@@ -30,17 +30,21 @@ void fprintcell(FILE *file,            /**< file pointer to text file */
   {
     fputs("Coord:\t\t",file);
     fprintcoord(file,&grid[cell].coord);
-    fputs("\nRandom seed:\t",file);
+    fprintf(file,"\nLand fraction:\t%g\n",grid[cell].landfrac);
+    if(config->with_lakes)
+      fprintf(file,"Lake fraction:\t%g\n",grid[cell].lakefrac);
+    fputs("Random seed:\t",file);
     for(i=0;i<NSEED;i++)
       printf(" %d",grid[cell].seed[i]);
     fputc('\n',file);
+    if(config->with_lakes)
+      fprintf(file,"dmass_lake:\t%g (dm3)\n",grid[cell].discharge.dmass_lake);
     if(config->river_routing)
     {
-       fprintf(file,"dmass_lake:\t%g (dm3)\n"
-                    "dfout:\t\t%g (dm3/d)\n"
+       fprintf(file,"dfout:\t\t%g (dm3/d)\n"
                     "dmass_river:\t%g (dm3)\n"
                     "dmass_sum:\t%g (dm3)\n",
-               grid[cell].discharge.dmass_lake,grid[cell].discharge.dfout,
+               grid[cell].discharge.dfout,
                grid[cell].discharge.dmass_river,grid[cell].discharge.dmass_sum);
        fputs("Queue:\t\t",file);
        fprintqueue(file,grid[cell].discharge.queue);

@@ -88,6 +88,11 @@ static size_t isnetcdfinput(const Config *config)
     if(config->soilph_filename.fmt==CDF)
       width=max(width,strlen(config->soilph_filename.var));
   }
+  if(config->landfrac_from_file)
+  {
+    if(config->landfrac_filename.fmt==CDF)
+      width=max(width,strlen(config->landfrac_filename.var));
+  }
   if(config->cropsheatfrost || config->fire==SPITFIRE_TMAX)
   {
     if(config->tmin_filename.fmt==CDF)
@@ -156,12 +161,15 @@ static size_t isnetcdfinput(const Config *config)
   }
   if(config->wet_filename.name!=NULL && config->wet_filename.fmt==CDF)
     width=max(width,strlen(config->wet_filename.var));
+  if(config->with_lakes)
+  {
+    if(config->lakes_filename.fmt==CDF)
+      width=max(width,strlen(config->lakes_filename.var));
+  }
   if(config->river_routing)
   {
     if(config->drainage_filename.fmt==CDF)
       width=max(width,strlen(config->drainage_filename.var));
-    if(config->lakes_filename.fmt==CDF)
-      width=max(width,strlen(config->lakes_filename.var));
     if(config->withlanduse!=NO_LANDUSE && config->neighb_irrig_filename.fmt==CDF)
       width=max(width,strlen(config->neighb_irrig_filename.var));
   }
@@ -255,6 +263,8 @@ void fprintconfig(FILE *file,          /**< File pointer to text output file */
   else
     putc('\n',file);
   len=0;
+  if(config->landfrac_from_file)
+    len=printsim(file,len,&count,"land fraction read from file");
 #if defined IMAGE && defined COUPLED
   if(config->sim_id==LPJML_IMAGE)
     len=printsim(file,len,&count,"IMAGE coupling");
@@ -308,6 +318,8 @@ void fprintconfig(FILE *file,          /**< File pointer to text output file */
     len=printsim(file,len,&count,"no N deposition");
   if(config->river_routing)
     len=printsim(file,len,&count,"river routing");
+  if(config->with_lakes)
+    len=printsim(file,len,&count,"with lakes");
   if(config->extflow)
     len=printsim(file,len,&count,"external flow");
   if(config->equilsoil)
@@ -540,6 +552,8 @@ void fprintconfig(FILE *file,          /**< File pointer to text output file */
   printinputfile(file, "slope", &config->slope_filename, width,config);
   printinputfile(file, "slope_min", &config->slope_min_filename, width,config);
   printinputfile(file, "slope_max", &config->slope_max_filename, width,config);
+  if(config->landfrac_from_file)
+    printinputfile(file,"landfrac",&config->landfrac_filename,width,config);
   printinputfile(file,"temp",&config->temp_filename,width,config);
   printinputfile(file,"prec",&config->prec_filename,width,config);
   printinputfile(file, "hydrotopes", &config->hydrotopes_filename, width,config);
@@ -645,6 +659,8 @@ void fprintconfig(FILE *file,          /**< File pointer to text output file */
 #endif
   if(config->wet_filename.name!=NULL)
     printinputfile(file,"wetdays",&config->wet_filename,width,config);
+  if(config->with_lakes)
+    printinputfile(file,"lakes",&config->lakes_filename,width,config);
   if(config->river_routing)
   {
     printinputfile(file,"drainage",&config->drainage_filename,width,config);
@@ -652,7 +668,6 @@ void fprintconfig(FILE *file,          /**< File pointer to text output file */
       printinputfile(file,"river",&config->river_filename,width,config);
     if(config->extflow)
       printinputfile(file,"extflow",&config->extflow_filename,width,config);
-    printinputfile(file,"lakes",&config->lakes_filename,width,config);
     if(config->withlanduse!=NO_LANDUSE)
       printinputfile(file,"neighbour",&config->neighb_irrig_filename,width,config);
   }

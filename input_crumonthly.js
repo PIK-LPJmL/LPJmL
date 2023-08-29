@@ -46,6 +46,7 @@
   "delta_swdown" : { "fmt" : "clm", "name" : "/p/projects/open/sibyll/palmod/climber_experiment/climber2_lgc_swdown_0.5.clm"},
   "soil" :         { "fmt" : "meta", "name" : "input_VERSION2/soil.json"},
   "coord" :        { "fmt" : "clm", "name" : "input_VERSION2/grid.bin"},
+  "landfrac" :     { "id" : 44, "fmt" : "clm",  "name" : "/p/projects/lpjml/inputs/grid/30min/landfrac_gadm36.bin"},
   "countrycode" :  { "fmt" : "clm", "name" : "input_VERSION2/cow_full_2018.bin"},
   "no3deposition" :{ "fmt" : "clm", "name" : "input_VERSION2/no3_deposition_rcp8p5.clm"},
   "nh4deposition" :{ "fmt" : "clm", "name" : "input_VERSION2/nh4_deposition_rcp8p5.clm"},
