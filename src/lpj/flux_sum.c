@@ -97,8 +97,8 @@ Real flux_sum(Flux *flux_global,   /**< global carbon and water fluxes */
         }
         forrootsoillayer(l)
         {
-          flux.soil.carbon=(stand->soil.pool[l].fast.carbon+stand->soil.pool[l].slow.carbon)*stand->frac*grid[cell].coord.area;
-          flux.soil.nitrogen=(stand->soil.pool[l].fast.nitrogen+stand->soil.pool[l].slow.nitrogen)*stand->frac*grid[cell].coord.area;
+          flux.soil.carbon+=(stand->soil.pool[l].fast.carbon+stand->soil.pool[l].slow.carbon)*stand->frac*grid[cell].coord.area;
+          flux.soil.nitrogen+=(stand->soil.pool[l].fast.nitrogen+stand->soil.pool[l].slow.nitrogen)*stand->frac*grid[cell].coord.area;
           flux.soil_slow.carbon+=stand->soil.pool[l].slow.carbon*stand->frac*grid[cell].coord.area;
           flux.soil_slow.nitrogen+=stand->soil.pool[l].slow.nitrogen*stand->frac*grid[cell].coord.area;
           flux.soil_CH4+=stand->soil.CH4[l]*stand->frac*grid[cell].coord.area;

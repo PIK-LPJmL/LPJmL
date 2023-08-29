@@ -205,6 +205,8 @@ void update_wetland(Cell *cell,          /**< pointer to cell */
           pos = addstand(&wetland_stand, cell) - 1;
           wetlandstandnum = pos;
           wetstand = getstand(cell->standlist, pos);
+          wetstand->soil.decomp_litter_pft=newvec(Stocks,ntotpft);
+          check(wetstand->soil.decomp_litter_pft);
           for (l = 0; l<LASTLAYER; l++)
           {
             wetstand->soil.c_shift[l] = newvec(Poolpar, ntotpft);
