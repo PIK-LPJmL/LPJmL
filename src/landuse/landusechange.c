@@ -24,6 +24,7 @@
 #include "reservoir.h"
 #include "woodplantation.h"
 #include "wetland.h"
+//#define CHECK_BALANCE
 
 typedef enum {PASTURE=1, OTHER_PASTURE,BIOMASS_TREE_PLANTATION, BIOMASS_GRASS_PLANTATION, AGRICULTURE_TREE_PLANTATION, WOOD_PLANTATION } Cultivation_type;
 
@@ -207,14 +208,11 @@ void deforest(Cell *cell,          /**< pointer to cell */
   if (fabs(start-end)>0.01)
   {
      fprintf(stderr, "C_ERROR in deforest: %g start: %g  end: %g istimber: %d intercrop: %d timber_harvest.carbon: %g deforest_emissions: %g  flux_estab.carbon %g startC: %g\n",
-             start-end,start-startC, end-(cell->balance.timber_harvest.carbon-cell->balance.flux_estab.carbon),config->istimber,intercrop,cell->balance.timber_harvest.carbon,cell->balance.flux_estab.carbon,cell->balance.deforest_emissions.carbon,startC);
+             start-end,start-startC, end-(cell->balance.timber_harvest.carbon-cell->balance.flux_estab.carbon),config->luc_timber,intercrop,cell->balance.timber_harvest.carbon,cell->balance.flux_estab.carbon,cell->balance.deforest_emissions.carbon,startC);
      foreachstand(checkstand,s,cell->standlist)
        fprintf(stderr,"type %s frac:%g s: %d iswetland: %d diff_start:%g diff:%g carbon:%g methan:%g\n",checkstand->type->name,checkstand->frac,s,checkstand->soil.iswetland,difffrac_old,difffrac,standstocks(checkstand).carbon*checkstand->frac,soilmethane(&checkstand->soil)*checkstand->frac);
   }
 #endif
-  else
-    fail(NO_NATURAL_STAND_ERR,TRUE,"No natural stand for deforest in cell (%s), difffrac=%g",
-         sprintcoord(line,&cell->coord),difffrac);
 } /* of 'deforest' */
 
 #ifdef IMAGE

@@ -84,7 +84,7 @@ Real infil_perc(Stand *stand,        /**< Stand pointer */
   //Real sat_lev = 0.9;
   Real prec=infil;
 
-#ifdef CHECK_BALANCE
+#ifdef CHECK_BALANCE_W
   Real start, end;
   Stocks n_before,n_after;
   start = end = 0;
@@ -93,14 +93,14 @@ Real infil_perc(Stand *stand,        /**< Stand pointer */
 #endif
 
   if(stand->type->landusetype==AGRICULTURE || stand->type->landusetype==SETASIDE_RF || stand->type->landusetype==SETASIDE_IR || stand->type->landusetype==SETASIDE_WETLAND || stand->type->landusetype==BIOMASS_GRASS ||
-      stand->type->landusetype==BIOMASS_TREE || stand->type->landusetype==GRASSLAND ||  stand->type->landusetype==AGRICULTURE_TREE || stand->type->landusetype==AGRICULTURE_GRASS)
+      stand->type->landusetype==BIOMASS_TREE || stand->type->landusetype==GRASSLAND || stand->type->landusetype==OTHERS  ||  stand->type->landusetype==AGRICULTURE_TREE || stand->type->landusetype==AGRICULTURE_GRASS)
     data_irrig=stand->data;
   else
     data_irrig=NULL;
 
   soil=&stand->soil;
   soil_infil=param.soil_infil; /* default to draw square root for infiltration factor*/
-  if(config->rw_manage && (stand->type->landusetype==AGRICULTURE || stand->type->landusetype==GRASSLAND || stand->type->landusetype==BIOMASS_GRASS ||
+  if(config->rw_manage && (stand->type->landusetype==AGRICULTURE || stand->type->landusetype==GRASSLAND || stand->type->landusetype==BIOMASS_GRASS || stand->type->landusetype==OTHERS  ||
       stand->type->landusetype==BIOMASS_TREE || stand->type->landusetype==AGRICULTURE_TREE || stand->type->landusetype==AGRICULTURE_GRASS))
     soil_infil=param.soil_infil_rw; /* parameter to increase soil infiltration rate */
   for(l=0;l<NTILLLAYER;l++)
@@ -136,7 +136,7 @@ Real infil_perc(Stand *stand,        /**< Stand pointer */
     icefrac[l]=(soil->ice_depth[l]+soil->ice_fw[l]+soil->wpwps[l]*soil->ice_pwp[l])/soil->wsats[l];
   Theta_ice=pow(10,-OMEGA*icefrac[jwt]);
 
-#ifdef CHECK_BALANCE
+#ifdef CHECK_BALANCE_W
   start=soil->wa;
   n_before=soilstocks(soil);
   n_before.nitrogen=n_before.nitrogen*stand->frac+getoutput(&stand->cell->output,LEACHING,config);
@@ -394,12 +394,13 @@ Real infil_perc(Stand *stand,        /**< Stand pointer */
 
     //THIS IS THE IMPLEMENTATION OF THE WATER TABLE DEPTH FOLLOWING CLM4.5
     // use analytical expression for aquifer specific yield
-    // S = soil->wsat*( 1. - pow((1.+soil->wtable/soil->par->psi_sat),(-1./soil->par->b)));   //see Table2 Clapp-Hornberger and CLM4.5 Gleichung 7.174
+    // S = soil->wsat*( 1. - pow((1.+soil->wtable/soil->par->psi_sat),(-1./soil->par->b)));   //see Table2 Clapp-Hornberger and CLM4.5 equ. 7.174
 
   Theta_ice=pow(10,-OMEGA*icefrac[jwt+1]);
   s_node=(allwater(soil,jwt)/soildepth[jwt] + allice(soil,jwt)/soildepth[jwt])/soil->wsat[jwt];
   s_node=max(s_node,0.02);
   s_node=min(1, s_node);
+
   //  this is the expression for unsaturated hydraulic conductivity
   //  q_recharge=-ka*(-soil->par->psi_sat/(wtable-layerbound[jwt-1]))*24
   //  if (wtable==layerbound[jwt]) q_recharge=-ka*(-soil->par->psi_sat/(wtable+1))*24
@@ -637,48 +638,7 @@ Real infil_perc(Stand *stand,        /**< Stand pointer */
   }
   else
   {
-    //===================  water table below frost table  =============================
-    //# compute possible perched water table *and* groundwater table afterwards
-    //# sat_lev is an arbitrary saturation level used to determine perched water table
-        //# I THINK THAT CAN BE NEGLECTED there is now liquid water in these layers
-
-
-    /*   for(l=icet;l>=0;l--)
-    if((allwater(soil,l)/soil->wsats[l]+allice(soil,l)/soil->wsats[l])>sat_lev){
-      k_perch=l;
-      break;
-    }
-
-   if(soil->wtable>frost_depth)
-   {
-      q_perch=0;
-      wtsub=0;
-      for(l=icet;l<=jwt;l++){
-        Theta_ice=pow(10,(-OMEGA*(0.5*(icefrac[l]+icefrac[l+1]))));
-        q_perch+=(Theta_ice*soil->Ks[l]*24*soildepth[l]);
-        wtsub+=soildepth[l];
-      }
-      if (wtsub > 0) q_perch = q_perch/wtsub;
-      drain_perched = q_perch_max * q_perch *(soil->wtable-frost_depth);
-      drain_perched = -drain_perched;
-      for(l=icet;l<=jwt;l++){
-         if(soil->w_fw[l]>0)
-         {
-           drain_perched_layer=max(-soil->w_fw[l],drain_perched);
-           soil->w_fw[l]+=drain_perched_layer;
-           drain_perched-=drain_perched_layer;
-           if(drain_perched>=0)
-           {
-               soil->wtable-=drain_perched_layer/((soil->wsats[l]-soil->ice_depth[l]-soil->ice_fw[l]-soil->wpwps[l]*soil->ice_pwp[l])/soildepth[l]);
-               break;
-           }
-           else
-             soil->wtable=layerbound[l];
-         }
-      }
-   }
-       */
-      //==  Topographic runoff  ==================================================
+    //==  Topographic runoff  ==================================================
 
     fff=2.5;       //m-1 decay factor originally 2.5 in CLM4.5
     icesum=0;
@@ -920,8 +880,9 @@ Real infil_perc(Stand *stand,        /**< Stand pointer */
   getoutput(&stand->cell->output,RUNOFF_LAT,config)+=runoff*stand->frac;
   getoutput(&stand->cell->output,RUNOFF_SURF,config)+=runoff_surface*stand->frac;
 
-#ifdef CHECK_BALANCE
+#ifdef CHECK_BALANCE_W
 
+// TODO check what test meant in earlier versions
   if(fabs(start-end+test-runoff_out-runoff_surface-drain_perched_out-rsub_top)>epsilon)
     fprintf(stderr,"W_error in infil1 Pixel: lat:%g lon:%g Bilanz:%g\n",stand->cell->coord.lat,stand->cell->coord.lon,start-end+test-runoff_out-runoff_surface-drain_perched_out-rsub_top);
   n_after=soilstocks(soil);
@@ -931,7 +892,7 @@ Real infil_perc(Stand *stand,        /**< Stand pointer */
 
 #endif
 
-#ifdef CHECK_BALANCE
+#ifdef CHECK_BALANCE_W
   water_after=soilwater(&stand->soil);
   balancew=water_after-water_before-prec+runoff_surface+runoff_out+drain_perched_out+rsub_top;
   if(fabs(balancew)>10)
@@ -966,8 +927,6 @@ Real infil_perc(Stand *stand,        /**< Stand pointer */
            break;
          }
        }
-//       fprintf(stderr,"in infil_perc:  runoff_surface: %g drain_perched_out: %g runoff_out: %g rsub_top: %g rw_buff: %g wa: %g infil: %g type: %s standfrac: %g\n",
-//            runoff_surface,drain_perched_out,runoff_out,rsub_top,soil->rw_buffer,soil->wa,prec,stand->type->name,stand->frac);
      }
      return runoff_surface;
    }

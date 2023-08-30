@@ -116,9 +116,9 @@ void update_annual(Cell *cell,          /**< Pointer to cell */
     end.carbon+=(st.carbon+ soilmethane(&stand->soil))*stand->frac-stand->cell->balance.flux_estab.carbon;
     end.nitrogen+=st.nitrogen*stand->frac-stand->cell->balance.flux_estab.nitrogen;
     end_w += soilwater(&stand->soil)*stand->frac;
-    fprintf(stdout,"update_annual: landusetype: %s stand.frac: %g NEP: %g\n\n",stand->type->name, stand->frac,cell->balance.nep);
+    fprintf(stdout,"update_annual: landusetype: %s stand.frac: %g \n\n",stand->type->name, stand->frac);
   }
-  if(fabs(start-end)>0.001) fprintf(stderr,"C_ERROR update annual - annual stand year=%d: C_ERROR=%g start : %g end : %g\n",year,start-end,start,end);
+  if(fabs(start.carbon-end.carbon)>0.001) fprintf(stderr,"C_ERROR update annual - annual stand year=%d: C_ERROR=%g start : %g end : %g\n",year,start.carbon-end.carbon,start.carbon,end.carbon);
   if (fabs(start_w - end_w)>0.001) fprintf(stderr, "W_ERROR update annual - annual stand: year=%d: W_ERROR=%g start : %g end : %g\n", year, start_w - end_w, start_w, end_w);
   if (fabs(start.nitrogen - end.nitrogen)>0.001) fprintf(stderr, "N_ERROR update annual - annual stand: year=%d: error=%g start : %g end : %g\n", year, start.nitrogen - end.nitrogen, start.nitrogen, end.nitrogen);
 #endif

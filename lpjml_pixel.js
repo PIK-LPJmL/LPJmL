@@ -286,8 +286,8 @@ ID                               Fmt                        filename
 /*  V. Run settings section                                          */
 /*===================================================================*/
 
-  "startgrid" : 14549, /*58463 13580  4276 14310 18175 49217 39049 28854 27410, 67208 60400 47284 47293 47277 8097 all grid cells */
-  "endgrid" : 14549,      /*ALL*/ /*33803 output_pixel hohes soilc*/
+  "startgrid" : 8097, /*58463 13580  4276 14310 18175 49217 39049 28854 27410, 67208 60400 47284 47293 47277 8097 all grid cells */
+  "endgrid" : 8097,      /*ALL*/ /*33803 output_pixel hohes soilc*/
 
 #ifdef CHECKPOINT
   "checkpoint_filename" : "restart/restart_checkpoint.lpj", /* filename of checkpoint file */
@@ -295,7 +295,7 @@ ID                               Fmt                        filename
 
 #ifndef FROM_RESTART
 
-  "nspinup" : 7000,  /* spinup years */
+  "nspinup" : 5000,  /* spinup years */
   "nspinyear" : 30,  /* cycle length during spinup (yr) */
   "firstyear": 1901, /* first year of simulation */
   "lastyear" : 1901, /* last year of simulation */
