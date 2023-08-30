@@ -88,7 +88,7 @@ void fprintcsvflux(FILE *file,          /**< Output file pointer */
         fprintf(file,"%c(%g gN/yr)",d,1/scale);
       if(config->withlanduse!=NO_LANDUSE)
         fprintf(file,"%c(%g gN/yr)%c(%g gN/yr)",d,1/scale,d,1/scale);
-      fprintf(file,"%c(%g gN)%c(%g gN)%c(%g gN)%c(%g gN)%c(%g gN)%c(%g gN)",d,1/scale,d,1/scale,d,1/scale,d,1/scale,1/scale,1/scale);
+      fprintf(file,"%c(%g gN)%c(%g gN)%c(%g gN)%c(%g gN)%c(%g gN)%c(%g gN)",d,1/scale,d,1/scale,d,1/scale,d,1/scale,d,1/scale,d,1/scale);
       if(config->withlanduse!=NO_LANDUSE)
         fprintf(file,"%c(%g gN)",d,1/scale);
     }
