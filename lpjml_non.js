@@ -2,7 +2,7 @@
 /**                                                                                \n**/
 /**                   l  p  j  m  l  _  n  o  n  .  j  s                           \n**/
 /**                                                                                \n**/
-/** Configuration file for LPJmL C Version 5.6.23 without nitrogen limitation      \n**/
+/** Configuration file for LPJmL C Version 5.7.5 without nitrogen limitation       \n**/
 /**                                                                                \n**/
 /** Configuration file is divided into five sections:                              \n**/
 /**                                                                                \n**/
@@ -29,7 +29,7 @@
   "sim_name" : "LPJmL run without nitrogen", /* Simulation description */
   "sim_id"   : "lpjml",       /* LPJML Simulation type with managed land use */
   "coupled_model" : null,     /* no model coupling */
-  "version"  : "5.6",         /* LPJmL version expected */
+  "version"  : "5.7",         /* LPJmL version expected */
   "random_prec" : true,       /* Random weather generator for precipitation enabled */
   "random_seed" : 2,          /* seed for random number generator */
   "radiation" : "radiation",  /* other options: CLOUDINESS, RADIATION, RADIATION_SWONLY, RADIATION_LWDOWN */
@@ -38,12 +38,14 @@
   "gsi_phenology": true,    /* GSI phenology enabled */
   "transp_suction_fcn" : false,        /* new transpiration reduction function disabled */
   "river_routing" : true,
+  "with_lakes" : true,
   "permafrost" : true,
   "extflow" : false,
   "johansen" : true,
   "soilpar_option" : "no_fixed_soilpar", /* other options "no_fixed_soilpar", "fixed_soilpar", "prescribed_soilpar" */
   "with_nitrogen" : "no", /* other options: "no", "lim", "unlim" */
   "store_climate" : true, /* store climate data in spin-up phase */
+  "landfrac_from_file" : true, /* read cell area from file (true/false) */
   "shuffle_spinup_climate" : false,
   "fix_climate" : false,
   "fix_landuse" : false,
@@ -129,6 +131,7 @@
 ID                         Fmt                    filename
 -------------------------- ---------------------- ----------------------------- */
     { "id" : "grid",             "file" : { "fmt" : "raw", "name" : "output/grid.bin" }},
+    { "id" : "terr_area",        "file" : { "fmt" : "raw", "name" : "output/terr_area.bin" }},
     { "id" : "fpc",              "file" : { "fmt" : "raw", "name" : "output/fpc.bin"}},
     { "id" : "npp",              "file" : { "fmt" : "raw", "name" : "output/mnpp.bin"}},
     { "id" : "gpp",              "file" : { "fmt" : "raw", "name" : "output/mgpp.bin"}},

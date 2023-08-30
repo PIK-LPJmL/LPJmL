@@ -62,7 +62,7 @@ void update_daily(Cell *cell,            /**< cell pointer           */
   Real agrfrac;
   Real litsum_old_nv[2]={0,0},litsum_new_nv[2]={0,0};
   Real litsum_old_agr[2]={0,0},litsum_new_agr[2]={0,0};
-
+  Irrigation *data;
 
   forrootmoist(l)
     rootdepth+=soildepth[l];
@@ -203,7 +203,7 @@ void update_daily(Cell *cell,            /**< cell pointer           */
     hetres=littersom(stand,gtemp_soil,agrfrac,npft,ncft,config);
     cell->balance.arh+=hetres.carbon*stand->frac;
     getoutput(&cell->output,RH,config)+=hetres.carbon*stand->frac;
-    getoutput(&cell->output,N2O_DENIT,config)+=hetres.nitrogen*stand->frac;
+    getoutput(&cell->output,N2O_NIT,config)+=hetres.nitrogen*stand->frac;
     cell->balance.n_outflux+=hetres.nitrogen*stand->frac;
 
     if(stand->type->landusetype==NATURAL)
@@ -250,7 +250,6 @@ void update_daily(Cell *cell,            /**< cell pointer           */
       getoutput(&cell->output,N2O_NIT_MGRASS,config)+=hetres.nitrogen*stand->frac;
       getoutput(&cell->output,RH_MGRASS,config)+=hetres.carbon*stand->frac;
     }
-    getoutput(&cell->output,N2O_NIT,config)+=hetres.nitrogen*stand->frac;
     cell->output.dcflux+=hetres.carbon*stand->frac;
 #if defined IMAGE && defined COUPLED
     if (stand->type->landusetype == NATURAL)
@@ -290,6 +289,8 @@ void update_daily(Cell *cell,            /**< cell pointer           */
         cell->balance.influx.nitrogen+=2000*stand->frac;
         if (isagriculture(stand->type->landusetype))
           getoutput(&cell->output,NDEPO_AGR,config)+=2000*stand->frac;
+        
+        getoutput(&cell->output,NDEPOS,config)+=2000*stand->frac;
       }
       else if(!config->no_ndeposition)
       {
@@ -309,6 +310,8 @@ void update_daily(Cell *cell,            /**< cell pointer           */
         cell->balance.influx.nitrogen+=(climate.nh4deposition+climate.no3deposition)*stand->frac;
         if (isagriculture(stand->type->landusetype))
           getoutput(&cell->output,NDEPO_AGR,config)+=(climate.nh4deposition+climate.no3deposition)*stand->frac;
+        
+        getoutput(&cell->output,NDEPOS,config)+=(climate.nh4deposition+climate.no3deposition)*stand->frac;
       }
 #ifdef DEBUG_N
       printf("BEFORE_STRESS[%s], day %d: ",stand->type->name,day);
@@ -373,8 +376,20 @@ void update_daily(Cell *cell,            /**< cell pointer           */
                      stand->soil.ice_depth[l]+stand->soil.ice_fw[l])/stand->soil.wsats[l]*stand->frac*(1.0/(1-stand->cell->lakefrac-stand->cell->ml.reservoirfrac));
     forrootmoist(l)
       getoutput(&cell->output,ROOTMOIST,config)+=stand->soil.w[l]*stand->soil.whcs[l]*stand->frac*(1.0/(1-stand->cell->lakefrac-stand->cell->ml.reservoirfrac)); /* absolute soil water content between wilting point and field capacity (mm) */
-      /*cell->output.mrootmoist+=stand->soil.w[l]*soildepth[l]/rootdepth*stand->frac*(1.0/(1-stand->cell->lakefrac-stand->cell->ml.reservoirfrac)); previous implementation that doesn't make sense to me, because the sum of soildepth[l]/rootdepth over the first 3 layers equals 1 (JJ, June 25, 2020)*/
-    //getoutput(&cell->output,SOILC1,config)+=(stand->soil.pool[l].slow.carbon+stand->soil.pool[l].fast.carbon)*stand->frac;
+    if(stand->type->landusetype==GRASSLAND || stand->type->landusetype==OTHERS ||
+       stand->type->landusetype==AGRICULTURE || stand->type->landusetype==AGRICULTURE_GRASS || stand->type->landusetype==AGRICULTURE_TREE ||
+       stand->type->landusetype==BIOMASS_TREE || stand->type->landusetype==BIOMASS_GRASS || stand->type->landusetype==WOODPLANTATION)
+    {
+      data = stand->data;
+      if(data->irrigation)
+        getoutput(&cell->output,IRRIG_STOR,config)+=data->irrig_stor*stand->frac*cell->coord.area;
+    }
+    /* only first 5 layers for SWC_VOL output */
+    forrootsoillayer(l)
+    {
+      getoutputindex(&cell->output,SWC_VOL,l,config)+=(stand->soil.w[l]*stand->soil.whcs[l]+stand->soil.w_fw[l]+stand->soil.wpwps[l]+
+                     stand->soil.ice_depth[l]+stand->soil.ice_fw[l])*stand->frac*cell->coord.area;
+    }
   } /* of foreachstand */
 
   getoutput(&cell->output,CELLFRAC_AGR,config)+=agrfrac;
@@ -397,7 +412,7 @@ void update_daily(Cell *cell,            /**< cell pointer           */
 
   getoutput(&cell->output,RUNOFF,config)+=cell->discharge.drunoff;
   cell->balance.awater_flux+=cell->discharge.drunoff;
-  if(config->river_routing)
+  if(config->with_lakes)
   {
     radiation(&daylength,&par,&eeq,cell->coord.lat,day,&climate,c_albwater,config->with_radiation);
     getoutput(&cell->output,PET,config)+=eeq*PRIESTLEY_TAYLOR*(cell->lakefrac+cell->ml.reservoirfrac);
@@ -463,6 +478,7 @@ void update_daily(Cell *cell,            /**< cell pointer           */
     }
 
     getoutput(&cell->output,LAKEVOL,config)+=cell->discharge.dmass_lake;
+    getoutput(&cell->output,RIVERVOL,config)+=cell->discharge.dmass_river;
   } /* of 'if(river_routing)' */
   getoutput(&cell->output,DAYLENGTH,config)+=daylength;
   soilpar_output(cell,agrfrac,config);

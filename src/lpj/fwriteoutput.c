@@ -544,6 +544,7 @@ void fwriteoutput(Outputfile *output,  /**< output file array */
   }
   vec=newvec(float,config->ngridcell);
   check(vec);
+  writeoutputvar(LAND_AREA,1);
   writeoutputarray(FPC,1);
   writeoutputvar(NPP,1);
   writeoutputvar(GPP,1);
@@ -563,6 +564,7 @@ void fwriteoutput(Outputfile *output,  /**< output file array */
   writeoutputvar(FIREC,1);
   writeoutputvar(FIREN,1);
   writeoutputvar(FLUX_FIREWOOD,1);
+  writeoutputvar(FLUX_FIREWOOD_N,1);
   writeoutputvar(FIREF,1);
   writeoutputvar(BNF_AGR,1);
   writeoutputvar(NFERT_AGR,1);
@@ -669,7 +671,12 @@ void fwriteoutput(Outputfile *output,  /**< output file array */
           {
             /*if(stand->type->landusetype==NATURAL) */
             foreachpft(pft,p,&stand->pftlist)
-              getoutput(&grid[cell].output,VEGN,config)+=(vegn_sum(pft)+pft->bm_inc.nitrogen)*stand->frac;
+            {
+              if(pft->par->cultivation_type==ANNUAL_CROP)
+                getoutput(&grid[cell].output,VEGN,config)+=vegn_sum(pft)*stand->frac;
+              else
+                getoutput(&grid[cell].output,VEGN,config)+=(vegn_sum(pft)+pft->bm_inc.nitrogen)*stand->frac;
+            }
           }
         }
     }
@@ -811,8 +818,7 @@ void fwriteoutput(Outputfile *output,  /**< output file array */
           {
             forrootsoillayer(l)
             {
-              if(stand->soil.mean_maxthaw>=layerbound[l])
-                getoutput(&grid[cell].output,SOILNO3,config)+=stand->soil.NO3[l]*stand->frac;
+              getoutput(&grid[cell].output,SOILNO3,config)+=stand->soil.NO3[l]*stand->frac;
             /*vec[count]+=(float)(stand->soil.YEDOMA*stand->frac);*/
             }
           }
@@ -831,8 +837,7 @@ void fwriteoutput(Outputfile *output,  /**< output file array */
           {
             forrootsoillayer(l)
             {
-              if(stand->soil.mean_maxthaw>=layerbound[l])
-                getoutput(&grid[cell].output,SOILNH4,config)+=stand->soil.NH4[l]*stand->frac;
+              getoutput(&grid[cell].output,SOILNH4,config)+=stand->soil.NH4[l]*stand->frac;
             /*vec[count]+=(float)(stand->soil.YEDOMA*stand->frac);*/
             }
           }
@@ -952,13 +957,18 @@ void fwriteoutput(Outputfile *output,  /**< output file array */
     writealldata(output,ADISCHARGE,vec,year,date,ndata,config);
   }
   writeoutputvar(DEFOREST_EMIS,1);
+  writeoutputvar(DEFOREST_EMIS_N,1);
   writeoutputvar(TRAD_BIOFUEL,1);
   writeoutputvar(FBURN,1);
   writeoutputvar(FTIMBER,1);
   writeoutputvar(TIMBER_HARVESTC,1);
+  writeoutputvar(TIMBER_HARVESTN,1);
   writeoutputvar(PRODUCT_POOL_FAST,1);
   writeoutputvar(PRODUCT_POOL_SLOW,1);
+  writeoutputvar(PRODUCT_POOL_FAST_N,1);
+  writeoutputvar(PRODUCT_POOL_SLOW_N,1);
   writeoutputvar(PROD_TURNOVER,1);
+  writeoutputvar(PROD_TURNOVER_N,1);
   if(iswrite(output,AFRAC_WD_UNSUST))
   {
     count=0;
@@ -1058,7 +1068,7 @@ void fwriteoutput(Outputfile *output,  /**< output file array */
   writeoutputvar(N_MINERALIZATION,1);
   writeoutputvar(N_VOLATILIZATION,1);
   writeoutputvar(N_IMMO,1);
-  writeoutputvar(RES_STORAGE,1e-9*ndate1);  /* mean monthly reservoir storage in 1.000.000 m3 per cell */
+  writeoutputvar(RES_STORAGE,ndate1);
   writeoutputvar(RES_DEMAND,1);
   writeoutputvar(TARGET_RELEASE,1);
   writeoutputvar(RES_CAP,1);
@@ -1090,7 +1100,10 @@ void fwriteoutput(Outputfile *output,  /**< output file array */
   writeoutputvar(GCONS_IRR,1);
   writeoutputvar(BCONS_IRR,1);
   writeoutputvar(IRRIG_RW,1);
-  writeoutputvar(LAKEVOL,ndate1);
+  writeoutputvar(LAKEVOL,ndate1);  
+  writeoutputvar(RIVERVOL,ndate1);
+  writeoutputarray(SWC_VOL,ndate1);
+  writeoutputvar(IRRIG_STOR,ndate1);
   writeoutputvar(LAKETEMP,ndate1);
   writeoutputshortvar(SDATE);
   writeoutputshortvar(HDATE);
@@ -1819,6 +1832,49 @@ void fwriteoutput(Outputfile *output,  /**< output file array */
     }
     writeoutputvar(MGRASS_LITN,1);
   }
+  if(isopen(output,ESTAB_STORAGE_C))
+  {
+    if(iswrite2(ESTAB_STORAGE_C,timestep,year,config) || (timestep==ANNUAL && config->outnames[ESTAB_STORAGE_C].timestep>0))
+    {
+      for(cell=0;cell<config->ngridcell;cell++)
+        if(!grid[cell].skip)
+        {
+          getoutput(&grid[cell].output,ESTAB_STORAGE_C,config)+=grid[cell].balance.estab_storage_tree[0].carbon +
+          grid[cell].balance.estab_storage_tree[1].carbon +
+          grid[cell].balance.estab_storage_grass[0].carbon +
+          grid[cell].balance.estab_storage_grass[1].carbon;
+        }
+    }
+    writeoutputvar(ESTAB_STORAGE_C,1);
+  }
+  if(isopen(output,ESTAB_STORAGE_N))
+  {
+    if(iswrite2(ESTAB_STORAGE_N,timestep,year,config) || (timestep==ANNUAL && config->outnames[ESTAB_STORAGE_N].timestep>0))
+    {
+      for(cell=0;cell<config->ngridcell;cell++)
+        if(!grid[cell].skip)
+        {
+          getoutput(&grid[cell].output,ESTAB_STORAGE_N,config)+=grid[cell].balance.estab_storage_tree[0].nitrogen +
+          grid[cell].balance.estab_storage_tree[1].nitrogen +
+          grid[cell].balance.estab_storage_grass[0].nitrogen +
+          grid[cell].balance.estab_storage_grass[1].nitrogen;
+        }
+    }
+    writeoutputvar(ESTAB_STORAGE_N,1);
+  }
+  if(isopen(output,RD))
+  {
+    writeoutputvar(RD,1);
+  }
+  if(isopen(output,PFT_WATER_DEMAND))
+  {
+    writeoutputarray(PFT_WATER_DEMAND,1);
+  }
+  if(isopen(output,NDEPOS)) 
+  {
+    writeoutputvar(NDEPOS,1);
+  }
+
   if(config->double_harvest)
   {
     writeoutputarray(PFT_HARVESTC2,1);

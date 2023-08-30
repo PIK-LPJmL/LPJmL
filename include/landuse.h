@@ -169,7 +169,6 @@ extern void output_gbw(Output *,const Stand *,Real,Real,Real,Real,
 
 /* Declaration of variables */
 
-extern Real tinyfrac;
 extern const char *biomass_names[NBIOMASSTYPE];
 
 #endif

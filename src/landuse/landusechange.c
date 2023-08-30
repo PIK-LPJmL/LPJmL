@@ -873,7 +873,7 @@ void landusechange(Cell *cell,          /**< pointer to cell */
           tempstand=getstand(cell->standlist,pos);
           tempstand->frac=movefrac;
           reclaim_land(irrigstand,tempstand,cell,FALSE,npft+ncft,config);
-          if(setaside(cell,getstand(cell->standlist,pos),cell->ml.with_tillage,intercrop,npft,ncft,TRUE,year,config))
+          if(setaside(cell,getstand(cell->standlist,pos),cell->ml.with_tillage,intercrop,npft,ncft,FALSE,year,config))
             delstand(cell->standlist,pos);
           irrigstand->frac-=movefrac;
         }
