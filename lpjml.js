@@ -43,7 +43,7 @@
   "gsi_phenology" : true,   /* GSI phenology enabled */
   "transp_suction_fcn" : false, /* enable transpiration suction function (true/false) */
   "with_lakes" : true,      /* enable lakes (true/false) */
-  "river_routing" : true,
+  "river_routing" : false,
   "extflow" : false,
   "permafrost" : true,
   "johansen" : true,
@@ -74,7 +74,7 @@
   "wateruse" : "no",  /* other options: "no", "yes", "all" */
   "equilsoil" : false,
 #else
-  "equilsoil" : true,
+  "equilsoil" : false,
   "population" : false,
   "landuse" : "no",
   "reservoir" : false,
@@ -282,18 +282,18 @@ ID                               Fmt                        filename
 /*  V. Run settings section                                          */
 /*===================================================================*/
 
-  "startgrid" : 47284, /* 27410, 67208 60400 47284 47293 47277 all grid cells */
-  "endgrid"   : 47284,
+  "startgrid" : "all", /* 27410, 67208 60400 47284 47293 47277 all grid cells */
+  "endgrid"   : "all",
 #ifdef CHECKPOINT
   "checkpoint_filename" : "restart/restart_checkpoint.lpj", /* filename of checkpoint file */
 #endif
 
 #ifndef FROM_RESTART
 
-  "nspinup" : 3500,  /* spinup years */
-  "nspinyear" : 30,  /* cycle length during spinup (yr) */
+  "nspinup" : 1,  /* spinup years */
+  "nspinyear" : 1,  /* cycle length during spinup (yr) */
   "firstyear": 1940, /* first year of simulation */
-  "lastyear" : 1946, /* last year of simulation */
+  "lastyear" : 1940, /* last year of simulation */
   "restart" :  false, /* start from restart file */
   "outputyear" : -1599,
   "write_restart" : true, /* create restart file: the last year of simulation=restart-year */
