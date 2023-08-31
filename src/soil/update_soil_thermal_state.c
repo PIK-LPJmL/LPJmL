@@ -30,15 +30,15 @@ void update_soil_thermal_state(Soil *soil,          /**< pointer to soil data */
              )
 {
 
-  /* calculate soil thermal properties */
+  /* calculate soil thermal properties and provide it for below functions */
   Soil_thermal_prop therm_prop;            
   calc_soil_thermal_props(&therm_prop, soil, NULL,  NULL, config->johansen, TRUE); 
   
-  /* apply daily changes to soil enthalpy distribution */
+  /* apply daily changes to soil enthalpy distribution  due to heatconvection and heatconduction*/
   modify_enth_due_to_unaccounted_masschanges(soil ,config);
   modify_enth_due_to_heatconduction(soil,temp_below_snow, therm_prop, config);
 
-  /* compute soil thermal attributes from enthalpy distribution and thermal properties */
+  /* compute soil thermal attributes from enthalpy distribution and thermal properties, i.e. the derived quantities */
   compute_mean_layer_temps_from_enth(soil->temp,soil->enth, therm_prop);
   compute_water_ice_ratios_from_enth(soil,config,therm_prop);
   compute_litter_temp_from_enth(soil, temp_below_snow ,config,therm_prop);
@@ -55,7 +55,7 @@ void modify_enth_due_to_unaccounted_masschanges(Soil * soil,const Config * confi
     apply_perc_enthalpy(soil);
     calc_soil_thermal_props(&old_therm_storage_prop, soil, soil->wi_abs_enth_adj,  soil->sol_abs_enth_adj, config->johansen, FALSE); 
     get_unaccounted_changes_in_water_and_solids(waterdiff, soliddiff, soil);        
-    apply_enth_of_unaccounted_mass_changes(soil->enth, waterdiff, soliddiff, old_therm_storage_prop);    
+    apply_enth_of_untracked_mass_shifts(soil->enth, waterdiff, soliddiff, old_therm_storage_prop);    
 }
 
 void modify_enth_due_to_heatconduction(Soil * soil, Real temp_below_snow, Soil_thermal_prop therm_prop ,const Config * config){
