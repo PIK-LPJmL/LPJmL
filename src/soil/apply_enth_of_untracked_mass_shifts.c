@@ -15,7 +15,7 @@ same way as for the water.
 */
 
 
-void apply_enth_of_unaccounted_mass_changes(Real *enth,             /*< enthalpy vector that is updated*/
+void apply_enth_of_untracked_mass_shifts(Real *enth,             /*< enthalpy vector that is updated*/
                          const Real *water_diff, /*< vector with absolute change of volumetric water content per layer */
                          const Real *solid_diff, /*< vector with absolute change of solid components per layer */
                          Soil_thermal_prop th    /*< soil thermal properties */
