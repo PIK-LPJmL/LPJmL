@@ -38,7 +38,7 @@ void allometry_tree(Pft *pft /**< Pointer to tree PFT */
   {
     tree->height=treepar->height_max;
     sm_ind_temp=tree->ind.sapwood;
-    sapw_nc=(tree->ind.sapwood.carbon==0) ? 0 : tree->ind.sapwood.nitrogen/tree->ind.sapwood.carbon;
+    sapw_nc=tree->ind.sapwood.nitrogen/tree->ind.sapwood.carbon;
     tree->ind.sapwood.carbon=tree->ind.leaf.carbon*treepar->height_max*wooddens*pft->par->sla/
                       treepar->k_latosa;
     tree->ind.sapwood.nitrogen-=(sm_ind_temp.nitrogen-tree->ind.sapwood.carbon*sapw_nc)*(1 - param.sapwood_recovery);
