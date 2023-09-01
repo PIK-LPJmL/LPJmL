@@ -44,7 +44,7 @@ Stocks cultivate(Cell *cell,           /**< cell pointer */
   Real start=0;
   foreachstand(stand,s,cell->standlist)
   {
-    start+=(standstocks(stand).carbon + soilmethane(&stand->soil))*stand->frac;
+    start+=(standstocks(stand).carbon + soilmethane(&stand->soil)*WC/WCH4)*stand->frac;
   }
 #endif
 
@@ -125,14 +125,14 @@ Stocks cultivate(Cell *cell,           /**< cell pointer */
   Real end=0;
   foreachstand(stand,s,cell->standlist)
   {
-    end+=(standstocks(stand).carbon + soilmethane(&stand->soil))*stand->frac;
+    end+=(standstocks(stand).carbon + soilmethane(&stand->soil)*WC/WCH4)*stand->frac;
   }
   if (fabs(end-start-bm_inc.carbon-manure*param.manure_cn*cropstand->frac*param.nfert_split_frac)>0.01)
   {
-    fprintf(stderr "C_ERROR-cultivate: day: %d    %g start: %.3f  end: %.3f  bm_inc.carbon: %.3f manure: %.3f\n",
+    fprintf(stderr, "C_ERROR-cultivate: day: %d    %g start: %.3f  end: %.3f  bm_inc.carbon: %.3f manure: %.3f\n",
            day,end-start-bm_inc.carbon,start, end,bm_inc.carbon,manure*param.manure_cn*cropstand->frac*param.nfert_split_frac );
     fprintf(stderr,"cropstand->frac: %g cropstand.carbon: %g setasidestand->frac: %g setasidestand.carbon: %g\n ",
-      cropstand->frac,(standstocks(cropstand).carbon + soilmethane(&cropstand->soil)),setasidestand->frac,(standstocks(setasidestand).carbon + soilmethane(&setasidestand->soil)));
+      cropstand->frac,(standstocks(cropstand).carbon + soilmethane(&cropstand->soil)),setasidestand->frac,(standstocks(setasidestand).carbon + soilmethane(&setasidestand->soil)*WC/WCH4));
   }
 
 #endif

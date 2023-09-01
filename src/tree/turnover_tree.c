@@ -49,7 +49,7 @@ Stocks turnover_tree(Litter *litter, /**< Litter pool */
 #ifdef CHECK_BALANCE
   sum_before=litterstocks(litter);
   sum_before.carbon+=vegc_sum_tree(pft)+pft->bm_inc.carbon;
-  sum_before.nitrogen+=vegn_sum_tree(pft)+pft->bm_inc.nitrogen+tree->turn_nbminc;
+  sum_before.nitrogen+=vegn_sum_tree(pft)+pft->bm_inc.nitrogen;
   turn_diff.carbon=tree->turn_nbminc;
 #endif
   cmass_excess=0;
@@ -75,6 +75,7 @@ Stocks turnover_tree(Litter *litter, /**< Litter pool */
     litter->item[pft->litter].agtop.leaf.carbon+=reprod;
     getoutput(output,LITFALLC,config)+=reprod*pft->stand->frac;
     update_fbd_tree(litter,pft->par->fuelbulkdensity,reprod,0);
+
     reprod=pft->bm_inc.nitrogen*treepar->reprod_cost;
     //litter->item[pft->litter].agtop.leaf.nitrogen+=reprod;
     //pft->bm_inc.nitrogen-=reprod;
@@ -170,10 +171,10 @@ Stocks turnover_tree(Litter *litter, /**< Litter pool */
   sum_after=litterstocks(litter);
   sum_after.carbon+=vegc_sum_tree(pft)+pft->bm_inc.carbon;
   sum_after.nitrogen+=vegn_sum_tree(pft)+pft->bm_inc.nitrogen;
-  if(fabs(sum_after.carbon-sum_before.carbon)>0.1)
-    fprintf(stderr,"C_ERROR %g!=%g turn_diff: %g in turnover_tree() for %s\n",sum_after.carbon,sum_before.carbon,turn_diff.carbon,pft->par->name);
-  if(fabs(sum_after.nitrogen-sum_before.nitrogen)>0.1)
-    fprintf(stderr,"N_ERROR %g!=%g turn_diff: %g in turnover_tree() for %s\n",sum_after.nitrogen,sum_before.nitrogen,turn_diff.nitrogen,pft->par->name);
+  if(fabs(sum_after.carbon-sum_before.carbon)>0.001)
+    fprintf(stderr,"C_ERROR in turnover_tree %g!=%g turn_diff: %g in turnover_tree() for %s\n",sum_after.carbon,sum_before.carbon,turn_diff.carbon,pft->par->name);
+  if(fabs(sum_after.nitrogen-sum_before.nitrogen)>0.001)
+    fprintf(stderr,"N_ERROR in turnover_tree %g!=%g turn_diff: %g in turnover_tree() for %s\n",sum_after.nitrogen,sum_before.nitrogen,turn_diff.nitrogen,pft->par->name);
 
 #endif
   return sum;

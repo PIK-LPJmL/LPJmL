@@ -25,16 +25,28 @@ Bool annual_grass(Stand *stand,        /**< pointer to stand */
   Bool isdead=FALSE;
   Real stress;
 #ifdef CHECK_BALANCE
-  Real start = 0;
+  Stocks start = {0,0};
   Real end = 0;
 #endif
   stress = 0;
 #ifdef CHECK_BALANCE
-  start = standstocks(stand).carbon + soilmethane(&stand->soil)-pft->establish.carbon;
+  start.carbon = standstocks(stand).carbon + soilmethane(&stand->soil)*WC/WCH4-pft->establish.carbon;
+  start.nitrogen = standstocks(stand).nitrogen -pft->establish.nitrogen;
 #endif
   if(stand->type->landusetype!=GRASSLAND && stand->type->landusetype!=OTHERS && stand->type->landusetype!=BIOMASS_GRASS && stand->type->landusetype != SETASIDE_IR && stand->type->landusetype != SETASIDE_RF)
   {
     turnover_grass(&stand->soil.litter,pft,(Real)stand->growing_days/NDAYYEAR,config);
+#ifdef CHECK_BALANCE
+  end = standstocks(stand).carbon + soilmethane(&stand->soil)*WC/WCH4-pft->establish.carbon;
+  if (fabs(end-start.carbon)>0.01)
+    fprintf(stderr, "C_ERROR annaul_grass1: %g start : %g end : %g growing days: %d bm_inc.carbon: %g stand.frac: %g type:%s  PFT:%s nind: %g\n",
+        end-start.carbon, start.carbon, end,pft->bm_inc.carbon,stand->frac,stand->type->name,pft->par->name,pft->nind);
+  end = standstocks(stand).nitrogen-pft->establish.nitrogen;
+  if (fabs(end-start.nitrogen)>0.01)
+    fprintf(stderr, "N_ERROR annaul_grass1: %g start : %g end : %g  bm_inc.nitrogen: %g stand.frac: %g type:%s  PFT:%s nind: %g estblish.nitrogen: %g\n",
+        end-start.nitrogen, start.nitrogen, end,pft->bm_inc.nitrogen,stand->frac,stand->type->name,pft->par->name,pft->nind,pft->establish.nitrogen);
+#endif
+
     isdead=allocation_grass(&stand->soil.litter,pft,fpc_inc,config);
   }
   if (pft->inun_count>pft->par->inun_dur)
@@ -44,9 +56,14 @@ Bool annual_grass(Stand *stand,        /**< pointer to stand */
       !isdead)  /* still not dead? */
     isdead=!survive(pft->par,&stand->cell->climbuf);
 #ifdef CHECK_BALANCE
-  end = standstocks(stand).carbon + soilmethane(&stand->soil)-pft->establish.carbon;
-  if (fabs(end-start)>0.01)
-    fprintf(stderr, "C_ERROR annaul_grass: %g start : %g endS : %g growing days: %d bm_inc.carbon: %g stand.frac: %g type:%s  PFT:%s nind: %g\n", end-start, start, end, stand->growing_days,pft->bm_inc.carbon,stand->frac,stand->type->name,pft->par->name,pft->nind);
+  end = standstocks(stand).carbon + soilmethane(&stand->soil)*WC/WCH4-pft->establish.carbon;
+  if (fabs(end-start.carbon)>0.01)
+    fprintf(stderr, "C_ERROR annaul_grass: %g start : %g end : %g growing days: %d bm_inc.carbon: %g stand.frac: %g type:%s  PFT:%s nind: %g\n",
+        end-start.carbon, start.carbon, end, stand->growing_days,pft->bm_inc.carbon,stand->frac,stand->type->name,pft->par->name,pft->nind);
+  end = standstocks(stand).nitrogen-pft->establish.nitrogen;
+  if (fabs(end-start.nitrogen)>0.01)
+    fprintf(stderr, "N_ERROR annaul_grass: %g start : %g end : %g  bm_inc.nitrogen: %g stand.frac: %g type:%s  PFT:%s nind: %g\n",
+        end-start.nitrogen, start.nitrogen, end,pft->bm_inc.nitrogen,stand->frac,stand->type->name,pft->par->name,pft->nind);
 #endif
   stand->growing_days=0;
   return isdead;

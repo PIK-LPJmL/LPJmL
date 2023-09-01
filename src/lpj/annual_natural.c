@@ -34,24 +34,34 @@ Bool annual_natural(Stand *stand,         /**< Pointer to stand */
   Real *fpc_inc;
   Real fire_frac;
   Real fpc_obs,fpc_obs_cor;
-  Stocks flux;
+  Stocks flux = {0,0};
 #ifndef DAILY_ESTABLISHMENT
-  Stocks flux_estab;
+  Stocks flux_estab={0,0};
 #endif
   Stocks firewood={0,0};
 #ifdef CHECK_BALANCE
-  Real start = 0;
+  Stocks start = {0,0};
   Real end = 0;
-  Real firec=0;
-  Real bm_inc=0;
+  Stocks bm_inc={0,0};
+  Stocks fluxes_fire={0,0};
+  Stocks fluxes_estab={0,0};
+  Stocks balance={0,0};
 #endif
   pft_len=getnpft(&stand->pftlist); /* get number of established PFTs */
   if(pft_len>0)
   {
 #ifdef CHECK_BALANCE
-    start = standstocks(stand).carbon + soilmethane(&stand->soil);//-stand->cell->balance.flux_estab.carbon;
+    start.carbon = standstocks(stand).carbon + soilmethane(&stand->soil)*WC/WCH4;//-stand->cell->balance.flux_estab.carbon;
+    start.nitrogen = standstocks(stand).nitrogen;
     foreachpft(pft,p,&stand->pftlist)
-      start-=pft->establish.carbon;
+    {
+//      start.carbon-=pft->establish.carbon;
+      //start.nitrogen-=pft->establish.nitrogen;
+    }
+    fluxes_fire.carbon=stand->cell->balance.fire.carbon;
+    fluxes_estab.carbon=stand->cell->balance.flux_estab.carbon;
+    fluxes_fire.nitrogen=stand->cell->balance.fire.nitrogen;
+    fluxes_estab.nitrogen=stand->cell->balance.flux_estab.nitrogen;
 #endif
     fpc_inc=newvec(Real,pft_len);
     check(fpc_inc);
@@ -74,19 +84,32 @@ Bool annual_natural(Stand *stand,         /**< Pointer to stand */
         p--; /* adjust loop variable */ 
       }
 #ifdef CHECK_BALANCE
-      bm_inc+=pft->bm_inc.carbon;            // BE CAREFUL gturn already added to soil carbon
+      bm_inc.carbon+=pft->bm_inc.carbon;                // BE CAREFUL gturn already added to soil carbon
+      bm_inc.nitrogen+=pft->bm_inc.nitrogen;            // BE CAREFUL gturn already added to soil carbon
 #endif
     } /* of foreachpft */
 #ifdef CHECK_BALANCE
-    end = standstocks(stand).carbon + soilmethane(&stand->soil);//-stand->cell->balance.flux_estab.carbon;
-    foreachpft(pft,p,&stand->pftlist)
-      end-=pft->establish.carbon;
-    if (fabs(end-start)>0.1)
+    end = standstocks(stand).carbon + soilmethane(&stand->soil)*WC/WCH4;//-stand->cell->balance.flux_estab.carbon;
+//    foreachpft(pft,p,&stand->pftlist)
+//      end-=pft->establish.carbon;
+    if (fabs(end-start.carbon)>epsilon)
     {
-      fprintf(stderr, "C_ERROR annual PFT: %g start: %g  end: %g annual_bminc: %g  type:%s flux_estab: %g stand->frac: %g \n",
-              end-start, start, end, bm_inc, stand->type->name,stand->cell->balance.flux_estab.carbon,stand->frac );
-      foreachpft(pft,p,&stand->pftlist)
-        fprintf(stderr, "PFT: %s fpc: %g establish_pft:%g\n",pft->par->name, pft->fpc,pft->establish.carbon);
+      fprintf(stderr, "C_ERROR annual natural after annnualpft: %g start: %g  end: %g annual_bminc: %g  type:%s flux_estab: %g stand->frac: %g \n",
+              end-start.carbon, start.carbon, end, bm_inc.carbon, stand->type->name,stand->cell->balance.flux_estab.carbon,stand->frac );
+//      foreachpft(pft,p,&stand->pftlist)
+//        fprintf(stderr, "PFT: %s fpc: %g establish_pft:%g\n",pft->par->name, pft->fpc,pft->establish.carbon);
+    }
+    end = standstocks(stand).nitrogen;
+//    foreachpft(pft,p,&stand->pftlist)
+//      end-=pft->establish.nitrogen;
+    if (fabs(start.nitrogen - end + flux_estab.nitrogen - flux.nitrogen)>epsilon)
+    {
+//      foreachpft(pft,p,&stand->pftlist)
+//          fprintf(stderr, "\nPFT:%s bm_inc=%g veg=%g soil=%g establish.carbon=%g\n",pft->par->name,
+//                   pft->bm_inc.nitrogen,vegn_sum(pft),soilcarbon(&stand->soil),pft->establish.nitrogen);
+       fprintf(stderr, "N_ERROR: annual natural  after annnualpft: %g start:%g  end:%g estab: %g fireN: %g annual_bminc: %g\n \n \n",
+               start.nitrogen - end + flux_estab.nitrogen - flux.nitrogen , start.nitrogen, end,
+               flux_estab.nitrogen, flux.nitrogen,bm_inc.nitrogen);
     }
 #endif
 
@@ -114,30 +137,21 @@ Bool annual_natural(Stand *stand,         /**< Pointer to stand */
           p--;  
         }
     }
-#ifdef CHECK_BALANCE
-    start = standstocks(stand).carbon + soilmethane(&stand->soil);
-#endif
 
     light(stand,fpc_inc,config);
     free(fpc_inc);
 #ifdef CHECK_BALANCE
-    end = standstocks(stand).carbon + soilmethane(&stand->soil);
-    if (fabs(end - start)>epsilon)
+    end = standstocks(stand).carbon + soilmethane(&stand->soil)*WC/WCH4;
+    if (fabs(end - start.carbon)>epsilon)
       fprintf(stderr, "C_ERROR light: %g start:%g  end:%g light:\n",
-              end - start, start, end);
+              end - start.carbon, start.carbon, end);
 #endif
   }
-#ifdef CHECK_BALANCE
-  start = standstocks(stand).carbon + soilmethane(&stand->soil);
-#endif
   if(config->fire==FIRE && stand->type->landusetype!=WETLAND)
   {  
     fire_frac=fire_prob(&stand->soil.litter,stand->fire_sum);
     getoutput(&stand->cell->output,FIREF,config)+=1.0/fire_frac;
     flux=firepft(stand,fire_frac,config);
-#ifdef CHECK_BALANCE
-    firec=flux.carbon;
-#endif
     getoutput(&stand->cell->output,FIREC,config)+=flux.carbon*stand->frac;
     stand->cell->balance.fire.carbon+=flux.carbon*stand->frac;
     if(flux.nitrogen<0)
@@ -171,11 +185,38 @@ Bool annual_natural(Stand *stand,         /**< Pointer to stand */
 #endif
 
 #ifdef CHECK_BALANCE
-  end = standstocks(stand).carbon + soilmethane(&stand->soil);
-  if (fabs(start - end + flux_estab.carbon - firec)>epsilon)
-     fprintf(stderr, "C_ERROR: %g start:%g  end:%g estab: %g fire: %g bm_inc: %g\n",
-             start - end + flux_estab.carbon - firec + bm_inc, start, end,
-             flux_estab.carbon, firec, bm_inc);
+
+  balance.carbon=((stand->cell->balance.flux_estab.carbon-fluxes_estab.carbon)/stand->frac)-((stand->cell->balance.fire.carbon-fluxes_fire.carbon)/stand->frac);
+  balance.nitrogen=((stand->cell->balance.flux_estab.nitrogen-fluxes_estab.nitrogen)/stand->frac)-((stand->cell->balance.fire.nitrogen-fluxes_fire.nitrogen)/stand->frac);
+
+  end = standstocks(stand).carbon + soilmethane(&stand->soil)*WC/WCH4;
+//  foreachpft(pft,p,&stand->pftlist)
+//    end-=pft->establish.carbon;
+
+  //if (fabs(start.carbon - end + flux_estab.carbon - firec)>epsilon)
+   if (fabs(start.carbon-end+balance.carbon)>0.1)
+   {
+    fprintf(stderr, "C_ERROR: annual natural end %g start:%.3f  end:%.3f  balance: %g estab: %g fire: %g bm_inc: %g firewood: %g firec: %g estab: %g\n",
+             start.carbon - end + balance.carbon , start.carbon, end,balance.carbon,
+             flux_estab.carbon, flux.carbon, bm_inc.carbon,firewood.carbon,
+             (stand->cell->balance.fire.carbon-fluxes_fire.carbon)/stand->frac,(stand->cell->balance.flux_estab.carbon-fluxes_estab.carbon)/stand->frac);
+    foreachpft(pft,p,&stand->pftlist)
+        fprintf(stderr, "\nPFT:%s bm_inc.c=%g vegC=%g soilC=%g establish.carbon=%g\n",pft->par->name,
+                 pft->bm_inc.carbon,vegc_sum(pft),soilstocks(&stand->soil).carbon,pft->establish.carbon);
+   }
+
+  end = standstocks(stand).nitrogen;
+//  foreachpft(pft,p,&stand->pftlist)
+//    end-=pft->establish.nitrogen;
+  if (fabs(start.nitrogen-end+balance.nitrogen)>0.001)
+  {
+//    foreachpft(pft,p,&stand->pftlist)
+//        fprintf(stderr, "\nPFT:%s bm_inc.N=%g vegN=%g soilN=%g establish.nitrogen=%g\n",pft->par->name,
+//                 pft->bm_inc.nitrogen,vegn_sum(pft),soilstocks(&stand->soil).nitrogen,pft->establish.nitrogen);
+     fprintf(stderr, "N_ERROR: annual natural end %g start:%g  end:%g estab: %g fireN: %g  bm_inc: %g\n \n \n",
+             start.nitrogen - end + +balance.nitrogen , start.nitrogen, end,
+             flux_estab.nitrogen, flux.nitrogen, bm_inc.nitrogen);
+  }
 #endif
   foreachpft(pft,p,&stand->pftlist)
   {

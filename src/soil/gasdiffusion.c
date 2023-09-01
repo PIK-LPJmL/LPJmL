@@ -35,7 +35,7 @@ void gasdiffusion(Soil *soil,    /**< [inout] pointer to soil data */
   unsigned long int steps, t;
   end=start=tmp_water=out=in=0;
   /*waterbalance needs to be updated*/
-  start = soilmethane(soil);
+  start = soilmethane(soil); //do not multiply by *WC/WCH4, is used for methane fluxes here
   *runoff=0;
   for (l = 0; l<BOTTOMLAYER; l++)
   {
@@ -219,10 +219,10 @@ void gasdiffusion(Soil *soil,    /**< [inout] pointer to soil data */
       }
     }
   }
-  end = soilmethane(soil);
+  end = soilmethane(soil); //do not multiply by *WC/WCH4, is used for methane fluxes here
 #ifdef CHECK_BALANCE
   if (fabs(start-end+out+in)>0.1)
-    fprintf(stderr, "C_ERROR: %g start:%g  end:%g gasdiff-in: %g gasdiff-out: %g\n",start-end+out+in, start, end, in,out);
+    fprintf(stderr, "C_ERROR: gasdiff %g start:%g  end:%g gasdiff-in: %g gasdiff-out: %g\n",start-end+out+in, start, end, in,out);
 #endif
 
   *CH4_out=start-end-*CH4_sink;

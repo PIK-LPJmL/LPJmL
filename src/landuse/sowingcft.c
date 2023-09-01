@@ -78,14 +78,13 @@ void sowingcft(Stocks *flux_estab,  /**< establishment flux */
   int s,p,cft_id,pos,st,l;
   Irrigation *irrigation,*data;
 #ifdef CHECK_BALANCE
-  Real flux_carbon=cell->balance.flux_estab.carbon+flux_estab->carbon;
-  Real balance_carbon=cell->balance.flux_estab.carbon;
+  Real flux_carbon=0;
   Real sflux_estab=flux_estab->carbon;
   Real start=0;
   Real manure=0;   //TODO is applied in cultive.c and needs to be taking into account
   foreachstand(stand,s,cell->standlist)
   {
-    start+=(standstocks(stand).carbon + soilmethane(&stand->soil))*stand->frac;
+    start+=(standstocks(stand).carbon + soilmethane(&stand->soil)*WC/WCH4)*stand->frac;
   }
 #endif
   s=NOT_FOUND;
@@ -145,14 +144,14 @@ void sowingcft(Stocks *flux_estab,  /**< establishment flux */
 
 #ifdef CHECK_BALANCE
   Real end=0;
-  flux_carbon=cell->balance.flux_estab.carbon+flux_estab->carbon-flux_carbon;
+  flux_carbon=flux_estab->carbon-sflux_estab;
   foreachstand(stand,s,cell->standlist)
   {
-    end+=(standstocks(stand).carbon + soilmethane(&stand->soil))*stand->frac;
+    end+=(standstocks(stand).carbon + soilmethane(&stand->soil)*WC/WCH4)*stand->frac;
   }
   if (fabs(end-start-flux_carbon)>0.01)
-         fprintf(stderr, "C_ERROR-SOWINGCFT: day: %d    %g start: %g  end: %g  sflux_estab.carbon: %g sbalance.flux_estab: %g flux_estab.carbon: %g balance.flux_estab: %g flux_carbon: %g \n",
-           day,end-start-flux_carbon,start, end,sflux_estab,balance_carbon,flux_estab->carbon,cell->balance.flux_estab.carbon, flux_carbon);
+    fprintf(stderr, "C_ERROR-SOWINGCFT: day: %d    %g start: %g  end: %g  sflux_estab.carbon: %g flux_estab.carbon: %g balance.flux_estab: %g flux_carbon: %g \n",
+        day,end-start-flux_carbon,start, end,sflux_estab,flux_estab->carbon,cell->balance.flux_estab.carbon, flux_carbon);
 
 #endif
 } /* of 'sowingcft' */

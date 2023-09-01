@@ -82,7 +82,7 @@ void update_daily(Cell *cell,            /**< cell pointer           */
   foreachstand(stand,s,cell->standlist)
   {
     water_before+=soilwater(&stand->soil)*stand->frac;
-    start1+=(standstocks(stand).carbon + soilmethane(&stand->soil))*stand->frac;
+    start1+=(standstocks(stand).carbon + soilmethane(&stand->soil)*WC/WCH4)*stand->frac;
   }
   start=start1;
 #endif
@@ -105,7 +105,7 @@ void update_daily(Cell *cell,            /**< cell pointer           */
 
 #ifdef CHECK_BALANCE
     foreachstand(stand,s,cell->standlist)
-      end+=(standstocks(stand).carbon + soilmethane(&stand->soil))*stand->frac;
+      end+=(standstocks(stand).carbon + soilmethane(&stand->soil)*WC/WCH4)*stand->frac;
     if (fabs(end-start-flux_estab.carbon-(cell->balance.flux_estab.carbon-flux_carbon))>0.001) fprintf(stderr, "C_ERROR1 in update_daily: %g start:%g  end:%g flux_estab: %g flux_carbon: %g\n",
                  end-start-flux_estab.carbon-(cell->balance.flux_estab.carbon-flux_carbon), start, end, flux_estab.carbon,(cell->balance.flux_estab.carbon-flux_carbon));
     start=end;
@@ -230,7 +230,7 @@ void update_daily(Cell *cell,            /**< cell pointer           */
       }
     }
 #ifdef CHECK_BALANCE
-    start = standstocks(stand).carbon + soilmethane(&stand->soil);
+    start = standstocks(stand).carbon + soilmethane(&stand->soil)*WC/WCH4;
 #endif
     ebul = ebullition(&stand->soil, fpc_total_stand);
     //cell->output.mCH4_em+=ebullition(&stand->soil,fpc_total_stand)*stand->frac;
@@ -244,8 +244,8 @@ void update_daily(Cell *cell,            /**< cell pointer           */
         stand->cell->balance.aCH4_rice+=ebul*stand->frac;
       }
 #ifdef CHECK_BALANCE
-    end = standstocks(stand).carbon + soilmethane(&stand->soil);
-    if (fabs(start - end - ebul)>epsilon) fprintf(stderr, "C_ERROR2 in update_daily: %g start:%g  end:%g daily: %g\n", start - end - ebul, start, end, ebul);
+    end = standstocks(stand).carbon + soilmethane(&stand->soil)*WC/WCH4;
+    if (fabs(start - end - ebul)>epsilon) fprintf(stderr, "C_ERROR1 in update_daily: %g start:%g  end:%g daily: %g\n", start - end - ebul, start, end, ebul);
 #endif
 
     /* update soil and litter properties to account for all changes since last call of littersom */
@@ -267,6 +267,10 @@ void update_daily(Cell *cell,            /**< cell pointer           */
         for(i=0;i<NFUELCLASS;i++)
           litsum_old_agr[WOOD]+=stand->soil.litter.item[l].agtop.wood[i].carbon+stand->soil.litter.item[l].agsub.wood[i].carbon;
       }
+#ifdef CHECK_BALANCE
+    end = standstocks(stand).carbon + soilmethane(&stand->soil)*WC/WCH4;
+    if (fabs(start - end - ebul)>epsilon) fprintf(stderr, "C_ERROR2 in update_daily: %g start:%g  end:%g daily: %g\n", start - end - ebul, start, end, ebul);
+#endif
 
     hetres=littersom(stand,gtemp_soil,agrfrac,&CH4_em,climate.temp,ch4,&runoff,&MT_water,npft,ncft,config);
     cell->discharge.drunoff += runoff*stand->frac;
@@ -590,7 +594,7 @@ void update_daily(Cell *cell,            /**< cell pointer           */
     if(stand->type->landusetype!=KILL)
     {
       water_after+=soilwater(&stand->soil)*stand->frac;
-      end+=(standstocks(stand).carbon + soilmethane(&stand->soil))*stand->frac ;
+      end+=(standstocks(stand).carbon + soilmethane(&stand->soil)*WC/WCH4)*stand->frac ;
     }
 //    if(stand->type->landusetype!=WETLAND && stand->type->landusetype!=NATURAL && year>=1960)
 //      fprintf(stderr,"type: %d frac : %g irrig_stor: %g \n",stand->type->landusetype,stand->frac,(data->irrig_stor + data->irrig_amount) * stand->frac);
@@ -598,11 +602,11 @@ void update_daily(Cell *cell,            /**< cell pointer           */
   balanceW=water_after-water_before-climate.prec-melt_all+
           ((cell->balance.atransp+cell->balance.aevap+cell->balance.ainterc+cell->balance.aevap_lake+cell->balance.aevap_res-cell->balance.airrig-cell->balance.aMT_water)-wfluxes_old)+cell->discharge.drunoff+
           (exess_old-cell->balance.excess_water)+cell->lateral_water;
-  if (fabs(end-start1+ebul-CH4_fluxes-flux_carbon)>0.01)
+  if (fabs(end-start1+ebul*WC/WCH4-CH4_fluxes*WC/WCH4-flux_carbon)>0.01)
   {
     fprintf(stderr, "C_ERROR-update_daily end: day: %d    %g start: %g  end: %g ebul: %g CH4_fluxes: %g flux_estab.carbon: %g flux_harvest.carbon: %g dcflux: %g flux_carbon: %g "
            "bm_inc: %g rh: %g aCH4_sink: %g aCH4_em : %g \n",
-           day,end-start1+ebul-CH4_fluxes-flux_carbon,start1, end, ebul,CH4_fluxes,cell->balance.flux_estab.carbon,cell->balance.flux_harvest.carbon,
+           day,end-start1+ebul-CH4_fluxes-flux_carbon,start1, end, ebul*WC/WCH4,CH4_fluxes*WC/WCH4,cell->balance.flux_estab.carbon,cell->balance.flux_harvest.carbon,
            cell->output.dcflux, flux_carbon ,cell->output.bm_inc,cell->balance.arh,cell->balance.aCH4_sink,cell->balance.aCH4_em);
     foreachstand(stand,s,cell->standlist)
              fprintf(stderr,"update_daily: standfrac: %g standtype: %s s= %d iswetland: %d cropfraction_rf: %g cropfraction_irr: %g grasfrac_rf: %g grasfrac_irr: %g\n",

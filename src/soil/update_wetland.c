@@ -62,7 +62,7 @@ void update_wetland(Cell *cell,          /**< pointer to cell */
   foreachstand(stand, s, cell->standlist)
   {
     st=standstocks(stand);
-    start.carbon+=(st.carbon+soilmethane(&stand->soil))*stand->frac;
+    start.carbon+=(st.carbon+soilmethane(&stand->soil)*WC/WCH4)*stand->frac;
     start.nitrogen+=st.nitrogen*stand->frac;
     water_before+=soilwater(&stand->soil)*stand->frac;
   }
@@ -358,7 +358,7 @@ void update_wetland(Cell *cell,          /**< pointer to cell */
         foreachstand(stand, s, cell->standlist)
         {
           st=standstocks(stand);
-          end.carbon+=(st.carbon+soilmethane(&stand->soil))*stand->frac;
+          end.carbon+=(st.carbon+soilmethane(&stand->soil)*WC/WCH4)*stand->frac;
           end.nitrogen+=st.nitrogen*stand->frac;
           water_after+=soilwater(&stand->soil)*stand->frac;
         }
@@ -612,7 +612,7 @@ void update_wetland(Cell *cell,          /**< pointer to cell */
   foreachstand(stand, s, cell->standlist)
   {
     st=standstocks(stand);
-    end.carbon+=(st.carbon+soilmethane(&stand->soil))*stand->frac;
+    end.carbon+=(st.carbon+soilmethane(&stand->soil)*WC/WCH4)*stand->frac;
     end.nitrogen+=st.nitrogen*stand->frac;
     water_after+=soilwater(&stand->soil)*stand->frac;
   }

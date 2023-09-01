@@ -32,7 +32,7 @@ Stocks sowing(Cell *cell,          /**< cell pointer */
   start=end=0;
   foreachstand(stand,s,cell->standlist)
   {
-    start+=(standstocks(stand).carbon + soilmethane(&stand->soil))*stand->frac;
+    start+=(standstocks(stand).carbon + soilmethane(&stand->soil)*WC/WCH4)*stand->frac;
   }
 #endif
   if(config->sdate_option==NO_FIXED_SDATE ||
@@ -52,10 +52,10 @@ Stocks sowing(Cell *cell,          /**< cell pointer */
   flux_carbon=cell->balance.flux_estab.carbon-flux_carbon;
   foreachstand(stand,s,cell->standlist)
   {
-    end+=(standstocks(stand).carbon + soilmethane(&stand->soil))*stand->frac;
+    end+=(standstocks(stand).carbon + soilmethane(&stand->soil)*WC/WCH4)*stand->frac;
   }
   if (fabs(end-start-flux_estab.carbon-flux_carbon)>0.001)
-         fprintf(stdout, "C_ERROR-in sowing: day: %d    %g start: %g  end: %g flux_estab.carbon: %g flux_carbon: %g \n",
+         fprintf(stdout, "C_ERROR-in sowing: day: %d    %g start: %.3f  end: %.3f flux_estab.carbon: %g flux_carbon: %g \n",
            day,end-start-flux_estab.carbon-flux_carbon,start, end,flux_estab.carbon,flux_carbon);
 
 #endif

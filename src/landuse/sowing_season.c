@@ -31,6 +31,7 @@ Stocks sowing_season(Cell *cell,          /**< pointer to cell */
   const Pftcroppar *croppar;
 #ifdef CHECK_BALANCE
   Stand *stand;
+  Real frac=0;
   const Pft *pft;
   Real end, start;
   Real flux_carbon=cell->balance.flux_estab.carbon;   //is added in cultivate as manure
@@ -38,7 +39,7 @@ Stocks sowing_season(Cell *cell,          /**< pointer to cell */
   start=end=0;
   foreachstand(stand,s,cell->standlist)
   {
-    start+=(standstocks(stand).carbon + soilmethane(&stand->soil))*stand->frac;
+    start+=(standstocks(stand).carbon + soilmethane(&stand->soil)*WC/WCH4)*stand->frac;
   }
 #endif
 
@@ -123,15 +124,18 @@ Stocks sowing_season(Cell *cell,          /**< pointer to cell */
   flux_carbon=cell->balance.flux_estab.carbon-flux_carbon;
   foreachstand(stand,s,cell->standlist)
   {
-    end+=(standstocks(stand).carbon + soilmethane(&stand->soil))*stand->frac;
+    end+=(standstocks(stand).carbon + soilmethane(&stand->soil)*WC/WCH4)*stand->frac;
   }
   if (fabs(end-start-flux_estab.carbon-flux_carbon)>0.001)
   {
-    fprintf(stderr, "C_ERROR-in sowing season: day: %d    %g start: %g  end: %g  flux_estab.carbon: %g flux_carbon: %g \n",
-         day,end-start-flux_estab.carbon-flux_carbon,start, end,flux_estab.carbon,flux_carbon);
+    fprintf(stderr, "C_ERROR-in sowing season: day: %d    %g start: %g  end: %g  flux_estab.carbon: %g flux_carbon: %g balance.flux_estab.carbon: %g\n",
+         day,end-start-flux_estab.carbon-flux_carbon,start, end,flux_estab.carbon,flux_carbon,cell->balance.flux_estab.carbon);
     foreachstand(stand,s,cell->standlist)
+    {
+      frac+=stand->frac;
       foreachpft(pft,p,&stand->pftlist)
-        fprintf(stderr,"sowing season year: %d day: %d frac[%s]= %g standNR: %d PFT: %s bm_in= %g landusetype: %d\n",year,day,stand->type->name,stand->frac,s,pft->par->name,pft->bm_inc,stand->type->landusetype);
+        fprintf(stderr,"sowing season year: %d day: %d frac[%s]= %g standNR: %d PFT: %s bm_in= %g landusetype: %d frac: %g\n",year,day,stand->type->name,stand->frac,s,pft->par->name,pft->bm_inc,stand->type->landusetype,frac);
+    }
   }
 #endif
   return flux_estab;

@@ -369,10 +369,10 @@ Bool setaside(Cell *cell,          /**< Pointer to LPJ cell */
   Real start=0;
   Stand *checkstand;
   foreachstand(checkstand,s,cell->standlist)
-    start+=(standstocks(checkstand).carbon*checkstand->frac+soilmethane(&checkstand->soil)*checkstand->frac);
+    start+=(standstocks(checkstand).carbon*checkstand->frac+soilmethane(&checkstand->soil)*WC/WCH4*checkstand->frac);
 //  foreachstand(checkstand,s,cell->standlist)
 //  {
-//    fprintf(stderr,"SETASIDE type %d frac:%g id:%d carbon:%g methan:%g\n",checkstand->type->landusetype,checkstand->frac,s,standstocks(checkstand).carbon*checkstand->frac,soilmethane(&checkstand->soil)*checkstand->frac);
+//    fprintf(stderr,"SETASIDE type %d frac:%g id:%d carbon:%g methan:%g\n",checkstand->type->landusetype,checkstand->frac,s,standstocks(checkstand).carbon*checkstand->frac,soilmethane(&checkstand->soil)*WC/WCH4*checkstand->frac);
 //     foreachpft(pft,p,&checkstand->pftlist)
 //        fprintf(stderr,"name:%s vegc:%g\n", pft->par->name,vegc_sum(pft));
 //  }
@@ -450,14 +450,14 @@ Bool setaside(Cell *cell,          /**< Pointer to LPJ cell */
 foreachstand(checkstand,k,cell->standlist)
 {
   if(cropstand!=checkstand)
-    end+=(standstocks(checkstand).carbon*checkstand->frac+soilmethane(&checkstand->soil)*checkstand->frac);
+    end+=(standstocks(checkstand).carbon*checkstand->frac+soilmethane(&checkstand->soil)*WC/WCH4*checkstand->frac);
 }
 if (fabs(start-end)>0.01)
 {
   fprintf(stderr, "C_ERROR in SETASIDE after mixsetaside: %g start:%g  end:%g s;%d \n",
          start-end,start, end,s);
   foreachstand(checkstand,k,cell->standlist)
-    fprintf(stderr,"type %d frac:%g id:%d carbon:%g methan:%g\n",checkstand->type->landusetype,checkstand->frac,k,standstocks(checkstand).carbon*checkstand->frac,soilmethane(&checkstand->soil)*checkstand->frac);
+    fprintf(stderr,"type %d frac:%g id:%d carbon:%g methan:%g\n",checkstand->type->landusetype,checkstand->frac,k,standstocks(checkstand).carbon*checkstand->frac,soilmethane(&checkstand->soil)*WC/WCH4*checkstand->frac);
 }
 #endif
     return TRUE;
@@ -477,7 +477,7 @@ if (fabs(start-end)>0.01)
 #ifdef CHECK_BALANCE
   end=-flux_estab.carbon*cropstand->frac;
   foreachstand(checkstand,s,cell->standlist)
-    end+=(standstocks(checkstand).carbon*checkstand->frac+soilmethane(&checkstand->soil)*checkstand->frac);
+    end+=(standstocks(checkstand).carbon*checkstand->frac+soilmethane(&checkstand->soil)*WC/WCH4*checkstand->frac);
 
   if (fabs(start-end)>0.01)
   {
@@ -485,7 +485,7 @@ if (fabs(start-end)>0.01)
              start-end,start, end);
      foreachstand(checkstand,s,cell->standlist)
        fprintf(stderr,"type %d frac:%g carbon:%g flux_estab:%g \n",checkstand->type->landusetype,checkstand->frac,
-           (standstocks(checkstand).carbon*checkstand->frac+soilmethane(&checkstand->soil)*checkstand->frac),cell->balance.flux_estab.carbon);
+           (standstocks(checkstand).carbon*checkstand->frac+soilmethane(&checkstand->soil)*WC/WCH4*checkstand->frac),cell->balance.flux_estab.carbon);
   }
 #endif
   return FALSE;

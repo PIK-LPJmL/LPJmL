@@ -124,7 +124,7 @@ Stocks littersom(Stand *stand,                      /**< [inout] pointer to stan
   soil=&stand->soil;
 #ifdef CHECK_BALANCE
   start = soilstocks(soil);
-  start.carbon+=soilmethane(soil);
+  start.carbon+=soilmethane(soil)*WC/WCH4;
 #endif
   flux.nitrogen=0;
   foreachsoillayer(l)
@@ -764,10 +764,11 @@ Stocks littersom(Stand *stand,                      /**< [inout] pointer to stan
   flux.carbon=decom_litter.carbon*param.atmfrac+soil_cflux;
 #ifdef CHECK_BALANCE
   end = soilstocks(soil);
-  end.carbon+=soilmethane(soil);
-  if (fabs(start.carbon - end.carbon - (flux.carbon + *methaneflux_litter))>0.0001){
+  end.carbon+=soilmethane(soil)*WC/WCH4;
+  if (fabs(start.carbon - end.carbon - (flux.carbon + *methaneflux_litter*WC/WCH4))>0.0001){
         fprintf(stderr,
-            "C_ERROR in littersom: iswetland: %d type: %s %.5f start:%.5f  ende:%.5f decomCO2: %g methane_em: %.5f\n", soil->iswetland, stand->type->name,start.carbon - end.carbon - (flux.carbon + *methaneflux_litter), start.carbon, end.carbon, flux.carbon, *methaneflux_litter);
+            "C_ERROR in littersom: iswetland: %d type: %s %.5f start:%.5f  ende:%.5f decomCO2: %g methane_em: %.5f\n", soil->iswetland,
+            stand->type->name,start.carbon - end.carbon - (flux.carbon + *methaneflux_litter*WC/WCH4), start.carbon, end.carbon, flux.carbon, *methaneflux_litter*WC/WCH4);
   }
   if (fabs(start.nitrogen - end.nitrogen - flux.nitrogen)>0.00001)
     fprintf(stderr, "N_ERROR in littersom: iswetland: %d %.5f start:%.5f  end:%.5f decomCO2: %g\n", soil->iswetland, start.nitrogen - end.nitrogen - flux.nitrogen, start.nitrogen, end.nitrogen, flux.nitrogen);

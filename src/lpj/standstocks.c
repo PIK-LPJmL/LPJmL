@@ -25,19 +25,15 @@ Stocks standstocks(const Stand *stand /**< pointer to stand */
   Pftgrass *grass;
   Pfttree *tree;
   Stocks tot;
-  Stocks turn;
-  Real turn_all=0;
   tot=soilstocks(&stand->soil); /* get stocks in soil */
   foreachpft(pft,p,&stand->pftlist)
   {
-    turn.carbon=turn.nitrogen=0;
-    turn_all+=turn.carbon;
     if(stand->type->landusetype!=AGRICULTURE)
-     tot.carbon+=vegc_sum(pft)+pft->bm_inc.carbon-turn.carbon; /* sum up carbon in PFTs */
+     tot.carbon+=vegc_sum(pft)+pft->bm_inc.carbon; /* sum up carbon in PFTs */
     else
-      tot.carbon+=vegc_sum(pft)-turn.carbon; /* sum up carbon in PFTs */
+      tot.carbon+=vegc_sum(pft); /* sum up carbon in PFTs */
 
-    tot.nitrogen+=vegn_sum(pft)+pft->bm_inc.nitrogen-turn.nitrogen; /* sum up nitrogen in PFTs */
+    tot.nitrogen+=vegn_sum(pft)+pft->bm_inc.nitrogen; /* sum up nitrogen in PFTs */
     if(pft->par->cultivation_type==ANNUAL_CROP)
       tot.nitrogen-=pft->bm_inc.nitrogen;
   }

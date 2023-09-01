@@ -41,13 +41,14 @@ Bool annual_grassland(Stand *stand,         /**< Pointer to stand */
   Real fpc_total,*fpc_type;
   Grassland *grassland;
 #ifdef CHECK_BALANCE
-  Real start = 0;
+  Stocks start = {0,0};
   Real end = 0;
   Real firec=0;
   Stocks bm_inc={0,0};
-  start = standstocks(stand).carbon + soilmethane(&stand->soil);
+  start.carbon = standstocks(stand).carbon + soilmethane(&stand->soil)*WC/WCH4;
+  start.nitrogen = standstocks(stand).nitrogen;
   foreachpft(pft,p,&stand->pftlist)
-   bm_inc.carbon+=pft->bm_inc.carbon;
+   bm_inc.nitrogen+=pft->bm_inc.nitrogen;
 #endif
 
   fpc_type=newvec(Real,config->ntypes);
@@ -149,10 +150,14 @@ Bool annual_grassland(Stand *stand,         /**< Pointer to stand */
     } 
   }
 #ifdef CHECK_BALANCE
-    end = standstocks(stand).carbon + soilmethane(&stand->soil);
-    if (fabs(end-start-flux_estab.carbon)>0.1)
+    end = standstocks(stand).carbon + soilmethane(&stand->soil)*WC/WCH4;
+    if (fabs(end-start.carbon-flux_estab.carbon)>0.001)
       fprintf(stderr, "C_ERROR annual grassland: %g start:%g  end:%g flux_estab.carbon: %g  type:%s\n",
-              end-start, start, end, flux_estab.carbon, stand->type->name);
+              end-start.carbon, start.carbon, end, flux_estab.carbon, stand->type->name);
+    end = standstocks(stand).nitrogen;
+    if (fabs(end-start.nitrogen-flux_estab.nitrogen)>0.001)
+      fprintf(stderr, "N_ERROR annual grassland: %g start:%g  end:%g flux_estab.carbon: %g  type:%s\n",
+              end-start.nitrogen, start.nitrogen, end, flux_estab.nitrogen, stand->type->name);
 #endif
   free(present);
   free(fpc_type);

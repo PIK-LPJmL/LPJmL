@@ -61,7 +61,7 @@ void deforest(Cell *cell,          /**< pointer to cell */
   Real start=startC;
   Stand *checkstand;
   foreachstand(checkstand,s,cell->standlist)
-    start+=(standstocks(checkstand).carbon*checkstand->frac+soilmethane(&checkstand->soil)*checkstand->frac);
+    start+=(standstocks(checkstand).carbon*checkstand->frac+soilmethane(&checkstand->soil)*WC/WCH4*checkstand->frac);
 #endif
 
   timberharvest=FALSE;
@@ -181,12 +181,12 @@ void deforest(Cell *cell,          /**< pointer to cell */
             crop=pft->data;
             fprintf(stderr,"type %s frac: %g s: %d iswetland_stand: %d irrig: %d  stand_irrigation: %d carbon:%g methan: %g PFT: %s growingdays: %d\n",
                stand->type->name,stand->frac,s,stand->soil.iswetland,irrig,data->irrigation,standstocks(stand).carbon,
-               soilmethane(&stand->soil),pft->par->name,crop->growingdays);
+               soilmethane(&stand->soil)*WC/WCH4,pft->par->name,crop->growingdays);
         }
         else
           fprintf(stderr,"type %s frac: %g s: %d iswetland_stand: %d irrig: %d  carbon:%g methan: %g PFT: %s \n",
              stand->type->name,stand->frac,s,stand->soil.iswetland,irrig,standstocks(stand).carbon,
-             soilmethane(&stand->soil),pft->par->name);
+             soilmethane(&stand->soil)*WC/WCH4,pft->par->name);
 
       }
     }
@@ -204,13 +204,13 @@ void deforest(Cell *cell,          /**< pointer to cell */
 #ifdef CHECK_BALANCE
   end=cell->balance.deforest_emissions.carbon+cell->balance.timber_harvest.carbon-cell->balance.flux_estab.carbon;
   foreachstand(checkstand,s,cell->standlist)
-    end+=(standstocks(checkstand).carbon*checkstand->frac+soilmethane(&checkstand->soil)*checkstand->frac);
+    end+=(standstocks(checkstand).carbon*checkstand->frac+soilmethane(&checkstand->soil)*WC/WCH4*checkstand->frac);
   if (fabs(start-end)>0.01)
   {
      fprintf(stderr, "C_ERROR in deforest: %g start: %g  end: %g istimber: %d intercrop: %d timber_harvest.carbon: %g deforest_emissions: %g  flux_estab.carbon %g startC: %g\n",
              start-end,start-startC, end-(cell->balance.timber_harvest.carbon-cell->balance.flux_estab.carbon),config->luc_timber,intercrop,cell->balance.timber_harvest.carbon,cell->balance.flux_estab.carbon,cell->balance.deforest_emissions.carbon,startC);
      foreachstand(checkstand,s,cell->standlist)
-       fprintf(stderr,"type %s frac:%g s: %d iswetland: %d diff_start:%g diff:%g carbon:%g methan:%g\n",checkstand->type->name,checkstand->frac,s,checkstand->soil.iswetland,difffrac_old,difffrac,standstocks(checkstand).carbon*checkstand->frac,soilmethane(&checkstand->soil)*checkstand->frac);
+       fprintf(stderr,"type %s frac:%g s: %d iswetland: %d diff_start:%g diff:%g carbon:%g methan:%g\n",checkstand->type->name,checkstand->frac,s,checkstand->soil.iswetland,difffrac_old,difffrac,standstocks(checkstand).carbon*checkstand->frac,soilmethane(&checkstand->soil)*WC/WCH4*checkstand->frac);
   }
 #endif
 } /* of 'deforest' */
@@ -291,9 +291,9 @@ static void regrowth(Cell *cell, /* pointer to cell */
   Real frac=0;
   Stand *checkstand;
   foreachstand(checkstand,s,cell->standlist)
-    start+=(standstocks(checkstand).carbon*checkstand->frac+soilmethane(&checkstand->soil)*checkstand->frac);
+    start+=(standstocks(checkstand).carbon*checkstand->frac+soilmethane(&checkstand->soil)*WC/WCH4*checkstand->frac);
 //  foreachstand(checkstand,s,cell->standlist)
-//    fprintf(stdout,"type %d frac:%g diff:%g carbon:%g methan:%g\n",checkstand->type->landusetype,checkstand->frac,difffrac,standstocks(checkstand).carbon*checkstand->frac,soilmethane(&checkstand->soil)*checkstand->frac);
+//    fprintf(stdout,"type %d frac:%g diff:%g carbon:%g methan:%g\n",checkstand->type->landusetype,checkstand->frac,difffrac,standstocks(checkstand).carbon*checkstand->frac,soilmethane(&checkstand->soil)*WC/WCH4*checkstand->frac);
 #endif
 
   if(iswetland)
@@ -380,7 +380,7 @@ static void regrowth(Cell *cell, /* pointer to cell */
 #ifdef CHECK_BALANCE
   end=cell->balance.deforest_emissions.carbon+cell->balance.timber_harvest.carbon-cell->balance.flux_estab.carbon;
   foreachstand(checkstand,s,cell->standlist)
-    end+=(standstocks(checkstand).carbon*checkstand->frac+soilmethane(&checkstand->soil)*checkstand->frac);
+    end+=(standstocks(checkstand).carbon*checkstand->frac+soilmethane(&checkstand->soil)*WC/WCH4*checkstand->frac);
   s=findlandusetype(cell->standlist,NATURAL);
   if(s!=NOT_FOUND)
      {
@@ -392,7 +392,7 @@ static void regrowth(Cell *cell, /* pointer to cell */
      fprintf(stderr, "C-ERROR in regrowth: %g start:%g  end:%g flux_estab:%g ntfrac: %g \n",
          end-start,start, end,flux_estab.carbon,frac);
 //     foreachstand(checkstand,s,cell->standlist)
-//       fprintf(stderr,"type %d frac:%g diff:%g carbon:%g methane:%g\n",checkstand->type->landusetype,checkstand->frac,difffrac,standstocks(checkstand).carbon*checkstand->frac,soilmethane(&checkstand->soil)*checkstand->frac);
+//       fprintf(stderr,"type %d frac:%g diff:%g carbon:%g methane:%g\n",checkstand->type->landusetype,checkstand->frac,difffrac,standstocks(checkstand).carbon*checkstand->frac,soilmethane(&checkstand->soil)*WC/WCH4*checkstand->frac);
   }
 #endif
 
@@ -427,7 +427,7 @@ static void landexpansion(Cell *cell,            /* cell pointer */
   Real start=cell->balance.timber_harvest.carbon-cell->balance.flux_estab.carbon;
   Stand *checkstand;
   foreachstand(checkstand,s,cell->standlist)
-    start+=(standstocks(checkstand).carbon*checkstand->frac+soilmethane(&checkstand->soil)*checkstand->frac);
+    start+=(standstocks(checkstand).carbon*checkstand->frac+soilmethane(&checkstand->soil)*WC/WCH4*checkstand->frac);
 #endif
 
   s=findlandusetype(cell->standlist,irrigation ? SETASIDE_IR : SETASIDE_RF);
@@ -717,13 +717,13 @@ static void landexpansion(Cell *cell,            /* cell pointer */
 #ifdef CHECK_BALANCE
   end=cell->balance.timber_harvest.carbon-cell->balance.flux_estab.carbon;
   foreachstand(checkstand,s,cell->standlist)
-    end+=(standstocks(checkstand).carbon*checkstand->frac+soilmethane(&checkstand->soil)*checkstand->frac);
+    end+=(standstocks(checkstand).carbon*checkstand->frac+soilmethane(&checkstand->soil)*WC/WCH4*checkstand->frac);
   if (fabs(start-end)>0.01)
   {
      fprintf(stderr, "C-ERROR in landexpansion: %g start: %g  end: %g harvest: %g flux_estab: %g\n",
              start-end,start, end, cell->balance.timber_harvest.carbon,flux_estab.carbon);
      foreachstand(checkstand,s,cell->standlist)
-       fprintf(stderr,"frac[%s]: %g diff: %g carbon: %g methan: %g\n",checkstand->type->name,checkstand->frac,difffrac,standstocks(checkstand).carbon*checkstand->frac,soilmethane(&checkstand->soil)*checkstand->frac);
+       fprintf(stderr,"frac[%s]: %g diff: %g carbon: %g methan: %g\n",checkstand->type->name,checkstand->frac,difffrac,standstocks(checkstand).carbon*checkstand->frac,soilmethane(&checkstand->soil)*WC/WCH4*checkstand->frac);
   }
 #endif
 
@@ -1179,12 +1179,12 @@ void landusechange(Cell *cell,          /**< pointer to cell */
   Stand *checkstand;
   foreachstand(checkstand,s,cell->standlist)
   {
-    start+=(standstocks(checkstand).carbon*checkstand->frac+soilmethane(&checkstand->soil)*checkstand->frac);
+    start+=(standstocks(checkstand).carbon*checkstand->frac+soilmethane(&checkstand->soil)*WC/WCH4*checkstand->frac);
     water_before+=soilwater(&checkstand->soil)*checkstand->frac;
   }
   start-=cell->balance.flux_estab.carbon;
 //  foreachstand(checkstand,s,cell->standlist)
-//    fprintf(stderr,"type %d frac:%g diff:%g carbon:%g methan:%g\n",checkstand->type->landusetype,checkstand->frac,difffrac,standstocks(checkstand).carbon*checkstand->frac,soilmethane(&checkstand->soil)*checkstand->frac);
+//    fprintf(stderr,"type %d frac:%g diff:%g carbon:%g methan:%g\n",checkstand->type->landusetype,checkstand->frac,difffrac,standstocks(checkstand).carbon*checkstand->frac,soilmethane(&checkstand->soil)*WC/WCH4*checkstand->frac);
 #endif
 
    if(cell->ml.dam)
@@ -1483,7 +1483,7 @@ void landusechange(Cell *cell,          /**< pointer to cell */
      fprintf(stderr, "C_ERROR in landusechange: %g start:%g  end:%g\n",
              start-end,start, end);
      foreachstand(checkstand,s,cell->standlist)
-       fprintf(stderr,"standNr: %d type %s frac:%g diff:%g carbon:%g methane:%g flux_estab: %g\n",s,checkstand->type->name,checkstand->frac,difffrac,standstocks(checkstand).carbon*checkstand->frac,soilmethane(&checkstand->soil)*checkstand->frac,cell->balance.flux_estab.carbon);
+       fprintf(stderr,"standNr: %d type %s frac:%g diff:%g carbon:%g methane:%g flux_estab: %g\n",s,checkstand->type->name,checkstand->frac,difffrac,standstocks(checkstand).carbon*checkstand->frac,soilmethane(&checkstand->soil)*WC/WCH4*checkstand->frac,cell->balance.flux_estab.carbon);
   }
   if (fabs(water_before - water_after)>0.01)
     fprintf(stderr, "W_ERROR in landusechange: %g start:%g  end:%g \n", water_before - water_after, water_before, water_after);
