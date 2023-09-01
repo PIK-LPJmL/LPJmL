@@ -544,6 +544,7 @@ void fwriteoutput(Outputfile *output,  /**< output file array */
   }
   vec=newvec(float,config->ngridcell);
   check(vec);
+  writeoutputvar(LAND_AREA,1);
   writeoutputarray(FPC,1);
   writeoutputarray(WPC,1);
   writeoutputvar(NPP,1);
@@ -1113,7 +1114,7 @@ void fwriteoutput(Outputfile *output,  /**< output file array */
   writeoutputvar(N_MINERALIZATION,1);
   writeoutputvar(N_VOLATILIZATION,1);
   writeoutputvar(N_IMMO,1);
-  writeoutputvar(RES_STORAGE,1e-9*ndate1);  /* mean monthly reservoir storage in 1.000.000 m3 per cell */
+  writeoutputvar(RES_STORAGE,ndate1);
   writeoutputvar(GW_OUTFLUX,1);
   writeoutputvar(GW_STORAGE,ndate1);
   writeoutputvar(CH4_EMISSIONS,1);
@@ -1158,7 +1159,10 @@ void fwriteoutput(Outputfile *output,  /**< output file array */
   writeoutputvar(GCONS_IRR,1);
   writeoutputvar(BCONS_IRR,1);
   writeoutputvar(IRRIG_RW,1);
-  writeoutputvar(LAKEVOL,ndate1);
+  writeoutputvar(LAKEVOL,ndate1);  
+  writeoutputvar(RIVERVOL,ndate1);
+  writeoutputarray(SWC_VOL,ndate1);
+  writeoutputvar(IRRIG_STOR,ndate1);
   writeoutputvar(LAKETEMP,ndate1);
   writeoutputshortvar(SDATE);
   writeoutputshortvar(HDATE);
@@ -1917,6 +1921,19 @@ void fwriteoutput(Outputfile *output,  /**< output file array */
     }
     writeoutputvar(ESTAB_STORAGE_N,1);
   }
+  if(isopen(output,RD))
+  {
+    writeoutputvar(RD,1);
+  }
+  if(isopen(output,PFT_WATER_DEMAND))
+  {
+    writeoutputarray(PFT_WATER_DEMAND,1);
+  }
+  if(isopen(output,NDEPOS)) 
+  {
+    writeoutputvar(NDEPOS,1);
+  }
+
   if(config->double_harvest)
   {
     writeoutputarray(PFT_HARVESTC2,1);

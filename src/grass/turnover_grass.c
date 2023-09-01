@@ -34,7 +34,7 @@ Stocks turnover_grass(Litter *litter, /**< Litter pool */
   const Pftgrasspar *grasspar;
   Output *output;
   Real reprod;
-  Grassphys gturn;
+  Grassphys gturn={{0,0},{0,0}};
   grass=pft->data;
   grasspar=getpftpar(pft,data);
   output=&pft->stand->cell->output;
@@ -109,6 +109,18 @@ Stocks turnover_grass(Litter *litter, /**< Litter pool */
     update_fbd_grass(litter,pft->par->fuelbulkdensity,gturn.leaf.carbon*pft->nind-grass->turn_litt.leaf.carbon);
     litter->item[pft->litter].bg.carbon+=gturn.root.carbon*pft->nind-grass->turn_litt.root.carbon;
     litter->item[pft->litter].bg.nitrogen+=gturn.root.nitrogen*pft->nind*pft->par->fn_turnover-grass->turn_litt.root.nitrogen;
+  }
+  else if(pft->stand->type->landusetype==BIOMASS_GRASS)
+  {
+    grass->ind.root.carbon-=grass->turn.root.carbon;
+    grass->ind.root.nitrogen-=grass->turn.root.nitrogen;
+    pft->bm_inc.nitrogen+= grass->turn.root.nitrogen*pft->nind*(1-pft->par->fn_turnover);
+    gturn.root.carbon=grass->ind.root.carbon*grasspar->turnover.root*fraction;
+    gturn.root.nitrogen=grass->ind.root.nitrogen*grasspar->turnover.root*fraction;
+    litter->item[pft->litter].bg.carbon+=gturn.root.carbon*pft->nind;
+    getoutput(output,LITFALLC,config)+=gturn.root.carbon*pft->nind*pft->stand->frac;
+    litter->item[pft->litter].bg.nitrogen+=gturn.root.nitrogen*pft->nind*pft->par->fn_turnover;
+    getoutput(output,LITFALLN,config)+=gturn.root.nitrogen*pft->nind*pft->par->fn_turnover*pft->stand->frac;
   }
   else
   {

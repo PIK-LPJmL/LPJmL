@@ -34,6 +34,8 @@ void freeconfig(Config *config /**< LPJmL configuration */
   free(config->compress_suffix);
   if(config->soil_filename.fmt!=CDF)
     freefilename(&config->coord_filename);
+  if(config->landfrac_from_file)
+    freefilename(&config->landfrac_filename);
   freefilename(&config->soil_filename);
   free(config->outputdir);
   free(config->inputdir);
@@ -48,6 +50,8 @@ void freeconfig(Config *config /**< LPJmL configuration */
   free(config->pft_index);
   free(config->layer_index);
   free(config->json_suffix);
+  if(config->with_lakes)
+    freefilename(&config->lakes_filename);
   if(config->river_routing)
   {
     freefilename(&config->drainage_filename);
@@ -55,7 +59,6 @@ void freeconfig(Config *config /**< LPJmL configuration */
       freefilename(&config->river_filename);
     if(config->extflow)
       freefilename(&config->extflow_filename);
-    freefilename(&config->lakes_filename);
     if(config->withlanduse!=NO_LANDUSE)
     {
       freefilename(&config->neighb_irrig_filename);

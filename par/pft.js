@@ -2,7 +2,7 @@
 /**                                                                                \n**/
 /**              p  f  t  .  j  s                                                  \n**/
 /**                                                                                \n**/
-/**  PFT and CFT parameter file for LPJmL version 6.0.001                          \n**/
+/**  PFT and CFT parameter file for LPJmL version 6.0.1                            \n**/
 /**  CFTs parameters must be put after PFTs                                        \n**/
 /**                                                                                \n**/
 /** (C) Potsdam Institute for Climate Impact Research (PIK), see COPYRIGHT file    \n**/
@@ -46,6 +46,11 @@
 #define FN_TURNOVER_EV_BR 0.5   /* fraction of N not recovered before turnover */
 #define FN_TURNOVER_EV 0.8   /* fraction of N not recovered before turnover */
 #define FN_TURNOVER_GR 0.3   /* fraction of N not recovered before turnover */
+#ifdef BMGR_BROWN
+#define FN_TURNOVER_BMGR 0.30    /* 0.30 for brown harvest + specific harvest dates */
+#else
+#define FN_TURNOVER_BMGR 0.69    /* 0.68 for green harvest + specific harvest dates */
+#endif 
 #define ALPHAA_NITROGEN 0.5  /* alphaa for simulations with nitrogen limitation */
 #define RATIO_SAPW 13.5 /* relative C:N ratio of sapwood */
 #define CN_BL_EG_MX 46.2
@@ -1853,7 +1858,8 @@
     "nmax" : 100.0,          /* nmax 7*/
     "resist" : 1.0,         /* resist 8*/
     "longevity" : 0.25,     /* leaf longevity 10*/
-    "lmro_ratio" : 0.75,   /* lmro_ratio 18*/
+    "sla" : 0.0825,         /* median for Miscanthus in TRY database */
+    "lmro_ratio" : 2.50,   /* somewhere in the range of literature values H08, Guo, Rakic*/
     "lmro_offset" : 0.5,     /* lmro_ratio 18*/
     "ramp" : 100.0,          /* ramp 19*/
     "lai_sapl" : 0.1,     /* lai_sapl 21; acc. to PFT 9*/
@@ -1864,7 +1870,7 @@
     "min_temprange" : -1000.0,/* min_temprange 34*/
     "emax": 10.0,            /* emax 35; acc. to PFT 9*/
     "intc" : 0.01,          /* intc 36*/
-    "alphaa" : 0.8, /* alphaa; extremely homogenous plantation*/
+    "alphaa" : 0.8,         /* alphaa, fraction of PAR assimilated at ecosystem level, relative to leaf level */
     "albedo_leaf" : 0.21,   /* albedo of green leaves */
     "albedo_stem" : 0.15,   /* albedo of stems */
     "albedo_litter" : 0.1,  /* albedo of litter */
@@ -1913,16 +1919,16 @@
     "vmax_up" : 5.51,             /* vmax_up, Maximum N uptake capacity per unit fine root mass, Smith et al. 2014 */
     "kNmin": 0.05,                /* kNmin, Rate of N uptake not associated with Michaelis-Menten Kinetics, Zaehle&Friend 2000 */
     "KNmin" : 1.19,               /* KNmin, Half saturation concentration of fine root N uptake, Smith et al. 2014 */
-    "cnratio_leaf": {"low": CN_GC4_MN, "median" : CN_GC4_MD, "high" : CN_GC4_MX}, /* 10.7 79.4 cnleaf min max, based on TRY data, prepared by Boris Sakschewski */
+    "cnratio_leaf": {"low": 34.0, "median" : 90.0, "high" : 132.0}, /* interannual variability in Heaton et al. (2009) */
     "knstore" : 0.05,       /* knstore, acc. to PFT 9 */
-    "fn_turnover" : FN_TURNOVER_GR, /* fraction of N not recovered before turnover */
+    "fn_turnover" : FN_TURNOVER_BMGR, /* fraction of N not recovered before turnover */
     "windspeed_dampening" : 0.6,/* windspeed dampening */
     "roughness_length" : 0.03,  /* roughness length */
     "ist_m" : -0.1,             /* inundation stress threshold [m] */
     "idt_d" : 20.0,             /* inundation duration threshold [days] */
     "irrig_threshold" : { "dry" : IRRIG_THRESHOLD_C4, "humid" : IRRIG_THRESHOLD_C4 },
-    "turnover" : {"leaf" : 1.0, "root" : 2.0}, /* turnover leaf  root 9 12*/
-    "cn_ratio" : {"leaf" : CTON_LEAF, "root" : CTON_ROOT}, /* C:N mass ratio for leaf and root 13,15*/
+    "turnover" : {"leaf" : 1.0, "root" : 2.0}, /* no leaf turnover for biomass grasses anymore --> all C in harvest, N partially recovered*/
+    "cn_ratio" : {"leaf" : 90.0, "root" : CTON_ROOT}, /* C:N mass ratio for leaf and root 13,15*/
     "ratio" : 1.16,
     "reprod_cost" : REPROD_COST, /* reproduction cost */
     "temp_bnf_lim" : {"low" : TEMP_BNF_MIN, "high" : TEMP_BNF_MAX},

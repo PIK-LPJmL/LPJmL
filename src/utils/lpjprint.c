@@ -41,14 +41,15 @@ static Bool printgrid(Config *config, /* Pointer to LPJ configuration */
              )
 {
   Cell grid;
-  int i,soil_id;
-  Bool swap,swap_cow;
+  int i,soil_id,data;
+  Bool swap,missing;
   unsigned int soilcode;
   Code code;
   size_t offset;
-  FILE *file_restart,*file_countrycode;
-  Type cow_type;
+  FILE *file_restart;
+  char *name;
   Celldata celldata;
+  Infile countrycode,regioncode;
 
   /* Open coordinate file */
   celldata=opencelldata(config);
@@ -56,22 +57,50 @@ static Bool printgrid(Config *config, /* Pointer to LPJ configuration */
     return TRUE;
   if(seekcelldata(celldata,config->startgrid))
   {
-    closecelldata(celldata);
+    closecelldata(celldata,config);
     return TRUE;
   }
-
   /* Open countrycode file */
   if(config->withlanduse!=NO_LANDUSE)
   {
-    file_countrycode=opencountrycode(&config->countrycode_filename,
-                                     &swap_cow,&cow_type,&offset,TRUE);
-    if(file_countrycode==NULL)
-      return TRUE;
-    if(seekcountrycode(file_countrycode,config->startgrid,cow_type,offset))
+    countrycode.fmt=config->countrycode_filename.fmt;
+    if(config->countrycode_filename.fmt==CDF)
     {
-      fclose(file_countrycode);
-      closecelldata(celldata);
-      return TRUE;
+      countrycode.cdf=openinput_netcdf(&config->countrycode_filename,NULL,0,config);
+      if(countrycode.cdf==NULL)
+      {
+        closecelldata(celldata,config);
+        return TRUE;
+      }
+      regioncode.fmt=config->regioncode_filename.fmt;
+      regioncode.cdf=openinput_netcdf(&config->regioncode_filename,NULL,0,config);
+      if(regioncode.cdf==NULL)
+      {
+        closeinput_netcdf(countrycode.cdf);
+        closecelldata(celldata,config);
+        return TRUE;
+      }
+    }
+    else
+    {
+      /* Open countrycode file */
+      countrycode.file=opencountrycode(&config->countrycode_filename,
+                                       &countrycode.swap,&countrycode.type,&offset,isroot(*config));
+      if(countrycode.file==NULL)
+      {
+        closecelldata(celldata,config);
+        return TRUE;
+      }
+      if(seekcountrycode(countrycode.file,config->startgrid,countrycode.type,offset))
+      {
+        /* seeking to position of first grid cell failed */
+        fprintf(stderr,
+                "ERROR106: Cannot seek in countrycode file to position %d.\n",
+                config->startgrid);
+        closecelldata(celldata,config);
+        fclose(countrycode.file);
+        return TRUE;
+      }
     }
   }
   /* If FROM_RESTART open restart file */
@@ -85,15 +114,31 @@ static Bool printgrid(Config *config, /* Pointer to LPJ configuration */
            config->checkpoint_restart_filename,config->checkpointyear);
   for(i=0;i<config->ngridcell;i++)
   {
-    if(readcelldata(celldata,&soilcode,&grid,i,config))
+    if(readcelldata(celldata,&grid,&soilcode,i,config))
       break;
     if(config->countrypar!=NULL)
     {
-      if(readcountrycode(file_countrycode,&code,cow_type,swap_cow))
+       if(config->countrycode_filename.fmt==CDF)
       {
-        fprintf(stderr,"WARNING008: Unexpected end of file in '%s', number of gridcells truncated to %d.\n",config->countrycode_filename.name,i);
-        config->ngridcell=i;
-        break;
+        if(readintinput_netcdf(countrycode.cdf,&data,&grid.coord,&missing) || missing)
+          code.country=-1;
+        else
+          code.country=(short)data;
+        if(readintinput_netcdf(regioncode.cdf,&data,&grid.coord,&missing) || missing)
+          code.region=-1;
+        else
+          code.region=(short)data;
+      }
+      else
+      {
+        if(readcountrycode(countrycode.file,&code,countrycode.type,countrycode.swap))
+        {
+          name=getrealfilename(&config->countrycode_filename);
+          fprintf(stderr,"ERROR190: Unexpected end of file in '%s' for cell %d.\n",
+                  name,i+config->startgrid);
+          free(name);
+          break;
+        }
       }
       if(code.country<0 || code.country>=config->ncountries ||
          code.region<0 || code.region>=config->nregions)
@@ -158,9 +203,13 @@ static Bool printgrid(Config *config, /* Pointer to LPJ configuration */
     freecell(&grid,npft,config);
   } /* of for(i=0;...) */
   fclose(file_restart);
-  closecelldata(celldata);
-  if(config->withlanduse!=NO_LANDUSE)
-    fclose(file_countrycode);
+  closecelldata(celldata,config);
+  if(config->countrypar!=NULL)
+  {
+    closeinput(&countrycode);
+    if(config->countrycode_filename.fmt==CDF)
+      closeinput(&regioncode);
+  }
   return FALSE;
 }
 int main(int argc,char **argv)

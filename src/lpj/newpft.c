@@ -43,7 +43,8 @@ void newpft(Pft *pft,            /**< PFT variables */
            pft->gdd=pft->phen=pft->fapar=pft->npp_bnf=pft->nleaf=0.0;
  pft->phen_gsi.tmin=pft->phen_gsi.light=pft->albedo=pft->snowcover=0;
  pft->phen_gsi.tmax=pft->phen_gsi.wscal=1;
- pft->inun_count=pft->inun_stress=pft->establish.carbon=pft->establish.nitrogen=0;
+ pft->inun_count=0;
+ pft->inun_stress=pft->establish.carbon=pft->establish.nitrogen=0;
 #ifdef DAILY_ESTABLISHMENT
   pft->established=FALSE;
 #endif

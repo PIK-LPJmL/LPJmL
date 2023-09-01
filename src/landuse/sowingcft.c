@@ -33,13 +33,16 @@ static void cultcftstand(Stocks *flux_estab,  /**< establishment flux */
                          const Config *config /**< LPJmL settings */
                         )
 {
+  Pft *pft;
+  int p;
   Stocks stocks;
-  Bool CULT =FALSE;
   if((nofallow || cell->ml.cropdates[cft].fallow[irrig]<=0)  &&
       check_lu(cell->standlist,(isother) ? cell->ml.landfrac[irrig].grass[0] : cell->ml.landfrac[irrig].crop[cft],npft+cft,(isother) ? OTHERS : AGRICULTURE,irrig))
   {
     if(!(*alloc_today))
     {
+      foreachpft(pft, p, &setasidestand->pftlist)
+        turnover_grass(&setasidestand->soil.litter, pft,1.0/NDAYYEAR,config);
       allocation_today(setasidestand,config);
       *alloc_today=TRUE;
     }
@@ -120,9 +123,9 @@ void sowingcft(Stocks *flux_estab,  /**< establishment flux */
         foreachpft(pft,p,&stand->pftlist)
           cft_id=pft->par->id-npft;
         landfrac=(isother) ? cell->ml.landfrac[irrig].grass[0] : cell->ml.landfrac[irrig].crop[cft_id];
-        if(irrigation->irrigation==irrig && stand->frac > (2*tinyfrac+epsilon) && stand->frac > landfrac+epsilon)
+        if(irrigation->irrigation==irrig && stand->frac > (2*param.tinyfrac+epsilon) && stand->frac > landfrac+epsilon)
         {
-          difffrac=min(stand->frac-tinyfrac,stand->frac-landfrac);
+          difffrac=min(stand->frac-param.tinyfrac,stand->frac-landfrac);
           pos=addstand((isother) ? &others_stand : &agriculture_stand,cell);
           cropstand=getstand(cell->standlist,pos-1);
           data=cropstand->data;

@@ -26,6 +26,7 @@ static Harvest harvest_grass(Stand *stand, /**< pointer to stand */
   Harvest harvest;
   Harvest sum={{0,0},{0,0},{0,0},{0,0}};
   Pftgrass *grass;
+  Pftgrasspar *grasspar;
   Pft *pft;
   int p;
   Output *output;
@@ -34,9 +35,16 @@ static Harvest harvest_grass(Stand *stand, /**< pointer to stand */
   foreachpft(pft,p,&stand->pftlist)
   {
     grass=pft->data;
+    grasspar=pft->par->data; //grasspar=getpftpar(pft,data);
+    if(pft->stand->type->landusetype==BIOMASS_GRASS)
+    {
+      pft->bm_inc.nitrogen+=(grass->ind.leaf.nitrogen)*(1-pft->par->fn_turnover)*hfrac*pft->nind;
+      harvest.harvest.nitrogen=grass->ind.leaf.nitrogen*pft->par->fn_turnover*hfrac;
+    } else {
+      harvest.harvest.nitrogen=grass->ind.leaf.nitrogen*hfrac*param.nfrac_grassharvest; 
+      stand->soil.NH4[0]+=grass->ind.leaf.nitrogen*hfrac*(1-param.nfrac_grassharvest)*pft->nind;
+    }
     harvest.harvest.carbon=grass->ind.leaf.carbon*hfrac;
-    harvest.harvest.nitrogen=grass->ind.leaf.nitrogen*hfrac*param.nfrac_grassharvest;
-    stand->soil.NH4[0]+=grass->ind.leaf.nitrogen*hfrac*(1-param.nfrac_grassharvest)*pft->nind;
     grass->ind.leaf.carbon*=(1-hfrac);
     grass->ind.leaf.nitrogen*=(1-hfrac);
     stand->soil.litter.item[pft->litter].bg.carbon+=grass->ind.root.carbon*hfrac*param.rootreduction*pft->nind;
