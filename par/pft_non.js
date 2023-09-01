@@ -2,7 +2,7 @@
 /**                                                                                \n**/
 /**                      p  f  t  _  n  o  n  .  j  s                              \n**/
 /**                                                                                \n**/
-/**  PFT and CFT parameter file for LPJmL version 5.7.5 without nitrogen           \n**/
+/**  PFT and CFT parameter file for LPJmL version 5.7.6 without nitrogen           \n**/
 /**  CFTs parameters must be put after PFTs                                        \n**/
 /**                                                                                \n**/
 /** (C) Potsdam Institute for Climate Impact Research (PIK), see COPYRIGHT file    \n**/
