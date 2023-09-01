@@ -26,7 +26,8 @@ void allometry_tree(Pft *pft /**< Pointer to tree PFT */
 {
   Pfttree *tree;
   const Pfttreepar *treepar;
-  Real allometry,sm_ind_temp,stemdiam; 
+  Real allometry,stemdiam,sapw_nc;
+  Stocks sm_ind_temp;
 
   tree=pft->data;
   treepar=getpftpar(pft,data);
@@ -36,10 +37,13 @@ void allometry_tree(Pft *pft /**< Pointer to tree PFT */
   if(tree->height>treepar->height_max)
   {
     tree->height=treepar->height_max;
-    sm_ind_temp=tree->ind.sapwood.carbon;
+    sm_ind_temp=tree->ind.sapwood;
+    sapw_nc=(tree->ind.sapwood.carbon==0) ? 0 : tree->ind.sapwood.nitrogen/tree->ind.sapwood.carbon;
     tree->ind.sapwood.carbon=tree->ind.leaf.carbon*treepar->height_max*wooddens*pft->par->sla/
                       treepar->k_latosa;
-    tree->ind.heartwood.carbon+=sm_ind_temp-tree->ind.sapwood.carbon;
+    tree->ind.sapwood.nitrogen-=(sm_ind_temp.nitrogen-tree->ind.sapwood.carbon*sapw_nc)*(1 - param.sapwood_recovery);
+    tree->ind.heartwood.carbon+=sm_ind_temp.carbon-tree->ind.sapwood.carbon;
+    tree->ind.heartwood.nitrogen+=(sm_ind_temp.nitrogen-tree->ind.sapwood.nitrogen);
   } 
   allometry=treepar->allom1*pow(tree->height/treepar->allom2,reinickerp/treepar->allom3);
   /* bark thickness for fire mortality [cm] */
