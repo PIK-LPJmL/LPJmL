@@ -84,12 +84,6 @@ Real daily_woodplantation(Stand *stand,       /**< stand pointer */
                   &gp_stand_leafon,gp_pft,&fpc_total_stand,config);
   if (!config->river_routing)
     irrig_amount(stand, &data->irrigation, npft, ncft,month,config);
-#if 0
-    if(config->pft_output_scaled)
-      getoutputindex(&stand->cell->output,CFT_AIRRIG,index,config)+=data->irrigation.irrig_amount*stand->frac;
-    else
-      getoutputindex(&stand->cell->output,CFT_AIRRIG,index,config)+=data->irrigation.irrig_amount;
-#endif
   for(l=0;l<LASTLAYER;l++)
     aet_stand[l]=green_transp[l]=0;
    /* Loop over PFTs for applying fertilizer */
