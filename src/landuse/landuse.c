@@ -362,14 +362,14 @@ Bool getlanduse(Landuse landuse,     /**< Pointer to landuse data */
           data[count]/=grid[cell].landfrac;
           sum+=data[count++];
         }
-      if(sum > 1+epsilon)
+      if(sum > 1)
       {
         if(sum*grid[cell].landfrac>1+epsilon)
         {
           fprintf(stderr,"WARNING013: Sum of land-use fractions in cell %d at year %d greater 1: %f even before scaling with landfrac\n",
                   cell+config->startgrid,yearl,sum*grid[cell].landfrac);
         }
-        else
+        else if(sum>1+epsilon)
           fprintf(stderr,"WARNING013: Sum of land-use fractions in cell %d at year %d greater 1: %f after scaling with landfrac of %f\n",
                   cell+config->startgrid,yearl,sum,grid[cell].landfrac);
         fflush(stderr);
