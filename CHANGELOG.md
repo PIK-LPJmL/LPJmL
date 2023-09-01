@@ -21,6 +21,10 @@ of `major.minor.patch` with
 
 ## [5.7.6] - 2023-09-01
 
+### Added
+
+- reallocation of N added in `allometry_tree.c` if tree height exceeds the maximum height.
+
 ### Changed
 
 - check for `sum>1` for warnings has been replaced by `sum>1+epsilon` in `getlanduse()`.
