@@ -47,6 +47,7 @@
   "extflow" : false,
   "permafrost" : true,
   "johansen" : true,
+  "percolation_heattransfer" : true,
   "soilpar_option" : "no_fixed_soilpar", /* other options "no_fixed_soilpar", "fixed_soilpar", "prescribed_soilpar" */
   "with_nitrogen" : "lim", /* other options: "no", "lim", "unlim" */
   "store_climate" : true, /* store climate data in spin-up phase */
@@ -65,6 +66,9 @@
   "fix_landuse_year" : 1901,             /* year after land use is fixed */
   "fix_co2" : false,                     /* fix atmospheric CO2  after specfied year */
   "fix_co2_year" : 1901,                 /* year after CO2 is fixed */
+  "landuse" : "no", /* other options: "no", "yes", "const", "all_crops", "only_crops" */
+  "wateruse" : "no",  /* other options: "no", "yes", "all" */
+
 #ifdef FROM_RESTART
   "new_seed" : false, /* read random seed from restart file */
   "population" : false,
@@ -294,7 +298,7 @@ ID                               Fmt                        filename
 "nspinup" : 0,  /* spinup years */
 "nspinyear" : 0,  /* cycle length during spinup (yr) */
 "firstyear": 1940, /* first year of simulation */
-"lastyear" : 1946, /* last year of simulation */
+"lastyear" : 1950, /* last year of simulation */
 "restart" :  false, /* start from restart file */
 "outputyear" : -1599,
 "write_restart" : true, /* create restart file: the last year of simulation=restart-year */

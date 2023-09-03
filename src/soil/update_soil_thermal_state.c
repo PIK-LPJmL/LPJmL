@@ -21,6 +21,7 @@ void modify_enth_due_to_unaccounted_masschanges(Soil *, const Config *);
 void modify_enth_due_to_heatconduction(Soil *, Real, Soil_thermal_prop,const Config *);
 void compute_litter_temp_from_enth(Soil * soil, Real temp_below_snow ,const Config * config,Soil_thermal_prop therm_prop);
 void compute_water_ice_ratios_from_enth(Soil *, const Config *, Soil_thermal_prop);
+void calc_gp_temps(Real * gp_temps, Real * enth, Soil_thermal_prop th);
 
 /* main function */
 
@@ -31,12 +32,17 @@ void update_soil_thermal_state(Soil *soil,          /**< pointer to soil data */
 {
 
   /* calculate soil thermal properties and provide it for below functions */
-  Soil_thermal_prop therm_prop;            
+  Soil_thermal_prop therm_prop;      
+  Real gp_temps[NHEATGRIDP] ={};      
   calc_soil_thermal_props(&therm_prop, soil, NULL,  NULL, config->johansen, TRUE); 
   
   /* apply daily changes to soil enthalpy distribution  due to heatconvection and heatconduction*/
+  calc_gp_temps(gp_temps, soil->enth, therm_prop);
   modify_enth_due_to_unaccounted_masschanges(soil ,config);
+  calc_gp_temps(gp_temps, soil->enth, therm_prop);
+
   modify_enth_due_to_heatconduction(soil,temp_below_snow, therm_prop, config);
+  calc_gp_temps(gp_temps, soil->enth, therm_prop);
 
   /* compute soil thermal attributes from enthalpy distribution and thermal properties, i.e. the derived quantities */
   compute_mean_layer_temps_from_enth(soil->temp,soil->enth, therm_prop);
@@ -44,6 +50,15 @@ void update_soil_thermal_state(Soil *soil,          /**< pointer to soil data */
   compute_litter_temp_from_enth(soil, temp_below_snow ,config,therm_prop);
 
 } 
+
+void calc_gp_temps(Real * gp_temps, Real * enth, Soil_thermal_prop th)
+{
+  int gp;
+  for(gp=0;gp<NHEATGRIDP;gp++)
+  {
+    gp_temps[gp]=ENTH2TEMP(enth, th, gp);
+  }
+}
 
 
 
@@ -117,16 +132,3 @@ void get_unaccounted_changes_in_water_and_solids(Real *waterdiff, Real *soliddif
 }
 
 
-/* Old content of soiltemp */
-
-Real soiltemp_lag(const Soil *soil,      /**< Soil data */
-                  const Climbuf *climbuf /**< Climate buffer */
-                 )                       /** \return soil temperature (deg C) */
-{
-  Real a,b,temp_lag;
-  if(soil->w[0]<epsilon)
-    return climbuf->temp[NDAYS-1];
-  linreg(&a,&b,climbuf->temp,NDAYS);
-  temp_lag=a+b*(NDAYS-1-soil->alag*LAG_CONV);
-  return climbuf->atemp_mean+soil->amp*(temp_lag-climbuf->atemp_mean);
-} /* of 'soiltemp_lag' */
