@@ -278,40 +278,42 @@ ID                               Fmt                        filename
   ],
 #endif
 
+
 /*===================================================================*/
 /*  V. Run settings section                                          */
 /*===================================================================*/
 
-  "startgrid" : "all", /* 27410, 67208 60400 47284 47293 47277 all grid cells */
-  "endgrid"   : "all",
+"startgrid" : 60400, /* 27410, 67208 60400 47284 47293 47277 all grid cells */
+"endgrid"   : 60400,
 #ifdef CHECKPOINT
-  "checkpoint_filename" : "restart/restart_checkpoint.lpj", /* filename of checkpoint file */
+"checkpoint_filename" : "restart/restart_checkpoint.lpj", /* filename of checkpoint file */
 #endif
 
 #ifndef FROM_RESTART
 
-  "nspinup" : 1,  /* spinup years */
-  "nspinyear" : 1,  /* cycle length during spinup (yr) */
-  "firstyear": 1940, /* first year of simulation */
-  "lastyear" : 1940, /* last year of simulation */
-  "restart" :  false, /* start from restart file */
-  "outputyear" : -1599,
-  "write_restart" : true, /* create restart file: the last year of simulation=restart-year */
-  "write_restart_filename" : "restart/restart_1840_nv_stdfire.lpj", /* filename of restart file */
-  "restart_year": 1946 /* write restart at year */
+"nspinup" : 0,  /* spinup years */
+"nspinyear" : 0,  /* cycle length during spinup (yr) */
+"firstyear": 1940, /* first year of simulation */
+"lastyear" : 1946, /* last year of simulation */
+"restart" :  false, /* start from restart file */
+"outputyear" : -1599,
+"write_restart" : true, /* create restart file: the last year of simulation=restart-year */
+"write_restart_filename" : "restart/restart_1840_nv_stdfire.lpj", /* filename of restart file */
+"restart_year": 1946 /* write restart at year */
 
 #else
 
-  "nspinup" : 0,   /* spinup years */
-  "nspinyear" : 30,  /* cycle length during spinup (yr)*/
-  "firstyear": 1940, /* first year of simulation */
-  "lastyear" : 1946, /* last year of simulation */
-  "outputyear": 1940, /* first year output is written  */
-  "restart" :  true, /* start from restart file */
-  "restart_filename" : "restart/restart_1840_nv_stdfire.lpj", /* filename of restart file */
-  "write_restart" : true, /* create restart file */
-  "write_restart_filename" : "restart/restart_1900_crop_stdfire.lpj", /* filename of restart file */
-  "restart_year": 1900 /* write restart at year */
+"nspinup" : 0,   /* spinup years */
+"nspinyear" : 30,  /* cycle length during spinup (yr)*/
+"firstyear": 1940, /* first year of simulation */
+"lastyear" : 1946, /* last year of simulation */
+"outputyear": 1940, /* first year output is written  */
+"restart" :  true, /* start from restart file */
+"restart_filename" : "restart/restart_1840_nv_stdfire.lpj", /* filename of restart file */
+"write_restart" : true, /* create restart file */
+"write_restart_filename" : "restart/restart_1900_crop_stdfire.lpj", /* filename of restart file */
+"restart_year": 1900 /* write restart at year */
 
 #endif
 }
+
