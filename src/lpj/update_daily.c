@@ -76,8 +76,9 @@ void update_daily(Cell *cell,            /**< cell pointer           */
   Real balanceW=0;
   Real wfluxes_old=cell->balance.atransp+cell->balance.aevap+cell->balance.ainterc+cell->balance.aevap_lake+cell->balance.aevap_res-cell->balance.airrig-cell->balance.aMT_water;
   Real exess_old=cell->balance.excess_water;
-  Real CH4_fluxes=cell->balance.aCH4_em+cell->balance.aCH4_sink;
-  Real flux_carbon=cell->balance.flux_estab.carbon;
+  Real CH4_fluxes=(cell->balance.aCH4_em+cell->balance.aCH4_sink)*WC/WCH4;
+  Real flux_carbon=cell->balance.flux_estab.carbon+cell->balance.influx.carbon; //influxes
+  Real flux_fire=cell->balance.fire.carbon+cell->balance.flux_firewood.carbon+cell->balance.neg_fluxes.carbon+cell->balance.flux_harvest.carbon+cell->balance.biomass_yield.carbon; //outfluxes
   end=start=start1=0;
   foreachstand(stand,s,cell->standlist)
   {
@@ -604,10 +605,12 @@ void update_daily(Cell *cell,            /**< cell pointer           */
   cell->balance.flux_estab.nitrogen+=flux_estab.nitrogen;
   cell->balance.flux_estab.carbon+=flux_estab.carbon;
 #ifdef CHECK_BALANCE
-  flux_carbon=(cell->balance.flux_estab.carbon-flux_carbon);
+  flux_fire=(cell->balance.fire.carbon+cell->balance.flux_firewood.carbon+cell->balance.neg_fluxes.carbon+cell->balance.flux_harvest.carbon+cell->balance.biomass_yield.carbon)-flux_fire; //outfluxes
+  flux_carbon=(cell->balance.flux_estab.carbon+cell->balance.influx.carbon)-flux_carbon;
   water_after=(cell->discharge.dmass_lake+cell->discharge.dmass_river)/cell->coord.area;
   CH4_fluxes-=(cell->balance.aCH4_em+cell->balance.aCH4_sink);                                 //will be negative, because emissions at the end are higher, thus we have to substract
-  end=cell->output.dcflux;
+  //end=cell->output.dcflux;
+  end=0;
   foreachstand(stand,s,cell->standlist)
   {
     if(stand->type->landusetype!=KILL)
@@ -621,12 +624,12 @@ void update_daily(Cell *cell,            /**< cell pointer           */
   balanceW=water_after-water_before-climate.prec-melt_all+
           ((cell->balance.atransp+cell->balance.aevap+cell->balance.ainterc+cell->balance.aevap_lake+cell->balance.aevap_res-cell->balance.airrig-cell->balance.aMT_water)-wfluxes_old)+cell->discharge.drunoff+
           (exess_old-cell->balance.excess_water)+cell->lateral_water;
-  if (fabs(end-start1+ebul*WC/WCH4-CH4_fluxes*WC/WCH4-flux_carbon)>0.01)
+  if (fabs(end-start1+ebul*WC/WCH4-CH4_fluxes*WC/WCH4-flux_carbon+flux_fire)>0.01)
   {
     fprintf(stderr, "C_ERROR-update_daily end: day: %d    %g start: %g  end: %g ebul: %g CH4_fluxes: %g flux_estab.carbon: %g flux_harvest.carbon: %g dcflux: %g flux_carbon: %g "
-           "bm_inc: %g rh: %g aCH4_sink: %g aCH4_em : %g \n",
-           day,end-start1+ebul-CH4_fluxes-flux_carbon,start1, end, ebul*WC/WCH4,CH4_fluxes*WC/WCH4,cell->balance.flux_estab.carbon,cell->balance.flux_harvest.carbon,
-           cell->output.dcflux, flux_carbon ,cell->output.bm_inc,cell->balance.arh,cell->balance.aCH4_sink,cell->balance.aCH4_em);
+           "flux_fire: %g neg_fluxes: %g bm_inc: %g rh: %g aCH4_sink: %g aCH4_em : %g \n",
+           day,end-start1+ebul-CH4_fluxes-flux_carbon+flux_fire,start1, end, ebul*WC/WCH4,CH4_fluxes*WC/WCH4,cell->balance.flux_estab.carbon,cell->balance.flux_harvest.carbon,
+           cell->output.dcflux, flux_carbon,flux_fire, cell->balance.neg_fluxes.carbon,cell->output.bm_inc,cell->balance.arh,cell->balance.aCH4_sink,cell->balance.aCH4_em);
     foreachstand(stand,s,cell->standlist)
              fprintf(stderr,"update_daily: standfrac: %g standtype: %s s= %d iswetland: %d cropfraction_rf: %g cropfraction_irr: %g grasfrac_rf: %g grasfrac_irr: %g\n",
                      stand->frac, stand->type->name,s,stand->soil.iswetland, crop_sum_frac(cell->ml.landfrac,12,config->nagtree,cell->ml.reservoirfrac+cell->lakefrac,FALSE),
