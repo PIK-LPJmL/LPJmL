@@ -24,6 +24,7 @@ of `major.minor.patch` with
 ### Added
 
 - reallocation of N added in `allometry_tree.c` if tree height exceeds the maximum height.
+- reproduction costs for nitrogen added to `turnover_tree.c`.
 
 ### Changed
 
