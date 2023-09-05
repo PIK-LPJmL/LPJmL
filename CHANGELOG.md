@@ -19,7 +19,13 @@ of `major.minor.patch` with
 
 ## [Unreleased]
 
-## [5.7.6] - 2023-09-01
+## [5.7.6] - 2023-09-04
+
+### Added
+
+- reallocation of N added in `allometry_tree.c` if tree height exceeds the maximum height.
+- reproduction costs for nitrogen added to `turnover_tree.c`.
+- missing output `"harvestc_agr"` updated and written to file.
 
 ### Changed
 
