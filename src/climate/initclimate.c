@@ -126,16 +126,24 @@ Climate *initclimate(const Cell grid[],   /**< LPJ grid */
   }
   if(config->wet_filename.name!=NULL)
   {
-    if(openclimate(&climate->file_wet,&config->wet_filename,"day",LPJ_SHORT,1.0,config))
+    if(isdaily(climate->file_prec))
     {
       if(isroot(*config))
-        fprintf(stderr,"ERROR236: Cannot open wet data file.\n");
-      freeclimate(climate,isroot(*config));
-      return NULL;
+        fprintf(stderr,"WARNING039: Number of wet days not used for daily precipitation input, set \"random_prec\" to false.\n");
     }
-    if(climate->firstyear<climate->file_wet.firstyear)
-      climate->firstyear=climate->file_wet.firstyear;
-    climate->file_wet.ready=FALSE;
+    else
+    {
+      if(openclimate(&climate->file_wet,&config->wet_filename,"day",LPJ_SHORT,1.0,config))
+      {
+        if(isroot(*config))
+          fprintf(stderr,"ERROR236: Cannot open wet data file.\n");
+        freeclimate(climate,isroot(*config));
+        return NULL;
+      }
+      if(climate->firstyear<climate->file_wet.firstyear)
+        climate->firstyear=climate->file_wet.firstyear;
+      climate->file_wet.ready=FALSE;
+    }
   }
   if(config->with_nitrogen && config->with_nitrogen!=UNLIM_NITROGEN && !config->no_ndeposition)
   {
@@ -403,7 +411,7 @@ Climate *initclimate(const Cell grid[],   /**< LPJ grid */
       }
     }
   }
-  if(config->wet_filename.name!=NULL && config->wet_filename.fmt!=FMS)
+  if(config->wet_filename.name!=NULL && !isdaily(climate->file_prec) && config->wet_filename.fmt!=FMS)
   {
     if((climate->data.wet=newvec(Real,climate->file_wet.n))==NULL)
     {
