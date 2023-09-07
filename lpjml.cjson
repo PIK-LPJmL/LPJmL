@@ -116,7 +116,7 @@
 #ifdef BMGR_BROWN
   "biomass_grass_harvest" : "brown",   /* define brown harvest of biomass grass at top; imapcts harvest event and fn_turnover of biomass grass */
 #else
- "biomass_grass_harvest" : "green",    /* comment out define of brown harvest of biomass grass for green harvest (default) */
+  "biomass_grass_harvest" : "green",   /* comment out define of brown harvest of biomass grass for green harvest (default) */
 #endif
   "crop_resp_fix" : false,             /* C:N ratio setting affecting crop respiration - options: true (fixed - avoids yield reductions at high n inputs); false (variable/dynamic) */
   "crop_phu_option" : "new",           /* defines setting for phenological heat unit and vernalization requirements for crops; options: "old", "new", "prescribed" */
@@ -128,17 +128,96 @@
 /*  II. Input parameter section                                      */
 /*===================================================================*/
 
-#include "param.cjson"    /* Input parameter file */
+  /* LPJmL parameter file */
+  "param" :
+    #include "par/lpjparam.cjson"
+  ,
+
+  /* Soil parameter file */
+  "soilpar" :
+    #include "par/soil.cjson"
+  ,
+
+  /* PFT parameter file*/
+  "pftpar" :
+    #include "par/pft.cjson"
+  ,
+
+  /* Management parameter file */
+  "countrypar" :
+    #include "par/manage_irrig_systems_with_dummy_laimax_data.cjson" 
+  ,
+
+  /* Management parameter file for regions*/
+  "regionpar" :
+    #include "par/manage_reg.cjson"
+  ,
+
+/*===================================================================*/
+/*  II. Mapping section                                              */
+/*===================================================================*/
+
+  /* the following array describes the order of the CFTs in the laimax array */
+  "laimaxmap" : ["temperate cereals","rice", "maize", "tropical cereals", "pulses",
+                 "temperate roots", "tropical roots", "oil crops sunflower",
+                 "oil crops soybean", "oil crops groundnut", "oil crops rapeseed",
+                 "sugarcane"],
+
+  /* the following array describes the order of the agricultural trees in the k_est array */
+  "treemap" : ["oil palm","tea","cotton"],
+
+  "soilmap" : [null,"clay", "silty clay", "sandy clay", "clay loam", "silty clay loam",
+              "sandy clay loam", "loam", "silt loam", "sandy loam", "silt",
+              "loamy sand", "sand", "rock and ice"],
+
+  /* the following array describes the order of the CFT bands in the land use file */
+  "landusemap" : ["temperate cereals","rice", "maize", "tropical cereals", "pulses",
+                  "temperate roots", "tropical roots", "oil crops sunflower",
+                  "oil crops soybean", "oil crops groundnut", "oil crops rapeseed",
+                  "sugarcane","others","grassland","biomass grass","biomass tree"],
+
+  "fertilizermap" : ["temperate cereals","rice", "maize", "tropical cereals", "pulses",
+                    "temperate roots", "tropical roots", "oil crops sunflower",
+                    "oil crops soybean", "oil crops groundnut", "oil crops rapeseed",
+                    "sugarcane","others","grassland","biomass grass","biomass tree"],
+
+  "cftmap" : ["temperate cereals","rice", "maize", "tropical cereals", "pulses",
+              "temperate roots", "tropical roots", "oil crops sunflower",
+              "oil crops soybean", "oil crops groundnut", "oil crops rapeseed",
+              "sugarcane"],
 
 /*===================================================================*/
 /*  III. Input data section                                          */
 /*===================================================================*/
 
-#include "input_crumonthly.cjson"    /* Input files of CRU dataset */
+
+  "inpath" : "/p/projects/lpjml/input/historical",
+
+  /* Input files of CRU dataset */
+  "input" :
+    #include "input.cjson"
+  ,
 
 /*===================================================================*/
 /*  IV. Output data section                                          */
 /*===================================================================*/
+
+  /* all available output variables and their definition */
+  "outputvar" :
+    #include "par/outputvars.cjson"
+  ,
+
+  /* output data settings */
+  "output_metafile" : true, /* no json metafile created */
+  "float_grid" : false,      /* set datatype of grid file to float (TRUE/FALSE) */
+  "compress" : 0,          /* compression level (1-9, 0= no compression) */
+  "missing_value" : -1e32, /* missing value in NetCDF files */
+  "pft_index" : "npft",    /* name of index variable for PFT output */
+  "layer_index" : "layer", /* name of index variable for soil layer output */
+  "compress_cmd" : "gzip -f", /* command for compression of output files */
+  "compress_suffix" : ".gz",  /* file suffix for compressed output files */
+  "json_suffix" : ".json",    /* file suffix for JSON metafiles */
+  "csv_delimit" : ",",        /* delimiter for CSV files */
 
 #ifdef WITH_GRIDBASED
   "grid_scaled" : true, /* PFT-specific outputs scaled by stand->frac */
@@ -147,9 +226,6 @@
   "grid_scaled" : false,
 #define SUFFIX pft.bin
 #endif
-
-  "output_metafile" : true, /* json metafile created (true/false) */
-  "float_grid" : false,     /* set datatype of grid file to float (true/false) */
 
 #define mkstr(s) xstr(s) /* putting string in quotation marks */
 #define xstr(s) #s
