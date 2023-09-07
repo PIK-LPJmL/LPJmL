@@ -195,7 +195,7 @@
 
   /* Input files of CRU dataset */
   "input" :
-    #include "par/input_crumonthly.cjson"
+    #include "input.cjson"
   ,
 
 /*===================================================================*/

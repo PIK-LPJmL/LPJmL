@@ -12,7 +12,6 @@
 /**                                                                                \n**/
 /**************************************************************************************/
 
-"input" :
 {
 #ifdef CRU_MONTHLY
   "temp" :         { "id" : 1, "fmt" : "clm",  "name" : "/p/projects/lpjml/input/historical/CRUDATA_TS3_23/cru_ts3.23.1901.2014.tmp.dat.clm"},
@@ -93,4 +92,4 @@
   "co2" :          { "id" : 5, "fmt" : "txt",  "name" : "input_VERSION2/co2_1841-2012.dat"},
   "wetdays" :      { "id" : 12, "fmt" : "clm",  "name" : "CRUDATA_TS3_23/gpcc_v7_cruts3_23_wet_1901_2013.clm"},
   "wateruse" :     { "id" : 20, "fmt" : "clm",  "name" : "input_VERSION2/wateruse_1900_2000.bin" } /* water consumption for industry,household and livestock */
-},
+}
