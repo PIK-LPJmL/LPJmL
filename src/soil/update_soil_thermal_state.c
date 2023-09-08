@@ -37,12 +37,8 @@ void update_soil_thermal_state(Soil *soil,          /**< pointer to soil data */
   calc_soil_thermal_props(&therm_prop, soil, NULL,  NULL, config->johansen, TRUE); 
   
   /* apply daily changes to soil enthalpy distribution  due to heatconvection and heatconduction*/
-  calc_gp_temps(gp_temps, soil->enth, therm_prop);
   modify_enth_due_to_unaccounted_masschanges(soil ,config);
-  calc_gp_temps(gp_temps, soil->enth, therm_prop);
-
   modify_enth_due_to_heatconduction(soil,temp_below_snow, therm_prop, config);
-  calc_gp_temps(gp_temps, soil->enth, therm_prop);
 
   /* compute soil thermal attributes from enthalpy distribution and thermal properties, i.e. the derived quantities */
   compute_mean_layer_temps_from_enth(soil->temp,soil->enth, therm_prop);
@@ -50,16 +46,6 @@ void update_soil_thermal_state(Soil *soil,          /**< pointer to soil data */
   compute_litter_temp_from_enth(soil, temp_below_snow ,config,therm_prop);
 
 } 
-
-void calc_gp_temps(Real * gp_temps, Real * enth, Soil_thermal_prop th)
-{
-  int gp;
-  for(gp=0;gp<NHEATGRIDP;gp++)
-  {
-    gp_temps[gp]=ENTH2TEMP(enth, th, gp);
-  }
-}
-
 
 
 /* functions used by the main functions */
@@ -132,3 +118,14 @@ void get_unaccounted_changes_in_water_and_solids(Real *waterdiff, Real *soliddif
 }
 
 
+/* functions used for testing purposes only */
+
+
+void calc_gp_temps(Real * gp_temps, Real * enth, Soil_thermal_prop th)
+{
+  int gp;
+  for(gp=0;gp<NHEATGRIDP;gp++)
+  {
+    gp_temps[gp]=ENTH2TEMP(enth, th, gp);
+  }
+}
