@@ -33,7 +33,6 @@ void update_soil_thermal_state(Soil *soil,          /**< pointer to soil data */
 
   /* calculate soil thermal properties and provide it for below functions */
   Soil_thermal_prop therm_prop;      
-  Real gp_temps[NHEATGRIDP] ={};      
   calc_soil_thermal_props(&therm_prop, soil, NULL,  NULL, config->johansen, TRUE); 
   
   /* apply daily changes to soil enthalpy distribution  due to heatconvection and heatconduction*/
