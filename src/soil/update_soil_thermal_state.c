@@ -49,7 +49,8 @@ void update_soil_thermal_state(Soil *soil,          /**< pointer to soil data */
 
 /* functions used by the main functions */
 
-void modify_enth_due_to_unaccounted_masschanges(Soil * soil,const Config * config){
+void modify_enth_due_to_unaccounted_masschanges(Soil * soil,const Config * config)
+{
     Soil_thermal_prop old_therm_storage_prop;                      
     Real waterdiff[NSOILLAYER], soliddiff[NSOILLAYER];  
     apply_perc_enthalpy(soil);
@@ -58,7 +59,8 @@ void modify_enth_due_to_unaccounted_masschanges(Soil * soil,const Config * confi
     apply_enth_of_untracked_mass_shifts(soil->enth, waterdiff, soliddiff, old_therm_storage_prop);    
 }
 
-void modify_enth_due_to_heatconduction(Soil * soil, Real temp_below_snow, Soil_thermal_prop therm_prop ,const Config * config){
+void modify_enth_due_to_heatconduction(Soil * soil, Real temp_below_snow, Soil_thermal_prop therm_prop ,const Config * config)
+{
   Real litter_agtop_temp;
   Real h[NHEATGRIDP], top_dirichlet_BC;          
   litter_agtop_temp = (temp_below_snow + ENTH2TEMP(soil->enth,therm_prop,0))/2;
@@ -68,13 +70,15 @@ void modify_enth_due_to_heatconduction(Soil * soil, Real temp_below_snow, Soil_t
   apply_heatconduction_of_a_day(soil->enth, NHEATGRIDP, h, top_dirichlet_BC, therm_prop ); 
 }
 
-void compute_water_ice_ratios_from_enth(Soil * soil, const Config * config, Soil_thermal_prop therm_prop){
+void compute_water_ice_ratios_from_enth(Soil * soil, const Config * config, Soil_thermal_prop therm_prop)
+{
   Real freezefrac[NSOILLAYER];                         /* fraction of each layer that is frozen */
   enth2freezefrac(freezefrac, soil->enth, therm_prop); /* get frozen fraction of each layer */
   freezefrac2soil(soil, freezefrac);                   /* apply frozen fraction to soil variables */
 }
 
-void compute_litter_temp_from_enth(Soil * soil, Real temp_below_snow ,const Config * config,Soil_thermal_prop therm_prop){
+void compute_litter_temp_from_enth(Soil * soil, Real temp_below_snow ,const Config * config,Soil_thermal_prop therm_prop)
+{
   soil->litter.agtop_temp = (temp_below_snow + ENTH2TEMP(soil->enth,therm_prop,0)) / 2;
 }
 
@@ -82,7 +86,8 @@ void compute_litter_temp_from_enth(Soil * soil, Real temp_below_snow ,const Conf
 
 /* small helper functions  */
 
-void setup_heatgrid(Real *h){
+void setup_heatgrid(Real *h)
+{
   int l,j;
   Real nodes[NSOILLAYER*GPLHEAT];
   Real soillayer_depth_m=0;
