@@ -19,6 +19,33 @@ of `major.minor.patch` with
 
 ## [Unreleased]
 
+## [5.7.6] - 2023-09-11
+
+### Added
+
+- reallocation of N added in `allometry_tree.c` if tree height exceeds the maximum height.
+- reproduction costs for nitrogen added to `turnover_tree.c`.
+- missing output `"harvestc_agr"` updated and written to file.
+
+### Changed
+
+- check for `sum>1` for warnings has been replaced by `sum>1+epsilon` in `getlanduse()`.
+- `ml.landfrac` scaling of output has been replaced by acual stand fraction.
+- `output_gbw_*` functions have been merged into one `output_gbw` function.
+
+### Removed
+
+- misplaced `CFT_AIRRIG` update has been removed from `daily_woodplantation.c`.
+
+### Fixed
+
+- missing `#include "grass.h"` added in `sowingcft.c`.
+- arguments of `setaside` calls in `annual_woodplantation.c` and `annual_biomass_tree.c` have been corrected.
+- update of `LITFALLN` corrected in `timber_burn.c`.
+- output written to correct `N2O_DENIT_*` file in `denitrification.c`.
+- missing `reservoirfrac` added to scaling for outputs in `daily_agriculture_grass.c` and `daily_agriculture_tree.c`.
+
+
 ## [5.7.5] - 2023-08-23
 
 ### Added
