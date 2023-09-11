@@ -19,7 +19,7 @@ of `major.minor.patch` with
 
 ## [Unreleased]
 
-## [5.7.6] - 2023-09-07
+## [5.7.6] - 2023-09-11
 
 ### Added
 
