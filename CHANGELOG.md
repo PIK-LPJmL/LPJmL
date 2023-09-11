@@ -19,7 +19,7 @@ of `major.minor.patch` with
 
 ## [Unreleased]
 
-## [5.7.6] - 2023-09-04
+## [5.7.6] - 2023-09-07
 
 ### Added
 
@@ -30,6 +30,12 @@ of `major.minor.patch` with
 ### Changed
 
 - check for `sum>1` for warnings has been replaced by `sum>1+epsilon` in `getlanduse()`.
+- `ml.landfrac` scaling of output has been replaced by acual stand fraction.
+- `output_gbw_*` functions have been merged into one `output_gbw` function.
+
+### Removed
+
+- misplaced `CFT_AIRRIG` update has been removed from `daily_woodplantation.c`.
 
 ### Fixed
 

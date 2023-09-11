@@ -293,7 +293,7 @@ Bool annual_woodplantation(Stand *stand,         /**< Pointer to stand */
         isdead=TRUE;
     }
 
-  getoutputindex(&stand->cell->output,CFTFRAC,index,config)=stand->cell->ml.landfrac[biomass_tree->irrigation.irrigation].woodplantation;
+  getoutputindex(&stand->cell->output,CFTFRAC,index,config)=stand->frac;
   getoutputindex(&stand->cell->output,CFT_NHARVEST,index,config)+=1.0;
 
   free(present);

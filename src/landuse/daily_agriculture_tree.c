@@ -344,10 +344,10 @@ Real daily_agriculture_tree(Stand *stand,                /**< stand pointer */
   getoutput(output,RETURN_FLOW_B,config)+=return_flow_b*stand->frac; /* now only changed in waterbalance_new.c*/
 
   /* output for green and blue water for evaporation, transpiration and interception */
-  output_gbw_agriculture_tree(output,stand,frac_g_evap,evap,evap_blue,
-                              return_flow_b,aet_stand,green_transp,
-                              intercep_stand,intercep_stand_blue,npft,
-                              ncft,config);
+  output_gbw(output,stand,frac_g_evap,evap,evap_blue,
+             return_flow_b,aet_stand,green_transp,
+             intercep_stand,intercep_stand_blue,
+             index,data->irrigation.irrigation,config);
 #ifdef DEBUG
   if(iscotton)
     printf("growing_day: %d %d %d\n",stand->growing_days,data->irrigation.irrigation,stand->cell->ml.growing_season_cotton[data->irrigation.irrigation]);
