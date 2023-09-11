@@ -197,7 +197,7 @@ Real daily_woodplantation(Stand *stand,       /**< stand pointer */
 #endif
    output->dcflux-=npp*stand->frac;
    getoutput(output,GPP,config)+=gpp*stand->frac;
-   getoutputindex(output,CFT_FPAR,index,config) += (fpar(pft)*stand->frac*(1.0 / (1 - stand->cell->lakefrac-stand->cell.ml.reservoirfrac)));
+   getoutputindex(output,CFT_FPAR,index,config) += (fpar(pft)*stand->frac*(1.0 / (1 - stand->cell->lakefrac-stand->cell->ml.reservoirfrac)));
    if (config->pft_output_scaled)
      getoutputindex(output,PFT_NPP,nnat+index,config)+=npp*stand->frac;
    else
