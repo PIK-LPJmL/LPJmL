@@ -138,9 +138,9 @@ Real infil_perc_rain(Stand *stand,        /**< Stand pointer */
       {
         grunoff=(soil->w[l]*soil->whcs[l])-((soildepth[l]-soil->freeze_depth[l])*(soil->wsat[l]-soil->wpwp[l]));
         soil->w[l]-=grunoff/soil->whcs[l];
-        reconcile_layer_energy_with_water_shift(soil,l,-min(grunoff,influx),vol_water_enth, config);
-        vol_water_enth=soil->freeze_depth[l]/soildepth[l] * (c_ice * soil->temp[l] ) + (1 - soil->freeze_depth[l]/soildepth[l]) * (c_water *soil->temp[l]+c_water2ice); //(soil->temp[l]>=0?c_water:c_ice)*soil->temp[l]+(soil->temp[l]>=0?c_water2ice:0);
-        reconcile_layer_energy_with_water_shift(soil,l,-max(grunoff-influx,0),vol_water_enth, config);
+        reconcile_layer_energy_with_water_shift(soil,l,-min(grunoff,influx),vol_water_enth, config); /* subtract runoff enth, with water having energy of above layer */
+        vol_water_enth=soil->freeze_depth[l]/soildepth[l] * (c_ice * soil->temp[l] ) + (1 - soil->freeze_depth[l]/soildepth[l]) * (c_water *soil->temp[l]+c_water2ice);
+        reconcile_layer_energy_with_water_shift(soil,l,-max(grunoff-influx,0),vol_water_enth, config); /* subtract runoff enth, with water having energy of current layer */
         runoff+=grunoff;
         lrunoff+=grunoff;
         *return_flow_b+=grunoff*(1-stand->frac_g[l]);
@@ -150,9 +150,9 @@ Real infil_perc_rain(Stand *stand,        /**< Stand pointer */
       {
         grunoff=(inactive_water[l]+soil->w[l]*soil->whcs[l])-soil->wsats[l];
         soil->w[l]-=grunoff/soil->whcs[l];
-        reconcile_layer_energy_with_water_shift(soil,l,-min(grunoff,influx),vol_water_enth, config);
+        reconcile_layer_energy_with_water_shift(soil,l,-min(grunoff,influx),vol_water_enth, config); /* subtract runoff enth, with water having energy of above layer */
         vol_water_enth=soil->freeze_depth[l]/soildepth[l] * (c_ice * soil->temp[l] ) + (1 - soil->freeze_depth[l]/soildepth[l]) * (c_water *soil->temp[l]+c_water2ice);
-        reconcile_layer_energy_with_water_shift(soil,l,-max(grunoff-influx,0),vol_water_enth, config);
+        reconcile_layer_energy_with_water_shift(soil,l,-max(grunoff-influx,0),vol_water_enth, config); /* subtract runoff enth, with water having energy of current layer */
         runoff+=grunoff;
         lrunoff+=grunoff;
         *return_flow_b+=grunoff*(1-stand->frac_g[l]);
