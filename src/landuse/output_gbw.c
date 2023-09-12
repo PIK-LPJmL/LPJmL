@@ -1,6 +1,6 @@
 /**************************************************************************************/
 /**                                                                                \n**/
-/**     o u t p u t _ g b w _ a g r i c u l t u t e _ t r e e . c                  \n**/
+/**                         o u t p u t _ g b w . c                                \n**/
 /**                                                                                \n**/
 /**     C implementation of LPJmL                                                  \n**/
 /**                                                                                \n**/
@@ -13,28 +13,24 @@
 /**************************************************************************************/
 
 #include "lpj.h"
-#include "agriculture.h"
-#include "agriculture_tree.h"
 
-void output_gbw_agriculture_tree(Output *output,      /**< output data */
-                                 const Stand *stand,                 /**< stand pointer */
-                                 Real frac_g_evap,
-                                 Real evap,                          /**< evaporation (mm) */
-                                 Real evap_blue,                     /**< evaporation of irrigation water (mm) */
-                                 Real return_flow_b,                 /**< irrigation return flows from surface runoff, lateral runoff and percolation (mm) */
-                                 const Real aet_stand[LASTLAYER],
-                                 const Real green_transp[LASTLAYER],
-                                 Real intercep_stand,                /**< stand interception (mm) */
-                                 Real intercep_stand_blue,           /**< stand interception from irrigation (mm) */
-                                 int npft,                           /**< number of natural PFTs */
-                                 int ncft,                           /**< number of CROPS */
-                                 const Config *config                /**< LPJmL configuration */
-                                )
+void output_gbw(Output *output,      /**< output data */
+                const Stand *stand,  /**< stand pointer */
+                Real frac_g_evap,
+                Real evap,           /**< evaporation (mm) */
+                Real evap_blue,      /**< evaporation of irrigation water (mm) */
+                Real return_flow_b,  /**< irrigation return flows from surface runoff, lateral runoff and percolation (mm) */
+                const Real aet_stand[LASTLAYER],
+                const Real green_transp[LASTLAYER],
+                Real intercep_stand,  /**< stand interception (mm) */
+                Real intercep_stand_blue, /**< stand interception from irrigation (mm) */
+                int index,            /**< index of output */
+                Bool irrigation,      /**< stand is irrigated (TRUE/FALSE) */
+                const Config *config /**< LPJmL configuration */
+               )
 {
-  int l,index;
+  int l;
   Real total_g,total_b;
-  Irrigation *data;
-  data=stand->data;
   total_g=total_b=0;
 
   total_g+=intercep_stand-intercep_stand_blue;
@@ -42,9 +38,6 @@ void output_gbw_agriculture_tree(Output *output,      /**< output data */
 
   total_g+=evap*frac_g_evap;
   total_b+=evap_blue;
-
-  index=agtree(ncft,config->nwptype)+data->pft_id-npft+config->nagtree+data->irrigation*getnirrig(ncft,config);
-
   forrootsoillayer(l)
   {
     total_g+=green_transp[l];
@@ -83,7 +76,7 @@ void output_gbw_agriculture_tree(Output *output,      /**< output data */
     getoutputindex(output,CFT_RETURN_FLOW_B,index,config)+=return_flow_b;
   }
 
-  if(data->irrigation)
+  if(irrigation)
   {
     getoutput(output,GCONS_IRR,config)+=total_g*stand->frac;
     getoutput(output,BCONS_IRR,config)+=total_b*stand->frac;
@@ -93,5 +86,4 @@ void output_gbw_agriculture_tree(Output *output,      /**< output data */
     getoutput(output,GCONS_RF,config)+=total_g*stand->frac;
     getoutput(output,GCONS_RF,config)+=total_b*stand->frac;
   }
-} /* of 'output_gbw_agriculture_tree' */
-
+} /* of 'output_gbw' */

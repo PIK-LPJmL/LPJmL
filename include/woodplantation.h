@@ -23,7 +23,4 @@ extern Real daily_woodplantation(Stand *, Real, const Dailyclimate *, int,int,
                                  Real, 
                                  Real, Real, Real, Real,
                                  Real, int, int, int, Bool,Real, const Config *);
-extern void output_gbw_woodplantation(Output *, const Stand *, Real, Real, Real, Real,
-                                      const Real[LASTLAYER], const Real[LASTLAYER], Real, Real, int,
-                                      const Config *);
 #endif

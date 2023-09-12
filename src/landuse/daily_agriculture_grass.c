@@ -222,14 +222,14 @@ Real daily_agriculture_grass(Stand *stand,                /**< stand pointer */
     getoutput(output,NPP,config) += npp * stand->frac;
     output->dcflux -= npp * stand->frac;
     getoutput(output,GPP,config) += gpp * stand->frac;
-    getoutput(output,FAPAR,config) += pft->fapar * stand->frac * (1.0 / (1 - stand->cell->lakefrac));
-    getoutput(output,PHEN_TMIN,config)+= pft->fpc * pft->phen_gsi.tmin * stand->frac * (1.0 / (1 - stand->cell->lakefrac));
-    getoutput(output,PHEN_TMAX,config)+= pft->fpc * pft->phen_gsi.tmax * stand->frac * (1.0 / (1 - stand->cell->lakefrac));
-    getoutput(output,PHEN_LIGHT,config)+= pft->fpc * pft->phen_gsi.light * stand->frac * (1.0 / (1 - stand->cell->lakefrac));
-    getoutput(output,PHEN_WATER,config)+= pft->fpc * pft->phen_gsi.wscal * stand->frac * (1.0 / (1 - stand->cell->lakefrac));
-    getoutput(output,WSCAL,config)+= pft->fpc * pft->wscal * stand->frac * (1.0 / (1 - stand->cell->lakefrac));
+    getoutput(output,FAPAR,config) += pft->fapar * stand->frac * (1.0 / (1 - stand->cell->lakefrac-stand->cell->ml.reservoirfrac));
+    getoutput(output,PHEN_TMIN,config)+= pft->fpc * pft->phen_gsi.tmin * stand->frac * (1.0 / (1 - stand->cell->lakefrac-stand->cell->ml.reservoirfrac));
+    getoutput(output,PHEN_TMAX,config)+= pft->fpc * pft->phen_gsi.tmax * stand->frac * (1.0 / (1 - stand->cell->lakefrac-stand->cell->ml.reservoirfrac));
+    getoutput(output,PHEN_LIGHT,config)+= pft->fpc * pft->phen_gsi.light * stand->frac * (1.0 / (1 - stand->cell->lakefrac-stand->cell->ml.reservoirfrac));
+    getoutput(output,PHEN_WATER,config)+= pft->fpc * pft->phen_gsi.wscal * stand->frac * (1.0 / (1 - stand->cell->lakefrac-stand->cell->ml.reservoirfrac));
+    getoutput(output,WSCAL,config)+= pft->fpc * pft->wscal * stand->frac * (1.0 / (1 - stand->cell->lakefrac-stand->cell->ml.reservoirfrac));
 
-    getoutputindex(output,CFT_FPAR,index,config) += (fpar(pft) * stand->frac * (1.0 / (1 - stand->cell->lakefrac)));
+    getoutputindex(output,CFT_FPAR,index,config) += (fpar(pft) * stand->frac * (1.0 / (1 - stand->cell->lakefrac-stand->cell->ml.reservoirfrac)));
 
     if (config->pft_output_scaled)
       getoutputindex(output,PFT_NPP,nnat+index,config)+=npp*stand->frac;
@@ -347,10 +347,10 @@ Real daily_agriculture_grass(Stand *stand,                /**< stand pointer */
     getoutputindex(output,CFTFRAC,index,config) += stand->frac;
     getoutputindex(output,CFT_NHARVEST,index,config) += 1.0;
   }
-  output_gbw_agriculture_tree(output, stand, frac_g_evap, evap, evap_blue,
-                               return_flow_b, aet_stand, green_transp,
-                               intercep_stand, intercep_stand_blue, npft,
-                               ncft, config);
+  output_gbw(output, stand, frac_g_evap, evap, evap_blue,
+             return_flow_b, aet_stand, green_transp,
+             intercep_stand, intercep_stand_blue,
+             index, data->irrigation, config);
   free(wet);
   return runoff;
 } /* of 'daily_agriculture_grass' */

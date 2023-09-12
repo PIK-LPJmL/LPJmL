@@ -16,6 +16,7 @@
 #include "grassland.h"
 #include "agriculture.h"
 #include "crop.h"
+#include "grass.h"
 
 static void cultcftstand(Stocks *flux_estab,  /**< establishment flux */
                          Bool *alloc_today,   /**< first allocation? (TRUE/FALSE) */

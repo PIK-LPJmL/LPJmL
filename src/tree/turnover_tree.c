@@ -74,8 +74,23 @@ Stocks turnover_tree(Litter *litter, /**< Litter pool */
     getoutput(output,LITFALLC,config)+=reprod*pft->stand->frac;
     update_fbd_tree(litter,pft->par->fuelbulkdensity,reprod,0);
     reprod=pft->bm_inc.nitrogen*treepar->reprod_cost;
-    //litter->item[pft->litter].agtop.leaf.nitrogen+=reprod;
-    //pft->bm_inc.nitrogen-=reprod;
+    pft->bm_inc.nitrogen-=reprod;
+    if(pft->establish.nitrogen<reprod)
+    {
+      reprod-=pft->establish.nitrogen;
+      getoutput(output,FLUX_ESTABN,config)-=pft->establish.nitrogen*pft->stand->frac;
+      pft->stand->cell->balance.flux_estab.nitrogen-=pft->establish.nitrogen*pft->stand->frac;
+      pft->establish.nitrogen=0;
+    }
+    else
+    {
+      getoutput(output,FLUX_ESTABN,config)-=reprod*pft->stand->frac;
+      pft->stand->cell->balance.flux_estab.nitrogen-=reprod*pft->stand->frac;
+      pft->establish.carbon-=reprod;
+      reprod=0;
+    }
+    getoutput(output,LITFALLN,config)+=reprod*pft->stand->frac;
+    litter->item[pft->litter].agtop.leaf.nitrogen+=reprod;
     if(israingreen(pft))
     {
       /* TODO what to do about N here? */

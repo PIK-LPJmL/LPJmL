@@ -580,6 +580,7 @@ void fwriteoutput(Outputfile *output,  /**< output file array */
   writeoutputvar(NH3_AGR,1);
   writeoutputvar(N2_AGR,1);
   writeoutputvar(LITFALLN_AGR,1);
+  writeoutputvar(HARVESTC_AGR,1);
   writeoutputvar(HARVESTN_AGR,1);
   writeoutputvar(SEEDN_AGR,1);
   writeoutputvar(DELTA_NORG_SOIL_AGR,1);

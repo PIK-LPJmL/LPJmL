@@ -26,8 +26,4 @@ extern Real daily_agriculture_tree(Stand *,Real,const Dailyclimate *,int,int,
 
 extern Bool annual_agriculture_tree(Stand *,int,int,Real,int,Bool,Bool,const Config *);
 
-extern void output_gbw_agriculture_tree(Output *,const Stand *,Real,Real,Real,Real,
-                                        const Real[LASTLAYER],const Real[LASTLAYER],Real,Real,int,int,
-                                        const Config *);
-
 #endif
