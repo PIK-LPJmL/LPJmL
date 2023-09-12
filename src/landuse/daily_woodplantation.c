@@ -84,12 +84,6 @@ Real daily_woodplantation(Stand *stand,       /**< stand pointer */
                   &gp_stand_leafon,gp_pft,&fpc_total_stand,config);
   if (!config->river_routing)
     irrig_amount(stand, &data->irrigation, npft, ncft,month,config);
-
-  if(config->pft_output_scaled)
-    getoutputindex(&stand->cell->output,CFT_AIRRIG,index,config)+=data->irrigation.irrig_amount*stand->cell->ml.landfrac[1].woodplantation;
-  else
-    getoutputindex(&stand->cell->output,CFT_AIRRIG,index,config)+=data->irrigation.irrig_amount;
-
   for(l=0;l<LASTLAYER;l++)
     aet_stand[l]=green_transp[l]=0;
    /* Loop over PFTs for applying fertilizer */
@@ -127,7 +121,7 @@ Real daily_woodplantation(Stand *stand,       /**< stand pointer */
       }
 #endif
       if (config->pft_output_scaled)
-        getoutputindex(&stand->cell->output,CFT_AIRRIG,index,config) += irrig_apply*stand->cell->ml.landfrac[1].woodplantation;
+        getoutputindex(&stand->cell->output,CFT_AIRRIG,index,config) += irrig_apply*stand->frac;
       else
         getoutputindex(&stand->cell->output,CFT_AIRRIG,index,config) += irrig_apply;
     }
@@ -203,9 +197,9 @@ Real daily_woodplantation(Stand *stand,       /**< stand pointer */
 #endif
    output->dcflux-=npp*stand->frac;
    getoutput(output,GPP,config)+=gpp*stand->frac;
-   getoutputindex(output,CFT_FPAR,index,config) += (fpar(pft)*stand->cell->ml.landfrac[data->irrigation.irrigation].woodplantation*(1.0 / (1 - stand->cell->lakefrac)));
+   getoutputindex(output,CFT_FPAR,index,config) += (fpar(pft)*stand->frac*(1.0 / (1 - stand->cell->lakefrac-stand->cell->ml.reservoirfrac)));
    if (config->pft_output_scaled)
-     getoutputindex(output,PFT_NPP,nnat+index,config)+=npp*stand->cell->ml.landfrac[data->irrigation.irrigation].woodplantation;
+     getoutputindex(output,PFT_NPP,nnat+index,config)+=npp*stand->frac;
    else
      getoutputindex(output,PFT_NPP,nnat+index,config)+=npp;
   } /* of foreachpft */
@@ -240,8 +234,8 @@ Real daily_woodplantation(Stand *stand,       /**< stand pointer */
   getoutput(output,RETURN_FLOW_B,config) += return_flow_b*stand->frac; /* now only changed in waterbalance_new.c*/
 
   /* output for green and blue water for evaporation, transpiration and interception */
-  output_gbw_woodplantation(output, stand, frac_g_evap, evap, evap_blue, return_flow_b, aet_stand, green_transp,
-                            intercep_stand, intercep_stand_blue, ncft, config);
+  output_gbw(output, stand, frac_g_evap, evap, evap_blue, return_flow_b, aet_stand, green_transp,
+             intercep_stand, intercep_stand_blue, index, data->irrigation.irrigation,config);
   free(wet);
   return runoff;
 } /* of 'daily_woodplantation' */
