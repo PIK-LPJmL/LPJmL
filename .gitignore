@@ -75,7 +75,6 @@ core-*
 *.lpj
 *.bin
 *.err
-*.txt
 
 # processed files
 *.Rdata
@@ -84,7 +83,6 @@ core-*
 *.N
 #*.csv
 *.CSV
-*.csv
 
 # Common desktop formats
 *.xls
