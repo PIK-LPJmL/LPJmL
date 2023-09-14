@@ -203,7 +203,8 @@ Real daily_biomass_grass(Stand *stand,                /**< stand pointer */
     gpp=water_stressed(pft,aet_stand,gp_stand,gp_stand_leafon,
                        gp_pft[getpftpar(pft,id)],&gc_pft,&rd,
                        &wet[p],eeq,co2,climate->temp,par,daylength,&wdf,
-                       npft,ncft,config);
+                       nnat+index,npft,ncft,config);
+    getoutput(output,RD,config)+=rd*stand->frac;
     if(gp_pft[getpftpar(pft,id)]>0.0)
     {
       gcgp=gc_pft/gp_pft[getpftpar(pft,id)];

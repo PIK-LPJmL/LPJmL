@@ -2,7 +2,7 @@
 /**                                                                                \n**/
 /**                   l  p  j  m  l  .  j  s                                       \n**/
 /**                                                                                \n**/
-/** Default configuration file for LPJmL C Version 5.7.1                           \n**/
+/** Default configuration file for LPJmL C Version 5.7.5                           \n**/
 /**                                                                                \n**/
 /** Configuration file is divided into five sections:                              \n**/
 /**                                                                                \n**/
@@ -175,6 +175,7 @@ ID                               Fmt                        filename
     { "id" : "npp",              "file" : { "fmt" : "raw", "name" : "output/mnpp.bin"}},
     { "id" : "gpp",              "file" : { "fmt" : "raw", "name" : "output/mgpp.bin"}},
     { "id" : "rh",               "file" : { "fmt" : "raw", "name" : "output/mrh.bin"}},
+    { "id" : "rd",               "file" : { "fmt" : "raw", "name" : "output/rd.bin"}},
     { "id" : "fapar",            "file" : { "fmt" : "raw", "name" : "output/mfapar.bin"}},
     { "id" : "transp",           "file" : { "fmt" : "raw", "name" : "output/mtransp.bin"}},
     { "id" : "runoff",           "file" : { "fmt" : "raw", "name" : "output/mrunoff.bin"}},
@@ -210,10 +211,11 @@ ID                               Fmt                        filename
     { "id" : "bnf",              "file" : { "fmt" : "raw", "name" : "output/mbnf.bin"}},
     { "id" : "n_immo",           "file" : { "fmt" : "raw", "name" : "output/mn_immo.bin"}},
     { "id" : "pft_ndemand",      "file" : { "fmt" : "raw", "name" : "output/pft_ndemand.bin"}},
-    { "id" : "nfert_agr",      "file" : { "fmt" : "raw", "name" : "output/nfert_agr.bin"}},
+    { "id" : "nfert_agr",        "file" : { "fmt" : "raw", "name" : "output/nfert_agr.bin"}},
     { "id" : "firen",            "file" : { "fmt" : "raw", "name" : "output/firen.bin"}},
     { "id" : "n_mineralization", "file" : { "fmt" : "raw", "name" : "output/mn_mineralization.bin"}},
     { "id" : "n_volatilization", "file" : { "fmt" : "raw", "name" : "output/mn_volatilization.bin"}},
+    { "id" : "ndepos",           "file" : { "fmt" : "raw", "name" : "output/ndepos.bin"}},
     { "id" : "pft_nlimit",       "file" : { "fmt" : "raw", "name" : "output/pft_nlimit.bin"}},
     { "id" : "pft_vegn",         "file" : { "fmt" : "raw", "name" : "output/pft_vegn.bin"}},
     { "id" : "pft_cleaf",        "file" : { "fmt" : "raw", "name" : "output/pft_cleaf.bin"}},
@@ -225,6 +227,7 @@ ID                               Fmt                        filename
     { "id" : "pft_nsapw",        "file" : { "fmt" : "raw", "name" : "output/pft_nsapw.bin"}},
     { "id" : "pft_chawo",        "file" : { "fmt" : "raw", "name" : "output/pft_chawo.bin"}},
     { "id" : "pft_nhawo",        "file" : { "fmt" : "raw", "name" : "output/pft_nhawo.bin"}},
+    { "id" : "pft_water_demand", "file" : { "fmt" : "raw", "name" : "output/pft_water_demand.bin"}},
 #ifdef WITH_SPITFIRE
     { "id" : "firec",            "file" : { "fmt" : "raw", "timestep" : "monthly" , "unit" : "gC/m2/month", "name" : "output/mfirec.bin"}},
     { "id" : "nfire",            "file" : { "fmt" : "raw", "name" : "output/mnfire.bin"}},

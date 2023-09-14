@@ -19,6 +19,55 @@ of `major.minor.patch` with
 
 ## [Unreleased]
 
+## [5.7.5] - 2023-08-23
+
+### Added
+
+- outputs:
+  - IRRIG_STOR
+  - RIVERVOL
+  - SWC_VOL
+ 
+### Changed:
+
+- unit of output RES_STORAGE changed from hm3 to dm3 to be in line with IRRIG_STOR, RIVERVOL, LAKEVOL, SWC_VOL
+
+### Fixed
+
+- check for land-use fractions to not exceed 100% after scaling with `landfrac`, re-scale to 100%, print warning see [!173](https://gitlab.pik-potsdam.de/lpjml/LPJmL_internal/-/merge_requests/173)
+- add turnover before allocation in cultcftstand to prevent sporadic C balance errors when running with intercrops, see[!175](https://gitlab.pik-potsdam.de/lpjml/LPJmL_internal/-/merge_requests/175)
+- number of wet days not read if daily precipitation input is used. A warning is additionally printed to set `"random_prec"` to false.
+- boolean `"river_routing"` is read before `"with_lakes"` flag to avoid uninitialized variable.
+
+
+## [5.7.4] - 2023-08-17
+
+### Changed
+
+- changed quadratic soil evaporation function to sigmoid form and a minimum amount of evaporation of 5% of the available energy, following [Sun et al. 2013](http://dx.doi.org/10.1080/17538947.2013.783635), as described in [!168](https://gitlab.pik-potsdam.de/lpjml/LPJmL_internal/-/merge_requests/168)
+
+## [5.7.3] - 2023-08-16
+
+### Fixed
+
+- correct accounting of blue water transpiration on agriculture stands in outputs
+- missing variable initialization for bioenergy grass
+- landuse change from irrigated to rainfed setaside moved area to wrong target setaside
+
+
+## [5.7.2] - 2023-08-11
+
+### Changed:
+
+- removed timestep attributes (monthly/annual) in all output descriptions that are not timestep specific
+
+### Added 
+
+- outputs:
+  - PFT_WATER_DEMAND: PFT specific water demand
+  - RD: dark respiration
+  - NDEPOS: total N deposition as sum of NH4 and NO3 deposition
+
 ## [5.7.1] - 2023-08-10
 
 ### Fixed

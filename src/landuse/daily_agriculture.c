@@ -293,8 +293,8 @@ Real daily_agriculture(Stand *stand,                /**< [inout] stand pointer *
     gpp=water_stressed(pft,aet_stand,gp_stand,gp_stand_leafon,
                        gp_pft[getpftpar(pft,id)],&gc_pft,&rd,
                        &wet[p],eeq,co2,climate->temp,par,daylength,&wdf,
-                       npft,ncft,config);
-
+                       nnat+index,npft,ncft,config);
+    getoutput(output,RD,config)+=rd*stand->frac;
     if(gp_pft[getpftpar(pft,id)]>0.0)
     {
       getoutputindex(output,PFT_GCGP_COUNT,nnat+index,config)++;
@@ -400,7 +400,7 @@ Real daily_agriculture(Stand *stand,                /**< [inout] stand pointer *
   forrootsoillayer(l)
   {
     transp+=aet_stand[l]*stand->frac;
-    getoutput(output,TRANSP,config)+=(aet_stand[l]-green_transp[l])*stand->frac;
+    getoutput(output,TRANSP_B,config)+=(aet_stand[l]-green_transp[l])*stand->frac;
   }
 
   /* calculate net irrigation requirements (NIR) for next days irrigation */
