@@ -117,26 +117,31 @@ Real nuptake_grass(Pft *pft,             /**< pointer to PFT data */
   {
     data=pft->stand->data;
     autofert_n=*n_plant_demand-(vegn_sum_grass(pft)+pft->bm_inc.nitrogen);
-    n_uptake += autofert_n;
-    pft->bm_inc.nitrogen += autofert_n;
-    pft->vscal+=1;
-    pft->stand->cell->balance.influx.nitrogen += autofert_n*pft->stand->frac;
-    getoutput(&pft->stand->cell->output,FLUX_AUTOFERT,config)+=autofert_n*pft->stand->frac;
-    switch(pft->stand->type->landusetype)
+    if(autofert_n>0)
     {
-      case GRASSLAND:
-        getoutputindex(&pft->stand->cell->output,CFT_NFERT,rmgrass(ncft)+data->irrigation*nirrig,config)+=autofert_n;
-        break;
-      case OTHERS:
-        getoutputindex(&pft->stand->cell->output,CFT_NFERT,rothers(ncft)+data->irrigation*nirrig,config)+=autofert_n;
-        break;
-      case BIOMASS_GRASS:
-        getoutputindex(&pft->stand->cell->output,CFT_NFERT,rbgrass(ncft)+data->irrigation*nirrig,config)+=autofert_n;
-        break;
-      case AGRICULTURE_GRASS:
-        getoutputindex(&pft->stand->cell->output,CFT_NFERT,data->pft_id-npft+config->nagtree+agtree(ncft,config->nwptype)+data->irrigation*nirrig,config)+=autofert_n;
-        break;
+      n_uptake += autofert_n;
+      pft->bm_inc.nitrogen += autofert_n;
+      pft->vscal+=1;
+      pft->stand->cell->balance.influx.nitrogen += autofert_n*pft->stand->frac;
+      getoutput(&pft->stand->cell->output,FLUX_AUTOFERT,config)+=autofert_n*pft->stand->frac;
+      switch(pft->stand->type->landusetype)
+      {
+        case GRASSLAND:
+          getoutputindex(&pft->stand->cell->output,CFT_NFERT,rmgrass(ncft)+data->irrigation*nirrig,config)+=autofert_n;
+          break;
+        case OTHERS:
+          getoutputindex(&pft->stand->cell->output,CFT_NFERT,rothers(ncft)+data->irrigation*nirrig,config)+=autofert_n;
+          break;
+        case BIOMASS_GRASS:
+          getoutputindex(&pft->stand->cell->output,CFT_NFERT,rbgrass(ncft)+data->irrigation*nirrig,config)+=autofert_n;
+          break;
+        case AGRICULTURE_GRASS:
+          getoutputindex(&pft->stand->cell->output,CFT_NFERT,data->pft_id-npft+config->nagtree+agtree(ncft,config->nwptype)+data->irrigation*nirrig,config)+=autofert_n;
+          break;
+      }
     }
+    pft->vscal+=1;
+    pft->npp_bnf=0.0;
   }
   else
   {
