@@ -19,6 +19,26 @@ of `major.minor.patch` with
 
 ## [Unreleased]
 
+## [5.7.7] - 2023-09-20
+
+### Contributor
+
+- Werner von Bloh (bloh@pik-potsdam.de)
+
+### Added
+
+- grassland specific variables `deficit_lsu_ne` and `deficit_lsu_mp` added to `fprint_grassland.c` and therefore are printed by `lpjprint`.
+
+### Removed
+
+- obsolete definition of constants removed in `conf.h`.
+
+### Fixed
+
+- division by zero resulting in a floating point exception if lpjml is run with `-fpe` option fixed in `littersom.c` and `harvest_stand.c`.
+- index in `"cft_nir"` output is now correctly calculated for `agriculture_tree`/`agrculture_grass` stands in `distribute_water.c`.
+
+
 ## [5.7.6] - 2023-09-11
 
 ### Added
