@@ -121,7 +121,6 @@ Real nuptake_grass(Pft *pft,             /**< pointer to PFT data */
     {
       n_uptake += autofert_n;
       pft->bm_inc.nitrogen += autofert_n;
-      pft->vscal+=1;
       pft->stand->cell->balance.influx.nitrogen += autofert_n*pft->stand->frac;
       getoutput(&pft->stand->cell->output,FLUX_AUTOFERT,config)+=autofert_n*pft->stand->frac;
       switch(pft->stand->type->landusetype)
