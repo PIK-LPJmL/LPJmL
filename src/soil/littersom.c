@@ -146,9 +146,9 @@ Stocks littersom(Stand *stand,                /**< pointer to stand data */
         {
           fnlim=max(0,(soil->NH4[l]+flux_soil[l].fast.nitrogen+flux_soil[l].slow.nitrogen)/fn_som);
         }*/
-        if(soil->pool[l].slow.carbon!=0)
+        if(soil->pool[l].slow.carbon>epsilon)
           soil->decay_rate[l].slow+=flux_soil[l].slow.carbon/soil->pool[l].slow.carbon;
-        if(soil->pool[l].fast.carbon!=0)
+        if(soil->pool[l].fast.carbon>epsilon)
           soil->decay_rate[l].fast+=flux_soil[l].fast.carbon/soil->pool[l].fast.carbon;
 
         soil->pool[l].slow.carbon-=flux_soil[l].slow.carbon;
