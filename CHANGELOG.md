@@ -41,7 +41,7 @@ of `major.minor.patch` with
 
 - `pft->npp_bnf` set to zero for the auto fertilization setting in the N uptake functions. Fertilization only applied if N deficit is greater than zero.
 
- 
+
 ## [5.7.6] - 2023-09-11
 
 ### Added
