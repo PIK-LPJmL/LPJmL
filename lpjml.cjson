@@ -49,7 +49,11 @@
   "johansen" : true,        /* enable johansen way of temp. conductivity in soils (see src/soil/soilconduct.c) */
   "soilpar_option" : "no_fixed_soilpar", /* calculation of soil parameters, options "no_fixed_soilpar", "fixed_soilpar", "prescribed_soilpar" */
   "soilpar_fixyear" : 1900, /* year to fix soilpars for soilpar_option fixed_soilpar */
+  #ifdef WITHOUT_NITROGEN
+  "with_nitrogen" : "no",   /* options: "no", "lim", "unlim" */
+  #else
   "with_nitrogen" : "lim",  /* options: "no", "lim", "unlim" */
+  #endif
   "store_climate" : true,   /* store climate data in spin-up phase */
   "landfrac_from_file" : true, /* read cell area from file (true/false) */
   "shuffle_spinup_climate" : true, /* shuffle spinup climate and/or climate in fix_climate run */
@@ -130,7 +134,11 @@
 
   /* LPJmL parameter file */
   "param" :
+#ifdef WITHOUT_NITROGEN
+    #include "par/lpjparam_non.cjson"
+#else
     #include "par/lpjparam.cjson"
+#endif
   ,
 
   /* Soil parameter file */
@@ -140,7 +148,11 @@
 
   /* PFT parameter file*/
   "pftpar" :
+ #ifdef WITHOUT_NITROGEN
+    #include "par/pft_non.cjson"
+#else
     #include "par/pft.cjson"
+#endif
   ,
 
   /* Management parameter file */
