@@ -1269,7 +1269,7 @@ void landusechange(Cell *cell,          /**< pointer to cell */
       deforest(cell,difffrac,intercrop,npft,FALSE,i,FALSE,ncft,year,minnatfrac_luc,config);  /*deforestation*/
 
 #ifdef CHECK_BALANCE
-  fprintf(stderr,"LANDUSECHANGE difffrac: %g cropfrac_rf: %g cropfrac_ir: %g cropfrac_wl: %g difffrac_rice: %g grassfrac: %g irrgation:%d \n",difffrac,cell->ml.cropfrac_rf,cell->ml.cropfrac_ir,cell->ml.cropfrac_wl[i],difffrac_rice[i],grassfrac, i);
+  //fprintf(stderr,"LANDUSECHANGE difffrac: %g cropfrac_rf: %g cropfrac_ir: %g cropfrac_wl: %g difffrac_rice: %g grassfrac: %g irrgation:%d \n",difffrac,cell->ml.cropfrac_rf,cell->ml.cropfrac_ir,cell->ml.cropfrac_wl[i],difffrac_rice[i],grassfrac, i);
 #endif
 
     /* pasture */
@@ -1287,7 +1287,7 @@ void landusechange(Cell *cell,          /**< pointer to cell */
       else if(difffrac<-epsilon)
         landexpansion(cell,difffrac,npft,stand,irrigation,cultivation_type,0,ncft,year,config);       /*grassland will be expanded*/
 #ifdef CHECK_BALANCE
-    fprintf(stderr,"landexp./grassred difffrac: %g s= %d\n",difffrac,s);
+    //fprintf(stderr,"landexp./grassred difffrac: %g s= %d\n",difffrac,s);
 #endif
     }
     else if(grassfrac>epsilon)                                                                       /*no GRASSLAND changes=-grassfrac */
@@ -1485,8 +1485,8 @@ void landusechange(Cell *cell,          /**< pointer to cell */
      foreachstand(checkstand,s,cell->standlist)
        fprintf(stderr,"standNr: %d type %s frac:%g diff:%g carbon:%g methane:%g flux_estab: %g\n",s,checkstand->type->name,checkstand->frac,difffrac,standstocks(checkstand).carbon*checkstand->frac,soilmethane(&checkstand->soil)*WC/WCH4*checkstand->frac,cell->balance.flux_estab.carbon);
   }
-  if (fabs(water_before - water_after)>0.01)
-    fprintf(stderr, "W_ERROR in landusechange: %g start:%g  end:%g \n", water_before - water_after, water_before, water_after);
+//  if (fabs(water_before - water_after)>0.01)
+//    fprintf(stderr, "W_ERROR in landusechange (1455): %g start:%g  end:%g \n", water_before - water_after, water_before, water_after);
 #endif
 
 } /* of 'landusechange' */

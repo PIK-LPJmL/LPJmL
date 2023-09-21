@@ -452,10 +452,10 @@ foreachstand(checkstand,k,cell->standlist)
   if(cropstand!=checkstand)
     end+=(standstocks(checkstand).carbon*checkstand->frac+soilmethane(&checkstand->soil)*WC/WCH4*checkstand->frac);
 }
-if (fabs(start-end)>0.01)
+if (fabs(end-start-flux_estab.carbon*cropstand->frac)>0.01)
 {
-  fprintf(stderr, "C_ERROR in SETASIDE after mixsetaside: %g start:%g  end:%g s;%d \n",
-         start-end,start, end,s);
+  fprintf(stderr, "C_ERROR in SETASIDE after mixsetaside: %g start: %g  end: %g s: %d flux_estab.carbon: %g \n",
+         end-start-flux_estab.carbon*cropstand->frac,start, end,s,flux_estab.carbon*cropstand->frac);
   foreachstand(checkstand,k,cell->standlist)
     fprintf(stderr,"type %d frac:%g id:%d carbon:%g methan:%g\n",checkstand->type->landusetype,checkstand->frac,k,standstocks(checkstand).carbon*checkstand->frac,soilmethane(&checkstand->soil)*WC/WCH4*checkstand->frac);
 }
@@ -479,10 +479,10 @@ if (fabs(start-end)>0.01)
   foreachstand(checkstand,s,cell->standlist)
     end+=(standstocks(checkstand).carbon*checkstand->frac+soilmethane(&checkstand->soil)*WC/WCH4*checkstand->frac);
 
-  if (fabs(start-end)>0.01)
+  if (fabs(end-start)>0.01)
   {
      fprintf(stderr, "C_ERROR in SETASIDE: %g start:%g  end:%g\n",
-             start-end,start, end);
+             end-start,start, end);
      foreachstand(checkstand,s,cell->standlist)
        fprintf(stderr,"type %d frac:%g carbon:%g flux_estab:%g \n",checkstand->type->landusetype,checkstand->frac,
            (standstocks(checkstand).carbon*checkstand->frac+soilmethane(&checkstand->soil)*WC/WCH4*checkstand->frac),cell->balance.flux_estab.carbon);

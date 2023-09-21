@@ -575,7 +575,7 @@ Bool getlanduse(Landuse landuse,     /**< Pointer to landuse data */
     }
     
     /* force tinyfrac for all crops only on pixels with valid soil */
-    if (config->withlanduse==ALL_CROPS && !grid[cell].skip && soiltype!=ROCK && soiltype!=ICE && soiltype >= 0)
+    if (config->withlanduse==ALL_CROPS  && !grid[cell].skip && soiltype!=ROCK && soiltype!=ICE && soiltype >= 0)
     {
       for(j=0; j<ncft; j++)
       {

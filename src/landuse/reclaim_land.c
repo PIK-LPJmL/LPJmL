@@ -30,7 +30,7 @@ void remove_vegetation_copy(Soil *soil, /* soil pointer */
   Real nind, sfrac=1;
   Real ftimber; /* fraction harvested for timber */
   Stocks harvest;
-  Stocks stocks;
+  Stocks stocks={0,0};
   Stocks trad_biofuel;
   if(usefrac==TRUE)
     sfrac=standfrac;
@@ -139,7 +139,8 @@ void remove_vegetation_copy(Soil *soil, /* soil pointer */
     }
 #endif
     /* rest goes to litter */
-    soil->litter.item[pft->litter].agtop.leaf.carbon+=pft->bm_inc.carbon*sfrac;
+    if(stand->type->landusetype!=AGRICULTURE)
+      soil->litter.item[pft->litter].agtop.leaf.carbon+=pft->bm_inc.carbon*sfrac;
     litter_update(&soil->litter,pft,nind*sfrac,config);
 #ifdef DEBUG_IMAGE_CELL
     if(ftimber>0 ||

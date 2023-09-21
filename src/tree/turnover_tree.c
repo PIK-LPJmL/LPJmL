@@ -48,9 +48,9 @@ Stocks turnover_tree(Litter *litter, /**< Litter pool */
   output=&pft->stand->cell->output;
 #ifdef CHECK_BALANCE
   sum_before=litterstocks(litter);
-  sum_before.carbon+=vegc_sum_tree(pft)+pft->bm_inc.carbon;
-  sum_before.nitrogen+=vegn_sum_tree(pft)+pft->bm_inc.nitrogen;
-  turn_diff.carbon=tree->turn_nbminc;
+  sum_before.carbon+=vegc_sum_tree(pft)+pft->bm_inc.carbon-pft->establish.carbon;
+  sum_before.nitrogen+=vegn_sum_tree(pft)+pft->bm_inc.nitrogen-pft->establish.nitrogen;
+  turn_diff.nitrogen=tree->turn_nbminc;
 #endif
   cmass_excess=0;
   /* reproduction */
@@ -169,10 +169,10 @@ Stocks turnover_tree(Litter *litter, /**< Litter pool */
   sum.nitrogen=turn.leaf.nitrogen+turn.sapwood.nitrogen+turn.root.nitrogen;
 #ifdef CHECK_BALANCE
   sum_after=litterstocks(litter);
-  sum_after.carbon+=vegc_sum_tree(pft)+pft->bm_inc.carbon;
-  sum_after.nitrogen+=vegn_sum_tree(pft)+pft->bm_inc.nitrogen;
+  sum_after.carbon+=vegc_sum_tree(pft)+pft->bm_inc.carbon-pft->establish.carbon;
+  sum_after.nitrogen+=vegn_sum_tree(pft)+pft->bm_inc.nitrogen-pft->establish.nitrogen;
   if(fabs(sum_after.carbon-sum_before.carbon)>0.001)
-    fprintf(stderr,"C_ERROR in turnover_tree %g!=%g turn_diff: %g in turnover_tree() for %s\n",sum_after.carbon,sum_before.carbon,turn_diff.carbon,pft->par->name);
+    fprintf(stderr,"C_ERROR in turnover_tree %g!=%g bm_inc.carbon: %g in turnover_tree() for %s\n",sum_after.carbon,sum_before.carbon,pft->bm_inc.carbon,pft->par->name);
   if(fabs(sum_after.nitrogen-sum_before.nitrogen)>0.001)
     fprintf(stderr,"N_ERROR in turnover_tree %g!=%g turn_diff: %g in turnover_tree() for %s\n",sum_after.nitrogen,sum_before.nitrogen,turn_diff.nitrogen,pft->par->name);
 

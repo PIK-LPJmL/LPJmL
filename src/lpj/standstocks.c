@@ -36,6 +36,8 @@ Stocks standstocks(const Stand *stand /**< pointer to stand */
     tot.nitrogen+=vegn_sum(pft)+pft->bm_inc.nitrogen; /* sum up nitrogen in PFTs */
     if(pft->par->cultivation_type==ANNUAL_CROP)
       tot.nitrogen-=pft->bm_inc.nitrogen;
+    if(stand->type->landusetype==OTHERS && pft->par->type==CROP)
+      tot.carbon-=pft->bm_inc.carbon;
   }
   return tot;
 } /* of 'standstocks' */

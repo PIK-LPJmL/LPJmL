@@ -66,7 +66,8 @@ Bool allocation_grass(Litter *litter,   /**< litter pool */
 
   pft->wscal_mean=pft->vscal=0;
   /* daily allocation for new grasslands */
-  if(pft->stand->type->landusetype==GRASSLAND || pft->stand->type->landusetype==OTHERS || pft->stand->type->landusetype==BIOMASS_GRASS || pft->stand->type->landusetype==SETASIDE_IR || pft->stand->type->landusetype==SETASIDE_RF)
+  if(pft->stand->type->landusetype==GRASSLAND || pft->stand->type->landusetype==OTHERS || pft->stand->type->landusetype==BIOMASS_GRASS ||
+      pft->stand->type->landusetype==SETASIDE_IR || pft->stand->type->landusetype==SETASIDE_RF || pft->stand->type->landusetype==SETASIDE_WETLAND)
   {
     /* otherwise there wouldn't be any growth */
     lmtorm=max(lmtorm,0.25);

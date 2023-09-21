@@ -26,8 +26,9 @@ Stocks sowing(Cell *cell,          /**< cell pointer */
   Stocks flux_estab={0,0};
 #ifdef CHECK_BALANCE
   Stand *stand;
+  Stocks flux;
   Real end, start;
-  Real flux_carbon=cell->balance.flux_estab.carbon;   //is added in cultivate as manure
+  flux.carbon=cell->balance.anpp+cell->balance.influx.carbon+cell->balance.flux_estab.carbon+flux_estab.carbon;   //is added in cultivate as manure
   int s;
   start=end=0;
   foreachstand(stand,s,cell->standlist)
@@ -49,14 +50,14 @@ Stocks sowing(Cell *cell,          /**< cell pointer */
     flux_estab=sowing_prescribe(cell,day,npft,ncft,year,config);
   getoutput(&cell->output,SEEDN_AGR,config)+=flux_estab.nitrogen;
 #ifdef CHECK_BALANCE
-  flux_carbon=cell->balance.flux_estab.carbon-flux_carbon;
+  flux.carbon=(cell->balance.anpp+cell->balance.influx.carbon+cell->balance.flux_estab.carbon+flux_estab.carbon)-flux.carbon;
   foreachstand(stand,s,cell->standlist)
   {
     end+=(standstocks(stand).carbon + soilmethane(&stand->soil)*WC/WCH4)*stand->frac;
   }
-  if (fabs(end-start-flux_estab.carbon-flux_carbon)>0.001)
+  if (fabs(end-start-flux.carbon)>0.001)
          fprintf(stdout, "C_ERROR-in sowing: day: %d    %g start: %.3f  end: %.3f flux_estab.carbon: %g flux_carbon: %g \n",
-           day,end-start-flux_estab.carbon-flux_carbon,start, end,flux_estab.carbon,flux_carbon);
+           day,end-start-flux.carbon,start, end,flux_estab.carbon,flux.carbon);
 
 #endif
   return flux_estab;
