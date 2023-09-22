@@ -273,13 +273,13 @@ void distribute_water(Cell *cell,            /**< pointer to LPJ cell */
           case AGRICULTURE_GRASS: case AGRICULTURE_TREE:
             if(config->pft_output_scaled)
             {
-              getoutputindex(&cell->output, CFT_CONV_LOSS_EVAP ,agtree(ncft,config->nwptype)+data->pft_id-npft+nirrig,config)+=conv_loss*data->conv_evap*stand->frac;
-              getoutputindex(&cell->output, CFT_CONV_LOSS_DRAIN ,agtree(ncft,config->nwptype)+data->pft_id-npft+nirrig,config)+=conv_loss*(1 - data->conv_evap)*stand->frac;
+              getoutputindex(&cell->output, CFT_CONV_LOSS_EVAP ,agtree(ncft,config->nwptype)+data->pft_id-npft+config->nagtree+nirrig,config)+=conv_loss*data->conv_evap*stand->frac;
+              getoutputindex(&cell->output, CFT_CONV_LOSS_DRAIN ,agtree(ncft,config->nwptype)+data->pft_id-npft+config->nagtree+nirrig,config)+=conv_loss*(1 - data->conv_evap)*stand->frac;
             }
             else
             {
-              getoutputindex(&cell->output, CFT_CONV_LOSS_EVAP ,agtree(ncft,config->nwptype)+data->pft_id-npft+nirrig,config)+=conv_loss*data->conv_evap;
-              getoutputindex(&cell->output, CFT_CONV_LOSS_DRAIN ,agtree(ncft,config->nwptype)+data->pft_id-npft+nirrig,config)+=conv_loss*(1 - data->conv_evap);
+              getoutputindex(&cell->output, CFT_CONV_LOSS_EVAP ,agtree(ncft,config->nwptype)+data->pft_id-npft+config->nagtree+nirrig,config)+=conv_loss*data->conv_evap;
+              getoutputindex(&cell->output, CFT_CONV_LOSS_DRAIN ,agtree(ncft,config->nwptype)+data->pft_id-npft+config->nagtree+nirrig,config)+=conv_loss*(1 - data->conv_evap);
             }
             break;
           default:
