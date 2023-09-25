@@ -19,6 +19,19 @@ of `major.minor.patch` with
 
 ## [Unreleased]
 
+## [5.7.8] - 2023-09-22
+
+### Contributors
+
+- author: Sebastian Ostberg (ostberg@pik-potsdam.de)
+- code review: Christoph Mueller (cmueller@pik-potsdam.de), Jannes Breier (breier@pik-potsdam.de)
+
+### Fixed
+
+- bug in `landusechange.c` where land transfers between rainfed and irrigated setaside stands were not taken into account when determining rainfed and irrigated areas to deforest/regrow
+- false positive carbon balance errors in `turnover_tree.c` if the code is compiled with `CHECK_BALANCE` switch
+
+
 ## [5.7.7] - 2023-09-20
 
 ### Contributors
