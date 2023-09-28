@@ -117,12 +117,10 @@ Stocks littersom(Stand *stand,                      /**< [inout] pointer to stan
   Real dKOVCON,NH4_mineral;
   Pool soilold[LASTLAYER];
   Stocks soilall[LASTLAYER];
+  soil=&stand->soil;
 #ifdef CHECK_BALANCE
   Stocks start;
   Stocks end;
-#endif
-  soil=&stand->soil;
-#ifdef CHECK_BALANCE
   start = soilstocks(soil);
   start.carbon+=soilmethane(soil)*WC/WCH4;
 #endif

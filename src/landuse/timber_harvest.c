@@ -115,7 +115,7 @@ Stocks timber_harvest(Pft *pft,      /**< Pointer to tree PFT */
   harvest.nitrogen=(tree->ind.heartwood.nitrogen+tree->ind.sapwood.nitrogen*2.0/3.0)*
                  ftimber*(*nind)*standfrac;
   trad_biofuel->carbon=trad_biofuel->nitrogen=0;
-  biofuel=0;
+  biofuel=0;  // be careful trad_biofuel needs to be calculated see line 125 standfrac not used line 71/72 why?
   pft->stand->cell->ml.product.fast.nitrogen+=harvest.nitrogen*f.fast;
   pft->stand->cell->ml.product.slow.nitrogen+=harvest.nitrogen*f.slow;
   pft->stand->cell->ml.product.fast.carbon+=harvest.carbon*f.fast;
@@ -141,6 +141,7 @@ Stocks timber_harvest(Pft *pft,      /**< Pointer to tree PFT */
                                          ftimber*(*nind)*treepar->fuelfrac[i]*standfrac;
     getoutput(output,LITFALLC_WOOD,config)+=(tree->ind.sapwood.carbon/3.0-tree->ind.debt.carbon+tree->excess_carbon)*
                                          ftimber*(*nind)*treepar->fuelfrac[i]*standfrac;
+
     soil->litter.item[pft->litter].agtop.wood[i].nitrogen+=(tree->ind.sapwood.nitrogen/3.0-tree->ind.debt.nitrogen)*
                                          ftimber*(*nind)*treepar->fuelfrac[i];
     getoutput(output,LITFALLN,config)+=(tree->ind.sapwood.nitrogen/3.0-tree->ind.debt.nitrogen)*

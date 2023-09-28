@@ -174,9 +174,9 @@ Bool annual_natural(Stand *stand,         /**< Pointer to stand */
     //    foreachpft(pft,p,&stand->pftlist)
     //        fprintf(stderr, "\nPFT:%s bm_inc.N=%g vegN=%g soilN=%g establish.nitrogen=%g\n",pft->par->name,
     //                 pft->bm_inc.nitrogen,vegn_sum(pft),soilstocks(&stand->soil).nitrogen,pft->establish.nitrogen);
-    fprintf(stderr, "N_ERROR: annual natural end %g start:%g  end:%g flux_in: %g flux_out %g  bm_inc: %g\n \n \n",
+    fprintf(stderr, "N_ERROR: annual natural end %g start:%g  end:%g flux_in: %g flux_out %g  bm_inc: %g standfrac: %g landusetype: %s\n \n \n",
         end-start.nitrogen+fluxes_out.nitrogen-fluxes_in.nitrogen, start.nitrogen,end,
-        fluxes_in.nitrogen, fluxes_out.nitrogen, bm_inc.nitrogen);
+        fluxes_in.nitrogen, fluxes_out.nitrogen, bm_inc.nitrogen,stand->frac, stand->type->name);
   }
 #endif
   foreachpft(pft,p,&stand->pftlist)

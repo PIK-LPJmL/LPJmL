@@ -26,15 +26,26 @@ Stocks sowing(Cell *cell,          /**< cell pointer */
   Stocks flux_estab={0,0};
 #ifdef CHECK_BALANCE
   Stand *stand;
-  Stocks flux;
-  Real end, start;
-  flux.carbon=cell->balance.anpp+cell->balance.influx.carbon+cell->balance.flux_estab.carbon+flux_estab.carbon;   //is added in cultivate as manure
+  Stocks start={0,0};
+  Stocks fluxes_in,fluxes_out;
+  Real end,CH4_fluxes;
   int s;
-  start=end=0;
+
+  fluxes_in.carbon=cell->balance.anpp+cell->balance.flux_estab.carbon+cell->balance.influx.carbon; //influxes
+  fluxes_out.carbon=cell->balance.arh+cell->balance.fire.carbon+cell->balance.flux_firewood.carbon+cell->balance.neg_fluxes.carbon+cell->balance.flux_harvest.carbon+cell->balance.biomass_yield.carbon; //outfluxes
+  fluxes_in.nitrogen=cell->balance.flux_estab.nitrogen+cell->balance.influx.nitrogen; //influxes
+  fluxes_out.nitrogen=cell->balance.fire.nitrogen+cell->balance.flux_firewood.nitrogen+cell->balance.n_outflux+cell->balance.neg_fluxes.nitrogen
+      +cell->balance.flux_harvest.nitrogen+cell->balance.biomass_yield.nitrogen+cell->balance.deforest_emissions.nitrogen; //outfluxes
+  CH4_fluxes=(cell->balance.aCH4_em+cell->balance.aCH4_sink)*WC/WCH4;                                 //will be negative, because emissions at the end are higher, thus we have to substract
   foreachstand(stand,s,cell->standlist)
   {
-    start+=(standstocks(stand).carbon + soilmethane(&stand->soil)*WC/WCH4)*stand->frac;
+     start.carbon+=(standstocks(stand).carbon + soilmethane(&stand->soil)*WC/WCH4)*stand->frac;
+     start.nitrogen+=standstocks(stand).nitrogen*stand->frac;
   }
+  start.carbon+=cell->ml.product.fast.carbon+cell->ml.product.slow.carbon+
+      cell->balance.estab_storage_grass[0].carbon+cell->balance.estab_storage_tree[0].carbon+cell->balance.estab_storage_grass[1].carbon+cell->balance.estab_storage_tree[1].carbon;
+  start.nitrogen+=cell->ml.product.fast.nitrogen+cell->ml.product.slow.nitrogen+
+      cell->balance.estab_storage_grass[0].nitrogen+cell->balance.estab_storage_tree[0].nitrogen+cell->balance.estab_storage_grass[1].nitrogen+cell->balance.estab_storage_tree[1].nitrogen;
 #endif
   if(config->sdate_option==NO_FIXED_SDATE ||
     (config->sdate_option==FIXED_SDATE && year<=config->sdate_fixyear))
@@ -50,15 +61,34 @@ Stocks sowing(Cell *cell,          /**< cell pointer */
     flux_estab=sowing_prescribe(cell,day,npft,ncft,year,config);
   getoutput(&cell->output,SEEDN_AGR,config)+=flux_estab.nitrogen;
 #ifdef CHECK_BALANCE
-  flux.carbon=(cell->balance.anpp+cell->balance.influx.carbon+cell->balance.flux_estab.carbon+flux_estab.carbon)-flux.carbon;
+  end=0;
+  fluxes_out.carbon=(cell->balance.arh+cell->balance.fire.carbon+cell->balance.flux_firewood.carbon+cell->balance.neg_fluxes.carbon
+                   +cell->balance.flux_harvest.carbon+cell->balance.biomass_yield.carbon)-fluxes_out.carbon; //outfluxes
+  fluxes_in.carbon=(cell->balance.anpp+cell->balance.flux_estab.carbon+cell->balance.influx.carbon)-fluxes_in.carbon;
+  CH4_fluxes-=(cell->balance.aCH4_em+cell->balance.aCH4_sink)*WC/WCH4;                                 //will be negative, because emissions at the end are higher, thus we have to substract
   foreachstand(stand,s,cell->standlist)
   {
     end+=(standstocks(stand).carbon + soilmethane(&stand->soil)*WC/WCH4)*stand->frac;
   }
-  if (fabs(end-start-flux.carbon)>0.001)
-         fprintf(stdout, "C_ERROR-in sowing: day: %d    %g start: %.3f  end: %.3f flux_estab.carbon: %g flux_carbon: %g \n",
-           day,end-start-flux.carbon,start, end,flux_estab.carbon,flux.carbon);
+  end+=cell->ml.product.fast.carbon+cell->ml.product.slow.carbon+
+       cell->balance.estab_storage_grass[0].carbon+cell->balance.estab_storage_tree[0].carbon+cell->balance.estab_storage_grass[1].carbon+cell->balance.estab_storage_tree[1].carbon;
+  if(fabs(end-start.carbon-CH4_fluxes+fluxes_out.carbon-fluxes_in.carbon-flux_estab.carbon)>0.001)
+  {
+         fprintf(stdout, "C_ERROR-in sowing: day: %d    %g start: %g end: %g flux_out.carbon: %g fluxes_in.carbon: %g flux_estab.carbon: %g CH4_fluxes: %g \n",
+           day,end-start.carbon-CH4_fluxes+fluxes_out.carbon-fluxes_in.carbon-flux_estab.carbon,start.carbon,end,fluxes_out.carbon,fluxes_in.carbon,flux_estab.carbon,CH4_fluxes);
+  }
+  fluxes_out.nitrogen=(cell->balance.fire.nitrogen+cell->balance.flux_firewood.nitrogen+cell->balance.n_outflux+cell->balance.neg_fluxes.nitrogen
+                      +cell->balance.flux_harvest.nitrogen+cell->balance.biomass_yield.nitrogen+cell->balance.deforest_emissions.nitrogen)-fluxes_out.nitrogen;
+  fluxes_in.nitrogen=(cell->balance.flux_estab.nitrogen+cell->balance.influx.nitrogen)-fluxes_in.nitrogen;
 
+  end=0;
+  foreachstand(stand,s,cell->standlist)
+      end+=standstocks(stand).nitrogen*stand->frac;
+  end+=cell->ml.product.fast.nitrogen+cell->ml.product.slow.nitrogen+
+       cell->balance.estab_storage_grass[0].nitrogen+cell->balance.estab_storage_tree[0].nitrogen+cell->balance.estab_storage_grass[1].nitrogen+cell->balance.estab_storage_tree[1].nitrogen;
+  if(fabs(end-start.nitrogen+fluxes_out.nitrogen-fluxes_in.nitrogen-flux_estab.nitrogen)>0.001)
+         fprintf(stdout, "N_ERROR-in sowing: day: %d    %g start: %.3f  end: %.3f influx: %g outflux: %g flux_estab.nitrogen: %g \n",
+             day,end-start.nitrogen-fluxes_in.nitrogen+fluxes_out.nitrogen-flux_estab.nitrogen,start.nitrogen,end,fluxes_in.nitrogen,fluxes_out.nitrogen,flux_estab.nitrogen);
 #endif
   return flux_estab;
 } /* of 'sowing' */

@@ -93,7 +93,7 @@ void remove_vegetation_copy(Soil *soil, /* soil pointer */
         }
 #endif
 #else
-        harvest=timber_harvest(pft,soil,frac,param.ftimber,standfrac,&nind,&trad_biofuel,config);
+        harvest=timber_harvest(pft,soil,frac,param.ftimber,standfrac,&nind,&trad_biofuel,config); //stand weighting in timber_harvest
 #endif
         getoutput(&cell->output,TRAD_BIOFUEL,config)+=trad_biofuel.carbon;
         cell->balance.trad_biofuel.carbon+=trad_biofuel.carbon;
@@ -111,7 +111,7 @@ void remove_vegetation_copy(Soil *soil, /* soil pointer */
 #endif
         stocks=timber_burn(pft,cell->ml.image_data->fburnt,&soil->litter,nind,config);
 #else
-        stocks=timber_burn(pft,param.fburnt,&soil->litter,nind,config);
+        stocks=timber_burn(pft,param.fburnt,&soil->litter,nind,config); //carbon balance closed by calling litter_update line 144
 #endif
         getoutput(&cell->output,DEFOREST_EMIS,config)+=stocks.carbon*standfrac;
         cell->balance.deforest_emissions.carbon+=stocks.carbon*standfrac;

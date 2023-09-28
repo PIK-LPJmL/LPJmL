@@ -282,6 +282,7 @@ void mixsetaside(Stand *setasidestand,Stand *cropstand,Bool intercrop,int year,i
               pft->nleaf = weightedaverage(pft->nleaf, pft2->nleaf, setasidestand->frac, cropstand->frac);
               pft->bm_inc.carbon = weightedaverage(pft->bm_inc.carbon, pft2->bm_inc.carbon, setasidestand->frac, cropstand->frac);
               pft->bm_inc.nitrogen = weightedaverage(pft->bm_inc.nitrogen, pft2->bm_inc.nitrogen, setasidestand->frac, cropstand->frac);
+              pft->nbalance_cor = weightedaverage(pft->nbalance_cor, pft2->nbalance_cor, setasidestand->frac, cropstand->frac);
               pft->establish.carbon = weightedaverage(pft->establish.carbon, pft2->establish.carbon, setasidestand->frac, cropstand->frac);
               pft->establish.nitrogen = weightedaverage(pft->establish.nitrogen, pft2->establish.nitrogen, setasidestand->frac, cropstand->frac);
               delpft(&cropstand->pftlist, p2);
@@ -306,6 +307,7 @@ void mixsetaside(Stand *setasidestand,Stand *cropstand,Bool intercrop,int year,i
             pft->nleaf = weightedaverage(pft->nleaf, 0, setasidestand->frac, cropstand->frac);
             pft->bm_inc.carbon = weightedaverage(pft->bm_inc.carbon, 0, setasidestand->frac, cropstand->frac);
             pft->bm_inc.nitrogen = weightedaverage(pft->bm_inc.nitrogen, 0, setasidestand->frac, cropstand->frac);
+            pft->nbalance_cor = weightedaverage(pft->nbalance_cor, 0, setasidestand->frac, cropstand->frac);
             pft->establish.carbon = weightedaverage(pft->establish.carbon, 0, setasidestand->frac, cropstand->frac);
             pft->establish.nitrogen = weightedaverage(pft->establish.nitrogen, 0, setasidestand->frac, cropstand->frac);
           }
@@ -335,6 +337,7 @@ void mixsetaside(Stand *setasidestand,Stand *cropstand,Bool intercrop,int year,i
           pft2->bm_inc.carbon = weightedaverage(pft->bm_inc.carbon, 0, cropstand->frac, setasidestand->frac);
           pft2->establish.carbon = weightedaverage(pft->establish.carbon, 0, cropstand->frac, setasidestand->frac);
           pft2->bm_inc.nitrogen = weightedaverage(pft->bm_inc.nitrogen, 0, cropstand->frac, setasidestand->frac);
+          pft2->nbalance_cor = weightedaverage(pft->nbalance_cor, 0, cropstand->frac, setasidestand->frac);
           pft2->establish.nitrogen = weightedaverage(pft->establish.nitrogen, 0, cropstand->frac, setasidestand->frac);
           delpft(&cropstand->pftlist, p);
           p--; /* adjust loop variable */

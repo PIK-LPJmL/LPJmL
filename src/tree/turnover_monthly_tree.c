@@ -35,4 +35,5 @@ void turnover_monthly_tree(Litter *litter, /**< pointer to litter pool */
   litter->item[pft->litter].bg.nitrogen+=tree->ind.root.nitrogen*treepar->turnover.root/NMONTH*pft->nind*pft->par->fn_turnover;
   getoutput(output,LITFALLN,config)+=tree->ind.root.nitrogen*treepar->turnover.root/NMONTH*pft->nind*pft->par->fn_turnover*pft->stand->frac;
   tree->turn_nbminc+= tree->ind.root.nitrogen*treepar->turnover.root/NMONTH*pft->nind*(1-pft->par->fn_turnover);
+  pft->nbalance_cor+= tree->ind.root.nitrogen*treepar->turnover.root/NMONTH*pft->nind*(1-pft->par->fn_turnover);
 } /* of 'turnover_monthly_tree' */

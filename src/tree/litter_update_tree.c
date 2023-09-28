@@ -32,6 +32,8 @@ void litter_update_tree(Litter *litter, /**< Litter pool */
   tree->ind.root.carbon-= tree->turn.root.carbon;
   tree->ind.leaf.nitrogen-= tree->turn.leaf.nitrogen;
   tree->ind.root.nitrogen-= tree->turn.root.nitrogen;
+  pft->bm_inc.nitrogen+= (tree->turn.root.nitrogen+tree->turn.leaf.nitrogen)*pft->nind*(1-pft->par->fn_turnover);
+  pft->nbalance_cor-=(tree->turn.root.nitrogen+tree->turn.leaf.nitrogen)*pft->nind*(1-pft->par->fn_turnover);
   litter->item[pft->litter].agtop.leaf.carbon+=tree->turn.leaf.carbon*pft->nind-tree->turn_litt.leaf.carbon;
   litter->item[pft->litter].agtop.leaf.nitrogen+=tree->turn.leaf.nitrogen*pft->nind-tree->turn_litt.leaf.nitrogen;
   update_fbd_tree(litter,pft->par->fuelbulkdensity,tree->turn.leaf.carbon*pft->nind-tree->turn_litt.leaf.carbon,0);

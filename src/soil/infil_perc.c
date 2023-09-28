@@ -799,6 +799,7 @@ Real infil_perc(Stand *stand,        /**< Stand pointer */
         {
           NO3surf=NPERCO*concNO3_mobile*srunoff; /* Eq. 4:2.1.5 */
           NO3surf=min(NO3surf,soil->NO3[l]);
+          soil->NO3[l]-=NO3surf;
         }
         else
           NO3surf=0;
@@ -815,7 +816,8 @@ Real infil_perc(Stand *stand,        /**< Stand pointer */
         else
           NO3lat=0;
 
-        soil->NO3[l]-=min((NO3surf+NO3lat),soil->NO3[l]);
+        NO3lat=min(NO3lat,soil->NO3[l]);
+        soil->NO3[l]-=NO3lat;
 
       /* nitrate percolating from this layer */
         NO3perc_ly=concNO3_mobile*(pperc[l]);  /*Eq 4:2.1.8*/

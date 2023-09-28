@@ -37,7 +37,7 @@ void update_annual(Cell *cell,          /**< Pointer to cell */
   Stocks litter_neg;
   Real soilc_agr,litc_agr,stand_fracs;
 #ifdef CHECK_BALANCE
-  //FLUX_FIREWOOD could play a role as well, turned off at the moment
+//anpp, influx and arh do not change
   Stocks start = {0,0};
   Stocks end = {0,0};
   Stocks st;
@@ -45,6 +45,7 @@ void update_annual(Cell *cell,          /**< Pointer to cell */
   Stocks fluxes_estab= {0,0};
   Stocks fluxes_neg= {0,0};
   Stocks fluxes_prod= {0,0};
+  Stocks fluxes_firewood={0,0};
   Stocks balance= {0,0};
   Real start_w = 0;
   Real end_w = 0;
@@ -87,14 +88,17 @@ void update_annual(Cell *cell,          /**< Pointer to cell */
     start.nitrogen+=st.nitrogen*stand->frac;//-stand->cell->balance.flux_estab.nitrogen;
     start_w += soilwater(&stand->soil)*stand->frac;
   }
-  fluxes_fire.carbon=cell->balance.fire.carbon;
-  fluxes_estab.carbon=cell->balance.flux_estab.carbon;
-  fluxes_fire.nitrogen=cell->balance.fire.nitrogen;
-  fluxes_estab.nitrogen=cell->balance.flux_estab.nitrogen;
-  fluxes_neg.carbon=cell->balance.neg_fluxes.carbon;
-  fluxes_prod.carbon=cell->balance.deforest_emissions.carbon;
-  fluxes_neg.nitrogen=cell->balance.neg_fluxes.nitrogen;
-  fluxes_prod.nitrogen=cell->balance.deforest_emissions.nitrogen;
+  start.carbon+=cell->ml.product.fast.carbon+cell->ml.product.slow.carbon+
+      cell->balance.estab_storage_grass[0].carbon+cell->balance.estab_storage_tree[0].carbon+cell->balance.estab_storage_grass[1].carbon+cell->balance.estab_storage_tree[1].carbon;
+  start.nitrogen+=cell->ml.product.fast.nitrogen+cell->ml.product.slow.nitrogen+
+      cell->balance.estab_storage_grass[0].nitrogen+cell->balance.estab_storage_tree[0].nitrogen+cell->balance.estab_storage_grass[1].nitrogen+cell->balance.estab_storage_tree[1].nitrogen;
+
+  fluxes_fire=cell->balance.fire;
+  fluxes_estab=cell->balance.flux_estab;
+  fluxes_neg=cell->balance.neg_fluxes;
+  fluxes_prod.carbon=(cell->balance.deforest_emissions.carbon+cell->balance.prod_turnover.fast.carbon+cell->balance.prod_turnover.slow.carbon);
+  fluxes_prod.nitrogen=(cell->balance.deforest_emissions.nitrogen+cell->balance.prod_turnover.fast.nitrogen+cell->balance.prod_turnover.slow.nitrogen);
+  fluxes_firewood=cell->balance.flux_firewood;
 #endif
     if((year<config->firstyear && config->sdate_option!=PRESCRIBED_SDATE) ||
        config->sdate_option==NO_FIXED_SDATE)
@@ -132,8 +136,15 @@ void update_annual(Cell *cell,          /**< Pointer to cell */
     end_w += soilwater(&stand->soil)*stand->frac;
     //fprintf(stdout,"update_annual: landusetype: %s stand.frac: %g \n\n",stand->type->name, stand->frac);
   }
-  balance.carbon=(cell->balance.flux_estab.carbon-fluxes_estab.carbon)-(cell->balance.fire.carbon-fluxes_fire.carbon);
-  balance.nitrogen=(cell->balance.flux_estab.nitrogen-fluxes_estab.nitrogen)-(cell->balance.fire.nitrogen-fluxes_fire.nitrogen);
+  end.carbon+=cell->ml.product.fast.carbon+cell->ml.product.slow.carbon+
+      cell->balance.estab_storage_grass[0].carbon+cell->balance.estab_storage_tree[0].carbon+cell->balance.estab_storage_grass[1].carbon+cell->balance.estab_storage_tree[1].carbon;
+  end.nitrogen+=cell->ml.product.fast.nitrogen+cell->ml.product.slow.nitrogen+
+      cell->balance.estab_storage_grass[0].nitrogen+cell->balance.estab_storage_tree[0].nitrogen+cell->balance.estab_storage_grass[1].nitrogen+cell->balance.estab_storage_tree[1].nitrogen;
+
+  balance.carbon=(cell->balance.flux_estab.carbon-fluxes_estab.carbon)-(cell->balance.fire.carbon-fluxes_fire.carbon)-(cell->balance.neg_fluxes.carbon-fluxes_neg.carbon)
+      -((cell->balance.deforest_emissions.carbon+cell->balance.prod_turnover.fast.carbon+cell->balance.prod_turnover.slow.carbon)-fluxes_prod.carbon)-(cell->balance.flux_firewood.carbon-fluxes_firewood.carbon);
+  balance.nitrogen=(cell->balance.flux_estab.nitrogen-fluxes_estab.nitrogen)-(cell->balance.fire.nitrogen-fluxes_fire.nitrogen)-(cell->balance.neg_fluxes.nitrogen-fluxes_neg.nitrogen)
+      -((cell->balance.deforest_emissions.nitrogen+cell->balance.prod_turnover.fast.nitrogen+cell->balance.prod_turnover.slow.nitrogen)-fluxes_prod.nitrogen)-(cell->balance.flux_firewood.nitrogen-fluxes_firewood.nitrogen);
   if(fabs(start.carbon-end.carbon+balance.carbon)>0.001) fprintf(stderr,"C_ERROR update annual: year=%d: C_ERROR=%g start : %g end : %g balance.carbon: %g\n",
       year,start.carbon-end.carbon+balance.carbon,start.carbon,end.carbon,balance.carbon);
   if (fabs(start_w - end_w)>0.001) fprintf(stderr, "W_ERROR update annual: year=%d: W_ERROR=%g start : %g end : %g\n",
@@ -156,8 +167,15 @@ void update_annual(Cell *cell,          /**< Pointer to cell */
     end.nitrogen+=st.nitrogen*stand->frac;
     end_w += soilwater(&stand->soil)*stand->frac;
   }
-  balance.carbon=(cell->balance.flux_estab.carbon-fluxes_estab.carbon)-(cell->balance.fire.carbon-fluxes_fire.carbon);
-  balance.nitrogen=(cell->balance.flux_estab.nitrogen-fluxes_estab.nitrogen)-(cell->balance.fire.nitrogen-fluxes_fire.nitrogen);
+  end.carbon+=cell->ml.product.fast.carbon+cell->ml.product.slow.carbon+
+      cell->balance.estab_storage_grass[0].carbon+cell->balance.estab_storage_tree[0].carbon+cell->balance.estab_storage_grass[1].carbon+cell->balance.estab_storage_tree[1].carbon;
+  end.nitrogen+=cell->ml.product.fast.nitrogen+cell->ml.product.slow.nitrogen+
+      cell->balance.estab_storage_grass[0].nitrogen+cell->balance.estab_storage_tree[0].nitrogen+cell->balance.estab_storage_grass[1].nitrogen+cell->balance.estab_storage_tree[1].nitrogen;
+
+  balance.carbon=(cell->balance.flux_estab.carbon-fluxes_estab.carbon)-(cell->balance.fire.carbon-fluxes_fire.carbon)-(cell->balance.neg_fluxes.carbon-fluxes_neg.carbon)
+      -((cell->balance.deforest_emissions.carbon+cell->balance.prod_turnover.fast.carbon+cell->balance.prod_turnover.slow.carbon)-fluxes_prod.carbon)-(cell->balance.flux_firewood.carbon-fluxes_firewood.carbon);
+  balance.nitrogen=(cell->balance.flux_estab.nitrogen-fluxes_estab.nitrogen)-(cell->balance.fire.nitrogen-fluxes_fire.nitrogen)-(cell->balance.neg_fluxes.nitrogen-fluxes_neg.nitrogen)
+      -((cell->balance.deforest_emissions.nitrogen+cell->balance.prod_turnover.fast.nitrogen+cell->balance.prod_turnover.slow.nitrogen)-fluxes_prod.nitrogen)-(cell->balance.flux_firewood.nitrogen-fluxes_firewood.nitrogen);
   if(fabs(start.carbon-end.carbon+balance.carbon)>0.001) fprintf(stderr,"C_ERROR update annual after update_wetland: year=%d: C_ERROR=%g start : %g end : %g balance.carbon: %g\n",
       year,start.carbon-end.carbon+balance.carbon,start.carbon,end.carbon,balance.carbon);
   if (fabs(start_w - end_w)>0.001) fprintf(stderr, "W_ERROR update annual after update_wetland: year=%d: W_ERROR=%g start : %g end : %g\n",
@@ -214,17 +232,23 @@ void update_annual(Cell *cell,          /**< Pointer to cell */
     st=standstocks(stand);
     end.carbon+=(st.carbon+ soilmethane(&stand->soil)*WC/WCH4)*stand->frac;
     end.nitrogen+=st.nitrogen*stand->frac;
-    end_w+= soilwater(&stand->soil)*stand->frac;
-    //fprintf(stderr,"update_annual: landusetype: %s stand.frac: %g NEP: %g\n\n",stand->type->name, stand->frac,cell->balance.nep);
+    end_w += soilwater(&stand->soil)*stand->frac;
   }
-  balance.carbon=(cell->balance.flux_estab.carbon-fluxes_estab.carbon)-(cell->balance.fire.carbon-fluxes_fire.carbon)-(cell->balance.neg_fluxes.carbon-fluxes_neg.carbon)-(cell->balance.deforest_emissions.carbon-fluxes_prod.carbon);
-  balance.nitrogen=(cell->balance.flux_estab.nitrogen-fluxes_estab.nitrogen)-(cell->balance.fire.nitrogen-fluxes_fire.nitrogen)-(cell->balance.neg_fluxes.nitrogen-fluxes_neg.nitrogen)-(cell->balance.deforest_emissions.nitrogen-fluxes_prod.nitrogen);
+  end.carbon+=cell->ml.product.fast.carbon+cell->ml.product.slow.carbon+
+      cell->balance.estab_storage_grass[0].carbon+cell->balance.estab_storage_tree[0].carbon+cell->balance.estab_storage_grass[1].carbon+cell->balance.estab_storage_tree[1].carbon;
+  end.nitrogen+=cell->ml.product.fast.nitrogen+cell->ml.product.slow.nitrogen+
+      cell->balance.estab_storage_grass[0].nitrogen+cell->balance.estab_storage_tree[0].nitrogen+cell->balance.estab_storage_grass[1].nitrogen+cell->balance.estab_storage_tree[1].nitrogen;
+
+  balance.carbon=(cell->balance.flux_estab.carbon-fluxes_estab.carbon)-(cell->balance.fire.carbon-fluxes_fire.carbon)-(cell->balance.neg_fluxes.carbon-fluxes_neg.carbon)
+      -((cell->balance.deforest_emissions.carbon+cell->balance.prod_turnover.fast.carbon+cell->balance.prod_turnover.slow.carbon)-fluxes_prod.carbon)-(cell->balance.flux_firewood.carbon-fluxes_firewood.carbon);
+  balance.nitrogen=(cell->balance.flux_estab.nitrogen-fluxes_estab.nitrogen)-(cell->balance.fire.nitrogen-fluxes_fire.nitrogen)-(cell->balance.neg_fluxes.nitrogen-fluxes_neg.nitrogen)
+      -((cell->balance.deforest_emissions.nitrogen+cell->balance.prod_turnover.fast.nitrogen+cell->balance.prod_turnover.slow.nitrogen)-fluxes_prod.nitrogen)-(cell->balance.flux_firewood.nitrogen-fluxes_firewood.nitrogen);
   if(fabs(start.carbon-end.carbon+balance.carbon)>0.001) fprintf(stderr,"C_ERROR update annual at the end: year=%d: C_ERROR=%g start : %g end : %g balance.carbon: %g\n",
       year,start.carbon-end.carbon+balance.carbon,start.carbon,end.carbon,balance.carbon);
   if (fabs(start_w - end_w)>0.001) fprintf(stderr, "W_ERROR update annual at the end: year=%d: W_ERROR=%g start : %g end : %g\n",
       year, start_w - end_w, start_w, end_w);
   if (fabs(start.nitrogen-end.nitrogen+balance.nitrogen)>0.001) fprintf(stderr,"N_ERROR update annual at the end: year=%d: error=%g start : %g end : %g balance.nitrogen: %g\n",
-      year, start.nitrogen-end.nitrogen+balance.nitrogen,start.nitrogen,end.nitrogen,balance.nitrogen);
+      year, start.nitrogen-end.nitrogen+balance.nitrogen, start.nitrogen, end.nitrogen,balance.nitrogen);
 #endif
 
 } /* of 'update_annual' */

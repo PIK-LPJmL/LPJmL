@@ -69,22 +69,24 @@ void check_fluxes(Cell *cell,          /**< cell pointer */
   balance.carbon=cell->balance.anpp-cell->balance.arh-cell->balance.fire.carbon-cell->balance.flux_firewood.carbon+
                  cell->balance.flux_estab.carbon-cell->balance.flux_harvest.carbon-cell->balance.biomass_yield.carbon-delta_tot.carbon-
                  cell->balance.neg_fluxes.carbon+cell->balance.influx.carbon-cell->balance.aCH4_em*WC/WCH4-cell->balance.aCH4_sink*WC/WCH4;
-  balance.nitrogen=cell->balance.influx.nitrogen-cell->balance.fire.nitrogen-cell->balance.flux_firewood.nitrogen-cell->balance.n_outflux+cell->balance.flux_estab.nitrogen-
-    cell->balance.biomass_yield.nitrogen-cell->balance.flux_harvest.nitrogen-delta_tot.nitrogen-cell->balance.neg_fluxes.nitrogen-
-    cell->balance.deforest_emissions.nitrogen;//cell->balance.timber_harvest.nitrogen;
+  balance.nitrogen=cell->balance.influx.nitrogen-cell->balance.fire.nitrogen-cell->balance.flux_firewood.nitrogen-cell->balance.n_outflux+
+                   cell->balance.flux_estab.nitrogen-cell->balance.biomass_yield.nitrogen-cell->balance.flux_harvest.nitrogen-delta_tot.nitrogen-
+                   cell->balance.neg_fluxes.nitrogen;
   /* for IMAGE but can also be used without IMAGE */
 #ifdef IMAGE
   balance.carbon-=cell->balance.deforest_emissions.carbon+cell->balance.prod_turnover.fast.carbon+cell->balance.prod_turnover.slow.carbon+cell->balance.trad_biofuel.carbon+cell->balance.timber_harvest.carbon;
 #else
-  balance.carbon-=(cell->balance.deforest_emissions.carbon+cell->balance.prod_turnover.fast.carbon+cell->balance.prod_turnover.slow.carbon+cell->balance.trad_biofuel.carbon); // +cell->balance.timber_harvest.carbon;
-  balance.nitrogen-=cell->balance.prod_turnover.fast.nitrogen+cell->balance.prod_turnover.slow.nitrogen;
+  balance.carbon-=(cell->balance.deforest_emissions.carbon+cell->balance.prod_turnover.fast.carbon+cell->balance.prod_turnover.slow.carbon+
+                   cell->balance.trad_biofuel.carbon);    //+cell->balance.timber_harvest.carbon); //goes in product pool
+  balance.nitrogen-=(cell->balance.deforest_emissions.nitrogen+cell->balance.prod_turnover.fast.nitrogen+cell->balance.prod_turnover.slow.nitrogen+
+                    cell->balance.trad_biofuel.nitrogen);  //+cell->balance.timber_harvest.nitrogen); //goes in product pool
 #endif
   if(config->ischeckpoint)
     startyear=max(config->firstyear-config->nspinup,config->checkpointyear)+1;
   else
     startyear=config->firstyear-config->nspinup+1;
 
-  if(year>startyear && fabs(balance.carbon)>0.01)
+  if(year>startyear && fabs(balance.carbon)>0.001)
   {
 #if defined IMAGE && defined COUPLED
     if(config->sim_id==LPJML_IMAGE)
@@ -140,7 +142,7 @@ void check_fluxes(Cell *cell,          /**< cell pointer */
   } /* end carbon balance error */
 
 
-  if(config->with_nitrogen && year>startyear && fabs(balance.nitrogen)>0.005)
+  if(config->with_nitrogen && year>startyear && fabs(balance.nitrogen)>0.001)
   {
 #ifdef NO_FAIL_BALANCE
     fprintf(stderr,"ERROR032: "
@@ -182,7 +184,7 @@ void check_fluxes(Cell *cell,          /**< cell pointer */
   }
   cell->balance.awater_flux+=cell->balance.atransp+cell->balance.aevap+cell->balance.ainterc+cell->balance.aevap_lake+cell->balance.aevap_res-cell->balance.airrig-cell->balance.aMT_water;
   balanceW=totw-cell->balance.totw-cell->balance.aprec+cell->balance.awater_flux+cell->balance.excess_water+cell->lateral_water;
-  if(year>startyear+1 && fabs(balanceW)>1.5)
+  if(year>startyear+1 && fabs(balanceW)>0.1)
   //if(year>1511 && fabs(balanceW)>1.5)
 #ifdef NO_FAIL_BALANCE
     fprintf(stderr,"ERROR005: "

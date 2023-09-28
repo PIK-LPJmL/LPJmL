@@ -143,8 +143,8 @@ Stocks turnover_tree(Litter *litter, /**< Litter pool */
   tree->ind.leaf.nitrogen-= turn.leaf.nitrogen;
   tree->ind.sapwood.nitrogen-= turn.sapwood.nitrogen;
   tree->ind.root.nitrogen-= turn.root.nitrogen;
-  pft->bm_inc.nitrogen+=tree->turn_nbminc;
-  tree->turn_nbminc=0;
+  pft->bm_inc.nitrogen+=pft->nbalance_cor;
+  tree->turn_nbminc=pft->nbalance_cor=0;
   tree->ind.heartwood.nitrogen+=turn.sapwood.nitrogen;
   if (tree->ind.leaf.nitrogen<epsilon)
   {

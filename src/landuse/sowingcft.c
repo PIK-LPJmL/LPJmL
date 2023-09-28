@@ -38,17 +38,23 @@ static void cultcftstand(Stocks *flux_estab,  /**< establishment flux */
   Stocks stocks;
 #ifdef CHECK_BALANCE
   Stand *stand;
-  Real flux_carbon=0;
-  Real sflux_estab=flux_estab->carbon+cell->balance.influx.carbon;
-  Real end=0;
-  Real start=0;
+  Stocks flux_in={0,0};
+  Stocks flux_out={0,0};
+  Stocks start={0,0};
+  flux_in.carbon=cell->balance.anpp+cell->balance.flux_estab.carbon+cell->balance.influx.carbon+flux_estab->carbon;
+  flux_in.nitrogen=cell->balance.flux_estab.nitrogen+cell->balance.influx.nitrogen+flux_estab->nitrogen;
   foreachstand(stand,s,cell->standlist)
-    start+=(standstocks(stand).carbon + soilmethane(&stand->soil)*WC/WCH4)*stand->frac;
+  {
+    start.carbon+=(standstocks(stand).carbon + soilmethane(&stand->soil)*WC/WCH4)*stand->frac;
+    start.nitrogen+=standstocks(stand).nitrogen*stand->frac;
+  }
+  Real end=0;
 #endif
+
   if((nofallow || cell->ml.cropdates[cft].fallow[irrig]<=0)  &&
       check_lu(cell->standlist,(isother) ? cell->ml.landfrac[irrig].grass[0] : cell->ml.landfrac[irrig].crop[cft],npft+cft,(isother) ? OTHERS : AGRICULTURE,irrig))
   {
-    if(year==1880) fprintf(stdout,"cultcftstand1 on day: %d allocation: %d type: %s standfrac: %g\n",day,*alloc_today,setasidestand->type->name,setasidestand->frac);
+//    if(year==2010 && day==59) fprintf(stdout,"cultcftstand2 on day: %d allocation: %d type: %s standfrac: %g\n",day,*alloc_today,setasidestand->type->name,setasidestand->frac);
     if(!(*alloc_today) && setasidestand->type->landusetype!=AGRICULTURE)
     {
       foreachpft(pft, p, &setasidestand->pftlist)
@@ -68,12 +74,34 @@ static void cultcftstand(Stocks *flux_estab,  /**< establishment flux */
       cell->ml.sdate_fixed[cft]=day;
   }//if check lu
 #ifdef CHECK_BALANCE
-  flux_carbon=(flux_estab->carbon+cell->balance.influx.carbon)-sflux_estab;
   foreachstand(stand,s,cell->standlist)
     end+=(standstocks(stand).carbon + soilmethane(&stand->soil)*WC/WCH4)*stand->frac;
-  if (fabs(end-start-flux_carbon)>0.01)
-    fprintf(stderr, "C_ERROR-cultcftstand: day: %d   %g start: %g  end: %g  sflux_estab.carbon: %g flux_estab.carbon: %g balance.flux_estab: %g influx.carbon:  %g flux_carbon: %g \n",
-        day,end-start-flux_carbon,start, end,sflux_estab,flux_estab->carbon,cell->balance.flux_estab.carbon,cell->balance.influx.carbon, flux_carbon);
+  end=0;
+  flux_in.carbon=(cell->balance.anpp+cell->balance.flux_estab.carbon+cell->balance.influx.carbon+flux_estab->carbon)-flux_in.carbon;
+  flux_in.nitrogen=(cell->balance.flux_estab.nitrogen+cell->balance.influx.nitrogen+flux_estab->nitrogen)-flux_in.nitrogen;
+
+  foreachstand(stand,s,cell->standlist)
+    end+=(standstocks(stand).carbon + soilmethane(&stand->soil)*WC/WCH4)*stand->frac;
+
+  if (fabs(end-start.carbon-flux_in.carbon)>0.01)
+  {
+    fprintf(stderr, "C_ERROR-cultcftstand: day: %d  CFT: %d  %g start: %.3f  end: %.3f  "
+        "flux_estab.carbon: %g balance.flux_estab: %g flux_in.carbon: %g \n",
+        day,cft,end-start.carbon-flux_in.carbon,start.carbon, end,flux_estab->carbon,cell->balance.flux_estab.carbon,
+        flux_in.carbon);
+   }
+  end=0;
+  foreachstand(stand,s,cell->standlist)
+    end+=standstocks(stand).nitrogen*stand->frac;
+
+  if (fabs(end-start.nitrogen-flux_in.nitrogen)>0.01)
+  {
+    fprintf(stderr, "N_ERROR-cultcftstand: day: %d  CFT: %d  %g start: %.3f  end: %.3f  "
+        "flux_estab.nitrogen: %g balance.flux_estab: %g flux_in.nitrogen: %g \n",
+        day,cft,end-start.nitrogen-flux_in.nitrogen,start.nitrogen, end,flux_estab->nitrogen,cell->balance.flux_estab.nitrogen,
+        flux_in.nitrogen);
+   }
+
 #endif
 
 } /* of 'cultcftstand' */
@@ -100,13 +128,15 @@ void sowingcft(Stocks *flux_estab,  /**< establishment flux */
   int s,p,cft_id,pos,st,l;
   Irrigation *irrigation,*data;
 #ifdef CHECK_BALANCE
-  Real flux_carbon=0;
-  Real sflux_estab=cell->balance.anpp+cell->balance.flux_estab.carbon+cell->balance.influx.carbon+flux_estab->carbon;
-  Real start=0;
-  Real manure=0;   //TODO is applied in cultive.c and needs to be taking into account
+  Stocks flux_in={0,0};
+  Stocks flux_out={0,0};
+  Stocks start={0,0};
+  flux_in.carbon=cell->balance.anpp+cell->balance.flux_estab.carbon+cell->balance.influx.carbon+flux_estab->carbon;
+  flux_in.nitrogen=cell->balance.flux_estab.nitrogen+cell->balance.influx.nitrogen+flux_estab->nitrogen;
   foreachstand(stand,s,cell->standlist)
   {
-    start+=(standstocks(stand).carbon + soilmethane(&stand->soil)*WC/WCH4)*stand->frac;
+    start.carbon+=(standstocks(stand).carbon + soilmethane(&stand->soil)*WC/WCH4)*stand->frac;
+    start.nitrogen+=standstocks(stand).nitrogen*stand->frac;
   }
 #endif
   s=NOT_FOUND;
@@ -126,8 +156,8 @@ void sowingcft(Stocks *flux_estab,  /**< establishment flux */
     setasidestand=getstand(cell->standlist,s);
     foreachpft(pft,p,&setasidestand->pftlist)
      if(pft->bm_inc.carbon>0) *alloc_today=FALSE;
-    if(year==1880) printf("CFT: %d PFT %s on irrig: %d standname: %s landfrac: %g other_ %g\n",
-        cft,pft->par->name,irrig,setasidestand->type->name,cell->ml.landfrac[irrig].crop[cft],cell->ml.landfrac[irrig].grass[0]);
+//    if(year==1880) printf("CFT: %d PFT %s on irrig: %d standname: %s landfrac: %g other_ %g\n",
+//        cft,pft->par->name,irrig,setasidestand->type->name,cell->ml.landfrac[irrig].crop[cft],cell->ml.landfrac[irrig].grass[0]);
     if(cft!=RICE)
       setasidestand->soil.iswetland=FALSE;
     cultcftstand(flux_estab,alloc_today,cell,setasidestand,irrig,wtype,nofallow,npft,ncft,cft,year,day,isother,config);
@@ -151,9 +181,9 @@ void sowingcft(Stocks *flux_estab,  /**< establishment flux */
           cropstand=getstand(cell->standlist,pos-1);
           data=cropstand->data;
           cropstand->frac=difffrac;
-          if(year==1880) printf("\n\n taking %g from %g of %s on irrig: %d landfrac: %g standname: %s isother: %d landfrac_others: %g landfrac_cfts: %.8f landfrac_cft_id: %g cft: %d cft_id: %d\n",
-              difffrac,stand->frac,pft->par->name,irrig,landfrac,stand->type->name,isother,
-              cell->ml.landfrac[irrig].grass[0],cell->ml.landfrac[irrig].crop[cft],cell->ml.landfrac[irrig].crop[cft_id],cft,cft_id);
+//          if(year==1880) printf("\n\n taking %g from %g of %s on irrig: %d landfrac: %g standname: %s isother: %d landfrac_others: %g landfrac_cfts: %.8f landfrac_cft_id: %g cft: %d cft_id: %d\n",
+//              difffrac,stand->frac,pft->par->name,irrig,landfrac,stand->type->name,isother,
+//              cell->ml.landfrac[irrig].grass[0],cell->ml.landfrac[irrig].crop[cft],cell->ml.landfrac[irrig].crop[cft_id],cft,cft_id);
           data->irrigation=irrig;
           stand->frac-=difffrac;
           reclaim_land(stand,cropstand,cell,config->luc_timber,npft+ncft,config);
@@ -169,26 +199,31 @@ void sowingcft(Stocks *flux_estab,  /**< establishment flux */
 
 #ifdef CHECK_BALANCE
   Real end=0;
-  flux_carbon=(cell->balance.anpp+cell->balance.flux_estab.carbon+cell->balance.influx.carbon+flux_estab->carbon)-sflux_estab;
+  flux_in.carbon=(cell->balance.anpp+cell->balance.flux_estab.carbon+cell->balance.influx.carbon+flux_estab->carbon)-flux_in.carbon;
+  flux_in.nitrogen=(cell->balance.flux_estab.nitrogen+cell->balance.influx.nitrogen+flux_estab->nitrogen)-flux_in.nitrogen;
+
   foreachstand(stand,s,cell->standlist)
-  {
     end+=(standstocks(stand).carbon + soilmethane(&stand->soil)*WC/WCH4)*stand->frac;
-  }
-  if (fabs(end-start-flux_carbon)>0.01)
+
+  if (fabs(end-start.carbon-flux_in.carbon)>0.01)
   {
     fprintf(stderr, "C_ERROR-SOWINGCFT: day: %d  CFT: %d  %g start: %.3f  end: %.3f  "
-        "sflux_estab.carbon: %g flux_estab.carbon: %g balance.flux_estab: %g flux_carbon: %g "
+        "flux_estab.carbon: %g balance.flux_estab: %g flux_in.carbon: %g "
         "diffrac: %g\n",
-        day,cft,end-start-flux_carbon,start, end,sflux_estab,flux_estab->carbon,cell->balance.flux_estab.carbon,
-        flux_carbon,difffrac);
-    foreachstand(stand,s,cell->standlist)
-    {
-      fprintf(stderr, "standname: %s frac: %g",stand->type->name,stand->frac);
-      foreachpft(pft,p,&stand->pftlist)
-       fprintf(stderr, "  pft: %s \n",pft->par->name);
-    }
+        day,cft,end-start.carbon-flux_in.carbon,start.carbon, end,flux_estab->carbon,cell->balance.flux_estab.carbon,
+        flux_in.carbon,difffrac);
+   }
+  end=0;
+  foreachstand(stand,s,cell->standlist)
+    end+=standstocks(stand).nitrogen*stand->frac;
 
-  }
-
+  if (fabs(end-start.nitrogen-flux_in.nitrogen)>0.01)
+  {
+    fprintf(stderr, "N_ERROR-SOWINGCFT: day: %d  CFT: %d  %g start: %.3f  end: %.3f  "
+        "flux_estab.nitrogen: %g balance.flux_estab: %g flux_in.nitrogen: %g "
+        "diffrac: %g\n",
+        day,cft,end-start.nitrogen-flux_in.nitrogen,start.nitrogen, end,flux_estab->nitrogen,cell->balance.flux_estab.nitrogen,
+        flux_in.nitrogen,difffrac);
+   }
 #endif
 } /* of 'sowingcft' */

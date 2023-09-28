@@ -75,7 +75,7 @@ Stocks cultivate(Cell *cell,           /**< cell pointer */
     cutpfts(setasidestand,config);
     cropstand=setasidestand;
     cropstand->soil.iswetland=setasidestand->soil.iswetland;
-    if(year==1880) fprintf(stdout,"HIER day: %d type: %s landfrac: %g isother: %d\n",day,setasidestand->type->name,landfrac,isother);
+    //if(year==2011) fprintf(stdout,"HIER day: %d cft: %d type: %s landfrac: %g isother: %d defores.nitrogen: %g timber_harvest.n: %g\n",day,cft,setasidestand->type->name,landfrac,isother,cell->balance.deforest_emissions.nitrogen,cell->balance.timber_harvest.nitrogen);
   }
   else
   {
@@ -84,7 +84,7 @@ Stocks cultivate(Cell *cell,           /**< cell pointer */
     cropstand->frac=landfrac;
     reclaim_land(setasidestand,cropstand,cell,config->luc_timber,npft+ncft,config);
     setasidestand->frac-=landfrac;
-    if(year==1880) fprintf(stdout,"HIER2 day: %d type: %s landfrac: %g isother: %d\n",day,setasidestand->type->name,landfrac,isother);
+    //if(year==2011) fprintf(stdout,"HIER2 day: %d cft: %d type: %s landfrac: %g isother: %d\n",day,cft,setasidestand->type->name,landfrac,isother);
   }
   if(cell->ml.with_tillage && year>=config->till_startyear)
   {
@@ -98,10 +98,10 @@ Stocks cultivate(Cell *cell,           /**< cell pointer */
   set_irrigsystem(cropstand,cft,npft,ncft,config);
   pft=addpft(cropstand,config->pftpar+npft+cft,year,day,config);
   phen_variety(pft,vern_date20,cell->coord.lat,day,wtype,npft,ncft,config);
-  if(year==1880) fprintf(stdout,"before addpft day: %d bminc: %g \n",day,bm_inc.carbon);
+  //if(year==2011) fprintf(stdout,"before addpft day: %d bminc: %g \n",day,bm_inc.carbon);
   bm_inc.carbon=pft->bm_inc.carbon*cropstand->frac;
   bm_inc.nitrogen=pft->bm_inc.nitrogen*cropstand->frac;
-  if(year==1880) fprintf(stdout,"after addpft day: %d bminc: %g pft_bminc: %g \n",day,bm_inc.carbon,pft->bm_inc.carbon);
+  //if(year==2011) fprintf(stdout,"after addpft day: %d bminc: %g pft_bminc: %g nbalance_cor: %g \n",day,bm_inc.carbon,pft->bm_inc.carbon,pft->nbalance_cor);
   if (cell->ml.manure_nr != NULL)
   {
     manure = (isother) ? cell->ml.manure_nr[irrigation].grass[0] : cell->ml.manure_nr[irrigation].crop[cft];
@@ -147,11 +147,11 @@ Stocks cultivate(Cell *cell,           /**< cell pointer */
   }
   if (fabs(end-start.nitrogen-bm_inc.nitrogen-(manure+fertil)*cropstand->frac*param.nfert_split_frac)>0.01)
   {
-    fprintf(stderr, "N_ERROR-cultivate: day: %d   %.4f start: %.4f  end: %.3f  bm_inc.nitrogen: %.4f manure: %.4f fertil: %f\n",
-           day,end-start.nitrogen-bm_inc.nitrogen-(manure+fertil)*cropstand->frac*param.nfert_split_frac,
+    fprintf(stderr, "N_ERROR-cultivate: day: %d  cft: %d %.4f start: %.4f  end: %.3f  bm_inc.nitrogen: %.4f manure: %.4f fertil: %f\n\n",
+           day,cft,end-start.nitrogen-bm_inc.nitrogen-(manure+fertil)*cropstand->frac*param.nfert_split_frac,
            start, end,bm_inc.nitrogen,manure*cropstand->frac*param.nfert_split_frac,fertil*cropstand->frac*param.nfert_split_frac );
-    fprintf(stderr,"cropstand->frac: %g cropstand.nitrogen: %g setasidestand->frac: %g setasidestand.nitrogen: %g\n ",
-      cropstand->frac,standstocks(cropstand).nitrogen,setasidestand->frac,standstocks(setasidestand).nitrogen);
+    fprintf(stderr,"cropstand->frac: %g cropstand.nitrogen: %g setasidestand->frac: %g setasidestand.nitrogen: %g defores.nitrogen: %g timber_harvest.n: %g\n ",
+      cropstand->frac,standstocks(cropstand).nitrogen,setasidestand->frac,standstocks(setasidestand).nitrogen,cell->balance.deforest_emissions.nitrogen,cell->balance.timber_harvest.nitrogen);
   }
 
 #endif
