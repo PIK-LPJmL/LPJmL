@@ -165,6 +165,9 @@ extern Bool isirrigevent(const Stand *);
 extern int fertday_biomass(const Cell *,const Config *);
 extern void fertilize_tree(Stand *,Real,Real,int,const Config *);
 extern void setotherstocrop(void);
+extern void output_gbw(Output *,const Stand *,Real,Real,Real,Real,
+                       const Real [LASTLAYER],const Real [LASTLAYER],Real,Real,int,
+                       Bool,const Config *);
 
 /* Declaration of variables */
 
