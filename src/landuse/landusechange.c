@@ -1372,7 +1372,7 @@ void landusechange(Cell *cell,          /**< pointer to cell */
    if(cell->ml.dam)
     landusechange_for_reservoir(cell,npft,ncft,intercrop,year,config);
   /* test if land needs to be reallocated between setaside stands */
-  difffrac=crop_sum_frac(cell->ml.landfrac,ncft,config->nagtree,cell->ml.reservoirfrac+cell->lakefrac,FALSE)-cell->ml.cropfrac_rf-cell->ml.landfrac[0].crop[RICE];
+  difffrac=crop_sum_frac(cell->ml.landfrac,ncft,config->nagtree,cell->ml.reservoirfrac+cell->lakefrac,FALSE)-cell->ml.cropfrac_rf-cell->ml.landfrac[0].crop[RICE]; //cropfrac is without wetland setaside
   difffrac2=crop_sum_frac(cell->ml.landfrac,ncft,config->nagtree,cell->ml.reservoirfrac+cell->lakefrac,TRUE)-cell->ml.cropfrac_ir-cell->ml.landfrac[1].crop[RICE];
   if(difffrac*difffrac2<-epsilon*epsilon) /* if one increases while the other decreases */
   {
@@ -1382,6 +1382,7 @@ void landusechange(Cell *cell,          /**< pointer to cell */
     {
       stand=getstand(cell->standlist,s);
       irrigstand=getstand(cell->standlist,s2);
+      if(year==2003)fprintf(stderr,"irrigstandfrac: %g rainfedfrac: %g\n",irrigstand->frac,stand->frac);
       if(difffrac2<0) /* move irrigated setaside to rainfed setaside */
       {
         movefrac=min(-difffrac2,difffrac);
@@ -1397,9 +1398,9 @@ void landusechange(Cell *cell,          /**< pointer to cell */
           tempstand=getstand(cell->standlist,pos);
           tempstand->frac=movefrac;
           reclaim_land(irrigstand,tempstand,cell,FALSE,npft+ncft,config);
+          irrigstand->frac-=movefrac;
           if(setaside(cell,getstand(cell->standlist,pos),cell->ml.with_tillage,intercrop,npft,ncft,TRUE,FALSE,year,config))
             delstand(cell->standlist,pos);
-          irrigstand->frac-=movefrac;
         }
       }
       else /* move rainfed setaside to irrigated setaside */
@@ -1419,9 +1420,9 @@ void landusechange(Cell *cell,          /**< pointer to cell */
           tempstand=getstand(cell->standlist,pos);
           tempstand->frac=movefrac;
           reclaim_land(stand,tempstand,cell,FALSE,npft+ncft,config);
+          stand->frac-=movefrac;
           if(setaside(cell,getstand(cell->standlist,pos),cell->ml.with_tillage,intercrop,npft,ncft,TRUE,stand->soil.iswetland,year,config))
              delstand(cell->standlist,pos);
-          stand->frac-=movefrac;
         }
       }
     }
@@ -1445,8 +1446,8 @@ void landusechange(Cell *cell,          /**< pointer to cell */
       -((cell->balance.deforest_emissions.carbon+cell->balance.prod_turnover.fast.carbon+cell->balance.prod_turnover.slow.carbon+cell->balance.trad_biofuel.carbon)-fluxes_prod.carbon)-(cell->balance.flux_firewood.carbon-fluxes_firewood.carbon);
   balance.nitrogen=(cell->balance.flux_estab.nitrogen-fluxes_estab.nitrogen)-(cell->balance.fire.nitrogen-fluxes_fire.nitrogen)-(cell->balance.neg_fluxes.nitrogen-fluxes_neg.nitrogen)
       -((cell->balance.deforest_emissions.nitrogen+cell->balance.prod_turnover.fast.nitrogen+cell->balance.prod_turnover.slow.nitrogen+cell->balance.trad_biofuel.nitrogen)-fluxes_prod.nitrogen)-(cell->balance.flux_firewood.nitrogen-fluxes_firewood.nitrogen);
-  if(fabs(start.carbon-end.carbon+balance.carbon)>0.001) fprintf(stderr,"C_ERROR landusechange after moving setaside year=%d: C_ERROR=%g start : %g end : %g balance.carbon: %g\n",
-      year,start.carbon-end.carbon+balance.carbon,start.carbon,end.carbon,balance.carbon);
+  if(fabs(start.carbon-end.carbon+balance.carbon)>0.001) fprintf(stderr,"C_ERROR landusechange after moving setaside year=%d: C_ERROR=%g start : %g end : %g balance.carbon: %g difffrac: %g difffrac2: %g rice_rainfed: %g rice_irr: %g wl_rf: %g wl_irr: %g\n",
+      year,start.carbon-end.carbon+balance.carbon,start.carbon,end.carbon,balance.carbon,difffrac,difffrac2,cell->ml.landfrac[0].crop[RICE],cell->ml.landfrac[1].crop[RICE],cell->ml.cropfrac_wl[0],cell->ml.cropfrac_wl[1]);
   if (fabs(start_w - end_w)>0.001) fprintf(stderr, "W_ERROR landusechange after moving setaside: year=%d: W_ERROR=%g start : %g end : %g\n",
       year, start_w - end_w, start_w, end_w);
   if (fabs(start.nitrogen-end.nitrogen+balance.nitrogen)>0.001) fprintf(stderr,"N_ERROR landusechange after moving setaside: year=%d: error=%g start : %g end : %g balance.nitrogen: %g\n",
@@ -1476,7 +1477,7 @@ void landusechange(Cell *cell,          /**< pointer to cell */
     else if(difffrac>=epsilon && cell->lakefrac+cell->ml.reservoirfrac+cell->ml.cropfrac_rf+cell->ml.cropfrac_ir+cell->ml.cropfrac_wl[0]+cell->ml.cropfrac_wl[1]<(1-epsilon))
       deforest(cell,difffrac,intercrop,npft,FALSE,i,FALSE,ncft,year,minnatfrac_luc,config);  /*deforestation*/
 
-#ifdef CHECK_BALANCE
+#ifdef CHECK_BALANCE2
   fprintf(stderr,"LANDUSECHANGE difffrac: %g cropfrac_rf: %g cropfrac_ir: %g cropfrac_wl: %g difffrac_rice: %g grassfrac: %g irrgation:%d \n",
       difffrac,cell->ml.cropfrac_rf,cell->ml.cropfrac_ir,cell->ml.cropfrac_wl[i],difffrac_rice[i],grassfrac, i);
 #endif
@@ -1495,7 +1496,7 @@ void landusechange(Cell *cell,          /**< pointer to cell */
         grasslandreduction(cell,difffrac,intercrop,npft,s,stand,ncft,year,config);
       else if(difffrac<-epsilon)
         landexpansion(cell,difffrac,npft,stand,irrigation,cultivation_type,0,ncft,year,config);       /*grassland will be expanded*/
-#ifdef CHECK_BALANCE
+#ifdef CHECK_BALANCE2
     fprintf(stderr,"1landexp./grassred difffrac: %g grassfrac: %g s= %d\n",
         difffrac,grassfrac,s);
 #endif
@@ -1504,7 +1505,7 @@ void landusechange(Cell *cell,          /**< pointer to cell */
     {
       difffrac= -grassfrac;
       landexpansion(cell,difffrac,npft,NULL,irrigation,cultivation_type,0,ncft,year,config);
-#ifdef CHECK_BALANCE
+#ifdef CHECK_BALANCE2
     fprintf(stderr,"2landexp./grassred difffrac: %g grassfrac: %g s= %d\n",
         difffrac,grassfrac,s);
 #endif
@@ -1524,7 +1525,7 @@ void landusechange(Cell *cell,          /**< pointer to cell */
           grasslandreduction(cell,difffrac,intercrop,npft,s,stand,ncft,year,config);
         else if(difffrac<-epsilon)
           landexpansion(cell,difffrac,npft,stand,irrigation,cultivation_type,0,ncft,year,config);
-#ifdef CHECK_BALANCE
+#ifdef CHECK_BALANCE2
     fprintf(stderr,"3landexp./grassred difffrac: %g grassfrac: %g s= %d\n",
         difffrac,grassfrac,s);
 #endif
@@ -1533,7 +1534,7 @@ void landusechange(Cell *cell,          /**< pointer to cell */
       {
         difffrac= -grassfrac;
         landexpansion(cell,difffrac,npft,NULL,irrigation,cultivation_type,0,ncft,year,config);
-#ifdef CHECK_BALANCE
+#ifdef CHECK_BALANCE2
     fprintf(stderr,"4landexp./grassred difffrac: %g grassfrac: %g s= %d\n",
         difffrac,grassfrac,s);
 #endif

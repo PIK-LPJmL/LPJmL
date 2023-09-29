@@ -59,40 +59,6 @@ void iterateyear(Outputfile *output,  /**< Output file data */
   intercrop=getintercrop(input.landuse);
   for(cell=0;cell<config->ngridcell;cell++)
   {
-#ifdef CHECK_BALANCE2
-      int i;
-      Real end=0;
-      Stocks start={0,0};
-      Stocks fluxes_in,fluxes_out;
-      Real water_before=(grid[cell].discharge.dmass_lake+grid[cell].discharge.dmass_river)/grid[cell].coord.area;
-      Real water_after=0;
-      Real balanceW=0;
-      Real wfluxes_old=grid[cell].balance.awater_flux+grid[cell].balance.atransp+grid[cell].balance.aevap+grid[cell].balance.ainterc+grid[cell].balance.aevap_lake+grid[cell].balance.aevap_res-grid[cell].balance.airrig-grid[cell].balance.aMT_water;
-      Real exess_old=grid[cell].balance.excess_water+grid[cell].lateral_water;
-      Real CH4_fluxes=(grid[cell].balance.aCH4_em+grid[cell].balance.aCH4_sink)*WC/WCH4;
-      fluxes_in.carbon=grid[cell].balance.anpp+grid[cell].balance.flux_estab.carbon+grid[cell].balance.influx.carbon; //influxes
-      fluxes_out.carbon=grid[cell].balance.arh+grid[cell].balance.fire.carbon+grid[cell].balance.flux_firewood.carbon+grid[cell].balance.neg_fluxes.carbon
-          +grid[cell].balance.flux_harvest.carbon+grid[cell].balance.biomass_yield.carbon+grid[cell].balance.deforest_emissions.carbon; //outfluxes
-      fluxes_in.nitrogen=grid[cell].balance.flux_estab.nitrogen+grid[cell].balance.influx.nitrogen; //influxes
-      fluxes_out.nitrogen=grid[cell].balance.fire.nitrogen+grid[cell].balance.flux_firewood.nitrogen+grid[cell].balance.n_outflux+grid[cell].balance.neg_fluxes.nitrogen
-          +grid[cell].balance.flux_harvest.nitrogen+grid[cell].balance.biomass_yield.nitrogen+grid[cell].balance.deforest_emissions.nitrogen; //outfluxes
-      foreachstand(stand,s,grid[cell].standlist)
-      {
-        water_before+=soilwater(&stand->soil)*stand->frac;
-        start.carbon+=(standstocks(stand).carbon + soilmethane(&stand->soil)*WC/WCH4)*stand->frac;
-        start.nitrogen+=standstocks(stand).nitrogen*stand->frac;
-      }
-      start.carbon+=grid[cell].ml.product.fast.carbon+grid[cell].ml.product.slow.carbon+
-          grid[cell].balance.estab_storage_grass[0].carbon+grid[cell].balance.estab_storage_tree[0].carbon+grid[cell].balance.estab_storage_grass[1].carbon+grid[cell].balance.estab_storage_tree[1].carbon;
-      start.nitrogen+=grid[cell].ml.product.fast.nitrogen+grid[cell].ml.product.slow.nitrogen+
-          grid[cell].balance.estab_storage_grass[0].nitrogen+grid[cell].balance.estab_storage_tree[0].nitrogen+grid[cell].balance.estab_storage_grass[1].nitrogen+grid[cell].balance.estab_storage_tree[1].nitrogen;
-      if(grid[cell].ml.dam)
-      {
-        water_before+=grid[cell].ml.resdata->dmass/grid[cell].coord.area;/*+grid[cell].resdata->dfout_irrigation/grid[cell].coord.area; */
-        for(i=0;i<NIRRIGDAYS;i++)
-          water_before+=grid[cell].ml.resdata->dfout_irrigation_daily[i]/grid[cell].coord.area;
-      }
-#endif
     initoutputdata(&grid[cell].output,ANNUAL,year,config);
     grid[cell].balance.surface_storage=grid[cell].balance.adischarge=0;
     grid[cell].discharge.afin_ext=0;
@@ -130,64 +96,6 @@ void iterateyear(Outputfile *output,  /**< Output file data */
       }
       initgdd(grid[cell].gdd,npft);
     } /*gridcell skipped*/
-#ifdef CHECK_BALANCE2
-      fluxes_out.carbon=(grid[cell].balance.arh+grid[cell].balance.fire.carbon+grid[cell].balance.flux_firewood.carbon+grid[cell].balance.neg_fluxes.carbon
-          +grid[cell].balance.flux_harvest.carbon+grid[cell].balance.biomass_yield.carbon+grid[cell].balance.deforest_emissions.carbon)-fluxes_out.carbon; //outfluxes
-      fluxes_in.carbon=(grid[cell].balance.anpp+grid[cell].balance.flux_estab.carbon+grid[cell].balance.influx.carbon)-fluxes_in.carbon;
-      fluxes_out.nitrogen=(grid[cell].balance.fire.nitrogen+grid[cell].balance.flux_firewood.nitrogen+grid[cell].balance.n_outflux+grid[cell].balance.neg_fluxes.nitrogen
-          +grid[cell].balance.flux_harvest.nitrogen+grid[cell].balance.biomass_yield.nitrogen+grid[cell].balance.deforest_emissions.nitrogen)-fluxes_out.nitrogen;
-      fluxes_in.nitrogen=(grid[cell].balance.flux_estab.nitrogen+grid[cell].balance.influx.nitrogen)-fluxes_in.nitrogen;
-      water_after=(grid[cell].discharge.dmass_lake+grid[cell].discharge.dmass_river)/grid[cell].coord.area;
-      CH4_fluxes-=(grid[cell].balance.aCH4_em+grid[cell].balance.aCH4_sink)*WC/WCH4;                                 //will be negative, because emissions at the end are higher, thus we have to substract
-      end=0;
-      foreachstand(stand,s,grid[cell].standlist)
-      {
-        water_after+=soilwater(&stand->soil)*stand->frac;
-        end+=(standstocks(stand).carbon + soilmethane(&stand->soil)*WC/WCH4)*stand->frac ;
-      }
-      end+=grid[cell].ml.product.fast.carbon+grid[cell].ml.product.slow.carbon+
-          grid[cell].balance.estab_storage_grass[0].carbon+grid[cell].balance.estab_storage_tree[0].carbon+grid[cell].balance.estab_storage_grass[1].carbon+grid[cell].balance.estab_storage_tree[1].carbon;
-      if(grid[cell].ml.dam)
-      {
-        water_after+=grid[cell].ml.resdata->dmass/grid[cell].coord.area;/*+grid[cell].resdata->dfout_irrigation/grid[cell].coord.area; */
-        for(i=0;i<NIRRIGDAYS;i++)
-          water_after+=grid[cell].ml.resdata->dfout_irrigation_daily[i]/grid[cell].coord.area;
-      }
-
-      balanceW=water_after-water_before+
-          ((grid[cell].balance.awater_flux+grid[cell].balance.atransp+grid[cell].balance.aevap+grid[cell].balance.ainterc+grid[cell].balance.aevap_lake+grid[cell].balance.aevap_res-grid[cell].balance.airrig-grid[cell].balance.aMT_water)-wfluxes_old)
-          +((grid[cell].balance.excess_water+grid[cell].lateral_water)-exess_old);
-      if (fabs(end-start.carbon-CH4_fluxes+fluxes_out.carbon-fluxes_in.carbon)>0.001)
-      {
-        fprintf(stderr, "C_ERROR-iterateyear after update_annual: day: %d    %g start: %g  end: %g CH4_fluxes: %g flux_estab.carbon: %g flux_harvest.carbon: %g dcflux: %g fluxes_in.carbon: %g "
-            "fluxes_out.carbon: %g neg_fluxes: %g bm_inc: %g rh: %g aCH4_sink: %g aCH4_em : %g \n",
-            day,end-start.carbon-CH4_fluxes-fluxes_in.carbon+fluxes_out.carbon,start.carbon,end,CH4_fluxes,grid[cell].balance.flux_estab.carbon,grid[cell].balance.flux_harvest.carbon,
-            grid[cell].output.dcflux, fluxes_in.carbon,fluxes_out.carbon, grid[cell].balance.neg_fluxes.carbon,grid[cell].output.bm_inc,grid[cell].balance.arh,grid[cell].balance.aCH4_sink*WC/WCH4,grid[cell].balance.aCH4_em*WC/WCH4);
-        //    foreachstand(stand,s,grid[cell].standlist)
-        //             fprintf(stderr,"update_daily: standfrac: %g standtype: %s s= %d iswetland: %d cropfraction_rf: %g cropfraction_irr: %g grasfrac_rf: %g grasfrac_irr: %g\n",
-        //                     stand->frac, stand->type->name,s,stand->soil.iswetland, crop_sum_frac(grid[cell].ml.landfrac,12,config->nagtree,grid[cell].ml.reservoirfrac+grid[cell].lakefrac,FALSE),
-        //                     cr.carbonop_sum_frac(grid[cell].ml.landfrac,12,config->nagtree,grid[cell].ml.reservoirfrac+grid[cell].lakefrac,TRUE),
-        //                     grid[cell].ml.landfrac[0].grass[0]+grid[cell].ml.landfrac[0].grass[1],grid[cell].ml.landfrac[1].grass[0]+grid[cell].ml.landfrac[1].grass[1]);
-      }
-      end=0;
-      foreachstand(stand,s,grid[cell].standlist)
-      end+=standstocks(stand).nitrogen*stand->frac;
-      end+=grid[cell].ml.product.fast.nitrogen+grid[cell].ml.product.slow.nitrogen+
-          grid[cell].balance.estab_storage_grass[0].nitrogen+grid[cell].balance.estab_storage_tree[0].nitrogen+grid[cell].balance.estab_storage_grass[1].nitrogen+grid[cell].balance.estab_storage_tree[1].nitrogen;
-      if (fabs(end-start.nitrogen+fluxes_out.nitrogen-fluxes_in.nitrogen)>0.005)
-      {
-        fprintf(stderr, "N_ERROR-iterateyear after landusechange: day: %d    %g start: %g  end: %g flux_estab.nitrogen: %g flux_harvest.nitrogen: %g "
-            "influx: %g outflux: %g neg_fluxes: %g\n",
-            day,end-start.nitrogen-fluxes_in.nitrogen+fluxes_out.nitrogen,start.nitrogen, end,grid[cell].balance.flux_estab.nitrogen,grid[cell].balance.flux_harvest.nitrogen,
-            fluxes_in.nitrogen,fluxes_out.nitrogen, grid[cell].balance.neg_fluxes.nitrogen);
-      }
-      if(fabs(balanceW)>0.1)
-        fprintf(stderr,"W-BALANCE-ERROR in iterateyear after landusechange: day %d balanceW: %g  exess_old: %g balance.excess_water: %g water_after: %g water_before: %g"
-            "atransp: %g  aevap %g ainterc %g aevap_lake  %g aevap_res: %g    airrig : %g aMT_water : %g flux_bal: %g runoff %g awater_flux %g lateral_water %g mfin-mfout : %g dmass_lake : %g  dmassriver : %g  \n",day,balanceW,exess_old,grid[cell].balance.excess_water,
-            water_after,water_before,grid[cell].balance.atransp,grid[cell].balance.aevap,grid[cell].balance.ainterc,grid[cell].balance.aevap_lake,grid[cell].balance.aevap_res,grid[cell].balance.airrig,grid[cell].balance.aMT_water,
-            ((grid[cell].balance.awater_flux+grid[cell].balance.atransp+grid[cell].balance.aevap+grid[cell].balance.ainterc+grid[cell].balance.aevap_lake+grid[cell].balance.aevap_res-grid[cell].balance.airrig-grid[cell].balance.aMT_water)-wfluxes_old),
-            grid[cell].discharge.drunoff,grid[cell].balance.awater_flux,grid[cell].lateral_water,((grid[cell].discharge.mfout-grid[cell].discharge.mfin)/grid[cell].coord.area),grid[cell].discharge.dmass_lake/grid[cell].coord.area,grid[cell].discharge.dmass_river/grid[cell].coord.area);
-#endif
   } /* of for(cell=...) */
 
   day=1;
@@ -235,41 +143,6 @@ void iterateyear(Outputfile *output,  /**< Output file data */
     {
       for(cell=0;cell<config->ngridcell;cell++)
       {
-#ifdef CHECK_BALANCE2
-        int i;
-        Real end=0;
-        Stocks start={0,0};
-        Stocks fluxes_in,fluxes_out;
-        Real water_before=(grid[cell].discharge.dmass_lake+grid[cell].discharge.dmass_river)/grid[cell].coord.area;
-        Real water_after=0;
-        Real balanceW=0;
-        Real wfluxes_old=grid[cell].balance.awater_flux+grid[cell].balance.atransp+grid[cell].balance.aevap+grid[cell].balance.ainterc+grid[cell].balance.aevap_lake+grid[cell].balance.aevap_res-grid[cell].balance.airrig-grid[cell].balance.aMT_water;
-        Real exess_old=grid[cell].balance.excess_water+grid[cell].lateral_water;
-        Real CH4_fluxes=(grid[cell].balance.aCH4_em+grid[cell].balance.aCH4_sink)*WC/WCH4;
-        fluxes_in.carbon=grid[cell].balance.anpp+grid[cell].balance.flux_estab.carbon+grid[cell].balance.influx.carbon; //influxes
-        fluxes_out.carbon=grid[cell].balance.arh+grid[cell].balance.fire.carbon+grid[cell].balance.flux_firewood.carbon+grid[cell].balance.neg_fluxes.carbon
-            +grid[cell].balance.flux_harvest.carbon+grid[cell].balance.biomass_yield.carbon+grid[cell].balance.deforest_emissions.carbon; //outfluxes
-        fluxes_in.nitrogen=grid[cell].balance.flux_estab.nitrogen+grid[cell].balance.influx.nitrogen; //influxes
-        fluxes_out.nitrogen=grid[cell].balance.fire.nitrogen+grid[cell].balance.flux_firewood.nitrogen+grid[cell].balance.n_outflux+grid[cell].balance.neg_fluxes.nitrogen
-            +grid[cell].balance.flux_harvest.nitrogen+grid[cell].balance.biomass_yield.nitrogen+grid[cell].balance.deforest_emissions.nitrogen; //outfluxes
-        foreachstand(stand,s,grid[cell].standlist)
-        {
-          water_before+=soilwater(&stand->soil)*stand->frac;
-          start.carbon+=(standstocks(stand).carbon + soilmethane(&stand->soil)*WC/WCH4)*stand->frac;
-          start.nitrogen+=standstocks(stand).nitrogen*stand->frac;
-        }
-        start.carbon+=grid[cell].ml.product.fast.carbon+grid[cell].ml.product.slow.carbon+
-            grid[cell].balance.estab_storage_grass[0].carbon+grid[cell].balance.estab_storage_tree[0].carbon+grid[cell].balance.estab_storage_grass[1].carbon+grid[cell].balance.estab_storage_tree[1].carbon;
-        start.nitrogen+=grid[cell].ml.product.fast.nitrogen+grid[cell].ml.product.slow.nitrogen+
-            grid[cell].balance.estab_storage_grass[0].nitrogen+grid[cell].balance.estab_storage_tree[0].nitrogen+grid[cell].balance.estab_storage_grass[1].nitrogen+grid[cell].balance.estab_storage_tree[1].nitrogen;
-        if(grid[cell].ml.dam)
-        {
-          water_before+=grid[cell].ml.resdata->dmass/grid[cell].coord.area;/*+grid[cell].resdata->dfout_irrigation/grid[cell].coord.area; */
-          for(i=0;i<NIRRIGDAYS;i++)
-            water_before+=grid[cell].ml.resdata->dfout_irrigation_daily[i]/grid[cell].coord.area;
-        }
-
-#endif
         if(!grid[cell].skip)
         {
           if(config->ispopulation)
@@ -320,64 +193,6 @@ void iterateyear(Outputfile *output,  /**< Output file data */
           update_daily(grid+cell,co2,ch4,popdens,daily,day,npft,
               ncft,year,month,intercrop,config);
         }
-#ifdef CHECK_BALANCE2
-        fluxes_out.carbon=(grid[cell].balance.arh+grid[cell].balance.fire.carbon+grid[cell].balance.flux_firewood.carbon+grid[cell].balance.neg_fluxes.carbon
-            +grid[cell].balance.flux_harvest.carbon+grid[cell].balance.biomass_yield.carbon+grid[cell].balance.deforest_emissions.carbon)-fluxes_out.carbon; //outfluxes
-        fluxes_in.carbon=(grid[cell].balance.anpp+grid[cell].balance.flux_estab.carbon+grid[cell].balance.influx.carbon)-fluxes_in.carbon;
-        water_after=(grid[cell].discharge.dmass_lake+grid[cell].discharge.dmass_river)/grid[cell].coord.area;
-        CH4_fluxes-=(grid[cell].balance.aCH4_em+grid[cell].balance.aCH4_sink)*WC/WCH4;                                 //will be negative, because emissions at the end are higher, thus we have to substract
-        end=0;
-        foreachstand(stand,s,grid[cell].standlist)
-        {
-          water_after+=soilwater(&stand->soil)*stand->frac;
-          end+=(standstocks(stand).carbon + soilmethane(&stand->soil)*WC/WCH4)*stand->frac ;
-        }
-        end+=grid[cell].ml.product.fast.carbon+grid[cell].ml.product.slow.carbon+
-            grid[cell].balance.estab_storage_grass[0].carbon+grid[cell].balance.estab_storage_tree[0].carbon+grid[cell].balance.estab_storage_grass[1].carbon+grid[cell].balance.estab_storage_tree[1].carbon;
-        if(grid[cell].ml.dam)
-        {
-          water_after+=grid[cell].ml.resdata->dmass/grid[cell].coord.area;/*+grid[cell].resdata->dfout_irrigation/grid[cell].coord.area; */
-          for(i=0;i<NIRRIGDAYS;i++)
-            water_after+=grid[cell].ml.resdata->dfout_irrigation_daily[i]/grid[cell].coord.area;
-        }
-
-        balanceW=water_after-water_before-daily.prec+
-            ((grid[cell].balance.awater_flux+grid[cell].balance.atransp+grid[cell].balance.aevap+grid[cell].balance.ainterc+grid[cell].balance.aevap_lake+grid[cell].balance.aevap_res-grid[cell].balance.airrig-grid[cell].balance.aMT_water)-wfluxes_old)
-            +((grid[cell].balance.excess_water+grid[cell].lateral_water)-exess_old);
-        if (fabs(end-start.carbon-CH4_fluxes+fluxes_out.carbon-fluxes_in.carbon)>0.001)
-        {
-          fprintf(stderr, "C_ERROR-iterateyear after update_annual: day: %d    %g start: %g  end: %g CH4_fluxes: %g flux_estab.carbon: %g flux_harvest.carbon: %g dcflux: %g fluxes_in.carbon: %g "
-              "fluxes_out.carbon: %g neg_fluxes: %g bm_inc: %g rh: %g aCH4_sink: %g aCH4_em : %g \n",
-              day,end-start.carbon-CH4_fluxes-fluxes_in.carbon+fluxes_out.carbon,start.carbon,end,CH4_fluxes,grid[cell].balance.flux_estab.carbon,grid[cell].balance.flux_harvest.carbon,
-              grid[cell].output.dcflux, fluxes_in.carbon,fluxes_out.carbon, grid[cell].balance.neg_fluxes.carbon,grid[cell].output.bm_inc,grid[cell].balance.arh,grid[cell].balance.aCH4_sink*WC/WCH4,grid[cell].balance.aCH4_em*WC/WCH4);
-          //    foreachstand(stand,s,grid[cell].standlist)
-          //             fprintf(stderr,"update_daily: standfrac: %g standtype: %s s= %d iswetland: %d cropfraction_rf: %g cropfraction_irr: %g grasfrac_rf: %g grasfrac_irr: %g\n",
-          //                     stand->frac, stand->type->name,s,stand->soil.iswetland, crop_sum_frac(grid[cell].ml.landfrac,12,config->nagtree,grid[cell].ml.reservoirfrac+grid[cell].lakefrac,FALSE),
-          //                     cr.carbonop_sum_frac(grid[cell].ml.landfrac,12,config->nagtree,grid[cell].ml.reservoirfrac+grid[cell].lakefrac,TRUE),
-          //                     grid[cell].ml.landfrac[0].grass[0]+grid[cell].ml.landfrac[0].grass[1],grid[cell].ml.landfrac[1].grass[0]+grid[cell].ml.landfrac[1].grass[1]);
-        }
-        fluxes_out.nitrogen=(grid[cell].balance.fire.nitrogen+grid[cell].balance.flux_firewood.nitrogen+grid[cell].balance.n_outflux+grid[cell].balance.neg_fluxes.nitrogen
-            +grid[cell].balance.flux_harvest.nitrogen+grid[cell].balance.biomass_yield.nitrogen+grid[cell].balance.deforest_emissions.nitrogen)-fluxes_out.nitrogen;
-        fluxes_in.nitrogen=(grid[cell].balance.flux_estab.nitrogen+grid[cell].balance.influx.nitrogen)-fluxes_in.nitrogen;
-        end=0;
-        foreachstand(stand,s,grid[cell].standlist)
-        end+=standstocks(stand).nitrogen*stand->frac;
-        end+=grid[cell].ml.product.fast.nitrogen+grid[cell].ml.product.slow.nitrogen+
-            grid[cell].balance.estab_storage_grass[0].nitrogen+grid[cell].balance.estab_storage_tree[0].nitrogen+grid[cell].balance.estab_storage_grass[1].nitrogen+grid[cell].balance.estab_storage_tree[1].nitrogen;
-        if (fabs(end-start.nitrogen+fluxes_out.nitrogen-fluxes_in.nitrogen)>0.005)
-        {
-          fprintf(stderr, "N_ERROR-iterateyear after update_daily: day: %d    %g start: %g  end: %g flux_estab.nitrogen: %g flux_harvest.nitrogen: %g "
-              "influx: %g outflux: %g neg_fluxes: %g\n",
-              day,end-start.nitrogen-fluxes_in.nitrogen+fluxes_out.nitrogen,start.nitrogen, end,grid[cell].balance.flux_estab.nitrogen,grid[cell].balance.flux_harvest.nitrogen,
-              fluxes_in.nitrogen,fluxes_out.nitrogen, grid[cell].balance.neg_fluxes.nitrogen);
-        }
-        if(fabs(balanceW)>0.1)
-          fprintf(stderr,"W-BALANCE-ERROR in iterateyear after update_daily: day %d balanceW: %g  exess_old: %g balance.excess_water: %g water_after: %g water_before: %g prec: %g"
-              "atransp: %g  aevap %g ainterc %g aevap_lake  %g aevap_res: %g    airrig : %g aMT_water : %g flux_bal: %g runoff %g awater_flux %g lateral_water %g mfin-mfout : %g dmass_lake : %g  dmassriver : %g  \n",day,balanceW,exess_old,grid[cell].balance.excess_water,
-              water_after,water_before,daily.prec,grid[cell].balance.atransp,grid[cell].balance.aevap,grid[cell].balance.ainterc,grid[cell].balance.aevap_lake,grid[cell].balance.aevap_res,grid[cell].balance.airrig,grid[cell].balance.aMT_water,
-              ((grid[cell].balance.awater_flux+grid[cell].balance.atransp+grid[cell].balance.aevap+grid[cell].balance.ainterc+grid[cell].balance.aevap_lake+grid[cell].balance.aevap_res-grid[cell].balance.airrig-grid[cell].balance.aMT_water)-wfluxes_old),
-              grid[cell].discharge.drunoff,grid[cell].balance.awater_flux,grid[cell].lateral_water,((grid[cell].discharge.mfout-grid[cell].discharge.mfin)/grid[cell].coord.area),grid[cell].discharge.dmass_lake/grid[cell].coord.area,grid[cell].discharge.dmass_river/grid[cell].coord.area);
-#endif
       }
 
       if(config->river_routing)
@@ -417,44 +232,6 @@ void iterateyear(Outputfile *output,  /**< Output file data */
 
   for(cell=0;cell<config->ngridcell;cell++)
   {
-#ifdef CHECK_BALANCE2
-    int i;
-    Real end=0;
-    Stocks start={0,0};
-    Stocks fluxes_in,fluxes_out;
-    Real water_before=(grid[cell].discharge.dmass_lake+grid[cell].discharge.dmass_river)/grid[cell].coord.area;
-    Real water_after=0;
-    Real balanceW=0;
-    Real wfluxes_old=grid[cell].balance.awater_flux+grid[cell].balance.atransp+grid[cell].balance.aevap+grid[cell].balance.ainterc+grid[cell].balance.aevap_lake+grid[cell].balance.aevap_res-grid[cell].balance.airrig-grid[cell].balance.aMT_water;
-    Real exess_old=grid[cell].balance.excess_water+grid[cell].lateral_water;
-    Real CH4_fluxes=(grid[cell].balance.aCH4_em+grid[cell].balance.aCH4_sink)*WC/WCH4;
-    fluxes_in.carbon=grid[cell].balance.anpp+grid[cell].balance.flux_estab.carbon+grid[cell].balance.influx.carbon; //influxes
-    fluxes_out.carbon=grid[cell].balance.arh+grid[cell].balance.fire.carbon+grid[cell].balance.flux_firewood.carbon+
-        grid[cell].balance.neg_fluxes.carbon+grid[cell].balance.flux_harvest.carbon+grid[cell].balance.biomass_yield.carbon+grid[cell].balance.deforest_emissions.carbon+grid[cell].balance.prod_turnover.fast.carbon
-        +grid[cell].balance.prod_turnover.slow.carbon+grid[cell].balance.trad_biofuel.carbon; //outfluxes
-    fluxes_in.nitrogen=grid[cell].balance.flux_estab.nitrogen+grid[cell].balance.influx.nitrogen; //influxes
-
-    fluxes_out.nitrogen=grid[cell].balance.fire.nitrogen+grid[cell].balance.flux_firewood.nitrogen+grid[cell].balance.n_outflux+grid[cell].balance.neg_fluxes.nitrogen
-        +grid[cell].balance.flux_harvest.nitrogen+grid[cell].balance.biomass_yield.nitrogen+grid[cell].balance.deforest_emissions.nitrogen+grid[cell].balance.prod_turnover.fast.nitrogen
-        +grid[cell].balance.prod_turnover.slow.nitrogen+grid[cell].balance.trad_biofuel.nitrogen; //outfluxes
-    foreachstand(stand,s,grid[cell].standlist)
-    {
-      water_before+=soilwater(&stand->soil)*stand->frac;
-      start.carbon+=(standstocks(stand).carbon + soilmethane(&stand->soil)*WC/WCH4)*stand->frac;
-      start.nitrogen+=standstocks(stand).nitrogen*stand->frac;
-    }
-    start.carbon+=grid[cell].ml.product.fast.carbon+grid[cell].ml.product.slow.carbon+
-        grid[cell].balance.estab_storage_grass[0].carbon+grid[cell].balance.estab_storage_tree[0].carbon+grid[cell].balance.estab_storage_grass[1].carbon+grid[cell].balance.estab_storage_tree[1].carbon;
-    start.nitrogen+=grid[cell].ml.product.fast.nitrogen+grid[cell].ml.product.slow.nitrogen+
-        grid[cell].balance.estab_storage_grass[0].nitrogen+grid[cell].balance.estab_storage_tree[0].nitrogen+grid[cell].balance.estab_storage_grass[1].nitrogen+grid[cell].balance.estab_storage_tree[1].nitrogen;
-    if(grid[cell].ml.dam)
-    {
-      water_before+=grid[cell].ml.resdata->dmass/grid[cell].coord.area;/*+grid[cell].resdata->dfout_irrigation/grid[cell].coord.area; */
-      for(i=0;i<NIRRIGDAYS;i++)
-        water_before+=grid[cell].ml.resdata->dfout_irrigation_daily[i]/grid[cell].coord.area;
-    }
-
-#endif
     if(!grid[cell].skip)
     {
       grid[cell].landcover=(config->prescribe_landcover!=NO_LANDCOVER) ? getlandcover(input.landcover,cell) : NULL;
@@ -532,67 +309,6 @@ void iterateyear(Outputfile *output,  /**< Output file data */
       if(grid[cell].ml.dam)
         grid[cell].balance.surface_storage+=reservoir_surface_storage(grid[cell].ml.resdata);
     }
-#ifdef CHECK_BALANCE2
-    fluxes_out.carbon=(grid[cell].balance.arh+grid[cell].balance.fire.carbon+grid[cell].balance.flux_firewood.carbon+grid[cell].balance.neg_fluxes.carbon
-        +grid[cell].balance.flux_harvest.carbon+grid[cell].balance.biomass_yield.carbon+grid[cell].balance.deforest_emissions.carbon+grid[cell].balance.prod_turnover.fast.carbon
-        +grid[cell].balance.prod_turnover.slow.carbon+grid[cell].balance.trad_biofuel.nitrogen)-fluxes_out.carbon; //outfluxes
-    fluxes_in.carbon=(grid[cell].balance.anpp+grid[cell].balance.flux_estab.carbon+grid[cell].balance.influx.carbon)-fluxes_in.carbon;
-
-    fluxes_out.nitrogen=(grid[cell].balance.fire.nitrogen+grid[cell].balance.flux_firewood.nitrogen+grid[cell].balance.n_outflux+grid[cell].balance.neg_fluxes.nitrogen
-        +grid[cell].balance.flux_harvest.nitrogen+grid[cell].balance.biomass_yield.nitrogen+grid[cell].balance.deforest_emissions.nitrogen+grid[cell].balance.prod_turnover.fast.nitrogen
-        +grid[cell].balance.prod_turnover.slow.nitrogen+grid[cell].balance.trad_biofuel.nitrogen)-fluxes_out.nitrogen;
-    fluxes_in.nitrogen=(grid[cell].balance.flux_estab.nitrogen+grid[cell].balance.influx.nitrogen)-fluxes_in.nitrogen;
-    water_after=(grid[cell].discharge.dmass_lake+grid[cell].discharge.dmass_river)/grid[cell].coord.area;
-    CH4_fluxes-=(grid[cell].balance.aCH4_em+grid[cell].balance.aCH4_sink)*WC/WCH4;                                 //will be negative, because emissions at the end are higher, thus we have to substract
-    end=0;
-    foreachstand(stand,s,grid[cell].standlist)
-    {
-      water_after+=soilwater(&stand->soil)*stand->frac;
-      end+=(standstocks(stand).carbon + soilmethane(&stand->soil)*WC/WCH4)*stand->frac ;
-    }
-    end+=grid[cell].ml.product.fast.carbon+grid[cell].ml.product.slow.carbon+
-        grid[cell].balance.estab_storage_grass[0].carbon+grid[cell].balance.estab_storage_tree[0].carbon+grid[cell].balance.estab_storage_grass[1].carbon+grid[cell].balance.estab_storage_tree[1].carbon;
-    if(grid[cell].ml.dam)
-    {
-      water_after+=grid[cell].ml.resdata->dmass/grid[cell].coord.area;/*+grid[cell].resdata->dfout_irrigation/grid[cell].coord.area; */
-      for(i=0;i<NIRRIGDAYS;i++)
-        water_after+=grid[cell].ml.resdata->dfout_irrigation_daily[i]/grid[cell].coord.area;
-    }
-
-    balanceW=water_after-water_before+
-        (grid[cell].balance.awater_flux-wfluxes_old)                                    // other fluxes added to awater_flux in check_fluxes
-        +((grid[cell].balance.excess_water+grid[cell].lateral_water)-exess_old);
-    if (fabs(end-start.carbon-CH4_fluxes+fluxes_out.carbon-fluxes_in.carbon)>0.001)
-    {
-      fprintf(stderr, "C_ERROR-iterateyear after update_annual: day: %d    %g start: %g  end: %g CH4_fluxes: %g flux_estab.carbon: %g flux_harvest.carbon: %g dcflux: %g fluxes_in.carbon: %g "
-          "fluxes_out.carbon: %g neg_fluxes: %g bm_inc: %g rh: %g aCH4_sink: %g aCH4_em : %g \n",
-          day,end-start.carbon-CH4_fluxes-fluxes_in.carbon+fluxes_out.carbon,start.carbon,end,CH4_fluxes,grid[cell].balance.flux_estab.carbon,grid[cell].balance.flux_harvest.carbon,
-          grid[cell].output.dcflux, fluxes_in.carbon,fluxes_out.carbon, grid[cell].balance.neg_fluxes.carbon,grid[cell].output.bm_inc,grid[cell].balance.arh,grid[cell].balance.aCH4_sink*WC/WCH4,grid[cell].balance.aCH4_em*WC/WCH4);
-      //    foreachstand(stand,s,grid[cell].standlist)
-      //             fprintf(stderr,"update_daily: standfrac: %g standtype: %s s= %d iswetland: %d cropfraction_rf: %g cropfraction_irr: %g grasfrac_rf: %g grasfrac_irr: %g\n",
-      //                     stand->frac, stand->type->name,s,stand->soil.iswetland, crop_sum_frac(grid[cell].ml.landfrac,12,config->nagtree,grid[cell].ml.reservoirfrac+grid[cell].lakefrac,FALSE),
-      //                     cr.carbonop_sum_frac(grid[cell].ml.landfrac,12,config->nagtree,grid[cell].ml.reservoirfrac+grid[cell].lakefrac,TRUE),
-      //                     grid[cell].ml.landfrac[0].grass[0]+grid[cell].ml.landfrac[0].grass[1],grid[cell].ml.landfrac[1].grass[0]+grid[cell].ml.landfrac[1].grass[1]);
-    }
-    end=0;
-    foreachstand(stand,s,grid[cell].standlist)
-    end+=standstocks(stand).nitrogen*stand->frac;
-    end+=grid[cell].ml.product.fast.nitrogen+grid[cell].ml.product.slow.nitrogen+
-        grid[cell].balance.estab_storage_grass[0].nitrogen+grid[cell].balance.estab_storage_tree[0].nitrogen+grid[cell].balance.estab_storage_grass[1].nitrogen+grid[cell].balance.estab_storage_tree[1].nitrogen;
-    if (fabs(end-start.nitrogen+fluxes_out.nitrogen-fluxes_in.nitrogen)>0.001)
-    {
-      fprintf(stderr, "N_ERROR-iterateyear after update_annual: day: %d    %g start: %g  end: %g flux_estab.nitrogen: %g flux_harvest.nitrogen: %g "
-          "influx: %g outflux: %g neg_fluxes: %g\n",
-          day,end-start.nitrogen-fluxes_in.nitrogen+fluxes_out.nitrogen,start.nitrogen, end,grid[cell].balance.flux_estab.nitrogen,grid[cell].balance.flux_harvest.nitrogen,
-          fluxes_in.nitrogen,fluxes_out.nitrogen, grid[cell].balance.neg_fluxes.nitrogen);
-    }
-    if(fabs(balanceW)>0.001)
-      fprintf(stderr,"W-BALANCE-ERROR in iterateyear after update_annual: day %d balanceW: %g  wfluxes_old: %g exess_old: %g balance.excess_water: %g water_after: %g water_before: %g"
-          "atransp: %g  aevap %g ainterc %g aevap_lake  %g aevap_res: %g    airrig : %g aMT_water : %g flux_bal: %g runoff %g awater_flux %g lateral_water %g mfin-mfout : %g dmass_lake : %g  dmassriver : %g  \n",day,balanceW,wfluxes_old,exess_old,grid[cell].balance.excess_water,
-          water_after,water_before,grid[cell].balance.atransp,grid[cell].balance.aevap,grid[cell].balance.ainterc,grid[cell].balance.aevap_lake,grid[cell].balance.aevap_res,grid[cell].balance.airrig,grid[cell].balance.aMT_water,
-          ((grid[cell].balance.awater_flux+grid[cell].balance.atransp+grid[cell].balance.aevap+grid[cell].balance.ainterc+grid[cell].balance.aevap_lake+grid[cell].balance.aevap_res-grid[cell].balance.airrig-grid[cell].balance.aMT_water)-wfluxes_old),
-          grid[cell].discharge.drunoff,grid[cell].balance.awater_flux,grid[cell].lateral_water,((grid[cell].discharge.mfout-grid[cell].discharge.mfin)/grid[cell].coord.area),grid[cell].discharge.dmass_lake/grid[cell].coord.area,grid[cell].discharge.dmass_river/grid[cell].coord.area);
-#endif
   } /* of for(cell=0,...) */
 
   fwriteoutput_ch4(output,ch4,co2,config);
