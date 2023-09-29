@@ -77,24 +77,40 @@ Stocks turnover_tree(Litter *litter, /**< Litter pool */
     update_fbd_tree(litter,pft->par->fuelbulkdensity,reprod,0);
 
     reprod=pft->bm_inc.nitrogen*treepar->reprod_cost;
-    //litter->item[pft->litter].agtop.leaf.nitrogen+=reprod;
-    //pft->bm_inc.nitrogen-=reprod;
-
+    pft->bm_inc.nitrogen-=reprod;
+    if(pft->establish.nitrogen<reprod)
+    {
+      reprod-=pft->establish.nitrogen;
+      getoutput(output,FLUX_ESTABN,config)-=pft->establish.nitrogen*pft->stand->frac;
+      pft->stand->cell->balance.flux_estab.nitrogen-=pft->establish.nitrogen*pft->stand->frac;
+      pft->establish.nitrogen=0;
+    }
+    else
+    {
+      getoutput(output,FLUX_ESTABN,config)-=reprod*pft->stand->frac;
+      pft->stand->cell->balance.flux_estab.nitrogen-=reprod*pft->stand->frac;
+      pft->establish.carbon-=reprod;
+      reprod=0;
+    }
+    getoutput(output,LITFALLN,config)+=reprod*pft->stand->frac;
+    litter->item[pft->litter].agtop.leaf.nitrogen+=reprod;
 //TODO with the Methane Version I removed this because it is for competition not longer needed but had already no effect in master
-//    if(israingreen(pft))
-//    {
-//      /* TODO what to do about N here? */
-//      //cmass_excess=tree->aphen_raingreen/(pft->par->longevity*NDAYYEAR)*pft->bm_inc-pft->bm_inc;
-//      if (cmass_excess>0.0)
-//      {
-//        if (cmass_excess>pft->bm_inc.carbon)
-//          cmass_excess=pft->bm_inc.carbon;
-//        litter->item[pft->litter].ag.leaf.carbon+=cmass_excess;
-//        getoutput(output,LITFALLC,config)+=cmass_excess*pft->stand->frac;
-//        update_fbd_tree(litter,pft->par->fuelbulkdensity,cmass_excess,0);
-//        pft->bm_inc.carbon-=cmass_excess;
-//      }
-//    }
+#if 0
+    if(israingreen(pft))
+    {
+      /* TODO what to do about N here? */
+      //cmass_excess=tree->aphen_raingreen/(pft->par->longevity*NDAYYEAR)*pft->bm_inc-pft->bm_inc;
+      if (cmass_excess>0.0)
+      {
+        if (cmass_excess>pft->bm_inc.carbon)
+          cmass_excess=pft->bm_inc.carbon;
+        litter->item[pft->litter].agtop.leaf.carbon+=cmass_excess;
+        getoutput(output,LITFALLC,config)+=cmass_excess*pft->stand->frac;
+        update_fbd_tree(litter,pft->par->fuelbulkdensity,cmass_excess,0);
+        pft->bm_inc.carbon-=cmass_excess;
+      }
+    }
+#endif
     payback=tree->ind.debt.carbon*pft->nind*CDEBT_PAYBACK_RATE>pft->bm_inc.carbon ? pft->bm_inc.carbon : tree->ind.debt.carbon*pft->nind*CDEBT_PAYBACK_RATE;
     if(pft->nind>0)
     {
@@ -171,10 +187,17 @@ Stocks turnover_tree(Litter *litter, /**< Litter pool */
   sum_after=litterstocks(litter);
   sum_after.carbon+=vegc_sum_tree(pft)+pft->bm_inc.carbon-pft->establish.carbon;
   sum_after.nitrogen+=vegn_sum_tree(pft)+pft->bm_inc.nitrogen-pft->establish.nitrogen;
+<<<<<<< HEAD
   if(fabs(sum_after.carbon-sum_before.carbon)>0.001)
     fprintf(stderr,"C_ERROR in turnover_tree %g!=%g bm_inc.carbon: %g in turnover_tree() for %s\n",sum_after.carbon,sum_before.carbon,pft->bm_inc.carbon,pft->par->name);
   if(fabs(sum_after.nitrogen-sum_before.nitrogen)>0.001)
     fprintf(stderr,"N_ERROR in turnover_tree %g!=%g turn_diff: %g in turnover_tree() for %s\n",sum_after.nitrogen,sum_before.nitrogen,turn_diff.nitrogen,pft->par->name);
+=======
+  if(fabs(sum_after.carbon-sum_before.carbon)>epsilon)
+    fail(INVALID_CARBON_BALANCE_ERR,TRUE,"Carbon balance error %g!=%g in turnover_tree()",sum_after.carbon,sum_before.carbon);
+  if(fabs(sum_after.nitrogen-sum_before.nitrogen)>0.1)
+    fail(INVALID_NITROGEN_BALANCE_ERR,TRUE,"Nitrogen balance error %g!=%g in turnover_tree() for %s",sum_after.nitrogen,sum_before.nitrogen,pft->par->name);
+>>>>>>> 92a4fd39284b81b6a8590fbcaa3b30f8e3a812d9
 
 #endif
   return sum;
