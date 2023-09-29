@@ -47,7 +47,7 @@ void check_stand_fracs(const Cell *cell, /**< pointer to cell */
         foreachpft(pft,p,&stand->pftlist)
              fprintf(stderr,"frac[%s]= %g standNR: %d PFT: %s \n",stand->type->name,stand->frac,s,pft->par->name);
       }
-      fail(NEGATIVE_STAND_FRAC_ERR,TRUE,"Negative or zero stand fraction %g for %s stand, lakefrac: %g, cell (%s) from routine: %d\n",
+      fail(NEGATIVE_STAND_FRAC_ERR,TRUE,TRUE,"Negative or zero stand fraction %g for %s stand, lakefrac: %g, cell (%s) from routine: %d\n",
            stand->frac,stand->type->name,lakefrac,sprintcoord(line,&cell->coord), routine);
     }
   }
@@ -55,7 +55,7 @@ void check_stand_fracs(const Cell *cell, /**< pointer to cell */
   if(fabs(frac_sum-1)>accuracy)
   {
 #if defined IMAGE && defined COUPLED
-    fail(STAND_FRAC_SUM_ERR,TRUE,"Sum of stand fractions differs from 1 by %g, frac_sum %g, lakefrac: %g, cell (%s), reservoirfrac %g from routine: %d\n",
+    fail(STAND_FRAC_SUM_ERR,TRUE,TRUE,"Sum of stand fractions differs from 1 by %g, frac_sum %g, lakefrac: %g, cell (%s), reservoirfrac %g from routine: %d\n",
          fabs(frac_sum-1),frac_sum, lakefrac,sprintcoord(line,&cell->coord),cell->ml.reservoirfrac,routine);
 #else
     for(j=0;j<ncft;j++)

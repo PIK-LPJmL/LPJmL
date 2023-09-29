@@ -21,6 +21,7 @@
 #include "types.h"
 
 void fail(int errcode,     /**< Error code (0...999) */
+          Bool stop,       /**< terminate program */
           Bool core,       /**< generate core file (TRUE/FALSE) */
           const char *msg, /**< error format string */
           ...              /**< optional parameter for output */
@@ -32,19 +33,23 @@ void fail(int errcode,     /**< Error code (0...999) */
    * Output is put in one printf statement. This has to be done because output
    * in multiple printf's is mixed up in the parallel version using MPI
    */
-  s=alloca(strlen(msg)+strlen("ERROR000: ")+strlen(", program terminated unsuccessfully.\n")+1);
+  if(stop)
+    s=alloca(strlen(msg)+strlen("ERROR000: ")+strlen(", program terminated unsuccessfully.\n")+1);
+  else
+    s=alloca(strlen(msg)+strlen("ERROR000: ")+strlen(".\n")+1);
   if(errcode>999)
     errcode=999;
   if(errcode<0)
     errcode=1;
   sprintf(s,"ERROR%03d: ",errcode);
   strcat(s,msg);
-  strcat(s,", program terminated unsuccessfully.\n");
+  strcat(s,(stop) ? ", program terminated unsuccessfully.\n" : ".\n");
   va_start(ap,msg);
   vfprintf(stderr,s,ap);
   fflush(stderr);
   va_end(ap);
-  if(core)
+  if(stop && core)
     abort(); /* generate core file for post-mortem analysis */
-  exit(errcode);
+  if(stop)
+    exit(errcode);
 } /* of 'fail' */

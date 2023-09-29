@@ -166,7 +166,7 @@ void remove_vegetation_copy(Soil *soil, /* soil pointer */
 void reclaim_land(const Stand *stand1,Stand *stand2,Cell *cell,Bool luc_timber,int ntotpft,
                   const Config *config)
 {
-  int l,p,s;
+  int l,p;
   Soil *soil;
   soil=&stand2->soil;
 

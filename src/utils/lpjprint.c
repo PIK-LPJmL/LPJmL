@@ -262,7 +262,7 @@ int main(int argc,char **argv)
   banner(title,4,78);
   initconfig(&config);
   if(readconfig(&config,scanfcn,NTYPES,NOUT,&argc,&argv,USAGE))
-    fail(READ_CONFIG_ERR,FALSE,"Cannot process configuration file");
+    fail(READ_CONFIG_ERR,TRUE,FALSE,"Cannot process configuration file");
   printf("Simulation: %s\n",config.sim_name);
   config.ischeckpoint=ischeckpointrestart(&config) && getfilesize(config.checkpoint_restart_filename)!=-1;
   if(!config.ischeckpoint && config.write_restart_filename==NULL)

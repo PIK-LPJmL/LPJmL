@@ -35,13 +35,13 @@ static void cultcftstand(Stocks *flux_estab,  /**< establishment flux */
                         )
 {
   Pft *pft;
-  int p,s;
+  int p;
   Stocks stocks;
 #ifdef CHECK_BALANCE
   Stand *stand;
   Stocks flux_in={0,0};
-  Stocks flux_out={0,0};
   Stocks start={0,0};
+  int s;
   flux_in.carbon=cell->balance.anpp+cell->balance.flux_estab.carbon+cell->balance.influx.carbon+flux_estab->carbon;
   flux_in.nitrogen=cell->balance.flux_estab.nitrogen+cell->balance.influx.nitrogen+flux_estab->nitrogen;
   foreachstand(stand,s,cell->standlist)
@@ -123,14 +123,13 @@ void sowingcft(Stocks *flux_estab,  /**< establishment flux */
               )
 {
   Stand *stand,*cropstand,*setasidestand;
-  Pft *pft,*croppft;
+  Pft *pft;
   Real difffrac=0;
   Real landfrac;
-  int s,p,cft_id,pos,st,l;
+  int s,p,cft_id,pos;
   Irrigation *irrigation,*data;
 #ifdef CHECK_BALANCE
   Stocks flux_in={0,0};
-  Stocks flux_out={0,0};
   Stocks start={0,0};
   flux_in.carbon=cell->balance.anpp+cell->balance.flux_estab.carbon+cell->balance.influx.carbon+flux_estab->carbon;
   flux_in.nitrogen=cell->balance.flux_estab.nitrogen+cell->balance.influx.nitrogen+flux_estab->nitrogen;
@@ -208,10 +207,10 @@ void sowingcft(Stocks *flux_estab,  /**< establishment flux */
 
   if (fabs(end-start.carbon-flux_in.carbon)>0.01)
   {
-    fprintf(stderr, "C_ERROR-SOWINGCFT: day: %d  CFT: %d  %g start: %.3f  end: %.3f  "
+    fail(INVALID_CARBON_BALANCE_ERR,FAIL_ON_BALANCE,FALSE, "Invalid carbon balance in %s: day: %d  CFT: %d  %g start: %.3f  end: %.3f  "
         "flux_estab.carbon: %g balance.flux_estab: %g flux_in.carbon: %g "
-        "diffrac: %g\n",
-        day,cft,end-start.carbon-flux_in.carbon,start.carbon, end,flux_estab->carbon,cell->balance.flux_estab.carbon,
+        "diffrac: %g",
+        __FUNCTION__,day,cft,end-start.carbon-flux_in.carbon,start.carbon, end,flux_estab->carbon,cell->balance.flux_estab.carbon,
         flux_in.carbon,difffrac);
    }
   end=0;
@@ -220,10 +219,10 @@ void sowingcft(Stocks *flux_estab,  /**< establishment flux */
 
   if (fabs(end-start.nitrogen-flux_in.nitrogen)>0.01)
   {
-    fprintf(stderr, "N_ERROR-SOWINGCFT: day: %d  CFT: %d  %g start: %.3f  end: %.3f  "
+    fail(INVALID_NITROGEN_BALANCE_ERR,FAIL_ON_BALANCE,FALSE, "Invalid nitrogen balance in %s: day: %d  CFT: %d  %g start: %.3f  end: %.3f  "
         "flux_estab.nitrogen: %g balance.flux_estab: %g flux_in.nitrogen: %g "
-        "diffrac: %g\n",
-        day,cft,end-start.nitrogen-flux_in.nitrogen,start.nitrogen, end,flux_estab->nitrogen,cell->balance.flux_estab.nitrogen,
+        "diffrac: %g",
+        __FUNCTION__,day,cft,end-start.nitrogen-flux_in.nitrogen,start.nitrogen, end,flux_estab->nitrogen,cell->balance.flux_estab.nitrogen,
         flux_in.nitrogen,difffrac);
    }
 #endif

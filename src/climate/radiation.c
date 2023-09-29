@@ -47,7 +47,7 @@ void radiation(Real *daylength,       /**< daylength (h) */
       break;
 #ifdef SAFE
     default:
-      fail(INVALID_RADIATION_ERR,FALSE,
+      fail(INVALID_RADIATION_ERR,TRUE,FALSE,
            "Invalid radiation model %d in radiation()",with_radiation);
 #endif
   }

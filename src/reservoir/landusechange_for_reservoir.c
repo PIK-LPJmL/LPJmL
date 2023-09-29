@@ -57,7 +57,7 @@ static void deforest_for_reservoir(Cell *cell,    /**< pointer to cell */
     delstand(cell->standlist,pos);
   }
   else
-    fail(NO_NATURAL_STAND_ERR,TRUE,"No natural stand for deforest_for_reservoir()");
+    fail(NO_NATURAL_STAND_ERR,TRUE,TRUE,"No natural stand for deforest_for_reservoir()");
 
 } /* of 'deforest_for_reservoir' */
 
@@ -195,7 +195,7 @@ static Real from_setaside_for_reservoir(Cell *cell,          /**< pointer to cel
 
   }
   else
-    fail(NO_SETASIDE_ERR,TRUE,
+    fail(NO_SETASIDE_ERR,TRUE,TRUE,
          "Not enough setaside stand created to put the reservoir in cell (%s): diff=%g",
          sprintcoord(line,&cell->coord),difffrac-setasidestand->frac);
 
@@ -298,7 +298,7 @@ void landusechange_for_reservoir(Cell *cell,          /**< pointer to cell */
                    cell->lakefrac,cell->ml.cropfrac_rf, cell->ml.cropfrac_ir,cell->ml.cropfrac_wl[0],cell->ml.cropfrac_wl[1],
                    cell->ml.reservoirfrac, cell->coord.lon, cell->coord.lat);
             fflush(stdout);
-            fail(FOREST_LEFT_ERR,TRUE,
+            fail(FOREST_LEFT_ERR,TRUE,TRUE,
                  "wrong loop, there is still natural land to deforest left");
           }
         }
@@ -368,30 +368,18 @@ void landusechange_for_reservoir(Cell *cell,          /**< pointer to cell */
 
 #ifndef IMAGE /*  Because the timber harvest is not accounted for in the carbon balance check*/
     if(fabs(balanceW)>0.01)
-#ifdef NO_FAIL_BALANCE
-      fprintf(stderr,"ERROR005: "
-#else
-      fail(INVALID_WATER_BALANCE_ERR,FALSE,
-#endif
+      fail(INVALID_WATER_BALANCE_ERR,FAIL_ON_BALANCE,FALSE,
            "water balance error in the building of the reservoir, balanceW=%g",
            balanceW);
     if(fabs(balance.nitrogen)>0.1)
     {
-#ifdef NO_FAIL_BALANCE
-      fprintf(stderr,"ERROR037: "
-#else
-      fail(INVALID_NITROGEN_BALANCE_ERR,FALSE,
-#endif
+      fail(INVALID_NITROGEN_BALANCE_ERR,FAIL_ON_BALANCE,FALSE,
            "nitrogen balance error in cell (%g,%g) in the building of the reservoir, balanceN=%g",
            cell->coord.lat,cell->coord.lon,balance.nitrogen);
       fflush(stderr);
     }
     if(fabs(balance.carbon)>2)
-#ifdef NO_FAIL_BALANCE
-      fprintf(stderr,"ERROR004: "
-#else
-      fail(INVALID_CARBON_BALANCE_ERR,FALSE,
-#endif
+      fail(INVALID_CARBON_BALANCE_ERR,FAIL_ON_BALANCE,FALSE,
            "carbon balance error in the building of the reservoir, balanceC=%g",
            balance.carbon);
 #endif

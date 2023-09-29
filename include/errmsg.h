@@ -64,6 +64,7 @@
 #define HAG_BETA_ERR 44
 #define INVALID_EXTFLOW_ERR 45
 #define OPEN_COUPLER_ERR 46
+#define INVALID_INUNDSTRESS_ERR 47
 
 /* Definition of macros */
 

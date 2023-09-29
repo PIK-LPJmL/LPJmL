@@ -74,7 +74,7 @@ Stocks establishment_tree(Pft *pft,               /**< pointer to tree PFT */
   est_pft=est_nind*(1.0-exp(-5.0*(1.0-fpc_type)))*(1.0-fpc_type)/(Real)n_est;
 #ifdef SAFE
   if (est_pft<0.0)
-    fail(NEGATIVE_ESTABLISHMENT_ERR,TRUE,
+    fail(NEGATIVE_ESTABLISHMENT_ERR,TRUE,TRUE,
          "establishment_area: negative establishment rate=%g, fpc_type=%g in cell (%s)",
          est_pft,fpc_type,sprintcoord(line,&pft->stand->cell->coord));
 #endif

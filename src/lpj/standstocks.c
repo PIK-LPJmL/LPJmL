@@ -22,8 +22,6 @@ Stocks standstocks(const Stand *stand /**< pointer to stand */
 {
   int p;
   const Pft *pft;
-  Pftgrass *grass;
-  Pfttree *tree;
   Stocks tot;
   tot=soilstocks(&stand->soil); /* get stocks in soil */
   foreachpft(pft,p,&stand->pftlist)

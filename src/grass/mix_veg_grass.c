@@ -48,8 +48,6 @@ Bool mix_veg_stock_grass(Pft *pft1, Pft *pft2, Real frac1, Real frac2,const Conf
 {
   Pftgrass *grass1;
   Pftgrass *grass2;
-  Pft *pft;
-  int p,id;
   Bool isdead=FALSE;
   Real nind,test;
   grass1=pft1->data;

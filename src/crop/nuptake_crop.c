@@ -118,10 +118,10 @@ Real nuptake_crop(Pft *pft,             /**< pointer to PFT data */
         }
 #ifdef SAFE
         if (soil->NO3[l]<-epsilon)
-          fail(NEGATIVE_SOIL_NO3_ERR,TRUE,"Cell (%s) NO3=%g<0 in layer %d, nuptake=%g, nsum=%g",
+          fail(NEGATIVE_SOIL_NO3_ERR,TRUE,TRUE,"Cell (%s) NO3=%g<0 in layer %d, nuptake=%g, nsum=%g",
                sprintcoord(line,&pft->stand->cell->coord),soil->NO3[l],l,n_uptake,nsum);
         if (soil->NH4[l]<-epsilon)
-          fail(NEGATIVE_SOIL_NO3_ERR,TRUE,"Cell (%s) NH4=%g<0 in layer %d, nuptake=%g, nsum=%g",
+          fail(NEGATIVE_SOIL_NO3_ERR,TRUE,TRUE,"Cell (%s) NH4=%g<0 in layer %d, nuptake=%g, nsum=%g",
                sprintcoord(line,&pft->stand->cell->coord),soil->NH4[l],l,n_uptake,nsum);
 
 #endif

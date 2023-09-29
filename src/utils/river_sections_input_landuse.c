@@ -68,11 +68,11 @@ int main(int argc,char **argv)
   landuse_version=setversion;
   if(freadanyheader(landuse_file,&header,&swap,headername,&landuse_version,TRUE)){
     fclose(landuse_file);
-    fail(3,FALSE,"Invalid header in landuse-infile.");
+    fail(3,TRUE,FALSE,"Invalid header in landuse-infile.");
   }
   if(header.order!=CELLYEAR){
     fclose(landuse_file);
-    fail(3,FALSE,"Order in landuse-infile not CELLYEAR.");
+    fail(3,TRUE,FALSE,"Order in landuse-infile not CELLYEAR.");
   }
   ncell=header.ncell;
 
@@ -84,7 +84,7 @@ int main(int argc,char **argv)
   version=setversion;
   if(freadheader(mfp,&header_grid,&swap_grid,LPJGRID_HEADER,&version,TRUE)){
     fclose(mfp);
-    fail(23,FALSE,"Invalid header in original grid file.");
+    fail(23,TRUE,FALSE,"Invalid header in original grid file.");
   }  
 
   for(i=0;i<ncell;i++){
@@ -105,7 +105,7 @@ int main(int argc,char **argv)
   version=setversion;
   if(freadheader(ifp,&header_grid,&swap_grid,LPJGRID_HEADER,&version,TRUE)){
     fclose(ifp);
-    fail(23,FALSE,"Invalid header in re-ordered grid file.");
+    fail(23,TRUE,FALSE,"Invalid header in re-ordered grid file.");
   }
 
   /* HEADER */

@@ -46,7 +46,7 @@ void irrig_amount_reservoir(Cell grid[],          /**< LPJ grid */
         if(grid[cell].ml.resdata->dfout_irrigation<0 && grid[cell].ml.resdata->dfout_irrigation>=-0.0001)
           grid[cell].ml.resdata->dfout_irrigation=0.0;
         if(grid[cell].ml.resdata->dfout_irrigation<-0.0001)
-          fail(OUTFLOW_RESERVOIR_ERR,TRUE,"dfout_irrigation<-0.0001");
+          fail(OUTFLOW_RESERVOIR_ERR,TRUE,TRUE,"dfout_irrigation<-0.0001");
 
         /*calculate how much of todays demand is available*/
         grid[cell].ml.resdata->demand_fraction=grid[cell].ml.resdata->dfout_irrigation/grid[cell].ml.resdata->ddemand;
@@ -68,7 +68,7 @@ void irrig_amount_reservoir(Cell grid[],          /**< LPJ grid */
         if(grid[cell].ml.resdata->dfout_irrigation_daily[NIRRIGDAYS-1]<0 && grid[cell].ml.resdata->dfout_irrigation_daily[NIRRIGDAYS-1]>=-0.0005)
           grid[cell].ml.resdata->dfout_irrigation_daily[NIRRIGDAYS-1]=0.0;
         if(grid[cell].ml.resdata->dfout_irrigation_daily[NIRRIGDAYS-1]<-0.005)
-          fail(OUTFLOW_RESERVOIR_ERR,TRUE,"dfout_irrigation_daily[%d] <-0.005: %.5f",NIRRIGDAYS-1,grid[cell].ml.resdata->dfout_irrigation_daily[NIRRIGDAYS-1]);
+          fail(OUTFLOW_RESERVOIR_ERR,TRUE,TRUE,"dfout_irrigation_daily[%d] <-0.005: %.5f",NIRRIGDAYS-1,grid[cell].ml.resdata->dfout_irrigation_daily[NIRRIGDAYS-1]);
 
         grid[cell].discharge.mfout+=grid[cell].ml.resdata->demand_fraction*grid[cell].ml.resdata->ddemand;
 
