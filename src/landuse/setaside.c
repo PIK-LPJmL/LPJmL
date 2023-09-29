@@ -237,10 +237,25 @@ void mixsoil(Stand *stand1,const Stand *stand2,int year,int ntotpft,const Config
 void mixsetaside(Stand *setasidestand,Stand *cropstand,Bool intercrop,int year,int ntotpft,const Config *config)
 {
   /*assumes that all vegetation carbon pools are zero after harvest*/
-  int p, p2;
+  int p, p2,s;
   Pft *pft, *pft2;
   Pftgrass *grass, *grass2;
   Bool found;
+#ifdef CHECK_BALANCE
+  Stand *stand;
+  Stocks start = {0,0};
+  Stocks end = {0,0};
+  Stocks st;
+  Real start_w = 0;
+  Real end_w = 0;
+  foreachstand(stand, s, cropstand->cell->standlist)
+  {
+    st=standstocks(stand);
+    start.carbon+=(st.carbon+ soilmethane(&stand->soil)*WC/WCH4)*stand->frac;//-stand->cell->balance.flux_estab.carbon;
+    start.nitrogen+=st.nitrogen*stand->frac;//-stand->cell->balance.flux_estab.nitrogen;
+    start_w += soilwater(&stand->soil)*stand->frac;
+  }
+#endif
   mixsoil(setasidestand, cropstand, year, ntotpft,config);
   setasidestand->slope_mean=(setasidestand->slope_mean*setasidestand->frac+cropstand->slope_mean*cropstand->frac)/(setasidestand->frac+cropstand->frac);
   setasidestand->Hag_Beta=min(1,(0.06*log(setasidestand->slope_mean+0.1)+0.22)/0.43);
@@ -347,6 +362,23 @@ void mixsetaside(Stand *setasidestand,Stand *cropstand,Bool intercrop,int year,i
     }
   }
   setasidestand->frac+=cropstand->frac;
+  cropstand->frac=0;
+#ifdef CHECK_BALANCE
+  end.carbon=end.nitrogen = end_w=0;
+  foreachstand(stand, s, cropstand->cell->standlist)
+  {
+    st=standstocks(stand);
+    end.carbon+=(st.carbon+ soilmethane(&stand->soil)*WC/WCH4)*stand->frac;
+    end.nitrogen+=st.nitrogen*stand->frac;
+    end_w+= soilwater(&stand->soil)*stand->frac;
+  }
+  if(fabs(start.carbon-end.carbon)>0.001) fprintf(stderr,"C_ERROR mixsetaside at the end: C_ERROR=%g start : %g end : %g \n",
+      start.carbon-end.carbon,start.carbon,end.carbon);
+  if (fabs(start_w - end_w)>0.001) fprintf(stderr, "W_ERROR mixsetaside at the end: W_ERROR=%g start : %g end : %g\n",
+      start_w - end_w, start_w, end_w);
+  if (fabs(start.nitrogen-end.nitrogen)>0.001) fprintf(stderr,"N_ERROR mixsetaside at the end: error=%g start : %g end : %g \n",
+      start.nitrogen-end.nitrogen,start.nitrogen,end.nitrogen);
+#endif
 } /* of 'mixsetaside' */
 
 Bool setaside(Cell *cell,          /**< Pointer to LPJ cell */
@@ -368,17 +400,37 @@ Bool setaside(Cell *cell,          /**< Pointer to LPJ cell */
   String line;
 
 #ifdef CHECK_BALANCE
-  Real end=0;
-  Real start=0;
+//anpp, influx and arh do not change
   Stand *checkstand;
-  foreachstand(checkstand,s,cell->standlist)
-    start+=(standstocks(checkstand).carbon*checkstand->frac+soilmethane(&checkstand->soil)*WC/WCH4*checkstand->frac);
-//  foreachstand(checkstand,s,cell->standlist)
-//  {
-//    fprintf(stderr,"SETASIDE type %d frac:%g id:%d carbon:%g methan:%g\n",checkstand->type->landusetype,checkstand->frac,s,standstocks(checkstand).carbon*checkstand->frac,soilmethane(&checkstand->soil)*WC/WCH4*checkstand->frac);
-//     foreachpft(pft,p,&checkstand->pftlist)
-//        fprintf(stderr,"name:%s vegc:%g\n", pft->par->name,vegc_sum(pft));
-//  }
+  Stocks start = {0,0};
+  Stocks end = {0,0};
+  Stocks st;
+  Stocks fluxes_fire= {0,0};
+  Stocks fluxes_estab= {0,0};
+  Stocks fluxes_neg= {0,0};
+  Stocks fluxes_prod= {0,0};
+  Stocks fluxes_firewood={0,0};
+  Stocks balance= {0,0};
+  Real start_w = 0;
+  Real end_w = 0;
+  foreachstand(checkstand, s, cell->standlist)
+  {
+    st=standstocks(checkstand);
+    start.carbon+=(st.carbon+ soilmethane(&checkstand->soil)*WC/WCH4)*checkstand->frac;//-stand->cell->balance.flux_estab.carbon;
+    start.nitrogen+=st.nitrogen*checkstand->frac;//-stand->cell->balance.flux_estab.nitrogen;
+    start_w += soilwater(&checkstand->soil)*checkstand->frac;
+  }
+  start.carbon+=cell->ml.product.fast.carbon+cell->ml.product.slow.carbon+
+      cell->balance.estab_storage_grass[0].carbon+cell->balance.estab_storage_tree[0].carbon+cell->balance.estab_storage_grass[1].carbon+cell->balance.estab_storage_tree[1].carbon;
+  start.nitrogen+=cell->ml.product.fast.nitrogen+cell->ml.product.slow.nitrogen+
+      cell->balance.estab_storage_grass[0].nitrogen+cell->balance.estab_storage_tree[0].nitrogen+cell->balance.estab_storage_grass[1].nitrogen+cell->balance.estab_storage_tree[1].nitrogen;
+
+  fluxes_fire=cell->balance.fire;
+  fluxes_estab=cell->balance.flux_estab;
+  fluxes_neg=cell->balance.neg_fluxes;
+  fluxes_prod.carbon=(cell->balance.deforest_emissions.carbon+cell->balance.prod_turnover.fast.carbon+cell->balance.prod_turnover.slow.carbon+cell->balance.trad_biofuel.carbon);
+  fluxes_prod.nitrogen=(cell->balance.deforest_emissions.nitrogen+cell->balance.prod_turnover.fast.nitrogen+cell->balance.prod_turnover.slow.nitrogen+cell->balance.trad_biofuel.nitrogen);
+  fluxes_firewood=cell->balance.flux_firewood;
 #endif
   if(cropstand<0)
     fail(NEGATIVE_STAND_FRAC_ERR,TRUE,"setaside: Negative crop stand frac =%g in cell (%s) before update",cropstand->frac,sprintcoord(line,&cell->coord));
@@ -449,20 +501,6 @@ Bool setaside(Cell *cell,          /**< Pointer to LPJ cell */
   if(s!=NOT_FOUND)
   {
     mixsetaside(getstand(cell->standlist,s),cropstand,intercrop,year,npft+ncft,config);
-#ifdef CHECK_BALANCE
-foreachstand(checkstand,k,cell->standlist)
-{
-  if(cropstand!=checkstand)
-    end+=(standstocks(checkstand).carbon*checkstand->frac+soilmethane(&checkstand->soil)*WC/WCH4*checkstand->frac);
-}
-if (fabs(end-start-flux_estab.carbon*cropstand->frac)>0.01)
-{
-  fprintf(stderr, "C_ERROR in SETASIDE after mixsetaside: %g start: %g  end: %g s: %d flux_estab.carbon: %g \n",
-         end-start-flux_estab.carbon*cropstand->frac,start, end,s,flux_estab.carbon*cropstand->frac);
-  foreachstand(checkstand,k,cell->standlist)
-    fprintf(stderr,"type %d frac:%g id:%d carbon:%g methan:%g\n",checkstand->type->landusetype,checkstand->frac,k,standstocks(checkstand).carbon*checkstand->frac,soilmethane(&checkstand->soil)*WC/WCH4*checkstand->frac);
-}
-#endif
     return TRUE;
   }
   else
@@ -478,18 +516,29 @@ if (fabs(end-start-flux_estab.carbon*cropstand->frac)>0.01)
     cropstand->soil.iswetland=iswetland;
   }
 #ifdef CHECK_BALANCE
-  end=-flux_estab.carbon*cropstand->frac;
-  foreachstand(checkstand,s,cell->standlist)
-    end+=(standstocks(checkstand).carbon*checkstand->frac+soilmethane(&checkstand->soil)*WC/WCH4*checkstand->frac);
-
-  if (fabs(end-start)>0.01)
+  end.carbon=end.nitrogen = end_w=0;
+  foreachstand(checkstand, s, cell->standlist)
   {
-     fprintf(stderr, "C_ERROR in SETASIDE: %g start:%g  end:%g\n",
-             end-start,start, end);
-     foreachstand(checkstand,s,cell->standlist)
-       fprintf(stderr,"type %d frac:%g carbon:%g flux_estab:%g \n",checkstand->type->landusetype,checkstand->frac,
-           (standstocks(checkstand).carbon*checkstand->frac+soilmethane(&checkstand->soil)*WC/WCH4*checkstand->frac),cell->balance.flux_estab.carbon);
+    st=standstocks(checkstand);
+    end.carbon+=(st.carbon+ soilmethane(&checkstand->soil)*WC/WCH4)*checkstand->frac;
+    end.nitrogen+=st.nitrogen*checkstand->frac;
+    end_w+= soilwater(&checkstand->soil)*checkstand->frac;
   }
+  end.carbon+=cell->ml.product.fast.carbon+cell->ml.product.slow.carbon+
+      cell->balance.estab_storage_grass[0].carbon+cell->balance.estab_storage_tree[0].carbon+cell->balance.estab_storage_grass[1].carbon+cell->balance.estab_storage_tree[1].carbon;
+  end.nitrogen+=cell->ml.product.fast.nitrogen+cell->ml.product.slow.nitrogen+
+      cell->balance.estab_storage_grass[0].nitrogen+cell->balance.estab_storage_tree[0].nitrogen+cell->balance.estab_storage_grass[1].nitrogen+cell->balance.estab_storage_tree[1].nitrogen;
+
+  balance.carbon=(cell->balance.flux_estab.carbon-fluxes_estab.carbon)-(cell->balance.fire.carbon-fluxes_fire.carbon)-(cell->balance.neg_fluxes.carbon-fluxes_neg.carbon)
+      -((cell->balance.deforest_emissions.carbon+cell->balance.prod_turnover.fast.carbon+cell->balance.prod_turnover.slow.carbon+cell->balance.trad_biofuel.carbon)-fluxes_prod.carbon)-(cell->balance.flux_firewood.carbon-fluxes_firewood.carbon);
+  balance.nitrogen=(cell->balance.flux_estab.nitrogen-fluxes_estab.nitrogen)-(cell->balance.fire.nitrogen-fluxes_fire.nitrogen)-(cell->balance.neg_fluxes.nitrogen-fluxes_neg.nitrogen)
+      -((cell->balance.deforest_emissions.nitrogen+cell->balance.prod_turnover.fast.nitrogen+cell->balance.prod_turnover.slow.nitrogen+cell->balance.trad_biofuel.nitrogen)-fluxes_prod.nitrogen)-(cell->balance.flux_firewood.nitrogen-fluxes_firewood.nitrogen);
+  if(fabs(start.carbon-end.carbon+balance.carbon)>0.001) fprintf(stderr,"C_ERROR setaside at the end: year=%d: C_ERROR=%g start : %g end : %g balance.carbon: %g\n",
+      year,start.carbon-end.carbon+balance.carbon,start.carbon,end.carbon,balance.carbon);
+  if (fabs(start_w - end_w)>0.001) fprintf(stderr, "W_ERROR setaside at the end: year=%d: W_ERROR=%g start : %g end : %g\n",
+      year, start_w - end_w, start_w, end_w);
+  if (fabs(start.nitrogen-end.nitrogen+balance.nitrogen)>0.001) fprintf(stderr,"N_ERROR setaside at the end: year=%d: error=%g start : %g end : %g balance.nitrogen: %g\n",
+      year, start.nitrogen-end.nitrogen+balance.nitrogen,start.nitrogen,end.nitrogen,balance.nitrogen);
 #endif
   return FALSE;
 } /* of 'setaside' */

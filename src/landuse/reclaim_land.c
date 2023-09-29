@@ -166,9 +166,10 @@ void remove_vegetation_copy(Soil *soil, /* soil pointer */
 void reclaim_land(const Stand *stand1,Stand *stand2,Cell *cell,Bool luc_timber,int ntotpft,
                   const Config *config)
 {
-  int l,p;
+  int l,p,s;
   Soil *soil;
   soil=&stand2->soil;
+
   stand2->fire_sum=stand1->fire_sum;
   stand2->slope_mean=stand1->slope_mean;
   stand2->Hag_Beta=stand1->Hag_Beta;
@@ -196,6 +197,7 @@ void reclaim_land(const Stand *stand1,Stand *stand2,Cell *cell,Bool luc_timber,i
     stand2->frac_g[l]=stand1->frac_g[l];
   remove_vegetation_copy(&stand2->soil,stand1,cell,stand2->frac,
                          luc_timber,FALSE,config);
+
 }/* of 'reclaim_land' */
 
 /*

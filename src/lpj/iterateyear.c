@@ -59,12 +59,6 @@ void iterateyear(Outputfile *output,  /**< Output file data */
   intercrop=getintercrop(input.landuse);
   for(cell=0;cell<config->ngridcell;cell++)
   {
-    initoutputdata(&grid[cell].output,ANNUAL,year,config);
-    grid[cell].balance.surface_storage=grid[cell].balance.adischarge=0;
-    grid[cell].discharge.afin_ext=0;
-    if(!grid[cell].skip)
-    {
-      init_annual(grid+cell,ncft,config);
 #ifdef CHECK_BALANCE2
       int i;
       Real end=0;
@@ -98,8 +92,13 @@ void iterateyear(Outputfile *output,  /**< Output file data */
         for(i=0;i<NIRRIGDAYS;i++)
           water_before+=grid[cell].ml.resdata->dfout_irrigation_daily[i]/grid[cell].coord.area;
       }
-
 #endif
+    initoutputdata(&grid[cell].output,ANNUAL,year,config);
+    grid[cell].balance.surface_storage=grid[cell].balance.adischarge=0;
+    grid[cell].discharge.afin_ext=0;
+    if(!grid[cell].skip)
+    {
+      init_annual(grid+cell,ncft,config);
       if (grid[cell].is_glaciated)
         check_glaciated(grid + cell,config);
       else
@@ -130,6 +129,7 @@ void iterateyear(Outputfile *output,  /**< Output file data */
         }
       }
       initgdd(grid[cell].gdd,npft);
+    } /*gridcell skipped*/
 #ifdef CHECK_BALANCE2
       fluxes_out.carbon=(grid[cell].balance.arh+grid[cell].balance.fire.carbon+grid[cell].balance.flux_firewood.carbon+grid[cell].balance.neg_fluxes.carbon
           +grid[cell].balance.flux_harvest.carbon+grid[cell].balance.biomass_yield.carbon+grid[cell].balance.deforest_emissions.carbon)-fluxes_out.carbon; //outfluxes
@@ -188,7 +188,6 @@ void iterateyear(Outputfile *output,  /**< Output file data */
             ((grid[cell].balance.awater_flux+grid[cell].balance.atransp+grid[cell].balance.aevap+grid[cell].balance.ainterc+grid[cell].balance.aevap_lake+grid[cell].balance.aevap_res-grid[cell].balance.airrig-grid[cell].balance.aMT_water)-wfluxes_old),
             grid[cell].discharge.drunoff,grid[cell].balance.awater_flux,grid[cell].lateral_water,((grid[cell].discharge.mfout-grid[cell].discharge.mfin)/grid[cell].coord.area),grid[cell].discharge.dmass_lake/grid[cell].coord.area,grid[cell].discharge.dmass_river/grid[cell].coord.area);
 #endif
-    } /*gridcell skipped*/
   } /* of for(cell=...) */
 
   day=1;
@@ -418,7 +417,7 @@ void iterateyear(Outputfile *output,  /**< Output file data */
 
   for(cell=0;cell<config->ngridcell;cell++)
   {
-#ifdef CHECK_BALANCE
+#ifdef CHECK_BALANCE2
     int i;
     Real end=0;
     Stocks start={0,0};
@@ -533,7 +532,7 @@ void iterateyear(Outputfile *output,  /**< Output file data */
       if(grid[cell].ml.dam)
         grid[cell].balance.surface_storage+=reservoir_surface_storage(grid[cell].ml.resdata);
     }
-#ifdef CHECK_BALANCE
+#ifdef CHECK_BALANCE2
     fluxes_out.carbon=(grid[cell].balance.arh+grid[cell].balance.fire.carbon+grid[cell].balance.flux_firewood.carbon+grid[cell].balance.neg_fluxes.carbon
         +grid[cell].balance.flux_harvest.carbon+grid[cell].balance.biomass_yield.carbon+grid[cell].balance.deforest_emissions.carbon+grid[cell].balance.prod_turnover.fast.carbon
         +grid[cell].balance.prod_turnover.slow.carbon+grid[cell].balance.trad_biofuel.nitrogen)-fluxes_out.carbon; //outfluxes
