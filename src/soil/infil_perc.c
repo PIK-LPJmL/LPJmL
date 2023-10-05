@@ -302,7 +302,8 @@ Real infil_perc(Stand *stand,        /**< Stand pointer */
               frac_g_influx=stand->frac_g[l];
               soil->perc_energy[l+1]=((soil->temp[l]-soil->temp[l+1])*perc*1e-3)*c_water;
             }
-            pperc[l]+=perc;
+            if(l<BOTTOMLAYER)
+              pperc[l]+=perc;
           } /*end percolation*/
         } /* if soil depth > freeze_depth */
       } /* soil layer loop */
