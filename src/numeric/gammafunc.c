@@ -92,7 +92,7 @@ Real gammp(Real a, Real x)
   if (x < 0.0 || a <= 0.0)
   {
     fprintf(stderr, "gammafunc.c: gammp. a x %g %g\n", a, x);
-    fail(GAMMA_FUNC_ERR, FALSE, "Invalid arguments in routine gammp");
+    fail(GAMMA_FUNC_ERR, TRUE,FALSE, "Invalid arguments in routine gammp");
   }
   if (x < (a + 1.0))
   {     //           Use the series representation.
@@ -111,7 +111,7 @@ Real gammq(Real a, Real x)
 {
   Real gamser, gammcf, gln;
 
-  if (x < 0.0 || a <= 0.0) fail(GAMMA_FUNC_ERR, FALSE, "Invalid arguments in routine gammq");
+  if (x < 0.0 || a <= 0.0) fail(GAMMA_FUNC_ERR, TRUE,FALSE, "Invalid arguments in routine gammq");
   if (x < (a + 1.0))
   {     //           Use the series representation
     gser(&gamser, a, x, &gln);
@@ -134,7 +134,7 @@ void gser(Real *gamser, Real a, Real x, Real *gln)
 
   *gln = gammln(a);
   if (x <= 0.0) {
-    if (x < 0.0) fail(GAMMA_FUNC_ERR, FALSE, "x less than 0 in routine gser");
+    if (x < 0.0) fail(GAMMA_FUNC_ERR, TRUE,FALSE, "x less than 0 in routine gser");
     *gamser = 0.0;
     return;
   }
@@ -151,7 +151,7 @@ void gser(Real *gamser, Real a, Real x, Real *gln)
         return;
       }
     }
-    fail(GAMMA_FUNC_ERR, FALSE, "a too large, ITMAX too small in routine gser");
+    fail(GAMMA_FUNC_ERR, TRUE,FALSE, "a too large, ITMAX too small in routine gser");
     return;
   }
 }
@@ -183,7 +183,7 @@ void gcf(Real *gammcf, Real a, Real x, Real *gln)
   if (i > ITMAX)
   {
     printf("gammafunc.c: gcf. a x %g %g\n", a, x);
-    fail(GAMMA_FUNC_ERR, FALSE, "a too large, ITMAX too small in gcf");
+    fail(GAMMA_FUNC_ERR, TRUE,FALSE, "a too large, ITMAX too small in gcf");
   }
   *gammcf = exp(-x + a*log(x) - (*gln))*h;   //            Put factors in front.
 }

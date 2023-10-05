@@ -187,10 +187,12 @@ Stocks turnover_tree(Litter *litter, /**< Litter pool */
   sum_after=litterstocks(litter);
   sum_after.carbon+=vegc_sum_tree(pft)+pft->bm_inc.carbon-pft->establish.carbon;
   sum_after.nitrogen+=vegn_sum_tree(pft)+pft->bm_inc.nitrogen-pft->establish.nitrogen;
-  if(fabs(sum_after.carbon-sum_before.carbon)>epsilon)
-    fail(INVALID_CARBON_BALANCE_ERR,TRUE,"Carbon balance error %.4f!=%.4f in turnover_tree() pft_establish : %g bminc: %g",sum_after.carbon,sum_before.carbon,pft->establish.carbon,pft->bm_inc.carbon);
-  if(fabs(sum_after.nitrogen-sum_before.nitrogen)>0.1)
-    fail(INVALID_NITROGEN_BALANCE_ERR,TRUE,"Nitrogen balance error %g!=%g in turnover_tree() for %s",sum_after.nitrogen,sum_before.nitrogen,pft->par->name);
+  if(fabs(sum_after.carbon-sum_before.carbon)>0.001)
+    fail(INVALID_CARBON_BALANCE_ERR,FAIL_ON_BALANCE,TRUE,"Invalid carbon balance in %s %g!=%g, bm_inc.carbon=%g for %s pft_establish : %g",
+         __FUNCTION__,sum_after.carbon,sum_before.carbon,pft->bm_inc.carbon,pft->par->name,pft->establish.carbon);
+  if(fabs(sum_after.nitrogen-sum_before.nitrogen)>0.001)
+    fail(INVALID_NITROGEN_BALANCE_ERR,FAIL_ON_BALANCE,TRUE,"Invalid nitrogen balance in %s %g!=%g, turn_diff=%g for %s",
+         __FUNCTION__,sum_after.nitrogen,sum_before.nitrogen,turn_diff.nitrogen,pft->par->name);
 #endif
   return sum;
 } /* of 'turnover_tree' */

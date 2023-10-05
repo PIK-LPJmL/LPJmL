@@ -48,10 +48,10 @@ void mixsoil(Stand *stand1,const Stand *stand2,int year,int ntotpft,const Config
     mixpool(stand1->soil.O2[l],stand2->soil.O2[l],stand1->frac,stand2->frac);
 #ifdef SAFE
       if(stand2->soil.NO3[l]<-epsilon || stand1->soil.NO3[l]<-epsilon)
-        fail(NEGATIVE_SOIL_NO3_ERR,TRUE,"setaside: Negative soil NO3-1=%g NO3-2=%gin layer %d in cell (%s)",
+        fail(NEGATIVE_SOIL_NO3_ERR,TRUE,TRUE,"setaside: Negative soil NO3-1=%g NO3-2=%gin layer %d in cell (%s)",
             stand1->soil.NO3[l],stand2->soil.NO3[l],l,sprintcoord(line,&stand2->cell->coord));
       if(stand2->soil.NH4[l]<-epsilon || stand1->soil.NH4[l]<-epsilon)
-        fail(NEGATIVE_SOIL_NH4_ERR,TRUE,"Negative soil NH4-1=%g  NH4-2=%gin layer %d in cell (%s)",
+        fail(NEGATIVE_SOIL_NH4_ERR,TRUE,TRUE,"Negative soil NH4-1=%g  NH4-2=%gin layer %d in cell (%s)",
             stand1->soil.NH4[l],stand2->soil.NH4[l],l,sprintcoord(line,&stand2->cell->coord));
 #endif
     mixpool(stand1->soil.decay_rate[l].fast,stand2->soil.decay_rate[l].fast,
@@ -223,11 +223,7 @@ void mixsoil(Stand *stand1,const Stand *stand2,int year,int ntotpft,const Config
   water_after=soilwater(&stand1->soil)*(stand1->frac+stand2->frac)+stand1->cell->balance.excess_water;
   if(fabs(water_before-water_after)>epsilon*1e-2)
   {
-#ifndef NO_FAIL_BALANCE
-    fail(INVALID_WATER_BALANCE_ERR,FALSE,
-#else
-    fprintf(stderr,
-#endif
+    fail(INVALID_WATER_BALANCE_ERR,FAIL_ON_BALANCE,FALSE,
          "Invalid water balance=%g=%g-%g in mixsoil()",fabs(water_before-water_after),water_before,water_after);
     fflush(stderr);
   }
@@ -237,7 +233,7 @@ void mixsoil(Stand *stand1,const Stand *stand2,int year,int ntotpft,const Config
 void mixsetaside(Stand *setasidestand,Stand *cropstand,Bool intercrop,int year,int ntotpft,const Config *config)
 {
   /*assumes that all vegetation carbon pools are zero after harvest*/
-  int p, p2,s;
+  int p, p2;
   Pft *pft, *pft2;
   Pftgrass *grass, *grass2;
   Bool found;
@@ -248,6 +244,7 @@ void mixsetaside(Stand *setasidestand,Stand *cropstand,Bool intercrop,int year,i
   Stocks st;
   Real start_w = 0;
   Real end_w = 0;
+  int s;
   foreachstand(stand, s, cropstand->cell->standlist)
   {
     st=standstocks(stand);
@@ -372,12 +369,15 @@ void mixsetaside(Stand *setasidestand,Stand *cropstand,Bool intercrop,int year,i
     end.nitrogen+=st.nitrogen*stand->frac;
     end_w+= soilwater(&stand->soil)*stand->frac;
   }
-  if(fabs(start.carbon-end.carbon)>0.001) fprintf(stderr,"C_ERROR mixsetaside at the end: C_ERROR=%g start : %g end : %g \n",
-      start.carbon-end.carbon,start.carbon,end.carbon);
-  if (fabs(start_w - end_w)>0.001) fprintf(stderr, "W_ERROR mixsetaside at the end: W_ERROR=%g start : %g end : %g\n",
-      start_w - end_w, start_w, end_w);
-  if (fabs(start.nitrogen-end.nitrogen)>0.001) fprintf(stderr,"N_ERROR mixsetaside at the end: error=%g start : %g end : %g \n",
-      start.nitrogen-end.nitrogen,start.nitrogen,end.nitrogen);
+  if(fabs(start.carbon-end.carbon)>0.001)
+    fail(INVALID_CARBON_BALANCE_ERR,FAIL_ON_BALANCE,FALSE,"Invalid carbon balance in %s mixsetaside at the end: C_ERROR=%g start : %g end : %g",
+         __FUNCTION__,start.carbon-end.carbon,start.carbon,end.carbon);
+  if (fabs(start_w - end_w)>0.001)
+    fail(INVALID_WATER_BALANCE_ERR,FAIL_ON_BALANCE,FALSE, "Invalid water balance in %s mixsetaside at the end: W_ERROR=%g start : %g end : %g",
+         __FUNCTION__,start_w - end_w, start_w, end_w);
+  if (fabs(start.nitrogen-end.nitrogen)>0.001)
+    fail(INVALID_NITROGEN_BALANCE_ERR,FAIL_ON_BALANCE,FALSE,"Invalid nitrogen balance in %s mixsetaside at the end: error=%g start : %g end : %g",
+         __FUNCTION__, start.nitrogen-end.nitrogen,start.nitrogen,end.nitrogen);
 #endif
 } /* of 'mixsetaside' */
 
@@ -393,7 +393,7 @@ Bool setaside(Cell *cell,          /**< Pointer to LPJ cell */
               const Config *config /**< LPJmL configuration */
              )                     /** \return stand has to be killed (TRUE/FALSE) */
 {
-  int s,p,n_est,k;
+  int s,p,n_est;
   Pft *pft;
   Stocks flux_estab,stocks;
   Irrigation *data;
@@ -433,14 +433,14 @@ Bool setaside(Cell *cell,          /**< Pointer to LPJ cell */
   fluxes_firewood=cell->balance.flux_firewood;
 #endif
   if(cropstand<0)
-    fail(NEGATIVE_STAND_FRAC_ERR,TRUE,"setaside: Negative crop stand frac =%g in cell (%s) before update",cropstand->frac,sprintcoord(line,&cell->coord));
+    fail(NEGATIVE_STAND_FRAC_ERR,TRUE,TRUE,"setaside: Negative crop stand frac =%g in cell (%s) before update",cropstand->frac,sprintcoord(line,&cell->coord));
 
   /* call tillage before */
   if(with_tillage && year >= config->till_startyear)
     tillage(&cropstand->soil,param.residue_frac);
 #ifdef SAFE
   if (!isempty(&cropstand->pftlist))
-    fail(LIST_NOT_EMPTY_ERR, TRUE, "Pftlist is not empty in setaside().");
+    fail(LIST_NOT_EMPTY_ERR,TRUE, TRUE, "Pftlist is not empty in setaside().");
 #endif
   if (intercrop)
   {
@@ -533,12 +533,15 @@ Bool setaside(Cell *cell,          /**< Pointer to LPJ cell */
       -((cell->balance.deforest_emissions.carbon+cell->balance.prod_turnover.fast.carbon+cell->balance.prod_turnover.slow.carbon+cell->balance.trad_biofuel.carbon)-fluxes_prod.carbon)-(cell->balance.flux_firewood.carbon-fluxes_firewood.carbon);
   balance.nitrogen=(cell->balance.flux_estab.nitrogen-fluxes_estab.nitrogen)-(cell->balance.fire.nitrogen-fluxes_fire.nitrogen)-(cell->balance.neg_fluxes.nitrogen-fluxes_neg.nitrogen)
       -((cell->balance.deforest_emissions.nitrogen+cell->balance.prod_turnover.fast.nitrogen+cell->balance.prod_turnover.slow.nitrogen+cell->balance.trad_biofuel.nitrogen)-fluxes_prod.nitrogen)-(cell->balance.flux_firewood.nitrogen-fluxes_firewood.nitrogen);
-  if(fabs(start.carbon-end.carbon+balance.carbon)>0.001) fprintf(stderr,"C_ERROR setaside at the end: year=%d: C_ERROR=%g start : %g end : %g balance.carbon: %g\n",
-      year,start.carbon-end.carbon+balance.carbon,start.carbon,end.carbon,balance.carbon);
-  if (fabs(start_w - end_w)>0.001) fprintf(stderr, "W_ERROR setaside at the end: year=%d: W_ERROR=%g start : %g end : %g\n",
-      year, start_w - end_w, start_w, end_w);
-  if (fabs(start.nitrogen-end.nitrogen+balance.nitrogen)>0.001) fprintf(stderr,"N_ERROR setaside at the end: year=%d: error=%g start : %g end : %g balance.nitrogen: %g\n",
-      year, start.nitrogen-end.nitrogen+balance.nitrogen,start.nitrogen,end.nitrogen,balance.nitrogen);
+  if(fabs(start.carbon-end.carbon+balance.carbon)>0.001)
+    fail(INVALID_CARBON_BALANCE_ERR,FAIL_ON_BALANCE,FALSE,"Invalid carbon balance in %s at the end: year=%d: C_ERROR=%g start : %g end : %g balance.carbon: %g",
+         __FUNCTION__,year,start.carbon-end.carbon+balance.carbon,start.carbon,end.carbon,balance.carbon);
+  if (fabs(start_w - end_w)>0.001)
+    fail(INVALID_WATER_BALANCE_ERR,FAIL_ON_BALANCE,FALSE, "Invalid water balance in %s at the end: year=%d: W_ERROR=%g start : %g end : %g",
+         __FUNCTION__,year, start_w - end_w, start_w, end_w);
+  if (fabs(start.nitrogen-end.nitrogen+balance.nitrogen)>0.001)
+    fail(INVALID_NITROGEN_BALANCE_ERR,FAIL_ON_BALANCE,FALSE,"Invalid nitrogen balance in %s at the end: year=%d: error=%g start : %g end : %g balance.nitrogen: %g",
+         __FUNCTION__,year, start.nitrogen-end.nitrogen+balance.nitrogen,start.nitrogen,end.nitrogen,balance.nitrogen);
 #endif
   return FALSE;
 } /* of 'setaside' */

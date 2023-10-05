@@ -330,7 +330,7 @@ Bool readcelldata(Celldata celldata,      /**< pointer to celldata */
 
   grid->Hag_beta=min(1,(0.06*log(grid->slope+0.1)+0.22)/0.43);
   if(grid->Hag_beta>1)
-    fail(HAG_BETA_ERR,FALSE,"HAG_BETA greater than 1 HAG_BETA= %.2f  slope= %.2f lat=e= %.2f lon=e= %.2f\n",
+    fail(HAG_BETA_ERR,TRUE,FALSE,"HAG_BETA greater than 1 HAG_BETA= %.2f  slope= %.2f lat=e= %.2f lon=e= %.2f\n",
          grid->Hag_beta,grid->slope,grid->coord.lat,grid->coord.lon);
   if(readinputdata(&celldata->slope_min,&grid->slope_min,&grid->coord,cell+config->startgrid,&config->slope_min_filename))
     return TRUE;

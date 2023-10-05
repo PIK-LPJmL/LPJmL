@@ -28,23 +28,25 @@ void update_wetland(Cell *cell,          /**< pointer to cell */
   Stand *stand;
   Pft *pft, *wetpft, *pft_save;
   int p,pn, l;
-  int s, pos,sn;
+  int s, pos;
   int wetlandstandnum,natstandnum;
   int *position;
   Bool *present;
-  Real wetlandarea_old, wetlandarea_new, delta_wetland,delta,natstandarea;
-  Stand *natstand, *wetstand, *setasidestand;
+  Real wetlandarea_old, wetlandarea_new, delta_wetland;
+  Stand *natstand, *wetstand;
   Real tmp, slope, slope_max;
-  Real wtable_use, lambda,carbon1,carbon2;
+  Real wtable_use, lambda;
   Real cti_min, cti_max, p_min, p_max;
   //Real cti_min_max, p_min_max;
-  Bool iswetland_change, iswetland,isdead;
+  Bool iswetland_change, iswetland;
   Pool ctotal;
   Poolpar kmean_pft, cshift;
   Real socfraction,crop_wetland;
-  Real frac,vegc_test;
+  Real frac;
 #ifdef CHECK_BALANCE
+#ifdef CHECK_BALANCE2
   Stand *checkstand;
+#endif
   Stocks st;
   Stocks start={0,0};
   Stocks end={0,0};
@@ -74,7 +76,6 @@ void update_wetland(Cell *cell,          /**< pointer to cell */
   if(s!=NOT_FOUND) {
     natstand = getstand(cell->standlist,s);
     natstandnum=s;
-    natstandarea=natstand->frac;
   }
   s = findlandusetype(cell->standlist, WETLAND);            /*COULD BE AGRICULTURE AS WELL BUT NOT YET*/
   if (s != NOT_FOUND) 
@@ -218,7 +219,6 @@ void update_wetland(Cell *cell,          /**< pointer to cell */
             check(wetstand->soil.c_shift[l]);
           }
           frac = natstand->frac;
-          delta=delta_wetland;
           if(frac<(wetlandarea_new-crop_wetland))
             wetstand->frac = frac;
           else
@@ -323,7 +323,6 @@ void update_wetland(Cell *cell,          /**< pointer to cell */
           foreachpft(pft, p, &wetstand->pftlist)
           if(!present[pft->par->id])
             mix_veg(pft,wetstand->frac/(wetstand->frac+natstand->frac));
-          delta=delta_wetland;
           natstand->frac=frac-delta_wetland;
           wetstand->frac+=delta_wetland;
           //    make sure there is no C in slow pool
@@ -622,11 +621,14 @@ void update_wetland(Cell *cell,          /**< pointer to cell */
     water_after+=soilwater(&stand->soil)*stand->frac;
   }
   if (fabs(start.carbon - end.carbon)>0.01)
-    fprintf(stderr, "\n C_ERROR in update wetland 2: %g start:%g  ende:%g \n", start.carbon - end.carbon, start.carbon, end.carbon);
+    fail(INVALID_CARBON_BALANCE_ERR,FAIL_ON_BALANCE,FALSE,"Invalid carbon balance in %s: %g start:%g  end:%g",
+         __FUNCTION__,start.carbon - end.carbon, start.carbon, end.carbon);
   if (fabs(start.nitrogen - end.nitrogen)>0.1)
-    fprintf(stderr, "N_ERROR in update wetland 2: %g start:%g  ende:%g \n", start.nitrogen - end.nitrogen, start.nitrogen, end.nitrogen);
+    fail(INVALID_NITROGEN_BALANCE_ERR,FAIL_ON_BALANCE,FALSE, "Invalid nitrogen balance in %s: %g start:%g  end:%g",
+         __FUNCTION__,start.nitrogen - end.nitrogen, start.nitrogen, end.nitrogen);
   if (fabs(water_before - water_after)>0.1)
-    fprintf(stderr, "W_ERROR in update wetland 2: %g start:%g  ende:%g \n", water_before - water_after, water_before, water_after);
+    fail(INVALID_WATER_BALANCE_ERR,FAIL_ON_BALANCE,FALSE, "Invalid water balance in %s: %g start:%g  end:%g",
+         __FUNCTION__,water_before - water_after, water_before, water_after);
 #endif
   free(present);
   free(position);

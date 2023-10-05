@@ -22,7 +22,7 @@ void irrig_amount(Stand *stand,        /**< pointer to non-natural stand */
                   const Config *config /**< LPJmL configuration */
                  )
 {
-  int p,nirrig,l;
+  int nirrig;
   Pft *pft;
   Real conv_loss,irrig_stand;
   Pftcrop *crop;

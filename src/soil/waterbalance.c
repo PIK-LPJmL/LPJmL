@@ -180,7 +180,7 @@ fprintf(stderr,"w[%d] %3.12f, fw[%d] %3.12f, icedepth[%d] %3.12f, whcs[%d] %3.12
     {
       if (soil->w[l]<-epsilon)
       {
-        fail(NEGATIVE_SOIL_MOISTURE_ERR, TRUE,
+        fail(NEGATIVE_SOIL_MOISTURE_ERR,TRUE,TRUE,
              "Cell (%s) soil-moisture %d negative: %g, lutype %s soil_type %s in waterbalance()",
              sprintcoord(line,&stand->cell->coord), l, soil->w[l], stand->type->name, soil->par->name);
       }
@@ -246,7 +246,7 @@ fprintf(stderr,"w[%d] %3.12f, fw[%d] %3.12f, icedepth[%d] %3.12f, whcs[%d] %3.12
      fprintf(stderr,"Cell (%s) aet= %3.5f evap= %3.5f cover= %3.2f soilwater=%.6f wsats=%.6f\n",
              sprintcoord(line,&stand->cell->coord),aet_stand[l],*evap,cover,allwater(soil,l)+allice(soil,l),soil->wsats[l]);
      fflush(stderr);
-     fail(NEGATIVE_SOIL_MOISTURE_ERR,TRUE,
+     fail(NEGATIVE_SOIL_MOISTURE_ERR,TRUE,TRUE,
           "Cell (%s) Soil-moisture %d negative: %g, lutype %s soil_type %s in waterbalance()",
           sprintcoord(line,&stand->cell->coord),l,soil->w[l],stand->type->name,soil->par->name);
     }
@@ -262,8 +262,9 @@ fprintf(stderr,"w[%d] %3.12f, fw[%d] %3.12f, icedepth[%d] %3.12f, whcs[%d] %3.12
 #ifdef CHECK_BALANCE
   water_after=soilwater(&stand->soil);
   balancew=water_after-water_before+marginal+aet+*evap;
-  if(fabs(balancew)>0.01) fprintf(stderr,"W_BALANCE-ERROR in waterbalance:  balanceW: %g water_before: %g water_after: %g marginal: %g aet: %g evap: %g evap_test: %g rw_buff: %g wa: %g evap_ratio: %g\n",
-      balancew,water_before,water_after,marginal,aet,*evap,evap_test,soil->rw_buffer,soil->wa,evap_ratio);
+  if(fabs(balancew)>0.01)
+    fail(INVALID_WATER_BALANCE_ERR,FAIL_ON_BALANCE,FALSE,"Invalid water balance in %s:  balanceW: %g water_before: %g water_after: %g marginal: %g aet: %g evap: %g evap_test: %g rw_buff: %g wa: %g evap_ratio: %g",
+      __FUNCTION__,balancew,water_before,water_after,marginal,aet,*evap,evap_test,soil->rw_buffer,soil->wa,evap_ratio);
 #endif
 
 } /* of 'waterbalance' */

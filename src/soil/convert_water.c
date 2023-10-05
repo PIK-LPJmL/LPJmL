@@ -54,7 +54,7 @@ void convert_water(Soil* soil, /**< pointer to soil data */
         if (fabs(soil->w[l])<epsilon)
           soil->w[l]=0.0;
         if (soil->w[l]<0)
-          fail(PERM_ERR,FALSE,"soil->w[%d]=%.10f<0 in convert_water()",l,
+          fail(PERM_ERR,TRUE,FALSE,"soil->w[%d]=%.10f<0 in convert_water()",l,
                soil->w[l]);
       }
       break;
@@ -78,7 +78,7 @@ void convert_water(Soil* soil, /**< pointer to soil data */
         }
       }     
       else if (soil->ice_depth[l]<0)
-        fail(PERM_ERR,FALSE,"ice_depth[%d]=%g<0 in convert_water()",l,soil->ice_depth[l]);
+        fail(PERM_ERR,TRUE,FALSE,"ice_depth[%d]=%g<0 in convert_water()",l,soil->ice_depth[l]);
   } /* of switch */
   /**
   * now use the energy from heat for any additional water/ice conversions

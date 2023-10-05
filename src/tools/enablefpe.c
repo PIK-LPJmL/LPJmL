@@ -23,7 +23,7 @@
 
 static void fpehandler(int UNUSED(sig_num))
 {
-  fail(FPE_ERR,TRUE,"Floating point exception occurred");
+  fail(FPE_ERR,TRUE,TRUE,"Floating point exception occurred");
 } /* of 'fpehandler' */
 
 #ifdef _WIN32

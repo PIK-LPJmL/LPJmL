@@ -93,7 +93,7 @@ int main(int argc,char **argv)
   argv_save=argv;
   if(readconfig(&config,scanfcn,NTYPES,NOUT,&argc,&argv,USAGE))
   {
-    fail(READ_CONFIG_ERR,FALSE,"Cannot process configuration file");
+    fail(READ_CONFIG_ERR,TRUE,FALSE,"Cannot process configuration file");
   }
   else
   {

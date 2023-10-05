@@ -80,7 +80,7 @@ Real infil_perc(Stand *stand,        /**< Stand pointer */
   Real icesum, depthsum, rsub_top_max, rsub_top, wtable_tmp;
   Real tmp_vol, zq, smp, smpmin, smp1, wh_zwt, wh, layerbound2;
   Real q_perch_max, k_drai_perch, k_perch, wtsub, drain_perched, drain_perched_out, drain_perched_layer;
-  Real rsub_top_tot, rsub_top_layer, active_wa, tmp_water, tmp_water2;
+  Real rsub_top_tot, rsub_top_layer, active_wa, tmp_water;
   //Real sat_lev = 0.9;
   Real prec=infil;
 
@@ -342,8 +342,8 @@ Real infil_perc(Stand *stand,        /**< Stand pointer */
                sprintcoord(line,&stand->cell->coord),infil,l,soil->ice_depth[l],soil->ice_fw[l],soil->w_fw[l],soil->w[l]*soil->whcs[l],
                allwater(soil,l)+allice(soil,l),soil->wsats[l],soil->whcs[l],prec);
         fflush(stderr);
-        fail(NEGATIVE_SOIL_MOISTURE_ERR,TRUE,
-             "Cell (%s) Soil-moisture %d negative: %g, lutype %s soil_type %s in infil_perc_rain\n",
+        fail(NEGATIVE_SOIL_MOISTURE_ERR,TRUE,TRUE,
+             "Cell (%s) Soil-moisture %d negative: %g, lutype %s soil_type %s in infil_perc",
              sprintcoord(line,&stand->cell->coord),l,soil->w[l],stand->type->name,soil->par->name);
       }
       soil->w[l]=0;
@@ -355,7 +355,7 @@ Real infil_perc(Stand *stand,        /**< Stand pointer */
   if(config->with_nitrogen)
     forrootsoillayer(l)
       if (soil->NO3[l]<-epsilon)
-        fail(NEGATIVE_SOIL_NO3_ERR,TRUE,"infil_prec_rain: Cell(%s) NO3=%g<0 in layer %d",sprintcoord(line,&stand->cell->coord),soil->NO3[l],l);
+        fail(NEGATIVE_SOIL_NO3_ERR,TRUE,TRUE,"infil_perc: Cell(%s) NO3=%g<0 in layer %d",sprintcoord(line,&stand->cell->coord),soil->NO3[l],l);
 #endif
 
   /* evaluate soil water deficit in upper 50cm (irrigation depth) after irrigation event */
@@ -749,7 +749,7 @@ Real infil_perc(Stand *stand,        /**< Stand pointer */
     {
        //  fail(NEGATIVE_SOIL_MOISTURE_ERR,TRUE,
 //          fprintf(stderr,
-//            "2 Pixel: %f %f Soil-moisture %d negative: %.6f, soil->ice_depth:%.6f, lutype %s soil_type %s in infil_perc_rain\n",
+//            "2 Pixel: %f %f Soil-moisture %d negative: %.6f, soil->ice_depth:%.6f, lutype %s soil_type %s in infil_perc\n",
 //            stand->cell->coord.lat,stand->cell->coord.lon,l,soil->w[l],soil->ice_depth[l],stand->type->name,soil->par->name);
           runoff_out+=soil->w[l];
           soil->w[l]=0;
@@ -759,7 +759,7 @@ Real infil_perc(Stand *stand,        /**< Stand pointer */
     {
         //fail(NEGATIVE_SOIL_MOISTURE_ERR,TRUE,
 //          fprintf(stderr,
-//         "2 Pixel: %f %f Soil-moisture FW %d negative: %.6f, lutype %s soil_type %s  tmp_water: %.6f  in infil_perc_rain\n",
+//         "2 Pixel: %f %f Soil-moisture FW %d negative: %.6f, lutype %s soil_type %s  tmp_water: %.6f  in infil_perc\n",
 //            stand->cell->coord.lat,stand->cell->coord.lon,l,soil->w_fw[l],stand->type->name,soil->par->name,tmp_water);
         runoff_out+=soil->w_fw[l];
         soil->w_fw[l]=0;
@@ -854,7 +854,7 @@ Real infil_perc(Stand *stand,        /**< Stand pointer */
 #ifdef SAFE
     forrootsoillayer(l)
       if (soil->NO3[l]<-epsilon)
-        fail(NEGATIVE_SOIL_NO3_ERR,TRUE,"infil_prec_rain: Cell(%s) NO3=%g<0 in layer %d",sprintcoord(line,&stand->cell->coord),soil->NO3[l],l);
+        fail(NEGATIVE_SOIL_NO3_ERR,TRUE,TRUE,"infil_perc: Cell(%s) NO3=%g<0 in layer %d",sprintcoord(line,&stand->cell->coord),soil->NO3[l],l);
 #endif
   } /* end of if(config->with_nitrogen) */
 
@@ -886,28 +886,21 @@ Real infil_perc(Stand *stand,        /**< Stand pointer */
 
 // TODO check what test meant in earlier versions
   if(fabs(start-end+test-runoff_out-runoff_surface-drain_perched_out-rsub_top)>epsilon)
-    fprintf(stderr,"W_error in infil1 Pixel: lat:%g lon:%g Bilanz:%g\n",stand->cell->coord.lat,stand->cell->coord.lon,start-end+test-runoff_out-runoff_surface-drain_perched_out-rsub_top);
+    fail(INVALID_WATER_BALANCE_ERR,NO_FAIL_BALANCE,FALSE,"Invalid water balance in %s, Cell(lat:%g lon:%g), balance:%g",
+         __FUNCTION__,stand->cell->coord.lat,stand->cell->coord.lon,start-end+test-runoff_out-runoff_surface-drain_perched_out-rsub_top);
   n_after=soilstocks(soil);
   n_after.nitrogen=n_after.nitrogen*stand->frac+stand->cell->output.mn_leaching;
   if(fabs(n_after.nitrogen-n_before.nitrogen)>0.0001)
-     fprintf(stdout,"N_error in infil Pixel: lat:%g lon:%g N balance:%g\n",stand->cell->coord.lat,stand->cell->coord.lon,n_after.nitrogen-n_before.nitrogen);
-
+     fail(INVALID_NITROGEN_BALANCE_ERR,NO_FAIL_BALANCE,FALSE,"Invalid nitrogen balance in %s, Cell (lat:%g lon:%g), N balance:%g",__FUNCTION__,stand->cell->coord.lat,stand->cell->coord.lon,n_after.nitrogen-n_before.nitrogen);
 #endif
 
 #ifdef CHECK_BALANCE_W
   water_after=soilwater(&stand->soil);
   balancew=water_after-water_before-prec+runoff_surface+runoff_out+drain_perched_out+rsub_top;
   if(fabs(balancew)>10)
-#ifdef NO_FAIL_BALANCE
-    fprintf(stderr,
-#else
-    fail(INVALID_WATER_BALANCE_ERR,FALSE,
+    fail(INVALID_WATER_BALANCE_ERR,NO_FAIL_BALANCE,FALSE,"Invalid water balance in %s: balanceW: %g water_before: %g water_after: %g type: %s standfrac: %g runoff_surface: %g drain_perched_out: %g runoff_out: %g rsub_top: %g rw_buff: %g wa: %g infil: %g",
+         __FUNCTION__,balancew,water_before,water_after,stand->type->name,stand->frac,runoff_surface,drain_perched_out,runoff_out,rsub_top,soil->rw_buffer,soil->wa,prec);
 #endif
-  "W-BALANCE-ERROR in infil_perc:  balanceW: %g water_before: %g water_after: %g type: %s standfrac: %g runoff_surface: %g drain_perched_out: %g runoff_out: %g rsub_top: %g rw_buff: %g wa: %g infil: %g\n",
-      balancew,water_before,water_after,stand->type->name,stand->frac,runoff_surface,drain_perched_out,runoff_out,rsub_top,soil->rw_buffer,soil->wa,prec);
-#endif
-
-
 
    if(stand->type->landusetype!=WETLAND && stand->cell->hydrotopes.skip_cell==FALSE && stand->frac<1-epsilon)
    {

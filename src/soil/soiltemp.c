@@ -122,7 +122,7 @@ void soiltemp(Soil *soil,          /**< pointer to soil data */
     dt = 0.5*(soildepth[l]*soildepth[l]*1e-6)/lambda[l]*heatcap[l];
 #ifdef SAFE
     if(isnan(dt))
-      fail(INVALID_TIMESTEP_ERR,TRUE,"Invalid time step in soiltemp() lambda: %g heatcap %g",lambda[l],heatcap[l]);
+      fail(INVALID_TIMESTEP_ERR,TRUE,TRUE,"Invalid time step in soiltemp() lambda: %g heatcap %g",lambda[l],heatcap[l]);
 #endif
     heat_steps=max(heat_steps,(unsigned long)(timestep2sec(1.0,NSTEP_DAILY)/dt)+1);
     /* convert any latent energy present in this soil layer */

@@ -55,9 +55,7 @@ Bool mix_veg_stock_tree(Pft *pft1,Pft *pft2,Real frac1, Real frac2,const Config 
 {
   Pfttree *tree1;
   Pfttree *tree2;
-  Pft *pft;
   Bool isdead=FALSE;
-  int p,id;
   Real nind,test;
   tree1=pft1->data;
   tree2=pft2->data;
@@ -95,9 +93,6 @@ Bool mix_veg_stock_tree(Pft *pft1,Pft *pft2,Real frac1, Real frac2,const Config 
   }
   else
   {
-    Soil *soil1, *soil2;
-    soil1=&pft1->stand->soil;
-    soil2=&pft2->stand->soil;
     litter_update(&pft1->stand->soil.litter,pft1,pft1->nind,config);
     litter_update(&pft2->stand->soil.litter,pft2,pft2->nind,config);
     isdead=TRUE;

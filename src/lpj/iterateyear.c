@@ -158,7 +158,7 @@ void iterateyear(Outputfile *output,  /**< Output file data */
           if(degCtoK(daily.temp)<0)
           {
             if(degCtoK(daily.temp)<(-0.2)) /* avoid precision errors: only fail if values are more negative than -0.2 */
-              fail(INVALID_CLIMATE_ERR,FALSE,"Temperature=%g K less than zero for cell %d at day %d",degCtoK(daily.temp),cell+config->startgrid,day);
+              fail(INVALID_CLIMATE_ERR,TRUE,FALSE,"Temperature=%g K less than zero for cell %d at day %d",degCtoK(daily.temp),cell+config->startgrid,day);
             daily.temp=-273.15;
           }
           if(config->with_radiation)
@@ -166,18 +166,18 @@ void iterateyear(Outputfile *output,  /**< Output file data */
             if(daily.swdown<0)
             {
               if(!config->isanomaly)
-                fail(INVALID_CLIMATE_ERR,FALSE,"Short wave radiation=%g W/m2 less than zero for cell %d at day %d",daily.swdown,cell+config->startgrid,day);
+                fail(INVALID_CLIMATE_ERR,TRUE,FALSE,"Short wave radiation=%g W/m2 less than zero for cell %d at day %d",daily.swdown,cell+config->startgrid,day);
               daily.swdown=0;
             }
           }
           else
           {
             if(daily.sun<-1e-5 || daily.sun>100)
-              fail(INVALID_CLIMATE_ERR,FALSE,"Cloudiness=%g%% not in [0,100] for cell %d at day %d",daily.sun,cell+config->startgrid,day);
+              fail(INVALID_CLIMATE_ERR,TRUE,FALSE,"Cloudiness=%g%% not in [0,100] for cell %d at day %d",daily.sun,cell+config->startgrid,day);
             getoutput(&grid[cell].output,SUN,config)+=daily.sun;
           }
           if(config->with_nitrogen && daily.windspeed<0)
-            fail(INVALID_CLIMATE_ERR,FALSE,"Wind speed=%g less than zero for cell %d at day %d",daily.windspeed,cell+config->startgrid,day);
+            fail(INVALID_CLIMATE_ERR,TRUE,FALSE,"Wind speed=%g less than zero for cell %d at day %d",daily.windspeed,cell+config->startgrid,day);
 #endif
           if(config->with_radiation==CLOUDINESS && daily.sun<0)
             daily.sun=0;
@@ -202,7 +202,7 @@ void iterateyear(Outputfile *output,  /**< Output file data */
         if(config->extflow)
         {
           if(getextflow(input.extflow,grid,day-1,year))
-            fail(INVALID_EXTFLOW_ERR,FALSE,"Cannot read external flow data");
+            fail(INVALID_EXTFLOW_ERR,TRUE,FALSE,"Cannot read external flow data");
         }
         drain(grid,month,config);
 
