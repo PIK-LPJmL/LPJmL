@@ -30,5 +30,5 @@ Real vegn_sum_grass(const Pft *pft /**< pointer to grass PFT */
 {
   const Pftgrass *grass;
   grass=pft->data;
-  return phys_sum_grass_n(grass->ind)*pft->nind-grass->turn_litt.leaf.nitrogen-grass->turn_litt.root.nitrogen;
+  return phys_sum_grass_n(grass->ind)*pft->nind+pft->nbalance_cor-grass->turn_litt.leaf.nitrogen-grass->turn_litt.root.nitrogen;
 } /* of 'vegn_sum_grass' */

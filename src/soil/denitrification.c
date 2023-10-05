@@ -83,7 +83,7 @@ void denitrification(Stand *stand,        /**< pointer to stand */
     soil->NO3[l]-=N_denit;
 #ifdef SAFE
     if(soil->NO3[l]<-epsilon)
-      fail(NEGATIVE_SOIL_NO3_ERR,TRUE,"Negative soil NO3=%g in layer %d",soil->NO3[l],l);
+      fail(NEGATIVE_SOIL_NO3_ERR,TRUE,TRUE,"Negative soil NO3=%g in layer %d",soil->NO3[l],l);
 #endif
     /* Calculation of N2O from denitrification after Bessou 2010 */
     N2O_denit = 0.11 * N_denit;
@@ -94,12 +94,12 @@ void denitrification(Stand *stand,        /**< pointer to stand */
     stand->cell->balance.n_outflux+=(N_denit+N2O_denit)*stand->frac;
     if(isagriculture(stand->type->landusetype))
     {
-      getoutput(&stand->cell->output,N2O_DENIT_MGRASS,config)+=N2O_denit*stand->frac;
+      getoutput(&stand->cell->output,N2O_DENIT_AGR,config)+=N2O_denit*stand->frac;
       getoutput(&stand->cell->output,N2_AGR,config)+=N_denit*stand->frac;
     }
     if(stand->type->landusetype==GRASSLAND)
     {
-      getoutput(&stand->cell->output,N2O_DENIT_AGR,config)+=N2O_denit*stand->frac;
+      getoutput(&stand->cell->output,N2O_DENIT_MGRASS,config)+=N2O_denit*stand->frac;
       getoutput(&stand->cell->output,N2_MGRASS,config)+=N_denit*stand->frac;
     }
     if(stand->type->landusetype==AGRICULTURE)

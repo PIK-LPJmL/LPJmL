@@ -48,7 +48,7 @@ Real ndemand_tree(const Pft *pft,     /**< pointer to PFT */
 #ifdef DEBUG_N
   fprinttreephys2(stdout,tree->ind,pft->nind);
   printf("\n");
-  printf("ndemand_to = %g vegn %g vegc %g ndemand_leaf %g nc_ratio %g %g \n",ndemand_tot,vegn_sum_tree(pft)+pft->bm_inc.nitrogen-tree->ind.heartwood.nitrogen*pft->nind,vegc_sum_tree(pft),*ndemand_leaf,nc_ratio,*ndemand_leaf/(tree->ind.leaf.carbon*pft->nind+pft->bm_inc.carbon*tree->falloc.leaf));
+  printf("ndemand_to = %g vegn %g vegc %g ndemand_leaf %g nc_ratio %g %g \n",ndemand_tot,vegn_sum_tree(pft)-pft->nbalance_cor+pft->bm_inc.nitrogen-tree->ind.heartwood.nitrogen*pft->nind,vegc_sum_tree(pft),*ndemand_leaf,nc_ratio,*ndemand_leaf/(tree->ind.leaf.carbon*pft->nind+pft->bm_inc.carbon*tree->falloc.leaf));
 #endif
   return ndemand_tot;
 } /* of 'ndemand_tree' */

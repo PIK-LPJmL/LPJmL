@@ -37,7 +37,7 @@ Real daily_agriculture(Stand *stand,                /**< [inout] stand pointer *
                        const Config *config         /**< [in] LPJ config */
                       )                             /** \return runoff (mm/day) */
 {
-  int p,l,nnat,nirrig,c,index;
+  int p,l,nnat,nirrig,index;
   Pft *pft;
   Real *gp_pft;         /**< pot. canopy conductance for PFTs & CFTs (mm/s) */
   Real gp_stand;               /**< potential stomata conductance  (mm/s) */
@@ -64,7 +64,7 @@ Real daily_agriculture(Stand *stand,                /**< [inout] stand pointer *
   Output *output;
   Pftcrop *crop;
   irrig_apply=0.0;
-  Stocks flux_estab={0,0};
+  //Stocks flux_estab={0,0};
 
   data=stand->data;
   negbm=FALSE;
@@ -329,7 +329,7 @@ Real daily_agriculture(Stand *stand,                /**< [inout] stand pointer *
     getoutput(output,GPP,config)+=gpp*stand->frac;
     getoutput(output,FAPAR,config) += pft->fapar * stand->frac * (1.0/(1-stand->cell->lakefrac-stand->cell->ml.reservoirfrac));
     getoutput(output,WSCAL,config) += pft->fpc * pft->wscal * stand->frac * (1.0/(1-stand->cell->lakefrac-stand->cell->ml.reservoirfrac));
-    getoutputindex(output,CFT_FPAR,index,config)+=(fpar(pft)*stand->frac*(1.0/(1-stand->cell->lakefrac)))*(1-pft->albedo);
+    getoutputindex(output,CFT_FPAR,index,config)+=(fpar(pft)*stand->frac*(1.0/(1-stand->cell->lakefrac-stand->cell->ml.reservoirfrac)))*(1-pft->albedo);
 
     if(config->pft_output_scaled)
       getoutputindex(output,PFT_NPP,nnat+index,config)+=npp*stand->frac;

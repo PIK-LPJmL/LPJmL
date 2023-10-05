@@ -68,7 +68,7 @@ void plant_gas_transport(Stand *stand,        /**< pointer to soil data */
    * In practice this value is small.
    * By default upland veg. has small 5% porosity but this can be switched to be equal to inundated porosity.
    */
-  start = standstocks(stand).carbon + soilmethane(&stand->soil);
+  start = standstocks(stand).carbon + soilmethane(&stand->soil)*WC/WCH4;
 #endif
   CH4_plant_all=0;
   CH4_air=p_s/R_gas/degCtoK(airtemp)*pch4*1e-6*WCH4; /*g/m3 methane concentration*/
@@ -168,8 +168,8 @@ void plant_gas_transport(Stand *stand,        /**< pointer to soil data */
   printO2(stand->soil.O2);
 #endif
 #ifdef CHECK_BALANCE
-  end = standstocks(stand).carbon + soilmethane(&stand->soil);
-  if (fabs(start - end - CH4_plant_all)>epsilon) fprintf(stderr, "C_ERROR: %g start:%g  end:%g Plant_gas_transp: %g\n", start - end - CH4_plant_all, start, end, CH4_plant_all);
+  end = standstocks(stand).carbon + soilmethane(&stand->soil)*WC/WCH4;
+  if (fabs(start - end - CH4_plant_all*WC/WCH4)>epsilon) fprintf(stderr, "C_ERROR: plant_gas %g start:%g  end:%g Plant_gas_transp: %g\n", start - end - CH4_plant_all*WC/WCH4, start, end, CH4_plant_all*WC/WCH4);
 #endif
 
 } /* of 'plant_gas_transport' */

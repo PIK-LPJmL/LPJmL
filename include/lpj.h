@@ -142,6 +142,11 @@ extern Bool iserror(int,const Config *);
 
 /* Definition of macros */
 
+#ifdef NO_FAIL_BALANCE
+#define FAIL_ON_BALANCE FALSE
+#else
+#define FAIL_ON_BALANCE TRUE
+#endif
 #define printflux(flux,total,year,config) fprintflux(stdout,flux,total,year,config)
 #define printcsvflux(flux,total,scale,year,config) fprintcsvflux(stdout,flux,total,scale,year,config)
 

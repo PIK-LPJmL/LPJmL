@@ -118,10 +118,10 @@ Real nuptake_crop(Pft *pft,             /**< pointer to PFT data */
         }
 #ifdef SAFE
         if (soil->NO3[l]<-epsilon)
-          fail(NEGATIVE_SOIL_NO3_ERR,TRUE,"Cell (%s) NO3=%g<0 in layer %d, nuptake=%g, nsum=%g",
+          fail(NEGATIVE_SOIL_NO3_ERR,TRUE,TRUE,"Cell (%s) NO3=%g<0 in layer %d, nuptake=%g, nsum=%g",
                sprintcoord(line,&pft->stand->cell->coord),soil->NO3[l],l,n_uptake,nsum);
         if (soil->NH4[l]<-epsilon)
-          fail(NEGATIVE_SOIL_NO3_ERR,TRUE,"Cell (%s) NH4=%g<0 in layer %d, nuptake=%g, nsum=%g",
+          fail(NEGATIVE_SOIL_NO3_ERR,TRUE,TRUE,"Cell (%s) NH4=%g<0 in layer %d, nuptake=%g, nsum=%g",
                sprintcoord(line,&pft->stand->cell->coord),soil->NH4[l],l,n_uptake,nsum);
 
 #endif
@@ -166,15 +166,19 @@ Real nuptake_crop(Pft *pft,             /**< pointer to PFT data */
       if(config->fertilizer_input==AUTO_FERTILIZER)
       {
         autofert_n = *n_plant_demand - pft->bm_inc.nitrogen;
-        n_uptake += autofert_n;
-        pft->bm_inc.nitrogen = *n_plant_demand;
+        if(autofert_n>0)
+        {
+          n_uptake += autofert_n;
+          pft->bm_inc.nitrogen = *n_plant_demand;
+          if(crop->dh!=NULL)
+            crop->dh->nfertsum+=autofert_n*pft->stand->frac;
+          else
+            getoutputindex(&pft->stand->cell->output,CFT_NFERT,index+data->irrigation*nirrig,config)+=autofert_n;
+          pft->stand->cell->balance.influx.nitrogen += autofert_n*pft->stand->frac;
+          getoutput(&pft->stand->cell->output,FLUX_AUTOFERT,config)+=autofert_n*pft->stand->frac;
+        }
         pft->vscal = 1;
-        if(crop->dh!=NULL)
-          crop->dh->nfertsum+=autofert_n*pft->stand->frac;
-        else
-          getoutputindex(&pft->stand->cell->output,CFT_NFERT,index+data->irrigation*nirrig,config)+=autofert_n;
-        pft->stand->cell->balance.influx.nitrogen += autofert_n*pft->stand->frac;
-        getoutput(&pft->stand->cell->output,FLUX_AUTOFERT,config)+=autofert_n*pft->stand->frac;
+        pft->npp_bnf=0.0;
       }
       else
       {

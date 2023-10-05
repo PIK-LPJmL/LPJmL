@@ -39,15 +39,15 @@
 #include "lpj.h"
 
 void iterateyear(Outputfile *output,  /**< Output file data */
-                 Cell grid[],         /**< cell array */
-                 Input input,         /**< input data */
-                 Real co2,            /**< atmospheric CO2 (ppmv) */
-                 Real ch4,            /**< CH4 concentration (ppmv) */
-                 int npft,            /**< number of natural PFTs */
-                 int ncft,            /**< number of crop PFTs */
-                 int year,            /**< simulation year (AD) */
-                 const Config *config /**< LPJ configuration */
-                )
+    Cell grid[],         /**< cell array */
+    Input input,         /**< input data */
+    Real co2,            /**< atmospheric CO2 (ppmv) */
+    Real ch4,            /**< CH4 concentration (ppmv) */
+    int npft,            /**< number of natural PFTs */
+    int ncft,            /**< number of crop PFTs */
+    int year,            /**< simulation year (AD) */
+    const Config *config /**< LPJ configuration */
+)
 {
   Dailyclimate daily;
   Bool intercrop;
@@ -80,7 +80,7 @@ void iterateyear(Outputfile *output,  /**< Output file data */
               landusechange(grid+cell,npft,ncft,intercrop,year,config);
             else if(grid[cell].ml.dam)
               landusechange_for_reservoir(grid+cell,npft,ncft,
-                                        intercrop,year,config);
+                  intercrop,year,config);
           }
 #if defined IMAGE && defined COUPLED
           setoutput_image(grid+cell,ncft,config);
@@ -112,30 +112,30 @@ void iterateyear(Outputfile *output,  /**< Output file data */
       initoutputdata(&((grid+cell)->output),MONTHLY,year,config);
       if(!grid[cell].skip)
       {
-       initclimate_monthly(input.climate,&grid[cell].climbuf,cell,month,grid[cell].seed);
+        initclimate_monthly(input.climate,&grid[cell].climbuf,cell,month,grid[cell].seed);
 
 #if defined IMAGE && defined COUPLED
         monthlyoutput_image(&grid[cell].output,input.climate,cell,month,config);
 #endif
 
 #ifdef DEBUG
-       printf("temp = %.2f prec = %.2f wet = %.2f",
-             (getcelltemp(input.climate,cell))[month],
-             (getcellprec(input.climate,cell))[month],
-             (israndomprec(input.climate)) ? (getcellwet(input.climate,cell))[month] : 0);
-       if(config->with_radiation)
-       {
-         if(config->with_radiation==RADIATION)
-           printf("lwnet = %.2f ",(getcelllwnet(input.climate,cell))[month]);
-         else if(config->with_radiation==RADIATION_LWDOWN)
-           printf("lwdown = %.2f ",(getcelllwnet(input.climate,cell))[month]);
-         printf("swdown = %.2f\n",(getcellswdown(input.climate,cell))[month]);
-       }
-       else
-         printf("sun = %.2f\n",(getcellsun(input.climate,cell))[month]);
-       if(config->prescribe_burntarea)
-         printf("burntarea = %.2f \n",
-                (getcellburntarea(input.climate,cell))[month]);
+        printf("temp = %.2f prec = %.2f wet = %.2f",
+            (getcelltemp(input.climate,cell))[month],
+            (getcellprec(input.climate,cell))[month],
+            (israndomprec(input.climate)) ? (getcellwet(input.climate,cell))[month] : 0);
+        if(config->with_radiation)
+        {
+          if(config->with_radiation==RADIATION)
+            printf("lwnet = %.2f ",(getcelllwnet(input.climate,cell))[month]);
+          else if(config->with_radiation==RADIATION_LWDOWN)
+            printf("lwdown = %.2f ",(getcelllwnet(input.climate,cell))[month]);
+          printf("swdown = %.2f\n",(getcellswdown(input.climate,cell))[month]);
+        }
+        else
+          printf("sun = %.2f\n",(getcellsun(input.climate,cell))[month]);
+        if(config->prescribe_burntarea)
+          printf("burntarea = %.2f \n",
+              (getcellburntarea(input.climate,cell))[month]);
 #endif
       }
     } /* of 'for(cell=...)' */
@@ -153,12 +153,12 @@ void iterateyear(Outputfile *output,  /**< Output file data */
           initoutputdata(&((grid+cell)->output),DAILY,year,config);
           /* get daily values for temperature, precipitation and sunshine */
           dailyclimate(&daily,input.climate,&grid[cell].climbuf,cell,day,
-                       month,dayofmonth);
+              month,dayofmonth);
 #ifdef SAFE
           if(degCtoK(daily.temp)<0)
           {
             if(degCtoK(daily.temp)<(-0.2)) /* avoid precision errors: only fail if values are more negative than -0.2 */
-              fail(INVALID_CLIMATE_ERR,FALSE,"Temperature=%g K less than zero for cell %d at day %d",degCtoK(daily.temp),cell+config->startgrid,day);
+              fail(INVALID_CLIMATE_ERR,TRUE,FALSE,"Temperature=%g K less than zero for cell %d at day %d",degCtoK(daily.temp),cell+config->startgrid,day);
             daily.temp=-273.15;
           }
           if(config->with_radiation)
@@ -166,18 +166,18 @@ void iterateyear(Outputfile *output,  /**< Output file data */
             if(daily.swdown<0)
             {
               if(!config->isanomaly)
-                fail(INVALID_CLIMATE_ERR,FALSE,"Short wave radiation=%g W/m2 less than zero for cell %d at day %d",daily.swdown,cell+config->startgrid,day);
+                fail(INVALID_CLIMATE_ERR,TRUE,FALSE,"Short wave radiation=%g W/m2 less than zero for cell %d at day %d",daily.swdown,cell+config->startgrid,day);
               daily.swdown=0;
             }
           }
           else
           {
             if(daily.sun<-1e-5 || daily.sun>100)
-              fail(INVALID_CLIMATE_ERR,FALSE,"Cloudiness=%g%% not in [0,100] for cell %d at day %d",daily.sun,cell+config->startgrid,day);
+              fail(INVALID_CLIMATE_ERR,TRUE,FALSE,"Cloudiness=%g%% not in [0,100] for cell %d at day %d",daily.sun,cell+config->startgrid,day);
             getoutput(&grid[cell].output,SUN,config)+=daily.sun;
           }
           if(config->with_nitrogen && daily.windspeed<0)
-            fail(INVALID_CLIMATE_ERR,FALSE,"Wind speed=%g less than zero for cell %d at day %d",daily.windspeed,cell+config->startgrid,day);
+            fail(INVALID_CLIMATE_ERR,TRUE,FALSE,"Wind speed=%g less than zero for cell %d at day %d",daily.windspeed,cell+config->startgrid,day);
 #endif
           if(config->with_radiation==CLOUDINESS && daily.sun<0)
             daily.sun=0;
@@ -191,7 +191,7 @@ void iterateyear(Outputfile *output,  /**< Output file data */
           fflush(stdout);
 #endif
           update_daily(grid+cell,co2,ch4,popdens,daily,day,npft,
-                       ncft,year,month,intercrop,config);
+              ncft,year,month,intercrop,config);
         }
       }
 
@@ -202,7 +202,7 @@ void iterateyear(Outputfile *output,  /**< Output file data */
         if(config->extflow)
         {
           if(getextflow(input.extflow,grid,day-1,year))
-             fail(INVALID_EXTFLOW_ERR,FALSE,"Cannot read external flow data");
+            fail(INVALID_EXTFLOW_ERR,TRUE,FALSE,"Cannot read external flow data");
         }
         drain(grid,month,config);
 
@@ -220,8 +220,8 @@ void iterateyear(Outputfile *output,  /**< Output file data */
     {
       if(!grid[cell].skip)
         update_monthly(grid+cell,getmtemp(input.climate,&grid[cell].climbuf,
-                       cell,month),getmprec(input.climate,&grid[cell].climbuf,
-                       cell,month),month,config);
+            cell,month),getmprec(input.climate,&grid[cell].climbuf,
+                cell,month),month,config);
     } /* of 'for(cell=0;...)' */
 
     if(year>=config->outputyear)
@@ -250,7 +250,7 @@ void iterateyear(Outputfile *output,  /**< Output file data */
 #endif
 
 
- /*     if(config->nspinup>param.veg_equil_year &&
+      /*     if(config->nspinup>param.veg_equil_year &&
          (year==config->firstyear-config->nspinup+param.veg_equil_year))
         equilveg(grid+cell);
       //if(!config->from_restart)
@@ -266,16 +266,16 @@ void iterateyear(Outputfile *output,  /**< Output file data */
       if(config->equilsoil)
       {
         if((year-(config->firstyear-config->nspinup+param.veg_equil_year-param.equisoil_years))%param.equisoil_interval==0 && 
-           (year-(config->firstyear-config->nspinup+param.veg_equil_year-param.equisoil_years))/param.equisoil_interval>=0 && 
-           (year-(config->firstyear-config->nspinup+param.veg_equil_year-param.equisoil_years))/param.equisoil_interval<param.nequilsoil)
+            (year-(config->firstyear-config->nspinup+param.veg_equil_year-param.equisoil_years))/param.equisoil_interval>=0 &&
+            (year-(config->firstyear-config->nspinup+param.veg_equil_year-param.equisoil_years))/param.equisoil_interval<param.nequilsoil)
           equilveg(grid+cell,npft+ncft);
 
         if(year==(config->firstyear-config->nspinup+param.veg_equil_year))
           equilsom(grid+cell,npft+ncft,config->pftpar,TRUE);
- 
+
         if((year-(config->firstyear-config->nspinup+param.veg_equil_year))%param.equisoil_interval==0 && 
-           (year-(config->firstyear-config->nspinup+param.veg_equil_year))/param.equisoil_interval>0 && 
-           (year-(config->firstyear-config->nspinup+param.veg_equil_year))/param.equisoil_interval<param.nequilsoil)
+            (year-(config->firstyear-config->nspinup+param.veg_equil_year))/param.equisoil_interval>0 &&
+            (year-(config->firstyear-config->nspinup+param.veg_equil_year))/param.equisoil_interval<param.nequilsoil)
           equilsom(grid+cell,npft+ncft,config->pftpar,FALSE);
 
         if(param.equisoil_fadeout>0)
@@ -295,8 +295,8 @@ void iterateyear(Outputfile *output,  /**< Output file data */
         getoutput(&grid[cell].output,DELTA_NMIN_SOIL_AGR,config)+=nmin_soil_agr;
         getoutput(&grid[cell].output,DELTA_NVEG_SOIL_AGR,config)+=nveg_soil_agr;
         foreachstand(stand,s,(grid+cell)->standlist)
-          if(stand->type->landusetype==GRASSLAND)
-            getoutput(&grid[cell].output,DELTAC_MGRASS,config)+=standstocks(stand).carbon*stand->frac;
+        if(stand->type->landusetype==GRASSLAND)
+          getoutput(&grid[cell].output,DELTAC_MGRASS,config)+=standstocks(stand).carbon*stand->frac;
       }
     }
     if(config->river_routing)

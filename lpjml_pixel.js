@@ -43,6 +43,7 @@
   "gsi_phenology" : true,   /* GSI phenology enabled */
   "transp_suction_fcn" : false, /* enable transpiration suction function (true/false) */
   "river_routing" : false,
+  "with_lakes" : false,      /* enable lakes (true/false) */
   "extflow" : false,
   "permafrost" : true,
   "johansen" : true,
@@ -52,6 +53,7 @@
   "soilpar_fixyear" : 1900,
   "with_nitrogen" : "lim", /* other options: "no", "lim", "unlim" */
   "store_climate" : true, /* store climate data in spin-up phase */
+  "landfrac_from_file" : true, /* read cell area from file (true/false) */
   "shuffle_spinup_climate" : true, /* shuffle spinup climate */
   "fix_climate" : false,                /* fix climate after specified year */
   "fix_climate_year" : 1901,            /* year after climate is fixed */
@@ -111,6 +113,11 @@
   "grass_harvest_options" : false,
   "prescribe_lsuha" : false,
   "mowing_days" : [152, 335],          /* Mowing days for grassland if grass harvest options are ser */
+#ifdef BMGR_BROWN
+  "biomass_grass_harvest" : "brown",   /* define brown harvest of biomass grass at top; imapcts harvest event and fn_turnover of biomass grass */
+#else
+  "biomass_grass_harvest" : "green",   /* comment out define of brown harvest of biomass grass for green harvest (default) */
+#endif  
   "crop_resp_fix" : false,             /* variable C:N ratio for crop respiration */
                                        /* for MAgPIE runs, turn off dynamic C:N ratio dependent respiration,
                                           which reduces yields at high N inputs */

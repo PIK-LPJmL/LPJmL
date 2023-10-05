@@ -362,14 +362,14 @@ Bool getlanduse(Landuse landuse,     /**< Pointer to landuse data */
           data[count]/=grid[cell].landfrac;
           sum+=data[count++];
         }
-      if(sum > 1.0)
+      if(sum > 1)
       {
-        if(sum*grid[cell].landfrac>1)
+        if(sum*grid[cell].landfrac>1+epsilon)
         {
           fprintf(stderr,"WARNING013: Sum of land-use fractions in cell %d at year %d greater 1: %f even before scaling with landfrac\n",
                   cell+config->startgrid,yearl,sum*grid[cell].landfrac);
         }
-        else
+        else if(sum>1+epsilon)
           fprintf(stderr,"WARNING013: Sum of land-use fractions in cell %d at year %d greater 1: %f after scaling with landfrac of %f\n",
                   cell+config->startgrid,yearl,sum,grid[cell].landfrac);
         fflush(stderr);
@@ -573,9 +573,9 @@ Bool getlanduse(Landuse landuse,     /**< Pointer to landuse data */
       grid[cell].ml.landfrac[0].biomass_tree=grid[cell].ml.landfrac[1].biomass_tree=0;
       grid[cell].ml.landfrac[0].woodplantation=grid[cell].ml.landfrac[1].woodplantation=0;
     }
-    
+
     /* force tinyfrac for all crops only on pixels with valid soil */
-    if (config->withlanduse==ALL_CROPS && !grid[cell].skip && soiltype!=ROCK && soiltype!=ICE && soiltype >= 0)
+    if (config->withlanduse==ALL_CROPS  && !grid[cell].skip && soiltype!=ROCK && soiltype!=ICE && soiltype >= 0)
     {
       for(j=0; j<ncft; j++)
       {

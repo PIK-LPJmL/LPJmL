@@ -29,10 +29,10 @@ Stocks cultivate(Cell *cell,           /**< cell pointer */
                  const Config *config  /**< LPJmL configuration */
                 )                      /** \return establihment flux (gC/m2,gN/m2) */
 {
-  int pos,p; /*position of new stand in list*/
+  int pos; /*position of new stand in list*/
   int vern_date20;
   Pft *pft;
-  Stand *cropstand, *stand;
+  Stand *cropstand,*stand;
   Irrigation *data;
   Stocks bm_inc;
   Pftcrop *crop;
@@ -41,16 +41,16 @@ Stocks cultivate(Cell *cell,           /**< cell pointer */
   Real landfrac;
 #ifdef CHECK_BALANCE
   int s;
-  Real start=0;
+  Stocks start={0,0};
   foreachstand(stand,s,cell->standlist)
   {
-    start+=(standstocks(stand).carbon + soilmethane(&stand->soil))*stand->frac;
+    start.carbon+=(standstocks(stand).carbon + soilmethane(&stand->soil)*WC/WCH4)*stand->frac;
+    start.nitrogen+=standstocks(stand).nitrogen*stand->frac;
   }
 #endif
 
 #ifdef IMAGE
   int nagr,s;
-  Stand *stand;
 #endif
   vern_date20=cell->ml.cropdates[cft].vern_date20;
   landfrac=(isother) ? cell->ml.landfrac[irrigation].grass[0] : cell->ml.landfrac[irrigation].crop[cft];
@@ -74,6 +74,7 @@ Stocks cultivate(Cell *cell,           /**< cell pointer */
     cutpfts(setasidestand,config);
     cropstand=setasidestand;
     cropstand->soil.iswetland=setasidestand->soil.iswetland;
+    //if(year==2011) fprintf(stdout,"HIER day: %d cft: %d type: %s landfrac: %g isother: %d defores.nitrogen: %g timber_harvest.n: %g\n",day,cft,setasidestand->type->name,landfrac,isother,cell->balance.deforest_emissions.nitrogen,cell->balance.timber_harvest.nitrogen);
   }
   else
   {
@@ -82,6 +83,7 @@ Stocks cultivate(Cell *cell,           /**< cell pointer */
     cropstand->frac=landfrac;
     reclaim_land(setasidestand,cropstand,cell,config->luc_timber,npft+ncft,config);
     setasidestand->frac-=landfrac;
+    //if(year==2011) fprintf(stdout,"HIER2 day: %d cft: %d type: %s landfrac: %g isother: %d\n",day,cft,setasidestand->type->name,landfrac,isother);
   }
   if(cell->ml.with_tillage && year>=config->till_startyear)
   {
@@ -95,8 +97,10 @@ Stocks cultivate(Cell *cell,           /**< cell pointer */
   set_irrigsystem(cropstand,cft,npft,ncft,config);
   pft=addpft(cropstand,config->pftpar+npft+cft,year,day,config);
   phen_variety(pft,vern_date20,cell->coord.lat,day,wtype,npft,ncft,config);
+  //if(year==2011) fprintf(stdout,"before addpft day: %d bminc: %g \n",day,bm_inc.carbon);
   bm_inc.carbon=pft->bm_inc.carbon*cropstand->frac;
   bm_inc.nitrogen=pft->bm_inc.nitrogen*cropstand->frac;
+  //if(year==2011) fprintf(stdout,"after addpft day: %d bminc: %g pft_bminc: %g nbalance_cor: %g \n",day,bm_inc.carbon,pft->bm_inc.carbon,pft->nbalance_cor);
   if (cell->ml.manure_nr != NULL)
   {
     manure = (isother) ? cell->ml.manure_nr[irrigation].grass[0] : cell->ml.manure_nr[irrigation].crop[cft];
@@ -125,14 +129,28 @@ Stocks cultivate(Cell *cell,           /**< cell pointer */
   Real end=0;
   foreachstand(stand,s,cell->standlist)
   {
-    end+=(standstocks(stand).carbon + soilmethane(&stand->soil))*stand->frac;
+    end+=(standstocks(stand).carbon + soilmethane(&stand->soil)*WC/WCH4)*stand->frac;
   }
-  if (fabs(end-start-bm_inc.carbon-manure*param.manure_cn*cropstand->frac*param.nfert_split_frac)>0.01)
+  if (fabs(end-start.carbon-bm_inc.carbon-manure*param.manure_cn*cropstand->frac*param.nfert_split_frac)>0.01)
   {
-    fprintf(stderr "C_ERROR-cultivate: day: %d    %g start: %.3f  end: %.3f  bm_inc.carbon: %.3f manure: %.3f\n",
-           day,end-start-bm_inc.carbon,start, end,bm_inc.carbon,manure*param.manure_cn*cropstand->frac*param.nfert_split_frac );
-    fprintf(stderr,"cropstand->frac: %g cropstand.carbon: %g setasidestand->frac: %g setasidestand.carbon: %g\n ",
-      cropstand->frac,(standstocks(cropstand).carbon + soilmethane(&cropstand->soil)),setasidestand->frac,(standstocks(setasidestand).carbon + soilmethane(&setasidestand->soil)));
+    fail(INVALID_CARBON_BALANCE_ERR,FAIL_ON_BALANCE,FALSE, "Invalid carbon balance in %s: day: %d   %.4f start: %.4f  end: %.3f  bm_inc.carbon: %.4f manure: %.4f\n",
+         "cropstand->frac: %g cropstand.carbon: %g setasidestand->frac: %g setasidestand.carbon: %g",
+         __FUNCTION__,day,end-start.carbon-bm_inc.carbon-manure*param.manure_cn*cropstand->frac*param.nfert_split_frac,
+         start.carbon, end,bm_inc.carbon,manure*param.manure_cn*cropstand->frac*param.nfert_split_frac,
+         cropstand->frac,(standstocks(cropstand).carbon + soilmethane(&cropstand->soil)),setasidestand->frac,(standstocks(setasidestand).carbon + soilmethane(&setasidestand->soil)*WC/WCH4));
+  }
+  end=0;
+  foreachstand(stand,s,cell->standlist)
+  {
+    end+=standstocks(stand).nitrogen*stand->frac;
+  }
+  if (fabs(end-start.nitrogen-bm_inc.nitrogen-(manure+fertil)*cropstand->frac*param.nfert_split_frac)>0.01)
+  {
+    fail(INVALID_NITROGEN_BALANCE_ERR,FAIL_ON_BALANCE,FALSE, "Invalid carbon balance in %s: day: %d  cft: %d %.4f start: %.4f  end: %.3f  bm_inc.nitrogen: %.4f manure: %.4f fertil: %f\n",
+         "cropstand->frac: %g cropstand.nitrogen: %g setasidestand->frac: %g setasidestand.nitrogen: %g defores.nitrogen: %g timber_harvest.n: %g\n ",
+         __FUNCTION__,day,cft,end-start.nitrogen-bm_inc.nitrogen-(manure+fertil)*cropstand->frac*param.nfert_split_frac,
+         start, end,bm_inc.nitrogen,manure*cropstand->frac*param.nfert_split_frac,fertil*cropstand->frac*param.nfert_split_frac,
+        cropstand->frac,standstocks(cropstand).nitrogen,setasidestand->frac,standstocks(setasidestand).nitrogen,cell->balance.deforest_emissions.nitrogen,cell->balance.timber_harvest.nitrogen);
   }
 
 #endif

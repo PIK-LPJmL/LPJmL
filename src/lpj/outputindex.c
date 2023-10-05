@@ -23,7 +23,7 @@ int outputindex(int index,           /**< index of output file */
                )                     /** \return index in output storage to write data */
 {
   if(i<0 || i>=config->outputsize[index])
-    fail(INVALID_BOUNDARY_ERR,TRUE,"Boundary=%d for output '%s' out of bounds, must be <%d",
+    fail(INVALID_BOUNDARY_ERR,TRUE,TRUE,"Boundary=%d for output '%s' out of bounds, must be <%d",
          i,config->outnames[index].name,config->outputsize[index]);
   return config->outputmap[index]+i;
 } /* of 'outputindex' */

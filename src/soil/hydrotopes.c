@@ -31,7 +31,7 @@ void hydrotopes(Cell *cell /**< Pointer to cell */
     if(stand->type->landusetype==WETLAND || stand->type->landusetype==SETASIDE_WETLAND)
     {
       stand->soil.iswetland=TRUE;
-  // 	determine hydrotope water level
+  // 	determine wetland water level
       if (!cell->hydrotopes.skip_cell)
       {
         wtable_h+=stand->soil.wtable/-1000;

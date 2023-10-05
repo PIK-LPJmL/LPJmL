@@ -15,6 +15,7 @@
 /**************************************************************************************/
 
 #include "lpj.h"
+#include "agriculture.h"
 
 void killstand(Cell *cell,          /**< cell pointer */
                int npft,            /**< number of natural PFTs */
@@ -30,6 +31,12 @@ void killstand(Cell *cell,          /**< cell pointer */
   Irrigation *data;
   Bool irrig;
   foreachstand(stand,s,cell->standlist)
+  {
+    if(stand->frac==0)
+    {
+      cutpfts(stand,config);
+      stand->type=&kill_stand;
+    }
     if(stand->type->landusetype==KILL)
     {
       if(stand->data!=NULL)
@@ -47,5 +54,6 @@ void killstand(Cell *cell,          /**< cell pointer */
         s--; /* stand has been killed, adjust stand index */
       }
     }
+  }
   check_stand_fracs(cell,cell->lakefrac+cell->ml.reservoirfrac,22);
 } /* of 'killstand' */

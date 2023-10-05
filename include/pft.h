@@ -219,6 +219,7 @@ typedef struct Pft
   Real nind;             /**< individual density (indiv/m2) */
   Real gdd;              /**< current-year growing degree days */
   Stocks bm_inc;         /**< annual biomass increment (gC/m2) */
+  Real nbalance_cor;     /**< for nitrogen bminc is increase at the end of the year (1-fn_turnover), but litter already in phenology and turnover, needed for correct N-balance within the year */
   Real wscal;            /**< mean daily water scalar (among leaf-on days) */
   Real wscal_mean;
   Real phen,aphen;

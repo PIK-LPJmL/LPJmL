@@ -39,6 +39,8 @@ void mix_veg_grass(Pft *pft,Real scaler)
   pft->bm_inc.nitrogen*=scaler;
   pft->establish.carbon*=scaler;
   pft->establish.nitrogen*=scaler;
+  pft->nbalance_cor*=scaler;
+
   grass->excess_carbon*=scaler;
 } /* of 'mix_veg_grass' */
 
@@ -46,8 +48,6 @@ Bool mix_veg_stock_grass(Pft *pft1, Pft *pft2, Real frac1, Real frac2,const Conf
 {
   Pftgrass *grass1;
   Pftgrass *grass2;
-  Pft *pft;
-  int p,id;
   Bool isdead=FALSE;
   Real nind,test;
   grass1=pft1->data;
@@ -58,6 +58,7 @@ Bool mix_veg_stock_grass(Pft *pft1, Pft *pft2, Real frac1, Real frac2,const Conf
   {
     pft1->bm_inc.carbon=(pft1->bm_inc.carbon*frac1+pft2->bm_inc.carbon*frac2)/(frac1+frac2);
     pft1->bm_inc.nitrogen=(pft1->bm_inc.nitrogen*frac1+pft2->bm_inc.nitrogen*frac2)/(frac1+frac2);
+    pft1->nbalance_cor=(pft1->nbalance_cor*frac1+pft2->nbalance_cor*frac2)/(frac1+frac2);
     pft1->establish.carbon=(pft1->establish.carbon*frac1+pft2->establish.carbon*frac2)/(frac1+frac2);
     pft1->establish.nitrogen=(pft1->establish.nitrogen*frac1+pft2->establish.nitrogen*frac2)/(frac1+frac2);
 
