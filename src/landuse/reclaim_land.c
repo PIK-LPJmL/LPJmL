@@ -17,13 +17,13 @@
 #include "tree.h"
 
 void remove_vegetation_copy(Soil *soil, /* soil pointer */
-                                   const Stand *stand, /* stand pointer */
-                                   Cell *cell, /* cell pointer */
-                                   Real standfrac, /* stand fraction (0..1) */
-                                   Bool luc_timber,
-                                   Bool usefrac,
-                                   const Config *config
-                                  )
+                            const Stand *stand, /* stand pointer */
+                            Cell *cell, /* cell pointer */
+                            Real standfrac, /* stand fraction (0..1) */
+                            Bool luc_timber,
+                            Bool usefrac,
+                            const Config *config
+                           )
 {
   int p;
   Pft *pft;

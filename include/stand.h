@@ -74,7 +74,7 @@ extern int delstand(Standlist,int);
 extern void freestandlist(Standlist);
 extern void mixsoil(Stand *,const Stand *,int,int,const Config *);
 extern Bool check_lu(const Standlist ,Real,int,Landusetype,Bool);
-extern void check_stand_fracs(const Cell *,Real,int);
+extern void check_stand_fracs2(const Cell *,Real,const char *,int);
 extern int findstand(const Standlist, Landusetype, Bool);
 extern int findstandpft(const Standlist,int,Bool);
 extern int findlandusetype(const Standlist,Landusetype);
@@ -102,6 +102,7 @@ extern void freelandcover(Landcover,Bool);
 
 #define getstand(list,index) ((Stand *)getlistitem(list,index))
 #define foreachstand(stand,i,list) for(i=0;i<getlistlen(list) && (stand=getstand(list,i));i++)
+#define check_stand_fracs(cell,lakefrac) check_stand_fracs2(cell,lakefrac,__FUNCTION__,__LINE__)
 
 /*
  * The following macros allow to call the stand-specific functions like virtual

@@ -384,7 +384,7 @@ void landusechange_for_reservoir(Cell *cell,          /**< pointer to cell */
            balance.carbon);
 #endif
     /* check if total fractions add up to 1 again */
-    check_stand_fracs(cell,cell->lakefrac+cell->ml.reservoirfrac,3);
+    check_stand_fracs(cell,cell->lakefrac+cell->ml.reservoirfrac);
 
   }
 } /* end of function */

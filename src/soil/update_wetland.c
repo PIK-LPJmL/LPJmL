@@ -73,12 +73,13 @@ void update_wetland(Cell *cell,          /**< pointer to cell */
   wetlandarea_old=wetlandarea_new=crop_wetland=0.;
   iswetland_change = iswetland = FALSE;
   s = findlandusetype(cell->standlist, NATURAL);            /*COULD BE AGRICULTURE AS WELL BUT NOT YET*/
-  if(s!=NOT_FOUND) {
+  if(s!=NOT_FOUND)
+  {
     natstand = getstand(cell->standlist,s);
     natstandnum=s;
   }
   s = findlandusetype(cell->standlist, WETLAND);            /*COULD BE AGRICULTURE AS WELL BUT NOT YET*/
-  if (s != NOT_FOUND) 
+  if (s != NOT_FOUND)
   {
     wetstand = getstand(cell->standlist, s);
     iswetland = TRUE;
@@ -93,9 +94,10 @@ void update_wetland(Cell *cell,          /**< pointer to cell */
   if(year==2010)
   {
     foreachstand(stand,s,cell->standlist)
-            fprintf(stderr,"UPADTE WETL YEAR= %d standfrac: %g standtype: %d iswetland: %d cropfraction_rf: %g cropfraction_irr: %g grasfrac_rf: %g grasfrac_irr: %g\n",year,stand->frac, stand->type->landusetype,stand->soil.iswetland,
-                crop_sum_frac(cell->ml.landfrac,12,config->nagtree,cell->ml.reservoirfrac+cell->lakefrac,FALSE),crop_sum_frac(cell->ml.landfrac,12,config->nagtree,cell->ml.reservoirfrac+cell->lakefrac,TRUE),
-                cell->ml.landfrac[0].grass[0]+cell->ml.landfrac[0].grass[1],cell->ml.landfrac[1].grass[0]+cell->ml.landfrac[1].grass[1]);
+      fprintf(stderr,"%s: year= %d standfrac: %g standtype: %d iswetland: %d cropfraction_rf: %g cropfraction_irr: %g grasfrac_rf: %g grasfrac_irr: %g\n",
+               __FUNCTION__,year,stand->frac, stand->type->landusetype,stand->soil.iswetland,
+              crop_sum_frac(cell->ml.landfrac,12,config->nagtree,cell->ml.reservoirfrac+cell->lakefrac,FALSE),crop_sum_frac(cell->ml.landfrac,12,config->nagtree,cell->ml.reservoirfrac+cell->lakefrac,TRUE),
+              cell->ml.landfrac[0].grass[0]+cell->ml.landfrac[0].grass[1],cell->ml.landfrac[1].grass[0]+cell->ml.landfrac[1].grass[1]);
   }
 #endif
 
@@ -130,7 +132,7 @@ void update_wetland(Cell *cell,          /**< pointer to cell */
 
       //   determine CTI index at wetland area mean
       tmp = itersolve(p_min, p_max, cti_min, cti_max, (p_min + p_max) / 2., cell->hydrotopes.cti_phi,
-          cell->hydrotopes.cti_chi, cell->hydrotopes.cti_mu, 0);
+                      cell->hydrotopes.cti_chi, cell->hydrotopes.cti_mu, 0);
       //   running mean of cti in wetland area
       cell->hydrotopes.wetland_cti_runmean = runmean_add(cell->hydrotopes.wetland_cti_runmean, tmp, (Real)HYD_AV_TIME);
     }
@@ -204,8 +206,8 @@ void update_wetland(Cell *cell,          /**< pointer to cell */
         {
           fprintf(stderr,"XXX update_wetland.c wetland not exist .\n");
           foreachstand(checkstand,s,cell->standlist)
-          fprintf(stderr,"type %s frac:%g s: %d iswetland: %d delta_wetland: %g wetlandnew: %g wetlandarea_new: %g crop_wetland: %g\n",
-              checkstand->type->name,checkstand->frac,s,checkstand->soil.iswetland,delta_wetland,wetlandarea_new-crop_wetland,wetlandarea_new,crop_wetland);
+            fprintf(stderr,"type %s frac:%g s: %d iswetland: %d delta_wetland: %g wetlandnew: %g wetlandarea_new: %g crop_wetland: %g\n",
+                    checkstand->type->name,checkstand->frac,s,checkstand->soil.iswetland,delta_wetland,wetlandarea_new-crop_wetland,wetlandarea_new,crop_wetland);
         }
 #endif
           pos = addstand(&wetland_stand, cell) - 1;
@@ -258,8 +260,8 @@ void update_wetland(Cell *cell,          /**< pointer to cell */
 #ifdef CHECK_BALANCE2
           if(year==2010)
             foreachstand(checkstand,s,cell->standlist)
-            fprintf(stderr,"type %s frac:%g s: %d iswetland: %d delta_wetland: %g wetlandarea_old: %g delta_wetland: %g\n",
-                checkstand->type->name,checkstand->frac,s,checkstand->soil.iswetland,delta_wetland,wetlandarea_old,delta_wetland);
+              fprintf(stderr,"type %s frac:%g s: %d iswetland: %d delta_wetland: %g wetlandarea_old: %g delta_wetland: %g\n",
+                      checkstand->type->name,checkstand->frac,s,checkstand->soil.iswetland,delta_wetland,wetlandarea_old,delta_wetland);
 #endif
         }
         else
@@ -336,8 +338,8 @@ void update_wetland(Cell *cell,          /**< pointer to cell */
 #ifdef CHECK_BALANCE2
          if(year==2010)
           foreachstand(checkstand,s,cell->standlist)
-          fprintf(stderr,"wetland exists type %s frac:%g s: %d iswetland: %d delta_wetland: %g wetlandarea_old: %g delta_wetland: %g\n",
-              checkstand->type->name,checkstand->frac,s,checkstand->soil.iswetland,delta_wetland,wetlandarea_old,delta_wetland);
+            fprintf(stderr,"wetland exists type %s frac:%g s: %d iswetland: %d delta_wetland: %g wetlandarea_old: %g delta_wetland: %g\n",
+                    checkstand->type->name,checkstand->frac,s,checkstand->soil.iswetland,delta_wetland,wetlandarea_old,delta_wetland);
 #endif
         }
 
@@ -367,13 +369,16 @@ void update_wetland(Cell *cell,          /**< pointer to cell */
           water_after+=soilwater(&stand->soil)*stand->frac;
         }
         if (fabs(start.carbon - end.carbon)>0.01)
-          fprintf(stderr, "\n C_ERROR in update wetland 1: %g start:%g  ende:%g \n", start.carbon - end.carbon, start.carbon, end.carbon);
+          fail(INVALID_CARBON_BALANCE_ERR,FAIL_ON_BALANCE,FALSE,"Invalid carbon balance in %s: %g start:%g  end:%g",
+               __FUNCTION__,start.carbon - end.carbon, start.carbon, end.carbon);
         if (fabs(start.nitrogen - end.nitrogen)>0.01)
-          fprintf(stderr, "N_ERROR in update wetland 1: %g start:%g  ende:%g \n", start.nitrogen - end.nitrogen, start.nitrogen, end.nitrogen);
+          fail(INVALID_NITROGEN_BALANCE_ERR,FAIL_ON_BALANCE,FALSE, "Invalid nitrogen balance in %s: %g start:%g  end:%gn",
+               __FUNCTION__,start.nitrogen - end.nitrogen, start.nitrogen, end.nitrogen);
         if (fabs(water_before - water_after)>0.1)
-          fprintf(stderr, "W_ERROR in update wetland 1: %g start:%g  ende:%g excess_water:%g\n", water_before - water_after, water_before, water_after,cell->balance.excess_water);
+          fail(INVALID_WATER_BALANCE_ERR,FAIL_ON_BALANCE,FALSE, "Invalid water balance in %s: %g start:%g  end:%g excess_water:%g\n",
+               __FUNCTION__, water_before - water_after, water_before, water_after,cell->balance.excess_water);
 #endif
-        check_stand_fracs(cell,cell->lakefrac+cell->ml.reservoirfrac,6);
+        check_stand_fracs(cell,cell->lakefrac+cell->ml.reservoirfrac);
 
       }
       // -----------------------------------------------------------------------------------------------
@@ -524,7 +529,8 @@ void update_wetland(Cell *cell,          /**< pointer to cell */
         wetstand->Hag_Beta = min(1, (0.09*log(slope + 0.1) + 0.22) / 0.43);
 
         s=findlandusetype(cell->standlist,NATURAL);            /*COULD BE AGRICULTURE AS WELL BUT NOT YET*/
-        if(s!=NOT_FOUND) {
+        if(s!=NOT_FOUND)
+        {
           natstand = getstand(cell->standlist,s);
 
           slope=exp(lambda*-cell->slope_max)*(-1/lambda-cell->slope_max)- exp(lambda*-slope_max)*(-1/lambda-slope_max);  //calculation of the integral of the PDF to get  mean slope
@@ -536,7 +542,8 @@ void update_wetland(Cell *cell,          /**< pointer to cell */
       else
       {
         s=findlandusetype(cell->standlist,NATURAL);            /*COULD BE AGRICULTURE AS WELL BUT NOT YET*/
-        if(s!=NOT_FOUND) {
+        if(s!=NOT_FOUND)
+        {
           natstand = getstand(cell->standlist,s);
           natstand->Hag_Beta=min(1,(0.06*log(cell->slope+0.1)+0.22)/0.43);
         }
@@ -607,7 +614,7 @@ void update_wetland(Cell *cell,          /**< pointer to cell */
   }
 #endif
 
-  check_stand_fracs(cell,cell->lakefrac+cell->ml.reservoirfrac,10);
+  check_stand_fracs(cell,cell->lakefrac+cell->ml.reservoirfrac);
 
 
 #ifdef CHECK_BALANCE

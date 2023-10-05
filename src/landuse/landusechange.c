@@ -52,6 +52,9 @@ void deforest(Cell *cell,          /**< pointer to cell */
   Real difffrac_wetland=0;
   Stand *stand,*cutstand;
   String line;
+#ifdef CHECK_BALANCE2
+  int j;
+#endif
 #ifdef CHECK_BALANCE
 //anpp, influx and arh do not change
   Stand *checkstand;
@@ -132,7 +135,7 @@ void deforest(Cell *cell,          /**< pointer to cell */
         /* stand was already tilled, so put FALSE to tillage argument */
         if(setaside(cell,getstand(cell->standlist,pos),FALSE,intercrop,npft,ncft,irrig,iswetland,year,config))
           delstand(cell->standlist,pos);
-        check_stand_fracs(cell,cell->lakefrac+cell->ml.reservoirfrac,1);
+        check_stand_fracs(cell,cell->lakefrac+cell->ml.reservoirfrac);
 
       }
     }
@@ -183,7 +186,7 @@ void deforest(Cell *cell,          /**< pointer to cell */
       difffrac_wetland=difffrac_old-difffrac;
 
   }
-  check_stand_fracs(cell,cell->lakefrac+cell->ml.reservoirfrac,11);
+  check_stand_fracs(cell,cell->lakefrac+cell->ml.reservoirfrac);
   cell->hydrotopes.wetland_area-=difffrac_wetland;
   cell->hydrotopes.wetland_area_runmean-=difffrac_wetland;
 
@@ -1648,13 +1651,13 @@ void landusechange(Cell *cell,          /**< pointer to cell */
                     irrigation,cultivation_type,0,ncft,year,config);
     }
   }
-  check_stand_fracs(cell,cell->lakefrac+cell->ml.reservoirfrac,4);
+  check_stand_fracs(cell,cell->lakefrac+cell->ml.reservoirfrac);
 
   foreachstand(stand,s,cell->standlist)
     if(stand->type->landusetype==GRASSLAND || stand->type->landusetype==BIOMASS_GRASS || stand->type->landusetype==BIOMASS_TREE || stand->type->landusetype==AGRICULTURE_TREE || stand->type->landusetype==AGRICULTURE_GRASS || stand->type->landusetype==WOODPLANTATION || (!config->others_to_crop && stand->type->landusetype==OTHERS)) /* do not update for crops, must be done in sowing functions */
       set_irrigsystem(stand,0,npft,ncft,config); /* no CFT index needed for non-agricultural stands */
 #ifdef SAFE
-  check_stand_fracs(cell,cell->lakefrac+cell->ml.reservoirfrac,7);
+  check_stand_fracs(cell,cell->lakefrac+cell->ml.reservoirfrac);
 #endif
   sum[0]=sum[1]=sum_wl[0]=sum_wl[1]=0.0;
   foreachstand(stand,s,cell->standlist)
@@ -1693,7 +1696,7 @@ void landusechange(Cell *cell,          /**< pointer to cell */
       cell->ml.image_data->timber_frac=0.0;
     }
   /* check that sum of fractions is 1.0 */
-  check_stand_fracs(cell,cell->lakefrac+cell->ml.reservoirfrac,8);
+  check_stand_fracs(cell,cell->lakefrac+cell->ml.reservoirfrac);
 
   /* check if there is more than 1 natural stand */
   nnat = 0;
