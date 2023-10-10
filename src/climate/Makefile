@@ -21,7 +21,7 @@ OBJS    = initclimate.$O getclimate.$O freeclimate.$O avgtemp.$O\
           getmprec.$O checkvalidclimate.$O readco2.$O opendata.$O\
           closeclimate.$O radiation.$O readdata.$O readintdata.$O\
           openinputdata.$O readinputdata.$O readintinputdata.$O getdeposition.$O\
-          opendata_seq.$O openclmdata.$O
+          opendata_seq.$O openclmdata.$O realdata.$O getrealdata.$O
 
 INC     = ../../include
 LIBDIR  = ../../lib
@@ -40,6 +40,8 @@ $(LIBDIR)/$(LIB): $(OBJS)
 	$(AR) $(ARFLAGS)$(LIBDIR)/$(LIB) $(OBJS)
 
 $(OBJS): $(HDRS)
+
+realdata.o getrealdata.o: realdata.h
 
 .c.$O: 
 	$(CC) $(CFLAGS) -I$(INC) -c $*.c

@@ -36,6 +36,7 @@ static Real getlength_breath_ratio(Real windsp_cover,Real fpc_sum,const Real fpc
 
 Real area_burnt(Real *fire_durat,       /**< fire duration (min) */
                 Real *ndayfire,         /**< number of days with fire */
+                Real *firedurationdays, /**< mean number of days a fire burns */
                 Real *burnt_area_max,   /**< size of fires in the largest active fire class (ha)*/
                 Real max_fireduration,  /**< maximum fire duration */
                 Real min_fireduration,  /**< minium fire duration */
@@ -53,7 +54,7 @@ Real area_burnt(Real *fire_durat,       /**< fire duration (min) */
   Real *fpc_total; /* total grid FPC for PFTs */
   Real d_area_burnt;
   Real burnt_area_sum=0;
-  Fire fire={0,0,0,0};
+  Fire fire={0,0,0,0,0};
   Real wind_cover_avg;
   Real fpcsum;
   int i;
@@ -90,21 +91,22 @@ Real area_burnt(Real *fire_durat,       /**< fire duration (min) */
   *burnt_area_max=0;
   if(stand->type->max_ndayfire==0)
     *ndayfire=(*fire_durat==0) ? 0 : 1;
+    
   else
   {
     *ndayfire=0;
-    if (fire_danger_index < 0.015) // condition for fire extinction
+    if (fire_danger_index < 0.2) // condition for fire extinction
       for(i=0;i<stand->type->max_ndayfire;i++)
         setqueue(stand->fires,(Real *)&fire,i);
     else
     {
       wind_cover_avg=0;
-      for(i=0;i<stand->type->max_ndayfire;i++)
+      for(i=0;i<stand->type->max_ndayfire;i++) //for every daily fire
       {
         getqueue(stand->fires,(Real *)&fire,i);
         wind_cover_avg+=fire.wind_cover;
         fire.dbf += (ros_backward+ros_forward) * *fire_durat;  /* in min , dbf in m*/
-        length_breath_ratio=getlength_breath_ratio((windsp_cover+wind_cover_avg)/(i+2),fpcsum,fpc_total);
+        length_breath_ratio=getlength_breath_ratio((windsp_cover+wind_cover_avg)/(i+2),fpcsum,fpc_total); //windsp_cover: actual windspeed cover
         if(length_breath_ratio<=0)
           fire.burnt_area=0;
         else
@@ -112,7 +114,7 @@ Real area_burnt(Real *fire_durat,       /**< fire duration (min) */
           /* applying maximum fire size condition */
           if(ismaxfire && M_PI_4/length_breath_ratio * fire.dbf*fire.dbf*1e-4 > stand->cell->max_firesize)
           {
-            burnt_area_sum += max(0,fire.num_fires*stand->cell->max_firesize - fire.burnt_area);
+            burnt_area_sum += max(0,fire.num_fires*stand->cell->max_firesize - fire.burnt_area); //minus fire.burnt_area?? was never caclulated before?
             fire.burnt_area=fire.num_fires*stand->cell->max_firesize;
           }
           else
@@ -123,23 +125,39 @@ Real area_burnt(Real *fire_durat,       /**< fire duration (min) */
           *burnt_area_max=max(*burnt_area_max,(fire.num_fires>0) ? fire.burnt_area/fire.num_fires : 0.0);
         }
 #ifdef DEBUG
-        if (fire.burnt_area>0)
-          printf("burnt area: %g, on burn day: %d burnt area sum= %g\n", (fire.num_fires * M_PI_4/length_breath_ratio * fire.dbf*fire.dbf)*1e-4 - fire.burnt_area, i, burnt_area_sum);
+      if (fire.burnt_area>0)
+        printf("burnt area: %g, on burn day: %d burnt area sum= %g\n", (fire.num_fires * M_PI_4/length_breath_ratio * fire.dbf*fire.dbf)*1e-4 - fire.burnt_area, i, burnt_area_sum);
 #endif
-        if(fire.burnt_area>0)
-          (*ndayfire)++;
-        /* fire class emptied if maximum fire size condition is met */
-        if(ismaxfire && M_PI_4/length_breath_ratio * fire.dbf*fire.dbf*1e-4 > stand->cell->max_firesize)
-          fire.burnt_area=fire.dbf=fire.wind_cover=fire.num_fires=0;
-        setqueue(stand->fires,(Real *)&fire,i);
+      /* fire class emptied if maximum fire size condition is met or fires where dead in past */
+      if((ismaxfire && M_PI_4/length_breath_ratio * fire.dbf*fire.dbf*1e-4 > stand->cell->max_firesize))
+        fire.burnt_area=fire.dbf=fire.wind_cover=fire.num_fires=0;
+      
+     if(fire.burnt_area>0) //if actual day burning happens
+     {
+       *ndayfire = 1;
+       if(fire.days_burning >= stand->type->max_ndayfire) //if new fire is placed in alread burning queue spot
+         fire.days_burning=1;
+       else
+         fire.days_burning++;
+      }
+      setqueue(stand->fires,(Real *)&fire,i);
       }
     }
     fire.burnt_area=d_area_burnt;
     fire.num_fires=num_fires;
     fire.dbf=dbf;
     fire.wind_cover=windsp_cover;
+    if(stand->type->landusetype==NATURAL)
+    {
+      //printf("d_area_burnt: %g, num_fires: %d, dbf: %g, wind_cover:%g\n",fire.burnt_area, fire.num_fires,fire.dbf,fire.wind_cover);
+      *firedurationdays=max_fireduration_from_queue(stand->fires);
+    }
+    else
+      *firedurationdays=0;
     putqueue(stand->fires,(Real *)&fire);
   }
+  
+  
   free(fpc_total);
 
   return burnt_area_sum;

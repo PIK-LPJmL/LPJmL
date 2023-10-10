@@ -49,6 +49,13 @@ Bool storeclimate(Climatedata *store,  /**< pointer to climate data to be stored
   }
   else
     store->humid=NULL;
+  if(climate->data.hmin!=NULL)
+  {
+    store->hmin=newvec(Real,climate->file_hmin.n*nyear);
+    checkptr(store->hmin);
+  }
+  else
+    store->hmin=NULL;
   if(climate->data.tmin!=NULL)
   {
     store->tmin=newvec(Real,climate->file_tmin.n*nyear);
@@ -153,6 +160,12 @@ Bool storeclimate(Climatedata *store,  /**< pointer to climate data to be stored
       for(j=0;j<climate->file_humid.n;j++)
         store->humid[count++]=climate->data.humid[j];
     }
+    if(store->hmin!=NULL)
+    {
+      count=climate->file_hmin.n*(year-firstyear);
+      for(j=0;j<climate->file_hmin.n;j++)
+        store->hmin[count++]=climate->data.hmin[j];
+    }
     if(store->tmin!=NULL)
     {
       count=climate->file_tmin.n*(year-firstyear);
@@ -236,6 +249,12 @@ void restoreclimate(Climate *climate,         /**< pointer to climate data */
     for(i=0;i<climate->file_humid.n;i++)
       climate->data.humid[i]=store->humid[index++];
   }
+  if(store->hmin!=NULL)
+  {
+    index=year*climate->file_hmin.n;
+    for(i=0;i<climate->file_hmin.n;i++)
+      climate->data.hmin[i]=store->hmin[index++];
+  }
   if(store->tmin!=NULL)
   {
     index=year*climate->file_tmin.n;
@@ -303,6 +322,8 @@ void moveclimate(Climate *climate,  /**< Pointer to climate data */
     climate->data.tmax=store->tmax+climate->file_tmax.n*year;
   if(climate->data.humid!=NULL)
     climate->data.humid=store->humid+climate->file_humid.n*year;
+  if(climate->data.hmin!=NULL)
+    climate->data.hmin=store->hmin+climate->file_hmin.n*year;
   if(climate->data.lightning!=NULL)
     climate->data.lightning=store->lightning+climate->file_lightning.n*year;
   if(climate->data.tmin!=NULL)

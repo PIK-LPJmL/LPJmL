@@ -57,6 +57,9 @@ void dailyclimate(Dailyclimate *daily,    /**< */
   if(climate->data.humid!=NULL)
     daily->humid=isdaily(climate->file_humid) ? climate->data.humid[cell*NDAYYEAR+day-1]
                       : interpolate(getcellhumid(climate,cell),month,dayofmonth);
+   if(climate->data.hmin!=NULL)
+    daily->hmin=isdaily(climate->file_hmin) ? climate->data.hmin[cell*NDAYYEAR+day-1]
+                      : interpolate(getcellhmin(climate,cell),month,dayofmonth);
   if(climate->data.ignition!=NULL)
   {
     if(isdaily(climate->file_ignition))
