@@ -51,12 +51,19 @@ struct config
   Filename tamp_filename;
   Filename tmax_filename;
   Filename humid_filename;
+  Filename hmin_filename;
   Filename tmin_filename;
   Filename lightning_filename;
   Filename ignition_filename;
   Filename lwnet_filename;
   Filename swdown_filename;
   Filename popdens_filename;
+  Filename hdi_filename;
+  Filename conifer_filename;
+  Filename drypine_filename;
+  Filename nonnativebl_filename;
+  Filename tpi_filename;
+  Filename slope_filename;
   Filename human_ign_prob_filename;
   Filename human_ignition_filename;
   Filename max_firesize_filename;
@@ -162,6 +169,7 @@ struct config
   Bool river_routing_restart;   /**< river routing enabled in restart file */
   Bool double_harvest;
   Bool relative_humidity;  /**< humidity is relative humidity */
+  Bool fire_base;
   int wateruse;           /**< enable wateruse (NO_WATERUSE, WATERUSE, ALL_WATERUSE) */
   int sdate_option_restart;     /**< sdate option in restart file */
   int crop_option_restart;      /**< crop option in restart file */

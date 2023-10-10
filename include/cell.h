@@ -128,6 +128,8 @@ Received 19 November 1997; accepted 15 January 1999*/
   FWIdata fwi_data;         /**< Canadian fire index data */
   Real fwi;                 /**< Candian fire index */
   Seed seed;                /**< seed for random generator */
+  Real mgpp_nat;            /**< NPP natural stand */
+  Real fpar_nat;
 #if defined IMAGE && defined COUPLED
   Real npp_nat;             /**< NPP natural stand */
   Real npp_wp;              /**< NPP woodplantation */
@@ -145,7 +147,7 @@ Received 19 November 1997; accepted 15 January 1999*/
 
 extern void freegrid(Cell [],int,const Config *);
 extern void freecell(Cell *,int,const Config *);
-extern void update_daily(Cell *,Real,Real,Real,Dailyclimate,int,
+extern void update_daily(Cell *,Real,Real,Real,Dailyclimate,Input *input,int,int,
                          int,int,int,int,Bool,const Config *);
 extern void update_annual(Cell *,int,int,
                           Real,int,Bool,Bool,const Config *);

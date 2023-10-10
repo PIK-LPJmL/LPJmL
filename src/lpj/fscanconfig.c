@@ -264,9 +264,12 @@ Bool fscanconfig(Config *config,    /**< LPJ configuration */
   config->max_firesize=FALSE;
   config->ishuman_ign_prob=FALSE;
   config->gsilivefuel=FALSE;
+  config->fire_base=FALSE;
   if(config->fire==SPITFIRE  || config->fire==SPITFIRE_TMAX)
   {
     if(fscanbool(file,&config->gsilivefuel,"gsilivefuel",TRUE,verbose))
+      return TRUE;
+    if(fscanbool(file,&config->fire_base,"fire_base",TRUE,verbose))
       return TRUE;
     if(fscankeywords(file,&config->fdi,"fdi",fdi,2,FALSE,verbose))
       return TRUE;
@@ -886,6 +889,16 @@ Bool fscanconfig(Config *config,    /**< LPJ configuration */
     config->tamp_filename.name=NULL;
   if(config->fire==SPITFIRE || config->fire==SPITFIRE_TMAX)
   {
+    if(config->fire_base)
+    { 
+      scanclimatefilename(&input,&config->hmin_filename,TRUE,TRUE,"hmin");
+      scanclimatefilename(&input,&config->hdi_filename,FALSE,TRUE,"hdi");
+      scanclimatefilename(&input,&config->conifer_filename,FALSE,TRUE,"conifer");
+      scanclimatefilename(&input,&config->drypine_filename,FALSE,TRUE,"drypine");
+      scanclimatefilename(&input,&config->nonnativebl_filename,FALSE,TRUE,"nonnativebl");
+      scanclimatefilename(&input,&config->tpi_filename,FALSE,TRUE,"tpi");
+      scanclimatefilename(&input,&config->slope_filename,FALSE,TRUE,"slope");
+    }
     if(config->prescribe_ignition)
     {
       scanclimatefilename(&input,&config->ignition_filename,FALSE,FALSE,"ignition");

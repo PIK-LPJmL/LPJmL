@@ -17,7 +17,7 @@
 
 /* Definition of datatypes */
 
-typedef struct
+struct input
 {
   Climate *climate;
   Landuse landuse;
@@ -26,11 +26,17 @@ typedef struct
   Wateruse wateruse_wd;
 #endif
   Popdens popdens;
+  Realdata hdi;
+  Realdata conifer;
+  Realdata drypine;
+  Realdata nonnativebl;
+  Realdata tpi;
+  Realdata slope; 
   Human_ign_prob human_ign_prob;
   Human_ignition human_ignition;
   Extflow extflow;
   Landcover landcover;
-} Input;
+};
 
 /* Declaration of functions */
 

@@ -27,6 +27,8 @@ extern void getqueue(const Queue,Real [],int);
 extern void setqueue(Queue,const Real [],int);
 extern void putqueue(Queue,const Real []);
 extern Real sumqueue(const Queue,int);
+extern Real weighted_fireduration_from_queue(const Queue);
+extern Real max_fireduration_from_queue(const Queue);
 extern void allsumqueue(const Queue,Real []);
 extern Bool fwritequeue(FILE *,const Queue);
 extern Bool skipqueue(FILE *,Bool);
@@ -34,6 +36,7 @@ extern Queue freadqueue(FILE *,Bool);
 extern void freequeue(Queue);
 extern void fprintqueue(FILE *,const Queue);
 extern int queuesize(const Queue);
+extern int lengthqueue(const Queue);
 
 /* Definition of macros */
 

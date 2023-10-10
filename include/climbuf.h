@@ -30,6 +30,8 @@ typedef struct
   Real temp[NDAYS];
   Real prec[NDAYS];
   Real gpp[NMEAN]; /* array of annual GPP */
+  Real gpp_month[NMONTH];
+  Real fpar[NMONTH];
   Real gpp_avg;    /* averaged annual GPP (gC/m2/yr) */
   Real dval_prec[NDAYS+1]; /* daily precipitation values (mm) */
   Real temp_min; /* minimum annual temperature (deg C) */
@@ -51,6 +53,7 @@ typedef struct
   Real *V_req;            /* 20-year average of vernalization requirements in days */
   Real *V_req_a;          /* annual vernalization requirements in days, used to calculate V_req */
   int gpp_index;          /* index to GPP array to write new data */
+  int month_index;          /* index to GPP array to write new data */
 } Climbuf;
 
 /* Definitions of macros */
@@ -66,7 +69,7 @@ extern void init_climbuf(Climbuf *,int);
 extern void daily_climbuf(Climbuf *,Real,Real);
 extern void getmintemp20_n(const Climbuf *,Real [],int);
 extern Real getavgprec(const Climbuf *);
-extern void monthly_climbuf(Climbuf *,Real,Real,Real,int);
+extern void monthly_climbuf(Climbuf *,Real,Real,Real,Real,Real,int);
 extern void annual_climbuf(Climbuf *,Real,Real,int,Bool);
 extern Bool fwriteclimbuf(FILE *,const Climbuf *,int);
 extern void fprintclimbuf(FILE *,const Climbuf *,int);

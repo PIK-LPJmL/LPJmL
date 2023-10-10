@@ -195,6 +195,8 @@ Real daily_woodplantation(Stand *stand,       /**< stand pointer */
      getoutput(output,D_GPP,config)+=gpp*stand->frac;
    }
    getoutput(output,NPP,config)+=npp*stand->frac;
+   stand->cell->fpar_nat+=pft->fapar*stand->frac*(1.0/(1-stand->cell->lakefrac-stand->cell->ml.reservoirfrac));
+   stand->cell->mgpp_nat+=gpp*stand->frac;
    getoutput(output,FAPAR,config)+= pft->fapar * stand->frac * (1.0/(1-stand->cell->lakefrac-stand->cell->ml.reservoirfrac));
    getoutput(output,PHEN_TMIN,config) += pft->fpc * pft->phen_gsi.tmin * stand->frac * (1.0/(1-stand->cell->lakefrac-stand->cell->ml.reservoirfrac));
    getoutput(output,PHEN_TMAX,config) += pft->fpc * pft->phen_gsi.tmax * stand->frac * (1.0/(1-stand->cell->lakefrac-stand->cell->ml.reservoirfrac));

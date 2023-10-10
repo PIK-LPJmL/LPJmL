@@ -1055,7 +1055,8 @@ void fwriteoutput(Outputfile *output,  /**< output file array */
   writeoutputvar(NFIRE,1);
   writeoutputvar(FIREDI,ndate1);
   writeoutputvar(FIREDURATION,ndate1);
-  writeoutputvar(NDAYFIRE,ndate1);
+  writeoutputvar(NDAYFIRE,1);
+  writeoutputvar(FIREDURATIONDAYS,ndate1);
   writeoutputvar(FIREEMISSION_CO2,1);
   writeoutputvar(FIREEMISSION_CO,1);
   writeoutputvar(FIREEMISSION_CH4,1);
@@ -1125,6 +1126,7 @@ void fwriteoutput(Outputfile *output,  /**< output file array */
   writeoutputvar(PHEN_TMAX,ndate1);
   writeoutputvar(PHEN_LIGHT,ndate1);
   writeoutputvar(PHEN_WATER,ndate1);
+  writeoutputvar(FWI,ndate1);
   writeoutputvar(WSCAL,ndate1);
   writeoutputvar(GCONS_RF,1);
   writeoutputvar(GCONS_IRR,1);
@@ -1164,7 +1166,6 @@ void fwriteoutput(Outputfile *output,  /**< output file array */
   writeoutputarray(STAND_BURNTAREA,1);
   writeoutputarray(STAND_FDI,ndate1);
   writeoutputarray(STAND_SURFACE_FI,ndate1);
-  writeoutputarray(FWI,ndate1);
 
   if(isopen(output,PFT_NLIMIT))
   {

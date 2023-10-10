@@ -168,6 +168,7 @@
   { "id" : NFIRE, "name": "nfire", "timestep" : "monthly", "var" : "nfire", "descr" :  "number of fires", "unit" : "", "scale" : 1.0, "offset" : 0.0},
   { "id" : FIREDI, "name": "firedi", "timestep" : "monthly", "var" : "firedi", "descr" :  "fire danger index", "unit" : "", "scale" : 1.0, "offset" : 0.0},
   { "id" : FIREDURATION, "name": "fireduration", "timestep" : "monthly", "var" : "fireduration", "descr" :  "fire duration", "unit" : "min", "scale" : 1.0, "offset" : 0.0},
+  { "id" : FIREDURATIONDAYS, "name": "firedurationdays", "timestep" : "monthly", "var" : "firedurationdays", "descr" :  "fire duration days", "unit" : "d", "scale" : 1.0, "offset" : 0.0},
   { "id" : NDAYFIRE, "name": "ndayfire", "timestep" : "monthly", "var" : "ndayfire", "descr" :  "average length of fires", "unit" : "days", "scale" : 1.0, "offset" : 0.0},
   { "id" : FIREEMISSION_CO2, "name": "fireemission_co2", "timestep" : "monthly", "var" : "co2_emission", "descr" :  "CO2 fire emission", "unit" : "g/m2/month", "scale" : 1.0, "offset" : 0.0},
   { "id" : FIREEMISSION_CO, "name": "fireemission_co", "timestep" : "monthly", "var" : "co_emission", "descr" :  "CO fire emission", "unit" : "g/m2/month", "scale" : 1.0, "offset" : 0.0},

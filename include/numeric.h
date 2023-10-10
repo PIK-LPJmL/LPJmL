@@ -47,6 +47,7 @@ extern void petpar3(Real *,Real *,Real *,Real,int,Real,Real,Bool,Real);
 extern int ivec_sum(const int[],int); /* vector sum of integers */
 extern void permute(int [],int,Seed);
 extern Real getavg(const Real[],int);
+extern Real getmax(const Real[],int);
 
 #ifndef USE_RAND48
 /* if erand48() function is not defined, use randfrac instead */
