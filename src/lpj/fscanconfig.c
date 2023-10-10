@@ -290,13 +290,14 @@ Bool fscanconfig(Config *config,    /**< LPJ configuration */
       return TRUE;
     if(fscanbool(file,&config->prescribe_ignition,"prescribe_ignition",TRUE,verbose))
       return TRUE;
-    if(config->prescribe_ignition)
+    if(!config->prescribe_ignition)
     {
       if(fscanbool(file,&config->ishuman_ign_prob,"human_ign_prob",TRUE,verbose))
         return TRUE;
     }
   }
   fscanbool2(file,&config->ispopulation,"population");
+  fscanbool2(file,&config->isswnet,"isswnet");
   config->prescribe_landcover=NO_LANDCOVER;
   if(fscankeywords(file,&config->prescribe_landcover,"prescribe_landcover",prescribe_landcover,3,TRUE,verbose))
     return TRUE;

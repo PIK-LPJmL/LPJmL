@@ -132,7 +132,7 @@ void update_daily(Cell *cell,            /**< cell pointer           */
       }
     }
     beta=albedo_stand(stand);
-    radiation(&daylength,&par,&eeq,cell->coord.lat,day,&climate,beta,config->with_radiation);
+    radiation(&daylength,&par,&eeq,cell->coord.lat,day,&climate,beta,config);
     if(config->gsilivefuel)
     {
       if(s==0)
@@ -433,7 +433,7 @@ void update_daily(Cell *cell,            /**< cell pointer           */
   cell->balance.awater_flux+=cell->discharge.drunoff;
   if(config->with_lakes)
   {
-    radiation(&daylength,&par,&eeq,cell->coord.lat,day,&climate,c_albwater,config->with_radiation);
+    radiation(&daylength,&par,&eeq,cell->coord.lat,day,&climate,c_albwater,config);
     getoutput(&cell->output,PET,config)+=eeq*PRIESTLEY_TAYLOR*(cell->lakefrac+cell->ml.reservoirfrac);
     cell->output.mpet+=eeq*PRIESTLEY_TAYLOR*(cell->lakefrac+cell->ml.reservoirfrac);
     getoutput(&cell->output,ALBEDO,config)+=c_albwater*(cell->lakefrac+cell->ml.reservoirfrac);

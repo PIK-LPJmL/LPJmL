@@ -1,10 +1,8 @@
 /**************************************************************************************/
 /**                                                                                \n**/
-/**            a  g  r  i  c  u  l  t  u  r  e    _  t  r  e  e  .  c              \n**/
+/**                       g  e  t  a  v  g  .  c                                   \n**/
 /**                                                                                \n**/
-/**     C implementation of LPJmL                                                  \n**/
-/**                                                                                \n**/
-/**     Definition of agricultural tree stand                                      \n**/
+/**     Function computes average of all real vector elements                      \n**/
 /**                                                                                \n**/
 /** (C) Potsdam Institute for Climate Impact Research (PIK), see COPYRIGHT file    \n**/
 /** authors, and contributors see AUTHORS file                                     \n**/
@@ -14,15 +12,21 @@
 /**                                                                                \n**/
 /**************************************************************************************/
 
-#include "lpj.h"
-#include "natural.h"
-#include "agriculture.h"
-#include "tree.h"
-#include "agriculture_tree.h"
+#include <stdlib.h>
+#include <stdio.h>
+#include "types.h"
+#include "numeric.h"
 
-Standtype agriculture_tree_stand={AGRICULTURE_TREE,"agriculture_tree",0.0,0.0,0,
-                                  new_biomass_tree,
-                                  free_agriculture,fwrite_biomass_tree,
-                                  fread_biomass_tree,fprint_biomass_tree,
-                                  daily_agriculture_tree,
-                                  annual_agriculture_tree,NULL};
+Real getmax(const Real vec[], /**< array of real values */
+            int size          /**< array size */
+           )                  /** \return average of array elements */
+{
+  int i;
+  Real max;
+  max=vec[0];
+  for(i=0;i<size;i++) 
+    if(max<vec[i])
+      max=vec[i];
+   
+  return max;
+} /* of 'getavg' */

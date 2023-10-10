@@ -383,6 +383,7 @@
   { "id" : STAND_FDI, "name": "stand_fdi", "timestep" : "annual", "var" :  "fdi", "long_name" :  "stand-specific fire danger index", "unit" : "", "scale" : 1.0, "offset" : 0.0},
   { "id" : STAND_SURFACE_FI, "name": "stand_surface_fi", "timestep" : "annual", "var" :  "surface_fi", "long_name" :  "stand-specific average surface fire intensity", "unit" : "kW/m2", "scale" : 1.0e-3, "offset" : 0.0},
   { "id" : FWI, "name": "fwi", "timestep" : "monthly", "var" :  "fwi", "long_name" :  "Canadian forest fire weather index", "unit" : "", "scale" : 1.0, "offset" : 0.0},
+  { "id" : DFMC, "name": "dfmc", "timestep" : "monthly", "var" : "dfmc", "long_name" : "dead fuel moisture content", "unit" : "", "scale" : 1.0, "offset" : 0.0},
   { "id" : HUMAN_IGNITION, "name": "human_ignition", "timestep" : "monthly", "var" :  "human_ign", "long_name" :  "human ignition", "unit" : "", "scale" : 1.0, "offset" : 0.0},
   { "id" : LIGHTNING, "name": "lightning", "timestep" : "monthly", "var" :  "lightning_ign", "long_name" :  "lightnings causing fires", "unit" : "", "scale" : 1.0, "offset" : 0.0},
   { "id" : SURFACE_FI, "name": "surface_fi", "timestep" : "monthly", "var" :  "surface_fi", "long_name" :  "average surface fire intensity", "unit" : "kW/m2", "scale" : 1.0e-3, "offset" : 0.0},

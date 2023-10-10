@@ -19,7 +19,8 @@
 Real getfwi(FWIdata *fwi,
             const Coord *coord,           /**< cell coordinate */
             const Dailyclimate  *climate, /**< daily climate data */
-            int month                     /**< month (0..11) */
+            int month,                     /**< month (0..11) */
+            Bool relative_humidity        /**< humidity is relative humidity (TRUE/FALSE) */
            )                              /** \return Canadian fire danger index */
 {
   Real d_fdi;
@@ -40,9 +41,15 @@ Real getfwi(FWIdata *fwi,
   static Real fl02[NMONTH] = {6.4, 5, 2.4, 0.4, -1.6, -1.6, -1.6, -1.6, -1.6, 0.9, 3.8, 5.8};
 
 
-  temperature = climate->temp + 273.16;
-  rh = 0.263 * 1013.25 * climate->humid *1/(exp(17.67*climate->temp/(temperature-29.65))) * 100; /* in percent */
-  wmo = 147.2 * (101-fwi->ffmc) / (59.5 + fwi->ffmc);
+  temperature = climate->tmax + 273.16;
+  
+  if(relative_humidity)
+    rh=climate->hmin*100; /*in percent*/
+  else
+    rh = 0.263 * 1013.25 * climate->hmin *1/(exp(17.67*climate->tmax/(temperature-29.65))) * 100; /* in percent */
+  //printf("temp_max: %g, rh: %g, wind: %g\n",climate->tmax + 273.16, rh, climate->windspeed*3.6);
+
+  wmo = 147.27723 * (101-fwi->ffmc) / (59.5 + fwi->ffmc);
   if (climate->prec > 0.5)
     ra = climate->prec - 0.5;
   else
@@ -56,10 +63,10 @@ Real getfwi(FWIdata *fwi,
   }
   wmo=min(250,wmo);
   /*Eq. 4 Equilibrium moisture content from drying*/
-  ed = 0.942 * pow(rh,0.679) + (11 * exp((rh - 100) / 10)) + 0.18 * (21.1 - climate->temp) * (1 - 1 / exp(rh * 0.115));
+  ed = 0.942 * pow(rh,0.679) + (11 * exp((rh - 100) / 10)) + 0.18 * (21.1 - climate->tmax) * (1 - 1 / exp(rh * 0.115));
   /*Eq. 5 Equilibrium moisture content from wetting*/
 
-  ew = 0.618 * pow(rh,0.753) + (10 * exp((rh - 100) / 10)) + 0.18 * (21.1 - climate->temp) * (1 - 1 / exp(rh * 0.115));
+  ew = 0.618 * pow(rh,0.753) + (10 * exp((rh - 100) / 10)) + 0.18 * (21.1 - climate->tmax) * (1 - 1 / exp(rh * 0.115));
 
 /*Eq. 6a (ko) Log drying rate at the normal termperature of 21.1 C*/
 
@@ -67,7 +74,7 @@ Real getfwi(FWIdata *fwi,
 
 /*Eq. 6b effect of temperature on  drying rate*/
 
-  x = z * 0.581 * exp(0.0365*climate->temp);
+  x = z * 0.581 * exp(0.0365*climate->tmax);
   wm = (wmo < ed && wmo < ew) ?  ew - (ew - wmo)/pow(10,x) : wmo;
 
 /*Eq. 7a (ko) Log wetting rate at the normal termperature of 21.1 C*/
@@ -75,7 +82,7 @@ Real getfwi(FWIdata *fwi,
   z = ( wmo > ed) ?  0.424 * (1 - pow(rh/100,1.7)) + 0.0694 * sqrt(climate->windspeed*3.6) * (1 - pow(rh/100,8)) : z;
 /*Eq. 7b Affect of temperature on  wetting rate*/
 
-  x = z * 0.581 * exp(0.0365 * climate->temp);
+  x = z * 0.581 * exp(0.0365 * climate->tmax);
 
 /*Eq. 9*/
 
@@ -94,7 +101,7 @@ Real getfwi(FWIdata *fwi,
 /*Duff Moisture Code (DMC)*/
 
 /***constrain low end of temperature***/
-  temperature = max(climate->temp,-1.1);
+  temperature = max(climate->tmax,-1.1);
 
 
 /***Eq. 16 - The log drying rate***/
@@ -146,6 +153,8 @@ Real getfwi(FWIdata *fwi,
   
 /*************************************************************************/
 /************Drought Code (DC)*******************************************/
+
+temperature = max(climate->tmax,-2.8);
 
 /***Eq. 22 - Potential Evapotranspiration**/
   pe = (0.36 * (temperature + 2.8) + fl01[month]) / 2;

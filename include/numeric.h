@@ -42,8 +42,8 @@ extern void setseed(Seed,int); /* set seed of random number generator */
 extern Bool freadseed(FILE *,Seed, Bool);
 extern Real randfrac(int *); /* random number generator */
 extern void petpar(Real *,Real *,Real *,Real *,Real,int,Real,Real,Real);
-extern void petpar2(Real *,Real *,Real *,Real,int,Real,Real,Real,Bool,Real);
-extern void petpar3(Real *,Real *,Real *,Real,int,Real,Real,Real);
+extern void petpar2(Real *,Real *,Real *,Real,int,Real,Real,Real,Bool,Bool,Real);
+extern void petpar3(Real *,Real *,Real *,Real,int,Real,Real,Bool,Real);
 extern int ivec_sum(const int[],int); /* vector sum of integers */
 extern void permute(int [],int,Seed);
 extern Real getavg(const Real[],int);

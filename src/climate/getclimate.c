@@ -208,6 +208,20 @@ Bool getclimate(Climate *climate,    /**< pointer to climate data */
       return TRUE;
     }
   }
+  if(climate->data.hmin!=NULL)
+  {
+    if(readclimate(&climate->file_hmin,climate->data.hmin,0,climate->file_hmin.scalar,grid,year,config))
+    {
+      if(isroot(*config))
+      {
+        name=getrealfilename(&config->hmin_filename);
+        fprintf(stderr,"ERROR131: Cannot read minium humidity of year %d from '%s'.\n",
+                year_climate,name);
+        free(name);
+      }
+      return TRUE;
+    }
+  }
   if(climate->data.ignition!=NULL)
   {
     if(readclimate(&climate->file_ignition,climate->data.ignition,0,climate->file_ignition.scalar,grid,year,config))

@@ -71,6 +71,7 @@ typedef struct
   Real drip_evap;        /**< reduction of drip soil evap */
   Real firedura;        /**< scaling factor for fire duration */
   Real max_fireduration; /**< default maximum fire duration (min) */
+  Real min_fireduration; /**< default minium fire duration (min) */
   int max_ndayfire;      /**< default maximum fire duration (days) */
   Real ler;              /**< efficiency in starting fires (0..1) */
   Real cg_ratio;         /**< cloud to ground flashes ratio */

@@ -28,16 +28,16 @@ Stocks livefuel_consum_crop(Litter * UNUSED(litter),Pft *pft,
   Stocks livefuel_consum,livefuel_consum_total;
   /*  livegrass consumption */
   crop=pft->data;
-  livefuel_consum.carbon = livefuel_consum_total.carbon=fuel_consumption_1hr(livefuel->M[0],fire_frac)*crop->ind.leaf.carbon*pft->nind;
-  livefuel_consum.nitrogen = livefuel_consum_total.nitrogen=fuel_consumption_1hr(livefuel->M[0],fire_frac)*crop->ind.leaf.nitrogen*pft->nind;
+  livefuel_consum.carbon = livefuel_consum_total.carbon=fuel_consumption_1hr(livefuel->M[0]/livefuel->char_moisture,fire_frac)*crop->ind.leaf.carbon*pft->nind;
+  livefuel_consum.nitrogen = livefuel_consum_total.nitrogen=fuel_consumption_1hr(livefuel->M[0]/livefuel->char_moisture,fire_frac)*crop->ind.leaf.nitrogen*pft->nind;
   /* livegrass update */
   if (pft->nind > 0)
   {
     crop->ind.leaf.carbon -= livefuel_consum.carbon / pft->nind;
     crop->ind.leaf.nitrogen -= livefuel_consum.nitrogen / pft->nind;
   }
-  livefuel_consum.carbon = fuel_consumption_1hr(livefuel->M[0],fire_frac)*crop->ind.so.carbon*pft->nind;
-  livefuel_consum.nitrogen = fuel_consumption_1hr(livefuel->M[0],fire_frac)*crop->ind.so.nitrogen*pft->nind;
+  livefuel_consum.carbon = fuel_consumption_1hr(livefuel->M[0]/livefuel->char_moisture,fire_frac)*crop->ind.so.carbon*pft->nind;
+  livefuel_consum.nitrogen = fuel_consumption_1hr(livefuel->M[0]/livefuel->char_moisture,fire_frac)*crop->ind.so.nitrogen*pft->nind;
   if (pft->nind > 0)
   {
     crop->ind.so.carbon -= livefuel_consum.carbon / pft->nind;
@@ -45,8 +45,8 @@ Stocks livefuel_consum_crop(Litter * UNUSED(litter),Pft *pft,
   }
   livefuel_consum_total.carbon+=livefuel_consum.carbon;
   livefuel_consum_total.nitrogen+=livefuel_consum.nitrogen;
-  livefuel_consum.carbon = fuel_consumption_1hr(livefuel->M[0],fire_frac)*crop->ind.pool.carbon*pft->nind;
-  livefuel_consum.nitrogen = fuel_consumption_1hr(livefuel->M[0],fire_frac)*crop->ind.pool.nitrogen*pft->nind;
+  livefuel_consum.carbon = fuel_consumption_1hr(livefuel->M[0]/livefuel->char_moisture,fire_frac)*crop->ind.pool.carbon*pft->nind;
+  livefuel_consum.nitrogen = fuel_consumption_1hr(livefuel->M[0]/livefuel->char_moisture,fire_frac)*crop->ind.pool.nitrogen*pft->nind;
   if (pft->nind > 0)
   {
     crop->ind.pool.carbon -= livefuel_consum.carbon / pft->nind;

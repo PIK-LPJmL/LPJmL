@@ -25,10 +25,10 @@ void radiation(Real *daylength,       /**< daylength (h) */
                int day,               /**< day (1..365) */
                Dailyclimate *climate, /**< daily climate data */
                Real beta,             /**< albedo */
-               int with_radiation     /**< CLOUDINESS/RADIATION/RADIATION_LWDOWN/RADIATION_SWONLY */
+               const Config *config     /**< CLOUDINESS/RADIATION/RADIATION_LWDOWN/RADIATION_SWONLY */
               )
 {
-  switch(with_radiation)
+  switch(config->with_radiation)
   {
     case CLOUDINESS:
       petpar(daylength,par,eeq,&climate->swdown,lat,day,climate->temp,
@@ -36,19 +36,19 @@ void radiation(Real *daylength,       /**< daylength (h) */
       break;
     case RADIATION:
       petpar2(daylength,par,eeq,lat,day,climate->temp,
-              climate->lwnet,climate->swdown,FALSE,beta);
+              climate->lwnet,climate->swdown,FALSE,config->isswnet,beta);
       break;
     case RADIATION_LWDOWN:
       petpar2(daylength,par,eeq,lat,day,climate->temp,
-              climate->lwnet,climate->swdown,TRUE,beta);
+              climate->lwnet,climate->swdown,TRUE,config->isswnet,beta);
       break;
     case RADIATION_SWONLY:
-      petpar3(daylength,par,eeq,lat,day,climate->temp,climate->swdown,beta);
-      break;
+      petpar3(daylength,par,eeq,lat,day,climate->temp,climate->swdown,config->isswnet,beta);
+      break; 
 #ifdef SAFE
     default:
       fail(INVALID_RADIATION_ERR,FALSE,
-           "Invalid radiation model %d in radiation()",with_radiation);
+           "Invalid radiation model %d in radiation()",config->with_radiation);
 #endif
   }
 } /* of 'radiation' */ 
