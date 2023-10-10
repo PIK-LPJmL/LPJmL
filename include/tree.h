@@ -21,7 +21,6 @@
 
 #define name_tree "tree"
 #define reinickerp 1.6
-#define wooddens 2e5      /* wood density (gC/m3) */
 
 /* Declaration of datatypes */
 
@@ -72,6 +71,7 @@ typedef struct
   Real fuelfrac[NFUELCLASS];        /**< Fuel fractions */
   Real k_est;                       /**< maximum overall sapling establishment rate (indiv/m2) */
   Real k_latosa;                    /**< leaf area to sapwood area */
+  Real wood_density;                /**< wood density (gC/m3) */
   int rotation;                     /**< coppicing interval from short rotation woody crops */
   int max_rotation_length;          /**< lifetime of short rotation woody crop plantation */
   Real harvest_ratio;               /**< fraction of biomass increment put into fruits */

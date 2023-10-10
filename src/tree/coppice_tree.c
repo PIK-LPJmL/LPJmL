@@ -45,7 +45,7 @@ Stocks coppice_tree(Pft *pft /**< pointer to tree PFT */
   allometry=treepar->allom1*pow(tree->height/treepar->allom2,reinickerp/treepar->allom3); /* calculate crownarea within coppice routine instead of calling allometry at the end */
   tree->crownarea=min(allometry,treepar->crownarea_max);
   /* calculate ind.leaf.carbon based on reduced height */
-  tree->ind.leaf.carbon=treepar->k_latosa*tree->ind.sapwood.carbon/(wooddens*tree->height*pft->par->sla);
+  tree->ind.leaf.carbon=treepar->k_latosa*tree->ind.sapwood.carbon/(treepar->wood_density*tree->height*pft->par->sla);
   harvest.carbon+=(leaf_old.carbon-tree->ind.leaf.carbon)*pft->nind;
   tree->ind.heartwood.nitrogen*=1-HARVEST_EFFICIENCY;
   tree->ind.sapwood.nitrogen*=1-HARVEST_EFFICIENCY_SAP;
