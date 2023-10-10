@@ -31,7 +31,7 @@ struct input
   Realdata drypine;
   Realdata nonnativebl;
   Realdata tpi;
-  Realdata slope; 
+  Realdata slope;
   Human_ign_prob human_ign_prob;
   Human_ignition human_ignition;
   Extflow extflow;

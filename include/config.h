@@ -199,7 +199,7 @@ struct config
   Bool check_climate;           /**< check climate input data for NetCDF files */
   Bool others_to_crop;          /**< move PFT type others into PFT crop, cft_tropic for tropical, cft_temp for temperate */
   Bool max_firesize;
-  Bool isswnet; 
+  Bool isswnet;
   int cft_temp;
   int cft_tropic;
   Verbosity scan_verbose;       /**< option -vv 2: verbosely print the read values during fscanconfig. default 1; 0 would supress even error messages */

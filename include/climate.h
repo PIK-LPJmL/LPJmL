@@ -21,6 +21,7 @@
 #define COLDEST_DAY_SHEMISPHERE 195
 
 /* Definitions of datatypes */
+
 typedef struct realdata *Realdata;
 
 typedef struct
@@ -33,7 +34,7 @@ typedef struct
   Real *tamp; /**< temperature amplitude */
   Real *tmax; /**< maximum temperature (deg C) */
   Real *humid; /**< specific humidity (kg/kg) */
-  Real *hmin; /**< minium specific humidity (kg/kg) */
+  Real *hmin; /**< minimum specific humidity (kg/kg) */
   Real *tmin; /**< minimum temperature (deg C) */
   Real *ignition;
   Real *lightning;

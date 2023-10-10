@@ -39,7 +39,7 @@ Bool fscanfireduration(LPJfile *file,          /**< pointer to LPJ file */
   }
   if(iskeydefined(file,"fireduration"))
   {
-    array=fscanarray(file,&size,"max_fireduration",verbose);
+    array=fscanarray(file,&size,"fireduration",verbose);
     if(array==NULL)
       return TRUE;
     for(i=0;i<size;i++)

@@ -881,17 +881,17 @@ Bool fscanconfig(Config *config,    /**< LPJ configuration */
   {
     case RADIATION:
       scanclimatefilename(input,&config->lwnet_filename,TRUE,TRUE,"lwnet");
-      scanclimatefilename(input,&config->swdown_filename,TRUE,TRUE,"swdown");
+      scanclimatefilename(input,&config->swdown_filename,TRUE,TRUE,(config->isswnet) ? "swnet" : "swdown");
       break;
     case RADIATION_LWDOWN:
       scanclimatefilename(input,&config->lwnet_filename,TRUE,TRUE,"lwdown");
-      scanclimatefilename(input,&config->swdown_filename,TRUE,TRUE,"swdown");
+      scanclimatefilename(input,&config->swdown_filename,TRUE,TRUE,(config->isswnet) ? "swnet" : "swdown");
       break;
     case CLOUDINESS:
       scanclimatefilename(input,&config->cloud_filename,TRUE,TRUE,"cloud");
       break;
     case RADIATION_SWONLY:
-      scanclimatefilename(input,&config->swdown_filename,TRUE,TRUE,"swdown");
+      scanclimatefilename(input,&config->swdown_filename,TRUE,TRUE,(config->isswnet) ? "swnet" : "swdown");
       break;
     default:
       if(verbose)

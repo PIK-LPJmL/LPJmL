@@ -127,6 +127,16 @@ void fprintfiles(FILE *file,          /**< pointer to text output file */
   }
   if(config->ispopulation)
     fprintfilename(file,&config->popdens_filename,TRUE);
+  if(config->fire_base)
+  {
+    fprintfilename(file,&config->hmin_filename,TRUE);
+    fprintfilename(file,&config->hdi_filename,TRUE);
+    fprintfilename(file,&config->conifer_filename,TRUE);
+    fprintfilename(file,&config->drypine_filename,TRUE);
+    fprintfilename(file,&config->nonnativebl_filename,TRUE);
+    fprintfilename(file,&config->tpi_filename,TRUE);
+    fprintfilename(file,&config->slope_filename,TRUE);
+  }
   if(config->grassfix_filename.name!=NULL)
     fprintfilename(file,&config->grassfix_filename,FALSE);
   if(config->grassharvest_filename.name!=NULL)
