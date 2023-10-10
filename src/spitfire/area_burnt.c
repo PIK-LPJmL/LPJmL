@@ -91,7 +91,6 @@ Real area_burnt(Real *fire_durat,       /**< fire duration (min) */
   *burnt_area_max=0;
   if(stand->type->max_ndayfire==0)
     *ndayfire=(*fire_durat==0) ? 0 : 1;
-    
   else
   {
     *ndayfire=0;
@@ -125,23 +124,24 @@ Real area_burnt(Real *fire_durat,       /**< fire duration (min) */
           *burnt_area_max=max(*burnt_area_max,(fire.num_fires>0) ? fire.burnt_area/fire.num_fires : 0.0);
         }
 #ifdef DEBUG
-      if (fire.burnt_area>0)
-        printf("burnt area: %g, on burn day: %d burnt area sum= %g\n", (fire.num_fires * M_PI_4/length_breath_ratio * fire.dbf*fire.dbf)*1e-4 - fire.burnt_area, i, burnt_area_sum);
+        if (fire.burnt_area>0)
+          printf("burnt area: %g, on burn day: %d burnt area sum= %g\n",
+                 (fire.num_fires * M_PI_4/length_breath_ratio * fire.dbf*fire.dbf)*1e-4 - fire.burnt_area, i, burnt_area_sum);
 #endif
-      /* fire class emptied if maximum fire size condition is met or fires where dead in past */
-      if((ismaxfire && M_PI_4/length_breath_ratio * fire.dbf*fire.dbf*1e-4 > stand->cell->max_firesize))
-        fire.burnt_area=fire.dbf=fire.wind_cover=fire.num_fires=0;
-      
-     if(fire.burnt_area>0) //if actual day burning happens
-     {
-       *ndayfire = 1;
-       if(fire.days_burning >= stand->type->max_ndayfire) //if new fire is placed in alread burning queue spot
-         fire.days_burning=1;
-       else
-         fire.days_burning++;
-      }
-      setqueue(stand->fires,(Real *)&fire,i);
-      }
+        /* fire class emptied if maximum fire size condition is met or fires where dead in past */
+        if((ismaxfire && M_PI_4/length_breath_ratio * fire.dbf*fire.dbf*1e-4 > stand->cell->max_firesize))
+          fire.burnt_area=fire.dbf=fire.wind_cover=fire.num_fires=0;
+
+       if(fire.burnt_area>0) //if actual day burning happens
+       {
+         *ndayfire = 1;
+         if(fire.days_burning >= stand->type->max_ndayfire) //if new fire is placed in alread burning queue spot
+           fire.days_burning=1;
+         else
+           fire.days_burning++;
+        }
+        setqueue(stand->fires,(Real *)&fire,i);
+      } /* of for(i=0;...) */
     }
     fire.burnt_area=d_area_burnt;
     fire.num_fires=num_fires;
@@ -156,8 +156,7 @@ Real area_burnt(Real *fire_durat,       /**< fire duration (min) */
       *firedurationdays=0;
     putqueue(stand->fires,(Real *)&fire);
   }
-  
-  
+
   free(fpc_total);
 
   return burnt_area_sum;

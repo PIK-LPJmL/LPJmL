@@ -74,7 +74,7 @@ extern Real gethuman_ign_prob(const Human_ign_prob,int);
 extern Bool readhuman_ign_prob(Human_ign_prob,int,const Cell *,const Config *);
 extern Real humanignition(Real,Ignition *);
 extern Bool initmax_firesize(Cell *,const Config *);
-extern Popdens initpopdens(const Config *);          
+extern Popdens initpopdens(const Config *);
 extern Human_ign_prob inithuman_ign_prob(const Config *);
 extern Human_ignition inithumanignition(const Config *);
 extern Bool gethumanignition(Human_ignition,int,Cell *,const Config *);

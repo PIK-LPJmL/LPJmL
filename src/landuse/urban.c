@@ -1,10 +1,10 @@
 /**************************************************************************************/
 /**                                                                                \n**/
-/**                    a  g  r  i  c  u  l  t  u  r  e  .  c                       \n**/
+/**                             u  r  b  a  n  .  c                                \n**/
 /**                                                                                \n**/
 /**     C implementation of LPJmL                                                  \n**/
 /**                                                                                \n**/
-/**     Definition of agricultural, setaside and kill stand                        \n**/
+/**     Definition of urban stand                                                  \n**/
 /**                                                                                \n**/
 /** (C) Potsdam Institute for Climate Impact Research (PIK), see COPYRIGHT file    \n**/
 /** authors, and contributors see AUTHORS file                                     \n**/
@@ -18,7 +18,6 @@
 #include "natural.h"
 #include "agriculture.h"
 #include "urban.h"
-
 
 Standtype urban_stand={URBAN,"urban",0.0,0.0,0,new_agriculture,
                              free_agriculture,fwrite_agriculture,

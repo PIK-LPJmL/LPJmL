@@ -1,10 +1,10 @@
 /**************************************************************************************/
 /**                                                                                \n**/
-/**                  a  g  r  i  c  u  l  t  u  r  e  .  h                         \n**/
+/**                        u  r  b  a  n  .  h                                     \n**/
 /**                                                                                \n**/
 /**     C implementation of LPJmL                                                  \n**/
 /**                                                                                \n**/
-/**     Declaration of agriculture stand                                           \n**/
+/**     Declaration of urban stand                                                 \n**/
 /**                                                                                \n**/
 /** (C) Potsdam Institute for Climate Impact Research (PIK), see COPYRIGHT file    \n**/
 /** authors, and contributors see AUTHORS file                                     \n**/
@@ -18,5 +18,5 @@
 #define URBAN_H
 
 extern Standtype urban_stand;
-extern Bool annual_urban(Stand *,int,int,Real,int,Bool,Bool,const Config *);
+
 #endif
