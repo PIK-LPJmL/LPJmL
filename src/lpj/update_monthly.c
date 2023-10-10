@@ -29,7 +29,7 @@ void update_monthly(Cell *cell,  /**< Pointer to cell */
   int s;
   Stand *stand;
 
-  monthly_climbuf(&cell->climbuf,mtemp,mprec,cell->output.mpet,month);
+  monthly_climbuf(&cell->climbuf,mtemp,mprec,cell->output.mpet,cell->mgpp_nat,cell->fpar_nat*ndaymonth1[month],month);
   if(cell->ml.dam) /* to store the monthly inflow and demand */
     update_reservoir_monthly(cell,month,config);
   foreachstand(stand,s,cell->standlist)

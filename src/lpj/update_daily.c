@@ -30,6 +30,8 @@ void update_daily(Cell *cell,            /**< cell pointer           */
                   Real popdensity,       /**< population density (capita/km2) */
                   Real human_ign_prob,   /**< human ignition probability */
                   Dailyclimate climate,  /**< Daily climate values */
+                  Input *input,
+                  int cell_id,
                   int day,               /**< day (1..365)           */
                   int npft,              /**< number of natural PFTs */
                   int ncft,              /**< number of crop PFTs   */
@@ -83,7 +85,7 @@ void update_daily(Cell *cell,            /**< cell pointer           */
   if(config->fire==SPITFIRE || config->fire==SPITFIRE_TMAX)
   {
     update_nesterov(cell,&climate);
-    cell->fwi=getfwi(&cell->fwi_data,&cell->coord,&climate,month);
+    cell->fwi=getfwi(&cell->fwi_data,&cell->coord,&climate,month,config->relative_humidity);
   }
   agrfrac=0;
   foreachstand(stand,s,cell->standlist)
@@ -150,7 +152,7 @@ void update_daily(Cell *cell,            /**< cell pointer           */
 
     if((config->fire==SPITFIRE  || config->fire==SPITFIRE_TMAX)&& stand->afire_frac<1)
     {
-      dailyfire_stand(stand,popdensity,human_ign_prob,avgprec,&climate,config);
+      dailyfire_stand(stand,popdensity,human_ign_prob,avgprec,input,cell_id,month,&climate,config);
     }
     if(config->permafrost)
     {

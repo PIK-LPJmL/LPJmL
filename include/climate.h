@@ -21,6 +21,7 @@
 #define COLDEST_DAY_SHEMISPHERE 195
 
 /* Definitions of datatypes */
+typedef struct realdata *Realdata;
 
 typedef struct
 {
@@ -32,6 +33,7 @@ typedef struct
   Real *tamp; /**< temperature amplitude */
   Real *tmax; /**< maximum temperature (deg C) */
   Real *humid; /**< specific humidity (kg/kg) */
+  Real *hmin; /**< minium specific humidity (kg/kg) */
   Real *tmin; /**< minimum temperature (deg C) */
   Real *ignition;
   Real *lightning;
@@ -51,6 +53,7 @@ typedef struct Dailyclimate
   Real tmin;       /**< minimum temperature (deg C) */
   Real tmax;       /**< maximum temperature (deg C) */
   Real humid;      /**< specific humidity (kg/kg) */
+  Real hmin;       /**< minium specific humidity (kg/kg) */
   Real lightning;  /**< daily lightning ignition  */
   Real ignition;
   Real lwnet;      /**< long wave net downward flux (W/m2) */
@@ -78,6 +81,7 @@ typedef struct
   Climatefile file_wind,file_tamp,file_tmax,file_tmin,file_lightning;
   Climatefile file_no3deposition,file_nh4deposition;
   Climatefile file_humid;
+  Climatefile file_hmin;
   Climatefile file_ignition;
 #if defined IMAGE && defined COUPLED
   Climatefile file_temp_var,file_prec_var;
@@ -98,6 +102,7 @@ typedef struct
 #define getcelltamp(climate,cell) climate->data.tamp+(cell)*NMONTH
 #define getcelltmax(climate,cell) climate->data.tmax+(cell)*NMONTH
 #define getcellhumid(climate,cell) climate->data.humid+(cell)*NMONTH
+#define getcellhmin(climate,cell) climate->data.hmin+(cell)*NMONTH
 #define getcellignition(climate,cell) climate->data.ignition+(cell)*NMONTH
 #define getcelltmin(climate,cell) climate->data.tmin+(cell)*NMONTH
 #define getcelllightning(climate,cell) climate->data.lightning+(cell)*NMONTH
@@ -147,5 +152,9 @@ extern Bool openinputdata(Infile *,const Filename *,const char *,const char *,
                           Type,Real,const Config *config);
 extern Bool readinputdata(Infile *,Real *,const Coord *,int,const Filename *);
 extern Bool readintinputdata(Infile *,int *,Bool *,const Coord *,int,const Filename *);
+extern Realdata initrealdata(const Filename *,const char *,const char *,const Config *);
+extern Bool readrealdata(Realdata,int,const Cell *,const Config *);
+extern Real getrealdata(const Realdata,int);
+extern void freerealdata(Realdata,Bool);
 
 #endif

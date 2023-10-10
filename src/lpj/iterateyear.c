@@ -98,6 +98,8 @@ void iterateyear(Outputfile *output,  /**< Output file data */
   {
     for(cell=0;cell<config->ngridcell;cell++)
     {
+      grid[cell].mgpp_nat=0;
+      grid[cell].fpar_nat=0;
       grid[cell].discharge.mfin=grid[cell].discharge.mfout=grid[cell].ml.mdemand=0.0;
       grid[cell].output.mpet=0;
       if(grid[cell].ml.dam)
@@ -178,7 +180,7 @@ void iterateyear(Outputfile *output,  /**< Output file data */
           printf("day=%d cell=%d\n",day,cell);
           fflush(stdout);
 #endif
-          update_daily(grid+cell,co2,popdens,human_ign_prob,daily,day,npft,
+          update_daily(grid+cell,co2,popdens,human_ign_prob,daily,&input,cell,day,npft,
                        ncft,year,month,intercrop,config);
         }
       }

@@ -59,7 +59,13 @@ Bool new_climbuf(Climbuf *climbuf, /**< pointer to climate buffer */
     climbuf->mpet20[m]=climbuf->mprec20[m]=climbuf->mtemp20[m]=-9999;
   for(m=0;m<NMEAN;m++)
     climbuf->gpp[m]=0;
+  for(m=0;m<NMONTH;m++)
+  {
+    climbuf->gpp_month[m]=0;
+    climbuf->fpar[m]=0;
+  }
   climbuf->gpp_index=0;
+  climbuf->month_index=0;
   return FALSE;
 } /* of 'new_climbuf' */
 
@@ -132,6 +138,8 @@ void monthly_climbuf(Climbuf *climbuf, /**< pointer to climate buffer */
                      Real mtemp,       /**< monthly average temperature (deg C) */
                      Real mprec,       /**< monthly precipitation (mm) */
                      Real mpet,        /**< monthly potential evapotranspiration (mm) */
+                     Real mgpp,
+                     Real fpar,
                      int month         /**< month of year (0..11) */
                     )
 {
@@ -144,6 +152,9 @@ void monthly_climbuf(Climbuf *climbuf, /**< pointer to climate buffer */
   climbuf->mpet20[month]= (climbuf->mpet20[month]<-9998) ? mpet : (1-kk)*climbuf->mpet20[month]+kk*mpet;
   climbuf->mtemp20[month]= (climbuf->mtemp20[month]<-9998) ? mtemp : (1-kk)*climbuf->mtemp20[month]+kk*mtemp;
   climbuf->atemp+=mtemp*k;
+  climbuf->gpp_month[climbuf->month_index]=mgpp;
+  climbuf->fpar[climbuf->month_index]=fpar;
+  climbuf->month_index=(climbuf->month_index+1) % NMONTH;
 } /* of 'monthly_climbuf' */
 
 void annual_climbuf(Climbuf *climbuf,    /**< pointer to climate buffer */
@@ -195,6 +206,9 @@ Bool fwriteclimbuf(FILE *file,             /**< pointer to binary file */
   fwrite(climbuf->V_req_a,sizeof(Real),ncft,file);
   fwrite(climbuf->gpp,sizeof(Real),NMEAN,file);
   fwrite(&climbuf->gpp_index,sizeof(int),1,file);
+  fwrite(climbuf->gpp_month,sizeof(Real),NMONTH,file);
+  fwrite(climbuf->fpar,sizeof(Real),NMONTH,file);
+  fwrite(&climbuf->month_index,sizeof(int),1,file);
   fwritebuffer(file,climbuf->min);
   return fwritebuffer(file,climbuf->max);
 } /* of 'fwriteclimbuf' */
@@ -229,6 +243,9 @@ Bool freadclimbuf(FILE *file,       /**< pointer to binary file */
   freadreal(climbuf->V_req_a,ncft,swap,file);
   freadreal(climbuf->gpp,NMEAN,swap,file);
   freadint1(&climbuf->gpp_index,swap,file);
+  freadreal(climbuf->gpp_month,NMONTH,swap,file);
+  freadreal(climbuf->fpar,NMONTH,swap,file);
+  freadint1(&climbuf->month_index,swap,file);
   climbuf->min=freadbuffer(file,swap);
   if(climbuf->min==NULL)
   {

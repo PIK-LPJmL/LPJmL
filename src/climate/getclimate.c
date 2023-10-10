@@ -216,7 +216,7 @@ Bool getclimate(Climate *climate,    /**< pointer to climate data */
       {
         name=getrealfilename(&config->hmin_filename);
         fprintf(stderr,"ERROR131: Cannot read minium humidity of year %d from '%s'.\n",
-                year_climate,name);
+                year,name);
         free(name);
       }
       return TRUE;

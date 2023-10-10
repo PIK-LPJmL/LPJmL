@@ -158,6 +158,15 @@ void freeconfig(Config *config /**< LPJmL configuration */
       freefilename(&config->sowing_cotton_ir_filename);
       freefilename(&config->harvest_cotton_ir_filename);
     }
+    if(config->fire_base)
+      freefilename(&config->hdi_filename);
+      freefilename(&config->conifer_filename);
+      freefilename(&config->drypine_filename);
+      freefilename(&config->nonnativebl_filename);
+      freefilename(&config->tpi_filename);
+      freefilename(&config->slope_filename);
+    {
+    }
     if(config->sdate_option==PRESCRIBED_SDATE)
       freefilename(&config->sdate_filename);
     if(config->prescribe_lsuha)

@@ -44,6 +44,7 @@ typedef struct
   Real burnt_area;
   Real dbf;
   Real wind_cover;
+  Real days_burning;
 } Fire;
 
 typedef struct
@@ -58,7 +59,7 @@ typedef struct
 extern Bool fscanfireduration(LPJfile *,Standtype **,int,Verbosity);
 extern Bool fscanfirestand(LPJfile *,Standtype **,int,Verbosity);
 extern void fprintfireduration(FILE *,Standtype **,int);
-extern Real area_burnt(Real *,Real *,Real *,Real,Real,Real,Real,Real,Real, int,Stand *,Bool);
+extern Real area_burnt(Real *,Real *,Real *,Real *,Real,Real,Real,Real,Real,Real, int,Stand *,Bool);
 extern Real deadfuel_consumption(const Litter *,Fuel *, Real);
 extern Real firedangerindex(Real,const Stand *,const Dailyclimate *,Real,int,Bool);
 extern Real firemortality_tree(Pft *,const Fuel *,Livefuel *,Real,Real);
@@ -85,15 +86,16 @@ extern void update_fbd_tree(Litter*,Real,Real,int);
 extern void update_fbd_grass(Litter*,Real,Real);
 extern Real wildfire_ignitions(Real,Real,Real);
 extern Real windspeed_fpc(Real,const Pftlist *);
-extern void dailyfire(Stand *,Real,Real,Real,const Dailyclimate *,const Config *);
+extern void dailyfire(Stand *,Real,Real,Real,Input *,int,int,const Dailyclimate *,const Config *);
 extern void update_nesterov(Cell *,const Dailyclimate *);
 extern Bool fwriteignition(FILE *,const Ignition *);
 extern Bool freadignition(FILE *,Ignition *,Bool);
 extern void fprintignition(FILE *,const Ignition *);
 extern Real getvpd(const Dailyclimate *,Bool);
 extern Real growing_season_index(Real,Real *,const Dailyclimate *,Bool,Real);
-extern Real getfwi(FWIdata *,const Coord *,const Dailyclimate  *,int);
+extern Real getfwi(FWIdata *,const Coord *,const Dailyclimate  *,int,Bool);
 extern void initfwi(FWIdata *);
+extern Real base(Input *,Real,Real,Real,Real,Real,Real,int);
 
 /* Definition of constants */
 

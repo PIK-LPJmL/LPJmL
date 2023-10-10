@@ -67,13 +67,9 @@ Bool fscanfireduration(LPJfile *file,          /**< pointer to LPJ file */
         }
         return TRUE;
       }
-<<<<<<< HEAD
-      if(fscanreal(s,&standtypes[index]->max_fireduration,"duration",FALSE,verbose))
-=======
-      if(fscanreal(&s,&standtypes[index]->max_fireduration,"max_duration",FALSE,verbose))
+      if(fscanreal(s,&standtypes[index]->max_fireduration,"max_duration",FALSE,verbose))
         return TRUE;
-      if(fscanreal(&s,&standtypes[index]->min_fireduration,"min_duration",FALSE,verbose))
->>>>>>> 529f2538b5809cd0c8d0d00ddc3998800e98247d
+      if(fscanreal(s,&standtypes[index]->min_fireduration,"min_duration",FALSE,verbose))
         return TRUE;
       if(fscanint(s,&standtypes[index]->max_ndayfire,"ndayfire",FALSE,verbose))
         return TRUE;

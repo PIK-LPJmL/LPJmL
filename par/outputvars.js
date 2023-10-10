@@ -371,6 +371,7 @@
   { "id" : PFT_LITTERC, "name": "pft_litterc", "timestep" : "daily", "var" : "litterc", "long_name" : "PFT-specific above-ground litter carbon", "unit" : "gC/m2", "scale" : 1.0, "offset" : 0.0},
   { "id" : PFT_PHEN, "name": "pft_phen", "timestep" : "monthly","var": "phenology", "long_name": "PFT-specific phenology", "unit": "1", "scale": 1.0, "offset" : 0.0},
   { "id" : FIREDURATION, "name": "fireduration", "timestep" : "monthly", "var" : "fireduration", "long_name" :  "fire duration", "unit" : "min", "scale" : 1.0, "offset" : 0.0},
+  { "id" : FIREDURATIONDAYS, "name": "firedurationdays", "timestep" : "monthly", "var" : "firedurationdays", "long_name" :  "fire duration days", "unit" : "d", "scale" : 1.0, "offset" : 0.0},
   { "id" : LIVEGRASS, "name": "livegrass", "timestep" : "monthly", "var" : "livegrass", "long_name" : "live grass fuel", "unit" : "g/m2", "scale" : 1.0, "offset" : 0.0},
   { "id" : DLM_LIVEGRASS, "name": "dlm_livegrass", "timestep" : "monthly", "var" : "dlm_livegrass", "long_name" : "litter moisture live grass", "unit" : "", "scale" : 1.0, "offset" : 0.0},
   { "id" : GSI_CUM, "name": "gsi_cum", "timestep" : "monthly", "var" : "gsicum", "long_name" : "cumulative GSI live fuel", "unit" : "", "scale" : 1.0, "offset" : 0.0},
