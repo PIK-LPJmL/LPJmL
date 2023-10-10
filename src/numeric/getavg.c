@@ -24,8 +24,8 @@ Real getavg(const Real vec[], /**< array of real values */
   int i;
   Real sum=0;
 
-  for(i=0;i<size;i++) 
+  for(i=0;i<size;i++)
     sum+=vec[i];
-   
+
   return sum/size;
 } /* of 'getavg' */

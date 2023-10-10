@@ -44,7 +44,7 @@ void radiation(Real *daylength,       /**< daylength (h) */
       break;
     case RADIATION_SWONLY:
       petpar3(daylength,par,eeq,lat,day,climate->temp,climate->swdown,config->isswnet,beta);
-      break; 
+      break;
 #ifdef SAFE
     default:
       fail(INVALID_RADIATION_ERR,FALSE,

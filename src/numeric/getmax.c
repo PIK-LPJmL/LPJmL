@@ -1,8 +1,8 @@
 /**************************************************************************************/
 /**                                                                                \n**/
-/**                       g  e  t  a  v  g  .  c                                   \n**/
+/**                       g  e  t  m  a  x  .  c                                   \n**/
 /**                                                                                \n**/
-/**     Function computes average of all real vector elements                      \n**/
+/**     Function computes maximum of all real vector elements                      \n**/
 /**                                                                                \n**/
 /** (C) Potsdam Institute for Climate Impact Research (PIK), see COPYRIGHT file    \n**/
 /** authors, and contributors see AUTHORS file                                     \n**/
@@ -19,14 +19,13 @@
 
 Real getmax(const Real vec[], /**< array of real values */
             int size          /**< array size */
-           )                  /** \return average of array elements */
+           )                  /** \return maximum of array elements */
 {
   int i;
   Real max;
   max=vec[0];
-  for(i=0;i<size;i++) 
+  for(i=0;i<size;i++)
     if(max<vec[i])
       max=vec[i];
-   
   return max;
-} /* of 'getavg' */
+} /* of 'getmax' */

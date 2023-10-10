@@ -935,7 +935,7 @@ Bool fscanconfig(Config *config,    /**< LPJ configuration */
   if(config->fire==SPITFIRE || config->fire==SPITFIRE_TMAX)
   {
     if(config->fire_base)
-    { 
+    {
       scanclimatefilename(input,&config->hmin_filename,TRUE,TRUE,"hmin");
       scanclimatefilename(input,&config->hdi_filename,FALSE,TRUE,"hdi");
       scanclimatefilename(input,&config->conifer_filename,FALSE,TRUE,"conifer");
@@ -1231,7 +1231,7 @@ Bool fscanconfig(Config *config,    /**< LPJ configuration */
   if(config->equilsoil && config->nspinup<(param.veg_equil_year+param.nequilsoil*param.equisoil_interval+param.equisoil_fadeout))
   {
     fprintf(stderr,"ERROR230: Number of spinup years=%d insuffficient for selected spinup settings, must be at least %d.\n",
-            config->nspinup,param.veg_equil_year+param.nequilsoil*param.equisoil_interval+param.equisoil_fadeout); 
+            config->nspinup,param.veg_equil_year+param.nequilsoil*param.equisoil_interval+param.equisoil_fadeout);
     return TRUE;
   }
   return FALSE;

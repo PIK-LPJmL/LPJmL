@@ -42,7 +42,7 @@ Standtype setaside_ir_stand={SETASIDE_IR,"setaside_ir",0.0,0.0,0,new_agriculture
 
 Standtype managedforest_stand={MANAGEDFOREST,"managed forest",0.0,0,0,NULL,NULL,NULL,
                                NULL,NULL,NULL,NULL,NULL};
- 
+
 Standtype kill_stand={KILL,"kill",0.0,0,0,NULL,free_agriculture,NULL,NULL,NULL,NULL,NULL,
                       NULL};
 
