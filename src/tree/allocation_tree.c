@@ -183,17 +183,17 @@ Bool allocation_tree(Litter *litter,   /**< litter pool */
     if (tree->height>0.0) 
     {
       if (pft->stand->type->landusetype==BIOMASS_TREE && tree->ind.root.carbon>=tree->ind.leaf.carbon/lmtorm &&
-    		  treepar->k_latosa*tree->ind.sapwood.carbon/(treepar->wood_density*tree->height*pft->par->sla)-tree->ind.leaf.carbon>=0.0)
+          treepar->k_latosa*tree->ind.sapwood.carbon/(treepar->wood_density*tree->height*pft->par->sla)-tree->ind.leaf.carbon>=0.0)
       {
-    	  tinc_ind_min.leaf.carbon=0.1;
-    	  tinc_ind_min.root.carbon=0.1;
+        tinc_ind_min.leaf.carbon=0.1;
+        tinc_ind_min.root.carbon=0.1;
 
       }
       else
       {
-    	  tinc_ind_min.leaf.carbon=treepar->k_latosa*tree->ind.sapwood.carbon/(treepar->wood_density*tree->height*
+        tinc_ind_min.leaf.carbon=treepar->k_latosa*tree->ind.sapwood.carbon/(treepar->wood_density*tree->height*
                         pft->par->sla)-tree->ind.leaf.carbon;
-    	  tinc_ind_min.root.carbon=treepar->k_latosa*tree->ind.sapwood.carbon/(treepar->wood_density*tree->height*
+        tinc_ind_min.root.carbon=treepar->k_latosa*tree->ind.sapwood.carbon/(treepar->wood_density*tree->height*
                         pft->par->sla*lmtorm)-tree->ind.root.carbon;
       }
     }
