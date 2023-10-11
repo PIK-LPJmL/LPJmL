@@ -22,9 +22,9 @@ void dailyfire(Stand *stand,                /**< pointer to stand */
                Real popdens,                /**< population density (capita/km2) */
                Real human_ign_prob,         /**< human ignition probability */
                Real avgprec,                /**< monthly averaged precipitation (mm/day) */
-               Input *input,
-               int cell,
-               int month,
+               Input *input,                /**< pointer to input data */
+               int cell,                    /**< cell index */
+               int month,                   /**< month (0..11) */
                const Dailyclimate *climate, /**< daily climate data */
                const Config *config         /**< LPJmL configuration */
               )
@@ -108,13 +108,13 @@ void dailyfire(Stand *stand,                /**< pointer to stand */
     if (config->fire_base)
     {
       if(stand->type->landusetype==NATURAL)
-      { 
+      {
         fpc_tree=0;
         foreachpft(pft,p,&stand->pftlist)
           if(istree(pft))
             fpc_tree+=pft->fpc;
         fpc_tree=fpc_tree*stand->frac*(1.0/(1-stand->cell->lakefrac-stand->cell->ml.reservoirfrac));
-        //printf("Zaehler: %g, Nenner: %g\n",stand->cell->climbuf.gpp_month[(stand->cell->climbuf.month_index+NMONTH-1) % NMONTH], getmax( stand->cell->climbuf.gpp_month,NMONTH));        
+        //printf("Zaehler: %g, Nenner: %g\n",stand->cell->climbuf.gpp_month[(stand->cell->climbuf.month_index+NMONTH-1) % NMONTH], getmax( stand->cell->climbuf.gpp_month,NMONTH));
         if(getmax( stand->cell->climbuf.gpp_month,NMONTH)>epsilon)
           GPP_index=stand->cell->climbuf.gpp_month[(stand->cell->climbuf.month_index+NMONTH-1) % NMONTH]/getmax( stand->cell->climbuf.gpp_month,NMONTH);
         else
@@ -138,7 +138,10 @@ void dailyfire(Stand *stand,                /**< pointer to stand */
     }
     else
     {
-      burnt_area = area_burnt(&fireduration,&ndayfire,&firedurationdays,&burnt_area_max,stand->type->max_fireduration,stand->type->min_fireduration,fire_danger_index, num_fires, windsp_cover, ros_forward, config->ntypes, stand,config->max_firesize);
+      burnt_area = area_burnt(&fireduration,&ndayfire,&firedurationdays,&burnt_area_max,
+                              stand->type->max_fireduration,stand->type->min_fireduration,
+                              fire_danger_index, num_fires, windsp_cover, ros_forward,
+                              config->ntypes, stand,config->max_firesize);
       if(stand->type->landusetype==NATURAL)
       {
         getoutput(output,FIREDURATION,config)+=fireduration;
@@ -163,7 +166,7 @@ void dailyfire(Stand *stand,                /**< pointer to stand */
   }
   /*fuel consumption in gBiomass/m2 for calculation of surface fire intensity*/
   fuel_consump=deadfuel_consumption(&stand->soil.litter,&fuel,fire_frac);
-  surface_fi=surface_fire_intensity(ros_forward,&fuel); 
+  surface_fi=surface_fire_intensity(ros_forward,&fuel);
   /* if not enough surface fire energy to sustain burning */
   if(surface_fi<50)  //&& !prescribe_burntarea)
   {

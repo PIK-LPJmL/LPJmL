@@ -53,7 +53,7 @@ typedef struct
   Real *V_req;            /* 20-year average of vernalization requirements in days */
   Real *V_req_a;          /* annual vernalization requirements in days, used to calculate V_req */
   int gpp_index;          /* index to GPP array to write new data */
-  int month_index;          /* index to GPP array to write new data */
+  int month_index;        /* index to GPP array to write new data */
 } Climbuf;
 
 /* Definitions of macros */

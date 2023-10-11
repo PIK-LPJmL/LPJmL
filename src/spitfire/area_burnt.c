@@ -39,7 +39,7 @@ Real area_burnt(Real *fire_durat,       /**< fire duration (min) */
                 Real *firedurationdays, /**< mean number of days a fire burns */
                 Real *burnt_area_max,   /**< size of fires in the largest active fire class (ha)*/
                 Real max_fireduration,  /**< maximum fire duration */
-                Real min_fireduration,  /**< minium fire duration */
+                Real min_fireduration,  /**< minimum fire duration */
                 Real fire_danger_index, /**< fire danger index (0..1) */
                 Real num_fires,         /**< number of fires */
                 Real windsp_cover,      /**< windspeed cover (m/min) */

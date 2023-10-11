@@ -54,7 +54,7 @@ typedef struct Dailyclimate
   Real tmin;       /**< minimum temperature (deg C) */
   Real tmax;       /**< maximum temperature (deg C) */
   Real humid;      /**< specific humidity (kg/kg) */
-  Real hmin;       /**< minium specific humidity (kg/kg) */
+  Real hmin;       /**< minimum specific humidity (kg/kg) */
   Real lightning;  /**< daily lightning ignition  */
   Real ignition;
   Real lwnet;      /**< long wave net downward flux (W/m2) */

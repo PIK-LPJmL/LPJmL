@@ -193,12 +193,12 @@ Real sumqueue(const Queue queue, /**< pointer to queue */
   return sum;
 } /* of 'sumqueue' */
 
-Real weighted_fireduration_from_queue(const Queue queue) /**< pointer to queue**/ 
+Real weighted_fireduration_from_queue(const Queue queue) /**< pointer to queue**/
 {
   int i;
   Real weightsum=0;
   Real sum=0;
-  
+
   for(i=0;i<queue->size;i++){
     weightsum+=queue->data[queue->count*(i+1)-1] * queue->data[i*queue->count];
     sum+=queue->data[i*queue->count];

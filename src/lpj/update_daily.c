@@ -30,8 +30,8 @@ void update_daily(Cell *cell,            /**< cell pointer           */
                   Real popdensity,       /**< population density (capita/km2) */
                   Real human_ign_prob,   /**< human ignition probability */
                   Dailyclimate climate,  /**< Daily climate values */
-                  Input *input,
-                  int cell_id,
+                  Input *input,          /**< pointer to input */
+                  int cell_id,           /**< cell index */
                   int day,               /**< day (1..365)           */
                   int npft,              /**< number of natural PFTs */
                   int ncft,              /**< number of crop PFTs   */

@@ -45,15 +45,15 @@ Real firemortality_tree(Pft *pft,const Fuel *fuel, Livefuel *livefuel,
    * crown height as a fraction of tree height definded per PFT
    * propn of canopy burnt = (SH - (height - cl))/cl = (SH - height + cl)/cl
    */
-  
+
   if (scorch_height < (tree->height - crown_length_tree))
     ck=0.0;
   else if(scorch_height < tree->height)
-    ck=((scorch_height - tree->height + crown_length_tree)*(tree->height - scorch_height + crown_length_tree))/pow(crown_length_tree,2); 
+    ck=((scorch_height - tree->height + crown_length_tree)*(tree->height - scorch_height + crown_length_tree))/pow(crown_length_tree,2);
     //ck=(scorch_height - tree->height + crown_length_tree) / crown_length_tree; //old formulation
   else
     ck=1.0;
-  
+
   /*post-fire mortality from crown scorching */
   /*postfire_mort_ck = treepar->crown_mort_rck*pow(ck,treepar->crown_mort_p);
 
@@ -86,7 +86,7 @@ Real firemortality_tree(Pft *pft,const Fuel *fuel, Livefuel *livefuel,
   /*Peterson & Ryan mortality*/
   postfire_mort_total= (tau_l > 0 && ck > 0) ? pow(ck,tau_c/tau_l-0.5) : 0;
   if(postfire_mort_total > 1)
-    postfire_mort_total = 1; 
+    postfire_mort_total = 1;
   /*number of indivs affected by fire in grid cell */
 #ifdef SAFE
   if(postfire_mort_total > 1)

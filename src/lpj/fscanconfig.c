@@ -300,7 +300,9 @@ Bool fscanconfig(Config *config,    /**< LPJ configuration */
     }
   }
   fscanbool2(file,&config->ispopulation,"population");
-  fscanbool2(file,&config->isswnet,"isswnet");
+  config->isswnet=FALSE;
+  if(fscanbool(file,&config->isswnet,"isswnet",TRUE,verbose))
+    return TRUE;
   config->prescribe_landcover=NO_LANDCOVER;
   if(fscankeywords(file,&config->prescribe_landcover,"prescribe_landcover",prescribe_landcover,3,TRUE,verbose))
     return TRUE;

@@ -25,7 +25,7 @@ void radiation(Real *daylength,       /**< daylength (h) */
                int day,               /**< day (1..365) */
                Dailyclimate *climate, /**< daily climate data */
                Real beta,             /**< albedo */
-               const Config *config     /**< CLOUDINESS/RADIATION/RADIATION_LWDOWN/RADIATION_SWONLY */
+               const Config *config   /**< LPJmL configuration */
               )
 {
   switch(config->with_radiation)

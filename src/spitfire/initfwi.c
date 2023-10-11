@@ -13,6 +13,7 @@
 /** Contact: https://github.com/PIK-LPJmL/LPJmL                                    \n**/
 /**                                                                                \n**/
 /**************************************************************************************/
+
 #include "lpj.h"
 
 void initfwi(FWIdata *fwi)

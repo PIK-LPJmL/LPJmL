@@ -118,9 +118,9 @@ void fuelload(const Stand *stand, /**< pointer to stand */
     alive_sum+=alive[i];
   }
   for(i=0;i<NFUELCLASS;++i)
-   {
+  {
     fuel->f[i]=(adead_sum>0) ? adead[i]/adead_sum : 0;
-   } 
+  }
   for(i=0;i<2;++i)
    {
    livefuel->f[i]=(alive_sum>0) ? alive[i]/alive_sum : 0;
@@ -137,7 +137,7 @@ void fuelload(const Stand *stand, /**< pointer to stand */
         break;
     fsum[index]+=fuel->f[i];
   }
-      /* assume nothing falls in class 0 (surface area to volume ratio < 16 ft^-1)*/ 
+      /* assume nothing falls in class 0 (surface area to volume ratio < 16 ft^-1)*/
   for(i=0;i<NFUELCLASS;++i)
   {
     for(index=0;index<NGLIM;++index)
@@ -145,7 +145,7 @@ void fuelload(const Stand *stand, /**< pointer to stand */
         break;
     fuel->g[i]=fsum[index];
   }
-   /* live fuels calculation of g factors */ 
+   /* live fuels calculation of g factors */
   for(i=0;i<NGLIM+1;++i)
     fsum[i]=0;
   for(i=0;i<2;++i)
@@ -155,7 +155,7 @@ void fuelload(const Stand *stand, /**< pointer to stand */
         break;
     fsum[index]+=livefuel->f[i];
   }
-      /* assume nothing falls in class 0 (surface area to volume ratio < 16 ft^-1)*/ 
+      /* assume nothing falls in class 0 (surface area to volume ratio < 16 ft^-1)*/
   for(i=0;i<2;++i)
   {
     for(index=0;index<NGLIM;++index)
@@ -163,7 +163,7 @@ void fuelload(const Stand *stand, /**< pointer to stand */
         break;
     livefuel->g[i]=fsum[index];
   }
- /*calculating live and dead moisture and fbd as in standard 5.3 spitfire*/ 
+ /*calculating live and dead moisture and fbd as in standard 5.3 spitfire*/
  dlm_1hr=ratio_dead_fuel=ratio_live_fuel=fbd_deadfuel=mean_w=0;
 
   /* Compute live fuel moisture, including livegrass moisture from soil moisture (average of top 2 layers rather than 1st layer as in Thonicke 2010)*/
@@ -172,8 +172,8 @@ void fuelload(const Stand *stand, /**< pointer to stand */
     if(config->gsilivefuel)
     {
       //livefuel->M[0]=max(0.3,min(2.5,4.4*stand->cell->gsi_cum-1.9)); //Luke's approach
-      
-      /*compute live fuel moisture based on phen-LFMC empirical relation for each grass PFT, weighted by FPC */ 
+
+      /*compute live fuel moisture based on phen-LFMC empirical relation for each grass PFT, weighted by FPC */
       fpc_grass_sum=0;
       livefuel->M[0]=0;
 
@@ -182,13 +182,13 @@ void fuelload(const Stand *stand, /**< pointer to stand */
         if(isgrass(pft))
         {
         grasspar=pft->par->data;
-        livefuel->M[0] += max(grasspar->lfmc_a, min(2.5, grasspar->lfmc_b + grasspar->lfmc_c*pft->phen)) * pft->fpc; 
+        livefuel->M[0] += max(grasspar->lfmc_a, min(2.5, grasspar->lfmc_b + grasspar->lfmc_c*pft->phen)) * pft->fpc;
         fpc_grass_sum += pft->fpc;
         }
       }
-      if(fpc_grass_sum>0) 
-        livefuel->M[0] = livefuel->M[0]/fpc_grass_sum;  
-      
+      if(fpc_grass_sum>0)
+        livefuel->M[0] = livefuel->M[0]/fpc_grass_sum;
+
     }
     else
     {
@@ -265,18 +265,18 @@ void fuelload(const Stand *stand, /**< pointer to stand */
  /* setting litter moisture values for all classes to the same value until this can be replaced with a new system */
   //fuel moisture never smaller than 2.5%:
   fuel->daily_litter_moist = max(0.025,fuel->daily_litter_moist);
-  
+
   fuel->M[0]=fuel->daily_litter_moist;
   fuel->M[1]=fuel->daily_litter_moist;
   fuel->M[2]=fuel->daily_litter_moist;
   fuel->M[3]=fuel->M[0]; /* cured grass moisture always set to same value as 1h fuel class */
   /* combustion efficiency for litter */
-  fuel->CME = 0.0005*pow(fuel->daily_litter_moist*100,2)-0.02*fuel->daily_litter_moist*100+0.94;  
+  fuel->CME = 0.0005*pow(fuel->daily_litter_moist*100,2)-0.02*fuel->daily_litter_moist*100+0.94;
   dlm_1hr = fuel->M[0]; /* corrected 1 hour fuel moisture, replaces the Nesterov-based one that only uses alpha[0]*/
 
   /* moisture of extinction (as PFT param.) weighted over litter amount */
   fuel->char_moist_factor= moistfactor(&stand->soil.litter);
-  
+
   /*
   // influence of livefuel on 1hr fuel moisture content RE-EXAMINE WITH NEW MOISTURE CALCULATIONS
   if (livegrass <= epsilon || fuel_gBiomass[0] <= epsilon)
@@ -284,7 +284,7 @@ void fuelload(const Stand *stand, /**< pointer to stand */
   else
     moist_livegrass_1hr=(fuel->daily_litter_moist*livegrass + dlm_1hr*fuel_gBiomass[0])
                             / (livegrass + fuel_gBiomass[0]);
-  
+
   if(fuel->char_moist_factor <= epsilon)
   {
     fuel->moist_1hr=1.0;

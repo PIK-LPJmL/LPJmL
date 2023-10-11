@@ -31,7 +31,7 @@ Real getfwi(FWIdata *fwi,
   static Real ell01[NMONTH] = {6.5, 7.5, 9, 12.8, 13.9, 13.9, 12.4, 10.9, 9.4, 8, 7, 6};
 /*20N: For 30 > latitude >= 10*/
   static Real ell02[NMONTH] = {7.9, 8.4, 8.9, 9.5, 9.9, 10.2, 10.1, 9.7, 9.1,8.6, 8.1, 7.8};
-/*20S: For -10 > latitude >= -30 */ 
+/*20S: For -10 > latitude >= -30 */
   static Real ell03[NMONTH] = {10.1, 9.6, 9.1, 8.5, 8.1, 7.8, 7.9, 8.3, 8.9, 9.4, 9.9, 10.2};
 /*40S: For -30 > latitude*/
   static Real ell04[NMONTH] = {11.5, 10.5, 9.2, 7.9, 6.8, 6.2, 6.5, 7.4, 8.7, 10, 11.2, 11.8};
@@ -42,7 +42,7 @@ Real getfwi(FWIdata *fwi,
 
 
   temperature = climate->tmax + 273.16;
-  
+
   if(relative_humidity)
     rh=climate->hmin*100; /*in percent*/
   else
@@ -109,29 +109,29 @@ Real getfwi(FWIdata *fwi,
   rk = 1.894 * (temperature + 1.1) * (100 - rh) * ell01[month] * 1e-04;
 
 /***Adjust the day length  and thus the drying r, based on latitude and month***/
-  
+
   rk = (coord->lat <= 30 && coord->lat > 10) ? 1.894 * (temperature + 1.1) * (100 - rh) * ell02[month] * 1e-04 : rk;
   rk = (coord->lat <= -10 && coord->lat > -30) ? 1.894 * (temperature + 1.1) * (100 - rh) * ell03[month] * 1e-04 : rk;
   rk = (coord->lat <= -30 && coord->lat >= -90) ? 1.894 * (temperature + 1.1) * (100 - rh) * ell04[month] * 1e-04 : rk;
-  rk = (coord->lat <= 10 && coord->lat > -10) ? 1.894 * (temperature + 1.1) * (100 - rh) * 9 * 1e-04 : rk;  
+  rk = (coord->lat <= 10 && coord->lat > -10) ? 1.894 * (temperature + 1.1) * (100 - rh) * 9 * 1e-04 : rk;
   ra = climate->prec;
-      
+
 /*      **Eq. 11 - Net rain amount***/
   rw = 0.92 * ra - 1.27;
 
 /***Alteration to Eq. 12 to calculate more accurately***/
 
   wmi = 20 + 280/exp(0.023 * fwi->dmc);
- 
+
 /***Eqs. 13a, 13b, 13c***/
-    
+
   if (fwi->dmc <= 33)
     be = 100/(0.5 + 0.3 * fwi->dmc);
   else if (fwi->dmc <= 65)
     be = 14 - 1.3 * log(fwi->dmc);
-  else 
+  else
     be = 6.2 * log(fwi->dmc) - 17.2;
- 
+
 
 /***Eq. 14 - Moisture content after rain**/
 
@@ -145,12 +145,12 @@ Real getfwi(FWIdata *fwi,
 
   pr = (climate->prec <= 1.5) ? fwi->dmc : pr0;
   pr = max(0,pr);
- 
+
 
 /**Calculate final P (DMC)**/
 
   fwi->dmc = max(pr + rk, 0);
-  
+
 /*************************************************************************/
 /************Drought Code (DC)*******************************************/
 
@@ -222,14 +222,14 @@ temperature = max(climate->tmax,-2.8);
 /**Eq. 27b - next 3 lines**/
 
   pe1 = (fwi->dmc == 0) ? 0 : (fwi->dmc - bui1)/fwi->dmc;
-  
+
   cc = 0.92 + pow(0.0114 * fwi->dmc,1.7);
   bui0 = fwi->dmc - cc * pe1;
 
 /**Constraints**/
 
   bui0 = max(0,bui0);
-  bui1 = (bui1 < fwi->dmc) ? bui0 : bui1; 
+  bui1 = (bui1 < fwi->dmc) ? bui0 : bui1;
 
 /*****************************************************************************/
 /*************** Fire weather index (FWI)*************************************/
