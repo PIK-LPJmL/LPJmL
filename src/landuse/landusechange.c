@@ -903,6 +903,16 @@ void landusechange(Cell *cell,          /**< pointer to cell */
       }
     }
   }
+  /* update rainfed and irrigated sum of fractions */
+  sum[0]=sum[1]=0.0;
+  foreachstand(stand,s,cell->standlist)
+    if(stand->type->landusetype!=NATURAL)
+    {
+      data=stand->data;
+      sum[data->irrigation]+=stand->frac;
+    }
+  cell->ml.cropfrac_rf=sum[0];
+  cell->ml.cropfrac_ir=sum[1];
 
   for(i=0;i<2;i++)
   {
