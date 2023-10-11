@@ -40,6 +40,7 @@
 {
   "soil" :         { "fmt" : "meta", "name" : "input_VERSION2/soil.json"},
   "coord" :        { "fmt" : "clm",  "name" : "input_VERSION2/grid.bin"},
+  "landfrac" :     { "id" : 44, "fmt" : "clm",  "name" : "/p/projects/lpjml/inputs/grid/30min/landfrac_gadm36.bin"},
   "countrycode" :  { "fmt" : "clm",  "name" : "input_VERSION2/cow_full_2018.bin"},
   "no3deposition" : { "fmt" : "clm",  "name" : "input_VERSION2/no3_deposition_rcp8p5.clm"},
   "nh4deposition" : { "fmt" : "clm",  "name" : "input_VERSION2/nh4_deposition_rcp8p5.clm"},
@@ -50,6 +51,7 @@
   "fertilizer_nr" : { "fmt" :"clm",  "name" : "input_VERSION3/fertilizer_luh2v2_1900-2015_32bands.clm"},
   "manure_nr" :    { "fmt" : "clm", "name" : "input_VERSION3/manure_zhang17_1860-2014_32bands_clm2.clm"},
   "with_tillage" : { "fmt" : "clm", "name" : "input_VERSION3/lpj_tillage_CA_1973-2010.clm"},
+  "grassland_lsuha" : { "id" : 24, "fmt" : "clm",  "name" : "/p/projects/lpjml/input/Grazing/grassland_lsuha_2000-2000.clm"},
   "residue_on_field" : { "fmt" : "clm", "name" : "/p/projects/lpjml/input/MADRAT/residues_madrat_1850-2015_16bands.clm"},
 //  "sdate" : {"fmt" : "clm", "name" : "/p/projects/lpjml/input/historical/input_VERSION2/sdate_combined_filled.clm"}, /* insert prescribed sdate file name here */
   "sdate" : {"fmt" : "clm", "name" : "/p/projects/landuse/users/cmueller/GGCMI/crop_calendar/GGCMI_CTWN_planting_v1.25.clm2"},

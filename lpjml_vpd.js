@@ -41,9 +41,10 @@
   "fire" : "spitfire_tmax", /* fire disturbance enabled, other options: NO_FIRE, FIRE, SPITFIRE, SPITFIRE_TMAX (for GLDAS input data) */
   "fdi" : "wvpd",           /* different fire danger index formulations: WVPD_INDEX, NESTEROV_INDEX*/
   "firewood" : false,
-  "new_phenology": true,    /* GSI phenology enabled */
+  "gsi_phenology": true,    /* GSI phenology enabled */
   "new_trf" : false,        /* new transpiration reduction function disabled */
   "river_routing" : false,
+  "with_lakes" : false,
   "extflow" : false,
   "permafrost" : true,
   "johansen" : true,
@@ -51,9 +52,10 @@
   "with_nitrogen" : "lim", /* other options: "no", "lim", "unlim" */
   "store_climate" : true, /* store climate data in spin-up phase */
   "const_climate" : false,
-  "shuffle_climate" : false,
+  "shuffle_spinup_climate" : false,
   "fix_climate" : false,
   "fix_landuse" : false,
+  "fix_co2" : false,
 #ifdef FROM_RESTART
   "new_seed" : false, /* read random seed from restart file */
   "equilsoil" : false,
@@ -96,6 +98,7 @@
   "crop_phu_option" : "new",
   "cropsheatfrost" : false,
   "double_harvest" : false,
+  "npp_controlled_bnf" : true,
 
 /*===================================================================*/
 /*  II. Input parameter section                                      */
@@ -211,7 +214,7 @@ ID                         Fmt                    filename
 
 #ifndef FROM_RESTART
 
-  "nspinup" : 1000,  /* spinup years */
+  "nspinup" : 3500,  /* spinup years */
   "nspinyear" : 30,  /* cycle length during spinup (yr) */
   "firstyear": 1948, /* first year of simulation */
   "lastyear" : 1948, /* last year of simulation */

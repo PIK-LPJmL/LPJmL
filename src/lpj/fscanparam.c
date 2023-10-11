@@ -18,6 +18,8 @@
 
 #define fscanparamreal(file,var,name) \
   if(fscanreal(file,var,name,FALSE,verbosity)) return TRUE;
+#define fscanparamrealarray(file,var,size,name) \
+  if(fscanrealarray(file,var,size,name,verbosity)) return TRUE;
 #define fscanparamreal01(file,var,name) \
   if(fscanreal01(file,var,name,FALSE,verbosity)) return TRUE;
 #define fscanparamint(file,var,name) \
@@ -181,7 +183,7 @@ Bool fscanparam(LPJfile *file,       /**< File pointer to text file */
     fscanparamreal(f,&param.firedura,"firedura");
     fscanparamreal(f,&param.fire_intens,"fire_intens");
     fscanparamreal(f,&param.hum_ign,"hum_ign");
-    fscanparamreal(f,&param.max_fireduration,"max_fireduration");
+    fscanparamrealarray(f,param.fireduration,2,"fireduration");
     fscanparamint(f,&param.max_ndayfire,"max_ndayfire");
     fscanparamreal01(f,&param.cg_ratio,"cg_ratio");
     fscanparamreal01(f,&param.ler,"ler");

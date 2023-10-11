@@ -19,17 +19,18 @@ void fprintfireduration(FILE *file,Standtype **standtypes,int nstand)
   int i;
   Bool first=TRUE;
   for(i=0;i<nstand;i++)
-    if(standtypes[i]->max_fireduration!=param.max_fireduration)
+    if(standtypes[i]->fireduration[0]!=param.fireduration[0] ||
+      (standtypes[i]->fireduration[1]!=param.fireduration[1]))
     {
       if(first)
       {
-        fprintf(file,"Maximum fire durations:");
+        fprintf(file,"fire durations:");
         first=FALSE;
       }
       else
         fputc(',',file);
-      fprintf(file," '%s' = %g (min)",
-              standtypes[i]->name,standtypes[i]->max_fireduration);
+      fprintf(file," '%s' = [%g,%g] (min)",
+              standtypes[i]->name,standtypes[i]->fireduration[0],standtypes[i]->fireduration[1]);
     }
   fputc('\n',file);
   first=TRUE;

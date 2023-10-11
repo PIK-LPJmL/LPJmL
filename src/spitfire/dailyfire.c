@@ -139,7 +139,7 @@ void dailyfire(Stand *stand,                /**< pointer to stand */
     else
     {
       burnt_area = area_burnt(&fireduration,&ndayfire,&firedurationdays,&burnt_area_max,
-                              stand->type->max_fireduration,stand->type->min_fireduration,
+                              stand->type->fireduration,
                               fire_danger_index, num_fires, windsp_cover, ros_forward,
                               config->ntypes, stand,config->max_firesize);
       if(stand->type->landusetype==NATURAL)

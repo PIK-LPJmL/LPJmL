@@ -103,8 +103,7 @@
   "fire_intens" : 0.000001,           /* threshold of fireintensity for which burnt area can be modeled */
   "ler" : 0.04,                       /* efficiency in starting fires */
   "cg_ratio" : 0.2,                   /*cloud to ground ratio for lightning flashes */
-  "max_fireduration" : 480,//1320,    /*default maximum fire duration (min) */
-  "min_fireduration" : 120,           /*default minium fire duration (min) */
+  "fireduration" : [120,480],//1320,    /*default maximum fire duration (min) */
   "max_ndayfire" : 5,                /* maximum fire days (days) */
   "nfert_split" : 5,                  /* threshold fertilizer input for split application */
   "residues_in_soil" : 0.1,           /* minimum residues in soil*/

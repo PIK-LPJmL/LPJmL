@@ -450,7 +450,7 @@ Bool filesexist(Config config, /**< LPJmL configuration */
     else
     {
       bad+=checkclmfile(&config,"lightning",&config.lightning_filename,NULL,FALSE);
-      bad+=checkclmfile(&config,"human ignition",&config.human_ignition_filename,"yr-1",TRUE);
+      bad+=checkclmfile(&config,"human ignition",&config.human_ignition_filename,"yr-1",FALSE);
     }
     if(config.prescribe_burntarea)
       bad+=checkclmfile(&config,"burnt area",&config.burntarea_filename,"hectare",TRUE);

@@ -1,8 +1,8 @@
 /**************************************************************************************/
 /**                                                                                \n**/
-/**                   l  p  j  m  l  .  j  s                                       \n**/
+/**                   l  p  j  m  l  _  s  p  i  t  f  i  r  e  .  j  s            \n**/
 /**                                                                                \n**/
-/** Default configuration file for LPJmL C Version 5.3.001                         \n**/
+/** Default configuration file for LPJmL C Version 5.7.8-FIRE                      \n**/
 /**                                                                                \n**/
 /** Configuration file is divided into five sections:                              \n**/
 /**                                                                                \n**/
@@ -31,14 +31,23 @@
   "sim_name" : "LPJmL Run", /* Simulation description */
   "sim_id"   : "lpjml",     /* LPJML Simulation type with managed land use */
   "version"  : "5.7",       /* LPJmL version expected */
+  "global_attrs" : {"institution" : "Potsdam Institute for Climate Impact Research",
+                    "contact" : "", /* name and email address */
+                    "comment" : ""  /* additional comments */
+                   },       /* Global attributes for NetCDF output files */
+
+  "coupled_model" : null,
   "random_prec" : false,     /* Random weather generator for precipitation enabled */
   "random_seed" : 2,        /* seed for random number generator */
   "radiation" : "radiation_lwdown",/* other options: "cloudiness", "radiation", "radiation_swonly", "radiation_lwdown" */
   "isswnet" : false,
+  "landfrac_from_file" : true,
+  "fire_base" : false,
   "fire" : "spitfire_tmax",          /* fire disturbance enabled, other options: NO_FIRE, FIRE, SPITFIRE, SPITFIRE_TMAX (for GLDAS input data) */
   "fdi" : "wvpd",       /* different fire danger index formulations: "wvpd" (needs GLDAS input data), "nesterov" */
-  "fireduration" : [{"stand" : "grassland", "max_duration" : 120, "min_duration" : 1 ,"ndayfire" : 1},
-                    {"stand" : "natural", "max_duration" : 300, "min_duration" : 120 ,"ndayfire" : 3}],
+   "max_firesize" : false,
+  "fireduration" : [{"stand" : "grassland", "duration" : [1,120] ,"ndayfire" : 1},
+                    {"stand" : "natural", "duration" : [120,300], "ndayfire" : 3}],
   "firewood" : false,
   "gsi_phenology" : true,   /* GSI phenology enabled */
   "new_trf" : false,        /* new transpiration reduction function disabled */
@@ -48,15 +57,17 @@
   "extflow" : false,
   "permafrost" : true,
   "johansen" : true,
+  "transp_suction_fcn" : false,
   "soilpar_option" : "no_fixed_soilpar", /* other options "no_fixed_soilpar", "fixed_soilpar", "prescribed_soilpar" */
   "with_nitrogen" : "lim", /* other options: "no", "lim", "unlim" */
   "store_climate" : true, /* store climate data in spin-up phase */
   "const_climate" : false,
-  "shuffle_climate" : true, /* shuffle spinup climate */
+  "shuffle_spinup_climate" : true, /* shuffle spinup climate */
   "const_deposition" : false,
   "fix_climate" : false,
   "fix_landuse" : false,
-  "litter_cover" : true,
+  "fix_deposition" : false,
+  "fix_co2" : false,
   "relative_humidity" : false,
 #ifdef RUN
   "prescribe_ignition" : false,
@@ -100,17 +111,18 @@
   "manure_input" : true,                /* enable manure input */
   "fix_fertilization" : false,          /* fix fertilizer input */
   "others_to_crop" : true,              /* move PFT type others into PFT crop, cft_tropic for tropical,  cft_temp for temperate */
-  "grazing" : "default",                /* default grazing type, other options : "default", "mowing", "ext", "int", "none" */
+  "grazing" : "livestock",              /* default grazing type, other options : "default", "mowing", "ext", "int", "none" */
   "cft_temp" : "temperate cereals",
   "cft_tropic" : "maize",
   "grassonly" : false,                  /* set all cropland including others to zero but keep managed grasslands */
-  "istimber" : true,
+  "luc_timber" : true,
   "grassland_fixed_pft" : false,
   "grass_harvest_options" : false,
   "mowing_days" : [152, 335],          /* Mowing days for grassland if grass harvest options are ser */
   "crop_resp_fix" : false,             /* variable C:N ratio for crop respiration */
                                        /* for MAgPIE runs, turn off dynamic C:N ratio dependent respiration,
                                           which reduces yields at high N inputs */
+  "prescribe_lsuha" : true,
   "crop_phu_option" : "new",
   "cropsheatfrost" : false,
   "double_harvest" : true,
@@ -140,14 +152,16 @@
 #define SUFFIX pft.nc
 #endif
 
-  "output_metafile" : false, /* no json metafile created */
-  "float_grid" : false,      /* set datatype of grid file to float (TRUE/FALSE) */
-
 #define mkstr(s) xstr(s) /* putting string in quotation marks */
 #define xstr(s) #s
 
-  "crop_index" : "temperate cereals", /* CFT for daily output */
-  "crop_irrigation" : false,          /* irrigation flag for daily output */
+  "output_metafile" : true,   /* json metafile created (true/false) */
+  "default_fmt" : "raw",      /* default format for output files: "raw","txt","cdf","clm","sock" */
+  "default_suffix" : ".bin",  /* default file suffix for output files */
+  "grid_type" : "short",      /* set datatype of grid file ("short", "float", "double") */
+  "absyear" : false,          /* years relative to baseyear (true/false) */
+  "rev_lat" : false,          /* reverse latitudes in NetCDF output (true/false) */
+  "with_days" : true,         /* use days as units for monthly output in NetCDF files */
 
 #ifdef RUN
 
@@ -158,6 +172,7 @@
 ID                               Fmt                        filename
 -------------------------------- ------------------------- ----------------------------- */
     { "id" : "grid",             "file" : { "fmt" : "raw", "name" : "output/grid.bin" }},
+    { "id" : "terr_area",        "file" : { "fmt" : "cdf", "name" : "output/area.nc" }},
     { "id" : "fpc",              "file" : { "fmt" : "cdf", "name" : "output/fpc.nc" }},
     { "id" : "globalflux",       "file" : { "fmt" : "txt", "name" : "output/globalflux.csv"}},
     { "id" : "npp",              "file" : { "fmt" : "cdf", "name" : "output/mnpp.nc"}},
@@ -251,13 +266,12 @@ ID                               Fmt                        filename
     { "id" : "surface_fi",       "file" : { "fmt" : "cdf", "name" : "output/msurface_fi.nc"}},
     { "id" : "firedays",         "file" : { "fmt" : "cdf", "name" : "output/mfiredays.nc"}},
     { "id" : "ndayfire",         "file" : { "fmt" : "cdf", "name" : "output/mndayfire.nc"}},
-    { "id" : "burntarea_stand",  "file" : { "fmt" : "cdf", "name" : "output/burntarea_stand.nc"}},
+    { "id" : "stand_burntarea",  "file" : { "fmt" : "cdf", "name" : "output/burntarea_stand.nc"}},
     { "id" : "littermoist",      "file" : { "fmt" : "cdf", "name" : "output/mlitter_moist.nc"}},
     //{ "id" : "pft_litterc",      "file" : { "fmt" : "cdf", "name" : "output/mlitterc_pft.nc"}},
     { "id" : "livegrass",        "file" : { "fmt" : "cdf", "name" : "output/mlivegrass.nc"}},
     { "id" : "dlm_livegrass",        "file" : { "fmt" : "cdf", "name" : "output/mdlm_livegrass.nc"}},
     { "id" : "dfmc",        "file" : { "fmt" : "cdf", "name" : "output/mdfmc.nc"}},
-    { "id" : "pft_phen",         "file" : { "fmt" : "cdf", "name" : "output/mpft_phen.nc"}},
     //{ "id" : "gsi_diff",        "file" : { "fmt" : "cdf", "name" : "output/mgsi_diff.nc"}},
     { "id" : "fuel",             "file" : { "fmt" : "cdf", "name" : "output/fuel.nc"}}
 

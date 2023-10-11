@@ -107,62 +107,7 @@ void fuelload(const Stand *stand, /**< pointer to stand */
     fuel->w[i]=fuel_gBiomass[i];
   }
   /* -> last fuel compound is caculated below, cured grass weight, setting to 0 as placeholder until curing can be included */
-  for(i=0;i<NFUELCLASS;++i)
-  {
-    adead[i]=sigma_dead[i]*fuel->w[i]/PART_DENS;
-    adead_sum+=adead[i];
-  }
-  for(i=0;i<2;++i)
-  {
-    alive[i]=sigma_live[i]*livefuel->w[i]/PART_DENS;
-    alive_sum+=alive[i];
-  }
-  for(i=0;i<NFUELCLASS;++i)
-  {
-    fuel->f[i]=(adead_sum>0) ? adead[i]/adead_sum : 0;
-  }
-  for(i=0;i<2;++i)
-   {
-   livefuel->f[i]=(alive_sum>0) ? alive[i]/alive_sum : 0;
-   }
-  fuel->fi=(adead_sum || alive_sum > 0) ? adead_sum/(adead_sum+alive_sum) : 0;
-  livefuel->fi=(adead_sum || alive_sum > 0) ? alive_sum/(adead_sum+alive_sum) : 0;
-  /* calculating g factors from Albini 1976 (loop to find sum of f factors in sigma bin and then second loop to assign the sum to each fuel class)*/
-  for(i=0;i<NGLIM+1;++i)
-    fsum[i]=0;
-  for(i=0;i<NFUELCLASS;++i)
-  {
-    for(index=0;index<NGLIM;++index)
-      if(sigma_dead[i]<glim[index]/30.48) /*conversion from ft^-1 to cm^-1*/
-        break;
-    fsum[index]+=fuel->f[i];
-  }
       /* assume nothing falls in class 0 (surface area to volume ratio < 16 ft^-1)*/
-  for(i=0;i<NFUELCLASS;++i)
-  {
-    for(index=0;index<NGLIM;++index)
-      if(sigma_dead[i]<glim[index]/30.48)
-        break;
-    fuel->g[i]=fsum[index];
-  }
-   /* live fuels calculation of g factors */
-  for(i=0;i<NGLIM+1;++i)
-    fsum[i]=0;
-  for(i=0;i<2;++i)
-  {
-    for(index=0;index<NGLIM;++index)
-      if(sigma_live[i]<glim[index]/30.48) /*conversion from ft^-1 to cm^-1*/
-        break;
-    fsum[index]+=livefuel->f[i];
-  }
-      /* assume nothing falls in class 0 (surface area to volume ratio < 16 ft^-1)*/
-  for(i=0;i<2;++i)
-  {
-    for(index=0;index<NGLIM;++index)
-      if(sigma_live[i]<glim[index]/30.48)
-        break;
-    livefuel->g[i]=fsum[index];
-  }
  /*calculating live and dead moisture and fbd as in standard 5.3 spitfire*/
  dlm_1hr=ratio_dead_fuel=ratio_live_fuel=fbd_deadfuel=mean_w=0;
 
@@ -219,6 +164,70 @@ void fuelload(const Stand *stand, /**< pointer to stand */
   /*accounting for cured grass in fuel loads */
   cured_frac=max(0,min(1,-1/0.9*livefuel->M[0]+4/3));
   fuel->w[NFUELCLASS-1]=livegrass*cured_frac;
+  for(i=0;i<NFUELCLASS;++i)
+  {
+    adead[i]=sigma_dead[i]*fuel->w[i]/PART_DENS;
+    adead_sum+=adead[i];
+
+  }
+  for(i=0;i<2;++i)
+  {
+    alive[i]=sigma_live[i]*livefuel->w[i]/PART_DENS;
+    alive_sum+=alive[i];
+  }
+  for(i=0;i<NFUELCLASS;++i)
+  {
+    fuel->f[i]=(adead_sum>0) ? adead[i]/adead_sum : 0;
+  }
+  for(i=0;i<2;++i)
+   {
+   livefuel->f[i]=(alive_sum>0) ? alive[i]/alive_sum : 0;
+   }
+  fuel->fi=(adead_sum || alive_sum > 0) ? adead_sum/(adead_sum+alive_sum) : 0;
+  livefuel->fi=(adead_sum || alive_sum > 0) ? alive_sum/(adead_sum+alive_sum) : 0;
+ for(i=0;i<NGLIM+1;++i)
+    fsum[i]=0;
+  for(i=0;i<NFUELCLASS;++i)
+  {
+    for(index=0;index<NGLIM;++index)
+      if(sigma_dead[i]<glim[index]/30.48) /*conversion from ft^-1 to cm^-1*/
+        break;
+    fsum[index]+=fuel->f[i];
+  }   
+      /* assume nothing falls in class 0 (surface area to volume ratio < 16 ft^-1)*/
+  for(i=0;i<NFUELCLASS;++i)
+  {
+    for(index=0;index<NGLIM;++index)
+      if(sigma_dead[i]<glim[index]/30.48)
+        break;
+    fuel->g[i]=fsum[index];
+  }
+  for(i=0;i<NFUELCLASS;++i)
+  {
+    for(index=0;index<NGLIM;++index)
+      if(sigma_dead[i]<glim[index]/30.48)
+        break;
+    fuel->g[i]=fsum[index];
+  }
+   /* live fuels calculation of g factors */
+  for(i=0;i<NGLIM+1;++i)
+    fsum[i]=0;
+  for(i=0;i<2;++i)
+  {
+    for(index=0;index<NGLIM;++index)
+      if(sigma_live[i]<glim[index]/30.48) /*conversion from ft^-1 to cm^-1*/
+        break;
+    fsum[index]+=livefuel->f[i];
+  }   
+      /* assume nothing falls in class 0 (surface area to volume ratio < 16 ft^-1)*/
+  for(i=0;i<2;++i)
+  {
+    for(index=0;index<NGLIM;++index)
+      if(sigma_live[i]<glim[index]/30.48)
+        break;
+    livefuel->g[i]=fsum[index];
+  }
+
   livefuel->w[0]=livegrass*(1-cured_frac);
   livefuel->w[1]=0; /* setting to 0 as placeholder for live woody component*/
 

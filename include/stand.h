@@ -23,9 +23,8 @@ struct standtype
 {
   Landusetype landusetype;
   char *name;
-  Real max_fireduration;
-  Real min_fireduration;
-  int max_ndayfire;
+  Real fireduration[2]; /**< fire duration interval (min) */
+  int max_ndayfire;     /**< maximum days for fire */
   void (*newstand)(Stand *);
   void (*freestand)(Stand *);
   Bool (*fwrite)(FILE *,const Stand *);

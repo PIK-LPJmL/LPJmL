@@ -369,6 +369,7 @@
   { "id" : ESTAB_STORAGE_N, "name": "estab_storage_n", "timestep" : "annual", "var" :  "estab_storage_n", "long_name" :  "Nitrogen storage for establishment of agriculture trees and grasses", "unit" : "gC/m2", "scale" : 1.0, "offset" : 0.0},
   { "id" : PFT_HEIGHT, "name": "pft_height", "timestep" : "annual","var": "heigt", "long_name": "tree height", "unit": "m", "scale": 1.0, "offset" : 0.0},
   { "id" : PFT_LITTERC, "name": "pft_litterc", "timestep" : "daily", "var" : "litterc", "long_name" : "PFT-specific above-ground litter carbon", "unit" : "gC/m2", "scale" : 1.0, "offset" : 0.0},
+  { "id" : LITTERMOIST, "name": "littermoist", "timestep" : "monthly", "var" : "littermoist", "long_name" : "litter moisture", "unit" : "mm", "scale" : 1.0, "offset" : 0.0},
   { "id" : PFT_PHEN, "name": "pft_phen", "timestep" : "monthly","var": "phenology", "long_name": "PFT-specific phenology", "unit": "1", "scale": 1.0, "offset" : 0.0},
   { "id" : FIREDURATION, "name": "fireduration", "timestep" : "monthly", "var" : "fireduration", "long_name" :  "fire duration", "unit" : "min", "scale" : 1.0, "offset" : 0.0},
   { "id" : FIREDURATIONDAYS, "name": "firedurationdays", "timestep" : "monthly", "var" : "firedurationdays", "long_name" :  "fire duration days", "unit" : "d", "scale" : 1.0, "offset" : 0.0},
