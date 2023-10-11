@@ -688,7 +688,6 @@ void fwriteoutput(Outputfile *output,  /**< output file array */
   {
     if(iswrite2(SOILC,timestep,year,config) || (timestep==ANNUAL && config->outnames[SOILC].timestep>0))
     {
-      litter=newvec(Real,npft);
       for(cell=0;cell<config->ngridcell;cell++)
         if(!grid[cell].skip)
         {
