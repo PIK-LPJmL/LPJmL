@@ -2,7 +2,7 @@
 /**                                                                                \n**/
 /**              p  f  t  _  v  p  d  .  j  s                                      \n**/
 /**                                                                                \n**/
-/**  PFT and CFT parameter file for LPJmL version 5.6.12-FIRE                      \n**/
+/**  PFT and CFT parameter file for LPJmL version 5.7.8-FIRE                       \n**/
 /**  CFTs parameters must be put after PFTs                                        \n**/
 /**                                                                                \n**/
 /** (C) Potsdam Institute for Climate Impact Research (PIK), see COPYRIGHT file    \n**/

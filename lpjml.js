@@ -45,8 +45,8 @@
   "gsilivefuel" : true,
   "fdi" : "nesterov",       /* different fire danger index formulations: "wvpd" (needs GLDAS input data), "nesterov" */
   "human_ign_prob" : false,
-  "max_fireduration" : [{"stand" : "grassland", "duration" : 60.0, "ndayfire" : 0}], /* max fire duration for specfic stands */
-  "firestand" : ["grassland"],
+  "fireduration" : [{"stand" : "grassland", "duration" : [1,120] ,"ndayfire" : 1},
+                    {"stand" : "natural", "duration" : [120,300], "ndayfire" : 3}],
   "firewood" : false,
   "gsi_phenology" : true,   /* GSI phenology enabled */
   "transp_suction_fcn" : false, /* enable transpiration suction function (true/false) */
