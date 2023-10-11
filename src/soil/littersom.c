@@ -93,7 +93,7 @@ Stocks littersom(Stand *stand,                      /**< [inout] pointer to stan
   Real yedoma_flux;
   Real F_NO3=0;     /* soil nitrification rate gN *m-2*d-1*/
   Real F_N2O=0;     /* soil nitrification rate gN *m-2*d-1*/
-  Real F_Nmineral;  /* net mineralization flux gN *m-2*d-1*/
+  Real F_Nmineral,F_Nmineral_all;  /* net mineralization flux gN *m-2*d-1*/
   Real fac_wfps, fac_temp;
   String line;
   Pft *pft;
@@ -123,13 +123,16 @@ Stocks littersom(Stand *stand,                      /**< [inout] pointer to stan
 #ifdef CHECK_BALANCE
   Stocks start;
   Stocks end;
+  Real water_before=soilwater(soil);
+  Real water_after=0;
+  Real balanceW=0;
   start = soilstocks(soil);
   start.carbon+=soilmethane(soil)*WC/WCH4;
 #endif
   flux.nitrogen=0;
   foreachsoillayer(l)
     response[l]=0.0;
-  decom_litter.carbon=decom_litter.nitrogen=soil_cflux=yedoma_flux=decom_sum.carbon=decom_sum.nitrogen=decom_fast.carbon=decom_slow.carbon=decom_fast.nitrogen=decom_slow.nitrogen=0.0;
+  decom_litter.carbon=decom_litter.nitrogen=soil_cflux=yedoma_flux=decom_sum.carbon=decom_sum.nitrogen=decom_fast.carbon=decom_slow.carbon=decom_fast.nitrogen=decom_slow.nitrogen=F_Nmineral_all=0.0;
   CH4_air = p_s / R_gas / (airtemp + 273.15)*pch4*1e-6*WCH4;    /*g/m3 methane concentration*/
 #if 0
   K_vdiff[0][0]=2./(midlayer[0]*(midlayer[0]+(midlayer[1]-midlayer[0])));
@@ -307,17 +310,18 @@ Stocks littersom(Stand *stand,                      /**< [inout] pointer to stan
         if (h2o_mt>0)
         {
           soil->w[l]+=(h2o_mt/soil->whcs[l]);
-          if (soil->w[l]>1)
+          if ((soil->w[l]*soil->whcs[l]+soil->ice_depth[l])>soil->whcs[l])
           {
-            soil->w_fw[l]+=(1-soil->w[l])*soil->whcs[l];
-            soil->w[l]=1;
+            soil->w_fw[l]+=((soil->w[l]*soil->whcs[l]+soil->ice_depth[l])-soil->whcs[l])/soil->whcs[l];
+            soil->w[l]-=((soil->w[l]*soil->whcs[l]+soil->ice_depth[l])-soil->whcs[l])/soil->whcs[l];
           }
-          if (soil->w_fw[l]>soil->wsats[l]-soil->whcs[l]-soil->wpwps[l])
+          if ((soil->w_fw[l]+soil->ice_fw[l])>soil->wsats[l]-soil->whcs[l]-soil->wpwps[l])
           {
-            *runoff+=soil->w_fw[l]-(soil->wsats[l]-soil->whcs[l]-soil->wpwps[l]);
-            soil->w_fw[l]=(soil->wsats[l]-soil->whcs[l]-soil->wpwps[l]);
+            *runoff+=(soil->w_fw[l]+soil->ice_fw[l])-(soil->wsats[l]-soil->whcs[l]-soil->wpwps[l]);
+            soil->w_fw[l]-=(soil->w_fw[l]+soil->ice_fw[l])-(soil->wsats[l]-soil->whcs[l]-soil->wpwps[l]);
           }
           *MT_water+=h2o_mt;
+          h2o_mt=0;
         }
         soil_cflux+=oxidation*WC/WCH4;                                   // CO2 flux into the atmosphere due to oxidation of methane
 #ifdef MICRO_HEATING
@@ -390,7 +394,7 @@ Stocks littersom(Stand *stand,                      /**< [inout] pointer to stan
         litter_flux=soil->litter.item[p].agtop.leaf.carbon*soil->litter.item[p].pft->k_litter10.leaf / k_red_litter*gtemp_soil[0];   // * exp((-soil->O2[0] / soildepth[0] * 1000) / O2star);
         soil->litter.item[p].agtop.leaf.carbon -= litter_flux*WC/WCH4;
         *methaneflux_litter+=litter_flux;
-        litter_flux= soil->litter.item[p].agtop.leaf.nitrogen*soil->litter.item[p].pft->k_litter10.leaf / k_red_litter*gtemp_soil[0];;; // * exp((-soil->O2[0] / soildepth[0] * 1000) / O2star);
+        litter_flux= soil->litter.item[p].agtop.leaf.nitrogen*soil->litter.item[p].pft->k_litter10.leaf / k_red_litter*gtemp_soil[0]; // * exp((-soil->O2[0] / soildepth[0] * 1000) / O2star);
         soil->litter.item[p].bg.nitrogen-=litter_flux;
         decom_sum.nitrogen+=litter_flux;
         decom_fast.nitrogen+=litter_flux;
@@ -532,10 +536,11 @@ Stocks littersom(Stand *stand,                      /**< [inout] pointer to stan
         {
           if(decom_sum.nitrogen>0)
           {
-            soil->pool[l].slow.nitrogen+=(1-param.fastfrac)*(1-param.atmfrac)*decom_sum.nitrogen*soil->c_shift[l][soil->litter.item[p].pft->id].slow;
-            soil->pool[l].fast.nitrogen+=param.fastfrac*(1-param.atmfrac)*decom_sum.nitrogen*soil->c_shift[l][soil->litter.item[p].pft->id].fast;
+            soil->pool[l].slow.nitrogen+=(1-soil->fastfrac)*(1-param.atmfrac)*decom_sum.nitrogen*soil->c_shift[l][soil->litter.item[p].pft->id].slow;
+            soil->pool[l].fast.nitrogen+=soil->fastfrac*(1-param.atmfrac)*decom_sum.nitrogen*soil->c_shift[l][soil->litter.item[p].pft->id].fast;
             /* NO3 and N2O from mineralization of organic matter */
-            F_Nmineral=max(0,decom_sum.nitrogen*param.atmfrac*(soil->fastfrac*soil->c_shift[l][soil->litter.item[p].pft->id].fast+(1-soil->fastfrac)*soil->c_shift[l][soil->litter.item[p].pft->id].slow));
+            F_Nmineral=decom_sum.nitrogen*param.atmfrac*(soil->fastfrac*soil->c_shift[l][soil->litter.item[p].pft->id].fast+(1-soil->fastfrac)*soil->c_shift[l][soil->litter.item[p].pft->id].slow);
+            F_Nmineral_all+=F_Nmineral;
             soil->NH4[l]+=F_Nmineral*(1-k_l);
 #ifdef SAFE
             if(soil->NH4[l]<-epsilon)
@@ -546,11 +551,12 @@ Stocks littersom(Stand *stand,                      /**< [inout] pointer to stan
             if(isagriculture(stand->type->landusetype))
               getoutput(&stand->cell->output,NMINERALIZATION_AGR,config)+=F_Nmineral*stand->frac;
           }
+
           N_sum=soil->NH4[l]+soil->NO3[l];
-          if(N_sum>0 && decom_sum.carbon>epsilon) /* immobilization of N */
+          if(N_sum>0) /* immobilization of N */
           {
-            n_immo=(1-soil->fastfrac)*(1-param.atmfrac)*(decom_sum.carbon/soil->par->cn_ratio-decom_sum.nitrogen)*soil->c_shift[l][soil->litter.item[p].pft->id].slow*N_sum/soildepth[l]*1e3/(k_N+N_sum/soildepth[l]*1e3);
-            if(n_immo>epsilon)
+            n_immo=param.fastfrac*(1-param.atmfrac)*(decom_sum.carbon/soil->par->cn_ratio-decom_sum.nitrogen)*soil->c_shift[l][soil->litter.item[p].pft->id].fast*N_sum/soildepth[l]*1e3/(k_N+N_sum/soildepth[l]*1e3);
+            if(n_immo >0)
             {
               if(n_immo>N_sum)
                 n_immo=N_sum;
@@ -561,14 +567,21 @@ Stocks littersom(Stand *stand,                      /**< [inout] pointer to stan
                 getoutput(&stand->cell->output,NIMMOBILIZATION_AGR,config)+=n_immo*stand->frac;
               soil->NH4[l]-=n_immo*soil->NH4[l]/N_sum;
               soil->NO3[l]-=n_immo*soil->NO3[l]/N_sum;
-#ifdef SAFE
-              if(soil->NO3[l]<-epsilon)
-                fail(NEGATIVE_SOIL_NO3_ERR,TRUE,TRUE,"Negative soil NO3=%g in layer %d in cell (%s) at immobilization in littersom()",soil->NO3[l],l,sprintcoord(line,&stand->cell->coord));
-              if(soil->NH4[l]<-epsilon)
-                fail(NEGATIVE_SOIL_NH4_ERR,TRUE,TRUE,"Negative soil NH4=%g in layer %d in cell (%s) at immobilization in littersom()",soil->NH4[l],l,sprintcoord(line,&stand->cell->coord));
-#endif
+              if(soil->NO3[l]<0)
+              {
+                soil->pool[l].fast.nitrogen+=soil->NO3[l];
+                soil->NO3[l]=0;
+              }
+              if(soil->NH4[l]<0)
+              {
+                soil->pool[l].fast.nitrogen+=soil->NH4[l];
+                soil->NH4[l]=0;
+              }
             }
           }
+          else
+            n_immo=0;
+
           N_sum=soil->NH4[l]+soil->NO3[l];
           if(N_sum>0)
           {
@@ -583,16 +596,16 @@ Stocks littersom(Stand *stand,                      /**< [inout] pointer to stan
               if(isagriculture(stand->type->landusetype))
                 getoutput(&stand->cell->output,NIMMOBILIZATION_AGR,config)+=n_immo*stand->frac;
               soil->NH4[l]-=n_immo*soil->NH4[l]/N_sum;
-              if(soil->NH4[l]<0)
-              {
-                 soil->pool[l].slow.nitrogen+=soil->NH4[l];
-                 soil->NH4[l]=0;
-              }
               soil->NO3[l]-=n_immo*soil->NO3[l]/N_sum;
               if(soil->NO3[l]<0)
               {
-                 soil->pool[l].slow.nitrogen+=soil->NO3[l];
-                 soil->NO3[l]=0;
+                soil->pool[l].slow.nitrogen+=soil->NO3[l];
+                soil->NO3[l]=0;
+              }
+              if(soil->NH4[l]<0)
+              {
+                soil->pool[l].slow.nitrogen+=soil->NH4[l];
+                soil->NH4[l]=0;
               }
 #ifdef SAFE
               if(soil->NO3[l]<-epsilon)
@@ -601,9 +614,10 @@ Stocks littersom(Stand *stand,                      /**< [inout] pointer to stan
                 fail(NEGATIVE_SOIL_NH4_ERR,TRUE,TRUE,"Negative soil NH4=%g in layer %d in cell (%s) at immobilization in littersom()",soil->NH4[l],l,sprintcoord(line,&stand->cell->coord));
 #endif
             }
-            else
-              n_immo=0;
           }
+          else
+            n_immo=0;
+
         } /* of if(config->with_nitrogen) */
       } /* of forrootlayer */
       /*sum for equilsom-routine*/
@@ -620,6 +634,7 @@ Stocks littersom(Stand *stand,                      /**< [inout] pointer to stan
     {
       fac_wfps = f_wfps(soil,l);
       fac_temp = f_temp(soil->temp[l]);
+      F_N2O=0;
       F_NO3=param.k_max*soil->NH4[l]*fac_temp*fac_wfps*f_ph(stand->cell->soilph);
       if(F_NO3>soil->NH4[l])
         F_NO3=soil->NH4[l];
@@ -630,20 +645,18 @@ Stocks littersom(Stand *stand,                      /**< [inout] pointer to stan
       }
       else
         F_NO3=0;
+      soil->NH4[l]-=F_NO3;
+      flux.nitrogen+=F_N2O;
 
 #ifdef SAFE
       if(soil->NO3[l]<-epsilon)
         fail(NEGATIVE_SOIL_NO3_ERR,TRUE,TRUE,"littersom: Negative soil NO3=%g in layer %d in cell (%s)",
              soil->NO3[l],l,sprintcoord(line,&stand->cell->coord));
-#endif
 
-      soil->NH4[l]-=F_NO3;
-#ifdef SAFE
       if(soil->NH4[l]<-epsilon)
         fail(NEGATIVE_SOIL_NH4_ERR,TRUE,TRUE,"Negative soil NH4=%g in layer %d in cell (%s)",
              soil->NH4[l],l,sprintcoord(line,&stand->cell->coord));
 #endif
-      flux.nitrogen += F_N2O;
       /* F_N2O is given back for output */
       if(stand->type->landusetype==AGRICULTURE)
       {
@@ -766,13 +779,19 @@ Stocks littersom(Stand *stand,                      /**< [inout] pointer to stan
 #ifdef CHECK_BALANCE
   end = soilstocks(soil);
   end.carbon+=soilmethane(soil)*WC/WCH4;
+  water_after=soilwater(soil);
   if (fabs(start.carbon - end.carbon - (flux.carbon + *methaneflux_litter*WC/WCH4))>0.0001){
         fprintf(stderr,
-            "C_ERROR in littersom: iswetland: %d type: %s %.5f start:%.5f  ende:%.5f decomCO2: %g methane_em: %.5f\n", soil->iswetland,
+            "C_ERROR in littersom: iswetland: %d type: %s %.8f start:%.8f  ende:%.8f decomCO2: %%.8f methane_em: %.8f\n", soil->iswetland,
             stand->type->name,start.carbon - end.carbon - (flux.carbon + *methaneflux_litter*WC/WCH4), start.carbon, end.carbon, flux.carbon, *methaneflux_litter*WC/WCH4);
   }
-  if (fabs(start.nitrogen - end.nitrogen - flux.nitrogen)>0.00001)
-    fprintf(stderr, "N_ERROR in littersom: iswetland: %d %.5f start:%.5f  end:%.5f decomCO2: %g\n", soil->iswetland, start.nitrogen - end.nitrogen - flux.nitrogen, start.nitrogen, end.nitrogen, flux.nitrogen);
+  if (fabs(end.nitrogen-start.nitrogen+flux.nitrogen)>0.00001)
+    fprintf(stderr, "N_ERROR in littersom: iswetland: %d %.8f start:%.8f  end:%.8f flux.nitrogen: %g F_Nmineral: %g  decom_sum.nitrogen: %g\n", soil->iswetland,end.nitrogen-start.nitrogen+flux.nitrogen,
+        start.nitrogen, end.nitrogen, flux.nitrogen,F_Nmineral_all,decom_sum.nitrogen);
+  balanceW=water_after-water_before-*MT_water+*runoff;
+  if(fabs(balanceW)>0.001)
+    fprintf(stderr,"W-BALANCE-ERROR in littersom: balanceW: %g  water_after: %.5f water_before: %.5f balance_stocks: %.5f w1: %g w2: %g\n"
+        "*MT_water_local: %g runoff_local= %g \n",balanceW,water_after,water_before,water_after-water_before,*MT_water,*runoff,soil->w[0],soil->w[1]);
 #endif
   return flux;
 } /* of 'littersom' */

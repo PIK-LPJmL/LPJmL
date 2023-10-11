@@ -36,7 +36,7 @@ void gasdiffusion(Soil *soil,    /**< [inout] pointer to soil data */
   end=start=tmp_water=out=in=0;
   /*waterbalance needs to be updated*/
   start = soilmethane(soil); //do not multiply by *WC/WCH4, is used for methane fluxes here
-  *runoff=0;
+  *runoff=*CH4_sink=*CH4_out=0;
   for (l = 0; l<BOTTOMLAYER; l++)
   {
     if ((soil->w[l] * soil->whcs[l] + soil->w_fw[l] + soil->ice_depth[l] + soil->ice_fw[l])>(soil->wsats[l] - soil->wpwps[l]))

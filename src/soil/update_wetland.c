@@ -368,13 +368,13 @@ void update_wetland(Cell *cell,          /**< pointer to cell */
           end.nitrogen+=st.nitrogen*stand->frac;
           water_after+=soilwater(&stand->soil)*stand->frac;
         }
-        if (fabs(start.carbon - end.carbon)>0.01)
+        if (fabs(start.carbon - end.carbon)>0.001)
           fail(INVALID_CARBON_BALANCE_ERR,FAIL_ON_BALANCE,FALSE,"Invalid carbon balance in %s: %g start:%g  end:%g",
                __FUNCTION__,start.carbon - end.carbon, start.carbon, end.carbon);
-        if (fabs(start.nitrogen - end.nitrogen)>0.01)
+        if (fabs(start.nitrogen - end.nitrogen)>0.001)
           fail(INVALID_NITROGEN_BALANCE_ERR,FAIL_ON_BALANCE,FALSE, "Invalid nitrogen balance in %s: %g start:%g  end:%gn",
                __FUNCTION__,start.nitrogen - end.nitrogen, start.nitrogen, end.nitrogen);
-        if (fabs(water_before - water_after)>0.1)
+        if (fabs(water_before - water_after)>0.001)
           fail(INVALID_WATER_BALANCE_ERR,FAIL_ON_BALANCE,FALSE, "Invalid water balance in %s: %g start:%g  end:%g excess_water:%g\n",
                __FUNCTION__, water_before - water_after, water_before, water_after,cell->balance.excess_water);
 #endif
@@ -627,13 +627,13 @@ void update_wetland(Cell *cell,          /**< pointer to cell */
     end.nitrogen+=st.nitrogen*stand->frac;
     water_after+=soilwater(&stand->soil)*stand->frac;
   }
-  if (fabs(start.carbon - end.carbon)>0.01)
+  if (fabs(start.carbon - end.carbon)>0.001)
     fail(INVALID_CARBON_BALANCE_ERR,FAIL_ON_BALANCE,FALSE,"Invalid carbon balance in %s: %g start:%g  end:%g",
          __FUNCTION__,start.carbon - end.carbon, start.carbon, end.carbon);
-  if (fabs(start.nitrogen - end.nitrogen)>0.1)
+  if (fabs(start.nitrogen - end.nitrogen)>0.001)
     fail(INVALID_NITROGEN_BALANCE_ERR,FAIL_ON_BALANCE,FALSE, "Invalid nitrogen balance in %s: %g start:%g  end:%g",
          __FUNCTION__,start.nitrogen - end.nitrogen, start.nitrogen, end.nitrogen);
-  if (fabs(water_before - water_after)>0.1)
+  if (fabs(water_before - water_after)>0.001)
     fail(INVALID_WATER_BALANCE_ERR,FAIL_ON_BALANCE,FALSE, "Invalid water balance in %s: %g start:%g  end:%g",
          __FUNCTION__,water_before - water_after, water_before, water_after);
 #endif

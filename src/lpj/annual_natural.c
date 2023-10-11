@@ -45,21 +45,20 @@ Bool annual_natural(Stand *stand,         /**< Pointer to stand */
   Stocks bm_inc={0,0};
   Stocks fluxes_out={0,0};
   Stocks fluxes_in={0,0};
+  start.carbon = standstocks(stand).carbon + soilmethane(&stand->soil)*WC/WCH4;
+  start.nitrogen = standstocks(stand).nitrogen;
+
+  fluxes_out.carbon=(stand->cell->balance.arh+stand->cell->balance.fire.carbon+stand->cell->balance.flux_firewood.carbon+stand->cell->balance.neg_fluxes.carbon
+      +stand->cell->balance.flux_harvest.carbon+stand->cell->balance.biomass_yield.carbon)/stand->frac;
+  fluxes_in.carbon=(stand->cell->balance.anpp+stand->cell->balance.flux_estab.carbon+stand->cell->balance.influx.carbon)/stand->frac;
+  fluxes_out.nitrogen=(stand->cell->balance.fire.nitrogen+stand->cell->balance.flux_firewood.nitrogen+stand->cell->balance.neg_fluxes.nitrogen
+      +stand->cell->balance.flux_harvest.nitrogen+stand->cell->balance.biomass_yield.nitrogen)/stand->frac;
+  fluxes_in.nitrogen=(stand->cell->balance.flux_estab.nitrogen+stand->cell->balance.influx.nitrogen)/stand->frac;
 #endif
+
   pft_len=getnpft(&stand->pftlist); /* get number of established PFTs */
   if(pft_len>0)
   {
-#ifdef CHECK_BALANCE
-    start.carbon = standstocks(stand).carbon + soilmethane(&stand->soil)*WC/WCH4;
-    start.nitrogen = standstocks(stand).nitrogen;
-
-    fluxes_out.carbon=(stand->cell->balance.arh+stand->cell->balance.fire.carbon+stand->cell->balance.flux_firewood.carbon+stand->cell->balance.neg_fluxes.carbon
-        +stand->cell->balance.flux_harvest.carbon+stand->cell->balance.biomass_yield.carbon)/stand->frac;
-    fluxes_in.carbon=(stand->cell->balance.anpp+stand->cell->balance.flux_estab.carbon+stand->cell->balance.influx.carbon)/stand->frac;
-    fluxes_out.nitrogen=(stand->cell->balance.fire.nitrogen+stand->cell->balance.flux_firewood.nitrogen+stand->cell->balance.neg_fluxes.nitrogen
-        +stand->cell->balance.flux_harvest.nitrogen+stand->cell->balance.biomass_yield.nitrogen)/stand->frac;
-    fluxes_in.nitrogen=(stand->cell->balance.flux_estab.nitrogen+stand->cell->balance.influx.nitrogen)/stand->frac;
-#endif
     fpc_inc=newvec(Real,pft_len);
     check(fpc_inc);
     
