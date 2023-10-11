@@ -84,7 +84,7 @@ Real infil_perc(Stand *stand,        /**< Stand pointer */
   //Real sat_lev = 0.9;
   Real prec=infil;
 
-#ifdef CHECK_BALANCE_W
+#ifdef CHECK_BALANCE
   Real start, end;
   Stocks n_before,n_after;
   start = end = 0;
@@ -136,10 +136,10 @@ Real infil_perc(Stand *stand,        /**< Stand pointer */
     icefrac[l]=(soil->ice_depth[l]+soil->ice_fw[l]+soil->wpwps[l]*soil->ice_pwp[l])/soil->wsats[l];
   Theta_ice=pow(10,-OMEGA*icefrac[jwt]);
 
-#ifdef CHECK_BALANCE_W
+#ifdef CHECK_BALANCE
   start=soil->wa;
   n_before=soilstocks(soil);
-  n_before.nitrogen=n_before.nitrogen*stand->frac+getoutput(&stand->cell->output,LEACHING,config);
+  n_before.nitrogen=n_before.nitrogen*stand->frac+stand->cell->balance.n_outflux;
 #endif
 
 
@@ -883,24 +883,20 @@ Real infil_perc(Stand *stand,        /**< Stand pointer */
   getoutput(&stand->cell->output,RUNOFF_LAT,config)+=runoff*stand->frac;
   getoutput(&stand->cell->output,RUNOFF_SURF,config)+=runoff_surface*stand->frac;
 
-#ifdef CHECK_BALANCE_W
+#ifdef CHECK_BALANCE
 
-// TODO check what test meant in earlier versions
-  if(fabs(start-end+test-runoff_out-runoff_surface-drain_perched_out-rsub_top)>epsilon)
-    fail(INVALID_WATER_BALANCE_ERR,NO_FAIL_BALANCE,FALSE,"Invalid water balance in %s, Cell(lat:%g lon:%g), balance:%g",
-         __FUNCTION__,stand->cell->coord.lat,stand->cell->coord.lon,start-end+test-runoff_out-runoff_surface-drain_perched_out-rsub_top);
   n_after=soilstocks(soil);
-  n_after.nitrogen=n_after.nitrogen*stand->frac+stand->cell->output.mn_leaching;
+  n_after.nitrogen=n_after.nitrogen*stand->frac+stand->cell->balance.n_outflux;
   if(fabs(n_after.nitrogen-n_before.nitrogen)>0.0001)
-     fail(INVALID_NITROGEN_BALANCE_ERR,NO_FAIL_BALANCE,FALSE,"Invalid nitrogen balance in %s, Cell (lat:%g lon:%g), N balance:%g",__FUNCTION__,stand->cell->coord.lat,stand->cell->coord.lon,n_after.nitrogen-n_before.nitrogen);
-#endif
+     fail(INVALID_NITROGEN_BALANCE_ERR,FAIL_ON_BALANCE,FALSE,"Invalid nitrogen balance in %s, Cell (lat:%g lon:%g), N balance:%g",
+         __FUNCTION__,stand->cell->coord.lat,stand->cell->coord.lon,n_after.nitrogen-n_before.nitrogen);
 
-#ifdef CHECK_BALANCE_W
   water_after=soilwater(&stand->soil);
   balancew=water_after-water_before-prec+runoff_surface+runoff_out+drain_perched_out+rsub_top;
-  if(fabs(balancew)>10)
-    fail(INVALID_WATER_BALANCE_ERR,NO_FAIL_BALANCE,FALSE,"Invalid water balance in %s: balanceW: %g water_before: %g water_after: %g type: %s standfrac: %g runoff_surface: %g drain_perched_out: %g runoff_out: %g rsub_top: %g rw_buff: %g wa: %g infil: %g",
-         __FUNCTION__,balancew,water_before,water_after,stand->type->name,stand->frac,runoff_surface,drain_perched_out,runoff_out,rsub_top,soil->rw_buffer,soil->wa,prec);
+  if(fabs(balancew)>0.001)
+      fail(INVALID_WATER_BALANCE_ERR,FAIL_ON_BALANCE,FALSE,"Invalid water balance in %s: balanceW: %g water_before: %g water_after: %g standtype: %s standfrac: %g runoff_surface: %g "
+        "drain_perched_out: %g runoff_out: %g rsub_top: %g rw_buff: %g wa: %g infil: %g",
+        __FUNCTION__,balancew,water_before,water_after,stand->type->name,stand->frac,runoff_surface,drain_perched_out,runoff_out,rsub_top,soil->rw_buffer,soil->wa,prec);
 #endif
 
    if(stand->type->landusetype!=WETLAND && stand->cell->hydrotopes.skip_cell==FALSE && stand->frac<1-epsilon)

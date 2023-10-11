@@ -638,9 +638,9 @@ void update_daily(Cell *cell,            /**< cell pointer           */
           +((cell->balance.excess_water+cell->lateral_water)-exess_old);
   if (fabs(end-start1.carbon-CH4_fluxes+fluxes_out.carbon-fluxes_in.carbon)>0.001)
   {
-    fprintf(stderr, "C_ERROR-iterateyear after update_annual: day: %d    %g start: %g  end: %g CH4_fluxes: %g flux_estab.carbon: %g flux_harvest.carbon: %g dcflux: %g fluxes_in.carbon: %g "
+    fprintf(stderr, "C_ERROR in %s : day: %d  %g start: %g  end: %g CH4_fluxes: %g flux_estab.carbon: %g flux_harvest.carbon: %g dcflux: %g fluxes_in.carbon: %g "
         "fluxes_out.carbon: %g neg_fluxes: %g bm_inc: %g rh: %g aCH4_sink: %g aCH4_em : %g \n",
-        day,end-start.carbon-CH4_fluxes-fluxes_in.carbon+fluxes_out.carbon,start.carbon,end,CH4_fluxes,cell->balance.flux_estab.carbon,cell->balance.flux_harvest.carbon,
+        __FUNCTION__,day,end-start.carbon-CH4_fluxes-fluxes_in.carbon+fluxes_out.carbon,start.carbon,end,CH4_fluxes,cell->balance.flux_estab.carbon,cell->balance.flux_harvest.carbon,
         cell->output.dcflux, fluxes_in.carbon,fluxes_out.carbon, cell->balance.neg_fluxes.carbon,cell->output.bm_inc,cell->balance.arh,cell->balance.aCH4_sink*WC/WCH4,cell->balance.aCH4_em*WC/WCH4);
   }
   fluxes_out.nitrogen=(cell->balance.fire.nitrogen+cell->balance.flux_firewood.nitrogen+cell->balance.n_outflux+cell->balance.neg_fluxes.nitrogen
@@ -654,9 +654,9 @@ void update_daily(Cell *cell,            /**< cell pointer           */
        cell->balance.estab_storage_grass[0].nitrogen+cell->balance.estab_storage_tree[0].nitrogen+cell->balance.estab_storage_grass[1].nitrogen+cell->balance.estab_storage_tree[1].nitrogen;
   if (fabs(end-start1.nitrogen+fluxes_out.nitrogen-fluxes_in.nitrogen)>0.001)
   {
-    fprintf(stderr, "N_ERROR-update_daily end: day: %d    %g start: %g  end: %g flux_estab.nitrogen: %g flux_harvest.nitrogen: %g "
+    fprintf(stderr, "N_ERROR in %s end: day: %d    %g start: %g  end: %g flux_estab.nitrogen: %g flux_harvest.nitrogen: %g "
            "influx: %g outflux: %g neg_fluxes: %g\n",
-           day,end-start1.nitrogen-fluxes_in.nitrogen+fluxes_out.nitrogen,start1.nitrogen, end,cell->balance.flux_estab.nitrogen,cell->balance.flux_harvest.nitrogen,
+           __FUNCTION__,day,end-start1.nitrogen-fluxes_in.nitrogen+fluxes_out.nitrogen,start1.nitrogen, end,cell->balance.flux_estab.nitrogen,cell->balance.flux_harvest.nitrogen,
            fluxes_in.nitrogen,fluxes_out.nitrogen, cell->balance.neg_fluxes.nitrogen);
 //    foreachstand(stand,s,cell->standlist)
 //             fprintf(stderr,"update_daily: standfrac: %g standtype: %s s= %d iswetland: %d cropfraction_rf: %g cropfraction_irr: %g grasfrac_rf: %g grasfrac_irr: %g\n",
@@ -665,9 +665,10 @@ void update_daily(Cell *cell,            /**< cell pointer           */
 //                     cell->ml.landfrac[0].grass[0]+cell->ml.landfrac[0].grass[1],cell->ml.landfrac[1].grass[0]+cell->ml.landfrac[1].grass[1]);
   }
 
-  if(fabs(balanceW)>0.001)
-    fprintf(stderr,"W-BALANCE-ERROR in update_daily: day %d balanceW: %g  exess_old: %g balance.excess_water: %g water_after: %g water_before: %g prec: %g melt: %g "
-        "atransp: %g  aevap %g ainterc %g aevap_lake  %g aevap_res: %g    airrig : %g aMT_water : %g MT_water: %g flux_bal: %g runoff %g awater_flux %g lateral_water %g mfin-mfout : %g dmass_lake : %g  dmassriver : %g  \n",day,balanceW,exess_old,cell->balance.excess_water,
+  if(fabs(balanceW)>epsilon)
+    fprintf(stderr,"W-BALANCE-ERROR in %s: day %d balanceW: %g  exess_old: %g balance.excess_water: %g water_after: %g water_before: %g prec: %g melt: %g "
+        "atransp: %g  aevap %g ainterc %g aevap_lake  %g aevap_res: %g    airrig : %g aMT_water : %g MT_water: %g flux_bal: %g runoff %g awater_flux %g lateral_water %g mfin-mfout : %g dmass_lake : %g  dmassriver : %g  \n",
+        __FUNCTION__,day,balanceW,exess_old,cell->balance.excess_water,
         water_after,water_before,climate.prec,melt_all,cell->balance.atransp,cell->balance.aevap,cell->balance.ainterc,cell->balance.aevap_lake,cell->balance.aevap_res,cell->balance.airrig,cell->balance.aMT_water,MT_water,
         ((cell->balance.awater_flux+cell->balance.atransp+cell->balance.aevap+cell->balance.ainterc+cell->balance.aevap_lake+cell->balance.aevap_res-cell->balance.airrig-cell->balance.aMT_water)-wfluxes_old),
         cell->discharge.drunoff,cell->balance.awater_flux,cell->lateral_water,((cell->discharge.mfout-cell->discharge.mfin)/cell->coord.area),cell->discharge.dmass_lake/cell->coord.area,cell->discharge.dmass_river/cell->coord.area);

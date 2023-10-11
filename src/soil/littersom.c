@@ -245,7 +245,7 @@ Stocks littersom(Stand *stand,                      /**< [inout] pointer to stan
         {
           fnlim=max(0,(flux_soil[l].fast.nitrogen+flux_soil[l].slow.nitrogen)/fn_som);
         }*/
-        h2o_mt=(flux_soil[l].slow.carbon+flux_soil[l].fast.carbon)*WH2O/WCO2/1000; // water produced during oxic decomposition C6H12O6 + O2 -> CO2 + H2O
+        h2o_mt=(flux_soil[l].slow.carbon+flux_soil[l].fast.carbon)*WH2O/WC/1000; // water produced during oxic decomposition C6H12O6 + O2 -> CO2 + H2O
         soil->O2[l]-=(flux_soil[l].slow.carbon + flux_soil[l].fast.carbon)*WO2/WC;
         if(soil->pool[l].slow.carbon>epsilon)
           soil->decay_rate[l].slow+=flux_soil[l].slow.carbon/soil->pool[l].slow.carbon;
@@ -305,20 +305,25 @@ Stocks littersom(Stand *stand,                      /**< [inout] pointer to stan
 #ifdef MICRO_HEATING
           soil->micro_heating[l]+=oxidation*m_heat_ox;
 #endif
-          h2o_mt+=oxidation*2*WH2O/WCH4/1000;                               // check again water produced during methane oxidation CH4 + 2O2 -> CO2 + 2H2O
+          h2o_mt+=oxidation*WH2O/WCH4/1000*2;                               // check again water produced during methane oxidation CH4 + 2O2 -> CO2 + 2H2O (mm)
         }
         if (h2o_mt>0)
         {
-          soil->w[l]+=(h2o_mt/soil->whcs[l]);
-          if ((soil->w[l]*soil->whcs[l]+soil->ice_depth[l])>soil->whcs[l])
+          if(soil->ice_depth[l]==soil->whcs[l])
+            *runoff+=h2o_mt;
+          else
           {
-            soil->w_fw[l]+=((soil->w[l]*soil->whcs[l]+soil->ice_depth[l])-soil->whcs[l])/soil->whcs[l];
-            soil->w[l]-=((soil->w[l]*soil->whcs[l]+soil->ice_depth[l])-soil->whcs[l])/soil->whcs[l];
-          }
-          if ((soil->w_fw[l]+soil->ice_fw[l])>soil->wsats[l]-soil->whcs[l]-soil->wpwps[l])
-          {
-            *runoff+=(soil->w_fw[l]+soil->ice_fw[l])-(soil->wsats[l]-soil->whcs[l]-soil->wpwps[l]);
-            soil->w_fw[l]-=(soil->w_fw[l]+soil->ice_fw[l])-(soil->wsats[l]-soil->whcs[l]-soil->wpwps[l]);
+            soil->w[l]+=(h2o_mt/soil->whcs[l]);
+            if ((soil->w[l]*soil->whcs[l]+soil->ice_depth[l])>soil->whcs[l])
+            {
+              soil->w_fw[l]+=((soil->w[l]*soil->whcs[l]+soil->ice_depth[l])-soil->whcs[l]);
+              soil->w[l]-=((soil->w[l]*soil->whcs[l]+soil->ice_depth[l])-soil->whcs[l])/soil->whcs[l];
+            }
+            if ((soil->w_fw[l]+soil->ice_fw[l])>soil->wsats[l]-soil->whcs[l]-soil->wpwps[l])
+            {
+              *runoff+=(soil->w_fw[l]+soil->ice_fw[l])-(soil->wsats[l]-soil->whcs[l]-soil->wpwps[l]);
+              soil->w_fw[l]-=(soil->w_fw[l]+soil->ice_fw[l])-(soil->wsats[l]-soil->whcs[l]-soil->wpwps[l]);
+            }
           }
           *MT_water+=h2o_mt;
           h2o_mt=0;
@@ -789,7 +794,7 @@ Stocks littersom(Stand *stand,                      /**< [inout] pointer to stan
     fprintf(stderr, "N_ERROR in littersom: iswetland: %d %.8f start:%.8f  end:%.8f flux.nitrogen: %g F_Nmineral: %g  decom_sum.nitrogen: %g\n", soil->iswetland,end.nitrogen-start.nitrogen+flux.nitrogen,
         start.nitrogen, end.nitrogen, flux.nitrogen,F_Nmineral_all,decom_sum.nitrogen);
   balanceW=water_after-water_before-*MT_water+*runoff;
-  if(fabs(balanceW)>0.001)
+  if(fabs(balanceW)>epsilon)
     fprintf(stderr,"W-BALANCE-ERROR in littersom: balanceW: %g  water_after: %.5f water_before: %.5f balance_stocks: %.5f w1: %g w2: %g\n"
         "*MT_water_local: %g runoff_local= %g \n",balanceW,water_after,water_before,water_after-water_before,*MT_water,*runoff,soil->w[0],soil->w[1]);
 #endif

@@ -182,8 +182,8 @@ void check_fluxes(Cell *cell,          /**< cell pointer */
     for(i=0;i<NIRRIGDAYS;i++)
       totw+=cell->ml.resdata->dfout_irrigation_daily[i]/cell->coord.area;
   }
-  cell->balance.awater_flux+=cell->balance.atransp+cell->balance.aevap+cell->balance.ainterc+cell->balance.aevap_lake+cell->balance.aevap_res-cell->balance.airrig-cell->balance.aMT_water;
-  balanceW=totw-cell->balance.totw-cell->balance.aprec+cell->balance.awater_flux+cell->balance.excess_water+cell->lateral_water;
+  cell->balance.awater_flux+=cell->balance.atransp+cell->balance.aevap+cell->balance.ainterc+cell->balance.aevap_lake+cell->balance.aevap_res-cell->balance.airrig;
+  balanceW=totw-cell->balance.totw-cell->balance.aprec-cell->balance.aMT_water+cell->balance.awater_flux+cell->balance.excess_water+cell->lateral_water;
   if(year>startyear+1 && fabs(balanceW)>0.001)
   //if(year>1511 && fabs(balanceW)>1.5)
 #ifdef NO_FAIL_BALANCE

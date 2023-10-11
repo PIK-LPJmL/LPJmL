@@ -256,6 +256,7 @@ fprintf(stderr,"w[%d] %3.12f, fw[%d] %3.12f, icedepth[%d] %3.12f, whcs[%d] %3.12
     if(stand->frac_g[l]<0)
       stand->frac_g[l]=0;
   stand->cell->discharge.drunoff+=marginal*stand->frac;
+  stand->cell->balance.awater_flux+=marginal*stand->frac;
   if(marginal>2)
     fprintf(stdout,"MARGINAL: %g\n",marginal*stand->frac);
   } /* soil layer loop */
