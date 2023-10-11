@@ -96,7 +96,7 @@
 #define NO_FERTILIZER 0
 #define FERTILIZER 1
 #define AUTO_FERTILIZER 2
-#define NOUT 356           /* number of output files */
+#define NOUT 357           /* number of output files */
 #define END -1              /* end marker for output files */
 #define GRIDBASED 1         /* pft-specific outputs scaled by stand->frac */
 #define PFTBASED 0          /* pft-specific outputs not scaled by stand->frac */
@@ -450,7 +450,6 @@
 #define MAX_FIRESIZE 340
 #define FUEL 341
 #define LIVEGRASS 342
-#define LITTERMOIST 343
 #define DLM_LIVEGRASS 343
 #define GSI_CUM 344
 #define GSI_DIFF 345
@@ -464,6 +463,7 @@
 #define IRRIG_STOR 353
 #define DFMC 354
 #define FIREDURATIONDAYS 355
+#define LITTERMOIST 356
 #define PFT_GCGP_COUNT 0
 #define NDAY_MONTH 1
 #define RANDOM_SEED 0

@@ -102,7 +102,7 @@
   "hum_ign" : -0.50,		      /* a parameter for scaling the human ignintions within SPITFIRE */
   "ler" : 1,                          /* efficiency in starting fires */
   "cg_ratio" : 0.2,                   /*cloud to ground ratio for lightning flashes */
-  "max_fireduration" : 1440,         /* maximum fire duration (min) */
+  "fireduration" : [120,1440],        /* fire duration interval (min) */
   "max_ndayfire" : 15,                /* maximum fire days (days) */
   "fire_intens" : 0.000001,           /* threshold of fireintensity for which burnt area can be modeled */
   "rootreduction" : 0.5,              /* fraction used to calculate amount of roots dying at harvest in managed grasslands */

@@ -81,7 +81,7 @@ int *scancftmap(LPJfile *file,       /**< pointer to LPJ config file */
       for(cft=0;cft<ncft;cft++)
         undef[cft]=TRUE;
     else
-      for(cft=0;cft<getnirrig(ncft,config)+1;cft++)
+      for(cft=0;cft<getnirrig(ncft,config)+urban;cft++)
         undef[cft]=TRUE;
     for(cft=0;cft<*size;cft++)
     {

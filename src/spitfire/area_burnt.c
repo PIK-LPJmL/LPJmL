@@ -38,8 +38,7 @@ Real area_burnt(Real *fire_durat,       /**< fire duration (min) */
                 Real *ndayfire,         /**< number of days with fire */
                 Real *firedurationdays, /**< mean number of days a fire burns */
                 Real *burnt_area_max,   /**< size of fires in the largest active fire class (ha)*/
-                Real max_fireduration,  /**< maximum fire duration */
-                Real min_fireduration,  /**< minimum fire duration */
+                const Real fireduration[2],   /**< fire duration interval (min) */
                 Real fire_danger_index, /**< fire danger index (0..1) */
                 Real num_fires,         /**< number of fires */
                 Real windsp_cover,      /**< windspeed cover (m/min) */
@@ -79,13 +78,13 @@ Real area_burnt(Real *fire_durat,       /**< fire duration (min) */
     /* check the parameter value!!
      *  fire duration as a function of daily fire danger index
      */
-    *fire_durat=(max_fireduration+1)/(1.0+((max_fireduration/min_fireduration-1)*exp(param.firedura*fire_danger_index)));
+    *fire_durat=(fireduration[1]+1)/(1.0+((fireduration[1]/fireduration[0]-1)*exp(param.firedura*fire_danger_index)));
     dbf = (ros_backward+ros_forward) * *fire_durat;  /* in min , dbf in m*/
     d_area_burnt = (num_fires * M_PI_4/length_breath_ratio * dbf*dbf)*1e-4;
     burnt_area_sum = d_area_burnt;
 #ifdef DEBUG
    if (d_area_burnt>0)
-     printf("normal burnt area= %g, fire_dura=%g,num_fires=%g,max_dura=%g,fdi=%g\n",burnt_area_sum,*fire_durat,num_fires,max_fireduration,fire_danger_index);
+     printf("normal burnt area= %g, fire_dura=%g,num_fires=%g,max_dura=%g,fdi=%g\n",burnt_area_sum,*fire_durat,num_fires,fireduration[1],fire_danger_index);
 #endif
   }
   *burnt_area_max=0;
