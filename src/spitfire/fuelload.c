@@ -185,7 +185,7 @@ void fuelload(const Stand *stand, /**< pointer to stand */
    }
   fuel->fi=(adead_sum || alive_sum > 0) ? adead_sum/(adead_sum+alive_sum) : 0;
   livefuel->fi=(adead_sum || alive_sum > 0) ? alive_sum/(adead_sum+alive_sum) : 0;
- for(i=0;i<NGLIM+1;++i)
+  for(i=0;i<NGLIM+1;++i)
     fsum[i]=0;
   for(i=0;i<NFUELCLASS;++i)
   {
@@ -193,8 +193,8 @@ void fuelload(const Stand *stand, /**< pointer to stand */
       if(sigma_dead[i]<glim[index]/30.48) /*conversion from ft^-1 to cm^-1*/
         break;
     fsum[index]+=fuel->f[i];
-  }   
-      /* assume nothing falls in class 0 (surface area to volume ratio < 16 ft^-1)*/
+  }
+  /* assume nothing falls in class 0 (surface area to volume ratio < 16 ft^-1)*/
   for(i=0;i<NFUELCLASS;++i)
   {
     for(index=0;index<NGLIM;++index)
@@ -209,7 +209,7 @@ void fuelload(const Stand *stand, /**< pointer to stand */
         break;
     fuel->g[i]=fsum[index];
   }
-   /* live fuels calculation of g factors */
+  /* live fuels calculation of g factors */
   for(i=0;i<NGLIM+1;++i)
     fsum[i]=0;
   for(i=0;i<2;++i)
@@ -218,8 +218,8 @@ void fuelload(const Stand *stand, /**< pointer to stand */
       if(sigma_live[i]<glim[index]/30.48) /*conversion from ft^-1 to cm^-1*/
         break;
     fsum[index]+=livefuel->f[i];
-  }   
-      /* assume nothing falls in class 0 (surface area to volume ratio < 16 ft^-1)*/
+  }
+  /* assume nothing falls in class 0 (surface area to volume ratio < 16 ft^-1)*/
   for(i=0;i<2;++i)
   {
     for(index=0;index<NGLIM;++index)

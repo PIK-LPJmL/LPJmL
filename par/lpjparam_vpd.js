@@ -2,7 +2,7 @@
 /**                                                                                \n**/
 /**              l  p  j  p  a  r  a  m  _  v  p  d  .  j  s                       \n**/
 /**                                                                                \n**/
-/**     LPJ parameter file for LPJmL version 5.5.001                               \n**/
+/**     LPJ parameter file for LPJmL version 5.7.8-FIRE                            \n**/
 /**                                                                                \n**/
 /** (C) Potsdam Institute for Climate Impact Research (PIK), see COPYRIGHT file    \n**/
 /** authors, and contributors see AUTHORS file                                     \n**/
@@ -68,10 +68,6 @@
   "fertilizer_rate" : 10,     /* default: 20; fixed fertilizer application rate in gN/m2/yr */
   "manure_rate" : 0,          /* default: 20; fixed manure application rate in gN/m2/yr */
   "mixing_efficiency" : 0.9,  /* mixing efficiency of tillage */
-  "fpc_tree_max" : 0.95,     /* maximum foliage projective cover for trees */
-  "temp_response" : 46.02,   /* Parameter in temperature response function */
-  "percthres" : 1.0,
-  "lsuha" : 0.0,             /* livestock density */
   "aprec_lim" : 900,         /* annual prec limit for C3 threshold*/
   "irrig_soilfrac" : 1.0,             /* fraction of soil filled with water during irrigation event */
   "canal_conveyance_eff_sand" : 0.7,  /* open canal conveyance efficiency, soil type sand (Ks > 20)*/
@@ -82,6 +78,7 @@
   "saturation_level_sprink" : 0.55,   /* saturation level sprinkler irrigation*/
   "saturation_level_drip" : 0.05,     /* saturation level drip irrigation*/
   "drip_evap_reduction" : 0.6,        /* reduction of drip soil evap */
+  "nfert_split" : 0,                  /* threshold fertilizer input for split application */
   "nfert_split_frac" : 0.2,           /* fraction of fertilizer input at sowing */
   "nfert_no3_frac" : 0.5,             /* fraction of NO3 in fertilizer input */
   "nmanure_nh4_frac" : 0.666667,      /* fraction of NH4 in manure input */
@@ -89,6 +86,7 @@
   "residues_in_soil_notillage" : 0.1,  /* minimum residues in soil before till_startyear (only if tilled) */
   "fburnt" : 1.0,                     /* fraction of trees burnt at deforestation, refers to remainder after timber harvest */
   "ftimber" : 0.76,                   /* timber fraction at deforestation */
+  "ftimber_wp" : 0.76,                /* timber fraction at deforestation for wood planations */
   "harvest_fast_frac" : 0.34,         /* fraction of harvested wood going to fast pools */
   "product_turnover" : { "fast" : 0.1, "slow" : 0.01}, /* product turnover (1/yr) */
   "esoil_reduction" : 0.0,            /* reduction of soil evaporation */
@@ -105,8 +103,6 @@
   "cg_ratio" : 0.2,                   /*cloud to ground ratio for lightning flashes */
   "fireduration" : [120,480],//1320,    /*default maximum fire duration (min) */
   "max_ndayfire" : 5,                /* maximum fire days (days) */
-  "nfert_split" : 5,                  /* threshold fertilizer input for split application */
-  "residues_in_soil" : 0.1,           /* minimum residues in soil*/
   "fburnt" : 1.0,                     /* fraction of trees burnt at deforestation, refers to remainder after timber harvest */
   "ftimber_wp" : 0.76,                /* timber fraction for wood plantations */
   "allocation_threshold" : 35.0,      /* allocation threshold for daily grassland allocation */
