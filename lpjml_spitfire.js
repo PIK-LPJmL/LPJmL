@@ -31,6 +31,11 @@
   "sim_name" : "LPJmL Run", /* Simulation description */
   "sim_id"   : "lpjml",     /* LPJML Simulation type with managed land use */
   "version"  : "5.7",       /* LPJmL version expected */
+  "global_attrs" : {"institution" : "Potsdam Institute for Climate Impact Research",
+                    "contact" : "", /* name and email address */
+                    "comment" : ""  /* additional comments */
+                   },       /* Global attributes for NetCDF output files */
+
   "coupled_model" : null,
   "random_prec" : false,     /* Random weather generator for precipitation enabled */
   "random_seed" : 2,        /* seed for random number generator */
@@ -106,7 +111,7 @@
   "manure_input" : true,                /* enable manure input */
   "fix_fertilization" : false,          /* fix fertilizer input */
   "others_to_crop" : true,              /* move PFT type others into PFT crop, cft_tropic for tropical,  cft_temp for temperate */
-  "grazing" : "default",                /* default grazing type, other options : "default", "mowing", "ext", "int", "none" */
+  "grazing" : "livestock",              /* default grazing type, other options : "default", "mowing", "ext", "int", "none" */
   "cft_temp" : "temperate cereals",
   "cft_tropic" : "maize",
   "grassonly" : false,                  /* set all cropland including others to zero but keep managed grasslands */
@@ -117,7 +122,7 @@
   "crop_resp_fix" : false,             /* variable C:N ratio for crop respiration */
                                        /* for MAgPIE runs, turn off dynamic C:N ratio dependent respiration,
                                           which reduces yields at high N inputs */
-  "prescribe_lsuha" : false,
+  "prescribe_lsuha" : true,
   "crop_phu_option" : "new",
   "cropsheatfrost" : false,
   "double_harvest" : true,
