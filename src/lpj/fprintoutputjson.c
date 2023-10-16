@@ -173,11 +173,16 @@ Bool fprintoutputjson(int index,           /**< index in outputvars array */
   {
     grid_filename=findgridfile(config);
     if(grid_filename!=NULL)
-      fprintf(file,"  \"grid\" : {\"filename\" : \"%s\", \"format\" : \"%s\", \"scalar\" : %g, \"datatype\" : \"%s\"},\n",
+    {
+      fprintf(file,"  \"grid\" : {\"filename\" : \"%s\", \"format\" : \"%s\", \"scalar\" : %g,",
               strippath(grid_filename->name),
               fmt[grid_filename->fmt],
-              (config->float_grid || grid_filename->fmt==TXT || grid_filename->fmt==CDF) ? 1 : 0.01,
+              (config->float_grid || grid_filename->fmt==TXT || grid_filename->fmt==CDF) ? 1 : 0.01);
+      if(grid_filename->fmt==CLM)
+        fprintf(file," \"offset\" : %zu,",headersize(LPJGRID_HEADER,grid_filename->version));
+      fprintf(file," \"datatype\" : \"%s\"},\n",
               typenames[(config->float_grid || grid_filename->fmt==TXT || grid_filename->fmt==CDF) ? LPJ_FLOAT : LPJ_SHORT]);
+    }
   }
   fprintf(file,"  \"filename\" : \"%s\"\n",strippath(filename));
   fprintf(file,"}\n");
