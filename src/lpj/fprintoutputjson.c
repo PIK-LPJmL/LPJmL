@@ -145,10 +145,11 @@ Bool fprintoutputjson(int index,           /**< index in outputvars array */
     fprintf(file,"  \"lastyear\" : %d,\n",config->outputvars[index].oneyear ? year : config->outputyear+max(1,config->outnames[id].timestep)-1+((config->lastyear-config->outputyear+1)/max(1,config->outnames[id].timestep)-1)*max(1,config->outnames[id].timestep));
     fprintf(file,"  \"nyear\" : %d,\n",(config->outputvars[index].oneyear) ? 1 : (config->lastyear-config->outputyear+1)/max(1,config->outnames[id].timestep));
   }
-  fprintf(file,"  \"datatype\" : \"%s\",\n",typenames[getoutputtype(id,config->float_grid)]);
   if(config->outputvars[index].id==GRID)
   {
-    if(config->float_grid)
+    fprintf(file,"  \"datatype\" : \"%s\",\n",
+            typenames[(config->float_grid || config->outputvars[index].filename.fmt==TXT || config->outputvars[index].filename.fmt==CDF) ? LPJ_FLOAT : LPJ_SHORT]);
+    if(config->float_grid || config->outputvars[index].filename.fmt==TXT || config->outputvars[index].filename.fmt==CDF)
       fprintf(file,"  \"scalar\" : 1.0,\n");
     else
       fprintf(file,"  \"scalar\" : 0.01,\n");
@@ -156,6 +157,7 @@ Bool fprintoutputjson(int index,           /**< index in outputvars array */
   }
   else
   {
+    fprintf(file,"  \"datatype\" : \"%s\",\n",typenames[getoutputtype(id,config->float_grid)]);
     fprintf(file,"  \"scalar\" : 1.0,\n");
     fprintf(file,"  \"order\" : \"cellseq\",\n");
   }
@@ -174,8 +176,8 @@ Bool fprintoutputjson(int index,           /**< index in outputvars array */
       fprintf(file,"  \"grid\" : {\"filename\" : \"%s\", \"format\" : \"%s\", \"scalar\" : %g, \"datatype\" : \"%s\"},\n",
               strippath(grid_filename->name),
               fmt[grid_filename->fmt],
-              (config->float_grid) ? 1 : 0.01,
-              typenames[(config->float_grid) ? LPJ_FLOAT : LPJ_SHORT]);
+              (config->float_grid || grid_filename->fmt==TXT || grid_filename->fmt==CDF) ? 1 : 0.01,
+              typenames[(config->float_grid || grid_filename->fmt==TXT || grid_filename->fmt==CDF) ? LPJ_FLOAT : LPJ_SHORT]);
   }
   fprintf(file,"  \"filename\" : \"%s\"\n",strippath(filename));
   fprintf(file,"}\n");
