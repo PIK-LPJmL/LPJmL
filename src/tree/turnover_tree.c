@@ -86,7 +86,7 @@ Stocks turnover_tree(Litter *litter, /**< Litter pool */
     {
       getoutput(output,FLUX_ESTABN,config)-=reprod*pft->stand->frac;
       pft->stand->cell->balance.flux_estab.nitrogen-=reprod*pft->stand->frac;
-      pft->establish.carbon-=reprod;
+      pft->establish.nitrogen-=reprod;
       reprod=0;
     }
     getoutput(output,LITFALLN,config)+=reprod*pft->stand->frac;

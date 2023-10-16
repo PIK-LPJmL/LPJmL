@@ -19,6 +19,22 @@ of `major.minor.patch` with
 
 ## [Unreleased]
 
+## [5.7.9] - 2023-10-06
+
+### Contributors
+
+- author: Werner von Bloh (bloh@pik-potsdam.de)
+- code review: Sibyll Schaphoff (sibylls@pik-potsdam.de), Constanze Werner (cowerner@pik-potsdam.de)
+
+### Removed
+
+- Unused flag `"biomass_grass_harvest"` removed from configuration
+
+### Fixed
+
+- update of `pft->establish.nitrogen` corrected in `turnover_tree.c`.
+
+
 ## [5.7.8] - 2023-09-22
 
 ### Contributors
