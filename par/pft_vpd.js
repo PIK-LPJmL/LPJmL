@@ -2,7 +2,7 @@
 /**                                                                                \n**/
 /**              p  f  t  _  v  p  d  .  j  s                                      \n**/
 /**                                                                                \n**/
-/**  PFT and CFT parameter file for LPJmL version 5.7.8-FIRE                       \n**/
+/**  PFT and CFT parameter file for LPJmL version 5.7.9-FIRE                       \n**/
 /**  CFTs parameters must be put after PFTs                                        \n**/
 /**                                                                                \n**/
 /** (C) Potsdam Institute for Climate Impact Research (PIK), see COPYRIGHT file    \n**/
@@ -87,6 +87,7 @@
 #define VPD_PARAM_TREE_BL 25
 #define VPD_PARAM_TREE_NL 35
 #define VPD_PARAM_GRASS 8
+#define WOOD_DENSITY 2e5      /* wood density (gC/m3) */
 
 "pftpar" :
 [
@@ -183,6 +184,7 @@
     "allom3" : ALLOM3,
     "allom4" : ALLOM4,
     "k_latosa" : K_LATOSA,
+    "wood_density" : WOOD_DENSITY, /* wood density in gC/m3 */
     "height_max" : HEIGHT_MAX, /* maximum height of tree */
     "scorchheight_f_param" : 0.2406, /* scorch height (F) */
     "crownlength" : 0.3334, /* crown length (CL) */
@@ -294,6 +296,7 @@
     "allom3" : ALLOM3,
     "allom4" : ALLOM4,
     "k_latosa" : K_LATOSA,
+    "wood_density" : WOOD_DENSITY, /* wood density in gC/m3 */
     "height_max" : HEIGHT_MAX, /* maximum height of tree */
     "scorchheight_f_param" : 0.1, /* scorch height (F) */
     "crownlength" : 0.10, /* crown length (CL) */
@@ -405,6 +408,7 @@
     "allom3" : ALLOM3,
     "allom4" : ALLOM4,
     "k_latosa" : K_LATOSA,
+    "wood_density" : WOOD_DENSITY, /* wood density in gC/m3 */
     "height_max" : HEIGHT_MAX, /* maximum height of tree */
     "scorchheight_f_param" : 0.1000,/* scorch height (F) */
     "crownlength" : 0.3334, /* crown length (CL) */
@@ -516,6 +520,7 @@
     "allom3" : ALLOM3,
     "allom4" : ALLOM4,
     "k_latosa" : K_LATOSA,
+    "wood_density" : WOOD_DENSITY, /* wood density in gC/m3 */
     "height_max" : HEIGHT_MAX, /* maximum height of tree */
     "scorchheight_f_param" : 0.3710,/* scorch height (F) */
     "crownlength" : 0.3334, /* crown length (CL) */
@@ -629,6 +634,7 @@
     "allom3" : ALLOM3,
     "allom4" : ALLOM4,
     "k_latosa" : K_LATOSA,
+    "wood_density" : WOOD_DENSITY, /* wood density in gC/m3 */
     "height_max" : HEIGHT_MAX, /* maximum height of tree */
     "scorchheight_f_param" : 0.0940,/* scorch height (F) */
     "crownlength" : 0.3334, /* crown length (CL) */
@@ -740,6 +746,7 @@
     "allom3" : ALLOM3,
     "allom4" : ALLOM4,
     "k_latosa" : K_LATOSA,
+    "wood_density" : WOOD_DENSITY, /* wood density in gC/m3 */
     "height_max" : HEIGHT_MAX, /* maximum height of tree */
     "scorchheight_f_param" : 0.1100,/* scorch height (F) */
     "crownlength" : 0.3334, /* crown length (CL) */
@@ -853,6 +860,7 @@
     "allom3" : ALLOM3,
     "allom4" : ALLOM4,
     "k_latosa" : K_LATOSA,
+    "wood_density" : WOOD_DENSITY, /* wood density in gC/m3 */
     "height_max" : HEIGHT_MAX, /* maximum height of tree */
     "scorchheight_f_param" : 0.0940,/* scorch height (F) */
     "crownlength" : 0.3334, /* crown length (CL) */
@@ -966,6 +974,7 @@
     "allom3" : ALLOM3,
     "allom4" : ALLOM4,
     "k_latosa" : K_LATOSA,
+    "wood_density" : WOOD_DENSITY, /* wood density in gC/m3 */
     "height_max" : HEIGHT_MAX, /* maximum height of tree */
     "scorchheight_f_param" : 0.0940,/* scorch height (F) */
     "crownlength" : 0.3334, /* crown length (CL) */
@@ -1370,6 +1379,7 @@
     "allom3" : 0.75,
     "allom4" : ALLOM4,
     "k_latosa" : 4000,      /* represent species investing in biomass (wood) production */
+    "wood_density" : WOOD_DENSITY, /* wood density in gC/m3 */
     "height_max" : 8,       /* maximum height of tree */
     "scorchheight_f_param" : 0.061,/* scorch height (F) */
     "crownlength" : 0.10 , /* crown length (CL) */
@@ -1477,6 +1487,7 @@
     "allom3" : 0.75,
     "allom4" : ALLOM4,
     "k_latosa" : 4000,    /* represent species investing in biomass (wood) production */
+    "wood_density" : WOOD_DENSITY, /* wood density in gC/m3 */
     "height_max" : 8,       /* maximum height of tree */
     "scorchheight_f_param" : 0.0940, /* scorch height (F) */
     "crownlength" : 0.3334, /* crown length (CL) */
