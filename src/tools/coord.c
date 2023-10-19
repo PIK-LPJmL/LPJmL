@@ -79,6 +79,7 @@ Coordfile opencoord(const Filename *filename, /**< filename of coord file */
     coordfile->cellsize.lon=header.cellsize_lon;
     coordfile->cellsize.lat=header.cellsize_lat;
     coordfile->datatype=header.datatype;
+    coordfile->scalar=header.scalar;
     if(header.nbands!=2)
     {
       if(isout)
@@ -106,6 +107,7 @@ Coordfile opencoord(const Filename *filename, /**< filename of coord file */
       free(coordfile);
       return NULL;
     }
+    fseek(coordfile->file,coordfile->offset,SEEK_SET);
     return coordfile;
   }
   coordfile->file=fopen(filename->name,"rb");
