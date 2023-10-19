@@ -18,14 +18,47 @@
 
 #define LINE_LEN 80  /* line length of JSON file */
 
-static const Filename *findgridfile(const Config *config)
+static const Filename *findoutputfile(int index,const Config *config)
 {
   int i;
   for(i=0;i<config->n_out;i++)
-    if(config->outputvars[i].id==GRID)
+    if(config->outputvars[i].id==index)
       return &config->outputvars[i].filename;
   return NULL;
 } /* of 'findgridfile' */
+
+static void fprintreffile(FILE *file,int index,int ref_index,const char *ref_name,const Config *config)
+{
+  const Filename *ref_filename;
+  char *name;
+  if(config->outputvars[index].id!=ref_index)
+  {
+    ref_filename=findoutputfile(ref_index,config);
+    if(ref_filename!=NULL)
+    {
+      if(ref_filename->meta)
+      {
+         name=malloc(strlen(ref_filename->name)+strlen(config->json_suffix)+1);
+         name=strcat(strcpy(name,ref_filename->name),config->json_suffix);
+         fprintf(file,"  \"%s\" : {\"filename\" : \"%s\", \"format\" : \"meta\"},\n",ref_name,strippath(name));
+         free(name);
+      }
+      else if(ref_filename->fmt==CLM)
+        fprintf(file,"  \"%s\" : {\"filename\" : \"%s\", \"format\" : \"clm\", \"version\" : %d}\n,",
+                 ref_name,strippath(ref_filename->name),ref_filename->version);
+      else
+      {
+        fprintf(file,"  \"%s\" : {\"filename\" : \"%s\", \"format\" : \"%s\", \"scalar\" : %g,",
+                ref_name,
+                strippath(ref_filename->name),
+                fmt[ref_filename->fmt],
+                (ref_index!=GRID || config->float_grid || ref_filename->fmt==TXT || ref_filename->fmt==CDF) ? 1 : 0.01);
+        fprintf(file," \"datatype\" : \"%s\"},\n",
+                typenames[(ref_index!=GRID || config->float_grid || ref_filename->fmt==TXT || ref_filename->fmt==CDF) ? LPJ_FLOAT : LPJ_SHORT]);
+      }
+    }
+  }
+} /* of 'fprintreffile' */
 
 Bool fprintoutputjson(int index,           /**< index in outputvars array */
                       int year,            /**< year one-year output is written */
@@ -35,7 +68,6 @@ Bool fprintoutputjson(int index,           /**< index in outputvars array */
   FILE *file;
   char *filename;
   char *json_filename;
-  const Filename *grid_filename;
   char **pftnames;
   int p,nbands,len,count,id;
   id=config->outputvars[index].id;
@@ -169,21 +201,8 @@ Bool fprintoutputjson(int index,           /**< index in outputvars array */
   fprintf(file,"  \"format\" : \"%s\",\n",fmt[config->outputvars[index].filename.fmt]);
   if(config->outputvars[index].filename.fmt==CLM)
     fprintf(file,"  \"version\" : %d,\n",config->outputvars[index].filename.version);
-  if(config->outputvars[index].id!=GRID)
-  {
-    grid_filename=findgridfile(config);
-    if(grid_filename!=NULL)
-    {
-      fprintf(file,"  \"grid\" : {\"filename\" : \"%s\", \"format\" : \"%s\", \"scalar\" : %g,",
-              strippath(grid_filename->name),
-              fmt[grid_filename->fmt],
-              (config->float_grid || grid_filename->fmt==TXT || grid_filename->fmt==CDF) ? 1 : 0.01);
-      if(grid_filename->fmt==CLM)
-        fprintf(file," \"offset\" : %zu,",headersize(LPJGRID_HEADER,grid_filename->version));
-      fprintf(file," \"datatype\" : \"%s\"},\n",
-              typenames[(config->float_grid || grid_filename->fmt==TXT || grid_filename->fmt==CDF) ? LPJ_FLOAT : LPJ_SHORT]);
-    }
-  }
+  fprintreffile(file,index,GRID,"grid",config);
+  fprintreffile(file,index,TERR_AREA,"ref_area",config);
   fprintf(file,"  \"filename\" : \"%s\"\n",strippath(filename));
   fprintf(file,"}\n");
   fclose(file);
