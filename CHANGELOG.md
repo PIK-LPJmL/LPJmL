@@ -19,7 +19,7 @@ of `major.minor.patch` with
 
 ## [Unreleased]
 
-## [5.7.9] - 2023-10-16
+## [5.7.9] - 2023-10-20
 
 ### Contributors
 
@@ -28,7 +28,7 @@ of `major.minor.patch` with
 
 ### Added
 
-- name of grid file written to output JSON files.
+- name of grid file and `"terr_area"` output written to output JSON files. A link to the corresponding JSON file is added.
 - list of utilities added to `INSTALL` file.
 
 ### Removed
@@ -38,6 +38,7 @@ of `major.minor.patch` with
 ### Fixed
 
 - update of `pft->establish.nitrogen` corrected in `turnover_tree.c`.
+- opening of grid file in JSON metafile format fixed in `opencoord()`.
 
 
 ## [5.7.8] - 2023-09-22
