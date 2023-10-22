@@ -22,6 +22,7 @@ void modify_enth_due_to_heatconduction(Soil *, Real, Soil_thermal_prop,const Con
 void compute_litter_temp_from_enth(Soil * soil, Real temp_below_snow ,const Config * config,Soil_thermal_prop therm_prop);
 void compute_water_ice_ratios_from_enth(Soil *, const Config *, Soil_thermal_prop);
 void calc_gp_temps(Real * gp_temps, Real * enth, Soil_thermal_prop th);
+void compute_maxthaw_depth(Soil * soil);
 
 /* main function */
 
@@ -43,6 +44,7 @@ void update_soil_thermal_state(Soil *soil,          /**< pointer to soil data */
   compute_mean_layer_temps_from_enth(soil->temp,soil->enth, therm_prop);
   compute_water_ice_ratios_from_enth(soil,config,therm_prop);
   compute_litter_temp_from_enth(soil, temp_below_snow ,config,therm_prop);
+  compute_maxthaw_depth(soil);
 
 } 
 
@@ -80,6 +82,21 @@ void compute_water_ice_ratios_from_enth(Soil * soil, const Config * config, Soil
 void compute_litter_temp_from_enth(Soil * soil, Real temp_below_snow ,const Config * config,Soil_thermal_prop therm_prop)
 {
   soil->litter.agtop_temp = (temp_below_snow + ENTH2TEMP(soil->enth,therm_prop,0)) / 2;
+}
+
+void compute_maxthaw_depth(Soil * soil)
+{
+  Real depth_to_first_ice=0;
+  int l;
+  for (l=0;l<=BOTTOMLAYER;l++)
+  {
+    depth_to_first_ice+=soildepth[l];
+    if(soil->freeze_depth[l]>epsilon)
+      break;
+  }
+  depth_to_first_ice-=soil->freeze_depth[l];
+  if (soil->maxthaw_depth<depth_to_first_ice)
+   soil->maxthaw_depth=depth_to_first_ice;
 }
 
 
