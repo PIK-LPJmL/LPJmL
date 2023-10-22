@@ -575,8 +575,8 @@ void set_irrigsystem(Stand *stand,          /**< stand pointer */
 
           if(config->pft_output_scaled)
           {
-            getoutputindex(output,CFT_CONV_LOSS_EVAP,rmgrass(ncft)+nirrig,config)-=(data->irrig_stor+data->irrig_amount)*(1/data->ec-1)*data->conv_evap*stand->cell->ml.landfrac[1].grass[1];
-            getoutputindex(output,CFT_CONV_LOSS_DRAIN,rmgrass(ncft)+nirrig,config)-=(data->irrig_stor+data->irrig_amount)*(1/data->ec-1)*(1-data->conv_evap)*stand->cell->ml.landfrac[1].grass[1];
+            getoutputindex(output,CFT_CONV_LOSS_EVAP,rmgrass(ncft)+nirrig,config)-=(data->irrig_stor+data->irrig_amount)*(1/data->ec-1)*data->conv_evap*stand->frac;
+            getoutputindex(output,CFT_CONV_LOSS_DRAIN,rmgrass(ncft)+nirrig,config)-=(data->irrig_stor+data->irrig_amount)*(1/data->ec-1)*(1-data->conv_evap)*stand->frac;
           }
           else
           {
@@ -618,8 +618,8 @@ void set_irrigsystem(Stand *stand,          /**< stand pointer */
 
             if(config->pft_output_scaled)
             {
-              getoutputindex(output,CFT_CONV_LOSS_EVAP,rothers(ncft)+nirrig,config)-=(data->irrig_stor+data->irrig_amount)*(1/data->ec-1)*data->conv_evap*stand->cell->ml.landfrac[1].grass[0];
-              getoutputindex(output,CFT_CONV_LOSS_DRAIN,rothers(ncft)+nirrig,config)-=(data->irrig_stor+data->irrig_amount)*(1/data->ec-1)*(1-data->conv_evap)*stand->cell->ml.landfrac[1].grass[0];
+              getoutputindex(output,CFT_CONV_LOSS_EVAP,rothers(ncft)+nirrig,config)-=(data->irrig_stor+data->irrig_amount)*(1/data->ec-1)*data->conv_evap*stand->frac;
+              getoutputindex(output,CFT_CONV_LOSS_DRAIN,rothers(ncft)+nirrig,config)-=(data->irrig_stor+data->irrig_amount)*(1/data->ec-1)*(1-data->conv_evap)*stand->frac;
             }
             else
             {
@@ -697,8 +697,8 @@ void set_irrigsystem(Stand *stand,          /**< stand pointer */
 #endif
         if(config->pft_output_scaled)
         {
-          getoutputindex(output,CFT_CONV_LOSS_EVAP,rbtree(ncft)+nirrig,config)-=(data->irrig_stor+data->irrig_amount)*(1/data->ec-1)*data->conv_evap*stand->cell->ml.landfrac[1].biomass_tree;
-          getoutputindex(output,CFT_CONV_LOSS_DRAIN,rbtree(ncft)+nirrig,config)-=(data->irrig_stor+data->irrig_amount)*(1/data->ec-1)*(1-data->conv_evap)*stand->cell->ml.landfrac[1].biomass_tree;
+          getoutputindex(output,CFT_CONV_LOSS_EVAP,rbtree(ncft)+nirrig,config)-=(data->irrig_stor+data->irrig_amount)*(1/data->ec-1)*data->conv_evap*stand->frac;
+          getoutputindex(output,CFT_CONV_LOSS_DRAIN,rbtree(ncft)+nirrig,config)-=(data->irrig_stor+data->irrig_amount)*(1/data->ec-1)*(1-data->conv_evap)*stand->frac;
         }
         else
         {
@@ -736,8 +736,8 @@ void set_irrigsystem(Stand *stand,          /**< stand pointer */
 #endif
         if(config->pft_output_scaled)
         {
-          getoutputindex(output,CFT_CONV_LOSS_EVAP,rbgrass(ncft)+nirrig,config)-=(data->irrig_stor+data->irrig_amount)*(1/data->ec-1)*data->conv_evap*stand->cell->ml.landfrac[1].biomass_grass;
-          getoutputindex(output,CFT_CONV_LOSS_DRAIN,rbgrass(ncft)+nirrig,config)-=(data->irrig_stor+data->irrig_amount)*(1/data->ec-1)*(1-data->conv_evap)*stand->cell->ml.landfrac[1].biomass_grass;
+          getoutputindex(output,CFT_CONV_LOSS_EVAP,rbgrass(ncft)+nirrig,config)-=(data->irrig_stor+data->irrig_amount)*(1/data->ec-1)*data->conv_evap*stand->frac;
+          getoutputindex(output,CFT_CONV_LOSS_DRAIN,rbgrass(ncft)+nirrig,config)-=(data->irrig_stor+data->irrig_amount)*(1/data->ec-1)*(1-data->conv_evap)*stand->frac;
         }
         else
         {
@@ -775,8 +775,8 @@ void set_irrigsystem(Stand *stand,          /**< stand pointer */
 #endif
         if (config->pft_output_scaled)
         {
-          getoutputindex(output,CFT_CONV_LOSS_EVAP,rwp(ncft)+nirrig,config)-=(data->irrig_stor+data->irrig_amount)*(1/data->ec-1)*data->conv_evap*stand->cell->ml.landfrac[1].woodplantation;
-          getoutputindex(output,CFT_CONV_LOSS_DRAIN,rwp(ncft)+nirrig,config)-=(data->irrig_stor+data->irrig_amount)*(1/data->ec-1)*(1-data->conv_evap)*stand->cell->ml.landfrac[1].woodplantation;
+          getoutputindex(output,CFT_CONV_LOSS_EVAP,rwp(ncft)+nirrig,config)-=(data->irrig_stor+data->irrig_amount)*(1/data->ec-1)*data->conv_evap*stand->frac;
+          getoutputindex(output,CFT_CONV_LOSS_DRAIN,rwp(ncft)+nirrig,config)-=(data->irrig_stor+data->irrig_amount)*(1/data->ec-1)*(1-data->conv_evap)*stand->frac;
         }
         else
         {
@@ -903,6 +903,16 @@ void landusechange(Cell *cell,          /**< pointer to cell */
       }
     }
   }
+  /* update rainfed and irrigated sum of fractions */
+  sum[0]=sum[1]=0.0;
+  foreachstand(stand,s,cell->standlist)
+    if(stand->type->landusetype!=NATURAL)
+    {
+      data=stand->data;
+      sum[data->irrigation]+=stand->frac;
+    }
+  cell->ml.cropfrac_rf=sum[0];
+  cell->ml.cropfrac_ir=sum[1];
 
   for(i=0;i<2;i++)
   {

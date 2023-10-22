@@ -310,7 +310,7 @@ Real daily_agriculture(Stand *stand,                /**< [inout] stand pointer *
     getoutput(output,GPP,config)+=gpp*stand->frac;
     getoutput(output,FAPAR,config) += pft->fapar * stand->frac * (1.0/(1-stand->cell->lakefrac-stand->cell->ml.reservoirfrac));
     getoutput(output,WSCAL,config) += pft->fpc * pft->wscal * stand->frac * (1.0/(1-stand->cell->lakefrac-stand->cell->ml.reservoirfrac));
-    getoutputindex(output,CFT_FPAR,index,config)+=(fpar(pft)*stand->frac*(1.0/(1-stand->cell->lakefrac)))*(1-pft->albedo);
+    getoutputindex(output,CFT_FPAR,index,config)+=(fpar(pft)*stand->frac*(1.0/(1-stand->cell->lakefrac-stand->cell->ml.reservoirfrac)))*(1-pft->albedo);
 
     if(config->pft_output_scaled)
       getoutputindex(output,PFT_NPP,nnat+index,config)+=npp*stand->frac;
