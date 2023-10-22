@@ -2,7 +2,7 @@
 /**                                                                                \n**/
 /**                   l  p  j  m  l  .  j  s                                       \n**/
 /**                                                                                \n**/
-/** Default configuration file for LPJmL C Version 5.7.1                           \n**/
+/** Default configuration file for LPJmL C Version 5.7.5                           \n**/
 /**                                                                                \n**/
 /** Configuration file is divided into five sections:                              \n**/
 /**                                                                                \n**/
@@ -43,7 +43,7 @@
   "gsi_phenology" : true,   /* GSI phenology enabled */
   "transp_suction_fcn" : false, /* enable transpiration suction function (true/false) */
   "with_lakes" : true,      /* enable lakes (true/false) */
-  "river_routing" : false,
+  "river_routing" : true,
   "extflow" : false,
   "permafrost" : true,
   "johansen" : true,
@@ -66,19 +66,16 @@
   "fix_landuse_year" : 1901,             /* year after land use is fixed */
   "fix_co2" : false,                     /* fix atmospheric CO2  after specfied year */
   "fix_co2_year" : 1901,                 /* year after CO2 is fixed */
-  "landuse" : "no", /* other options: "no", "yes", "const", "all_crops", "only_crops" */
-  "wateruse" : "no",  /* other options: "no", "yes", "all" */
-
-#ifdef FROM_RESTART
+  #ifdef FROM_RESTART
   "new_seed" : false, /* read random seed from restart file */
   "population" : false,
-  "landuse" : "no", /* other options: "no", "yes", "const", "all_crops", "only_crops" */
+  "landuse" : "yes", /* other options: "no", "yes", "const", "all_crops", "only_crops" */
   "landuse_year_const" : 2000, /* set landuse year for "const" case */
   "reservoir" : true,
-  "wateruse" : "no",  /* other options: "no", "yes", "all" */
+  "wateruse" : "yes",  /* other options: "no", "yes", "all" */
   "equilsoil" : false,
 #else
-  "equilsoil" : false,
+  "equilsoil" : true,
   "population" : false,
   "landuse" : "no",
   "reservoir" : false,
@@ -175,6 +172,7 @@ ID                               Fmt                        filename
     { "id" : "npp",              "file" : { "fmt" : "raw", "name" : "output/mnpp.bin"}},
     { "id" : "gpp",              "file" : { "fmt" : "raw", "name" : "output/mgpp.bin"}},
     { "id" : "rh",               "file" : { "fmt" : "raw", "name" : "output/mrh.bin"}},
+    { "id" : "rd",               "file" : { "fmt" : "raw", "name" : "output/rd.bin"}},
     { "id" : "fapar",            "file" : { "fmt" : "raw", "name" : "output/mfapar.bin"}},
     { "id" : "transp",           "file" : { "fmt" : "raw", "name" : "output/mtransp.bin"}},
     { "id" : "runoff",           "file" : { "fmt" : "raw", "name" : "output/mrunoff.bin"}},
@@ -210,10 +208,11 @@ ID                               Fmt                        filename
     { "id" : "bnf",              "file" : { "fmt" : "raw", "name" : "output/mbnf.bin"}},
     { "id" : "n_immo",           "file" : { "fmt" : "raw", "name" : "output/mn_immo.bin"}},
     { "id" : "pft_ndemand",      "file" : { "fmt" : "raw", "name" : "output/pft_ndemand.bin"}},
-    { "id" : "nfert_agr",      "file" : { "fmt" : "raw", "name" : "output/nfert_agr.bin"}},
+    { "id" : "nfert_agr",        "file" : { "fmt" : "raw", "name" : "output/nfert_agr.bin"}},
     { "id" : "firen",            "file" : { "fmt" : "raw", "name" : "output/firen.bin"}},
     { "id" : "n_mineralization", "file" : { "fmt" : "raw", "name" : "output/mn_mineralization.bin"}},
     { "id" : "n_volatilization", "file" : { "fmt" : "raw", "name" : "output/mn_volatilization.bin"}},
+    { "id" : "ndepos",           "file" : { "fmt" : "raw", "name" : "output/ndepos.bin"}},
     { "id" : "pft_nlimit",       "file" : { "fmt" : "raw", "name" : "output/pft_nlimit.bin"}},
     { "id" : "pft_vegn",         "file" : { "fmt" : "raw", "name" : "output/pft_vegn.bin"}},
     { "id" : "pft_cleaf",        "file" : { "fmt" : "raw", "name" : "output/pft_cleaf.bin"}},
@@ -225,6 +224,7 @@ ID                               Fmt                        filename
     { "id" : "pft_nsapw",        "file" : { "fmt" : "raw", "name" : "output/pft_nsapw.bin"}},
     { "id" : "pft_chawo",        "file" : { "fmt" : "raw", "name" : "output/pft_chawo.bin"}},
     { "id" : "pft_nhawo",        "file" : { "fmt" : "raw", "name" : "output/pft_nhawo.bin"}},
+    { "id" : "pft_water_demand", "file" : { "fmt" : "raw", "name" : "output/pft_water_demand.bin"}},
 #ifdef WITH_SPITFIRE
     { "id" : "firec",            "file" : { "fmt" : "raw", "timestep" : "monthly" , "unit" : "gC/m2/month", "name" : "output/mfirec.bin"}},
     { "id" : "nfire",            "file" : { "fmt" : "raw", "name" : "output/mnfire.bin"}},
@@ -232,53 +232,38 @@ ID                               Fmt                        filename
 #else
     { "id" : "firec",            "file" : { "fmt" : "raw", "name" : "output/firec.bin"}},
 #endif
-    { "id" : "soiltemp1",        "file" : { "fmt" : "txt", "name" : "output/msoiltemp1.txt"}},
-    { "id" : "soiltemp2",        "file" : { "fmt" : "txt", "name" : "output/msoiltemp2.txt"}},
-    { "id" : "soiltemp3",        "file" : { "fmt" : "txt", "name" : "output/msoiltemp3.txt"}},
-    { "id" : "soiltemp4",        "file" : { "fmt" : "txt", "name" : "output/msoiltemp4.txt"}},
-    { "id" : "soiltemp5",        "file" : { "fmt" : "txt", "name" : "output/msoiltemp5.txt"}},
-    { "id" : "soiltemp6",        "file" : { "fmt" : "txt", "name" : "output/msoiltemp6.txt"}},
-    { "id" : "swc1",        "file" : { "fmt" : "txt", "name" : "output/water1.txt"}},
-    { "id" : "swc2",        "file" : { "fmt" : "txt", "name" : "output/water2.txt"}},
-    { "id" : "swc3",        "file" : { "fmt" : "txt", "name" : "output/water3.txt"}},
-    { "id" : "swc4",        "file" : { "fmt" : "txt", "name" : "output/water4.txt"}},
-    { "id" : "swc5",        "file" : { "fmt" : "txt", "name" : "output/water5.txt"}},
-    { "id" : "rain",        "file" : { "fmt" : "txt", "name" : "output/rain.txt"}}
-
+    { "id" : "discharge",        "file" : { "fmt" : "raw", "name" : "output/mdischarge.bin"}},
+    { "id" : "wateramount",      "file" : { "fmt" : "raw", "name" : "output/mwateramount.bin"}},
+    { "id" : "harvestc",         "file" : { "fmt" : "raw", "name" : "output/flux_harvest.bin"}},
+    { "id" : "sdate",            "file" : { "fmt" : "raw", "name" : "output/sdate.bin"}},
+    { "id" : "pft_harvestc",     "file" : { "fmt" : "raw", "name" : mkstr(output/pft_harvest.SUFFIX)}},
+    { "id" : "cftfrac",          "file" : { "fmt" : "raw", "name" : "output/cftfrac.bin"}},
+    { "id" : "seasonality",      "file" : { "fmt" : "raw", "name" : "output/seasonality.bin"}},
+    { "id" : "pet",              "file" : { "fmt" : "raw", "name" : "output/mpet.bin"}},
+    { "id" : "albedo",           "file" : { "fmt" : "raw", "name" : "output/malbedo.bin"}},
+    { "id" : "maxthaw_depth",    "file" : { "fmt" : "raw", "name" : "output/maxthaw_depth.bin"}},
+    { "id" : "perc",             "file" : { "fmt" : "raw", "name" : "output/mperc.bin"}},
+    { "id" : "soiltemp1",        "file" : { "fmt" : "raw", "name" : "output/msoiltemp1.bin"}},
+    { "id" : "soiltemp2",        "file" : { "fmt" : "raw", "name" : "output/msoiltemp2.bin"}},
+    { "id" : "soiltemp3",        "file" : { "fmt" : "raw", "name" : "output/msoiltemp3.bin"}},
+    { "id" : "soilc_layer",      "file" : { "fmt" : "raw", "name" : "output/soilc_layer.bin"}},
+    { "id" : "agb",              "file" : { "fmt" : "raw", "name" : "output/agb.bin"}},
+    { "id" : "agb_tree",         "file" : { "fmt" : "raw", "name" : "output/agb_tree.bin"}},
+    { "id" : "return_flow_b",    "file" : { "fmt" : "raw", "name" : "output/mreturn_flow_b.bin"}},
+    { "id" : "transp_b",         "file" : { "fmt" : "raw", "name" : "output/mtransp_b.bin"}},
+    { "id" : "evap_b",           "file" : { "fmt" : "raw", "name" : "output/mevap_b.bin"}},
+    { "id" : "interc_b",         "file" : { "fmt" : "raw", "name" : "output/mintec_b.bin"}},
+    { "id" : "prod_turnover",    "file" : { "fmt" : "raw", "name" : "output/prod_turnover.bin"}},
+    { "id" : "deforest_emis",    "file" : { "fmt" : "raw", "name" : "output/deforest_emis.bin"}},
+    { "id" : "conv_loss_evap",   "file" : { "fmt" : "raw", "name" : "output/aconv_loss_evap.bin"}},
+    { "id" : "conv_loss_drain",  "file" : { "fmt" : "raw", "name" : "output/aconv_loss_drain.bin"}}
 /*------------------------------ ------------------------- ------------------------------- */
   ],
 
 #else
   "output" :
   [
-
-  /*
-  ID                               Fmt                        filename
-  -------------------------------- ------------------------- ----------------------------- */
-    { "id" : "grid",             "file" : { "fmt" : "txt", "name" : "output/grid.txt" }},
-    { "id" : "temp",             "file" : { "fmt" : "txt", "name" : "output/temp.txt"}},
-    
-  #ifdef WITH_SPITFIRE
-    { "id" : "firec",            "file" : { "fmt" : "raw", "timestep" : "monthly" , "unit" : "gC/m2/month", "name" : "output/mfirec.bin"}},
-    { "id" : "nfire",            "file" : { "fmt" : "raw", "name" : "output/mnfire.bin"}},
-    { "id" : "burntarea",        "file" : { "fmt" : "raw", "name" : "output/mburnt_area.bin"}},
-  #else
-    { "id" : "firec",            "file" : { "fmt" : "raw", "name" : "output/firec.bin"}},
-  #endif
-    { "id" : "soiltemp1",        "file" : { "fmt" : "txt", "name" : "output/msoiltemp1.txt"}},
-    { "id" : "soiltemp2",        "file" : { "fmt" : "txt", "name" : "output/msoiltemp2.txt"}},
-    { "id" : "soiltemp3",        "file" : { "fmt" : "txt", "name" : "output/msoiltemp3.txt"}},
-    { "id" : "soiltemp4",        "file" : { "fmt" : "txt", "name" : "output/msoiltemp4.txt"}},
-    { "id" : "soiltemp5",        "file" : { "fmt" : "txt", "name" : "output/msoiltemp5.txt"}},
-    { "id" : "soiltemp6",        "file" : { "fmt" : "txt", "name" : "output/msoiltemp6.txt"}},
-    { "id" : "swc1",        "file" : { "fmt" : "txt", "name" : "output/water1.txt"}},
-    { "id" : "swc2",        "file" : { "fmt" : "txt", "name" : "output/water2.txt"}},
-    { "id" : "swc3",        "file" : { "fmt" : "txt", "name" : "output/water3.txt"}},
-    { "id" : "swc4",        "file" : { "fmt" : "txt", "name" : "output/water4.txt"}},
-    { "id" : "swc5",        "file" : { "fmt" : "txt", "name" : "output/water5.txt"}},
-    { "id" : "swe",        "file" : { "fmt" : "txt", "name" : "output/snow.txt"}},
-    { "id" : "rain",        "file" : { "fmt" : "txt", "name" : "output/rain.txt"}}
-  /*------------------------------ ------------------------- ------------------------------- */
+{ "id" : "globalflux",       "file" : { "fmt" : "txt", "name" : "output/globalflux_spinup.csv"}}
   ],
 #endif
 
@@ -287,31 +272,31 @@ ID                               Fmt                        filename
 /*  V. Run settings section                                          */
 /*===================================================================*/
 
-"startgrid" : 60400, /* 27410, 67208 60400 47284 47293 47277 all grid cells */
-"endgrid"   : 60400,
+"startgrid" : "all", /* 27410, 67208 60400 47284 47293 47277 all grid cells */
+"endgrid"   : "all",
 #ifdef CHECKPOINT
 "checkpoint_filename" : "restart/restart_checkpoint.lpj", /* filename of checkpoint file */
 #endif
 
 #ifndef FROM_RESTART
 
-"nspinup" : 0,  /* spinup years */
-"nspinyear" : 0,  /* cycle length during spinup (yr) */
-"firstyear": 1940, /* first year of simulation */
-"lastyear" : 1950, /* last year of simulation */
+"nspinup" : 3500,  /* spinup years */
+"nspinyear" : 30,  /* cycle length during spinup (yr) */
+"firstyear": 1901, /* first year of simulation */
+"lastyear" : 1901, /* last year of simulation */
 "restart" :  false, /* start from restart file */
 "outputyear" : -1599,
 "write_restart" : true, /* create restart file: the last year of simulation=restart-year */
 "write_restart_filename" : "restart/restart_1840_nv_stdfire.lpj", /* filename of restart file */
-"restart_year": 1946 /* write restart at year */
+"restart_year": 1840 /* write restart at year */
 
 #else
 
-"nspinup" : 0,   /* spinup years */
+"nspinup" : 390,   /* spinup years */
 "nspinyear" : 30,  /* cycle length during spinup (yr)*/
-"firstyear": 1940, /* first year of simulation */
-"lastyear" : 1946, /* last year of simulation */
-"outputyear": 1940, /* first year output is written  */
+"firstyear": 1901, /* first year of simulation */
+"lastyear" : 2011, /* last year of simulation */
+"outputyear": 1901, /* first year output is written  */
 "restart" :  true, /* start from restart file */
 "restart_filename" : "restart/restart_1840_nv_stdfire.lpj", /* filename of restart file */
 "write_restart" : true, /* create restart file */
@@ -320,4 +305,3 @@ ID                               Fmt                        filename
 
 #endif
 }
-

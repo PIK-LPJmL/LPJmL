@@ -284,10 +284,10 @@ Bool fscanconfig(Config *config,    /**< LPJ configuration */
   config->transp_suction_fcn=FALSE;
   if(fscanbool(file,&config->transp_suction_fcn,"transp_suction_fcn",TRUE,verbose))
     return TRUE;
+  fscanbool2(file,&config->river_routing,"river_routing");
   config->with_lakes=config->river_routing;
   if(fscanbool(file,&config->with_lakes,"with_lakes",TRUE,verbose))
     return TRUE;
-  fscanbool2(file,&config->river_routing,"river_routing");
   config->extflow=FALSE;
   if(config->river_routing)
   {

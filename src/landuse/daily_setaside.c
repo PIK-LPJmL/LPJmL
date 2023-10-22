@@ -127,7 +127,9 @@ Real daily_setaside(Stand *stand, /**< stand pointer */
      */
     gpp=water_stressed(pft,aet_stand,gp_stand,gp_stand_leafon,
                        gp_pft[getpftpar(pft,id)],&gc_pft,&rd,
-                       &wet[p],eeq,co2,climate->temp,par,daylength,&wdf,npft,ncft,config);
+                       &wet[p],eeq,co2,climate->temp,par,daylength,&wdf,
+                       0,npft,ncft,config); // handing over index 0, but exclude in water_stressed
+    getoutput(output,RD,config)+=rd*stand->frac;
     if(gp_pft[getpftpar(pft,id)]>0.0)
     {
       output->gcgp_count[pft->par->id]++;
