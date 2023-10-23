@@ -1,0 +1,20 @@
+{
+  "filename" : "out.bin",
+  "source" : "../bin/cdf2bin -json grid.bin vegc.nc",
+  "firstcell" : 0,
+  "ncell" : 1,
+  "cellsize_lon" : 0.500000,
+  "cellsize_lat" : 0.500000,
+  "firstyear" : 1901,
+  "lastyear" : 1903,
+  "nyear" : 3,
+  "nstep" : 1,
+  "timestep" : 1,
+  "nbands" : 1,
+  "scalar" : 1.000000,
+  "datatype" : "float",
+  "format" : "raw",
+  "order" : "cellseq",
+  "grid" : {"filename" : "grid.bin", "format" : "raw", "datatype" : "short"},
+  "bigendian" : false
+}
