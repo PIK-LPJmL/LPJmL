@@ -31,6 +31,7 @@ void fprintpar_tree(FILE *file,       /**< pointer to text file */
                "max crownarea:\t%g (m2)\n"
                "sapling:\t%g %g %g %g (gC/m2/yr)\n"
                "k_latosa:\t%g\n"
+               "wood_density:\t%g (gC/m3)\n"
                "allometry:\t%g %g %g %g\n",
           leaftype[partree->leaftype],
           1/partree->turnover.leaf,1/partree->turnover.sapwood,1/partree->turnover.root,
@@ -38,7 +39,8 @@ void fprintpar_tree(FILE *file,       /**< pointer to text file */
           partree->crownarea_max,
           partree->sapl.leaf.carbon,partree->sapl.sapwood.carbon,
           partree->sapl.heartwood.carbon,partree->sapl.root.carbon,partree->k_latosa,
-          partree->allom1,partree->allom2,partree->allom3,partree->allom4);
+          partree->wood_density,partree->allom1,partree->allom2,partree->allom3,
+          partree->allom4);
   if(config->with_nitrogen)
     fprintf(file,"rel. C:N ratio:\t%g %g\n",
             partree->ratio.sapwood,partree->ratio.root);

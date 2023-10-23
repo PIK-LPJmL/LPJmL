@@ -19,17 +19,29 @@ of `major.minor.patch` with
 
 ## [Unreleased]
 
-## [5.7.9] - 2023-10-20
+## [5.7.10] - 2023-10-20
 
 ### Contributors
 
 - author: Werner von Bloh (bloh@pik-potsdam.de)
-- code review: Sibyll Schaphoff (sibylls@pik-potsdam.de), Constanze Werner (cowerner@pik-potsdam.de)
+- code review: Jannes Breier (breier@pik-potsdam.de), Constanze Werner (cowerner@pik-potsdam.de), Christoph Mueller (cmueller@pik-potsdam.de)
 
 ### Added
 
-- name of grid file and `"terr_area"` output written to output JSON files. A link to the corresponding JSON file is added.
+- name of grid file and `"terr_area"` output file written to output JSON files. A link to the corresponding JSON file is added.
 - list of utilities added to `INSTALL` file.
+
+
+## [5.7.9] - 2023-10-20
+
+### Contributors
+
+- author: Werner von Bloh (bloh@pik-potsdam.de), Jens Heinke (heinke@pik-potsdam.de), Stephen Wirth (wirth@pik-potsdam.de)
+- code review: Sibyll Schaphoff (sibylls@pik-potsdam.de), Constanze Werner (cowerner@pik-potsdam.de), Christoph Mueller (cmueller@pik-potsdam.de)
+
+### Changed
+
+- constant wood density has been replaced by PFT-specific parameter `"wood_density"`,
 
 ### Removed
 
@@ -39,6 +51,7 @@ of `major.minor.patch` with
 
 - update of `pft->establish.nitrogen` corrected in `turnover_tree.c`.
 - opening of grid file in JSON metafile format fixed in `opencoord()`.
+- C and N in manure from grazing livestock goes to litter (as described in [Heinke et al. 2023](https://doi.org/10.5194/gmd-16-2455-2023) instead of going to soil pools directly.
 
 
 ## [5.7.8] - 2023-09-22
