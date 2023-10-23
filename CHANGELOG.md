@@ -23,8 +23,8 @@ of `major.minor.patch` with
 
 ### Contributors
 
-- author: Werner von Bloh (bloh@pik-potsdam.de)
-- code review: Sibyll Schaphoff (sibylls@pik-potsdam.de), Constanze Werner (cowerner@pik-potsdam.de)
+- author: Werner von Bloh (bloh@pik-potsdam.de), Jens Heinke (heinke@pik-potsdam.de)
+- code review: Sibyll Schaphoff (sibylls@pik-potsdam.de), Constanze Werner (cowerner@pik-potsdam.de), Christoph Mueller (cmueller@pik-potsdam.de)
 
 ### Removed
 
@@ -33,6 +33,7 @@ of `major.minor.patch` with
 ### Fixed
 
 - update of `pft->establish.nitrogen` corrected in `turnover_tree.c`.
+- C and N in manure from grazing livestock goes to litter (as described in [Heinke et al. 2023](https://doi.org/10.5194/gmd-16-2455-2023) instead of going to soil pools directly.
 
 
 ## [5.7.8] - 2023-09-22
