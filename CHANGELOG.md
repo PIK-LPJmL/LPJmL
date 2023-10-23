@@ -19,7 +19,7 @@ of `major.minor.patch` with
 
 ## [Unreleased]
 
-## [5.7.10] - 2023-10-20
+## [5.7.10] - 2023-10-23
 
 ### Contributors
 
@@ -30,9 +30,13 @@ of `major.minor.patch` with
 
 - name of grid file and `"terr_area"` output file written to output JSON files. A link to the corresponding JSON file is added.
 - list of utilities added to `INSTALL` file.
+- `-json` flag added to `cdf2clm` utility.
 
+### Fixed
 
-## [5.7.9] - 2023-10-20
+- opening of grid file in JSON metafile format fixed in `opencoord()`.
+
+## [5.7.9] - 2023-10-23
 
 ### Contributors
 
@@ -41,7 +45,7 @@ of `major.minor.patch` with
 
 ### Changed
 
-- constant wood density has been replaced by PFT-specific parameter `"wood_density"`,
+- constant wood density has been replaced by PFT-specific parameter `"wood_density"`.
 
 ### Removed
 
@@ -50,7 +54,6 @@ of `major.minor.patch` with
 ### Fixed
 
 - update of `pft->establish.nitrogen` corrected in `turnover_tree.c`.
-- opening of grid file in JSON metafile format fixed in `opencoord()`.
 - C and N in manure from grazing livestock goes to litter (as described in [Heinke et al. 2023](https://doi.org/10.5194/gmd-16-2455-2023) instead of going to soil pools directly.
 
 
