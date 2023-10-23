@@ -187,7 +187,6 @@ Bool fscanconfig(Config *config,    /**< LPJ configuration */
   const char *nitrogen[]={"no","lim","unlim"};
   const char *tillage[]={"no","all","read"};
   const char *residue_treatment[]={"no_residue_remove","fixed_residue_remove","read_residue_data"};
-  const char *biomass_grass_harvest[]={"green","brown"};
   Bool def[N_IN];
   verbose=(isroot(*config)) ? config->scan_verbose : NO_ERR;
 
@@ -513,8 +512,6 @@ Bool fscanconfig(Config *config,    /**< LPJ configuration */
         fscanint2(file,&config->till_startyear,"till_startyear");
       }
       if(fscankeywords(file,&config->residue_treatment,"residue_treatment",residue_treatment,3,TRUE,verbose))
-        return TRUE;
-      if(fscankeywords(file,&config->biomass_grass_harvest,"biomass_grass_harvest",biomass_grass_harvest,2,TRUE,verbose))
         return TRUE;
     }
     if(fscanbool(file,&config->black_fallow,"black_fallow",TRUE,verbose))
