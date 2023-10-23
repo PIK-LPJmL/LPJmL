@@ -2,7 +2,7 @@
 /**                                                                                \n**/
 /**                   l  p  j  m  l  _  s  p  i  t  f  i  r  e  .  j  s            \n**/
 /**                                                                                \n**/
-/** Default configuration file for LPJmL C Version 5.7.8-FIRE                      \n**/
+/** Default configuration file for LPJmL C Version 5.7.9-FIRE                      \n**/
 /**                                                                                \n**/
 /** Configuration file is divided into five sections:                              \n**/
 /**                                                                                \n**/
