@@ -19,7 +19,7 @@ of `major.minor.patch` with
 
 ## [Unreleased]
 
-## [5.7.10] - 2023-10-23
+## [5.7.10] - 2023-10-24
 
 ### Contributors
 
@@ -35,6 +35,7 @@ of `major.minor.patch` with
 ### Fixed
 
 - opening of grid file in JSON metafile format fixed in `opencoord()`.
+- Default soil map is set for soil data in NetCDF format.
 
 ## [5.7.9] - 2023-10-23
 

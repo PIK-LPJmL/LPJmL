@@ -25,7 +25,7 @@ static const Filename *findoutputfile(int index,const Config *config)
     if(config->outputvars[i].id==index)
       return &config->outputvars[i].filename;
   return NULL;
-} /* of 'findgridfile' */
+} /* of 'findoutputfile' */
 
 static void fprintreffile(FILE *file,int index,int ref_index,const char *ref_name,const Config *config)
 {
