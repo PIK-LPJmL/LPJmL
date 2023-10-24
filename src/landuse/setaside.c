@@ -158,6 +158,9 @@ void mixsoil(Stand *stand1,const Stand *stand2,int year,int ntotpft,const Config
     mixpool(stand1->soil.wpwp[l],stand2->soil.wpwp[l],stand1->frac,stand2->frac);
     mixpool(stand1->soil.wpwps[l],stand2->soil.wpwps[l],stand1->frac,
             stand2->frac);
+    mixpool(stand1->soil.wi_abs_enth_adj[l],stand2->soil.wi_abs_enth_adj[l],stand1->frac,stand2->frac);
+    mixpool(stand1->soil.sol_abs_enth_adj[l],stand2->soil.sol_abs_enth_adj[l],stand1->frac,stand2->frac);
+
 /*
     absolute_water1[l] = stand1->soil.w[l] * stand1->soil.whcs[l] + stand1->soil.w_fw[l] + stand1->soil.wpwps[l] * (1 - stand1->soil.ice_pwp[l]);
     absolute_water2 = stand2->soil.w[l] * stand2->soil.whcs[l] + stand2->soil.w_fw[l] + stand2->soil.wpwps[l] * (1 - stand2->soil.ice_pwp[l]);
@@ -192,6 +195,8 @@ void mixsoil(Stand *stand1,const Stand *stand2,int year,int ntotpft,const Config
   mixpool(stand1->soil.whcs[BOTTOMLAYER], stand2->soil.whcs[BOTTOMLAYER], stand1->frac, stand2->frac);
   mixpool(stand1->soil.wpwp[BOTTOMLAYER],stand2->soil.wpwp[BOTTOMLAYER],stand1->frac,stand2->frac);
   mixpool(stand1->soil.wpwps[BOTTOMLAYER], stand2->soil.wpwps[BOTTOMLAYER], stand1->frac, stand2->frac);
+  mixpool(stand1->soil.wi_abs_enth_adj[BOTTOMLAYER], stand2->soil.wi_abs_enth_adj[BOTTOMLAYER], stand1->frac, stand2->frac);
+  mixpool(stand1->soil.sol_abs_enth_adj[BOTTOMLAYER], stand2->soil.sol_abs_enth_adj[BOTTOMLAYER], stand1->frac, stand2->frac);
   mixpool(stand1->soil.beta_soil[BOTTOMLAYER], stand2->soil.beta_soil[BOTTOMLAYER], stand1->frac, stand2->frac);
   mixpool(stand1->soil.bulkdens[BOTTOMLAYER], stand2->soil.bulkdens[BOTTOMLAYER], stand1->frac, stand2->frac);
   mixpool(stand1->soil.k_dry[BOTTOMLAYER], stand2->soil.k_dry[BOTTOMLAYER], stand1->frac, stand2->frac);

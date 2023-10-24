@@ -89,6 +89,8 @@ void copysoil(Soil *dst,       /**< destination */
     dst->Ks[i]=src->Ks[i];
     dst->bulkdens[i]=src->bulkdens[i];
     dst->beta_soil[i]=src->beta_soil[i];
+    dst->wi_abs_enth_adj[i]=src->wi_abs_enth_adj[i];
+    dst->sol_abs_enth_adj[i]=src->sol_abs_enth_adj[i];
 #ifdef MICRO_HEATING
     dst->micro_heating[i]=src->micro_heating[i];
     dst->decomC[i]=src->decomC[i];
