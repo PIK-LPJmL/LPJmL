@@ -47,7 +47,7 @@
   "fdi" : "wvpd",       /* different fire danger index formulations: "wvpd" (needs GLDAS input data), "nesterov" */
    "max_firesize" : false,
   "fireduration" : [{"stand" : "grassland", "duration" : [1,120] ,"ndayfire" : 1},
-                    {"stand" : "natural", "duration" : [120,300], "ndayfire" : 3}],
+                    {"stand" : "natural", "duration" : [120,360], "ndayfire" : 5}],
   "firewood" : false,
   "gsi_phenology" : true,   /* GSI phenology enabled */
   "new_trf" : false,        /* new transpiration reduction function disabled */
@@ -315,21 +315,21 @@ ID                               Fmt                        filename
   "nspinup" : 390,   /* spinup years */
   "nspinyear" : 30,  /* cycle length during spinup (yr)*/
   "firstyear": 1979, /* first year of simulation */
-  "lastyear" : 1999, /* last year of simulation */
+  "lastyear" : 1994, /* last year of simulation */
   "restart" :  true, /* start from restart file */
   "restart_filename" : "restart/restart_1840_nv.lpj", /* filename of restart file */
   "write_restart" : true, /* create restart file */
-  "write_restart_filename" : "restart/restart_1999_crop.lpj", /* filename of restart file */
-  "restart_year": 1999 /* write restart at year */
+  "write_restart_filename" : "restart/restart_1994_crop.lpj", /* filename of restart file */
+  "restart_year": 1994 /* write restart at year */
 
 #elif defined(RUN)
   "nspinup" : 0,   /* spinup years */
   "nspinyear" : 11,  /* cycle length during spinup (yr)*/
-  "firstyear": 2000, /* first year of simulation */
+  "firstyear": 1995, /* first year of simulation */
   "lastyear" : 2016, /* last year of simulation */
-  "outputyear": 2000, /* first year output is written  */
+  "outputyear": 1995, /* first year output is written  */
   "restart" :  true, /* start from restart file */
-  "restart_filename" : "restart/restart_1999_crop.lpj", /* filename of restart file */
+  "restart_filename" : "restart/restart_1994_crop.lpj", /* filename of restart file */
   "write_restart" : true, /* create restart file */
   "write_restart_filename" : "restart/restart_2016_crop.lpj", /* filename of restart file */
   "restart_year": 2016 /* write restart at year */
