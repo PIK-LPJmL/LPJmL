@@ -276,7 +276,6 @@ struct config
   int prescribe_landcover; /**< use input to prescribe land cover ? */
   int* mowingdays;         /**< mowing days for grassland */
   int mowingdays_size;     /**< size of mowing days array */
-  int biomass_grass_harvest;           /**< green or brown harvest of biomass grass */
   Bool npp_controlled_bnf;             /**< biological nitrogen fixation folowing Ma et al., 2022 */
   Seed seed;
   int start_coupling;      /**< year in which coupling to IMAGE/coupler starts */

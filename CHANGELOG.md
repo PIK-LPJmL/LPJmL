@@ -19,6 +19,27 @@ of `major.minor.patch` with
 
 ## [Unreleased]
 
+## [5.7.9] - 2023-10-23
+
+### Contributors
+
+- author: Werner von Bloh (bloh@pik-potsdam.de), Jens Heinke (heinke@pik-potsdam.de), Stephen Wirth (wirth@pik-potsdam.de)
+- code review: Sibyll Schaphoff (sibylls@pik-potsdam.de), Constanze Werner (cowerner@pik-potsdam.de), Christoph Mueller (cmueller@pik-potsdam.de)
+
+### Changed
+
+- constant wood density has been replaced by PFT-specific parameter `"wood_density"`,
+
+### Removed
+
+- Unused flag `"biomass_grass_harvest"` removed from configuration
+
+### Fixed
+
+- update of `pft->establish.nitrogen` corrected in `turnover_tree.c`.
+- C and N in manure from grazing livestock goes to litter (as described in [Heinke et al. 2023](https://doi.org/10.5194/gmd-16-2455-2023) instead of going to soil pools directly.
+
+
 ## [5.7.8] - 2023-09-22
 
 ### Contributors
