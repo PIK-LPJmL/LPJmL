@@ -89,9 +89,9 @@
 #define MAXBNFCOSTTE 0.0014
 #define MAXBNFCOSTBO 0.0056
 #define BNF_COST 6.0
-#define VPD_PARAM_TREE_BL 25
-#define VPD_PARAM_TREE_NL 35
-#define VPD_PARAM_GRASS 8
+#define VPD_PARAM_TREE_BL 45
+#define VPD_PARAM_TREE_NL 55
+#define VPD_PARAM_GRASS 4
 
 "pftpar" :
 [
