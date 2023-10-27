@@ -36,6 +36,10 @@ of `major.minor.patch` with
 
 - `fscanfloat()` accepts now also integer input.
 
+### Removed
+
+- obsolete constant definitions in `conf.h`.
+
 ### Fixed
 
 - opening of grid file in JSON metafile format fixed in `opencoord()`.
