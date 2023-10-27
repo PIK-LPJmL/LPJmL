@@ -15,13 +15,7 @@
 /**************************************************************************************/
 
 #include "lpj.h"
-
-struct realdata
-{
-  Climatefile file;
-  char *name;
-  Real *data;
-}; /* Definition of opaque datatype Realdata */
+#include "realdata.h"
 
 Realdata initrealdata(const Filename *filename, /**< filename */
                       const char *name,
@@ -97,9 +91,3 @@ void freerealdata(Realdata realdata,Bool isroot)
     free(realdata);
   }
 } /* of 'freerealdata' */
-
-
-Real getrealdata(const Realdata realdata,int cell)
-{
-  return realdata->data[cell];
-}  /* of 'getrealdata' */
