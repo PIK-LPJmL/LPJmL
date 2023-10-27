@@ -17,7 +17,7 @@
 void update_soil_thermal_state(Soil *, Real, const Config *);
 void setup_heatgrid(Real *);
 void get_unaccounted_changes_in_water_and_solids(Real *, Real *, Soil *);
-void modify_enth_due_to_unaccounted_masschanges(Soil *, const Config *);
+void modify_enth_due_to_masschanges(Soil *, const Config *);
 void modify_enth_due_to_heatconduction(Soil *, Real, Soil_thermal_prop,const Config *);
 void compute_litter_temp_from_enth(Soil * soil, Real temp_below_snow ,const Config * config,Soil_thermal_prop therm_prop);
 void compute_water_ice_ratios_from_enth(Soil *, const Config *, Soil_thermal_prop);
@@ -37,7 +37,7 @@ void update_soil_thermal_state(Soil *soil,          /**< pointer to soil data */
   calc_soil_thermal_props(&therm_prop, soil, NULL,  NULL, config->johansen, TRUE); 
   
   /* apply daily changes to soil enthalpy distribution  due to heatconvection and heatconduction*/
-  modify_enth_due_to_unaccounted_masschanges(soil ,config);
+  modify_enth_due_to_masschanges(soil ,config);
   modify_enth_due_to_heatconduction(soil,temp_below_snow, therm_prop, config);
 
   /* compute soil thermal attributes from enthalpy distribution and thermal properties, i.e. the derived quantities */
@@ -51,7 +51,7 @@ void update_soil_thermal_state(Soil *soil,          /**< pointer to soil data */
 
 /* functions used by the main functions */
 
-void modify_enth_due_to_unaccounted_masschanges(Soil * soil,const Config * config)
+void modify_enth_due_to_masschanges(Soil * soil,const Config * config)
 {
     Soil_thermal_prop old_therm_storage_prop;                      
     Real waterdiff[NSOILLAYER], soliddiff[NSOILLAYER];  
@@ -126,6 +126,7 @@ void setup_heatgrid(Real *h)
 
 }
 
+
 void get_unaccounted_changes_in_water_and_solids(Real *waterdiff, Real *soliddiff, Soil *soil)
 {
   int l;
@@ -149,4 +150,24 @@ void calc_gp_temps(Real * gp_temps, Real * enth, Soil_thermal_prop th)
   {
     gp_temps[gp]=ENTH2TEMP(enth, th, gp);
   }
+}
+
+
+/* alternative grid where elements do not cross layer boundaries, 
+allows extract tempeature at layer boundaries as last gridpoint of each layer is on its boundary
+to next layer 
+use for testing only!*/
+void setup_heatgrid_layer_boundaries(Real *h)
+{
+  int l,j;
+  //printf("GPL Heat %d  ", GPLHEAT);
+  for(l=0;l<NSOILLAYER;++l)
+  {
+     for(j=0;j<GPLHEAT;++j)
+     {
+        h[l*GPLHEAT+j]= (soildepth[l]/1000)/GPLHEAT;
+        //printf("gp: %f j: %d add: %f ", h[l*GPLHEAT+j], j, (soildepth[l]/1000) * ( (1.0*j+1)/GPLHEAT) );
+     }
+  }
+
 }
