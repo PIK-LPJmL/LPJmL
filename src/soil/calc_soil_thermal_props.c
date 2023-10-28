@@ -85,18 +85,21 @@ void calc_soil_thermal_props(Soil_thermal_prop *th,  /*< Soil thermal property s
 
     /* get volumetric latent heat   */
     latent_heat = waterc_abs_layer / soildepth[layer] * c_water2ice;
+
+    /* calculate thermal resistance of parts of the top and bottom elements that belong to current to layer */
+    /* (assume that the distance from last gridpoint to bottom layer border is the same as from first gridpoint to top layer border) */
     cur_length_to_border = (soildepth[layer]/1000)/(GPLHEAT*2);
     resistance_froz_cur =  cur_length_to_border/lam_froz;
     resistance_unfroz_cur = cur_length_to_border/lam_unfroz;
-    for (j = 0; j < GPLHEAT; ++j) { /* iterate through gridpoints of the layer */
 
+    for (j = 0; j < GPLHEAT; ++j) { /* iterate through gridpoints of the layer */
       if(with_conductivity)
       {
         /* set properties of j-th layer element */
         /* maximum element refernced = GPLHEAT*(NSOILLAYER-1)+GPLHEAT-1 = NHEATGRIDP-1 */
-
-
         if(j==0){
+          /* element crosses layers, hence thermal resistance is used to calculate conductivity of element */
+          /* (make use of the fact that the resistance of a piece of composite material is the sum of the resitances of the pieces)*/
           th->lam_frozen[GPLHEAT * layer + j]   = 
           (prev_length_to_border+cur_length_to_border)/(resistance_froz_cur+resistance_froz_prev);
           th->lam_unfrozen[GPLHEAT * layer + j] =  
@@ -112,6 +115,8 @@ void calc_soil_thermal_props(Soil_thermal_prop *th,  /*< Soil thermal property s
       th->c_unfrozen[GPLHEAT * layer + j]   = c_unfroz;
       th->latent_heat[GPLHEAT * layer + j]  = latent_heat;
     }
+
+    /* save thermal resistance of part of last element of current layer for next iteration */
     resistance_froz_prev=resistance_froz_cur;
     resistance_unfroz_prev=resistance_unfroz_cur;
     prev_length_to_border=cur_length_to_border;

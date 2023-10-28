@@ -16,6 +16,7 @@
 
 void update_soil_thermal_state(Soil *, Real, const Config *);
 void setup_heatgrid(Real *);
+void setup_heatgrid_layer_boundaries(Real *);
 void get_unaccounted_changes_in_water_and_solids(Real *, Real *, Soil *);
 void modify_enth_due_to_masschanges(Soil *, const Config *);
 void modify_enth_due_to_heatconduction(Soil *, Real, Soil_thermal_prop,const Config *);
@@ -23,6 +24,7 @@ void compute_litter_temp_from_enth(Soil * soil, Real temp_below_snow ,const Conf
 void compute_water_ice_ratios_from_enth(Soil *, const Config *, Soil_thermal_prop);
 void calc_gp_temps(Real * gp_temps, Real * enth, Soil_thermal_prop th);
 void compute_maxthaw_depth(Soil * soil);
+void compute_bottom_bound_layer_temps_from_enth(Real *,  const Real *,   Soil_thermal_prop);
 
 /* main function */
 
@@ -168,6 +170,25 @@ void setup_heatgrid_layer_boundaries(Real *h)
         h[l*GPLHEAT+j]= (soildepth[l]/1000)/GPLHEAT;
         //printf("gp: %f j: %d add: %f ", h[l*GPLHEAT+j], j, (soildepth[l]/1000) * ( (1.0*j+1)/GPLHEAT) );
      }
+  }
+
+}
+
+
+/* compute bottom boundary layer temeperatures, to be used incombination with setup_heatgrid_layer_boundaries */
+
+void compute_bottom_bound_layer_temps_from_enth(Real *temp,          /*< temperature vector that is written to N=NSOILLAYER */
+                    const Real *enth,    /*< input enthalpy vector N=NHEATGRID */
+                    Soil_thermal_prop th /*< soil thermal properties */
+                    )
+{
+  int layer, j;
+  int gp; /* gridpoint */
+  Real T =0.0, Tmean=0.0; 
+  
+  for(layer=0; layer<NSOILLAYER; ++layer)
+  {
+    temp[layer]= ENTH2TEMP(enth,th,(layer+1)*GPLHEAT-1); /* take the bottom most gp of each layer */
   }
 
 }
