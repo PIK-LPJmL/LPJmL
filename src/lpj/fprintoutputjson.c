@@ -92,6 +92,7 @@ Bool fprintoutputjson(int index,           /**< index in outputvars array */
     }
     fprintf(file,"},\n");
   }
+  fprintf(file,"  \"name\" : \"%s\",\n",config->outnames[id].name);
   fprintf(file,"  \"variable\" : \"%s\",\n",config->outnames[id].var);
   fprintf(file,"  \"firstcell\" : %d,\n",config->firstgrid);
   fprintf(file,"  \"ncell\" : %d,\n",(id==ADISCHARGE) ? config->nall : config->total);
