@@ -79,11 +79,10 @@ void apply_heatconduction_of_a_day(
   temp[0] = temp_top; /* assign dirichlet boundary condition */
   int timestp;
   for(timestp=0; timestp<timesteps; ++timestp) { 
-
     /* calculate gridpoint temperatures from gridpoint enthalpies */
     for (j=0; j<N; ++j)
     {
-      temp[j+1] = (enth[j] < 0                 ?  enth[j] *                      th.c_frozen[j]   : 0) + /* enthalpy-temperature relation */
+      temp[j+1] = (enth[j] < 0                 ?  enth[j] *                      th.c_frozen[j]   : 0) + 
                   (enth[j] > th.latent_heat[j] ? (enth[j] - th.latent_heat[j]) * th.c_unfrozen[j] : 0); 
                   /* T=0 when 0<enth[j]<latent_heat */
       /* the term corresponds to eq (3.18) and (2.4) of the master thesis */
@@ -106,6 +105,5 @@ void apply_heatconduction_of_a_day(
       /* the term corresponds to eq (3.20) of the master thesis */
       /* it is the enthalpy update during the timestep */
     }
-
   }
 }
