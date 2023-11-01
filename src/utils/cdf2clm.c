@@ -591,6 +591,8 @@ int main(int argc,char **argv)
     }
     if(units==NULL)
       units=getattr_netcdf(&climate,climate.varid,"units");
+    if(var==NULL)
+      var=getvarname_netcdf(&climate);
     long_name=getattr_netcdf(&climate,climate.varid,"long_name");
     standard_name=getattr_netcdf(&climate,climate.varid,"standard_name");
     history=getattr_netcdf(&climate,NC_GLOBAL,"history");
