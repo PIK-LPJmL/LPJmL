@@ -89,7 +89,7 @@ void apply_heatconduction_of_a_day(
       /* it is the standart across-phase enthalpy temperature relation */
     }
 
-    /* calculate fluxes from temperature difference */
+    /* calculate heat fluxes from temperature difference */
     for (j=0; j<N; ++j) 
     {
       QQ[j] = -(temp[j+1] *(temp[j+1]  < 0 ? th.lam_frozen[j] : th.lam_unfrozen[j]) - 
@@ -98,7 +98,7 @@ void apply_heatconduction_of_a_day(
       /* an interpretation is the heat flux between gp j+1 and j, see Fourriers law */
     }
     
-    /* calculate and apply enth update */
+    /* calculate and apply enthalpy update */
     for (j=0; j<N; ++j) 
     {
       enth[j] = enth[j]+ dt * (QQ[j] - QQ[j+1]) * inv_element_midpoint_dist[j];
