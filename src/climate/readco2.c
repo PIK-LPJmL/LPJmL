@@ -111,6 +111,20 @@ Bool readco2(Co2data *co2,             /**< pointer to co2 data */
       yr_old=yr;
     }
     fclose(file);
+    if(config->fix_co2 && co2->firstyear+co2->nyear-1<min(config->lastyear,config->fix_co2_year))
+    {
+      if(verbose)
+        fprintf(stderr,"ERROR157: Last year=%d in '%s' less than CO2 fix year %d.\n",
+                co2->firstyear+co2->nyear-1,filename->name,min(config->lastyear,config->fix_co2_year));
+      return TRUE;
+    }
+    if(!config->fix_co2 && co2->firstyear+co2->nyear-1<config->lastyear)
+    {
+      if(verbose)
+        fprintf(stderr,"ERROR157: Last year=%d in '%s' less than last simulation year %d.\n",
+                co2->firstyear+co2->nyear-1,filename->name,config->lastyear);
+      return TRUE;
+    }
   }
   else if(filename->fmt==SOCK && config->start_coupling>config->firstyear-config->nspinup)
   {
