@@ -492,8 +492,10 @@ int main(int argc,char **argv)
   size_t offset;
   Map *map=NULL;
   Attr *global_attrs=NULL;
+  Attr *global_attrs2=NULL;
   int i,j,k,ngrid,version,iarg,compress,nbands,setversion;
-  Bool swap,landuse,notime,isglobal,istype,israw,ismeta,isint,n_global;
+  Bool swap,landuse,notime,isglobal,istype,israw,ismeta,isint;
+  int n_global,n_global2;
   float *f,scale,cellsize_lon,cellsize_lat;
   int *idata,*iarr;
   char *units,*long_name,*endptr,*arglist,*missing_value;
@@ -770,7 +772,7 @@ int main(int argc,char **argv)
     header.datatype=type;
     header.order=CELLYEAR;
 
-    file=openmetafile(&header,&map,map_name,&global_attrs,&n_global,&source,&history,&var_name,&var_units,&var_standard_name,&var_long_name,&grid_name,NULL,&swap,&offset,filename,TRUE);
+    file=openmetafile(&header,&map,map_name,&global_attrs2,&n_global2,&source,&history,&var_name,&var_units,&var_standard_name,&var_long_name,&grid_name,NULL,&swap,&offset,filename,TRUE);
     if(file==NULL)
       return EXIT_FAILURE;
     if(fseek(file,offset,SEEK_CUR))
@@ -783,6 +785,11 @@ int main(int argc,char **argv)
       units=var_units;
     if(long_name==NULL && var_long_name==NULL)
       long_name=var_long_name;
+    if(global_attrs2!=NULL)
+    {
+      mergeattrs(&global_attrs,&n_global,global_attrs2,n_global2);
+      freeattrs(global_attrs2,n_global2);
+    }
   }
   else
   {
