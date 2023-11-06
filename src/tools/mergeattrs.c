@@ -14,7 +14,12 @@
 /**                                                                                \n**/
 /**************************************************************************************/
 
-#include "lpj.h"
+#include <stdlib.h>
+#include <stdio.h>
+#include <string.h>
+#include <math.h>
+#include "types.h"
+#include "errmsg.h"
 
 static int findattr(const char *name,Attr *attrs,int n)
 {
@@ -25,14 +30,20 @@ static int findattr(const char *name,Attr *attrs,int n)
   return NOT_FOUND;
 } /* of 'findattr' */
 
-void mergeattrs(Attr **attrs,int *n,Attr *attrs2, int n2)
+void mergeattrs(Attr **attrs,       /**< pointer to array of attributes */
+                int *n,             /**< length of attribute list */
+                const Attr *attrs2, /**< attribute list to merge */
+                int n2              /**< length of attribute list to merge */
+               )
 {
   int i,index;
   for(i=0;i<n2;i++)
   {
+    /* is name already defined? */
     index=findattr(attrs2[i].name,*attrs,*n);
     if(index==NOT_FOUND)
     {
+      /* no, append attribute list with new entry */
       *attrs=realloc(*attrs,sizeof(Attr)*(*n+1));
       (*attrs)[*n].name=strdup(attrs2[i].name);
       (*attrs)[*n].value=strdup(attrs2[i].value);
@@ -40,9 +51,9 @@ void mergeattrs(Attr **attrs,int *n,Attr *attrs2, int n2)
     }
     else
     {
+      /* yes, replace value */
       free((*attrs)[index].value);
       (*attrs)[index].value=strdup(attrs2[i].value);
     }
   }
 } /* of 'mergeattrs' */
-
