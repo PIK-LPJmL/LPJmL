@@ -1142,7 +1142,7 @@ void fwriteoutput(Outputfile *output,  /**< output file array */
   writeoutputvar(GCONS_IRR,1);
   writeoutputvar(BCONS_IRR,1);
   writeoutputvar(IRRIG_RW,1);
-  writeoutputvar(LAKEVOL,ndate1);  
+  writeoutputvar(LAKEVOL,ndate1);
   writeoutputvar(RIVERVOL,ndate1);
   writeoutputarray(SWC_VOL,ndate1);
   writeoutputvar(IRRIG_STOR,ndate1);
@@ -1910,18 +1910,9 @@ void fwriteoutput(Outputfile *output,  /**< output file array */
     }
     writeoutputvar(ESTAB_STORAGE_N,1);
   }
-  if(isopen(output,RD))
-  {
-    writeoutputvar(RD,1);
-  }
-  if(isopen(output,PFT_WATER_DEMAND))
-  {
-    writeoutputarray(PFT_WATER_DEMAND,1);
-  }
-  if(isopen(output,NDEPOS)) 
-  {
-    writeoutputvar(NDEPOS,1);
-  }
+  writeoutputvar(RD,1);
+  writeoutputarray(PFT_WATER_DEMAND,1);
+  writeoutputvar(NDEPOS,1);
 
   if(config->double_harvest)
   {

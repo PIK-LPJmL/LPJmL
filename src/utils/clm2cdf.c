@@ -939,7 +939,7 @@ int main(int argc,char **argv)
       fclose(file);
       return EXIT_FAILURE;
     }
-    if(fabs(header.cellsize_lon-res.lon)>min(res.lat,header.cellsize_lat)*0.5)
+    if(fabs(header.cellsize_lat-res.lat)>min(res.lat,header.cellsize_lat)*0.5)
     {
       fprintf(stderr,"Latitudinal cell size=%g in '%s' differs from %g in '%s'.\n",
               header.cellsize_lat,filename,res.lat,grid_filename);

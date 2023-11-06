@@ -123,7 +123,7 @@ static void printclm(const char *filename,int output,int nbands,int version,
       printf("\n");
       freemap(map);
     }
-    if(strlen(unit)>0)
+    if(unit!=NULL && strlen(unit)>0)
       printf("Unit:\t\t%s\n",unit);
     if(isrestart)
     {
