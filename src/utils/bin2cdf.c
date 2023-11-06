@@ -29,36 +29,6 @@ typedef struct
   int varid;
 } Cdf;
 
-static int findattr(const char *name,Attr *attrs,int n)
-{
-  int i;
-  for(i=0;i<n;i++)
-   if(!strcmp(name,attrs[i].name))
-     return i;
-  return NOT_FOUND;
-} /* of 'findattr' */
-
-static void mergeattrs(Attr **attrs,int *n,Attr *attrs2, int n2)
-{
-  int i,index;
-  for(i=0;i<n2;i++)
-  {
-    index=findattr(attrs2[i].name,*attrs,*n);
-    if(index==NOT_FOUND)
-    {
-      *attrs=realloc(*attrs,sizeof(Attr)*(*n+1));
-      (*attrs)[*n].name=strdup(attrs2[i].name);
-      (*attrs)[*n].value=strdup(attrs2[i].value);
-      (*n)++;
-    }
-    else
-    {
-      free((*attrs)[index].value);
-      (*attrs)[index].value=strdup(attrs2[i].value);
-    }
-  }
-} /* of 'mergeattrs' */
-
 static Cdf *create_cdf(const char *filename,
                        Map *map,
                        const char *map_name,
@@ -907,10 +877,10 @@ int main(int argc,char **argv)
     free(grid_name.name);
     free(path);
   }
-  if(isclm || grid_name.fmt==CLM)
+  if(isclm || grid_name.fmt==CLM || grid_name.fmt==META)
   {
     coord_filename.name=grid_filename;
-    coord_filename.fmt=CLM;
+    coord_filename.fmt=(isclm) ? CLM : grid_name.fmt;
     coordfile=opencoord(&coord_filename,TRUE);
     if(coordfile==NULL)
       return EXIT_FAILURE;
