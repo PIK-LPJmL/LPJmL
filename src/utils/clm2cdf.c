@@ -192,7 +192,7 @@ static Cdf *create_cdf(const char *filename,
     }
     else if(header->nbands>1)
     {
-      len=snprintf(NULL,len,"days since %d-1-1 0:0:0",header->firstyear);
+      len=snprintf(NULL,0,"days since %d-1-1 0:0:0",header->firstyear);
       s=malloc(len+1);
       check(s);
       sprintf(s,"days since %d-1-1 0:0:0",header->firstyear);
@@ -787,7 +787,7 @@ int main(int argc,char **argv)
       long_name=var_long_name;
     if(global_attrs2!=NULL)
     {
-      mergeattrs(&global_attrs,&n_global,global_attrs2,n_global2);
+      mergeattrs(&global_attrs,&n_global,global_attrs2,n_global2,FALSE);
       freeattrs(global_attrs2,n_global2);
     }
   }

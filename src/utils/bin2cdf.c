@@ -845,7 +845,7 @@ int main(int argc,char **argv)
       long_name=var_long_name;
     if(global_attrs2!=NULL)
     {
-      mergeattrs(&global_attrs,&n_global,global_attrs2,n_global2);
+      mergeattrs(&global_attrs,&n_global,global_attrs2,n_global2,FALSE);
       freeattrs(global_attrs2,n_global2);
     }
   }
