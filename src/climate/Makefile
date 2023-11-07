@@ -50,9 +50,6 @@ realdata.$O: realdata.h realdata.c
 getrealdata.$O: realdata.h getrealdata.c
 	$(CC) $(CFLAGS) -I$(INC) -c getrealdata.c
 
-clean:
-	$(RM) $(RMFLAGS) $(OBJS)
-	(cd $(LIBDIR) && $(RM) $(RMFLAGS)  $(LIB))
 clean: 
 	$(RM) $(RMFLAGS) $(OBJS)
 	(cd $(LIBDIR) && $(RM) $(RMFLAGS)  $(LIB))
