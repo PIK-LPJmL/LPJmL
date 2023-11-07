@@ -33,7 +33,8 @@ static int findattr(const char *name,Attr *attrs,int n)
 void mergeattrs(Attr **attrs,       /**< pointer to array of attributes */
                 int *n,             /**< length of attribute list */
                 const Attr *attrs2, /**< attribute list to merge */
-                int n2              /**< length of attribute list to merge */
+                int n2,             /**< length of attribute list to merge */
+                Bool replace        /**< replace already defined values (TRUE/FALSE) */
                )
 {
   int i,index;
@@ -49,7 +50,7 @@ void mergeattrs(Attr **attrs,       /**< pointer to array of attributes */
       (*attrs)[*n].value=strdup(attrs2[i].value);
       (*n)++;
     }
-    else
+    else if(replace)
     {
       /* yes, replace value */
       free((*attrs)[index].value);

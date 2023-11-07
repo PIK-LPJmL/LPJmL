@@ -180,7 +180,7 @@ extern char *getrealfilename(const Filename *);
 extern LPJfile *parse_json(FILE *,Verbosity);
 extern Bool isdir(const char *);
 extern double mrun(void);
-void mergeattrs(Attr **,int *,const Attr *, int);
+void mergeattrs(Attr **,int *,const Attr *, int,Bool);
 #ifdef WITH_FPE
 extern void enablefpe(void);
 #endif
