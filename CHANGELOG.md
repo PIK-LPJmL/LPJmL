@@ -19,6 +19,88 @@ of `major.minor.patch` with
 
 ## [Unreleased]
 
+## [5.7.9] - 2023-10-23
+
+### Contributors
+
+- author: Werner von Bloh (bloh@pik-potsdam.de), Jens Heinke (heinke@pik-potsdam.de), Stephen Wirth (wirth@pik-potsdam.de)
+- code review: Sibyll Schaphoff (sibylls@pik-potsdam.de), Constanze Werner (cowerner@pik-potsdam.de), Christoph Mueller (cmueller@pik-potsdam.de)
+
+### Changed
+
+- constant wood density has been replaced by PFT-specific parameter `"wood_density"`,
+
+### Removed
+
+- Unused flag `"biomass_grass_harvest"` removed from configuration
+
+### Fixed
+
+- update of `pft->establish.nitrogen` corrected in `turnover_tree.c`.
+- C and N in manure from grazing livestock goes to litter (as described in [Heinke et al. 2023](https://doi.org/10.5194/gmd-16-2455-2023) instead of going to soil pools directly.
+
+
+## [5.7.8] - 2023-09-22
+
+### Contributors
+
+- author: Sebastian Ostberg (ostberg@pik-potsdam.de)
+- code review: Christoph Mueller (cmueller@pik-potsdam.de), Jannes Breier (breier@pik-potsdam.de)
+
+### Fixed
+
+- bug in `landusechange.c` where land transfers between rainfed and irrigated setaside stands were not taken into account when determining rainfed and irrigated areas to deforest/regrow
+- false positive carbon balance errors in `turnover_tree.c` if the code is compiled with `CHECK_BALANCE` switch
+
+
+## [5.7.7] - 2023-09-20
+
+### Contributors
+
+- author: Werner von Bloh (bloh@pik-potsdam.de)
+- code review: Jens Heinke (heinke@pik-potsdam.de), Sibyll Schaphoff (sibylls@pik-potsdam.de), Christoph Mueller (cmueller@pik-potsdam.de)
+
+### Added
+
+- grassland specific variables `deficit_lsu_ne` and `deficit_lsu_mp` added to `fprint_grassland.c` and therefore are printed by `lpjprint`.
+
+### Removed
+
+- obsolete definition of constants removed in `conf.h`.
+
+### Fixed
+
+- division by zero resulting in a floating point exception if lpjml is run with `-fpe` option fixed in `littersom.c` and `harvest_stand.c`.
+- index in `"cft_nir"` output is now correctly calculated for `agriculture_tree`/`agrculture_grass` stands in `distribute_water.c`.
+- `pft->npp_bnf` set to zero for the auto fertilization setting in the N uptake functions. Fertilization only applied if N deficit is greater than zero.
+
+## [5.7.6] - 2023-09-11
+
+### Added
+
+- reallocation of N added in `allometry_tree.c` if tree height exceeds the maximum height.
+- reproduction costs for nitrogen added to `turnover_tree.c`.
+- missing output `"harvestc_agr"` updated and written to file.
+
+### Changed
+
+- check for `sum>1` for warnings has been replaced by `sum>1+epsilon` in `getlanduse()`.
+- `ml.landfrac` scaling of output has been replaced by acual stand fraction.
+- `output_gbw_*` functions have been merged into one `output_gbw` function.
+
+### Removed
+
+- misplaced `CFT_AIRRIG` update has been removed from `daily_woodplantation.c`.
+
+### Fixed
+
+- missing `#include "grass.h"` added in `sowingcft.c`.
+- arguments of `setaside` calls in `annual_woodplantation.c` and `annual_biomass_tree.c` have been corrected.
+- update of `LITFALLN` corrected in `timber_burn.c`.
+- output written to correct `N2O_DENIT_*` file in `denitrification.c`.
+- missing `reservoirfrac` added to scaling for outputs in `daily_agriculture_grass.c` and `daily_agriculture_tree.c`.
+
+
 ## [5.7.5] - 2023-08-23
 
 ### Added

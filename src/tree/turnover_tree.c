@@ -47,8 +47,8 @@ Stocks turnover_tree(Litter *litter, /**< Litter pool */
   output=&pft->stand->cell->output;
 #ifdef CHECK_BALANCE
   sum_before=litterstocks(litter);
-  sum_before.carbon+=vegc_sum_tree(pft)+pft->bm_inc.carbon;
-  sum_before.nitrogen+=vegn_sum_tree(pft)+pft->bm_inc.nitrogen+tree->turn_nbminc;
+  sum_before.carbon+=vegc_sum_tree(pft)+pft->bm_inc.carbon-pft->establish.carbon;
+  sum_before.nitrogen+=vegn_sum_tree(pft)+pft->bm_inc.nitrogen+tree->turn_nbminc-pft->establish.nitrogen;
 #endif
   cmass_excess=0;
   /* reproduction */
@@ -74,8 +74,23 @@ Stocks turnover_tree(Litter *litter, /**< Litter pool */
     getoutput(output,LITFALLC,config)+=reprod*pft->stand->frac;
     update_fbd_tree(litter,pft->par->fuelbulkdensity,reprod,0);
     reprod=pft->bm_inc.nitrogen*treepar->reprod_cost;
-    //litter->item[pft->litter].agtop.leaf.nitrogen+=reprod;
-    //pft->bm_inc.nitrogen-=reprod;
+    pft->bm_inc.nitrogen-=reprod;
+    if(pft->establish.nitrogen<reprod)
+    {
+      reprod-=pft->establish.nitrogen;
+      getoutput(output,FLUX_ESTABN,config)-=pft->establish.nitrogen*pft->stand->frac;
+      pft->stand->cell->balance.flux_estab.nitrogen-=pft->establish.nitrogen*pft->stand->frac;
+      pft->establish.nitrogen=0;
+    }
+    else
+    {
+      getoutput(output,FLUX_ESTABN,config)-=reprod*pft->stand->frac;
+      pft->stand->cell->balance.flux_estab.nitrogen-=reprod*pft->stand->frac;
+      pft->establish.nitrogen-=reprod;
+      reprod=0;
+    }
+    getoutput(output,LITFALLN,config)+=reprod*pft->stand->frac;
+    litter->item[pft->litter].agtop.leaf.nitrogen+=reprod;
     if(israingreen(pft))
     {
       /* TODO what to do about N here? */
@@ -158,8 +173,8 @@ Stocks turnover_tree(Litter *litter, /**< Litter pool */
   sum.nitrogen=turn.leaf.nitrogen+turn.sapwood.nitrogen+turn.root.nitrogen;
 #ifdef CHECK_BALANCE
   sum_after=litterstocks(litter);
-  sum_after.carbon+=vegc_sum_tree(pft)+pft->bm_inc.carbon;
-  sum_after.nitrogen+=vegn_sum_tree(pft)+pft->bm_inc.nitrogen;
+  sum_after.carbon+=vegc_sum_tree(pft)+pft->bm_inc.carbon-pft->establish.carbon;
+  sum_after.nitrogen+=vegn_sum_tree(pft)+pft->bm_inc.nitrogen-pft->establish.nitrogen;
   if(fabs(sum_after.carbon-sum_before.carbon)>epsilon)
     fail(INVALID_CARBON_BALANCE_ERR,TRUE,"Carbon balance error %g!=%g in turnover_tree()",sum_after.carbon,sum_before.carbon);
   if(fabs(sum_after.nitrogen-sum_before.nitrogen)>0.1)

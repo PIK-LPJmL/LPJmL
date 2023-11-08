@@ -28,9 +28,8 @@ OBJS    = cultivate.$O landuse.$O landusechange.$O\
           annual_agriculture.$O annual_biomass_grass.$O annual_setaside.$O\
           annual_woodplantation.$O daily_woodplantation.$O\
           daily_grassland.$O daily_biomass_grass.$O annual_biomass_tree.$O\
-          daily_agriculture.$O daily_biomass_tree.$O output_gbw_grassland.$O\
-          output_gbw_biomass_grass.$O output_gbw_biomass_tree.$O\
-          output_gbw_woodplantation.$O woodplantation.$O\
+          daily_agriculture.$O daily_biomass_tree.$O output_gbw.$O\
+          woodplantation.$O\
           output_gbw_agriculture.$O calc_nir.$O irrig_amount.$O killstand.$O\
           landfrac.$O cutpfts.$O crop_sum_frac.$O woodconsum.$O\
           new_agriculture.$O free_agriculture.$O fwrite_agriculture.$O\
@@ -44,7 +43,7 @@ OBJS    = cultivate.$O landuse.$O landusechange.$O\
           scancftmap.$O\
           fscanmowingdays.$O getnsoil_agr.$O agriculture_tree.$O agriculture_grass.$O\
           daily_agriculture_tree.$O daily_agriculture_grass.$O fscantreedens.$O\
-          findstandpft.$O output_gbw_agriculture_tree.$O isirrigevent.$O\
+          findstandpft.$O isirrigevent.$O\
           annual_agriculture_tree.$O annual_agriculture_grass.$O readcottondays.$O\
           update_irrig.$O update_double_harvest.$O fscanagtreemap.$O sowingcft.$O\
           fertday_biomass.$O fertilize_tree.$O setotherstocrop.$O

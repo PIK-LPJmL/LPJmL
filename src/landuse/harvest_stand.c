@@ -289,8 +289,10 @@ static Harvest harvest_grass_grazing_live(Stand *stand,const Config *config)
     bm_tot.nitrogen+= grass->ind.leaf.nitrogen*pft->nind;
     sum_lai += actual_lai_grass(pft);
   }
-
-  n2cn = bm_tot.nitrogen/(bm_tot.nitrogen+bm_tot.carbon);
+  if(bm_tot.nitrogen+bm_tot.carbon==0)
+    n2cn=0;
+  else
+    n2cn = bm_tot.nitrogen/(bm_tot.nitrogen+bm_tot.carbon);
   lsu2area = stand->cell->ml.grassland_lsuha * 1e3 * 1e-4;
 
   w_C_in_CP  = 0.53; // mass fraction of carbon in crude protein (estimated from chemical composition)
@@ -426,9 +428,10 @@ static Harvest harvest_grass_grazing_live(Stand *stand,const Config *config)
     }
 
     sum.harvest.carbon   += c_methane+c_milk+c_co2;       // sum of losses
-    stand->soil.pool->fast.carbon += c_feces + c_urine;   // manure back to soil
+    stand->soil.litter.item[pft->litter].agtop.leaf.carbon+=c_feces+c_urine; // to litter
     sum.harvest.nitrogen += n_milk;                       // sum of losses
-    stand->soil.pool->fast.nitrogen += n_feces;             // back to soil
+    stand->soil.litter.item[pft->litter].agtop.leaf.nitrogen+=n_feces; // to litter
+
     stand->soil.NH4[0] += n_urine;             // urine to ammonia
 
     /* writing new mgrass outputs */
