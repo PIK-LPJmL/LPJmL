@@ -125,7 +125,7 @@
       "min_temprange" : -1000.0, /* min_temprange 34*/
       "emax": 10.0,            /* emax 35*/
       "intc" : 0.02,          /* intc 36*/
-      "alphaa" : ALPHAA_NITROGEN, /* alphaa, fraction of PAR assimilated at ecosystem level, relative to leaf level */
+      "alphaa" : ALPHAA, /* alphaa, fraction of PAR assimilated at ecosystem level, relative to leaf level */
       "albedo_leaf" : 0.13,   /* albedo of green leaves */
       "albedo_stem" : 0.1,    /* albedo of stems */
       "albedo_litter" : 0.1,  /* albedo of litter */
@@ -236,7 +236,7 @@
       "min_temprange" : -1000.0, /* min_temprange 34*/
       "emax": 10.0,            /* emax 35*/
       "intc" : 0.02,          /* intc 36*/
-      "alphaa" : ALPHAA_NITROGEN, /* alphaa, fraction of PAR assimilated at ecosystem level, relative to leaf level */
+      "alphaa" : ALPHAA, /* alphaa, fraction of PAR assimilated at ecosystem level, relative to leaf level */
       "albedo_leaf" : 0.14,   /* albedo of green leaves */
       "albedo_stem" : 0.1,   /* albedo of stems */
       "albedo_litter" : 0.1, /* albedo of litter */
@@ -347,7 +347,7 @@
       "min_temprange" : -1000.0, /* min_temprange 34*/
       "emax": 5.0, //7.0,            /* emax 35*/
       "intc" : 0.02,          /* intc 36*/
-      "alphaa" : ALPHAA_NITROGEN, /* alphaa, fraction of PAR assimilated at ecosystem level, relative to leaf level */
+      "alphaa" : ALPHAA, /* alphaa, fraction of PAR assimilated at ecosystem level, relative to leaf level */
       "albedo_leaf" : 0.137,  /* albedo of green leaves */
       "albedo_stem" : 0.04,   /* albedo of stems */
       "albedo_litter" : 0.1,  /* albedo of litter */
@@ -458,7 +458,7 @@
       "min_temprange" : -1000.0, /* min_temprange 34*/
       "emax": 7.0,            /* emax 35*/
       "intc" : 0.02,          /* intc 36*/
-      "alphaa" : ALPHAA_NITROGEN, /* alphaa, fraction of PAR assimilated at ecosystem level, relative to leaf level */
+      "alphaa" : ALPHAA, /* alphaa, fraction of PAR assimilated at ecosystem level, relative to leaf level */
       "albedo_leaf" : 0.15,   /* albedo of green leaves */
       "albedo_stem" : 0.04,   /* albedo of stems */
       "albedo_litter" : 0.1,  /* albedo of litter */
@@ -569,7 +569,7 @@
       "min_temprange" : -1000.0, /* min_temprange 34*/
       "emax": 7.0,            /* emax 35*/
       "intc" : 0.02,          /* intc 36*/
-      "alphaa" : ALPHAA_NITROGEN, /* alphaa, fraction of PAR assimilated at ecosystem level, relative to leaf level */
+      "alphaa" : ALPHAA, /* alphaa, fraction of PAR assimilated at ecosystem level, relative to leaf level */
       "albedo_leaf" : 0.15,   /* albedo of green leaves */
       "albedo_stem" : 0.04,   /* albedo of stems */
       "albedo_litter" : 0.1,  /* albedo of litter */
@@ -682,7 +682,7 @@
       "min_temprange" : -1000.0, /* min_temprange 34*/
       "emax": 5.0, //7.0,            /* emax 35*/
       "intc" : 0.06,          /* intc 36*/
-      "alphaa" : ALPHAA_NITROGEN, /* alphaa, fraction of PAR assimilated at ecosystem level, relative to leaf level */
+      "alphaa" : ALPHAA, /* alphaa, fraction of PAR assimilated at ecosystem level, relative to leaf level */
       "albedo_leaf" : 0.18,   /* albedo of green leaves */
       "albedo_stem" : 0.1,    /* albedo of stems */
       "albedo_litter" : 0.1,  /* albedo of litter */
@@ -793,7 +793,7 @@
       "min_temprange" : -1000.0, /* min_temprange 34*/
       "emax": 7.0,            /* emax 35*/
       "intc" : 0.06,          /* intc 36*/
-      "alphaa" : ALPHAA_NITROGEN, /* alphaa, fraction of PAR assimilated at ecosystem level, relative to leaf level */
+      "alphaa" : ALPHAA, /* alphaa, fraction of PAR assimilated at ecosystem level, relative to leaf level */
       "albedo_leaf" : 0.18,   /* albedo of green leaves */
       "albedo_stem" : 0.1,    /* albedo of stems */
       "albedo_litter" : 0.1,  /* albedo of litter */
@@ -906,7 +906,7 @@
       "min_temprange" : 30.0,  /* min_temprange 34*/
       "emax": 5.0, //7.0,            /* emax 35*/
       "intc" : 0.06,          /* intc 36*/
-      "alphaa" : ALPHAA_NITROGEN, /* alphaa, fraction of PAR assimilated at ecosystem level, relative to leaf level */
+      "alphaa" : ALPHAA, /* alphaa, fraction of PAR assimilated at ecosystem level, relative to leaf level */
       "albedo_leaf" : 0.12,   /* albedo of green leaves */
       "albedo_stem" : 0.05,   /* albedo of stems */
       "albedo_litter" : 0.01, /* albedo of litter */
@@ -1019,7 +1019,7 @@
       "min_temprange" : -1000.0,/* min_temprange 34*/
       "emax": 10.0,            /* emax 35*/
       "intc" : 0.01,          /* intc 36*/
-      "alphaa" : ALPHAA_NITROGEN, /* alphaa, fraction of PAR assimilated at ecosystem level, relative to leaf level */
+      "alphaa" : ALPHAA, /* alphaa, fraction of PAR assimilated at ecosystem level, relative to leaf level */
       "albedo_leaf" : 0.21,   /* albedo of green leaves */
       "albedo_stem" : 0.15,   /* albedo of stems */
       "albedo_litter" : 0.1,  /* albedo of litter */
@@ -1113,7 +1113,7 @@
       "min_temprange" : -1000.0,/* min_temprange 34*/
       "emax": 7.0,            /* emax 35*/
       "intc" : 0.01,          /* intc 36*/
-      "alphaa" : ALPHAA_NITROGEN, /* alphaa, fraction of PAR assimilated at ecosystem level, relative to leaf level */
+      "alphaa" : ALPHAA, /* alphaa, fraction of PAR assimilated at ecosystem level, relative to leaf level */
       "albedo_leaf" : 0.23,   /* albedo of green leaves */
       "albedo_stem" : 0.15,   /* albedo of stems */
       "albedo_litter" : 0.1,  /* albedo of litter */
@@ -1207,7 +1207,7 @@
       "min_temprange" : 18.0,  /* min_temprange 34*/
       "emax": 7.0,            /* emax 35*/
       "intc" : 0.01,          /* intc 36*/
-      "alphaa" : ALPHAA_NITROGEN, /* alphaa, fraction of PAR assimilated at ecosystem level, relative to leaf level */
+      "alphaa" : ALPHAA, /* alphaa, fraction of PAR assimilated at ecosystem level, relative to leaf level */
       "albedo_leaf" : 0.23,   /* albedo of green leaves */
       "albedo_stem" : 0.1,    /* albedo of stems */
       "albedo_litter" : 0.1,  /* albedo of litter */
