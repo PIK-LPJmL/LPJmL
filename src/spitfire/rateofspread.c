@@ -105,8 +105,8 @@ Real rateofspread(Real windsp_cover,Fuel *fuel,Livefuel *livefuel)
   wind_forward=3.281*windsp_cover;
 
   /* wind speed limit according to Patricia L. Andrews et al. 2012 */
-  if(wind_forward > 96.8*pow(ir,1/3))
-    wind_forward = 96.8*pow(ir,1/3);
+  if(wind_forward > 96.8*pow(ir,1.0/3.0))
+    wind_forward = 96.8*pow(ir,1.0/3.0);
 
   /* Effect of wind speed */
   phi_wind=(bet <= 0) ?  0 : c*pow(wind_forward,b)*pow(bet,-e);

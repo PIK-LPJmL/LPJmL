@@ -162,8 +162,10 @@ void fuelload(const Stand *stand, /**< pointer to stand */
   /* Livegrass weighted average fbd */
 
   /*accounting for cured grass in fuel loads */
-  cured_frac=max(0,min(1,-1/0.9*livefuel->M[0]+4/3));
+  cured_frac=max(0,min(1,-1/0.9*livefuel->M[0]+4.0/3.0));
   fuel->w[NFUELCLASS-1]=livegrass*cured_frac;
+  livefuel->w[0]=livegrass*(1-cured_frac);
+  livefuel->w[1]=0; /* setting to 0 as placeholder for live woody component*/
   for(i=0;i<NFUELCLASS;++i)
   {
     adead[i]=sigma_dead[i]*fuel->w[i]/PART_DENS;
@@ -228,8 +230,6 @@ void fuelload(const Stand *stand, /**< pointer to stand */
     livefuel->g[i]=fsum[index];
   }
 
-  livefuel->w[0]=livegrass*(1-cured_frac);
-  livefuel->w[1]=0; /* setting to 0 as placeholder for live woody component*/
 
   /*   NEED TO STORE C3/C4 FBD and STORE GRASS FBD AVE -???*/
   /* average fuel bulk density for live and dead fuel*/
