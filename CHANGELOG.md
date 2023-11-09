@@ -19,7 +19,7 @@ of `major.minor.patch` with
 
 ## [Unreleased]
 
-## [5.7.10] - 2023-10-27
+## [5.7.10] - 2023-11-09
 
 ### Contributors
 
@@ -44,6 +44,7 @@ of `major.minor.patch` with
 
 - opening of grid file in JSON metafile format fixed in `opencoord()`.
 - default soil map is set for soil data in NetCDF format.
+- missing carbon influx added to NBP calculation in `flux_sum.c`.
 
 ## [5.7.9] - 2023-10-23
 
