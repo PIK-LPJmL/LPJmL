@@ -65,4 +65,4 @@
   "co2" :          { "fmt" : "txt",  "name" : "/p/projects/lpjml/input/historical/input_VERSION2/co2_1841-2017.dat"},
   "wetdays" :      { "fmt" : "clm",  "name" : "/p/projects/lpjml/input/historical/CRUDATA_TS3_23/gpcc_v7_cruts3_23_wet_1901_2013.clm"},
   "wateruse" :     { "fmt" : "clm",  "name" : "/p/projects/lpjml/input/historical/input_VERSION2/wateruse_1900_2000.bin" } /* water consumption for industry,household and livestock */
-},
+}
