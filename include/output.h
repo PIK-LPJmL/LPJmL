@@ -24,6 +24,7 @@
                        index==RESPONSE_LAYER_AGR || index==RESPONSE_LAYER_NV || index==CSHIFT_FAST_NV || index==CSHIFT_SLOW_NV || index == SOILC_AGR_LAYER || index==PERC)
 
 #define DEFAULT_PORT 2222 /* default port for socket connection */
+#define JSON_SUFFIX ".json" /* file suffix for JSON metafiles */
 
 #define getoutput(output,index,config) (output)->data[(config)->outputmap[index]]
 #ifdef CHECK_BOUNDARY

@@ -97,7 +97,6 @@
 #define FERTILIZER 1
 #define AUTO_FERTILIZER 2
 #define NOUT 332            /* number of output files */
-#define END -1              /* end marker for output files */
 #define GRIDBASED 1         /* pft-specific outputs scaled by stand->frac */
 #define PFTBASED 0          /* pft-specific outputs not scaled by stand->frac */
 #define DAILY_IRRIG 1       /* daily outputs for irrigated crop */
