@@ -17,6 +17,18 @@
 #ifndef SOIL_H /* Already included? */
 #define SOIL_H
 
+/* This is following macro defines a static keyword that vanishes for unit testing.
+ When compiling for unit testing (with U_TEST defined), the STATIC macro is defined as 
+ an empty string, omitting the 'STATIC' keyword. This makes functions accessible outside 
+ of the respective file, facilitating testing. In standard compilation (without U_TEST), 
+ STATIC is defined as 'static', ensuring that these functions have only within-file 
+ access, maintaining encapsulation. */
+#ifdef U_TEST
+#define STATIC 
+#else
+#define STATIC static  
+#endif
+
 /* Definition of constants */
 
 #define NSOILLAYER 6 /* Number of soil layers */
@@ -59,7 +71,7 @@
 #define NSTEP_DAILY 1
 #define LAG_CONV (NDAYYEAR*0.5*M_1_PI)  /* conversion factor for oscillation
                                 lag from angular units to days (=365/(2*PI))*/
-#define MINERALDENS 2700 /* mineral density in kg/m3*/
+#define MINERALDENS 2700.0 /* mineral density in kg/m3*/
 #define ORGDENS 1400     /* density of organic soil substances [kg/m3]*/
 #define PRIESTLEY_TAYLOR 1.32 /* Priestley-Taylor coefficient */
 #define SOILDEPTH_IRRIG 500 /*size of layer considered for calculation of irrigation ammount*/

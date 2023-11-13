@@ -177,7 +177,6 @@ void pedotransfer(Stand *stand,  /**< pointer to stand */
         }
       }
       soil->bulkdens[l] = (1 - soil->wsat[l])*MINERALDENS;
-      soil->k_dry[l] = (0.135*soil->bulkdens[l] + 64.7) / (MINERALDENS - 0.947*soil->bulkdens[l]);
       excess+=wmm+imm;
       /* check if plant available water and ice do not exceed 1.0 */
       dispose=soil->w[l] + soil->ice_depth[l]/soil->whcs[l] - 1.0;

@@ -18,6 +18,8 @@
 
 #define checkptr(ptr) if(ptr==NULL) { printallocerr(#ptr); return TRUE;}
 
+STATIC Real calc_soil_dry_therm_cond(int soiltype, Real bulk_density);
+
 Bool initsoil(Stand *stand,           /**< Pointer to stand data */
               const Soilpar *soilpar, /**< soil parameter array */
               int ntotpft,            /**< number of PFT including crops*/
@@ -115,11 +117,6 @@ Bool initsoil(Stand *stand,           /**< Pointer to stand data */
       soil->bulkdens[l]=(1-soilpar->wsat)*MINERALDENS;
       soil->beta_soil[l]=-2.655/log10(soilpar->wfc/soilpar->wsat);
       soil->Ks[l] = soilpar->Ks;
-      if(soilpar->type==ROCK)
-        soil->k_dry[l]=8.8;
-      else            //Johansen assumptions
-        soil->k_dry[l]=(0.135*soil->bulkdens[l]+64.7)/
-               (MINERALDENS-0.947*soil->bulkdens[l]);
     }
     /*assume last layer is bedrock in 6-layer version */
     soil->wfc[BOTTOMLAYER]=soilpar->wfc;
@@ -130,7 +127,6 @@ Bool initsoil(Stand *stand,           /**< Pointer to stand data */
     soil->wsat[BOTTOMLAYER]=soilpar->wsat;
     soil->wsats[BOTTOMLAYER]=0.006*soildepth[BOTTOMLAYER];
     soil->bulkdens[BOTTOMLAYER]=(1-soil->wsats[BOTTOMLAYER]/soildepth[BOTTOMLAYER])*MINERALDENS;
-    soil->k_dry[BOTTOMLAYER]=0.039*pow(soil->wsats[BOTTOMLAYER]/soildepth[BOTTOMLAYER],-2.2);
     soil->beta_soil[BOTTOMLAYER]=-2.655/log10(soilpar->wfc/soilpar->wsat);
     soil->Ks[BOTTOMLAYER] = soilpar->Ks;
   }
@@ -148,7 +144,6 @@ Bool initsoil(Stand *stand,           /**< Pointer to stand data */
         soil->wpwps[l] = soil->wpwp[l] * soildepth[l];
         soil->wsats[l] = soil->wsat[l] * soildepth[l];
         soil->bulkdens[l] = (1 - soil->wsats[l] / soildepth[l])*MINERALDENS;
-        soil->k_dry[l] = 8.8;
         soil->Ks[l] = 0.1;
         soil->beta_soil[l] = -2.655 / log10(soil->wfc[l] / soil->wsat[l]);
       }
@@ -179,9 +174,20 @@ Bool initsoil(Stand *stand,           /**< Pointer to stand data */
     soil->wpwps[BOTTOMLAYER] = soil->wpwp[BOTTOMLAYER] * soildepth[BOTTOMLAYER];
     soil->wsats[BOTTOMLAYER] = soil->wsat[BOTTOMLAYER] * soildepth[BOTTOMLAYER];
     soil->bulkdens[BOTTOMLAYER] = (1 - soil->wsats[BOTTOMLAYER] / soildepth[BOTTOMLAYER])*MINERALDENS;
-    soil->k_dry[BOTTOMLAYER] = 0.039*pow(soil->wsats[BOTTOMLAYER] / soildepth[BOTTOMLAYER], -2.2);
     soil->Ks[BOTTOMLAYER] = 0.1;
     soil->beta_soil[BOTTOMLAYER] = -2.655 / log10(soil->wfc[BOTTOMLAYER] / soil->wsat[BOTTOMLAYER]);
   }
+  foreachsoillayer(l){
+    soil->k_dry[l]=calc_soil_dry_therm_cond(soil->par->type, soil->bulkdens[l]);
+  }
   return FALSE;
 } /* of 'initsoil' */
+
+STATIC Real calc_soil_dry_therm_cond(int soiltype, Real bulk_density) {
+  // Source: Johanssen O (1975) Thermal conductivity of soils. University of
+  // Trondheim
+  Real k_dry=0.0;
+  k_dry = (0.135*bulk_density+64.7)/
+        (MINERALDENS-0.947*bulk_density);
+  return k_dry;
+}

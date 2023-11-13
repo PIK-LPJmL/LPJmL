@@ -12,16 +12,6 @@
 /**                                                                                \n**/
 /**************************************************************************************/
 
-// When compiling for unit testing (with U_TEST defined), the STATIC macro is defined as an empty string, 
-// omitting the 'STATIC' keyword. This makes functions accessible outside of this file, facilitating testing.
-// In standard compilation (without U_TEST), STATIC is defined as 'STATIC', ensuring that these functions 
-// have only within-file access, maintaining encapsulation.
-#ifdef U_TEST
-#define STATIC 
-#else
-#define STATIC STATIC  
-#endif
-
 #include "lpj.h"
 
 STATIC void setup_heatgrid(Real *);
