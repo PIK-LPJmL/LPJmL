@@ -294,6 +294,7 @@ extern void apply_perc_enthalpy(Soil *);
 extern void freezefrac2soil(Soil *, const Real *);
 extern void enth2freezefrac(Real *, const Real * , Soil_thermal_prop);
 extern void soilice2moisture(Soil *, Real *,int);
+extern void update_soil_thermal_state(Soil *,Real,const Config *);
 extern Real temp_response(Real);
 extern Real litter_agtop_tree(const Litter *,int);
 extern Real litter_agtop_nitrogen_tree(const Litter *,int);
