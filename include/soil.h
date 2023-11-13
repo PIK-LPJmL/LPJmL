@@ -26,7 +26,7 @@
 #define NFUELCLASS 4 /* Number of fuel classes */
 #define TOPLAYER 0
 #define NTILLLAYER 1 /* number of layers to be tilled */
-#ifndef TESTSCENARIO_HEAT2
+#ifndef U_TEST
   #define GPLHEAT 3 /* Gripoints per soil layer for the heat conduction scheme  */
 #endif
 

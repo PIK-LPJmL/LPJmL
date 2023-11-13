@@ -12,18 +12,28 @@
 /**                                                                                \n**/
 /**************************************************************************************/
 
+// When compiling for unit testing (with U_TEST defined), the STATIC macro is defined as an empty string, 
+// omitting the 'STATIC' keyword. This makes functions accessible outside of this file, facilitating testing.
+// In standard compilation (without U_TEST), STATIC is defined as 'STATIC', ensuring that these functions 
+// have only within-file access, maintaining encapsulation.
+#ifdef U_TEST
+#define STATIC 
+#else
+#define STATIC STATIC  
+#endif
+
 #include "lpj.h"
 
-static void setup_heatgrid(Real *);
-static void setup_heatgrid_layer_boundaries(Real *);
-static void get_unaccounted_changes_in_water_and_solids(Real *, Real *, Soil *);
-static void modify_enth_due_to_masschanges(Soil *, const Config *);
-static void modify_enth_due_to_heatconduction(Soil *, Real, Soil_thermal_prop,const Config *);
-static void compute_litter_temp_from_enth(Soil * soil, Real temp_below_snow ,const Config * config,Soil_thermal_prop therm_prop);
-static void compute_water_ice_ratios_from_enth(Soil *, const Config *, Soil_thermal_prop);
-static void calc_gp_temps(Real * gp_temps, Real * enth, Soil_thermal_prop th);
-static void compute_maxthaw_depth(Soil * soil);
-static void compute_bottom_bound_layer_temps_from_enth(Real *,  const Real *,   Soil_thermal_prop);
+STATIC void setup_heatgrid(Real *);
+STATIC void setup_heatgrid_layer_boundaries(Real *);
+STATIC void get_unaccounted_changes_in_water_and_solids(Real *, Real *, Soil *);
+STATIC void modify_enth_due_to_masschanges(Soil *, const Config *);
+STATIC void modify_enth_due_to_heatconduction(Soil *, Real, Soil_thermal_prop,const Config *);
+STATIC void compute_litter_temp_from_enth(Soil * soil, Real temp_below_snow, const Config * config,Soil_thermal_prop therm_prop);
+STATIC void compute_water_ice_ratios_from_enth(Soil *, const Config *, Soil_thermal_prop);
+STATIC void calc_gp_temps(Real * gp_temps, Real * enth, Soil_thermal_prop th);
+STATIC void compute_maxthaw_depth(Soil * soil);
+STATIC void compute_bottom_bound_layer_temps_from_enth(Real *,  const Real *,   Soil_thermal_prop);
 
 /* main function */
 
@@ -52,7 +62,7 @@ void update_soil_thermal_state(Soil *soil,          /**< pointer to soil data */
 
 /* functions used by the main functions */
 
-static void modify_enth_due_to_masschanges(Soil * soil,const Config * config)
+STATIC void modify_enth_due_to_masschanges(Soil * soil,const Config * config)
 {
     Soil_thermal_prop old_therm_storage_prop;                      
     Real waterdiff[NSOILLAYER], soliddiff[NSOILLAYER];  
@@ -62,7 +72,7 @@ static void modify_enth_due_to_masschanges(Soil * soil,const Config * config)
     apply_enth_of_untracked_mass_shifts(soil->enth, waterdiff, soliddiff, old_therm_storage_prop);    
 }
 
-static void modify_enth_due_to_heatconduction(Soil * soil, Real temp_below_snow, Soil_thermal_prop therm_prop ,const Config * config)
+STATIC void modify_enth_due_to_heatconduction(Soil * soil, Real temp_below_snow, Soil_thermal_prop therm_prop ,const Config * config)
 {
   Real litter_agtop_temp;
   Real h[NHEATGRIDP], top_dirichlet_BC;          
@@ -73,19 +83,19 @@ static void modify_enth_due_to_heatconduction(Soil * soil, Real temp_below_snow,
   apply_heatconduction_of_a_day(soil->enth, NHEATGRIDP, h, top_dirichlet_BC, therm_prop ); 
 }
 
-static void compute_water_ice_ratios_from_enth(Soil * soil, const Config * config, Soil_thermal_prop therm_prop)
+STATIC void compute_water_ice_ratios_from_enth(Soil * soil, const Config * config, Soil_thermal_prop therm_prop)
 {
   Real freezefrac[NSOILLAYER];                         /* fraction of each layer that is frozen */
   enth2freezefrac(freezefrac, soil->enth, therm_prop); /* get frozen fraction of each layer */
   freezefrac2soil(soil, freezefrac);                   /* apply frozen fraction to soil variables */
 }
 
-static void compute_litter_temp_from_enth(Soil * soil, Real temp_below_snow ,const Config * config,Soil_thermal_prop therm_prop)
+STATIC void compute_litter_temp_from_enth(Soil * soil, Real temp_below_snow ,const Config * config,Soil_thermal_prop therm_prop)
 {
   soil->litter.agtop_temp = (temp_below_snow + ENTH2TEMP(soil->enth,therm_prop,0)) / 2;
 }
 
-static void compute_maxthaw_depth(Soil * soil)
+STATIC void compute_maxthaw_depth(Soil * soil)
 {
   Real depth_to_first_ice=0;
   int l;
@@ -104,7 +114,7 @@ static void compute_maxthaw_depth(Soil * soil)
 
 /* small helper functions  */
 
-static void setup_heatgrid(Real *h)
+STATIC void setup_heatgrid(Real *h)
 {
   int l,j;
   Real nodes[NSOILLAYER*GPLHEAT];
@@ -128,7 +138,7 @@ static void setup_heatgrid(Real *h)
 }
 
 
-static void get_unaccounted_changes_in_water_and_solids(Real *waterdiff, Real *soliddiff, Soil *soil)
+STATIC void get_unaccounted_changes_in_water_and_solids(Real *waterdiff, Real *soliddiff, Soil *soil)
 {
   int l;
   for(l=0;l<NSOILLAYER;++l)   /* track water flow and porosity changes of other methods */
@@ -144,7 +154,7 @@ static void get_unaccounted_changes_in_water_and_solids(Real *waterdiff, Real *s
 /* functions used for testing purposes only */
 
 
-static void calc_gp_temps(Real * gp_temps, Real * enth, Soil_thermal_prop th)
+STATIC void calc_gp_temps(Real * gp_temps, Real * enth, Soil_thermal_prop th)
 {
   int gp;
   for(gp=0;gp<NHEATGRIDP;gp++)
@@ -158,7 +168,7 @@ static void calc_gp_temps(Real * gp_temps, Real * enth, Soil_thermal_prop th)
 allows extract tempeature at layer boundaries as last gridpoint of each layer is on its boundary
 to next layer 
 use for testing only!*/
-static void setup_heatgrid_layer_boundaries(Real *h)
+STATIC void setup_heatgrid_layer_boundaries(Real *h)
 {
   int l,j;
   //printf("GPL Heat %d  ", GPLHEAT);
@@ -176,7 +186,7 @@ static void setup_heatgrid_layer_boundaries(Real *h)
 
 /* compute bottom boundary layer temeperatures, to be used incombination with setup_heatgrid_layer_boundaries */
 
-static void compute_bottom_bound_layer_temps_from_enth(Real *temp,          /*< temperature vector that is written to N=NSOILLAYER */
+STATIC void compute_bottom_bound_layer_temps_from_enth(Real *temp,          /*< temperature vector that is written to N=NSOILLAYER */
                     const Real *enth,    /*< input enthalpy vector N=NHEATGRID */
                     Soil_thermal_prop th /*< soil thermal properties */
                     )
