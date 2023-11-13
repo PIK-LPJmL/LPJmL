@@ -11,6 +11,12 @@ Note that the function works with an enthalpy vector but a temperature boundary 
 #include "lpj.h"
 #include <math.h>
 
+static void use_scheme_with_temp_crossing_zegro_deg(Real * , Real * , Real * , Real * , const int , const int , const Real , const Real * , Soil_thermal_prop * );
+static void use_scheme_with_temp_above_zegro_deg(Real * , Real * , Real * , Real * , const int , const int , const Real , const Real * , Soil_thermal_prop * );
+static void use_scheme_with_temp_below_zegro_deg(Real * , Real * , Real * , Real * , const int , const int , const Real , const Real * , Soil_thermal_prop * );
+static enum uniform_temp_sign check_uniform_temp_sign_throughout_soil(Real *, Real, Soil_thermal_prop *, int);
+enum uniform_temp_sign {ALL_BELOW_0, MIXED_SIGN, ALL_ABOVE_0};
+
 void apply_heatconduction_of_a_day(
                     Real * enth,           /*< enthalpy vector that the method is updating (excluding gridpoint at surface) */
                     /* the gridpoint at the surface is assumed to have the given temp_top temperature */
@@ -28,6 +34,7 @@ void apply_heatconduction_of_a_day(
   Real QQ[N+1];         /* term resulting from the finite element method  */
   /* can be interpreted as the negative of the heatflux from gp j to gp j+1  */
   Real dt = 0.0;        /* timestep */
+  
   int j; /* loop iteration */
   int timesteps;
 
@@ -72,18 +79,66 @@ void apply_heatconduction_of_a_day(
   timesteps= (int)(dayLength* dt_inv) +1;
   dt = dayLength/ timesteps; /* final timestep */
 
-
-
-  /*******main timestepping loop*******/
   QQ[N]=0;            /* it is intended that the last value of QQ stays at zero during timestepping */
   temp[0] = temp_top; /* assign dirichlet boundary condition */
-  int timestp;
+
+  enum uniform_temp_sign uniform_temp_sign = check_uniform_temp_sign_throughout_soil(enth, temp_top, &th, N);
+
+  if(uniform_temp_sign == ALL_ABOVE_0)
+    use_scheme_with_temp_above_zegro_deg(enth, temp, QQ, inv_element_midpoint_dist, N, timesteps, dt, h, &th);
+  else if(uniform_temp_sign == ALL_BELOW_0)
+    use_scheme_with_temp_below_zegro_deg(enth, temp, QQ, inv_element_midpoint_dist, N, timesteps, dt, h, &th);
+  else if(uniform_temp_sign == MIXED_SIGN)
+    use_scheme_with_temp_crossing_zegro_deg(enth, temp, QQ, inv_element_midpoint_dist, N, timesteps, dt, h, &th);
+  else
+  {
+    printf("Error: uniform_temp_sign is not one of the three possible values. \n");
+    exit(-1);
+  }    
+    
+}
+
+static enum uniform_temp_sign check_uniform_temp_sign_throughout_soil(Real * enth, Real temp_top, Soil_thermal_prop * th, int N){
+  int j;
+  int temp_sign;
+  int temp_sign_top = (temp_top < 0 ? -1 : 0) + 
+                      (temp_top > 0 ?  1 : 0);
+  for (j=0; j<N; ++j)
+  {
+    temp_sign = (enth[j] < 0                  ? -1 : 0) + 
+                (enth[j] > th->latent_heat[j] ?  1 : 0); 
+    if (temp_sign != temp_sign_top)
+      return MIXED_SIGN;
+  }
+  // switch case
+  switch (temp_sign_top)
+  {
+  case -1: return ALL_BELOW_0; break;
+  case  0: return MIXED_SIGN; break;
+  case  1: return ALL_ABOVE_0; break;
+  }
+}
+
+static void use_scheme_with_temp_crossing_zegro_deg(
+                    Real * enth,         
+                    Real * temp,
+                    Real * QQ,
+                    Real * inv_element_midpoint_dist,
+                    const int N,   
+                    const int timesteps,     
+                    const Real dt,  
+                    const Real * h,       
+                    Soil_thermal_prop * th   
+                    ) 
+{
+  /*******main timestepping loop*******/
+  int timestp, j;
   for(timestp=0; timestp<timesteps; ++timestp) { 
     /* calculate gridpoint temperatures from gridpoint enthalpies */
     for (j=0; j<N; ++j)
     {
-      temp[j+1] = (enth[j] < 0                 ?  enth[j] *                      th.c_frozen[j]   : 0) + 
-                  (enth[j] > th.latent_heat[j] ? (enth[j] - th.latent_heat[j]) * th.c_unfrozen[j] : 0); 
+      temp[j+1] = (enth[j] < 0                 ?  enth[j] *                        th->c_frozen[j]   : 0) + 
+                  (enth[j] > th->latent_heat[j] ? (enth[j] - th->latent_heat[j]) * th->c_unfrozen[j] : 0); 
                   /* T=0 when 0<enth[j]<latent_heat */
       /* the term corresponds to eq (3.18) and (2.4) of the master thesis */
       /* it is the standart across-phase enthalpy temperature relation */
@@ -92,8 +147,90 @@ void apply_heatconduction_of_a_day(
     /* calculate heat fluxes from temperature difference */
     for (j=0; j<N; ++j) 
     {
-      QQ[j] = -(temp[j+1] *(temp[j+1]  < 0 ? th.lam_frozen[j] : th.lam_unfrozen[j]) - 
-                temp[j]   *(temp[j]    < 0 ? th.lam_frozen[j] : th.lam_unfrozen[j])) ;
+      QQ[j] = -(temp[j+1] *(temp[j+1]  < 0 ? th->lam_frozen[j] : th->lam_unfrozen[j]) - 
+                temp[j]   *(temp[j]    < 0 ? th->lam_frozen[j] : th->lam_unfrozen[j])) ;
+      /* the term corresponds to eq (3.15) of the master thesis multiplied with -1 */
+      /* an interpretation is the heat flux between gp j+1 and j, see Fourriers law */
+    }
+    
+    /* calculate and apply enthalpy update */
+    for (j=0; j<N; ++j) 
+    {
+      enth[j] = enth[j]+ dt * (QQ[j] - QQ[j+1]) * inv_element_midpoint_dist[j];
+      /* the term corresponds to eq (3.20) of the master thesis */
+      /* it is the enthalpy update during the timestep */
+    }
+  }
+}
+
+static void use_scheme_with_temp_above_zegro_deg(
+                    Real * enth,         
+                    Real * temp,
+                    Real * QQ,
+                    Real * inv_element_midpoint_dist,
+                    const int N,   
+                    const int timesteps,     
+                    const Real dt,  
+                    const Real * h,       
+                    Soil_thermal_prop * th   
+                    ) 
+{
+  /*******main timestepping loop*******/
+  int timestp, j;
+  for(timestp=0; timestp<timesteps; ++timestp) { 
+    /* calculate gridpoint temperatures from gridpoint enthalpies */
+    for (j=0; j<N; ++j)
+    {
+      temp[j+1] = (enth[j] - th->latent_heat[j]) * th->c_unfrozen[j]; 
+      /* the term corresponds to eq (3.18) and (2.4) of the master thesis */
+      /* it is the standart across-phase enthalpy temperature relation */
+    }
+
+    /* calculate heat fluxes from temperature difference */
+    for (j=0; j<N; ++j) 
+    {
+      QQ[j] = -(temp[j+1] - temp[j]) * th->lam_unfrozen[j];
+      /* the term corresponds to eq (3.15) of the master thesis multiplied with -1 */
+      /* an interpretation is the heat flux between gp j+1 and j, see Fourriers law */
+    }
+    
+    /* calculate and apply enthalpy update */
+    for (j=0; j<N; ++j) 
+    {
+      enth[j] = enth[j]+ dt * (QQ[j] - QQ[j+1]) * inv_element_midpoint_dist[j];
+      /* the term corresponds to eq (3.20) of the master thesis */
+      /* it is the enthalpy update during the timestep */
+    }
+  }
+}
+
+static void use_scheme_with_temp_below_zegro_deg(
+                    Real * enth,         
+                    Real * temp,
+                    Real * QQ,
+                    Real * inv_element_midpoint_dist,
+                    const int N,   
+                    const int timesteps,     
+                    const Real dt,  
+                    const Real * h,       
+                    Soil_thermal_prop * th   
+                    ) 
+{
+  /*******main timestepping loop*******/
+  int timestp, j;
+  for(timestp=0; timestp<timesteps; ++timestp) { 
+    /* calculate gridpoint temperatures from gridpoint enthalpies */
+    for (j=0; j<N; ++j)
+    {
+      temp[j+1] =  enth[j] * th->c_frozen[j]; 
+      /* the term corresponds to eq (3.18) and (2.4) of the master thesis */
+      /* it is the standart across-phase enthalpy temperature relation */
+    }
+
+    /* calculate heat fluxes from temperature difference */
+    for (j=0; j<N; ++j) 
+    {
+      QQ[j] = -(temp[j+1] - temp[j]) * th->lam_frozen[j];
       /* the term corresponds to eq (3.15) of the master thesis multiplied with -1 */
       /* an interpretation is the heat flux between gp j+1 and j, see Fourriers law */
     }
