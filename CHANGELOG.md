@@ -19,7 +19,7 @@ of `major.minor.patch` with
 
 ## [Unreleased]
 
-## [5.7.10] - 2023-11-09
+## [5.7.10] - 2023-11-13
 
 ### Contributors
 
@@ -32,7 +32,7 @@ of `major.minor.patch` with
 - name of grid file and `"terr_area"` output file written to output JSON files. A link to the corresponding JSON file is added.
 - list of utilities added to `INSTALL` file.
 - `-json` flag added to `cdf2clm` utility.
-- last year of CO2 data is checked and lpjml fails with an error if last year is less than last simulation year or CO2 fix year.
+- last year of CO2 data is checked at run time and last year of simulation is changed accordingly.
 
 ### Changed
 
