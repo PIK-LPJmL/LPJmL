@@ -105,7 +105,7 @@ typedef struct
 
 /* Declaration of functions */
 
-extern Climate *initclimate(const Cell *,const Config *);
+extern Climate *initclimate(const Cell *,Config *);
 extern Bool getclimate(Climate *,const Cell *,int,const Config *);
 extern Bool getco2(const Climate *,Real *,int,const Config *);
 extern Bool getdeposition(Climate *,const Cell *,int,Config *);
@@ -129,7 +129,7 @@ extern void closeclimatefile(Climatefile *,Bool);
 extern Bool readclimate(Climatefile *,Real *,Real,Real,const Cell *,int,
                         const Config *);
 extern Bool checkvalidclimate(Climate *,Cell *,Config *);
-extern Bool readco2(Co2data *,const Filename *,const Config *);
+extern Bool readco2(Co2data *,const Filename *,Config *);
 extern void radiation(Real *, Real *,Real *,Real,int,Dailyclimate *,Real,int);
 extern Real *readdata(Climatefile *,Real *data,const Cell *,const char *,int,const Config *);
 extern int *readintdata(Climatefile *,const Cell *,const char *,int,const Config *);
