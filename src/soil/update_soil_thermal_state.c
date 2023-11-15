@@ -16,9 +16,9 @@
 
 STATIC void setup_heatgrid(Real *);
 STATIC void setup_heatgrid_layer_boundaries(Real *);
-STATIC void get_unaccounted_changes_in_water_and_solids(Real *, Real *, Soil *);
+STATIC void get_unaccounted_changes_in_water_and_solids(Real *, Real *, Real *, Soil *);
 STATIC void update_wi_and_sol_enth_adjusted(Real *, Real *, Soil *);
-STATIC void modify_enth_due_to_masschanges(Soil *, const Config *);
+STATIC void modify_enth_due_to_masschanges(Soil *, Real *, const Config *);
 STATIC void modify_enth_due_to_heatconduction(enum uniform_temp_sign, Soil *, Real, Soil_thermal_prop,const Config *);
 STATIC void compute_litter_temp_from_enth(Soil * soil, Real temp_below_snow, const Config * config,Soil_thermal_prop therm_prop);
 STATIC void compute_water_ice_ratios_from_enth(Soil *, const Config *, Soil_thermal_prop);
@@ -47,7 +47,7 @@ void update_soil_thermal_state(Soil *soil,          /**< pointer to soil data */
   calc_soil_thermal_props(uniform_temp_sign, &therm_prop, soil, abs_waterice_cont,  NULL, config->johansen, TRUE); 
 
   /* apply daily changes to soil enthalpy distribution  due to heatconvection and heatconduction*/
-  modify_enth_due_to_masschanges(soil, config);
+  modify_enth_due_to_masschanges(soil, abs_waterice_cont, config);
   modify_enth_due_to_heatconduction(uniform_temp_sign, soil, temp_below_snow, therm_prop, config);
 
   /* compute soil thermal attributes from enthalpy distribution and thermal properties, i.e. the derived quantities */
@@ -89,11 +89,11 @@ STATIC enum uniform_temp_sign check_uniform_temp_sign_throughout_soil(Real * ent
   }
 }
 
-STATIC void modify_enth_due_to_masschanges(Soil * soil,const Config * config)
+STATIC void modify_enth_due_to_masschanges(Soil * soil, Real * abs_waterice_cont, const Config * config)
 {
     Real waterdiff[NSOILLAYER], soliddiff[NSOILLAYER];  
     apply_perc_enthalpy(soil);
-    get_unaccounted_changes_in_water_and_solids(waterdiff, soliddiff, soil);        
+    get_unaccounted_changes_in_water_and_solids(waterdiff, soliddiff, abs_waterice_cont, soil);        
     apply_enth_of_untracked_mass_shifts(soil->enth, waterdiff, soliddiff, soil->wi_abs_enth_adj, soil->sol_abs_enth_adj);    
     update_wi_and_sol_enth_adjusted(waterdiff, soliddiff, soil);
 }
@@ -171,12 +171,12 @@ STATIC void setup_heatgrid(Real *h)
 }
 
 
-STATIC void get_unaccounted_changes_in_water_and_solids(Real *waterdiff, Real *soliddiff, Soil *soil)
+STATIC void get_unaccounted_changes_in_water_and_solids(Real *waterdiff, Real *soliddiff, Real * abs_waterice_cont, Soil *soil)
 {
   int l;
   foreachsoillayer(l)   /* track water flow and porosity changes of other methods */
   {
-    waterdiff[l] = (allwater(soil,l)+allice(soil,l) - soil->wi_abs_enth_adj[l]);
+    waterdiff[l] = (abs_waterice_cont[l] - soil->wi_abs_enth_adj[l]);
     soliddiff[l] = (soildepth[l]-soil->wsats[l])-soil->sol_abs_enth_adj[l];
   }
 }

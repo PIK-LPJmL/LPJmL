@@ -26,7 +26,7 @@ void calc_soil_thermal_props(
                      Bool with_conductivity          /*< Flag to activate conductivity update  */
                      ) 
 {
-  int  layer, j;
+  int  layer, j, gp;
   Real c_froz, c_unfroz;             /* frozen and unfrozen heat capacities */
   Real lam_froz, lam_unfroz;         /* frozen and unfrozen conductivities */
   Real latent_heat;                  /* latent heat of fusion depending on water content */
@@ -114,6 +114,7 @@ void calc_soil_thermal_props(
     resistance_unfroz_cur = cur_length_to_border/lam_unfroz;
 
     for (j = 0; j < GPLHEAT; ++j) { /* iterate through gridpoints of the layer */
+      gp = GPLHEAT * layer + j;
       if(with_conductivity)
       {
         /* set properties of j-th layer element */
@@ -122,25 +123,25 @@ void calc_soil_thermal_props(
           /* element crosses layers, hence thermal resistance is used to calculate conductivity of element */
           /* (make use of the fact that the resistance of a piece of composite material is the sum of the resitances of the pieces)*/
           if(calc_frozen_values)
-            th->lam_frozen[GPLHEAT * layer + j]   = 
+            th->lam_frozen[gp]   = 
             (prev_length_to_border+cur_length_to_border)/(resistance_froz_cur+resistance_froz_prev);
           if(calc_unfrozen_values)
-            th->lam_unfrozen[GPLHEAT * layer + j] =  
+            th->lam_unfrozen[gp] =  
             (prev_length_to_border+cur_length_to_border)/(resistance_unfroz_cur+resistance_unfroz_prev);
         }else{
           if(calc_frozen_values)
-            th->lam_frozen[GPLHEAT * layer + j]   = lam_froz;
+            th->lam_frozen[gp]   = lam_froz;
           if(calc_unfrozen_values)
-            th->lam_unfrozen[GPLHEAT * layer + j] = lam_unfroz;
+            th->lam_unfrozen[gp] = lam_unfroz;
         }
         
       }
       /* set properties of j-th layer gridpoint */
       if(calc_frozen_values)
-        th->c_frozen [GPLHEAT * layer + j]    = c_froz;
+        th->c_frozen [gp]    = c_froz;
       if(calc_unfrozen_values)
-        th->c_unfrozen[GPLHEAT * layer + j]   = c_unfroz;
-      th->latent_heat[GPLHEAT * layer + j]  = latent_heat;
+        th->c_unfrozen[gp]   = c_unfroz;
+      th->latent_heat[gp]  = latent_heat;
     }
 
     /* save thermal resistance of part of last element of current layer for next iteration */
