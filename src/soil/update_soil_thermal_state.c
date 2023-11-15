@@ -19,13 +19,14 @@ STATIC void setup_heatgrid_layer_boundaries(Real *);
 STATIC void get_unaccounted_changes_in_water_and_solids(Real *, Real *, Soil *);
 STATIC void update_wi_and_sol_enth_adjusted(Real *, Real *, Soil *);
 STATIC void modify_enth_due_to_masschanges(Soil *, const Config *);
-STATIC void modify_enth_due_to_heatconduction(Soil *, Real, Soil_thermal_prop,const Config *);
+STATIC void modify_enth_due_to_heatconduction(enum uniform_temp_sign, Soil *, Real, Soil_thermal_prop,const Config *);
 STATIC void compute_litter_temp_from_enth(Soil * soil, Real temp_below_snow, const Config * config,Soil_thermal_prop therm_prop);
 STATIC void compute_water_ice_ratios_from_enth(Soil *, const Config *, Soil_thermal_prop);
 STATIC void calc_gp_temps(Real * gp_temps, Real * enth, Soil_thermal_prop th);
 STATIC void compute_maxthaw_depth(Soil * soil);
 STATIC void compute_bottom_bound_layer_temps_from_enth(Real *,  const Real *,   Soil_thermal_prop);
-
+STATIC enum uniform_temp_sign check_uniform_temp_sign_throughout_soil(Real *, Real, Real *);
+STATIC void get_abs_waterice_cont(Real *, Soil *);
 /* main function */
 
 void update_soil_thermal_state(Soil *soil,          /**< pointer to soil data */
@@ -33,25 +34,60 @@ void update_soil_thermal_state(Soil *soil,          /**< pointer to soil data */
               const Config *config                  /**< LPJmL configuration */
              )
 {
+  /* calculate absolute water ice content of each layer and provide it for below functions */
+  Real abs_waterice_cont[NSOILLAYER];
+  get_abs_waterice_cont(abs_waterice_cont, soil);
+
+  /* check if phase changes are already present in soil or can possibly happen during timestep due to temp_bs forcing */
+  enum uniform_temp_sign uniform_temp_sign;
+  uniform_temp_sign = check_uniform_temp_sign_throughout_soil(soil->enth, temp_below_snow, abs_waterice_cont);
 
   /* calculate soil thermal properties and provide it for below functions */
-  Soil_thermal_prop therm_prop;      
-  calc_soil_thermal_props(&therm_prop, soil, NULL,  NULL, config->johansen, TRUE); 
-  
+  Soil_thermal_prop therm_prop = {};      
+  calc_soil_thermal_props(uniform_temp_sign, &therm_prop, soil, abs_waterice_cont,  NULL, config->johansen, TRUE); 
+
   /* apply daily changes to soil enthalpy distribution  due to heatconvection and heatconduction*/
-  modify_enth_due_to_masschanges(soil ,config);
-  modify_enth_due_to_heatconduction(soil,temp_below_snow, therm_prop, config);
+  modify_enth_due_to_masschanges(soil, config);
+  modify_enth_due_to_heatconduction(uniform_temp_sign, soil, temp_below_snow, therm_prop, config);
 
   /* compute soil thermal attributes from enthalpy distribution and thermal properties, i.e. the derived quantities */
   compute_mean_layer_temps_from_enth(soil->temp,soil->enth, therm_prop);
-  compute_water_ice_ratios_from_enth(soil,config,therm_prop);
   compute_litter_temp_from_enth(soil, temp_below_snow ,config,therm_prop);
-  compute_maxthaw_depth(soil);
-
+  if(uniform_temp_sign == MIXED_SIGN || uniform_temp_sign == UNKNOWN)
+  {
+    compute_water_ice_ratios_from_enth(soil,config,therm_prop);
+    compute_maxthaw_depth(soil);
+  }
 } 
 
 
 /* functions used by the main functions */
+
+STATIC enum uniform_temp_sign check_uniform_temp_sign_throughout_soil(Real * enth, Real temp_top, Real * abs_waterice_cont){
+  int l,gp;
+  int temp_sign;
+  int temp_sign_top = (temp_top < 0 ? -1 : 0) + 
+                      (temp_top > 0 ?  1 : 0);
+  Real vol_latent_heat;
+  foreachsoillayer(l)
+  {
+    vol_latent_heat = abs_waterice_cont[l]/soildepth[l] * c_water2ice;
+    for(gp=l*GPLHEAT;gp<(l+1)*GPLHEAT;gp++)
+    {
+      temp_sign = (enth[gp] < 0               ? -1 : 0) + 
+                  (enth[gp] > vol_latent_heat ?  1 : 0); 
+      if (temp_sign != temp_sign_top)
+        return MIXED_SIGN;
+    }
+  }
+  // switch case
+  switch (temp_sign_top)
+  {
+  case -1: return ALL_BELOW_0; break;
+  case  0: return MIXED_SIGN; break;
+  case  1: return ALL_ABOVE_0; break;
+  }
+}
 
 STATIC void modify_enth_due_to_masschanges(Soil * soil,const Config * config)
 {
@@ -62,7 +98,7 @@ STATIC void modify_enth_due_to_masschanges(Soil * soil,const Config * config)
     update_wi_and_sol_enth_adjusted(waterdiff, soliddiff, soil);
 }
 
-STATIC void modify_enth_due_to_heatconduction(Soil * soil, Real temp_below_snow, Soil_thermal_prop therm_prop ,const Config * config)
+STATIC void modify_enth_due_to_heatconduction(enum uniform_temp_sign uniform_temp_sign, Soil * soil, Real temp_below_snow, Soil_thermal_prop therm_prop ,const Config * config)
 {
   Real litter_agtop_temp;
   Real h[NHEATGRIDP], top_dirichlet_BC;          
@@ -70,7 +106,7 @@ STATIC void modify_enth_due_to_heatconduction(Soil * soil, Real temp_below_snow,
   top_dirichlet_BC = temp_below_snow  * (1 - soil->litter.agtop_cover) +
          litter_agtop_temp * soil->litter.agtop_cover;      
   setup_heatgrid(h);
-  apply_heatconduction_of_a_day(soil->enth, NHEATGRIDP, h, top_dirichlet_BC, therm_prop ); 
+  apply_heatconduction_of_a_day(uniform_temp_sign, soil->enth, NHEATGRIDP, h, top_dirichlet_BC, therm_prop ); 
 }
 
 STATIC void compute_water_ice_ratios_from_enth(Soil * soil, const Config * config, Soil_thermal_prop therm_prop)
@@ -103,6 +139,13 @@ STATIC void compute_maxthaw_depth(Soil * soil)
 
 
 /* small helper functions  */
+
+STATIC void get_abs_waterice_cont(Real * abs_waterice_cont, Soil * soil)
+{
+  int l;
+  foreachsoillayer(l)
+    abs_waterice_cont[l] = allice(soil,l) + allwater(soil,l);
+}
 
 STATIC void setup_heatgrid(Real *h)
 {

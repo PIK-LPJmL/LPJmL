@@ -14,10 +14,9 @@ Note that the function works with an enthalpy vector but a temperature boundary 
 static void use_enth_scheme(Real *, const int, const Real *, const Real, Soil_thermal_prop *);
 static void use_temp_scheme(Real *, const int, const Real *, const Real *, const Real *);
 static void use_scheme_with_temp_below_zegro_deg(Real *, const int, const Real *, const Real, Soil_thermal_prop *);
-static enum uniform_temp_sign check_uniform_temp_sign_throughout_soil(Real *, Real, Soil_thermal_prop *, int);
-enum uniform_temp_sign {ALL_BELOW_0, MIXED_SIGN, ALL_ABOVE_0};
 
 void apply_heatconduction_of_a_day(
+                    enum uniform_temp_sign uniform_temp_sign, /*< flag to indicate if the temperature is everywhere above 0, everywhere below 0 or mixed */
                     Real * enth,           /*< enthalpy vector that the method is updating (excluding gridpoint at surface) */
                     /* the gridpoint at the surface is assumed to have the given temp_top temperature */
                     const int N,           /*< number of gridpoints (excluding gridpoint at surface) */
@@ -35,7 +34,6 @@ void apply_heatconduction_of_a_day(
 
   /* to choose if the standard and cheap heat conduction temperature methad can be used or the more expensive enthalpy method needs to be applied
      check if the temperature forcing and temperatures in the soil column show any sign changes or are all negative/ all positive */
-  enum uniform_temp_sign uniform_temp_sign = check_uniform_temp_sign_throughout_soil(enth, temp_top, &th, N);
 
   if(uniform_temp_sign == ALL_ABOVE_0)
   {
@@ -75,27 +73,6 @@ void apply_heatconduction_of_a_day(
     exit(-1);
   }    
     
-}
-
-static enum uniform_temp_sign check_uniform_temp_sign_throughout_soil(Real * enth, Real temp_top, Soil_thermal_prop * th, int N){
-  int j;
-  int temp_sign;
-  int temp_sign_top = (temp_top < 0 ? -1 : 0) + 
-                      (temp_top > 0 ?  1 : 0);
-  for (j=0; j<N; ++j)
-  {
-    temp_sign = (enth[j] < 0                  ? -1 : 0) + 
-                (enth[j] > th->latent_heat[j] ?  1 : 0); 
-    if (temp_sign != temp_sign_top)
-      return MIXED_SIGN;
-  }
-  // switch case
-  switch (temp_sign_top)
-  {
-  case -1: return ALL_BELOW_0; break;
-  case  0: return MIXED_SIGN; break;
-  case  1: return ALL_ABOVE_0; break;
-  }
 }
 
 static void use_enth_scheme(
