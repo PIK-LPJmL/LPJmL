@@ -23,7 +23,6 @@
   "soildepth_evap" : 300.0,  /* depth of sublayer at top of upper soil layer (mm) */
   "soil_infil" : 2.0,        /* default soil infiltration */
   "soil_infil_litter" : 2.0, /* soil infiltration intensification by litter cover*/
-  "co2_p" : 278.0,           /* pre-industrial CO2 (ppmv) */
   "k" : 0.0548,              /* k    k = 7.4e-7 * atomic_mass_C / atomic_mass_N * seconds_per_day = 0.0548 Sprugel et al. 1996, Eqn 7*/
   "theta" : 0.9,             /* theta */
   "alphac3" : 0.08,          /* alphac3 */

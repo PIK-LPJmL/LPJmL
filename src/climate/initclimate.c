@@ -269,10 +269,11 @@ Climate *initclimate(const Cell grid[],   /**< LPJ grid */
     freeclimate(climate,isroot(*config));
     return NULL;
   }
-  if(isroot(*config) && climate->co2.firstyear>climate->file_temp.firstyear)
-      fprintf(stderr,"WARNING001: First year in '%s'=%d greater than climate->file_temp.firstyear=%d.\n"
-              "            Preindustrial value=%g is used.\n",
-              config->co2_filename.name,climate->co2.firstyear,climate->file_temp.firstyear,param.co2_p);
+  if(isroot(*config) && climate->co2.firstyear>config->firstyear-config->nspinup)
+      fprintf(stderr,"WARNING001: First year in CO2 data file '%s'=%d greater than first simulation year %d,\n"
+              "            value=%g ppm of year %d is used.\n",
+              config->co2_filename.name,climate->co2.firstyear,config->firstyear-config->nspinup,
+              climate->co2.data[0],climate->co2.firstyear);
 #ifdef DEBUG7
   printf("climate->file_temp.firstyear: %d  co2-year: %d  value: %f\n",
          climate->file_temp.firstyear, climate->co2.firstyear,climate->co2.data[0]);
