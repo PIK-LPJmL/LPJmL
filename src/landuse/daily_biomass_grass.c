@@ -179,7 +179,7 @@ Real daily_biomass_grass(Stand *stand,                /**< stand pointer */
     /* count irrigation events*/
     getoutputindex(output,CFT_IRRIG_EVENTS,index,config)++; /* id is consecutively counted over natural pfts, biomass, and the cfts; ids for cfts are from 12-23, that is why npft (=12) is distracted from id */
   }
-  
+
   if(climate->prec+melt>0)  /* enthalpy of soil infiltration */
     vol_water_enth = climate->temp*c_water*climate->prec/(climate->prec+melt)+c_water2ice;
   else

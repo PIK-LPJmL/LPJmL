@@ -18,15 +18,15 @@
 #define SOIL_H
 
 /* This is following macro defines a static keyword that vanishes for unit testing.
- When compiling for unit testing (with U_TEST defined), the STATIC macro is defined as 
- an empty string, omitting the 'STATIC' keyword. This makes functions accessible outside 
- of the respective file, facilitating testing. In standard compilation (without U_TEST), 
- STATIC is defined as 'static', ensuring that these functions have only within-file 
+ When compiling for unit testing (with U_TEST defined), the STATIC macro is defined as
+ an empty string, omitting the 'STATIC' keyword. This makes functions accessible outside
+ of the respective file, facilitating testing. In standard compilation (without U_TEST),
+ STATIC is defined as 'static', ensuring that these functions have only within-file
  access, maintaining encapsulation. */
 #ifdef U_TEST
-#define STATIC 
+#define STATIC
 #else
-#define STATIC static  
+#define STATIC static
 #endif
 
 /* Definition of constants */
@@ -221,23 +221,24 @@ typedef struct
   Real YEDOMA;       /**< g/m2 */
   Litter litter;     /**< Litter pool */
   Real rw_buffer;    /**< available rain water amount in buffer (mm) */
-  Real wi_abs_enth_adj[NSOILLAYER];  /* = WaterIcecontent_Absolute_Enthalpy_Adjusted  
-                                        absolute water ice contents with computed corresponding enthalpies, 
+  Real wi_abs_enth_adj[NSOILLAYER];  /* = WaterIcecontent_Absolute_Enthalpy_Adjusted
+                                        absolute water ice contents with computed corresponding enthalpies,
                                         allowing obervation of changes made without enthalpy adjustments */
   Real sol_abs_enth_adj[NSOILLAYER]; /* = Solidcontent_Absolute_Enthalpy_Adjusted  */
 } Soil;
 
 #ifndef TESTSCENARIO_HEAT
-typedef struct{
-    Real lam_frozen[NHEATGRIDP];    /* conductivity of soil in frozen state [W/K/m] */
-    Real lam_unfrozen[NHEATGRIDP];  /* conductivity of soil in unfrozen state [W/K/m]*/
-    Real c_frozen[NHEATGRIDP];      /* heat capacity of soil in frozen state [J/m3/K]*/
-    Real c_unfrozen[NHEATGRIDP];    /* heat capacity of soil in unfrozen state [J/m3/K]*/
-    Real latent_heat[NHEATGRIDP];   /* latent heat of fusion of soil [J/m3]*/
-    /* lamFrozen and lamNormal define thermal conductivities for each interval of the grid 
-      (e.g. lamFrozen[0] <-> interval directly below the surface), while the other variables define 
-      their properties only at the gridpoints, (e.g. cFrozen[0] <-> first point below surface) */
-}Soil_thermal_prop;
+typedef struct
+{
+  Real lam_frozen[NHEATGRIDP];    /* conductivity of soil in frozen state [W/K/m] */
+  Real lam_unfrozen[NHEATGRIDP];  /* conductivity of soil in unfrozen state [W/K/m]*/
+  Real c_frozen[NHEATGRIDP];      /* heat capacity of soil in frozen state [J/m3/K]*/
+  Real c_unfrozen[NHEATGRIDP];    /* heat capacity of soil in unfrozen state [J/m3/K]*/
+  Real latent_heat[NHEATGRIDP];   /* latent heat of fusion of soil [J/m3]*/
+  /* lamFrozen and lamNormal define thermal conductivities for each interval of the grid
+    (e.g. lamFrozen[0] <-> interval directly below the surface), while the other variables define
+    their properties only at the gridpoints, (e.g. cFrozen[0] <-> first point below surface) */
+} Soil_thermal_prop;
 #endif
 
 struct Pftpar; /* forward declaration */
@@ -298,13 +299,13 @@ extern Stocks soilstocks(const Soil *);
 extern Real soilwater(const Soil *);
 extern Real soilconduct(const Soil *,int,Bool);
 extern Real soilheatcap(const Soil *,int);
-extern void apply_heatconduction_of_a_day(Real *, const int, const Real *, const Real, const Soil_thermal_prop);
+extern void apply_heatconduction_of_a_day(Real *, int, const Real *, Real, Soil_thermal_prop);
 extern void calc_soil_thermal_props(Soil_thermal_prop *, const Soil *, const Real *, const Real * , Bool, Bool);
-extern void compute_mean_layer_temps_from_enth(Real *, const Real *, Soil_thermal_prop);
-extern void apply_enth_of_untracked_mass_shifts(Real *, const Real *, const Real *, Soil_thermal_prop);
+extern void compute_mean_layer_temps_from_enth(Real *, const Real *,const  Soil_thermal_prop *);
+extern void apply_enth_of_untracked_mass_shifts(Real *, const Real *, const Real *,const  Soil_thermal_prop *);
 extern void apply_perc_enthalpy(Soil *);
 extern void freezefrac2soil(Soil *, const Real *);
-extern void enth2freezefrac(Real *, const Real * , Soil_thermal_prop);
+extern void enth2freezefrac(Real *, const Real * ,const  Soil_thermal_prop *);
 extern void soilice2moisture(Soil *, Real *,int);
 extern void update_soil_thermal_state(Soil *,Real,const Config *);
 extern Real temp_response(Real);
@@ -337,11 +338,11 @@ extern void cmpsoilmap(const int*,int,const Config *);
 #define f_temp(soiltemp) exp(-(soiltemp-18.79)*(soiltemp-18.79)/(2*5.26*5.26)) /* Parton et al 2001*/
 #define f_NH4(nh4) (1-exp(-0.0105*(nh4))) /* Parton et al 1996 */
 #define getsoilmoist(soil,l) (((soil)->w[l] * (soil)->whcs[l] + ((soil)->wpwps[l] * (1 - (soil)->ice_pwp[l])) + (soil)->w_fw[l]) / (soil)->wsats[l])
-/* The macro computes the temperature at a gridpoint (gp) 
+/* The macro computes the temperature at a gridpoint (gp)
 given an enthalpy vector (enth) and a Soil_thermal_prop (th)*/
 #define ENTH2TEMP(e, th, gp)\
- (((e)[(gp)]<0                      ?  (e)[(gp)]                           / (th).c_frozen[(gp)]   : 0) +\
-  ((e)[(gp)]>(th).latent_heat[(gp)] ? ((e)[(gp)] - (th).latent_heat[(gp)]) / (th).c_unfrozen[(gp)] : 0))
+ (((e)[(gp)]<0                      ?  (e)[(gp)]                           / (th)->c_frozen[(gp)]   : 0) +\
+  ((e)[(gp)]>(th)->latent_heat[(gp)] ? ((e)[(gp)] - (th)->latent_heat[(gp)]) / (th)->c_unfrozen[(gp)] : 0))
 #define reconcile_layer_energy_with_water_shift(soil, layer, amount, vol_enthalpy, config) ({\
         if(config->percolation_heattransfer)\
         {\

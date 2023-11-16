@@ -66,7 +66,7 @@
   "fix_landuse_year" : 1901,             /* year after land use is fixed */
   "fix_co2" : false,                     /* fix atmospheric CO2  after specfied year */
   "fix_co2_year" : 1901,                 /* year after CO2 is fixed */
-  #ifdef FROM_RESTART
+#ifdef FROM_RESTART
   "new_seed" : false, /* read random seed from restart file */
   "population" : false,
   "landuse" : "yes", /* other options: "no", "yes", "const", "all_crops", "only_crops" */
@@ -258,7 +258,7 @@ ID                               Fmt                        filename
 #else
   "output" :
   [
-{ "id" : "globalflux",       "file" : { "fmt" : "txt", "name" : "output/globalflux_spinup.csv"}}
+    { "id" : "globalflux",       "file" : { "fmt" : "txt", "name" : "output/globalflux_spinup.csv"}}
   ],
 #endif
 
@@ -267,36 +267,36 @@ ID                               Fmt                        filename
 /*  V. Run settings section                                          */
 /*===================================================================*/
 
-"startgrid" : "all", /* 27410, 67208 60400 47284 47293 47277 all grid cells */
-"endgrid"   : "all",
+  "startgrid" : "all", /* 27410, 67208 60400 47284 47293 47277 all grid cells */
+  "endgrid"   : "all",
 #ifdef CHECKPOINT
-"checkpoint_filename" : "restart/restart_checkpoint.lpj", /* filename of checkpoint file */
+  "checkpoint_filename" : "restart/restart_checkpoint.lpj", /* filename of checkpoint file */
 #endif
 
 #ifndef FROM_RESTART
 
-"nspinup" : 3500,  /* spinup years */
-"nspinyear" : 30,  /* cycle length during spinup (yr) */
-"firstyear": 1901, /* first year of simulation */
-"lastyear" : 1901, /* last year of simulation */
-"restart" :  false, /* start from restart file */
-"outputyear" : -1599,
-"write_restart" : true, /* create restart file: the last year of simulation=restart-year */
-"write_restart_filename" : "restart/restart_1840_nv_stdfire.lpj", /* filename of restart file */
-"restart_year": 1840 /* write restart at year */
+  "nspinup" : 3500,  /* spinup years */
+  "nspinyear" : 30,  /* cycle length during spinup (yr) */
+  "firstyear": 1901, /* first year of simulation */
+  "lastyear" : 1901, /* last year of simulation */
+  "restart" :  false, /* start from restart file */
+  "outputyear" : -1599,
+  "write_restart" : true, /* create restart file: the last year of simulation=restart-year */
+  "write_restart_filename" : "restart/restart_1840_nv_stdfire.lpj", /* filename of restart file */
+  "restart_year": 1840 /* write restart at year */
 
 #else
 
-"nspinup" : 390,   /* spinup years */
-"nspinyear" : 30,  /* cycle length during spinup (yr)*/
-"firstyear": 1901, /* first year of simulation */
-"lastyear" : 2011, /* last year of simulation */
-"outputyear": 1901, /* first year output is written  */
-"restart" :  true, /* start from restart file */
-"restart_filename" : "restart/restart_1840_nv_stdfire.lpj", /* filename of restart file */
-"write_restart" : true, /* create restart file */
-"write_restart_filename" : "restart/restart_1900_crop_stdfire.lpj", /* filename of restart file */
-"restart_year": 1900 /* write restart at year */
+  "nspinup" : 390,   /* spinup years */
+  "nspinyear" : 30,  /* cycle length during spinup (yr)*/
+  "firstyear": 1901, /* first year of simulation */
+  "lastyear" : 2011, /* last year of simulation */
+  "outputyear": 1901, /* first year output is written  */
+  "restart" :  true, /* start from restart file */
+  "restart_filename" : "restart/restart_1840_nv_stdfire.lpj", /* filename of restart file */
+  "write_restart" : true, /* create restart file */
+  "write_restart_filename" : "restart/restart_1900_crop_stdfire.lpj", /* filename of restart file */
+  "restart_year": 1900 /* write restart at year */
 
 #endif
 }

@@ -121,7 +121,7 @@ Bool initsoiltemp(Climate* climate,    /**< pointer to climate data */
             stand->soil.w[l]=0;
             stand->soil.freeze_depth[l]=soildepth[l];
             stand->soil.ice_pwp[l]=1;
-          }   
+          }
         }
   /* initialse the enthalpy vectors based on temperature */
   Soil_thermal_prop therm; /* thermal properties of soil for calculation of enthalpy */
@@ -133,14 +133,15 @@ Bool initsoiltemp(Climate* climate,    /**< pointer to climate data */
         calc_soil_thermal_props(&therm,&(stand->soil),NULL,NULL,config->johansen,FALSE); /* get thermal properties of soil; dep on water content */
         foreachsoillayer(l)
         {
-          for(i=0; i<GPLHEAT; ++i){ /* iterate through gridpoints of the refined heatgrid */
-            gridpoint = GPLHEAT*l+i; 
-            /* Get the enthalpy corresponding to the temperature.   
+          for(i=0; i<GPLHEAT; ++i)
+          { /* iterate through gridpoints of the refined heatgrid */
+            gridpoint = GPLHEAT*l+i;
+            /* Get the enthalpy corresponding to the temperature.
                when $temp=0$, we only know that $enth in [0,latent_heat]$,
                hence there is some freedom in choosing inital enth         */
-            stand->soil.enth[gridpoint] = 
-               (stand->soil.temp[l]<0 ? 
-                stand->soil.temp[l]*therm.c_frozen[gridpoint]  : 
+            stand->soil.enth[gridpoint] =
+               (stand->soil.temp[l]<0 ?
+                stand->soil.temp[l]*therm.c_frozen[gridpoint]  :
                 stand->soil.temp[l]*therm.c_unfrozen[gridpoint]+therm.latent_heat[gridpoint]);
           }
           stand->soil.wi_abs_enth_adj[l]=allwater((&(stand->soil)),l)+allice((&(stand->soil)),l);
