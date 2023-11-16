@@ -56,11 +56,12 @@ static Bool mpi_write_coords(const Netcdf *cdf, /* Pointer to Netcdf */
   {
     count=0;
     for(i=0;i<size;i++)
-      if(vec[i]==-1)
-        vec[i]=MISSING_VALUE_INT;
-      else
-        vec[i]=count++;
-    rc=write_int_netcdf(cdf,vec,NO_TIME,size); /* write data to file */
+      if(vec[i]!=-1)
+      {
+        vec[count]=count;
+        count++;
+      }
+    rc=write_int_netcdf(cdf,vec,NO_TIME,count); /* write data to file */
     free(vec);
   }
   /* broadcast return code to all other tasks */
@@ -287,6 +288,18 @@ int writecoords(Outputfile *output,  /**< output struct */
     }
   }
 #else
+  if(output->files[index].isopen && output->files[index].fmt==CDF)
+  {
+    count=0;
+    for(cell=0;cell<config->ngridcell;cell++)
+      if(cellid[cell]!=-1)
+      {
+        cellid[count]=count;
+        count++;
+      }
+    write_int_netcdf(&output->files[index].fp.cdf,cellid,NO_TIME,count);
+    free(cellid);
+  }
   if(config->float_grid)
   {
     if(output->files[index].isopen)
@@ -302,10 +315,6 @@ int writecoords(Outputfile *output,  /**< output struct */
                     fvec[cell].lon,config->csv_delimit,fvec[cell].lat,config->csv_delimit);
           fprintf(output->files[index].fp.file,"%g%c%g\n",
                   fvec[count-1].lon,config->csv_delimit,fvec[count-1].lat);
-          break;
-        case CDF:
-          write_int_netcdf(&output->files[index].fp.cdf,cellid,NO_TIME,config->nall);
-          free(cellid);
           break;
       }
     if(output->files[index].issocket)
@@ -330,16 +339,6 @@ int writecoords(Outputfile *output,  /**< output struct */
                     vec[cell].lon*0.01,config->csv_delimit,vec[cell].lat*0.01,config->csv_delimit);
           fprintf(output->files[index].fp.file,"%g%c%g\n",
                   vec[count-1].lon*0.01,config->csv_delimit,vec[count-1].lat*0.01);
-          break;
-        case CDF:
-          count=0;
-          for(cell=0;cell<config->nall;cell++)
-            if(cellid[cell]==-1)
-              cellid[cell]=MISSING_VALUE_INT;
-            else
-              cellid[cell]=count++;
-          write_int_netcdf(&output->files[index].fp.cdf,cellid,NO_TIME,config->nall);
-          free(cellid);
           break;
       }
       if(output->files[index].issocket)
