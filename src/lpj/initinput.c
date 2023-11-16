@@ -18,7 +18,7 @@
 
 Bool initinput(Input *input,        /**< Input data */
                int npft,            /**< number of natural PFTs */
-               const Config *config /**< LPJ configuration */
+               Config *config       /**< LPJ configuration */
               )                     /** \return TRUE on error */
 {
   if((input->climate=initclimate(config))==NULL)

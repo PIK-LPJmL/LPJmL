@@ -32,7 +32,7 @@ static Bool create(Netcdf *cdf,const char *filename,int index,
                          config->outnames[config->outputvars[index].id].long_name,
                          (config->outputvars[index].id==GRID) ? "" :
                          config->outnames[config->outputvars[index].id].unit,
-                         getoutputtype(config->outputvars[index].id,config->grid_type),
+                         (config->outputvars[index].id==GRID) ? LPJ_INT: getoutputtype(config->outputvars[index].id,config->grid_type),
                          getnyear(config->outnames,config->outputvars[index].id),
                          (config->outnames[config->outputvars[index].id].timestep==ANNUAL) ? 1 : config->outnames[config->outputvars[index].id].timestep,
                          0,FALSE,array,config);

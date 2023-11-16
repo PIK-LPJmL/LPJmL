@@ -79,6 +79,7 @@ Coordfile opencoord(const Filename *filename, /**< filename of coord file */
     coordfile->cellsize.lon=header.cellsize_lon;
     coordfile->cellsize.lat=header.cellsize_lat;
     coordfile->datatype=header.datatype;
+    coordfile->scalar=header.scalar;
     if(header.nbands!=2)
     {
       if(isout)
@@ -106,6 +107,7 @@ Coordfile opencoord(const Filename *filename, /**< filename of coord file */
       free(coordfile);
       return NULL;
     }
+    fseek(coordfile->file,coordfile->offset,SEEK_SET);
     return coordfile;
   }
   coordfile->file=fopen(filename->name,"rb");
@@ -290,6 +292,16 @@ Bool readcoord(Coordfile coordfile, /**< open coord file */
     default:
       return TRUE;
   } /* of switch */
+  if(coord->lat<-90 || coord->lat>90)
+  {
+    fprintf(stderr,"ERROR261: Invalid value %g for latitude, must be in [-90,90].\n",coord->lat);
+    return TRUE;
+  }
+  if(coord->lon<-180 || coord->lon>180)
+  {
+    fprintf(stderr,"ERROR261: Invalid value %g for longitude, must be in [-180,180].\n",coord->lon);
+    return TRUE;
+  }
   /* calculate cell area */
   coord->area=cellarea(coord,resol);
   return FALSE;

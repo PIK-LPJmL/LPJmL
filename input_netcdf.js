@@ -3,7 +3,7 @@
 /**        i  n  p  u  t  _  n  e  t  c  d  f  .  j  s                             \n**/
 /**                                                                                \n**/
 /** Configuration file for NetCDF input dataset for LPJmL                          \n**/
-/** Version 5.7.9                                                                  \n**/
+/** Version 5.7.10                                                                  \n**/
 /**                                                                                \n**/
 /** (C) Potsdam Institute for Climate Impact Research (PIK), see COPYRIGHT file    \n**/
 /** authors, and contributors see AUTHORS file                                     \n**/

@@ -45,11 +45,16 @@ Bool fscanfloat(LPJfile *file,    /**< pointer to LPJ file */
   }
   if(json_object_get_type(item)!=json_type_double)
   {
-    if(verb)
-      fprintf(stderr,"ERROR226: Type of '%s' is not float.\n",name);
-    return TRUE;
+    if(json_object_get_type(item)!=json_type_int)
+    {
+      if(verb)
+        fprintf(stderr,"ERROR226: Type of '%s' is not float.\n",name);
+      return TRUE;
+    }
+    *value=(float)json_object_get_int(item);
   }
-  *value=(float)json_object_get_double(item);
+  else
+    *value=(float)json_object_get_double(item);
   if (verb >= VERB)
     printf("\"%s\" : %g\n",name,*value);
   return FALSE;

@@ -276,13 +276,13 @@ int main(int argc,char **argv)
   fclose(out);
   if(ismeta)
   {
-    out_json=malloc(strlen(argv[iarg+1])+strlen(".json")+1);
+    out_json=malloc(strlen(argv[iarg+1])+strlen(JSON_SUFFIX)+1);
     if(out_json==NULL)
     {
       printallocerr("filename");
       return EXIT_FAILURE;
     }
-    strcat(strcpy(out_json,argv[iarg+1]),".json");
+    strcat(strcpy(out_json,argv[iarg+1]),JSON_SUFFIX);
     arglist=catstrvec(argv,argc);
     file=fopen(out_json,"w");
     if(file==NULL)
