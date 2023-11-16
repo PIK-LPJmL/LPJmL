@@ -79,6 +79,7 @@ Coordfile opencoord(const Filename *filename, /**< filename of coord file */
     coordfile->cellsize.lon=header.cellsize_lon;
     coordfile->cellsize.lat=header.cellsize_lat;
     coordfile->datatype=header.datatype;
+    coordfile->scalar=header.scalar;
     if(header.nbands!=2)
     {
       if(isout)
@@ -106,6 +107,7 @@ Coordfile opencoord(const Filename *filename, /**< filename of coord file */
       free(coordfile);
       return NULL;
     }
+    fseek(coordfile->file,coordfile->offset,SEEK_SET);
     return coordfile;
   }
   coordfile->file=fopen(filename->name,"rb");
@@ -334,6 +336,12 @@ Real cellarea(const Coord *coord, /**< cell coordinate */
 {
   return (111194.9*resol->lat)*(111194.9*resol->lon)*cos(deg2rad(coord->lat));
 } /* of 'cellarea' */
+
+Type getcoordtype(const Coordfile coordfile /**< open coord file */
+                 )                          /** \return datatype of coordinates */
+{
+  return  coordfile->datatype;
+} /* of 'getcoordtype' */
 
 Bool fscancoord(LPJfile *file, /**< pointer to text file */
                 Coord *coord,  /**< cell coordinate read */

@@ -89,7 +89,7 @@ static void printclm(const char *filename,int output,int nbands,int version,
   }
   if(isjon)
   {
-    fprintjson(stdout,filename,NULL,&header,NULL,NULL,CLM,id,swap,version);
+    fprintjson(stdout,filename,NULL,&header,NULL,NULL,NULL,LPJ_SHORT,CLM,id,swap,version);
     return;
   }
   if((output & NO_HEADER)==0)

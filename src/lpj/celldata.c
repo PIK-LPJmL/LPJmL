@@ -112,12 +112,12 @@ Celldata opencelldata(Config *config /**< LPJmL configuration */
       }
       freemap(map);
     }
+  }
+  if(config->soilmap==NULL)
+  {
+    config->soilmap=defaultsoilmap(&config->soilmap_size,config);
     if(config->soilmap==NULL)
-    {
-      config->soilmap=defaultsoilmap(&config->soilmap_size,config);
-      if(config->soilmap==NULL)
-        return NULL;
-    }
+      return NULL;
   }
   if(config->with_lakes)
   {
