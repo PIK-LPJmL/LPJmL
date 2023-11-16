@@ -61,11 +61,12 @@ static Bool mpi_write_coords(const Netcdf *cdf, /* Pointer to Netcdf */
   {
     count=0;
     for(i=0;i<size;i++)
-      if(vec[i]==-1)
-        vec[i]=MISSING_VALUE_INT;
-      else
-        vec[i]=count++;
-    rc=write_int_netcdf(cdf,vec,NO_TIME,size); /* write data to file */
+      if(vec[i]!=-1)
+      {
+        vec[count]=count;
+        count++;
+      }
+    rc=write_int_netcdf(cdf,vec,NO_TIME,count); /* write data to file */
     free(vec);
   }
   /* broadcast return code to all other tasks */
@@ -365,6 +366,18 @@ int writecoords(Outputfile *output,  /**< output struct */
     }
   }
 #else
+  if(output->files[index].isopen && output->files[index].fmt==CDF)
+  {
+    count=0;
+    for(cell=0;cell<config->ngridcell;cell++)
+      if(cellid[cell]!=-1)
+      {
+        cellid[count]=count;
+        count++;
+      }
+     write_int_netcdf(&output->files[index].fp.cdf,cellid,NO_TIME,count);
+     free(cellid);
+  }
   switch(config->grid_type)
   {
     case LPJ_FLOAT:

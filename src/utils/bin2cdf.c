@@ -871,7 +871,7 @@ int main(int argc,char **argv)
     grid_filename=addpath(grid_name.name,path);
     if(grid_filename==NULL)
     {
-     printallocerr("name");
+      printallocerr("name");
       return EXIT_FAILURE;
     }
     free(grid_name.name);

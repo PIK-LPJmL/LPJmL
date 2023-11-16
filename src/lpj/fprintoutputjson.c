@@ -31,6 +31,7 @@ static void fprintreffile(FILE *file,int index,int ref_index,const char *ref_nam
 {
   const Filename *ref_filename;
   char *name;
+  Type type;
   if(config->outputvars[index].id!=ref_index)
   {
     ref_filename=findoutputfile(ref_index,config);
@@ -54,9 +55,22 @@ static void fprintreffile(FILE *file,int index,int ref_index,const char *ref_nam
                 fmt[ref_filename->fmt],
                 (ref_index!=GRID || config->grid_type!=LPJ_SHORT || ref_filename->fmt==TXT || ref_filename->fmt==CDF) ? 1 : 0.01);
          if(ref_index==GRID)
-           fprintf(file,"  \"datatype\" : \"%s\"},\n",typenames[(ref_filename->fmt==TXT) ? LPJ_FLOAT  :  config->grid_type]);
-         else
-           fprintf(file," \"datatype\" : \"%s\"},\n",typenames[LPJ_FLOAT]);
+         {
+           switch(ref_filename->fmt)
+           {
+             case CDF:
+               type=LPJ_INT;
+               break;
+             case TXT:
+               type=LPJ_FLOAT;
+               break;
+             default:
+               type=config->grid_type;
+          }
+        }
+        else
+          type=getoutputtype(ref_index,config->grid_type);
+        fprintf(file,"  \"datatype\" : \"%s\"},\n",typenames[type]);
       }
     }
   }
@@ -72,6 +86,7 @@ Bool fprintoutputjson(int index,           /**< index in outputvars array */
   char *json_filename;
   char **pftnames;
   time_t t;
+  Type type;
   int p,nbands,len,count,id;
   id=config->outputvars[index].id;
   if(config->outputvars[index].oneyear)
@@ -200,7 +215,18 @@ Bool fprintoutputjson(int index,           /**< index in outputvars array */
   }
   if(config->outputvars[index].id==GRID)
   {
-    fprintf(file,"  \"datatype\" : \"%s\",\n",typenames[(config->outputvars[index].filename.fmt==TXT) ? LPJ_FLOAT  :  getoutputtype(id,config->grid_type)]);
+    switch(config->outputvars[index].filename.fmt)
+    {
+      case CDF:
+        type=LPJ_INT;
+        break;
+      case TXT:
+        type=LPJ_FLOAT;
+        break;
+      default:
+        type=config->grid_type;
+    }
+    fprintf(file,"  \"datatype\" : \"%s\",\n",typenames[type]);
     if(config->grid_type==LPJ_SHORT && (config->outputvars[index].filename.fmt==CLM || config->outputvars[index].filename.fmt==RAW))
       fprintf(file,"  \"scalar\" : 0.01,\n");
     else

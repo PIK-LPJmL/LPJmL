@@ -37,7 +37,7 @@ char *getfilefrommeta(const char *filename, /**< name of metafile */
   if(name==NULL)
   {
     if(isout)
-      fprintf(stderr,"ERROR223: No filename specified in '%s'.\n",filename);
+      fprintf(stderr,"ERROR223: Cannot parse JSON file in '%s'.\n",filename);
     return NULL;
   }
   path=getpath(filename);
