@@ -70,7 +70,7 @@ STATIC void modify_enth_due_to_heatconduction(Soil * soil, Real temp_below_snow,
   top_dirichlet_BC = temp_below_snow  * (1 - soil->litter.agtop_cover) +
          litter_agtop_temp * soil->litter.agtop_cover;
   setup_heatgrid(h);
-  apply_heatconduction_of_a_day(soil->enth, NHEATGRIDP, h, top_dirichlet_BC, *therm_prop );
+  apply_heatconduction_of_a_day(soil->enth, h, top_dirichlet_BC, *therm_prop );
 }
 
 STATIC void compute_water_ice_ratios_from_enth(Soil * soil,const Soil_thermal_prop *therm_prop)
