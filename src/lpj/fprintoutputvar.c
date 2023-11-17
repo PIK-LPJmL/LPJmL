@@ -62,16 +62,16 @@ void fprintoutputvar(FILE *file,              /**< pointer to text file */
     width_standard_name=max(width_standard_name,strlen(output[i].standard_name));
   }
   fprintf(file,"Output files available\n"
-          "%-*s %-*s %-*s dt  nbd Type  Scale   Offset %-*s Long name\n",width,"Name",width_var,"Variable",width_unit,"Unit",width_standard_name,"Standard name");
+          "%-*s %-*s %-*s tstep nbd Type  Scale   Offset %-*s Long name\n",width,"Name",width_var,"Variable",width_unit,"Unit",width_standard_name,"Standard name");
   frepeatch(file,'-',width);
   fputc(' ',file);
   frepeatch(file,'-',width_var);
   fputc(' ',file);
   frepeatch(file,'-',width_unit);
-  fputs(" --- --- ----- ------- ------ ",file);
+  fputs(" ----- --- ----- ------- ------ ",file);
   frepeatch(file,'-',width_standard_name);
   fputc(' ',file);
-  frepeatch(file,'-',77-width-width_unit-width_var-7-4-width_standard_name);
+  frepeatch(file,'-',77-width-width_unit-width_var-7-6-width_standard_name);
   putc('\n',file);
   for(i=0;i<size;i++)
   {
@@ -95,7 +95,7 @@ void fprintoutputvar(FILE *file,              /**< pointer to text file */
         default:
           sc="";
       }
-      fprintf(file,"%-*s %-*s %-*s %-3s %3d %5s %5g%-2s %6g %-*s %s\n",width,output[index].name,
+      fprintf(file,"%-*s %-*s %-*s %-5s %3d %5s %5g%-2s %6g %-*s %s\n",width,output[index].name,
               width_var,output[index].var,
               width_unit,strlen(output[index].unit)==0 ? "-" : output[index].unit,sprinttimestep(s,output[index].timestep),
               outputsize(index,npft,ncft,config),
@@ -110,9 +110,9 @@ void fprintoutputvar(FILE *file,              /**< pointer to text file */
   frepeatch(file,'-',width_var);
   fputc(' ',file);
   frepeatch(file,'-',width_unit);
-  fputs(" --- --- ----- ------- ------ ",file);
+  fputs(" ----- --- ----- ------- ------ ",file);
   frepeatch(file,'-',width_standard_name);
   fputc(' ',file);
-  frepeatch(file,'-',77-width-width_unit-width_var-7-4-width_standard_name);
+  frepeatch(file,'-',77-width-width_unit-width_var-7-6-width_standard_name);
   putc('\n',file);
 } /* of 'fprintoutputvar' */

@@ -31,7 +31,11 @@ while (x == y)
 {
   if (x<10)
     something();
-  somethingelse();
+  else
+  {
+    somethingelse();
+    morethingstodo();
+  }
 }
 ```
 
@@ -44,6 +48,7 @@ Data types should begin with an uppercase character:
 ```c
 typedef struct
 {
+  int variable; /**< description (unit) */
 } Datatype;
 ```
 
