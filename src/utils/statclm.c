@@ -220,12 +220,14 @@ int main(int argc,char **argv)
         }
       }
     }
-    free(unit);
-    unit=NULL;
     fclose(file);
     free(vec);
     if(iserr)
+    {
+      free(unit);
+      unit=NULL;
       continue;
+    }
     if(iscsv)
     {
       if(verbose)
@@ -242,6 +244,8 @@ int main(int argc,char **argv)
       else
         printf("min=%g, max=%g, avg=%g\n",fmin,fmax,favg/header.nyear);
     }
+    free(unit);
+    unit=NULL;
   }
   return EXIT_SUCCESS;
 } /* of 'main' */
