@@ -232,10 +232,13 @@ int main(int argc,char **argv)
   float cellsize_lon,cellsize_lat;
   Bool swap,verbose,isclm,isbyte,isjson;
   Header header;
+  Filename grid_name;
+  Type grid_type;
   isbyte=swap=verbose=isclm=isjson=FALSE;
   units=NULL;
   var=NULL;
   outname="out.bin"; /* default file name for output */
+  grid_type=LPJ_SHORT;
   cellsize_lon=cellsize_lat=0.5;      /* default cell size */
   initconfig(&config);
   for(i=1;i<argc;i++)
@@ -330,6 +333,7 @@ int main(int argc,char **argv)
       return EXIT_FAILURE;
     }
     config.ngridcell=numcoord(coordfile);
+    grid_type=getcoordtype(coordfile);
     if(config.ngridcell==0)
     {
       fprintf(stderr,"Number of cells is zero in '%s'.\n",argv[i]);
@@ -466,7 +470,9 @@ int main(int argc,char **argv)
       printfcreateerr(out_json);
       return EXIT_FAILURE;
     }
-    fprintjson(file,outname,arglist,&header,NULL,NULL,(isclm) ? CLM : RAW,LPJOUTPUT_HEADER,FALSE,LPJOUTPUT_VERSION);
+    grid_name.name=argv[i];
+    grid_name.fmt=(isclm) ? CLM : RAW;
+    fprintjson(file,outname,arglist,&header,NULL,NULL,&grid_name,grid_type,(isclm) ? CLM : RAW,LPJOUTPUT_HEADER,FALSE,LPJOUTPUT_VERSION);
     fclose(file);
   }
   return EXIT_SUCCESS;
