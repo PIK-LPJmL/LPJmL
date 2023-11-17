@@ -330,7 +330,7 @@ Bool create_netcdf(Netcdf *cdf,
     dim[1]=cdf->lon_dim_id;
     chunk[0]=array->nlat;
     chunk[1]=array->nlon;
-  } 
+  }
   rc=nc_def_var(cdf->ncid,name,nctype[type],(year==NULL) ? 2 : 3,dim,&cdf->varid);
   error(rc);
 #ifdef USE_NETCDF4

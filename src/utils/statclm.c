@@ -14,7 +14,7 @@
 
 #include "lpj.h"
 
-#define USAGE "Usage: %s [-scale s] [-verbose] [-csv] [-type {byte|short|int|float|double}] filename ...\n"
+#define USAGE "Usage: %s [-metafile] [-version v] [-scale s] [-verbose] [-csv] [-type {byte|short|int|float|double}] filename ...\n"
 
 int main(int argc,char **argv)
 {
@@ -22,15 +22,17 @@ int main(int argc,char **argv)
   String id;
   FILE *file;
   long long size;
-  Bool swap,verbose,iscsv;
-  int version,i,j,cell,iarg,year,index;
+  size_t offset;
+  Bool swap,verbose,iscsv,iserr,ismeta;
+  int version,i,j,cell,iarg,year,index,setversion;
   float fmin,fmax,favg,avg,cavg,fmin2,fmax2,scale;
   float *vec;
-  char *endptr;
+  char *endptr,*unit=NULL;
   Type datatype;
   scale=1;
-  verbose=iscsv=FALSE;
+  verbose=iscsv=ismeta=FALSE;
   datatype=LPJ_SHORT;
+  setversion=READ_VERSION;
   for(iarg=1;iarg<argc;iarg++)
   {
     if(argv[iarg][0]=='-')
@@ -47,6 +49,22 @@ int main(int argc,char **argv)
         if(*endptr!='\0')
         {
           fprintf(stderr,"Invalid value '%s' for option '-scale'.\n",
+                  argv[iarg]);
+          return EXIT_FAILURE;
+        }
+      }
+      else if(!strcmp(argv[iarg],"-version"))
+      {
+        if(iarg==argc-1)
+        {
+          fprintf(stderr,"Argument missing after '-version' option.\n"
+                USAGE,argv[0]);
+          return EXIT_FAILURE;
+        }
+        setversion=strtol(argv[++iarg],&endptr,10);
+        if(*endptr!='\0')
+        {
+          fprintf(stderr,"Invalid value '%s' for option '-version'.\n",
                   argv[iarg]);
           return EXIT_FAILURE;
         }
@@ -68,6 +86,8 @@ int main(int argc,char **argv)
         }
         datatype=(Type)index;
       }
+      else if(!strcmp(argv[iarg],"-metafile"))
+        ismeta=TRUE;
       else if(!strcmp(argv[iarg],"-verbose"))
         verbose=TRUE;
       else if(!strcmp(argv[iarg],"-csv"))
@@ -91,33 +111,73 @@ int main(int argc,char **argv)
   if(iscsv)
   {
     if(verbose)
-      printf("filename,year,min,max,avg\n");
+    {
+      if(unit!=NULL && strlen(unit))
+        printf("filename,year,min (%s) ,max (%s) ,avg (%s) \n",unit,unit,unit);
+      else
+        printf("filename,year,min,max,avg\n");
+    }
     else
-      printf("filename,min,max,avg\n");
+    {
+      if(unit!=NULL && strlen(unit))
+        printf("filename,min (%s) ,max (%s) ,avg (%s) \n",unit,unit,unit);
+      else
+        printf("filename,min,max,avg\n");
+    }
   }
   for(i=iarg;i<argc;i++)
   {
-    version=READ_VERSION;
-    file=fopen(argv[i],"rb");
-    if(file==NULL)
+    if(ismeta)
     {
-      fprintf(stderr,"Error opening '%s': %s\n",argv[iarg],strerror(errno));
-      return EXIT_FAILURE;
-    }
-    if(freadanyheader(file,&header,&swap,id,&version,TRUE))
-      return EXIT_FAILURE;
-    if(version<2)
-      header.scalar=scale;
-    if(version<3)
+      header.scalar=1;
+      header.cellsize_lon=header.cellsize_lat=0.5;
+      header.firstyear=1901;
+      header.firstcell=0;
+      header.nyear=1;
+      header.nbands=1;
+      header.nstep=1;
+      header.timestep=1;
       header.datatype=datatype;
-    size=getfilesizep(file)-headersize(id,version);
-    if(size!=typesizes[header.datatype]*header.ncell*header.nbands*header.nyear*header.nstep)
-      fprintf(stderr,"Warning: File length of '%s' does not match header, differs by %lld bytes.\n",
-              argv[i],llabs(size-(long long)typesizes[header.datatype]*header.ncell*header.nbands*header.nstep*header.nyear));
+      header.order=CELLYEAR;
+      header.scalar=scale;
+      file=openmetafile(&header,NULL,NULL,NULL,NULL,NULL,NULL,NULL,&unit,NULL,NULL,NULL,NULL,&swap,&offset,argv[i],TRUE);
+      if(file==NULL)
+        continue;
+      if(fseek(file,offset,SEEK_CUR))
+      {
+        fprintf(stderr,"Error seeking in '%s' to offset %lu.\n",argv[i],offset);
+        fclose(file);
+        continue;
+      }
+    }
+    else
+    {
+      version=setversion;
+      file=fopen(argv[i],"rb");
+      if(file==NULL)
+      {
+        fprintf(stderr,"Error opening '%s': %s\n",argv[i],strerror(errno));
+        return EXIT_FAILURE;
+      }
+      if(freadanyheader(file,&header,&swap,id,&version,TRUE))
+      {
+        fclose(file);
+        continue;
+      }
+      if(version<2)
+        header.scalar=scale;
+      if(version<3)
+        header.datatype=datatype;
+      size=getfilesizep(file)-headersize(id,version);
+      if(size!=typesizes[header.datatype]*header.ncell*header.nbands*header.nyear*header.nstep)
+        fprintf(stderr,"Warning: File length of '%s' does not match header, differs by %lld bytes.\n",
+                argv[i],llabs(size-(long long)typesizes[header.datatype]*header.ncell*header.nbands*header.nstep*header.nyear));
+    }
     fmin=HUGE_VAL;
     fmax=-HUGE_VAL;
     favg=0;
     vec=newvec(float,header.nstep*header.nbands);
+    iserr=FALSE;
     for(year=0;year<header.nyear;year++)
     {
       cavg=0;
@@ -129,7 +189,8 @@ int main(int argc,char **argv)
         if(readfloatvec(file,vec,header.scalar,header.nstep*header.nbands,swap,header.datatype))
         {
           fprintf(stderr,"Unexpected end of file in '%s'.\n",argv[iarg]);
-          return EXIT_FAILURE;
+          iserr=TRUE;
+          break;
         }
         for(j=0;j<header.nstep*header.nbands;j++)
         {
@@ -141,6 +202,8 @@ int main(int argc,char **argv)
         }
         cavg+=avg/header.nstep/header.nbands;
       }
+      if(iserr)
+        break;
       favg+=cavg/header.ncell;
       if(verbose)
       {
@@ -150,12 +213,19 @@ int main(int argc,char **argv)
         {
           if(argc-iarg>1)
             printf("%s: ",argv[i]);
-          printf("year=%d, min=%g, max=%g, avg=%g\n",year+header.firstyear,fmin2,fmax2,cavg/header.ncell);
+          if(unit!=NULL && strlen(unit))
+            printf("year=%d, min=%g %s, max=%g %s, avg=%g %s\n",year+header.firstyear,fmin2,unit,fmax2,unit,cavg/header.ncell,unit);
+          else
+            printf("year=%d, min=%g, max=%g, avg=%g\n",year+header.firstyear,fmin2,fmax2,cavg/header.ncell);
         }
       }
     }
+    free(unit);
+    unit=NULL;
     fclose(file);
     free(vec);
+    if(iserr)
+      continue;
     if(iscsv)
     {
       if(verbose)
@@ -167,7 +237,10 @@ int main(int argc,char **argv)
     {
       if(argc-iarg>1)
         printf("%s: ",argv[i]);
-      printf("min=%g, max=%g, avg=%g\n",fmin,fmax,favg/header.nyear);
+      if(unit!=NULL && strlen(unit))
+        printf("min=%g %s, max=%g %s, avg=%g %s\n",fmin,unit,fmax,unit,favg/header.ncell,unit);
+      else
+        printf("min=%g, max=%g, avg=%g\n",fmin,fmax,favg/header.nyear);
     }
   }
   return EXIT_SUCCESS;
