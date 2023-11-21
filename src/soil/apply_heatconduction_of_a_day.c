@@ -12,8 +12,13 @@ Note that the function works with an enthalpy vector but a temperature boundary 
 #include <math.h>
 
 static void use_enth_scheme(Real *, const int, const Real *, const Real, Soil_thermal_prop *);
-static void use_temp_scheme(Real *, const int, const Real *, const Real *, const Real *);
+STATIC void use_temp_scheme(Real *, const int, const Real *, const Real *, const Real *, int);
+STATIC void use_temp_scheme_implicit(Real *, const int, const Real *, const Real *, const Real *, int);
 static void use_scheme_with_temp_below_zegro_deg(Real *, const int, const Real *, const Real, Soil_thermal_prop *);
+STATIC void arrange_matrix(Real *, Real *, Real *, const int, const Real *, const Real *, const Real *, const Real);
+STATIC void thomas_algorithm(double *, double *, double *, double *, double *, int);
+STATIC void timestep_implicit(Real *, const int, const Real *, const Real *, const Real *, const Real);
+STATIC void timestep_explicit_matrix(Real *, const int, const Real *, const Real *, const Real *, const Real);
 
 void apply_heatconduction_of_a_day(
                     enum uniform_temp_sign uniform_temp_sign, /*< flag to indicate if the temperature is everywhere above 0, everywhere below 0 or mixed */
@@ -45,7 +50,7 @@ void apply_heatconduction_of_a_day(
       temp[j+1] = (enth[j] - th.latent_heat[j]) / th.c_unfrozen[j];
     
     /* update temperature */
-    use_temp_scheme(temp, N, h, th.c_unfrozen, th.lam_unfrozen);
+    use_temp_scheme_implicit(temp, N, h, th.c_unfrozen, th.lam_unfrozen, -1);
 
     /* get the enthalpies corresponding to the updated temperatures */
     for (j=0; j<N; ++j)
@@ -59,7 +64,7 @@ void apply_heatconduction_of_a_day(
       temp[j+1] = enth[j] / th.c_frozen[j];
 
     /* update temperature */
-    use_temp_scheme(temp, N, h, th.c_frozen, th.lam_frozen);
+    use_temp_scheme_implicit(temp, N, h, th.c_frozen, th.lam_frozen, -1);
 
     /* get the enthalpies corresponding to the updated temperatures */
     for (j=0; j<N; ++j)
@@ -174,13 +179,14 @@ static void use_enth_scheme(
 }
 
 
-static void use_temp_scheme(
+STATIC void use_temp_scheme(
                     Real * temp,           /*< enthalpy vector that the method is updating (excluding gridpoint at surface) */
                     /* the gridpoint at the surface is assumed to have the given temp_top temperature */
                     const int N,           /*< number of gridpoints (excluding gridpoint at surface) */
                     const Real * h,        /*< distances between adjacent gridpoints  */
                     const Real * hcap,        /*< heat capacities */
-                    const Real * lam       /*< thermal conductivities */
+                    const Real * lam,       /*< thermal conductivities */
+                    int timesteps /*< if in non testing scenario pass -1 to automatically determine timestep */
                     ) 
 {
 
@@ -198,7 +204,6 @@ static void use_temp_scheme(
   
   /*******calulate max possible timestep*******/
   /* seek for the maximum that still guarantees stability.*/
-  int timesteps;        /* number of timesteps */
   Real dt = 0.0;        /* timestep */
   Real dt_inv_temporary;
   Real dt_inv=0;
@@ -207,8 +212,11 @@ static void use_temp_scheme(
     if (dt_inv < dt_inv_temporary)
       dt_inv = dt_inv_temporary;
   }
-  timesteps= (int)(dayLength* dt_inv) +1;
+  /* for testing a custom number of timestep can be passed to this function, in a non testing scenario -1 is passed */
+  if(timesteps == -1) 
+    timesteps= (int)(dayLength* dt_inv) +1;
   dt = dayLength/ timesteps; /* final timestep */
+
 
   /* precompute multiplication with dt */
   Real inv_element_midpoint_dist_divBy_c_multBy_dt[N]; /* inverse of the distances between the midpoints of adjacent elements divided by unfrozen heat capacity */
@@ -231,12 +239,180 @@ static void use_temp_scheme(
       /* an interpretation is the heat flux between gp j+1 and j, see Fourriers law */
     }
     
-    /* calculate and apply enthalpy update */
+    /* calculate and apply temperature update */
     for (j=0; j<N; ++j) 
     {
       temp[j+1] = temp[j+1]+ (QQ[j] - QQ[j+1]) * inv_element_midpoint_dist_divBy_c_multBy_dt[j];
       /* the term corresponds to eq (3.20) of the master thesis */
-      /* it is the enthalpy update during the timestep */
+      /* it is the temperature update during the timestep */
     }
   }
+}
+
+
+
+STATIC void use_temp_scheme_implicit(
+                    Real * temp,           /*< enthalpy vector that the method is updating (excluding gridpoint at surface) */
+                    /* the gridpoint at the surface is assumed to have the given temp_top temperature */
+                    const int N,           /*< number of gridpoints (excluding gridpoint at surface) */
+                    const Real * h,        /*< distances between adjacent gridpoints  */
+                    const Real * hcap,        /*< heat capacities */
+                    const Real * lam,       /*< thermal conductivities */
+                    int steps /*< if in non testing scenario pass -1 to automatically determine timestep */
+                    )
+{
+  if(steps == -1)
+    if(U_TEST && GPLHEAT > 3)
+      steps = GPLHEAT; /* high res value */
+    else 
+      steps = 1; /* default value (on timestep per day) */
+  Real dt = dayLength/steps;
+  for (int i = 0; i < steps; i++) {
+    timestep_implicit(temp, N, h, hcap, lam, dt);
+  }
+}
+
+
+
+
+ STATIC void timestep_implicit(
+                    Real * temp,           /*< enthalpy vector that the method is updating (excluding gridpoint at surface) */
+                    /* the gridpoint at the surface is assumed to have the given temp_top temperature */
+                    const int N,           /*< number of gridpoints (excluding gridpoint at surface) */
+                    const Real * h,        /*< distances between adjacent gridpoints  */
+                    const Real * hcap,        /*< heat capacities */
+                    const Real * lam,       /*< thermal conductivities */
+                    const Real dt          /*< timestep */
+                    ) 
+{
+
+
+  Real sub[N]; /* sub diagonal elements */
+  Real main[N]; /* main diagonal elements */
+  Real sup[N]; /* super diagonal elements */
+  arrange_matrix(sub, main, sup, N, h, hcap, lam, dt);
+
+  /* print mat */
+  // for (int i = 0; i < N; i++) {
+  //   printf("%f %f %f\n", sub[i], main[i], sup[i]);
+  // }
+  
+
+  /* compute right-hand side  */
+  Real rhs[N];
+  int j;
+  for (j=0; j<N; ++j){
+    rhs[j] = (temp[j+1] * (2-main[j]) - temp[j] * sub[j] - temp[j+2] * sup[j]);
+    //if(j==N-1)
+      //printf("%f %f %f\n", temp[j+1], temp[j], temp[j+2]);
+  }
+  rhs[0] -= temp[0] * sub[0];
+
+  /* solve tridiagonal system */
+  thomas_algorithm(sub, main, sup, rhs, &temp[1], N);
+ }
+
+ /* the below function is for testing only */
+STATIC void timestep_explicit_matrix(
+                    Real * temp,           /*< enthalpy vector that the method is updating (excluding gridpoint at surface) */
+                    /* the gridpoint at the surface is assumed to have the given temp_top temperature */
+                    const int N,           /*< number of gridpoints (excluding gridpoint at surface) */
+                    const Real * h,        /*< distances between adjacent gridpoints  */
+                    const Real * hcap,        /*< heat capacities */
+                    const Real * lam,       /*< thermal conductivities */
+                    const Real dt          /*< timestep */
+                    ) 
+{
+
+
+  Real sub[N]; /* sub diagonal elements */
+  Real main[N]; /* main diagonal elements */
+  Real sup[N]; /* super diagonal elements */
+  arrange_matrix(sub, main, sup, N, h, hcap, lam, dt);
+
+  /* print mat */
+  // for (int i = 0; i < N; i++) {
+  //   printf("%f %f %f\n", sub[i], main[i], sup[i]);
+  // }
+  
+
+  /* compute right-hand side  */
+  Real rhs[N];
+  int j;
+  printf("dt %f\n", dt);
+  for (j=0; j<N; ++j){
+    rhs[j] = 2 * (temp[j+1] * (1.5-main[j]) - temp[j] * sub[j] - temp[j+2] * sup[j]);
+    //if(j==N-1)
+      //printf("%f %f %f\n", temp[j+1], temp[j], temp[j+2]);
+  }
+  //rhs[0] -= temp[0] * sub[0];
+
+  for (j=0; j<N; ++j)
+    printf("%f \n", rhs[j]);
+
+  /* solve tridiagonal system */
+  //thomas_algorithm(sub, main, sup, rhs, &temp[1], N);
+  for (j=0; j<N; ++j)
+    temp[j+1] = rhs[j];
+
+ }
+
+STATIC void arrange_matrix(           
+                    Real * a,          /*< sub diagonal elements  */
+                    Real * b,          /*< main diagonal elements */
+                    Real * c,          /*< super diagonal elements */
+                    const int N,           /*< number of gridpoints (excluding gridpoint at surface) */
+                    const Real * h,        /*< distances between adjacent gridpoints  */
+                    const Real * hcap,        /*< heat capacities */
+                    const Real * lam ,   /*< thermal conductivities */
+                    const Real dt
+                    )   
+{
+  /*******precompute some values for better performance*******/
+  Real lam_divBy_h[N];      /* thermal conducitivity divided by gridpoint distances */
+  Real inv_element_midpoint_dist_divBy_c[N]; /* inverse of the distances between the midpoints of adjacent elements divided by unfrozen heat capacity */
+  lam_divBy_h[0] = lam[0] / h[0];
+  int j;
+  Real dt_half = dt/2;
+  for (j=0; j<(N-1); ++j)
+  {
+    lam_divBy_h[j+1] = lam[j+1] / h[j+1];
+    inv_element_midpoint_dist_divBy_c[j] = 2/(h[j] +  h[j+1])/hcap[j]; 
+    a[j] = - lam_divBy_h[j] * inv_element_midpoint_dist_divBy_c[j] * dt_half ;
+    c[j] = - lam_divBy_h[j+1] * inv_element_midpoint_dist_divBy_c[j] * dt_half ;
+    b[j] = 1 - a[j] - c[j];
+  }
+  inv_element_midpoint_dist_divBy_c[N-1] = (2/h[N-1])/hcap[N-1]; 
+  a[N-1] = - lam_divBy_h[N-1] * inv_element_midpoint_dist_divBy_c[N-1] * dt_half;
+  b[N-1] = 1 - a[N-1];
+  c[N-1] = 0;
+
+}
+
+STATIC void thomas_algorithm(double *a, /* sub diagonal elements */
+                      double *b, /* main diagonal elements */
+                      double *c, /* super diagonal elements */
+                      double *d, /* right hand side */
+                      double *x, /* solution */
+                      int n) {
+    double c_prime[n - 1];
+    double d_prime[n];
+
+    /* modify coefficients by pogressing in forward direction */
+    /* this codes eliminiates the sub diagnal a an norms the diagonal b 1 */
+    c_prime[0] = c[0] / b[0];
+    for (int i = 1; i < n - 1; i++) {
+        c_prime[i] = c[i] / (b[i] - a[i] * c_prime[i - 1]);
+    }
+
+    d_prime[0] = d[0] / b[0];
+    for (int i = 1; i < n; i++) {
+        d_prime[i] = (d[i] - a[i] * d_prime[i - 1]) / (b[i] - a[i] * c_prime[i - 1]);
+    }
+
+    /* back substitution */
+    x[n - 1] = d_prime[n - 1];
+    for (int i = n - 2; i >= 0; i--) {
+        x[i] = d_prime[i] - c_prime[i] * x[i + 1];
+    }
 }
