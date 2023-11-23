@@ -177,6 +177,7 @@ int main(int argc,char **argv)
     fmax=-HUGE_VAL;
     favg=0;
     vec=newvec(float,header.nstep*header.nbands);
+    check(vec);
     iserr=FALSE;
     for(year=0;year<header.nyear;year++)
     {
@@ -188,7 +189,7 @@ int main(int argc,char **argv)
         avg=0;
         if(readfloatvec(file,vec,header.scalar,header.nstep*header.nbands,swap,header.datatype))
         {
-          fprintf(stderr,"Unexpected end of file in '%s'.\n",argv[iarg]);
+          fprintf(stderr,"Unexpected end of file in '%s'.\n",argv[i]);
           iserr=TRUE;
           break;
         }
