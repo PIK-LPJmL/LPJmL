@@ -21,6 +21,8 @@
 /**************************************************************************************/
 
 //#define BMGR_BROWN    /* enables brown harvest of biomass grass, instead of green harvest (default) */
+#define CRU_MONTHLY /* Set makro for climate input selection. Options are  CRU_MONTHLY, CRU_NETCDF, GLDAS. If no makro is provided the default (GSWP3-W5E5) is used.*/
+#define OLD_LU /* Set makro for landuse, fertilzer and manure input selection. Options are  OLD_LU and MADRAT. If no makro is provided the default (LandInG toolbox) is used.*/
 
 {   /* LPJmL configuration in JSON format */
 
@@ -33,12 +35,28 @@
   "coupled_model" : null,   /* Coupled model: null (no model coupled), string (name of coupled model) */
   "start_coupling": null,   /* Start year of model coupling: null (start_coupling is set to firstyear if coupled_model != null), int (start year of coupling) */
   "version"  : "5.7",       /* LPJmL version expected */
-  "random_prec" : true,     /* Random weather generator for precipitation enabled */
+  #ifdef CRU_MONTHLY
+    "random_prec" : true,     /* Random weather generator for precipitation enabled */
+  #elif CRU_NETCDF
+    "random_prec" : true,     /* Random weather generator for precipitation enabled */
+  #elif GLDAS
+    "random_prec" : false,     /* Random weather generator for precipitation enabled */
+  #else
+    "random_prec" : false,     /* Random weather generator for precipitation enabled */
+  #endif
   "random_seed" : 2,        /* seed for random number generator */
-  "radiation" : "radiation",/* type of radiation input to be used, options: "cloudiness", "radiation", "radiation_swonly", "radiation_lwdown" */
+  #ifdef CRU_MONTHLY
+   "radiation" : "radiation",/* type of radiation input to be used, options: "cloudiness", "radiation", "radiation_swonly", "radiation_lwdown" */
+  #elif CRU_NETCDF
+   "radiation" : "radiation",/* type of radiation input to be used, options: "cloudiness", "radiation", "radiation_swonly", "radiation_lwdown" */
+  #elif GLDAS
+    "radiation" : "radiation",/* type of radiation input to be used, options: "cloudiness", "radiation", "radiation_swonly", "radiation_lwdown" */
+  #else
+    "radiation" : "radiation",/* type of radiation input to be used, options: "cloudiness", "radiation", "radiation_swonly", "radiation_lwdown" */
+  #endif
   "fire" : "fire",          /* fire disturbance enabled, options: "no_fire", "fire", "spitfire", "spitfire_tmax" (for GLDAS input data) */
   "fire_on_grassland" : false, /* enable fire on grassland for Spitfire */
-  "fdi" : "nesterov",       /* fire danger index formulations: "wvpd" (needs GLDAS input data), "nesterov" */
+  "fdi" : "nesterov",       /* fire danger index formulations: "wvpd" (needs humidity input data), "nesterov" */
   "firewood" : false,       /* NOT TESTED - DO NOT ENABLE */
   "gsi_phenology" : true,   /* enable GSI phenology */
   "transp_suction_fcn" : false, /* enable new transpiration reduction function - NOT TESTED */
