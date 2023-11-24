@@ -1,6 +1,6 @@
 /**************************************************************************************/
 /**                                                                                \n**/
-/**                   l  p  j  m  l  .  c  j  s  o  n                              \n**/
+/**           l  p  j  m  l  _  c  o  n  f  i  g  .  c  j  s  o  n                 \n**/
 /**                                                                                \n**/
 /** Default configuration file for LPJmL C Version 5.7.10                          \n**/
 /**                                                                                \n**/
@@ -22,7 +22,7 @@
 
 //#define BMGR_BROWN    /* enables brown harvest of biomass grass, instead of green harvest (default) */
 #define CRU_MONTHLY /* Set makro for climate input selection. Options are  CRU_MONTHLY, CRU_NETCDF, GLDAS. If no makro is provided the default (GSWP3-W5E5) is used.*/
-#define OLD_LU /* Set makro for landuse, fertilzer and manure input selection. Options are  OLD_LU and MADRAT. If no makro is provided the default (LandInG toolbox) is used.*/
+#define OLD_LU /* Set makro for landuse, fertilizer and manure input selection. Options are  OLD_LU and MADRAT. If no makro is provided the default (LandInG toolbox) is used.*/
 
 {   /* LPJmL configuration in JSON format */
 

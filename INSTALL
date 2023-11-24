@@ -281,7 +281,7 @@ Running the code
 
 Sequential version can be started by invoking:
 
-./bin/lpjml
+./bin/lpjml lpjml_config.cjson
 
 If you run lpjml outside the root directory of LPJmL, the following environment
 variable should be set:
@@ -328,7 +328,7 @@ bin/lpjsubmit ntasks LPJmL_args...
 
 Depending on your MPI version installed the program can be started interactively:
 
-mpirun -np 32 ./bin/lpjml lpjml.cjson
+mpirun -np 32 ./bin/lpjml lpjml_config.cjson
 
 Error codes
 -----------
