@@ -40,7 +40,7 @@ HDRS    = $(INC)/buffer.h $(INC)/cell.h $(INC)/climate.h $(INC)/conf.h\
 
 DATA    = par/*.cjson
 
-JSON	= lpjml.cjson input.cjson input_GLDAS.cjson input_netcdf.cjson
+JSON	= lpjml_config.cjson input.cjson input_netcdf.cjson
 
 SCRIPTS	= configure.bat configure.sh\
           bin/output_bsq bin/lpjsubmit_aix bin/lpjsubmit_intel\
