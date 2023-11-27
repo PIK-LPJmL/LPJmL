@@ -369,7 +369,7 @@ int writecoords(Outputfile *output,  /**< output struct */
   {
     count=0;
     for(cell=0;cell<config->ngridcell;cell++)
-      if(cellid[cell]!=-1)
+      if(cellid[cell]==-1)
         cellid[cell]=MISSING_VALUE_INT;
       else
         cellid[cell]=count++;
