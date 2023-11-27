@@ -1,6 +1,6 @@
 /**************************************************************************************/
 /**                                                                                \n**/
-/**           f  s  c  a  n  l  a  n   d  c  o  v  e  r  m  a  p  .  c             \n**/
+/**           f  s  c  a  n  l  a  n  d  c  o  v  e  r  m  a  p  .  c              \n**/
 /**                                                                                \n**/
 /**     C implementation of LPJmL                                                  \n**/
 /**                                                                                \n**/

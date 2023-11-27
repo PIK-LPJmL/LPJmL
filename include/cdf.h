@@ -93,15 +93,15 @@ typedef struct
   Bool oneyear;     /**< one file for each year (TRUE/FALSE) */
   size_t var_len;
 #if defined(USE_NETCDF) || defined(USE_NETCDF4)
-  int ncid;
-  int varid;
+  int ncid;         /**< id of NetCDF file to read */
+  int varid;        /**< NetCDF id of variable to read */
   Bool isleap;      /**< leap days in file (TRUE/FALSE) */
   Bool is360;       /**< lon coordinates are in [0,360] (TRUE/FALSE) */
   size_t nlon,nlat; /**< dimensions of longitude/latitude */
-  double lon_min;
-  double lat_min;
-  double lon_res;
-  double lat_res;
+  double lon_min;   /**< minimum longitude of grid (deg) */
+  double lat_min;   /**< minimum latitude of grid (deg) */
+  double lon_res;   /**< longitudinal resolution of grid (deg) */
+  double lat_res;   /**< latitudinal resolution of grid (deg) */
   union
   {
     short s;

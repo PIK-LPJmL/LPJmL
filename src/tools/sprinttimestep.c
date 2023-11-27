@@ -22,13 +22,10 @@ char *sprinttimestep(String s,    /**< string time step is printed */
                      int timestep /**< time step (ANNUAL,MONTHLY,DAILY) */
                     )             /** \return pointer to string */
 {
-  char timenames[]={'Y','M','D'};
+  char *timenames[]={"year","month","day"};
   if(timestep<0)
-  {
-    s[0]=timenames[-2-timestep];
-    s[1]='\0';
-  }
+    strcpy(s,timenames[-2-timestep]);
   else
-    snprintf(s,STRING_LEN,"%d",timestep);
+    snprintf(s,STRING_LEN,"%da",timestep);
   return s;
 } /* of 'sprinttimestep' */

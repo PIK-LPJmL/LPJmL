@@ -3,17 +3,23 @@
 statclm \- print statistics of clm files
 .SH SYNOPSIS
 .B statclm
-[-scale s] [-verbose] [-csv] [-type {byte|short|int|float|double}] \fIfile.clm ...\fP
+[-metafile] [-scale s] [-version] [-verbose] [-csv] [-type {byte|short|int|float|double}] \fIfile.clm ...\fP
 
 .SH DESCRIPTION
 Program prints minimum, maximum and average of all data in a clm file.
 .SH OPTIONS
 .TP
+-metafile
+File is a JSON metafile describing the structure of the binary file
+.TP
 -scale s
 Values are scaled by a factor s if version of clm file is less than 2
 .TP
+-version v
+Set version of clm file to v. If not specified version is read from clm file
+.TP
 -type {byte|short|int|float|double}
-Set datatype of clm file if version of clm file is less than 3. Default is short.
+Set datatype of clm file if version of clm file is less than 3. Default is short
 .TP
 -verbose
 Print statistics for each year
