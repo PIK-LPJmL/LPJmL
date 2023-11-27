@@ -3,7 +3,7 @@
 lpjcheck \- Checks syntax of LPJmL configuration files 
 .SH SYNOPSIS
 .B lpjcheck
-[\-h] [\-v] [\-q] [\-nocheck] [-vv] [\-ofiles] [\-param] [-pp cmd] [\-couple host[:port]] [\-outpath \fIdir\fP]
+[\-h] [\-v] [\-q] [\-nocheck] [-vv] [\-ofiles] [\-param] [-nopp] [-pp cmd] [\-couple host[:port]] [\-outpath \fIdir\fP]
 [\-inpath \fIdir\fP] [\-restartpath \fIdir\fP] [[\-Dmacro[=value]] [\-I\fIdir\fP] ...]
 \fIfilename\fP
 .SH DESCRIPTION
@@ -31,6 +31,9 @@ List only all available output variables.
 .TP
 \-param
 Print LPJmL parameter.
+.TP
+\-nopp
+Disabling preprocessing of configuration file by \fBcpp\fP.
 .TP
 \-pp cmd
 Set preprocessor program to cmd. Default is \fBcpp\fP.

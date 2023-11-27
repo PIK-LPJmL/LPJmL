@@ -3,7 +3,7 @@
 lpjfiles \- Prints list of input/output files of LPJmL 
 .SH SYNOPSIS
 .B lpjfiles
-[\-h] [\-v] [\-noinput] [-pp cmd] [\-outpath \fIdir\fP]
+[\-h] [\-v] [\-noinput] [-nopp] [-pp cmd] [\-outpath \fIdir\fP]
 [\-inpath \fIdir\fP] [\-restartpath \fIdir\fP] [[\-Dmacro[=value]] [\-I\fIdir\fP] ...]
 \fIfilename\fP
 .SH DESCRIPTION
@@ -18,6 +18,9 @@ print LPJmL version
 .TP
 \-noinput
 does not list input data files
+.TP
+\-nopp
+Disabling preprocessing of configuration file by \fBcpp\fP.
 .TP
 \-pp cmd
 Set preprocessor program to cmd. Default is \fBcpp\fP.

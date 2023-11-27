@@ -28,7 +28,7 @@
 #define NTYPES 3
 #define NSTANDTYPES 13 /* number of stand types */
 
-#define USAGE "Usage: %s [-h] [-v] [-pp cmd] [-inpath dir] [-restartpath dir]\n"\
+#define USAGE "Usage: %s [-h] [-v]  [-nopp] [-pp cmd] [-inpath dir] [-restartpath dir]\n"\
               "       [[-Dmacro[=value]] [-Idir] ...] filename [-check] [start [end]]\n"
 
 
@@ -244,6 +244,7 @@ int main(int argc,char **argv)
       printf("\nArguments:\n"
              "-h               print this help text\n"
              "-v               print LPJmL version\n"
+             "-nopp            disable preprocessing\n"
              "-pp cmd          set preprocessor program. Default is '" cpp_cmd "'\n"
              "-inpath dir      directory appended to input filenames\n"
              "-restartpath dir directory appended to restart filename\n"

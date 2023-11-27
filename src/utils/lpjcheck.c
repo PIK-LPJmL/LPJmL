@@ -22,7 +22,7 @@
 #define USAGE "Usage: %s [-h] [-v] [-q] [-nocheck] [-ofiles] [-param] [-vv]\n"\
               "       [-couple hostname[:port]]\n"\
               "       [-outpath dir] [-inpath dir] [-restartpath dir]\n"\
-              "       [-pp cmd] [[-Dmacro[=value]] [-Idir] ...] filename\n"
+              "       [-nopp] [-pp cmd] [[-Dmacro[=value]] [-Idir] ...] filename\n"
 
 int main(int argc,char **argv)
 {
@@ -76,6 +76,7 @@ int main(int argc,char **argv)
              "                    configuration files\n"
              "-ofiles             list only all available output variables\n"
              "-param              print LPJ parameter\n"
+             "-nopp               disable preprocessing\n"
              "-pp cmd             set preprocessor program. Default is '" cpp_cmd "'\n"
              "-couple host[:port] set host and port where coupled model is running\n"
              "-outpath dir        directory appended to output filenames\n"
