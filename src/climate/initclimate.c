@@ -62,7 +62,7 @@ static void initdata(Climate *climate)
   climate->data.nh4deposition=NULL;
 } /* of 'initdata' */
 
-Climate *initclimate(const Config *config /**< pointer to LPJ configuration */
+Climate *initclimate(Config *config /**< pointer to LPJ configuration */
                     )                     /** \return allocated climate data struct or NULL on error */
 {
   Climate *climate;
@@ -294,6 +294,8 @@ Climate *initclimate(const Config *config /**< pointer to LPJ configuration */
   }
   if(readco2(&climate->co2,&config->co2_filename,config))
   {
+    if(isroot(*config))
+      fprintf(stderr,"ERROR236: Cannot read CO2 data file.\n");
     freeclimate(climate,isroot(*config));
     return NULL;
   }

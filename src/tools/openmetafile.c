@@ -70,8 +70,8 @@ char *parse_json_metafile(FILE *file,         /**< pointer to JSON file */
                           const char *map_name, /**< name of map or NULL */
                           Attr **attrs,       /**< pointer to array of attributes */
                           int *n_attr,        /**< size of array attribute */
-                          char **source,
-                          char **history,
+                          char **source,      /**< source of data  or NULL */
+                          char **history,     /**< history of data or NULL */
                           char **variable,    /**< name of variable or NULL */
                           char **unit,        /**< unit of variable or NULL */
                           char **standard_name, /**< standard name of variable or NULL */
@@ -87,6 +87,7 @@ char *parse_json_metafile(FILE *file,         /**< pointer to JSON file */
   const char *filename,*val;
   char *ret;
   Bool endian;
+  int format;
   lpjfile=parse_json(file,verbosity);
   if(lpjfile==NULL)
     return NULL;
@@ -111,6 +112,22 @@ char *parse_json_metafile(FILE *file,         /**< pointer to JSON file */
     {
      *attrs=NULL;
      *n_attr=0;
+    }
+  }
+  if(iskeydefined(lpjfile,"format"))
+  {
+    if(fscankeywords(lpjfile,&format,"format",fmt,N_FMT,FALSE,verbosity))
+    {
+      closeconfig(lpjfile);
+      return NULL;
+    }
+    if(format!=RAW && format!=CLM && format!=CLM2)
+    {
+      if(verbosity)
+        fprintf(stderr,"ERROR229: Invalid format %s for input file, must be raw, clm or clm2.\n",
+                format[fmt]);
+      closeconfig(lpjfile);
+      return NULL;
     }
   }
   if(variable!=NULL)
@@ -409,8 +426,8 @@ FILE *openmetafile(Header *header,       /**< pointer to file header */
                    const char *map_name, /**< name of map or NULL */
                    Attr **attrs,         /**< pointer to array of attributes */
                    int *n_attr,          /**< size of array attribute */
-                   char **source,
-                   char **history,
+                   char **source,        /**< source of data or NULL */
+                   char **history,       /**< history of data or NULL */
                    char **variable,      /**< name of variable or NULL */
                    char **unit,          /**< unit of variable or NULL */
                    char **standard_name, /**< standard name of variable or NULL */
@@ -444,7 +461,7 @@ FILE *openmetafile(Header *header,       /**< pointer to file header */
   if(name==NULL)
   {
     if(isout)
-      fprintf(stderr,"ERROR223: No filename specified in '%s'.\n",filename);
+      fprintf(stderr,"ERROR223: Cannot parse JSON file '%s'.\n",filename);
     return NULL;
   }
   path=getpath(filename);
@@ -466,7 +483,7 @@ FILE *openmetafile(Header *header,       /**< pointer to file header */
   if(isout && file!=NULL)
   {
     if((header->order==CELLINDEX  && getfilesizep(file)!=sizeof(int)*header->ncell+typesizes[header->datatype]*header->ncell*header->nbands*header->nstep*header->nyear+*offset) || (header->order!=CELLINDEX && getfilesizep(file)!=typesizes[header->datatype]*header->ncell*header->nbands*header->nyear*header->nstep+*offset))
-      fprintf(stderr,"WARNING032: File size of '%s' does not match settings in description file '%s'.\n",name,filename);
+      fprintf(stderr,"WARNING032: File size of '%s' does not match settings in JSON metafile '%s'.\n",name,filename);
   }
   free(name);
   return file;

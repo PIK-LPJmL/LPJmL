@@ -50,7 +50,7 @@ FILE *openinputfile(Header *header,           /**< [out] pointer to file header 
     if(file==NULL)
     {
       if(isroot(*config))
-        fprintf(stderr,"ERROR224: Cannot read description file '%s'.\n",filename->name);
+        fprintf(stderr,"ERROR224: Cannot read JSON metafile '%s'.\n",filename->name);
       return NULL;
     }
     if(isroot(*config) && unit!=NULL && var_unit!=NULL && strcmp(unit,var_unit))

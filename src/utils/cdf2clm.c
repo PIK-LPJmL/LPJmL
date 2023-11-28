@@ -643,13 +643,13 @@ int main(int argc,char **argv)
   fclose(file);
   if(isjson)
   {
-    out_json=malloc(strlen(outname)+strlen(".json")+1);
+    out_json=malloc(strlen(outname)+strlen(JSON_SUFFIX)+1);
     if(out_json==NULL)
     {
       printallocerr("filename");
       return EXIT_FAILURE;
     }
-    strcat(strcpy(out_json,outname),".json");
+    strcat(strcpy(out_json,outname),JSON_SUFFIX);
     arglist=catstrvec(argv,argc);
     file=fopen(out_json,"w");
     if(file==NULL)

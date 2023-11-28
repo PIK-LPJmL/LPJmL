@@ -91,6 +91,9 @@ Bool fscankeywords(LPJfile *file,    /**< pointer to LPJ file */
     }
     return TRUE;
   }
+  if(verb)
+    fprintf(stderr,"REMARK001: Use of number for keywords for '%s' is deprecated, use string \"%s\" instead.\n",
+            name,array[*value]);
   if (verb >= VERB)
     printf("\"%s\" : %d\n", name, *value);
   return FALSE;

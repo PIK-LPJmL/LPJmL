@@ -40,7 +40,7 @@ struct input
 
 /* Declaration of functions */
 
-extern Bool initinput(Input *,int,const Config *);
+extern Bool initinput(Input *,int,Config *);
 extern void freeinput(Input,const Config *);
 
 #endif

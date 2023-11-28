@@ -18,7 +18,7 @@
 
 Bool readco2(Co2data *co2,             /**< pointer to co2 data */
              const Filename *filename, /**< file name */
-             const Config *config      /**< LPJmL configuration */
+             Config *config            /**< LPJmL configuration */
             )                          /** \return TRUE on error */
 {
   FILE *file;
@@ -111,6 +111,34 @@ Bool readco2(Co2data *co2,             /**< pointer to co2 data */
       yr_old=yr;
     }
     fclose(file);
+    if(config->fix_co2 && co2->firstyear+co2->nyear-1<min(config->lastyear,config->fix_co2_year))
+    {
+      if(config->firstyear>co2->firstyear+co2->nyear-1)
+      {
+        if(verbose)
+          fprintf(stderr,"ERROR259: Last year=%d in CO2 data '%s' less than first simulation year %d.\n",
+                  co2->firstyear+co2->nyear-1,filename->name,config->firstyear);
+        return TRUE;
+      }
+      if(verbose)
+        fprintf(stderr,"ERROR260: Last year=%d in CO2 data '%s' less than CO2 fix year %d, last year set to %d.\n",
+                co2->firstyear+co2->nyear-1,filename->name,min(config->lastyear,config->fix_co2_year),co2->firstyear+co2->nyear-1);
+      config->lastyear=co2->firstyear+co2->nyear-1;
+    }
+    if(!config->fix_co2 && co2->firstyear+co2->nyear-1<config->lastyear)
+    {
+      if(config->firstyear>co2->firstyear+co2->nyear-1)
+      {
+        if(verbose)
+          fprintf(stderr,"ERROR259: Last year=%d in CO2 data '%s' less than first simulation year %d.\n",
+                  co2->firstyear+co2->nyear-1,filename->name,config->firstyear);
+        return TRUE;
+      }
+      if(verbose)
+        fprintf(stderr,"ERROR260: Last year=%d in CO2 data '%s' less than last simulation year %d, last year set to %d.\n",
+                co2->firstyear+co2->nyear-1,filename->name,config->lastyear,co2->firstyear+co2->nyear-1);
+      config->lastyear=co2->firstyear+co2->nyear-1;
+    }
   }
   else if(filename->fmt==SOCK && config->start_coupling>config->firstyear-config->nspinup)
   {

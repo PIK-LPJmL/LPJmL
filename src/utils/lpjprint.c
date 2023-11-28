@@ -29,7 +29,7 @@
 #define NTYPES 3
 #define NSTANDTYPES 14 /* number of stand types */
 
-#define USAGE "Usage: %s [-h] [-v] [-pp cmd] [-inpath dir] [-restartpath dir]\n"\
+#define USAGE "Usage: %s [-h] [-v]  [-nopp] [-pp cmd] [-inpath dir] [-restartpath dir]\n"\
               "       [[-Dmacro[=value]] [-Idir] ...] filename [-check] [start [end]]\n"
 
 
@@ -134,7 +134,7 @@ static Bool printgrid(Config *config, /* Pointer to LPJ configuration */
         if(readcountrycode(countrycode.file,&code,countrycode.type,countrycode.swap))
         {
           name=getrealfilename(&config->countrycode_filename);
-          fprintf(stderr,"ERROR190: Unexpected end of file in '%s' for cell %d.\n",
+          fprintf(stderr,"ERROR190: Cannot read restart data from '%s' for cell %d.\n",
                   name,i+config->startgrid);
           free(name);
           break;
@@ -260,6 +260,7 @@ int main(int argc,char **argv)
       printf("\nArguments:\n"
              "-h               print this help text\n"
              "-v               print LPJmL version\n"
+             "-nopp            disable preprocessing\n"
              "-pp cmd          set preprocessor program. Default is '" cpp_cmd "'\n"
              "-inpath dir      directory appended to input filenames\n"
              "-restartpath dir directory appended to restart filename\n"

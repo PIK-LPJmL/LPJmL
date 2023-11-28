@@ -2,7 +2,7 @@
 /**                                                                                \n**/
 /**              l  p  j  p  a  r  a  m  _  v  p  d  .  j  s                       \n**/
 /**                                                                                \n**/
-/**     LPJ parameter file for LPJmL version 5.7.9-FIRE                            \n**/
+/**     LPJ parameter file for LPJmL version 5.7.10-fire                           \n**/
 /**                                                                                \n**/
 /** (C) Potsdam Institute for Climate Impact Research (PIK), see COPYRIGHT file    \n**/
 /** authors, and contributors see AUTHORS file                                     \n**/

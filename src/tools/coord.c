@@ -69,7 +69,7 @@ Coordfile opencoord(const Filename *filename, /**< filename of coord file */
     if(header.ncell<=0)
     {
       if(isout)
-        fprintf(stderr,"ERROR221: Invalid number %d of cells in description file '%s', must be greater than zero.\n",
+        fprintf(stderr,"ERROR221: Invalid number %d of cells in JSON metafile '%s', must be greater than zero.\n",
                 header.ncell,filename->name);
       free(coordfile);
       return NULL;
@@ -79,10 +79,11 @@ Coordfile opencoord(const Filename *filename, /**< filename of coord file */
     coordfile->cellsize.lon=header.cellsize_lon;
     coordfile->cellsize.lat=header.cellsize_lat;
     coordfile->datatype=header.datatype;
+    coordfile->scalar=header.scalar;
     if(header.nbands!=2)
     {
       if(isout)
-        fprintf(stderr,"ERROR218: Number of bands=%d in description file '%s' is not 2.\n",
+        fprintf(stderr,"ERROR218: Number of bands=%d in JSON metafile '%s' is not 2.\n",
                 header.nbands,filename->name);
       fclose(coordfile->file);
       free(coordfile);
@@ -91,7 +92,7 @@ Coordfile opencoord(const Filename *filename, /**< filename of coord file */
     if(header.nstep!=1)
     {
       if(isout)
-        fprintf(stderr,"ERROR218: Number of steps=%d in description file '%s' is not 1.\n",
+        fprintf(stderr,"ERROR218: Number of steps=%d in JSON metafile '%s' is not 1.\n",
                 header.nstep,filename->name);
       fclose(coordfile->file);
       free(coordfile);
@@ -100,12 +101,13 @@ Coordfile opencoord(const Filename *filename, /**< filename of coord file */
     if(header.timestep!=1)
     {
       if(isout)
-        fprintf(stderr,"ERROR218: Time step=%d in description file '%s' is not 1.\n",
+        fprintf(stderr,"ERROR218: Time step=%d in JSON metafile '%s' is not 1.\n",
                 header.timestep,filename->name);
       fclose(coordfile->file);
       free(coordfile);
       return NULL;
     }
+    fseek(coordfile->file,coordfile->offset,SEEK_SET);
     return coordfile;
   }
   coordfile->file=fopen(filename->name,"rb");
@@ -290,6 +292,16 @@ Bool readcoord(Coordfile coordfile, /**< open coord file */
     default:
       return TRUE;
   } /* of switch */
+  if(coord->lat<-90 || coord->lat>90)
+  {
+    fprintf(stderr,"ERROR261: Invalid value %g for latitude, must be in [-90,90].\n",coord->lat);
+    return TRUE;
+  }
+  if(coord->lon<-180 || coord->lon>180)
+  {
+    fprintf(stderr,"ERROR261: Invalid value %g for longitude, must be in [-180,180].\n",coord->lon);
+    return TRUE;
+  }
   /* calculate cell area */
   coord->area=cellarea(coord,resol);
   return FALSE;

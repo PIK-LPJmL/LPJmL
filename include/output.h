@@ -24,6 +24,7 @@
                        index==RESPONSE_LAYER_AGR || index==RESPONSE_LAYER_NV || index==CSHIFT_FAST_NV || index==CSHIFT_SLOW_NV || index == SOILC_AGR_LAYER || index==PERC)
 
 #define DEFAULT_PORT 2222 /* default port for socket connection */
+#define JSON_SUFFIX ".json" /* file suffix for JSON metafiles */
 
 #define getoutput(output,index,config) (output)->data[(config)->outputmap[index]]
 #ifdef CHECK_BOUNDARY
@@ -82,7 +83,7 @@ typedef struct
   Real total_irrig_from_reservoir; /*Total water added to fields from reservoirs */
   Real n_demand;              /**< total N demand by plants (gN/yr) */
   Real n_uptake;              /**< total N uptake by plants (gN/yr) */
-  Real n_influx;              /**< total N inputs (gN/yr) */
+  Stocks influx;              /**< total influx  (gC/yr,gN/yr) */
   Real n_outflux;             /**< total N losses (gN/yr) */
   Real excess_water;          /**< Exess water (dm3) */
   Stocks soil;                /**< soil stocks (gC,gN) */

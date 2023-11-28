@@ -108,6 +108,6 @@ void fprintflux(FILE *file,          /**< Output file pointer */
     fprintf(file," %10.1f",flux.discharge*convert*1000);
   if(config->with_nitrogen)
     fprintf(file," %7.1f %8.1f %7.1f %7.1f",flux.n_uptake*convert*1000,flux.n_demand*convert*1000,flux.n_outflux*convert*1000,
-    flux.n_influx*convert*1000);
+            flux.influx.nitrogen*convert*1000);
   fputc('\n',file);
 } /* of 'fprintflux' */

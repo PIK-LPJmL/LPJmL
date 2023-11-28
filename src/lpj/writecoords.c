@@ -365,6 +365,17 @@ int writecoords(Outputfile *output,  /**< output struct */
     }
   }
 #else
+  if(output->files[index].isopen && output->files[index].fmt==CDF)
+  {
+    count=0;
+    for(cell=0;cell<config->ngridcell;cell++)
+      if(cellid[cell]==-1)
+        cellid[cell]=MISSING_VALUE_INT;
+      else
+        cellid[cell]=count++;
+     write_int_netcdf(&output->files[index].fp.cdf,cellid,NO_TIME,config->nall);
+     free(cellid);
+  }
   switch(config->grid_type)
   {
     case LPJ_FLOAT:
