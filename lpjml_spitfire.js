@@ -47,7 +47,7 @@
   "fdi" : "wvpd",       /* different fire danger index formulations: "wvpd" (needs GLDAS input data), "nesterov" */
    "max_firesize" : false,
   "fireduration" : [{"stand" : "grassland", "duration" : [1,120] ,"ndayfire" : 1},
-                    {"stand" : "natural", "duration" : [120,360], "ndayfire" : 5}],
+                    {"stand" : "natural", "duration" : [120,480], "ndayfire" : 3}],
   "firewood" : false,
   "gsi_phenology" : true,   /* GSI phenology enabled */
   "new_trf" : false,        /* new transpiration reduction function disabled */
@@ -290,7 +290,7 @@ ID                               Fmt                        filename
 /*  V. Run settings section                                          */
 /*===================================================================*/
 
-  "startgrid" : "all",//"all"//109661 //117928 /* "all" 117928 27410, 67208 60400 47284 47293 47277 all grid cells */
+  "startgrid" : "all",//good: 29649, //bad: 30964, //"all", //24552,//"all",//"all"//109661 //117928 /* "all" 117928 27410, 67208 60400 47284 47293 47277 all grid cells */
 
 #ifdef CHECKPOINT
   "checkpoint_filename" : "restart/restart_checkpoint.lpj", /* filename of checkpoint file */
@@ -330,7 +330,7 @@ ID                               Fmt                        filename
   "outputyear": 1995, /* first year output is written  */
   "restart" :  true, /* start from restart file */
   "restart_filename" : "restart/restart_1994_crop.lpj", /* filename of restart file */
-  "write_restart" : true, /* create restart file */
+  "write_restart" : false, /* create restart file */
   "write_restart_filename" : "restart/restart_2016_crop.lpj", /* filename of restart file */
   "restart_year": 2016 /* write restart at year */
 #endif

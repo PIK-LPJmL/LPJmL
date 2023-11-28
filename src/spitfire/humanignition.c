@@ -18,7 +18,7 @@ Real humanignition(Real popdens,
                    Ignition* ignition)
 {
   Real a_nd, human_ign, k_pd;
-  Real ign_factor = 135; //used to scale human ignitions to balance human and lightning ignitions
+  Real ign_factor = 15; //used to scale human ignitions to balance human and lightning ignitions
 
   a_nd = ignition->human;
   k_pd = exp(param.hum_ign*sqrt(popdens));
