@@ -19,6 +19,20 @@ of `major.minor.patch` with
 
 ## [Unreleased]
 
+## [5.8.0] - 2023-11-30
+
+### Added
+
+- new keyword `"cultivation_types"` added to specify an array of cultivation types read from the `pft.cjson` file:
+```
+  "cultivation_types" : ["none","biomass","annual crop"],
+```
+
+- wood plantation and agricultural tree PFTs added to `pft.cjson`.
+
+- '"k_est"' establishment density array added for agricultural trees to `"countrypar"` in `manage_irrig_systems_with_dummy_laimax_data.cjson`.
+
+
 ## [5.7.10] - 2023-11-13
 
 ### Contributors
