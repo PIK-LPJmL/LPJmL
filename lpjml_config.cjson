@@ -390,7 +390,13 @@ ID                               Fmt                        filename
   "nspinup" : 390,   /* spinup years */
   "nspinyear" : 30,  /* cycle length during spinup (yr)*/
   "firstyear": 1901, /* first year of simulation */
+#if defined CRU_MONTHLY || defined CRU_NETCDF
   "lastyear" : 2011, /* last year of simulation */
+#elif defined GLDAS
+  "lastyear" : 2017, /* last year of simulation */
+#else 
+  "lastyear" : 2019, /* last year of simulation */
+#endif
   "outputyear": 1901, /* first year output is written  */
   "restart" :  true, /* start from restart file */
   "restart_filename" : "restart/restart_1840_nv_stdfire.lpj", /* filename of restart file */
