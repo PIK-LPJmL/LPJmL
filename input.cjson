@@ -23,7 +23,7 @@
   "wind":          { "id" : 15, "fmt" : "clm",  "name" : "/p/projects/lpjml/input/historical/input_VERSION2/mwindspeed_1860-2100_67420.clm"},
   "tamp":          { "id" : 3, "fmt" : "clm",  "name" : "/p/projects/lpjml/input/historical/CRUDATA_TS3_23/cru_ts3.23.1901.2014.dtr.dat.clm"}, /* diurnal temp. range */
   "wetdays" :      { "id" : 12, "fmt" : "clm",  "name" : "CRUDATA_TS3_23/gpcc_v7_cruts3_23_wet_1901_2013.clm"},
-#elif CRU_NETCDF
+#elif defined CRU_NETCDF
   "temp" : { "fmt" : "cdf", "var" : "temp", "name" : "/p/projects/biodiversity/cru_netcdf/cru_ts_3_10.1901.2009.tmp.nc"},
   "prec" : { "fmt" : "cdf", "var" : "prec", "name" : "/p/projects/biodiversity/cru_netcdf/gpcc_cru09_prec_monthly_1901_2009.nc"},
   "lwnet" :       { "id" : 4, "fmt" : "clm",  "name" : "DUMMYLOCATION"},
@@ -33,7 +33,7 @@
   "wind" : { "fmt" : "cdf", "var" : "windspeed", "name" : "/p/projects/biodiversity/cru_netcdf/mwindspeed_1860-2100_67420.nc"},
   "tamp" : { "fmt" : "cdf", "var" : "tamp", "name" : "/p/projects/biodiversity/cru_netcdf/cru_ts_3_10.1901.2009.dtr.nc"}, /* diurnal temp. range */
   "wetdays" : { "fmt" : "cdf", "var" : "wet", "name" : "cru_netcdf/gpcc_cru09_wet_monthly_1901_2009.nc"},
-#elif GLDAS
+#elif defined GLDAS
   "temp" :         { "fmt" : "clm",  "name" : "/p/projects/lpjml/input/GLDAS/INPUT/GLDAS_NOAH05_daily_1948-2017.Tair_f_inst.clm"},
   "prec" :         { "fmt" : "clm",  "name" : "/p/projects/lpjml/input/GLDAS/INPUT/GLDAS_NOAH05_daily_1948-2017.Prec.clm"},
   "lwnet" :        { "fmt" : "clm",  "name" : "/p/projects/lpjml/input/GLDAS/INPUT/GLDAS_NOAH05_daily_1948-2017.Lwnet_tavg.clm"},
@@ -64,7 +64,7 @@
   "landuse" :      { "id" : 6, "fmt" : "clm",  "name" : "/p/projects/lpjml/input/historical/input_VERSION2/cft1700_2005_irrigation_systems_64bands.bin"},
   "fertilizer_nr" : { "id" : 18, "fmt" :"clm",  "name" : "/p/projects/lpjml/input/historical/input_VERSION3/fertilizer_luh2v2_1900-2015_32bands.clm"},
   "manure_nr" :    { "id" : 19, "fmt" : "clm", "name" : "/p/projects/lpjml/input/historical/input_VERSION3/manure_zhang17_1860-2014_32bands_clm2.clm"},
-#elif MADRAT
+#elif defined MADRAT
   "landuse" :      { "id" : 6, "fmt" : "clm",  "name" : "/p/projects/lpjml/input/MADRAT/lu_madrat_850-2015_32bands.clm"},
   "fertilizer_nr" : { "id" : 18, "fmt" :"clm",  "name" : "/p/projects/lpjml/input/historical/input_VERSION3/fertilizer_luh2v2_1900-2015_32bands.clm"},
   "manure_nr" :    { "id" : 19, "fmt" : "clm", "name" : "/p/projects/lpjml/input/historical/input_VERSION3/manure_zhang17_1860-2014_32bands_clm2.clm"},
