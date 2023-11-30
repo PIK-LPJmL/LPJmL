@@ -47,7 +47,7 @@ SCRIPTS	= configure.bat configure.sh\
           bin/lpjsubmit_mpich bin/lpjrun bin/backtrace\
           bin/regridlpj bin/lpjsubmit_slurm
 
-FILES	= Makefile config/* README AUTHORS INSTALL VERSION LICENSE STYLESHEET\
+FILES	= Makefile config/* README AUTHORS INSTALL VERSION LICENSE STYLESHEET.md\
           $(JSON) $(DATA) $(HDRS) $(SCRIPTS)
 
 main:
