@@ -37,7 +37,7 @@
   "version"  : "5.8",       /* LPJmL version expected */
   #if defined CRU_MONTHLY || defined CRU_NETCDF
     "random_prec" : true,     /* Random weather generator for precipitation enabled */
-  #elif GLDAS
+  #elif defined GLDAS
     "random_prec" : false,     /* Random weather generator for precipitation enabled */
   #else
     "random_prec" : false,     /* Random weather generator for precipitation enabled */
@@ -45,7 +45,7 @@
   "random_seed" : 2,        /* seed for random number generator */
   #if defined CRU_MONTHLY || defined CRU_NETCDF
    "radiation" : "radiation",/* type of radiation input to be used, options: "cloudiness", "radiation", "radiation_swonly", "radiation_lwdown" */
-  #elif GLDAS
+  #elif defined GLDAS
     "radiation" : "radiation",/* type of radiation input to be used, options: "cloudiness", "radiation", "radiation_swonly", "radiation_lwdown" */
   #else
     "radiation" : "radiation",/* type of radiation input to be used, options: "cloudiness", "radiation", "radiation_swonly", "radiation_lwdown" */
