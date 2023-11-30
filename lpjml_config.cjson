@@ -35,9 +35,7 @@
   "coupled_model" : null,   /* Coupled model: null (no model coupled), string (name of coupled model) */
   "start_coupling": null,   /* Start year of model coupling: null (start_coupling is set to firstyear if coupled_model != null), int (start year of coupling) */
   "version"  : "5.8",       /* LPJmL version expected */
-  #ifdef CRU_MONTHLY
-    "random_prec" : true,     /* Random weather generator for precipitation enabled */
-  #elif CRU_NETCDF
+  #ifdef CRU_MONTHLY || CRU_NETCDF
     "random_prec" : true,     /* Random weather generator for precipitation enabled */
   #elif GLDAS
     "random_prec" : false,     /* Random weather generator for precipitation enabled */
@@ -45,9 +43,7 @@
     "random_prec" : false,     /* Random weather generator for precipitation enabled */
   #endif
   "random_seed" : 2,        /* seed for random number generator */
-  #ifdef CRU_MONTHLY
-   "radiation" : "radiation",/* type of radiation input to be used, options: "cloudiness", "radiation", "radiation_swonly", "radiation_lwdown" */
-  #elif CRU_NETCDF
+  #ifdef CRU_MONTHLY || CRU_NETCDF
    "radiation" : "radiation",/* type of radiation input to be used, options: "cloudiness", "radiation", "radiation_swonly", "radiation_lwdown" */
   #elif GLDAS
     "radiation" : "radiation",/* type of radiation input to be used, options: "cloudiness", "radiation", "radiation_swonly", "radiation_lwdown" */
