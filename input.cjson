@@ -41,7 +41,10 @@
   "swdown" :       { "id" : 3, "fmt" : "clm",  "name" : "/p/projects/lpjml/input/historical/ISIMIP3av2/obsclim/GSWP3-W5E5/rsds_gswp3-w5e5_obsclim_1901-2019.clm"},
   "cloud":         { "id" : 0, "fmt" : "clm",  "name" : "DUMMYLOCATION"},
   "wind":          { "id" : 15, "fmt" : "clm",  "name" : "/p/projects/lpjml/input/historical/ISIMIP3av2/obsclim/GSWP3-W5E5/sfcwind_gswp3-w5e5_obsclim_1901-2019.clm"},
-  "tamp":          { "id" : 3, "fmt" : "clm",  "name" : "DUMMYLOCATION"}, /* diurnal temp. range */
+  "tamp":          { "id" : 11, "fmt" : "clm",  "name" : "DUMMYLOCATION"}, /* diurnal temp. range */
+  "tmax":          { "id" : 10, "fmt" : "clm",  "name" : "/p/projects/lpjml/input/historical/ISIMIP3av2/obsclim/GSWP3-W5E5/tasmax_gswp3-w5e5_obsclim_1901-2019.clm"}, /* diurnal temp. range */
+  "tmin":          { "id" : 9, "fmt" : "clm",  "name" : "/p/projects/lpjml/input/historical/ISIMIP3av2/obsclim/GSWP3-W5E5/tasmin_gswp3-w5e5_obsclim_1901-2019.clm"}, /* diurnal temp. range */
+  "humid":          { "id" : 14, "fmt" : "clm",  "name" : "/p/projects/lpjml/input/historical/ISIMIP3av2/obsclim/GSWP3-W5E5/huss_gswp3-w5e5_obsclim_1901-2019.clm"}, /* diurnal temp. range */
 #endif
   "soil" :         { "id" : 41, "fmt" : "meta", "name" : "input_VERSION2/soil.json"},
   "coord" :        { "id" : 43, "fmt" : "clm",  "name" : "input_VERSION2/grid.bin"},
