@@ -3,7 +3,7 @@
 " **           f  i  l  e  t  y  p  e  s  .  v  i  m                             **
 " **                                                                             **
 " **    This files sets for editor vim syntax filetypes for *.cjson files        **
-" **    to json.                                                                 **
+" **    to javascript.                                                           **
 " **    To enable put                                                            **
 " **    so $LPJROOT/bin/vim/filetypes.vim                                        **
 " **    in $HOME/.vimrc                                                          **
@@ -17,6 +17,6 @@
 " *********************************************************************************
 augroup filetype
         au!
-        au! BufRead,BufNewFile *.cjson set filetype=json
+        au! BufRead,BufNewFile *.cjson set filetype=javascript
 
 augroup END
