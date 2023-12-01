@@ -210,7 +210,11 @@ Bool getvar_netcdf(Climatefile *file,    /**< climate data file */
       {
         rc=nc_get_att_int(file->ncid,file->varid,"_FillValue",&file->missing_value.i);
         if(rc)
+        {
+          fprintf(stderr,"WARNING408: Cannot read missing or fill value for %s in '%s', set to %d.\n",
+                  (var==NULL) ? name : var,filename,MISSING_VALUE_INT);
           file->missing_value.i=MISSING_VALUE_INT;
+        }
       }
       file->datatype=LPJ_INT;
       break;
@@ -220,7 +224,11 @@ Bool getvar_netcdf(Climatefile *file,    /**< climate data file */
       {
         rc=nc_get_att_float(file->ncid,file->varid,"_FillValue",&file->missing_value.f);
         if(rc)
+        {
+          fprintf(stderr,"WARNING408: Cannot read missing or fill value for %s in '%s', set to %g.\n",
+                  (var==NULL) ? name : var,filename,config->missing_value);
           file->missing_value.f=config->missing_value;
+        }
       }
       file->datatype=LPJ_FLOAT;
       break;
@@ -230,7 +238,11 @@ Bool getvar_netcdf(Climatefile *file,    /**< climate data file */
       {
         rc=nc_get_att_short(file->ncid,file->varid,"_FillValue",&file->missing_value.s);
         if(rc)
+        {
+          fprintf(stderr,"WARNING408: Cannot read missing or fill value for %s in '%s', set to %d.\n",
+                  (var==NULL) ? name : var,filename,MISSING_VALUE_SHORT);
           file->missing_value.s=MISSING_VALUE_SHORT;
+        }
       }
       file->datatype=LPJ_SHORT;
       break;
@@ -240,7 +252,11 @@ Bool getvar_netcdf(Climatefile *file,    /**< climate data file */
       {
         rc=nc_get_att_double(file->ncid,file->varid,"_FillValue",&file->missing_value.d);
         if(rc)
+        {
+          fprintf(stderr,"WARNING408: Cannot read missing or fill value for %s in '%s', set to %g.\n",
+                  (var==NULL) ? name : var,filename,config->missing_value);
           file->missing_value.d=config->missing_value;
+        }
       }
       file->datatype=LPJ_DOUBLE;
       break;
