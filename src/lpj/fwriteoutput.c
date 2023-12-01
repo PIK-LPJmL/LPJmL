@@ -1101,7 +1101,7 @@ void fwriteoutput(Outputfile *output,  /**< output file array */
   writeoutputvar(GCONS_IRR,1);
   writeoutputvar(BCONS_IRR,1);
   writeoutputvar(IRRIG_RW,1);
-  writeoutputvar(LAKEVOL,ndate1);  
+  writeoutputvar(LAKEVOL,ndate1);
   writeoutputvar(RIVERVOL,ndate1);
   writeoutputarray(SWC_VOL,ndate1);
   writeoutputvar(IRRIG_STOR,ndate1);
@@ -1871,7 +1871,7 @@ void fwriteoutput(Outputfile *output,  /**< output file array */
   {
     writeoutputarray(PFT_WATER_DEMAND,1);
   }
-  if(isopen(output,NDEPOS)) 
+  if(isopen(output,NDEPOS))
   {
     writeoutputvar(NDEPOS,1);
   }
