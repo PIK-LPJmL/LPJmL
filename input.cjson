@@ -33,16 +33,6 @@
   "wind" : { "fmt" : "cdf", "var" : "windspeed", "name" : "/p/projects/biodiversity/cru_netcdf/mwindspeed_1860-2100_67420.nc"},
   "tamp" : { "fmt" : "cdf", "var" : "tamp", "name" : "/p/projects/biodiversity/cru_netcdf/cru_ts_3_10.1901.2009.dtr.nc"}, /* diurnal temp. range */
   "wetdays" : { "fmt" : "cdf", "var" : "wet", "name" : "cru_netcdf/gpcc_cru09_wet_monthly_1901_2009.nc"},
-#elif defined GLDAS
-  "temp" :         { "fmt" : "clm",  "name" : "/p/projects/lpjml/input/GLDAS/INPUT/GLDAS_NOAH05_daily_1948-2017.Tair_f_inst.clm"},
-  "prec" :         { "fmt" : "clm",  "name" : "/p/projects/lpjml/input/GLDAS/INPUT/GLDAS_NOAH05_daily_1948-2017.Prec.clm"},
-  "lwnet" :        { "fmt" : "clm",  "name" : "/p/projects/lpjml/input/GLDAS/INPUT/GLDAS_NOAH05_daily_1948-2017.Lwnet_tavg.clm"},
-  "swdown" :       { "fmt" : "clm",  "name" : "/p/projects/lpjml/input/GLDAS/INPUT/GLDAS_NOAH05_daily_1948-2017.SWdown_f_tavg.clm"},
-  "wind":          { "fmt" : "clm",  "name" : "/p/projects/lpjml/input/GLDAS/INPUT/GLDAS_NOAH05_daily_1948-2017.Wind_f_inst.clm"},
-  "tamp":          { "fmt" : "clm",  "name" : "/p/projects/lpjml/input/historical/CRUDATA_TS3_23/cru_ts3.23.1901.2014.dtr.dat.clm"}, /* diurnal temp. range */
-  "tmin":          { "fmt" : "clm",  "name" : "/p/projects/lpjml/input/GLDAS/INPUT/GLDAS_NOAH05_daily_1948-2017.Tair_min.clm"},
-  "tmax":          { "fmt" : "clm",  "name" : "/p/projects/lpjml/input/GLDAS/INPUT/GLDAS_NOAH05_daily_1948-2017.Tair_max.clm"},
-  "humid":         { "fmt" : "clm",  "name" : "/p/projects/lpjml/input/GLDAS/INPUT/GLDAS_NOAH05_daily_1948-2017.Qair_f_inst.clm"},
 #else /*  Default from GSWP3 W5E5 */
   "temp" :         { "id" : 1, "fmt" : "clm",  "name" : "/p/projects/lpjml/input/historical/ISIMIP3av2/obsclim/GSWP3-W5E5/tas_gswp3-w5e5_obsclim_1901-2019.clm"},
   "prec" :         { "id" : 2, "fmt" : "clm",  "name" : "/p/projects/lpjml/input/historical/ISIMIP3av2/obsclim/GSWP3-W5E5/pr_gswp3-w5e5_obsclim_1901-2019.clm"},
@@ -68,7 +58,7 @@
   "landuse" :      { "id" : 6, "fmt" : "clm",  "name" : "/p/projects/lpjml/input/MADRAT/lu_madrat_850-2015_32bands.clm"},
   "fertilizer_nr" : { "id" : 18, "fmt" :"clm",  "name" : "/p/projects/lpjml/input/historical/input_VERSION3/fertilizer_luh2v2_1900-2015_32bands.clm"},
   "manure_nr" :    { "id" : 19, "fmt" : "clm", "name" : "/p/projects/lpjml/input/historical/input_VERSION3/manure_zhang17_1860-2014_32bands_clm2.clm"},
-#else /* Default from LandIng toolbox  */
+#else /* Default from LandInG toolbox  */
   "landuse" :      { "id" : 6, "fmt" : "clm",  "name" : "/p/projects/lpjml/input/historical/input_toolbox_30arcmin/paper_version/cft_default_cft_aggregation_30min_1500-2017_fallow_to_others.bin"},
   "fertilizer_nr" : { "id" : 18, "fmt" :"clm",  "name" : "/p/projects/lpjml/input/historical/input_toolbox_30arcmin/paper_version/fert_N_default_cft_aggregation_30min_1860-2017.clm"},
   "manure_nr" :    { "id" : 19, "fmt" : "clm", "name" : "/p/projects/lpjml/input/historical/input_toolbox_30arcmin/paper_version/manure_N_default_cft_aggregation_30min_1860-2017.clm"},
