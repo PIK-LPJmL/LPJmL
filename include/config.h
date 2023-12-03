@@ -113,6 +113,8 @@ struct config
   int nwft;               /**< numer of WFTs */
   int ngrass;             /**< number of grass PFTs not biomass */
   int nwptype;
+  int *cult_types;        /**< array of cultivation types to read from pft.js */
+  int ncult_types;        /**< size of cult_types array */
   int nsoil;              /**< number of soil types */
   Soilpar *soilpar;       /**< Soil parameter array */
   int ncountries;         /**< number of countries */
@@ -312,6 +314,7 @@ extern Bool fscanoutput(LPJfile *,int,int,Config *,int);
 extern Bool readconfig(Config *,Pfttype [],int,int,int *,
                        char ***,const char *);
 extern Bool fscanconfig(Config *,LPJfile *,Pfttype [],int,int);
+extern Bool fscancultivationtypes(LPJfile *,const char *,int **,int *,Verbosity);
 extern void fprintparam(FILE *,int,int,const Config *);
 extern void fprintfiles(FILE *,Bool,Bool,const Config *);
 extern Bool getextension(Extension *,const Config *);
