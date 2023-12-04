@@ -87,6 +87,7 @@ STATIC enum uniform_temp_sign check_uniform_temp_sign_throughout_soil(Real * ent
   case  0: return MIXED_SIGN; break;
   case  1: return ALL_ABOVE_0; break;
   }
+  return UNKNOWN;
 }
 
 STATIC void modify_enth_due_to_masschanges(Soil * soil, Real * abs_waterice_cont, const Config * config)

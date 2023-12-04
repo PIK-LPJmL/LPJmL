@@ -262,10 +262,11 @@ STATIC void use_temp_scheme_implicit(
                     )
 {
   if(steps == -1)
-    if(U_TEST && GPLHEAT > 3)
+    #ifdef U_TEST
       steps = GPLHEAT; /* high res value */
-    else 
+    #else
       steps = 1; /* default value (on timestep per day) */
+    #endif
   Real dt = dayLength/steps;
   for (int i = 0; i < steps; i++) {
     timestep_implicit(temp, N, h, hcap, lam, dt);

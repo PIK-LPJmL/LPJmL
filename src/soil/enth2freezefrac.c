@@ -21,7 +21,7 @@ void enth2freezefrac( Real *freeze_frac,            /**< vector with a fraction 
     {
       /* get upper an lower gripoints of the element */
       gp=layer*GPLHEAT+j;
-      if(th.latent_heat[gp]==0)
+      if(th.latent_heat[gp]==0.0)
         ff_layer += (enth[gp]>0? 0.0:1.0)/GPLHEAT;
       else
         ff_layer += (1-min( max((enth[gp]/th.latent_heat[gp]),0) ,1))/GPLHEAT;
