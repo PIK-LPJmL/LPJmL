@@ -63,7 +63,7 @@ extern const char *irrigsys[];
 
 extern int fscancountrypar(LPJfile *,Countrypar **,int,int,Verbosity,const Config *);
 extern int fscanregionpar(LPJfile *,Regionpar **,Verbosity);
-extern int fscantreedens(LPJfile *,Countrypar *,int,int,Verbosity,const Config *);
+extern int fscantreedens(LPJfile *,Countrypar *,int,Verbosity,const Config *);
 extern void fprintcountrypar(FILE *,const Countrypar *,int,int,const Config *);
 extern void fprintregionpar(FILE *,const Regionpar[],int);
 extern Bool initmanage(Manage *, const Countrypar *, const Regionpar *,const Pftpar *,int,
