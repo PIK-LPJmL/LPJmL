@@ -21,8 +21,8 @@
 /**************************************************************************************/
 
 //#define BMGR_BROWN    /* enables brown harvest of biomass grass, instead of green harvest (default) */
-#define CRU_MONTHLY /* Set makro for climate input selection. Options are  CRU_MONTHLY, CRU_NETCDF, GLDAS. If no makro is provided the default (GSWP3-W5E5) is used.*/
-#define OLD_LU /* Set makro for landuse, fertilizer and manure input selection. Options are  OLD_LU and MADRAT. If no makro is provided the default (LandInG toolbox) is used.*/
+//#define CRU_MONTHLY /* Set macro for climate input selection. Options are  CRU_MONTHLY, CRU_NETCDF. If no makro is provided the default (GSWP3-W5E5) is used.*/
+#define OLD_LU /* Set macro for landuse, fertilizer and manure input selection. Options are  OLD_LU and MADRAT. If no makro is provided the default (LandInG toolbox) is used.*/
 
 {   /* LPJmL configuration in JSON format */
 
@@ -39,19 +39,11 @@
                     "contact" : "", /* name and email address */
                     "comment" : ""  /* additional comments */
                    },       /* Global attributes for NetCDF output files */
-  #ifdef CRU_MONTHLY || CRU_NETCDF
+  #if defined CRU_MONTHLY || defined CRU_NETCDF
     "random_prec" : true,     /* Random weather generator for precipitation enabled */
-  #elif GLDAS
-    "random_prec" : false,     /* Random weather generator for precipitation enabled */
-  #else
-    "random_prec" : false,     /* Random weather generator for precipitation enabled */
-  #endif
-  "random_seed" : 2,        /* seed for random number generator */
-  #ifdef CRU_MONTHLY || CRU_NETCDF
-   "radiation" : "radiation",/* type of radiation input to be used, options: "cloudiness", "radiation", "radiation_swonly", "radiation_lwdown" */
-  #elif GLDAS
     "radiation" : "radiation",/* type of radiation input to be used, options: "cloudiness", "radiation", "radiation_swonly", "radiation_lwdown" */
   #else
+    "random_prec" : false,     /* Random weather generator for precipitation disabled */
     "radiation" : "radiation",/* type of radiation input to be used, options: "cloudiness", "radiation", "radiation_swonly", "radiation_lwdown" */
   #endif
   "isswnet" : false,
@@ -64,6 +56,8 @@
                     {"stand" : "natural", "duration" : [120,480], "ndayfire" : 3}],
 
   "fdi" : "wvpd",       /* fire danger index formulations: "wvpd" (needs humidity input data), "nesterov" */
+  "prescribe_ignition" : false,
+  "random_seed" : 2,        /* seed for random number generator */
   "firewood" : false,       /* NOT TESTED - DO NOT ENABLE */
   "gsi_phenology" : true,   /* enable GSI phenology */
   "transp_suction_fcn" : false, /* enable new transpiration reduction function - NOT TESTED */
@@ -98,7 +92,7 @@
   "relative_humidity" : false,
 #ifdef FROM_RESTART
   "new_seed" : false,       /* read random seed from restart file */
-  "population" : false,     /* use population input (for spitfire) */
+  "population" : true,     /* use population input (for spitfire) */
   "landuse" : "yes",        /* landuse setting; options: "no", "yes", "const", "all_crops", "only_crops" */
   "landuse_year_const" : 2000, /* set landuse year for "const" and "only_crops" cases */
   "reservoir" : true,       /* enables reservoirs (changes discharge and allows for irrigation water source), requires river_routing=true and elevation and reservoir input files  */
@@ -143,11 +137,6 @@
   "grass_harvest_options" : false,      /* true: grid-specific grassland management, requires input file; false: default management (setting "grazing") everywhere */
   "prescribe_lsuha" : false,            /* prescribe livestock unit per hectare, input required (needed for "grazing" = "livestock") */
   "mowing_days" : [152, 335],           /* Mowing days (day-of-year) for grassland if "grazing" = "mowing" */
-#ifdef BMGR_BROWN
-  "biomass_grass_harvest" : "brown",   /* define brown harvest of biomass grass at top; imapcts harvest event and fn_turnover of biomass grass */
-#else
-  "biomass_grass_harvest" : "green",   /* comment out define of brown harvest of biomass grass for green harvest (default) */
-#endif
   "crop_resp_fix" : false,             /* C:N ratio setting affecting crop respiration - options: true (fixed - avoids yield reductions at high n inputs); false (variable/dynamic) */
   "crop_phu_option" : "new",           /* defines setting for phenological heat unit and vernalization requirements for crops; options: "old", "new", "prescribed" */
   "cropsheatfrost" : false,            /* enable extreme temperature crop damages - requires tmin/tmax inputs - NOT TESTED */
@@ -183,7 +172,7 @@
 
   /* Management parameter file */
   "countrypar" :
-    #include "par/manage_irrig_systems_with_dummy_laimax_data.cjson" 
+    #include "par/manage_irrig_systems_with_dummy_laimax_data.cjson"
   ,
 
   /* Management parameter file for regions*/
@@ -204,21 +193,24 @@
   /* the following array describes the order of the agricultural trees in the k_est array */
   "treemap" : ["oil palm","tea","cotton"],
 
+  /* the following array describes the order of the soil types in the soil file */
   "soilmap" : [null,"clay", "silty clay", "sandy clay", "clay loam", "silty clay loam",
               "sandy clay loam", "loam", "silt loam", "sandy loam", "silt",
               "loamy sand", "sand", "rock and ice"],
 
-  /* the following array describes the order of the CFT bands in the land use file */
+  /* the following array describes the order of the bands in the land use file */
   "landusemap" : ["temperate cereals","rice", "maize", "tropical cereals", "pulses",
                   "temperate roots", "tropical roots", "oil crops sunflower",
                   "oil crops soybean", "oil crops groundnut", "oil crops rapeseed",
                   "sugarcane","others","grassland","biomass grass","biomass tree"],
 
+  /* the following array describes the order of the bands in the fertilizer and manure file */
   "fertilizermap" : ["temperate cereals","rice", "maize", "tropical cereals", "pulses",
                     "temperate roots", "tropical roots", "oil crops sunflower",
                     "oil crops soybean", "oil crops groundnut", "oil crops rapeseed",
                     "sugarcane","others","grassland","biomass grass","biomass tree"],
 
+  /* the following array describes the order of the CFTs in the sowing date and crop PHU file */
   "cftmap" : ["temperate cereals","rice", "maize", "tropical cereals", "pulses",
               "temperate roots", "tropical roots", "oil crops sunflower",
               "oil crops soybean", "oil crops groundnut", "oil crops rapeseed",
@@ -247,7 +239,7 @@
 
   /* output data settings */
   "output_metafile" : true, /* no json metafile created */
-  "float_grid" : false,      /* set datatype of grid file to float (TRUE/FALSE) */
+  "nofill" : false,        /* do not fill NetCDF files at creation (true/false) */
   "compress" : 0,          /* compression level (1-9, 0= no compression) */
   "missing_value" : -1e32, /* missing value in NetCDF files */
   "pft_index" : "npft",    /* name of index variable for PFT output */
@@ -257,6 +249,12 @@
   "compress_suffix" : ".gz",  /* file suffix for compressed output files */
   "json_suffix" : ".json",    /* file suffix for JSON metafiles */
   "csv_delimit" : ",",        /* delimiter for CSV files */
+  "default_fmt" : "raw",      /* default format for output files: "raw","txt","cdf","clm","sock" */
+  "default_suffix" : ".bin",  /* default file suffix for output files */
+  "grid_type" : "short",      /* set datatype of grid file ("short", "float", "double") */
+  "absyear" : false,          /* years relative to baseyear (true/false) */
+  "rev_lat" : false,          /* reverse latitudes in NetCDF output (true/false) */
+  "with_days" : true,         /* use days as units for monthly output in NetCDF files */
 
 #ifdef WITH_GRIDBASED
   "grid_scaled" : true, /* PFT-specific outputs scaled by stand->frac */
@@ -265,14 +263,6 @@
   "grid_scaled" : false,
 #define SUFFIX pft.bin
 #endif
-
-  "output_metafile" : true,   /* json metafile created (true/false) */
-  "default_fmt" : "raw",      /* default format for output files: "raw","txt","cdf","clm","sock" */
-  "default_suffix" : ".bin",  /* default file suffix for output files */
-  "grid_type" : "short",      /* set datatype of grid file ("short", "float", "double") */
-  "absyear" : false,          /* years relative to baseyear (true/false) */
-  "rev_lat" : false,          /* reverse latitudes in NetCDF output (true/false) */
-  "with_days" : true,         /* use days as units for monthly output in NetCDF files */
 
 #define mkstr(s) xstr(s) /* putting string in quotation marks */
 #define xstr(s) #s
@@ -347,13 +337,12 @@ ID                               Fmt                        filename
     { "id" : "pft_chawo",        "file" : { "name" : "output/pft_chawo"}},
     { "id" : "pft_nhawo",        "file" : { "name" : "output/pft_nhawo"}},
     { "id" : "pft_water_demand", "file" : { "name" : "output/pft_water_demand"}},
-#ifdef WITH_SPITFIRE
     { "id" : "firec",            "file" : { "timestep" : "monthly" , "unit" : "gC/m2/month", "name" : "output/mfirec"}},
     { "id" : "nfire",            "file" : { "name" : "output/mnfire"}},
+    { "id" : "fireduration",     "file" : { "name" : "output/mfireduration"}},
+    { "id" : "firedurationdays", "file" : { "name" : "output/mfiredurationdays"}},
+    { "id" : "firedi",           "file" : { "name" : "output/mfiredi"}},
     { "id" : "burntarea",        "file" : { "name" : "output/mburnt_area"}},
-#else
-    { "id" : "firec",            "file" : { "name" : "output/firec"}},
-#endif
     { "id" : "discharge",        "file" : { "name" : "output/mdischarge"}},
     { "id" : "wateramount",      "file" : { "name" : "output/mwateramount"}},
     { "id" : "harvestc",         "file" : { "name" : "output/flux_harvest"}},
@@ -408,8 +397,8 @@ ID                               Fmt                        filename
   "lastyear" : 1901, /* last year of simulation */
   "restart" :  false, /* start from restart file */
   "outputyear" : -1599,
-  "write_restart" : true, /* create restart file: the last year of simulation=restart-year */
-  "write_restart_filename" : "restart/restart_1840_nv_stdfire.lpj", /* filename of restart file */
+  "write_restart" : true, /* create restart file at year defined in "restart_year" */
+  "write_restart_filename" : "restart/restart_1840_nv_stdfire.lpj", /* filename of restart file written */
   "restart_year": 1840 /* write restart at year */
 
 #else
@@ -417,13 +406,17 @@ ID                               Fmt                        filename
   "nspinup" : 390,   /* spinup years */
   "nspinyear" : 30,  /* cycle length during spinup (yr)*/
   "firstyear": 1901, /* first year of simulation */
+#if defined CRU_MONTHLY || defined CRU_NETCDF
   "lastyear" : 2011, /* last year of simulation */
+#else 
+  "lastyear" : 2019, /* last year of simulation */
+#endif
   "outputyear": 1901, /* first year output is written  */
   "baseyear": 1901, /* base year for output  */
   "restart" :  true, /* start from restart file */
   "restart_filename" : "restart/restart_1840_nv_stdfire.lpj", /* filename of restart file */
   "write_restart" : true, /* create restart file */
-  "write_restart_filename" : "restart/restart_1900_crop_stdfire.lpj", /* filename of restart file */
+  "write_restart_filename" : "restart/restart_1900_crop_stdfire.lpj", /* filename of restart file written */
   "restart_year": 1900 /* write restart at year */
 
 #endif
