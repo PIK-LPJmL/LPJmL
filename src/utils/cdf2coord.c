@@ -232,7 +232,7 @@ int main(int argc,char **argv)
     rc=nc_get_att_double(ncid,var_id,"_FillValue",&missing_value);
   if(rc)
   {
-    fprintf(stderr,"WARNING408: Cannot read missing for fill value in '%s': %s, set to %g.\n",
+    fprintf(stderr,"WARNING402: Cannot read missing for fill value in '%s': %s, set to %g.\n",
             argv[i],nc_strerror(rc),MISSING_VALUE_FLOAT);
     missing_value=MISSING_VALUE_FLOAT;
   }

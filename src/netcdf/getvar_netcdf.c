@@ -211,7 +211,7 @@ Bool getvar_netcdf(Climatefile *file,    /**< climate data file */
         rc=nc_get_att_int(file->ncid,file->varid,"_FillValue",&file->missing_value.i);
         if(rc)
         {
-          fprintf(stderr,"WARNING408: Cannot read missing or fill value for %s in '%s', set to %d.\n",
+          fprintf(stderr,"WARNING402: Cannot read missing or fill value for %s in '%s', set to %d.\n",
                   (var==NULL) ? name : var,filename,MISSING_VALUE_INT);
           file->missing_value.i=MISSING_VALUE_INT;
         }
@@ -225,7 +225,7 @@ Bool getvar_netcdf(Climatefile *file,    /**< climate data file */
         rc=nc_get_att_float(file->ncid,file->varid,"_FillValue",&file->missing_value.f);
         if(rc)
         {
-          fprintf(stderr,"WARNING408: Cannot read missing or fill value for %s in '%s', set to %g.\n",
+          fprintf(stderr,"WARNING402: Cannot read missing or fill value for %s in '%s', set to %g.\n",
                   (var==NULL) ? name : var,filename,config->missing_value);
           file->missing_value.f=config->missing_value;
         }
@@ -239,7 +239,7 @@ Bool getvar_netcdf(Climatefile *file,    /**< climate data file */
         rc=nc_get_att_short(file->ncid,file->varid,"_FillValue",&file->missing_value.s);
         if(rc)
         {
-          fprintf(stderr,"WARNING408: Cannot read missing or fill value for %s in '%s', set to %d.\n",
+          fprintf(stderr,"WARNING402: Cannot read missing or fill value for %s in '%s', set to %d.\n",
                   (var==NULL) ? name : var,filename,MISSING_VALUE_SHORT);
           file->missing_value.s=MISSING_VALUE_SHORT;
         }
@@ -253,7 +253,7 @@ Bool getvar_netcdf(Climatefile *file,    /**< climate data file */
         rc=nc_get_att_double(file->ncid,file->varid,"_FillValue",&file->missing_value.d);
         if(rc)
         {
-          fprintf(stderr,"WARNING408: Cannot read missing or fill value for %s in '%s', set to %g.\n",
+          fprintf(stderr,"WARNING402: Cannot read missing or fill value for %s in '%s', set to %g.\n",
                   (var==NULL) ? name : var,filename,config->missing_value);
           file->missing_value.d=config->missing_value;
         }
@@ -266,9 +266,6 @@ Bool getvar_netcdf(Climatefile *file,    /**< climate data file */
                 (var==NULL) ? name : var,filename);
       return TRUE;
   }
-  if(rc)
-    fprintf(stderr,"WARNING402: Cannot read missing value of %s in '%s': %s.\n",
-            (var==NULL) ? name : var,filename,nc_strerror(rc));
   if(!nc_inq_atttype(file->ncid,file->varid,"add_offset",&type))
   {
     switch(type)
