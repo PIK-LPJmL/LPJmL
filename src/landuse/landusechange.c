@@ -1439,7 +1439,7 @@ void landusechange(Cell *cell,          /**< pointer to cell */
   /* update rainfed and irrigated sum of fractions */
   sum[0]=sum[1]=0.0;
   foreachstand(stand,s,cell->standlist)
-    if(stand->type->landusetype!=NATURAL && stand->type->landusetype!=WETLAND)
+    if(stand->type->landusetype!=NATURAL && stand->type->landusetype!=WETLAND && stand->type->landusetype!=KILL)
     {
       data=stand->data;
       sum[data->irrigation]+=stand->frac;
@@ -1662,7 +1662,7 @@ void landusechange(Cell *cell,          /**< pointer to cell */
   sum[0]=sum[1]=sum_wl[0]=sum_wl[1]=0.0;
   foreachstand(stand,s,cell->standlist)
   {
-    if(stand->type->landusetype!=NATURAL && stand->type->landusetype!=WETLAND)
+    if(stand->type->landusetype!=NATURAL && stand->type->landusetype!=WETLAND && stand->type->landusetype!=KILL)
     {
       data=stand->data;
       sum[data->irrigation]+=stand->frac;

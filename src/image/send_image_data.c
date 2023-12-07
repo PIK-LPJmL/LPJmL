@@ -488,7 +488,7 @@ Bool send_image_data(const Cell grid[],      /**< LPJ grid */
       agrfrac=0.0;
       foreachstand(stand,s,grid[cell].standlist)
       {
-        if(stand->type->landusetype!=NATURAL && stand->type->landusetype!=WOODPLANTATION && stand->type->landusetype!=WETLAND)
+        if(stand->type->landusetype!=NATURAL && stand->type->landusetype!=WOODPLANTATION && stand->type->landusetype!=WETLAND  && stand->type->landusetype!=KILL)
         {
           foreachpft(pft,p,&stand->pftlist)
           switch(pft->par->type)

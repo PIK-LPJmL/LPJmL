@@ -89,7 +89,7 @@ void gasdiffusion(Soil *soil,    /**< [inout] pointer to soil data */
       if (D_O2[l]>0)
       {
         dO2 = 0.5*(D_O2[l] + ((l == 0) ? D_O2[l] : D_O2[l - 1]))*timestep2sec(1.0, steps) /((l==0) ? soildepth[l] : (0.5* (soildepth[l]+ soildepth[l-1]))) * 1000
-          *(O2_upper - soil->O2[l] / soildepth[l] / epsilon_O2[l] * 1000);
+          *(O2_upper - soil->O2[l] / soildepth[l] / epsilon_O2[l] * 1000)*0.5;
         if(dO2>0 && l>0)
         {
           soil->O2[l - 1] -= dO2*(soildepth[l - 1] * epsilon_O2[l - 1]) / 1000;
@@ -108,7 +108,7 @@ void gasdiffusion(Soil *soil,    /**< [inout] pointer to soil data */
         }
 
         dO2 = 0.5*(D_O2[l] + ((l == BOTTOMLAYER - 1) ? D_O2[l] : D_O2[l + 1]))*timestep2sec(1.0, steps) / ((l==BOTTOMLAYER-1) ? soildepth[l] : (0.5* (soildepth[l]+ soildepth[l+1]))) * 1000
-          *(O2_lower - soil->O2[l] / soildepth[l] / epsilon_O2[l] * 1000);
+          *(O2_lower - soil->O2[l] / soildepth[l] / epsilon_O2[l] * 1000)*0.5;
         if (dO2>0 && l != (BOTTOMLAYER - 1))
         {
           soil->O2[l + 1] -=dO2*(soildepth[l + 1] * epsilon_O2[l + 1]) / 1000;
@@ -168,7 +168,7 @@ void gasdiffusion(Soil *soil,    /**< [inout] pointer to soil data */
       if (D_CH4[l]>0)
       {
         dCH4 = 0.5*(D_CH4[l] + ((l == 0) ? D_CH4[l] : D_CH4[l - 1]))*timestep2sec(1.0, steps)/((l==0) ? soildepth[l] : (0.5* (soildepth[l]+ soildepth[l-1]))) * 1000
-            *(CH4_upper - soil->CH4[l] / soildepth[l] / epsilon_CH4[l] * 1000);
+            *(CH4_upper - soil->CH4[l] / soildepth[l] / epsilon_CH4[l] * 1000)*0.5;
         if (dCH4>0 && l>0)
         {
           soil->CH4[l-1]-= dCH4*(soildepth[l - 1] * epsilon_CH4[l - 1]) / 1000;
@@ -179,8 +179,8 @@ void gasdiffusion(Soil *soil,    /**< [inout] pointer to soil data */
 
         soil->CH4[l]+= dCH4*(soildepth[l] * epsilon_CH4[l]) / 1000;
 
-        if(dCH4<0 && l==0)
-          *CH4_sink+=dCH4*(soildepth[l] * epsilon_CH4[l]) / 1000;  // sink is defined to be negative
+        if(dCH4>0 && l==0)
+          *CH4_sink+=-dCH4*(soildepth[l] * epsilon_CH4[l]) / 1000;  // sink is defined to be negative
 #ifdef CHECK_BALANCE
         if(dCH4<0 && l==0)
           out+=dCH4*(soildepth[l] * epsilon_CH4[l]) / 1000;
@@ -197,7 +197,7 @@ void gasdiffusion(Soil *soil,    /**< [inout] pointer to soil data */
         CH4_lower = (l == BOTTOMLAYER - 1) ? 0 : soil->CH4[l + 1] / soildepth[l + 1] / epsilon_CH4[l + 1] * 1000;
 
         dCH4 = 0.5*(D_CH4[l] + ((l == BOTTOMLAYER - 1) ? D_CH4[l] : D_CH4[l + 1]))*timestep2sec(1.0, steps)/(0.5* (soildepth[l]+ soildepth[l+1])) * 1000
-            *(CH4_lower - soil->CH4[l] / soildepth[l] / epsilon_CH4[l] * 1000);
+            *(CH4_lower - soil->CH4[l] / soildepth[l] / epsilon_CH4[l] * 1000)*0.5;
         if (dCH4>0 && l != (BOTTOMLAYER - 1))
         {
           soil->CH4[l + 1] -= dCH4*(soildepth[l + 1] * epsilon_CH4[l + 1]) / 1000;

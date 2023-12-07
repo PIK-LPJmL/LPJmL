@@ -307,7 +307,7 @@ void landusechange_for_reservoir(Cell *cell,          /**< pointer to cell */
       /* update the cropfactor to include the 'new' setaside */
       sum[0]=sum[1]=sum_wl[0]=sum_wl[1]=0.0;
       foreachstand(stand,s,cell->standlist)
-        if(stand->type->landusetype!=NATURAL && stand->type->landusetype!=WETLAND){
+        if(stand->type->landusetype!=NATURAL && stand->type->landusetype!=WETLAND  && stand->type->landusetype!=KILL){
           data=stand->data;
           sum[data->irrigation]+=stand->frac;
           if(stand->soil.iswetland)
@@ -325,7 +325,7 @@ void landusechange_for_reservoir(Cell *cell,          /**< pointer to cell */
       /* update the cropfactor */
       sum[0]=sum[1]=sum_wl[0]=sum_wl[1]=0.0;
       foreachstand(stand,s,cell->standlist)
-        if(stand->type->landusetype!=NATURAL && stand->type->landusetype!=WETLAND){
+        if(stand->type->landusetype!=NATURAL && stand->type->landusetype!=WETLAND && stand->type->landusetype!=KILL){
           data=stand->data;
           sum[data->irrigation]+=stand->frac;
           if(stand->soil.iswetland)
