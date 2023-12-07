@@ -16,9 +16,6 @@
 
 #include "lpj.h"
 
-#define CG 0.2   /* cloud to ground flashes ratio */
-#define INTENSITY_LIMIT 5  /*intensity limit under which a fire cannot burn, 50 in original SPITIFRE version*/
-
 void dailyfire(Stand *stand,                /**< pointer to stand */
                Real popdens,                /**< population density (capita/km2) */
                Real human_ign_prob,         /**< human ignition probability */
@@ -177,7 +174,7 @@ void dailyfire(Stand *stand,                /**< pointer to stand */
   surface_fi=surface_fire_intensity(ros_forward,&fuel);
   /* if not enough surface fire energy to sustain burning */
   //printf("surface_fi: %g\n", surface_fi);
-  if(surface_fi<INTENSITY_LIMIT)  //&& !prescribe_burntarea)
+  if(surface_fi<param.intensity_limit)  //&& !prescribe_burntarea)
   {
     //printf("surface_fi: %g\n", surface_fi);
     stand->afire_frac-=fire_frac;
@@ -195,7 +192,7 @@ void dailyfire(Stand *stand,                /**< pointer to stand */
   livefuel_consump.carbon=livefuel_consump.nitrogen=0;
   foreachpft(pft,p,&stand->pftlist)
   {
-    if(surface_fi>INTENSITY_LIMIT)
+    if(surface_fi>param.intensity_limit)
     {
       livefuel_consump_pft=pft->par->livefuel_consumption(&stand->soil.litter, pft,
                                                           &fuel, &livefuel, &isdead, surface_fi, fire_frac,config);

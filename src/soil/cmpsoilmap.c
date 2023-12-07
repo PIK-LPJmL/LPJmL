@@ -25,7 +25,7 @@ void cmpsoilmap(const int *soilmap,  /**< soilmap array */
   int i;
   for(i=0;i<min(size,config->soilmap_size);i++)
     if(soilmap[i]!=config->soilmap[i])
-      fprintf(stderr,"WARMING037: Soil '%s' in '%s' differs from soil '%s' in 'soilmap' at position %d.\n",
+      fprintf(stderr,"WARNING037: Soil '%s' in '%s' differs from soil '%s' in 'soilmap' at position %d.\n",
               soilmap[i]==0 ? "null" : config->soilpar[soilmap[i]-1].name,config->soil_filename.name,
               config->soilmap[i]==0 ? "null" : config->soilpar[config->soilmap[i-1]].name,i);
 

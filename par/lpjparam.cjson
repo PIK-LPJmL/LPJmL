@@ -107,10 +107,11 @@
     "hum_ign" : -0.53,                  /* a parameter for scaling the human ignintions within SPITFIRE */
     "k_ign_prob" :  0.3,//0.215,//0.05, //0.0115,
     "fire_intens" : 0.000001,           /* threshold of fireintensity for which burnt area can be modeled */
+    "intensity_limit" :  5.0,           /* intensity limit under which a fire cannot burn, 50 in original SPITIFRE version*/
     "ler" : 0.04,                       /* efficiency in starting fires */
-    "cg_ratio" : 0.2,                   /*cloud to ground ratio for lightning flashes */
-    "fireduration" : [120,480],//1320,    /*default maximum fire duration (min) */
-    "max_ndayfire" : 5,                /* maximum fire days (days) */
+    "cg_ratio" : 0.2,                   /* cloud to ground ratio for lightning flashes */
+    "fireduration" : [120,480],         /* default fire duration interval (min) */
+    "max_ndayfire" : 5,                 /* maximum fire days (days) */
     "fburnt" : 1.0,                     /* fraction of trees burnt at deforestation, refers to remainder after timber harvest */
     "ftimber_wp" : 0.76,                /* timber fraction for wood plantations */
     "allocation_threshold" : 35.0,      /* allocation threshold for daily grassland allocation */

@@ -101,10 +101,10 @@ Bool fscanoutput(LPJfile *file,  /**< pointer to LPJ file */
     return TRUE;
   }
   metafile=FALSE;
-  if(fscanbool(file,&metafile,"output_metafile",TRUE,verbosity))
+  if(fscanbool(file,&metafile,"output_metafile",!config->pedantic,verbosity))
     return TRUE;
   default_fmt=RAW;
-  if(fscankeywords(file,&default_fmt,"default_fmt",fmt,N_FMT,TRUE,verbosity))
+  if(fscankeywords(file,&default_fmt,"default_fmt",fmt,N_FMT,!config->pedantic,verbosity))
     return TRUE;
   name=fscanstring(file,"","default_suffix",verbosity);
   if(name==NULL)
@@ -131,10 +131,10 @@ Bool fscanoutput(LPJfile *file,  /**< pointer to LPJ file */
       return TRUE;
   }
   config->rev_lat=FALSE;
-  if(fscanbool(file,&config->rev_lat,"rev_lat",TRUE,verbosity))
+  if(fscanbool(file,&config->rev_lat,"rev_lat",!config->pedantic,verbosity))
     return TRUE;
   config->with_days=TRUE;
-  if(fscanbool(file,&config->with_days,"with_days",TRUE,verbosity))
+  if(fscanbool(file,&config->with_days,"with_days",!config->pedantic,verbosity))
     return TRUE;
   config->grid_type=LPJ_SHORT;
   if(iskeydefined(file,"float_grid"))
@@ -166,7 +166,7 @@ Bool fscanoutput(LPJfile *file,  /**< pointer to LPJ file */
     checkptr(config->outputdir);
   }
   config->absyear=FALSE;
-  if(fscanbool(file,&config->absyear,"absyear",TRUE,verbosity))
+  if(fscanbool(file,&config->absyear,"absyear",!config->pedantic,verbosity))
     return TRUE;
   if(iskeydefined(file,"grid_scaled"))
   {
@@ -192,6 +192,8 @@ Bool fscanoutput(LPJfile *file,  /**< pointer to LPJ file */
       {
         if(verbosity)
           fprintf(stderr,"ERROR166: Id '%s' not defined for output file, output is ignored.\n",name);
+        if(config->pedantic)
+          return TRUE;
         continue;
       }
     }
@@ -225,6 +227,8 @@ Bool fscanoutput(LPJfile *file,  /**< pointer to LPJ file */
       if(verbosity)
         fprintf(stderr,"WARNING006: Output file for '%s' is opened twice, will be ignored.\n",
               config->outnames[flag].name);
+      if(config->pedantic)
+        return TRUE;
       freefilename(&config->outputvars[count].filename);
     }
     else if(outputsize(flag,npft,ncft,config)==0)
@@ -244,15 +248,19 @@ Bool fscanoutput(LPJfile *file,  /**< pointer to LPJ file */
     else if(config->outputvars[count].filename.fmt==CLM2)
     {
       if(verbosity)
-        fprintf(stderr,"ERROR223: File format \"clm2\" is not supported for output file '%s'.\n",
+        fprintf(stderr,"ERROR223: File format \"clm2\" is not supported for output file '%s', will be ignored.\n",
                 config->outputvars[count].filename.name);
+      if(config->pedantic)
+        return TRUE;
       freefilename(&config->outputvars[count].filename);
     }
     else if(config->outputvars[count].filename.fmt==META)
     {
       if(verbosity)
-        fprintf(stderr,"ERROR223: File format META is not supported for output file '%s'.\n",
+        fprintf(stderr,"ERROR223: File format META is not supported for output file '%s', will be ignored.\n",
                 config->outputvars[count].filename.name);
+      if(config->pedantic)
+        return TRUE;
       freefilename(&config->outputvars[count].filename);
     }
     else
@@ -275,16 +283,24 @@ Bool fscanoutput(LPJfile *file,  /**< pointer to LPJ file */
       }
       if(config->outputvars[count].filename.timestep!=NOT_FOUND)
       {
-        if(verbosity && config->outputvars[count].filename.timestep<getmintimestep(flag))
+        if(config->outputvars[count].filename.timestep<getmintimestep(flag))
         {
-          fprintf(stderr,"ERROR246: Time step %s for '%s' output too short, must be %s.\n",
-                  sprinttimestep(s,config->outputvars[count].filename.timestep),
-                  config->outnames[flag].name,
-                  sprinttimestep(s2,getmintimestep(flag)));
+          if(verbosity)
+            fprintf(stderr,"ERROR246: Time step %s for '%s' output too short, must be %s.\n",
+                    sprinttimestep(s,config->outputvars[count].filename.timestep),
+                    config->outnames[flag].name,
+                    sprinttimestep(s2,getmintimestep(flag)));
+          if(config->pedantic)
+            return TRUE;
         }
-        else if(verbosity && config->outputvars[count].filename.timestep!=ANNUAL && isannual_output(flag))
-          fprintf(stderr,"ERROR246: Only annual time step allowed for '%s' output, time step is %s.\n",
-                  config->outnames[flag].name,sprinttimestep(s2,config->outputvars[count].filename.timestep));
+        else if(config->outputvars[count].filename.timestep!=ANNUAL && isannual_output(flag))
+        {
+          if(verbosity)
+            fprintf(stderr,"ERROR246: Only annual time step allowed for '%s' output, time step is %s.\n",
+                    config->outnames[flag].name,sprinttimestep(s2,config->outputvars[count].filename.timestep));
+          if(config->pedantic)
+            return TRUE;
+        }
         config->outnames[flag].timestep=config->outputvars[count].filename.timestep;
       }
 
@@ -317,11 +333,15 @@ Bool fscanoutput(LPJfile *file,  /**< pointer to LPJ file */
           if(verbosity)
             fprintf(stderr,"ERROR224: Invalid format specifier in filename '%s'.\n",
                     config->outputvars[count].filename.name);
+          if(config->pedantic)
+            return TRUE;
         }
         else if(config->outputvars[count].oneyear && getnyear(config->outnames,flag)==0)
         {
           if(verbosity)
             fprintf(stderr,"ERROR225: One year output not allowed for grid, globalflux, country or region.\n");
+          if(config->pedantic)
+            return TRUE;
         }
       }
       else

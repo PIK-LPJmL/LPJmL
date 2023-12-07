@@ -47,7 +47,7 @@
     "radiation" : "radiation",/* type of radiation input to be used, options: "cloudiness", "radiation", "radiation_swonly", "radiation_lwdown" */
   #endif
   "isswnet" : false,
-  "fire" : "spitfire_tmax",          /* fire disturbance enabled, options: "no_fire", "fire", "spitfire", "spitfire_tmax" (for GLDAS input data) */
+  "fire" : "spitfire_tmax", /* fire disturbance enabled, options: "no_fire", "fire", "spitfire", "spitfire_tmax" (for GLDAS input data) */
   "gsilivefuel" : true,
   "human_ign_prob" : false,
   "max_firesize" : false,
@@ -55,7 +55,7 @@
   "fireduration" : [{"stand" : "grassland", "duration" : [1,120] ,"ndayfire" : 1},
                     {"stand" : "natural", "duration" : [120,480], "ndayfire" : 3}],
 
-  "fdi" : "wvpd",       /* fire danger index formulations: "wvpd" (needs humidity input data), "nesterov" */
+  "fdi" : "wvpd",           /* fire danger index formulations: "wvpd" (needs humidity input data), "nesterov" */
   "prescribe_ignition" : false,
   "random_seed" : 2,        /* seed for random number generator */
   "firewood" : false,       /* NOT TESTED - DO NOT ENABLE */
@@ -85,14 +85,14 @@
   "fix_deposition_year" : 1901,          /* year after deposition is fixed */
   "fix_deposition_interval" : [1901,1930],
   "fix_deposition_shuffle" : true,       /* randomly shuffle depositions in the interval */
-  "fix_landuse" : false,    /* fix landuse after fix_landuseyear; different than landuse = const - where all years are the same */
+  "fix_landuse" : false,                 /* fix landuse after fix_landuseyear; different than landuse = const - where all years are the same */
   "fix_landuse_year" : 1901,             /* year after land use is fixed */
   "fix_co2" : false,                     /* fix atmospheric CO2  after specfied year */
   "fix_co2_year" : 1901,                 /* year after CO2 is fixed */
   "relative_humidity" : false,
 #ifdef FROM_RESTART
   "new_seed" : false,       /* read random seed from restart file */
-  "population" : true,     /* use population input (for spitfire) */
+  "population" : true,      /* use population input (for spitfire) */
   "landuse" : "yes",        /* landuse setting; options: "no", "yes", "const", "all_crops", "only_crops" */
   "landuse_year_const" : 2000, /* set landuse year for "const" and "only_crops" cases */
   "reservoir" : true,       /* enables reservoirs (changes discharge and allows for irrigation water source), requires river_routing=true and elevation and reservoir input files  */
@@ -197,6 +197,13 @@
   "soilmap" : [null,"clay", "silty clay", "sandy clay", "clay loam", "silty clay loam",
               "sandy clay loam", "loam", "silt loam", "sandy loam", "silt",
               "loamy sand", "sand", "rock and ice"],
+
+  /* The following array is used for mapping prescribed FPC */
+  "landcovermap" : ["tropical broadleaved evergreen tree", "tropical broadleaved raingreen tree",
+                    "temperate needleleaved evergreen tree", "temperate broadleaved evergreen tree",
+                    "temperate broadleaved summergreen tree", "boreal needleleaved evergreen tree",
+                    "boreal broadleaved summergreen tree", "boreal needleleaved summergreen tree",
+                    "Tropical C4 grass", "Temperate C3 grass", "Polar C3 grass"],
 
   /* the following array describes the order of the bands in the land use file */
   "landusemap" : ["temperate cereals","rice", "maize", "tropical cereals", "pulses",

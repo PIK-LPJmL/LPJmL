@@ -75,6 +75,7 @@ typedef struct
   Real ler;              /**< efficiency in starting fires (0..1) */
   Real cg_ratio;         /**< cloud to ground flashes ratio */
   Real fire_intens;     /**< threshold of fireintensity for which burnt area can be modeled */
+  Real intensity_limit; /**< intensity limit under which a fire cannot burn */
   Real hum_ign;         /**< a parameter for scaling the human ignintions within SPITFIRE */
   Real k_ign_prob;      /**< scaling factor for human ignition probabilities */
   Real residues_in_soil;  /**< minimum residues in soil*/

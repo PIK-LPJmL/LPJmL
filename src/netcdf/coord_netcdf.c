@@ -668,7 +668,7 @@ Coord_netcdf opencoord_netcdf(const char *filename,const char *var,Bool isout)
       {
         rc=nc_get_att_uchar(coord->ncid,coord->varid,"_FillValue",&coord->missing_value.b);
         if(rc)
-          coord->missing_value.s=MISSING_VALUE_BYTE;
+          coord->missing_value.b=MISSING_VALUE_BYTE;
       }
       coord->type=LPJ_BYTE;
       break;

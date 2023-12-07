@@ -160,7 +160,7 @@
     { "id" : SWE, "name": "swe", "timestep" : "monthly", "var" :  "SWE", "long_name" :  "snow water equivalent", "unit" : "mm", "scale" : 1.0, "offset" : 0.0},
     { "id" : SOILC_LAYER, "name": "soilc_layer", "timestep" : "annual", "var" :  "SoilC", "long_name" :  "Soil carbon in layer", "unit" : "gC/m2", "scale" : 1.0, "offset" : 0.0},
     { "id" : RUNOFF_SURF, "name": "runoff_surf", "timestep" : "monthly", "var" :  "runoff_surf", "long_name" :  "surface runoff", "unit" : "mm/month", "scale" : 1.0, "offset" : 0.0},
-  { "id" : RUNOFF_LAT, "name": "runoff_lat", "timestep" : "monthly", "var" :  "runoff_lat", "long_name" :  "lateral runoff", "unit" : "mm/month", "scale" : 1.0, "offset" : 0.0},
+    { "id" : RUNOFF_LAT, "name": "runoff_lat", "timestep" : "monthly", "var" :  "runoff_lat", "long_name" :  "lateral runoff", "unit" : "mm/month", "scale" : 1.0, "offset" : 0.0},
     { "id" : SEEPAGE, "name": "seepage",  "timestep" : "monthly", "var" :  "seepage", "long_name" :  "seepage water", "unit" : "mm/month", "scale" : 1.0, "offset" : 0.0},
     { "id" : BURNTAREA, "name": "burntarea", "timestep" : "monthly", "var" :  "burntarea", "long_name" :  "area burnt", "unit" : "hectare", "scale" : 1.0, "offset" : 0.0},
     { "id" : SOILC_SLOW, "name": "soilc_slow", "timestep" : "annual", "var" :  "soilc_slow", "long_name" :  "slow soil carbon", "unit" : "gC/m2", "scale" : 1.0, "offset" : 0.0},
@@ -207,6 +207,8 @@
     { "id" : AGB, "name": "agb", "timestep" : "annual", "var" :  "AGB", "long_name" :  "above ground biomass", "unit" : "gC/m2", "scale" : 1.0, "offset" : 0.0},
     { "id" : AGB_TREE, "name": "agb_tree", "timestep" : "annual", "var" :  "agb_tree", "long_name" :  "above ground tree biomass", "unit" : "gC/m2", "scale" : 1.0, "offset" : 0.0},
     { "id" : LAKEVOL, "name": "lakevol", "timestep" : "monthly", "var" :  "lakevol", "long_name" :  "lake content volume", "unit" : "dm3", "scale" : 1.0, "offset" : 0.0},
+    { "id" : RIVERVOL, "name": "rivervol", "timestep" : "monthly", "var" :  "rivervol", "long_name" :  "river content volume", "unit" : "dm3", "scale" : 1.0, "offset" : 0.0},
+    { "id" : IRRIG_STOR, "name": "irrig_stor", "timestep" : "monthly", "var" :  "irrig_stor", "long_name" :  "water content in irrigation storage", "unit" : "dm3", "scale" : 1.0, "offset" : 0.0},
     { "id" : LAKETEMP, "name": "laketemp", "timestep" : "monthly", "var" :  "laketemp", "long_name" :  "lake surface temperature", "unit" : "Celsius", "scale" : 1.0, "offset" : 0.0},
     { "id" : FIREN, "name": "firen", "timestep" : "annual", "var": "FireN", "long_name": "fire nitrogen emission", "unit": "gN/m2/yr", "scale": 1.0, "offset" : 0.0},
     { "id" : FLUX_ESTABN, "name": "flux_estabn", "timestep" : "annual", "var": "estabn", "long_name": "establishment flux", "unit": "gN/m2/yr", "scale": 1.0, "offset" : 0.0},
@@ -379,7 +381,5 @@
     { "id" : ROS, "name": "ros", "timestep" : "monthly", "var" :  "ros", "long_name" :  "rate of spread", "unit" : "m/s", "scale" : 1.0, "offset" : 0.0},
     { "id" : FIRESIZE, "name": "firesize", "timestep" : "monthly", "var" :  "firesize", "long_name" :  "average size of fire", "unit" : "km2", "scale" : 1.0e-6, "offset" : 0.0},
     { "id" : FIREDAYS, "name": "firedays", "timestep" : "monthly", "var" :  "firedays", "long_name" :  "number of days with fire", "unit" : "days", "scale" : 1.0, "offset" : 0.0},
-    { "id" : RIVERVOL, "name": "rivervol", "timestep" : "monthly", "var" :  "rivervol", "long_name" :  "river content volume", "unit" : "dm3", "scale" : 1.0, "offset" : 0.0},
     { "id" : SWC_VOL, "name": "swc_vol", "timestep" : "monthly", "var" : "swc_vol", "long_name" : "soil water content for each of the top 5 soillayers", "unit" : "dm3", "scale" : 1.0, "offset" : 0.0},
-    { "id" : IRRIG_STOR, "name": "irrig_stor", "timestep" : "monthly", "var" :  "irrig_stor", "long_name" :  "water content in irrigation storage", "unit" : "dm3", "scale" : 1.0, "offset" : 0.0}
   ]

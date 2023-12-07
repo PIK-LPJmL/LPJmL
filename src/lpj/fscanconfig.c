@@ -215,10 +215,15 @@ Bool fscanconfig(Config *config,    /**< LPJ configuration */
       checkptr(name);
     }
   }
-  else if(verbose)
-    fprintf(stderr,"WARNING027: Name 'coupled_model' for string not found, set to null.\n");
+  else
+  {
+    if(verbose)
+      fprintf(stderr,"WARNING027: Name 'coupled_model' for string not found, set to null.\n");
+    if(config->pedantic)
+      return TRUE;
+  }
   config->landfrac_from_file=FALSE;
-  if(fscanbool(file,&config->landfrac_from_file,"landfrac_from_file",TRUE,verbose))
+  if(fscanbool(file,&config->landfrac_from_file,"landfrac_from_file",!config->pedantic,verbose))
     return TRUE;
   fscanbool2(file,&israndom,"random_prec");
   config->seed_start=RANDOM_SEED;
@@ -234,7 +239,7 @@ Bool fscanconfig(Config *config,    /**< LPJ configuration */
       return TRUE;
     }
   }
-  else if(fscanint(file,&config->seed_start,"random_seed",TRUE,verbose))
+  else if(fscanint(file,&config->seed_start,"random_seed",!config->pedantic,verbose))
     return TRUE;
   if(config->seed_start==RANDOM_SEED)
     config->seed_start=time(NULL);
@@ -243,7 +248,7 @@ Bool fscanconfig(Config *config,    /**< LPJ configuration */
 #ifdef COUPLING_WITH_FMS
   config->nitrogen_coupled=FALSE;
 #endif
-  if(fscankeywords(file,&config->with_nitrogen,"with_nitrogen",nitrogen,3,TRUE,verbose))
+  if(fscankeywords(file,&config->with_nitrogen,"with_nitrogen",nitrogen,3,!config->pedantic,verbose))
     return TRUE;
   if(fscankeywords(file,&config->with_radiation,"radiation",radiation,4,FALSE,verbose))
     return TRUE;
@@ -272,51 +277,49 @@ Bool fscanconfig(Config *config,    /**< LPJ configuration */
   config->fire_base=FALSE;
   if(config->fire==SPITFIRE  || config->fire==SPITFIRE_TMAX)
   {
-    if(fscanbool(file,&config->gsilivefuel,"gsilivefuel",TRUE,verbose))
+    if(fscanbool(file,&config->gsilivefuel,"gsilivefuel",!config->pedantic,verbose))
       return TRUE;
-    if(fscanbool(file,&config->fire_base,"fire_base",TRUE,verbose))
+    if(fscanbool(file,&config->fire_base,"fire_base",!config->pedantic,verbose))
       return TRUE;
     if(fscankeywords(file,&config->fdi,"fdi",fdi,2,FALSE,verbose))
       return TRUE;
-    if(config->fdi==WVPD_INDEX && verbose)
-      fputs("WARNING029: VPD index only calibrated for South America.\n",stderr);
     if(config->fdi==WVPD_INDEX)
     {
       config->relative_humidity=FALSE;
-      if(fscanbool(file,&config->relative_humidity,"relative_humidity",TRUE,verbose))
+      if(fscanbool(file,&config->relative_humidity,"relative_humidity",!config->pedantic,verbose))
         return TRUE;
     }
-    if(fscanbool(file,&config->prescribe_burntarea,"prescribe_burntarea",TRUE,verbose))
+    if(fscanbool(file,&config->prescribe_burntarea,"prescribe_burntarea",!config->pedantic,verbose))
       return TRUE;
-    if(fscanbool(file,&config->max_firesize,"max_firesize",TRUE,verbose))
+    if(fscanbool(file,&config->max_firesize,"max_firesize",!config->pedantic,verbose))
       return TRUE;
-    if(fscanbool(file,&config->prescribe_ignition,"prescribe_ignition",TRUE,verbose))
+    if(fscanbool(file,&config->prescribe_ignition,"prescribe_ignition",!config->pedantic,verbose))
       return TRUE;
     if(!config->prescribe_ignition)
     {
-      if(fscanbool(file,&config->ishuman_ign_prob,"human_ign_prob",TRUE,verbose))
+      if(fscanbool(file,&config->ishuman_ign_prob,"human_ign_prob",!config->pedantic,verbose))
         return TRUE;
     }
   }
   fscanbool2(file,&config->ispopulation,"population");
   config->isswnet=FALSE;
-  if(fscanbool(file,&config->isswnet,"isswnet",TRUE,verbose))
+  if(fscanbool(file,&config->isswnet,"isswnet",!config->pedantic,verbose))
     return TRUE;
   config->prescribe_landcover=NO_LANDCOVER;
-  if(fscankeywords(file,&config->prescribe_landcover,"prescribe_landcover",prescribe_landcover,3,TRUE,verbose))
+  if(fscankeywords(file,&config->prescribe_landcover,"prescribe_landcover",prescribe_landcover,3,!config->pedantic,verbose))
     return TRUE;
   fscanbool2(file,&config->gsi_phenology,"gsi_phenology");
   config->transp_suction_fcn=FALSE;
-  if(fscanbool(file,&config->transp_suction_fcn,"transp_suction_fcn",TRUE,verbose))
+  if(fscanbool(file,&config->transp_suction_fcn,"transp_suction_fcn",!config->pedantic,verbose))
     return TRUE;
   fscanbool2(file,&config->river_routing,"river_routing");
   config->with_lakes=config->river_routing;
-  if(fscanbool(file,&config->with_lakes,"with_lakes",TRUE,verbose))
+  if(fscanbool(file,&config->with_lakes,"with_lakes",!config->pedantic,verbose))
     return TRUE;
   config->extflow=FALSE;
   if(config->river_routing)
   {
-    if(fscanbool(file,&config->extflow,"extflow",TRUE,verbose))
+    if(fscanbool(file,&config->extflow,"extflow",!config->pedantic,verbose))
       return TRUE;
   }
   config->reservoir=FALSE;
@@ -326,7 +329,7 @@ Bool fscanconfig(Config *config,    /**< LPJ configuration */
 #endif
   fscanbool2(file,&config->permafrost,"permafrost");
   config->johansen = TRUE;
-  if(fscanbool(file,&config->johansen,"johansen",TRUE,verbose))
+  if(fscanbool(file,&config->johansen,"johansen",!config->pedantic,verbose))
     return TRUE;
   config->sdate_option=NO_FIXED_SDATE;
   config->crop_phu_option=NEW_CROP_PHU;
@@ -342,26 +345,26 @@ Bool fscanconfig(Config *config,    /**< LPJ configuration */
   config->prescribe_lsuha=FALSE;
   if(config->with_nitrogen)
   {
-    if(fscanbool(file,&config->npp_controlled_bnf,"npp_controlled_bnf",TRUE,verbose))
+    if(fscanbool(file,&config->npp_controlled_bnf,"npp_controlled_bnf",!config->pedantic,verbose))
       return TRUE;
 #ifdef COUPLING_WITH_FMS
     config->nitrogen_coupled=TRUE;
-    if(fscanbool(file,&config->nitrogen_coupled,"nitrogen_coupled",TRUE,verbose))
+    if(fscanbool(file,&config->nitrogen_coupled,"nitrogen_coupled",!config->pedantic,verbose))
       return TRUE;
 #endif
   }
   config->soilpar_option=NO_FIXED_SOILPAR;
-  if(fscankeywords(file,&config->soilpar_option,"soilpar_option",soilpar_option,3,TRUE,verbose))
+  if(fscankeywords(file,&config->soilpar_option,"soilpar_option",soilpar_option,3,!config->pedantic,verbose))
     return TRUE;
   if(config->soilpar_option==FIXED_SOILPAR)
   {
     fscanint2(file,&config->soilpar_fixyear,"soilpar_fixyear");
   }
   config->storeclimate=TRUE;
-  if(fscanbool(file,&config->storeclimate,"store_climate",TRUE,verbose))
+  if(fscanbool(file,&config->storeclimate,"store_climate",!config->pedantic,verbose))
     return TRUE;
   config->fix_climate=FALSE;
-  if(fscanbool(file,&config->fix_climate,"fix_climate",TRUE,verbose))
+  if(fscanbool(file,&config->fix_climate,"fix_climate",!config->pedantic,verbose))
     return TRUE;
   if(config->fix_climate)
   {
@@ -381,7 +384,7 @@ Bool fscanconfig(Config *config,    /**< LPJ configuration */
   config->fix_deposition_with_climate=FALSE;
   if(config->with_nitrogen==LIM_NITROGEN)
   {
-    if(fscanbool(file,&config->no_ndeposition,"no_ndeposition",TRUE,verbose))
+    if(fscanbool(file,&config->no_ndeposition,"no_ndeposition",!config->pedantic,verbose))
       return TRUE;
     if(!config->no_ndeposition)
     {
@@ -399,7 +402,7 @@ Bool fscanconfig(Config *config,    /**< LPJ configuration */
       }
       else
       {
-        if(fscanbool(file,&config->fix_deposition,"fix_deposition",TRUE,verbose))
+        if(fscanbool(file,&config->fix_deposition,"fix_deposition",!config->pedantic,verbose))
           return TRUE;
         if(config->fix_deposition)
         {
@@ -425,14 +428,14 @@ Bool fscanconfig(Config *config,    /**< LPJ configuration */
       return TRUE;
     if(config->withlanduse!=NO_LANDUSE)
     {
-      if(fscanbool(file,&config->double_harvest,"double_harvest",TRUE,verbose))
+      if(fscanbool(file,&config->double_harvest,"double_harvest",!config->pedantic,verbose))
         return TRUE;
       if(config->withlanduse==CONST_LANDUSE || config->withlanduse==ALL_CROPS || config->withlanduse==ONLY_CROPS)
         fscanint2(file,&config->landuse_year_const,"landuse_year_const");
       config->fix_landuse=FALSE;
       if(config->withlanduse!=CONST_LANDUSE)
       {
-        if(fscanbool(file,&config->fix_landuse,"fix_landuse",TRUE,verbose))
+        if(fscanbool(file,&config->fix_landuse,"fix_landuse",!config->pedantic,verbose))
           return TRUE;
         if(config->fix_landuse)
         {
@@ -445,7 +448,7 @@ Bool fscanconfig(Config *config,    /**< LPJ configuration */
         fscanint2(file,&config->sdate_fixyear,"sdate_fixyear");
       if(fscankeywords(file,&config->irrig_scenario,"irrigation",irrigation,4,FALSE,verbose))
         return TRUE;
-      if(fscankeywords(file,&config->crop_phu_option,"crop_phu_option",crop_phu_options,3,TRUE,verbose))
+      if(fscankeywords(file,&config->crop_phu_option,"crop_phu_option",crop_phu_options,3,!config->pedantic,verbose))
         return TRUE;
       fscanbool2(file,&config->intercrop,"intercrop");
       config->manure_input=FALSE;
@@ -453,88 +456,88 @@ Bool fscanconfig(Config *config,    /**< LPJ configuration */
       if(config->with_nitrogen)
       {
         config->crop_resp_fix=FALSE;
-        if(fscanbool(file,&config->crop_resp_fix,"crop_resp_fix",TRUE,verbose))
+        if(fscanbool(file,&config->crop_resp_fix,"crop_resp_fix",!config->pedantic,verbose))
           return TRUE;
       }
       else
         config->crop_resp_fix=TRUE;
       if(config->with_nitrogen==LIM_NITROGEN)
       {
-        if(fscanbool(file,&config->fix_fertilization,"fix_fertilization",TRUE,verbose))
+        if(fscanbool(file,&config->fix_fertilization,"fix_fertilization",!config->pedantic,verbose))
           return TRUE;
         if(!config->fix_fertilization)
         {
           config->fertilizer_input=FERTILIZER;
-          if(fscankeywords(file,&config->fertilizer_input,"fertilizer_input",fertilizer,3,TRUE,verbose))
+          if(fscankeywords(file,&config->fertilizer_input,"fertilizer_input",fertilizer,3,!config->pedantic,verbose))
             return TRUE;
           if(config->fertilizer_input!=AUTO_FERTILIZER)
           {
-            if (fscanbool(file,&config->manure_input,"manure_input",TRUE,verbose))
+            if (fscanbool(file,&config->manure_input,"manure_input",!config->pedantic,verbose))
               return TRUE;
           }
         }
       }
-      if (fscanbool(file,&config->cropsheatfrost,"cropsheatfrost",TRUE, verbose))
+      if (fscanbool(file,&config->cropsheatfrost,"cropsheatfrost",!config->pedantic, verbose))
         return TRUE;
       if(config->cropsheatfrost && config->fire==SPITFIRE)
         config->fire=SPITFIRE_TMAX;
       config->grassonly = FALSE;
-      if (fscanbool(file, &config->grassonly, "grassonly", TRUE, verbose))
+      if (fscanbool(file, &config->grassonly, "grassonly", !config->pedantic, verbose))
         return TRUE;
       config->luc_timber=FALSE;
-      if(fscanbool(file,&config->luc_timber,"luc_timber",TRUE,verbose))
+      if(fscanbool(file,&config->luc_timber,"luc_timber",!config->pedantic,verbose))
         return TRUE;
       config->residues_fire=FALSE;
-      if(fscanbool(file,&config->residues_fire,"residues_fire",TRUE,verbose))
+      if(fscanbool(file,&config->residues_fire,"residues_fire",!config->pedantic,verbose))
         return TRUE;
-      if(fscanbool(file,&config->rw_manage,"rw_manage",TRUE,verbose))
+      if(fscanbool(file,&config->rw_manage,"rw_manage",!config->pedantic,verbose))
         return TRUE;
       if(fscankeywords(file,&config->laimax_interpolate,"laimax_interpolate",laimax_interpolate,4,FALSE,verbose))
         return TRUE;
       if(config->laimax_interpolate==CONST_LAI_MAX)
         fscanreal2(file,&config->laimax,"laimax");
-      if (fscanbool(file, &config->others_to_crop, "others_to_crop", TRUE, verbose))
+      if (fscanbool(file, &config->others_to_crop, "others_to_crop", !config->pedantic, verbose))
         return TRUE;
       if(config->river_routing)
       {
         fscanbool2(file,&config->reservoir,"reservoir");
 #ifdef IMAGE
-        fscanbool(file,&config->groundwater_irrig,"groundwater_irrigation", TRUE,verbose);
-        fscanbool(file,&config->aquifer_irrig,"aquifer_irrigation",TRUE,verbose);
+        fscanbool(file,&config->groundwater_irrig,"groundwater_irrigation", !config->pedantic,verbose);
+        fscanbool(file,&config->aquifer_irrig,"aquifer_irrigation",!config->pedantic,verbose);
 #endif
       }
       grassfix=FALSE;
-      if(fscanbool(file,&grassfix,"grassland_fixed_pft",TRUE,verbose))
+      if(fscanbool(file,&grassfix,"grassland_fixed_pft",!config->pedantic,verbose))
         return TRUE;
       grassharvest=FALSE;
-      if(fscanbool(file,&grassharvest,"grass_harvest_options", TRUE, verbose))
+      if(fscanbool(file,&grassharvest,"grass_harvest_options", !config->pedantic, verbose))
         return TRUE;
       if(!grassharvest)
       {
         config->grazing=GS_DEFAULT;
-        if(fscankeywords(file,&config->grazing,"grazing",grazing_type,6,TRUE,verbose))
+        if(fscankeywords(file,&config->grazing,"grazing",grazing_type,6,!config->pedantic,verbose))
           return TRUE;
       }
       config->grazing_others=GS_DEFAULT;
       if(!config->others_to_crop)
       {
-        if(fscankeywords(file,&config->grazing_others,"grazing_others",grazing_type,6,TRUE,verbose))
+        if(fscankeywords(file,&config->grazing_others,"grazing_others",grazing_type,6,!config->pedantic,verbose))
           return TRUE;
       }
       if(fscanmowingdays(file,config))
         return TRUE;
-      if(fscanbool(file,&config->prescribe_lsuha,"prescribe_lsuha", TRUE, verbose))
+      if(fscanbool(file,&config->prescribe_lsuha,"prescribe_lsuha", !config->pedantic, verbose))
         return TRUE;
-      if(fscankeywords(file,&config->tillage_type,"tillage_type",tillage,3,TRUE,verbose))
+      if(fscankeywords(file,&config->tillage_type,"tillage_type",tillage,3,!config->pedantic,verbose))
         return TRUE;
       if(config->tillage_type)
       {
         fscanint2(file,&config->till_startyear,"till_startyear");
       }
-      if(fscankeywords(file,&config->residue_treatment,"residue_treatment",residue_treatment,3,TRUE,verbose))
+      if(fscankeywords(file,&config->residue_treatment,"residue_treatment",residue_treatment,3,!config->pedantic,verbose))
         return TRUE;
     }
-    if(fscanbool(file,&config->black_fallow,"black_fallow",TRUE,verbose))
+    if(fscanbool(file,&config->black_fallow,"black_fallow",!config->pedantic,verbose))
       return TRUE;
     if(config->black_fallow)
     {
@@ -726,7 +729,7 @@ Bool fscanconfig(Config *config,    /**< LPJ configuration */
     fputs("WARNING403: Compression of NetCDF files is not supported in this version of NetCDF.\n",stderr);
 #endif
   config->missing_value=MISSING_VALUE_FLOAT;
-  if(fscanfloat(file,&config->missing_value,"missing_value",TRUE,verbose))
+  if(fscanfloat(file,&config->missing_value,"missing_value",!config->pedantic,verbose))
     return TRUE;
   fscanname(file,name,"pft_index");
   config->pft_index=strdup(name);
@@ -989,7 +992,7 @@ Bool fscanconfig(Config *config,    /**< LPJ configuration */
   else
     config->landcovermap=NULL;
   config->fix_co2=FALSE;
-  if(fscanbool(file,&config->fix_co2,"fix_co2",TRUE,verbose))
+  if(fscanbool(file,&config->fix_co2,"fix_co2",!config->pedantic,verbose))
     return TRUE;
   if(config->fix_co2)
   {
@@ -1184,6 +1187,8 @@ Bool fscanconfig(Config *config,    /**< LPJ configuration */
       if(verbose)
         fprintf(stderr,"ERROR230: First year output is written=%d less than first simulation year=%d, set to %d.\n",
                 config->outputyear,config->firstyear-config->nspinup,config->firstyear-config->nspinup);
+      if(config->pedantic)
+        return TRUE;
       config->outputyear=config->firstyear-config->nspinup;
     }
   }
@@ -1202,7 +1207,7 @@ Bool fscanconfig(Config *config,    /**< LPJ configuration */
     fscanname(file,name,"restart_filename");
     config->restart_filename=addpath(name,config->restartdir);
     checkptr(config->restart_filename);
-    if(fscanbool(file,&config->new_seed,"new_seed",TRUE,verbose))
+    if(fscanbool(file,&config->new_seed,"new_seed",!config->pedantic,verbose))
       return TRUE;
   }
   else

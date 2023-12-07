@@ -1,15 +1,15 @@
 .TH setclm 1  "USER COMMANDS"
 .SH NAME
-setclm \- set value in header of clm files for LPJmL                   
+setclm \- set value for specified record in header of clm files for LPJmL
 .SH SYNOPSIS
 .B setclm
-{id|version|order|firstyear|nyear|firstcell|ncell|nbands} \fIvalue\fP \fIclmfile\fP
+{id|version|order|firstyear|nyear|firstcell|ncell|nbands|nstep|scalar|type|cellsize|cellsize_lon|cellsize_lat} \fIvalue\fP \fIclmfile\fP
 
 .SH DESCRIPTION
-Program sets file header and data stored in clm data files for LPJmL. 
+Program sets file header and data stored in clm data files for LPJmL.
 .SH OPTIONS
 .TP
-{id|version|order|firstyear|nyear|firstcell|ncell|nbands} 
+{id|version|order|firstyear|nyear|firstcell|ncell|nbands|nstep|scalar|type|cellsize_lon|cellsize_lat}
 Define record to be set
 .TP
 .I value
@@ -20,7 +20,7 @@ filename of clm data file
 .SH EXAMPLE
 .TP
 Set version of clm file to 2:
-.B setclm 
+.B setclm
 version 2 tmp.clm
 .PP
 .SH EXIT STATUS
