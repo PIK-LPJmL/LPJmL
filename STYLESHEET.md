@@ -24,7 +24,7 @@ Each source file should begin with the following header:
 
 ## Indentation style
 
-LPJmL uses the Allman style for indentation:
+LPJmL uses the [Allman style](https://en.wikipedia.org/wiki/Indentation_style#Allman_style) for indentation:
 
 ```c
 while (x == y)
@@ -50,9 +50,9 @@ typedef struct
 {
   int variable; /**< description (unit) */
 } Datatype;
-```
 
 Datatype variable;
+```
 
 ## Function headers
 
