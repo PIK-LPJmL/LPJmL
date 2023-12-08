@@ -221,8 +221,6 @@ Real daily_agriculture_grass(Stand *stand,                /**< stand pointer */
     stand->cell->balance.agpp+=gpp*stand->frac;
     getoutput(output,NPP,config) += npp * stand->frac;
     output->dcflux -= npp * stand->frac;
-    stand->cell->fpar_nat+=pft->fapar*stand->frac* (1.0/(1-stand->cell->lakefrac-stand->cell->ml.reservoirfrac));
-    stand->cell->mgpp_nat+=gpp*stand->frac;
     getoutput(output,GPP,config) += gpp * stand->frac;
     getoutput(output,FAPAR,config) += pft->fapar * stand->frac * (1.0 / (1 - stand->cell->lakefrac-stand->cell->ml.reservoirfrac));
     getoutput(output,PHEN_TMIN,config)+= pft->fpc * pft->phen_gsi.tmin * stand->frac * (1.0 / (1 - stand->cell->lakefrac-stand->cell->ml.reservoirfrac));

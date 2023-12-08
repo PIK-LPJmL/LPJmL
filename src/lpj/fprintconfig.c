@@ -170,21 +170,6 @@ static size_t isnetcdfinput(const Config *config)
     width=max(width,strlen(config->wet_filename.var));
   if(config->with_lakes && config->lakes_filename.fmt==CDF)
     width=max(width,strlen(config->lakes_filename.var));
-  if(config->fire_base)
-  {
-    if(config->hdi_filename.fmt==CDF)
-      width=max(width,strlen(config->hdi_filename.var));
-    if(config->conifer_filename.fmt==CDF)
-      width=max(width,strlen(config->conifer_filename.var));
-    if(config->drypine_filename.fmt==CDF)
-      width=max(width,strlen(config->drypine_filename.var));
-    if(config->nonnativebl_filename.fmt==CDF)
-      width=max(width,strlen(config->nonnativebl_filename.var));
-    if(config->tpi_filename.fmt==CDF)
-      width=max(width,strlen(config->tpi_filename.var));
-    if(config->slope_filename.fmt==CDF)
-      width=max(width,strlen(config->slope_filename.var));
-  }
   if(config->river_routing)
   {
     if(config->drainage_filename.fmt==CDF)
@@ -328,8 +313,6 @@ void fprintconfig(FILE *file,          /**< File pointer to text output file */
     len=printsim(file,len,&count,"GSI livefuel");
   if(config->shuffle_spinup_climate)
     len=printsim(file,len,&count,"shuffle spinup climate");
-  if(config->fire_base)
-    len=printsim(file,len,&count,"with prescribed burning with BASE");
   if(config->fix_climate)
   {
     snprintf(s,STRING_LEN,"fix climate after year %d %s years %d-%d",
@@ -649,16 +632,6 @@ void fprintconfig(FILE *file,          /**< File pointer to text output file */
   }
   if(config->ispopulation)
     printinputfile(file,"pop. dens",&config->popdens_filename,width,config);
-  if(config->fire_base)
-  {
-    printinputfile(file,(config->relative_humidity) ? "min. rhumid" : "min. humid",&config->hmin_filename,width,config);
-    printinputfile(file,"HDI",&config->hdi_filename,width,config);
-    printinputfile(file,"Conifer",&config->conifer_filename,width,config);
-    printinputfile(file,"DryPine",&config->drypine_filename,width,config);
-    printinputfile(file,"NonNativeBL",&config->nonnativebl_filename,width,config);
-    printinputfile(file,"TPI",&config->tpi_filename,width,config);
-    printinputfile(file,"Slope",&config->slope_filename,width,config);
-  }
   if(config->ishuman_ign_prob)
     printinputfile(file,"h ign prob",&config->human_ign_prob_filename,width,config);
   if(config->prescribe_burntarea)

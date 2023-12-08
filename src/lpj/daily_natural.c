@@ -142,7 +142,6 @@ Real daily_natural(Stand *stand,                /**< [inout] stand pointer */
       getoutputindex(output,PFT_GCGP_COUNT,pft->par->id,config)++;
       getoutputindex(output,PFT_GCGP,pft->par->id,config)+=gc_pft/gp_pft[getpftpar(pft,id)];
     }
-    stand->cell->mgpp_nat+=gpp*stand->frac;
     npp=npp(pft,gtemp_air,gtemp_soil,gpp-rd-pft->npp_bnf,config->with_nitrogen);
     pft->npp_bnf=0.0;
     output->dcflux-=npp*stand->frac;
@@ -156,7 +155,6 @@ Real daily_natural(Stand *stand,                /**< [inout] stand pointer */
     stand->cell->balance.agpp+=gpp*stand->frac;
     getoutput(output,NPP,config)+=npp*stand->frac;
     getoutput(output,GPP,config)+=gpp*stand->frac;
-    stand->cell->fpar_nat+=pft->fapar*stand->frac*(1.0/(1-stand->cell->lakefrac-stand->cell->ml.reservoirfrac));
     getoutput(output,FAPAR,config) += pft->fapar * stand->frac * (1.0/(1-stand->cell->lakefrac-stand->cell->ml.reservoirfrac));
     if (stand->type->landusetype == SETASIDE_RF || stand->type->landusetype == SETASIDE_IR)
       getoutput(output,NPP_AGR,config) += npp*stand->frac / agrfrac;

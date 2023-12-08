@@ -107,16 +107,6 @@ void freeconfig(Config *config /**< LPJmL configuration */
     freefilename(&config->popdens_filename);
   if(config->ishuman_ign_prob)
     freefilename(&config->human_ign_prob_filename);
-  if(config->fire_base)
-  {
-    freefilename(&config->hmin_filename);
-    freefilename(&config->hdi_filename);
-    freefilename(&config->conifer_filename);
-    freefilename(&config->drypine_filename);
-    freefilename(&config->nonnativebl_filename);
-    freefilename(&config->tpi_filename);
-    freefilename(&config->slope_filename);
-  }
   if(config->grassfix_filename.name!=NULL)
     freefilename(&config->grassfix_filename);
   if(config->grassharvest_filename.name!=NULL)
@@ -168,15 +158,6 @@ void freeconfig(Config *config /**< LPJmL configuration */
       freefilename(&config->harvest_cotton_rf_filename);
       freefilename(&config->sowing_cotton_ir_filename);
       freefilename(&config->harvest_cotton_ir_filename);
-    }
-    if(config->fire_base)
-    {
-      freefilename(&config->hdi_filename);
-      freefilename(&config->conifer_filename);
-      freefilename(&config->drypine_filename);
-      freefilename(&config->nonnativebl_filename);
-      freefilename(&config->tpi_filename);
-      freefilename(&config->slope_filename);
     }
     if(config->sdate_option==PRESCRIBED_SDATE)
       freefilename(&config->sdate_filename);

@@ -87,8 +87,9 @@ void update_daily(Cell *cell,            /**< cell pointer           */
   if(config->fire==SPITFIRE || config->fire==SPITFIRE_TMAX)
   {
     update_nesterov(cell,&climate);
-    if(config->fire_base)
-      cell->fwi=getfwi(&cell->fwi_data,&cell->coord,&climate,month,config->relative_humidity);
+    if(config->fdi==WVPD_INDEX)
+    cell->fwi=getfwi(&cell->fwi_data,&cell->coord,&climate,month,config->relative_humidity);
+
   }
   agrfrac=0;
   foreachstand(stand,s,cell->standlist)

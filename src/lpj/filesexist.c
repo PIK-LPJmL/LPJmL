@@ -412,16 +412,6 @@ Bool filesexist(Config config, /**< LPJmL configuration */
   }
   if(config.ispopulation)
     bad+=checkdatafile(&config,&config.popdens_filename,"popdens","km-2",LPJ_SHORT,1);
-  if(config.fire_base)
-  {
-    bad+=checkdatafile(&config,&config.hdi_filename,"HDI","1",LPJ_SHORT,1);
-    bad+=checkdatafile(&config,&config.conifer_filename,"Conifer","1",LPJ_SHORT,1);
-    bad+=checkdatafile(&config,&config.drypine_filename,"DryPine","1",LPJ_SHORT,1);
-    bad+=checkdatafile(&config,&config.nonnativebl_filename,"NonNativeBL","1",LPJ_SHORT,1);
-    bad+=checkdatafile(&config,&config.tpi_filename,"TPI","1",LPJ_SHORT,1);
-    bad+=checkdatafile(&config,&config.slope_filename,"Slope","1",LPJ_SHORT,1);
-    bad+=checkclmfile(&config,"minium humidity",&config.hmin_filename,NULL,TRUE);
-  }
   if(config.ishuman_ign_prob)
     bad+=checkdatafile(&config,&config.human_ign_prob_filename,"human ign prob",NULL,LPJ_SHORT,1);
   if(config.with_nitrogen)

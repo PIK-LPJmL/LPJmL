@@ -98,8 +98,6 @@ void iterateyear(Outputfile *output,  /**< Output file data */
   {
     for(cell=0;cell<config->ngridcell;cell++)
     {
-      grid[cell].mgpp_nat=0;
-      grid[cell].fpar_nat=0;
       grid[cell].discharge.mfin=grid[cell].discharge.mfout=grid[cell].ml.mdemand=0.0;
       grid[cell].output.mpet=0;
       if(grid[cell].ml.dam)

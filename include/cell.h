@@ -129,8 +129,6 @@ Received 19 November 1997; accepted 15 January 1999*/
   FWIdata fwi_data;         /**< Canadian fire index data */
   Real fwi;                 /**< Candian fire index */
   Seed seed;                /**< seed for random generator */
-  Real mgpp_nat;            /**< GPP natural stand */
-  Real fpar_nat;            /**< FPAR natural stand */
 #if defined IMAGE && defined COUPLED
   Real npp_nat;             /**< NPP natural stand */
   Real npp_wp;              /**< NPP woodplantation */

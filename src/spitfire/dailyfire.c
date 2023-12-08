@@ -105,50 +105,16 @@ void dailyfire(Stand *stand,                /**< pointer to stand */
     burnt_area = climate->burntarea;
   else
   {
-    if (config->fire_base)
+    burnt_area = area_burnt(&fireduration,&ndayfire,&firedurationdays,&burnt_area_max,
+                            stand->type->fireduration,
+                            fire_danger_index, num_fires, windsp_cover, ros_forward,
+                            config->ntypes, stand,config->max_firesize);
+    if(stand->type->landusetype==NATURAL)
     {
-      if(stand->type->landusetype==NATURAL)
-      {
-        fpc_tree=0;
-        foreachpft(pft,p,&stand->pftlist)
-          if(istree(pft))
-            fpc_tree+=pft->fpc;
-        fpc_tree=fpc_tree*stand->frac*(1.0/(1-stand->cell->lakefrac-stand->cell->ml.reservoirfrac));
-        //printf("Zaehler: %g, Nenner: %g\n",stand->cell->climbuf.gpp_month[(stand->cell->climbuf.month_index+NMONTH-1) % NMONTH], getmax( stand->cell->climbuf.gpp_month,NMONTH));
-        if(getmax( stand->cell->climbuf.gpp_month,NMONTH)>epsilon)
-          GPP_index=stand->cell->climbuf.gpp_month[(stand->cell->climbuf.month_index+NMONTH-1) % NMONTH]/getmax( stand->cell->climbuf.gpp_month,NMONTH);
-        else
-          GPP_index=0;
-        FAPAR12=getavg(stand->cell->climbuf.fpar,NMONTH)*NMONTH;
-        fire_frac_base = base(input,
-                              popdens,
-                              stand->cell->fwi,
-                              stand->cell->climbuf.gpp_avg,
-                              fpc_tree,
-                              GPP_index,
-                              FAPAR12,
-                              cell)*ndaymonth1[month];
-        burnt_area = fire_frac_base * stand->cell->coord.area * stand->frac*1e-4; /*in ha */
-        getoutput(output,FWI,config)+=stand->cell->fwi;
-        if (burnt_area < 0)
-          burnt_area = 0;
-      }
-      else
-        burnt_area = 0;
-    }
-    else
-    {
-      burnt_area = area_burnt(&fireduration,&ndayfire,&firedurationdays,&burnt_area_max,
-                              stand->type->fireduration,
-                              fire_danger_index, num_fires, windsp_cover, ros_forward,
-                              config->ntypes, stand,config->max_firesize);
-      if(stand->type->landusetype==NATURAL)
-      {
-        getoutput(output,FIREDURATION,config)+=fireduration;
-        getoutput(output,NDAYFIRE,config)+=ndayfire;
-        getoutput(output,FIREDURATIONDAYS,config)+=firedurationdays;
-        getoutput(output,MAX_FIRESIZE,config)=max(getoutput(output,MAX_FIRESIZE,config),burnt_area_max);
-      }
+      getoutput(output,FIREDURATION,config)+=fireduration;
+      getoutput(output,NDAYFIRE,config)+=ndayfire;
+      getoutput(output,FIREDURATIONDAYS,config)+=firedurationdays;
+      getoutput(output,MAX_FIRESIZE,config)=max(getoutput(output,MAX_FIRESIZE,config),burnt_area_max);
     }
   }
   fire_frac=burnt_area*1e4 / (stand->cell->coord.area * stand->frac);  /*in m2*/

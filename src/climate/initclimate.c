@@ -31,7 +31,6 @@ static void initdata(Climate *climate)
   climate->file_nh4deposition.isopen=FALSE;
   climate->file_wind.isopen=FALSE;
   climate->file_humid.isopen=FALSE;
-  climate->file_hmin.isopen=FALSE;
   climate->file_tmin.isopen=FALSE;
   climate->file_tmax.isopen=FALSE;
   climate->file_tamp.isopen=FALSE;
@@ -56,7 +55,6 @@ static void initdata(Climate *climate)
   climate->data.tmin=NULL;
   climate->data.tmax=NULL;
   climate->data.humid=NULL;
-  climate->data.hmin=NULL;
   climate->data.burntarea=NULL;
   climate->data.no3deposition=NULL;
   climate->data.nh4deposition=NULL;
@@ -191,16 +189,6 @@ Climate *initclimate(Config *config /**< pointer to LPJ configuration */
       {
         if(isroot(*config))
           fprintf(stderr,"ERROR236: Cannot open humid data file.\n");
-        freeclimate(climate,isroot(*config));
-        return NULL;
-      }
-    }
-    if(config->fire_base)
-    {
-      if(openclimate(&climate->file_hmin,&config->hmin_filename,"kg kg-1",LPJ_SHORT,1.0,config))
-      {
-        if(isroot(*config))
-          fprintf(stderr,"ERROR236: Cannot open hmin data file.\n");
         freeclimate(climate,isroot(*config));
         return NULL;
       }
@@ -386,15 +374,6 @@ Climate *initclimate(Config *config /**< pointer to LPJ configuration */
       if((climate->data.humid=newvec(Real,climate->file_humid.n))==NULL)
       {
         printallocerr("humid");
-        freeclimate(climate,isroot(*config));
-        return NULL;
-      }
-    }
-    if(config->fire_base)
-    {
-      if((climate->data.hmin=newvec(Real,climate->file_hmin.n))==NULL)
-      {
-        printallocerr("hmin");
         freeclimate(climate,isroot(*config));
         return NULL;
       }

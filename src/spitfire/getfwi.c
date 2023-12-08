@@ -44,9 +44,9 @@ Real getfwi(FWIdata *fwi,
   temperature = climate->tmax + 273.16;
 
   if(relative_humidity)
-    rh=climate->hmin*100; /*in percent*/
+    rh=climate->humid*100; /*in percent*/
   else
-    rh = 0.263 * 1013.25 * climate->hmin *1/(exp(17.67*climate->tmax/(temperature-29.65))) * 100; /* in percent */
+    rh = 0.263 * 1013.25 * climate->humid *1/(exp(17.67*climate->tmax/(temperature-29.65))) * 100; /* in percent */
   //printf("temp_max: %g, rh: %g, wind: %g\n",climate->tmax + 273.16, rh, climate->windspeed*3.6);
 
   wmo = 147.27723 * (101-fwi->ffmc) / (59.5 + fwi->ffmc);

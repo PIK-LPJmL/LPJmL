@@ -95,7 +95,6 @@ extern Real getvpd(const Dailyclimate *,Bool);
 extern Real growing_season_index(Real,Real *,const Dailyclimate *,Bool,Real);
 extern Real getfwi(FWIdata *,const Coord *,const Dailyclimate  *,int,Bool);
 extern void initfwi(FWIdata *);
-extern Real base(Input *,Real,Real,Real,Real,Real,Real,int);
 
 /* Definition of constants */
 

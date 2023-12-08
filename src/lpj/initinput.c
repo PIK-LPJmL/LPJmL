@@ -60,30 +60,6 @@ Bool initinput(Input *input,        /**< Input data */
   }
   else
     input->popdens=NULL;
-  if(config->fire_base)
-  {
-    if((input->hdi=initrealdata(&config->hdi_filename,"HDI","1",config))==NULL)
-      return TRUE;
-    if((input->conifer=initrealdata(&config->conifer_filename,"Conifer","1",config))==NULL)
-      return TRUE;
-    if((input->drypine=initrealdata(&config->drypine_filename,"DryPine","1",config))==NULL)
-      return TRUE;
-    if((input->nonnativebl=initrealdata(&config->nonnativebl_filename,"NonNativeBL","1",config))==NULL)
-      return TRUE;
-    if((input->tpi=initrealdata(&config->tpi_filename,"TPI","1",config))==NULL)
-      return TRUE;
-    if((input->slope=initrealdata(&config->slope_filename,"Slope","1",config))==NULL)
-      return TRUE;
-  }
-  else
-  {
-    input->hdi=NULL;
-    input->conifer=NULL;
-    input->drypine=NULL;
-    input->nonnativebl=NULL;
-    input->tpi=NULL;
-    input->slope=NULL;
-  }
   if(config->ishuman_ign_prob)
   {
     if((input->human_ign_prob=inithuman_ign_prob(config))==NULL)
