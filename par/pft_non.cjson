@@ -913,7 +913,11 @@
       "irrig_threshold" : { "dry" : IRRIG_THRESHOLD_C4, "humid" : IRRIG_THRESHOLD_C4 },
       "turnover" : {"leaf" : 1.0, "root" : 2.0}, /* turnover leaf  root 9 12*/
       "cn_ratio" : {"leaf" : CTON_LEAF, "root" : CTON_ROOT}, /* C:N mass ratio for leaf, and root 13,15*/
-      "reprod_cost" : REPROD_COST /* reproduction cost */
+      "reprod_cost" : REPROD_COST, /* reproduction cost */
+      "lfmc_a" : 0.3,
+      "lfmc_b" : 0.195,
+      "lfmc_c" : 1.555,
+      "lfmc_d" : 0
     },
   /*--------------------------------------------------------------------------*/
   /* 10. pft */
@@ -993,7 +997,11 @@
       "irrig_threshold" : { "dry" : IRRIG_THRESHOLD_C3_DRY, "humid" : IRRIG_THRESHOLD_C3_HUMID },
       "turnover" : {"leaf" : 1.0, "root" : 2.0}, /* turnover leaf  root 9 12*/
       "cn_ratio" : {"leaf" : CTON_LEAF, "root" : CTON_ROOT}, /* C:N mass ratio for leaf, and root 13,15*/
-      "reprod_cost" : REPROD_COST /* reproduction cost */
+      "reprod_cost" : REPROD_COST, /* reproduction cost */
+      "lfmc_a" : 0.3,
+      "lfmc_b" : 0.195,
+      "lfmc_c" : 1.555,
+      "lfmc_d" : 0
     },
   /*--------------------------------------------------------------------------*/
   /* 11. pft */
@@ -1072,7 +1080,11 @@
       "irrig_threshold" : { "dry" : IRRIG_THRESHOLD_C3_DRY, "humid" : IRRIG_THRESHOLD_C3_HUMID },
       "turnover" : {"leaf" : 1.0, "root" : 2.0}, /* turnover leaf  root 9 12*/
       "cn_ratio" : {"leaf" : CTON_LEAF, "root" : CTON_ROOT}, /* C:N mass ratio for leaf, and root 13,15*/
-      "reprod_cost" : REPROD_COST /* reproduction cost */
+      "reprod_cost" : REPROD_COST, /* reproduction cost */
+      "lfmc_a" : 0.3,
+      "lfmc_b" : -0.85,
+      "lfmc_c" : 1.829,
+      "lfmc_d" : 0
     },
   /*----------------------------------------------------------------------------------------*/
   /* 1. bft */
@@ -1351,7 +1363,11 @@
       "irrig_threshold" : { "dry" : IRRIG_THRESHOLD_C4, "humid" : IRRIG_THRESHOLD_C4 },
       "turnover" : {"leaf" : 1.0, "root" : 2.0}, /* turnover leaf  root 9 12*/
       "cn_ratio" : {"leaf" : CTON_LEAF, "root" : CTON_ROOT}, /* C:N mass ratio for leaf and root 13,15*/
-      "reprod_cost" : REPROD_COST /* reproduction cost */
+      "reprod_cost" : REPROD_COST, /* reproduction cost */
+      "lfmc_a" : 0.3,
+      "lfmc_b" : 0.195,
+      "lfmc_c" : 1.555,
+      "lfmc_d" : 0
     },
   /*--------------------------------------------------------------------------*/
   /* 1. cft */

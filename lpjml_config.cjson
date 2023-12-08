@@ -42,21 +42,23 @@
   #if defined CRU_MONTHLY || defined CRU_NETCDF
     "random_prec" : true,     /* Random weather generator for precipitation enabled */
     "radiation" : "radiation",/* type of radiation input to be used, options: "cloudiness", "radiation", "radiation_swonly", "radiation_lwdown" */
+    "fire" : "spitfire", /* fire disturbance enabled, options: "no_fire", "fire", "spitfire", "spitfire_tmax" */
+    "fdi" : "nesterov",  /* fire danger index formulations: "wvpd" (needs humidity input data), "nesterov" */
   #else
     "random_prec" : false,     /* Random weather generator for precipitation disabled */
     "radiation" : "radiation",/* type of radiation input to be used, options: "cloudiness", "radiation", "radiation_swonly", "radiation_lwdown" */
+    "fire" : "spitfire_tmax", /* fire disturbance enabled, options: "no_fire", "fire", "spitfire", "spitfire_tmax" */
+    "fdi" : "wvpd",           /* fire danger index formulations: "wvpd" (needs humidity input data), "nesterov" */
   #endif
-  "isswnet" : false,
-  "fire" : "spitfire_tmax", /* fire disturbance enabled, options: "no_fire", "fire", "spitfire", "spitfire_tmax" (for GLDAS input data) */
+  "isswnet" : false,          /* short-wave data is net radiation */
   "gsilivefuel" : true,
-  "human_ign_prob" : false,
-  "max_firesize" : false,
+  "human_ign_prob" : false,   /* read human ignition probabilty from file */
+  "max_firesize" : false,     /* read maximum fire size from file */
   "fire_base" : false,
   "fireduration" : [{"stand" : "grassland", "duration" : [1,120] ,"ndayfire" : 1},
-                    {"stand" : "natural", "duration" : [120,480], "ndayfire" : 3}],
+                    {"stand" : "natural", "duration" : [120,480], "ndayfire" : 3}], /* fire duration inztervals and maximum days of fire for each stand */
 
-  "fdi" : "wvpd",           /* fire danger index formulations: "wvpd" (needs humidity input data), "nesterov" */
-  "prescribe_ignition" : false,
+  "prescribe_ignition" : false, /* read ingnitions from file */
   "random_seed" : 2,        /* seed for random number generator */
   "firewood" : false,       /* NOT TESTED - DO NOT ENABLE */
   "gsi_phenology" : true,   /* enable GSI phenology */
@@ -163,7 +165,7 @@
 
   /* PFT parameter file*/
   "pftpar" :
- #ifdef WITHOUT_NITROGEN
+#ifdef WITHOUT_NITROGEN
     #include "par/pft_non.cjson"
 #else
     #include "par/pft.cjson"
@@ -309,6 +311,7 @@ ID                               Fmt                        filename
     { "id" : "phen_tmax",        "file" : { "name" : "output/mphen_tmax"}},
     { "id" : "phen_light",       "file" : { "name" : "output/mphen_light"}},
     { "id" : "phen_water",       "file" : { "name" : "output/mphen_water"}},
+#ifndef WITHOUT_NITROGEN
     { "id" : "vegn",             "file" : { "name" : "output/vegn"}},
     { "id" : "soiln",            "file" : { "name" : "output/soiln"}},
     { "id" : "litn",             "file" : { "name" : "output/litn"}},
@@ -328,22 +331,23 @@ ID                               Fmt                        filename
     { "id" : "n_immo",           "file" : { "name" : "output/mn_immo"}},
     { "id" : "pft_ndemand",      "file" : { "name" : "output/pft_ndemand"}},
     { "id" : "nfert_agr",        "file" : { "name" : "output/nfert_agr"}},
-    { "id" : "firen",            "file" : { "name" : "output/firen"}},
+    { "id" : "firen",            "file" : { "timestep" : "monthly" , "unit" : "gN/m2/month", "name" : "output/mfiren"}},
     { "id" : "n_mineralization", "file" : { "name" : "output/mn_mineralization"}},
     { "id" : "n_volatilization", "file" : { "name" : "output/mn_volatilization"}},
     { "id" : "ndepos",           "file" : { "name" : "output/ndepos"}},
     { "id" : "pft_nlimit",       "file" : { "name" : "output/pft_nlimit"}},
     { "id" : "pft_vegn",         "file" : { "name" : "output/pft_vegn"}},
-    { "id" : "pft_cleaf",        "file" : { "name" : "output/pft_cleaf"}},
     { "id" : "pft_nleaf",        "file" : { "name" : "output/pft_nleaf"}},
-    { "id" : "pft_laimax",       "file" : { "name" : "output/pft_laimax"}},
-    { "id" : "pft_croot",        "file" : { "name" : "output/pft_croot"}},
     { "id" : "pft_nroot",        "file" : { "name" : "output/pft_nroot"}},
-    { "id" : "pft_csapw",        "file" : { "name" : "output/pft_csapw"}},
     { "id" : "pft_nsapw",        "file" : { "name" : "output/pft_nsapw"}},
-    { "id" : "pft_chawo",        "file" : { "name" : "output/pft_chawo"}},
     { "id" : "pft_nhawo",        "file" : { "name" : "output/pft_nhawo"}},
+#endif
     { "id" : "pft_water_demand", "file" : { "name" : "output/pft_water_demand"}},
+    { "id" : "pft_laimax",       "file" : { "name" : "output/pft_laimax"}},
+    { "id" : "pft_cleaf",        "file" : { "name" : "output/pft_cleaf"}},
+    { "id" : "pft_croot",        "file" : { "name" : "output/pft_croot"}},
+    { "id" : "pft_csapw",        "file" : { "name" : "output/pft_csapw"}},
+    { "id" : "pft_chawo",        "file" : { "name" : "output/pft_chawo"}},
     { "id" : "firec",            "file" : { "timestep" : "monthly" , "unit" : "gC/m2/month", "name" : "output/mfirec"}},
     { "id" : "nfire",            "file" : { "name" : "output/mnfire"}},
     { "id" : "fireduration",     "file" : { "name" : "output/mfireduration"}},
@@ -415,7 +419,7 @@ ID                               Fmt                        filename
   "firstyear": 1901, /* first year of simulation */
 #if defined CRU_MONTHLY || defined CRU_NETCDF
   "lastyear" : 2011, /* last year of simulation */
-#else 
+#else
   "lastyear" : 2019, /* last year of simulation */
 #endif
   "outputyear": 1901, /* first year output is written  */

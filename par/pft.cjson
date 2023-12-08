@@ -317,7 +317,7 @@
       "phi_bnf" : [PHI_BNF_1, PHI_BNF_2],
       "nfixpot" : 0.01,  /* Yu and Zhuang 2020 minimum*/
       "maxbnfcost" : MAXBNFCOSTTR,
-      "bnf_cost" : BNF_COST 
+      "bnf_cost" : BNF_COST
     },
   /*---------------------------------------------------------------------------------------------*/
   /* 3. pft */
@@ -429,7 +429,7 @@
       "phi_bnf" : [PHI_BNF_1, PHI_BNF_2],
       "nfixpot" : 0.01,  /* Yu and Zhuang 2020 minimum*/
       "maxbnfcost" : MAXBNFCOSTTE,
-      "bnf_cost" : BNF_COST 
+      "bnf_cost" : BNF_COST
    },
   /*--------------------------------------------------------------------------*/
   /* 4. pft */
@@ -541,7 +541,7 @@
       "phi_bnf" : [PHI_BNF_1, PHI_BNF_2],
       "nfixpot" : 0.01,  /* Yu and Zhuang 2020 minimum*/
       "maxbnfcost" : MAXBNFCOSTTE,
-      "bnf_cost" : BNF_COST 
+      "bnf_cost" : BNF_COST
     },
   /*--------------------------------------------------------------------------*/
   /* 5. pft */
@@ -655,7 +655,7 @@
       "phi_bnf" : [PHI_BNF_1, PHI_BNF_2],
       "nfixpot" : 0.01,  /* Yu and Zhuang 2020 minimum*/
       "maxbnfcost" : MAXBNFCOSTTE,
-      "bnf_cost" : BNF_COST 
+      "bnf_cost" : BNF_COST
     },
   /*--------------------------------------------------------------------------*/
   /* 6. pft */
@@ -767,7 +767,7 @@
       "phi_bnf" : [PHI_BNF_1, PHI_BNF_2],
       "nfixpot" : 0.01,  /* Yu and Zhuang 2020 minimum*/
       "maxbnfcost" : MAXBNFCOSTBO,
-      "bnf_cost" : BNF_COST 
+      "bnf_cost" : BNF_COST
     },
   /*--------------------------------------------------------------------------*/
   /* 7. pft */
@@ -1289,7 +1289,7 @@
       "lfmc_a" : 0.3,
       "lfmc_b" : -0.85,
       "lfmc_c" : 1.829,
-      "lfmc_d" : 0 
+      "lfmc_d" : 0
     },
   /*----------------------------------------------------------------------------------------*/
   /* 1. bft */
@@ -1510,7 +1510,7 @@
       "phi_bnf" : [PHI_BNF_1, PHI_BNF_2],
       "nfixpot" : 0.01,  /* Yu and Zhuang 2020 minimum*/
       "maxbnfcost" : MAXBNFCOSTTE,
-      "bnf_cost" : BNF_COST 
+      "bnf_cost" : BNF_COST
     },
   /*--------------------------------------------------------------------------*/
   /* 3. bft ONLY FOR BIOENERGY*/
@@ -1608,7 +1608,7 @@
       "lfmc_a" : 0.3,
       "lfmc_b" : 0.195,
       "lfmc_c" : 1.555,
-      "lfmc_d" : 0 
+      "lfmc_d" : 0
     },
   /*--------------------------------------------------------------------------*/
   /* 1. wft */
@@ -2858,7 +2858,7 @@
       "phi_bnf" : [PHI_BNF_1, PHI_BNF_2],  /* Ma et al., 2022 faba bean*/
       "nfixpot" : 0.5,  /* Yu and Zhuang 2020 middle of proposed range*/
       "maxbnfcost" : MAXBNFCOST,
-      "bnf_cost" : BNF_COST 
+      "bnf_cost" : BNF_COST
     },
   /*--------------------------------------------------------------------------*/
   /* 6. cft */
@@ -3313,7 +3313,7 @@
       "phi_bnf" : [-0.33, 1.67],  /* Ma et al., 2022 soy bean*/
       "nfixpot" : 0.5,  /* Yu and Zhuang 2020 middle of proposed range*/
       "maxbnfcost" : MAXBNFCOST,
-      "bnf_cost" : BNF_COST 
+      "bnf_cost" : BNF_COST
     },
   /*--------------------------------------------------------------------------*/
   /* 10. cft */
