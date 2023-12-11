@@ -160,7 +160,7 @@ fi
   "lightning"        : { "fmt" : "clm", "name" : "$dir/lightning_$name.clm"},
   "human_ignition"   : { "fmt" : "clm", "name" : "$dir/human_ignition_$name.clm"},
   "popdens"          : { "fmt" : "clm", "name" : "$dir/popdens_$name.clm "},
-  "co2"              : { "fmt" : "txt", "name" : "/p/projects/lpjml/input/historical/input_VERSION2/co2_1841-2012.dat"},
+  "co2"              : { "fmt" : "txt", "name" : "/p/projects/lpjml/input/historical/input_VERSION2/co2_1841-2022.dat"},
   "wetdays"          : { "fmt" : "clm", "name" : "$dir/wet_$name.clm"},
   "no3deposition"    : { "fmt" : "clm", "name" : "$dir/no3_deposition_$name.clm"},
   "nh4deposition"    : { "fmt" : "clm", "name" : "$dir/nh4_deposition_$name.clm"},
