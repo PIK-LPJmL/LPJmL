@@ -273,7 +273,7 @@ Bool allocation_tree(Litter *litter,   /**< litter pool */
     }
   }
 
-  if(bm_inc_ind.carbon>0 && tinc_ind.leaf.carbon>0 && tinc_ind.sapwood.carbon>0 && tree->ind.root.carbon>0)
+  if(bm_inc_ind.carbon>0 && tinc_ind.leaf.carbon>0 && tinc_ind.sapwood.carbon>0 && tinc_ind.root.carbon>0)
   {
     tree->falloc.leaf=tinc_ind.leaf.carbon/bm_inc_ind.carbon;
     tree->falloc.root=tinc_ind.root.carbon/bm_inc_ind.carbon;
