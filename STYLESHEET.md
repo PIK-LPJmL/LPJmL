@@ -49,14 +49,14 @@ Data types should begin with an uppercase character:
 typedef struct
 {
   int variable; /**< description (unit) */
-} Datatype;
+} Datatype;     /**< description of data type */
 
 Datatype variable;
 ```
 
 ## Function headers
 
-Each argument of a function should be on a separate line and commented suitable for Doxygen:
+Each argument of a function should be on a separate line and commented suitable for [Doxygen](https://www.doxygen.nl/):
 
 ```c
 Returntype function(Type1 arg1,/**< description of argument 1 (unit) */

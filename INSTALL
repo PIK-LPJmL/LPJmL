@@ -213,6 +213,7 @@ lpjprint     - print contents of restart file of LPJmL model runs
 printclm     - print contents of CLM files for LPJmL
 output_bsq   - concatenate all output files from distributed LPJmL simulations
 manage2js    - convert management  *.par files to JSON files
+mathclm      - perform mathematical operations with CLM files
 mergeclm     - merge LPJmL climate data files
 printglobal  - print global values for raw binary output files
 printharvest - print global harvested carbon for crops and managed grasslands
