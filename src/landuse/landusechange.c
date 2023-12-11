@@ -410,6 +410,8 @@ static void regrowth(Cell *cell, /* pointer to cell */
     {        /*mixing of natural vegetation with regrowth*/
       natstand=getstand(cell->standlist,s);
       mixsoil(natstand,mixstand,year,npft+ncft,config);
+      mixstand->slope_mean=(mixstand->slope_mean*mixstand->frac+natstand->slope_mean*natstand->frac)/(mixstand->frac+natstand->frac);
+      mixstand->Hag_Beta=min(1,(0.06*log(mixstand->slope_mean+0.1)+0.22)/0.43);
       foreachpft(pft,p,&natstand->pftlist)
         mix_veg(pft,natstand->frac/(natstand->frac-difffrac));
       natstand->frac+=mixstand->frac;
@@ -681,6 +683,8 @@ static void landexpansion(Cell *cell,            /* cell pointer */
         delstand(cell->standlist,pos);
       }
       mixsoil(grassstand,mixstand,year,npft+ncft,config);
+      mixstand->slope_mean=(mixstand->slope_mean*mixstand->frac+grassstand->slope_mean*grassstand->frac)/(mixstand->frac+grassstand->frac);
+      mixstand->Hag_Beta=min(1,(0.06*log(mixstand->slope_mean+0.1)+0.22)/0.43);
       foreachpft(pft,p,&grassstand->pftlist)
         mix_veg(pft,grassstand->frac/(grassstand->frac-difffrac2));
       data=grassstand->data;
