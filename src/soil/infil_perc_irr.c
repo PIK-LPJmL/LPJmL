@@ -96,8 +96,8 @@ Real infil_perc_irr(Stand *stand,        /**< Stand pointer */
     srunoff=slug-influx; /*surface runoff used for leaching */
     *return_flow_b+=slug - influx;
     frac_g_influx=0; /* first layer has only blue influx, but lower layers with percolation have mixed frac_g_influx */
-    
-    
+
+
     if(data_irrig->irrig_system==DRIP)
     {
       /* in case of Drip: directly fill up field cap of first two soil layers, no surface runoff, lateral runoff or percolation */
@@ -303,11 +303,12 @@ Real infil_perc_irr(Stand *stand,        /**< Stand pointer */
 
     } /* if not drip */
     /* recompute the soil temperature in cases of strong percolation, to allow temperature changes to affect further percolation energy transfer */
-    if(infil_loop_count%2 == 0 && config->percolation_heattransfer ){ 
+    if(infil_loop_count%2 == 0 && config->percolation_heattransfer )
+    {
       apply_perc_enthalpy(soil);
       Soil_thermal_prop th;
       calc_soil_thermal_props(UNKNOWN, &th,soil,soil->wi_abs_enth_adj, soil->sol_abs_enth_adj, TRUE,FALSE);
-      compute_mean_layer_temps_from_enth(soil->temp, soil->enth, th);
+      compute_mean_layer_temps_from_enth(soil->temp, soil->enth, &th);
     }
     infil_loop_count+=1;
   } /* while infil > 0 */

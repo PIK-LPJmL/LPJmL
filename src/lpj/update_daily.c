@@ -47,7 +47,6 @@ void update_daily(Cell *cell,            /**< cell pointer           */
   Real gtemp_air;  /* value of air temperature response function */
   Real gtemp_soil[NSOILLAYER]; /* value of soil temperature response function */
   Real temp_bs;    /* temperature beneath snow */
-  Real prec_energy; /* energy from temperature difference between rain and soil [J/m2]*/
   Stocks flux_estab={0,0};
   Real evap=0;
   Stocks hetres={0,0};
@@ -154,12 +153,16 @@ void update_daily(Cell *cell,            /**< cell pointer           */
         stand->soil.micro_heating[l]=m_heat*stand->soil.decomC[l];
       stand->soil.micro_heating[0]+=m_heat*stand->soil.litter.decomC;
 #endif
+#ifdef TIMING
       clock_t t;
       t = clock();
+#endif
       update_soil_thermal_state(&stand->soil,temp_bs,config);
+#ifdef TIMING
       t = clock() - t;
       double time_taken = ((double)t)/CLOCKS_PER_SEC; // in seconds
-      //printf("%f \n",time_taken);
+      printf("%f \n",time_taken);
+#endif
     }
     else
     {

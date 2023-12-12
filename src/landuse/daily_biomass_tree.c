@@ -157,7 +157,7 @@ Real daily_biomass_tree(Stand *stand,                /**< stand pointer */
     /* count irrigation events*/
     getoutputindex(output,CFT_IRRIG_EVENTS,rbtree(ncft)+data->irrigation.irrigation*nirrig,config)++;
   }
-  
+
   if(climate->prec+melt>0)  /* enthalpy of soil infiltration */
     vol_water_enth = climate->temp*c_water*climate->prec/(climate->prec+melt)+c_water2ice;
   else
