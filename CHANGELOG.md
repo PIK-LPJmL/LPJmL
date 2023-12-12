@@ -19,6 +19,35 @@ of `major.minor.patch` with
 
 ## [Unreleased]
 
+## [5.8.1] - 2023-12-11
+
+### Contributors
+
+- author: Werner von Bloh (bloh@pik-potsdam.de), Sebastion Ostberg (ostberg@pik-potsdam.de), Christoph Mueller (cmueller@pik-potsdam.de), Sibyll Schaphoff (sibylls@pik-potsdam.de)
+
+### Added
+
+- tmin, tmax, humid GSWP3-W5E5 inputs added to `input.cjson`.
+- missing parameters added in `lpjparam_non.cjson` and `pft_non.cjson`.
+
+### Changed
+
+- set gml.noaa data as default CO2 input.
+- GSWP3-W5E5 climate is now the default.
+- `regridlpj` utility script updated for new inputs
+
+### Removed
+
+- GLDAS climate input removed.
+
+### Fixed
+
+- scaling fixed for daily output and unit 1/second in fwriteoutput.c (issue #332).
+- `#ifdef` and `#elif` statements fixed in `lpjml_config.cjson` and `input.cjson`.
+- computation of root biomass based on carbon fixed in `nuptake_grass` and `nuptake_tree` (issue #330)
+- fixed bug in `allocation_tree` (issue #330)
+
+
 ## [5.8.0] - 2023-11-30
 
 ### Contributors
