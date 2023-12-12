@@ -19,6 +19,27 @@ of `major.minor.patch` with
 
 ## [Unreleased]
 
+## [5.7.11] - 2023-11-16
+
+### Contributors
+
+- author: Werner von Bloh (bloh@pik-potsdam.de)
+
+### Added
+
+- allowed range for coordinates checked in `readcoord()`.
+- allowed formats (`raw`, `clm`, `clm2`) for input files checked in `openmetafile()`.
+
+### Changed
+
+- Error messages change to more meaningful
+
+### Fixed
+
+- NetCDF output for grid file corrected if cells are skipped.
+- `var_len` correctly set for input with no time axis in `openclimate_netcdf.c`.
+
+
 ## [5.7.10] - 2023-11-13
 
 ### Contributors
