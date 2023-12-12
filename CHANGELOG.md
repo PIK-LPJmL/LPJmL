@@ -19,7 +19,7 @@ of `major.minor.patch` with
 
 ## [Unreleased]
 
-## [5.7.11] - 2023-11-16
+## [5.8.2] - 2023-12-12
 
 ### Contributors
 
@@ -32,13 +32,75 @@ of `major.minor.patch` with
 
 ### Changed
 
-- Error messages change to more meaningful
+- Error messages changed for more clarity.
 
 ### Fixed
 
 - NetCDF output for grid file corrected if cells are skipped.
 - `var_len` correctly set for input with no time axis in `openclimate_netcdf.c`.
 
+
+## [5.8.1] - 2023-12-11
+
+### Contributors
+
+- author: Werner von Bloh (bloh@pik-potsdam.de), Sebastian Ostberg (ostberg@pik-potsdam.de), Christoph Mueller (cmueller@pik-potsdam.de), Sibyll Schaphoff (sibylls@pik-potsdam.de)
+
+### Added
+
+- tmin, tmax, humid GSWP3-W5E5 inputs added to `input.cjson`.
+- missing parameters added in `lpjparam_non.cjson` and `pft_non.cjson`.
+
+### Changed
+
+- set gml.noaa data as default CO2 input.
+- GSWP3-W5E5 climate is now the default.
+- `regridlpj` utility script updated for new inputs
+
+### Removed
+
+- GLDAS climate input removed.
+
+### Fixed
+
+- scaling fixed for daily output and unit 1/second in fwriteoutput.c (issue #332).
+- `#ifdef` and `#elif` statements fixed in `lpjml_config.cjson` and `input.cjson`.
+- computation of root biomass based on carbon fixed in `nuptake_grass` and `nuptake_tree` (issue #330)
+- fixed bug in `allocation_tree` (issue #330)
+
+
+## [5.8.0] - 2023-11-30
+
+### Contributors
+
+- author: Jannes Breier (breier@pik-potsdam.de), Werner von Bloh (bloh@pik-potsdam.de), Stephen Wirth (wirth@pik-potsdam.de)
+- code review: Sibyll Schaphoff (sibylls@pik-potsdam.de), Christoph Mueller (cmueller@pik-potsdam.de)
+- dicussed by attendees of [LPJmL seminar](https://gitlab.pik-potsdam.de/lpjml/LPJmL_internal/-/wikis/231123_lpjmlseminar) on Nov. 23rd 2023.
+
+### Added
+
+- new keyword `"cultivation_types"` added to specify an array of cultivation types read from the `pft.cjson` file:
+```
+  "cultivation_types" : ["none","biomass","annual crop"],
+```
+- wood plantation and agricultural tree PFTs added to `pft.cjson`.
+- '"k_est"' establishment density array added for agricultural trees to `"countrypar"` in `manage_irrig_systems_with_dummy_laimax_data.cjson`.
+- Makros to select different climate (CRU_MONTHLY, CRU_NETCDF, GLDAS) as well as land use, fertilizer and manure (OLD_LU, MADRAT) inputs added to `input.cjson`.
+- Makro to disable nitrogen cycle (WITHOUT_NITROGEN) added to `lpjml_config.cjson`.
+- Makros definition and description added to `lpjml_config.cjson`.
+
+### Changed
+
+- file ending from `js` to `cjson`.
+- renamed `lpjml.cjson` to `lpjml_config.cjson`.
+- extended `input.cjson` to include CRU, GSWP3-W5E5 and GLDAS climate inputs and LandInG, MADRAT and "Old" land use, fertilizer and manure inputs.
+- Moved mappings from `input.cjson` to lpjml_config.cjson.
+- Moved soil depths array and fuel bulk density factors from `soil.cjson` to `lpjparam.cjson`.
+
+### Removed
+
+- `lpjml_*js`, `param_*js`, `lpjparam_*js`, `pft_*.js`, `input_*.js` and `manage_*.js files` for specific projects.
+>>>>>>> 5dc55f7e9de7d08c25f40d6cb75499bec1159ed7
 
 ## [5.7.10] - 2023-11-13
 

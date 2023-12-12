@@ -1,8 +1,8 @@
 /**************************************************************************************/
 /**                                                                                \n**/
-/**                   l  p  j  m  l  .  j  s                                       \n**/
+/**           l  p  j  m  l  _  c  o  n  f  i  g  .  c  j  s  o  n                 \n**/
 /**                                                                                \n**/
-/** Default configuration file for LPJmL C Version 5.7.10                           \n**/
+/** Default configuration file for LPJmL C Version 5.8.1                           \n**/
 /**                                                                                \n**/
 /** Configuration file is divided into five sections:                              \n**/
 /**                                                                                \n**/
@@ -21,6 +21,8 @@
 /**************************************************************************************/
 
 //#define BMGR_BROWN    /* enables brown harvest of biomass grass, instead of green harvest (default) */
+//#define CRU_MONTHLY /* Set macro for climate input selection. Options are  CRU_MONTHLY, CRU_NETCDF. If no makro is provided the default (GSWP3-W5E5) is used.*/
+#define OLD_LU /* Set macro for landuse, fertilizer and manure input selection. Options are  OLD_LU and MADRAT. If no makro is provided the default (LandInG toolbox) is used.*/
 
 {   /* LPJmL configuration in JSON format */
 
@@ -32,27 +34,37 @@
   "sim_id"   : "lpjml",     /* LPJML Simulation type with managed land use */
   "coupled_model" : null,   /* Coupled model: null (no model coupled), string (name of coupled model) */
   "start_coupling": null,   /* Start year of model coupling: null (start_coupling is set to firstyear if coupled_model != null), int (start year of coupling) */
-  "version"  : "5.7",       /* LPJmL version expected */
-  "random_prec" : true,     /* Random weather generator for precipitation enabled */
+  "version"  : "5.8",       /* LPJmL version expected */
+  #if defined CRU_MONTHLY || defined CRU_NETCDF
+    "random_prec" : true,     /* Random weather generator for precipitation enabled */
+    "radiation" : "radiation",/* type of radiation input to be used, options: "cloudiness", "radiation", "radiation_swonly", "radiation_lwdown" */
+  #else
+    "random_prec" : false,     /* Random weather generator for precipitation disabled */
+    "radiation" : "radiation",/* type of radiation input to be used, options: "cloudiness", "radiation", "radiation_swonly", "radiation_lwdown" */
+  #endif
   "random_seed" : 2,        /* seed for random number generator */
-  "radiation" : "radiation",/* other options: "cloudiness", "radiation", "radiation_swonly", "radiation_lwdown" */
-  "fire" : "fire",          /* fire disturbance enabled, other options: NO_FIRE, FIRE, SPITFIRE, SPITFIRE_TMAX (for GLDAS input data) */
+  "fire" : "fire",          /* fire disturbance enabled, options: "no_fire", "fire", "spitfire", "spitfire_tmax"  */
   "fire_on_grassland" : false, /* enable fire on grassland for Spitfire */
-  "fdi" : "nesterov",       /* different fire danger index formulations: "wvpd" (needs GLDAS input data), "nesterov" */
-  "firewood" : false,
-  "gsi_phenology" : true,   /* GSI phenology enabled */
-  "transp_suction_fcn" : false, /* enable transpiration suction function (true/false) */
+  "fdi" : "nesterov",       /* fire danger index formulations: "wvpd" (needs humidity input data), "nesterov" */
+  "firewood" : false,       /* NOT TESTED - DO NOT ENABLE */
+  "gsi_phenology" : true,   /* enable GSI phenology */
+  "transp_suction_fcn" : false, /* enable new transpiration reduction function - NOT TESTED */
   "with_lakes" : true,      /* enable lakes (true/false) */
-  "river_routing" : true,
-  "extflow" : false,
-  "permafrost" : true,
-  "johansen" : true,
-  "soilpar_option" : "no_fixed_soilpar", /* other options "no_fixed_soilpar", "fixed_soilpar", "prescribed_soilpar" */
-  "with_nitrogen" : "lim", /* other options: "no", "lim", "unlim" */
-  "store_climate" : true, /* store climate data in spin-up phase */
+  "river_routing" : true,   /* enable river routing (requires input matching grid and lakes/reservoirs) */
+  "extflow" : false,        /* enable discharge inflow for regional runs (requires extflow_filename) */
+  "permafrost" : true,      /* enable permafrost */
+  "johansen" : true,        /* enable johansen way of temp. conductivity in soils (see src/soil/soilconduct.c) */
+  "soilpar_option" : "no_fixed_soilpar", /* calculation of soil parameters, options "no_fixed_soilpar", "fixed_soilpar", "prescribed_soilpar" */
+  "soilpar_fixyear" : 1900, /* year to fix soilpars for soilpar_option fixed_soilpar */
+  #ifdef WITHOUT_NITROGEN
+  "with_nitrogen" : "no",   /* options: "no", "lim", "unlim" */
+  #else
+  "with_nitrogen" : "lim",  /* options: "no", "lim", "unlim" */
+  #endif
+  "store_climate" : true,   /* store climate data in spin-up phase */
   "landfrac_from_file" : true, /* read cell area from file (true/false) */
-  "shuffle_spinup_climate" : true, /* shuffle spinup climate */
-  "fix_climate" : false,                /* fix climate after specified year */
+  "shuffle_spinup_climate" : true, /* shuffle spinup climate and/or climate in fix_climate run */
+  "fix_climate" : false,    /* enable a fixed climate input period, requires fix_climate_interval, fix_climate_year, fix_climate_shuffle */
   "fix_climate_year" : 1901,            /* year after climate is fixed */
   "fix_climate_interval" : [1901,1930],
   "fix_climate_shuffle" : true,          /* randomly shuffle climate in the interval */
@@ -61,79 +73,168 @@
   "fix_deposition_year" : 1901,          /* year after deposition is fixed */
   "fix_deposition_interval" : [1901,1930],
   "fix_deposition_shuffle" : true,       /* randomly shuffle depositions in the interval */
-  "fix_landuse" : false,                 /* fix land use after specfied year */
+  "fix_landuse" : false,    /* fix landuse after fix_landuseyear; different than landuse = const - where all years are the same */
   "fix_landuse_year" : 1901,             /* year after land use is fixed */
   "fix_co2" : false,                     /* fix atmospheric CO2  after specfied year */
   "fix_co2_year" : 1901,                 /* year after CO2 is fixed */
 #ifdef FROM_RESTART
-  "new_seed" : false, /* read random seed from restart file */
-  "population" : false,
-  "landuse" : "yes", /* other options: "no", "yes", "const", "all_crops", "only_crops" */
-  "landuse_year_const" : 2000, /* set landuse year for "const" case */
-  "reservoir" : true,
-  "wateruse" : "yes",  /* other options: "no", "yes", "all" */
-  "equilsoil" : false,
+  "new_seed" : false,       /* read random seed from restart file */
+  "population" : false,     /* use population input (for spitfire) */
+  "landuse" : "yes",        /* landuse setting; options: "no", "yes", "const", "all_crops", "only_crops" */
+  "landuse_year_const" : 2000, /* set landuse year for "const" and "only_crops" cases */
+  "reservoir" : true,       /* enables reservoirs (changes discharge and allows for irrigation water source), requires river_routing=true and elevation and reservoir input files  */
+  "wateruse" : "yes",       /* HIL water withdrawals and return flows, requires wateruse input, options: "no", "yes" (only for years prescribed in input), "all" (use first year for years before and last year of input for years after period prescibed in input file) */
+  "equilsoil" : false,      /* enables soil equilibration  (natural vegetation spinup) */
 #else
-  "equilsoil" : true,
-  "population" : false,
-  "landuse" : "no",
-  "reservoir" : false,
-  "wateruse" : "no",
+  "equilsoil" : true,       /* enables soil equilibration  (natural vegetation spinup) */
+  "population" : false,     /* use population input (for spitfire) */
+  "landuse" : "no",         /* landuse setting; options: "no", "yes", "const", "all_crops", "only_crops" */
+  "reservoir" : false,      /* enables reservoirs (changes discharge and allows for irrigation water source), requires river_routing=true and elevation and reservoir input files  */
+  "wateruse" : "no",        /* HIL water withdrawals and return flows, requires wateruse input, options: "no", "yes" (only for years prescribed in input), "all" (use first year for years before and last year of input for years after period prescibed in input file) */
 #endif
-  "prescribe_burntarea" : false,
-  "prescribe_landcover" : "no_landcover", /* NO_LANDCOVER, LANDCOVERFPC, LANDCOVEREST */
-  "sowing_date_option" : "fixed_sdate",   /* NO_FIXED_SDATE, FIXED_SDATE, PRESCRIBED_SDATE */
-  "sdate_fixyear" : 1970,               /* year in which sowing dates shall be fixed */
-  "intercrop" : false,                  /* intercrops on setaside */
-  "residue_treatment" : "fixed_residue_remove", /* residue options: READ_RESIDUE_DATA, NO_RESIDUE_REMOVE, FIXED_RESIDUE_REMOVE (uses param residues_in_soil) */ 
-  "residues_fire" : false,              /* fire in residuals */
-  "irrigation" : "lim",                 /* other options: "no", "lim", "pot", "all" */
-  "laimax_interpolate" : "laimax_par",  /* laimax values from manage parameter file, */
-                                        /* other options: LAIMAX_CFT, CONST_LAI_MAX, LAIMAX_INTERPOLATE */
+  "cultivation_types" : ["none","biomass","annual crop"], /* cultivation types to read from pft.cjson. Cultivations types are "none" (natural PFTs), "biomass" (bioenergy PFTs), "wp" (wood plantation PFTs),  "annual tree" (agriculture tree PFTs) and "annual crop" (CFTs)*/
+  "prescribe_burntarea" : false, /* prescribe burned area on nat vegetation (for spitfire)  */
+  "prescribe_landcover" : "no_landcover", /* prescribe natural veg composition, options: "no_landcover", "landcoverfpc" (FPC), "landcoverest" (establishment) */
+  "sowing_date_option" : "fixed_sdate",   /* options: no_fixed_sdate, fixed_sdate, prescribed_sdate */
+  "sdate_fixyear" : 1970,               /* year in which sowing dates shall be fixed, when using fixed_sdate */
+  "intercrop" : false,                  /* enables intercrops on setaside */
+  "residue_treatment" : "fixed_residue_remove", /* residue options: "read_residue_data" (requires input dataset on fraction to remain on field), "no_residue_remove" (all non-harvested plant components to litter), "fixed_residue_remove" (fraction of non-harvested above ground biomass to remain in soil according to param residues_in_soil) */
+  "residues_fire" : false,              /* enables burning of residuals on cropland - non-functional? */
+  "irrigation" : "lim",                 /* options: "no", "lim", "pot", "all" */
+  "laimax_interpolate" : "laimax_par",  /* laimax settings, options:  "laimax_par" (values from pft.cjson), "laimax_cft" (values from manage_irrig_*.cjson), "const_lai_max" (constant values set in flag laimax), "laimax_interpolate" (interpolates laimin and laimax based on values from pft.cjson - non-functional?) */
+  "laimax" : 5,                         /* maximum LAI for laimax_interpolate = "const_lai_max" */
   "tillage_type" : "all",               /* Options: "all" (all agr. cells tilled), "no" (no cells tilled) and "read" (tillage dataset used) */
-  "till_startyear" : 1850,              /* year in which tillage should start */
+  "till_startyear" : 1850,              /* year in which tillage should start (currently only for tillage_type="read") */
+  "till_fallow" : false,                /* tillage on */
   "black_fallow" : false,               /* simulation with black fallow on PNV */
-  "pft_residue" : "temperate cereals",
+  "pft_residue" : "temperate cereals",  /* ?  */
   "no_ndeposition" : false,             /* turn off atmospheric N deposition */
-  "rw_manage" : false,                  /* rain water management */
-  "laimax" : 5,                         /* maximum LAI for CONST_LAI_MAX */
-  "fertilizer_input" : "yes",           /* enable fertilizer input, other options: "no", "yes", "auto" */
+  "rw_manage" : false,                  /* enable rain water management; specific parameters in lpjparam.cjson */
+  "fertilizer_input" : "yes",           /* fertilizer input setting, options: "no" (crops only depend on N in soils and from deposition), "yes", "auto" (applies exact N demand required by managed vegetation directly to plants - removes any N stress) */
   "manure_input" : true,                /* enable manure input */
-  "fix_fertilization" : false,          /* fix fertilizer input */
-  "others_to_crop" : true,              /* move PFT type others into PFT crop, cft_tropic for tropical,  cft_temp for temperate */
-  "grazing" : "default",                /* default grazing type, other options : "default", "mowing", "ext", "int", "livestock", "none" */
-  "grazing_others" : "default",         /* default grazing type for others, other options : "default", "mowing", "ext", "int", "livestock", "none" */
-  "cft_temp" : "temperate cereals",
-  "cft_tropic" : "maize",
+  "fix_fertilization" : false,          /* fertilizer and manure input setting, options: "false" (prescribed time/cell/cft specific input), "true" (global constant rates from lpjmlparam.cjson) */
+  "others_to_crop" : true,              /* true: cultivate others as a separate stand of cft according to setting "cft_temp"/"cft_trop"; false: simulate others as grassland with setting "grazing_others" */
+  "cft_temp" : "temperate cereals",     /* cft name (see pft.cjson) to simulate others in temperate regions (abs(lat)>30 deg), if others_to_crop is true  */
+  "cft_tropic" : "maize",               /* cft name (see pft.cjson) to simulate others in tropical regions (abs(lat)<30 deg), if others_to_crop is true  */
+  "grazing_others" : "default",         /* default grazing type for others, options : "default", "mowing", "ext", "int", "livestock", "none" */
+  "grazing" : "default",                /* default grazing type, options : "default", "mowing", "ext", "int", "livestock", "none" */
   "grassonly" : false,                  /* set all cropland including others to zero but keep managed grasslands */
-  "luc_timber" : true,                  /* land-use change timber */
-  "grassland_fixed_pft" : false,
-  "grass_harvest_options" : false,
-  "prescribe_lsuha" : false,
-  "mowing_days" : [152, 335],          /* Mowing days for grassland if grass harvest options are ser */
-  "crop_resp_fix" : false,             /* variable C:N ratio for crop respiration */
-                                       /* for MAgPIE runs, turn off dynamic C:N ratio dependent respiration,
-                                          which reduces yields at high N inputs */
-  "crop_phu_option" : "new",
-  "cropsheatfrost" : false,
-  "double_harvest" : true,
-  "npp_controlled_bnf" : true,
+  "luc_timber" : true,                  /* true: extract timber carbon (timber_harvest output) if natural vegetation is cleared for managed land, false: carbon is put in litter */
+  "grassland_fixed_pft" : false,        /* prescribe per grid cell the grass pft to be grown, requires additional input - non-functional? */
+  "grass_harvest_options" : false,      /* true: grid-specific grassland management, requires input file; false: default management (setting "grazing") everywhere */
+  "prescribe_lsuha" : false,            /* prescribe livestock unit per hectare, input required (needed for "grazing" = "livestock") */
+  "mowing_days" : [152, 335],           /* Mowing days (day-of-year) for grassland if "grazing" = "mowing" */
+  "crop_resp_fix" : false,             /* C:N ratio setting affecting crop respiration - options: true (fixed - avoids yield reductions at high n inputs); false (variable/dynamic) */
+  "crop_phu_option" : "new",           /* defines setting for phenological heat unit and vernalization requirements for crops; options: "old", "new", "prescribed" */
+  "cropsheatfrost" : false,            /* enable extreme temperature crop damages - requires tmin/tmax inputs - NOT TESTED */
+  "double_harvest" : true,             /* true: enables outputs for second growing season (e.g. harvest2.bin; sdate2.bin - have to be explicitly added to outputs); false: crop specific outputs over all growing seasons are added up/overwritten - caution: this interplays with the setting "grid_scaled" */
+  "npp_controlled_bnf" : true,         /* enable npp controlled bnf based on Ma et al. 2022, alternatively old Cleveland et al. 1999*/
 
 /*===================================================================*/
 /*  II. Input parameter section                                      */
 /*===================================================================*/
 
-#include "param.js"    /* Input parameter file */
+  /* LPJmL parameter file */
+  "param" :
+#ifdef WITHOUT_NITROGEN
+    #include "par/lpjparam_non.cjson"
+#else
+    #include "par/lpjparam.cjson"
+#endif
+  ,
+
+  /* Soil parameter file */
+  "soilpar" :
+    #include "par/soil.cjson"
+  ,
+
+  /* PFT parameter file*/
+  "pftpar" :
+ #ifdef WITHOUT_NITROGEN
+    #include "par/pft_non.cjson"
+#else
+    #include "par/pft.cjson"
+#endif
+  ,
+
+  /* Management parameter file */
+  "countrypar" :
+    #include "par/manage_irrig_systems_with_dummy_laimax_data.cjson"
+  ,
+
+  /* Management parameter file for regions*/
+  "regionpar" :
+    #include "par/manage_reg.cjson"
+  ,
+
+/*===================================================================*/
+/*  II. Mapping section                                              */
+/*===================================================================*/
+
+  /* the following array describes the order of the CFTs in the laimax array */
+  "laimaxmap" : ["temperate cereals","rice", "maize", "tropical cereals", "pulses",
+                 "temperate roots", "tropical roots", "oil crops sunflower",
+                 "oil crops soybean", "oil crops groundnut", "oil crops rapeseed",
+                 "sugarcane"],
+
+  /* the following array describes the order of the agricultural trees in the k_est array */
+  "treemap" : ["oil palm","tea","cotton"],
+
+  /* the following array describes the order of the soil types in the soil file */
+  "soilmap" : [null,"clay", "silty clay", "sandy clay", "clay loam", "silty clay loam",
+              "sandy clay loam", "loam", "silt loam", "sandy loam", "silt",
+              "loamy sand", "sand", "rock and ice"],
+
+  /* the following array describes the order of the bands in the land use file */
+  "landusemap" : ["temperate cereals","rice", "maize", "tropical cereals", "pulses",
+                  "temperate roots", "tropical roots", "oil crops sunflower",
+                  "oil crops soybean", "oil crops groundnut", "oil crops rapeseed",
+                  "sugarcane","others","grassland","biomass grass","biomass tree"],
+
+  /* the following array describes the order of the bands in the fertilizer and manure file */
+  "fertilizermap" : ["temperate cereals","rice", "maize", "tropical cereals", "pulses",
+                    "temperate roots", "tropical roots", "oil crops sunflower",
+                    "oil crops soybean", "oil crops groundnut", "oil crops rapeseed",
+                    "sugarcane","others","grassland","biomass grass","biomass tree"],
+
+  /* the following array describes the order of the CFTs in the sowing date and crop PHU file */
+  "cftmap" : ["temperate cereals","rice", "maize", "tropical cereals", "pulses",
+              "temperate roots", "tropical roots", "oil crops sunflower",
+              "oil crops soybean", "oil crops groundnut", "oil crops rapeseed",
+              "sugarcane"],
 
 /*===================================================================*/
 /*  III. Input data section                                          */
 /*===================================================================*/
 
-#include "input_crumonthly.js"    /* Input files of CRU dataset */
+
+  "inpath" : "/p/projects/lpjml/input/historical",
+
+  /* Input files of CRU dataset */
+  "input" :
+    #include "input.cjson"
+  ,
 
 /*===================================================================*/
 /*  IV. Output data section                                          */
 /*===================================================================*/
+
+  /* all available output variables and their definition */
+  "outputvar" :
+    #include "par/outputvars.cjson"
+  ,
+
+  /* output data settings */
+  "output_metafile" : true, /* no json metafile created */
+  "float_grid" : false,      /* set datatype of grid file to float (TRUE/FALSE) */
+  "compress" : 0,          /* compression level (1-9, 0= no compression) */
+  "missing_value" : -1e32, /* missing value in NetCDF files */
+  "pft_index" : "npft",    /* name of index variable for PFT output */
+  "layer_index" : "layer", /* name of index variable for soil layer output */
+  "compress_cmd" : "gzip -f", /* command for compression of output files */
+  "compress_suffix" : ".gz",  /* file suffix for compressed output files */
+  "json_suffix" : ".json",    /* file suffix for JSON metafiles */
+  "csv_delimit" : ",",        /* delimiter for CSV files */
 
 #ifdef WITH_GRIDBASED
   "grid_scaled" : true, /* PFT-specific outputs scaled by stand->frac */
@@ -142,9 +243,6 @@
   "grid_scaled" : false,
 #define SUFFIX pft.bin
 #endif
-
-  "output_metafile" : true, /* no json metafile created */
-  "float_grid" : false,      /* set datatype of grid file to float (TRUE/FALSE) */
 
 #define mkstr(s) xstr(s) /* putting string in quotation marks */
 #define xstr(s) #s
@@ -280,8 +378,8 @@ ID                               Fmt                        filename
   "lastyear" : 1901, /* last year of simulation */
   "restart" :  false, /* start from restart file */
   "outputyear" : -1599,
-  "write_restart" : true, /* create restart file: the last year of simulation=restart-year */
-  "write_restart_filename" : "restart/restart_1840_nv_stdfire.lpj", /* filename of restart file */
+  "write_restart" : true, /* create restart file at year defined in "restart_year" */
+  "write_restart_filename" : "restart/restart_1840_nv_stdfire.lpj", /* filename of restart file written */
   "restart_year": 1840 /* write restart at year */
 
 #else
@@ -289,12 +387,16 @@ ID                               Fmt                        filename
   "nspinup" : 390,   /* spinup years */
   "nspinyear" : 30,  /* cycle length during spinup (yr)*/
   "firstyear": 1901, /* first year of simulation */
+#if defined CRU_MONTHLY || defined CRU_NETCDF
   "lastyear" : 2011, /* last year of simulation */
+#else 
+  "lastyear" : 2019, /* last year of simulation */
+#endif
   "outputyear": 1901, /* first year output is written  */
   "restart" :  true, /* start from restart file */
   "restart_filename" : "restart/restart_1840_nv_stdfire.lpj", /* filename of restart file */
   "write_restart" : true, /* create restart file */
-  "write_restart_filename" : "restart/restart_1900_crop_stdfire.lpj", /* filename of restart file */
+  "write_restart_filename" : "restart/restart_1900_crop_stdfire.lpj", /* filename of restart file written */
   "restart_year": 1900 /* write restart at year */
 
 #endif
