@@ -240,6 +240,10 @@ typedef struct{
 }Soil_thermal_prop;
 #endif
 
+/* enum indicating whether the sign of temperatures in soil column is uniform positive uniform negative or mixed*/
+enum uniform_temp_sign {ALL_BELOW_0, MIXED_SIGN, ALL_ABOVE_0, UNKNOWN};
+
+
 struct Pftpar; /* forward declaration */
 struct Dailyclimate; /* forward declaration */
 
@@ -298,10 +302,10 @@ extern Stocks soilstocks(const Soil *);
 extern Real soilwater(const Soil *);
 extern Real soilconduct(const Soil *,int,Bool);
 extern Real soilheatcap(const Soil *,int);
-extern void apply_heatconduction_of_a_day(Real *, const int, const Real *, const Real, const Soil_thermal_prop);
-extern void calc_soil_thermal_props(Soil_thermal_prop *, const Soil *, const Real *, const Real * , Bool, Bool);
+extern void apply_heatconduction_of_a_day(enum uniform_temp_sign, Real *, const int, const Real *, const Real, const Soil_thermal_prop);
+extern void calc_soil_thermal_props(enum uniform_temp_sign, Soil_thermal_prop *, const Soil *, const Real *, const Real * , Bool, Bool);
 extern void compute_mean_layer_temps_from_enth(Real *, const Real *, Soil_thermal_prop);
-extern void apply_enth_of_untracked_mass_shifts(Real *, const Real *, const Real *, Soil_thermal_prop);
+extern void apply_enth_of_untracked_mass_shifts(Real *, const Real *, const Real *, const Real *, const Real *);
 extern void apply_perc_enthalpy(Soil *);
 extern void freezefrac2soil(Soil *, const Real *);
 extern void enth2freezefrac(Real *, const Real * , Soil_thermal_prop);

@@ -113,7 +113,7 @@ void fprintcsvflux(FILE *file,          /**< Output file pointer */
   if(config->with_nitrogen)
   {
     fprintf(file,"%c%g%c%g%c%g%c%g%c%g%c%g",d,flux.n_uptake*scale,d,flux.n_demand*scale,d,flux.n_outflux*scale,
-            d,flux.n_influx*scale,d,flux.estab.nitrogen*scale,d,flux.neg_fluxes.nitrogen*scale);
+            d,flux.influx.nitrogen*scale,d,flux.estab.nitrogen*scale,d,flux.neg_fluxes.nitrogen*scale);
     if(config->fire)
       fprintf(file,"%c%g",d,flux.fire.nitrogen*scale);
     if(config->withlanduse!=NO_LANDUSE)

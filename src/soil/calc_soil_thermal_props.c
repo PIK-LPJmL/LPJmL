@@ -16,7 +16,9 @@ For the conductivity it uses the approach described by Johansen (1977)
 #include "lpj.h"
 
 
-void calc_soil_thermal_props(Soil_thermal_prop *th,  /*< Soil thermal property structure that is set or modified */
+void calc_soil_thermal_props(
+                     enum uniform_temp_sign uniform_temp_sign, /*< flag to indicate if the temperatures are all positive all negative or mixed */
+                     Soil_thermal_prop *th,  /*< Soil thermal property structure that is set or modified */
                      const Soil *soil,               /*< Soil structure from which water content etc is obtained  */
                      const Real *waterc_abs,         /*< Absolute total water content of soillayers (including ice) */
                      const Real *solc_abs,           /*< Absolute total content of solids of soillayers*/
@@ -24,7 +26,7 @@ void calc_soil_thermal_props(Soil_thermal_prop *th,  /*< Soil thermal property s
                      Bool with_conductivity          /*< Flag to activate conductivity update  */
                      ) 
 {
-  int  layer, j;
+  int  layer, j, gp;
   Real c_froz, c_unfroz;             /* frozen and unfrozen heat capacities */
   Real lam_froz, lam_unfroz;         /* frozen and unfrozen conductivities */
   Real latent_heat;                  /* latent heat of fusion depending on water content */
@@ -34,12 +36,24 @@ void calc_soil_thermal_props(Soil_thermal_prop *th,  /*< Soil thermal property s
   Real sat;                          /* saturation of soil */
   Real ke_unfroz, ke_froz;           /* kersten number for unfrozen and frozen soil */
   Real por;                          /* porosity of the soil */
+  Bool calc_frozen_values;
+  Bool calc_unfrozen_values;
 
   /* thermal resistance from last (resp first) layer to layer border*/
   Real resistance_froz_prev=0, resistance_froz_cur=0,resistance_unfroz_prev=0,resistance_unfroz_cur=0;              
   Real prev_length_to_border =0, cur_length_to_border;
   Real soillayer_depth_m;
   Real tmp;                          /* temporary variable */
+
+  if(uniform_temp_sign == ALL_BELOW_0)
+    calc_unfrozen_values = FALSE;
+  else
+    calc_unfrozen_values = TRUE;
+
+  if(uniform_temp_sign == ALL_ABOVE_0)
+    calc_frozen_values = FALSE;
+  else
+    calc_frozen_values = TRUE;
 
   for (layer = 0; layer < NSOILLAYER; ++layer) {
 
@@ -48,7 +62,7 @@ void calc_soil_thermal_props(Soil_thermal_prop *th,  /*< Soil thermal property s
      // fail(-1, TRUE, "Currently only the Johansen method to\ 
      //                 calculate soil thermal conductivities is implemented.");
      printf("Only Johansen implemented");
-
+     exit(-1);
     }
 
     /* get absolute water and solid content of soil */
@@ -68,20 +82,27 @@ void calc_soil_thermal_props(Soil_thermal_prop *th,  /*< Soil thermal property s
       /* get frozen and unfrozen conductivity with johansens approach */
       por            = soil -> wsat[layer];
       tmp =  K_SOLID_log* (1 - por);
-      lam_sat_froz   = pow(10, tmp + K_ICE_log * por); /* geometric mean  */
-      lam_sat_unfroz = pow(10, tmp + K_WATER_log * por);
+      if(calc_frozen_values) 
+        lam_sat_froz   = pow(10, tmp + K_ICE_log * por); /* geometric mean  */
+      if(calc_unfrozen_values)
+        lam_sat_unfroz = pow(10, tmp + K_WATER_log * por);
+      
       if(soil->wsats[layer]<epsilon)
         sat=0;
       else
         sat        =  waterc_abs_layer / soil->wsats[layer];
       ke_unfroz  = (sat < 0.1 ? 0 : log10(sat) + 1); /* fine soil parametrisation of Johansen */
       ke_froz    =  sat;
-      lam_froz   = (lam_sat_froz   - soil->k_dry[layer]) * ke_froz   + soil->k_dry[layer]; 
-      lam_unfroz = (lam_sat_unfroz - soil->k_dry[layer]) * ke_unfroz + soil->k_dry[layer];
+      if(calc_frozen_values)
+        lam_froz   = (lam_sat_froz   - soil->k_dry[layer]) * ke_froz   + soil->k_dry[layer]; 
+      if(calc_unfrozen_values)
+        lam_unfroz = (lam_sat_unfroz - soil->k_dry[layer]) * ke_unfroz + soil->k_dry[layer];
     }
     /* get frozen and unfrozen volumetric heat capacity */
-    c_froz   = (c_mineral * solidc_abs_layer + c_ice   * waterc_abs_layer) / soildepth[layer];
-    c_unfroz = (c_mineral * solidc_abs_layer + c_water * waterc_abs_layer) / soildepth[layer];
+    if(calc_frozen_values)
+      c_froz   = (c_mineral * solidc_abs_layer + c_ice   * waterc_abs_layer) / soildepth[layer];
+    if(calc_unfrozen_values)
+      c_unfroz = (c_mineral * solidc_abs_layer + c_water * waterc_abs_layer) / soildepth[layer];
 
     /* get volumetric latent heat   */
     latent_heat = waterc_abs_layer / soildepth[layer] * c_water2ice;
@@ -93,6 +114,7 @@ void calc_soil_thermal_props(Soil_thermal_prop *th,  /*< Soil thermal property s
     resistance_unfroz_cur = cur_length_to_border/lam_unfroz;
 
     for (j = 0; j < GPLHEAT; ++j) { /* iterate through gridpoints of the layer */
+      gp = GPLHEAT * layer + j;
       if(with_conductivity)
       {
         /* set properties of j-th layer element */
@@ -100,20 +122,26 @@ void calc_soil_thermal_props(Soil_thermal_prop *th,  /*< Soil thermal property s
         if(j==0){
           /* element crosses layers, hence thermal resistance is used to calculate conductivity of element */
           /* (make use of the fact that the resistance of a piece of composite material is the sum of the resitances of the pieces)*/
-          th->lam_frozen[GPLHEAT * layer + j]   = 
-          (prev_length_to_border+cur_length_to_border)/(resistance_froz_cur+resistance_froz_prev);
-          th->lam_unfrozen[GPLHEAT * layer + j] =  
-          (prev_length_to_border+cur_length_to_border)/(resistance_unfroz_cur+resistance_unfroz_prev);
+          if(calc_frozen_values)
+            th->lam_frozen[gp]   = 
+            (prev_length_to_border+cur_length_to_border)/(resistance_froz_cur+resistance_froz_prev);
+          if(calc_unfrozen_values)
+            th->lam_unfrozen[gp] =  
+            (prev_length_to_border+cur_length_to_border)/(resistance_unfroz_cur+resistance_unfroz_prev);
         }else{
-          th->lam_frozen[GPLHEAT * layer + j]   = lam_froz;
-          th->lam_unfrozen[GPLHEAT * layer + j] = lam_unfroz;
+          if(calc_frozen_values)
+            th->lam_frozen[gp]   = lam_froz;
+          if(calc_unfrozen_values)
+            th->lam_unfrozen[gp] = lam_unfroz;
         }
         
       }
       /* set properties of j-th layer gridpoint */
-      th->c_frozen [GPLHEAT * layer + j]    = c_froz;
-      th->c_unfrozen[GPLHEAT * layer + j]   = c_unfroz;
-      th->latent_heat[GPLHEAT * layer + j]  = latent_heat;
+      if(calc_frozen_values)
+        th->c_frozen [gp]    = c_froz;
+      if(calc_unfrozen_values)
+        th->c_unfrozen[gp]   = c_unfroz;
+      th->latent_heat[gp]  = latent_heat;
     }
 
     /* save thermal resistance of part of last element of current layer for next iteration */
@@ -122,3 +150,4 @@ void calc_soil_thermal_props(Soil_thermal_prop *th,  /*< Soil thermal property s
     prev_length_to_border=cur_length_to_border;
   }
 }
+

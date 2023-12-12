@@ -1,9 +1,9 @@
 /**************************************************************************************/
 /**                                                                                \n**/
-/**        i  n  p  u  t  _  n  e  t  c  d  f  .  j  s                             \n**/
+/**        i  n  p  u  t  _  n  e  t  c  d  f  .  c  j  s  o  n                    \n**/
 /**                                                                                \n**/
 /** Configuration file for NetCDF input dataset for LPJmL                          \n**/
-/** Version 5.7.9                                                                  \n**/
+/** Version 5.8.0                                                                  \n**/
 /**                                                                                \n**/
 /** (C) Potsdam Institute for Climate Impact Research (PIK), see COPYRIGHT file    \n**/
 /** authors, and contributors see AUTHORS file                                     \n**/
@@ -54,4 +54,4 @@
 
   "wetdays" : { "fmt" : "cdf", "var" : "wet", "name" : "cru_netcdf/gpcc_cru09_wet_monthly_1901_2009.nc"},
   "wateruse" : { "fmt" : "cdf", "var" : "wateruse", "name" : "cru_netcdf/wateruse_1900_2000.nc"} /* water consumption for industry, household and livestock */
-},
+}

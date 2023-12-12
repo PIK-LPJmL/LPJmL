@@ -18,12 +18,71 @@ same way as for the water.
 void apply_enth_of_untracked_mass_shifts(Real *enth,             /*< enthalpy vector that is updated*/
                          const Real *water_diff, /*< vector with absolute change of volumetric water content per layer */
                          const Real *solid_diff, /*< vector with absolute change of solid components per layer */
+                         const Real *wi_abs_enth_adj, /*< vector with enthalpy adjusted water ice content */
+                         const Real *sol_abs_enth_adj /*< vector with enthalpy adjusted solid content */
+                         )
+{
+    int l,j;   /* l=layer, j is for sublayer */
+    int gp;    /* gridpoint */
+    Real gp_water_energy; /* gridpoint water energy */
+    Real gp_solid_energy; /* gridpoint solid energy */
+    Real rel_waterice_cont; /* relative water ice content */
+    Real rel_solid_cont;    /* relative solid content */
+    Real vol_latent_heat;   /* volumetric latent heat of soil (=latent heat of water * rel. waterice cont.) */
+    Real c_quo_wat = c_mineral/c_water;
+    Real c_quo_ice = c_mineral/c_ice;
+
+    for(l=0;l<NSOILLAYER;++l){
+        rel_waterice_cont = wi_abs_enth_adj[l]/soildepth[l];
+        rel_solid_cont = sol_abs_enth_adj[l]/soildepth[l];
+        vol_latent_heat = rel_waterice_cont * c_water2ice;
+
+        for(j=0;j<GPLHEAT;++j){
+            gp=GPLHEAT*l+j;      
+            
+            /* get volumetric enthalpy of current water at the gridpoint */
+            if(enth[gp] >= vol_latent_heat)
+              /* the below formula is equivalent to
+                 gridpoint_water_energy = gridpoint_soil_temp * vol_heat_capacity_of_water + vol_latent_heat_of_water */
+              gp_water_energy = (enth[gp] - vol_latent_heat) / (rel_waterice_cont + c_quo_wat * rel_solid_cont) + c_water2ice;
+            else if (enth[gp] <= 0) 
+              /* the below formula is equivalent to
+                 gridpoint_ice_energy = gridpoint_soil_temp * vol_heat_capacity_of_ice */
+              gp_water_energy =  enth[gp]                    / (rel_waterice_cont + c_quo_ice * rel_solid_cont);
+            else /* the only option left is that enth is between 0 and total potential latent heat of soil */
+              gp_water_energy =  enth[gp];
+            
+            /* get volumetric enthalpy of current solids at the gridpoint */
+            /* total volumetric enthalpy is sum of */
+            /* volumetric enthalpy of water times vol. water content */
+            /* and volumetric enthalpy of solid components times vol. solid content */
+            gp_solid_energy = (enth[gp] - gp_water_energy * rel_waterice_cont)/rel_solid_cont;  
+
+            /* add the energy from the inflowing or outflowing water 
+               assuming it has has the 
+               the same volumetric enthalpy as the water already there  */
+            enth[gp]+=gp_water_energy*water_diff[l]/soildepth[l]; 
+
+            /* add the energy from the incoming or outgoing*/
+            /* solid components assuming they have the */
+            /* same volumetric enthalpy as the solid components already there */
+            enth[gp]+=gp_solid_energy*solid_diff[l]/soildepth[l];
+        }
+       
+    }
+}
+
+
+/* old method that was discarded due to bad computational performance */
+void apply_enth_of_untracked_mass_shifts_old(Real *enth,             /*< enthalpy vector that is updated*/
+                         const Real *water_diff, /*< vector with absolute change of volumetric water content per layer */
+                         const Real *solid_diff, /*< vector with absolute change of solid components per layer */
                          Soil_thermal_prop th    /*< soil thermal properties */
                          )
 {
     int l,j;   /* l=layer, j is for sublayer */
     int gp;    /* gridpoint */
-    Real gp_water_energy,T;
+    Real gp_water_energy,T, gp_solid_energy;
     for(l=0;l<NSOILLAYER;++l){
         for(j=0;j<GPLHEAT;++j){
             gp=GPLHEAT*l+j;          
@@ -43,6 +102,8 @@ void apply_enth_of_untracked_mass_shifts(Real *enth,             /*< enthalpy ve
             /* assume that the incoming or outgoing solid mass has 
                the same temperature as the solid mass already there */
             enth[gp]+=T*c_mineral*solid_diff[l]/soildepth[l];
+            gp_solid_energy = T*c_mineral;
         }
+        
     }
 }
