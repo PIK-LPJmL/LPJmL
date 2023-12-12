@@ -23,7 +23,7 @@ of `major.minor.patch` with
 
 ### Contributors
 
-- author: Werner von Bloh (bloh@pik-potsdam.de), Sebastion Ostberg (ostberg@pik-potsdam.de) Christoph Mueller (cmueller@pik-potsdam.de)
+- author: Werner von Bloh (bloh@pik-potsdam.de), Sebastion Ostberg (ostberg@pik-potsdam.de), Christoph Mueller (cmueller@pik-potsdam.de), Sibyll Schaphoff (sibylls@pik-potsdam.de)
 
 ### Added
 
@@ -44,6 +44,8 @@ of `major.minor.patch` with
 
 - scaling fixed for daily output and unit 1/second in fwriteoutput.c (issue #332).
 - `#ifdef` and `#elif` statements fixed in `lpjml_config.cjson` and `input.cjson`.
+- computation of root biomass based on carbon fixed in `nuptake_grass` and `nuptake_tree` (issue #330)
+- fixed bug in `allocation_tree` (issue #330)
 
 
 ## [5.8.0] - 2023-11-30
