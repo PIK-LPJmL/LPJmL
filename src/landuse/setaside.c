@@ -212,7 +212,7 @@ void mixsoil(Stand *stand1,const Stand *stand2,int year,int ntotpft,const Config
   /* update soil thermal properties */
   Soil_thermal_prop therm;
   calc_soil_thermal_props(UNKNOWN, &therm, &(stand1->soil), NULL, NULL ,config->johansen, FALSE);
-  compute_mean_layer_temps_from_enth(stand1->soil.temp,stand1->soil.enth,therm);
+  compute_mean_layer_temps_from_enth(stand1->soil.temp,stand1->soil.enth,&therm);
 #ifdef CHECK_BALANCE
   water_after=soilwater(&stand1->soil)*(stand1->frac+stand2->frac)+stand1->cell->balance.excess_water;
   if(fabs(water_before-water_after)>epsilon*1e-2)
