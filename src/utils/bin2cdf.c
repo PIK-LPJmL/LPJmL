@@ -172,7 +172,7 @@ static Cdf *create_cdf(const char *filename,
     sprintf(s,"%s: %s",strdate(&t),cmdline);
   }
   rc=nc_put_att_text(cdf->ncid,NC_GLOBAL,"history",strlen(s),s);
-  free(s); 
+  free(s);
   for(i=0;i<n_global;i++)
   {
     rc=nc_put_att_text(cdf->ncid,NC_GLOBAL,global_attrs[i].name,strlen(global_attrs[i].value),global_attrs[i].value);

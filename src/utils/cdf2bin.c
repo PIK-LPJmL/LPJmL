@@ -435,7 +435,7 @@ int main(int argc,char **argv)
   for(j=i+1;j<argc;j++)
   {
     if(verbose)
-      printf("%s\n",argv[j]); 
+      printf("%s\n",argv[j]);
     if(openclimate_netcdf(&data,argv[j],NULL,var,NULL,units,&config))
     {
       fprintf(stderr,"Error opening '%s'.\n",argv[j]);

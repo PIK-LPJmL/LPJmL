@@ -57,7 +57,7 @@ int main(int argc,char **argv)
       fprintf(file,USAGE,progname);
       fprintf(file,"\nArguments:\n"
              "-h               print this help text\n"
-             "-h               print LPJmL version\n"
+             "-v               print LPJmL version\n"
              "-noinput         does not list input data files\n"
              "-nooutput        does not list output files\n"
              "-nopp            disable preprocessing\n"
