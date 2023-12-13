@@ -195,6 +195,7 @@ STATIC void use_temp_scheme_implicit(
                     int steps
                     )
 {
+  int i;
   /* determine number of timesteps to be performed for the day */
   if(steps == -1)
     #ifdef U_TEST
@@ -205,7 +206,7 @@ STATIC void use_temp_scheme_implicit(
   Real dt = day2sec(1.0/steps);
 
   /* do implicit timestepping */
-  for (int i = 0; i < steps; i++) {
+  for (i = 0; i < steps; i++) {
     timestep_implicit(temp, h, hcap, lam, dt);
   }
 }
@@ -290,22 +291,23 @@ STATIC void thomas_algorithm(double *a, /* sub diagonal elements */
                       ) {
     double c_prime[NHEATGRIDP - 1];
     double d_prime[NHEATGRIDP];
+    int i;
 
     /* modify coefficients by pogressing in forward direction */
     /* this codes eliminiates the sub diagnal a an norms the diagonal b 1 */
     c_prime[0] = c[0] / b[0];
-    for (int i = 1; i < NHEATGRIDP - 1; i++) {
+    for (i = 1; i < NHEATGRIDP - 1; i++) {
         c_prime[i] = c[i] / (b[i] - a[i] * c_prime[i - 1]);
     }
 
     d_prime[0] = d[0] / b[0];
-    for (int i = 1; i < NHEATGRIDP; i++) {
+    for (i = 1; i < NHEATGRIDP; i++) {
         d_prime[i] = (d[i] - a[i] * d_prime[i - 1]) / (b[i] - a[i] * c_prime[i - 1]);
     }
 
     /* back substitution */
     x[NHEATGRIDP - 1] = d_prime[NHEATGRIDP - 1];
-    for (int i = NHEATGRIDP - 2; i >= 0; i--) {
+    for (i = NHEATGRIDP - 2; i >= 0; i--) {
         x[i] = d_prime[i] - c_prime[i] * x[i + 1];
     }
 }
