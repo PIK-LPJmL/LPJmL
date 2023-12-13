@@ -100,7 +100,7 @@ of `major.minor.patch` with
 ### Removed
 
 - `lpjml_*js`, `param_*js`, `lpjparam_*js`, `pft_*.js`, `input_*.js` and `manage_*.js files` for specific projects.
->>>>>>> 5dc55f7e9de7d08c25f40d6cb75499bec1159ed7
+
 
 ## [5.7.10] - 2023-11-13
 
