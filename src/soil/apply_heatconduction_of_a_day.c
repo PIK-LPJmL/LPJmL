@@ -43,8 +43,8 @@ void apply_heatconduction_of_a_day(Uniform_temp_sign uniform_temp_sign, /**< fla
   Real temp[NHEATGRIDP+1];     /* temperature array (including surface gridpoint with index 0)*/
   /* Note that temp[k] and enth[k-1] thus both correspond to the kth gridpoint (gp) (starting from 0)*/
 
-  /* to choose if the standard and cheap heat conduction temperature method can be used or the more 
-     expensive enthalpy method needs to be applied check if the temperature forcing and temperatures 
+  /* to choose if the standard and cheap heat conduction temperature method can be used or the more
+     expensive enthalpy method needs to be applied check if the temperature forcing and temperatures
      in the soil column show any sign changes or are all negative/ all positive */
   if(uniform_temp_sign == ALL_ABOVE_0)
   {
@@ -54,7 +54,7 @@ void apply_heatconduction_of_a_day(Uniform_temp_sign uniform_temp_sign, /**< fla
     temp[0] = temp_top; /* assign dirichlet boundary condition */
     for (j=0; j<NHEATGRIDP; ++j)
       temp[j+1] = (enth[j] - th->latent_heat[j]) / th->c_unfrozen[j];
-    
+
     /* update temperature */
     use_temp_scheme_implicit(temp, h, th->c_unfrozen, th->lam_unfrozen, -1);
 
@@ -62,7 +62,7 @@ void apply_heatconduction_of_a_day(Uniform_temp_sign uniform_temp_sign, /**< fla
     for (j=0; j<NHEATGRIDP; ++j)
       enth[j] = temp[j+1] * th->c_unfrozen[j] + th->latent_heat[j];
 
-  } 
+  }
   else if(uniform_temp_sign == ALL_BELOW_0)
   {
     /* temperature scheme can be used with frozen soil props */
@@ -79,28 +79,26 @@ void apply_heatconduction_of_a_day(Uniform_temp_sign uniform_temp_sign, /**< fla
     for (j=0; j<NHEATGRIDP; ++j)
       enth[j] = temp[j+1] * th->c_frozen[j];
 
-  } 
+  }
   else if(uniform_temp_sign == MIXED_SIGN)
   {
 
     /* enthalpy scheme has to be used */
     use_enth_scheme(enth, h, temp_top, *th);
 
-  } 
+  }
   else
   {
-    printf("Error: uniform_temp_sign is not one of the three possible values. \n");
-    exit(-1);
-  }    
-    
+    fail(INVALID_TEMP_SIGN_ERR,FALSE,"uniform_temp_sign=%d is not one of the three possible values",uniform_temp_sign);
+  }
+
 }
 
-static void use_enth_scheme(
-                    Real * enth,          
-                    const Real * h,       
-                    const Real temp_top,  
-                    Soil_thermal_prop th   
-                    ) 
+static void use_enth_scheme(Real * enth,
+                            const Real * h,
+                            const Real temp_top,
+                            Soil_thermal_prop th
+                           )
 {
   Real temp[NHEATGRIDP + 1];     /* temperature array (including surface gridpoint with index 0)*/
   /* since the surface gridpoint is included in temp but exluded in enth  */
@@ -119,11 +117,11 @@ static void use_enth_scheme(
   for (j = 0; j < NHEATGRIDP; ++j)
   {
     h_inv[j] = 1/h[j];
-    /* the following lines change the meaning of th.lam_(un)frozen, which no longer 
+    /* the following lines change the meaning of th.lam_(un)frozen, which no longer
     contains thermal conductivities but the thermal conductivities divided by the respective elemt size */
     th.lam_frozen[j] = th.lam_frozen[j] * h_inv[j];
     th.lam_unfrozen[j] = th.lam_unfrozen[j] * h_inv[j];
-    /* the following lines change the meaning of th.c_(un)frozen, which no longer 
+    /* the following lines change the meaning of th.c_(un)frozen, which no longer
     contains heat capacities but reciprocal heat capacities */
     th.c_frozen[j]= 1/ th.c_frozen[j] ;
     th.c_unfrozen[j]= 1/ th.c_unfrozen[j] ;
@@ -155,8 +153,8 @@ static void use_enth_scheme(
   QQ[NHEATGRIDP]=0;            /* it is intended that the last value of QQ stays at zero during timestepping */
   temp[0] = temp_top; /* assign dirichlet boundary condition */
   int timestp;
-  for(timestp=0; timestp<timesteps; ++timestp) 
-  { 
+  for(timestp=0; timestp<timesteps; ++timestp)
+  {
     /* calculate gridpoint temperatures from gridpoint enthalpies */
     for (j=0; j<NHEATGRIDP; ++j)
     {
@@ -186,13 +184,12 @@ static void use_enth_scheme(
   }
 }
 
-STATIC void use_temp_scheme_implicit(
-                    Real * temp,           
-                    const Real * h,        
-                    const Real * hcap,      
-                    const Real * lam,      
-                    int steps
-                    )
+STATIC void use_temp_scheme_implicit(Real * temp,
+                                     const Real * h,
+                                     const Real * hcap,
+                                     const Real * lam,
+                                     int steps
+                                    )
 {
   int i;
   /* determine number of timesteps to be performed for the day */
@@ -205,7 +202,8 @@ STATIC void use_temp_scheme_implicit(
   Real dt = day2sec(1.0/steps);
 
   /* do implicit timestepping */
-  for (i = 0; i < steps; i++) {
+  for (i = 0; i < steps; i++)
+  {
     timestep_implicit(temp, h, hcap, lam, dt);
   }
 }
@@ -215,15 +213,14 @@ STATIC void use_temp_scheme_implicit(
 /* This function peforms a single implicit timestep,
    for the temperature scheme.
    A linear system of the form `Ax = rhs` is solved for this.
-   The matrix A is tridiagonal and given by the sub main and 
+   The matrix A is tridiagonal and given by the sub main and
    superdiagonal vectors */
-STATIC void timestep_implicit(
-                    Real * temp,          
-                    const Real * h,        
-                    const Real * hcap,       
-                    const Real * lam,       
-                    const Real dt       
-                    ) 
+STATIC void timestep_implicit(Real * temp,
+                              const Real * h,
+                              const Real * hcap,
+                              const Real * lam,
+                              const Real dt
+                             )
 {
   Real sub[NHEATGRIDP];  /* sub diagonal elements */
   Real main[NHEATGRIDP]; /* main diagonal elements */
@@ -236,7 +233,8 @@ STATIC void timestep_implicit(
   /* See supplement of master thesis equation (6) */
   Real rhs[NHEATGRIDP];
   int j;
-  for (j=0; j<NHEATGRIDP; ++j){ 
+  for (j=0; j<NHEATGRIDP; ++j)
+  {
     rhs[j] = (temp[j+1] * (2-main[j]) - temp[j] * sub[j] - temp[j+2] * sup[j]);
   }
   rhs[0] -= temp[0] * sub[0];
@@ -247,15 +245,14 @@ STATIC void timestep_implicit(
 
 /* This function arranges the matrix for the implicit timestep. */
 /* The equations can be found in the master thesis supplement equation (6). */
-STATIC void arrange_matrix(           
-                    Real * a,          /*< sub diagonal elements  */
-                    Real * b,          /*< main diagonal elements */
-                    Real * c,          /*< super diagonal elements */
-                    const Real * h,    /*< distances between adjacent gridpoints  */
-                    const Real * hcap, /*< heat capacities */
-                    const Real * lam , /*< thermal conductivities */
-                    const Real dt      /*< timestep */
-                    )   
+STATIC void arrange_matrix(Real * a,          /*< sub diagonal elements  */
+                           Real * b,          /*< main diagonal elements */
+                           Real * c,          /*< super diagonal elements */
+                           const Real * h,    /*< distances between adjacent gridpoints  */
+                           const Real * hcap, /*< heat capacities */
+                           const Real * lam , /*< thermal conductivities */
+                           const Real dt      /*< timestep */
+                          )
 {
 
   /* precompute some values */
@@ -267,12 +264,12 @@ STATIC void arrange_matrix(
   for (j=0; j<(NHEATGRIDP-1); ++j)
   {
     lam_divBy_h[j+1] = lam[j+1] / h[j+1];
-    inv_element_midpoint_dist_divBy_c[j] = 2/(h[j] +  h[j+1])/hcap[j]; 
+    inv_element_midpoint_dist_divBy_c[j] = 2/(h[j] +  h[j+1])/hcap[j];
     a[j] = - lam_divBy_h[j] * inv_element_midpoint_dist_divBy_c[j] * dt_half ;
     c[j] = - lam_divBy_h[j+1] * inv_element_midpoint_dist_divBy_c[j] * dt_half ;
     b[j] = 1 - a[j] - c[j];
   }
-  inv_element_midpoint_dist_divBy_c[NHEATGRIDP-1] = (2/h[NHEATGRIDP-1])/hcap[NHEATGRIDP-1]; 
+  inv_element_midpoint_dist_divBy_c[NHEATGRIDP-1] = (2/h[NHEATGRIDP-1])/hcap[NHEATGRIDP-1];
 
   /* compute the diagonal entries */
   a[NHEATGRIDP-1] = - lam_divBy_h[NHEATGRIDP-1] * inv_element_midpoint_dist_divBy_c[NHEATGRIDP-1] * dt_half;
@@ -280,33 +277,37 @@ STATIC void arrange_matrix(
   c[NHEATGRIDP-1] = 0;
 }
 
-/* This function performs the standard thomas algorithm to solve a 
+/* This function performs the standard thomas algorithm to solve a
    tridiagonal matrix system. */
 STATIC void thomas_algorithm(double *a, /* sub diagonal elements */
-                      double *b, /* main diagonal elements */
-                      double *c, /* super diagonal elements */
-                      double *d, /* right hand side */
-                      double *x /* solution */
-                      ) {
-    double c_prime[NHEATGRIDP - 1];
-    double d_prime[NHEATGRIDP];
-    int i;
+                             double *b, /* main diagonal elements */
+                             double *c, /* super diagonal elements */
+                             double *d, /* right hand side */
+                             double *x /* solution */
+                            )
+{
+  double c_prime[NHEATGRIDP - 1];
+  double d_prime[NHEATGRIDP];
+  int i;
 
-    /* modify coefficients by pogressing in forward direction */
-    /* this codes eliminiates the sub diagnal a an norms the diagonal b 1 */
-    c_prime[0] = c[0] / b[0];
-    for (i = 1; i < NHEATGRIDP - 1; i++) {
-        c_prime[i] = c[i] / (b[i] - a[i] * c_prime[i - 1]);
-    }
+  /* modify coefficients by pogressing in forward direction */
+  /* this codes eliminiates the sub diagnal a an norms the diagonal b 1 */
+  c_prime[0] = c[0] / b[0];
+  for (i = 1; i < NHEATGRIDP - 1; i++)
+  {
+    c_prime[i] = c[i] / (b[i] - a[i] * c_prime[i - 1]);
+  }
 
-    d_prime[0] = d[0] / b[0];
-    for (i = 1; i < NHEATGRIDP; i++) {
-        d_prime[i] = (d[i] - a[i] * d_prime[i - 1]) / (b[i] - a[i] * c_prime[i - 1]);
-    }
+  d_prime[0] = d[0] / b[0];
+  for (i = 1; i < NHEATGRIDP; i++)
+  {
+    d_prime[i] = (d[i] - a[i] * d_prime[i - 1]) / (b[i] - a[i] * c_prime[i - 1]);
+  }
 
-    /* back substitution */
-    x[NHEATGRIDP - 1] = d_prime[NHEATGRIDP - 1];
-    for (i = NHEATGRIDP - 2; i >= 0; i--) {
-        x[i] = d_prime[i] - c_prime[i] * x[i + 1];
-    }
+  /* back substitution */
+  x[NHEATGRIDP - 1] = d_prime[NHEATGRIDP - 1];
+  for (i = NHEATGRIDP - 2; i >= 0; i--)
+  {
+    x[i] = d_prime[i] - c_prime[i] * x[i + 1];
+  }
 }

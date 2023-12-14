@@ -61,7 +61,7 @@ void update_soil_thermal_state(Soil *soil,           /**< pointer to soil data *
     compute_water_ice_ratios_from_enth(soil,&therm_prop);
     compute_maxthaw_depth(soil);
   }
-} 
+}
 
 
 /**** functions used by update_soil_thermal_state ****/
@@ -80,8 +80,8 @@ STATIC Uniform_temp_sign check_uniform_temp_sign_throughout_soil(Real * enth, Re
     vol_latent_heat = abs_waterice_cont[l]/soildepth[l] * c_water2ice;
     for(gp=l*GPLHEAT;gp<(l+1)*GPLHEAT;gp++)
     {
-      temp_sign = (enth[gp] < 0               ? -1 : 0) + 
-                  (enth[gp] > vol_latent_heat ?  1 : 0); 
+      temp_sign = (enth[gp] < 0               ? -1 : 0) +
+                  (enth[gp] > vol_latent_heat ?  1 : 0);
       if (temp_sign != temp_sign_top) /* check for all gp temps if sign is that of forcing temp */
         return MIXED_SIGN;
     }
@@ -89,30 +89,33 @@ STATIC Uniform_temp_sign check_uniform_temp_sign_throughout_soil(Real * enth, Re
 
   switch (temp_sign_top)
   {
-  case -1: return ALL_BELOW_0; break;
-  case  0: return MIXED_SIGN; break;
-  case  1: return ALL_ABOVE_0; break;
+    case -1:
+      return ALL_BELOW_0;
+    case  0:
+      return MIXED_SIGN;
+    case  1:
+      return ALL_ABOVE_0;
+    default:
+      return UNKNOWN;
   }
-  return UNKNOWN;
 }
 
 STATIC void modify_enth_due_to_masschanges(Soil * soil, Real * abs_waterice_cont)
 {
-    /* Apply the percolation enthalpy water percolation 
-       for which the corresponding enthalpy shifts are known */
-    apply_perc_enthalpy(soil);
+  /* Apply the percolation enthalpy water percolation
+     for which the corresponding enthalpy shifts are known */
+  apply_perc_enthalpy(soil);
 
-    
-    /* Bookkeep which changes have been done to water and solids without adjusting enthalpy */
-    Real waterdiff[NSOILLAYER], soliddiff[NSOILLAYER];
-    get_unaccounted_changes_in_water_and_solids(waterdiff, soliddiff, abs_waterice_cont, soil);
+  /* Bookkeep which changes have been done to water and solids without adjusting enthalpy */
+  Real waterdiff[NSOILLAYER], soliddiff[NSOILLAYER];
+  get_unaccounted_changes_in_water_and_solids(waterdiff, soliddiff, abs_waterice_cont, soil);
 
-    /* For those unaccounted changed add or remove some enthalpy to avoid temperature changes */
-    apply_enth_of_untracked_mass_shifts(soil->enth, waterdiff, soliddiff, soil->wi_abs_enth_adj, soil->sol_abs_enth_adj);
+  /* For those unaccounted changed add or remove some enthalpy to avoid temperature changes */
+  apply_enth_of_untracked_mass_shifts(soil->enth, waterdiff, soliddiff, soil->wi_abs_enth_adj, soil->sol_abs_enth_adj);
 
-    /* Set enthalpy adjusted waterice and solid content to current waterice and solid contents 
-       as enthalpy adjustment have been made for the unaccounted parts */
-    update_wi_and_sol_enth_adjusted(waterdiff, soliddiff, soil);
+  /* Set enthalpy adjusted waterice and solid content to current waterice and solid contents
+     as enthalpy adjustment have been made for the unaccounted parts */
+  update_wi_and_sol_enth_adjusted(waterdiff, soliddiff, soil);
 }
 
 STATIC void modify_enth_due_to_heatconduction(Uniform_temp_sign uniform_temp_sign, Soil * soil, Real temp_below_snow, const Soil_thermal_prop * therm_prop)
@@ -121,7 +124,7 @@ STATIC void modify_enth_due_to_heatconduction(Uniform_temp_sign uniform_temp_sig
   Real h[NHEATGRIDP], top_dirichlet_BC;
 
   /* Compute the dirichlet boundary condition.
-     The below snow temp is mixed with the upmost gp temp to get 
+     The below snow temp is mixed with the upmost gp temp to get
      litter temp, which is then weighted according to agtop_cover. */
   litter_agtop_temp = (temp_below_snow + ENTH2TEMP(soil->enth,therm_prop,0))/2;
   top_dirichlet_BC = temp_below_snow  * (1 - soil->litter.agtop_cover) +
@@ -131,7 +134,7 @@ STATIC void modify_enth_due_to_heatconduction(Uniform_temp_sign uniform_temp_sig
   setup_heatgrid(h);
 
   /* apply heatconduction */
-  apply_heatconduction_of_a_day(uniform_temp_sign, soil->enth, h, top_dirichlet_BC, therm_prop ); 
+  apply_heatconduction_of_a_day(uniform_temp_sign, soil->enth, h, top_dirichlet_BC, therm_prop );
 }
 
 STATIC void compute_water_ice_ratios_from_enth(Soil * soil, const Soil_thermal_prop *therm_prop)
@@ -171,10 +174,10 @@ STATIC void get_abs_waterice_cont(Real * abs_waterice_cont, Soil * soil)
     abs_waterice_cont[l] = allice(soil,l) + allwater(soil,l);
 }
 
-/* The function evenly distributes grid points within each soil layer. 
-   For a single grid point per layer (GPLHEAT=1), it's placed at the layer's midpoint. 
-   With multiple grid points, they are arranged so that the distance from the border to the 
-   nearest grid points is half the distance between adjacent grid points within the layer. 
+/* The function evenly distributes grid points within each soil layer.
+   For a single grid point per layer (GPLHEAT=1), it's placed at the layer's midpoint.
+   With multiple grid points, they are arranged so that the distance from the border to the
+   nearest grid points is half the distance between adjacent grid points within the layer.
    Note that the intervals betweens adjacent gridpoints are called elements. Thus, with this
    grid arrangement, the elements can cross layer borders. */
 
@@ -206,7 +209,7 @@ STATIC void setup_heatgrid(Real *h /**< distances between adjacent gridpoints */
 STATIC void get_unaccounted_changes_in_water_and_solids(Real *waterdiff, Real *soliddiff, Real * abs_waterice_cont, Soil *soil)
 {
   int l;
-  foreachsoillayer(l) 
+  foreachsoillayer(l)
   {
     waterdiff[l] = (abs_waterice_cont[l] - soil->wi_abs_enth_adj[l]);
     soliddiff[l] = (soildepth[l]-soil->wsats[l])-soil->sol_abs_enth_adj[l];
@@ -251,11 +254,11 @@ STATIC void setup_heatgrid_layer_boundaries(Real *h)
 }
 
 
-/* Function computes bottom boundary layer temeperatures. Should be used in combination with setup_heatgrid_layer_boundaries. 
+/* Function computes bottom boundary layer temeperatures. Should be used in combination with setup_heatgrid_layer_boundaries.
    Is an alternative to compute_mean_layer_temps_from_enth. */
-STATIC void compute_bottom_bound_layer_temps_from_enth(Real *temp,         
-                                                       const Real *enth,    
-                                                       const Soil_thermal_prop *th 
+STATIC void compute_bottom_bound_layer_temps_from_enth(Real *temp,
+                                                       const Real *enth,
+                                                       const Soil_thermal_prop *th
                                                       )
 {
   int layer;

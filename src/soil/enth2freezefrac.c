@@ -1,13 +1,13 @@
 #include "lpj.h"
 
-void enth2freezefrac(Real *freeze_frac,         /**< vector with a fraction for each layer that is frozen */
-                     const Real *enth,          /**< enthalpy vector, if NULL enth of soil is used */
+void enth2freezefrac(Real freeze_frac[],         /**< vector with a fraction for each layer that is frozen */
+                     const Real enth[],          /**< enthalpy vector, if NULL enth of soil is used */
                      const Soil_thermal_prop *th /**< thermal properties of soil */
                     )
 {
   int layer,j;
   int gp;                /* upper and lower gridpoint of an element  */
-  Real ff_layer;                 /* frozen fraction of layer */
+  Real ff_layer;         /* frozen fraction of layer */
 
   /******Get fraction of the layer that is frozen*******/
 
@@ -31,5 +31,4 @@ void enth2freezefrac(Real *freeze_frac,         /**< vector with a fraction for 
     }
     freeze_frac[layer]=ff_layer;
   }
-}
- /* of 'enth2freezefrac' */
+} /* of 'enth2freezefrac' */

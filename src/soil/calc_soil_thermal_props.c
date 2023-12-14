@@ -1,9 +1,20 @@
-/*
-The function calculates thermal properties of the soil for the different vertical layers.
-It returs volumetric heat capacity, and thermal conductivity for the soil in frozen and
-unfrozen state based on soil texture and water content.
-For the conductivity it uses the approach described by Johansen (1977)
-*/
+/**************************************************************************************/
+/**                                                                                \n**/
+/**                    calc_soil_thermal_props.c                                   \n**/
+/**                                                                                \n**/
+/** The function calculates thermal properties of the soil for the different       \n**/
+/** vertical layers. It returs volumetric heat capacity, and thermal conductivity  \n**/
+/** for the soil in frozen and unfrozen state based on soil texture and water      \n**/
+/** content. For the conductivity it uses the approach described by                \n**/
+/** Johansen (1977)                                                                \n**/
+/**                                                                                \n**/
+/** (C) Potsdam Institute for Climate Impact Research (PIK), see COPYRIGHT file    \n**/
+/** authors, and contributors see AUTHORS file                                     \n**/
+/** This file is part of LPJmL and licensed under GNU AGPL Version 3               \n**/
+/** or later. See LICENSE file or go to http://www.gnu.org/licenses/               \n**/
+/** Contact: https://github.com/PIK-LPJmL/LPJmL                                    \n**/
+/**                                                                                \n**/
+/**************************************************************************************/
 
 #include "lpj.h"
 
@@ -57,9 +68,7 @@ void calc_soil_thermal_props(Uniform_temp_sign uniform_temp_sign,  /**< flag to 
 
     if (!johansen)
     {
-     // fail(-1, TRUE, "Currently only the Johansen method to calculate soil thermal conductivities is implemented.");
-     printf("Only Johansen implemented");
-     exit(-1);
+      fail(NO_JOHANSEN_ERR,FALSE,"only Johansen method implemented in cals_soil_thermal_props");
     }
 
     /* get absolute water and solid content of soil */
@@ -80,11 +89,11 @@ void calc_soil_thermal_props(Uniform_temp_sign uniform_temp_sign,  /**< flag to 
       /* get frozen and unfrozen conductivity with johansens approach */
       por            = soil -> wsat[layer];
       tmp =  K_SOLID_log* (1 - por);
-      if(calc_frozen_values) 
+      if(calc_frozen_values)
         lam_sat_froz   = pow(10, tmp + K_ICE_log * por); /* geometric mean  */
       if(calc_unfrozen_values)
         lam_sat_unfroz = pow(10, tmp + K_WATER_log * por);
-      
+
       if(soil->wsats[layer]<epsilon)
         sat=0;
       else

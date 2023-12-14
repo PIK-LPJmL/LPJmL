@@ -381,6 +381,8 @@ Error code Description                                   Error type
         41 Invalid time step in soiltemp()               Internal
         42 Cannot read external flow                     External
         43 Opening connection to coupled model failed    External
+        44 Invalid uniform temp sign value               Internal
+        45 Only Johansen method implemented              Internal
 ---------- --------------------------------------------- ----------
 
 External errors are caused by invalid or missing input files while internal
