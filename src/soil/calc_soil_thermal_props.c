@@ -15,13 +15,13 @@ For the conductivity it uses the approach described by Johansen (1977)
 #define K_ICE_log   0.34242268082     /* Thermal conductivity of ice */
 #define K_WATER_log -0.24412514432    /* Thermal conductivity of liquid water*/
 
-void calc_soil_thermal_props(enum uniform_temp_sign uniform_temp_sign,  /**< flag to indicate if the temperatures are all positive all negative or mixed */
-                             Soil_thermal_prop *th,                     /**< Soil thermal property structure that is set or modified */
-                             const Soil *soil,                          /**< Soil structure from which water content etc is obtained  */
-                             const Real *waterc_abs,                    /**< Absolute total water content of soillayers (including ice) */
-                             const Real *solc_abs,                      /**< Absolute total content of solids of soillayers*/
-                             Bool johansen,                             /**< Flag to activate johansen method */
-                             Bool with_conductivity                     /**< Flag to activate conductivity update  */
+void calc_soil_thermal_props(Uniform_temp_sign uniform_temp_sign,  /**< flag to indicate if the temperatures are all positive all negative or mixed */
+                             Soil_thermal_prop *th,                /**< Soil thermal property structure that is set or modified */
+                             const Soil *soil,                     /**< Soil structure from which water content etc is obtained  */
+                             const Real *waterc_abs,               /**< Absolute total water content of soillayers (including ice) */
+                             const Real *solc_abs,                 /**< Absolute total content of solids of soillayers*/
+                             Bool johansen,                        /**< Flag to activate johansen method */
+                             Bool with_conductivity                /**< Flag to activate conductivity update  */
                             )
 {
   int  layer, j, gp;

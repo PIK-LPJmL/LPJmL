@@ -31,11 +31,11 @@ STATIC void arrange_matrix(Real *, Real *, Real *, const Real *, const Real *, c
 STATIC void thomas_algorithm(double *, double *, double *, double *, double *);
 STATIC void timestep_implicit(Real *, const Real *, const Real *, const Real *, const Real);
 
-void apply_heatconduction_of_a_day(enum uniform_temp_sign uniform_temp_sign, /*< flag to indicate if the temperatures all have the same signs */
-                                   Real * enth,                              /*< enthalpy vector that the method is updating (excluding gridpoint at surface) */
-                                   const Real * h,                           /*< distances between adjacent gridpoints  */
-                                   const Real temp_top,                      /*< temperature of the ground surface (GST), (dirichlet boundary condition) */
-                                   const Soil_thermal_prop * th                      /*< thermal properties of soil (thermal conductivity, heat capacity, latent heat) */
+void apply_heatconduction_of_a_day(Uniform_temp_sign uniform_temp_sign, /**< flag to indicate if the temperatures all have the same signs */
+                                   Real * enth,                         /**< enthalpy vector that the method is updating (excluding gridpoint at surface) */
+                                   const Real * h,                      /**< distances between adjacent gridpoints  */
+                                   const Real temp_top,                 /**< temperature of the ground surface (GST), (dirichlet boundary condition) */
+                                   const Soil_thermal_prop * th         /**< thermal properties of soil (thermal conductivity, heat capacity, latent heat) */
                                   )
 {
   int j; /* gridpoint index */
@@ -105,7 +105,6 @@ static void use_enth_scheme(
   Real temp[NHEATGRIDP + 1];     /* temperature array (including surface gridpoint with index 0)*/
   /* since the surface gridpoint is included in temp but exluded in enth  */
   /* the kth gridpoint (gp) (when calling the surface gp the 0th gp) corresponds to temp[k] and enth[k-1]  */
-  Real lam[NHEATGRIDP];          /* thermal conducitivity */
   Real QQ[NHEATGRIDP+1];         /* term resulting from the finite element method  */
   /* can be interpreted as the negative of the heatflux from gp j to gp j+1  */
   Real dt = 0.0;        /* timestep */

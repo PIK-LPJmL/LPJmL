@@ -18,14 +18,14 @@ STATIC void setup_heatgrid(Real *);
 STATIC void setup_heatgrid_layer_boundaries(Real *);
 STATIC void get_unaccounted_changes_in_water_and_solids(Real *, Real *, Real *, Soil *);
 STATIC void update_wi_and_sol_enth_adjusted(Real *, Real *, Soil *);
-STATIC void modify_enth_due_to_masschanges(Soil *, Real *, const Config *);
-STATIC void modify_enth_due_to_heatconduction(enum uniform_temp_sign, Soil *, Real, const Soil_thermal_prop *,const Config *);
+STATIC void modify_enth_due_to_masschanges(Soil *, Real *);
+STATIC void modify_enth_due_to_heatconduction(Uniform_temp_sign, Soil *, Real, const Soil_thermal_prop *);
 STATIC void compute_litter_temp_from_enth(Soil * soil, Real temp_below_snow, const Soil_thermal_prop * therm_prop);
 STATIC void compute_water_ice_ratios_from_enth(Soil *, const Soil_thermal_prop *);
 STATIC void calc_gp_temps(Real * gp_temps, Real * enth, const  Soil_thermal_prop *);
 STATIC void compute_maxthaw_depth(Soil * soil);
 STATIC void compute_bottom_bound_layer_temps_from_enth(Real *,  const Real *,const Soil_thermal_prop *);
-STATIC enum uniform_temp_sign check_uniform_temp_sign_throughout_soil(Real *, Real, Real *);
+STATIC Uniform_temp_sign check_uniform_temp_sign_throughout_soil(Real *, Real, Real *);
 STATIC void get_abs_waterice_cont(Real *, Soil *);
 /* main function */
 
@@ -39,7 +39,7 @@ void update_soil_thermal_state(Soil *soil,           /**< pointer to soil data *
   get_abs_waterice_cont(abs_waterice_cont, soil);
 
   /* check if phase changes are already present in soil or can possibly happen during timestep due to temp_bs forcing */
-  enum uniform_temp_sign uniform_temp_sign;
+  Uniform_temp_sign uniform_temp_sign;
   uniform_temp_sign = check_uniform_temp_sign_throughout_soil(soil->enth, temp_below_snow, abs_waterice_cont);
 
   /* calculate soil thermal properties and provide it for below functions */
@@ -47,8 +47,8 @@ void update_soil_thermal_state(Soil *soil,           /**< pointer to soil data *
   calc_soil_thermal_props(uniform_temp_sign, &therm_prop, soil, abs_waterice_cont,  NULL, config->johansen, TRUE);
 
   /* apply daily changes to soil enthalpy distribution  due to heatconvection and heatconduction*/
-  modify_enth_due_to_masschanges(soil, abs_waterice_cont, config);
-  modify_enth_due_to_heatconduction(uniform_temp_sign, soil, temp_below_snow, &therm_prop, config);
+  modify_enth_due_to_masschanges(soil, abs_waterice_cont);
+  modify_enth_due_to_heatconduction(uniform_temp_sign, soil, temp_below_snow, &therm_prop);
 
   /* compute soil thermal attributes from enthalpy distribution and thermal properties, i.e. the derived quantities */
   compute_mean_layer_temps_from_enth(soil->temp,soil->enth, &therm_prop);
@@ -63,7 +63,7 @@ void update_soil_thermal_state(Soil *soil,           /**< pointer to soil data *
 
 /* functions used by the main functions */
 
-STATIC enum uniform_temp_sign check_uniform_temp_sign_throughout_soil(Real * enth, Real temp_top, Real * abs_waterice_cont){
+STATIC Uniform_temp_sign check_uniform_temp_sign_throughout_soil(Real * enth, Real temp_top, Real * abs_waterice_cont){
   int l,gp;
   int temp_sign;
   int temp_sign_top = (temp_top < 0 ? -1 : 0) + 
@@ -90,7 +90,7 @@ STATIC enum uniform_temp_sign check_uniform_temp_sign_throughout_soil(Real * ent
   return UNKNOWN;
 }
 
-STATIC void modify_enth_due_to_masschanges(Soil * soil, Real * abs_waterice_cont, const Config * config)
+STATIC void modify_enth_due_to_masschanges(Soil * soil, Real * abs_waterice_cont)
 {
     Real waterdiff[NSOILLAYER], soliddiff[NSOILLAYER];
     apply_perc_enthalpy(soil);
@@ -99,7 +99,7 @@ STATIC void modify_enth_due_to_masschanges(Soil * soil, Real * abs_waterice_cont
     update_wi_and_sol_enth_adjusted(waterdiff, soliddiff, soil);
 }
 
-STATIC void modify_enth_due_to_heatconduction(enum uniform_temp_sign uniform_temp_sign, Soil * soil, Real temp_below_snow, const Soil_thermal_prop * therm_prop ,const Config * config)
+STATIC void modify_enth_due_to_heatconduction(Uniform_temp_sign uniform_temp_sign, Soil * soil, Real temp_below_snow, const Soil_thermal_prop * therm_prop)
 {
   Real litter_agtop_temp;
   Real h[NHEATGRIDP], top_dirichlet_BC;
