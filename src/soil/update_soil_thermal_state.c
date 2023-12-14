@@ -27,7 +27,9 @@ STATIC void compute_maxthaw_depth(Soil * soil);
 STATIC void compute_bottom_bound_layer_temps_from_enth(Real *,  const Real *,const Soil_thermal_prop *);
 STATIC Uniform_temp_sign check_uniform_temp_sign_throughout_soil(Real *, Real, Real *);
 STATIC void get_abs_waterice_cont(Real *, Soil *);
-/* main function */
+
+
+/**** main function ****/
 
 void update_soil_thermal_state(Soil *soil,           /**< pointer to soil data */
                                Real temp_below_snow, /**< (deg C) */
@@ -39,6 +41,7 @@ void update_soil_thermal_state(Soil *soil,           /**< pointer to soil data *
   get_abs_waterice_cont(abs_waterice_cont, soil);
 
   /* check if phase changes are already present in soil or can possibly happen during timestep due to temp_bs forcing */
+  /* without the need of considering phase changes the below calculations simplify significantly */
   Uniform_temp_sign uniform_temp_sign;
   uniform_temp_sign = check_uniform_temp_sign_throughout_soil(soil->enth, temp_below_snow, abs_waterice_cont);
 
@@ -61,12 +64,15 @@ void update_soil_thermal_state(Soil *soil,           /**< pointer to soil data *
 } 
 
 
-/* functions used by the main functions */
+/**** functions used by update_soil_thermal_state ****/
 
-STATIC Uniform_temp_sign check_uniform_temp_sign_throughout_soil(Real * enth, Real temp_top, Real * abs_waterice_cont){
+/* Function checks if forcing as well as all temperatures in the soil have the same sign.
+   This simplifies calculations as no phase changes need to be considered. */
+STATIC Uniform_temp_sign check_uniform_temp_sign_throughout_soil(Real * enth, Real temp_top, Real * abs_waterice_cont)
+{
   int l,gp;
   int temp_sign;
-  int temp_sign_top = (temp_top < 0 ? -1 : 0) + 
+  int temp_sign_top = (temp_top < 0 ? -1 : 0) +  /* get the sign of forcing temp */
                       (temp_top > 0 ?  1 : 0);
   Real vol_latent_heat;
   foreachsoillayer(l)
@@ -76,11 +82,11 @@ STATIC Uniform_temp_sign check_uniform_temp_sign_throughout_soil(Real * enth, Re
     {
       temp_sign = (enth[gp] < 0               ? -1 : 0) + 
                   (enth[gp] > vol_latent_heat ?  1 : 0); 
-      if (temp_sign != temp_sign_top)
+      if (temp_sign != temp_sign_top) /* check for all gp temps if sign is that of forcing temp */
         return MIXED_SIGN;
     }
   }
-  // switch case
+
   switch (temp_sign_top)
   {
   case -1: return ALL_BELOW_0; break;
@@ -92,10 +98,20 @@ STATIC Uniform_temp_sign check_uniform_temp_sign_throughout_soil(Real * enth, Re
 
 STATIC void modify_enth_due_to_masschanges(Soil * soil, Real * abs_waterice_cont)
 {
-    Real waterdiff[NSOILLAYER], soliddiff[NSOILLAYER];
+    /* Apply the percolation enthalpy water percolation 
+       for which the corresponding enthalpy shifts are known */
     apply_perc_enthalpy(soil);
+
+    
+    /* Bookkeep which changes have been done to water and solids without adjusting enthalpy */
+    Real waterdiff[NSOILLAYER], soliddiff[NSOILLAYER];
     get_unaccounted_changes_in_water_and_solids(waterdiff, soliddiff, abs_waterice_cont, soil);
+
+    /* For those unaccounted changed add or remove some enthalpy to avoid temperature changes */
     apply_enth_of_untracked_mass_shifts(soil->enth, waterdiff, soliddiff, soil->wi_abs_enth_adj, soil->sol_abs_enth_adj);
+
+    /* Set enthalpy adjusted waterice and solid content to current waterice and solid contents 
+       as enthalpy adjustment have been made for the unaccounted parts */
     update_wi_and_sol_enth_adjusted(waterdiff, soliddiff, soil);
 }
 
@@ -103,10 +119,18 @@ STATIC void modify_enth_due_to_heatconduction(Uniform_temp_sign uniform_temp_sig
 {
   Real litter_agtop_temp;
   Real h[NHEATGRIDP], top_dirichlet_BC;
+
+  /* Compute the dirichlet boundary condition.
+     The below snow temp is mixed with the upmost gp temp to get 
+     litter temp, which is then weighted according to agtop_cover. */
   litter_agtop_temp = (temp_below_snow + ENTH2TEMP(soil->enth,therm_prop,0))/2;
   top_dirichlet_BC = temp_below_snow  * (1 - soil->litter.agtop_cover) +
          litter_agtop_temp * soil->litter.agtop_cover;
+
+  /* setup grid */
   setup_heatgrid(h);
+
+  /* apply heatconduction */
   apply_heatconduction_of_a_day(uniform_temp_sign, soil->enth, h, top_dirichlet_BC, therm_prop ); 
 }
 
@@ -138,7 +162,7 @@ STATIC void compute_maxthaw_depth(Soil * soil)
 }
 
 
-/* small helper functions  */
+/**** small helper functions  ****/
 
 STATIC void get_abs_waterice_cont(Real * abs_waterice_cont, Soil * soil)
 {
@@ -147,7 +171,15 @@ STATIC void get_abs_waterice_cont(Real * abs_waterice_cont, Soil * soil)
     abs_waterice_cont[l] = allice(soil,l) + allwater(soil,l);
 }
 
-STATIC void setup_heatgrid(Real *h)
+/* The function evenly distributes grid points within each soil layer. 
+   For a single grid point per layer (GPLHEAT=1), it's placed at the layer's midpoint. 
+   With multiple grid points, they are arranged so that the distance from the border to the 
+   nearest grid points is half the distance between adjacent grid points within the layer. 
+   Note that the intervals betweens adjacent gridpoints are called elements. Thus, with this
+   grid arrangement, the elements can cross layer borders. */
+
+STATIC void setup_heatgrid(Real *h /**< distances between adjacent gridpoints */
+                          )
 {
   int l,j;
   Real nodes[NHEATGRIDP];
@@ -174,7 +206,7 @@ STATIC void setup_heatgrid(Real *h)
 STATIC void get_unaccounted_changes_in_water_and_solids(Real *waterdiff, Real *soliddiff, Real * abs_waterice_cont, Soil *soil)
 {
   int l;
-  foreachsoillayer(l)   /* track water flow and porosity changes of other methods */
+  foreachsoillayer(l) 
   {
     waterdiff[l] = (abs_waterice_cont[l] - soil->wi_abs_enth_adj[l]);
     soliddiff[l] = (soildepth[l]-soil->wsats[l])-soil->sol_abs_enth_adj[l];
@@ -190,9 +222,9 @@ STATIC void update_wi_and_sol_enth_adjusted(Real * waterdiff, Real *soliddiff, S
   }
 }
 
-/* functions used for testing purposes only */
+/**** unused functions; Only exist for testing purposes or backward compatibility ****/
 
-
+/* Function returns temperature at all individual gridpoints. */
 STATIC void calc_gp_temps(Real * gp_temps, Real * enth,const  Soil_thermal_prop *th)
 {
   int gp;
@@ -203,34 +235,30 @@ STATIC void calc_gp_temps(Real * gp_temps, Real * enth,const  Soil_thermal_prop 
 }
 
 
-/* alternative grid where elements do not cross layer boundaries,
-allows extract tempeature at layer boundaries as last gridpoint of each layer is on its boundary
-to next layer
-use for testing only!*/
+/* Function defines an alternative grid where elements do not cross layer boundaries.
+   It allows to extract tempeatures at layer boundaries, since last gridpoint of each layer is on its boundary
+   to next layer. Is an alternative to setupheat_grid. */
 STATIC void setup_heatgrid_layer_boundaries(Real *h)
 {
   int l,j;
-  //printf("GPL Heat %d  ", GPLHEAT);
   for(l=0;l<NSOILLAYER;++l)
   {
     for(j=0;j<GPLHEAT;++j)
     {
       h[l*GPLHEAT+j]= (soildepth[l]/1000)/GPLHEAT;
-      //printf("gp: %f j: %d add: %f ", h[l*GPLHEAT+j], j, (soildepth[l]/1000) * ( (1.0*j+1)/GPLHEAT) );
     }
   }
 }
 
 
-/* compute bottom boundary layer temeperatures, to be used incombination with setup_heatgrid_layer_boundaries */
-
-STATIC void compute_bottom_bound_layer_temps_from_enth(Real *temp,          /**< temperature vector that is written to N=NSOILLAYER */
-                                                       const Real *enth,    /**< input enthalpy vector N=NHEATGRID */
-                                                       const Soil_thermal_prop *th /**< soil thermal properties */
+/* Function computes bottom boundary layer temeperatures. Should be used in combination with setup_heatgrid_layer_boundaries. 
+   Is an alternative to compute_mean_layer_temps_from_enth. */
+STATIC void compute_bottom_bound_layer_temps_from_enth(Real *temp,         
+                                                       const Real *enth,    
+                                                       const Soil_thermal_prop *th 
                                                       )
 {
   int layer;
-
   for(layer=0; layer<NSOILLAYER; ++layer)
   {
     temp[layer]= ENTH2TEMP(enth,th,(layer+1)*GPLHEAT-1); /* take the bottom most gp of each layer */
