@@ -1,3 +1,15 @@
+/**************************************************************************************/
+/**                                                                                \n**/
+/**                    apply_heatconduction_of_a_day.c                             \n**/
+/**                                                                                \n**/
+/** (C) Potsdam Institute for Climate Impact Research (PIK), see COPYRIGHT file    \n**/
+/** authors, and contributors see AUTHORS file                                     \n**/
+/** This file is part of LPJmL and licensed under GNU AGPL Version 3               \n**/
+/** or later. See LICENSE file or go to http://www.gnu.org/licenses/               \n**/
+/** Contact: https://github.com/PIK-LPJmL/LPJmL                                    \n**/
+/**                                                                                \n**/
+/**************************************************************************************/
+
 /*
 The function applies heat conduction that happens during the timespan of a day
 to the enthalpy (i.e. thermal energy) vector, given thermal properties of the soil.

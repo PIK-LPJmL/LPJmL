@@ -1,3 +1,15 @@
+/**************************************************************************************/
+/**                                                                                \n**/
+/**                    apply_enth_of_untracked_mass_shifts.c                       \n**/
+/**                                                                                \n**/
+/** (C) Potsdam Institute for Climate Impact Research (PIK), see COPYRIGHT file    \n**/
+/** authors, and contributors see AUTHORS file                                     \n**/
+/** This file is part of LPJmL and licensed under GNU AGPL Version 3               \n**/
+/** or later. See LICENSE file or go to http://www.gnu.org/licenses/               \n**/
+/** Contact: https://github.com/PIK-LPJmL/LPJmL                                    \n**/
+/**                                                                                \n**/
+/**************************************************************************************/
+
 #include "lpj.h"
 
 /*
@@ -13,7 +25,6 @@ or does not want the water flow to influence soil temperatures.
 The function now also accounts for enthalpy changes due changes of solid components in the
 same way as for the water.
 */
-
 
 void apply_enth_of_untracked_mass_shifts(Real enth[],             /**< enthalpy vector that is updated*/
                                          const Real water_diff[], /**< vector with absolute change of volumetric water content per layer */
