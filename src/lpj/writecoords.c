@@ -5,7 +5,7 @@
 /**     C implementation of LPJmL                                                  \n**/
 /**                                                                                \n**/
 /**     Function writes grid coordinates into binary file or writes                \n**/
-/**     soil code in NetCDF file                                                   \n**/
+/**     cell index in NetCDF file                                                  \n**/
 /**                                                                                \n**/
 /** (C) Potsdam Institute for Climate Impact Research (PIK), see COPYRIGHT file    \n**/
 /** authors, and contributors see AUTHORS file                                     \n**/
@@ -29,52 +29,6 @@ typedef struct
   double lat; /**< latitude */
 } Doublecoord;
 
-#ifdef USE_MPI
-static Bool mpi_write_coords(const Netcdf *cdf, /* Pointer to Netcdf */
-                             void *data,        /* data to be written to file */
-                             int size,
-                             int counts[],
-                             int offsets[],
-                             int rank,          /* MPI rank */
-                             MPI_Comm comm      /* MPI communicator */
-                            )                   /* returns TRUE on error */
-{
-  Bool rc;
-  int i,count;
-  int *vec=NULL;
-  if(rank==0)
-  {
-    vec=newvec(int,size); /* allocate receive buffer */
-    if(vec==NULL)
-    {
-      printallocerr("vec");
-      rc=TRUE;
-    }
-    else
-      rc=FALSE;
-  }
-  MPI_Bcast(&rc,1,MPI_INT,0,comm);
-  if(rc)
-    return TRUE;
-  MPI_Gatherv(data,counts[rank],MPI_INT,vec,counts,offsets,MPI_INT,0,comm);
-  if(rank==0)
-  {
-    count=0;
-    for(i=0;i<size;i++)
-      if(vec[i]==-1)
-        vec[i]=MISSING_VALUE_INT;
-      else
-        vec[i]=count++;
-    rc=write_int_netcdf(cdf,vec,NO_TIME,size); /* write data to file */
-    free(vec);
-  }
-  /* broadcast return code to all other tasks */
-  MPI_Bcast(&rc,1,MPI_INT,0,comm);
-  MPI_Barrier(comm);
-  return rc;
-} /* of 'mpi_write_coords' */
-#endif
-
 int writecoords(Outputfile *output,  /**< output struct */
                 int index,           /**< index in output file array */
                 const Cell grid[],   /**< LPJ grid */
@@ -86,7 +40,6 @@ int writecoords(Outputfile *output,  /**< output struct */
   Floatcoord *fdst=NULL;
   Doublecoord *ddst=NULL;
   MPI_Datatype type;
-  int *offsets,*counts;
 #endif
   Bool rc;
   int cell,count;
@@ -96,21 +49,25 @@ int writecoords(Outputfile *output,  /**< output struct */
   Doublecoord *dvec=NULL;
   if(output->files[index].isopen && output->files[index].fmt==CDF)
   {
-    cellid=newvec(int,config->ngridcell);
-    if(cellid==NULL)
+    if(isroot(*config))
     {
-      printallocerr("cellid");
-      rc=TRUE;
+      cellid=newvec(int,config->total);
+      if(cellid==NULL)
+      {
+        printallocerr("cellid");
+        rc=TRUE;
+      }
+      else
+      {
+        for(cell=0;cell<config->total;cell++)
+          cellid[cell]=cell;
+        rc=write_int_netcdf(&output->files[index].fp.cdf,cellid,NO_TIME,config->total);
+        count=config->total;
+        free(cellid);
+      }
     }
     else
-    {
-      for(cell=0;cell<config->ngridcell;cell++)
-        if(grid[cell].skip)
-          cellid[cell]= -1;
-        else
-          cellid[cell]=cell+config->startgrid;
       rc=FALSE;
-    }
   }
   if(output->files[index].fmt!=CDF || output->files[index].issocket)
   {
@@ -181,36 +138,6 @@ int writecoords(Outputfile *output,  /**< output struct */
   if(iserror(rc,config))
     return 0;
 #ifdef USE_MPI
-  if(output->files[index].isopen && output->files[index].fmt==CDF)
-  {
-    rc=FALSE;
-    counts=newvec(int,config->ntask);
-    if(counts==NULL)
-    {
-      printallocerr("counts");
-      rc=TRUE;
-    }
-    offsets=newvec(int,config->ntask);
-    if(offsets==NULL)
-    {
-      printallocerr("offsets");
-      rc=TRUE;
-    }
-    if(iserror(rc,config))
-    {
-      free(cellid);
-      free(counts);
-      free(offsets);
-      return 0;
-    }
-    getcounts(counts,offsets,config->nall,1,config->ntask);
-    mpi_write_coords(&output->files[index].fp.cdf,cellid,
-                     config->nall,
-                     counts,offsets,config->rank,config->comm);
-    free(counts);
-    free(offsets);
-    free(cellid);
-  }
   if(output->files[index].issocket || output->files[index].fmt!=CDF)
   {
     switch(config->grid_type)
@@ -365,17 +292,6 @@ int writecoords(Outputfile *output,  /**< output struct */
     }
   }
 #else
-  if(output->files[index].isopen && output->files[index].fmt==CDF)
-  {
-    count=0;
-    for(cell=0;cell<config->ngridcell;cell++)
-      if(cellid[cell]==-1)
-        cellid[cell]=MISSING_VALUE_INT;
-      else
-        cellid[cell]=count++;
-     write_int_netcdf(&output->files[index].fp.cdf,cellid,NO_TIME,config->nall);
-     free(cellid);
-  }
   switch(config->grid_type)
   {
     case LPJ_FLOAT:
@@ -440,13 +356,13 @@ int writecoords(Outputfile *output,  /**< output struct */
                     vec[count-1].lon*0.01,config->csv_delimit,vec[count-1].lat*0.01);
             break;
         }
-        if(output->files[index].issocket)
-        {
-          send_token_coupler(PUT_DATA,index,config);
-          writeshort_socket(config->socket,vec,count*2);
-        }
-        free(vec);
-        break;
+      if(output->files[index].issocket)
+      {
+        send_token_coupler(PUT_DATA,index,config);
+        writeshort_socket(config->socket,vec,count*2);
+      }
+      free(vec);
+      break;
   }
 #endif
   return count;

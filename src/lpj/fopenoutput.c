@@ -59,7 +59,7 @@ static void openfile(Outputfile *output,const Cell grid[],
   {
     switch(config->outputvars[i].id)
     {
-      case ADISCHARGE: case GRID:
+      case ADISCHARGE:
         if(output->index_all==NULL)
         {
           output->index_all=createcoord_all(grid,config);
@@ -89,7 +89,7 @@ static void openfile(Outputfile *output,const Cell grid[],
         if(!config->ischeckpoint && config->outputvars[i].filename.meta)
           fprintoutputjson(i,0,config);
         if(!create(&output->files[config->outputvars[i].id].fp.cdf,filename,i,
-                   (config->outputvars[i].id==ADISCHARGE || config->outputvars[i].id==GRID) ? output->index_all : output->index,config))
+                   (config->outputvars[i].id==ADISCHARGE) ? output->index_all : output->index,config))
           output->files[config->outputvars[i].id].isopen=TRUE;
       }
     }

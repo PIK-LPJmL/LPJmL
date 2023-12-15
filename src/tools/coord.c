@@ -292,6 +292,7 @@ Bool readcoord(Coordfile coordfile, /**< open coord file */
     default:
       return TRUE;
   } /* of switch */
+  /* check correct range of coordinate */
   if(coord->lat<-90 || coord->lat>90)
   {
     fprintf(stderr,"ERROR261: Invalid value %g for latitude, must be in [-90,90].\n",coord->lat);
