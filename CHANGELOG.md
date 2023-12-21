@@ -23,7 +23,7 @@ of `major.minor.patch` with
 
 ### Contributors
 
-- author: Johanna Braun (jobraun@pik-potsdam.de), Sebastion Ostberg (ostberg@pik-potsdam.de)
+- author: Johanna Braun (jobraun@pik-potsdam.de), Sebastian Ostberg (ostberg@pik-potsdam.de)
 - code review: Christoph Mueller (cmueller@pik-potsdam.de)
 - dicussed by attendees of [LPJmL seminar](https://gitlab.pik-potsdam.de/lpjml/LPJmL_internal/-/wikis/231221_lpjmlseminar) on Dec. 21st 2023 and [Nov. 23rd 2023](https://gitlab.pik-potsdam.de/lpjml/LPJmL_internal/-/wikis/231123_lpjmlseminar).
 
@@ -45,7 +45,7 @@ of `major.minor.patch` with
 
 ### Contributors
 
-- author: Werner von Bloh (bloh@pik-potsdam.de), Sebastion Ostberg (ostberg@pik-potsdam.de), Christoph Mueller (cmueller@pik-potsdam.de), Sibyll Schaphoff (sibylls@pik-potsdam.de)
+- author: Werner von Bloh (bloh@pik-potsdam.de), Sebastian Ostberg (ostberg@pik-potsdam.de), Christoph Mueller (cmueller@pik-potsdam.de), Sibyll Schaphoff (sibylls@pik-potsdam.de)
 
 ### Added
 
@@ -107,7 +107,7 @@ of `major.minor.patch` with
 ### Contributors
 
 - author: Werner von Bloh (bloh@pik-potsdam.de)
-- code review: Jannes Breier (breier@pik-potsdam.de), Constanze Werner (cowerner@pik-potsdam.de), Sebastion Ostberg(ostberg@pik-potsdam.de), 
+- code review: Jannes Breier (breier@pik-potsdam.de), Constanze Werner (cowerner@pik-potsdam.de), Sebastian Ostberg(ostberg@pik-potsdam.de), 
   Marie Hemmen (hemmen@pik-potsdam.de), Christoph Mueller (cmueller@pik-potsdam.de)
 
 ### Added
