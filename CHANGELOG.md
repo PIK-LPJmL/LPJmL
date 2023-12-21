@@ -19,6 +19,28 @@ of `major.minor.patch` with
 
 ## [Unreleased]
 
+## [5.8.2] - 2023-12-21
+
+### Contributors
+
+- author: Johanna Braun (jobraun@pik-potsdam.de), Sebastion Ostberg (ostberg@pik-potsdam.de)
+- code review: Christoph Mueller (cmueller@pik-potsdam.de)
+- dicussed by attendees of [LPJmL seminar](https://gitlab.pik-potsdam.de/lpjml/LPJmL_internal/-/wikis/231221_lpjmlseminar) on Dec. 21st 2023 and [Nov. 23rd 2023](https://gitlab.pik-potsdam.de/lpjml/LPJmL_internal/-/wikis/231123_lpjmlseminar).
+
+### Changed
+
+- `wateruse` from "yes" to "all"
+- `sowing_date_option` from "fixed_sdate" to "prescribed_sdate"
+- `crop_phu_option` from "new" to "prescribed"
+- `tillage_type` from "all" to "read"
+- `residue_treatment` from  "fixed_residue_remove" to "read_residue_data"
+- `grazing` from "default" to "livestock"
+- `prescribe_lsuha` from FALSE to TRUE
+- set `nspinup` to 420 instead of 390 for LU spinup
+- updated paths to land management input files in `input.cjson`
+- set all available [LandInG1.0](https://doi.org/10.5194/gmd-16-3375-2023) inputs as the `default` option
+
+
 ## [5.8.1] - 2023-12-11
 
 ### Contributors
