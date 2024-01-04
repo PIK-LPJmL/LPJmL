@@ -61,16 +61,16 @@ void output_gbw_agriculture(Output *output,      /**< output data */
       getoutputindex(output,CFT_CONSUMP_WATER_B,index,config)+=total_b*stand->frac;
       forrootsoillayer(l)
       {
-        if(crop->dh!=NULL)
-          crop->dh->transpsum+=aet_stand[l]*stand->frac;
+        if(crop->sh!=NULL)
+          crop->sh->transpsum+=aet_stand[l]*stand->frac;
         else
           getoutputindex(output,CFT_TRANSP,index,config)+=aet_stand[l]*stand->frac;
         getoutputindex(output,CFT_TRANSP_B,index,config)+=(aet_stand[l]-green_transp[l])*stand->frac;
       }
-      if(crop->dh!=NULL)
+      if(crop->sh!=NULL)
       {
-        crop->dh->evapsum+=evap*stand->frac;
-        crop->dh->intercsum+=intercep_stand*stand->frac;
+        crop->sh->evapsum+=evap*stand->frac;
+        crop->sh->intercsum+=intercep_stand*stand->frac;
       }
       else
       {
@@ -87,16 +87,16 @@ void output_gbw_agriculture(Output *output,      /**< output data */
       getoutputindex(output,CFT_CONSUMP_WATER_B,index,config)+=total_b;
       forrootsoillayer(l)
       {
-        if(crop->dh!=NULL)
-          crop->dh->transpsum+=aet_stand[l];
+        if(crop->sh!=NULL)
+          crop->sh->transpsum+=aet_stand[l];
         else
           getoutputindex(output,CFT_TRANSP,index,config)+=aet_stand[l];
         getoutputindex(output,CFT_TRANSP_B,index,config)+=(aet_stand[l]-green_transp[l]);
       }
-      if(crop->dh!=NULL)
+      if(crop->sh!=NULL)
       {
-        crop->dh->evapsum+=evap;
-        crop->dh->intercsum+=intercep_stand;
+        crop->sh->evapsum+=evap;
+        crop->sh->intercsum+=intercep_stand;
       }
       else
       {

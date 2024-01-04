@@ -391,10 +391,10 @@ Stocks littersom(Stand *stand,                /**< pointer to stand data */
         foreachpft(pft,p,&stand->pftlist)
         {
           crop=pft->data;
-          if(crop->dh!=NULL)
+          if(crop->sh!=NULL)
           {
-            crop->dh->n2o_nitsum+=F_N2O;
-            crop->dh->c_emissum+=decom_litter.carbon*param.atmfrac+soil_cflux;
+            crop->sh->n2o_nitsum+=F_N2O;
+            crop->sh->c_emissum+=decom_litter.carbon*param.atmfrac+soil_cflux;
           }
           else
           {
