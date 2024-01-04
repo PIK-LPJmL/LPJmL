@@ -19,6 +19,18 @@ of `major.minor.patch` with
 
 ## [Unreleased]
 
+### Contributors
+
+- author: Christoph  Mueller (cmueller@pik-potsdam.de)
+- code review:
+
+### Changed
+
+- renamed `double_harvest.c` to `separate_harvests.c` and `update_double_harvest.c` to `update_separate_harvests.c` and changed entries in Makefiles accordingly
+- renamed functions `double_harvest()` to `separate_harvests()` and `update_double_harvest()` to `update_separate_harvests()` throughout the code
+- renamed the `struct` `Double_harvest` to `Separate_harvest` and the variable of type `Separate_harvest` in `struct` `Pftcrop` from `dh` to `sh`
+- renamed `double_harvest` flag in `struct` `Config` to `separate harvests` 
+
 ## [5.8.2] - 2023-12-21
 
 ### Contributors
