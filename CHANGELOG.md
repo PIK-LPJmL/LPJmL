@@ -61,7 +61,6 @@ of `major.minor.patch` with
 - set `nspinup` to 420 instead of 390 for LU spinup
 - updated paths to land management input files in `input.cjson`
 - set all available [LandInG1.0](https://doi.org/10.5194/gmd-16-3375-2023) inputs as the `default` option
->>>>>>> b57a69edbe8f86ef85d5830aa283ce22c55dc8c0
 
 
 ## [5.8.1] - 2023-12-11
