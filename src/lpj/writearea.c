@@ -41,12 +41,12 @@ int writearea(Outputfile *output,  /**< output file array */
     case TERR_AREA:
       for(cell=0;cell<config->ngridcell;cell++)
         if(!grid[cell].skip)
-          vec[count++]=(float)grid[cell].coord.area;
+          vec[count++]=(float)(config->outnames[TERR_AREA].offset+config->outnames[TERR_AREA].scale*grid[cell].coord.area);
       break;
     case LAKE_AREA:
       for(cell=0;cell<config->ngridcell;cell++)
         if(!grid[cell].skip)
-          vec[count++]=(float)(grid[cell].coord.area*grid[cell].lakefrac);
+          vec[count++]=(float)((config->outnames[LAKE_AREA].offset+config->outnames[LAKE_AREA].scale*grid[cell].coord.area*grid[cell].lakefrac);
       break;
     default:
       if(isroot(*config))
