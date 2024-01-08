@@ -427,9 +427,9 @@ Bool filesexist(Config config, /**< LPJmL configuration */
     bad+=checkinputdata(&config,&config.grassfix_filename,"grassfix",NULL,LPJ_SHORT);
   if(config.grassharvest_filename.name!=NULL)
     bad+=checkinputdata(&config,&config.grassharvest_filename,"grassharvest",NULL,LPJ_SHORT);
-  if(config.with_nitrogen || config.fire==SPITFIRE || config.fire==SPITFIRE_TMAX)
+  if(config.with_nitrogen || isspitfire(&config))
     bad+=checkclmfile(&config,"wind speed",&config.wind_filename,"m/s",TRUE);
-  if(config.fire==SPITFIRE || config.fire==SPITFIRE_TMAX)
+  if(isspitfire(&config))
   {
     if(config.fdi==WVPD_INDEX)
       bad+=checkclmfile(&config,"humidity",&config.humid_filename,NULL,TRUE);

@@ -102,6 +102,7 @@ extern void initfwi(FWIdata *);
 
 /* Definition of macros */
 
+#define isspitfire(config) ((config)->fire==SPITFIRE || (config)->fire==SPITFIRE_TMAX)
 #define fwritefwi(file,fwi)  fwrite(fwi,sizeof(FWIdata),1,file)
 #define freadfwi(file,fwi,swap) freadreal((Real *)fwi,sizeof(FWIdata)/sizeof(Real),swap,file)
 #define fprintfwi(file,fwi) fprintf(file,"ffmc:\t\t%g\ndmc:\t\t%g\ndc:\t\t%g\n",(fwi)->ffmc,(fwi)->dmc,(fwi)->dc)

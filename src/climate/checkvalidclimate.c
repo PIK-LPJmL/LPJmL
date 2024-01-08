@@ -109,7 +109,7 @@ Bool checkvalidclimate(Climate *climate, /**< pointer to climate data */
     if(checkvalid(&climate->file_wet,config->wet_filename.name,grid,config))
       return TRUE;
   }
-  if(config->fire==SPITFIRE || config->fire==SPITFIRE_TMAX || config->with_nitrogen)
+  if(isspitfire(config) || config->with_nitrogen)
   {
     if(checkvalid(&climate->file_wind,config->wind_filename.name,grid,config))
       return TRUE;
@@ -126,7 +126,7 @@ Bool checkvalidclimate(Climate *climate, /**< pointer to climate data */
     if(checkvalid(&climate->file_tmax,config->tmax_filename.name,grid,config))
       return TRUE;
   }
-  if(config->fire==SPITFIRE || config->fire==SPITFIRE_TMAX)
+  if(isspitfire(config))
   {
     if(checkvalid(&climate->file_lightning,config->lightning_filename.name,grid,config))
       return TRUE;

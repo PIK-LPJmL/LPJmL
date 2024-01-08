@@ -111,9 +111,9 @@ void freeconfig(Config *config /**< LPJmL configuration */
     freefilename(&config->grassfix_filename);
   if(config->grassharvest_filename.name!=NULL)
     freefilename(&config->grassharvest_filename);
-  if(config->with_nitrogen  || config->fire==SPITFIRE || config->fire==SPITFIRE_TMAX)
+  if(config->with_nitrogen  || isspitfire(config))
     freefilename(&config->wind_filename);
-  if(config->fire==SPITFIRE || config->fire==SPITFIRE_TMAX)
+  if(isspitfire(config))
   {
     if(config->fdi==WVPD_INDEX)
       freefilename(&config->humid_filename);

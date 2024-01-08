@@ -84,7 +84,7 @@ void update_daily(Cell *cell,            /**< cell pointer           */
     flux_estab=sowing(cell,climate.prec,day,year,npft,ncft,config); 
   cell->discharge.drunoff=0.0;
 
-  if(config->fire==SPITFIRE || config->fire==SPITFIRE_TMAX)
+  if(isspitfire(config))
   {
     update_nesterov(cell,&climate);
     if(config->fdi==WVPD_INDEX)
@@ -154,7 +154,7 @@ void update_daily(Cell *cell,            /**< cell pointer           */
     cell->output.mpet+=eeq*PRIESTLEY_TAYLOR*stand->frac;
     getoutput(&cell->output,ALBEDO,config) += beta * stand->frac;
 
-    if((config->fire==SPITFIRE  || config->fire==SPITFIRE_TMAX)&& stand->afire_frac<1)
+    if(isspitfire(config) && stand->afire_frac<1)
     {
       dailyfire_stand(stand,popdensity,human_ign_prob,avgprec,input,cell_id,month,&climate,config);
     }

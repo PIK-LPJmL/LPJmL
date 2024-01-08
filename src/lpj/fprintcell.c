@@ -135,7 +135,7 @@ void fprintcell(FILE *file,            /**< file pointer to text file */
                 grid[cell].ml.product.slow.carbon);
 #endif
       }
-      if(config->fire==SPITFIRE || config->fire==SPITFIRE_TMAX)
+      if(isspitfire(config))
       {
         fprintignition(file,&grid[cell].ignition);
         if(config->gsilivefuel)

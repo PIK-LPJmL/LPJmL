@@ -30,7 +30,7 @@ void fprintpar_grass(FILE *file,const Pftpar *par,const Config *config)
           pargrass->reprod_cost);
   if(config->with_nitrogen)
     fprintf(file,"rel. ratio:\t%g\n",pargrass->ratio);
-  if(config->fire==SPITFIRE || config->fire==SPITFIRE_TMAX)
+  if(isspitfire(config))
     fprintf(file,"lfmc_a:\t\t%g\n"
             "lfmc_b:\t\t%g\n"
             "lfmc_c:\t\t%g\n"

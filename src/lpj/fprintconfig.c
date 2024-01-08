@@ -94,10 +94,10 @@ static size_t isnetcdfinput(const Config *config)
   }
   if(config->fire==SPITFIRE && config->tamp_filename.fmt==CDF)
     width=max(width,strlen(config->tamp_filename.var));
-  if((config->with_nitrogen || config->fire==SPITFIRE  || config->fire==SPITFIRE_TMAX) &&
+  if((config->with_nitrogen || isspitfire(config)) &&
      config->wind_filename.fmt==CDF)
     width=max(width,strlen(config->wind_filename.var));
-  if(config->fire==SPITFIRE  || config->fire==SPITFIRE_TMAX)
+  if(isspitfire(config))
   {
     if(config->fdi==WVPD_INDEX && config->humid_filename.fmt==CDF)
       width=max(width,strlen(config->humid_filename.var));
@@ -297,16 +297,16 @@ void fprintconfig(FILE *file,          /**< File pointer to text output file */
     len=printsim(file,len,&count,"random precipitation");
   if(config->fire)
   {
-    len=printsim(file,len,&count,(config->fire==SPITFIRE  || config->fire==SPITFIRE_TMAX)  ? "spitfire version " SPITFIRE_VERSION : "fire");
-    if((config->fire==SPITFIRE || config->fire==SPITFIRE_TMAX) && config->ispopulation)
+    len=printsim(file,len,&count,(isspitfire(config))  ? "spitfire version " SPITFIRE_VERSION : "GlobFIRM fire");
+    if(isspitfire(config) && config->ispopulation)
       len=printsim(file,len,&count,"and population");
-    if((config->fire==SPITFIRE || config->fire==SPITFIRE_TMAX) && config->prescribe_burntarea)
+    if(isspitfire(config) && config->prescribe_burntarea)
       len=printsim(file,len,&count,"prescribed burntarea");
     if(config->ishuman_ign_prob)
       len=printsim(file,len,&count,"human ignition probabilities");
     if(config->prescribe_ignition)
       len=printsim(file,len,&count,"prescribed ignitions");
-    if(config->fire==SPITFIRE || config->fire==SPITFIRE_TMAX)
+    if(isspitfire(config))
       len=printsim(file,len,&count,fdi[config->fdi]);
   }
   if(config->gsilivefuel)
@@ -610,7 +610,7 @@ void fprintconfig(FILE *file,          /**< File pointer to text output file */
     printinputfile(file,"soilpH",&config->soilph_filename,width,config);
   }
   printinputfile(file,"co2",&config->co2_filename,width,config);
-  if(config->with_nitrogen || config->fire==SPITFIRE || config->fire==SPITFIRE_TMAX)
+  if(config->with_nitrogen || isspitfire(config))
     printinputfile(file,"windspeed",&config->wind_filename,width,config);
   if(config->cropsheatfrost || config->fire==SPITFIRE_TMAX)
   {
@@ -619,7 +619,7 @@ void fprintconfig(FILE *file,          /**< File pointer to text output file */
   }
   if(config->fire==SPITFIRE)
     printinputfile(file,"temp ampl",&config->tamp_filename,width,config);
-  if(config->fire==SPITFIRE || config->fire==SPITFIRE_TMAX)
+  if(isspitfire(config))
   {
     if(config->fdi==WVPD_INDEX)
       printinputfile(file,(config->relative_humidity) ? "rhumid" : "humid",&config->humid_filename,width,config);

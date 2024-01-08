@@ -134,7 +134,7 @@ Bool fscanpft_grass(LPJfile *file, /**< pointer to LPJ file */
       return TRUE;
     }
   }
-  if(config->fire==SPITFIRE || config->fire==SPITFIRE_TMAX)
+  if(isspitfire(config))
   {
     fscanreal2(verb,file,&grass->lfmc_a,pft->name,"lfmc_a");
     fscanreal2(verb,file,&grass->lfmc_b,pft->name,"lfmc_b");

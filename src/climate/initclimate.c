@@ -169,7 +169,7 @@ Climate *initclimate(Config *config /**< pointer to LPJ configuration */
                 config->nh4deposition_filename.name,climate->file_nh4deposition.firstyear+climate->file_nh4deposition.nyear-1,lastyear);
     }
   }
-  if(config->fire==SPITFIRE || config->fire==SPITFIRE_TMAX || config->with_nitrogen)
+  if(isspitfire(config) || config->with_nitrogen)
   {
     if(openclimate(&climate->file_wind,&config->wind_filename,"m/s",LPJ_SHORT,0.001,config))
     {
@@ -181,7 +181,7 @@ Climate *initclimate(Config *config /**< pointer to LPJ configuration */
     if(climate->firstyear<climate->file_wind.firstyear)
       climate->firstyear=climate->file_wind.firstyear;
   }
-  if(config->fire==SPITFIRE || config->fire==SPITFIRE_TMAX)
+  if(isspitfire(config))
   {
     if(config->fdi==WVPD_INDEX)
     {
@@ -217,7 +217,7 @@ Climate *initclimate(Config *config /**< pointer to LPJ configuration */
       return NULL;
     }
   }
-  if(config->fire==SPITFIRE || config->fire==SPITFIRE_TMAX)
+  if(isspitfire(config))
   {
     if(config->prescribe_ignition)
     {
@@ -328,7 +328,7 @@ Climate *initclimate(Config *config /**< pointer to LPJ configuration */
       return NULL;
     }
   }
-  if(config->with_nitrogen || config->fire==SPITFIRE || config->fire==SPITFIRE_TMAX)
+  if(config->with_nitrogen || isspitfire(config))
   {
     if(config->wind_filename.fmt!=FMS)
     {
@@ -367,7 +367,7 @@ Climate *initclimate(Config *config /**< pointer to LPJ configuration */
       }
     }
   }
-  if(config->fire==SPITFIRE || config->fire==SPITFIRE_TMAX)
+  if(isspitfire(config))
   {
     if(config->fdi==WVPD_INDEX)
     {
@@ -442,7 +442,7 @@ Climate *initclimate(Config *config /**< pointer to LPJ configuration */
       return NULL;
     }
   }
-  if((config->fire==SPITFIRE || config->fire==SPITFIRE_TMAX) && config->prescribe_burntarea)
+  if(config->prescribe_burntarea)
   {
     if((climate->data.burntarea=newvec(Real,climate->file_burntarea.n))==NULL)
     {

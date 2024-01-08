@@ -67,7 +67,7 @@ Bool initinput(Input *input,        /**< Input data */
   }
   else
     input->human_ign_prob=NULL;
-  if(!config->prescribe_ignition && (config->fire==SPITFIRE || config->fire==SPITFIRE_TMAX))
+  if(!config->prescribe_ignition && isspitfire(config))
   {
     if((input->human_ignition=inithumanignition(config))==NULL)
       return TRUE;

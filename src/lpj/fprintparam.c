@@ -67,7 +67,7 @@ void fprintparam(FILE *file,    /**< pointer to text file */
     fprintf(file,"equisoil_years:\t%d\n",param.equisoil_years);
     fprintf(file,"equisoil_fadeout:\t%d\n",param.equisoil_fadeout);
   }
-  if(config->fire==SPITFIRE || config->fire==SPITFIRE_TMAX)
+  if(isspitfire(config))
   {
     fprintf(file,"firedura:\t%g\n"
             "fire_intens:\t%g\n"

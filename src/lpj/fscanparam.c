@@ -201,7 +201,7 @@ Bool fscanparam(LPJfile *file,       /**< File pointer to text file */
     param.q_ash=param.sapwood_recovery=param.fertilizer_rate=0;
     param.residue_cn=1;
   }
-  if(config->fire==SPITFIRE || config->fire==SPITFIRE_TMAX)
+  if(isspitfire(config))
   {
     fscanparamreal(f,&param.firedura,"firedura");
     fscanparamreal(f,&param.fire_intens,"fire_intens");

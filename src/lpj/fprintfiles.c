@@ -102,7 +102,7 @@ void fprintfiles(FILE *file,          /**< pointer to text output file */
     }
     fprintfilename(file,&config->soilph_filename,FALSE);
   }
-  if(config->with_nitrogen || config->fire==SPITFIRE || config->fire==SPITFIRE_TMAX)
+  if(config->with_nitrogen || isspitfire(config))
     fprintfilename(file,&config->wind_filename,TRUE);
   if(config->fire==SPITFIRE_TMAX||config->cropsheatfrost)
   {
@@ -111,7 +111,7 @@ void fprintfiles(FILE *file,          /**< pointer to text output file */
   }
   if(config->fire==SPITFIRE)
     fprintfilename(file,&config->tamp_filename,TRUE);
-  if(config->fire==SPITFIRE || config->fire==SPITFIRE_TMAX)
+  if(isspitfire(config))
   {
     if(config->fdi==WVPD_INDEX)
       fprintfilename(file,&config->humid_filename,TRUE);

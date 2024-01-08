@@ -179,7 +179,7 @@ Bool fscanconfig(Config *config,    /**< LPJ configuration */
   const char *fertilizer[]={"no","yes","auto"};
   const char *irrigation[]={"no","lim","pot","all"};
   const char *radiation[]={"cloudiness","radiation","radiation_swonly","radiation_lwdown"};
-  const char *fire[]={"no_fire","fire","spitfire","spitfire_tmax"};
+  const char *fire[]={"no","globfirm","spitfire","spitfire_tmax"};
   const char *sowing_data_option[]={"no_fixed_sdate","fixed_sdate","prescribed_sdate"};
   const char *soilpar_option[]={"no_fixed_soilpar","fixed_soilpar","prescribed_soilpar"};
   const char *wateruse[]={"no","yes","all"};
@@ -274,7 +274,7 @@ Bool fscanconfig(Config *config,    /**< LPJ configuration */
   config->max_firesize=FALSE;
   config->ishuman_ign_prob=FALSE;
   config->gsilivefuel=FALSE;
-  if(config->fire==SPITFIRE  || config->fire==SPITFIRE_TMAX)
+  if(isspitfire(config))
   {
     if(fscanbool(file,&config->gsilivefuel,"gsilivefuel",!config->pedantic,verbose))
       return TRUE;
@@ -618,7 +618,7 @@ Bool fscanconfig(Config *config,    /**< LPJ configuration */
   config->nwptype=(config->nwft) ? NWPTYPE : 0;
   config->ngrass=getngrassnat(config->pftpar,config->npft[GRASS]+config->npft[TREE]);
   config->iscotton=findpftname("cotton",config->pftpar+config->npft[GRASS]+config->npft[TREE]-config->nagtree,config->nagtree)!=NOT_FOUND;
-  if(config->fire==SPITFIRE  || config->fire==SPITFIRE_TMAX)
+  if(isspitfire(config))
   {
     if(fscanfireduration(file,standtypes,nstand,verbose))
     {
@@ -918,11 +918,11 @@ Bool fscanconfig(Config *config,    /**< LPJ configuration */
   }
   else
     config->no3deposition_filename.name=config->nh4deposition_filename.name=config->soilph_filename.name=NULL;
-  if((config->fire==SPITFIRE || config->fire==SPITFIRE_TMAX) && config->fdi==WVPD_INDEX)
+  if(isspitfire(config) && config->fdi==WVPD_INDEX)
   {
     scanclimatefilename(input,&config->humid_filename,TRUE,TRUE,"humid");
   }
-  if(config->with_nitrogen || config->fire==SPITFIRE || config->fire==SPITFIRE_TMAX)
+  if(config->with_nitrogen || isspitfire(config))
   {
     scanclimatefilename(input,&config->wind_filename,TRUE,TRUE,"wind");
   }
@@ -939,7 +939,7 @@ Bool fscanconfig(Config *config,    /**< LPJ configuration */
   }
   else
     config->tamp_filename.name=NULL;
-  if(config->fire==SPITFIRE || config->fire==SPITFIRE_TMAX)
+  if(isspitfire(config))
   {
     if(config->prescribe_ignition)
     {

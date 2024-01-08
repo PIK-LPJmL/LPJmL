@@ -299,7 +299,7 @@ int iterate(Outputfile *output, /**< Output file data */
         break; /* leave time loop */
       }
     }
-    if(config->fire==SPITFIRE || config->fire==SPITFIRE_TMAX)
+    if(!config->prescribe_ignition && isspitfire(config))
     {
       rc=gethumanignition(input.human_ignition,year,grid,config);
       if(iserror(rc,config))
