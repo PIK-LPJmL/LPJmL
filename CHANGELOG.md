@@ -19,7 +19,7 @@ of `major.minor.patch` with
 
 ## [Unreleased]
 
-## [5.8.2] - 2023-12-12
+## [5.8.3] - 2024-01-08
 
 ### Contributors
 
@@ -28,7 +28,8 @@ of `major.minor.patch` with
 ### Added
 
 - allowed range for coordinates checked in `readcoord()`.
-- allowed formats (`raw`, `clm`, `clm2`) for input files checked in `openmetafile()`.
+- allowed formats (`"raw"`, `"clm"`, `"clm2"`) for input files checked in `openmetafile()`.
+- Output scaling added to `writearea.c`.
 
 ### Changed
 
@@ -38,6 +39,29 @@ of `major.minor.patch` with
 
 - NetCDF output for grid file corrected if cells are skipped.
 - `var_len` correctly set for input with no time axis in `openclimate_netcdf.c`.
+
+
+## [5.8.2] - 2023-12-21
+
+### Contributors
+
+- author: Johanna Braun (jobraun@pik-potsdam.de), Sebastian Ostberg (ostberg@pik-potsdam.de)
+- code review: Christoph Mueller (cmueller@pik-potsdam.de)
+- dicussed by attendees of [LPJmL seminar](https://gitlab.pik-potsdam.de/lpjml/LPJmL_internal/-/wikis/231221_lpjmlseminar) on Dec. 21st 2023 and [Nov. 23rd 2023](https://gitlab.pik-potsdam.de/lpjml/LPJmL_internal/-/wikis/231123_lpjmlseminar).
+
+### Changed
+
+- `wateruse` from "yes" to "all"
+- `sowing_date_option` from "fixed_sdate" to "prescribed_sdate"
+- `crop_phu_option` from "new" to "prescribed"
+- `tillage_type` from "all" to "read"
+- `residue_treatment` from  "fixed_residue_remove" to "read_residue_data"
+- `grazing` from "default" to "livestock"
+- `prescribe_lsuha` from FALSE to TRUE
+- set `nspinup` to 420 instead of 390 for LU spinup
+- updated paths to land management input files in `input.cjson`
+- set all available [LandInG1.0](https://doi.org/10.5194/gmd-16-3375-2023) inputs as the `default` option
+>>>>>>> b57a69edbe8f86ef85d5830aa283ce22c55dc8c0
 
 
 ## [5.8.1] - 2023-12-11
@@ -107,7 +131,7 @@ of `major.minor.patch` with
 ### Contributors
 
 - author: Werner von Bloh (bloh@pik-potsdam.de)
-- code review: Jannes Breier (breier@pik-potsdam.de), Constanze Werner (cowerner@pik-potsdam.de), Sebastion Ostberg(ostberg@pik-potsdam.de), 
+- code review: Jannes Breier (breier@pik-potsdam.de), Constanze Werner (cowerner@pik-potsdam.de), Sebastian Ostberg(ostberg@pik-potsdam.de), 
   Marie Hemmen (hemmen@pik-potsdam.de), Christoph Mueller (cmueller@pik-potsdam.de)
 
 ### Added
