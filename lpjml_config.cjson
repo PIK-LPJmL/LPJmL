@@ -23,6 +23,7 @@
 //#define BMGR_BROWN    /* enables brown harvest of biomass grass, instead of green harvest (default) */
 //#define CRU_MONTHLY /* Set macro for climate input selection. Options are  CRU_MONTHLY, CRU_NETCDF. If no makro is provided the default (GSWP3-W5E5) is used.*/
 #define OLD_LU /* Set macro for landuse, fertilizer and manure input selection. Options are  OLD_LU and MADRAT. If no makro is provided the default (LandInG toolbox) is used.*/
+//#define GLOBFIRM /* enable GlobFIRM fire model */
 
 {   /* LPJmL configuration in JSON format */
 
@@ -42,19 +43,26 @@
   #if defined CRU_MONTHLY || defined CRU_NETCDF
     "random_prec" : true,     /* Random weather generator for precipitation enabled */
     "radiation" : "radiation",/* type of radiation input to be used, options: "cloudiness", "radiation", "radiation_swonly", "radiation_lwdown" */
-    "fire" : "spitfire", /* fire disturbance enabled, options: "no_fire", "fire", "spitfire", "spitfire_tmax" */
+#ifdef GLOBFIRM
+    "fire" : "globfirm", /* fire disturbance enabled, options: "no", "globfirm", "spitfire", "spitfire_tmax" */
+#else
+    "fire" : "spitfire", /* fire disturbance enabled, options: "no", "globfirm", "spitfire", "spitfire_tmax" */
+#endif
     "fdi" : "nesterov",  /* fire danger index formulations: "wvpd" (needs humidity input data), "nesterov" */
   #else
     "random_prec" : false,     /* Random weather generator for precipitation disabled */
     "radiation" : "radiation",/* type of radiation input to be used, options: "cloudiness", "radiation", "radiation_swonly", "radiation_lwdown" */
-    "fire" : "spitfire_tmax", /* fire disturbance enabled, options: "no_fire", "fire", "spitfire", "spitfire_tmax" */
+#ifdef GLOBFIRM
+    "fire" : "globfirm", /* fire disturbance enabled, options: "no", "globfirm", "spitfire", "spitfire_tmax" */
+#else
+    "fire" : "spitfire_tmax", /* fire disturbance enabled, options: "no", "globfirm", "spitfire", "spitfire_tmax" */
+#endif
     "fdi" : "wvpd",           /* fire danger index formulations: "wvpd" (needs humidity input data), "nesterov" */
   #endif
   "isswnet" : false,          /* short-wave data is net radiation */
   "gsilivefuel" : true,
   "human_ign_prob" : false,   /* read human ignition probabilty from file */
   "max_firesize" : false,     /* read maximum fire size from file */
-  "fire_base" : false,
   "fireduration" : [{"stand" : "grassland", "duration" : [1,120] ,"ndayfire" : 1},
                     {"stand" : "natural", "duration" : [120,480], "ndayfire" : 3}], /* fire duration inztervals and maximum days of fire for each stand */
 
@@ -331,7 +339,11 @@ ID                               Fmt                        filename
     { "id" : "n_immo",           "file" : { "name" : "output/mn_immo"}},
     { "id" : "pft_ndemand",      "file" : { "name" : "output/pft_ndemand"}},
     { "id" : "nfert_agr",        "file" : { "name" : "output/nfert_agr"}},
+#ifdef GLOBFIRM
+    { "id" : "firen",            "file" : { "name" : "output/firen"}},
+#else
     { "id" : "firen",            "file" : { "timestep" : "monthly" , "unit" : "gN/m2/month", "name" : "output/mfiren"}},
+#endif
     { "id" : "n_mineralization", "file" : { "name" : "output/mn_mineralization"}},
     { "id" : "n_volatilization", "file" : { "name" : "output/mn_volatilization"}},
     { "id" : "ndepos",           "file" : { "name" : "output/ndepos"}},
@@ -348,12 +360,16 @@ ID                               Fmt                        filename
     { "id" : "pft_croot",        "file" : { "name" : "output/pft_croot"}},
     { "id" : "pft_csapw",        "file" : { "name" : "output/pft_csapw"}},
     { "id" : "pft_chawo",        "file" : { "name" : "output/pft_chawo"}},
+#ifdef GLOBFIRM
+    { "id" : "firec",            "file" : { "name" : "output/firec"}},
+#else
     { "id" : "firec",            "file" : { "timestep" : "monthly" , "unit" : "gC/m2/month", "name" : "output/mfirec"}},
     { "id" : "nfire",            "file" : { "name" : "output/mnfire"}},
     { "id" : "fireduration",     "file" : { "name" : "output/mfireduration"}},
     { "id" : "firedurationdays", "file" : { "name" : "output/mfiredurationdays"}},
     { "id" : "firedi",           "file" : { "name" : "output/mfiredi"}},
     { "id" : "burntarea",        "file" : { "name" : "output/mburnt_area"}},
+#endif
     { "id" : "discharge",        "file" : { "name" : "output/mdischarge"}},
     { "id" : "wateramount",      "file" : { "name" : "output/mwateramount"}},
     { "id" : "harvestc",         "file" : { "name" : "output/flux_harvest"}},
