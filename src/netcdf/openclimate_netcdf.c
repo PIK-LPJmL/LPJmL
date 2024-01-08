@@ -383,7 +383,7 @@ Bool openclimate_netcdf(Climatefile *file,    /**< climate data file */
       return TRUE;
     }
     nc_inq_vardimid(file->ncid,file->varid,dimids);
-    nc_inq_dimlen(file->ncid,dimids[1],&file->var_len);
+    nc_inq_dimlen(file->ncid,dimids[(file->time_step==MISSING_TIME) ? 0 : 1],&file->var_len);
     free(dimids);
   }
   else

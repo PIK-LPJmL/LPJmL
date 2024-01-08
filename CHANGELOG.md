@@ -19,6 +19,28 @@ of `major.minor.patch` with
 
 ## [Unreleased]
 
+## [5.8.3] - 2024-01-08
+
+### Contributors
+
+- author: Werner von Bloh (bloh@pik-potsdam.de)
+
+### Added
+
+- allowed range for coordinates checked in `readcoord()`.
+- allowed formats (`"raw"`, `"clm"`, `"clm2"`) for input files checked in `openmetafile()`.
+- Output scaling added to `writearea.c`.
+
+### Changed
+
+- Error messages changed for more clarity.
+
+### Fixed
+
+- NetCDF output for grid file corrected if cells are skipped.
+- `var_len` correctly set for input with no time axis in `openclimate_netcdf.c`.
+
+
 ## [5.8.2] - 2023-12-21
 
 ### Contributors
@@ -101,6 +123,7 @@ of `major.minor.patch` with
 ### Removed
 
 - `lpjml_*js`, `param_*js`, `lpjparam_*js`, `pft_*.js`, `input_*.js` and `manage_*.js files` for specific projects.
+
 
 ## [5.7.10] - 2023-11-13
 
