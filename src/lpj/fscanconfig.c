@@ -545,6 +545,8 @@ Bool fscanconfig(Config *config,    /**< LPJ configuration */
     {
       if(isroot(*config))
         fputs("WARNING028: Type of 'wateruse' is boolean, converted to int.\n",stderr);
+      if(config->pedantic)
+        return TRUE;
       fscanbool2(file,&config->wateruse,"wateruse");
     }
     else
@@ -719,11 +721,16 @@ Bool fscanconfig(Config *config,    /**< LPJ configuration */
       return TRUE;
   }
   config->compress=0;
-  if(fscanint(file,&config->compress,"compress",TRUE,verbose))
+  if(fscanint(file,&config->compress,"compress",!config->pedantic,verbose))
     return TRUE;
 #ifdef USE_NETCDF
-  if(config->compress && verbose)
-    fputs("WARNING403: Compression of NetCDF files is not supported in this version of NetCDF.\n",stderr);
+  if(config->compress)
+  {
+    if(verbose)
+      fputs("WARNING403: Compression of NetCDF files is not supported in this version of NetCDF.\n",stderr);
+    if(config->pedantic)
+      return TRUE;
+  }
 #endif
   config->missing_value=MISSING_VALUE_FLOAT;
   if(fscanfloat(file,&config->missing_value,"missing_value",!config->pedantic,verbose))
@@ -1221,6 +1228,8 @@ Bool fscanconfig(Config *config,    /**< LPJ configuration */
     {
       if(verbose)
         fprintf(stderr,"WARNING014: Restart year=%d not in simulation years, no restart file written.\n",config->restartyear);
+      if(config->pedantic)
+        return TRUE;
       free(config->write_restart_filename);
       config->write_restart_filename=NULL;
     }

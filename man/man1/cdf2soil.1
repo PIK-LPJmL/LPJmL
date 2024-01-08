@@ -12,10 +12,10 @@ Program converts NetCDF input data into soil code or binary input data and write
 variable name in NetCDF file, default is 'stexture'
 .TP
 \-scale factor
-scaling factor for CLM grid file. Default is 0.01
+scaling factor for clm grid file. Default is 0.01
 .TP
 \-float
-write float values in clm file, default is short
+write float values in grid clm file, default is short
 .TP
 \-soilmap
 Use built-in soil map
@@ -31,7 +31,7 @@ filename of soil code data file written
 .SH EXAMPLES
 .TP
 .B cdf2soil
-soilcode.nc -var soilcode grid.clm soilcode.bin
+-var soilcode soilcode.nc grid.clm soilcode.bin
 .PP
 .SH EXIT STATUS
 .B cdf2soil
