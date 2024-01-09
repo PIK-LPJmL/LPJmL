@@ -36,6 +36,7 @@ void update_annual(Cell *cell,          /**< Pointer to cell */
   Real mintemp[N];
   Stocks litter_neg;
   Real soilc_agr,litc_agr,stand_fracs;
+  Real natfrac,wetlandfrac;
 #ifdef CHECK_BALANCE
 //anpp, influx and arh do not change
   Stocks start = {0,0};
@@ -50,6 +51,7 @@ void update_annual(Cell *cell,          /**< Pointer to cell */
   Real start_w = 0;
   Real end_w = 0;
 #endif
+  natfrac=wetlandfrac=0;
   if(cell->ml.dam)
     update_reservoir_annual(cell);
 
@@ -126,6 +128,12 @@ void update_annual(Cell *cell,          /**< Pointer to cell */
     else if(stand->type->landusetype == NATURAL)
       foreachpft(pft, p, &stand->pftlist)
         getoutputindex(&cell->output,FPC,getpftpar(pft, id) + 1,config) += pft->fpc;
+    if(stand->type->landusetype == NATURAL)
+      natfrac+=stand->frac;
+    if(stand->type->landusetype == WETLAND)
+      wetlandfrac+=stand->frac;
+
+
   } /* of foreachstand */
 #ifdef CHECK_BALANCE
   foreachstand(stand,s,cell->standlist)
@@ -152,8 +160,8 @@ void update_annual(Cell *cell,          /**< Pointer to cell */
   if (fabs(start.nitrogen - end.nitrogen+balance.nitrogen)>0.001) fprintf(stderr, "N_ERROR update annual: year=%d: error=%g start : %g end : %g balance.nitrogen: %g\n",
       year, start.nitrogen - end.nitrogen+balance.nitrogen, start.nitrogen, end.nitrogen,balance.nitrogen);
 #endif
-  getoutputindex(&cell->output,FPC,0,config) += 1 - cell->ml.cropfrac_rf - cell->ml.cropfrac_ir- cell->ml.cropfrac_wl[0]  - cell->ml.cropfrac_wl[1] - cell->lakefrac - cell->ml.reservoirfrac - cell->hydrotopes.wetland_area;
-  getoutputindex(&cell->output,WPC,0,config) += cell->hydrotopes.wetland_area;
+  getoutputindex(&cell->output,FPC,0,config) += natfrac;
+  getoutputindex(&cell->output,WPC,0,config) += wetlandfrac;
   cell->hydrotopes.wetland_wtable_mean /= NMONTH;
   cell->hydrotopes.wtable_mean /= NMONTH;
   if(cell->lakefrac<1)

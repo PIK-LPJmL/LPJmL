@@ -42,10 +42,10 @@
   "bioturbate" : 0.5,        /* bioturbation (0 = no bioturbation) */
   "veg_equil_year" : 990,
   "veg_equil_unlim" : false, /* enable vegetation spinup without nitrogen limitation */
-  "nequilsoil" : 160,        /* number of equisoil calls */
-  "equisoil_interval" : 15,  /* time interval between equisoil calls */
-  "equisoil_years": 10,      /* number of years used in calculation for equisoil */
-  "equisoil_fadeout": 300,   /* number of years for equisoil fadeout (for final call of equisoil); set to zero for no fadeout  */
+  "nequilsoil" : 60,         /* number of equisoil calls */
+  "equisoil_interval" : 40,  /* time interval between equisoil calls */
+  "equisoil_years": 30,      /* number of years used in calculation for equisoil */
+  "equisoil_fadeout": 200,   /* number of years for equisoil fadeout (for final call of equisoil); set to zero for no fadeout  */
   "k_max": 0.10,             /* k_max, maximum fraction of soil->NH4 assumed to be nitrified Parton, 2001*/
   "fpc_tree_max" : 0.95,     /* maximum foliage projective cover for trees */
   "temp_response" : 66.02,   /* Parameter in temperature response function */
