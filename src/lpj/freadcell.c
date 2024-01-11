@@ -187,7 +187,6 @@ Bool freadcell(FILE *file,             /**< File pointer to binary file */
       fprintf(stderr,"ERROR254: Cannot read gs data.\n");
       return TRUE;
     }
-    freadreal1(&cell->gsi_cum,swap,file);
     if(cell->ml.landfrac!=NULL && config->landuse_restart)
     {
       if(freadlandfrac(file,cell->ml.landfrac,ncft,config->nagtree,swap))
@@ -199,6 +198,7 @@ Bool freadcell(FILE *file,             /**< File pointer to binary file */
       freadreal((Real *)&cell->ml.product,sizeof(Pool)/sizeof(Real),swap,file);
 #endif
     }
+    freadreal1(&cell->gsi_cum,swap,file);
     if(cell->ml.fertilizer_nr!=NULL && config->landuse_restart)
     {
       if(freadlandfrac(file,cell->ml.fertilizer_nr,ncft,config->nagtree,swap))
