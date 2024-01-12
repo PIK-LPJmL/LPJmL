@@ -19,6 +19,18 @@ of `major.minor.patch` with
 
 ## [Unreleased]
 
+### Contributors
+
+- author: Christoph Müller (cmueller@pik-potsdam.de) and the entire LPJmL team
+
+### Added
+
+- added `.zenodo.json` for interaction with zenodo archives
+
+### Changed
+
+- updated AUTHORS file
+
 ## [5.8.2] - 2023-12-21
 
 ### Contributors
