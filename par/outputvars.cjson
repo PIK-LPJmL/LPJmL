@@ -89,6 +89,7 @@
     { "id" : GROWING_PERIOD, "name": "growing_period", "timestep" : "annual", "var" : "growing_period", "descr" : "", "unit" : "day", "scale" : 1.0, "offset" : 0.0},
     { "id" : CFT_PET, "name": "cft_pet", "timestep" : "annual", "var" : "pet", "descr" : "CFT-specific potential evapotranspiration", "unit" : "mm/yr", "scale" : 1.0, "offset" : 0.0},
     { "id" : PFT_WATER_DEMAND, "name": "pft_water_demand", "timestep" : "annual", "var" : "pft_water_demand", "descr" : "PFT-specific water demand", "unit" : "mm/yr", "scale" : 1.0, "offset" : 0.0},
+    { "id" : PFT_WATER_SUPPLY, "name": "pft_water_supply", "timestep" : "annual", "var" : "pft_water_supply", "descr" : "PFT-specific water supply", "unit" : "mm/yr", "scale" : 1.0, "offset" : 0.0},
     { "id" : CFT_TRANSP, "name": "cft_transp", "timestep" : "annual", "var" : "transp", "descr" : "CFT-specific transpiration", "unit" : "mm/yr", "scale" : 1.0, "offset" : 0.0},
     { "id" : CFT_TRANSP_B, "name": "cft_transp_b", "timestep" : "annual", "var" : "transp_b", "descr" : "CFT-specific blue transpiration", "unit" : "mm/yr", "scale" : 1.0, "offset" : 0.0},
     { "id" : CFT_EVAP, "name": "cft_evap", "timestep" : "annual", "var" : "evap", "descr" : "CFT-specific evaporation", "unit" : "mm/yr", "scale" : 1.0, "offset" : 0.0},
