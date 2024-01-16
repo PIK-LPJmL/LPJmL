@@ -120,7 +120,7 @@ Real water_stressed(Pft *pft,                  /**< [inout] pointer to PFT varia
   if (pft->stand->type->landusetype!=SETASIDE_RF && pft->stand->type->landusetype!=SETASIDE_IR)
   {
     getoutputindex(&pft->stand->cell->output,PFT_WATER_DEMAND,index,config)+=demand_pft;
-    getoutputindex(&pft->stand->cell->output,PFT_WATER_SUPPLY,index,config)+=supply_pft;
+    getoutputindex(&pft->stand->cell->output,PFT_WATER_SUPPLY,index,config)+=(supply_pft<=demand_pft) ? supply_pft : demand_pft;
   }
 
   *wdf=wdf(pft,demand,supply);
