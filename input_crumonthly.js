@@ -55,7 +55,7 @@
   "slope_mean" :   { "fmt" : "clm", "name" : "input_VERSION2/GloSlope-30as_mean.clm"},
   "slope_min"  :   { "fmt" : "clm", "name" : "input_VERSION2/GloSlope-30as_min.clm"},
   "slope_max"  :   { "fmt" : "clm", "name" : "input_VERSION2/GloSlope-30as_max.clm"},
-  "ch4" :          { "fmt" : "txt", "name" : "input_VERSION2/CH4_concentration_lpj.csv"},
+  "ch4" :          { "fmt" : "txt", "name" : "input_VERSION2/CH4_concentration_1841-2022.dat"},
   "hydrotopes" :   { "fmt" : "clm", "name" : "input_VERSION2/hydro2_shuffle.bin"},
 //  "landuse" :      { "fmt" : "clm",  "name" : "input_VERSION2/cft1700_2005_irrigation_systems_64bands.bin"},
   "landuse" :      { "fmt" : "clm",  "name" : "/p/projects/lpjml/input/MADRAT/lu_madrat_850-2015_32bands.clm"},
@@ -93,7 +93,7 @@
   "popdens" :      { "fmt" : "clm",  "name" : "input_VERSION2/popdens_HYDE3_1901_2011_bi.clm"},
   "burntarea" :    { "fmt" : "clm",  "name" : "/data/biosx/mforkel/input_new/GFED_CNFDB_ALFDB_Interp.BA.360.720.1901.2012.30days.clm"},
   "landcover":     { "fmt" : "clm",  "name" : "/data/biosx/mforkel/input_new/landcover_synmap_koeppen_vcf_newPFT_forLPJ_20130910.clm"},/*synmap_koeppen_vcf_NewPFT_adjustedByLanduse_SpinupTransitionPrescribed_forLPJ.clm*/
-  "co2" :          { "fmt" : "txt",  "name" : "input_VERSION2/CO2_antarctica2015composite_lpj.csv"},
+  "co2" :          { "fmt" : "txt",  "name" : "input_VERSION2/co2_1841-2022.dat"},
   "wetdays" :      { "fmt" : "clm",  "name" : "CRUDATA_TS3_23/gpcc_v7_cruts3_23_wet_1901_2013.clm"},
   "wateruse" :     { "fmt" : "clm",  "name" : "input_VERSION2/wateruse_1900_2000.bin" } /* water consumption for industry,household and livestock */
 },

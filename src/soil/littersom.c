@@ -290,7 +290,7 @@ Stocks littersom(Stand *stand,                      /**< [inout] pointer to stan
         soil->k_mean[l].slow+=(param.k_soil10.slow*response[l]);
 
         /*methanotrophy */
-        if((soil_moist[l]<0.8) && layerbound[l]<=soil->wtable && soil->CH4[l]/soildepth[l]/epsilon_O2*1000>CH4_air)
+        if((soil_moist[l]<0.9) && layerbound[l]<=soil->wtable && soil->CH4[l]/soildepth[l]/epsilon_O2*1000>CH4_air)
         {
            /*maybe calculating during diffusivity */
           oxidation=(Vmax_CH4*1e-3*24*WCH4*soil->CH4[l]/soildepth[l]/epsilon_O2*1000)/(km_CH4*1e-3*WCH4+soil->CH4[l]/soildepth[l]/epsilon_O2*1000)*gtemp_soil[l]*soildepth[l]*epsilon_O2/1000;   // gCH4/m3/h*24 = gCH4/m3/d ->g/layer/m2

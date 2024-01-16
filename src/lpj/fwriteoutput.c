@@ -919,7 +919,7 @@ void fwriteoutput(Outputfile *output,  /**< output file array */
         if(!grid[cell].skip)
         {
           foreachstand(stand,s,grid[cell].standlist)
-            if(stand->type->landusetype!=NATURAL)
+            if(stand->type->landusetype!=NATURAL && stand->type->landusetype!=WETLAND &&  stand->type->landusetype!=KILL)
               foreachpft(pft,p,&stand->pftlist)
                 getoutput(&grid[cell].output,MG_VEGC,config)+=(vegc_sum(pft)*stand->frac);
         }
@@ -935,7 +935,7 @@ void fwriteoutput(Outputfile *output,  /**< output file array */
         {
           foreachstand(stand,s,grid[cell].standlist)
           {
-            if(stand->type->landusetype!=NATURAL)
+            if(stand->type->landusetype!=NATURAL && stand->type->landusetype!=WETLAND &&  stand->type->landusetype!=KILL)
             {
               for(p=0;p<stand->soil.litter.n;p++)
                 getoutput(&grid[cell].output,MG_SOILC,config)+=stand->soil.litter.item[p].bg.carbon*stand->frac;
@@ -955,7 +955,7 @@ void fwriteoutput(Outputfile *output,  /**< output file array */
         if(!grid[cell].skip)
         {
           foreachstand(stand,s,grid[cell].standlist)
-            if(stand->type->landusetype!=NATURAL)
+            if(stand->type->landusetype!=NATURAL && stand->type->landusetype!=WETLAND &&  stand->type->landusetype!=KILL)
               getoutput(&grid[cell].output,MG_LITC,config)+=(litter_agtop_sum(&stand->soil.litter)+litter_agsub_sum(&stand->soil.litter))*stand->frac;
         }
     }
@@ -1119,6 +1119,7 @@ void fwriteoutput(Outputfile *output,  /**< output file array */
   writeoutputvar(GW_OUTFLUX,1);
   writeoutputvar(GW_STORAGE,ndate1);
   writeoutputvar(CH4_EMISSIONS,1);
+  writeoutputvar(CH4_SETASIDE,1);
   writeoutputvar(CH4_RICE_EM,1);
   writeoutputvar(CH4_EBULLITION,1);
   writeoutputvar(CH4_SINK,1);
@@ -1204,7 +1205,7 @@ void fwriteoutput(Outputfile *output,  /**< output file array */
         {
           foreachstand(stand,s,grid[cell].standlist)
           {
-            if(stand->type->landusetype == NATURAL)
+            if(stand->type->landusetype == NATURAL || stand->type->landusetype == WETLAND)
               foreachpft(pft,p,&stand->pftlist)
                 getoutputindex(&grid[cell].output,PFT_NLIMIT,pft->par->id,config)+=pft->nlimit*ndate1;
           }
@@ -1223,7 +1224,7 @@ void fwriteoutput(Outputfile *output,  /**< output file array */
         {
           foreachstand(stand,s,grid[cell].standlist)
           {
-            if(stand->type->landusetype == NATURAL)
+            if(stand->type->landusetype == NATURAL || stand->type->landusetype == WETLAND)
               foreachpft(pft,p,&stand->pftlist)
                 getoutputindex(&grid[cell].output,PFT_VEGC,pft->par->id,config)+=vegc_sum(pft);
           }
@@ -1242,7 +1243,7 @@ void fwriteoutput(Outputfile *output,  /**< output file array */
         {
           foreachstand(stand,s,grid[cell].standlist)
           {
-            if(stand->type->landusetype == NATURAL)
+            if(stand->type->landusetype == NATURAL || stand->type->landusetype == WETLAND)
               foreachpft(pft,p,&stand->pftlist)
                 getoutputindex(&grid[cell].output,PFT_VEGN,pft->par->id,config)+=vegn_sum(pft)+pft->bm_inc.nitrogen;
           }
@@ -1420,7 +1421,7 @@ void fwriteoutput(Outputfile *output,  /**< output file array */
         {
           foreachstand(stand,s,grid[cell].standlist)
           {
-            if(stand->type->landusetype == NATURAL)
+            if(stand->type->landusetype == NATURAL || stand->type->landusetype == WETLAND)
               foreachpft(pft,p,&stand->pftlist)
                 getoutputindex(&grid[cell].output,PFT_LAIMAX,pft->par->id,config)+=pft->par->lai(pft);
           }
@@ -1440,7 +1441,7 @@ void fwriteoutput(Outputfile *output,  /**< output file array */
         {
           foreachstand(stand,s,grid[cell].standlist)
           {
-            if(stand->type->landusetype == NATURAL)
+            if(stand->type->landusetype == NATURAL || stand->type->landusetype == WETLAND)
             {
               foreachpft(pft,p,&stand->pftlist)
                 switch(pft->par->type)
@@ -1471,7 +1472,7 @@ void fwriteoutput(Outputfile *output,  /**< output file array */
         {
           foreachstand(stand,s,grid[cell].standlist)
           {
-            if(stand->type->landusetype == NATURAL)
+            if(stand->type->landusetype == NATURAL || stand->type->landusetype == WETLAND)
             {
               foreachpft(pft,p,&stand->pftlist)
                 switch(pft->par->type)
@@ -1502,7 +1503,7 @@ void fwriteoutput(Outputfile *output,  /**< output file array */
         {
           foreachstand(stand,s,grid[cell].standlist)
           {
-            if(stand->type->landusetype == NATURAL)
+            if(stand->type->landusetype == NATURAL || stand->type->landusetype == WETLAND)
             {
               foreachpft(pft,p,&stand->pftlist)
                 switch(pft->par->type)
@@ -1533,7 +1534,7 @@ void fwriteoutput(Outputfile *output,  /**< output file array */
         {
           foreachstand(stand,s,grid[cell].standlist)
           {
-            if(stand->type->landusetype == NATURAL)
+            if(stand->type->landusetype == NATURAL || stand->type->landusetype == WETLAND)
             {
               foreachpft(pft,p,&stand->pftlist)
                 switch(pft->par->type)

@@ -100,7 +100,7 @@
 #define NO_FERTILIZER 0
 #define FERTILIZER 1
 #define AUTO_FERTILIZER 2
-#define NOUT 350            /* number of output files */
+#define NOUT 351            /* number of output files */
 #define END -1              /* end marker for output files */
 #define GRIDBASED 1         /* pft-specific outputs scaled by stand->frac */
 #define PFTBASED 0          /* pft-specific outputs not scaled by stand->frac */
@@ -450,17 +450,18 @@
 #define CTI_VAL 336
 #define CH4_EMISSIONS 337
 #define CH4_SINK 338
-#define MT_WATER 339
-#define MEANSOILO2 340
-#define MEANSOILCH4 341
-#define CH4_EBULLITION 342
-#define CH4_PLANT_GAS 343
-#define WPC 344
-#define GW_STORAGE 345
-#define GW_OUTFLUX 346
-#define CH4_RICE_EM 347
-#define TRANSP 348
-#define RUNOFF 349
+#define CH4_SETASIDE 339
+#define MT_WATER 340
+#define MEANSOILO2 341
+#define MEANSOILCH4 342
+#define CH4_EBULLITION 343
+#define CH4_PLANT_GAS 344
+#define WPC 345
+#define GW_STORAGE 346
+#define GW_OUTFLUX 347
+#define CH4_RICE_EM 348
+#define TRANSP 349
+#define RUNOFF 350
 #define PFT_GCGP_COUNT 0
 #define NDAY_MONTH 1
 

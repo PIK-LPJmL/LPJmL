@@ -33,7 +33,7 @@ Bool annual_grass(Stand *stand,        /**< pointer to stand */
   start.carbon = standstocks(stand).carbon + soilmethane(&stand->soil)*WC/WCH4-pft->establish.carbon;
   start.nitrogen = standstocks(stand).nitrogen -pft->establish.nitrogen;
 #endif
-  if(stand->type->landusetype!=GRASSLAND && stand->type->landusetype!=OTHERS && stand->type->landusetype!=BIOMASS_GRASS && stand->type->landusetype != SETASIDE_IR && stand->type->landusetype != SETASIDE_RF)
+  if(stand->type->landusetype!=GRASSLAND && stand->type->landusetype!=OTHERS && stand->type->landusetype!=BIOMASS_GRASS  && stand->type->landusetype != SETASIDE_WETLAND && stand->type->landusetype != SETASIDE_IR && stand->type->landusetype != SETASIDE_RF)
   {
     turnover_grass(&stand->soil.litter,pft,(Real)stand->growing_days/NDAYYEAR,config);
 #ifdef CHECK_BALANCE

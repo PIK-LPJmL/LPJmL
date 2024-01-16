@@ -234,6 +234,16 @@ void update_daily(Cell *cell,            /**< cell pointer           */
     cell->balance.aCH4_em+=CH4_em*stand->frac;
     getoutput(&cell->output,CH4_SINK,config)+=CH4_sink*stand->frac;
     cell->balance.aCH4_sink+=CH4_sink*stand->frac;
+    if(stand->type->landusetype==SETASIDE_RF || stand->type->landusetype==SETASIDE_IR)
+    {
+      stand->cell->balance.aCH4_setaside+=CH4_em*stand->frac;
+      getoutput(&stand->cell->output,CH4_SETASIDE,config)+=CH4_em*stand->frac;
+    }
+    else if(stand->type->landusetype==SETASIDE_WETLAND)
+    {
+      stand->cell->balance.aCH4_rice+=CH4_em*stand->frac;
+      getoutput(&stand->cell->output,CH4_RICE_EM,config)+=CH4_em*stand->frac;
+    }
     fpc_total_stand = 0;
     foreachpft(pft, p, &stand->pftlist)
     {
@@ -248,6 +258,16 @@ void update_daily(Cell *cell,            /**< cell pointer           */
     getoutput(&cell->output,CH4_EMISSIONS,config) += ebul*stand->frac;
     cell->balance.aCH4_em+=ebul*stand->frac;
     getoutput(&cell->output,CH4_EBULLITION,config) += ebul*stand->frac;
+    if(stand->type->landusetype==SETASIDE_RF || stand->type->landusetype==SETASIDE_IR)
+    {
+      stand->cell->balance.aCH4_setaside+=ebul*stand->frac;
+      getoutput(&stand->cell->output,CH4_SETASIDE,config)+=ebul*stand->frac;
+    }
+    else if(stand->type->landusetype==SETASIDE_WETLAND)
+    {
+      stand->cell->balance.aCH4_rice+=ebul*stand->frac;
+      getoutput(&stand->cell->output,CH4_RICE_EM,config)+=ebul*stand->frac;
+    }
     foreachpft(pft, p, &stand->pftlist)
       if(!strcmp(pft->par->name,"rice") && ebul>0)
       {
@@ -281,6 +301,16 @@ void update_daily(Cell *cell,            /**< cell pointer           */
     cell->balance.n_outflux+=hetres.nitrogen*stand->frac;
     getoutput(&cell->output,CH4_EMISSIONS,config) += CH4_em*stand->frac;
     cell->balance.aCH4_em+=CH4_em*stand->frac;
+    if(stand->type->landusetype==SETASIDE_RF || stand->type->landusetype==SETASIDE_IR)
+    {
+      stand->cell->balance.aCH4_setaside+=CH4_em*stand->frac;
+      getoutput(&stand->cell->output,CH4_SETASIDE,config)+=CH4_em*stand->frac;
+    }
+    else if(stand->type->landusetype==SETASIDE_WETLAND)
+    {
+      stand->cell->balance.aCH4_rice+=CH4_em*stand->frac;
+      getoutput(&stand->cell->output,CH4_RICE_EM,config)+=CH4_em*stand->frac;
+    }
     foreachpft(pft, p, &stand->pftlist)
       if(!strcmp(pft->par->name,"rice") && CH4_em>0)                   //assuming only one CFT/PFT
       {
@@ -337,7 +367,7 @@ void update_daily(Cell *cell,            /**< cell pointer           */
     }
     cell->output.dcflux+=hetres.carbon*stand->frac;
 #if defined IMAGE && defined COUPLED
-    if (stand->type->landusetype == NATURAL || stand->type->landusetype ==WETLAND )
+    if (stand->type->landusetype == NATURAL || stand->type->landusetype == WETLAND )
     {
       cell->rh_nat += hetres.carbon*stand->frac;
     } /* if NATURAL */

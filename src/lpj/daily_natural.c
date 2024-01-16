@@ -127,7 +127,7 @@ Real daily_natural(Stand *stand,                /**< [inout] stand pointer */
   if (stand->type->landusetype!=WETLAND || stand->frac<0.001)
   {
     runoff+=infil_perc(stand,climate->prec+melt-intercep_stand,&return_flow_b,npft,ncft,config);
-    if (stand->type->landusetype==WETLAND)
+    if (stand->type->landusetype==WETLAND)                  //case stand->frac<0.001
     {
       runoff+= stand->cell->lateral_water/stand->frac;
       stand->cell->lateral_water=0;

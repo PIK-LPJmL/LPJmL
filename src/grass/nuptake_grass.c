@@ -73,7 +73,7 @@ Real nuptake_grass(Pft *pft,             /**< pointer to PFT data */
         up_temp_f = nuptake_temp_fcn(soil->temp[l]);
         NO3_up = 2*pft->par->vmax_up*(pft->par->kNmin+totn/(totn+pft->par->KNmin*soil->wsat[l]*soildepth[l]/1000))* up_temp_f*
             f_NCplant * (grass->ind.root.carbon*pft->nind+pft->bm_inc.carbon*grass->falloc.root-grass->turn_litt.root.carbon)*rootdist_n[l]/1000;
-        /* reducing uptake according to availability */
+       /* reducing uptake according to availability */
         if(NO3_up>totn)
           NO3_up=totn;
         n_uptake+=NO3_up;
@@ -116,7 +116,8 @@ Real nuptake_grass(Pft *pft,             /**< pointer to PFT data */
     }
   }
   if(config->fertilizer_input==AUTO_FERTILIZER
-    && (pft->stand->type->landusetype==GRASSLAND || pft->stand->type->landusetype==OTHERS || pft->stand->type->landusetype==BIOMASS_GRASS || pft->stand->type->landusetype==AGRICULTURE_GRASS || pft->stand->type->landusetype == SETASIDE_RF || pft->stand->type->landusetype == SETASIDE_IR))
+    && (pft->stand->type->landusetype==GRASSLAND || pft->stand->type->landusetype==OTHERS || pft->stand->type->landusetype==BIOMASS_GRASS || pft->stand->type->landusetype==AGRICULTURE_GRASS ||
+        pft->stand->type->landusetype == SETASIDE_RF || pft->stand->type->landusetype == SETASIDE_IR || pft->stand->type->landusetype == SETASIDE_WETLAND))
   {
     data=pft->stand->data;
     autofert_n=*n_plant_demand-(vegn_sum_grass(pft)+pft->bm_inc.nitrogen);
@@ -178,7 +179,7 @@ Real nuptake_grass(Pft *pft,             /**< pointer to PFT data */
   n_uptake+=n_upfail;
   switch(pft->stand->type->landusetype)
   {
-    case NATURAL: case SETASIDE_RF: case SETASIDE_IR:
+    case NATURAL: case WETLAND: case SETASIDE_RF: case SETASIDE_IR: case SETASIDE_WETLAND:           //problematic as some PFTs are present in many stands
       if(config->pft_output_scaled)
         getoutputindex(&pft->stand->cell->output,PFT_BNF,pft->par->id,config)+=n_fixed*pft->stand->frac;
       else

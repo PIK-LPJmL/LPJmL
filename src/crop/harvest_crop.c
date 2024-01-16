@@ -49,6 +49,7 @@ void harvest_crop(Output *output,      /**< Output data */
     res_onfield = config->residue_treatment==FIXED_RESIDUE_REMOVE ? param.residues_in_soil : 1 ;
   else
     res_onfield=stand->cell->ml.residue_on_field[data->irrigation].crop[pft->par->id-npft];
+  if(pft->par->id-npft==RICE) res_onfield=0.7;
   if (stand->cell->ml.with_tillage && year < config->till_startyear)
     res_onfield = param.residues_in_soil_notillage;
   res_remove = (1-res_onfield);

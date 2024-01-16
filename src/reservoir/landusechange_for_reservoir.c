@@ -119,7 +119,7 @@ static Real from_setaside_for_reservoir(Cell *cell,          /**< pointer to cel
         foreachstand(stand,s,cell->standlist)
           if(stand->type->landusetype!=NATURAL  && stand->type->landusetype!=WETLAND &&
             stand->type->landusetype!=SETASIDE_RF && stand->type->landusetype!=SETASIDE_WETLAND &&
-            stand->type->landusetype!=SETASIDE_IR)
+            stand->type->landusetype!=SETASIDE_IR && stand->type->landusetype!=KILL)
          {
             data=stand->data;
             pos=addstand(&natural_stand,cell)-1;
@@ -142,7 +142,7 @@ static Real from_setaside_for_reservoir(Cell *cell,          /**< pointer to cel
     factor=difffrac/(cell->ml.cropfrac_rf+cell->ml.cropfrac_ir+cell->ml.cropfrac_wl[0]+cell->ml.cropfrac_wl[1]);
     fprintf(stderr,"WARNING026: no setasidestand in cell (%s) to put the reservoir, reduce cropland by %g\n",sprintcoord(line,&cell->coord),factor);
     foreachstand(stand,s,cell->standlist)
-      if(stand->type->landusetype!=NATURAL && stand->type->landusetype!=WETLAND) /*&&
+      if(stand->type->landusetype!=NATURAL && stand->type->landusetype!=WETLAND && stand->type->landusetype!=KILL) /*&&
          stand->type->landusetype!=SETASIDE)*/ /* existence of SETASIDES has been ruled out */
       {
         data=stand->data;
@@ -307,7 +307,7 @@ void landusechange_for_reservoir(Cell *cell,          /**< pointer to cell */
       /* update the cropfactor to include the 'new' setaside */
       sum[0]=sum[1]=sum_wl[0]=sum_wl[1]=0.0;
       foreachstand(stand,s,cell->standlist)
-        if(stand->type->landusetype!=NATURAL && stand->type->landusetype!=WETLAND  && stand->type->landusetype!=KILL){
+        if(stand->type->landusetype!=NATURAL && stand->type->landusetype!=WETLAND && stand->type->landusetype!=KILL){
           data=stand->data;
           sum[data->irrigation]+=stand->frac;
           if(stand->soil.iswetland)

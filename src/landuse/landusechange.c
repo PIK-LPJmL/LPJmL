@@ -67,6 +67,7 @@ void deforest(Cell *cell,          /**< pointer to cell */
   Stocks fluxes_neg= {0,0};
   Stocks fluxes_prod= {0,0};
   Stocks fluxes_firewood={0,0};
+  Stocks fluxes_harvest={0,0};
   Stocks balance= {0,0};
   Real start_w = 0;
   Real end_w = 0;
@@ -86,9 +87,10 @@ void deforest(Cell *cell,          /**< pointer to cell */
   fluxes_fire=cell->balance.fire;
   fluxes_estab=cell->balance.flux_estab;
   fluxes_neg=cell->balance.neg_fluxes;
+  fluxes_firewood=cell->balance.flux_firewood;
+  fluxes_harvest=cell->balance.flux_harvest;
   fluxes_prod.carbon=(cell->balance.deforest_emissions.carbon+cell->balance.prod_turnover.fast.carbon+cell->balance.prod_turnover.slow.carbon+cell->balance.trad_biofuel.carbon);
   fluxes_prod.nitrogen=(cell->balance.deforest_emissions.nitrogen+cell->balance.prod_turnover.fast.nitrogen+cell->balance.prod_turnover.slow.nitrogen+cell->balance.trad_biofuel.nitrogen);
-  fluxes_firewood=cell->balance.flux_firewood;
 #endif
 
   timberharvest=FALSE;
@@ -192,7 +194,7 @@ void deforest(Cell *cell,          /**< pointer to cell */
 
   if(s==NOT_FOUND && difffrac>0.01)
   {
-#ifdef CHECK_BALANCE2
+#ifdef DEBUG
     Irrigation *data;
     Pftcrop *crop;
     foreachstand(stand,s,cell->standlist)
@@ -216,7 +218,7 @@ void deforest(Cell *cell,          /**< pointer to cell */
     }
 #endif
    fprintf(stderr,"WARNING: No natural stand or wetland for deforest in (%s), difffrac= %g iswetland: %d  \n",sprintcoord(line,&cell->coord),difffrac, iswetland);
-#ifdef CHECK_BALANCE2
+#ifdef DEBUG
     for(j=0;j<ncft;j++)
       fprintf(stderr,"landfrac_rainfed: %g landfrac_irr: %g\n", cell->ml.landfrac[0].crop[j],cell->ml.landfrac[1].crop[j]);
     fprintf(stderr,"grassfrac_rainfed: %g grassfrac_irr: %g\n",(cell->ml.landfrac[0].grass[0]+cell->ml.landfrac[0].grass[1]),
@@ -239,9 +241,9 @@ void deforest(Cell *cell,          /**< pointer to cell */
   end.nitrogen+=cell->ml.product.fast.nitrogen+cell->ml.product.slow.nitrogen+
       cell->balance.estab_storage_grass[0].nitrogen+cell->balance.estab_storage_tree[0].nitrogen+cell->balance.estab_storage_grass[1].nitrogen+cell->balance.estab_storage_tree[1].nitrogen;
 
-  balance.carbon=(cell->balance.flux_estab.carbon-fluxes_estab.carbon)-(cell->balance.fire.carbon-fluxes_fire.carbon)-(cell->balance.neg_fluxes.carbon-fluxes_neg.carbon)
+  balance.carbon=(cell->balance.flux_estab.carbon-fluxes_estab.carbon)-(cell->balance.fire.carbon-fluxes_fire.carbon)-(cell->balance.flux_harvest.carbon-flux_harvest.carbon)-(cell->balance.neg_fluxes.carbon-fluxes_neg.carbon)
       -((cell->balance.deforest_emissions.carbon+cell->balance.prod_turnover.fast.carbon+cell->balance.prod_turnover.slow.carbon+cell->balance.trad_biofuel.carbon)-fluxes_prod.carbon)-(cell->balance.flux_firewood.carbon-fluxes_firewood.carbon);
-  balance.nitrogen=(cell->balance.flux_estab.nitrogen-fluxes_estab.nitrogen)-(cell->balance.fire.nitrogen-fluxes_fire.nitrogen)-(cell->balance.neg_fluxes.nitrogen-fluxes_neg.nitrogen)
+  balance.nitrogen=(cell->balance.flux_estab.nitrogen-fluxes_estab.nitrogen)-(cell->balance.fire.nitrogen-fluxes_fire.nitrogen)-(cell->balance.flux_harvest.nitrogen-flux_harvest.nitrogen)-(cell->balance.neg_fluxes.nitrogen-fluxes_neg.nitrogen)
       -((cell->balance.deforest_emissions.nitrogen+cell->balance.prod_turnover.fast.nitrogen+cell->balance.prod_turnover.slow.nitrogen+cell->balance.trad_biofuel.nitrogen)-fluxes_prod.nitrogen)-(cell->balance.flux_firewood.nitrogen-fluxes_firewood.nitrogen);
   if(fabs(start.carbon-end.carbon+balance.carbon)>0.001)
     fail(INVALID_CARBON_BALANCE_ERR,FAIL_ON_BALANCE,FALSE,"Invalid carbon balance in %s at the end: year=%d: C_ERROR=%g start : %g end : %g balance.carbon: %g",
@@ -548,7 +550,7 @@ static void landexpansion(Cell *cell,            /* cell pointer */
         pos=addstand(&natural_stand,cell)-1;
         mixstand=getstand(cell->standlist,pos);
         mixstand->frac= -difffrac;
-        mixstand->typee=&kill_stand;
+        mixstand->type=&kill_stand;
         reclaim_land(setasidestand,mixstand,cell,config->luc_timber,npft+ncft,config);
         setasidestand->frac+=difffrac;
 #else

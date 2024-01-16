@@ -30,7 +30,7 @@ void check_stand_fracs2(const Cell *cell,    /**< pointer to cell */
 {
   int s,ncft,j,p;
   Real frac_sum,frac_sum2;
-  const Stand *stand;
+  const Stand *stand,*checkstand;
   const Pft* pft;
   String line;
   ncft=12;
@@ -42,11 +42,11 @@ void check_stand_fracs2(const Cell *cell,    /**< pointer to cell */
       frac_sum+=stand->frac;
     else 
     {
-      foreachstand(stand,s,cell->standlist)
+      foreachstand(checkstand,s,cell->standlist)
       {
-        fprintf(stderr,"frac[%s]=%g\n",stand->type->name,stand->frac);
-        foreachpft(pft,p,&stand->pftlist)
-           fprintf(stderr,"frac[%s]= %g standNR: %d PFT: %s \n",stand->type->name,stand->frac,s,pft->par->name);
+        fprintf(stderr,"frac[%s]=%g\n",checkstand->type->name,checkstand->frac);
+        foreachpft(pft,p,&checkstand->pftlist)
+           fprintf(stderr,"frac[%s]= %g standNR: %d PFT: %s \n",checkstand->type->name,checkstand->frac,s,pft->par->name);
       }
       fail(NEGATIVE_STAND_FRAC_ERR,TRUE,TRUE,"Negative or zero stand fraction %g for %s stand, lakefrac: %g, cell (%s) from function %s() in line %d.\n",
            stand->frac,stand->type->name,lakefrac,sprintcoord(line,&cell->coord), routine,linenr);
