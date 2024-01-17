@@ -66,8 +66,8 @@ static void initdata(Climate *climate)
   }
 } /* of 'initdata' */
 
-Climate *initclimate(const Cell grid[],   /**< LPJ grid */
-                     const Config *config /**< pointer to LPJ configuration */
+Climate *initclimate(const Cell grid[], /**< LPJ grid */
+                     Config *config     /**< pointer to LPJ configuration */
                     )                     /** \return allocated climate data struct or NULL on error */
 {
   char *name;
@@ -318,6 +318,8 @@ Climate *initclimate(const Cell grid[],   /**< LPJ grid */
   }
   if(readtracegas(&climate->co2,&config->co2_filename,config))
   {
+    if(isroot(*config))
+      fprintf(stderr,"ERROR236: Cannot read CO2 data file.\n");
     freeclimate(climate,isroot(*config));
     return NULL;
   }
@@ -333,6 +335,8 @@ Climate *initclimate(const Cell grid[],   /**< LPJ grid */
   {
     if (readtracegas(&climate->ch4, &config->ch4_filename,config))
     {
+      if(isroot(*config))
+        fprintf(stderr,"ERROR236: Cannot read CH4 data file.\n");
       freeclimate(climate,isroot(*config));
       return NULL;
     }

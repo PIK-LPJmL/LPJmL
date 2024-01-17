@@ -19,6 +19,139 @@ of `major.minor.patch` with
 
 ## [Unreleased]
 
+## [5.8.2] - 2023-12-21
+
+### Contributors
+
+- author: Johanna Braun (jobraun@pik-potsdam.de), Sebastian Ostberg (ostberg@pik-potsdam.de)
+- code review: Christoph Mueller (cmueller@pik-potsdam.de)
+- dicussed by attendees of [LPJmL seminar](https://gitlab.pik-potsdam.de/lpjml/LPJmL_internal/-/wikis/231221_lpjmlseminar) on Dec. 21st 2023 and [Nov. 23rd 2023](https://gitlab.pik-potsdam.de/lpjml/LPJmL_internal/-/wikis/231123_lpjmlseminar).
+
+### Changed
+
+- `wateruse` from "yes" to "all"
+- `sowing_date_option` from "fixed_sdate" to "prescribed_sdate"
+- `crop_phu_option` from "new" to "prescribed"
+- `tillage_type` from "all" to "read"
+- `residue_treatment` from  "fixed_residue_remove" to "read_residue_data"
+- `grazing` from "default" to "livestock"
+- `prescribe_lsuha` from FALSE to TRUE
+- set `nspinup` to 420 instead of 390 for LU spinup
+- updated paths to land management input files in `input.cjson`
+- set all available [LandInG1.0](https://doi.org/10.5194/gmd-16-3375-2023) inputs as the `default` option
+
+
+## [5.8.1] - 2023-12-11
+
+### Contributors
+
+- author: Werner von Bloh (bloh@pik-potsdam.de), Sebastian Ostberg (ostberg@pik-potsdam.de), Christoph Mueller (cmueller@pik-potsdam.de), Sibyll Schaphoff (sibylls@pik-potsdam.de)
+
+### Added
+
+- tmin, tmax, humid GSWP3-W5E5 inputs added to `input.cjson`.
+- missing parameters added in `lpjparam_non.cjson` and `pft_non.cjson`.
+
+### Changed
+
+- set gml.noaa data as default CO2 input.
+- GSWP3-W5E5 climate is now the default.
+- `regridlpj` utility script updated for new inputs
+
+### Removed
+
+- GLDAS climate input removed.
+
+### Fixed
+
+- scaling fixed for daily output and unit 1/second in fwriteoutput.c (issue #332).
+- `#ifdef` and `#elif` statements fixed in `lpjml_config.cjson` and `input.cjson`.
+- computation of root biomass based on carbon fixed in `nuptake_grass` and `nuptake_tree` (issue #330)
+- fixed bug in `allocation_tree` (issue #330)
+
+
+## [5.8.0] - 2023-11-30
+
+### Contributors
+
+- author: Jannes Breier (breier@pik-potsdam.de), Werner von Bloh (bloh@pik-potsdam.de), Stephen Wirth (wirth@pik-potsdam.de)
+- code review: Sibyll Schaphoff (sibylls@pik-potsdam.de), Christoph Mueller (cmueller@pik-potsdam.de)
+- dicussed by attendees of [LPJmL seminar](https://gitlab.pik-potsdam.de/lpjml/LPJmL_internal/-/wikis/231123_lpjmlseminar) on Nov. 23rd 2023.
+
+### Added
+
+- new keyword `"cultivation_types"` added to specify an array of cultivation types read from the `pft.cjson` file:
+```
+  "cultivation_types" : ["none","biomass","annual crop"],
+```
+- wood plantation and agricultural tree PFTs added to `pft.cjson`.
+- '"k_est"' establishment density array added for agricultural trees to `"countrypar"` in `manage_irrig_systems_with_dummy_laimax_data.cjson`.
+- Makros to select different climate (CRU_MONTHLY, CRU_NETCDF, GLDAS) as well as land use, fertilizer and manure (OLD_LU, MADRAT) inputs added to `input.cjson`.
+- Makro to disable nitrogen cycle (WITHOUT_NITROGEN) added to `lpjml_config.cjson`.
+- Makros definition and description added to `lpjml_config.cjson`.
+
+### Changed
+
+- file ending from `js` to `cjson`.
+- renamed `lpjml.cjson` to `lpjml_config.cjson`.
+- extended `input.cjson` to include CRU, GSWP3-W5E5 and GLDAS climate inputs and LandInG, MADRAT and "Old" land use, fertilizer and manure inputs.
+- Moved mappings from `input.cjson` to lpjml_config.cjson.
+- Moved soil depths array and fuel bulk density factors from `soil.cjson` to `lpjparam.cjson`.
+
+### Removed
+
+- `lpjml_*js`, `param_*js`, `lpjparam_*js`, `pft_*.js`, `input_*.js` and `manage_*.js files` for specific projects.
+
+## [5.7.10] - 2023-11-13
+
+### Contributors
+
+- author: Werner von Bloh (bloh@pik-potsdam.de)
+- code review: Jannes Breier (breier@pik-potsdam.de), Constanze Werner (cowerner@pik-potsdam.de), Sebastian Ostberg(ostberg@pik-potsdam.de), 
+  Marie Hemmen (hemmen@pik-potsdam.de), Christoph Mueller (cmueller@pik-potsdam.de)
+
+### Added
+
+- name of grid file and `"terr_area"` output file written to output JSON files. A link to the corresponding JSON file is added.
+- list of utilities added to `INSTALL` file.
+- `-json` flag added to `cdf2clm` utility.
+- last year of CO2 data is checked at run time and last year of simulation is changed accordingly.
+
+### Changed
+
+- `fscanfloat()` accepts now also integer input.
+
+### Removed
+
+- obsolete constant definitions in `conf.h`.
+
+### Fixed
+
+- opening of grid file in JSON metafile format fixed in `opencoord()`.
+- default soil map is set for soil data in NetCDF format.
+- missing carbon influx added to NBP calculation in `flux_sum.c`.
+
+## [5.7.9] - 2023-10-23
+
+### Contributors
+
+- author: Werner von Bloh (bloh@pik-potsdam.de), Jens Heinke (heinke@pik-potsdam.de), Stephen Wirth (wirth@pik-potsdam.de)
+- code review: Sibyll Schaphoff (sibylls@pik-potsdam.de), Constanze Werner (cowerner@pik-potsdam.de), Christoph Mueller (cmueller@pik-potsdam.de)
+
+### Changed
+
+- constant wood density has been replaced by PFT-specific parameter `"wood_density"`.
+
+### Removed
+
+- Unused flag `"biomass_grass_harvest"` removed from configuration.
+
+### Fixed
+
+- update of `pft->establish.nitrogen` corrected in `turnover_tree.c`.
+- C and N in manure from grazing livestock goes to litter (as described in [Heinke et al. 2023](https://doi.org/10.5194/gmd-16-2455-2023) instead of going to soil pools directly.
+
+
 ## [5.7.8] - 2023-09-22
 
 ### Contributors

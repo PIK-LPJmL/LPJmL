@@ -63,7 +63,8 @@ Real flux_sum(Flux *flux_global,   /**< global carbon and water fluxes */
       flux.wateruse+=grid[cell].balance.awateruse_hil;
       flux.n_demand+=grid[cell].balance.n_demand*grid[cell].coord.area;
       flux.n_uptake+=grid[cell].balance.n_uptake*grid[cell].coord.area;
-      flux.n_influx+=grid[cell].balance.influx.nitrogen*grid[cell].coord.area;
+      flux.influx.carbon+=grid[cell].balance.influx.carbon*grid[cell].coord.area;
+      flux.influx.nitrogen+=grid[cell].balance.influx.nitrogen*grid[cell].coord.area;
       flux.n_outflux+=grid[cell].balance.n_outflux*grid[cell].coord.area;
       flux.excess_water+=grid[cell].balance.excess_water*grid[cell].coord.area;
       flux.CH4_emissions+=grid[cell].balance.aCH4_em*grid[cell].coord.area;

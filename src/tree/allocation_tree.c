@@ -184,17 +184,17 @@ Bool allocation_tree(Litter *litter,   /**< litter pool */
     if (tree->height>0.0) 
     {
       if (pft->stand->type->landusetype==BIOMASS_TREE && tree->ind.root.carbon>=tree->ind.leaf.carbon/lmtorm &&
-    		  treepar->k_latosa*tree->ind.sapwood.carbon/(wooddens*tree->height*pft->par->sla)-tree->ind.leaf.carbon>=0.0)
+          treepar->k_latosa*tree->ind.sapwood.carbon/(treepar->wood_density*tree->height*pft->par->sla)-tree->ind.leaf.carbon>=0.0)
       {
-    	  tinc_ind_min.leaf.carbon=0.1;
-    	  tinc_ind_min.root.carbon=0.1;
+        tinc_ind_min.leaf.carbon=0.1;
+        tinc_ind_min.root.carbon=0.1;
 
       }
       else
       {
-    	  tinc_ind_min.leaf.carbon=treepar->k_latosa*tree->ind.sapwood.carbon/(wooddens*tree->height*
+        tinc_ind_min.leaf.carbon=treepar->k_latosa*tree->ind.sapwood.carbon/(treepar->wood_density*tree->height*
                         pft->par->sla)-tree->ind.leaf.carbon;
-    	  tinc_ind_min.root.carbon=treepar->k_latosa*tree->ind.sapwood.carbon/(wooddens*tree->height*
+        tinc_ind_min.root.carbon=treepar->k_latosa*tree->ind.sapwood.carbon/(treepar->wood_density*tree->height*
                         pft->par->sla*lmtorm)-tree->ind.root.carbon;
       }
     }
@@ -221,8 +221,8 @@ Bool allocation_tree(Litter *litter,   /**< litter pool */
       data.b= tree->ind.sapwood.carbon+bm_inc_ind.carbon-tree->ind.leaf.carbon/lmtorm+
               tree->ind.root.carbon;
       data.lm=1+1/lmtorm;
-      data.k1=pow(treepar->allom2,2.0/treepar->allom3)*4.0*M_1_PI/wooddens;
-      data.k3=treepar->k_latosa/wooddens/pft->par->sla;
+      data.k1=pow(treepar->allom2,2.0/treepar->allom3)*4.0*M_1_PI/treepar->wood_density;
+      data.k3=treepar->k_latosa/treepar->wood_density/pft->par->sla;
       data.ind_leaf=tree->ind.leaf.carbon;
       data.ind_heart=tree->ind.heartwood.carbon;
       data.allom3=treepar->allom3;
@@ -268,7 +268,7 @@ Bool allocation_tree(Litter *litter,   /**< litter pool */
         litter->item[pft->litter].agtop.leaf.carbon+=-tinc_ind.leaf.carbon*pft->nind;
         getoutput(&pft->stand->cell->output,LITFALLC,config)+=-tinc_ind.leaf.carbon*pft->nind*pft->stand->frac;
       }
-      tinc_ind.sapwood.carbon=(tinc_ind.leaf.carbon+tree->ind.leaf.carbon)*wooddens*tree->height*
+      tinc_ind.sapwood.carbon=(tinc_ind.leaf.carbon+tree->ind.leaf.carbon)*treepar->wood_density*tree->height*
                        pft->par->sla/treepar->k_latosa-tree->ind.sapwood.carbon;
       tinc_ind.heartwood.carbon=-tinc_ind.sapwood.carbon;
     }

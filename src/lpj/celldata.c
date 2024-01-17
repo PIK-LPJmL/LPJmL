@@ -116,12 +116,12 @@ Celldata opencelldata(Config *config /**< LPJmL configuration */
       }
       freemap(map);
     }
+  }
+  if(config->soilmap==NULL)
+  {
+    config->soilmap=defaultsoilmap(&config->soilmap_size,config);
     if(config->soilmap==NULL)
-    {
-      config->soilmap=defaultsoilmap(&config->soilmap_size,config);
-      if(config->soilmap==NULL)
-        return NULL;
-    }
+      return NULL;
   }
   if(openinputdata(&celldata->kbf,&config->kbf_filename,"Kbf",NULL,LPJ_FLOAT,0.001,config))
   {

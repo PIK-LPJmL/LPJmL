@@ -40,8 +40,10 @@ static Harvest harvest_grass(Stand *stand, /**< pointer to stand */
     {
       pft->bm_inc.nitrogen+=(grass->ind.leaf.nitrogen)*(1-pft->par->fn_turnover)*hfrac*pft->nind;
       harvest.harvest.nitrogen=grass->ind.leaf.nitrogen*pft->par->fn_turnover*hfrac;
-    } else {
-      harvest.harvest.nitrogen=grass->ind.leaf.nitrogen*hfrac*param.nfrac_grassharvest; 
+    }
+    else
+    {
+      harvest.harvest.nitrogen=grass->ind.leaf.nitrogen*hfrac*param.nfrac_grassharvest;
       stand->soil.NH4[0]+=grass->ind.leaf.nitrogen*hfrac*(1-param.nfrac_grassharvest)*pft->nind;
     }
     harvest.harvest.carbon=grass->ind.leaf.carbon*hfrac;
@@ -426,9 +428,10 @@ static Harvest harvest_grass_grazing_live(Stand *stand,const Config *config)
     }
 
     sum.harvest.carbon   += c_methane+c_milk+c_co2;       // sum of losses
-    stand->soil.pool->fast.carbon += c_feces + c_urine;   // manure back to soil
+    stand->soil.litter.item[pft->litter].agtop.leaf.carbon+=c_feces+c_urine; // to litter
     sum.harvest.nitrogen += n_milk;                       // sum of losses
-    stand->soil.pool->fast.nitrogen += n_feces;             // back to soil
+    stand->soil.litter.item[pft->litter].agtop.leaf.nitrogen+=n_feces; // to litter
+
     stand->soil.NH4[0] += n_urine;             // urine to ammonia
 
     /* writing new mgrass outputs */

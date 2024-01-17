@@ -1,8 +1,8 @@
 /**************************************************************************************/
 /**                                                                                \n**/
-/**                   i  n  p  u  t  .  h                                          \n**/
+/**                   h y d r o  .  c  j  s  o  n                                  \n**/
 /**                                                                                \n**/
-/**     C implementation of LPJmL                                                  \n**/
+/** Default input parameter file for LPJmL C Version 6.0.1                         \n**/
 /**                                                                                \n**/
 /** (C) Potsdam Institute for Climate Impact Research (PIK), see COPYRIGHT file    \n**/
 /** authors, and contributors see AUTHORS file                                     \n**/
@@ -12,29 +12,10 @@
 /**                                                                                \n**/
 /**************************************************************************************/
 
-#ifndef INPUT_H
-#define INPUT_H
-
-/* Definition of datatypes */
-
-typedef struct
-{
-  Climate *climate;
-  Landuse landuse;
-  Wateruse wateruse;
-  Icefrac icefrac;
-#ifdef IMAGE
-  Wateruse wateruse_wd;
-#endif
-  Popdens popdens;
-  Human_ignition human_ignition;
-  Extflow extflow;
-  Landcover landcover;
-} Input;
-
-/* Declaration of functions */
-
-extern Bool initinput(Input *,const Cell *,int,Config *);
-extern void freeinput(Input,const Config *);
-
-#endif
+  {
+    "wland_min" : 0.0,	    /* wland_min */
+    "cti_max" : 10.0,   	    /* maximum compound topographic index (cti_max)*/
+    "lat_min" : -80.0,	    /* lat_min */
+    "wtab_thres" : 0.1,	    /* wtab_thres */
+    "cti_thres" :  5.0	    /* cti_thres */
+  }

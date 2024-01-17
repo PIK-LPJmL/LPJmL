@@ -98,6 +98,15 @@ const char *phenology[]={"evergreen","raingreen","summergreen","any","cropgreen"
 const char *cultivation_type[]={"none","biomass","annual crop","annual tree","wp"};
 const char *path[]={"no pathway","C3","C4"};
 
+static int findint(int val,const int *array,int size)
+{
+  int i;
+  for(i=0;i<size;i++)
+    if(val==array[i])
+      return i;
+  return NOT_FOUND;
+} /* of 'findint' */
+
 static Bool fscanpftirrig(LPJfile *file,Irrig_threshold *irrig_threshold,const char *name,Verbosity verb)
 {
   LPJfile *f;
@@ -117,7 +126,7 @@ Bool fscanpftpar(LPJfile *file,       /**< pointer to LPJ file */
                  Config *config       /**< LPJ configuration */
                 )                     /** \return TRUE on error */
 {
-  int n,l,count;
+  int n,l,count,npft;
   LPJfile *arr,*item,*subitem;
   const char *s;
   Pftpar *pft;
@@ -150,11 +159,12 @@ Bool fscanpftpar(LPJfile *file,       /**< pointer to LPJ file */
   for(n=0;n<count;n++)
     config->pftpar[n].id=UNDEF;
   isbiomass=isagtree=iscrop=iswp=FALSE;
+  npft=0;
   for(n=0;n<count;n++)
   {
     item=fscanarrayindex(arr,n);
-    pft=config->pftpar+n;
-    pft->id=n;
+    pft=config->pftpar+npft;
+    pft->id=npft;
 
     /* Read pft->name */
     s=fscanstring(item,NULL,"name",verb);
@@ -167,18 +177,24 @@ Bool fscanpftpar(LPJfile *file,       /**< pointer to LPJ file */
     pft->name=strdup(s); /* store PFT name */
     checkptr(pft->name);
 
-    /* Read pft->type, defined in pftpar.h */
-    if(fscankeywords(item,&pft->type,"type",config->pfttypes,config->ntypes,FALSE,verb))
-    {
-      if(verb)
-        fprintf(stderr,"ERROR116: Invalid type of PFT '%s'.\n",pft->name);
-      return TRUE;
-    }
     fscanpftbool(verb,item,&pft->peatland,pft->name,"peatland_pft");
+    /* Read pft->type, defined in pftpar.h */
     if(fscankeywords(item,&pft->cultivation_type,"cultivation_type",cultivation_type,5,FALSE,verb))
     {
       if(verb)
         fprintf(stderr,"ERROR201: Invalid value for cultivation type of PFT '%s'.\n",pft->name);
+      return TRUE;
+    }
+    if(config->ncult_types)
+    {
+     if(findint(pft->cultivation_type,config->cult_types,config->ncult_types)==NOT_FOUND)
+       continue;
+    }
+    npft++;
+    if(fscankeywords(item,&pft->type,"type",config->pfttypes,config->ntypes,FALSE,verb))
+    {
+      if(verb)
+        fprintf(stderr,"ERROR116: Invalid type of PFT '%s'.\n",pft->name);
       return TRUE;
     }
     if(isbiomass && pft->cultivation_type==NONE)

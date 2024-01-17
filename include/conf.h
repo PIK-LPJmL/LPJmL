@@ -79,8 +79,6 @@
 #define META 5
 #define CDF 6
 #define SOCK 7
-#define RESTART 1
-#define NO_RESTART 0
 #define NO_FIRE 0
 #define FIRE 1
 #define SPITFIRE 2
@@ -104,8 +102,6 @@
 #define END -1              /* end marker for output files */
 #define GRIDBASED 1         /* pft-specific outputs scaled by stand->frac */
 #define PFTBASED 0          /* pft-specific outputs not scaled by stand->frac */
-#define DAILY_IRRIG 1       /* daily outputs for irrigated crop */
-#define DAILY_RAINFED 0     /* daily outputs for rain-fed crop */
 #define CONST_PREC 2
 #define ANNUAL -2
 #define MONTHLY -3

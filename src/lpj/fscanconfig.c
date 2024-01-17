@@ -593,10 +593,18 @@ Bool fscanconfig(Config *config,    /**< LPJ configuration */
     config->soilmap_size=0;
   }
   config->ntypes=ntypes;
+  if(fscancultivationtypes(file,"cultivation_types",&config->cult_types,&config->ncult_types,verbose))
+    return TRUE;
   if(fscanpftpar(file,scanfcn,config))
   {
     if(verbose)
       fputs("ERROR230: Cannot read PFT parameter 'pftpar'.\n",stderr);
+    return TRUE;
+  }
+  if(config->npft[CROP]==0 && config->withlanduse)
+  {
+    if(verbose)
+      fputs("ERROR230: No crop PFTs defined in 'pftpar' and land use enabled.\n",stderr);
     return TRUE;
   }
   config->nbiomass=getnculttype(config->pftpar,config->npft[GRASS]+config->npft[TREE],BIOMASS);
@@ -672,7 +680,7 @@ Bool fscanconfig(Config *config,    /**< LPJ configuration */
     }
     if(config->nagtree)
     {
-      if (fscantreedens(file,config->countrypar,config->ncountries,config->npft[GRASS]+config->npft[TREE],verbose,config)==0)
+      if (fscantreedens(file,config->countrypar,config->npft[GRASS]+config->npft[TREE],verbose,config)==0)
       {
         if(verbose)
           fputs("ERROR230: Cannot read tree density (k_est) parameter 'treedens'.\n",stderr);

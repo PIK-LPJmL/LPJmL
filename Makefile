@@ -39,12 +39,9 @@ HDRS    = $(INC)/buffer.h $(INC)/cell.h $(INC)/climate.h $(INC)/conf.h\
           $(INC)/agriculture_tree.h $(INC)/agriculture_grass.h $(INC)/coupler.h\
           $(INC)/couplerpar.h
 
-DATA    = par/*.js
+DATA    = par/*.cjson
 
-JSON	= lpjml.js input_crumonthly.js param.js lpj.js input_GSWP3-ERA5.js\
-          lpjml_netcdf.js input_netcdf.js lpjml_fms.js input_fms.js\
-          lpjml_vpd.js input_GLDAS.js param_vpd.js param_non.js lpjml_non.js\
-          input_coupler.js
+JSON	= lpjml_config.cjson input.cjson input_netcdf.cjson
 
 SCRIPTS	= configure.bat configure.sh\
           bin/output_bsq bin/lpjsubmit_aix bin/lpjsubmit_intel\

@@ -16,7 +16,7 @@ configure.sh (1) - Configure LPJmL
 country2cdf (1) - convert country/region code file into NetCDF file
 cru2clm (1) - convert raw binary data files to clm data files for LPJmL
 cutclm (1) - cuts LPJmL climate data files
-cvrtclm (1) - converts version of clm file to latest version 3
+cvrtclm (1) - converts version of clm file to version 3 or 4
 failonerror (3) - print error message and terminates program
 fcloseoutput (3) - close LPJmL output files
 flux_sum (3) - calculate global carbon and water fluxes

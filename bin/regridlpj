@@ -15,31 +15,55 @@
 ##                                                                             ##
 #################################################################################
 
+USAGE="Usage: $0 [-dir path] [-crumonthly] [-oldlu] [-madrat] suffix [countrycode ...]"
+cru=0
+lu=0
+
+while(( "$#" )); do
+  case "$1" in
+    -dir)
+    if [ $# -lt 2 ]
+    then
+      echo >&2 "Argument missing after option '-dir'"
+      echo >&2 $USAGE
+      exit 1
+    fi
+    shift 1
+    dir=$1
+    shift 1
+    ;;
+    -crumonthly)
+    cru=1
+    ;;
+    -oldlu)
+    lu=1
+    shift 1
+    ;;
+    -madrat)
+    lu=2
+    shift 1
+    ;;
+    -*)
+     echo >&2 Invalid option $1
+     echo >&2 $USAGE
+     exit 1
+     ;;
+   *)
+     break
+     ;;
+  esac
+done
 if [ $# -lt 1 ]
 then
-  echo >&2 Error: Missing arguments 
-  echo >&2 Usage: $0 [-dir path] suffix [countrycode ...]
-  exit 1
-fi
-if [ $1 = "-dir" ]
-then
-  shift 1
-  dir=$1
-  shift 1
-else
-  dir=$PWD
-fi
-if [ $# -lt 1 ]
-then
-  echo >&2 Error: Missing arguments 
-  echo >&2 Usage: $0 [-dir path] suffix [countrycode ...]
+  echo >&2 Error: Missing arguments
+  echo >&2 $USAGE
   exit 1
 fi
 name=$1
 shift 1
 if [ $# -gt 0 ]
 then
-  if getcountry $LPJINPATH/input_VERSION2/cow_mg_2006_full.bin  $LPJINPATH/input_VERSION2/grid.bin $dir/grid_$name.clm $* ;
+  if getcountry $LPJINPATH/input_VERSION2/cow_full_2018.bin  $LPJINPATH/input_VERSION2/grid.bin $dir/grid_$name.clm $* ;
   then
     echo regridding for countries $*
   else
@@ -54,60 +78,96 @@ fi
 if  regridsoil $LPJINPATH/input_VERSION2/grid.bin $dir/grid_$name.clm  $LPJINPATH/input_VERSION2/soil_new_67420.bin $dir/soil_$name.bin
 then
   regridsoil $LPJINPATH/input_VERSION2/grid.bin $dir/grid_$name.clm  $LPJINPATH/input_VERSION2/glwd_lakes_and_rivers.bin $dir/lakes_$name.bin
+  if [ "$cru" = "1" ]
+  then
+    regridclm $LPJINPATH/input_VERSION2/grid.bin $dir/grid_$name.clm  $LPJINPATH/CRUDATA_TS3_23/cru_ts3.23.1901.2014.tmp.dat.clm $dir/tmp_$name.clm
+    regridclm $LPJINPATH/input_VERSION2/grid.bin $dir/grid_$name.clm  $LPJINPATH/CRUDATA_TS3_23/cru_ts3.23.1901.2014.dtr.dat.clm $dir/tamp_$name.clm
+    regridclm $LPJINPATH/input_VERSION2/grid.bin $dir/grid_$name.clm  $LPJINPATH/CRUDATA_TS3_23/gpcc_v7_cruts3_23_precip_1901_2013.clm $dir/prec_$name.clm
+    regridclm $LPJINPATH/input_VERSION2/grid.bin $dir/grid_$name.clm  $LPJINPATH/CRUDATA_TS3_23/cru_ts3.23.1901.2014.cld.dat.clm $dir/cld_$name.clm
+  regridclm $LPJINPATH/input_VERSION2/grid.bin $dir/grid_$name.clm  $LPJINPATH/input_VERSION2/lwnet_erainterim_1901-2011.clm $dir/lwnet_$name.clm
+  regridclm $LPJINPATH/input_VERSION2/grid.bin $dir/grid_$name.clm  $LPJINPATH/input_VERSION2/swdown_erainterim_1901-2011.clm $dir/swdown_$name.clm
+  regridclm $LPJINPATH/input_VERSION2/grid.bin $dir/grid_$name.clm  $LPJINPATH/CRUDATA_TS3_23/gpcc_v7_cruts3_23_wet_1901_2013.clm $dir/wet_$name.clm
+  regridclm $LPJINPATH/input_VERSION2/grid.bin $dir/grid_$name.clm  $LPJINPATH/input_VERSION2/mwindspeed_1860-2100_67420.clm $dir/windspeed_$name.clm
+else
+  regridclm $LPJINPATH/input_VERSION2/grid.bin $dir/grid_$name.clm  /p/projects/lpjml/inputs/grid/30min/landfrac_gadm36.bin $dir/landfrac_$name.clm
+  regridclm $LPJINPATH/input_VERSION2/grid.bin $dir/grid_$name.clm  $LPJINPATH/ISIMIP3av2/obsclim/GSWP3-W5E5/tas_gswp3-w5e5_obsclim_1901-2019.clm $dir/tmp_$name.clm
+  regridclm $LPJINPATH/input_VERSION2/grid.bin $dir/grid_$name.clm  $LPJINPATH/ISIMIP3av2/obsclim/GSWP3-W5E5/pr_gswp3-w5e5_obsclim_1901-2019.clm $dir/prec_$name.clm
+  regridclm $LPJINPATH/input_VERSION2/grid.bin $dir/grid_$name.clm  $LPJINPATH/ISIMIP3av2/obsclim/GSWP3-W5E5/lwnet_gswp3-w5e5_obsclim_1901-2019.clm $dir/lwnet_$name.clm
+  regridclm $LPJINPATH/input_VERSION2/grid.bin $dir/grid_$name.clm  $LPJINPATH/ISIMIP3av2/obsclim/GSWP3-W5E5/rsds_gswp3-w5e5_obsclim_1901-2019.clm $dir/swdown_$name.clm
+  regridclm $LPJINPATH/input_VERSION2/grid.bin $dir/grid_$name.clm  $LPJINPATH/ISIMIP3av2/obsclim/GSWP3-W5E5/sfcwind_gswp3-w5e5_obsclim_1901-2019.clm $dir/windspeed_$name.clm
+  regridclm $LPJINPATH/input_VERSION2/grid.bin $dir/grid_$name.clm  $LPJINPATH/ISIMIP3av2/obsclim/GSWP3-W5E5/tasmax_gswp3-w5e5_obsclim_1901-2019.clm $dir/tmax_$name.clm
+  regridclm $LPJINPATH/input_VERSION2/grid.bin $dir/grid_$name.clm  $LPJINPATH/ISIMIP3av2/obsclim/GSWP3-W5E5/tasmin_gswp3-w5e5_obsclim_1901-2019.clm $dir/tmin_$name.clm
+  regridclm $LPJINPATH/input_VERSION2/grid.bin $dir/grid_$name.clm  $LPJINPATH/ISIMIP3av2/obsclim/GSWP3-W5E5/huss_gswp3-w5e5_obsclim_1901-2019.clm $dir/humid_$name.clm
+fi
   regridclm -size4 $LPJINPATH/input_VERSION2/grid.bin $dir/grid_$name.clm  $LPJINPATH/input_VERSION2/mlightning.clm $dir/lightning_$name.clm
   regridclm $LPJINPATH/input_VERSION2/grid.bin $dir/grid_$name.clm  $LPJINPATH/input_VERSION2/human_ignition.clm $dir/human_ignition_$name.clm
   regridclm $LPJINPATH/input_VERSION2/grid.bin $dir/grid_$name.clm  $LPJINPATH/input_VERSION2/popdens_HYDE_1901_2010_bi.clm $dir/popdens_$name.clm
-  regridclm $LPJINPATH/input_VERSION2/grid.bin $dir/grid_$name.clm  $LPJINPATH/input_VERSION2/cft1700_2005_irrigation_systems_64bands.bin $dir/landuse_$name.clm
-  regridclm $LPJINPATH/input_VERSION2/grid.bin $dir/grid_$name.clm  $LPJINPATH/input_VERSION2/cru_ts_3_10.1901.2009.dtr.clm $dir/tamp_$name.clm
-  regridclm $LPJINPATH/input_VERSION2/grid.bin $dir/grid_$name.clm  $LPJINPATH/input_VERSION2/mwindspeed_1860-2100_67420.clm $dir/windspeed_$name.clm
-  regridclm $LPJINPATH/input_VERSION2/grid.bin $dir/grid_$name.clm  $LPJINPATH/input_VERSION2/cru_ts_3_10.1901.2009.tmp.clm $dir/tmp_$name.clm
-  regridclm $LPJINPATH/input_VERSION2/grid.bin $dir/grid_$name.clm  $LPJINPATH/input_VERSION2/gpcc_cru09_prec_monthly_1901_2009.clm $dir/prec_$name.clm
-  regridclm $LPJINPATH/input_VERSION2/grid.bin $dir/grid_$name.clm  $LPJINPATH/input_VERSION2/cru_ts_3_10.1901.2009.cld.clm $dir/cld_$name.clm
-  regridclm $LPJINPATH/input_VERSION2/grid.bin $dir/grid_$name.clm  $LPJINPATH/input_VERSION2/lwnet_erainterim_1901-2011.clm $dir/lwnet_$name.clm
-  regridclm $LPJINPATH/input_VERSION2/grid.bin $dir/grid_$name.clm  $LPJINPATH/input_VERSION2/swdown_erainterim_1901-2011.clm $dir/swdown_$name.clm
-  regridclm $LPJINPATH/input_VERSION2/grid.bin $dir/grid_$name.clm  $LPJINPATH/input_VERSION2/gpcc_cru09_wet_monthly_1901_2009.clm $dir/wet_$name.clm
-  regridclm $LPJINPATH/input_VERSION2/grid.bin $dir/grid_$name.clm  $LPJINPATH/input_VERSION2/cow_mg_2006_full.bin $dir/country_$name.clm
+  regridclm $LPJINPATH/input_VERSION2/grid.bin $dir/grid_$name.clm  $LPJINPATH/input_VERSION2/cow_full_2018.bin $dir/country_$name.clm
   regridclm -size4 $LPJINPATH/input_VERSION2/grid.bin $dir/grid_$name.clm $LPJINPATH/input_VERSION2/no3_deposition_rcp8p5.clm $dir/no3_deposition_$name.clm
   regridclm -size4 $LPJINPATH/input_VERSION2/grid.bin $dir/grid_$name.clm $LPJINPATH/input_VERSION2/nh4_deposition_rcp8p5.clm $dir/nh4_deposition_$name.clm
   regridclm $LPJINPATH/input_VERSION2/grid.bin $dir/grid_$name.clm $LPJINPATH/input_VERSION2/soil_ph.clm $dir/soil_ph_$name.clm
-  regridclm $LPJINPATH/input_VERSION2/grid.bin $dir/grid_$name.clm $LPJINPATH/input_VERSION2/fertilizer_ggcmi.clm2 $dir/fertilizer_ggcmi_$name.clm
+  regridclm $LPJINPATH/input_VERSION2/grid.bin $dir/grid_$name.clm $LPJINPATH/input_VERSION3/lpj_tillage_CA_1973-2010.clm $dir/tillage_$name.clm
+  regridclm $LPJINPATH/input_VERSION2/grid.bin $dir/grid_$name.clm /p/projects/lpjml/input/MADRAT/residues_madrat_1850-2015_16bands.clm $dir/residue_$name.clm
+  regridclm $LPJINPATH/input_VERSION2/grid.bin $dir/grid_$name.clm /p/projects/landuse/users/cmueller/GGCMI/crop_calendar/GGCMI_CTWN_planting_v1.25.clm2 $dir/sdate_$name.clm
 
-  cat << EOF >input_$name.js
+  if [ "$lu" = "1" ]
+  then
+    regridclm $LPJINPATH/input_VERSION2/grid.bin $dir/grid_$name.clm  $LPJINPATH/input_VERSION2/cft1700_2005_irrigation_systems_64bands.bin $dir/landuse_$name.clm
+    regridclm $LPJINPATH/input_VERSION2/grid.bin $dir/grid_$name.clm $LPJINPATH/input_VERSION3/fertilizer_luh2v2_1900-2015_32bands.clm $dir/fertilizer_$name.clm
+    regridclm $LPJINPATH/input_VERSION2/grid.bin $dir/grid_$name.clm $LPJINPATH/input_VERSION3/manure_zhang17_1860-2014_32bands_clm2.clm manure_$name.clm
+  elif [ "$lu" = "2" ]
+  then
+    regridclm $LPJINPATH/input_VERSION2/grid.bin $dir/grid_$name.clm  /p/projects/lpjml/input/MADRAT/lu_madrat_850-2015_32bands.clm $dir/landuse_$name.clm
+    regridclm $LPJINPATH/input_VERSION2/grid.bin $dir/grid_$name.clm $LPJINPATH/input_VERSION3/fertilizer_luh2v2_1900-2015_32bands.clm $dir/fertilizer_$name.clm
+    regridclm $LPJINPATH/input_VERSION2/grid.bin $dir/grid_$name.clm $LPJINPATH/input_VERSION3/manure_zhang17_1860-2014_32bands_clm2.clm manure_$name.clm
+  else
+    regridclm $LPJINPATH/input_VERSION2/grid.bin $dir/grid_$name.clm  $LPJINPATH/input_toolbox_30arcmin/paper_version/cft_default_cft_aggregation_30min_1500-2017_fallow_to_others.bin $dir/landuse_$name.clm
+    regridclm $LPJINPATH/input_VERSION2/grid.bin $dir/grid_$name.clm $LPJINPATH/input_toolbox_30arcmin/paper_version/fert_N_default_cft_aggregation_30min_1860-2017.clm $dir/fertilizer_$name.clm
+    regridclm $LPJINPATH/input_VERSION2/grid.bin $dir/grid_$name.clm $LPJINPATH/input_toolbox_30arcmin/paper_version/manure_N_default_cft_aggregation_30min_1860-2017.clm manure_$name.clm
+  fi
+
+  cat << EOF >input_$name.cjson
 /*********************************************************************/
 /*                                                                   */
-/*                 i  n  p  u  t  .  j  s                            */
+/*                 i  n  p  u  t  .  c  j  s  o  n                   */
 /*                                                                   */
-/* Configuration file for input dataset for LPJ C Version 5.1.001    */
+/* Configuration file for input dataset for LPJ C Version 5.8.1      */
 /*                                                                   */
 /* Created: $(date +"%d.%m.%Y")                                               */
 /*                                                                   */
 /*********************************************************************/
 
-#include "include/conf.h" /* include constant definitions */
-
-"input" :
 {
-  "soil"           : { "fmt" : RAW, "name" : "$dir/soil_$name.bin"},
-  "coord"          : { "fmt" : CLM, "name" : "$dir/grid_$name.clm"},
-  "countrycode"    : { "fmt" : CLM, "name" : "$dir/country_$name.clm"},
-  "landuse"        : { "fmt" : CLM, "name" : "$dir/landuse_$name.clm"},
-  "temp"           : { "fmt" : CLM, "name" : "$dir/tmp_$name.clm"},
-  "prec"           : { "fmt" : CLM, "name" : "$dir/prec_$name.clm"},
-  "lwnet"          : { "fmt" : CLM, "name" : "$dir/lwnet_$name.clm"},
-  "swdown"         : { "fmt" : CLM, "name" : "$dir/swdown_$name.clm"},
-  "cloud"          : { "fmt" : CLM, "name" : "$dir/cld_$name.clm"},
-  "wind"           : { "fmt" : CLM, "name" : "$dir/windspeed_$name.clm"},
-  "tamp"           : { "fmt" : CLM, "name" : "$dir/tamp_$name.clm"},
-  "lightning"      : { "fmt" : CLM, "name" : "$dir/lightning_$name.clm"},
-  "human_ignition" : { "fmt" : CLM, "name" : "$dir/human_ignition_$name.clm"},
-  "popdens"        : { "fmt" : CLM, "name" : "$dir/popdens_$name.clm "},
-  "co2"            : { "fmt" : TXT, "name" : "/p/projects/lpjml/input/historical/input_VERSION2/co2_1841-2012.dat"},
-  "wetdays"        : { "fmt" : CLM, "name" : "$dir/wet_$name.clm"},
-  "no3deposition"  : { "fmt" : CLM, "name" : "$dir/no3_deposition_$name.clm"},
-  "nh4deposition"  : { "fmt" : CLM, "name" : "$dir/nh4_deposition_$name.clm"},
-  "soilpH"         : { "fmt" : CLM, "name" : "$dir/soil_ph_$name.clm"},
-  "fertilizer_nr"  : { "fmt" : CLM, "name" : "$dir/fertilizer_ggcmi_$name.clm"}
-},
+  "soil"             : { "fmt" : "raw", "name" : "$dir/soil_$name.bin"},
+  "coord"            : { "fmt" : "clm", "name" : "$dir/grid_$name.clm"},
+  "countrycode"      : { "fmt" : "clm", "name" : "$dir/country_$name.clm"},
+  "landfrac"         : { "fmt" : "clm", "name" : "$dir/landfrac_$name.clm"},
+  "lakes"            : { "fmt" : "raw", "name" : "$dir/lakes_$name.bin"},
+  "landuse"          : { "fmt" : "clm", "name" : "$dir/landuse_$name.clm"},
+  "with_tillage"     : { "fmt" : "clm", "name" : "$dir/tillage_$name.clm"},
+  "residue_on_field" : { "fmt" : "clm", "name" : "$dir/residue_$name.clm"},
+  "sdate"            : { "fmt" : "clm", "name" : "$dir/sdate_$name.clm"},
+  "temp"             : { "fmt" : "clm", "name" : "$dir/tmp_$name.clm"},
+  "prec"             : { "fmt" : "clm", "name" : "$dir/prec_$name.clm"},
+  "lwnet"            : { "fmt" : "clm", "name" : "$dir/lwnet_$name.clm"},
+  "swdown"           : { "fmt" : "clm", "name" : "$dir/swdown_$name.clm"},
+  "cloud"            : { "fmt" : "clm", "name" : "$dir/cld_$name.clm"},
+  "wind"             : { "fmt" : "clm", "name" : "$dir/windspeed_$name.clm"},
+  "tamp"             : { "fmt" : "clm", "name" : "$dir/tamp_$name.clm"},
+  "tmin"             : { "fmt" : "clm", "name" : "$dir/tmin_$name.clm"},
+  "tmax"             : { "fmt" : "clm", "name" : "$dir/tmax_$name.clm"},
+  "humid"            : { "fmt" : "clm", "name" : "$dir/humid_$name.clm"},
+  "lightning"        : { "fmt" : "clm", "name" : "$dir/lightning_$name.clm"},
+  "human_ignition"   : { "fmt" : "clm", "name" : "$dir/human_ignition_$name.clm"},
+  "popdens"          : { "fmt" : "clm", "name" : "$dir/popdens_$name.clm "},
+  "co2"              : { "fmt" : "txt", "name" : "/p/projects/lpjml/input/historical/input_VERSION2/co2_1841-2022.dat"},
+  "wetdays"          : { "fmt" : "clm", "name" : "$dir/wet_$name.clm"},
+  "no3deposition"    : { "fmt" : "clm", "name" : "$dir/no3_deposition_$name.clm"},
+  "nh4deposition"    : { "fmt" : "clm", "name" : "$dir/nh4_deposition_$name.clm"},
+  "soilpH"           : { "fmt" : "clm", "name" : "$dir/soil_ph_$name.clm"},
+  "manure_nr"        : { "fmt" : "clm", "name" : "$dir/manure_$name.clm"},
+  "fertilizer_nr"    : { "fmt" : "clm", "name" : "$dir/fertilizer_$name.clm"}
+}
 EOF
 else
   exit 1

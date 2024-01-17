@@ -36,12 +36,35 @@ Bool fscanparam(LPJfile *file,       /**< File pointer to text file */
                )                     /** \return TRUE on error  */
 {
   LPJfile *f;
+  int l;
   Verbosity verbosity;
   verbosity=(isroot(*config))  ? config->scan_verbose : NO_ERR;
   if(verbosity>=VERB)
     printf("// LPJ parameters\n");
   f=fscanstruct(file,"param",verbosity);
   if(f==NULL)
+    return TRUE;
+  if(fscanrealarray(f,soildepth,NSOILLAYER,"soildepth",verbosity))
+    return TRUE;
+  /* calculate layerbound and midlayer from soildepth */
+  layerbound[0]=soildepth[0];
+  midlayer[0]=soildepth[0]*0.5;
+  for(l=1;l<NSOILLAYER;l++)
+  {
+    layerbound[l]=layerbound[l-1]+soildepth[l];
+    midlayer[l]=layerbound[l-1]+soildepth[l]*0.5;
+  }
+  foreachsoillayer(l)
+  {
+    if(soildepth[l]<=0)
+    {
+      if(verbosity)
+        fprintf(stderr,"ERROR234: Soil depth of layer %d=%g must be greater than zero.\n",l,soildepth[l]);
+      return TRUE;
+    }
+    logmidlayer[l]=log10(midlayer[l]/midlayer[NSOILLAYER-2]);
+  }
+  if(fscanrealarray(f,fbd_fac,NFUELCLASS,"fbd_fac",verbosity))
     return TRUE;
   if(config->landfrac_from_file)
   {

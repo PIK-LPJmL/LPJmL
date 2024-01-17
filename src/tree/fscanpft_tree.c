@@ -214,6 +214,7 @@ Bool fscanpft_tree(LPJfile *file, /**< pointer to LPJ file */
               tree->k_latosa,pft->name);
     return TRUE;
   }
+  fscanreal2(verb,file,&tree->wood_density,pft->name,"wood_density");
   if(config->fire==SPITFIRE || config->fire==SPITFIRE_TMAX)
   {
     fscanreal2(verb,file,&tree->scorchheight_f_param,pft->name,"scorchheight_f_param");
@@ -265,7 +266,7 @@ Bool fscanpft_tree(LPJfile *file, /**< pointer to LPJ file */
                   2/(2-reinickerp));
   stemdiam=wood_sapl*sqrt(4*tree->sapl.leaf.carbon*pft->sla/M_PI/tree->k_latosa);
   height_sapl=tree->allom2*pow(stemdiam,tree->allom3);
-  tree->sapl.sapwood.carbon=wooddens*height_sapl*tree->sapl.leaf.carbon*pft->sla/tree->k_latosa;
+  tree->sapl.sapwood.carbon=tree->wood_density*height_sapl*tree->sapl.leaf.carbon*pft->sla/tree->k_latosa;
   tree->sapl.heartwood.carbon=(wood_sapl-1)*tree->sapl.sapwood.carbon;
   tree->sapl.root.carbon=(1.0/pft->lmro_ratio)*tree->sapl.leaf.carbon;
   tree->sapling_C=phys_sum_tree(tree->sapl)*tree->k_est;

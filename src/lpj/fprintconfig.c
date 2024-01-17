@@ -243,6 +243,23 @@ static void printinputfile(FILE *file,const char *descr,const Filename *filename
   fputc('\n',file);
 } /* of 'printinputfile' */
 
+static void fprintcultivations(FILE *file,const Pftpar *pftpar,int ntotpft)
+{
+  int p;
+  int cult;
+  cult=pftpar[0].cultivation_type;
+  fprintf(file,"Cultivation types: %s",cultivation_type[cult]);
+  for(p=1;p<ntotpft;p++)
+  {
+    if(cult!=pftpar[p].cultivation_type)
+    {
+      cult=pftpar[p].cultivation_type;
+      fprintf(file,", %s",cultivation_type[cult]);
+    }
+  }
+  fputc('\n',file);
+} /* of 'fprintcultivations' */
+
 void fprintconfig(FILE *file,          /**< File pointer to text output file */
                   int npft,            /**< Number of natural PFTs */
                   int ncft,            /**< Number of crop PFTs */
@@ -458,7 +475,7 @@ void fprintconfig(FILE *file,          /**< File pointer to text output file */
     else if(config->laimax_interpolate==LAIMAX_PAR)
     {
       len+=fprintf(file,", ");
-      len=fputstring(file,len,"pft.js LAImax",78);
+      len=fputstring(file,len,"pft.cjson LAImax",78);
     }
     if(config->sdate_option==FIXED_SDATE)
     {
@@ -523,8 +540,10 @@ void fprintconfig(FILE *file,          /**< File pointer to text output file */
     fprintf(file,"Mowing days for grassland:");
     for(i=0;i<config->mowingdays_size;i++)
       fprintf(file," %d",config->mowingdays[i]);
+    fputc('\n',file);
   }
-  fprintf(file,"\nWorking directory: %s\n",getdir());
+  fprintcultivations(file,config->pftpar,npft+ncft);
+  fprintf(file,"Working directory: %s\n",getdir());
   if(isreadrestart(config))
     fprintf(file,"Starting from restart file '%s'.\n",config->restart_filename);
   else
