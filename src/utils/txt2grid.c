@@ -20,7 +20,7 @@
 
 #include "lpj.h"
 
-#define USAGE "Usage: txt2grid [-h] [-v] [-map file] [-fmt s] [-skip n] [-cellsize size] [-cellsize_lon size] -cellsize_lat size] [-float] [-latlon] gridfile clmfile\n"
+#define USAGE "Usage: txt2grid [-h] [-v] [-map file] [-fmt s] [-skip n] [-cellsize size] [-cellsize_lon size] [-cellsize_lat size] [-float] [-latlon] gridfile clmfile\n"
 
 typedef  struct
 {

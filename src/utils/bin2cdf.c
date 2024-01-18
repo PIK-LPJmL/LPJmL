@@ -20,7 +20,7 @@
 
 #define error(rc) if(rc) {free(lon);free(lat);free(year);fprintf(stderr,"ERROR427: Cannot write '%s': %s.\n",filename,nc_strerror(rc)); nc_close(cdf->ncid); free(cdf);return NULL;}
 
-#define USAGE "Usage: %s [-h] [-v] [-clm] [-floatgrid] [-doublegrid] [-revlat] [-days] [-firstyear y] [-baseyear y] [-nbands n] [-nstep n] [-cellsize size] [-swap]\n       [[-attr name=value]..] [-global] [-short] [-compress level] [-units u] [-descr d] [-missing_value val] [-metafile] [-map name] [varname gridfile]\n       binfile netcdffile\n"
+#define USAGE "Usage: %s [-h] [-v] [-clm] [-floatgrid] [-doublegrid] [-revlat] [-days] [-absyear] [-firstyear y] [-baseyear y] [-nbands n] [-nstep n] [-cellsize size] [-swap]\n       [[-attr name=value]..] [-global] [-short] [-compress level] [-units u] [-descr d] [-missing_value val] [-metafile] [-map name] [varname gridfile]\n       binfile netcdffile\n"
 
 typedef struct
 {
@@ -50,7 +50,8 @@ static Cdf *create_cdf(const char *filename,
                        int compress,
                        const Coord_array *array,
                        Bool revlat,
-                       Bool with_days)
+                       Bool with_days,
+                       Bool absyear)
 {
   Cdf *cdf;
   double *lon,*lat;
@@ -99,8 +100,12 @@ static Cdf *create_cdf(const char *filename,
   switch(header.nstep)
   {
     case 1:
-      for(i=0;i<header.nyear;i++)
-        year[i]=header.firstyear-baseyear+i*header.timestep+header.timestep/2;
+      if(absyear)
+        for(i=0;i<header.nyear;i++)
+          year[i]=header.firstyear-i*header.timestep+header.timestep/2;
+        else
+        for(i=0;i<header.nyear;i++)
+          year[i]=header.firstyear-baseyear+i*header.timestep+header.timestep/2;
       break;
     case 12:
       if(with_days)
@@ -184,9 +189,14 @@ static Cdf *create_cdf(const char *filename,
   error(rc);
   if(header.nstep==1)
   {
-    len=snprintf(NULL,0,"years since %d-1-1 0:0:0",baseyear);
-    s=malloc(len+1);
-    sprintf(s,"years since %d-1-1 0:0:0",baseyear);
+    if(absyear)
+      s=strdup(YEARS_NAME);
+    else
+    {
+      len=snprintf(NULL,0,"years since %d-1-1 0:0:0",baseyear);
+      s=malloc(len+1);
+      sprintf(s,"years since %d-1-1 0:0:0",baseyear);
+    }
   }
   else if(header.nstep==12)
   {
@@ -537,7 +547,7 @@ int main(int argc,char **argv)
   float *data;
   short *data_short;
   int i,j,k,ngrid,iarg,compress,version,n_global,n_global2,baseyear;
-  Bool swap,ispft,isshort,isglobal,isclm,ismeta,isbaseyear,revlat,withdays;
+  Bool swap,ispft,isshort,isglobal,isclm,ismeta,isbaseyear,revlat,withdays,absyear;
   Type gridtype;
   float cellsize,fcoord[2];
   double dcoord[2];
@@ -559,7 +569,7 @@ int main(int argc,char **argv)
   grid_name.fmt=RAW;
   units=long_name=NULL;
   compress=0;
-  swap=isglobal=FALSE;
+  swap=isglobal=absyear=FALSE;
   res.lon=res.lat=header.cellsize_lon=header.cellsize_lat=0.5;
   header.firstyear=1901;
   header.nbands=1;
@@ -593,6 +603,7 @@ int main(int argc,char **argv)
                "-doublegrid      set data type of grid file to double, default is short\n"
                "-revlat          reverse order of latitudes in NetCDF file\n"
                "-days            use days as units for monthly output\n"
+               "-absyear         absolute year instead of relative to base year\n"
                "-cellsize s      set cell size, default is %g\n"
                "-compress l      set compression level for NetCDF4 files\n"
                "-attr name=value set global attribute name to value in NetCDF file\n"
@@ -606,6 +617,7 @@ int main(int argc,char **argv)
                "-nstep n         number of steps per year, default is 1\n"
                "-ispft           output is PFT-specific\n"
                "-firstyear f     first year, default is %d\n"
+               "-baseyear y      base year of annual time axis, default is firstyear\n"
                "-metafile        set the input format to JSON metafile instead of raw\n"
                "-map name        name of map in JSON metafile, default is \"band_names\"\n"
                "varname          variable name in NetCDF file\n"
@@ -651,6 +663,8 @@ int main(int argc,char **argv)
         revlat=TRUE;
       else if(!strcmp(argv[iarg],"-days"))
         withdays=TRUE;
+      else if(!strcmp(argv[iarg],"-absyear"))
+        absyear=TRUE;
       else if(!strcmp(argv[iarg],"-descr"))
       {
         if(iarg==argc-1)
@@ -1071,7 +1085,7 @@ int main(int argc,char **argv)
     }
   }
   if(!isbaseyear)
-     baseyear=header.firstyear;
+    baseyear=header.firstyear;
   index=createindex(grid,ngrid,res,isglobal,revlat);
   if(index==NULL)
     return EXIT_FAILURE;
@@ -1099,7 +1113,7 @@ int main(int argc,char **argv)
     }
   }
 
-  cdf=create_cdf(outname,map,map_name,cmdline,source,history,variable,units,var_standard_name,long_name,miss,miss_short,global_attrs,n_global,(isshort) ? LPJ_SHORT : LPJ_FLOAT,header,baseyear,ispft,compress,index,revlat,withdays);
+  cdf=create_cdf(outname,map,map_name,cmdline,source,history,variable,units,var_standard_name,long_name,miss,miss_short,global_attrs,n_global,(isshort) ? LPJ_SHORT : LPJ_FLOAT,header,baseyear,ispft,compress,index,revlat,withdays,absyear);
   free(cmdline);
   if(cdf==NULL)
     return EXIT_FAILURE;
