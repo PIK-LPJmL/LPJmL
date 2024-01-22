@@ -23,8 +23,8 @@ of `major.minor.patch` with
 
 ### Contributors
 
-- author: Fabian Stenzel, Stephen Wirth, Sibyll Schaphoff
-- code review: Stephen Wirth, Constanze Werner
+- author: Fabian Stenzel (stenzel@pik-potsdam.de), Stephen Wirth (wirth@pik-potsdam.de), Sibyll Schaphoff (schaphoff@pik-potsdam.de)
+- code review: Stephen Wirth, Constanze Werner (cowerner@pik-potsdam.de)
 
 ### Fixed:
 
