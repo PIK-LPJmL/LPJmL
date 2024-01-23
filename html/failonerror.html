@@ -1,0 +1,64 @@
+<HTML>
+<BODY>
+<PRE>
+<!-- Manpage converted by man2html 3.0.1 -->
+     <B>NAME</B>
+          failonerror - Prints error message and terminates program
+
+     <B>SYNOPSIS</B>
+          <B>#include</B> <B>"lpj.h"</B>
+
+          <B>void</B> <B>failonerror(const</B> <B>Config</B> <B>*</B><I>config</I><B>,int</B> <I>rc</I><B>,int</B> <I>errcode</I><B>,const</B> <B>char</B> <B>*</B><I>msg</I><B>);</B>
+
+
+     <B>DESCRIPTION</B>
+          Function writes out error message and terminates program.
+          The parallel version checks the return code on all tasks and
+          prints error message only on task zero. The arguments of
+          <B>failonerror</B> are:
+
+          <I>config</I>
+               LPJmL configuration data. Must be initialized by
+               <B>initmpiconfig()</B> or <B>initconfig()</B>.
+
+          <I>rc</I>   Return code of last function call. Program will be
+               terminated if value on any task is greater than zero.
+
+          <I>errcode</I>
+               Value returned from main program.
+
+          <I>msg</I>  Error message printed on error stream.
+
+
+     <B>RETURN</B> <B>VALUE</B>
+          None.
+
+     <B>AUTHORS</B>
+          For authors and contributors see AUTHORS file
+
+
+     <B>COPYRIGHT</B>
+          (C) Potsdam Institute for Climate Impact Research (PIK), see
+          COPYRIGHT file
+
+
+     <B>SEE</B> <B>ALSO</B>
+          <B><A HREF="initconfig.html">initconfig(3)</A></B>, <B><A HREF="initmpiconfig.html">initmpiconfig(3)</A></B>
+
+
+
+
+
+
+
+
+
+
+</PRE>
+<HR>
+<ADDRESS>
+Man(1) output converted with
+<a href="http://www.oac.uci.edu/indiv/ehood/man2html.html">man2html</a>
+</ADDRESS>
+</BODY>
+</HTML>

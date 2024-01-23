@@ -1,0 +1,122 @@
+<HTML>
+<HEAD>
+<TITLE>lpjfiles.1</TITLE>
+</HEAD>
+<BODY>
+<H1>lpjfiles.1</H1>
+<HR>
+<PRE>
+<!-- Manpage converted by man2html 3.0.1 -->
+     <B>NAME</B>
+          lpjfiles - Prints list of input/output files of LPJmL
+
+     <B>SYNOPSIS</B>
+          <B>lpjfiles</B> [-h] [-noinput] [-pp cmd] [-outpath <I>dir</I>] [-inpath
+          <I>dir</I>] [-restartpath <I>dir</I>] [[-Dmacro[=value]] [-I<I>dir</I>] ...]
+          [<I>filename</I>]
+
+     <B>DESCRIPTION</B>
+          Program prints list of all input and output files of LPJmL
+          configuration files. It can be used to get a list of files
+          to be archived.
+
+     <B>OPTIONS</B>
+          -h   display a short help text
+
+          -noinput
+               does not list input data files
+
+          -pp cmd
+               Set preprocessor program to cmd. Default is <B>cpp</B> <B>-P</B>.
+
+          -outpath <I>dir</I>
+               set the output directory path. The path is added to the
+               output filenames if they do not contain an absolute
+               path.
+
+          -inpath <I>dir</I>
+               set the input directory path. The path is added to the
+               input filenames if they do not contain an absolute
+               path.
+
+          -Dmacro[=value]
+               define macro for the preprocessor of the configuration
+               file
+
+          -I<I>dir</I>
+               define include directory for the preprocessor of the
+               configuration file
+
+          <I>filename</I>
+               name of configuration file, default is <I>lpjml</I>.<I>conf</I>.
+
+     <B>EXAMPLES</B>
+     located in the scratch file system
+          Archive files for default configuration file with input files
+               <B>lpjfiles</B> -input /scratch/01/lpj | tail -n +2 | tar -cf
+               files.tar -T -
+
+     <B>ENVIRONMENT</B>
+          LPJCONFIG
+               default LPJmL configuration filename
+
+          LPJPREP
+               defines preprocessor command for LPJmL configuration
+               file, default is <B>cpp</B> <B>-P</B>. Same as '-pp' option.
+
+          LPJROOT
+               defines the root directory for LPJmL. This directory is
+               added to the include directories of the preprocessor
+
+          LPJINPATH
+               Path appended to the input filenames. Only done for
+               filenames without absolute path.
+
+          LPJOPTIONS
+               runtime options for the preprocessor of LPJmL
+               configuration files
+
+          LPJOUTPATH
+               Path appended to the output filenames. Only done for
+               filenames without absolute path.
+
+          LPJRESTARTPATH
+               Path appended to the restart filenames. Only done for
+               filenames without absolute path.
+
+
+     <B>EXIT</B> <B>STATUS</B>
+          <B>lpjfiles</B> returns a zero exit status if the configuration
+          file has no syntax errors.  Non zero is returned in case of
+          failure.
+
+
+     <B>AUTHORS</B>
+          For authors and contributors see AUTHORS file
+
+
+     <B>COPYRIGHT</B>
+          (C) Potsdam Institute for Climate Impact Research (PIK), see
+          COPYRIGHT file
+
+
+     <B>SEE</B> <B>ALSO</B>
+          <B><A HREF="lpjml.html">lpjml(1)</A></B>, <B><A HREF="lpjcheck.html">lpjcheck(1)</A></B>, <B><A HREF="lpjml.conf.html">lpjml.conf(5)</A></B>
+
+
+
+
+
+
+
+
+
+
+</PRE>
+<HR>
+<ADDRESS>
+Man(1) output converted with
+<a href="http://www.oac.uci.edu/indiv/ehood/man2html.html">man2html</a>
+</ADDRESS>
+</BODY>
+</HTML>

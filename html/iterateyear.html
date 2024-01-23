@@ -1,0 +1,116 @@
+<HTML>
+<BODY>
+<PRE>
+<!-- Manpage converted by man2html 3.0.1 -->
+     <B>NAME</B>
+          iterateyear - year time loop for LPJmL
+
+     <B>SYNOPSIS</B>
+          <B>#include</B> <B>"lpj.h"</B>
+
+          <B>void</B> <B>iterateyear(Outputfile</B> <B>*</B><I>output</I><B>,</B>
+                           <B>Cell</B> <I>grid</I><B>[],</B>
+                           <B>Input</B> <I>input</I><B>,</B>
+                           <B>Real</B> <I>co2</I><B>,</B>
+                           <B>int</B> <I>npft</I><B>,</B> <B>int</B> <I>ncft</I><B>,</B>
+                           <B>int</B> <I>year</I><B>,</B>
+                           <B>const</B> <B>Config</B> <B>*</B><I>config</I>
+                          <B>);</B>
+
+
+     <B>DESCRIPTION</B>
+          Function performs year time loop for LPJmL The arguments of
+          <B>iterateyear</B> are:
+
+          <I>output</I>
+               Pointer to initialized output data. <I>output</I> must be
+               initialized by <B>fopenoutput()</B>.
+
+          <I>grid</I> Cell grid array allocated and initialized by <B>newgrid()</B>.
+
+          <I>input</I>
+               Input data initialized by <B>initinput()</B>.
+
+          <I>co2</I>  Atmospheric CO2 concentration (ppmv).
+
+          <I>npft</I> Number of natural plant functional types.
+
+          <I>ncft</I> Number of crop plant functional types.
+
+          <I>year</I> Simulation year
+
+          <I>config</I>
+               LPJmL configuration data. Must be read by <B>readconfig()</B>.
+
+     <B>RETURN</B> <B>VALUE</B>
+          None
+
+
+     <B>AUTHORS</B>
+          For authors and contributors see AUTHORS file
+
+
+     <B>COPYRIGHT</B>
+          (C) Potsdam Institute for Climate Impact Research (PIK), see
+          COPYRIGHT file
+
+     <B>SEE</B> <B>ALSO</B>
+          <B><A HREF="readconfig.html">readconfig(3)</A></B>, <B><A HREF="fopenoutput.html">fopenoutput(3)</A></B>, <B><A HREF="newgrid.html">newgrid(3)</A></B>, <B><A HREF="initinput.html">initinput(3)</A></B>,
+          <B><A HREF="getlanduse.html">getlanduse(3)</A></B>, <B><A HREF="getclimate.html">getclimate(3)</A></B>, <B><A HREF="iterate.html">iterate(3)</A></B>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</PRE>
+<HR>
+<ADDRESS>
+Man(1) output converted with
+<a href="http://www.oac.uci.edu/indiv/ehood/man2html.html">man2html</a>
+</ADDRESS>
+</BODY>
+</HTML>

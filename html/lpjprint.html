@@ -1,0 +1,121 @@
+<HTML>
+<HEAD>
+<TITLE>lpjprint.1</TITLE>
+</HEAD>
+<BODY>
+<H1>lpjprint.1</H1>
+<HR>
+<PRE>
+<!-- Manpage converted by man2html 3.0.1 -->
+     <B>NAME</B>
+          lpjprint - Print contents of restart file of LPJmL model
+          runs
+
+     <B>SYNOPSIS</B>
+          <B>lpjprint</B> [-h] [-inpath <I>dir</I>] [-restartpath <I>dir</I>]
+          [[-Dmacro[=value]] [-I<I>dir</I>] ...] [<I>filename</I> [start [end]]]
+
+     <B>DESCRIPTION</B>
+          Program prints contents of restart file of a LPJmL model
+          run. The LPJmL configuration file is read in in order to
+          find the location and name of the restart file.
+
+     <B>OPTIONS</B>
+          -h   display a short help text
+
+          -inpath <I>dir</I>
+               set the input directory path. The path is added to the
+               input filenames if they do not contain an absolute
+               path.
+
+          -restartpath <I>dir</I>
+               set the restart directory path. The path is added to
+               the restart filename if they do not contain an absolute
+               path.
+
+          -Dmacro{=value]
+               define macro for the preprocessor of the configuration
+               file
+
+          -I<I>dir</I>
+               define include directory for the preprocessor of the
+               configuration file
+
+          <I>filename</I>
+               name of configuration file, default is <I>lpjml</I>.<I>conf</I>.
+
+          <I>start</I>
+               Index of first grid cell to be printed.
+
+          <I>end</I>  Index of last grid cell to be printed.
+
+
+     <B>EXAMPLE</B>
+     file located in the scratch file system
+          Print restart file with default configuration file with restart
+               <B>lpjprint</B> -restartpath /scratch/02/lpj
+
+     <B>ENVIRONMENT</B>
+          LPJCONFIG
+               default LPJmL configuration filename
+
+          LPJPREP
+               defines preprocessor command for LPJmL configuration
+               file, default is <B>cpp</B> <B>-P</B>.
+
+          LPJROOT
+               defines the root directory for LPJmL. This directory is
+               added to the include directories of the preprocessor
+
+          LPJINPATH
+               Path appended to the input filenames. Only done for
+               filenames without absolute path.
+
+          LPJOPTIONS
+               runtime options for the preprocessor of LPJmL
+               configuration files
+
+          LPJRESTARTPATH
+               Path appended to the restart filenames. Only done for
+               filenames without absolute path.
+
+
+     <B>EXIT</B> <B>STATUS</B>
+          <B>lpjprint</B> returns a zero exit status if the restart file has
+          been printed.  Non zero is returned in case of failure.
+
+
+     <B>AUTHORS</B>
+          For authors and contributors see AUTHORS file
+
+
+     <B>COPYRIGHT</B>
+          (C) Potsdam Institute for Climate Impact Research (PIK), see
+          COPYRIGHT file
+
+
+     <B>SEE</B> <B>ALSO</B>
+          <B><A HREF="lpjml.html">lpjml(1)</A></B>, <B><A HREF="lpjcheck.html">lpjcheck(1)</A></B>, <B><A HREF="lpjfiles.html">lpjfiles(1)</A></B>, <B><A HREF="lpjml.conf.html">lpjml.conf(5)</A></B>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</PRE>
+<HR>
+<ADDRESS>
+Man(1) output converted with
+<a href="http://www.oac.uci.edu/indiv/ehood/man2html.html">man2html</a>
+</ADDRESS>
+</BODY>
+</HTML>

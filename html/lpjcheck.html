@@ -1,0 +1,174 @@
+<HTML>
+<HEAD>
+<TITLE>lpjcheck.1</TITLE>
+</HEAD>
+<BODY>
+<H1>lpjcheck.1</H1>
+<HR>
+<PRE>
+<!-- Manpage converted by man2html 3.0.1 -->
+     <B>NAME</B>
+          lpjcheck - Checks syntax of LPJmL configuration files
+
+     <B>SYNOPSIS</B>
+          <B>lpjcheck</B> [-h] [-q] [-vv] [-param] [-pp cmd] [-output
+          {write|gather|mpi2|socket=hostname[:port]}] [-outpath <I>dir</I>]
+          [-inpath <I>dir</I>] [-restartpath <I>dir</I>] [[-Dmacro[=value]] [-I<I>dir</I>]
+          ...]  [<I>filename</I>]
+
+     <B>DESCRIPTION</B>
+          Program checks the syntax of LPJmL configuration files. It
+          is checked additionally whether all input files and output
+          directories are present. <B>lpjcheck</B> will print the total
+          amount of disk space used for the output files.
+
+     <B>OPTIONS</B>
+          -h   display a short help text
+
+          -q   Only error messages are displayed, other output is
+               suppressed.
+
+          -vv  verbosely print the actual values during reading of the
+               configuration files.
+
+          -param
+               Print LPJmL parameter.
+
+          -pp cmd
+               Set preprocessor program to cmd. Default is <B>cpp</B> <B>-P</B>.
+
+          -output {gather|mpi2|socket=hostname[:port]}
+               use the given output method to write data to disk.
+               Valid output methods are write, mpi2, gather, and
+               socket. The default output method for the MPI version
+               is gather sending all output to the root task, while
+               the default method for the sequential code is write.
+               The methods gather and mpi2 are only valid for the MPI
+               version of the code.
+
+          -outpath <I>dir</I>
+               set the output directory path. The path is added to the
+               output filenames if they do not contain an absolute
+               path.
+
+          -inpath <I>dir</I>
+               set the input directory path. The path is added to the
+               input filenames if they do not contain an absolute
+               path.
+
+          -Dmacro[=value]
+               define macro for the preprocessor of the configuration
+               file
+
+          -I<I>dir</I>
+               define include directory for the preprocessor of the
+               configuration file
+
+          <I>filename</I>
+               name of configuration file, default is <I>lpjml</I>.<I>conf</I>.
+
+     <B>EXAMPLES</B>
+     scratch file system
+          Check default configuration file with input files located in the
+               <B>lpjcheck</B> -input /scratch/02/lpj
+
+     <B>ENVIRONMENT</B>
+          LPJCONFIG
+               default LPJmL configuration filename
+
+          LPJPREP
+               defines preprocessor command for LPJmL configuration
+               file, default is <B>cpp</B> <B>-P</B>. Same as '-pp' option.
+
+          LPJROOT
+               defines the root directory for LPJmL. This directory is
+               added to the include directories of the preprocessor
+
+          LPJINPATH
+               Path appended to the input filenames. Only done for
+               filenames without absolute path.
+
+          LPJOPTIONS
+               runtime options for the preprocessor of LPJmL
+               configuration files
+
+          LPJOUTPATH
+               Path appended to the output filenames. Only done for
+               filenames without absolute path.
+
+          LPJRESTARTPATH
+               Path appended to the restart filenames. Only done for
+               filenames without absolute path.
+
+          LPJOUTPUT
+               Default method for generating output files. Valid
+               values are write, mpi2, gather, and socket.
+
+
+     <B>EXIT</B> <B>STATUS</B>
+          <B>lpjcheck</B> returns a zero exit status if the configuration
+          file has no syntax errors and all input files and output
+          directories exist.  Non zero is returned in case of failure.
+
+
+     <B>AUTHORS</B>
+          For authors and contributors see AUTHORS file
+
+
+     <B>COPYRIGHT</B>
+          (C) Potsdam Institute for Climate Impact Research (PIK), see
+          COPYRIGHT file
+
+
+     <B>SEE</B> <B>ALSO</B>
+          <B><A HREF="lpjml.html">lpjml(1)</A></B>, <B><A HREF="lpjfiles.html">lpjfiles(1)</A></B>, <B><A HREF="lpjsubmit.html">lpjsubmit(1)</A></B>, <B><A HREF="lpjml.conf.html">lpjml.conf(5)</A></B>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</PRE>
+<HR>
+<ADDRESS>
+Man(1) output converted with
+<a href="http://www.oac.uci.edu/indiv/ehood/man2html.html">man2html</a>
+</ADDRESS>
+</BODY>
+</HTML>

@@ -1,0 +1,69 @@
+<HTML>
+<HEAD>
+<TITLE>lpjrun.1</TITLE>
+</HEAD>
+<BODY>
+<H1>lpjrun.1</H1>
+<HR>
+<PRE>
+<!-- Manpage converted by man2html 3.0.1 -->
+     <B>NAME</B>
+          lpjrun - Run parallel LPJmL program interactively.
+
+     <B>SYNOPSIS</B>
+          <B>lpjrun</B> ntasks [args ...]
+
+     <B>DESCRIPTION</B>
+          Script runs LPJmL simulation in parallel invoking the <B>mpirun</B>
+          command.  Has been tested on Apple MacOS X.
+
+     <B>OPTIONS</B>
+          ntasks
+               set the number of parallel MPI tasks.
+
+          args set command line arguments for the <B>lpjml</B> program
+
+     <B>EXAMPLES</B>
+     file:
+          Run program job with 8 parallel MPI tasks starting from a restart
+               <B>lpjrun</B> 8 -DFROM_RESTART
+
+     <B>ENVIRONMENT</B>
+          LPJROOT
+               defines the root directory for LPJmL. The variable has
+               to be defined before calling <B>lpjrun</B>
+
+
+     <B>EXIT</B> <B>STATUS</B>
+          <B>lpjrun</B> returns a zero exit status if LPJmL run fails.  Non
+          zero is returned in case of failure.
+
+
+     <B>AUTHORS</B>
+          For authors and contributors see AUTHORS file
+
+
+     <B>COPYRIGHT</B>
+          (C) Potsdam Institute for Climate Impact Research (PIK), see
+          COPYRIGHT file
+
+
+     <B>SEE</B> <B>ALSO</B>
+          <B><A HREF="lpjml.html">lpjml(1)</A></B>, <B><A HREF="lpjcheck.html">lpjcheck(1)</A></B>, <B><A HREF="lpjsubmit.html">lpjsubmit(1)</A></B>
+
+
+
+
+
+
+
+
+
+</PRE>
+<HR>
+<ADDRESS>
+Man(1) output converted with
+<a href="http://www.oac.uci.edu/indiv/ehood/man2html.html">man2html</a>
+</ADDRESS>
+</BODY>
+</HTML>

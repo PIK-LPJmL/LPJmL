@@ -1,0 +1,220 @@
+<HTML>
+<BODY>
+<PRE>
+<!-- Manpage converted by man2html 3.0.1 -->
+     <B>NAME</B>
+          lpj.conf - Configuration file for LPJmL runs with natural
+          vegetation
+
+     <B>DESCRIPTION</B>
+          By default <B>lpj</B> reads in the <I>lpj</I>.<I>conf</I> file. This file is
+          preprocessed by the <B>cpp</B> processor. The type of simulation
+          can be changed by defining macros as runtime options of the
+          <B>lpj</B> command.
+
+        <B>Macro</B> <B>definitions</B>
+          -DFROM_RESTART
+               Simulation is started from a restart file.
+
+          -DISRANDOM
+               A random precipitation generator is used. The number of
+               wet days in a month is used as an additional input
+               variable
+
+          -DRIVER_ROUTING
+               Simulation is performed with river routing. Input file
+               for drainage has to be provided.
+
+          -WITH_GRIDBASED
+               PFT-specific output is grid scaled.
+
+        <B>File</B> <B>structure</B>
+          The LPJmL configuration file contains integer, float, and
+          string values. Strings containing white spaces must be
+          delimited by '"'. The file <I>include</I>/<I>conf</I>.<I>h</I> has to be included
+          for the definition of symbols.  The file is divided into
+          five different sections:
+
+          I. Simulation description and type section
+               The first two entries describe the simulation and its
+               type:
+
+               #include "include/conf.h"
+               Simulation description string (string)
+               LPJ  /* Simulation type with natural vegetation */
+               INTERPOLATE_PREC | RANDOM_PREC random seed (int)
+               CLOUDINESS | RADIATION | RADIATION_SWONLY | RADIATION_LWDOWN
+               NO_FIRE | FIRE
+               NO_FIRE | FIRE | SPITFIRE
+               NO_FIREWOOD | FIREWOOD
+               NO_POPULATION | POPULATION
+               NO_PRESCIBE_BURNTAREA | PRESCRIBE_BURNTAREA
+               NO_LANDCOVER | LANDCOVERFPC
+               OLD_PHENOLOGY | NEW_PHENOLOGY
+               NO_DRAINAGE | DRAINAGE
+               PERM | NO_PERM
+
+          II. Input parameter section
+               PFT and soil parameters are defined here. They are
+               included from the $<I>LPJROOT</I>/<I>par</I> directory:
+               #include "param.conf"
+
+          III. Input data section
+               This section contains filenames of the climate, land
+               use, and  river routing data. Data file have to be in
+               the clm data format and are created from binary files
+               by the <B>cru2clm</B> (climate data) and <B>grid2clm</B> (grid
+               coordinates) command:
+
+               grid coordinates filename (string)
+               soilcode filename (string)
+               #ifdef RIVER_ROUTING
+               lake fraction filename (string)
+               river routing filename (string)
+               #endif
+               temperature data filename (string)
+               precipitation data filename (string)
+               cloudiness data filename (string)
+               CO2 date filename (string)
+               #ifdef ISRANDOM
+               number of wet days filename (string)
+               #endif
+
+          IV. Output data section
+               Output variables are defined in the output section of
+               then LPJmL configuration file. Definition has to be in
+               the format
+
+               GRIDBASED|PFTBASED
+               VARIABLE1 filename1 (string)
+               VARIABLE2 filename2 (string)
+                ...
+               END
+
+          V. Run settings section
+               In the last section the first grid cell and the number
+               of grid cells have to be specified as well as the first
+               and last simulation year:
+
+               ALL | index of first cell (int) index of last years (int)
+               0 | Number of spinup years (int) cycle length during spinup (int)
+               first year of simulation (int)
+               last year of simulation (int)
+               NO_RESTART | RESTART restart filename  (string)
+               NO_RESTART | RESTART restart filename (string) year file is written (int)
+
+        <B>Output</B> <B>variables</B>
+          The following variables are defined:
+
+          FIREC
+            fire count
+
+          FIREF
+            fire fraction
+
+          VEGC
+            natural vegetation carbon (gC/m2)
+
+          SOILC
+            natural soil carbon (gC/m2)
+
+          LITC
+            natural litter carbon (gC/m2)
+
+          APREC
+            annual precipitation
+
+          INPUT_LAKE
+            Lake influx
+
+          ADISCHARGE
+            annual discharge (dm3/yr)
+
+          MNPP
+            monthly NPP (gC/m2}
+
+          MGPP
+            monthly GPP (gC/m2}
+
+          MRH
+            monthly respiration
+
+          MTRANSP
+            monthly transpiration
+
+          MRUNOFF
+            monthly runoff
+
+          MDISCHARGE
+            monthly discharge (hm3/d)
+
+          MWATERAMOUNT
+            mean monthly water amount (hm3)
+
+          MEVAP
+            monthly evaporation
+
+          MINTERC
+            monthly interception
+
+          MSWC1
+            monthly soil water layer 1
+
+          MSWC2
+            monthly soil water layer 2
+
+          MEVAP_LAKE
+            Lake evaporation
+
+
+     <B>AUTHORS</B>
+          For authors and contributors see AUTHORS file
+
+
+     <B>COPYRIGHT</B>
+          (C) Potsdam Institute for Climate Impact Research (PIK), see
+          COPYRIGHT file
+
+
+     <B>SEE</B> <B>ALSO</B>
+          <B><A HREF="lpj.html">lpj(1)</A></B>, <B><A HREF="lpjml.html">lpjml(1)</A></B>, <B><A HREF="cru2clm.html">cru2clm(1)</A></B>, <B><A HREF="grid2clm.html">grid2clm(1)</A></B>, <B><A HREF="clm.html">clm(5)</A></B>,
+          <B><A HREF="lpjml.conf.html">lpjml.conf(5)</A></B>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</PRE>
+<HR>
+<ADDRESS>
+Man(1) output converted with
+<a href="http://www.oac.uci.edu/indiv/ehood/man2html.html">man2html</a>
+</ADDRESS>
+</BODY>
+</HTML>

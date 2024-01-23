@@ -1,0 +1,64 @@
+<HTML>
+<BODY>
+<PRE>
+<!-- Manpage converted by man2html 3.0.1 -->
+     <B>NAME</B>
+          pnet_inlen - Get number of connections
+
+     <B>SYNOPSIS</B>
+          <B>#include</B> <B>&lt;mpi.h&gt;</B>
+          <B>#include</B> <B>"pnet.h"</B>
+
+          <B>int</B> <B>pnet_inlen(const</B> <B>Pnet</B> *<I>pnet</I><B>,int</B> <I>node</I><B>);</B>
+
+     <B>DESCRIPTION</B>
+          Function returns number of connections for specified local
+          node. Function is implemented as a macro.  The arguments of
+          <B>pnet_inlen</B> are:
+
+          <I>pnet</I> Pointer to initialized Pnet struct
+
+          <I>node</I> Index of node. Must be
+               pnet_lo(pnet)&lt;=node&lt;=pnet_hi(pnet).
+
+     <B>RETURN</B> <B>VALUE</B>
+          Upon successful completion number of connections is
+          returned.
+
+     <B>AUTHORS</B>
+          For authors and contributors see AUTHORS file
+
+
+     <B>COPYRIGHT</B>
+          (C) Potsdam Institute for Climate Impact Research (PIK), see
+          COPYRIGHT file
+
+
+     <B>SEE</B> <B>ALSO</B>
+          <B><A HREF="pnet_inindex.html">pnet_inindex(3)</A></B>, <B><A HREF="pnet_outlen.html">pnet_outlen(3)</A></B>, <B><A HREF="pnet_outindex.html">pnet_outindex(3)</A></B>,
+          <B><A HREF="pnet_init.html">pnet_init(3)</A></B>, <B><A HREF="pnet_free.html">pnet_free(3)</A></B>, <B><A HREF="pnet_setup.html">pnet_setup(3)</A></B>, <B><A HREF="pnet_hi.html">pnet_hi(3)</A></B>,
+          <B><A HREF="pnet_nodes.html">pnet_nodes(3)</A></B>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</PRE>
+<HR>
+<ADDRESS>
+Man(1) output converted with
+<a href="http://www.oac.uci.edu/indiv/ehood/man2html.html">man2html</a>
+</ADDRESS>
+</BODY>
+</HTML>

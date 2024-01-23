@@ -1,0 +1,69 @@
+<HTML>
+<HEAD>
+<TITLE>grid2clm.1</TITLE>
+</HEAD>
+<BODY>
+<H1>grid2clm.1</H1>
+<HR>
+<PRE>
+<!-- Manpage converted by man2html 3.0.1 -->
+     <B>NAME</B>
+          grid2clm - convert grid data file to clm data files for
+          LPJmL
+
+     <B>SYNOPSIS</B>
+          <B>grid2clm</B> [-h] [-swap] [-scale s] [-cellsize c] <I>gridfile</I>
+          <I>clmfile</I>
+
+     <B>DESCRIPTION</B>
+          Program converts raw binary data file consisting of 16bit
+          integer values in a file format suitable for LPJmL.
+
+     <B>OPTIONS</B>
+          -h   display a short help text
+
+          -swap
+               change byte order in grid file
+
+          -scale s
+               set scale factor, default is 0.01
+
+          -cellsize c
+               set cell size, default is 0.5
+
+          <I>gridfile</I>
+               filename of binary grid data file
+
+          <I>clmfile</I>
+               filename of clm data file written
+
+     <B>EXAMPLES</B>
+          Create clm data file from grid dataset changing byte order:
+               <B>grid2clm</B> -swap grid.bin grid.clm
+
+     <B>EXIT</B> <B>STATUS</B>
+          <B>grid2clm</B> returns a zero exit status if the clm file is
+          created.  Non zero is returned in case of failure.
+
+
+     <B>AUTHORS</B>
+          For authors and contributors see AUTHORS file
+
+
+     <B>COPYRIGHT</B>
+          (C) Potsdam Institute for Climate Impact Research (PIK), see
+          COPYRIGHT file
+
+
+     <B>SEE</B> <B>ALSO</B>
+          <B><A HREF="lpjml.html">lpjml(1)</A></B>, <B><A HREF="txt2clm.html">txt2clm(1)</A></B>, <B><A HREF="cru2clm.html">cru2clm(1)</A></B>, <B><A HREF="clm.html">clm(5)</A></B>
+
+
+</PRE>
+<HR>
+<ADDRESS>
+Man(1) output converted with
+<a href="http://www.oac.uci.edu/indiv/ehood/man2html.html">man2html</a>
+</ADDRESS>
+</BODY>
+</HTML>

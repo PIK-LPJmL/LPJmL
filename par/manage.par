@@ -1,0 +1,216 @@
+/**************************************************************************************/
+/**                                                                                \n**/
+/**        m  a  n  a  g  e  .  p  a  r                                            \n**/
+/**                                                                                \n**/
+/**     management parameter data LPJmL Version 4.0.002                            \n**/
+/**                                                                                \n**/
+/** (C) Potsdam Institute for Climate Impact Research (PIK), see COPYRIGHT file    \n**/
+/** authors, and contributors see AUTHORS file                                     \n**/
+/** This file is part of LPJmL and licensed under GNU AGPL Version 3               \n**/
+/** or later. See LICENSE file or go to http://www.gnu.org/licenses/               \n**/
+/** Contact: https://github.com/PIK-LPJmL/LPJmL                                    \n**/
+/**                                                                                \n**/
+/**************************************************************************************/
+
+#include "../include/managepar.h"
+
+197  /* Number of countries*/
+
+/* country-id  country-name	laimax temp. cereals	laimax maize	EP	EC */
+Afghanistan	"Afghanistan"	2.0	4.0	0.378	0.700
+Albania	"Albania"	3.0	4.0	0.545	0.825
+Algeria	"Algeria"	3.0	4.0	0.545	0.825
+American_Samoa	"American Samoa"	4.0	5.0	0.488	0.769
+Angola	"Angola"	3.0	4.0	0.420	0.700
+Argentina	"Argentina"	3.0	5.0	0.378	0.700
+Armenia	"Armenia"	3.0	4.0	0.420	0.700
+Austria	"Austria"	5.0	6.0	0.713	0.950
+Azerbaijan	"Azerbaijan"	2.0	4.0	0.294	0.700
+Bahamas_The	"Bahamas, The"	4.0	5.0	0.488	0.769
+Bangladesh	"Bangladesh"	3.0	4.0	0.378	0.700
+Belgium	"Belgium"	6.0	7.0	0.713	0.950
+Belize	"Belize"	3.0	4.0	0.420	0.700
+Benin	"Benin"	3.0	4.0	0.566	0.825
+Bhutan	"Bhutan"	3.0	4.0	0.420	0.700
+Bolivia	"Bolivia"	3.0	4.0	0.420	0.700
+Bosnia_and_Herzegovina	"Bosnia and Herzegovina"	3.0	4.0	0.420	0.700
+Botswana	"Botswana"	3.0	4.0	0.566	0.825
+Brunei	"Brunei"	3.0	4.0	0.566	0.825
+Bulgaria	"Bulgaria"	3.0	4.0	0.378	0.700
+Burkina_Faso	"Burkina Faso"	3.0	4.0	0.566	0.825
+Burundi	"Burundi"	3.0	4.0	0.420	0.700
+Byelarus	"Byelarus"	3.0	4.0	0.713	0.950
+Cambodia	"Cambodia"	3.0	4.0	0.420	0.700
+Cameroon	"Cameroon"	3.0	4.0	0.420	0.700
+Cape_Verde	"Cape Verde"	4.0	5.0	0.488	0.769
+Cayman_Islands	"Cayman Islands"	4.0	5.0	0.488	0.769
+Central_African_Republic	"Central African Republic"	3.0	4.0	0.420	0.700
+Chad	"Chad"	3.0	4.0	0.420	0.700
+Chile	"Chile"	5.0	4.0	0.294	0.700
+Colombia	"Colombia"	3.0	4.0	0.378	0.700
+Comoros	"Comoros"	4.0	5.0	0.488	0.769
+Congo_Brazzaville	"Congo-Brazzaville"	3.0	4.0	0.420	0.700
+Cook_Islands	"Cook Islands"	4.0	5.0	0.488	0.769
+Costa_Rica	"Costa Rica"	3.0	4.0	0.420	0.700
+Croatia	"Croatia"	4.0	5.0	0.713	0.950
+Cuba	"Cuba"	3.0	4.0	0.545	0.825
+Cyprus	"Cyprus"	3.0	6.0	0.855	0.950
+Czech_Republic	"Czech Republic"	4.0	6.0	0.713	0.950
+Denmark	"Denmark"	7.0	6.0	0.713	0.950
+Djibouti	"Djibouti"	3.0	4.0	0.420	0.700
+Dominican_Republic	"Dominican Republic"	3.0	4.0	0.420	0.700
+Ecuador	"Ecuador"	3.0	4.0	0.378	0.700
+Egypt	"Egypt"	6.0	6.0	0.378	0.700
+El_Salvador	"El Salvador"	3.0	4.0	0.420	0.700
+Equatorial_Guinea	"Equatorial Guinea"	3.0	4.0	0.420	0.700
+Eritrea	"Eritrea"	3.0	4.0	0.420	0.700
+Estonia	"Estonia"	3.0	4.0	0.713	0.950
+Ethiopia	"Ethiopia"	3.0	4.0	0.378	0.700
+Falkland_Islands_or_Islas_Malvinas	"Falkland Islands (Islas Malvinas)"	4.0	5.0	0.488	0.769
+Faroe_Islands	"Faroe Islands"	4.0	5.0	0.488	0.769
+Federated_States_of_Micronesia	"Federated States of Micronesia"	4.0	5.0	0.488	0.769
+Fiji	"Fiji"	4.0	5.0	0.488	0.769
+Finland	"Finland"	3.0	6.0	0.713	0.950
+France	"France"	7.0	7.0	0.545	0.825
+French_Guiana	"French Guiana"	3.0	4.0	0.420	0.700
+French_Polynesia	"French Polynesia"	4.0	5.0	0.488	0.769
+French_Southern_and_Antarctica_Lands	"French Southern and Antarctica Lands"	3.0	4.0	0.488	0.769
+Gabon	"Gabon"	3.0	4.0	0.420	0.700
+Gambia_The	"Gambia, The"	3.0	4.0	0.420	0.700
+Georgia	"Georgia"	2.0	4.0	0.378	0.700
+Germany	"Germany"	7.0	7.0	0.713	0.950
+Ghana	"Ghana"	3.0	4.0	0.420	0.700
+Greece	"Greece"	3.0	7.0	0.713	0.950
+Greenland	"Greenland"	3.0	4.0	0.488	0.769
+Guadeloupe	"Guadeloupe"	4.0	5.0	0.488	0.769
+Guatemala	"Guatemala"	3.0	4.0	0.420	0.700
+Guinea	"Guinea"	3.0	4.0	0.420	0.700
+Guinea_Bissau	"Guinea-Bissau"	3.0	4.0	0.420	0.700
+Guyana	"Guyana"	3.0	4.0	0.420	0.700
+Haiti	"Haiti"	3.0	4.0	0.420	0.700
+Honduras	"Honduras"	3.0	4.0	0.420	0.700
+Hungary	"Hungary"	4.0	6.0	0.713	0.950
+Iceland	"Iceland"	3.0	4.0	0.488	0.769
+Indonesia	"Indonesia"	3.0	4.0	0.378	0.700
+Iran	"Iran"	2.0	4.0	0.378	0.700
+Iraq	"Iraq"	2.0	4.0	0.503	0.825
+Ireland	"Ireland"	7.0	4.0	0.488	0.769
+Israel	"Israel"	4.0	4.0	0.855	0.950
+Italy	"Italy"	4.0	7.0	0.503	0.825
+Ivory_Coast	"Ivory Coast"	3.0	4.0	0.566	0.825
+Jamaica	"Jamaica"	3.0	4.0	0.420	0.700
+Japan	"Japan"	6.0	7.0	0.378	0.700
+Jordan	"Jordan"	3.0	4.0	0.855	0.950
+Kazakhstan	"Kazakhstan"	2.0	4.0	0.545	0.825
+Kenya	"Kenya"	3.0	4.0	0.420	0.700
+Kiribati	"Kiribati"	4.0	5.0	0.488	0.769
+Kuwait	"Kuwait"	6.0	6.0	0.566	0.825
+Kyrgyzstan	"Kyrgyzstan"	2.0	4.0	0.378	0.700
+Laos	"Laos"	3.0	4.0	0.420	0.700
+Latvia	"Latvia"	3.0	4.0	0.713	0.950
+Lebanon	"Lebanon"	3.0	4.0	0.566	0.825
+Lesotho	"Lesotho"	3.0	4.0	0.420	0.700
+Liberia	"Liberia"	3.0	4.0	0.420	0.700
+Libya	"Libya"	3.0	4.0	0.566	0.825
+Lithuania	"Lithuania"	3.0	4.0	0.713	0.950
+Luxembourg	"Luxembourg"	6.0	7.0	0.713	0.950
+Macedonia	"Macedonia"	3.0	6.0	0.713	0.950
+Madagascar	"Madagascar"	3.0	4.0	0.420	0.700
+Malawi	"Malawi"	3.0	4.0	0.713	0.950
+Malaysia	"Malaysia"	3.0	4.0	0.420	0.700
+Maldives	"Maldives"	4.0	5.0	0.488	0.769
+Mali	"Mali"	3.0	4.0	0.420	0.700
+Marshall_Islands	"Marshall Islands"	4.0	5.0	0.488	0.769
+Mauritania	"Mauritania"	3.0	4.0	0.420	0.700
+Mauritius	"Mauritius"	4.0	5.0	0.488	0.769
+Mexico	"Mexico"	5.0	4.0	0.294	0.700
+Moldova	"Moldova"	3.0	4.0	0.378	0.700
+Mongolia	"Mongolia"	3.0	4.0	0.420	0.700
+Montenegro	"Montenegro"	3.0	6.0	0.488	0.769
+Morocco	"Morocco"	3.0	4.0	0.420	0.700
+Mozambique	"Mozambique"	3.0	4.0	0.545	0.825
+Myanmar_or_Burma	"Myanmar (Burma)"	3.0	4.0	0.420	0.700
+Namibia	"Namibia"	3.0	4.0	0.566	0.825
+Nepal	"Nepal"	3.0	4.0	0.378	0.700
+Netherlands	"Netherlands"	7.0	6.0	0.503	0.825
+New_Caledonia	"New Caledonia"	4.0	5.0	0.488	0.769
+New_Zealand	"New Zealand"	6.0	6.0	0.420	0.700
+Nicaragua	"Nicaragua"	3.0	4.0	0.420	0.700
+Niger	"Niger"	3.0	4.0	0.420	0.700
+Nigeria	"Nigeria"	3.0	4.0	0.378	0.700
+North_Korea	"North Korea"	3.0	4.0	0.378	0.700
+Northern_Mariana_Islands	"Northern Mariana Islands"	4.0	5.0	0.488	0.769
+Norway	"Norway"	4.0	6.0	0.420	0.700
+Oman	"Oman"	6.0	4.0	0.855	0.950
+Pakistan	"Pakistan"	4.0	4.0	0.294	0.700
+Panama	"Panama"	3.0	4.0	0.420	0.700
+Papua_New_Guinea	"Papua New Guinea"	3.0	4.0	0.420	0.700
+Paraguay	"Paraguay"	4.0	4.0	0.420	0.700
+Peru	"Peru"	3.0	4.0	0.420	0.700
+Philippines	"Philippines"	3.0	4.0	0.378	0.700
+Pitcairn_Islands	"Pitcairn Islands"	4.0	5.0	0.488	0.769
+Poland	"Poland"	4.0	6.0	0.420	0.700
+Portugal	"Portugal"	4.0	6.0	0.378	0.700
+Puerto_Rico	"Puerto Rico"	3.0	6.0	0.420	0.700
+Qatar	"Qatar"	6.0	6.0	0.566	0.825
+Reunion	"Reunion"	4.0	5.0	0.488	0.769
+Romania	"Romania"	3.0	4.0	0.713	0.950
+Rwanda	"Rwanda"	3.0	4.0	0.420	0.700
+Sao_Tome_and_Principe	"Sao Tome and Principe"	4.0	5.0	0.488	0.769
+Saudi_Arabia	"Saudi Arabia"	6.0	6.0	0.545	0.825
+Senegal	"Senegal"	3.0	4.0	0.420	0.700
+Serbia	"Serbia"	3.0	5.0	0.420	0.700
+Sierra_Leone	"Sierra Leone"	3.0	4.0	0.420	0.700
+Slovakia	"Slovakia"	4.0	5.0	0.713	0.950
+Slovenia	"Slovenia"	4.0	5.0	0.566	0.825
+Solomon_Islands	"Solomon Islands"	4.0	5.0	0.488	0.769
+Somalia	"Somalia"	3.0	4.0	0.420	0.700
+South_Africa	"South Africa"	3.0	5.0	0.566	0.825
+South_Georgia_and_the_South_Sandwich_Islands	"South Georgia and the South Sandwich Islands"	4.0	5.0	0.488	0.769
+South_Korea	"South Korea"	6.0	7.0	0.420	0.700
+Spain	"Spain"	4.5	7.0	0.545	0.825
+Sri_Lanka	"Sri Lanka"	3.0	4.0	0.545	0.825
+St_Vincent_and_the_Grenadines	"St. Vincent and the Grenadines"	4.0	5.0	0.488	0.769
+Sudan	"Sudan"	3.0	4.0	0.294	0.700
+Suriname	"Suriname"	3.0	4.0	0.420	0.700
+Svalbard	"Svalbard"	4.0	5.0	0.488	0.769
+Swaziland	"Swaziland"	3.0	4.0	0.566	0.825
+Sweden	"Sweden"	4.0	6.0	0.713	0.950
+Switzerland	"Switzerland"	7.0	7.0	0.713	0.950
+Syria	"Syria"	2.0	4.0	0.294	0.700
+Taiwan	"Taiwan"	6.0	4.0	0.488	0.769
+Tajikistan	"Tajikistan"	2.0	4.0	0.294	0.700
+Tanzania_United_Republic_of	"Tanzania, United Republic of"	3.0	4.0	0.566	0.825
+Thailand	"Thailand"	3.0	4.0	0.294	0.700
+Togo	"Togo"	3.0	4.0	0.420	0.700
+Tokelau	"Tokelau"	4.0	5.0	0.488	0.769
+Trinidad_and_Tobago	"Trinidad and Tobago"	3.0	4.0	0.420	0.700
+Tunisia	"Tunisia"	3.0	4.0	0.566	0.825
+Turkey	"Turkey"	4.0	5.0	0.378	0.700
+Turkmenistan	"Turkmenistan"	2.0	4.0	0.378	0.700
+Tuvalu	"Tuvalu"	4.0	5.0	0.488	0.769
+Uganda	"Uganda"	3.0	4.0	0.420	0.700
+Ukraine	"Ukraine"	3.0	4.0	0.713	0.950
+United_Arab_Emirates	"United Arab Emirates"	6.0	6.0	0.855	0.950
+United_Kingdom	"United Kingdom"	7.0	4.0	0.713	0.950
+Uruguay	"Uruguay"	5.0	6.0	0.420	0.700
+Uzbekistan	"Uzbekistan"	2.0	4.0	0.294	0.700
+Vanuatu	"Vanuatu"	4.0	5.0	0.488	0.769
+Venezuela	"Venezuela"	4.0	6.0	0.294	0.700
+Vietnam	"Vietnam"	3.0	4.0	0.294	0.700
+Virgin_Islands	"Virgin Islands"	4.0	5.0	0.488	0.769
+Wake_Islands	"Wake Islands"	4.0	5.0	0.488	0.769
+West_Bank	"West Bank"	4.0	5.0	0.488	0.769
+Western_Sahara	"Western Sahara"	3.0	4.0	0.420	0.700
+Western_Samoa	"Western Samoa"	4.0	5.0	0.488	0.769
+Yemen	"Yemen"	3.0	4.0	0.420	0.700
+Zaire_DR_Congo	"DR Congo, former Zaire"	3.0	4.0	0.420	0.700
+Zambia	"Zambia"	3.0	4.0	0.566	0.825
+Zimbabwe	"Zimbabwe"	6.0	4.0	0.566	0.825
+Australia	"Australia"	4.0	5.0	0.378	0.700
+Brazil	"Brazil"	4.0	4.0	0.545	0.825
+Canada	"Canada"	3.0	7.0	0.545	0.825
+China	"China"	6.0	7.0	0.378	0.700
+India	"India"	4.0	4.0	0.378	0.700
+Russia	"Russia"	3.0	4.0	0.713	0.950
+United_States	"United States"	3.0	7.0	0.545	0.825

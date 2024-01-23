@@ -1,0 +1,235 @@
+/**************************************************************************************/
+/**                                                                                \n**/
+/**               o  u  t  p  u  t  v  a  r  s  .  p  a  r                         \n**/
+/**                                                                                \n**/
+/**  Defines array of output variables                                             \n**/
+/**                                                                                \n**/
+/** (C) Potsdam Institute for Climate Impact Research (PIK), see COPYRIGHT file    \n**/
+/** authors, and contributors see AUTHORS file                                     \n**/
+/** This file is part of LPJmL and licensed under GNU AGPL Version 3               \n**/
+/** or later. See LICENSE file or go to http://www.gnu.org/licenses/               \n**/
+/** Contact: https://github.com/PIK-LPJmL/LPJmL                                    \n**/
+/**                                                                                \n**/
+/**************************************************************************************/
+
+0        /* compression level (1-9, 0= no compression) */
+-1e32   /* missing value in NetCDF files */
+
+  /* id name variable(NetCDF) description unit scale offset */
+  GRID "grid" "soil" "coordinates" "degree" 1.0 0.0
+  FPC "fpc" "FPC" "foliage projected cover" "" 1.0 0.0
+  MNPP "mnpp" "NPP" "monthly NPP" "gC/m2/month" 1.0 0.0
+  MGPP "mgpp" "GPP" "monthly GPP" "gC/m2/month" 1.0 0.0
+  MRH "mrh" "RH" "monthly heterotrophic respiration" "gC/m2/month" 1.0 0.0
+  MTRANSP "mtransp" "transp" "monthly transpiration" "mm/month" 1.0 0.0
+  MTRANSP_B "mtransp_b" "transp_b" "monthly transpired irrigation water" "mm/month" 1.0 0.0
+  MRUNOFF "mrunoff" "runoff" "monthly runoff" "mm/month" 1.0 0.0
+  MDISCHARGE "mdischarge" "discharge" "monthly discharge" "hm3/d" 1.0 0.0
+  MWATERAMOUNT "mwateramount" "wateramount" "mean monthly water amount" "hm3" 1.0 0.0
+  MEVAP "mevap" "evap" "monthly evaporation" "mm/month" 1.0 0.0
+  MEVAP_B "mevap_b" "evap_b" "monthly evaporation of irrigation water" "mm/month" 1.0 0.0
+  MINTERC "minterc" "interc" "monthly interception" "mm/month" 1.0 0.0
+  MINTERC_B "minterc_b" "interc_b" "monthly blue interception" "mm/month" 1.0 0.0
+  MSWC "mswc" "SWC" "fractional saturation of soil water content" "" 1.0 0.0
+  MSWC1 "mswc1" "SWC1" "fractional saturation of soil water content in layer 1" "" 1.0 0.0
+  MSWC2 "mswc2" "SWC2" "fractional saturation of soil water content in layer 2" "" 1.0 0.0
+  FIREC "firec" "FireC" "fire carbon emission" "gC/m2/yr" 1.0 0.0
+  FIREF "firef" "Firef" "fire interval" "yr" 1.0 0.0
+  VEGC "vegc" "VegC" "vegetation carbon" "gC/m2" 1.0 0.0
+  SOILC "soilc" "SoilC" "total soil carbon density" "gC/m2" 1.0 0.0
+  LITC "litc" "LitC" "litter carbon" "gC/m2" 1.0 0.0
+  FLUX_ESTAB "flux_estab" "estab" "establishment flux" "gC/m2/yr" 1.0 0.0
+  PFT_NPP "pft_npp" "NPP" "PFT-specific NPP" "gC/m2/yr" 1.0 0.0
+  PFT_GCGP "pft_gcgp" "GCGP" "PFT-specific water stress" "" 1.0 0.0
+  HARVEST "harvest" "harvest" "harvested carbon" "gC/m2/yr" 1.0 0.0
+  MIRRIG "mirrig" "irrig" "irrigation" "mm/month" 1.0 0.0
+  SDATE "sdate" "sdate" "sowing date" "" 1.0 0.0
+  PFT_HARVEST "pft_harvest" "harvest" "harvested carbon" "gC/m2/yr" 1.0 0.0
+  PFT_RHARVEST "pft_rharvest" "rharvest" "harvested residual carbon" "gC/m2/yr" 1.0 0.0
+  COUNTRY "country" "country" "country code" "" 1.0 0.0
+  REGION "region" "region" "region code" "" 1.0 0.0
+  MG_VEGC "mg_vegc" "mVegC" "managed vegetation carbon" "gC/m2" 1.0 0.0
+  MG_SOILC "mg_soilc" "mSoilC" "managed soil carbon" "gC/m2" 1.0 0.0
+  MG_LITC "mg_litc" "mLitC" "managed litter carbon" "gC/m2" 1.0 0.0
+  APREC "aprec" "prec" "annual precipitation" "mm/yr" 1.0 0.0
+  INPUT_LAKE "input_lake" "input_lake" "precipitation input to lakes" "hm3/yr" 1.0 0.0
+  MRETURN_FLOW_B "mreturn_flow_b" "return_flow_b" "blue water return flow of runoff" "mm/month" 1.0 0.0
+  MEVAP_LAKE "mevap_lake" "evap_lake" "lake evaporation" "mm/month" 1.0 0.0
+  ADISCHARGE "adischarge" "discharge" "annual discharge" "hm3/yr" 1.0 0.0
+  CFTFRAC "cftfrac" "CFTfrac" "CFT fraction" "" 1.0 0.0
+  CFT_CONSUMP_WATER_G "cft_consump_water_g" "consump_water_g" "CFT specific green water consumption" "mm/yr" 1.0 0.0
+  CFT_CONSUMP_WATER_B "cft_consump_water_b" "consump_water_b" "CFT specific blue water consumption" "mm/yr" 1.0 0.0
+  PROD_TURNOVER "prod_turnover" "prod_turnover" "emissions from product turnover" "gC/m2/yr" 1.0 0.0
+  DEFOREST_EMIS "deforest_emis" "deforest_emis" "deforestation emission" "gC/m2/yr" 1.0 0.0
+  AIRRIG "airrig" "irrig" "annual irrigation" "mm/yr" 1.0 0.0
+  CFT_AIRRIG "cft_airrig" "irrig" "CFT-specific irrigation" "mm/yr" 1.0 0.0
+  HDATE "hdate" "hdate" "harvesting date" "" 1.0 0.0
+  GROWING_PERIOD "growing_period" "growing_period" "" "day" 1.0 0.0
+  CFT_PET "cft_pet" "pet" "CFT-specific potential evapotranspiration" "mm/yr" 1.0 0.0
+  CFT_TRANSP "cft_transp" "transp" "CFT-specific transpiration" "mm/yr" 1.0 0.0
+  CFT_TRANSP_B "cft_transp_b" "transp_b" "CFT-specific blue transpiration" "mm/yr" 1.0 0.0
+  CFT_EVAP "cft_evap" "evap" "CFT-specific evaporation" "mm/yr" 1.0 0.0
+  CFT_EVAP_B "cft_evap_b" "evap_b" "CFT-specific blue evaporation" "mm/yr" 1.0 0.0
+  CFT_INTERC "cft_interc" "interc" "CFT-specific interception" "mm/yr" 1.0 0.0
+  CFT_INTERC_B "cft_interc_b" "interc_b" "CFT-specific blue interception" "mm/yr" 1.0 0.0
+  CFT_RETURN_FLOW_B "cft_return_flow_b" "return_flow_b" "CFT-specific irrigation return flow" "mm/yr" 1.0 0.0
+  CFT_NIR "cft_nir" "nir" "CFT-specific net irrigation requirement" "mm/yr" 1.0 0.0
+  CFT_FPAR "cft_fpar" "FPAR" "CFT-specific FPAR" "" 1.0 0.0
+  CFT_TEMP "cft_temp" "temp" "CFT-specific temperature" "celsius" 1.0 0.0
+  CFT_PREC "cft_prec" "prec" "CFT-specific precipitation" "mm/yr" 1.0 0.0
+  CFT_CONV_LOSS_EVAP "cft_conv_loss_evap" "conv_loss_evap" "CFT-specific evaporative conveyance losses" "mm/yr" 1.0 0.0
+  CFT_CONV_LOSS_DRAIN "cft_conv_loss_drain" "conv_loss_drain" "CFT-specific drainage conveyance losses" "mm/yr" 1.0 0.0
+  CFT_IRRIG_EVENTS "cft_irrig_events" "count" "number of days with irrigation events" "days" 1.0 0.0
+  /* for daily outputs */
+  D_LAI "d_lai" "LAI" "leaf area index" "" 1.0 0.0
+  D_PHEN "d_phen" "Phen" "Phenology" "" 1.0 0.0
+  D_CLEAF "d_cleaf" "LeafC" "Leaf carbon" "gC/m2" 1.0 0.0
+  D_CROOT "d_croot" "RootC" "Root carbon" "gC/m2" 1.0 0.0
+  D_CSO "d_cso" "csoC" "carbon in storage organs" "gC/m2" 1.0 0.0
+  D_CPOOL "d_cpool" "PoolC" "carbon in additional pool stem" "gC/m2" 1.0 0.0
+  D_WDF "d_wdf" "WDF" "water deficit fraction" "" 1.0 0.0
+  D_GROWINGDAY "d_growingday" "growingday" "growing days" "d" 1.0 0.0
+  D_PVD "d_pvd" "PVD" "number of vernalization days required" "d" 1.0 0.0
+  D_PHU "d_phu" "PHU" "" "" 1.0 0.0
+  D_FPHU "d_fphu" "FPHU" "" "" 1.0 0.0
+  D_LAIMAXAD "d_laimaxad" "LAImaxad" "" "" 1.0 0.0
+  D_LAINPPDEF "d_lainppdeficit" "LAINPPdeficit" "LAI reduction due to insufficient NPP" "" 1.0 0.0
+  D_HUSUM "d_husum" "husum" "sum of heat units" "" 1.0 0.0
+  D_VDSUM "d_vdsum" "vdsum" "sum of vernalization days" "d" 1.0 0.0
+  D_WSCAL "d_wscal" "wscal" "" "" 1.0 0.0
+  D_NPP "d_npp" "NPP" "Net primary production" "gC/m2/day" 1.0 0.0
+  D_GPP "d_gpp" "GPP" "Gross primary production" "gC/m2/day" 1.0 0.0
+  D_RD "d_rd" "RD" "" "" 1.0 0.0
+  D_RROOT "d_rroot" "rroot" "" "" 1.0 0.0
+  D_RSO "d_rso" "RSO" "" "" 1.0 0.0
+  D_RPOOL "d_rpool" "RPool" "" "" 1.0 0.0
+  D_GRESP "d_gresp" "Gresp" "" "" 1.0 0.0
+  D_TRANS "d_trans" "Trans" "transpiration" "mm/day" 1.0 0.0
+  D_EVAP "d_evap" "evap" "evaporation" "mm/day" 1.0 0.0
+  D_PREC "d_prec" "prec" "precipitation" "mm/day" 1.0 0.0
+  D_PERC "d_perc" "perc" "" "mm/day" 1.0 0.0
+  D_IRRIG "d_irrig" "irrig" "irrigation" "mm/day" 1.0 0.0
+  D_W0 "d_w0" "w0" "" "" 1.0 0.0
+  D_W1 "d_w1" "w1" "" "" 1.0 0.0
+  D_WEVAP "d_wevap" "wevap" "" "mm/day" 1.0 0.0
+  D_HI "d_hi" "Hi" "" "" 1.0 0.0
+  D_FHIOPT "d_fhiopt" "Hiopt" "optimum harvest index HI reached at harvest" "" 1.0 0.0
+  D_HIMIND "d_himind" "Himind" "minimum harvest index HI reached at harvest" "" 1.0 0.0
+  D_FROOT "d_froot" "froot" "" "" 1.0 0.0
+  D_TEMP "d_temp" "temp" "temperature" "celsius" 1.0 0.0
+  D_SUN "d_sun" "cloud" "cloudiness" "%" 1.0 0.0
+  D_PAR "d_par" "PAR" "Photosynthetic Active Radiation" "J/m2/day" 1.0 0.0
+  D_DAYLENGTH "d_daylength" "daylength" "day length" "h" 1.0 0.0
+  D_SWE "d_swe" "SWE" "snow water equivalent" "mm" 1.0 0.0
+  D_DISCHARGE "d_discharge" "discharge" "discharge" "m3/s" 1.0 0.0
+  D_RUNOFF "d_runoff" "runoff" "runoff" "mm/day" 1.0 0.0
+  D_RH "d_rh" "rh" "heterotrophic respiration" "gC/m2/day" 1.0 0.0
+  D_INTERC "d_interc" "interc" "interception" "mm/day" 1.0 0.0
+  D_ASSIM "d_assim" "assim" "assim" "gC/m2/day" 1.0 0.0
+  D_ROT_MODE "d_rot_mode" "rot_mode" "rotation mode" "" 1.0 0.0
+  D_PET "d_pet" "PET" "potential evapotranspiration" "mm/day" 1.0 0.0
+  /* further non-daily outputs */
+  MEVAP_RES "mevap_res" "evap_res" "evaporation from reservoirs" "mm/month" 1.0 0.0
+  MPREC_RES "mprec_res" "prec_res" "reservoir precipitation" "mm/month" 1.0 0.0
+  MFIREC "mfirec" "FireC" "fire carbon emission" "gC/m2/month" 1.0 0.0
+  MNFIRE "mnfire" "nfire" "number of fires" "" 1.0 0.0
+  MFIREDI "mfiredi" "firedi" "fire danger index" "" 1.0 0.0
+  MFIREEMISSION_CO2 "mfireemission_co2" "co2_emission" "CO2 fire emission" "g/m2/month" 1.0 0.0
+  MFIREEMISSION_CO "mfireemission_co" "co_emission" "CO fire emission" "g/m2/month" 1.0 0.0
+  MFIREEMISSION_CH4 "mfireemission_ch4" "ch4_emission" "CH4 fire emission" "g/m2/month" 1.0 0.0
+  MFIREEMISSION_VOC "mfireemission_voc" "voc_emission" "VOC fire emission" "g/m2/month" 1.0 0.0
+  MFIREEMISSION_TPM "mfireemission_tpm" "tpm_emission" "TPM fire emission" "g/m2/month" 1.0 0.0
+  MFIREEMISSION_NOX "mfireemission_nox" "nox_emission" "NOX fire emission" "g/m2/month" 1.0 0.0
+  FLUX_FIREWOOD "flux_firewood" "flux_firewood" "wood fire emissions" "gC/m2/yr" 1.0 0.0
+  RHARVEST_BURNT "rharvest_burnt" "rharvest_burnt" "residual burnt carbon" "gC/m2/yr" 1.0 0.0
+  RHARVEST_BURNT_IN_FIELD "rharvest_burntinfield" "rharvest_burntinfield" "" "gC/m2/yr" 1.0 0.0
+  MTEMP_IMAGE "mtemp_image" "temp" "temperature received from IMAGE" "Celsius" 1.0 0.0
+  MPREC_IMAGE "mprec_image" "prec" "precipitation received from IMAGE" "mm/month" 1.0 0.0
+  MSUN_IMAGE "msun_image" "sun" "sunshine received from IMAGE" "%" 1.0 0.0
+  MWET_IMAGE "mwet_image" "wet" "wet days received from IMAGE" "day" 1.0 0.0
+  FBURN "fburn" "fburn" "fraction of deforested wood burnt" "" 1.0 0.0
+  FTIMBER "ftimber" "ftimber" "fraction of deforested wood harvested as timber" "" 1.0 0.0
+  TIMBER_HARVEST "timber_harvest" "timber_harvest" "carbon harvested as timber" "gC/m2/yr" 1.0 0.0
+  PRODUCT_POOL_FAST "product_pool_fast" "product_pool_fast" "carbon in the fast product pool" "gC/m2" 1.0 0.0
+  PRODUCT_POOL_SLOW "product_pool_slow" "product_pool_slow" "carbon in the slow product pool" "gC/m2" 1.0 0.0
+  LUC_IMAGE "luc_image" "luc_image" "" "" 1.0 0.0
+  MAXTHAW_DEPTH "maxthaw_depth" "maxthaw_depth" "maximum thawing depth" "mm" 1.0 0.0
+  MSOILTEMP "msoiltemp" "soiltemp" "soil temperature" "Celsius" 1.0 0.0
+  MSOILTEMP1 "msoiltemp1" "soiltemp1" "soil temperature in layer 1" "Celsius" 1.0 0.0
+  MSOILTEMP2 "msoiltemp2" "soiltemp2" "soil temperature in layer 2" "Celsius" 1.0 0.0
+  MSOILTEMP3 "msoiltemp3" "soiltemp3" "soil temperature in layer 3" "Celsius" 1.0 0.0
+  MSOILTEMP4 "msoiltemp4" "soiltemp4" "soil temperature in layer 4" "Celsius" 1.0 0.0
+  MSOILTEMP5 "msoiltemp5" "soiltemp5" "soil temperature in layer 5" "Celsius" 1.0 0.0
+  MSOILTEMP6 "msoiltemp6" "soiltemp6" "soil temperature in layer 6" "Celsius" 1.0 0.0
+  MRES_STORAGE "mres_storage" "res_storage" "mean reservoir storage" "hm3" 1.0 0.0
+  MRES_DEMAND "mres_demand" "res_demand" "reservoir demand" "hm3/month" 1.0 0.0
+  MTARGET_RELEASE "mtarget_release" "target_release" "target release" "hm3/month" 1.0 0.0
+  MRES_CAP "mres_cap" "res_cap" "output of reservoir capacity" "hm3/month" 1.0 0.0
+  SEASONALITY "seasonality" "seasonality" "seasonality" "" 1.0 0.0
+  MPET "mpet" "PET" "potential evapotranspiration" "mm/month" 1.0 0.0
+  TRAD_BIOFUEL "trad_biofuel" "trad_biofuels" "carbon emissions from traditional biofuel burnt" "gC/m2/yr" 1.0 0.0
+  AFRAC_WD_UNSUST "afrac_wd_unsust" "frac_wd_unsust" "" "" 1.0 0.0
+  MWD_UNSUST "mwd_unsust" "wd_unsust" "" "" 1.0 0.0
+  ACONV_LOSS_EVAP "aconv_loss_evap" "conv_loss_evap" "evaporative conveyance loss" "mm/yr" 1.0 0.0
+  ACONV_LOSS_DRAIN "aconv_loss_drain" "conv_loss_drain" "drainage conveyance loss" "mm/yr" 1.0 0.0
+  MWD_LOCAL "mwd_local" "wd_local" "local withdrawal" "mm/month" 1.0 0.0
+  MWD_NEIGHB "mwd_neighb" "wd_neighb" "neighbour withdrawal" "mm/month" 1.0 0.0
+  MWD_RES "mwd_res" "wd_res" "reservoir withdrawal" "mm/month" 1.0 0.0
+  MWD_RETURN "mwd_return" "wd_return" "withdrawals returned to river" "mm/month" 1.0 0.0
+  MCONV_LOSS_EVAP "mconv_loss_evap" "conv_loss_evap" "evaporative conveyance loss" "mm/month" 1.0 0.0
+  MCONV_LOSS_DRAIN "mconv_loss_drain" "conv_loss_drain" "drainage conveyance loss" "mm/month" 1.0 0.0
+  MSTOR_RETURN "mstor_return" "stor_return" "irrig stor return" "mm/month" 1.0 0.0
+  MPREC "mprec" "prec" "monthly precipitation" "mm/month" 1.0 0.0
+  MRAIN "mrain" "rain" "precipitation fallen as rain" "mm/month" 1.0 0.0
+  MSNOWF "msnowf" "snowfall" "monthly snowfall" "mm/month" 1.0 0.0
+  MMELT "mmelt" "melt" "monthly snowmelt" "mm/month" 1.0 0.0
+  MSNOWRUNOFF "msnowrunoff" "snowrunoff" "" "mm/month" 1.0 0.0
+  MSWE "mswe" "SWE" "snow water equivalent" "mm" 1.0 0.0
+  SOILC_LAYER "soilc_layer" "SoilC" "Soil carbon in layer" "gC/m2" 1.0 0.0
+  MRUNOFF_SURF "mrunoff_surf" "runoff_surf" "surface runoff" "mm/month" 1.0 0.0
+  MRUNOFF_LAT "mrunoff_lat" "runoff_lat" "lateral runoff" "mm/month" 1.0 0.0
+  MSEEPAGE "mseepage" "seepage" "seepage water" "mm/month" 1.0 0.0
+  MBURNTAREA "mburntarea" "burntarea" "monthly area burnt" "hectare" 1.0 0.0
+  ABURNTAREA "aburntarea" "burntarea" "yearly area burnt" "hectare" 1.0 0.0
+  SOILC_SLOW "soilc_slow" "soilc_slow" "slow soil carbon" "gC/m2" 1.0 0.0
+  MSWC3 "mswc3" "SWC3" "fractional saturation of soil water content in layer 3" "" 1.0 0.0
+  MSWC4 "mswc4" "SWC4" "fractional saturation of soil water content in layer 4" "" 1.0 0.0
+  MSWC5 "mswc5" "SWC5" "fractional saturation of soil water content in layer 5" "" 1.0 0.0
+  MROOTMOIST "mrootmoist" "rootmoist" "root moisture" "" 1.0 0.0
+  CFT_SRAD "cft_srad" "srad" "CFT-specific shortwave downward radiation" "W/m2" 1.0 0.0
+  CFT_ABOVEGBM "cft_aboveground_biomass" "aboveground_biomass" "CFT aboveground biomass" "gC/m2" 1.0 0.0
+  MGCONS_RF "mgcons_rf" "gcons_rf" "monthly green water consumption on rainfed stands " "mm" 1.0 0.0
+  MGCONS_IRR "mgcons_irr" "gcons_irr" "monthly green water consumption on irrigated stands " "mm" 1.0 0.0
+  MBCONS_IRR "mbcons_irr" "bcons_irr" "monthly green water consumption on irrigated stands " "mm" 1.0 0.0
+  AWATERUSE_HIL "awateruse_hil" "wateruse_hil" "" "l/yr" 1.0 0.0
+  MFAPAR "mfapar" "FPAR" "fraction of absorbed PAR" "" 1.0 0.0
+  MALBEDO "malbedo" "albedo" "" "" 1.0 0.0
+  MPHEN_TMIN "mphen_tmin" "phen_tmin" "" "" 1.0 0.0
+  MPHEN_TMAX "mphen_tmax" "phen_tmax" "" "" 1.0 0.0
+  MPHEN_LIGHT "mphen_light" "phen_light" "" "" 1.0 0.0
+  MPHEN_WATER "mphen_water" "phen_water" "" "" 1.0 0.0
+  MWSCAL "mwscal" "wscal" "water scalar" "" 1.0 0.0
+  MIRRIG_RW "mirrig_rw" "rw_irrig" "supplementary rainwater irrigation" "mm/month" 1.0 0.0
+  MUNMET_DEMAND "munmet_demand" "unmet_demand" "unavailable requested irrigation water" "mm/month" 1.0 0.0
+  HDATE2 "hdate2" "hdate2" "harvesting date 2nd season" "DOY" 1.0 0.0
+  SDATE2 "sdate2" "sdate2" "sowing date 2nd season" "DOY" 1.0 0.0
+  PFT_HARVEST2 "pft_harvest2" "harvest2" "harvested carbon 2nd season" "gC/m2/yr" 1.0 0.0
+  PFT_RHARVEST2 "pft_rharvest2" "rharvest2" "harvested residual carbon 2nd season" "gC/m2/yr" 1.0 0.0
+  GROWING_PERIOD2 "growing_period2" "growing_period2" "" "day" 1.0 0.0
+  CFT_PET2 "cft_pet2" "pet2" "CFT-specific potential evapotranspiration 2nd season" "mm/yr" 1.0 0.0
+  CFT_TRANSP2 "cft_transp2" "transp2" "CFT-specific transpiration 2nd season" "mm/yr" 1.0 0.0
+  CFT_EVAP2 "cft_evap2" "evap2" "CFT-specific evaporation 2nd season" "mm/yr" 1.0 0.0
+  CFT_INTERC2 "cft_interc2" "interc2" "CFT-specific interception 2nd season" "mm/yr" 1.0 0.0
+  CFT_NIR2 "cft_nir2" "nir2" "CFT-specific net irrigation requirement 2nd season" "mm/yr" 1.0 0.0
+  CFT_TEMP2 "cft_temp2" "temp2" "CFT-specific temperature 2nd season" "deg C" 1.0 0.0
+  CFT_PREC2 "cft_prec2" "prec2" "CFT-specific precipitation 2nd season" "mm/yr" 1.0 0.0
+  CFT_SRAD2 "cft_srad2" "srad2" "CFT-specific shortwave downward radiation 2nd season" "W/m2" 1.0 0.0
+  CFT_ABOVEGBM2 "cft_aboveground_biomass2" "aboveground_biomass2" "CFT aboveground biomass 2nd season" "gC/m2" 1.0 0.0
+  CFTFRAC2 "cftfrac2" "CFTfrac2" "CFT fraction 2nd season" "" 1.0 0.0
+  CFT_AIRRIG2 "cft_airrig2" "irrig2" "CFT-specific irrigation 2nd season" "mm/yr" 1.0 0.0
+  SYEAR "syear" "syear" "year of sowing" "" 1.0 0.0
+  SYEAR2 "syear2" "syear2" "year of sowing 2nd season" "" 1.0 0.0
+  AGB "agb" "AGB" "above ground biomass" "gC/m2" 1.0 0.0
+  AGB_TREE "agb_tree" "AGB_TREE" "above ground tree biomass" "gC/m2" 1.0 0.0
+  MLAKEVOL "mlakevol" "lakevol" "lake content volume" "dm3" 1.0 0.0
+  MLAKETEMP "mlaketemp" "laketemp" "lake surface temperature" "deg C" 1.0 0.0

@@ -1,0 +1,60 @@
+/**************************************************************************************/
+/**                                                                                \n**/
+/**              s  o  i  l  _  r  o  c  k  _  i  c  e  .  p  a  r                 \n**/
+/**                                                                                \n**/
+/**  Soil parameter data for LPJmL version 4.0.002                                 \n**/
+/**                                                                                \n**/
+/** (C) Potsdam Institute for Climate Impact Research (PIK), see COPYRIGHT file    \n**/
+/** authors, and contributors see AUTHORS file                                     \n**/
+/** This file is part of LPJmL and licensed under GNU AGPL Version 3               \n**/
+/** or later. See LICENSE file or go to http://www.gnu.org/licenses/               \n**/
+/** Contact: https://github.com/PIK-LPJmL/LPJmL                                    \n**/
+/**                                                                                \n**/
+/**************************************************************************************/
+
+#include "../include/soilpar.h"
+
+200         /* soil depth layer (mm) */
+300         /* soil depth layer (mm) */
+500         /* soil depth layer (mm) */
+1000        /* soil depth layer (mm) */
+1000        /* soil depth layer (mm) */
+10000       /* soil depth layer (mm) */
+
+1 1.2 1.4 0 /* fuel bulk density factors */
+
+14 /* Number of soiltypes */
+
+
+/*
+ID           Name               Ks     Sf    w_pwp  w_fc   w_sat hsg  tdiff_0  tdiff_15  tdiff_100  cond_pwp  cond_100  cond_100_ice
+----------  ------------------- ----   ----  ------ ------ ----- ---  -------  --------  ---------  --------  --------  -------------*/
+Cl          "clay"               3.5   243   0.284  0.398  0.468  1   0.572    0.571     0.555      1.388     1.719     3.233
+SiCl        "silty clay"         4.8   169   0.259  0.378  0.468  2   0.502    0.503     0.491      1.177     1.516     2.853
+SaCl        "sandy clay"        26.0    51   0.205  0.295  0.406  4   0.785    0.791     0.799      1.720     2.347     4.060
+ClLo        "clay loam"          8.8   139   0.214  0.345  0.465  3   0.650    0.656     0.653      1.369     1.967     3.685
+SiClLo      "silty clay loam"    7.3   324   0.247  0.387  0.464  2   0.556    0.557     0.542      1.270     1.675     3.134
+SaClLo      "sandy clay loam"   16.0    72   0.143  0.256  0.404  1   0.780    0.808     0.867      1.498     2.527     4.360
+Lo          "loam"              12.2   192   0.139  0.292  0.439  4   0.701    0.740     0.797      1.276     2.340     4.233
+SiLo        "silt loam"         10.1   409   0.177  0.368  0.476  2   0.637    0.657     0.661      1.219     1.999     3.803
+SaLo        "sandy loam"        18.8    77   0.100  0.228  0.434  2   0.640    0.713     0.863      1.053     2.530     4.547
+Si          "silt"              10.1   409   0.177  0.368  0.476  2   0.637    0.657     0.661      1.219     1.999     3.803
+LoSa        "loamy sand"        50.7    20   0.060  0.149  0.421  2   0.403    0.529     0.850      0.601     2.706     4.778
+Sa          "sand"             167.8    39   0.022  0.088  0.339  2   0.201    0.196     0.896      0.303     3.431     5.423
+ROCK        "rock"               0.1     1   0.0001 0.005  0.006  4   4.137    4.127     4.089      8.768     8.657     8.727
+/* TODO: correct values for ICE - for now just a copy of ROCK */
+ICE         "ice"                0.1     1   0.0001 0.005  0.006  4   4.137    4.127     4.089      8.768     8.657     8.727        /*
+----------  ------------------- ----   ----  ------ ------ ----- ---  -------  --------  ---------  --------  --------  -------------*/
+
+/* Ks: saturated hydraulic conductivity (mm/h) following Cosby (1984)
+ * Sf: Suction head (mm) in Green-Ampt equation following Rawls, Brakensiek and Miller (1982)
+ * w_pwp: water content at wilting point following Cosby (1984)
+ * w_fc: water content at field cpacity following Cosby (1984)
+ * w_sat: water content at saturation following Cosby (1984)
+ * tdiff0: thermal diffusivity (mm^2/s) at wilting point (0% whc) following Lawrence and Slater (2007)
+ * tdiff15: thermal diffusivity (mm^2/s) at 15% whc following Lawrence and Slater (2007)
+ * tdiff100: thermal diffusivity (mm^2/s) at field capacity (100% whc) following Lawrence and Slater (2007)
+ * cond_pwp: thermal conductivity (W/m^2/K) at wilting point following Lawrence and Slater (2007)
+ * cond_100: thermal conductivity (W/m^2/K) at saturation (all water) following Lawrence and Slater (2007)
+ * cond_100_ice: thermal conductivity (W/m^2/K) at saturation (all ice) Lawrence and Slater (2007)
+ */

@@ -1,0 +1,121 @@
+<HTML>
+<HEAD>
+<TITLE>cdf2soil.1</TITLE>
+</HEAD>
+<BODY>
+<H1>cdf2soil.1</H1>
+<HR>
+<PRE>
+<!-- Manpage converted by man2html 3.0.1 -->
+     <B>NAME</B>
+          cdf2soil - convert NetCDF file into binary file
+
+     <B>SYNOPSIS</B>
+          <B>cdf2soil</B> <B>[</B>-<B>var</B> <B>name]</B> <B>[</B>-<B>float]</B> <B>[</B>-<B>scale</B> <B>s]</B> netcdffile gridfile
+          soilfile
+
+     <B>DESCRIPTION</B>
+          Program converts NetCDF input data into soil code or binary
+          input data and writes grid file.
+
+     <B>OPTIONS</B>
+          -var name
+               variable name in NetCDF file
+
+          -scale factor
+               scaling factor for CLM grid file. Default is 0.01
+
+          -float
+               write float values in clm file, default is short
+
+          -soilmap
+               Use built-in soil map
+
+          <I>netcdffile</I>
+               filename of NetCDF file converted
+
+          <I>gridfile</I>
+               filename of grid data file written
+
+          <I>soilfile</I>
+               filename of soil code data file written
+
+     <B>EXAMPLES</B>
+          <B>cdf2soil</B>
+               soilcode.nc  -var soil grid.clm soilcode.bin
+
+     <B>EXIT</B> <B>STATUS</B>
+          <B>cdf2soil</B> returns a zero exit status if the soil code file is
+          created.  Non zero is returned in case of failure.
+
+
+     <B>AUTHORS</B>
+          For authors and contributors see AUTHORS file
+
+
+     <B>COPYRIGHT</B>
+          (C) Potsdam Institute for Climate Impact Research (PIK), see
+          COPYRIGHT file
+
+
+     <B>SEE</B> <B>ALSO</B>
+          <B><A HREF="cdf2coord.html">cdf2coord(1)</A></B>, <B><A HREF="cdf2clm.html">cdf2clm(1)</A></B>, <B><A HREF="clm2cdf.html">clm2cdf(1)</A></B>, <B><A HREF="bin2cdf.html">bin2cdf(1)</A></B>,
+          <B><A HREF="country2cdf.html">country2cdf(1)</A></B>, <B><A HREF="regridlpj.html">regridlpj(1)</A></B>, <B><A HREF="lpjml.html">lpjml(1)</A></B>, <B><A HREF="txt2clm.html">txt2clm(1)</A></B>,
+          <B><A HREF="cru2clm.html">cru2clm(1)</A></B>, <B><A HREF="clm.html">clm(5)</A></B>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</PRE>
+<HR>
+<ADDRESS>
+Man(1) output converted with
+<a href="http://www.oac.uci.edu/indiv/ehood/man2html.html">man2html</a>
+</ADDRESS>
+</BODY>
+</HTML>

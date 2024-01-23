@@ -1,0 +1,116 @@
+<HTML>
+<BODY>
+<PRE>
+<!-- Manpage converted by man2html 3.0.1 -->
+     <B>NAME</B>
+          readconfig - Reads LPJmL configuration
+
+     <B>SYNOPSIS</B>
+          <B>#include</B> <B>"lpj.h"</B>
+
+          <B>Bool</B> <B>readconfig(Config</B> <B>*</B><I>config</I><B>,const</B> <B>char</B> <B>*</B><I>filename</I><B>,</B>
+                          <B>Fscanpftparfcn</B> <I>scanfcns</I><B>[],int</B> <I>ntypes</I><B>,</B>
+                          <B>int</B> <I>nout</I><B>,int</B> <B>*</B><I>argc</I><B>,char</B> <B>***</B><I>argv</I><B>,</B>
+                          <B>const</B> <B>char</B> <B>*</B><I>usage</I><B>);</B>
+
+
+     <B>DESCRIPTION</B>
+          Function reads LPJmL configuration.  The arguments of
+          <B>readconfig</B> are:
+
+          <I>config</I>
+               Pointer to LPJmL configuration data. Must be
+               initialized by <B>initmpiconfig()</B> or <B>initconfig()</B>.
+
+          <I>filename</I>
+               Default configuration filename if no filename is given
+               as an argument.
+
+          <I>scanfcns</I>
+               Vector of scan functions for PFT-specific parameters.
+
+          <I>ntypes</I>
+               Number of plant functional type (PFT) classes.
+
+          <I>nout</I> Maximum number of output files.
+
+          <I>argc</I> Pointer to the number of arguments.
+
+          <I>argv</I> Pointer to argument vector.
+
+          <I>usage</I>
+               Usage string printed in case of error in argument list
+               or NULL.
+
+
+     <B>RETURN</B> <B>VALUE</B>
+          Upon successful completion FALSE is returned and TRUE in
+          case of error.
+
+
+     <B>AUTHORS</B>
+          For authors and contributors see AUTHORS file
+
+
+     <B>COPYRIGHT</B>
+          (C) Potsdam Institute for Climate Impact Research (PIK), see
+          COPYRIGHT file
+
+
+     <B>SEE</B> <B>ALSO</B>
+          <B><A HREF="initmpiconfig.html">initmpiconfig(3)</A></B>, <B><A HREF="initconfig.html">initconfig(3)</A></B>, <B><A HREF="freeconfig.html">freeconfig(3)</A></B>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</PRE>
+<HR>
+<ADDRESS>
+Man(1) output converted with
+<a href="http://www.oac.uci.edu/indiv/ehood/man2html.html">man2html</a>
+</ADDRESS>
+</BODY>
+</HTML>
