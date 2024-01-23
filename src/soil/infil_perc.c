@@ -592,7 +592,6 @@ Real infil_perc(Stand *stand,        /**< Stand pointer */
   jwt=findwtlayer(soil);
 
   //==  LATERAL FLOW ==================================================
-  // perched water table of frozen soil
   // water table above frost table
 
   q_perch_max = 1e-5 * sin(stand->slope_mean*3.6*M_PI/180);                          //specify maximum drainage rate mm/d
@@ -601,7 +600,7 @@ Real infil_perc(Stand *stand,        /**< Stand pointer */
   if(frost_depth<layerbound[BOTTOMLAYER-1])
   {
     if(soil->wtable<frost_depth)
-    {                                                //WATER_TABLE ABOVE FROST_DEPTH
+    {                                                //ONLY IF WATER_TABLE ABOVE FROST_DEPTH
       k_perch=0;
       wtsub=0;
       for(l=jwt;l<=icet;l++)
