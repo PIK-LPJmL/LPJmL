@@ -237,8 +237,6 @@ Bool annual_biomass_tree(Stand *stand,         /**< Pointer to stand */
 
   stand->cell->balance.estab_storage_tree[biomass_tree->irrigation.irrigation].carbon-=flux_estab.carbon*stand->frac;
   stand->cell->balance.estab_storage_tree[biomass_tree->irrigation.irrigation].nitrogen-=flux_estab.nitrogen*stand->frac;
-  stand->cell->balance.flux_estab.carbon+=flux_estab.carbon*stand->frac;
-  stand->cell->balance.flux_estab.nitrogen+=flux_estab.nitrogen*stand->frac;
   stand->cell->output.dcflux-=flux_estab.carbon*stand->frac;
 
   foreachpft(pft,p,&stand->pftlist)
