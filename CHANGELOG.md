@@ -26,10 +26,45 @@ of `major.minor.patch` with
 ### Added
 
 - added `.zenodo.json` for interaction with zenodo archives
+- added CITATION.cff file
 
 ### Changed
 
 - updated AUTHORS file
+
+## [5.8.4] - 2024-01-22
+
+### Contributors
+
+- author: Fabian Stenzel (stenzel@pik-potsdam.de), Stephen Wirth (wirth@pik-potsdam.de), Sibyll Schaphoff (schaphoff@pik-potsdam.de)
+- code review: Stephen Wirth, Constanze Werner (cowerner@pik-potsdam.de)
+
+### Fixed:
+
+- Removed lines 240 and 241 in landuse/annual_biomass_tree.c to get rid of the carbon balance error, which shows up in cells with significant bioenergy tree fractions in the landuse input.
+
+## [5.8.3] - 2024-01-21
+
+### Contributors
+
+- author: Werner von Bloh (bloh@pik-potsdam.de)
+- code review: Jannes Breier (breier@pik-potsdam.de), Christoph Mueller (cmueller@pik-potsdam.de)
+
+### Added
+
+- allowed range for coordinates checked in `readcoord()`.
+- allowed formats (`"raw"`, `"clm"`, `"clm2"`) for input files checked in `openmetafile()`.
+- Output scaling added to `writearea.c`.
+
+### Changed
+
+- Error messages changed for more clarity.
+
+### Fixed
+
+- NetCDF output for grid file corrected if cells are skipped.
+- `var_len` correctly set for input with no time axis in `openclimate_netcdf.c`.
+
 
 ## [5.8.2] - 2023-12-21
 
@@ -113,6 +148,7 @@ of `major.minor.patch` with
 ### Removed
 
 - `lpjml_*js`, `param_*js`, `lpjparam_*js`, `pft_*.js`, `input_*.js` and `manage_*.js files` for specific projects.
+
 
 ## [5.7.10] - 2023-11-13
 
