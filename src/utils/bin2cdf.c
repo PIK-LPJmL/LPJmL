@@ -1144,6 +1144,7 @@ int main(int argc,char **argv)
           if(freadshort(data_short,ngrid,swap,file)!=ngrid)
           {
             fprintf(stderr,"Error reading data in year %d.\n",i+header.firstyear);
+            close_cdf(cdf);
             return EXIT_FAILURE;
           }
           if(write_short_cdf(cdf,data_short,i*header.nstep+j,ngrid,ispft,k,miss_short))
@@ -1154,6 +1155,7 @@ int main(int argc,char **argv)
           if(freadfloat(data,ngrid,swap,file)!=ngrid)
           {
             fprintf(stderr,"Error reading data in year %d.\n",i+header.firstyear);
+            close_cdf(cdf);
             return EXIT_FAILURE;
           }
           if(write_float_cdf(cdf,data,i*header.nstep+j,ngrid,ispft,k,miss))
