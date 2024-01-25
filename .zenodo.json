@@ -150,7 +150,9 @@
          "name":"Müller, Christoph"
       }
    ],
-   "license":"AGPL-3.0 license",
+   "license": {
+     "id": "AGPL-3.0-or-later"
+   },
    "related_identifiers":[
       {
          "scheme":"doi",
@@ -225,8 +227,10 @@
       "PIK"
    ],
    "communities":[
+      { 
+         "identifier":"lpjml"
+      },
       {
-         "identifier":"lpjml",
          "identifier":"pikpotsdam"
       }
    ]
