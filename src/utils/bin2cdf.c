@@ -102,7 +102,7 @@ static Cdf *create_cdf(const char *filename,
     case 1:
       if(absyear)
         for(i=0;i<header.nyear;i++)
-          year[i]=header.firstyear-i*header.timestep+header.timestep/2;
+          year[i]=header.firstyear+i*header.timestep+header.timestep/2;
         else
         for(i=0;i<header.nyear;i++)
           year[i]=header.firstyear-baseyear+i*header.timestep+header.timestep/2;

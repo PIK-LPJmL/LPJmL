@@ -266,12 +266,12 @@ void fprintconfig(FILE *file,          /**< File pointer to text output file */
   int i,count=0,width,width_unit,index;
   Bool isnetcdf;
   fputs("==============================================================================\n",file);
+  fprintattrs(file,config->global_attrs,config->n_global);
   fprintf(file,"Simulation \"%s\"",config->sim_name);
   if(config->ntask>1)
     fprintf(file," running on %d tasks\n",config->ntask);
   else
     putc('\n',file);
-  fprintattrs(file,config->global_attrs,config->n_global);
   len=0;
   if(config->landfrac_from_file)
     len=printsim(file,len,&count,"land fraction read from file");
