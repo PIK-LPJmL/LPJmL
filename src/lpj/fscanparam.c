@@ -282,3 +282,50 @@ Bool fscanparam(LPJfile *file,       /**< File pointer to text file */
   param.k_soil10.slow/=NDAYYEAR;
   return FALSE;
 } /* of 'fscanparam' */
+
+Bool fscanparamcft(LPJfile *file,       /**< File pointer to text file */
+                   const Config *config /**< LPJ configuration */
+                  )                     /** \return TRUE on error  */
+{
+  LPJfile *f;
+  const char *name;
+  Verbosity verbosity;
+  verbosity=(isroot(*config))  ? config->scan_verbose : NO_ERR;
+  if(verbosity>=VERB)
+    printf("// LPJ parameters\n");
+  f=fscanstruct(file,"param",verbosity);
+  if(f==NULL)
+    return TRUE;
+  if(config->withlanduse!=NO_LANDUSE && config->with_nitrogen)
+  {
+    name=fscanstring(f,NULL,"cft_fertday_temp",verbosity);
+    if(name==NULL)
+      return TRUE;
+    param.cft_fertday_temp=findpftname(name,config->pftpar+config->npft[GRASS]+config->npft[TREE],config->npft[CROP]);
+    if(param.cft_fertday_temp==NOT_FOUND)
+    {
+      if(verbosity)
+      {
+        fprintf(stderr,"ERROR230: Invalid CFT '%s' for 'cft_fertday_temp', must be ",name);
+        fprintpftnames(stderr,config->pftpar+config->npft[GRASS]+config->npft[TREE],config->npft[CROP]);
+        fputs(".\n",stderr);
+      }
+      return TRUE;
+    }
+    name=fscanstring(f,NULL,"cft_fertday_tropic",verbosity);
+    if(name==NULL)
+      return TRUE;
+    param.cft_fertday_tropic=findpftname(name,config->pftpar+config->npft[GRASS]+config->npft[TREE],config->npft[CROP]);
+    if(param.cft_fertday_tropic==NOT_FOUND)
+    {
+      if(verbosity)
+      {
+        fprintf(stderr,"ERROR230: Invalid CFT '%s' for 'cft_fertday_tropic', must be ",name);
+        fprintpftnames(stderr,config->pftpar+config->npft[GRASS]+config->npft[TREE],config->npft[CROP]);
+        fputs(".\n",stderr);
+      }
+      return TRUE;
+    }
+  }
+  return FALSE;
+} /* of 'fscanparamcft' */

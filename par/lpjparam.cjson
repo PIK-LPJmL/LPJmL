@@ -111,6 +111,8 @@
     "fire_intens" : 0.000001,           /* threshold of fireintensity for which burnt area can be modeled */
     "rootreduction" : 0.5,              /* fraction used to calculate amount of roots dying at harvest in managed grasslands */
     "phen_limit" : 0.5,                 /* phen. limit for agricultural trees */
+    "cft_fertday_temp" : "temperate cereals", /* cft name (see pft.cjson) for fertilizer application date for grassland in temperate regions (abs(lat)>30 deg) */
+    "cft_fertday_tropic" : "maize",           /* cft name (see pft.cjson) for fertilizer application date for grassland in tropical regions (abs(lat)<30 deg) */
     #ifdef BMGR_BROWN
       "bmgr_harvest_day_nh" : 32.0,     /* harvest date (doy) of brown biomass grass harvest; NH 1.Feb */
       "bmgr_harvest_day_sh" : 213.0,    /* harvest date (doy) of brown biomass grass harvest; SH 1.Aug */

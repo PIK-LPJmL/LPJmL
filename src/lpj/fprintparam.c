@@ -101,6 +101,8 @@ void fprintparam(FILE *file,    /**< pointer to text file */
       fprintf(file,"nmanure_nh4_frac:\t%g\n",param.nmanure_nh4_frac);
       fprintf(file,"manure_cn:\t%g\n", param.manure_cn);
       fprintf(file,"manure_rate:\t%g\n", param.manure_rate);
+      fprintf(file,"cft_fertday_temp:\t%s\n", config->pftpar[npft+param.cft_fertday_temp].name);
+      fprintf(file,"cft_fertday_tropic:\t%s\n", config->pftpar[npft+param.cft_fertday_tropic].name);
     }
     fprintf(file,"residues_frac:\t%g\n",param.residue_frac);
     if(config->residue_treatment)
