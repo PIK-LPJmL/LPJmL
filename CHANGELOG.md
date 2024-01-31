@@ -19,9 +19,12 @@ of `major.minor.patch` with
 
 ## [Unreleased]
 
+## [5.8.5] - 2024-01-31
+
 ### Contributors
 
 - author: Christoph Müller (cmueller@pik-potsdam.de) and the entire LPJmL team
+- code review: Boris Sakschewski (borissa@pik-potsdam.de), Fabian Stenzel (stenzel@pik-potsdam.de)
 
 ### Added
 
