@@ -1020,6 +1020,7 @@ int main(int argc,char **argv)
       if(readintvec(file,idata,ngrid*header.nbands,swap,header.datatype))
       {
         fprintf(stderr,"Error reading data in year %d.\n",i+header.firstyear);
+        close_cdf(cdf);
         return EXIT_FAILURE;
       }
       for(j=0;j<header.nbands;j++)
@@ -1052,6 +1053,7 @@ int main(int argc,char **argv)
       if(readfloatvec(file,data,header.scalar,ngrid*header.nbands,swap,header.datatype))
       {
         fprintf(stderr,"Error reading data in year %d.\n",i+header.firstyear);
+        close_cdf(cdf);
         return EXIT_FAILURE;
       }
       for(j=0;j<header.nbands;j++)

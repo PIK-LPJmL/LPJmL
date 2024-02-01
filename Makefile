@@ -107,7 +107,7 @@ tar:
 	    src/numeric/*.c src/numeric/Makefile src/soil/*.c src/soil/Makefile\
 	    src/tools/*.c src/tools/Makefile src/tree/*.c src/tree/Makefile\
             src/lpj/FILES src/pnet/*.c src/pnet/FILES src/socket/Makefile\
-            src/socket/*.c src/reservoir/Makefile\
+            src/socket/*.c src/reservoir/Makefile src/climate/*.h\
             src/image/Makefile src/image/*.c src/reservoir/*.c\
             src/pnet/Makefile REFERENCES COPYRIGHT src/utils/*.c src/utils/Makefile\
             src/spitfire/Makefile src/spitfire/*.c src/netcdf/Makefile src/netcdf/*.c\
@@ -124,7 +124,7 @@ zipfile:
 	    src/numeric/*.c src/numeric/Makefile src/soil/*.c src/soil/Makefile\
 	    src/tools/*.c src/tools/Makefile src/tree/*.c src/tree/Makefile\
             src/lpj/FILES src/pnet/*.c src/pnet/FILES src/socket/Makefile\
-            src/socket/*.c src/reservoir/Makefile\
+            src/socket/*.c src/reservoir/Makefile src/climate/*.h\
             src/image/*.c src/image/Makefile src/reservoir/*.c\
             src/pnet/Makefile REFERENCES COPYRIGHT src/utils/*.c src/utils/Makefile\
             src/spitfire/Makefile src/spitfire/*.c src/netcdf/Makefile src/netcdf/*.c\

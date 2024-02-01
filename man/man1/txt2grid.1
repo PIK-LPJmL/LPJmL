@@ -3,7 +3,7 @@
 txt2grid \- convert text files to clm grid data files for LPJ
 .SH SYNOPSIS
 .B txt2grid
-[\-h] [\-v] [\-latlon] [\-map refgridfile] [-fmt s] [-skip n] [-cellsize size] [-float]
+[\-h] [\-v] [\-latlon] [\-map refgridfile] [-fmt s] [-skip n] [-cellsize size] [-cellsize_lon size] [-cellsize_lat size] [-float]
 .I txtfile gridfile
 .SH DESCRIPTION
 Program converts text files into LPJ grid data files
@@ -37,7 +37,13 @@ input format string for the scanf function in
 skip first n lines in text file, default is one
 .TP
 \-cellsize size
-set cell size, default is 0.5
+set latitudinal and longitudinal cell size, default is 0.5
+.TP
+\-cellsize_lon size
+set longitudinal cell size, default is 0.5
+.TP
+\-cellsize_lat size
+set latitudinal cell size, default is 0.5
 .TP
 \-float
 longitude/latitude values written in float format to clm file, default is short
