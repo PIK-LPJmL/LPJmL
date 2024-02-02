@@ -192,7 +192,7 @@ cat2bsq      - concatenate output files from distributed LPJmL simulations
 catclm       - concatenate LPJmL climate data files
 cdf2bin      - convert NetCDF files into raw binary data
 cdf2clm      - convert NetCDF files into CLM files
-cdf2coord    - extract CLM grid file form NetCDF file
+cdf2coord    - extract CLM grid file from NetCDF file
 cdf2soil     - convert NetCDF file into binary file
 cft2clm      - convert binary landuse data files to CLM data files for LPJmL
 clm2cdf      - convert CLM files into NetCDF files
@@ -311,7 +311,11 @@ The following runtime options are defined:
 -v                 - print compiler used and LPJmL flags set
 -vv                - verbosely print the actual values during reading of the
                      configuration files
+-pedantic          - stops on warnings\n"
+-ofiles            - list only all available output variables
 -param             - print LPJmL parameter for soils and PFTs
+-nopp              - disable preprocessing
+-pp cmd            - set preprocessor program. Default is 'cpp'
 -fpe               - enable floating point exceptions
 -image host        - set host where IMAGE model is running. Option is only
                     available for the IMAGE version

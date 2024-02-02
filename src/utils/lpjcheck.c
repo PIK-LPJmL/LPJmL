@@ -74,6 +74,7 @@ int main(int argc,char **argv)
              "-q                  print error messsages only\n"
              "-vv                 verbosely print the actual values during reading of the\n"
              "                    configuration files\n"
+             "-pedantic           stops on warnings\n"
              "-ofiles             list only all available output variables\n"
              "-param              print LPJ parameter\n"
              "-nopp               disable preprocessing\n"
