@@ -71,7 +71,7 @@ void fprintparam(FILE *file,    /**< pointer to text file */
   {
     fprintf(file,"firedura:\t%g\n"
             "fire_intens:\t%g\n"
-            "intensity_limit:\t%g"
+            "intensity_limit:\t%g\n"
             "hum_ign:\t%g\n"
             "cg_ratio:\t%g\n"
             "ler:\t\t%g\n"
