@@ -226,7 +226,7 @@ Bool fscanoutput(LPJfile *file,  /**< pointer to LPJ file */
     {
       if(verbosity)
         fprintf(stderr,"WARNING006: Output file for '%s' is opened twice, will be ignored.\n",
-              config->outnames[flag].name);
+                config->outnames[flag].name);
       if(config->pedantic)
         return TRUE;
       freefilename(&config->outputvars[count].filename);
@@ -235,14 +235,14 @@ Bool fscanoutput(LPJfile *file,  /**< pointer to LPJ file */
     {
       if(verbosity)
         fprintf(stderr,"WARNING006: Number of bands in output file for '%s' is zero, will be ignored.\n",
-              config->outnames[flag].name);
+                config->outnames[flag].name);
       freefilename(&config->outputvars[count].filename);
     }
     else if(!config->with_nitrogen && isnitrogen_output(flag))
     {
       if(verbosity)
         fprintf(stderr,"WARNING006: Output file for '%s' is nitrogen output but nitrogen is not enabled, will be ignored.\n",
-              config->outnames[flag].name);
+                config->outnames[flag].name);
       freefilename(&config->outputvars[count].filename);
     }
     else if(config->outputvars[count].filename.fmt==CLM2)
@@ -257,7 +257,7 @@ Bool fscanoutput(LPJfile *file,  /**< pointer to LPJ file */
     else if(config->outputvars[count].filename.fmt==META)
     {
       if(verbosity)
-        fprintf(stderr,"ERROR223: File format META is not supported for output file '%s', will be ignored.\n",
+        fprintf(stderr,"ERROR223: File format \"meta\" is not supported for output file '%s', will be ignored.\n",
                 config->outputvars[count].filename.name);
       if(config->pedantic)
         return TRUE;

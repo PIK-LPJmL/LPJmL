@@ -311,7 +311,11 @@ The following runtime options are defined:
 -v                 - print compiler used and LPJmL flags set
 -vv                - verbosely print the actual values during reading of the
                      configuration files
+-pedantic          - stops on warnings\n"
+-ofiles            - list only all available output variables
 -param             - print LPJmL parameter for soils and PFTs
+-nopp              - disable preprocessing
+-pp cmd            - set preprocessor program. Default is 'cpp'
 -fpe               - enable floating point exceptions
 -image host        - set host where IMAGE model is running. Option is only
                     available for the IMAGE version

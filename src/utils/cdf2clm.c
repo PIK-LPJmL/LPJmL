@@ -15,9 +15,9 @@
 #include "lpj.h"
 
 #ifdef USE_UDUNITS
-#define USAGE "Usage: %s [-v] [-units unit] [-var name] [-time name] [-o filename] [-scale factor] [-id s] [-version v] [-float] [-zero] [-json] gridfile netcdffile ...\n"
+#define USAGE "Usage: %s [-h] [-v] [-units unit] [-var name] [-time name] [-o filename] [-scale factor] [-id s] [-version v] [-float] [-zero] [-json] gridfile netcdffile ...\n"
 #else
-#define USAGE "Usage: %s [-v] [-var name] [-o filename] [-scale factor] [-id s] [-version v] [-float] [-zero] [-json] gridfile netcdffile ...\n"
+#define USAGE "Usage: %s [-h] [-v] [-var name] [-o filename] [-scale factor] [-id s] [-version v] [-float] [-zero] [-json] gridfile netcdffile ...\n"
 #endif
 
 #if defined(USE_NETCDF) || defined(USE_NETCDF4)
@@ -369,6 +369,33 @@ int main(int argc,char **argv)
   {
     if(argv[i][0]=='-')
     {
+      if(!strcmp(argv[i],"-h"))
+      {
+        printf("   cdf2clm (" __DATE__ ") Help\n"
+               "   ==========================\n\n"
+               "Convert NetCDF data into CLM input data for LPJmL version " LPJ_VERSION "\n\n");
+        printf(USAGE
+               "\nArguments:\n"
+               "-h            print this help text\n"
+               "-v            print name of NetCDF files\n"
+               "-scale factor scaling factor for CLM files. Default is one\n"
+#ifdef USE_UDUNITS
+               "-units u      set unit to convert from  NetCDF file\n"
+#endif
+               "-var name     variable  name  in NetCDF file \n"
+               "-time name    name of time in NetCDF file, default is 'time' or 'TIME'\n"
+               "-id string    LPJ header string in clm file\n"
+               "-version v    version of clm header, default is 3\n"
+               "-float        write float values in clm file, default is short\n"
+               "-zero         write zero values in clm file if data is not found\n"
+               "-json         JSON metafile is created with suffix '.json'\n"
+               "-o clmfile    filename of CLM data file written. Default is out.clm\n"
+               "gridfile      filename of grid data file\n"
+               "netcdffile    filename of NetCDF file(s) converted\n\n"
+               "(C) Potsdam Institute for Climate Impact Research (PIK), see COPYRIGHT file\n",
+               argv[0]);
+        return EXIT_SUCCESS;
+      }
       if(!strcmp(argv[i],"-var"))
       {
         if(argc==i+1)
