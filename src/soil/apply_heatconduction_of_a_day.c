@@ -25,7 +25,7 @@ David Hötten.
 #include "lpj.h"
 #include <math.h>
 
-static void use_enth_scheme(Real *, const Real *, const Real, Soil_thermal_prop);
+static void use_enth_scheme(Real *, const Real *, const Real, const Soil_thermal_prop *);
 STATIC void use_temp_scheme_implicit(Real *, const Real *, const Real *, const Real *, int);
 STATIC void arrange_matrix(Real *, Real *, Real *, const Real *, const Real *, const Real *, const Real);
 STATIC void thomas_algorithm(double *, double *, double *, double *, double *);
@@ -84,7 +84,7 @@ void apply_heatconduction_of_a_day(enum uniform_temp_sign uniform_temp_sign, /*<
   {
 
     /* enthalpy scheme has to be used */
-    use_enth_scheme(enth, h, temp_top, *th);
+    use_enth_scheme(enth, h, temp_top, th);
 
   } 
   else
@@ -99,16 +99,18 @@ static void use_enth_scheme(
                     Real * enth,          
                     const Real * h,       
                     const Real temp_top,  
-                    Soil_thermal_prop th   
+                    const Soil_thermal_prop * th   
                     ) 
 {
   Real temp[NHEATGRIDP + 1];     /* temperature array (including surface gridpoint with index 0)*/
   /* since the surface gridpoint is included in temp but exluded in enth  */
   /* the kth gridpoint (gp) (when calling the surface gp the 0th gp) corresponds to temp[k] and enth[k-1]  */
-  Real lam[NHEATGRIDP];          /* thermal conducitivity */
+  Real lam_fro_dBh[NHEATGRIDP], lam_unfro_dBh[NHEATGRIDP]; /* thermal conducitivity divided by gridpoint distances */ 
+  Real inv_c_fro[NHEATGRIDP], inv_c_unfro[NHEATGRIDP];     /* inverses of frozen and unfrozen heat capacities */
   Real QQ[NHEATGRIDP+1];         /* term resulting from the finite element method  */
   /* can be interpreted as the negative of the heatflux from gp j to gp j+1  */
   Real dt = 0.0;        /* timestep */
+
 
   int j; /* loop iteration */
   int timesteps;
@@ -120,14 +122,12 @@ static void use_enth_scheme(
   for (j = 0; j < NHEATGRIDP; ++j)
   {
     h_inv[j] = 1/h[j];
-    /* the following lines change the meaning of th.lam_(un)frozen, which no longer 
-    contains thermal conductivities but the thermal conductivities divided by the respective elemt size */
-    th.lam_frozen[j] = th.lam_frozen[j] * h_inv[j];
-    th.lam_unfrozen[j] = th.lam_unfrozen[j] * h_inv[j];
-    /* the following lines change the meaning of th.c_(un)frozen, which no longer 
-    contains heat capacities but reciprocal heat capacities */
-    th.c_frozen[j]= 1/ th.c_frozen[j] ;
-    th.c_unfrozen[j]= 1/ th.c_unfrozen[j] ;
+    /* thermal conductivities divided by the respective element size */
+    lam_fro_dBh[j] = th->lam_frozen[j] * h_inv[j];
+    lam_unfro_dBh[j] = th->lam_unfrozen[j] * h_inv[j];
+    /* reciprocal heat capacities */
+    inv_c_fro[j]= 1/ th->c_frozen[j] ;
+    inv_c_unfro[j]= 1/ th->c_unfrozen[j] ;
 
     inv_element_midpoint_dist[j] = 2/(h[j] + (j<NHEATGRIDP-1 ? h[j+1] : 0.0));
   }
@@ -143,8 +143,8 @@ static void use_enth_scheme(
   Real dt_inv=0;
   for (j=0; j<NHEATGRIDP; ++j)
   {
-    dt_inv_temporary = max( (th.lam_unfrozen[j] + (j<NHEATGRIDP-1 ? th.lam_unfrozen[j+1]:0.0) )   *th.c_unfrozen[j],
-                            (th.lam_frozen[j]   + (j<NHEATGRIDP-1 ? th.lam_frozen[j+1]:0.0) )     *th.c_frozen[j]    )
+    dt_inv_temporary = max( (lam_unfro_dBh[j] + (j<NHEATGRIDP-1 ? lam_unfro_dBh[j+1]:0.0) )   *inv_c_unfro[j],
+                            (lam_fro_dBh[j]   + (j<NHEATGRIDP-1 ? lam_fro_dBh[j+1]:0.0) )     *inv_c_fro[j]    )
                                * inv_element_midpoint_dist[j];
     if (dt_inv < dt_inv_temporary)
       dt_inv = dt_inv_temporary;
@@ -161,8 +161,8 @@ static void use_enth_scheme(
     /* calculate gridpoint temperatures from gridpoint enthalpies */
     for (j=0; j<NHEATGRIDP; ++j)
     {
-      temp[j+1] = (enth[j] < 0                 ?  enth[j] *                      th.c_frozen[j]   : 0) +
-                  (enth[j] > th.latent_heat[j] ? (enth[j] - th.latent_heat[j]) * th.c_unfrozen[j] : 0);
+      temp[j+1] = (enth[j] < 0                 ?  enth[j] *                      inv_c_fro[j]   : 0) +
+                  (enth[j] > th->latent_heat[j] ? (enth[j] - th->latent_heat[j]) * inv_c_unfro[j] : 0);
                   /* T=0 when 0<enth[j]<latent_heat */
       /* the term corresponds to eq (3.18) and (2.4) of the master thesis */
       /* it is the standart across-phase enthalpy temperature relation */
@@ -171,8 +171,8 @@ static void use_enth_scheme(
     /* calculate heat fluxes from temperature difference */
     for (j=0; j<NHEATGRIDP; ++j)
     {
-      QQ[j] = -(temp[j+1] *(temp[j+1]  < 0 ? th.lam_frozen[j] : th.lam_unfrozen[j]) -
-                temp[j]   *(temp[j]    < 0 ? th.lam_frozen[j] : th.lam_unfrozen[j])) ;
+      QQ[j] = -(temp[j+1] *(temp[j+1]  < 0 ? lam_fro_dBh[j] : lam_unfro_dBh[j]) -
+                temp[j]   *(temp[j]    < 0 ? lam_fro_dBh[j] : lam_unfro_dBh[j])) ;
       /* the term corresponds to eq (3.15) of the master thesis multiplied with -1 */
       /* an interpretation is the heat flux between gp j+1 and j, see Fourriers law */
     }
