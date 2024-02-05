@@ -7,14 +7,6 @@ For the conductivity it uses the approach described by Johansen (1977)
 
 #include "lpj.h"
 
-#define K_SOLID 8       /* Thermal conductivity of solid components in saturated state */
-#define K_ICE   2.2     /* Thermal conductivity of ice */
-#define K_WATER 0.57    /* Thermal conductivity of liquid water*/
-
-#define K_SOLID_log 0.90308998699      /* Thermal conductivity of solid components in saturated state */
-#define K_ICE_log   0.34242268082     /* Thermal conductivity of ice */
-#define K_WATER_log -0.24412514432    /* Thermal conductivity of liquid water*/
-
 void calc_soil_thermal_props(enum uniform_temp_sign uniform_temp_sign,  /**< flag to indicate if the temperatures are all positive all negative or mixed */
                              Soil_thermal_prop *th,                     /**< Soil thermal property structure that is set or modified */
                              const Soil *soil,                          /**< Soil structure from which water content etc is obtained  */
@@ -79,11 +71,11 @@ void calc_soil_thermal_props(enum uniform_temp_sign uniform_temp_sign,  /**< fla
     {
       /* get frozen and unfrozen conductivity with johansens approach */
       por            = soil -> wsat[layer];
-      tmp =  K_SOLID_log* (1 - por);
+      tmp =  K_SOLID_LOG* (1 - por);
       if(calc_frozen_values) 
-        lam_sat_froz   = pow(10, tmp + K_ICE_log * por); /* geometric mean  */
+        lam_sat_froz   = pow(10, tmp + K_ICE_LOG * por); /* geometric mean  */
       if(calc_unfrozen_values)
-        lam_sat_unfroz = pow(10, tmp + K_WATER_log * por);
+        lam_sat_unfroz = pow(10, tmp + K_WATER_LOG * por);
       
       if(soil->wsats[layer]<epsilon)
         sat=0;
