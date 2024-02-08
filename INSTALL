@@ -217,6 +217,7 @@ printglobal  - print global values for raw binary output files
 printharvest - print global harvested carbon for crops and managed grasslands
 regridclm    - regrid CLM file to new grid
 regridlpj    - regrid input data set for selected countries or specified grid file
+regridsoil   - regrid soil file to new grid
 regridsoil   - regrid binary soil file to different grid file
 setclm       - set value in header of CLM files for LPJmL
 soil2cdf     - convert binary files into NetCDF files

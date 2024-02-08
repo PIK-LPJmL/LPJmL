@@ -22,15 +22,16 @@ If grid coordinate cannot be found in old grid values are set to zero
 Version of CLM file is set to 2. By default version is read from file header
 .TP
 .I grid_old.clm
-corresponding grid filename of input data
+Corresponding grid filename of input data
 .TP
 .I grid_new.clm
 New grid filename data should be regridded to
 .TP
 .I  data_old.clm
 Filename of data file that should be regridded
+.TP
 .I data_new.clm
-Filename of data file where regridded file is written
+Filename of data file where regridded data is written
 .SH EXAMPLES
 .TP
 Regrid CLM file to the grid file of the amazon basin:
@@ -48,4 +49,4 @@ For authors and contributors see AUTHORS file
 (C) Potsdam Institute for Climate Impact Research (PIK), see COPYRIGHT file
 
 .SH SEE ALSO
-regridlpj (1), lpjml(1), txt2clm(1), cru2clm(1), clm(5)
+regridlpj(1), regridsoil(1), lpjml(1), txt2clm(1), cru2clm(1), clm(5)

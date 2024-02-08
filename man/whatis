@@ -92,6 +92,7 @@ readconfig (3) - read LPJmL configuration
 readpopdens (3) - read population density data
 regridclm (1) - regrid CLM file to new grid
 regridlpj (1) - regrid input data set for selected countries or specified grid file
+regridsoil (1) - regrid soil file to new grid
 setclm (1) - set value in header of clm files for LPJmL
 soil2cdf (1) - convert binary files into NetCDF files
 txt2grid (1) - convert text files to clm grid data files for LPJ
