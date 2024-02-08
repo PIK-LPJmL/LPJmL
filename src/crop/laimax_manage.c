@@ -14,9 +14,9 @@
 
 void laimax_manage(Manage *manage,        /**< Management data */
                    const Pftpar pftpar[], /**< crop PFT parameter array */
-                   int npft, /**< number of natural PFTs */
-                   int ncft, /**< number of crop PFTs */
-                   int year  /**< year (AD) */
+                   int npft,              /**< number of natural PFTs */
+                   int ncft,              /**< number of crop PFTs */
+                   int year               /**< year (AD) */
                   )
 {
   int cft;
@@ -25,7 +25,6 @@ void laimax_manage(Manage *manage,        /**< Management data */
     for(cft=0;cft<ncft;cft++)
     {
       /* Section for interpolation of laimax between 1950 and 2000   */
-
 
       croppar=pftpar[cft].data; 
   
@@ -37,7 +36,7 @@ void laimax_manage(Manage *manage,        /**< Management data */
           manage->laimax[npft+cft]=croppar->laimin;
         else if(year>2003)
         {
-          if(!strcmp(pftpar[cft].name,"termperate cereals"))
+          if(!strcmp(pftpar[cft].name,"temperate cereals"))
             manage->laimax[npft+cft]=manage->par->laimax_tempcer;
           else if(!strcmp(pftpar[cft].name,"maize"))
             manage->laimax[npft+cft]=manage->par->laimax_maize;
@@ -46,7 +45,7 @@ void laimax_manage(Manage *manage,        /**< Management data */
         }
         else
         {
-          if(!strcmp(pftpar[cft].name,"termperate cereals"))
+          if(!strcmp(pftpar[cft].name,"temperate cereals"))
             /*calculate linear trend of country-specific laimax from 1950 onwards*/
             /*function y=ax+b   (x,y): (1950,laimin)....(2000,laimax)*/
             manage->laimax[npft+cft]=(manage->par->laimax_tempcer-croppar->laimin)/50*year+40*croppar->laimin-39*manage->par->laimax_tempcer;
