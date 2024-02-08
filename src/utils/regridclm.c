@@ -3,7 +3,6 @@
 /**                    r  e  g  r  i  d  c  l  m  .  c                             \n**/
 /**                                                                                \n**/
 /**     CLM data is regridded to new grid file                                     \n**/
-/**     resolution.                                                                \n**/
 /**                                                                                \n**/
 /** (C) Potsdam Institute for Climate Impact Research (PIK), see COPYRIGHT file    \n**/
 /** authors, and contributors see AUTHORS file                                     \n**/
@@ -15,7 +14,7 @@
 
 #include "lpj.h"
 
-#define USAGE "Usage: %s [-size4] [-search] [-zero] [-longheader] coord_old.clm coord_new.clm data_old.clm data_new.clm\n"
+#define USAGE "Usage: %s [-size4] [-search] [-zero] [-longheader] grid_old.clm grid_new.clm data_old.clm data_new.clm\n"
 
 int main(int argc,char **argv)
 {
@@ -100,6 +99,10 @@ int main(int argc,char **argv)
   getcellsizecoord(&lon,&lat,grid);
   res2.lon=lon;
   res2.lat=lat;
+  if(res.lon!=res2.lon)
+    fprintf(stderr,"Warning: longitudinal resolution %g in '%s' differs from %g in '%s.\n",res2.lon,argv[2],res.lon,argv[1]);
+  if(res.lat!=res2.lat)
+    fprintf(stderr,"Warning: latitudinal resolution %g in '%s' differs from %g in '%s.\n",res2.lat,argv[2],res.lat,argv[1]);
   c2=newvec(Coord,ngrid2);
   if(c2==NULL)
   {
@@ -136,6 +139,10 @@ int main(int argc,char **argv)
             data_version,argv[3],CLM_MAX_VERSION+1);
       return EXIT_FAILURE;
   }
+  if(res.lon!=header.cellsize_lon)
+    fprintf(stderr,"Warning: longitudinal resolution %g in '%s' differs from %g in '%s.\n",header.cellsize_lon,argv[3],res.lon,argv[1]);
+  if(res.lat!=header.cellsize_lat)
+    fprintf(stderr,"Warning: latitudinal resolution %g in '%s' differs from %g in '%s.\n",header.cellsize_lat,argv[3],res.lat,argv[1]);
   if(header.nyear<=0)
   {
     fprintf(stderr,"Invalid nyear=%d, set to one.\n",header.nyear);
@@ -245,6 +252,8 @@ int main(int argc,char **argv)
     return EXIT_FAILURE;
   }
   header2=header;
+  header2.cellsize_lon=res2.lon;
+  header2.cellsize_lat=res2.lat;
   header2.ncell=ngrid2;
   if(fwriteheader(file,&header2,id,data_version))
   {
