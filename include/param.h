@@ -19,6 +19,14 @@
 
 typedef struct
 {
+  Stocks stocks; /**< maximum error in local stock flux balance (g/m2) */
+  Real w_local;  /**< maximum error in local water balance (mm) */
+  Real w_global; /**< maximum error in global water balance (mm) */
+} Error_limit;
+
+typedef struct
+{
+  Error_limit error_limit; /**< limits for balance errors ti stop simulation*/
   Real minlandfrac; /**< minimum land area fraction */
   Real tinyfrac;    /**< minimum land-use fraction used by all_crops */
   Real k_litter10;
@@ -108,8 +116,8 @@ typedef struct
   Real phen_limit;        /**< limit for agricultural trees */
   Real nfrac_grassharvest; /**< fraction of nitrogen from grass harvest not returned to NH4 pool via manure after mowing*/
   Real nfrac_grazing;       /**< fraction of nitrogen from grass harvest not returned to NH4 pool via manure from livestock*/
-  Real bmgr_harvest_day_nh; /**< harvest date of biomass grass harvest in northern hemisphere (green/brown)*/
-  Real bmgr_harvest_day_sh; /**< harvest date of biomass grass harvest in southern hemisphere (green/brown)*/
+  int bmgr_harvest_day_nh;  /**< harvest date of biomass grass harvest in northern hemisphere (green/brown)*/
+  int bmgr_harvest_day_sh;  /**< harvest date of biomass grass harvest in southern hemisphere (green/brown)*/
   int cft_fertday_temp;     /**< cft index for fertilizer application date for grassland in temperate regions (abs(lat)>30 deg) */
   int cft_fertday_tropic;   /**< cft index for fertilizer application date for grassland in tropical regions (abs(lat)<30 deg) */
 } Param;
@@ -120,6 +128,7 @@ extern Param param;
 
 /* Declaration of functions */
 
+extern Bool fscanerrorlimit(LPJfile *,Error_limit *,const char *,Verbosity);
 extern Bool fscanparam(LPJfile *,const Config *);
 extern Bool fscanparamcft(LPJfile *,const Config *);
 

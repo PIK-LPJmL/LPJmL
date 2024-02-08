@@ -99,10 +99,10 @@
     "rootreduction" : 0.5,              /* fraction used to calculate amount of roots dying at harvest in managed grasslands */
     "phen_limit" : 0.5,                 /* phen. limit for agricultural trees */
      #ifdef BMGR_BROWN
-      "bmgr_harvest_day_nh" : 32.0,     /* harvest date (doy) of brown biomass grass harvest; NH 1.Feb */
-      "bmgr_harvest_day_sh" : 213.0     /* harvest date (doy) of brown biomass grass harvest; SH 1.Aug */
+      "bmgr_harvest_day_nh" : 32,       /* harvest date (doy) of brown biomass grass harvest; NH 1.Feb */
+      "bmgr_harvest_day_sh" : 213       /* harvest date (doy) of brown biomass grass harvest; SH 1.Aug */
     #else
-      "bmgr_harvest_day_nh" : 275.0,    /* harvest date (doy) of green biomass grass harvest; NH 1.Oct */
-      "bmgr_harvest_day_sh" : 92.0      /* harvest date (doy) of green biomass grass harvest; SH 1.Apr */
+      "bmgr_harvest_day_nh" : 275,      /* harvest date (doy) of green biomass grass harvest; NH 1.Oct */
+      "bmgr_harvest_day_sh" : 92        /* harvest date (doy) of green biomass grass harvest; SH 1.Apr */
     #endif
   }

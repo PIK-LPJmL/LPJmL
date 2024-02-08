@@ -121,11 +121,11 @@
     "cft_fertday_temp" : "temperate cereals", /* cft name (see pft.cjson) for fertilizer application date for grassland in temperate regions (abs(lat)>30 deg) */
     "cft_fertday_tropic" : "maize",           /* cft name (see pft.cjson) for fertilizer application date for grassland in tropical regions (abs(lat)<30 deg) */
     #ifdef BMGR_BROWN
-      "bmgr_harvest_day_nh" : 32.0,     /* harvest date (doy) of brown biomass grass harvest; NH 1.Feb */
-      "bmgr_harvest_day_sh" : 213.0,    /* harvest date (doy) of brown biomass grass harvest; SH 1.Aug */
+      "bmgr_harvest_day_nh" : 32,       /* harvest date (doy) of brown biomass grass harvest; NH 1.Feb */
+      "bmgr_harvest_day_sh" : 213,      /* harvest date (doy) of brown biomass grass harvest; SH 1.Aug */
     #else
-      "bmgr_harvest_day_nh" : 275.0,    /* harvest date (doy) of green biomass grass harvest; NH 1.Oct */
-      "bmgr_harvest_day_sh" : 92.0,     /* harvest date (doy) of green biomass grass harvest; SH 1.Apr */
+      "bmgr_harvest_day_nh" : 275,      /* harvest date (doy) of green biomass grass harvest; NH 1.Oct */
+      "bmgr_harvest_day_sh" : 92,       /* harvest date (doy) of green biomass grass harvest; SH 1.Apr */
     #endif
     "nfrac_grassharvest" : 0.5,         /* fraction of nitrogen from grass harvest not returned to NH4 pool via manure after mowing*/
     "nfrac_grazing" : 0.5               /* fraction of nitrogen from grass harvest not returned to NH4 pool via manure from livestock*/

@@ -276,8 +276,8 @@ Bool fscanparam(LPJfile *file,       /**< File pointer to text file */
     fscanparamreal01(f,&param.hfrac_biomass,"hfrac_biomass");
     fscanparamreal01(f,&param.rootreduction,"rootreduction");
     fscanparamreal01(f,&param.phen_limit,"phen_limit");
-    fscanparamreal(f,&param.bmgr_harvest_day_nh,"bmgr_harvest_day_nh");
-    fscanparamreal(f,&param.bmgr_harvest_day_sh,"bmgr_harvest_day_sh");
+    fscanparamint(f,&param.bmgr_harvest_day_nh,"bmgr_harvest_day_nh");
+    fscanparamint(f,&param.bmgr_harvest_day_sh,"bmgr_harvest_day_sh");
   }
   param.k_litter10/=NDAYYEAR;
   param.k_soil10.fast/=NDAYYEAR;
