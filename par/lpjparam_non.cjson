@@ -14,6 +14,13 @@
 
 
   {
+    "error_limits" :
+    {
+      "carbon" : 1.0,       /* maximum error in local carbon balance (gC/m2) */
+      "nitrogen" : 0.2,     /* maximum error in local nitrogen balance (gN/m2) */
+      "water_local" : 1.5,  /* maximum error in local water balance (mm) */
+      "water_global" : 1e-3 /* maximum error in global water balance (mm) */
+    },
     "soildepth" : [
       200.0,       /* soil depth layer (mm) */
       300.0,       /* soil depth layer (mm) */

@@ -8,7 +8,7 @@ cat2bsq (1) - concatenate output files from distributed LPJmL simulations
 catclm (1) - concatenate LPJmL climate data files
 cdf2bin(1) - convert NetCDF files into raw binary data
 cdf2clm (1) - convert NetCDF files into CLM files
-cdf2coord(1) - extract CLM grid file form NetCDF file
+cdf2coord(1) - extract CLM grid file from NetCDF file
 cdf2soil (1) - convert NetCDF file into binary file
 cft2clm (1) - convert binary landuse data files to clm data files for LPJmL
 clm2cdf (1) - convert CLM files into NetCDF files
@@ -90,7 +90,8 @@ printharvest (1) - print global harvested carbon for crops and managed grassland
 printlicense (3) - print LPJmL license
 readconfig (3) - read LPJmL configuration
 readpopdens (3) - read population density data
-regridlpj (1) - regrid CRU input data set for selected countries
+regridclm (1) - regrid CLM file to new grid
+regridlpj (1) - regrid input data set for selected countries or specified grid file
 setclm (1) - set value in header of clm files for LPJmL
 soil2cdf (1) - convert binary files into NetCDF files
 txt2grid (1) - convert text files to clm grid data files for LPJ

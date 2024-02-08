@@ -44,6 +44,8 @@ Bool fscanparam(LPJfile *file,       /**< File pointer to text file */
   f=fscanstruct(file,"param",verbosity);
   if(f==NULL)
     return TRUE;
+  if(fscanerrorlimit(f,&param.error_limit,"error_limits",verbosity))
+    return TRUE;
   if(fscanrealarray(f,soildepth,NSOILLAYER,"soildepth",verbosity))
     return TRUE;
   /* calculate layerbound and midlayer from soildepth */

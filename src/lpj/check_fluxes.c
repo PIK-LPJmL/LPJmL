@@ -69,7 +69,7 @@ void check_fluxes(Cell *cell,          /**< cell pointer */
   else
     startyear=config->firstyear+1;
 
-  if(year>startyear && fabs(balance.carbon)>1)
+  if(year>startyear && fabs(balance.carbon)>param.error_limit.stocks.carbon)
   {
 #if defined IMAGE && defined COUPLED
     if(config->sim_id==LPJML_IMAGE)
@@ -112,7 +112,7 @@ void check_fluxes(Cell *cell,          /**< cell pointer */
          cell->balance.deforest_emissions.carbon,cell->balance.prod_turnover.fast.carbon+cell->balance.prod_turnover.slow.carbon,cell->balance.influx.carbon);
 #endif
   }
-  if(config->with_nitrogen && year>startyear && fabs(balance.nitrogen)>.2)
+  if(config->with_nitrogen && year>startyear && fabs(balance.nitrogen)>param.error_limit.stocks.nitrogen)
   {
 #ifdef NO_FAIL_BALANCE
     fprintf(stderr,"ERROR032: "
@@ -152,7 +152,7 @@ void check_fluxes(Cell *cell,          /**< cell pointer */
   }
   cell->balance.awater_flux+=cell->balance.atransp+cell->balance.aevap+cell->balance.ainterc+cell->balance.aevap_lake+cell->balance.aevap_res-cell->balance.airrig;
   balanceW=totw-cell->balance.totw-cell->balance.aprec+cell->balance.awater_flux+cell->balance.excess_water;
-  if(year>startyear && fabs(balanceW)>1.5)
+  if(year>startyear && fabs(balanceW)>param.error_limit.w_local)
   //if(year>1511 && fabs(balanceW)>1.5)
 #ifdef NO_FAIL_BALANCE
     fprintf(stderr,"ERROR005: "
