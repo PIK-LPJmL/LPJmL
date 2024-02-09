@@ -86,6 +86,10 @@ int main(int argc,char **argv)
   getcellsizecoord(&lon,&lat,grid);
   res2.lon=lon;
   res2.lat=lat;
+  if(res.lon!=res2.lon)
+    fprintf(stderr,"Warning: longitudinal resolution %g in '%s' differs from %g in '%s.\n",res2.lon,argv[2],res.lon,argv[1]);
+  if(res.lat!=res2.lat)
+    fprintf(stderr,"Warning: latitudinal resolution %g in '%s' differs from %g in '%s.\n",res2.lat,argv[2],res.lat,argv[1]);
   c2=newvec(Coord,ngrid2);
   if(c2==NULL)
   {
