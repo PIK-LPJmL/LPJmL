@@ -19,6 +19,57 @@ of `major.minor.patch` with
 
 ## [Unreleased]
 
+## [5.8.2] - 2023-12-21
+
+### Contributors
+
+- author: Johanna Braun (jobraun@pik-potsdam.de), Sebastian Ostberg (ostberg@pik-potsdam.de)
+- code review: Christoph Mueller (cmueller@pik-potsdam.de)
+- dicussed by attendees of [LPJmL seminar](https://gitlab.pik-potsdam.de/lpjml/LPJmL_internal/-/wikis/231221_lpjmlseminar) on Dec. 21st 2023 and [Nov. 23rd 2023](https://gitlab.pik-potsdam.de/lpjml/LPJmL_internal/-/wikis/231123_lpjmlseminar).
+
+### Changed
+
+- `wateruse` from "yes" to "all"
+- `sowing_date_option` from "fixed_sdate" to "prescribed_sdate"
+- `crop_phu_option` from "new" to "prescribed"
+- `tillage_type` from "all" to "read"
+- `residue_treatment` from  "fixed_residue_remove" to "read_residue_data"
+- `grazing` from "default" to "livestock"
+- `prescribe_lsuha` from FALSE to TRUE
+- set `nspinup` to 420 instead of 390 for LU spinup
+- updated paths to land management input files in `input.cjson`
+- set all available [LandInG1.0](https://doi.org/10.5194/gmd-16-3375-2023) inputs as the `default` option
+
+
+## [5.8.1] - 2023-12-11
+
+### Contributors
+
+- author: Werner von Bloh (bloh@pik-potsdam.de), Sebastian Ostberg (ostberg@pik-potsdam.de), Christoph Mueller (cmueller@pik-potsdam.de), Sibyll Schaphoff (sibylls@pik-potsdam.de)
+
+### Added
+
+- tmin, tmax, humid GSWP3-W5E5 inputs added to `input.cjson`.
+- missing parameters added in `lpjparam_non.cjson` and `pft_non.cjson`.
+
+### Changed
+
+- set gml.noaa data as default CO2 input.
+- GSWP3-W5E5 climate is now the default.
+- `regridlpj` utility script updated for new inputs
+
+### Removed
+
+- GLDAS climate input removed.
+
+### Fixed
+
+- scaling fixed for daily output and unit 1/second in fwriteoutput.c (issue #332).
+- `#ifdef` and `#elif` statements fixed in `lpjml_config.cjson` and `input.cjson`.
+- computation of root biomass based on carbon fixed in `nuptake_grass` and `nuptake_tree` (issue #330)
+- fixed bug in `allocation_tree` (issue #330)
+
+
 ## [5.8.0] - 2023-11-30
 
 ### Contributors
@@ -56,7 +107,7 @@ of `major.minor.patch` with
 ### Contributors
 
 - author: Werner von Bloh (bloh@pik-potsdam.de)
-- code review: Jannes Breier (breier@pik-potsdam.de), Constanze Werner (cowerner@pik-potsdam.de), Sebastion Ostberg(ostberg@pik-potsdam.de), 
+- code review: Jannes Breier (breier@pik-potsdam.de), Constanze Werner (cowerner@pik-potsdam.de), Sebastian Ostberg(ostberg@pik-potsdam.de), 
   Marie Hemmen (hemmen@pik-potsdam.de), Christoph Mueller (cmueller@pik-potsdam.de)
 
 ### Added
