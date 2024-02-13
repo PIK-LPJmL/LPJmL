@@ -39,7 +39,7 @@
 #define TOPLAYER 0
 #define NTILLLAYER 1 /* number of layers to be tilled */
 #ifndef U_TEST
-  #define GPLHEAT 2 /* Gripoints per soil layer for the heat conduction scheme  */
+  #define GPLHEAT 1 /* Gripoints per soil layer for the heat conduction scheme  */
 #endif
 #define NHEATGRIDP NSOILLAYER*GPLHEAT /* Total number of gridpoints for the heatflow scheme */
 #define SNOWLAYER NSOILLAYER

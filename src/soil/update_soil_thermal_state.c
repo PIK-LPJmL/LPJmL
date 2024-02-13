@@ -17,19 +17,17 @@
 // The following three values are calculated by: lawrance and slater 2007, Incorporating organic soil into a global climate model
 // the values for purely organic soils are used here as a rough estimate for litter thermal properties
 #define K_LITTER_DRY 0.05  // thermal conductivity of organic material when completly dry
-#define K_LITTER_SAT_FROZEN 1.947743   // thermal conudcitivity of fully saturated frozen organic material with a porosity of 0.944
-#define K_LITTER_SAT_UNFROZEN 0.54429019  // // thermal conudcitivity of fully saturated unfrozen organic material with a porosity of 0.944
+#define K_LITTER_SAT_FROZEN 2.106374   // thermal conudcitivity of fully saturated frozen organic material with a porosity of 0.944
+#define K_LITTER_SAT_UNFROZEN 0.554636  // // thermal conudcitivity of fully saturated unfrozen organic material with a porosity of 0.944
 
 // The following two values are rough estimates
-#define K_SNOW_SOILINS 0.5 // snow thermal conductivty used for soil insulation
+#define K_SNOW_SOILINS 0.3 // snow thermal conductivty used for soil insulation
 #define SNOWHEIGHT_PER_WATEREQ 4 // snow height per m^3 snow water equivalent used for snow insulation
 
-// The following two values are the mean of three URSA sites of
-// Redding et al: Particle Density of Aspen, Spruce, and Pine Forest Floors in Alberta, Canada
-#define DRY_BULK_DENSITY_LITTER 87.6 // [kg m-3] mean of measured bulk densities of forest floors at URSA sites, the value is high as compared to other lit estimates
+#define DRY_BULK_DENSITY_LITTER 71.1
 // porosity is calculated using f = (p_s - p_b)/p_s 
 // Hillel: Environmental Soil Physics, p15 f.
-#define POROSITY_LITTER 0.944  // [fraction]
+#define POROSITY_LITTER 0.952  // [fraction]
 
 STATIC void setup_heatgrid(Real *);
 STATIC void setup_heatgrid_layer_boundaries(Real *);

@@ -133,25 +133,22 @@ Real snow(Soil *soil,       /**< pointer to soil data */
     //   if(fabs(dT)<epsilon || t==maxheatsteps)
     //     break;
     //   /* melting of the whole snow layer*/
-    //   if(soil->temp[SNOWLAYER]+dT-T_zero>0)
-    //   {
-    //     heatflux=lambda_snow*(soil->temp[SNOWLAYER]-T_zero+dT)/soil->snowpack*1000;
-    //     soil->temp[SNOWLAYER]=T_zero;
-    //     melt_heat=min(heatflux*timestep2sec(1.0,heat_steps),soil->snowpack*1e-3*c_water2ice);/*[J/m2]*/
-    //     *snowmelt+=melt_heat/c_water2ice*1000; /* [J/m2]/[J/m3]*1000 = [mm] */
-    //     soil->snowpack-=melt_heat/c_water2ice*1000;
-    //     if (soil->snowpack<epsilon)
-    //     {
-    //       *temp_bsnow=temp;
-    //       soil->snowpack=0.0;
-    //       break;
-    //     }
-    //     heatflux-=melt_heat/timestep2sec(1.0,heat_steps);/*[W/m2]*/
-    //     if(fabs(heatflux) < epsilon)
-    //       heatflux=0.0;
-    //     dT=heatflux*soil->snowpack*1e-3/lambda_snow;
-    //     *temp_bsnow=soil->temp[SNOWLAYER]+dT;
-    //   }
+      // if(soil->temp[SNOWLAYER]-T_zero>0)
+      // {
+      //   heatflux=lambda_snow*(soil->temp[SNOWLAYER]-T_zero)/soil->snowpack*1000;
+      //   melt_heat=min(heatflux*timestep2sec(1.0,heat_steps),soil->snowpack*1e-3*c_water2ice);/*[J/m2]*/
+      //   *snowmelt+=melt_heat/c_water2ice*1000; /* [J/m2]/[J/m3]*1000 = [mm] */
+      //   soil->snowpack-=melt_heat/c_water2ice*1000;
+      //   if (soil->snowpack<epsilon)
+      //   {
+      //     soil->snowpack=0.0;
+      //     break;
+      //   }
+      //   heatflux-=melt_heat/timestep2sec(1.0,heat_steps);/*[W/m2]*/
+      //   if(fabs(heatflux) < epsilon)
+      //     heatflux=0.0;
+      //   dT=heatflux*soil->snowpack*1e-3/lambda_snow;
+      // }
     //   else
     //   {
     //     soil->temp[SNOWLAYER]+=dT;
