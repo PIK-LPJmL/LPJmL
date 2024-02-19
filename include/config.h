@@ -133,6 +133,7 @@ struct config
   int laimax_interpolate;
   Real laimax;        /**< maximum LAI for benchmark */
   Bool withdailyoutput; /**< with daily output (TRUE/FALSE) */
+  Bool flush_output;   /**< flush output after every simulation year (TRUE/FALSE) */
   Bool nofill;          /**< do not fille NetCDF files at creation (TRUE/FALSE) */
   int pft_residue;
   int fdi;
