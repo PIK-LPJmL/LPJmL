@@ -14,7 +14,7 @@
 
 #include "lpj.h"
 
-#define USAGE "Usage: %s [-size4] [-search] [-zero] [-longheader] grid_old.clm grid_new.clm data_old.clm data_new.clm\n"
+#define USAGE "Usage: %s [-size4] [-search] [-zero] [-longheader] [-json] grid_old.clm grid_new.clm data_old.clm data_new.clm\n"
 
 int main(int argc,char **argv)
 {
@@ -22,48 +22,50 @@ int main(int argc,char **argv)
   Header header,header2;
   Coord *c,*c2;
   Real dist_min;
-  Bool swap,isint,issearch,iszero;
+  Bool swap,isint,issearch,iszero,isjson;
   short *data;
   int *zero;
   int *idata;
   long long size;
   Coord res,res2;
   Coordfile grid;
-  int i,j,*index,data_version,setversion,ngrid,ngrid2;
+  int i,j,*index,data_version,setversion,ngrid,ngrid2,iarg;
   float lon,lat,*fzero;
+  char *arglist,*out_json;
   String id;
-  Filename filename;
-  isint=issearch=iszero=FALSE;
+  Filename filename,grid_name;
+  Type grid_type;
+  isint=issearch=iszero=isjson=FALSE;
   setversion=READ_VERSION;
-  for(i=1;i<argc;i++)
-    if(argv[i][0]=='-')
+  for(iarg=1;iarg<argc;iarg++)
+    if(argv[iarg][0]=='-')
     {
-      if(!strcmp(argv[i],"-size4"))
+      if(!strcmp(argv[iarg],"-size4"))
         isint=TRUE;
-      else if(!strcmp(argv[i],"-longheader"))
+      else if(!strcmp(argv[iarg],"-longheader"))
         setversion=2;
-      else if(!strcmp(argv[i],"-search"))
+      else if(!strcmp(argv[iarg],"-search"))
         issearch=TRUE;
-      else if(!strcmp(argv[i],"-zero"))
+      else if(!strcmp(argv[iarg],"-json"))
+        isjson=TRUE;
+      else if(!strcmp(argv[iarg],"-zero"))
         iszero=TRUE;
       else
       {
         fprintf(stderr,"Invalid option '%s'.\n"
-                USAGE,argv[i],argv[0]);
+                USAGE,argv[iarg],argv[0]);
         return EXIT_FAILURE;
       }
     }
     else
       break;
-  argc-=i-1;
-  argv+=i-1;
-  if(argc<5)
+  if(argc<4+iarg)
   {
     fprintf(stderr,"Error: Missing arguments.\n"
             USAGE,argv[1-i]);
     return EXIT_FAILURE;
   }
-  filename.name=argv[1];
+  filename.name=argv[iarg];
   filename.fmt=(setversion==2) ? CLM2 : CLM;
   grid=opencoord(&filename,TRUE);
   if(grid==NULL)
@@ -84,25 +86,26 @@ int main(int argc,char **argv)
     if(readcoord(grid,c+i,&res))
     {
       closecoord(grid);
-      fprintf(stderr,"Error reading cell %d in '%s'.\n",i,argv[1]);
+      fprintf(stderr,"Error reading cell %d in '%s'.\n",i,argv[iarg]);
       return EXIT_FAILURE;
     }
     //printf("c:%g %g\n",c[i].lon,c[i].lat);
   }
   closecoord(grid);
-  filename.name=argv[2];
+  filename.name=argv[iarg+1];
   filename.fmt=(setversion==2) ? CLM2 : CLM;
   grid=opencoord(&filename,TRUE);
   if(grid==NULL)
     return EXIT_FAILURE;
+  grid_type=getcoordtype(grid);
   ngrid2=numcoord(grid);
   getcellsizecoord(&lon,&lat,grid);
   res2.lon=lon;
   res2.lat=lat;
   if(res.lon!=res2.lon)
-    fprintf(stderr,"Warning: longitudinal resolution %g in '%s' differs from %g in '%s.\n",res2.lon,argv[2],res.lon,argv[1]);
+    fprintf(stderr,"Warning: longitudinal resolution %g in '%s' differs from %g in '%s.\n",res2.lon,argv[iarg+1],res.lon,argv[iarg]);
   if(res.lat!=res2.lat)
-    fprintf(stderr,"Warning: latitudinal resolution %g in '%s' differs from %g in '%s.\n",res2.lat,argv[2],res.lat,argv[1]);
+    fprintf(stderr,"Warning: latitudinal resolution %g in '%s' differs from %g in '%s.\n",res2.lat,argv[iarg+1],res.lat,argv[iarg]);
   c2=newvec(Coord,ngrid2);
   if(c2==NULL)
   {
@@ -115,34 +118,34 @@ int main(int argc,char **argv)
     if(readcoord(grid,c2+i,&res2))
     {
       closecoord(grid);
-      fprintf(stderr,"Error reading cell %d in '%s'.\n",i,argv[2]);
+      fprintf(stderr,"Error reading cell %d in '%s'.\n",i,argv[iarg+1]);
       return EXIT_FAILURE;
     }
     //printf("c2:%g %g\n",c2[i].lon,c2[i].lat);
   }
   closecoord(grid);
-  data_file=fopen(argv[3],"rb");
+  data_file=fopen(argv[iarg+2],"rb");
   if(data_file==NULL)
   {
-    fprintf(stderr,"Error opening '%s': %s.\n",argv[3],strerror(errno));
+    fprintf(stderr,"Error opening '%s': %s.\n",argv[iarg+2],strerror(errno));
     return EXIT_FAILURE;
   }
   data_version=setversion;
   if(freadanyheader(data_file,&header,&swap,id,&data_version,TRUE))
   {
-    fprintf(stderr,"Error reading header in '%s'.\n",argv[3]);
+    fprintf(stderr,"Error reading header in '%s'.\n",argv[iarg+2]);
     return EXIT_FAILURE;
   }
   if(data_version>CLM_MAX_VERSION)
   {
     fprintf(stderr,"Error: Unsupported version %d in '%s', must be less than %d.\n",
-            data_version,argv[3],CLM_MAX_VERSION+1);
+            data_version,argv[iarg+2],CLM_MAX_VERSION+1);
       return EXIT_FAILURE;
   }
   if(res.lon!=header.cellsize_lon)
-    fprintf(stderr,"Warning: longitudinal resolution %g in '%s' differs from %g in '%s.\n",header.cellsize_lon,argv[3],res.lon,argv[1]);
+    fprintf(stderr,"Warning: longitudinal resolution %g in '%s' differs from %g in '%s.\n",header.cellsize_lon,argv[iarg+2],res.lon,argv[iarg]);
   if(res.lat!=header.cellsize_lat)
-    fprintf(stderr,"Warning: latitudinal resolution %g in '%s' differs from %g in '%s.\n",header.cellsize_lat,argv[3],res.lat,argv[1]);
+    fprintf(stderr,"Warning: latitudinal resolution %g in '%s' differs from %g in '%s.\n",header.cellsize_lat,argv[iarg+2],res.lat,argv[iarg]);
   if(header.nyear<=0)
   {
     fprintf(stderr,"Invalid nyear=%d, set to one.\n",header.nyear);
@@ -151,7 +154,7 @@ int main(int argc,char **argv)
   if(header.ncell!=ngrid)
   {
     fprintf(stderr,"Invalid number of cells %d in '%s', not %d.\n",
-            header.ncell,argv[3],ngrid);
+            header.ncell,argv[iarg+2],ngrid);
     return EXIT_FAILURE;
   }
   size=getfilesizep(data_file)-headersize(id,data_version);
@@ -182,7 +185,7 @@ int main(int argc,char **argv)
     {
       if((long long)header.ncell*header.nyear*header.nbands*header.nstep*sizeof(short)==size)
       {
-        fprintf(stderr,"File size of '%s' does not match header, set datatype to 2 byte size.\n",argv[3]);  
+        fprintf(stderr,"File size of '%s' does not match header, set datatype to 2 byte size.\n",argv[iarg+2]);
         isint=FALSE;
         free(idata);
         data=newvec(short,(long long)header.ncell*header.nbands*header.nstep);
@@ -196,10 +199,10 @@ int main(int argc,char **argv)
       {
         header.nyear=size/(sizeof(int)*header.ncell*header.nbands*header.nstep);
         if(size % (sizeof(int)*header.ncell*header.nbands*header.nstep)==0)
-          fprintf(stderr,"File size of '%s' does not match header, number of years set to %d.\n",argv[3],header.nyear);
+          fprintf(stderr,"File size of '%s' does not match header, number of years set to %d.\n",argv[iarg+2],header.nyear);
         else
         {
-          fprintf(stderr,"File size of '%s' is not multiple of ncell and nbands.\n",argv[3]);
+          fprintf(stderr,"File size of '%s' is not multiple of ncell and nbands.\n",argv[iarg+2]);
           return EXIT_FAILURE;
         }
       }
@@ -222,7 +225,7 @@ int main(int argc,char **argv)
     {
       if((long long)header.ncell*header.nyear*header.nbands*header.nstep*sizeof(int)==size)
       {
-        fprintf(stderr,"File size of '%s' does not match header, set datatype to 4 byte size.\n",argv[3]);  
+        fprintf(stderr,"File size of '%s' does not match header, set datatype to 4 byte size.\n",argv[iarg+2]);
         isint=TRUE;
         free(data);
         idata=newvec(int,(long long)header.ncell*header.nbands*header.nstep);
@@ -236,19 +239,19 @@ int main(int argc,char **argv)
       {
         header.nyear=size/(sizeof(short)*header.ncell*header.nbands*header.nstep);
         if(size % (sizeof(short)*header.ncell*header.nbands*header.nstep)==0)
-          fprintf(stderr,"File size of '%s' does not match header, number of years set to %d.\n",argv[3],header.nyear);
+          fprintf(stderr,"File size of '%s' does not match header, number of years set to %d.\n",argv[iarg+2],header.nyear);
         else
         {
-          fprintf(stderr,"File size of '%s' is not multiple of ncell and nbands.\n",argv[3]);
+          fprintf(stderr,"File size of '%s' is not multiple of ncell and nbands.\n",argv[iarg+2]);
           return EXIT_FAILURE;
         }
       }
     }
   }
-  file=fopen(argv[4],"wb");
+  file=fopen(argv[iarg+3],"wb");
   if(file==NULL)
   {
-    fprintf(stderr,"Error creating '%s': %s.\n",argv[4],strerror(errno));
+    fprintf(stderr,"Error creating '%s': %s.\n",argv[iarg+3],strerror(errno));
     return EXIT_FAILURE;
   }
   header2=header;
@@ -257,7 +260,7 @@ int main(int argc,char **argv)
   header2.ncell=ngrid2;
   if(fwriteheader(file,&header2,id,data_version))
   {
-    fprintf(stderr,"Error writing header in '%s'.\n",argv[4]);
+    fprintf(stderr,"Error writing header in '%s'.\n",argv[iarg+3]);
     return EXIT_FAILURE;
   }
   index=newvec(int,ngrid2);
@@ -298,7 +301,7 @@ int main(int argc,char **argv)
     {
       if(freadint(idata,(long long)header.ncell*header.nbands*header.nstep,swap,data_file)!=(long long)header.ncell*header.nbands*header.nstep)
       {
-        fprintf(stderr,"Error reading '%s' in year %d.\n",argv[3],header2.firstyear+i);
+        fprintf(stderr,"Error reading '%s' in year %d.\n",argv[iarg+2],header2.firstyear+i);
         return EXIT_FAILURE;
       }
       for(j=0;j<header2.ncell;j++)
@@ -308,7 +311,7 @@ int main(int argc,char **argv)
         else
         {
           if(fwrite(idata+index[j]*header.nbands*header.nstep,sizeof(int),header.nbands*header.nstep,file)!=header.nbands*header.nstep)
-            fprintf(stderr,"Error writing file '%s: %s.\n",argv[4],strerror(errno));
+            fprintf(stderr,"Error writing file '%s: %s.\n",argv[iarg+3],strerror(errno));
         }
       }
     }
@@ -317,7 +320,7 @@ int main(int argc,char **argv)
     {
       if(freadshort(data,(long long)header.ncell*header.nbands*header.nstep,swap,data_file)!=(long long)header.ncell*header.nbands*header.nstep)
       {
-        fprintf(stderr,"Error reading '%s' in year %d.\n",argv[3],header2.firstyear+i);
+        fprintf(stderr,"Error reading '%s' in year %d.\n",argv[iarg+2],header2.firstyear+i);
         return EXIT_FAILURE;
       }
       for(j=0;j<header2.ncell;j++)
@@ -327,11 +330,34 @@ int main(int argc,char **argv)
         else
         {
           if(fwrite(data+index[j]*header.nbands*header.nstep,sizeof(short),header.nbands*header.nstep,file)!=header.nbands*header.nstep)
-            fprintf(stderr,"Error writing file '%s: %s.\n",argv[4],strerror(errno));
+            fprintf(stderr,"Error writing file '%s: %s.\n",argv[iarg+3],strerror(errno));
         }
       }
     }
   fclose(file);
   fclose(data_file);
+  if(isjson)
+  {
+    out_json=malloc(strlen(argv[iarg+3])+strlen(JSON_SUFFIX)+1);
+    if(out_json==NULL)
+    {
+      printallocerr("filename");
+      return EXIT_FAILURE;
+    }
+    strcat(strcpy(out_json,argv[iarg+3]),JSON_SUFFIX);
+    arglist=catstrvec(argv,argc);
+    file=fopen(out_json,"w");
+    if(file==NULL)
+    {
+      printfcreateerr(out_json);
+      return EXIT_FAILURE;
+    }
+    if(data_version<4)
+      header2.nbands/=header2.nstep;
+    grid_name.name=argv[iarg+1];
+    grid_name.fmt=CLM;
+    fprintjson(file,argv[iarg+3],NULL,NULL,arglist,&header2,NULL,NULL,NULL,0,NULL,NULL,NULL,NULL,&grid_name,grid_type,CLM,id,FALSE,data_version);
+    fclose(file);
+  }
   return EXIT_SUCCESS;
 } /* of 'main' */
