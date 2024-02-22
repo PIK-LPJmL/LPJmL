@@ -507,10 +507,6 @@ Bool fscanconfig(Config *config,    /**< LPJ configuration */
         return TRUE;
       if(fscankeywords(file,&config->tillage_type,"tillage_type",tillage,3,TRUE,verbose))
         return TRUE;
-      if(config->tillage_type)
-      {
-        fscanint2(file,&config->till_startyear,"till_startyear");
-      }
       if(fscankeywords(file,&config->residue_treatment,"residue_treatment",residue_treatment,3,TRUE,verbose))
         return TRUE;
     }
