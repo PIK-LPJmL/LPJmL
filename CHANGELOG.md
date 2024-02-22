@@ -19,6 +19,46 @@ of `major.minor.patch` with
 
 ## [Unreleased]
 
+## [5.8.5] - 2024-02-22
+
+- author: Stephen Wirth (wirth@pik-potsdam.de), Werner von Bloh Schaphoff (bloh@pik-potsdam.de)
+
+### Fixed
+
+- Divsion by zero avoided for calculation of `nc_ratio` in `ndemand_tree.c` and `ndemand_grass.c` (issue #341).
+- Default directory for input files to current directory set and directory created in `regridlpj`.
+- Correct id 11 set for `"tamp"` input in `input.cjson` (issue #347).
+
+### Changed
+
+- Hard coded CFT indices (e.g. `MAIZE`) have been replaced by their names.
+- Datatype of `bmgr_harvest_day_nh` and ` bmgr_harvest_day_nh` changed to `int`.
+- Function `freadseed()` used in `freadrestartheader.c`.
+
+### Added
+
+- Man page for `regridclm` and `regridsoil` added.
+- New keywords `"cft_fertday_temp"` and `"cft_fertday_tropic"` added in `lpjparam.cjson`to specify the CFT names where the fertilizer application dates are taken from for grasslands.
+- Missing filename of tillage input added to `lpjfiles` utility.
+- Option `-h` added to `lpjsubmit`. Options `-v` and `-l` added to `configure.sh`.
+- New keyword `"error_limits"` defined in `lpjparam.cjson` to set maximum balance errors allowed in simulation:
+
+```java
+ "error_limits" :
+    {
+      "carbon" : 1.0,       /* maximum error in local carbon balance (gC/m2) */
+      "nitrogen" : 0.2,     /* maximum error in local nitrogen balance (gN/m2) */
+      "water_local" : 1.5,  /* maximum error in local water balance (mm) */
+      "water_global" : 1e-3 /* maximum error in global water balance (mm) */
+    },
+```
+### Removed
+
+- Option `--propagate` removed from `srun` in `lpjsubmit_slurm`.
+- Hard-coded parameter `k_l` removed in `littersom.c`.
+- Parameter `"residues_in_soil_notillage" removed.
+- Keyword in `"till_startyear"` removed from `lpjml_config.cjson`.
+
 ## [5.8.4] - 2024-01-22
 
 ### Contributors
