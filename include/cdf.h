@@ -138,7 +138,7 @@ extern Bool create_pft_netcdf(Netcdf *,const char *,int,int,int,const char *,con
                               const char *,const char *,Type,int,int,
                               int,Bool,const Coord_array *,const Config *);
 extern Bool close_netcdf(Netcdf *);
-extern Bool flush_netcdf(Netcdf *);
+extern void flush_netcdf(Netcdf *);
 extern Bool readclimate_netcdf(Climatefile *,Real *,const Cell *,int,
                                const Config *);
 extern int checkvalidclimate_netcdf(Climatefile *,Cell *,int,const Config *);
