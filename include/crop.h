@@ -147,7 +147,6 @@ extern void litter_update_crop(Litter *,Pft *,Real,const Config *);
 extern Real lai_crop(const Pft *);
 extern Real actual_lai_crop(const Pft *);
 extern Bool phenology_crop(Pft *,Real,Real,Real,int,const Config *);
-extern void laimax_manage(Manage *,const Pftpar [],int,int,int);
 extern Bool fwrite_crop(FILE *,const Pft *);
 extern void fprint_crop(FILE *,const Pft *,int);
 extern Bool fread_crop(FILE *,Pft *,Bool,Bool);

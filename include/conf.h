@@ -45,9 +45,8 @@
 #define GRASS_FIXED_PFT 1
 #define NO_GRASS_FIXED_PFT 0
 #define LAIMAX_CFT 0
-#define LAIMAX_INTERPOLATE 1
-#define CONST_LAI_MAX 2
-#define LAIMAX_PAR 3
+#define CONST_LAI_MAX 1
+#define LAIMAX_PAR 2
 #define NO_NITROGEN 0
 #define LIM_NITROGEN 1
 #define UNLIM_NITROGEN 2

@@ -194,7 +194,7 @@ Real water_stressed(Pft *pft,                  /**< [inout] pointer to PFT varia
     data.b=pft->par->b;
     data.co2=ppm2Pa(co2);
     data.compvm=FALSE;
-    data.apar=par*(1-getpftpar(pft, albedo_leaf))*alphaa(pft,config->with_nitrogen,config->laimax_interpolate)*fpar(pft); /** par calculation do not include albedo*/
+    data.apar=par*(1-getpftpar(pft, albedo_leaf))*alphaa(pft,config->with_nitrogen,config->laimax_manage)*fpar(pft); /** par calculation do not include albedo*/
     data.daylength=daylength;
     data.vmax=pft->vmax;
     lambda=bisect((Bisectfcn)fcn,0.02,LAMBDA_OPT+0.05,&data,0,EPSILON,30,&iter);

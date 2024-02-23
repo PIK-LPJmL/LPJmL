@@ -126,7 +126,7 @@ struct config
   char *compress_suffix; /**< suffix for compressed output files */
   char csv_delimit;      /**< delimiter of CSV files */
   int n_out;     /**< number of output files */
-  int laimax_interpolate;
+  int laimax_manage;
   Real laimax;        /**< maximum LAI for benchmark */
   Bool withdailyoutput; /**< with daily output (TRUE/FALSE) */
   int pft_residue;

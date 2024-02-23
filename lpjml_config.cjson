@@ -101,7 +101,7 @@
   "residue_treatment" : "read_residue_data", /* residue options: "read_residue_data" (requires input dataset on fraction to remain on field), "no_residue_remove" (all non-harvested plant components to litter), "fixed_residue_remove" (fraction of non-harvested above ground biomass to remain in soil according to param residues_in_soil) */
   "residues_fire" : false,              /* enables burning of residuals on cropland - non-functional? */
   "irrigation" : "lim",                 /* options: "no", "lim", "pot", "all" */
-  "laimax_interpolate" : "laimax_par",  /* laimax settings, options:  "laimax_par" (values from pft.cjson), "laimax_cft" (values from manage_irrig_*.cjson), "const_lai_max" (constant values set in flag laimax), "laimax_interpolate" (interpolates laimin and laimax based on values from pft.cjson - non-functional?) */
+  "laimax_manage" : "laimax_par",       /* laimax settings, options:  "laimax_par" (values from pft.cjson), "laimax_cft" (values from manage_irrig_*.cjson), "laimax_const" (constant values set in flag laimax) */
   "laimax" : 5,                         /* maximum LAI for laimax_interpolate = "const_lai_max" */
   "tillage_type" : "read",               /* Options: "all" (all agr. cells tilled), "no" (no cells tilled) and "read" (tillage dataset used) */
   "till_fallow" : false,                /* tillage on */

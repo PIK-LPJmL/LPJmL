@@ -15,21 +15,17 @@
 #include "lpj.h"
 #include "crop.h"
 
-Bool initmanage(Manage *manage,               /**< pointer to management data */
-                const Countrypar *countrypar, /**< pointer to country param */
-                const Regionpar *regionpar,   /**< pointer to region param */
-                const Pftpar *pftpar,         /**< PFT parameter array */
-                int npft,                     /**< number of natural PFTs */
-                int nagtree,
-                int ncft,                     /**< number of crop PFts */
-                int laimax_opt,               /**< Option for maximm LAI setting */
-                Real laimax                   /**< maximum LAI */
-               )                              /** \return TRUE on error */
+Bool initmanage(Manage *manage,      /**< pointer to management data */
+                Code code,           /**< country and region code */
+                int npft,            /**< number of natural PFTs */
+                int ncft,            /**< number of crop PFts */
+                const Config *config /**< LPJmL configuration */
+               )                     /** \return TRUE on error */
 {
   const Pftcroppar *croppar;
   int cft;
-  manage->par=countrypar;    
-  manage->regpar=regionpar;
+  manage->par=config->countrypar+code.country;    
+  manage->regpar=config->regionpar+code.region;
   if(manage->par->laimax_cft==NULL)
   {
     manage->laimax=newvec2(Real,npft,npft+ncft-1);  /* allocate memory for country-specific laimax*/
@@ -41,15 +37,15 @@ Bool initmanage(Manage *manage,               /**< pointer to management data */
   }
   else
     manage->laimax=manage->par->laimax_cft-npft;  /* set pointer to country specific laimax */
-  manage->k_est = manage->par->k_est - npft + nagtree; /* set pointer to country specific k_est */
+  manage->k_est = manage->par->k_est - npft + config->nagtree; /* set pointer to country specific k_est */
 
-  if(laimax_opt==CONST_LAI_MAX)
+  if(config->laimax_manage==CONST_LAI_MAX)
     for(cft=0;cft<ncft;cft++)
-      manage->laimax[npft+cft]=laimax;
-  else if(laimax_opt==LAIMAX_PAR)
+      manage->laimax[npft+cft]=config->laimax;
+  else if(config->laimax_manage==LAIMAX_PAR)
     for(cft=0;cft<ncft;cft++)
     {
-      croppar=pftpar[npft+cft].data;
+      croppar=config->pftpar[npft+cft].data;
       manage->laimax[npft+cft]=croppar->laimax;
     }
   return FALSE;

@@ -149,9 +149,7 @@ static Bool printgrid(Config *config, /* Pointer to LPJ configuration */
           grid.ml.manage.regpar=NULL;
       }
       else
-        initmanage(&grid.ml.manage,config->countrypar+code.country,
-                   config->regionpar+code.region,config->pftpar,npft,config->nagtree,ncft,
-                   config->laimax_interpolate,config->laimax);
+        initmanage(&grid.ml.manage,code,npft,ncft,config);
     }
     else
     {

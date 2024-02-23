@@ -31,8 +31,6 @@ typedef struct
   int id;     /* country id (0-196)*/
   char *name; /* country name */
   IrrigationType default_irrig_system; /* default irrig system at country-level (SURF=1,SPRINK=2,DRIP=3), used for ALLCROPS or ALL_IRRIGATION */
-  Real laimax_tempcer;  /*laimax for temperate cereals*/
-  Real laimax_maize;    /*laimax for maize*/
   /* parameters defined for each country */
   Real *laimax_cft;  /* pointer to crop-specific laimax */
   Real *k_est;
@@ -66,8 +64,8 @@ extern int fscanregionpar(LPJfile *,Regionpar **,Verbosity);
 extern int fscantreedens(LPJfile *,Countrypar *,int,Verbosity,const Config *);
 extern void fprintcountrypar(FILE *,const Countrypar *,int,int,const Config *);
 extern void fprintregionpar(FILE *,const Regionpar[],int);
-extern Bool initmanage(Manage *, const Countrypar *, const Regionpar *,const Pftpar *,int,
-                       int,int,int,Real);
+extern Bool initmanage(Manage *, Code,int,
+                       int,const Config *);
 extern void freemanage(Manage *,int);
 extern FILE *opencountrycode(const Filename *,Bool *,Type *,size_t *,Bool);
 extern FILE *createcountrycode(const char *,int,int);

@@ -182,7 +182,7 @@ Bool fscanconfig(Config *config,    /**< LPJ configuration */
   const char *soilpar_option[]={"no_fixed_soilpar","fixed_soilpar","prescribed_soilpar"};
   const char *wateruse[]={"no","yes","all"};
   const char *prescribe_landcover[]={"no_landcover","landcoverest","landcoverfpc"};
-  const char *laimax_interpolate[]={"laimax_cft","laimax_interpolate","const_lai_max","laimax_par"};
+  const char *laimax_manage[]={"laimax_cft","laimax_const","laimax_par"};
   const char *fdi[]={"nesterov","wvpd"};
   const char *nitrogen[]={"no","lim","unlim"};
   const char *tillage[]={"no","all","read"};
@@ -469,9 +469,9 @@ Bool fscanconfig(Config *config,    /**< LPJ configuration */
         return TRUE;
       if(fscanbool(file,&config->rw_manage,"rw_manage",TRUE,verbose))
         return TRUE;
-      if(fscankeywords(file,&config->laimax_interpolate,"laimax_interpolate",laimax_interpolate,4,FALSE,verbose))
+      if(fscankeywords(file,&config->laimax_manage,"laimax_manage",laimax_manage,3,FALSE,verbose))
         return TRUE;
-      if(config->laimax_interpolate==CONST_LAI_MAX)
+      if(config->laimax_manage==CONST_LAI_MAX)
         fscanreal2(file,&config->laimax,"laimax");
       if (fscanbool(file, &config->others_to_crop, "others_to_crop", TRUE, verbose))
         return TRUE;
@@ -653,7 +653,7 @@ Bool fscanconfig(Config *config,    /**< LPJ configuration */
   if(config->withlanduse!=NO_LANDUSE)
   {
     /* landuse enabled */
-    if((config->ncountries=fscancountrypar(file,&config->countrypar,config->npft[GRASS]+config->npft[TREE],(config->laimax_interpolate==LAIMAX_CFT) ? config->npft[CROP] : 0,verbose,config))==0)
+    if((config->ncountries=fscancountrypar(file,&config->countrypar,config->npft[GRASS]+config->npft[TREE],(config->laimax_manage==LAIMAX_CFT) ? config->npft[CROP] : 0,verbose,config))==0)
     {
       if(verbose)
         fputs("ERROR230: Cannot read country parameter 'countrypar'.\n",stderr);

@@ -131,8 +131,6 @@ int fscancountrypar(LPJfile *file,           /**< pointer to LPJ file */
     else
     {
       country->laimax_cft=NULL;
-      fscanreal2(verb,item,&country->laimax_tempcer,"laimax_tempcer",country->name);
-      fscanreal2(verb,item,&country->laimax_maize,"laimax_maize",country->name);
     }
     if(fscankeywords(item,(int *)&country->default_irrig_system,"default_irrig_system",irrigsys,4,FALSE,verb))
     {

@@ -69,8 +69,6 @@ void iterateyear(Outputfile *output,  /**< Output file data */
         if(grid[cell].lakefrac<1)
         {
           /* calculate landuse change */
-          if(config->laimax_interpolate==LAIMAX_INTERPOLATE)
-            laimax_manage(&grid[cell].ml.manage,config->pftpar+npft,npft,ncft,year);
           if(year>config->firstyear-config->nspinup || config->from_restart)
             landusechange(grid+cell,npft,ncft,intercrop,year,config);
           else if(grid[cell].ml.dam)

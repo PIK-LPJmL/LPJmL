@@ -464,18 +464,13 @@ void fprintconfig(FILE *file,          /**< File pointer to text output file */
       len+=fprintf(file,", ");
       len=fputstring(file,len,"fire in residuals",78);
     }
-    if(config->laimax_interpolate==LAIMAX_INTERPOLATE)
-    {
-      len+=fprintf(file,", ");
-      len=fputstring(file,len,"interpolated LAImax",78);
-    }
-    else if(config->laimax_interpolate==CONST_LAI_MAX)
+    if(config->laimax_manage==CONST_LAI_MAX)
     {
       len+=fprintf(file,", ");
       snprintf(s,STRING_LEN,"const LAImax=%.1f",config->laimax);
       len=fputstring(file,len,s,78);
     }
-    else if(config->laimax_interpolate==LAIMAX_PAR)
+    else if(config->laimax_manage==LAIMAX_PAR)
     {
       len+=fprintf(file,", ");
       len=fputstring(file,len,"pft.cjson LAImax",78);
