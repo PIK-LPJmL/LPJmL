@@ -54,6 +54,17 @@ int main(int argc,char **argv)
   }
   if(ismeta)
   {
+    header1.scalar=1;
+    header1.cellsize_lon=header1.cellsize_lat=0.5;
+    header1.firstyear=1901;
+    header1.firstcell=0;
+    header1.nyear=1;
+    header1.nbands=1;
+    header1.nstep=1;
+    header1.timestep=1;
+    header1.datatype=LPJ_FLOAT;
+    header1.order=CELLSEQ;
+    header1.scalar=1;
     file1=openmetafile(&header1,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,&swap1,&offset,argv[iarg],TRUE);
     if(file1==NULL)
       return EXIT_FAILURE;
@@ -62,6 +73,17 @@ int main(int argc,char **argv)
       fprintf(stderr,"Error seeking in '%s' to offset %lu.\n",argv[iarg],offset);
       return EXIT_FAILURE;
     }
+    header2.scalar=1;
+    header2.cellsize_lon=header2.cellsize_lat=0.5;
+    header2.firstyear=1901;
+    header2.firstcell=0;
+    header2.nyear=1;
+    header2.nbands=1;
+    header2.nstep=1;
+    header2.timestep=1;
+    header2.datatype=LPJ_FLOAT;
+    header2.order=CELLSEQ;
+    header2.scalar=1;
     file2=openmetafile(&header2,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,&swap2,&offset,argv[iarg+1],TRUE);
     if(file2==NULL)
       return EXIT_FAILURE;
