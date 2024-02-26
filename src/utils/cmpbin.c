@@ -65,7 +65,7 @@ int main(int argc,char **argv)
     header1.datatype=LPJ_FLOAT;
     header1.order=CELLSEQ;
     header1.scalar=1;
-    file1=openmetafile(&header1,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,&swap1,&offset,argv[iarg],TRUE);
+    file1=openmetafile(&header1,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,&swap1,&offset,argv[iarg],TRUE);
     if(file1==NULL)
       return EXIT_FAILURE;
     if(fseek(file1,offset,SEEK_CUR))
@@ -84,7 +84,7 @@ int main(int argc,char **argv)
     header2.datatype=LPJ_FLOAT;
     header2.order=CELLSEQ;
     header2.scalar=1;
-    file2=openmetafile(&header2,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,&swap2,&offset,argv[iarg+1],TRUE);
+    file2=openmetafile(&header2,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,&swap2,&offset,argv[iarg+1],TRUE);
     if(file2==NULL)
       return EXIT_FAILURE;
     if(fseek(file2,offset,SEEK_CUR))

@@ -140,7 +140,7 @@ int main(int argc,char **argv)
       header.datatype=datatype;
       header.order=CELLYEAR;
       header.scalar=scale;
-      file=openmetafile(&header,NULL,NULL,NULL,NULL,NULL,NULL,NULL,&unit,NULL,NULL,NULL,NULL,&swap,&offset,argv[i],TRUE);
+      file=openmetafile(&header,NULL,NULL,NULL,NULL,NULL,NULL,NULL,&unit,NULL,NULL,NULL,NULL,NULL,&swap,&offset,argv[i],TRUE);
       if(file==NULL)
         continue;
       if(fseek(file,offset,SEEK_CUR))

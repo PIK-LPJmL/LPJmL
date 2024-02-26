@@ -195,8 +195,8 @@ $(BIN)/printharvest$E: printharvest.$O $(LPJLIBS)
 $(BIN)/regridsoil$E: regridsoil.$O $(LIBDIR)/libtools.$A
 	$(LINK) $(LNOPTS)$(BIN)/regridsoil$E regridsoil.$O $(LIBDIR)/libtools.$A $(LIBS)
 
-$(BIN)/mathclm$E: mathclm.$O $(LIBDIR)/libtools.$A
-	$(LINK) $(LNOPTS)$(BIN)/mathclm$E mathclm.$O $(LIBDIR)/libtools.$A
+$(BIN)/mathclm$E: mathclm.$O $(LPJLIBS)
+	$(LINK) $(LNOPTS)$(BIN)/mathclm$E mathclm.$O $(LPJLIBS) $(LIBS)
 
 $(BIN)/cutclm$E: cutclm.$O $(LIBDIR)/libtools.$A
 	$(LINK) $(LNOPTS)$(BIN)/cutclm$E cutclm.$O $(LIBDIR)/libtools.$A

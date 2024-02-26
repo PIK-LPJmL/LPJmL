@@ -3,13 +3,22 @@
 mathclm \- performs mathematical operations with clm files
 .SH SYNOPSIS
 .B mathclm
-[\-longheader] [-type {byte|short|int|float|double}] {add|sub|mul|div|avg|max|min|repl|float|int} \fIinfile1.clm\fP [{\fIinfile2.clm\fP|value}] \fIoutfile.clm\fP
+[\-longheader] [-raw] [-json] [-metafile] [-type {byte|short|int|float|double}] {add|sub|mul|div|avg|max|min|repl|float|int} \fIinfile1.clm\fP [{\fIinfile2.clm\fP|value}] \fIoutfile.clm\fP
 .SH DESCRIPTION
-Program cuts climate data files in clm format.
+Program performs mathematical operations on clm files.
 .SH OPTIONS
 .TP
 \-longheader
-Long (version 2) header assumed for clm files
+Long (version 2) header assumed for clm files.
+.TP
+\-raw
+Input files are in raw binary format.
+-TP
+\-json
+Additional JSON metafile written.
+.TP
+\-metafile
+Files are JSON metafiles describing the structure of the data. An additional JSON metafile with suffix \fI.json\fP is written. Output file is written in raw binary format.
 .TP
 -type {byte|short|int|float|double}
 Set datatype of clm file. Default is short.
@@ -18,13 +27,13 @@ add|sub|mul|div|avg|max|min|repl|float|int
 Mathematical operation to be performed
 .TP
 .I infile1.clm
-First argument of operation
+First argument of operation. Must be a filename
 .TP
 .I infile2.clm|value
 Second optional argument of operation. Can be a filename or a numerical value
 .TP
 .I outfile.clm
-Filename of clm file results of mathematical operation are stored
+Filename of clm file where the results of the mathematical operation are written
 .SH EXAMPLE
 .TP
 Add data of 2 files
@@ -36,7 +45,7 @@ Convert data of file to float
 float infile.clm outfile.clm
 .TP
 Set minimum value of data to zero
-.B matchlm
+.B mathclm
 max infile.clm 0 outfile.clm
 .PP
 .SH EXIT STATUS
