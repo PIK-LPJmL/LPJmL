@@ -19,7 +19,7 @@ of `major.minor.patch` with
 
 ## [Unreleased]
 
-## [5.8.5] - 2024-02-22
+## [5.8.5] - 2024-02-26
 
 - author: Stephen Wirth (wirth@pik-potsdam.de), Werner von Bloh Schaphoff (bloh@pik-potsdam.de)
 
@@ -28,6 +28,7 @@ of `major.minor.patch` with
 - Divsion by zero avoided for calculation of `nc_ratio` in `ndemand_tree.c` and `ndemand_grass.c` (issue #341).
 - Default directory for input files to current directory set and directory created in `regridlpj`.
 - Correct id 11 set for `"tamp"` input in `input.cjson` (issue #347).
+- Correct filename used in error message in utility `mathclm`.
 
 ### Changed
 
