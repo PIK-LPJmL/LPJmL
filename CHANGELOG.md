@@ -19,9 +19,10 @@ of `major.minor.patch` with
 
 ## [Unreleased]
 
-## [5.8.5] - 2024-02-26
+## [5.8.6] - 2024-02-27
 
 - author: Stephen Wirth (wirth@pik-potsdam.de), Werner von Bloh Schaphoff (bloh@pik-potsdam.de)
+- code review: Johanna Braun (jobraun@pik-potsdam.de)
 
 ### Fixed
 
@@ -59,6 +60,24 @@ of `major.minor.patch` with
 - Hard-coded parameter `k_l` removed in `littersom.c`.
 - Parameter `"residues_in_soil_notillage" removed.
 - Keyword in `"till_startyear"` removed from `lpjml_config.cjson`.
+
+
+## [5.8.5] - 2024-01-31
+
+### Contributors
+
+- author: Christoph Mueller (cmueller@pik-potsdam.de) and the entire LPJmL team
+- code review: Boris Sakschewski (borissa@pik-potsdam.de), Fabian Stenzel (stenzel@pik-potsdam.de)
+
+### Added
+
+- added `.zenodo.json` for interaction with zenodo archives
+- added CITATION.cff file
+
+### Changed
+
+- updated AUTHORS file
+>>>>>>> cd474087a67f80593980406264a894045a1f882d
 
 ## [5.8.4] - 2024-01-22
 
