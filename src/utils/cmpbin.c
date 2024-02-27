@@ -95,25 +95,25 @@ int main(int argc,char **argv)
     if(header1.nyear!=header2.nyear)
     {
       fprintf(stderr,"Number of years in '%s'=%d differs from number of years in '%s'=%d.\n",
-              argv[iarg],header1.nyear,argv[iarg+1],header1.nyear);
+              argv[iarg],header1.nyear,argv[iarg+1],header2.nyear);
       header1.nyear=min(header1.nyear,header2.nyear);
     }
     if(header1.ncell!=header2.ncell)
     {
       fprintf(stderr,"Number of cells in '%s'=%d differs from number of cells in '%s'=%d.\n",
-              argv[iarg],header1.ncell,argv[iarg+1],header1.ncell);
+              argv[iarg],header1.ncell,argv[iarg+1],header2.ncell);
       return EXIT_FAILURE;
     }
     if(header1.nbands!=header2.nbands)
     {
       fprintf(stderr,"Number of bands in '%s'=%d differs from number of bands in '%s'=%d.\n",
-              argv[iarg],header1.nbands,argv[iarg+1],header1.nbands);
+              argv[iarg],header1.nbands,argv[iarg+1],header2.nbands);
       return EXIT_FAILURE;
     }
     if(header1.nstep!=header2.nstep)
     {
       fprintf(stderr,"Number of steps in '%s'=%d differs from number of steps in '%s'=%d.\n",
-              argv[iarg],header1.nstep,argv[iarg+1],header1.nstep);
+              argv[iarg],header1.nstep,argv[iarg+1],header2.nstep);
       return EXIT_FAILURE;
     }
     if(header1.datatype!=LPJ_FLOAT)
