@@ -96,6 +96,7 @@ Real daily_agriculture_tree(Stand *stand,                /**< stand pointer */
     flux_estab=establishment(pft,0,0,1);
     getoutput(output,FLUX_ESTABC,config)+=flux_estab.carbon*stand->frac;
     getoutput(output,FLUX_ESTABN,config)+=flux_estab.nitrogen*stand->frac;
+    getoutput(output,FLUX_ESTABN_MG,config)+=flux_estab.nitrogen*stand->frac;
     stand->cell->balance.flux_estab.carbon+=flux_estab.carbon*stand->frac;
     stand->cell->balance.flux_estab.nitrogen+=flux_estab.nitrogen*stand->frac;
     stand->growing_days=0;

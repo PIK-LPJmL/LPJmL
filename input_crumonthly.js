@@ -54,6 +54,7 @@
   "residue_on_field" : { "id" : 8, "fmt" : "clm", "name" : "/p/projects/lpjml/input/MADRAT/residues_madrat_1850-2015_16bands.clm"},
 //  "sdate" : { "id" : 28,"fmt" : "clm", "name" : "/p/projects/lpjml/input/historical/input_VERSION2/sdate_combined_filled.clm"}, /* insert prescribed sdate file name here */
   "sdate" : { "id" : 28,"fmt" : "clm", "name" : "/p/projects/landuse/users/cmueller/GGCMI/crop_calendar/GGCMI_CTWN_planting_v1.25.clm2"},
+  "crop_phu" : {"fmt" : "clm", "name" : "dummy location"},  /* insert prescribed phu file name here */
   "grassland_fixed_pft" : { "id" : 29, "fmt" : "raw", "name" : "/home/rolinski/LPJ/Newinput/scenario_MO0.bin"},
   //"landuse" :      { "id" : 6, "fmt" : "clm",  "name" : "input_VERSION2/cft1700_2005_irrigation_systems_64bands.bin"},
   //"fertilizer_nr" : { "id" : 18, "fmt" : "clm",  "name" : "input_VERSION2/fertilizer_ggcmi.clm2"},
