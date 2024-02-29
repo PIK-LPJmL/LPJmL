@@ -26,7 +26,7 @@ typedef struct
 
 typedef struct
 {
-  Error_limit error_limit; /**< limits for balance errors ti stop simulation*/
+  Error_limit error_limit; /**< limits for balance errors to stop simulation */
   Real minlandfrac; /**< minimum land area fraction */
   Real tinyfrac;    /**< minimum land-use fraction used by all_crops */
   Real k_litter10;
