@@ -24,6 +24,10 @@ of `major.minor.patch` with
 - author: Christoph  Mueller (cmueller@pik-potsdam.de)
 - code review:
 
+### Fixed
+
+- missing family names added in CITATION.cff
+
 ### Changed
 
 - renamed `double_harvest.c` to `separate_harvests.c` and `update_double_harvest.c` to `update_separate_harvests.c` and changed entries in Makefiles accordingly
