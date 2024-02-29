@@ -5,8 +5,8 @@
 ##                                                                             ##
 ##   configure script to copy appropriate Makefile.$osname                     ##
 ##                                                                             ##
-##   Usage: configure.sh [-h] [-prefix dir] [-debug] [-check] [-nompi]         ##
-##                       [-Dmacro[=value] ...]                                 ##
+##   Usage: configure.sh [-h] [-v] [-l] [-prefix dir] [-debug] [-check]        ##
+##                       [-nompi] [-Dmacro[=value] ...]                        ##
 ##                                                                             ##
 ## (C) Potsdam Institute for Climate Impact Research (PIK), see COPYRIGHT file ##
 ## authors, and contributors see AUTHORS file                                  ##
@@ -15,18 +15,22 @@
 ## Contact: https://github.com/PIK-LPJmL/LPJmL                                 ##
 #################################################################################
 
+USAGE="Usage: $0 [-h] [-v] [-l] [-prefix dir] [-debug] [-nompi] [-check] [-Dmacro[=value] ...]"
 debug=0
 nompi=0
 prefix=$PWD
 macro=""
 while(( "$#" )); do
   case "$1" in
-    -h)
+    -h|--help)
       echo $0 - configure LPJmL $(cat VERSION)
-      echo Usage: $0 [-h] [-prefix dir] [-debug] [-nompi] [-check] [-Dmacro[=value] ...]
+      echo
+      echo $USAGE
       echo
       echo Arguments:
-      echo "-h              print this help text"
+      echo "-h,--help       print this help text"
+      echo "-v,--version    print version"
+      echo "-l,--license    print license"
       echo "-prefix dir     set installation directory for LPJmL. Default is current directory"
       echo "-debug          set debug flags and disable optimization"
       echo "-check          set debug flags, enable pointer checking and disable optimization"
@@ -35,13 +39,23 @@ while(( "$#" )); do
       echo
       echo After successfull completion of $0 LPJmL can be compiled by make all
       echo Invoke make clean after change in configuration
+      echo -e "\nSee LICENSE file or invoke $0 -l to print license"
+      echo -e "\n(C) Potsdam Institute for Climate Impact Research (PIK), see COPYRIGHT file"
+      exit 0
+      ;;
+    -l|--license)
+      more LICENSE
+      exit 0
+      ;;
+    -v|--version)
+      cat VERSION
       exit 0
       ;;
     -prefix)
       if [ $# -lt 2 ]
       then
         echo >&2 Error: prefix directory missing
-        echo >&2 Usage: $0 [-h] [-prefix dir] [-debug] [-nompi] [-check] [-Dmacro[=value] ...]
+        echo >&2 $USAGE
         exit 1
       fi
       prefix=$2
@@ -65,19 +79,19 @@ while(( "$#" )); do
       ;;
     -*)
       echo >&2 Invalid option $1
-      echo >&2 Usage: $0 [-h] [-prefix dir] [-debug] [-nompi] [-check] [-Dmacro[=value] ...]
+      echo >&2 $USAGE
       exit 1
       ;;
     *)
       echo >&2 Invalid argument $1
-      echo >&2 Usage: $0 [-h] [-prefix dir] [-debug] [-nompi] [-check] [-Dmacro[=value] ...]
+      echo >&2 $USAGE
       exit 1
       ;;
   esac
 done
 
 echo Configuring LPJmL $(cat VERSION)...
-        
+
 osname=$(uname)
 
 if test -d /p ;
@@ -97,7 +111,7 @@ then
     then
       cp config/Makefile.intel Makefile.inc
     elif which gcc >/dev/null 2>/dev/null ;
-    then 
+    then
       cp config/Makefile.gcc Makefile.inc
     else
       echo >&2 Error: No gcc found
@@ -117,7 +131,7 @@ then
          echo SLURM found
          ln -sf lpjsubmit_slurm bin/lpjsubmit
       else
-         echo >2 No batch system found 
+         echo >2 No batch system found
       fi
     elif which mpicc >/dev/null 2>/dev/null ;
     then
@@ -125,10 +139,10 @@ then
       ln -sf lpjsubmit_mpich bin/lpjsubmit
       echo MPICH found
     elif which icc >/dev/null 2>/dev/null ;
-    then 
+    then
       cp config/Makefile.intel Makefile.inc
     elif which gcc >/dev/null 2>/dev/null ;
-    then 
+    then
       cp config/Makefile.gcc Makefile.inc
     else
       echo >&2 Error: No gcc found
@@ -165,7 +179,7 @@ then
     fi
   fi
   echo Create executables with make all
-elif [ "$osname" = "AIX" ] 
+elif [ "$osname" = "AIX" ]
 then
   echo  Operating system is AIX
   if [ "$nompi" = "1" ]

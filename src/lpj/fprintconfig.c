@@ -429,10 +429,25 @@ void fprintconfig(FILE *file,          /**< File pointer to text output file */
       len+=fprintf(file,", ");
       len=fputstring(file,len,"land-use change timber",78);
     }
-    if(config->tillage_type)
+    if(config->residue_treatment==FIXED_RESIDUE_REMOVE)
     {
-      snprintf(s,STRING_LEN,"with tillage at year %d",config->till_startyear);
-      len=printsim(file,len,&count,s);
+      len+=fprintf(file,", ");
+      len=fputstring(file,len,"fixed residue remove",78);
+    }
+    else if(config->residue_treatment==READ_RESIDUE_DATA)
+    {
+      len+=fprintf(file,", ");
+      len=fputstring(file,len,"residue remove read from file",78);
+    }
+    if(config->tillage_type==TILLAGE)
+    {
+      len+=fprintf(file,", ");
+      len=fputstring(file,len,"with tillage",78);
+    }
+    else if(config->tillage_type==READ_TILLAGE)
+    {
+      len+=fprintf(file,", ");
+      len=fputstring(file,len,"with tillage read from file",78);
     }
     if (config->crop_resp_fix)
     {

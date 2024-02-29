@@ -5,10 +5,10 @@ cdf2coord \- extract CLM grid from NetCDF file
 .B cdf2coord
 [\-var name] [\-index i] [\-float] [\-scale s]  netcdffile gridfile
 .SH DESCRIPTION
-Program extracts grid file in CLM format from  NetCDF input data. All cells with valid input will be put in the grid file. 
+Program extracts grid file in CLM format from NetCDF input data. All cells with valid input will be put in the grid file.
 .SH OPTIONS
 .TP
-\-var name 
+\-var name
 variable name in NetCDF file
 .TP
 \-index i
@@ -20,15 +20,15 @@ scaling factor for CLM grid file. Default is 0.01
 \-float
 write float values in CLM grid file, default is short
 .TP
-.I netcdffile     
+.I netcdffile
 filename of NetCDF file
-.I gridfile    
+.I gridfile
 filename of grid data file written
 .SH EXAMPLES
 .TP
 Create coord file from temperatureo data file:
 .B cdf2coord
--var tas -o temp1901-2010.nc  grid.clm
+-var tas -o temp1901-2010.nc grid.clm
 .PP
 .SH EXIT STATUS
 .B cdf2coord
