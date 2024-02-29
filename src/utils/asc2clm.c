@@ -65,14 +65,14 @@ int main(int argc,char **argv)
   for(i=1;i<argc;i++)
     if(argv[i][0]=='-')
     {
-      if(!strcmp(argv[i],"-h"))
+      if(!strcmp(argv[i],"-h") || !strcmp(argv[i],"--help"))
       {
         printf("   asc2clm (" __DATE__ ") help\n"
                "   ==========================\n\n"
                "Convert gridded ASCII files to clm data files for LPJmL version " LPJ_VERSION "\n\n"
                USAGE
                "\nArguments:\n"
-               "-h           print this help text\n"
+               "-h,--help    print this help text\n"
                "-f           force overwrite of output file\n"
                "-firstyear y first year, default is %d\n"
                "-grid file   create grid file\n" 

@@ -22,7 +22,7 @@ int main(int argc,char **argv)
   float *data;
   float *data_sum;
   size_t offset;
-  int i,j,ngrid,iarg,nitem,nsum,nyear,version;
+  int i,j,ngrid,iarg,nitem,nsum,nyear,version,format;
   char *endptr;
   char *map_name=BAND_NAMES;
   char *arglist;
@@ -143,6 +143,11 @@ int main(int argc,char **argv)
     fclose(file);
     iarg++;
   }
+  if(!strcmp(argv[iarg],argv[iarg+1]))
+  {
+    fputs("Error: source and destination filename are the same.\n",stderr);
+    return EXIT_FAILURE;
+  }
   if(!ismeta)
   {
     file=fopen(argv[iarg],"rb");
@@ -158,6 +163,7 @@ int main(int argc,char **argv)
     fprintf(stderr,"Error creating '%s': %s.\n",argv[iarg+1],strerror(errno));
     return EXIT_FAILURE;
   }
+  format=(isclm) ? CLM : RAW;
   if(ismeta)
   {
     /* set default values */
@@ -171,7 +177,7 @@ int main(int argc,char **argv)
     header.cellsize_lon=header.cellsize_lat=0.5;
     header.ncell=1;
     header.nyear=1;
-    file=openmetafile(&header,&map,map_name,&attrs,&n_attr,&source,&history,&variable,&units,&standard_name,&long_name,&grid_name,&grid_type,NULL,&swap,&offset,argv[iarg],TRUE);
+    file=openmetafile(&header,&map,map_name,&attrs,&n_attr,&source,&history,&variable,&units,&standard_name,&long_name,&grid_name,&grid_type,&format,&swap,&offset,argv[iarg],TRUE);
     if(file==NULL)
       return EXIT_FAILURE;
     fseek(file,offset,SEEK_SET);
@@ -195,7 +201,7 @@ int main(int argc,char **argv)
     nyear=header.nyear*nsum;
     nitem=header.nbands;
     header.nstep=1;
-    if(isclm)
+    if(isclm || format==CLM)
       fwriteheader(out,&header,LPJOUTPUT_HEADER,LPJOUTPUT_VERSION);
   }
   else if(isclm)
@@ -291,7 +297,7 @@ int main(int argc,char **argv)
       printfcreateerr(out_json);
       return EXIT_FAILURE;
     }
-    fprintjson(file,argv[iarg+1],source,history,arglist,&header,map,map_name,attrs,n_attr,variable,units,standard_name,long_name,(grid_name.name==NULL) ? NULL : &grid_name,grid_type,RAW,LPJOUTPUT_HEADER,FALSE,LPJOUTPUT_VERSION);
+    fprintjson(file,argv[iarg+1],source,history,arglist,&header,map,map_name,attrs,n_attr,variable,units,standard_name,long_name,(grid_name.name==NULL) ? NULL : &grid_name,grid_type,(isclm) ? CLM : format,LPJOUTPUT_HEADER,FALSE,LPJOUTPUT_VERSION);
     fclose(file);
   }
   return EXIT_SUCCESS;

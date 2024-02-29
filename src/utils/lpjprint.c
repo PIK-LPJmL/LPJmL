@@ -232,7 +232,7 @@ int main(int argc,char **argv)
   progname=strippath(argv[0]);
   if(argc>1)
   {
-    if(!strcmp(argv[1],"-h"))
+    if(!strcmp(argv[1],"-h") || !strcmp(argv[1],"--help"))
     {
       fputs("     ",stdout);
       rc=printf("%s (" __DATE__ ") Help",
@@ -242,8 +242,8 @@ int main(int argc,char **argv)
       fputs("\n\nPrint content of restart files for LPJmL " LPJ_VERSION "\n\n",stdout);
       printf(USAGE,progname);
       printf("\nArguments:\n"
-             "-h               print this help text\n"
-             "-v               print LPJmL version\n"
+             "-h,--help        print this help text\n"
+             "-v,--version     print LPJmL version\n"
              "-nopp            disable preprocessing\n"
              "-pp cmd          set preprocessor program. Default is '" cpp_cmd "'\n"
              "-inpath dir      directory appended to input filenames\n"
@@ -257,7 +257,7 @@ int main(int argc,char **argv)
              "(C) Potsdam Institute for Climate Impact Research (PIK), see COPYRIGHT file\n");
       return EXIT_SUCCESS;
     }
-    else if(!strcmp(argv[1],"-v"))
+    else if(!strcmp(argv[1],"-v") || !strcmp(argv[1],"--version"))
     {
       puts(LPJ_VERSION);
       return EXIT_SUCCESS;

@@ -13,8 +13,9 @@
 /**************************************************************************************/
 
 #include "lpj.h"
+#include <sys/stat.h>
 
-#define USAGE "Usage: %s [-longheader] [-raw] [-metafile] [-json] [-type {byte|short|int|float|double}] {add|sub|mul|div|avg|max|min|repl|float|int} infile1.clm [{infile2.clm|value}] outfile.clm\n"
+#define USAGE "Usage: %s [-v] [-f] [-longheader] [-raw] [-metafile] [-json] [-type {byte|short|int|float|double}] {add|sub|mul|div|avg|max|min|repl|float|int} infile1.clm [{infile2.clm|value}] outfile.clm\n"
 
 int main(int argc,char **argv)
 {
@@ -43,18 +44,27 @@ int main(int argc,char **argv)
   int index,format;
   int *cell_index,*cell_index2;
   char *out_name;
-  Bool isvalue,intvalue,isint,ismeta,israw,isjson;
+  Bool isvalue,intvalue,isint,ismeta,israw,isjson,isforce;
   enum {ADD,SUB,MUL,DIV,AVG,MAX,MIN,REPL,FLOAT,INT} op;
   FILE *in1,*in2,*out;
+  struct stat filestat;
+  char c;
   setversion=READ_VERSION;
   index=NOT_FOUND;
-  ismeta=israw=isjson=FALSE;
+  ismeta=israw=isjson=isforce=FALSE;
   format=CLM;
   for(iarg=1;iarg<argc;iarg++)
     if(argv[iarg][0]=='-')
     {
-      if(!strcmp(argv[iarg],"-longheader"))
+      if(!strcmp(argv[1],"-v") || !strcmp(argv[1],"--version"))
+      {
+        puts(LPJ_VERSION);
+        return EXIT_SUCCESS;
+      }
+      else if(!strcmp(argv[iarg],"-longheader"))
         setversion=2;
+      else if(!strcmp(argv[iarg],"-f"))
+        isforce=TRUE;
       else if(!strcmp(argv[iarg],"-metafile"))
         ismeta=TRUE;
       else if(!strcmp(argv[iarg],"-json"))
@@ -141,9 +151,16 @@ int main(int argc,char **argv)
     header1.cellsize_lon=header1.cellsize_lat=0.5;
     header1.ncell=1;
     header1.nyear=1;
+    version=LPJ_CLIMATE_VERSION;
+    grid_type=LPJ_SHORT;
     in1=openmetafile(&header1,&map,map_name,&attrs,&n_attr,&source,&history,&variable,&units,&standard_name,&long_name,&grid_name,&grid_type,&format,&swap1,&offset,argv[iarg+1],TRUE);
     if(in1==NULL)
       return EXIT_FAILURE;
+    if(format==CLM)
+    {
+      if(freadheaderid(in1,id,TRUE))
+        return EXIT_FAILURE;
+    }
     fseek(in1,offset,SEEK_SET);
   }
   else
@@ -217,6 +234,7 @@ int main(int argc,char **argv)
         header2.cellsize_lon=header2.cellsize_lat=0.5;
         header2.ncell=1;
         header2.nyear=1;
+        grid_type2=LPJ_SHORT;
         in2=openmetafile(&header2,&map2,map_name,NULL,NULL,NULL,NULL,NULL,&units2,NULL,NULL,&grid_name2,&grid_type2,NULL,&swap2,&offset,argv[iarg+2],TRUE);
         if(in1==NULL)
           return EXIT_FAILURE;
@@ -359,6 +377,16 @@ int main(int argc,char **argv)
     check(data1);
   }
   out_name=argv[iarg+((op==FLOAT || op==INT) ? 2 : 3)];
+  if(!isforce)
+  {
+    if(!stat(out_name,&filestat))
+    {
+      fprintf(stderr,"File '%s' already exists, overwrite (y/n)?\n",out_name);
+      scanf("%c",&c);
+      if(c!='y')
+        return EXIT_FAILURE;
+    }
+  }
   out=fopen(out_name,"wb");
   if(out==NULL)
   {
@@ -376,8 +404,8 @@ int main(int argc,char **argv)
     header3.scalar=1;
     header3.datatype=(op!=FLOAT && isint) ? LPJ_INT : LPJ_FLOAT;
   }
-  if(!ismeta  && !israw)
-    fwriteheader(out,&header3,id,max(version,3));
+  if(format==CLM)
+    fwriteheader(out,&header3,id,max(version,(ismeta) ? 4 : 3));
   if(header1.order==CELLINDEX)
   {
     cell_index=newvec(int,header1.ncell);
@@ -694,7 +722,7 @@ int main(int argc,char **argv)
       printfcreateerr(out_json);
       return EXIT_FAILURE;
     }
-    fprintjson(out,out_name,source,history,arglist,&header3,map,map_name,attrs,n_attr,variable,units,standard_name,long_name,(grid_name.name==NULL) ? NULL : &grid_name,grid_type,format,LPJ_CLIMATE_HEADER,FALSE,LPJ_CLIMATE_VERSION);
+    fprintjson(out,out_name,source,history,arglist,&header3,map,map_name,attrs,n_attr,variable,units,standard_name,long_name,(grid_name.name==NULL) ? NULL : &grid_name,grid_type,format,id,FALSE,max(version,(ismeta) ? 4 : 3));
     fclose(out);
   }
   return EXIT_FAILURE;

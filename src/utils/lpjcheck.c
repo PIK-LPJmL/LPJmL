@@ -45,18 +45,18 @@ int main(int argc,char **argv)
   progname=strippath(argv[0]);
   if(argc>1)
   {
-    if(!strcmp(argv[1],"-q")) /* checks for '-q' flag */
+    if(!strcmp(argv[1],"-q") || !strcmp(argv[1],"--quiet")) /* checks for '-q' flag */
     {
       argc--; /* adjust command line options */
       argv++;
       isout=FALSE; /* no output */
     }
-    else if(!strcmp(argv[1],"-v"))
+    else if(!strcmp(argv[1],"-v") || !strcmp(argv[1],"--version"))
     {
       puts(LPJ_VERSION);
       return EXIT_SUCCESS;
     }
-    else if(!strcmp(argv[1],"-h"))
+    else if(!strcmp(argv[1],"-h") || !strcmp(argv[1],"--help"))
     {
       file=popen("more","w");
       if(file==NULL)
@@ -66,12 +66,12 @@ int main(int argc,char **argv)
               progname);
       fprintf(file,"\n     ");
       frepeatch(file,'=',rc);
-      fprintf(file,"\n\nChecks syntax of LPJmL version " LPJ_VERSION " configuration files\n\n");
+      fprintf(file,"\n\nChecks syntax of LPJmL version " LPJ_VERSION " configuration (*.cjson) files\n\n");
       fprintf(file,USAGE,progname);
       fprintf(file,"Arguments:\n"
-             "-h                  print this help text\n"
-             "-v                  print LPJmL version\n"
-             "-q                  print error messsages only\n"
+             "-h,--help           print this help text\n"
+             "-v,--version        print LPJmL version\n"
+             "-q,--quiet          print error messsages only\n"
              "-vv                 verbosely print the actual values during reading of the\n"
              "                    configuration files\n"
              "-pedantic           stops on warnings\n"

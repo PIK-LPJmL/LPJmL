@@ -3,17 +3,23 @@
 mathclm \- performs mathematical operations with clm files
 .SH SYNOPSIS
 .B mathclm
-[\-longheader] [-raw] [-json] [-metafile] [-type {byte|short|int|float|double}] {add|sub|mul|div|avg|max|min|repl|float|int} \fIinfile1.clm\fP [{\fIinfile2.clm\fP|value}] \fIoutfile.clm\fP
+[\-v] [\-f] [\-longheader] [-raw] [-json] [-metafile] [-type {byte|short|int|float|double}] {add|sub|mul|div|avg|max|min|repl|float|int} \fIinfile1.clm\fP [{\fIinfile2.clm\fP|value}] \fIoutfile.clm\fP
 .SH DESCRIPTION
 Program performs mathematical operations on clm files.
 .SH OPTIONS
+.TP
+\v,\--version
+Print version.
+.TP
+\-f
+Force overwrite of existing output file.
 .TP
 \-longheader
 Long (version 2) header assumed for clm files.
 .TP
 \-raw
 Input files are in raw binary format.
--TP
+.TP
 \-json
 Additional JSON metafile written.
 .TP
@@ -47,6 +53,7 @@ float infile.clm outfile.clm
 Set minimum value of data to zero
 .B mathclm
 max infile.clm 0 outfile.clm
+.TP
 .PP
 .SH EXIT STATUS
 .B mathclm

@@ -17,6 +17,9 @@ lpjcheck
 program. Can only be used for the MPI version of \fBlpjml\fP.
 .SH OPTIONS
 .TP
+\-h,\--help
+print help text.
+.TP
 \-class c
 set the SLURM/LoadLeveler class to which the job will be submitted. Default class is 'short'. Valid classes can be obtained by the
 .B llclass
@@ -36,7 +39,6 @@ set filename of output file, default is \fIlpjml.$(cluster).out\fP.
 .TP
 \-e error
 set filename of error file, default is \fIlpjml.$(cluster).err\fP.
-
 .TP
 \-q
 only error messages are displayed, other output is suppressed.

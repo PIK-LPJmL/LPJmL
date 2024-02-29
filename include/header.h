@@ -152,6 +152,7 @@ extern Bool freadheader(FILE *,Header *,Bool *,const char *,int *,Bool);
 extern Bool freadrestartheader(FILE *,Restartheader *,Bool);
 extern Bool fwriterestartheader(FILE *,const Restartheader *);
 extern Bool freadanyheader(FILE *,Header *,Bool *,String,int *,Bool);
+extern Bool freadheaderid(FILE *,String,Bool);
 extern size_t headersize(const char *,int);
 extern FILE *openinputfile(Header *, Bool *,const Filename *,
                            String,const char *,int *,size_t *,Bool,const Config *);
