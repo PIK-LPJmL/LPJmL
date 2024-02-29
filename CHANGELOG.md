@@ -21,7 +21,7 @@ of `major.minor.patch` with
 
 ## [5.8.6] - 2024-02-29
 
-- author: Stephen Wirth (wirth@pik-potsdam.de), Werner von Bloh (bloh@pik-potsdam.de), Jen Heinke (heinke@pik-potsdam.de), Marie Hemmen (hemmen@pik-potsdam.de)
+- author: Stephen Wirth (wirth@pik-potsdam.de), Werner von Bloh (bloh@pik-potsdam.de), Jens Heinke (heinke@pik-potsdam.de), Marie Hemmen (hemmen@pik-potsdam.de)
 - code review: Johanna Braun (jobraun@pik-potsdam.de)
 
 ### Fixed
