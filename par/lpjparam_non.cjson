@@ -2,7 +2,7 @@
 /**                                                                                \n**/
 /**              l  p  j  p  a  r  a  m  _  n  o  n  .  c  j  s  o  n              \n**/
 /**                                                                                \n**/
-/**     LPJ parameter file for LPJmL version 5.8.0 without nitrogen                \n**/
+/**     LPJ parameter file for LPJmL version 5.8.5 without nitrogen                \n**/
 /**                                                                                \n**/
 /** (C) Potsdam Institute for Climate Impact Research (PIK), see COPYRIGHT file    \n**/
 /** authors, and contributors see AUTHORS file                                     \n**/
@@ -14,6 +14,13 @@
 
 
   {
+    "error_limits" :
+    {
+      "carbon" : 1.0,       /* maximum error in local carbon balance (gC/m2) */
+      "nitrogen" : 0.2,     /* maximum error in local nitrogen balance (gN/m2) */
+      "water_local" : 1.5,  /* maximum error in local water balance (mm) */
+      "water_global" : 1e-3 /* maximum error in global water balance (mm) */
+    },
     "soildepth" : [
       200.0,       /* soil depth layer (mm) */
       300.0,       /* soil depth layer (mm) */
@@ -89,5 +96,12 @@
     "hum_ign" : -0.50,                  /* a parameter for scaling the human ignintions within SPITFIRE */
     "fire_intens" : 0.000001,           /* threshold of fireintensity for which burnt area can be modeled */
     "rootreduction" : 0.5,              /* fraction used to calculate amount of roots dying at harvest in managed grasslands */
-    "phen_limit" : 0.5                  /* phen. limit for agricultural trees */
+    "phen_limit" : 0.5,                 /* phen. limit for agricultural trees */
+     #ifdef BMGR_BROWN
+      "bmgr_harvest_day_nh" : 32,       /* harvest date (doy) of brown biomass grass harvest; NH 1.Feb */
+      "bmgr_harvest_day_sh" : 213       /* harvest date (doy) of brown biomass grass harvest; SH 1.Aug */
+    #else
+      "bmgr_harvest_day_nh" : 275,      /* harvest date (doy) of green biomass grass harvest; NH 1.Oct */
+      "bmgr_harvest_day_sh" : 92        /* harvest date (doy) of green biomass grass harvest; SH 1.Apr */
+    #endif
   }

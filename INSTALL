@@ -2,9 +2,9 @@
 | |   |  _ \   | |_ __ ___ | |     | ___|       ( _ )
 | |   | |_) |  | | '_ ` _ \| |     |___ \       / _ \
 | |___|  __/ |_| | | | | | | |___   ___) |  _  | (_) |
-|_____|_|   \___/|_| |_| |_|_____| |____/  (_)  \___/  Version 5.8.0
+|_____|_|   \___/|_| |_| |_|_____| |____/  (_)  \___/  Version 5.8.5
 
-Installation of LPJmL C Version 5.8.0
+Installation of LPJmL C Version 5.8.5
 
 Installation for Unix-like systems
 ----------------------------------
@@ -26,7 +26,7 @@ cd lpjml
 
 untar source files
 
-gzip -cd lpjml-5.8.0.tar.gz|tar -xf -
+gzip -cd lpjml-5.8.5.tar.gz|tar -xf -
 
 Directory tree after extracting the tar files:
 
@@ -192,7 +192,7 @@ cat2bsq      - concatenate output files from distributed LPJmL simulations
 catclm       - concatenate LPJmL climate data files
 cdf2bin      - convert NetCDF files into raw binary data
 cdf2clm      - convert NetCDF files into CLM files
-cdf2coord    - extract CLM grid file form NetCDF file
+cdf2coord    - extract CLM grid file from NetCDF file
 cdf2soil     - convert NetCDF file into binary file
 cft2clm      - convert binary landuse data files to CLM data files for LPJmL
 clm2cdf      - convert CLM files into NetCDF files
@@ -215,7 +215,9 @@ manage2js    - convert management  *.par files to JSON files
 mergeclm     - merge LPJmL climate data files
 printglobal  - print global values for raw binary output files
 printharvest - print global harvested carbon for crops and managed grasslands
-regridlpj    - regrid CLM file to different grid file
+regridclm    - regrid CLM file to new grid
+regridlpj    - regrid input data set for selected countries or specified grid file
+regridsoil   - regrid soil file to new grid
 regridsoil   - regrid binary soil file to different grid file
 setclm       - set value in header of CLM files for LPJmL
 soil2cdf     - convert binary files into NetCDF files

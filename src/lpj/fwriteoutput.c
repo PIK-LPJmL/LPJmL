@@ -106,7 +106,7 @@ static Real getscale(int date,int ndata,int timestep,Time time)
       break;
     case NDAYYEAR: /* daily output */
       if(time==SECOND)
-        scale=1/NSECONDSDAY;
+        scale=1./NSECONDSDAY;
       else
         scale=1;
       break;

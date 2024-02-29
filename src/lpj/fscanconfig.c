@@ -592,6 +592,12 @@ Bool fscanconfig(Config *config,    /**< LPJ configuration */
       fputs("ERROR230: No crop PFTs defined in 'pftpar' and land use enabled.\n",stderr);
     return TRUE;
   }
+  if(fscanparamcft(file,config))
+  {
+    if(verbose)
+      fputs("ERROR230: Cannot read LPJ parameter 'param'.\n",stderr);
+    return TRUE;
+  }
   config->nbiomass=getnculttype(config->pftpar,config->npft[GRASS]+config->npft[TREE],BIOMASS);
   config->nagtree=getnculttype(config->pftpar,config->npft[GRASS]+config->npft[TREE],ANNUAL_TREE);
   config->nwft=getnculttype(config->pftpar, config->npft[GRASS] + config->npft[TREE],WP);

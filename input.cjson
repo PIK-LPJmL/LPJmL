@@ -2,7 +2,7 @@
 /**                                                                                \n**/
 /**                       i  n  p  u  t  .  c  j  s  o  n                          \n**/
 /**                                                                                \n**/
-/** Configuration file for input dataset for LPJ C Version 5.8.0                   \n**/
+/** Configuration file for input dataset for LPJ C Version 5.8.5                   \n**/
 /**                                                                                \n**/
 /** (C) Potsdam Institute for Climate Impact Research (PIK), see COPYRIGHT file    \n**/
 /** authors, and contributors see AUTHORS file                                     \n**/
@@ -14,16 +14,16 @@
 
 {
 #ifdef CRU_MONTHLY
-  "temp" :         { "id" : 1, "fmt" : "clm",  "name" : "/p/projects/lpjml/input/historical/CRUDATA_TS3_23/cru_ts3.23.1901.2014.tmp.dat.clm"},
-  "prec" :         { "id" : 2, "fmt" : "clm",  "name" : "/p/projects/lpjml/input/historical/CRUDATA_TS3_23/gpcc_v7_cruts3_23_precip_1901_2013.clm"},
-  "lwnet" :        { "id" : 4, "fmt" : "clm",  "name" : "/p/projects/lpjml/input/historical/input_VERSION2/lwnet_erainterim_1901-2011.clm"},
+  "temp" :         { "id" : 1, "fmt" : "clm",  "name" : "CRUDATA_TS3_23/cru_ts3.23.1901.2014.tmp.dat.clm"},
+  "prec" :         { "id" : 2, "fmt" : "clm",  "name" : "CRUDATA_TS3_23/gpcc_v7_cruts3_23_precip_1901_2013.clm"},
+  "lwnet" :        { "id" : 4, "fmt" : "clm",  "name" : "input_VERSION2/lwnet_erainterim_1901-2011.clm"},
   "lwdown" :       { "id" : 43, "fmt" : "clm",  "name" : "DUMMYLOCATION"},
-  "swdown" :       { "id" : 3, "fmt" : "clm",  "name" : "/p/projects/lpjml/input/historical/input_VERSION2/swdown_erainterim_1901-2011.clm"},
-  "cloud":         { "id" : 0, "fmt" : "clm",  "name" : "/p/projects/lpjml/input/historical/CRUDATA_TS3_23/cru_ts3.23.1901.2014.cld.dat.clm"},
-  "wind":          { "id" : 15, "fmt" : "clm",  "name" : "/p/projects/lpjml/input/historical/input_VERSION2/mwindspeed_1860-2100_67420.clm"},
-  "tamp":          { "id" : 3, "fmt" : "clm",  "name" : "/p/projects/lpjml/input/historical/CRUDATA_TS3_23/cru_ts3.23.1901.2014.dtr.dat.clm"}, /* diurnal temp. range */
+  "swdown" :       { "id" : 3, "fmt" : "clm",  "name" : "input_VERSION2/swdown_erainterim_1901-2011.clm"},
+  "cloud":         { "id" : 0, "fmt" : "clm",  "name" : "CRUDATA_TS3_23/cru_ts3.23.1901.2014.cld.dat.clm"},
+  "wind":          { "id" : 15, "fmt" : "clm",  "name" : "input_VERSION2/mwindspeed_1860-2100_67420.clm"},
+  "tamp":          { "id" : 3, "fmt" : "clm",  "name" : "CRUDATA_TS3_23/cru_ts3.23.1901.2014.dtr.dat.clm"}, /* diurnal temp. range */
   "wetdays" :      { "id" : 12, "fmt" : "clm",  "name" : "CRUDATA_TS3_23/gpcc_v7_cruts3_23_wet_1901_2013.clm"},
-#elif CRU_NETCDF
+#elif defined CRU_NETCDF
   "temp" : { "fmt" : "cdf", "var" : "temp", "name" : "/p/projects/biodiversity/cru_netcdf/cru_ts_3_10.1901.2009.tmp.nc"},
   "prec" : { "fmt" : "cdf", "var" : "prec", "name" : "/p/projects/biodiversity/cru_netcdf/gpcc_cru09_prec_monthly_1901_2009.nc"},
   "lwnet" :       { "id" : 4, "fmt" : "clm",  "name" : "DUMMYLOCATION"},
@@ -33,60 +33,54 @@
   "wind" : { "fmt" : "cdf", "var" : "windspeed", "name" : "/p/projects/biodiversity/cru_netcdf/mwindspeed_1860-2100_67420.nc"},
   "tamp" : { "fmt" : "cdf", "var" : "tamp", "name" : "/p/projects/biodiversity/cru_netcdf/cru_ts_3_10.1901.2009.dtr.nc"}, /* diurnal temp. range */
   "wetdays" : { "fmt" : "cdf", "var" : "wet", "name" : "cru_netcdf/gpcc_cru09_wet_monthly_1901_2009.nc"},
-#elif GLDAS
-  "temp" :         { "fmt" : "clm",  "name" : "/p/projects/lpjml/input/GLDAS/INPUT/GLDAS_NOAH05_daily_1948-2017.Tair_f_inst.clm"},
-  "prec" :         { "fmt" : "clm",  "name" : "/p/projects/lpjml/input/GLDAS/INPUT/GLDAS_NOAH05_daily_1948-2017.Prec.clm"},
-  "lwnet" :        { "fmt" : "clm",  "name" : "/p/projects/lpjml/input/GLDAS/INPUT/GLDAS_NOAH05_daily_1948-2017.Lwnet_tavg.clm"},
-  "swdown" :       { "fmt" : "clm",  "name" : "/p/projects/lpjml/input/GLDAS/INPUT/GLDAS_NOAH05_daily_1948-2017.SWdown_f_tavg.clm"},
-  "wind":          { "fmt" : "clm",  "name" : "/p/projects/lpjml/input/GLDAS/INPUT/GLDAS_NOAH05_daily_1948-2017.Wind_f_inst.clm"},
-  "tamp":          { "fmt" : "clm",  "name" : "/p/projects/lpjml/input/historical/CRUDATA_TS3_23/cru_ts3.23.1901.2014.dtr.dat.clm"}, /* diurnal temp. range */
-  "tmin":          { "fmt" : "clm",  "name" : "/p/projects/lpjml/input/GLDAS/INPUT/GLDAS_NOAH05_daily_1948-2017.Tair_min.clm"},
-  "tmax":          { "fmt" : "clm",  "name" : "/p/projects/lpjml/input/GLDAS/INPUT/GLDAS_NOAH05_daily_1948-2017.Tair_max.clm"},
-  "humid":         { "fmt" : "clm",  "name" : "/p/projects/lpjml/input/GLDAS/INPUT/GLDAS_NOAH05_daily_1948-2017.Qair_f_inst.clm"},
 #else /*  Default from GSWP3 W5E5 */
-  "temp" :         { "id" : 1, "fmt" : "clm",  "name" : "/p/projects/lpjml/input/historical/ISIMIP3av2/obsclim/GSWP3-W5E5/tas_gswp3-w5e5_obsclim_1901-2019.clm"},
-  "prec" :         { "id" : 2, "fmt" : "clm",  "name" : "/p/projects/lpjml/input/historical/ISIMIP3av2/obsclim/GSWP3-W5E5/pr_gswp3-w5e5_obsclim_1901-2019.clm"},
-  "lwnet" :        { "id" : 4, "fmt" : "clm",  "name" : "/p/projects/lpjml/input/historical/ISIMIP3av2/obsclim/GSWP3-W5E5/lwnet_gswp3-w5e5_obsclim_1901-2019.clm"},
+  "temp" :         { "id" : 1, "fmt" : "clm",  "name" : "ISIMIP3av2/obsclim/GSWP3-W5E5/tas_gswp3-w5e5_obsclim_1901-2019.clm"},
+  "prec" :         { "id" : 2, "fmt" : "clm",  "name" : "ISIMIP3av2/obsclim/GSWP3-W5E5/pr_gswp3-w5e5_obsclim_1901-2019.clm"},
+  "lwnet" :        { "id" : 4, "fmt" : "clm",  "name" : "ISIMIP3av2/obsclim/GSWP3-W5E5/lwnet_gswp3-w5e5_obsclim_1901-2019.clm"},
   "lwdown" :       { "id" : 43, "fmt" : "clm",  "name" : "DUMMYLOCATION"},
-  "swdown" :       { "id" : 3, "fmt" : "clm",  "name" : "/p/projects/lpjml/input/historical/ISIMIP3av2/obsclim/GSWP3-W5E5/rsds_gswp3-w5e5_obsclim_1901-2019.clm"},
+  "swdown" :       { "id" : 3, "fmt" : "clm",  "name" : "ISIMIP3av2/obsclim/GSWP3-W5E5/rsds_gswp3-w5e5_obsclim_1901-2019.clm"},
   "cloud":         { "id" : 0, "fmt" : "clm",  "name" : "DUMMYLOCATION"},
-  "wind":          { "id" : 15, "fmt" : "clm",  "name" : "/p/projects/lpjml/input/historical/ISIMIP3av2/obsclim/GSWP3-W5E5/sfcwind_gswp3-w5e5_obsclim_1901-2019.clm"},
-  "tamp":          { "id" : 3, "fmt" : "clm",  "name" : "DUMMYLOCATION"}, /* diurnal temp. range */
+  "wind":          { "id" : 15, "fmt" : "clm",  "name" : "ISIMIP3av2/obsclim/GSWP3-W5E5/sfcwind_gswp3-w5e5_obsclim_1901-2019.clm"},
+  "tamp":          { "id" : 11, "fmt" : "clm",  "name" : "DUMMYLOCATION"}, /* diurnal temp. range */
+  "tmax":          { "id" : 10, "fmt" : "clm",  "name" : "ISIMIP3av2/obsclim/GSWP3-W5E5/tasmax_gswp3-w5e5_obsclim_1901-2019.clm"},
+  "tmin":          { "id" : 9, "fmt" : "clm",  "name" : "ISIMIP3av2/obsclim/GSWP3-W5E5/tasmin_gswp3-w5e5_obsclim_1901-2019.clm"},
+  "humid":          { "id" : 14, "fmt" : "clm",  "name" : "ISIMIP3av2/obsclim/GSWP3-W5E5/huss_gswp3-w5e5_obsclim_1901-2019.clm"},
 #endif
-  "soil" :         { "id" : 41, "fmt" : "meta", "name" : "input_VERSION2/soil.json"},
+  "soil" :         { "id" : 41, "fmt" : "clm", "name" : "input_toolbox_30arcmin/soil_30arcmin_13_types.bin"},
   "coord" :        { "id" : 43, "fmt" : "clm",  "name" : "input_VERSION2/grid.bin"},
   "landfrac" :     { "id" : 44, "fmt" : "clm",  "name" : "/p/projects/lpjml/inputs/grid/30min/landfrac_gadm36.bin"},
   "countrycode" :  { "id" : 25, "fmt" : "clm",  "name" : "input_VERSION2/cow_full_2018.bin"},
   "no3deposition" : { "id" : 17, "fmt" : "clm",  "name" : "input_VERSION2/no3_deposition_rcp8p5.clm"},
   "nh4deposition" : { "id" : 16, "fmt" : "clm",  "name" : "input_VERSION2/nh4_deposition_rcp8p5.clm"},
-  "soilpH" :        { "id" : 26, "fmt" : "clm",  "name" : "input_VERSION2/soil_ph.clm"},
+  "soilpH" :        { "id" : 26, "fmt" : "clm",  "name" : "input_toolbox_30arcmin/soil_pH_30arcmin.bin"},
 #ifdef OLD_LU
-  "landuse" :      { "id" : 6, "fmt" : "clm",  "name" : "/p/projects/lpjml/input/historical/input_VERSION2/cft1700_2005_irrigation_systems_64bands.bin"},
-  "fertilizer_nr" : { "id" : 18, "fmt" :"clm",  "name" : "/p/projects/lpjml/input/historical/input_VERSION3/fertilizer_luh2v2_1900-2015_32bands.clm"},
-  "manure_nr" :    { "id" : 19, "fmt" : "clm", "name" : "/p/projects/lpjml/input/historical/input_VERSION3/manure_zhang17_1860-2014_32bands_clm2.clm"},
-#elif MADRAT
+  "landuse" :      { "id" : 6, "fmt" : "clm",  "name" : "input_VERSION2/cft1700_2005_irrigation_systems_64bands.bin"},
+  "fertilizer_nr" : { "id" : 18, "fmt" :"clm",  "name" : "input_VERSION3/fertilizer_luh2v2_1900-2015_32bands.clm"},
+  "manure_nr" :    { "id" : 19, "fmt" : "clm", "name" : "input_VERSION3/manure_zhang17_1860-2014_32bands_clm2.clm"},
+#elif defined MADRAT
   "landuse" :      { "id" : 6, "fmt" : "clm",  "name" : "/p/projects/lpjml/input/MADRAT/lu_madrat_850-2015_32bands.clm"},
-  "fertilizer_nr" : { "id" : 18, "fmt" :"clm",  "name" : "/p/projects/lpjml/input/historical/input_VERSION3/fertilizer_luh2v2_1900-2015_32bands.clm"},
-  "manure_nr" :    { "id" : 19, "fmt" : "clm", "name" : "/p/projects/lpjml/input/historical/input_VERSION3/manure_zhang17_1860-2014_32bands_clm2.clm"},
-#else /* Default from LandIng toolbox  */
-  "landuse" :      { "id" : 6, "fmt" : "clm",  "name" : "/p/projects/lpjml/input/historical/input_toolbox_30arcmin/paper_version/cft_default_cft_aggregation_30min_1500-2017_fallow_to_others.bin"},
-  "fertilizer_nr" : { "id" : 18, "fmt" :"clm",  "name" : "/p/projects/lpjml/input/historical/input_toolbox_30arcmin/paper_version/fert_N_default_cft_aggregation_30min_1860-2017.clm"},
-  "manure_nr" :    { "id" : 19, "fmt" : "clm", "name" : "/p/projects/lpjml/input/historical/input_toolbox_30arcmin/paper_version/manure_N_default_cft_aggregation_30min_1860-2017.clm"},
+  "fertilizer_nr" : { "id" : 18, "fmt" :"clm",  "name" : "input_VERSION3/fertilizer_luh2v2_1900-2015_32bands.clm"},
+  "manure_nr" :    { "id" : 19, "fmt" : "clm", "name" : "input_VERSION3/manure_zhang17_1860-2014_32bands_clm2.clm"},
+#else /* Default from LandInG toolbox  */
+  "landuse" :      { "id" : 6, "fmt" : "clm",  "name" : "input_toolbox_30arcmin/paper_version/cft_default_cft_aggregation_30min_1500-2017_fallow_to_others_64bands.clm"},
+  "fertilizer_nr" : { "id" : 18, "fmt" :"clm",  "name" : "input_toolbox_30arcmin/paper_version/fert_N_default_cft_aggregation_30min_1860-2017.clm"},
+  "manure_nr" :    { "id" : 19, "fmt" : "clm", "name" : "input_toolbox_30arcmin/paper_version/manure_N_default_cft_aggregation_30min_1860-2017.clm"},
 #endif
 //  "fertilizer_nr" : { "id" : 18, "fmt" :"clm",  "name" : "input_VERSION2/fertilizer_ggcmi.clm2"},
   
 
-  "with_tillage" : { "id" : 7, "fmt" : "clm", "name" : "input_VERSION3/lpj_tillage_CA_1973-2010.clm"},
+  "with_tillage" : { "id" : 7, "fmt" : "clm", "name" : "/p/projects/lpjml/inputs/land_management/30min/tillage_1973_1974-2010_1973_as_till_everywhere.clm"},
   "residue_on_field" : { "id" : 8, "fmt" : "clm", "name" : "/p/projects/lpjml/input/MADRAT/residues_madrat_1850-2015_16bands.clm"},
 //  "sdate" : { "id" : 28,"fmt" : "clm", "name" : "/p/projects/lpjml/input/historical/input_VERSION2/sdate_combined_filled.clm"}, /* insert prescribed sdate file name here */
-  "sdate" : { "id" : 28,"fmt" : "clm", "name" : "/p/projects/landuse/users/cmueller/GGCMI/crop_calendar/GGCMI_CTWN_planting_v1.25.clm2"},
+  "sdate" : { "id" : 28,"fmt" : "clm", "name" : "ISIMIP3a/sdate_24_bands.clm"},
+  "crop_phu" : {"fmt" : "clm", "name" : "ISIMIP3av2/phusum_gswp3-w5e5_obsclim_24_bands_annual_1901-2019.clm"},
   "grassland_fixed_pft" : { "id" : 29, "fmt" : "raw", "name" : "/home/rolinski/LPJ/Newinput/scenario_MO0.bin"},
   //"landuse" :      { "id" : 6, "fmt" : "clm",  "name" : "input_VERSION2/cft1700_2005_irrigation_systems_64bands.bin"},
   //"fertilizer_nr" : { "id" : 18, "fmt" : "clm",  "name" : "input_VERSION2/fertilizer_ggcmi.clm2"},
   /* insert prescribed sdate file name here */
   "grassland_fixed_pft" : { "id" : 30, "fmt" : "raw", "name" : "/p/projects/landuse/users/rolinski/Newinput/scenario_MO0.bin"},
   "grass_harvest_options" : { "id" : 31, "fmt" : "raw", "name": "/p/projects/landuse/users/rolinski/Newinput/scenario_MO2.bin"},
-  "grassland_lsuha" : { "id" : 24, "fmt" : "clm",  "name" : "/p/projects/lpjml/input/Grazing/grassland_lsuha_2000-2000.clm"},
+  "grassland_lsuha" : { "id" : 24, "fmt" : "clm",  "name" : "/p/projects/lpjml/input/Grazing/grassland_lsuha_gswp3_2000-2000.clm"},
   "sowing_ag_tree_rf" :   { "id" : 32, "fmt" : "cdf", "var" : "planting day", "name" : "/p/projects/landuse/users/cmueller/GGCMI/crop_calendar/Cotton_rf_growing_season_dates_v1.25.nc4"},
   "harvest_ag_tree_rf" :  { "id" : 33, "fmt" : "cdf", "var" : "harvest day", "name" : "/p/projects/landuse/users/cmueller/GGCMI/crop_calendar/Cotton_rf_growing_season_dates_v1.25.nc4"},
   "sowing_ag_tree_ir" :   { "id" : 34, "fmt" : "cdf", "var" : "planting day", "name" : "/p/projects/landuse/users/cmueller/GGCMI/crop_calendar/Cotton_ir_growing_season_dates_v1.25.nc4"},
