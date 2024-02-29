@@ -21,7 +21,7 @@ of `major.minor.patch` with
 
 ## [5.8.6] - 2024-02-29
 
-- author: Stephen Wirth (wirth@pik-potsdam.de), Werner von Bloh Schaphoff (bloh@pik-potsdam.de)
+- author: Stephen Wirth (wirth@pik-potsdam.de), Werner von Bloh (bloh@pik-potsdam.de), Jen Heinke (heinke@pik-potsdam.de), Marie Hemmen (hemmen@pik-potsdam.de)
 - code review: Johanna Braun (jobraun@pik-potsdam.de)
 
 ### Fixed
@@ -61,8 +61,8 @@ of `major.minor.patch` with
 
 - Option `--propagate` removed from `srun` in `lpjsubmit_slurm`.
 - Hard-coded parameter `k_l` removed in `littersom.c`.
-- Parameter `"residues_in_soil_notillage" removed.
-- Parameter `"co2_p" removed.
+- Parameter `"residues_in_soil_notillage"` removed.
+- Parameter `"co2_p"`  removed.
 - Keyword in `"till_startyear"` removed from `lpjml_config.cjson`.
 
 
