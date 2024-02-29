@@ -148,7 +148,7 @@ int main(int argc,char **argv)
     return EXIT_FAILURE;
   }
   size=getfilesizep(data_file)-headersize(id,data_version);
-  if(data_version==3)
+  if(data_version>=3)
     isint=header.datatype==LPJ_INT || header.datatype==LPJ_FLOAT;
   if(iszero)
   {
