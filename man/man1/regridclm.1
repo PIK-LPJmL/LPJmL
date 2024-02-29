@@ -1,0 +1,52 @@
+.TH regridclm 1  "USER COMMANDS"
+.SH NAME
+regridclm \- regrid CLM file to new grid
+.SH SYNOPSIS
+.B regridclm
+[\-size4] [\-search] [\-zero] [\-longheader]
+.I grid_old.clm grid_new.clm data_old.clm data_new.clm
+.SH DESCRIPTION
+Program reads CLM file and corresponding grid file to regrid the data to a new grid file.
+.SH OPTIONS
+.TP
+\-size4
+size of CLM input data set to 4 bytes. By default size is read from header or set to 2 bytes for version<3
+.TP
+\-search
+If grid coordinate cannot be found in old grid nearest grid cell is used
+.TP
+\-zero
+If grid coordinate cannot be found in old grid values are set to zero
+.TP
+\-longheader
+Version of CLM file is set to 2. By default version is read from file header
+.TP
+.I grid_old.clm
+Corresponding grid filename of input data
+.TP
+.I grid_new.clm
+New grid filename data should be regridded to
+.TP
+.I  data_old.clm
+Filename of data file that should be regridded
+.TP
+.I data_new.clm
+Filename of data file where regridded data is written
+.SH EXAMPLES
+.TP
+Regrid CLM file to the grid file of the amazon basin:
+.B regridclm
+grid.clm grid_amazon.clm temp_1901-2018.clm temp_amazon_1901-2018.clm
+.SH EXIT STATUS
+Non zero is returned in case of failure.
+
+.SH AUTHORS
+
+For authors and contributors see AUTHORS file
+
+.SH COPYRIGHT
+
+(C) Potsdam Institute for Climate Impact Research (PIK), see COPYRIGHT file
+
+.SH SEE ALSO
+regridlpj(1), regridsoil(1), lpjml(1), txt2clm(1), cru2clm(1), clm(5)

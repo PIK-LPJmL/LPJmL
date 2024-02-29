@@ -59,8 +59,8 @@ Bool getextension(Extension *ext,const Config *config)
     {
       if(readcoord(file_coord,&coord,&resolution))
       {
-        fprintf(stderr,"ERROR190: Unexpected end of file in '%s'.\n",
-                config->coord_filename.name);
+        fprintf(stderr,"ERROR190: Cannot read coordinate from '%s' for cell %d.\n",
+                config->coord_filename.name,i);
         if(i==0)
           ext->lat_min=ext->lon_min=ext->lat_max=ext->lon_max=0;
         break;

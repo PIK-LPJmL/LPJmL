@@ -1,8 +1,10 @@
 /**************************************************************************************/
 /**                                                                                \n**/
-/**      f  w  r  i  t  e  r  e  s  t  a  r  t  h  e  a  d  e  r  .  c             \n**/
+/**               f  s  c  a  n  e  r  r  o  r  l  i  m  i  t  .  c                \n**/
 /**                                                                                \n**/
-/**     Writing file header for LPJ restart files.                                 \n**/
+/**     C implementation of LPJmL                                                  \n**/
+/**                                                                                \n**/
+/**     Functions reads error limits from configuration file                       \n**/
 /**                                                                                \n**/
 /** (C) Potsdam Institute for Climate Impact Research (PIK), see COPYRIGHT file    \n**/
 /** authors, and contributors see AUTHORS file                                     \n**/
@@ -14,19 +16,23 @@
 
 #include "lpj.h"
 
-Bool fwriterestartheader(FILE *file,                 /**< file pointer of binary file */
-                         const Restartheader *header /**< file header to be written */
-                        )                            /** \return TRUE on error */
+Bool fscanerrorlimit(LPJfile *file,      /**< pointer to LPJ file */
+                     Error_limit *limit, /**< on return error limits read */
+                     const char *name,   /**< name of limit variable */
+                     Verbosity verb      /**< verbosity level (NO_ERR,ERR,VERB) */
+                    )                    /** \return TRUE on error */
 {
-  if(fwrite(&header->landuse,sizeof(int),1,file)!=1)
+  LPJfile *f;
+  f=fscanstruct(file,name,verb);
+  if(f==NULL)
     return TRUE;
-  if(fwrite(&header->river_routing,sizeof(int),1,file)!=1)
+  if(fscanreal(f,&limit->stocks.carbon,"carbon",FALSE,verb))
     return TRUE;
-  if(fwrite(&header->sdate_option,sizeof(int),1,file)!=1)
+  if(fscanreal(f,&limit->stocks.nitrogen,"nitrogen",FALSE,verb))
     return TRUE;
-  if(fwrite(&header->crop_option,sizeof(int),1,file)!=1)
+  if(fscanreal(f,&limit->w_local,"water_local",FALSE,verb))
     return TRUE;
-  if(fwrite(&header->separate_harvests,sizeof(int),1,file)!=1)
+  if(fscanreal(f,&limit->w_global,"water_global",FALSE,verb))
     return TRUE;
-  return fwrite(header->seed,sizeof(Seed),1,file)!=1;
-} /* of 'fwriterestartheader' */
+  return FALSE;
+} /* of 'fscanerrorlimit' */

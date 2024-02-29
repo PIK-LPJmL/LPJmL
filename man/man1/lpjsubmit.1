@@ -3,7 +3,7 @@
 lpjsubmit \- Submit parallel SLURM/LoadLeveler job for LPJmL simulations 
 .SH SYNOPSIS
 .B lpjsubmit
-[\-class c] [\-group g] [\-wtime time] [\-blocking n] [\-o output] [\-e error] [\-q] [\-nocheck] [\-norun] [\-dependency id] [-couple program] [-constraint c][[-option op=text] ...] ntasks [args ...]
+[\-h] [\-class c] [\-group g] [\-wtime time] [\-blocking n] [\-o output] [\-e error] [\-q] [\-nocheck] [\-norun] [\-dependency id] [-couple program] [-constraint c][[-option op=text] ...] ntasks args ...
 .SH DESCRIPTION
 Script creates SLURM/LoadLeveler job control file \fIjob.jcf\fP and submits the job to the SLURM/LoadLeveler queue via
 .B
@@ -17,6 +17,9 @@ lpjcheck
 program. Can only be used for the MPI version of \fBlpjml\fP.
 .SH OPTIONS
 .TP
+\-h,\--help
+print help text.
+.TP
 \-class c
 set the SLURM/LoadLeveler class to which the job will be submitted. Default class is 'short'. Valid classes can be obtained by the
 .B llclass
@@ -26,7 +29,7 @@ command.
 set the SLURM/LoadLeveler group. Valid groups are user-specific and set in the \fI/home/loadl/LoadL_admin\fP file.
 .TP
 \-wtime time
-set wall clock limit of LoadLeveler job. time must be in the format hh:mm:ss.
+set wall clock limit of SLURM/LoadLeveler job. time must be in the format hh:mm:ss.
 .TP
 \-blocking n
 set blocking (number of tasks per node) for parallel job to n. Default is unlimited.
@@ -36,9 +39,8 @@ set filename of output file, default is \fIlpjml.$(cluster).out\fP.
 .TP
 \-e error
 set filename of error file, default is \fIlpjml.$(cluster).err\fP.
-
 .TP
-\-q
+\-q,\--quiet
 only error messages are displayed, other output is suppressed.
 .TP
 \-nocheck
