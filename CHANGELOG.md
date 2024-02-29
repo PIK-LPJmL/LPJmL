@@ -78,7 +78,7 @@ of `major.minor.patch` with
 ### Changed
 
 - updated AUTHORS file
->>>>>>> cd474087a67f80593980406264a894045a1f882d
+
 
 ## [5.8.4] - 2024-01-22
 
