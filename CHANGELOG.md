@@ -19,7 +19,7 @@ of `major.minor.patch` with
 
 ## [Unreleased]
 
-## [5.8.6] - 2024-02-27
+## [5.8.6] - 2024-02-29
 
 - author: Stephen Wirth (wirth@pik-potsdam.de), Werner von Bloh Schaphoff (bloh@pik-potsdam.de)
 - code review: Johanna Braun (jobraun@pik-potsdam.de)
@@ -30,6 +30,7 @@ of `major.minor.patch` with
 - Default directory for input files to current directory set and directory created in `regridlpj`.
 - Correct id 11 set for `"tamp"` input in `input.cjson` (issue #347).
 - Correct filename used in error message in utility `mathclm`.
+- Datatype of Version 4 CLM files correctly handled in `cutclm`, `catclm`, `mergeclm`, `regridclm`.
 
 ### Changed
 
