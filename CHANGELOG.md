@@ -37,6 +37,8 @@ of `major.minor.patch` with
 - Hard coded CFT indices (e.g. `MAIZE`) have been replaced by their names.
 - Datatype of `bmgr_harvest_day_nh` and ` bmgr_harvest_day_nh` changed to `int`.
 - Function `freadseed()` used in `freadrestartheader.c`.
+- First value of CO2 data file used for simulation years before first year of CO2 data.
+- CO2 data replaced by TRENDY data in `input.cjson`.
 
 ### Added
 
@@ -60,6 +62,7 @@ of `major.minor.patch` with
 - Option `--propagate` removed from `srun` in `lpjsubmit_slurm`.
 - Hard-coded parameter `k_l` removed in `littersom.c`.
 - Parameter `"residues_in_soil_notillage" removed.
+- Parameter `"co2_p" removed.
 - Keyword in `"till_startyear"` removed from `lpjml_config.cjson`.
 
 
