@@ -8,7 +8,7 @@
 ##                                                                             ##
 ##    Usage: lpjsubmit [-h] [-class c] [-group g] [-wtime time] [-blocking n]  ##
 ##                     [-o output] [-e error] [-q] [-nocheck] [-norun]         ##
-##                     [-constraint c] [-option a=b] ntask [LPJargs...]        ##
+##                     [-constraint c] [-option a=b] ntask LPJargs...          ##
 ##                                                                             ##
 ## (C) Potsdam Institute for Climate Impact Research (PIK), see COPYRIGHT file ##
 ## authors, and contributors see AUTHORS file                                  ##
@@ -18,14 +18,7 @@
 ##                                                                             ##
 #################################################################################
 
-USAGE="Usage: lpjsubmit [-class c] [-group g] [-wtime time] [-blocking n] [-o output] [-e error]\n[-q] [-nocheck] [-norun] [-dependency id] [-couple program] [-constraint c] [[-option a=b] ...] ntasks [args ...]"
-
-if [ "$LPJROOT" = "" ]
-then
-  echo >&2 Error: environment variable LPJROOT is not set
-  echo >&2 "Set by export LPJROOT=<path to lpjml directory>"
-  exit 1
-fi
+USAGE="Usage: lpjsubmit [-h] [-class c] [-group g] [-wtime time] [-blocking n] [-o output] [-e error]\n[-q] [-nocheck] [-norun] [-dependency id] [-couple program] [-constraint c] [[-option a=b] ...] ntasks args ..."
 
 class=short
 group=""
@@ -52,16 +45,18 @@ while(( "$#" )); do
       echo "-blocking n    set blocking (number of tasks per node), default is unlimited"
       echo "-o output      set filename of output file"
       echo "-e error       set filename of error file"
-      echo "-q             only error messages are displayed, other output is suppressed"
+      echo "-q,--quiet     only error messages are displayed, other output is suppressed"
 
-      echo "-nocheck       does not check input files and output directories"
+      echo "-nocheck       do not check input files and output directories"
 
-      echo "-norun         does not submit job to batch queue, creates slurm.jcf file only"
+      echo "-norun         do not submit job to batch queue, creates slurm.jcf file only"
       echo "-dependency id job will be scheduled after job with job id id finished successfully"
 
-      echo "-constraint c  defines constraint c for SLURM job"
+      echo "-constraint c  define constraint c for SLURM job"
       echo "-option op=txt set option op to txt for SLURM job. This option can be repeated multiple times"
-      echo "-couple prg    start couple prgin the background before starting LPJmL"
+      echo "-couple prg    start couple prg in the background before starting LPJmL"
+      echo "ntasks         number of MPI tasks"
+      echo "args           arguments and options of lpjml"
       echo -e "\n(C) Potsdam Institute for Climate Impact Research (PIK), see COPYRIGHT file"
       exit 0
       ;;
@@ -131,7 +126,7 @@ while(( "$#" )); do
      error=$1
      shift 1
      ;;
-   -q)
+   -q|--quiet)
      shift 1
      quiet="-Q"
      ;;
@@ -202,6 +197,13 @@ if [ $# -lt 1 ]
 then
   echo >&2 Error: Number of tasks missing
   echo -e >&2 $USAGE
+  exit 1
+fi
+
+if [ "$LPJROOT" = "" ]
+then
+  echo >&2 Error: environment variable LPJROOT is not set
+  echo >&2 "Set by export LPJROOT=<path to lpjml directory>"
   exit 1
 fi
 

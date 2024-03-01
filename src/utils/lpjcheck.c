@@ -68,7 +68,7 @@ int main(int argc,char **argv)
       frepeatch(file,'=',rc);
       fprintf(file,"\n\nChecks syntax of LPJmL version " LPJ_VERSION " configuration (*.cjson) files\n\n");
       fprintf(file,USAGE,progname);
-      fprintf(file,"Arguments:\n"
+      fprintf(file,"\nArguments:\n"
              "-h,--help           print this help text\n"
              "-v,--version        print LPJmL version\n"
              "-q,--quiet          print error messsages only\n"

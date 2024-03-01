@@ -76,7 +76,7 @@ varname
 variable name in NetCDF file. If not specified variable name is read from metafile
 .TP
 .I gridfile    
-filename of grid data file. If not specified variable name is read from metafile
+filename of grid data file. If not specified grid name is read from metafile
 .TP
 .I clmfile
 filename of CLM data file
@@ -88,6 +88,10 @@ filename of NetCDF file created
 Create data file for temperature:
 .B clm2cdf
 -units celsius -descr temperature temp grid.bin tmp.clm tmp.nc
+.TP
+Create data file for temperature using JSON metafile:
+.B clm2cdf
+-metafile tmp.clm.json tmp.nc
 .PP
 .SH EXIT STATUS
 .B clm2cdf

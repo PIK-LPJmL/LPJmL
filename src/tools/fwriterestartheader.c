@@ -28,9 +28,5 @@ Bool fwriterestartheader(FILE *file,                 /**< file pointer of binary
     return TRUE;
   if(fwrite(&header->double_harvest,sizeof(int),1,file)!=1)
     return TRUE;
-#ifdef USE_RAND48
-  return fwrite(header->seed,sizeof(short),NSEED,file)!=NSEED;
-#else
-  return fwrite(header->seed,sizeof(int),NSEED,file)!=NSEED;
-#endif
+  return fwrite(header->seed,sizeof(Seed),1,file)!=1;
 } /* of 'fwriterestartheader' */

@@ -50,6 +50,7 @@ OBJS    = update_daily.$O update_annual.$O init_annual.$O\
           fprintcsvflux.$O extflow.$O getmintimestep.$O isannual_output.$O\
           npp_contr_biol_n_fixation.$O fprintoutputjson.$O writearea.$O\
           fscancultivationtypes.$O fscanlandcovermap.$O getroute.$O\
+          fscanerrorlimit.$O
 
 INC     = ../../include
 LIBDIR  = ../../lib

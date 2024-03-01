@@ -63,12 +63,12 @@ BIN     = ../../bin
 LPJLIBS = $(LIBDIR)/liblpj.$A $(LIBDIR)/libtree.$A\
           $(LIBDIR)/liblanduse.$A\
           $(LIBDIR)/libreservoir.$A $(LIBDIR)/libclimate.$A\
-          $(LIBDIR)/libnum.$A\
           $(LIBDIR)/libcrop.$A $(LIBDIR)/libpnet.$A\
           $(LIBDIR)/liblpj.$A $(LIBDIR)/libnum.$A\
           $(LIBDIR)/libgrass.$A $(LIBDIR)/libtree.$A\
           $(LIBDIR)/libspitfire.$A $(LIBDIR)/libsoil.$A\
-          $(LIBDIR)/libcdf.$A $(LIBDIR)/libtools.$A $(LIBDIR)/libcoupler.$A
+          $(LIBDIR)/libcdf.$A $(LIBDIR)/libtools.$A $(LIBDIR)/libcoupler.$A\
+          $(LIBDIR)/libnum.$A
 
 all: $(BIN)/cru2clm$E $(BIN)/grid2clm$E $(BIN)/cfts26_lu2clm$E\
      $(BIN)/river_sections_input_grid$E $(BIN)/river_sections_input_soil$E\
@@ -306,18 +306,18 @@ $(BIN)/cvrtsoil$E: cvrtsoil.$O $(LIBDIR)/libtools.$A
 	$(LINK) $(LNOPTS)$(BIN)/cvrtsoil$E cvrtsoil.$(O)\
 		$(LIBDIR)/libtools.$A $(LIBS)
 
-$(BIN)/lpjcat$E: lpjcat.$O $(LIBDIR)/libtools.$A  
+$(BIN)/lpjcat$E: lpjcat.$O $(LIBDIR)/libtools.$A $(LIBDIR)/libnum.$A 
 	$(LINK) $(LNOPTS)$(BIN)/lpjcat$E lpjcat.$(O)\
-		$(LIBDIR)/libtools.$A $(LIBS)
+		$(LIBDIR)/libtools.$A $(LIBDIR)/libnum.$A $(LIBS)
 
 $(BIN)/printreservoir$E: printreservoir.$O $(LIBDIR)/libtools.$A $(LIBDIR)/libreservoir.$A 
 	$(LINK) $(LNOPTS)$(BIN)/printreservoir$E printreservoir.$(O)\
 		$(LIBDIR)/libtools.$A $(LIBDIR)/libreservoir.$A $(LIBS)
 
-$(BIN)/printclm$E: printclm.$O $(LIBDIR)/libtools.$A $(LIBDIR)/libreservoir.$A
+$(BIN)/printclm$E: printclm.$O $(LIBDIR)/libtools.$A $(LIBDIR)/libreservoir.$A $(LIBDIR)/libnum.$A
 	$(LINK) $(LNOPTS)$(BIN)/printclm$E printclm.$(O)\
 		$(LIBDIR)/libtools.$A\
-		$(LIBDIR)/libreservoir.$A $(LIBS)
+		$(LIBDIR)/libreservoir.$A $(LIBDIR)/libnum.$A $(LIBS)
 
 $(BIN)/printdrain$E: printdrain.$O $(LIBDIR)/libtools.$A
 	$(LINK) $(LNOPTS)$(BIN)/printdrain$E printdrain.$(O)\

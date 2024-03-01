@@ -140,6 +140,9 @@ void fprintfiles(FILE *file,          /**< pointer to text output file */
       fprintfilename(file,&config->manure_nr_filename,TRUE);
     if(config->residue_treatment==READ_RESIDUE_DATA)
       fprintfilename(file,&config->residue_data_filename,TRUE);
+    if(config->tillage_type==READ_TILLAGE)
+      fprintfilename(file,&config->with_tillage_filename,TRUE);
+
     if(config->prescribe_lsuha)
       fprintfilename(file,&config->lsuha_filename,FALSE);
   }

@@ -512,11 +512,7 @@ Bool fscanconfig(Config *config,    /**< LPJ configuration */
         return TRUE;
       if(fscankeywords(file,&config->tillage_type,"tillage_type",tillage,3,!config->pedantic,verbose))
         return TRUE;
-      if(config->tillage_type)
-      {
-        fscanint2(file,&config->till_startyear,"till_startyear");
-      }
-      if(fscankeywords(file,&config->residue_treatment,"residue_treatment",residue_treatment,3,!config->pedantic,verbose))
+      if(fscankeywords(file,&config->residue_treatment,"residue_treatment",residue_treatment,3,TRUE,verbose))
         return TRUE;
     }
     if(fscanbool(file,&config->black_fallow,"black_fallow",!config->pedantic,verbose))
@@ -597,6 +593,12 @@ Bool fscanconfig(Config *config,    /**< LPJ configuration */
   {
     if(verbose)
       fputs("ERROR230: No crop PFTs defined in 'pftpar' and land use enabled.\n",stderr);
+    return TRUE;
+  }
+  if(fscanparamcft(file,config))
+  {
+    if(verbose)
+      fputs("ERROR230: Cannot read LPJ parameter 'param'.\n",stderr);
     return TRUE;
   }
   config->nbiomass=getnculttype(config->pftpar,config->npft[GRASS]+config->npft[TREE],BIOMASS);

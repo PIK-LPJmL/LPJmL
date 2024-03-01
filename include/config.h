@@ -143,7 +143,6 @@ struct config
   Bool crop_resp_fix;      /**< with fixed crop respiration (TRUE/FALSE) */
   Bool cropsheatfrost;
   int tillage_type;      /**< type of tillage NO_TILLAGE=0, TILLAGE=1, READ_TILLAGE=2 */
-  int till_startyear;    /**< year in which tillage should start */
   int residue_treatment; /** residue options: READ_RESIDUE_DATA, NO_RESIDUE_REMOVE, FIXED_RESIDUE_REMOVE (uses param residues_in_soil) */
   Bool black_fallow;      /**< simulation with black fallow */
   Bool till_fallow;         /**< apply tillage on black fallow */
