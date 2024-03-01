@@ -153,6 +153,10 @@ void freeconfig(Config *config /**< LPJmL configuration */
       freefilename(&config->sdate_filename);
     if(config->prescribe_lsuha)
       freefilename(&config->lsuha_filename);
+    if (config->residue_treatment == READ_RESIDUE_DATA)
+      freefilename(&config->residue_data_filename);
+    if(config->crop_phu_option==PRESCRIBED_CROP_PHU)
+      freefilename(&config->crop_phu_filename);
   }
   if(config->with_nitrogen)
   {
