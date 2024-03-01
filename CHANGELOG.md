@@ -19,6 +19,66 @@ of `major.minor.patch` with
 
 ## [Unreleased]
 
+## [5.8.7] - 2024-03-01
+
+-author: Werner von Bloh
+
+### Changed
+
+- NetCDF output files are now in a more ISMIP3 compliant format, datatype of time is double,  `depth_bnds` added to layer specific output. Standard amd long name can be specified in `outputvars.json`.
+- Deprecated function `MPI_Extent` call replaced by `MPI_Get_extent` in `mpi_write.c`.
+- Functions create_netcdf.c/create_pft_netcdf.c and create1_netcdf.c/create1_pft_netcdf.c have been merged.
+- Function `findcoord()` improved to find cell indices, returns now true if coord is within cell.
+- `STYLESHEET` file converted to markup.
+- Cell size in `regridclm` is set to cell size of target grid, warning is printed if cell size differs.
+- Format and suffix of output files have been removed in `lpjml_config.cjson`:
+```java
+{ "id" : "npp", "file" : { "name" : "output/mnpp"}},
+```
+
+## Added
+
+- More options added to `lpjml_config.cjson` to customize format of output:
+```java
+  "default_fmt" : "raw",      /* default format for output files: "raw","txt","cdf","clm","sock" */
+  "default_suffix" : ".bin",  /* default file suffix for output files */
+  "grid_type" : "short",      /* set datatype of grid file ("short", "float", "double") */
+  "flush_output" : false,     /* flush output to file every time step */
+  "absyear" : false,          /* absolute years instead of years relative to baseyear (true/false) */
+  "rev_lat" : false,          /* reverse order of latitudes in NetCDF output (true/false) */
+  "with_days" : true,         /* use days as units for monthly output in NetCDF files */
+  "nofill" : false,           /* do not fill NetCDF files at creation (true/false) */
+  "baseyear" : 1901,          /* base year for output in NetCDF files */
+```
+- Global attributes for NetCDF output files can be set in the `lpjml_config.cjson` file:
+```java
+ "global_attrs" : {"institution" : "Potsdam Institute for Climate Impact Research",
+                    "contact" : "", /* name and email address */
+                    /* any name and string value can be added: "name" : "value", */
+                    "comment" : ""  /* additional comments */
+                   },       /* Global attributes for NetCDF output files */
+```
+- Option `-metafile` added to `regridclm`. If metafile contains name of grid file, the filename of the source grid can be omitted:
+```
+regridclm -metafile grid_new.clm temp.clm.json temp_new.clm
+```
+- NetCDF files can be created with `bin2cdf` and `clm2cdf`from the JSON metafiles containing all global attributes:
+```bash
+bin2cdf -metafile soilc_layer.bin.json soilc_layer.nc
+clm2cdf -metafile temp.clm.json temp.nc
+```
+- `"landcovermap"` added to define mapping of the prescribed FPC input to PFTs.
+- `-hostfile` option added to `lpjrun`.
+- New utilities added:
+  * cmpbin - compares binary ouput files
+  * statclm - prints minimum, maximum and average of clm files
+  * regriddrain - regrids drainage file to new grid
+- Option `-nopp` added to `lpjml`. This option disables preprocessing of the config file by `cpp`.
+- Option `-ofiles` added to `lpjml` to print list of all available output files.
+- Option `-pedantic` added to `lpjcheck` and `lpjml` to stop on warning.
+- Option `-json` added to `regridclm` and `regridsoil` utilities to create additional JSON metafiles.
+
+
 ## [5.8.6] - 2024-02-29
 
 - author: Stephen Wirth (wirth@pik-potsdam.de), Werner von Bloh (bloh@pik-potsdam.de), Jens Heinke (heinke@pik-potsdam.de), Marie Hemmen (hemmen@pik-potsdam.de)
