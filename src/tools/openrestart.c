@@ -97,7 +97,13 @@ FILE *openrestart(const char *filename, /**< filename of restart file */
     }
   }
   config->landuse_restart=restartheader.landuse;
-  if(restartheader.river_routing!=config->river_routing)
+  config->river_routing_restart=restartheader.river_routing;
+  if(!restartheader.river_routing && config->river_routing)
+  {
+    if(isroot(*config))
+      fprintf(stderr,"WARNING040: River routing in '%s' not set while set in run.\n",filename);
+  }
+  else if(restartheader.river_routing!=config->river_routing)
   {
     if(isroot(*config))
       fprintf(stderr,"ERROR181: River-routing setting %s is different from %s in %s file '%s'.\n",

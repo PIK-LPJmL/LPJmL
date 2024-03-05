@@ -44,32 +44,47 @@ Bool freadcell(FILE *file,             /**< File pointer to binary file */
 #ifdef IMAGE
     freadreal1(&cell->discharge.dmass_gw,swap,file); // groundwater mass
 #endif
-    freadreal1(&cell->discharge.dfout,swap,file);
-    freadreal1(&cell->discharge.dmass_river,swap,file);
-    freadreal1(&cell->discharge.dmass_sum,swap,file);
-    freadreal1(&cell->lateral_water, swap, file);
+    if(config->river_routing_restart)
+    {
+      freadreal1(&cell->discharge.dfout,swap,file);
+      freadreal1(&cell->discharge.dmass_river,swap,file);
+      freadreal1(&cell->discharge.dmass_sum,swap,file);
+      freadreal1(&cell->lateral_water, swap, file);
 #ifdef COUPLING_WITH_FMS
-    freadreal1(&cell->laketemp,swap,file);
+      freadreal1(&cell->laketemp,swap,file);
 #endif
-    cell->discharge.queue=freadqueue(file,swap);
-    if(cell->discharge.queue==NULL)
-    {
-      fprintf(stderr,"ERROR254: Cannot read queue data.\n");
-      return TRUE;
-    }
-    if(fread(&b,sizeof(b),1,file)!=1)
-    {
-      fprintf(stderr,"ERROR254: Cannot read dam flag.\n");
-      return TRUE;
-    }
-    cell->ml.dam=b;
-    if(cell->ml.dam)
-    {
-      if(freadresdata(file,cell,swap))
+      cell->discharge.queue=freadqueue(file,swap);
+      if(cell->discharge.queue==NULL)
       {
-        fprintf(stderr,"ERROR254: Cannot read reservoir data.\n");
+        fprintf(stderr,"ERROR254: Cannot read queue data.\n");
         return TRUE;
       }
+      if(fread(&b,sizeof(b),1,file)!=1)
+      {
+        fprintf(stderr,"ERROR254: Cannot read dam flag.\n");
+        return TRUE;
+      }
+      cell->ml.dam=b;
+      if(cell->ml.dam)
+      {
+        if(freadresdata(file,cell,swap))
+        {
+          fprintf(stderr,"ERROR254: Cannot read reservoir data.\n");
+          return TRUE;
+        }
+      }
+    }
+    else
+    {
+#ifdef IMAGE
+      cell->discharge.dmass_gw=0;
+#endif
+#ifdef COUPLING_WITH_FMS
+      cell->laketemp=0;
+#endif
+      cell->discharge.dfout=cell->discharge.dmass_river=cell->discharge.dmass_sum=cell->lateral_water=0.0;
+      cell->ml.dam=FALSE;
+      cell->discharge.queue=NULL;
     }
   } 
   if(!cell->skip)
