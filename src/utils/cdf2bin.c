@@ -17,7 +17,7 @@
 #ifdef USE_UDUNITS
 #define USAGE "Usage: %s [-swap] [-v] [-units unit] [-var name] [-clm] [-cellsize size] [-byte] [-floatgrid] [-doublegrid]  [-o filename] [-json] gridfile netcdffile ...\n"
 #else
-#define USAGE "Usage: %s [-swap] [-v] [-var name] [-clm] [-cellsize size] [-byte] [-floatgrid] [-doublegrid] [-o filename] gridfile netcdffile ...\n"
+#define USAGE "Usage: %s [-swap] [-v] [-var name] [-clm] [-cellsize size] [-byte] [-floatgrid] [-doublegrid] [-o filename] [-json] gridfile netcdffile ...\n"
 #endif
 
 #if defined(USE_NETCDF) || defined(USE_NETCDF4)
@@ -257,7 +257,7 @@ int main(int argc,char **argv)
         isbyte=TRUE;
       else if(!strcmp(argv[iarg],"-floatgrid"))
         grid_type=LPJ_FLOAT;
-      else if(!strcmp(argv[iarg],"-floatgrid"))
+      else if(!strcmp(argv[iarg],"-doublegrid"))
         grid_type=LPJ_DOUBLE;
       else if(!strcmp(argv[iarg],"-json"))
         isjson=TRUE;

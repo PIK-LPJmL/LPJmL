@@ -383,9 +383,9 @@ int main(int argc,char **argv)
                "-v,--verbose  print name of NetCDF files\n"
                "-scale factor scaling factor for CLM files. Default is one\n"
 #ifdef USE_UDUNITS
-               "-units u      set unit to convert from  NetCDF file\n"
+               "-units u      set unit to convert from NetCDF file\n"
 #endif
-               "-var name     variable  name  in NetCDF file \n"
+               "-var name     variable  name in NetCDF file \n"
                "-time name    name of time in NetCDF file, default is 'time' or 'TIME'\n"
                "-id string    LPJ header string in clm file\n"
                "-version v    version of clm header, default is 3\n"
