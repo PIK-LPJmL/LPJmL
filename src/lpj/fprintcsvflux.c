@@ -117,7 +117,7 @@ void fprintcsvflux(FILE *file,          /**< Output file pointer */
   fprintf(file,"%c%g",d,flux.CH4_sink*scale);
   fprintf(file,"%c%g",d,flux.CH4_fire*scale);
   if(config->withlanduse!=NO_LANDUSE)
-    fprintf(file,"%c%g%c%g",d,flux.CH4_rice*scale,d,flux.CH4_setaside);
+    fprintf(file,"%c%g%c%g",d,flux.CH4_rice*scale,d,flux.CH4_setaside*scale);
   fprintf(file,"%c%g",d,flux.prec*scale);
   fprintf(file,"%c%g",d,flux.soil.carbon*scale);
   fprintf(file,"%c%g",d,flux.soil_slow.carbon*scale);

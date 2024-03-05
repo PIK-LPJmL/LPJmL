@@ -24,10 +24,8 @@ void mix_veg_tree(Pft *pft,Real scaler)
   pft->bm_inc.carbon*=scaler; /*not necessary as Carbon should always be zero when this function is called?*/
   pft->establish.carbon*=scaler;
   pft->establish.nitrogen*=scaler;
-  pft->nbalance_cor*=scaler;
 
   tree->excess_carbon*=scaler;
-  tree->turn_nbminc*=scaler;
   tree->fruit.carbon*=scaler;
   tree->fruit.nitrogen*=scaler;
   tree->ind.leaf.carbon*=scaler;
@@ -84,7 +82,6 @@ Bool mix_veg_stock_tree(Pft *pft1,Pft *pft2,Real frac1, Real frac2,const Config 
     tree1->turn_litt.root.nitrogen=(tree1->turn_litt.root.nitrogen*frac1+tree2->turn_litt.root.nitrogen*frac2)/(frac1+frac2);
     pft1->nind=nind;
     pft1->bm_inc.nitrogen=(frac1*pft1->bm_inc.nitrogen+frac2*pft2->bm_inc.nitrogen)/(frac1+frac2);
-    pft1->nbalance_cor=(frac1*pft1->nbalance_cor+frac2*pft2->nbalance_cor)/(frac1+frac2);
     pft1->bm_inc.carbon=(frac1*pft1->bm_inc.carbon+frac2*pft2->bm_inc.carbon)/(frac1+frac2);
     pft1->establish.carbon=(pft1->establish.carbon*frac1+pft2->establish.carbon*frac2)/(frac1+frac2);
     pft1->establish.nitrogen=(pft1->establish.nitrogen*frac1+pft2->establish.nitrogen*frac2)/(frac1+frac2);

@@ -106,7 +106,6 @@ Stocks cultivate(Cell *cell,           /**< cell pointer */
   //if(year==2011) fprintf(stdout,"before addpft day: %d bminc: %g \n",day,bm_inc.carbon);
   bm_inc.carbon=pft->bm_inc.carbon*cropstand->frac;
   bm_inc.nitrogen=pft->bm_inc.nitrogen*cropstand->frac;
-  //if(year==2011) fprintf(stdout,"after addpft day: %d bminc: %g pft_bminc: %g nbalance_cor: %g \n",day,bm_inc.carbon,pft->bm_inc.carbon,pft->nbalance_cor);
   if (cell->ml.manure_nr != NULL)
   {
     manure = (isother) ? cell->ml.manure_nr[irrigation].grass[0] : cell->ml.manure_nr[irrigation].crop[cft];

@@ -40,7 +40,6 @@ Bool fread_tree(FILE *file, /**< pointer to binary file */
   freadint1(&tree->isphen,swap,file);
   freadreal((Real *)&tree->turn,sizeof(Treeturn)/sizeof(Real),swap,file);
   freadreal((Real *)&tree->turn_litt,sizeof(Treeturn)/sizeof(Real),swap,file);
-  freadreal1(&tree->turn_nbminc,swap,file);
   freadreal((Real *)&tree->ind,sizeof(Treephys2)/sizeof(Real),swap,file);
   if(pft->par->cultivation_type==ANNUAL_TREE)
   {

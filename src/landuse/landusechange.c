@@ -1397,7 +1397,6 @@ void landusechange(Cell *cell,          /**< pointer to cell */
     {
       stand=getstand(cell->standlist,s);
       irrigstand=getstand(cell->standlist,s2);
-      if(year==2003)fprintf(stderr,"irrigstandfrac: %g rainfedfrac: %g\n",irrigstand->frac,stand->frac);
       if(difffrac2<0) /* move irrigated setaside to rainfed setaside */
       {
         movefrac=min(-difffrac2,difffrac);

@@ -271,7 +271,6 @@ Real daily_biomass_grass(Stand *stand,                /**< stand pointer */
           grass->turn_litt.root.carbon+=grass->ind.root.carbon*grasspar->turnover.root/NDAYYEAR*pft->nind;
           grass->turn.root.nitrogen+=grass->ind.root.nitrogen*grasspar->turnover.root/NDAYYEAR;
           stand->soil.litter.item[pft->litter].bg.nitrogen+=grass->ind.root.nitrogen*grasspar->turnover.root/NDAYYEAR*pft->nind*pft->par->fn_turnover;
-          //pft->nbalance_cor+=grass->ind.root.nitrogen*grasspar->turnover.root/NDAYYEAR*pft->nind*(1-pft->par->fn_turnover);
           pft->bm_inc.nitrogen+=grass->ind.root.nitrogen*grasspar->turnover.root/NDAYYEAR*pft->nind*(1-pft->par->fn_turnover);
           getoutput(output,LITFALLN,config)+=grass->ind.root.nitrogen*grasspar->turnover.root/NDAYYEAR*pft->nind*pft->par->fn_turnover*stand->frac;
           grass->turn_litt.root.nitrogen+=grass->ind.root.nitrogen*grasspar->turnover.root/NDAYYEAR*pft->nind;

@@ -236,8 +236,8 @@ Bool allocation_grass(Litter *litter,   /**< litter pool */
   end = vegn_sum(pft)+pft->bm_inc.nitrogen+stocks.nitrogen;
 
   if(fabs(end-start.nitrogen)>0.01)
-    fprintf(stderr, "N_ERROR allocation_grass: %g start : %g end : %g  bm_inc.nitrogen: %g  nbalance_cor: %g  PFT:%s nind: %g leaf_turn_litt: %g root_turn_litt: %g  root_turn: %g  leaf_turn: %g \n",
-        end-start.nitrogen, start.nitrogen,end,pft->bm_inc.nitrogen,pft->nbalance_cor,pft->par->name,pft->nind,grass->turn_litt.root.nitrogen,grass->turn_litt.leaf.nitrogen,grass->turn.root.nitrogen,grass->turn.leaf.nitrogen);
+    fprintf(stderr, "N_ERROR allocation_grass: %g start : %g end : %g  bm_inc.nitrogen: %g   PFT:%s nind: %g leaf_turn_litt: %g root_turn_litt: %g  root_turn: %g  leaf_turn: %g \n",
+        end-start.nitrogen, start.nitrogen,end,pft->bm_inc.nitrogen,pft->par->name,pft->nind,grass->turn_litt.root.nitrogen,grass->turn_litt.leaf.nitrogen,grass->turn.root.nitrogen,grass->turn.leaf.nitrogen);
 #endif
 
   *fpc_inc=fpc_grass(pft);

@@ -524,6 +524,8 @@ void update_daily(Cell *cell,            /**< cell pointer           */
       getoutputindex(&cell->output,SWC_VOL,l,config)+=(stand->soil.w[l]*stand->soil.whcs[l]+stand->soil.w_fw[l]+stand->soil.wpwps[l]+
                      stand->soil.ice_depth[l]+stand->soil.ice_fw[l])*stand->frac*cell->coord.area;
     }
+    if(stand->soil.iswetland)
+     getoutput(&cell->output,WTAB,config) += cell->hydrotopes.wetland_wtable_current;
   } /* of foreachstand */
 
   getoutput(&cell->output,CELLFRAC_AGR,config)+=agrfrac;
@@ -543,8 +545,6 @@ void update_daily(Cell *cell,            /**< cell pointer           */
 
   hydrotopes(cell);
   getoutput(&cell->output,MWATER,config) += cell->hydrotopes.meanwater;
-  if(stand->soil.iswetland)
-   getoutput(&cell->output,WTAB,config) += cell->hydrotopes.wetland_wtable_current;
   cell->hydrotopes.wetland_wtable_monthly+= cell->hydrotopes.wetland_wtable_current;
   cell->hydrotopes.wtable_monthly+= cell->hydrotopes.meanwater;
 #ifdef IMAGE

@@ -502,8 +502,6 @@ Bool filesexist(Config config, /**< LPJmL configuration */
       bad+=checkinputdata(&config,&config.sowing_cotton_ir_filename,"sowing cotton ir",NULL,LPJ_SHORT);
       bad+=checkinputdata(&config,&config.harvest_cotton_ir_filename,"harvest cotton ir",NULL,LPJ_SHORT);
     }
-    if(config.sdate_option==PRESCRIBED_SDATE)
-      bad+=checkinputfile(&config,&config.sdate_filename,NULL,TRUE);
     if(config.crop_phu_option==PRESCRIBED_CROP_PHU)
       bad+=checkdatafile(&config,&config.crop_phu_filename,"crop phu",NULL,LPJ_SHORT,2*config.cftmap_size);
     if(config.countrycode_filename.fmt==CDF)

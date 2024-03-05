@@ -594,7 +594,7 @@ Real infil_perc(Stand *stand,        /**< Stand pointer */
   //==  LATERAL FLOW ==================================================
   // water table above frost table
 
-  q_perch_max = 1e-5 * sin(stand->slope_mean*3.6*M_PI/180);                          //specify maximum drainage rate mm/d
+  q_perch_max = 0.864 * sin(stand->slope_mean*3.6*M_PI/180);                          //1e-5mm/s specify maximum drainage rate mm/d
   frost_depth=layerbound[icet]-soil->freeze_depth[icet];
 
   if(frost_depth<layerbound[BOTTOMLAYER-1])
@@ -664,7 +664,7 @@ Real infil_perc(Stand *stand,        /**< Stand pointer */
     if(jwt>=(BOTTOMLAYER-1))
       depthsum=layerbound[BOTTOMLAYER-1];
     Theta_ice=pow(10,(-OMEGA*(icesum/depthsum)));                                               // OMEGA of 6 gives a high impact on low ice fractions (0.1 -> 0.2511886)
-    rsub_top_max=50*sin(stand->slope_mean*3.6*M_PI/180);                                        // 20 mm day-1 suggested by Karpouzas etal, 2006, Christen etal, 2006 ->50 mm day-1
+    rsub_top_max=20*sin(stand->slope_mean*3.6*M_PI/180);                                        // 20 mm day-1 suggested by Karpouzas etal, 2006, Christen etal, 2006 ->50 mm day-1
     rsub_top=Theta_ice*rsub_top_max*exp(-fff*soil->wtable/1000);
     rsub_top=min(rsub_top,active_wa);
     //! use analytical expression for aquifer specific yield

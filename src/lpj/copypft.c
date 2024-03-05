@@ -39,7 +39,6 @@ void copypft(Pft *dst, const Pft *src)
   dst->snowcover = src->snowcover;
   dst->inun_count = src->inun_count;
   dst->inun_stress = src->inun_stress;
-  dst->nbalance_cor =src->nbalance_cor;
 /* call PFT-specific copy function */
   src->par->copy(dst, src);
 } /* of 'copypft' */
