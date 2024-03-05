@@ -600,6 +600,38 @@ int main(int argc,char **argv)
           return EXIT_FAILURE;
         }
       }
+      if(units==NULL)
+        units=getattr_netcdf(&climate,climate.varid,"units");
+      if(var==NULL)
+        var=getvarname_netcdf(&climate);
+      long_name=getattr_netcdf(&climate,climate.varid,"long_name");
+      standard_name=getattr_netcdf(&climate,climate.varid,"standard_name");
+      history=getattr_netcdf(&climate,NC_GLOBAL,"history");
+      source=getattr_netcdf(&climate,NC_GLOBAL,"source");
+      if(nc_inq_natts(climate.ncid,&len))
+        n_attr=0;
+      else
+      {
+        attrs=newvec(Attr,len);
+        if(attrs==NULL)
+        {
+          printallocerr("attrs");
+          return EXIT_FAILURE;
+        }
+        n_attr=0;
+        for(i=0;i<len;i++)
+        {
+          if(!nc_inq_attname(climate.ncid,NC_GLOBAL,i,name))
+          {
+            if(strcmp(name,"history") && strcmp(name,"source"))
+            {
+              attrs[n_attr].value=getattr_netcdf(&climate,NC_GLOBAL,name);
+              if(attrs[n_attr].value!=NULL)
+                attrs[n_attr++].name=strdup(name);
+            }
+          }
+        }
+      }
     }
     else
     {
@@ -617,33 +649,6 @@ int main(int argc,char **argv)
       {
         fprintf(stderr,"First year %d in '%s' not last year %d.\n",climate.firstyear,argv[j],header.firstyear+header.nyear);
         return EXIT_FAILURE;
-      }
-    }
-    if(units==NULL)
-      units=getattr_netcdf(&climate,climate.varid,"units");
-    if(var==NULL)
-      var=getvarname_netcdf(&climate);
-    long_name=getattr_netcdf(&climate,climate.varid,"long_name");
-    standard_name=getattr_netcdf(&climate,climate.varid,"standard_name");
-    history=getattr_netcdf(&climate,NC_GLOBAL,"history");
-    source=getattr_netcdf(&climate,NC_GLOBAL,"source");
-    if(nc_inq_natts(climate.ncid,&len))
-      n_attr=0;
-    else
-    {
-      attrs=newvec(Attr,len);
-      n_attr=0;
-      for(i=0;i<len;i++)
-      {
-        if(!nc_inq_attname(climate.ncid,NC_GLOBAL,i,name))
-        {
-          if(strcmp(name,"history") && strcmp(name,"source"))
-          {
-            attrs[n_attr].value=getattr_netcdf(&climate,NC_GLOBAL,name);
-            if(attrs[n_attr].value!=NULL)
-              attrs[n_attr++].name=strdup(name);
-          }
-        }
       }
     }
     time=climate.time_step;
