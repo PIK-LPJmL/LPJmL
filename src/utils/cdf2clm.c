@@ -353,6 +353,9 @@ int main(int argc,char **argv)
   Time time;
   size_t var_len;
   char *id,*out_json;
+  Attr *attrs=NULL;
+  int n_attr,len;
+  char name[NC_MAX_NAME];
   Filename grid_name;
   Type grid_type;
   /* set default values */
@@ -624,6 +627,25 @@ int main(int argc,char **argv)
     standard_name=getattr_netcdf(&climate,climate.varid,"standard_name");
     history=getattr_netcdf(&climate,NC_GLOBAL,"history");
     source=getattr_netcdf(&climate,NC_GLOBAL,"source");
+    if(nc_inq_natts(climate.ncid,&len))
+      n_attr=0;
+    else
+    {
+      attrs=newvec(Attr,len);
+      n_attr=0;
+      for(i=0;i<len;i++)
+      {
+        if(!nc_inq_attname(climate.ncid,NC_GLOBAL,i,name))
+        {
+          if(strcmp(name,"history") && strcmp(name,"source"))
+          {
+            attrs[n_attr].value=getattr_netcdf(&climate,NC_GLOBAL,name);
+            if(attrs[n_attr].value!=NULL)
+              attrs[n_attr++].name=strdup(name);
+          }
+        }
+      }
+    }
     time=climate.time_step;
     var_len=climate.var_len;
     for(year=0;year<climate.nyear;year++)
@@ -688,7 +710,7 @@ int main(int argc,char **argv)
       header.nbands/=header.nstep;
     grid_name.name=argv[i];
     grid_name.fmt=CLM;
-    fprintjson(file,outname,source,history,arglist,&header,NULL,NULL,NULL,0,var,units,standard_name,long_name,&grid_name,grid_type,CLM,id,FALSE,version);
+    fprintjson(file,outname,source,history,arglist,&header,NULL,NULL,attrs,n_attr,var,units,standard_name,long_name,&grid_name,grid_type,CLM,id,FALSE,version);
     fclose(file);
   }
   return EXIT_SUCCESS;
