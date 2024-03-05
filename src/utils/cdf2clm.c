@@ -347,7 +347,7 @@ int main(int argc,char **argv)
   Coord *coords;
   Header header;
   FILE *file;
-  int i,j,k,year,version;
+  int iarg,j,k,year,version;
   short *s;
   Bool isfloat,verbose,iszero,isjson;
   Time time;
@@ -368,11 +368,11 @@ int main(int argc,char **argv)
   id=LPJ_CLIMATE_HEADER;
   version=LPJ_CLIMATE_VERSION;
   initconfig(&config);
-  for(i=1;i<argc;i++)
+  for(iarg=1;iarg<argc;iarg++)
   {
-    if(argv[i][0]=='-')
+    if(argv[iarg][0]=='-')
     {
-      if(!strcmp(argv[i],"-h") || !strcmp(argv[i],"--help"))
+      if(!strcmp(argv[iarg],"-h") || !strcmp(argv[iarg],"--help"))
       {
         printf("   cdf2clm (" __DATE__ ") Help\n"
                "   ==========================\n\n"
@@ -399,78 +399,78 @@ int main(int argc,char **argv)
                argv[0]);
         return EXIT_SUCCESS;
       }
-      if(!strcmp(argv[i],"-var"))
+      if(!strcmp(argv[iarg],"-var"))
       {
-        if(argc==i+1)
+        if(argc==iarg+1)
         {
           fprintf(stderr,"Missing argument after option '-var'.\n"
                  USAGE,argv[0]);
           return EXIT_FAILURE;
         }
-        var=argv[++i];
+        var=argv[++iarg];
       }
-      else if(!strcmp(argv[i],"-time"))
+      else if(!strcmp(argv[iarg],"-time"))
       {
-        if(argc==i+1)
+        if(argc==iarg+1)
         {
           fprintf(stderr,"Missing argument after option '-time'.\n"
                  USAGE,argv[0]);
           return EXIT_FAILURE;
         }
-        time_name=argv[++i];
+        time_name=argv[++iarg];
       }
 #ifdef USE_UDUNITS
-      else if(!strcmp(argv[i],"-units"))
+      else if(!strcmp(argv[iarg],"-units"))
       {
-        if(argc==i+1)
+        if(argc==iarg+1)
         {
           fprintf(stderr,"Missing argument after option '-units'.\n"
                  USAGE,argv[0]);
           return EXIT_FAILURE;
         }
-        units=argv[++i];
+        units=argv[++iarg];
       }
 #endif
-      else if(!strcmp(argv[i],"-o"))
+      else if(!strcmp(argv[iarg],"-o"))
       {
-        if(argc==i+1)
+        if(argc==iarg+1)
         {
           fprintf(stderr,"Missing argument after option '-o'.\n"
                  USAGE,argv[0]);
           return EXIT_FAILURE;
         }
-        outname=argv[++i];
+        outname=argv[++iarg];
       }
-      else if(!strcmp(argv[i],"-id"))
+      else if(!strcmp(argv[iarg],"-id"))
       {
-        if(argc==i+1)
+        if(argc==iarg+1)
         {
           fprintf(stderr,"Missing argument after option '-id'.\n"
                  USAGE,argv[0]);
           return EXIT_FAILURE;
         }
-        id=argv[++i];
+        id=argv[++iarg];
       }
-      else if(!strcmp(argv[i],"-float"))
+      else if(!strcmp(argv[iarg],"-float"))
         isfloat=TRUE;
-      else if(!strcmp(argv[i],"-v") || !strcmp(argv[i],"--verbose"))
+      else if(!strcmp(argv[iarg],"-v") || !strcmp(argv[iarg],"--verbose"))
         verbose=TRUE;
-      else if(!strcmp(argv[i],"-zero"))
+      else if(!strcmp(argv[iarg],"-zero"))
         iszero=TRUE;
-      else if(!strcmp(argv[i],"-json"))
+      else if(!strcmp(argv[iarg],"-json"))
         isjson=TRUE;
-      else if(!strcmp(argv[i],"-scale"))
+      else if(!strcmp(argv[iarg],"-scale"))
       {
-        if(argc==i+1)
+        if(argc==iarg+1)
         {
           fprintf(stderr,"Missing argument after option '-scale'.\n"
                  USAGE,argv[0]);
           return EXIT_FAILURE;
         }
-        scale=(float)strtod(argv[++i],&endptr);
+        scale=(float)strtod(argv[++iarg],&endptr);
         if(*endptr!='\0')
         {
-          fprintf(stderr,"Invalid number '%s' for option '-scale'.\n",argv[i]);
+          fprintf(stderr,"Invalid number '%s' for option '-scale'.\n",argv[iarg]);
           return EXIT_FAILURE;
         }
         if(scale==0)
@@ -479,18 +479,18 @@ int main(int argc,char **argv)
           return EXIT_FAILURE;
         }
       }
-      else if(!strcmp(argv[i],"-version"))
+      else if(!strcmp(argv[iarg],"-version"))
       {
-        if(argc==i+1)
+        if(argc==iarg+1)
         {
           fprintf(stderr,"Missing argument after option '-version'.\n"
                  USAGE,argv[0]);
           return EXIT_FAILURE;
         }
-        version=strtol(argv[++i],&endptr,10);
+        version=strtol(argv[++iarg],&endptr,10);
         if(*endptr!='\0')
         {
-          fprintf(stderr,"Invalid number '%s' for option '-version'.\n",argv[i]);
+          fprintf(stderr,"Invalid number '%s' for option '-version'.\n",argv[iarg]);
           return EXIT_FAILURE;
         }
       }
@@ -498,20 +498,20 @@ int main(int argc,char **argv)
       else
       {
         fprintf(stderr,"Invalid option '%s'.\n"
-                USAGE,argv[i],argv[0]);
+                USAGE,argv[iarg],argv[0]);
         return EXIT_FAILURE;
       }
     }
     else
       break;
   }
-  if(argc<i+2)
+  if(argc<iarg+2)
   {
     fprintf(stderr,"Missing arguments.\n"
             USAGE,argv[0]);
     return EXIT_FAILURE;
   }
-  coord_filename.name=argv[i];
+  coord_filename.name=argv[iarg];
   coord_filename.fmt=CLM;
   coordfile=opencoord(&coord_filename,TRUE);
   if(coordfile==NULL)
@@ -544,7 +544,7 @@ int main(int argc,char **argv)
     return EXIT_FAILURE;
   }
   fwriteheader(file,&header,id,version);
-  for(j=i+1;j<argc;j++)
+  for(j=iarg+1;j<argc;j++)
   {
     if(openclimate_netcdf(&climate,argv[j],time_name,var,NULL,units,&config))
     {
@@ -553,7 +553,7 @@ int main(int argc,char **argv)
     }
     if(verbose)
       printf("%s: ",argv[j]);
-    if(j==i+1)
+    if(j==iarg+1)
     {
       header.firstyear=climate.firstyear;
       switch(climate.time_step)
@@ -713,7 +713,7 @@ int main(int argc,char **argv)
     }
     if(version<4)
       header.nbands/=header.nstep;
-    grid_name.name=argv[i];
+    grid_name.name=argv[iarg];
     grid_name.fmt=CLM;
     fprintjson(file,outname,source,history,arglist,&header,NULL,NULL,attrs,n_attr,var,units,standard_name,long_name,&grid_name,grid_type,CLM,id,FALSE,version);
     fclose(file);
