@@ -619,9 +619,9 @@ int main(int argc,char **argv)
           return EXIT_FAILURE;
         }
         n_attr=0;
-        for(i=0;i<len;i++)
+        for(k=0;k<len;k++)
         {
-          if(!nc_inq_attname(climate.ncid,NC_GLOBAL,i,name))
+          if(!nc_inq_attname(climate.ncid,NC_GLOBAL,k,name))
           {
             if(strcmp(name,"history") && strcmp(name,"source"))
             {

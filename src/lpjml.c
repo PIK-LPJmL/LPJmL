@@ -224,6 +224,9 @@ int main(int argc,char **argv)
   }
   /* open output files */  
   output=fopenoutput(grid,NOUT,&config);
+  rc=(output==NULL);
+  failonerror(&config,rc,INIT_OUTPUT_ERR,
+              "Initialization of output data failed");
   rc=initoutput(output,grid,config.npft[GRASS]+config.npft[TREE],config.npft[CROP],&config);
   failonerror(&config,rc,INIT_OUTPUT_ERR,
               "Initialization of output data failed");
