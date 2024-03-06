@@ -139,7 +139,7 @@ int main(int argc,char **argv)
   progname=strippath(argv[0]); /* strip path from program name */
   if(argc>1)
   {
-    if(!strcmp(argv[1],"-h")) /* check for help option */
+    if(!strcmp(argv[1],"-h") || !strcmp(argv[1],"--help")) /* check for help option */
     {
       if(isroot(config))
       {
@@ -150,7 +150,7 @@ int main(int argc,char **argv)
 #endif
       return EXIT_SUCCESS;
     }
-    if(!strcmp(argv[1],"-l")) /* check for license option */
+    if(!strcmp(argv[1],"-l") || !strcmp(argv[1],"--license")) /* check for license option */
     {
       if(isroot(config))
         printlicense();
@@ -159,7 +159,7 @@ int main(int argc,char **argv)
 #endif
       return EXIT_SUCCESS;
     }
-    else if(!strcmp(argv[1],"-v")) /* check for version option */
+    else if(!strcmp(argv[1],"-v") || !strcmp(argv[1],"--version")) /* check for version option */
     {
       if(isroot(config))
         printflags(progname);

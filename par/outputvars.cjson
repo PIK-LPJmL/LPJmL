@@ -2,7 +2,7 @@
 /**                                                                                \n**/
 /**               o  u  t  p  u  t  v  a  r  s  .  c  j  s  o  n                   \n**/
 /**                                                                                \n**/
-/**  Defines array of output variables for LPJmL 5.8.5-SPITFIRE                    \n**/
+/**  Defines array of output variables for LPJmL 5.8.6-SPITFIRE                    \n**/
 /**                                                                                \n**/
 /**  Monthly output rates can be rescaled to 1/day or 1/second by setting the unit \n**/
 /**  to day-1 or sec-1, e.g.:                                                      \n**/
@@ -381,5 +381,5 @@
     { "id" : ROS, "name": "ros", "timestep" : "monthly", "var" :  "ros", "long_name" :  "rate of spread", "unit" : "m/s", "scale" : 1.0, "offset" : 0.0},
     { "id" : FIRESIZE, "name": "firesize", "timestep" : "monthly", "var" :  "firesize", "long_name" :  "average size of fire", "unit" : "km2", "scale" : 1.0e-6, "offset" : 0.0},
     { "id" : FIREDAYS, "name": "firedays", "timestep" : "monthly", "var" :  "firedays", "long_name" :  "number of days with fire", "unit" : "days", "scale" : 1.0, "offset" : 0.0},
-    { "id" : SWC_VOL, "name": "swc_vol", "timestep" : "monthly", "var" : "swc_vol", "long_name" : "soil water content for each of the top 5 soillayers", "unit" : "dm3", "scale" : 1.0, "offset" : 0.0},
+    { "id" : SWC_VOL, "name": "swc_vol", "timestep" : "monthly", "var" : "swc_vol", "long_name" : "soil water content for each of the top 5 soillayers", "unit" : "dm3", "scale" : 1.0, "offset" : 0.0}
   ]

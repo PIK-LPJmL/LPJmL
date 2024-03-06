@@ -1,8 +1,10 @@
 /**************************************************************************************/
 /**                                                                                \n**/
-/**      f  w  r  i  t  e  r  e  s  t  a  r  t  h  e  a  d  e  r  .  c             \n**/
+/**                 f  l  u  s  h  _  n  e  t  c  d  f  .  c                       \n**/
 /**                                                                                \n**/
-/**     Writing file header for LPJ restart files.                                 \n**/
+/**     C implementation of LPJmL                                                  \n**/
+/**                                                                                \n**/
+/**     Function flushes NetCDF file                                               \n**/
 /**                                                                                \n**/
 /** (C) Potsdam Institute for Climate Impact Research (PIK), see COPYRIGHT file    \n**/
 /** authors, and contributors see AUTHORS file                                     \n**/
@@ -13,20 +15,13 @@
 /**************************************************************************************/
 
 #include "lpj.h"
+#if defined(USE_NETCDF) || defined(USE_NETCDF4)
+#include <netcdf.h>
+#endif
 
-Bool fwriterestartheader(FILE *file,                 /**< file pointer of binary file */
-                         const Restartheader *header /**< file header to be written */
-                        )                            /** \return TRUE on error */
+void flush_netcdf(Netcdf *cdf)
 {
-  if(fwrite(&header->landuse,sizeof(int),1,file)!=1)
-    return TRUE;
-  if(fwrite(&header->river_routing,sizeof(int),1,file)!=1)
-    return TRUE;
-  if(fwrite(&header->sdate_option,sizeof(int),1,file)!=1)
-    return TRUE;
-  if(fwrite(&header->crop_option,sizeof(int),1,file)!=1)
-    return TRUE;
-  if(fwrite(&header->double_harvest,sizeof(int),1,file)!=1)
-    return TRUE;
-  return fwrite(header->seed,sizeof(Seed),1,file)!=1;
-} /* of 'fwriterestartheader' */
+#if defined(USE_NETCDF) || defined(USE_NETCDF4)
+  nc_sync(cdf->ncid);
+#endif
+} /* of 'flush_netcdf' */

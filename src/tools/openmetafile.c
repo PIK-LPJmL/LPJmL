@@ -34,7 +34,7 @@
 
 const char *ordernames[]={"cellyear","yearcell","cellindex","cellseq"};
 
-void fprintmap(FILE *file,Map *map)
+void fprintmap(FILE *file,const Map *map)
 {
   int i;
   fputc('[',file);
@@ -78,6 +78,7 @@ char *parse_json_metafile(FILE *file,         /**< pointer to JSON file */
                           char **long_name,   /**< long name of variable or NULL */
                           Filename *gridfile, /**< name of grid file or NULL */
                           Type *grid_type,    /**< datatype of grid or NULL */
+                          int *filefmt,       /**< file format or NULL */
                           size_t *offset,     /**< offset in binary file */
                           Bool *swap,         /**< byte order has to be changed (TRUE/FALSE) */
                           Verbosity verbosity /**< verbosity level */
@@ -129,6 +130,8 @@ char *parse_json_metafile(FILE *file,         /**< pointer to JSON file */
       closeconfig(lpjfile);
       return NULL;
     }
+    if(filefmt!=NULL)
+      *filefmt=format;
   }
   if(variable!=NULL)
   {
@@ -434,6 +437,7 @@ FILE *openmetafile(Header *header,       /**< pointer to file header */
                    char **long_name,     /**< long name of variable or NULL */
                    Filename *gridfile,   /**< name of grid file or NULL */
                    Type *grid_type,      /**< datatype of grid or NULL */
+                   int *filefmt,         /**< file format or NULL */
                    Bool *swap,           /**< byte order has to be changed (TRUE/FALSE) */
                    size_t *offset,       /**< offset in binary file */
                    const char *filename, /**< file name */
@@ -456,7 +460,7 @@ FILE *openmetafile(Header *header,       /**< pointer to file header */
   name=NULL;
   if(map!=NULL)
     *map=NULL;
-  name=parse_json_metafile(file,header,map,map_name,attrs,n_attr,source,history,variable,unit,standard_name,long_name,gridfile,grid_type,offset,swap,isout ? ERR : NO_ERR);
+  name=parse_json_metafile(file,header,map,map_name,attrs,n_attr,source,history,variable,unit,standard_name,long_name,gridfile,grid_type,filefmt,offset,swap,isout ? ERR : NO_ERR);
   fclose(file);
   if(name==NULL)
   {

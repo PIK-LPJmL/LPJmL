@@ -130,10 +130,15 @@ void fprintjson(FILE *file,           /**< pointer to text file */
   }
   if(gridfile!=NULL)
   {
-    fprintf(file,"  \"grid\" : {\"filename\" : \"%s\", \"format\" : \"%s\", \"datatype\" : \"%s\"},\n",
-            strippath(gridfile->name),
-            fmt[gridfile->fmt],
-            typenames[grid_type]);
+    if(gridfile->fmt==META)
+      fprintf(file,"  \"grid\" : {\"filename\" : \"%s\", \"format\" : \"%s\"},\n",
+              strippath(gridfile->name),
+              fmt[gridfile->fmt]);
+    else
+      fprintf(file,"  \"grid\" : {\"filename\" : \"%s\", \"format\" : \"%s\", \"datatype\" : \"%s\"},\n",
+              strippath(gridfile->name),
+              fmt[gridfile->fmt],
+              typenames[grid_type]);
   }
   fprintf(file,"  \"bigendian\" : %s\n",bool2str((!swap && bigendian()) || (swap && !bigendian())));
   fprintf(file,"}\n");

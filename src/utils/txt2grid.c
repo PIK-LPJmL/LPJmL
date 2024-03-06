@@ -84,15 +84,15 @@ int main(int argc,char **argv)
   for(iarg=1;iarg<argc;iarg++)
     if(argv[iarg][0]=='-')
     {
-      if(!strcmp(argv[iarg],"-h"))
+      if(!strcmp(argv[iarg],"-h") || !strcmp(argv[iarg],"--help"))
       {
         printf("   txt2grid (" __DATE__ ") Help\n"
                "   ===========================\n\n"
                "Convert text file to clm grid file for LPJmL version " LPJ_VERSION "\n\n"
                USAGE
                "\nArguments:\n"
-               "-h                 print this help text\n"
-               "-v                 verbose output\n"
+               "-h,--help          print this help text\n"
+               "-v,--verbose       verbose output\n"
                "-map file          mapping to nearest cell in grid file\n"
                "-fmt s             format string for text input, default is '%s'\n"
                "-cellsize size     cell size, default is %g\n"
@@ -117,7 +117,7 @@ int main(int argc,char **argv)
         }
         fmt=argv[++iarg];
       }
-      else if(!strcmp(argv[iarg],"-v"))
+      else if(!strcmp(argv[iarg],"-v") || !strcmp(argv[iarg],"--verbose"))
         verbose=TRUE;
       else if(!strcmp(argv[iarg],"-float"))
         isfloat=TRUE;

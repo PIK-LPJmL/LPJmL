@@ -19,6 +19,19 @@
 #include "tree.h"
 #include "agriculture.h"
 
+static void flush_output(Outputfile *output,int index)
+{
+  switch(output->files[index].fmt)
+  {
+    case RAW: case CLM: case TXT:
+      fflush(output->files[index].fp.file);
+      break;
+    case CDF:
+      flush_netcdf(&output->files[index].fp.cdf);
+      break;
+  }
+}
+
 #define iswrite(output,index) (isopen(output,index) && iswrite2(index,timestep,year,config))
 
 #define writeoutputvar(index,scale) if(iswrite(output,index))\
@@ -28,6 +41,8 @@
       if(!grid[cell].skip)\
         vec[count++]=(float)(grid[cell].output.data[config->outputmap[index]]*scale);\
     writedata(output,index,vec,year,date,ndata,config);\
+    if(isroot(*config) && config->flush_output)\
+      flush_output(output,index);\
   }
 
 #define writeoutputarray(index,scale) if(iswrite(output,index))\
@@ -41,6 +56,8 @@
           vec[count++]=(float)(grid[cell].output.data[config->outputmap[index]+i]*scale);\
       writepft(output,index,vec,year,date,ndata,i,config);\
     }\
+    if(isroot(*config) && config->flush_output)\
+      flush_output(output,index);\
   }
 
 #define writeoutputshortvar(index) if(iswrite(output,index))\
@@ -56,6 +73,8 @@
           svec[count++]=(short)(grid[cell].output.data[config->outputmap[index]+i]);\
       writeshortpft(output,index,svec,year,date,ndata,i,config);\
     }\
+    if(isroot(*config) && config->flush_output)\
+      flush_output(output,index);\
     free(svec);\
   }
 

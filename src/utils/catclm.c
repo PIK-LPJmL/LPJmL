@@ -101,13 +101,13 @@ int main(int argc,char **argv)
         return EXIT_FAILURE;
       }
       filesize=getfilesizep(in)-headersize(id,version);
-      if((header.order==CELLINDEX && filesize!=sizeof(int)*header.ncell+((version==3) ? typesizes[header.datatype] : size)*header.ncell*header.nbands*header.nstep*header.nyear) ||
-         (header.order!=CELLINDEX && filesize!=((version==3) ? typesizes[header.datatype] : size)*header.ncell*header.nbands*header.nstep*header.nyear))
+      if((header.order==CELLINDEX && filesize!=sizeof(int)*header.ncell+((version>=3) ? typesizes[header.datatype] : size)*header.ncell*header.nbands*header.nstep*header.nyear) ||
+         (header.order!=CELLINDEX && filesize!=((version>=3) ? typesizes[header.datatype] : size)*header.ncell*header.nbands*header.nstep*header.nyear))
       {
         fprintf(stderr,"Error: file length of '%s' does not match header.\n",argv[iarg+i]);
         return EXIT_FAILURE;
       }
-      if(version==3 && header.datatype!=oldheader.datatype)
+      if(version>=3 && header.datatype!=oldheader.datatype)
       {
         fprintf(stderr,"Error: Different datatype in '%s'.\n",argv[i+iarg]);
         return EXIT_FAILURE;
@@ -172,8 +172,8 @@ int main(int argc,char **argv)
         return EXIT_FAILURE;
       }
       filesize=getfilesizep(in)-headersize(id,version);
-      if((header.order==CELLINDEX && filesize!=sizeof(int)*header.ncell+((version==3) ? typesizes[header.datatype] : size)*header.ncell*header.nbands*header.nstep*header.nyear) ||
-         (header.order!=CELLINDEX && filesize!=((version==3) ? typesizes[header.datatype] : size)*header.ncell*header.nbands*header.nstep*header.nyear))
+      if((header.order==CELLINDEX && filesize!=sizeof(int)*header.ncell+((version>=3) ? typesizes[header.datatype] : size)*header.ncell*header.nbands*header.nstep*header.nyear) ||
+         (header.order!=CELLINDEX && filesize!=((version>=3) ? typesizes[header.datatype] : size)*header.ncell*header.nbands*header.nstep*header.nyear))
       {
         fprintf(stderr,"Error: file length of '%s' does not match header.\n",argv[i+iarg]);
         return EXIT_FAILURE;
@@ -209,7 +209,7 @@ int main(int argc,char **argv)
     }
     if(verbose)
       printf("Filename: %s, %d-%d\n",argv[i+iarg],header.firstyear,header.firstyear+header.nyear-1);
-    if(version==3)
+    if(version>=3)
       size=typesizes[header.datatype];
     switch(size)
     {

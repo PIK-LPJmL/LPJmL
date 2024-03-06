@@ -130,6 +130,9 @@ Bool fscanoutput(LPJfile *file,  /**< pointer to LPJ file */
     if(fscanbool(file,&config->global_netcdf,"global_netcdf",FALSE,verbosity))
       return TRUE;
   }
+  config->flush_output=FALSE;
+  if(fscanbool(file,&config->flush_output,"flush_output",!config->pedantic,verbosity))
+    return TRUE;
   config->rev_lat=FALSE;
   if(fscanbool(file,&config->rev_lat,"rev_lat",!config->pedantic,verbosity))
     return TRUE;

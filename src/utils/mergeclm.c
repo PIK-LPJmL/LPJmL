@@ -180,7 +180,7 @@ int main(int argc,char **argv)
                   header.firstyear,argv[i+iarg],header_out.firstyear);
           return EXIT_FAILURE;
         }
-        else if(version==3 && header.datatype!=header_out.datatype)
+        else if(version>=3 && header.datatype!=header_out.datatype)
         {
           fprintf(stderr,"Data type=%s in file '%s' differs from %s.\n",
                   typenames[header.datatype],argv[i+iarg],typenames[header_out.datatype]);

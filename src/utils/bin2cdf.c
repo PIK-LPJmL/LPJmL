@@ -589,15 +589,15 @@ int main(int argc,char **argv)
   for(iarg=1;iarg<argc;iarg++)
     if(argv[iarg][0]=='-')
     {
-      if(!strcmp(argv[iarg],"-h"))
+      if(!strcmp(argv[iarg],"-h") || !strcmp(argv[iarg],"--help"))
       {
         printf("   bin2cdf (" __DATE__ ") Help\n"
                "   ==========================\n\n"
                "Convert binary output into NetCDF files for LPJmL version " LPJ_VERSION "\n\n");
         printf(USAGE
                "\nArguments:\n"
-               "-h               print this help text\n"
-               "-v               print LPJmL version\n"
+               "-h,--help        print this help text\n"
+               "-v,--version     print LPJmL version\n"
                "-clm             file is in CLM format, default is raw\n"
                "-floatgrid       set data type of grid file to float, default is short\n"
                "-doublegrid      set data type of grid file to double, default is short\n"
@@ -628,7 +628,7 @@ int main(int argc,char **argv)
                argv[0],header.cellsize_lon,header.firstyear);
         return EXIT_SUCCESS;
       }
-      else if(!strcmp(argv[iarg],"-v"))
+      else if(!strcmp(argv[iarg],"-v") || !strcmp(argv[iarg],"--version"))
       {
         puts(LPJ_VERSION);
         return EXIT_SUCCESS;
@@ -850,7 +850,7 @@ int main(int argc,char **argv)
   }
   if(ismeta)
   {
-    file=openmetafile(&header,&map,map_name,&global_attrs2,&n_global2,&source,&history,&var_name,&var_units,&var_standard_name,&var_long_name,&grid_name,&gridtype,&swap,&offset,filename,TRUE);
+    file=openmetafile(&header,&map,map_name,&global_attrs2,&n_global2,&source,&history,&var_name,&var_units,&var_standard_name,&var_long_name,&grid_name,&gridtype,NULL,&swap,&offset,filename,TRUE);
     if(file==NULL)
       return EXIT_FAILURE;
     if(units==NULL && var_units!=NULL)

@@ -75,7 +75,7 @@ Stocks cultivate(Cell *cell,           /**< cell pointer */
     reclaim_land(setasidestand,cropstand,cell,config->luc_timber,npft+ncft,config);
     setasidestand->frac-=landfrac;
   }
-  if(cell->ml.with_tillage && year>=config->till_startyear)
+  if(cell->ml.with_tillage)
   {
     tillage(&cropstand->soil,param.residue_frac);
     updatelitterproperties(cropstand,cropstand->frac);

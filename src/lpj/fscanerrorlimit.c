@@ -1,9 +1,10 @@
 /**************************************************************************************/
 /**                                                                                \n**/
-/**      f  r  e  a  d  r  e  s  t  a  r  t  h  e  a  d  e  r  .  c                \n**/
+/**               f  s  c  a  n  e  r  r  o  r  l  i  m  i  t  .  c                \n**/
 /**                                                                                \n**/
-/**     Reading file header for LPJ restart files. Detects                         \n**/
-/**     whether byte order has to be changed                                       \n**/
+/**     C implementation of LPJmL                                                  \n**/
+/**                                                                                \n**/
+/**     Functions reads error limits from configuration file                       \n**/
 /**                                                                                \n**/
 /** (C) Potsdam Institute for Climate Impact Research (PIK), see COPYRIGHT file    \n**/
 /** authors, and contributors see AUTHORS file                                     \n**/
@@ -15,20 +16,23 @@
 
 #include "lpj.h"
 
-Bool freadrestartheader(FILE *file,            /**< file pointer of binary file */
-                        Restartheader *header, /**< file header to be read */
-                        Bool swap              /**< set to TRUE if data is in different byte order */
-                       )                       /** \return TRUE on error */
+Bool fscanerrorlimit(LPJfile *file,      /**< pointer to LPJ file */
+                     Error_limit *limit, /**< on return error limits read */
+                     const char *name,   /**< name of limit variable */
+                     Verbosity verb      /**< verbosity level (NO_ERR,ERR,VERB) */
+                    )                    /** \return TRUE on error */
 {
-  if(freadint(&header->landuse,1,swap,file)!=1)
+  LPJfile *f;
+  f=fscanstruct(file,name,verb);
+  if(f==NULL)
     return TRUE;
-  if(freadint(&header->river_routing,1,swap,file)!=1)
+  if(fscanreal(f,&limit->stocks.carbon,"carbon",FALSE,verb))
     return TRUE;
-  if(freadint(&header->sdate_option,1,swap,file)!=1)
+  if(fscanreal(f,&limit->stocks.nitrogen,"nitrogen",FALSE,verb))
     return TRUE;
-  if(freadint(&header->crop_option,1,swap,file)!=1)
+  if(fscanreal(f,&limit->w_local,"water_local",FALSE,verb))
     return TRUE;
-  if(freadint(&header->double_harvest,1,swap,file)!=1)
+  if(fscanreal(f,&limit->w_global,"water_global",FALSE,verb))
     return TRUE;
-  return freadseed(file,header->seed,swap);
-} /* of 'freadrestartheader' */
+  return FALSE;
+} /* of 'fscanerrorlimit' */

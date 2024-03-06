@@ -531,15 +531,15 @@ int main(int argc,char **argv)
   for(iarg=1;iarg<argc;iarg++)
     if(argv[iarg][0]=='-')
     {
-      if(!strcmp(argv[iarg],"-h"))
+      if(!strcmp(argv[iarg],"-h") || !strcmp(argv[iarg],"--help"))
       {
         printf("   clm2cdf (" __DATE__ ") Help\n"
                "   ==========================\n\n"
                "Convert CLM input data into NetCDF input data for LPJmL version " LPJ_VERSION "\n\n");
         printf(USAGE
                "\nArguments:\n"
-               "-h               print this help text\n"
-               "-v               print LPJmL version\n"
+               "-h,--help        print this help text\n"
+               "-v,--version     print LPJmL version\n"
                "-global          use global grid for NetCDF file\n"
                "-longheader      force version of CLM file to 2\n"
                "-scale s         set scaling factor for CLM version 1 files, default is 1\n"
@@ -567,7 +567,7 @@ int main(int argc,char **argv)
                progname);
         return EXIT_SUCCESS;
       }
-      else if(!strcmp(argv[iarg],"-v"))
+      else if(!strcmp(argv[iarg],"-v") || !strcmp(argv[iarg],"--version"))
       {
         puts(LPJ_VERSION);
         return EXIT_SUCCESS;
@@ -772,7 +772,7 @@ int main(int argc,char **argv)
     header.datatype=type;
     header.order=CELLYEAR;
 
-    file=openmetafile(&header,&map,map_name,&global_attrs2,&n_global2,&source,&history,&var_name,&var_units,&var_standard_name,&var_long_name,&grid_name,NULL,&swap,&offset,filename,TRUE);
+    file=openmetafile(&header,&map,map_name,&global_attrs2,&n_global2,&source,&history,&var_name,&var_units,&var_standard_name,&var_long_name,&grid_name,NULL,NULL,&swap,&offset,filename,TRUE);
     if(file==NULL)
       return EXIT_FAILURE;
     if(fseek(file,offset,SEEK_CUR))

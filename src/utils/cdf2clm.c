@@ -369,15 +369,15 @@ int main(int argc,char **argv)
   {
     if(argv[i][0]=='-')
     {
-      if(!strcmp(argv[i],"-h"))
+      if(!strcmp(argv[i],"-h") || !strcmp(argv[i],"--help"))
       {
         printf("   cdf2clm (" __DATE__ ") Help\n"
                "   ==========================\n\n"
                "Convert NetCDF data into CLM input data for LPJmL version " LPJ_VERSION "\n\n");
         printf(USAGE
                "\nArguments:\n"
-               "-h            print this help text\n"
-               "-v            print name of NetCDF files\n"
+               "-h,--help     print this help text\n"
+               "-v,--verbose  print name of NetCDF files\n"
                "-scale factor scaling factor for CLM files. Default is one\n"
 #ifdef USE_UDUNITS
                "-units u      set unit to convert from  NetCDF file\n"
@@ -450,7 +450,7 @@ int main(int argc,char **argv)
       }
       else if(!strcmp(argv[i],"-float"))
         isfloat=TRUE;
-      else if(!strcmp(argv[i],"-v"))
+      else if(!strcmp(argv[i],"-v") || !strcmp(argv[i],"--verbose"))
         verbose=TRUE;
       else if(!strcmp(argv[i],"-zero"))
         iszero=TRUE;

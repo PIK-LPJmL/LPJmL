@@ -97,14 +97,14 @@ int main(int argc,char **argv)
   for(iarg=1;iarg<argc;iarg++)
     if(argv[iarg][0]=='-')
     {
-      if(!strcmp(argv[iarg],"-h"))
+      if(!strcmp(argv[iarg],"-h") || !strcmp(argv[iarg],"--help"))
       {
         printf("   txt2clm (" __DATE__ ") Help\n"
                "   ==========================\n\n"
                "Convert text files to clm data files for LPJmL version " LPJ_VERSION "\n\n");
         printf(USAGE
                "Arguments:\n"
-               "-h           print this help text\n"
+               "-h,--help    print this help text\n"
                "-version     set version, default is %d\n"
                "-cellindex   set order to cell index\n"
                "-csv c       file is in CSV format with separator c\n"

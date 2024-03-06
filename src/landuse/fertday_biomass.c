@@ -21,17 +21,17 @@ int fertday_biomass(const Cell *cell,    /**< pointer to cell */
   int fday;
   if (config->sdate_option==PRESCRIBED_SDATE)
   {
-    if(cell->coord.lat > 30 || cell->coord.lat < -30)
-      fday=cell->ml.sdate_fixed[TEMPERATE_CEREALS];  /* wheat sowing date */
+    if(fabs(cell->coord.lat) > 30)
+      fday=cell->ml.sdate_fixed[param.cft_fertday_temp];  /* wheat sowing date */
     else
-      fday=cell->ml.sdate_fixed[MAIZE];  /* maize sowing date */
+      fday=cell->ml.sdate_fixed[param.cft_fertday_tropic];  /* maize sowing date */
   }
   else
   {
-    if (cell->coord.lat > 30 || cell->coord.lat < -30)
-      fday=cell->ml.cropdates[TEMPERATE_CEREALS].spring_sdate20;  /* wheat sowing date */
+    if(fabs(cell->coord.lat) > 30)
+      fday=cell->ml.cropdates[param.cft_fertday_temp].spring_sdate20;  /* wheat sowing date */
     else
-      fday=cell->ml.cropdates[MAIZE].spring_sdate20;  /* maize sowing date */
+      fday=cell->ml.cropdates[param.cft_fertday_tropic].spring_sdate20;  /* maize sowing date */
   }
   if (fday==0)
     fday=(cell->coord.lat >= 0.0) ? 91 /* 1st of April */ : 274; /* 1st of October */

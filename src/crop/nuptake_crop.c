@@ -41,6 +41,7 @@ Real nuptake_crop(Pft *pft,             /**< pointer to PFT data */
   Real n_deficit=0.0;
   Real autofert_n=0;
   Real rootdist_n[LASTLAYER];
+  Real nc_ratio;
   int l,nirrig,nnat,index;
   soil=&pft->stand->soil;
   if(config->permafrost)
@@ -66,7 +67,11 @@ Real nuptake_crop(Pft *pft,             /**< pointer to PFT data */
 #endif
   ndemand_leaf_opt=*ndemand_leaf;
   nsum=0;
-  if((crop->ind.leaf.nitrogen/crop->ind.leaf.carbon)<(pft->par->ncleaf.high*(1+pft->par->knstore)))
+  if(crop->ind.leaf.carbon==0)
+    nc_ratio = pft->par->ncleaf.low;
+  else
+    nc_ratio = crop->ind.leaf.nitrogen/crop->ind.leaf.carbon;
+  if(nc_ratio<(pft->par->ncleaf.high*(1+pft->par->knstore)))
     forrootsoillayer(l)
     {
       wscaler=soil->w[l]>epsilon ? 1 : 0;
@@ -181,7 +186,10 @@ Real nuptake_crop(Pft *pft,             /**< pointer to PFT data */
       {
         //*n_plant_demand=pft->bm_inc.nitrogen;
         //*ndemand_leaf=pft->bm_inc.nitrogen*crop->ind.leaf.carbon/(crop->ind.leaf.carbon+(crop->ind.root.carbon/croppar->ratio.root+crop->ind.pool.carbon/croppar->ratio.pool+crop->ind.so.carbon/croppar->ratio.so)); /*these parameters need to be in pft.par and need to be checked as well)*/
-        *ndemand_leaf=(crop->ind.leaf.carbon*pft->nind)*(crop->ind.leaf.nitrogen)/(crop->ind.leaf.carbon);
+        if(crop->ind.leaf.carbon==0)
+          *ndemand_leaf=0;
+        else
+          *ndemand_leaf=(crop->ind.leaf.carbon*pft->nind)*(crop->ind.leaf.nitrogen)/(crop->ind.leaf.carbon);
         if(ndemand_leaf_opt<epsilon)
           pft->vscal=1;
         else

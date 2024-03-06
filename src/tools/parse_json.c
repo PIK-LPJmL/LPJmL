@@ -27,6 +27,9 @@ LPJfile *parse_json(FILE *file,         /**< pointer to JSON text file */
   enum json_tokener_error json_error;
   struct json_tokener *tok;
   tok=json_tokener_new();
+#ifdef STRICT_JSON
+  json_tokener_set_flags(tok,JSON_TOKENER_STRICT);
+#endif
   while((line=fscanline(file))!=NULL)  /* read line from file */
   {
     if(first)

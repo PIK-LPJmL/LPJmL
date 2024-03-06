@@ -39,7 +39,7 @@ FILE *fopensoilcode(const Filename *filename, /**< filename  of soil code file *
     header.ncell=0;
     header.nyear=1;
     header.cellsize_lon=header.cellsize_lat=0.5;
-    file=openmetafile(&header,map,filename->map,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,swap,offset,filename->name,isout);
+    file=openmetafile(&header,map,filename->map,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,swap,offset,filename->name,isout);
     if(file==NULL)
       return file;
     *type=header.datatype;

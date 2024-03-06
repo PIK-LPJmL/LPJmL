@@ -68,7 +68,7 @@ int main(int argc,char **argv)
   progname=strippath(argv[0]);
   if(argc>1)
   {
-    if(!strcmp(argv[1],"-h"))
+    if(!strcmp(argv[1],"-h") || !strcmp(argv[1],"--help"))
     {
       file=popen("more","w");
       if(file==NULL)
@@ -81,8 +81,8 @@ int main(int argc,char **argv)
       fputs("\n\nPrint input/output files of LPJmL version " LPJ_VERSION "\n\n",file);
       fprintf(file,USAGE,progname);
       fprintf(file,"\nArguments:\n"
-             "-h               print this help text\n"
-             "-v               print LPJmL version\n"
+             "-h,--help        print this help text\n"
+             "-v,--version     print LPJmL version\n"
              "-noinput         does not list input data files\n"
              "-nooutput        does not list output files\n"
              "-nopp            disable preprocessing\n"
@@ -98,7 +98,7 @@ int main(int argc,char **argv)
         pclose(file);
       return EXIT_SUCCESS;
     }
-    else if(!strcmp(argv[1],"-v"))
+    else if(!strcmp(argv[1],"-v") || !strcmp(argv[1],"--version"))
     {
       puts(LPJ_VERSION);
       return EXIT_SUCCESS;
