@@ -136,9 +136,9 @@ fi
 /*                                                                   */
 /*                 i  n  p  u  t  .  c  j  s  o  n                   */
 /*                                                                   */
-/* Configuration file for input dataset for LPJ C Version 5.8.6      */
+/* Configuration file for input dataset for LPJ C Version 5.8.7      */
 /*                                                                   */
-/* Created: $(date +"%d.%m.%Y")                                               */
+/* Created: $(date +"%d.%m.%Y")                                      */
 /*                                                                   */
 /*********************************************************************/
 

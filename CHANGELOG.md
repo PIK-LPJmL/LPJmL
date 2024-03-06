@@ -19,10 +19,12 @@ of `major.minor.patch` with
 
 ## [Unreleased]
 
+## [5.8.8] - 2024-03-07
+
 ### Contributors
 
 - author: Christoph  Mueller (cmueller@pik-potsdam.de)
-- code review:
+- code review: Boris Sakschewski (borissa@pik-potsdam.de), Sabine Mathesius (sabine.mathesius@pik-potsdam.de)
 
 ### Fixed
 
@@ -33,7 +35,24 @@ of `major.minor.patch` with
 - renamed `double_harvest.c` to `separate_harvests.c` and `update_double_harvest.c` to `update_separate_harvests.c` and changed entries in Makefiles accordingly
 - renamed functions `double_harvest()` to `separate_harvests()` and `update_double_harvest()` to `update_separate_harvests()` throughout the code
 - renamed the `struct` `Double_harvest` to `Separate_harvest` and the variable of type `Separate_harvest` in `struct` `Pftcrop` from `dh` to `sh`
-- renamed `double_harvest` flag in `struct` `Config` to `separate harvests` 
+- renamed `double_harvest` flag in `struct` `Config` to `separate_harvests` 
+
+## [5.8.7] - 2024-03-06
+
+### Contributors
+
+- author: Sibyll Schaphoff (sibylls@pik-potsdam.de)
+- code review: Jens Heinke (heinke@pik-potsdam.de), Werner von Bloh (bloh@pik-potsdam.de)
+
+### Added
+
+- new output `PFT_WATER_SUPPLY` to calculate water stress PFT-specific.
+
+### Changed
+
+- output writing for the new output (`conf.h` , `outputvar.cjson` , `createpftnames.c` , `fwriteoutput.c` , `outputsize.c` , `water_stressed.c`).
+- `isopen()` call removed (`fwriteoutput.c`).
+
 
 ## [5.8.6] - 2024-02-29
 
