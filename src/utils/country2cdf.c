@@ -208,7 +208,7 @@ int main(int argc,char **argv)
     {
       if(!strcmp(argv[iarg],"-descr"))
       {
-        if(argc==iarg-1)
+        if(argc==iarg+1)
         {
           fprintf(stderr,"Missing argument after option '-descr'.\n"
                  USAGE,argv[0]);
@@ -220,7 +220,7 @@ int main(int argc,char **argv)
         isglobal=TRUE;
       else if(!strcmp(argv[iarg],"-cellsize"))
       {
-        if(argc==iarg-1)
+        if(argc==iarg+1)
         {
           fprintf(stderr,"Error: Missing argument after option '-cellsize'.\n"
                   USAGE,argv[0]);
@@ -235,7 +235,7 @@ int main(int argc,char **argv)
       }
       else if(!strcmp(argv[iarg],"-index"))
       {
-        if(argc==iarg-1)
+        if(argc==iarg+1)
         {
           fprintf(stderr,"Error: Missing argument after option '-descr'.\n"
                  USAGE,argv[0]);
@@ -251,7 +251,7 @@ int main(int argc,char **argv)
       }
       else if(!strcmp(argv[iarg],"-compress"))
       {
-        if(argc==iarg-1)
+        if(argc==iarg+1)
         {
           fprintf(stderr,"Error: Missing argument after option '-compress'.\n"
                   USAGE,argv[0]);

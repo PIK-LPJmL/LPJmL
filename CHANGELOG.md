@@ -19,7 +19,7 @@ of `major.minor.patch` with
 
 ## [Unreleased]
 
-## [5.8.7] - 2024-03-01
+## [5.8.7] - 2024-03-05
 
 - author: Werner von Bloh (bloh@pik-potsdam.de), Sebastian Ostberg (ostberg@pik-potsdam.de)
 - code review: Jannes Breier (breier@pik-potsdam.de)
@@ -37,6 +37,7 @@ of `major.minor.patch` with
 { "id" : "npp", "file" : { "name" : "output/mnpp"}},
 ```
 - `LPJINPATH` set to `/p/projects/lpjml/input/historical` in `regridlpj` if not defined.
+- `"descr"` in `outputvars.cjson` renamed to `"long_name"`.
 
 ### Added
 
@@ -60,6 +61,7 @@ of `major.minor.patch` with
                     "comment" : ""  /* additional comments */
                    }, /* Global attributes for NetCDF output files */
 ```
+- `"standard_name"` for output can be set in `outputvars.cjson`. If not defined standard name is set to variable name.
 - Chunking defined for NetCDF files if compiled with `-DUSE_NETCDF4`.
 - Option `-metafile` added to `regridclm` and `binsum`. If metafile contains name of grid file, the filename of the source grid can be omitted:
 ```bash
@@ -78,12 +80,17 @@ clm2cdf -metafile temp.clm.json temp.nc
   * `statclm` - prints minimum, maximum and average of clm files
   * `regriddrain` - regrids drainage file to new grid
 - Option `-metafile` added to `mathclm`.
+- `cdf2clm` stores all global attributes of NetCDF file in JSON metafile if `-json` option is set.
 - Option `-nopp` added to `lpjml`. This option disables preprocessing of the config file by `cpp`.
-- Option `-ofiles` added to `lpjml` to print list of all available output files.
+- Option `-ofiles` added to `lpjml` and `lpjcheck`  to print list of all available output files.
 - Option `-pedantic` added to `lpjcheck` and `lpjml` to stop on warning.
 - Option `-json` added to `regridclm` and `regridsoil` utilities to create additional JSON metafiles.
 - Compile flag `-DSTRICT_JSON` added to enable more strict syntax checking of JSON files.
 
+### Fixed
+
+- Missing deallocation added in `freeconfig.c` and memory leak in `fscanpftpar.c` fixed.
+- Missing argument after option handling fixed in `cdf2bin` and `countr2cdf`.
 
 ## [5.8.6] - 2024-02-29
 

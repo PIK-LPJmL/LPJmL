@@ -156,7 +156,6 @@ void freeconfig(Config *config /**< LPJmL configuration */
       freefilename(&config->residue_data_filename);
     if(config->crop_phu_option==PRESCRIBED_CROP_PHU)
       freefilename(&config->crop_phu_filename);
-
   }
   if(config->with_nitrogen)
   {
