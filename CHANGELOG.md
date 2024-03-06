@@ -90,6 +90,7 @@ clm2cdf -metafile temp.clm.json temp.nc
 ### Fixed
 
 - Missing deallocation added in `freeconfig.c` and memory leak in `fscanpftpar.c` fixed.
+- Missing argument after option handling fixed in `cdf2bin` and `countr2cdf`.
 
 ## [5.8.6] - 2024-02-29
 
