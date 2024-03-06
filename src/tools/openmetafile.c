@@ -71,6 +71,7 @@ char *parse_json_metafile(FILE *file,         /**< pointer to JSON file */
   const char *filename;
   char *ret;
   Bool endian;
+  int format;
   lpjfile=parse_json(file,verbosity);
   if(lpjfile==NULL)
     return NULL;
@@ -80,6 +81,22 @@ char *parse_json_metafile(FILE *file,         /**< pointer to JSON file */
       *map=fscanstringarray(lpjfile,(map_name==NULL) ? MAP_NAME : map_name,verbosity);
     else
       *map=NULL;
+  }
+  if(iskeydefined(lpjfile,"format"))
+  {
+    if(fscankeywords(lpjfile,&format,"format",fmt,N_FMT,FALSE,verbosity))
+    {
+      closeconfig(lpjfile);
+      return NULL;
+    }
+    if(format!=RAW && format!=CLM && format!=CLM2)
+    {
+      if(verbosity)
+        fprintf(stderr,"ERROR229: Invalid format %s for input file, must be raw, clm or clm2.\n",
+                format[fmt]);
+      closeconfig(lpjfile);
+      return NULL;
+    }
   }
   if(header!=NULL)
   {
@@ -257,7 +274,7 @@ FILE *openmetafile(Header *header,       /**< pointer to file header */
   if(name==NULL)
   {
     if(isout)
-      fprintf(stderr,"ERROR223: No filename specified in '%s'.\n",filename);
+      fprintf(stderr,"ERROR223: Cannot parse JSON file '%s'.\n",filename);
     return NULL;
   }
   path=getpath(filename);

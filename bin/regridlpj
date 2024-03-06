@@ -18,6 +18,7 @@
 USAGE="Usage: $0 [-dir path] [-crumonthly] [-oldlu] [-madrat] suffix [countrycode ...]"
 cru=0
 lu=0
+dir=$PWD
 
 while(( "$#" )); do
   case "$1" in
@@ -60,6 +61,10 @@ then
   exit 1
 fi
 name=$1
+if [ "$dir" != $PWD ]
+then
+  mkdir -p $dir
+fi
 shift 1
 if [ $# -gt 0 ]
 then
@@ -131,7 +136,7 @@ fi
 /*                                                                   */
 /*                 i  n  p  u  t  .  c  j  s  o  n                   */
 /*                                                                   */
-/* Configuration file for input dataset for LPJ C Version 5.8.1      */
+/* Configuration file for input dataset for LPJ C Version 5.8.6      */
 /*                                                                   */
 /* Created: $(date +"%d.%m.%Y")                                               */
 /*                                                                   */
@@ -160,7 +165,7 @@ fi
   "lightning"        : { "fmt" : "clm", "name" : "$dir/lightning_$name.clm"},
   "human_ignition"   : { "fmt" : "clm", "name" : "$dir/human_ignition_$name.clm"},
   "popdens"          : { "fmt" : "clm", "name" : "$dir/popdens_$name.clm "},
-  "co2"              : { "fmt" : "txt", "name" : "/p/projects/lpjml/input/historical/input_VERSION2/co2_1841-2022.dat"},
+  "co2" :          { "id" : 5, "fmt" : "txt",  "name" : "/p/projects/lpjml/inputs/co2/global/TRENDY/v12/global_co2_ann_1700_2022.txt"},
   "wetdays"          : { "fmt" : "clm", "name" : "$dir/wet_$name.clm"},
   "no3deposition"    : { "fmt" : "clm", "name" : "$dir/no3_deposition_$name.clm"},
   "nh4deposition"    : { "fmt" : "clm", "name" : "$dir/nh4_deposition_$name.clm"},

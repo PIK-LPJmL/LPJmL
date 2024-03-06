@@ -63,7 +63,7 @@ int main(int argc,char **argv)
       frepeatch(file,'=',rc);
       fprintf(file,"\n\nChecks syntax of LPJmL version " LPJ_VERSION " configuration files\n\n");
       fprintf(file,USAGE,progname);
-      fprintf(file,"Arguments:\n"
+      fprintf(file,"\nArguments:\n"
              "-h                  print this help text\n"
              "-q                  print error messsages only\n"
              "-vv                 verbosely print the actual values during reading of the\n"

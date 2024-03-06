@@ -78,7 +78,7 @@ int main(int argc,char **argv)
             version,argv[index+1],CLM_MAX_VERSION+1);
     return EXIT_FAILURE;
   }
-  if(version==3)
+  if(version>=3)
     size=typesizes[header.datatype];
   else
   {

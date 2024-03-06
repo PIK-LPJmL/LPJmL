@@ -31,6 +31,7 @@ int main(int argc,char **argv)
   Type type;
   int index;
   int *cell_index,*cell_index2;
+  char *out_name;
   Bool isvalue,intvalue,isint;
   enum {ADD,SUB,MUL,DIV,AVG,MAX,MIN,REPL,FLOAT,INT} op;
   FILE *in1,*in2,*out;
@@ -255,7 +256,8 @@ int main(int argc,char **argv)
     data1=newvec(float,header1.nbands*header1.nstep);
     check(data1);
   }
-  out=fopen(argv[iarg+((op==FLOAT || op==INT) ? 2 : 3)],"wb");
+  out_name=argv[iarg+((op==FLOAT || op==INT) ? 2 : 3)];
+  out=fopen(out_name,"wb");
   if(out==NULL)
   {
     fprintf(stderr,"Error creating '%s': %s.\n",argv[iarg+((op==FLOAT) ? 2 : 3)],strerror(errno));
@@ -460,7 +462,7 @@ int main(int argc,char **argv)
         if(fwrite(idata3,sizeof(int),header1.nbands*header1.nstep,out)!=header1.nbands*header1.nstep)
         {
           fprintf(stderr,"Error writing '%s' in year %d.\n",
-                  argv[iarg+3],yr+header1.firstyear);
+                  out_name,yr+header1.firstyear);
           return EXIT_FAILURE;
         }
       }
@@ -565,7 +567,7 @@ int main(int argc,char **argv)
         if(fwrite(data3,sizeof(float),header1.nbands*header1.nstep,out)!=header1.nbands*header1.nstep)
         {
           fprintf(stderr,"Error writing '%s' in year %d.\n",
-                  argv[iarg+3],yr+header1.firstyear);
+                  out_name,yr+header1.firstyear);
           return EXIT_FAILURE;
         }
       }

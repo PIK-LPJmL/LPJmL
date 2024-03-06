@@ -2,7 +2,7 @@
 /**                                                                                \n**/
 /**              l  p  j  p  a  r  a  m  .  c  j  s  o  n                          \n**/
 /**                                                                                \n**/
-/**     LPJ parameter file for LPJmL version 5.8.2                                 \n**/
+/**     LPJ parameter file for LPJmL version 5.8.6                                 \n**/
 /**                                                                                \n**/
 /** (C) Potsdam Institute for Climate Impact Research (PIK), see COPYRIGHT file    \n**/
 /** authors, and contributors see AUTHORS file                                     \n**/
@@ -13,6 +13,13 @@
 /**************************************************************************************/
 
   {
+    "error_limits" :
+    {
+      "carbon" : 1.0,       /* maximum error in local carbon balance (gC/m2) */
+      "nitrogen" : 0.2,     /* maximum error in local nitrogen balance (gN/m2) */
+      "water_local" : 1.5,  /* maximum error in local water balance (mm) */
+      "water_global" : 1e-3 /* maximum error in global water balance (mm) */
+    },
     "soildepth" : [
       200.0,       /* soil depth layer (mm) */
       300.0,       /* soil depth layer (mm) */
@@ -31,7 +38,6 @@
     "soildepth_evap" : 300.0,  /* depth of sublayer at top of upper soil layer (mm) */
     "soil_infil" : 2.0,        /* default soil infiltration */
     "soil_infil_litter" : 2.0, /* soil infiltration intensification by litter cover*/
-    "co2_p" : 278.0,           /* pre-industrial CO2 (ppmv) */
     "k" : 0.0548,              /* k    k = 7.4e-7 * atomic_mass_C / atomic_mass_N * seconds_per_day = 0.0548 Sprugel et al. 1996, Eqn 7*/
     "theta" : 0.9,             /* theta */
     "alphac3" : 0.08,          /* alphac3 */
@@ -91,7 +97,6 @@
     "nfert_no3_frac" : 0.5,             /* fraction of NO3 in fertilizer input */
     "nmanure_nh4_frac" : 0.666667,      /* fraction of NH4 in manure input */
     "residues_in_soil" : 0.3,           /* minimum residues in soil*/
-    "residues_in_soil_notillage" : 0.1,  /* minimum residues in soil before till_startyear (only if tilled) */
     "fburnt" : 1.0,                     /* fraction of trees burnt at deforestation, refers to remainder after timber harvest */
     "ftimber" : 0.76,                   /* timber fraction at deforestation */
     "ftimber_wp" : 0.76,                /* timber fraction for wood plantations */
@@ -111,12 +116,14 @@
     "fire_intens" : 0.000001,           /* threshold of fireintensity for which burnt area can be modeled */
     "rootreduction" : 0.5,              /* fraction used to calculate amount of roots dying at harvest in managed grasslands */
     "phen_limit" : 0.5,                 /* phen. limit for agricultural trees */
+    "cft_fertday_temp" : "temperate cereals", /* cft name (see pft.cjson) for fertilizer application date for grassland in temperate regions (abs(lat)>30 deg) */
+    "cft_fertday_tropic" : "maize",           /* cft name (see pft.cjson) for fertilizer application date for grassland in tropical regions (abs(lat)<30 deg) */
     #ifdef BMGR_BROWN
-      "bmgr_harvest_day_nh" : 32.0,     /* harvest date (doy) of brown biomass grass harvest; NH 1.Feb */
-      "bmgr_harvest_day_sh" : 213.0,    /* harvest date (doy) of brown biomass grass harvest; SH 1.Aug */
+      "bmgr_harvest_day_nh" : 32,       /* harvest date (doy) of brown biomass grass harvest; NH 1.Feb */
+      "bmgr_harvest_day_sh" : 213,      /* harvest date (doy) of brown biomass grass harvest; SH 1.Aug */
     #else
-      "bmgr_harvest_day_nh" : 275.0,    /* harvest date (doy) of green biomass grass harvest; NH 1.Oct */
-      "bmgr_harvest_day_sh" : 92.0,     /* harvest date (doy) of green biomass grass harvest; SH 1.Apr */
+      "bmgr_harvest_day_nh" : 275,      /* harvest date (doy) of green biomass grass harvest; NH 1.Oct */
+      "bmgr_harvest_day_sh" : 92,       /* harvest date (doy) of green biomass grass harvest; SH 1.Apr */
     #endif
     "nfrac_grassharvest" : 0.5,         /* fraction of nitrogen from grass harvest not returned to NH4 pool via manure after mowing*/
     "nfrac_grazing" : 0.5               /* fraction of nitrogen from grass harvest not returned to NH4 pool via manure from livestock*/
