@@ -293,6 +293,8 @@ Outputfile *fopenoutput(const Cell grid[],   /**< LPJ grid */
     MPI_Bcast(&output->files[config->outputvars[i].id].isopen,1,MPI_INT,
               0,config->comm);
 #endif
+    if(config->pedantic && config->outputvars[i].filename.fmt!=SOCK && !output->files[config->outputvars[i].id].isopen)
+      return NULL;
     if(output->files[config->outputvars[i].id].compress)
       free(filename);
   }

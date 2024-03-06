@@ -77,7 +77,7 @@ Bool fscankeywords(LPJfile *file,    /**< pointer to LPJ file */
   if(json_object_get_type(item)!=json_type_int)
   {
     if(verb)
-      fprintf(stderr,"ERROR226: Name '%s' not of type int.\n",name);
+      fprintf(stderr,"ERROR226: Name '%s' not of type int or string.\n",name);
     return TRUE;
   }
   *value=json_object_get_int(item);

@@ -174,14 +174,12 @@ Bool fscanpftpar(LPJfile *file,       /**< pointer to LPJ file */
         readstringerr("name");
       return TRUE;
     }
-    pft->name=strdup(s); /* store PFT name */
-    checkptr(pft->name);
 
     /* Read pft->type, defined in pftpar.h */
     if(fscankeywords(item,&pft->cultivation_type,"cultivation_type",cultivation_type,5,FALSE,verb))
     {
       if(verb)
-        fprintf(stderr,"ERROR201: Invalid value for cultivation type of PFT '%s'.\n",pft->name);
+        fprintf(stderr,"ERROR201: Invalid value for cultivation type of PFT '%s'.\n",s);
       return TRUE;
     }
     if(config->ncult_types)
@@ -189,6 +187,8 @@ Bool fscanpftpar(LPJfile *file,       /**< pointer to LPJ file */
      if(findint(pft->cultivation_type,config->cult_types,config->ncult_types)==NOT_FOUND)
        continue;
     }
+    pft->name=strdup(s); /* store PFT name */
+    checkptr(pft->name);
     npft++;
     if(fscankeywords(item,&pft->type,"type",config->pfttypes,config->ntypes,FALSE,verb))
     {

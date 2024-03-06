@@ -69,7 +69,7 @@ int iterate(Outputfile *output, /**< Output file data */
     /* climate for the first nspinyear years is stored in memory
        to avoid reading repeatedly from disk */
     rc=storeclimate(&store,input.climate, grid,firstspinupyear,config->nspinyear,config);
-    failonerror(config,rc,STORE_CLIMATE_ERR,"Storage of climate failed");
+    failonerror(config,rc,STORE_CLIMATE_ERR,"Storage of climate failed, re-run with \"store_climate\" : false setting");
 
     data_save=input.climate->data;
   }
