@@ -19,7 +19,7 @@ of `major.minor.patch` with
 
 ## [Unreleased]
 
-## [5.8.7] - 2024-03-05
+## [5.8.8] - 2024-03-06
 
 - author: Werner von Bloh (bloh@pik-potsdam.de), Sebastian Ostberg (ostberg@pik-potsdam.de)
 - code review: Jannes Breier (breier@pik-potsdam.de)
@@ -92,6 +92,24 @@ clm2cdf -metafile temp.clm.json temp.nc
 - Missing deallocation added in `freeconfig.c` and memory leak in `fscanpftpar.c` fixed.
 - Missing argument after option handling fixed in `cdf2bin` and `countr2cdf`.
 - Missing `$dir/` added to manure data in `regridlpj`.
+
+
+## [5.8.7] - 2024-03-06
+
+### Contributors
+
+- author: Sibyll Schaphoff (sibylls@pik-potsdam.de)
+- code review: Jens Heinke (heinke@pik-potsdam.de), Werner von Bloh (bloh@pik-potsdam.de)
+
+### Added
+
+- new output `PFT_WATER_SUPPLY` to calculate water stress PFT-specific.
+
+### Changed
+
+- output writing for the new output (`conf.h` , `outputvar.cjson` , `createpftnames.c` , `fwriteoutput.c` , `outputsize.c` , `water_stressed.c`).
+- `isopen()` call removed (`fwriteoutput.c`).
+
 
 ## [5.8.6] - 2024-02-29
 
