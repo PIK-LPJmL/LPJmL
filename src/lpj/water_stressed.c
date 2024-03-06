@@ -13,8 +13,6 @@
 /**************************************************************************************/
 
 #include "lpj.h"
-#include "agriculture.h"
-#include "grass.h"
 
 #define EPSILON 0.001  /* min precision of solution in bisection method */
 
