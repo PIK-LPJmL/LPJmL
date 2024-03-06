@@ -125,16 +125,16 @@ fi
   then
     regridclm -json $LPJINPATH/input_VERSION2/grid.bin $dir/grid_$name.clm  $LPJINPATH/input_VERSION2/cft1700_2005_irrigation_systems_64bands.bin $dir/landuse_$name.clm
     regridclm -json $LPJINPATH/input_VERSION2/grid.bin $dir/grid_$name.clm $LPJINPATH/input_VERSION3/fertilizer_luh2v2_1900-2015_32bands.clm $dir/fertilizer_$name.clm
-    regridclm -json $LPJINPATH/input_VERSION2/grid.bin $dir/grid_$name.clm $LPJINPATH/input_VERSION3/manure_zhang17_1860-2014_32bands_clm2.clm manure_$name.clm
+    regridclm -json $LPJINPATH/input_VERSION2/grid.bin $dir/grid_$name.clm $LPJINPATH/input_VERSION3/manure_zhang17_1860-2014_32bands_clm2.clm $dir/manure_$name.clm
   elif [ "$lu" = "2" ]
   then
     regridclm -json $LPJINPATH/input_VERSION2/grid.bin $dir/grid_$name.clm  /p/projects/lpjml/input/MADRAT/lu_madrat_850-2015_32bands.clm $dir/landuse_$name.clm
     regridclm -json $LPJINPATH/input_VERSION2/grid.bin $dir/grid_$name.clm $LPJINPATH/input_VERSION3/fertilizer_luh2v2_1900-2015_32bands.clm $dir/fertilizer_$name.clm
-    regridclm -json $LPJINPATH/input_VERSION2/grid.bin $dir/grid_$name.clm $LPJINPATH/input_VERSION3/manure_zhang17_1860-2014_32bands_clm2.clm manure_$name.clm
+    regridclm -json $LPJINPATH/input_VERSION2/grid.bin $dir/grid_$name.clm $LPJINPATH/input_VERSION3/manure_zhang17_1860-2014_32bands_clm2.clm $dir/manure_$name.clm
   else
     regridclm -json $LPJINPATH/input_VERSION2/grid.bin $dir/grid_$name.clm  $LPJINPATH/input_toolbox_30arcmin/paper_version/cft_default_cft_aggregation_30min_1500-2017_fallow_to_others.bin $dir/landuse_$name.clm
     regridclm -json $LPJINPATH/input_VERSION2/grid.bin $dir/grid_$name.clm $LPJINPATH/input_toolbox_30arcmin/paper_version/fert_N_default_cft_aggregation_30min_1860-2017.clm $dir/fertilizer_$name.clm
-    regridclm -json $LPJINPATH/input_VERSION2/grid.bin $dir/grid_$name.clm $LPJINPATH/input_toolbox_30arcmin/paper_version/manure_N_default_cft_aggregation_30min_1860-2017.clm manure_$name.clm
+    regridclm -json $LPJINPATH/input_VERSION2/grid.bin $dir/grid_$name.clm $LPJINPATH/input_toolbox_30arcmin/paper_version/manure_N_default_cft_aggregation_30min_1860-2017.clm $dir/manure_$name.clm
   fi
 
   cat << EOF >input_$name.cjson

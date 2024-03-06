@@ -91,6 +91,7 @@ clm2cdf -metafile temp.clm.json temp.nc
 
 - Missing deallocation added in `freeconfig.c` and memory leak in `fscanpftpar.c` fixed.
 - Missing argument after option handling fixed in `cdf2bin` and `countr2cdf`.
+- Missing `$dir/` added to manure data in `regridlpj`.
 
 ## [5.8.6] - 2024-02-29
 
