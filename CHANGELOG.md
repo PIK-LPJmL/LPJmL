@@ -19,7 +19,7 @@ of `major.minor.patch` with
 
 ## [Unreleased]
 
-## [5.8.7] - 2024-01-31
+## [5.8.7] - 2024-03-06
 
 ### Contributors
 
@@ -28,12 +28,12 @@ of `major.minor.patch` with
 
 ### Added
 
-- new output PFT_WATER_SUPPLY to calculate water stress pft-specific
+- new output `PFT_WATER_SUPPLY` to calculate water stress PFT-specific.
 
 ### Changed
 
-- output writing for the new output (conf.h, outputvar.cjson, createpftnames.c, fwriteoutput.c, outputsize.c, water_stressed.c)
-- isopen call removed (fwriteoutput.c)
+- output writing for the new output (`conf.h` , `outputvar.cjson` , `createpftnames.c` , `fwriteoutput.c` , `outputsize.c` , `water_stressed.c`).
+- `isopen()` call removed (`fwriteoutput.c`).
 
 
 ## [5.8.6] - 2024-02-29
