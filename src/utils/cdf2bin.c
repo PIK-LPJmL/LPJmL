@@ -243,6 +243,7 @@ int main(int argc,char **argv)
   grid_type=LPJ_SHORT;
   cellsize_lon=cellsize_lat=0.5;      /* default cell size */
   initconfig(&config);
+  initsetting_netcdf(&config.netcdf);
   for(i=1;i<argc;i++)
   {
     if(argv[i][0]=='-')

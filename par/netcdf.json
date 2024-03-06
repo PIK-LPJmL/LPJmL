@@ -1,0 +1,18 @@
+  {
+    "missing_value" : {"float" : -1e32, "short" : -9999, "int" : -999999, "byte" : 99},
+    "longitude" : { "name" : "lon", "dim" : "lon", "long_name" : "Longitude",
+                    "standard_name" : "longitude", "unit" :"degrees_east", "scale" : 1.0},
+    "latitude" : { "name" : "lat", "dim" : "lat", "long_name" : "Latitude",
+                   "standard_name" : "latitude","unit" :"degrees_north", "scale" : 1.0},
+    "time" : { "name" : "time", "dim": "time", "long_name" : "Time", "standard_name": "time","unit" :"", "scale" : 1.0},
+    "depth" : { "name" : "depth", "dim": "layer",
+                "long_name" : "Depth of Vertical Layer Center Below Surface",
+                "standard_name" : "depth_below_surface","unit" :"m", "scale" : 1.0e-3},
+    "bnds" : { "name" : "depth_bnds", "dim" : "depth_bnds",
+               "long_name" : "bnds=0 for the top of the layer, and bnds=1 for the bottom of the layer",
+               "standard_name" : "","unit" :"m", "scale" : 1.0e-3},
+    "pft" : { "name" : "NamePFT", "dim": "npft",
+              "long_name" : "Name of plant functional types" , "standard_name": "","unit" :"", "scale" : 1.0},
+    "calendar" : "noleap",
+    "years" : "Years"
+  }

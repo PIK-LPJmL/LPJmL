@@ -17,6 +17,7 @@
 #include "lpj.h"
 
 int getnsoilcode(const Filename *filename, /**< filename of soil code file */
+                 const Netcdf_config *config,
                  unsigned int nsoil,       /**< number of soil types */
                  Bool isout                /**< error output? (TRUE/FALSE) */
                 )                          /** \return number of soil codes */
@@ -29,7 +30,7 @@ int getnsoilcode(const Filename *filename, /**< filename of soil code file */
   Header header;
   if(filename->fmt==CDF)
   {
-    coord=opencoord_netcdf(filename->name,filename->var,isout);
+    coord=opencoord_netcdf(filename->name,filename->var,&config,isout);
     if(coord==NULL)
     {
       if(isout)

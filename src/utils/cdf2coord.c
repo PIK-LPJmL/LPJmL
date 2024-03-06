@@ -42,11 +42,13 @@ int main(int argc,char **argv)
   {
     float lon,lat;
   } coord_f;
+  Netcdf_config netcdf_config;
   char *var;
   FILE *out;
   var=NULL;
   header.datatype=LPJ_SHORT;
   header.scalar=0.01;
+  initsetting_netcdf(&netcdf_config);
   for(i=1;i<argc;i++)
     if(argv[i][0]=='-')
     {
@@ -129,7 +131,7 @@ int main(int argc,char **argv)
     for(j=0;j<nvars;j++)
     {
       nc_inq_varname(ncid,j,name);
-      if(strcmp(name,LON_NAME) && strcmp(name,LON_STANDARD_NAME) && strcmp(name,LAT_NAME) && strcmp(name,LAT_STANDARD_NAME) && strcmp(name,"time"))
+      if(strcmp(name,netcdf_config.lon.name) && strcmp(name,netcdf_config.lon.standard_name) && strcmp(name,netcdf_config.lat.name) && strcmp(name,netcdf_config.lat.standard_name) && strcmp(name,netcdf_config.time.name))
       {
         var_id=j;
         break;
@@ -233,8 +235,8 @@ int main(int argc,char **argv)
   if(rc)
   {
     fprintf(stderr,"WARNING402: Cannot read missing for fill value in '%s': %s, set to %g.\n",
-            argv[i],nc_strerror(rc),MISSING_VALUE_FLOAT);
-    missing_value=MISSING_VALUE_FLOAT;
+            argv[i],nc_strerror(rc),netcdf_config.missing_value.f);
+    missing_value=netcdf_config.missing_value.f;
   }
   out=fopen(argv[i+1],"wb");
   if(out==NULL)

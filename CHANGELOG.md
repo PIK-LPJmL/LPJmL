@@ -21,12 +21,13 @@ of `major.minor.patch` with
 
 ## [5.8.7] - 2024-03-01
 
--author: Werner von Bloh (bloh@pik-potsdam.de)
+- author: Werner von Bloh (bloh@pik-potsdam.de), Sebastian Ostberg (ostberg@pik-potsdam.de)
+- code review: Jannes Breier (breier@pik-potsdam.de)
 
 ### Changed
 
 - NetCDF output files are now in a more ISMIP3 compliant format, datatype of time is double,  `depth_bnds` added to layer specific output. Standard amd long name can be specified in `outputvars.json`.
-- Deprecated function `MPI_Extent` call replaced by `MPI_Get_extent` in `mpi_write.c`.
+- Deprecated function `MPI_Extent` replaced by `MPI_Get_extent` in `mpi_write.c`.
 - Functions `create_netcdf.c`/`create_pft_netcdf.c` and `create1_netcdf.c`/`create1_pft_netcdf.c` have been merged.
 - Function `findcoord()` improved to find cell indices, returns now true if coord is within cell.
 - `STYLESHEET` file converted to markup.
@@ -59,6 +60,7 @@ of `major.minor.patch` with
                     "comment" : ""  /* additional comments */
                    }, /* Global attributes for NetCDF output files */
 ```
+- Chunking defined for NetCDF files if compiled with `-DUSE_NETCDF4`.
 - Option `-metafile` added to `regridclm` and `binsum`. If metafile contains name of grid file, the filename of the source grid can be omitted:
 ```bash
 regridclm -metafile grid_new.clm temp.clm.json temp_new.clm

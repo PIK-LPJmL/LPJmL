@@ -17,31 +17,8 @@
 #ifndef CDF_H
 #define CDF_H
 
-#define MISSING_VALUE_FLOAT -1e32
-#define MISSING_VALUE_SHORT -9999
-#define MISSING_VALUE_INT -999999
-#define MISSING_VALUE_BYTE 99
 #define NO_TIME -1
-#define LON_NAME "lon"
-#define LON_STANDARD_NAME "longitude"
-#define LON_LONG_NAME "Longitude"
-#define LAT_NAME "lat"
-#define LAT_LONG_NAME "Latitude"
-#define LAT_STANDARD_NAME "latitude"
-#define TIME_NAME "time"
-#define TIME_STANDARD_NAME "time"
-#define TIME_LONG_NAME "Time"
-#define LON_DIM_NAME "lon"
-#define LAT_DIM_NAME "lat"
-#define TIME_DIM_NAME "time"
-#define YEARS_NAME "Years"
 #define NULL_NAME "(null)"
-#define DEPTH_NAME "depth"
-#define DEPTH_STANDARD_NAME "depth_below_surface"
-#define DEPTH_LONG_NAME "Depth of Vertical Layer Center Below Surface"
-#define BNDS_NAME "depth_bnds"
-#define BNDS_LONG_NAME "bnds=0 for the top of the layer, and bnds=1 for the bottom of the layer"
-#define CALENDAR "noleap"
 
 typedef enum { ONEFILE,CREATE,APPEND,CLOSE} State_nc;
 
@@ -64,7 +41,7 @@ typedef struct cdf
   int time_var_id,lon_var_id,lat_var_id;
   int n;
   const Coord_array *index;
-  float missing_value;
+  Missing_value missing_value;
 } Netcdf;
 
 typedef struct
@@ -162,7 +139,7 @@ extern Bool readintdata_netcdf(const Climatefile *,int *,const Cell *,
                                int,const Config *);
 extern Bool readshortdata_netcdf(const Climatefile *,short *,const Cell *,
                                  int,const Config *);
-extern Coord_netcdf opencoord_netcdf(const char *,const char *,Bool);
+extern Coord_netcdf opencoord_netcdf(const char *,const char *,const Netcdf_config *,Bool);
 extern void closecoord_netcdf(Coord_netcdf);
 extern Bool seekcoord_netcdf(Coord_netcdf,int);
 extern Bool readcoord_netcdf(Coord_netcdf,Coord *,const Coord *,unsigned int *);
@@ -189,6 +166,8 @@ extern void free_netcdf(int);
 extern Bool checkcoord(const size_t *,int,const Coord *,const Climatefile *);
 extern char *getattr_netcdf(const Climatefile *,int,const char *);
 extern char *getvarname_netcdf(const Climatefile *);
+extern void initsetting_netcdf(Netcdf_config *);
+extern Bool parse_config_netcdf(Netcdf_config *,const char *);
 
 #ifdef USE_MPI
 extern Bool mpi_write_netcdf(const Netcdf *,void *,MPI_Datatype,int,int,

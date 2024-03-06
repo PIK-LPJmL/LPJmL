@@ -83,7 +83,7 @@ Bool openclimate_netcdf(Climatefile *file,    /**< climate data file */
       }
       nc_get_att_text(file->ncid, var_id, "units",s);
       s[len]='\0';
-      if(!strcasecmp(YEARS_NAME,s))
+      if(!strcasecmp(config->netcdf.years_name,s))
       {
         file->time_step=YEAR;
         time=newvec(int,time_len);

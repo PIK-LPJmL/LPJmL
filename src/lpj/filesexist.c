@@ -34,7 +34,7 @@ static int checksoilcode(Config *config)
     file=fopensoilcode(&config->soil_filename,&map,&swap,&offset,&type,config->nsoil,TRUE);
     if(file==NULL)
       return 1;
-    ncell=getnsoilcode(&config->soil_filename,config->nsoil,TRUE);
+    ncell=getnsoilcode(&config->soil_filename,&config->netcdf,config->nsoil,TRUE);
     if(map!=NULL)
     {
       soilmap=getsoilmap(map,config);
@@ -323,7 +323,7 @@ static int checkrestartfile(Config *config, const char *filename)
 static int checksoilfile(Config *config,const Filename *filename)
 {
   int size;
-  size=getnsoilcode(filename,config->nsoil,TRUE);
+  size=getnsoilcode(filename,&config->netcdf,config->nsoil,TRUE);
   if(size==-1)
     return 1;
   if(size<config->nall+config->firstgrid)
@@ -372,7 +372,7 @@ static int checkcoordfileclm(Config *config,const Filename *filename)
 static int checkcoordfile(Config *config,const Filename *filename)
 {
   Coord_netcdf coord_netcdf;
-  coord_netcdf=opencoord_netcdf(filename->name,filename->var,TRUE);
+  coord_netcdf=opencoord_netcdf(filename->name,filename->var,&config->netcdf,TRUE);
   if(coord_netcdf==NULL)
     return 1;
   getresolution_netcdf(coord_netcdf,&config->resolution);

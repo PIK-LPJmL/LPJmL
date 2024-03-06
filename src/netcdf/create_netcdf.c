@@ -43,10 +43,10 @@ Bool create_netcdf(Netcdf *cdf,
 #if defined(USE_NETCDF) || defined(USE_NETCDF4)
   char *s;
   time_t t;
-  int i,j,rc,nyear,imiss=MISSING_VALUE_INT,len;
-  short smiss=MISSING_VALUE_SHORT;
+  int i,j,rc,nyear,imiss=config->netcdf.missing_value.i,len;
+  short smiss=config->netcdf.missing_value.s;
   double *lon,*lat;
-  float miss=config->missing_value;
+  float miss=config->netcdf.missing_value.f;
   double *year;
   size_t chunk[3];
   int dim[3];
@@ -55,7 +55,7 @@ Bool create_netcdf(Netcdf *cdf,
     fputs("ERROR424: Invalid array pointer in create_netcdf().\n",stderr);
     return TRUE;
   }
-  cdf->missing_value=config->missing_value;
+  cdf->missing_value=config->netcdf.missing_value;
   cdf->index=array;
   if(cdf->state==APPEND || cdf->state==CLOSE)
   {
@@ -226,20 +226,24 @@ Bool create_netcdf(Netcdf *cdf,
     if(year!=NULL)
     {
       if(n==1)
-        rc=nc_def_dim(cdf->ncid,TIME_DIM_NAME,nyear/timestep,&cdf->time_dim_id);
+        rc=nc_def_dim(cdf->ncid,config->netcdf.time.dim,nyear/timestep,&cdf->time_dim_id);
       else
-        rc=nc_def_dim(cdf->ncid,TIME_DIM_NAME,nyear*n,&cdf->time_dim_id);
+        rc=nc_def_dim(cdf->ncid,config->netcdf.time.dim,nyear*n,&cdf->time_dim_id);
       error(rc);
-      rc=nc_def_var(cdf->ncid,TIME_NAME,NC_DOUBLE,1,&cdf->time_dim_id,&cdf->time_var_id);
+      rc=nc_def_var(cdf->ncid,config->netcdf.time.name,NC_DOUBLE,1,&cdf->time_dim_id,&cdf->time_var_id);
       error(rc);
-      rc=nc_put_att_text(cdf->ncid, cdf->time_var_id,"standard_name",strlen(TIME_STANDARD_NAME),TIME_STANDARD_NAME);
+      rc=nc_put_att_text(cdf->ncid, cdf->time_var_id,"standard_name",
+                         strlen(config->netcdf.time.standard_name),
+                         config->netcdf.time.standard_name);
       error(rc);
-      rc=nc_put_att_text(cdf->ncid, cdf->time_var_id,"long_name",strlen(TIME_LONG_NAME),TIME_LONG_NAME);
+      rc=nc_put_att_text(cdf->ncid, cdf->time_var_id,"long_name",
+                         strlen(config->netcdf.time.long_name),
+                         config->netcdf.time.long_name);
       error(rc);
     }
-    rc=nc_def_dim(cdf->ncid,LAT_DIM_NAME,array->nlat,&cdf->lat_dim_id);
+    rc=nc_def_dim(cdf->ncid,config->netcdf.lat.dim,array->nlat,&cdf->lat_dim_id);
     error(rc);
-    rc=nc_def_dim(cdf->ncid,LON_DIM_NAME,array->nlon,&cdf->lon_dim_id);
+    rc=nc_def_dim(cdf->ncid,config->netcdf.lon.dim,array->nlon,&cdf->lon_dim_id);
     error(rc);
     rc=nc_put_att_text(cdf->ncid,NC_GLOBAL,"title",
                        strlen(config->sim_name),config->sim_name);
@@ -258,16 +262,16 @@ Bool create_netcdf(Netcdf *cdf,
       rc=nc_put_att_text(cdf->ncid,NC_GLOBAL,config->global_attrs[i].name,strlen(config->global_attrs[i].value),config->global_attrs[i].value);
       error(rc);
     }
-    rc=nc_def_var(cdf->ncid,LAT_NAME,NC_DOUBLE,1,&cdf->lat_dim_id,&cdf->lat_var_id);
+    rc=nc_def_var(cdf->ncid,config->netcdf.lat.name,NC_DOUBLE,1,&cdf->lat_dim_id,&cdf->lat_var_id);
     error(rc);
-    rc=nc_def_var(cdf->ncid,LON_NAME,NC_DOUBLE,1,&cdf->lon_dim_id,&cdf->lon_var_id);
+    rc=nc_def_var(cdf->ncid,config->netcdf.lon.name,NC_DOUBLE,1,&cdf->lon_dim_id,&cdf->lon_var_id);
     error(rc);
     if(year!=NULL)
     {
       if(n==1)
       {
         if(config->absyear)
-          s=strdup(YEARS_NAME);
+          s=strdup(config->netcdf.years_name);
         else
         {
           len=snprintf(NULL,0,"years since %d-1-1 0:0:0",(oneyear) ? actualyear : config->baseyear);
@@ -290,27 +294,37 @@ Bool create_netcdf(Netcdf *cdf,
       rc=nc_put_att_text(cdf->ncid,cdf->time_var_id,"units",strlen(s),s);
       free(s);
       error(rc);
-      rc=nc_put_att_text(cdf->ncid,cdf->time_var_id,"calendar",strlen(CALENDAR),
-                         CALENDAR);
+      rc=nc_put_att_text(cdf->ncid,cdf->time_var_id,"calendar",strlen(config->netcdf.calendar),
+                         config->netcdf.calendar);
       error(rc);
       rc=nc_put_att_text(cdf->ncid, cdf->time_var_id,"axis",strlen("T"),"T");
       error(rc);
     }
-    rc=nc_put_att_text(cdf->ncid,cdf->lon_var_id,"units",strlen("degrees_east"),
-                     "degrees_east");
+    rc=nc_put_att_text(cdf->ncid,cdf->lon_var_id,"units",
+                       strlen(config->netcdf.lon.unit),
+                       config->netcdf.lon.unit);
     error(rc);
-    rc=nc_put_att_text(cdf->ncid, cdf->lon_var_id,"long_name",strlen(LON_LONG_NAME),LON_LONG_NAME);
+    rc=nc_put_att_text(cdf->ncid, cdf->lon_var_id,"long_name",
+                       strlen(config->netcdf.lon.long_name),
+                       config->netcdf.lon.long_name);
     error(rc);
-    rc=nc_put_att_text(cdf->ncid, cdf->lon_var_id,"standard_name",strlen(LON_STANDARD_NAME),LON_STANDARD_NAME);
+    rc=nc_put_att_text(cdf->ncid, cdf->lon_var_id,"standard_name",
+                       strlen(config->netcdf.lon.standard_name),
+                       config->netcdf.lon.standard_name);
     error(rc);
     rc=nc_put_att_text(cdf->ncid, cdf->lon_var_id,"axis",strlen("X"),"X");
     error(rc);
-    rc=nc_put_att_text(cdf->ncid,cdf->lat_var_id,"units",strlen("degrees_north"),
-                     "degrees_north");
+    rc=nc_put_att_text(cdf->ncid,cdf->lat_var_id,"units",
+                       strlen(config->netcdf.lat.unit),
+                       config->netcdf.lat.unit);
     error(rc);
-    rc=nc_put_att_text(cdf->ncid, cdf->lat_var_id,"long_name",strlen(LAT_LONG_NAME),LAT_LONG_NAME);
+    rc=nc_put_att_text(cdf->ncid, cdf->lat_var_id,"long_name",
+                       strlen(config->netcdf.lat.long_name),
+                       config->netcdf.lat.long_name);
     error(rc);
-    rc=nc_put_att_text(cdf->ncid, cdf->lat_var_id,"standard_name",strlen(LAT_STANDARD_NAME),LAT_STANDARD_NAME);
+    rc=nc_put_att_text(cdf->ncid, cdf->lat_var_id,"standard_name",
+                       strlen(config->netcdf.lat.standard_name),
+                       config->netcdf.lat.standard_name);
     error(rc);
     rc=nc_put_att_text(cdf->ncid, cdf->lat_var_id,"axis",strlen("Y"),"Y");
     error(rc);

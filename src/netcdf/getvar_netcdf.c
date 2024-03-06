@@ -49,7 +49,7 @@ Bool getvar_netcdf(Climatefile *file,    /**< climate data file */
     for(i=0;i<nvars;i++)
     {
       nc_inq_varname(file->ncid,i,name);
-      if(strcmp(name,LON_NAME) && strcmp(name,LON_STANDARD_NAME) && strcmp(name,LAT_NAME) && strcmp(name,LAT_STANDARD_NAME) && strcmp(name,TIME_NAME) && strcmp(name,"NamePFT"))
+      if(strcmp(name,config->netcdf.lon.name) && strcmp(name,config->netcdf.lon.standard_name) && strcmp(name,config->netcdf.lat.name) && strcmp(name,config->netcdf.lat.standard_name) && strcmp(name,config->netcdf.time.name) && strcmp(name,config->netcdf.pft.name))
       {
         file->varid=i;
         break;
@@ -212,8 +212,8 @@ Bool getvar_netcdf(Climatefile *file,    /**< climate data file */
         if(rc)
         {
           fprintf(stderr,"WARNING402: Cannot read missing or fill value for %s in '%s', set to %d.\n",
-                  (var==NULL) ? name : var,filename,MISSING_VALUE_INT);
-          file->missing_value.i=MISSING_VALUE_INT;
+                  (var==NULL) ? name : var,filename,config->netcdf.missing_value.i);
+          file->missing_value.i=config->netcdf.missing_value.i;
         }
       }
       file->datatype=LPJ_INT;
@@ -226,8 +226,8 @@ Bool getvar_netcdf(Climatefile *file,    /**< climate data file */
         if(rc)
         {
           fprintf(stderr,"WARNING402: Cannot read missing or fill value for %s in '%s', set to %g.\n",
-                  (var==NULL) ? name : var,filename,config->missing_value);
-          file->missing_value.f=config->missing_value;
+                  (var==NULL) ? name : var,filename,config->netcdf.missing_value.f);
+          file->missing_value.f=config->netcdf.missing_value.f;
         }
       }
       file->datatype=LPJ_FLOAT;
@@ -240,8 +240,8 @@ Bool getvar_netcdf(Climatefile *file,    /**< climate data file */
         if(rc)
         {
           fprintf(stderr,"WARNING402: Cannot read missing or fill value for %s in '%s', set to %d.\n",
-                  (var==NULL) ? name : var,filename,MISSING_VALUE_SHORT);
-          file->missing_value.s=MISSING_VALUE_SHORT;
+                  (var==NULL) ? name : var,filename,config->netcdf.missing_value.s);
+          file->missing_value.s=config->netcdf.missing_value.s;
         }
       }
       file->datatype=LPJ_SHORT;
@@ -254,8 +254,8 @@ Bool getvar_netcdf(Climatefile *file,    /**< climate data file */
         if(rc)
         {
           fprintf(stderr,"WARNING402: Cannot read missing or fill value for %s in '%s', set to %g.\n",
-                  (var==NULL) ? name : var,filename,config->missing_value);
-          file->missing_value.d=config->missing_value;
+                  (var==NULL) ? name : var,filename,config->netcdf.missing_value.f);
+          file->missing_value.d=config->netcdf.missing_value.f;
         }
       }
       file->datatype=LPJ_DOUBLE;

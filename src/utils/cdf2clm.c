@@ -365,6 +365,7 @@ int main(int argc,char **argv)
   id=LPJ_CLIMATE_HEADER;
   version=LPJ_CLIMATE_VERSION;
   initconfig(&config);
+  initsetting_netcdf(&config.netcdf);
   for(i=1;i<argc;i++)
   {
     if(argv[i][0]=='-')

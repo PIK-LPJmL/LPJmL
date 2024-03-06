@@ -22,8 +22,6 @@
 #define error(var,rc) if(rc){ if(isout) fprintf(stderr,"ERROR403: Cannot read '%s' in '%s': %s.\n",var,filename,nc_strerror(rc)); nc_close(coord->ncid); free(coord); return NULL;}
 #endif
 
-//#define MISSING_VALUE_FLOAT -9999.
-
 struct coord_netcdf
 {
   int ncid;
@@ -489,7 +487,7 @@ Bool readcoord_netcdf(Coord_netcdf coord,Coord *c,const Coord *resol,unsigned in
   return TRUE;
 } /* of 'readcoord_netcdf' */
 
-Coord_netcdf opencoord_netcdf(const char *filename,const char *var,Bool isout)
+Coord_netcdf opencoord_netcdf(const char *filename,const char *var,const Netcdf_config *config,Bool isout)
 {
 #if defined(USE_NETCDF) || defined(USE_NETCDF4)
   Coord_netcdf coord;
@@ -519,7 +517,7 @@ Coord_netcdf opencoord_netcdf(const char *filename,const char *var,Bool isout)
     for(i=0;i<nvars;i++)
     {
       nc_inq_varname(coord->ncid,i,name);
-      if(strcmp(name,LON_NAME) && strcmp(name,LAT_NAME) && strcmp(name,TIME_NAME))
+      if(strcmp(name,config->lon.name) && strcmp(name,config->lat.name) && strcmp(name,config->time.name))
       {
         coord->varid=i;
         break;
@@ -638,7 +636,7 @@ Coord_netcdf opencoord_netcdf(const char *filename,const char *var,Bool isout)
       {
         rc=nc_get_att_int(coord->ncid,coord->varid,"_FillValue",&coord->missing_value.i);
         if(rc)
-          coord->missing_value.i=MISSING_VALUE_INT;
+          coord->missing_value.i=config->missing_value.i;
       }
       coord->type=LPJ_INT;
       break;
@@ -648,7 +646,7 @@ Coord_netcdf opencoord_netcdf(const char *filename,const char *var,Bool isout)
       {
         rc=nc_get_att_float(coord->ncid,coord->varid,"_FillValue",&coord->missing_value.f);
         if(rc)
-          coord->missing_value.f=MISSING_VALUE_FLOAT;
+          coord->missing_value.f=config->missing_value.f;
       }
       coord->type=LPJ_FLOAT;
       break;
@@ -658,7 +656,7 @@ Coord_netcdf opencoord_netcdf(const char *filename,const char *var,Bool isout)
       {
         rc=nc_get_att_short(coord->ncid,coord->varid,"_FillValue",&coord->missing_value.s);
         if(rc)
-          coord->missing_value.s=MISSING_VALUE_SHORT;
+          coord->missing_value.s=config->missing_value.s;
       }
       coord->type=LPJ_SHORT;
       break;
@@ -668,7 +666,7 @@ Coord_netcdf opencoord_netcdf(const char *filename,const char *var,Bool isout)
       {
         rc=nc_get_att_uchar(coord->ncid,coord->varid,"_FillValue",&coord->missing_value.b);
         if(rc)
-          coord->missing_value.b=MISSING_VALUE_BYTE;
+          coord->missing_value.b=config->missing_value.b;
       }
       coord->type=LPJ_BYTE;
       break;

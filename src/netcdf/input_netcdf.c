@@ -124,7 +124,7 @@ static Bool setvarinput_netcdf(Input_netcdf input,const Filename *filename,
     for(i=0;i<nvars;i++)
     {
       nc_inq_varname(input->ncid,i,name);
-      if(strcmp(name,LON_NAME) && strcmp(name,LON_STANDARD_NAME) && strcmp(name,LAT_NAME) && strcmp(name,LAT_STANDARD_NAME) && strcmp(name,TIME_NAME))
+      if(strcmp(name,config->netcdf.lon.name) && strcmp(name,config->netcdf.lon.standard_name) && strcmp(name,config->netcdf.lat.name) && strcmp(name,config->netcdf.lat.standard_name) && strcmp(name,config->netcdf.time.name))
       {
         input->varid=i;
         break;
@@ -178,7 +178,7 @@ static Bool setvarinput_netcdf(Input_netcdf input,const Filename *filename,
         rc=nc_get_att_short(input->ncid,input->varid,"_FillValue",
                             &input->missing_value.s);
         if(rc)
-          input->missing_value.s=MISSING_VALUE_SHORT;
+          input->missing_value.s=config->netcdf.missing_value.s;
       }
       input->type=LPJ_SHORT;
       break;
@@ -190,7 +190,7 @@ static Bool setvarinput_netcdf(Input_netcdf input,const Filename *filename,
         rc=nc_get_att_int(input->ncid,input->varid,"_FillValue",
                           &input->missing_value.i);
         if(rc)
-          input->missing_value.i=MISSING_VALUE_INT;
+          input->missing_value.i=config->netcdf.missing_value.i;
       }
       input->type=LPJ_INT;
       break;
@@ -202,7 +202,7 @@ static Bool setvarinput_netcdf(Input_netcdf input,const Filename *filename,
         rc=nc_get_att_double(input->ncid,input->varid,"_FillValue",
                              &input->missing_value.d);
         if(rc)
-          input->missing_value.d=config->missing_value;
+          input->missing_value.d=config->netcdf.missing_value.f;
       }
       input->type=LPJ_DOUBLE;
       break;
@@ -214,7 +214,7 @@ static Bool setvarinput_netcdf(Input_netcdf input,const Filename *filename,
         rc=nc_get_att_float(input->ncid,input->varid,"_FillValue",
                             &input->missing_value.f);
         if(rc)
-          input->missing_value.f=config->missing_value;
+          input->missing_value.f=config->netcdf.missing_value.f;
       }
       input->type=LPJ_FLOAT;
       break;
@@ -226,7 +226,7 @@ static Bool setvarinput_netcdf(Input_netcdf input,const Filename *filename,
         rc=nc_get_att_uchar(input->ncid,input->varid,"_FillValue",
                             &input->missing_value.b);
         if(rc)
-          input->missing_value.b=MISSING_VALUE_BYTE;
+          input->missing_value.b=config->netcdf.missing_value.b;
       }
       input->type=LPJ_BYTE;
       break;

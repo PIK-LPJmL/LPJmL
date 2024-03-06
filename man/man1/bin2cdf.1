@@ -3,7 +3,7 @@
 bin2cdf \- convert binary output files into NetCDF files
 .SH SYNOPSIS
 .B bin2cdf
-[\-h] [\-v] [\-clm] [\-floatgrid] [\-doublegrid] [\-revlat] [\-days] [\-absyear] [\-cellsize size] [\-compress level] [\-descr d] [\-missing_value val] [[\-attr name=value] ...] [\-units u] [-global] [-swap] [\-short] [\-nbands n] [\-nstep n] [\-ispft] [\-firstyear y] [\-baseyear y] [\-metafile] [\-map name]
+[\-h] [\-v] [\-clm] [\-floatgrid] [\-doublegrid] [\-revlat] [\-days] [\-absyear] [\-cellsize size] [\-compress level] [\-descr d] [\-missing_value val] [[\-attr name=value] ...] [\-units u] [-global] [-swap] [\-short] [\-nbands n] [\-nstep n] [\-ispft] [\-firstyear y] [\-baseyear y] [\-metafile] [\-config file] [\-map name]
 .I [varname gridfile] binfile netcdffile
 .SH DESCRIPTION
 Program converts binary output files into NetCDF file.
@@ -45,7 +45,7 @@ set long name in NetCDF file
 set missing value in NetCDF file to val
 .TP
 \-attr name=value
-set global attribute name in NETCDF file to value
+set global attribute name in NetCDF file to value
 .TP
 \-units u
 set units in NetCDF file
@@ -76,6 +76,9 @@ set base year of time axis in NetCDF file. Default is firstyear.
 .TP
 \-metafile
 set the input format to JSON metafile instead of raw
+.TP
+\-config file
+read missing values and axis names from JSON file
 .TP
 \-map name
 name of map in JSON metafile, default is "band_names"

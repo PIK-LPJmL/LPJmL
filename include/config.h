@@ -19,6 +19,32 @@
 
 typedef struct
 {
+   float f;
+   int i;
+   short s;
+   Byte b;
+} Missing_value; /**< Missing values for NetCDF files */
+
+typedef struct
+{
+  char *name;
+  char *dim;
+  char *standard_name;
+  char *long_name;
+  char *unit;
+  double scale;
+} Axis;  /**< axis description */
+
+struct netcdf_config
+{
+  Missing_value missing_value;
+  Axis lat,lon,time,depth, bnds,pft;
+  char *years_name;
+  char *calendar;
+};
+
+typedef struct
+{
   Filename filename; /**< Filename of output file */
   int id;
   Bool oneyear;
@@ -137,8 +163,6 @@ struct config
   Bool nofill;          /**< do not fille NetCDF files at creation (TRUE/FALSE) */
   int pft_residue;
   int fdi;
-  char *pft_index;
-  char *layer_index;
   int with_nitrogen;      /**< enable nitrogen cycle */
   Bool crop_resp_fix;      /**< with fixed crop respiration (TRUE/FALSE) */
   Bool cropsheatfrost;
@@ -152,6 +176,7 @@ struct config
   int fertilizer_input;     /**< simulation with fertilizer input */
   Bool manure_input;       /**< simulation with manure input */
   Bool prescribe_lsuha;    /**< simulation with prescribed grassland livestock density from file */
+  Netcdf_config netcdf;   /**< setting for missing values and axis names of NetCDF files */
   Bool global_netcdf;     /**< enable global grid for NetCDF output */
   Bool rev_lat;           /**< reverse lat coordinates in NetCDF output */
   Bool with_days;         /**< using days as a unit for monthly output */
@@ -192,7 +217,6 @@ struct config
   int cft_tropic;
   Verbosity scan_verbose;       /**< option -vv 2: verbosely print the read values during fscanconfig. default 1; 0 would supress even error messages */
   int compress;           /**< compress NetCDF output (0: no compression) */
-  float missing_value;    /**< Missing value in NetCDF files */
   Variable *outnames;
 #ifdef USE_MPI
   MPI_Comm comm; /**< MPI communicator */
@@ -332,6 +356,8 @@ extern Bool getextension(Extension *,const Config *);
 extern void fprintincludes(FILE *,const char *,int,char **);
 extern size_t getsize(int,const Config *);
 extern int *fscanlandcovermap(LPJfile *,int *,const char *,int,const Config *);
+extern Bool fscanconfig_netcdf(LPJfile *,Netcdf_config *,const char *,Verbosity);
+extern void freeconfig_netcdf(Netcdf_config *);
 extern void closeconfig(LPJfile *);
 
 /* Definition of macros */

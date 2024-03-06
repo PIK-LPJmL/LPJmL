@@ -69,6 +69,7 @@ int main(int argc,char **argv)
   {
     cdf=opencoord_netcdf(config.soil_filename.name,
                          config.soil_filename.var,
+                         &config.netcdf,
                          TRUE);
     if(cdf==NULL)
       return EXIT_FAILURE;

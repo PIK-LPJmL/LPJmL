@@ -234,6 +234,11 @@
     #include "par/outputvars.cjson"
   ,
 
+  /* Definition of missing values and axis names in NetCDF files */
+  "netcdf_config" :
+    #include "par/netcdf.cjson"
+  ,
+
   /* output data settings */
   "output_metafile" : true,   /* json metafile created (true/false) */
   "default_fmt" : "raw",      /* default format for output files: "raw","txt","cdf","clm","sock" */
@@ -245,9 +250,6 @@
   "with_days" : true,         /* use days as units for monthly output in NetCDF files */
   "nofill" : false,           /* do not fill NetCDF files at creation (true/false) */
   "compress" : 0,             /* compression level (1-9, 0= no compression) */
-  "missing_value" : -1e32,    /* missing value in NetCDF files */
-  "pft_index" : "npft",       /* name of index variable for PFT output */
-  "layer_index" : "layer",    /* name of index variable for soil layer output */
   "compress_cmd" : "gzip -f", /* command for compression of output files */
   "compress_suffix" : ".gz",  /* file suffix for compressed output files */
   "json_suffix" : ".json",    /* file suffix for JSON metafiles */
@@ -406,7 +408,7 @@ ID                               Fmt                        filename
   "firstyear": 1901, /* first year of simulation */
 #if defined CRU_MONTHLY || defined CRU_NETCDF
   "lastyear" : 2011, /* last year of simulation */
-#else 
+#else
   "lastyear" : 2019, /* last year of simulation */
 #endif
   "outputyear": 1901, /* first year output is written  */

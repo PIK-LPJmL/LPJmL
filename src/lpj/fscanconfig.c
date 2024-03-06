@@ -706,15 +706,12 @@ Bool fscanconfig(Config *config,    /**< LPJ configuration */
       return TRUE;
   }
 #endif
-  config->missing_value=MISSING_VALUE_FLOAT;
-  if(fscanfloat(file,&config->missing_value,"missing_value",!config->pedantic,verbose))
+  if(fscanconfig_netcdf(file,&config->netcdf,"netcdf_config",verbose))
+  {
+    if(verbose)
+      fputs("ERRROR230: Cannot read setting for NetCDF output.\n",stderr);
     return TRUE;
-  fscanname(file,name,"pft_index");
-  config->pft_index=strdup(name);
-  checkptr(config->pft_index);
-  fscanname(file,name,"layer_index");
-  config->layer_index=strdup(name);
-  checkptr(config->layer_index);
+  }
   config->outnames=fscanoutputvar(file,NOUT,verbose);
   if(config->outnames==NULL)
   {
@@ -1035,7 +1032,7 @@ Bool fscanconfig(Config *config,    /**< LPJ configuration */
   if(config->startgrid==ALL)
   {
     config->startgrid=0;
-    endgrid=getnsoilcode(&config->soil_filename,config->nsoil,isroot(*config));
+    endgrid=getnsoilcode(&config->soil_filename,&config->netcdf,config->nsoil,isroot(*config));
     if(endgrid==0)
     {
       if(verbose)

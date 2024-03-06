@@ -29,6 +29,7 @@ void freeconfig(Config *config /**< LPJmL configuration */
                )
 {
   int i;
+  freeconfig_netcdf(&config->netcdf);
   free(config->coupled_model);
   free(config->compress_cmd);
   free(config->compress_suffix);
@@ -42,8 +43,6 @@ void freeconfig(Config *config /**< LPJmL configuration */
   free(config->restartdir);
   free(config->arglist);
   free(config->sim_name);
-  free(config->pft_index);
-  free(config->layer_index);
   free(config->json_suffix);
   freeattrs(config->global_attrs,config->n_global);
   if(config->with_lakes)
@@ -153,6 +152,11 @@ void freeconfig(Config *config /**< LPJmL configuration */
       freefilename(&config->sdate_filename);
     if(config->prescribe_lsuha)
       freefilename(&config->lsuha_filename);
+    if (config->residue_treatment == READ_RESIDUE_DATA)
+      freefilename(&config->residue_data_filename);
+    if(config->crop_phu_option==PRESCRIBED_CROP_PHU)
+      freefilename(&config->crop_phu_filename);
+
   }
   if(config->with_nitrogen)
   {
