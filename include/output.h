@@ -48,8 +48,8 @@ typedef struct
   Real *data;            /**< storage for output */
   Real mpet;             /**< monthly PET (mm) */
   Real dcflux;           /**< daily carbon flux from LPJ to atmosphere (gC/m2/day) */
-  int *syear2;           /**< sowing year of second season, used for double_harvest */
-  int *syear;            /**< sowing year of first season, used for double_harvest */
+  int *syear2;           /**< sowing year of second season, used for separate_harvests */
+  int *syear;            /**< sowing year of first season, used for separate_harvests */
 #ifdef COUPLING_WITH_FMS
   Real dwflux;           /**< daily water flux from LPJ to atmosphere (kg/m2/day) */
 #endif

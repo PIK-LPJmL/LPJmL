@@ -19,7 +19,7 @@ of `major.minor.patch` with
 
 ## [Unreleased]
 
-## [5.8.8] - 2024-03-06
+## [5.8.8] - 2024-03-07
 
 - author: Werner von Bloh (bloh@pik-potsdam.de), Sebastian Ostberg (ostberg@pik-potsdam.de)
 - code review: Jannes Breier (breier@pik-potsdam.de)
@@ -93,6 +93,25 @@ clm2cdf -metafile temp.clm.json temp.nc
 - Missing argument after option handling fixed in `cdf2bin` and `countr2cdf`.
 - Missing `$dir/` added to manure data in `regridlpj`.
 - Correct default landuse file set in `regridlpj`.
+
+
+## [5.8.8] - 2024-03-07
+
+### Contributors
+
+- author: Christoph  Mueller (cmueller@pik-potsdam.de)
+- code review: Boris Sakschewski (borissa@pik-potsdam.de), Sabine Mathesius (sabine.mathesius@pik-potsdam.de)
+
+### Fixed
+
+- missing family names added in CITATION.cff
+
+### Changed
+
+- renamed `double_harvest.c` to `separate_harvests.c` and `update_double_harvest.c` to `update_separate_harvests.c` and changed entries in Makefiles accordingly
+- renamed functions `double_harvest()` to `separate_harvests()` and `update_double_harvest()` to `update_separate_harvests()` throughout the code
+- renamed the `struct` `Double_harvest` to `Separate_harvest` and the variable of type `Separate_harvest` in `struct` `Pftcrop` from `dh` to `sh`
+- renamed `double_harvest` flag in `struct` `Config` to `separate_harvests` 
 
 
 ## [5.8.7] - 2024-03-06

@@ -172,8 +172,8 @@ Real nuptake_crop(Pft *pft,             /**< pointer to PFT data */
         {
           n_uptake += autofert_n;
           pft->bm_inc.nitrogen = *n_plant_demand;
-          if(crop->dh!=NULL)
-            crop->dh->nfertsum+=autofert_n*pft->stand->frac;
+          if(crop->sh!=NULL)
+            crop->sh->nfertsum+=autofert_n*pft->stand->frac;
           else
             getoutputindex(&pft->stand->cell->output,CFT_NFERT,index+data->irrigation*nirrig,config)+=autofert_n;
           pft->stand->cell->balance.influx.nitrogen += autofert_n*pft->stand->frac;
@@ -204,7 +204,7 @@ Real nuptake_crop(Pft *pft,             /**< pointer to PFT data */
 #ifdef DEBUG_N
   printf("ndemand=%g,ndemand_opt=%g\n",*ndemand_leaf,ndemand_leaf_opt);
 #endif
-  if(crop->dh!=NULL)
+  if(crop->sh!=NULL)
     crop->nuptakesum += n_uptake;
   else
     getoutputindex(&pft->stand->cell->output,PFT_NUPTAKE,nnat+index+data->irrigation*nirrig,config)+=n_uptake;

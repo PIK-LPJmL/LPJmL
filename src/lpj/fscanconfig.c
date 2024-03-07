@@ -315,7 +315,7 @@ Bool fscanconfig(Config *config,    /**< LPJ configuration */
   config->no_ndeposition=FALSE;
   config->cropsheatfrost=FALSE;
   config->black_fallow=FALSE;
-  config->double_harvest=FALSE;
+  config->separate_harvests=FALSE;
   config->others_to_crop = FALSE;
   config->npp_controlled_bnf = FALSE;
   config->prescribe_lsuha=FALSE;
@@ -410,7 +410,7 @@ Bool fscanconfig(Config *config,    /**< LPJ configuration */
         if(fscanbool(file,&config->fire_on_grassland,"fire_on_grassland",!config->pedantic,verbose))
           return TRUE;
       }
-      if(fscanbool(file,&config->double_harvest,"double_harvest",!config->pedantic,verbose))
+      if(fscanbool(file,&config->separate_harvests,"separate_harvests",!config->pedantic,verbose))
         return TRUE;
       if(config->withlanduse==CONST_LANDUSE || config->withlanduse==ALL_CROPS || config->withlanduse==ONLY_CROPS)
         fscanint2(file,&config->landuse_year_const,"landuse_year_const");
