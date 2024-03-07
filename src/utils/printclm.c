@@ -139,7 +139,7 @@ static void printclm(const char *filename,int output,int nbands,int version,
                bool2str(restartheader.river_routing),
                bool2str(restartheader.sdate_option),
                bool2str(restartheader.crop_option),
-               bool2str(restartheader.double_harvest));
+               bool2str(restartheader.separate_harvests));
         printf("Random seed:\t");
         for(i=0;i<NSEED;i++)
           printf(" %d",restartheader.seed[i]);

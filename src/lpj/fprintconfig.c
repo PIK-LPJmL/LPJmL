@@ -513,8 +513,8 @@ void fprintconfig(FILE *file,          /**< File pointer to text output file */
     snprintf(s,STRING_LEN,"%s crop PHU option",crop_phu_options[config->crop_phu_option]);
     len=fputstring(file,len,s,78);
   }
-  if(config->double_harvest)
-    len=printsim(file,len,&count,"double harvest");
+  if(config->separate_harvests)
+    len=printsim(file,len,&count,"separate harvests");
   if(config->grassfix_filename.name!=NULL)
     len=printsim(file,len,&count,"grassland fixed PFT");
   if(config->grassharvest_filename.name!=NULL)

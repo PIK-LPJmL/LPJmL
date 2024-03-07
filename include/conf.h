@@ -94,7 +94,7 @@
 #define NO_FERTILIZER 0
 #define FERTILIZER 1
 #define AUTO_FERTILIZER 2
-#define NOUT 332            /* number of output files */
+#define NOUT 333            /* number of output files */
 #define GRIDBASED 1         /* pft-specific outputs scaled by stand->frac */
 #define PFTBASED 0          /* pft-specific outputs not scaled by stand->frac */
 #define CONST_PREC 2
@@ -429,11 +429,13 @@
 #define ESTAB_STORAGE_C 324
 #define ESTAB_STORAGE_N 325
 #define PFT_WATER_DEMAND 326
-#define RD 327
-#define NDEPOS 328
-#define RIVERVOL 329
-#define SWC_VOL 330
-#define IRRIG_STOR 331
+#define PFT_WATER_SUPPLY 327
+#define RD 328
+#define NDEPOS 329
+#define RIVERVOL 330
+#define SWC_VOL 331
+#define IRRIG_STOR 332
+
 #define PFT_GCGP_COUNT 0
 #define NDAY_MONTH 1
 #define RANDOM_SEED 0
