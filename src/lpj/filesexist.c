@@ -25,7 +25,8 @@ static int checksoilcode(Config *config)
   size_t offset;
   Type type;
   int cell,ncell;
-  unsigned int i,soilcode;
+  int i;
+  unsigned int soilcode;
   char *name;
   Map *map;
   int *soilmap;
@@ -93,7 +94,7 @@ static int checksoilcode(Config *config)
     fclose(file);
     for(i=0;i<config->soilmap_size;i++)
       if(!exist[i] && config->soilmap[i]!=0)
-        fprintf(stderr,"WARNING035: Soilcode %u ('%s') not found in '%s'.\n",
+        fprintf(stderr,"WARNING035: Soilcode %d ('%s') not found in '%s'.\n",
                 i,config->soilpar[config->soilmap[i]-1].name,name);
     free(name);
   }

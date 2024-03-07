@@ -183,7 +183,7 @@ while(( "$#" )); do
      norun=1
      ;;
    -*)
-     echo >&2 Invalid option $1
+     echo >&2 Invalid option \'$1\'
      echo -e >&2 $USAGE
      exit 1
      ;;

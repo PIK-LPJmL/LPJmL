@@ -247,7 +247,7 @@ int main(int argc,char **argv)
     nc_close(ncid);
     return EXIT_FAILURE;
   }
-  header.cellsize_lon=(lon[lon_len-1]-lon[0])/(lon_len-1);
+  header.cellsize_lon=(float)((lon[lon_len-1]-lon[0])/(lon_len-1));
   header.cellsize_lat=(float)fabs((lat[lat_len-1]-lat[0])/(lat_len-1));
   fwriteheader(out,&header,LPJGRID_HEADER,LPJGRID_VERSION);
   header.ncell=0;

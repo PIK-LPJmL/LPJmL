@@ -571,6 +571,7 @@ int main(int argc,char **argv)
   Header header;
   float *data;
   short *data_short;
+  const char *progname;
   int i,j,k,ngrid,iarg,compress,version,n_global,n_global2,baseyear;
   Bool swap,ispft,isshort,isglobal,isclm,ismeta,isbaseyear,revlat,withdays,absyear;
   Type gridtype;
@@ -610,6 +611,7 @@ int main(int argc,char **argv)
   map_name=BAND_NAMES;
   n_global=0;
   missing_value=NULL;
+  progname=strippath(argv[0]);
   initsetting_netcdf(&netcdf_config);
   for(iarg=1;iarg<argc;iarg++)
     if(argv[iarg][0]=='-')
@@ -651,7 +653,7 @@ int main(int argc,char **argv)
                "binfile          filename of binary data file\n"
                "netcdffile       filename of NetCDF file created\n\n"
                "(C) Potsdam Institute for Climate Impact Research (PIK), see COPYRIGHT file\n",
-               argv[0],header.cellsize_lon,header.firstyear);
+               progname,header.cellsize_lon,header.firstyear);
         return EXIT_SUCCESS;
       }
       else if(!strcmp(argv[iarg],"-v") || !strcmp(argv[iarg],"--version"))
@@ -664,7 +666,7 @@ int main(int argc,char **argv)
         if(iarg==argc-1)
         {
           fprintf(stderr,"Error: Missing argument after option '-units'.\n"
-                 USAGE,argv[0]);
+                  USAGE,progname);
           return EXIT_FAILURE;
         }
         units=argv[++iarg];
@@ -696,7 +698,7 @@ int main(int argc,char **argv)
         if(iarg==argc-1)
         {
           fprintf(stderr,"Error: Missing argument after option '-descr'.\n"
-                 USAGE,argv[0]);
+                  USAGE,progname);
           return EXIT_FAILURE;
         }
         long_name=argv[++iarg];
@@ -706,7 +708,7 @@ int main(int argc,char **argv)
         if(iarg==argc-1)
         {
           fprintf(stderr,"Error: Missing argument after option '-missing_value'.\n"
-                 USAGE,argv[0]);
+                  USAGE,progname);
           return EXIT_FAILURE;
         }
         missing_value=argv[++iarg];
@@ -717,7 +719,7 @@ int main(int argc,char **argv)
         {
           fprintf(stderr,
                   "Error: Argument missing for '-attr' option.\n"
-                 USAGE,argv[0]);
+                  USAGE,progname);
           return EXIT_FAILURE;
         }
         pos=strchr(argv[++iarg],'=');
@@ -725,7 +727,7 @@ int main(int argc,char **argv)
         {
           fprintf(stderr,
                   "Error: Missing '=' for '-attr' option.\n"
-                 USAGE,argv[0]);
+                  USAGE,progname);
           return EXIT_FAILURE;
         }
         *pos='\0';
@@ -742,7 +744,7 @@ int main(int argc,char **argv)
         if(iarg==argc-1)
         {
           fprintf(stderr,"Error: Missing argument after option '-map'.\n"
-                 USAGE,argv[0]);
+                  USAGE,progname);
           return EXIT_FAILURE;
         }
         map_name=argv[++iarg];
@@ -752,7 +754,7 @@ int main(int argc,char **argv)
         if(iarg==argc-1)
         {
           fprintf(stderr,"Error: Missing argument after option '-config'.\n"
-                 USAGE,argv[0]);
+                  USAGE,progname);
           return EXIT_FAILURE;
         }
         config_filename=argv[++iarg];
@@ -762,7 +764,7 @@ int main(int argc,char **argv)
         if(iarg==argc-1)
         {
           fprintf(stderr,"Error: Missing argument after option '-nbands'.\n"
-                  USAGE,argv[0]);
+                  USAGE,progname);
           return EXIT_FAILURE;
         }
         header.nbands=strtol(argv[++iarg],&endptr,10);
@@ -782,7 +784,7 @@ int main(int argc,char **argv)
         if(iarg==argc-1)
         {
           fprintf(stderr,"Error: Missing argument after option '-nstep'.\n"
-                  USAGE,argv[0]);
+                  USAGE,progname);
           return EXIT_FAILURE;
         }
         header.nstep=strtol(argv[++iarg],&endptr,10);
@@ -802,7 +804,7 @@ int main(int argc,char **argv)
         if(iarg==argc-1)
         {
           fprintf(stderr,"Error: Missing argument after option '-firstyear'.\n"
-                  USAGE,argv[0]);
+                  USAGE,progname);
           return EXIT_FAILURE;
         }
         header.firstyear=strtol(argv[++iarg],&endptr,10);
@@ -817,7 +819,7 @@ int main(int argc,char **argv)
         if(iarg==argc-1)
         {
           fprintf(stderr,"Error: Missing argument after option '-baseyear'.\n"
-                  USAGE,argv[0]);
+                  USAGE,progname);
           return EXIT_FAILURE;
         }
         baseyear=strtol(argv[++iarg],&endptr,10);
@@ -833,7 +835,7 @@ int main(int argc,char **argv)
         if(iarg==argc-1)
         {
           fprintf(stderr,"Error: Missing argument after option '-cellsize'.\n"
-                  USAGE,argv[0]);
+                  USAGE,progname);
           return EXIT_FAILURE;
         }
         cellsize=(float)strtod(argv[++iarg],&endptr);
@@ -849,7 +851,7 @@ int main(int argc,char **argv)
         if(iarg==argc-1)
         {
           fprintf(stderr,"Error: Missing argument after option '-compress'.\n"
-                  USAGE,argv[0]);
+                  USAGE,progname);
           return EXIT_FAILURE;
         }
         compress=strtol(argv[++iarg],&endptr,10);
@@ -862,7 +864,7 @@ int main(int argc,char **argv)
       else
       {
         fprintf(stderr,"Error: Invalid option '%s'.\n"
-                USAGE,argv[iarg],argv[0]);
+                  USAGE,argv[iarg],progname);
         return EXIT_FAILURE;
       }
     }
@@ -876,7 +878,7 @@ int main(int argc,char **argv)
   else if(argc<iarg+4)
   {
     fprintf(stderr,"Error: Missing argument(s).\n"
-            USAGE,argv[0]);
+            USAGE,progname);
     return EXIT_FAILURE;
   }
   else
@@ -1148,7 +1150,7 @@ int main(int argc,char **argv)
     }
     else
     {
-      netcdf_config.missing_value.f=strtod(missing_value,&endptr);
+      netcdf_config.missing_value.f=(float)strtod(missing_value,&endptr);
       if(*endptr!='\0')
       {
         fprintf(stderr,"Inavlid number '%s' for missing value.\n",missing_value);
@@ -1214,7 +1216,7 @@ int main(int argc,char **argv)
     free(data);
   return EXIT_SUCCESS;
 #else
-  fprintf(stderr,"ERROR401: NetCDF is not supported in this version of %s.\n",argv[0]);
+  fprintf(stderr,"ERROR401: NetCDF is not supported in this version of %s.\n",strippath(argv[0]));
   return EXIT_FAILURE;
 #endif
 } /* of 'main' */

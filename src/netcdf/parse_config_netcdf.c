@@ -33,7 +33,7 @@ Bool parse_config_netcdf(Netcdf_config *config,
   lpjfile=parse_json(file,ERR);
   if(lpjfile==NULL)
   {
-    fclose(file); 
+    fclose(file);
     return TRUE;
   }
   rc=fscanconfig_netcdf(lpjfile,config,NULL,ERR);

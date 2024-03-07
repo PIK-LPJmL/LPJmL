@@ -26,7 +26,8 @@ void fprintattrs(FILE *file,        /**< pointer to text file */
                  int n_attr         /**< size of array */
                 )
 {
-  int i,len=0;
+  size_t len=0;
+  int i;
   if(n_attr>0) /* is anything to print? */
   {
     /* calculate maximum length of line */

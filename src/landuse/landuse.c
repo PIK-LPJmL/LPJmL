@@ -272,7 +272,8 @@ Bool getlanduse(Landuse landuse,     /**< Pointer to landuse data */
                 const Config *config /**< LPJ configuration */
                )                     /** \return TRUE on error */
 {
-  int i,j,count,cell;
+  size_t i;
+  int j,count,cell;
   int start;
   IrrigationType p;
   Real sum,*data;
@@ -752,7 +753,7 @@ Bool getlanduse(Landuse landuse,     /**< Pointer to landuse data */
           if(readlandfracmap(grid[cell].ml.fertilizer_nr+i,config->fertilizermap,
                              config->fertilizermap_size,data,&count,ncft,config->nwptype))
           {
-            fprintf(stderr,"ERROR149: Fertilizer input=%g for band %d less than zero for cell %d (%s) in year %d.\n",
+            fprintf(stderr,"ERROR149: Fertilizer input=%g for band %zu less than zero for cell %d (%s) in year %d.\n",
                     data[count],count % config->fertilizermap_size+i*config->fertilizermap_size,
                     cell+config->startgrid,sprintcoord(line,&grid[cell].coord),yearf);
             return TRUE;
@@ -778,7 +779,7 @@ Bool getlanduse(Landuse landuse,     /**< Pointer to landuse data */
           if(readlandfracmap(grid[cell].ml.manure_nr+i,config->fertilizermap,
                              config->fertilizermap_size,data,&count,ncft,config->nwptype))
           {
-            fprintf(stderr,"ERROR149: Manure input=%g for band %d less than zero for cell %d (%s) in year %d.\n",
+            fprintf(stderr,"ERROR149: Manure input=%g for band %zu less than zero for cell %d (%s) in year %d.\n",
                     data[count],count % config->fertilizermap_size+i*config->fertilizermap_size,
                     cell+config->startgrid,sprintcoord(line,&grid[cell].coord),yearm);
             return TRUE;

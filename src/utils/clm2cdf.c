@@ -987,8 +987,8 @@ int main(int argc,char **argv)
     }
     if(ismeta)
     {
-      header.cellsize_lon=res.lon;
-      header.cellsize_lat=res.lat;
+      header.cellsize_lon=(float)res.lon;
+      header.cellsize_lat=(float)res.lat;
     }
   }
   else

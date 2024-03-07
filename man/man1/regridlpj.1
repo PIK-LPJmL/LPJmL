@@ -3,14 +3,17 @@
 regridlpj \- regrid input data set for selected countries or specified grid file
 .SH SYNOPSIS
 .B regridlpj
-[\-dir path] [-crumontly] [-oldlu] [-madrat]
+[\-dir path] [\-inpath path] [-crumontly] [-oldlu] [-madrat]
 .I filesuffix  [countrycode ...]
 .SH DESCRIPTION
-Program regrids input files for selected countries if country codes are provided. If country code is missing grid file grid_filesuffix.clm is used for regridding. Configuration file input_filesuffix.cjson is created in the current directory.
+Program regrids input files for selected countries if country codes are provided. If country code is missing grid file \fIgrid_filesuffix.clm\fP is used for regridding. Configuration file \fIinput_filesuffix.cjson\fP is created in the current directory.
 .SH OPTIONS
 .TP
 \-dir path
 set directory for regridded input files
+.TP
+\-inpath path
+set directory for input files to regrid. By default path defined in environmental variable LPJINPATH is used.
 .TP
 \-crumonthly
 Instead of GSWP3-W5E5 climate data monthly CRU data is used
@@ -25,7 +28,7 @@ Instead of LandInG land-use data MADRAT data is used
 File suffix for regridded input files and configuration file
 .TP
 .I countrycode
-ISO 3166-1 alpha-3 abbreviations for countries or country 
+ISO 3166-1 alpha-3 abbreviations for countries or country
 codes as numbers defined in
 .I include/managepar.h
 .SH EXAMPLES
