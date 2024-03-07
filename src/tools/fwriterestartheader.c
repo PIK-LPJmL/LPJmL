@@ -26,7 +26,7 @@ Bool fwriterestartheader(FILE *file,                 /**< file pointer of binary
     return TRUE;
   if(fwrite(&header->crop_option,sizeof(int),1,file)!=1)
     return TRUE;
-  if(fwrite(&header->double_harvest,sizeof(int),1,file)!=1)
+  if(fwrite(&header->separate_harvests,sizeof(int),1,file)!=1)
     return TRUE;
   return fwrite(header->seed,sizeof(Seed),1,file)!=1;
 } /* of 'fwriterestartheader' */

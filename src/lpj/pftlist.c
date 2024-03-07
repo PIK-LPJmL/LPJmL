@@ -81,7 +81,7 @@ Bool freadpftlist(FILE *file,            /**< file pointer of a binary file */
                   Pftlist *pftlist,      /**< PFT list */
                   const Pftpar pftpar[], /**< PFT parameter array */
                   int ntotpft,           /**< total number of PFTs */
-                  Bool double_harvest,
+                  Bool separate_harvests,
                   Bool swap              /**< if true data is in different byte order */
                  )                       /** \return TRUE on error */
 {
@@ -102,7 +102,7 @@ Bool freadpftlist(FILE *file,            /**< file pointer of a binary file */
       return TRUE;
     }
     for(p=0;p<pftlist->n;p++)
-      if(freadpft(file,stand,pftlist->pft+p,pftpar,ntotpft,double_harvest,swap))
+      if(freadpft(file,stand,pftlist->pft+p,pftpar,ntotpft,separate_harvests,swap))
       {
         fprintf(stderr,"ERROR254: Cannot read PFT %d.\n",p);
         pftlist->n=p;

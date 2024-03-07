@@ -87,11 +87,11 @@ FILE *openrestart(const char *filename, /**< filename of restart file */
       fclose(file);
       return NULL;
     }
-    if(restartheader.double_harvest!=config->double_harvest)
+    if(restartheader.separate_harvests!=config->separate_harvests)
     {
       if(isroot(*config))
         fprintf(stderr,"ERROR180: Double harvest setting %s is different from %s in %s file '%s'.\n",
-                bool2str(config->double_harvest),bool2str(restartheader.double_harvest),type,filename);
+                bool2str(config->separate_harvests),bool2str(restartheader.separate_harvests),type,filename);
       fclose(file);
       return NULL;
     }

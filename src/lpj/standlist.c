@@ -54,7 +54,7 @@ Standlist freadstandlist(FILE *file,            /**< File pointer to binary file
                          const Soilpar *soilpar,/**< soil parameter */
                          Standtype **standtype, /**< array of stand types */
                          int nstand,            /**< number of stand types */
-                         Bool double_harvest,   /**< double harvest enabled (TRUE/FALSE) */
+                         Bool separate_harvests,/**< separate harvests enabled (TRUE/FALSE) */
                          Bool swap              /**< Byte order has to be changed */
                         ) /** \return allocated stand list or NULL */
 {
@@ -73,7 +73,7 @@ Standlist freadstandlist(FILE *file,            /**< File pointer to binary file
   /* Read all stand data */
   for(s=0;s<standlist->n;s++)
     if((getlistitem(standlist,s)=freadstand(file,cell,pftpar,ntotpft,soilpar,
-                                            standtype,nstand,double_harvest,swap))==NULL)
+                                            standtype,nstand,separate_harvests,swap))==NULL)
     {
       fprintf(stderr,"ERROR254: Cannot read stand %d.\n",s);
       return NULL;

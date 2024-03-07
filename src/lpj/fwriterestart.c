@@ -87,7 +87,7 @@ Bool fwriterestart(const Cell grid[],   /**< cell array               */
     restartheader.sdate_option=config->sdate_option;
     restartheader.crop_option=config->crop_phu_option==PRESCRIBED_CROP_PHU;
     restartheader.river_routing=config->river_routing;
-    restartheader.double_harvest=config->double_harvest;
+    restartheader.separate_harvests=config->separate_harvests;
     for(i=0;i<NSEED;i++)
       restartheader.seed[i]=config->seed[i];
     fwriterestartheader(file,&restartheader);

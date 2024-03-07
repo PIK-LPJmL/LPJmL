@@ -53,25 +53,25 @@ void fprint_crop(FILE *file,       /**< pointer to text file */
   }
   fprintf(file,"Supplysum:\t%g\n",crop->supplysum);
   fprintf(file,"Frostkill:\t%s\n",bool2str(crop->frostkill));
-  if(crop->dh!=NULL)
+  if(crop->sh!=NULL)
   {
-    fprintf(file,"Petsum:\t%g\n",crop->dh->petsum);
-    fprintf(file,"Evapsum:\t%g\n",crop->dh->evapsum);
-    fprintf(file,"Transpsum:\t%g\n",crop->dh->transpsum);
-    fprintf(file,"Intercsum:\t%g\n",crop->dh->intercsum);
-    fprintf(file,"Precsum:\t%g\n",crop->dh->precsum);
-    fprintf(file,"Sradsum:\t%g\n",crop->dh->sradsum);
-    fprintf(file,"Irrig_apply:\t%g\n",crop->dh->irrig_apply);
-    fprintf(file,"Tempsum:\t%g\n",crop->dh->tempsum);
-    fprintf(file,"Nirsum:\t%g\n",crop->dh->nirsum);
-    fprintf(file,"LGP:\t%g\n",crop->dh->lgp);
-    fprintf(file,"Runoffsum:\t%g\n",crop->dh->runoffsum);
-    fprintf(file,"N2O_denitsum:\t%g\n",crop->dh->n2o_denitsum);
-    fprintf(file,"N2O_nitsum:\t%g\n",crop->dh->n2o_nitsum);
-    fprintf(file,"N2_emissum:\t%g\n",crop->dh->n2_emissum);
-    fprintf(file,"Leachingsum:\t%g\n",crop->dh->leachingsum);
-    fprintf(file,"C_emissum:\t%g\n",crop->dh->c_emissum);
-    fprintf(file,"Sdate:\t\t%d\n",crop->dh->sdate);
-    fprintf(file,"Sowing year:\t%d\n",crop->dh->sowing_year);
+    fprintf(file,"Petsum:\t%g\n",crop->sh->petsum);
+    fprintf(file,"Evapsum:\t%g\n",crop->sh->evapsum);
+    fprintf(file,"Transpsum:\t%g\n",crop->sh->transpsum);
+    fprintf(file,"Intercsum:\t%g\n",crop->sh->intercsum);
+    fprintf(file,"Precsum:\t%g\n",crop->sh->precsum);
+    fprintf(file,"Sradsum:\t%g\n",crop->sh->sradsum);
+    fprintf(file,"Irrig_apply:\t%g\n",crop->sh->irrig_apply);
+    fprintf(file,"Tempsum:\t%g\n",crop->sh->tempsum);
+    fprintf(file,"Nirsum:\t%g\n",crop->sh->nirsum);
+    fprintf(file,"LGP:\t%g\n",crop->sh->lgp);
+    fprintf(file,"Runoffsum:\t%g\n",crop->sh->runoffsum);
+    fprintf(file,"N2O_denitsum:\t%g\n",crop->sh->n2o_denitsum);
+    fprintf(file,"N2O_nitsum:\t%g\n",crop->sh->n2o_nitsum);
+    fprintf(file,"N2_emissum:\t%g\n",crop->sh->n2_emissum);
+    fprintf(file,"Leachingsum:\t%g\n",crop->sh->leachingsum);
+    fprintf(file,"C_emissum:\t%g\n",crop->sh->c_emissum);
+    fprintf(file,"Sdate:\t\t%d\n",crop->sh->sdate);
+    fprintf(file,"Sowing year:\t%d\n",crop->sh->sowing_year);
   }
 } /* of 'fprint_crop' */

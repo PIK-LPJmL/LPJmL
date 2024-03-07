@@ -21,26 +21,33 @@ authors:
     given-names: "Matthias"
     orcid: https://orcid.org/0000-0003-0363-9697
     affiliation: "Inst. of Photogrammetry and Remote Sensing, TU Dresden"
-  - affiliation: "Potsdam Institute for Climate Impact Research (PIK)"
+  - family-names: "Gerten"
     given-names: "Dieter"
-  - affiliation: "Potsdam Institute for Climate Impact Research (PIK)"
+    affiliation: "Potsdam Institute for Climate Impact Research (PIK)"
+  - family-names: "Heinke"
     given-names: "Jens"
-  - affiliation: "Potsdam Institute for Climate Impact Research (PIK)"
+    affiliation: "Potsdam Institute for Climate Impact Research (PIK)"
+  - family-names: "Jägermeyr"
     given-names: "Jonas"
+    affiliation: "Potsdam Institute for Climate Impact Research (PIK)"
   - family-names: "Langerwisch"
     given-names: "Fanny"
-  - affiliation: "Potsdam Institute for Climate Impact Research (PIK)"
+  - family-names: "Lucht"
     given-names: "Wolfgang"
-  - affiliation: "Potsdam Institute for Climate Impact Research (PIK)"
+    affiliation: "Potsdam Institute for Climate Impact Research (PIK)"
+  - family-names: "Rolinski"
     given-names: "Susanne"
+    affiliation: "Potsdam Institute for Climate Impact Research (PIK)"
   - family-names: "Waha"
     given-names: "Katharina"
-  - orcid: https://orcid.org/0000-0002-2368-7015
-    affiliation: "Potsdam Institute for Climate Impact Research (PIK)"
+  - family-names: "Ostberg"
     given-names: "Sebastian"
-  - orcid: https://orcid.org/0000-0003-3090-3318
+    orcid: https://orcid.org/0000-0002-2368-7015
     affiliation: "Potsdam Institute for Climate Impact Research (PIK)"
+  - family-names: "Wirth"
     given-names: "Stephen Björn"
+    orcid: https://orcid.org/0000-0003-3090-3318
+    affiliation: "Potsdam Institute for Climate Impact Research (PIK)"
   - family-names: "Fader"
     given-names: "Marianela"
   - family-names: "Drüke"
@@ -61,38 +68,50 @@ authors:
     given-names: "Liesbeth"
   - family-names: "Beringer (Erbrecht)"
     given-names: "Tim"
+    affiliation: "Potsdam Institute for Climate Impact Research (PIK)"
   - family-names: "Rost (Jachner)"
     given-names: "Stephanie"
   - family-names: "Gumpenberger"
     given-names: "Marlies"
   - family-names: "Heyder"
     given-names: "Ursula"
-  - orcid: https://orcid.org/0000-0003-1511-3086
-    affiliation: "Potsdam Institute for Climate Impact Research (PIK)"
+  - family-names: "Werner"
     given-names: "Constanze"
-  - orcid: https://orcid.org/0000-0002-8809-1044
+    orcid: https://orcid.org/0000-0003-1511-3086
     affiliation: "Potsdam Institute for Climate Impact Research (PIK)"
+  - family-names: "Braun"
     given-names: "Johanna"
-  - orcid: https://orcid.org/0000-0002-9055-6904
+    orcid: https://orcid.org/0000-0002-8809-1044
     affiliation: "Potsdam Institute for Climate Impact Research (PIK)"
+  - family-names: "Breier"
     given-names: "Jannes"
-  - orcid: https://orcid.org/0000-0002-5109-0048
+    orcid: https://orcid.org/0000-0002-9055-6904
     affiliation: "Potsdam Institute for Climate Impact Research (PIK)"
+  - family-names: "Stenzel"
     given-names: "Fabian"
-  - affiliation: "Potsdam Institute for Climate Impact Research (PIK)"
+    orcid: https://orcid.org/0000-0002-5109-0048
+    affiliation: "Potsdam Institute for Climate Impact Research (PIK)"
+  - family-names: "Mathesius"
     given-names: "Sabine"
-  - affiliation: "Potsdam Institute for Climate Impact Research (PIK)"
+    affiliation: "Potsdam Institute for Climate Impact Research (PIK)"
+  - family-names: "Hemmen"
     given-names: "Marie"
-  - affiliation: "Potsdam Institute for Climate Impact Research (PIK)"
+    affiliation: "Potsdam Institute for Climate Impact Research (PIK)"
+  - family-names: "Billing"
     given-names: "Maik"
-  - affiliation: "Potsdam Institute for Climate Impact Research (PIK)"
+    affiliation: "Potsdam Institute for Climate Impact Research (PIK)"
+    given-names: "Maik"
+  - family-names: "Oberhagemann"
     given-names: "Luke"
-  - orcid: https://orcid.org/0000-0002-7230-9723
     affiliation: "Potsdam Institute for Climate Impact Research (PIK)"
+  - family-names: "Sakschewski"
     given-names: "Boris"
-  - orcid: https://orcid.org/0000-0002-9491-3550
+    orcid: https://orcid.org/0000-0002-7230-9723
     affiliation: "Potsdam Institute for Climate Impact Research (PIK)"
+  - family-names: "Müller"
     given-names: "Christoph"
+    orcid: https://orcid.org/0000-0002-9491-3550
+    affiliation: "Potsdam Institute for Climate Impact Research (PIK)"
 
 title: "LPJmL: central open-source github repository of LPJmL at PIK"
 version: "5.7.5"

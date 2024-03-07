@@ -28,7 +28,7 @@ Bool freadrestartheader(FILE *file,            /**< file pointer of binary file 
     return TRUE;
   if(freadint(&header->crop_option,1,swap,file)!=1)
     return TRUE;
-  if(freadint(&header->double_harvest,1,swap,file)!=1)
+  if(freadint(&header->separate_harvests,1,swap,file)!=1)
     return TRUE;
   return freadseed(file,header->seed,swap);
 } /* of 'freadrestartheader' */

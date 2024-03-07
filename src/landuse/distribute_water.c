@@ -115,15 +115,15 @@ void distribute_water(Cell *cell,            /**< pointer to LPJ cell */
               crop=pft->data;
               if(config->pft_output_scaled)
               {
-                if(crop->dh!=NULL)
-                  crop->dh->nirsum+=data->net_irrig_amount*stand->frac;
+                if(crop->sh!=NULL)
+                  crop->sh->nirsum+=data->net_irrig_amount*stand->frac;
                 else
                   getoutputindex(&cell->output,CFT_NIR,pft->par->id-npft+nirrig,config)+=data->net_irrig_amount*stand->frac;
               }
               else
               {
-                if(crop->dh!=NULL)
-                  crop->dh->nirsum+=data->net_irrig_amount;
+                if(crop->sh!=NULL)
+                  crop->sh->nirsum+=data->net_irrig_amount;
                 else
                   getoutputindex(&cell->output,CFT_NIR,pft->par->id-npft+nirrig,config)+=data->net_irrig_amount;
               }

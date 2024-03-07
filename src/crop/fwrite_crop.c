@@ -54,27 +54,27 @@ Bool fwrite_crop(FILE *file,    /**< pointer to file data */
   fwrite1(&crop->nmanure,sizeof(Real),file);
   fwrite1(&crop->vscal_sum,sizeof(Real),file);
   fwrite1(&crop->frostkill,sizeof(int),file);
-  if(crop->dh!=NULL)
+  if(crop->sh!=NULL)
   {
-    fwrite1(&crop->dh->petsum,sizeof(Real),file);
-    fwrite1(&crop->dh->evapsum,sizeof(Real),file);
-    fwrite1(&crop->dh->transpsum,sizeof(Real),file);
-    fwrite1(&crop->dh->intercsum,sizeof(Real),file);
-    fwrite1(&crop->dh->precsum,sizeof(Real),file);
-    fwrite1(&crop->dh->sradsum,sizeof(Real),file);
-    fwrite1(&crop->dh->irrig_apply,sizeof(Real),file);
-    fwrite1(&crop->dh->tempsum,sizeof(Real),file);
-    fwrite1(&crop->dh->nirsum,sizeof(Real),file);
-    fwrite1(&crop->dh->lgp,sizeof(Real),file);
-    fwrite1(&crop->dh->runoffsum,sizeof(Real),file);
-    fwrite1(&crop->dh->n2o_denitsum,sizeof(Real),file);
-    fwrite1(&crop->dh->n2o_nitsum,sizeof(Real),file);
-    fwrite1(&crop->dh->n2_emissum,sizeof(Real),file);
-    fwrite1(&crop->dh->leachingsum,sizeof(Real),file);
-    fwrite1(&crop->dh->c_emissum,sizeof(Real),file);
-    fwrite1(&crop->dh->nfertsum,sizeof(Real),file);
-    fwrite1(&crop->dh->sdate,sizeof(int),file);
-    fwrite1(&crop->dh->sowing_year,sizeof(int),file);
+    fwrite1(&crop->sh->petsum,sizeof(Real),file);
+    fwrite1(&crop->sh->evapsum,sizeof(Real),file);
+    fwrite1(&crop->sh->transpsum,sizeof(Real),file);
+    fwrite1(&crop->sh->intercsum,sizeof(Real),file);
+    fwrite1(&crop->sh->precsum,sizeof(Real),file);
+    fwrite1(&crop->sh->sradsum,sizeof(Real),file);
+    fwrite1(&crop->sh->irrig_apply,sizeof(Real),file);
+    fwrite1(&crop->sh->tempsum,sizeof(Real),file);
+    fwrite1(&crop->sh->nirsum,sizeof(Real),file);
+    fwrite1(&crop->sh->lgp,sizeof(Real),file);
+    fwrite1(&crop->sh->runoffsum,sizeof(Real),file);
+    fwrite1(&crop->sh->n2o_denitsum,sizeof(Real),file);
+    fwrite1(&crop->sh->n2o_nitsum,sizeof(Real),file);
+    fwrite1(&crop->sh->n2_emissum,sizeof(Real),file);
+    fwrite1(&crop->sh->leachingsum,sizeof(Real),file);
+    fwrite1(&crop->sh->c_emissum,sizeof(Real),file);
+    fwrite1(&crop->sh->nfertsum,sizeof(Real),file);
+    fwrite1(&crop->sh->sdate,sizeof(int),file);
+    fwrite1(&crop->sh->sowing_year,sizeof(int),file);
   }
   fwrite1(&crop->supplysum,sizeof(Real),file);
   return FALSE;
