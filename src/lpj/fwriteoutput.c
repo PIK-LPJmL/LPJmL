@@ -1868,7 +1868,7 @@ void fwriteoutput(Outputfile *output,  /**< output file array */
   writeoutputarray(PFT_WATER_SUPPLY,1);
   writeoutputvar(NDEPOS,1);
 
-  if(config->double_harvest)
+  if(config->separate_harvests)
   {
     writeoutputarray(PFT_HARVESTC2,1);
     writeoutputarray(PFT_HARVESTN2,1);
