@@ -30,7 +30,7 @@ int getnsoilcode(const Filename *filename, /**< filename of soil code file */
   Header header;
   if(filename->fmt==CDF)
   {
-    coord=opencoord_netcdf(filename->name,filename->var,&config,isout);
+    coord=opencoord_netcdf(filename->name,filename->var,config,isout);
     if(coord==NULL)
     {
       if(isout)

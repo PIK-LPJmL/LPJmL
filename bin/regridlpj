@@ -15,7 +15,7 @@
 ##                                                                             ##
 #################################################################################
 
-USAGE="Usage: $0 [-dir path] [-crumonthly] [-oldlu] [-madrat] suffix [countrycode ...]"
+USAGE="Usage: $0 [-dir path] [-inpath path] [-crumonthly] [-oldlu] [-madrat] suffix [countrycode ...]"
 cru=0
 lu=0
 dir=$PWD
@@ -33,6 +33,17 @@ while(( "$#" )); do
     dir=$1
     shift 1
     ;;
+    -inpath)
+    if [ $# -lt 2 ]
+    then
+      echo >&2 "Argument missing after option '-inpath'"
+      echo >&2 $USAGE
+      exit 1
+    fi
+    shift 1
+    LPJINPATH=$1
+    shift 1
+    ;;
     -crumonthly)
     cru=1
     ;;
@@ -45,7 +56,7 @@ while(( "$#" )); do
     shift 1
     ;;
     -*)
-     echo >&2 Invalid option $1
+     echo >&2 Invalid option \'$1\'
      echo >&2 $USAGE
      exit 1
      ;;
@@ -113,7 +124,7 @@ fi
   regridclm -json -size4 $LPJINPATH/input_VERSION2/grid.bin $dir/grid_$name.clm  $LPJINPATH/input_VERSION2/mlightning.clm $dir/lightning_$name.clm
   regridclm -json $LPJINPATH/input_VERSION2/grid.bin $dir/grid_$name.clm  $LPJINPATH/input_VERSION2/human_ignition.clm $dir/human_ignition_$name.clm
   regridclm -json $LPJINPATH/input_VERSION2/grid.bin $dir/grid_$name.clm  $LPJINPATH/input_VERSION2/popdens_HYDE_1901_2010_bi.clm $dir/popdens_$name.clm
-  regridclm $LPJINPATH/input_VERSION2/grid.bin $dir/grid_$name.clm  $LPJINPATH/input_VERSION2/cow_full_2018.bin $dir/country_$name.clm
+  regridclm -json $LPJINPATH/input_VERSION2/grid.bin $dir/grid_$name.clm  $LPJINPATH/input_VERSION2/cow_full_2018.bin $dir/country_$name.clm
   regridclm -json -size4 $LPJINPATH/input_VERSION2/grid.bin $dir/grid_$name.clm $LPJINPATH/input_VERSION2/no3_deposition_rcp8p5.clm $dir/no3_deposition_$name.clm
   regridclm -json -size4 $LPJINPATH/input_VERSION2/grid.bin $dir/grid_$name.clm $LPJINPATH/input_VERSION2/nh4_deposition_rcp8p5.clm $dir/nh4_deposition_$name.clm
   regridclm -json $LPJINPATH/input_VERSION2/grid.bin $dir/grid_$name.clm $LPJINPATH/input_VERSION2/soil_ph.clm $dir/soil_ph_$name.clm
@@ -125,16 +136,16 @@ fi
   then
     regridclm -json $LPJINPATH/input_VERSION2/grid.bin $dir/grid_$name.clm  $LPJINPATH/input_VERSION2/cft1700_2005_irrigation_systems_64bands.bin $dir/landuse_$name.clm
     regridclm -json $LPJINPATH/input_VERSION2/grid.bin $dir/grid_$name.clm $LPJINPATH/input_VERSION3/fertilizer_luh2v2_1900-2015_32bands.clm $dir/fertilizer_$name.clm
-    regridclm -json $LPJINPATH/input_VERSION2/grid.bin $dir/grid_$name.clm $LPJINPATH/input_VERSION3/manure_zhang17_1860-2014_32bands_clm2.clm manure_$name.clm
+    regridclm -json $LPJINPATH/input_VERSION2/grid.bin $dir/grid_$name.clm $LPJINPATH/input_VERSION3/manure_zhang17_1860-2014_32bands_clm2.clm $dir/manure_$name.clm
   elif [ "$lu" = "2" ]
   then
     regridclm -json $LPJINPATH/input_VERSION2/grid.bin $dir/grid_$name.clm  /p/projects/lpjml/input/MADRAT/lu_madrat_850-2015_32bands.clm $dir/landuse_$name.clm
     regridclm -json $LPJINPATH/input_VERSION2/grid.bin $dir/grid_$name.clm $LPJINPATH/input_VERSION3/fertilizer_luh2v2_1900-2015_32bands.clm $dir/fertilizer_$name.clm
-    regridclm -json $LPJINPATH/input_VERSION2/grid.bin $dir/grid_$name.clm $LPJINPATH/input_VERSION3/manure_zhang17_1860-2014_32bands_clm2.clm manure_$name.clm
+    regridclm -json $LPJINPATH/input_VERSION2/grid.bin $dir/grid_$name.clm $LPJINPATH/input_VERSION3/manure_zhang17_1860-2014_32bands_clm2.clm $dir/manure_$name.clm
   else
-    regridclm -json $LPJINPATH/input_VERSION2/grid.bin $dir/grid_$name.clm  $LPJINPATH/input_toolbox_30arcmin/paper_version/cft_default_cft_aggregation_30min_1500-2017_fallow_to_others.bin $dir/landuse_$name.clm
+    regridclm -metafile $dir/grid_$name.clm  $LPJINPATH/input_toolbox_30arcmin/paper_version/cft_default_cft_aggregation_30min_1500-2017_fallow_to_others_64bands.clm.json $dir/landuse_$name.clm
     regridclm -json $LPJINPATH/input_VERSION2/grid.bin $dir/grid_$name.clm $LPJINPATH/input_toolbox_30arcmin/paper_version/fert_N_default_cft_aggregation_30min_1860-2017.clm $dir/fertilizer_$name.clm
-    regridclm -json $LPJINPATH/input_VERSION2/grid.bin $dir/grid_$name.clm $LPJINPATH/input_toolbox_30arcmin/paper_version/manure_N_default_cft_aggregation_30min_1860-2017.clm manure_$name.clm
+    regridclm -json $LPJINPATH/input_VERSION2/grid.bin $dir/grid_$name.clm $LPJINPATH/input_toolbox_30arcmin/paper_version/manure_N_default_cft_aggregation_30min_1860-2017.clm $dir/manure_$name.clm
   fi
 
   cat << EOF >input_$name.cjson
