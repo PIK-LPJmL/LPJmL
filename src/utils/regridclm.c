@@ -116,21 +116,29 @@ int main(int argc,char **argv)
       fclose(data_file);
       return EXIT_FAILURE;
     }
-    if(grid_name.name==NULL)
+    if(argc==iarg+4)
     {
-      fprintf(stderr,"Error: grid filename must be specified in '%s' metafile.\n",argv[index_datafile]);
-      return EXIT_FAILURE;
+      filename.name=argv[iarg];
+      filename.fmt=(setversion==2) ? CLM2 : CLM;
     }
-    path=getpath(argv[index_datafile]);
-    filename.name=addpath(grid_name.name,path);
-    filename.fmt=grid_name.fmt;
-    if(filename.name==NULL)
+    else
     {
-     printallocerr("name");
-      return EXIT_FAILURE;
+      if(grid_name.name==NULL)
+      {
+        fprintf(stderr,"Error: grid filename must be specified in '%s' metafile.\n",argv[index_datafile]);
+        return EXIT_FAILURE;
+      }
+      path=getpath(argv[index_datafile]);
+      filename.name=addpath(grid_name.name,path);
+      filename.fmt=grid_name.fmt;
+      if(filename.name==NULL)
+      {
+        printallocerr("name");
+        return EXIT_FAILURE;
+      }
+      free(grid_name.name);
+      free(path);
     }
-    free(grid_name.name);
-    free(path);
   }
   else
   {

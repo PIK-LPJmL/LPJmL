@@ -19,7 +19,7 @@ of `major.minor.patch` with
 
 ## [Unreleased]
 
-## [5.8.8] - 2024-03-07
+## [5.8.8] - 2024-03-13
 
 - author: Werner von Bloh (bloh@pik-potsdam.de), Sebastian Ostberg (ostberg@pik-potsdam.de)
 - code review: Jannes Breier (breier@pik-potsdam.de)
@@ -68,7 +68,7 @@ of `major.minor.patch` with
 regridclm -metafile grid_new.clm temp.clm.json temp_new.clm
 binsum -metafile mnpp.bin.json anpp.bin
 ```
-- NetCDF files can be created with `bin2cdf` and `clm2cdf`from the JSON metafiles containing all global attributes:
+- NetCDF files can be created with `bin2cdf` and `clm2cdf` from the JSON metafiles containing all global attributes:
 ```bash
 bin2cdf -metafile soilc_layer.bin.json soilc_layer.nc
 clm2cdf -metafile temp.clm.json temp.nc
@@ -79,7 +79,7 @@ clm2cdf -metafile temp.clm.json temp.nc
   * `cmpbin` - compares binary ouput files
   * `statclm` - prints minimum, maximum and average of clm files
   * `regriddrain` - regrids drainage file to new grid
-- Option `-metafile` added to `mathclm`.
+- Option `-metafile` and `-f` added to `mathclm`.
 - `cdf2clm` stores all global attributes of NetCDF file in JSON metafile if `-json` option is set.
 - Option `-nopp` added to `lpjml`. This option disables preprocessing of the config file by `cpp`.
 - Option `-ofiles` added to `lpjml` and `lpjcheck`  to print list of all available output files.
@@ -92,7 +92,7 @@ clm2cdf -metafile temp.clm.json temp.nc
 - Missing deallocation added in `freeconfig.c` and memory leak in `fscanpftpar.c` fixed.
 - Missing argument after option handling fixed in `cdf2bin` and `countr2cdf`.
 - Missing `$dir/` added to manure data in `regridlpj`.
-- Correct default landuse file set in `regridlpj`.
+- Correct default landuse, sowing data and crop PHU file set in `regridlpj`.
 
 
 ## [5.8.8] - 2024-03-07
