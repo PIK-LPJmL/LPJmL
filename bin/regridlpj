@@ -86,7 +86,7 @@ else
     cp grid_$name.clm $dir
   fi
 fi
-if  regridsoil -json $LPJINPATH/input_VERSION2/grid.bin $dir/grid_$name.clm  $LPJINPATH/input_VERSION2/soil_new_67420.bin $dir/soil_$name.bin
+if  regridsoil -json $LPJINPATH/input_VERSION2/grid.bin $dir/grid_$name.clm  $LPJINPATH/input_toolbox_30arcmin/soil_30arcmin_13_types.bin $dir/soil_$name.bin
 then
   regridsoil -json $LPJINPATH/input_VERSION2/grid.bin $dir/grid_$name.clm  $LPJINPATH/input_VERSION2/glwd_lakes_and_rivers.bin $dir/lakes_$name.bin
   if [ "$cru" = "1" ]
@@ -116,10 +116,12 @@ fi
   regridclm $LPJINPATH/input_VERSION2/grid.bin $dir/grid_$name.clm  $LPJINPATH/input_VERSION2/cow_full_2018.bin $dir/country_$name.clm
   regridclm -json -size4 $LPJINPATH/input_VERSION2/grid.bin $dir/grid_$name.clm $LPJINPATH/input_VERSION2/no3_deposition_rcp8p5.clm $dir/no3_deposition_$name.clm
   regridclm -json -size4 $LPJINPATH/input_VERSION2/grid.bin $dir/grid_$name.clm $LPJINPATH/input_VERSION2/nh4_deposition_rcp8p5.clm $dir/nh4_deposition_$name.clm
-  regridclm -json $LPJINPATH/input_VERSION2/grid.bin $dir/grid_$name.clm $LPJINPATH/input_VERSION2/soil_ph.clm $dir/soil_ph_$name.clm
-  regridclm -json $LPJINPATH/input_VERSION2/grid.bin $dir/grid_$name.clm $LPJINPATH/input_VERSION3/lpj_tillage_CA_1973-2010.clm $dir/tillage_$name.clm
+  regridclm -json $LPJINPATH/input_VERSION2/grid.bin $dir/grid_$name.clm $LPJINPATH/input_toolbox_30arcmin/soil_pH_30arcmin.bin $dir/soil_ph_$name.clm
+  regridclm -json $LPJINPATH/input_VERSION2/grid.bin $dir/grid_$name.clm /p/projects/lpjml/inputs/land_management/30min/tillage_1973_1974-2010_1973_as_till_everywhere.clm $dir/tillage_$name.clm
   regridclm -json $LPJINPATH/input_VERSION2/grid.bin $dir/grid_$name.clm /p/projects/lpjml/input/MADRAT/residues_madrat_1850-2015_16bands.clm $dir/residue_$name.clm
-  regridclm -json $LPJINPATH/input_VERSION2/grid.bin $dir/grid_$name.clm /p/projects/landuse/users/cmueller/GGCMI/crop_calendar/GGCMI_CTWN_planting_v1.25.clm2 $dir/sdate_$name.clm
+  regridclm -json $LPJINPATH/input_VERSION2/grid.bin $dir/grid_$name.clm $LPJINPATH/ISIMIP3a/sdate_24_bands.clm $dir/sdate_$name.clm
+  regridclm -json $LPJINPATH/input_VERSION2/grid.bin $dir/grid_$name.clm $LPJINPATH/ISIMIP3av2/phusum_gswp3-w5e5_obsclim_24_bands_annual_1901-2019.clm $dir/crop_phu_$name.clm
+
 
   if [ "$lu" = "1" ]
   then
@@ -158,6 +160,7 @@ fi
   "with_tillage"     : { "fmt" : "clm", "name" : "$dir/tillage_$name.clm"},
   "residue_on_field" : { "fmt" : "clm", "name" : "$dir/residue_$name.clm"},
   "sdate"            : { "fmt" : "clm", "name" : "$dir/sdate_$name.clm"},
+  "crop_phu"         : { "fmt" : "clm", "name" : "$dir/crop_phu_$name.clm"},
   "temp"             : { "fmt" : "clm", "name" : "$dir/tmp_$name.clm"},
   "prec"             : { "fmt" : "clm", "name" : "$dir/prec_$name.clm"},
   "lwnet"            : { "fmt" : "clm", "name" : "$dir/lwnet_$name.clm"},
