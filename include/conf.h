@@ -43,7 +43,7 @@
 #define NO_AQUIFER_IRRIG 0 //Flag to allow for irrigation from aquifers (according to input map for aquifers)
 #endif
 #define LAIMAX_CFT 0
-#define CONST_LAI_MAX 1
+#define LAIMAX_CONST 1
 #define LAIMAX_PAR 2
 #define NO_NITROGEN 0
 #define LIM_NITROGEN 1

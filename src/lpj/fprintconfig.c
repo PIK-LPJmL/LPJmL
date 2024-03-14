@@ -463,7 +463,7 @@ void fprintconfig(FILE *file,          /**< File pointer to text output file */
       len+=fprintf(file,", ");
       len=fputstring(file,len,"fire in residuals",78);
     }
-    if(config->laimax_manage==CONST_LAI_MAX)
+    if(config->laimax_manage==LAIMAX_CONST)
     {
       len+=fprintf(file,", ");
       snprintf(s,STRING_LEN,"const LAImax=%.1f",config->laimax);

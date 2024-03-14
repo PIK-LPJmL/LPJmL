@@ -24,7 +24,7 @@ Bool initmanage(Manage *manage,      /**< pointer to management data */
 {
   const Pftcroppar *croppar;
   int cft;
-  manage->par=config->countrypar+code.country;    
+  manage->par=config->countrypar+code.country;
   manage->regpar=config->regionpar+code.region;
   if(manage->par->laimax_cft==NULL)
   {
@@ -39,7 +39,7 @@ Bool initmanage(Manage *manage,      /**< pointer to management data */
     manage->laimax=manage->par->laimax_cft-npft;  /* set pointer to country specific laimax */
   manage->k_est = manage->par->k_est - npft + config->nagtree; /* set pointer to country specific k_est */
 
-  if(config->laimax_manage==CONST_LAI_MAX)
+  if(config->laimax_manage==LAIMAX_CONST)
     for(cft=0;cft<ncft;cft++)
       manage->laimax[npft+cft]=config->laimax;
   else if(config->laimax_manage==LAIMAX_PAR)

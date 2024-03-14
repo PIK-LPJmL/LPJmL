@@ -470,7 +470,7 @@ Bool fscanconfig(Config *config,    /**< LPJ configuration */
         return TRUE;
       if(fscankeywords(file,&config->laimax_manage,"laimax_manage",laimax_manage,3,FALSE,verbose))
         return TRUE;
-      if(config->laimax_manage==CONST_LAI_MAX)
+      if(config->laimax_manage==LAIMAX_CONST)
         fscanreal2(file,&config->laimax,"laimax");
       if (fscanbool(file, &config->others_to_crop, "others_to_crop", !config->pedantic, verbose))
         return TRUE;
