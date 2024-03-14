@@ -992,7 +992,7 @@ int main(int argc,char **argv)
       miss=strtod(missing_value,&endptr);
       if(*endptr!='\0')
       {
-        fprintf(stderr,"Inavlid number '%s' for missing value.\n",missing_value);
+        fprintf(stderr,"Invalid number '%s' for missing value.\n",missing_value);
         return EXIT_FAILURE;
       }
     }
