@@ -27,7 +27,6 @@ extern Bool annual_natural(Stand *,int,int,Real,int,Bool,Bool,const Config *);
 
 extern void dailyfire_natural(Stand *,Output *,Livefuel *,Real *,Real,
                               Dailyclimate,const Pftpar *,int);
-extern Real woodconsum_natural(Stand*, Pftlist *,Litter *,Real,Real,Real,int);
 extern void new_natural(Stand *);
 extern void free_natural(Stand *);
 extern Bool fread_natural(FILE *,Stand *,Bool);

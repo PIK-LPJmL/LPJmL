@@ -86,14 +86,12 @@
 #define OLD_CROP_PHU 0
 #define NEW_CROP_PHU 1
 #define PRESCRIBED_CROP_PHU 2
-#define NO_FIREWOOD 0
-#define FIREWOOD 1
 #define RANDOM_PREC 1
 #define INTERPOLATE_PREC 0
 #define NO_FERTILIZER 0
 #define FERTILIZER 1
 #define AUTO_FERTILIZER 2
-#define NOUT 332            /* number of output files */
+#define NOUT 330            /* number of output files */
 #define END -1              /* end marker for output files */
 #define GRIDBASED 1         /* pft-specific outputs scaled by stand->frac */
 #define PFTBASED 0          /* pft-specific outputs not scaled by stand->frac */
@@ -168,7 +166,7 @@
 #define FIREDI 63
 #define FIREEMISSION_CO2 64
 #define FAPAR 65
-#define FLUX_FIREWOOD 66
+#define IRRIG_STOR 66
 #define RHARVEST_BURNTC 67
 #define RHARVEST_BURNT_IN_FIELDC 68
 #define TEMP_IMAGE 69
@@ -425,15 +423,13 @@
 #define PRODUCT_POOL_SLOW_N 320
 #define DEFOREST_EMIS_N 321
 #define PROD_TURNOVER_N 322
-#define FLUX_FIREWOOD_N 323
-#define ESTAB_STORAGE_C 324
-#define ESTAB_STORAGE_N 325
-#define PFT_WATER_DEMAND 326
-#define RD 327
-#define NDEPOS 328
-#define RIVERVOL 329
-#define SWC_VOL 330
-#define IRRIG_STOR 331
+#define ESTAB_STORAGE_C 323
+#define ESTAB_STORAGE_N 324
+#define PFT_WATER_DEMAND 325
+#define RD 326
+#define NDEPOS 327
+#define RIVERVOL 328
+#define SWC_VOL 329
 #define PFT_GCGP_COUNT 0
 #define NDAY_MONTH 1
 #define RANDOM_SEED 0

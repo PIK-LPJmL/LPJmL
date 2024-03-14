@@ -43,7 +43,6 @@ typedef struct
   char *name; /* region name */
   Real bifratio;   /* Yevich's data/rharvest von LPJ; for all crops (no rharvest for grass)*/
   Real fuelratio;  /* Yevich's data (withoutdung)/rharvest von LPJ; for all crops (no rharvest for grass)*/
-  Real woodconsum; /* domestic firewood consumption [kgDM/capita/day]*/
 } Regionpar; /* parameters defined for each region */
 
 

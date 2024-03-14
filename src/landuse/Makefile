@@ -31,7 +31,7 @@ OBJS    = cultivate.$O landuse.$O landusechange.$O\
           daily_agriculture.$O daily_biomass_tree.$O output_gbw.$O\
           woodplantation.$O\
           output_gbw_agriculture.$O calc_nir.$O irrig_amount.$O killstand.$O\
-          landfrac.$O cutpfts.$O crop_sum_frac.$O woodconsum.$O\
+          landfrac.$O cutpfts.$O crop_sum_frac.$O\
           new_agriculture.$O free_agriculture.$O fwrite_agriculture.$O\
           fread_agriculture.$O fprint_agriculture.$O fprintregionpar.$O\
           fprintcountrypar.$O wateruse.$O withdrawal_demand.$O\

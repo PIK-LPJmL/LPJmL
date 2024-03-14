@@ -256,12 +256,6 @@ Bool fscanconfig(Config *config,    /**< LPJ configuration */
 #endif
   if(fscankeywords(file,&config->fire,"fire",fire,4,FALSE,verbose))
     return TRUE;
-  if(config->sim_id==LPJ)
-    config->firewood=NO_FIREWOOD;
-  else
-  {
-    fscanbool2(file,&config->firewood,"firewood");
-  }
   if(config->fire==SPITFIRE  || config->fire==SPITFIRE_TMAX)
   {
     if(fscankeywords(file,&config->fdi,"fdi",fdi,2,FALSE,verbose))

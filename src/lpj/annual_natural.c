@@ -38,7 +38,6 @@ Bool annual_natural(Stand *stand,         /**< Pointer to stand */
 #ifndef DAILY_ESTABLISHMENT
   Stocks flux_estab;
 #endif
-  Stocks firewood={0,0};
   pft_len=getnpft(&stand->pftlist); /* get number of established PFTs */
   if(pft_len>0)
   {
@@ -72,22 +71,6 @@ Bool annual_natural(Stand *stand,         /**< Pointer to stand */
 #ifdef DEBUG2
     printf("Number of updated pft: %d\n",stand->pftlist.n);
 #endif
-    if(year>=config->firstyear && config->firewood==FIREWOOD)
-    {
-      firewood=woodconsum(stand,popdens);
-      getoutput(&stand->cell->output,FLUX_FIREWOOD,config)+=firewood.carbon*stand->frac;
-      getoutput(&stand->cell->output,FLUX_FIREWOOD_N,config)+=firewood.nitrogen*stand->frac;
-      stand->cell->balance.flux_firewood.carbon+=firewood.carbon*stand->frac;
-      stand->cell->balance.flux_firewood.nitrogen+=firewood.nitrogen*stand->frac;
-      foreachpft(pft,p,&stand->pftlist)
-        if(pft->nind<epsilon)
-        {
-          fpc_inc[p]=fpc_inc[getnpft(&stand->pftlist)-1];
-          litter_update(&stand->soil.litter,pft,pft->nind,config);
-          delpft(&stand->pftlist,p);
-          p--;  
-        }
-    }
     light(stand,fpc_inc,config);
     free(fpc_inc);
   }

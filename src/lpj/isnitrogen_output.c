@@ -32,7 +32,7 @@ Bool isnitrogen_output(int index /**< index for output file */
     case NMANURE_AGR: case NDEPO_AGR: case NMINERALIZATION_AGR: case NIMMOBILIZATION_AGR:
     case NUPTAKE_AGR: case NLEACHING_AGR: case N2O_DENIT_AGR: case N2O_NIT_AGR:
     case NH3_AGR: case N2_AGR: case PFT_BNF: case TIMBER_HARVESTN: case PRODUCT_POOL_FAST_N:
-    case PRODUCT_POOL_SLOW_N: case DEFOREST_EMIS_N: case PROD_TURNOVER_N: case FLUX_FIREWOOD_N:
+    case PRODUCT_POOL_SLOW_N: case DEFOREST_EMIS_N: case PROD_TURNOVER_N:
     case ESTAB_STORAGE_N:
       return TRUE;
     default:

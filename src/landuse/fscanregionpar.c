@@ -83,8 +83,6 @@ int fscanregionpar(LPJfile *file,         /**< pointer to LPJ file */
     region->id=id;
     fscanreal012(verb,item,&region->fuelratio,"fuelratio",region->name);
     fscanreal012(verb,item,&region->bifratio,"bifratio",region->name);
-    fscanreal2(verb,item,&region->woodconsum,"woodconsum",region->name);
-
   } /* of 'for(n=0;...)' */
   return n;
 } /* of 'fscanregionpar' */

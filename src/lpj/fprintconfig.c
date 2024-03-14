@@ -515,8 +515,6 @@ void fprintconfig(FILE *file,          /**< File pointer to text output file */
     len=printsim(file,len,&count,"grassland harvest options");
   if(config->prescribe_lsuha)
     len=printsim(file,len,&count,"prescribed livestock density");
-  if(config->firewood)
-    len=printsim(file,len,&count,"wood fires");
   if(config->reservoir)
     len=printsim(file,len,&count,"dam reservoirs");
 #ifdef IMAGE

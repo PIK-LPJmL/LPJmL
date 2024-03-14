@@ -68,7 +68,6 @@ typedef struct
   Real awd_unsustainable;   /**< annual withdrawal from unsustainable source (mm) */
   Real soil_storage;        /**< Water stored in the soil column by the end of year (dm3) */
   Stocks fire;              /**< annual fire carbon and nitrogen emissions (g/m2)*/
-  Stocks flux_firewood;     /**< carbon and nitrogen emissions from domestic wood use [g/m2/a]*/
   Stocks flux_estab;        /**< establishment flux (gC/m2,gN/m2) */
   Stocks flux_harvest;      /**< harvest flux (gC/m2,g/N/m2) */
   Stocks timber_harvest;    /**< timber flux (gC/m2,g/N/m2) */

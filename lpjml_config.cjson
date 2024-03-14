@@ -46,7 +46,6 @@
   "fire" : "fire",          /* fire disturbance enabled, options: "no_fire", "fire", "spitfire", "spitfire_tmax"  */
   "fire_on_grassland" : false, /* enable fire on grassland for Spitfire */
   "fdi" : "nesterov",       /* fire danger index formulations: "wvpd" (needs humidity input data), "nesterov" */
-  "firewood" : false,       /* NOT TESTED - DO NOT ENABLE */
   "gsi_phenology" : true,   /* enable GSI phenology */
   "transp_suction_fcn" : false, /* enable new transpiration reduction function - NOT TESTED */
   "with_lakes" : true,      /* enable lakes (true/false) */
