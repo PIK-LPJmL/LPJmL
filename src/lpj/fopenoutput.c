@@ -28,23 +28,26 @@ static Bool create(Netcdf *cdf,const char *filename,int index,
                          (config->outputvars[index].id==GRID) ? "cellid" :
                          config->outnames[config->outputvars[index].id].var,
                          (config->outputvars[index].id==GRID) ? "cell id" :
-                         config->outnames[config->outputvars[index].id].descr,
+                         config->outnames[config->outputvars[index].id].standard_name,
+                         config->outnames[config->outputvars[index].id].long_name,
                          (config->outputvars[index].id==GRID) ? "" :
                          config->outnames[config->outputvars[index].id].unit,
-                         (config->outputvars[index].id==GRID) ? LPJ_INT : getoutputtype(config->outputvars[index].id,FALSE),
+                         (config->outputvars[index].id==GRID) ? LPJ_INT: getoutputtype(config->outputvars[index].id,config->grid_type),
                          getnyear(config->outnames,config->outputvars[index].id),
-                         (config->outnames[config->outputvars[index].id].timestep==ANNUAL) ? 1 : config->outnames[config->outputvars[index].id].timestep,array,config);
+                         (config->outnames[config->outputvars[index].id].timestep==ANNUAL) ? 1 : config->outnames[config->outputvars[index].id].timestep,
+                         0,FALSE,array,config);
   else
     return create_pft_netcdf(cdf,filename,
                              config->outputvars[index].id,
                              config->npft[GRASS]+config->npft[TREE],
                              config->npft[CROP],
                              config->outnames[config->outputvars[index].id].var,
-                             config->outnames[config->outputvars[index].id].descr,
+                             config->outnames[config->outputvars[index].id].standard_name,
+                             config->outnames[config->outputvars[index].id].long_name,
                              config->outnames[config->outputvars[index].id].unit,
-                             getoutputtype(config->outputvars[index].id,FALSE),
+                             getoutputtype(config->outputvars[index].id,config->grid_type),
                              getnyear(config->outnames,config->outputvars[index].id),
-                             (config->outnames[config->outputvars[index].id].timestep==ANNUAL) ? 1 : config->outnames[config->outputvars[index].id].timestep,array,config);
+                             (config->outnames[config->outputvars[index].id].timestep==ANNUAL) ? 1 : config->outnames[config->outputvars[index].id].timestep,0,FALSE,array,config);
 } /* of 'create' */
 
 static void openfile(Outputfile *output,const Cell grid[],
@@ -134,13 +137,9 @@ static void openfile(Outputfile *output,const Cell grid[],
             header.scalar=1;
             if(config->outputvars[i].id==GRID)
             {
-              if(config->float_grid)
-                header.datatype=LPJ_FLOAT;
-              else
-              {
-                header.datatype=LPJ_SHORT;
+              header.datatype=config->grid_type;
+              if(header.datatype==LPJ_SHORT)
                 header.scalar=0.01;
-              }
               header.nbands=2;
               header.nstep=1;
               header.timestep=1;
@@ -168,7 +167,7 @@ static void openfile(Outputfile *output,const Cell grid[],
               header.nbands=outputsize(config->outputvars[i].id,
                                        config->npft[GRASS]+config->npft[TREE],
                                        config->npft[CROP],config);
-              header.datatype=getoutputtype(config->outputvars[i].id,FALSE);
+              header.datatype=getoutputtype(config->outputvars[i].id,config->grid_type);
               fwriteheader(output->files[config->outputvars[i].id].fp.file,
                            &header,LPJOUTPUT_HEADER,config->outputvars[i].filename.version);
             }
@@ -276,7 +275,7 @@ Outputfile *fopenoutput(const Cell grid[],   /**< LPJ grid */
           size=outputsize(config->outputvars[i].id,
                           config->npft[GRASS]+config->npft[TREE],
                           config->npft[CROP],config);
-        if(openoutput_coupler(config->outputvars[i].filename.id,ncell,getnyear(config->outnames,config->outputvars[i].id),size,getoutputtype(config->outputvars[i].id,config->float_grid),config))
+        if(openoutput_coupler(config->outputvars[i].filename.id,ncell,getnyear(config->outnames,config->outputvars[i].id),size,getoutputtype(config->outputvars[i].id,config->grid_type),config))
         {
           output->files[config->outputvars[i].id].issocket=FALSE;
           fprintf(stderr,"ERROR100: Cannot open socket stream for output '%s'.\n",
@@ -294,6 +293,8 @@ Outputfile *fopenoutput(const Cell grid[],   /**< LPJ grid */
     MPI_Bcast(&output->files[config->outputvars[i].id].isopen,1,MPI_INT,
               0,config->comm);
 #endif
+    if(config->pedantic && config->outputvars[i].filename.fmt!=SOCK && !output->files[config->outputvars[i].id].isopen)
+      return NULL;
     if(output->files[config->outputvars[i].id].compress)
       free(filename);
   }
@@ -379,23 +380,26 @@ void openoutput_yearly(Outputfile *output,int year,const Config *config)
                             config->npft[GRASS]+config->npft[TREE],
                             config->npft[CROP],config);
            if(size==1)
-             output->files[config->outputvars[i].id].isopen=!create1_netcdf(&output->files[config->outputvars[i].id].fp.cdf,filename,
+             output->files[config->outputvars[i].id].isopen=!create_netcdf(&output->files[config->outputvars[i].id].fp.cdf,filename,
                            config->outnames[config->outputvars[i].id].var,
-                           config->outnames[config->outputvars[i].id].descr,
+                           config->outnames[config->outputvars[i].id].standard_name,
+                           config->outnames[config->outputvars[i].id].long_name,
                            config->outnames[config->outputvars[i].id].unit,
-                           getoutputtype(config->outputvars[i].id,FALSE),
-                           getnyear(config->outnames,config->outputvars[i].id),
-                           (config->outputvars[i].id==ADISCHARGE) ? output->index_all : output->index,year,config);
+                           getoutputtype(config->outputvars[i].id,config->grid_type),
+                           getnyear(config->outnames,config->outputvars[i].id),1,year,TRUE,
+                           (config->outputvars[i].id==ADISCHARGE) ? output->index_all : output->index,config);
            else
-             output->files[config->outputvars[i].id].isopen=!create1_pft_netcdf(&output->files[config->outputvars[i].id].fp.cdf,filename,
+             output->files[config->outputvars[i].id].isopen=!create_pft_netcdf(&output->files[config->outputvars[i].id].fp.cdf,filename,
                            config->outputvars[i].id,
                            config->npft[GRASS]+config->npft[TREE],
                            config->npft[CROP],
                            config->outnames[config->outputvars[i].id].var,
-                           config->outnames[config->outputvars[i].id].descr,
+                           config->outnames[config->outputvars[i].id].standard_name,
+                           config->outnames[config->outputvars[i].id].long_name,
                            config->outnames[config->outputvars[i].id].unit,
-                           getoutputtype(config->outputvars[i].id,FALSE),
-                           getnyear(config->outnames,config->outputvars[i].id),year,output->index,config);
+                           getoutputtype(config->outputvars[i].id,config->grid_type),
+                           getnyear(config->outnames,config->outputvars[i].id),1,year,TRUE,
+                               output->index,config);
 
           } /* of switch */
           free(filename);

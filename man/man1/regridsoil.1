@@ -3,7 +3,7 @@
 regridsoil \- regrid soil file to new grid
 .SH SYNOPSIS
 .B regridclm
-[\-search] [\-zero] [\-longheader]
+[\-search] [\-zero] [\-longheader] [\-json]
 .I grid_old.clm grid_new.clm soil_old.clm soil_new.clm
 .SH DESCRIPTION
 Program reads soil file and corresponding grid file to regrid the soil data to a new grid file.
@@ -17,6 +17,9 @@ If grid coordinate cannot be found in old grid soil code is set to zero
 .TP
 \-longheader
 Version of CLM grid file is set to 2. By default version is read from file header
+.TP
+\-json
+An additional JSON metafile with suffix \fI.json\fP is written.
 .TP
 .I grid_old.clm
 Corresponding grid filename of input data

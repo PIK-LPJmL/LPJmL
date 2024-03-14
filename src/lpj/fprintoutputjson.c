@@ -31,6 +31,7 @@ static void fprintreffile(FILE *file,int index,int ref_index,const char *ref_nam
 {
   const Filename *ref_filename;
   char *name;
+  Type type;
   if(config->outputvars[index].id!=ref_index)
   {
     ref_filename=findoutputfile(ref_index,config);
@@ -52,9 +53,24 @@ static void fprintreffile(FILE *file,int index,int ref_index,const char *ref_nam
                 ref_name,
                 strippath(ref_filename->name),
                 fmt[ref_filename->fmt],
-                (ref_index!=GRID || config->float_grid || ref_filename->fmt==TXT || ref_filename->fmt==CDF) ? 1 : 0.01);
-        fprintf(file," \"datatype\" : \"%s\"},\n",
-                typenames[(ref_index!=GRID || config->float_grid || ref_filename->fmt==TXT || ref_filename->fmt==CDF) ? LPJ_FLOAT : LPJ_SHORT]);
+                (ref_index!=GRID || config->grid_type!=LPJ_SHORT || ref_filename->fmt==TXT || ref_filename->fmt==CDF) ? 1 : 0.01);
+         if(ref_index==GRID)
+         {
+           switch(ref_filename->fmt)
+           {
+             case CDF:
+               type=LPJ_INT;
+               break;
+             case TXT:
+               type=LPJ_FLOAT;
+               break;
+             default:
+               type=config->grid_type;
+          }
+        }
+        else
+          type=getoutputtype(ref_index,config->grid_type);
+        fprintf(file,"  \"datatype\" : \"%s\"},\n",typenames[type]);
       }
     }
   }
@@ -69,6 +85,8 @@ Bool fprintoutputjson(int index,           /**< index in outputvars array */
   char *filename;
   char *json_filename;
   char **pftnames;
+  time_t t;
+  Type type;
   int p,nbands,len,count,id;
   id=config->outputvars[index].id;
   if(config->outputvars[index].oneyear)
@@ -110,8 +128,21 @@ Bool fprintoutputjson(int index,           /**< index in outputvars array */
   fprintf(file,"{\n");
   fprintf(file,"  \"sim_name\" : \"%s\",\n",config->sim_name);
   fprintf(file,"  \"source\" : \"LPJmL C Version " LPJ_VERSION"\",\n");
-  fprintf(file,"  \"history\" : \"%s\",\n",config->arglist);
-  fprintf(file,"  \"variable\" : \"%s\",\n",config->outnames[id].name);
+  time(&t);
+  fprintf(file,"  \"history\" : \"%s: %s\",\n",strdate(&t),config->arglist);
+  if(config->n_global)
+  {
+    fprintf(file,"  \"global_attrs\" : {");
+    for(p=0;p<config->n_global;p++)
+    {
+      fprintf(file,"\"%s\" : \"%s\"",config->global_attrs[p].name,config->global_attrs[p].value);
+      if(p<config->n_global-1)
+        fprintf(file,", ");
+    }
+    fprintf(file,"},\n");
+  }
+  fprintf(file,"  \"name\" : \"%s\",\n",config->outnames[id].name);
+  fprintf(file,"  \"variable\" : \"%s\",\n",config->outnames[id].var);
   fprintf(file,"  \"firstcell\" : %d,\n",config->firstgrid);
   fprintf(file,"  \"ncell\" : %d,\n",(id==ADISCHARGE) ? config->nall : config->total);
   fprintf(file,"  \"cellsize_lon\" : %f,\n",config->resolution.lon);
@@ -155,11 +186,16 @@ Bool fprintoutputjson(int index,           /**< index in outputvars array */
      }
    }
   }
-  fprintf(file,"  \"descr\" : ");
-  if(config->outnames[id].descr==NULL)
+  fprintf(file,"  \"standard_name\" : ");
+  if(config->outnames[id].standard_name==NULL)
+    fprintf(file,"\"%s\",\n",config->outnames[id].name);
+  else
+    fprintf(file,"\"%s\",\n",config->outnames[id].standard_name);
+  fprintf(file,"  \"long_name\" : ");
+  if(config->outnames[id].long_name==NULL)
     fprintf(file,"null,\n");
   else
-    fprintf(file,"\"%s\",\n",config->outnames[id].descr);
+    fprintf(file,"\"%s\",\n",config->outnames[id].long_name);
   fprintf(file,"  \"unit\" : ");
   if(config->outnames[id].unit==NULL)
     fprintf(file,"null,\n");
@@ -179,17 +215,27 @@ Bool fprintoutputjson(int index,           /**< index in outputvars array */
   }
   if(config->outputvars[index].id==GRID)
   {
-    fprintf(file,"  \"datatype\" : \"%s\",\n",
-            typenames[(config->float_grid || config->outputvars[index].filename.fmt==TXT || config->outputvars[index].filename.fmt==CDF) ? LPJ_FLOAT : LPJ_SHORT]);
-    if(config->float_grid || config->outputvars[index].filename.fmt==TXT || config->outputvars[index].filename.fmt==CDF)
-      fprintf(file,"  \"scalar\" : 1.0,\n");
-    else
+    switch(config->outputvars[index].filename.fmt)
+    {
+      case CDF:
+        type=LPJ_INT;
+        break;
+      case TXT:
+        type=LPJ_FLOAT;
+        break;
+      default:
+        type=config->grid_type;
+    }
+    fprintf(file,"  \"datatype\" : \"%s\",\n",typenames[type]);
+    if(config->grid_type==LPJ_SHORT && (config->outputvars[index].filename.fmt==CLM || config->outputvars[index].filename.fmt==RAW))
       fprintf(file,"  \"scalar\" : 0.01,\n");
+    else
+      fprintf(file,"  \"scalar\" : 1.0,\n");
     fprintf(file,"  \"order\" : \"cellyear\",\n");
   }
   else
   {
-    fprintf(file,"  \"datatype\" : \"%s\",\n",typenames[getoutputtype(id,config->float_grid)]);
+    fprintf(file,"  \"datatype\" : \"%s\",\n",typenames[getoutputtype(id,config->grid_type)]);
     fprintf(file,"  \"scalar\" : 1.0,\n");
     fprintf(file,"  \"order\" : \"cellseq\",\n");
   }

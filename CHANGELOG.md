@@ -19,6 +19,83 @@ of `major.minor.patch` with
 
 ## [Unreleased]
 
+## [5.8.9] - 2024-03-14
+
+- author: Werner von Bloh (bloh@pik-potsdam.de), Sebastian Ostberg (ostberg@pik-potsdam.de)
+- code review: Jannes Breier (breier@pik-potsdam.de)
+
+### Changed
+
+- NetCDF output files are now in a more ISIMIP3 compliant format, datatype of time, lat, and lon is now double, `depth_bnds` added to layer specific output. Standard and long name can be specified in `outputvars.json`.
+- Deprecated function `MPI_Extent` replaced by `MPI_Get_extent` in `mpi_write.c`.
+- Functions `create_netcdf.c`/`create_pft_netcdf.c` and `create1_netcdf.c`/`create1_pft_netcdf.c` have been merged.
+- Function `findcoord()` improved to find cell indices, returns now true if coord is within cell.
+- `STYLESHEET` file converted to markup.
+- Cell size in `regridclm` is set to cell size of target grid, warning is printed if cell size differs.
+- Format and suffix of output files have been removed in `lpjml_config.cjson` and are now set by `"default_fmt"` and `"default_suffix"`:
+```java
+{ "id" : "npp", "file" : { "name" : "output/mnpp"}},
+```
+- `LPJINPATH` set to `/p/projects/lpjml/input/historical` in `regridlpj` if not defined.
+- `"descr"` in `outputvars.cjson` renamed to `"long_name"`.
+
+### Added
+
+- More options added to `lpjml_config.cjson` to customize format of output:
+```java
+  "default_fmt" : "raw",     /* default format for output files: "raw","txt","cdf","clm","sock" */
+  "default_suffix" : ".bin", /* default file suffix for output files */
+  "grid_type" : "short",     /* set datatype of grid file ("short", "float", "double") */
+  "flush_output" : false,    /* flush output to file every time step */
+  "absyear" : false,         /* absolute years instead of years relative to baseyear (true/false) */
+  "rev_lat" : false,         /* reverse order of latitudes in NetCDF output (true/false) */
+  "with_days" : true,        /* use days as units for monthly output in NetCDF files */
+  "nofill" : false,          /* do not fill NetCDF files at creation (true/false) */
+  "baseyear" : 1901,         /* base year for output in NetCDF files */
+```
+- Global attributes for NetCDF output files can be set in the `lpjml_config.cjson` file:
+```java
+ "global_attrs" : {"institution" : "Potsdam Institute for Climate Impact Research",
+                    "contact" : "", /* name and email address */
+                    /* any name and string value can be added: "name" : "value", */
+                    "comment" : ""  /* additional comments */
+                   }, /* Global attributes for NetCDF output files */
+```
+- `"standard_name"` for output can be set in `outputvars.cjson`. If not defined standard name is set to variable name.
+- Chunking defined for NetCDF files if compiled with `-DUSE_NETCDF4`.
+- Option `-metafile` added to `regridclm` and `binsum`. If metafile contains name of grid file, the filename of the source grid can be omitted:
+```bash
+regridclm -metafile grid_new.clm temp.clm.json temp_new.clm
+binsum -metafile mnpp.bin.json anpp.bin
+```
+- NetCDF files can be created with `bin2cdf` and `clm2cdf` from the JSON metafiles containing all global attributes:
+```bash
+bin2cdf -metafile soilc_layer.bin.json soilc_layer.nc
+clm2cdf -metafile temp.clm.json temp.nc
+```
+- `"landcovermap"` added to define mapping of the prescribed FPC input to PFTs.
+- `-hostfile` option added to `lpjrun`.
+- New utilities added:
+  * `cmpbin` - compares binary ouput files
+  * `statclm` - prints minimum, maximum and average of clm files
+  * `regriddrain` - regrids drainage file to new grid
+- Option `-metafile` and `-f` added to `mathclm`.
+- `cdf2clm` stores all global attributes of NetCDF file in JSON metafile if `-json` option is set.
+- Option `-nopp` added to `lpjml`. This option disables preprocessing of the config file by `cpp`.
+- Option `-ofiles` added to `lpjml` and `lpjcheck`  to print list of all available output files.
+- Option `-pedantic` added to `lpjcheck` and `lpjml` to stop on warning.
+- Option `-json` added to `regridclm` and `regridsoil` utilities to create additional JSON metafiles.
+- Compile flag `-DSTRICT_JSON` added to enable more strict syntax checking of JSON files.
+- Remark message in `fscankeywords.c` added if number instead of string is used in JSON file.
+
+### Fixed
+
+- Missing deallocation added in `freeconfig.c` and memory leak in `fscanpftpar.c` fixed.
+- Missing argument after option handling fixed in `cdf2bin` and `countr2cdf`.
+- Missing `$dir/` added to manure data in `regridlpj`.
+- Correct default landuse, sowing data and crop PHU file set in `regridlpj`.
+
+
 ## [5.8.8] - 2024-03-07
 
 ### Contributors
@@ -36,6 +113,7 @@ of `major.minor.patch` with
 - renamed functions `double_harvest()` to `separate_harvests()` and `update_double_harvest()` to `update_separate_harvests()` throughout the code
 - renamed the `struct` `Double_harvest` to `Separate_harvest` and the variable of type `Separate_harvest` in `struct` `Pftcrop` from `dh` to `sh`
 - renamed `double_harvest` flag in `struct` `Config` to `separate_harvests` 
+
 
 ## [5.8.7] - 2024-03-06
 

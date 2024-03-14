@@ -42,7 +42,7 @@ Celldata opencelldata(Config *config /**< LPJmL configuration */
                      )               /** \return pointer to cell data or NULL */
 {
   Celldata celldata;
-  List *map;
+  Map *map;
   int *soilmap;
   float lon,lat;
   celldata=new(struct celldata);
@@ -105,10 +105,10 @@ Celldata opencelldata(Config *config /**< LPJmL configuration */
       else
       {
         if(isroot(*config) && config->soilmap!=NULL)
-           cmpsoilmap(soilmap,getlistlen(map),config);
+           cmpsoilmap(soilmap,getmapsize(map),config);
         free(config->soilmap);
         config->soilmap=soilmap;
-        config->soilmap_size=getlistlen(map);
+        config->soilmap_size=getmapsize(map);
       }
       freemap(map);
     }
@@ -242,7 +242,7 @@ Bool readcelldata(Celldata celldata,      /**< pointer to celldata */
                      celldata->soil.bin.swap,celldata->soil.bin.type))
     {
       name=getrealfilename(&config->soil_filename);
-      fprintf(stderr,"ERROR190: Unexpected end of file in '%s' for cell %d.\n",
+      fprintf(stderr,"ERROR190: Cannot read soil code from '%s' for cell %d.\n",
               name,cell+config->startgrid);
       config->ngridcell=cell;
       free(name);

@@ -10,13 +10,14 @@ cdf2bin(1) - convert NetCDF files into raw binary data
 cdf2clm (1) - convert NetCDF files into CLM files
 cdf2coord(1) - extract CLM grid file from NetCDF file
 cdf2soil (1) - convert NetCDF file into binary file
-cft2clm (1) - convert binary landuse data files to clm data files for LPJmL
+cft2clm (1) - convert binary landuse data files to CLM data files for LPJmL
 clm2cdf (1) - convert CLM files into NetCDF files
+cmpbin (1) - compare two binary output files
 configure.sh (1) - Configure LPJmL
 country2cdf (1) - convert country/region code file into NetCDF file
-cru2clm (1) - convert raw binary data files to clm data files for LPJmL
+cru2clm (1) - convert raw binary data files to CLM data files for LPJmL
 cutclm (1) - cuts LPJmL climate data files
-cvrtclm (1) - converts version of clm file to version 3 or 4
+cvrtclm (1) - converts version of CLM file to version 3 or 4
 failonerror (3) - print error message and terminates program
 fcloseoutput (3) - close LPJmL output files
 flux_sum (3) - calculate global carbon and water fluxes
@@ -31,14 +32,14 @@ freelanduse (3) - close file and deallocates land use data
 freepopdens (3) - close file and deallocates population density data
 freewateruse (3) - close file and deallocates water use data
 fwriterestart (3) - write restart file
-getcellindex (1) - get cell index for coordinates in grid clm file
+getcellindex (1) - get cell index for coordinates in grid CLM file
 getclimate (3) - get climate data for specified year
 getco2 (3) - get atmospheric CO2 concentration
 getcountry (1) - extract grid cells for specified countries
 getlanduse (3) - get land use data
 getpopdens (3) - get population density data
-grid2clm (1) - convert grid data file to clm data files for LPJmL
-headersize (1) - print header size of clm files
+grid2clm (1) - convert grid data file to CLM data files for LPJmL
+headersize (1) - print header size of CLM files
 initclimate (3) - initialize climate data
 initconfig (3) - initialize LPJmL configuration for the sequential version
 initdrain (3) - initialize river routing network
@@ -52,19 +53,20 @@ isroot (3) - determines whether task is root task
 iterate (3) - main time loop for LPJmL
 iterateyear (3) - year time loop for LPJmL
 lpjcat (1) - concatenate restart files from distributed LPJmL simulations.
-lpjcheck (1) - check syntax of LPJmL configuration files 
+lpjcheck (1) - check syntax of LPJmL configuration files
 lpjfiles (1) - print list of input/output files of LPJmL
 lpjml (1) - dynamic global vegetation model with managed land and river routing
-lpjprint (1) - print contents of restart file of LPJmL model runs 
+lpjprint (1) - print contents of restart file of LPJmL model runs
 lpjrun (1) - run parallel LPJmL program interactively.
-lpjsubmit (1) - submit parallel LoadLeveler job for LPJmL simulation 
-printclm (1) - print contents of clm files for LPJmL
-printheader (1) - print header of clm files for LPJmL                   
+lpjsubmit (1) - submit parallel LoadLeveler job for LPJmL simulation
+printclm (1) - print contents of CLM files for LPJmL
+printheader (1) - print header of CLM files for LPJmL
 output_bsq (1) - concatenate all output files from distributed LPJmL simulations
 lpj_paths.sh (1) - set environmental variables used by LPJmL
 lpj_paths.csh (1) - set environmental variables used by LPJmL for C shell
 clm (5) - input data files for LPJmL runs
 manage2js (1) - convert management  *.par files to JSON file
+mathclm (1) - perform mathematical operations with CLM files
 mergeclm (1) - merge LPJmL climate data files
 newgrid (3) - allocate LPJ grid cells
 pnet_addconnect (3) - add connection to network
@@ -93,10 +95,11 @@ readpopdens (3) - read population density data
 regridclm (1) - regrid CLM file to new grid
 regridlpj (1) - regrid input data set for selected countries or specified grid file
 regridsoil (1) - regrid soil file to new grid
-setclm (1) - set value in header of clm files for LPJmL
+setclm (1) - set value in header of CLM files for LPJmL
 soil2cdf (1) - convert binary files into NetCDF files
-txt2grid (1) - convert text files to clm grid data files for LPJ
-txt2clm (1) - convert CRU ASCII files to clm data files for LPJmL
+statclm (1) - print statistics of CLM files
+txt2grid (1) - convert text files to CLM grid data files for LPJ
+txt2clm (1) - convert CRU ASCII files to CLM data files for LPJmL
 writecoords (3) - write coordinate file
 writecountrycode (3) - write country code file
 writeregioncode  (3) - write region code file

@@ -13,8 +13,9 @@
 /**************************************************************************************/
 
 #include "lpj.h"
+#include <sys/stat.h>
 
-#define USAGE "Usage: %s [-longheader] [-type {byte|short|int|float|double}] {add|sub|mul|div|avg|max|min|repl|float|int} infile1.clm [{infile2.clm|value}] outfile.clm\n"
+#define USAGE "Usage: %s [-v] [-f] [-longheader] [-raw] [-metafile] [-json] [-type {byte|short|int|float|double}] {add|sub|mul|div|avg|max|min|repl|float|int} infile1.clm [{infile2.clm|value}] outfile.clm\n"
 
 int main(int argc,char **argv)
 {
@@ -28,20 +29,51 @@ int main(int argc,char **argv)
   int iarg,ivalue,setversion;
   char *endptr;
   size_t size;
+  char *map_name=BAND_NAMES;
+  char *arglist;
+  char *out_json;
+  size_t offset;
+  Map *map=NULL,*map2=NULL;
+  Attr *attrs;
+  int n_attr;
+  char *units=NULL,*long_name=NULL,*variable=NULL,*standard_name=NULL,*source=NULL,*history=NULL;
+  char *units2=NULL;
+  Type grid_type,grid_type2;
+  Filename grid_name,grid_name2;
   Type type;
-  int index;
+  int index,format;
   int *cell_index,*cell_index2;
   char *out_name;
-  Bool isvalue,intvalue,isint;
+  Bool isvalue,intvalue,isint,ismeta,israw,isjson,isforce;
   enum {ADD,SUB,MUL,DIV,AVG,MAX,MIN,REPL,FLOAT,INT} op;
   FILE *in1,*in2,*out;
+  struct stat filestat;
+  char c;
   setversion=READ_VERSION;
   index=NOT_FOUND;
+  ismeta=israw=isjson=isforce=FALSE;
+  format=CLM;
   for(iarg=1;iarg<argc;iarg++)
     if(argv[iarg][0]=='-')
     {
-      if(!strcmp(argv[iarg],"-longheader"))
+      if(!strcmp(argv[1],"-v") || !strcmp(argv[1],"--version"))
+      {
+        puts(LPJ_VERSION);
+        return EXIT_SUCCESS;
+      }
+      else if(!strcmp(argv[iarg],"-longheader"))
         setversion=2;
+      else if(!strcmp(argv[iarg],"-f"))
+        isforce=TRUE;
+      else if(!strcmp(argv[iarg],"-metafile"))
+        ismeta=TRUE;
+      else if(!strcmp(argv[iarg],"-json"))
+        isjson=TRUE;
+      else if(!strcmp(argv[iarg],"-raw"))
+      {
+        format=RAW;
+        israw=TRUE;
+      }
       else if(!strcmp(argv[iarg],"-type"))
       {
         if(argc-1==iarg)
@@ -106,30 +138,72 @@ int main(int argc,char **argv)
             USAGE,argv[0]);
     return EXIT_FAILURE;
   }
-  in1=fopen(argv[iarg+1],"rb");
-  if(in1==NULL)
+  if(ismeta)
   {
-    fprintf(stderr,"Error opening '%s': %s.\n",argv[iarg+1],strerror(errno));
-    return EXIT_FAILURE;
+    /* set default values */
+    header1.datatype=(index!=NOT_FOUND) ? type : LPJ_SHORT;
+    header1.timestep=1;
+    header1.nbands=1;
+    header1.nstep=1;
+    header1.order=CELLYEAR;
+    header1.firstcell=0;
+    header1.firstyear=1901;
+    header1.cellsize_lon=header1.cellsize_lat=0.5;
+    header1.ncell=1;
+    header1.nyear=1;
+    version=LPJ_CLIMATE_VERSION;
+    grid_type=LPJ_SHORT;
+    in1=openmetafile(&header1,&map,map_name,&attrs,&n_attr,&source,&history,&variable,&units,&standard_name,&long_name,&grid_name,&grid_type,&format,&swap1,&offset,argv[iarg+1],TRUE);
+    if(in1==NULL)
+      return EXIT_FAILURE;
+    if(format==CLM)
+    {
+      if(freadheaderid(in1,id,TRUE))
+        return EXIT_FAILURE;
+    }
+    fseek(in1,offset,SEEK_SET);
   }
-  version=setversion;
-  if(freadanyheader(in1,&header1,&swap1,id,&version,TRUE))
+  else
   {
-    fprintf(stderr,"Error reading header in '%s'.\n",argv[iarg+1]);
-    return EXIT_FAILURE;
+    in1=fopen(argv[iarg+1],"rb");
+    if(in1==NULL)
+    {
+      fprintf(stderr,"Error opening '%s': %s.\n",argv[iarg+1],strerror(errno));
+      return EXIT_FAILURE;
+    }
+    if(israw)
+    {
+      header1.datatype=(index!=NOT_FOUND) ? type : LPJ_SHORT;
+      header1.nyear=1;
+      header1.nbands=1;
+      header1.nstep=1;
+      header1.scalar=1;
+      size=getfilesizep(in1);
+      header1.ncell=size/typesizes[header1.datatype];
+      header1.order=CELLYEAR;
+    }
+    else
+    {
+      version=setversion;
+      if(freadanyheader(in1,&header1,&swap1,id,&version,TRUE))
+      {
+        fprintf(stderr,"Error reading header in '%s'.\n",argv[iarg+1]);
+        return EXIT_FAILURE;
+      }
+      if(version>CLM_MAX_VERSION)
+      {
+        fprintf(stderr,"Error: Unsupported version %d in '%s', must be less than %d.\n",
+                version,argv[iarg+1],CLM_MAX_VERSION+1);
+        return EXIT_FAILURE;
+      }
+      if(index!=NOT_FOUND)
+        header1.datatype=type;
+      size=getfilesizep(in1)-headersize(id,version);
+      if((header1.order==CELLINDEX && size!=sizeof(int)*header1.ncell+(long long)header1.nyear*header1.ncell*header1.nbands*header1.nstep*typesizes[header1.datatype]) ||
+         (header1.order!=CELLINDEX && size!=(long long)header1.nyear*header1.ncell*header1.nbands*header1.nstep*typesizes[header1.datatype]))
+        fprintf(stderr,"Warning: File size of '%s' does not match nbands*nstep*ncell*nyear.\n",argv[iarg+1]);
+    }
   }
-  if(version>CLM_MAX_VERSION)
-  {
-    fprintf(stderr,"Error: Unsupported version %d in '%s', must be less than %d.\n",
-            version,argv[iarg+1],CLM_MAX_VERSION+1);
-    return EXIT_FAILURE;
-  }
-  if(index!=NOT_FOUND)
-    header1.datatype=type;
-  size=getfilesizep(in1)-headersize(id,version);
-  if((header1.order==CELLINDEX && size!=sizeof(int)*header1.ncell+(long long)header1.nyear*header1.ncell*header1.nbands*header1.nstep*typesizes[header1.datatype]) ||
-     (header1.order!=CELLINDEX && size!=(long long)header1.nyear*header1.ncell*header1.nbands*header1.nstep*typesizes[header1.datatype]))
-    fprintf(stderr,"Warning: File size of '%s' does not match nbands*nstep*ncell*nyear.\n",argv[iarg+1]);
   if(op!=FLOAT && op!=INT)
   {
     value=(float)strtod(argv[iarg+2],&endptr);
@@ -147,26 +221,76 @@ int main(int argc,char **argv)
     else
     {
       isvalue=FALSE;
-      in2=fopen(argv[iarg+2],"rb");
-      if(in2==NULL)
+      if(ismeta)
       {
-        fprintf(stderr,"Error opening '%s': %s.\n",argv[iarg+2],strerror(errno));
-        return EXIT_FAILURE;
+        /* set default values */
+        header2.datatype=(index!=NOT_FOUND) ? type : LPJ_SHORT;
+        header2.timestep=1;
+        header2.nbands=1;
+        header2.nstep=1;
+        header2.order=CELLYEAR;
+        header2.firstcell=0;
+        header2.firstyear=1901;
+        header2.cellsize_lon=header2.cellsize_lat=0.5;
+        header2.ncell=1;
+        header2.nyear=1;
+        grid_type2=LPJ_SHORT;
+        in2=openmetafile(&header2,&map2,map_name,NULL,NULL,NULL,NULL,NULL,&units2,NULL,NULL,&grid_name2,&grid_type2,NULL,&swap2,&offset,argv[iarg+2],TRUE);
+        if(in1==NULL)
+          return EXIT_FAILURE;
+        fseek(in2,offset,SEEK_SET);
+        if(units!=NULL && units2!=NULL && strcmp(units,units2))
+          fprintf(stderr,"Warning: Unit '%s' in '%s' differs from unit '%s' in '%s'.\n",
+                  units,argv[iarg+1],units2,argv[iarg+2]);
+        if(grid_name.name!=NULL && grid_name2.name!=NULL && strcmp(grid_name.name,grid_name2.name))
+          fprintf(stderr,"Warning: Grid filename '%s' in '%s' differs from grid filename '%s' in '%s'.\n",
+                  grid_name.name,argv[iarg+1],grid_name2.name,argv[iarg+2]);
+        if(map!=NULL  && map2!=NULL && !cmpmap(map,map2))
+          fprintf(stderr,"Warning: Map '%s' in '%s' differs from map in '%s'.\n",
+                  map_name,argv[iarg+1],argv[iarg+2]);
+
       }
-      version=setversion;
-      if(freadheader(in2,&header2,&swap2,id,&version,TRUE))
+      else
       {
-        fprintf(stderr,"Error reading header in '%s'.\n",argv[iarg+2]);
-        return EXIT_FAILURE;
+        in2=fopen(argv[iarg+2],"rb");
+        if(in2==NULL)
+        {
+          fprintf(stderr,"Error opening '%s': %s.\n",argv[iarg+2],strerror(errno));
+          return EXIT_FAILURE;
+        }
+        if(israw)
+        {
+          header2.datatype=(index!=NOT_FOUND) ? type : LPJ_SHORT;
+          header2.nyear=1;
+          header2.nbands=1;
+          header2.nstep=1;
+          header2.scalar=1;
+          header2.order=CELLYEAR;
+          size=getfilesizep(in2);
+          header2.ncell=size/typesizes[header2.datatype];
+        }
+        else
+        {
+          version=setversion;
+          if(freadheader(in2,&header2,&swap2,id,&version,TRUE))
+          {
+            fprintf(stderr,"Error reading header in '%s'.\n",argv[iarg+2]);
+            return EXIT_FAILURE;
+          }
+          if(version>CLM_MAX_VERSION)
+          {
+            fprintf(stderr,"Error: Unsupported version %d in '%s', must be less than %d.\n",
+                    version,argv[iarg+2],CLM_MAX_VERSION+1);
+            return EXIT_FAILURE;
+          }
+          if(index!=NOT_FOUND)
+            header2.datatype=type;
+          size=getfilesizep(in2)-headersize(id,version);
+          if((header1.order==CELLINDEX && size!=sizeof(int)*header2.ncell+(long long)header2.nyear*header2.ncell*header2.nbands*header2.nstep*typesizes[header2.datatype]) ||
+             (header1.order!=CELLINDEX && size!=(long long)header2.nyear*header2.ncell*header2.nbands*header2.nstep*typesizes[header2.datatype]))
+            fprintf(stderr,"Warning: File size of '%s' does not match nbands*nstep*ncell*nyear.\n",argv[iarg+2]);
+        }
       }
-      if(version>CLM_MAX_VERSION)
-      {
-        fprintf(stderr,"Error: Unsupported version %d in '%s', must be less than %d.\n",
-                version,argv[iarg+2],CLM_MAX_VERSION+1);
-        return EXIT_FAILURE;
-      }
-      if(index!=NOT_FOUND)
-        header2.datatype=type;
       if(header1.nyear!=header2.nyear)
       {
         fprintf(stderr,"nyear %d differs from %d.\n",header1.nyear,header2.nyear);
@@ -212,10 +336,6 @@ int main(int argc,char **argv)
         fprintf(stderr,"cell order %d differs from %d.\n",header1.order,header2.order);
         return EXIT_FAILURE;
       }
-      size=getfilesizep(in2)-headersize(id,version);
-      if((header1.order==CELLINDEX && size!=sizeof(int)*header2.ncell+(long long)header2.nyear*header2.ncell*header2.nbands*header2.nstep*typesizes[header2.datatype]) ||
-         (header1.order!=CELLINDEX && size!=(long long)header2.nyear*header2.ncell*header2.nbands*header2.nstep*typesizes[header2.datatype]))
-        fprintf(stderr,"Warning: File size of '%s' does not match nbands*nstep*ncell*nyear.\n",argv[iarg+2]);
     }
     if(isvalue)
       isint=(intvalue && header1.datatype==LPJ_INT && header1.scalar==1);
@@ -257,10 +377,20 @@ int main(int argc,char **argv)
     check(data1);
   }
   out_name=argv[iarg+((op==FLOAT || op==INT) ? 2 : 3)];
+  if(!isforce)
+  {
+    if(!stat(out_name,&filestat))
+    {
+      fprintf(stderr,"File '%s' already exists, overwrite (y/n)?\n",out_name);
+      scanf("%c",&c);
+      if(c!='y')
+        return EXIT_FAILURE;
+    }
+  }
   out=fopen(out_name,"wb");
   if(out==NULL)
   {
-    fprintf(stderr,"Error creating '%s': %s.\n",argv[iarg+((op==FLOAT) ? 2 : 3)],strerror(errno));
+    fprintf(stderr,"Error creating '%s': %s.\n",out_name,strerror(errno));
     return EXIT_FAILURE;
   }
   header3=header1;
@@ -274,7 +404,8 @@ int main(int argc,char **argv)
     header3.scalar=1;
     header3.datatype=(op!=FLOAT && isint) ? LPJ_INT : LPJ_FLOAT;
   }
-  fwriteheader(out,&header3,id,max(version,3));
+  if(format==CLM)
+    fwriteheader(out,&header3,id,max(version,(ismeta) ? 4 : 3));
   if(header1.order==CELLINDEX)
   {
     cell_index=newvec(int,header1.ncell);
@@ -575,5 +706,24 @@ int main(int argc,char **argv)
   if(op!=FLOAT && !isvalue)
     fclose(in2);
   fclose(out);
+  if(ismeta || isjson)
+  {
+    out_json=malloc(strlen(out_name)+strlen(JSON_SUFFIX)+1);
+    if(out_json==NULL)
+    {
+      printallocerr("filename");
+      return EXIT_FAILURE;
+    }
+    strcat(strcpy(out_json,out_name),JSON_SUFFIX);
+    arglist=catstrvec(argv,argc);
+    out=fopen(out_json,"w");
+    if(out==NULL)
+    {
+      printfcreateerr(out_json);
+      return EXIT_FAILURE;
+    }
+    fprintjson(out,out_name,source,history,arglist,&header3,map,map_name,attrs,n_attr,variable,units,standard_name,long_name,(grid_name.name==NULL) ? NULL : &grid_name,grid_type,format,id,FALSE,max(version,(ismeta) ? 4 : 3));
+    fclose(out);
+  }
   return EXIT_FAILURE;
 } /* of 'main' */

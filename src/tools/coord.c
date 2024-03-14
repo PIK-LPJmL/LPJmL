@@ -60,7 +60,7 @@ Coordfile opencoord(const Filename *filename, /**< filename of coord file */
     header.nyear=1;
     header.order=CELLYEAR;
     header.cellsize_lon=header.cellsize_lat=0.5;
-    coordfile->file=openmetafile(&header,NULL,NULL,&coordfile->swap,&coordfile->offset,filename->name,isout);
+    coordfile->file=openmetafile(&header,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,&coordfile->swap,&coordfile->offset,filename->name,isout);
     if(coordfile->file==NULL)
     {
       free(coordfile);
@@ -69,7 +69,7 @@ Coordfile opencoord(const Filename *filename, /**< filename of coord file */
     if(header.ncell<=0)
     {
       if(isout)
-        fprintf(stderr,"ERROR221: Invalid number %d of cells in description file '%s', must be greater than zero.\n",
+        fprintf(stderr,"ERROR221: Invalid number %d of cells in JSON metafile '%s', must be greater than zero.\n",
                 header.ncell,filename->name);
       free(coordfile);
       return NULL;
@@ -83,7 +83,7 @@ Coordfile opencoord(const Filename *filename, /**< filename of coord file */
     if(header.nbands!=2)
     {
       if(isout)
-        fprintf(stderr,"ERROR218: Number of bands=%d in description file '%s' is not 2.\n",
+        fprintf(stderr,"ERROR218: Number of bands=%d in JSON metafile '%s' is not 2.\n",
                 header.nbands,filename->name);
       fclose(coordfile->file);
       free(coordfile);
@@ -92,7 +92,7 @@ Coordfile opencoord(const Filename *filename, /**< filename of coord file */
     if(header.nstep!=1)
     {
       if(isout)
-        fprintf(stderr,"ERROR218: Number of steps=%d in description file '%s' is not 1.\n",
+        fprintf(stderr,"ERROR218: Number of steps=%d in JSON metafile '%s' is not 1.\n",
                 header.nstep,filename->name);
       fclose(coordfile->file);
       free(coordfile);
@@ -101,7 +101,7 @@ Coordfile opencoord(const Filename *filename, /**< filename of coord file */
     if(header.timestep!=1)
     {
       if(isout)
-        fprintf(stderr,"ERROR218: Time step=%d in description file '%s' is not 1.\n",
+        fprintf(stderr,"ERROR218: Time step=%d in JSON metafile '%s' is not 1.\n",
                 header.timestep,filename->name);
       fclose(coordfile->file);
       free(coordfile);
@@ -368,12 +368,13 @@ Bool fscancoord(LPJfile *file, /**< pointer to text file */
 
 int findcoord(const Coord *c,      /**< coordinate */
               const Coord array[], /**< array of coordinates */
+              const Coord *res,    /**< resolution (deg) */
               int size             /**< size of array */
              )         /** \return index of coordinate found or NOT_FOUND */
 {
   int i;
   for(i=0;i<size;i++)
-    if(fabs(array[i].lon-c->lon)<epsilon && fabs(array[i].lat-c->lat)<epsilon)
+    if(fabs(array[i].lon-c->lon)<res->lon*0.5 && fabs(array[i].lat-c->lat)<res->lat*0.5)
       return i;
   return NOT_FOUND;
 } /* of 'findcoord' */
