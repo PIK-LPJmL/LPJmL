@@ -108,8 +108,6 @@ static size_t isnetcdfinput(const Config *config)
   }
   if(config->ispopulation && config->popdens_filename.fmt==CDF)
     width=max(width,strlen(config->popdens_filename.var));
-  if(config->grassfix_filename.name!=NULL && config->grassfix_filename.fmt==CDF)
-    width=max(width,strlen(config->grassfix_filename.var));
   if(config->grassharvest_filename.name!=NULL && config->grassharvest_filename.fmt==CDF)
     width=max(width,strlen(config->grassharvest_filename.var));
   if(config->withlanduse!=NO_LANDUSE)
@@ -509,8 +507,6 @@ void fprintconfig(FILE *file,          /**< File pointer to text output file */
   }
   if(config->separate_harvests)
     len=printsim(file,len,&count,"double harvest");
-  if(config->grassfix_filename.name!=NULL)
-    len=printsim(file,len,&count,"grassland fixed PFT");
   if(config->grassharvest_filename.name!=NULL)
     len=printsim(file,len,&count,"grassland harvest options");
   if(config->prescribe_lsuha)
@@ -614,8 +610,6 @@ void fprintconfig(FILE *file,          /**< File pointer to text output file */
     printinputfile(file,"burntarea",&config->burntarea_filename,width,config);
   if(config->prescribe_landcover)
     printinputfile(file,"landcover",&config->landcover_filename,width,config);
-  if(config->grassfix_filename.name!=NULL)
-    printinputfile(file,"Grassfix",&config->grassfix_filename,width,config);
   if(config->grassharvest_filename.name!=NULL)
     printinputfile(file,"Grassharvest",&config->grassharvest_filename,width,config);
   if(config->withlanduse!=NO_LANDUSE)

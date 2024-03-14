@@ -171,7 +171,7 @@ Bool fscanconfig(Config *config,    /**< LPJ configuration */
  {
   const char *name;
   LPJfile *input;
-  int i,restart,endgrid,israndom,grassfix,grassharvest;
+  int i,restart,endgrid,israndom,grassharvest;
   Verbosity verbose;
   const char *landuse[]={"no","yes","const","all_crops","only_crops"};
   const char *fertilizer[]={"no","yes","auto"};
@@ -477,9 +477,6 @@ Bool fscanconfig(Config *config,    /**< LPJ configuration */
         fscanbool(file,&config->aquifer_irrig,"aquifer_irrigation",TRUE,verbose);
 #endif
       }
-      grassfix=FALSE;
-      if(fscanbool(file,&grassfix,"grassland_fixed_pft",TRUE,verbose))
-        return TRUE;
       grassharvest=FALSE;
       if(fscanbool(file,&grassharvest,"grass_harvest_options", TRUE, verbose))
         return TRUE;
@@ -776,12 +773,6 @@ Bool fscanconfig(Config *config,    /**< LPJ configuration */
       scanclimatefilename(input,&config->residue_data_filename,FALSE,TRUE,"residue_on_field");
     if(config->prescribe_lsuha)
       scanclimatefilename(input,&config->lsuha_filename,FALSE,TRUE,"grassland_lsuha");
-    if(grassfix == GRASS_FIXED_PFT)
-    {
-      scanclimatefilename(input,&config->grassfix_filename,FALSE,FALSE,"grassland_fixed_pft");
-    }
-    else
-      config->grassfix_filename.name = NULL;
     if(grassharvest)
     {
       scanclimatefilename(input,&config->grassharvest_filename,FALSE,FALSE,"grass_harvest_options");
@@ -791,7 +782,6 @@ Bool fscanconfig(Config *config,    /**< LPJ configuration */
   }
   else
   {
-    config->grassfix_filename.name = NULL;
     config->grassharvest_filename.name = NULL;
     config->lsuha_filename.name = NULL;
   }

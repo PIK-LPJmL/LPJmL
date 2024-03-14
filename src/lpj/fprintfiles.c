@@ -120,8 +120,6 @@ void fprintfiles(FILE *file,          /**< pointer to text output file */
   }
   if(config->ispopulation)
     fprintfilename(file,&config->popdens_filename,TRUE);
-  if(config->grassfix_filename.name!=NULL)
-    fprintfilename(file,&config->grassfix_filename,FALSE);
   if(config->grassharvest_filename.name!=NULL)
     fprintfilename(file,&config->grassharvest_filename,FALSE);
   if(config->withlanduse!=NO_LANDUSE)

@@ -421,8 +421,6 @@ Bool filesexist(Config config, /**< LPJmL configuration */
     }
     bad+=checkinputdata(&config,&config.soilph_filename,"soilPH",NULL,LPJ_SHORT);
   }
-  if(config.grassfix_filename.name!=NULL)
-    bad+=checkinputdata(&config,&config.grassfix_filename,"grassfix",NULL,LPJ_SHORT);
   if(config.grassharvest_filename.name!=NULL)
     bad+=checkinputdata(&config,&config.grassharvest_filename,"grassharvest",NULL,LPJ_SHORT);
   if(config.with_nitrogen || config.fire==SPITFIRE || config.fire==SPITFIRE_TMAX)

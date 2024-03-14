@@ -86,7 +86,6 @@ struct config
   Filename aquifer_filename;
   Filename wateruse_wd_filename;
 #endif
-  Filename grassfix_filename;
   Filename grassharvest_filename;
   Filename lsuha_filename;
   Filename sowing_cotton_rf_filename;

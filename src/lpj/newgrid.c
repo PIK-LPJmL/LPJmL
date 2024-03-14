@@ -36,7 +36,6 @@ static Cell *newgrid2(Config *config,          /* Pointer to LPJ configuration *
   Celldata celldata;
   Bool swap_restart;
   Bool missing;
-  Infile grassfix_file;
   Infile grassharvest_file;
   unsigned int soilcode;
   int soil_id;
@@ -114,20 +113,6 @@ static Cell *newgrid2(Config *config,          /* Pointer to LPJ configuration *
         return NULL;
       }
     }
-    if(config->grassfix_filename.name!=NULL)
-    {
-      if(openinputdata(&grassfix_file,&config->grassfix_filename,"grassfix",NULL,LPJ_BYTE,1.0,config))
-      {
-        closecelldata(celldata,config);
-        if(config->countrypar!=NULL)
-        {
-          closeinput(&countrycode);
-          if(config->countrycode_filename.fmt==CDF)
-            closeinput(&regioncode);
-        }
-        return NULL;
-      }
-    }
     if(config->grassharvest_filename.name!=NULL)
     {
       // SR, grass management options: here choosing the grass harvest regime on the managed grassland
@@ -140,8 +125,6 @@ static Cell *newgrid2(Config *config,          /* Pointer to LPJ configuration *
           if(config->countrycode_filename.fmt==CDF)
             closeinput(&regioncode);
         }
-        if(config->grassfix_filename.name!=NULL)
-          closeinput(&grassfix_file);
         return NULL;
       }
     }
@@ -160,8 +143,6 @@ static Cell *newgrid2(Config *config,          /* Pointer to LPJ configuration *
         if(config->countrycode_filename.fmt==CDF)
           closeinput(&regioncode);
       }
-      if(config->grassfix_filename.name!=NULL)
-        closeinput(&grassfix_file);
       if(config->grassharvest_filename.name!=NULL)
          closeinput(&grassharvest_file);
       return NULL;
@@ -204,8 +185,6 @@ static Cell *newgrid2(Config *config,          /* Pointer to LPJ configuration *
       if(config->countrycode_filename.fmt==CDF)
         closeinput(&regioncode);
     }
-    if(config->grassfix_filename.name!=NULL)
-      closeinput(&grassfix_file);
     if(config->grassharvest_filename.name!=NULL)
       closeinput(&grassharvest_file);
     return NULL;
@@ -232,8 +211,6 @@ static Cell *newgrid2(Config *config,          /* Pointer to LPJ configuration *
         if(config->countrycode_filename.fmt==CDF)
           closeinput(&regioncode);
       }
-      if(config->grassfix_filename.name!=NULL)
-        closeinput(&grassfix_file);
       if(config->grassharvest_filename.name!=NULL)
         closeinput(&grassharvest_file);
       return NULL;
@@ -284,13 +261,6 @@ static Cell *newgrid2(Config *config,          /* Pointer to LPJ configuration *
         }
       }
 
-      if(config->grassfix_filename.name != NULL)
-      {
-        if(readintinputdata(&grassfix_file,&grid[i].ml.fixed_grass_pft,NULL,&grid[i].coord,i+config->startgrid,&config->grassfix_filename))
-          return NULL;
-      }
-      else
-        grid[i].ml.fixed_grass_pft= -1;
       if(config->grassharvest_filename.name != NULL)
       {
         if(readintinputdata(&grassharvest_file,(int *)&grid[i].ml.grass_scenario,NULL,&grid[i].coord,i+config->startgrid,&config->grassharvest_filename))
@@ -497,8 +467,6 @@ static Cell *newgrid2(Config *config,          /* Pointer to LPJ configuration *
   if(file_restart!=NULL)
     fclose(file_restart);
   closecelldata(celldata,config);
-  if(config->grassfix_filename.name!=NULL)
-    closeinput(&grassfix_file);
   if(config->grassharvest_filename.name!=NULL)
     closeinput(&grassharvest_file);
   if(config->countrypar!=NULL)

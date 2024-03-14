@@ -78,7 +78,6 @@
   //"landuse" :      { "id" : 6, "fmt" : "clm",  "name" : "input_VERSION2/cft1700_2005_irrigation_systems_64bands.bin"},
   //"fertilizer_nr" : { "id" : 18, "fmt" : "clm",  "name" : "input_VERSION2/fertilizer_ggcmi.clm2"},
   /* insert prescribed sdate file name here */
-  "grassland_fixed_pft" : { "id" : 30, "fmt" : "raw", "name" : "/p/projects/landuse/users/rolinski/Newinput/scenario_MO0.bin"},
   "grass_harvest_options" : { "id" : 31, "fmt" : "raw", "name": "/p/projects/landuse/users/rolinski/Newinput/scenario_MO2.bin"},
   "grassland_lsuha" : { "id" : 24, "fmt" : "clm",  "name" : "/p/projects/lpjml/input/Grazing/grassland_lsuha_gswp3_2000-2000.clm"},
   "sowing_ag_tree_rf" :   { "id" : 32, "fmt" : "cdf", "var" : "planting day", "name" : "/p/projects/landuse/users/cmueller/GGCMI/crop_calendar/Cotton_rf_growing_season_dates_v1.25.nc4"},

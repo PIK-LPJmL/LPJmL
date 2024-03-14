@@ -118,7 +118,6 @@
   "grazing" : "livestock",                /* default grazing type, options : "default", "mowing", "ext", "int", "livestock", "none" */
   "grassonly" : false,                  /* set all cropland including others to zero but keep managed grasslands */
   "luc_timber" : true,                  /* true: extract timber carbon (timber_harvest output) if natural vegetation is cleared for managed land, false: carbon is put in litter */
-  "grassland_fixed_pft" : false,        /* prescribe per grid cell the grass pft to be grown, requires additional input - non-functional? */
   "grass_harvest_options" : false,      /* true: grid-specific grassland management, requires input file; false: default management (setting "grazing") everywhere */
   "prescribe_lsuha" : true,            /* prescribe livestock unit per hectare, input required (needed for "grazing" = "livestock") */
   "mowing_days" : [152, 335],           /* Mowing days (day-of-year) for grassland if "grazing" = "mowing" */

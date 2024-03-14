@@ -102,8 +102,6 @@ void freeconfig(Config *config /**< LPJmL configuration */
   free(config->npft);
   if(config->ispopulation)
     freefilename(&config->popdens_filename);
-  if(config->grassfix_filename.name!=NULL)
-    freefilename(&config->grassfix_filename);
   if(config->grassharvest_filename.name!=NULL)
     freefilename(&config->grassharvest_filename);
   if(config->with_nitrogen  || config->fire==SPITFIRE || config->fire==SPITFIRE_TMAX)

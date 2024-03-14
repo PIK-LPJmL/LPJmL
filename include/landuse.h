@@ -87,7 +87,6 @@ typedef struct
   Real mdemand;           /**< monthly irrigation demand */
   Bool dam;               /**< dam inside cell (TRUE/FALSE) */
   Bool with_tillage;      /* simulation with tillage implementation */
-  int fixed_grass_pft;              /**< fix C3 or C4 for GRASS pft */
   GrassScenarioType grass_scenario; /**< 0=default, 1=mowing, 2=ext.grazing, 3=int.grazing */
   Real grassland_lsuha;             /**< livestock density on grassland in LSU/ha */
 #if defined IMAGE && defined COUPLED
