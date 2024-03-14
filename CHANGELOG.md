@@ -26,7 +26,7 @@ of `major.minor.patch` with
 
 ### Changed
 
-- NetCDF output files are now in a more ISIMIP3 compliant format, datatype of time, lat, and lon is now double, `depth_bnds` added to layer specific output. Standard amd long name can be specified in `outputvars.json`.
+- NetCDF output files are now in a more ISIMIP3 compliant format, datatype of time, lat, and lon is now double, `depth_bnds` added to layer specific output. Standard and long name can be specified in `outputvars.json`.
 - Deprecated function `MPI_Extent` replaced by `MPI_Get_extent` in `mpi_write.c`.
 - Functions `create_netcdf.c`/`create_pft_netcdf.c` and `create1_netcdf.c`/`create1_pft_netcdf.c` have been merged.
 - Function `findcoord()` improved to find cell indices, returns now true if coord is within cell.
