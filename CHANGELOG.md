@@ -19,14 +19,14 @@ of `major.minor.patch` with
 
 ## [Unreleased]
 
-## [5.8.8] - 2024-03-13
+## [5.8.9] - 2024-03-14
 
 - author: Werner von Bloh (bloh@pik-potsdam.de), Sebastian Ostberg (ostberg@pik-potsdam.de)
 - code review: Jannes Breier (breier@pik-potsdam.de)
 
 ### Changed
 
-- NetCDF output files are now in a more ISIMIP3 compliant format, datatype of time is now double,  `depth_bnds` added to layer specific output. Standard amd long name can be specified in `outputvars.json`.
+- NetCDF output files are now in a more ISIMIP3 compliant format, datatype of time, lat, and lon is now double, `depth_bnds` added to layer specific output. Standard amd long name can be specified in `outputvars.json`.
 - Deprecated function `MPI_Extent` replaced by `MPI_Get_extent` in `mpi_write.c`.
 - Functions `create_netcdf.c`/`create_pft_netcdf.c` and `create1_netcdf.c`/`create1_pft_netcdf.c` have been merged.
 - Function `findcoord()` improved to find cell indices, returns now true if coord is within cell.
@@ -86,6 +86,7 @@ clm2cdf -metafile temp.clm.json temp.nc
 - Option `-pedantic` added to `lpjcheck` and `lpjml` to stop on warning.
 - Option `-json` added to `regridclm` and `regridsoil` utilities to create additional JSON metafiles.
 - Compile flag `-DSTRICT_JSON` added to enable more strict syntax checking of JSON files.
+- Remark message in `fscankeywords.c` added if number instead of string is used in JSON file.
 
 ### Fixed
 
