@@ -56,6 +56,14 @@ void moisture2soilice(Soil *soil, /**< pointer to soil data */
   /* amount of ice formed in current timestep (mm) */
   soil->ice_depth[l]+=freeze_heat_w/c_water2ice*1000; /*[mm]*/
   soil->w[l]-=freeze_heat_w/c_water2ice*1000/soil->whcs[l];
+  if(soil->w[l]*soil->whcs[l]+soil->ice_depth[l]>soil->whcs[l]+epsilon)
+  {
+    soil->w_fw[l]+=(soil->w[l]*soil->whcs[l]+soil->ice_depth[l])-soil->whcs[l];
+    if(soil->ice_depth[l]>epsilon)
+      soil->ice_depth[l]-=(soil->w[l]*soil->whcs[l]+soil->ice_depth[l])-soil->whcs[l];
+    else
+      soil->w[l]-=((soil->w[l]*soil->whcs[l]+soil->ice_depth[l])-soil->whcs[l])/soil->whcs[l];
+  }
   if (fabs(soil->w[l]*soil->whcs[l])<epsilon)
     soil->w[l]=0;
   /* conversion of water below permanent wilting point*/
@@ -78,8 +86,8 @@ void moisture2soilice(Soil *soil, /**< pointer to soil data */
 #ifdef SAFE
   if(soil->w[l]<0)
     fail(PERM_ERR,TRUE,FALSE,"soil.w[%d]=%.10f<0 in moisture2soilice()",l,soil->w[l]);
-  if(soil->ice_depth[l]<0 || soil->ice_depth[l]>soil->whcs[l]+epsilon){
-    fprintf(stderr,"soil->ice_depth[%d]=%.10f which is larger than soil>whcs[%d] %.10f moisture2soilice()\n",l,soil->ice_depth[l],l,soil->whcs[l]);
+  if(soil->ice_depth[l]<-epsilon || soil->ice_depth[l]>soil->whcs[l]+epsilon){
+    fprintf(stderr,"soil->ice_depth[%d]=%.10f which is larger than soil>whcs[%d] %.10f freeze_heat_w: %g w*whcs: %g moisture2soilice()\n",l,soil->ice_depth[l],l,soil->whcs[l],freeze_heat_w,soil->w[l]*soil->whcs[l]);
   }
 #endif
 } /* of 'moisture2soilice' */

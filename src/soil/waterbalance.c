@@ -140,23 +140,24 @@ void waterbalance(Stand *stand,           /**< Stand pointer */
     {
       /* release evaporation water */
       evap_out[l]=(soil->w[l]*soil->whcs[l]+soil->w_fw[l])*evap_ratio*min(1,soildepth_evap/soildepth[l]);
-      soil->w_fw[l]-=evap_out[l];
+      if(evap_out[l]>0)
+        soil->w_fw[l]-=evap_out[l];
+      else
+        evap_out[l]=0;
       soildepth_evap-=soildepth[l];
       evap_test+=evap_out[l];
     }
     //printf("l= %d \n",l);
     if(soil->w_fw[l]<0)
     {
-      //printf("w[%d] %3.12f, fw[%d] %3.12f evap_out[l] %3.12f aet_stand[l] %3.12f soil->w[l] %3.12f soil->ice_depth[l] %3.12f in line 120 waterbalance\n", l, soil->w[l], l, soil->w_fw[l],evap_out[l],aet_stand[l],soil->w[l]*soil->whcs[l],soil->ice_depth[l]);
       soil->w[l]+=soil->w_fw[l]/soil->whcs[l];
       soil->w_fw[l]=0;
-      //printf("w[%d] %3.12f, fw[%d] %3.12f in line 123 waterbalance\n", l, soil->w[l], l, soil->w_fw[l]);
-    }
-    if (soil->w[l]< -1e-12)
-    {
-      fprintf(stderr,"Cell (%s) negative soil water after evap and transp w= %3.5f evap=  %3.5f transp=  %3.2f\n",
-              sprintcoord(line,&stand->cell->coord),soil->w[l],evap_out[l],aet_stand[l]);
-      fflush(stderr);
+      if (soil->w[l]< -epsilon)
+      {
+        fprintf(stderr,"Cell (%s) negative soil water after evap and transp w= %3.5f evap=  %3.5f transp=  %3.2f\n",
+            sprintcoord(line,&stand->cell->coord),soil->w[l],evap_out[l],aet_stand[l]);
+        fflush(stderr);
+      }
     }
     /* reallocate water above field capacity to freewater; needed here since thawing permafrost can increase soil->w */
     if (soil->w[l]+soil->ice_depth[l]/soil->whcs[l]>(1+epsilon))

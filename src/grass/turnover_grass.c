@@ -122,7 +122,7 @@ Stocks turnover_grass(Litter *litter, /**< Litter pool */
     getoutput(output,LITFALLC,config)+=gturn.root.carbon*pft->nind*pft->stand->frac;
     litter->item[pft->litter].bg.nitrogen+=gturn.root.nitrogen*pft->nind*pft->par->fn_turnover;
     getoutput(output,LITFALLN,config)+=gturn.root.nitrogen*pft->nind*pft->par->fn_turnover*pft->stand->frac;
-    pft->bm_inc.nitrogen+= (gturn.root.nitrogen+gturn.leaf.nitrogen)*pft->nind*(1-pft->par->fn_turnover);
+    pft->bm_inc.nitrogen+= gturn.root.nitrogen*pft->nind*(1-pft->par->fn_turnover);
   }
   else
   {
@@ -132,10 +132,11 @@ Stocks turnover_grass(Litter *litter, /**< Litter pool */
     grass->ind.leaf.nitrogen-=grass->turn.leaf.nitrogen;
     litter->item[pft->litter].agtop.leaf.carbon+=grass->turn.leaf.carbon*pft->nind-grass->turn_litt.leaf.carbon;
     litter->item[pft->litter].agtop.leaf.nitrogen+=(grass->turn.leaf.nitrogen*pft->nind-grass->turn_litt.leaf.nitrogen)*pft->par->fn_turnover;
+    pft->bm_inc.nitrogen+=(grass->turn.leaf.nitrogen*pft->nind-grass->turn_litt.leaf.nitrogen)*(1-pft->par->fn_turnover);
     update_fbd_tree(litter,pft->par->fuelbulkdensity,grass->turn.leaf.carbon*pft->nind-grass->turn_litt.leaf.carbon,0);
     litter->item[pft->litter].bg.carbon+=grass->turn.root.carbon*pft->nind-grass->turn_litt.root.carbon;
-    litter->item[pft->litter].bg.nitrogen+=grass->turn.root.nitrogen*pft->nind-grass->turn_litt.root.nitrogen;
-    pft->bm_inc.nitrogen+=(gturn.root.nitrogen*pft->nind-grass->turn_litt.root.nitrogen)*(1-pft->par->fn_turnover);
+    litter->item[pft->litter].bg.nitrogen+=(grass->turn.root.nitrogen*pft->nind-grass->turn_litt.root.nitrogen)*pft->par->fn_turnover;
+    pft->bm_inc.nitrogen+=(grass->turn.root.nitrogen*pft->nind-grass->turn_litt.root.nitrogen)*(1-pft->par->fn_turnover);
 
     gturn.root.carbon=grass->ind.root.carbon*grasspar->turnover.root*fraction;
     gturn.root.nitrogen=grass->ind.root.nitrogen*grasspar->turnover.root*fraction;

@@ -146,6 +146,13 @@ void mixsoil(Stand *stand1,const Stand *stand2,int year,int ntotpft,const Config
   mixpool(stand1->soil.wa,stand2->soil.wa,stand1->frac,stand2->frac);
   mixpool(stand1->soil.snowdens,stand2->soil.snowdens,stand1->frac,stand2->frac);
   mixpool(stand1->soil.wtable,stand2->soil.wtable,stand1->frac,stand2->frac);
+  mixpool(stand1->soil.rw_buffer,stand2->soil.rw_buffer,stand1->frac,stand2->frac);
+  mixpool(stand1->soil.mean_maxthaw,stand2->soil.mean_maxthaw,stand1->frac,stand2->frac);
+  mixpool(stand1->soil.maxthaw_depth,stand2->soil.maxthaw_depth,stand1->frac,stand2->frac);
+  mixpool(stand1->soil.alag,stand2->soil.alag,stand1->frac,stand2->frac);
+  mixpool(stand1->soil.amp,stand2->soil.amp,stand1->frac,stand2->frac);
+  mixpool(stand1->soil.w_evap,stand2->soil.w_evap,stand1->frac,stand2->frac);
+
 
   forrootsoillayer(l)
   {
@@ -164,17 +171,17 @@ void mixsoil(Stand *stand1,const Stand *stand2,int year,int ntotpft,const Config
     mixpool(stand1->soil.whc[l],stand2->soil.whc[l],stand1->frac,stand2->frac);
     mixpool(stand1->soil.wsat[l],stand2->soil.wsat[l],stand1->frac,stand2->frac);
     mixpool(stand1->soil.wsats[l],stand2->soil.wsats[l],stand1->frac,stand2->frac);
-    mixpool(stand1->soil.ice_depth[l],stand2->soil.ice_depth[l],stand1->frac,
-            stand2->frac);
-    mixpool(stand1->soil.ice_fw[l],stand2->soil.ice_fw[l],stand1->frac,
-            stand2->frac);
-    mixpool(stand1->soil.freeze_depth[l],stand2->soil.freeze_depth[l],
-            stand1->frac,stand2->frac);
-    mixpool(stand1->soil.ice_pwp[l],stand2->soil.ice_pwp[l],stand1->frac,
-            stand2->frac);
+    mixpool(stand1->soil.ice_depth[l],stand2->soil.ice_depth[l],stand1->frac,stand2->frac);
+    mixpool(stand1->soil.ice_fw[l],stand2->soil.ice_fw[l],stand1->frac,stand2->frac);
+    mixpool(stand1->soil.freeze_depth[l],stand2->soil.freeze_depth[l],stand1->frac,stand2->frac);
+    mixpool(stand1->soil.ice_pwp[l],stand2->soil.ice_pwp[l],stand1->frac,stand2->frac);
     mixpool(stand1->soil.wpwp[l],stand2->soil.wpwp[l],stand1->frac,stand2->frac);
-    mixpool(stand1->soil.wpwps[l],stand2->soil.wpwps[l],stand1->frac,
-            stand2->frac);
+    mixpool(stand1->soil.wpwps[l],stand2->soil.wpwps[l],stand1->frac,stand2->frac);
+    mixpool(stand1->soil.beta_soil[l], stand2->soil.beta_soil[l], stand1->frac, stand2->frac);
+    mixpool(stand1->soil.bulkdens[l], stand2->soil.bulkdens[l], stand1->frac, stand2->frac);
+    mixpool(stand1->soil.k_dry[l], stand2->soil.k_dry[l], stand1->frac, stand2->frac);
+    mixpool(stand1->soil.Ks[l], stand2->soil.Ks[l], stand1->frac, stand2->frac);
+
 /*
     absolute_water1[l] = stand1->soil.w[l] * stand1->soil.whcs[l] + stand1->soil.w_fw[l] + stand1->soil.wpwps[l] * (1 - stand1->soil.ice_pwp[l]);
     absolute_water2 = stand2->soil.w[l] * stand2->soil.whcs[l] + stand2->soil.w_fw[l] + stand2->soil.wpwps[l] * (1 - stand2->soil.ice_pwp[l]);
@@ -194,9 +201,11 @@ void mixsoil(Stand *stand1,const Stand *stand2,int year,int ntotpft,const Config
     pedotransfer(stand1,NULL,NULL,stand1->frac+stand2->frac);
   //pedotransfer(stand1,absolute_water1,absolute_ice1,stand1->frac+stand2->frac);
   /* bedrock needs to be mixed seperately */
+
   stand1->soil.w[BOTTOMLAYER]=(stand1->soil.w[BOTTOMLAYER]*stand1->soil.whcs[BOTTOMLAYER]*stand1->frac+stand2->soil.w[BOTTOMLAYER]*stand2->soil.whcs[BOTTOMLAYER]*stand2->frac)/(stand1->frac+stand2->frac);
   mixpool(stand1->soil.whcs[BOTTOMLAYER],stand2->soil.whcs[BOTTOMLAYER],stand1->frac,stand2->frac);
   stand1->soil.w[BOTTOMLAYER]/=stand1->soil.whcs[BOTTOMLAYER];
+  mixpool(stand1->soil.w[BOTTOMLAYER],stand2->soil.w[BOTTOMLAYER],stand1->frac,stand2->frac);
   mixpool(stand1->soil.w_fw[BOTTOMLAYER],stand2->soil.w_fw[BOTTOMLAYER],stand1->frac,stand2->frac);
   mixpool(stand1->soil.wsat[BOTTOMLAYER],stand2->soil.wsat[BOTTOMLAYER],stand1->frac,stand2->frac);
   mixpool(stand1->soil.wsats[BOTTOMLAYER],stand2->soil.wsats[BOTTOMLAYER],stand1->frac,stand2->frac);
@@ -206,7 +215,6 @@ void mixsoil(Stand *stand1,const Stand *stand2,int year,int ntotpft,const Config
   mixpool(stand1->soil.ice_pwp[BOTTOMLAYER],stand2->soil.ice_pwp[BOTTOMLAYER],stand1->frac,stand2->frac);
   mixpool(stand1->soil.wfc[BOTTOMLAYER], stand2->soil.wfc[BOTTOMLAYER], stand1->frac, stand2->frac);
   mixpool(stand1->soil.whc[BOTTOMLAYER], stand2->soil.whc[BOTTOMLAYER], stand1->frac, stand2->frac);
-  mixpool(stand1->soil.whcs[BOTTOMLAYER], stand2->soil.whcs[BOTTOMLAYER], stand1->frac, stand2->frac);
   mixpool(stand1->soil.wpwp[BOTTOMLAYER],stand2->soil.wpwp[BOTTOMLAYER],stand1->frac,stand2->frac);
   mixpool(stand1->soil.wpwps[BOTTOMLAYER], stand2->soil.wpwps[BOTTOMLAYER], stand1->frac, stand2->frac);
   mixpool(stand1->soil.beta_soil[BOTTOMLAYER], stand2->soil.beta_soil[BOTTOMLAYER], stand1->frac, stand2->frac);
@@ -214,11 +222,6 @@ void mixsoil(Stand *stand1,const Stand *stand2,int year,int ntotpft,const Config
   mixpool(stand1->soil.k_dry[BOTTOMLAYER], stand2->soil.k_dry[BOTTOMLAYER], stand1->frac, stand2->frac);
   mixpool(stand1->soil.Ks[BOTTOMLAYER], stand2->soil.Ks[BOTTOMLAYER], stand1->frac, stand2->frac);
 
-  mixpool(stand1->soil.mean_maxthaw,stand2->soil.mean_maxthaw,stand1->frac,
-          stand2->frac);
-  mixpool(stand1->soil.alag,stand2->soil.alag,stand1->frac,stand2->frac);
-  mixpool(stand1->soil.amp,stand2->soil.amp,stand1->frac,stand2->frac);
-  mixpool(stand1->soil.rw_buffer,stand2->soil.rw_buffer,stand1->frac,stand2->frac);
 #ifdef CHECK_BALANCE
   water_after=soilwater(&stand1->soil)*(stand1->frac+stand2->frac)+stand1->cell->balance.excess_water;
   if(fabs(water_before-water_after)>epsilon*1e-2)
@@ -242,7 +245,7 @@ void mixsetaside(Stand *setasidestand,Stand *cropstand,Bool intercrop,int year,i
   Stocks start = {0,0};
   Stocks end = {0,0};
   Stocks st;
-  Real start_w = 0;
+  Real start_w = cropstand->cell->balance.excess_water;
   Real end_w = 0;
   int s;
   foreachstand(stand, s, cropstand->cell->standlist)
@@ -358,7 +361,8 @@ void mixsetaside(Stand *setasidestand,Stand *cropstand,Bool intercrop,int year,i
   setasidestand->frac+=cropstand->frac;
   cropstand->frac=0;
 #ifdef CHECK_BALANCE
-  end.carbon=end.nitrogen = end_w=0;
+  end.carbon=end.nitrogen = 0;
+  end_w=cropstand->cell->balance.excess_water;
   foreachstand(stand, s, cropstand->cell->standlist)
   {
     st=standstocks(stand);
