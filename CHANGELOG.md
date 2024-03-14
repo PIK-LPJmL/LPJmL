@@ -19,21 +19,61 @@ of `major.minor.patch` with
 
 ## [Unreleased]
 
-## [5.8.5] - 2024-02-22
+## [5.8.8] - 2024-03-07
 
-- author: Stephen Wirth (wirth@pik-potsdam.de), Werner von Bloh Schaphoff (bloh@pik-potsdam.de)
+### Contributors
+
+- author: Christoph  Mueller (cmueller@pik-potsdam.de)
+- code review: Boris Sakschewski (borissa@pik-potsdam.de), Sabine Mathesius (sabine.mathesius@pik-potsdam.de)
+
+### Fixed
+
+- missing family names added in CITATION.cff
+
+### Changed
+
+- renamed `double_harvest.c` to `separate_harvests.c` and `update_double_harvest.c` to `update_separate_harvests.c` and changed entries in Makefiles accordingly
+- renamed functions `double_harvest()` to `separate_harvests()` and `update_double_harvest()` to `update_separate_harvests()` throughout the code
+- renamed the `struct` `Double_harvest` to `Separate_harvest` and the variable of type `Separate_harvest` in `struct` `Pftcrop` from `dh` to `sh`
+- renamed `double_harvest` flag in `struct` `Config` to `separate_harvests` 
+
+## [5.8.7] - 2024-03-06
+
+### Contributors
+
+- author: Sibyll Schaphoff (sibylls@pik-potsdam.de)
+- code review: Jens Heinke (heinke@pik-potsdam.de), Werner von Bloh (bloh@pik-potsdam.de)
+
+### Added
+
+- new output `PFT_WATER_SUPPLY` to calculate water stress PFT-specific.
+
+### Changed
+
+- output writing for the new output (`conf.h` , `outputvar.cjson` , `createpftnames.c` , `fwriteoutput.c` , `outputsize.c` , `water_stressed.c`).
+- `isopen()` call removed (`fwriteoutput.c`).
+
+
+## [5.8.6] - 2024-02-29
+
+- author: Stephen Wirth (wirth@pik-potsdam.de), Werner von Bloh (bloh@pik-potsdam.de), Jens Heinke (heinke@pik-potsdam.de), Marie Hemmen (hemmen@pik-potsdam.de)
+- code review: Johanna Braun (jobraun@pik-potsdam.de)
 
 ### Fixed
 
 - Divsion by zero avoided for calculation of `nc_ratio` in `ndemand_tree.c` and `ndemand_grass.c` (issue #341).
 - Default directory for input files to current directory set and directory created in `regridlpj`.
 - Correct id 11 set for `"tamp"` input in `input.cjson` (issue #347).
+- Correct filename used in error message in utility `mathclm`.
+- Datatype of Version 4 CLM files correctly handled in `cutclm`, `catclm`, `mergeclm`, `regridclm`.
 
 ### Changed
 
 - Hard coded CFT indices (e.g. `MAIZE`) have been replaced by their names.
 - Datatype of `bmgr_harvest_day_nh` and ` bmgr_harvest_day_nh` changed to `int`.
 - Function `freadseed()` used in `freadrestartheader.c`.
+- First value of CO2 data file used for simulation years before first year of CO2 data.
+- CO2 data replaced by TRENDY data in `input.cjson`.
 
 ### Added
 
@@ -56,8 +96,27 @@ of `major.minor.patch` with
 
 - Option `--propagate` removed from `srun` in `lpjsubmit_slurm`.
 - Hard-coded parameter `k_l` removed in `littersom.c`.
-- Parameter `"residues_in_soil_notillage" removed.
+- Parameter `"residues_in_soil_notillage"` removed.
+- Parameter `"co2_p"`  removed.
 - Keyword in `"till_startyear"` removed from `lpjml_config.cjson`.
+
+
+## [5.8.5] - 2024-01-31
+
+### Contributors
+
+- author: Christoph Mueller (cmueller@pik-potsdam.de) and the entire LPJmL team
+- code review: Boris Sakschewski (borissa@pik-potsdam.de), Fabian Stenzel (stenzel@pik-potsdam.de)
+
+### Added
+
+- added `.zenodo.json` for interaction with zenodo archives
+- added CITATION.cff file
+
+### Changed
+
+- updated AUTHORS file
+
 
 ## [5.8.4] - 2024-01-22
 

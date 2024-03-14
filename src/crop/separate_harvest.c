@@ -1,6 +1,6 @@
 /**************************************************************************************/
 /**                                                                                \n**/
-/**       d  o  u  b  l  e  _  h  a  r  v  e  s  t  .  c                           \n**/
+/**     s  e  p  a  r  a  t  e  _  h  a  r  v  e  s  t  s  .  c                    \n**/
 /**                                                                                \n**/
 /**     C implementation of LPJmL                                                  \n**/
 /**                                                                                \n**/
@@ -17,7 +17,7 @@
 
 #include "lpj.h"
 
-void double_harvest(int test,
+void separate_harvests(int test,
                     Real *out,
                     Real *out2,
                     Real in
@@ -27,4 +27,4 @@ void double_harvest(int test,
     *out2=in;
   else
     *out=in;
-} /* of 'double_harvest' */ 
+} /* of 'separate_harvests' */ 

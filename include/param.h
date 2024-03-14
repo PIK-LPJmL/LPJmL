@@ -26,7 +26,7 @@ typedef struct
 
 typedef struct
 {
-  Error_limit error_limit; /**< limits for balance errors ti stop simulation*/
+  Error_limit error_limit; /**< limits for balance errors to stop simulation */
   Real minlandfrac; /**< minimum land area fraction */
   Real tinyfrac;    /**< minimum land-use fraction used by all_crops */
   Real k_litter10;
@@ -36,7 +36,6 @@ typedef struct
   Real soildepth_evap; /**< depth of sublayer at top of upper soil layer (mm) */
   Real soil_infil;      /**< soil infiltration */
   Real soil_infil_litter; /**< soil infiltration intensification by litter cover*/
-  Real co2_p;       /**< pre-industrial CO2 concentration (ppm) */
   Real k;
   Real theta;      /**< co-limitation (shape) parameter */
   Real alphac3;    /**< intrinsic quantum efficiency of CO2 uptake in C4 plants */

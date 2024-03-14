@@ -1861,20 +1861,12 @@ void fwriteoutput(Outputfile *output,  /**< output file array */
     }
     writeoutputvar(ESTAB_STORAGE_N,1);
   }
-  if(isopen(output,RD))
-  {
-    writeoutputvar(RD,1);
-  }
-  if(isopen(output,PFT_WATER_DEMAND))
-  {
-    writeoutputarray(PFT_WATER_DEMAND,1);
-  }
-  if(isopen(output,NDEPOS))
-  {
-    writeoutputvar(NDEPOS,1);
-  }
+  writeoutputvar(RD,1);
+  writeoutputarray(PFT_WATER_DEMAND,1);
+  writeoutputarray(PFT_WATER_SUPPLY,1);
+  writeoutputvar(NDEPOS,1);
 
-  if(config->double_harvest)
+  if(config->separate_harvests)
   {
     writeoutputarray(PFT_HARVESTC2,1);
     writeoutputarray(PFT_HARVESTN2,1);

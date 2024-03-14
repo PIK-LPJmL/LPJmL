@@ -45,7 +45,7 @@ void init_annual(Cell *cell,          /**< Pointer to cell */
   cell->balance.prod_turnover.slow.carbon=cell->balance.prod_turnover.slow.nitrogen=0;
   cell->balance.neg_fluxes.carbon=cell->balance.neg_fluxes.nitrogen=0;
   cell->balance.excess_water=cell->balance.agpp=0;
-  if(config->double_harvest)
+  if(config->separate_harvests)
     for(p=0;p<2*ncft;p++)
       cell->output.syear2[p]=cell->output.syear[p]=0;
   foreachstand(stand,s,cell->standlist)

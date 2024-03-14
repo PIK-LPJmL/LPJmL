@@ -53,7 +53,7 @@ static void cultcftstand(Stocks *flux_estab,  /**< establishment flux */
     flux_estab->nitrogen+=stocks.nitrogen;
     if(irrig)
       cft+=ncft;
-    if(!config->double_harvest)
+    if(!config->separate_harvests)
       getoutputindex(&cell->output,SDATE,cft,config)=day;
     if(config->sdate_option==FIXED_SDATE)
       cell->ml.sdate_fixed[cft]=day;

@@ -24,6 +24,7 @@ while(( "$#" )); do
   case "$1" in
     -h|--help)
       echo $0 - configure LPJmL $(cat VERSION)
+      echo
       echo $USAGE
       echo
       echo Arguments:
@@ -38,6 +39,7 @@ while(( "$#" )); do
       echo
       echo After successfull completion of $0 LPJmL can be compiled by make all
       echo Invoke make clean after change in configuration
+      echo -e "\nSee LICENSE file or invoke $0 -l to print license"
       echo -e "\n(C) Potsdam Institute for Climate Impact Research (PIK), see COPYRIGHT file"
       exit 0
       ;;
