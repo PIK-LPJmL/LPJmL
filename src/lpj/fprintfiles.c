@@ -115,6 +115,8 @@ void fprintfiles(FILE *file,          /**< pointer to text output file */
   {
     if(config->fdi==WVPD_INDEX)
       fprintfilename(file,&config->humid_filename,TRUE);
+    if(config->prescribe_burntarea)
+      fprintfilename(file,&config->burntarea_filename,TRUE);
     fprintfilename(file,&config->lightning_filename,FALSE);
     fprintfilename(file,&config->human_ignition_filename,FALSE);
   }

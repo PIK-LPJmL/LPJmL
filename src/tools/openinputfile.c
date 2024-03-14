@@ -20,6 +20,7 @@ FILE *openinputfile(Header *header,           /**< [out] pointer to file header 
                     Bool *swap,               /**< [out] byte order has to be changed (TRUE/FALSE) */
                     const Filename *filename, /**< [in]  file name */
                     String headername,        /**< [out] clm file header string */
+                    const char *unit,         /**< unit expected or NULL */
                     int *version,             /**< [inout] clm file version */
                     size_t *offset,           /**< [in] offset in binary file */
                     Bool isyear,              /**< [in] check for first year (TRUE/FALSE) */
@@ -27,6 +28,7 @@ FILE *openinputfile(Header *header,           /**< [out] pointer to file header 
                    )                          /** \return file pointer to open file or NULL */
 {
   FILE *file;
+  char *var_unit=NULL;
   if(filename->fmt==META)
   {
     *version=CLM_MAX_VERSION+1;
@@ -44,13 +46,18 @@ FILE *openinputfile(Header *header,           /**< [out] pointer to file header 
     header->cellsize_lon=(float)config->resolution.lon;
     header->cellsize_lat=(float)config->resolution.lat;
     /* open description file */
-    file=openmetafile(header,NULL,NULL,swap,offset,filename->name,isroot(*config));
+    file=openmetafile(header,NULL,NULL,NULL,NULL,NULL,NULL,NULL,&var_unit,NULL,NULL,NULL,NULL,NULL,swap,offset,filename->name,isroot(*config));
     if(file==NULL)
     {
       if(isroot(*config))
-        fprintf(stderr,"ERROR224: Cannot read description file '%s'.\n",filename->name);
+        fprintf(stderr,"ERROR224: Cannot read JSON metafile '%s'.\n",filename->name);
       return NULL;
     }
+    if(isroot(*config) && unit!=NULL && var_unit!=NULL && strcmp(unit,var_unit))
+      fprintf(stderr,"WARNING408: Unit '%s' in '%s' differs from unit '%s' in configuration file.\n",
+                      var_unit,filename->name,unit);
+    free(var_unit);
+
   /*  if(fabs(header->cellsize_lon-config->resolution.lon)>epsilon)
     {
       if(isroot(*config))

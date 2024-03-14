@@ -3,7 +3,7 @@
 cdf2coord \- extract CLM grid from NetCDF file
 .SH SYNOPSIS
 .B cdf2coord
-[\-var name] [\-index i] [\-float] [\-scale s]  netcdffile gridfile
+[\-var name] [\-index i] [\-{float|double}] [\-scale s]  netcdffile gridfile
 .SH DESCRIPTION
 Program extracts grid file in CLM format from NetCDF input data. All cells with valid input will be put in the grid file.
 .SH OPTIONS
@@ -17,8 +17,8 @@ Converting from i-th dataset. Default is first (=0).
 \-scale factor
 scaling factor for CLM grid file. Default is 0.01
 .TP
-\-float
-write float values in CLM grid file, default is short
+\-{float|double}
+write float or double values in CLM grid file, default is short
 .TP
 .I netcdffile
 filename of NetCDF file
@@ -44,4 +44,4 @@ For authors and contributors see AUTHORS file
 (C) Potsdam Institute for Climate Impact Research (PIK), see COPYRIGHT file
 
 .SH SEE ALSO
-clm2bin(), clm2cdf(1), bin2cdf(1), country2cdf(1), regridlpj(1), lpjml(1), txt2clm(1), cru2clm(1), clm(5)
+cdf2clm(1), clm2cdf(1), bin2cdf(1), country2cdf(1), regridlpj(1), lpjml(1), txt2clm(1), cru2clm(1), clm(5)

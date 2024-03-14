@@ -84,9 +84,15 @@ Variable *fscanoutputvar(LPJfile *file, /**< pointer to LPJ file */
     fscanname(item,name,"var",outnames[index].name);
     outnames[index].var=strdup(name);
     checkptr(outnames[index].var);
-    fscanname(item,name,"descr",outnames[index].name);
-    outnames[index].descr=strdup(name);
-    checkptr(outnames[index].descr);
+    if(iskeydefined(item,"standard_name"))
+    {
+      fscanname(item,name,"standard_name",outnames[index].name);
+    }
+    outnames[index].standard_name=strdup(name);
+    checkptr(outnames[index].standard_name);
+    fscanname(item,name,"long_name",outnames[index].name);
+    outnames[index].long_name=strdup(name);
+    checkptr(outnames[index].long_name);
     fscanname(item,name,"unit",outnames[index].name);
     if(strstr(name,"/month")!=NULL)
       outnames[index].time=MONTH;

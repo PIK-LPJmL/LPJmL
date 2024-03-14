@@ -258,6 +258,8 @@ Bool fscanparam(LPJfile *file,       /**< File pointer to text file */
       {
         if(isroot(*config))
           fprintf(stderr,"WARNING030: Parameter 'soil_infil_rw'=%g less than 'soil_infil', set to %g.\n",param.soil_infil_rw,param.soil_infil);
+        if(config->pedantic)
+          return TRUE;
         param.soil_infil_rw=param.soil_infil;
       }
       fscanparamreal(f,&param.yield_gap_bridge,"yield_gap_bridge");

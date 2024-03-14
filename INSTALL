@@ -2,9 +2,9 @@
 | |   |  _ \   | |_ __ ___ | |     | ___|       ( _ )
 | |   | |_) |  | | '_ ` _ \| |     |___ \       / _ \
 | |___|  __/ |_| | | | | | | |___   ___) |  _  | (_) |
-|_____|_|   \___/|_| |_| |_|_____| |____/  (_)  \___/  Version 5.8.8
+|_____|_|   \___/|_| |_| |_|_____| |____/  (_)  \___/  Version 5.8.9
 
-Installation of LPJmL C Version 5.8.8
+Installation of LPJmL C Version 5.8.9
 
 Installation for Unix-like systems
 ----------------------------------
@@ -26,7 +26,7 @@ cd lpjml
 
 untar source files
 
-gzip -cd lpjml-5.8.8.tar.gz|tar -xf -
+gzip -cd lpjml-5.8.9.tar.gz|tar -xf -
 
 Directory tree after extracting the tar files:
 
@@ -144,21 +144,22 @@ Flag                Description
 ------------------- ------------------------------------------------------------
 CHECK_BOUNDARY      check array boundaries of output
 COUPLING_WITH_FMS   enable coupling to FMS
-DAILY_ESTABLISHMENT Enable daily establishment
+DAILY_ESTABLISHMENT enable daily establishment
 DEBUG               diagnostic output is generated for debugging purposes
 DEBUG_COUPLER       diagnostic output is generated for the coupler
 IMAGE               include coupler to IMAGE model
 LINEAR_DECAY        use linearized functions for litter decay
-MICRO_HEATING       Enable microbial heating
+MICRO_HEATING       enable microbial heating
 NO_FAIL_BALANCE     lpjml does not terminate on balance errors
 PERMUTE             random permutation of PFT list
 SAFE                code is compiled with additional checks
+STRICT_JSON         strict JSON checking
 USE_MPI             compile parallel version of LPJmL
 USE_NETCDF          enable NetCDF input/output
 USE_NETCDF4         enable NetCDF version 4 input/output
 USE_RAND48          use drand48() random number generator
 USE_UDUNITS         enable unit conversion in NetCDF files
-USE_TIMING          enables timing for socket I/O
+USE_TIMING          enable timing for socket I/O
 WITH_FIRE_MOISTURE  enable moisture dependent fire emissions
 WITH_FPE            floating point exceptions are enabled for debugging purposes
 ------------------- ------------------------------------------------------------
@@ -196,6 +197,7 @@ cdf2coord    - extract CLM grid file from NetCDF file
 cdf2soil     - convert NetCDF file into binary file
 cft2clm      - convert binary landuse data files to CLM data files for LPJmL
 clm2cdf      - convert CLM files into NetCDF files
+cmpbin       - compare two binary output files
 country2cdf  - convert country/region code file into NetCDF file
 cru2clm      - convert CRU data into file format suitable for LPJmL.
                CRU data files have to be in the format specified in
@@ -212,6 +214,7 @@ lpjprint     - print contents of restart file of LPJmL model runs
 printclm     - print contents of CLM files for LPJmL
 output_bsq   - concatenate all output files from distributed LPJmL simulations
 manage2js    - convert management  *.par files to JSON files
+mathclm      - perform mathematical operations with CLM files
 mergeclm     - merge LPJmL climate data files
 printglobal  - print global values for raw binary output files
 printharvest - print global harvested carbon for crops and managed grasslands
@@ -221,6 +224,7 @@ regridsoil   - regrid soil file to new grid
 regridsoil   - regrid binary soil file to different grid file
 setclm       - set value in header of CLM files for LPJmL
 soil2cdf     - convert binary files into NetCDF files
+statclm      - print statistics of clm files
 txt2grid     - convert text files to CLM grid data files for LPJmL
 txt2clm      - convert text files to CLM data files for LPJmL
 
@@ -310,7 +314,11 @@ The following runtime options are defined:
 -v                 - print compiler used and LPJmL flags set
 -vv                - verbosely print the actual values during reading of the
                      configuration files
+-pedantic          - stops on warnings\n"
+-ofiles            - list only all available output variables
 -param             - print LPJmL parameter for soils and PFTs
+-nopp              - disable preprocessing
+-pp cmd            - set preprocessor program. Default is 'cpp'
 -fpe               - enable floating point exceptions
 -image host        - set host where IMAGE model is running. Option is only
                     available for the IMAGE version
@@ -383,6 +391,7 @@ Error code Description                                   Error type
         41 Invalid time step in soiltemp()               Internal
         42 Cannot read external flow                     External
         43 Opening connection to coupled model failed    External
+        44 Error initializing output data                External
 ---------- --------------------------------------------- ----------
 
 External errors are caused by invalid or missing input files while internal

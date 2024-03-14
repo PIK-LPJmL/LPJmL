@@ -3,13 +3,16 @@
 cdf2clm \- convert NetCDF files into CLM files
 .SH SYNOPSIS
 .B cdf2clm
-[\-v] [\-scale factor] [\-units u] [\-var name] [\-time name] [\-id string] [\-version v] [\-float] [\-json] [\-o clmfile]
+[\-h] [\-v] [\-scale factor] [\-units u] [\-var name] [\-time name] [\-id string] [\-version v] [\-float] [\-zero] [\-json] [\-o clmfile]
 gridfile netcdffile ...
 .SH DESCRIPTION
 Program converts NetCDF input data into CLM input data.
 .SH OPTIONS
 .TP
-\-v
+\-h,\--help
+print help text
+.TP
+\-v,\--verbose
 print name of NetCDF files
 .TP
 \-scale factor
@@ -18,10 +21,10 @@ scaling factor for CLM files. Default is one
 \-units u
 set unit to convert from  NetCDF file
 .TP
-\-var name 
+\-var name
 variable name in NetCDF file
 .TP
-\-time name 
+\-time name
 name of time in NetCDF file, default is "time" or "TIME"
 .TP
 \-id string
@@ -32,6 +35,9 @@ version of clm header, default is 3
 .TP
 \-float
 write float values in clm file, default is short
+.TP
+\-zero
+write zero values in clm file if data is not found
 .TP
 \-json
 JSON metafile is created with suffix '.json'
@@ -46,9 +52,9 @@ filename of grid data file
 filename of NetCDF file(s) converted
 .SH EXAMPLES
 .TP
-Create data file for temperature:
+Create CLM data file and corresponding JSON metafile for temperature:
 .B cdf2clm
--units celsius -var tas -o temp1901-2010.clm  grid.clm tmp*.nc
+-float -json -units celsius -var tas -o temp1901-2010.clm  grid.clm tmp*.nc
 .PP
 .SH EXIT STATUS
 .B cdf2clm
