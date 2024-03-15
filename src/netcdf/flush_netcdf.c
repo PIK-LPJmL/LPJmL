@@ -1,16 +1,10 @@
-Programming style guide for LPJmL
-
-File header
-
-Each source file should begin with the following header:
-
 /**************************************************************************************/
 /**                                                                                \n**/
-/**                      f  i  l  e  n  a  m  e  .  c                              \n**/
+/**                 f  l  u  s  h  _  n  e  t  c  d  f  .  c                       \n**/
 /**                                                                                \n**/
 /**     C implementation of LPJmL                                                  \n**/
 /**                                                                                \n**/
-/**     Description of the function defined in the source code                     \n**/
+/**     Function flushes NetCDF file                                               \n**/
 /**                                                                                \n**/
 /** (C) Potsdam Institute for Climate Impact Research (PIK), see COPYRIGHT file    \n**/
 /** authors, and contributors see AUTHORS file                                     \n**/
@@ -20,37 +14,14 @@ Each source file should begin with the following header:
 /**                                                                                \n**/
 /**************************************************************************************/
 
-Indentation style
+#include "lpj.h"
+#if defined(USE_NETCDF) || defined(USE_NETCDF4)
+#include <netcdf.h>
+#endif
 
-LPJmL uses the Allman style for indentation:
-
-while (x == y)
+void flush_netcdf(Netcdf *cdf)
 {
-  if (x<10)
-    something();
-  somethingelse();
-}
-
-Indents are 2 spaces, tabulators should not be used.
-
-Naming of data types
-
-Data types should begin with an uppercase character:
-
-typedef struct
-{
-} Datatype;
-
-Datatype variable;
-
-Function headers
-
-Each argument of a function should be on a separate line and commented suitable for Doxygen:
-
-Returntype function(Type1 arg1,/**< description of argument 1 (unit) */
-                    Type2 arg2 /**< description of argument 2 (unit) */
-                   )           /** \return description of return value (unit) */
-{
-} /* of 'function' */
-
-Functions should be implemented in separate source files.
+#if defined(USE_NETCDF) || defined(USE_NETCDF4)
+  nc_sync(cdf->ncid);
+#endif
+} /* of 'flush_netcdf' */

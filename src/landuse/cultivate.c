@@ -85,7 +85,7 @@ Stocks cultivate(Cell *cell,           /**< cell pointer */
     setasidestand->frac-=landfrac;
     //if(year==2011) fprintf(stdout,"HIER2 day: %d cft: %d type: %s landfrac: %g isother: %d\n",day,cft,setasidestand->type->name,landfrac,isother);
   }
-  if(cell->ml.with_tillage && year>=config->till_startyear)
+  if(cell->ml.with_tillage)
   {
     tillage(&cropstand->soil,param.residue_frac);
     updatelitterproperties(cropstand,cropstand->frac);

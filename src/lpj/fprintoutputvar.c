@@ -35,7 +35,7 @@ void fprintoutputvar(FILE *file,              /**< pointer to text file */
                      const Config *config     /**< LPJ configuration */
                     )
 {
-  int i,width,width_unit,width_var,index;
+  int i,width,width_unit,width_var,index,width_standard_name;
   char *sc;
   Item *item;
   String s;
@@ -53,21 +53,25 @@ void fprintoutputvar(FILE *file,              /**< pointer to text file */
   width=strlen("Name");
   width_unit=strlen("Unit");
   width_var=strlen("Variable");
+  width_standard_name=strlen("standard_name");
   for(i=0;i<size;i++)
   {
     width=max(width,strlen(output[i].name));
     width_unit=max(width_unit,strlen(output[i].unit));
     width_var=max(width_var,strlen(output[i].var));
+    width_standard_name=max(width_standard_name,strlen(output[i].standard_name));
   }
   fprintf(file,"Output files available\n"
-          "%-*s %-*s %-*s dt  nbd Type  Scale   Offset Description\n",width,"Name",width_var,"Variable",width_unit,"Unit");
+          "%-*s %-*s %-*s tstep nbd Type  Scale   Offset %-*s Long name\n",width,"Name",width_var,"Variable",width_unit,"Unit",width_standard_name,"Standard name");
   frepeatch(file,'-',width);
   fputc(' ',file);
   frepeatch(file,'-',width_var);
   fputc(' ',file);
   frepeatch(file,'-',width_unit);
-  fputs(" --- --- ----- ------- ------ ",file);
-  frepeatch(file,'-',77-width-width_unit-width_var-7-4);
+  fputs(" ----- --- ----- ------- ------ ",file);
+  frepeatch(file,'-',width_standard_name);
+  fputc(' ',file);
+  frepeatch(file,'-',77-width-width_unit-width_var-7-6-width_standard_name);
   putc('\n',file);
   for(i=0;i<size;i++)
   {
@@ -91,11 +95,13 @@ void fprintoutputvar(FILE *file,              /**< pointer to text file */
         default:
           sc="";
       }
-      fprintf(file,"%-*s %-*s %-*s %-3s %3d %5s %5g%-2s %6g %s\n",width,output[index].name,
+      fprintf(file,"%-*s %-*s %-*s %-5s %3d %5s %5g%-2s %6g %-*s %s\n",width,output[index].name,
               width_var,output[index].var,
               width_unit,strlen(output[index].unit)==0 ? "-" : output[index].unit,sprinttimestep(s,output[index].timestep),
               outputsize(index,npft,ncft,config),
-             typenames[getoutputtype(index,config->float_grid)],output[index].scale,sc,output[index].offset,output[index].descr);
+              typenames[getoutputtype(index,config->grid_type)],output[index].scale,sc,output[index].offset,
+              width_standard_name,output[index].standard_name,output[index].long_name);
+
     }
   }
   free(item);
@@ -104,7 +110,9 @@ void fprintoutputvar(FILE *file,              /**< pointer to text file */
   frepeatch(file,'-',width_var);
   fputc(' ',file);
   frepeatch(file,'-',width_unit);
-  fputs(" --- --- ----- ------- ------ ",file);
-  frepeatch(file,'-',77-width-width_unit-width_var-7-4);
+  fputs(" ----- --- ----- ------- ------ ",file);
+  frepeatch(file,'-',width_standard_name);
+  fputc(' ',file);
+  frepeatch(file,'-',77-width-width_unit-width_var-7-6-width_standard_name);
   putc('\n',file);
 } /* of 'fprintoutputvar' */

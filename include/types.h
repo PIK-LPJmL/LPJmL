@@ -97,6 +97,12 @@ typedef struct
   Real nitrogen;
 } Stocks;
 
+typedef struct
+{
+  char *name;
+  char *value;
+} Attr;
+
 /* Declaration of functions */
 
 extern void fail(int,Bool,Bool,const char *,...);
@@ -107,7 +113,7 @@ extern Bool fscanbool(LPJfile *,Bool *,const char *,Bool,Verbosity);
 extern Bool fscanrealarray(LPJfile *,Real *,int,const char *,Verbosity);
 extern Bool fscanintarray(LPJfile *,int *,int,const char *,Verbosity);
 extern const char *fscanstring(LPJfile *,const char *,const char *,Verbosity);
-extern LPJfile *fscanstruct(const LPJfile *,const char *,Verbosity);
+extern LPJfile *fscanstruct(LPJfile *,const char *,Verbosity);
 extern LPJfile *fscanarray(LPJfile *,int *,const char *,Verbosity);
 extern LPJfile *fscanarrayindex(const LPJfile *,int);
 extern Bool iskeydefined(const LPJfile *,const char *);
@@ -139,6 +145,7 @@ extern char *getbuilddate(void);
 extern time_t getfiledate(const char *);
 extern char *stripsuffix(const char *);
 extern Bool hassuffix(const char *,const char *);
+extern Bool hasanysuffix(const char *);
 extern char *mkfilename(const char *);
 extern int findstr(const char *,const char *const *,int);
 extern Bool checkfmt(const char *,char);
@@ -148,12 +155,15 @@ extern Bool ffscanint(FILE *,int *,const char *,Verbosity);
 extern Bool fscansize(LPJfile *,size_t *,const char *,Bool,Verbosity);
 extern Bool fscanuint(LPJfile *,unsigned int *,const char *,Bool,Verbosity);
 extern Bool fscanfloat(LPJfile *,float *,const char *,Bool,Verbosity);
+extern Bool fscanattrs(LPJfile *,Attr **,int *,const char *,Verbosity);
+extern void fprintattrs(FILE *,const Attr *,int);
+extern void freeattrs(Attr *,int);
 extern void fprinttime(FILE *,int);
 extern Bool readrealvec(FILE *,Real *,Real,Real,size_t,Bool,Type);
 extern Bool readfloatvec(FILE *,float *,float,size_t,Bool,Type);
 extern Bool readintvec(FILE *,int *,size_t,Bool,Type);
 extern Bool readuintvec(FILE *,unsigned int *,size_t,Bool,Type);
-extern Bool readfilename(LPJfile *,Filename *,const char *,const char *,Bool,Bool,Verbosity);
+extern Bool readfilename(LPJfile *,Filename *,const char *,const char *,Bool,Bool,Bool,Verbosity);
 extern void freefilename(Filename *);
 extern void **newmat(size_t,int,int);
 extern void freemat(void **);
@@ -170,6 +180,7 @@ extern char *getrealfilename(const Filename *);
 extern LPJfile *parse_json(FILE *,Verbosity);
 extern Bool isdir(const char *);
 extern double mrun(void);
+void mergeattrs(Attr **,int *,const Attr *, int,Bool);
 #ifdef WITH_FPE
 extern void enablefpe(void);
 #endif

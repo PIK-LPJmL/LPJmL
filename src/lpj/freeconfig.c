@@ -50,6 +50,7 @@ void freeconfig(Config *config /**< LPJmL configuration */
   free(config->pft_index);
   free(config->layer_index);
   free(config->json_suffix);
+  freeattrs(config->global_attrs,config->n_global);
   if(config->with_lakes)
     freefilename(&config->lakes_filename);
   if(config->river_routing)
@@ -104,6 +105,7 @@ void freeconfig(Config *config /**< LPJmL configuration */
   free(config->pfttypes);
   freepftpar(config->pftpar,ivec_sum(config->npft,config->ntypes));
   freesoilpar(config->soilpar,config->nsoil);
+  free(config->landcovermap);
   free(config->soilmap);
   free(config->npft);
   if(config->ispopulation)
@@ -157,6 +159,10 @@ void freeconfig(Config *config /**< LPJmL configuration */
       freefilename(&config->sdate_filename);
     if(config->prescribe_lsuha)
       freefilename(&config->lsuha_filename);
+    if (config->residue_treatment == READ_RESIDUE_DATA)
+      freefilename(&config->residue_data_filename);
+    if(config->crop_phu_option==PRESCRIBED_CROP_PHU)
+      freefilename(&config->crop_phu_filename);
   }
   if(config->with_nitrogen)
   {

@@ -51,15 +51,15 @@ void irrig_amount(Stand *stand,        /**< pointer to non-natural stand */
           crop=pft->data;
           if(config->pft_output_scaled)
           {
-            if(crop->dh!=NULL)
-              crop->dh->nirsum+=data->net_irrig_amount*stand->frac;
+            if(crop->sh!=NULL)
+              crop->sh->nirsum+=data->net_irrig_amount*stand->frac;
             else
               getoutputindex(&stand->cell->output,CFT_NIR,pft->par->id-npft+nirrig,config)+=data->net_irrig_amount*stand->frac;
           }
           else
           {
-            if(crop->dh!=NULL)
-              crop->dh->nirsum+=data->net_irrig_amount;
+            if(crop->sh!=NULL)
+              crop->sh->nirsum+=data->net_irrig_amount;
             else
               getoutputindex(&stand->cell->output,CFT_NIR,pft->par->id-npft+nirrig,config)+=data->net_irrig_amount;
           }

@@ -1997,7 +1997,7 @@
       {
         "slope" : 23,         /* new phenology: slope of light limiting function */
         "base" : 75.94,       /* new phenology: inflection point of light limiting function (Wm-2) */
-        "tau" : 0.22,         /* new phenology: change rate of actual to previous day light limiting function */
+        "tau" : 0.22          /* new phenology: change rate of actual to previous day light limiting function */
       },
       "wscal" :
       {

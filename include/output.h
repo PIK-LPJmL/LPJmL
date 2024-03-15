@@ -24,6 +24,7 @@
                        index==RESPONSE_LAYER_AGR || index==RESPONSE_LAYER_NV || index==CSHIFT_FAST_NV || index==CSHIFT_SLOW_NV || index == SOILC_AGR_LAYER || index==PERC)
 
 #define DEFAULT_PORT 2222 /* default port for socket connection */
+#define JSON_SUFFIX ".json" /* file suffix for JSON metafiles */
 
 #define getoutput(output,index,config) (output)->data[(config)->outputmap[index]]
 #ifdef CHECK_BOUNDARY
@@ -48,8 +49,8 @@ typedef struct
   Real mpet;             /**< monthly PET (mm) */
   Real dcflux;           /**< daily carbon flux from LPJ to atmosphere (gC/m2/day) */
   Real bm_inc;
-  int *syear2;           /**< sowing year of second season, used for double_harvest */
-  int *syear;            /**< sowing year of first season, used for double_harvest */
+  int *syear2;           /**< sowing year of second season, used for separate_harvests */
+  int *syear;            /**< sowing year of first season, used for separate_harvests */
 #ifdef COUPLING_WITH_FMS
   Real dwflux;           /**< daily water flux from LPJ to atmosphere (kg/m2/day) */
 #endif
@@ -111,10 +112,11 @@ typedef enum { MISSING_TIME,SECOND,DAY,MONTH,YEAR } Time;
 
 typedef struct
 {
-  char *name;  /**< variable name */
-  char *var;   /**< data name in NetCDF file */
-  char *descr; /**< description */
-  char *unit;  /**< units */
+  char *name;          /**< variable name */
+  char *var;           /**< data name in NetCDF file */
+  char *standard_name; /**< standard name of variable */
+  char *long_name;     /**< long name of variable */
+  char *unit;          /**< units */
   float scale;
   float offset;
   Time time;
@@ -127,7 +129,7 @@ typedef struct
 
 extern void freeoutput(Output *);
 extern int outputsize(int,int,int,const Config *);
-extern Type getoutputtype(int,Bool);
+extern Type getoutputtype(int,Type);
 extern int getnyear(const Variable *,int);
 extern Bool isnitrogen_output(int);
 extern Bool isannual_output(int);

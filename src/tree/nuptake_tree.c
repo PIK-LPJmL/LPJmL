@@ -31,7 +31,7 @@ Real nuptake_tree(Pft *pft,             /**< pointer to PFT data */
   Soil *soil;
   const Pfttreepar *treepar;
   Real NO3_up=0;
-  Real NCplant,ndemand_leaf_opt,NC_actual,NC_leaf,ndemand_all;
+  Real NCplant,ndemand_leaf_opt,NC_leaf,ndemand_all;
   Real f_NCplant=0;
   Real up_temp_f;
   Real totn,nsum;
@@ -61,6 +61,10 @@ Real nuptake_tree(Pft *pft,             /**< pointer to PFT data */
   f_NCplant = min(max(((NCplant-pft->par->ncleaf.high)/(pft->par->ncleaf.low-pft->par->ncleaf.high)),0),1); /*zaehle supple 10*/
   ndemand_leaf_opt=*ndemand_leaf;
   nsum=0;
+  if((tree->ind.leaf.carbon-tree->turn.leaf.carbon+pft->bm_inc.carbon*tree->falloc.leaf/pft->nind)==0)
+    NC_leaf=pft->par->ncleaf.low;
+  else
+    NC_leaf=(tree->ind.leaf.nitrogen-tree->turn.leaf.nitrogen+pft->bm_inc.nitrogen*tree->falloc.leaf/pft->nind)/(tree->ind.leaf.carbon-tree->turn.leaf.carbon+pft->bm_inc.carbon*tree->falloc.leaf/pft->nind);
   if(NC_leaf<(pft->par->ncleaf.high*(1+pft->par->knstore)))
     forrootsoillayer(l)
     {
@@ -156,8 +160,10 @@ Real nuptake_tree(Pft *pft,             /**< pointer to PFT data */
       pft->npp_bnf=0.0;
     if(*n_plant_demand/(1+pft->par->knstore)>(vegn_sum_tree(pft)+pft->bm_inc.nitrogen-tree->ind.heartwood.nitrogen*pft->nind))   /*HERE RECALCULATION OF N-demand TO N-supply*/
     {
-      NC_actual=(vegn_sum_tree(pft)+pft->bm_inc.nitrogen-tree->ind.heartwood.nitrogen*pft->nind)/(vegc_sum_tree(pft)+pft->bm_inc.carbon-tree->ind.heartwood.carbon*pft->nind);
-      NC_leaf=(tree->ind.leaf.nitrogen-tree->turn.leaf.nitrogen+pft->bm_inc.nitrogen*tree->falloc.leaf/pft->nind)/(tree->ind.leaf.carbon-tree->turn.leaf.carbon+pft->bm_inc.carbon*tree->falloc.leaf/pft->nind);
+      if(tree->ind.leaf.carbon-tree->turn.leaf.carbon+pft->bm_inc.carbon*tree->falloc.leaf/pft->nind==0)
+        NC_leaf=pft->par->ncleaf.low;
+      else
+        NC_leaf=(tree->ind.leaf.nitrogen-tree->turn.leaf.nitrogen+pft->bm_inc.nitrogen*tree->falloc.leaf/pft->nind)/(tree->ind.leaf.carbon-tree->turn.leaf.carbon+pft->bm_inc.carbon*tree->falloc.leaf/pft->nind);
       if(NC_leaf< pft->par->ncleaf.low)
         NC_leaf=pft->par->ncleaf.low;
       else if (NC_leaf>pft->par->ncleaf.high)

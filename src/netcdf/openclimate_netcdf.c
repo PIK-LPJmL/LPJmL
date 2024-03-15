@@ -37,6 +37,7 @@ Bool openclimate_netcdf(Climatefile *file,    /**< climate data file */
   int m=0,d=0,time_diff;
   double *date;
   size_t len,time_len;
+  char var_name[NC_MAX_NAME];
   Bool isopen,isdim;
   file->isopen=FALSE;
   if(filename==NULL || file==NULL)
@@ -352,8 +353,9 @@ Bool openclimate_netcdf(Climatefile *file,    /**< climate data file */
   {
     if(ndims!=2 && ndims!=3)
     {
-      fprintf(stderr,"ERROR408: Invalid number of dimensions %d in '%s', must be 2 or 3.\n",
-              ndims,filename);
+      nc_inq_varname(file->ncid,file->varid,var_name);
+      fprintf(stderr,"ERROR408: Invalid number of dimensions %d for variable '%s' in '%s', must be 2 or 3.\n",
+              ndims,var_name,filename);
       free_netcdf(file->ncid);
       return TRUE;
     }
@@ -363,8 +365,9 @@ Bool openclimate_netcdf(Climatefile *file,    /**< climate data file */
   {
     if(ndims!=3 && ndims!=4)
     {
-      fprintf(stderr,"ERROR408: Invalid number of dimensions %d in '%s', must be 3 or 4.\n",
-              ndims,filename);
+      nc_inq_varname(file->ncid,file->varid,var_name);
+      fprintf(stderr,"ERROR408: Invalid number of dimensions %d for variable '%s' in '%s', must be 3 or 4.\n",
+              ndims,var_name,filename);
       free_netcdf(file->ncid);
       return TRUE;
     }
@@ -380,7 +383,7 @@ Bool openclimate_netcdf(Climatefile *file,    /**< climate data file */
       return TRUE;
     }
     nc_inq_vardimid(file->ncid,file->varid,dimids);
-    nc_inq_dimlen(file->ncid,dimids[1],&file->var_len);
+    nc_inq_dimlen(file->ncid,dimids[(file->time_step==MISSING_TIME) ? 0 : 1],&file->var_len);
     free(dimids);
   }
   else

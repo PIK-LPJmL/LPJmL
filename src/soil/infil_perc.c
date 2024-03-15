@@ -827,10 +827,10 @@ Real infil_perc(Stand *stand,        /**< Stand pointer */
       {
         foreachpft(pft,p,&stand->pftlist)
               {
-          if(config->double_harvest)
+          if(config->separate_harvests)
           {
             crop=pft->data;
-            crop->dh->leachingsum+=NO3perc_ly;
+            crop->sh->leachingsum+=NO3perc_ly;
           }
           else
             getoutputindex(&stand->cell->output,CFT_LEACHING,pft->par->id-npft+data_irrig->irrigation*ncft,config)+=NO3perc_ly;

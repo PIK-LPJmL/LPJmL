@@ -123,7 +123,7 @@ Bool initoutput(Outputfile *outputfile, /**< Output data */
         return TRUE;
       }
     }
-    if(config->double_harvest)
+    if(config->separate_harvests)
     {
       grid[i].output.syear2=newvec(int,2*ncft);
       checkptr(grid[i].output.syear2);

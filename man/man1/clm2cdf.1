@@ -3,14 +3,17 @@
 clm2cdf \- convert CLM files into NetCDF files
 .SH SYNOPSIS
 .B clm2cdf
-[\-h] [\-global] [\-longheader] [\-scale factor] [\-cellsize size] [\-byte] [\-int] [\-float] [\-intnetcdf] [\-metafile] [\-map name] [\-raw] [\-nbands n] [\-landuse] [\-notime] [\-compress level] [\-units u] [\-descr d]
-.I varname gridfile clmfile netcdffile
+[\-h] [\-v] [\-global] [\-scale factor] [\-cellsize size] [\-byte] [\-int] [\-float] [[\-attr name=value] ...] [\-intnetcdf] [\-metafile] [\-map name] [\-raw] [\-nbands n] [\-landuse] [\-notime] [\-compress level] [\-units u] [\-descr d] [\-missing_value val]
+.I [varname gridfile] clmfile netcdffile
 .SH DESCRIPTION
 Program converts CLM input data into NetCDF input data. 
 .SH OPTIONS
 .TP
-\-h
+\-h,\--help
 print help text
+.TP
+\-v,\--version
+print LPJmL version
 .TP
 \-global
 use global grid for NetCDF file
@@ -33,11 +36,14 @@ set data type in CLM file to int, default is short or read from CLM header
 \-float
 set data type in CLM file to float, default is short or read from CLM header
 .TP
+\-attr name=value
+set global attribute name in output files to value
+.TP
 \-intnetcdf
 set data type in NetCDF file to int, default is float for short and float datatypes in CLM files
 .TP
 \-metafile
-set the input format to JSON metafile instead of CLM
+set the input format to JSON metafile instead of CLM.
 .TP
 \-map name
 name of map in JSON metafile, default is "map"
@@ -63,11 +69,14 @@ set units in NetCDF file
 \-descr d
 set long name in NetCDF file
 .TP
+\-missing_value val
+set missing value in NetCDF file to val
+.TP
 varname
-variable name in NetCDF file
+variable name in NetCDF file. If not specified variable name is read from metafile
 .TP
 .I gridfile    
-filename of grid data file
+filename of grid data file. If not specified grid name is read from metafile
 .TP
 .I clmfile
 filename of CLM data file
@@ -79,6 +88,10 @@ filename of NetCDF file created
 Create data file for temperature:
 .B clm2cdf
 -units celsius -descr temperature temp grid.bin tmp.clm tmp.nc
+.TP
+Create data file for temperature using JSON metafile:
+.B clm2cdf
+-metafile tmp.clm.json tmp.nc
 .PP
 .SH EXIT STATUS
 .B clm2cdf

@@ -77,7 +77,7 @@ Bool fscankeywords(LPJfile *file,    /**< pointer to LPJ file */
   if(json_object_get_type(item)!=json_type_int)
   {
     if(verb)
-      fprintf(stderr,"ERROR226: Name '%s' not of type int.\n",name);
+      fprintf(stderr,"ERROR226: Name '%s' not of type int or string.\n",name);
     return TRUE;
   }
   *value=json_object_get_int(item);
@@ -96,6 +96,9 @@ Bool fscankeywords(LPJfile *file,    /**< pointer to LPJ file */
     }
     return TRUE;
   }
+  if(verb)
+    fprintf(stderr,"REMARK001: Use of number for keywords for '%s' is deprecated, use string \"%s\" instead.\n",
+            name,array[*value]);
   if (verb >= VERB)
     printf("\"%s\" : %d\n", name, *value);
   return FALSE;

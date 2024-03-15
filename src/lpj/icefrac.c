@@ -52,7 +52,7 @@ Icefrac initicefrac(const Config *config /**< LPJ configuration */
   {
     if ((icefrac->file.file = openinputfile(&header, &icefrac->file.swap,
                                             &config->icefrac_filename,
-                                            headername,
+                                            headername,NULL,
                                             &version, &offset,TRUE, config)) == NULL)
     {
       free(icefrac);

@@ -51,7 +51,7 @@ Bool opendata_seq(Climatefile *file,        /**< pointer to file */
   }
   else
   {
-    if(openclmdata(file,filename,name,datatype,scalar,nbands,config))
+    if(openclmdata(file,filename,name,unit,datatype,scalar,nbands,config))
       return TRUE;
   }
   if(ischeck && file->var_len!=nbands)

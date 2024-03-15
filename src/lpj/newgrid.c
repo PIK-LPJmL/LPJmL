@@ -266,7 +266,7 @@ static Cell *newgrid2(Config *config,          /* Pointer to LPJ configuration *
         if(readcountrycode(countrycode.file,&code,countrycode.type,countrycode.swap))
         {
           name=getrealfilename(&config->countrycode_filename);
-          fprintf(stderr,"ERROR190: Unexpected end of file in '%s' for cell %d.\n",
+          fprintf(stderr,"ERROR190: Cannot read country code from '%s' for cell %d.\n",
                   name,i+config->startgrid);
           free(name);
           return NULL;
@@ -481,7 +481,7 @@ static Cell *newgrid2(Config *config,          /* Pointer to LPJ configuration *
                    config->soilpar+soil_id,standtype,nstand,
                    swap_restart,config))
       {
-        fprintf(stderr,"ERROR190: Unexpected end of file in '%s' for cell %d.\n",
+        fprintf(stderr,"ERROR190: Cannot read restart data from '%s' for cell %d.\n",
                 (config->ischeckpoint) ? config->checkpoint_restart_filename : config->restart_filename,i+config->startgrid);
         return NULL;
       }
