@@ -121,6 +121,10 @@ fi
   regridclm -json $LPJINPATH/input_VERSION2/grid.bin $dir/grid_$name.clm /p/projects/lpjml/input/MADRAT/residues_madrat_1850-2015_16bands.clm $dir/residue_$name.clm
   regridclm -json $LPJINPATH/input_VERSION2/grid.bin $dir/grid_$name.clm $LPJINPATH/ISIMIP3a/sdate_24_bands.clm $dir/sdate_$name.clm
   regridclm -json $LPJINPATH/input_VERSION2/grid.bin $dir/grid_$name.clm $LPJINPATH/ISIMIP3av2/phusum_gswp3-w5e5_obsclim_24_bands_annual_1901-2019.clm $dir/crop_phu_$name.clm
+  regridclm -json -size4 $LPJINPATH/input_VERSION2/grid.bin $dir/grid_$name.clm $LPJINPATH/input_VERSION2/GloSlope-30as_mean.clm $dir/slope_mean_$name.clm
+  regridclm -json -size4 $LPJINPATH/input_VERSION2/grid.bin $dir/grid_$name.clm $LPJINPATH/input_VERSION2/GloSlope-30as_min.clm $dir/slope_min_$name.clm
+  regridclm -json -size4 $LPJINPATH/input_VERSION2/grid.bin $dir/grid_$name.clm $LPJINPATH/input_VERSION2/GloSlope-30as_max.clm $dir/slope_max_$name.clm
+  regridclm -json $LPJINPATH/input_VERSION2/grid.bin $dir/grid_$name.clm $LPJINPATH/input_VERSION2/hydro2_shuffle.bin $dir/hydro_$name.clm
 
 
   if [ "$lu" = "1" ]
@@ -144,9 +148,9 @@ fi
 /*                                                                   */
 /*                 i  n  p  u  t  .  c  j  s  o  n                   */
 /*                                                                   */
-/* Configuration file for input dataset for LPJ C Version 5.8.9      */
+/* Configuration file for input dataset for LPJ C Version 6.0.1      */
 /*                                                                   */
-/* Created: $(date +"%d.%m.%Y")                                      */
+/* Created: $(date +"%d.%m.%Y")                                               */
 /*                                                                   */
 /*********************************************************************/
 
@@ -156,6 +160,11 @@ fi
   "countrycode"      : { "fmt" : "clm", "name" : "$dir/country_$name.clm"},
   "landfrac"         : { "fmt" : "clm", "name" : "$dir/landfrac_$name.clm"},
   "lakes"            : { "fmt" : "raw", "name" : "$dir/lakes_$name.bin"},
+  "slope_mean"       : { "fmt" : "clm", "name" : "$dir/slope_mean_$name.clm"},
+  "slope_min"        : { "fmt" : "clm", "name" : "$dir/slope_min_$name.clm"},
+  "slope_max"        : { "fmt" : "clm", "name" : "$dir/slope_max_$name.clm"},
+  "kbf"              : { "fmt" : "cdf", "var" : "KBF", "name" :"input_VERSION2/kbf_mar.nc"},
+  "hydrotopes"       : { "fmt" : "clm", "name" : "$dir/hydro_$name.clm"},
   "landuse"          : { "fmt" : "clm", "name" : "$dir/landuse_$name.clm"},
   "with_tillage"     : { "fmt" : "clm", "name" : "$dir/tillage_$name.clm"},
   "residue_on_field" : { "fmt" : "clm", "name" : "$dir/residue_$name.clm"},
@@ -174,7 +183,8 @@ fi
   "lightning"        : { "fmt" : "clm", "name" : "$dir/lightning_$name.clm"},
   "human_ignition"   : { "fmt" : "clm", "name" : "$dir/human_ignition_$name.clm"},
   "popdens"          : { "fmt" : "clm", "name" : "$dir/popdens_$name.clm "},
-  "co2" :          { "id" : 5, "fmt" : "txt",  "name" : "/p/projects/lpjml/inputs/co2/global/TRENDY/v12/global_co2_ann_1700_2022.txt"},
+  "co2"              : { "id" : 5, "fmt" : "txt",  "name" : "/p/projects/lpjml/inputs/co2/global/TRENDY/v12/global_co2_ann_1700_2022.txt"},
+  "ch4"              : { "fmt" : "txt", "name" : "input_VERSION2/CH4_concentration_1841-2022.dat"},
   "wetdays"          : { "fmt" : "clm", "name" : "$dir/wet_$name.clm"},
   "no3deposition"    : { "fmt" : "clm", "name" : "$dir/no3_deposition_$name.clm"},
   "nh4deposition"    : { "fmt" : "clm", "name" : "$dir/nh4_deposition_$name.clm"},
