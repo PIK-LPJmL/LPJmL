@@ -21,7 +21,7 @@ OBJS    = cultivate.$O landuse.$O landusechange.$O\
           initmanage.$O fscancountrypar.$O fscanregionpar.$O\
           findlandusetype.$O findstand.$O setaside.$O harvest_stand.$O\
           opencountrycode.$O readcountrycode.$O grassland.$O\
-          biomass_tree.$O biomass_grass.$O daily_setaside.$O\
+          biomass_tree.$O biomass_grass.$O\
           createcountrycode.$O freecountrypar.$O freeregionpar.$O\
           writecountrycode.$O writeregioncode.$O freemanage.$O\
           timber_burn.$O timber_harvest.$O annual_grassland.$O\
