@@ -150,7 +150,7 @@ void fprintfiles(FILE *file,          /**< pointer to text output file */
     fprintfilename(file,&config->reservoir_filename,FALSE);
   }
 #ifdef IMAGE
-  if(config->aquifer_irrig==AQUIFER_IRRIG)
+  if(config->aquifer_irrig)
     fprintfilename(file,&config->aquifer_filename,FALSE);
 #endif
   if(config->wet_filename.name!=NULL)

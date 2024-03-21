@@ -161,6 +161,28 @@ static void divide(int *start, /**< index of first grid cell */
   *end=hi;
 } /* of 'divide' */
 
+static Bool checktimestep(const Config *config)
+{
+  Bool rc;
+  int i;
+  rc=FALSE;
+  for(i=0;i<config->n_out;i++)
+  {
+    if(config->outputvars[i].filename.timestep>1 && (config->lastyear-config->outputyear)/config->outputvars[i].filename.timestep==0)
+    {
+      rc=TRUE;
+      if(isroot(*config))
+      {
+        fprintf(stderr,"WARNING040: Time step of %d yrs for output '%s' longer than output interval [%d,%d], no output written.\n",
+                config->outputvars[i].filename.timestep,
+                config->outnames[config->outputvars[i].id].name,
+                config->outputyear,config->lastyear);
+      }
+    }
+  }
+  return rc;
+} /* of 'checktimestep' */
+
 Bool fscanconfig(Config *config,    /**< LPJ configuration */
                  LPJfile *file,     /**< File pointer to LPJ file */
                  Pfttype scanfcn[], /**< array of PFT-specific scan
@@ -171,7 +193,8 @@ Bool fscanconfig(Config *config,    /**< LPJ configuration */
  {
   const char *name;
   LPJfile *input;
-  int i,restart,endgrid,israndom,grassharvest;
+  Bool israndom;
+  int i,restart,endgrid,grassharvest;
   Verbosity verbose;
   const char *landuse[]={"no","yes","const","all_crops","only_crops"};
   const char *fertilizer[]={"no","yes","auto"};
@@ -294,8 +317,8 @@ Bool fscanconfig(Config *config,    /**< LPJ configuration */
   }
   config->reservoir=FALSE;
 #ifdef IMAGE
-  config->groundwater_irrig = NO_GROUNDWATER_IRRIG;
-  config->aquifer_irrig = NO_AQUIFER_IRRIG;
+  config->groundwater_irrig = FALSE;
+  config->aquifer_irrig = FALSE;
 #endif
   fscanbool2(file,&config->permafrost,"permafrost");
   config->johansen = TRUE;
@@ -839,7 +862,7 @@ Bool fscanconfig(Config *config,    /**< LPJ configuration */
         scanfilename(input,&config->reservoir_filename,config->inputdir,"reservoir");
       }
 #ifdef IMAGE
-      if(config->aquifer_irrig==AQUIFER_IRRIG)
+      if(config->aquifer_irrig)
         scanclimatefilename(input,&config->aquifer_filename,FALSE,FALSE,"aquifer");
 #endif
     }
@@ -937,7 +960,7 @@ Bool fscanconfig(Config *config,    /**< LPJ configuration */
       fprintf(stderr,"ERROR209: Cannot read filename for CO2 input.\n");
     return TRUE;
   }
-  if(israndom==RANDOM_PREC)
+  if(israndom)
   {
     scanclimatefilename(input,&config->wet_filename,TRUE,TRUE,"wetdays");
   }
@@ -1127,6 +1150,8 @@ Bool fscanconfig(Config *config,    /**< LPJ configuration */
   }
   else
     config->outputyear=config->firstyear;
+  if(checktimestep(config) && config->pedantic)
+    return TRUE;
   config->baseyear=config->outputyear;
   if(config->n_out && iskeydefined(file,"baseyear"))
   {

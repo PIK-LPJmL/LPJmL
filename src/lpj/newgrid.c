@@ -131,7 +131,7 @@ static Cell *newgrid2(Config *config,          /* Pointer to LPJ configuration *
   }
 
 #if defined IMAGE
-  if(config->aquifer_irrig==AQUIFER_IRRIG)
+  if(config->aquifer_irrig)
   {
     /* Open file with aquifer locations */
     if(openinputdata(&aquifers,&config->aquifer_filename,"aquifer",NULL,LPJ_BYTE,1.0,config))
@@ -176,7 +176,7 @@ static Cell *newgrid2(Config *config,          /* Pointer to LPJ configuration *
     printallocerr("grid");
     closecelldata(celldata,config);
 #ifdef IMAGE
-    if(config->aquifer_irrig==AQUIFER_IRRIG)
+    if(config->aquifer_irrig)
       closeinput(&aquifers);
 #endif
     if(config->countrypar!=NULL)
@@ -272,7 +272,7 @@ static Cell *newgrid2(Config *config,          /* Pointer to LPJ configuration *
     }
 #ifdef IMAGE
     grid[i].discharge.aquifer=0;
-    if(config->aquifer_irrig==AQUIFER_IRRIG)
+    if(config->aquifer_irrig)
     {
       if(readintinputdata(&aquifers,&grid[i].discharge.aquifer,NULL,&grid[i].coord,i+config->startgrid,&config->aquifer_filename))
         return NULL;
@@ -483,7 +483,7 @@ static Cell *newgrid2(Config *config,          /* Pointer to LPJ configuration *
   }
 #endif
 #ifdef IMAGE
-  if(config->aquifer_irrig==AQUIFER_IRRIG)
+  if(config->aquifer_irrig)
     closeinput(&aquifers);
 #endif
   return grid;

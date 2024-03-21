@@ -517,7 +517,7 @@ Bool filesexist(Config config, /**< LPJmL configuration */
     if(config.with_nitrogen&& config.fertilizer_input==FERTILIZER &&!config.fix_fertilization)
       bad+=checkdatafile(&config,&config.fertilizer_nr_filename,"fertilizer","g/m2",LPJ_SHORT,2*config.fertilizermap_size);
 #ifdef IMAGE
-    if(config.aquifer_irrig==AQUIFER_IRRIG)
+    if(config.aquifer_irrig)
     {
       bad+=checkinputfile(&config,&config.aquifer_filename,NULL,0);
     }

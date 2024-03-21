@@ -36,12 +36,6 @@
 #define LIM_IRRIGATION 1
 #define POT_IRRIGATION 2
 #define ALL_IRRIGATION 3
-#ifdef IMAGE
-#define GROUNDWATER_IRRIG 1
-#define NO_GROUNDWATER_IRRIG 0 // Flag to allow for irrigation from groundwater reservoir (sustainable gw irrigation)
-#define AQUIFER_IRRIG 1
-#define NO_AQUIFER_IRRIG 0 //Flag to allow for irrigation from aquifers (according to input map for aquifers)
-#endif
 #define LAIMAX_CFT 0
 #define LAIMAX_CONST 1
 #define LAIMAX_PAR 2
@@ -84,15 +78,12 @@
 #define OLD_CROP_PHU 0
 #define NEW_CROP_PHU 1
 #define PRESCRIBED_CROP_PHU 2
-#define RANDOM_PREC 1
-#define INTERPOLATE_PREC 0
 #define NO_FERTILIZER 0
 #define FERTILIZER 1
 #define AUTO_FERTILIZER 2
 #define NOUT 331            /* number of output files */
 #define GRIDBASED 1         /* pft-specific outputs scaled by stand->frac */
 #define PFTBASED 0          /* pft-specific outputs not scaled by stand->frac */
-#define CONST_PREC 2
 #define ANNUAL -2
 #define MONTHLY -3
 #define DAILY -4

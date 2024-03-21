@@ -172,7 +172,7 @@ static size_t isnetcdfinput(const Config *config)
 #ifdef IMAGE
   if(config->wateruse_wd_filename.name!=NULL && config->wateruse_wd_filename.fmt==CDF)
     width=max(width,strlen(config->wateruse_wd_filename.var));
-  if(config->aquifer_irrig==AQUIFER_IRRIG && config->aquifer_filename.fmt==CDF)
+  if(config->aquifer_irrig && config->aquifer_filename.fmt==CDF)
     width=max(width,strlen(config->aquifer_filename.var));
 #endif
   if(width)
@@ -515,9 +515,9 @@ void fprintconfig(FILE *file,          /**< File pointer to text output file */
   if(config->reservoir)
     len=printsim(file,len,&count,"dam reservoirs");
 #ifdef IMAGE
-  if(config->groundwater_irrig==GROUNDWATER_IRRIG)
+  if(config->groundwater_irrig)
     len=printsim(file,len,&count,"groundwater irrigation");
-  if(config->aquifer_irrig==AQUIFER_IRRIG)
+  if(config->aquifer_irrig)
     len=printsim(file,len,&count,"aquifer irrigation");
 #endif
   if(config->wateruse)
@@ -647,7 +647,7 @@ void fprintconfig(FILE *file,          /**< File pointer to text output file */
     printinputfile(file,"reservoir",&config->reservoir_filename,width,config);
   }
 #ifdef IMAGE
-  if(config->aquifer_irrig==AQUIFER_IRRIG)
+  if(config->aquifer_irrig)
     printinputfile(file,"aquifer",&config->aquifer_filename,width,config);
 #endif
   if(config->wet_filename.name!=NULL)
