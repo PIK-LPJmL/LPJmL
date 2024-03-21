@@ -19,14 +19,14 @@ of `major.minor.patch` with
 
 ## [Unreleased]
 
-## [5.8.8] - 2024-03-07
+## [5.8.9] - 2024-03-14
 
 - author: Werner von Bloh (bloh@pik-potsdam.de), Sebastian Ostberg (ostberg@pik-potsdam.de)
 - code review: Jannes Breier (breier@pik-potsdam.de)
 
 ### Changed
 
-- NetCDF output files are now in a more ISMIP3 compliant format, datatype of time is double,  `depth_bnds` added to layer specific output. Standard amd long name can be specified in `outputvars.json`.
+- NetCDF output files are now in a more ISIMIP3 compliant format, datatype of time, lat, and lon is now double, `depth_bnds` added to layer specific output. Standard and long name can be specified in `outputvars.json`.
 - Deprecated function `MPI_Extent` replaced by `MPI_Get_extent` in `mpi_write.c`.
 - Functions `create_netcdf.c`/`create_pft_netcdf.c` and `create1_netcdf.c`/`create1_pft_netcdf.c` have been merged.
 - Function `findcoord()` improved to find cell indices, returns now true if coord is within cell.
@@ -68,7 +68,7 @@ of `major.minor.patch` with
 regridclm -metafile grid_new.clm temp.clm.json temp_new.clm
 binsum -metafile mnpp.bin.json anpp.bin
 ```
-- NetCDF files can be created with `bin2cdf` and `clm2cdf`from the JSON metafiles containing all global attributes:
+- NetCDF files can be created with `bin2cdf` and `clm2cdf` from the JSON metafiles containing all global attributes:
 ```bash
 bin2cdf -metafile soilc_layer.bin.json soilc_layer.nc
 clm2cdf -metafile temp.clm.json temp.nc
@@ -79,20 +79,21 @@ clm2cdf -metafile temp.clm.json temp.nc
   * `cmpbin` - compares binary ouput files
   * `statclm` - prints minimum, maximum and average of clm files
   * `regriddrain` - regrids drainage file to new grid
-- Option `-metafile` added to `mathclm`.
+- Option `-metafile` and `-f` added to `mathclm`.
 - `cdf2clm` stores all global attributes of NetCDF file in JSON metafile if `-json` option is set.
 - Option `-nopp` added to `lpjml`. This option disables preprocessing of the config file by `cpp`.
 - Option `-ofiles` added to `lpjml` and `lpjcheck`  to print list of all available output files.
 - Option `-pedantic` added to `lpjcheck` and `lpjml` to stop on warning.
 - Option `-json` added to `regridclm` and `regridsoil` utilities to create additional JSON metafiles.
 - Compile flag `-DSTRICT_JSON` added to enable more strict syntax checking of JSON files.
+- Remark message in `fscankeywords.c` added if number instead of string is used in JSON file.
 
 ### Fixed
 
 - Missing deallocation added in `freeconfig.c` and memory leak in `fscanpftpar.c` fixed.
 - Missing argument after option handling fixed in `cdf2bin` and `countr2cdf`.
 - Missing `$dir/` added to manure data in `regridlpj`.
-- Correct default landuse file set in `regridlpj`.
+- Correct default landuse, sowing data and crop PHU file set in `regridlpj`.
 
 
 ## [5.8.8] - 2024-03-07
