@@ -20,6 +20,7 @@
 #define error(rc) if(rc) {free(lon);free(lat);free(year);fprintf(stderr,"ERROR427: Cannot write '%s': %s.\n",filename,nc_strerror(rc)); nc_close(cdf->ncid); free(cdf);return NULL;}
 
 #define USAGE "Usage: %s [-h] [-v] [-scale s] [-longheader] [-global] [-cellsize size] [-byte] [-int] [-float]\n       [[-attr name=value] ...] [-intnetcdf] [-metafile] [-raw] [-nbands n] [-landuse] [-notime] [-compress level] [-units u]\n       [-map name] [-descr d] [-missing_value val] [-config file] [name gridfile] clmfile netcdffile\n"
+#define ERR_USAGE USAGE "Try \"%s --help\" for more information\n"
 
 typedef struct
 {
@@ -591,7 +592,7 @@ int main(int argc,char **argv)
         if(argc==iarg+1)
         {
           fprintf(stderr,"Error: Missing argument after option '-units'.\n"
-                 USAGE,progname);
+                  ERR_USAGE,progname,progname);
           return EXIT_FAILURE;
         }
         units=argv[++iarg];
@@ -633,7 +634,7 @@ int main(int argc,char **argv)
         if(argc==iarg+1)
         {
           fprintf(stderr,"Error: Missing argument after option '-descr'.\n"
-                 USAGE,progname);
+                  ERR_USAGE,progname,progname);
           return EXIT_FAILURE;
         }
         long_name=argv[++iarg];
@@ -643,7 +644,7 @@ int main(int argc,char **argv)
         if(argc==iarg+1)
         {
           fprintf(stderr,"Error: Missing argument after option '-missing_value'.\n"
-                 USAGE,progname);
+                  ERR_USAGE,progname,progname);
           return EXIT_FAILURE;
         }
         missing_value=argv[++iarg];
@@ -654,7 +655,7 @@ int main(int argc,char **argv)
         {
           fprintf(stderr,
                   "Error: Argument missing for '-attr' option.\n"
-                 USAGE,progname);
+                  ERR_USAGE,progname,progname);
           return EXIT_FAILURE;
         }
         pos=strchr(argv[++iarg],'=');
@@ -662,7 +663,7 @@ int main(int argc,char **argv)
         {
           fprintf(stderr,
                   "Error: Missing '=' for '-attr' option.\n"
-                 USAGE,progname);
+                  ERR_USAGE,progname,progname);
           return EXIT_FAILURE;
         }
         *pos='\0';
@@ -679,7 +680,7 @@ int main(int argc,char **argv)
         if(argc==iarg+1)
         {
           fprintf(stderr,"Error: Missing argument after option '-map'.\n"
-                 USAGE,progname);
+                  ERR_USAGE,progname,progname);
           return EXIT_FAILURE;
         }
         map_name=argv[++iarg];
@@ -689,7 +690,7 @@ int main(int argc,char **argv)
         if(argc==iarg+1)
         {
           fprintf(stderr,"Error: Missing argument after option '-config'.\n"
-                 USAGE,progname);
+                  ERR_USAGE,progname,progname);
           return EXIT_FAILURE;
         }
         config_filename=argv[++iarg];
@@ -699,7 +700,7 @@ int main(int argc,char **argv)
         if(argc==iarg+1)
         {
           fprintf(stderr,"Error: Missing argument after option '-scale'.\n"
-                  USAGE,progname);
+                  ERR_USAGE,progname,progname);
           return EXIT_FAILURE;
         }
         scale=(float)strtod(argv[++iarg],&endptr);
@@ -714,7 +715,7 @@ int main(int argc,char **argv)
         if(argc==iarg+1)
         {
           fprintf(stderr,"Error: Missing argument after option '-cellsize'.\n"
-                  USAGE,progname);
+                  ERR_USAGE,progname,progname);
           return EXIT_FAILURE;
         }
         cellsize_lon=cellsize_lat=(float)strtod(argv[++iarg],&endptr);
@@ -729,7 +730,7 @@ int main(int argc,char **argv)
         if(argc==iarg+1)
         {
           fprintf(stderr,"Error: Missing argument after option '-nbands'.\n"
-                  USAGE,progname);
+                  ERR_USAGE,progname,progname);
           return EXIT_FAILURE;
         }
         nbands=strtol(argv[++iarg],&endptr,10);
@@ -750,7 +751,7 @@ int main(int argc,char **argv)
         if(argc==iarg+1)
         {
           fprintf(stderr,"Error: Missing argument after option '-compress'.\n"
-                  USAGE,progname);
+                  ERR_USAGE,progname,progname);
           return EXIT_FAILURE;
         }
         compress=strtol(argv[++iarg],&endptr,10);
@@ -763,7 +764,7 @@ int main(int argc,char **argv)
       else
       {
         fprintf(stderr,"Error: Invalid option '%s'.\n"
-                USAGE,argv[iarg],progname);
+                  ERR_USAGE,argv[iarg],progname,progname);
         return EXIT_FAILURE;
       }
     }
@@ -777,7 +778,7 @@ int main(int argc,char **argv)
   else if(argc<iarg+4)
   {
     fprintf(stderr,"Error: Missing arguments.\n"
-            USAGE,progname);
+            ERR_USAGE,progname,progname);
     return EXIT_FAILURE;
   }
   else

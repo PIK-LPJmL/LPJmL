@@ -21,6 +21,7 @@
 #include "lpj.h"
 
 #define USAGE "Usage: txt2grid [-h] [-v] [-map file] [-fmt s] [-skip n] [-cellsize size] [-cellsize_lon size] [-cellsize_lat size] [-float] [-latlon] gridfile clmfile\n"
+#define ERR_USAGE USAGE "Try \"txt2grid --help\" for more information\n"
 
 typedef  struct
 {
@@ -112,7 +113,7 @@ int main(int argc,char **argv)
         if(iarg==argc-1)
         {
            fputs("Argument missing after '-fmt' option.\n"
-                 USAGE,stderr);
+                 ERR_USAGE,stderr);
            return EXIT_FAILURE;
         }
         fmt=argv[++iarg];
@@ -128,7 +129,7 @@ int main(int argc,char **argv)
         if(iarg==argc-1)
         {
            fputs("Argument missing after '-cellsize' option.\n"
-                 USAGE,stderr);
+                 ERR_USAGE,stderr);
            return EXIT_FAILURE;
         }
         header.cellsize_lon=header.cellsize_lat=(float)strtod(argv[++iarg],&endptr);
@@ -143,7 +144,7 @@ int main(int argc,char **argv)
         if(iarg==argc-1)
         {
            fputs("Argument missing after '-cellsize_lat' option.\n"
-                 USAGE,stderr);
+                 ERR_USAGE,stderr);
            return EXIT_FAILURE;
         }
         header.cellsize_lat=(float)strtod(argv[++iarg],&endptr);
@@ -158,7 +159,7 @@ int main(int argc,char **argv)
         if(iarg==argc-1)
         {
            fputs("Argument missing after '-cellsize_lon' option.\n"
-                 USAGE,stderr);
+                 ERR_USAGE,stderr);
            return EXIT_FAILURE;
         }
         header.cellsize_lon=(float)strtod(argv[++iarg],&endptr);
@@ -173,7 +174,7 @@ int main(int argc,char **argv)
         if(iarg==argc-1)
         {
            fputs("Argument missing after '-map' option.\n"
-                 USAGE,stderr);
+                 ERR_USAGE,stderr);
            return EXIT_FAILURE;
         }
         map_name=argv[++iarg];
@@ -183,7 +184,7 @@ int main(int argc,char **argv)
         if(iarg==argc-1)
         {
            fputs("Argument missing after '-skip' option.\n"
-                 USAGE,stderr);
+                 ERR_USAGE,stderr);
            return EXIT_FAILURE;
         }
         nskip=strtol(argv[++iarg],&endptr,10);
@@ -196,7 +197,7 @@ int main(int argc,char **argv)
       else
       {
         fprintf(stderr,"Error: invalid option '%s'.\n"
-                USAGE,argv[iarg]);
+                ERR_USAGE,argv[iarg]);
         return EXIT_FAILURE;
       }
     }
@@ -205,7 +206,7 @@ int main(int argc,char **argv)
   if(argc<iarg+2)
   {
     fputs("Filenames missing.\n"
-          USAGE,stderr);
+          ERR_USAGE,stderr);
     return EXIT_FAILURE;
   }
   if(map_name!=NULL)

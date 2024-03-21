@@ -31,7 +31,7 @@
                 "       [-outpath dir] [-inpath dir] [-restartpath dir]\n"\
                 "       [[-Dmacro[=value]] [-Idir] ...] filename\n"
 
-char *lpj_usage=USAGE;
+char *lpj_usage=USAGE "Try \"%s --help\" for more information\n";
 
 void help(const char *progname /**< program filename */
          )
@@ -52,7 +52,7 @@ void help(const char *progname /**< program filename */
 #if defined IMAGE && defined COUPLED
   fputs("and IMAGE coupler\n",file);
 #endif
-  fprintf(file,lpj_usage,progname);
+  fprintf(file,USAGE,progname);
   fprintf(file,"\nArguments:\n"
           "-h,--help           print this help text\n"
           "-l,--license        print license file\n"

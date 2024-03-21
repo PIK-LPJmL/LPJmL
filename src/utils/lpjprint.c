@@ -30,7 +30,7 @@
 
 #define USAGE "Usage: %s [-h] [-v]  [-nopp] [-pp cmd] [-inpath dir] [-restartpath dir]\n"\
               "       [[-Dmacro[=value]] [-Idir] ...] filename [-check] [start [end]]\n"
-
+#define LPJ_USAGE USAGE "Try \"%s --help\" for more information\n"
 
 static Bool printgrid(Config *config, /* Pointer to LPJ configuration */
                       Standtype standtype[],
@@ -271,7 +271,7 @@ int main(int argc,char **argv)
   title[3]="see COPYRIGHT file";
   banner(title,4,78);
   initconfig(&config);
-  if(readconfig(&config,scanfcn,NTYPES,NOUT,&argc,&argv,USAGE))
+  if(readconfig(&config,scanfcn,NTYPES,NOUT,&argc,&argv,LPJ_USAGE))
     fail(READ_CONFIG_ERR,FALSE,"Cannot process configuration file");
   printf("Simulation: %s\n",config.sim_name);
   config.ischeckpoint=ischeckpointrestart(&config) && getfilesize(config.checkpoint_restart_filename)!=-1;

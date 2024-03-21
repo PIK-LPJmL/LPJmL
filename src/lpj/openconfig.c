@@ -179,7 +179,7 @@ FILE *openconfig(Config *config,      /**< configuration struct */
           {
             fprintf(stderr,"ERROR164: Argument missing for '-wait' option.\n");
             if(usage!=NULL)
-              fprintf(stderr,usage,progname);
+              fprintf(stderr,usage,progname,progname);
           }
           free(options);
           return NULL;
@@ -212,7 +212,7 @@ FILE *openconfig(Config *config,      /**< configuration struct */
           {
             fprintf(stderr,"ERROR164: Argument missing for '-image' option.\n");
             if(usage!=NULL)
-              fprintf(stderr,usage,progname);
+              fprintf(stderr,usage,progname,progname);
           }
           free(options);
           return NULL;
@@ -261,7 +261,7 @@ FILE *openconfig(Config *config,      /**< configuration struct */
           {
             fprintf(stderr,"ERROR164: Argument missing for '-couple' option.\n");
             if(usage!=NULL)
-              fprintf(stderr,usage,progname);
+              fprintf(stderr,usage,progname,progname);
           }
           free(options);
           return NULL;
@@ -298,7 +298,7 @@ FILE *openconfig(Config *config,      /**< configuration struct */
           {
             fprintf(stderr,"ERROR164: Argument missing for '-pp' option.\n");
             if(usage!=NULL)
-              fprintf(stderr,usage,progname);
+              fprintf(stderr,usage,progname,progname);
           }
           free(options);
           return NULL;
@@ -323,7 +323,7 @@ FILE *openconfig(Config *config,      /**< configuration struct */
             fprintf(stderr,
                     "ERROR164: Argument missing for '-inpath' option.\n");
             if(usage!=NULL)
-              fprintf(stderr,usage,progname);
+              fprintf(stderr,usage,progname,progname);
           }
           free(options);
           return NULL;
@@ -344,7 +344,7 @@ FILE *openconfig(Config *config,      /**< configuration struct */
             fprintf(stderr,
                     "ERROR164: Argument missing for '-outpath' option.\n");
             if(usage!=NULL)
-              fprintf(stderr,usage,progname);
+              fprintf(stderr,usage,progname,progname);
           }
           free(options);
           return NULL;
@@ -364,7 +364,7 @@ FILE *openconfig(Config *config,      /**< configuration struct */
           {
             fprintf(stderr,"ERROR164: Argument missing for '-restartpath' option.\n");
             if(usage!=NULL)
-              fprintf(stderr,usage,progname);
+              fprintf(stderr,usage,progname,progname);
           }
           free(options);
           return NULL;
@@ -387,7 +387,7 @@ FILE *openconfig(Config *config,      /**< configuration struct */
         {
           fprintf(stderr,"ERROR162: Invalid option '%s'.\n",(*argv)[i]);
           if(usage!=NULL)
-            fprintf(stderr,usage,progname);
+            fprintf(stderr,usage,progname,progname);
         }
         free(options);
         return NULL;
@@ -402,7 +402,7 @@ FILE *openconfig(Config *config,      /**< configuration struct */
     {
       fprintf(stderr,"ERROR164: Configuration filename missing.\n");
       if(usage!=NULL)
-        fprintf(stderr,usage,progname);
+        fprintf(stderr,usage,progname,progname);
     }
     free(options);
     return NULL;

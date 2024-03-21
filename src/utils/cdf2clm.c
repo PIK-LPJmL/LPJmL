@@ -19,6 +19,7 @@
 #else
 #define USAGE "Usage: %s [-h] [-v] [-var name] [-o filename] [-scale factor] [-id s] [-version v] [-float] [-zero] [-json] gridfile netcdffile ...\n"
 #endif
+#define ERR_USAGE USAGE "Try \"%s --help\" for more information\n"
 
 #if defined(USE_NETCDF) || defined(USE_NETCDF4)
 #include <netcdf.h>
@@ -356,6 +357,7 @@ int main(int argc,char **argv)
   Attr *attrs=NULL;
   int n_attr,len;
   char name[NC_MAX_NAME];
+  const char *progname;
   Filename grid_name;
   Type grid_type;
   /* set default values */
@@ -369,6 +371,7 @@ int main(int argc,char **argv)
   version=LPJ_CLIMATE_VERSION;
   initconfig(&config);
   initsetting_netcdf(&config.netcdf);
+  progname=strippath(argv[0]);
   for(iarg=1;iarg<argc;iarg++)
   {
     if(argv[iarg][0]=='-')
@@ -397,7 +400,7 @@ int main(int argc,char **argv)
                "gridfile      filename of grid data file\n"
                "netcdffile    filename of NetCDF file(s) converted\n\n"
                "(C) Potsdam Institute for Climate Impact Research (PIK), see COPYRIGHT file\n",
-               argv[0]);
+               progname);
         return EXIT_SUCCESS;
       }
       if(!strcmp(argv[iarg],"-var"))
@@ -405,7 +408,7 @@ int main(int argc,char **argv)
         if(argc==iarg+1)
         {
           fprintf(stderr,"Missing argument after option '-var'.\n"
-                 USAGE,argv[0]);
+                  ERR_USAGE,progname,progname);
           return EXIT_FAILURE;
         }
         var=argv[++iarg];
@@ -415,7 +418,7 @@ int main(int argc,char **argv)
         if(argc==iarg+1)
         {
           fprintf(stderr,"Missing argument after option '-time'.\n"
-                 USAGE,argv[0]);
+                  ERR_USAGE,progname,progname);
           return EXIT_FAILURE;
         }
         time_name=argv[++iarg];
@@ -426,7 +429,7 @@ int main(int argc,char **argv)
         if(argc==iarg+1)
         {
           fprintf(stderr,"Missing argument after option '-units'.\n"
-                 USAGE,argv[0]);
+                  ERR_USAGE,progname,progname);
           return EXIT_FAILURE;
         }
         units=argv[++iarg];
@@ -437,7 +440,7 @@ int main(int argc,char **argv)
         if(argc==iarg+1)
         {
           fprintf(stderr,"Missing argument after option '-o'.\n"
-                 USAGE,argv[0]);
+                  ERR_USAGE,progname,progname);
           return EXIT_FAILURE;
         }
         outname=argv[++iarg];
@@ -447,7 +450,7 @@ int main(int argc,char **argv)
         if(argc==iarg+1)
         {
           fprintf(stderr,"Missing argument after option '-id'.\n"
-                 USAGE,argv[0]);
+                  ERR_USAGE,progname,progname);
           return EXIT_FAILURE;
         }
         id=argv[++iarg];
@@ -465,7 +468,7 @@ int main(int argc,char **argv)
         if(argc==iarg+1)
         {
           fprintf(stderr,"Missing argument after option '-scale'.\n"
-                 USAGE,argv[0]);
+                  ERR_USAGE,progname,progname);
           return EXIT_FAILURE;
         }
         scale=(float)strtod(argv[++iarg],&endptr);
@@ -485,7 +488,7 @@ int main(int argc,char **argv)
         if(argc==iarg+1)
         {
           fprintf(stderr,"Missing argument after option '-version'.\n"
-                 USAGE,argv[0]);
+                  ERR_USAGE,progname,progname);
           return EXIT_FAILURE;
         }
         version=strtol(argv[++iarg],&endptr,10);
@@ -499,7 +502,7 @@ int main(int argc,char **argv)
       else
       {
         fprintf(stderr,"Invalid option '%s'.\n"
-                USAGE,argv[iarg],argv[0]);
+                  ERR_USAGE,argv[iarg],progname,progname);
         return EXIT_FAILURE;
       }
     }
@@ -509,7 +512,7 @@ int main(int argc,char **argv)
   if(argc<iarg+2)
   {
     fprintf(stderr,"Missing arguments.\n"
-            USAGE,argv[0]);
+            ERR_USAGE,progname,progname);
     return EXIT_FAILURE;
   }
   coord_filename.name=argv[iarg];
