@@ -41,12 +41,12 @@ int writearea(Outputfile *output,  /**< output file array */
     case TERR_AREA:
       for(cell=0;cell<config->ngridcell;cell++)
         if(!grid[cell].skip)
-          vec[count++]=(float)grid[cell].coord.area;
+          vec[count++]=(float)(config->outnames[TERR_AREA].offset+config->outnames[TERR_AREA].scale*grid[cell].coord.area);
       break;
     case LAKE_AREA:
       for(cell=0;cell<config->ngridcell;cell++)
         if(!grid[cell].skip)
-          vec[count++]=(float)(grid[cell].coord.area*grid[cell].lakefrac);
+          vec[count++]=(float)(config->outnames[LAKE_AREA].offset+config->outnames[LAKE_AREA].scale*grid[cell].coord.area*grid[cell].lakefrac);
       break;
     default:
       if(isroot(*config))
@@ -61,15 +61,21 @@ int writearea(Outputfile *output,  /**< output file array */
       case RAW: case CLM:
         mpi_write(output->files[index].fp.file,vec,MPI_FLOAT,config->total,
                   output->counts,output->offsets,config->rank,config->comm);
+        if(isroot(*config) && config->flush_output)
+          fflush(output->files[index].fp.file);
         break;
       case TXT:
         mpi_write_txt(output->files[index].fp.file,vec,MPI_FLOAT,config->total,
                       output->counts,output->offsets,config->rank,config->csv_delimit,config->comm);
+        if(isroot(*config) && config->flush_output)
+          fflush(output->files[index].fp.file);
         break;
       case CDF:
         mpi_write_netcdf(&output->files[index].fp.cdf,vec,MPI_FLOAT,config->total,
                          NO_TIME,
                          output->counts,output->offsets,config->rank,config->comm);
+        if(isroot(*config) && config->flush_output)
+          flush_netcdf(&output->files[index].fp.cdf);
         break;
     }
   if(output->files[index].issocket)
@@ -86,14 +92,20 @@ int writearea(Outputfile *output,  /**< output file array */
       case RAW: case CLM:
         if(fwrite(vec,sizeof(float),count,output->files[index].fp.file)!=count)
           fprintf(stderr,"ERROR204: Cannot write output: %s.\n",strerror(errno));
+        if(config->flush_output)
+          fflush(output->files[index].fp.file);
         break;
       case TXT:
         for(cell=0;cell<count-1;cell++)
           fprintf(output->files[index].fp.file,"%g%c",vec[cell],config->csv_delimit);
         fprintf(output->files[index].fp.file,"%g\n",vec[count-1]);
+        if(config->flush_output)
+          fflush(output->files[index].fp.file);
         break;
       case CDF:
         write_float_netcdf(&output->files[index].fp.cdf,vec,NO_TIME,count);
+        if(config->flush_output)
+          flush_netcdf(&output->files[index].fp.cdf);
         break;
     }
   if(output->files[index].issocket)

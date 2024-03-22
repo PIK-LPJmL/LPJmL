@@ -32,12 +32,12 @@ char *getfilefrommeta(const char *filename, /**< name of metafile */
     return NULL;
   }
   initscan(filename);
-  name=parse_json_metafile(file,NULL,NULL,NULL,&offset,&swap,isout ? ERR : NO_ERR);
+  name=parse_json_metafile(file,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,&offset,&swap,isout ? ERR : NO_ERR);
   fclose(file);
   if(name==NULL)
   {
     if(isout)
-      fprintf(stderr,"ERROR223: No filename specified in '%s'.\n",filename);
+      fprintf(stderr,"ERROR223: Cannot parse JSON file '%s'.\n",filename);
     return NULL;
   }
   path=getpath(filename);

@@ -22,14 +22,26 @@
 #define MISSING_VALUE_INT -999999
 #define MISSING_VALUE_BYTE 99
 #define NO_TIME -1
-#define LON_NAME "longitude"
-#define LAT_NAME "latitude"
+#define LON_NAME "lon"
+#define LON_STANDARD_NAME "longitude"
+#define LON_LONG_NAME "Longitude"
+#define LAT_NAME "lat"
+#define LAT_LONG_NAME "Latitude"
+#define LAT_STANDARD_NAME "latitude"
 #define TIME_NAME "time"
-#define LON_DIM_NAME "longitude"
-#define LAT_DIM_NAME "latitude"
+#define TIME_STANDARD_NAME "time"
+#define TIME_LONG_NAME "Time"
+#define LON_DIM_NAME "lon"
+#define LAT_DIM_NAME "lat"
 #define TIME_DIM_NAME "time"
 #define YEARS_NAME "Years"
 #define NULL_NAME "(null)"
+#define DEPTH_NAME "depth"
+#define DEPTH_STANDARD_NAME "depth_below_surface"
+#define DEPTH_LONG_NAME "Depth of Vertical Layer Center Below Surface"
+#define BNDS_NAME "depth_bnds"
+#define BNDS_LONG_NAME "bnds=0 for the top of the layer, and bnds=1 for the bottom of the layer"
+#define CALENDAR "noleap"
 
 typedef enum { ONEFILE,CREATE,APPEND,CLOSE} State_nc;
 
@@ -81,15 +93,15 @@ typedef struct
   Bool oneyear;     /**< one file for each year (TRUE/FALSE) */
   size_t var_len;
 #if defined(USE_NETCDF) || defined(USE_NETCDF4)
-  int ncid;
-  int varid;
+  int ncid;         /**< id of NetCDF file to read */
+  int varid;        /**< NetCDF id of variable to read */
   Bool isleap;      /**< leap days in file (TRUE/FALSE) */
   Bool is360;       /**< lon coordinates are in [0,360] (TRUE/FALSE) */
   size_t nlon,nlat; /**< dimensions of longitude/latitude */
-  float lon_min;
-  float lat_min;
-  float lon_res;
-  float lat_res;
+  double lon_min;   /**< minimum longitude of grid (deg) */
+  double lat_min;   /**< minimum latitude of grid (deg) */
+  double lon_res;   /**< longitudinal resolution of grid (deg) */
+  double lat_res;   /**< latitudinal resolution of grid (deg) */
   union
   {
     short s;
@@ -115,23 +127,18 @@ typedef struct
   Input_netcdf cdf;
 } Infile;
 
-extern Bool create1_netcdf(Netcdf *,const char *,const char *,
-                          const char *,const char *,Type,int,
-                          const Coord_array *,int,const Config *);
-extern Bool create_netcdf(Netcdf *,const char *,const char *,
+extern Bool create_netcdf(Netcdf *,const char *,const char *,const char *,
                           const char *,const char *,Type,int,int,
-                          const Coord_array *,const Config *);
+                          int,Bool,const Coord_array *,const Config *);
 extern Bool openclimate_netcdf(Climatefile *,const char *,const char *,const char *,
                                const char *,const char *,const Config *);
 extern Bool mpi_openclimate_netcdf(Climatefile *,const Filename *,
                                    const char *,const Config *);
-extern Bool create_pft_netcdf(Netcdf *,const char *,int,int,int,const char *,
+extern Bool create_pft_netcdf(Netcdf *,const char *,int,int,int,const char *,const char *,
                               const char *,const char *,Type,int,int,
-                              const Coord_array *,const Config *);
-extern Bool create1_pft_netcdf(Netcdf *,const char *,int,int,int,const char *,
-                              const char *,const char *,Type,int,int,
-                              const Coord_array *,const Config *);
+                              int,Bool,const Coord_array *,const Config *);
 extern Bool close_netcdf(Netcdf *);
+extern void flush_netcdf(Netcdf *);
 extern Bool readclimate_netcdf(Climatefile *,Real *,const Cell *,int,
                                const Config *);
 extern int checkvalidclimate_netcdf(Climatefile *,Cell *,int,const Config *);
@@ -180,6 +187,8 @@ extern void closeinput(Infile *);
 extern int open_netcdf(const char *,int *,Bool *);
 extern void free_netcdf(int);
 extern Bool checkcoord(const size_t *,int,const Coord *,const Climatefile *);
+extern char *getattr_netcdf(const Climatefile *,int,const char *);
+extern char *getvarname_netcdf(const Climatefile *);
 
 #ifdef USE_MPI
 extern Bool mpi_write_netcdf(const Netcdf *,void *,MPI_Datatype,int,int,

@@ -32,6 +32,8 @@ int main(int argc,char **argv)
   header.order=0;
   header.firstcell=0;
   header.nbands=2;
+  header.nstep=1;
+  header.timestep=1;
   header.cellsize_lon=header.cellsize_lat=0.5;
   header.datatype=LPJ_SHORT;
   header.scalar=0.01;

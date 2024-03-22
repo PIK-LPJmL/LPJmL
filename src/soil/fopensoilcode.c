@@ -17,7 +17,7 @@
 #include "lpj.h"
 
 FILE *fopensoilcode(const Filename *filename, /**< filename  of soil code file */
-                    List **map,               /**< soilmap array or NULL */
+                    Map **map,               /**< soilmap array or NULL */
                     Bool *swap,           /**< byte order has to be changed */
                     size_t *offset,       /**< offset in binary file */
                     Type *type,           /**< data type in soilcode file */
@@ -39,7 +39,7 @@ FILE *fopensoilcode(const Filename *filename, /**< filename  of soil code file *
     header.ncell=0;
     header.nyear=1;
     header.cellsize_lon=header.cellsize_lat=0.5;
-    file=openmetafile(&header,map,filename->map,swap,offset,filename->name,isout);
+    file=openmetafile(&header,map,filename->map,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,swap,offset,filename->name,isout);
     if(file==NULL)
       return file;
     *type=header.datatype;

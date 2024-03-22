@@ -235,6 +235,23 @@ static void printinputfile(FILE *file,const char *descr,const Filename *filename
   fputc('\n',file);
 } /* of 'printinputfile' */
 
+static void fprintcultivations(FILE *file,const Pftpar *pftpar,int ntotpft)
+{
+  int p;
+  int cult;
+  cult=pftpar[0].cultivation_type;
+  fprintf(file,"Cultivation types: %s",cultivation_type[cult]);
+  for(p=1;p<ntotpft;p++)
+  {
+    if(cult!=pftpar[p].cultivation_type)
+    {
+      cult=pftpar[p].cultivation_type;
+      fprintf(file,", %s",cultivation_type[cult]);
+    }
+  }
+  fputc('\n',file);
+} /* of 'fprintcultivations' */
+
 void fprintconfig(FILE *file,          /**< File pointer to text output file */
                   int npft,            /**< Number of natural PFTs */
                   int ncft,            /**< Number of crop PFTs */
@@ -249,6 +266,7 @@ void fprintconfig(FILE *file,          /**< File pointer to text output file */
   int i,count=0,width,width_unit,index;
   Bool isnetcdf;
   fputs("==============================================================================\n",file);
+  fprintattrs(file,config->global_attrs,config->n_global);
   fprintf(file,"Simulation \"%s\"",config->sim_name);
   if(config->ntask>1)
     fprintf(file," running on %d tasks\n",config->ntask);
@@ -412,10 +430,25 @@ void fprintconfig(FILE *file,          /**< File pointer to text output file */
       len+=fprintf(file,", ");
       len=fputstring(file,len,"land-use change timber",78);
     }
-    if(config->tillage_type)
+    if(config->residue_treatment==FIXED_RESIDUE_REMOVE)
     {
-      snprintf(s,STRING_LEN,"with tillage at year %d",config->till_startyear);
-      len=printsim(file,len,&count,s);
+      len+=fprintf(file,", ");
+      len=fputstring(file,len,"fixed residue remove",78);
+    }
+    else if(config->residue_treatment==READ_RESIDUE_DATA)
+    {
+      len+=fprintf(file,", ");
+      len=fputstring(file,len,"residue remove read from file",78);
+    }
+    if(config->tillage_type==TILLAGE)
+    {
+      len+=fprintf(file,", ");
+      len=fputstring(file,len,"with tillage",78);
+    }
+    else if(config->tillage_type==READ_TILLAGE)
+    {
+      len+=fprintf(file,", ");
+      len=fputstring(file,len,"with tillage read from file",78);
     }
     if (config->crop_resp_fix)
     {
@@ -446,7 +479,7 @@ void fprintconfig(FILE *file,          /**< File pointer to text output file */
     else if(config->laimax_interpolate==LAIMAX_PAR)
     {
       len+=fprintf(file,", ");
-      len=fputstring(file,len,"pft.js LAImax",78);
+      len=fputstring(file,len,"pft.cjson LAImax",78);
     }
     if(config->sdate_option==FIXED_SDATE)
     {
@@ -480,8 +513,8 @@ void fprintconfig(FILE *file,          /**< File pointer to text output file */
     snprintf(s,STRING_LEN,"%s crop PHU option",crop_phu_options[config->crop_phu_option]);
     len=fputstring(file,len,s,78);
   }
-  if(config->double_harvest)
-    len=printsim(file,len,&count,"double harvest");
+  if(config->separate_harvests)
+    len=printsim(file,len,&count,"separate harvests");
   if(config->grassfix_filename.name!=NULL)
     len=printsim(file,len,&count,"grassland fixed PFT");
   if(config->grassharvest_filename.name!=NULL)
@@ -511,8 +544,10 @@ void fprintconfig(FILE *file,          /**< File pointer to text output file */
     fprintf(file,"Mowing days for grassland:");
     for(i=0;i<config->mowingdays_size;i++)
       fprintf(file," %d",config->mowingdays[i]);
+    fputc('\n',file);
   }
-  fprintf(file,"\nWorking directory: %s\n",getdir());
+  fprintcultivations(file,config->pftpar,npft+ncft);
+  fprintf(file,"Working directory: %s\n",getdir());
   if(isreadrestart(config))
     fprintf(file,"Starting from restart file '%s'.\n",config->restart_filename);
   else
@@ -745,16 +780,17 @@ void fprintconfig(FILE *file,          /**< File pointer to text output file */
       if(config->compress)
         fprintf(file,"Compression level for NetCDF: %d\n",config->compress);
       fprintf(file,"Missing value in NetCDF:      %g\n"
+                   "Base year in NetCDF:          %d\n"
                    "NetCDF grid:                  %s\n",
-              config->missing_value,
+              config->missing_value,config->baseyear,
               config->global_netcdf ? "global" : "local");
     }
-    fprintf(file,"%*s Fmt  %*s Type  dt  nbd Filename\n",-width,"Variable",-width_unit,"Unit");
+    fprintf(file,"%*s Fmt  %*s Type   tstep nbd Filename\n",-width,"Variable",-width_unit,"Unit");
     frepeatch(file,'-',width);
     fputs(" ---- ",file);
     frepeatch(file,'-',width_unit);
-    fputs(" ----- --- --- ",file);
-    frepeatch(file,'-',76-width-4-width_unit-7-3-4);
+    fputs(" ------ ----- --- ",file);
+    frepeatch(file,'-',76-width-4-width_unit-7-3-7);
     putc('\n',file);
     for(i=0;i<config->n_out;i++)
     {
@@ -763,9 +799,9 @@ void fprintconfig(FILE *file,          /**< File pointer to text output file */
         fprintf(file,"%*d",-width,config->outputvars[index].id);
       else
         fprintf(file,"%*s",-width,config->outnames[config->outputvars[index].id].name);
-      fprintf(file," %-4s %*s %-5s %-3s %3d ",fmt[config->outputvars[index].filename.fmt],
+      fprintf(file," %-4s %*s %-6s %-5s %3d ",fmt[config->outputvars[index].filename.fmt],
               -width_unit,strlen(config->outnames[config->outputvars[index].id].unit)==0 ? "-" : config->outnames[config->outputvars[index].id].unit,
-              typenames[getoutputtype(config->outputvars[index].id,config->float_grid)],
+              typenames[getoutputtype(config->outputvars[index].id,config->grid_type)],
               sprinttimestep(s,config->outnames[config->outputvars[index].id].timestep),outputsize(config->outputvars[index].id,npft,ncft,config));
       printoutname(file,&config->outputvars[index].filename,config->outputvars[index].oneyear,config);
       putc('\n',file);
@@ -774,8 +810,8 @@ void fprintconfig(FILE *file,          /**< File pointer to text output file */
     frepeatch(file,'-',width);
     fputs(" ---- ",file);
     frepeatch(file,'-',width_unit);
-    fputs(" ----- --- --- ",file);
-    frepeatch(file,'-',76-width-4-width_unit-7-3-4);
+    fputs(" ------ ----- --- ",file);
+    frepeatch(file,'-',76-width-4-width_unit-7-3-7);
     putc('\n',file);
     if(config->pft_output_scaled)
       fputs("PFT-specific output is grid scaled.\n",file);

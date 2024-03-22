@@ -144,7 +144,7 @@ Real daily_agriculture_tree(Stand *stand,                /**< stand pointer */
     rainmelt=0.0;
 
   /* The index for ag_tree in ml.fertilizer_nr.ag_tree structure (fertil)
-     takes PFT id (according to pft.js or similar),
+     takes PFT id (according to pft.cjson or similar),
      subtracts the number of all non-crop PFTs (npft),
      adds the number of ag_trees (config->nagtree),
      so that the first element in ag_tree fertilizer vector (indexed as 0)

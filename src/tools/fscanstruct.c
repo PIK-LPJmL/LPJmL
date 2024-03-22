@@ -19,17 +19,22 @@
 #include <json-c/json.h>
 #include "types.h"
 
-LPJfile *fscanstruct(const LPJfile *file, /**< pointer to LPJ file               */
-                     const char *name,    /**< name of variable                  */
-                     Verbosity verb       /**< verbosity level (NO_ERR,ERR,VERB) */
-                    )                     /** \return pointer to object or NULL on error */
+LPJfile *fscanstruct(LPJfile *file,    /**< pointer to LPJ file               */
+                     const char *name, /**< name of variable                  */
+                     Verbosity verb    /**< verbosity level (NO_ERR,ERR,VERB) */
+                    )                  /** \return pointer to object or NULL on error */
 {
   struct json_object *item;
-  if(!json_object_object_get_ex(file,name,&item))
+  if(name==NULL)
+    item=file;
+  else
   {
-    if(verb)
-      fprintf(stderr,"ERROR225: Name '%s' for object not found.\n",name);
-    return NULL;
+    if(!json_object_object_get_ex(file,name,&item))
+    {
+      if(verb)
+        fprintf(stderr,"ERROR225: Name '%s' for object not found.\n",name);
+      return NULL;
+    }
   }
   if(json_object_get_type(item)!=json_type_object)
   {
