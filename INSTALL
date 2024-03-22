@@ -242,6 +242,8 @@ Environment variables
 
 The following environment variables are used by LPJmL:
 
+LPJNOPP        - disables preprocessor if set to "true", same as -nopp option
+LPJPEDANTIC    - enables pedantic mode if set to "true", same as -pedantic option
 LPJPREP        - defines preprocessor command for LPJmL configuration  file, default
                  is "cpp"
 LPJROOT        - defines the root directory for LPJmL. This directory is added to the
@@ -249,9 +251,9 @@ LPJROOT        - defines the root directory for LPJmL. This directory is added t
 LPJIMAGE       - sets host where IMAGE is running
 LPJCOUPLEDHOST - sets host where the coupled model is running
 LPJWAIT        - sets time to wait for connection to IMAGE/coupled model
-LPJINPATH      - Path append to the input filenames. Only done for filenames
+LPJINPATH      - Path appended to the input filenames. Only done for filenames
                  without absolute path.
-LPJRESTARTPATH - Path append to the restart filenames. Only done for filenames
+LPJRESTARTPATH - Path appended to the restart filenames. Only done for filenames
                  without absolute path.
 LPJOPTIONS     - cpp runtime options for LPJmL
 LPJOUTPATH     - Path appended to the output filenames. Only done for filenames

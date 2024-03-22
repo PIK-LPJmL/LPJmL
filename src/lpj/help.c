@@ -31,7 +31,7 @@
                 "       [-outpath dir] [-inpath dir] [-restartpath dir]\n"\
                 "       [[-Dmacro[=value]] [-Idir] ...] filename\n"
 
-char *lpj_usage=USAGE "Try \"%s --help\" for more information\n";
+char *lpj_usage=USAGE "\nTry \"%s --help\" for more information.\n";
 
 void help(const char *progname /**< program filename */
          )
@@ -77,7 +77,7 @@ void help(const char *progname /**< program filename */
           "-restartpath dir    directory appended to restart filename\n"
           "-Dmacro[=value]     define macro for preprocessor of configuration file\n"
           "-Idir               directory to search for include files\n"
-          "filename            configuration filename\n\n"
+          "filename            configuration (*.cjson) filename\n\n"
           "(C) Potsdam Institute for Climate Impact Research (PIK), see COPYRIGHT file\n");
   if(file!=stdout)
     pclose(file);
