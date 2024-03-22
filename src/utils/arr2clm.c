@@ -13,22 +13,24 @@
 /**************************************************************************************/
 #include "lpj.h"
 
-#define USAGE "Usage: arr2clm [-firstyear y] [-version v] [-float] [-scale s] [-id s] [-invalid i] [-r v] gridfile arrfile clmfile\n"
+#define USAGE "Usage: arr2clm [-firstyear y] [-version v] [-float] [-scale s] [-id s] [-invalid i] [-r v] [-json] gridfile arrfile clmfile\n"
 
 int main(int argc,char **argv)
 {
   int iarg,i,version,count,nlon,nlat;
-  Bool isfloat;
+  Bool isfloat,isjson;
   Coordfile coordfile;
   Coord *coords;
   Coord resolution;
+  Type coord_type;
   Filename coord_filename;
   Header header;
   FILE *in,*out;
+  char *arglist,*out_json;
   float *data,value,invalid,replace;
   short svalue;
   char *id,*endptr;
-  isfloat=FALSE;
+  isfloat=isjson=FALSE;
   header.scalar=1;
   header.firstyear=1901;
   header.firstcell=0;
@@ -45,6 +47,8 @@ int main(int argc,char **argv)
     {
       if(!strcmp(argv[iarg],"-float"))
         isfloat=TRUE;
+      else if(!strcmp(argv[iarg],"-json"))
+        isjson=TRUE;
       else if(!strcmp(argv[iarg],"-scale"))
       {
         if(argc==iarg+1)
@@ -155,6 +159,7 @@ int main(int argc,char **argv)
   coordfile=opencoord(&coord_filename,TRUE);
   if(coordfile==NULL)
     return EXIT_FAILURE;
+  coord_type=getcoordtype(coordfile);
   coords=newvec(Coord,numcoord(coordfile));
   if(coords==NULL)
   {
@@ -211,7 +216,7 @@ int main(int argc,char **argv)
       else
       {
         if(round(value/header.scalar)<SHRT_MIN || round(value/header.scalar)>SHRT_MAX)
-         fprintf(stderr,"Warning: Data overflow %g for cell %d.\n ",value/header.scalar,i);
+          fprintf(stderr,"Warning: Data overflow %g for cell %d.\n ",value/header.scalar,i);
         svalue=(short)round(value/header.scalar);
         fwrite(&svalue,sizeof(short),1,out);
       }
@@ -226,5 +231,24 @@ int main(int argc,char **argv)
   fwriteheader(out,&header,id,version);
   fclose(out);
   fclose(in);
+  if(isjson)
+  {
+    out_json=malloc(strlen(argv[iarg+2])+strlen(JSON_SUFFIX)+1);
+    if(out_json==NULL)
+    {
+      printallocerr("filename");
+      return EXIT_FAILURE;
+    }
+    strcat(strcpy(out_json,argv[iarg+2]),JSON_SUFFIX);
+    arglist=catstrvec(argv,argc);
+    out=fopen(out_json,"w");
+    if(out==NULL)
+    {
+      printfcreateerr(out_json);
+      return EXIT_FAILURE;
+    }
+    fprintjson(out,argv[iarg+2],NULL,NULL,arglist,&header,NULL,NULL,NULL,0,NULL,NULL,NULL,NULL,&coord_filename,coord_type,CLM,id,FALSE,version);
+    fclose(out);
+  }
   return EXIT_SUCCESS;
 } /* of 'main' */

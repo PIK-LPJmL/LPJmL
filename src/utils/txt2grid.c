@@ -21,7 +21,7 @@
 #include "lpj.h"
 
 #define USAGE "Usage: txt2grid [-h] [-v] [-map file] [-fmt s] [-skip n] [-cellsize size] [-cellsize_lon size] [-cellsize_lat size] [-float] [-latlon] gridfile clmfile\n"
-#define ERR_USAGE USAGE "Try \"txt2grid --help\" for more information\n"
+#define ERR_USAGE USAGE "\nTry \"txt2grid --help\" for more information.\n"
 
 typedef  struct
 {

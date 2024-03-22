@@ -20,8 +20,8 @@
 
 #define error(rc) if(rc) {free(lon);free(lat);free(year);fprintf(stderr,"ERROR427: Cannot write '%s': %s.\n",filename,nc_strerror(rc)); nc_close(cdf->ncid); free(cdf);return NULL;}
 
-#define USAGE "Usage: %s [-h] [-v] [-clm] [-floatgrid] [-doublegrid] [-revlat] [-days] [-absyear] [-firstyear y] [-baseyear y] [-nbands n] [-nstep n] [-cellsize size] [-swap]\n       [[-attr name=value]..] [-global] [-short] [-compress level] [-units u] [-descr d] [-missing_value val] [-metafile] [-map name] [-config file] [varname gridfile]\n       binfile netcdffile\n"
-#define ERR_USAGE USAGE "Try \"%s --help\" for more information\n"
+#define USAGE "\nUsage: %s [-h] [-v] [-clm] [-floatgrid] [-doublegrid] [-revlat] [-days] [-absyear]\n       [-firstyear y] [-baseyear y] [-nbands n] [-nstep n] [-cellsize size] [-swap]\n       [[-attr name=value]..] [-global] [-short] [-compress level] [-units u] [-descr d]\n       [-missing_value val] [-metafile] [-map name] [-config file] [varname gridfile]\n       binfile netcdffile\n"
+#define ERR_USAGE USAGE "\nTry \"%s --help\" for more information.\n"
 
 typedef struct
 {
@@ -621,7 +621,7 @@ int main(int argc,char **argv)
       {
         printf("   bin2cdf (" __DATE__ ") Help\n"
                "   ==========================\n\n"
-               "Convert binary output into NetCDF files for LPJmL version " LPJ_VERSION "\n\n");
+               "Convert binary output into NetCDF files for LPJmL version " LPJ_VERSION "\n");
         printf(USAGE
                "\nArguments:\n"
                "-h,--help        print this help text\n"

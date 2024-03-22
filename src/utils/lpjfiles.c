@@ -21,7 +21,7 @@
 
 #define USAGE "Usage: %s [-h] [-v] [-noinput] [-nooutput] [-outpath dir] [-inpath dir] [-restartpath dir]\n"\
               "       [-nopp] [-pp cmd] [[-Dmacro[=value]] [-Idir] ...] filename\n"
-#define LPJ_USAGE USAGE "Try \"%s --help\" for more information\n"
+#define LPJ_USAGE USAGE "\nTry \"%s --help\" for more information.\n"
 
 int main(int argc,char **argv)
 {

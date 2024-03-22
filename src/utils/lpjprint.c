@@ -28,9 +28,9 @@
 #define NTYPES 3
 #define NSTANDTYPES 13 /* number of stand types */
 
-#define USAGE "Usage: %s [-h] [-v]  [-nopp] [-pp cmd] [-inpath dir] [-restartpath dir]\n"\
+#define USAGE "\nUsage: %s [-h] [-v]  [-nopp] [-pp cmd] [-inpath dir] [-restartpath dir]\n"\
               "       [[-Dmacro[=value]] [-Idir] ...] filename [-check] [start [end]]\n"
-#define LPJ_USAGE USAGE "Try \"%s --help\" for more information\n"
+#define LPJ_USAGE USAGE "\nTry \"%s --help\" for more information.\n"
 
 static Bool printgrid(Config *config, /* Pointer to LPJ configuration */
                       Standtype standtype[],
@@ -239,7 +239,7 @@ int main(int argc,char **argv)
                 progname);
       fputs("\n     ",stdout);
       repeatch('=',rc);
-      fputs("\n\nPrint content of restart files for LPJmL " LPJ_VERSION "\n\n",stdout);
+      fputs("\n\nPrint content of restart files for LPJmL " LPJ_VERSION "\n",stdout);
       printf(USAGE,progname);
       printf("\nArguments:\n"
              "-h,--help        print this help text\n"

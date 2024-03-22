@@ -15,11 +15,11 @@
 #include "lpj.h"
 
 #ifdef USE_UDUNITS
-#define USAGE "Usage: %s [-h] [-v] [-units unit] [-var name] [-time name] [-o filename] [-scale factor] [-id s] [-version v] [-float] [-zero] [-json] gridfile netcdffile ...\n"
+#define USAGE "\nUsage: %s [-h] [-v] [-units unit] [-var name] [-time name] [-o filename]\n       [-scale factor] [-id s] [-version v] [-float] [-zero] [-json] gridfile netcdffile ...\n"
 #else
-#define USAGE "Usage: %s [-h] [-v] [-var name] [-o filename] [-scale factor] [-id s] [-version v] [-float] [-zero] [-json] gridfile netcdffile ...\n"
+#define USAGE "\nUsage: %s [-h] [-v] [-var name] [-o filename] [-scale factor]\n       [-id s] [-version v] [-float] [-zero] [-json] gridfile netcdffile ...\n"
 #endif
-#define ERR_USAGE USAGE "Try \"%s --help\" for more information\n"
+#define ERR_USAGE USAGE "\nTry \"%s --help\" for more information.\n"
 
 #if defined(USE_NETCDF) || defined(USE_NETCDF4)
 #include <netcdf.h>
@@ -380,7 +380,7 @@ int main(int argc,char **argv)
       {
         printf("   cdf2clm (" __DATE__ ") Help\n"
                "   ==========================\n\n"
-               "Convert NetCDF data into CLM input data for LPJmL version " LPJ_VERSION "\n\n");
+               "Convert NetCDF data into CLM input data for LPJmL version " LPJ_VERSION "\n");
         printf(USAGE
                "\nArguments:\n"
                "-h,--help     print this help text\n"
