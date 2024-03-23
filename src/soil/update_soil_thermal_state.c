@@ -21,7 +21,7 @@
 #define K_LITTER_SAT_UNFROZEN 0.554636  // // thermal conudcitivity of fully saturated unfrozen organic material with a porosity of 0.944
 
 // The following two values are rough estimates
-#define K_SNOW_SOILINS 0.3 // snow thermal conductivty used for soil insulation
+#define K_SNOW_SOILINS 0.2 // snow thermal conductivty used for soil insulation
 #define SNOWHEIGHT_PER_WATEREQ 4 // snow height per m^3 snow water equivalent used for snow insulation
 
 #define DRY_BULK_DENSITY_LITTER 71.1
