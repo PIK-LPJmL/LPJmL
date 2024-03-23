@@ -18,13 +18,7 @@ void updatelitterproperties(Stand *stand,  /**< Stand pointer */
                             Real standfrac /**< stand fraction (0..1) */
                            )
 {
-  int l;
-  Real dm_sum=0;
-  for(l=0;l<stand->soil.litter.n;l++)
-    dm_sum+=stand->soil.litter.item[l].agtop.leaf.carbon/0.42; /* Accounting that C content in plant dry matter is 42% (Brady and Weil 2008, p.504)*/
-  if(dm_sum<0)
-    dm_sum=0;
-
+  Real dm_sum = calc_litter_dm_sum(&stand->soil);
   stand->soil.litter.agtop_cover=1-exp(-6e-3*dm_sum);
   stand->soil.litter.agtop_wcap=2e-3*dm_sum;
   if((stand->soil.litter.agtop_moist-stand->soil.litter.agtop_wcap)>epsilon*1e-3)
@@ -34,5 +28,17 @@ void updatelitterproperties(Stand *stand,  /**< Stand pointer */
     stand->soil.litter.agtop_moist=stand->soil.litter.agtop_wcap;
   }
 } /* of 'updatelitterproperties' */
+
+
+Real calc_litter_dm_sum(Soil *soil) {
+  int l;
+  Real dm_sum=0;
+  for(l=0;l<soil->litter.n;l++){
+    dm_sum+=soil->litter.item[l].agtop.leaf.carbon/0.42; /* Accounting that C content in plant dry matter is 42% (Brady and Weil 2008, p.504)*/
+  }
+  if(dm_sum<0)
+    dm_sum=0;
+  return(dm_sum);
+} /* of 'calc_litter_dm_sum' */
 
 /*Brady, N.C., Weil, R.R., The nature and properties of soil, 2008, 14th edition, ISBN 0-13-227938-X*/

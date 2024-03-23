@@ -39,11 +39,9 @@
 #define TOPLAYER 0
 #define NTILLLAYER 1 /* number of layers to be tilled */
 #ifndef U_TEST
-  #define GPLHEAT 3 /* Gripoints per soil layer for the heat conduction scheme  */
+  #define GPLHEAT 1 /* Gripoints per soil layer for the heat conduction scheme  */
 #endif
-
 #define NHEATGRIDP NSOILLAYER*GPLHEAT /* Total number of gridpoints for the heatflow scheme */
-//#define WITH_WATER_HEAT_TRANSFER
 #define SNOWLAYER NSOILLAYER
 
 #define snow_skin_depth 40.0 /* snow skin layer depth (mm water equivalent)*/
@@ -76,7 +74,12 @@
 #define PRIESTLEY_TAYLOR 1.32 /* Priestley-Taylor coefficient */
 #define SOILDEPTH_IRRIG 500 /*size of layer considered for calculation of irrigation ammount*/
 #define CDN 1.2         /* shape factor for denitrification from SWAT; beta_denit eq 3:1.4.1, SWAT Manual 2009 , take smaller value as it seems to be to high 1.4 originally*/
-
+#define K_SOLID 8       /* Thermal conductivity of solid components in saturated state */
+#define K_ICE   2.2     /* Thermal conductivity of ice */
+#define K_WATER 0.57    /* Thermal conductivity of liquid water*/
+#define K_SOLID_LOG 0.90308998699    
+#define K_ICE_LOG   0.34242268082    
+#define K_WATER_LOG -0.24412514432 
 /* Declaration of variables */
 
 extern Real soildepth[NSOILLAYER];
@@ -325,6 +328,7 @@ extern void getrootdist(Real [],const Real[],Real);
 extern Stocks checklitter(Litter *);
 extern Real getwr(const Soil *,const Real []);
 extern void updatelitterproperties(Stand *,Real);
+extern Real calc_litter_dm_sum(Soil *soil);
 extern void pedotransfer(Stand *, Real *, Real *,Real);
 extern void soilpar_output(Cell *,Real,const Config *);
 extern int findsoilid(const char *,const Soilpar *,int);

@@ -259,6 +259,7 @@ void update_daily(Cell *cell,            /**< cell pointer           */
     } /* if woodplantation */
 #endif
 
+    getoutput(&cell->output,TEMP_BS,config)+=temp_bs*stand->frac;
     getoutput(&cell->output,SWE,config)+=stand->soil.snowpack*stand->frac;
     getoutput(&cell->output,SNOWRUNOFF,config)+=snowrunoff;
     getoutput(&cell->output,MELT,config)+=melt*stand->frac;

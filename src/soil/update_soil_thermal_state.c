@@ -14,19 +14,39 @@
 
 #include "lpj.h"
 
+// The following three values are calculated by: lawrance and slater 2007, Incorporating organic soil into a global climate model
+// the values for purely organic soils are used here as a rough estimate for litter thermal properties
+#define K_LITTER_DRY 0.05  // thermal conductivity of organic material when completly dry
+#define K_LITTER_SAT_FROZEN 2.106374   // thermal conudcitivity of fully saturated frozen organic material with a porosity of 0.944
+#define K_LITTER_SAT_UNFROZEN 0.554636  // // thermal conudcitivity of fully saturated unfrozen organic material with a porosity of 0.944
+
+// The following two values are rough estimates
+#define K_SNOW_SOILINS 0.2 // snow thermal conductivty used for soil insulation
+#define SNOWHEIGHT_PER_WATEREQ 4 // snow height per m^3 snow water equivalent used for snow insulation
+
+#define DRY_BULK_DENSITY_LITTER 71.1
+// porosity is calculated using f = (p_s - p_b)/p_s 
+// Hillel: Environmental Soil Physics, p15 f.
+#define POROSITY_LITTER 0.952  // [fraction]
+
 STATIC void setup_heatgrid(Real *);
 STATIC void setup_heatgrid_layer_boundaries(Real *);
 STATIC void get_unaccounted_changes_in_water_and_solids(Real *, Real *, Real *, Soil *);
 STATIC void update_wi_and_sol_enth_adjusted(Real *, Real *, Soil *);
-STATIC void modify_enth_due_to_masschanges(Soil *, Real *);
-STATIC void modify_enth_due_to_heatconduction(Uniform_temp_sign, Soil *, Real, const Soil_thermal_prop *);
-STATIC void compute_litter_temp_from_enth(Soil * soil, Real temp_below_snow, const Soil_thermal_prop * therm_prop);
+STATIC void modify_enth_due_to_masschanges(Soil *, Real *, const Config *);
+STATIC void modify_enth_due_to_heatconduction(enum uniform_temp_sign, Soil *, Real, Soil_thermal_prop *,const Config *);
+STATIC void compute_litter_and_snow_temp_from_enth(Soil * soil, Real temp_below_snow, const Soil_thermal_prop * therm_prop);
 STATIC void compute_water_ice_ratios_from_enth(Soil *, const Soil_thermal_prop *);
 STATIC void calc_gp_temps(Real * gp_temps, Real * enth, const  Soil_thermal_prop *);
 STATIC void compute_maxthaw_depth(Soil * soil);
 STATIC void compute_bottom_bound_layer_temps_from_enth(Real *,  const Real *,const Soil_thermal_prop *);
 STATIC Uniform_temp_sign check_uniform_temp_sign_throughout_soil(Real *, Real, Real *);
 STATIC void get_abs_waterice_cont(Real *, Soil *);
+STATIC void adjust_for_litter(Real h[], Soil_thermal_prop * therm_prop, Soil * soil);
+STATIC void adjust_for_snow(Real h[], Soil_thermal_prop * therm_prop, Soil * soil);
+STATIC Real calc_litter_depth(Soil * soil);
+STATIC Real calc_snow_depth(Soil * soil);
+STATIC Real calc_litter_therm_conductivity(Real litter_temp,  Real sat_degree);
 
 
 /**** main function ****/
@@ -55,7 +75,7 @@ void update_soil_thermal_state(Soil *soil,           /**< pointer to soil data *
 
   /* compute soil thermal attributes from enthalpy distribution and thermal properties, i.e. the derived quantities */
   compute_mean_layer_temps_from_enth(soil->temp,soil->enth, &therm_prop);
-  compute_litter_temp_from_enth(soil, temp_below_snow, &therm_prop);
+  compute_litter_and_snow_temp_from_enth(soil, temp_below_snow, &therm_prop);
   if(uniform_temp_sign == MIXED_SIGN || uniform_temp_sign == UNKNOWN)
   {
     compute_water_ice_ratios_from_enth(soil,&therm_prop);
@@ -118,23 +138,106 @@ STATIC void modify_enth_due_to_masschanges(Soil * soil, Real * abs_waterice_cont
   update_wi_and_sol_enth_adjusted(waterdiff, soliddiff, soil);
 }
 
-STATIC void modify_enth_due_to_heatconduction(Uniform_temp_sign uniform_temp_sign, Soil * soil, Real temp_below_snow, const Soil_thermal_prop * therm_prop)
+
+STATIC void modify_enth_due_to_heatconduction(enum uniform_temp_sign uniform_temp_sign, Soil * soil, Real temp_below_snow, Soil_thermal_prop * therm_prop ,const Config * config)
 {
   Real litter_agtop_temp;
   Real h[NHEATGRIDP], top_dirichlet_BC;
 
-  /* Compute the dirichlet boundary condition.
-     The below snow temp is mixed with the upmost gp temp to get
-     litter temp, which is then weighted according to agtop_cover. */
-  litter_agtop_temp = (temp_below_snow + ENTH2TEMP(soil->enth,therm_prop,0))/2;
-  top_dirichlet_BC = temp_below_snow  * (1 - soil->litter.agtop_cover) +
-         litter_agtop_temp * soil->litter.agtop_cover;
+  /* Compute the dirichlet boundary condition. */
+  top_dirichlet_BC = temp_below_snow ;
 
   /* setup grid */
   setup_heatgrid(h);
 
+  /* modify grid and conductivity of top layer if snow is present */
+  adjust_for_snow(h, therm_prop, soil);
+  adjust_for_litter(h, therm_prop, soil);
+
   /* apply heatconduction */
   apply_heatconduction_of_a_day(uniform_temp_sign, soil->enth, h, top_dirichlet_BC, therm_prop );
+}
+
+STATIC void adjust_for_snow(Real h[], Soil_thermal_prop * therm_prop, Soil * soil)
+{
+  Real snowdepth = calc_snow_depth(soil);
+
+  Real froz_thermal_resistance = (h[0]/therm_prop->lam_frozen[0]) + (snowdepth/K_SNOW_SOILINS );
+  Real froz_therm_cond = (h[0]+snowdepth) / froz_thermal_resistance;
+  therm_prop->lam_frozen[0] = froz_therm_cond;
+
+  //printf("frozen lam at 0: %f, frozen lam at 1: %f\n", therm_prop->lam_frozen[0], therm_prop->lam_frozen[1]);
+  //printf("h0 %f, snowdepth %f\n", h[0], snowdepth);
+
+  Real unfroz_thermal_resistance = (h[0]/therm_prop->lam_unfrozen[0]) + (snowdepth/K_SNOW_SOILINS );
+  Real unfroz_therm_cond = (h[0]+snowdepth) / unfroz_thermal_resistance;
+  therm_prop->lam_unfrozen[0] = unfroz_therm_cond;
+
+  h[0]+=snowdepth;
+}
+
+
+STATIC void adjust_for_litter(Real h[], Soil_thermal_prop * therm_prop, Soil * soil)
+{
+  Real litterdepth = calc_litter_depth(soil); // unit: [m]
+  Real saturation_degree;
+  
+  if(soil->litter.agtop_moist < epsilon || litterdepth  < epsilon )
+    saturation_degree = 0;
+  else
+    saturation_degree = min((soil->litter.agtop_moist/1000)/(POROSITY_LITTER * litterdepth), 1);
+
+  Real lam_litter = calc_litter_therm_conductivity(soil->litter.agtop_temp, saturation_degree);
+
+  Real froz_thermal_resistance = (h[0]/therm_prop->lam_frozen[0]) + (litterdepth/lam_litter );
+  Real froz_therm_cond = (h[0]+litterdepth) / froz_thermal_resistance;
+  therm_prop->lam_frozen[0] = froz_therm_cond;
+
+  Real unfroz_thermal_resistance = (h[0]/therm_prop->lam_unfrozen[0]) + (litterdepth/lam_litter );
+  Real unfroz_therm_cond = (h[0]+litterdepth) / unfroz_thermal_resistance;
+  therm_prop->lam_unfrozen[0] = unfroz_therm_cond;
+
+  h[0]+=litterdepth;
+
+  //printf("littdepth %f, lam_fro %f, lam_unfroz %f, sat %f, littemp %f\n", litterdepth,  therm_prop->lam_frozen[0],  therm_prop->lam_unfrozen[0] , saturation_degree, soil->litter.agtop_temp);
+}
+
+STATIC Real calc_litter_therm_conductivity(Real litter_temp,  // temperature of litter
+                                           Real sat_degree   // saturation degree
+                                           ) 
+{
+  // source: lawrance and slater 2007, Incorporating organic soil into a global climate model
+  // values for purely organic soils are used for the litter layer
+
+  Real lam_sat;     // saturated thermal conductivity; unit: W m-1 K-1
+  Real ke;          // kersten number
+
+  if(sat_degree < epsilon) 
+    return(K_LITTER_DRY);
+
+  if(litter_temp < 0) // water in litter is assumed to be frozen
+  {
+    ke = sat_degree;
+    lam_sat = K_LITTER_SAT_FROZEN;
+  }
+  else
+  {
+    ke = (sat_degree < 0.1 ? 0 : log10(sat_degree) + 1);
+    lam_sat = K_LITTER_SAT_UNFROZEN;
+  }
+
+  return((lam_sat   - K_LITTER_DRY) * ke   + K_LITTER_DRY);
+}
+
+STATIC Real calc_litter_depth(Soil * soil)
+{
+  Real dm_sum = calc_litter_dm_sum(soil);
+  return((dm_sum/1000)/DRY_BULK_DENSITY_LITTER); // resulting unit: [m]
+}
+
+STATIC Real calc_snow_depth(Soil * soil)
+{
+  return(soil->snowpack*SNOWHEIGHT_PER_WATEREQ*1e-3); // resulting unit: [m]
 }
 
 STATIC void compute_water_ice_ratios_from_enth(Soil * soil, const Soil_thermal_prop *therm_prop)
@@ -144,10 +247,26 @@ STATIC void compute_water_ice_ratios_from_enth(Soil * soil, const Soil_thermal_p
   freezefrac2soil(soil, freezefrac);                   /* apply frozen fraction to soil variables */
 }
 
-STATIC void compute_litter_temp_from_enth(Soil * soil, Real temp_below_snow , const Soil_thermal_prop *therm_prop)
+STATIC void compute_litter_and_snow_temp_from_enth(Soil * soil, Real airtemp , const Soil_thermal_prop *therm_prop)
 {
-  soil->litter.agtop_temp = (temp_below_snow + ENTH2TEMP(soil->enth,therm_prop,0)) / 2;
+  Real snowdepth = calc_snow_depth(soil);
+  Real litterdepth = calc_litter_depth(soil);
+  Real dist_top_gp_soilsurf = soildepth[0]/1000/(GPLHEAT *2); // top soil grdpoint to soil surface / soil litter interface distance 
+  Real top_soil_gp_to_snow_surf_dist = dist_top_gp_soilsurf + litterdepth + snowdepth;
+
+  Real top_soil_gp_temp = ENTH2TEMP(soil->enth,therm_prop,0);
+
+  Real weight_airtemp_litter = (dist_top_gp_soilsurf + litterdepth/2)/top_soil_gp_to_snow_surf_dist;
+  Real litter_temp = top_soil_gp_temp * (1- weight_airtemp_litter) + airtemp * weight_airtemp_litter;
+
+  Real weight_airtemp_snow = (top_soil_gp_to_snow_surf_dist - snowdepth/2)/top_soil_gp_to_snow_surf_dist;
+  Real snow_temp = top_soil_gp_temp * (1- weight_airtemp_snow) + airtemp * weight_airtemp_snow;
+  
+
+  soil->litter.agtop_temp = litter_temp;
+  soil->temp[NSOILLAYER] = snow_temp;
 }
+
 
 STATIC void compute_maxthaw_depth(Soil * soil)
 {
@@ -186,8 +305,8 @@ STATIC void setup_heatgrid(Real *h /**< distances between adjacent gridpoints */
 {
   int l,j;
   Real nodes[NHEATGRIDP];
-  Real soillayer_depth_m=0;
-  Real layer_border_m=0;
+  Real soillayer_depth_m=0; /* sollayerdepth in meter*/
+  Real layer_border_m=0;    /* depth of current layer border in meter*/
 
   for(l=0;l<NSOILLAYER;++l)
   {
