@@ -493,8 +493,6 @@ void update_daily(Cell *cell,            /**< cell pointer           */
   /* Establishment fluxes are area weighted in subroutines */
   getoutput(&cell->output,FLUX_ESTABC,config)+=flux_estab.carbon;
   getoutput(&cell->output,FLUX_ESTABN,config)+=flux_estab.nitrogen;
-  if (stand->type->landusetype!=NATURAL && stand->type->landusetype!=WOODPLANTATION)
-    getoutput(&cell->output,FLUX_ESTABN_MG,config)+=flux_estab.nitrogen;
   cell->balance.flux_estab.nitrogen+=flux_estab.nitrogen;
   cell->balance.flux_estab.carbon+=flux_estab.carbon;
   cell->output.dcflux-=flux_estab.carbon;
