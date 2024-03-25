@@ -3,13 +3,13 @@
 txt2clm \- convert text files to clm data files for LPJmL
 .SH SYNOPSIS
 .B txt2clm
-[\-h] [\-version v] [\-float] [\-int] [\-scale s] [\-nbands n] [-nstep n] [\-firstyear f] [\-firstcell c] [\-ncell n]  [\-header id]
+[\-h] [\-version v] [\-float] [\-int] [\-csv c] [\-scale s] [\-nbands n] [-nstep n] [\-firstyear f] [\-firstcell c] [\-ncell n]  [\-header id]
 .I txtfile clmfile 
 .SH DESCRIPTION
 Program converts text files containing white space separated numbers into LPJ climate data files. File is read until end of file is reached.
 .SH OPTIONS
 .TP
-\-h
+\-h,\--help
 display a short help text
 .TP
 \-version v
@@ -20,6 +20,9 @@ write data as float, default is short
 .TP
 \-int 
 write data as int, default is short
+.TP
+\-csv c
+text file is in CSV format with separator character c
 .TP
 \-scale s
 scale data by a factor

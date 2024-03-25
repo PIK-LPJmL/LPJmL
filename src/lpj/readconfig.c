@@ -39,7 +39,10 @@ Bool readconfig(Config *config,        /**< LPJ configuration */
     return TRUE;
   verbosity=(isroot(*config)) ? config->scan_verbose : NO_ERR;
   lpjfile=parse_json(file,verbosity);
-  pclose(file);
+  if(config->nopp)
+    fclose(file);
+  else
+    pclose(file);
   if(lpjfile==NULL)
     return TRUE;
   s=fscanstring(lpjfile,NULL,"sim_name",verbosity);
@@ -67,8 +70,16 @@ Bool readconfig(Config *config,        /**< LPJ configuration */
       closeconfig(lpjfile);
       return TRUE;
     }
-    if(verbosity && strncmp(s,LPJ_VERSION,strlen(s)))
-      fprintf(stderr,"WARNING025: LPJ version '%s' does not match '" LPJ_VERSION "'.\n",s);
+    if(strncmp(s,LPJ_VERSION,strlen(s)))
+    {
+      if(verbosity)
+        fprintf(stderr,"WARNING025: LPJ version '%s' does not match '" LPJ_VERSION "'.\n",s);
+      if(config->pedantic)
+      {
+        closeconfig(lpjfile);
+        return TRUE;
+      }
+    }
   }
   /* Read LPJ configuration */
   config->sim_id=LPJML;

@@ -149,7 +149,7 @@ Real daily_agriculture(Stand *stand,                /**< [inout] stand pointer *
 
     if(phenology_crop(pft,climate->temp,climate->tmax,daylength,npft,config))
     {
-      update_double_harvest(output,pft,data->irrigation,day,npft,ncft,config);
+      update_separate_harvests(output,pft,data->irrigation,day,npft,ncft,config);
       harvest_crop(output,stand,pft,npft,ncft,year,config);
       /* return irrig_stor and irrig_amount */
       if(data->irrigation)
@@ -226,12 +226,12 @@ Real daily_agriculture(Stand *stand,                /**< [inout] stand pointer *
       {
         pft=getpft(&stand->pftlist,0);
         crop=pft->data;
-        if(crop->dh!=NULL)
+        if(crop->sh!=NULL)
         {
           if(config->pft_output_scaled)
-            crop->dh->irrig_apply+=irrig_apply*stand->frac;
+            crop->sh->irrig_apply+=irrig_apply*stand->frac;
           else
-            crop->dh->irrig_apply+=irrig_apply;
+            crop->sh->irrig_apply+=irrig_apply;
         }
         else
         {
@@ -314,25 +314,25 @@ Real daily_agriculture(Stand *stand,                /**< [inout] stand pointer *
       getoutputindex(output,PFT_NPP,nnat+index,config)+=npp;
     getoutputindex(output,PFT_LAI,nnat+index,config)+=actual_lai_crop(pft);
     crop=pft->data;
-    if(stand->type->landusetype==AGRICULTURE && config->double_harvest)
+    if(stand->type->landusetype==AGRICULTURE && config->separate_harvests)
     {
-      crop->dh->lgp+=1;
+      crop->sh->lgp+=1;
       if(config->pft_output_scaled)
       {
-        crop->dh->petsum+=eeq*((1-pft->phen)*PRIESTLEY_TAYLOR+pft->phen*(1-wet[p])*PRIESTLEY_TAYLOR+pft->phen*wet[p]*PRIESTLEY_TAYLOR)*stand->frac; //???
-        crop->dh->precsum+=climate->prec*stand->frac;
-        crop->dh->sradsum+=climate->swdown*stand->frac;
-        crop->dh->tempsum+=climate->temp*stand->frac;
+        crop->sh->petsum+=eeq*((1-pft->phen)*PRIESTLEY_TAYLOR+pft->phen*(1-wet[p])*PRIESTLEY_TAYLOR+pft->phen*wet[p]*PRIESTLEY_TAYLOR)*stand->frac; //???
+        crop->sh->precsum+=climate->prec*stand->frac;
+        crop->sh->sradsum+=climate->swdown*stand->frac;
+        crop->sh->tempsum+=climate->temp*stand->frac;
       }
       else
       {
-        crop->dh->petsum+=eeq*((1-pft->phen)*PRIESTLEY_TAYLOR+pft->phen*(1-wet[p])*PRIESTLEY_TAYLOR+pft->phen*wet[p]*PRIESTLEY_TAYLOR); //???
-        crop->dh->precsum+=climate->prec;
-        crop->dh->sradsum+=climate->swdown;
-        crop->dh->tempsum+=climate->temp;
+        crop->sh->petsum+=eeq*((1-pft->phen)*PRIESTLEY_TAYLOR+pft->phen*(1-wet[p])*PRIESTLEY_TAYLOR+pft->phen*wet[p]*PRIESTLEY_TAYLOR); //???
+        crop->sh->precsum+=climate->prec;
+        crop->sh->sradsum+=climate->swdown;
+        crop->sh->tempsum+=climate->temp;
       }
       if(stand->type->landusetype==AGRICULTURE)
-        crop->dh->runoffsum+=runoff;
+        crop->sh->runoffsum+=runoff;
     }
     else
     {
@@ -345,7 +345,7 @@ Real daily_agriculture(Stand *stand,                /**< [inout] stand pointer *
     }
     if(negbm)
     {
-      update_double_harvest(output,pft,data->irrigation,day,npft,ncft,config);
+      update_separate_harvests(output,pft,data->irrigation,day,npft,ncft,config);
       harvest_crop(output,stand,pft,npft,ncft,year,config);
       if(data->irrigation)
       {

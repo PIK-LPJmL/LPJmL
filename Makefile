@@ -47,7 +47,7 @@ SCRIPTS	= configure.bat configure.sh\
           bin/lpjsubmit_mpich bin/lpjrun bin/backtrace\
           bin/regridlpj bin/lpjsubmit_slurm
 
-FILES	= Makefile config/* README AUTHORS INSTALL VERSION LICENSE STYLESHEET\
+FILES	= Makefile config/* README AUTHORS INSTALL VERSION LICENSE STYLESHEET.md\
           $(JSON) $(DATA) $(HDRS) $(SCRIPTS)
 
 main:
@@ -83,7 +83,7 @@ install: all
 	install bin/* $(LPJROOT)/bin
 	install -m 644 $(HDRS) $(LPJROOT)/include
 	install -m 644 $(DATA) $(LPJROOT)/par
-	install -m 644 README INSTALL VERSION AUTHORS LICENSE COPYRIGHT $(JSON) $(LPJROOT)
+	install -m 644 README INSTALL VERSION AUTHORS LICENSE COPYRIGHT CHANGELOG.md $(JSON) $(LPJROOT)
 	install -m 644 man/whatis $(LPJROOT)/man
 	install -m 644 man/man1/*.1 $(LPJROOT)/man/man1
 	install -m 644 man/man5/*.5 $(LPJROOT)/man/man5

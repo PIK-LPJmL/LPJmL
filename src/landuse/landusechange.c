@@ -477,7 +477,7 @@ static void grasslandreduction(Cell *cell,            /* cell pointer */
 
     cutpfts(grassstand,config);
     /*force one tillage event on new stand upon cultivation of previous grassland,  */
-    if(setaside(cell,getstand(cell->standlist,s),TRUE,intercrop,npft,ncft,data->irrigation,max(config->till_startyear,year),config))
+    if(setaside(cell,getstand(cell->standlist,s),TRUE,intercrop,npft,ncft,data->irrigation,year,config))
       delstand(cell->standlist,s);
   }
   else

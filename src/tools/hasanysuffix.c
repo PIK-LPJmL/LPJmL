@@ -1,11 +1,8 @@
 /**************************************************************************************/
 /**                                                                                \n**/
-/**       d  o  u  b  l  e  _  h  a  r  v  e  s  t  .  c                           \n**/
+/**                   h  a  s  a  n  y  s  u  f  f  i  x  .  c                     \n**/
 /**                                                                                \n**/
-/**     C implementation of LPJmL                                                  \n**/
-/**                                                                                \n**/
-/**     Function to distribute 2 harvests in one calendar year to                  \n**/
-/**     separate output files                                                      \n**/
+/**     Function checks whether filename has any suffix                            \n**/
 /**                                                                                \n**/
 /** (C) Potsdam Institute for Climate Impact Research (PIK), see COPYRIGHT file    \n**/
 /** authors, and contributors see AUTHORS file                                     \n**/
@@ -15,16 +12,27 @@
 /**                                                                                \n**/
 /**************************************************************************************/
 
-#include "lpj.h"
+#include <stdlib.h>
+#include <stdio.h>
+#include <string.h>
+#include "types.h"
 
-void double_harvest(int test,
-                    Real *out,
-                    Real *out2,
-                    Real in
-                   )
+Bool hasanysuffix(const char *name /**< filename */
+                 )                 /** \return TRUE if name has suffix */
 {
-  if(test>0)
-    *out2=in;
-  else
-    *out=in;
-} /* of 'double_harvest' */ 
+  int i;
+#ifdef SAFE
+  if(name==NULL)
+    return FALSE;
+#endif
+  for(i=strlen(name)-1;i>=0;i--)
+#ifdef _WIN32
+    if(name[i]=='/' || name[i]=='\\')
+#else
+    if(name[i]=='/')
+#endif
+      return FALSE;
+    else if(name[i]=='.')
+      return TRUE;
+  return FALSE;
+} /* of 'hasanysuffix' */

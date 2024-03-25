@@ -261,6 +261,8 @@ int main(int argc,char **argv)
   rewind(out);
   header.firstcell=0;
   header.nyear=1;
+  header.nstep=1;
+  header.timestep=1;
   header.firstyear=1901;
   header.nbands=2;
   header.order=CELLYEAR;
