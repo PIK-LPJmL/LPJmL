@@ -3,7 +3,7 @@
 txt2grid \- convert text files to clm grid data files for LPJ
 .SH SYNOPSIS
 .B txt2grid
-[\-h] [\-v] [\-latlon] [\-map refgridfile] [-fmt s] [-skip n] [-cellsize size] [-cellsize_lon size] [-cellsize_lat size] [-float]
+[\-h] [\-v] [\-latlon] [\-map refgridfile] [-fmt s] [-skip n] [-cellsize size] [-cellsize_lon size] [-cellsize_lat size] [-float] [-double]
 .I txtfile gridfile
 .SH DESCRIPTION
 Program converts text files into LPJ grid data files
@@ -48,6 +48,9 @@ set latitudinal cell size, default is 0.5
 \-float
 longitude/latitude values written in float format to clm file, default is short
 .TP
+\-double
+longitude/latitude values written in double format to clm file, default is short
+.TP
 .I textfile    
 filename of text file to convert
 .TP
@@ -58,6 +61,10 @@ filename of clm grid data file written
 Create clm grid data file from text file containing longitude/latitude values in each line:
 .B txt2grid
 -skip 0 -fmt "%f %f" grid.txt grid.clm
+.TP
+Create clm grid data file with double values from text file containing longitude/latitude values in each line:
+.B txt2grid
+-skip 0 -double -fmt "%lf %lf" grid.txt grid.clm
 .PP
 .SH EXIT STATUS
 .B txt2grid
