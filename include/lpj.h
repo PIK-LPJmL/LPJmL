@@ -28,7 +28,7 @@
 #ifndef LPJ_H /* Already included? */
 #define LPJ_H
 
-#define LPJ_VERSION  "5.7.10"
+#define LPJ_VERSION  "5.8.5"
 
 /* Necessary header files */
 

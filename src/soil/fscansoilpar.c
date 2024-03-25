@@ -47,34 +47,12 @@ Bool fscansoilpar(LPJfile *file, /**< pointer to LPJ file */
 {
   LPJfile *arr,*item;
   int id;
-  int l,n;
+  int n;
   const char *s;
   Soilpar *soil;
   Verbosity verb;
   verb=(isroot(*config)) ? config->scan_verbose : NO_ERR;
   if (verb>=VERB) puts("// soil parameters");
-  if(fscanrealarray(file,soildepth,NSOILLAYER,"soildepth",verb))
-    return TRUE;
-  /* calculate layerbound and midlayer from soildepth */
-  layerbound[0]=soildepth[0];
-  midlayer[0]=soildepth[0]*0.5;
-  for(l=1;l<NSOILLAYER;l++)
-  {
-    layerbound[l]=layerbound[l-1]+soildepth[l];
-    midlayer[l]=layerbound[l-1]+soildepth[l]*0.5;
-  }
-  foreachsoillayer(l)
-  {
-    if(soildepth[l]<=0)
-    {
-      if(verb)
-        fprintf(stderr,"ERROR234: Soil depth of layer %d=%g must be greater than zero.\n",l,soildepth[l]);
-      return TRUE;
-    }
-    logmidlayer[l]=log10(midlayer[l]/midlayer[NSOILLAYER-2]);
-  }
-  if(fscanrealarray(file,fbd_fac,NFUELCLASS,"fbd_fac",verb))
-    return TRUE;
   arr=fscanarray(file,&config->nsoil,"soilpar",verb);
   if(arr==NULL)
     return TRUE;
