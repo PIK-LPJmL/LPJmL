@@ -37,7 +37,7 @@ David Hötten.
 #include "lpj.h"
 #include <math.h>
 
-static void use_enth_scheme(Real *, const Real *, const Real, const Soil_thermal_prop *);
+STATIC void use_enth_scheme(Real *, const Real *, const Real, const Soil_thermal_prop *);
 STATIC void use_temp_scheme_implicit(Real *, const Real *, const Real *, const Real *, int);
 STATIC void arrange_matrix(Real *, Real *, Real *, const Real *, const Real *, const Real *, const Real);
 STATIC void thomas_algorithm(double *, double *, double *, double *, double *);
@@ -106,7 +106,7 @@ void apply_heatconduction_of_a_day(Uniform_temp_sign uniform_temp_sign, /**< fla
 
 }
 
-static void use_enth_scheme(
+STATIC void use_enth_scheme(
                     Real * enth,          
                     const Real * h,       
                     const Real temp_top,  
@@ -247,10 +247,11 @@ STATIC void timestep_implicit(Real * temp,
   /* See supplement of master thesis equation (6) */
   Real rhs[NHEATGRIDP];
   int j;
-  for (j=0; j<NHEATGRIDP; ++j)
+  for (j=0; j<(NHEATGRIDP-1); ++j)
   {
-    rhs[j] = (temp[j+1] * (2-main[j]) - temp[j] * sub[j] - temp[j+2] * sup[j]);
+    rhs[j] = temp[j+1] * (2-main[j]) - temp[j] * sub[j] - temp[j+2] * sup[j];
   }
+  rhs[NHEATGRIDP-1] = temp[j+1] * (2-main[j]) - temp[j] * sub[j];
   rhs[0] -= temp[0] * sub[0];
 
   /* solve tridiagonal system with the thomas algorithm */
