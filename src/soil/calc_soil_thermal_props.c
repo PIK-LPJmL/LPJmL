@@ -18,7 +18,7 @@
 
 #include "lpj.h"
 
-void calc_soil_thermal_props(enum uniform_temp_sign uniform_temp_sign,  /**< flag to indicate if the temperatures are all positive all negative or mixed */
+void calc_soil_thermal_props(Uniform_temp_sign uniform_temp_sign,  /**< flag to indicate if the temperatures are all positive all negative or mixed */
                              Soil_thermal_prop *th,                     /**< Soil thermal property structure that is set or modified */
                              const Soil *soil,                          /**< Soil structure from which water content etc is obtained  */
                              const Real *waterc_abs,                    /**< Absolute total water content of soillayers (including ice) */

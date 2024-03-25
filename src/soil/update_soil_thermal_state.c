@@ -33,8 +33,8 @@ STATIC void setup_heatgrid(Real *);
 STATIC void setup_heatgrid_layer_boundaries(Real *);
 STATIC void get_unaccounted_changes_in_water_and_solids(Real *, Real *, Real *, Soil *);
 STATIC void update_wi_and_sol_enth_adjusted(Real *, Real *, Soil *);
-STATIC void modify_enth_due_to_masschanges(Soil *, Real *, const Config *);
-STATIC void modify_enth_due_to_heatconduction(enum uniform_temp_sign, Soil *, Real, Soil_thermal_prop *,const Config *);
+STATIC void modify_enth_due_to_masschanges(Soil *, Real *);
+STATIC void modify_enth_due_to_heatconduction(Uniform_temp_sign, Soil *, Real, Soil_thermal_prop *);
 STATIC void compute_litter_and_snow_temp_from_enth(Soil * soil, Real temp_below_snow, const Soil_thermal_prop * therm_prop);
 STATIC void compute_water_ice_ratios_from_enth(Soil *, const Soil_thermal_prop *);
 STATIC void calc_gp_temps(Real * gp_temps, Real * enth, const  Soil_thermal_prop *);
@@ -139,7 +139,7 @@ STATIC void modify_enth_due_to_masschanges(Soil * soil, Real * abs_waterice_cont
 }
 
 
-STATIC void modify_enth_due_to_heatconduction(enum uniform_temp_sign uniform_temp_sign, Soil * soil, Real temp_below_snow, Soil_thermal_prop * therm_prop ,const Config * config)
+STATIC void modify_enth_due_to_heatconduction(Uniform_temp_sign uniform_temp_sign, Soil * soil, Real temp_below_snow, Soil_thermal_prop * therm_prop)
 {
   Real litter_agtop_temp;
   Real h[NHEATGRIDP], top_dirichlet_BC;
