@@ -2,7 +2,7 @@
 /**                                                                                \n**/
 /**                       i  n  p  u  t  .  c  j  s  o  n                          \n**/
 /**                                                                                \n**/
-/** Configuration file for input dataset for LPJ C Version 5.8.2                   \n**/
+/** Configuration file for input dataset for LPJ C Version 5.8.9                   \n**/
 /**                                                                                \n**/
 /** (C) Potsdam Institute for Climate Impact Research (PIK), see COPYRIGHT file    \n**/
 /** authors, and contributors see AUTHORS file                                     \n**/
@@ -21,7 +21,7 @@
   "swdown" :       { "id" : 3, "fmt" : "clm",  "name" : "input_VERSION2/swdown_erainterim_1901-2011.clm"},
   "cloud":         { "id" : 0, "fmt" : "clm",  "name" : "CRUDATA_TS3_23/cru_ts3.23.1901.2014.cld.dat.clm"},
   "wind":          { "id" : 15, "fmt" : "clm",  "name" : "input_VERSION2/mwindspeed_1860-2100_67420.clm"},
-  "tamp":          { "id" : 3, "fmt" : "clm",  "name" : "CRUDATA_TS3_23/cru_ts3.23.1901.2014.dtr.dat.clm"}, /* diurnal temp. range */
+  "tamp":          { "id" : 11, "fmt" : "clm",  "name" : "CRUDATA_TS3_23/cru_ts3.23.1901.2014.dtr.dat.clm"}, /* diurnal temp. range */
   "wetdays" :      { "id" : 12, "fmt" : "clm",  "name" : "CRUDATA_TS3_23/gpcc_v7_cruts3_23_wet_1901_2013.clm"},
 #elif defined CRU_NETCDF
   "temp" : { "fmt" : "cdf", "var" : "temp", "name" : "/p/projects/biodiversity/cru_netcdf/cru_ts_3_10.1901.2009.tmp.nc"},
@@ -95,6 +95,6 @@
   "popdens" :      { "id" : 21, "fmt" : "clm",  "name" : "input_VERSION2/popdens_HYDE3_1901_2011_bi.clm"},
   "burntarea" :    { "id" : 13, "fmt" : "clm",  "name" : "/data/biosx/mforkel/input_new/GFED_CNFDB_ALFDB_Interp.BA.360.720.1901.2012.30days.clm"},
   "landcover":     { "id" : 42, "fmt" : "clm",  "name" : "/data/biosx/mforkel/input_new/landcover_synmap_koeppen_vcf_newPFT_forLPJ_20130910.clm"},/*synmap_koeppen_vcf_NewPFT_adjustedByLanduse_SpinupTransitionPrescribed_forLPJ.clm*/
-  "co2" :          { "id" : 5, "fmt" : "txt",  "name" : "input_VERSION2/co2_1841-2022.dat"},
+  "co2" :          { "id" : 5, "fmt" : "txt",  "name" : "/p/projects/lpjml/inputs/co2/global/TRENDY/v12/global_co2_ann_1700_2022.txt"},
   "wateruse" :     { "id" : 20, "fmt" : "clm",  "name" : "input_VERSION2/wateruse_1900_2000.bin" } /* water consumption for industry,household and livestock */
 }

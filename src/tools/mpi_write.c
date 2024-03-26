@@ -29,8 +29,9 @@ int mpi_write(FILE *file,        /**< File pointer to binary file */
              )                   /** \return number of items written to disk */
 {
   int rc=0;
+  MPI_Aint lb;
   MPI_Aint extent;
-  MPI_Type_extent(type,&extent);
+  MPI_Type_get_extent(type,&lb,&extent);
   void *vec;
   if(rank==0)
   {

@@ -49,8 +49,6 @@ void harvest_crop(Output *output,      /**< Output data */
     res_onfield = config->residue_treatment==FIXED_RESIDUE_REMOVE ? param.residues_in_soil : 1 ;
   else
     res_onfield=stand->cell->ml.residue_on_field[data->irrigation].crop[pft->par->id-npft];
-  if (stand->cell->ml.with_tillage && year < config->till_startyear)
-    res_onfield = param.residues_in_soil_notillage;
   res_remove = (1-res_onfield);
   stand->soil.litter.item[pft->litter].agtop.leaf.carbon += (crop->ind.leaf.carbon + crop->ind.pool.carbon)*res_onfield;
   getoutput(output,LITFALLC,config)+=(crop->ind.leaf.carbon + crop->ind.pool.carbon)*res_onfield*stand->frac;
@@ -85,46 +83,46 @@ void harvest_crop(Output *output,      /**< Output data */
   stand->soil.litter.item[pft->litter].bg.nitrogen+=crop->ind.root.nitrogen;
   getoutput(output,LITFALLN,config)+=crop->ind.root.nitrogen*stand->frac;
   getoutput(output,LITFALLN_AGR,config)+=crop->ind.root.nitrogen*stand->frac;
-  if(crop->dh!=NULL)
+  if(crop->sh!=NULL)
   {
     if(config->pft_output_scaled)
     {
-      double_harvest(output->syear2[pft->par->id-npft+data->irrigation*ncft],
+      separate_harvests(output->syear2[pft->par->id-npft+data->irrigation*ncft],
                      &(getoutputindex(output,PFT_HARVESTC,index,config)),
                      &(getoutputindex(output,PFT_HARVESTC2,index,config)),harvest.harvest.carbon*stand->frac);
-      double_harvest(output->syear2[pft->par->id-npft+data->irrigation*ncft],
+      separate_harvests(output->syear2[pft->par->id-npft+data->irrigation*ncft],
                      &(getoutputindex(output,PFT_HARVESTN,index,config)),
                      &(getoutputindex(output,PFT_HARVESTN2,index,config)),harvest.harvest.nitrogen*stand->frac);
-      double_harvest(output->syear2[pft->par->id-npft+data->irrigation*ncft],
+      separate_harvests(output->syear2[pft->par->id-npft+data->irrigation*ncft],
                      &(getoutputindex(output,PFT_RHARVESTC,index,config)),
                      &(getoutputindex(output,PFT_RHARVESTC2,index,config)),(harvest.residual.carbon+harvest.residuals_burnt.carbon+harvest.residuals_burntinfield.carbon)*stand->frac);
-      double_harvest(output->syear2[pft->par->id-npft+data->irrigation*ncft],
+      separate_harvests(output->syear2[pft->par->id-npft+data->irrigation*ncft],
                      &(getoutputindex(output,PFT_RHARVESTN,index,config)),
                      &(getoutputindex(output,PFT_RHARVESTN2,index,config)),(harvest.residual.nitrogen+harvest.residuals_burnt.nitrogen+harvest.residuals_burntinfield.nitrogen)*stand->frac);
     }
     else
     {
-      double_harvest(output->syear2[pft->par->id-npft+data->irrigation*ncft],
+      separate_harvests(output->syear2[pft->par->id-npft+data->irrigation*ncft],
                      &(getoutputindex(output,PFT_HARVESTC,index,config)),
                      &(getoutputindex(output,PFT_HARVESTC2,index,config)),harvest.harvest.carbon);
-      double_harvest(output->syear2[pft->par->id-npft+data->irrigation*ncft],
+      separate_harvests(output->syear2[pft->par->id-npft+data->irrigation*ncft],
                      &(getoutputindex(output,PFT_HARVESTN,index,config)),
                      &(getoutputindex(output,PFT_HARVESTN2,index,config)),harvest.harvest.nitrogen);
-      double_harvest(output->syear2[pft->par->id-npft+data->irrigation*ncft],
+      separate_harvests(output->syear2[pft->par->id-npft+data->irrigation*ncft],
                      &(getoutputindex(output,PFT_RHARVESTC,index,config)),
                      &(getoutputindex(output,PFT_RHARVESTC2,index,config)),harvest.residual.carbon+harvest.residuals_burnt.carbon+harvest.residuals_burntinfield.carbon);
-      double_harvest(output->syear2[pft->par->id-npft+data->irrigation*ncft],
+      separate_harvests(output->syear2[pft->par->id-npft+data->irrigation*ncft],
                      &(getoutputindex(output,PFT_RHARVESTN,index,config)),
                      &(getoutputindex(output,PFT_RHARVESTN2,index,config)),harvest.residual.nitrogen+harvest.residuals_burnt.nitrogen+harvest.residuals_burntinfield.nitrogen);
     }
     /* harvested area */
-    double_harvest(output->syear2[pft->par->id-npft+data->irrigation*ncft],
+    separate_harvests(output->syear2[pft->par->id-npft+data->irrigation*ncft],
                    &(getoutputindex(output,CFTFRAC,index,config)),
                    &(getoutputindex(output,CFTFRAC2,index,config)),stand->frac);
     if(output->syear2[pft->par->id-npft+data->irrigation*ncft]>0)
-      getoutputindex(output,SDATE2,pft->par->id-npft+data->irrigation*ncft,config)=crop->dh->sdate;
+      getoutputindex(output,SDATE2,pft->par->id-npft+data->irrigation*ncft,config)=crop->sh->sdate;
     else
-      getoutputindex(output,SDATE,pft->par->id-npft+data->irrigation*ncft,config)=crop->dh->sdate;
+      getoutputindex(output,SDATE,pft->par->id-npft+data->irrigation*ncft,config)=crop->sh->sdate;
   }
   else
   {

@@ -268,10 +268,10 @@ Real infil_perc_irr(Stand *stand,        /**< Stand pointer */
               {
                 foreachpft(pft,p,&stand->pftlist)
                 {
-                  if(config->double_harvest)
+                  if(config->separate_harvests)
                   {
                     crop=pft->data;
-                    crop->dh->leachingsum+=NO3surf + NO3lat;
+                    crop->sh->leachingsum+=NO3surf + NO3lat;
                   }
                   else
                     getoutputindex(&stand->cell->output,CFT_LEACHING,pft->par->id-npft+data_irrig->irrigation*ncft,config)+=NO3surf + NO3lat;
@@ -291,10 +291,10 @@ Real infil_perc_irr(Stand *stand,        /**< Stand pointer */
       {
         foreachpft(pft,p,&stand->pftlist)
         {
-          if(config->double_harvest)
+          if(config->separate_harvests)
           {
             crop=pft->data;
-            crop->dh->leachingsum+=NO3perc_ly;
+            crop->sh->leachingsum+=NO3perc_ly;
           }
           else
             getoutputindex(&stand->cell->output,CFT_LEACHING,pft->par->id-npft+data_irrig->irrigation*ncft,config)+=NO3perc_ly;

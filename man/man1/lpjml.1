@@ -3,7 +3,7 @@
 lpjml \- Dynamic global vegetation model with managed land and river routing
 .SH SYNOPSIS
 .B lpjml
-[\-h] [\-l] [\-v] [-vv] [-param] [-pp cmd] [-fpe] [-image host[:inport[,outport]]] [-couple host[:port]] [\-wait time] [\-outpath \fIdir\fP]
+[\-h] [\-l] [\-v] [-vv] [-pedantic] [-ofiles] [-param] [-nopp] [-pp cmd] [-fpe] [-image host[:inport[,outport]]] [-couple host[:port]] [\-wait time] [\-outpath \fIdir\fP]
 [\-inpath \fIdir\fP] [\-restartpath \fIdir\fP]
 [[\-Dmacro[=value]] [\-I\fIdir\fP] ...] \fIfilename\fP
 
@@ -19,23 +19,32 @@ years to develop equilibrium vegetation and soil structure. A restart
 file can be created to save compute time for the spin-up phase. If the Message Passing Interface (MPI) library is available a parallel version of the program is built. If -DIMAGE flag is set in \fIMakefile.inc\fP coupling the IMAGE model via the TDT library is enabled.
 .SH OPTIONS
 .TP
-\-h
+\-h,\--help
 print a short help text
 .TP
-\-l
+\-l,\--license
 print the license file
 .TP
-\-v
+\-v,\--version
 print information about program version, operating system, compiler used, and compiler flags set.
 .TP
 \-vv
 verbosely print the actual values during reading of the configuration files.
 .TP
+\-pedantic
+stops on warnings.
+.TP
+\-ofiles
+list only all available output variables.
+.TP
 \-param
 print LPJmL parameter for soils and PFTs and list of all available output files.
 .TP
+\-nopp
+disable preprocessing of configuration file by cpp or command specified by -pp option.
+.TP
 \-pp cmd
-set preprocessor program to cmd, default is \fBcpp\fP.
+set preprocessor program to cmd. Default is \fBcpp\fP.
 .TP
 \-fpe
 enable floating point exceptions. A core file is generated in case of an arithmetic error. Option is only available if \fBlpjml\fP has been compiled with -DWITH_FPE flag.
@@ -253,7 +262,9 @@ Invalid uniform temp sign value. Internal error
 .TP
 ERROR045
 Only Johansen method implemented. Internal error
-
+.TP
+ERROR046
+Error initializing output data. External error
 .P
 Internal errors will generate a core dump and have to be fixed by changes in the code. A "post-mortem" analysis can be made by calling
 

@@ -102,7 +102,7 @@ int main(int argc,char **argv)
            fprintf(stderr,"Invalid argument '%s' for longitude.\n",argv[i+1]);
            return EXIT_FAILURE;
       }
-      index=findcoord(&pos,coords,n);
+      index=findcoord(&pos,coords,&res,n);
       if(index==NOT_FOUND)
       {
         if(issearch)

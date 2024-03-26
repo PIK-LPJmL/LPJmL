@@ -3,7 +3,7 @@
 lpjcheck \- Checks syntax of LPJmL configuration files 
 .SH SYNOPSIS
 .B lpjcheck
-[\-h] [\-q] [\-nocheck] [-vv] [\-param] [-pp cmd] [\-couple host[:port]] [\-outpath \fIdir\fP]
+[\-h] [\-v] [\-q] [\-nocheck] [-vv] [\-ofiles] [\-param] [-nopp] [-pp cmd] [\-couple host[:port]] [\-outpath \fIdir\fP]
 [\-inpath \fIdir\fP] [\-restartpath \fIdir\fP] [[\-Dmacro[=value]] [\-I\fIdir\fP] ...]
 \fIfilename\fP
 .SH DESCRIPTION
@@ -11,10 +11,13 @@ Program checks the syntax of LPJmL configuration files. It is checked additional
 \fBlpjcheck\fP will print the total amount of disk space used for the output files.
 .SH OPTIONS
 .TP
-\-h
+\-h,\--help
 display a short help text
 .TP
-\-q
+\-v,\--version
+print LPJmL version
+.TP
+\-q,\--quiet
 Only error messages are displayed, other output is suppressed.
 .TP
 \-nocheck
@@ -23,8 +26,14 @@ Does not check for input/output files
 \-vv
 verbosely print the actual values during reading of the configuration files.
 .TP
+\-ofiles
+List only all available output variables.
+.TP
 \-param
 Print LPJmL parameter.
+.TP
+\-nopp
+Disabling preprocessing of configuration file by \fBcpp\fP.
 .TP
 \-pp cmd
 Set preprocessor program to cmd. Default is \fBcpp\fP.

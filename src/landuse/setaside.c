@@ -353,7 +353,7 @@ Bool setaside(Cell *cell,            /**< Pointer to LPJ cell */
   Stocks flux_estab,stocks;
   Irrigation *data;
   /* call tillage before */
-  if(with_tillage && year >= config->till_startyear)
+  if(with_tillage)
     tillage(&cropstand->soil,param.residue_frac);
 #ifdef SAFE
   if (!isempty(&cropstand->pftlist))

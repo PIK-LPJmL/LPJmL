@@ -15,9 +15,9 @@
 #include "lpj.h"
 
 #ifdef USE_UDUNITS
-#define USAGE "Usage: %s [-v] [-units unit] [-var name] [-time name] [-o filename] [-scale factor] [-id s] [-version v] [-float] [-json] gridfile netcdffile ...\n"
+#define USAGE "Usage: %s [-h] [-v] [-units unit] [-var name] [-time name] [-o filename] [-scale factor] [-id s] [-version v] [-float] [-zero] [-json] gridfile netcdffile ...\n"
 #else
-#define USAGE "Usage: %s [-v] [-var name] [-o filename] [-scale factor] [-id s] [-version v] [-float] [-json] gridfile netcdffile ...\n"
+#define USAGE "Usage: %s [-h] [-v] [-var name] [-o filename] [-scale factor] [-id s] [-version v] [-float] [-zero] [-json] gridfile netcdffile ...\n"
 #endif
 
 #if defined(USE_NETCDF) || defined(USE_NETCDF4)
@@ -48,6 +48,7 @@ static Bool readclimate2(Climatefile *file,    /* climate data file */
                          float data[],         /* pointer to data read in */
                          int year,             /* year */
                          const Coord coords[], /* coordinates */
+                         Bool iszero,          /* set to zero if data is not found */
                          const Config *config  /* LPJ configuration */
                         )                      /* returns TRUE on error */
 {
@@ -211,9 +212,14 @@ static Bool readclimate2(Climatefile *file,    /* climate data file */
             fprintf(stderr,") ");
             printindex(i,file->time_step,file->var_len);
             fprintf(stderr,".\n");
-            free(f);
-            nc_close(file->ncid);
-            return TRUE;
+            if(iszero)
+              f[file->nlon*(i*file->nlat+offsets[index])+offsets[index+1]]=0;
+            else
+            {
+              free(f);
+              nc_close(file->ncid);
+              return TRUE;
+            }
           }
           else if(isnan(f[file->nlon*(i*file->nlat+offsets[index])+offsets[index+1]]))
           {
@@ -222,9 +228,14 @@ static Bool readclimate2(Climatefile *file,    /* climate data file */
             fprintf(stderr,") ");
             printindex(i,file->time_step,file->var_len);
             fprintf(stderr,".\n");
-            free(f);
-            nc_close(file->ncid);
-            return TRUE;
+            if(iszero)
+              f[file->nlon*(i*file->nlat+offsets[index])+offsets[index+1]]=0;
+            else
+            {
+              free(f);
+              nc_close(file->ncid);
+              return TRUE;
+            }
           }
           data[cell*size*file->var_len+i]=(float)(file->slope*f[file->nlon*(i*file->nlat+offsets[index])+offsets[index+1]]+file->intercept);
           break;
@@ -236,9 +247,14 @@ static Bool readclimate2(Climatefile *file,    /* climate data file */
             fprintf(stderr,") ");
             printindex(i,file->time_step,file->var_len);
             fprintf(stderr,".\n");
-            free(d);
-            nc_close(file->ncid);
-            return TRUE;
+            if(iszero)
+              d[file->nlon*(i*file->nlat+offsets[index])+offsets[index+1]]=0;
+            else
+            {
+              free(d);
+              nc_close(file->ncid);
+              return TRUE;
+            }
           }
           else if(isnan(d[file->nlon*(i*file->nlat+offsets[index])+offsets[index+1]]))
           {
@@ -247,11 +263,16 @@ static Bool readclimate2(Climatefile *file,    /* climate data file */
             fprintf(stderr,") ");
             printindex(i,file->time_step,file->var_len);
             fprintf(stderr,".\n");
-            free(d);
-            nc_close(file->ncid);
-            return TRUE;
+            if(iszero)
+              d[file->nlon*(i*file->nlat+offsets[index])+offsets[index+1]]=0;
+            else
+            {
+              free(d);
+              nc_close(file->ncid);
+              return TRUE;
+            }
           }
-          data[cell*size*file->var_len+i]=file->slope*d[file->nlon*(i*file->nlat+offsets[index])+offsets[index+1]]+file->intercept;
+          data[cell*size*file->var_len+i]=(float)(file->slope*d[file->nlon*(i*file->nlat+offsets[index])+offsets[index+1]]+file->intercept);
           break;
         case LPJ_INT:
           if(idata[file->nlon*(i*file->nlat+offsets[index])+offsets[index+1]]==file->missing_value.i)
@@ -261,11 +282,16 @@ static Bool readclimate2(Climatefile *file,    /* climate data file */
             fprintf(stderr,") ");
             printindex(i,file->time_step,file->var_len);
             fprintf(stderr,".\n");
-            free(idata);
-            nc_close(file->ncid);
-            return TRUE;
+            if(iszero)
+              idata[file->nlon*(i*file->nlat+offsets[index])+offsets[index+1]]=0;
+            else
+            {
+              free(idata);
+              nc_close(file->ncid);
+              return TRUE;
+            }
           }
-          data[cell*size*file->var_len+i]=file->slope*idata[file->nlon*(i*file->nlat+offsets[index])+offsets[index+1]]+file->intercept;
+          data[cell*size*file->var_len+i]=(float)(file->slope*idata[file->nlon*(i*file->nlat+offsets[index])+offsets[index+1]]+file->intercept);
           break;
         case LPJ_SHORT:
           if(s[file->nlon*(i*file->nlat+offsets[index])+offsets[index+1]]==file->missing_value.s)
@@ -275,11 +301,16 @@ static Bool readclimate2(Climatefile *file,    /* climate data file */
             fprintf(stderr,") ");
             printindex(i,file->time_step,file->var_len);
             fprintf(stderr,".\n");
-            free(s);
-            nc_close(file->ncid);
-            return TRUE;
+            if(iszero)
+              s[file->nlon*(i*file->nlat+offsets[index])+offsets[index+1]]=0;
+            else
+            {
+              free(s);
+              nc_close(file->ncid);
+              return TRUE;
+            }
           }
-          data[cell*size*file->var_len+i]=file->slope*s[file->nlon*(i*file->nlat+offsets[index])+offsets[index+1]]+file->intercept;
+          data[cell*size*file->var_len+i]=(float)(file->slope*s[file->nlon*(i*file->nlat+offsets[index])+offsets[index+1]]+file->intercept);
           break;
       } /* of 'switch' */
     }
@@ -310,18 +341,21 @@ int main(int argc,char **argv)
   Coordfile coordfile;
   Climatefile climate;
   Config config;
-  char *units,*var,*outname,*endptr,*time_name,*out_json,*arglist;
+  char *units,*var,*outname,*endptr,*time_name,*arglist,*long_name,*standard_name,*history,*source;
   float scale,*data;
   Filename coord_filename;
   Coord *coords;
   Header header;
   FILE *file;
-  int i,j,k,year,version;
+  int iarg,j,k,year,version;
   short *s;
-  Bool isfloat,verbose,isjson;
+  Bool isfloat,verbose,iszero,isjson;
   Time time;
   size_t var_len;
-  char *id;
+  char *id,*out_json;
+  Attr *attrs=NULL;
+  int n_attr,len;
+  char name[NC_MAX_NAME];
   Filename grid_name;
   Type grid_type;
   /* set default values */
@@ -329,85 +363,114 @@ int main(int argc,char **argv)
   var=NULL;
   time_name=NULL;
   scale=1;
-  isfloat=verbose=isjson=FALSE;
+  isfloat=verbose=iszero=isjson=FALSE;
   outname="out.clm"; /* default file name for output */
   id=LPJ_CLIMATE_HEADER;
   version=LPJ_CLIMATE_VERSION;
   initconfig(&config);
-  for(i=1;i<argc;i++)
+  for(iarg=1;iarg<argc;iarg++)
   {
-    if(argv[i][0]=='-')
+    if(argv[iarg][0]=='-')
     {
-      if(!strcmp(argv[i],"-var"))
+      if(!strcmp(argv[iarg],"-h") || !strcmp(argv[iarg],"--help"))
       {
-        if(argc==i+1)
+        printf("   cdf2clm (" __DATE__ ") Help\n"
+               "   ==========================\n\n"
+               "Convert NetCDF data into CLM input data for LPJmL version " LPJ_VERSION "\n\n");
+        printf(USAGE
+               "\nArguments:\n"
+               "-h,--help     print this help text\n"
+               "-v,--verbose  print name of NetCDF files\n"
+               "-scale factor scaling factor for CLM files. Default is one\n"
+#ifdef USE_UDUNITS
+               "-units u      set unit to convert from NetCDF file\n"
+#endif
+               "-var name     variable  name in NetCDF file \n"
+               "-time name    name of time in NetCDF file, default is 'time' or 'TIME'\n"
+               "-id string    LPJ header string in clm file\n"
+               "-version v    version of clm header, default is 3\n"
+               "-float        write float values in clm file, default is short\n"
+               "-zero         write zero values in clm file if data is not found\n"
+               "-json         JSON metafile is created with suffix '.json'\n"
+               "-o clmfile    filename of CLM data file written. Default is out.clm\n"
+               "gridfile      filename of grid data file\n"
+               "netcdffile    filename of NetCDF file(s) converted\n\n"
+               "(C) Potsdam Institute for Climate Impact Research (PIK), see COPYRIGHT file\n",
+               argv[0]);
+        return EXIT_SUCCESS;
+      }
+      if(!strcmp(argv[iarg],"-var"))
+      {
+        if(argc==iarg+1)
         {
           fprintf(stderr,"Missing argument after option '-var'.\n"
                  USAGE,argv[0]);
           return EXIT_FAILURE;
         }
-        var=argv[++i];
+        var=argv[++iarg];
       }
-      else if(!strcmp(argv[i],"-time"))
+      else if(!strcmp(argv[iarg],"-time"))
       {
-        if(argc==i+1)
+        if(argc==iarg+1)
         {
           fprintf(stderr,"Missing argument after option '-time'.\n"
                  USAGE,argv[0]);
           return EXIT_FAILURE;
         }
-        time_name=argv[++i];
+        time_name=argv[++iarg];
       }
 #ifdef USE_UDUNITS
-      else if(!strcmp(argv[i],"-units"))
+      else if(!strcmp(argv[iarg],"-units"))
       {
-        if(argc==i+1)
+        if(argc==iarg+1)
         {
           fprintf(stderr,"Missing argument after option '-units'.\n"
                  USAGE,argv[0]);
           return EXIT_FAILURE;
         }
-        units=argv[++i];
+        units=argv[++iarg];
       }
 #endif
-      else if(!strcmp(argv[i],"-o"))
+      else if(!strcmp(argv[iarg],"-o"))
       {
-        if(argc==i+1)
+        if(argc==iarg+1)
         {
           fprintf(stderr,"Missing argument after option '-o'.\n"
                  USAGE,argv[0]);
           return EXIT_FAILURE;
         }
-        outname=argv[++i];
+        outname=argv[++iarg];
       }
-      else if(!strcmp(argv[i],"-id"))
+      else if(!strcmp(argv[iarg],"-id"))
       {
-        if(argc==i+1)
+        if(argc==iarg+1)
         {
           fprintf(stderr,"Missing argument after option '-id'.\n"
                  USAGE,argv[0]);
           return EXIT_FAILURE;
         }
-        id=argv[++i];
+        id=argv[++iarg];
       }
-      else if(!strcmp(argv[i],"-float"))
+      else if(!strcmp(argv[iarg],"-float"))
         isfloat=TRUE;
-      else if(!strcmp(argv[i],"-v"))
+      else if(!strcmp(argv[iarg],"-v") || !strcmp(argv[iarg],"--verbose"))
         verbose=TRUE;
-      else if(!strcmp(argv[i],"-json"))
+      else if(!strcmp(argv[iarg],"-zero"))
+        iszero=TRUE;
+      else if(!strcmp(argv[iarg],"-json"))
         isjson=TRUE;
-      else if(!strcmp(argv[i],"-scale"))
+      else if(!strcmp(argv[iarg],"-scale"))
       {
-        if(argc==i+1)
+        if(argc==iarg+1)
         {
           fprintf(stderr,"Missing argument after option '-scale'.\n"
                  USAGE,argv[0]);
           return EXIT_FAILURE;
         }
-        scale=(float)strtod(argv[++i],&endptr);
+        scale=(float)strtod(argv[++iarg],&endptr);
         if(*endptr!='\0')
         {
-          fprintf(stderr,"Invalid number '%s' for option '-scale'.\n",argv[i]);
+          fprintf(stderr,"Invalid number '%s' for option '-scale'.\n",argv[iarg]);
           return EXIT_FAILURE;
         }
         if(scale==0)
@@ -416,18 +479,18 @@ int main(int argc,char **argv)
           return EXIT_FAILURE;
         }
       }
-      else if(!strcmp(argv[i],"-version"))
+      else if(!strcmp(argv[iarg],"-version"))
       {
-        if(argc==i+1)
+        if(argc==iarg+1)
         {
           fprintf(stderr,"Missing argument after option '-version'.\n"
                  USAGE,argv[0]);
           return EXIT_FAILURE;
         }
-        version=strtol(argv[++i],&endptr,10);
+        version=strtol(argv[++iarg],&endptr,10);
         if(*endptr!='\0')
         {
-          fprintf(stderr,"Invalid number '%s' for option '-version'.\n",argv[i]);
+          fprintf(stderr,"Invalid number '%s' for option '-version'.\n",argv[iarg]);
           return EXIT_FAILURE;
         }
       }
@@ -435,20 +498,20 @@ int main(int argc,char **argv)
       else
       {
         fprintf(stderr,"Invalid option '%s'.\n"
-                USAGE,argv[i],argv[0]);
+                USAGE,argv[iarg],argv[0]);
         return EXIT_FAILURE;
       }
     }
     else
       break;
   }
-  if(argc<i+2)
+  if(argc<iarg+2)
   {
     fprintf(stderr,"Missing arguments.\n"
             USAGE,argv[0]);
     return EXIT_FAILURE;
   }
-  coord_filename.name=argv[i];
+  coord_filename.name=argv[iarg];
   coord_filename.fmt=CLM;
   coordfile=opencoord(&coord_filename,TRUE);
   if(coordfile==NULL)
@@ -481,7 +544,7 @@ int main(int argc,char **argv)
     return EXIT_FAILURE;
   }
   fwriteheader(file,&header,id,version);
-  for(j=i+1;j<argc;j++)
+  for(j=iarg+1;j<argc;j++)
   {
     if(openclimate_netcdf(&climate,argv[j],time_name,var,NULL,units,&config))
     {
@@ -490,7 +553,7 @@ int main(int argc,char **argv)
     }
     if(verbose)
       printf("%s: ",argv[j]);
-    if(j==i+1)
+    if(j==iarg+1)
     {
       header.firstyear=climate.firstyear;
       switch(climate.time_step)
@@ -537,6 +600,38 @@ int main(int argc,char **argv)
           return EXIT_FAILURE;
         }
       }
+      if(units==NULL)
+        units=getattr_netcdf(&climate,climate.varid,"units");
+      if(var==NULL)
+        var=getvarname_netcdf(&climate);
+      long_name=getattr_netcdf(&climate,climate.varid,"long_name");
+      standard_name=getattr_netcdf(&climate,climate.varid,"standard_name");
+      history=getattr_netcdf(&climate,NC_GLOBAL,"history");
+      source=getattr_netcdf(&climate,NC_GLOBAL,"source");
+      if(nc_inq_natts(climate.ncid,&len))
+        n_attr=0;
+      else
+      {
+        attrs=newvec(Attr,len);
+        if(attrs==NULL)
+        {
+          printallocerr("attrs");
+          return EXIT_FAILURE;
+        }
+        n_attr=0;
+        for(k=0;k<len;k++)
+        {
+          if(!nc_inq_attname(climate.ncid,NC_GLOBAL,k,name))
+          {
+            if(strcmp(name,"history") && strcmp(name,"source"))
+            {
+              attrs[n_attr].value=getattr_netcdf(&climate,NC_GLOBAL,name);
+              if(attrs[n_attr].value!=NULL)
+                attrs[n_attr++].name=strdup(name);
+            }
+          }
+        }
+      }
     }
     else
     {
@@ -560,7 +655,7 @@ int main(int argc,char **argv)
     var_len=climate.var_len;
     for(year=0;year<climate.nyear;year++)
     {
-      if(readclimate2(&climate,data,year,coords,&config))
+      if(readclimate2(&climate,data,year,coords,iszero,&config))
       {
         fprintf(stderr,"Error reading '%s' in year %d.\n",argv[j],year+climate.firstyear);
         return EXIT_FAILURE;
@@ -602,13 +697,13 @@ int main(int argc,char **argv)
   fclose(file);
   if(isjson)
   {
-    out_json=malloc(strlen(outname)+strlen(".json")+1);
+    out_json=malloc(strlen(outname)+strlen(JSON_SUFFIX)+1);
     if(out_json==NULL)
     {
       printallocerr("filename");
       return EXIT_FAILURE;
     }
-    strcat(strcpy(out_json,outname),".json");
+    strcat(strcpy(out_json,outname),JSON_SUFFIX);
     arglist=catstrvec(argv,argc);
     file=fopen(out_json,"w");
     if(file==NULL)
@@ -618,9 +713,9 @@ int main(int argc,char **argv)
     }
     if(version<4)
       header.nbands/=header.nstep;
-    grid_name.name=argv[i];
+    grid_name.name=argv[iarg];
     grid_name.fmt=CLM;
-    fprintjson(file,outname,arglist,&header,NULL,NULL,&grid_name,grid_type,CLM,id,FALSE,version);
+    fprintjson(file,outname,source,history,arglist,&header,NULL,NULL,attrs,n_attr,var,units,standard_name,long_name,&grid_name,grid_type,CLM,id,FALSE,version);
     fclose(file);
   }
   return EXIT_SUCCESS;
