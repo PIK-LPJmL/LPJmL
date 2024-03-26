@@ -58,11 +58,6 @@ void calc_soil_thermal_props(Uniform_temp_sign uniform_temp_sign,  /**< flag to 
   for (layer = 0; layer < NSOILLAYER; ++layer)
   {
 
-    if (!johansen)
-    {
-      fail(NO_JOHANSEN_ERR,FALSE,"only Johansen method implemented in cals_soil_thermal_props");
-    }
-
     /* get absolute water and solid content of soil */
     if(waterc_abs == NULL)
     {
@@ -78,24 +73,31 @@ void calc_soil_thermal_props(Uniform_temp_sign uniform_temp_sign,  /**< flag to 
 
     if(with_conductivity)
     {
-      /* get frozen and unfrozen conductivity with johansens approach */
-      por            = soil -> wsat[layer];
-      tmp =  K_SOLID_LOG* (1 - por);
-      if(calc_frozen_values) 
-        lam_sat_froz   = pow(10, tmp + K_ICE_LOG * por); /* geometric mean  */
-      if(calc_unfrozen_values)
-        lam_sat_unfroz = pow(10, tmp + K_WATER_LOG * por);
-      
       if(soil->wsats[layer]<epsilon)
-        sat=0;
+        sat = 0;
       else
-        sat        =  waterc_abs_layer / soil->wsats[layer];
-      ke_unfroz  = (sat < 0.1 ? 0 : log10(sat) + 1); /* fine soil parametrisation of Johansen */
-      ke_froz    =  sat;
-      if(calc_frozen_values)
-        lam_froz   = (lam_sat_froz   - soil->k_dry[layer]) * ke_froz   + soil->k_dry[layer];
-      if(calc_unfrozen_values)
-        lam_unfroz = (lam_sat_unfroz - soil->k_dry[layer]) * ke_unfroz + soil->k_dry[layer];
+        sat = waterc_abs_layer / soil->wsats[layer];
+      if (johansen)
+      {
+        /* get frozen and unfrozen conductivity with johansens approach */
+        por            = soil -> wsat[layer];
+        tmp =  K_SOLID_LOG* (1 - por);
+        if(calc_frozen_values) 
+          lam_sat_froz   = pow(10, tmp + K_ICE_LOG * por); /* geometric mean  */
+        if(calc_unfrozen_values)
+          lam_sat_unfroz = pow(10, tmp + K_WATER_LOG * por);
+        ke_unfroz  = (sat < 0.1 ? 0 : log10(sat) + 1); /* fine soil parametrisation of Johansen */
+        ke_froz    =  sat;
+        if(calc_frozen_values)
+          lam_froz   = (lam_sat_froz   - soil->k_dry[layer]) * ke_froz   + soil->k_dry[layer];
+        if(calc_unfrozen_values)
+          lam_unfroz = (lam_sat_unfroz - soil->k_dry[layer]) * ke_unfroz + soil->k_dry[layer];
+      }
+      else
+      {
+        lam_froz = sat * soil->par->tcond_100_ice + (1 - sat) * soil->par->tcond_pwp;
+        lam_unfroz = sat * soil->par->tcond_100 + (1 - sat) * soil->par->tcond_pwp;
+      }
     }
     /* get frozen and unfrozen volumetric heat capacity */
     if(calc_frozen_values)
