@@ -1092,9 +1092,23 @@ Bool fscanconfig(Config *config,    /**< LPJ configuration */
   config->shuffle_spinup_climate=FALSE;
   if(config->nspinup)
   {
+    if(config->nspinup<0)
+    {
+      if(verbose)
+        fprintf(stderr,"ERROR262: Number of spinup years=%d must be greater than or equal to zero.\n",
+               config->nspinup);
+      return TRUE;
+    }
     if(fscanbool(file,&config->shuffle_spinup_climate,"shuffle_spinup_climate",TRUE,verbose))
       return TRUE;
     fscanint2(file,&config->nspinyear,"nspinyear");
+    if(config->nspinyear<1)
+    {
+      if(verbose)
+        fprintf(stderr,"ERROR263: Cycle length of spinup (\"nspinyear\")=%d must be greater than zero.\n",
+               config->nspinyear);
+      return TRUE;
+    }
     if(iskeydefined(file,"firstspinupyear"))
     {
       fscanint2(file,&config->firstspinupyear,"firstspinupyear");
