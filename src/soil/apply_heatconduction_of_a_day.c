@@ -247,19 +247,22 @@ STATIC void timestep_implicit(Real * temp,
   /* See supplement of master thesis equation (6) */
   Real rhs[NHEATGRIDP];
   int j;
-  for (j=0; j<(NHEATGRIDP-1); ++j)
+  /* matrix vector product Y * temp */
+  rhs[0] =  temp[1] * (2-main[0]) - temp[2] * sup[0];
+  for (j=1; j<(NHEATGRIDP-1); ++j)
   {
-    rhs[j] = temp[j+1] * (2-main[j]) - temp[j] * sub[j] - temp[j+2] * sup[j];
+    rhs[j] = temp[j+1] * (2-main[j]) - temp[j] * sub[j] - temp[j+2] * sup[j]; // equation (10-12)
   }
-  rhs[NHEATGRIDP-1] = temp[j+1] * (2-main[j]) - temp[j] * sub[j];
-  rhs[0] -= temp[0] * sub[0];
+  rhs[NHEATGRIDP-1] = temp[NHEATGRIDP] * (2-main[NHEATGRIDP-1]) - temp[NHEATGRIDP-1] * sub[NHEATGRIDP-1];
+  /* add vector L */
+  rhs[0] -= 2 * temp[0] * sub[0];
 
   /* solve tridiagonal system with the thomas algorithm */
   thomas_algorithm(sub, main, sup, rhs, &temp[1]);
 }
 
 /* This function arranges the matrix for the implicit timestep. */
-/* The equations can be found in the master thesis supplement equation (6). */
+/* The equations can be found in the master thesis supplement equation (7-9). */
 STATIC void arrange_matrix(Real * a,          /*< sub diagonal elements  */
                            Real * b,          /*< main diagonal elements */
                            Real * c,          /*< super diagonal elements */
@@ -278,15 +281,16 @@ STATIC void arrange_matrix(Real * a,          /*< sub diagonal elements  */
   Real dt_half = dt/2;
   for (j=0; j<(NHEATGRIDP-1); ++j)
   {
+    // loop over the rows of the matrix
     lam_divBy_h[j+1] = lam[j+1] / h[j+1];
     inv_element_midpoint_dist_divBy_c[j] = 2/(h[j] +  h[j+1])/hcap[j];
-    a[j] = - lam_divBy_h[j] * inv_element_midpoint_dist_divBy_c[j] * dt_half ;
-    c[j] = - lam_divBy_h[j+1] * inv_element_midpoint_dist_divBy_c[j] * dt_half ;
-    b[j] = 1 - a[j] - c[j];
+    a[j] = - lam_divBy_h[j] * inv_element_midpoint_dist_divBy_c[j] * dt_half ; // equation (8)
+    c[j] = - lam_divBy_h[j+1] * inv_element_midpoint_dist_divBy_c[j] * dt_half ; // equation (7)
+    b[j] = 1 - a[j] - c[j]; // equation (9)
   }
-  inv_element_midpoint_dist_divBy_c[NHEATGRIDP-1] = (2/h[NHEATGRIDP-1])/hcap[NHEATGRIDP-1];
 
-  /* compute the diagonal entries */
+  // the last row of the matrix is different
+  inv_element_midpoint_dist_divBy_c[NHEATGRIDP-1] = (2/h[NHEATGRIDP-1])/hcap[NHEATGRIDP-1];
   a[NHEATGRIDP-1] = - lam_divBy_h[NHEATGRIDP-1] * inv_element_midpoint_dist_divBy_c[NHEATGRIDP-1] * dt_half;
   b[NHEATGRIDP-1] = 1 - a[NHEATGRIDP-1];
   c[NHEATGRIDP-1] = 0;
@@ -305,7 +309,7 @@ STATIC void thomas_algorithm(double *a, /* sub diagonal elements */
   double d_prime[NHEATGRIDP];
   int i;
 
-  /* modify coefficients by pogressing in forward direction */
+  /* modify coefficients by progressing in forward direction */
   /* this codes eliminiates the sub diagnal a an norms the diagonal b 1 */
   c_prime[0] = c[0] / b[0];
   for (i = 1; i < NHEATGRIDP - 1; i++)
