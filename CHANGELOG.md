@@ -19,6 +19,32 @@ of `major.minor.patch` with
 
 ## [Unreleased]
 
+## [5.8.10] - 2024-03-26
+
+- author: Werner von Bloh (bloh@pik-potsdam.de)
+
+### Added
+
+- Warning added if time step of output is longer than output interval.
+- Cycle length of spinup and number of spinup years checked for positive values in `fscanconfig.c`.
+
+### Changed
+
+- Setting `"const_lai_max"` renamed to `"laimax_const"` for consistency.
+
+### Removed
+
+- `"laimax_interpolate"`, `"firewood"` and `"grassland_fixed_pft"` setting and corresponding code removed.
+- Obsolete function `daily_setaside.c` removed. Function is not necessary any more for coupling to POEM.
+- Obsolete constants removed in `conf.h`.
+
+### Fixed
+
+- Typos in error messages corrected in `bin2cdf.c` and `clm2cdf.c`.
+- Output of turnover corrected in `fprintpar_grass.c`.
+- Output of options fixed in `openconfig.c` if environment variable `LPJOPTIONS` is set.
+
+
 ## [5.8.9] - 2024-03-14
 
 - author: Werner von Bloh (bloh@pik-potsdam.de), Sebastian Ostberg (ostberg@pik-potsdam.de)
