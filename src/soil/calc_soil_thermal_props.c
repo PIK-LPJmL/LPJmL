@@ -108,10 +108,14 @@ void calc_soil_thermal_props(Uniform_temp_sign uniform_temp_sign,  /**< flag to 
 
     /* calculate thermal resistance of parts of the top and bottom elements that belong to current to layer */
     /* (assume that the distance from last gridpoint to bottom layer border is the same as from first gridpoint to top layer border) */
-    cur_length_to_border = (soildepth[layer]/1000)/(GPLHEAT*2);
-    resistance_froz_cur =  cur_length_to_border/lam_froz;
-    resistance_unfroz_cur = cur_length_to_border/lam_unfroz;
-
+    if(with_conductivity)
+    {
+      cur_length_to_border = (soildepth[layer]/1000)/(GPLHEAT*2);
+      if(calc_frozen_values)
+        resistance_froz_cur =  cur_length_to_border/lam_froz;
+      if(calc_unfrozen_values)
+        resistance_unfroz_cur = cur_length_to_border/lam_unfroz;
+    }
     for (j = 0; j < GPLHEAT; ++j)
     { /* iterate through gridpoints of the layer */
       gp = GPLHEAT * layer + j;
@@ -146,10 +150,12 @@ void calc_soil_thermal_props(Uniform_temp_sign uniform_temp_sign,  /**< flag to 
         th->c_unfrozen[gp]   = c_unfroz;
       th->latent_heat[gp]  = latent_heat;
     }
-
-    /* save thermal resistance of part of last element of current layer for next iteration */
-    resistance_froz_prev=resistance_froz_cur;
-    resistance_unfroz_prev=resistance_unfroz_cur;
-    prev_length_to_border=cur_length_to_border;
+    if(with_conductivity)
+    {
+      /* save thermal resistance of part of last element of current layer for next iteration */
+      resistance_froz_prev=resistance_froz_cur;
+      resistance_unfroz_prev=resistance_unfroz_cur;
+      prev_length_to_border=cur_length_to_border;
+    }
   }
 } /* of 'calc_soil_thermal_props' */

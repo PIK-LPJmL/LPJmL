@@ -129,6 +129,7 @@
   "cropsheatfrost" : false,            /* enable extreme temperature crop damages - requires tmin/tmax inputs - NOT TESTED */
   "double_harvest" : true,             /* true: enables outputs for second growing season (e.g. harvest2.bin; sdate2.bin - have to be explicitly added to outputs); false: crop specific outputs over all growing seasons are added up/overwritten - caution: this interplays with the setting "grid_scaled" */
   "npp_controlled_bnf" : true,         /* enable npp controlled bnf based on Ma et al. 2022, alternatively old Cleveland et al. 1999*/
+  "percolation_heattransfer" : true,   /* enable heat transfer by percolation of water through the soil */
 
 /*===================================================================*/
 /*  II. Input parameter section                                      */
