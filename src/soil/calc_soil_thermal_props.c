@@ -100,10 +100,8 @@ void calc_soil_thermal_props(Uniform_temp_sign uniform_temp_sign,  /**< flag to 
       }
     }
     /* get frozen and unfrozen volumetric heat capacity */
-    if(calc_frozen_values)
-      c_froz   = (c_mineral * solidc_abs_layer + c_ice   * waterc_abs_layer) / soildepth[layer];
-    if(calc_unfrozen_values)
-      c_unfroz = (c_mineral * solidc_abs_layer + c_water * waterc_abs_layer) / soildepth[layer];
+    c_froz   = (c_mineral * solidc_abs_layer + c_ice   * waterc_abs_layer) / soildepth[layer];
+    c_unfroz = (c_mineral * solidc_abs_layer + c_water * waterc_abs_layer) / soildepth[layer];
 
     /* get volumetric latent heat   */
     latent_heat = waterc_abs_layer / soildepth[layer] * c_water2ice;
@@ -146,10 +144,8 @@ void calc_soil_thermal_props(Uniform_temp_sign uniform_temp_sign,  /**< flag to 
 
       }
       /* set properties of j-th layer gridpoint */
-      if(calc_frozen_values)
-        th->c_frozen [gp]    = c_froz;
-      if(calc_unfrozen_values)
-        th->c_unfrozen[gp]   = c_unfroz;
+      th->c_frozen [gp]    = c_froz;
+      th->c_unfrozen[gp]   = c_unfroz;
       th->latent_heat[gp]  = latent_heat;
     }
     if(with_conductivity)
