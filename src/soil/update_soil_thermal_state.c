@@ -162,14 +162,14 @@ STATIC void adjust_for_snow(Real h[], Soil_thermal_prop * therm_prop, Soil * soi
 {
   Real snowdepth = calc_snow_depth(soil);
 
-  if(!uniform_temp_sign == ALL_ABOVE_0)
+  if(!(uniform_temp_sign == ALL_ABOVE_0))
   {
     Real froz_thermal_resistance = (h[0]/therm_prop->lam_frozen[0]) + (snowdepth/K_SNOW_SOILINS);
     Real froz_therm_cond = (h[0]+snowdepth) / froz_thermal_resistance;
     therm_prop->lam_frozen[0] = froz_therm_cond;
   }
 
-  if(!uniform_temp_sign == ALL_BELOW_0)
+  if(!(uniform_temp_sign == ALL_BELOW_0))
   {
     Real unfroz_thermal_resistance = (h[0]/therm_prop->lam_unfrozen[0]) + (snowdepth/K_SNOW_SOILINS);
     Real unfroz_therm_cond = (h[0]+snowdepth) / unfroz_thermal_resistance;
@@ -192,14 +192,14 @@ STATIC void adjust_for_litter(Real h[], Soil_thermal_prop * therm_prop, Soil * s
 
   Real lam_litter = calc_litter_therm_conductivity(soil->litter.agtop_temp, saturation_degree);
 
-  if(!uniform_temp_sign == ALL_ABOVE_0)
+  if(!(uniform_temp_sign == ALL_ABOVE_0))
   {
     Real froz_thermal_resistance = (h[0]/therm_prop->lam_frozen[0]) + (litterdepth/lam_litter );
     Real froz_therm_cond = (h[0]+litterdepth) / froz_thermal_resistance;
     therm_prop->lam_frozen[0] = froz_therm_cond;
   }
 
-  if(!uniform_temp_sign == ALL_BELOW_0)
+  if(!(uniform_temp_sign == ALL_BELOW_0))
   {
     Real unfroz_thermal_resistance = (h[0]/therm_prop->lam_unfrozen[0]) + (litterdepth/lam_litter );
     Real unfroz_therm_cond = (h[0]+litterdepth) / unfroz_thermal_resistance;
@@ -244,7 +244,7 @@ STATIC Real calc_litter_depth(Soil * soil)
 
 STATIC Real calc_snow_depth(Soil * soil)
 {
-  return(soil->snowpack*SNOWHEIGHT_PER_WATEREQ*1e-3); // resulting unit: [m]
+  return(soil->snowpack*SNOWHEIGHT_PER_WATEREQ*1e-3); // resulting unit: [m] 
 }
 
 STATIC void compute_water_ice_ratios_from_enth(Soil * soil, const Soil_thermal_prop *therm_prop)
