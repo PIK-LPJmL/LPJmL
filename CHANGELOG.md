@@ -35,7 +35,7 @@ of `major.minor.patch` with
 
 ### Removed
 
-- `"laimax_interpolate"`, `"firewood"`, `"black_fallow"`, `"till_fallow"`, and `"grassland_fixed_pft"` setting and corresponding code removed (issue #350).
+- `"laimax_interpolate"`, `"firewood"`, `"black_fallow"`, `"till_fallow"`, `"cropsheatfrost"`, and `"grassland_fixed_pft"` settings and corresponding code removed (issue #350).
 - Obsolete function `daily_setaside.c` removed. Function is not necessary any more for coupling to POEM.
 - Obsolete constants removed in `conf.h`.
 - Unused parameter `"residue_rate"`, `"residue_pool"`, `"residue_cn"`, `"residue_fbg"` removed.

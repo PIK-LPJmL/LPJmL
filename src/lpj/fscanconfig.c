@@ -330,7 +330,6 @@ Bool fscanconfig(Config *config,    /**< LPJ configuration */
   config->tillage_type=NO_TILLAGE;
   config->residue_treatment=NO_RESIDUE_REMOVE;
   config->no_ndeposition=FALSE;
-  config->cropsheatfrost=FALSE;
   config->separate_harvests=FALSE;
   config->others_to_crop = FALSE;
   config->npp_controlled_bnf = FALSE;
@@ -475,10 +474,6 @@ Bool fscanconfig(Config *config,    /**< LPJ configuration */
           }
         }
       }
-      if (fscanbool(file,&config->cropsheatfrost,"cropsheatfrost",!config->pedantic, verbose))
-        return TRUE;
-      if(config->cropsheatfrost && config->fire==SPITFIRE)
-        config->fire=SPITFIRE_TMAX;
       config->grassonly = FALSE;
       if (fscanbool(file, &config->grassonly, "grassonly", !config->pedantic, verbose))
         return TRUE;
@@ -886,7 +881,7 @@ Bool fscanconfig(Config *config,    /**< LPJ configuration */
   {
     scanclimatefilename(input,&config->wind_filename,TRUE,TRUE,"wind");
   }
-  if(config->fire==SPITFIRE_TMAX || config->cropsheatfrost)
+  if(config->fire==SPITFIRE_TMAX)
   {
     scanclimatefilename(input,&config->tmin_filename,TRUE,TRUE,"tmin");
     scanclimatefilename(input,&config->tmax_filename,TRUE,TRUE,"tmax");

@@ -434,7 +434,7 @@ Bool filesexist(Config config, /**< LPJmL configuration */
     bad+=checkdatafile(&config,&config.lightning_filename,"lightning",NULL,LPJ_INT,12);
     bad+=checkclmfile(&config,"human ignition",&config.human_ignition_filename,"yr-1",TRUE);
   }
-  if(config.cropsheatfrost || config.fire==SPITFIRE_TMAX)
+  if(config.fire==SPITFIRE_TMAX)
   {
     bad+=checkclmfile(&config,"tmin",&config.tmin_filename,"celsius",TRUE);
     bad+=checkclmfile(&config,"tmax",&config.tmax_filename,"celsius",TRUE);

@@ -21,7 +21,6 @@
 
 Bool phenology_crop(Pft *pft,            /**< pointer to PFT variables */
                     Real temp,           /**< temperature (deg C) */
-                    Real tmax,           /**< daily maximum temperature (deg C) */
                     Real daylength,      /**< length of day (h) */
                     int npft,            /**< number of natural PFTs */
                     const Config *config /**< LPJ configuration */
@@ -37,7 +36,7 @@ Bool phenology_crop(Pft *pft,            /**< pointer to PFT variables */
   int hlimit;
   Real vd_inc=1;
   Real vd_b,vrf,prf;
-  Real as;
+//  Real as;
   crop=pft->data;
   par=pft->par->data;
   harvesting=FALSE;
@@ -60,7 +59,7 @@ Bool phenology_crop(Pft *pft,            /**< pointer to PFT variables */
   laimax=pft->stand->cell->ml.manage.laimax[pft->par->id];
 
   /* accelerated senescence factor should be between 1 and 2 and applied to mean temperature, following Maiorano et al. 2017 */
-  as = 1.0;
+//  as = 1.0;
 // as is disabled until effect on growing season length is better understood
 //  if (tmax > TLOW && tmax < THIGH)
 //    as = 1/(THIGH-TLOW)*(tmax-TLOW)+1;
@@ -69,15 +68,7 @@ Bool phenology_crop(Pft *pft,            /**< pointer to PFT variables */
 
   if(crop->husum<crop->phu)
   {
-    if(config->cropsheatfrost)
-    {
-      if(!crop->senescence)
-        hu=max(0,temp*as-crop->basetemp);
-      else
-        hu=max(0,temp-crop->basetemp);
-    }
-    else
-      hu=max(0,temp-crop->basetemp);
+    hu=max(0,temp-crop->basetemp);
     if(config->crop_phu_option==OLD_CROP_PHU)
     {
       /* Calculation of vernalization days */
@@ -168,9 +159,6 @@ Bool phenology_crop(Pft *pft,            /**< pointer to PFT variables */
     harvesting=TRUE;
 
   if(crop->growingdays==hlimit)
-    harvesting=TRUE;
-
-  if(crop->frostkill)
     harvesting=TRUE;
 
   /* determination of lai */

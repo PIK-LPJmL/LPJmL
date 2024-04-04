@@ -85,7 +85,7 @@ static size_t isnetcdfinput(const Config *config)
     if(config->landfrac_filename.fmt==CDF)
       width=max(width,strlen(config->landfrac_filename.var));
   }
-  if(config->cropsheatfrost || config->fire==SPITFIRE_TMAX)
+  if(config->fire==SPITFIRE_TMAX)
   {
     if(config->tmin_filename.fmt==CDF)
       width=max(width,strlen(config->tmin_filename.var));
@@ -402,11 +402,6 @@ void fprintconfig(FILE *file,          /**< File pointer to text output file */
                config->pftpar[config->cft_temp+npft].name);
       len=printsim(file,len,&count,s);
     }
-    if (config->cropsheatfrost)
-    {
-      len += fprintf(file, ", ");
-      len = fputstring(file, len, "with crops heat frost", 78);
-    }
     if (config->grassonly)
     {
       len += fprintf(file, ", ");
@@ -580,7 +575,7 @@ void fprintconfig(FILE *file,          /**< File pointer to text output file */
   printinputfile(file,"co2",&config->co2_filename,width,config);
   if(config->with_nitrogen || config->fire==SPITFIRE || config->fire==SPITFIRE_TMAX)
     printinputfile(file,"windspeed",&config->wind_filename,width,config);
-  if(config->cropsheatfrost || config->fire==SPITFIRE_TMAX)
+  if(config->fire==SPITFIRE_TMAX)
   {
     printinputfile(file,"tmin",&config->tmin_filename,width,config);
     printinputfile(file,"tmax",&config->tmax_filename,width,config);

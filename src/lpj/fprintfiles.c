@@ -104,7 +104,7 @@ void fprintfiles(FILE *file,          /**< pointer to text output file */
   }
   if(config->with_nitrogen || config->fire==SPITFIRE || config->fire==SPITFIRE_TMAX)
     fprintfilename(file,&config->wind_filename,TRUE);
-  if(config->fire==SPITFIRE_TMAX||config->cropsheatfrost)
+  if(config->fire==SPITFIRE_TMAX)
   {
     fprintfilename(file,&config->tmax_filename,TRUE);
     fprintfilename(file,&config->tmin_filename,TRUE);

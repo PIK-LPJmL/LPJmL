@@ -62,7 +62,6 @@ Bool fread_crop(FILE *file,          /**< file pointer */
   freadreal1(&crop->nfertilizer,swap,file);
   freadreal1(&crop->nmanure,swap,file);
   freadreal1(&crop->vscal_sum,swap,file);
-  freadint1(&crop->frostkill,swap,file);
   if(pft->stand->type->landusetype==AGRICULTURE && separate_harvests)
   {
     crop->sh=new(Separate_harvests);
