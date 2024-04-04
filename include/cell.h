@@ -145,7 +145,7 @@ extern void freecell(Cell *,int,const Config *);
 extern void update_daily(Cell *,Real,Real,Dailyclimate,int,
                          int,int,int,int,Bool,const Config *);
 extern void update_annual(Cell *,int,int,
-                          Real,int,Bool,Bool,const Config *);
+                          int,Bool,Bool,const Config *);
 extern void update_monthly(Cell *,Real,Real,int,const Config *);
 extern void init_annual(Cell *,int,const Config *);
 extern int fwritecell(FILE *,long long [],const Cell [],int,int,int,Bool,const Config *);

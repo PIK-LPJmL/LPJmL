@@ -133,7 +133,7 @@ int main(int argc,char **argv)
   Socket *socket;
   float *landuse;
   float *fertilizer;
-  short *country,*region;
+  short *country;
   char *endptr;
   float co2;
   Intcoord *coords;
@@ -447,7 +447,7 @@ int main(int argc,char **argv)
   writeint_socket(socket,&index,1);
   n_out-=n_err;
   /* read all static non time dependent outputs */
-  region=country=NULL;
+  country=NULL;
   coords=NULL;
   fcoords=NULL;
   for(i=0;i<n_out_1;i++)

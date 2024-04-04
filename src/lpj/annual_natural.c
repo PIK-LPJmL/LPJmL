@@ -22,7 +22,6 @@
 Bool annual_natural(Stand *stand,         /**< Pointer to stand */
                     int npft,             /**< number of natural pfts */
                     int UNUSED(ncft),     /**< number of crop PFTs */
-                    Real popdens,         /**< population density (capita/km2) */
                     int year,             /**< year (AD) */
                     Bool isdaily,         /**< daily temperature data? */
                     Bool UNUSED(intercrop), /**< intercropping enabled (TRUE/FALSE) */
