@@ -159,11 +159,6 @@
     #include "par/manage_irrig_systems_with_dummy_laimax_data.cjson"
   ,
 
-  /* Management parameter file for regions*/
-  "regionpar" :
-    #include "par/manage_reg.cjson"
-  ,
-
 /*===================================================================*/
 /*  II. Mapping section                                              */
 /*===================================================================*/

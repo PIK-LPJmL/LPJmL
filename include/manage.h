@@ -23,11 +23,6 @@ typedef enum {NOIRRIG, SURF, SPRINK, DRIP} IrrigationType;
 
 typedef struct
 {
-  short country,region;
-} Code;
-
-typedef struct
-{
   int id;     /* country id (0-196)*/
   char *name; /* country name */
   IrrigationType default_irrig_system; /* default irrig system at country-level (SURF=1,SPRINK=2,DRIP=3), used for ALLCROPS or ALL_IRRIGATION */
@@ -36,20 +31,9 @@ typedef struct
   Real *k_est;
 } Countrypar;
 
-
-typedef struct
-{
-  int id;     /* region id (0-432)*/
-  char *name; /* region name */
-  Real bifratio;   /* Yevich's data/rharvest von LPJ; for all crops (no rharvest for grass)*/
-  Real fuelratio;  /* Yevich's data (withoutdung)/rharvest von LPJ; for all crops (no rharvest for grass)*/
-} Regionpar; /* parameters defined for each region */
-
-
 typedef struct
 {
   const Countrypar *par;    /* pointer to country-specific parameter */
-  const Regionpar *regpar;  /* pointer to region-specific parameter */
   Real *laimax;             /* maximum crop specific LAI */
   Real *k_est;
 } Manage;
@@ -59,18 +43,14 @@ extern const char *irrigsys[];
 /* Declaration of functions */
 
 extern int fscancountrypar(LPJfile *,Countrypar **,int,int,Verbosity,const Config *);
-extern int fscanregionpar(LPJfile *,Regionpar **,Verbosity);
 extern int fscantreedens(LPJfile *,Countrypar *,int,Verbosity,const Config *);
 extern void fprintcountrypar(FILE *,const Countrypar *,int,int,const Config *);
-extern void fprintregionpar(FILE *,const Regionpar[],int);
-extern Bool initmanage(Manage *, Code,int,
-                       int,const Config *);
+extern Bool initmanage(Manage *,int,int,int,const Config *);
 extern void freemanage(Manage *,int);
-extern FILE *opencountrycode(const Filename *,Bool *,Type *,size_t *,Bool);
+extern FILE *opencountrycode(const Filename *,Bool *,Bool *,Type *,size_t *,Bool);
 extern FILE *createcountrycode(const char *,int,int);
-extern Bool readcountrycode(FILE *,Code *,Type,Bool);
+extern Bool readcountrycode(FILE *,int *,Type,Bool,Bool);
 extern void freecountrypar(Countrypar [],int);
-extern void freeregionpar(Regionpar [],int);
 
 /* Definitions of macros */
 

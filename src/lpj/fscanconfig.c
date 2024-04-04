@@ -650,12 +650,6 @@ Bool fscanconfig(Config *config,    /**< LPJ configuration */
         fputs("ERROR230: Cannot read country parameter 'countrypar'.\n",stderr);
       return TRUE;
     }
-    if((config->nregions=fscanregionpar(file,&config->regionpar,verbose))==0)
-    {
-      if(verbose)
-        fputs("ERROR230: Cannot read region parameter 'regionpar'.\n",stderr);
-      return TRUE;
-    }
     if(config->nagtree)
     {
       if (fscantreedens(file,config->countrypar,config->npft[GRASS]+config->npft[TREE],verbose,config)==0)
@@ -669,7 +663,6 @@ Bool fscanconfig(Config *config,    /**< LPJ configuration */
   else
   {
     config->countrypar=NULL;
-    config->regionpar=NULL;
   }
   config->global_attrs=NULL;
   config->n_global=0;
@@ -755,10 +748,6 @@ Bool fscanconfig(Config *config,    /**< LPJ configuration */
         return TRUE;
     }
     scanclimatefilename(input,&config->countrycode_filename,FALSE,FALSE,"countrycode");
-    if(config->countrycode_filename.fmt==CDF)
-    {
-      scanclimatefilename(input,&config->regioncode_filename,FALSE,FALSE,"regioncode");
-    }
     scanclimatefilename(input,&config->landuse_filename,FALSE,TRUE,"landuse");
     if(config->iscotton)
     {

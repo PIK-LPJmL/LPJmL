@@ -110,6 +110,8 @@ typedef struct
   Real phen_limit;        /**< limit for agricultural trees */
   Real nfrac_grassharvest; /**< fraction of nitrogen from grass harvest not returned to NH4 pool via manure after mowing*/
   Real nfrac_grazing;       /**< fraction of nitrogen from grass harvest not returned to NH4 pool via manure from livestock*/
+  Real bifratio;            /**< fraction of residue burnt in field */
+  Real fuelratio;           /**< fraction of residue burnt outside field */
   int bmgr_harvest_day_nh;  /**< harvest date of biomass grass harvest in northern hemisphere (green/brown)*/
   int bmgr_harvest_day_sh;  /**< harvest date of biomass grass harvest in southern hemisphere (green/brown)*/
   int cft_fertday_temp;     /**< cft index for fertilizer application date for grassland in temperate regions (abs(lat)>30 deg) */

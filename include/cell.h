@@ -155,7 +155,6 @@ extern Bool freadcell(FILE *,Cell *,int,int,const Soilpar *,
 extern int writecoords(Outputfile *,int,const Cell [],const Config *);
 extern int writearea(Outputfile *,int,const Cell [],const Config *);
 extern int writecountrycode(Outputfile *,int,const Cell [],const Config *);
-extern int writeregioncode(Outputfile *,int,const Cell [],const Config *);
 extern int iterate(Outputfile *,Cell [],Input,
                    int,int,Config *);
 extern void iterateyear(Outputfile *,Cell [],Input,

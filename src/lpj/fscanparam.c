@@ -228,6 +228,11 @@ Bool fscanparam(LPJfile *file,       /**< File pointer to text file */
       fscanparamreal01(f,&param.harvest_fast_frac,"harvest_fast_frac");
       fscanparampoolpar(f,&param.product_turnover,"product_turnover");
     }
+    if(config->residues_fire)
+    {
+      fscanparamreal01(f,&param.bifratio,"bifratio");
+      fscanparamreal01(f,&param.fuelratio,"fuelratio");
+    }
     if(config->rw_manage)
     {
       fscanparamreal01(f,&param.esoil_reduction,"esoil_reduction");

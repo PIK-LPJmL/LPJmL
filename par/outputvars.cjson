@@ -70,7 +70,6 @@
     { "id" : PFT_HARVESTC, "name": "pft_harvestc", "timestep" : "annual", "var" : "harvestc", "long_name" : "harvested carbon excluding residuals", "unit" : "gC/m2/yr", "scale" : 1.0, "offset" : 0.0},
     { "id" : PFT_RHARVESTC, "name": "pft_rharvestc", "timestep" : "annual", "var" : "rharvestc", "long_name" : "harvested residual carbon", "unit" : "gC/m2/yr", "scale" : 1.0, "offset" : 0.0},
     { "id" : COUNTRY, "name": "country", "timestep" : "annual", "var" : "country", "long_name" : "country code", "unit" : "", "scale" : 1.0, "offset" : 0.0},
-    { "id" : REGION, "name": "region", "timestep" : "annual", "var" : "region", "long_name" : "region code", "unit" : "", "scale" : 1.0, "offset" : 0.0},
     { "id" : MG_VEGC, "name": "mg_vegc", "timestep" : "annual", "var" : "mVegC", "long_name" : "managed vegetation carbon", "unit" : "gC/m2", "scale" : 1.0, "offset" : 0.0},
     { "id" : MG_SOILC, "name": "mg_soilc", "timestep" : "annual", "var" : "mSoilC", "long_name" : "managed soil carbon", "unit" : "gC/m2", "scale" : 1.0, "offset" : 0.0},
     { "id" : MG_LITC, "name": "mg_litc", "timestep" : "annual", "var" : "mLitC", "long_name" : "managed litter carbon", "unit" : "gC/m2", "scale" : 1.0, "offset" : 0.0},

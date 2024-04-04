@@ -62,8 +62,8 @@ void harvest_crop(Output *output,      /**< Output data */
   }
   else
   {
-    fuelratio = stand->cell->ml.manage.regpar->fuelratio; /* burn outside of field */
-    bifratio = stand->cell->ml.manage.regpar->bifratio; /* burn in field */
+    fuelratio = param.fuelratio; /* burn outside of field */
+    bifratio = param.bifratio; /* burn in field */
     if (bifratio + fuelratio > res_remove)
     {
       bifratio *= res_remove;

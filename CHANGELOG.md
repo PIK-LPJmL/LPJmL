@@ -32,6 +32,7 @@ of `major.minor.patch` with
 
 - Setting `"const_lai_max"` renamed to `"laimax_const"` for consistency.
 - Keyword `"laimax_interpolate"` renamed to `"laimax_manage"`.
+- Region-specific fractions for residue burning replaced by global parameter `"bifratio"` and `"fuelratio"`.
 
 ### Removed
 
@@ -39,6 +40,9 @@ of `major.minor.patch` with
 - Obsolete function `daily_setaside.c` removed. Function is not necessary any more for coupling to POEM.
 - Obsolete constants removed in `conf.h`.
 - Unused parameter `"residue_rate"`, `"residue_pool"`, `"residue_cn"`, `"residue_fbg"` removed.
+- Functions for reading region-specific parameters removed.
+- Obsolete region parameter file `manage_reg.cjson` removed
+- Obsolete outputs `"region"`, `"flux_firewood"`, `"flux_firewood_n"` removed.
 
 
 ### Fixed

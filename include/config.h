@@ -67,7 +67,6 @@ struct config
   Filename soilph_filename;
   Filename river_filename;
   Filename countrycode_filename;
-  Filename regioncode_filename;
   Filename landuse_filename;
   Filename fertilizer_nr_filename;
   Filename no3deposition_filename;
@@ -122,8 +121,6 @@ struct config
   Soilpar *soilpar;       /**< Soil parameter array */
   int ncountries;         /**< number of countries */
   Countrypar *countrypar; /**< country parameter array */
-  int nregions;           /**< number of regions */
-  Regionpar *regionpar;
   Outputvar *outputvars;
   char *compress_cmd;    /**< command for compressing output files */
   char *compress_suffix; /**< suffix for compressed output files */

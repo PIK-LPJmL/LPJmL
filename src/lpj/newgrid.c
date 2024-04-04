@@ -41,6 +41,7 @@ static Cell *newgrid2(Config *config,          /* Pointer to LPJ configuration *
   int soil_id;
   char *name;
   size_t offset;
+  Bool isregion;
 #ifdef IMAGE
   Infile aquifers;
 #ifdef COUPLED
@@ -48,9 +49,9 @@ static Cell *newgrid2(Config *config,          /* Pointer to LPJ configuration *
   Product *productpool;
 #endif
 #endif
-  Code code;
+  int code;
   FILE *file_restart;
-  Infile countrycode,regioncode;
+  Infile countrycode;
 
   /* Open coordinate and soil file */
   celldata=opencelldata(config);
@@ -83,20 +84,12 @@ static Cell *newgrid2(Config *config,          /* Pointer to LPJ configuration *
         closecelldata(celldata,config);
         return NULL;
       }
-      regioncode.fmt=config->regioncode_filename.fmt;
-      regioncode.cdf=openinput_netcdf(&config->regioncode_filename,NULL,0,config);
-      if(regioncode.cdf==NULL)
-      {
-        closeinput_netcdf(countrycode.cdf);
-        closecelldata(celldata,config);
-        return NULL;
-      }
     }
     else
     {
       /* Open countrycode file */
       countrycode.file=opencountrycode(&config->countrycode_filename,
-                                       &countrycode.swap,&countrycode.type,&offset,isroot(*config));
+                                       &countrycode.swap,&isregion,&countrycode.type,&offset,isroot(*config));
       if(countrycode.file==NULL)
       {
         closecelldata(celldata,config);
@@ -122,8 +115,6 @@ static Cell *newgrid2(Config *config,          /* Pointer to LPJ configuration *
         if(config->countrypar!=NULL)
         {
           closeinput(&countrycode);
-          if(config->countrycode_filename.fmt==CDF)
-            closeinput(&regioncode);
         }
         return NULL;
       }
@@ -140,8 +131,6 @@ static Cell *newgrid2(Config *config,          /* Pointer to LPJ configuration *
       if(config->countrypar!=NULL)
       {
         closeinput(&countrycode);
-        if(config->countrycode_filename.fmt==CDF)
-          closeinput(&regioncode);
       }
       if(config->grassharvest_filename.name!=NULL)
          closeinput(&grassharvest_file);
@@ -182,8 +171,6 @@ static Cell *newgrid2(Config *config,          /* Pointer to LPJ configuration *
     if(config->countrypar!=NULL)
     {
       closeinput(&countrycode);
-      if(config->countrycode_filename.fmt==CDF)
-        closeinput(&regioncode);
     }
     if(config->grassharvest_filename.name!=NULL)
       closeinput(&grassharvest_file);
@@ -208,8 +195,6 @@ static Cell *newgrid2(Config *config,          /* Pointer to LPJ configuration *
       if(config->countrypar!=NULL)
       {
         closeinput(&countrycode);
-        if(config->countrycode_filename.fmt==CDF)
-          closeinput(&regioncode);
       }
       if(config->grassharvest_filename.name!=NULL)
         closeinput(&grassharvest_file);
@@ -230,17 +215,13 @@ static Cell *newgrid2(Config *config,          /* Pointer to LPJ configuration *
       if(config->countrycode_filename.fmt==CDF)
       {
         if(readintinput_netcdf(countrycode.cdf,&data,&grid[i].coord,&missing) || missing)
-          code.country=-1;
+          code=-1;
         else
-          code.country=(short)data;
-        if(readintinput_netcdf(regioncode.cdf,&data,&grid[i].coord,&missing) || missing)
-          code.region=-1;
-        else
-          code.region=(short)data;
+          code=data;
       }
       else
       {
-        if(readcountrycode(countrycode.file,&code,countrycode.type,countrycode.swap))
+        if(readcountrycode(countrycode.file,&code,countrycode.type,isregion,countrycode.swap))
         {
           name=getrealfilename(&config->countrycode_filename);
           fprintf(stderr,"ERROR190: Cannot read country code from '%s' for cell %d.\n",
@@ -251,9 +232,8 @@ static Cell *newgrid2(Config *config,          /* Pointer to LPJ configuration *
       }
       if(config->soilmap[soilcode]>0)
       {
-        if(code.country<0 || code.country>=config->ncountries ||
-           code.region<0 || code.region>=config->nregions)
-          fprintf(stderr,"WARNING009: Invalid countrycode=%d or regioncode=%d with valid soilcode in cell %d (not skipped)\n",code.country,code.region,i+config->startgrid);
+        if(code<0 || code>=config->ncountries)
+          fprintf(stderr,"WARNING009: Invalid countrycode=%d valid soilcode in cell %d (not skipped)\n",code,i+config->startgrid);
         else
         {
           if(initmanage(&grid[i].ml.manage,code,npft,ncft,config))
@@ -472,8 +452,6 @@ static Cell *newgrid2(Config *config,          /* Pointer to LPJ configuration *
   if(config->countrypar!=NULL)
   {
     closeinput(&countrycode);
-    if(config->countrycode_filename.fmt==CDF)
-      closeinput(&regioncode);
   }
 #if defined IMAGE && defined COUPLED
   if(config->sim_id==LPJML_IMAGE)

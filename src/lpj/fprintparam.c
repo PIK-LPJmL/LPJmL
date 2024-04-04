@@ -137,6 +137,11 @@ void fprintparam(FILE *file,    /**< pointer to text file */
       fprintf(file,"product turnover:\t%g %g (1/yr)\n",
               param.product_turnover.fast,param.product_turnover.slow);
     }
+    if(config->residues_fire)
+    {
+      fprintf(file,"bifratio:\t\t%g\n",param.bifratio);
+      fprintf(file,"fuelratio:\t\t%g\n",param.fuelratio);
+    }
     if(config->rw_manage)
     {
       fprintf(file,"esoil reduction:\t%g\n",param.esoil_reduction);
@@ -163,8 +168,6 @@ void fprintparam(FILE *file,    /**< pointer to text file */
     fputs("------------------------------------------------------------------------------\n"
           "Country parameter\n",file);
     fprintcountrypar(file,config->countrypar,npft,ncft,config);
-    fputs("Region parameter\n",file);
-    fprintregionpar(file,config->regionpar,config->nregions);
   }
   else
     for(p=0;p<getnnat(npft,config);p++)

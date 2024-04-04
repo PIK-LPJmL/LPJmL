@@ -505,7 +505,6 @@ Bool filesexist(Config config, /**< LPJmL configuration */
     if(config.countrycode_filename.fmt==CDF)
     {
       bad+=checkinputfile(&config,&config.countrycode_filename,NULL,0);
-      bad+=checkinputfile(&config,&config.regioncode_filename,NULL,0);
     }
     else
       bad+=checkinputfile(&config,&config.countrycode_filename,NULL,2);

@@ -490,11 +490,6 @@ int main(int argc,char **argv)
         check(country);
         readshort_socket(socket,country,sizes[index]);
         break;
-      case REGION:
-        region=newvec(short,sizes[index]);
-        check(region);
-        readshort_socket(socket,region,sizes[index]);
-        break;
       default:
         fprintf(stderr,"Unsupported index %d of output.\n",index);
         return EXIT_FAILURE;

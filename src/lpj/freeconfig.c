@@ -135,11 +135,8 @@ void freeconfig(Config *config /**< LPJmL configuration */
     if(config->tillage_type==READ_TILLAGE)
       freefilename(&config->with_tillage_filename);
     freecountrypar(config->countrypar,config->ncountries);
-    freeregionpar(config->regionpar,config->nregions);
     freefilename(&config->landuse_filename);
     freefilename(&config->countrycode_filename);
-    if(config->countrycode_filename.fmt==CDF)
-      freefilename(&config->regioncode_filename);
     if(config->iscotton)
     {
       freefilename(&config->sowing_cotton_rf_filename);

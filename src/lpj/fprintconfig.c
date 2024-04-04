@@ -600,8 +600,6 @@ void fprintconfig(FILE *file,          /**< File pointer to text output file */
   if(config->withlanduse!=NO_LANDUSE)
   {
     printinputfile(file,"countries",&config->countrycode_filename,width,config);
-    if(config->countrycode_filename.fmt==CDF)
-      printinputfile(file,"regions",&config->regioncode_filename,width,config);
     printinputfile(file,"landuse",&config->landuse_filename,width,config);
     if(config->iscotton)
     {

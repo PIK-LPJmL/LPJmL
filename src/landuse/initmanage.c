@@ -16,7 +16,7 @@
 #include "crop.h"
 
 Bool initmanage(Manage *manage,      /**< pointer to management data */
-                Code code,           /**< country and region code */
+                int code,            /**< country code */
                 int npft,            /**< number of natural PFTs */
                 int ncft,            /**< number of crop PFts */
                 const Config *config /**< LPJmL configuration */
@@ -24,8 +24,7 @@ Bool initmanage(Manage *manage,      /**< pointer to management data */
 {
   const Pftcroppar *croppar;
   int cft;
-  manage->par=config->countrypar+code.country;
-  manage->regpar=config->regionpar+code.region;
+  manage->par=config->countrypar+code;
   if(manage->par->laimax_cft==NULL)
   {
     manage->laimax=newvec2(Real,npft,npft+ncft-1);  /* allocate memory for country-specific laimax*/

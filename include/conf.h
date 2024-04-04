@@ -81,7 +81,7 @@
 #define NO_FERTILIZER 0
 #define FERTILIZER 1
 #define AUTO_FERTILIZER 2
-#define NOUT 331            /* number of output files */
+#define NOUT 330            /* number of output files */
 #define GRIDBASED 1         /* pft-specific outputs scaled by stand->frac */
 #define PFTBASED 0          /* pft-specific outputs not scaled by stand->frac */
 #define ANNUAL -2
@@ -90,11 +90,11 @@
 /* output*/
 #define GRID 0
 #define COUNTRY 1
-#define REGION 2
-#define GLOBALFLUX 3
-#define TERR_AREA 4
-#define LAKE_AREA 5
-#define FPC 6
+#define GLOBALFLUX 2
+#define TERR_AREA 3
+#define LAKE_AREA 4
+#define FPC 5
+#define PFT_WATER_SUPPLY 6
 #define TRANSP 7
 #define RUNOFF 8
 #define DISCHARGE 9
@@ -418,7 +418,6 @@
 #define NDEPOS 327
 #define RIVERVOL 328
 #define SWC_VOL 329
-#define PFT_WATER_SUPPLY 330
 #define PFT_GCGP_COUNT 0
 #define NDAY_MONTH 1
 #define RANDOM_SEED 0
