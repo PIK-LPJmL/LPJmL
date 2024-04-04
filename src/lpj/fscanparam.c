@@ -183,22 +183,10 @@ Bool fscanparam(LPJfile *file,       /**< File pointer to text file */
       return TRUE;
     }
     fscanparamreal(f,&param.fertilizer_rate,"fertilizer_rate");
-    if(config->residue_treatment)
-    {
-      fscanparamreal(f,&param.residue_cn,"residue_cn");
-      if(param.residue_cn<=0)
-      {
-        if(isroot(*config))
-          fprintf(stderr,"ERROR238: Parameter residue_cn=%g must be greater than zero.\n",
-                  param.residue_cn);
-        return TRUE;
-      }
-    }
   }
   else
   {
     param.q_ash=param.sapwood_recovery=param.fertilizer_rate=0;
-    param.residue_cn=1;
   }
   if(config->fire==SPITFIRE || config->fire==SPITFIRE_TMAX)
   {
@@ -206,13 +194,6 @@ Bool fscanparam(LPJfile *file,       /**< File pointer to text file */
     fscanparamreal(f,&param.fire_intens,"fire_intens");
     fscanparamreal(f,&param.hum_ign,"hum_ign");
   }
-  if(config->residue_treatment)
-  {
-    fscanparamreal(f,&param.residue_rate,"residue_rate");
-    fscanparamreal(f,&param.residue_pool,"residue_pool");
-    fscanparamreal01(f,&param.residue_fbg,"residue_fbg");
-  }
-  fscanparamreal01(f,&param.residue_frac,"residue_frac");
   fscanparamreal01(f,&param.mixing_efficiency,"mixing_efficiency");
   if(config->withlanduse!=NO_LANDUSE)
   {

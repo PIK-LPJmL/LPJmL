@@ -53,7 +53,7 @@ Bool annual_natural(Stand *stand,         /**< Pointer to stand */
              pft->bm_inc.carbon,vegc_sum(pft),soilcarbon(&stand->soil));
 #endif
       
-      if(annualpft(stand,pft,fpc_inc+p,isdaily,config) || config->black_fallow)
+      if(annualpft(stand,pft,fpc_inc+p,isdaily,config))
       {
         /* PFT killed, delete from list of established PFTs */
         fpc_inc[p]=fpc_inc[getnpft(&stand->pftlist)-1];
@@ -95,21 +95,18 @@ Bool annual_natural(Stand *stand,         /**< Pointer to stand */
     stand->cell->output.dcflux+=flux.carbon*stand->frac;
   }
 #ifndef DAILY_ESTABLISHMENT
-  if(!config->black_fallow)
-  {
-    flux_estab=establishmentpft(stand,npft,stand->cell->balance.aprec,year,config);
-    getoutput(&stand->cell->output,FLUX_ESTABC,config)+=flux_estab.carbon*stand->frac;
-    getoutput(&stand->cell->output,FLUX_ESTABN,config)+=flux_estab.nitrogen*stand->frac;
-    stand->cell->balance.flux_estab.carbon+=flux_estab.carbon*stand->frac;
-    stand->cell->balance.flux_estab.nitrogen+=flux_estab.nitrogen*stand->frac;
-    stand->cell->output.dcflux-=flux_estab.carbon*stand->frac;
+  flux_estab=establishmentpft(stand,npft,stand->cell->balance.aprec,year,config);
+  getoutput(&stand->cell->output,FLUX_ESTABC,config)+=flux_estab.carbon*stand->frac;
+  getoutput(&stand->cell->output,FLUX_ESTABN,config)+=flux_estab.nitrogen*stand->frac;
+  stand->cell->balance.flux_estab.carbon+=flux_estab.carbon*stand->frac;
+  stand->cell->balance.flux_estab.nitrogen+=flux_estab.nitrogen*stand->frac;
+  stand->cell->output.dcflux-=flux_estab.carbon*stand->frac;
 #if defined IMAGE && defined COUPLED
-    if(stand->type->landusetype==NATURAL)
-    {
-      stand->cell->flux_estab_nat+=flux_estab.carbon*stand->frac;
-    }
-#endif
+  if(stand->type->landusetype==NATURAL)
+  {
+    stand->cell->flux_estab_nat+=flux_estab.carbon*stand->frac;
   }
+#endif
 #endif
   foreachpft(pft,p,&stand->pftlist)
   {

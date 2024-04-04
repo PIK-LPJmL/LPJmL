@@ -68,6 +68,12 @@ int main(int argc,char **argv)
                   argv[iarg]);
           return EXIT_FAILURE;
         }
+        if(setversion>CLM_MAX_VERSION)
+        {
+          fprintf(stderr,"Version %d greater than maximum version %d supported.\n",
+                  setversion,CLM_MAX_VERSION);
+          return EXIT_FAILURE;
+        }
       }
       else if(!strcmp(argv[iarg],"-type"))
       {

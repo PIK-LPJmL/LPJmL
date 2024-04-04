@@ -107,9 +107,6 @@
   "laimax_manage" : "laimax_par",       /* laimax settings, options:  "laimax_par" (values from pft.cjson), "laimax_cft" (values from manage_irrig_*.cjson), "laimax_const" (constant values set in flag laimax) */
   "laimax" : 5,                         /* maximum LAI for laimax_interpolate = "laimax_const" */
   "tillage_type" : "read",              /* Options: "all" (all agr. cells tilled), "no" (no cells tilled) and "read" (tillage dataset used) */
-  "till_fallow" : false,                /* tillage on */
-  "black_fallow" : false,               /* simulation with black fallow on PNV */
-  "pft_residue" : "temperate cereals",  /* ?  */
   "no_ndeposition" : false,             /* turn off atmospheric N deposition */
   "rw_manage" : false,                  /* enable rain water management; specific parameters in lpjparam.cjson */
   "fertilizer_input" : "yes",           /* fertilizer input setting, options: "no" (crops only depend on N in soils and from deposition), "yes", "auto" (applies exact N demand required by managed vegetation directly to plants - removes any N stress) */

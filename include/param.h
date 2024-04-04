@@ -87,10 +87,6 @@ typedef struct
   Real nmanure_nh4_frac;  /* fraction of NH4 in manure */
   Real residue_frac; /**< fraction of residues to be submerged with tillage */
   Real mixing_efficiency; /**< density factor to simulate changes in bulk density by tillage */
-  Real residue_rate;        /**< fixed residue rate in gC/m2/yr */
-  Real residue_pool;        /**< fixed residue pool in gC/m2 */
-  Real residue_cn;          /**< CN ratio of prescribed residues */
-  Real residue_fbg;         /**< belowground fraction of prescribed residues */
   Real fertilizer_rate;     /**< fixed fertilizer application rate in gN/m2/yr */
   Real manure_rate;         /**< fixed manure application rate in gN/m2/yr */
   Real min_c_bnf;

@@ -55,7 +55,7 @@ void update_daily(Cell *cell,            /**< cell pointer           */
   Stand *stand;
   Real bnf;
   Real nh3;
-  int index,l,i;
+  int l,i;
   Real rootdepth=0.0;
   Livefuel livefuel={0,0,0,0,0};
   const Real prec_save=climate.prec;
@@ -97,37 +97,6 @@ void update_daily(Cell *cell,            /**< cell pointer           */
       stand->soil.litter.item[l].agtop.leaf.nitrogen *= (1 - param.bioturbate);
     }
 
-    if(stand->type->landusetype==NATURAL && config->black_fallow && (day==152 || day==335))
-    {
-      if(config->prescribe_residues && param.residue_rate>0 && param.residue_pool<=0)
-      {
-        index=findlitter(&stand->soil.litter,config->pftpar+config->pft_residue);
-        if(index==NOT_FOUND)
-          index=addlitter(&stand->soil.litter,config->pftpar+config->pft_residue)-1;
-        stand->soil.litter.item[index].agtop.leaf.carbon+=param.residue_rate*(1-param.residue_fbg)/2;
-        stand->soil.litter.item[index].agtop.leaf.nitrogen+=param.residue_rate*(1-param.residue_fbg)/param.residue_cn/2;
-        stand->soil.litter.item[index].bg.carbon+=param.residue_rate*param.residue_fbg*0.5;
-        stand->soil.litter.item[index].bg.nitrogen+=param.residue_rate*param.residue_fbg/param.residue_cn/2;
-        getoutput(&cell->output,FLUX_ESTABC,config)+=param.residue_rate*stand->frac*0.5;
-        cell->balance.flux_estab.carbon+=param.residue_rate*stand->frac*0.5;
-        getoutput(&cell->output,FLUX_ESTABN,config)+=param.residue_rate/param.residue_cn*0.5*stand->frac;
-        cell->balance.flux_estab.nitrogen+=param.residue_rate/param.residue_cn*0.5*stand->frac;
-        updatelitterproperties(stand,stand->frac);
-      }
-      if(config->fix_fertilization)
-      {
-        stand->soil.NO3[0]+=param.fertilizer_rate*0.25;
-        stand->soil.NH4[0]+=param.fertilizer_rate*0.25;
-        cell->balance.influx.nitrogen+=param.fertilizer_rate*0.5*stand->frac;
-      }
-      if(config->till_fallow)
-      {
-        tillage(&stand->soil,param.residue_frac);
-        if(config->soilpar_option==NO_FIXED_SOILPAR || (config->soilpar_option==FIXED_SOILPAR && year<config->soilpar_fixyear))
-          pedotransfer(stand,NULL,NULL,stand->frac);
-        updatelitterproperties(stand,stand->frac);
-      }
-    }
     beta=albedo_stand(stand);
     radiation(&daylength,&par,&eeq,cell->coord.lat,day,&climate,beta,config->with_radiation);
     getoutput(&cell->output,PET,config)+=eeq*PRIESTLEY_TAYLOR*stand->frac;
@@ -220,19 +189,6 @@ void update_daily(Cell *cell,            /**< cell pointer           */
         for(i=0;i<NFUELCLASS;i++)
           litsum_new_agr[WOOD]+=stand->soil.litter.item[l].agtop.wood[i].carbon+stand->soil.litter.item[l].agsub.wood[i].carbon;
       }
-
-    if(stand->type->landusetype==NATURAL && config->black_fallow && config->prescribe_residues && param.residue_pool>0)
-    {
-      index=findlitter(&stand->soil.litter,config->pftpar+config->pft_residue);
-      if(index==NOT_FOUND)
-        index=addlitter(&stand->soil.litter,config->pftpar+config->pft_residue)-1;
-      getoutput(&cell->output,FLUX_ESTABC,config)+=(param.residue_pool-stand->soil.litter.item[index].agtop.leaf.carbon)*stand->frac;
-      cell->balance.flux_estab.carbon+=(param.residue_pool-stand->soil.litter.item[index].agtop.leaf.carbon)*stand->frac;
-      stand->soil.litter.item[index].agtop.leaf.carbon=param.residue_pool;
-      getoutput(&cell->output,FLUX_ESTABN,config)+=(param.residue_pool/param.residue_cn-stand->soil.litter.item[index].agtop.leaf.nitrogen)*stand->frac;
-      cell->balance.flux_estab.nitrogen+=(param.residue_pool/param.residue_cn-stand->soil.litter.item[index].agtop.leaf.nitrogen)*stand->frac;
-      stand->soil.litter.item[index].agtop.leaf.nitrogen=param.residue_pool/param.residue_cn;
-    }
 
     /* update soil and litter properties to account for all changes from littersom */
     if(config->soilpar_option==NO_FIXED_SOILPAR || (config->soilpar_option==FIXED_SOILPAR && year<config->soilpar_fixyear))

@@ -60,9 +60,6 @@
     "percthres" : 1.0,
     "fpc_tree_max" : 0.95,     /* maximum foliage projective cover for trees */
     "k_mort" : 0.2,            /* coefficient of growth efficiency in mortality equation (k_mort2) */
-    "residue_rate": 200,       /* fixed residue rate in gC/m2/yr, ignored if <=0 and if pool >0  */
-    "residue_pool" : 100,      /* fixed aboveground residue pool in gC/m2, ignored if <=0, overrules constant rate */
-    "residue_fbg": 0.25,       /* belowground fraction of prescribed residues */
     "residue_frac" : 0.95,     /* fraction of residues to be submerged by tillage */
     "mixing_efficiency" : 0.9, /* mixing efficiency of tillage */
     "lsuha" : 0.0,             /* livestock density applied for daily or rotational grazing on mangement grasslands */

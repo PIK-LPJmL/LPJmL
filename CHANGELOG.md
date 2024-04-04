@@ -19,7 +19,7 @@ of `major.minor.patch` with
 
 ## [Unreleased]
 
-## [5.8.10] - 2024-03-26
+## [5.8.10] - 2024-04-04
 
 - author: Werner von Bloh (bloh@pik-potsdam.de)
 
@@ -31,18 +31,22 @@ of `major.minor.patch` with
 ### Changed
 
 - Setting `"const_lai_max"` renamed to `"laimax_const"` for consistency.
+- Keyword `"laimax_interpolate"` renamed to `"laimax_manage"`.
 
 ### Removed
 
-- `"laimax_interpolate"`, `"firewood"` and `"grassland_fixed_pft"` setting and corresponding code removed.
+- `"laimax_interpolate"`, `"firewood"`, `"black_fallow"`, `"till_fallow"`, and `"grassland_fixed_pft"` setting and corresponding code removed (issue #350).
 - Obsolete function `daily_setaside.c` removed. Function is not necessary any more for coupling to POEM.
 - Obsolete constants removed in `conf.h`.
+- Unused parameter `"residue_rate"`, `"residue_pool"`, `"residue_cn"`, `"residue_fbg"` removed.
+
 
 ### Fixed
 
 - Typos in error messages corrected in `bin2cdf.c` and `clm2cdf.c`.
 - Output of turnover corrected in `fprintpar_grass.c`.
 - Output of options fixed in `openconfig.c` if environment variable `LPJOPTIONS` is set.
+- Calculation of average fixed in `statclm`.
 
 
 ## [5.8.9] - 2024-03-14

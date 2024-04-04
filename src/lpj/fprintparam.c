@@ -107,14 +107,6 @@ void fprintparam(FILE *file,    /**< pointer to text file */
       fprintf(file,"cft_fertday_tropic:\t%s\n", config->pftpar[npft+param.cft_fertday_tropic].name);
     }
     fprintf(file,"residues_frac:\t%g\n",param.residue_frac);
-    if(config->residue_treatment)
-    {
-      fprintf(file,"residue rate:\t%g (gC/m2/yr)\n",param.residue_rate);
-      fprintf(file,"residue pool:\t%g (gC/m2)\n",param.residue_pool);
-      fprintf(file,"residue fbg:\t%g\n",param.residue_fbg);
-      if(config->with_nitrogen)
-        fprintf(file,"residue C:N:\t%g\n",param.residue_cn);
-    }
     fprintf(file,"mixing_efficiency:\t%g\n",param.mixing_efficiency);
     fprintf(file,"livestock density on grassland:\t%g\n",
             param.lsuha);

@@ -331,7 +331,6 @@ Bool fscanconfig(Config *config,    /**< LPJ configuration */
   config->residue_treatment=NO_RESIDUE_REMOVE;
   config->no_ndeposition=FALSE;
   config->cropsheatfrost=FALSE;
-  config->black_fallow=FALSE;
   config->separate_harvests=FALSE;
   config->others_to_crop = FALSE;
   config->npp_controlled_bnf = FALSE;
@@ -529,13 +528,6 @@ Bool fscanconfig(Config *config,    /**< LPJ configuration */
       if(fscankeywords(file,&config->residue_treatment,"residue_treatment",residue_treatment,3,TRUE,verbose))
         return TRUE;
     }
-    if(fscanbool(file,&config->black_fallow,"black_fallow",!config->pedantic,verbose))
-      return TRUE;
-    if(config->black_fallow)
-    {
-      fscanbool2(file,&config->till_fallow,"till_fallow");
-      fscanbool2(file,&config->prescribe_residues,"prescribe_residues");
-    }
     if(isboolean(file,"wateruse"))
     {
       if(isroot(*config))
@@ -648,23 +640,6 @@ Bool fscanconfig(Config *config,    /**< LPJ configuration */
       {
         fprintf(stderr,"ERROR230: Invalid CFT '%s' for 'cft_tropic', must be ",name);
         fprintpftnames(stderr,config->pftpar+config->npft[GRASS]+config->npft[TREE],config->npft[CROP]);
-        fputs(".\n",stderr);
-      }
-      return TRUE;
-    }
-  }
-  if(config->black_fallow && config->prescribe_residues)
-  {
-    name=fscanstring(file,NULL,"residue_pft",verbose);
-    if(name==NULL)
-      return TRUE;
-    config->pft_residue=findpftname(name,config->pftpar,config->npft[GRASS]+config->npft[TREE]+config->npft[CROP]);
-    if(config->pft_residue==NOT_FOUND)
-    {
-      if(verbose)
-      {
-        fprintf(stderr,"ERROR230: Invalid PFT '%s' for black fallow, must be ",name);
-        fprintpftnames(stderr,config->pftpar,config->npft[GRASS]+config->npft[TREE]+config->npft[CROP]);
         fputs(".\n",stderr);
       }
       return TRUE;

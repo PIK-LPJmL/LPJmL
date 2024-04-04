@@ -134,7 +134,6 @@ struct config
   Bool withdailyoutput; /**< with daily output (TRUE/FALSE) */
   Bool flush_output;   /**< flush output after every simulation year (TRUE/FALSE) */
   Bool nofill;          /**< do not fille NetCDF files at creation (TRUE/FALSE) */
-  int pft_residue;
   int fdi;
   char *pft_index;
   char *layer_index;
@@ -143,11 +142,8 @@ struct config
   Bool cropsheatfrost;
   int tillage_type;      /**< type of tillage NO_TILLAGE=0, TILLAGE=1, READ_TILLAGE=2 */
   int residue_treatment; /** residue options: READ_RESIDUE_DATA, NO_RESIDUE_REMOVE, FIXED_RESIDUE_REMOVE (uses param residues_in_soil) */
-  Bool black_fallow;      /**< simulation with black fallow */
-  Bool till_fallow;         /**< apply tillage on black fallow */
   Bool fix_fertilization;   /**< simulation with fixed fertilizer application rate */
   Bool no_ndeposition;      /**< turn off atmospheric N deposition */
-  Bool prescribe_residues;  /**< simulation with prescribed residue rate on black fallow */
   int fertilizer_input;     /**< simulation with fertilizer input */
   Bool manure_input;       /**< simulation with manure input */
   Bool prescribe_lsuha;    /**< simulation with prescribed grassland livestock density from file */
