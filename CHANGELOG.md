@@ -32,7 +32,7 @@ of `major.minor.patch` with
 back to `"grid"` (instead of `"soil"`). If NetCDF output is written the variable
 name would be cell id, if raw output is written the variable name would be
 the coordinates. `"grid"` is used as generic naming here, `long_name` is used
-to describe to describe this exception (`"grid information (raw: coordinates, cdf: cell_id)"`)
+to describe this exception (`"grid information (raw: coordinates, cdf: cell_id)"`)
 
 
 ## [5.8.9] - 2024-03-14
