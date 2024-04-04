@@ -328,7 +328,7 @@ extern void getrootdist(Real [],const Real[],Real);
 extern Stocks checklitter(Litter *);
 extern Real getwr(const Soil *,const Real []);
 extern void updatelitterproperties(Stand *,Real);
-extern Real calc_litter_dm_sum(Soil *soil);
+extern Real calc_litter_dm_sum(const Soil *);
 extern void pedotransfer(Stand *, Real *, Real *,Real);
 extern void soilpar_output(Cell *,Real,const Config *);
 extern int findsoilid(const char *,const Soilpar *,int);

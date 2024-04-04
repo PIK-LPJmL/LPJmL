@@ -65,14 +65,14 @@ Real snow(Soil *soil,       /**< pointer to soil data */
 {
   Real runoff=0;
   Real melt_heat,      /*[J/m2]*/
-       dt,             /* change in time [s]*/
+ //      dt,             /* change in time [s]*/
        dT,             /* change in temperature [K]*/
        heatflux,
        depth;
   Real frsg;  /* Snow cover of the ground below the canopy (0-1) */
   Real HS;    /* Height of the Snow (m) */
 
-  unsigned long int heat_steps,t;
+  //unsigned long int heat_steps,t;
 
   *snowmelt=0.0;
   /* precipitation falls as snow */
@@ -120,8 +120,8 @@ Real snow(Soil *soil,       /**< pointer to soil data */
       }
     }
     /* stability criterion for finite-difference solution */
-    dt=0.5*(soil->snowpack*soil->snowpack*1e-6)/th_diff_snow;
-    heat_steps= (unsigned long int)(timestep2sec(1.0,NSTEP_DAILY)/dt)+1;
+    //dt=0.5*(soil->snowpack*soil->snowpack*1e-6)/th_diff_snow;
+    //heat_steps= (unsigned long int)(timestep2sec(1.0,NSTEP_DAILY)/dt)+1;
     *temp_bsnow=temp;
     // for (t=0; t<heat_steps;++t)
     // {

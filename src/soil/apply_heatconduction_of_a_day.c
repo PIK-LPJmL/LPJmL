@@ -40,7 +40,7 @@ David Hötten.
 STATIC void use_enth_scheme(Real *, const Real *, const Real, const Soil_thermal_prop *);
 STATIC void use_temp_scheme_implicit(Real *, const Real *, const Real *, const Real *, int);
 STATIC void arrange_matrix(Real *, Real *, Real *, const Real *, const Real *, const Real *, const Real);
-STATIC void thomas_algorithm(double *, double *, double *, double *, double *);
+STATIC void thomas_algorithm(const double *, const double *, const double *,const double *, double *);
 STATIC void timestep_implicit(Real *, const Real *, const Real *, const Real *, const Real);
 
 void apply_heatconduction_of_a_day(Uniform_temp_sign uniform_temp_sign, /**< flag to indicate if the temperatures all have the same signs */
@@ -298,10 +298,10 @@ STATIC void arrange_matrix(Real * a,          /*< sub diagonal elements  */
 
 /* This function performs the standard thomas algorithm to solve a
    tridiagonal matrix system. */
-STATIC void thomas_algorithm(double *a, /* sub diagonal elements */
-                             double *b, /* main diagonal elements */
-                             double *c, /* super diagonal elements */
-                             double *d, /* right hand side */
+STATIC void thomas_algorithm(const double *a, /* sub diagonal elements */
+                             const double *b, /* main diagonal elements */
+                             const double *c, /* super diagonal elements */
+                             const double *d, /* right hand side */
                              double *x /* solution */
                             )
 {

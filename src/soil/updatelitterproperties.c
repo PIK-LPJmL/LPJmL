@@ -29,11 +29,12 @@ void updatelitterproperties(Stand *stand,  /**< Stand pointer */
   }
 } /* of 'updatelitterproperties' */
 
-
-Real calc_litter_dm_sum(Soil *soil) {
+Real calc_litter_dm_sum(const Soil *soil)
+{
   int l;
   Real dm_sum=0;
-  for(l=0;l<soil->litter.n;l++){
+  for(l=0;l<soil->litter.n;l++)
+  {
     dm_sum+=soil->litter.item[l].agtop.leaf.carbon/0.42; /* Accounting that C content in plant dry matter is 42% (Brady and Weil 2008, p.504)*/
   }
   if(dm_sum<0)
