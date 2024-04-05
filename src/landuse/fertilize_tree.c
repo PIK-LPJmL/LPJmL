@@ -60,7 +60,7 @@ void fertilize_tree(Stand *stand,        /**< pointer to stand */
           stand->cell->balance.influx.nitrogen += fertil * param.nfert_split_frac * stand->frac;
           getoutput(output, NFERT_AGR, config) += fertil * param.nfert_split_frac * pft->stand->frac;
           if(pft->stand->type->landusetype!=WOODPLANTATION)
-            getoutput(output, NFERT_MG, config) += fertil * param.nfert_split_frac * pft->stand->frac;
+            getoutput(output, NAPPLIC_MG, config) += fertil * param.nfert_split_frac * pft->stand->frac;
           /* Store remainder of fertilizer for second application */
           tree->nfertilizer = fertil * (1 - param.nfert_split_frac);
 
@@ -72,7 +72,7 @@ void fertilize_tree(Stand *stand,        /**< pointer to stand */
           stand->cell->balance.influx.nitrogen += manure*stand->frac*param.nfert_split_frac;
           getoutput(output,NMANURE_AGR,config)+=manure*stand->frac*param.nfert_split_frac;
           if(pft->stand->type->landusetype!=WOODPLANTATION)
-            getoutput(output,NFERT_MG,config)+=manure*stand->frac*param.nfert_split_frac; 
+            getoutput(output,NAPPLIC_MG,config)+=manure*stand->frac*param.nfert_split_frac; 
 
           /* store remainder of manure for second application */
           tree->nmanure=manure*(1-param.nfert_split_frac);
@@ -89,7 +89,7 @@ void fertilize_tree(Stand *stand,        /**< pointer to stand */
           stand->cell->balance.influx.nitrogen += fertil * stand->frac;
           getoutput(output, NFERT_AGR, config) += fertil * pft->stand->frac;
           if(pft->stand->type->landusetype!=WOODPLANTATION)
-            getoutput(output, NFERT_MG, config) += fertil * pft->stand->frac;
+            getoutput(output, NAPPLIC_MG, config) += fertil * pft->stand->frac;
           tree->nfertilizer = 0;
 
           /* application of manure */
@@ -99,7 +99,7 @@ void fertilize_tree(Stand *stand,        /**< pointer to stand */
           stand->soil.litter.item->agsub.leaf.nitrogen += manure*(1-param.nmanure_nh4_frac);
           getoutput(output,NMANURE_AGR,config)+=manure*stand->frac;
           if(pft->stand->type->landusetype!=WOODPLANTATION)
-            getoutput(output,NFERT_MG,config)+=manure*stand->frac;
+            getoutput(output,NAPPLIC_MG,config)+=manure*stand->frac;
           stand->cell->balance.influx.carbon += manure*param.manure_cn*stand->frac;
           stand->cell->balance.influx.nitrogen += manure*stand->frac;
           tree->nmanure = 0; 

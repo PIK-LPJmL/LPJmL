@@ -98,7 +98,7 @@ Stocks cultivate(Cell *cell,           /**< cell pointer */
     cell->balance.influx.carbon += manure*param.manure_cn*cropstand->frac*param.nfert_split_frac;
     cell->balance.influx.nitrogen += manure*cropstand->frac*param.nfert_split_frac;
     getoutput(&cell->output,NMANURE_AGR,config)+=manure*cropstand->frac*param.nfert_split_frac;
-    getoutput(&cell->output,NFERT_MG,config)+=manure*cropstand->frac*param.nfert_split_frac;
+    getoutput(&cell->output,NAPPLIC_MG,config)+=manure*cropstand->frac*param.nfert_split_frac;
     /* store remainder of manure for second application */
     crop = pft->data;
     crop->nmanure=manure*(1-param.nfert_split_frac);
@@ -110,7 +110,7 @@ Stocks cultivate(Cell *cell,           /**< cell pointer */
     cropstand->soil.NH4[0] += fertil*(1 - param.nfert_no3_frac)*param.nfert_split_frac;
     cell->balance.influx.nitrogen += fertil*param.nfert_split_frac*cropstand->frac;
     getoutput(&cell->output,NFERT_AGR,config)+=fertil*param.nfert_split_frac*cropstand->frac;
-    getoutput(&cell->output,NFERT_MG,config)+=fertil*param.nfert_split_frac*cropstand->frac;
+    getoutput(&cell->output,NAPPLIC_MG,config)+=fertil*param.nfert_split_frac*cropstand->frac;
     /* store remainder of fertilizer for second application */
     crop = pft->data;
     crop->nfertilizer = fertil*(1-param.nfert_split_frac);
