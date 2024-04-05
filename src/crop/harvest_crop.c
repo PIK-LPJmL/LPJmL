@@ -69,7 +69,7 @@ void harvest_crop(Output *output,      /**< Output data */
       bifratio *= res_remove;
       fuelratio *= res_remove;
     }
-    res_remove -= fuelratio - bifratio;
+    res_remove -= fuelratio + bifratio;
     harvest.residuals_burnt.carbon = (crop->ind.leaf.carbon + crop->ind.pool.carbon)*fuelratio;
     harvest.residuals_burntinfield.carbon = (crop->ind.leaf.carbon + crop->ind.pool.carbon)*bifratio;
     harvest.residuals_burnt.nitrogen = (crop->ind.leaf.nitrogen + crop->ind.pool.nitrogen)*fuelratio;
