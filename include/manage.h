@@ -55,6 +55,6 @@ extern void freecountrypar(Countrypar [],int);
 /* Definitions of macros */
 
 #define fwritecountrycode(file,code,n) fwrite(code,sizeof(Code),n,file)
-#define seekcountrycode(file,index,nbands,type,offset) fseek(file,offset+(index)*typesizes[type]*nbands,SEEK_SET)
+#define seekcountrycode(file,index,nbands,type,offset) fseek(file,offset+(index)*typesizes[type]*(nbands),SEEK_SET)
 
 #endif
