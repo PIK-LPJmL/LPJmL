@@ -20,7 +20,7 @@
 #define error(rc) if(rc) {free(lon);free(lat);fprintf(stderr,"ERROR427: Cannot write '%s': %s.\n",filename,nc_strerror(rc)); nc_close(cdf->ncid); free(cdf);return NULL;}
 
 #define MISSING_VALUE 999
-#define USAGE "Usage: %s [-global] [-index i] [-cellsize size] [-compress level] [-descr d] name\n       gridfile countryfile netcdffile\n"
+#define USAGE "Usage: %s [-global] [-index i] [-cellsize size] [-compress level] [-descr d] [-config file] name\n       gridfile countryfile netcdffile\n"
 
 typedef struct
 {
@@ -30,7 +30,8 @@ typedef struct
 } Cdf;
 
 static Cdf *create_cdf(const char *filename,
-                       const char *clm_filename,
+                       const char *progname,
+                       const char *arglist,
                        const char *name,
                        const char *descr,
                        const Netcdf_config *netcdf_config,
@@ -41,9 +42,9 @@ static Cdf *create_cdf(const char *filename,
   Cdf *cdf;
   double *lon,*lat;
   int i,rc,dim[2];
-  String s;
+  char *s;
   time_t t;
-  int lat_var_id,lon_var_id,lat_dim_id,lon_dim_id;
+  int lat_var_id,lon_var_id,lat_dim_id,lon_dim_id,len;
   cdf=new(Cdf);
   lon=newvec(double,array->nlon);
   if(lon==NULL)
@@ -83,21 +84,21 @@ static Cdf *create_cdf(const char *filename,
   error(rc);
   rc=nc_def_dim(cdf->ncid,netcdf_config->lon.dim,array->nlon,&lon_dim_id);
   error(rc);
-  snprintf(s,STRING_LEN,"country2cdf %s",clm_filename);
-  rc=nc_put_att_text(cdf->ncid,NC_GLOBAL,"source",strlen(s),s);
-  error(rc);
   time(&t);
-  snprintf(s,STRING_LEN,"Created for user %s on %s at %s",getuser(),gethost(),
-           ctime(&t));
-  s[strlen(s)-1]='\0';
+  len=snprintf(NULL,0,"%s: %s",strdate(&t),arglist);
+  s=malloc(len+1);
+  check(s);
+  sprintf(s,"%s: %s",strdate(&t),arglist);
   rc=nc_put_att_text(cdf->ncid,NC_GLOBAL,"history",strlen(s),s);
+  error(rc);
+  rc=nc_put_att_text(cdf->ncid,NC_GLOBAL,"source",strlen(progname),progname);
   error(rc);
   rc=nc_def_var(cdf->ncid,netcdf_config->lat.name,NC_DOUBLE,1,&lat_dim_id,&lat_var_id);
   error(rc);
   rc=nc_def_var(cdf->ncid,netcdf_config->lon.name,NC_DOUBLE,1,&lon_dim_id,&lon_var_id);
   error(rc);
-  rc=nc_put_att_text(cdf->ncid,lon_var_id,"units",strlen("degrees_east"),
-                     "degrees_east");
+  rc=nc_put_att_text(cdf->ncid,lon_var_id,"units",
+                     strlen(netcdf_config->lon.unit),netcdf_config->lon.unit);
   error(rc);
   rc=nc_put_att_text(cdf->ncid, lon_var_id,"long_name",
                      strlen(netcdf_config->lon.long_name),netcdf_config->lon.long_name);
@@ -107,8 +108,8 @@ static Cdf *create_cdf(const char *filename,
   error(rc);
   rc=nc_put_att_text(cdf->ncid, lon_var_id,"axis",strlen("X"),"X");
   error(rc);
-  rc=nc_put_att_text(cdf->ncid,lat_var_id,"units",strlen("degrees_north"),
-                     "degrees_north");
+  rc=nc_put_att_text(cdf->ncid,lat_var_id,"units",
+                     strlen(netcdf_config->lat.unit),netcdf_config->lat.unit);
   error(rc);
   rc=nc_put_att_text(cdf->ncid, lat_var_id,"long_name",
                      strlen(netcdf_config->lat.long_name),netcdf_config->lat.long_name);
@@ -194,7 +195,8 @@ int main(int argc,char **argv)
   short *f;
   float cellsize,lon,lat;
   Bool swap,isglobal;
-  char *descr,*endptr;
+  char *descr,*endptr,*arglist;
+  char  *config_filename;
   Netcdf_config netcdf_config;
   Filename filename;
   descr=NULL;
@@ -202,6 +204,7 @@ int main(int argc,char **argv)
   inum=0;
   cellsize=0;
   isglobal=FALSE;
+  config_filename=NULL;
   initsetting_netcdf(&netcdf_config);
   for(iarg=1;iarg<argc;iarg++)
     if(argv[iarg][0]=='-')
@@ -264,6 +267,16 @@ int main(int argc,char **argv)
           return EXIT_FAILURE;
         }
       }
+      else if(!strcmp(argv[iarg],"-config"))
+      {
+        if(argc==iarg+1)
+        {
+          fprintf(stderr,"Error: Missing argument after option '-config'.\n"
+                  USAGE,argv[0]);
+          return EXIT_FAILURE;
+        }
+        config_filename=argv[++iarg];
+      }
       else
       {
         fprintf(stderr,"Error: Invalid option '%s'.\n"
@@ -278,6 +291,14 @@ int main(int argc,char **argv)
     fprintf(stderr,"Error: Missing arguments.\n"
             USAGE,argv[0]);
     return EXIT_FAILURE;
+  }
+  if(config_filename!=NULL)
+  {
+    if(parse_config_netcdf(&netcdf_config,config_filename))
+    {
+      fprintf(stderr,"Error reading Netcdf configuration file `%s`.\n",config_filename);
+      return EXIT_FAILURE;
+    }
   }
   filename.fmt=CLM;
   filename.name=argv[iarg+1];
@@ -353,7 +374,8 @@ int main(int argc,char **argv)
     fclose(file);
     return EXIT_FAILURE;
   }
-  cdf=create_cdf(argv[iarg+3],argv[iarg+2],argv[iarg],descr,&netcdf_config,res,compress,index);
+  arglist=catstrvec(argv,argc);
+  cdf=create_cdf(argv[iarg+3],argv[0],arglist,argv[iarg],descr,&netcdf_config,res,compress,index);
   if(cdf==NULL)
     return EXIT_FAILURE;
   data=newvec(short,ngrid*header.nbands);

@@ -3,7 +3,7 @@
 addheader \- Add clm header to binary file
 .SH SYNOPSIS
 .B addheader
-[-swap] [-nyear n] [-firstyear n] [-lastyear n] [-ncell n] [-firstcell n] [-nbands n] [-nstep n ] [-order n] [-version n] [-cellsize s] [-scale s] [-id s] [-type {byte|short|int|float|double}] \fIbinfile\fP \fIclmfile\fP
+[-swap] [-nyear n] [-firstyear n] [-lastyear n] [-ncell n] [-firstcell n] [-nbands n] [-nstep n ] [-timestep n] [-order n] [-version n] [-cellsize s] [-scale s] [-id s] [-type {byte|short|int|float|double}] \fIbinfile\fP \fIclmfile\fP
 .SH DESCRIPTION
 Program adds clm header to raw  binary file for LPJmL.
 .SH OPTIONS
@@ -32,6 +32,9 @@ Set number of bands, default is 12
 -nstep n
 Set number of steps, default is 1
 .TP
+-timestep n
+Set number of time steps, default is 1
+.TP
 -order n
 Set order of data, default is 0
 .TP
@@ -58,7 +61,8 @@ filename of clm data file
 .SH EXAMPLE
 .TP
 Add header to daily climate float data:
-.B  addheader -type float -lastyear 2018 -nbands 365 floatdata.bin file.clm
+.B  addheader
+-type float -lastyear 2018 -nbands 365 floatdata.bin file.clm
 .PP
 .SH EXIT STATUS
 .B addheader
