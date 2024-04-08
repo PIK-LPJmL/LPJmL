@@ -95,7 +95,7 @@ static Cell *newgrid2(Config *config,          /* Pointer to LPJ configuration *
         closecelldata(celldata,config);
         return NULL;
       }
-      if(seekcountrycode(countrycode.file,config->startgrid,countrycode.type,offset))
+      if(seekcountrycode(countrycode.file,config->startgrid,(isregion) ? 2 : 1,countrycode.type,offset))
       {
         /* seeking to position of first grid cell failed */
         fprintf(stderr,

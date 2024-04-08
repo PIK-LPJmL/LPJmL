@@ -19,7 +19,7 @@ of `major.minor.patch` with
 
 ## [Unreleased]
 
-## [5.8.10] - 2024-04-04
+## [5.8.10] - 2024-04-05
 
 - author: Werner von Bloh (bloh@pik-potsdam.de)
 
@@ -51,7 +51,7 @@ of `major.minor.patch` with
 - Output of turnover corrected in `fprintpar_grass.c`.
 - Output of options fixed in `openconfig.c` if environment variable `LPJOPTIONS` is set.
 - Calculation of average fixed in `statclm`.
-
+- `res_remove` calculation fixed for residue fires in `harvest_crop.c` to close carbon and nitrogen balance.
 
 ## [5.8.9] - 2024-03-14
 
