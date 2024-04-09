@@ -19,8 +19,8 @@
 
 #define error(rc) if(rc) {free(lon);free(lat);free(year);fprintf(stderr,"ERROR427: Cannot write '%s': %s.\n",filename,nc_strerror(rc)); nc_close(cdf->ncid); free(cdf);return NULL;}
 
-#define USAGE "Usage: %s [-h] [-v] [-scale s] [-longheader] [-global] [-cellsize size] [-byte] [-int] [-float]\n       [[-attr name=value] ...] [-intnetcdf] [-metafile] [-raw] [-nbands n] [-landuse] [-notime] [-compress level] [-units u]\n       [-map name] [-descr d] [-missing_value val] [-config file] [name gridfile] clmfile netcdffile\n"
-#define ERR_USAGE USAGE "Try \"%s --help\" for more information\n"
+#define USAGE "\nUsage: %s [-h] [-v] [-scale s] [-longheader] [-global] [-cellsize size] [-byte] [-int] [-float]\n       [[-attr name=value] ...] [-intnetcdf] [-metafile] [-raw] [-nbands n] [-landuse] [-notime] [-compress level] [-units u]\n       [-map name] [-descr d] [-missing_value val] [-config file] [name gridfile] clmfile netcdffile\n"
+#define ERR_USAGE USAGE "\nTry \"%s --help\" for more information\n"
 
 typedef struct
 {
@@ -549,7 +549,7 @@ int main(int argc,char **argv)
       {
         printf("   clm2cdf (" __DATE__ ") Help\n"
                "   ==========================\n\n"
-               "Convert CLM input data into NetCDF input data for LPJmL version " LPJ_VERSION "\n\n");
+               "Convert CLM input data into NetCDF input data for LPJmL version " LPJ_VERSION "\n");
         printf(USAGE
                "\nArguments:\n"
                "-h,--help        print this help text\n"

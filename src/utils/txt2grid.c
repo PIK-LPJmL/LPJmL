@@ -20,7 +20,7 @@
 
 #include "lpj.h"
 
-#define USAGE "Usage: txt2grid [-h] [-v] [-map file] [-fmt s] [-skip n] [-cellsize size] [-cellsize_lon size] [-cellsize_lat size] [-float] [-double] [-latlon] gridfile clmfile\n"
+#define USAGE "\nUsage: txt2grid [-h] [-v] [-map file] [-fmt s] [-skip n] [-cellsize size] [-cellsize_lon size] [-cellsize_lat size] [-float] [-double] [-latlon] gridfile clmfile\n"
 #define ERR_USAGE USAGE "\nTry \"txt2grid --help\" for more information.\n"
 
 typedef  struct
@@ -123,7 +123,7 @@ int main(int argc,char **argv)
       {
         printf("   txt2grid (" __DATE__ ") Help\n"
                "   ===========================\n\n"
-               "Convert text file to clm grid file for LPJmL version " LPJ_VERSION "\n\n"
+               "Convert text file to clm grid file for LPJmL version " LPJ_VERSION "\n"
                USAGE
                "\nArguments:\n"
                "-h,--help          print this help text\n"

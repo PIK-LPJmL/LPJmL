@@ -16,7 +16,8 @@
 
 #include "lpj.h"
 
-#define USAGE "Usage: txt2clm [-h] [-version v] [-cellindex] [-scale s] [-float] [-int] [-nbands n] [-nstep n] [-cellsize size]\n               [-firstcell n] [-ncell n] [-firstyear f] [-header id] [-csv c] txtfile clmfile\n"
+#define USAGE "\nUsage: txt2clm [-h] [-version v] [-cellindex] [-scale s] [-float] [-int] [-nbands n] [-nstep n] [-cellsize size]\n               [-firstcell n] [-ncell n] [-firstyear f] [-header id] [-csv c] txtfile clmfile\n"
+#define ERR_USAGE USAGE "\nTry \"txt2clm --help\" for more information.\n"
 
 static int getfloat(FILE *file,char sep,float *value)
 {
@@ -101,7 +102,7 @@ int main(int argc,char **argv)
       {
         printf("   txt2clm (" __DATE__ ") Help\n"
                "   ==========================\n\n"
-               "Convert text files to clm data files for LPJmL version " LPJ_VERSION "\n\n");
+               "Convert text files to clm data files for LPJmL version " LPJ_VERSION "\n");
         printf(USAGE
                "Arguments:\n"
                "-h,--help    print this help text\n"
@@ -135,7 +136,7 @@ int main(int argc,char **argv)
         if(iarg==argc-1)
         {
           fputs("Argument missing after '-scale' option.\n"
-                USAGE,stderr);
+                ERR_USAGE,stderr);
           return EXIT_FAILURE;
         }
         multiplier=(float)strtod(argv[++iarg],&endptr);
@@ -156,7 +157,7 @@ int main(int argc,char **argv)
         if(iarg==argc-1)
         {
           fputs("Argument missing after '-cellsize' option.\n"
-                USAGE,stderr);
+                ERR_USAGE,stderr);
           return EXIT_FAILURE;
         }
         header.cellsize_lon=header.cellsize_lat=(float)strtod(argv[++iarg],&endptr);
@@ -177,7 +178,7 @@ int main(int argc,char **argv)
         if(iarg==argc-1)
         {
           fputs("Argument missing after '-nbands' option.\n"
-                USAGE,stderr);
+                ERR_USAGE,stderr);
           return EXIT_FAILURE;
         }
         header.nbands=strtol(argv[++iarg],&endptr,10);
@@ -198,7 +199,7 @@ int main(int argc,char **argv)
         if(iarg==argc-1)
         {
           fputs("Argument missing after '-csv' option.\n"
-                USAGE,stderr);
+                ERR_USAGE,stderr);
           return EXIT_FAILURE;
         }
         sep=argv[++iarg][0];
@@ -209,7 +210,7 @@ int main(int argc,char **argv)
         if(iarg==argc-1)
         {
           fputs("Argument missing after '-nstep' option.\n"
-                USAGE,stderr);
+                ERR_USAGE,stderr);
           return EXIT_FAILURE;
         }
         header.nstep=strtol(argv[++iarg],&endptr,10);
@@ -230,7 +231,7 @@ int main(int argc,char **argv)
         if(iarg==argc-1)
         {
           fputs("Argument missing after '-version' option.\n"
-                USAGE,stderr);
+                ERR_USAGE,stderr);
           return EXIT_FAILURE;
         }
         version=strtol(argv[++iarg],&endptr,10);
@@ -256,7 +257,7 @@ int main(int argc,char **argv)
         if(iarg==argc-1)
         {
           fputs("Argument missing after '-firstcell' option.\n"
-                USAGE,stderr);
+                ERR_USAGE,stderr);
           return EXIT_FAILURE;
         }
         header.firstcell=strtol(argv[++iarg],&endptr,10);
@@ -272,7 +273,7 @@ int main(int argc,char **argv)
         if(iarg==argc-1)
         {
           fputs("Argument missing after '-ncell' option.\n"
-                USAGE,stderr);
+                ERR_USAGE,stderr);
           return EXIT_FAILURE;
         }
         header.ncell=strtol(argv[++iarg],&endptr,10);
@@ -293,7 +294,7 @@ int main(int argc,char **argv)
         if(iarg==argc-1)
         {
           fputs("Argument missing after '-firstyear' option.\n"
-                USAGE,stderr);
+                ERR_USAGE,stderr);
           return EXIT_FAILURE;
         }
         header.firstyear=strtol(argv[++iarg],&endptr,10);
@@ -309,7 +310,7 @@ int main(int argc,char **argv)
         if(iarg==argc-1)
         {
           fputs("Argument missing after '-header' option.\n"
-                USAGE,stderr);
+                ERR_USAGE,stderr);
           return EXIT_FAILURE;
         }
         id=argv[++iarg];
@@ -317,7 +318,7 @@ int main(int argc,char **argv)
       else
       {
         fprintf(stderr,"Error: Invalid option '%s'.\n",argv[iarg]);
-        fprintf(stderr,USAGE);
+        fprintf(stderr,ERR_USAGE);
         return EXIT_FAILURE;
       }
     }
@@ -326,7 +327,7 @@ int main(int argc,char **argv)
   if(argc<iarg+2)
   {
     fputs("Filename(s) missing.\n"
-          USAGE,stderr);
+          ERR_USAGE,stderr);
     return EXIT_FAILURE;
   }
   file=fopen(argv[iarg],"r");
