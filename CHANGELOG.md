@@ -19,7 +19,7 @@ of `major.minor.patch` with
 
 ## [Unreleased]
 
-## [5.8.10] - 2024-04-05
+## [5.8.10] - 2024-04-09
 
 - author: Werner von Bloh (bloh@pik-potsdam.de)
 
@@ -33,6 +33,7 @@ of `major.minor.patch` with
 - Setting `"const_lai_max"` renamed to `"laimax_const"` for consistency.
 - Keyword `"laimax_interpolate"` renamed to `"laimax_manage"`.
 - Region-specific fractions for residue burning replaced by global parameter `"bifratio"` and `"fuelratio"`.
+- `lpjml` now terminates with an error message instead of a warning on invalid country codes to avoid invalid access to country-specific parameters.
 
 ### Removed
 
@@ -43,7 +44,7 @@ of `major.minor.patch` with
 - Functions for reading region-specific parameters removed.
 - Obsolete region parameter file `manage_reg.cjson` removed
 - Obsolete outputs `"region"`, `"flux_firewood"`, `"flux_firewood_n"` removed.
-
+- Region definitions removed from `managepar.h`.
 
 ### Fixed
 

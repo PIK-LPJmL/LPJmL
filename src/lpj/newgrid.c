@@ -233,7 +233,13 @@ static Cell *newgrid2(Config *config,          /* Pointer to LPJ configuration *
       if(config->soilmap[soilcode]>0)
       {
         if(code<0 || code>=config->ncountries)
-          fprintf(stderr,"WARNING009: Invalid countrycode=%d valid soilcode in cell %d (not skipped)\n",code,i+config->startgrid);
+        {
+          name=getrealfilename(&config->countrycode_filename);
+          fprintf(stderr,"ERROR190: Invalid country code=%d read from '%s' in cell %d, must be in [0,%d].\n",
+                  code,name,i+config->startgrid,config->ncountries-1);
+          free(name);
+          return NULL;
+        }
         else
         {
           if(initmanage(&grid[i].ml.manage,code,npft,ncft,config))
