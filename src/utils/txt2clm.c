@@ -16,7 +16,7 @@
 
 #include "lpj.h"
 
-#define USAGE "\nUsage: txt2clm [-h] [-version v] [-cellindex] [-scale s] [-float] [-int] [-nbands n] [-nstep n] [-cellsize size]\n               [-firstcell n] [-ncell n] [-firstyear f] [-header id] [-csv c] txtfile clmfile\n"
+#define USAGE "\nUsage: txt2clm [-h] [-version v] [-cellindex] [-scale s] [-float] [-int] [-nbands n] [-nstep n] [-cellsize size]\n               [-firstcell n] [-ncell n] [-firstyear f] [-header id] [-csv c] [-json] txtfile clmfile\n"
 #define ERR_USAGE USAGE "\nTry \"txt2clm --help\" for more information.\n"
 
 static int getfloat(FILE *file,char sep,float *value)
@@ -78,7 +78,9 @@ int main(int argc,char **argv)
   Header header;
   int version;
   char *id;
+  char *arglist,*out_json;
   int i,iarg,rc;
+  Bool isjson;
   char sep;
   /* set default values */
   header.order=CELLYEAR;
@@ -93,6 +95,7 @@ int main(int argc,char **argv)
   header.cellsize_lon=header.cellsize_lat=0.5;
   id=LPJ_CLIMATE_HEADER;
   version=LPJ_CLIMATE_VERSION;
+  isjson=FALSE;
   sep='\0';
   /* parse command line options */
   for(iarg=1;iarg<argc;iarg++)
@@ -119,6 +122,7 @@ int main(int argc,char **argv)
                "-scale s     scale data by a factor of s\n"
                "-cellsize s  cell size, default is %g\n"
                "-header id   clm header string, default is '%s'\n"
+               "-json        JSON metafile is created with suffix '.json'\n"
                "txtfile      filename of text file\n"
                "clmfile      filename of clm data file\n\n"
                "(C) Potsdam Institute for Climate Impact Research (PIK), see COPYRIGHT file\n",
@@ -131,6 +135,8 @@ int main(int argc,char **argv)
         header.datatype=LPJ_INT;
       else if(!strcmp(argv[iarg],"-cellindex"))
         header.order=CELLINDEX;
+      else if(!strcmp(argv[iarg],"-json"))
+        isjson=TRUE;
       else if(!strcmp(argv[iarg],"-scale"))
       {
         if(iarg==argc-1)
@@ -426,5 +432,24 @@ int main(int argc,char **argv)
   rewind(out);
   fwriteheader(out,&header,id,version);
   fclose(out);
+  if(isjson)
+  {
+    out_json=malloc(strlen(argv[iarg+1])+strlen(JSON_SUFFIX)+1);
+    if(out_json==NULL)
+    {
+      printallocerr("filename");
+      return EXIT_FAILURE;
+    }
+    strcat(strcpy(out_json,argv[iarg+1]),JSON_SUFFIX);
+    arglist=catstrvec(argv,argc);
+    out=fopen(out_json,"w");
+    if(out==NULL)
+    {
+      printfcreateerr(out_json);
+      return EXIT_FAILURE;
+    }
+    fprintjson(out,argv[iarg+1],"txt2clm",NULL,arglist,&header,NULL,NULL,NULL,0,NULL,NULL,NULL,NULL,NULL,LPJ_SHORT,CLM,id,FALSE,version);
+    fclose(out);
+  }
   return EXIT_SUCCESS;
 } /* of 'main' */

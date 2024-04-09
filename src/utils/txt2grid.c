@@ -20,7 +20,7 @@
 
 #include "lpj.h"
 
-#define USAGE "\nUsage: txt2grid [-h] [-v] [-map file] [-fmt s] [-skip n] [-cellsize size] [-cellsize_lon size] [-cellsize_lat size] [-float] [-double] [-latlon] gridfile clmfile\n"
+#define USAGE "\nUsage: txt2grid [-h] [-v] [-map file] [-fmt s] [-skip n] [-cellsize size] [-cellsize_lon size] [-cellsize_lat size]\n       [-float] [-double] [-latlon] [-json] gridfile clmfile\n"
 #define ERR_USAGE USAGE "\nTry \"txt2grid --help\" for more information.\n"
 
 typedef  struct
@@ -108,13 +108,14 @@ int main(int argc,char **argv)
   Real dist_min;
   Header header;
   char *endptr,*map_name;
-  Bool latlon,verbose;
+  char *arglist,*out_json;
+  Bool latlon,verbose,isjson;
   fmt="%*d,%f,%f,%*d,%*d";
   Type type;
   nskip=1;
   header.cellsize_lon=header.cellsize_lat=0.5;
   type=LPJ_SHORT;
-  latlon=verbose=FALSE;
+  latlon=verbose=isjson=FALSE;
   map_name=NULL;
   for(iarg=1;iarg<argc;iarg++)
     if(argv[iarg][0]=='-')
@@ -137,6 +138,7 @@ int main(int argc,char **argv)
                "-double            write double data, default is short\n"
                "-skip n            skip first n lines, default is one\n"
                "-latlon            read latitude then longitude\n"
+               "-json              JSON metafile is created with suffix '.json'\n"
                "gridfile           filename of grid text file\n"
                "clmfile            filename of clm data file\n\n"
                "(C) Potsdam Institute for Climate Impact Research (PIK), see COPYRIGHT file\n",
@@ -161,6 +163,8 @@ int main(int argc,char **argv)
         type=LPJ_DOUBLE;
       else if(!strcmp(argv[iarg],"-latlon"))
         latlon=TRUE;
+      else if(!strcmp(argv[iarg],"-json"))
+        isjson=TRUE;
       else if(!strcmp(argv[iarg],"-cellsize"))
       {
         if(iarg==argc-1)
@@ -358,6 +362,26 @@ int main(int argc,char **argv)
   rewind(gridfile);
   fwriteheader(gridfile,&header,LPJGRID_HEADER,LPJGRID_VERSION);
   fclose(gridfile);
+  if(isjson)
+  {
+    out_json=malloc(strlen(argv[iarg+1])+strlen(JSON_SUFFIX)+1);
+    if(out_json==NULL)
+    {
+      printallocerr("filename");
+      return EXIT_FAILURE;
+    }
+    strcat(strcpy(out_json,argv[iarg+1]),JSON_SUFFIX);
+    arglist=catstrvec(argv,argc);
+    gridfile=fopen(out_json,"w");
+    if(gridfile==NULL)
+    {
+      printfcreateerr(out_json);
+      return EXIT_FAILURE;
+    }
+    fprintjson(gridfile,argv[iarg+1],"txt2grid",NULL,arglist,&header,NULL,NULL,NULL,0,"grid","degree",NULL,"cell coordinates",NULL,LPJ_SHORT,CLM,LPJGRID_HEADER,FALSE,LPJGRID_VERSION);
+    fclose(gridfile);
+
+  }
   if(map_name!=NULL)
     closecoord(coordfile);
   fclose(file);

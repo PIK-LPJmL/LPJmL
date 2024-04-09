@@ -3,7 +3,7 @@
 txt2grid \- convert text files to clm grid data files for LPJ
 .SH SYNOPSIS
 .B txt2grid
-[\-h] [\-v] [\-latlon] [\-map refgridfile] [-fmt s] [-skip n] [-cellsize size] [-cellsize_lon size] [-cellsize_lat size] [-float] [-double]
+[\-h] [\-v] [\-latlon] [\-map refgridfile] [-fmt s] [-skip n] [-cellsize size] [-cellsize_lon size] [-cellsize_lat size] [-float] [-double] [-json]
 .I txtfile gridfile
 .SH DESCRIPTION
 Program converts text files into LPJ grid data files
@@ -50,6 +50,9 @@ longitude/latitude values written in float format to clm file, default is short
 .TP
 \-double
 longitude/latitude values written in double format to clm file, default is short
+.TP
+\-json
+JSON metafile is created with suffix '.json'
 .TP
 .I textfile    
 filename of text file to convert
