@@ -194,6 +194,7 @@ Bool fscanparam(LPJfile *file,       /**< File pointer to text file */
     fscanparamreal(f,&param.fire_intens,"fire_intens");
     fscanparamreal(f,&param.hum_ign,"hum_ign");
   }
+  fscanparamreal01(f,&param.residue_frac,"residue_frac");
   fscanparamreal01(f,&param.mixing_efficiency,"mixing_efficiency");
   if(config->withlanduse!=NO_LANDUSE)
   {
