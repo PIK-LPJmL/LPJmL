@@ -23,7 +23,7 @@ of `major.minor.patch` with
 ## [5.8.10] - 2024-04-04
 
 - author: Jannes Breier (jannesbr@pik-potsdam.de)
-- code review: Stephen Wirth (wirth@pik-potsdam.de)
+- code review: Stephen Wirth (wirth@pik-potsdam.de), David Hoetten (davidho@pik-potsdam.de)
 
 
 ### Changed
