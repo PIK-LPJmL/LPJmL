@@ -2,7 +2,7 @@
 /**                                                                                \n**/
 /**               o  u  t  p  u  t  v  a  r  s  .  c  j  s  o  n                   \n**/
 /**                                                                                \n**/
-/**  Defines array of output variables for LPJmL 5.8.9                             \n**/
+/**  Defines array of output variables for LPJmL 5.8.10                            \n**/
 /**                                                                                \n**/
 /**  Monthly output rates can be rescaled to 1/day or 1/second by setting the unit \n**/
 /**  to day-1 or sec-1, e.g.:                                                      \n**/
@@ -24,8 +24,8 @@
 #include "../include/conf.h" /* include constant definitions */
 
   [
-    /* id           name   timestep       variable(NetCDF) long_name             unit               scale          offset */
-    { "id" : GRID, "name" : "grid", "timestep" : "annual", "var" : "soil", "long_name" : "coordinates", "unit" : "degree", "scale" : 1.0, "offset" : 0.0},
+    /* id           name   timestep       variable         long_name             unit               scale          offset */
+    { "id" : GRID, "name" : "grid", "timestep" : "annual", "var" : "grid", "long_name" : "grid information (raw: coordinates, cdf: cell_id)", "unit" : "", "scale" : 1.0, "offset" : 0.0},
     { "id" : TERR_AREA, "name" : "terr_area", "timestep" : "annual", "var" : "terr_area", "long_name" : "terrestrial area including lakes", "unit" : "m2", "scale" : 1.0, "offset" : 0.0},
     { "id" : LAND_AREA, "name" : "land_area", "timestep" : "annual", "var" : "land_area", "long_name" : "land area", "unit" : "m2", "scale" : 1.0, "offset" : 0.0},
     { "id" : LAKE_AREA, "name" : "lake_area", "timestep" : "annual", "var" : "lake_area", "long_name" : "lake area", "unit" : "m2", "scale" : 1.0, "offset" : 0.0},

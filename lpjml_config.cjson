@@ -2,7 +2,7 @@
 /**                                                                                \n**/
 /**           l  p  j  m  l  _  c  o  n  f  i  g  .  c  j  s  o  n                 \n**/
 /**                                                                                \n**/
-/** Default configuration file for LPJmL C Version 5.8.9                           \n**/
+/** Default configuration file for LPJmL C Version 5.8.10                          \n**/
 /**                                                                                \n**/
 /** Configuration file is divided into five sections:                              \n**/
 /**                                                                                \n**/
@@ -105,7 +105,7 @@
   "residues_fire" : false,              /* enables burning of residuals on cropland - non-functional? */
   "irrigation" : "lim",                 /* options: "no", "lim", "pot", "all" */
   "laimax_manage" : "laimax_par",       /* laimax settings, options:  "laimax_par" (values from pft.cjson), "laimax_cft" (values from manage_irrig_*.cjson), "laimax_const" (constant values set in flag laimax) */
-  "laimax" : 5,                         /* maximum LAI for laimax_interpolate = "laimax_const" */
+  "laimax" : 5,                         /* maximum LAI for laimax_manage = "laimax_const" */
   "tillage_type" : "read",              /* Options: "all" (all agr. cells tilled), "no" (no cells tilled) and "read" (tillage dataset used) */
   "no_ndeposition" : false,             /* turn off atmospheric N deposition */
   "rw_manage" : false,                  /* enable rain water management; specific parameters in lpjparam.cjson */

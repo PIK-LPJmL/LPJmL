@@ -19,7 +19,7 @@ of `major.minor.patch` with
 
 ## [Unreleased]
 
-## [5.8.10] - 2024-04-10
+## [5.8.11] - 2024-04-10
 
 - author: Werner von Bloh (bloh@pik-potsdam.de)
 
@@ -54,6 +54,22 @@ of `major.minor.patch` with
 - Output of options fixed in `openconfig.c` if environment variable `LPJOPTIONS` is set.
 - Calculation of average fixed in `statclm`.
 - `res_remove` calculation fixed for residue fires in `harvest_crop.c` to close carbon and nitrogen balance.
+
+
+## [5.8.10] - 2024-04-04
+
+- author: Jannes Breier (jannesbr@pik-potsdam.de)
+- code review: Stephen Wirth (wirth@pik-potsdam.de), David Hoetten (davidho@pik-potsdam.de)
+
+
+### Changed
+
+- In outputvars.cjson, the `variable` field for output grid has been changed
+back to `"grid"` (instead of `"soil"`). If NetCDF output is written the variable
+name would be cell id, if raw output is written the variable name would be
+the coordinates. `"grid"` is used as generic naming here, `long_name` is used
+to describe this exception (`"grid information (raw: coordinates, cdf: cell_id)"`)
+
 
 ## [5.8.9] - 2024-03-14
 
