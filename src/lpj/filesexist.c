@@ -163,6 +163,37 @@ static int checkinputfile(const Config *config,const Filename *filename,const ch
   return 0;
 } /* of 'checkinputfile' */
 
+static int checkcountryfile(const Config *config,const Filename *filename)
+{
+  FILE *file;
+  Header header;
+  String headername;
+  int version;
+  Bool swap;
+  Input_netcdf input;
+  size_t offset;
+  if(filename->fmt==CDF)
+  {
+    input=openinput_netcdf(filename,NULL,0,config);
+    if(input==NULL)
+      return 1;
+    closeinput_netcdf(input);
+  }
+  else
+  {
+    file=openinputfile(&header,&swap,filename,headername,NULL,&version,&offset,FALSE,config);
+    if(file==NULL)
+      return 1;
+    fclose(file);
+    if(header.nbands!=1 && header.nbands!=2)
+    {
+      fprintf(stderr,"ERROR218: Number of bands %d in '%s' is not 1 or 2.\n",header.nbands,filename->name);
+      return 1;
+    }
+  }
+  return 0;
+} /* of 'checkcountryfile' */
+
 static int checklanduse(const Config *config)
 {
   Climatefile landuse;
@@ -502,12 +533,7 @@ Bool filesexist(Config config, /**< LPJmL configuration */
       bad+=checkinputfile(&config,&config.sdate_filename,NULL,2*config.npft[CROP]);
     if(config.crop_phu_option==PRESCRIBED_CROP_PHU)
       bad+=checkdatafile(&config,&config.crop_phu_filename,"crop phu",NULL,LPJ_SHORT,2*config.cftmap_size);
-    if(config.countrycode_filename.fmt==CDF)
-    {
-      bad+=checkinputfile(&config,&config.countrycode_filename,NULL,0);
-    }
-    else
-      bad+=checkinputfile(&config,&config.countrycode_filename,NULL,2);
+    bad+=checkcountryfile(&config,&config.countrycode_filename);
     if(config.reservoir)
     {
       bad+=checkinputdata(&config,&config.elevation_filename,"elevation","m",LPJ_SHORT);
