@@ -19,6 +19,19 @@ of `major.minor.patch` with
 
 ## [Unreleased]
 
+## [5.8.10] - 2024-04-10
+
+### Contributors
+
+- author: Johanna Braun (jobraun@pik-potsdam.de)
+- code review: Stephen Wirth (wirth@pik-potsdam.de), Constanze Werner (cowerner@pik-potsdam.de), Jannes Breier (breier@pik-potsdam.de)
+
+### Added
+
+- added four new outputs for managed land: deposition (`NDEPO_MG`), biological nitrogen fixation (`BNF_MG`), applied nitrogen (`NAPPLIED_MG`) and nitrogen establishment flux (`FLUX_ESTABN_MG`)
+
+
+
 ## [5.8.9] - 2024-03-14
 
 - author: Werner von Bloh (bloh@pik-potsdam.de), Sebastian Ostberg (ostberg@pik-potsdam.de)

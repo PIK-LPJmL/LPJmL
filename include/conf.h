@@ -436,7 +436,7 @@
 #define SWC_VOL 331
 #define IRRIG_STOR 332
 #define FLUX_ESTABN_MG 333
-#define NAPPLIC_MG 334
+#define NAPPLIED_MG 334
 #define BNF_MG 335
 #define NDEPO_MG 336
 #define PFT_GCGP_COUNT 0
