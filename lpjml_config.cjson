@@ -61,7 +61,7 @@
   #endif
   "isswnet" : false,          /* short-wave data is net radiation */
   "gsilivefuel" : true,
-  "human_ign_prob" : false,   /* read human ignition probabilty from file */
+  "human_ign_prob" : false,   /* read human ignition probability from file */
   "max_firesize" : false,     /* read maximum fire size from file */
   "fireduration" : [{"stand" : "grassland", "duration" : [1,120] ,"ndayfire" : 1},
                     {"stand" : "natural", "duration" : [120,480], "ndayfire" : 3}], /* fire duration inztervals and maximum days of fire for each stand */
@@ -85,7 +85,7 @@
   #endif
   "store_climate" : true,   /* store climate data in spin-up phase */
   "landfrac_from_file" : true, /* read cell area from file (true/false) */
-  "shuffle_spinup_climate" : true, /* shuffle spinup climate and/or climate in fix_climate run */
+  "shuffle_spinup_climate" : true, /* shuffle spinup climate  */
   "fix_climate" : false,    /* enable a fixed climate input period, requires fix_climate_interval, fix_climate_year, fix_climate_shuffle */
   "fix_climate_year" : 1901,            /* year after climate is fixed */
   "fix_climate_interval" : [1901,1930],
