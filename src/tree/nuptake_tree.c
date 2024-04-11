@@ -150,6 +150,8 @@ Real nuptake_tree(Pft *pft,             /**< pointer to PFT data */
        n_fixed=npp_contr_biol_n_fixation(pft, soil, n_deficit, config);
        pft->bm_inc.nitrogen+=n_fixed;
        getoutput(&pft->stand->cell->output,BNF,config)+=n_fixed*pft->stand->frac;
+       if(pft->stand->type->landusetype!=NATURAL && pft->stand->type->landusetype!=WOODPLANTATION)
+         getoutput(&pft->stand->cell->output,BNF_MG,config)+=n_fixed*pft->stand->frac;
        pft->stand->cell->balance.influx.nitrogen+=n_fixed*pft->stand->frac;
     }
     else

@@ -2,7 +2,7 @@
 /**                                                                                \n**/
 /**               o  u  t  p  u  t  v  a  r  s  .  c  j  s  o  n                   \n**/
 /**                                                                                \n**/
-/**  Defines array of output variables for LPJmL 5.8.10                             \n**/
+/**  Defines array of output variables for LPJmL 5.8.11                             \n**/
 /**                                                                                \n**/
 /**  Monthly output rates can be rescaled to 1/day or 1/second by setting the unit \n**/
 /**  to day-1 or sec-1, e.g.:                                                      \n**/
@@ -291,6 +291,10 @@
     { "id" : CFT_LEACHING2, "name": "cft_leaching2", "timestep" : "annual", "var": "leaching_cft2", "long_name": "CFT leaching", "unit" : "gN/m2/growing season","scale": 1.0, "offset" : 0.0},
     { "id" : CFT_C_EMIS, "name": "cft_c_emis", "timestep" : "annual", "var": "c_emis_cft", "long_name": "CFT C emissions", "unit" : "gC/m2/growing season","scale": 1.0, "offset" : 0.0},
     { "id" : CFT_C_EMIS2, "name": "cft_c_emis2", "timestep" : "annual", "var": "c_emis_cft2", "long_name": "CFT C emissions", "unit" : "gC/m2/growing season","scale": 1.0, "offset" : 0.0},
+    { "id" : BNF_MG, "name" : "bnf_mg" , "timestep" : "annual", "var" : "bnf_mg" , "long_name" : "BNF on managed land", "unit" : "gN/m2/yr" , "scale" : 1.0, "offset" : 0.0},
+    { "id" : NDEPO_MG, "name" : "ndepo_mg" , "timestep" : "annual", "var" : "ndepo_mg" , "long_name" : "N input from atmospheric deposition on managed land", "unit" : "gN/m2/yr" , "scale" : 1.0, "offset" : 0.0},
+    { "id" : FLUX_ESTABN_MG, "name": "flux_estabn_mg", "timestep" : "annual", "var": "flux_estabn_mg", "long_name": "establishment flux on managed land", "unit" : "gN/m2/year","scale": 1.0, "offset" : 0.0},
+    { "id" : NAPPLIED_MG, "name" : "napplied_mg" , "timestep" : "annual", "var" : "napplied_mg" , "long_name" : "N input from fertilizer and manure applied to managed land", "unit" : "gN/m2/yr" , "scale" : 1.0, "offset" : 0.0},
     { "id" : BNF_AGR, "name" : "bnf_agr" , "timestep" : "annual", "var" : "ABNF_agr" , "long_name" : "BNF on agricultural stands", "unit" : "gN/m2/yr" , "scale" : 1.0, "offset" : 0.0},
     { "id" : NFERT_AGR, "name" : "nfert_agr" , "timestep" : "annual", "var" : "ANFERT_agr" , "long_name" : "N input from fertilizer on agricultural stands", "unit" : "gN/m2/yr" , "scale" : 1.0, "offset" : 0.0},
     { "id" : NMANURE_AGR, "name" : "nmanure_agr" , "timestep" : "annual", "var" : "ANMANURE_agr" , "long_name" : "N input from manure on  agricultural stands", "unit" : "gN/m2/yr" , "scale" : 1.0, "offset" : 0.0},
