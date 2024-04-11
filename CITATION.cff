@@ -108,13 +108,16 @@ authors:
     given-names: "Boris"
     orcid: https://orcid.org/0000-0002-7230-9723
     affiliation: "Potsdam Institute for Climate Impact Research (PIK)"
+  - family-names: "Hötten"
+    given-names: "David"
+    affiliation: "Potsdam Institute for Climate Impact Research (PIK)"
   - family-names: "Müller"
     given-names: "Christoph"
     orcid: https://orcid.org/0000-0002-9491-3550
     affiliation: "Potsdam Institute for Climate Impact Research (PIK)"
 
 title: "LPJmL: central open-source github repository of LPJmL at PIK"
-version: "5.7.5"
+version: "5.7.11"
 repository-code: https://github.com/PIK-LPJmL/LPJmL
 
 keywords:

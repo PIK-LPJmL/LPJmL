@@ -74,6 +74,8 @@ Stocks turnover_grass(Litter *litter, /**< Litter pool */
     else
     {
       getoutput(output,FLUX_ESTABN,config)-=reprod*pft->stand->frac;
+      if(pft->stand->type->landusetype!=NATURAL)
+        getoutput(output,FLUX_ESTABN_MG,config)-=reprod*pft->stand->frac;
       pft->stand->cell->balance.flux_estab.nitrogen-=reprod*pft->stand->frac;
       pft->establish.nitrogen-=reprod;
       reprod=0;
