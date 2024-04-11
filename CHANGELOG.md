@@ -19,7 +19,7 @@ of `major.minor.patch` with
 
 ## [Unreleased]
 
-## [5.8.11] - 2024-04-11
+## [5.8.12] - 2024-04-11
 
 - author: Werner von Bloh (bloh@pik-potsdam.de)
 
@@ -54,6 +54,18 @@ of `major.minor.patch` with
 - Output of options fixed in `openconfig.c` if environment variable `LPJOPTIONS` is set.
 - Calculation of average fixed in `statclm`.
 - `res_remove` calculation fixed for residue fires in `harvest_crop.c` to close carbon and nitrogen balance.
+
+
+## [5.8.11] - 2024-04-10
+
+### Contributors
+
+- author: Johanna Braun (jobraun@pik-potsdam.de)
+- code review: Stephen Wirth (wirth@pik-potsdam.de), Constanze Werner (cowerner@pik-potsdam.de), Jannes Breier (breier@pik-potsdam.de)
+
+### Added
+
+- added four new outputs for managed land: deposition (`NDEPO_MG`), biological nitrogen fixation (`BNF_MG`), applied nitrogen (`NAPPLIED_MG`) and nitrogen establishment flux (`FLUX_ESTABN_MG`)
 
 
 ## [5.8.10] - 2024-04-04
