@@ -19,7 +19,7 @@ of `major.minor.patch` with
 
 ## [Unreleased]
 
-## [5.8.11] - 2024-04-10
+## [5.8.11] - 2024-04-11
 
 - author: Werner von Bloh (bloh@pik-potsdam.de)
 
@@ -34,7 +34,7 @@ of `major.minor.patch` with
 - Keyword `"laimax_interpolate"` renamed to `"laimax_manage"`.
 - Region-specific fractions for residue burning replaced by global parameter `"bifratio"` and `"fuelratio"`.
 - `lpjml` now terminates with an error message instead of a warning on invalid country codes to avoid invalid access to country-specific parameters.
-- Country code files can now have only one bands. Files with 2 bands are still supported, but region code ignored.
+- Country code files can now have only one band. Files with 2 bands are still supported, but region code ignored.
 
 ### Removed
 
