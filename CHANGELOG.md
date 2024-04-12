@@ -54,6 +54,7 @@ of `major.minor.patch` with
 - Output of options fixed in `openconfig.c` if environment variable `LPJOPTIONS` is set.
 - Calculation of average fixed in `statclm`.
 - `res_remove` calculation fixed for residue fires in `harvest_crop.c` to close carbon and nitrogen balance.
+- Missing update of `FLUX_ESTABN_MG` added in `turnover_tree.c`.
 
 
 ## [5.8.11] - 2024-04-10
