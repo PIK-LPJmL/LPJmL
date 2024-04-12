@@ -19,6 +19,27 @@ of `major.minor.patch` with
 
 ## [Unreleased]
 
+## [5.8.10] - 2024-04-09
+
+- author: Werner von Bloh (bloh@pik-potsdam.de)
+
+### Changed
+
+- Axis names and missing values for NetCDF output are read from JSON file `netcdf.cjson`.
+- Warnings in `addheader` replaced by terminating errors.
+
+### Added
+
+- Environment variables `LPJNOPP` and `LPJPEDANTIC` added. If set to `true`, preprocessor is disabled and pedantic checking is enabled, respectively.
+- Info about `--help` option added in case of error in command line arguments.
+- Option `-config` added to `bin2cdf`, `country2cdf` and `clm2cdf` in order to read axis names and missing values from a JSON file. File `netcdf.json` added as a template.
+- Option `-json` added to `arr2clm`, `asc2clm`, `txt2grid`, and `txt2clm` in order to create additional JSON metafiles.
+- Option `-inpath` added to `regridlpj` in order to set directory where data can be found.
+- Option `-double` added to `txt2grd` in order to create grid files with coordinate values of type double.
+- Option `-timestep` added to `addheader`.
+- Check for correct number of time steps added in `openclimate_netcdf.c`.
+
+
 ## [5.8.9] - 2024-03-14
 
 - author: Werner von Bloh (bloh@pik-potsdam.de), Sebastian Ostberg (ostberg@pik-potsdam.de)
