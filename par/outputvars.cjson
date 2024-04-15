@@ -160,7 +160,7 @@
     { "id" : MELT, "name": "melt", "timestep" : "monthly", "var" :  "melt", "long_name" :  "snowmelt", "unit" : "mm/month", "scale" : 1.0, "offset" : 0.0},
     { "id" : SNOWRUNOFF, "name": "snowrunoff", "timestep" : "monthly", "var" :  "snowrunoff", "long_name" :  "", "unit" : "mm/month", "scale" : 1.0, "offset" : 0.0},
     { "id" : SWE, "name": "swe", "timestep" : "monthly", "var" :  "SWE", "long_name" :  "snow water equivalent", "unit" : "mm", "scale" : 1.0, "offset" : 0.0},
-    { "id" : TEMP_BS, "name": "temp_bs", "timestep" : "monthly", "var" :  "TEMP_BS", "long_name" :  "temp below snow", "unit" : "Celsius", "scale" : 1.0, "offset" : 0.0},
+    { "id" : LITTERTEMP, "name": "littertemp", "timestep" : "monthly", "var" :  "littertemp", "long_name" :  "litter temperature", "unit" : "Celsius", "scale" : 1.0, "offset" : 0.0},
     { "id" : SOILC_LAYER, "name": "soilc_layer", "timestep" : "annual", "var" :  "SoilC", "long_name" :  "Soil carbon in layer", "unit" : "gC/m2", "scale" : 1.0, "offset" : 0.0},
     { "id" : RUNOFF_SURF, "name": "runoff_surf", "timestep" : "monthly", "var" :  "runoff_surf", "long_name" :  "surface runoff", "unit" : "mm/month", "scale" : 1.0, "offset" : 0.0},
     { "id" : RUNOFF_LAT, "name": "runoff_lat", "timestep" : "monthly", "var" :  "runoff_lat", "long_name" :  "lateral runoff", "unit" : "mm/month", "scale" : 1.0, "offset" : 0.0},

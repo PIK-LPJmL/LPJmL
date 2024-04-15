@@ -80,6 +80,17 @@
 #define K_SOLID_LOG 0.90308998699    
 #define K_ICE_LOG   0.34242268082    
 #define K_WATER_LOG -0.24412514432 
+/* Litter bulk and particle density are literature mean values for Oi horizon */
+#define DRY_BULK_DENSITY_LITTER 71.1
+/* Porosity is calculated using f = (p_s - p_b)/p_s 
+   Hillel: Environmental Soil Physics, p15 f. */
+#define POROSITY_LITTER 0.952  // [fraction]
+/* Litter thermal properties are based on organic soil values of 
+   Lawrance and Slater 2007, Incorporating organic soil into a global climate model */
+#define K_LITTER_DRY 0.05  /* thermal conductivity of organic material when completly dry */
+#define K_LITTER_SAT_FROZEN 2.106374   /* thermal conductivity of fully saturated frozen organic material */
+#define K_LITTER_SAT_UNFROZEN 0.554636  /* thermal conudcitivity of fully saturated unfrozen organic material */
+
 /* Declaration of variables */
 
 extern Real soildepth[NSOILLAYER];
@@ -294,7 +305,7 @@ extern Real moistfactor(const Litter *);
 extern void moisture2soilice(Soil *,Real *,int);
 extern void newsoil(Soil *);
 extern int seeksoilcode(FILE *,int,size_t,Type);
-extern Real snow(Soil *,Real *,Real *,Real, Real *,Real *);
+extern Real snow(Soil *,Real *,Real *,Real,Real *);
 extern Real snow_old(Real *,Real *,Real *,Real);
 extern void soiltemp(Soil*, Real,const Config *);
 #ifdef COUPLING_WITH_FMS

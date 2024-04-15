@@ -14,20 +14,11 @@
 
 #include "lpj.h"
 
-// The following three values are calculated by: lawrance and slater 2007, Incorporating organic soil into a global climate model
-// the values for purely organic soils are used here as a rough estimate for litter thermal properties
-#define K_LITTER_DRY 0.05  // thermal conductivity of organic material when completly dry
-#define K_LITTER_SAT_FROZEN 2.106374   // thermal conudcitivity of fully saturated frozen organic material with a porosity of 0.944
-#define K_LITTER_SAT_UNFROZEN 0.554636  // // thermal conudcitivity of fully saturated unfrozen organic material with a porosity of 0.944
+// For the snow thermal insulation the following alternative
+// value for snowheight per water height is used 
+// compare to c_watertosnow
+#define SNOWHEIGHT_PER_WATERHEIGHT 4
 
-// The following two values are rough estimates
-#define K_SNOW_SOILINS 0.2 // snow thermal conductivty used for soil insulation
-#define SNOWHEIGHT_PER_WATEREQ 4 // snow height per m^3 snow water equivalent used for snow insulation
-
-#define DRY_BULK_DENSITY_LITTER 71.1
-// porosity is calculated using f = (p_s - p_b)/p_s 
-// Hillel: Environmental Soil Physics, p15 f.
-#define POROSITY_LITTER 0.952  // [fraction]
 
 STATIC void setup_heatgrid(Real *);
 STATIC void setup_heatgrid_layer_boundaries(Real *);
@@ -35,15 +26,15 @@ STATIC void get_unaccounted_changes_in_water_and_solids(Real *, Real *,const Rea
 STATIC void update_wi_and_sol_enth_adjusted(const Real *,const Real *, Soil *);
 STATIC void modify_enth_due_to_masschanges(Soil *,const Real *);
 STATIC void modify_enth_due_to_heatconduction(Uniform_temp_sign, Soil *, Real, Soil_thermal_prop *);
-STATIC void compute_litter_and_snow_temp_from_enth(Soil * soil, Real temp_below_snow, const Soil_thermal_prop * therm_prop);
+STATIC void compute_litter_and_snow_temp_from_enth(Soil * soil, Real airtemp, const Soil_thermal_prop * therm_prop);
 STATIC void compute_water_ice_ratios_from_enth(Soil *, const Soil_thermal_prop *);
 STATIC void calc_gp_temps(Real * gp_temps, Real * enth, const Soil_thermal_prop *);
 STATIC void compute_maxthaw_depth(Soil * soil);
 STATIC void compute_bottom_bound_layer_temps_from_enth(Real *,  const Real *,const Soil_thermal_prop *);
 STATIC Uniform_temp_sign check_uniform_temp_sign_throughout_soil(const Real *, Real,const Real *);
 STATIC void get_abs_waterice_cont(Real *,const Soil *);
-STATIC void adjust_for_litter(Real h[], Soil_thermal_prop * therm_prop,const Soil * soil, Uniform_temp_sign uniform_temp_sign);
-STATIC void adjust_for_snow(Real h[], Soil_thermal_prop * therm_prop,const Soil * soil, Uniform_temp_sign uniform_temp_sign);
+STATIC void adjust_grid_and_therm_cond_for_litter(Real h[], Soil_thermal_prop * therm_prop,const Soil * soil, Uniform_temp_sign uniform_temp_sign);
+STATIC void adjust_grid_and_therm_cond_for_snow(Real h[], Soil_thermal_prop * therm_prop,const Soil * soil, Uniform_temp_sign uniform_temp_sign);
 STATIC Real calc_litter_depth(const Soil * soil);
 STATIC Real calc_snow_depth(const Soil * soil);
 STATIC Real calc_litter_therm_conductivity(Real litter_temp,  Real sat_degree);
@@ -52,7 +43,7 @@ STATIC Real calc_litter_therm_conductivity(Real litter_temp,  Real sat_degree);
 /**** main function ****/
 
 void update_soil_thermal_state(Soil *soil,           /**< pointer to soil data */
-                               Real temp_below_snow, /**< (deg C) */
+                               Real airtemp, /**< (deg C) */
                                const Config *config  /**< LPJmL configuration */
                               )
 {
@@ -60,10 +51,10 @@ void update_soil_thermal_state(Soil *soil,           /**< pointer to soil data *
   Real abs_waterice_cont[NSOILLAYER];
   get_abs_waterice_cont(abs_waterice_cont, soil);
 
-  /* check if phase changes are already present in soil or can possibly happen during timestep due to temp_bs forcing */
+  /* check if phase changes are already present in soil or can possibly happen during timestep due to airtemp forcing */
   /* without the need of considering phase changes the below calculations simplify significantly */
   Uniform_temp_sign uniform_temp_sign;
-  uniform_temp_sign = check_uniform_temp_sign_throughout_soil(soil->enth, temp_below_snow, abs_waterice_cont);
+  uniform_temp_sign = check_uniform_temp_sign_throughout_soil(soil->enth, airtemp, abs_waterice_cont);
 
   /* calculate soil thermal properties and provide it for below functions */
   Soil_thermal_prop therm_prop = {};
@@ -71,12 +62,11 @@ void update_soil_thermal_state(Soil *soil,           /**< pointer to soil data *
 
   /* apply daily changes to soil enthalpy distribution  due to heatconvection and heatconduction*/
   modify_enth_due_to_masschanges(soil, abs_waterice_cont);
-  modify_enth_due_to_heatconduction(uniform_temp_sign, soil, temp_below_snow, &therm_prop);
+  modify_enth_due_to_heatconduction(uniform_temp_sign, soil, airtemp, &therm_prop);
 
   /* compute soil thermal attributes from enthalpy distribution and thermal properties, i.e. the derived quantities */
   compute_mean_layer_temps_from_enth(soil->temp,soil->enth, &therm_prop);
-  compute_litter_and_snow_temp_from_enth(soil, temp_below_snow, &therm_prop);
-
+  compute_litter_and_snow_temp_from_enth(soil, airtemp, &therm_prop);
   compute_water_ice_ratios_from_enth(soil,&therm_prop);
   compute_maxthaw_depth(soil);
 }
@@ -137,47 +127,51 @@ STATIC void modify_enth_due_to_masschanges(Soil * soil,const Real * abs_waterice
 }
 
 
-STATIC void modify_enth_due_to_heatconduction(Uniform_temp_sign uniform_temp_sign, Soil * soil, Real temp_below_snow, Soil_thermal_prop * therm_prop)
+STATIC void modify_enth_due_to_heatconduction(Uniform_temp_sign uniform_temp_sign, Soil * soil, Real airtemp, Soil_thermal_prop * therm_prop)
 {
   Real h[NHEATGRIDP], top_dirichlet_BC;
 
   /* Compute the dirichlet boundary condition. */
-  top_dirichlet_BC = temp_below_snow ;
+  top_dirichlet_BC = airtemp;
 
   /* setup grid */
   setup_heatgrid(h);
 
-  /* modify grid and conductivity of top layer if snow is present */
-  adjust_for_snow(h, therm_prop, soil, uniform_temp_sign);
-  adjust_for_litter(h, therm_prop, soil, uniform_temp_sign);
+  /* modify grid and conductivity of top element if snow and litter is present */
+  adjust_grid_and_therm_cond_for_snow(h, therm_prop, soil, uniform_temp_sign);
+  adjust_grid_and_therm_cond_for_litter(h, therm_prop, soil, uniform_temp_sign);
 
   /* apply heatconduction */
   apply_heatconduction_of_a_day(uniform_temp_sign, soil->enth, h, top_dirichlet_BC, therm_prop);
 }
 
-STATIC void adjust_for_snow(Real h[], Soil_thermal_prop * therm_prop,const Soil * soil, Uniform_temp_sign uniform_temp_sign)
+STATIC void adjust_grid_and_therm_cond_for_snow(Real h[], Soil_thermal_prop * therm_prop, const Soil * soil, Uniform_temp_sign uniform_temp_sign)
 {
   Real snowdepth = calc_snow_depth(soil);
 
+  /* adjust frozen thermal conductivity */
   if(!(uniform_temp_sign == ALL_ABOVE_0))
   {
-    Real froz_thermal_resistance = (h[0]/therm_prop->lam_frozen[0]) + (snowdepth/K_SNOW_SOILINS);
+    /* use fact that thermal resistances sum up for layers in serial arrangement */
+    Real froz_thermal_resistance = (h[0]/therm_prop->lam_frozen[0]) + (snowdepth/lambda_snow);
     Real froz_therm_cond = (h[0]+snowdepth) / froz_thermal_resistance;
     therm_prop->lam_frozen[0] = froz_therm_cond;
   }
 
+  /* adjust unfrozen thermal conductivity */
   if(!(uniform_temp_sign == ALL_BELOW_0))
   {
-    Real unfroz_thermal_resistance = (h[0]/therm_prop->lam_unfrozen[0]) + (snowdepth/K_SNOW_SOILINS);
+    Real unfroz_thermal_resistance = (h[0]/therm_prop->lam_unfrozen[0]) + (snowdepth/lambda_snow);
     Real unfroz_therm_cond = (h[0]+snowdepth) / unfroz_thermal_resistance;
     therm_prop->lam_unfrozen[0] = unfroz_therm_cond;
   }
 
+  /* adjust grid */
   h[0]+=snowdepth;
 }
 
 
-STATIC void adjust_for_litter(Real h[], Soil_thermal_prop * therm_prop,const Soil * soil, Uniform_temp_sign uniform_temp_sign)
+STATIC void adjust_grid_and_therm_cond_for_litter(Real h[], Soil_thermal_prop * therm_prop,const Soil * soil, Uniform_temp_sign uniform_temp_sign)
 {
   Real litterdepth = calc_litter_depth(soil); // unit: [m]
   Real saturation_degree;
@@ -189,13 +183,16 @@ STATIC void adjust_for_litter(Real h[], Soil_thermal_prop * therm_prop,const Soi
 
   Real lam_litter = calc_litter_therm_conductivity(soil->litter.agtop_temp, saturation_degree);
 
+  /* adjust frozen thermal conductivity */
   if(!(uniform_temp_sign == ALL_ABOVE_0))
   {
+    /* use fact that thermal resistances sum up for layers in serial arrangement */
     Real froz_thermal_resistance = (h[0]/therm_prop->lam_frozen[0]) + (litterdepth/lam_litter );
     Real froz_therm_cond = (h[0]+litterdepth) / froz_thermal_resistance;
     therm_prop->lam_frozen[0] = froz_therm_cond;
   }
 
+  /* adjust unfrozen thermal conductivity */
   if(!(uniform_temp_sign == ALL_BELOW_0))
   {
     Real unfroz_thermal_resistance = (h[0]/therm_prop->lam_unfrozen[0]) + (litterdepth/lam_litter );
@@ -203,6 +200,7 @@ STATIC void adjust_for_litter(Real h[], Soil_thermal_prop * therm_prop,const Soi
     therm_prop->lam_unfrozen[0] = unfroz_therm_cond;
   }
 
+  /* adjust grid */
   h[0]+=litterdepth;
 }
 
@@ -241,7 +239,7 @@ STATIC Real calc_litter_depth(const Soil * soil)
 
 STATIC Real calc_snow_depth(const Soil * soil)
 {
-  return(soil->snowpack*SNOWHEIGHT_PER_WATEREQ*1e-3); // resulting unit: [m] 
+  return(soil->snowpack*SNOWHEIGHT_PER_WATERHEIGHT*1e-3); // resulting unit: [m] 
 }
 
 STATIC void compute_water_ice_ratios_from_enth(Soil * soil, const Soil_thermal_prop *therm_prop)
@@ -253,25 +251,33 @@ STATIC void compute_water_ice_ratios_from_enth(Soil * soil, const Soil_thermal_p
 
 STATIC void compute_litter_and_snow_temp_from_enth(Soil * soil, Real airtemp , const Soil_thermal_prop *therm_prop)
 {
+  /* the function assumes that above the soil surface comes first the litter layer and then the snow layer */
+
+  /* calculate the relevant distances */
   Real snowdepth = calc_snow_depth(soil);
   Real litterdepth = calc_litter_depth(soil);
-  Real dist_top_gp_soilsurf = soildepth[0]/1000/(GPLHEAT *2); // top soil grdpoint to soil surface / soil litter interface distance 
-  Real top_soil_gp_to_snow_surf_dist = dist_top_gp_soilsurf + litterdepth + snowdepth;
+  Real dist_top_gp_soilsurf = soildepth[0]/1000/(GPLHEAT * 2); // top soil gridpoint to soil surface / soil litter interface distance 
+  Real top_soil_gp_to_snow_surf_dist = dist_top_gp_soilsurf + litterdepth + snowdepth; // full distance from top soil gp to snow surface
 
+  /* calculate the temperature of the top soillayer gridpoint */
   Real top_soil_gp_temp = ENTH2TEMP(soil->enth,therm_prop,0);
 
+  /* interpolate litter temp from top soil gp temp and airtemp */
+  /* weight is used for the air temperature */
   Real weight_airtemp_litter = (dist_top_gp_soilsurf + litterdepth/2)/top_soil_gp_to_snow_surf_dist;
   Real litter_temp = top_soil_gp_temp * (1- weight_airtemp_litter) + airtemp * weight_airtemp_litter;
 
+  /* interpolate snowtemp from top soil gp temp and airtemp */
+  /* weight is used for the air temperature */
   Real weight_airtemp_snow = (top_soil_gp_to_snow_surf_dist - snowdepth/2)/top_soil_gp_to_snow_surf_dist;
   Real snow_temp = top_soil_gp_temp * (1- weight_airtemp_snow) + airtemp * weight_airtemp_snow;
-  
 
+  /* assign interpolated temperatures */
   soil->litter.agtop_temp = litter_temp;
   soil->temp[NSOILLAYER] = snow_temp;
 }
 
-
+/* FUnction to compute or update the maximum of depths until the first ice is reached */
 STATIC void compute_maxthaw_depth(Soil * soil)
 {
   Real depth_to_first_ice=0;
@@ -283,6 +289,8 @@ STATIC void compute_maxthaw_depth(Soil * soil)
       break;
   }
   depth_to_first_ice-=soil->freeze_depth[l];
+
+  /* update the maxthaw_depth if new maximum is reached */
   if (soil->maxthaw_depth<depth_to_first_ice)
    soil->maxthaw_depth=depth_to_first_ice;
 }
@@ -303,7 +311,6 @@ STATIC void get_abs_waterice_cont(Real * abs_waterice_cont,const Soil * soil)
    nearest grid points is half the distance between adjacent grid points within the layer.
    Note that the intervals betweens adjacent gridpoints are called elements. Thus, with this
    grid arrangement, the elements can cross layer borders. */
-
 STATIC void setup_heatgrid(Real *h /**< distances between adjacent gridpoints */
                           )
 {
@@ -325,7 +332,6 @@ STATIC void setup_heatgrid(Real *h /**< distances between adjacent gridpoints */
   for(l=0;l<NSOILLAYER;++l)
     for(j=0;j<GPLHEAT;++j)
       h[l*GPLHEAT+j] = nodes[l*GPLHEAT+j] - (l*GPLHEAT+j>0?nodes[l*GPLHEAT+j-1]:0);
-
 }
 
 
@@ -346,48 +352,5 @@ STATIC void update_wi_and_sol_enth_adjusted(const Real * waterdiff,const Real *s
   {
     soil->wi_abs_enth_adj[l]  = soil->wi_abs_enth_adj[l]  + waterdiff[l];
     soil->sol_abs_enth_adj[l] = soil->sol_abs_enth_adj[l] + soliddiff[l];
-  }
-}
-
-/**** unused functions; Only exist for testing purposes or backward compatibility ****/
-
-/* Function returns temperature at all individual gridpoints. */
-STATIC void calc_gp_temps(Real * gp_temps, Real * enth,const Soil_thermal_prop *th)
-{
-  int gp;
-  for(gp=0;gp<NHEATGRIDP;gp++)
-  {
-    gp_temps[gp]=ENTH2TEMP(enth, th, gp);
-  }
-}
-
-
-/* Function defines an alternative grid where elements do not cross layer boundaries.
-   It allows to extract tempeatures at layer boundaries, since last gridpoint of each layer is on its boundary
-   to next layer. Is an alternative to setupheat_grid. */
-STATIC void setup_heatgrid_layer_boundaries(Real *h)
-{
-  int l,j;
-  for(l=0;l<NSOILLAYER;++l)
-  {
-    for(j=0;j<GPLHEAT;++j)
-    {
-      h[l*GPLHEAT+j]= (soildepth[l]/1000)/GPLHEAT;
-    }
-  }
-}
-
-
-/* Function computes bottom boundary layer temeperatures. Should be used in combination with setup_heatgrid_layer_boundaries.
-   Is an alternative to compute_mean_layer_temps_from_enth. */
-STATIC void compute_bottom_bound_layer_temps_from_enth(Real *temp,
-                                                       const Real *enth,
-                                                       const Soil_thermal_prop *th
-                                                      )
-{
-  int layer;
-  for(layer=0; layer<NSOILLAYER; ++layer)
-  {
-    temp[layer]= ENTH2TEMP(enth,th,(layer+1)*GPLHEAT-1); /* take the bottom most gp of each layer */
   }
 }

@@ -46,7 +46,6 @@ void update_daily(Cell *cell,            /**< cell pointer           */
 #endif
   Real gtemp_air;  /* value of air temperature response function */
   Real gtemp_soil[NSOILLAYER]; /* value of soil temperature response function */
-  Real temp_bs;    /* temperature beneath snow */
   Stocks flux_estab={0,0};
   Real evap=0;
   Stocks hetres={0,0};
@@ -138,7 +137,7 @@ void update_daily(Cell *cell,            /**< cell pointer           */
     if(config->permafrost)
     {
       snowrunoff=snow(&stand->soil,&climate.prec,&melt,
-                      climate.temp,&temp_bs,&evap)*stand->frac;
+                      climate.temp,&evap)*stand->frac;
       cell->discharge.drunoff+=snowrunoff;
       getoutput(&cell->output,EVAP,config)+=evap*stand->frac; /* evap from snow runoff*/
       cell->balance.aevap+=evap*stand->frac; /* evap from snow runoff*/
@@ -154,7 +153,7 @@ void update_daily(Cell *cell,            /**< cell pointer           */
       stand->soil.micro_heating[0]+=m_heat*stand->soil.litter.decomC;
 #endif
 
-      update_soil_thermal_state(&stand->soil,temp_bs,config);
+      update_soil_thermal_state(&stand->soil,climate.temp,config);
 
     }
     else
@@ -259,7 +258,7 @@ void update_daily(Cell *cell,            /**< cell pointer           */
     } /* if woodplantation */
 #endif
 
-    getoutput(&cell->output,TEMP_BS,config)+=temp_bs*stand->frac;
+    getoutput(&cell->output,LITTERTEMP,config)+=stand->soil.litter.agtop_temp*stand->frac;
     getoutput(&cell->output,SWE,config)+=stand->soil.snowpack*stand->frac;
     getoutput(&cell->output,SNOWRUNOFF,config)+=snowrunoff;
     getoutput(&cell->output,MELT,config)+=melt*stand->frac;

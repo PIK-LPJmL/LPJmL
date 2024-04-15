@@ -435,7 +435,7 @@
 #define RIVERVOL 330
 #define SWC_VOL 331
 #define IRRIG_STOR 332
-#define TEMP_BS 333
+#define LITTERTEMP 333
 
 #define PFT_GCGP_COUNT 0
 #define NDAY_MONTH 1
