@@ -76,11 +76,9 @@ void update_soil_thermal_state(Soil *soil,           /**< pointer to soil data *
   /* compute soil thermal attributes from enthalpy distribution and thermal properties, i.e. the derived quantities */
   compute_mean_layer_temps_from_enth(soil->temp,soil->enth, &therm_prop);
   compute_litter_and_snow_temp_from_enth(soil, temp_below_snow, &therm_prop);
-  if(uniform_temp_sign == MIXED_SIGN || uniform_temp_sign == UNKNOWN)
-  {
-    compute_water_ice_ratios_from_enth(soil,&therm_prop);
-    compute_maxthaw_depth(soil);
-  }
+
+  compute_water_ice_ratios_from_enth(soil,&therm_prop);
+  compute_maxthaw_depth(soil);
 }
 
 
