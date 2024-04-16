@@ -76,10 +76,15 @@ void convert_water(Soil* soil, /**< pointer to soil data */
           soilice2moisture(soil,&melt_heat,l); 
           soil->state[l]=(short)getstate(soil->temp+l);
         }
-      }     
-      else if (soil->ice_depth[l]<0)
-        fail(PERM_ERR,TRUE,FALSE,"ice_depth[%d]=%g<0 in convert_water()",l,soil->ice_depth[l]);
+      }
   } /* of switch */
+  if (soil->ice_depth[l]<0)
+        {
+          if (soil->ice_depth[l]<-epsilon)
+            soil->ice_depth[l]=0;
+          else
+            fail(PERM_ERR,TRUE,FALSE,"ice_depth[%d]=%g<0 in convert_water()",l,soil->ice_depth[l]);
+        }
   /**
   * now use the energy from heat for any additional water/ice conversions
   **/

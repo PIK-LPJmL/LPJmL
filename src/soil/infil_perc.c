@@ -75,7 +75,7 @@ Real infil_perc(Stand *stand,        /**< Stand pointer */
   Real S;                  /*aquifer specific yield (-)*/
   Real Theta_ice, k_perch_max, frost_depth,soildepth_irrig,deficit;
   Real icefrac[NSOILLAYER];
-  Real s_node = 0;                                                //soil wetness
+  Real s_node = 0;                                                //soil moisture
   Real s1, vol_eq, tempi, temp0, voleq1, fff,ka;
   Real icesum, depthsum, rsub_top_max, rsub_top, wtable_tmp;
   Real tmp_vol, zq, smp, smpmin, smp1, wh_zwt, wh, layerbound2;
@@ -395,7 +395,6 @@ Real infil_perc(Stand *stand,        /**< Stand pointer */
 
   //THIS IS THE IMPLEMENTATION OF THE WATER TABLE DEPTH FOLLOWING CLM4.5
   // use analytical expression for aquifer specific yield
-  // S = soil->wsat*( 1. - pow((1.+soil->wtable/soil->par->psi_sat),(-1./soil->par->b)));   //see Table2 Clapp-Hornberger and CLM4.5 equ. 7.174
 
   Theta_ice=pow(10,-OMEGA*icefrac[jwt+1]);
   s_node=(allwater(soil,jwt)/soildepth[jwt] + allice(soil,jwt)/soildepth[jwt])/soil->wsat[jwt];
@@ -412,7 +411,7 @@ Real infil_perc(Stand *stand,        /**< Stand pointer */
   //  If water table is below soil column calculate zq for the last layer
   if(soil->wtable > layerbound[BOTTOMLAYER])
   {
-    if (soil->wtable==layerbound[jwt] || (soil->par->psi_sat+soil->wtable-layerbound[jwt])<epsilon)
+    if (soil->wtable==layerbound[jwt] || (soil->wtable-layerbound[jwt])<epsilon)
       vol_eq=soil->wsat[jwt];
     else
     {
@@ -456,7 +455,7 @@ Real infil_perc(Stand *stand,        /**< Stand pointer */
   }
   smpmin =-1e8;                                             // restriction of soil potential (mm)
   tmp_vol=max(vol_eq/soil->wsat[jwt],0.01);                 // equilibrium volumetric water
-  zq=-soil->par->psi_sat*pow(tmp_vol,-soil->par->b);        // eq. 7.126 soil matric potential
+  zq=-soil->par->psi_sat*pow(tmp_vol,-soil->par->b);        // eq. 7.126 equilibrium soil matric potential
   zq= max(smpmin, zq);                                      // equilibrium matric potential for layer [mm]
   smp = -soil->par->psi_sat*pow(s_node,-soil->par->b);      // mm (soil matric potential)
   smp1=max(smpmin,smp);

@@ -126,11 +126,11 @@ Bool initsoil(Stand *stand,           /**< Pointer to stand data */
     /*assume last layer is bedrock in 6-layer version */
     soil->wfc[BOTTOMLAYER]=soilpar->wfc;
     soil->wpwp[BOTTOMLAYER]=soilpar->wpwp;
-    soil->whc[BOTTOMLAYER]=0.002;/*0.006 wsats - 0.002 whc - 0.001 wpwps = 0.003 for free water */
+    soil->whc[BOTTOMLAYER]=0.049;/*0.05 fc - 0.001 wpwps = 0.049 for free water */
     soil->whcs[BOTTOMLAYER]=soil->whc[BOTTOMLAYER]*soildepth[BOTTOMLAYER];
     soil->wpwps[BOTTOMLAYER]=0.001*soildepth[BOTTOMLAYER];
     soil->wsat[BOTTOMLAYER]=soilpar->wsat;
-    soil->wsats[BOTTOMLAYER]=0.006*soildepth[BOTTOMLAYER];
+    soil->wsats[BOTTOMLAYER]=0.08*soildepth[BOTTOMLAYER];
     soil->bulkdens[BOTTOMLAYER]=(1-soil->wsats[BOTTOMLAYER]/soildepth[BOTTOMLAYER])*MINERALDENS;
     soil->k_dry[BOTTOMLAYER]=0.039*pow(soil->wsats[BOTTOMLAYER]/soildepth[BOTTOMLAYER],-2.2);
     soil->beta_soil[BOTTOMLAYER]=-2.655/log10(soilpar->wfc/soilpar->wsat);

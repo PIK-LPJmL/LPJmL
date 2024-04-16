@@ -24,8 +24,8 @@
     "fbd_fac" : [1.0, 1.2, 1.4, 0.0], /* fuel bulk density factors */
     "minlandfrac" : 1e-6,      /* minimum land fraction used if landfrac=0 */
     "tinyfrac" : 1e-6,         /* minimum land-use fraction used by all_crops */
-    "k_litter10" : 0.7,        /* 0.3 k_litter10 only for belowground litter  (1/yr) */
-    "k_soil10" : { "fast" : 0.03, "slow":  0.001}, /* fast, slow k_soil10  (1/yr) */
+    "k_litter10" : 0.6,        /* 0.3 k_litter10 only for belowground litter  (1/yr) */
+    "k_soil10" : { "fast" : 0.025, "slow":  0.001}, /* fast, slow k_soil10  (1/yr) */
     "init_soiln" : { "fast" : 2000.0, "slow":  1000.0}, /* initial fast and slow soil nitrogen (gN/m2) 2500 2500*/
     "maxsnowpack": 20000.0,    /* max. snow pack (mm) */
     "soildepth_evap" : 300.0,  /* depth of sublayer at top of upper soil layer (mm) */

@@ -78,7 +78,7 @@ Real flux_sum(Flux *flux_global,   /**< global carbon and water fluxes */
       flux.product_turnover.nitrogen+=(grid[cell].balance.prod_turnover.fast.nitrogen+grid[cell].balance.prod_turnover.slow.nitrogen)*grid[cell].coord.area;
       flux.neg_fluxes.carbon+=grid[cell].balance.neg_fluxes.carbon*grid[cell].coord.area;
       flux.neg_fluxes.nitrogen+=grid[cell].balance.neg_fluxes.nitrogen*grid[cell].coord.area;
-      flux.area_agr+=(grid[cell].ml.cropfrac_rf+grid[cell].ml.cropfrac_ir)*grid[cell].coord.area;
+      flux.area_agr+=(grid[cell].ml.cropfrac_rf+grid[cell].ml.cropfrac_ir+grid[cell].ml.cropfrac_wl[0]+grid[cell].ml.cropfrac_wl[1])*grid[cell].coord.area;
       flux.estab_storage.carbon+=(grid[cell].balance.estab_storage_tree[0].carbon +
                                  grid[cell].balance.estab_storage_tree[1].carbon +
                                  grid[cell].balance.estab_storage_grass[0].carbon +

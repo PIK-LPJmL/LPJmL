@@ -43,10 +43,16 @@ void soilice2moisture(Soil *soil, /**< pointer to soil data */
   else
     melt_heat=melt_heat_ice+melt_heat_pwp+melt_heat_fw;
   *heat-=melt_heat;
+
   soil->ice_depth[l]-=melt_heat_ice/c_water2ice*1000;/*[mm]*/
   soil->w[l]+=(melt_heat_ice/c_water2ice)/soil->whcs[l]*1000; /*fraction of whcs*/
   if (fabs(soil->ice_depth[l])<epsilon)
+  {
+    soil->w[l]+=soil->ice_depth[l];
     soil->ice_depth[l]=0;
+    if(soil->w[l]<0) soil->w[l]=0;
+  }
+
   /* conversion of water below permanent wilting point*/
   soil->ice_pwp[l]-=melt_heat_pwp/c_water2ice*1000/soil->wpwps[l];
   if(fabs(soil->ice_pwp[l])<epsilon)
