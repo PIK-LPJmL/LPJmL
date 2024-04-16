@@ -406,6 +406,7 @@ Bool setaside(Cell *cell,            /**< Pointer to LPJ cell */
     }
     getoutput(&cell->output,FLUX_ESTABC,config)+=flux_estab.carbon*cropstand->frac;
     getoutput(&cell->output,FLUX_ESTABN,config)+=flux_estab.nitrogen*cropstand->frac;
+    getoutput(&cell->output,FLUX_ESTABN_MG,config)+=flux_estab.nitrogen*cropstand->frac;
     cell->balance.flux_estab.carbon+=flux_estab.carbon*cropstand->frac;
     cell->balance.flux_estab.nitrogen+=flux_estab.nitrogen*cropstand->frac;
 

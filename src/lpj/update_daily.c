@@ -286,7 +286,8 @@ void update_daily(Cell *cell,            /**< cell pointer           */
         cell->balance.influx.nitrogen+=2000*stand->frac;
         if (isagriculture(stand->type->landusetype))
           getoutput(&cell->output,NDEPO_AGR,config)+=2000*stand->frac;
-        
+        if(stand->type->landusetype!=NATURAL && stand->type->landusetype!=WOODPLANTATION)
+          getoutput(&cell->output,NDEPO_MG,config)+=2000*stand->frac;
         getoutput(&cell->output,NDEPOS,config)+=2000*stand->frac;
       }
       else if(!config->no_ndeposition)
@@ -307,7 +308,8 @@ void update_daily(Cell *cell,            /**< cell pointer           */
         cell->balance.influx.nitrogen+=(climate.nh4deposition+climate.no3deposition)*stand->frac;
         if (isagriculture(stand->type->landusetype))
           getoutput(&cell->output,NDEPO_AGR,config)+=(climate.nh4deposition+climate.no3deposition)*stand->frac;
-        
+        if(stand->type->landusetype!=NATURAL && stand->type->landusetype!=WOODPLANTATION)
+          getoutput(&cell->output,NDEPO_MG,config)+=(climate.nh4deposition+climate.no3deposition)*stand->frac;
         getoutput(&cell->output,NDEPOS,config)+=(climate.nh4deposition+climate.no3deposition)*stand->frac;
       }
 #ifdef DEBUG_N
@@ -330,6 +332,8 @@ void update_daily(Cell *cell,            /**< cell pointer           */
       bnf=biologicalnfixation(stand, npft, ncft, config);
       stand->soil.NH4[0]+=bnf;
       getoutput(&cell->output,BNF,config)+=bnf*stand->frac;
+      if(stand->type->landusetype!=NATURAL && stand->type->landusetype!=WOODPLANTATION)
+        getoutput(&cell->output,BNF_MG,config)+=bnf*stand->frac;
       cell->balance.influx.nitrogen+=bnf*stand->frac;
     }
 

@@ -102,6 +102,7 @@ Real daily_agriculture_grass(Stand *stand,                /**< stand pointer */
       stand->soil.NH4[0]+=fertil*(1-param.nfert_no3_frac);
       stand->cell->balance.influx.nitrogen+=fertil*stand->frac;
       getoutput(output,NFERT_AGR,config)+=fertil*stand->frac;
+      getoutput(output,NAPPLIED_MG,config)+=fertil*stand->frac;
     } /* end fday==day */
   }
   if (config->with_nitrogen && stand->cell->ml.manure_nr!=NULL)
@@ -115,6 +116,7 @@ Real daily_agriculture_grass(Stand *stand,                /**< stand pointer */
       stand->cell->balance.influx.carbon += manure*param.manure_cn*stand->frac;
       stand->cell->balance.influx.nitrogen += manure*stand->frac;
       getoutput(&stand->cell->output,NMANURE_AGR,config)+=manure*stand->frac;
+      getoutput(&stand->cell->output,NAPPLIED_MG,config)+=manure*stand->frac;
     } /* end fday==day */
   }
 
