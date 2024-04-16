@@ -304,6 +304,8 @@ int main(int argc,char **argv)
   float fcoord[2];
   double dcoord[2];
   outheader.nyear=1;
+  outheader.nstep=1;
+  outheader.timestep=1;
   outheader.firstcell=0;
   outheader.order=0;
   outheader.ncell=0;

@@ -20,7 +20,7 @@
 
 #include "lpj.h"
 
-#define USAGE "Usage: txt2grid [-h] [-v] [-map file] [-fmt s] [-skip n] [-cellsize size] [-float] [-latlon] gridfile clmfile\n"
+#define USAGE "Usage: txt2grid [-h] [-v] [-map file] [-fmt s] [-skip n] [-cellsize size] [-cellsize_lon size] [-cellsize_lat size] [-float] [-latlon] gridfile clmfile\n"
 
 typedef  struct
 {
@@ -84,25 +84,27 @@ int main(int argc,char **argv)
   for(iarg=1;iarg<argc;iarg++)
     if(argv[iarg][0]=='-')
     {
-      if(!strcmp(argv[iarg],"-h"))
+      if(!strcmp(argv[iarg],"-h") || !strcmp(argv[iarg],"--help"))
       {
         printf("   txt2grid (" __DATE__ ") Help\n"
                "   ===========================\n\n"
                "Convert text file to clm grid file for LPJmL version " LPJ_VERSION "\n\n"
                USAGE
                "\nArguments:\n"
-               "-h             print this help text\n"
-               "-v             verbose output\n"
-               "-map file      mapping to nearest cell in grid file\n"
-               "-fmt s         format string for text input, default is '%s'\n"
-               "-cellsize size cell size, default is %g\n"
-               "-float         write float data, default is short\n"
-               "-skip n        skip first n lines, default is one\n"
-               "-latlon        read latitude then longitude\n"
-               "gridfile       filename of grid text file\n"
-               "clmfile        filename of clm data file\n\n"
+               "-h,--help          print this help text\n"
+               "-v,--verbose       verbose output\n"
+               "-map file          mapping to nearest cell in grid file\n"
+               "-fmt s             format string for text input, default is '%s'\n"
+               "-cellsize size     cell size, default is %g\n"
+               "-cellsize_lat size latitudinal cell size, default is %g\n"
+               "-cellsize_lon size longitudinal cell size, default is %g\n"
+               "-float             write float data, default is short\n"
+               "-skip n            skip first n lines, default is one\n"
+               "-latlon            read latitude then longitude\n"
+               "gridfile           filename of grid text file\n"
+               "clmfile            filename of clm data file\n\n"
                "(C) Potsdam Institute for Climate Impact Research (PIK), see COPYRIGHT file\n",
-               fmt,header.cellsize_lon);
+               fmt,header.cellsize_lon,header.cellsize_lat,header.cellsize_lon);
         return EXIT_SUCCESS;
       }
       if(!strcmp(argv[iarg],"-fmt"))
@@ -115,7 +117,7 @@ int main(int argc,char **argv)
         }
         fmt=argv[++iarg];
       }
-      else if(!strcmp(argv[iarg],"-v"))
+      else if(!strcmp(argv[iarg],"-v") || !strcmp(argv[iarg],"--verbose"))
         verbose=TRUE;
       else if(!strcmp(argv[iarg],"-float"))
         isfloat=TRUE;
@@ -133,6 +135,36 @@ int main(int argc,char **argv)
         if(*endptr!='\0')
         {
           fprintf(stderr,"Invalid number '%s' for '-cellsize' option.\n",argv[iarg]);
+          return EXIT_FAILURE;
+        }
+      }
+      else if(!strcmp(argv[iarg],"-cellsize_lat"))
+      {
+        if(iarg==argc-1)
+        {
+           fputs("Argument missing after '-cellsize_lat' option.\n"
+                 USAGE,stderr);
+           return EXIT_FAILURE;
+        }
+        header.cellsize_lat=(float)strtod(argv[++iarg],&endptr);
+        if(*endptr!='\0')
+        {
+          fprintf(stderr,"Invalid number '%s' for '-cellsize_lat' option.\n",argv[iarg]);
+          return EXIT_FAILURE;
+        }
+      }
+      else if(!strcmp(argv[iarg],"-cellsize_lon"))
+      {
+        if(iarg==argc-1)
+        {
+           fputs("Argument missing after '-cellsize_lon' option.\n"
+                 USAGE,stderr);
+           return EXIT_FAILURE;
+        }
+        header.cellsize_lon=(float)strtod(argv[++iarg],&endptr);
+        if(*endptr!='\0')
+        {
+          fprintf(stderr,"Invalid number '%s' for '-cellsize_lon' option.\n",argv[iarg]);
           return EXIT_FAILURE;
         }
       }
@@ -212,6 +244,8 @@ int main(int argc,char **argv)
   header.firstcell=0;
   header.firstyear=0;
   header.nyear=1;
+  header.nstep=1;
+  header.timestep=1;
   if(isfloat)
   {
    header.scalar=1;
@@ -247,8 +281,8 @@ int main(int argc,char **argv)
         printcoord(grid_ref+index);
         printf(", distance=%g\n",dist_min);
       }
-      coord.lon=grid_ref[index].lon;
-      coord.lat=grid_ref[index].lat;
+      coord.lon=(float)grid_ref[index].lon;
+      coord.lat=(float)grid_ref[index].lat;
     }
     else if(verbose)
     {

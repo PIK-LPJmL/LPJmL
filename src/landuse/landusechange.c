@@ -942,12 +942,12 @@ static void grasslandreduction(Cell *cell,            /* cell pointer */
 
     if(grassstand->soil.iswetland)
     {
-      if(setaside(cell,getstand(cell->standlist,s),TRUE,intercrop,npft,ncft,data->irrigation,TRUE,max(config->till_startyear,year),config))
+      if(setaside(cell,getstand(cell->standlist,s),TRUE,intercrop,npft,ncft,data->irrigation,TRUE,year,config))
         delstand(cell->standlist,s);
     }
     else
     {
-      if(setaside(cell,getstand(cell->standlist,s),TRUE,intercrop,npft,ncft,data->irrigation,FALSE,max(config->till_startyear,year),config))
+      if(setaside(cell,getstand(cell->standlist,s),TRUE,intercrop,npft,ncft,data->irrigation,FALSE,year,config))
         delstand(cell->standlist,s);
     }
   }

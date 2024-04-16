@@ -437,7 +437,7 @@ Bool setaside(Cell *cell,          /**< Pointer to LPJ cell */
     fail(NEGATIVE_STAND_FRAC_ERR,TRUE,TRUE,"setaside: Negative crop stand frac =%g in cell (%s) before update",cropstand->frac,sprintcoord(line,&cell->coord));
 
   /* call tillage before */
-  if(with_tillage && year >= config->till_startyear)
+  if(with_tillage)
     tillage(&cropstand->soil,param.residue_frac);
 #ifdef SAFE
   if (!isempty(&cropstand->pftlist))

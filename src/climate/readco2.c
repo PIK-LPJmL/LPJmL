@@ -123,6 +123,8 @@ Bool readco2(Co2data *co2,             /**< pointer to co2 data */
       if(verbose)
         fprintf(stderr,"ERROR260: Last year=%d in CO2 data '%s' less than CO2 fix year %d, last year set to %d.\n",
                 co2->firstyear+co2->nyear-1,filename->name,min(config->lastyear,config->fix_co2_year),co2->firstyear+co2->nyear-1);
+      if(config->pedantic)
+        return TRUE;
       config->lastyear=co2->firstyear+co2->nyear-1;
     }
     if(!config->fix_co2 && co2->firstyear+co2->nyear-1<config->lastyear)
@@ -137,6 +139,8 @@ Bool readco2(Co2data *co2,             /**< pointer to co2 data */
       if(verbose)
         fprintf(stderr,"ERROR260: Last year=%d in CO2 data '%s' less than last simulation year %d, last year set to %d.\n",
                 co2->firstyear+co2->nyear-1,filename->name,config->lastyear,co2->firstyear+co2->nyear-1);
+      if(config->pedantic)
+        return TRUE;
       config->lastyear=co2->firstyear+co2->nyear-1;
     }
   }

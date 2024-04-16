@@ -133,6 +133,8 @@ void fprintfiles(FILE *file,          /**< pointer to text output file */
   {
     if(config->fdi==WVPD_INDEX)
       fprintfilename(file,&config->humid_filename,TRUE);
+    if(config->prescribe_burntarea)
+      fprintfilename(file,&config->burntarea_filename,TRUE);
     fprintfilename(file,&config->lightning_filename,FALSE);
     fprintfilename(file,&config->human_ignition_filename,FALSE);
   }
@@ -156,6 +158,9 @@ void fprintfiles(FILE *file,          /**< pointer to text output file */
       fprintfilename(file,&config->manure_nr_filename,TRUE);
     if(config->residue_treatment==READ_RESIDUE_DATA)
       fprintfilename(file,&config->residue_data_filename,TRUE);
+    if(config->tillage_type==READ_TILLAGE)
+      fprintfilename(file,&config->with_tillage_filename,TRUE);
+
     if(config->prescribe_lsuha)
       fprintfilename(file,&config->lsuha_filename,FALSE);
   }

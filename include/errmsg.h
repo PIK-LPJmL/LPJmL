@@ -65,6 +65,7 @@
 #define INVALID_EXTFLOW_ERR 45
 #define OPEN_COUPLER_ERR 46
 #define INVALID_INUNDSTRESS_ERR 47
+#define INIT_OUTPUT_ERR 48
 
 /* Definition of macros */
 

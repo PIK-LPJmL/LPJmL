@@ -84,5 +84,6 @@ extern Real *transfer_function(Real,int *);
 extern Extflow initextflow(const Config *);
 extern Bool getextflow(Extflow,Cell *,int,int);
 extern void freeextflow(Extflow);
+extern Bool getroute(FILE *,Routing *,Bool);
 
 #endif

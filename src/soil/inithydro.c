@@ -32,7 +32,7 @@ Bool inithydro(Cell *grid,    /**< LPJ grid */
   size_t offset;
 
   if ((hydrofile = openinputfile(&header, &swap, &config->hydrotopes_filename,
-                                 headername,
+                                 headername,NULL,
                                  &version, &offset, FALSE,config)) == NULL)
     return TRUE;
   if(header.nbands!=CTI_DATA_LENGTH)

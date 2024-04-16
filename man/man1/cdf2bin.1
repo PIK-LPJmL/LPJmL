@@ -3,7 +3,7 @@
 cdf2bin \- convert NetCDF files into raw binary data
 .SH SYNOPSIS
 .B cdf2bin
-[\-v] [\-swap] [\-units u] [\-var name] [\-clm] [\-byte] [\-cellsize size [\-json] [\-o binfile]
+[\-v] [\-swap] [\-units u] [\-var name] [\-clm] [\-byte] [\-cellsize size] [\-floatgrid] [\-doublegrid] [\-json] [\-o binfile]
 gridfile netcdffile ...
 .SH DESCRIPTION
 Program converts NetCDF output data into raw binary output data.
@@ -20,6 +20,12 @@ units to convert data from NetCDF file
 \-var name
 variable name in NetCDF file
 .TP
+\-floatgrid
+set datatype of grid file to float, default is short.
+.TP
+\-doublegrid
+set datatype of grid file to double, default is short.
+.TP
 \-clm
 gridfile is in CLM format, default is raw
 .TP
@@ -30,13 +36,13 @@ output data is converted to byte
 cell size in grid file, default is 0.5
 .TP
 \-json
-JSON metafile is created with suffix '.json'.
+JSON metafile is created with suffix '.json'
 .TP
 \-o binfile
 filename of raw binary data file written. Default is out.bin
 .TP
 .I gridfile
-filename of binary grid data file consisting of short values or clm file if -clm option is set
+filename of binary grid data file consisting of short, float or double  values or clm file if -clm option is set
 .TP
 .I netcdffile
 filename of NetCDF file(s) converted
@@ -60,4 +66,4 @@ For authors and contributors see AUTHORS file
 (C) Potsdam Institute for Climate Impact Research (PIK), see COPYRIGHT file
 
 .SH SEE ALSO
-bin2cdf(1), cdf2clm(1), country2cdf(1), regridlpj(1), lpjml(1), txt2clm(1), cru2clm(1), clm(5)
+bin2cdf(1), cmpbin(1), cdf2clm(1), country2cdf(1), regridlpj(1), lpjml(1), txt2clm(1), cru2clm(1), clm(5)

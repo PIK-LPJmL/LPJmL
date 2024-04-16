@@ -45,7 +45,6 @@
 #define CN_ratio_fast 8
 #define CN_ratio_slow 12
 #define k_N 5e-3 /* Michaelis-Menten parameter k_S,1/2 (gN/m3) */
-#define k_l 0.0  /* Parton et al., 2001 equ. 2 */
 #define S 0.2587 // saturation factor MacDougall and Knutti, 2016
 #define KOVCON (0.001*1000) //Constant of diffusion (m2a-1)
 #define WTABTHRES 10
@@ -258,12 +257,11 @@ Stocks littersom(Stand *stand,                      /**< [inout] pointer to stan
         soil->pool[l].fast.nitrogen-=flux_soil[l].fast.nitrogen;
         soil_cflux+=flux_soil[l].slow.carbon+flux_soil[l].fast.carbon;
         F_Nmineral=flux_soil[l].slow.nitrogen+flux_soil[l].fast.nitrogen;
-        soil->NH4[l]+=F_Nmineral*(1-k_l);
+        soil->NH4[l]+=F_Nmineral;
 #ifdef SAFE
         if(soil->NH4[l]<-epsilon)
          fail(NEGATIVE_SOIL_NH4_ERR,TRUE,TRUE,"1 Negative soil NH4=%g in layer %d in cell (%s) at mineralization",soil->NH4[l],l,sprintcoord(line,&stand->cell->coord));
 #endif
-        soil->NO3[l]+=F_Nmineral*k_l;
         getoutput(&stand->cell->output,N_MINERALIZATION,config)+=F_Nmineral*stand->frac;
         if(isagriculture(stand->type->landusetype))
           getoutput(&stand->cell->output,NMINERALIZATION_AGR,config)+=F_Nmineral*stand->frac;
@@ -547,12 +545,11 @@ Stocks littersom(Stand *stand,                      /**< [inout] pointer to stan
             /* NO3 and N2O from mineralization of organic matter */
             F_Nmineral=decom_sum.nitrogen*param.atmfrac*(soil->fastfrac*soil->c_shift[l][soil->litter.item[p].pft->id].fast+(1-soil->fastfrac)*soil->c_shift[l][soil->litter.item[p].pft->id].slow);
             F_Nmineral_all+=F_Nmineral;
-            soil->NH4[l]+=F_Nmineral*(1-k_l);
+            soil->NH4[l]+=F_Nmineral;
 #ifdef SAFE
             if(soil->NH4[l]<-epsilon)
               fail(NEGATIVE_SOIL_NH4_ERR,TRUE,TRUE,"2 Negative soil NH4=%g in layer %d in cell (%s) at mineralization",soil->NH4[l],l,sprintcoord(line,&stand->cell->coord));
 #endif
-            soil->NO3[l]+=F_Nmineral*k_l;
             getoutput(&stand->cell->output,N_MINERALIZATION,config)+=F_Nmineral*stand->frac;
             if(isagriculture(stand->type->landusetype))
               getoutput(&stand->cell->output,NMINERALIZATION_AGR,config)+=F_Nmineral*stand->frac;
@@ -669,10 +666,10 @@ Stocks littersom(Stand *stand,                      /**< [inout] pointer to stan
         foreachpft(pft,p,&stand->pftlist)
         {
           crop=pft->data;
-          if(crop->dh!=NULL)
+          if(crop->sh!=NULL)
           {
-            crop->dh->n2o_nitsum+=F_N2O;
-            crop->dh->c_emissum+=decom_litter.carbon*param.atmfrac+soil_cflux;
+            crop->sh->n2o_nitsum+=F_N2O;
+            crop->sh->c_emissum+=decom_litter.carbon*param.atmfrac+soil_cflux;
           }
           else
           {

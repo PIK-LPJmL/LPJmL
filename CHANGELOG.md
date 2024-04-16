@@ -19,6 +19,217 @@ of `major.minor.patch` with
 
 ## [Unreleased]
 
+## [5.8.9] - 2024-03-14
+
+- author: Werner von Bloh (bloh@pik-potsdam.de), Sebastian Ostberg (ostberg@pik-potsdam.de)
+- code review: Jannes Breier (breier@pik-potsdam.de)
+
+### Changed
+
+- NetCDF output files are now in a more ISIMIP3 compliant format, datatype of time, lat, and lon is now double, `depth_bnds` added to layer specific output. Standard and long name can be specified in `outputvars.json`.
+- Deprecated function `MPI_Extent` replaced by `MPI_Get_extent` in `mpi_write.c`.
+- Functions `create_netcdf.c`/`create_pft_netcdf.c` and `create1_netcdf.c`/`create1_pft_netcdf.c` have been merged.
+- Function `findcoord()` improved to find cell indices, returns now true if coord is within cell.
+- `STYLESHEET` file converted to markup.
+- Cell size in `regridclm` is set to cell size of target grid, warning is printed if cell size differs.
+- Format and suffix of output files have been removed in `lpjml_config.cjson` and are now set by `"default_fmt"` and `"default_suffix"`:
+```java
+{ "id" : "npp", "file" : { "name" : "output/mnpp"}},
+```
+- `LPJINPATH` set to `/p/projects/lpjml/input/historical` in `regridlpj` if not defined.
+- `"descr"` in `outputvars.cjson` renamed to `"long_name"`.
+
+### Added
+
+- More options added to `lpjml_config.cjson` to customize format of output:
+```java
+  "default_fmt" : "raw",     /* default format for output files: "raw","txt","cdf","clm","sock" */
+  "default_suffix" : ".bin", /* default file suffix for output files */
+  "grid_type" : "short",     /* set datatype of grid file ("short", "float", "double") */
+  "flush_output" : false,    /* flush output to file every time step */
+  "absyear" : false,         /* absolute years instead of years relative to baseyear (true/false) */
+  "rev_lat" : false,         /* reverse order of latitudes in NetCDF output (true/false) */
+  "with_days" : true,        /* use days as units for monthly output in NetCDF files */
+  "nofill" : false,          /* do not fill NetCDF files at creation (true/false) */
+  "baseyear" : 1901,         /* base year for output in NetCDF files */
+```
+- Global attributes for NetCDF output files can be set in the `lpjml_config.cjson` file:
+```java
+ "global_attrs" : {"institution" : "Potsdam Institute for Climate Impact Research",
+                    "contact" : "", /* name and email address */
+                    /* any name and string value can be added: "name" : "value", */
+                    "comment" : ""  /* additional comments */
+                   }, /* Global attributes for NetCDF output files */
+```
+- `"standard_name"` for output can be set in `outputvars.cjson`. If not defined standard name is set to variable name.
+- Chunking defined for NetCDF files if compiled with `-DUSE_NETCDF4`.
+- Option `-metafile` added to `regridclm` and `binsum`. If metafile contains name of grid file, the filename of the source grid can be omitted:
+```bash
+regridclm -metafile grid_new.clm temp.clm.json temp_new.clm
+binsum -metafile mnpp.bin.json anpp.bin
+```
+- NetCDF files can be created with `bin2cdf` and `clm2cdf` from the JSON metafiles containing all global attributes:
+```bash
+bin2cdf -metafile soilc_layer.bin.json soilc_layer.nc
+clm2cdf -metafile temp.clm.json temp.nc
+```
+- `"landcovermap"` added to define mapping of the prescribed FPC input to PFTs.
+- `-hostfile` option added to `lpjrun`.
+- New utilities added:
+  * `cmpbin` - compares binary ouput files
+  * `statclm` - prints minimum, maximum and average of clm files
+  * `regriddrain` - regrids drainage file to new grid
+- Option `-metafile` and `-f` added to `mathclm`.
+- `cdf2clm` stores all global attributes of NetCDF file in JSON metafile if `-json` option is set.
+- Option `-nopp` added to `lpjml`. This option disables preprocessing of the config file by `cpp`.
+- Option `-ofiles` added to `lpjml` and `lpjcheck`  to print list of all available output files.
+- Option `-pedantic` added to `lpjcheck` and `lpjml` to stop on warning.
+- Option `-json` added to `regridclm` and `regridsoil` utilities to create additional JSON metafiles.
+- Compile flag `-DSTRICT_JSON` added to enable more strict syntax checking of JSON files.
+- Remark message in `fscankeywords.c` added if number instead of string is used in JSON file.
+
+### Fixed
+
+- Missing deallocation added in `freeconfig.c` and memory leak in `fscanpftpar.c` fixed.
+- Missing argument after option handling fixed in `cdf2bin` and `countr2cdf`.
+- Missing `$dir/` added to manure data in `regridlpj`.
+- Correct default landuse, sowing data and crop PHU file set in `regridlpj`.
+
+
+## [5.8.8] - 2024-03-07
+
+### Contributors
+
+- author: Christoph  Mueller (cmueller@pik-potsdam.de)
+- code review: Boris Sakschewski (borissa@pik-potsdam.de), Sabine Mathesius (sabine.mathesius@pik-potsdam.de)
+
+### Fixed
+
+- missing family names added in CITATION.cff
+
+### Changed
+
+- renamed `double_harvest.c` to `separate_harvests.c` and `update_double_harvest.c` to `update_separate_harvests.c` and changed entries in Makefiles accordingly
+- renamed functions `double_harvest()` to `separate_harvests()` and `update_double_harvest()` to `update_separate_harvests()` throughout the code
+- renamed the `struct` `Double_harvest` to `Separate_harvest` and the variable of type `Separate_harvest` in `struct` `Pftcrop` from `dh` to `sh`
+- renamed `double_harvest` flag in `struct` `Config` to `separate_harvests` 
+
+
+## [5.8.7] - 2024-03-06
+
+### Contributors
+
+- author: Sibyll Schaphoff (sibylls@pik-potsdam.de)
+- code review: Jens Heinke (heinke@pik-potsdam.de), Werner von Bloh (bloh@pik-potsdam.de)
+
+### Added
+
+- new output `PFT_WATER_SUPPLY` to calculate water stress PFT-specific.
+
+### Changed
+
+- output writing for the new output (`conf.h` , `outputvar.cjson` , `createpftnames.c` , `fwriteoutput.c` , `outputsize.c` , `water_stressed.c`).
+- `isopen()` call removed (`fwriteoutput.c`).
+
+
+## [5.8.6] - 2024-02-29
+
+- author: Stephen Wirth (wirth@pik-potsdam.de), Werner von Bloh (bloh@pik-potsdam.de), Jens Heinke (heinke@pik-potsdam.de), Marie Hemmen (hemmen@pik-potsdam.de)
+- code review: Johanna Braun (jobraun@pik-potsdam.de)
+
+### Fixed
+
+- Divsion by zero avoided for calculation of `nc_ratio` in `ndemand_tree.c` and `ndemand_grass.c` (issue #341).
+- Default directory for input files to current directory set and directory created in `regridlpj`.
+- Correct id 11 set for `"tamp"` input in `input.cjson` (issue #347).
+- Correct filename used in error message in utility `mathclm`.
+- Datatype of Version 4 CLM files correctly handled in `cutclm`, `catclm`, `mergeclm`, `regridclm`.
+
+### Changed
+
+- Hard coded CFT indices (e.g. `MAIZE`) have been replaced by their names.
+- Datatype of `bmgr_harvest_day_nh` and ` bmgr_harvest_day_nh` changed to `int`.
+- Function `freadseed()` used in `freadrestartheader.c`.
+- First value of CO2 data file used for simulation years before first year of CO2 data.
+- CO2 data replaced by TRENDY data in `input.cjson`.
+
+### Added
+
+- Man page for `regridclm` and `regridsoil` added.
+- New keywords `"cft_fertday_temp"` and `"cft_fertday_tropic"` added in `lpjparam.cjson`to specify the CFT names where the fertilizer application dates are taken from for grasslands.
+- Missing filename of tillage input added to `lpjfiles` utility.
+- Option `-h` added to `lpjsubmit`. Options `-v` and `-l` added to `configure.sh`.
+- New keyword `"error_limits"` defined in `lpjparam.cjson` to set maximum balance errors allowed in simulation:
+
+```java
+ "error_limits" :
+    {
+      "carbon" : 1.0,       /* maximum error in local carbon balance (gC/m2) */
+      "nitrogen" : 0.2,     /* maximum error in local nitrogen balance (gN/m2) */
+      "water_local" : 1.5,  /* maximum error in local water balance (mm) */
+      "water_global" : 1e-3 /* maximum error in global water balance (mm) */
+    },
+```
+### Removed
+
+- Option `--propagate` removed from `srun` in `lpjsubmit_slurm`.
+- Hard-coded parameter `k_l` removed in `littersom.c`.
+- Parameter `"residues_in_soil_notillage"` removed.
+- Parameter `"co2_p"`  removed.
+- Keyword in `"till_startyear"` removed from `lpjml_config.cjson`.
+
+
+## [5.8.5] - 2024-01-31
+
+### Contributors
+
+- author: Christoph Mueller (cmueller@pik-potsdam.de) and the entire LPJmL team
+- code review: Boris Sakschewski (borissa@pik-potsdam.de), Fabian Stenzel (stenzel@pik-potsdam.de)
+
+### Added
+
+- added `.zenodo.json` for interaction with zenodo archives
+- added CITATION.cff file
+
+### Changed
+
+- updated AUTHORS file
+
+
+## [5.8.4] - 2024-01-22
+
+### Contributors
+
+- author: Fabian Stenzel (stenzel@pik-potsdam.de), Stephen Wirth (wirth@pik-potsdam.de), Sibyll Schaphoff (schaphoff@pik-potsdam.de)
+- code review: Stephen Wirth, Constanze Werner (cowerner@pik-potsdam.de)
+
+### Fixed:
+
+- Removed lines 240 and 241 in landuse/annual_biomass_tree.c to get rid of the carbon balance error, which shows up in cells with significant bioenergy tree fractions in the landuse input.
+
+## [5.8.3] - 2024-01-21
+
+### Contributors
+
+- author: Werner von Bloh (bloh@pik-potsdam.de)
+- code review: Jannes Breier (breier@pik-potsdam.de), Christoph Mueller (cmueller@pik-potsdam.de)
+
+### Added
+
+- allowed range for coordinates checked in `readcoord()`.
+- allowed formats (`"raw"`, `"clm"`, `"clm2"`) for input files checked in `openmetafile()`.
+- Output scaling added to `writearea.c`.
+
+### Changed
+
+- Error messages changed for more clarity.
+
+### Fixed
+
+- NetCDF output for grid file corrected if cells are skipped.
+- `var_len` correctly set for input with no time axis in `openclimate_netcdf.c`.
+
+
 ## [5.8.2] - 2023-12-21
 
 ### Contributors
@@ -101,6 +312,7 @@ of `major.minor.patch` with
 ### Removed
 
 - `lpjml_*js`, `param_*js`, `lpjparam_*js`, `pft_*.js`, `input_*.js` and `manage_*.js files` for specific projects.
+
 
 ## [5.7.10] - 2023-11-13
 

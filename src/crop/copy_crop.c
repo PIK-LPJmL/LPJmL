@@ -23,10 +23,10 @@ void copy_crop(Pft *dst,const Pft *src)
   dst_crop=dst->data;
   src_crop=src->data;
   *dst_crop=*src_crop;
-  if(src_crop->dh!=NULL)
+  if(src_crop->sh!=NULL)
   {
-    dst_crop->dh=new(Double_harvest);
-    check(dst_crop->dh);
-    *(dst_crop->dh)=*(src_crop->dh);
+    dst_crop->sh=new(Separate_harvests);
+    check(dst_crop->sh);
+    *(dst_crop->sh)=*(src_crop->sh);
   }
 } /* of 'copy_crop' */

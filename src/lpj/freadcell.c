@@ -109,7 +109,7 @@ Bool freadcell(FILE *file,             /**< File pointer to binary file */
     }
     /* read stand list */
     cell->standlist=freadstandlist(file,cell,config->pftpar,npft+ncft,soilpar,
-                                   standtype,nstand,config->double_harvest,swap);
+                                   standtype,nstand,config->separate_harvests,swap);
     if(cell->standlist==NULL)
     {
       fprintf(stderr,"ERROR254: Cannot read stand list.\n");

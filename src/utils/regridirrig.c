@@ -25,7 +25,7 @@ int main(int argc,char **argv)
   long long size;
   Coord res,res2;
   Coordfile grid;
-  int i,j,index,data_version,setversion,ngrid,ngrid2;
+  int i,index,index2,data_version,setversion,ngrid,ngrid2;
   float lon,lat;
   String id;
   Filename filename;
@@ -39,7 +39,7 @@ int main(int argc,char **argv)
       {
         fprintf(stderr,"Invalid option '%s'.\n",argv[i]);
         return EXIT_FAILURE;
-      } 
+      }
     }
     else
       break;
@@ -48,7 +48,7 @@ int main(int argc,char **argv)
   if(argc<5)
   {
     fprintf(stderr,"Error: Missing arguments.\n"
-            "Usage: %s [-longheader] coord0.5.clm coord0.25.clm data0.5.clm data0.25.clm\n",
+            "Usage: %s [-longheader] coord_all.clm coord.clm data_all.clm data.clm\n",
             argv[1-i]);
     return EXIT_FAILURE;
   }
@@ -138,7 +138,7 @@ int main(int argc,char **argv)
   }
   if(size!=(long long)header.ncell*header.nyear*header.nbands*sizeof(int))
   {
-    header.nyear=size/(sizeof(int)*header.ncell*header.nbands); 
+    header.nyear=size/(sizeof(int)*header.ncell*header.nbands);
     fprintf(stderr,"File '%s' too short.\n",argv[3]);
     return EXIT_FAILURE;
   }
@@ -159,36 +159,33 @@ int main(int argc,char **argv)
   }
   for(i=0;i<ngrid2;i++)
   {
-    for(j=0;j<ngrid;j++)
-      if(fabs(c2[i].lat-c[j].lat)<1e-5 && fabs(c2[i].lon-c[j].lon)<1e-5)
-      {
-        index=j;
-        break;
-      }
-    if(j==ngrid2)
+    index=findcoord(c2+i,c,&res,ngrid);
+    if(index==NOT_FOUND)
     {
-      fputs("Initial Coord ",stderr);
+      fputs("Coordinate ",stderr);
       fprintcoord(stderr,c2+i);
       fputs(" not found.\n",stderr);
-      return EXIT_FAILURE; 
+      return EXIT_FAILURE;
     }
     index=data[index];
-    for(j=0;j<ngrid2;j++)
-      if(fabs(c2[j].lat-c[index].lat)<1e-5 && fabs(c2[j].lon-c[index].lon)<1e-5)
-      {
-        index=j;
-        break;
-      }
-    if(j==ngrid2)
+    if(index<0 || index>=ngrid)
     {
-      fputs("Coord ",stderr);
+      fprintf(stderr,"Invalid index %d for cell %d (",index,i);
+      fprintcoord(stderr,c2+i);
+      fprintf(stderr,") found, must be in [0,%d].\n",ngrid-1);
+      return EXIT_FAILURE;
+    }
+    index2=findcoord(c+index,c2,&res,ngrid2);
+    if(index2==NOT_FOUND)
+    {
+      fputs("Coordinate ",stderr);
       fprintcoord(stderr,c+index);
       fputs(" for cell ",stderr);
       fprintcoord(stderr,c2+i);
-      fputs(" not found.\n",stderr);
-      index=i;
+      fprintf(stderr," not found in '%s', set to itself.\n",argv[2]);
+      index2=i;
     }
-    fwrite(&index,1,sizeof(int),file);
+    fwrite(&index2,1,sizeof(int),file);
   }
   fclose(file);
   return EXIT_SUCCESS;

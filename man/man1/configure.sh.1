@@ -3,31 +3,107 @@
 configure.sh \- Configure LPJmL
 .SH SYNOPSIS
 .B configure.sh
-[-h] [-prefix \fIdir\fP] [-debug] [-nompi] [-check] [-Dmacro[=value] ...]
+[-h] [-v] [-l] [-prefix \fIdir\fP] [-debug] [-nompi] [-check] [-Dmacro[=value] ...]
 .SH DESCRIPTION
-Script configures LPJmL for specific OS and compiler. File \fIMakefile.inc\fP and scripts \fBlpj_paths.sh\fP, \fBlpj_paths.csh\fP are created. After configuration LPJmL program and utilities can be created by invoking
+Script configures LPJmL for specific OS and compiler. File \fIMakefile.inc\fP and scripts \fBlpj_paths.sh\fP, \fBlpj_paths.csh\fP are created.
+If configure script exits with message "Unsupported operating system",
+\fIMakefile.$osname\fP is created from \fIMakefile.gcc\fP and probably has to be
+modified for your operating system/compiler.
+After successfull configuration LPJmL program and utilities can be created by invoking
 
 .B make all
 
+After a change in the configuration lpjml and utilities must be rebuilt by invoking
+
+.B make clean; make all
 .SH OPTIONS
 .TP
--h
+-h,--help
 display a short help text.
+.TP
+-v,--version
+print version of LPJmL
+.TP
+-l,--license
+print LPJmL license file
 .TP
 -prefix \fIdir\fP
 Set installation directory for LPJmL. Default is current working directory.
 .TP
 -debug
-Set debug flags and disable optimization of compiler. LPJmL has to be rebuilt by invoking \fBmake clean\fP and \fBmake all\fP.
+Set debug flags and disable optimization of compiler.
 .TP
 -check
-Set debug flags, enable pointer checking for access out of bounds and disable optimization of compiler. LPJmL has to be rebuilt by invoking \fBmake clean\fP and \fBmake all\fP.
+Set debug flags, enable pointer checking for access out of bounds and disable optimization of compiler.
 .TP
 -nompi
 Do not build the MPI version of the code.
 .TP
 -Dmacro[=value]
 Defines macro for compilation
+.SH COMPILE MACROS
+The following macros are defined for compilation flags of lpjml:
+.TP
+CHECK_BOUNDARY
+Check array boundaries of output
+.TP
+COUPLING_WITH_FMS
+Enable coupling to FMS
+.TP
+DAILY_ESTABLISHMENT
+Enable daily establishment
+.TP
+DEBUG
+Diagnostic output is generated for debugging purposes
+.TP
+DEBUG_COUPLER
+Diagnostic output is generated for the coupler
+.TP
+IMAGE
+Include coupler to IMAGE model
+.TP
+LINEAR_DECAY
+Use linearized functions for litter decay
+.TP
+MICRO_HEATING
+Enable microbial heating
+.TP
+NO_FAIL_BALANCE
+lpjml does not terminate on balance errors
+.TP
+PERMUTE
+Random permutation of PFT list
+.TP
+SAFE
+Code is compiled with additional checks
+.TP
+STRICT_JSON
+Strict JSON checking
+.TP
+USE_MPI
+Compile parallel version of LPJmL
+.TP
+USE_NETCDF
+Enable NetCDF input/output
+.TP
+USE_NETCDF4
+Enable NetCDF version 4 input/output
+.TP
+USE_RAND48
+Use drand48() random number generator
+.TP
+USE_UDUNITS
+Enable unit conversion in NetCDF files
+.TP
+USE_TIMING
+Enable timing for socket I/O
+.TP
+WITH_FIRE_MOISTURE
+Enable moisture dependent fire emissions
+.TP
+WITH_FPE
+Floating point exceptions are enabled for debugging purposes
+
 .SH EXAMPLE
 .TP
 Configure LPJmL with installation directory \fI/data/biosx/lpjml\fP:

@@ -14,6 +14,13 @@
 
 
   {
+    "error_limits" :
+    {
+      "carbon" : 1.0,       /* maximum error in local carbon balance (gC/m2) */
+      "nitrogen" : 0.2,     /* maximum error in local nitrogen balance (gN/m2) */
+      "water_local" : 1.5,  /* maximum error in local water balance (mm) */
+      "water_global" : 1e-3 /* maximum error in global water balance (mm) */
+    },
     "soildepth" : [
       200.0,       /* soil depth layer (mm) */
       300.0,       /* soil depth layer (mm) */
@@ -31,9 +38,6 @@
     "soildepth_evap" : 300.0,  /* depth of sublayer at top of upper soil layer (mm) */
     "soil_infil" : 2.0,        /* default soil infiltration */
     "soil_infil_litter" : 2.0, /* soil infiltration intensification by litter cover*/
-    "co2_p" : 278.0,           /* pre-industrial CO2 (ppmv) */
-    "co2_p" : 278.0,           /* pre-industrial CO2 (ppmv) */
-    "lgm_co2" : 180,           /* LGM CO2 (ppmv) */
     "pch4" :  801,             /* pre-industrial atmospheric CH4 (801 ppb) */
     "lgm_ch4" : 460,           /* Eemian (460) LGM (466) atmospheric CH4 (ppb) */
     "ch4_ip" : 1790,           /* initial  pre-industrial amount of atmospheric CH4 (ppb) */
@@ -76,7 +80,6 @@
     "saturation_level_drip" : 0.05,     /* saturation level drip irrigation*/
     "drip_evap_reduction" : 0.6,        /* reduction of drip soil evap */
     "residues_in_soil" : 0.1,           /* minimum residues in soil*/
-    "residues_in_soil_notillage" : 0.1, /* minimum residues in soil before till_startyear (only if tilled) */
     "fburnt" : 0,                       /* fraction of trees burnt at deforestation */
     "ftimber" : 0,                      /* timber fraction at deforestation */
     "ftimber_wp" : 0.76,                /* timber fraction for wood plantations */
@@ -97,10 +100,10 @@
     "rootreduction" : 0.5,              /* fraction used to calculate amount of roots dying at harvest in managed grasslands */
     "phen_limit" : 0.5,                 /* phen. limit for agricultural trees */
      #ifdef BMGR_BROWN
-      "bmgr_harvest_day_nh" : 32.0,     /* harvest date (doy) of brown biomass grass harvest; NH 1.Feb */
-      "bmgr_harvest_day_sh" : 213.0     /* harvest date (doy) of brown biomass grass harvest; SH 1.Aug */
+      "bmgr_harvest_day_nh" : 32,       /* harvest date (doy) of brown biomass grass harvest; NH 1.Feb */
+      "bmgr_harvest_day_sh" : 213       /* harvest date (doy) of brown biomass grass harvest; SH 1.Aug */
     #else
-      "bmgr_harvest_day_nh" : 275.0,    /* harvest date (doy) of green biomass grass harvest; NH 1.Oct */
-      "bmgr_harvest_day_sh" : 92.0      /* harvest date (doy) of green biomass grass harvest; SH 1.Apr */
+      "bmgr_harvest_day_nh" : 275,      /* harvest date (doy) of green biomass grass harvest; NH 1.Oct */
+      "bmgr_harvest_day_sh" : 92        /* harvest date (doy) of green biomass grass harvest; SH 1.Apr */
     #endif
   }

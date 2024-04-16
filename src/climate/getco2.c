@@ -46,7 +46,9 @@ Bool getco2(const Climate *climate, /**< Pointer to climate data */
 
       return TRUE;
     }
-    *pco2=(year<0) ? param.co2_p : climate->co2.data[year];
+    else if(year<0)
+      year=0;
+    *pco2=climate->co2.data[year];
   }
   return FALSE;
 } /* of 'getco2' */

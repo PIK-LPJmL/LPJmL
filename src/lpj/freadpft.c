@@ -21,7 +21,7 @@ Bool freadpft(FILE *file,            /**< pointer to binary file */
               Pft *pft,              /**< PFT variables to read */
               const Pftpar pftpar[], /**< PFT parameter array */
               int ntotpft,           /**< total number of PFTs */
-              Bool double_harvest,
+              Bool separate_harvests,
               Bool swap              /**< Byte order has to be changed
                                         (TRUE/FALSE) */
              )                       /** \return TRUE on error */
@@ -47,7 +47,7 @@ Bool freadpft(FILE *file,            /**< pointer to binary file */
   freadint1(&pft->inun_count, swap, file);
   freadreal1(&pft->inun_stress, swap, file);
   /* read class-dependent PFT variables */
-  if(pft->par->fread(file,pft,double_harvest,swap))
+  if(pft->par->fread(file,pft,separate_harvests,swap))
   {
     fprintf(stderr,"ERROR254: Cannot read PFT-specific data.\n");
     return TRUE;

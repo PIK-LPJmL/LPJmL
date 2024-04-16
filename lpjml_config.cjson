@@ -35,6 +35,10 @@
   "coupled_model" : null,   /* Coupled model: null (no model coupled), string (name of coupled model) */
   "start_coupling": null,   /* Start year of model coupling: null (start_coupling is set to firstyear if coupled_model != null), int (start year of coupling) */
   "version"  : "6.0",       /* LPJmL version expected */
+  "global_attrs" : {"institution" : "Potsdam Institute for Climate Impact Research",
+                    "contact" : "", /* name and email address */
+                    "comment" : ""  /* additional comments */
+                   },       /* Global attributes for NetCDF output files */
   #if defined CRU_MONTHLY || defined CRU_NETCDF
     "random_prec" : true,     /* Random weather generator for precipitation enabled */
     "radiation" : "radiation",/* type of radiation input to be used, options: "cloudiness", "radiation", "radiation_swonly", "radiation_lwdown" */
@@ -105,8 +109,7 @@
   "irrigation" : "lim",                 /* options: "no", "lim", "pot", "all" */
   "laimax_interpolate" : "laimax_par",  /* laimax settings, options:  "laimax_par" (values from pft.cjson), "laimax_cft" (values from manage_irrig_*.cjson), "const_lai_max" (constant values set in flag laimax), "laimax_interpolate" (interpolates laimin and laimax based on values from pft.cjson - non-functional?) */
   "laimax" : 5,                         /* maximum LAI for laimax_interpolate = "const_lai_max" */
-  "tillage_type" : "read",               /* Options: "all" (all agr. cells tilled), "no" (no cells tilled) and "read" (tillage dataset used) */
-  "till_startyear" : 1850,              /* year in which tillage should start (currently only for tillage_type="read") */
+  "tillage_type" : "read",              /* Options: "all" (all agr. cells tilled), "no" (no cells tilled) and "read" (tillage dataset used) */
   "till_fallow" : false,                /* tillage on */
   "black_fallow" : false,               /* simulation with black fallow on PNV */
   "pft_residue" : "temperate cereals",  /* ?  */
@@ -119,18 +122,18 @@
   "cft_temp" : "temperate cereals",     /* cft name (see pft.cjson) to simulate others in temperate regions (abs(lat)>30 deg), if others_to_crop is true  */
   "cft_tropic" : "maize",               /* cft name (see pft.cjson) to simulate others in tropical regions (abs(lat)<30 deg), if others_to_crop is true  */
   "grazing_others" : "default",         /* default grazing type for others, options : "default", "mowing", "ext", "int", "livestock", "none" */
-  "grazing" : "livestock",                /* default grazing type, options : "default", "mowing", "ext", "int", "livestock", "none" */
+  "grazing" : "livestock",              /* default grazing type, options : "default", "mowing", "ext", "int", "livestock", "none" */
   "grassonly" : false,                  /* set all cropland including others to zero but keep managed grasslands */
   "luc_timber" : true,                  /* true: extract timber carbon (timber_harvest output) if natural vegetation is cleared for managed land, false: carbon is put in litter */
   "grassland_fixed_pft" : false,        /* prescribe per grid cell the grass pft to be grown, requires additional input - non-functional? */
   "grass_harvest_options" : false,      /* true: grid-specific grassland management, requires input file; false: default management (setting "grazing") everywhere */
-  "prescribe_lsuha" : true,            /* prescribe livestock unit per hectare, input required (needed for "grazing" = "livestock") */
+  "prescribe_lsuha" : true,             /* prescribe livestock unit per hectare, input required (needed for "grazing" = "livestock") */
   "mowing_days" : [152, 335],           /* Mowing days (day-of-year) for grassland if "grazing" = "mowing" */
-  "crop_resp_fix" : false,             /* C:N ratio setting affecting crop respiration - options: true (fixed - avoids yield reductions at high n inputs); false (variable/dynamic) */
-  "crop_phu_option" : "prescribed",           /* defines setting for phenological heat unit and vernalization requirements for crops; options: "old", "new", "prescribed" */
-  "cropsheatfrost" : false,            /* enable extreme temperature crop damages - requires tmin/tmax inputs - NOT TESTED */
-  "double_harvest" : true,             /* true: enables outputs for second growing season (e.g. harvest2.bin; sdate2.bin - have to be explicitly added to outputs); false: crop specific outputs over all growing seasons are added up/overwritten - caution: this interplays with the setting "grid_scaled" */
-  "npp_controlled_bnf" : true,         /* enable npp controlled bnf based on Ma et al. 2022, alternatively old Cleveland et al. 1999*/
+  "crop_resp_fix" : false,              /* C:N ratio setting affecting crop respiration - options: true (fixed - avoids yield reductions at high n inputs); false (variable/dynamic) */
+  "crop_phu_option" : "prescribed",     /* defines setting for phenological heat unit and vernalization requirements for crops; options: "old", "new", "prescribed" */
+  "cropsheatfrost" : false,             /* enable extreme temperature crop damages - requires tmin/tmax inputs - NOT TESTED */
+  "separate_harvests" : true,           /* true: enables outputs for second growing season (e.g. harvest2.bin; sdate2.bin - have to be explicitly added to outputs); false: crop specific outputs over all growing seasons are added up/overwritten - caution: this interplays with the setting "grid_scaled" */
+  "npp_controlled_bnf" : true,          /* enable npp controlled bnf based on Ma et al. 2022, alternatively old Cleveland et al. 1999*/
 
 /*===================================================================*/
 /*  II. Input parameter section                                      */
@@ -192,6 +195,13 @@
               "sandy clay loam", "loam", "silt loam", "sandy loam", "silt",
               "loamy sand", "sand", "rock and ice"],
 
+  /* The following array is used for mapping prescribed FPC */
+  "landcovermap" : ["tropical broadleaved evergreen tree", "tropical broadleaved raingreen tree",
+                    "temperate needleleaved evergreen tree", "temperate broadleaved evergreen tree",
+                    "temperate broadleaved summergreen tree", "boreal needleleaved evergreen tree",
+                    "boreal broadleaved summergreen tree", "boreal needleleaved summergreen tree",
+                    "Tropical C4 grass", "Temperate C3 grass", "Polar C3 grass"],
+
   /* the following array describes the order of the bands in the land use file */
   "landusemap" : ["temperate cereals","rice", "maize", "tropical cereals", "pulses",
                   "temperate roots", "tropical roots", "oil crops sunflower",
@@ -232,12 +242,19 @@
   ,
 
   /* output data settings */
-  "output_metafile" : true, /* no json metafile created */
-  "float_grid" : false,      /* set datatype of grid file to float (TRUE/FALSE) */
-  "compress" : 0,          /* compression level (1-9, 0= no compression) */
-  "missing_value" : -1e32, /* missing value in NetCDF files */
-  "pft_index" : "npft",    /* name of index variable for PFT output */
-  "layer_index" : "layer", /* name of index variable for soil layer output */
+  "output_metafile" : true,   /* json metafile created (true/false) */
+  "default_fmt" : "raw",      /* default format for output files: "raw","txt","cdf","clm","sock" */
+  "default_suffix" : ".bin",  /* default file suffix for output files */
+  "grid_type" : "short",      /* set datatype of grid file ("short", "float", "double") */
+  "flush_output" : false,     /* flush output to file every time step */
+  "absyear" : false,          /* absolute years instead of years relative to baseyear (true/false) */
+  "rev_lat" : false,          /* reverse order of latitudes in NetCDF output (true/false) */
+  "with_days" : true,         /* use days as units for monthly output in NetCDF files */
+  "nofill" : false,           /* do not fill NetCDF files at creation (true/false) */
+  "compress" : 0,             /* compression level (1-9, 0= no compression) */
+  "missing_value" : -1e32,    /* missing value in NetCDF files */
+  "pft_index" : "npft",       /* name of index variable for PFT output */
+  "layer_index" : "layer",    /* name of index variable for soil layer output */
   "compress_cmd" : "gzip -f", /* command for compression of output files */
   "compress_suffix" : ".gz",  /* file suffix for compressed output files */
   "json_suffix" : ".json",    /* file suffix for JSON metafiles */
@@ -405,6 +422,7 @@ ID                               Fmt                        filename
   "lastyear" : 2019, /* last year of simulation */
 #endif
   "outputyear": 1841, /* first year output is written  */
+  "baseyear": 1901, /* base year for output  */
   "restart" :  true, /* start from restart file */
   "restart_filename" : "restart/restart_1840_nv_stdfire_fake.lpj", /* filename of restart file */
   "write_restart" : true, /* create restart file */

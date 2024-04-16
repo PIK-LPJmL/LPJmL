@@ -108,10 +108,10 @@ void denitrification(Stand *stand,        /**< pointer to stand */
       foreachpft(pft,p,&stand->pftlist)
       {
         crop=pft->data;
-        if(crop->dh!=NULL)
+        if(crop->sh!=NULL)
         {
-          crop->dh->n2o_denitsum+=N2O_denit;
-          crop->dh->n2_emissum+=N_denit;
+          crop->sh->n2o_denitsum+=N2O_denit;
+          crop->sh->n2_emissum+=N_denit;
         }
         else
         {

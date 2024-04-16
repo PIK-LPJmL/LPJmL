@@ -147,7 +147,7 @@ Bool openclimate(Climatefile *file,        /**< pointer to climate file */
   }
   if((file->file=openinputfile(&header,&file->swap,
                                filename,
-                               headername,
+                               headername,units,
                                &version,&offset,!config->isanomaly,config))==NULL)
     return TRUE;
   if (header.order!=CELLYEAR)
