@@ -14,7 +14,7 @@
 
 #include "lpj.h"
 
-#define USAGE  "Usage: %s [-var name] [-index i] [-{float|double}] [-scale s] netcdffile coordfile\n"
+#define USAGE  "Usage: %s [-var name] [-index i] [-{float|double}] [-scale s] [-json] netcdffile coordfile\n"
 
 #if defined(USE_NETCDF) || defined(USE_NETCDF4)
 #include <netcdf.h>
@@ -44,10 +44,13 @@ int main(int argc,char **argv)
   } coord_f;
   Netcdf_config netcdf_config;
   char *var;
+  char *out_json,*arglist;
   FILE *out;
+  Bool isjson;
   var=NULL;
   header.datatype=LPJ_SHORT;
   header.scalar=0.01;
+  isjson=FALSE;
   initsetting_netcdf(&netcdf_config);
   for(i=1;i<argc;i++)
     if(argv[i][0]=='-')
@@ -62,6 +65,8 @@ int main(int argc,char **argv)
         }
         var=argv[++i];
       }
+      else if(!strcmp(argv[i],"-json"))
+        isjson=TRUE;
       else if(!strcmp(argv[i],"-float"))
       {
         header.datatype=LPJ_FLOAT;
@@ -298,6 +303,25 @@ int main(int argc,char **argv)
   free(lat);
   nc_close(ncid);
   printf("Number of cells: %d\n",header.ncell);
+  if(isjson)
+  {
+    out_json=malloc(strlen(argv[i+1])+strlen(JSON_SUFFIX)+1);
+    if(out_json==NULL)
+    {
+      printallocerr("filename");
+      return EXIT_FAILURE;
+    }
+    strcat(strcpy(out_json,argv[i+1]),JSON_SUFFIX);
+    arglist=catstrvec(argv,argc);
+    out=fopen(out_json,"w");
+    if(out==NULL)
+    {
+      printfcreateerr(out_json);
+      return EXIT_FAILURE;
+    }
+    fprintjson(out,argv[i+1],argv[0],NULL,arglist,&header,NULL,NULL,NULL,0,"grid","degree",NULL,"cell coordinates",NULL,LPJ_SHORT,CLM,LPJGRID_HEADER,FALSE,LPJGRID_VERSION);
+    fclose(out);
+  }
   return EXIT_SUCCESS;
 #else
   fprintf(stderr,"ERROR401: NetCDF is not supported in this version of %s.\n",argv[0]);

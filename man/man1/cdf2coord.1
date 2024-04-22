@@ -3,7 +3,7 @@
 cdf2coord \- extract CLM grid from NetCDF file
 .SH SYNOPSIS
 .B cdf2coord
-[\-var name] [\-index i] [\-{float|double}] [\-scale s]  netcdffile gridfile
+[\-var name] [\-index i] [\-{float|double}] [\-scale s] [\-json] netcdffile gridfile
 .SH DESCRIPTION
 Program extracts grid file in CLM format from NetCDF input data. All cells with valid input will be put in the grid file.
 .SH OPTIONS
@@ -19,6 +19,9 @@ scaling factor for CLM grid file. Default is 0.01
 .TP
 \-{float|double}
 write float or double values in CLM grid file, default is short
+.TP
+\-json
+JSON metafile is created with suffix '.json'
 .TP
 .I netcdffile
 filename of NetCDF file
