@@ -69,6 +69,9 @@ void soilice2moisture(Soil *soil, /**< pointer to soil data */
     fprintf(stderr,"soil->ice_pwp[%d]=%.10f in soilice2moisture().\n",l,soil->ice_pwp[l]);
   if(soil->w[l]<0)
     fprintf(stderr,"w[%d]=%.10f soil->ice_depth[l]=%.10f in soilice2moisture().\n",l,soil->w[l],soil->ice_depth[l]);
+  if(soil->w[l]>1+epsilon)
+    fprintf(stderr,"w[%d]=%.10f soil->ice_depth[l]=%.10f melt_heat_ice=%.10f melt_heat=%.10f in soilice2moisture().\n",l,soil->w[l],soil->ice_depth[l],melt_heat_ice,melt_heat);
+
 #endif
   if(ice_water_old > epsilon)
     soil->freeze_depth[l]-=soil->freeze_depth[l]*(allwater(soil,l)-soil_water_old)/ice_water_old;

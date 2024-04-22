@@ -526,6 +526,9 @@ void update_daily(Cell *cell,            /**< cell pointer           */
     }
     if(stand->soil.iswetland)
      getoutput(&cell->output,WTAB,config) += cell->hydrotopes.wetland_wtable_current;
+    getoutput(&cell->output,GW_STORAGE,config) += stand->soil.wa*stand->frac;
+
+
   } /* of foreachstand */
 
   getoutput(&cell->output,CELLFRAC_AGR,config)+=agrfrac;
@@ -535,13 +538,16 @@ void update_daily(Cell *cell,            /**< cell pointer           */
   getoutput(&cell->output,DECAY_WOOD_AGR,config)*=litsum_old_agr[WOOD]>0 ? litsum_new_agr[WOOD]/litsum_old_agr[WOOD] : 1;
 
 
-  gw_outflux = cell->ground_st*cell->kbf;
-  cell->ground_st -= gw_outflux;
-  //cell->discharge.drunoff+=(gw_outflux+cell->ground_st_am*cell->kbf/100);
-  getoutput(&cell->output,GW_OUTFLUX,config) += (gw_outflux + cell->ground_st_am*cell->kbf / 100);
-  cell->ground_st_am -= cell->ground_st_am*cell->kbf / 100;
+//  gw_outflux = cell->ground_st*cell->kbf;
+//  cell->ground_st -= gw_outflux;
+//  //cell->discharge.drunoff+=(gw_outflux+cell->ground_st_am*cell->kbf/100);
+//  getoutput(&cell->output,GW_OUTFLUX,config) += (gw_outflux + cell->ground_st_am*cell->kbf / 100);
+//  cell->ground_st_am -= cell->ground_st_am*cell->kbf / 100;
+//
+//  getoutput(&cell->output,GW_STORAGE,config) += (cell->ground_st + cell->ground_st_am);
 
-  getoutput(&cell->output,GW_STORAGE,config) += (cell->ground_st + cell->ground_st_am);
+/////// replace storage with the new stand specific groundwater storage see above and groundwater discharge are set in infil_perc
+
 
   hydrotopes(cell);
   getoutput(&cell->output,MWATER,config) += cell->hydrotopes.meanwater;

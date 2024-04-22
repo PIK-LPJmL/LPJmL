@@ -492,7 +492,7 @@ Real infil_perc(Stand *stand,        /**< Stand pointer */
     S=soil->wsat[jwt]*(1.-pow((1.+(1/soil->par->psi_sat)),(-1./soil->par->b)));
   S=max(S,0.02);
   qcharge_tot+=qcharge_tot1;
-  if(soil->wtable>layerbound[BOTTOMLAYER])
+  if(soil->wtable>layerbound[BOTTOMLAYER-1])        // BOTTOMLAYEYR?
   {
     soil->wa+=qcharge_tot1;                      //water in the unconfined aquifer (mm)
     soil->wtable-=(qcharge_tot)/S;
@@ -593,7 +593,7 @@ Real infil_perc(Stand *stand,        /**< Stand pointer */
   //==  LATERAL FLOW ==================================================
   // water table above frost table
 
-  q_perch_max = 0.864 * sin(stand->slope_mean*3.6*M_PI/180);                          //1e-5mm/s specify maximum drainage rate mm/d
+  q_perch_max = 0.864 * sin(stand->slope_mean*M_PI/180);                          //1e-5mm/s specify maximum drainage rate 0.864 mm/d
   frost_depth=layerbound[icet]-soil->freeze_depth[icet];
 
   if(frost_depth<layerbound[BOTTOMLAYER-1])
@@ -663,23 +663,20 @@ Real infil_perc(Stand *stand,        /**< Stand pointer */
     if(jwt>=(BOTTOMLAYER-1))
       depthsum=layerbound[BOTTOMLAYER-1];
     Theta_ice=pow(10,(-OMEGA*(icesum/depthsum)));                                               // OMEGA of 6 gives a high impact on low ice fractions (0.1 -> 0.2511886)
-    rsub_top_max=20*sin(stand->slope_mean*3.6*M_PI/180);                                        // 20 mm day-1 suggested by Karpouzas etal, 2006, Christen etal, 2006 ->50 mm day-1
+    rsub_top_max=20*sin(stand->slope_mean*M_PI/180);                                        // 20 mm day-1 suggested by Karpouzas etal, 2006, Christen etal, 2006 ->50 mm day-1, slope converted from degrees to radians
     rsub_top=Theta_ice*rsub_top_max*exp(-fff*soil->wtable/1000);
     rsub_top=min(rsub_top,active_wa);
     //! use analytical expression for aquifer specific yield
     if(soil->wtable>=layerbound[BOTTOMLAYER-1])
     {
-      if (soil->wtable>0)
-        S=soil->wsat[l]*(1.-pow((1.+(soil->wtable/soil->par->psi_sat)),(-1./soil->par->b)));
-      else
-        S=soil->wsat[l]*(1.-pow((1.+(1/soil->par->psi_sat)),(-1./soil->par->b)));
+      S=soil->wsat[l]*(1.-pow((1.+(soil->wtable/soil->par->psi_sat)),(-1./soil->par->b)));
       S=max(S,0.02);
       soil->wa-=rsub_top;
       soil->wtable+=rsub_top/S;
-      tmp_water=max(0,(soil->wa-5000));
+      tmp_water=max(0,(soil->wa-5000));                                                           // is set to be maximum 5000 mm
       soil->w_fw[BOTTOMLAYER-1]+=tmp_water;
       soil->wa-=tmp_water;
-      nrsub_top[BOTTOMLAYER-1]+=tmp_water;
+      nrsub_top[BOTTOMLAYER-1]+=tmp_water;                                                   // water used for leaching out of the stand
       if(soil->w_fw[BOTTOMLAYER-1]>soil->wsats[BOTTOMLAYER-1]-soil->wpwps[BOTTOMLAYER-1]-soil->ice_fw[BOTTOMLAYER-1]-soil->whcs[BOTTOMLAYER-1])
       {
         runoff_out+=soil->w_fw[BOTTOMLAYER-1]-(soil->wsats[BOTTOMLAYER-1]-soil->wpwps[BOTTOMLAYER-1]-soil->ice_fw[BOTTOMLAYER-1]-soil->whcs[BOTTOMLAYER-1]);
@@ -867,9 +864,10 @@ Real infil_perc(Stand *stand,        /**< Stand pointer */
   }
 
   /*writing output*/
-  getoutput(&stand->cell->output,SEEPAGE,config)+=outflux*stand->frac;
-  getoutput(&stand->cell->output,RUNOFF_LAT,config)+=runoff*stand->frac;
+  getoutput(&stand->cell->output,SEEPAGE,config)+=(outflux+lat_runoff_last+runoff)*stand->frac;
+  getoutput(&stand->cell->output,RUNOFF_LAT,config)+=(drain_perched_out+runoff_out+rsub_top)*stand->frac;
   getoutput(&stand->cell->output,RUNOFF_SURF,config)+=runoff_surface*stand->frac;
+  getoutput(&stand->cell->output,GW_OUTFLUX,config)+=(drain_perched_out+runoff_out+rsub_top)*stand->frac;
 
 #ifdef CHECK_BALANCE
 

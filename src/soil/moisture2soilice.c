@@ -23,6 +23,7 @@ void moisture2soilice(Soil *soil, /**< pointer to soil data */
 {
   Real freeze_heat,freeze_heat_w, freeze_heat_pwp, freeze_heat_fw; /* The energy (J/m2) that will be added to heat during freezing */
   Real ice_water_old, soil_water_old,frac_freeze;
+  Real adj_water;
 
   ice_water_old=allice(soil,l);
   soil_water_old=allwater(soil,l);
@@ -58,11 +59,16 @@ void moisture2soilice(Soil *soil, /**< pointer to soil data */
   soil->w[l]-=freeze_heat_w/c_water2ice*1000/soil->whcs[l];
   if(soil->w[l]*soil->whcs[l]+soil->ice_depth[l]>soil->whcs[l]+epsilon)
   {
-    soil->w_fw[l]+=(soil->w[l]*soil->whcs[l]+soil->ice_depth[l])-soil->whcs[l];
-    if(soil->ice_depth[l]>epsilon)
-      soil->ice_depth[l]-=(soil->w[l]*soil->whcs[l]+soil->ice_depth[l])-soil->whcs[l];
+    adj_water=(soil->w[l]*soil->whcs[l]+soil->ice_depth[l])-soil->whcs[l];
+    soil->w_fw[l]+=adj_water;
+    if(soil->ice_depth[l]>adj_water)
+      soil->ice_depth[l]-=adj_water;
     else
-      soil->w[l]-=((soil->w[l]*soil->whcs[l]+soil->ice_depth[l])-soil->whcs[l])/soil->whcs[l];
+    {
+      adj_water-=soil->ice_depth[l];
+      soil->ice_depth[l]=0;
+      soil->w[l]-=adj_water/soil->whcs[l];
+    }
   }
   if (fabs(soil->w[l]*soil->whcs[l])<epsilon)
     soil->w[l]=0;
@@ -87,7 +93,7 @@ void moisture2soilice(Soil *soil, /**< pointer to soil data */
   if(soil->w[l]<0)
     fail(PERM_ERR,TRUE,FALSE,"soil.w[%d]=%.10f<0 in moisture2soilice()",l,soil->w[l]);
   if(soil->ice_depth[l]<-epsilon || soil->ice_depth[l]>soil->whcs[l]+epsilon){
-    fprintf(stderr,"soil->ice_depth[%d]=%.10f which is larger than soil>whcs[%d] %.10f freeze_heat_w: %g w*whcs: %g moisture2soilice()\n",l,soil->ice_depth[l],l,soil->whcs[l],freeze_heat_w,soil->w[l]*soil->whcs[l]);
+    fprintf(stderr,"soil->ice_depth[%d]=%.10f soil->w[%d]=%.10f soil>whcs[%d] %.10f freeze_heat_w: %g heat: %g soilstate: %d moisture2soilice()\n",l,soil->ice_depth[l],l,soil->w[l],l,soil->whcs[l],freeze_heat_w,*heat,soil->state[l]);
   }
 #endif
 } /* of 'moisture2soilice' */
