@@ -12,10 +12,9 @@
 /**                                                                                \n**/
 /**************************************************************************************/
 
-#undef USE_MPI
 #include "lpj.h"
 
-#define USAGE "Usage: %s [-list] [-longheader] countryfile gridfile outfile country ...\n"
+#define USAGE "Usage: %s [-list] [-longheader] [-json] countryfile gridfile outfile country ...\n"
 
 #define NCOUNTRY 236 /* number of countries defined in LPJmL */
 
@@ -294,13 +293,14 @@ static Bool findcountry(const int country[],int n,int c)
 int main(int argc,char **argv)
 {
   FILE *file,*grid,*out;
-  int i,*country,n,version,country_version;
+  int i,*country,n,version,country_version,iarg;
   char *endptr;
+  char *out_json,*arglist;
   Intcoord coord;
   Header header,gridheader,outheader;
   String headername;
   Code code;
-  Bool swap_country,swap_grid,rc;
+  Bool swap_country,swap_grid,rc,isjson;
   float fcoord[2];
   double dcoord[2];
   outheader.nyear=1;
@@ -311,47 +311,52 @@ int main(int argc,char **argv)
   outheader.ncell=0;
   outheader.nbands=2;
   version=country_version=READ_VERSION;
-  if(argc>1 && !strcmp(argv[1],"-longheader"))
-  {
-    version=country_version=2;
-    argc--;
-    argv++;
-  }
-  if(argc>1 && !strcmp(argv[1],"-list"))
-  {
-    puts("List of country codes:\nCode Name");
-    qsort(countrynames,NCOUNTRY,sizeof(Countryname),
-          (int (*)(const void *,const void *))compare);
-    for(i=0;i<NCOUNTRY;i++)
-      printf("%s  %s\n",countrynames[i].abbrev,countrynames[i].name);
-    return EXIT_SUCCESS;
-  }
-  if(argc<5)
+  isjson=FALSE;
+  for(iarg=1;iarg<argc;iarg++)
+    if(argv[iarg][0]=='-')
+    {
+      if(!strcmp(argv[iarg],"-longheader"))
+        version=country_version=2;
+      else if(!strcmp(argv[iarg],"-json"))
+        isjson=TRUE;
+      else if(!strcmp(argv[iarg],"-list"))
+      {
+        puts("List of country codes:\nCode Name");
+        qsort(countrynames,NCOUNTRY,sizeof(Countryname),
+              (int (*)(const void *,const void *))compare);
+        for(i=0;i<NCOUNTRY;i++)
+          printf("%s  %s\n",countrynames[i].abbrev,countrynames[i].name);
+        return EXIT_SUCCESS;
+      }
+    }
+    else
+      break;
+  if(argc<iarg+4)
   {
     fprintf(stderr,"Argument(s) missing.\n"
             USAGE,argv[0]);
     return EXIT_FAILURE;
   }
-  file=fopen(argv[1],"rb");
+  file=fopen(argv[iarg],"rb");
   if(file==NULL)
   {
-    fprintf(stderr,"Error opening '%s': %s.\n",argv[1],strerror(errno));
+    fprintf(stderr,"Error opening '%s': %s.\n",argv[iarg],strerror(errno));
     return EXIT_FAILURE;
   }
   if(freadanyheader(file,&header,&swap_country,headername,&country_version,TRUE))
   {
-    fprintf(stderr,"Error reading header of '%s'.\n",argv[1]);
+    fprintf(stderr,"Error reading header of '%s'.\n",argv[iarg]);
     return EXIT_FAILURE;
   }
-  grid=fopen(argv[2],"rb");
+  grid=fopen(argv[iarg+1],"rb");
   if(grid==NULL)
   {
-    fprintf(stderr,"Error opening '%s': %s.\n",argv[2],strerror(errno));
+    fprintf(stderr,"Error opening '%s': %s.\n",argv[iarg+1],strerror(errno));
     return EXIT_FAILURE;
   }
   if(freadheader(grid,&gridheader,&swap_grid,LPJGRID_HEADER,&version,TRUE))
   {
-    fprintf(stderr,"Error reading header of '%s'.\n",argv[2]);
+    fprintf(stderr,"Error reading header of '%s'.\n",argv[iarg+1]);
     return EXIT_FAILURE;
   }
   outheader.firstyear=gridheader.firstyear;
@@ -362,24 +367,24 @@ int main(int argc,char **argv)
     outheader.cellsize_lat=gridheader.cellsize_lat;
     outheader.scalar=gridheader.scalar;
   }
-  n=argc-4;
+  n=argc-iarg-3;
   country=newvec(int,n);
   check(country);
   for(i=0;i<n;i++)
   {
-    country[i]=strtol(argv[4+i],&endptr,10);
+    country[i]=strtol(argv[iarg+3+i],&endptr,10);
     if(*endptr!='\0')
     {
       /* argument is not a number */
-      country[i]=findcountryname(argv[4+i],countrynames,NCOUNTRY);
+      country[i]=findcountryname(argv[iarg+3+i],countrynames,NCOUNTRY);
       if(country[i]==NOT_FOUND)
       {
-        fprintf(stderr,"Invalid number/name '%s' for country.\n",argv[4+i]);
+        fprintf(stderr,"Invalid number/name '%s' for country.\n",argv[iarg+3+i]);
         return EXIT_FAILURE;
       }
     }
   }
-  out=fopen(argv[3],"wb");
+  out=fopen(argv[iarg+2],"wb");
   if(out==NULL)
   {
     fprintf(stderr,"Error creating '%s': %s.\n",argv[3],strerror(errno));
@@ -437,6 +442,25 @@ int main(int argc,char **argv)
   rewind(out);
   fwriteheader(out,&outheader,LPJGRID_HEADER,version);
   fclose(out);
+  if(isjson)
+  {
+    out_json=malloc(strlen(argv[iarg+2])+strlen(JSON_SUFFIX)+1);
+    if(out_json==NULL)
+    {
+      printallocerr("filename");
+      return EXIT_FAILURE;
+    }
+    strcat(strcpy(out_json,argv[iarg+2]),JSON_SUFFIX);
+    arglist=catstrvec(argv,argc);
+    out=fopen(out_json,"w");
+    if(out==NULL)
+    {
+      printfcreateerr(out_json);
+      return EXIT_FAILURE;
+    }
+    fprintjson(out,argv[iarg+2],argv[0],NULL,arglist,&header,NULL,NULL,NULL,0,"grid","degree",NULL,"cell coordinates",NULL,LPJ_SHORT,CLM,LPJGRID_HEADER,FALSE,version);
+    fclose(out);
+  }
   if(header.ncell)
     printf("Number of cells: %d\n",outheader.ncell);
   else

@@ -3,7 +3,7 @@
 getcountry \- extract grid cells for specified countries
 .SH SYNOPSIS
 .B getcountry
-[\-list] [\-longheader] 
+[\-list] [\-longheader] [\-json]
 .I countryfile gridfile outfile countrycode ...
 .SH DESCRIPTION
 Program extracts country grid cells from grid file. 
@@ -14,6 +14,9 @@ print list of country codes defined
 .TP
 \-longheader
 set long header in grid and country code file
+.TP
+\-json
+JSON metafile is created with suffix '.json'
 .TP
 .I countryfile
 country code file
@@ -31,7 +34,7 @@ ISO 3166-1 alpha-3 abbreviations for countries. or country codes as numbers defi
 .TP
 Create grid data file for USA:
 .B getcountry
-grid.bin grid_usa.clm USA
+cow_full_2018.bin grid.bin grid_usa.clm USA
 .PP
 .SH EXIT STATUS
 .B getcountry
