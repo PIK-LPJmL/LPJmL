@@ -19,7 +19,9 @@ of `major.minor.patch` with
 
 ## [Unreleased]
 
-## [5.8.10] - 2024-04-09
+## [5.8.12] - 2024-04-21
+
+### Contributors
 
 - author: Werner von Bloh (bloh@pik-potsdam.de)
 
@@ -33,11 +35,38 @@ of `major.minor.patch` with
 - Environment variables `LPJNOPP` and `LPJPEDANTIC` added. If set to `true`, preprocessor is disabled and pedantic checking is enabled, respectively.
 - Info about `--help` option added in case of error in command line arguments.
 - Option `-config` added to `bin2cdf`, `country2cdf` and `clm2cdf` in order to read axis names and missing values from a JSON file. File `netcdf.json` added as a template.
-- Option `-json` added to `arr2clm`, `asc2clm`, `txt2grid`, and `txt2clm` in order to create additional JSON metafiles.
+- Option `-json` added to `arr2clm`, `asc2clm`, `txt2grid`, `txt2clm`, and `cdf2coor` in order to create additional JSON metafiles.
 - Option `-inpath` added to `regridlpj` in order to set directory where data can be found.
 - Option `-double` added to `txt2grd` in order to create grid files with coordinate values of type double.
 - Option `-timestep` added to `addheader`.
 - Check for correct number of time steps added in `openclimate_netcdf.c`.
+
+
+## [5.8.11] - 2024-04-10
+
+### Contributors
+
+- author: Johanna Braun (jobraun@pik-potsdam.de)
+- code review: Stephen Wirth (wirth@pik-potsdam.de), Constanze Werner (cowerner@pik-potsdam.de), Jannes Breier (breier@pik-potsdam.de)
+
+### Added
+
+- added four new outputs for managed land: deposition (`NDEPO_MG`), biological nitrogen fixation (`BNF_MG`), applied nitrogen (`NAPPLIED_MG`) and nitrogen establishment flux (`FLUX_ESTABN_MG`)
+
+
+## [5.8.10] - 2024-04-04
+
+- author: Jannes Breier (jannesbr@pik-potsdam.de)
+- code review: Stephen Wirth (wirth@pik-potsdam.de), David Hoetten (davidho@pik-potsdam.de)
+
+
+### Changed
+
+- In outputvars.cjson, the `variable` field for output grid has been changed
+back to `"grid"` (instead of `"soil"`). If NetCDF output is written the variable
+name would be cell id, if raw output is written the variable name would be
+the coordinates. `"grid"` is used as generic naming here, `long_name` is used
+to describe this exception (`"grid information (raw: coordinates, cdf: cell_id)"`)
 
 
 ## [5.8.9] - 2024-03-14

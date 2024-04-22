@@ -116,6 +116,7 @@ Real daily_agriculture(Stand *stand,                /**< [inout] stand pointer *
         stand->soil.NH4[0]+=crop->nfertilizer*(1-param.nfert_no3_frac);
         stand->cell->balance.influx.nitrogen+=crop->nfertilizer*stand->frac;
         getoutput(output,NFERT_AGR,config)+=crop->nfertilizer*pft->stand->frac;
+        getoutput(output,NAPPLIED_MG,config)+=crop->nfertilizer*pft->stand->frac;
         crop->nfertilizer=0;
       }
       if(crop->fphu>0.25 && crop->nmanure>0)
@@ -127,6 +128,7 @@ Real daily_agriculture(Stand *stand,                /**< [inout] stand pointer *
         stand->cell->balance.influx.carbon += crop->nmanure*param.manure_cn*stand->frac;
         stand->cell->balance.influx.nitrogen += crop->nmanure*stand->frac;
         getoutput(output,NMANURE_AGR,config)+=crop->nmanure*pft->stand->frac;
+        getoutput(output,NAPPLIED_MG,config)+=crop->nmanure*pft->stand->frac;
         crop->nmanure=0;
       }
     }

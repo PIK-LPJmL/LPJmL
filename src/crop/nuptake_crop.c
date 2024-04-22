@@ -145,6 +145,7 @@ Real nuptake_crop(Pft *pft,             /**< pointer to PFT data */
         getoutput(&pft->stand->cell->output,BNF,config) += fixed_n*pft->stand->frac;
         pft->stand->cell->balance.influx.nitrogen += fixed_n*pft->stand->frac;
         getoutput(&pft->stand->cell->output,BNF_AGR,config) += fixed_n*pft->stand->frac;
+        getoutput(&pft->stand->cell->output,BNF_MG,config) += fixed_n*pft->stand->frac;
         pft->vscal = 1;
       }
       else
@@ -157,6 +158,7 @@ Real nuptake_crop(Pft *pft,             /**< pointer to PFT data */
           getoutput(&pft->stand->cell->output,BNF,config)+=fixed_n*pft->stand->frac;
           pft->stand->cell->balance.influx.nitrogen+=fixed_n*pft->stand->frac;
           getoutput(&pft->stand->cell->output,BNF_AGR,config) += fixed_n*pft->stand->frac;
+          getoutput(&pft->stand->cell->output,BNF_MG,config) += fixed_n*pft->stand->frac;
         }
         else
           pft->npp_bnf=0.0;
