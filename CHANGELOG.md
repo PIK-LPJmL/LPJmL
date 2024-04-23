@@ -21,6 +21,8 @@ of `major.minor.patch` with
 
 ## [5.8.12] - 2024-04-11
 
+### Contributors
+
 - author: Werner von Bloh (bloh@pik-potsdam.de)
 
 ### Added
@@ -55,6 +57,7 @@ of `major.minor.patch` with
 - Calculation of average fixed in `statclm`.
 - `res_remove` calculation fixed for residue fires in `harvest_crop.c` to close carbon and nitrogen balance.
 - Missing update of `FLUX_ESTABN_MG` added in `turnover_tree.c`.
+- `regridclm` now used for regridding of soil file in `regridlpj`.
 
 
 ## [5.8.11] - 2024-04-10
