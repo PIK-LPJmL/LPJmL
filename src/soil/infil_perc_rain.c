@@ -17,19 +17,18 @@
 #include "lpj.h"
 #include "agriculture.h"
 #include "crop.h"
-#define NPERCO 0.4  /*controls the amount of nitrate removed from the surface layer in runoff relative to the amount removed via percolation.  0.5 in Neitsch:SWAT MANUAL*/
 
+#define NPERCO 0.4  /*controls the amount of nitrate removed from the surface layer in runoff relative to the amount removed via percolation.  0.5 in Neitsch:SWAT MANUAL*/
 
 Real infil_perc_rain(Stand *stand,        /**< Stand pointer */
                      Real infil,          /**< rainfall + melting water - interception_stand (mm) + rw_irrig */
-                     Real infil_vol_enth, /**< volumetric enthalpy contained in infil */
+                     Real infil_vol_enth, /**< volumetric enthalpy contained in infil (J/m^3) */
                      Real *return_flow_b, /**< blue water return flow (mm) */
                      int npft,            /**< number of natural PFTs */
                      int ncft,            /**< number of crop PFTs */
                      const Config *config /**< LPJ configuration */
                     )                     /** \return water runoff (mm) */
 {
-
   Real runoff;
   Real perc,slug,tolitter;
   Real TT; /*traveltime in [mm/h]*/
@@ -108,7 +107,7 @@ Real infil_perc_rain(Stand *stand,        /**< Stand pointer */
     srunoff=slug-influx; /*surface runoff used for leaching */
     frac_g_influx=1; /* first layer has only green influx, but lower layers with percolation have mixed frac_g_influx */
 
-    vol_water_enth= infil_vol_enth;
+    vol_water_enth=infil_vol_enth;
     for(l=0;l<NSOILLAYER;l++)
     {
       if(l<NTILLLAYER)
@@ -116,8 +115,7 @@ Real infil_perc_rain(Stand *stand,        /**< Stand pointer */
       previous_soil_water[l]=soil->w[l]*soil->whcs[l]+soil->ice_depth[l]+soil->w_fw[l]+soil->ice_fw[l];
       soil->w[l]+=(soil->w_fw[l]+influx)/soil->whcs[l];
       soil->w_fw[l]=0.0;
-      reconcile_layer_energy_with_water_shift(soil,l,influx,vol_water_enth, config);
-
+      reconcile_layer_energy_with_water_shift(soil,l,influx,vol_water_enth,config); /* account for enthalpy of water inflow  */
       lrunoff=0.0;
       inactive_water[l]=soil->ice_depth[l]+soil->wpwps[l]+soil->ice_fw[l];
 
@@ -138,9 +136,9 @@ Real infil_perc_rain(Stand *stand,        /**< Stand pointer */
       {
         grunoff=(soil->w[l]*soil->whcs[l])-((soildepth[l]-soil->freeze_depth[l])*(soil->wsat[l]-soil->wpwp[l]));
         soil->w[l]-=grunoff/soil->whcs[l];
-        reconcile_layer_energy_with_water_shift(soil,l,-min(grunoff,influx),vol_water_enth, config); /* subtract runoff enth, with water having energy of above layer */
-        vol_water_enth=soil->freeze_depth[l]/soildepth[l] * (c_ice * soil->temp[l] ) + (1 - soil->freeze_depth[l]/soildepth[l]) * (c_water *soil->temp[l]+c_water2ice);
-        reconcile_layer_energy_with_water_shift(soil,l,-max(grunoff-influx,0),vol_water_enth, config); /* subtract runoff enth, with water having energy of current layer */
+        reconcile_layer_energy_with_water_shift(soil,l,-min(grunoff,influx),vol_water_enth,config); /* subtract enth of runoff until influx, assuming vol_enth of above layer  */
+        vol_water_enth=soil->freeze_depth[l]/soildepth[l]*(c_ice*soil->temp[l]) + (1-soil->freeze_depth[l]/soildepth[l])*(c_water*soil->temp[l]+c_water2ice);
+        reconcile_layer_energy_with_water_shift(soil,l,-max(grunoff-influx,0),vol_water_enth, config); /* subtract enth of runoff above influx, assuming vol_enth of current layer */
         runoff+=grunoff;
         lrunoff+=grunoff;
         *return_flow_b+=grunoff*(1-stand->frac_g[l]);
@@ -150,17 +148,15 @@ Real infil_perc_rain(Stand *stand,        /**< Stand pointer */
       {
         grunoff=(inactive_water[l]+soil->w[l]*soil->whcs[l])-soil->wsats[l];
         soil->w[l]-=grunoff/soil->whcs[l];
-        reconcile_layer_energy_with_water_shift(soil,l,-min(grunoff,influx),vol_water_enth, config); /* subtract runoff enth, with water having energy of above layer */
-        vol_water_enth=soil->freeze_depth[l]/soildepth[l] * (c_ice * soil->temp[l] ) + (1 - soil->freeze_depth[l]/soildepth[l]) * (c_water *soil->temp[l]+c_water2ice);
-        reconcile_layer_energy_with_water_shift(soil,l,-max(grunoff-influx,0),vol_water_enth, config); /* subtract runoff enth, with water having energy of current layer */
+        reconcile_layer_energy_with_water_shift(soil,l,-min(grunoff,influx),vol_water_enth, config); /* subtract enth of runoff until influx, assuming vol_enth of above layer  */
+        vol_water_enth=soil->freeze_depth[l]/soildepth[l]*(c_ice*soil->temp[l]) + (1-soil->freeze_depth[l]/soildepth[l])*(c_water*soil->temp[l]+c_water2ice);
+        reconcile_layer_energy_with_water_shift(soil,l,-max(grunoff-influx,0),vol_water_enth, config); /* subtract enth of runoff above influx, assuming vol_enth of current layer */
         runoff+=grunoff;
         lrunoff+=grunoff;
         *return_flow_b+=grunoff*(1-stand->frac_g[l]);
       }
-
       influx=0.0;
-      vol_water_enth=soil->freeze_depth[l]/soildepth[l] * (c_ice * soil->temp[l] ) + (1 - soil->freeze_depth[l]/soildepth[l]) * (c_water *soil->temp[l]+c_water2ice);
-
+      vol_water_enth=soil->freeze_depth[l]/soildepth[l]*(c_ice*soil->temp[l]) + (1-soil->freeze_depth[l]/soildepth[l])*(c_water*soil->temp[l]+c_water2ice);
 
       if (soildepth[l]>soil->freeze_depth[l])
       {
@@ -187,7 +183,7 @@ Real infil_perc_rain(Stand *stand,        /**< Stand pointer */
                    sprintcoord(line,&stand->cell->coord),TT,HC,perc/soil->whcs[l],l,soil->w[l]);
 #endif
           soil->w[l]-=perc/soil->whcs[l];
-          reconcile_layer_energy_with_water_shift(soil,l,-perc,vol_water_enth, config);
+          reconcile_layer_energy_with_water_shift(soil,l,-perc,vol_water_enth,config); /* subtract enthalpy of percolating water */
           if (fabs(soil->w[l])< epsilon/soil->whcs[l])
           {
             perc+=(soil->w[l])*soil->whcs[l];
@@ -292,13 +288,13 @@ Real infil_perc_rain(Stand *stand,        /**< Stand pointer */
           getoutputindex(&stand->cell->output,CFT_LEACHING,pft->par->id-npft+data_irrig->irrigation*ncft,config)+=NO3perc_ly;
       }
     }
-    /* recompute the soil temperature in cases of strong percolation, to allow temperature changes to affect further percolation energy transfer */
-    if(infil_loop_count%2 == 0 && config->percolation_heattransfer )
+    /* recompute the soil temperature every two iterations, to allow temperature changes to affect following percolation energy transfer */
+    if (infil_loop_count%2==0 && config->percolation_heattransfer)
     {
       apply_perc_enthalpy(soil);
       Soil_thermal_prop th;
-      calc_soil_thermal_props(UNKNOWN, &th,soil,soil->wi_abs_enth_adj, soil->sol_abs_enth_adj, TRUE,FALSE);
-      compute_mean_layer_temps_from_enth(soil->temp, soil->enth, &th);
+      calc_soil_thermal_props(UNKNOWN,&th,soil,soil->wi_abs_enth_adj,soil->sol_abs_enth_adj,TRUE,FALSE);
+      compute_mean_layer_temps_from_enth(soil->temp,soil->enth,&th);
     }
     infil_loop_count+=1;
   } /* while infil > 0 */

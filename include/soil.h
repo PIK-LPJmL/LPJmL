@@ -17,12 +17,8 @@
 #ifndef SOIL_H /* Already included? */
 #define SOIL_H
 
-/* This is following macro defines a static keyword that vanishes for unit testing.
- When compiling for unit testing (with U_TEST defined), the STATIC macro is defined as
- an empty string, omitting the 'STATIC' keyword. This makes functions accessible outside
- of the respective file, facilitating testing. In standard compilation (without U_TEST),
- STATIC is defined as 'static', ensuring that these functions have only within-file
- access, maintaining encapsulation. */
+/* A static keyword that vanishes for unit testing, 
+ * then enabling testing with external functions. */
 #ifdef U_TEST
 #define STATIC
 #else
@@ -39,7 +35,7 @@
 #define TOPLAYER 0
 #define NTILLLAYER 1 /* number of layers to be tilled */
 #ifndef U_TEST
-  #define GPLHEAT 1 /* Gripoints per soil layer for the heat conduction scheme  */
+#define GPLHEAT 1 /* Gripoints per soil layer for the heat conduction scheme  */
 #endif
 #define NHEATGRIDP NSOILLAYER*GPLHEAT /* Total number of gridpoints for the heatflow scheme */
 #define SNOWLAYER NSOILLAYER
@@ -81,12 +77,12 @@
 #define K_ICE_LOG   0.34242268082    
 #define K_WATER_LOG -0.24412514432 
 /* Litter bulk and particle density are literature mean values for Oi horizon */
-#define DRY_BULK_DENSITY_LITTER 71.1
+#define DRY_BULK_DENSITY_LITTER 71.1 /* [kg/m^3] */
 /* Porosity is calculated using f = (p_s - p_b)/p_s 
-   Hillel: Environmental Soil Physics, p15 f. */
+ * Hillel: Environmental Soil Physics, p15 f. */
 #define POROSITY_LITTER 0.952  // [fraction]
 /* Litter thermal properties are based on organic soil values of 
-   Lawrance and Slater 2007, Incorporating organic soil into a global climate model */
+ * Lawrance and Slater 2007, Incorporating organic soil into a global climate model */
 #define K_LITTER_DRY 0.05  /* thermal conductivity of organic material when completly dry */
 #define K_LITTER_SAT_FROZEN 2.106374   /* thermal conductivity of fully saturated frozen organic material */
 #define K_LITTER_SAT_UNFROZEN 0.554636  /* thermal conudcitivity of fully saturated unfrozen organic material */
@@ -98,7 +94,6 @@ extern Real layerbound[NSOILLAYER];
 extern Real midlayer[NSOILLAYER];
 extern Real logmidlayer[NSOILLAYER];
 extern Real fbd_fac[NFUELCLASS];
-
 
 #include "soilpar.h"
 
@@ -235,28 +230,27 @@ typedef struct
   Real YEDOMA;       /**< g/m2 */
   Litter litter;     /**< Litter pool */
   Real rw_buffer;    /**< available rain water amount in buffer (mm) */
-  Real wi_abs_enth_adj[NSOILLAYER];  /* = WaterIcecontent_Absolute_Enthalpy_Adjusted
-                                        absolute water ice contents with computed corresponding enthalpies,
-                                        allowing obervation of changes made without enthalpy adjustments */
-  Real sol_abs_enth_adj[NSOILLAYER]; /* = Solidcontent_Absolute_Enthalpy_Adjusted  */
+  /* the next two variables allow observation of soil content changes, made without cosidering enthalpy adjustments */
+  Real wi_abs_enth_adj[NSOILLAYER];  /**< absolute water ice content with corresponding enthalpy adjustments (mm) */
+  Real sol_abs_enth_adj[NSOILLAYER]; /**< absolute solid content with adjusted enthalpy (mm) */
 } Soil;
 
 #ifndef TESTSCENARIO_HEAT
 typedef struct
 {
-  Real lam_frozen[NHEATGRIDP];    /* conductivity of soil in frozen state [W/K/m] */
-  Real lam_unfrozen[NHEATGRIDP];  /* conductivity of soil in unfrozen state [W/K/m]*/
-  Real c_frozen[NHEATGRIDP];      /* heat capacity of soil in frozen state [J/m3/K]*/
-  Real c_unfrozen[NHEATGRIDP];    /* heat capacity of soil in unfrozen state [J/m3/K]*/
-  Real latent_heat[NHEATGRIDP];   /* latent heat of fusion of soil [J/m3]*/
-  /* lamFrozen and lamNormal define thermal conductivities for each interval of the grid
-    (e.g. lamFrozen[0] <-> interval directly below the surface), while the other variables define
-    their properties only at the gridpoints, (e.g. cFrozen[0] <-> first point below surface) */
+  Real lam_frozen[NHEATGRIDP];    /**< conductivity of soil in frozen state [W/K/m] */
+  Real lam_unfrozen[NHEATGRIDP];  /**< conductivity of soil in unfrozen state [W/K/m] */
+  Real c_frozen[NHEATGRIDP];      /**< heat capacity of soil in frozen state [J/m3/K] */
+  Real c_unfrozen[NHEATGRIDP];    /**< heat capacity of soil in unfrozen state [J/m3/K] */
+  Real latent_heat[NHEATGRIDP];   /**< latent heat of fusion of soil [J/m3] */
+  /* lam_frozen and lam_unfrozen define thermal conductivities for each element (i.e. intervals between gridpoints)
+   * (e.g. lam_frozen[0] <-> element directly below the surface), while the other variables define
+   * properties at the gridpoints, (e.g. c_frozen[0] <-> first point below surface) */
 } Soil_thermal_prop;
 #endif
 
-/* enum indicating whether the sign of temperatures in soil column is uniform positive uniform negative or mixed*/
-
+/* states whether the sign of temperatures in soil column and air is 
+ * uniformly above/below zero, or mixed or unknown */
 typedef enum {ALL_BELOW_0, MIXED_SIGN, ALL_ABOVE_0, UNKNOWN} Uniform_temp_sign;
 
 
@@ -358,11 +352,12 @@ extern void cmpsoilmap(const int*,int,const Config *);
 #define f_temp(soiltemp) exp(-(soiltemp-18.79)*(soiltemp-18.79)/(2*5.26*5.26)) /* Parton et al 2001*/
 #define f_NH4(nh4) (1-exp(-0.0105*(nh4))) /* Parton et al 1996 */
 #define getsoilmoist(soil,l) (((soil)->w[l] * (soil)->whcs[l] + ((soil)->wpwps[l] * (1 - (soil)->ice_pwp[l])) + (soil)->w_fw[l]) / (soil)->wsats[l])
-/* The macro computes the temperature at a gridpoint (gp)
-given an enthalpy vector (enth) and a Soil_thermal_prop (th)*/
+/* Compute the temperature at a gridpoint (gp)
+given an enthalpy vector (enth) and a Soil_thermal_prop (th) */
 #define ENTH2TEMP(e, th, gp)\
- (((e)[(gp)]<0                      ?  (e)[(gp)]                           / (th)->c_frozen[(gp)]   : 0) +\
+ (((e)[(gp)]<0                       ?  (e)[(gp)]                            / (th)->c_frozen[(gp)]   : 0) +\
   ((e)[(gp)]>(th)->latent_heat[(gp)] ? ((e)[(gp)] - (th)->latent_heat[(gp)]) / (th)->c_unfrozen[(gp)] : 0))
+/* Calculate the energy of percolating water and add it to perc_energy */
 #define reconcile_layer_energy_with_water_shift(soil, layer, amount, vol_enthalpy, config) ({\
         if(config->percolation_heattransfer)\
         {\

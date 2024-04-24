@@ -12,18 +12,17 @@
 
 #include "lpj.h"
 
-void freezefrac2soil(Soil *soil,
-                     const Real freezfrac[NSOILLAYER]
+void freezefrac2soil(Soil *soil,                       /**< pointer to soil to be modified */
+                     const Real freezfrac[NSOILLAYER]  /**< vector with a fraction for each layer that is frozen */
                     )
 {
   int layer;
 
-  Real n_wi;      /* normal soil waterice, absolute  */
+  Real n_wi;      /* normal (i.e. all except for free) soil waterice, absolute  */
   Real f_wi;      /* free soil waterice, absolute  */
 
-  for(layer=0;layer<NSOILLAYER;++layer)
+  for(layer=0; layer<NSOILLAYER; ++layer)
   {
-
     soil->freeze_depth[layer] = freezfrac[layer] * soildepth[layer];
 
     /* get the absolute quantities */
@@ -33,10 +32,11 @@ void freezefrac2soil(Soil *soil,
     n_wi  = soil->w[layer] * soil->whcs[layer] + soil->ice_depth[layer];
     f_wi  = soil->w_fw[layer] + soil->ice_fw[layer];
 
+    /* divide n_wi and f_wi to water and ice pools using the freezefrac */
     soil->ice_depth[layer] = n_wi * freezfrac[layer];
-    soil->w[layer] = n_wi * (1-freezfrac[layer]) / soil->whcs[layer];
-    soil->ice_pwp[layer] = freezfrac[layer];
-    soil->ice_fw[layer] = f_wi * freezfrac[layer];
-    soil->w_fw[layer] = f_wi * (1-freezfrac[layer]);
+    soil->w[layer]         = n_wi * (1-freezfrac[layer]) / soil->whcs[layer];
+    soil->ice_pwp[layer]   = freezfrac[layer];
+    soil->ice_fw[layer]    = f_wi * freezfrac[layer];
+    soil->w_fw[layer]      = f_wi * (1-freezfrac[layer]);
   }
 } /* of 'freezefrac2soil' */

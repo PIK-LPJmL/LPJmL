@@ -130,7 +130,7 @@ Bool initsoiltemp(Climate* climate,    /**< pointer to climate data */
     if(!grid[cell].skip)
       foreachstand(stand,s,grid[cell].standlist)
       {
-        calc_soil_thermal_props(UNKNOWN, &therm,&(stand->soil),NULL,NULL,config->johansen,FALSE); /* get thermal properties of soil; dep on water content */
+        calc_soil_thermal_props(UNKNOWN,&therm,&(stand->soil),NULL,NULL,config->johansen,FALSE); /* thermal properties of soil depend on water content */
         foreachsoillayer(l)
         {
           for(i=0; i<GPLHEAT; ++i)
@@ -138,10 +138,10 @@ Bool initsoiltemp(Climate* climate,    /**< pointer to climate data */
             gridpoint = GPLHEAT*l+i;
             /* Get the enthalpy corresponding to the temperature.
                when $temp=0$, we only know that $enth in [0,latent_heat]$,
-               hence there is some freedom in choosing inital enth         */
+               hence there is some freedom in choosing inital enth */
             stand->soil.enth[gridpoint] =
                (stand->soil.temp[l]<0 ?
-                stand->soil.temp[l]*therm.c_frozen[gridpoint]  :
+                stand->soil.temp[l]*therm.c_frozen[gridpoint] :
                 stand->soil.temp[l]*therm.c_unfrozen[gridpoint]+therm.latent_heat[gridpoint]);
           }
           stand->soil.wi_abs_enth_adj[l]=allwater((&(stand->soil)),l)+allice((&(stand->soil)),l);

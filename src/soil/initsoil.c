@@ -18,15 +18,7 @@
 
 #define checkptr(ptr) if(ptr==NULL) { printallocerr(#ptr); return TRUE;}
 
-STATIC Real calc_soil_dry_therm_cond(int soiltype, Real bulk_density)
-{
-  // Source: Johanssen O (1975) Thermal conductivity of soils. University of
-  // Trondheim
-  Real k_dry=0.0;
-  k_dry = (0.135*bulk_density+64.7)/
-        (MINERALDENS-0.947*bulk_density);
-  return k_dry;
-} /* of 'calc_soil_dry_therm_cond' */
+STATIC Real calc_soil_dry_therm_cond(Real);
 
 Bool initsoil(Stand *stand,           /**< Pointer to stand data */
               const Soilpar *soilpar, /**< soil parameter array */
@@ -187,7 +179,16 @@ Bool initsoil(Stand *stand,           /**< Pointer to stand data */
   }
   foreachsoillayer(l)
   {
-    soil->k_dry[l]=calc_soil_dry_therm_cond(soil->par->type, soil->bulkdens[l]);
+    soil->k_dry[l]=calc_soil_dry_therm_cond(soil->bulkdens[l]);
   }
   return FALSE;
 } /* of 'initsoil' */
+
+STATIC Real calc_soil_dry_therm_cond(Real bulk_density)
+{
+  /* Source: Johanssen O (1975) Thermal conductivity of soils. University of
+   * Trondheim */
+  Real k_dry=0.0;
+  k_dry=(0.135*bulk_density+64.7) / (MINERALDENS-0.947*bulk_density);
+  return k_dry;
+} /* of 'calc_soil_dry_therm_cond' */

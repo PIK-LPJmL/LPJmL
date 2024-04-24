@@ -154,7 +154,6 @@ void update_daily(Cell *cell,            /**< cell pointer           */
 #endif
 
       update_soil_thermal_state(&stand->soil,climate.temp,config);
-
     }
     else
     {
