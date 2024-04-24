@@ -94,10 +94,11 @@ void apply_heatconduction_of_a_day(Uniform_temp_sign uniform_temp_sign, /**< fla
   {
     fail(INVALID_TEMP_SIGN_ERR,FALSE,"uniform_temp_sign=%d is not one of the three possible values",uniform_temp_sign);
   }
-}
+} /* of 'apply_heatconduction_of_a_day' */
 
 
 /******** underlying numerical methods ********/
+
 /* The function applies the expensive explicit enthalpy scheme */
 STATIC void use_enth_scheme(
                     Real * enth,          
@@ -193,7 +194,7 @@ STATIC void use_enth_scheme(
       /* it is the enthalpy update during the timestep */
     }
   }
-}
+} /* of 'use_enth_scheme' */
 
 /* The function applies the cheaper implicit enthalpy scheme */
 STATIC void use_temp_scheme_implicit(Real * temp,
@@ -217,7 +218,7 @@ STATIC void use_temp_scheme_implicit(Real * temp,
   /* do implicit timestepping */
   for (i = 0; i < steps; i++)
     timestep_implicit(temp, h, hcap, lam, dt);
-}
+} /* of 'use_temp_scheme_implicit' */
 
 
 
@@ -256,10 +257,10 @@ STATIC void timestep_implicit(Real * temp,
 
   /* --- solve tridiagonal system with the thomas algorithm --- */
   thomas_algorithm(sub, main, sup, rhs, &temp[1]);
-}
+} /* of 'timestep_implicit' */
 
-/* This function arranges the matrix for the implicit timestep. */
-/* The equations can be found in the master thesis supplement equation (7-9). */
+/* This function arranges the matrix for the implicit timestep.
+ * The equations can be found in the master thesis supplement equation (7-9). */
 STATIC void arrange_matrix(Real * a,          /* sub diagonal elements  */
                            Real * b,          /* main diagonal elements */
                            Real * c,          /* super diagonal elements */
@@ -293,7 +294,7 @@ STATIC void arrange_matrix(Real * a,          /* sub diagonal elements  */
   a[NHEATGRIDP-1] = - lam_divBy_h[NHEATGRIDP-1] * inv_element_midpoint_dist_divBy_c[NHEATGRIDP-1] * dt_half;
   b[NHEATGRIDP-1] = 1 - a[NHEATGRIDP-1];
   c[NHEATGRIDP-1] = 0;
-}
+} /* of 'arrange_matrix' */
 
 /* This function performs the standard thomas algorithm to solve a
    tridiagonal matrix system. */
@@ -322,4 +323,4 @@ STATIC void thomas_algorithm(const double *a, /* sub diagonal elements */
   x[NHEATGRIDP-1] = d_prime[NHEATGRIDP-1];
   for (i = NHEATGRIDP-2; i>=0; i--)
     x[i] = d_prime[i] - c_prime[i] * x[i+1];
-}
+} /* of 'thomas_algorithm' */
