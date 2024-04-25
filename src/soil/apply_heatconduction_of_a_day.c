@@ -158,6 +158,10 @@ STATIC void use_enth_scheme(
     if (dt_inv < dt_inv_temporary)
       dt_inv = dt_inv_temporary;
   }
+#ifdef SAFE
+  if(isnan(dt_inv))
+    fail(INVALID_TIMESTEP_ERR, TRUE, "Invalid time step in %s", __FUNCTION__);
+#endif
   timesteps = (int)(day2sec(dt_inv)) + 1; /* get number timesteps that ensures small enough timestep */
   dt = day2sec(1.0 / timesteps); /* final timestep */
 
