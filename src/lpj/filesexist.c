@@ -34,6 +34,12 @@ static int checksoilcode(Config *config)
     file=fopensoilcode(&config->soil_filename,&map,&swap,&offset,&type,config->nsoil,TRUE);
     if(file==NULL)
       return 1;
+    if(fseek(file,offset,SEEK_SET))
+    {
+      fprintf(stderr,"ERROR107: Cannot seek in soilcode file to position %zu.\n",
+              offset);
+      return 0;
+    }
     ncell=getnsoilcode(&config->soil_filename,config->nsoil,TRUE);
     if(map!=NULL)
     {
