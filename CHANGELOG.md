@@ -19,7 +19,7 @@ of `major.minor.patch` with
 
 ## [Unreleased]
 
-## [5.8.12] - 2024-04-24
+## [5.8.12] - 2024-04-26
 
 ### Contributors
 
@@ -58,8 +58,9 @@ of `major.minor.patch` with
 - Calculation of average fixed in `statclm`.
 - `res_remove` calculation fixed for residue fires in `harvest_crop.c` to close carbon and nitrogen balance.
 - Missing update of `FLUX_ESTABN_MG` added in `turnover_tree.c`.
-- `regridclm` now used for regridding of soil file in `regridlpj`.
-
+- `regridclm` now uses for regridding of soil file in `regridlpj`.
+- Missing regridding of wateruse and livestock density input added in `regridlpj`.
+- Missing file seek to offset defined in JSON metafile added in `filesexist.c`.
 
 ## [5.8.11] - 2024-04-10
 
