@@ -38,7 +38,7 @@ static int checksoilcode(Config *config)
     {
       fprintf(stderr,"ERROR107: Cannot seek in soilcode file to position %zu.\n",
               offset);
-      return 0;
+      return 1;
     }
     ncell=getnsoilcode(&config->soil_filename,config->nsoil,TRUE);
     if(map!=NULL)
@@ -58,14 +58,14 @@ static int checksoilcode(Config *config)
     {
       config->soilmap=defaultsoilmap(&config->soilmap_size,config);
       if(config->soilmap==NULL)
-        return 0;
+        return 1;
     }
     exist=newvec(Bool,config->soilmap_size);
     if(exist==NULL)
     {
       printallocerr("exist");
       fclose(file);
-      return 0;
+      return 1;
     }
     for(i=0;i<config->soilmap_size;i++)
       exist[i]=FALSE;
@@ -74,7 +74,7 @@ static int checksoilcode(Config *config)
     {
       printallocerr("name");
       fclose(file);
-      return 0;
+      return 1;
     }
     for(cell=0;cell<ncell;cell++)
     {
