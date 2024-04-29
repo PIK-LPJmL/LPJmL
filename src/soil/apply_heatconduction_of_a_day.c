@@ -12,18 +12,22 @@
 
 /*
 
- * This function calculates and applies heat conduction over the span of a day to the enthalpy 
- * (i.e., thermal energy) vector.
- * It employs an adaptive numerical method, meaning it has different underlying implementations 
- * from which the most suitable is selected based on the data.
- * Method a) is chosen if soil temperatures and temperature forcing (below snow temperature) 
+ * This function calculates and applies heat conduction fluxes over the span of a day 
+ * to the enthalpy (i.e., thermal energy) vector.
+ * The underlying model is the enthalpy formulation of the heat conduction PDE
+ * d/dt enth = d/dx (lam d/dx temp),
+ * in its weak form, where lam is the thermal coductivity.
+ * It employs an adaptive numerical method for this, having different 
+ * underlying submethods from which the most suitable is selected based on the data.
+ * Submethod a) is chosen if soil temperatures and surface temperature
  * are uniformly above or below 0 degrees Celsius. It utilizes a computationally efficient 
  * standard heat conduction scheme based on finite element space and Crank-Nicolson time 
  * discretization, with a timestep of one day.
- * Method b) is selected when temperature signs are not uniform. 
+ * Submethod b) is selected when temperature signs are not uniform. 
  * This method applies an enthalpy scheme based on the enthalpy formulation using 
  * finite element space and explicit forward Euler time discretization, requiring shorter 
- * timesteps to maintain stability.
+ * timesteps to maintain stability. The cheap method a) cannot be applied here due to 
+ * nonlinearity in the temp <-> enth relation introduced by latent heat of fusion of water.
  * Both methods impose the surface temperature as a Dirichlet boundary condition.
 
 */
