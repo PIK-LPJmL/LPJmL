@@ -12,7 +12,7 @@
 
 #include "lpj.h"
 
-void compute_mean_layer_temps_from_enth(Real temp[],                /**< temperature vector that is written (°C) */
+void compute_mean_layer_temps_from_enth(Real temp[],                /**< temperature vector that is written (deg C) */
                                         const Real enth[],          /**< input enthalpy vector (J/m^3) */
                                         const Soil_thermal_prop *th /**< soil thermal properties */
                                        )

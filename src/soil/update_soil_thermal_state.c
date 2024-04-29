@@ -15,7 +15,7 @@
 #include "lpj.h"
 
 /* For the snow thermal insulation the following alternative
- * value for snowheight per water height is used 
+ * value for snowheight per water height is used
  * compare to c_watertosnow */
 #define SNOWHEIGHT_PER_WATERHEIGHT 4
 
@@ -170,7 +170,7 @@ STATIC void adjust_grid_and_therm_cond_for_litter(Real h[], Soil_thermal_prop *t
 {
   Real litterdepth = calc_litter_depth(soil); /* (m) */
   Real saturation_degree;
-  
+
   if(soil->litter.agtop_moist < epsilon || litterdepth  < epsilon )
     saturation_degree = 0;
   else
@@ -207,7 +207,7 @@ STATIC Real calc_litter_therm_conductivity(Real litter_temp, Real sat_degree)
   Real lam_sat;       /* saturated thermal conductivity */
   Real ke;            /* kersten number */
 
-  if(sat_degree < epsilon) 
+  if(sat_degree < epsilon)
     return(K_LITTER_DRY);
 
   if(litter_temp < 0) /* water in litter is then assumed to be frozen */
@@ -343,7 +343,7 @@ STATIC void update_wi_and_sol_enth_adjusted(const Real *waterdiff, const Real *s
   int l;
   foreachsoillayer(l)
   {
-    /* set the bookkeeping variables to the currect soil contents,  
+    /* set the bookkeeping variables to the currect soil contents,
      * as for all soil mass changes corresponding enthalpy adjustments have been made */
     soil->wi_abs_enth_adj[l]  = soil->wi_abs_enth_adj[l]  + waterdiff[l];
     soil->sol_abs_enth_adj[l] = soil->sol_abs_enth_adj[l] + soliddiff[l];

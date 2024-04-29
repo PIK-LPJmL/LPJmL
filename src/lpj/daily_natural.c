@@ -120,7 +120,7 @@ Real daily_natural(Stand *stand,                /**< [inout] stand pointer */
 
   /* soil inflow: infiltration and percolation */
   /* calc enthalpy of soil infiltration */
-  if(climate->prec+melt>0) 
+  if(climate->prec+melt>0)
     /* assume infiltrating water is liquid and thus contains latent heat, melt water only has latent heat */
     vol_water_enth=climate->temp*c_water*climate->prec/(climate->prec+melt)+c_water2ice;
   else

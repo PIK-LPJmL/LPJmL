@@ -12,24 +12,23 @@
 
 /*
 
- * This function calculates and applies heat conduction over the span of a day to the enthalpy 
+ * This function calculates and applies heat conduction over the span of a day to the enthalpy
  * (i.e., thermal energy) vector.
- * It employs an adaptive numerical method, meaning it has different underlying implementations 
+ * It employs an adaptive numerical method, meaning it has different underlying implementations
  * from which the most suitable is selected based on the data.
- * Method a) is chosen if soil temperatures and temperature forcing (below snow temperature) 
- * are uniformly above or below 0 degrees Celsius. It utilizes a computationally efficient 
- * standard heat conduction scheme based on finite element space and Crank-Nicolson time 
+ * Method a) is chosen if soil temperatures and temperature forcing (below snow temperature)
+ * are uniformly above or below 0 degrees Celsius. It utilizes a computationally efficient
+ * standard heat conduction scheme based on finite element space and Crank-Nicolson time
  * discretization, with a timestep of one day.
- * Method b) is selected when temperature signs are not uniform. 
- * This method applies an enthalpy scheme based on the enthalpy formulation using 
- * finite element space and explicit forward Euler time discretization, requiring shorter 
+ * Method b) is selected when temperature signs are not uniform.
+ * This method applies an enthalpy scheme based on the enthalpy formulation using
+ * finite element space and explicit forward Euler time discretization, requiring shorter
  * timesteps to maintain stability.
  * Both methods impose the surface temperature as a Dirichlet boundary condition.
 
 */
 
 #include "lpj.h"
-#include <math.h>
 
 /* declare internally used functions */
 STATIC void use_enth_scheme(Real *, const Real *, const Real, const Soil_thermal_prop *);
@@ -100,17 +99,16 @@ void apply_heatconduction_of_a_day(Uniform_temp_sign uniform_temp_sign, /**< fla
 /******** underlying numerical methods ********/
 
 /* The function applies the expensive explicit enthalpy scheme */
-STATIC void use_enth_scheme(
-                    Real * enth,          
-                    const Real * h,       
-                    const Real temp_top,  
-                    const Soil_thermal_prop * th   
-                    ) 
+STATIC void use_enth_scheme(Real * enth,
+                            const Real * h,
+                            const Real temp_top,
+                            const Soil_thermal_prop * th
+                           )
 {
   Real temp[NHEATGRIDP + 1];     /* temperature array (including surface gridpoint with index 0) */
   /* since the surface gridpoint is included in temp but exluded in enth  */
   /* the kth gridpoint (gp) (when calling the surface gp the 0th gp) corresponds to temp[k] and enth[k-1]  */
-  Real lam_fro_dBh[NHEATGRIDP], lam_unfro_dBh[NHEATGRIDP]; /* thermal conducitivity divided by gridpoint distances */ 
+  Real lam_fro_dBh[NHEATGRIDP], lam_unfro_dBh[NHEATGRIDP]; /* thermal conducitivity divided by gridpoint distances */
   Real inv_c_fro[NHEATGRIDP], inv_c_unfro[NHEATGRIDP];     /* inverses of frozen and unfrozen heat capacities */
   Real QQ[NHEATGRIDP+1];         /* term resulting from the finite element method  */
   /* QQ can be interpreted as the heatflux from gp j to gp j+1  */
@@ -140,13 +138,13 @@ STATIC void use_enth_scheme(
   }
 
   /* --- calulate max possible timestep --- */
-  /* 
+  /*
    * This timestep is the maximum that still guarantees stability.
    * It guarantees stability by ensuring that the ||.||_E norm of all matrices D(z)
    * corresponding to the piecewise affine integrator map from current to next timestep
    * enth_c -> enth_n is smaller than 1 and hence the integrator map is a contraction.
    * The estimate for the matrix norm used here is derived from eq (3.43) of the thesis
-   * (see also equation (3.40)) 
+   * (see also equation (3.40))
    */
   Real dt_inv_temporary;
   Real dt_inv=0;
@@ -209,8 +207,8 @@ STATIC void use_temp_scheme_implicit(Real * temp,
                                     )
 {
   int i;
-  /* determine number of timesteps to be performed for the day 
-   * for non untit testing it is just 1 */
+  /* determine number of timesteps to be performed for the day
+   * for non unit testing it is just 1 */
   if(steps == -1)
     #ifdef U_TEST
       steps = GPLHEAT; /* high res value */
@@ -228,7 +226,7 @@ STATIC void use_temp_scheme_implicit(Real * temp,
 
 /* This function peforms a single implicit timestep,
  * for the temperature scheme.
- * A linear system of the form `Ax = rhs` (eq (6) 
+ * A linear system of the form `Ax = rhs` (eq (6)
  * of supplement) is solved for this.
  * The matrix A is tridiagonal and given by the sub main and
  * superdiagonal vectors. Please see the supplement of

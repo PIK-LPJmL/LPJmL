@@ -114,7 +114,6 @@ Real snow(Soil *soil,       /**< pointer to soil data */
         return runoff;
       }
     }
-    
   } /* snow present?*/
 
   /* calculate snow height and fraction of snow coverage */

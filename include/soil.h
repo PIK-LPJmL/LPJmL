@@ -17,7 +17,7 @@
 #ifndef SOIL_H /* Already included? */
 #define SOIL_H
 
-/* A static keyword that vanishes for unit testing, 
+/* A static keyword that vanishes for unit testing,
  * then enabling testing with external functions. */
 #ifdef U_TEST
 #define STATIC
@@ -73,15 +73,15 @@
 #define K_SOLID 8       /* Thermal conductivity of solid components in saturated state */
 #define K_ICE   2.2     /* Thermal conductivity of ice */
 #define K_WATER 0.57    /* Thermal conductivity of liquid water*/
-#define K_SOLID_LOG 0.90308998699    
-#define K_ICE_LOG   0.34242268082    
-#define K_WATER_LOG -0.24412514432 
+#define K_SOLID_LOG 0.90308998699
+#define K_ICE_LOG   0.34242268082
+#define K_WATER_LOG -0.24412514432
 /* Litter bulk and particle density are literature mean values for Oi horizon */
 #define DRY_BULK_DENSITY_LITTER 71.1 /* [kg/m^3] */
-/* Porosity is calculated using f = (p_s - p_b)/p_s 
+/* Porosity is calculated using f = (p_s - p_b)/p_s
  * Hillel: Environmental Soil Physics, p15 f. */
 #define POROSITY_LITTER 0.952  // [fraction]
-/* Litter thermal properties are based on organic soil values of 
+/* Litter thermal properties are based on organic soil values of
  * Lawrance and Slater 2007, Incorporating organic soil into a global climate model */
 #define K_LITTER_DRY 0.05  /* thermal conductivity of organic material when completly dry */
 #define K_LITTER_SAT_FROZEN 2.106374   /* thermal conductivity of fully saturated frozen organic material */
@@ -249,7 +249,7 @@ typedef struct
 } Soil_thermal_prop;
 #endif
 
-/* states whether the sign of temperatures in soil column and air is 
+/* states whether the sign of temperatures in soil column and air is
  * uniformly above/below zero, or mixed or unknown */
 typedef enum {ALL_BELOW_0, MIXED_SIGN, ALL_ABOVE_0, UNKNOWN} Uniform_temp_sign;
 

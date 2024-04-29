@@ -82,7 +82,7 @@ void calc_soil_thermal_props(Uniform_temp_sign uniform_temp_sign,       /**< fla
         /* saturated conductivities */
         por = soil -> wsat[layer];
         tmp = K_SOLID_LOG * (1 - por);
-        if(calc_frozen_values) 
+        if(calc_frozen_values)
           lam_sat_froz   = pow(10, tmp + K_ICE_LOG   * por); /* geometric mean  */
         if(calc_unfrozen_values)
           lam_sat_unfroz = pow(10, tmp + K_WATER_LOG * por);
