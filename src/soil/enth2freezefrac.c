@@ -33,7 +33,7 @@ void enth2freezefrac(Real freeze_frac[],         /**< vector with a fraction for
         ff_layer += (1 - min(max((enth[gp]/th->latent_heat[gp]), 0), 1)) / GPLHEAT;
     }
 
-    /* Compensate for numerical precision errors druing summation */
+    /* Compensate for numerical precision errors during summation */
     if (ff_layer > 1-epsilon)
     {
         ff_layer = 1;
