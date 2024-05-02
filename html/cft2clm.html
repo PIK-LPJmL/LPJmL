@@ -1,0 +1,121 @@
+<HTML>
+<HEAD>
+<TITLE>cft2clm.1</TITLE>
+</HEAD>
+<BODY>
+<H1>cft2clm.1</H1>
+<HR>
+<PRE>
+<!-- Manpage converted by man2html 3.0.1 -->
+     <B>NAME</B>
+          cft2clm - convert binary land use data files to clm data
+          files for LPJmL
+
+     <B>SYNOPSIS</B>
+          <B>cft2clm</B> [-h] [-firstyear first] [-lastyear last] [-nyear n]
+          [-nbands n] [-swap] <I>cftfile</I> <I>clmfile</I>
+
+     <B>DESCRIPTION</B>
+          Program converts a raw binary land use data file consisting
+          of 16bit integer values into a file format suitable for
+          LPJmL.
+
+     <B>OPTIONS</B>
+          -h   display a short help text
+
+          -firstyear first
+               first year in land use file (default is 1700)
+
+          -lastyear  last
+               last year in land use file
+
+          -nyear  n
+               number of years in land use file (default is 306)
+
+          -nbands n
+               number of bands in output file (default is 26)
+
+          -swap
+               change byte order in CRU file
+
+          <I>cftfile</I>
+               filename of binary land use data file
+
+          <I>clmfile</I>
+               filename of clm data file written
+
+     <B>EXAMPLES</B>
+          Create clm data file from land use dataset changing byte order:
+               <B>cft2clm</B> -swap cft26.bin cft2003.clm
+
+     <B>EXIT</B> <B>STATUS</B>
+          <B>cft2clm</B> returns a zero exit status if the clm file is
+          created.  Non zero is returned in case of failure.
+
+
+     <B>AUTHORS</B>
+          For authors and contributors see AUTHORS file
+
+
+     <B>COPYRIGHT</B>
+          (C) Potsdam Institute for Climate Impact Research (PIK), see
+          COPYRIGHT file
+
+
+     <B>SEE</B> <B>ALSO</B>
+          <B><A HREF="lpjml.html">lpjml(1)</A></B>, <B><A HREF="cru2clm.html">cru2clm(1)</A></B>, <B><A HREF="txt2clm.html">txt2clm(1)</A></B>, <B><A HREF="grid2clm.html">grid2clm(1)</A></B>, <B><A HREF="clm.html">clm(5)</A></B>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</PRE>
+<HR>
+<ADDRESS>
+Man(1) output converted with
+<a href="http://www.oac.uci.edu/indiv/ehood/man2html.html">man2html</a>
+</ADDRESS>
+</BODY>
+</HTML>

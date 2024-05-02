@@ -1,0 +1,64 @@
+<HTML>
+<BODY>
+<PRE>
+<!-- Manpage converted by man2html 3.0.1 -->
+     <B>NAME</B>
+          iterate - Main time loop for LPJmL
+
+     <B>SYNOPSIS</B>
+          <B>#include</B> <B>"lpj.h"</B>
+
+          <B>int</B> <B>iterate(Outputfile</B> <B>*</B><I>output</I><B>,</B>
+                      <B>Cell</B> <I>grid</I><B>[],</B>
+                      <B>Input</B> <I>input</I><B>,</B>
+                      <B>int</B> <I>npft</I><B>,</B> <B>int</B> <I>ncft</I><B>,</B>
+                      <B>const</B> <B>Config</B> <B>*</B><I>config</I>
+                     <B>);</B>
+
+
+     <B>DESCRIPTION</B>
+          Function provides main time loop for LPJmL. In each time
+          step the global carbon and water fluxes are printed.  The
+          arguments of <B>iterate</B> are:
+
+          <I>output</I>
+               Pointer to initialized output data. <I>output</I> must be
+               initialized by <B>fopenoutput()</B>.
+
+          <I>grid</I> Cell grid array allocated and initialized by <B>newgrid()</B>.
+
+          <I>input</I>
+               Input data initialized by <B>initinput()</B>.
+
+          <I>npft</I> Number of natural plant functional types.
+
+          <I>ncft</I> Number of crop plant functional types.
+
+          <I>config</I>
+               LPJmL configuration data. Must be read by <B>readconfig()</B>.
+
+     <B>RETURN</B> <B>VALUE</B>
+          Upon successful completion the last simulation year +1 is
+          returned.
+
+
+     <B>AUTHORS</B>
+          For authors and contributors see AUTHORS file
+
+
+     <B>COPYRIGHT</B>
+          (C) Potsdam Institute for Climate Impact Research (PIK), see
+          COPYRIGHT file
+
+
+     <B>SEE</B> <B>ALSO</B>
+          <B><A HREF="readconfig.html">readconfig(3)</A></B>, <B><A HREF="fopenoutput.html">fopenoutput(3)</A></B>, <B><A HREF="newgrid.html">newgrid(3)</A></B>, <B><A HREF="initinput.html">initinput(3)</A></B>,
+          <B><A HREF="iterateyear.html">iterateyear(3)</A></B>, <B><A HREF="fwriterestart.html">fwriterestart(3)</A></B>, <B><A HREF="flux_sum.html">flux_sum(3)</A></B>, <B><A HREF="fprintflux.html">fprintflux(3)</A></B>
+</PRE>
+<HR>
+<ADDRESS>
+Man(1) output converted with
+<a href="http://www.oac.uci.edu/indiv/ehood/man2html.html">man2html</a>
+</ADDRESS>
+</BODY>
+</HTML>

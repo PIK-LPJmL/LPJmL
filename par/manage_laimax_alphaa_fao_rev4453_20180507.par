@@ -1,0 +1,255 @@
+/**************************************************************************************/
+/**                                                                                \n**/
+/**        m  a  n  a  g  e  _ l  a  i  m  a  x  .  p  a  r                        \n**/
+/**                                                                                \n**/
+/**     management parameter data with maximum LAI values for all crops            \n**/
+/**               LPJmL Version 4.0.001                                            \n**/
+/**                                                                                \n**/
+/** (C) Potsdam Institute for Climate Impact Research (PIK), see COPYRIGHT file    \n**/
+/** authors, and contributors see AUTHORS file                                     \n**/
+/** This file is part of LPJmL and licensed under GNU AGPL Version 3               \n**/
+/** or later. See LICENSE file or go to http://www.gnu.org/licenses/               \n**/
+/** Contact: https://gitlab.pik-potsdam.de/lpjml                                   \n**/
+/**                                                                                \n**/
+/**************************************************************************************/
+
+#include "../include/managepar.h"
+
+236  /* Number of countries*/
+
+Afghanistan "Afghanistan" 1 5 2 1 2 1 6 3 7 2 3 7 1
+Aland_Islands "Aland Islands" 3 6 5 4 5 6 1 4 3 5 3 1 1
+Albania "Albania" 2 6 3 4 5 2 1 3 3 5 3 1 2
+Algeria "Algeria" 1 6 3 5 1 6 1 1 7 4 2 7 2
+American_Samoa "American Samoa" 2 7 3 4 2 7 1 7 4 4 6 7 2
+Angola "Angola" 2 1 1 1 1 1 4 4 3 1 1 4 1
+Anguilla "Anguilla" 1 4 3 2 2 5 4 4 5 2 7 6 2
+Antigua_and_Barbuda "Antigua and Barbuda" 1 4 3 2 2 5 4 4 5 2 7 6 2
+Argentina "Argentina" 1 4 5 3 1 5 2 4 5 2 2 7 1
+Armenia "Armenia" 2 3 7 5 2 1 1 2 2 1 2 1 1
+Austria "Austria" 4 6 7 7 2 6 1 4 6 5 4 1 2
+Azerbaijan "Azerbaijan" 2 3 3 5 2 3 1 4 2 1 2 1 1
+Bahamas_The "Bahamas The" 1 4 3 2 2 5 4 4 5 2 7 6 2
+Bahrain "Bahrain" 2 6 5 5 1 6 1 4 7 6 2 7 2
+Bangladesh "Bangladesh" 4 5 4 2 2 1 6 2 7 3 2 2 1
+Barbados "Barbados" 1 4 3 2 2 5 4 4 5 2 7 6 2
+Belgium "Belgium" 4 6 7 4 3 6 1 4 3 5 4 1 2
+Belize "Belize" 1 4 2 2 2 5 4 4 5 2 7 3 1
+Benin "Benin" 2 3 1 2 1 1 4 4 3 1 1 5 2
+Bermuda "Bermuda" 2 5 7 4 3 7 1 7 4 4 4 7 2
+Bhutan "Bhutan" 1 4 2 2 2 1 6 2 5 2 3 4 1
+Bolivia "Bolivia" 1 3 3 2 2 5 3 3 7 2 7 5 1
+Bosnia_and_Herzegovina "Bosnia and Herzegovina" 2 6 4 4 2 1 1 1 3 5 2 1 1
+Botswana "Botswana" 3 2 1 1 1 1 3 4 3 2 1 5 2
+British_Indian_Ocean_Territory "British Indian Ocean Territory" 4 4 2 3 2 1 6 2 7 2 3 4 1
+Brunei "Brunei" 2 1 3 2 1 1 4 2 3 2 1 3 2
+Bulgaria "Bulgaria" 2 5 5 3 3 2 1 4 2 7 3 1 1
+Burkina_Faso "Burkina Faso" 2 2 2 2 1 1 1 4 3 1 1 4 2
+Burundi "Burundi" 1 2 1 2 1 1 3 4 1 1 1 7 1
+Byelarus "Byelarus" 2 3 3 5 2 4 1 4 2 1 2 1 2
+Cambodia "Cambodia" 3 3 3 5 2 6 5 7 5 2 2 1 1
+Cameroon "Cameroon" 2 2 2 2 1 1 3 4 1 1 1 1 1
+Cape_Verde "Cape Verde" 2 2 2 2 1 1 3 4 3 1 1 5 2
+Cayman_Islands "Cayman Islands" 1 4 3 2 2 5 4 4 5 2 7 6 2
+Central_African_Republic "Central African Republic" 2 2 1 2 1 1 1 4 3 1 1 1 1
+Chad "Chad" 2 1 1 1 1 1 3 4 3 1 1 7 1
+Chile "Chile" 2 7 7 2 2 5 4 4 5 2 7 6 1
+Christmas_Island "Christmas Island" 2 7 3 4 2 7 1 7 4 4 6 7 1
+Cocos_Keeling_Islands "Cocos Keeling Islands" 2 7 3 4 2 7 1 7 4 4 6 7 1
+Colombia "Colombia" 1 5 3 2 2 5 3 4 6 2 7 7 1
+Comoros "Comoros" 2 2 2 2 1 1 3 4 3 1 1 5 2
+Congo_Brazzaville "Congo Brazzaville" 2 1 1 2 1 1 2 4 3 1 1 2 1
+Cook_Islands "Cook Islands" 2 7 3 4 2 7 1 7 4 4 6 7 2
+Costa_Rica "Costa Rica" 1 4 2 2 2 5 4 4 5 2 7 5 1
+Croatia "Croatia" 3 6 4 6 2 5 1 4 3 5 3 1 2
+Cuba "Cuba" 1 4 2 2 2 5 2 4 5 2 7 2 2
+Curacao "Curacao" 1 4 3 2 2 5 4 4 5 2 7 6 1
+Cyprus "Cyprus" 1 6 5 4 5 6 1 4 3 5 3 1 3
+Czech_Republic "Czech Republic" 3 6 7 6 2 6 1 4 3 5 4 1 2
+Denmark "Denmark" 5 6 5 4 3 7 1 4 3 5 4 1 2
+Djibouti "Djibouti" 2 2 2 2 1 1 3 4 3 1 1 5 1
+Dominica "Dominica" 1 4 3 2 2 5 4 4 5 2 7 6 2
+Dominican_Republic "Dominican Republic" 1 3 1 2 2 5 2 4 5 1 7 4 1
+Ecuador "Ecuador" 1 5 2 2 2 5 2 4 6 2 7 7 1
+Egypt "Egypt" 3 7 7 5 1 3 1 6 4 6 2 7 1
+El_Salvador "El Salvador" 1 5 2 2 2 5 3 4 5 2 7 7 1
+Equatorial_Guinea "Equatorial Guinea" 2 2 2 2 1 1 1 4 3 1 1 5 1
+Eritrea "Eritrea" 1 2 1 1 1 1 3 4 3 1 1 5 1
+Estonia "Estonia" 2 6 5 4 1 6 1 4 3 5 2 1 2
+Ethiopia "Ethiopia" 1 2 3 2 1 1 3 4 3 1 1 7 1
+Falkland_Islands_or_Islas_Malvinas "Falkland Islands or Islas Malvinas" 1 4 3 2 2 5 4 4 5 2 7 6 2
+Faroe_Islands "Faroe Islands" 3 6 5 4 5 6 1 4 3 5 3 1 2
+Federated_States_of_Micronesia "Federated States of Micronesia" 2 4 3 2 1 1 4 2 3 2 1 3 2
+Fiji "Fiji" 2 4 3 2 1 1 4 2 3 2 1 3 2
+Finland "Finland" 3 6 5 4 2 7 1 4 3 5 2 1 2
+France "France" 4 5 7 7 4 7 1 4 3 5 3 1 2
+French_Guiana "French Guiana" 1 3 3 2 2 5 2 4 5 2 7 6 1
+French_Polynesia "French Polynesia" 2 7 3 4 2 7 1 7 4 4 6 7 2
+French_Southern_and_Antarctica_Lands "French Southern and Antarctica Lands" 2 2 2 2 1 1 3 4 3 1 1 5 2
+Gabon "Gabon" 2 3 2 2 1 1 1 4 3 2 1 4 1
+Gambia_The "Gambia The" 2 2 1 2 1 1 1 4 3 1 1 5 1
+Georgia "Georgia" 1 3 3 5 1 3 1 1 7 1 2 1 1
+Germany "Germany" 5 6 7 4 3 6 1 4 3 5 4 1 2
+Ghana "Ghana" 2 2 2 2 1 1 3 4 3 2 1 1 1
+Greece "Greece" 1 6 7 4 3 5 1 3 3 5 3 1 2
+Greenland "Greenland" 3 6 5 4 5 6 1 4 3 5 3 1 2
+Grenada "Grenada" 1 4 3 2 2 5 4 4 5 2 7 6 2
+Guadeloupe "Guadeloupe" 1 4 3 2 2 5 4 4 5 2 7 6 2
+Guam "Guam" 2 4 3 2 1 1 4 2 3 2 1 3 2
+Guatemala "Guatemala" 2 2 2 2 2 5 1 4 5 2 7 7 1
+Guernsey "Guernsey" 3 6 5 4 5 6 1 4 3 5 3 1 2
+Guinea "Guinea" 2 2 1 2 1 1 2 4 3 2 1 5 1
+Guinea_Bissau "Guinea Bissau" 2 2 2 2 1 1 4 4 3 2 1 5 1
+Guyana "Guyana" 1 4 2 2 2 5 3 4 5 1 7 3 1
+Haiti "Haiti" 1 2 1 2 2 5 1 4 5 1 7 3 1
+Heard_Island_and_McDonald_Islands "Heard Island and McDonald Islands" 2 7 3 4 2 7 1 7 4 4 6 7 1
+Honduras "Honduras" 1 3 1 2 2 5 1 4 5 2 7 7 1
+Hong_Kong "Hong Kong" 3 6 4 5 2 6 5 7 3 4 2 6 1
+Hungary "Hungary" 3 7 6 2 2 7 1 4 3 5 3 1 2
+Iceland "Iceland" 3 6 5 4 5 6 1 4 3 5 3 1 2
+Indonesia "Indonesia" 2 4 3 2 1 1 3 2 3 2 1 3 1
+Iran "Iran" 2 7 7 1 1 7 1 1 7 6 2 7 1
+Iraq "Iraq" 1 3 2 5 1 2 1 3 7 6 2 7 2
+Ireland "Ireland" 4 6 5 4 3 4 1 4 3 5 3 1 2
+Isle_of_Man "Isle of Man" 3 6 5 4 5 6 1 4 3 5 3 1 2
+Israel "Israel" 2 6 7 5 1 6 1 7 7 7 2 7 3
+Italy "Italy" 2 5 6 4 4 6 1 6 5 5 2 1 2
+Ivory_Coast "Ivory Coast" 2 2 2 2 1 1 2 4 3 1 1 3 2
+Jamaica "Jamaica" 1 4 1 2 2 5 5 4 5 2 7 4 1
+Japan "Japan" 2 7 3 3 2 7 1 7 3 3 6 7 1
+Jersey "Jersey" 3 6 5 4 5 6 1 4 3 5 3 1 2
+Jordan "Jordan" 2 6 1 5 1 6 1 4 7 6 2 7 3
+Kazakhstan "Kazakhstan" 1 4 3 2 2 2 1 3 7 7 4 1 2
+Kenya "Kenya" 4 3 2 1 1 1 5 2 3 2 1 7 1
+Kiribati "Kiribati" 2 4 3 2 1 1 4 2 3 2 1 3 2
+Kosovo "Kosovo" 3 6 5 4 5 6 1 4 3 5 3 1 1
+Kuwait "Kuwait" 3 6 5 5 1 6 1 4 7 6 2 7 2
+Kyrgyzstan "Kyrgyzstan" 2 3 7 6 1 5 1 7 2 1 2 1 1
+Laos "Laos" 3 4 3 5 2 6 3 7 4 2 2 4 1
+Latvia "Latvia" 2 6 5 4 1 5 1 4 3 5 3 1 2
+Lebanon "Lebanon" 2 6 2 5 7 4 1 4 7 7 2 7 2
+Lesotho "Lesotho" 1 2 1 2 1 1 3 4 3 1 1 5 1
+Liberia "Liberia" 2 2 2 2 1 1 2 4 1 1 1 1 1
+Libya "Libya" 1 6 1 1 2 6 1 4 7 5 2 7 2
+Lithuania "Lithuania" 3 6 3 4 2 6 1 4 3 5 2 1 2
+Luxembourg "Luxembourg" 4 6 6 4 3 6 1 4 3 5 4 1 2
+Macedonia "Macedonia" 2 7 5 4 3 4 1 3 2 5 7 1 2
+Madagascar "Madagascar" 2 2 1 2 1 1 1 4 3 1 1 4 1
+Malawi "Malawi" 1 1 2 1 1 1 7 1 3 1 1 5 2
+Malaysia "Malaysia" 2 3 3 2 1 1 2 2 3 5 1 3 1
+Maldives "Maldives" 4 4 2 3 2 1 6 2 7 2 3 4 2
+Mali "Mali" 3 4 2 2 1 1 4 4 3 1 1 3 1
+Malta "Malta" 3 6 5 4 5 6 1 4 3 5 3 1 2
+Marshall_Islands "Marshall Islands" 2 4 3 2 1 1 4 2 3 2 1 3 2
+Martinique "Martinique" 1 4 3 2 2 5 4 4 5 2 7 6 2
+Mauritania "Mauritania" 2 5 1 1 1 1 3 4 3 7 1 5 1
+Mauritius "Mauritius" 2 2 2 2 1 1 3 4 3 1 1 5 2
+Mayotte "Mayotte" 2 2 2 2 1 1 3 4 3 1 1 5 2
+Mexico "Mexico" 4 4 3 2 4 5 4 4 3 2 7 7 1
+Moldova "Moldova" 2 3 3 1 1 2 1 2 2 1 3 1 1
+Mongolia "Mongolia" 1 6 4 5 2 6 5 7 3 4 2 6 1
+Montenegro "Montenegro" 1 6 2 4 5 6 1 4 3 5 3 1 2
+Montserrat "Montserrat" 1 4 3 2 2 5 4 4 5 2 7 6 2
+Morocco "Morocco" 1 5 2 7 1 5 1 6 7 7 2 7 1
+Mozambique "Mozambique" 2 1 1 1 1 1 1 1 3 1 1 1 2
+Myanmar_or_Burma "Myanmar or Burma" 3 5 3 3 2 1 4 3 5 3 3 6 1
+Namibia "Namibia" 2 2 3 1 1 1 3 4 3 1 1 5 2
+Nauru "Nauru" 2 4 3 2 1 1 4 2 3 2 1 3 1
+Nepal "Nepal" 2 3 2 3 2 1 6 2 3 2 3 3 1
+Netherlands "Netherlands" 5 6 7 4 3 7 1 4 3 5 4 1 2
+New_Caledonia "New Caledonia" 2 4 3 2 1 1 4 2 3 2 1 3 2
+New_Zealand "New Zealand" 3 7 7 4 2 7 1 7 4 4 6 7 1
+Nicaragua "Nicaragua" 1 3 1 2 2 5 2 4 5 5 7 6 1
+Niger "Niger" 2 4 1 1 1 1 7 4 3 1 1 2 1
+Nigeria "Nigeria" 2 2 2 3 1 1 3 4 3 2 1 2 1
+Niue "Niue" 2 7 3 4 2 7 1 7 4 4 6 7 1
+No_Land "No Land" 1 1 1 1 1 1 1 1 1 1 1 1 1
+Norfolk_Island "Norfolk Island" 2 7 3 4 2 7 1 7 4 4 6 7 1
+North_Korea "North Korea" 2 5 3 7 1 1 4 2 2 2 1 3 1
+Northern_Mariana_Islands "Northern Mariana Islands" 2 4 3 2 1 1 4 2 3 2 1 3 2
+Norway "Norway" 3 6 5 4 5 6 1 4 3 5 2 1 1
+Oman "Oman" 2 6 5 5 1 6 1 4 7 6 2 7 3
+Pakistan "Pakistan" 4 4 3 2 2 1 6 7 7 7 3 5 1
+Palau "Palau" 2 4 3 2 1 1 4 2 3 2 1 3 2
+Panama "Panama" 1 3 2 2 2 5 4 4 5 2 7 3 1
+Papua_New_Guinea "Papua New Guinea" 2 4 3 2 1 1 3 2 3 2 1 3 1
+Paraguay "Paraguay" 2 2 2 2 2 5 3 3 6 1 7 7 1
+Peru "Peru" 1 7 5 2 2 5 4 4 5 2 7 7 1
+Philippines "Philippines" 2 3 2 2 1 1 2 2 3 2 1 3 1
+Pitcairn_Islands "Pitcairn Islands" 2 7 3 4 2 7 1 7 4 4 6 7 2
+Poland "Poland" 3 6 5 7 2 5 1 2 3 5 3 1 1
+Portugal "Portugal" 1 7 4 4 5 4 1 1 3 5 3 1 1
+Puerto_Rico "Puerto Rico" 2 5 7 4 3 7 1 7 4 4 4 1 1
+Qatar "Qatar" 2 6 5 5 1 6 1 4 7 6 2 7 2
+Reunion "Reunion" 4 4 2 3 2 1 6 2 7 2 3 4 2
+Romania "Romania" 2 3 3 3 2 3 1 3 3 5 2 1 2
+Rwanda "Rwanda" 1 2 1 1 1 1 2 4 1 1 1 7 1
+Saint_Helena_Ascension_and_Tristan_da_Cunha "Saint Helena Ascension and Tristan da Cunha" 2 2 2 2 1 1 3 4 3 1 1 5 1
+Saint_Kitts_and_Nevis "Saint Kitts and Nevis" 1 4 3 2 2 5 4 4 5 2 7 6 2
+Saint_Lucia "Saint Lucia" 1 4 3 2 2 5 4 4 5 2 7 6 2
+Saint_Pierre_and_Miquelon "Saint Pierre and Miquelon" 2 5 7 4 3 7 1 7 4 4 4 7 2
+Sao_Tome_and_Principe "Sao Tome and Principe" 2 2 2 2 1 1 3 4 3 1 1 5 2
+Saudi_Arabia "Saudi Arabia" 7 6 5 7 1 6 1 4 7 6 2 7 2
+Senegal "Senegal" 2 3 2 1 1 1 3 4 3 1 1 4 1
+Serbia "Serbia" 1 6 2 4 1 2 1 1 1 5 1 1 1
+Seychelles "Seychelles" 2 2 2 2 1 1 3 4 3 1 1 5 1
+Sierra_Leone "Sierra Leone" 2 2 1 3 1 1 2 4 3 1 1 5 1
+Singapore "Singapore" 2 4 3 2 1 1 4 2 3 2 1 3 1
+Slovakia "Slovakia" 3 6 5 5 2 4 1 3 3 5 3 1 2
+Slovenia "Slovenia" 3 6 6 2 2 3 1 2 3 5 3 1 2
+Solomon_Islands "Solomon Islands" 2 4 3 2 1 1 4 2 3 2 1 3 2
+Somalia "Somalia" 2 5 1 2 1 1 4 4 3 1 1 6 1
+South_Africa "South Africa" 4 2 3 1 1 1 3 5 6 3 1 7 2
+South_Georgia_and_the_South_Sandwich_Islands "South Georgia and the South Sandwich Islands" 1 4 3 2 2 5 4 4 5 2 7 6 2
+South_Korea "South Korea" 2 5 3 2 1 1 4 2 2 4 1 3 1
+South_Sudan "South Sudan" 2 2 2 2 1 1 3 4 3 1 1 5 1
+Spain "Spain" 2 7 7 1 7 6 1 6 3 5 2 1 2
+Sri_Lanka "Sri Lanka" 4 4 2 2 2 1 2 2 7 1 3 3 2
+St_Vincent_and_the_Grenadines "St Vincent and the Grenadines" 1 4 3 2 2 5 4 4 5 2 7 6 2
+Sudan "Sudan" 3 2 1 1 1 1 3 2 3 1 1 4 1
+Suriname "Suriname" 1 4 3 2 2 5 4 4 5 2 7 2 1
+Svalbard "Svalbard" 3 6 5 4 5 6 1 4 3 5 3 1 2
+Swaziland "Swaziland" 2 2 1 2 1 1 3 4 3 1 1 7 2
+Sweden "Sweden" 4 6 5 4 2 7 1 4 3 5 3 1 2
+Switzerland "Switzerland" 4 6 7 4 3 7 1 6 7 5 4 1 2
+Syria "Syria" 2 6 3 1 7 7 1 2 7 5 2 7 1
+Taiwan "Taiwan" 3 6 4 5 2 6 5 7 3 4 2 6 2
+Tajikistan "Tajikistan" 2 4 3 5 1 3 1 2 2 1 2 1 1
+Tanzania_United_Republic_of "Tanzania United Republic of" 2 2 1 1 1 1 2 1 3 1 1 7 2
+Thailand "Thailand" 7 3 3 2 1 1 5 2 6 3 1 3 1
+Timor_Leste "Timor Leste" 2 2 1 2 1 1 1 2 2 1 1 3 1
+Togo "Togo" 2 2 1 1 1 1 2 4 3 1 1 5 1
+Tokelau "Tokelau" 2 4 3 2 1 1 4 2 3 2 1 3 2
+Tonga "Tonga" 2 4 3 2 1 1 4 2 3 2 1 3 1
+Trinidad_and_Tobago "Trinidad and Tobago" 1 2 2 2 2 5 4 4 5 2 7 2 1
+Tunisia "Tunisia" 1 6 5 5 1 1 1 1 7 6 1 7 2
+Turkey "Turkey" 2 6 7 2 7 4 1 7 4 4 3 1 1
+Turkmenistan "Turkmenistan" 3 4 2 5 7 7 1 2 2 1 2 1 1
+Turks_and_Caicos_Islands "Turks and Caicos Islands" 1 4 3 2 2 5 4 4 5 2 7 6 2
+Tuvalu "Tuvalu" 2 4 3 2 1 1 4 2 3 2 1 3 2
+Uganda "Uganda" 2 1 1 3 1 1 3 4 3 1 1 7 1
+Ukraine "Ukraine" 2 5 3 4 2 2 1 2 2 1 2 1 2
+United_Arab_Emirates "United Arab Emirates" 2 6 5 5 1 6 1 4 7 6 2 7 3
+United_Kingdom "United Kingdom" 5 6 5 4 3 7 1 4 3 5 3 1 2
+United_States_Minor_Outlying_Islands "United States Minor Outlying Islands" 2 5 7 4 3 7 1 7 4 4 4 7 2
+Uruguay "Uruguay" 1 4 3 2 3 5 4 2 3 2 7 7 1
+Uzbekistan "Uzbekistan" 4 2 3 3 1 1 1 7 2 1 2 1 1
+Vanuatu "Vanuatu" 2 4 3 2 1 1 4 2 3 2 1 3 2
+Venezuela "Venezuela" 1 4 3 2 2 5 3 3 5 2 7 6 1
+Vietnam "Vietnam" 3 5 3 5 2 6 3 7 4 3 2 3 1
+Virgin_Islands "Virgin Islands" 1 4 3 2 2 5 4 4 5 2 7 6 2
+Wallis_and_Futuna "Wallis and Futuna" 2 4 3 2 1 1 4 2 3 2 1 3 1
+West_Bank "West Bank" 4 6 5 5 3 6 1 7 7 1 2 7 2
+Western_Sahara "Western Sahara" 2 2 2 2 1 1 3 4 3 1 1 5 1
+Western_Samoa "Western Samoa" 2 4 3 2 1 1 4 2 3 2 1 3 2
+Yemen "Yemen" 4 6 2 5 1 6 1 4 7 6 2 7 1
+Zaire_DR_Congo "Zaire DR Congo" 2 1 1 1 1 1 2 4 1 1 1 6 1
+Zambia "Zambia" 7 1 2 1 1 1 2 1 2 1 1 7 2
+Zimbabwe "Zimbabwe" 5 2 1 1 1 1 2 1 4 1 1 7 2
+Australia "Australia" 2 5 3 4 2 7 1 7 7 5 6 7 1
+Brazil "Brazil" 2 3 3 2 3 5 4 3 5 2 7 7 2
+Canada "Canada" 3 5 7 4 3 7 1 3 4 4 4 7 2
+China "China" 3 6 4 5 2 6 7 7 3 4 2 7 1
+India "India" 5 4 2 3 2 1 7 2 7 2 3 4 1
+Russia "Russia" 2 4 4 6 2 3 1 2 2 1 2 1 2
+United_States "United States" 2 5 7 4 2 7 1 7 4 4 4 7 2

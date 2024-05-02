@@ -1,0 +1,64 @@
+<HTML>
+<BODY>
+<PRE>
+<!-- Manpage converted by man2html 3.0.1 -->
+     <B>NAME</B>
+          newgrid - Allocates LPJ grid cells
+
+     <B>SYNOPSIS</B>
+          <B>#include</B> <B>"lpj.h"</B>
+
+          <B>Cell</B> <B>*newgrid(Config</B> <B>*</B><I>config</I><B>,const</B> <B>Standtype</B> <I>standtype</I><B>[],</B>
+                        <B>int</B> <I>nstand</I><B>,int</B> <I>npft</I><B>,int</B> <I>ncft</I><B>);</B>
+
+
+     <B>DESCRIPTION</B>
+          Function allocates grid cells and reads soil code, country
+          code and coordinates. If restart filename is set state of
+          grid cells is recovered from a restart file. The arguments
+          of <B>newgrid</B> are:
+
+          <I>config</I>
+               Pointer to LPJmL configuration data. Must be read by
+               <B>readconfig()</B>.
+
+          <I>standtype</I>
+               Array of stand type definitions.
+
+          <I>nstand</I>
+               Number of stand types.
+
+          <I>npft</I> Number of natural plant functional types.
+
+          <I>ncft</I> Number of crop plant functional types.
+
+     <B>RETURN</B> <B>VALUE</B>
+          Upon successful completion pointer to allocated grid is
+          returned and NULL in case of failure.
+
+
+     <B>AUTHORS</B>
+          For authors and contributors see AUTHORS file
+
+
+     <B>COPYRIGHT</B>
+          (C) Potsdam Institute for Climate Impact Research (PIK), see
+          COPYRIGHT file
+
+
+     <B>SEE</B> <B>ALSO</B>
+          <B><A HREF="readconfig.html">readconfig(3)</A></B>, <B><A HREF="freegrid.html">freegrid(3)</A></B>
+
+
+
+
+
+
+</PRE>
+<HR>
+<ADDRESS>
+Man(1) output converted with
+<a href="http://www.oac.uci.edu/indiv/ehood/man2html.html">man2html</a>
+</ADDRESS>
+</BODY>
+</HTML>

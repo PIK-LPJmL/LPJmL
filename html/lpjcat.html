@@ -1,0 +1,69 @@
+<HTML>
+<HEAD>
+<TITLE>lpjcat.1</TITLE>
+</HEAD>
+<BODY>
+<H1>lpjcat.1</H1>
+<HR>
+<PRE>
+<!-- Manpage converted by man2html 3.0.1 -->
+     <B>NAME</B>
+          lpjcat - Concatenates restart files from distributed LPJmL
+          simulations.
+
+     <B>SYNOPSIS</B>
+          <B>lpjcat</B> [-o <I>outfile</I>] <I>filename</I> ...
+
+     <B>DESCRIPTION</B>
+          Program concatenates restart files from the LPJmL model to
+          one joint restart file. Is used to create a restart file
+          from distributed runs started by the <B>lpjdistribute</B> and
+          <B>lpjdistribute_river</B> scripts.  Program is obsolete for the
+          MPI version of <B>lpjml</B>.
+
+     <B>OPTIONS</B>
+          -o <I>outfile</I>
+               sets filename of the concatenated restart file. Default
+               is output to stdout.
+
+          <I>filename</I>
+               name of restart file(s).
+
+     <B>EXAMPLE</B>
+          Concatenates restart files to the file <I>restart</I>.<I>lpj</I>:
+               <B>lpjcat</B> -o restart.lpj restart_*.lpj
+
+     <B>EXIT</B> <B>STATUS</B>
+          <B>lpjcat</B> returns a zero exit status if the restart files have
+          been concatenated.  Non zero is returned in case of failure.
+
+
+     <B>AUTHORS</B>
+          For authors and contributors see AUTHORS file
+
+
+     <B>COPYRIGHT</B>
+          (C) Potsdam Institute for Climate Impact Research (PIK), see
+          COPYRIGHT file
+
+
+     <B>SEE</B> <B>ALSO</B>
+          <B><A HREF="lpjml.html">lpjml(1)</A></B>, <B><A HREF="cat2bsq.html">cat2bsq(1)</A></B>, <B><A HREF="output_bsq.html">output_bsq(1)</A></B>
+
+
+
+
+
+
+
+
+
+
+</PRE>
+<HR>
+<ADDRESS>
+Man(1) output converted with
+<a href="http://www.oac.uci.edu/indiv/ehood/man2html.html">man2html</a>
+</ADDRESS>
+</BODY>
+</HTML>

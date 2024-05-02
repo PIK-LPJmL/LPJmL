@@ -1,0 +1,64 @@
+<HTML>
+<BODY>
+<PRE>
+<!-- Manpage converted by man2html 3.0.1 -->
+     <B>NAME</B>
+          getlanduse - Get land use data
+
+     <B>SYNOPSIS</B>
+          <B>#include</B> <B>"lpj.h"</B>
+
+          <B>Bool</B> <B>getlanduse(Landuse</B> <I>landuse</I><B>,Cell</B> <I>grid</I>[]<B>,int</B> <I>year</I><B>,int</B> <I>ncft</I><B>,const</B> <B>Config</B> <B>*</B><I>config</I><B>);</B>
+
+
+     <B>DESCRIPTION</B>
+          Function reads land use data for specified year.  The
+          arguments of <B>getlanduse</B> are:
+
+          <I>landuse</I>
+               Pointer to land use data.  Must be initialized by
+               <B>initlanduse()</B>.
+
+          <I>grid</I> Cell grid array allocated and initialized by <B>newgrid()</B>.
+
+          <I>year</I> Sets year land use is read.
+
+          <I>ncft</I> Number of crop plant functional types.
+
+          <I>config</I>
+               LPJmL configuration data. Must be read by <B>readconfig()</B>.
+
+     <B>RETURN</B> <B>VALUE</B>
+          Upon successful completion FALSE is returned and TRUE on
+          error.
+
+
+     <B>AUTHORS</B>
+          For authors and contributors see AUTHORS file
+
+
+     <B>COPYRIGHT</B>
+          (C) Potsdam Institute for Climate Impact Research (PIK), see
+          COPYRIGHT file
+
+
+     <B>SEE</B> <B>ALSO</B>
+          <B><A HREF="readconfig.html">readconfig(3)</A></B>, <B><A HREF="initlanduse.html">initlanduse(3)</A></B>, <B><A HREF="freelanduse.html">freelanduse(3)</A></B>
+
+
+
+
+
+
+
+
+
+
+</PRE>
+<HR>
+<ADDRESS>
+Man(1) output converted with
+<a href="http://www.oac.uci.edu/indiv/ehood/man2html.html">man2html</a>
+</ADDRESS>
+</BODY>
+</HTML>

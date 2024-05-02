@@ -1,0 +1,64 @@
+<HTML>
+<BODY>
+<PRE>
+<!-- Manpage converted by man2html 3.0.1 -->
+     <B>NAME</B>
+          pnet_inindex - Get index for input buffer
+
+     <B>SYNOPSIS</B>
+          <B>#include</B> <B>&lt;mpi.h&gt;</B>
+          <B>#include</B> <B>"pnet.h"</B>
+
+          <B>int</B> <B>pnet_inindex(const</B> <B>Pnet</B> *<I>pnet</I><B>,int</B> <I>node</I><B>,</B> <B>int</B> <I>index</I><B>);</B>
+
+     <B>DESCRIPTION</B>
+          Function returns index of in input buffer for specified node
+          and connection. Function is implemented as a macro.  The
+          arguments of <B>pnet_inindex</B> are:
+
+          <I>pnet</I> Pointer to initialized Pnet struct
+
+          <I>node</I> Index of node. Must be
+               pnet_lo(pnet)&lt;=node&lt;=pnet_hi(pnet).
+
+          <I>index</I>
+               Index in connection list of specified node. Must be
+               0&lt;=index&lt;pnet_inlen(pnet,node).
+
+     <B>RETURN</B> <B>VALUE</B>
+          Upon successful completion index in input buffer is
+          returned.
+
+     <B>EXAMPLE</B>
+          float *in,*out,*node;
+          Pnet *pnet;
+          int i,j;
+          out=(float *)pnet_output(pnet);
+          in=(float *)pnet_input(pnet);
+          for(i=0;i&lt;pnet_outlen(pnet);i++)
+            out[i]=node[pnet_outindex(pnet,i)];
+          pnet_exchg();
+          for(i=pnet_lo(pnet);i&lt;=pnet_hi(pnet);i++)
+            for(j=0;j&lt;pnet_inlen(pnet,i);j++)
+              node[i]+=in[pnet_inindex(pnet,i,j)];
+
+     <B>AUTHORS</B>
+          For authors and contributors see AUTHORS file
+
+
+     <B>COPYRIGHT</B>
+          (C) Potsdam Institute for Climate Impact Research (PIK), see
+          COPYRIGHT file
+
+
+     <B>SEE</B> <B>ALSO</B>
+          <B><A HREF="pnet_inlen.html">pnet_inlen(3)</A></B>,<B><A HREF="pnet_init.html">pnet_init(3)</A></B>, <B><A HREF="pnet_free.html">pnet_free(3)</A></B>, <B><A HREF="pnet_setup.html">pnet_setup(3)</A></B>,
+          <B><A HREF="pnet_lo.html">pnet_lo(3)</A></B>, <B><A HREF="pnet_hi.html">pnet_hi(3)</A></B>, <B><A HREF="pnet_nodes.html">pnet_nodes(3)</A></B>
+</PRE>
+<HR>
+<ADDRESS>
+Man(1) output converted with
+<a href="http://www.oac.uci.edu/indiv/ehood/man2html.html">man2html</a>
+</ADDRESS>
+</BODY>
+</HTML>

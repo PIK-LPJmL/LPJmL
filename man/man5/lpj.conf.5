@@ -1,0 +1,178 @@
+.TH lpj.conf 5  "August 1, 2017" "version 4.0.002" "FILE FORMATS"
+.SH NAME
+lpj.conf \- Configuration file for LPJmL runs with natural vegetation
+.SH DESCRIPTION
+By default
+.B lpj
+reads in the
+.I lpj.conf
+file. This file is preprocessed by the
+.B cpp
+processor. 
+The type of simulation can be changed by defining macros as runtime options of the
+.B lpj
+command.   
+.PP
+.SS Macro definitions
+.TP
+\-DFROM_RESTART
+Simulation is started from a restart file.
+.TP
+\-DISRANDOM
+A random precipitation generator is used. The number of wet days in a month is used as an additional input variable
+.TP
+\-DRIVER_ROUTING
+Simulation is performed with river routing. Input file for drainage has to be provided.
+.TP
+\-WITH_GRIDBASED
+PFT-specific output is grid scaled.
+.SS File structure
+The LPJmL configuration file contains integer, float, and string values. Strings containing white spaces must be delimited by '"'. The file \fIinclude/conf.h\fP has to be included for the definition of symbols.
+The file is divided into five different sections: 
+.TP
+I. Simulation description and type section
+The first two entries describe the simulation and its type:
+
+.nf
+#include "include/conf.h"
+Simulation description string (string)
+LPJ  /* Simulation type with natural vegetation */
+INTERPOLATE_PREC | RANDOM_PREC random seed (int)
+CLOUDINESS | RADIATION | RADIATION_SWONLY | RADIATION_LWDOWN
+NO_FIRE | FIRE
+NO_FIRE | FIRE | SPITFIRE
+NO_FIREWOOD | FIREWOOD
+NO_POPULATION | POPULATION
+NO_PRESCIBE_BURNTAREA | PRESCRIBE_BURNTAREA
+NO_LANDCOVER | LANDCOVERFPC
+OLD_PHENOLOGY | NEW_PHENOLOGY
+NO_DRAINAGE | DRAINAGE
+PERM | NO_PERM
+.fi
+.TP
+II. Input parameter section
+PFT and soil parameters are defined here. They are included from the \fI$LPJROOT/par\fP directory:
+.nf
+#include "param.conf"
+.fi
+.TP
+III. Input data section
+This section contains filenames of the climate, land use, and  river routing data. Data file have to be in the clm data format and are created from binary files by the
+.B cru2clm
+(climate data) and
+.B  grid2clm
+(grid coordinates)
+command:
+
+.nf
+grid coordinates filename (string)
+soilcode filename (string)
+#ifdef RIVER_ROUTING
+lake fraction filename (string)
+river routing filename (string)
+#endif
+temperature data filename (string)
+precipitation data filename (string)
+cloudiness data filename (string)
+CO2 date filename (string)
+#ifdef ISRANDOM
+number of wet days filename (string)
+#endif
+.fi
+.TP
+IV. Output data section
+Output variables are defined in the output section of then LPJmL configuration file. Definition has to be in the format
+
+.nf
+GRIDBASED|PFTBASED
+VARIABLE1 filename1 (string)
+VARIABLE2 filename2 (string)
+ ...
+END
+.fi
+.TP
+V. Run settings section
+In the last section the first grid cell and the number of grid cells have to be specified as well as the first and last simulation year:
+
+.nf
+ALL | index of first cell (int) index of last years (int)
+0 | Number of spinup years (int) cycle length during spinup (int)
+first year of simulation (int)
+last year of simulation (int)
+NO_RESTART | RESTART restart filename  (string)
+NO_RESTART | RESTART restart filename (string) year file is written (int)
+.fi
+.SS Output variables
+The following variables are defined:
+
+.TP 2
+FIREC
+fire count
+.TP
+FIREF
+fire fraction
+.TP
+VEGC
+natural vegetation carbon (gC/m2)
+.TP
+SOILC
+natural soil carbon (gC/m2)
+.TP
+LITC
+natural litter carbon (gC/m2)
+.TP
+APREC
+annual precipitation
+.TP
+INPUT_LAKE
+Lake influx
+.TP
+ADISCHARGE
+annual discharge (dm3/yr)
+.TP
+MNPP
+monthly NPP (gC/m2}
+.TP
+MGPP
+monthly GPP (gC/m2}
+.TP
+MRH
+monthly respiration
+.TP
+MTRANSP
+monthly transpiration
+.TP
+MRUNOFF
+monthly runoff
+.TP
+MDISCHARGE
+monthly discharge (hm3/d)
+.TP
+MWATERAMOUNT
+mean monthly water amount (hm3)
+.TP
+MEVAP
+monthly evaporation
+.TP
+MINTERC
+monthly interception
+.TP
+MSWC1
+monthly soil water layer 1
+.TP
+MSWC2
+monthly soil water layer 2
+.TP
+MEVAP_LAKE
+Lake evaporation
+
+.SH AUTHORS
+
+For authors and contributors see AUTHORS file
+
+.SH COPYRIGHT
+
+(C) Potsdam Institute for Climate Impact Research (PIK), see COPYRIGHT file
+
+.SH SEE ALSO
+lpj(1), lpjml(1), cru2clm(1), grid2clm(1), clm(5), lpjml.conf(5)

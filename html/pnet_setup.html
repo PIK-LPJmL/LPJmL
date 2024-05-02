@@ -1,0 +1,64 @@
+<HTML>
+<BODY>
+<PRE>
+<!-- Manpage converted by man2html 3.0.1 -->
+     <B>NAME</B>
+          pnet_setup - Initialize communication pattern
+
+     <B>SYNOPSIS</B>
+          <B>#include</B> <B>&lt;mpi.h&gt;</B>
+          <B>#include</B> <B>"pnet.h"</B>
+
+          <B>int</B> <B>pnet_setup(Pnet</B> *<I>pnet</I><B>);</B>
+
+     <B>DESCRIPTION</B>
+          Function initializes communication pattern necessary for the
+          distributed network. This is the core function of the Pnet
+          library. Pnet has to be initialized by <B>pnet_init</B> and
+          connections have to be added by calls of <B>pnet_addconnect</B>
+          before <B>pnet_setup</B> can be called. Data have to be exchanged
+          by invoking the <B>pnet_exchg</B> macro. After calling this
+          function connections must not be added.  The argument of
+          <B>pnet_setup</B> is:
+
+          <I>pnet</I> Pointer to initialized Pnet struct
+
+     <B>RETURN</B> <B>VALUE</B>
+          Upon successful completion <B>PNET_OK</B> is returned.
+
+     <B>ERRORS</B>
+          <B>PNET_ALLOC_ERR</B>
+               Cannot allocate memory.
+
+
+     <B>AUTHORS</B>
+          For authors and contributors see AUTHORS file
+
+
+     <B>COPYRIGHT</B>
+          (C) Potsdam Institute for Climate Impact Research (PIK), see
+          COPYRIGHT file
+
+
+     <B>SEE</B> <B>ALSO</B>
+          <B><A HREF="pnet_exchg.html">pnet_exchg(3)</A></B>, <B><A HREF="pnet_init.html">pnet_init(3)</A></B>, <B><A HREF="pnet_addconnect.html">pnet_addconnect(3)</A></B>,
+          <B><A HREF="pnet_free.html">pnet_free(3)</A></B>,  <B><A HREF="pnet_lo.html">pnet_lo(3)</A></B>, <B><A HREF="pnet_hi.html">pnet_hi(3)</A></B>, <B><A HREF="pnet_nodes.html">pnet_nodes(3)</A></B>
+
+
+
+
+
+
+
+
+
+
+
+</PRE>
+<HR>
+<ADDRESS>
+Man(1) output converted with
+<a href="http://www.oac.uci.edu/indiv/ehood/man2html.html">man2html</a>
+</ADDRESS>
+</BODY>
+</HTML>

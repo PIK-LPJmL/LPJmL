@@ -1,0 +1,64 @@
+<HTML>
+<BODY>
+<PRE>
+<!-- Manpage converted by man2html 3.0.1 -->
+     <B>NAME</B>
+          writecoords - Write coordinate file
+
+     <B>SYNOPSIS</B>
+          <B>#include</B> <B>"lpj.h"</B>
+
+          <B>int</B> <B>writecoords(Outputfile</B> <B>*</B><I>output</I><B>,</B>
+                          <B>int</B> <I>index</I><B>,</B>
+                          <B>Cell</B> <I>grid</I><B>[],</B>
+                          <B>const</B> <B>Config</B> <B>*</B><I>config</I>
+                         <B>);</B>
+
+
+     <B>DESCRIPTION</B>
+          Function writes coordinate data for LPJmL grid. Only cell
+          coordinates with valid soil code are written.  The arguments
+          of <B>writecoords</B> are:
+
+          <I>output</I>
+               Pointer to initialized output data. <I>output</I> must be
+               initialized by <B>fopenoutput()</B>.
+
+          <I>index</I>
+               Set index of output.
+
+          <I>grid</I> Cell grid array allocated and initialized by <B>newgrid()</B>.
+
+          <I>config</I>
+               LPJmL configuration data. Must be read by <B>readconfig()</B>.
+
+     <B>RETURN</B> <B>VALUE</B>
+          Upon successful completion the number of coordinates written
+          is returned.
+
+
+     <B>AUTHORS</B>
+          For authors and contributors see AUTHORS file
+
+
+     <B>COPYRIGHT</B>
+          (C) Potsdam Institute for Climate Impact Research (PIK), see
+          COPYRIGHT file
+
+
+     <B>SEE</B> <B>ALSO</B>
+          <B><A HREF="readconfig.html">readconfig(3)</A></B>, <B><A HREF="fopenoutput.html">fopenoutput(3)</A></B>, <B><A HREF="newgrid.html">newgrid(3)</A></B>, <B><A HREF="fcloseoutput.html">fcloseoutput(3)</A></B>,
+          <B><A HREF="isopen.html">isopen(3)</A></B>, <B><A HREF="writecountrycode.html">writecountrycode(3)</A></B>, <B><A HREF="writeregioncode.html">writeregioncode(3)</A></B>
+
+
+
+
+
+</PRE>
+<HR>
+<ADDRESS>
+Man(1) output converted with
+<a href="http://www.oac.uci.edu/indiv/ehood/man2html.html">man2html</a>
+</ADDRESS>
+</BODY>
+</HTML>

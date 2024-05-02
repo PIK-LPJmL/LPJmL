@@ -1,0 +1,64 @@
+<HTML>
+<BODY>
+<PRE>
+<!-- Manpage converted by man2html 3.0.1 -->
+     <B>NAME</B>
+          pnet_outindex - Get index for output buffer
+
+     <B>SYNOPSIS</B>
+          <B>#include</B> <B>&lt;mpi.h&gt;</B>
+          <B>#include</B> <B>"pnet.h"</B>
+
+          <B>int</B> <B>pnet_outindex(const</B> <B>Pnet</B> *<I>pnet</I><B>,int</B> <I>index</I><B>);</B>
+
+     <B>DESCRIPTION</B>
+          Function returns index of node that has to be stored in the
+          output buffer. Function is implemented as a macro.  The
+          arguments of <B>pnet_outindex</B> are:
+
+          <I>pnet</I> Pointer to initialized Pnet struct
+
+          <I>index</I>
+               Index in output buffer. Must be
+               0&lt;=index&lt;pnet_outlen(pnet).
+
+     <B>RETURN</B> <B>VALUE</B>
+          Upon successful completion number of connections is
+          returned.
+
+     <B>AUTHORS</B>
+          For authors and contributors see AUTHORS file
+
+
+     <B>COPYRIGHT</B>
+          (C) Potsdam Institute for Climate Impact Research (PIK), see
+          COPYRIGHT file
+
+
+     <B>SEE</B> <B>ALSO</B>
+          <B><A HREF="pnet_init.html">pnet_init(3)</A></B>, <B><A HREF="pnet_free.html">pnet_free(3)</A></B>, <B><A HREF="pnet_setup.html">pnet_setup(3)</A></B>, <B><A HREF="pnet_hi.html">pnet_hi(3)</A></B>,
+          <B><A HREF="pnet_nodes.html">pnet_nodes(3)</A></B>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</PRE>
+<HR>
+<ADDRESS>
+Man(1) output converted with
+<a href="http://www.oac.uci.edu/indiv/ehood/man2html.html">man2html</a>
+</ADDRESS>
+</BODY>
+</HTML>

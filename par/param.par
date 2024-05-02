@@ -1,0 +1,63 @@
+/**************************************************************************************/
+/**                                                                                \n**/
+/**              p  a  r  a  m  .  p  a  r                                         \n**/
+/**                                                                                \n**/
+/**     LPJ parameter file for LPJmL version 4.0.002                               \n**/
+/**                                                                                \n**/
+/** (C) Potsdam Institute for Climate Impact Research (PIK), see COPYRIGHT file    \n**/
+/** authors, and contributors see AUTHORS file                                     \n**/
+/** This file is part of LPJmL and licensed under GNU AGPL Version 3               \n**/
+/** or later. See LICENSE file or go to http://www.gnu.org/licenses/               \n**/
+/** Contact: https://github.com/PIK-LPJmL/LPJmL                                    \n**/
+/**                                                                                \n**/
+/**************************************************************************************/
+
+0.3        /* k_litter10  (1/yr) */
+0.03       /* fast k_soil10  (1/yr) */
+0.001      /* slow k_soil10  (1/yr) */
+20000.0    /* max. snow pack (mm) */
+300.0      /* depth of sublayer at top of upper soil layer (mm) */
+278.0      /* pre-industrial CO2 (ppmv) */
+0.0548     /* k    k = 7.4e-7 * atomic_mass_C / atomic_mass_N * seconds_per_day = 0.0548 Sprugel et al. 1996, Eqn 7*/
+0.7        /* theta */
+0.5       /* k_beer */
+0.08      /* alphac3 */
+0.053     /* alphac4 */
+0.015     /* bc3 leaf respiration as fraction of Vmax for C3 plants */
+0.035     /* bc4 leaf respiration as fraction of Vmax for C4 plants */
+0.25      /* r_growth */
+3.26      /* GM empirical parameter in demand function */
+1.391     /* ALPHAM Priestley-Taylor coefficient*/ 
+3.0e4     /* Michaelis constant for O2 (Pa) at 25 deg C */
+30        /* Michaelis constant for CO2 (Pa) at 25 deg C */
+0.7       /* atmfrac */
+0.98      /* fastfrac */
+0.2       /* coefficient of growth efficiency in mortality equation (k_mort2) */
+-11.06    /* scaling factor for fire duration for the WVPD*/
+-0.50     /* a parameter for scaling the human ignintions within SPITFIRE */
+0.000001  /* threshold of fireintensity for which burnt area can be modeled */
+#ifdef WITH_LANDUSE
+900       /* annual prec limit for C3 threshold*/
+0.8       /* irrigation threshold C3, prec < aprec_lim */
+0.9       /* irrigation threshold C3, prec >= aprec_lim */
+0.7       /* irrigation threshold C4 */
+1.0       /* irrigation threshold RICE */
+1.0       /* fraction of soil filled with water during irrigation event */
+0.7       /* open canal conveyance efficiency, soil type sand (Ks > 20)*/
+0.75      /* open canal conveyance efficiency, soil type loam (10<=Ks<=20)*/
+0.8       /* open canal conveyance efficiency, soil type clay (Ks<10) */
+0.95      /* pressurized conveyance efficiency*/
+1.15      /* saturation level surface irrigation*/
+0.55      /* saturation level sprinkler irrigation*/
+0.05      /* saturation level drip irrigation*/
+0.6       /* reduction of drip soil evap */
+0.1       /* minimum residues in soil*/
+#ifdef WITH_RWMANAGEMENT
+0.0       /* reduction of soil evaporation */
+0.0       /* rw_buffer_max, size of rainwater harvesting tank [mm] */
+0.0       /* frac_ro_stored, fraction of surface runoff stored in tank */
+0.0       /* rw_irrig_thres, threshold to apply rw_irrigation */
+2         /* values > 2 (default) increase soil infiltration on rainfed and irrigated managed land */
+0.0       /* yield-gap bridge: factor by which laimax value is closed (7 - country-value)*factor */
+#endif
+#endif

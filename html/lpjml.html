@@ -1,0 +1,381 @@
+<HTML>
+<HEAD>
+<TITLE>lpjml.1</TITLE>
+</HEAD>
+<BODY>
+<H1>lpjml.1</H1>
+<HR>
+<PRE>
+<!-- Manpage converted by man2html 3.0.1 -->
+     <B>NAME</B>
+          lpj, lpjml - Dynamic global vegetation model with managed
+          land and river routing
+
+     <B>SYNOPSIS</B>
+          <B>lpjml</B> [-h] [-l] [-v] [-vv] [-param] [-pp cmd] [-fpe] [-image
+          host[:inport[,outport]]] [-wait time] [-output
+          {write|gather|mpi2|socket=hostname[:port]}] [-outpath <I>dir</I>]
+          [-inpath <I>dir</I>] [-restartpath <I>dir</I>] [[-Dmacro[=value]] [-I<I>dir</I>]
+          ...] [<I>filename</I>]
+
+          <B>lpj</B> [-h] [-l] [-v] [-vv] [-param] [-pp cmd] [-fpe] [-image
+          host[:inport[,outport]]] [-wait time] [-output
+          {write|gather|mpi2|socket=hostname[:port]}] [-outpath <I>dir</I>]
+          [-inpath <I>dir</I>] [-restartpath <I>dir</I>] [[-Dmacro[=value]] [-I<I>dir</I>]
+          ...] [<I>filename</I>]
+
+     <B>DESCRIPTION</B>
+          The model simulates vegetation dynamics, hydrology and soil
+          organic matter dynamics on an area-averaged grid cell basis
+          using one-year time step. The name derives from the three
+          locations <B>L</B>und-<B>P</B>otsdam-<B>J</B>ena but is no longer to be
+          interpreted that way. Input parameters are monthly mean air
+          temperature, total precipitation and percentage of full
+          sunshine, annual atmospheric CO2 concentration and soil
+          texture class. The simulation for each grid cell begins from
+          "bare ground", requiring a "spin up" (under non-transient
+          climate) of c. 5000 years to develop equilibrium vegetation
+          and soil structure. A restart file can be created to save
+          compute time for the spin-up phase. If the Message Passing
+          Interface (MPI) library is available a parallel version of
+          the program is built. If -DIMAGE flag is set in <I>Makefile</I>.<I>inc</I>
+          coupling the IMAGE model via the TDT library is enabled.
+
+     <B>OPTIONS</B>
+          -h   print a short help text
+
+          -l   print the license file
+
+          -v   print information about program version, operating
+               system, compiler used, and compiler flags set.
+
+          -vv  verbosely print the actual values during reading of the
+               configuration files.
+
+          -param
+               print LPJmL parameter for soils and PFTs.
+
+          -pp cmd
+               set preprocessor program to cmd. Default is <B>cpp</B> <B>-P</B>.
+
+          -fpe enable floating point exceptions. A core file is
+               generated in case of an arithmetic error. Option is
+               only available if <B>lpjml</B> has been compiled with
+               -DWITH_FPE flag.
+
+          -image host[:inport[,outport]]
+               set host where IMAGE model is running. Default is
+               localhost. inport and outport are the port numbers for
+               ingoing and outgoing data. Default port numbers are
+               2225 and 2224, respectively. This option is only
+               available for the IMAGE version of the code.
+
+          -wait time
+               set time to wait for connection to IMAGE model. Time is
+               measured in seconds. Default value is 10 sec. This
+               option is only available for the IMAGE version of the
+               code.
+
+          -output {gather|mpi2|socket=hostname[:port]]}
+               use the given output method to write data to disk or to
+               a output channel. Valid output methods are write,
+               gather, mpi2, and socket. The default output method for
+               the MPI version is gather sending all output to the
+               root task, while the default method is write for the
+               sequential version of the code. Method mpi2 uses MPI-2
+               parallel file functions, while output method socket
+               sends output data via a TCP/IP socket to a remote host
+               hostname. Default port is 2222. <B>lpjliveview</B> is a
+               program to display output variables on a X11 display at
+               run time. The mpi2 and gather output methods are only
+               valid for the MPI version of the code.
+
+          -outpath <I>dir</I>
+               set the output directory path. The path is added to the
+               output filenames if they do not contain an absolute
+               path.
+
+          -inpath <I>dir</I>
+               set the input directory path. The path is added to the
+               input filenames if they do not contain an absolute
+               path.
+
+          -restartpath <I>dir</I>
+               set the restart directory path. The path is added to
+               the restart filenames if they do not contain an
+               absolute path.
+
+          -Dmacro[=value]
+               define macro for the preprocessor of the configuration
+               file
+
+          -I<I>dir</I>
+               define include directory for the preprocessor of the
+               configuration file
+
+          <I>filename</I>
+               name of configuration file, default is <I>lpjml</I>.<I>js</I> for
+               <B>lpjml</B> and <I>lpj</I>.<I>js</I> for <B>lpj</B>.
+
+     <B>EXAMPLES</B>
+          Perform simulation with input from the /scratch file system:
+               <B>lpjml</B> -inpath /scratch/02/lpj
+
+          Perform simulation with output sent to host aix:
+               <B>lpjml</B> -output socket=aix
+
+     enabled:
+          Start simulation from restart file with floating point exceptions
+               <B>lpjml</B> -DFROM_RESTART -fpe lpjml.js
+
+          For running the MPI version of the program on more than one
+          task the <B>lpjsubmit</B> script has to be used.
+
+     <B>ENVIRONMENT</B>
+          LPJCONFIG
+               default LPJmL configuration filename
+
+          LPJPREP
+               defines preprocessor command for LPJmL configuration
+               file, default is <B>cpp</B> <B>-P</B>. Same as '-pp' option.
+
+          LPJROOT
+               defines the root directory for LPJmL. This directory is
+               added to the include directories of the preprocessor.
+               Invoking <B>lpj_paths.sh</B> or <B>lpj_paths.csh</B> will set this
+               environment variable correctly.
+
+          LPJIMAGE
+               sets the host where IMAGE model is running. Same as '-
+               image' option.
+
+          LPJWAITIMAGE
+               sets time to wait for connection to IMAGE model. Same
+               as in '-wait' option.
+
+          LPJINPATH
+               path appended to the input filenames. Only done for
+               filenames without absolute path. Same as '-inpath <I>dir</I>'
+               option.
+
+          LPJOPTIONS
+               runtime options for the preprocessor of LPJmL
+               configuration files
+
+          LPJOUTPATH
+               path appended to the output filenames. Only done for
+               filenames without absolute path. Same as '-outpath <I>dir</I>'
+               option.
+
+          LPJRESTARTPATH
+               path appended to the restart filenames. Only done for
+               filenames without absolute path. Same as '-restartpath
+               <I>dir</I>' option.
+
+          LPJOUTPUT
+               default method for generating output files. Valid
+               values are mpi2, gather, and socket. Same as '-output
+               method' option.
+
+
+     <B>EXIT</B> <B>STATUS</B>
+          <B>lpjml</B> and <B>lpj</B> returns a zero exit status if the simulation
+          finishes successfully.  Non zero is returned in case of
+          failure.
+
+     <B>DIAGNOSTICS</B>
+          On error the program prints the following message on stderr:
+
+          ERRORxxx: message, program terminated unsuccessfully
+
+          where xxx is the return code of the program. The following
+          error codes are defined:
+
+          ERROR001
+               Error reading configuration. Check syntax of
+               configuration file. External error
+
+          ERROR002
+               Error initializing input. Check whether all input files
+               are present. External error
+
+          ERROR003
+               Error initializing grid, check for missing input files.
+               External error
+
+          ERROR004
+               Invalid carbon balance. Internal error
+
+          ERROR005
+               Invalid water balance. Internal error
+
+          ERROR006
+               Negative discharge. Internal error
+
+          ERROR007
+               Negative fire probability. Internal error.
+
+          ERROR008
+               Negative soil moisture. Internal error
+
+          ERROR009
+               Error allocating memory. Rerun parallel program on more
+               MPI tasks to reduce memory per task. External error
+
+          ERROR010
+               Negative stand fraction. Internal error.
+
+          ERROR011
+               Stand fraction sum error. Can be caused by invalid
+               restart file. External error
+
+          ERROR012
+               List is empty in <B>dellistitem()</B>. Internal error.
+
+          ERROR013
+               Index out of range in <B>dellistitem()</B>. Internal error
+
+          ERROR014
+               Error in <B>newlanduse()</B>. Can be caused by invalid restart
+               file. External error
+
+          ERROR015
+               Invalid year in <B>getco2()</B>. CO2 data file is too short.
+               External error
+
+          ERROR016
+               Crop fraction &gt;1. Internal error.
+
+          ERROR017
+               No natural stand for <B>deforest()</B>. Internal error.
+
+          ERROR018
+               Wrong cultivation type. Internal error.
+
+          ERROR019
+               Floating point error occurred. Floating point
+               exceptions will only be thrown if -fpe option is set.
+               This is in particular useful if NaNs appear in the
+               output files.  Internal error.
+
+          ERROR021
+               PFT list is not empty in <B>setaside()</B>. Internal error.
+
+          ERROR022
+               Negative establishment rate. Internal error.
+
+          ERROR023
+               Output channel is broken. This error is only raised if
+               '-output socket' option is set. It is usually caused by
+               a premature end of the corresponding live view program.
+               External error.
+
+          ERROR024
+               Error sending data to the IMAGE model. This error can
+               only be raised if LPJmL is compiled with the -DIMAGE
+               flag set in <I>Makefile</I>.<I>inc</I>. External error.
+
+          ERROR025
+               Error opening connection to IMAGE model. This error can
+               only be raised if LPJmL is compiled with the -DIMAGE
+               flag set in <I>Makefile</I>.<I>inc</I>. External error.
+
+          ERROR026
+               Not enough setaside stand created to put the reservoir.
+               Internal error.
+
+          ERROR027
+               Forest left after deforestation. Internal error.
+
+          ERROR028
+               Outflow reservoir error. Internal error.
+
+          ERROR029
+               Error in permafrost module. Internal error.
+
+          ERROR030
+               Error in global water balance. Internal error.
+
+          ERROR031
+               Error in store climate function.
+
+          ERROR032
+               No FMS coupler supported.
+
+          ERROR033
+               Error initializing soil temperature
+
+          ERROR034
+               Invalid radiation model. Internal error
+
+
+          Internal errors will generate a core dump and have to be
+          fixed by changes in the code. A "post-mortem" analysis can
+          be made by calling
+
+          <B>gdb</B> $LPJROOT/bin/lpjml core
+
+          It is recommended to compile the code without optimization
+          and inlining making the inspection of the core file easier.
+          Configure in $LPJROOT with
+
+          <B>configure.sh</B> -debug
+          <B>make</B> clean
+          <B>make</B>
+
+          will do the job. If no core file is generated set the user
+          limit for core files:
+
+          <B>ulimit</B> -c unlimited
+
+          Some of these errors are only raised if the -DSAFE flag has
+          been set in <I>Makefile</I>.<I>inc</I>. The flags set at compile time can
+          be obtained by invoking <B>lpjml</B> <B>-v</B>. After the core file has
+          been created a backtrace of the failed program can be
+          obtained by calling
+
+          <B>backtrace</B>
+
+          Without any arguments <B>lpjml</B> will be inspected and the call
+          tree displayed using the core file in the working directory.
+
+
+     <B>AUTHORS</B>
+          For authors and contributors see AUTHORS file
+
+
+     <B>COPYRIGHT</B>
+          (C) Potsdam Institute for Climate Impact Research (PIK), see
+          COPYRIGHT file
+
+
+     <B>SEE</B> <B>ALSO</B>
+          <B><A HREF="lpjsubmit.html">lpjsubmit(1)</A></B>, <B><A HREF="lpjcheck.html">lpjcheck(1)</A></B>, <B><A HREF="configure.sh.html">configure.sh(1)</A></B>, <B><A HREF="backtrace.html">backtrace(1)</A></B>,
+          <B><A HREF="cru2clm.html">cru2clm(1)</A></B>, <B><A HREF="txt2clm.html">txt2clm(1)</A></B>, <B><A HREF="grid2clm.html">grid2clm(1)</A></B>, <B><A HREF="cft2clm.html">cft2clm(1)</A></B>, <B><A HREF="lpjcat.html">lpjcat(1)</A></B>,
+          <B><A HREF="lpjprint.html">lpjprint(1)</A></B>, <B><A HREF="printharvest.html">printharvest(1)</A></B>, <B><A HREF="printclm.html">printclm(1)</A></B>, <B><A HREF="printheader.html">printheader(1)</A></B>,
+          <B><A HREF="cat2bsq.html">cat2bsq(1)</A></B>, <B><A HREF="output_bsq.html">output_bsq(1)</A></B>, <B><A HREF="lpj_paths.sh.html">lpj_paths.sh(1)</A></B>,
+          <B><A HREF="lpj_paths.csh.html">lpj_paths.csh(1)</A></B>, <B><A HREF="lpjml.conf.html">lpjml.conf(5)</A></B>, <B><A HREF="lpj.conf.html">lpj.conf(5)</A></B>,
+          <B><A HREF="lpjml_image.conf.html">lpjml_image.conf(5)</A></B>, <B><A HREF="clm.html">clm(5)</A></B>
+
+          Contact: https://github.com/PIK-LPJmL/LPJmL /lpjml
+
+
+
+
+
+
+
+
+
+
+
+
+
+</PRE>
+<HR>
+<ADDRESS>
+Man(1) output converted with
+<a href="http://www.oac.uci.edu/indiv/ehood/man2html.html">man2html</a>
+</ADDRESS>
+</BODY>
+</HTML>

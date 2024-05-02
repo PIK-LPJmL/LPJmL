@@ -1,0 +1,64 @@
+<HTML>
+<BODY>
+<PRE>
+<!-- Manpage converted by man2html 3.0.1 -->
+     <B>NAME</B>
+          pnet_init - Initialize Pnet datatype
+
+     <B>SYNOPSIS</B>
+          <B>#include</B> <B>&lt;mpi.h&gt;</B>
+          <B>#include</B> <B>"pnet.h"</B>
+
+          <B>Pnet</B> <B>*pnet_init(MPI_Comm</B> <I>comm</I><B>,</B> <B>MPI_Datatype</B> <I>datatype</I><B>,</B> <B>int</B> <I>nodes</I><B>);</B>
+
+     <B>DESCRIPTION</B>
+          The Pnet library is used for MPI parallelization of
+          networks. The function has to be called after the
+          initialization of MPI. The arguments of <B>pnet_init</B> are:
+
+          <I>comm</I> MPI communicator
+
+          <I>datatype</I>
+               MPI datatype network for data transfer
+
+          <I>nodes</I>
+               Number of nodes in the network.
+
+     <B>RETURN</B> <B>VALUE</B>
+          Upon successful completion of <B>pnet_init</B> a pointer to
+          allocated Pnet struct is returned and NULL in case of
+          failure.
+
+
+     <B>AUTHORS</B>
+          For authors and contributors see AUTHORS file
+
+
+     <B>COPYRIGHT</B>
+          (C) Potsdam Institute for Climate Impact Research (PIK), see
+          COPYRIGHT file
+
+
+     <B>SEE</B> <B>ALSO</B>
+          <B><A HREF="pnet_free.html">pnet_free(3)</A></B>, <B><A HREF="pnet_setup.html">pnet_setup(3)</A></B>, <B><A HREF="pnet_nodes.html">pnet_nodes(3)</A></B>
+
+
+
+
+
+
+
+
+
+
+
+
+
+</PRE>
+<HR>
+<ADDRESS>
+Man(1) output converted with
+<a href="http://www.oac.uci.edu/indiv/ehood/man2html.html">man2html</a>
+</ADDRESS>
+</BODY>
+</HTML>

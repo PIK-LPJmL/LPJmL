@@ -1,0 +1,64 @@
+<HTML>
+<BODY>
+<PRE>
+<!-- Manpage converted by man2html 3.0.1 -->
+     <B>NAME</B>
+          writeint_socket - write integers to socket
+
+     <B>SYNOPSIS</B>
+          <B>#include</B> <B>"types.h"</B>
+          <B>#include</B> <B>"channel.h"</B>
+
+          <B>Bool</B> <B>writeint_socket(Socket</B> <B>*</B><I>socket</I><B>,const</B> <B>int</B> <B>*</B><I>data</I><B>,int</B> <I>n</I><B>);</B>
+
+
+     <B>DESCRIPTION</B>
+          Function writes integer data to open socket.  The arguments
+          of <B>writeint_socket</B> are:
+
+          <I>socket</I>
+               Pointer to socket. Socket must be opened by
+               <B>open_socket()</B> or <B>connect_socket()</B>.
+
+          <I>data</I> Integer data to write from socket.
+
+          <I>n</I>    Number of integer values to write.
+
+     <B>RETURN</B> <B>VALUE</B>
+          Upon successful completion FALSE is returned and TRUE on
+          failure.
+
+
+     <B>AUTHORS</B>
+          For authors and contributors see AUTHORS file
+
+
+     <B>COPYRIGHT</B>
+          (C) Potsdam Institute for Climate Impact Research (PIK), see
+          COPYRIGHT file
+
+
+     <B>SEE</B> <B>ALSO</B>
+          <B><A HREF="writefloat_socket.html">writefloat_socket(3)</A></B>, <B><A HREF="close_socket.html">close_socket(3)</A></B>, <B><A HREF="open_socket.html">open_socket(3)</A></B>,
+          <B><A HREF="connect_socket.html">connect_socket(3)</A></B>, <B><A HREF="readint_socket.html">readint_socket(3)</A></B>
+
+
+
+
+
+
+
+
+
+
+
+
+
+</PRE>
+<HR>
+<ADDRESS>
+Man(1) output converted with
+<a href="http://www.oac.uci.edu/indiv/ehood/man2html.html">man2html</a>
+</ADDRESS>
+</BODY>
+</HTML>

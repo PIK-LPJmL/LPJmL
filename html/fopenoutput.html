@@ -1,0 +1,64 @@
+<HTML>
+<BODY>
+<PRE>
+<!-- Manpage converted by man2html 3.0.1 -->
+     <B>NAME</B>
+          fopenoutput - creates LPJmL output files
+
+     <B>SYNOPSIS</B>
+          <B>#include</B> <B>"lpj.h"</B>
+
+          <B>Outputfile</B> <B>*fopenoutput(const</B> <B>Cell</B> <I>grid</I>[]<B>,int</B> <I>nout</I><B>,const</B> <B>Config</B> <B>*</B><I>config</I><B>);</B>
+
+
+     <B>DESCRIPTION</B>
+          Function creates and opens output files specified in the
+          LPJmL configuration.  The arguments of <B>fopenoutput</B> are:
+
+          <I>grid</I> Pointer to LPJmL grid. Must be initialized by
+               <B>newgrid()</B>.
+
+          <I>config</I>
+               Pointer to LPJmL configuration data. Must be read by
+               <B>readconfig()</B>.
+
+          <I>nout</I> Maximum number of output files.
+
+     <B>RETURN</B> <B>VALUE</B>
+          Upon successful completion pointer to allocated output data
+          is returned or NULL in case of failure.
+
+     <B>AUTHORS</B>
+          For authors and contributors see AUTHORS file
+
+
+     <B>COPYRIGHT</B>
+          (C) Potsdam Institute for Climate Impact Research (PIK), see
+          COPYRIGHT file
+
+
+     <B>SEE</B> <B>ALSO</B>
+          <B><A HREF="fcloseoutput.html">fcloseoutput(3)</A></B>, <B><A HREF="readconfig.html">readconfig(3)</A></B>, <B><A HREF="newgrid.html">newgrid(3)</A></B>, <B><A HREF="iterate.html">iterate(3)</A></B>,
+          <B><A HREF="isopen.html">isopen(3)</A></B>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</PRE>
+<HR>
+<ADDRESS>
+Man(1) output converted with
+<a href="http://www.oac.uci.edu/indiv/ehood/man2html.html">man2html</a>
+</ADDRESS>
+</BODY>
+</HTML>

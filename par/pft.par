@@ -1,0 +1,2153 @@
+/**************************************************************************************/
+/**                                                                                \n**/
+/**              p  f  t  .  p  a  r                                               \n**/
+/**                                                                                \n**/
+/**  PFT and CFT parameter file for LPJmL version 4.0.002                          \n**/
+/**  CFTs parameters must be put after PFTs                                        \n**/
+/**                                                                                \n**/
+/** (C) Potsdam Institute for Climate Impact Research (PIK), see COPYRIGHT file    \n**/
+/** authors, and contributors see AUTHORS file                                     \n**/
+/** This file is part of LPJmL and licensed under GNU AGPL Version 3               \n**/
+/** or later. See LICENSE file or go to http://www.gnu.org/licenses/               \n**/
+/** Contact: https://github.com/PIK-LPJmL/LPJmL                                    \n**/
+/**                                                                                \n**/
+/**************************************************************************************/
+
+#include "../include/pftpar.h" /* include constant definitions */
+
+#define CTON_LEAF 30
+#define CTON_ROOT 30
+#define CTON_POOL 100
+#define CTON_SO 100
+#define CTON_SAP 330
+#ifdef WITH_SPITFIRE
+#define FLAM_TREE 0.3
+#define FLAM_GRASS 0.3
+#else
+#define FLAM_TREE 0.3
+#define FLAM_GRASS 0.3
+#endif
+#define K_LITTER10 0.97       /* now only used for crops and value a middle value of C4 grasses; need to be updated with TRY-database*/
+#define ALPHA_FUELP_TROP 0.0000334
+#define ALPHA_FUELP_EXTRATROP 0.0000667
+#define APREC_MIN 100
+#define ALLOM1 100.0
+#define ALLOM2 40.0
+#define ALLOM3 0.67     /*0.5*/
+#define ALLOM4 0.3
+#define APHEN_MAX 245
+#define APHEN_MIN 60    /* minimum aphen for cold-induced senescence */
+#define HEIGHT_MAX 100  /* maximum height of trees */
+#define REPROD_COST 0.1 /* reproduction cost */
+#define K_EST 0.12 /* maximum overall sapling establishment rate (indiv/m2) */
+#ifdef WITH_SPITFIRE
+#define MORT_MAX 0.03
+#else
+#define MORT_MAX 0.03
+#endif
+
+26  /* number of PFT's (natural + crops + bioenergy) */
+
+/* first pft */
+TROPICAL_BROADLEAVED_EVERGREEN_TREE
+"tropical broadleaved evergreen tree"
+TREE
+NONE                        /* cultivation_type */
+30 55 70 77                 /* curve number */
+0.962                       /* beta_root */
+0.0                         /* minwscal 3*/
+0.5                         /* gmin 4*/
+0.2                         /* respcoeff 5*/
+100                         /* nmax 7*/
+0.12                        /* resist 8*/
+1.6                         /* leaf longevity 10*/
+1.0                         /* lmro_ratio 18*/
+1000                        /* ramp 19*/
+1.500                       /* lai_sapl 21*/
+0.0                         /* gdd5min 30*/
+1000                        /* twmax 31*/
+1000                        /* twmax_daily 31*/
+5.0                         /* gddbase (deg C) 33*/
+-1000                       /* min_temprange 34*/
+7                           /* emax 35*/
+0.02                        /* intc 36*/
+0.4                         /* alphaa, fraction of PAR assimilated at ecosystem level, relative to leaf level */
+0.14                        /* albedo of green leaves */
+0.1                         /* albedo of stems */
+0.1                         /* albedo of litter */
+0.4                         /* maximum snow coverage in green canopy */
+0.5                         /* lightextcoeff, light extinction coeffcient in Lambert-Beer equation */
+1.01                        /* new phenology: slope of cold-temperature limiting function */
+8.3                         /* new phenology: inflection point of cold-temperature limiting function (deg C) */
+0.2                         /* new phenology: change rate of actual to previous day cold-temperature limiting fct */
+1.86                        /* new phenology: slope of warm-temperature limiting function tmax_sl */
+38.64                       /* new phenology: inflection point of warm-temperature limiting function (deg C) */
+0.2                         /* new phenology: change rate of actual to previous day warm-temperature limiting fct */
+77.17                       /* new phenology: slope of light limiting function */
+55.53                       /* new phenology: inflection point of light limiting function (Wm-2) */
+0.52                        /* new phenology: change rate of actual to previous day light limiting function */
+5.14                        /* new phenology: slope of water limiting function */
+4.997                       /* new phenology: inflection point of water limiting function (% water availability)  */
+0.44                        /* new phenology: change rate of actual to previous day water limiting function */
+MORT_MAX                    /* asymptotic maximum mortality rate (1/year) */
+EVERGREEN                   /* phenology */
+C3                          /* pathway */
+2.0 55.0                    /* lower and upper temperature limit for co2 (deg C) 24 27*/
+25 30                       /* lower and upper limit of temperature optimum for photosynthesis(deg C) 25 26*/
+15.5 1000                   /* lower and upper coldest monthly mean temperature(deg C) 28 29*/
+0.38009                     /* shape factor for soil organic matter vertical distribution*/
+0.0000334                   /* scaling factor fire danger index */
+47.22296                    /* scaling factor vpd fire danger index*/
+25.0                        /* fuel bulk density */
+1580.0 103.0   6.80   8.10   8.50 1.999 /* emission factors */
+APREC_MIN                   /* minimum annual precipitation to establish */
+FLAM_TREE                   /* flam */
+0.93                        /* K_LITTER10 turnover rate after Brovkin etal 2012*/
+0.039                       /* K_LITTER10 turnover rate after Brovkin etal 2012*/
+2.75                        /* Q10_wood */
+0.4                         /* windspeed dampening */
+2.0                         /* roughness length */
+BROADLEAVED                 /* leaftype */
+2.0 20.0 2.0                /* turnover leaf  sapwood root 9 11 12*/
+CTON_LEAF CTON_SAP CTON_ROOT/* C:N mass ratio for leaf, sapwood, and root 13,14,15*/
+15.0                        /* crownarea_max 20*/
+1.2                         /* sapwood sapling 22*/
+REPROD_COST                 /* reproduction cost */
+ALLOM1                      /* allometry */
+ALLOM2
+ALLOM3
+ALLOM4
+HEIGHT_MAX                  /* maximum height of tree */
+0.1487                      /* scorch height (F) */
+0.3334                      /* crown length (CL) */
+0.0301                      /* bark thickness par1 */
+0.0281                      /* bark thickness par2 */
+1.00                        /* crown damage (rCK) */
+3.00                        /* crown damage (p)     */
+0.045 0.075 0.21 0.67       /* fuel fraction */
+K_EST                       /* k_est */
+8                           /* rotation */
+40                          /* max_rotation_length */
+/*--------------------------------------------------------------------------*/
+/* 2. pft */
+TROPICAL_BROADLEAVED_RAINGREEN_TREE
+"tropical broadleaved raingreen tree"
+TREE
+NONE                        /* cultivation_type */
+30 55 70 77                 /* curve number */
+0.961                       /* beta_root 1 */
+0.35                        /* minwscal 3*/
+0.5                         /* gmin 4*/
+0.2                         /* respcoeff 5*/
+100                         /* nmax 7*/
+0.5                         /* resist 8*/
+0.5                         /* leaf longivity 10*/
+1.0                         /* lmro_ratio 18*/
+1000                        /* ramp 19*/
+1.500                       /* lai_sapl 21*/
+0.0                         /* gdd5min 30*/
+1000                        /* twmax 31*/
+1000                        /* twmax_daily 31*/
+5.0                         /* gddbase (deg C) 33*/
+-1000                       /* min_temprange 34*/
+7.0                         /* emax 35*/
+0.02                        /* intc 36*/
+0.4                         /* alphaa, fraction of PAR assimilated at ecosystem level, relative to leaf level */
+0.13                        /* albedo of green leaves */
+0.07                        /* albedo of stems*/
+0.06                        /* albedo of litter */
+0.5                         /* maximum snow coverage in green canopy */
+0.5                         /* lightextcoeff, light extinction coeffcient in Lambert-Beer equation */
+0.24                        /* new phenology: slope of cold-temperature limiting function */
+7.66                        /* new phenology: inflection point of cold-temperature limiting function (deg C) */
+0.2                         /* new phenology: change rate of actual to previous day cold-temperature limiting fct */
+1.625                       /* new phenology: slope of warm-temperature limiting function tmax_sl */
+38.64                       /* new phenology: inflection point of warm-temperature limiting function (deg C) */
+0.2                         /* new phenology: change rate of actual to previous day warm-temperature limiting fct */
+23                          /* new phenology: slope of light limiting function */
+13.01                       /* new phenology: inflection point of light limiting function (Wm-2) */
+0.2                         /* new phenology: change rate of actual to previous day light limiting function */
+7.97                        /* new phenology: slope of water limiting function */
+22.21                       /* new phenology: inflection point of water limiting function (% water availability)  */
+0.1348                      /* new phenology: change rate of actual to previous day water limiting function */
+MORT_MAX                    /* asymptotic maximum mortality rate (1/year) */
+RAINGREEN                   /* phenology */
+C3                          /* pathway */
+2.0 55.0                    /* lower and upper temperature limit for co2 (deg C) 24 27*/
+25 30                       /* lower and upper limit of temperature optimum for photosynthesis(deg C) 25 26*/
+15.5 1000                   /* lower and upper coldest monthly mean temperature(deg C) 28 29*/
+0.51395                     /* shape factor for soil organic matter vertical distribution*/
+0.0000334                   /* scaling factor fire danger index */
+15.43195                    /* scaling factor vpd fire danger index*/
+13.0                        /* fuel bulk density */
+1664.0 63.0 2.20 3.40 8.50 2.540 /* emission factors */
+APREC_MIN                   /* minimum annual precipitation to establish */
+FLAM_TREE                   /* flam */
+1.17                        /* turnover rate after Brovkin etal 2012*/
+0.039                       /* turnover rate after Brovkin etal 2012*/
+2.75                        /* Q10_wood */
+0.4                         /* windspeed dampening */
+2.0                         /* roughness length */
+BROADLEAVED                 /* leaftype */
+1.0 20  1.0                 /* turnover leaf  sapwood root 9 11 12*/
+CTON_LEAF CTON_SAP CTON_ROOT/* C:N mass ratio for leaf, sapwood, and root 13,14,15*/
+12                          /* crownarea_max 20*/
+1.2                         /* sapwood sapling 22*/
+REPROD_COST                 /* reproduction cost */
+ALLOM1                      /* allometry */
+ALLOM2
+ALLOM3
+ALLOM4
+HEIGHT_MAX                  /* maximum height of tree */
+0.061                       /* scorch height (F) */
+0.10                        /* crown length (CL) */
+0.1085                      /* bark thickness par1 */
+0.2120                      /* bark thickness par2 */
+0.05                        /* crown damage (rCK) */
+3.00                        /* crown damage (p)     */
+0.045 0.075 0.21 0.67       /* fuel fraction */
+K_EST                       /* k_est */
+8                           /* rotation */
+40                          /* max_rotation_length */
+/*---------------------------------------------------------------------------------------------*/
+/* 3. pft */
+TEMPERATE_NEEDLELEAVED_EVERGREEN_TREE
+"temperate needleleaved evergreen tree"
+TREE
+NONE                        /* cultivation_type */
+30 55 70 77                 /* curve number */
+0.976                       /* beta_root 1 */
+0.00                        /* minwscal 3*/
+0.5                         /* gmin 4*/
+1.2                         /* respcoeff 5*/
+100                         /* nmax 7*/
+0.12                        /* resist 8*/
+4.0                         /* leaf longevity 10*/
+1.0                         /* lmro_ratio 18*/
+1000                        /* ramp 19*/
+1.500                       /* lai_sapl 21*/
+900.0                       /* gdd5min 30*/
+1000                        /* twmax 31*/
+1000                        /* twmax_daily 31*/
+5.0                         /* gddbase (deg C) 33*/
+-1000                       /* min_temprange 34*/
+5.0                         /* emax 35*/
+0.02                        /* intc 36*/
+0.4                         /* alphaa, fraction of PAR assimilated at ecosystem level, relative to leaf level */
+0.137                       /* albedo of green leaves*/
+0.04                        /* albedo of stems */
+0.1                         /* albedo of litter */
+0.1                         /* maximum snow coverage in green canopy */
+0.4                         /* lightextcoeff, light extinction coeffcient in Lambert-Beer equation */
+0.2172                      /* new phenology: slope of cold-temperature limiting function */
+-7.813                      /* new phenology: inflection point of cold-temperature limiting function (deg C) */
+0.2                         /* new phenology: change rate of actual to previous day cold-temperature limiting fct */
+1.83                        /* new phenology: slope of warm-temperature limiting function tmax_sl */
+35.26                       /* new phenology: inflection point of warm-temperature limiting function (deg C) */
+0.2                         /* new phenology: change rate of actual to previous day warm-temperature limiting fct */
+20                          /* new phenology: slope of light limiting function */
+4.872                       /* new phenology: inflection point of light limiting function (Wm-2) */
+0.2                         /* new phenology: change rate of actual to previous day light limiting function */
+5                           /* new phenology: slope of water limiting function */
+8.613                       /* new phenology: inflection point of water limiting function (% water availability)  */
+0.8                         /* new phenology: change rate of actual to previous day water limiting function */
+MORT_MAX                    /* asymptotic maximum mortality rate (1/year) */
+EVERGREEN                   /* phenology */
+C3                          /* pathway */
+-4.0 42.0                   /* lower and upper temperature limit for co2 (deg C) 24 27*/
+20 30                       /* lower and upper limit of temperature optimum for photosynthesis(deg C) 25 26*/
+-2.0 22.0                   /* lower and upper coldest monthly mean temperature(deg C) 28 29*/
+0.32198                     /* shape factor for soil organic matter vertical distribution*/
+0.0000667                   /* scaling factor fire danger index */
+6                           /* scaling factor vpd fire danger index*/
+25.0                        /* fuel bulk density */
+1568.0 106.0 4.80 5.70 17.60 3.240 /* emission factors */
+APREC_MIN                   /* minimum annual precipitation to establish */
+FLAM_TREE                   /* flam */
+0.7                         /* turnover rate after Brovkin etal 2012*/
+0.041                       /* turnover rate after Brovkin etal 2012*/
+1.97                        /* Q10_wood */
+0.4                         /* windspeed dampening */
+1.0                         /* roughness length */
+NEEDLELEAVED                /* leaftype */
+4.0 20 4.0                  /* turnover leaf  sapwood root 9 11 12*/
+CTON_LEAF CTON_SAP CTON_ROOT/* C:N mass ratio for leaf, sapwood, and root 13,14,15*/
+15                          /* crownarea_max 20*/
+1.2                         /* sapwood sapling 22*/
+REPROD_COST                 /* reproduction cost */
+ALLOM1                      /* allometry */
+ALLOM2
+ALLOM3
+ALLOM4
+HEIGHT_MAX                  /* maximum height of tree */
+0.1000                      /* scorch height (F) */
+0.3334                      /* crown length (CL) */
+0.0367                      /* bark thickness par1 */
+0.0592                      /* bark thickness par2 */
+1.00                        /* crown damage (rCK) */
+3.75                        /* crown damage (p)     */
+0.045 0.075 0.21 0.67       /* fuel fraction */
+K_EST                       /* k_est */
+8                           /* rotation */
+40                          /* max_rotation_length */
+/*--------------------------------------------------------------------------*/
+/* 4. pft */
+TEMPERATE_BROADLEAVED_EVERGREEN_TREE
+"temperate broadleaved evergreen tree"
+TREE
+NONE
+30 55 70 77                 /* curve number */
+0.964                       /* beta_root 1 */
+0.00                        /* minwscal 3*/
+0.5                         /* gmin 4*/
+1.2                         /* respcoeff 5*/
+100                         /* nmax 7*/
+0.5                         /* resist 8*/
+1.6                         /* leaf longevity 10*/
+1.0                         /* lmro_ratio 18*/
+1000                        /* ramp 19*/
+1.500                       /* lai_sapl 21*/
+1200.0                      /* gdd5min 30*/
+1000                        /* twmax 31*/
+1000                        /* twmax_daily 31*/
+5.0                         /* gddbase (deg C) 33*/
+-1000                       /* min_temprange 34*/
+5.0                         /* emax 35*/
+0.02                        /* intc 36*/
+0.4                         /* alphaa, fraction of PAR assimilated at ecosystem level, relative to leaf level */
+0.15                        /* albedo of green leaves*/
+0.04                        /* albedo of stems*/
+0.1                         /* albedo of litter */
+0.4                         /* maximum snow coverage in green canopy */
+0.5                         /* lightextcoeff, light extinction coeffcient in Lambert-Beer equation */
+0.55                        /* new phenology: slope of cold-temperature limiting function */
+-0.6297                     /* new phenology: inflection point of cold-temperature limiting function (deg C) */
+0.2                         /* new phenology: change rate of actual to previous day cold-temperature limiting fct */
+0.98                        /* new phenology: slope of warm-temperature limiting function tmax_sl */
+41.12                       /* new phenology: inflection point of warm-temperature limiting function (deg C) */
+0.2                         /* new phenology: change rate of actual to previous day warm-temperature limiting fct */
+18.83                       /* new phenology: slope of light limiting function */
+39.32                       /* new phenology: inflection point of light limiting function (Wm-2) */
+0.2                         /* new phenology: change rate of actual to previous day light limiting function */
+5                           /* new phenology: slope of water limiting function */
+8.821                       /* new phenology: inflection point of water limiting function (% water availability)  */
+0.8                         /* new phenology: change rate of actual to previous day water limiting function */
+MORT_MAX                        /* asymptotic maximum mortality rate (1/year) */
+EVERGREEN                   /* phenology */
+C3                          /* pathway */
+-4.0 42.0                   /* lower and upper temperature limit for co2 (deg C) 24 27*/
+20 30                       /* lower and upper limit of temperature optimum for photosynthesis(deg C) 25 26*/
+3.0 18.8                    /* lower and upper coldest monthly mean temperature(deg C) 28 29*/
+0.43740                     /* shape factor for soil organic matter vertical distribution*/
+0.0000334                   /* scaling factor fire danger index */
+6                           /* scaling factor vpd fire danger index*/
+22.0                        /* fuel bulk density (pb) */
+1568.0 106.0 4.80 5.70 17.60 3.240 /* emission factors */
+APREC_MIN                   /* minimum annual precipitation to establish */
+FLAM_TREE                   /* flam */
+0.86                        /* turnover rate after Brovkin etal 2012*/
+0.104                       /* turnover rate after Brovkin etal 2012*/
+1.37                        /* Q10_wood */
+0.4                         /* windspeed dampening */
+1.0                         /* roughness length */
+BROADLEAVED                 /* leaftype */
+1.0 20 1.0                  /* turnover leaf  sapwood root 9 11 12*/
+CTON_LEAF CTON_SAP CTON_ROOT/* C:N mass ratio for leaf, sapwood, and root 13,14,15*/
+15                          /* crownarea_max 20*/
+1.2                         /* sapwood sapling 22*/
+REPROD_COST                 /* reproduction cost */
+ALLOM1                      /* allometry */
+ALLOM2
+ALLOM3
+ALLOM4
+HEIGHT_MAX                  /* maximum height of tree */
+0.3710                      /* scorch height (F) */
+0.3334                      /* crown length (CL) */
+0.0451                      /* bark thickness par1 */
+0.1412                      /* bark thickness par2 */
+0.95                        /* crown damage (rCK) */
+3.00                        /* crown damage (p)     */
+0.045 0.075 0.21 0.67       /* fuel fraction */
+K_EST                       /* k_est */
+8                           /* rotation */
+40                          /* max_rotation_length */
+/*--------------------------------------------------------------------------*/
+/* 5. pft */
+TEMPERATE_BROADLEAVED_SUMMERGREEN_TREE
+"temperate broadleaved summergreen tree"
+TREE
+NONE                        /* cultivation_type */
+30 55 70 77                 /* curve number */
+0.966                       /* beta_root 1 */
+0.00                        /* minwscal 3*/
+0.5                         /* gmin 4*/
+1.2                         /* respcoeff 5*/
+120                         /* nmax 7*/
+0.3                         /* resist 8*/
+0.45                        /* leaf longevity 10*/
+1.0                         /* lmro_ratio 18*/
+300                         /* ramp 19*/
+1.500                       /* lai_sapl 21*/
+1200.0                      /* gdd5min 30*/
+1000                        /* twmax 31*/
+1000                        /* twmax_daily 31*/
+5.0                         /* gddbase (deg C) 33*/
+-1000                       /* min_temprange 34*/
+5.0                         /* emax 35*/
+0.02                        /* intc 36*/
+0.4                         /* alphaa, fraction of PAR assimilated at ecosystem level, relative to leaf level */
+0.15                        /* albedo of green leaves*/
+0.04                        /* albedo of stems */
+0.1                         /* albedo of litter */
+0.4                         /* maximum snow coverage in green canopy */
+0.6                         /* lightextcoeff, light extinction coeffcient in Lambert-Beer equation */
+0.2591                      /* new phenology: slope of cold-temperature limiting function */
+13.69                       /* new phenology: inflection point of cold-temperature limiting function (deg C) */
+0.2                         /* new phenology: change rate of actual to previous day cold-temperature limiting fct */
+1.74                        /* new phenology: slope of warm-temperature limiting function tmax_sl */
+41.51                       /* new phenology: inflection point of warm-temperature limiting function (deg C) */
+0.2                         /* new phenology: change rate of actual to previous day warm-temperature limiting fct */
+58                          /* new phenology: slope of light limiting function */
+59.78                       /* new phenology: inflection point of light limiting function (Wm-2) */
+0.2                         /* new phenology: change rate of actual to previous day light limiting function */
+5.24                        /* new phenology: slope of water limiting function */
+20.96                       /* new phenology: inflection point of water limiting function (% water availability)  */
+0.8                         /* new phenology: change rate of actual to previous day water limiting function */
+MORT_MAX                    /* asymptotic maximum mortality rate (1/year) */
+SUMMERGREEN                 /* phenology */
+C3                          /* pathway */
+-4.0 38.0                   /* lower and upper temperature limit for co2 (deg C) 24 27*/
+20 25                       /* lower and upper limit of temperature optimum for photosynthesis(deg C) 25 26*/
+-17.0 15.5                  /* lower and upper coldest monthly mean temperature(deg C) 28 29*/
+0.28880                     /* shape factor for soil organic matter vertical distribution*/
+0.0000667                   /* scaling factor fire danger index */
+6                           /* scaling factor vpd fire danger index*/
+22.0                        /* fuel bulk density */
+1568.0 106.0 4.80 5.70 17.60 3.240 /* emission factors */
+APREC_MIN                   /* minimum annual precipitation to establish */
+FLAM_TREE                   /* flam */
+0.95                        /* turnover rate after Brovkin etal 2012*/
+0.104                       /* turnover rate after Brovkin etal 2012*/
+1.37                        /* Q10_wood */
+0.4                         /* windspeed dampening */
+1.0                         /* roughness length */
+BROADLEAVED                 /* leaftype */
+1.0 20 1.0                  /* turnover leaf  sapwood root 9 11 12*/
+CTON_LEAF CTON_SAP CTON_ROOT/* C:N mass ratio for leaf, sapwood, and root 13,14,15*/
+15                          /* crownarea_max 20*/
+1.2                         /* sapwood sapling 22*/
+APHEN_MIN
+APHEN_MAX
+REPROD_COST                 /* reproduction cost */
+ALLOM1                      /* allometry */
+ALLOM2
+ALLOM3
+ALLOM4
+HEIGHT_MAX                  /* maximum height of tree */
+0.0940                      /* scorch height (F) */
+0.3334                      /* crown length (CL) */
+0.0347                      /* bark thickness par1 */
+0.1086                      /* bark thickness par2 */
+1.00                        /* crown damage (rCK) */
+3.00                        /* crown damage (p)     */
+0.045 0.075 0.21 0.67       /* fuel fraction */
+K_EST                       /* k_est */
+8                           /* rotation */
+40                          /* max_rotation_length */
+/*--------------------------------------------------------------------------*/
+/* 6. pft */
+BOREAL_NEEDLELEAVED_EVERGREEN_TREE
+"boreal needleleaved evergreen tree"
+TREE
+NONE                        /* cultivation_type */
+30 55 70 77                 /* curve number */
+0.943                       /* beta_root 1 */
+0.00                        /* minwscal 3*/
+0.3                         /* gmin 4*/
+1.2                         /* respcoeff 5*/
+100                         /* nmax 7*/
+0.12                        /* resist 8*/
+4.0                         /* leaf longevity 10*/
+1.0                         /* lmro_ratio 18*/
+1000                        /* ramp 19*/
+1.500                       /* lai_sapl 21*/
+600                         /* gdd5min 30*/
+23                          /* twmax 31*/
+25                          /* twmax_daily 31*/
+5.0                         /* gddbase (deg C) 33*/
+-1000                       /* min_temprange 34*/
+5.0                         /* emax 35*/
+0.06                        /* intc 36*/
+0.4                         /* alphaa, fraction of PAR assimilated at ecosystem level, relative to leaf level */
+0.13                        /* albedo of green leaves */
+0.1                         /* albedo of stems */
+0.1                         /* albedo of litter */
+0.1                         /* maximum snow coverage in green canopy */
+0.5                         /* lightextcoeff, light extinction coeffcient in Lambert-Beer equation */
+0.1008                      /* new phenology: slope of cold-temperature limiting function */
+-7.516                      /* new phenology: inflection point of cold-temperature limiting function (deg C) */
+0.2                         /* new phenology: change rate of actual to previous day cold-temperature limiting fct */
+0.24                        /* new phenology: slope of warm-temperature limiting function tmax_sl */
+27.32                       /* new phenology: inflection point of warm-temperature limiting function (deg C) */
+0.2                         /* new phenology: change rate of actual to previous day warm-temperature limiting fct */
+14                          /* new phenology: slope of light limiting function */
+3.04                        /* new phenology: inflection point of light limiting function (Wm-2) */
+0.2                         /* new phenology: change rate of actual to previous day light limiting function */
+5                           /* new phenology: slope of water limiting function */
+0.007695                    /* new phenology: inflection point of water limiting function (% water availability)  */
+0.8                         /* new phenology: change rate of actual to previous day water limiting function */
+MORT_MAX                    /* asymptotic maximum mortality rate (1/year) */
+EVERGREEN                   /* phenology */
+C3                          /* pathway */
+-4.0 38.0                   /* lower and upper temperature limit for co2 (deg C) 24 27*/
+15 25                       /* lower and upper limit of temperature optimum for photosynthesis(deg C) 25 26*/
+-32.5 -2                    /* lower and upper coldest monthly mean temperature(deg C) 28 29*/
+0.28670                     /* shape factor for soil organic matter vertical distribution*/
+0.0000667                   /* scaling factor fire danger index */
+6                           /* scaling factor vpd fire danger index*/
+25.0                        /* fuel bulk density (pb) */
+1568.0 106.0 4.80 5.70 17.60 3.240 /* emission factors */
+APREC_MIN                   /* minimum annual precipitation to establish */
+FLAM_TREE                   /* flam */
+0.76                        /* turnover rate after Brovkin etal 2012*/
+0.041                       /* turnover rate after Brovkin etal 2012*/
+1.97                        /* Q10_wood */
+0.4                         /* windspeed dampening */
+1.0                         /* roughness length */
+NEEDLELEAVED                /* leaftype */
+4.0 20 4.0                  /* turnover leaf  sapwood root 9 11 12*/
+CTON_LEAF CTON_SAP CTON_ROOT/* C:N mass ratio for leaf, sapwood, and root 13,14,15*/
+15                          /* crownarea_max 20*/
+1.2                         /* sapwood sapling 22*/
+REPROD_COST                 /* reproduction cost */
+ALLOM1                      /* allometry */
+ALLOM2
+ALLOM3
+ALLOM4
+HEIGHT_MAX                  /* maximum height of tree */
+0.1100                      /* scorch height (F) */
+0.3334                      /* crown length (CL) */
+0.0292                      /* bark thickness par1 */
+0.2632                      /* bark thickness par2 */
+1.00                        /* crown damage (rCK) */
+3.00                        /* crown damage (p)     */
+0.045 0.075 0.21 0.67       /* fuel fraction */
+K_EST                       /* k_est */
+8                           /* rotation */
+40                          /* max_rotation_length */
+/*--------------------------------------------------------------------------*/
+/* 7. pft */
+BOREAL_BROADLEAVED_SUMMERGREEN_TREE
+"boreal broadleaved summergreen tree"
+TREE
+NONE                        /* cultivation_type */
+30 55 70 77                 /* curve number */
+0.943                       /* beta_root 1 */
+0.00                        /* minwscal 3*/
+0.5                         /* gmin 4*/
+1.2                         /* respcoeff 5*/
+100                         /* nmax 7*/
+0.3                         /* resist 8*/
+0.5                         /* leaf longevity 10*/
+1.0                         /* lmro_ratio 18*/
+200                         /* ramp 19*/
+1.500                       /* lai_sapl 21*/
+350                         /* gdd5min 30*/
+23                          /* twmax 31*/
+25                          /* twmax_daily 31*/
+5.0                         /* gddbase (deg C) 33*/
+-1000                       /* min_temprange 34*/
+5.0                         /* emax 35*/
+0.06                        /* intc 36*/
+0.4                         /* alphaa, fraction of PAR assimilated at ecosystem level, relative to leaf level */
+0.18                        /* albedo of green leaves */
+0.1                         /* albedo of stems */
+0.1                         /* albedo of litter */
+0.15                        /* maximum snow coverage in green canopy */
+0.5                         /* lightextcoeff, light extinction coeffcient in Lambert-Beer equation, Aubin etal., 2000) */
+0.2153                      /* new phenology: slope of cold-temperature limiting function */
+2.045                       /* new phenology: inflection point of cold-temperature limiting function (deg C) */
+0.2                         /* new phenology: change rate of actual to previous day cold-temperature limiting fct */
+1.74                        /* new phenology: slope of warm-temperature limiting function tmax_sl */
+41.51                       /* new phenology: inflection point of warm-temperature limiting function (deg C) */
+0.2                         /* new phenology: change rate of actual to previous day warm-temperature limiting fct */
+58                          /* new phenology: slope of light limiting function */
+59.78                       /* new phenology: inflection point of light limiting function (Wm-2) */
+0.2                         /* new phenology: change rate of actual to previous day light limiting function */
+5.24                        /* new phenology: slope of water limiting function */
+20.96                       /* new phenology: inflection point of water limiting function (% water availability)  */
+0.8                         /* new phenology: change rate of actual to previous day water limiting function */
+MORT_MAX                    /* asymptotic maximum mortality rate (1/year) */
+SUMMERGREEN                 /* phenology */
+C3                          /* pathway */
+-4.0 38.0                   /* lower and upper temperature limit for co2 (deg C) 24 27*/
+15 25                       /* lower and upper limit of temperature optimum for photosynthesis(deg C) 25 26*/
+-1000 -2                    /* lower and upper coldest monthly mean temperature(deg C) 28 29*/
+0.28670                     /* shape factor for soil organic matter vertical distribution*/
+0.0000667                   /* scaling factor fire danger index */
+6                           /* scaling factor vpd fire danger index*/
+22.0                        /* fuel bulk density (pb) */
+1568.0 106.0 4.80 5.70 17.60 3.240 /* emission factors */
+APREC_MIN                   /* minimum annual precipitation to establish */
+FLAM_TREE                   /* flam */
+0.94                        /* turnover rate after Brovkin etal 2012*/
+0.104                       /* turnover rate after Brovkin etal 2012*/
+1.37                        /* Q10_wood */
+0.4                         /* windspeed dampening */
+1.0                         /* roughness length */
+BROADLEAVED                 /* leaftype */
+1.0 20 1.0                  /* turnover leaf  sapwood root 9 11 12*/
+CTON_LEAF CTON_SAP CTON_ROOT/* C:N mass ratio for leaf, sapwood, and root 13,14,15*/
+15                          /* crownarea_max 20*/
+1.2                         /* sapwood sapling 22*/
+APHEN_MIN
+APHEN_MAX
+REPROD_COST                 /* reproduction cost */
+ALLOM1                      /* allometry */
+ALLOM2
+ALLOM3
+ALLOM4
+HEIGHT_MAX                  /* maximum height of tree */
+0.0940                      /* scorch height (F) */
+0.3334                      /* crown length (CL) */
+0.0347                      /* bark thickness par1 */
+0.1086                      /* bark thickness par2 */
+1.00                        /* crown damage (rCK) */
+3.00                        /* crown damage (p)     */
+0.045 0.075 0.21 0.67       /* fuel fraction */
+K_EST                       /* k_est */
+8                           /* rotation */
+40                          /* max_rotation_length */
+/*--------------------------------------------------------------------------*/
+/* 8. pft */
+BOREAL_NEEDLELEAVED_SUMMERGREEN_TREE
+"boreal needleleaved summergreen tree"
+TREE
+NONE                        /* cultivation_type */
+30 55 70 77                 /* curve number */
+0.943                       /* beta_root 1 */
+0.00                        /* minwscal 3*/
+0.5                         /* gmin 4*/
+1.2                         /* respcoeff 5*/
+100                         /* nmax 7*/
+0.12                        /* resist 8*/
+0.65                        /* leaf longevity 10*/
+1.0                         /* lmro_ratio 18*/
+200                         /* ramp 19*/
+1.500                       /* lai_sapl 21*/
+350                         /* gdd5min 30*/
+23                          /* twmax 31*/
+25                          /* twmax_daily 31*/
+5.0                         /* gddbase (deg C) 33*/
+30                          /* min_temprange 34*/
+5.0                         /* emax 35*/
+0.06                        /* intc 36*/
+0.4                         /* alphaa, fraction of PAR assimilated at ecosystem level, relative to leaf level */
+0.12                        /* albedo of green leaves */
+0.05                        /* albedo of stems */
+0.01                        /* albedo of litter */
+0.15                        /* maximum snow coverage in green canopy */
+0.6                         /* lightextcoeff, light extinction coeffcient in Lambert-Beer equation */
+0.15                        /* new phenology: slope of cold-temperature limiting function */
+-4.165                      /* new phenology: inflection point of cold-temperature limiting function (deg C) */
+0.2                         /* new phenology: change rate of actual to previous day cold-temperature limiting fct */
+0.24                        /* new phenology: slope of warm-temperature limiting function tmax_sl */
+44.6                        /* new phenology: inflection point of warm-temperature limiting function (deg C) */
+0.2                         /* new phenology: change rate of actual to previous day warm-temperature limiting fct */
+95                          /* new phenology: slope of light limiting function */
+130.1                       /* new phenology: inflection point of light limiting function (Wm-2) */
+0.2                         /* new phenology: change rate of actual to previous day light limiting function */
+5                           /* new phenology: slope of water limiting function */
+2.344                       /* new phenology: inflection point of water limiting function (% water availability)  */
+0.8                         /* new phenology: change rate of actual to previous day water limiting function */
+MORT_MAX                    /* asymptotic maximum mortality rate (1/year) */
+SUMMERGREEN                 /* phenology */
+C3                          /* pathway */
+-4.0 38.0                   /* lower and upper temperature limit for co2 (deg C) 24 27*/
+15 25                       /* lower and upper limit of temperature optimum for photosynthesis(deg C) 25 26*/
+-46 -5.4                    /* lower and upper coldest monthly mean temperature(deg C) 28 29*/
+0.28670                     /* shape factor for soil organic matter vertical distribution*/
+0.0000667                   /* scaling factor fire danger index */
+6                           /* scaling factor vpd fire danger index*/
+22.0                        /* fuel bulk density (pb) */
+1568.0 106.0 4.80 5.70 17.60 3.240 /* emission factors */
+APREC_MIN                   /* minimum annual precipitation to establish */
+FLAM_TREE                   /* flam */
+0.76                        /* turnover rate after Brovkin etal 2012*/
+0.041                       /* turnover rate after Brovkin etal 2012*/
+1.97                        /* Q10_wood */
+0.4                         /* windspeed dampening */
+1.0                         /* roughness length */
+NEEDLELEAVED                /* leaftype */
+1.0 20 1.0                  /* turnover leaf  sapwood root 9 11 12*/
+CTON_LEAF CTON_SAP CTON_ROOT/* C:N mass ratio for leaf, sapwood, and root 13,14,15*/
+15                          /* crownarea_max 20*/
+1.2                         /* sapwood sapling 22*/
+10
+200
+REPROD_COST                 /* reproduction cost */
+ALLOM1                      /* allometry */
+ALLOM2
+ALLOM3
+ALLOM4
+HEIGHT_MAX                  /* maximum height of tree */
+0.0940                      /* scorch height (F) */
+0.3334                      /* crown length (CL) */
+0.0347                      /* bark thickness par1 */
+0.1086                      /* bark thickness par2 */
+1.00                        /* crown damage (rCK) */
+3.00                        /* crown damage (p)     */
+0.045 0.075 0.21 0.67       /* fuel fraction */
+K_EST                       /* k_est */
+8                           /* rotation */
+40                          /* max_rotation_length */
+/*--------------------------------------------------------------------------*/
+/* 9. pft */
+TROPICAL_HERBACEOUS
+"Tropical C4 grass"
+GRASS
+NONE                        /* cultivation_type */
+39 61 74 80                 /* curve number */
+0.972                       /* beta_root 1 */
+0.20                        /* minwscal 3*/
+0.5                         /* gmin 4*/
+0.2                         /* respcoeff 5*/
+100                         /* nmax 7*/
+0.01                        /* resist 8*/
+0.4                         /* leaf longevity 10 0.75*/
+0.60                        /* lmro_ratio 18*/
+100                         /* ramp 19*/
+0.001                       /* lai_sapl 21*/
+0                           /* gdd5min 30*/
+1000                        /* twmax 31*/
+1000                        /* twmax_daily 31*/
+5.0                         /* gddbase (deg C) 33*/
+-1000                       /* min_temprange 34*/
+7.0                         /* emax 35*/
+0.01                        /* intc 36*/
+0.4                         /* alphaa, fraction of PAR assimilated at ecosystem level, relative to leaf level */
+0.21                        /* albedo of green leaves */
+0.15                        /* albedo of stems */
+0.1                         /* albedo of litter */
+0.4                         /* maximum snow coverage in green canopy */
+0.4                         /* lightextcoeff, light extinction coeffcient in Lambert-Beer equation */
+0.91                        /* new phenology: slope of cold-temperature limiting function */
+6.418                       /* new phenology: inflection point of cold-temperature limiting function (deg C) */
+0.2                         /* new phenology: change rate of actual to previous day cold-temperature limiting fct */
+1.47                        /* new phenology: slope of warm-temperature limiting function tmax_sl */
+29.16                       /* new phenology: inflection point of warm-temperature limiting function (deg C) */
+0.2                         /* new phenology: change rate of actual to previous day warm-temperature limiting fct */
+64.23                       /* new phenology: slope of light limiting function */
+69.9                        /* new phenology: inflection point of light limiting function (Wm-2) */
+0.4                         /* new phenology: change rate of actual to previous day light limiting function */
+0.1                         /* new phenology: slope of water limiting function */
+41.72                       /* new phenology: inflection point of water limiting function (% water availability)  */
+0.17                        /* new phenology: change rate of actual to previous day water limiting function */
+MORT_MAX                        /* asymptotic maximum mortality rate (1/year) */
+ANY                         /* phenology */
+C4                          /* pathway */
+6.0 55.0                    /* lower and upper temperature limit for co2 (deg C) 24 27*/
+20 45                       /* lower and upper limit of temperature optimum for photosynthesis(deg C) 25 26*/
+7.0 1000.0                  /* lower and upper coldest monthly mean temperature(deg C) 28 29*/
+0.46513                     /* shape factor for soil organic matter vertical distribution*/
+0.0000667                   /* scaling factor fire danger index */
+3.85899                     /* scaling factor vpd fire danger index */
+2.0                         /* fuel bulk density (pb) */
+1664.0 63.0 2.20 3.40 8.50 2.540 /* emission factors */
+100                         /* minimum annual precipitation to establish */
+FLAM_GRASS                  /* flam */
+0.97                        /* turnover rate after Brovkin etal 2012*/
+0.97                        /* turnover rate after Brovkin etal 2012*/
+1                           /* Q10_wood */
+0.6                         /* windspeed dampening */
+0.03                        /* roughness length */
+1.0 2.0                     /* turnover leaf root 9 12*/
+CTON_LEAF CTON_ROOT         /* C:N mass ratio for leaf and root 13,15*/
+REPROD_COST                 /* reproduction cost */
+/*--------------------------------------------------------------------------*/
+/* 10. pft */
+TEMPERATE_HERBACEOUS
+"Temperate C3 grass"
+GRASS
+NONE                        /* cultivation_type */
+39 61 74 80                 /* curve number */
+0.943                       /* beta_root 1 */
+0.20                        /* minwscal 3*/
+0.5                         /* gmin 4*/
+1.2                         /* respcoeff 5*/
+100                         /* nmax 7*/
+0.01                        /* resist 8*/
+0.35                        /* leaf longevity 10*/
+0.60                        /* lmro_ratio 18 0.75*/
+100                         /* ramp 19*/
+0.001                       /* lai_sapl 21*/
+0                           /* gdd5min 30*/
+1000                        /* twmax 31*/
+1000                        /* twmax_daily 31*/
+5.0                         /* gddbase (deg C) 33*/
+-1000                       /* min_temprange 34*/
+5.0                         /* emax 35*/
+0.01                        /* intc 36*/
+0.4                         /* alphaa, fraction of PAR assimilated at ecosystem level, relative to leaf level */
+0.20                        /* albedo of green leaves */
+0.15                        /* albedo of stems */
+0.1                         /* albedo of litter */
+0.4                         /* maximum snow coverage in green canopy */
+0.5                         /* lightextcoeff, light extinction coeffcient in Lambert-Beer equation */
+0.3111                      /* new phenology: slope of cold-temperature limiting function */
+4.979                       /* new phenology: inflection point of cold-temperature limiting function (deg C) */
+0.01011                     /* new phenology: change rate of actual to previous day cold-temperature limiting fct */
+0.24                        /* new phenology: slope of warm-temperature limiting function tmax_sl */
+32.04                       /* new phenology: inflection point of warm-temperature limiting function (deg C) */
+0.2                         /* new phenology: change rate of actual to previous day warm-temperature limiting fct */
+23                          /* new phenology: slope of light limiting function */
+75.94                       /* new phenology: inflection point of light limiting function (Wm-2) */
+0.22                        /* new phenology: change rate of actual to previous day light limiting function */
+0.5222                      /* new phenology: slope of water limiting function */
+53.07                       /* new phenology: inflection point of water limiting function (% water availability)  */
+0.01001                     /* new phenology: change rate of actual to previous day water limiting function */
+MORT_MAX                        /* asymptotic maximum mortality rate (1/year) */
+ANY                         /* phenology */
+C3                          /* pathway */
+-4.0 45.0                   /* lower and upper temperature limit for co2 (deg C) 24 27*/
+10 30                       /* lower and upper limit of temperature optimum for photosynthesis(deg C) 25 26*/
+-39 15.5                    /* lower and upper coldest monthly mean temperature(deg C) 28 29*/
+0.38184                     /* shape factor for soil organic matter vertical distribution*/
+0.0000667                   /* scaling factor fire danger index */
+6                           /* scaling factor vpd fire danger index*/
+4.0                         /* fuel bulk density (pb) */
+1568.0 106.0 4.80 5.70 17.60 3.240 /* emission factors */
+100                        /* minimum annual precipitation to establish */
+FLAM_GRASS                  /* flam */
+1.20                        /* turnover rate after Brovkin etal 2012*/
+1.20                        /* turnover rate after Brovkin etal 2012*/
+1                           /* Q10_wood */
+0.6                         /* windspeed dampening */
+0.03                        /* roughness length */
+1.0 2.0                     /* turnover leaf root 9 12*/
+CTON_LEAF CTON_ROOT         /* C:N mass ratio for leaf and root 13,15*/
+REPROD_COST                 /* reproduction cost */
+/*--------------------------------------------------------------------------*/
+/* 11. pft */
+POLAR_HERBACEOUS
+"Polar C3 grass"
+GRASS
+NONE                        /* cultivation_type */
+39 61 74 80                 /* curve number */
+0.943                       /* beta_root 1 */
+0.20                        /* minwscal 3*/
+0.5                         /* gmin 4*/
+1.2                         /* respcoeff 5*/
+100                         /* nmax 7*/
+0.01                        /* resist 8*/
+0.35                        /* leaf longevity 10*/
+0.60                        /* lmro_ratio 18 0.75*/
+100                         /* ramp 19*/
+0.001                       /* lai_sapl 21*/
+0.01                        /* gdd5min 30*/
+1000                        /* twmax 31*/
+1000                        /* twmax_daily 31*/
+5.0                         /* gddbase (deg C) 33*/
+18                          /* min_temprange 34*/
+5.0                         /* emax 35*/
+0.01                        /* intc 36*/
+0.4                         /* alphaa, fraction of PAR assimilated at ecosystem level, relative to leaf level */
+0.21                        /* albedo of green leaves 0.07 */
+0.1                         /* albedo of stems */
+0.1                         /* albedo of litter */
+0.4                         /* maximum snow coverage in green canopy */
+0.5                         /* lightextcoeff, light extinction coeffcient in Lambert-Beer equation */
+0.13                        /* new phenology: slope of cold-temperature limiting function */
+2.79                        /* new phenology: inflection point of cold-temperature limiting function (deg C) */
+0.2                         /* new phenology: change rate of actual to previous day cold-temperature limiting fct */
+0.24                        /* new phenology: slope of warm-temperature limiting function tmax_sl */
+26.12                       /* new phenology: inflection point of warm-temperature limiting function (deg C) */
+0.2                         /* new phenology: change rate of actual to previous day warm-temperature limiting fct */
+23                          /* new phenology: slope of light limiting function */
+50                          /* new phenology: inflection point of light limiting function (Wm-2) */
+0.38                        /* new phenology: change rate of actual to previous day light limiting function */
+0.88                        /* new phenology: slope of water limiting function */
+1                           /* new phenology: inflection point of water limiting function (% water availability)  */
+0.94                        /* new phenology: change rate of actual to previous day water limiting function */
+MORT_MAX                        /* asymptotic maximum mortality rate (1/year) */
+ANY                         /* phenology */
+C3                          /* pathway */
+-4.0 45.0                   /* lower and upper temperature limit for co2 (deg C) 24 27*/
+10 30                       /* lower and upper limit of temperature optimum for photosynthesis(deg C) 25 26*/
+-1000 -2.6                  /* lower and upper coldest monthly mean temperature(deg C) 28 29*/
+0.38184                     /* shape factor for soil organic matter vertical distribution*/
+0.0000667                   /* scaling factor fire danger index */
+6                           /* scaling factor vpd fire danger index*/
+4.0                         /* fuel bulk density (pb) */
+1568.0 106.0 4.80 5.70 17.60 3.240 /* emission factors */
+APREC_MIN                   /* minimum annual precipitation to establish */
+FLAM_GRASS                  /* flam */
+1.20                        /* turnover rate after Brovkin etal 2012*/
+1.20                        /* turnover rate after Brovkin etal 2012*/
+1                           /* Q10_wood */
+0.6                         /* windspeed dampening */
+0.03                        /* roughness length */
+1.0 2.0                     /* turnover leaf root 9 12*/
+CTON_LEAF CTON_ROOT         /* C:N mass ratio for leaf and root 13,15*/
+REPROD_COST                 /* reproduction cost */
+/*----------------------------------------------------------------------------------------*/
+/* 1. bft */
+BIOENERGY_TROPICAL_TREE
+"bioenergy tropical tree"
+TREE
+BIOMASS                     /* cultivation_type */
+30 55 70 77                 /* curvenumbers*/
+0.975                       /* beta_root */
+0.00                        /* minwscal 3*/
+0.2                         /* gmin 4, normal 0.5 */
+0.2                         /* respcoeff 5 */
+100                         /* nmax 7*/
+1.0                         /* resist 8*/
+2.0                         /* sla 10  */
+1.0                         /* lmro_ratio 18*/
+1000                        /* ramp 19*/
+1.6                         /* lai_sapl 21, normal 1.5                         TIM 1.9*/
+0.0                         /* gdd5min 30*/
+1000                        /* twmax 31*/
+1000                        /* twmax_daily 31*/
+5.0                         /* gddbase (deg C) 33*/
+-1000                       /* min_temprange 34*/
+7.0                         /* emax 35, normal 7 */
+0.02                        /* intc 36*/
+0.8                         /* alphaa, fraction of PAR assimilated at ecosystem level, relative to leaf level */
+0.13                        /* albedo of green leaves */
+0.04                        /* albedo of stems */
+0.1                         /* albedo of litter */
+0.4                         /* maximum snow coverage in green canopy */
+0.6                         /* lightextcoeff, light extinction coeffcient in Lambert-Beer equation */
+1.01                        /* new phenology: slope of cold-temperature limiting function */
+8.3                         /* new phenology: inflection point of cold-temperature limiting function (deg C) */
+0.2                         /* new phenology: change rate of actual to previous day cold-temperature limiting fct */
+1.86                        /* new phenology: slope of warm-temperature limiting function tmax_sl */
+38.64                       /* new phenology: inflection point of warm-temperature limiting function (deg C) */
+0.2                         /* new phenology: change rate of actual to previous day warm-temperature limiting fct */
+77.17                       /* new phenology: slope of light limiting function */
+55.53                       /* new phenology: inflection point of light limiting function (Wm-2) */
+0.52                        /* new phenology: change rate of actual to previous day light limiting function */
+5.14                        /* new phenology: slope of water limiting function */
+4.997                       /* new phenology: inflection point of water limiting function (% water availability)  */
+0.44                        /* new phenology: change rate of actual to previous day water limiting function */
+0.005                        /* asymptotic maximum mortality rate (1/year) */
+EVERGREEN                   /* phenology */
+C3                          /* pathway */
+2.0 55.0                    /* lower and upper temperature limit for co2 (deg C) 24 27*/
+25 38                       /* lower and upper limit of temperature optimum for photosynthesis(deg C) 25 26 (Almeida, 2004, FEM) 8 38*/
+7 1000                      /* lower and upper coldest monthly mean temperature(deg C) 28 29*/
+0.38009                     /* shape factor for soil organic matter vertical distribution*/
+0.000067                    /* scaling factor fire danger index */
+6                           /* scaling factor vpd fire danger index*/
+13.0                        /* fuel bulk density */
+1664.0 63.0 2.20 3.40 8.50 2.540 /* emission factors */
+APREC_MIN                   /* minimum annual precipitation to establish */
+FLAM_TREE                   /* flam */
+0.93                        /* turnover rate after Brovkin etal 2012*/
+0.039                       /* turnover rate after Brovkin etal 2012*/
+2.75                        /* Q10_wood */
+0.4                         /* windspeed dampening */
+1.0                         /* roughness length */
+BROADLEAVED                 /* leaftype */
+2.0 10  2.0                 /* turnover leaf  sapwood root 9 11 12*/
+CTON_LEAF CTON_SAP CTON_ROOT /* C:N mass ratio for leaf, sapwood, and root 13,14,15*/
+2.0                         /* crownarea_max 20*/
+2.2                         /* sapwood sapling 22  TIM 2.5*/
+REPROD_COST                 /* reproduction cost */
+110                         /* allometry */
+35
+0.75
+ALLOM4
+8                           /* maximum height of tree */
+0.061                       /* scorch height (F) */
+0.10                        /* crown length (CL) */
+0.1085                      /* bark thickness par1 */
+0.2120                      /* bark thickness par2 */
+0.05                        /* crown damage (rCK) */
+3.00                        /* crown damage (p)     */
+0.045 0.075 0.21 0.67       /* fuel fraction */
+0.5                         /* k_est,  Giardina, 2002 */
+8                           /* rotation */
+40                          /* max_rotation_length */
+/*--------------------------------------------------------------------------*/
+/* 2. bft */
+BIOENERGY_TEMPERATE_TREE
+"bioenergy temperate tree"
+TREE
+BIOMASS                     /* cultivation_type */
+30 55 70 77                 /* curvenumbers */
+0.966                       /* beta_root 1 */
+0.00                        /* minwscal 3 */
+0.2                         /* gmin 4 */
+1.0                         /* respcoeff 5 */
+120                         /* nmax 7*/
+0.95                        /* resist 8, no fires on plantations */
+0.45                        /* sla 10*/
+1.0                         /* lmro_ratio 18*/
+300                         /* ramp 19*/
+1.6                         /* lai_sapl 2.1, larger sapling used for plantations, original value 1.5  */
+300.0                       /* gdd5min 30*/
+1000                        /* twmax 31*/
+1000                        /* twmax_daily 31*/
+5.0                         /* gddbase (deg C) 33*/
+-1000                       /* min_temprange 34*/
+5.0                         /* emax 35*/
+0.02                        /* intc 36*/
+0.8                         /* alphaa, fraction of PAR assimilated at ecosystem level, relative to leaf level */
+0.14                        /* albedo of green leaves 0.1798*/
+0.04                        /* albedo of stems */
+0.1                         /* albedo of litter */
+0.4                         /* maximum snow coverage in green canopy */
+0.6                         /* lightextcoeff, light extinction coeffcient in Lambert-Beer equation */
+0.2153                      /* new phenology: slope of cold-temperature limiting function */
+5                           /* new phenology: inflection point of cold-temperature limiting function (deg C) */
+0.2                         /* new phenology: change rate of actual to previous day cold-temperature limiting fct */
+1.74                        /* new phenology: slope of warm-temperature limiting function tmax_sl */
+41.51                       /* new phenology: inflection point of warm-temperature limiting function (deg C) */
+0.2                         /* new phenology: change rate of actual to previous day warm-temperature limiting fct */
+58                          /* new phenology: slope of light limiting function */
+59.78                       /* new phenology: inflection point of light limiting function (Wm-2) */
+0.2                         /* new phenology: change rate of actual to previous day light limiting function */
+5.24                        /* new phenology: slope of water limiting function */
+20.96                       /* new phenology: inflection point of water limiting function (% water availability)  */
+0.8                         /* new phenology: change rate of actual to previous day water limiting function */
+0.005                       /* asymptotic maximum mortality rate (1/year) */
+SUMMERGREEN                 /* phenology */
+C3                          /* pathway */
+-4.0 38.0                   /* lower and upper temperature limit for co2 (deg C) 24 27*/
+15 30                       /* lower and upper limit of temperature optimum for photosynthesis(deg C) 25 26*/
+-30 8                       /* lower and upper coldest monthly mean temperature(deg C) 28 29*/
+0.28880                     /* shape factor for soil organic matter vertical distribution*/
+0.0000667                   /* scaling factor fire danger index */
+6                           /* scaling factor vpd fire danger index*/
+22.0                        /* fuel bulk density */
+1568.0 106.0 4.80 5.70 17.60 3.240 /* emission factors */
+APREC_MIN                   /* minimum annual precipitation to establish */
+FLAM_TREE                   /* flam */
+0.95                        /* turnover rate after Brovkin etal 2012*/
+0.104                       /* turnover rate after Brovkin etal 2012*/
+1.37                        /* Q10_wood */
+0.4                         /* windspeed dampening */
+1.0                         /* roughness length */
+BROADLEAVED                 /* leaftype */
+1.0 10  1.0                 /* turnover leaf  sapwood root 9 11 12*/
+CTON_LEAF CTON_SAP CTON_ROOT /* C:N mass ratio for leaf, sapwood, and root 13,14,15*/
+1.5                         /* crownarea_max 20*/
+2.5                         /* sapwood sapling 22 TIM 3.0*/
+APHEN_MIN
+APHEN_MAX
+REPROD_COST                 /* reproduction cost */
+110                         /* allometry */
+35
+0.75
+ALLOM4
+8                           /* maximum height of tree */
+0.0940                      /* scorch height (F) */
+0.3334                      /* crown length (CL) */
+0.0347                      /* bark thickness par1 */
+0.1086                      /* bark thickness par2 */
+1.0                         /* crown damage (rCK) */
+3.00                        /* crown damage (p)     */
+0.045 0.075 0.21 0.67       /* fuel fraction */
+0.8                         /* k_est TIM 1.5*/
+8                           /* rotation */
+40                          /* max_rotation_length */
+/*--------------------------------------------------------------------------*/
+/* 3. bft ONLY FOR BIOENERGY*/
+BIOENERGY_C4_GRASS
+"bioenergy C4 grass"
+GRASS
+BIOMASS                     /* cultivation_type */
+39 61 74 80                 /*curvenumbers */
+0.972                       /* beta_root 1 */
+0.20                        /* minwscal 3*/
+0.5                         /* gmin 4*/
+0.2                         /* respcoeff 5*/
+100                         /* nmax 7*/
+1.0                         /* resist 8*/
+0.25                        /* sla 10*/
+0.75                        /* lmro_ratio 18*/
+100                         /* ramp 19*/
+0.001                       /* lai_sapl 21*/
+0                           /* gdd5min 30*/
+1000                        /* twmax 31*/
+1000                        /* twmax_daily 31*/
+5.0                         /* gddbase (deg C) 33*/
+-1000                       /* min_temprange 34*/
+7.0                         /* emax 35*/
+0.01                        /* intc 36*/
+0.8                         /* alphaa, fraction of PAR assimilated at ecosystem level, relative to leaf level */
+0.21                        /* albedo of green leaves */
+0.15                        /* albedo of stems */
+0.1                         /* albedo of litter */
+0.4                         /* maximum snow coverage in green canopy */
+0.6                         /* lightextcoeff, light extinction coeffcient in Lambert-Beer equation */
+0.91                        /* new phenology: slope of cold-temperature limiting function */
+6.418                       /* new phenology: inflection point of cold-temperature limiting function (deg C) */
+0.2                         /* new phenology: change rate of actual to previous day cold-temperature limiting fct */
+1.47                        /* new phenology: slope of warm-temperature limiting function tmax_sl */
+29.16                       /* new phenology: inflection point of warm-temperature limiting function (deg C) */
+0.2                         /* new phenology: change rate of actual to previous day warm-temperature limiting fct */
+64.23                       /* new phenology: slope of light limiting function */
+69.9                        /* new phenology: inflection point of light limiting function (Wm-2) */
+0.4                         /* new phenology: change rate of actual to previous day light limiting function */
+0.1                         /* new phenology: slope of water limiting function */
+41.72                       /* new phenology: inflection point of water limiting function (% water availability)  */
+0.17                        /* new phenology: change rate of actual to previous day water limiting function */
+MORT_MAX                        /* asymptotic maximum mortality rate (1/year) */
+ANY                         /* phenology */
+C4                          /* pathway */
+4.0 55.0                    /* lower and upper temperature limit for co2 (deg C) 24 27*/
+15 45                        /* lower and upper limit of temperature optimum for photosynthesis(deg C) 25 26*/
+-40 1000                    /* lower and upper coldest monthly mean temperature(deg C) 28 29*/
+0.46513                     /* shape factor for soil organic matter vertical distribution*/
+0.0000667                   /* scaling factor fire danger index */
+6                           /* scaling factor vpd fire danger index*/
+2.0                         /* fuel bulk density (pb) */
+1664.0 63.0 2.20 3.40 8.50 2.540 /* emission factors */
+APREC_MIN                   /* minimum annual precipitation to establish */
+FLAM_GRASS                  /* flam */
+0.97                        /* turnover rate after Brovkin etal 2012*/
+0.97                        /* turnover rate after Brovkin etal 2012*/
+1                           /* Q10_wood */
+0.6                         /* windspeed dampening */
+0.03                        /* roughness length */
+1.0 2.0                     /* turnover leaf root 9 12*/
+CTON_LEAF CTON_ROOT         /* C:N mass ratio for leaf and root 13,15*/
+REPROD_COST                 /* reproduction cost */
+/*--------------------------------------------------------------------------*/
+/* 1. cft */
+TEMPERATE_CEREALS
+"temperate cereals"
+CROP
+ANNUAL_CROP                 /* cultivation_type */
+60 72 80 84                 /* curve number */
+0.9690                      /* beta_root 1 */
+0.3                         /* minwscal 3*/
+0.5                         /* gmin 4*/
+1.0                         /* respcoeff 5*/
+100                         /* nmax 7 value of 8. PFT*/
+0.5                         /* resist 8*/
+0.5                         /* leaf longevity 10*/
+1.5                         /* lmro_ratio 18*/
+500                         /* ramp 19*/
+0.0001                      /* lai_sapl 21 not used, computed internally*/
+0.0                         /* gdd5min 30 */
+1000                        /* twmax 31 value of 8. PFT*/
+1000                        /* twmax_daily 31*/
+0.0                         /* gddbase (deg C) 33 */
+-1000                       /* min_temprange 34 */
+8.0                         /* emax 35*/
+0.01                        /* intc 36*/
+1.0                         /* alphaa, fraction of PAR assimilated at ecosystem level, relative to leaf level */
+0.18                        /* albedo of green leaves */
+0.15                        /* albedo of stems */
+0.06                        /* albedo of litter */
+0.4                         /* maximum snow coverage in green canopy */
+0.5                         /* lightextcoeff, light extinction coeffcient in Lambert-Beer equation */
+0.3111                      /* new phenology: slope of cold-temperature limiting function */
+4.979                       /* new phenology: inflection point of cold-temperature limiting function (deg C) */
+0.01011                     /* new phenology: change rate of actual to previous day cold-temperature limiting fct */
+0.24                        /* new phenology: slope of warm-temperature limiting function tmax_sl */
+32.04                       /* new phenology: inflection point of warm-temperature limiting function (deg C) */
+0.2                         /* new phenology: change rate of actual to previous day warm-temperature limiting fct */
+23                          /* new phenology: slope of light limiting function */
+75.94                       /* new phenology: inflection point of light limiting function (Wm-2) */
+0.22                        /* new phenology: change rate of actual to previous day light limiting function */
+0.5222                      /* new phenology: slope of water limiting function */
+53.07                       /* new phenology: inflection point of water limiting function (% water availability)  */
+0.01001                     /* new phenology: change rate of actual to previous day water limiting function */
+MORT_MAX                       /* asymptotic maximum mortality rate (1/year) */
+CROPGREEN                   /* phenology */
+C3                          /* pathway */
+0.0 40.0                    /* lower and upper temperature limit for co2 (deg C) 24 27*/
+12 17                       /* lower and upper limit of temperature optimum for photosynthesis(deg C) 25 26*/
+-1000 1000                  /* lower and upper coldest monthly mean temperature(deg C) 28 29 */
+0.40428                     /* shape factor for soil organic matter vertical distribution*/
+0.0000667                   /* scaling factor fire danger index */
+6                           /* scaling factor vpd fire danger index*/
+2.0                         /* fuel bulk density (pb) */
+1568.0 106.0 4.80 5.70 17.60 3.240 /* emission factors */
+0                           /* minimum annual precipitation to establish */
+FLAM_GRASS                  /* flam */
+K_LITTER10
+K_LITTER10
+1
+0.6                         /* windspeed dampening */
+0.03                        /* roughness length */
+TEMP_WTYP_CALC_SDATE        /* calc_sdate: method to calculate the sowing date */
+258 90                      /* sdatenh,sdatesh: init sowing date for northern and southern hemisphere (julian day) */
+330                         /* hlimit: max length of crop cycle  */
+30                          /* fallow_days: wait after harvest until next sowing */
+12 5 12                     /* temp_fall, temp_spring, temp_vernalization: thresholds for sowing date f(T)*/
+3 10                        /* min & max trg: temperature under which vernalization is possible (deg C)*/
+0                           /* pvd: number of vernalising days required*/
+1.0                         /* psens: sensitivity to the photoperiod effect [0-1](1 means no sensitivity)*/
+8                           /* pb: basal photoperiod (h)(pb<ps for longer days plants)*/
+20                          /* ps: saturating photoperiod (h) (ps<pb for shorter days plants)*/
+1700.0 2876.9               /* min & max phu: potential heat units required for plant maturity winter(deg C)*/
+1000.0 2648.4               /* min & intercept for computing potential heat units required for plant maturity summer(deg C)*/
+9999                        /* phu parameter for determining the variability of phu */
+0.0 0.0                     /* min & max basetemp: base temperature */
+0.05                        /* fphuc: fraction of growing season 1 [0-1]*/
+0.05                        /* flaimaxc: fraction of plant maximal LAI 1 [0-1]*/
+0.45                        /* fphuk: fraction of growing season 2 [0-1]*/
+0.95                        /* flaimaxk: fraction of plant maximal LAI 2 [0-1]*/
+0.7                         /* fphusen: fraction of growing period at which LAI starts decreasing [0-1]*/
+0.00                        /* flaimaxharvest: fraction of plant maximal LAI still present at harvest [0-1]*/
+5.0                         /* laimax: plant maximal LAI (m2leaf/m2)*/
+2.0                         /* laimin: plant maximal LAI (m2leaf/m2) in 1950*/
+0.50                        /* hiopt: optimum harvest index HI reached at harvest*/
+0.20                        /* himin: minimum harvest index HI reached at harvest*/
+2.0                         /* shapesenescencenorm */
+CTON_ROOT CTON_SO CTON_POOL /* C:N mass ratio for root, storage organ, and pool */
+/*--------------------------------------------------------------------------*/
+/* 2. cft */
+RICE
+"rice"
+CROP
+ANNUAL_CROP                 /* cultivation_type */
+60 72 80 84                 /* curve number */
+0.9690                      /* beta_root 1 */
+0.3                         /* minwscal 3*/
+0.5                         /* gmin 4*/
+1.0                         /* respcoeff 5*/
+100                         /* nmax 7                            value of 8. PFT*/
+0.5                         /* resist 8*/
+0.33                        /* leaf longevity 10*/
+1.5                         /* lmro_ratio 18*/
+500                         /* ramp 19*/
+0.001                       /* lai_sapl 21                       not used, computed internally*/
+0.0                         /* gdd5min 30 */
+1000                        /* twmax 31                          value of 8. PFT*/
+1000                        /* twmax_daily 31*/
+10.0                        /* gddbase (deg C) 33 */
+-1000                       /* min_temprange 34 */
+8.0                         /* emax 35*/
+0.01                        /* intc 36*/
+1.0                         /* alphaa, fraction of PAR assimilated at ecosystem level, relative to leaf level */
+0.18                        /* albedo of green leaves Albedo estimates for land surface models and support for a new paradigm based on foliage nitrogen concentration Hollingeretal */
+0.15                        /* albedo of stems */
+0.06                        /* albedo of litter */
+0.4                         /* maximum snow coverage in green canopy */
+0.5                         /* lightextcoeff, light extinction coeffcient in Lambert-Beer equation */
+0.91                        /* new phenology: slope of cold-temperature limiting function */
+6.418                       /* new phenology: inflection point of cold-temperature limiting function (deg C) */
+0.2                         /* new phenology: change rate of actual to previous day cold-temperature limiting fct */
+1.47                        /* new phenology: slope of warm-temperature limiting function tmax_sl */
+29.16                       /* new phenology: inflection point of warm-temperature limiting function (deg C) */
+0.2                         /* new phenology: change rate of actual to previous day warm-temperature limiting fct */
+64.23                       /* new phenology: slope of light limiting function */
+69.9                        /* new phenology: inflection point of light limiting function (Wm-2) */
+0.4                         /* new phenology: change rate of actual to previous day light limiting function */
+0.1                         /* new phenology: slope of water limiting function */
+41.72                       /* new phenology: inflection point of water limiting function (% water availability)  */
+0.17                        /* new phenology: change rate of actual to previous day water limiting function */
+MORT_MAX                       /* asymptotic maximum mortality rate (1/year) */
+CROPGREEN                   /* phenology */
+C3                          /* pathway */
+6.0 55.0                    /* lower and upper temperature limit for co2 (deg C) 24 27*/
+20 45                       /* lower and upper limit of temperature optimum for photosynthesis(deg C) 25 26*/
+-1000 1000                  /* lower and upper coldest monthly mean temperature(deg C) 28 29 */
+0.40428                     /* shape factor for soil organic matter vertical distribution*/
+0.0000667                   /* scaling factor fire danger index */
+6                           /* scaling factor vpd fire danger index*/
+2.0                         /* fuel bulk density (pb) */
+1568.0 106.0 4.80 5.70 17.60 3.240 /* emission factors */
+0                           /* minimum annual precipitation to establish */
+FLAM_GRASS                  /* flam */
+K_LITTER10
+K_LITTER10
+1
+0.6                         /* windspeed dampening */
+0.03                        /* roughness length */
+PREC_CALC_SDATE             /* ????calc_sdate: method to calculate the sowing date */
+100 180                     /* sdatenh,sdatesh: init sowing date for northern and southern hemisphere (julian day) */
+180                         /* hlimit: max length of crop cycle  */
+30                          /* fallow_days: wait after harvest until next sowing */
+1000 18 1000                /* temp_fall, temp_spring, temp_vernalization: thresholds for sowing date f(T)*/
+1000 1000                   /* min & max trg: temperature under which vernalization is possible (deg C)*/
+0                           /* pvd: number of vernalising days required*/
+1.0                         /* psens: sensitivity to the photoperiod effect [0-1](1 means no sensitivity)*/
+24                          /* pb: basal photoperiod (h)(pb<ps for longer days plants)*/
+0                           /* ps: saturating photoperiod (h) (ps<pb for shorter days plants)*/
+0.0 0.0                     /* min & max phu: potential heat units required for plant maturity winter(deg C)*/
+1600 1800                   /* min & max phu: potential heat units required for plant maturity summer(deg C)*/
+9999                        /* phu parameter for determining the variability of phu */
+10.0 10.0                   /* min & max basetemp: base temperature */
+0.10                        /* fphuc: fraction of growing season 1 [0-1] mimic maize ERROR in SWAT/SWIM/EPIC parameters? 0.3*/
+0.05                        /* flaimaxc: fraction of plant maximal LAI 1 [0-1] mimic maize ERROR in SWAT/SWIM/EPIC parameters? 0.01*/
+0.50                        /* fphuk: fraction of growing season 2 [0-1] mimic maize ERROR in SWAT/SWIM/EPIC parameters? 0.7*/
+0.95                        /* flaimaxk: fraction of plant maximal LAI 2 [0-1]*/
+0.80                        /* fphusen: fraction of growing period at which LAI starts decreasing [0-1]*/
+0.00                        /* flaimaxharvest: fraction of plant maximal LAI still present at harvest [0-1]*/
+5.0                         /* laimax: plant maximal LAI (m2leaf/m2)*/
+5.0                         /* laimin: plant maximal LAI (m2leaf/m2) in 1950*/
+0.50                        /* hiopt: optimum harvest index HI reached at harvest*/
+0.25                        /* himin: minimum harvest index HI reached at harvest*/
+2.0                         /* shapesenescencenorm */
+CTON_ROOT CTON_SO CTON_POOL /* C:N mass ratio for root, storage organ, and pool */
+/*--------------------------------------------------------------------------*/
+/* 3. cft */
+MAIZE
+"maize"
+CROP
+ANNUAL_CROP                 /* cultivation_type */
+60 72 80 84                 /* curve number */
+0.9690                      /* beta_root 1 */
+0.3                         /* minwscal 3*/
+0.5                         /* gmin 4*/
+1.0                         /* respcoeff 5*/
+100                         /* nmax 7                            value of 8. PFT*/
+0.5                         /* resist 8*/
+0.33                        /* leaf longevity 10*/
+1.5                         /* lmro_ratio 18*/
+500                         /* ramp 19*/
+0.001                       /* lai_sapl 21                       not used, computed internally*/
+0.0                         /* gdd5min 30 */
+1000                        /* twmax 31                          value of 8. PFT*/
+1000                        /* twmax_daily 31*/
+6.0                         /* gddbase (deg C) 33 */
+-1000                       /* min_temprange 34 */
+8.0                         /* emax 35*/
+0.01                        /* intc 36*/
+1.0                         /* alphaa, fraction of PAR assimilated at ecosystem level, relative to leaf level */
+0.18                        /* albedo of green leaves */
+0.15                        /* albedo of stems */
+0.06                        /* albedo of litter */
+0.4                         /* maximum snow coverage in green canopy */
+0.5                         /* lightextcoeff, light extinction coeffcient in Lambert-Beer equation */
+0.91                        /* new phenology: slope of cold-temperature limiting function */
+6.418                       /* new phenology: inflection point of cold-temperature limiting function (deg C) */
+0.2                         /* new phenology: change rate of actual to previous day cold-temperature limiting fct */
+1.47                        /* new phenology: slope of warm-temperature limiting function tmax_sl */
+29.16                       /* new phenology: inflection point of warm-temperature limiting function (deg C) */
+0.2                         /* new phenology: change rate of actual to previous day warm-temperature limiting fct */
+64.23                       /* new phenology: slope of light limiting function */
+69.9                        /* new phenology: inflection point of light limiting function (Wm-2) */
+0.4                         /* new phenology: change rate of actual to previous day light limiting function */
+0.1                         /* new phenology: slope of water limiting function */
+41.72                       /* new phenology: inflection point of water limiting function (% water availability)  */
+0.17                        /* new phenology: change rate of actual to previous day water limiting function */
+MORT_MAX                       /* asymptotic maximum mortality rate (1/year) */
+CROPGREEN                   /* phenology */
+C4                          /* pathway */
+8.0 42.0                    /* lower and upper temperature limit for co2 (deg C) 24 27*/
+21 26                       /* lower and upper limit of temperature optimum for photosynthesis(deg C) 25 26*/
+-1000 1000                  /* lower and upper coldest monthly mean temperature(deg C) 28 29 */
+0.40428                     /* shape factor for soil organic matter vertical distribution*/
+0.0000667                   /* scaling factor fire danger index */
+6                           /* scaling factor vpd fire danger index*/
+2.0                         /* fuel bulk density (pb) */
+1568.0 106.0 4.80 5.70 17.60 3.240 /* emission factors */
+0                           /* minimum annual precipitation to establish */
+FLAM_GRASS                  /* flam */
+K_LITTER10
+K_LITTER10
+1
+0.6                         /* windspeed dampening */
+0.03                        /* roughness length */
+TEMP_PREC_CALC_SDATE        /* calc_sdate: method to calculate the sowing date*/
+1 181                       /* sdatenh,sdatesh: init sowing date for northern and southern hemisphere (julian day) */
+240                         /* hlimit: max length of crop cycle  */
+30                          /* fallow_days: wait after harvest until next sowing */
+1000 14 1000                /* temp_fall, temp_spring, temp_vernalization: thresholds for sowing date f(T)*/
+1000 1000                   /* min & max trg: temperature under which vernalization is possible (deg C)*/
+0                           /* pvd: number of vernalising days required*/
+1.0                         /* psens: sensitivity to the photoperiod effect [0-1](1 means no sensitivity)*/
+0                           /* pb: basal photoperiod (h)(pb<ps for longer days plants)*/
+24                          /* ps: saturating photoperiod (h) (ps<pb for shorter days plants)*/
+0.0 0.0                     /* min & max phu: potential heat units required for plant maturity winter(deg C)*/
+1600.0 1600.0               /* min & max phu: potential heat units required for plant maturity summer(deg C)*/
+9999                        /* phu parameter for determining the variability of phu */
+5.0 15.0                    /* min & max basetemp: base temperature */
+0.10                        /* fphuc: fraction of growing season 1 [0-1]*/
+0.05                        /* flaimaxc: fraction of plant maximal LAI 1 [0-1]*/
+0.50                        /* fphuk: fraction of growing season 2 [0-1]*/
+0.95                        /* flaimaxk: fraction of plant maximal LAI 2 [0-1]*/
+0.75                        /* fphusen: fraction of growing period at which LAI starts decreasing [0-1]*/
+0.00                        /* flaimaxharvest: fraction of plant maximal LAI still present at harvest [0-1]*/
+5.0                         /* laimax: plant maximal LAI (m2leaf/m2)*/
+4.0                         /* laimin: plant maximal LAI (m2leaf/m2) in 1950*/
+0.50                        /* hiopt: optimum harvest index HI reached at harvest*/
+0.30                        /* himin: minimum harvest index HI reached at harvest*/
+2.0                         /* shapesenescencenorm */
+CTON_ROOT CTON_SO CTON_POOL /* C:N mass ratio for root, storage organ, and pool */
+/*--------------------------------------------------------------------------*/
+/* 4. cft */
+TROPICAL_CEREALS
+"tropical cereals"
+CROP
+ANNUAL_CROP                 /* cultivation_type */
+60 72 80 84                 /* curve number */
+0.9690                      /* beta_root 1 */
+0.3                         /* minwscal 3*/
+0.5                         /* gmin 4*/
+1.0                         /* respcoeff 5*/
+100                         /* nmax 7                            value of 8. PFT*/
+0.5                         /* resist 8*/
+0.5                         /* leaf longevity 10*/
+1.5                         /* lmro_ratio 18*/
+500                         /* ramp 19*/
+0.001                       /* lai_sapl 21                       not used, computed internally*/
+0.0                         /* gdd5min 30 */
+1000                        /* twmax 31                          value of 8. PFT*/
+1000                        /* twmax_daily 31*/
+10.0                        /* gddbase (deg C) 33 */
+-1000                       /* min_temprange 34 */
+8.0                         /* emax 35*/
+0.01                        /* intc 36*/
+1.0                         /* alphaa, fraction of PAR assimilated at ecosystem level, relative to leaf level */
+0.18                        /* albedo of green leaves */
+0.15                        /* albedo of stems */
+0.06                        /* albedo of litter */
+0.4                         /* maximum snow coverage in green canopy */
+0.5                         /* lightextcoeff, light extinction coeffcient in Lambert-Beer equation */
+0.91                        /* new phenology: slope of cold-temperature limiting function */
+6.418                       /* new phenology: inflection point of cold-temperature limiting function (deg C) */
+0.2                         /* new phenology: change rate of actual to previous day cold-temperature limiting fct */
+1.47                        /* new phenology: slope of warm-temperature limiting function tmax_sl */
+29.16                       /* new phenology: inflection point of warm-temperature limiting function (deg C) */
+0.2                         /* new phenology: change rate of actual to previous day warm-temperature limiting fct */
+64.23                       /* new phenology: slope of light limiting function */
+69.9                        /* new phenology: inflection point of light limiting function (Wm-2) */
+0.4                         /* new phenology: change rate of actual to previous day light limiting function */
+0.1                         /* new phenology: slope of water limiting function */
+41.72                       /* new phenology: inflection point of water limiting function (% water availability)  */
+0.17                        /* new phenology: change rate of actual to previous day water limiting function */
+MORT_MAX                       /* asymptotic maximum mortality rate (1/year) */
+CROPGREEN                   /* phenology */
+C4                          /* pathway */
+6.0 55.0                    /* lower and upper temperature limit for co2 (deg C) 24 27*/
+20 45                       /* lower and upper limit of temperature optimum for photosynthesis(deg C) 25 26*/
+-1000 1000                  /* lower and upper coldest monthly mean temperature(deg C) 28 29 */
+0.40428                     /* shape factor for soil organic matter vertical distribution*/
+0.0000667                   /* scaling factor fire danger index */
+6                           /* scaling factor vpd fire danger index*/
+2.0                         /* fuel bulk density (pb) */
+1568.0 106.0 4.80 5.70 17.60 3.240 /* emission factors */
+0                           /* minimum annual precipitation to establish */
+FLAM_GRASS                  /* flam */
+K_LITTER10
+K_LITTER10
+1
+0.6                         /* windspeed dampening */
+0.03                        /* roughness length */
+PREC_CALC_SDATE                        /* calc_sdate: method to calculate the sowing date*/
+80 260                      /* sdatenh,sdatesh: init sowing date for northern and southern hemisphere (julian day) */
+240                         /* hlimit: max length of crop cycle  */
+30                          /* fallow_days: wait after harvest until next sowing */
+1000 12 1000                /* temp_fall, temp_spring, temp_vernalization: thresholds for sowing date f(T)*/
+1000 1000                   /* min & max trg: temperature under which vernalization is possible (deg C)*/
+0                           /* pvd: number of vernalising days required*/
+1.0                         /* psens: sensitivity to the photoperiod effect [0-1](1 means no sensitivity)*/
+0                           /* pb: basal photoperiod (h)(pb<ps for longer days plants)*/
+24                          /* ps: saturating photoperiod (h) (ps<pb for shorter days plants)*/
+0.0 0.0                     /* min & max phu: potential heat units required for plant maturity winter(deg C)*/
+1500 1500                   /* min & max phu: potential heat units required for plant maturity summer(deg C)*/
+9999                        /* phu parameter for determining the variability of phu */
+10.0 10.0                   /* min & max basetemp: base temperature */
+0.15                        /* fphuc: fraction of growing season 1 [0-1]*/
+0.01                        /* flaimaxc: fraction of plant maximal LAI 1 [0-1]*/
+0.50                        /* fphuk: fraction of growing season 2 [0-1]*/
+0.95                        /* flaimaxk: fraction of plant maximal LAI 2 [0-1]*/
+0.85                        /* fphusen: fraction of growing period at which LAI starts decreasing [0-1]*/
+0.00                        /* flaimaxharvest: fraction of plant maximal LAI still present at harvest [0-1]*/
+5.0                         /* laimax: plant maximal LAI (m2leaf/m2)*/
+5.0                         /* laimin: plant maximal LAI (m2leaf/m2) in 1950*/
+0.25                        /* hiopt: optimum harvest index HI reached at harvest*/
+0.10                        /* himin: minimum harvest index HI reached at harvest*/
+2.0                         /* shapesenescencenorm */
+CTON_ROOT CTON_SO CTON_POOL /* C:N mass ratio for root, storage organ, and pool */
+/*--------------------------------------------------------------------------*/
+/* 5. cft */
+PULSES                      /* re-parameterized as field peas, swatusermanual2000.pdf, CM 4.2.2009 */
+"pulses"
+CROP
+ANNUAL_CROP                 /* cultivation_type */
+60 72 80 84                 /* curve number */
+0.9690                      /* beta_root 1 */
+0.3                         /* minwscal 3*/
+0.5                         /* gmin 4*/
+1.0                         /* respcoeff 5*/
+100                         /* nmax 7                            value of 8. PFT*/
+0.5                         /* resist 8*/
+0.5                         /* leaf longevity 10*/
+1.5                         /* lmro_ratio 18*/
+500                         /* ramp 19*/
+0.001                       /* lai_sapl 21                       not used, computed internally*/
+0.0                         /* gdd5min 30 */
+1000                        /* twmax 31                          value of 8. PFT*/
+1000                        /* twmax_daily 31*/
+1.0                         /* gddbase (deg C) 33 */
+-1000                       /* min_temprange 34 */
+8.0                         /* emax 35*/
+0.01                        /* intc 36*/
+1.0                         /* alphaa, fraction of PAR assimilated at ecosystem level, relative to leaf level */
+0.18                        /* albedo of green leaves */
+0.15                        /* albedo of stems */
+0.06                        /* albedo of litter */
+0.4                         /* maximum snow coverage in green canopy */
+0.5                         /* lightextcoeff, light extinction coeffcient in Lambert-Beer equation */
+0.3111                      /* new phenology: slope of cold-temperature limiting function */
+4.979                       /* new phenology: inflection point of cold-temperature limiting function (deg C) */
+0.01011                     /* new phenology: change rate of actual to previous day cold-temperature limiting fct */
+0.24                        /* new phenology: slope of warm-temperature limiting function tmax_sl */
+32.04                       /* new phenology: inflection point of warm-temperature limiting function (deg C) */
+0.2                         /* new phenology: change rate of actual to previous day warm-temperature limiting fct */
+23                          /* new phenology: slope of light limiting function */
+75.94                       /* new phenology: inflection point of light limiting function (Wm-2) */
+0.22                        /* new phenology: change rate of actual to previous day light limiting function */
+0.5222                      /* new phenology: slope of water limiting function */
+53.07                       /* new phenology: inflection point of water limiting function (% water availability)  */
+0.01001                     /* new phenology: change rate of actual to previous day water limiting function */
+MORT_MAX                       /* asymptotic maximum mortality rate (1/year) */
+CROPGREEN                   /* phenology */
+C3                          /* pathway */
+-4.0 45.0                   /* lower and upper temperature limit for co2 (deg C) 24 27*/
+10 30                       /* lower and upper limit of temperature optimum for photosynthesis(deg C) 25 26*/
+-1000 1000                  /* lower and upper coldest monthly mean temperature(deg C) 28 29 */
+0.40428                     /* shape factor for soil organic matter vertical distribution*/
+0.0000667                   /* scaling factor fire danger index */
+6                           /* scaling factor vpd fire danger index*/
+2.0                         /* fuel bulk density (pb) */
+1568.0 106.0 4.80 5.70 17.60 3.240 /* emission factors */
+0                           /* minimum annual precipitation to establish */
+FLAM_GRASS                  /* flam */
+K_LITTER10
+K_LITTER10
+1
+0.6                         /* windspeed dampening */
+0.03                        /* roughness length */
+TEMP_PREC_CALC_SDATE        /* calc_sdate: method to calculate the sowing date*/
+1 181                       /* sdatenh,sdatesh: init sowing date for northern and southern hemisphere (julian day) */
+300                         /* hlimit: max length of crop cycle  */
+30                          /* fallow_days: wait after harvest until next sowing */
+1000 10 1000                /* temp_fall, temp_spring, temp_vernalization: thresholds for sowing date f(T)*/
+1000 1000                   /* min & max trg: temperature under which vernalization is possible (deg C)*/
+0                           /* pvd: number of vernalising days required*/
+1.0                         /* psens: sensitivity to the photoperiod effect [0-1](1 means no sensitivity)*/
+0                           /* pb: basal photoperiod (h)(pb<ps for longer days plants)*/
+24                          /* ps: saturating photoperiod (h) (ps<pb for shorter days plants)*/
+0.0 0.0                     /* min & max phu: potential heat units required for plant maturity winter(deg C)*/
+2000 2000                   /* min & max phu: potential heat units required for plant maturity summer(deg C)*/
+9999                        /* phu parameter for determining the variability of phu */
+1.0 1.0                     /* min & max basetemp: base temperature */
+0.15                        /* fphuc: fraction of growing season 1 [0-1]*/
+0.01                        /* flaimaxc: fraction of plant maximal LAI 1 [0-1]*/
+0.50                        /* fphuk: fraction of growing season 2 [0-1]*/
+0.95                        /* flaimaxk: fraction of plant maximal LAI 2 [0-1]*/
+0.90                        /* fphusen: fraction of growing period at which LAI starts decreasing [0-1]*//*newer value in swat2005io.pdf, used to be 0.75*/
+0.00                        /* flaimaxharvest: fraction of plant maximal LAI still present at harvest [0-1]*/
+4.0                         /* laimax: plant maximal LAI (m2leaf/m2)*/
+4.0                         /* laimin: plant maximal LAI (m2leaf/m2) in 1950*/
+0.45                        /* hiopt: optimum harvest index HI reached at harvest*/
+0.1                         /* himin: minimum harvest index HI reached at harvest*/
+2.0                         /* shapesenescencenorm */
+CTON_ROOT CTON_SO CTON_POOL /* C:N mass ratio for root, storage organ, and pool */
+/*--------------------------------------------------------------------------*/
+/* 6. cft */
+TEMPERATE_ROOTS
+"temperate roots"
+CROP
+ANNUAL_CROP                 /* cultivation_type */
+60 72 80 84                 /* curve number */
+0.9690                      /* beta_root 1 */
+0.3                         /* minwscal 3*/
+0.5                         /* gmin 4*/
+1.0                         /* respcoeff 5*/
+100                         /* nmax 7                            value of 8. PFT*/
+0.5                         /* resist 8*/
+0.5                         /* leaf longevity 10*/
+1.5                         /* lmro_ratio 18*/
+500                         /* ramp 19*/
+0.001                       /* lai_sapl 21                       not used, computed internally*/
+0.0                         /* gdd5min 30 */
+1000                        /* twmax 31                          value of 8. PFT*/
+1000                        /* twmax_daily 31*/
+3.0                         /* gddbase (deg C) 33 */
+-1000                       /* min_temprange 34 */
+8.0                         /* emax 35*/
+0.01                        /* intc 36*/
+1.0                         /* alphaa, fraction of PAR assimilated at ecosystem level, relative to leaf level */
+0.18                        /* albedo of green leaves */
+0.15                        /* albedo of stems */
+0.06                        /* albedo of litter */
+0.4                         /* maximum snow coverage in green canopy */
+0.5                         /* lightextcoeff, light extinction coeffcient in Lambert-Beer equation */
+0.3111                      /* new phenology: slope of cold-temperature limiting function */
+4.979                       /* new phenology: inflection point of cold-temperature limiting function (deg C) */
+0.01011                     /* new phenology: change rate of actual to previous day cold-temperature limiting fct */
+0.24                        /* new phenology: slope of warm-temperature limiting function tmax_sl */
+32.04                       /* new phenology: inflection point of warm-temperature limiting function (deg C) */
+0.2                         /* new phenology: change rate of actual to previous day warm-temperature limiting fct */
+23                          /* new phenology: slope of light limiting function */
+75.94                       /* new phenology: inflection point of light limiting function (Wm-2) */
+0.22                        /* new phenology: change rate of actual to previous day light limiting function */
+0.5222                      /* new phenology: slope of water limiting function */
+53.07                       /* new phenology: inflection point of water limiting function (% water availability)  */
+0.01001                     /* new phenology: change rate of actual to previous day water limiting function */
+MORT_MAX                       /* asymptotic maximum mortality rate (1/year) */
+CROPGREEN                   /* phenology */
+C3                          /* pathway */
+-4.0 45.0                   /* lower and upper temperature limit for co2 (deg C) 24 27*/
+10 30                       /* lower and upper limit of temperature optimum for photosynthesis(deg C) 25 26*/
+-1000 1000                  /* lower and upper coldest monthly mean temperature(deg C) 28 29 */
+0.40428                     /* shape factor for soil organic matter vertical distribution*/
+0.0000667                   /* scaling factor fire danger index */
+6                           /* scaling factor vpd fire danger index*/
+2.0                         /* fuel bulk density (pb) */
+1568.0 106.0 4.80 5.70 17.60 3.240 /* emission factors */
+0                           /* minimum annual precipitation to establish */
+FLAM_GRASS                  /* flam */
+K_LITTER10
+K_LITTER10
+1
+0.6                         /* windspeed dampening */
+0.03                        /* roughness length */
+TEMP_STYP_CALC_SDATE        /* calc_sdate: method to calculate the sowing date*/
+90 270                      /* sdatenh,sdatesh: init sowing date for northern and southern hemisphere (julian day) */
+260                         /* hlimit: max length of crop cycle  */
+30                          /* fallow_days: wait after harvest until next sowing */
+1000 8 1000                 /* temp_fall, temp_spring, temp_vernalization: thresholds for sowing date f(T)*/
+1000 1000                   /* min & max trg: temperature under which vernalization is possible (deg C)*/
+0                           /* pvd: number of vernalising days required*/
+1.0                         /* psens: sensitivity to the photoperiod effect [0-1](1 means no sensitivity)*/
+0                           /* pb: basal photoperiod (h)(pb<ps for longer days plants)*/
+24                          /* ps: saturating photoperiod (h) (ps<pb for shorter days plants)*/
+0.0 0.0                     /* min & max phu: potential heat units required for plant maturity winter(deg C)*/
+2700 2700                   /* min & max phu: potential heat units required for plant maturity summer(deg C)*/
+9999                        /* phu parameter for determining the variability of phu */
+3.0 3.0                     /* min & max basetemp: base temperature */
+0.15                        /* fphuc: fraction of growing season 1 [0-1]*/
+0.05                        /* flaimaxc: fraction of plant maximal LAI 1 [0-1]*/
+0.50                        /* fphuk: fraction of growing season 2 [0-1]*/
+0.95                        /* flaimaxk: fraction of plant maximal LAI 2 [0-1]*/
+0.75                        /* fphusen: fraction of growing period at which LAI starts decreasing [0-1]*/
+0.75                        /* flaimaxharvest: fraction of plant maximal LAI still present at harvest [0-1]*/
+5.0                         /* laimax: plant maximal LAI (m2leaf/m2)*/
+5.0                         /* laimin: plant maximal LAI (m2leaf/m2) in 1950*/
+3.5                         /* hiopt: optimum harvest index HI reached at harvest*/
+1.25                        /* himin: minimum harvest index HI reached at harvest*/
+0.5                         /* shapesenescencenorm */
+CTON_ROOT CTON_SO CTON_POOL /* C:N mass ratio for root, storage organ, and pool */
+/*--------------------------------------------------------------------------*/
+/* 7. cft */
+TROPICAL_ROOTS
+"tropical roots"            /* re-parameterized as Cassava, 14.12.2009 KW */
+CROP
+ANNUAL_CROP                 /* cultivation_type */
+60 72 80 84                 /* curve number */
+0.9690                      /* beta_root 1 */
+0.3                         /* minwscal 3*/
+0.5                         /* gmin 4*/
+1.0                         /* respcoeff 5*/
+100                         /* nmax 7                            value of 8. PFT*/
+0.5                         /* resist 8*/
+0.5                         /* leaf longevity 10*/
+1.5                         /* lmro_ratio 18*/
+500                         /* ramp 19*/
+0.001                       /* lai_sapl 21                       not used, computed internally*/
+0.0                         /* gdd5min 30 */
+1000                        /* twmax 31                          value of 8. PFT*/
+1000                        /* twmax_daily 31*/
+15.0                        /* gddbase (deg C) 33 */
+-1000                       /* min_temprange 34 */
+8.0                         /* emax 35*/
+0.01                        /* intc 36*/
+1.0                         /* alphaa, fraction of PAR assimilated at ecosystem level, relative to leaf level */
+0.18                        /* albedo of green leaves */
+0.15                        /* albedo of stems */
+0.06                        /* albedo of litter */
+0.4                         /* maximum snow coverage in green canopy */
+0.5                         /* lightextcoeff, light extinction coeffcient in Lambert-Beer equation */
+0.91                        /* new phenology: slope of cold-temperature limiting function */
+6.418                       /* new phenology: inflection point of cold-temperature limiting function (deg C) */
+0.2                         /* new phenology: change rate of actual to previous day cold-temperature limiting fct */
+1.47                        /* new phenology: slope of warm-temperature limiting function tmax_sl */
+29.16                       /* new phenology: inflection point of warm-temperature limiting function (deg C) */
+0.2                         /* new phenology: change rate of actual to previous day warm-temperature limiting fct */
+64.23                       /* new phenology: slope of light limiting function */
+69.9                        /* new phenology: inflection point of light limiting function (Wm-2) */
+0.4                         /* new phenology: change rate of actual to previous day light limiting function */
+0.1                         /* new phenology: slope of water limiting function */
+41.72                       /* new phenology: inflection point of water limiting function (% water availability)  */
+0.17                        /* new phenology: change rate of actual to previous day water limiting function */
+MORT_MAX                       /* asymptotic maximum mortality rate (1/year) */
+CROPGREEN                   /* phenology */
+C3                          /* pathway */
+6.0 55.0                    /* lower and upper temperature limit for co2 (deg C) 24 27*/
+20 45                       /* lower and upper limit of temperature optimum for photosynthesis(deg C) 25 26*/
+-1000 1000                  /* lower and upper coldest monthly mean temperature(deg C) 28 29 */
+0.40428                     /* shape factor for soil organic matter vertical distribution*/
+0.0000667                   /* scaling factor fire danger index */
+6                           /* scaling factor vpd fire danger index*/
+2.0                         /* fuel bulk density (pb) */
+1568.0 106.0 4.80 5.70 17.60 3.240 /* emission factors */
+0                           /* minimum annual precipitation to establish */
+FLAM_GRASS                  /* flam */
+K_LITTER10
+K_LITTER10
+1
+0.6                         /* windspeed dampening */
+0.03                        /* roughness length */
+PREC_CALC_SDATE             /* calc_sdate: method to calculate the sowing date */
+80 180                      /* sdatenh,sdatesh: init sowing date for northern and southern hemisphere (julian day) */
+330                         /* hlimit: max length of crop cycle  */
+30                          /* fallow_days: wait after harvest until next sowing */
+1000 22 1000                /* temp_fall, temp_spring, temp_vernalization: thresholds for sowing date f(T)*/
+1000 1000                   /* min & max trg: temperature under which vernalization is possible (deg C)*/
+0                           /* pvd: number of vernalising days required*/
+1.0                         /* psens: sensitivity to the photoperiod effect [0-1](1 means no sensitivity)*/
+0                           /* pb: basal photoperiod (h)(pb<ps for longer days plants)*/
+24                          /* ps: saturating photoperiod (h) (ps<pb for shorter days plants)*/
+0.0 0.0                     /* min & max phu: potential heat units required for plant maturity winter(deg C)*/
+2000 2000                   /* min & max phu: potential heat units required for plant maturity summer(deg C)*/
+9999                        /* phu parameter for determining the variability of phu */
+15.0 15.0                   /* min & max basetemp: base temperature */
+0.15                        /* fphuc: fraction of growing season 1 [0-1]*/
+0.05                        /* flaimaxc: fraction of plant maximal LAI 1 [0-1]*/
+0.50                        /* fphuk: fraction of growing season 2 [0-1]*/
+0.95                        /* flaimaxk: fraction of plant maximal LAI 2 [0-1]*/
+0.75                        /* fphusen: fraction of growing period at which LAI starts decreasing [0-1]*/
+0.75                        /* flaimaxharvest: fraction of plant maximal LAI still present at harvest [0-1]*/
+5.0                         /* laimax: plant maximal LAI (m2leaf/m2)*/
+5.0                         /* laimin: plant maximal LAI (m2leaf/m2) in 1950*/
+2                           /* hiopt: optimum harvest index HI reached at harvest*/
+1.10                        /* himin: minimum harvest index HI reached at harvest*/
+0.5                         /* shapesenescencenorm */
+CTON_ROOT CTON_SO CTON_POOL /* C:N mass ratio for root, storage organ, and pool */
+/*--------------------------------------------------------------------------*/
+/* 8. cft */
+OIL_CROPS_SUNFLOWER
+"oil crops sunflower"
+CROP
+ANNUAL_CROP                 /* cultivation_type */
+60 72 80 84                 /* curve number */
+0.9690                      /* beta_root 1 */
+0.3                         /* minwscal 3*/
+0.5                         /* gmin 4*/
+1.0                         /* respcoeff 5*/
+100                         /* nmax 7                            value of 8. PFT*/
+0.5                         /* resist 8*/
+0.33                        /* leaf longevity 10*/
+1.5                         /* lmro_ratio 18*/
+500                         /* ramp 19*/
+0.001                       /* lai_sapl 21                       not used, computed internally*/
+0.0                         /* gdd5min 30 */
+1000                        /* twmax 31                          value of 8. PFT*/
+1000                        /* twmax_daily 31*/
+6.0                         /* gddbase (deg C) 33 */
+-1000                       /* min_temprange 34 */
+8.0                         /* emax 35*/
+0.01                        /* intc 36*/
+1.0                         /* alphaa, fraction of PAR assimilated at ecosystem level, relative to leaf level */
+0.18                        /* albedo of green leaves */
+0.15                        /* albedo of stems */
+0.06                        /* albedo of litter */
+0.4                         /* maximum snow coverage in green canopy */
+0.5                         /* lightextcoeff, light extinction coeffcient in Lambert-Beer equation */
+0.3111                      /* new phenology: slope of cold-temperature limiting function */
+4.979                       /* new phenology: inflection point of cold-temperature limiting function (deg C) */
+0.01011                     /* new phenology: change rate of actual to previous day cold-temperature limiting fct */
+0.24                        /* new phenology: slope of warm-temperature limiting function tmax_sl */
+32.04                       /* new phenology: inflection point of warm-temperature limiting function (deg C) */
+0.2                         /* new phenology: change rate of actual to previous day warm-temperature limiting fct */
+23                          /* new phenology: slope of light limiting function */
+75.94                       /* new phenology: inflection point of light limiting function (Wm-2) */
+0.22                        /* new phenology: change rate of actual to previous day light limiting function */
+0.5222                      /* new phenology: slope of water limiting function */
+53.07                       /* new phenology: inflection point of water limiting function (% water availability)  */
+0.01001                     /* new phenology: change rate of actual to previous day water limiting function */
+MORT_MAX                       /* asymptotic maximum mortality rate (1/year) */
+CROPGREEN                   /* phenology */
+C3                          /* pathway */
+8.0 42.0                    /* lower and upper temperature limit for co2 (deg C) 24 27*/
+25 32                       /* lower and upper limit of temperature optimum for photosynthesis(deg C) 25 26*/
+-1000 1000                  /* lower and upper coldest monthly mean temperature(deg C) 28 29 */
+0.40428                     /* shape factor for soil organic matter vertical distribution*/
+0.0000667                   /* scaling factor fire danger index */
+6                           /* scaling factor vpd fire danger index*/
+2.0                         /* fuel bulk density (pb) */
+1568.0 106.0 4.80 5.70 17.60 3.240 /* emission factors */
+0                           /* minimum annual precipitation to establish */
+FLAM_GRASS                  /* flam */
+K_LITTER10
+K_LITTER10
+1
+0.6                         /* windspeed dampening */
+0.03                        /* roughness length */
+TEMP_STYP_CALC_SDATE        /* calc_sdate: method to calculate the sowing date */
+1 181                       /* sdatenh,sdatesh: init sowing date for northern and southern hemisphere (julian day) */
+240                         /* hlimit: max length of crop cycle  */
+30                          /* fallow_days: wait after harvest until next sowing */
+1000 13 1000                /* temp_fall, temp_spring, temp_vernalization: thresholds for sowing date f(T)*/
+1000 1000                   /* min & max trg: temperature under which vernalization is possible (deg C)*/
+0                           /* pvd: number of vernalising days required*/
+1.0                         /* psens: sensitivity to the photoperiod effect [0-1](1 means no sensitivity)*/
+0                           /* pb: basal photoperiod (h)(pb<ps for longer days plants)*/
+24                          /* ps: saturating photoperiod (h) (ps<pb for shorter days plants)*/
+0.0 0.0                     /* min & max phu: potential heat units required for plant maturity winter(deg C)*/
+1000 1600                   /* min & max phu: potential heat units required for plant maturity summer(deg C)*/
+2460                        /* phu parameter for determining the variability of phu */
+6.0 6.0                     /* min & max basetemp: base temperature */
+0.15                        /* fphuc: fraction of growing season 1 [0-1]*/
+0.01                        /* flaimaxc: fraction of plant maximal LAI 1 [0-1]*/
+0.50                        /* fphuk: fraction of growing season 2 [0-1]*/
+0.95                        /* flaimaxk: fraction of plant maximal LAI 2 [0-1]*/
+0.70                        /* fphusen: fraction of growing period at which LAI starts decreasing [0-1]*/
+0.00                        /* flaimaxharvest: fraction of plant maximal LAI still present at harvest [0-1]*/
+5.0                         /* laimax: plant maximal LAI (m2leaf/m2)*/
+5.0                         /* laimin: plant maximal LAI (m2leaf/m2) in 1950*/
+0.40                        /* hiopt: optimum harvest index HI reached at harvest*/
+0.20                        /* himin: minimum harvest index HI reached at harvest*/
+2.0                         /* shapesenescencenorm */
+CTON_ROOT CTON_SO CTON_POOL /* C:N mass ratio for root, storage organ, and pool */
+/*--------------------------------------------------------------------------*/
+/* 9. cft */
+OIL_CROPS_SOYBEAN
+"oil crops soybean"
+CROP
+ANNUAL_CROP                 /* cultivation_type */
+60 72 80 84                 /* curve number */
+0.9690                      /* beta_root 1 */
+0.3                         /* minwscal 3*/
+0.5                         /* gmin 4*/
+1.0                         /* respcoeff 5*/
+100                         /* nmax 7                            value of 8. PFT*/
+0.5                         /* resist 8*/
+0.66                        /* leaf longevity 10*/
+1.5                         /* lmro_ratio 18*/
+500                         /* ramp 19*/
+0.001                       /* lai_sapl 21                       not used, computed internally*/
+0.0                         /* gdd5min 30 */
+1000                        /* twmax 31                          value of 8. PFT*/
+1000                        /* twmax_daily 31*/
+10.0                        /* gddbase (deg C) 33 */
+-1000                       /* min_temprange 34 */
+8.0                         /* emax 35*/
+0.01                        /* intc 36*/
+1.0                         /* alphaa, fraction of PAR assimilated at ecosystem level, relative to leaf level */
+0.18                        /* albedo of green leaves */
+0.15                        /* albedo of stems */
+0.06                        /* albedo of litter */
+0.4                         /* maximum snow coverage in green canopy */
+0.5                         /* lightextcoeff, light extinction coeffcient in Lambert-Beer equation */
+0.3111                      /* new phenology: slope of cold-temperature limiting function */
+4.979                       /* new phenology: inflection point of cold-temperature limiting function (deg C) */
+0.01011                     /* new phenology: change rate of actual to previous day cold-temperature limiting fct */
+0.24                        /* new phenology: slope of warm-temperature limiting function tmax_sl */
+32.04                       /* new phenology: inflection point of warm-temperature limiting function (deg C) */
+0.2                         /* new phenology: change rate of actual to previous day warm-temperature limiting fct */
+23                          /* new phenology: slope of light limiting function */
+75.94                       /* new phenology: inflection point of light limiting function (Wm-2) */
+0.22                        /* new phenology: change rate of actual to previous day light limiting function */
+0.5222                      /* new phenology: slope of water limiting function */
+53.07                       /* new phenology: inflection point of water limiting function (% water availability)  */
+0.01001                     /* new phenology: change rate of actual to previous day water limiting function */
+MORT_MAX                       /* asymptotic maximum mortality rate (1/year) */
+CROPGREEN                   /* phenology */
+C3                          /* pathway */
+5.0 45.0                    /* lower and upper temperature limit for co2 (deg C) 24 27*/
+28 32                       /* lower and upper limit of temperature optimum for photosynthesis(deg C) 25 26*/
+-1000 1000                  /* lower and upper coldest monthly mean temperature(deg C) 28 29 */
+0.40428                     /* shape factor for soil organic matter vertical distribution*/
+0.0000667                   /* scaling factor fire danger index */
+6                           /* scaling factor vpd fire danger index*/
+2.0                         /* fuel bulk density (pb) */
+1568.0 106.0 4.80 5.70 17.60 3.240 /* emission factors */
+0                           /* minimum annual precipitation to establish */
+FLAM_GRASS                  /* flam */
+K_LITTER10
+K_LITTER10
+1
+0.6                         /* windspeed dampening */
+0.03                        /* roughness length */
+PREC_CALC_SDATE             /* calc_sdate: method to calculate the sowing date */
+140 320                     /* sdatenh,sdatesh: init sowing date for northern and southern hemisphere (julian day) */
+240                         /* hlimit: max length of crop cycle  */
+30                          /* fallow_days: wait after harvest until next sowing */
+1000 13 1000                /* temp_fall, temp_spring, temp_vernalization: thresholds for sowing date f(T)*/
+1000 1000                   /* min & max trg: temperature under which vernalization is possible (deg C)*/
+0                           /* pvd: number of vernalising days required*/
+1.0                         /* psens: sensitivity to the photoperiod effect [0-1](1 means no sensitivity)*/
+0                           /* pb: basal photoperiod (h)(pb<ps for longer days plants)*/
+24                          /* ps: saturating photoperiod (h) (ps<pb for shorter days plants)*/
+0.0 0.0                     /* min & max phu: potential heat units required for plant maturity winter(deg C)*/
+1000 1000                   /* min & max phu: potential heat units required for plant maturity summer(deg C)*/
+9999                        /* phu parameter for determining the variability of phu */
+10.0 10.0                   /* min & max basetemp: base temperature */
+0.15                        /* fphuc: fraction of growing season 1 [0-1]*/
+0.05                        /* flaimaxc: fraction of plant maximal LAI 1 [0-1]*/
+0.50                        /* fphuk: fraction of growing season 2 [0-1]*/
+0.95                        /* flaimaxk: fraction of plant maximal LAI 2 [0-1]*/
+0.70                        /* fphusen: fraction of growing period at which LAI starts decreasing [0-1]*/
+0.00                        /* flaimaxharvest: fraction of plant maximal LAI still present at harvest [0-1]*/
+5.0                         /* laimax: plant maximal LAI (m2leaf/m2)*/
+5.0                         /* laimin: plant maximal LAI (m2leaf/m2) in 1950*/
+0.4                         /* hiopt: optimum harvest index HI reached at harvest*/
+0.1                         /* himin: minimum harvest index HI reached at harvest*/
+0.5                         /* shapesenescencenorm */
+CTON_ROOT CTON_SO CTON_POOL /* C:N mass ratio for root, storage organ, and pool */
+/*--------------------------------------------------------------------------*/
+/* 10. cft */
+OIL_CROPS_GROUNDNUT
+"oil crops groundnut"
+CROP
+ANNUAL_CROP                 /* cultivation_type */
+60 72 80 84                 /* curve number */
+0.9690                      /* beta_root 1 */
+0.3                         /* minwscal 3*/
+0.5                         /* gmin 4*/
+1.0                         /* respcoeff 5*/
+100                         /* nmax 7*/
+0.5                         /* resist 8*/
+0.5                         /* leaf longevity 10*/
+1.5                         /* lmro_ratio 18*/
+500                         /* ramp 19*/
+0.001                       /* lai_sapl 21                       not used, computed internally*/
+0.0                         /* gdd5min 30 */
+1000                        /* twmax 31                          value of 8. PFT*/
+1000                        /* twmax_daily 31*/
+14.0                        /* gddbase (deg C) 33 */
+-1000                       /* min_temprange 34 */
+8.0                         /* emax 35*/
+0.01                        /* intc 36*/
+1.0                         /* alphaa, fraction of PAR assimilated at ecosystem level, relative to leaf level */
+0.18                        /* albedo of green leaves */
+0.15                        /* albedo of stems */
+0.06                        /* albedo of litter */
+0.4                         /* maximum snow coverage in green canopy */
+0.5                         /* lightextcoeff, light extinction coeffcient in Lambert-Beer equation */
+0.3111                      /* new phenology: slope of cold-temperature limiting function */
+4.979                       /* new phenology: inflection point of cold-temperature limiting function (deg C) */
+0.01011                     /* new phenology: change rate of actual to previous day cold-temperature limiting fct */
+0.24                        /* new phenology: slope of warm-temperature limiting function tmax_sl */
+32.04                       /* new phenology: inflection point of warm-temperature limiting function (deg C) */
+0.2                         /* new phenology: change rate of actual to previous day warm-temperature limiting fct */
+23                          /* new phenology: slope of light limiting function */
+75.94                       /* new phenology: inflection point of light limiting function (Wm-2) */
+0.22                        /* new phenology: change rate of actual to previous day light limiting function */
+0.5222                      /* new phenology: slope of water limiting function */
+53.07                       /* new phenology: inflection point of water limiting function (% water availability)  */
+0.01001                     /* new phenology: change rate of actual to previous day water limiting function */
+MORT_MAX                       /* asymptotic maximum mortality rate (1/year) */
+CROPGREEN                   /* phenology */
+C3                          /* pathway */
+6.0 55.0                    /* lower and upper temperature limit for co2 (deg C) 24 27*/
+20 45                       /* lower and upper limit of temperature optimum for photosynthesis(deg C) 25 26*/
+-1000 1000                  /* lower and upper coldest monthly mean temperature(deg C) 28 29 */
+0.40428                     /* shape factor for soil organic matter vertical distribution*/
+0.0000667                   /* scaling factor fire danger index */
+6                           /* scaling factor vpd fire danger index*/
+2.0                         /* fuel bulk density (pb) */
+1568.0 106.0 4.80 5.70 17.60 3.240 /* emission factors */
+0                           /* minimum annual precipitation to establish */
+FLAM_GRASS                  /* flam */
+K_LITTER10
+K_LITTER10
+1
+0.6                         /* windspeed dampening */
+0.03                        /* roughness length */
+PREC_CALC_SDATE             /* calc_sdate: method to calculate the sowing date */
+100 280                     /* sdatenh,sdatesh: init sowing date for northern and southern hemisphere (julian day) */
+240                         /* hlimit: max length of crop cycle  */
+30                          /* fallow_days: wait after harvest until next sowing */
+1000 15 1000                /* temp_fall, temp_spring, temp_vernalization: thresholds for sowing date f(T)*/
+1000 1000                   /* min & max trg: temperature under which vernalization is possible (deg C)*/
+0                           /* pvd: number of vernalising days required*/
+1.0                         /* psens: sensitivity to the photoperiod effect [0-1](1 means no sensitivity)*/
+0                           /* pb: basal photoperiod (h)(pb<ps for longer days plants)*/
+24                          /* ps: saturating photoperiod (h) (ps<pb for shorter days plants)*/
+0.0 0.0                     /* min & max phu: potential heat units required for plant maturity winter(deg C)*/
+1500 1500                   /* min & max phu: potential heat units required for plant maturity summer(deg C)*/
+9999                        /* phu parameter for determining the variability of phu */
+14.0 14.0                   /* min & max basetemp: base temperature */
+0.15                        /* fphuc: fraction of growing season 1 [0-1]*/
+0.01                        /* flaimaxc: fraction of plant maximal LAI 1 [0-1]*/
+0.50                        /* fphuk: fraction of growing season 2 [0-1]*/
+0.95                        /* flaimaxk: fraction of plant maximal LAI 2 [0-1]*/
+0.75                        /* fphusen: fraction of growing period at which LAI starts decreasing [0-1]*/
+0.00                        /* flaimaxharvest: fraction of plant maximal LAI still present at harvest [0-1]*/
+5.0                         /* laimax: plant maximal LAI (m2leaf/m2)*/
+5.0                         /* laimin: plant maximal LAI (m2leaf/m2) in 1950*/
+0.40                        /* hiopt: optimum harvest index HI reached at harvest*/
+0.30                        /* himin: minimum harvest index HI reached at harvest*/
+0.5                         /* shapesenescencenorm */
+CTON_ROOT CTON_SO CTON_POOL /* C:N mass ratio for root, storage organ, and pool */
+/*--------------------------------------------------------------------------*/
+/* 11. cft */
+OIL_CROPS_RAPESEED
+"oil crops rapeseed"
+CROP
+ANNUAL_CROP                 /* cultivation_type */
+60 72 80 84                 /* curve number */
+0.9690                      /* beta_root 1 */
+0.3                         /* minwscal 3*/
+0.5                         /* gmin 4*/
+1.0                         /* respcoeff 5*/
+100                         /* nmax 7                            value of 8. PFT*/
+0.5                         /* resist 8*/
+0.41                        /* leaf longevity 10*/
+1.5                         /* lmro_ratio 18*/
+500                         /* ramp 19*/
+0.001                       /* lai_sapl 21                       not used, computed internally*/
+0.0                         /* gdd5min 30 */
+1000                        /* twmax 31                          value of 8. PFT*/
+1000                        /* twmax_daily 31*/
+0.0                         /* gddbase (deg C) 33 */
+-1000                       /* min_temprange 34 */
+8.0                         /* emax 35*/
+0.01                        /* intc 36*/
+1.0                         /* alphaa, fraction of PAR assimilated at ecosystem level, relative to leaf level */
+0.18                        /* albedo of green leaves */
+0.15                        /* albedo of stems */
+0.06                        /* albedo of litter */
+0.4                         /* maximum snow coverage in green canopy */
+0.5                         /* lightextcoeff, light extinction coeffcient in Lambert-Beer equation */
+0.3111                      /* new phenology: slope of cold-temperature limiting function */
+4.979                       /* new phenology: inflection point of cold-temperature limiting function (deg C) */
+0.01011                     /* new phenology: change rate of actual to previous day cold-temperature limiting fct */
+0.24                        /* new phenology: slope of warm-temperature limiting function tmax_sl */
+32.04                       /* new phenology: inflection point of warm-temperature limiting function (deg C) */
+0.2                         /* new phenology: change rate of actual to previous day warm-temperature limiting fct */
+23                          /* new phenology: slope of light limiting function */
+75.94                       /* new phenology: inflection point of light limiting function (Wm-2) */
+0.22                        /* new phenology: change rate of actual to previous day light limiting function */
+0.5222                      /* new phenology: slope of water limiting function */
+53.07                       /* new phenology: inflection point of water limiting function (% water availability)  */
+0.01001                     /* new phenology: change rate of actual to previous day water limiting function */
+MORT_MAX                       /* asymptotic maximum mortality rate (1/year) */
+CROPGREEN                   /* phenology */
+C3                          /* pathway */
+0.0 40.0                    /* lower and upper temperature limit for co2 (deg C) 24 27*/
+12 17                       /* lower and upper limit of temperature optimum for photosynthesis(deg C) 25 26*/
+-1000 1000                  /* lower and upper coldest monthly mean temperature(deg C) */
+0.40428                     /* shape factor for soil organic matter vertical distribution*/
+0.0000667                   /* scaling factor fire danger index */
+6                           /* scaling factor vpd fire danger index*/
+2.0                         /* fuel bulk density (pb) */
+1568.0 106.0 4.80 5.70 17.60 3.240 /* emission factors */
+0                           /* minimum annual precipitation to establish */
+FLAM_GRASS                  /* flam */
+K_LITTER10
+K_LITTER10
+1
+0.6                         /* windspeed dampening */
+0.03                        /* roughness length */
+TEMP_WTYP_CALC_SDATE        /* calc_sdate: method to calculate the sowing date */
+241 61                      /* sdatenh,sdatesh: init sowing date for northern and southern hemisphere (julian day) */
+210                         /* hlimit: max length of crop cycle  */
+0                           /* fallow_days: wait after harvest until next sowing */
+17 5 12                     /* temp_fall, temp_spring, temp_vernalization: thresholds for sowing date f(T)*/
+3 10                        /* min & max trg: temperature under which vernalization is possible (deg C)*/
+0                           /* pvd: number of vernalising days required*/
+1.0                         /* psens: sensitivity to the photoperiod effect [0-1](1 means no sensitivity)*/
+8                           /* pb: basal photoperiod (h)(pb<ps for longer days plants)*/
+20                          /* ps: saturating photoperiod (h) (ps<pb for shorter days plants)*/
+2100.0 3279.7               /* min & max phu: potential heat units required for plant maturity winter (deg C)*/
+1000.0 2648.4               /* min & intercept for computing potential heat units required for plant maturity summer(deg C)*/
+9999                        /* phu parameter for determining the variability of phu */
+0.0 0.0                     /* min & max basetemp: base temperature */
+0.05                        /* fphuc: fraction of growing season 1 [0-1]*/
+0.01                        /* flaimaxc: fraction of plant maximal LAI 1 [0-1]*/
+0.50                        /* fphuk: fraction of growing season 2 [0-1]*/
+0.95                        /* flaimaxk: fraction of plant maximal LAI 2 [0-1]*/
+0.85                        /* fphusen: fraction of growing period at which LAI starts decreasing [0-1]*/
+0.00                        /* flaimaxharvest: fraction of plant maximal LAI still present at harvest [0-1]*/
+7.0                         /* laimax: plant maximal LAI (m2leaf/m2)*/
+7.0                         /* laimin: plant maximal LAI (m2leaf/m2) in 1950*/
+0.30                        /* hiopt: optimum harvest index HI reached at harvest*/
+0.15                        /* himin: minimum harvest index HI reached at harvest*/
+2.0                         /* shapesenescencenorm */
+CTON_ROOT CTON_SO CTON_POOL /* C:N mass ratio for root, storage organ, and pool */
+/*--------------------------------------------------------------------------*/
+/* 12. cft */
+SUGARCANE
+"sugarcane"
+CROP
+ANNUAL_CROP                 /* cultivation_type */
+60 72 80 84                 /* curve number */
+0.9690                      /* beta_root 1 */
+0.3                         /* minwscal 3*/
+0.5                         /* gmin 4*/
+0.2                         /* respcoeff 5*/
+100                         /* nmax 7                            value of 8. PFT*/
+0.5                         /* resist 8*/
+0.66                        /* leaf longevity 10*/
+1.5                         /* lmro_ratio 18*/
+500                         /* ramp 19*/
+0.001                       /* lai_sapl 21                       not used, computed internally*/
+0.0                         /* gdd5min 30 */
+1000                        /* twmax 31                          value of 8. PFT*/
+1000                        /* twmax_daily 31*/
+6.0                         /* gddbase (deg C) 33 */
+-1000                       /* min_temprange 34 */
+8.0                         /* emax 35*/
+0.01                        /* intc 36*/
+1.0                         /* alphaa, fraction of PAR assimilated at ecosystem level, relative to leaf level */
+0.18                        /* albedo of green leaves */
+0.15                        /* albedo of stems */
+0.06                        /* albedo of litter */
+0.4                         /* maximum snow coverage in green canopy */
+0.5                         /* lightextcoeff, light extinction coeffcient in Lambert-Beer equation */
+0.91                        /* new phenology: slope of cold-temperature limiting function */
+6.418                       /* new phenology: inflection point of cold-temperature limiting function (deg C) */
+0.2                         /* new phenology: change rate of actual to previous day cold-temperature limiting fct */
+1.47                        /* new phenology: slope of warm-temperature limiting function tmax_sl */
+29.16                       /* new phenology: inflection point of warm-temperature limiting function (deg C) */
+0.2                         /* new phenology: change rate of actual to previous day warm-temperature limiting fct */
+64.23                       /* new phenology: slope of light limiting function */
+69.9                        /* new phenology: inflection point of light limiting function (Wm-2) */
+0.4                         /* new phenology: change rate of actual to previous day light limiting function */
+0.1                         /* new phenology: slope of water limiting function */
+41.72                       /* new phenology: inflection point of water limiting function (% water availability)  */
+0.17                        /* new phenology: change rate of actual to previous day water limiting function */
+MORT_MAX                       /* asymptotic maximum mortality rate (1/year) */
+CROPGREEN                   /* phenology */
+C4                          /* pathway */
+8.0 42.0                    /* lower and upper temperature limit for co2 (deg C) 24 27*/
+18 30                       /* lower and upper limit of temperature optimum for photosynthesis(deg C) 25 26*/
+-1000 1000                  /* lower and upper coldest monthly mean temperature(deg C) 28 29 */
+0.40428                     /* shape factor for soil organic matter vertical distribution*/
+0.0000667                   /* scaling factor fire danger index */
+6                           /* scaling factor vpd fire danger index*/
+2.0                         /* fuel bulk density (pb) */
+1568.0 106.0 4.80 5.70 17.60 3.240 /* emission factors */
+0                           /* minimum annual precipitation to establish */
+FLAM_GRASS                  /* flam */
+K_LITTER10
+K_LITTER10
+1
+0.6                         /* windspeed dampening */
+0.03                        /* roughness length */
+TEMP_PREC_CALC_SDATE        /* calc_sdate: method to calculate the sowing date*/
+120 300                     /* sdatenh,sdatesh: init sowing date for northern and southern hemisphere (julian day) */
+360                         /* hlimit: max length of crop cycle  */
+0                           /* fallow_days: wait after harvest until next sowing */
+1000 14 1000                /* temp_fall, temp_spring, temp_vernalization: thresholds for sowing date f(T)*/
+1000 1000                   /* min & max trg: temperature under which vernalization is possible (deg C)*/
+0                           /* pvd: number of vernalising days required*/
+1.0                         /* psens: sensitivity to the photoperiod effect [0-1](1 means no sensitivity)*/
+0                           /* pb: basal photoperiod (h)(pb<ps for longer days plants)*/
+24                          /* ps: saturating photoperiod (h) (ps<pb for shorter days plants)*/
+0.0 0.0                     /* min & max phu: potential heat units required for plant maturity winter(deg C)*/
+2000.0 4000.0               /* min & max phu: potential heat units required for plant maturity summer(deg C)*/
+9999                        /* phu parameter for determining the variability of phu */
+11.0 15.0                   /* min & max basetemp: base temperature */
+0.01                        /* fphuc: fraction of growing season 1 [0-1]*/
+0.01                        /* flaimaxc: fraction of plant maximal LAI 1 [0-1]*/
+0.40                        /* fphuk: fraction of growing season 2 [0-1]*/
+0.95                        /* flaimaxk: fraction of plant maximal LAI 2 [0-1]*/
+0.95                        /* fphusen: fraction of growing period at which LAI starts decreasing [0-1]*/
+0.50                        /* flaimaxharvest: fraction of plant maximal LAI still present at harvest [0-1]*/
+6.0                         /* laimax: plant maximal LAI (m2leaf/m2)*/
+2.0                         /* laimin: plant maximal LAI (m2leaf/m2) in 1950*/
+0.80                        /* hiopt: optimum harvest index HI reached at harvest*/
+0.80                        /* himin: minimum harvest index HI reached at harvest*/
+2.0                         /* shapesenescencenorm */
+CTON_ROOT CTON_SO CTON_POOL /* C:N mass ratio for root, storage organ, and pool */
+/*--------------------------------------------------------------------------*/
+

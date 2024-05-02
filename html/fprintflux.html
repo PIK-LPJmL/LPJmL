@@ -1,0 +1,64 @@
+<HTML>
+<BODY>
+<PRE>
+<!-- Manpage converted by man2html 3.0.1 -->
+     <B>NAME</B>
+          fprintflux, printflux - Print global carbon and water fluxes
+
+     <B>SYNOPSIS</B>
+          <B>#include</B> <B>"lpj.h"</B>
+
+          <B>void</B> <B>fprintflux(FILE</B> <B>*</B><I>file</I><B>,Flux</B> <I>flux</I><B>,Real</B> <B>cflux_total,const</B> <B>Config</B> <B>*</B><I>config</I><B>);</B>
+          <B>void</B> <B>printflux(Flux</B> <I>flux</I><B>,Real</B> <I>cflux</I>_<I>total</I><B>,const</B> <B>Config</B> <B>*</B><I>config</I><B>);</B>
+
+
+     <B>DESCRIPTION</B>
+          Function prints global carbon and water fluxes. <B>printflux()</B>
+          writes output to standard output.  The arguments of
+          <B>fprintflux</B> are:
+
+          <I>file</I> File pointer to output stream.
+
+          <I>flux</I> Global carbon and water fluxes. Must be calculated by
+               <B>flux_sum()</B>.
+
+          <I>cflux</I>_<I>total</I>
+               Total flux of carbon. Must be calculated by <B>flux_sum()</B>.
+
+          <I>config</I>
+               LPJmL configuration data. Must be read by <B>readconfig()</B>.
+
+     <B>RETURN</B> <B>VALUE</B>
+          None.
+
+     <B>AUTHORS</B>
+          For authors and contributors see AUTHORS file
+
+
+     <B>COPYRIGHT</B>
+          (C) Potsdam Institute for Climate Impact Research (PIK), see
+          COPYRIGHT file
+
+
+     <B>SEE</B> <B>ALSO</B>
+          <B><A HREF="flux_sum.html">flux_sum(3)</A></B>, <B><A HREF="readconfig.html">readconfig(3)</A></B>
+
+
+
+
+
+
+
+
+
+
+
+
+</PRE>
+<HR>
+<ADDRESS>
+Man(1) output converted with
+<a href="http://www.oac.uci.edu/indiv/ehood/man2html.html">man2html</a>
+</ADDRESS>
+</BODY>
+</HTML>

@@ -1,0 +1,121 @@
+<HTML>
+<HEAD>
+<TITLE>lpjsubmit.1</TITLE>
+</HEAD>
+<BODY>
+<H1>lpjsubmit.1</H1>
+<HR>
+<PRE>
+<!-- Manpage converted by man2html 3.0.1 -->
+     <B>NAME</B>
+          lpjsubmit - Submit parallel SLURM/LoadLeveler job for LPJmL
+          simulations
+
+     <B>SYNOPSIS</B>
+          <B>lpjsubmit</B> [-class c] [-group g] [-wtime time] [-blocking n]
+          [-o output] [-e error] [-q] [-nocheck] [-norun] ntasks [args
+          ...]
+
+     <B>DESCRIPTION</B>
+          Script creates SLURM/LoadLeveler job control file <I>job</I>.<I>jcf</I>
+          and submits the job to the LoadLeveler queue via <B>llsubmit</B> or
+          to SLURM via <B>sbatch</B> for the LPJmL simulation program. Before
+          submitting syntax of configuration file is checked by
+          calling the <B>lpjcheck</B> program. Can only be used for the MPI
+          version of <B>lpjml</B>.
+
+     <B>OPTIONS</B>
+          -class c
+               set the SLURM/LoadLeveler class to which the job will
+               be submitted. Default class is 'short'. Valid classes
+               can be obtained by the <B>llclass</B> command.
+
+          -group g
+               set the SLURM/LoadLeveler group. Valid groups are
+               user-specific and set in the /<I>home</I>/<I>loadl</I>/<I>LoadL</I>_<I>admin</I>
+               file.
+
+          -wtime time
+               set wall clock limit of LoadLeveler job. time must be
+               in the format hh:mm:ss.
+
+          -blocking n
+               set blocking (number of tasks per node) for parallel
+               job to n. Default is unlimited.
+
+          -o output
+               set filename of output file, default is
+               <I>lpjml</I>.$(<I>cluster</I>).<I>out</I>.
+
+          -e error
+               set filename of error file, default is
+               <I>lpjml</I>.$(<I>cluster</I>).<I>err</I>.
+
+
+          -q   only error messages are displayed, other output is
+               suppressed.
+
+          -nocheck
+               does not check input files and output directories.
+
+          -norun
+               does not submit job to batch queue, creates <I>slurm</I>.<I>jcf</I>
+               file only.
+
+          ntasks
+               set the number of parallel MPI tasks.
+
+          args set command line arguments for the <B>lpjml</B> program.
+
+     <B>EXAMPLE</B>
+     file with a wall clock limit of 1h:
+          Submit job with 32 parallel MPI tasks starting from a restart
+               <B>lpjsubmit</B> -wtime 1:00:00 32 -DFROM_RESTART
+
+     <B>ENVIRONMENT</B>
+          LPJROOT
+               defines the root directory for LPJmL. The variable has
+               to be defined before calling <B>lpjsubmit</B>. This is usually
+               done by the <B>lpj_paths.sh</B> script.
+
+
+     <B>EXIT</B> <B>STATUS</B>
+          <B>lpjsubmit</B> returns a zero exit status if job has been
+          submitted.  Non zero is returned in case of failure.
+
+
+     <B>AUTHORS</B>
+          For authors and contributors see AUTHORS file
+
+
+     <B>COPYRIGHT</B>
+          (C) Potsdam Institute for Climate Impact Research (PIK), see
+          COPYRIGHT file
+
+
+     <B>SEE</B> <B>ALSO</B>
+          <B><A HREF="lpjml.html">lpjml(1)</A></B>, <B><A HREF="lpjcheck.html">lpjcheck(1)</A></B>, <B><A HREF="lpj_paths.sh.html">lpj_paths.sh(1)</A></B>, <B><A HREF="lpjml.conf.html">lpjml.conf(5)</A></B>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</PRE>
+<HR>
+<ADDRESS>
+Man(1) output converted with
+<a href="http://www.oac.uci.edu/indiv/ehood/man2html.html">man2html</a>
+</ADDRESS>
+</BODY>
+</HTML>

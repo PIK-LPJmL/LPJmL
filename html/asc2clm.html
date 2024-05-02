@@ -1,0 +1,121 @@
+<HTML>
+<HEAD>
+<TITLE>asc2clm.1</TITLE>
+</HEAD>
+<BODY>
+<H1>asc2clm.1</H1>
+<HR>
+<PRE>
+<!-- Manpage converted by man2html 3.0.1 -->
+     <B>NAME</B>
+          asc2clm - convert ARC/Info ASCII files to clm data files for
+          LPJmL
+
+     <B>SYNOPSIS</B>
+          <B>asc2clm</B> [-h] [-f] [-firstyear y] [-grid file] [-nbands n]
+          [-scale s] <I>ascfile</I> ... <I>clmfile</I> [<I>gridfile</I>]
+
+     <B>DESCRIPTION</B>
+          Program converts ARC/Info ASCII (plain text) input data
+          files into LPJ climate data file.
+
+     <B>OPTIONS</B>
+          -h   display a short help text
+
+          -f   force overwrite of existing CLM file
+
+          -firstyear y
+               set first simulation year in CLM file, default is 1901
+
+          -grid file
+               write LPJ grid file
+
+          -nbands n
+               set number of bands of CLM file, default is 12
+
+          -header s
+               set header string of CLM file, default is LPJCLIM
+
+          -scale s
+               scale data by a factor
+
+          <I>ascfile</I>
+               filename(s) of ARC/info ASCII data
+
+          <I>clmfile</I>
+               filename of clm data file written
+
+     <B>EXAMPLES</B>
+     data by 10:
+          Create clm data and grid file from ARC/Info dataset and scale
+               <B>asc2clm</B> -grid grid.clm -scale 10 tmp_1901_*.asc
+               tmp_1901.clm
+
+     <B>EXIT</B> <B>STATUS</B>
+          <B>asc2clm</B> returns a zero exit status if the clm file is
+          created.  Non zero is returned in case of failure.
+
+
+     <B>AUTHORS</B>
+          For authors and contributors see AUTHORS file
+
+     <B>COPYRIGHT</B>
+          (C) Potsdam Institute for Climate Impact Research (PIK), see
+          COPYRIGHT file
+
+
+     <B>SEE</B> <B>ALSO</B>
+          <B><A HREF="lpjml.html">lpjml(1)</A></B>, <B><A HREF="txt2clm.html">txt2clm(1)</A></B>, <B><A HREF="cru2clm.html">cru2clm(1)</A></B>, <B><A HREF="grid2clm.html">grid2clm(1)</A></B>, <B><A HREF="cft2clm.html">cft2clm(1)</A></B>,
+          <B><A HREF="catclm.html">catclm(1)</A></B>, <B><A HREF="clm.html">clm(5)</A></B>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</PRE>
+<HR>
+<ADDRESS>
+Man(1) output converted with
+<a href="http://www.oac.uci.edu/indiv/ehood/man2html.html">man2html</a>
+</ADDRESS>
+</BODY>
+</HTML>

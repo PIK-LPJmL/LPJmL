@@ -1,0 +1,325 @@
+<HTML>
+<BODY>
+<PRE>
+<!-- Manpage converted by man2html 3.0.1 -->
+     <B>NAME</B>
+          lpjml.conf - Configuration file for LPJmL runs
+
+     <B>DESCRIPTION</B>
+          By default <B>lpjml</B> reads in the <I>lpjml</I>.<I>conf</I> file. This file is
+          preprocessed by the <B>cpp</B> processor. The type of simulation
+          can be changed by defining macros as runtime options of the
+          <B>lpjml</B> command.
+
+        <B>Macro</B> <B>definitions</B>
+          -DFROM_RESTART
+               Simulation is started from a restart file.
+
+          -DISRANDOM
+               A random precipitation generator is used. The number of
+               wet days in a month is used as an additional input
+               variable
+
+          -DRIVER_ROUTING
+               Simulation is performed with river routing. Input file
+               for drainage has to be provided.
+
+          -DWITH_LANDUSE[=mode]
+               Simulation is performed with managed land. Additional
+               parameter and input files have to be provided
+
+          -DWITH_LAIMAX_CFT
+               Simulation with maximum LAI values for crops taken from
+               the management parameter file.
+
+          -DWITH_SPITFIRE
+               Simulation with Spitfire fire model. Needs additional
+               input files.
+
+          -DWITH_FIREWOOD
+               Simulation with wood fires. Needs population density
+               data file.
+
+          -DWITH_RESERVOIRS
+               Simulation with dam reservoirs. Needs additional input
+               files for elevation and reservoirs.
+
+          -DWITH_WATERUSE
+               Simulation is performed with water consumption for
+               industry, household and livestock.
+
+          -DDAILY_OUTPUT
+               Daily output variables are written.
+
+          -DWITH_GRIDBASED
+               PFT-specific output is grid scaled.
+
+        <B>File</B> <B>structure</B>
+          The LPJmL configuration file contains integer, float, and
+          string values. Strings containing white spaces must be
+          delimited by '"'. The file <I>include</I>/<I>conf</I>.<I>h</I> has to be included
+          for the definition of symbols.  The file is divided into
+          five different sections:
+
+          I. Simulation description and type section
+               The first two entries describe the simulation and its
+               type:
+
+               #include "include/conf.h"
+               Simulation description string (string)
+               LPJML  /* Simulation type */
+               INTERPOLATE_PREC | RANDOM_PREC random seed (int)
+               CLOUDINESS | RADIATION | RADIATION_SWONLY | RADIATION_LWDOWN
+               NO_FIRE | FIRE | SPITFIRE
+               NO_FIREWOOD | FIREWOOD
+               NO_POPULATION | POPULATION
+               NO_PRESCIBE_BURNTAREA | PRESCRIBE_BURNTAREA
+               NO_LANDCOVER | LANDCOVERFPC
+               OLD_PHENOLOGY | NEW_PHENOLOGY
+               NO_DRAINAGE | DRAINAGE
+               PERM | NO_PERM
+               NO_LANDUSE | LANDUSE | CONST_LANDUSE | ALL_CROPS
+                            NO_FIXED_SDATE | FIXED_SDATE
+                            NO_IRRIGATION | LIM_IRRIGATION | POT_IRRIGATION | ALL_IRRIGATION
+                            CONST_LAI_MAX | LAIMAX_INTERPOLATE | LAIMAX_CFT
+                            NO_RESERVOIR | RESERVOIR
+                            NO_GRASS_FIXED_PFT | GRASS_FIXED_PFT
+               NO_WATERUSE | WATERUSE | ALL_WATERUSE
+
+          II. Input parameter section
+               LPJ, PFT and soil parameters are defined here. If land
+               use is enabled parameter file for management must be
+               also defined. They are included from the $<I>LPJROOT</I>/<I>par</I>
+               directory:
+               #include "param.conf"
+
+          III. Input data section
+               This section contains filenames of the climate, land
+               use, and  river routing data. Data file have to be in
+               the clm data format and are created from binary files
+               by the <B>cru2clm</B> (climate data), <B>grid2clm</B> (grid
+               coordinates) and <B>cft2clm</B> (land use data) command:
+
+               CDF variable (string) soilcode filename (string) | RAW|CLM|CLM2|META soil filename (string)
+                                                                  RAW|CLM|CLM2|META coordinates filename (string)
+               #ifdef WITH_LANDUSE
+               RAW|CLM|CLM2|META country and region code filename (string) | CDF variable (string) country code filename (string)
+                                                                      | CDF variable (string) region code filename (string)
+               RAW|CLM|CLM2|META land use data filename (string) | CDF variable (string) land use data filename (string)
+               #ifdef READ_SDATES
+               RAW|CLM|CLM2|CDF|META  sowing dates filename (string)
+               #endif
+               #ifdef WITH_FIXED_GRASS_PFT
+               RAW  grass fixed filename (string)
+               #endif
+               #endif
+               #ifdef RIVER_ROUTING
+               RAW|CLM|CLM2|CDF|META lake fraction filename (string)
+               RAW|CLM|META river routing filename (string)
+               #ifdef WITH_LANDUSE
+               RAW|CLM|CLM2|CDF|META neighbor irrigation filename (string)
+               #ifdef WITH_RESERVOIRS
+               RAW|CLM|CLM2|CDF|META elevation filename (string)
+               RAW|CLM|CLM2|META reservoir info filename (string)
+               #endif
+               #endif
+               #endif
+               RAW|CLM|CLM2|CDF|META temperature data filename (string)
+               RAW|CLM|CLM2|CDF|META precipitation data filename (string)
+               #ifdef USE_RADIATION
+               RAW|CLM|CLM2|CDF|META long wave net flux data filename (string)
+               RAW|CLM|CLM2|CDF|META short wave down flux data filename (string)
+               #else
+               RAW|CLM|CLM2|CDF|META cloudiness data filename (string)
+               #endif
+               #ifdef WITH_SPITFIRE
+               RAW|CLM|CLM2|CDF|META windspeed data filename (string)
+               RAW|CLM|CLM2|CDF|META temperature amplitude data filename (string) | CDF minimum temperature data filename  (string)
+                                                                                    CDF maximum temperature data filename (string)
+               RAW|CLM|CLM2|CDF|META lightning data filename (string)
+               RAW|CLM|CLM2|CDF|META human ignition data filename (string)
+               #endif
+               #if defined(WITH_SPITFIRE) || defined(WITH_FIREWOOD)
+               #endif
+               RAW|CLM|CLM2|CDF|META population density filename (string)
+               #ifdef USE_BURNTAREA
+               RAW|CLM|CLM2|CDF|META burnt area filename (string)
+               #endif
+               #ifdef USE_LANDCOVER
+               RAW|CLM|CLM2|CDF|META land cover filename (string)
+               #endif
+               TXT CO2 data filename (string)
+               #ifdef ISRANDOM
+               RAW|CLM|CLM2|CDF|META number of wet days filename (string)
+               #endif
+
+          IV. Output data section
+               Output variables are defined in the output section of
+               then LPJmL configuration file. Definition has to be in
+               the format
+
+               GRIDBASED|PFTBASED
+               VARIABLE1 RAW|TXT|CLM|CDF filename1 (string)
+               VARIABLE2 RAW|TXT|CLM|CDF filename2 (string)
+                ...
+               END
+
+               If daily output is set a PFT index must be included
+               after the end of the output variable section:
+
+               #ifdef DAILY_OUTPUT
+               PFT index (int)
+               DAILY_RAINFED|DAILY_IRRIG
+               #endif
+
+          V. Run settings section
+               In the last section the first grid cell and the number
+               of grid cells have to be specified as well as the first
+               and last simulation year:
+
+               ALL | index of first cell (int) index of last years (int)
+               0 | Number of spinup years (int) cycle length during spinup (int)
+               first year of simulation (int)
+               last year of simulation (int)
+               NO_RESTART | RESTART restart filename  (string)
+               NO_RESTART | RESTART restart filename (string) year file is written (int)
+
+        <B>Output</B> <B>variables</B>
+          The following variables are defined:
+
+
+          FIREC
+            fire carbon emissions (gC/m2)
+
+          FIREF
+            fire frequency (1/yr)
+
+          VEGC
+            natural vegetation carbon (gC/m2)
+
+          SOILC
+            natural soil carbon (gC/m2)
+
+          LITC
+            natural litter carbon (gC/m2)
+
+          MG_VEGC
+            managed vegetation carbon (gC/m2)
+
+          MG_SOILC
+            managed soil carbon (gC/m2)
+
+          MG_LITC
+            managed litter carbon (gC/m2)
+
+          APREC
+            annual precipitation (mm)
+
+          INPUT_LAKE
+            Lake influx (hm3/yr)
+
+          ADISCHARGE
+            annual discharge (hm3/yr)
+
+          FLUX_ESTAB
+            establishment flux (gC/m2)
+
+          HARVEST
+            harvest flux (gC/m2)
+
+          PFT_LITC
+            PFT-specific litter carbon (gC/m2)
+
+          MNPP
+            monthly NPP (gC/m2}
+
+          MGPP
+            monthly GPP (gC/m2}
+
+          D_NPP
+            daily NPP (gC/m2}
+
+          D_DAYLENGTH
+            day length (h}
+
+          MRH
+            monthly respiration
+
+          MTRANSP
+            monthly transpiration (mm)
+
+          MRUNOFF
+            monthly runoff (mm)
+
+          MDISCHARGE
+            monthly discharge (hm3/d)
+
+          MWATERAMOUNT
+            mean monthly water amount (hm3)
+
+          MEVAP
+            monthly evaporation (mm)
+
+          MINTERC
+            monthly interception (mm)
+
+          MSWC1
+            monthly soil water layer 1
+
+          MSWC2
+            monthly soil water layer 2
+
+          MIRRIG
+            monthly irrigation (mm)
+
+          MRETURN_FLOW_B
+            monthly blue water (mm)
+
+          MEVAP_LAKE
+            Lake evaporation (mm)
+
+          MFIREC
+            Monthly fire carbon (gC/m2)
+
+          MNFIRE
+
+          Monthly fire
+
+          MFIREDI
+            Monthly fire danger index
+
+          MFIREEMISSSION
+            Monthly fire emissions
+
+     D_GROWINGDAY, D_PVD, D_PHU, D_FPHU, D_LAIMAXAD, D_LAINPPDEF,
+     D_HUSUM, D_VDSUM, D_WSCAL, D_NPP, D_GPP, D_RD, D_RROOT, D_RSO,
+     D_RPOOL, D_GRESP, D_TRANS, D_EVAP, D_PREC, D_PERC, D_IRRIG, D_W0,
+     D_W1, D_WEVAP, D_HI, D_FHIOPT, D_HIMIND, D_FROOT, D_TEMP, D_SUN,
+     D_PAR, D_PET
+          D_LAI, D_PHEN, D_CLEAF, D_CROOT, D_CSO, D_CPOOL, D_WDF,
+            Daily output data.
+
+
+     <B>AUTHORS</B>
+          For authors and contributors see AUTHORS file
+
+
+     <B>COPYRIGHT</B>
+          (C) Potsdam Institute for Climate Impact Research (PIK), see
+          COPYRIGHT file
+
+
+     <B>SEE</B> <B>ALSO</B>
+          <B><A HREF="lpjml.html">lpjml(1)</A></B>, <B><A HREF="cru2clm.html">cru2clm(1)</A></B>, <B><A HREF="grid2clm.html">grid2clm(1)</A></B>, <B><A HREF="cft2clm.html">cft2clm(1)</A></B>, <B><A HREF="lpj.conf.html">lpj.conf(5)</A></B>,
+          <B><A HREF="clm.html">clm(5)</A></B>
+
+
+
+</PRE>
+<HR>
+<ADDRESS>
+Man(1) output converted with
+<a href="http://www.oac.uci.edu/indiv/ehood/man2html.html">man2html</a>
+</ADDRESS>
+</BODY>
+</HTML>

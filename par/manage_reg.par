@@ -1,0 +1,500 @@
+/**************************************************************************************/
+/**                                                                                \n**/
+/**       m a n a g e _ r e g .  p  a  r                                           \n**/
+/**                                                                                \n**/
+/**     management parameter data with maximum LAI values for all crops            \n**/
+/**     (subnational information is available) LPJmL Version 4.0.002               \n**/
+/**                                                                                \n**/
+/** (C) Potsdam Institute for Climate Impact Research (PIK), see COPYRIGHT file    \n**/
+/** authors, and contributors see AUTHORS file                                     \n**/
+/** This file is part of LPJmL and licensed under GNU AGPL Version 3               \n**/
+/** or later. See LICENSE file or go to http://www.gnu.org/licenses/               \n**/
+/** Contact: https://github.com/PIK-LPJmL/LPJmL                                    \n**/
+/**                                                                                \n**/
+/**************************************************************************************/
+
+#include "../include/managepar.h"
+
+472  /* Number of countries + subnational regional information for Australia, Brazil, Canada, China, India and US */
+/*1. biofuel [0-1]  2. bif[0-1]  3. wood+charcoal consumption kgDM/capita/day*/
+
+		/*biofuel*/	/*bif*/	/*wood+charcoal consumption kgDM/cap/day*/
+Afghanistan	"Afghanistan"	0.35906	0.11066	0.80078
+Aland_Islands  "Aland Islands" 0.00000	0.00000	0.00000
+Albania	"Albania"	0.00000	0.00100	0.22563
+Algeria	"Algeria"	0.00042	0.00428	0.91990
+American_Samoa	"American Samoa"	0.00000	0.00000	0.00000
+Angola	"Angola"	0.03306	0.14335	2.43207
+Anguilla "Anguilla"  0.00000	0.00000	0.00000
+Antigua_and_Barbuda  "Antigua and Barbuda" 0.00000	0.00000	0.00000
+Argentina	"Argentina"	0.01755	0.01570	0.30475
+Armenia	"Armenia"	0.00000	0.00200	0.10949
+Austria	"Austria"	0.00000	0.00000	0.00000
+Azerbaijan	"Azerbaijan"	0.00000	0.00600	0.00837
+Bahamas_The	"Bahamas, The"	0.00000	0.00000	0.00000
+Bahrain "Bahrain"  0.00000	0.00000	0.00000
+Bangladesh	"Bangladesh"	0.30300	0.09157	0.38706
+Barbados "Barbados"  0.00000	0.00000	0.00000
+Belgium	"Belgium"	0.00000	0.00000	0.00000
+Belize	"Belize"	0.50798	0.49202	2.62774
+Benin	"Benin"	0.07427	0.13555	1.73694
+Bermuda "Bermuda"  0.00000	0.00000	0.00000
+Bhutan	"Bhutan"	0.69010	0.30990	5.00000
+Bolivia	"Bolivia"	0.03239	0.02827	0.88462
+Bosnia_and_Herzegovina	"Bosnia and Herzegovina"	0.00000	0.01000	0.59101
+Botswana	"Botswana"	0.27856	0.36729	2.72224
+British_Indian_Ocean_Territory "British Indian Ocean Territory" 0.35906	0.11066	0.80078
+Brunei	"Brunei"	0.00000	0.00000	1.44660
+Bulgaria	"Bulgaria"	0.00000	0.05000	0.47057
+Burkina_Faso	"Burkina Faso"	0.16987	0.14062	1.83628
+Burundi	"Burundi"	0.11478	0.26504	1.10245
+Byelarus	"Byelarus"	0.00000	0.00200	0.25645
+Cambodia	"Cambodia"	0.12591	0.52598	2.80863
+Cameroon	"Cameroon"	0.02212	0.11835	1.42345
+Cape_Verde	"Cape Verde"	0.00000	0.00000	0.00000
+Cayman_Islands	"Cayman Islands"	0.00000	0.00000	0.00000
+Central_African_Republic	"Central African Republic"	0.02908	0.11496	2.70661
+Chad	"Chad"	0.16942	0.10344	0.73502
+Chile	"Chile"	0.00130	0.00058	0.94040
+Christmas_Island "Christmas Island"  0.35906	0.11066	0.80078
+Cocos_Keeling_Islands "Cocos Keeling Islands"  0.35906	0.11066	0.80078
+Colombia	"Colombia"	0.06855	0.15504	1.06625
+Comoros	"Comoros"	0.00000	0.00000	0.00000
+Congo_Brazzaville	"Congo-Brazzaville"	0.30251	0.27828	0.77446
+Cook_Islands	"Cook Islands"	0.00000	0.00000	0.00000
+Costa_Rica	"Costa Rica"	0.27330	0.23003	1.81960
+Croatia	"Croatia"	0.00000	0.00500	0.87574
+Cuba	"Cuba"	0.54273	0.45727	1.13574
+Curacao "Curacao"  0.05813	0.05671	0.21474
+Cyprus	"Cyprus"	0.00000	0.00000	0.00000
+Czech_Republic	"Czech Republic"	0.00000	0.00000	0.31695
+Denmark	"Denmark"	0.00000	0.00000	0.00000
+Djibouti	"Djibouti"	0.00000	0.00000	1.51312
+Dominica "Dominica" 0.00000	0.00000	0.00000
+Dominican_Republic	"Dominican Republic"	0.43256	0.37491	0.55250
+Ecuador	"Ecuador"	0.15889	0.14994	0.60073
+Egypt	"Egypt"	0.66309	0.33691	0.04872
+El_Salvador	"El Salvador"	0.08123	0.15323	1.65498
+Equatorial_Guinea	"Equatorial Guinea"	0.01675	0.01087	5.00000
+Eritrea	"Eritrea"	0.74541	0.07502	1.22422
+Estonia	"Estonia"	0.00000	0.00000	2.83451
+Ethiopia	"Ethiopia"	0.48297	0.04145	1.82423
+Falkland_Islands_or_Islas_Malvinas	"Falkland Islands (Islas Malvinas)"	0.00000	0.00000	0.00000
+Faroe_Islands	"Faroe Islands"	0.00000	0.00000	0.00000
+Federated_States_of_Micronesia	"Federated States of Micronesia"	0.00000	0.00000	0.00000
+Fiji	"Fiji"	0.44118	0.55882	1.08521
+Finland	"Finland"	0.00000	0.00000	0.00000
+France	"France"	0.00000	0.00000	0.00000
+French_Guiana	"French Guiana"	0.00000	0.00000	0.71251
+French_Polynesia	"French Polynesia"	0.00000	0.00000	0.00000
+French_Southern_and_Antarctica_Lands	"French Southern and Antarctica Lands"	0.00000	0.00000	0.00000
+Gabon	"Gabon"	0.05507	0.07737	3.74496
+Gambia_The	"Gambia, The"	0.03233	0.08033	1.86391
+Georgia	"Georgia"	0.00000	0.02000	0.01336
+Germany	"Germany"	0.00000	0.00000	0.00000
+Ghana	"Ghana"	0.02598	0.04775	2.22282
+Greece	"Greece"	0.00000	0.07692	0.32671
+Greenland	"Greenland"	0.00000	0.00000	0.00000
+Grenada "Grenada"  0.00000	0.00000	0.00000
+Guadeloupe	"Guadeloupe"	0.00000	0.00000	0.00000
+Guam "Guam" 	0.00000	0.00000	0.00000
+Guatemala	"Guatemala"	0.20919	0.21380	2.22675
+Guernsey "Guernsey"  0.00000	0.00000	0.00000
+Guinea	"Guinea"	0.08379	0.21697	3.01904
+Guinea_Bissau	"Guinea-Bissau"	0.05205	0.13290	1.95796
+Guyana	"Guyana"	0.23111	0.19823	1.30229
+Haiti	"Haiti"	0.36772	0.32683	1.36530
+Heard_Island_and_McDonald_Islands "Heard Island and McDonald Islands" 0.35906	0.11066	0.80078
+Honduras	"Honduras"	0.08552	0.14333	2.34211
+Hong_Kong "Hong Kong"  0.00000	0.00000	0.00000
+Hungary	"Hungary"	0.00000	0.01700	0.56543
+Iceland	"Iceland"	0.00000	0.00000	0.00000
+Indonesia	"Indonesia"	0.08495	0.40226	1.02335
+Iran	"Iran"	0.02456	0.03325	0.05490
+Iraq	"Iraq"	0.01458	0.03739	0.40096
+Ireland	"Ireland"	0.00000	0.00000	0.00000
+Isle_of_Man "Isle of Man"  0.00000	0.00000	0.00000
+Israel	"Israel"	0.00000	0.09418	0.00140
+Italy	"Italy"	0.00000	0.01400	0.00000
+Ivory_Coast	"Ivory Coast"	0.16329	0.15011	1.85100
+Jamaica	"Jamaica"	0.69321	0.30679	1.37592
+Japan	"Japan"	0.03173	0.01284	0.37851
+Jersey "Jersey"  0.00000	0.00000	0.00000
+Jordan	"Jordan"	0.00007	0.10067	0.05061
+Kazakhstan	"Kazakhstan"	0.00000	0.05000	0.09877
+Kenya	"Kenya"	0.51496	0.08942	2.87340
+Kiribati	"Kiribati"	0.00000	0.00000	0.00000
+Kosovo "Kosovo"  0.00000	0.00800	0.30217
+Kuwait	"Kuwait"	0.00000	0.00000	0.00000
+Kyrgyzstan	"Kyrgyzstan"	0.00000	0.05000	0.00794
+Laos	"Laos"	0.12915	0.39267	1.18865
+Latvia	"Latvia"	0.00000	0.00000	0.00000
+Lebanon	"Lebanon"	0.00000	0.05711	0.01770
+Lesotho	"Lesotho"	0.53954	0.04819	0.11750
+Liberia	"Liberia"	0.09893	0.18841	3.91432
+Libya	"Libya"	0.00153	0.00139	0.06102
+Lithuania	"Lithuania"	0.00000	0.00000	0.78047
+Luxembourg	"Luxembourg"	0.00000	0.00000	0.00000
+Macedonia	"Macedonia"	0.00000	0.00600	0.11329
+Madagascar	"Madagascar"	0.05575	0.38162	1.17540
+Malawi	"Malawi"	0.14333	0.34482	2.38380
+Malaysia	"Malaysia"	0.02772	0.05947	1.21949
+Maldives	"Maldives"	0.00000	0.00000	0.00000
+Mali	"Mali"	0.12722	0.26749	2.02115
+Malta "Malta"  0.00000	0.01400	0.00000
+Marshall_Islands	"Marshall Islands"	0.00000	0.00000	0.00000
+Martinique "Martinique"  0.00000	0.00000	0.00000
+Mauritania	"Mauritania"	0.08241	0.07321	1.52068
+Mauritius	"Mauritius"	0.00000	0.00000	0.00000
+Mayotte "Mayotte"  0.00000	0.00000	0.00000
+Mexico	"Mexico"	0.09130	0.12908	0.61503
+Moldova	"Moldova"	0.00000	0.03300	0.01323
+Mongolia	"Mongolia"	0.11594	0.03393	1.89497
+Montenegro	"Montenegro"	0.00000	0.00000	0.00000
+Montserrat "Montserrat"  0.00000	0.00000	0.00000
+Morocco	"Morocco"	0.01804	0.01003	1.09489
+Mozambique	"Mozambique"	0.07314	0.07281	2.74699
+Myanmar_or_Burma	"Myanmar (Burma)"	0.07044	0.23689	1.81601
+Namibia	"Namibia"	0.13242	0.02511	1.03832
+Nauru "Nauru"  0.35906	0.11066	0.80078
+Nepal	"Nepal"	0.41857	0.58144	1.48184
+Netherlands	"Netherlands"	0.00000	0.00000	0.00000
+New_Caledonia	"New Caledonia"	0.00000	0.00000	0.00000
+New_Zealand	"New Zealand"	0.00000	0.00000	0.00000
+Nicaragua	"Nicaragua"	0.10357	0.10233	1.56957
+Niger	"Niger"	0.27794	0.05528	1.42828
+Nigeria	"Nigeria"	0.08895	0.07199	1.79607
+Niue "Niue"   0.35906	0.11066	0.80078
+No_Land "No Land" 0.00000	0.00000	0.00000
+Norfolk_Island "Norfolk Island" 0.35906	0.11066	0.80078
+North_Korea	"North Korea"	0.07995	0.00076	0.48002
+Northern_Mariana_Islands	"Northern Mariana Islands"	0.00000	0.00000	0.00000
+Norway	"Norway"	0.00000	0.00000	0.00000
+Oman	"Oman"	0.00000	0.00000	0.00000
+Pakistan	"Pakistan"	0.39200	0.26690	0.41342
+Palau "Palau" 0.00000	0.00000	0.00000
+Panama	"Panama"	0.09064	0.05576	0.93476
+Papua_New_Guinea	"Papua New Guinea"	0.13663	0.16322	4.13393
+Paraguay	"Paraguay"	0.05219	0.21175	3.06860
+Peru	"Peru"	0.05511	0.05428	1.54153
+Philippines	"Philippines"	0.06729	0.31153	1.36854
+Pitcairn_Islands	"Pitcairn Islands"	0.00000	0.00000	0.00000
+Poland	"Poland"	0.00000	0.00000	0.26080
+Portugal	"Portugal"	0.00000	0.07417	0.00000
+Puerto_Rico	"Puerto Rico"	0.00000	0.15000	0.00000
+Qatar	"Qatar"	0.00000	0.00000	0.00000
+Reunion	"Reunion"	0.63152	0.36848	0.08576
+Romania	"Romania"	0.00000	0.05000	0.30223
+Rwanda	"Rwanda"	0.20965	0.10924	1.47763
+Saint_Helena_Ascension_and_Tristan_da_Cunha "Saint Helena Ascension and Tristan da Cunha" 0.35906	0.11066	0.80078
+Saint_Kitts_and_Nevis "Saint Kitts and Nevis"  0.00000	0.00000	0.00000
+Saint_Lucia "Saint Lucia"  0.00000	0.00000	0.00000
+Saint_Pierre_and_Miquelon "Saint Pierre and Miquelon"  0.00000	0.00000	0.00000
+Sao_Tome_and_Principe	"Sao Tome and Principe"	0.00000	0.00000	0.00000
+Saudi_Arabia	"Saudi Arabia"	0.01852	0.17855	0.00410
+Senegal	"Senegal"	0.11416	0.09828	1.15874
+Serbia	"Serbia"	0.00000	0.00800	0.30217
+Seychelles "Seychelles"  0.35906	0.11066	0.80078
+Sierra_Leone	"Sierra Leone"	0.17218	0.61085	2.41938
+Singapore "Singapore"  0.02772	0.05947	1.21949
+Slovakia	"Slovakia"	0.00000	0.00100	0.20343
+Slovenia	"Slovenia"	0.00000	0.00000	0.64438
+Solomon_Islands	"Solomon Islands"	0.00000	0.00000	4.24971
+Somalia	"Somalia"	0.13825	0.09943	1.39619
+South_Africa	"South Africa"	0.07265	0.07213	0.98926
+South_Georgia_and_the_South_Sandwich_Islands	"South Georgia and the South Sandwich Islands"	0.00000	0.00000	0.00000
+South_Korea	"South Korea"	0.07410	0.00000	0.22150
+South_Sudan "South Sudan" 0.11146	0.13850	4.24069
+Spain	"Spain"	0.00000	0.07417	0.00000
+Sri_Lanka	"Sri Lanka"	0.13235	0.32731	1.26903
+St_Vincent_and_the_Grenadines	"St. Vincent and the Grenadines"	0.00000	0.00000	0.00000
+Sudan	"Sudan"	0.11146	0.13850	4.24069
+Suriname	"Suriname"	0.00000	0.00000	0.64222
+Svalbard	"Svalbard"	0.00000	0.00000	0.00000
+Swaziland	"Swaziland"	0.43988	0.56012	1.41698
+Sweden	"Sweden"	0.00000	0.00000	0.00000
+Switzerland	"Switzerland"	0.00000	0.00000	0.00000
+Syria	"Syria"	0.00864	0.05600	0.12314
+Taiwan	"Taiwan"	0.00000	0.00000	0.23449
+Tajikistan	"Tajikistan"	0.00000	0.05000	0.10164
+Tanzania_United_Republic_of	"Tanzania, United Republic of"	0.13321	0.32095	4.51281
+Thailand	"Thailand"	0.14599	0.56047	1.44684
+Timor_Leste "Timor Leste"  0.08495	0.40226	1.02335
+Togo	"Togo"	0.03595	0.03820	1.48561
+Tokelau	"Tokelau"	0.00000	0.00000	0.00000
+Tonga "Tonga"  0.35906	0.11066	0.80078
+Trinidad_and_Tobago	"Trinidad and Tobago"	0.00523	0.00490	0.02336
+Tunisia	"Tunisia"	0.00000	0.00215	0.42326
+Turkey	"Turkey"	0.10973	0.11498	0.95439
+Turkmenistan	"Turkmenistan"	0.00000	0.05000	0.00083
+Turks_and_Caicos_Islands "Turks and Caicos Islands" 0.00000	0.00000	0.00000
+Tuvalu	"Tuvalu"	0.00000	0.00000	0.00000
+Uganda	"Uganda"	0.03395	0.08466	2.90816
+Ukraine	"Ukraine"	0.00000	0.20000	0.13240
+United_Arab_Emirates	"United Arab Emirates"	0.00000	0.00000	0.00000
+United_Kingdom	"United Kingdom"	0.00000	0.00000	0.00000
+United_States_Minor_Outlying_Islands "United States Minor Outlying Islands" 0.00000	0.00000	0.00000
+Uruguay	"Uruguay"	0.01315	0.00927	1.39597
+Uzbekistan	"Uzbekistan"	0.00000	0.05000	0.00184
+Vanuatu	"Vanuatu"	0.00000	0.00000	5.00000
+Venezuela	"Venezuela"	0.05813	0.05671	0.21474
+Vietnam	"Vietnam"	0.44792	0.41436	1.14632
+Virgin_Islands	"Virgin Islands"	0.00000	0.00000	0.00000
+Wallis_and_Futuna "Wallis and Futuna" 0.35906	0.11066	0.80078
+West_Bank	"West Bank"	0.00000	0.21180	0.00000
+Western_Sahara	"Western Sahara"	0.00000	0.00000	0.07276
+Western_Samoa	"Western Samoa"	0.00000	0.00000	0.00000
+Yemen	"Yemen"	0.03105	0.15690	1.23362
+Zaire_DR_Congo	"DR Congo, former Zaire"	0.02176	0.05141	1.97254
+Zambia	"Zambia"	0.02727	0.16858	5.00000
+Zimbabwe	"Zimbabwe"	0.09445	0.62188	1.47056
+/*Australia*/
+New_South_Wales	"New South Wales"	0.00000	0.06864	0.00000
+Northern_Territory	"Northern Territory"	0.00000	0.06864	0.00000
+Queensland	"Queensland"	0.00000	0.06864	0.00000
+South_Australia	"South Australia"	0.00000	0.06864	0.00000
+Tasmania	"Tasmania"	0.00000	0.06864	0.00000
+Victoria	"Victoria"	0.00000	0.06864	0.00000
+Western_Australia	"Western Australia"	0.00000	0.06864	0.00000
+/*Brazil*/
+Acre	"Acre"	0.00000	0.00000	5.00000
+Alagoas	"Alagoas"	0.19384	0.80616	2.85601
+Amapa	"Amapa"	0.00000	0.00000	2.95871
+Amazonas	"Amazonas"	0.98622	0.01378	3.22971
+Bahia	"Bahia"	0.22669	0.01449	3.46495
+Ceara	"Ceara"	0.00000	0.00000	3.30229
+Distrito_Federal	"Distrito Federal"	0.00000	0.00000	0.04597
+Espirito_Santo	"Espirito Santo"	0.79686	0.20314	2.42549
+Goias	"Goias"	0.17046	0.02680	1.86875
+Litigated_Zone	"Litigated Zone"	0.00000	0.00000	0.82950
+Mato_Grosso_do_Sul	"Mato Grosso do Sul"	0.14285	0.17214	3.57657
+Minas_Gerais	"Minas Gerais"	0.20460	0.10528	2.07869
+Mato_Grosso	"Mato Grosso"	0.14448	0.01849	4.07424
+Maranhao	"Maranhao"	0.96278	0.03722	4.43092
+Paraiba	"Paraiba"	0.69143	0.30857	1.83297
+Parana	"Parana"	0.60770	0.39230	2.97544
+Para	"Para"	0.60321	0.03053	2.14108
+Piaui	"Piaui"	0.68951	0.05999	4.48049
+Pernambuco	"Pernambuco"	0.36626	0.63374	4.88589
+Rio_de_Janeiro	"Rio de Janeiro"	0.35696	0.64304	0.60464
+Rio_Grande_do_Norte	"Rio Grande do Norte"	0.00000	0.00000	2.70738
+Rio_Grande_do_Sul	"Rio Grande do Sul"	0.11823	0.01426	2.00089
+Rondonia	"Rondonia"	0.99375	0.00625	3.87257
+Roraima	"Roraima"	0.00000	0.00000	5.00000
+Santa_Catarina	"Santa Catarina"	0.40862	0.05644	2.53665
+Sao_Paulo	"Sao Paulo"	0.15018	0.84982	0.68468
+Sergipe	"Sergipe"	0.52288	0.47712	2.76799
+Tocantins	"Tocantins"	0.41279	0.04072	5.00000
+/*Canada*/
+Alberta	"Alberta"	0.00000	0.09000	0.00000
+British_Columbia	"British Columbia"	0.00000	0.00000	0.00000
+Manitoba	"Manitoba"	0.00000	0.09000	0.00000
+New_Brunswick	"New Brunswick"	0.00000	0.00000	0.00000
+Nova_Scotia	"Nova Scotia"	0.00000	0.00000	0.00000
+Northwest_Territories	"Northwest Territories"	0.00000	0.00000	0.00000
+Newfoundland	"Newfoundland"	0.00000	0.00000	0.00000
+Ontario	"Ontario"	0.00000	0.00000	0.00000
+Prince_Edward_Island	"Prince Edward Island"	0.00000	0.00000	0.00000
+Quebec	"Quebec"	0.00000	0.00000	0.00000
+Saskatchewan	"Saskatchewan"	0.00000	0.09000	0.00000
+Yukon_Territory	"Yukon Territory"	0.00000	0.00000	0.00000
+/*China*/
+Anhui_Sheng	"Anhui Sheng"	0.68602	0.01090	0.46982
+Beijing_Shi	"Beijing Shi"	0.98727	0.01273	0.02474
+Fujian_Sheng	"Fujian Sheng"	0.97549	0.02451	1.43226
+Gansu_Sheng	"Gansu Sheng"	0.50034	0.00662	0.27780
+Guangdong_Sheng	"Guangdong Sheng"	0.88057	0.03386	0.40733
+Guangxizhuangzu_Zizhiqu	"Guangxizhuangzu Zizhiqu"	0.91869	0.05631	1.23645
+Guizhou_Sheng	"Guizhou Sheng"	0.47731	0.00968	1.91977
+Hainan_Sheng	"Hainan Sheng"	0.48712	0.01865	0.67215
+Hebei_Sheng	"Hebei Sheng"	0.98798	0.01202	0.15130
+Heilongjiang_Sheng	"Heilongjiang Sheng"	0.26869	0.00737	0.37452
+Henan_Sheng	"Henan Sheng"	0.98660	0.01341	0.48699
+Hongkong	"Hongkong"	0.00000	0.00000	0.00000
+Hubei_Sheng	"Hubei Sheng"	0.93964	0.01606	0.60966
+Hunan_Sheng	"Hunan Sheng"	0.65521	0.01248	0.81120
+Jiangsu_Sheng	"Jiangsu Sheng"	0.98528	0.01472	0.12690
+Jiangxi_Sheng	"Jiangxi Sheng"	0.60065	0.01252	1.24909
+Jilin_Sheng	"Jilin Sheng"	0.33848	0.01414	0.41061
+Liaoning_Sheng	"Liaoning Sheng"	0.98603	0.01397	0.47038
+Neimenggu_Zizhiqu	"Neimenggu Zizhiqu"	0.43291	0.00607	1.13309
+Ningxiahuizu_Zizhiqu	"Ningxiahuizu Zizhiqu"	0.99003	0.00997	0.19329
+Qinghai_Sheng	"Qinghai Sheng"	0.98974	0.01026	0.31038
+Shaanxi_Sheng	"Shaanxi Sheng"	0.67960	0.00869	1.02968
+Shandong_Sheng	"Shandong Sheng"	0.98736	0.01264	0.49921
+Shanghai_Shi	"Shanghai Shi"	0.92859	0.01948	0.00000
+Shanxi_Sheng	"Shanxi Sheng"	0.76986	0.00863	0.26271
+Sichuan_Sheng	"Sichuan Sheng"	0.98295	0.01705	0.99329
+Tianjin_Shi	"Tianjin Shi"	0.98640	0.01360	0.02326
+Xinjiangweiwu_erzu_Zizhiqu	"Xinjiangweiwu'erzu Zizhiqu"	0.98692	0.01308	0.43457
+Xizang_Zizhiqu	"Xizang Zizhiqu"	0.39786	0.02855	0.57795
+Yunnan_Sheng	"Yunnan Sheng"	0.42849	0.02885	1.61375
+Zhejiang_Sheng	"Zhejiang Sheng"	0.55334	0.00891	0.87400
+/*India*/
+Andaman_and_Nicobar_Islands	"Andaman and Nicobar Islands"	0.00000	0.00000	0.00000
+Andhra_Pradesh	"Andhra Pradesh"	0.30937	0.11703	0.96169
+Arunachal_Pradesh	"Arunachal Pradesh"	0.33332	0.34343	3.04012
+Assam	"Assam"	0.43789	0.56211	1.69993
+Bihar	"Bihar"	0.43217	0.56783	0.77854
+Chandigarh	"Chandigarh"	0.36775	0.19408	0.17596
+Gujarat	"Gujarat"	0.10100	0.09034	0.53992
+Haryana	"Haryana"	0.50579	0.49421	0.38256
+Himachal_Pradesh	"Himachal Pradesh"	0.00000	1.00000	0.76177
+Jammu_and_Kashmir	"Jammu and Kashmir"	0.35518	0.37390	0.61677
+Karnataka	"Karnataka"	0.21061	0.10997	0.73006
+Kerala	"Kerala"	0.00000	0.00000	0.64647
+Madhya_Pradesh	"Madhya Pradesh"	0.12956	0.19143	1.06487
+Maharashtra	"Maharashtra"	0.17294	0.13171	0.77972
+Manipur	"Manipur"	0.74438	0.25562	1.49169
+Meghalaya	"Meghalaya"	0.90393	0.09607	0.62021
+Mizoram	"Mizoram"	0.00000	0.00000	1.26281
+Nagaland	"Nagaland"	0.00000	0.00000	1.02587
+Orissa	"Orissa"	0.50357	0.49643	1.98545
+Punjab	"Punjab"	0.16523	0.24004	0.32405
+Rajasthan	"Rajasthan"	0.15188	0.15217	0.73199
+Sikkim	"Sikkim"	0.00000	0.00000	1.39877
+Tamil_Nadu	"Tamil Nadu"	0.47088	0.19429	0.86004
+Tripura	"Tripura"	0.42518	0.16538	1.12889
+Uttar_Pradesh	"Uttar Pradesh"	0.25731	0.74269	0.33465
+West_Bengal	"West Bengal"	0.54825	0.45175	0.83462
+/*Russia*/
+Adygea	"Adygea"	0.00000	0.04000	0.57249
+Aga_Buryatia	"Aga Buryatia"	0.00000	0.00000	0.57249
+Altay	"Altay"	0.00000	0.04000	0.57249
+Amur	"Amur"	0.00000	0.00000	0.57249
+Arctic_Island	"Arctic Island"	0.00000	0.00000	0.57249
+Arkhangelsk	"Arkhangelsk"	0.00000	0.00000	0.57249
+Astrakhan	"Astrakhan"	0.00000	0.04000	0.57249
+Bashkortostan	"Bashkortostan"	0.00000	0.04000	0.57249
+Belgorod	"Belgorod"	0.00000	0.10000	0.57249
+Bryansk	"Bryansk"	0.00000	0.10000	0.57249
+Buryatia	"Buryatia"	0.00000	0.00000	0.57249
+Chechnya	"Chechnya"	0.00000	0.04000	0.57249
+Chelyabinsk	"Chelyabinsk"	0.00000	0.04000	0.57249
+Chita	"Chita"	0.00000	0.00000	0.57249
+Chukotka	"Chukotka"	0.00000	0.00000	0.57249
+Chuvashia_or_Chavash	"Chuvashia (Chavash)"	0.00000	0.04000	0.57249
+Dagestan	"Dagestan"	0.00000	0.04000	0.57249
+Evenk	"Evenk"	0.00000	0.00000	0.57249
+Irkutsk	"Irkutsk"	0.00000	0.04000	0.57249
+Ivanovo	"Ivanovo"	0.00000	0.04000	0.57249
+Jewish	"Jewish"	0.00000	0.00000	0.57249
+Kabardino_Balkaria	"Kabardino-Balkaria"	0.00000	0.04000	0.57249
+Kaliningrad	"Kaliningrad"	0.00000	0.04000	0.57249
+Kalmykia_Khalmg_Tan	"Kalmykia - Khalmg Tan"	0.00000	0.04000	0.57249
+Kaluga	"Kaluga"	0.00000	0.10000	0.57249
+Kamchatka	"Kamchatka"	0.00000	0.00000	0.57249
+Karachay_Cherkessia	"Karachay-Cherkessia"	0.00000	0.04000	0.57249
+Karelia	"Karelia"	0.00000	0.00000	0.57249
+Kemerovo	"Kemerovo"	0.00000	0.04000	0.57249
+Khabarovsk	"Khabarovsk"	0.00000	0.04000	0.57249
+Khakassia	"Khakassia"	0.00000	0.04000	0.57249
+Khant_Mansiysk	"Khant-Mansiysk"	0.00000	0.00000	0.57249
+Kirov	"Kirov"	0.00000	0.04000	0.57249
+Komi	"Komi"	0.00000	0.00000	0.57249
+Komi_Permyak	"Komi-Permyak"	0.00000	0.04000	0.57249
+Koryak	"Koryak"	0.00000	0.00000	0.57249
+Kostroma	"Kostroma"	0.00000	0.04000	0.57249
+Krasnodar	"Krasnodar"	0.00000	0.10000	0.57249
+Krasnoyarsk	"Krasnoyarsk"	0.00000	0.00000	0.57249
+Kurgan	"Kurgan"	0.00000	0.04000	0.57249
+Kursk	"Kursk"	0.00000	0.10000	0.57249
+Leningrad	"Leningrad"	0.00000	0.04000	0.57249
+Lipetsk	"Lipetsk"	0.00000	0.10000	0.57249
+Magadan	"Magadan"	0.00000	0.00000	0.57249
+Mari_El	"Mari El"	0.00000	0.04000	0.57249
+Mordovia	"Mordovia"	0.00000	0.04000	0.57249
+Moscow	"Moscow"	0.00000	0.00000	0.57249
+Murmansk	"Murmansk"	0.00000	0.00000	0.57249
+Nenetsk	"Nenetsk"	0.00000	0.00000	0.57249
+Nizhniy_Novgorod	"Nizhniy Novgorod"	0.00000	0.04000	0.57249
+North_Ossetia_Alani	"North Ossetia - Alani"	0.00000	0.04000	0.57249
+Novgorod	"Novgorod"	0.00000	0.04000	0.57249
+Novosibirsk	"Novosibirsk"	0.00000	0.04000	0.57249
+Omsk	"Omsk"	0.00000	0.04000	0.57249
+Orel	"Orel"	0.00000	0.10000	0.57249
+Orenburg	"Orenburg"	0.00000	0.04000	0.57249
+Penza	"Penza"	0.00000	0.04000	0.57249
+Perm	"Perm"	0.00000	0.04000	0.57249
+Primorskiy	"Primorskiy"	0.00000	0.04000	0.57249
+Pskov	"Pskov"	0.00000	0.10000	0.57249
+Rostov	"Rostov"	0.00000	0.10000	0.57249
+Ryazan	"Ryazan"	0.00000	0.04000	0.57249
+Sakha_or_Yakutia	"Sakha (Yakutia)"	0.00000	0.00000	0.57249
+Sakhalin	"Sakhalin"	0.00000	0.00000	0.57249
+Samara	"Samara"	0.00000	0.04000	0.57249
+Saratov	"Saratov"	0.00000	0.04000	0.57249
+Smolensk	"Smolensk"	0.00000	0.10000	0.57249
+St_Petersburg	"St Petersburg"	0.00000	0.00000	0.57249
+Stavropol	"Stavropol"	0.00000	0.04000	0.57249
+Sverdlovsk	"Sverdlovsk"	0.00000	0.04000	0.57249
+Tambov	"Tambov"	0.00000	0.04000	0.57249
+Tatarstan	"Tatarstan"	0.00000	0.04000	0.57249
+Taymyr_or_Dolgano_Nenets	"Taymyr (Dolgano-Nenets)"	0.00000	0.00000	0.57249
+Tomsk	"Tomsk"	0.00000	0.04000	0.57249
+Tula	"Tula"	0.00000	0.10000	0.57249
+Tver	"Tver"	0.00000	0.04000	0.57249
+Tyumen	"Tyumen"	0.00000	0.04000	0.57249
+Tyva_or_Tuva	"Tyva (Tuva)"	0.00000	0.04000	0.57249
+Udmurtia	"Udmurtia"	0.00000	0.04000	0.57249
+Ulyanovsk	"Ulyanovsk"	0.00000	0.04000	0.57249
+Ust_Orda_Buryat	"Ust-Orda Buryat"	0.00000	0.00000	0.57249
+Vladimir	"Vladimir"	0.00000	0.04000	0.57249
+Volgograd	"Volgograd"	0.00000	0.04000	0.57249
+Vologda	"Vologda"	0.00000	0.04000	0.57249
+Voronezh	"Voronezh"	0.00000	0.10000	0.57249
+Wrangel_Island	"Wrangel Island"	0.00000	0.00000	0.57249
+Yamalo_Nenetsk	"Yamalo-Nenetsk"	0.00000	0.00000	0.57249
+Yaroslavl	"Yaroslavl"	0.00000	0.04000	0.57249
+water	"water"	0.00000	0.00000	0.00000
+/*United States*/
+Alabama	"Alabama"	0.00000	0.10000	0.00000
+Alaska	"Alaska"	0.00000	0.00000	0.00000
+Arizona	"Arizona"	0.00000	0.02000	0.00000
+Arkansas	"Arkansas"	0.00000	0.15000	0.00000
+California	"California"	0.00000	0.03154	0.00000
+Colorado	"Colorado"	0.00000	0.02000	0.00000
+Connecticut	"Connecticut"	0.00000	0.00000	0.00000
+Delaware	"Delaware"	0.00000	0.00000	0.00000
+Florida	"Florida"	0.00000	0.20000	0.00000
+US_Georgia	"Georgia (US)"	0.00000	0.10000	0.00000
+Hawaii	"Hawaii"	0.00000	0.15000	0.00000
+Idaho	"Idaho"	0.00000	0.00000	0.00000
+Illinois	"Illinois"	0.00000	0.00100	0.00000
+Indiana	"Indiana"	0.00000	0.00100	0.00000
+Iowa	"Iowa"	0.00000	0.00000	0.00000
+Kansas	"Kansas"	0.00000	0.10000	0.00000
+Kentucky	"Kentucky"	0.00000	0.00500	0.00000
+Louisiana	"Louisiana"	0.00000	0.20000	0.00000
+Maine	"Maine"	0.00000	0.00000	0.00000
+Maryland	"Maryland"	0.00000	0.00000	0.00000
+Massachusetts	"Massachusetts"	0.00000	0.00000	0.00000
+Michigan	"Michigan"	0.00000	0.00000	0.00000
+Minnesota	"Minnesota"	0.00000	0.00000	0.00000
+Mississippi	"Mississippi"	0.00000	0.15000	0.00000
+Missouri	"Missouri"	0.00000	0.10000	0.00000
+Montana	"Montana"	0.00000	0.15000	0.00000
+Nebraska	"Nebraska"	0.00000	0.05000	0.00000
+Nevada	"Nevada"	0.00000	0.00000	0.00000
+New_Hampshire	"New Hampshire"	0.00000	0.00000	0.00000
+New_Jersey	"New Jersey"	0.00000	0.00000	0.00000
+New_Mexico	"New Mexico"	0.00000	0.02000	0.00000
+New_York	"New York"	0.00000	0.00000	0.00000
+North_Carolina	"North Carolina"	0.00000	0.05000	0.00000
+North_Dakota	"North Dakota"	0.00000	0.15000	0.00000
+Ohio	"Ohio"	0.00000	0.00000	0.00000
+Oklahoma	"Oklahoma"	0.00000	0.00000	0.00000
+Oregon	"Oregon"	0.00000	0.00500	0.00000
+Pennsylvania	"Pennsylvania"	0.00000	0.00000	0.00000
+Rhode_Island	"Rhode Island"	0.00000	0.00000	0.00000
+South_Carolina	"South Carolina"	0.00000	0.05000	0.00000
+South_Dakota	"South Dakota"	0.00000	0.05000	0.00000
+Tennessee	"Tennessee"	0.00000	0.05000	0.00000
+Texas	"Texas"	0.00000	0.01000	0.00000
+Utah	"Utah"	0.00000	0.00000	0.00000
+Vermont	"Vermont"	0.00000	0.00000	0.00000
+Virginia	"Virginia"	0.00000	0.00500	0.00000
+Washington	"Washington"	0.00000	0.00500	0.00000
+West_Virginia	"West Virginia"	0.00000	0.00000	0.00000
+Wisconsin	"Wisconsin"	0.00000	0.00000	0.00000
+Wyoming	"Wyoming"	0.00000	0.00000	0.00000

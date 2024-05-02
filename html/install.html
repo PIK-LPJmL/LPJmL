@@ -1,0 +1,1460 @@
+<HTML>
+<HEAD>
+<LINK REL="stylesheet" HREF="style.css" TYPE="text/css">
+<TITLE>
+Installing and running LPJmL C Version 4.0.002
+</TITLE>
+</HEAD>
+<BODY>
+<H1>Installing and running  LPJmL C Version 4.0.002</H1>
+
+<H2>Installation for Unix-like systems</h2>
+
+This text describes how to install and run  LPJmL on your system. 
+The code has been tested for AIX, Linux, Mac OS X, and Windows 
+with cygwin and Microsoft C compiler (sequential version without MPI). 
+Cygwin is a Linux-like environment for Windows (<A HREF="http://www.cygwin.com">http://www.cygwin.com</A>)
+On Mac OS the xcode suite must be installed in order to have the gcc 
+compiler.</p>
+
+create lpj directory:</p>
+<pre class="example">
+mkdir lpjml
+</pre>
+
+Go to lpj directory:</p>
+<pre class="example">
+cd lpjml
+</pre>
+
+untar source and data files</p>
+<pre class="example">
+gzip -cd lpjml-4.0.002.tar.gz|tar -xf -
+</pre>
+
+Directory tree after extracting the tar files:</p>
+<pre class="tree">
+--lpjml
+|
++-config        : OS- and compiler-specific Makefiles
+|
++-bin           : Directory for executables and shell scripts
+|
++-man           : Manual pages root directory
+| |
+| +-man1        : Manual pages for programs and scripts
+| |
+| +-man3        : Manual pages for functions
+| |
+| +-man5        : Manual pages for file formats
+|
++--html         : Documentation and man pages in HTML format
+|
++--par          : Parameter files for PFTs and soils
+|
++--lib          : library files (created by make)
+|
++--include      : include files
+|
++--src          : source tree
+   |
+   +--numeric   : source for numerical routines
+   |
+   +--tools     : source for tools
+   |
+   +--pnet      : source for library for distributed networks
+   |
+   +--climate   : climate code 
+   |
+   +--lpj       : lpj functions
+   |
+   +--soil      : soil code
+   |
+   +--grass     : grass PFT code
+   |
+   +--tree      : tree PFT code
+   |
+   +--crop      : crop PFT code
+   |
+   +--landuse   : land use code
+   |
+   +--spitfire  : spitfire fire code
+   |
+   +--reservoir : reservoir code
+   |
+   +--socket    : socket communication library
+   |
+   +--image     : Coupler to IMAGE model
+   |
+   +--netcdf    : NetCDF input/output functions
+   |
+   +--utils     : utility programs
+</pre>
+
+Configure for your operating system</p>
+On the HLRS2015 cluster at PIK you have to set the lpjml module for compilation and linking:
+
+<pre class="example">
+module load lpjml
+</pre>
+
+<pre class="example">
+% ./configure.sh
+Configuring LPJmL 4.0.002...
+Operating system is Linux
+Intel MPI found
+Create executables with make all
+Put . $PWD/bin/lpj_paths.sh in your $HOME/.profile
+</pre>
+The configure script creates scripts <tt>lpj_paths.sh</tt>/<tt>lpj_paths.csh</tt> for the bash/csh shell that sets all necessary environment variables. They are set by invoking
+<pre class="example">
+. bin/lpj_paths.sh
+</pre>
+from the LPJmL root directory. It is recommended to put this statement into your <tt>~./.profile</tt>.
+If configure script exits with message "Unsupported operating system",
+<tt>Makefile.$osname</tt> is created from <tt>Makefile.gcc</tt> and probably has to be 
+modified for your operating system/compiler.
+If the configure script finds a MPI environment a parallel version of <tt>lpjml</tt> is built. This is done by checking for <tt>mpicc</tt>/<tt>mpiicc</tt> in the search path for commands.
+The configure script creates a copy of the following OS-specific makefiles from
+directory <tt>config</tt>:<p>
+<table>
+<tr bgcolor="#ccccff">
+<th>Makefile</th><th>Description<th>
+</tr>
+<tr>
+<td>
+<tt>Makefile.aix
+</td>
+<td>
+IBM AIX settings (xlc compiler)
+</td>
+</tr>
+<tr>
+<td>
+<tt>Makefile.aix_mpi</tt>
+</td>
+<td>
+IBM AIX and MPI environment
+</td>
+</tr>
+<tr>
+<td>
+<tt>Makefile.gcc</tt>
+</td>
+<td>
+GNU C-compiler settings
+</td>
+</tr>
+<tr>
+<td>
+<tt>Makefile.intel</tt>
+</td>
+<td>
+Intel C-compiler settings
+</td>
+</tr>
+<tr>
+<td>
+<tt>Makefile.intel_mpi</tt>
+</td>
+<td>
+Intel C-compiler and Intel MPI settings
+</td>
+</tr>
+<tr>
+<td>
+<tt>Makefile.cluster2015</tt>
+</td>
+<td>
+Intel C-compiler and Intel MPI on cluster2015 at PIK
+</td>
+</tr>
+<tr>
+<td>
+<tt>Makefile.mpich</tt>
+</td>
+<td>
+GNU C-Compiler and MPI Chameleon settings
+</td>
+</tr>
+<tr>
+<td>
+<tt>Makefile.win32</tt>
+</td>
+<td>
+Windows settings (used by <tt>configure.bat</tt>)
+</table>
+
+<h3>Compilation flags</h3>
+
+Compilation of <tt>lpjml</tt> is customized by definition of macros in the <tt>LPJFLAGS</tt>
+section of <tt>Makefile.inc</tt>:
+<pre>
+LPJFLAGS= -Dflag1 ...
+</pre>
+<table>
+<tr bgcolor="#ccccff">
+<th> Flag</th><th>Description<th>
+</tr>
+<tr>
+<td>
+DAILY_ESTABLISHMENT
+</td>
+<td>
+enable daily establishment
+</td>
+</tr>
+<tr>
+<td>
+DEBUG
+</td>
+<td>
+diagnostic output is generated for debugging purposes
+</td>
+</tr>
+<tr>
+<td>
+DOUBLE_HARVEST
+</td>
+<td>
+adding correct sequencing of harvest events
+</td>
+</tr>
+<tr>
+<td>
+IMAGE
+</td>
+<td>
+Coupler to IMAGE model enabled via socket library
+</td>
+</tr>
+<tr>
+<td>
+LINEAR_DECAY
+</td>
+<td>
+use linearized functions for litter decay
+</td>
+</tr>
+<tr>
+<td>
+MICRO_HEATING
+</td>
+<td>
+Enable microbial heating
+</td>
+</tr>
+<tr>
+<td>
+NO_FAIL_BALANCE
+</td>
+<td>
+lpjml does not terminate on balance errors
+</td>
+</tr>
+<tr>
+<td>
+SAFE
+</td>
+<td>
+code is compiled with additional checks
+</td>
+</tr>
+<tr>
+<td>
+STORECLIMATE
+</td>
+<td>
+Store climate input data in memory for spin up phase
+</td>
+</tr>
+<tr>
+<td>
+USE_JSON
+</td>
+<td>
+enable JSON format for LPJmL configuration files
+</td>
+</tr>
+<tr>
+<td>
+USE_MPI
+</td>
+<td>
+compile parallel version of LPJmL
+</td>
+</tr>
+<tr>
+<td>
+USE_NETCDF
+</td>
+<td>
+enable NetCDF input/output
+</td>
+</tr>
+<tr>
+<td>
+USE_NETCDF4
+</td>
+<td>
+enable NetCDF version 4 input/output
+</td>
+</tr>
+<tr>
+<td>
+USE_RAND48
+</td>
+<td>
+use <tt>drand48()</tt> random number generator
+</td>
+</tr>
+<tr>
+<td>
+USE_UDUNITS
+</td>
+<td>
+enable unit conversion in NetCDF files
+</td>
+<tr>
+<td>
+WITH_FPE
+</td>
+<td>
+floating point exceptions are enabled for debugging purposes
+</td>
+</tr>
+</table>
+
+Create executables:</p>
+<pre class="example">
+make    
+</pre>
+
+One executable in directory <tt>bin</tt> is created:</p>
+
+<tt><A HREF="lpjml.html">lpjml</A></tt>    - LPJmL simulation code</p>
+
+Utility programs are compiled by </p>
+<pre class="example">
+make utils
+</pre>
+
+The following programs are created in the <tt>bin</tt> directory:</p>
+<table>
+<tr bgcolor="#ccccff">
+<th> Program</th><th>Description<th>
+</tr>
+<tr>
+<td>
+<A HREF="adddrain.html">
+<tt>adddrain</tt>
+</A>
+</td>
+<td>
+Adds river basin to coordinate file
+<br></td>
+</tr>
+<tr>
+<td>
+<A HREF="asc2clm.html">
+<tt>asc2clm</tt>
+</A>
+</td>
+<td>
+Convert CRU ASCII files to clm data files for LPJmL
+<br></td>
+</tr>
+<tr>
+<td>
+<A HREF="backtrace.html">
+<tt>backtrace</tt>
+</A>
+</td>
+<td>
+Create backtrace from core file
+<br></td>
+</tr>
+<tr>
+<td>
+<A HREF="bin2cdf.html">
+<tt>bin2cdf</tt>
+</A>
+</td>
+<td>
+Convert binary output files into NetCDF files
+<br></td>
+</tr>
+<tr>
+<td>
+<A HREF="catclm.html">
+<tt>catclm</tt>
+</A>
+</td>
+<td>
+Concatenate climate data files
+<br></td>
+</tr>
+<tr>
+<td>
+<A HREF="cdf2bin.html">
+<tt>cdf2bin</tt>
+</A>
+</td>
+<td>
+Convert NetCDF files into raw binary data
+<br></td>
+</tr>
+<tr>
+<td>
+<A HREF="cdf2clm.html">
+<tt>cdf2clm</tt>
+</A>
+</td>
+<td>
+convert NetCDF files into CLM files
+<br></td>
+</tr>
+<tr>
+<td>
+<A HREF="cdf2coord.html">
+<tt>cdf2coord</tt>
+</A>
+</td>
+<td>
+extract CLM grid file from NetCDF file
+<br></td>
+</tr>
+<tr>
+<td>
+<A HREF="cdf2soil.html">
+<tt>cdf2soil</tt>
+</A>
+</td>
+<td>
+convert NetCDF file into binary file
+<br></td>
+</tr>
+
+<tr>
+<td>
+<A HREF="cft2clm.html">
+<tt>cft2clm</tt></A>
+</td>
+<td>
+convert binary land use data files to clm data files for LPJmL
+<br></td>
+</tr>
+<tr>
+<td>
+<A HREF="clm2cdf.html">
+<tt>clm2cdf</tt></A>
+</td>
+<td>
+convert CLM files into NetCDF files
+<br></td>
+</tr>
+<tr>
+<td>
+<A HREF="cru2clm.html">
+<tt>cru2clm</tt>
+</A>
+</td>
+<td>
+convert raw binary data files to clm data files for LPJmL
+<br></td>
+</tr>
+<tr>
+<td>
+<A HREF="cutclm.html">
+<tt>cutclm</tt>
+</A>
+</td>
+<td>
+Cuts climate data files
+<br></td>
+</tr>
+<tr>
+<td>
+<A HREF="grid2clm.html">
+<tt>grid2clm</tt>
+</A>
+</td>
+<td>
+convert grid data file to clm data files for LPJmL
+<br></td>
+</tr>
+<tr>
+<td>
+<A HREF="lpjcat.html">
+<tt>lpjcat</tt>
+</A>
+</td>
+<td>
+Concatenates restart files from distributed LPJmL simulations.
+<br></tr>
+<tr>
+<td>
+<A HREF="lpjcheck.html">
+<tt>lpjcheck</tt>
+</A>
+</td>
+<td>
+Checks syntax of LPJmL configuration files 
+<br></td>
+</tr>
+<tr>
+<td>
+<A HREF="lpj.html">
+<tt>lpj</tt>
+</A>
+</td>
+<td>
+Dynamic global vegetation model with river routing
+<br></td>
+</tr>
+<tr>
+<td>
+<A HREF="lpjfiles.html">
+<tt>lpjfiles</tt>
+</A>
+</td>
+<td>
+Print list of input/output files of LPJmL
+<br></td>
+</tr>
+<tr>
+<td>
+<A HREF="lpjml.html">
+<tt>lpjml</tt>
+</A>
+</td>
+<td>
+Dynamic global vegetation model with managed landuse and river routing
+<br></td>
+</tr>
+<tr>
+<td>
+<A HREF="lpjprint.html">
+<tt>lpjprint</tt>
+</A>
+</td>
+<td>
+Print contents of restart file of LPJmL model runs 
+<br></td>
+</tr>
+<tr>
+<td>
+<A HREF="lpjrun.html">
+<tt>lpjrun</tt>
+</A>
+</td>
+<td>
+Run parallel LPJmL program interactively.
+<br></td>
+</tr>
+<tr>
+<td>
+<A HREF="manage2js.html">
+<tt>manage2js</tt>
+</A>
+</td>
+<td>
+Convert management  *.par files to JSON file
+<br></td>
+</tr>
+<tr>
+<td>
+<A HREF="printclm.html">
+<tt>printclm</tt>
+</A>
+</td>
+<td>
+Print contents of clm files for LPJmL                   
+<br></td>
+</tr>
+<tr>
+<td>
+<A HREF="printclm.html">
+<tt>printheader</tt>
+</A>
+</td>
+<td>
+Print header of clm files for LPJmL                   
+<br></td>
+</tr>
+<tr>
+<td>
+<A HREF="txt2clm.html">
+<tt>txt2clm</tt>
+</A>
+</td>
+<td>
+Convert CRU ASCII files to clm data files for LPJmL
+<br></td>
+</tr>
+<tr>
+<td>
+<A HREF="txt2grid.html">
+<tt>txt2grid</tt> (1)
+</A>
+</td>
+<td>
+Convert text files to clm grid data files for LPJmL
+<br></td>
+</tr>
+<tr>
+<td>
+<A HREF="cat2bsq.html">
+<tt>cat2bsq</tt>
+</A>
+</td>
+<td>
+Concatenates output files from distributed LPJmL simulations
+<br></td>
+</tr>
+</table>
+An installation directory can be defined during configuration:
+<pre class="example">
+./configure.sh -prefix /data/biosx/lpjml-4.0.002
+</pre>
+Then the binaries can be copied in the installation directory by invoking</p>
+<pre class="example">
+make install
+</pre>
+
+The necessary parameter and include files will be copied, too.
+
+Create output and restart directory:</p>
+
+<pre class="example">
+make test
+</pre>
+
+On the compute cluster at PIK it is better to create symbolic links of the 
+input, output, and restart directory to the parallel GPFS filesystem <tt>/scratch</tt>.
+This improves performance in particular for the parallel code. </p>
+<pre class="example">
+% mkdir -p /p/tmp/$USER/lpj/restart
+% mkdir -p /p/tmp/$USER/lpj/output
+% ln -sf /p/tmp/$USER/lpj/restart restart
+% ln -sf /p/tmp/$USER/lpj/output output
+</pre>
+
+<H3>Man pages</h3>
+
+Manual pages for the <tt>man</tt> command are located in the <tt>$LPJROOT/man</tt> directory. The MANPATH variable is set by the <tt>lpj_paths.sh</tt> script.
+HTML versions of the manual pages are located <A HREF="manpages.html">here</A>.
+
+Invoking</p>
+
+<pre class="example">
+apropos lpj
+</pre>
+
+yields list of man pages related to LPJmL.</p>
+
+<h2>Running the program</h2>
+
+Sequential version can be started by invoking:</p>
+
+<pre class="example">
+./bin/lpjml 
+</pre>
+By default the configuration file <tt>lpjml.js</tt> is read. The contents of this file can be viewed <A HREF="lpjml_example.html">here</A>.
+If you run <tt>lpjml</tt> outside the root directory of LPJmL, the following environment
+variable should be set (done by <tt>lpj_paths.sh</tt>):</p>
+
+<pre class="example">
+export LPJROOT=$HOME/lpjml
+</pre>
+Then all includes are found.
+
+<h3>Environment variables</h3>
+
+The following environment variables are used by LPJmL:</p>
+<table>
+<tr bgcolor="#ccccff">
+<th> Environment variable</th><th>Description<th>
+</tr>
+<tr><td>
+LPJCONFIG
+</td><td>
+default LPJmL configuration filename
+</td></tr>
+<tr><td>
+LPJPREP
+</td><td>
+defines preprocessor command for LPJmL configuration  file, default
+is <tt>cpp -P</tt>
+</td></tr>
+<tr><td>
+LPJROOT        
+</td><td>
+defines the root directory for LPJmL. This directory is added to the 
+ include directories of the preprocessor. Is usually set by <tt>lpj_paths.sh</tt>.
+</td></tr>
+<tr><td>
+LPJIMAGE
+</td><td>
+sets host where IMAGE model is running
+</td></tr>
+<tr><td>
+LPJWAITIMAGE
+</td><td>
+sets time to wait for connection to  IMAGE model
+</td></tr>
+<tr><td>
+LPJINPATH   
+</td><td>
+Path append to the input filenames. Only done for filenames
+ without absolute path.
+</td></tr>
+<tr><td>
+LPJRESTARTPATH 
+</td><td>
+Path append to the restart filenames. Only done for filenames
+ without absolute path.
+</td></tr>
+<tr><td>
+LPJOPTIONS  
+</td><td>
+preprocessor runtime options for LPJmL
+</td></tr>
+<tr><td>
+LPJOUTPATH
+</td><td>
+Path appended to the output filenames. Only done for filenames
+ without absolute path.
+</td></tr>
+<tr><td>
+LPOUTPUT
+</td><td>
+Default method for generating output files. Valid values
+ are write, mpi2, gather, and socket. Method mpi2 and gather are used by the MPI version only.
+</td></tr>
+</table>
+<h3>Runtime options of LPJmL</h3>
+
+The following runtime options are defined for <tt>lpjml</tt>: </p>
+<table>
+<tr bgcolor="#ccccff">
+<th> Option</th><th>Description<th>
+</tr>
+<tr><td>
+-Iincludepath
+</td><td>
+Adds include path for LPJmL configuration file
+</td></tr>
+<tr><td>
+-Dmacro[=value]   
+</td><td>
+Defines macro
+</td></tr>
+<tr><td>
+-h          
+</td><td>
+print usage of lpjml
+</td></tr>
+<tr><td>
+-l
+</td><td>
+print license
+</td></tr>
+<tr><td>
+-v         
+</td><td>
+print compiler used and LPJmL flags set
+</td></tr>
+<tr><td>
+-param
+</td><td>
+print LPJmL parameter for soils and PFTs
+</td></tr>
+<tr><td>
+-pp cmd
+</td><td>
+set preprocessor program to cmd. Default is cpp -P.
+</td></tr> 
+<tr><td>
+-fpe     
+</td><td>
+enable floating point exceptions
+</td></tr>
+<tr><td>
+-image host
+</td><td>
+set host where IMAGE model is running. Default is 'localhost'. Option is only available for the IMAGE version.
+</td></tr>
+<tr><td>
+-wait time
+</td><td>
+set time to wait for connection to IMAGE model measured in sec. Default is 10 sec.
+</td></tr>
+<tr><td>
+-output method 
+</td><td>
+Method for generating output files. Valid values for 
+    are write, mpi2, gather, and socket. Methods mpi2 and gather are only available for the
+    MPI version
+</td></tr>
+<tr><td>
+-inpath dir  
+</td><td>
+input directory path
+</td></tr>
+<tr><td>
+-outpath dir  
+</td><td>
+output directory path
+</td></tr>
+<tr><td>
+-restartpath dir 
+</td><td>
+restart directory path
+</td></tr>
+</table>
+The first two options will be sent to the preprocessor.
+
+For the parallel version SLURM and LoadLeveler files for Linux and AIX are provided.
+A job can be submitted by invoking the <tt><A HREF="lpjsubmit.html">lpjsubmit</A></tt> script:</p>
+<pre class="example">
+lpjsubmit ntasks LPJmL_args...
+</pre>
+
+Depending on your MPI version installed the program can be started interactively:</p>
+
+<pre class="example">
+% mpirun -np 256 $LPJROOT/bin/lpjml
+******************************************************************************
+****        _     ____     _           _       _  _          ___          ****
+****       | |   |  _ \   | |_ __ ___ | |     | || |        / _ \         ****
+****       | |   | |_) |  | | '_ ` _ \| |     | || |_      | | | |        ****
+****       | |___|  __/ |_| | | | | | | |___  |__   _|  _  | |_| |        ****
+****       |_____|_|   \___/|_| |_| |_|_____|    |_|   (_)  \___/         ****
+****                                                                      ****
+****                lpjml C Version 4.0.002 (Nov  6 2018)                 ****
+****    Dynamic global vegetation model with natural and managed land     ****
+****                     Compiled for Linux with MPI                      ****
+****       (C) Potsdam Institute for Climate Impact Research (PIK),       ****
+****                          see COPYRIGHT file                          ****
+****              Authors, and contributors see AUTHORS file              ****
+**** This version of LPJmL is licensed under GNU AGPL Version 3 or later  ****
+****        See LICENSE file or go to http://www.gnu.org/licenses/        ****
+****                 or invoke lpjml -l to print license                  ****
+****          Contact: https://github.com/PIK-LPJmL/LPJmL /lpjml          ****
+****                                                                      ****
+******************************************************************************
+
+Running for user user on cs-e14c05b07 at Tue Nov  6 20:14:43 2018
+Reading configuration from 'lpjml.js' with options '-DFROM_RESTART'.
+==============================================================================
+Simulation "LPJmL Run" running on 256 tasks
+Simulation with random precipitation, fire, river routing, permafrost,
+new phenology, land use, limited irrigation, intercropping,
+fixed sowing date after 1970, dam reservoirs, water use.
+Working directory: /home/user/git/lpjml
+Starting from restart file '/p/tmp/user/lpjml/restart/restart_1840_nv_stdfire.lpj'.
+Input files:
+Variable   Fmt  Filename
+---------- ---- --------------------------------------------------------------
+soil       meta /p/projects/lpjml/input/historical/input_VERSION2/soil.descr
+coord      clm  /p/projects/lpjml/input/historical/input_VERSION2/grid.bin
+temp       clm  /p/projects/lpjml/input/historical/CRUDATA_TS3_23/cru_ts3.23.1901.2014.tmp.dat.clm
+prec       clm  /p/projects/lpjml/input/historical/CRUDATA_TS3_23/gpcc_v7_cruts3_23_precip_1901_2013.clm
+lwnet      clm  /p/projects/lpjml/input/historical/input_VERSION2/lwnet_erainterim_1901-2011.clm
+swdown     clm  /p/projects/lpjml/input/historical/input_VERSION2/swdown_erainterim_1901-2011.clm
+co2        txt  /p/projects/lpjml/input/historical/input_VERSION2/co2_1841-2012.dat
+countries  clm  /p/projects/lpjml/input/historical/input_VERSION2/cow_mg_2006_full.bin
+landuse    clm  /p/projects/lpjml/input/historical/input_VERSION2/cft1700_2005_irrigation_systems_64bands.bin
+elevation  clm  /p/projects/lpjml/input/historical/input_VERSION2/elevation.bin
+reservoir  clm  /p/projects/lpjml/input/historical/input_VERSION2/reservoir_info_grand5.bin
+wetdays    clm  /p/projects/lpjml/input/historical/CRUDATA_TS3_23/gpcc_v7_cruts3_23_wet_1901_2013.clm
+drainage   clm  /p/projects/lpjml/input/historical/input_VERSION2/drainagestn.bin
+lakes      meta /p/projects/lpjml/input/historical/input_VERSION2/glwd_lakes_and_rivers.descr
+neighbour  clm  /p/projects/lpjml/input/historical/input_VERSION2/neighb_irrig_stn.bin
+wateruse   clm  /p/projects/lpjml/input/historical/input_VERSION2/wateruse_1900_2000.bin
+---------- ---- --------------------------------------------------------------
+Writing restart file '/p/tmp/user/lpjml/restart/restart_1900_crop_stdfire.lpj' after year 1900.
+Random seed: 2
+Number of output files:       45
+Output written in year:       1901
+Byte order in output files:   little endian
+Output method:                gathered
+Variable         Fmt Unit         Type   Filename
+---------------- --- ------------ ------ -------------------------------------
+            grid raw       degree  short /p/tmp/user/lpjml/output/grid.bin
+             fpc raw            -  float /p/tmp/user/lpjml/output/fpc.bin
+            mnpp raw  gC/m2/month  float /p/tmp/user/lpjml/output/mnpp.bin
+            mgpp raw  gC/m2/month  float /p/tmp/user/lpjml/output/mgpp.bin
+             mrh raw  gC/m2/month  float /p/tmp/user/lpjml/output/mrh.bin
+          mfapar raw            -  float /p/tmp/user/lpjml/output/mfapar.bin
+         mtransp raw     mm/month  float /p/tmp/user/lpjml/output/mtransp.bin
+         mrunoff raw     mm/month  float /p/tmp/user/lpjml/output/mrunoff.bin
+           mevap raw     mm/month  float /p/tmp/user/lpjml/output/mevap.bin
+         minterc raw     mm/month  float /p/tmp/user/lpjml/output/minterc.bin
+           mswc1 raw            -  float /p/tmp/user/lpjml/output/mswc1.bin
+           mswc2 raw            -  float /p/tmp/user/lpjml/output/mswc2.bin
+           firec raw     gC/m2/yr  float /p/tmp/user/lpjml/output/firec.bin
+           firef raw           yr  float /p/tmp/user/lpjml/output/firef.bin
+            vegc raw        gC/m2  float /p/tmp/user/lpjml/output/vegc.bin
+           soilc raw        gC/m2  float /p/tmp/user/lpjml/output/soilc.bin
+            litc raw        gC/m2  float /p/tmp/user/lpjml/output/litc.bin
+      flux_estab raw     gC/m2/yr  float /p/tmp/user/lpjml/output/flux_estab.bin
+      mphen_tmin raw            -  float /p/tmp/user/lpjml/output/mphen_tmin.bin
+      mphen_tmax raw            -  float /p/tmp/user/lpjml/output/mphen_tmax.bin
+     mphen_light raw            -  float /p/tmp/user/lpjml/output/mphen_light.bin
+     mphen_water raw            -  float /p/tmp/user/lpjml/output/mphen_water.bin
+          mfirec raw  gC/m2/month  float /p/tmp/user/lpjml/output/mfirec.bin
+      mdischarge raw        hm3/d  float /p/tmp/user/lpjml/output/mdischarge.bin
+    mwateramount raw          hm3  float /p/tmp/user/lpjml/output/mwateramount.bin
+         harvest raw     gC/m2/yr  float /p/tmp/user/lpjml/output/flux_harvest.bin
+           sdate raw            -  short /p/tmp/user/lpjml/output/sdate.bin
+     pft_harvest raw     gC/m2/yr  float /p/tmp/user/lpjml/output/pft_harvest.pft.bin
+         cftfrac raw            -  float /p/tmp/user/lpjml/output/cftfrac.bin
+     seasonality raw            -  short /p/tmp/user/lpjml/output/seasonality.bin
+            mpet raw     mm/month  float /p/tmp/user/lpjml/output/mpet.bin
+         malbedo raw            -  float /p/tmp/user/lpjml/output/malbedo.bin
+   maxthaw_depth raw           mm  float /p/tmp/user/lpjml/output/maxthaw_depth.bin
+      msoiltemp1 raw      Celsius  float /p/tmp/user/lpjml/output/msoiltemp1.bin
+      msoiltemp2 raw      Celsius  float /p/tmp/user/lpjml/output/msoiltemp2.bin
+      msoiltemp3 raw      Celsius  float /p/tmp/user/lpjml/output/msoiltemp3.bin
+     soilc_layer raw        gC/m2  float /p/tmp/user/lpjml/output/soilc_layer.bin
+             agb raw        gC/m2  float /p/tmp/user/lpjml/output/agb.bin
+        agb_TREE raw        gC/m2  float /p/tmp/user/lpjml/output/agb_tree.bin
+  mreturn_flow_b raw     mm/month  float /p/tmp/user/lpjml/output/mreturn_flow_b.bin
+       mtransp_b raw     mm/month  float /p/tmp/user/lpjml/output/mtransp_b.bin
+         mevap_b raw     mm/month  float /p/tmp/user/lpjml/output/mevap_b.bin
+       minterc_b raw     mm/month  float /p/tmp/user/lpjml/output/mintec_b.bin
+ aconv_loss_evap raw        mm/yr  float /p/tmp/user/lpjml/output/aconv_loss_evap.bin
+aconv_loss_drain raw        mm/yr  float /p/tmp/user/lpjml/output/aconv_loss_drain.bin
+---------------- --- ------------ ------ -------------------------------------
+Spinup years:                   390
+Cycle length during spinup:      30
+First year:                    1901
+Last year:                     2011
+Number of grid cells:         67420
+==============================================================================
+Simulation begins...
+
+                  Carbon flux (GtC)                                Water (km3)
+       --------------------------------------- ---------------------------------------------
+Spinup NEP     estab   fire    harvest total   transp     evap    interc  wd      discharge
+------ ------- ------- ------- ------- ------- ---------- ------- ------- ------- ----------
+  1511   2.088   0.004   3.620   0.000  -1.528    47957.3  9976.7  6895.2     0.0    51348.1
+  1512  -1.062   0.036   3.629   0.095  -4.750    45776.6 11529.4  6555.8    20.8    50481.0
+  1513   2.715   0.035   3.613   0.458  -1.321    47354.0 11195.4  6634.2    22.1    50551.0
+  1514   4.357   0.035   3.229   0.739   0.423    48562.6 10554.8  6682.2    23.1    50039.0
+...
+  2009  13.477   0.162   3.074   8.476   2.090    47712.6  9357.4  8168.6  2496.7    52281.5
+  2010  14.199   0.162   3.069   8.765   2.528    48559.7 10116.4  8488.2  2356.5    54515.1
+  2011  15.201   0.162   3.063   8.667   3.633    48735.4  9536.9  8527.0  2577.8    56086.4
+Simulation ended.
+lpjml successfully terminated, 67420 grid cells processed.
+Wall clock time:        1776 sec, 5.3e-05 sec/cell/year.
+Total wall clock time:  1778 sec (00:29:38).
+</pre>
+
+<h3>Error codes</h3>
+
+If <tt>lpjml</tt> fails an error message is displayed in the following format</p>
+<pre>
+ERRORxxx: message
+</pre>
+
+where <tt>xxx</tt> is the error code returned. The following error codes are defined:</p>
+<table border="1">
+<tr bgcolor="#ccccff">
+<th>Error code</th><th> Description</th><th>          Error type</th><th>
+</tr>
+<tr>
+<td align="right">
+1
+</td><td>
+Error reading configuration
+</td><td>
+External
+</td></tr>
+<tr>
+<td align="right">
+2
+</td><td>
+Error initializing input data
+</td><td>
+External
+</td></tr>
+<tr>
+<td align="right">
+3
+</td><td>
+Error initializing grid    
+</td><td>
+External
+</td></tr>
+<tr>
+<td align="right">
+4
+</td><td>
+Invalid carbon balance   
+</td><td>
+Internal
+</td></tr>
+<tr>
+<td align="right">
+5
+</td><td>
+Invalid water balance    
+</td><td>
+Internal
+</td></tr>
+<tr>
+<td align="right">
+6
+</td><td>
+Negative discharge    
+</td><td>
+Internal
+</td></tr>
+<tr>
+<td align="right">
+7
+</td><td>
+Negative fire probability 
+</td><td>
+Internal
+</td></tr>
+<tr>
+<td align="right">
+8
+</td><td>
+Negative soil moisture   
+</td><td>
+Internal
+</td></tr>
+<tr>
+<td align="right">
+9
+</td><td>
+Error allocating memory 
+</td><td>
+External
+</td></tr>
+<tr>
+<td align="right">
+10
+</td><td>
+Negative stand fraction
+</td><td>
+Internal
+</td></tr>
+<tr>
+<td align="right">
+11
+</td><td>
+Stand fraction sum error  
+</td><td>
+Internal
+</td></tr>
+<tr>
+<td align="right">
+12
+</td><td>
+List is empty in <tt>dellistitem</tt>
+</td><td>
+Internal
+</td></tr>
+<tr>
+<td align="right">
+13
+</td><td>
+Index out of range in <tt>dellistitem</tt>
+</td><td> Internal
+</td></tr>
+<tr>
+<td align="right">
+15
+</td><td>
+Invalid year in <tt>getco2()</tt>
+</td><td>
+External
+</td></tr>
+<tr>
+<td align="right">
+16
+</td><td>
+Crop fraction >1     
+</td><td>
+Internal
+</td></tr>
+<tr>
+<td align="right">
+17
+</td><td>
+No natural stand for deforest
+</td><td>
+Internal
+</td></tr>
+<tr>
+<td align="right">
+18
+</td><td>
+Wrong cultivation type
+</td><td>
+Internal
+</td></tr>
+<tr>
+<td align="right">
+19
+</td><td>
+Floating point error 
+</td><td>
+Internal
+</td></tr>
+<tr>
+<td align="right">
+21
+</td><td>
+PFT list is not empty in <tt>setaside</tt>
+</td><td>
+Internal
+</td></tr><tr>
+<td align="right">
+22
+</td><td>
+Negative establishment rate
+</td><td>
+Internal
+</td></tr>
+<tr>
+<td align="right">
+23
+</td><td>
+Output channel is broken in socket connection
+</td><td>
+External 
+</td></tr>
+<tr>
+<td align="right">
+24
+</td><td>
+Sending data to IMAGE model failed
+</td><td>
+External
+</td></tr>
+<tr>
+<td align="right">
+25
+</td><td>
+Opening connection to IMAGE model failed
+</td><td>
+External
+</td></tr>
+<tr>
+<td align="right">
+26
+</td><td>
+Not enough setaside stand created
+</td><td>
+Internal
+</td></tr>
+<tr>
+<td align="right">
+27
+</td><td>
+Forest left after deforestation
+</td><td>
+Internal
+</td></tr>
+<tr>
+<td align="right">
+28
+</td><td>
+Outflow reservoir error
+</td><td>
+       Internal
+</td></tr>
+<tr>
+<td align="right">
+29
+</td><td>
+Permafrost error
+</td><td>
+	      Internal
+</td></tr>
+<tr>
+<td align="right">
+30
+</td><td>
+Global waterbalance error
+</td><td>
+     Internal
+</td></tr>
+<tr>
+<td align="right">
+31
+</td><td>
+Cannot store climate data
+</td><td>
+     External
+</td></tr>
+<tr>
+<td align="right">
+32
+</td><td>
+NO FMS coupler
+</td><td>
+		External
+</td></tr>
+<tr>
+<td align="right">
+33
+</td><td>
+Cannot initialize soil temperature  
+</td><td>
+External
+</td></tr>
+<tr>
+<td align="right">
+34
+</td><td>
+Invalid radiation model  
+</td><td>
+Internal
+</td></tr>
+</table>
+
+External errors are caused by invalid or missing input files while internal 
+errors are caused by problems inside the LPJmL code. The latter will cause a core
+dump and have to be fixed by program changes. Some errors will only be generated
+if -DSAFE is set in the compile options of <tt>Makefile.inc</tt>. The options set at compile time can be obtained by invoking
+<pre class="example">
+% lpjml -v
+lpjml C Version 4.0.002 (Nov  7 2018)
+Operating system: Linux, little endian
+Compiler:         Intel C version 15.00, 64 bit
+Compile flags:    "-DUSE_RAND48 -DUSE_MPI -DSAFE -DWITH_FPE -DSTORECLIMATE -DUSE_NETCDF -DUSE_UDUNITS -DUSE_JSON "
+</pre>
+It is recommended to compile the code without optimization
+and inlining making the inspection of the core file easier.
+Configuring in $LPJROOT with
+<pre class="example">
+./configure.sh -debug
+make clean
+make
+</pre>
+will do the job. If no core file is generated set the user limit for core files:
+<pre class="example">
+% ulimit -c
+0
+% ulimit -c unlimited
+</pre>
+Then the core can be analysed with the <tt>gdb</tt> debugger:
+<pre class="example">
+gdb $LPJROOT/bin/lpjml core
+</pre>
+or by invoking the <A HREF="backtrace.html"><tt>backtrace</tt></A> script:
+<pre class="example">
+backtrace
+</pre>
+Additional checking for pointer access out of bounds can be done via
+<pre class="example">
+./configure.sh -check
+make clean
+make
+</pre>
+This option is only available for the Intel compiler and significantly slows down execution speed.
+
+<h3>Building with Visual C++ 2005</h3>
+
+<h4>How to get the software</h4>
+
+Microsoft free version of the Visual Studio allows you to download the program, including a debugger. You can get it at <a href="https://www.visualstudio.com/downloads/">https://www.visualstudio.com/downloads</a> and choose Visual Studio Community.
+
+The link might only work for the newest version 2017, since that is available now. You should still be able to download the 2015 version at <a href="https://www.microsoft.com/de-DE/download/details.aspx?id=48146">https://www.microsoft.com/de-DE/download/details.aspx?id=48146</A> or <a href="https://www.visualstudio.com/vs/older-downloads/">https://www.visualstudio.com/vs/older-downloads/</A>.
+
+If you are working with windows systems anyway, this is a nice and handy developer environment. The main difference to alternatives (eclipse, text editors, etc.) is that VS uses no makefiles. Instead, you'll have to configure the project by hand.
+
+However, you still may use the makefiles supplied with the code in windows systems, if you have VS C++ installed.
+
+<h4>SVN management</h4>
+
+The plugin VisualSVN (<a href="https://www.visualsvn.com/visualsvn/download/">download here</a>) allows for smoothly integrating the SVN functionality of Tortoise in Visual Studio and really makes things nice there.
+However, it seems that PIK computers are member of an Active Directory domain, so buying a license is needed... :-(
+
+<h4>Setting up a VS project</h4>
+lick near the icon in the upper left to start a new project a new project on the downward arrow and choose 'start project from existing code', which starts a project wizard:<br>
+
+<ul>
+
+<li>What type of project: <i>Visual C++</i></li>
+
+<li>general properties</li>
+
+<ul>
+
+<li>name your project</li>
+
+<li>enter file location</li>
+
+<li>check "add files to project from these folders"</li>
+
+<li>check "add subfolders"</li>
+
+<li>check "show all files in Solution Explorer"</li>
+
+</ul>
+
+<li>project type</li>
+
+<ul>
+
+<li>check "Use Visual Studio"</li>
+
+<li>project type: "console application project"</li>
+
+</ul>
+
+<li>click <i>finish</i>, the rest can be
+specified later</li>
+
+</ul>
+In case you are not able to create a project (error message: "Exception from HRESULT: 0x80041FE2"), go to the Windows control panel &rarr; uninstall a program &rarr; VS2015 &rarr; 'right click': change &rarr; MODIFY &rarr; drop down menu: Programming Languages &rarr; Visual C++ &rarr; check the box: 'Windows XP Support for C++' &rarr; Update
+That should solve the problem and you can now create a project from existing code.
+After the project has been created, you need to exclude all .c files from the project that are not essential to the code. This can be done in the Solution Explorer (upper left hand corner).
+<ul>
+<li>    exclude all files from the project that are not LPJ-essential (right click &rarr; exclude from project). This comprises in directory <tt>src</tt>: the file <tt>nooutput_gwb.c</tt> in directory <tt>lpj</tt>, <tt>utils</tt>, and <tt>lpj_climber4.c</tt>.
+</ul>
+
+
+Finally, you need to specify the project properties. For
+this, right-click on the project in the <i>Solution Explorer</i>.</p>
+
+<ul>
+
+<li>configuration properties:</li>
+
+<ul>
+
+<li>General:</li>
+
+<ul>
+
+<li>character set &rarr; use Multi-Byte Character Set</li>
+
+<li>IMPORTANT:
+if you want to run the executable also on other computers you need to
+statically link the libraries to the exe file. For this, choose "Use
+MFC in static library"&nbsp;for the "Use of MFC" option. Otherwise,
+this can
+remain with the "Use Standard Windows Libraries"</li>
+
+</ul>
+
+<li>Debugging:</li>
+
+<ul>
+
+<li>Command arguments <tt>lpjml.conf</tt> <br>
+
+</li>
+
+<li>here, you can specify your working directory</li>
+
+</ul>
+
+<li>C/C++</li>
+
+<ul>
+
+<li>General:</li>
+
+<ul>
+
+<li>Additional include directories: add the
+<tt>..\include</tt> directory here</li>
+
+<li>Debug Information Format: C7 Compatible (<tt>/Z7</tt>)</li>
+
+</ul>
+
+<li>Optimization</li>
+
+<ul>
+
+<li>disabled (or whatever you want)<br>
+
+</li>
+
+</ul>
+
+<li>Preprocessor</li>
+
+<ul>
+
+<li>preprocessor
+definitions: basically, here all compiler Flags from the <tt>src/Makefile</tt>
+can be specified, but without the "-D" prefix.</li>
+
+<ul>
+
+<li>Essential preprocessor definitions are: <tt>WIN32;
+_DEBUG; _CONSOLE; SAFE; _USE_MATH_DEFINES; _CRT_SECURE_NO_DEPRECATE;</tt>
+</li>
+
+<li>optional: <tt>IMAGE</tt></li>
+
+</ul>
+
+</ul>
+
+<li>Code Generation</li>
+
+<ul>
+
+<li>Enable Minimal Rebuild &rarr; No</li>
+
+<li>Basic Runtime Checks &rarr; Default</li>
+
+</ul>
+
+<li>Advanced</li>
+
+<ul>
+
+<li>compile as &rarr; compile as C code (<tt>/TC</tt>)</li>
+
+</ul>
+
+</ul>
+
+<li>Linker</li>
+
+<ul>
+
+<li>General</li>
+
+<ul>
+<li>under 'Enable Incremental Linking' &rarr; 'NO (/INCREMENTAL:NO)'
+
+
+</ul>
+<li>Input</li>
+<ul>
+  <li>Additional Dependencies &rarr; <tt>advapi32.lib ws2_32.lib</tt>
+      </ul>
+
+      </ul>
+
+    </ul>
+
+  </ul>
+
+  Done. Now right-click on the project in the Solution
+Explorer and select rebuild or build.
+
+</ul>
+
+<address>
+Last change: 7 November 2018 by Werner von Bloh, PIK Potsdam
+</address>
+</BODY>
+</HTML>

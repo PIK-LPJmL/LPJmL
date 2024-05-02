@@ -1,0 +1,69 @@
+<HTML>
+<HEAD>
+<TITLE>backtrace.1</TITLE>
+</HEAD>
+<BODY>
+<H1>backtrace.1</H1>
+<HR>
+<PRE>
+<!-- Manpage converted by man2html 3.0.1 -->
+     <B>NAME</B>
+          backtrace - Print backtrace from core file
+
+     <B>SYNOPSIS</B>
+          <B>backtrace</B> [<I>exe</I> [<I>core</I>]]
+
+     <B>DESCRIPTION</B>
+          Script prints backtrace from core file using the <B>gdb</B>
+          debugger. Full information of failed program is obtained if
+          it was compiled with <B>configure.sh</B> <B>-debug</B> option.
+
+     <B>OPTIONS</B>
+          <I>exe</I>  Name of the executable. Default name is
+               $<I>LPJROOT</I>/<I>bin</I>/<I>lpjml</I>.
+
+          <I>core</I> Name of the core file. Default name is <I>core</I>.
+
+     <B>ENVIRONMENT</B>
+          LPJROOT
+               defines the root directory for LPJmL.
+
+     <B>EXIT</B> <B>STATUS</B>
+          <B>backtrace</B> returns a zero exit status if backtrace has been
+          printed.  Non zero is returned in case of failure.
+
+
+     <B>AUTHORS</B>
+          For authors and contributors see AUTHORS file
+
+
+     <B>COPYRIGHT</B>
+          (C) Potsdam Institute for Climate Impact Research (PIK), see
+          COPYRIGHT file
+
+
+     <B>SEE</B> <B>ALSO</B>
+          <B><A HREF="lpjml.html">lpjml(1)</A></B>, <B><A HREF="configure.sh.html">configure.sh(1)</A></B>, <B><A HREF="gdb.html">gdb(1)</A></B>, <B><A HREF="core.html">core(5)</A></B>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</PRE>
+<HR>
+<ADDRESS>
+Man(1) output converted with
+<a href="http://www.oac.uci.edu/indiv/ehood/man2html.html">man2html</a>
+</ADDRESS>
+</BODY>
+</HTML>

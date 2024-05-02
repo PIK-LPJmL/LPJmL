@@ -1,0 +1,221 @@
+<HTML>
+<BODY>
+<PRE>
+<!-- Manpage converted by man2html 3.0.1 -->
+     <B>NAME</B>
+          clm - Input data files for LPJmL runs
+
+     <B>DESCRIPTION</B>
+          LPJmL is driven by monthly fields of temperature,
+          precipitation, cloudiness and number of days with rain.
+          Additionally static information on soil properties,
+          geographic coordinates of climate and soil data, and mean
+          annual atmospheric CO2 concentration are required. Except
+          for CO2 all files are binary data including a header (except
+          for the soil and lake fraction data).
+
+        <B>Structure</B> <B>of</B> <B>the</B> <B>header</B>
+          header name
+               (7 byte char array, LPJCLIM for temp, precip, wet days
+               and cloudiness, LPJGRID for coordinate data, LPJLUSE
+               for land use data, LPJ_COW for country codes, LPJDAMS
+               for reservoir data)
+
+          header version
+               (4 byte integer, currently set to 3, also used to
+               determine if input data needs byte swapping)
+
+          order
+               (4 byte integer, values are either 1 (cellyear) or 2
+               (yearcell))
+
+          firstyear
+               (4 byte integer, first year of data record)
+
+          nyear
+               (4 byte integer, total number of years)
+
+          firstcell
+               (4 byte integer)
+
+          ncell
+               (4 byte integer, number of grid cells represented)
+
+          nbands
+               (4 byte integer, number of items per cell)
+
+          cellsize_lon
+               (4 byte float, longitude cellsize in deg)
+
+          scalar
+               (4 byte float conversion factor)
+
+          cellsize_lat
+               (4 byte float, latitude cellsize in deg)
+
+          datatype
+               (4 byte int, 0 for byte, 1 for short, 2 for int, 3 for
+               float, 4 for double)
+
+
+        <B>Sorting</B> <B>of</B> <B>the</B> <B>climate</B> <B>data</B>
+          The sorting of the monthly climate data and of the land use
+          data does not correspond to a standard file format but is a
+          mixture of BSQ (band sequential) and BIP (band interleaved
+          by pixel). You start with 12 monthly values (or with 24 land
+          use-fractions) of the first year and first grid cell. After
+          that, the first twelve monthly values of the second cell
+          follow and so on. Once you are done with all grid cells, you
+          continue with the first grid cell's monthly data of the
+          second year. This format is called "cellyear" in the LPJmL
+          vocabulary and is the only format that is supported from
+          LPJmL-version 3.2 and above ("YEARCELL" = BIP has been used
+          in previous LPJ-versions).  Once you have a data set that
+          you want to apply, you use any programming language, to
+          write the header to a file. In C, you can use the function
+          <B>fwriteheader(..)</B>  in <I>src</I>/<I>tools</I>/<I>header</I>.<I>c</I> to write headers (or
+          <B>freadheader(...)</B> to read it) Datasets can be converted to
+          LPJ-format (including headers) from plain binary input files
+          (BIP) with the executable <B>cru2clm</B> that has been provided
+          with the LPJmL distribution.  Data needs to be stored in the
+          same order as the input grid.
+
+        <B>Input</B> <B>data</B> <B>files</B>
+          soil data
+               (1 file) data type char (1 byte), the grid needs to be
+               the same as your input grid / climate data
+               values are currently ranging from 0 to 9
+               corresponding soil parameters can be found in
+               <I>par</I>/<I>soil</I>.<I>par</I>
+               no header
+
+
+          climate data
+               (all monthly values, 4 files + 1 file with atmospheric
+               CO2 concentrations)
+
+               - temperature [scaled: degree Celsius*10]
+                 size of header: 43 bytes
+
+               - precipitation [mm/month]
+                 size of header: 43 bytes
+
+               - cloudiness [%]
+                 for internal computation of radiation
+                 size of header: 43 bytes
+
+               - wet days
+                 number of wet days per month (needed only, if your
+
+               are using the
+                 "weather generator", that distributes rain within
+               month randomly)
+                 size of header: 43 bytes
+
+               - atmospheric carbon dioxide [ppmv]
+                 global annual mean CO2 concentration as ASCII file
+                 format: year concentration
+                 Example
+                   1990 354.19
+                   1991 355.59
+                   1992 356.37
+                   1993 357.04
+                   1994 358.88
+
+          Land use data
+
+               - land use:
+                 in C data type short (2 bytes), grid needs to be the
+               same as your input grid / climate data
+                 values range between 0 and 1000 (fraction *1000)
+                 each grid cell and year has 24 entries: 12 for rain-
+               fed crops, 12 for irrigated crops
+                 crop order is as follows:
+                 1: temperate cereals, 2: rice, 3: maize, 4: tropical
+               cereals, 5: pulses,
+                 6: temperate roots, 7: tropical roots, 8: oil crops
+               sunflower, 9: oil crops soybean,
+                 10: oil crops groundnut, 11: oil crops rapeseed, 12:
+               pasture (C3/C4 mix left to LPJmL to determine)
+
+               - country codes:
+                 in C data type short (2 bytes)
+                 for each cell two values: countrycodes (n=197) and
+               regioncodes (n=433)
+
+               - river routing:
+                 in C data type int (4 bytes), the grid needs to be
+               the same as your input grid / climate data
+                 for each cell two values: one in which cell to rout
+               the water
+                                           one with the distance [km]
+               between the midpoints of the two cells
+
+                 -9: inland sink or outflow to the ocean
+
+
+     <B>AUTHORS</B>
+          For authors and contributors see AUTHORS file
+
+
+     <B>COPYRIGHT</B>
+          (C) Potsdam Institute for Climate Impact Research (PIK), see
+          COPYRIGHT file
+
+
+     <B>SEE</B> <B>ALSO</B>
+          <B><A HREF="lpjml.html">lpjml(1)</A></B>, <B><A HREF="cru2clm.html">cru2clm(1)</A></B>, <B><A HREF="txt2clm.html">txt2clm(1)</A></B>, <B><A HREF="catclm.html">catclm(1)</A></B>, <B><A HREF="cvrtclm.html">cvrtclm(1)</A></B>,
+          <B><A HREF="grid2clm.html">grid2clm(1)</A></B>, <B><A HREF="cft2clm.html">cft2clm(1)</A></B>, <B><A HREF="printclm.html">printclm(1)</A></B>, <B><A HREF="printheader.html">printheader(1)</A></B>,
+          <B><A HREF="headersize.html">headersize(1)</A></B>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</PRE>
+<HR>
+<ADDRESS>
+Man(1) output converted with
+<a href="http://www.oac.uci.edu/indiv/ehood/man2html.html">man2html</a>
+</ADDRESS>
+</BODY>
+</HTML>

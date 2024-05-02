@@ -1,0 +1,116 @@
+<HTML>
+<BODY>
+<PRE>
+<!-- Manpage converted by man2html 3.0.1 -->
+     <B>NAME</B>
+          flux_sum - Calculates global carbon and water fluxes
+
+     <B>SYNOPSIS</B>
+          <B>#include</B> <B>"lpj.h"</B>
+
+          <B>Real</B> <B>flux_sum(Flux</B> <B>*</B><I>flux</I><B>,const</B> <B>Cell</B> <I>grid</I><B>[],const</B> <B>Config</B> <B>*</B><I>config</I><B>);</B>
+
+
+     <B>DESCRIPTION</B>
+          Function calculates global carbon and water fluxes.  The
+          arguments of <B>flux_sum</B> are:
+
+          <I>flux</I> Pointer to flux struct. <B>Flux</B> is defined in <I>output</I>.<I>h</I> as
+               follows:
+
+               <B>typedef</B> <B>struct</B>
+               <B>{</B>
+                 <B>Real</B> <B>nep;</B>      <B>/*</B> <B>Total</B> <B>NEP</B> <B>(gC)</B> <B>*/</B>
+                 <B>Real</B> <B>fire;</B>     <B>/*</B> <B>Total</B> <B>fire</B> <B>(gC)</B> <B>*/</B>
+                 <B>Real</B> <B>estab;</B>    <B>/*</B> <B>Total</B> <B>extablishment</B> <B>flux</B> <B>(gC)</B> <B>*/</B>
+                 <B>Real</B> <B>harvest;</B>  <B>/*</B> <B>Total</B> <B>harvested</B> <B>carbon</B> <B>(gC)</B> <B>*/</B>
+                 <B>Real</B> <B>transp;</B>   <B>/*</B> <B>Total</B> <B>transpiration</B> <B>(dm3)</B> <B>*/</B>
+                 <B>Real</B> <B>evap;</B>     <B>/*</B> <B>Total</B> <B>evaporation</B> <B>(dm3)</B> <B>*/</B>
+                 <B>Real</B> <B>interc;</B>   <B>/*</B> <B>Total</B> <B>interception</B> <B>(dm3)</B> <B>*/</B>
+                 <B>Real</B> <B>wd;</B>       <B>/*</B> <B>Total</B> <B>irrigation</B> <B>water</B> <B>withdrawal</B> <B>(dm3)</B> <B>*/</B>
+                 <B>Real</B> <B>wd_unsustainable;</B>      <B>/*</B> <B>Total</B> <B>irrigation</B> <B>water</B> <B>withdrawal</B> <B>from</B> <B>unsustainable</B> <B>sourc</B>
+               <B>e</B> <B>(dm3)</B> <B>*/</B>
+                 <B>Real</B> <B>wateruse;</B>              <B>/*</B> <B>Total</B> <B>wateruse</B> <B>for</B> <B>household</B> <B>industry</B> <B>and</B> <B>livestock</B> <B>*/</B>
+                 <B>Real</B> <B>discharge;</B>             <B>/*</B> <B>Total</B> <B>discharge</B> <B>(dm3)</B> <B>*/</B>
+                 <B>Real</B> <B>evap_lake;</B>             <B>/*</B> <B>Total</B> <B>evaporation</B> <B>from</B> <B>lakes</B> <B>(dm3)</B> <B>*/</B>
+                 <B>Real</B> <B>evap_res;</B>              <B>/*</B> <B>Total</B> <B>evaporation</B> <B>from</B> <B>reservoirs</B> <B>(dm3)</B> <B>*/</B>
+                 <B>Real</B> <B>irrig;</B>                 <B>/*</B> <B>Total</B> <B>field</B> <B>irrigation</B> <B>(dm3)</B> <B>*/</B>
+                 <B>Real</B> <B>conv_loss;</B>             <B>/*</B> <B>Total</B> <B>evaporation</B> <B>during</B> <B>conveyance</B> <B>(dm3)</B> <B>*/</B>
+                 <B>Real</B> <B>prec;</B>                  <B>/*</B> <B>Total</B> <B>precipitation</B> <B>(dm3)</B> <B>*/</B>
+                 <B>Real</B> <B>delta_surface_storage;</B> <B>/*</B> <B>Total</B> <B>change</B> <B>of</B> <B>surface</B> <B>storage</B> <B>(dm3),</B> <B>increase</B> <B>positive</B> <B>*</B>
+               <B>/</B>
+                 <B>Real</B> <B>delta_soil_storage;</B>    <B>/*</B> <B>Total</B> <B>change</B> <B>of</B> <B>soil</B> <B>storage</B> <B>(dm3),</B> <B>increase</B> <B>positive</B> <B>*/</B>
+                 <B>Real</B> <B>area;</B>                  <B>/*</B> <B>Total</B> <B>area</B> <B>(m2)</B> <B>*/</B>
+                 <B>Real</B> <B>total_reservoir_out;</B>   <B>/*</B> <B>Total</B> <B>water</B> <B>extracted</B> <B>from</B> <B>reservoirs</B> <B>for</B> <B>irrigation</B> <B>*/</B>
+                 <B>Real</B> <B>total_irrig_from_reservoir;</B> <B>/*Total</B> <B>water</B> <B>added</B> <B>to</B> <B>fields</B> <B>from</B> <B>reservoirs</B> <B>*/</B>
+               <B>}</B> <B>Flux;</B>
+
+          <I>grid</I> Cell grid array allocated and initialized by <B>newgrid()</B>.
+
+          <I>config</I>
+               LPJmL configuration data. Must be read by <B>readconfig()</B>.
+
+     <B>RETURN</B> <B>VALUE</B>
+          Upon successful completion the total carbon flux in (gC) is
+          returned.
+
+     <B>AUTHORS</B>
+          For authors and contributors see AUTHORS file
+
+
+     <B>COPYRIGHT</B>
+          (C) Potsdam Institute for Climate Impact Research (PIK), see
+          COPYRIGHT file
+
+
+     <B>SEE</B> <B>ALSO</B>
+          <B><A HREF="readconfig.html">readconfig(3)</A></B>, <B><A HREF="newgrid.html">newgrid(3)</A></B>, <B><A HREF="fprintflux.html">fprintflux(3)</A></B>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</PRE>
+<HR>
+<ADDRESS>
+Man(1) output converted with
+<a href="http://www.oac.uci.edu/indiv/ehood/man2html.html">man2html</a>
+</ADDRESS>
+</BODY>
+</HTML>

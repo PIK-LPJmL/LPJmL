@@ -1,0 +1,121 @@
+<HTML>
+<HEAD>
+<TITLE>bin2cdf.1</TITLE>
+</HEAD>
+<BODY>
+<H1>bin2cdf.1</H1>
+<HR>
+<PRE>
+<!-- Manpage converted by man2html 3.0.1 -->
+     <B>NAME</B>
+          bin2cdf - convert binary output files into NetCDF files
+
+     <B>SYNOPSIS</B>
+          <B>bin2cdf</B> [-cellsize size] [-compress level] [-descr d]
+          [-units u] [-global] {-swap] [-short] [-nitem n} [-ispft]
+          [-firstyear y] <I>varname</I> <I>gridfile</I> <I>binfile</I> <I>netcdffile</I>
+
+     <B>DESCRIPTION</B>
+          Program converts binary output files into NetCDF file.
+
+     <B>OPTIONS</B>
+          -cellsize size
+               set cell size in grid file to size. Default is 0.5 deg.
+
+          -compress level
+               compression level for NetCDF4 files
+
+          -descr d
+               set long name in NetCDF file
+
+          -units u
+               set units in NetCDF file
+
+          -global
+               use global grid for NetCDF file
+
+          -swap
+               change byte order in binary file
+
+          -short
+               Data type of output is short, default is float
+
+          -nitem n
+               set number of output per year or number of PFTs if
+               -ispft option is set.
+
+          -ispft
+               output is PFT specific.
+
+          -firstyear
+               set first year in NetCDF file. Default is 1901.
+
+          varname
+               variable name in NetCDF file
+
+          <I>gridfile</I>
+               filename of grid data file
+
+          <I>binfile</I>
+               filename of binary data file
+
+          <I>netcdffile</I>
+               filename of NetCDF file created
+
+     <B>EXAMPLES</B>
+          Create data file for vegetation carbon:
+               <B>bin2cdf</B> -units gC/m2 -descr "vegetation carbon" vegc
+               output/grid.bin output/vegc.bin vegc.nc
+
+          Convert monthly data:
+               <B>bin2cdf</B> -units gC/m2/month -descr "Net primary
+               production" -nitem 12 npp output/grid.bin
+               output/mnpp.bin mnpp.nc
+
+     <B>EXIT</B> <B>STATUS</B>
+          <B>bin2cdf</B> returns a zero exit status if the NetCDF file is
+          created.  Non zero is returned in case of failure.
+
+
+     <B>AUTHORS</B>
+          For authors and contributors see AUTHORS file
+
+
+     <B>COPYRIGHT</B>
+          (C) Potsdam Institute for Climate Impact Research (PIK), see
+          COPYRIGHT file
+
+
+     <B>SEE</B> <B>ALSO</B>
+          <B><A HREF="soil2cdf.html">soil2cdf(1)</A></B>, <B><A HREF="clm2cdf.html">clm2cdf(1)</A></B>, <B><A HREF="country2cdf.html">country2cdf(1)</A></B>, <B><A HREF="lpjml.html">lpjml(1)</A></B>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</PRE>
+<HR>
+<ADDRESS>
+Man(1) output converted with
+<a href="http://www.oac.uci.edu/indiv/ehood/man2html.html">man2html</a>
+</ADDRESS>
+</BODY>
+</HTML>
