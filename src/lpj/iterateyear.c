@@ -196,7 +196,7 @@ void iterateyear(Outputfile *output,  /**< Output file data */
       }
 
       if(config->withdailyoutput && day<NDAYYEAR && year>=config->outputyear)
-        /* ISIMIP3: postpone last timestep until after annual processes */
+        /* postpone last timestep until after annual processes */
         fwriteoutput(output,grid,year,day-1,DAILY,npft,ncft,config);
 
       day++;
@@ -211,7 +211,7 @@ void iterateyear(Outputfile *output,  /**< Output file data */
     } /* of 'for(cell=0;...)' */
 
     if(year>=config->outputyear && month<NMONTH-1)
-      /* write out monthly output */ /* ISIMIP3: postpone last timestep until after annual processes */
+      /* write out monthly output, postpone last timestep until after annual processes */
       fwriteoutput(output,grid,year,month,MONTHLY,npft,ncft,config);
 
   } /* of 'foreachmonth */
@@ -284,7 +284,7 @@ void iterateyear(Outputfile *output,  /**< Output file data */
 
   if(year>=config->outputyear)
   {
-    /* ISIMIP3: write last monthly/daily output timestep after annual processes */
+    /* write last monthly/daily output timestep after annual processes */
     fwriteoutput(output,grid,year,NMONTH-1,MONTHLY,npft,ncft,config);
     if(config->withdailyoutput)
       fwriteoutput(output,grid,year,NDAYYEAR-1,DAILY,npft,ncft,config);
