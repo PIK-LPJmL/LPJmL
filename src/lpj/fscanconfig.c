@@ -899,7 +899,7 @@ Bool fscanconfig(Config *config,    /**< LPJ configuration */
   }
   if(config->prescribe_landcover!=NO_LANDCOVER)
   {
-    config->landcovermap=fscanlandcovermap(file,&config->landcovermap_size,"landcovermap",config->npft[GRASS]+config->npft[TREE],config);
+    config->landcovermap=fscanlandcovermap(file,&config->landcovermap_size,"landcovermap",getnnat(config->npft[GRASS]+config->npft[TREE],config),config);
     if(config->landcovermap==NULL)
       return TRUE;
     scanclimatefilename(input,&config->landcover_filename,FALSE,FALSE,"landcover");
