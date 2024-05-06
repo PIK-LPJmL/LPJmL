@@ -79,27 +79,29 @@ int *fscanlandcovermap(LPJfile *file,       /**< pointer to LPJ config file */
       else
       {
         if(verbose)
-          fprintf(stderr,"ERROR244: Unknown tree \"%s\" in map '%s'.\n",s,name);
+          fprintf(stderr,"ERROR244: Unknown PFT \"%s\" in map '%s'.\n",s,name);
         free(pftmap);
         return NULL;
       }
     } /* of for(pft=0...) */
-    first=TRUE;
-    for(pft=0;pft<nnat;pft++)
-      if(undef[pft])
-      {
-        if(first)
-        if(isroot(*config))
+    if(verbose)
+    {
+      first=TRUE;
+      for(pft=0;pft<nnat;pft++)
+        if(undef[pft])
         {
-          fprintf(stderr,"ERROR244: Map '%s' not defined for ",name);
-          first=FALSE;
+          if(first)
+          {
+            fprintf(stderr,"ERROR244: Map '%s' not defined for ",name);
+            first=FALSE;
+          }
+          else
+             fputs(", ",stderr);
+          fprintf(stderr,"'%s'",config->pftpar[pft].name);
         }
-        else
-          fputs(", ",stderr);
-        fprintf(stderr,"'%s'",config->pftpar[pft].name);
-      }
-    if(!first)
-      fputs(".\n",stderr);
+      if(!first)
+        fputs(".\n",stderr);
+    }
     free(undef);
   }
   else
@@ -114,7 +116,7 @@ int *fscanlandcovermap(LPJfile *file,       /**< pointer to LPJ config file */
     }
     for(pft=0;pft<nnat;pft++)
       pftmap[pft]=pft;
-    if(isroot(*config))
+    if(verbose)
     {
       fprintf(stderr,"WARNING011: Map '%s' not found, set to [",name);
       for(pft=0;pft<nnat;pft++)
