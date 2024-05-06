@@ -31,9 +31,9 @@ int *fscanlandcovermap(LPJfile *file,       /**< pointer to LPJ config file */
   int pft,nnat;
   Bool first;
   nnat=getnnat(npft,config);
+  verbose=(isroot(*config)) ? config->scan_verbose : NO_ERR;
   if(iskeydefined(file,name))
   {
-    verbose=(isroot(*config)) ? config->scan_verbose : NO_ERR;
     array=fscanarray(file,size,name,verbose);
     if(array==NULL)
       return NULL;
