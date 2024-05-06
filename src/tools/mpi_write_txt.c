@@ -50,9 +50,10 @@ int mpi_write_txt(FILE *file,        /**< File pointer to text file */
                  )                   /** \return number of items written to disk */
 {
   int rc;
+  MPI_Aint lb;
   MPI_Aint extent;
   void *vec;
-  MPI_Type_extent(type,&extent);
+  MPI_Type_get_extent(type,&lb,&extent);
   if(rank==0)
   {
     vec=malloc(size*extent); /* allocate receive buffer */
