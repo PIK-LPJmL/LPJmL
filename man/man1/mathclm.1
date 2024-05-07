@@ -3,7 +3,7 @@
 mathclm \- performs mathematical operations with clm files
 .SH SYNOPSIS
 .B mathclm
-[\-v] [\-f] [\-longheader] [-raw] [-json] [-metafile] [-type {byte|short|int|float|double}] {add|sub|mul|div|avg|max|min|repl|float|int} \fIinfile1.clm\fP [{\fIinfile2.clm\fP|value}] \fIoutfile.clm\fP
+[\-v] [\-f] [\-longheader] [-raw] [-json] [-metafile] [-type {byte|short|int|float|double}] {add|sub|mul|div|avg|max|min|repl|float|int|sum|tsum|tmean} \fIinfile1.clm\fP [{\fIinfile2.clm\fP|value}] \fIoutfile.clm\fP
 .SH DESCRIPTION
 Program performs mathematical operations on clm files.
 .SH OPTIONS
@@ -29,8 +29,47 @@ Files are JSON metafiles describing the structure of the data. An additional JSO
 -type {byte|short|int|float|double}
 Set datatype of clm file. Default is short.
 .TP
-add|sub|mul|div|avg|max|min|repl|float|int
-Mathematical operation to be performed
+add|sub|mul|div|avg|max|min|repl|float|int|sum
+Mathematical operation to be performed. The following operations are defined:
+.TP
+add
+Add each number
+.TP
+sub
+Subtract each number
+.TP
+div
+Divide each number
+.TP
+mul
+Multiply each number
+.TP
+avg
+Average of each two numbers
+.TP
+max
+Maximum of each two number
+.TP
+min
+Minimum of each two numbers
+.TP
+repl
+Replace number by non-zero values of second file
+.TP
+float
+Convert numbers to float
+.TP
+int
+Convert numbers to int
+.TP
+sum
+Sum all values of each band to one
+.TP
+tsum
+Sum over all time steps of each band to one
+.TP
+tmean
+Average over all time steps of each band to one
 .TP
 .I infile1.clm
 First argument of operation. Must be a filename
@@ -53,6 +92,10 @@ float infile.clm outfile.clm
 Set minimum value of data to zero
 .B mathclm
 max infile.clm 0 outfile.clm
+.TP
+Sum over all bands in clm file
+.B mathclm
+sum infile.clm outfile.clm
 .TP
 .PP
 .SH EXIT STATUS

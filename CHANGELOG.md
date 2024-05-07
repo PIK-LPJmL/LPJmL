@@ -19,7 +19,7 @@ of `major.minor.patch` with
 
 ## [Unreleased]
 
-## [5.8.12] - 2024-04-22
+## [5.8.12] - 2024-04-25
 
 ### Contributors
 
@@ -29,6 +29,8 @@ of `major.minor.patch` with
 
 - Axis names and missing values for NetCDF output are read from JSON file `netcdf.cjson`.
 - Warnings in `addheader` replaced by terminating errors.
+- Function `openinputfile()` returns an error if cell size differs in JSON metafile.
+- Function `openmetafile()` returns an error if binary file is empty.
 
 ### Added
 
@@ -40,6 +42,7 @@ of `major.minor.patch` with
 - Option `-double` added to `txt2grd` in order to create grid files with coordinate values of type double.
 - Option `-timestep` added to `addheader`.
 - Check for correct number of time steps added in `openclimate_netcdf.c`.
+- Option `sum`, `tsum` and `tmean` to `mathclm` added.
 
 
 ## [5.8.11] - 2024-04-10
