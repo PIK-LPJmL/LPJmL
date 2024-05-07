@@ -19,6 +19,20 @@ of `major.minor.patch` with
 
 ## [Unreleased]
 
+## [5.8.13] - 2024-05-07
+
+### Contributors
+
+- author: Jannes Breier (jannesbr@pik-potsdam.de)
+- code review: Stephen Wirth (wirth@pik-potsdam.de), Jens Heinke (heinke@pik-potsdam.de)
+
+### Changed
+
+- PFT parameter lai_sapl has been set back to its original value of 0.001 for grasses
+(tropical, temperate, polar)
+
+
+
 ## [5.8.12] - 2024-05-07
 
 ### Contributors
@@ -37,7 +51,6 @@ of `major.minor.patch` with
 ### Fixed
 
 - fixed handling of monthly and daily outputs in `iterateyear.c` to ensure that last annual timestep of outputs is written after `update_annual()` is called
-
 
 
 ## [5.8.11] - 2024-04-10
