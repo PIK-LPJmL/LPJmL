@@ -99,7 +99,7 @@ void copysoil(Soil *dst,       /**< destination */
   dst->w_evap=src->w_evap;
   for(i=0;i<NSOILLAYER+1;i++)
     dst->temp[i]=src->temp[i];
-  for(i=0;i<NHEATGRIDP+1;i++)
+  for(i=0;i<NHEATGRIDP;i++)
     dst->enth[i]=src->enth[i];
   dst->rw_buffer=src->rw_buffer;
   for(i=0;i<NTILLLAYER;i++)
