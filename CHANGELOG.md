@@ -19,7 +19,7 @@ of `major.minor.patch` with
 
 ## [Unreleased]
 
-## [5.8.12] - 2024-04-26
+## [5.8.12] - 2024-05-03
 
 ### Contributors
 
@@ -29,6 +29,7 @@ of `major.minor.patch` with
 
 - Warning added if time step of output is longer than output interval.
 - Cycle length of spinup and number of spinup years checked for positive values in `fscanconfig.c`.
+- Missing regridding of wateruse and livestock density input added in `regridlpj`.
 
 ### Changed
 
@@ -38,6 +39,7 @@ of `major.minor.patch` with
 - `lpjml` now terminates with an error message instead of a warning on invalid country codes to avoid invalid access to country-specific parameters.
 - Country code files can now have only one band. Files with 2 bands are still supported, but region code ignored.
 - Filename and source is written into configuration file created by `regridlpj`.
+- All occurrences of the deprecated function `MPI_Type_extent` replaced by `MPI_Type_get_extent`.
 
 ### Removed
 
@@ -58,9 +60,10 @@ of `major.minor.patch` with
 - Calculation of average fixed in `statclm`.
 - `res_remove` calculation fixed for residue fires in `harvest_crop.c` to close carbon and nitrogen balance.
 - Missing update of `FLUX_ESTABN_MG` added in `turnover_tree.c`.
-- `regridclm` now uses for regridding of soil file in `regridlpj`.
-- Missing regridding of wateruse and livestock density input added in `regridlpj`.
-- Missing file seek to offset defined in JSON metafile added in `filesexist.c`.
+- `regridclm` now used for regridding of soil file in `regridlpj`.
+- Missing file seek to offset defined in JSON metafile added and return value fixed in `checksoilcode()`.
+- Prescribed land cover is now read correctly if landcover map size differs from number of natural PFTs.
+- Check for land use type `WP` corrected in `landusechange.c`.
 
 ## [5.8.11] - 2024-04-10
 
