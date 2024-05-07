@@ -19,7 +19,7 @@ of `major.minor.patch` with
 
 ## [Unreleased]
 
-## [5.8.12] - 2024-04-25
+## [5.8.13] - 2024-05-07
 
 ### Contributors
 
@@ -43,6 +43,28 @@ of `major.minor.patch` with
 - Option `-timestep` added to `addheader`.
 - Check for correct number of time steps added in `openclimate_netcdf.c`.
 - Option `sum`, `tsum` and `tmean` to `mathclm` added.
+
+
+## [5.8.12] - 2024-05-07
+
+### Contributors
+
+- author: Sibyll Schaphoff (sibylls@pik-potsdam.de), Werner von Bloh (bloh@pik-potsdamde)
+- code review: Stephen Wirth (wirth@pik-potsdam.de), Christoph Mueller (cmueller@pik-potsdam.de), Sebastian Ostberg (ostberg@pik-potsdam.de)
+
+### Added
+
+- added link to LPJmL Zenodo archive to README
+
+### Changed
+
+- changed `ifndef` usage in `lpjml_config.cjson` to `ifdef` to avoid confusion
+
+### Fixed
+
+- fixed handling of monthly and daily outputs in `iterateyear.c` to ensure that last annual timestep of outputs is written after `update_annual()` is called
+
+>>>>>>> b29e30a195c650552dd1467888cafc9fe534e8a5
 
 
 ## [5.8.11] - 2024-04-10
