@@ -19,7 +19,7 @@ of `major.minor.patch` with
 
 ## [Unreleased]
 
-## [5.8.12] - 2024-05-03
+## [5.8.13] - 2024-05-07
 
 ### Contributors
 
@@ -64,6 +64,27 @@ of `major.minor.patch` with
 - Missing file seek to offset defined in JSON metafile added and return value fixed in `checksoilcode()`.
 - Prescribed land cover is now read correctly if landcover map size differs from number of natural PFTs.
 - Check for land use type `WP` corrected in `landusechange.c`.
+
+
+## [5.8.12] - 2024-05-07
+
+### Contributors
+
+- author: Sibyll Schaphoff (sibylls@pik-potsdam.de), Werner von Bloh (bloh@pik-potsdamde)
+- code review: Stephen Wirth (wirth@pik-potsdam.de), Christoph Mueller (cmueller@pik-potsdam.de), Sebastian Ostberg (ostberg@pik-potsdam.de)
+
+### Added
+
+- added link to LPJmL Zenodo archive to README
+
+### Changed
+
+- changed `ifndef` usage in `lpjml_config.cjson` to `ifdef` to avoid confusion
+
+### Fixed
+
+- fixed handling of monthly and daily outputs in `iterateyear.c` to ensure that last annual timestep of outputs is written after `update_annual()` is called
+
 
 ## [5.8.11] - 2024-04-10
 

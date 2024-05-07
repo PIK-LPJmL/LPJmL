@@ -2,7 +2,7 @@
 /**                                                                                \n**/
 /**           l  p  j  m  l  _  c  o  n  f  i  g  .  c  j  s  o  n                 \n**/
 /**                                                                                \n**/
-/** Default configuration file for LPJmL C Version 5.8.12                          \n**/
+/** Default configuration file for LPJmL C Version 5.8.13                          \n**/
 /**                                                                                \n**/
 /** Configuration file is divided into five sections:                              \n**/
 /**                                                                                \n**/
@@ -376,26 +376,14 @@ ID                               Fmt                        filename
   "checkpoint_filename" : "restart/restart_checkpoint.lpj", /* filename of checkpoint file */
 #endif
 
-#ifndef FROM_RESTART
-
-  "nspinup" : 3500,  /* spinup years */
-  "nspinyear" : 30,  /* cycle length during spinup (yr) */
-  "firstyear": 1901, /* first year of simulation */
-  "lastyear" : 1901, /* last year of simulation */
-  "restart" :  false, /* start from restart file */
-  "outputyear" : -1599,
-  "write_restart" : true, /* create restart file at year defined in "restart_year" */
-  "write_restart_filename" : "restart/restart_1840_nv_stdfire.lpj", /* filename of restart file written */
-  "restart_year": 1840 /* write restart at year */
-
-#else
+#ifdef FROM_RESTART
 
   "nspinup" : 420,   /* spinup years */
   "nspinyear" : 30,  /* cycle length during spinup (yr)*/
   "firstyear": 1901, /* first year of simulation */
 #if defined CRU_MONTHLY || defined CRU_NETCDF
   "lastyear" : 2011, /* last year of simulation */
-#else 
+#else
   "lastyear" : 2019, /* last year of simulation */
 #endif
   "outputyear": 1901, /* first year output is written  */
@@ -405,6 +393,18 @@ ID                               Fmt                        filename
   "write_restart" : true, /* create restart file */
   "write_restart_filename" : "restart/restart_1900_crop_stdfire.lpj", /* filename of restart file written */
   "restart_year": 1900 /* write restart at year */
+
+#else
+  /* first spinup */
+  "nspinup" : 3500,  /* spinup years */
+  "nspinyear" : 30,  /* cycle length during spinup (yr) */
+  "firstyear": 1901, /* first year of simulation */
+  "lastyear" : 1901, /* last year of simulation */
+  "restart" :  false, /* start from restart file */
+  "outputyear" : -1599,
+  "write_restart" : true, /* create restart file at year defined in "restart_year" */
+  "write_restart_filename" : "restart/restart_1840_nv_stdfire.lpj", /* filename of restart file written */
+  "restart_year": 1840 /* write restart at year */
 
 #endif
 }
