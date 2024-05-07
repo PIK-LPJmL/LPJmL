@@ -260,15 +260,18 @@ STATIC void compute_maxthaw_depth(Soil *soil)
   for (l=0; l<=BOTTOMLAYER; l++)
   {
     depth_to_first_ice+=soildepth[l];
-    if(soil->freeze_depth[l]>epsilon)
+    if(soil->freeze_depth[l]>epsilon) 
+    {
+      depth_to_first_ice-=soil->freeze_depth[l];
       break;
+    }
   }
-  depth_to_first_ice-=soil->freeze_depth[l];
 
   /* update the maxthaw_depth if new maximum is reached */
   if (soil->maxthaw_depth<depth_to_first_ice)
     soil->maxthaw_depth=depth_to_first_ice;
 } /* of 'compute_maxthaw_depth' */
+
 
 
 /******** small helper functions  ********/
