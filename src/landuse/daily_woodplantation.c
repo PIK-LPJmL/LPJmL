@@ -58,7 +58,7 @@ Real daily_woodplantation(Stand *stand,       /**< stand pointer */
   Real wdf; /* water deficit fraction */
   Real gc_pft;
   Real transp;
-  Real vol_water_enth; /* volumetric enthalpy of water */
+  Real vol_water_enth; /* volumetric enthalpy of water (J/m3) */
   Biomass_tree *data;
   Soil *soil;
   irrig_apply = 0;

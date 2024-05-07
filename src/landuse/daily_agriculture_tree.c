@@ -77,7 +77,7 @@ Real daily_agriculture_tree(Stand *stand,                /**< stand pointer */
   Stocks flux_estab,yield;
   Real fpc_inc,fpc_total,*fpc_type;
   Real cnratio_fruit;
-  Real vol_water_enth; /* volumetric enthalpy of water */
+  Real vol_water_enth; /* volumetric enthalpy of water (J/m3) */
   Biomass_tree *data;
   Soil *soil;
   String line;

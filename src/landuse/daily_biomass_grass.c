@@ -61,7 +61,7 @@ Real daily_biomass_grass(Stand *stand,                /**< stand pointer */
   Real transp;
   Real fertil;
   Real manure;
-  Real vol_water_enth; /* volumetric enthalpy of water */
+  Real vol_water_enth; /* volumetric enthalpy of water (J/m3) */
   Bool isphen;
   Irrigation *data;
   Pftgrass *grass;

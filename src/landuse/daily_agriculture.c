@@ -59,7 +59,7 @@ Real daily_agriculture(Stand *stand,                /**< [inout] stand pointer *
   Real wdf; /* water deficit fraction */
   Real transp;
   Real cft_rm=0.0; /* cft-specific monthly root moisture */
-  Real vol_water_enth; /* volumetric enthalpy of water */
+  Real vol_water_enth; /* volumetric enthalpy of water (J/m3) */
   Bool negbm;
   Irrigation *data;
   Output *output;

@@ -194,7 +194,7 @@ typedef struct
   Real w[NSOILLAYER],            /**< soil water as fraction of whc (fractional water holding capacity) */
     w_fw[NSOILLAYER];            /**< free water or gravitational water (mm), absolute water content between field capacity and saturation */
   Real w_evap;                   /**< soil moisture content which is not transpired and can evaporate? correct? */
-  Real perc_energy[NSOILLAYER];  /**< energy transfer by percolation */
+  Real perc_energy[NSOILLAYER];  /**< energy transfer by percolation (J) */
 #ifdef MICRO_HEATING
   Real micro_heating[NSOILLAYER]; /**< energy of microbiological heating*/
   Real decomC[NSOILLAYER];
@@ -235,7 +235,6 @@ typedef struct
   Real sol_abs_enth_adj[NSOILLAYER]; /**< absolute solid content with adjusted enthalpy (mm) */
 } Soil;
 
-#ifndef TESTSCENARIO_HEAT
 typedef struct
 {
   Real lam_frozen[NHEATGRIDP];    /**< conductivity of soil in frozen state [W/K/m] */
@@ -247,7 +246,6 @@ typedef struct
    * (e.g. lam_frozen[0] <-> element directly below the surface), while the other variables define
    * properties at the gridpoints, (e.g. c_frozen[0] <-> first point below surface) */
 } Soil_thermal_prop;
-#endif
 
 /* states whether the sign of temperatures in soil column and air is
  * uniformly above/below zero, or mixed or unknown */

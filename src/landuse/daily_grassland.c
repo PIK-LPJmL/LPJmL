@@ -70,7 +70,7 @@ Real daily_grassland(Stand *stand,                /**< stand pointer */
   Real gc_pft,gcgp;
   Real wdf; /* water deficit fraction */
   Real transp;
-  Real vol_water_enth; /* volumetric enthalpy of water */
+  Real vol_water_enth; /* volumetric enthalpy of water (J/m3) */
   Bool isphen;
   Grassland *data;
   Pftgrass *grass;

@@ -57,7 +57,7 @@ Real daily_setaside(Stand *stand, /**< stand pointer */
   Real wdf; /* water deficit fraction */
   Real transp;
   Real gc_pft;
-  Real vol_water_enth; /* volumetric enthalpy of water */
+  Real vol_water_enth; /* volumetric enthalpy of water (J/m3) */
   Stocks flux_estab = {0,0};
   Stocks stocks;
   int n_est;
