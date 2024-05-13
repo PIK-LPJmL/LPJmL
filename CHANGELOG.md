@@ -64,7 +64,7 @@ of `major.minor.patch` with
 - `regridclm` now used for regridding of soil file in `regridlpj`.
 - Missing file seek to offset defined in JSON metafile added and return value fixed in `checksoilcode()`.
 - Prescribed land cover is now read correctly if landcover map size differs from number of natural PFTs.
-- Check for land use type `WP` corrected in `landusechange.c`.
+- Check for land use type `WP` corrected in `landusechange.c` (issue #354).
 
 
 ## [5.8.12] - 2024-05-07

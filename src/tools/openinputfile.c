@@ -178,8 +178,12 @@ FILE *openinputfile(Header *header,           /**< [out] pointer to file header 
     if(size!=getfilesizep(file))
     {
       if(isroot(*config))
-        fprintf(stderr,"ERROR264: File size of '%s' does not match header, differs by %lld bytes.\n",
-                filename->name,llabs(size-getfilesizep(file)));
+      {
+        fprintf(stderr,"ERROR264: File size of '%s' does not match header, differs by ",
+                filename->name);
+        fprintintf(stderr,llabs(size-getfilesizep(file)));
+        fputs(" bytes.\n",stderr);
+      }
       fclose(file);
       return NULL;
     }
