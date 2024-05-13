@@ -30,6 +30,7 @@ of `major.minor.patch` with
 - Warning added if time step of output is longer than output interval.
 - Cycle length of spinup and number of spinup years checked for positive values in `fscanconfig.c`.
 - Missing regridding of wateruse and livestock density input added in `regridlpj`.
+- File size of CLM input files is checked for consistency with header and lpjml is stopped accordingly.
 
 ### Changed
 

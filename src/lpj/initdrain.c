@@ -240,9 +240,9 @@ static Bool initriver(Cell grid[],Config *config)
   {
 
     if((drainage.file=openinputfile(&header,&drainage.swap,&config->drainage_filename,
-                                    headername,NULL,&version,&offset,FALSE,config))==NULL)
+                                    headername,NULL,LPJ_INT,&version,&offset,FALSE,config))==NULL)
       return TRUE;
-    if(version>=3 && header.datatype!=LPJ_INT)
+    if(header.datatype!=LPJ_INT)
     {
       if(isroot(*config))
         fprintf(stderr,"ERROR217: Datatype %s in drainage file '%s' is not int.\n",typenames[header.datatype],config->drainage_filename.name);
@@ -257,8 +257,6 @@ static Bool initriver(Cell grid[],Config *config)
       fclose(drainage.file);
       return TRUE;
     }
-    if(isroot(*config) && config->drainage_filename.fmt!=META && getfilesizep(drainage.file)!=sizeof(Routing)*header.ncell+headersize(headername,version)+offset)
-      fprintf(stderr,"WARNING032: File size of '%s' does not match nyear*ncell*nbands.\n",config->drainage_filename.name);
     /* seek startgrid positions in drainage file */
     if(fseek(drainage.file,sizeof(Routing)*(config->startgrid-header.firstcell)+offset,SEEK_CUR))
     {

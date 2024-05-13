@@ -21,6 +21,7 @@ FILE *openinputfile(Header *header,           /**< [out] pointer to file header 
                     const Filename *filename, /**< [in]  file name */
                     String headername,        /**< [out] clm file header string */
                     const char *unit,         /**< unit expected or NULL */
+                    Type datatype,            /**< datatype for version 2 files */
                     int *version,             /**< [inout] clm file version */
                     size_t *offset,           /**< [in] offset in binary file */
                     Bool isyear,              /**< [in] check for first year (TRUE/FALSE) */
@@ -29,6 +30,7 @@ FILE *openinputfile(Header *header,           /**< [out] pointer to file header 
 {
   FILE *file;
   char *var_unit=NULL;
+  long long size;
   if(filename->fmt==META)
   {
     *version=CLM_MAX_VERSION+1;
@@ -42,7 +44,7 @@ FILE *openinputfile(Header *header,           /**< [out] pointer to file header 
     header->nstep=1;
     header->timestep=1;
     header->scalar=1;
-    header->datatype=LPJ_SHORT;
+    header->datatype=datatype;
     header->cellsize_lon=(float)config->resolution.lon;
     header->cellsize_lat=(float)config->resolution.lat;
     /* open description file */
@@ -109,7 +111,7 @@ FILE *openinputfile(Header *header,           /**< [out] pointer to file header 
     header->nstep=1;
     header->timestep=1;
     header->scalar=1;
-    header->datatype=LPJ_SHORT;
+    header->datatype=datatype;
     *version=0;
   }
   else
@@ -165,6 +167,21 @@ FILE *openinputfile(Header *header,           /**< [out] pointer to file header 
         fclose(file);
         return NULL;
       }
+    }
+    if(*version<3)
+      header->datatype=datatype;
+    /* check file size of CLM file */
+    if(header->order==CELLINDEX)
+      size=sizeof(int)*header->ncell+typesizes[header->datatype]*header->ncell*header->nbands*header->nstep*header->nyear+headersize(headername,*version);
+    else
+      size=typesizes[header->datatype]*header->ncell*header->nbands*header->nyear*header->nstep+headersize(headername,*version);
+    if(size!=getfilesizep(file))
+    {
+      if(isroot(*config))
+        fprintf(stderr,"ERROR264: File size of '%s' does not match header, differs by %lld bytes.\n",
+                filename->name,llabs(size-getfilesizep(file)));
+      fclose(file);
+      return NULL;
     }
   }
   return file;
