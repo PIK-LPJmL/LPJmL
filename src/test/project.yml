@@ -39,7 +39,7 @@
     - U_TEST
     - GPLHEAT=10
     - TEST
-  :test_update_soil_thermal_state_highRes:
+  :test_update_soil_thermal_state_high_resolution:
     - U_TEST
     - GPLHEAT=150
     - TEST
