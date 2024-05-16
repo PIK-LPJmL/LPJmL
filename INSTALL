@@ -89,6 +89,8 @@ Directory tree after extracting the tar files:
      +--netcdf    : NetCDF input/output functions
      |
      +--utils     : utility programs
+     |
+     +--test      : unit tests for src code using ceedling
 
 Configure for your operating system
 
