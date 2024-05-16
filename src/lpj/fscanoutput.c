@@ -87,6 +87,27 @@ Bool fscanoutput(LPJfile *file,  /**< pointer to LPJ file */
   count=index=0;
   config->withdailyoutput=FALSE;
   size=nout_max;
+  config->json_filename=NULL;
+  if(iskeydefined(file,"outpath"))
+  {
+    outpath=fscanstring(file,NULL,"outpath",verbosity);
+    if(outpath==NULL)
+      return TRUE;
+    free(config->outputdir);
+    config->outputdir=strdup(outpath);
+    checkptr(config->outputdir);
+  }
+  if(!config->nopp)
+  {
+    if(iskeydefined(file,"json_filename"))
+    {
+      name=fscanstring(file,NULL,"json_filename",verbosity);
+      if(name==NULL)
+        return TRUE;
+      config->json_filename=addpath(name,config->outputdir);
+      checkptr(config->json_filename);
+    }
+  }
   if(!iskeydefined(file,"output"))
   {
     config->pft_output_scaled=FALSE;
@@ -158,15 +179,6 @@ Bool fscanoutput(LPJfile *file,  /**< pointer to LPJ file */
                 typenames[config->grid_type]);
       return TRUE;
     }
-  }
-  if(iskeydefined(file,"outpath"))
-  {
-    outpath=fscanstring(file,NULL,"outpath",verbosity);
-    if(outpath==NULL)
-      return TRUE;
-    free(config->outputdir);
-    config->outputdir=strdup(outpath);
-    checkptr(config->outputdir);
   }
   config->absyear=FALSE;
   if(fscanbool(file,&config->absyear,"absyear",!config->pedantic,verbosity))

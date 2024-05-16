@@ -27,17 +27,18 @@ FILE *openconfig(Config *config,      /**< configuration struct */
                 )                     /** \return file pointer of open file or NULL */
 
 {
-  char *cmd,*lpjpath,*lpjinc,*filter,*env_options,*pos;
+  char *lpjpath,*lpjinc,*env_options,*pos;
   char **options;
   char *endptr;
   Bool iscpp;
   FILE *file;
   int i,len,dcount;
   config->nopp=FALSE;
-  filter=getenv(LPJPREP);
-  if(filter==NULL)
+  config->cmd=NULL;
+  config->filter=getenv(LPJPREP);
+  if(config->filter==NULL)
   {
-    filter=cpp_cmd;
+    config->filter=cpp_cmd;
     iscpp=TRUE;
   }
   else
@@ -301,7 +302,7 @@ FILE *openconfig(Config *config,      /**< configuration struct */
           free(options);
           return NULL;
         }
-        filter=(*argv)[++i];
+        config->filter=(*argv)[++i];
         iscpp=FALSE;
       }
       else if(!strcmp((*argv)[i],"-param"))
@@ -455,30 +456,29 @@ FILE *openconfig(Config *config,      /**< configuration struct */
       options[dcount++]=env_options;
       len+=strlen(env_options)+1;
     }
-    len+=strlen(filter);
+    len+=strlen(config->filter);
     if(config->rank!=0)
 #ifdef _WIN32
       len+=strlen(" 2>nul:");
 #else
       len+=strlen(" 2>/dev/null");
 #endif
-    cmd=malloc(strlen(config->filename)+len+1);
-    checkptr(cmd);
-    strcat(strcpy(cmd,filter)," ");
+    config->cmd=malloc(strlen(config->filename)+len+1);
+    checkptr(config->cmd);
+    strcat(strcpy(config->cmd,config->filter)," ");
     /* concatenate options for cpp command */
     for(i=0;i<dcount;i++)
-      strcat(strcat(cmd,options[i])," ");
-    strcat(cmd,config->filename);
+      strcat(strcat(config->cmd,options[i])," ");
+    strcat(config->cmd,config->filename);
     if(config->rank!=0)
 #ifdef _WIN32
-      strcat(cmd," 2>nul:"); /* only task 0 sends error messages */
+      strcat(config->cmd," 2>nul:"); /* only task 0 sends error messages */
 #else
-      strcat(cmd," 2>/dev/null"); /* only task 0 sends error messages */
+      strcat(config->cmd," 2>/dev/null"); /* only task 0 sends error messages */
 #endif
     if(lpjpath!=NULL)
       free(lpjinc);
-    file=popen(cmd,"r"); /* open pipe, output of cpp goes to file */
-    free(cmd);
+    file=popen(config->cmd,"r"); /* open pipe, output of cpp goes to file */
   }
   if(file==NULL)
   {
