@@ -265,7 +265,7 @@
 #define xstr(s) #s
 
 #ifdef FROM_RESTART
-  "json_filename" : "output/lpjml_config_restart.json", /* Filename of preprocessed configuration file written */
+  "json_config_filename" : "output/lpjml_config_restart.json", /* Filename of preprocessed configuration file written */
 
   "output" :
   [
@@ -372,7 +372,7 @@ ID                               Fmt                        filename
 
 #else
 
-  "json_filename" : "output/lpjml_config_spinup.json", /* Filename of preprocessed configuration file written */
+  "json_config_filename" : "output/lpjml_config_spinup.json", /* Filename of preprocessed configuration file written */
 
   "output" :
   [

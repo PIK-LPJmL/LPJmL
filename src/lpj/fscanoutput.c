@@ -99,9 +99,9 @@ Bool fscanoutput(LPJfile *file,  /**< pointer to LPJ file */
   }
   if(!config->nopp)
   {
-    if(iskeydefined(file,"json_filename"))
+    if(iskeydefined(file,"json_config_filename") && !isnull(file,"json_config_filename"))
     {
-      name=fscanstring(file,NULL,"json_filename",verbosity);
+      name=fscanstring(file,NULL,"json_config_filename",verbosity);
       if(name==NULL)
         return TRUE;
       config->json_filename=addpath(name,config->outputdir);
