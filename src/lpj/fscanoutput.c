@@ -106,6 +106,16 @@ Bool fscanoutput(LPJfile *file,  /**< pointer to LPJ file */
         return TRUE;
       config->json_filename=addpath(name,config->outputdir);
       checkptr(config->json_filename);
+      if(!strcmp(config->filename,config->json_filename))
+      {
+        if(verbosity)
+          fprintf(stderr,"ERROR262: Filename of processed JSON file '%s' is identical to configuration filename, no file written.\n",
+                  config->json_filename);
+        if(config->pedantic)
+          return TRUE;
+        free(config->json_filename);
+        config->json_filename=NULL;
+      }
     }
   }
   if(!iskeydefined(file,"output"))

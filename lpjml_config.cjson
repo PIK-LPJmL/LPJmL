@@ -32,7 +32,6 @@
 
   "sim_name" : "LPJmL Run", /* Simulation description */
   "sim_id"   : "lpjml",     /* LPJML Simulation type with managed land use */
-  "json_filename" : "output/lpjml_config.json", /* Filename of preprocessed configuration file written */
   "coupled_model" : null,   /* Coupled model: null (no model coupled), string (name of coupled model) */
   "start_coupling": null,   /* Start year of model coupling: null (start_coupling is set to firstyear if coupled_model != null), int (start year of coupling) */
   "version"  : "5.8",       /* LPJmL version expected */
@@ -266,6 +265,7 @@
 #define xstr(s) #s
 
 #ifdef FROM_RESTART
+  "json_filename" : "output/lpjml_config_restart.json", /* Filename of preprocessed configuration file written */
 
   "output" :
   [
@@ -371,6 +371,8 @@ ID                               Fmt                        filename
   ],
 
 #else
+
+  "json_filename" : "output/lpjml_config_spinup.json", /* Filename of preprocessed configuration file written */
 
   "output" :
   [

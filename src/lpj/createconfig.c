@@ -30,7 +30,7 @@ void createconfig(const Config *config)
     }
     cmd=strcat(strcat(strcpy(cmd,config->cmd)," -P >"),config->json_filename);
     if(rc=system(cmd))
-      fprintf(stderr,"ERROR265: Cannot write '%s', rc=%d.\n",
+      fprintf(stderr,"ERROR263: Cannot write '%s', rc=%d.\n",
               config->json_filename,rc);
     free(cmd);
   }
