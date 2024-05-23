@@ -19,6 +19,15 @@ of `major.minor.patch` with
 
 ## [Unreleased]
 
+### Contributors
+
+- author: Sebastian Ostberg (ostberg@pik-potsdam.de)
+- code review:
+
+### Fixed
+
+- fixed PFT attribute scaling in mix_veg_grass() and mix_veg_tree()
+
 ## [5.8.12] - 2024-05-07
 
 ### Contributors
