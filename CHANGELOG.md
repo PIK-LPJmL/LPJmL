@@ -19,11 +19,30 @@ of `major.minor.patch` with
 
 ## [Unreleased]
 
+## [5.8.13] - 2024-05-17
+
+### Contributors
+
+- author: Werner von Bloh (bloh@pik-potsdam.de)
+- code review: Jannes Breier (breier@pik-potsdam.de)
+
+### Added
+
+- A preprocessed JSON configuration file can be written if the following setting is added to the `*.cjson` configuration file:
+```java
+"json_config_filename" : "output/lpjml_config_restart.json", /* Filename of preprocessed configuration file written or null to disable this feature */
+```
+
+### Fixed
+
+- The right allocated storage for `config->coupled_model` is checked for `NULL` in `fscanconfig.c`.
+
+
 ## [5.8.12] - 2024-05-07
 
 ### Contributors
 
-- author: Sibyll Schaphoff (sibylls@pik-potsdam.de), Werner von Bloh (bloh@pik-potsdamde)
+- author: Sibyll Schaphoff (sibylls@pik-potsdam.de), Werner von Bloh (bloh@pik-potsdam.de)
 - code review: Stephen Wirth (wirth@pik-potsdam.de), Christoph Mueller (cmueller@pik-potsdam.de), Sebastian Ostberg (ostberg@pik-potsdam.de)
 
 ### Added
@@ -39,7 +58,6 @@ of `major.minor.patch` with
 - fixed handling of monthly and daily outputs in `iterateyear.c` to ensure that last annual timestep of outputs is written after `update_annual()` is called
 
 
-
 ## [5.8.11] - 2024-04-10
 
 ### Contributors
@@ -52,9 +70,9 @@ of `major.minor.patch` with
 - added four new outputs for managed land: deposition (`NDEPO_MG`), biological nitrogen fixation (`BNF_MG`), applied nitrogen (`NAPPLIED_MG`) and nitrogen establishment flux (`FLUX_ESTABN_MG`)
 
 
-
-
 ## [5.8.10] - 2024-04-04
+
+### Contributors
 
 - author: Jannes Breier (jannesbr@pik-potsdam.de)
 - code review: Stephen Wirth (wirth@pik-potsdam.de), David Hoetten (davidho@pik-potsdam.de)
@@ -70,6 +88,8 @@ to describe this exception (`"grid information (raw: coordinates, cdf: cell_id)"
 
 
 ## [5.8.9] - 2024-03-14
+
+### Contributors
 
 - author: Werner von Bloh (bloh@pik-potsdam.de), Sebastian Ostberg (ostberg@pik-potsdam.de)
 - code review: Jannes Breier (breier@pik-potsdam.de)

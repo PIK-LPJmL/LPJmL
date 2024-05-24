@@ -265,7 +265,8 @@
 #define xstr(s) #s
 
 #ifdef FROM_RESTART
-  "json_config_filename" : "output/lpjml_config_restart.json", /* Filename of preprocessed configuration file written */
+
+  "json_config_filename" : "output/lpjml_config_restart.json", /* Filename of preprocessed configuration file written or null to disable this feature */
 
   "output" :
   [
@@ -372,7 +373,7 @@ ID                               Fmt                        filename
 
 #else
 
-  "json_config_filename" : "output/lpjml_config_spinup.json", /* Filename of preprocessed configuration file written */
+  "json_config_filename" : "output/lpjml_config_spinup.json", /* Filename of preprocessed configuration file written or null to disable this feature */
 
   "output" :
   [
@@ -397,7 +398,7 @@ ID                               Fmt                        filename
   "firstyear": 1901, /* first year of simulation */
 #if defined CRU_MONTHLY || defined CRU_NETCDF
   "lastyear" : 2011, /* last year of simulation */
-#else 
+#else
   "lastyear" : 2019, /* last year of simulation */
 #endif
   "outputyear": 1901, /* first year output is written  */
@@ -407,7 +408,7 @@ ID                               Fmt                        filename
   "write_restart" : true, /* create restart file */
   "write_restart_filename" : "restart/restart_1900_crop_stdfire.lpj", /* filename of restart file written */
   "restart_year": 1900 /* write restart at year */
-  
+
 #else
   /* first spinup */
   "nspinup" : 3500,  /* spinup years */
@@ -419,6 +420,6 @@ ID                               Fmt                        filename
   "write_restart" : true, /* create restart file at year defined in "restart_year" */
   "write_restart_filename" : "restart/restart_1840_nv_stdfire.lpj", /* filename of restart file written */
   "restart_year": 1840 /* write restart at year */
-  
+
 #endif
 }
