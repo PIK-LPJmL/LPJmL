@@ -19,7 +19,7 @@ of `major.minor.patch` with
 
 ## [Unreleased]
 
-## [5.8.13] - 2024-05-07
+## [5.8.13] - 2024-05-21
 
 ### Contributors
 
@@ -31,6 +31,7 @@ of `major.minor.patch` with
 - Cycle length of spinup and number of spinup years checked for positive values in `fscanconfig.c`.
 - Missing regridding of wateruse and livestock density input added in `regridlpj`.
 - File size of CLM input files is checked for consistency with header and lpjml is stopped accordingly.
+- Utility `drainage2cdf` added to convert CLM drainage file into a NetCDF file using the soil code NetCDF file (issue #355).
 
 ### Changed
 
@@ -41,6 +42,7 @@ of `major.minor.patch` with
 - Country code files can now have only one band. Files with 2 bands are still supported, but region code ignored.
 - Filename and source is written into configuration file created by `regridlpj`.
 - All occurrences of the deprecated function `MPI_Type_extent` replaced by `MPI_Type_get_extent`.
+- `null` allowed for `"global_attrs"`, `"inpath"`, `"outpath"`, `"restartpath"`, `"output"`, and `"checkpoint_filename"` to disable the feature.
 
 ### Removed
 
@@ -65,7 +67,7 @@ of `major.minor.patch` with
 - Missing file seek to offset defined in JSON metafile added and return value fixed in `checksoilcode()`.
 - Prescribed land cover is now read correctly if landcover map size differs from number of natural PFTs.
 - Check for land use type `WP` corrected in `landusechange.c` (issue #354).
-
+- Function `initdrain()`corrected to handle river routing files in NetCDF format.
 
 ## [5.8.12] - 2024-05-07
 

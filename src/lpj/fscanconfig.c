@@ -666,7 +666,7 @@ Bool fscanconfig(Config *config,    /**< LPJ configuration */
   }
   config->global_attrs=NULL;
   config->n_global=0;
-  if(iskeydefined(file,"global_attrs"))
+  if(iskeydefined(file,"global_attrs") && !isnull(file,"global_attrs"))
   {
     if(fscanattrs(file,&config->global_attrs,&config->n_global,"global_attrs",verbose))
       return TRUE;
@@ -709,7 +709,7 @@ Bool fscanconfig(Config *config,    /**< LPJ configuration */
   {
     fscanbool2(file,&config->check_climate,"check_climate");
   }
-  if(iskeydefined(file,"inpath"))
+  if(iskeydefined(file,"inpath") && !isnull(file,"inpath"))
   {
     name=fscanstring(file,NULL,"inpath",verbose);
     if(name==NULL)
@@ -974,7 +974,7 @@ Bool fscanconfig(Config *config,    /**< LPJ configuration */
   /*=================================================================*/
 
   if (verbose>=VERB) puts("// V. run settings");
-  if(iskeydefined(file,"restartpath"))
+  if(iskeydefined(file,"restartpath") && !isnull(file,"restartpath"))
   {
     name=fscanstring(file,NULL,"restartpath",verbose);
     if(name==NULL)
@@ -1146,7 +1146,7 @@ Bool fscanconfig(Config *config,    /**< LPJ configuration */
     config->restart_filename=NULL;
   }
   fscanbool2(file,&config->equilsoil,"equilsoil");
-  if(iskeydefined(file,"checkpoint_filename"))
+  if(iskeydefined(file,"checkpoint_filename") && !isnull(file,"checkpoint_filename"))
   {
     fscanname(file,name,"checkpoint_filename");
     config->checkpoint_restart_filename=addpath(name,config->restartdir);

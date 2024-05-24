@@ -224,6 +224,7 @@
   ,
 
   /* output data settings */
+  "outpath" : null,           /* Default path to output files or null */
   "output_metafile" : true,   /* json metafile created (true/false) */
   "default_fmt" : "raw",      /* default format for output files: "raw","txt","cdf","clm","sock" */
   "default_suffix" : ".bin",  /* default file suffix for output files */
@@ -362,7 +363,7 @@ ID                               Fmt                        filename
 
   "output" :
   [
-    { "id" : "globalflux",       "file" : { "fmt" : "txt", "name" : "output/globalflux_spinup.csv"}}
+  //  { "id" : "globalflux",       "file" : { "fmt" : "txt", "name" : "output/globalflux_spinup.csv"}}
   ],
 #endif
 
