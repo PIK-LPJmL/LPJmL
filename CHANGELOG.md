@@ -19,7 +19,7 @@ of `major.minor.patch` with
 
 ## [Unreleased]
 
-## [5.8.13] - 2024-05-21
+## [5.8.14] - 2024-05-24
 
 ### Contributors
 
@@ -68,6 +68,20 @@ of `major.minor.patch` with
 - Prescribed land cover is now read correctly if landcover map size differs from number of natural PFTs.
 - Check for land use type `WP` corrected in `landusechange.c` (issue #354).
 - Function `initdrain()`corrected to handle river routing files in NetCDF format.
+
+
+## [5.8.13] - 2024-05-23
+
+### Contributors
+
+- author: Jannes Breier (jannesbr@pik-potsdam.de)
+- code review: Stephen Wirth (wirth@pik-potsdam.de), Jens Heinke (heinke@pik-potsdam.de)
+
+### Changed
+
+- PFT parameter lai_sapl has been set back to its original value of 0.001 for grasses
+(tropical, temperate, polar)
+
 
 ## [5.8.12] - 2024-05-07
 

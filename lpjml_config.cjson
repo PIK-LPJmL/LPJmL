@@ -363,7 +363,7 @@ ID                               Fmt                        filename
 
   "output" :
   [
-  //  { "id" : "globalflux",       "file" : { "fmt" : "txt", "name" : "output/globalflux_spinup.csv"}}
+    { "id" : "globalflux",       "file" : { "fmt" : "txt", "name" : "output/globalflux_spinup.csv"}}
   ],
 #endif
 
