@@ -19,7 +19,7 @@ of `major.minor.patch` with
 
 ## [Unreleased]
 
-## [5.8.13] - 2024-05-17
+## [5.8.14] - 2024-05-24
 
 ### Contributors
 
@@ -36,6 +36,19 @@ of `major.minor.patch` with
 ### Fixed
 
 - The right allocated storage for `config->coupled_model` is checked for `NULL` in `fscanconfig.c`.
+
+
+## [5.8.13] - 2024-05-23
+
+### Contributors
+
+- author: Jannes Breier (jannesbr@pik-potsdam.de)
+- code review: Stephen Wirth (wirth@pik-potsdam.de), Jens Heinke (heinke@pik-potsdam.de)
+
+### Changed
+
+- PFT parameter lai_sapl has been set back to its original value of 0.001 for grasses
+(tropical, temperate, polar)
 
 
 ## [5.8.12] - 2024-05-07
