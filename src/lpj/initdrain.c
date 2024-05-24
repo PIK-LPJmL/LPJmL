@@ -86,7 +86,10 @@ static int *getindex(const Input_netcdf input,const Cell grid[],
   n=getindexsize_netcdf(input);
   index=newvec(int,n);
   if(index==NULL)
+  {
+    printallocerr("index");
     iserr=TRUE;
+  }
   else if(isroot(*config))
   {
     for(i=0;i<n;i++)
@@ -288,29 +291,34 @@ static Bool initriver(Cell grid[],Config *config)
     {
       if(readintinput_netcdf(drainage.cdf,&r.index,&grid[cell].coord,&missing) || missing)
       {
+        fprintf(stderr,"ERROR203: Cannot read drainage of cell %d (%s).\n",
+               cell+config->startgrid,sprintcoord(line,&grid[cell].coord));
         closeinput_netcdf(drainage.cdf);
         closeinput_netcdf(river.cdf);
         free(index);
         return TRUE;
       }
-      if(r.index<0 ||  r.index>=n)
+      if(r.index<-1 ||  r.index>=n)
       {
-        fprintf(stderr,"ERROR203: Invalid irrigation neighbour %d of cell %d (%s).\n",
+        fprintf(stderr,"ERROR203: Invalid drainage  %d of cell %d (%s).\n",
                 r.index,cell+config->startgrid,sprintcoord(line,&grid[cell].coord));
         closeinput_netcdf(drainage.cdf);
         closeinput_netcdf(river.cdf);
         free(index);
         return TRUE;
       }
-      r.index=index[r.index];
-      if(r.index==-1)
+      if(r.index>0)
       {
-        fprintf(stderr,"ERROR203: Invalid irrigation neighbour %d of cell %d (%s).\n",
-                r.index,cell+config->startgrid,sprintcoord(line,&grid[cell].coord));
-        closeinput_netcdf(drainage.cdf);
-        closeinput_netcdf(river.cdf);
-        free(index);
-        return TRUE;
+        r.index=index[r.index];
+        if(r.index==-1)
+        {
+          fprintf(stderr,"ERROR203: Invalid drainage %d of cell %d (%s).\n",
+                  r.index,cell+config->startgrid,sprintcoord(line,&grid[cell].coord));
+          closeinput_netcdf(drainage.cdf);
+          closeinput_netcdf(river.cdf);
+          free(index);
+          return TRUE;
+        }
       }
       if(readinput_netcdf(drainage.cdf,&len,&grid[cell].coord))
       {
