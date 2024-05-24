@@ -42,6 +42,18 @@ struct coord_netcdf
   size_t offsets[2];
 };
 
+const float *getlon_netcdf(const Coord_netcdf coord,int *nlon)
+{
+  *nlon=coord->lon_len;
+  return coord->lon;
+} /* of 'getlon_netcdf' */
+
+const float *getlat_netcdf(const Coord_netcdf coord,int *nlat)
+{
+  *nlat=coord->lat_len;
+  return coord->lat;
+} /* of 'getlat_netcdf' */
+
 void closecoord_netcdf(Coord_netcdf coord)
 {
 #if defined(USE_NETCDF) || defined(USE_NETCDF4)

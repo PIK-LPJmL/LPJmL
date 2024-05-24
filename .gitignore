@@ -170,3 +170,4 @@ bin/regriddrain
 bin/coupler_demo
 bin/cmpbin
 bin/statclm
+bin/drainage2cdf
