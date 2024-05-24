@@ -19,10 +19,13 @@ of `major.minor.patch` with
 
 ## [Unreleased]
 
+
+## [5.8.14] - 2024-05-24
+
 ### Contributors
 
 - author: Sebastian Ostberg (ostberg@pik-potsdam.de)
-- code review:
+- code review: Susanne Rolinski (rolinski@pik-potsdam.de), Christoph Mueller (cmueller@pik-potsdam.de)
 
 ### Fixed
 
