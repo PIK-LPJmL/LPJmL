@@ -29,7 +29,7 @@ of `major.minor.patch` with
 
 ### Fixed
 
-- fixed PFT attribute scaling in mix_veg_grass() and mix_veg_tree()
+- fixed PFT pool scaling in mix_veg_grass() and mix_veg_tree()
 
 
 ## [5.8.13] - 2024-05-23
