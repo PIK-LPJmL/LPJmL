@@ -26,4 +26,7 @@ void mix_veg_tree(Pft *pft,Real scaler)
   tree->fruit.nitrogen*=scaler;
   tree->turn_litt.leaf.carbon*=scaler;
   tree->turn_litt.leaf.nitrogen*=scaler;
+
+  pft->establish.carbon*=scaler;
+  pft->establish.nitrogen*=scaler;
 } /* of 'mix_veg_tree' */

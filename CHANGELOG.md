@@ -19,6 +19,19 @@ of `major.minor.patch` with
 
 ## [Unreleased]
 
+
+## [5.8.14] - 2024-05-27
+
+### Contributors
+
+- author: Sebastian Ostberg (ostberg@pik-potsdam.de)
+- code review: Susanne Rolinski (rolinski@pik-potsdam.de), Christoph Mueller (cmueller@pik-potsdam.de)
+
+### Fixed
+
+- fixed PFT pool scaling in mix_veg_grass() and mix_veg_tree()
+
+
 ## [5.8.13] - 2024-05-23
 
 ### Contributors
@@ -30,7 +43,6 @@ of `major.minor.patch` with
 
 - PFT parameter lai_sapl has been set back to its original value of 0.001 for grasses
 (tropical, temperate, polar)
-
 
 
 ## [5.8.12] - 2024-05-07
