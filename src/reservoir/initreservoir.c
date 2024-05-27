@@ -55,9 +55,9 @@ static Bool initreservoir2(Cell grid[],   /**< LPJ grid */
   {
     if(openinputdata(&year,&config->reservoir_filename,"year reservoir",NULL,LPJ_INT,1.0,0,config))
       return TRUE;
-    if(openinputdata(&capacity,&config->capacity_reservoir_filename,"capacity reservoir",NULL,LPJ_FLOAT,1.0,0,config))
+    if(openinputdata(&capacity,&config->capacity_reservoir_filename,"capacity reservoir","dm3",LPJ_FLOAT,1.0,0,config))
       return TRUE;
-    if(openinputdata(&area,&config->area_reservoir_filename,"area reservoir",NULL,LPJ_FLOAT,1.0,0,config))
+    if(openinputdata(&area,&config->area_reservoir_filename,"area reservoir","km2",LPJ_FLOAT,1.0,0,config))
       return TRUE;
     if(openinputdata(&inst_cap,&config->inst_cap_reservoir_filename,"inst cap reservoir",NULL,LPJ_INT,1.0,0,config))
       return TRUE;

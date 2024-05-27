@@ -147,14 +147,17 @@ static Cdf *create_cdf(const char *filename,
   dim[0]=lat_dim_id;
   dim[1]=lon_dim_id;
   rc=nc_def_var(cdf->ncid,"year",NC_INT,2,dim,&cdf->varid_year);
+  rc=nc_put_att_text(cdf->ncid, cdf->varid_year,"standard_name",strlen("year"),"year");
   nc_put_att_int(cdf->ncid, cdf->varid_year,"missing_value",NC_INT,1,&imiss);
   rc=nc_put_att_int(cdf->ncid, cdf->varid_year,"_FillValue",NC_INT,1,&imiss);
   error(rc);
   rc=nc_def_var(cdf->ncid,"area",NC_FLOAT,2,dim,&cdf->varid_area);
+  rc=nc_put_att_text(cdf->ncid, cdf->varid_area,"units",strlen("km2"),"km2");
   nc_put_att_float(cdf->ncid, cdf->varid_area,"missing_value",NC_FLOAT,1,&miss);
   rc=nc_put_att_float(cdf->ncid, cdf->varid_area,"_FillValue",NC_FLOAT,1,&miss);
   error(rc);
   rc=nc_def_var(cdf->ncid,"capacity",NC_FLOAT,2,dim,&cdf->varid_capacity);
+  rc=nc_put_att_text(cdf->ncid, cdf->varid_capacity,"units",strlen("dm3"),"dm3");
   nc_put_att_float(cdf->ncid, cdf->varid_capacity,"missing_value",NC_FLOAT,1,&miss);
   rc=nc_put_att_float(cdf->ncid, cdf->varid_capacity,"_FillValue",NC_FLOAT,1,&miss);
   error(rc);
