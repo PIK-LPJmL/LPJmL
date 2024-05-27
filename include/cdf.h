@@ -124,6 +124,7 @@ typedef struct
   Type type;     /**< data type in binary file */
   Real scalar;   /**< scaling factor */
   FILE *file;    /**< pointer to binary file */
+  int nbands;    /**< number of bands */
   Input_netcdf cdf;
 } Infile;
 

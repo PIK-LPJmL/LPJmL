@@ -404,7 +404,7 @@ Bool fscanpftpar(LPJfile *file,       /**< pointer to LPJ file */
       if(cnratio.low<=0 || cnratio.high<=0 || cnratio.median<=0)
       {
         if(verb)
-          fprintf(stderr,"ERROR235: CN ratio limits=(%g,%g,%g) must be greater than zero for PFT '%s'.\n",
+          fprintf(stderr,"ERROR235: C:N ratio limits=(%g,%g,%g) must be greater than zero for PFT '%s'.\n",
                   cnratio.low,cnratio.median,cnratio.high,pft->name);
         return TRUE;
       }

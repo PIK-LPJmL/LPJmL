@@ -34,9 +34,12 @@ static Bool initreservoir2(Cell grid[],   /**< LPJ grid */
   char *name;
   size_t filesize;
   Infile input;
+  Infile year,capacity,area,inst_cap,height,purpose;
   Reservoir reservoir;
   size_t offset;
-  if(openinputdata(&input,&config->elevation_filename,"elevation","m",LPJ_SHORT,1.0,config))
+  Bool missing;
+  String line;
+  if(openinputdata(&input,&config->elevation_filename,"elevation","m",LPJ_SHORT,1.0,0,config))
     return TRUE;
   for(cell=0;cell<config->ngridcell;cell++)
   {
@@ -48,6 +51,101 @@ static Bool initreservoir2(Cell grid[],   /**< LPJ grid */
     grid[cell].elevation=(int)data;
   }
   closeinput(&input);
+  if(config->reservoir_filename.fmt==CDF)
+  {
+    if(openinputdata(&year,&config->reservoir_filename,"year reservoir",NULL,LPJ_INT,1.0,0,config))
+      return TRUE;
+    if(openinputdata(&capacity,&config->capacity_reservoir_filename,"capacity reservoir",NULL,LPJ_FLOAT,1.0,0,config))
+      return TRUE;
+    if(openinputdata(&area,&config->area_reservoir_filename,"area reservoir",NULL,LPJ_FLOAT,1.0,0,config))
+      return TRUE;
+    if(openinputdata(&inst_cap,&config->inst_cap_reservoir_filename,"inst cap reservoir",NULL,LPJ_INT,1.0,0,config))
+      return TRUE;
+    if(openinputdata(&height,&config->height_reservoir_filename,"heigbt reservoir","m",LPJ_INT,1.0,0,config))
+      return TRUE;
+    if(openinputdata(&purpose,&config->purpose_reservoir_filename,"purpose reservoir",NULL,LPJ_INT,1.0,NPURPOSE,config))
+      return TRUE;
+    for(cell=0;cell<config->ngridcell;cell++)
+    {
+      if(readintinputdata(&year,&reservoir.year,&missing,&grid[cell].coord,cell+config->startgrid,&config->reservoir_filename) || missing)
+      {
+        fprintf(stderr,"ERROR203: Cannot read year of reservoir of cell %d (%s).\n",
+               cell+config->startgrid,sprintcoord(line,&grid[cell].coord));
+        closeinput(&year);
+        return TRUE;
+      }
+      if(readinputdata(&capacity,&data,&grid[cell].coord,cell+config->startgrid,&config->capacity_reservoir_filename))
+      {
+        fprintf(stderr,"ERROR203: Cannot read capacity of reservoir of cell %d (%s).\n",
+               cell+config->startgrid,sprintcoord(line,&grid[cell].coord));
+        closeinput(&capacity);
+        return TRUE;
+      }
+      reservoir.capacity=data;
+      if(readinputdata(&area,&data,&grid[cell].coord,cell+config->startgrid,&config->area_reservoir_filename))
+      {
+        fprintf(stderr,"ERROR203: Cannot read area of reservoir of cell %d (%s).\n",
+               cell+config->startgrid,sprintcoord(line,&grid[cell].coord));
+        closeinput(&area);
+        return TRUE;
+      }
+      reservoir.area=data;
+      if(readintinputdata(&inst_cap,&reservoir.inst_cap,&missing,&grid[cell].coord,cell+config->startgrid,&config->inst_cap_reservoir_filename) || missing)
+      {
+        fprintf(stderr,"ERROR203: Cannot read installed capacity of reservoir of cell %d (%s).\n",
+               cell+config->startgrid,sprintcoord(line,&grid[cell].coord));
+        closeinput(&inst_cap);
+        return TRUE;
+      }
+      if(readintinputdata(&height,&reservoir.height,&missing,&grid[cell].coord,cell+config->startgrid,&config->height_reservoir_filename) || missing)
+      {
+        fprintf(stderr,"ERROR203: Cannot read height of reservoir of cell %d (%s).\n",
+               cell+config->startgrid,sprintcoord(line,&grid[cell].coord));
+        closeinput(&height);
+        return TRUE;
+      }
+      if(readintinputdata(&purpose,reservoir.purpose,&missing,&grid[cell].coord,cell+config->startgrid,&config->purpose_reservoir_filename) || missing)
+      {
+        fprintf(stderr,"ERROR203: Cannot read purpose of reservoir of cell %d (%s).\n",
+               cell+config->startgrid,sprintcoord(line,&grid[cell].coord));
+        closeinput(&purpose);
+        return TRUE;
+      }
+      /*if constant landuse, all dams as in landuse year (but 'built' before)*/
+      if(config->withlanduse==CONST_LANDUSE)
+      {
+        if(reservoir.year>0 && reservoir.year<=config->landuse_year_const)
+          reservoir.year=1;
+      }
+
+      if(reservoir.year>0 && reservoir.year<=config->lastyear) /* Is there a dam? */
+      {
+        if(!grid[cell].ml.dam)
+        {
+          grid[cell].ml.resdata=new(Resdata);
+          if(grid[cell].ml.resdata==NULL)
+          {
+            printallocerr("resdata");
+            fclose(file);
+            return TRUE;
+          }
+          grid[cell].ml.resdata->demand_fraction=0;
+        }
+        grid[cell].ml.resdata->reservoir=reservoir;
+
+      }
+      else /* no */
+        grid[cell].ml.resdata=NULL;
+    }
+    closeinput(&year);
+    closeinput(&capacity);
+    closeinput(&area);
+    closeinput(&inst_cap);
+    closeinput(&height);
+    closeinput(&purpose);
+  }
+  else
+  {
   if((file=openinputfile(&header,&swap,&config->reservoir_filename,
                          headername,NULL,LPJ_FLOAT,
                          &version,&offset,TRUE,config))==NULL)
@@ -131,6 +229,7 @@ static Bool initreservoir2(Cell grid[],   /**< LPJ grid */
       grid[cell].ml.resdata=NULL;
   }
   fclose(file);
+  }
   return FALSE;
 } /* of 'initreservoir2' */
 

@@ -40,7 +40,7 @@ int main(int argc,char **argv)
   int ncid,rc,lat_dim_id,lon_dim_id,lon_var_id,lat_var_id;
   int dim[2];
   int index_varid,len_varid;
-  int miss=-9999;
+  int miss=MISSING_VALUE_INT;
   int data[2];
   int version;
   int src_cell,dst_cell;
@@ -181,8 +181,12 @@ int main(int argc,char **argv)
     fprintf(stderr,"Number of bands=%d in '%s' must be 1 or 2.\n",
             header.nbands,argv[iarg+2]);
     return EXIT_FAILURE;
-  } 
-  
+  }
+  if(version>2 && header.datatype!=LPJ_INT)
+  {
+    fprintf(stderr,"Datatype of file '%s' is %s, must be int.\n",argv[iarg+2],typenames[header.datatype]);
+    return EXIT_FAILURE;
+  }
 #ifdef USE_NETCDF4
   rc=nc_create(argv[iarg+3],NC_CLOBBER|NC_NETCDF4,&ncid);
 #else
@@ -284,10 +288,16 @@ int main(int argc,char **argv)
 #ifdef DEBUG
     printf("data[0]=%d\n",data[0]);
 #endif
-    if(data[0]==-1)
-     out[index[src_cell]]=-1;
+    if(data[0]<0)
+     out[index[src_cell]]=data[0];
     else
     {
+      if(data[0]<0 || data[0]>=n)
+      {
+        fprintf(stderr,"Index for cell (%s)=%d in '%s' must be in [0,%d].\n",
+                sprintcoord(line,grid+i),data[0],argv[iarg+2],n-1);
+        return EXIT_FAILURE;
+      }
       dst_cell=findcoord(grid+data[0],grid_soil,&resolution,n);
       if(dst_cell==NOT_FOUND)
       {
@@ -313,4 +323,4 @@ int main(int argc,char **argv)
   fprintf(stderr,"ERROR401: NetCDF is not supported in this version of %s.\n",argv[0]);
   return EXIT_FAILURE;
 #endif
-}
+} /* of 'main' */

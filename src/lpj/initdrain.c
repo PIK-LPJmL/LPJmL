@@ -128,7 +128,7 @@ static Bool initirrig(Cell grid[],    /**< Cell grid             */
   int cell,neighb_irrig,rc,*index=NULL,n;
   /* open neighbour irrigation file */
   irrig_file.fmt=config->neighb_irrig_filename.fmt;
-  if(openinputdata(&irrig_file,&config->neighb_irrig_filename,"irrigation",NULL,LPJ_INT,1.0,config))
+  if(openinputdata(&irrig_file,&config->neighb_irrig_filename,"irrigation",NULL,LPJ_INT,1.0,0,config))
     return TRUE;
   if(config->neighb_irrig_filename.fmt==CDF)
   {
@@ -298,7 +298,7 @@ static Bool initriver(Cell grid[],Config *config)
         free(index);
         return TRUE;
       }
-      if(r.index<-1 ||  r.index>=n)
+      if(r.index>=n)
       {
         fprintf(stderr,"ERROR203: Invalid drainage  %d of cell %d (%s).\n",
                 r.index,cell+config->startgrid,sprintcoord(line,&grid[cell].coord));
@@ -307,7 +307,7 @@ static Bool initriver(Cell grid[],Config *config)
         free(index);
         return TRUE;
       }
-      if(r.index>0)
+      if(r.index>=0)
       {
         r.index=index[r.index];
         if(r.index==-1)

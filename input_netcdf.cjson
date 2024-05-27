@@ -3,7 +3,7 @@
 /**        i  n  p  u  t  _  n  e  t  c  d  f  .  c  j  s  o  n                    \n**/
 /**                                                                                \n**/
 /** Configuration file for NetCDF input dataset for LPJmL                          \n**/
-/** Version 5.8.13                                                                 \n**/
+/** Version 5.8.12                                                                 \n**/
 /**                                                                                \n**/
 /** (C) Potsdam Institute for Climate Impact Research (PIK), see COPYRIGHT file    \n**/
 /** authors, and contributors see AUTHORS file                                     \n**/
@@ -13,34 +13,31 @@
 /**                                                                                \n**/
 /**************************************************************************************/
 
-"inpath" : "/p/projects/biodiversity",
-
-"soilmap" : [null,"clay", "silty clay", "sandy clay", "clay loam", "silty clay loam",
-             "sandy clay loam", "loam", "silt loam", "sandy loam", "silt",
-             "loamy sand", "sand", "rock and ice"],
-
-/* the following array describes the order of the CFT bands in the land use file */
-
-"landusemap" : ["temperate cereals","rice", "maize", "tropical cereals", "pulses",
-                "temperate roots", "tropical roots", "oil crops sunflower",
-                "oil crops soybean", "oil crops groundnut", "oil crops rapeseed",
-                "sugarcane","others","grassland","biomass grass","biomass tree"],
-
-"fertilizermap" : ["temperate cereals","rice", "maize", "tropical cereals", "pulses",
-                   "temperate roots", "tropical roots", "oil crops sunflower",
-                   "oil crops soybean", "oil crops groundnut", "oil crops rapeseed",
-                   "sugarcane","others","grassland","biomass grass","biomass tree"],
-
-"input" :
 {
   "soil" : { "fmt" : "cdf", "var" : "soilcode", "name" : "cru_netcdf/soil_new_67420.nc"},
+  "drainage" : { "fmt" : "cdf", "var" : "index", "name" : "cru_netcdf/drainage.nc"},
+  "neighb_irrig" : { "fmt" : "cdf", "var" : "index", "name" : "cru_netcdf/neighb_irrig.nc"},
+  "elevation" : { "fmt" : "cdf", "var" : "elevation", "name" : "cru_netcdf/elevation.nc"},
+  "river" : { "fmt" : "cdf", "var" : "riverlen", "name" : "cru_netcdf/drainage.nc"},
   "landfrac" : { "fmt" : "cdf", "var" : "landfrac", "name" : "cru_netcdf/landfrac_gadm36.nc"},
+  "reservoir" : { "fmt" : "cdf", "var" : "year", "name" : "cru_netcdf/reservoir.nc"},
+  "capacity_reservoir" : { "fmt" : "cdf", "var" : "capacity", "name" : "cru_netcdf/reservoir.nc"},
+  "area_reservoir" : { "fmt" : "cdf", "var" : "area", "name" : "cru_netcdf/reservoir.nc"},
+  "inst_cap_reservoir" : { "fmt" : "cdf", "var" : "inst_cap", "name" : "cru_netcdf/reservoir.nc"},
+  "height_reservoir" : { "fmt" : "cdf", "var" : "height", "name" : "cru_netcdf/reservoir.nc"},
+  "purpose_reservoir" : { "fmt" : "cdf", "var" : "purpose", "name" : "cru_netcdf/reservoir.nc"},
   "no3deposition" : { "fmt" : "cdf", "var" : "no3dep",  "name" : "cru_netcdf/no3_deposition_rcp8p5.nc"},
   "nh4deposition" : { "fmt" : "cdf",  "var" : "nh4dep", "name" : "cru_netcdf/nh4_deposition_rcp8p5.nc"},
   "soilpH" :        { "fmt" : "cdf",  "var" : "soilph", "name" : "cru_netcdf/soil_ph.nc"},
   "countrycode" : { "fmt" : "cdf", "var" : "country", "name" : "cru_netcdf/cow_full_2018.nc"},
   "landuse" : { "fmt" : "cdf", "var" :  "landfrac", "name" : "cru_netcdf/cft1700_2005_irrigation_systems_64bands.nc"},
+  "sdate" : { "fmt" : "cdf", "var" :  "sdate", "name" : "cru_netcdf/sdate.nc"},
+  "crop_phu" : { "fmt" : "cdf", "var" :  "crop_phu", "name" : "cru_netcdf/crop_phu.nc"},
   "fertilizer_nr" : { "fmt" : "cdf",  "var" : "nfert", "name" : "cru_netcdf/fertilizer_ggcmi.nc"},
+  "with_tillage" : { "fmt" : "cdf",  "var" : "tillage", "name" : "cru_netcdf/tillage.nc"},
+  "residue_on_field" : { "fmt" : "cdf",  "var" : "residue_on_field", "name" : "cru_netcdf/residue_on_field.nc"},
+  "grassland_lsuha" : { "fmt" : "cdf",  "var" : "grassland_lsuha", "name" : "cru_netcdf/grassland_lsuha.nc"},
+  "manure_nr" : { "fmt" : "cdf",  "var" : "manure", "name" : "cru_netcdf/manure.nc"},
   "temp" : { "fmt" : "cdf", "var" : "temp", "name" : "cru_netcdf/cru_ts_3_10.1901.2009.tmp.nc"},
   "prec" : { "fmt" : "cdf", "var" : "prec", "name" : "cru_netcdf/gpcc_cru09_prec_monthly_1901_2009.nc"},
   "cloud" : { "fmt" : "cdf", "var" : "cloud", "name" : "cru_netcdf/cru_ts_3_10.1901.2009.cld.nc"},

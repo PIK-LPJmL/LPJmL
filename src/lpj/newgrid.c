@@ -109,7 +109,7 @@ static Cell *newgrid2(Config *config,          /* Pointer to LPJ configuration *
     if(config->grassharvest_filename.name!=NULL)
     {
       // SR, grass management options: here choosing the grass harvest regime on the managed grassland
-      if(openinputdata(&grassharvest_file,&config->grassharvest_filename,"grass harvest",NULL,LPJ_BYTE,1.0,config))
+      if(openinputdata(&grassharvest_file,&config->grassharvest_filename,"grass harvest",NULL,LPJ_BYTE,1.0,0,config))
       {
         closecelldata(celldata,config);
         if(config->countrypar!=NULL)
@@ -521,12 +521,20 @@ Cell *newgrid(Config *config,          /**< Pointer to LPJ configuration */
   {
     /* initialize river-routing network */
     if(initdrain(grid,config))
+    {
+      if(isroot(*config))
+        fputs("ERROR207: Cannot initialize river network.\n",stderr);
       return NULL;
+    }
   }
   if(config->reservoir)
   {
     if(initreservoir(grid,config))
+    {
+      if(isroot(*config))
+        fputs("ERROR207: Cannot initialize reservoir data.\n",stderr);
       return NULL;
+    }
   }
   if(config->withlanduse!=NO_LANDUSE && config->iscotton)
   {

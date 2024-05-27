@@ -127,10 +127,10 @@ static int checkfile(const Config *config,const char *name,const Filename *filen
     return 0;
 } /* of 'checkfile' */
 
-static int checkinputdata(const Config *config,const Filename *filename,const char *name,const char *unit,Type datatype)
+static int checkinputdata(const Config *config,const Filename *filename,const char *name,const char *unit,Type datatype,int size)
 {
   Infile file;
-  if(openinputdata(&file,filename,name,unit,datatype,1,config))
+  if(openinputdata(&file,filename,name,unit,datatype,1.0,size,config))
     return 1;
   closeinput(&file);
   return 0;
@@ -436,16 +436,16 @@ Bool filesexist(Config config, /**< LPJmL configuration */
   else
     bad+=checkcoordfile(&config,&config.soil_filename);
   if(config.landfrac_from_file)
-    bad+=checkinputdata(&config,&config.landfrac_filename,"landfrac","1",LPJ_SHORT);
+    bad+=checkinputdata(&config,&config.landfrac_filename,"landfrac","1",LPJ_SHORT,0);
   if(config.with_lakes)
-    bad+=checkinputdata(&config,&config.lakes_filename,"lakes","1",LPJ_SHORT);
+    bad+=checkinputdata(&config,&config.lakes_filename,"lakes","1",LPJ_SHORT,0);
   if(config.river_routing)
   {
     if(config.extflow)
       bad+=checkclmfile(&config,"extflow",&config.extflow_filename,NULL,LPJ_FLOAT,0);
     bad+=checkinputfile(&config,&config.drainage_filename,NULL,LPJ_INT,(config.drainage_filename.fmt==CDF) ? 0 : 2);
     if(config.withlanduse!=NO_LANDUSE)
-      bad+=checkinputdata(&config,&config.neighb_irrig_filename,"neigbour irrigation",NULL,LPJ_INT);
+      bad+=checkinputdata(&config,&config.neighb_irrig_filename,"neigbour irrigation",NULL,LPJ_INT,0);
   }
   if(config.ispopulation)
     bad+=checkdatafile(&config,&config.popdens_filename,"popdens","km-2",LPJ_SHORT,1);
@@ -456,10 +456,10 @@ Bool filesexist(Config config, /**< LPJmL configuration */
       bad+=checkclmfile(&config,"NO3 deposition",&config.no3deposition_filename,"g/m2/day",LPJ_FLOAT,FALSE);
       bad+=checkclmfile(&config,"NH4 deposition",&config.nh4deposition_filename,"g/m2/day",LPJ_FLOAT,FALSE);
     }
-    bad+=checkinputdata(&config,&config.soilph_filename,"soilPH",NULL,LPJ_SHORT);
+    bad+=checkinputdata(&config,&config.soilph_filename,"soilPH",NULL,LPJ_SHORT,0);
   }
   if(config.grassharvest_filename.name!=NULL)
-    bad+=checkinputdata(&config,&config.grassharvest_filename,"grassharvest",NULL,LPJ_SHORT);
+    bad+=checkinputdata(&config,&config.grassharvest_filename,"grassharvest",NULL,LPJ_SHORT,0);
   if(config.with_nitrogen || config.fire==SPITFIRE || config.fire==SPITFIRE_TMAX)
     bad+=checkclmfile(&config,"wind speed",&config.wind_filename,"m/s",LPJ_SHORT,TRUE);
   if(config.fire==SPITFIRE || config.fire==SPITFIRE_TMAX)
@@ -530,10 +530,10 @@ Bool filesexist(Config config, /**< LPJmL configuration */
       bad+=checkdatafile(&config,&config.sdate_filename,"sowing",NULL,LPJ_SHORT,2*config.cftmap_size);
     if(config.iscotton)
     {
-      bad+=checkinputdata(&config,&config.sowing_cotton_rf_filename,"sowing cotton rf",NULL,LPJ_SHORT);
-      bad+=checkinputdata(&config,&config.harvest_cotton_rf_filename,"harvest cotton rf",NULL,LPJ_SHORT);
-      bad+=checkinputdata(&config,&config.sowing_cotton_ir_filename,"sowing cotton ir",NULL,LPJ_SHORT);
-      bad+=checkinputdata(&config,&config.harvest_cotton_ir_filename,"harvest cotton ir",NULL,LPJ_SHORT);
+      bad+=checkinputdata(&config,&config.sowing_cotton_rf_filename,"sowing cotton rf",NULL,LPJ_SHORT,0);
+      bad+=checkinputdata(&config,&config.harvest_cotton_rf_filename,"harvest cotton rf",NULL,LPJ_SHORT,0);
+      bad+=checkinputdata(&config,&config.sowing_cotton_ir_filename,"sowing cotton ir",NULL,LPJ_SHORT,0);
+      bad+=checkinputdata(&config,&config.harvest_cotton_ir_filename,"harvest cotton ir",NULL,LPJ_SHORT,0);
     }
     if(config.sdate_option==PRESCRIBED_SDATE)
       bad+=checkinputfile(&config,&config.sdate_filename,NULL,LPJ_SHORT,2*config.npft[CROP]);
@@ -542,8 +542,18 @@ Bool filesexist(Config config, /**< LPJmL configuration */
     bad+=checkcountryfile(&config,&config.countrycode_filename);
     if(config.reservoir)
     {
-      bad+=checkinputdata(&config,&config.elevation_filename,"elevation","m",LPJ_SHORT);
-      bad+=checkinputfile(&config,&config.reservoir_filename,NULL,LPJ_FLOAT,10);
+      bad+=checkinputdata(&config,&config.elevation_filename,"elevation","m",LPJ_SHORT,0);
+      if(config.reservoir_filename.fmt==CDF)
+      {
+        bad+=checkinputdata(&config,&config.reservoir_filename,"year reservoir",NULL,LPJ_INT,0);
+        bad+=checkinputdata(&config,&config.capacity_reservoir_filename,"capacity reservoir",NULL,LPJ_FLOAT,0);
+        bad+=checkinputdata(&config,&config.area_reservoir_filename,"area reservoir",NULL,LPJ_FLOAT,0);
+        bad+=checkinputdata(&config,&config.inst_cap_reservoir_filename,"inst cap reservoir",NULL,LPJ_INT,0);
+        bad+=checkinputdata(&config,&config.height_reservoir_filename,"height reservoir","m",LPJ_INT,0);
+        bad+=checkinputdata(&config,&config.purpose_reservoir_filename,"purpose reservoir",NULL,LPJ_INT,NPURPOSE);
+      }
+      else
+        bad+=checkinputfile(&config,&config.reservoir_filename,NULL,LPJ_FLOAT,10);
     }
     if(config.with_nitrogen&& config.fertilizer_input==FERTILIZER &&!config.fix_fertilization)
       bad+=checkdatafile(&config,&config.fertilizer_nr_filename,"fertilizer","g/m2",LPJ_SHORT,2*config.fertilizermap_size);
@@ -560,7 +570,7 @@ Bool filesexist(Config config, /**< LPJmL configuration */
     if(config.residue_treatment==READ_RESIDUE_DATA)
       bad+=checkdatafile(&config,&config.residue_data_filename,"residue extraction",NULL,LPJ_SHORT,config.fertilizermap_size);
     if(config.prescribe_lsuha)
-      bad+=checkinputdata(&config,&config.lsuha_filename,"livestock density","lsu/ha",LPJ_SHORT);
+      bad+=checkinputdata(&config,&config.lsuha_filename,"livestock density","lsu/ha",LPJ_SHORT,0);
   }
   badout=0;
   oldpath=strdup("");
