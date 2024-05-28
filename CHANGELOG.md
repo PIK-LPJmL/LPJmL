@@ -31,9 +31,20 @@ of `major.minor.patch` with
 - Cycle length of spinup and number of spinup years checked for positive values in `fscanconfig.c`.
 - Missing regridding of wateruse and livestock density input added in `regridlpj`.
 - File size of CLM input files is checked for consistency with header and lpjml is stopped accordingly.
-- Utility `drainage2cdf` added to convert CLM drainage file into a NetCDF file using the soil code NetCDF file (issue #355).
+- Utility `drainage2cdf` added to convert CLM drainage and neighbor irrigation file into a NetCDF file using the soil code NetCDF file (issue #355).
 - Utility `reservoir2cdf` added to convert CLM reservoir file into a NetCDF file using the soil code NetCDF file.
-- Reservoir data can now be in NetCDF format.
+- Reservoir, irrigation neighbor and drainage data can now be in NetCDF format:
+```java
+"drainage" :           { "fmt" : "cdf", "var" : "index", "name" : "cru_netcdf/drainage.nc"},
+"neighb_irrig" :       { "fmt" : "cdf", "var" : "index", "name" : "cru_netcdf/neighb_irrig.nc"},
+"river" :              { "fmt" : "cdf", "var" : "riverlen", "name" : "cru_netcdf/drainage.nc"},
+"reservoir" :          { "fmt" : "cdf", "var" : "year", "name" : "cru_netcdf/reservoir.nc"},
+"capacity_reservoir" : { "fmt" : "cdf", "var" : "capacity", "name" : "cru_netcdf/reservoir.nc"},
+"area_reservoir" :     { "fmt" : "cdf", "var" : "area", "name" : "cru_netcdf/reservoir.nc"},
+"inst_cap_reservoir" : { "fmt" : "cdf", "var" : "inst_cap", "name" : "cru_netcdf/reservoir.nc"},
+"height_reservoir" :   { "fmt" : "cdf", "var" : "height", "name" : "cru_netcdf/reservoir.nc"},
+"purpose_reservoir" :  { "fmt" : "cdf", "var" : "purpose", "name" : "cru_netcdf/reservoir.nc"},
+```
 
 ### Changed
 
