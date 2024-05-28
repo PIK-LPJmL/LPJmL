@@ -26,7 +26,7 @@ int main(int argc,char **argv)
 #if defined(USE_NETCDF) || defined(USE_NETCDF4)
   char *var;
   var=NULL;
-  const float *lon,*lat;
+  const double *lon,*lat;
   int *index;
   Coord *grid_soil,*grid;
   FILE *file;
@@ -260,9 +260,9 @@ int main(int argc,char **argv)
   }
   rc=nc_enddef(ncid);
   error(rc);
-  rc=nc_put_var_float(ncid,lat_var_id,lat);
+  rc=nc_put_var_double(ncid,lat_var_id,lat);
   error(rc);
-  rc=nc_put_var_float(ncid,lon_var_id,lon);
+  rc=nc_put_var_double(ncid,lon_var_id,lon);
   error(rc);
   out=newvec(int,nlon*nlat);
   check(out);
