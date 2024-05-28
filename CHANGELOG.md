@@ -19,7 +19,7 @@ of `major.minor.patch` with
 
 ## [Unreleased]
 
-## [5.8.14] - 2024-05-24
+## [5.8.15] - 2024-05-28
 
 ### Contributors
 
@@ -70,6 +70,18 @@ of `major.minor.patch` with
 - Prescribed land cover is now read correctly if landcover map size differs from number of natural PFTs.
 - Check for land use type `WP` corrected in `landusechange.c` (issue #354).
 - Function `initdrain()`corrected to handle river routing files in NetCDF format.
+
+
+## [5.8.14] - 2024-05-27
+
+### Contributors
+
+- author: Sebastian Ostberg (ostberg@pik-potsdam.de)
+- code review: Susanne Rolinski (rolinski@pik-potsdam.de), Christoph Mueller (cmueller@pik-potsdam.de)
+
+### Fixed
+
+- fixed PFT pool scaling in mix_veg_grass() and mix_veg_tree()
 
 
 ## [5.8.13] - 2024-05-23
