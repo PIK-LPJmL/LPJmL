@@ -18,18 +18,19 @@ Converting from i-th dataset. Default is first (=0).
 scaling factor for CLM grid file. Default is 0.01
 .TP
 \-{float|double}
-write float or double values in CLM grid file, default is short
+write float or double values in CLM grid file without applying the scaling factor, default is short
 .TP
 \-latlon
 The order of grid cells set to change latitude first, default is longitude first
 .TP
 .I netcdffile
 filename of NetCDF file
+.TP
 .I gridfile
 filename of grid data file written
 .SH EXAMPLES
 .TP
-Create coord file from temperature data file:
+Create grid file from temperature data file:
 .B cdf2coord
 -var tas -o temp1901-2010.nc grid.clm
 .PP
