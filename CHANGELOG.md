@@ -20,6 +20,22 @@ of `major.minor.patch` with
 ## [Unreleased]
 
 
+## [5.8.15] - 2024-05-29
+
+### Contributors
+
+- author: Werner von Bloh (bloh@pik-potsdam.de)
+
+### Added
+
+- List of required modules on new cluster added in `INSTALL`.
+- `configure.sh` script recognizes new cluster at PIK and sets compiler accordingly.
+
+### Fixed
+
+- Function `mpi_write.c` changed to avoid `SEGV` on new cluster.
+
+
 ## [5.8.14] - 2024-05-27
 
 ### Contributors

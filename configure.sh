@@ -123,8 +123,8 @@ then
   else
     if which mpiicx >/dev/null 2>/dev/null ;
     then
-      echo new Intel MPI found
-      cp config/Makefile.hpc Makefile.inc
+      echo New Intel MPI found
+      cp config/Makefile.hpc2024 Makefile.inc
       if which sbatch >/dev/null 2>/dev/null ;
       then
          echo SLURM found

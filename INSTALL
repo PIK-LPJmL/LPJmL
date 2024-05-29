@@ -146,7 +146,7 @@ Makefile.intel       - Intel C-compiler settings
 Makefile.icx         - Intel C-compiler settings on the new cluster at PIK
 Makefile.intel_mpi   - Intel C-compiler and Intel MPI settings
 Makefile.cluster2015 - Intel C-compiler and Intel MPI on HLRS2015 cluster at PIK
-Makefile.hpc          - Intel C-compiler and Intel MPI on the new cluster at PIK
+Makefile.hpc2024      - Intel C-compiler and Intel MPI on the new cluster at PIK
 Makefile.mpich       - GNU C-Compiler and MPI Chameleon settings
 Makefile.win32       - Windows settings (used by configure.bat)
 
