@@ -3,7 +3,7 @@
 clm2cdf \- convert CLM files into NetCDF files
 .SH SYNOPSIS
 .B clm2cdf
-[\-h] [\-v] [\-global] [\-scale factor] [\-cellsize size] [\-byte] [\-int] [\-float] [[\-attr name=value] ...] [\-intnetcdf] [\-metafile] [\-map name] [\-raw] [\-nbands n] [\-landuse] [\-notime] [\-compress level] [\-units u] [\-descr d] [\-missing_value val]
+[\-h] [\-v] [\-global] [\-longheader] [\-scale factor] [\-cellsize size] [\-byte] [\-int] [\-float] [[\-attr name=value] ...] [\-intnetcdf] [\-metafile] [\-map name] [\-raw] [\-nbands n] [\-landuse] [\-notime] [\-compress level] [\-units u] [\-descr d] [\-missing_value val]
 .I [varname gridfile] clmfile netcdffile
 .SH DESCRIPTION
 Program converts CLM input data into NetCDF input data. 
@@ -107,4 +107,4 @@ See AUTHORS file
 (C) Potsdam Institute for Climate Impact Research (PIK), see COPYRIGHT file
 
 .SH SEE ALSO
-bin2cdf(1), country2cdf(1), regridlpj(1), lpjml(1), txt2clm(1), cru2clm(1), clm(5)
+bin2cdf(1), country2cdf(1), drainage2cdf(1), reservoir2cdf(1), regridlpj(1), lpjml(1), txt2clm(1), cru2clm(1), clm(5)

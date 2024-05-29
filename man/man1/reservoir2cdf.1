@@ -1,0 +1,71 @@
+.TH reservoir2cdf 1  "USER COMMANDS"
+.SH NAME
+reservoir2cdf \- convert CLM reservoir file into NetCDF file
+.SH SYNOPSIS
+.B reservoir2cdf
+[\-h] [\-v] [\-global] [\-longheader] [\-cellsize size] [[\-attr name=value] ...] [\-metafile] [\-raw] [\-compress level] 
+.I [gridfile] reservoirfile netcdffile
+.SH DESCRIPTION
+Program converts CLM reservoir input data into NetCDF input data. 
+.SH OPTIONS
+.TP
+\-h,\--help
+print help text
+.TP
+\-v,\--version
+print LPJmL version
+.TP
+\-global
+use global grid for NetCDF file
+.TP
+\-longheader
+force version of CLM file to 2
+.TP
+\-cellsize size
+set cell size of grid file to size
+.TP
+\-attr name=value
+set global attribute name in output files to value
+.TP
+\-metafile
+set the input format to JSON metafile instead of CLM.
+.TP
+\-raw
+set the input format to raw instead of CLM
+.TP
+\-compress level
+compression level for NetCDF4 files
+.TP
+.I gridfile    
+filename of grid data file. If not specified grid name is read from metafile
+.TP
+.I reservoirfile
+filename of CLM reservoir file with 10 bands
+.TP
+.I netcdffile     
+filename of NetCDF file created
+.SH EXAMPLES
+.TP
+Create reservoir data file:
+.B reservoir2cdf
+grid.clm reservoir.clm reservoir.nc
+.TP
+Create data file using JSON metafile:
+.B reservoir2cdf
+-metafile reservoir.clm.json reservoir.nc
+.PP
+.SH EXIT STATUS
+.B clm2cdf
+returns a zero exit status if the NetCDF file is created.
+Non zero is returned in case of failure.
+
+.SH AUTHORS
+
+See AUTHORS file
+
+.SH COPYRIGHT
+
+(C) Potsdam Institute for Climate Impact Research (PIK), see COPYRIGHT file
+
+.SH SEE ALSO
+clm2cdf(1), bin2cdf(1), country2cdf(1), drainage2cdf(1), regridlpj(1), lpjml(1), txt2clm(1), cru2clm(1), clm(5)
