@@ -32,6 +32,7 @@ of `major.minor.patch` with
 - Missing regridding of wateruse and livestock density input added in `regridlpj`.
 - File size of CLM input files is checked for consistency with header and lpjml is stopped accordingly.
 - Option `-int` added to utility `cdf2clm`.
+- Option `-latlon` added to utility `cdf2coord` in order to change the order of the CLM grid file.
 - Utility `cdf2reservoir` added to convert NetCDF reservoir file to CLM file.
 - Utility `drainage2cdf` added to convert CLM drainage and neighbor irrigation file into a NetCDF file using the soil code NetCDF file (issue #355).
 - Utility `reservoir2cdf` added to convert CLM reservoir file into a NetCDF file using the soil code NetCDF file.
