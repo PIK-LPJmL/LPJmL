@@ -619,6 +619,7 @@ int main(int argc,char **argv)
       fprintf(stderr,"Error reading reservoir data of cell %d.\n",i);
       return EXIT_FAILURE;
     }
+    rdata[i].capacity*=1e-12; /* convert dm3 ->km3 */
   }
   if(write_reservoir_cdf(cdf,rdata,ngrid,miss,imiss))
     return EXIT_FAILURE;
