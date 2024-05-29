@@ -107,7 +107,10 @@ then
   echo Operating system is $osname
   if [ "$nompi" = "1" ]
   then
-    if which icc >/dev/null 2>/dev/null ;
+    if which icx >/dev/null 2>/dev/null ;
+    then
+      cp config/Makefile.icx Makefile.inc
+    elif which icc >/dev/null 2>/dev/null ;
     then
       cp config/Makefile.intel Makefile.inc
     elif which gcc >/dev/null 2>/dev/null ;
@@ -118,7 +121,18 @@ then
       exit 1
     fi
   else
-    if which mpiicc >/dev/null 2>/dev/null ;
+    if which mpiicx >/dev/null 2>/dev/null ;
+    then
+      echo new Intel MPI found
+      cp config/Makefile.hpc Makefile.inc
+      if which sbatch >/dev/null 2>/dev/null ;
+      then
+         echo SLURM found
+         ln -sf lpjsubmit_hpc bin/lpjsubmit
+      else
+         echo >2 No batch system found
+      fi
+    elif which mpiicc >/dev/null 2>/dev/null ;
     then
       echo Intel MPI found
       cp config/Makefile.cluster2015 Makefile.inc
