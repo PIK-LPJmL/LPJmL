@@ -149,7 +149,7 @@ int main(int argc,char **argv)
       return EXIT_FAILURE;
     }
   }
-  else if(!strcmp(argv[1],"-type"))
+  else if(!strcmp(argv[1],"type"))
   {
     if(version<3)
     {

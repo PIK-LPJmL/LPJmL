@@ -31,6 +31,7 @@ of `major.minor.patch` with
 - Cycle length of spinup and number of spinup years checked for positive values in `fscanconfig.c`.
 - Missing regridding of wateruse and livestock density input added in `regridlpj`.
 - File size of CLM input files is checked for consistency with header and lpjml is stopped accordingly.
+- Option `-int` added to utility `cdf2clm`.
 - Utility `drainage2cdf` added to convert CLM drainage and neighbor irrigation file into a NetCDF file using the soil code NetCDF file (issue #355).
 - Utility `reservoir2cdf` added to convert CLM reservoir file into a NetCDF file using the soil code NetCDF file.
 - Reservoir, irrigation neighbor and drainage data can now be in NetCDF format:
@@ -71,6 +72,7 @@ of `major.minor.patch` with
 ### Fixed
 
 - Typos in error messages corrected in `bin2cdf.c` and `clm2cdf.c`.
+- Option `type` corrected in `setclm`.
 - Output of turnover corrected in `fprintpar_grass.c`.
 - Output of options fixed in `openconfig.c` if environment variable `LPJOPTIONS` is set.
 - Calculation of average fixed in `statclm`.
