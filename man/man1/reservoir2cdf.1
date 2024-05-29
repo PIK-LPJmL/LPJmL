@@ -3,10 +3,10 @@
 reservoir2cdf \- convert CLM reservoir file into NetCDF file
 .SH SYNOPSIS
 .B reservoir2cdf
-[\-h] [\-v] [\-global] [\-longheader] [\-cellsize size] [[\-attr name=value] ...] [\-metafile] [\-raw] [\-compress level] 
+[\-h] [\-v] [\-global] [\-longheader] [\-cellsize size] [[\-attr name=value] ...] [\-metafile] [\-raw] [\-compress level]
 .I [gridfile] reservoirfile netcdffile
 .SH DESCRIPTION
-Program converts CLM reservoir input data into NetCDF input data. 
+Program converts CLM reservoir input data into NetCDF input data.
 .SH OPTIONS
 .TP
 \-h,\--help
@@ -36,13 +36,13 @@ set the input format to raw instead of CLM
 \-compress level
 compression level for NetCDF4 files
 .TP
-.I gridfile    
+.I gridfile
 filename of grid data file. If not specified grid name is read from metafile
 .TP
 .I reservoirfile
 filename of CLM reservoir file with 10 bands
 .TP
-.I netcdffile     
+.I netcdffile
 filename of NetCDF file created
 .SH EXAMPLES
 .TP

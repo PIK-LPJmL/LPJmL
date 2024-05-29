@@ -79,7 +79,7 @@ int main(int argc,char **argv)
     fprintf(stderr,"Error: Missing argument(s).\n"
             USAGE,argv[0]);
     return EXIT_FAILURE;
-  } 
+  }
   soil=opencoord_netcdf(argv[iarg],var,TRUE);
   if(soil==NULL)
     return EXIT_FAILURE;
@@ -152,7 +152,7 @@ int main(int argc,char **argv)
     }
   }
   closecoord(gridfile);
-  file=fopen(argv[iarg+2],"rb"); 
+  file=fopen(argv[iarg+2],"rb");
   if(file==NULL)
   {
     printfopenerr(argv[iarg+2]);
@@ -267,13 +267,13 @@ int main(int argc,char **argv)
   out=newvec(int,nlon*nlat);
   check(out);
   for(i=0;i<nlon*nlat;i++)
-    out[i]=miss; 
+    out[i]=miss;
   if(header.nbands==2)
   {
     len=newvec(float,nlon*nlat);
     check(len);
     for(i=0;i<nlon*nlat;i++)
-      len[i]=fmiss; 
+      len[i]=fmiss;
   }
   for(i=0;i<n;i++)
   {
