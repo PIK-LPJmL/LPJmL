@@ -20,6 +20,7 @@
 #define error(rc) if(rc) {fprintf(stderr,"ERROR427: Cannot write '%s': %s.\n",argv[iarg+3],nc_strerror(rc)); nc_close(ncid);return EXIT_FAILURE;}
 
 #define USAGE "Usage: %s [-var name] soilcode.nc grid.clm drainage.clm drainage.nc\n"
+#define INDEX_LONG_NAME "index of cell into/from which water flows (ilat*nlon+ilon)"
 
 int main(int argc,char **argv)
 {
@@ -211,9 +212,9 @@ int main(int argc,char **argv)
   error(rc);
   rc=nc_def_dim(ncid,LON_DIM_NAME,nlon,&lon_dim_id);
   error(rc);
-  rc=nc_def_var(ncid,LAT_NAME,NC_FLOAT,1,&lat_dim_id,&lat_var_id);
+  rc=nc_def_var(ncid,LAT_NAME,NC_DOUBLE,1,&lat_dim_id,&lat_var_id);
   error(rc);
-  rc=nc_def_var(ncid,LON_NAME,NC_FLOAT,1,&lon_dim_id,&lon_var_id);
+  rc=nc_def_var(ncid,LON_NAME,NC_DOUBLE,1,&lon_dim_id,&lon_var_id);
   error(rc);
   rc=nc_put_att_text(ncid,lon_var_id,"units",strlen("degrees_east"),
                      "degrees_east");
@@ -239,7 +240,7 @@ int main(int argc,char **argv)
   error(rc);
   rc=nc_put_att_text(ncid, index_varid,"standard_name",strlen("index"),"index");
   error(rc);
-  //rc=nc_put_att_text(ncid, index_varid,"long_name",strlen(long_name),long_name);
+  rc=nc_put_att_text(ncid, index_varid,"long_name",strlen(INDEX_LONG_NAME),INDEX_LONG_NAME);
   error(rc);
   nc_put_att_int(ncid, index_varid,"missing_value",NC_INT,1,&miss);
   rc=nc_put_att_int(ncid, index_varid,"_FillValue",NC_INT,1,&miss);
