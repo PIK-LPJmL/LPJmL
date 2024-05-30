@@ -19,12 +19,12 @@ of `major.minor.patch` with
 
 ## [Unreleased]
 
-## [5.8.14] - 2024-05-24
+## [5.8.15] - 2024-05-30
 
 ### Contributors
 
 - author: Werner von Bloh (bloh@pik-potsdam.de)
-- code review: Jannes Breier (breier@pik-potsdam.de)
+- code review: Jannes Breier (breier@pik-potsdam.de), Christoph Mueller (cmueller@pik-potsdam.de)
 
 ### Added
 
@@ -36,6 +36,19 @@ of `major.minor.patch` with
 ### Fixed
 
 - The right allocated storage for `config->coupled_model` is checked for `NULL` in `fscanconfig.c`.
+
+
+
+## [5.8.14] - 2024-05-27
+
+### Contributors
+
+- author: Sebastian Ostberg (ostberg@pik-potsdam.de)
+- code review: Susanne Rolinski (rolinski@pik-potsdam.de), Christoph Mueller (cmueller@pik-potsdam.de)
+
+### Fixed
+
+- fixed PFT pool scaling in mix_veg_grass() and mix_veg_tree()
 
 
 ## [5.8.13] - 2024-05-23

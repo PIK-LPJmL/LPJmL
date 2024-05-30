@@ -2,9 +2,9 @@
 | |   |  _ \   | |_ __ ___ | |     | ___|       ( _ )
 | |   | |_) |  | | '_ ` _ \| |     |___ \       / _ \
 | |___|  __/ |_| | | | | | | |___   ___) |  _  | (_) |
-|_____|_|   \___/|_| |_| |_|_____| |____/  (_)  \___/  Version 5.8.13
+|_____|_|   \___/|_| |_| |_|_____| |____/  (_)  \___/  Version 5.8.15
 
-Installation of LPJmL C Version 5.8.13
+Installation of LPJmL C Version 5.8.15
 
 Installation for Unix-like systems
 ----------------------------------
@@ -26,7 +26,7 @@ cd lpjml
 
 untar source files
 
-gzip -cd lpjml-5.8.13.tar.gz|tar -xf -
+gzip -cd lpjml-5.8.15.tar.gz|tar -xf -
 
 Directory tree after extracting the tar files:
 
