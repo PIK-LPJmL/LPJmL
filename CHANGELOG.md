@@ -19,7 +19,7 @@ of `major.minor.patch` with
 
 ## [Unreleased]
 
-## [5.8.15] - 2024-05-28
+## [5.8.16] - 2024-05-30
 
 ### Contributors
 
@@ -87,6 +87,25 @@ of `major.minor.patch` with
 - Function `initdrain()`corrected to handle river routing files in NetCDF format.
 
 
+## [5.8.15] - 2024-05-30
+
+### Contributors
+
+- author: Werner von Bloh (bloh@pik-potsdam.de)
+- code review: Jannes Breier (breier@pik-potsdam.de), Christoph Mueller (cmueller@pik-potsdam.de)
+
+### Added
+
+- A preprocessed JSON configuration file can be written if the following setting is added to the `*.cjson` configuration file:
+```java
+"json_config_filename" : "output/lpjml_config_restart.json", /* Filename of preprocessed configuration file written or null to disable this feature */
+```
+
+### Fixed
+
+- The right allocated storage for `config->coupled_model` is checked for `NULL` in `fscanconfig.c`.
+
+
 ## [5.8.14] - 2024-05-27
 
 ### Contributors
@@ -116,7 +135,7 @@ of `major.minor.patch` with
 
 ### Contributors
 
-- author: Sibyll Schaphoff (sibylls@pik-potsdam.de), Werner von Bloh (bloh@pik-potsdamde)
+- author: Sibyll Schaphoff (sibylls@pik-potsdam.de), Werner von Bloh (bloh@pik-potsdam.de)
 - code review: Stephen Wirth (wirth@pik-potsdam.de), Christoph Mueller (cmueller@pik-potsdam.de), Sebastian Ostberg (ostberg@pik-potsdam.de)
 
 ### Added
@@ -146,6 +165,8 @@ of `major.minor.patch` with
 
 ## [5.8.10] - 2024-04-04
 
+### Contributors
+
 - author: Jannes Breier (jannesbr@pik-potsdam.de)
 - code review: Stephen Wirth (wirth@pik-potsdam.de), David Hoetten (davidho@pik-potsdam.de)
 
@@ -160,6 +181,8 @@ to describe this exception (`"grid information (raw: coordinates, cdf: cell_id)"
 
 
 ## [5.8.9] - 2024-03-14
+
+### Contributors
 
 - author: Werner von Bloh (bloh@pik-potsdam.de), Sebastian Ostberg (ostberg@pik-potsdam.de)
 - code review: Jannes Breier (breier@pik-potsdam.de)
