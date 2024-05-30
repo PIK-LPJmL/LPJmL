@@ -131,7 +131,7 @@ static Bool initreservoir2(Cell grid[],   /**< LPJ grid */
         closeinput(&capacity);
         return TRUE;
       }
-      reservoir.capacity=data;
+      reservoir.capacity=data*1e12; /* convert km3 -> dm3 */
       if(readinputdata(&area,&data,&grid[cell].coord,cell+config->startgrid,&config->area_reservoir_filename))
       {
         fprintf(stderr,"ERROR203: Cannot read area of reservoir of cell %d (%s).\n",
