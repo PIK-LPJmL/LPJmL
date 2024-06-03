@@ -19,7 +19,7 @@ of `major.minor.patch` with
 
 ## [Unreleased]
 
-## [5.8.16] - 2024-05-30
+## [5.8.16] - 2024-06-03
 
 ### Contributors
 
@@ -32,7 +32,7 @@ of `major.minor.patch` with
 
 ### Fixed
 
-- Function `mpi_write.c` changed to avoid `SEGV` on new cluster.
+- Functions `mpi_write.c` and `mpi_write_socket.c` changed to avoid `SEGV` on new cluster.
 
 
 ## [5.8.15] - 2024-05-30
