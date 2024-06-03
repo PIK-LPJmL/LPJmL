@@ -34,7 +34,7 @@ Bool mpi_write_socket(Socket *socket,    /* socket */
 {
   Bool rc;
   MPI_Aint extent;
-  void *vec;
+  void *vec=NULL;
   MPI_Type_extent(type,&extent);
 
   if(rank==0)
