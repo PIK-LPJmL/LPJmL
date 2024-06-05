@@ -337,7 +337,7 @@ extern void cmpsoilmap(const int*,int,const Config *);
 #define allwater(soil,l) (soil->w[l]*soil->whcs[l]+soil->wpwps[l]*(1-soil->ice_pwp[l])+soil->w_fw[l])
 #define timestep2sec(timestep,steps) (24.0*3600.0*((timestep)/(steps))) /* convert timestep --> sec */
 #define fprintpool(file,pool) fprintf(file,"%.2f %.2f",pool.slow,pool.fast)
-#define f_temp(soiltemp) exp(-(soiltemp-18.79)*(soiltemp-18.79)/(2*5.26*5.26)) /* Parton et al 2001*/
+#define f_temp(soiltemp) exp(-(soiltemp-18.79)*(soiltemp-18.79)/(2*8.26*8.26)) /* Parton et al 2001  increased b from 5.26 to 8.26 as to much accumulation under permafrost */
 #define f_NH4(nh4) (1-exp(-0.0105*(nh4))) /* Parton et al 1996 */
 #define getV(soil,l) (((soil)->wsats[l] - ((soil)->w[l] * (soil)->whcs[l] + (soil)->ice_depth[l] + (soil)->ice_fw[l] + (soil)->wpwps[l] + (soil)->w_fw[l])) / soildepth[l]) /*soil air content (m3 air/m3 soil)*/
 #define getsoilmoist(soil,l) (((soil)->w[l] * (soil)->whcs[l] + ((soil)->wpwps[l] * (1 - (soil)->ice_pwp[l])) + (soil)->w_fw[l]) / (soil)->wsats[l])

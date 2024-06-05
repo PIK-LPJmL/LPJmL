@@ -98,6 +98,7 @@ typedef struct
   Real aCH4_setaside;
   Real aMT_water;          /* water produced during Methanogenesis */
   Real temp;               /**< air temperature (celsius) */
+  Real gw_withdrawal;
 } Balance;
 
 typedef struct celldata *Celldata;

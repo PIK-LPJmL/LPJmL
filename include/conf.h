@@ -36,9 +36,9 @@
 #define LIM_IRRIGATION 1
 #define POT_IRRIGATION 2
 #define ALL_IRRIGATION 3
-#ifdef IMAGE
 #define GROUNDWATER_IRRIG 1
 #define NO_GROUNDWATER_IRRIG 0 // Flag to allow for irrigation from groundwater reservoir (sustainable gw irrigation)
+#ifdef IMAGE
 #define AQUIFER_IRRIG 1
 #define NO_AQUIFER_IRRIG 0 //Flag to allow for irrigation from aquifers (according to input map for aquifers)
 #endif
