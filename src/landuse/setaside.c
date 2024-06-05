@@ -139,8 +139,7 @@ void mixsoil(Stand *stand1,const Stand *stand2,int year,int ntotpft,const Config
      mixpool(stand1->soil.decomp_litter_pft[i].nitrogen,stand2->soil.decomp_litter_pft[i].nitrogen,
              stand1->frac,stand2->frac);
   }
-  mixpool(stand1->soil.snowpack,stand2->soil.snowpack,stand1->frac,
-          stand2->frac);
+  mixpool(stand1->soil.snowpack,stand2->soil.snowpack,stand1->frac, stand2->frac);
   mixpool(stand1->soil.snowfraction,stand2->soil.snowfraction,stand1->frac,stand2->frac);
   mixpool(stand1->soil.snowheight,stand2->soil.snowheight,stand1->frac,stand2->frac);
   mixpool(stand1->soil.wa,stand2->soil.wa,stand1->frac,stand2->frac);
@@ -166,6 +165,7 @@ void mixsoil(Stand *stand1,const Stand *stand2,int year,int ntotpft,const Config
     stand1->soil.w[l]=(stand1->soil.w[l]*stand1->soil.whcs[l]*stand1->frac+stand2->soil.w[l]*stand2->soil.whcs[l]*stand2->frac)/(stand1->frac+stand2->frac);
     mixpool(stand1->soil.whcs[l],stand2->soil.whcs[l],stand1->frac,stand2->frac);
     stand1->soil.w[l]/=stand1->soil.whcs[l];
+
     mixpool(stand1->soil.w_fw[l],stand2->soil.w_fw[l],stand1->frac,stand2->frac);
     mixpool(stand1->soil.wfc[l],stand2->soil.wfc[l],stand1->frac,stand2->frac);
     mixpool(stand1->soil.whc[l],stand2->soil.whc[l],stand1->frac,stand2->frac);
@@ -449,7 +449,7 @@ Bool setaside(Cell *cell,          /**< Pointer to LPJ cell */
     for (p = 0; p < npft; p++)
     {
       if(establish(cell->gdd[p],config->pftpar+p,&cell->climbuf,cropstand->type->landusetype==WETLAND || cropstand->type->landusetype==SETASIDE_WETLAND) &&
-         config->pftpar[p].type==GRASS && config->pftpar[p].cultivation_type==NONE)
+         config->pftpar[p].type==GRASS && config->pftpar[p].cultivation_type==NONE && p!=Sphagnum_moss)
       {
         addpft(cropstand,config->pftpar+p,year,0,config);
         n_est++;

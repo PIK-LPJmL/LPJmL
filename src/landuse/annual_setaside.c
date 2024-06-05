@@ -81,7 +81,7 @@ Bool annual_setaside(Stand *stand,         /**< Pointer to stand */
   {
     for(p=0;p<npft;p++)
     {
-      if(config->pftpar[p].type==GRASS && config->pftpar[p].cultivation_type==NONE 
+      if(config->pftpar[p].type==GRASS && config->pftpar[p].cultivation_type==NONE && p!=Sphagnum_moss
          && establish(stand->cell->gdd[p],config->pftpar+p,&stand->cell->climbuf, stand->type->landusetype == WETLAND || stand->type->landusetype==SETASIDE_WETLAND))
       {
         if(!present[p])

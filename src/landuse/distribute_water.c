@@ -35,7 +35,7 @@ void distribute_water(Cell *cell,            /**< pointer to LPJ cell */
                       const Config *config   /**< LPJmL configuration */
                      )
 {
-  int s,nirrig;
+  int s,p,nirrig,isrice;
   Real conv_loss,irrig_stand;
   Real frac_irrig_amount,frac_unsustainable;
 #ifdef IMAGE
@@ -47,6 +47,7 @@ void distribute_water(Cell *cell,            /**< pointer to LPJ cell */
   Pftcrop *crop;
   conv_loss=0.0;
   nirrig=getnirrig(ncft,config);
+  isrice=FALSE;
 #ifdef IMAGE
   /* actual irrigation requirement */
   if(config->irrig_scenario==LIM_IRRIGATION && cell->discharge.aquifer==0)
@@ -71,31 +72,32 @@ void distribute_water(Cell *cell,            /**< pointer to LPJ cell */
    /* actual irrigation requirement */
   if(config->irrig_scenario==LIM_IRRIGATION)
   {
-    frac_irrig_amount=cell->discharge.gir>0 ? cell->discharge.withdrawal/cell->discharge.gir : 0.0;
+    frac_irrig_amount=cell->discharge.gir>0 ? (cell->discharge.withdrawal+cell->discharge.withdrawal_gw)/cell->discharge.gir : 0.0;
   }
   else
   {
     /* potential irrigation requirement */
     frac_irrig_amount=cell->discharge.gir>0 ? 1.0 : 0.0;
-    frac_unsustainable=cell->discharge.gir>0 ? 1 - cell->discharge.withdrawal/cell->discharge.gir : 0.0;
+    frac_unsustainable=cell->discharge.gir>0 ? 1 - (cell->discharge.withdrawal+cell->discharge.withdrawal_gw)/cell->discharge.gir : 0.0;
     frac_unsustainable=frac_unsustainable>0 ? frac_unsustainable : 0.0;
     cell->balance.awd_unsustainable+=frac_unsustainable*cell->discharge.gir;
     getoutput(&cell->output,WD_UNSUST,config)+=frac_unsustainable*cell->discharge.gir;
   }
 #endif
+  foreachstand(stand,s,cell->standlist)
+    stand->soil.wa-=cell->discharge.withdrawal_gw/cell->coord.area*stand->frac * (1.0/(1-cell->lakefrac-cell->ml.reservoirfrac));
 
-  cell->discharge.withdrawal=0.0;
-#ifdef IMAGE
-  cell->discharge.withdrawal_gw=0.0;
-#endif
+  cell->discharge.withdrawal= cell->discharge.withdrawal_gw=0.0;
   foreachstand(stand,s,cell->standlist)
     if(stand->type->landusetype==AGRICULTURE || stand->type->landusetype==GRASSLAND || stand->type->landusetype==OTHERS || stand->type->landusetype==BIOMASS_GRASS || stand->type->landusetype==BIOMASS_TREE || stand->type->landusetype==WOODPLANTATION || stand->type->landusetype==AGRICULTURE_TREE || stand->type->landusetype==AGRICULTURE_GRASS)
     {
       data=stand->data;
       data->irrig_event=FALSE;
       data->irrig_amount=0;
+      foreachpft(pft, p, &stand->pftlist)
+       if(!strcmp(pft->par->name,"rice")) isrice=TRUE;
 
-      if(data->irrigation)
+      if(data->irrigation||isrice)
       {
         /* determine if irrigation today */
         data->irrig_event=isirrigevent(stand);

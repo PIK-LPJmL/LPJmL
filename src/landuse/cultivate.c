@@ -95,7 +95,7 @@ Stocks cultivate(Cell *cell,           /**< cell pointer */
   data=cropstand->data;
   data->irrigation= (config->irrig_scenario==ALL_IRRIGATION) || irrigation;
   set_irrigsystem(cropstand,cft,npft,ncft,config);
-  if(cft==RICE && irrigation)
+  if(cft==RICE)
   {
     cropstand->slope_mean=0;
     cropstand->Hag_Beta=min(1,(0.06*log(cropstand->slope_mean+0.1)+0.22)/0.43);

@@ -32,10 +32,12 @@ void withdrawal_demand(Cell *grid,          /**< LPJ grid */
                        const Config *config /**< LPJ configuration */
                       )
 {
-  int cell,i,s;
+  int cell,i,s,p,isrice;
   Real *in,*out;
   Irrigation *data;
   Stand *stand;
+  Pft *pft;
+  isrice=FALSE;
 
   in=(Real *)pnet_input(config->irrig_neighbour);
   out=(Real *)pnet_output(config->irrig_neighbour);
@@ -56,8 +58,10 @@ void withdrawal_demand(Cell *grid,          /**< LPJ grid */
            stand->type->landusetype==AGRICULTURE_TREE ||
            stand->type->landusetype==WOODPLANTATION)
         {
+          foreachpft(pft, p, &stand->pftlist)
+           if(!strcmp(pft->par->name,"rice")) isrice=TRUE;
           data=stand->data;
-          if(data->irrigation)
+          if(data->irrigation||isrice)
           {
             grid[cell].discharge.gir+=max((data->net_irrig_amount+data->dist_irrig_amount-data->irrig_stor)/data->ec,0)*stand->frac*grid[cell].coord.area; /* interception losses is fraction (GIR-interception) / GIR from day before */
           }

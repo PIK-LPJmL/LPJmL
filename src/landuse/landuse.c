@@ -429,6 +429,7 @@ Bool getlanduse(Landuse landuse,     /**< Pointer to landuse data */
               {
                 grid[cell].ml.landfrac[i].crop[config->landusemap[j]]+=data[count++];
                 grid[cell].ml.irrig_system->crop[config->landusemap[j]]=p;
+                grid[cell].ml.irrig_system->crop[RICE]=SURF;                               //TODO this should be a flag
               }
               else if(config->landusemap[j]<ncft+NGRASS)
               {

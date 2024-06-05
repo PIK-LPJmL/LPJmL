@@ -326,6 +326,8 @@ static void regrowth(Cell *cell, /* pointer to cell */
   Stocks flux_estab;
   Pft *pft;
   Stand *setasidestand,*natstand,*mixstand;
+  int where=0;
+
 #ifdef CHECK_BALANCE
 //anpp, influx and arh do not change
   Stand *checkstand;
@@ -337,15 +339,15 @@ static void regrowth(Cell *cell, /* pointer to cell */
   Stocks fluxes_neg= {0,0};
   Stocks fluxes_prod= {0,0};
   Stocks fluxes_firewood={0,0};
-  Stocks balance= {0,0};
-  Real start_w = 0;
-  Real end_w = 0;
+  Stocks balance={0,0};
+  Real start_w=cell->balance.excess_water;
+  Real end_w=0;
   foreachstand(checkstand, s, cell->standlist)
   {
     st=standstocks(checkstand);
     start.carbon+=(st.carbon+ soilmethane(&checkstand->soil)*WC/WCH4)*checkstand->frac;//-stand->cell->balance.flux_estab.carbon;
     start.nitrogen+=st.nitrogen*checkstand->frac;//-stand->cell->balance.flux_estab.nitrogen;
-    start_w += soilwater(&checkstand->soil)*checkstand->frac;
+    start_w += soilwater(&checkstand->soil)*checkstand->frac+cell->balance.excess_water;
   }
   start.carbon+=cell->ml.product.fast.carbon+cell->ml.product.slow.carbon+
       cell->balance.estab_storage_grass[0].carbon+cell->balance.estab_storage_tree[0].carbon+cell->balance.estab_storage_grass[1].carbon+cell->balance.estab_storage_tree[1].carbon;
@@ -358,8 +360,14 @@ static void regrowth(Cell *cell, /* pointer to cell */
   fluxes_prod.carbon=(cell->balance.deforest_emissions.carbon+cell->balance.prod_turnover.fast.carbon+cell->balance.prod_turnover.slow.carbon+cell->balance.trad_biofuel.carbon);
   fluxes_prod.nitrogen=(cell->balance.deforest_emissions.nitrogen+cell->balance.prod_turnover.fast.nitrogen+cell->balance.prod_turnover.slow.nitrogen+cell->balance.trad_biofuel.nitrogen);
   fluxes_firewood=cell->balance.flux_firewood;
-#endif
+//  if(year==1971)
+//  {
+//    fprintf(stderr,"difffrac=%g\n",difffrac);
+//    foreachstand(checkstand, s, cell->standlist)
+//      fprintf(stderr,"soilwater=%.5f type:%s frac:%.5f\n",soilwater(&checkstand->soil),checkstand->type->name,checkstand->frac);
+//  }
 
+#endif
   if(iswetland)
     s=findlandusetype(cell->standlist,SETASIDE_WETLAND);
   else
@@ -390,6 +398,7 @@ static void regrowth(Cell *cell, /* pointer to cell */
       cutpfts(mixstand,config);
       difffrac=-mixstand->frac;
       pos=s;
+      where=1;
     }
     else
     {
@@ -401,6 +410,7 @@ static void regrowth(Cell *cell, /* pointer to cell */
       mixstand->frac= -difffrac;
       reclaim_land(setasidestand,mixstand,cell,config->luc_timber,npft+ncft,config);
       setasidestand->frac+=difffrac;
+      where=2;
     }
 #endif
 
@@ -419,6 +429,7 @@ static void regrowth(Cell *cell, /* pointer to cell */
       natstand->frac+=mixstand->frac;
       natstand->soil.iswetland=iswetland;
       delstand(cell->standlist,pos);
+      where+=10;
     }
     else
     {
@@ -430,6 +441,7 @@ static void regrowth(Cell *cell, /* pointer to cell */
       mixstand->type->newstand(mixstand);
       natstand=mixstand;
       natstand->soil.iswetland=iswetland;
+      where+=20;
     }
     natstand->prescribe_landcover = NO_LANDCOVER;
 
@@ -445,7 +457,9 @@ static void regrowth(Cell *cell, /* pointer to cell */
 
 
 #ifdef CHECK_BALANCE
-  end.carbon=end.nitrogen = end_w=0;
+  pos=s;
+  end.carbon=end.nitrogen=0;
+  end_w=cell->balance.excess_water;
   foreachstand(checkstand, s, cell->standlist)
   {
     st=standstocks(checkstand);
@@ -466,10 +480,14 @@ static void regrowth(Cell *cell, /* pointer to cell */
     fail(INVALID_CARBON_BALANCE_ERR,FAIL_ON_BALANCE,FALSE,"Invalid carbon balance in %s at the end: year=%d: C_ERROR=%g start : %g end : %g balance.carbon: %g\n",
          __FUNCTION__,year,start.carbon-end.carbon+balance.carbon,start.carbon,end.carbon,balance.carbon);
   if (fabs(start_w - end_w)>0.001)
-    fail(INVALID_WATER_BALANCE_ERR,FAIL_ON_BALANCE,FALSE, "Invalid water balance in %s at the end: year=%d: W_ERROR=%g start : %g end : %g\n",
-         __FUNCTION__,year, start_w - end_w, start_w, end_w);
+  {
+    foreachstand(checkstand, s, cell->standlist)
+       fprintf(stderr,"soilwater=%.5f type:%s frac:%.5f\n",soilwater(&checkstand->soil),checkstand->type->name,checkstand->frac);
+    fail(INVALID_WATER_BALANCE_ERR,FAIL_ON_BALANCE,FALSE, "Invalid water balance in %s at the end: year=%d: W_ERROR=%g start : %g end : %g iswetland: %d where: %d difffrac: %g s: %d\n",
+         __FUNCTION__,year, start_w - end_w, start_w, end_w,iswetland,where,difffrac,pos);
+  }
   if (fabs(start.nitrogen-end.nitrogen+balance.nitrogen)>0.001)
-    fail(INVALID_NITROGEN_BALANCE_ERR,FAIL_ON_BALANCE,FALSE,"Invalid nitrogen balance in %s at the end: year=%d: error=%g start : %g end : %g balance.nitrogen: %g\n",
+    fail(INVALID_NITROGEN_BALANCE_ERR,FAIL_ON_BALANCE,FALSE,"Invalid nitrogen balance in %s at the end: year=%d: error=%g start : %g end : %g balance.nitrogen: %g \n",
          __FUNCTION__,year, start.nitrogen-end.nitrogen+balance.nitrogen,start.nitrogen,end.nitrogen,balance.nitrogen);
 #endif
 
@@ -711,7 +729,7 @@ static void landexpansion(Cell *cell,            /* cell pointer */
         case PASTURE:
           for(p=0;p<npft;p++)
             if(establish(cell->gdd[p],config->pftpar+p,&cell->climbuf,mixstand->type->landusetype==WETLAND || mixstand->type->landusetype==SETASIDE_WETLAND) &&
-              config->pftpar[p].type==GRASS && config->pftpar[p].cultivation_type==NONE)
+              config->pftpar[p].type==GRASS && config->pftpar[p].cultivation_type==NONE && p!=Sphagnum_moss)
             {
               addpft(mixstand,config->pftpar+p,year,0,config);
               n_est[config->pftpar[p].type]++;
@@ -725,7 +743,7 @@ static void landexpansion(Cell *cell,            /* cell pointer */
           {
             for(p=0;p<npft;p++)
               if(establish(cell->gdd[p],config->pftpar+p,&cell->climbuf,mixstand->type->landusetype==WETLAND || mixstand->type->landusetype==SETASIDE_WETLAND) &&
-                config->pftpar[p].type==GRASS && config->pftpar[p].cultivation_type==NONE)
+                config->pftpar[p].type==GRASS && config->pftpar[p].cultivation_type==NONE && p!=Sphagnum_moss)
               {
                 addpft(mixstand,config->pftpar+p,year,0,config);
                 n_est[config->pftpar[p].type]++;
@@ -769,7 +787,7 @@ static void landexpansion(Cell *cell,            /* cell pointer */
         case BIOMASS_GRASS_PLANTATION:
           for(p=0;p<npft;p++)
             if(establish(cell->gdd[p],config->pftpar+p,&cell->climbuf,mixstand->type->landusetype==WETLAND || mixstand->type->landusetype==SETASIDE_WETLAND) &&
-              config->pftpar[p].type==GRASS && config->pftpar[p].cultivation_type==BIOMASS)
+              config->pftpar[p].type==GRASS && config->pftpar[p].cultivation_type==BIOMASS && p!=Sphagnum_moss)
             {
               addpft(mixstand,config->pftpar+p,year,0,config);
               n_est[config->pftpar[p].type]++;
@@ -1362,7 +1380,7 @@ void landusechange(Cell *cell,          /**< pointer to cell */
   Stocks fluxes_prod= {0,0};
   Stocks fluxes_firewood={0,0};
   Stocks balance= {0,0};
-  Real start_w = 0;
+  Real start_w=cell->balance.excess_water;
   Real end_w = 0;
   foreachstand(stand, s, cell->standlist)
   {
@@ -1453,7 +1471,8 @@ void landusechange(Cell *cell,          /**< pointer to cell */
   cell->ml.cropfrac_ir=sum[1];
 
 #ifdef CHECK_BALANCE
-  end.carbon=end.nitrogen = end_w=0;
+  end.carbon=end.nitrogen =0;
+  end_w=cell->balance.excess_water;
   foreachstand(stand, s, cell->standlist)
   {
     st=standstocks(stand);
@@ -1721,7 +1740,8 @@ void landusechange(Cell *cell,          /**< pointer to cell */
 #endif
 
 #ifdef CHECK_BALANCE
-  end.carbon=end.nitrogen = end_w=0;
+  end.carbon=end.nitrogen=0;
+  end_w=cell->balance.excess_water;
   foreachstand(stand, s, cell->standlist)
   {
     st=standstocks(stand);

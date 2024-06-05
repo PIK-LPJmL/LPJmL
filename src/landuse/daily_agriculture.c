@@ -37,7 +37,7 @@ Real daily_agriculture(Stand *stand,                /**< [inout] stand pointer *
                        const Config *config         /**< [in] LPJ config */
                       )                             /** \return runoff (mm/day) */
 {
-  int p,l,nnat,nirrig,index;
+  int p,l,nnat,nirrig,index,isrice;
   Pft *pft;
   Real *gp_pft;         /**< pot. canopy conductance for PFTs & CFTs (mm/s) */
   Real gp_stand;               /**< potential stomata conductance  (mm/s) */
@@ -64,6 +64,7 @@ Real daily_agriculture(Stand *stand,                /**< [inout] stand pointer *
   Output *output;
   Pftcrop *crop;
   irrig_apply=0.0;
+  isrice=FALSE;
   //Stocks flux_estab={0,0};
 
   data=stand->data;
@@ -101,6 +102,7 @@ Real daily_agriculture(Stand *stand,                /**< [inout] stand pointer *
   {
     index=(stand->type->landusetype==OTHERS) ? data->irrigation*nirrig+rothers(ncft) : pft->par->id-npft+data->irrigation*nirrig;
     crop=pft->data;
+    if(!strcmp(pft->par->name,"rice")) isrice=TRUE;
     /* kill crop at frost events */
     if(config->cropsheatfrost && climate->tmin<(-5))
     {
@@ -154,7 +156,7 @@ Real daily_agriculture(Stand *stand,                /**< [inout] stand pointer *
       update_separate_harvests(output,pft,data->irrigation,day,npft,ncft,config);
       harvest_crop(output,stand,pft,npft,ncft,year,config);
       /* return irrig_stor and irrig_amount */
-      if(data->irrigation)
+      if(data->irrigation||isrice)
       {
         stand->cell->discharge.dmass_lake+=(data->irrig_stor+data->irrig_amount)*stand->cell->coord.area*stand->frac;
         stand->cell->balance.awater_flux-=(data->irrig_stor+data->irrig_amount)*stand->frac; /* cell water balance account for cell inflow */
@@ -220,7 +222,7 @@ Real daily_agriculture(Stand *stand,                /**< [inout] stand pointer *
     rainmelt=0.0;
 
   /* blue water inflow*/
-  if(data->irrigation && data->irrig_amount>epsilon)
+  if((data->irrigation||isrice) && data->irrig_amount>epsilon)
   { /* data->irrigation defines if stand is irrigated in general and not if water is delivered that day, initialized in new_agriculture.c and changed in landusechange.c*/
     irrig_apply=max(data->irrig_amount-rainmelt,0);  /*irrigate only missing deficit after rain, remainder goes to stor */
     data->irrig_stor+=data->irrig_amount-irrig_apply;
@@ -370,7 +372,7 @@ Real daily_agriculture(Stand *stand,                /**< [inout] stand pointer *
     {
       update_separate_harvests(output,pft,data->irrigation,day,npft,ncft,config);
       harvest_crop(output,stand,pft,npft,ncft,year,config);
-      if(data->irrigation)
+      if(data->irrigation||isrice)
       {
         stand->cell->discharge.dmass_lake+=(data->irrig_stor+data->irrig_amount)*stand->cell->coord.area*stand->frac;
         stand->cell->balance.awater_flux-=(data->irrig_stor+data->irrig_amount)*stand->frac;
@@ -423,7 +425,7 @@ Real daily_agriculture(Stand *stand,                /**< [inout] stand pointer *
   }
 
   /* calculate net irrigation requirements (NIR) for next days irrigation */
-  if(data->irrigation && stand->pftlist.n>0) /* second element to avoid irrigation on just harvested fields */
+  if((data->irrigation||isrice) && stand->pftlist.n>0) /* second element to avoid irrigation on just harvested fields */
     calc_nir(stand,data,gp_stand,wet,eeq,config->others_to_crop);
 
   getoutput(output,TRANSP,config)+=transp;
