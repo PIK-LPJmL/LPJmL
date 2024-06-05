@@ -168,7 +168,7 @@ Bool annual_natural(Stand *stand,         /**< Pointer to stand */
 
   end = standstocks(stand).nitrogen;
 
-  if (fabs(end-start.nitrogen+fluxes_out.nitrogen-fluxes_in.nitrogen)>0.001)
+  if (fabs(end-start.nitrogen+fluxes_out.nitrogen-fluxes_in.nitrogen)>epsilon)
   {
     //    foreachpft(pft,p,&stand->pftlist)
     //        fprintf(stderr, "\nPFT:%s bm_inc.N=%g vegN=%g soilN=%g establish.nitrogen=%g\n",pft->par->name,

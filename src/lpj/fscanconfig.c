@@ -299,8 +299,9 @@ Bool fscanconfig(Config *config,    /**< LPJ configuration */
       return TRUE;
   }
   config->reservoir=FALSE;
+  config->groundwater_irrig = GROUNDWATER_IRRIG;
+
 #ifdef IMAGE
-  config->groundwater_irrig = NO_GROUNDWATER_IRRIG;
   config->aquifer_irrig = NO_AQUIFER_IRRIG;
 #endif
   fscanbool2(file,&config->permafrost,"permafrost");

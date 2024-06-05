@@ -253,7 +253,7 @@ void update_annual(Cell *cell,          /**< Pointer to cell */
       -((cell->balance.deforest_emissions.nitrogen+cell->balance.prod_turnover.fast.nitrogen+cell->balance.prod_turnover.slow.nitrogen)-fluxes_prod.nitrogen)-(cell->balance.flux_firewood.nitrogen-fluxes_firewood.nitrogen);
   if(fabs(start.carbon-end.carbon+balance.carbon)>0.001) fprintf(stderr,"C_ERROR update annual at the end: year=%d: C_ERROR=%g start : %g end : %g balance.carbon: %g\n",
       year,start.carbon-end.carbon+balance.carbon,start.carbon,end.carbon,balance.carbon);
-  if (fabs(start_w - end_w)>0.001) fprintf(stderr, "W_ERROR update annual at the end: year=%d: W_ERROR=%g start : %g end : %g\n",
+  if (fabs(start_w - end_w)>epsilon) fprintf(stderr, "W_ERROR update annual at the end: year=%d: W_ERROR=%g start : %g end : %g\n",
       year, start_w - end_w, start_w, end_w);
   if (fabs(start.nitrogen-end.nitrogen+balance.nitrogen)>0.001) fprintf(stderr,"N_ERROR update annual at the end: year=%d: error=%g start : %g end : %g balance.nitrogen: %g\n",
       year, start.nitrogen-end.nitrogen+balance.nitrogen, start.nitrogen, end.nitrogen,balance.nitrogen);

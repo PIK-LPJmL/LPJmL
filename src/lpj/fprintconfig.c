@@ -537,9 +537,9 @@ void fprintconfig(FILE *file,          /**< File pointer to text output file */
     len=printsim(file,len,&count,"wood fires");
   if(config->reservoir)
     len=printsim(file,len,&count,"dam reservoirs");
-#ifdef IMAGE
   if(config->groundwater_irrig==GROUNDWATER_IRRIG)
     len=printsim(file,len,&count,"groundwater irrigation");
+#ifdef IMAGE
   if(config->aquifer_irrig==AQUIFER_IRRIG)
     len=printsim(file,len,&count,"aquifer irrigation");
 #endif

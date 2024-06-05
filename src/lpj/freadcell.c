@@ -41,15 +41,14 @@ Bool freadcell(FILE *file,             /**< File pointer to binary file */
   freadreal1(&cell->discharge.dmass_lake,swap,file);
   if(config->river_routing)
   {
-#ifdef IMAGE
-    freadreal1(&cell->discharge.dmass_gw,swap,file); // groundwater mass
-#endif
     if(config->river_routing_restart)
     {
+      freadreal1(&cell->discharge.dmass_gw,swap,file); // groundwater mass    if(config->river_routing_restart)
       freadreal1(&cell->discharge.dfout,swap,file);
       freadreal1(&cell->discharge.dmass_river,swap,file);
       freadreal1(&cell->discharge.dmass_sum,swap,file);
       freadreal1(&cell->lateral_water, swap, file);
+      cell->discharge.withdrawal=cell->discharge.withdrawal_gw=0;
 #ifdef COUPLING_WITH_FMS
       freadreal1(&cell->laketemp,swap,file);
 #endif
@@ -76,9 +75,8 @@ Bool freadcell(FILE *file,             /**< File pointer to binary file */
     }
     else
     {
-#ifdef IMAGE
-      cell->discharge.dmass_gw=0;
-#endif
+      cell->discharge.dmass_gw=5000*cell->coord.area;;
+      cell->discharge.withdrawal=cell->discharge.withdrawal_gw=0;
 #ifdef COUPLING_WITH_FMS
       cell->laketemp=0;
 #endif

@@ -40,10 +40,8 @@ int fwritecell(FILE *file,        /**< File pointer of binary file */
       break;
     if(config->river_routing)
     {
-#ifdef IMAGE
-    if(fwrite(&grid[cell].discharge.dmass_gw,sizeof(Real),1,file)!=1)
-      break;
-#endif
+      if(fwrite(&grid[cell].discharge.dmass_gw,sizeof(Real),1,file)!=1)
+        break;
       if(fwrite(&grid[cell].discharge.dfout,sizeof(Real),1,file)!=1)
         break;
       if(fwrite(&grid[cell].discharge.dmass_river,sizeof(Real),1,file)!=1)

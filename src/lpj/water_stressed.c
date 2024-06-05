@@ -81,11 +81,12 @@ Real water_stressed(Pft *pft,                  /**< [inout] pointer to PFT varia
   Irrigation *irrig;
   Real istress=0;
   aet_frac = 1;
-
+  if(pft->inun_count>pft->par->inun_dur)
+    pft->inun_count=pft->par->inun_dur;
   if (-pft->stand->soil.wtable >= pft->par->inun_thres)
     pft->inun_count++;
   else
-    pft->inun_count--;
+    pft->inun_count-=2;
   if (pft->inun_count<0)
     pft->inun_count = 0;
 
@@ -148,7 +149,7 @@ Real water_stressed(Pft *pft,                  /**< [inout] pointer to PFT varia
 
   *wdf=wdf(pft,demand,supply);
 
-  if(eeq>0 && gp_stand_leafon>0 && pft->fpc>0)
+  if(eeq>0 && gp_stand_leafon>epsilon && pft->fpc>0)
   {
     pft->wscal=(pft->par->emax*wr)/(eeq*param.ALPHAM/(1+(param.GM*param.ALPHAM)/gp_stand_leafon));
     if(pft->wscal>1)

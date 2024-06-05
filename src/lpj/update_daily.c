@@ -39,7 +39,7 @@ void update_daily(Cell *cell,            /**< cell pointer           */
                   const Config *config   /**< LPJmL configuration */
                  )
 {
-  int s,p;
+  int s,p,isrice;
   Pft *pft;
   Real melt=0,eeq,par,daylength,beta,gw_outflux;
   Real CH4_em=0,CH4_sink=0;
@@ -68,6 +68,7 @@ void update_daily(Cell *cell,            /**< cell pointer           */
   Real agrfrac,fpc_total_stand;
   Real litsum_old_nv[2]={0,0},litsum_new_nv[2]={0,0};
   Real litsum_old_agr[2]={0,0},litsum_new_agr[2]={0,0};
+  isrice=FALSE;
 
 #ifdef CHECK_BALANCE
   Real end=0;
@@ -234,7 +235,7 @@ void update_daily(Cell *cell,            /**< cell pointer           */
     cell->balance.aCH4_em+=CH4_em*stand->frac;
     getoutput(&cell->output,CH4_SINK,config)+=CH4_sink*stand->frac;
     cell->balance.aCH4_sink+=CH4_sink*stand->frac;
-    if(stand->type->landusetype==SETASIDE_RF || stand->type->landusetype==SETASIDE_IR)
+    if(stand->type->landusetype==SETASIDE_RF || stand->type->landusetype==SETASIDE_IR || stand->type->landusetype==AGRICULTURE)
     {
       stand->cell->balance.aCH4_setaside+=CH4_em*stand->frac;
       getoutput(&stand->cell->output,CH4_SETASIDE,config)+=CH4_em*stand->frac;
@@ -258,7 +259,7 @@ void update_daily(Cell *cell,            /**< cell pointer           */
     getoutput(&cell->output,CH4_EMISSIONS,config) += ebul*stand->frac;
     cell->balance.aCH4_em+=ebul*stand->frac;
     getoutput(&cell->output,CH4_EBULLITION,config) += ebul*stand->frac;
-    if(stand->type->landusetype==SETASIDE_RF || stand->type->landusetype==SETASIDE_IR)
+    if(stand->type->landusetype==SETASIDE_RF || stand->type->landusetype==SETASIDE_IR || stand->type->landusetype==AGRICULTURE)
     {
       stand->cell->balance.aCH4_setaside+=ebul*stand->frac;
       getoutput(&stand->cell->output,CH4_SETASIDE,config)+=ebul*stand->frac;
@@ -301,7 +302,7 @@ void update_daily(Cell *cell,            /**< cell pointer           */
     cell->balance.n_outflux+=hetres.nitrogen*stand->frac;
     getoutput(&cell->output,CH4_EMISSIONS,config) += CH4_em*stand->frac;
     cell->balance.aCH4_em+=CH4_em*stand->frac;
-    if(stand->type->landusetype==SETASIDE_RF || stand->type->landusetype==SETASIDE_IR)
+    if(stand->type->landusetype==SETASIDE_RF || stand->type->landusetype==SETASIDE_IR || stand->type->landusetype==AGRICULTURE)
     {
       stand->cell->balance.aCH4_setaside+=CH4_em*stand->frac;
       getoutput(&stand->cell->output,CH4_SETASIDE,config)+=CH4_em*stand->frac;
@@ -515,7 +516,9 @@ void update_daily(Cell *cell,            /**< cell pointer           */
        stand->type->landusetype==BIOMASS_TREE || stand->type->landusetype==BIOMASS_GRASS || stand->type->landusetype==WOODPLANTATION)
     {
       data = stand->data;
-      if(data->irrigation)
+      foreachpft(pft, p, &stand->pftlist)
+       if(!strcmp(pft->par->name,"rice")) isrice=TRUE;
+      if(data->irrigation||isrice)
         getoutput(&cell->output,IRRIG_STOR,config)+=data->irrig_stor*stand->frac*cell->coord.area;
     }
     /* only first 5 layers for SWC_VOL output */
@@ -526,7 +529,7 @@ void update_daily(Cell *cell,            /**< cell pointer           */
     }
     if(stand->soil.iswetland)
      getoutput(&cell->output,WTAB,config) += cell->hydrotopes.wetland_wtable_current;
-    getoutput(&cell->output,GW_STORAGE,config) += stand->soil.wa*stand->frac;
+   // getoutput(&cell->output,GW_STORAGE,config) += stand->soil.wa*stand->frac;
 
 
   } /* of foreachstand */
@@ -538,13 +541,12 @@ void update_daily(Cell *cell,            /**< cell pointer           */
   getoutput(&cell->output,DECAY_WOOD_AGR,config)*=litsum_old_agr[WOOD]>0 ? litsum_new_agr[WOOD]/litsum_old_agr[WOOD] : 1;
 
 
-//  gw_outflux = cell->ground_st*cell->kbf;
-//  cell->ground_st -= gw_outflux;
-//  //cell->discharge.drunoff+=(gw_outflux+cell->ground_st_am*cell->kbf/100);
-//  getoutput(&cell->output,GW_OUTFLUX,config) += (gw_outflux + cell->ground_st_am*cell->kbf / 100);
-//  cell->ground_st_am -= cell->ground_st_am*cell->kbf / 100;
-//
-//  getoutput(&cell->output,GW_STORAGE,config) += (cell->ground_st + cell->ground_st_am);
+  gw_outflux = cell->ground_st*cell->kbf;
+  cell->ground_st -= gw_outflux;
+  cell->discharge.drunoff+=(gw_outflux+cell->ground_st_am*cell->kbf/100);
+  getoutput(&cell->output,GW_OUTFLUX,config) += (gw_outflux + cell->ground_st_am*cell->kbf / 100);
+  cell->ground_st_am -= cell->ground_st_am*cell->kbf / 100;
+  getoutput(&cell->output,GW_STORAGE,config) += (cell->ground_st + cell->ground_st_am);
 
 /////// replace storage with the new stand specific groundwater storage see above and groundwater discharge are set in infil_perc
 
@@ -553,8 +555,9 @@ void update_daily(Cell *cell,            /**< cell pointer           */
   getoutput(&cell->output,MWATER,config) += cell->hydrotopes.meanwater;
   cell->hydrotopes.wetland_wtable_monthly+= cell->hydrotopes.wetland_wtable_current;
   cell->hydrotopes.wtable_monthly+= cell->hydrotopes.meanwater;
+
 #ifdef IMAGE
-  // outflow from groundwater reservoir to river
+  // outflow from groundwater reservoir to river THIS IS NOT NECESSARY ANYMORE IS HANDLED in infil_perc
   if (cell->discharge.dmass_gw > 0)
   {
     fout_gw=cell->discharge.dmass_gw/GWCOEFF;
@@ -700,8 +703,8 @@ void update_daily(Cell *cell,            /**< cell pointer           */
 //                     crop_sum_frac(cell->ml.landfrac,12,config->nagtree,cell->ml.reservoirfrac+cell->lakefrac,TRUE),
 //                     cell->ml.landfrac[0].grass[0]+cell->ml.landfrac[0].grass[1],cell->ml.landfrac[1].grass[0]+cell->ml.landfrac[1].grass[1]);
   }
-
-  if(fabs(balanceW)>epsilon)
+  fprintf(stdout,"day: %d\n\n",day);
+  if(fabs(balanceW)>0.001)
     fprintf(stderr,"W-BALANCE-ERROR in %s: day %d balanceW: %g  exess_old: %g balance.excess_water: %g water_after: %g water_before: %g prec: %g melt: %g "
         "atransp: %g  aevap %g ainterc %g aevap_lake  %g aevap_res: %g    airrig : %g aMT_water : %g MT_water: %g flux_bal: %g runoff %g awater_flux %g lateral_water %g mfin-mfout : %g dmass_lake : %g  dmassriver : %g  \n",
         __FUNCTION__,day,balanceW,exess_old,cell->balance.excess_water,
