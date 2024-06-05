@@ -153,6 +153,14 @@
    "license": {
      "id": "AGPL-3.0-or-later"
    },
+   "contributors": [
+      {
+        "name": "Müller, Christoph",
+        "type": "ContactPerson",  
+        "affiliation": "https://ror.org/03e8s1d88",
+        "orcid": "0000-0002-9491-3550"
+      }
+   ],
    "related_identifiers":[
       {
          "scheme":"doi",
@@ -224,7 +232,9 @@
       "bioenergy",
       "model",
       "open source",
-      "PIK"
+      "PIK",
+      "active-development",
+      "Potsdam Institute for Climate Impact Research"
    ],
    "communities":[
       { 

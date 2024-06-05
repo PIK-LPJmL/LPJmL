@@ -19,6 +19,16 @@ of `major.minor.patch` with
 
 ## [Unreleased]
 
+### Contributors
+
+- author: Christoph Müller (cmueller@pik-potsdam.de)
+
+### Changed
+
+- .zenodo.org updated to be compliant with PIK publication rules:
+  - added "active-development" and "Potsdam Institute for Climate Impact Reserach" to keywords
+  - added Christoph as "contributor", which seems to be the only way to have a visible contact person
+
 ## [5.8.15] - 2024-05-30
 
 ### Contributors
