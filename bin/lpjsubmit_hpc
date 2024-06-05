@@ -278,7 +278,7 @@ then
   echo >>slurm.jcf
 fi
 cat <<EOF >>slurm.jcf
-srun \$LPJROOT/bin/lpjml $args
+mpirun \$LPJROOT/bin/lpjml $args
 
 rc=\$?  # save return code of srun
 exit \$rc # exit with return code
