@@ -42,10 +42,10 @@
 #define MORT_MAX 0.01
 #endif
 #define MORT_MAX_GRASS 0.00
-#define FN_TURNOVER 0.2      /* fraction of N not recovered before turnover */
-#define FN_TURNOVER_EV_BR 0.6   /* fraction of N not recovered before turnover */
-#define FN_TURNOVER_EV 0.8   /* fraction of N not recovered before turnover */
-#define FN_TURNOVER_GR 0.8   /* fraction of N not recovered before turnover */
+#define FN_TURNOVER 0.2       /* fraction of N not recovered before turnover */
+#define FN_TURNOVER_EV_BR 0.4   /* fraction of N not recovered before turnover */
+#define FN_TURNOVER_EV 0.8    /* fraction of N not recovered before turnover */
+#define FN_TURNOVER_GR 0.8    /* fraction of N not recovered before turnover */
 #define ALPHAA 0.5            /* alphaa for simulations with nitrogen limitation */
 #define RATIO_SAPW 13.5 /* relative C:N ratio of sapwood */
 #define CN_BL_EG_MX 46.2
@@ -103,7 +103,7 @@
       "beta_root" : 0.952,    /* beta_root original 0.962*/
       "minwscal" : 0.0,       /* minwscal 3*/
       "gmin"  : 1.5,          /* gmin 4*/
-      "respcoeff" : 0.8,      /* respcoeff 5*/
+      "respcoeff" : 0.2,      /* respcoeff 5*/
       "nmax" : 100.,          /* nmax 7*/
       "resist" : 0.12,        /* resist 8*/
       "longevity" : 1.6,      /* leaf longevity 10*/
@@ -173,8 +173,8 @@
       "fn_turnover" : FN_TURNOVER_EV_BR, /* fraction of N not recovered before turnover */
       "windspeed_dampening" : 0.4, /* windspeed dampening */
       "roughness_length" : 2.0,  /* roughness length */
-      "ist_m" : -0.2,             /* inundation stress threshold [m] */
-      "idt_d" : 20.0,             /* inundation duration threshold [days] */
+      "ist_m" : -0.01,             /* inundation stress threshold [m] */
+      "idt_d" : 150.0,             /* inundation duration threshold [days] */
       "irrig_threshold" : { "dry" : IRRIG_THRESHOLD_C3_DRY, "humid" : IRRIG_THRESHOLD_C3_HUMID },
       "leaftype" : "broadleaved",  /* leaftype */
       "turnover" : {"leaf" : 2.0, "sapwood" : 30.0, "root" : 2.0}, /* turnover leaf  sapwood root 9 11 12*/
@@ -218,7 +218,7 @@
       "beta_root" : 0.952,    /* beta_root original 0.962*/
       "minwscal" : 0.0,       /* minwscal 3*/
       "gmin"  : 1.5,          /* gmin 4*/
-      "respcoeff" : 0.8,      /* respcoeff 5*/
+      "respcoeff" : 0.2,      /* respcoeff 5*/
       "nmax" : 100.,          /* nmax 7*/
       "resist" : 0.12,        /* resist 8*/
       "longevity" : 1.6,      /* leaf longevity 10*/
@@ -288,8 +288,8 @@
       "fn_turnover" : FN_TURNOVER_EV_BR, /* fraction of N not recovered before turnover */
       "windspeed_dampening" : 0.4, /* windspeed dampening */
       "roughness_length" : 2.0,  /* roughness length */
-      "ist_m" : 0.5,             /* inundation stress threshold [m] */
-      "idt_d" : 50.0,             /* inundation duration threshold [days] */
+      "ist_m" : 0.1,             /* inundation stress threshold [m] */
+      "idt_d" : 365.0,             /* inundation duration threshold [days] */
       "irrig_threshold" : { "dry" : IRRIG_THRESHOLD_C3_DRY, "humid" : IRRIG_THRESHOLD_C3_HUMID },
       "leaftype" : "broadleaved",  /* leaftype */
       "turnover" : {"leaf" : 2.0, "sapwood" : 30.0, "root" : 2.0}, /* turnover leaf  sapwood root 9 11 12*/
@@ -333,7 +333,7 @@
       "beta_root" : 0.981,    /* beta_root  original 0.962*/
       "minwscal" : 0.35,      /* minwscal 3*/
       "gmin"  : 1.5,          /* gmin 4*/
-      "respcoeff" : 0.8,      /* respcoeff 5*/
+      "respcoeff" : 0.2,      /* respcoeff 5*/
       "nmax" : 100.,          /* nmax 7*/
       "resist" : 0.5,         /* resist 8*/
       "longevity" : 0.5,      /* leaf longevity 10*/
@@ -1144,7 +1144,7 @@
       "beta_root" : 0.972,    /* beta_root */
       "minwscal" : 0.20,      /* minwscal 3*/
       "gmin"  : 1.5,          /* gmin 4*/
-      "respcoeff" : 0.2,      /* respcoeff 5*/
+      "respcoeff" : 0.6,      /* respcoeff 5*/
       "nmax" : 100.0,          /* nmax 7*/
       "resist" : 0.01,        /* resist 8*/
       "longevity" : 0.4,      /* leaf longevity 10*/
@@ -1599,7 +1599,7 @@
       "KNmin" : 1.19,               /* KNmin, Half saturation concentration of fine root N uptake, Smith et al. 2014 */
       "cnratio_leaf": {"low": CN_GC3_MN, "median" : CN_GC3_MD, "high" : CN_GC3_MX}, /* 10.7 79.4 cnleaf min max, based on TRY data, prepared by Boris Sakschewski */
       "knstore" : 0.1,       /* knstore, Smith et al. 2014 */
-      "fn_turnover" : FN_TURNOVER_GR, /* fraction of N not recovered before turnover */
+      "fn_turnover" : 0.6, /* fraction of N not recovered before turnover */
       "windspeed_dampening" : 0.6,  /* windspeed dampening */
       "roughness_length" : 0.03,    /* roughness length */
       "ist_m" : 0.5,             /* inundation stress threshold [m] */             

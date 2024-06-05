@@ -31,7 +31,7 @@
     "fbd_fac" : [1.0, 1.2, 1.4, 0.0], /* fuel bulk density factors */
     "minlandfrac" : 1e-6,      /* minimum land fraction used if landfrac=0 */
     "tinyfrac" : 1e-6,         /* minimum land-use fraction used by all_crops */
-    "k_litter10" : 0.6,        /* 0.3 k_litter10 only for belowground litter  (1/yr) */
+    "k_litter10" : 0.3,        /* 0.3 k_litter10 only for belowground litter  (1/yr) */
     "k_soil10" : { "fast" : 0.025, "slow":  0.001}, /* fast, slow k_soil10  (1/yr) */
     "init_soiln" : { "fast" : 2000.0, "slow":  1000.0}, /* initial fast and slow soil nitrogen (gN/m2) 2500 2500*/
     "maxsnowpack": 20000.0,    /* max. snow pack (mm) */
@@ -53,12 +53,12 @@
     "atmfrac" : 0.6,           /* atmfrac */
     "fastfrac" : 0.97,         /* fastfrac */
     "bioturbate" : 0.5,        /* bioturbation (0 = no bioturbation) */
-    "veg_equil_year" : 990,
+    "veg_equil_year" : 500,
     "veg_equil_unlim" : false, /* enable vegetation spinup without nitrogen limitation */
-    "nequilsoil" : 5 ,         /* number of equisoil calls */
+    "nequilsoil" : 10 ,         /* number of equisoil calls */
     "equisoil_interval" : 60,  /* time interval between equisoil calls */
     "equisoil_years": 30,      /* number of years used in calculation for equisoil */
-    "equisoil_fadeout": 0,     /* number of years for equisoil fadeout (for final call of equisoil); set to zero for no fadeout  */
+    "equisoil_fadeout": 100,     /* number of years for equisoil fadeout (for final call of equisoil); set to zero for no fadeout  */
     "k_max": 0.10,             /* k_max, maximum fraction of soil->NH4 assumed to be nitrified Parton, 2001*/
     "fpc_tree_max" : 0.95,     /* maximum foliage projective cover for trees */
     "temp_response" : 66.02,   /* Parameter in temperature response function */
@@ -101,10 +101,10 @@
     "nmanure_nh4_frac" : 0.666667,      /* fraction of NH4 in manure input */
     "residues_in_soil" : 0.3,           /* minimum residues in soil*/
     "fburnt" : 1.0,                     /* fraction of trees burnt at deforestation, refers to remainder after timber harvest */
-    "ftimber" : 0.76,                   /* timber fraction at deforestation */
-    "ftimber_wp" : 0.76,                /* timber fraction for wood plantations */
+    "ftimber" : 0.6,                    /* timber fraction at deforestation */
+    "ftimber_wp" : 0.76,                /* timber fraction for wood plantations 0.76*/
     "harvest_fast_frac" : 0.34,         /* fraction of harvested wood going to fast pools */
-    "product_turnover" : { "fast" : 0.2, "slow" : 0.002}, /* product turnover (1/yr) */
+    "product_turnover" : { "fast" : 0.25, "slow" : 0.0025}, /* product turnover (1/yr) */
     "esoil_reduction" : 0.0,            /* reduction of soil evaporation */
     "rw_buffer_max" : 0.0,              /* size of rainwater harvesting tank [mm] */
     "frac_ro_stored" : 0.0,             /* fraction of surface runoff stored in tank */
