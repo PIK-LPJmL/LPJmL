@@ -80,6 +80,8 @@ static Real from_setaside_for_reservoir(Cell *cell,          /**< pointer to cel
   /* first check if there is any SETASIDE in the cell */
   s=findlandusetype(cell->standlist,SETASIDE_RF);
   s2=findlandusetype(cell->standlist,SETASIDE_IR);
+  if(s2==NOT_FOUND)
+    s2=findlandusetype(cell->standlist,SETASIDE_WETLAND);
   /* if there IS already setaside in the the cell: */
   if(s!=NOT_FOUND)
   {
@@ -165,6 +167,8 @@ static Real from_setaside_for_reservoir(Cell *cell,          /**< pointer to cel
    * created to put the be replaced by the reservoir
    */
   s=findlandusetype(cell->standlist,SETASIDE_RF);
+  if(s==NOT_FOUND)
+    s=findlandusetype(cell->standlist,SETASIDE_WETLAND);
   setasidestand=getstand(cell->standlist,s);
 
   if(difffrac<=setasidestand->frac+epsilon)
