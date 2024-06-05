@@ -227,7 +227,7 @@ Stocks littersom(Stand *stand,                      /**< [inout] pointer to stan
         if (flux_soil[l].fast.carbon>C_max[l])
         {
           flux_soil[l].fast.carbon=C_max[l];
-          //flux_soil[l].fast.nitrogen=flux_soil[l].fast.carbon/CN_fast;
+          flux_soil[l].fast.nitrogen=flux_soil[l].fast.carbon/CN_fast;
           C_max[l]=0;
         }
         else
@@ -235,7 +235,7 @@ Stocks littersom(Stand *stand,                      /**< [inout] pointer to stan
         if (flux_soil[l].slow.carbon>C_max[l])
         {
           flux_soil[l].slow.carbon=C_max[l];
-          //flux_soil[l].slow.nitrogen=flux_soil[l].slow.carbon/CN_slow;
+          flux_soil[l].slow.nitrogen=flux_soil[l].slow.carbon/CN_slow;
         }
 
 /* TODO nitrogen limitation of decomposition including variable decay rates Brovkin,
@@ -322,6 +322,11 @@ Stocks littersom(Stand *stand,                      /**< [inout] pointer to stan
             {
               *runoff+=(soil->w_fw[l]+soil->ice_fw[l])-(soil->wsats[l]-soil->whcs[l]-soil->wpwps[l]);
               soil->w_fw[l]-=(soil->w_fw[l]+soil->ice_fw[l])-(soil->wsats[l]-soil->whcs[l]-soil->wpwps[l]);
+            }
+            if(soil->w_fw[l]<0)
+            {
+              soil->ice_fw[l]+=soil->w_fw[l];
+              soil->w_fw[l]=0;
             }
           }
           *MT_water+=h2o_mt;

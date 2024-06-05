@@ -232,12 +232,13 @@ void update_wetland(Cell *cell,          /**< pointer to cell */
           copysoil(&wetstand->soil, &natstand->soil, ntotpft);
           wetstand->soil.iswetland = TRUE;
           for (l = 0; l<NSOILLAYER; l++)
-            wetstand->frac_g[l] = natstand->frac_g[l];
-          //        make sure there is no C in slow pool
+            wetstand->frac_g[l] = 1;
+//          //        make sure there is no C in slow pool
           forrootsoillayer(l)
           {
             wetstand->soil.pool[l].fast.carbon += wetstand->soil.pool[l].slow.carbon;
-            wetstand->soil.pool[l].slow.carbon = 0.;
+            wetstand->soil.pool[l].fast.nitrogen+=wetstand->soil.pool[l].slow.nitrogen;
+            wetstand->soil.pool[l].slow.carbon=wetstand->soil.pool[l].slow.nitrogen=0.;
 
           } /* of forrootsoillayer() */
           //        copy PFT list to wetland stand
@@ -328,13 +329,13 @@ void update_wetland(Cell *cell,          /**< pointer to cell */
           natstand->frac=frac-delta_wetland;
           wetstand->frac+=delta_wetland;
           //    make sure there is no C in slow pool
-          forrootsoillayer(l)
-          {
-            wetstand->soil.pool[l].fast.carbon+=wetstand->soil.pool[l].slow.carbon;
-            wetstand->soil.pool[l].fast.nitrogen+=wetstand->soil.pool[l].slow.nitrogen;
-            wetstand->soil.pool[l].slow.carbon=wetstand->soil.pool[l].slow.nitrogen=0.;
-
-          } /* of forrootsoillayer */
+//          forrootsoillayer(l)
+//          {
+//            wetstand->soil.pool[l].fast.carbon+=wetstand->soil.pool[l].slow.carbon;
+//            wetstand->soil.pool[l].fast.nitrogen+=wetstand->soil.pool[l].slow.nitrogen;
+//            wetstand->soil.pool[l].slow.carbon=wetstand->soil.pool[l].slow.nitrogen=0.;
+//
+//          } /* of forrootsoillayer */
 #ifdef CHECK_BALANCE2
          if(year==2010)
           foreachstand(checkstand,s,cell->standlist)
@@ -633,7 +634,7 @@ void update_wetland(Cell *cell,          /**< pointer to cell */
   if (fabs(start.nitrogen - end.nitrogen)>0.001)
     fail(INVALID_NITROGEN_BALANCE_ERR,FAIL_ON_BALANCE,FALSE, "Invalid nitrogen balance in %s: %g start:%g  end:%g",
          __FUNCTION__,start.nitrogen - end.nitrogen, start.nitrogen, end.nitrogen);
-  if (fabs(water_before - water_after)>0.001)
+  if (fabs(water_before - water_after)>epsilon)
     fail(INVALID_WATER_BALANCE_ERR,FAIL_ON_BALANCE,FALSE, "Invalid water balance in %s: %g start:%g  end:%g",
          __FUNCTION__,water_before - water_after, water_before, water_after);
 #endif

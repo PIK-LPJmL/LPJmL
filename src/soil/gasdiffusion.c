@@ -221,7 +221,7 @@ void gasdiffusion(Soil *soil,    /**< [inout] pointer to soil data */
   }
   end = soilmethane(soil); //do not multiply by *WC/WCH4, is used for methane fluxes here
 #ifdef CHECK_BALANCE
-  if (fabs(start-end+out+in)>0.1)
+  if (fabs(start-end+out+in)>epsilon)
     fail(INVALID_CARBON_BALANCE_ERR,FAIL_ON_BALANCE,TRUE,"Invalid carbon balance in %s: gasdiff %g start:%g  end:%g gasdiff-in: %g gasdiff-out: %g",
          __FUNCTION__,start-end+out+in, start, end, in,out);
 #endif

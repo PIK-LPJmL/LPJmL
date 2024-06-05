@@ -16,6 +16,7 @@
 #include "lpj.h"
 #include "crop.h"
 #include "agriculture.h"
+#define min_denit 0.0426    //original 0.0326 not at very high T
 
 void denitrification(Stand *stand,        /**< pointer to stand */
                      int npft,            /**< number of natural PFTs */
@@ -48,12 +49,12 @@ void denitrification(Stand *stand,        /**< pointer to stand */
     if(Corg<0)
       Corg=0;
     if(soil->temp[l]>epsilon)
-      FT = 0.0326+0.00351*pow(soil->temp[l],1.652)-pow((soil->temp[l]/41.748),7.19);
+      FT = min_denit+0.00351*pow(soil->temp[l],1.652)-pow((soil->temp[l]/41.748),7.19);
       /* Equation C5 from Smith et al 2014 but only for positive temp */
     else if (soil->temp[l] > 45.9) /* otherwise FT is negative */
       FT=0.0;
     else
-      FT=0.0326;
+      FT=min_denit;
 #ifdef DEBUG_N
     printf("w=(%g + %g + %g  + %g + %g )/ %g\n",soil->wpwps[l],soil->w[l]*soil->whcs[l],soil->ice_depth[l],
            soil->w_fw[l],soil->ice_fw[l],soil->wsats[l]);

@@ -29,6 +29,7 @@ void fprintsoil(FILE *file,           /**< pointer to text file */
   char *soilstates[]={"NOSTATE","BELOW_T_ZERO","AT_T_ZERO","ABOVE_T_ZERO",
                       "FREEZING","THAWING"};
   fprintf(file,"Soil type:\t%s\n",soil->par->name);
+  fprintf(file,"iswetland:\t%d\n",soil->iswetland);
   fputs("C shift fast:\n"
         "PFT                                     ",file);
   forrootsoillayer(l)
@@ -124,18 +125,18 @@ void fprintsoil(FILE *file,           /**< pointer to text file */
             sum.slow.carbon,sum.fast.carbon);
   }
   fprintf(file,"\nRootlayer:\t%d\n",l);
-  fprintf(file,"Decomp_mean carbon:\t%.2f (gC/m2)\n",soil->decomp_litter_mean.carbon);
-  if(with_nitrogen)
-    fprintf(file,"Decomp_mean nitrogen:\t%.2f (gN/m2)\n",soil->decomp_litter_mean.nitrogen);
-  fputs("Decomp litter:\n"
-        "PFT                                     carbon (gC/m2) nitrogen (gN/m2)\n"
-        "--------------------------------------- -------------- ----------------\n",file);
-  for(p=0;p<ntotpft;p++)
-  {
-    fprintf(file,"%-40s",pftpar[p].name);
-    fprintf(file," %13.2f %16.2f\n",soil->decomp_litter_pft[p].carbon,soil->decomp_litter_pft[p].nitrogen);
-  }
-  fputs("--------------------------------------- -------------- ----------------\n",file);
+//  fprintf(file,"Decomp_mean carbon:\t%.2f (gC/m2)\n",soil->decomp_litter_mean.carbon);
+//  if(with_nitrogen)
+//    fprintf(file,"Decomp_mean nitrogen:\t%.2f (gN/m2)\n",soil->decomp_litter_mean.nitrogen);
+//  fputs("Decomp litter:\n"
+//        "PFT                                     carbon (gC/m2) nitrogen (gN/m2)\n"
+//        "--------------------------------------- -------------- ----------------\n",file);
+//  for(p=0;p<ntotpft;p++)
+//  {
+//    fprintf(file,"%-40s",pftpar[p].name);
+//    fprintf(file," %13.2f %16.2f\n",soil->decomp_litter_pft[p].carbon,soil->decomp_litter_pft[p].nitrogen);
+//  }
+//  fputs("--------------------------------------- -------------- ----------------\n",file);
   fputs("Litter:",file);
   fprintlitter(file,&soil->litter,with_nitrogen);
   fprintf(file,"\nmean maxthaw:\t%.2f (mm)\n",soil->mean_maxthaw);

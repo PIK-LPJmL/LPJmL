@@ -64,11 +64,11 @@ Bool initsoil(Stand *stand,           /**< Pointer to stand data */
   soil->w_evap=0.0;
   soil->count=0;
   soil->wa = 5000;
-  soil->wtable = 3500;
+  soil->wtable = layerbound[BOTTOMLAYER-1]+soildepth[BOTTOMLAYER-1];
   soil->iswetland = FALSE;
   for (l=0;l<NSOILLAYER;l++)
   {
-    soil->w[l]=0.0;
+    soil->w[l]=0.8;
     soil->w_fw[l]=0.0;
     soil->ice_fw[l]=0.0;
     soil->ice_depth[l]=0;
@@ -76,7 +76,6 @@ Bool initsoil(Stand *stand,           /**< Pointer to stand data */
     soil->ice_pwp[l]=0;
     soil->state[l]=NOSTATE;
     soil->perc_energy[l]=0;
-    soil->whcs[l]=0;
 #ifdef MICRO_HEATING
     soil->micro_heating[l]=0;
     soil->decomC[l]=0;
@@ -126,7 +125,7 @@ Bool initsoil(Stand *stand,           /**< Pointer to stand data */
     /*assume last layer is bedrock in 6-layer version */
     soil->wfc[BOTTOMLAYER]=soilpar->wfc;
     soil->wpwp[BOTTOMLAYER]=soilpar->wpwp;
-    soil->whc[BOTTOMLAYER]=0.049;/*0.05 fc - 0.001 wpwps = 0.049 for free water */
+    soil->whc[BOTTOMLAYER]=0.049;/*0.05 fc - 0.001 wpwps = 0.049 for field capacity water */
     soil->whcs[BOTTOMLAYER]=soil->whc[BOTTOMLAYER]*soildepth[BOTTOMLAYER];
     soil->wpwps[BOTTOMLAYER]=0.001*soildepth[BOTTOMLAYER];
     soil->wsat[BOTTOMLAYER]=soilpar->wsat;

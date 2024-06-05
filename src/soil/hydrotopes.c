@@ -34,8 +34,8 @@ void hydrotopes(Cell *cell /**< Pointer to cell */
   // 	determine wetland water level
       if (!cell->hydrotopes.skip_cell)
       {
-        wtable_h+=stand->soil.wtable/-1000;
-        w++;
+        wtable_h+=stand->soil.wtable/-1000*stand->frac;
+        w+=stand->frac;
       }
     }
   }

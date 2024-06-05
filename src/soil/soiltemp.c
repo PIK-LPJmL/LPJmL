@@ -62,6 +62,10 @@ void soiltemp(Soil *soil,          /**< pointer to soil data */
   Real temp_old,admit_old;
   layer=heat=0;
   /*temperature change of upper soillayer by precipitation, of lower layers by percolation water*/
+#ifdef CHECK_BALANCE
+  Real water_after, water_before,balancew;
+  water_before=soilwater(soil);
+#endif
   for(l=0; l<NSOILLAYER;l++)
   {
 #ifdef MICRO_HEATING
@@ -122,7 +126,10 @@ void soiltemp(Soil *soil,          /**< pointer to soil data */
     dt = 0.5*(soildepth[l]*soildepth[l]*1e-6)/lambda[l]*heatcap[l];
 #ifdef SAFE
     if(isnan(dt))
+    {
       fail(INVALID_TIMESTEP_ERR,TRUE,TRUE,"Invalid time step in soiltemp() lambda: %g heatcap %g",lambda[l],heatcap[l]);
+      fprintsoil(stdout,soil,config->pftpar,config->npft[TREE]+config->npft[GRASS]+config->npft[CROP],config->with_nitrogen);
+    }
 #endif
     heat_steps=max(heat_steps,(unsigned long)(timestep2sec(1.0,NSTEP_DAILY)/dt)+1);
     /* convert any latent energy present in this soil layer */
@@ -256,4 +263,19 @@ void soiltemp(Soil *soil,          /**< pointer to soil data */
   }
   if (soil->maxthaw_depth<layer-soil->freeze_depth[l])
     soil->maxthaw_depth=layer-soil->freeze_depth[l];
+#ifdef CHECK_BALANCE
+  foreachsoillayer(l)
+   if (soil->w[l]< -epsilon || soil->w_fw[l]< -epsilon )
+   {
+      fprintf(stderr,"end soiltemp soilwater=%.6f soilice=%.6f wsats=%.6f\n",
+          allwater(soil,l),allice(soil,l),soil->wsats[l]);
+      fflush(stderr);
+   }
+  water_after=soilwater(soil);
+  balancew=water_after-water_before;
+  if(fabs(balancew)>epsilon)
+    fail(INVALID_WATER_BALANCE_ERR,FAIL_ON_BALANCE,FALSE,"Invalid water balance in %s:  balanceW: %g water_before: %g water_after: %g \n",
+      __FUNCTION__,balancew,water_before,water_after);
+#endif
+
 } /* of 'soiltemp' */
