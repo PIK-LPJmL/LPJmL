@@ -104,7 +104,8 @@ Or you can simply load the lpjml module:
 
 module load lpjml
 
-On the new cluster you have to set the following modules:
+On the new PIK cluster you have to set the following modules:
+
 module use /p/system/modulefiles/compiler \
                /p/system/modulefiles/gpu \
                /p/system/modulefiles/libraries \
@@ -143,10 +144,10 @@ Makefile.aix_mpi     - IBM AIX and MPI environment
 Makefile.gcc         - GNU C-compiler settings
 Makefile.darwin_gcc  - GNU C-compiler settings for MacOS X
 Makefile.intel       - Intel C-compiler settings
-Makefile.icx         - Intel C-compiler settings on the new cluster at PIK
+Makefile.icx         - Intel C-compiler settings on the new PIK cluster
 Makefile.intel_mpi   - Intel C-compiler and Intel MPI settings
-Makefile.cluster2015 - Intel C-compiler and Intel MPI on HLRS2015 cluster at PIK
-Makefile.hpc2024      - Intel C-compiler and Intel MPI on the new cluster at PIK
+Makefile.cluster2015 - Intel C-compiler and Intel MPI on HLRS2015 PIK cluster
+Makefile.hpc2024     - Intel C-compiler and Intel MPI on the new PIK cluster
 Makefile.mpich       - GNU C-Compiler and MPI Chameleon settings
 Makefile.win32       - Windows settings (used by configure.bat)
 

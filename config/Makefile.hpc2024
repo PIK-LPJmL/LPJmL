@@ -4,7 +4,7 @@
 ##                                                                             ##
 ##   Make include file for compiler and os specific settings                   ##
 ##   Compile and link options for Intel compiler mpiixc and library            ##
-##   settings for the HPC cluster at PIK                                       ##
+##   settings for the new PIK cluster                                          ##
 ##   Parallel MPI is enabled                                                   ##
 ##                                                                             ##
 ## (C) Potsdam Institute for Climate Impact Research (PIK), see COPYRIGHT file ##
