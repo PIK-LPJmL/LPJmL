@@ -265,8 +265,6 @@ cat <<EOF >>slurm.jcf
 #SBATCH -o  $output
 #SBATCH -e  $error
 
-module load mpi/intel/5.1.3
-
 export LPJROOT=$LPJROOT
 
 ulimit -c unlimited
