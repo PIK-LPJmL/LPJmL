@@ -19,7 +19,7 @@ of `major.minor.patch` with
 
 ## [Unreleased]
 
-## [5.8.16] - 2024-06-03
+## [5.8.16] - 2024-06-06
 
 ### Contributors
 
@@ -27,12 +27,14 @@ of `major.minor.patch` with
 
 ### Added
 
-- List of required modules on new cluster added in `INSTALL`.
-- `configure.sh` script recognizes new cluster at PIK and sets compiler accordingly.
+- List of required modules on new PIK cluster added in `INSTALL`.
+- `configure.sh` script recognizes new PIK cluster and sets `mpiicx`/`icx` compiler accordingly.
+- New site-specific `Makefile.hpc2024` and Makefile.icx` for parallel/sequential compilation on new cluster added.
+- New `lpjsubmit_hpc` slurm script added for new PIK cluster. `configure.sh` sets symbolic link of `lpjsubmit` to this script.
 
 ### Fixed
 
-- Functions `mpi_write.c` and `mpi_write_socket.c` changed to avoid `SEGV` on new cluster.
+- Functions `mpi_write.c` and `mpi_write_socket.c` changed to avoid `SEGV` on new PIK cluster.
 
 
 ## [5.8.15] - 2024-05-30
