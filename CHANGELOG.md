@@ -19,7 +19,7 @@ of `major.minor.patch` with
 
 ## [Unreleased]
 
-## [5.8.16] - 2024-06-06
+## [5.8.17] - 2024-06-07
 
 ### Contributors
 
@@ -35,6 +35,20 @@ of `major.minor.patch` with
 ### Fixed
 
 - Functions `mpi_write.c` and `mpi_write_socket.c` changed to avoid `SEGV` on new PIK cluster.
+
+
+## [5.8.16] - 2024-06-07
+
+### Contributors
+
+- author: Christoph Müller (cmueller@pik-potsdam.de)
+- reviewer: Fabian Stenzel (stenzel@pik-potsdam.de), Luke Oberhagemann (lukeober@pik-potsdam.de)
+
+### Changed
+
+- .zenodo.org updated to be compliant with PIK publication rules:
+  - added "active-development" and "Potsdam Institute for Climate Impact Research" to keywords
+  - added Christoph as "contributor", which seems to be the only way to have a visible contact person
 
 
 ## [5.8.15] - 2024-05-30
