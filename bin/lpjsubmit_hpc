@@ -278,7 +278,7 @@ fi
 cat <<EOF >>slurm.jcf
 mpirun \$LPJROOT/bin/lpjml $args
 
-rc=\$?  # save return code of srun
+rc=\$?  # save return code of mpirun
 exit \$rc # exit with return code
 EOF
   if [ "$norun" = "0" ]
