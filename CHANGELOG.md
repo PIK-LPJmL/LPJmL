@@ -19,7 +19,7 @@ of `major.minor.patch` with
 
 ## [Unreleased]
 
-## [5.8.17] - 2024-06-07
+## [5.8.17] - 2024-06-10
 
 ### Contributors
 
@@ -32,9 +32,13 @@ of `major.minor.patch` with
 - New site-specific `Makefile.hpc2024` and Makefile.icx` for parallel/sequential compilation on new cluster added.
 - New `lpjsubmit_hpc` slurm script added for new PIK cluster. `configure.sh` sets symbolic link of `lpjsubmit` to this script.
 
+### Changed
+
+- All occurrences of the deprecated function `MPI_Type_extent` replaced by `MPI_Type_get_extent` to allow compilation with OpenMPI.
+
 ### Fixed
 
-- Functions `mpi_write.c` and `mpi_write_socket.c` changed to avoid `SEGV` on new PIK cluster.
+- Functions `mpi_write.c`, `mpi_write_txt.c`, `mpi_read_socket.c` and `mpi_write_socket.c` changed to avoid `SEGV` on new PIK cluster.
 
 
 ## [5.8.16] - 2024-06-07
