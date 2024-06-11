@@ -19,7 +19,7 @@ of `major.minor.patch` with
 
 ## [Unreleased]
 
-## [5.8.17] - 2024-06-10
+## [5.8.17] - 2024-06-11
 
 ### Contributors
 
@@ -35,6 +35,7 @@ of `major.minor.patch` with
 ### Changed
 
 - All occurrences of the deprecated function `MPI_Type_extent` replaced by `MPI_Type_get_extent` to allow compilation with OpenMPI.
+- `*.tmp` files added to `.gitignore`.
 
 ### Fixed
 
