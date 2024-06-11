@@ -35,10 +35,11 @@ of `major.minor.patch` with
 ### Changed
 
 - Compile option `-Werror` added to stop compilation after warning.
+- All occurrences of the deprecated function `MPI_Type_extent` replaced by `MPI_Type_get_extent` to allow compilation with OpenMPI.
 
 ### Fixed
 
-- Functions `mpi_write.c` and `mpi_write_socket.c` changed to avoid `SEGV` on new PIK cluster.
+- Functions `mpi_write.c`, `mpi_write_txt.c`, `mpi_read_socket.c` and `mpi_write_socket.c` changed to avoid `SEGV` on new PIK cluster.
 - Incorrect scaling removed in utility `printharvest`.
 - Uninitialized PFT pointer set to first PFT in `harvest_stand.c`.
 - Prescribed land cover is now read correctly if landcover map size differs from number of natural PFTs.
