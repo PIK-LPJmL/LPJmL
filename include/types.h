@@ -66,8 +66,8 @@ typedef unsigned char Byte;
 typedef char String[STRING_LEN+1];
 
 extern const size_t typesizes[];
-extern const char *typenames[];
-extern const char *fmt[N_FMT];
+extern char *typenames[];
+extern char *fmt[N_FMT];
 
 typedef enum {LPJ_BYTE,LPJ_SHORT,LPJ_INT,LPJ_FLOAT,LPJ_DOUBLE} Type;
 typedef enum {NO_ERR, ERR, VERB } Verbosity;
@@ -122,7 +122,7 @@ extern Bool isint(const LPJfile *,const char *);
 extern Bool isstring(const LPJfile *,const char *);
 extern char *fscanline(FILE *);
 extern Bool fscantoken(FILE *,String);
-extern Bool fscankeywords(LPJfile *,int *,const char *,const char *const *,
+extern Bool fscankeywords(LPJfile *,int *,const char *,char **,
                           int,Bool,Verbosity);
 extern Bool isnull(const LPJfile *,const char *);
 extern char *sysname(void);
@@ -147,7 +147,7 @@ extern char *stripsuffix(const char *);
 extern Bool hassuffix(const char *,const char *);
 extern Bool hasanysuffix(const char *);
 extern char *mkfilename(const char *);
-extern int findstr(const char *,const char *const *,int);
+extern int findstr(const char *,char **,int);
 extern Bool checkfmt(const char *,char);
 extern int fputstring(FILE *,int,const char *,int);
 extern Bool fscanint(LPJfile *,int *,const char *,Bool,Verbosity);
@@ -167,7 +167,7 @@ extern Bool readfilename(LPJfile *,Filename *,const char *,const char *,Bool,Boo
 extern void freefilename(Filename *);
 extern void **newmat(size_t,int,int);
 extern void freemat(void **);
-extern char *catstrvec(const char * const *,int);
+extern char *catstrvec(char **,int);
 extern char *strdate(const time_t *);
 extern int getlinecount(void);
 extern char* getfilename(void);

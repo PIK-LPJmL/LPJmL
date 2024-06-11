@@ -41,6 +41,8 @@ static void printindex(size_t i,Time time,size_t var_len)
       if(var_len>1)
         fprintf(stderr,"at item %d",(int)(i % var_len)+1);
       break;
+    default:
+      break;
   }
 } /* of 'printindex' */
 
@@ -72,6 +74,9 @@ static Bool readclimate2(Climatefile *file,    /* climate data file */
     case YEAR: case MISSING_TIME:
       size=1;
       break;
+    case SECOND:
+      fprintf(stderr,"Time step of second not supported.\n");
+      return TRUE;
   }
   if(file->time_step==MISSING_TIME)
     start=0;
@@ -196,6 +201,8 @@ static Bool readclimate2(Climatefile *file,    /* climate data file */
         case LPJ_SHORT:
           free(s);
           break;
+        default:
+          break;
       }
       nc_close(file->ncid);
       return TRUE;
@@ -312,6 +319,8 @@ static Bool readclimate2(Climatefile *file,    /* climate data file */
           }
           data[cell*size*file->var_len+i]=(float)(file->slope*s[file->nlon*(i*file->nlat+offsets[index])+offsets[index+1]]+file->intercept);
           break;
+        default:
+          break;
       } /* of 'switch' */
     }
   }
@@ -328,6 +337,8 @@ static Bool readclimate2(Climatefile *file,    /* climate data file */
       break;
     case LPJ_SHORT:
       free(s);
+      break;
+    default:
       break;
   }
   return FALSE;
@@ -576,6 +587,9 @@ int main(int argc,char **argv)
           if(verbose)
             printf((climate.time_step==YEAR) ? "yearly" : "no");
           break;
+        case SECOND:
+          fprintf(stderr,"Time step of second not supported in '%s'.\n",argv[j]);
+          return EXIT_FAILURE;
       }
       if(verbose)
       {

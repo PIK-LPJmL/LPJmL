@@ -19,7 +19,7 @@ of `major.minor.patch` with
 
 ## [Unreleased]
 
-## [5.8.17] - 2024-06-07
+## [5.8.17] - 2024-06-11
 
 ### Contributors
 
@@ -35,6 +35,11 @@ of `major.minor.patch` with
 ### Fixed
 
 - Functions `mpi_write.c` and `mpi_write_socket.c` changed to avoid `SEGV` on new PIK cluster.
+- Incorrect scaling removed in utility `printharvest`.
+- Uninitialized PFT pointer set first PFT in `harvest_stand.c`.
+- Prescribed land cover is now read correctly if landcover map size differs from number of natural PFTs.
+- Check for land use type `WP` corrected in `landusechange.c` (issue #354).
+- Code fixed to remove all warnings if compiled with `icx`.
 
 
 ## [5.8.16] - 2024-06-07

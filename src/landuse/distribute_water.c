@@ -38,9 +38,6 @@ void distribute_water(Cell *cell,            /**< pointer to LPJ cell */
   int s,nirrig;
   Real conv_loss,irrig_stand;
   Real frac_irrig_amount,frac_unsustainable;
-#ifdef IMAGE
-  Real frac_sw;
-#endif
   Stand *stand;
   Pft *pft;
   Irrigation *data;
@@ -52,13 +49,11 @@ void distribute_water(Cell *cell,            /**< pointer to LPJ cell */
   if(config->irrig_scenario==LIM_IRRIGATION && cell->discharge.aquifer==0)
   {
     frac_irrig_amount=cell->discharge.gir>0 ? (cell->discharge.withdrawal+cell->discharge.withdrawal_gw)/cell->discharge.gir : 0.0;
-    frac_sw=frac_irrig_amount>0 ? cell->discharge.withdrawal/(cell->discharge.withdrawal+cell->discharge.withdrawal_gw) : 0.0;
   }
   else
   {
     /* potential irrigation requirement */
     frac_irrig_amount=cell->discharge.gir>0 ? (cell->discharge.withdrawal+cell->discharge.withdrawal_gw+cell->discharge.irrig_unmet)/cell->discharge.gir : 0.0;
-    frac_sw=frac_irrig_amount>0 ? cell->discharge.withdrawal/(cell->discharge.withdrawal+cell->discharge.withdrawal_gw+cell->discharge.irrig_unmet):0.0;
     frac_unsustainable=cell->discharge.gir>0 ? (cell->discharge.irrig_unmet/cell->discharge.gir) : 0.0;
     frac_unsustainable=frac_unsustainable>0 ? frac_unsustainable : 0.0;
     // coord area added to change to mm
@@ -171,6 +166,9 @@ void distribute_water(Cell *cell,            /**< pointer to LPJ cell */
                 getoutputindex(&cell->output,CFT_NIR,rbtree(ncft)+nirrig,config)+=data->net_irrig_amount*stand->frac;
               else
                 getoutputindex(&cell->output,CFT_NIR,rbtree(ncft)+nirrig,config)+=data->net_irrig_amount;
+              break;
+            default:
+              /* do nothing */
               break;
           } /* of switch */
 

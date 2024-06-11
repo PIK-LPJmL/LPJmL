@@ -1001,7 +1001,7 @@ int main(int argc,char **argv)
   free(arglist);
   if(cdf==NULL)
     return EXIT_FAILURE;
-  if((isint ||(header.datatype==LPJ_INT || header.datatype==LPJ_BYTE) && header.scalar==1))
+  if((isint ||((header.datatype==LPJ_INT || header.datatype==LPJ_BYTE) && header.scalar==1)))
   {
     idata=newvec(int,ngrid*header.nbands);
     if(idata==NULL)

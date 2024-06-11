@@ -118,7 +118,7 @@ extern Landfrac *newlandfrac(int,int);
 extern void initlandfracitem(Landfrac *,int,int);
 extern void initlandfrac(Landfrac [2],int,int);
 extern void scalelandfrac(Landfrac [2],int,int,Real);
-extern void freelandfrac(Landfrac [2]);
+extern void freelandfrac(Landfrac *);
 extern Bool fwritelandfrac(FILE *,const Landfrac [2],int,int);
 extern void fprintlandfrac(FILE *,const Landfrac *,int,int);
 extern Bool freadlandfrac(FILE *,Landfrac [2],int,int,Bool);
@@ -169,6 +169,6 @@ extern void output_gbw(Output *,const Stand *,Real,Real,Real,Real,
 
 /* Declaration of variables */
 
-extern const char *biomass_names[NBIOMASSTYPE];
+extern char *biomass_names[NBIOMASSTYPE];
 
 #endif

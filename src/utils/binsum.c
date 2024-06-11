@@ -125,20 +125,23 @@ int main(int argc,char **argv)
     }
     switch(grid_type)
     {
-       case LPJ_SHORT:
-         ngrid=getfilesizep(file)/sizeof(short)/2;
-         break;
-       case LPJ_FLOAT:
-         ngrid=getfilesizep(file)/sizeof(float)/2;
-         break;
-       case LPJ_DOUBLE:
-         ngrid=getfilesizep(file)/sizeof(double)/2;
-         break;
+      case LPJ_SHORT:
+        ngrid=getfilesizep(file)/sizeof(short)/2;
+        break;
+      case LPJ_FLOAT:
+        ngrid=getfilesizep(file)/sizeof(float)/2;
+        break;
+      case LPJ_DOUBLE:
+        ngrid=getfilesizep(file)/sizeof(double)/2;
+        break;
+      default:
+        fprintf(stderr,"Invalid datatype %d in '%s'.\n",grid_type,argv[iarg]);
+        return EXIT_FAILURE;
     }
     if(ngrid==0)
     {
-       fprintf(stderr,"Error: Number of grid cells in '%s' is zero.\n",argv[iarg]);
-       return EXIT_FAILURE;
+      fprintf(stderr,"Error: Number of grid cells in '%s' is zero.\n",argv[iarg]);
+      return EXIT_FAILURE;
     }
     fclose(file);
     iarg++;

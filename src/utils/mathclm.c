@@ -525,6 +525,8 @@ int main(int argc,char **argv)
               for(k=0;k<header1.nbands*header1.nstep;k++)
                 idata3[k]=min(idata1[k],ivalue);
               break;
+            default:
+              break;
           } /* of switch */
         else
         {
@@ -587,6 +589,8 @@ int main(int argc,char **argv)
                 for(k=0;k<header1.nbands*header1.nstep;k++)
                   idata3[k]=idata1[k];
               break;
+            case FLOAT: case INT:
+              break;
           } /* of switch */
         }
         /* write int data to file */
@@ -637,6 +641,8 @@ int main(int argc,char **argv)
             case MIN:
               for(k=0;k<header1.nbands*header1.nstep;k++)
                 data3[k]=min(data1[k],value);
+              break;
+            default:
               break;
           } /* of switch */
         else
@@ -691,6 +697,8 @@ int main(int argc,char **argv)
               else
                 for(k=0;k<header1.nbands*header1.nstep;k++)
                   data3[k]=data1[k];
+              break;
+            case FLOAT: case INT:
               break;
           } /* of switch */
         }

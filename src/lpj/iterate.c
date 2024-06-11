@@ -53,13 +53,13 @@ int iterate(Outputfile *output, /**< Output file data */
 {
   Real co2,cflux_total;
   Flux flux;
-  int year,landuse_year,wateruse_year,startyear,firstspinupyear,spinup_year,climate_year,year_co2,depos_year;
+  int year,landuse_year,startyear,firstspinupyear,spinup_year,climate_year,year_co2,depos_year;
+#ifndef COUPLED
+  int wateruse_year;
+#endif
   Bool rc;
   Climatedata store,data_save;
 
-#if defined IMAGE && defined COUPLED
-  Real finish;
-#endif
 
   firstspinupyear=(config->isfirstspinupyear) ?  config->firstspinupyear : input.climate->firstyear;
   if(isroot(*config) && config->nspinup && !config->isfirstspinupyear)
@@ -208,6 +208,7 @@ int iterate(Outputfile *output, /**< Output file data */
         landuse_year=config->fix_landuse_year;
       else
         landuse_year=year;
+#ifndef COUPLED
       /* under constant landuse also keep wateruse at landuse_year_const */
       if(config->withlanduse==CONST_LANDUSE)
         wateruse_year=config->landuse_year_const;
@@ -215,6 +216,7 @@ int iterate(Outputfile *output, /**< Output file data */
         wateruse_year=config->fix_landuse_year;
       else
         wateruse_year=year;
+#endif
 #if defined IMAGE && defined COUPLED
       if(year>=config->start_coupling)
       {
@@ -383,7 +385,7 @@ int iterate(Outputfile *output, /**< Output file data */
 #if defined IMAGE && defined COUPLED
   /* wait for IMAGE to finish before closing TDT-connections by LPJ */
   if(config->sim_id==LPJML_IMAGE)
-    finish=receive_image_finish(config);
+    receive_image_finish(config);
 #endif
   return year;
 } /* of 'iterate' */

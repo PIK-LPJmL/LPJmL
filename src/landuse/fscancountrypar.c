@@ -24,7 +24,7 @@
 
 #define checkptr(ptr) if(ptr==NULL) { printallocerr(#ptr); return 0;}
 
-const char *irrigsys[]={"no irrig","surf","sprink","drip"};
+char *irrigsys[]={"no irrig","surf","sprink","drip"};
 
 int fscancountrypar(LPJfile *file,           /**< pointer to LPJ file */
                     Countrypar **countrypar, /**< Pointer to countrypar array */

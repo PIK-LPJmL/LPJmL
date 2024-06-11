@@ -322,12 +322,15 @@ static Cdf *create_cdf(const char *filename,
   }
   switch(type)
   {
-     case LPJ_FLOAT:
-       rc=nc_def_var(cdf->ncid,name,NC_FLOAT,(ispft) ? 4 : 3,dim,&cdf->varid);
-       break;
-     case LPJ_SHORT:
-       rc=nc_def_var(cdf->ncid,name,NC_SHORT,(ispft) ? 4 : 3,dim,&cdf->varid);
-       break;
+    case LPJ_FLOAT:
+      rc=nc_def_var(cdf->ncid,name,NC_FLOAT,(ispft) ? 4 : 3,dim,&cdf->varid);
+      break;
+    case LPJ_SHORT:
+      rc=nc_def_var(cdf->ncid,name,NC_SHORT,(ispft) ? 4 : 3,dim,&cdf->varid);
+      break;
+    default:
+      fprintf(stderr,"Invalid datatype %d.\n",type);
+      return NULL;
   }
   error(rc);
 #ifdef USE_NETCDF4
@@ -363,6 +366,8 @@ static Cdf *create_cdf(const char *filename,
     case LPJ_SHORT:
       nc_put_att_short(cdf->ncid, cdf->varid,"missing_value",NC_SHORT,1,&miss_short);
       rc=nc_put_att_short(cdf->ncid, cdf->varid,"_FillValue",NC_SHORT,1,&miss_short);
+      break;
+    default:
       break;
   }
   error(rc);
@@ -943,6 +948,9 @@ int main(int argc,char **argv)
         if(getfilesizep(gridfile) % (sizeof(double)/2))
           fprintf(stderr,"Size of grid file '%s' is non multiple of coord size.\n",grid_filename);
         break;
+      default:
+        fprintf(stderr,"Invalid datatype %d in '%s'.\n",gridtype,grid_filename);
+        return EXIT_FAILURE;
     }
     if(ngrid==0)
     {
@@ -980,6 +988,8 @@ int main(int argc,char **argv)
           grid[i].lat=intcoord.lat*0.01;
           grid[i].lon=intcoord.lon*0.01;
         }
+        break;
+      default:
         break;
     }
     fclose(gridfile);

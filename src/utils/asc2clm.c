@@ -271,7 +271,7 @@ int main(int argc,char **argv)
       file=fopen(argv[y*nbands*nstep+m],"r");
       if(file==NULL)
       {
-        fprintf(stderr,"Error opening '%s': %s.\n",argv[y],strerror(errno));
+        fprintf(stderr,"Error opening '%s': %s.\n",argv[y*nbands*nstep+m],strerror(errno));
         return EXIT_FAILURE;
       }
       /* parse header  */
@@ -343,6 +343,10 @@ int main(int argc,char **argv)
               fputs("Error allocating memory for data.\n",stderr);
               return EXIT_FAILURE;
             }
+            break;
+          default:
+            fprintf(stderr,"Invalid datatype %d in '%s'.\n",type,argv[y*nbands*nstep+m]);
+            return EXIT_FAILURE;
         } /* of 'switch' */
         nrows_first=nrows;
         ncols_first=ncols;
@@ -469,7 +473,9 @@ int main(int argc,char **argv)
             return EXIT_FAILURE;
           }
         break;
-     }
+      default:
+        break;
+    }
   }  
   if(gridfile!=NULL)
   {

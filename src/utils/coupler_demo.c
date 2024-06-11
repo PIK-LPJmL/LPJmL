@@ -26,7 +26,10 @@ static Bool readsocket(Socket *socket,int day,int sizes[],int count[],Type type[
 {
   Token token;
   int index;
-  int year,step;
+  int year;
+#if COUPLER_VERSION == 4
+  int step;
+#endif
   int j,k;
   float *data;
   short *sdata;
@@ -143,14 +146,16 @@ int main(int argc,char **argv)
   Type type[NOUT];
   int sizes_in[N_IN];
   Type type_in[N_IN];
+#if COUPLER_VERSION == 4
   Type datatype;
+  int ncell_in;
+  int status;
+#endif
   int port;
   int nmonth_out;
   int nday_out;
   int nbands;
   int firstgrid;
-  int ncell_in;
-  int status;
   Bool swap;
   String line;
   const char *progname;
