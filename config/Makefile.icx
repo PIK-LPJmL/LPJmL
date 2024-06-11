@@ -14,8 +14,8 @@
 #################################################################################
 
 CC	= icx
-DEBUGFLAGS  = -g
-CHECKFLAGS = -g -check-pointers=rw
+DEBUGFLAGS  = -g -O0
+CHECKFLAGS = -g -O0 -check-pointers=rw
 OPTFLAGS= -O3 -no-vec
 WFLAG	= -Wall
 LPJFLAGS  = -DUSE_RAND48 -DSAFE -DWITH_FPE -DUSE_NETCDF -DUSE_UDUNITS -DPERMUTE -DUSE_TIMING -DSTRICT_JSON #-DDAILY_ESTABLISHMENT
