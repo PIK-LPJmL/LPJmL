@@ -32,11 +32,15 @@ of `major.minor.patch` with
 - New site-specific `Makefile.hpc2024` and Makefile.icx` for parallel/sequential compilation on new cluster added.
 - New `lpjsubmit_hpc` slurm script added for new PIK cluster. `configure.sh` sets symbolic link of `lpjsubmit` to this script.
 
+### Changed
+
+- Compile option `-Werror` added to stop compilation after warning.
+
 ### Fixed
 
 - Functions `mpi_write.c` and `mpi_write_socket.c` changed to avoid `SEGV` on new PIK cluster.
 - Incorrect scaling removed in utility `printharvest`.
-- Uninitialized PFT pointer set first PFT in `harvest_stand.c`.
+- Uninitialized PFT pointer set to first PFT in `harvest_stand.c`.
 - Prescribed land cover is now read correctly if landcover map size differs from number of natural PFTs.
 - Check for land use type `WP` corrected in `landusechange.c` (issue #354).
 - Code fixed to remove all warnings if compiled with `icx`.
