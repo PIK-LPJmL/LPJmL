@@ -36,6 +36,7 @@ of `major.minor.patch` with
 
 - Compile option `-Werror` added to stop compilation of `mpiicx`/`icx` after warning. This feature can be disabled by using the `-noerror` option of `configure.sh`.
 - All occurrences of the deprecated function `MPI_Type_extent` replaced by `MPI_Type_get_extent` to allow compilation with OpenMPI.
+- `*.tmp` files added to `.gitignore`.
 
 ### Fixed
 
