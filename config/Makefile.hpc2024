@@ -16,8 +16,8 @@
 #################################################################################
 
 CC	= mpiicx
-OPTFLAGS= -g -O3 -no-vec
-DEBUGFLAGS = -g
+OPTFLAGS= -g -O3 -no-vec -Werror
+DEBUGFLAGS = -g -O0 -Werror
 CHECKFLAGS = -g -check-pointers=rw
 LPJFLAGS=  -DUSE_RAND48 -DUSE_MPI -DSAFE -DWITH_FPE -DUSE_NETCDF -DUSE_UDUNITS -DPERMUTE -DUSE_TIMING -DSTRICT_JSON #-DDAILY_ESTABLISHMENT
 WFLAG   = -Wall
