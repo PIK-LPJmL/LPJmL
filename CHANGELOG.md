@@ -19,11 +19,12 @@ of `major.minor.patch` with
 
 ## [Unreleased]
 
-## [5.8.17] - 2024-06-11
+## [5.8.17] - 2024-06-12
 
 ### Contributors
 
 - author: Werner von Bloh (bloh@pik-potsdam.de)
+- code review: Sibyll Schaphoff (sibylls@pik-potsdam.de), Sebastian Ostberg (ostberg@pik-potsdam.de)
 
 ### Added
 
