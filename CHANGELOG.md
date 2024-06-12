@@ -19,7 +19,7 @@ of `major.minor.patch` with
 
 ## [Unreleased]
 
-## [5.8.17] - 2024-06-11
+## [5.8.18] - 2024-06-12
 
 ### Contributors
 
@@ -27,26 +27,21 @@ of `major.minor.patch` with
 
 ### Added
 
-- List of required modules on new PIK cluster added in `INSTALL`.
-- `configure.sh` script recognizes new PIK cluster and sets `mpiicx`/`icx` compiler accordingly.
-- New site-specific `Makefile.hpc2024` and Makefile.icx` for parallel/sequential compilation on new cluster added.
-- New `lpjsubmit_hpc` slurm script added for new PIK cluster. `configure.sh` sets symbolic link of `lpjsubmit` to this script.
+- Missing regridding of wateruse and livestock density input added in `regridlpj`.
 
 ### Changed
 
-- Compile option `-Werror` added to stop compilation of `mpiicx`/`icx` after warning. This feature can be disabled by using the `-noerror` option of `configure.sh`.
-- All occurrences of the deprecated function `MPI_Type_extent` replaced by `MPI_Type_get_extent` to allow compilation with OpenMPI.
-- `*.tmp` files added to `.gitignore`.
+- Compile option `-Werror` added to stop compilation of `icx`/`gcc` after warning. This feature can be disabled by using the `-noerror` option of `configure.sh`.
+- Filename and source is written into configuration file created by `regridlpj`.
 
 ### Fixed
 
-- Functions `mpi_write.c`, `mpi_write_txt.c`, `mpi_read_socket.c` and `mpi_write_socket.c` changed to avoid `SEGV` on new PIK cluster.
 - Incorrect scaling removed in utility `printharvest`.
 - Uninitialized PFT pointer set to first PFT in `harvest_stand.c`.
 - Prescribed land cover is now read correctly if landcover map size differs from number of natural PFTs.
 - Check for land use type `WP` corrected in `landusechange.c` (issue #354).
-- Code fixed to remove all warnings if compiled with `icx`.
-
+- Code fixed to remove all warnings if compiled with `icx`/`gcc`.
+- `regridclm` now used for regridding of soil file in `regridlpj`.
 
 ## [5.8.16] - 2024-06-07
 
