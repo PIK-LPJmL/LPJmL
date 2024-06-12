@@ -42,7 +42,7 @@ int writecoords(Outputfile *output,  /**< output struct */
   MPI_Datatype type;
 #endif
   Bool rc;
-  int cell,count;
+  int cell,count=0;
   int *cellid;
   Intcoord *vec=NULL;
   Floatcoord *fvec=NULL;

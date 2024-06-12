@@ -32,8 +32,8 @@ static Bool readmydata(Climatefile *file,    /* climate data file */
 {
   int t,cell,rc,index,n,start;
   size_t i;
-  float *f;
-  short *s;
+  float *f=NULL;
+  short *s=NULL;
   float data;
   size_t offsets[4];
   size_t address[2];
@@ -93,7 +93,7 @@ static Bool readmydata(Climatefile *file,    /* climate data file */
     case YEAR: case MISSING_TIME:
       n=1;
       break;
-    case SECOND:
+    default:
       fprintf(stderr,"ERROR421: Time step of second not supported.\n");
       return TRUE;
   }

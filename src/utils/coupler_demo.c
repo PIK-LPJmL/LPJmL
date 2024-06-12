@@ -131,7 +131,7 @@ static Bool readyeardata(Socket *socket,int nday_out,int nmonth_out,int n_out,in
 
 int main(int argc,char **argv)
 {
-  FILE *file;
+  FILE *file=NULL;
   Header header;
   Socket *socket;
   float *landuse;
@@ -416,9 +416,9 @@ int main(int argc,char **argv)
           index=COUPLER_OK;
           break;
         default:
-          index=COUPLER_ERR;
           n_err++;
           fprintf(stderr,"Invalid number of steps %d for index %d, must be 1, 12, or 365.\n",nstep[index],index);
+          index=COUPLER_ERR;
       }
     writeint_socket(socket,&index,1);
   }

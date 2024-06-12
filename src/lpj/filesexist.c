@@ -537,6 +537,8 @@ Bool filesexist(Config config, /**< LPJmL configuration */
   oldpath=strdup("");
   if(config.nall!=-1 && config.n_out)
     size=outputfilesize(&config);
+  else
+    size=0;
   for(i=0;i<config.n_out;i++)
   {
     if(config.outputvars[i].filename.fmt!=SOCK)

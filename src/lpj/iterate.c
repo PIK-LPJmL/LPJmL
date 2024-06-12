@@ -242,7 +242,6 @@ int iterate(Outputfile *output, /**< Output file data */
       }
       if(config->reservoir)
         allocate_reservoir(grid,year,config);
-    }
 #ifndef COUPLED
     if(config->wateruse)
     {
@@ -275,6 +274,7 @@ int iterate(Outputfile *output, /**< Output file data */
     }
 #endif
 #endif
+    }
     if(config->ispopulation)
     {
       rc=readpopdens(input.popdens,year,grid,config);

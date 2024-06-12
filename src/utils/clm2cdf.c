@@ -53,7 +53,10 @@ static Cdf *create_cdf(const char *filename,
   int *year,i,j,rc,dim[4],varid;
   char *s;
   time_t t;
-  size_t chunk[4],offset[2],count[2];
+#ifdef USE_NETCDF4
+  size_t chunk[4];
+#endif
+  size_t offset[2],count[2];
   int time_var_id,lat_var_id,lon_var_id,time_dim_id,lat_dim_id,lon_dim_id,map_dim_id,len_dim_id;
   int landuse_dim_id;
   int index;
@@ -257,7 +260,9 @@ static Cdf *create_cdf(const char *filename,
   else
   {
     dim[0]=time_dim_id;
+#ifdef USE_NETCDF4
     chunk[0]=1;
+#endif
     index=1;
   }
   if(landuse)
@@ -265,18 +270,22 @@ static Cdf *create_cdf(const char *filename,
     rc=nc_def_dim(cdf->ncid,"pft",header->nbands,&landuse_dim_id);
     error(rc);
     dim[index]=landuse_dim_id;
-    chunk[index]=1;
     dim[index+1]=lat_dim_id;
-    chunk[index+1]=array->nlat;
     dim[index+2]=lon_dim_id;
+#ifdef USE_NETCDF4
+    chunk[index]=1;
+    chunk[index+1]=array->nlat;
     chunk[index+2]=array->nlon;
+#endif
   }
   else
   {
     dim[index]=lat_dim_id;
-    chunk[index]=array->nlat;
     dim[index+1]=lon_dim_id;
+#ifdef USE_NETCDF4
+    chunk[index]=array->nlat;
     chunk[index+1]=array->nlon;
+#endif
   }
   if(notime)
     rc=nc_def_var(cdf->ncid,name,(isint) ? NC_INT : NC_FLOAT,(landuse) ? 3 : 2,dim,&cdf->varid);
@@ -527,6 +536,7 @@ int main(int argc,char **argv)
   grid_name.fmt=CLM;
   n_global=0;
   missing_value=NULL;
+  type=LPJ_SHORT;
   progname=strippath(argv[0]);
   for(iarg=1;iarg<argc;iarg++)
     if(argv[iarg][0]=='-')

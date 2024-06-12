@@ -22,7 +22,7 @@ int main(int argc,char **argv)
   float *data;
   float *data_sum;
   size_t offset;
-  int i,j,ngrid,iarg,nitem,nsum,nyear,version,format;
+  int i,j,ngrid=0,iarg,nitem,nsum,nyear,version,format;
   char *endptr;
   char *map_name=BAND_NAMES;
   char *arglist;
@@ -231,7 +231,7 @@ int main(int argc,char **argv)
   }
   else
   {
-    /* raw binary format, get numnber of years from file size */
+    /* raw binary format, get number of years from file size */
     nyear=getfilesizep(file)/sizeof(float)/ngrid/nitem;
     if(getfilesizep(file) % (sizeof(float)*ngrid*nitem))
       fprintf(stderr,"Warning: file size of '%s' is not multiple of bands %d and number of cells %d.\n",argv[iarg],nitem,ngrid);

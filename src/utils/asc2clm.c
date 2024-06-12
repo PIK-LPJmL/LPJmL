@@ -36,9 +36,9 @@ int main(int argc,char **argv)
   int nrows_first,ncols_first,ncell_first;
   float xllcorner_first,yllcorner_first,cellsize_first;
   float xllcorner,yllcorner,cellsize,nodata,value;
-  short **data;
-  int **data_int,value_int;
-  float **data_float;
+  short **data=NULL;
+  int **data_int=NULL,value_int;
+  float **data_float=NULL;
   char *endptr;
   Coord grid;
   Type type;
@@ -264,6 +264,11 @@ int main(int argc,char **argv)
   header.nbands=nstep;
   fwriteheader(out,&header,head,LPJ_CLIMATE_VERSION);
   first=TRUE;
+  nrows_first=0;
+  ncols_first=0;
+  xllcorner_first=0;
+  yllcorner_first=0;
+  cellsize_first=0;
   for(y=0;y<nyear;y++)
   {
     for(m=0;m<nbands*nstep;m++)

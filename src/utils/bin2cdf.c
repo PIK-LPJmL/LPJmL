@@ -549,8 +549,8 @@ int main(int argc,char **argv)
   Coord *grid,res;
   Cdf *cdf;
   Header header;
-  float *data;
-  short *data_short;
+  float *data=NULL;
+  short *data_short=NULL;
   int i,j,k,ngrid,iarg,compress,version,n_global,n_global2,baseyear;
   Bool swap,ispft,isshort,isglobal,isclm,ismeta,isbaseyear,revlat,withdays,absyear;
   Type gridtype;

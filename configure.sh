@@ -122,7 +122,6 @@ then
       cp config/Makefile.intel Makefile.inc
     elif which gcc >/dev/null 2>/dev/null ;
     then
-      warning=""
       cp config/Makefile.gcc Makefile.inc
     else
       echo >&2 Error: No gcc found
@@ -158,7 +157,6 @@ then
       fi
     elif which mpicc >/dev/null 2>/dev/null ;
     then
-      warning=""
       cp config/Makefile.mpich Makefile.inc
       ln -sf lpjsubmit_mpich bin/lpjsubmit
       echo MPICH found
@@ -168,7 +166,6 @@ then
       cp config/Makefile.intel Makefile.inc
     elif which gcc >/dev/null 2>/dev/null ;
     then
-      warning=""
       cp config/Makefile.gcc Makefile.inc
     else
       echo >&2 Error: No gcc found

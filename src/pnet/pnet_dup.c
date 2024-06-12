@@ -51,7 +51,7 @@ Pnet *pnet_dup(const Pnet *pnet
   ret->hi=pnet->hi;
   /* allocate memory for connection list array */
   ret->connect=newvec2(Intlist,pnet->lo,pnet->hi);
-  if(ret->connect+pnet->lo==NULL) /* was memory allocation successful? */
+  if(ret->connect==NULL) /* was memory allocation successful? */
   {
     free(ret);
     return NULL; /* no, return NULL */

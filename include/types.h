@@ -167,6 +167,7 @@ extern Bool readfilename(LPJfile *,Filename *,const char *,const char *,Bool,Boo
 extern void freefilename(Filename *);
 extern void **newmat(size_t,int,int);
 extern void freemat(void **);
+extern void *newarray(size_t,int,int);
 extern char *catstrvec(char **,int);
 extern char *strdate(const time_t *);
 extern int getlinecount(void);
@@ -199,7 +200,7 @@ extern void enablefpe(void);
 #define repeatch(c,count) frepeatch(stdout,c,count)
 #define banner(s,size,w) fbanner(stdout,s,size,w)
 #define newvec(type,size) (type *)malloc(sizeof(type)*(size))
-#define newvec2(type,lo,hi) (type *)malloc(sizeof(type)*(hi-(lo)+1))-(lo)
+#define newvec2(type,lo,hi) (type *)newarray(sizeof(type),lo,hi)
 #define newmatrix(type,ysize,xsize) (type **)newmat(sizeof(type),ysize,xsize)
 #define freevec(ptr,lo,hi) free(ptr+lo)
 #define check(ptr) if((ptr)==NULL) fail(ALLOC_MEMORY_ERR,FALSE,"Cannot allocate memory for '%s' in %s()",#ptr,__FUNCTION__)

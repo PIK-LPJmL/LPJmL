@@ -52,7 +52,7 @@ int main(int argc,char **argv)
   Coordfile coordfile;
   Intcoord intcoord;
   Coord_netcdf cdf;
-  FILE *file,*frac_file;
+  FILE *file,*frac_file=NULL;
   int i,j,n,index,cell,year,harvest_index;
   float harvest,lon,lat,frac;
   Real harvest_total;

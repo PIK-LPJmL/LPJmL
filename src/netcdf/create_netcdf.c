@@ -48,7 +48,9 @@ Bool create_netcdf(Netcdf *cdf,
   double *lon=NULL,*lat=NULL;
   float miss=config->missing_value;
   double *year=NULL;
+#ifdef USE_NETCDF4
   size_t chunk[3];
+#endif
   int dim[3];
   if(array==NULL || name==NULL || filename==NULL)
   {
@@ -320,16 +322,20 @@ Bool create_netcdf(Netcdf *cdf,
     dim[0]=cdf->time_dim_id;
     dim[1]=cdf->lat_dim_id;
     dim[2]=cdf->lon_dim_id;
+#ifdef USE_NETCDF4
     chunk[0]=1;
     chunk[1]=array->nlat;
     chunk[2]=array->nlon;
+#endif
   }
   else
   {
     dim[0]=cdf->lat_dim_id;
     dim[1]=cdf->lon_dim_id;
+#ifdef USE_NETCDF4
     chunk[0]=array->nlat;
     chunk[1]=array->nlon;
+#endif
   }
   rc=nc_def_var(cdf->ncid,name,nctype[type],(year==NULL) ? 2 : 3,dim,&cdf->varid);
   error(rc);

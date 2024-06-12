@@ -35,7 +35,7 @@ int fscancountrypar(LPJfile *file,           /**< pointer to LPJ file */
                    )                         /** \return number of elements in array */
 {
   LPJfile *arr,*item;
-  int i,ncountries,n,id,*cftmap,cftmap_size;
+  int i,ncountries,n,id,*cftmap=NULL,cftmap_size;
   Real *laimax_cft;
   const char *s;
   Countrypar *country;
