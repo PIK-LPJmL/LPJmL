@@ -1,8 +1,10 @@
 /**************************************************************************************/
 /**                                                                                \n**/
-/**     m  i  x  _  v  e  g  _  t  r  e  e  .  c                                   \n**/
+/**                c  r  e  a  t  e  c  o  n  f  i  g  .  c                        \n**/
 /**                                                                                \n**/
 /**     C implementation of LPJmL                                                  \n**/
+/**                                                                                \n**/
+/**     Function write processed LPJ configuration file                            \n**/
 /**                                                                                \n**/
 /** (C) Potsdam Institute for Climate Impact Research (PIK), see COPYRIGHT file    \n**/
 /** authors, and contributors see AUTHORS file                                     \n**/
@@ -13,20 +15,23 @@
 /**************************************************************************************/
 
 #include "lpj.h"
-#include "tree.h"
 
-void mix_veg_tree(Pft *pft,Real scaler)
+void createconfig(const Config *config)
 {
-  Pfttree *tree;
-  tree=pft->data;
-  pft->nind*=scaler;
-  pft->bm_inc.nitrogen*=scaler;
-  pft->bm_inc.carbon*=scaler; /*not necessary as Carbon should always be zero when this function is called?*/
-  tree->fruit.carbon*=scaler;
-  tree->fruit.nitrogen*=scaler;
-  tree->turn_litt.leaf.carbon*=scaler;
-  tree->turn_litt.leaf.nitrogen*=scaler;
-
-  pft->establish.carbon*=scaler;
-  pft->establish.nitrogen*=scaler;
-} /* of 'mix_veg_tree' */
+  char *cmd;
+  int rc;
+  if(config->json_filename!=NULL)
+  {
+    cmd=malloc(strlen(config->cmd)+strlen(config->json_filename)+6);
+    if(cmd==NULL)
+    {
+      printallocerr("cmd");
+      return;
+    }
+    cmd=strcat(strcat(strcpy(cmd,config->cmd)," -P >"),config->json_filename);
+    if(rc=system(cmd))
+      fprintf(stderr,"ERROR263: Cannot write '%s', rc=%d.\n",
+              config->json_filename,rc);
+    free(cmd);
+  }
+} /* of 'createconfig' */

@@ -196,8 +196,11 @@ int main(int argc,char **argv)
     return EXIT_SUCCESS;
   }
   if(isroot(config))
+  {
+    createconfig(&config);
     printconfig(standtype,NSTANDTYPES,config.npft[GRASS]+config.npft[TREE],
                 config.npft[CROP],&config);
+  }
   if(config.sim_id==LPJML_FMS)
   {
     if(isroot(config))

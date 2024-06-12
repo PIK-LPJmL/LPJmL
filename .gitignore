@@ -70,6 +70,7 @@ core-*
 *.dat
 *.DAT
 *.swp
+*.tmp
 
 # output files
 *.lpj

@@ -45,6 +45,7 @@ int pnet_setup(Pnet *pnet /**< Pointer to Pnet structure */
   int *lo,*hi;
   int i,j,k,*index,*in,size,slice,rem,task,insize;
 #ifdef USE_MPI
+  MPI_Aint lb;
   MPI_Aint extent;
 #endif
   if(pnet==NULL)
@@ -206,7 +207,7 @@ int pnet_setup(Pnet *pnet /**< Pointer to Pnet structure */
 #endif
   /* Allocation of input and output buffer */
 #ifdef USE_MPI
-  MPI_Type_extent(pnet->type,&extent); /* calculate size of datatype */
+  MPI_Type_get_extent(pnet->type,&lb,&extent); /* calculate size of datatype */
   pnet->outbuffer=malloc(extent*pnet->outsize);
   pnet->inbuffer=malloc(extent*insize);
 #else
