@@ -2,9 +2,9 @@
 | |   |  _ \   | |_ __ ___ | |     | ___|       ( _ )
 | |   | |_) |  | | '_ ` _ \| |     |___ \       / _ \
 | |___|  __/ |_| | | | | | | |___   ___) |  _  | (_) |
-|_____|_|   \___/|_| |_| |_|_____| |____/  (_)  \___/  Version 5.8.16
+|_____|_|   \___/|_| |_| |_|_____| |____/  (_)  \___/  Version 5.8.17
 
-Installation of LPJmL C Version 5.8.16
+Installation of LPJmL C Version 5.8.17
 
 Installation for Unix-like systems
 ----------------------------------
@@ -26,7 +26,7 @@ cd lpjml
 
 untar source files
 
-gzip -cd lpjml-5.8.16.tar.gz|tar -xf -
+gzip -cd lpjml-5.8.17.tar.gz|tar -xf -
 
 Directory tree after extracting the tar files:
 
@@ -143,11 +143,10 @@ Makefile.aix         - IBM AIX settings (xlc compiler)
 Makefile.aix_mpi     - IBM AIX and MPI environment
 Makefile.gcc         - GNU C-compiler settings
 Makefile.darwin_gcc  - GNU C-compiler settings for MacOS X
-Makefile.intel       - Intel C-compiler settings
-Makefile.icx         - Intel C-compiler settings on the new PIK cluster
-Makefile.intel_mpi   - Intel C-compiler and Intel MPI settings
+Makefile.intel       - Intel C-compiler (icc) settings
+Makefile.icx         - New Intel C-compiler (icx) settings
 Makefile.cluster2015 - Intel C-compiler and Intel MPI on HLRS2015 PIK cluster
-Makefile.hpc2024     - Intel C-compiler and Intel MPI on the new PIK cluster
+Makefile.hpc2024     - New Intel C-compiler and Intel MPI on the new PIK cluster
 Makefile.mpich       - GNU C-Compiler and MPI Chameleon settings
 Makefile.win32       - Windows settings (used by configure.bat)
 
