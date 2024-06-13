@@ -29,7 +29,7 @@
 #include "pnet.h"
 
 Pnet *pnet_dup(const Pnet *pnet
-              )      /** \returs duplicated pnet structure or NULL */
+              )      /** \return duplicated pnet structure or NULL */
 {
   int i;
   Pnet *ret;
