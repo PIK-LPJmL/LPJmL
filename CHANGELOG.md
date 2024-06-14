@@ -19,6 +19,30 @@ of `major.minor.patch` with
 
 ## [Unreleased]
 
+## [5.8.17] - 2024-06-14
+
+### Contributors
+
+- author: Werner von Bloh (bloh@pik-potsdam.de)
+- code review: Sibyll Schaphoff (sibylls@pik-potsdam.de), Sebastian Ostberg (ostberg@pik-potsdam.de)
+
+### Added
+
+- List of required modules on new PIK cluster added in `INSTALL`.
+- `configure.sh` script recognizes new PIK cluster and sets `mpiicx`/`icx` compiler accordingly.
+- New site-specific `Makefile.hpc2024` and Makefile.icx` for parallel/sequential compilation on new cluster added.
+- New `lpjsubmit_hpc` slurm script added for new PIK cluster. `configure.sh` sets symbolic link of `lpjsubmit` to this script.
+
+### Changed
+
+- All occurrences of the deprecated function `MPI_Type_extent` replaced by `MPI_Type_get_extent` to allow compilation with OpenMPI.
+- `*.tmp` files added to `.gitignore`.
+
+### Fixed
+
+- Functions `mpi_write.c`, `mpi_write_txt.c`, `mpi_read_socket.c` and `mpi_write_socket.c` changed to avoid `SEGV` on new PIK cluster.
+
+
 ## [5.8.16] - 2024-06-07
 
 ### Contributors
@@ -31,6 +55,7 @@ of `major.minor.patch` with
 - .zenodo.org updated to be compliant with PIK publication rules:
   - added "active-development" and "Potsdam Institute for Climate Impact Research" to keywords
   - added Christoph as "contributor", which seems to be the only way to have a visible contact person
+
 
 ## [5.8.15] - 2024-05-30
 
@@ -49,7 +74,6 @@ of `major.minor.patch` with
 ### Fixed
 
 - The right allocated storage for `config->coupled_model` is checked for `NULL` in `fscanconfig.c`.
-
 
 
 ## [5.8.14] - 2024-05-27

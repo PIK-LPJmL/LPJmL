@@ -32,7 +32,7 @@ int mpi_write(FILE *file,        /**< File pointer to binary file */
   MPI_Aint lb;
   MPI_Aint extent;
   MPI_Type_get_extent(type,&lb,&extent);
-  void *vec;
+  void *vec=NULL;
   if(rank==0)
   {
     vec=malloc(size*extent); /* allocate receive buffer */
