@@ -256,6 +256,8 @@
 
 #ifdef FROM_RESTART
 
+  "json_config_filename" : "output/lpjml_config_restart.json", /* Filename of preprocessed configuration file written or null to disable this feature */
+
   "output" :
   [
 
@@ -360,6 +362,8 @@ ID                               Fmt                        filename
   ],
 
 #else
+
+  "json_config_filename" : "output/lpjml_config_spinup.json", /* Filename of preprocessed configuration file written or null to disable this feature */
 
   "output" :
   [

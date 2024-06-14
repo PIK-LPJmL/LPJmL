@@ -233,7 +233,7 @@ Bool fscanconfig(Config *config,    /**< LPJ configuration */
         return TRUE;
       }
       config->coupled_model=strdup(name);
-      checkptr(name);
+      checkptr(config->coupled_model);
     }
   }
   else

@@ -34,5 +34,10 @@ void mix_veg_grass(Pft *pft,Real scaler)
 
   pft->bm_inc.carbon*=scaler;
   pft->bm_inc.nitrogen*=scaler;
-  
+
+  pft->establish.carbon*=scaler;
+  pft->establish.nitrogen*=scaler;
+
+  grass->excess_carbon*=scaler;
+  grass->max_leaf*=scaler;
 } /* of 'mix_veg_grass' */

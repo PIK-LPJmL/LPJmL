@@ -87,7 +87,38 @@ Bool fscanoutput(LPJfile *file,  /**< pointer to LPJ file */
   count=index=0;
   config->withdailyoutput=FALSE;
   size=nout_max;
-  if(!iskeydefined(file,"output") || isnull(file,"output"))
+  config->json_filename=NULL;
+  if(iskeydefined(file,"outpath") && !isnull(file,"outpath"))
+  {
+    outpath=fscanstring(file,NULL,"outpath",verbosity);
+    if(outpath==NULL)
+      return TRUE;
+    free(config->outputdir);
+    config->outputdir=strdup(outpath);
+    checkptr(config->outputdir);
+  }
+  if(!config->nopp)
+  {
+    if(iskeydefined(file,"json_config_filename") && !isnull(file,"json_config_filename"))
+    {
+      name=fscanstring(file,NULL,"json_config_filename",verbosity);
+      if(name==NULL)
+        return TRUE;
+      config->json_filename=addpath(name,config->outputdir);
+      checkptr(config->json_filename);
+      if(!strcmp(config->filename,config->json_filename))
+      {
+        if(verbosity)
+          fprintf(stderr,"ERROR262: Filename of processed JSON file '%s' is identical to configuration filename, no file written.\n",
+                  config->json_filename);
+        if(config->pedantic)
+          return TRUE;
+        free(config->json_filename);
+        config->json_filename=NULL;
+      }
+    }
+  }
+  if(!iskeydefined(file,"output") && !isnull(file,"output"))
   {
     config->pft_output_scaled=FALSE;
     config->n_out=0;
@@ -158,15 +189,6 @@ Bool fscanoutput(LPJfile *file,  /**< pointer to LPJ file */
                 typenames[config->grid_type]);
       return TRUE;
     }
-  }
-  if(iskeydefined(file,"outpath") && !isnull(file,"outpath"))
-  {
-    outpath=fscanstring(file,NULL,"outpath",verbosity);
-    if(outpath==NULL)
-      return TRUE;
-    free(config->outputdir);
-    config->outputdir=strdup(outpath);
-    checkptr(config->outputdir);
   }
   config->absyear=FALSE;
   if(fscanbool(file,&config->absyear,"absyear",!config->pedantic,verbosity))
