@@ -3,7 +3,7 @@
 ##    M  a  k  e  f  i  l  e  .  h  p  c  2  0  2  4                           ##
 ##                                                                             ##
 ##   Make include file for compiler and os specific settings                   ##
-##   Compile and link options for Intel compiler mpiixc and library            ##
+##   Compile and link options for Intel compiler mpiicx and library            ##
 ##   settings for the new PIK cluster                                          ##
 ##   Parallel MPI is enabled                                                   ##
 ##                                                                             ##

@@ -19,7 +19,7 @@ of `major.minor.patch` with
 
 ## [Unreleased]
 
-## [5.8.18] - 2024-06-13
+## [5.8.18] - 2024-06-14
 
 ### Contributors
 
@@ -45,7 +45,7 @@ of `major.minor.patch` with
 - Missing seek to offset added in filesexist.c
 
 
-## [5.8.17] - 2024-06-12
+## [5.8.17] - 2024-06-14
 
 ### Contributors
 
