@@ -35,7 +35,7 @@ while(( "$#" )); do
       echo "-prefix dir     set installation directory for LPJmL. Default is current directory"
       echo "-debug          set debug flags and disable optimization"
       echo "-check          set debug flags, enable pointer checking and disable optimization"
-      echo "-noerror        do not stop compilaton on warnings"
+      echo "-noerror        do not stop compilation on warnings"
       echo "-nompi          do not build MPI version"
       echo "-Dmacro[=value] define macro for compilation"
       echo
