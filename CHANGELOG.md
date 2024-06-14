@@ -19,7 +19,7 @@ of `major.minor.patch` with
 
 ## [Unreleased]
 
-## [5.8.18] - 2024-06-12
+## [5.8.18] - 2024-06-13
 
 ### Contributors
 
@@ -66,7 +66,6 @@ of `major.minor.patch` with
 
 ### Fixed
 
-<<<<<<< HEAD
 - Functions `mpi_write.c`, `mpi_write_txt.c`, `mpi_read_socket.c` and `mpi_write_socket.c` changed to avoid `SEGV` on new PIK cluster.
 
 
@@ -147,17 +146,6 @@ of `major.minor.patch` with
 
 - fixed handling of monthly and daily outputs in `iterateyear.c` to ensure that last annual timestep of outputs is written after `update_annual()` is called
 
-=======
-- Typos in error messages corrected in `bin2cdf.c` and `clm2cdf.c`.
-- Output of turnover corrected in `fprintpar_grass.c`.
-- Output of options fixed in `openconfig.c` if environment variable `LPJOPTIONS` is set.
-- Calculation of average fixed in `statclm`.
-- `res_remove` calculation fixed for residue fires in `harvest_crop.c` to close carbon and nitrogen balance.
-- Missing update of `FLUX_ESTABN_MG` added in `turnover_tree.c`.
-- `regridclm` now uses for regridding of soil file in `regridlpj`.
-- Missing regridding of wateruse and livestock density input added in `regridlpj`.
-- Missing file seek to offset defined in JSON metafile added in `filesexist.c`.
->>>>>>> cbc47ada (Missing seek to offset added in filesexist.c)
 
 ## [5.8.11] - 2024-04-10
 
