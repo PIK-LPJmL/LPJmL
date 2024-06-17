@@ -14,7 +14,7 @@
 #################################################################################
 
 CC	= icx
-DEBUGFLAGS  = -g -O0r
+DEBUGFLAGS  = -g -O0
 CHECKFLAGS = -g -O0 -check-pointers=rw
 OPTFLAGS = -g -O3 -no-vec
 WFLAG	= -Wall
