@@ -6,7 +6,7 @@
 ##   configure script to copy appropriate Makefile.$osname                     ##
 ##                                                                             ##
 ##   Usage: configure.sh [-h] [-v] [-l] [-prefix dir] [-debug] [-check]        ##
-##                       [-nompi] [-Dmacro[=value] ...]                        ##
+##                       [-nompi] [-noerror] [-Dmacro[=value] ...]             ##
 ##                                                                             ##
 ## (C) Potsdam Institute for Climate Impact Research (PIK), see COPYRIGHT file ##
 ## authors, and contributors see AUTHORS file                                  ##
