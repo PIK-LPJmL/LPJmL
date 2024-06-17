@@ -19,7 +19,7 @@ of `major.minor.patch` with
 
 ## [Unreleased]
 
-## [5.8.18] - 2024-06-14
+## [5.8.18] - 2024-06-17
 
 ### Contributors
 
@@ -43,6 +43,7 @@ of `major.minor.patch` with
 - Code fixed to remove all warnings if compiled with `icx`/`gcc`.
 - `regridclm` now used for regridding of soil file in `regridlpj`.
 - Missing seek to offset added in filesexist.c
+- Debug option in `Makefile.icx` corrected.
 
 
 ## [5.8.17] - 2024-06-14
