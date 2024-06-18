@@ -19,7 +19,7 @@ of `major.minor.patch` with
 
 ## [Unreleased]
 
-## [5.8.18] - 2024-06-17
+## [5.8.18] - 2024-06-18
 
 ### Contributors
 
@@ -38,13 +38,13 @@ of `major.minor.patch` with
 
 - Incorrect scaling removed in utility `printharvest`.
 - Uninitialized PFT pointer set to first PFT in `harvest_stand.c`.
+- Uninitialized variable `n_attr` set to zero in utility `printclm`.
 - Prescribed land cover is now read correctly if landcover map size differs from number of natural PFTs.
 - Check for land use type `WP` corrected in `landusechange.c` (issue #354).
 - Code fixed to remove all warnings if compiled with `icx`/`gcc`.
 - `regridclm` now used for regridding of soil file in `regridlpj`.
 - Missing seek to offset added in filesexist.c
 - Debug option in `Makefile.icx` corrected.
-
 
 ## [5.8.17] - 2024-06-14
 
