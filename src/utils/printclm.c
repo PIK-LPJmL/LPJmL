@@ -40,7 +40,7 @@ static void printclm(const char *filename,int output,int nbands,int version,
   Reservoir reservoir;
   Map *map=NULL;
   Attr *attrs=NULL;
-  int n_attr;
+  int n_attr=0;
   if(ismeta)
   {
     isrestart=isreservoir=FALSE;
