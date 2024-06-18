@@ -67,8 +67,11 @@ struct config
   char *inputdir;             /**< input directory */
   char *outputdir;            /**< output directory */
   char *restartdir;           /**< restart directory */
+  char *cmd;                  /**< command line to process configuration file */
+  char *filter;               /**< preprocessor for configuration file */
   int n_global;               /**< number of global attributes in output files */
   Attr *global_attrs;         /**< array of global attributes */
+  char *json_filename;        /**< filename of preprocessed JSON file */
   Filename temp_filename;
   Filename prec_filename;
   Filename cloud_filename;
@@ -358,6 +361,7 @@ extern size_t getsize(int,const Config *);
 extern int *fscanlandcovermap(LPJfile *,int *,const char *,int,const Config *);
 extern Bool fscanconfig_netcdf(LPJfile *,Netcdf_config *,const char *,Verbosity);
 extern void freeconfig_netcdf(Netcdf_config *);
+extern void createconfig(const Config *);
 extern void closeconfig(LPJfile *);
 
 /* Definition of macros */
