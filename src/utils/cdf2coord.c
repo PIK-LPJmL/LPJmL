@@ -14,7 +14,7 @@
 
 #include "lpj.h"
 
-#define USAGE  "Usage: %s [-var name] [-index i] [-{float|double}] [-scale s] netcdffile coordfile\n"
+#define USAGE  "Usage: %s [-var name] [-index i] [-{float|double}] [-scale s] [-latlon] netcdffile coordfile\n"
 
 #if defined(USE_NETCDF) || defined(USE_NETCDF4)
 #include <netcdf.h>
@@ -26,7 +26,7 @@ int main(int argc,char **argv)
 {
 #if defined(USE_NETCDF) || defined(USE_NETCDF4)
   int rc,ncid,var_id,*dimids,i,j,nvars,lon_id,lat_id,ndims,index,first;
-
+  int index1,index2,len1,len2;
   double *lat,*lon;
   size_t lat_len,lon_len;
   size_t offsets[4]={0,0,0,0},counts[4]={1,1,1,1};
@@ -44,9 +44,11 @@ int main(int argc,char **argv)
   } coord_f;
   char *var;
   FILE *out;
+  Bool latlon;
   var=NULL;
   header.datatype=LPJ_SHORT;
   header.scalar=0.01;
+  latlon=FALSE;
   for(i=1;i<argc;i++)
     if(argv[i][0]=='-')
     {
@@ -70,6 +72,8 @@ int main(int argc,char **argv)
         header.datatype=LPJ_DOUBLE;
         header.scalar=1;
       }
+      else if(!strcmp(argv[i],"-latlon"))
+        latlon=TRUE;
       else if(!strcmp(argv[i],"-index"))
       {
         if(argc==i+1)
@@ -100,7 +104,6 @@ int main(int argc,char **argv)
           return EXIT_FAILURE;
         }
       }
-
       else
       {
         fprintf(stderr,"Invalid option '%s'.\n"
@@ -232,7 +235,7 @@ int main(int argc,char **argv)
     rc=nc_get_att_double(ncid,var_id,"_FillValue",&missing_value);
   if(rc)
   {
-    fprintf(stderr,"WARNING402: Cannot read missing for fill value in '%s': %s, set to %g.\n",
+    fprintf(stderr,"WARNING402: Cannot read missing or fill value in '%s': %s, set to %g.\n",
             argv[i],nc_strerror(rc),MISSING_VALUE_FLOAT);
     missing_value=MISSING_VALUE_FLOAT;
   }
@@ -249,9 +252,23 @@ int main(int argc,char **argv)
   header.cellsize_lat=(float)fabs((lat[lat_len-1]-lat[0])/(lat_len-1));
   fwriteheader(out,&header,LPJGRID_HEADER,LPJGRID_VERSION);
   header.ncell=0;
-  for(offsets[first]=0;offsets[first]<lat_len;offsets[first]++)
+  if(latlon)
   {
-    for(offsets[first+1]=0;offsets[first+1]<lon_len;offsets[first+1]++)
+    index1=first+1;
+    len1=lon_len;
+    index2=first;
+    len2=lat_len;
+  }
+  else
+  {
+    index1=first;
+    len1=lat_len;
+    index2=first+1;
+    len2=lon_len;
+  }
+  for(offsets[index1]=0;offsets[index1]<len1;offsets[index1]++)
+  {
+    for(offsets[index2]=0;offsets[index2]<len2;offsets[index2]++)
     {
       rc=nc_get_vara_double(ncid,var_id,offsets,counts,&data);
       error(rc);

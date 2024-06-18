@@ -17,7 +17,8 @@ configure.sh (1) - Configure LPJmL
 country2cdf (1) - convert country/region code file into NetCDF file
 cru2clm (1) - convert raw binary data files to CLM data files for LPJmL
 cutclm (1) - cuts LPJmL climate data files
-cvrtclm (1) - converts version of CLM file to version 3 or 4
+cvrtclm (1) - convert version of CLM file to version 3 or 4
+drainage2cdf (1) - convert CLM drainage file into NetCDF file
 failonerror (3) - print error message and terminates program
 fcloseoutput (3) - close LPJmL output files
 flux_sum (3) - calculate global carbon and water fluxes
@@ -95,6 +96,7 @@ readpopdens (3) - read population density data
 regridclm (1) - regrid CLM file to new grid
 regridlpj (1) - regrid input data set for selected countries or specified grid file
 regridsoil (1) - regrid soil file to new grid
+reservoir2cdf (1) - convert CLM reservoir file into NetCDF file
 setclm (1) - set value in header of CLM files for LPJmL
 soil2cdf (1) - convert binary files into NetCDF files
 statclm (1) - print statistics of CLM files

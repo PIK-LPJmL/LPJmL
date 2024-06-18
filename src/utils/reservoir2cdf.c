@@ -19,7 +19,7 @@
 
 #define error(rc) if(rc) {free(lon);free(lat);fprintf(stderr,"ERROR427: Cannot write '%s': %s.\n",filename,nc_strerror(rc)); nc_close(cdf->ncid); free(cdf);return NULL;}
 
-#define USAGE "Usage: %s [-h] [-v] [-longheader] [-global] [-cellsize size]\n       [[-attr name=value] ...] [-raw] [-compress level]\n       [gridfile] clmfile netcdffile\n"
+#define USAGE "Usage: %s [-h] [-v] [-metafile] [-longheader] [-global] [-cellsize size]\n       [[-attr name=value] ...] [-raw] [-compress level]\n       [gridfile] clmfile netcdffile\n"
 
 typedef struct
 {
@@ -157,7 +157,7 @@ static Cdf *create_cdf(const char *filename,
   rc=nc_put_att_float(cdf->ncid, cdf->varid_area,"_FillValue",NC_FLOAT,1,&miss);
   error(rc);
   rc=nc_def_var(cdf->ncid,"capacity",NC_FLOAT,2,dim,&cdf->varid_capacity);
-  rc=nc_put_att_text(cdf->ncid, cdf->varid_capacity,"units",strlen("dm3"),"dm3");
+  rc=nc_put_att_text(cdf->ncid, cdf->varid_capacity,"units",strlen("km3"),"km3");
   nc_put_att_float(cdf->ncid, cdf->varid_capacity,"missing_value",NC_FLOAT,1,&miss);
   rc=nc_put_att_float(cdf->ncid, cdf->varid_capacity,"_FillValue",NC_FLOAT,1,&miss);
   error(rc);
@@ -619,6 +619,7 @@ int main(int argc,char **argv)
       fprintf(stderr,"Error reading reservoir data of cell %d.\n",i);
       return EXIT_FAILURE;
     }
+    rdata[i].capacity*=1e-12; /* convert dm3 ->km3 */
   }
   if(write_reservoir_cdf(cdf,rdata,ngrid,miss,imiss))
     return EXIT_FAILURE;

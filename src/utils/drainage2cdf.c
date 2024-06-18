@@ -20,13 +20,14 @@
 #define error(rc) if(rc) {fprintf(stderr,"ERROR427: Cannot write '%s': %s.\n",argv[iarg+3],nc_strerror(rc)); nc_close(ncid);return EXIT_FAILURE;}
 
 #define USAGE "Usage: %s [-var name] soilcode.nc grid.clm drainage.clm drainage.nc\n"
+#define INDEX_LONG_NAME "index of cell into/from which water flows (ilat*nlon+ilon)"
 
 int main(int argc,char **argv)
 {
 #if defined(USE_NETCDF) || defined(USE_NETCDF4)
   char *var;
   var=NULL;
-  const float *lon,*lat;
+  const double *lon,*lat;
   int *index;
   Coord *grid_soil,*grid;
   FILE *file;
@@ -79,7 +80,7 @@ int main(int argc,char **argv)
     fprintf(stderr,"Error: Missing argument(s).\n"
             USAGE,argv[0]);
     return EXIT_FAILURE;
-  } 
+  }
   soil=opencoord_netcdf(argv[iarg],var,TRUE);
   if(soil==NULL)
     return EXIT_FAILURE;
@@ -152,7 +153,7 @@ int main(int argc,char **argv)
     }
   }
   closecoord(gridfile);
-  file=fopen(argv[iarg+2],"rb"); 
+  file=fopen(argv[iarg+2],"rb");
   if(file==NULL)
   {
     printfopenerr(argv[iarg+2]);
@@ -211,9 +212,9 @@ int main(int argc,char **argv)
   error(rc);
   rc=nc_def_dim(ncid,LON_DIM_NAME,nlon,&lon_dim_id);
   error(rc);
-  rc=nc_def_var(ncid,LAT_NAME,NC_FLOAT,1,&lat_dim_id,&lat_var_id);
+  rc=nc_def_var(ncid,LAT_NAME,NC_DOUBLE,1,&lat_dim_id,&lat_var_id);
   error(rc);
-  rc=nc_def_var(ncid,LON_NAME,NC_FLOAT,1,&lon_dim_id,&lon_var_id);
+  rc=nc_def_var(ncid,LON_NAME,NC_DOUBLE,1,&lon_dim_id,&lon_var_id);
   error(rc);
   rc=nc_put_att_text(ncid,lon_var_id,"units",strlen("degrees_east"),
                      "degrees_east");
@@ -239,7 +240,7 @@ int main(int argc,char **argv)
   error(rc);
   rc=nc_put_att_text(ncid, index_varid,"standard_name",strlen("index"),"index");
   error(rc);
-  //rc=nc_put_att_text(ncid, index_varid,"long_name",strlen(long_name),long_name);
+  rc=nc_put_att_text(ncid, index_varid,"long_name",strlen(INDEX_LONG_NAME),INDEX_LONG_NAME);
   error(rc);
   nc_put_att_int(ncid, index_varid,"missing_value",NC_INT,1,&miss);
   rc=nc_put_att_int(ncid, index_varid,"_FillValue",NC_INT,1,&miss);
@@ -260,20 +261,20 @@ int main(int argc,char **argv)
   }
   rc=nc_enddef(ncid);
   error(rc);
-  rc=nc_put_var_float(ncid,lat_var_id,lat);
+  rc=nc_put_var_double(ncid,lat_var_id,lat);
   error(rc);
-  rc=nc_put_var_float(ncid,lon_var_id,lon);
+  rc=nc_put_var_double(ncid,lon_var_id,lon);
   error(rc);
   out=newvec(int,nlon*nlat);
   check(out);
   for(i=0;i<nlon*nlat;i++)
-    out[i]=miss; 
+    out[i]=miss;
   if(header.nbands==2)
   {
     len=newvec(float,nlon*nlat);
     check(len);
     for(i=0;i<nlon*nlat;i++)
-      len[i]=fmiss; 
+      len[i]=fmiss;
   }
   for(i=0;i<n;i++)
   {
