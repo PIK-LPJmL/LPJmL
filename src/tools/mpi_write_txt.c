@@ -52,7 +52,7 @@ int mpi_write_txt(FILE *file,        /**< File pointer to text file */
   int rc;
   MPI_Aint lb;
   MPI_Aint extent;
-  void *vec;
+  void *vec=NULL;
   MPI_Type_get_extent(type,&lb,&extent);
   if(rank==0)
   {

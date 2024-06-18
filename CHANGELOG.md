@@ -19,7 +19,7 @@ of `major.minor.patch` with
 
 ## [Unreleased]
 
-## [5.8.17] - 2024-05-24
+## [5.8.18] - 2024-06-18
 
 ### Contributors
 
@@ -72,6 +72,30 @@ of `major.minor.patch` with
 - Function `initdrain()`corrected to handle river routing files in NetCDF format.
 
 
+## [5.8.17] - 2024-06-14
+
+### Contributors
+
+- author: Werner von Bloh (bloh@pik-potsdam.de)
+- code review: Sibyll Schaphoff (sibylls@pik-potsdam.de), Sebastian Ostberg (ostberg@pik-potsdam.de)
+
+### Added
+
+- List of required modules on new PIK cluster added in `INSTALL`.
+- `configure.sh` script recognizes new PIK cluster and sets `mpiicx`/`icx` compiler accordingly.
+- New site-specific `Makefile.hpc2024` and Makefile.icx` for parallel/sequential compilation on new cluster added.
+- New `lpjsubmit_hpc` slurm script added for new PIK cluster. `configure.sh` sets symbolic link of `lpjsubmit` to this script.
+
+### Changed
+
+- All occurrences of the deprecated function `MPI_Type_extent` replaced by `MPI_Type_get_extent` to allow compilation with OpenMPI.
+- `*.tmp` files added to `.gitignore`.
+
+### Fixed
+
+- Functions `mpi_write.c`, `mpi_write_txt.c`, `mpi_read_socket.c` and `mpi_write_socket.c` changed to avoid `SEGV` on new PIK cluster.
+
+
 ## [5.8.16] - 2024-06-07
 
 ### Contributors
@@ -115,7 +139,6 @@ of `major.minor.patch` with
 ### Fixed
 
 - fixed PFT pool scaling in mix_veg_grass() and mix_veg_tree()
->>>>>>> a2ef7afa96d621ba597e9045b43b5302743c0949
 
 
 ## [5.8.13] - 2024-05-23
