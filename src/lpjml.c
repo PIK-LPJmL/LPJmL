@@ -165,8 +165,18 @@ int main(int argc,char **argv)
   /* Read configuration file */
   rc=readconfig(&config,scanfcn,NTYPES,NOUT,&argc,&argv,lpj_usage);
   failonerror(&config,rc,READ_CONFIG_ERR,"Cannot read configuration");
-  if(isroot(config) && argc)
-    fputs("WARNING018: Arguments listed after configuration filename, will be ignored.\n",stderr);
+  if(argc)
+  {
+    if(isroot(config))
+      fputs("WARNING018: Arguments listed after configuration filename, will be ignored.\n",stderr);
+    if(config.pedantic)
+    {
+#ifdef USE_MPI
+      MPI_Finalize();
+#endif
+      return READ_CONFIG_ERR;
+    }
+  }
   if(config.ofiles)
   {
     if(isroot(config))

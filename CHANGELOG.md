@@ -64,8 +64,6 @@ of `major.minor.patch` with
 
 - fixed handling of monthly and daily outputs in `iterateyear.c` to ensure that last annual timestep of outputs is written after `update_annual()` is called
 
->>>>>>> b29e30a195c650552dd1467888cafc9fe534e8a5
-
 
 ## [5.8.11] - 2024-04-10
 

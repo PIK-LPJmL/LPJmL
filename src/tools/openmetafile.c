@@ -484,10 +484,20 @@ FILE *openmetafile(Header *header,       /**< pointer to file header */
   if((file=fopen(name,"rb"))==NULL  && isout)
     printfopenerr(name);
   /* check file size of binary file */
-  if(isout && file!=NULL)
+  if(file!=NULL)
   {
     if((header->order==CELLINDEX  && getfilesizep(file)!=sizeof(int)*header->ncell+typesizes[header->datatype]*header->ncell*header->nbands*header->nstep*header->nyear+*offset) || (header->order!=CELLINDEX && getfilesizep(file)!=typesizes[header->datatype]*header->ncell*header->nbands*header->nyear*header->nstep+*offset))
-      fprintf(stderr,"WARNING032: File size of '%s' does not match settings in JSON metafile '%s'.\n",name,filename);
+    {
+      if(getfilesizep(file)==0)
+      {
+        fclose(file);
+        file=NULL;
+        if(isout)
+          fprintf(stderr,"ERROR242: File '%s' is empty.\n",name);
+      }
+      else if(isout)
+        fprintf(stderr,"WARNING032: File size of '%s' does not match settings in JSON metafile '%s'.\n",name,filename);
+    }
   }
   free(name);
   return file;
