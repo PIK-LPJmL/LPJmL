@@ -1,15 +1,15 @@
 {
    "title":"LPJmL: central open-source github repository of LPJmL at PIK",
-   "version":"5.8.13",
+   "version":"5.8.16",
    "creators":[
       {
          "orcid":"0000-0003-1677-8282",
-         "affiliation":"Potsdam Institute for Climate Impact Research (PIK)",
+         "affiliation": "Potsdam Institute for Climate Impact Research (PIK)",
          "name":"Schaphoff, Sibyll"
       },
       {
          "orcid":"0000-0002-7399-2704",
-         "affiliation":"Potsdam Institute for Climate Impact Research (PIK)",
+         "affiliation": "Potsdam Institute for Climate Impact Research (PIK)",
          "name":"von Bloh, Werner"
       },
       {
@@ -17,7 +17,7 @@
       },
       {
          "orcid":"0000-0001-5283-4937",
-         "affiliation":"Potsdam Institute for Climate Impact Research (PIK)",
+         "affiliation": "Potsdam Institute for Climate Impact Research (PIK)",
          "name":"Thonicke, Kirsten"
       },
       {
@@ -29,26 +29,26 @@
          "name":"Forkel, Matthias"
       },
       {
-         "affiliation":"Potsdam Institute for Climate Impact Research (PIK)",
+         "affiliation": "Potsdam Institute for Climate Impact Research (PIK)",
          "name":"Gerten, Dieter"
       },
       {
-         "affiliation":"Potsdam Institute for Climate Impact Research (PIK)",
+         "affiliation": "Potsdam Institute for Climate Impact Research (PIK)",
          "name":"Heinke, Jens"
       },
       {
-         "affiliation":"Potsdam Institute for Climate Impact Research (PIK)",
+         "affiliation": "Potsdam Institute for Climate Impact Research (PIK)",
          "name":"Jägermeyr, Jonas"
       },
       {
          "name":"Langerwisch, Fanny"
       },
       {
-         "affiliation":"Potsdam Institute for Climate Impact Research (PIK)",
+         "affiliation": "Potsdam Institute for Climate Impact Research (PIK)",
          "name":"Lucht, Wolfgang"
       },
       {
-         "affiliation":"Potsdam Institute for Climate Impact Research (PIK)",
+         "affiliation": "Potsdam Institute for Climate Impact Research (PIK)",
          "name":"Rolinski, Susanne"
       },
       {
@@ -56,12 +56,12 @@
       },
       {
          "orcid":"0000-0002-2368-7015",
-         "affiliation":"Potsdam Institute for Climate Impact Research (PIK)",
+         "affiliation": "Potsdam Institute for Climate Impact Research (PIK)",
          "name":"Ostberg, Sebastian"
       },
       {
          "orcid":"0000-0003-3090-3318",
-         "affiliation":"Potsdam Institute for Climate Impact Research (PIK)",
+         "affiliation": "Potsdam Institute for Climate Impact Research (PIK)",
          "name":"Wirth, Stephen Björn"
       },
       {
@@ -105,54 +105,62 @@
       },
       {
          "orcid":"0000-0003-1511-3086",
-         "affiliation":"Potsdam Institute for Climate Impact Research (PIK)",
+         "affiliation": "Potsdam Institute for Climate Impact Research (PIK)",
          "name":"Werner, Constanze"
       },
       {
          "orcid":"0000-0002-8809-1044",
-         "affiliation":"Potsdam Institute for Climate Impact Research (PIK)",
+         "affiliation": "Potsdam Institute for Climate Impact Research (PIK)",
          "name":"Braun, Johanna"
       },
       {
          "orcid":"0000-0002-9055-6904",
-         "affiliation":"Potsdam Institute for Climate Impact Research (PIK)",
+         "affiliation": "Potsdam Institute for Climate Impact Research (PIK)",
          "name":"Breier, Jannes"
       },
       {
          "orcid":"0000-0002-5109-0048",
-         "affiliation":"Potsdam Institute for Climate Impact Research (PIK)",
+         "affiliation": "Potsdam Institute for Climate Impact Research (PIK)",
          "name":"Stenzel, Fabian"
       },
       {
-         "affiliation":"Potsdam Institute for Climate Impact Research (PIK)",
+         "affiliation": "Potsdam Institute for Climate Impact Research (PIK)",
          "name":"Mathesius, Sabine"
       },
       {
-         "affiliation":"Potsdam Institute for Climate Impact Research (PIK)",
+         "affiliation": "Potsdam Institute for Climate Impact Research (PIK)",
          "name":"Hemmen, Marie"
       },
       {
-         "affiliation":"Potsdam Institute for Climate Impact Research (PIK)",
+         "affiliation": "Potsdam Institute for Climate Impact Research (PIK)",
          "name":"Billing, Maik"
       },
       {
-         "affiliation":"Potsdam Institute for Climate Impact Research (PIK)",
+         "affiliation": "Potsdam Institute for Climate Impact Research (PIK)",
          "name":"Oberhagemann, Luke"
       },
       {
          "orcid":"0000-0002-7230-9723",
-         "affiliation":"Potsdam Institute for Climate Impact Research (PIK)",
+         "affiliation": "Potsdam Institute for Climate Impact Research (PIK)",
          "name":"Sakschewski, Boris"
       },
       {
          "orcid":"0000-0002-9491-3550",
-         "affiliation":"Potsdam Institute for Climate Impact Research (PIK)",
+         "affiliation": "Potsdam Institute for Climate Impact Research (PIK)",
          "name":"Müller, Christoph"
       }
    ],
    "license": {
      "id": "AGPL-3.0-or-later"
    },
+   "contributors": [
+      {
+        "name": "Müller, Christoph",
+        "type": "ContactPerson",  
+        "affiliation": "Potsdam Institute for Climate Impact Research (PIK)",
+        "orcid": "0000-0002-9491-3550"
+      }
+   ],
    "related_identifiers":[
       {
          "scheme":"doi",
@@ -224,7 +232,9 @@
       "bioenergy",
       "model",
       "open source",
-      "PIK"
+      "PIK",
+      "active-development",
+      "Potsdam Institute for Climate Impact Research"
    ],
    "communities":[
       { 

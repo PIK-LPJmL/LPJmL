@@ -2,7 +2,7 @@
 /**                                                                                \n**/
 /**           l  p  j  m  l  _  c  o  n  f  i  g  .  c  j  s  o  n                 \n**/
 /**                                                                                \n**/
-/** Default configuration file for LPJmL C Version 5.8.13                          \n**/
+/** Default configuration file for LPJmL C Version 5.8.16                          \n**/
 /**                                                                                \n**/
 /** Configuration file is divided into five sections:                              \n**/
 /**                                                                                \n**/
@@ -256,6 +256,8 @@
 
 #ifdef FROM_RESTART
 
+  "json_config_filename" : "output/lpjml_config_restart.json", /* Filename of preprocessed configuration file written or null to disable this feature */
+
   "output" :
   [
 
@@ -360,6 +362,8 @@ ID                               Fmt                        filename
   ],
 
 #else
+
+  "json_config_filename" : "output/lpjml_config_spinup.json", /* Filename of preprocessed configuration file written or null to disable this feature */
 
   "output" :
   [

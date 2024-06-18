@@ -151,7 +151,7 @@ EOF
   printf "/** Source: %-56s **/\n" "$args" >>input_$name.cjson
   cat << EOF >>input_$name.cjson
 /**                                                                  **/
-/** Configuration file for input dataset for LPJmL C Version 5.8.13  **/
+/** Configuration file for input dataset for LPJmL C Version 5.8.16  **/
 /**                                                                  **/
 /** Created: $(date +"%d.%m.%Y")                                              **/
 /**                                                                  **/

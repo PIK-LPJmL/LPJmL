@@ -19,7 +19,7 @@ of `major.minor.patch` with
 
 ## [Unreleased]
 
-## [5.8.14] - 2024-05-24
+## [5.8.17] - 2024-05-24
 
 ### Contributors
 
@@ -72,6 +72,52 @@ of `major.minor.patch` with
 - Function `initdrain()`corrected to handle river routing files in NetCDF format.
 
 
+## [5.8.16] - 2024-06-07
+
+### Contributors
+
+- author: Christoph Müller (cmueller@pik-potsdam.de)
+- reviewer: Fabian Stenzel (stenzel@pik-potsdam.de), Luke Oberhagemann (lukeober@pik-potsdam.de)
+
+### Changed
+
+- .zenodo.org updated to be compliant with PIK publication rules:
+  - added "active-development" and "Potsdam Institute for Climate Impact Research" to keywords
+  - added Christoph as "contributor", which seems to be the only way to have a visible contact person
+
+
+## [5.8.15] - 2024-05-30
+
+### Contributors
+
+- author: Werner von Bloh (bloh@pik-potsdam.de)
+- code review: Jannes Breier (breier@pik-potsdam.de), Christoph Mueller (cmueller@pik-potsdam.de)
+
+### Added
+
+- A preprocessed JSON configuration file can be written if the following setting is added to the `*.cjson` configuration file:
+```java
+"json_config_filename" : "output/lpjml_config_restart.json", /* Filename of preprocessed configuration file written or null to disable this feature */
+```
+
+### Fixed
+
+- The right allocated storage for `config->coupled_model` is checked for `NULL` in `fscanconfig.c`.
+
+
+## [5.8.14] - 2024-05-27
+
+### Contributors
+
+- author: Sebastian Ostberg (ostberg@pik-potsdam.de)
+- code review: Susanne Rolinski (rolinski@pik-potsdam.de), Christoph Mueller (cmueller@pik-potsdam.de)
+
+### Fixed
+
+- fixed PFT pool scaling in mix_veg_grass() and mix_veg_tree()
+>>>>>>> a2ef7afa96d621ba597e9045b43b5302743c0949
+
+
 ## [5.8.13] - 2024-05-23
 
 ### Contributors
@@ -89,7 +135,7 @@ of `major.minor.patch` with
 
 ### Contributors
 
-- author: Sibyll Schaphoff (sibylls@pik-potsdam.de), Werner von Bloh (bloh@pik-potsdamde)
+- author: Sibyll Schaphoff (sibylls@pik-potsdam.de), Werner von Bloh (bloh@pik-potsdam.de)
 - code review: Stephen Wirth (wirth@pik-potsdam.de), Christoph Mueller (cmueller@pik-potsdam.de), Sebastian Ostberg (ostberg@pik-potsdam.de)
 
 ### Added
@@ -119,6 +165,8 @@ of `major.minor.patch` with
 
 ## [5.8.10] - 2024-04-04
 
+### Contributors
+
 - author: Jannes Breier (jannesbr@pik-potsdam.de)
 - code review: Stephen Wirth (wirth@pik-potsdam.de), David Hoetten (davidho@pik-potsdam.de)
 
@@ -133,6 +181,8 @@ to describe this exception (`"grid information (raw: coordinates, cdf: cell_id)"
 
 
 ## [5.8.9] - 2024-03-14
+
+### Contributors
 
 - author: Werner von Bloh (bloh@pik-potsdam.de), Sebastian Ostberg (ostberg@pik-potsdam.de)
 - code review: Jannes Breier (breier@pik-potsdam.de)

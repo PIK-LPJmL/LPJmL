@@ -172,6 +172,8 @@ void fprintfiles(FILE *file,          /**< pointer to text output file */
   }
   if(withoutput)
   {
+    if(config->json_filename!=NULL)
+      fprintf(file,"%s\n",config->json_filename);
     if(iswriterestart(config))
       fprintf(file,"%s\n",config->write_restart_filename);
     for(i=0;i<config->n_out;i++)
