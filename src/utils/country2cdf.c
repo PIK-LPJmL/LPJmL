@@ -296,7 +296,7 @@ int main(int argc,char **argv)
   {
     if(parse_config_netcdf(&netcdf_config,config_filename))
     {
-      fprintf(stderr,"Error reading Netcdf configuration file `%s`.\n",config_filename);
+      fprintf(stderr,"Error reading NetCDF configuration file `%s`.\n",config_filename);
       return EXIT_FAILURE;
     }
   }

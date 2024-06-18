@@ -308,6 +308,11 @@ int main(int argc,char **argv)
           fprintf(stderr,"Invalid number '%s' for option '-cellsize'.\n",argv[iarg]);
           return EXIT_FAILURE;
         }
+        if(cellsize_lon<=0)
+        {
+          fprintf(stderr,"Cell size=%g must be greater than zero.\n",cellsize_lon);
+          return EXIT_FAILURE;
+        }
         cellsize_lat=cellsize_lon;
       }
       else

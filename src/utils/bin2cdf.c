@@ -845,6 +845,11 @@ int main(int argc,char **argv)
           fprintf(stderr,"Error: Invalid number '%s' for option '-cellsize'.\n",argv[iarg]);
           return EXIT_FAILURE;
         }
+        if(cellsize<=0)
+        {
+          fprintf(stderr,"Cell size=%g must be greater than zero.\n",cellsize);
+          return EXIT_FAILURE;
+        }
         res.lon=res.lat=header.cellsize_lon=header.cellsize_lat=cellsize;
       }
       else if(!strcmp(argv[iarg],"-compress"))
@@ -891,7 +896,7 @@ int main(int argc,char **argv)
   {
     if(parse_config_netcdf(&netcdf_config,config_filename))
     {
-      fprintf(stderr,"Error reading Netcdf configuration file `%s`.\n",config_filename);
+      fprintf(stderr,"Error reading NetCDF configuration file `%s`.\n",config_filename);
       return EXIT_FAILURE;
     }
   }
@@ -1117,6 +1122,11 @@ int main(int argc,char **argv)
     {
       if(header.nbands>1)
         ispft=TRUE;
+      if(getfilesizep(file)==0)
+      {
+        fprintf(stderr,"Error: File '%s' is empty.\n",argv[iarg+2]);
+        return EXIT_FAILURE;
+      }
       if(isshort)
       {
         header.nyear=getfilesizep(file)/sizeof(short)/ngrid/header.nbands/header.nstep;

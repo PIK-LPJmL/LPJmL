@@ -20,7 +20,7 @@
 #define error(rc) if(rc) {free(lon);free(lat);free(year);fprintf(stderr,"ERROR427: Cannot write '%s': %s.\n",filename,nc_strerror(rc)); nc_close(cdf->ncid); free(cdf);return NULL;}
 
 #define USAGE "\nUsage: %s [-h] [-v] [-scale s] [-longheader] [-global] [-cellsize size] [-byte] [-int] [-float]\n       [[-attr name=value] ...] [-intnetcdf] [-metafile] [-raw] [-nbands n] [-landuse] [-notime] [-compress level] [-units u]\n       [-map name] [-descr d] [-missing_value val] [-config file] [name gridfile] clmfile netcdffile\n"
-#define ERR_USAGE USAGE "\nTry \"%s --help\" for more information\n"
+#define ERR_USAGE USAGE "\nTry \"%s --help\" for more information.\n"
 
 typedef struct
 {
@@ -724,6 +724,11 @@ int main(int argc,char **argv)
           fprintf(stderr,"Error: Invalid number '%s' for option '-cellsize'.\n",argv[iarg]);
           return EXIT_FAILURE;
         }
+        if(cellsize_lon<=0)
+        {
+          fprintf(stderr,"Cell size=%g must be greater than zero.\n",cellsize_lon);
+          return EXIT_FAILURE;
+        }
       }
       else if(!strcmp(argv[iarg],"-nbands"))
       {
@@ -790,7 +795,7 @@ int main(int argc,char **argv)
   {
     if(parse_config_netcdf(&netcdf_config,config_filename))
     {
-      fprintf(stderr,"Error reading Netcdf configuration file `%s`.\n",config_filename);
+      fprintf(stderr,"Error reading NetCDF configuration file `%s`.\n",config_filename);
       return EXIT_FAILURE;
     }
   }
