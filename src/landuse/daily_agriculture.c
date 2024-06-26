@@ -225,6 +225,7 @@ Real daily_agriculture(Stand *stand,                /**< [inout] stand pointer *
       if(getnpft(&stand->pftlist)>0)
       {
         pft=getpft(&stand->pftlist,0);
+        index=(stand->type->landusetype==OTHERS) ? data->irrigation*nirrig+rothers(ncft) : pft->par->id-npft+data->irrigation*nirrig;
         crop=pft->data;
         if(crop->sh!=NULL)
         {
