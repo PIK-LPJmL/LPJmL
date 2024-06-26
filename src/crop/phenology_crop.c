@@ -56,7 +56,7 @@ Bool phenology_crop(Pft *pft,            /**< pointer to PFT variables */
       break;
     default:
       hlimit=0;
-      fail(INVALID_CROP_PHU_OPTION,TRUE,"Invalid crop PHU option %d",
+      fail(INVALID_CROP_PHU_OPTION_ERR,TRUE,"Invalid crop PHU option %d",
            config->crop_phu_option);
   }
   crop->senescence0=crop->senescence;

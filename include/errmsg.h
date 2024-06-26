@@ -62,7 +62,8 @@
 #define INVALID_EXTFLOW_ERR 42
 #define OPEN_COUPLER_ERR 43
 #define INIT_OUTPUT_ERR 44
-#define INVALID_CROP_PHU_OPTION 45
+#define INVALID_CROP_PHU_OPTION_ERR 45
+#define INVALID_FIRE_INDEX_ERR 46
 
 /* Definition of macros */
 
