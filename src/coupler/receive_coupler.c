@@ -34,7 +34,7 @@ Bool receive_coupler(int index,           /**< index of input file */
   int rc;
 #endif
 #else
-  int rc;
+  int rc=TRUE;
 #endif
   if(isroot(*config))
   {

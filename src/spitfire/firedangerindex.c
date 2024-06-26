@@ -92,8 +92,8 @@ Real firedangerindex(Real char_moist_factor,
       d_fdi*= vpd_sum;
       break;
     default:
-      fprintf(stderr,"ERROR264: Invalid fire index %d.\n",fid);
       d_fdi=0;
+      fail(INVALID_FIRE_INDEX_ERR,TRUE,"Invalid fire index %d",fid);
   }  /* of 'switch' */
   return d_fdi;
 } /* of 'firedangerindex' */

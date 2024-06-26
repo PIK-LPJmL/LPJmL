@@ -411,6 +411,8 @@ Error code Description                                   Error type
         42 Cannot read external flow                     External
         43 Opening connection to coupled model failed    External
         44 Error initializing output data                External
+        45 Invalid crop PHU option                       Internal
+        46 Invalid fire danger index                     Internal
 ---------- --------------------------------------------- ----------
 
 External errors are caused by invalid or missing input files while internal

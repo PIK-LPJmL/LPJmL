@@ -71,6 +71,8 @@ of `major.minor.patch` with
 - `regridclm` now used for regridding of soil file in `regridlpj`.
 - Missing seek to offset added in filesexist.c
 - Debug option in `Makefile.icx` corrected.
+- Misplaced deallocation of memory for unit corrected in `printclm`.
+
 
 
 ## [5.8.17] - 2024-06-14
