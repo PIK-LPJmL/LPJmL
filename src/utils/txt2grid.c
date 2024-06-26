@@ -97,10 +97,10 @@ static Bool scancoord(FILE *file,const char *fmt,Double_coord *coord,Bool latlon
 int main(int argc,char **argv)
 {
   FILE *file,*gridfile;
-  Coordfile coordfile;
+  Coordfile coordfile=NULL;
   Filename filename;
   const char *fmt;
-  Coord grid,*grid_ref,res;
+  Coord grid,*grid_ref=NULL,res;
   String line;
   int i,iarg,nskip,n,index;
   Double_coord dcoord;

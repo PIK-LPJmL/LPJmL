@@ -46,11 +46,11 @@ Bool create_pft_netcdf(Netcdf *cdf,
   char *s;
   time_t t;
   int i,j,rc,nyear,size,len;
-  double *lon,*lat;
+  double *lon=NULL,*lat=NULL;
   double *layer,*bnds;
-  double *year;
+  double *year=NULL;
   int dim[4],bnds_var_id,bnds_dim_id;
-  char **pftnames;
+  char **pftnames=NULL;
   size_t chunk[4];
   int dimids[2];
 #ifndef USE_NETCDF4
@@ -459,6 +459,12 @@ Bool create_pft_netcdf(Netcdf *cdf,
       nc_put_att_int(cdf->ncid, cdf->varid, "missing_value", NC_INT,1,&config->netcdf.missing_value.i);
       rc=nc_put_att_int(cdf->ncid, cdf->varid, "_FillValue", NC_INT,1,&config->netcdf.missing_value.i);
       break;
+    default:
+      fputs("ERROR428: Invalid data type in NetCDF file.\n",stderr);
+      free(lat);
+      free(lon);
+      free(year);
+      return TRUE;
   }
   error(rc);
   rc=nc_put_att_text(cdf->ncid,NC_GLOBAL,"title",

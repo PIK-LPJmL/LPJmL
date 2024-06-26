@@ -45,10 +45,12 @@ Bool create_netcdf(Netcdf *cdf,
   time_t t;
   int i,j,rc,nyear,imiss=config->netcdf.missing_value.i,len;
   short smiss=config->netcdf.missing_value.s;
-  double *lon,*lat;
+  double *lon=NULL,*lat=NULL;
   float miss=config->netcdf.missing_value.f;
-  double *year;
+  double *year=NULL;
+#ifdef USE_NETCDF4
   size_t chunk[3];
+#endif
   int dim[3];
   if(array==NULL || name==NULL || filename==NULL)
   {
@@ -334,16 +336,20 @@ Bool create_netcdf(Netcdf *cdf,
     dim[0]=cdf->time_dim_id;
     dim[1]=cdf->lat_dim_id;
     dim[2]=cdf->lon_dim_id;
+#ifdef USE_NETCDF4
     chunk[0]=1;
     chunk[1]=array->nlat;
     chunk[2]=array->nlon;
+#endif
   }
   else
   {
     dim[0]=cdf->lat_dim_id;
     dim[1]=cdf->lon_dim_id;
+#ifdef USE_NETCDF4
     chunk[0]=array->nlat;
     chunk[1]=array->nlon;
+#endif
   }
   rc=nc_def_var(cdf->ncid,name,nctype[type],(year==NULL) ? 2 : 3,dim,&cdf->varid);
   error(rc);
@@ -385,6 +391,13 @@ Bool create_netcdf(Netcdf *cdf,
       nc_put_att_int(cdf->ncid, cdf->varid,"missing_value",NC_INT,1,&imiss);
       rc=nc_put_att_int(cdf->ncid, cdf->varid,"_FillValue",NC_INT,1,&imiss);
       break;
+    default:
+      fputs("ERROR428: Invalid data type in NetCDF file.\n",stderr);
+      free(lat);
+      free(lon);
+      free(year);
+      return TRUE;
+
   }
   error(rc);
   if(cdf->state==ONEFILE || cdf->state==CLOSE)

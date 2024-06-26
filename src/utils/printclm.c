@@ -33,14 +33,14 @@ static void printclm(const char *filename,int output,int nbands,int version,
   char byte;
   float fdata;
   double ddata;
-  int year,cell,i,*index,rc,t;
+  int year,cell,i,*index=NULL,rc,t;
   char *unit=NULL,*long_name=NULL,*standard_name=NULL;
   Bool swap,isrestart,isreservoir;
   size_t offset;
   Reservoir reservoir;
   Map *map=NULL;
   Attr *attrs=NULL;
-  int n_attr;
+  int n_attr=0;
   if(ismeta)
   {
     isrestart=isreservoir=FALSE;

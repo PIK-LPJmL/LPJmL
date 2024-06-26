@@ -23,8 +23,8 @@ int main(int argc,char **argv)
   int version,yr,cell,k,s,isum;
   Bool swap1,swap2,flag;
   String id;
-  float *data1,*data2,*data3;
-  int *idata1,*idata2,*idata3;
+  float *data1=NULL,*data2=NULL,*data3=NULL;
+  int *idata1=NULL,*idata2=NULL,*idata3=NULL;
   float value,sum;
   int iarg,ivalue,setversion;
   char *endptr;
@@ -40,13 +40,13 @@ int main(int argc,char **argv)
   char *units2=NULL;
   Type grid_type,grid_type2;
   Filename grid_name,grid_name2;
-  Type type;
+  Type type=LPJ_SHORT;
   int index,format;
   int *cell_index,*cell_index2;
   char *out_name;
-  Bool isvalue,intvalue,isint,ismeta,israw,isjson,isforce;
+  Bool isvalue=FALSE,intvalue,isint=FALSE,ismeta,israw,isjson,isforce;
   enum {ADD,SUB,MUL,DIV,AVG,MAX,MIN,REPL,FLOAT,INT,SUM,TSUM,TMEAN} op;
-  FILE *in1,*in2,*out;
+  FILE *in1,*in2=NULL,*out;
   struct stat filestat;
   char c;
   setversion=READ_VERSION;
@@ -650,6 +650,7 @@ int main(int argc,char **argv)
     {
       for(yr=0;yr<header1.nyear;yr++)
         for(cell=0;cell<header1.ncell;cell++)
+        {
           for(s=0;s<header1.nstep;s++)
           {
             if(readintvec(in1,idata1,header1.nbands,swap1,header1.datatype))
@@ -668,6 +669,7 @@ int main(int argc,char **argv)
                     argv[iarg+2],yr+header1.firstyear);
             return EXIT_FAILURE;
           }
+        }
     }
     else
     {
@@ -736,6 +738,8 @@ int main(int argc,char **argv)
               for(k=0;k<header1.nbands*header1.nstep;k++)
                 idata3[k]=min(idata1[k],ivalue);
               break;
+            default:
+              break;
           } /* of switch */
         else
         {
@@ -798,6 +802,10 @@ int main(int argc,char **argv)
                 for(k=0;k<header1.nbands*header1.nstep;k++)
                   idata3[k]=idata1[k];
               break;
+            case FLOAT: case INT:
+              break;
+            default:
+              break;
           } /* of switch */
         }
         /* write int data to file */
@@ -848,6 +856,8 @@ int main(int argc,char **argv)
             case MIN:
               for(k=0;k<header1.nbands*header1.nstep;k++)
                 data3[k]=min(data1[k],value);
+              break;
+            default:
               break;
           } /* of switch */
         else
@@ -902,6 +912,10 @@ int main(int argc,char **argv)
               else
                 for(k=0;k<header1.nbands*header1.nstep;k++)
                   data3[k]=data1[k];
+              break;
+            case FLOAT: case INT:
+              break;
+            default:
               break;
           } /* of switch */
         }

@@ -115,7 +115,10 @@ Real biologicalnfixation(const Stand *stand, /**< pointer to stand */
       else
         getoutputindex(&pft->stand->cell->output,PFT_BNF,nnat+rothers(ncft)+data->irrigation*nirrig,config)+=pft_bnf;/*pft->stand->cell->ml.landfrac[data->irrigation].grass[0];*/
     break;
-    }
+      default:
+        /* do nothing */
+       break;
+    } /* of switch() */
   
     bnf += pft_bnf;
   } /* of foreachpft */

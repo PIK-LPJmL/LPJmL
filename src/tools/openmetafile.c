@@ -32,7 +32,7 @@
 
 #include "lpj.h"
 
-const char *ordernames[]={"cellyear","yearcell","cellindex","cellseq"};
+char *ordernames[]={"cellyear","yearcell","cellindex","cellseq"};
 
 void fprintmap(FILE *file,const Map *map)
 {

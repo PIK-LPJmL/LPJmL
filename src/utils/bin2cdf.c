@@ -348,12 +348,15 @@ static Cdf *create_cdf(const char *filename,
   }
   switch(type)
   {
-     case LPJ_FLOAT:
-       rc=nc_def_var(cdf->ncid,name,NC_FLOAT,(ispft) ? 4 : 3,dim,&cdf->varid);
-       break;
-     case LPJ_SHORT:
-       rc=nc_def_var(cdf->ncid,name,NC_SHORT,(ispft) ? 4 : 3,dim,&cdf->varid);
-       break;
+    case LPJ_FLOAT:
+      rc=nc_def_var(cdf->ncid,name,NC_FLOAT,(ispft) ? 4 : 3,dim,&cdf->varid);
+      break;
+    case LPJ_SHORT:
+      rc=nc_def_var(cdf->ncid,name,NC_SHORT,(ispft) ? 4 : 3,dim,&cdf->varid);
+      break;
+    default:
+      fprintf(stderr,"Invalid datatype %d.\n",type);
+      return NULL;
   }
   error(rc);
 #ifdef USE_NETCDF4
@@ -389,6 +392,8 @@ static Cdf *create_cdf(const char *filename,
     case LPJ_SHORT:
       nc_put_att_short(cdf->ncid, cdf->varid,"missing_value",NC_SHORT,1,&netcdf_config->missing_value.s);
       rc=nc_put_att_short(cdf->ncid, cdf->varid,"_FillValue",NC_SHORT,1,&netcdf_config->missing_value.s);
+      break;
+    default:
       break;
   }
   error(rc);
@@ -570,8 +575,8 @@ int main(int argc,char **argv)
   Coord *grid,res;
   Cdf *cdf;
   Header header;
-  float *data;
-  short *data_short;
+  float *data=NULL;
+  short *data_short=NULL;
   const char *progname;
   int i,j,k,ngrid,iarg,compress,version,n_global,n_global2,baseyear;
   Bool swap,ispft,isshort,isglobal,isclm,ismeta,isbaseyear,revlat,withdays,absyear;
@@ -915,6 +920,15 @@ int main(int argc,char **argv)
       freeattrs(global_attrs2,n_global2);
     }
   }
+  else
+  {
+    file=fopen(argv[iarg+2],"rb");
+    if(file==NULL)
+    {
+      fprintf(stderr,"Error opening '%s': %s.\n",argv[iarg+2],strerror(errno));
+      return EXIT_FAILURE;
+    }
+  }
   if(argc!=iarg+2)
   {
     variable=argv[iarg];
@@ -995,6 +1009,9 @@ int main(int argc,char **argv)
         if(getfilesizep(gridfile) % (sizeof(double)/2))
           fprintf(stderr,"Size of grid file '%s' is non multiple of coord size.\n",grid_filename);
         break;
+      default:
+        fprintf(stderr,"Invalid datatype %d in '%s'.\n",gridtype,grid_filename);
+        return EXIT_FAILURE;
     }
     if(ngrid==0)
     {
@@ -1033,6 +1050,8 @@ int main(int argc,char **argv)
           grid[i].lon=intcoord.lon*0.01;
         }
         break;
+      default:
+        break;
     }
     fclose(gridfile);
   }
@@ -1064,12 +1083,6 @@ int main(int argc,char **argv)
   }
   else
   {
-    file=fopen(argv[iarg+2],"rb");
-    if(file==NULL)
-    {
-      fprintf(stderr,"Error opening '%s': %s.\n",argv[iarg+2],strerror(errno));
-      return EXIT_FAILURE;
-    }
     if(isclm)
     {
       version=READ_VERSION;

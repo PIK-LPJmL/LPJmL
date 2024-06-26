@@ -354,6 +354,9 @@ Bool openclimate_netcdf(Climatefile *file,    /**< climate data file */
       file->nyear=1;
       file->n=config->ngridcell;
       break;
+    case SECOND:
+      fputs("ERROR436: Invalid time step second.\n",stderr);
+      return TRUE;
   }
   if(getvar_netcdf(file,filename,var,var_units,units,config))
   {
