@@ -565,6 +565,7 @@ void fwriteoutput(Outputfile *output,  /**< output file array */
   check(vec);
   writeoutputvar(LAND_AREA,1);
   writeoutputarray(FPC,1);
+  writeoutputvar(NBP,1);
   writeoutputvar(NPP,1);
   writeoutputvar(GPP,1);
   writeoutputvar(DAYLENGTH,ndate1);
