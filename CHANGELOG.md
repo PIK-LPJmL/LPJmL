@@ -19,6 +19,17 @@ of `major.minor.patch` with
 
 ## [Unreleased]
 
+## [5.8.18] - 2024-06-27
+
+### Contributors
+
+- author: Werner von Bloh (bloh@pik-potsdam.de), Sebastian Ostberg (ostberg@pik-potsdam.de)
+
+### Added
+
+- Output `"nbp"` for net biosphere productivity and `"tws"` for  total water storage added.
+
+
 ## [5.8.17] - 2024-06-14
 
 ### Contributors
