@@ -116,6 +116,7 @@ Real daily_biomass_grass(Stand *stand,                /**< stand pointer */
         stand->soil.litter.item->agsub.leaf.carbon += manure*param.manure_cn;
         stand->soil.litter.item->agsub.leaf.nitrogen += manure*(1-param.nmanure_nh4_frac);
         stand->cell->balance.influx.carbon += manure*param.manure_cn*stand->frac;
+        getoutput(&stand->cell->output,NBP,config)+=manure*param.manure_cn*stand->frac;
         stand->cell->balance.influx.nitrogen += manure*stand->frac;
         getoutput(&stand->cell->output,NMANURE_AGR,config)+=manure*stand->frac;
         getoutput(&stand->cell->output,NAPPLIED_MG,config)+=manure*stand->frac;
@@ -213,6 +214,7 @@ Real daily_biomass_grass(Stand *stand,                /**< stand pointer */
     npp=npp_grass(pft,gtemp_air,gtemp_soil,gpp-rd-pft->npp_bnf,config->with_nitrogen);
     pft->npp_bnf=0.0;
     getoutput(output,NPP,config)+=npp*stand->frac;
+    getoutput(output,NBP,config)+=npp*stand->frac;
     stand->cell->balance.anpp+=npp*stand->frac;
     stand->cell->balance.agpp+=gpp*stand->frac;
     output->dcflux-=npp*stand->frac;

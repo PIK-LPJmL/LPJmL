@@ -203,6 +203,7 @@ void update_daily(Cell *cell,            /**< cell pointer           */
     hetres=littersom(stand,gtemp_soil,agrfrac,npft,ncft,config);
     cell->balance.arh+=hetres.carbon*stand->frac;
     getoutput(&cell->output,RH,config)+=hetres.carbon*stand->frac;
+    getoutput(&cell->output,NBP,config)-=hetres.carbon*stand->frac;
     getoutput(&cell->output,N2O_NIT,config)+=hetres.nitrogen*stand->frac;
     cell->balance.n_outflux+=hetres.nitrogen*stand->frac;
 
@@ -227,6 +228,7 @@ void update_daily(Cell *cell,            /**< cell pointer           */
       if(index==NOT_FOUND)
         index=addlitter(&stand->soil.litter,config->pftpar+config->pft_residue)-1;
       getoutput(&cell->output,FLUX_ESTABC,config)+=(param.residue_pool-stand->soil.litter.item[index].agtop.leaf.carbon)*stand->frac;
+      getoutput(&cell->output,NBP,config)+=(param.residue_pool-stand->soil.litter.item[index].agtop.leaf.carbon)*stand->frac;
       cell->balance.flux_estab.carbon+=(param.residue_pool-stand->soil.litter.item[index].agtop.leaf.carbon)*stand->frac;
       stand->soil.litter.item[index].agtop.leaf.carbon=param.residue_pool;
       getoutput(&cell->output,FLUX_ESTABN,config)+=(param.residue_pool/param.residue_cn-stand->soil.litter.item[index].agtop.leaf.nitrogen)*stand->frac;
@@ -492,6 +494,7 @@ void update_daily(Cell *cell,            /**< cell pointer           */
 #endif
   /* Establishment fluxes are area weighted in subroutines */
   getoutput(&cell->output,FLUX_ESTABC,config)+=flux_estab.carbon;
+  getoutput(&cell->output,NBP,config)+=flux_estab.carbon;
   getoutput(&cell->output,FLUX_ESTABN,config)+=flux_estab.nitrogen;
   cell->balance.flux_estab.nitrogen+=flux_estab.nitrogen;
   cell->balance.flux_estab.carbon+=flux_estab.carbon;

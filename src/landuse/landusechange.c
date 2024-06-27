@@ -210,6 +210,7 @@ static void regrowth(Cell *cell, /* pointer to cell */
 
     flux_estab=establishmentpft(natstand,npft,PREC_MAX,year,config);
     getoutput(&cell->output,FLUX_ESTABC,config)+=flux_estab.carbon*natstand->frac;
+    getoutput(&cell->output,NBP,config)+=flux_estab.carbon*natstand->frac;
     getoutput(&cell->output,FLUX_ESTABN,config)+=flux_estab.nitrogen*natstand->frac;
     cell->balance.flux_estab.carbon+=flux_estab.carbon*natstand->frac;
     cell->balance.flux_estab.nitrogen+=flux_estab.nitrogen*natstand->frac;
@@ -406,6 +407,7 @@ static void landexpansion(Cell *cell,            /* cell pointer */
           flux_estab.carbon=flux_estab.nitrogen=0;
         }
         getoutput(&cell->output,FLUX_ESTABC,config)+=flux_estab.carbon*mixstand->frac;
+        getoutput(&cell->output,NBP,config)+=flux_estab.carbon*mixstand->frac;
         getoutput(&cell->output,FLUX_ESTABN,config)+=flux_estab.nitrogen*mixstand->frac;
         if (!pft->par->cultivation_type == WP)
           getoutput(&cell->output,FLUX_ESTABN_MG,config)+=flux_estab.nitrogen*mixstand->frac;

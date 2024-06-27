@@ -280,6 +280,7 @@ ID                               Fmt                        filename
     { "id" : "lake_area",        "file" : { "name" : "output/lake_area" }},
     { "id" : "fpc",              "file" : { "name" : "output/fpc" }},
     { "id" : "globalflux",       "file" : { "fmt" : "txt", "name" : "output/globalflux.csv"}},
+    { "id" : "nbp",              "file" : { "name" : "output/anbp"}},
     { "id" : "npp",              "file" : { "name" : "output/mnpp"}},
     { "id" : "gpp",              "file" : { "name" : "output/mgpp"}},
     { "id" : "rh",               "file" : { "name" : "output/mrh"}},

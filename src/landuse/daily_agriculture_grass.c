@@ -113,6 +113,7 @@ Real daily_agriculture_grass(Stand *stand,                /**< stand pointer */
       stand->soil.litter.item->agsub.leaf.carbon += manure*param.manure_cn;
       stand->soil.litter.item->agsub.leaf.nitrogen += manure*(1-param.nmanure_nh4_frac);
       stand->cell->balance.influx.carbon += manure*param.manure_cn*stand->frac;
+      getoutput(&stand->cell->output,NBP,config) += manure*param.manure_cn*stand->frac;
       stand->cell->balance.influx.nitrogen += manure*stand->frac;
       getoutput(&stand->cell->output,NMANURE_AGR,config)+=manure*stand->frac;
       getoutput(&stand->cell->output,NAPPLIED_MG,config)+=manure*stand->frac;
@@ -222,6 +223,7 @@ Real daily_agriculture_grass(Stand *stand,                /**< stand pointer */
     stand->cell->balance.anpp+=npp*stand->frac;
     stand->cell->balance.agpp+=gpp*stand->frac;
     getoutput(output,NPP,config) += npp * stand->frac;
+    getoutput(output,NBP,config) += npp * stand->frac;
     output->dcflux -= npp * stand->frac;
     getoutput(output,GPP,config) += gpp * stand->frac;
     getoutput(output,FAPAR,config) += pft->fapar * stand->frac * (1.0 / (1 - stand->cell->lakefrac-stand->cell->ml.reservoirfrac));

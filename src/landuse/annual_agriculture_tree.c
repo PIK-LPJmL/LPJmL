@@ -124,6 +124,7 @@ Bool annual_agriculture_tree(Stand *stand,         /**< Pointer to stand */
           //printf("%s yield %s=%g t/ha, %g indiv/ha, wstress=%g, fpc=%g\n",(data->irrigation.irrigation) ? "irrigated" :"",pft->par->name,yield.carbon*1e4/1e6/0.45,pft->nind*1e4,pft->wscal_mean/365,pft->fpc);
           //printf("index=%d, yield=%g\n",index,yield);
           getoutput(&stand->cell->output,HARVESTC,config)+=yield.carbon*stand->frac;
+          getoutput(&stand->cell->output,NBP,config)-=yield.carbon*stand->frac;
           getoutput(&stand->cell->output,HARVESTN,config)+=yield.nitrogen*stand->frac;
           if(config->pft_output_scaled)
           {
@@ -230,11 +231,6 @@ Bool annual_agriculture_tree(Stand *stand,         /**< Pointer to stand */
         reduce(&stand->soil.litter,pft,fpc_total,config);
   stand->cell->balance.estab_storage_tree[data->irrigation.irrigation].carbon-=flux_estab.carbon*stand->frac;
   stand->cell->balance.estab_storage_tree[data->irrigation.irrigation].nitrogen-=flux_estab.nitrogen*stand->frac;
-  flux_estab.carbon=flux_estab.nitrogen=0;
-
-  stand->cell->balance.flux_estab.carbon+=flux_estab.carbon*stand->frac;
-  stand->cell->balance.flux_estab.nitrogen+=flux_estab.nitrogen*stand->frac;
-  stand->cell->output.dcflux-=flux_estab.carbon*stand->frac;
 
   foreachpft(pft,p,&stand->pftlist)
     if(istree(pft))

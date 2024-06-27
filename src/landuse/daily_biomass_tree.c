@@ -184,6 +184,7 @@ Real daily_biomass_tree(Stand *stand,                /**< stand pointer */
    npp=npp(pft,gtemp_air,gtemp_soil,gpp-rd-pft->npp_bnf,config->with_nitrogen);
    pft->npp_bnf=0.0;
    getoutput(output,NPP,config)+=npp*stand->frac;
+   getoutput(output,NBP,config)+=npp*stand->frac;
    stand->cell->balance.anpp+=npp*stand->frac;
    stand->cell->balance.agpp+=gpp*stand->frac;
    output->dcflux-=npp*stand->frac;

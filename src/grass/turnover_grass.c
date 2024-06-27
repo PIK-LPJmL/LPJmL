@@ -47,12 +47,14 @@ Stocks turnover_grass(Litter *litter, /**< Litter pool */
     {
       reprod-=pft->establish.carbon;
       getoutput(output,FLUX_ESTABC,config)-=pft->establish.carbon*pft->stand->frac;
+      getoutput(output,NBP,config)-=pft->establish.carbon*pft->stand->frac;
       pft->stand->cell->balance.flux_estab.carbon-=pft->establish.carbon*pft->stand->frac;
       pft->establish.carbon=0;
     }
     else
     {
       getoutput(output,FLUX_ESTABC,config)-=reprod*pft->stand->frac;
+      getoutput(output,NBP,config)-=reprod*pft->stand->frac;
       pft->stand->cell->balance.flux_estab.carbon-=reprod*pft->stand->frac;
       pft->establish.carbon-=reprod;
       reprod=0;

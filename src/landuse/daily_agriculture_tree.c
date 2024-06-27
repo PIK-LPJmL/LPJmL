@@ -95,6 +95,7 @@ Real daily_agriculture_tree(Stand *stand,                /**< stand pointer */
     pft=addpft(stand,config->pftpar+data->irrigation.pft_id,year,0,config);
     flux_estab=establishment(pft,0,0,1);
     getoutput(output,FLUX_ESTABC,config)+=flux_estab.carbon*stand->frac;
+    getoutput(output,NBP,config)+=flux_estab.carbon*stand->frac;
     getoutput(output,FLUX_ESTABN,config)+=flux_estab.nitrogen*stand->frac;
     getoutput(output,FLUX_ESTABN_MG,config)+=flux_estab.nitrogen*stand->frac;
     stand->cell->balance.flux_estab.carbon+=flux_estab.carbon*stand->frac;
@@ -299,6 +300,7 @@ Real daily_agriculture_tree(Stand *stand,                /**< stand pointer */
     } /* of istree() */
 
     getoutput(output,NPP,config)+=npp*stand->frac;
+    getoutput(output,NBP,config)+=npp*stand->frac;
     stand->cell->balance.anpp+=npp*stand->frac;
     stand->cell->balance.agpp+=gpp*stand->frac;
     output->dcflux-=npp*stand->frac;
@@ -369,6 +371,7 @@ Real daily_agriculture_tree(Stand *stand,                /**< stand pointer */
       printf("harvest(%s) %d: %g %g\n",config->pftpar[data->irrigation.pft_id].name,data->irrigation.irrigation,yield.carbon,yield.nitrogen);
 #endif
       getoutput(output,HARVESTC,config)+=yield.carbon*stand->frac;
+      getoutput(output,NBP,config)-=yield.nitrogen*stand->frac;
       getoutput(output,HARVESTN,config)+=yield.nitrogen*stand->frac;
       if(config->pft_output_scaled)
       {
