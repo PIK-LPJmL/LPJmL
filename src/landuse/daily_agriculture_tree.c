@@ -371,7 +371,7 @@ Real daily_agriculture_tree(Stand *stand,                /**< stand pointer */
       printf("harvest(%s) %d: %g %g\n",config->pftpar[data->irrigation.pft_id].name,data->irrigation.irrigation,yield.carbon,yield.nitrogen);
 #endif
       getoutput(output,HARVESTC,config)+=yield.carbon*stand->frac;
-      getoutput(output,NBP,config)-=yield.nitrogen*stand->frac;
+      getoutput(output,NBP,config)-=yield.carbon*stand->frac;
       getoutput(output,HARVESTN,config)+=yield.nitrogen*stand->frac;
       if(config->pft_output_scaled)
       {
