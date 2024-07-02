@@ -19,6 +19,108 @@ of `major.minor.patch` with
 
 ## [Unreleased]
 
+## [5.8.17] - 2024-06-14
+
+### Contributors
+
+- author: Werner von Bloh (bloh@pik-potsdam.de)
+- code review: Sibyll Schaphoff (sibylls@pik-potsdam.de), Sebastian Ostberg (ostberg@pik-potsdam.de)
+
+### Added
+
+- List of required modules on new PIK cluster added in `INSTALL`.
+- `configure.sh` script recognizes new PIK cluster and sets `mpiicx`/`icx` compiler accordingly.
+- New site-specific `Makefile.hpc2024` and Makefile.icx` for parallel/sequential compilation on new cluster added.
+- New `lpjsubmit_hpc` slurm script added for new PIK cluster. `configure.sh` sets symbolic link of `lpjsubmit` to this script.
+
+### Changed
+
+- All occurrences of the deprecated function `MPI_Type_extent` replaced by `MPI_Type_get_extent` to allow compilation with OpenMPI.
+- `*.tmp` files added to `.gitignore`.
+
+### Fixed
+
+- Functions `mpi_write.c`, `mpi_write_txt.c`, `mpi_read_socket.c` and `mpi_write_socket.c` changed to avoid `SEGV` on new PIK cluster.
+
+
+## [5.8.16] - 2024-06-07
+
+### Contributors
+
+- author: Christoph Müller (cmueller@pik-potsdam.de)
+- reviewer: Fabian Stenzel (stenzel@pik-potsdam.de), Luke Oberhagemann (lukeober@pik-potsdam.de)
+
+### Changed
+
+- .zenodo.org updated to be compliant with PIK publication rules:
+  - added "active-development" and "Potsdam Institute for Climate Impact Research" to keywords
+  - added Christoph as "contributor", which seems to be the only way to have a visible contact person
+
+
+## [5.8.15] - 2024-05-30
+
+### Contributors
+
+- author: Werner von Bloh (bloh@pik-potsdam.de)
+- code review: Jannes Breier (breier@pik-potsdam.de), Christoph Mueller (cmueller@pik-potsdam.de)
+
+### Added
+
+- A preprocessed JSON configuration file can be written if the following setting is added to the `*.cjson` configuration file:
+```java
+"json_config_filename" : "output/lpjml_config_restart.json", /* Filename of preprocessed configuration file written or null to disable this feature */
+```
+
+### Fixed
+
+- The right allocated storage for `config->coupled_model` is checked for `NULL` in `fscanconfig.c`.
+
+
+## [5.8.14] - 2024-05-27
+
+### Contributors
+
+- author: Sebastian Ostberg (ostberg@pik-potsdam.de)
+- code review: Susanne Rolinski (rolinski@pik-potsdam.de), Christoph Mueller (cmueller@pik-potsdam.de)
+
+### Fixed
+
+- fixed PFT pool scaling in mix_veg_grass() and mix_veg_tree()
+
+
+## [5.8.13] - 2024-05-23
+
+### Contributors
+
+- author: Jannes Breier (jannesbr@pik-potsdam.de)
+- code review: Stephen Wirth (wirth@pik-potsdam.de), Jens Heinke (heinke@pik-potsdam.de)
+
+### Changed
+
+- PFT parameter lai_sapl has been set back to its original value of 0.001 for grasses
+(tropical, temperate, polar)
+
+
+## [5.8.12] - 2024-05-07
+
+### Contributors
+
+- author: Sibyll Schaphoff (sibylls@pik-potsdam.de), Werner von Bloh (bloh@pik-potsdam.de)
+- code review: Stephen Wirth (wirth@pik-potsdam.de), Christoph Mueller (cmueller@pik-potsdam.de), Sebastian Ostberg (ostberg@pik-potsdam.de)
+
+### Added
+
+- added link to LPJmL Zenodo archive to README
+
+### Changed
+
+- changed `ifndef` usage in `lpjml_config.cjson` to `ifdef` to avoid confusion
+
+### Fixed
+
+- fixed handling of monthly and daily outputs in `iterateyear.c` to ensure that last annual timestep of outputs is written after `update_annual()` is called
+
+
 ## [5.8.11] - 2024-04-10
 
 ### Contributors
@@ -31,9 +133,9 @@ of `major.minor.patch` with
 - added four new outputs for managed land: deposition (`NDEPO_MG`), biological nitrogen fixation (`BNF_MG`), applied nitrogen (`NAPPLIED_MG`) and nitrogen establishment flux (`FLUX_ESTABN_MG`)
 
 
-
-
 ## [5.8.10] - 2024-04-04
+
+### Contributors
 
 - author: Jannes Breier (jannesbr@pik-potsdam.de)
 - code review: Stephen Wirth (wirth@pik-potsdam.de), David Hoetten (davidho@pik-potsdam.de)
@@ -49,6 +151,8 @@ to describe this exception (`"grid information (raw: coordinates, cdf: cell_id)"
 
 
 ## [5.8.9] - 2024-03-14
+
+### Contributors
 
 - author: Werner von Bloh (bloh@pik-potsdam.de), Sebastian Ostberg (ostberg@pik-potsdam.de)
 - code review: Jannes Breier (breier@pik-potsdam.de)

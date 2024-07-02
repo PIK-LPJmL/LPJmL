@@ -315,7 +315,7 @@ extern void calc_soil_thermal_props(Uniform_temp_sign, Soil_thermal_prop *, cons
 extern void compute_mean_layer_temps_from_enth(Real *, const Real *,const  Soil_thermal_prop *);
 extern void apply_enth_of_untracked_mass_shifts(Real *, const Real *, const Real *, const Real *, const Real *);
 extern void apply_perc_enthalpy(Soil *);
-extern void freezefrac2soil(Soil *, const Real *);
+extern void freezefrac2soil(Soil *, const Real [NSOILLAYER]);
 extern void enth2freezefrac(Real *, const Real * ,const  Soil_thermal_prop *);
 extern void soilice2moisture(Soil *, Real *,int);
 extern void update_soil_thermal_state(Soil *,Real,const Config *);

@@ -29,6 +29,8 @@ void freeconfig(Config *config /**< LPJmL configuration */
                )
 {
   int i;
+  free(config->cmd);
+  free(config->json_filename);
   free(config->coupled_model);
   free(config->compress_cmd);
   free(config->compress_suffix);
