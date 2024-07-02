@@ -25,7 +25,6 @@ void the_mean_layer_temps_should_equal_mean_of_original_temps(Real *layerTemps, 
 void test_soillayer_temps_should_be_zero_if_enthalpy_is_zero()
 {
   Soil test_soil;
-  Real random_temp;
   setup_simple_soil(&test_soil);
 
   set_enthalpies_to_zero(&test_soil);
@@ -38,7 +37,6 @@ void test_soillayer_temps_should_be_zero_if_enthalpy_is_zero()
 void test_soillayer_temps_should_be_zero_if_enthalpy_equals_latent_heat()
 {
   Soil test_soil;
-  Real random_temp;
   setup_simple_soil(&test_soil);
 
   set_enthalpies_to_latent_heat(&test_soil);

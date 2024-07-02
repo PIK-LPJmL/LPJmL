@@ -3,17 +3,13 @@
 # Configure unit testing of LPJmL modules with Ceedling 
 
 :project:
-  :use_exceptions: FALSE
-  :use_test_preprocessor: TRUE
-  :use_auxiliary_dependencies: TRUE
-  :use_deep_dependencies: TRUE
+  :use_deep_dependencies: FALSE
   :build_root: build
   # :release_build: TRUE
+  :use_test_preprocessor: FALSE
   :test_file_prefix: test_
   :which_ceedling: gem
   :ceedling_version: 0.29.1
-
-:environment:
 
 :extension:
   :executable: .out
@@ -34,81 +30,30 @@
   # in order to add common defines:
   #  1) remove the trailing [] from the :common: section
   #  2) add entries to the :common: section (e.g. :test: has TEST defined)
-  :common: &common_defines []
-  :test:
+  :common: 
     - U_TEST
     - GPLHEAT=10
-    - TEST
   :test_update_soil_thermal_state_high_resolution:
     - U_TEST
     - GPLHEAT=150
-    - TEST
-  :test_soiltemp:
-    - U_TEST
-    - GPLHEAT=10
-    - TEST
   :test_apply_heatconduction_of_a_day:
     - U_TEST
     - GPLHEAT=1
-    - TEST
 
 :unity:
   :defines:
     - UNITY_INCLUDE_DOUBLE
 
-:cmock:
-  :includes:
-    - lpj.h
-  :mock_prefix: mock_
-  :when_no_prototypes: :warn
-  :enforce_strict_ordering: TRUE
-  :plugins:
-    - :ignore
-    - :callback
-  :treat_as:
-    uint8:    HEX8
-    uint16:   HEX16
-    uint32:   UINT32
-    int8:     INT8
-    bool:     UINT8
-  :treat_externs:  :include
-  :treat_as_array:
-    String
-  :fail_on_unexpected_calls: FALSE
-
-# Add -gcov to the plugins list to make sure of the gcov plugin
-# You will need to have gcov and gcovr both installed to make it work.
-# For more information on these options, see docs in plugins/gcov
-:gcov:
-  :reports:
-    - HtmlDetailed
-  :gcovr:
-    :html_medium_threshold: 75
-    :html_high_threshold: 90
-  
 :flags:
   :test:
     :compile:
       :apply_heatconduction_of_a_day:
         - -O3
+      :*:
+        - -O0
     :link:
       :*:
         - -lm
-
-# LIBRARIES
-# These libraries are automatically injected into the build process. Those specified as
-# common will be used in all types of builds. Otherwise, libraries can be injected in just
-# tests or releases. These options are MERGED with the options in supplemental yaml files.
-:libraries:
-  :placement: :end
-  :flag: "-l${1}"
-  :path_flag: "-L ${1}"
-  :system:     # for example, you might list 'm' to grab the math library
-    - 'lm'
-  :test: []
-  :release: []
-  :paths:
-    - /usr/lib/../lib64
 
 :plugins:
   :load_paths:

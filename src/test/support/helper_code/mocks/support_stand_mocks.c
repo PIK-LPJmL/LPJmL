@@ -28,14 +28,6 @@ Stand *setup_simple_stand()
   Irrigation *irrig = calloc(1, sizeof(Irrigation));
   Soilpar *par = calloc(1, sizeof(Soilpar));
   Stand *stand = calloc(1, sizeof(Stand));
-
-
-  /* set pointer relations */
-  cell->output.data = data;
-  stand->type = type;
-  stand->cell = cell;
-  stand->soil.par = par;
-  stand->data = irrig;
   
   /* configure stand and sub structures */
   type->landusetype = AGRICULTURE;
@@ -43,6 +35,13 @@ Stand *setup_simple_stand()
   par->sand = 1;
   stand->frac = 0.4;
   setup_simple_soil(&stand->soil);
+
+  /* set pointer relations */
+  cell->output.data = data;
+  stand->type = type;
+  stand->cell = cell;
+  stand->soil.par = par;
+  stand->data = irrig;
 
   return stand;
 }

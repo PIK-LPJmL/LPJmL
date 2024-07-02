@@ -12,11 +12,11 @@
 #include "unity.h" 
 /* modules under test */
 #include "compute_mean_layer_temps_from_enth.h"
+#include "calc_soil_thermal_props.h"
 /* support for tests */
 #include "support_global_variables.h"
 #include "support_soil_mocks.h"
 #include "support_manipulate_soil.h"
-#include "calc_soil_thermal_props.h"
 
 /* ------- prototypes ------- */
 void the_thermal_prop_should_be_as_ever(Soil_thermal_prop);

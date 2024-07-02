@@ -94,7 +94,6 @@ void set_soilwater_to_zero(Soil *zeroWaterSoilPointer)
   foreachsoillayer(l)
   {
     zeroWaterSoilPointer->w[l] = 0;
-    zeroWaterSoilPointer->whcs[l] = 0;
     zeroWaterSoilPointer->wpwps[l] = 0;
     zeroWaterSoilPointer->w_fw[l] = 0;
     zeroWaterSoilPointer->ice_depth[l] = 0;

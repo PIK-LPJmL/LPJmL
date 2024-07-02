@@ -48,7 +48,8 @@ void setup_simple_soil(Soil *test_soil)
   {
     test_soil->k_dry[l] = 0.5;
     test_soil->w[l] = 0.3;
-    test_soil->whcs[l] = 0.5 * soildepth[l];
+    test_soil->whc[l] = 0.5;
+    test_soil->whcs[l] = test_soil->whc[l] * soildepth[l];
     test_soil->wpwp[l] = 0.05;
     test_soil->w_fw[l] = 0.05 * soildepth[l];
     test_soil->wsat[l] = 0.8;
