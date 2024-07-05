@@ -36,7 +36,7 @@
     { "id" : RH, "name": "rh", "timestep" : "monthly", "var" : "RH", "long_name" : "heterotrophic respiration", "unit" : "gC/m2/month", "scale" : 1.0, "offset" : 0.0},
     { "id" : RD, "name": "rd", "timestep" : "monthly", "var" : "RD", "long_name" : "dark respiration", "unit" : "gC/m2/month", "scale" : 1.0, "offset" : 0.0},
     { "id" : NBP, "name" : "nbp", "timestep" : "annual", "var" : "nbp", "long_name" : "net biosphere productivity", "unit" : "gC/m2/yr", "scale" : 1.0, "offset" : 0.0},
-    { "id" : TWS, "name" : "tws", "timestep" : "monthly", "var" : "tws", "long_name" : "total water storage", "unit" : "kg/m2", "scale" : 1.0, "offset" : 0.0},
+    { "id" : TWS, "name" : "tws", "timestep" : "monthly", "var" : "tws", "long_name" : "total water storage", "unit" : "mm", "scale" : 1.0, "offset" : 0.0},
     { "id" : TRANSP, "name": "transp", "timestep" : "monthly", "var" : "transp", "long_name" : "transpiration", "unit" : "mm/month", "scale" : 1.0, "offset" : 0.0},
     { "id" : TRANSP_B, "name": "transp_b", "timestep" : "monthly", "var" : "transp_b", "long_name" : "transpired irrigation water", "unit" : "mm/month", "scale" : 1.0, "offset" : 0.0},
     { "id" : RUNOFF, "name": "runoff", "timestep" : "monthly", "var" : "runoff", "long_name" :  "runoff", "unit":  "mm/month", "scale" : 1.0, "offset" : 0.0},
