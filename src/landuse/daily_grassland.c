@@ -147,7 +147,6 @@ Real daily_grassland(Stand *stand,                /**< stand pointer */
         stand->soil.litter.item->agsub.leaf.carbon += manure*param.manure_cn;
         stand->soil.litter.item->agsub.leaf.nitrogen += manure*(1-param.nmanure_nh4_frac);
         stand->cell->balance.influx.carbon += manure*param.manure_cn*stand->frac;
-        getoutput(output,NBP,config)+=manure*param.manure_cn*stand->frac;
         stand->cell->balance.influx.nitrogen += manure*stand->frac;
         if(stand->type->landusetype==OTHERS)
           getoutput(output,NMANURE_AGR,config)+=manure*stand->frac;
@@ -267,7 +266,6 @@ Real daily_grassland(Stand *stand,                /**< stand pointer */
     }
     npp=npp_grass(pft,gtemp_air,gtemp_soil,gpp-rd-pft->npp_bnf,config->with_nitrogen);
     getoutput(output,NPP,config)+=npp*stand->frac;
-    getoutput(output,NBP,config)+=npp*stand->frac;
 #if defined IMAGE && defined COUPLED
     stand->cell->npp_grass+=npp*stand->frac;
 #endif

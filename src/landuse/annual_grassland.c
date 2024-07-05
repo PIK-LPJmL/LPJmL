@@ -99,7 +99,6 @@ Bool annual_grassland(Stand *stand,         /**< Pointer to stand */
       flux_estab.nitrogen+=stocks.nitrogen;
     }
   getoutput(&stand->cell->output,FLUX_ESTABC,config)+=flux_estab.carbon*stand->frac;
-  getoutput(&stand->cell->output,NBP,config)+=flux_estab.carbon*stand->frac;
   getoutput(&stand->cell->output,FLUX_ESTABN,config)+=flux_estab.nitrogen*stand->frac;
   getoutput(&stand->cell->output,FLUX_ESTABN_MG,config)+=flux_estab.nitrogen*stand->frac;
   stand->cell->balance.flux_estab.carbon+=flux_estab.carbon*stand->frac;

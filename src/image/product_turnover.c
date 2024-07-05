@@ -18,10 +18,8 @@
 void product_turnover(Cell *cell,const Config *config)
 {
   getoutput(&cell->output,PROD_TURNOVER,config)+=cell->ml.product.fast.carbon*param.product_turnover.fast;
-  getoutput(&cell->output,NBP,config)-=cell->ml.product.fast.carbon*param.product_turnover.fast;
   cell->balance.prod_turnover.fast.carbon+=cell->ml.product.fast.carbon*param.product_turnover.fast;
   getoutput(&cell->output,PROD_TURNOVER,config)+=cell->ml.product.slow.carbon*param.product_turnover.slow;
-  getoutput(&cell->output,NBP,config)-=cell->ml.product.slow.carbon*param.product_turnover.slow;
   cell->balance.prod_turnover.slow.carbon+=cell->ml.product.slow.carbon*param.product_turnover.slow;
   cell->ml.product.fast.carbon*=(1.0-param.product_turnover.fast);
   cell->ml.product.slow.carbon*=(1.0-param.product_turnover.slow);

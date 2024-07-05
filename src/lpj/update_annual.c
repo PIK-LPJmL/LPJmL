@@ -90,7 +90,6 @@ void update_annual(Cell *cell,          /**< Pointer to cell */
     {
       litter_neg=checklitter(&stand->soil.litter);
       getoutput(&cell->output,NEGC_FLUXES,config)+=litter_neg.carbon*stand->frac;
-      getoutput(&cell->output,NBP,config)-=litter_neg.carbon*stand->frac;
       getoutput(&cell->output,NEGN_FLUXES,config)+=litter_neg.nitrogen*stand->frac;
       cell->balance.neg_fluxes.carbon+=litter_neg.carbon*stand->frac;
       cell->balance.neg_fluxes.nitrogen+=litter_neg.nitrogen*stand->frac;

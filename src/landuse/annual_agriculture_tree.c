@@ -124,7 +124,6 @@ Bool annual_agriculture_tree(Stand *stand,         /**< Pointer to stand */
           //printf("%s yield %s=%g t/ha, %g indiv/ha, wstress=%g, fpc=%g\n",(data->irrigation.irrigation) ? "irrigated" :"",pft->par->name,yield.carbon*1e4/1e6/0.45,pft->nind*1e4,pft->wscal_mean/365,pft->fpc);
           //printf("index=%d, yield=%g\n",index,yield);
           getoutput(&stand->cell->output,HARVESTC,config)+=yield.carbon*stand->frac;
-          getoutput(&stand->cell->output,NBP,config)-=yield.carbon*stand->frac;
           getoutput(&stand->cell->output,HARVESTN,config)+=yield.nitrogen*stand->frac;
           if(config->pft_output_scaled)
           {

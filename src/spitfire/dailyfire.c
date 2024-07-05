@@ -157,7 +157,6 @@ void dailyfire(Stand *stand,                /**< pointer to stand */
   getoutput(output,FIREF,config) += fire_frac;
   getoutput(output,BURNTAREA,config) += burnt_area; /*ha*/
   getoutput(output,FIREC,config)+= total_fire.carbon;
-  getoutput(output,NBP,config)-= total_fire.carbon;
   stand->cell->balance.fire.carbon+=total_fire.carbon;
   getoutput(output,FIREN,config)+=total_fire.nitrogen*(1-param.q_ash)*stand->frac;
   stand->cell->balance.fire.nitrogen+=total_fire.nitrogen*(1-param.q_ash)*stand->frac;

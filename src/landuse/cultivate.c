@@ -96,7 +96,6 @@ Stocks cultivate(Cell *cell,           /**< cell pointer */
     cropstand->soil.litter.item->agsub.leaf.carbon += manure*param.manure_cn*param.nfert_split_frac;
     cropstand->soil.litter.item->agsub.leaf.nitrogen += manure*(1-param.nmanure_nh4_frac)*param.nfert_split_frac;
     cell->balance.influx.carbon += manure*param.manure_cn*cropstand->frac*param.nfert_split_frac;
-    getoutput(&cell->output,NBP,config) += manure*param.manure_cn*cropstand->frac*param.nfert_split_frac;
     cell->balance.influx.nitrogen += manure*cropstand->frac*param.nfert_split_frac;
     getoutput(&cell->output,NMANURE_AGR,config)+=manure*cropstand->frac*param.nfert_split_frac;
     getoutput(&cell->output,NAPPLIED_MG,config)+=manure*cropstand->frac*param.nfert_split_frac;

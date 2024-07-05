@@ -155,7 +155,6 @@ Real daily_natural(Stand *stand,                /**< [inout] stand pointer */
     stand->cell->balance.anpp+=npp*stand->frac;
     stand->cell->balance.agpp+=gpp*stand->frac;
     getoutput(output,NPP,config)+=npp*stand->frac;
-    getoutput(output,NBP,config)+=npp*stand->frac;
     getoutput(output,GPP,config)+=gpp*stand->frac;
     getoutput(output,FAPAR,config) += pft->fapar * stand->frac * (1.0/(1-stand->cell->lakefrac-stand->cell->ml.reservoirfrac));
     if (stand->type->landusetype == SETASIDE_RF || stand->type->landusetype == SETASIDE_IR)
@@ -212,7 +211,6 @@ Real daily_natural(Stand *stand,                /**< [inout] stand pointer */
   else if (year>911)
     flux_estab=establishmentpft(stand,config->pftpar,npft,config->ntypes,stand->cell->balance.aprec,year);
   getoutput(output,FLUX_ESTABC,config)+=flux_estab.carbon*stand->frac;
-  getoutput(output,NBP,config)+=flux_estab.carbon*stand->frac;
   getoutput(output,FLUX_ESTABN,config)+=flux_estab.nitrogen*stand->frac;
   stand->cell->balance.flux_estab.carbon+=flux_estab.carbon*stand->frac;
   stand->cell->balance.flux_estab.nitrogen+=flux_estab.nitrogen*stand->frac;

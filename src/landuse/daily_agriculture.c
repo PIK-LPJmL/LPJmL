@@ -126,7 +126,6 @@ Real daily_agriculture(Stand *stand,                /**< [inout] stand pointer *
         stand->soil.litter.item->agtop.leaf.carbon += crop->nmanure*param.manure_cn;
         stand->soil.litter.item->agtop.leaf.nitrogen += crop->nmanure*(1-param.nmanure_nh4_frac);
         stand->cell->balance.influx.carbon += crop->nmanure*param.manure_cn*stand->frac;
-        getoutput(output,NBP,config) += crop->nmanure*param.manure_cn*stand->frac;
         stand->cell->balance.influx.nitrogen += crop->nmanure*stand->frac;
         getoutput(output,NMANURE_AGR,config)+=crop->nmanure*stand->frac;
         getoutput(output,NAPPLIED_MG,config)+=crop->nmanure*stand->frac;
@@ -300,7 +299,6 @@ Real daily_agriculture(Stand *stand,                /**< [inout] stand pointer *
     npp=npp_crop(pft,gtemp_air,gtemp_soil,gpp-rd-pft->npp_bnf,&negbm,wdf,config);
     pft->npp_bnf=0.0;
     getoutput(output,NPP,config)+=npp*stand->frac;
-    getoutput(output,NBP,config)+=npp*stand->frac;
     stand->cell->balance.anpp+=npp*stand->frac;
     stand->cell->balance.agpp+=gpp*stand->frac;
     getoutput(output,NPP_AGR,config) += npp*stand->frac / agrfrac;

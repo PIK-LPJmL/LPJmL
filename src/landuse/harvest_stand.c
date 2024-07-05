@@ -489,7 +489,6 @@ Harvest harvest_stand(Output *output, /**< Output data */
     harvest=harvest_grass(stand,hfrac,config);
   }
   getoutput(output,HARVESTC,config)+=(harvest.harvest.carbon+harvest.residual.carbon)*stand->frac;
-  getoutput(output,NBP,config)-=(harvest.harvest.carbon+harvest.residual.carbon)*stand->frac;
   getoutput(output,HARVESTN,config)+=(harvest.harvest.nitrogen+harvest.residual.nitrogen)*stand->frac;
   stand->cell->balance.flux_harvest.carbon+=(harvest.harvest.carbon+harvest.residual.carbon)*stand->frac;
   stand->cell->balance.flux_harvest.nitrogen+=(harvest.harvest.nitrogen+harvest.residual.nitrogen)*stand->frac;

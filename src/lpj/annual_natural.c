@@ -76,7 +76,6 @@ Bool annual_natural(Stand *stand,         /**< Pointer to stand */
     {
       firewood=woodconsum(stand,popdens);
       getoutput(&stand->cell->output,FLUX_FIREWOOD,config)+=firewood.carbon*stand->frac;
-      getoutput(&stand->cell->output,NBP,config)-=firewood.carbon*stand->frac;
       getoutput(&stand->cell->output,FLUX_FIREWOOD_N,config)+=firewood.nitrogen*stand->frac;
       stand->cell->balance.flux_firewood.carbon+=firewood.carbon*stand->frac;
       stand->cell->balance.flux_firewood.nitrogen+=firewood.nitrogen*stand->frac;
@@ -98,7 +97,6 @@ Bool annual_natural(Stand *stand,         /**< Pointer to stand */
     getoutput(&stand->cell->output,FIREF,config)+=1.0/fire_frac;
     flux=firepft(stand,fire_frac,config);
     getoutput(&stand->cell->output,FIREC,config)+=flux.carbon*stand->frac;
-    getoutput(&stand->cell->output,NBP,config)-=flux.carbon*stand->frac;
     stand->cell->balance.fire.carbon+=flux.carbon*stand->frac;
     if(flux.nitrogen<0)
     {
@@ -117,7 +115,6 @@ Bool annual_natural(Stand *stand,         /**< Pointer to stand */
   if(!config->black_fallow)
   {
     flux_estab=establishmentpft(stand,npft,stand->cell->balance.aprec,year,config);
-    getoutput(&stand->cell->output,NBP,config)+=flux_estab.carbon*stand->frac;
     getoutput(&stand->cell->output,FLUX_ESTABC,config)+=flux_estab.carbon*stand->frac;
     getoutput(&stand->cell->output,FLUX_ESTABN,config)+=flux_estab.nitrogen*stand->frac;
     stand->cell->balance.flux_estab.carbon+=flux_estab.carbon*stand->frac;
