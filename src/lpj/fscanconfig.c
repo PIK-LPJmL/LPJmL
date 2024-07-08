@@ -307,6 +307,9 @@ Bool fscanconfig(Config *config,    /**< LPJ configuration */
   config->johansen = TRUE;
   if(fscanbool(file,&config->johansen,"johansen",!config->pedantic,verbose))
     return TRUE;
+  config->percolation_heattransfer = TRUE;
+  if(fscanbool(file,&config->percolation_heattransfer,"percolation_heattransfer",!config->pedantic,verbose))
+    return TRUE;
   config->sdate_option=NO_FIXED_SDATE;
   config->crop_phu_option=NEW_CROP_PHU;
   config->rw_manage=FALSE;

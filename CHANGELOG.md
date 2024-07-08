@@ -19,7 +19,7 @@ of `major.minor.patch` with
 
 ## [Unreleased]
 
-## [5.8.18] - 2024-06-27
+## [5.9.1] - 2024-07-09
 
 ### Contributors
 
@@ -29,6 +29,30 @@ of `major.minor.patch` with
 
 - Output `"nbp"` for net biosphere productivity and `"tws"` for  total water storage added.
 
+
+## [5.9.0] - 2024-07-08
+
+### Contributors
+
+- author: David Hötten (davidho@pik-potsdam.de)
+- code review: Sibyll Schaphoff (sibylls@pik-potsdam.de), Werner von Bloh (bloh@pik-potsdam.de) 
+
+### Added
+- Added `GPL_HEAT` macro to change number of gridpoints per soil layer used for heat convection.
+- Added `percolation_heattransfer` switch to disable convection/percolation heattransfer.
+- Added `littertemp` output variable for litter temperature.
+- Added fast implicit crank nicolson heat conduction scheme for non-phase change conditions `apply_heatconduction_of_a_day.c`.
+
+### Changed 
+- Replaced `soiltemp` soil temperature and snow and litter heat conduction routines with `update_soil_thermal_state.c`;
+  `soiltemp` remains in the repository for POEM/FMS coupling.
+- Use enthalpy (thermal energy) as state variable for soil thermal regime instead of temperature.
+- Numeric heat conduction method is a finite element enthalpy scheme `apply_heatconduction_of_a_day.c`.
+- Numeric heat convection method is improved by closing the energy balance for water infil and percolation. 
+- Conduction through snow and litter cover is now part of the numerical method for the soil.
+- Snow and litter temperatures are now calculated by interpolating air and top gridpoint temperature.
+- Snow melt by snow temperature greater than 0 deg is removed.
+- Litter heat insulation is now based on literature values for litter thermal conductivity.
 
 ## [5.8.17] - 2024-06-14
 
