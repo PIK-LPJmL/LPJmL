@@ -171,3 +171,6 @@ bin/regriddrain
 bin/coupler_demo
 bin/cmpbin
 bin/statclm
+
+# test build folder
+src/test/build
