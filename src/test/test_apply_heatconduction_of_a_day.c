@@ -12,6 +12,8 @@
 #include "unity.h" 
 /* lpjml modules under test */
 #include "apply_heatconduction_of_a_day.h"
+#include "compute_mean_layer_temps_from_enth.h"
+#include "calc_soil_thermal_props.h"
 /* lpjml modules mocked */
 #include "support_fail_stub.h"
 /* support for tests */

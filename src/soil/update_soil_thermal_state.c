@@ -14,11 +14,6 @@
 
 #include "lpj.h"
 
-/* For the snow thermal insulation the following alternative
- * value for snowheight per water height is used
- * compare to c_watertosnow */
-#define SNOWHEIGHT_PER_WATERHEIGHT 4
-
 /* declare internally used functions */
 STATIC void setup_heatgrid(Real *);
 STATIC void get_unaccounted_changes_in_water_and_solids(Real *, Real *, const Real *, const Soil *);

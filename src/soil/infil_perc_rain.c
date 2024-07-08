@@ -293,7 +293,7 @@ Real infil_perc_rain(Stand *stand,        /**< Stand pointer */
     {
       apply_perc_enthalpy(soil);
       Soil_thermal_prop th;
-      calc_soil_thermal_props(UNKNOWN,&th,soil,soil->wi_abs_enth_adj,soil->sol_abs_enth_adj,TRUE,FALSE);
+      calc_soil_thermal_props(UNKNOWN,&th,soil,soil->wi_abs_enth_adj,soil->sol_abs_enth_adj,config->johansen,FALSE);
       compute_mean_layer_temps_from_enth(soil->temp,soil->enth,&th);
     }
     infil_loop_count+=1;

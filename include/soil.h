@@ -37,7 +37,7 @@
 #ifndef U_TEST
 #define GPLHEAT 1 /* Gripoints per soil layer for the heat conduction scheme  */
 #endif
-#define NHEATGRIDP NSOILLAYER*GPLHEAT /* Total number of gridpoints for the heatflow scheme */
+#define NHEATGRIDP ((NSOILLAYER)*(GPLHEAT)) /* Total number of gridpoints for the heatflow scheme */
 #define SNOWLAYER NSOILLAYER
 
 #define snow_skin_depth 40.0 /* snow skin layer depth (mm water equivalent)*/
@@ -70,19 +70,26 @@
 #define PRIESTLEY_TAYLOR 1.32 /* Priestley-Taylor coefficient */
 #define SOILDEPTH_IRRIG 500 /*size of layer considered for calculation of irrigation ammount*/
 #define CDN 1.2         /* shape factor for denitrification from SWAT; beta_denit eq 3:1.4.1, SWAT Manual 2009 , take smaller value as it seems to be to high 1.4 originally*/
+/* The below snowheight per water height is used for thermal calculations;
+ * It is a typical value for settled snow (see Muskett et al (2012): Remote Sensing ... ) 
+ * analogous to c_watertosnow */
+#define SNOWHEIGHT_PER_WATERHEIGHT 4
 #define K_SOLID 8       /* Thermal conductivity of solid components in saturated state */
 #define K_ICE   2.2     /* Thermal conductivity of ice */
 #define K_WATER 0.57    /* Thermal conductivity of liquid water*/
 #define K_SOLID_LOG 0.90308998699
 #define K_ICE_LOG   0.34242268082
 #define K_WATER_LOG -0.24412514432
-/* Litter bulk and particle density are literature mean values for Oi horizon */
+/* Litter bulk and particle density are literature mean values for Oi horizon (dry bulk density samples are from the boreal zone)*/
+/* Range for dry bulk density is 39.6 [kg/m^3] (Kasischke et al (2000): Controls on Patterns of ... ) to 90.0 [kg/m^3] (Huang et al (1996): Forms amounts and ... ) */
+/* Range for particle density is 1220 [kg/m^3] (Wickland et al (2007): Decomposition of soil ... ) to 1660 [kg/m^3] (Lauren et al (1997): Physical properties ... ) */
 #define DRY_BULK_DENSITY_LITTER 71.1 /* [kg/m^3] */
 /* Porosity is calculated using f = (p_s - p_b)/p_s
+ * p_b is bulk density; p_s is particle density
  * Hillel: Environmental Soil Physics, p15 f. */
 #define POROSITY_LITTER 0.952  // [fraction]
 /* Litter thermal properties are based on organic soil values of
- * Lawrance and Slater 2007, Incorporating organic soil into a global climate model */
+ * (Lawrance and Slater (2007), Incorporating organic soil into a global climate model) */
 #define K_LITTER_DRY 0.05  /* thermal conductivity of organic material when completly dry */
 #define K_LITTER_SAT_FROZEN 2.106374   /* thermal conductivity of fully saturated frozen organic material */
 #define K_LITTER_SAT_UNFROZEN 0.554636  /* thermal conudcitivity of fully saturated unfrozen organic material */
