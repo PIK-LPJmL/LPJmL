@@ -64,6 +64,7 @@ Real daily_agriculture_grass(Stand *stand,                /**< stand pointer */
   Real wdf; /* water deficit fraction */
   Real fertil;
   Real manure;
+  Real vol_water_enth; /* volumetric enthalpy of water (J/m3) */
   Bool isphen;
   Irrigation* data;
   Pftgrass* grass;
@@ -173,12 +174,17 @@ Real daily_agriculture_grass(Stand *stand,                /**< stand pointer */
   /* soil inflow: infiltration and percolation */
   if (irrig_apply > epsilon)
   {
-    runoff += infil_perc_irr(stand, irrig_apply, &return_flow_b,npft,ncft,config);
+    vol_water_enth = climate->temp*c_water+c_water2ice; /* enthalpy of soil infiltration */
+    runoff += infil_perc_irr(stand, irrig_apply, vol_water_enth ,&return_flow_b,npft,ncft,config);
     /* count irrigation events*/
     getoutputindex(output,CFT_IRRIG_EVENTS,index,config)++; /* id is consecutively counted over natural pfts, biomass, and the cfts; ids for cfts are from 12-23, that is why npft (=12) is distracted from id */
-    }
+  }
 
-    runoff += infil_perc_rain(stand, rainmelt, &return_flow_b,npft,ncft,config);
+  if(climate->prec+melt>0) /* enthalpy of soil infiltration */
+    vol_water_enth = climate->temp*c_water*climate->prec/(climate->prec+melt)+c_water2ice;
+  else
+    vol_water_enth=0;
+  runoff += infil_perc_rain(stand, rainmelt, vol_water_enth ,&return_flow_b,npft,ncft,config);
 
   /* Version with daily allocation and grass management */
   /* #ifdef NEW_GRASS */

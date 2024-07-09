@@ -236,6 +236,7 @@ struct config
   Bool with_lakes;     /**< enable lakes (TRUE/FALSE) */
   Bool extflow;        /** external flow enabled */
   Bool permafrost;     /**< permafrost module enabled */
+  Bool percolation_heattransfer; /**< water heat transfer enabled */
   Bool johansen;       /**< johansen enabled */
   Bool gsi_phenology;	/**< GSI phenology enabled (TRUE/FALSE) */
   Bool transp_suction_fcn; /**< transpiration reduction function enabled */
