@@ -28,10 +28,12 @@ of `major.minor.patch` with
 ### Added
 
 - Output `"nbp"` for net biosphere productivity and `"tws"` for total water storage added.
+- `fail` added to mail type in `lpjsubmit_hpc`.
 
 ### Fixed
 
 - Scaling of `"littertemp"` output fixed.
+- Units corrected for `"swc"` and `"rootmoist"` output.
 
 
 ## [5.9.0] - 2024-07-08
