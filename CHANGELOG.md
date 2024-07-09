@@ -27,7 +27,11 @@ of `major.minor.patch` with
 
 ### Added
 
-- Output `"nbp"` for net biosphere productivity and `"tws"` for  total water storage added.
+- Output `"nbp"` for net biosphere productivity and `"tws"` for total water storage added.
+
+### Fixed
+
+- Scaling of `"littertemp"` output fixed.
 
 
 ## [5.9.0] - 2024-07-08
@@ -44,6 +48,7 @@ of `major.minor.patch` with
 - Added fast implicit crank nicolson heat conduction scheme for non-phase change conditions `apply_heatconduction_of_a_day.c`.
 
 ### Changed 
+
 - Replaced `soiltemp` soil temperature and snow and litter heat conduction routines with `update_soil_thermal_state.c`;
   `soiltemp` remains in the repository for POEM/FMS coupling.
 - Use enthalpy (thermal energy) as state variable for soil thermal regime instead of temperature.
@@ -53,6 +58,7 @@ of `major.minor.patch` with
 - Snow and litter temperatures are now calculated by interpolating air and top gridpoint temperature.
 - Snow melt by snow temperature greater than 0 deg is removed.
 - Litter heat insulation is now based on literature values for litter thermal conductivity.
+
 
 ## [5.8.17] - 2024-06-14
 
