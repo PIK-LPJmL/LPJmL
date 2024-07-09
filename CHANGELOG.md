@@ -33,7 +33,7 @@ of `major.minor.patch` with
 ### Fixed
 
 - Scaling of `"littertemp"` output fixed.
-- Units corrected for `"swc"` and `"rootmoist"` output.
+- Unit corrected for "rootmoist"` output.
 
 
 ## [5.9.0] - 2024-07-08
