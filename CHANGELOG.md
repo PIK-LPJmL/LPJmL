@@ -34,6 +34,7 @@ of `major.minor.patch` with
 
 - Scaling of `"littertemp"` output fixed.
 - Unit corrected for "rootmoist"` output.
+- Correct number of output files printed in `lpjfiles` utility if separate output files for each year are enabled.
 
 
 ## [5.9.0] - 2024-07-08
