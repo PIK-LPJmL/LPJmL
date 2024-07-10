@@ -27,7 +27,7 @@ FILE *openconfig(Config *config,      /**< configuration struct */
                 )                     /** \return file pointer of open file or NULL */
 
 {
-  char *lpjpath,*lpjinc,*env_options,*pos;
+  char *lpjpath=NULL,*lpjinc,*env_options,*pos;
   char **options;
   char *endptr;
   Bool iscpp;

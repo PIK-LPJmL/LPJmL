@@ -118,13 +118,13 @@ extern Landfrac *newlandfrac(int,int);
 extern void initlandfracitem(Landfrac *,int,int);
 extern void initlandfrac(Landfrac [2],int,int);
 extern void scalelandfrac(Landfrac [2],int,int,Real);
-extern void freelandfrac(Landfrac [2]);
+extern void freelandfrac(Landfrac *);
 extern Bool fwritelandfrac(FILE *,const Landfrac [2],int,int);
 extern void fprintlandfrac(FILE *,const Landfrac *,int,int);
 extern Bool freadlandfrac(FILE *,Landfrac [2],int,int,Bool);
 extern Bool readlandfracmap(Landfrac *,const int [],int,const Real [],int *,int,int);
 extern Real landfrac_sum(const Landfrac [2],int,int,Bool);
-extern Real crop_sum_frac(Landfrac *,int,int,Real,Bool);
+extern Real crop_sum_frac(Landfrac [2],int,int,Real,Bool);
 extern Stocks cultivate(Cell *,Bool,int,Bool,Stand *,
                         int,int,int,int,Bool,const Config *);
 #ifdef IMAGE
@@ -169,6 +169,6 @@ extern void output_gbw(Output *,const Stand *,Real,Real,Real,Real,
 
 /* Declaration of variables */
 
-extern const char *biomass_names[NBIOMASSTYPE];
+extern char *biomass_names[NBIOMASSTYPE];
 
 #endif

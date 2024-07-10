@@ -52,10 +52,9 @@ int main(int argc,char **argv)
   Coordfile coordfile;
   Intcoord intcoord;
   Coord_netcdf cdf;
-  FILE *file,*frac_file;
+  FILE *file,*frac_file=NULL;
   int i,j,n,index,cell,year,harvest_index;
   float harvest,lon,lat,frac;
-  Real scale;
   Real harvest_total;
   Landfrac *harvest_sum;
   initconfig(&config);
@@ -305,7 +304,7 @@ int main(int argc,char **argv)
     }
     for(i=0;i<NGRASS;i++)
     {
-      printf(",%g",(harvest_sum[0].grass[i]+harvest_sum[1].grass[i])*scale);
+      printf(",%g",(harvest_sum[0].grass[i]+harvest_sum[1].grass[i]));
       harvest_total+=harvest_sum[0].grass[i]+harvest_sum[1].grass[i];
     }
     printf(",%g",(harvest_sum[0].biomass_grass+harvest_sum[1].biomass_grass));

@@ -1,10 +1,8 @@
 /**************************************************************************************/
 /**                                                                                \n**/
-/**                      f  i  n  d  s  t  r  .  c                                 \n**/
+/**                     n  e  w  a  r  r  a  y  .  c                               \n**/
 /**                                                                                \n**/
-/**     C implementation of LPJmL                                                  \n**/
-/**                                                                                \n**/
-/**     Function finds string in array of strings                                  \n**/
+/** Function allocates storage for an array with bounds [lo,hi]                    \n**/
 /**                                                                                \n**/
 /** (C) Potsdam Institute for Climate Impact Research (PIK), see COPYRIGHT file    \n**/
 /** authors, and contributors see AUTHORS file                                     \n**/
@@ -14,21 +12,18 @@
 /**                                                                                \n**/
 /**************************************************************************************/
 
+#include <stdlib.h>
 #include <stdio.h>
-#include <string.h>
 #include "types.h"
 
-int findstr(const char *s, /**< string to be find in array */
-            char **array,  /**< array of strings */
-            int size       /**< size of array */
-           )               /** \return index of string found or NOT_FOUND */
+void *newarray(size_t size, /**< size of array element */
+               int lo,      /**< lower bound of array */
+               int hi       /**< upper bound of array */
+              )             /** \return pointer to array or NULL */
 {
-  int i;
-  if(s!=NULL && array!=NULL)
-  {
-    for(i=0;i<size;i++)
-      if(!strcmp(s,array[i]))
-        return i;
-  }
-  return NOT_FOUND;
-} /* of 'findstr' */
+  void *ptr;
+  ptr=malloc(size*(hi-lo+1));
+  if(ptr==NULL)
+    return NULL;
+  return ptr-lo*size;
+} /* of 'newarray' */

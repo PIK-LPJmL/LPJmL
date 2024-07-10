@@ -43,7 +43,7 @@ Bool annual_agriculture_tree(Stand *stand,         /**< Pointer to stand */
   Stocks flux_return;
   Stocks estab_store={0,0};
   Stocks yield={0.0,0};
-  Pfttreepar *treepar;
+  Pfttreepar *treepar=NULL;
   Pfttree *tree;
   Biomass_tree *data;
   Real k_est_thiscell,sapling_C_thiscell;
