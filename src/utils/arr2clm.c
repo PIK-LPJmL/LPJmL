@@ -247,7 +247,7 @@ int main(int argc,char **argv)
       printfcreateerr(out_json);
       return EXIT_FAILURE;
     }
-    fprintjson(out,argv[iarg+2],NULL,NULL,arglist,&header,NULL,NULL,NULL,0,NULL,NULL,NULL,NULL,&coord_filename,coord_type,CLM,id,FALSE,version);
+    fprintjson(out,argv[iarg+2],NULL,NULL,NULL,arglist,&header,NULL,NULL,NULL,0,NULL,NULL,NULL,NULL,&coord_filename,coord_type,CLM,id,FALSE,version);
     fclose(out);
   }
   return EXIT_SUCCESS;

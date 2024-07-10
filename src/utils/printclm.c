@@ -14,7 +14,7 @@
 
 #include "lpj.h"
 
-#define USAGE "Usage: %s [-metafile] [-header] [-data] [-text] [-json] [-scale] [-longheader] [-type {byte|short|int|float|double}]\n       [-map name] [-nbands n] [-start s] [-end e] [-first f] [-last l] filename ...\n"
+#define USAGE "Usage: %s [-v] [-metafile] [-header] [-data] [-text] [-json] [-scale] [-longheader] [-type {byte|short|int|float|double}]\n       [-map name] [-nbands n] [-start s] [-end e] [-first f] [-last l] filename ...\n"
 #define NO_HEADER 1
 #define NO_DATA 2
 #define NO_TEXT 4
@@ -95,7 +95,7 @@ static void printclm(const char *filename,int output,int nbands,int version,
   }
   if(isjon)
   {
-    fprintjson(stdout,filename,NULL,NULL,NULL,&header,map,map_name,attrs,n_attr,NULL,unit,standard_name,long_name,NULL,LPJ_SHORT,CLM,id,swap,version);
+    fprintjson(stdout,filename,NULL,NULL,NULL,NULL,&header,map,map_name,attrs,n_attr,NULL,unit,standard_name,long_name,NULL,LPJ_SHORT,CLM,id,swap,version);
     return;
   }
   free(long_name);
@@ -444,7 +444,12 @@ int main(int argc,char **argv)
   for(i=1;i<argc;i++)
     if(argv[i][0]=='-')
     {
-      if(!strcmp(argv[i],"-header"))
+      if(!strcmp(argv[i],"-v") || !strcmp(argv[i],"--version"))
+      {
+        puts(LPJ_VERSION);
+        return EXIT_SUCCESS;
+      }
+      else if(!strcmp(argv[i],"-header"))
         output|=NO_HEADER;
       else if(!strcmp(argv[i],"-data"))
         output|=NO_DATA;

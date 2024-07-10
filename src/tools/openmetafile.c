@@ -52,6 +52,22 @@ void fprintmap(FILE *file,const Map *map)
   fputc(']',file);
 } /* of 'fprintmap' */
 
+Map *newmap(Bool isfloat,int size)
+{
+  Map *map;
+  map=new(Map);
+  if(map==NULL)
+    return NULL;
+  map->isfloat=isfloat;
+  map->list=newlist(size);
+  if(map->list==NULL)
+  {
+    free(map);
+    return NULL;
+  }
+  return map;
+} /* of 'newmap' */
+
 void freemap(Map *map)
 {
   int i;

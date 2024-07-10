@@ -15,9 +15,9 @@
 #include "lpj.h"
 
 #ifdef USE_UDUNITS
-#define USAGE "Usage: %s [-swap] [-v] [-units unit] [-var name] [-clm] [-cellsize size] [-byte] [-floatgrid] [-doublegrid]  [-o filename] [-json] gridfile netcdffile ...\n"
+#define USAGE "Usage: %s [-swap] [-v] [-units unit] [-var name] [-map name] [-clm] [-cellsize size] [-byte] [-floatgrid] [-doublegrid]  [-o filename] [-json] gridfile netcdffile ...\n"
 #else
-#define USAGE "Usage: %s [-swap] [-v] [-var name] [-clm] [-cellsize size] [-byte] [-floatgrid] [-doublegrid] [-o filename] [-json] gridfile netcdffile ...\n"
+#define USAGE "Usage: %s [-swap] [-v] [-var name] [-map name] [-clm] [-cellsize size] [-byte] [-floatgrid] [-doublegrid] [-o filename] [-json] gridfile netcdffile ...\n"
 #endif
 
 #if defined(USE_NETCDF) || defined(USE_NETCDF4)
@@ -227,12 +227,13 @@ int main(int argc,char **argv)
   Filename coord_filename;
   Climatefile data;
   Config config;
-  char *units,*var,*outname,*endptr,*out_json,*arglist,*long_name,*standard_name,*history,*source;
+  char *units,*var,*outname,*endptr,*out_json,*arglist,*long_name,*standard_name,*history,*source,*map_name,*title;
   Coord *grid;
   Intcoord intcoord;
   float fcoord[2];
   double dcoord[2];
   FILE *file;
+  Map *map;
   int iarg,j;
   float cellsize_lon,cellsize_lat;
   Bool swap,verbose,isclm,isbyte,isjson;
@@ -242,6 +243,7 @@ int main(int argc,char **argv)
   isbyte=swap=verbose=isclm=isjson=FALSE;
   units=NULL;
   var=NULL;
+  map_name=0;
   outname="out.bin"; /* default file name for output */
   grid_type=LPJ_SHORT;
   cellsize_lon=cellsize_lat=0.5;      /* default cell size */
@@ -287,6 +289,17 @@ int main(int argc,char **argv)
         units=argv[++iarg];
       }
 #endif
+      else if(!strcmp(argv[iarg],"-map"))
+      {
+        if(argc==iarg+1)
+        {
+          fprintf(stderr,"Missing argument after option '-map'.\n"
+                 USAGE,argv[0]);
+          return EXIT_FAILURE;
+        }
+        map_name=argv[++iarg];
+      }
+
       else if(!strcmp(argv[iarg],"-o"))
       {
         if(argc==iarg+1)
@@ -464,7 +477,15 @@ int main(int argc,char **argv)
     standard_name=getattr_netcdf(&data,data.varid,"standard_name");
     history=getattr_netcdf(&data,NC_GLOBAL,"history");
     source=getattr_netcdf(&data,NC_GLOBAL,"source");
-
+    title=getattr_netcdf(&data,NC_GLOBAL,"title");
+    if(map_name!=NULL)
+    {
+      map=readmap_netcdf(data.ncid,map_name);
+      if(map==NULL)
+        map_name=NULL;
+      else
+        map_name=BAND_NAMES;
+    }
     if(isclm || isjson)
     {
       if(j==iarg+1)
@@ -540,7 +561,7 @@ int main(int argc,char **argv)
     }
     grid_name.name=argv[iarg];
     grid_name.fmt=(isclm) ? CLM : RAW;
-    fprintjson(file,outname,source,history,arglist,&header,NULL,NULL,NULL,0,var,units,standard_name,long_name,&grid_name,grid_type,(isclm) ? CLM : RAW,LPJOUTPUT_HEADER,FALSE,LPJOUTPUT_VERSION);
+    fprintjson(file,outname,title,source,history,arglist,&header,map,map_name,NULL,0,var,units,standard_name,long_name,&grid_name,grid_type,(isclm) ? CLM : RAW,LPJOUTPUT_HEADER,FALSE,LPJOUTPUT_VERSION);
     fclose(file);
   }
   return EXIT_SUCCESS;

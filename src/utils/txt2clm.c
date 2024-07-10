@@ -448,7 +448,7 @@ int main(int argc,char **argv)
       printfcreateerr(out_json);
       return EXIT_FAILURE;
     }
-    fprintjson(out,argv[iarg+1],"txt2clm",NULL,arglist,&header,NULL,NULL,NULL,0,NULL,NULL,NULL,NULL,NULL,LPJ_SHORT,CLM,id,FALSE,version);
+    fprintjson(out,argv[iarg+1],NULL,"txt2clm",NULL,arglist,&header,NULL,NULL,NULL,0,NULL,NULL,NULL,NULL,NULL,LPJ_SHORT,CLM,id,FALSE,version);
     fclose(out);
   }
   return EXIT_SUCCESS;
