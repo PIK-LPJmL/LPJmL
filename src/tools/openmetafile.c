@@ -32,7 +32,7 @@
 
 #include "lpj.h"
 
-const char *ordernames[]={"cellyear","yearcell","cellindex","cellseq"};
+char *ordernames[]={"cellyear","yearcell","cellindex","cellseq"};
 
 void fprintmap(FILE *file,const Map *map)
 {
@@ -126,7 +126,7 @@ char *parse_json_metafile(FILE *file,         /**< pointer to JSON file */
     {
       if(verbosity)
         fprintf(stderr,"ERROR229: Invalid format %s for input file, must be raw, clm or clm2.\n",
-                format[fmt]);
+                fmt[format]);
       closeconfig(lpjfile);
       return NULL;
     }

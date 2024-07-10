@@ -24,7 +24,7 @@ int main(int argc,char **argv)
   FILE *ifp1,*ifp2;
   FILE *ofp,*ofp_ngrid;
   Header header;
-  int i, j, k, l, c, c0;
+  int i, j, k, c, c0;
   int ncell;
   int *rivers;
   int value;
@@ -137,7 +137,7 @@ int main(int argc,char **argv)
 
   /* re-order the input, generate output with grid number of length < LEN_MAX */
   k=1;
-  l=c=c0=0;
+  c=c0=0;
   while(sum[k]!=-99)
   {
     if(c==0 && sum[k]>LEN_MAX)
@@ -181,7 +181,6 @@ int main(int argc,char **argv)
     /* write output of ngrid.txt */
     fprintf(ofp_ngrid,"%d\n",c0);
 
-    l++;
     c=c0=0;
   }
   fclose(ofp);

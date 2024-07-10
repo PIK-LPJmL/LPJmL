@@ -58,7 +58,6 @@ Real daily_biomass_tree(Stand *stand,                /**< stand pointer */
   Real wdf; /* water deficit fraction */
   Real transp;
   Real gc_pft;
-  Real fertil;
   Real vol_water_enth; /* volumetric enthalpy of water (J/m3) */
   Biomass_tree *data;
   Soil *soil;

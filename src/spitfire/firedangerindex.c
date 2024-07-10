@@ -91,6 +91,9 @@ Real firedangerindex(Real char_moist_factor,
       d_fdi = pow(10,Z) * (1-rh) * VD * exp(-cR * R);
       d_fdi*= vpd_sum;
       break;
+    default:
+      d_fdi=0;
+      fail(INVALID_FIRE_INDEX_ERR,TRUE,"Invalid fire index %d",fid);
   }  /* of 'switch' */
   return d_fdi;
 } /* of 'firedangerindex' */

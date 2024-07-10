@@ -90,7 +90,7 @@ void scalelandfrac(Landfrac landfrac[2], /**< land fractions (non-irrig., irrig.
   }
 } /* of 'scalelandfrac' */
 
-void freelandfrac(Landfrac landfrac[2] /**< land fractions (non-irrig., irrig.) */
+void freelandfrac(Landfrac *landfrac /**< land fractions (non-irrig., irrig.) */
                  )
 {
   if(landfrac!=NULL)
