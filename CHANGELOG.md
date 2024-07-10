@@ -19,11 +19,12 @@ of `major.minor.patch` with
 
 ## [Unreleased]
 
-## [5.9.1] - 2024-06-09
+## [5.9.2] - 2024-06-10
 
 ### Contributors
 
 - author: Werner von Bloh (bloh@pik-potsdam.de)
+- code review: Christoph Mueller (cmueller@pik-potsdam.de), Sebastian Ostberg (ostberg@pik-potsdam.de)
 
 ### Added
 
@@ -33,6 +34,7 @@ of `major.minor.patch` with
 
 - Compile option `-Werror` added to stop compilation of `icx`/`gcc` after warning. This feature can be disabled by using the `-noerror` option of `configure.sh`.
 - Filename and source is written into configuration file created by `regridlpj`.
+- All missing output indices are printed in case that the `"outputvar"` array is too short.
 
 ### Fixed
 
@@ -44,7 +46,6 @@ of `major.minor.patch` with
 - Code fixed to remove all warnings if compiled with `icx`/`gcc`.
 - `regridclm` now used for regridding of soil file in `regridlpj`.
 - Missing seek to offset added in filesexist.c
-- Debug option in `Makefile.icx` corrected.
 - Misplaced deallocation of memory for unit corrected in `printclm`.
 
 
