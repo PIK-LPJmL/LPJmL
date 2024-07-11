@@ -19,7 +19,7 @@ of `major.minor.patch` with
 
 ## [Unreleased]
 
-## [5.9.2] - 2024-06-10
+## [5.9.1] - 2024-06-11
 
 ### Contributors
 
