@@ -19,6 +19,36 @@ of `major.minor.patch` with
 
 ## [Unreleased]
 
+## [5.9.1] - 2024-06-11
+
+### Contributors
+
+- author: Werner von Bloh (bloh@pik-potsdam.de)
+- code review: Christoph Mueller (cmueller@pik-potsdam.de), Sebastian Ostberg (ostberg@pik-potsdam.de)
+
+### Added
+
+- Missing regridding of wateruse and livestock density input added in `regridlpj`.
+
+### Changed
+
+- Compile option `-Werror` added to stop compilation of `icx`/`gcc` after warning. This feature can be disabled by using the `-noerror` option of `configure.sh`.
+- Filename and source is written into configuration file created by `regridlpj`.
+- All missing output indices are printed in case that the `"outputvar"` array is too short.
+
+### Fixed
+
+- Incorrect scaling removed in utility `printharvest`.
+- Uninitialized PFT pointer set to first PFT in `harvest_stand.c`.
+- Uninitialized variable `n_attr` set to zero in utility `printclm`.
+- Prescribed land cover is now read correctly if landcover map size differs from number of natural PFTs.
+- Check for land use type `WP` corrected in `landusechange.c` (issue #354).
+- Code fixed to remove all warnings if compiled with `icx`/`gcc`.
+- `regridclm` now used for regridding of soil file in `regridlpj`.
+- Missing seek to offset added in filesexist.c
+- Misplaced deallocation of memory for unit corrected in `printclm`.
+
+
 ## [5.9.0] - 2024-07-08
 
 ### Contributors

@@ -94,9 +94,9 @@
 
 #define checkptr(ptr) if(ptr==NULL) { printallocerr(#ptr); return TRUE;}
 
-const char *phenology[]={"evergreen","raingreen","summergreen","any","cropgreen"};
-const char *cultivation_type[]={"none","biomass","annual crop","annual tree","wp"};
-const char *path[]={"no pathway","C3","C4"};
+char *phenology[]={"evergreen","raingreen","summergreen","any","cropgreen"};
+char *cultivation_type[]={"none","biomass","annual crop","annual tree","wp"};
+char *path[]={"no pathway","C3","C4"};
 
 static int findint(int val,const int *array,int size)
 {

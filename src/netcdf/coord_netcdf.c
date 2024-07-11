@@ -76,7 +76,7 @@ int numcoord_netcdf(const Coord_netcdf coord)
         printallocerr("soil");
         return -1;
       }
-      if(rc=nc_get_var_short(coord->ncid,coord->varid,soil))
+      if((rc=nc_get_var_short(coord->ncid,coord->varid,soil)))
       {
         fprintf(stderr,"ERROR410: Cannot read soilcode: %s.\n",
                 nc_strerror(rc));
@@ -95,7 +95,7 @@ int numcoord_netcdf(const Coord_netcdf coord)
         printallocerr("soil");
         return -1;
       }
-      if(rc=nc_get_var_float(coord->ncid,coord->varid,fsoil))
+      if((rc=nc_get_var_float(coord->ncid,coord->varid,fsoil)))
       {
         fprintf(stderr,"ERROR410: Cannot read soilcode: %s.\n",
                 nc_strerror(rc));
@@ -114,7 +114,7 @@ int numcoord_netcdf(const Coord_netcdf coord)
         printallocerr("isoil");
         return -1;
       }
-      if(rc=nc_get_var_int(coord->ncid,coord->varid,isoil))
+      if((rc=nc_get_var_int(coord->ncid,coord->varid,isoil)))
       {
         fprintf(stderr,"ERROR410: Cannot read soilcode: %s.\n",
                 nc_strerror(rc));
@@ -133,7 +133,7 @@ int numcoord_netcdf(const Coord_netcdf coord)
         printallocerr("bsoil");
         return -1;
       }
-      if(rc=nc_get_var_uchar(coord->ncid,coord->varid,bsoil))
+      if((rc=nc_get_var_uchar(coord->ncid,coord->varid,bsoil)))
       {
         fprintf(stderr,"ERROR410: Cannot read soilcode: %s.\n",
                 nc_strerror(rc));
@@ -145,6 +145,9 @@ int numcoord_netcdf(const Coord_netcdf coord)
           count++;
       free(bsoil);
       break;
+    default:
+      fputs("ERROR428: Invalid data type in NetCDF file.\n",stderr);
+      return -1;
   }
   return count;
 #else
@@ -250,6 +253,9 @@ int *getindexcoord_netcdf(const Coord_netcdf coord)
           index[i]=count++;
       free(bsoil);
       break;
+    default:
+      fputs("ERROR428: Invalid data type in NetCDF file.\n",stderr);
+      return NULL;
   }
   return index;
 #else
@@ -275,7 +281,7 @@ Bool seekcoord_netcdf(Coord_netcdf coord,int pos)
       for(coord->offsets[0]=0;coord->offsets[0]<coord->lat_len;coord->offsets[0]++)
         for(coord->offsets[1]=0;coord->offsets[1]<coord->lon_len;coord->offsets[1]++)
         {
-          if(rc=nc_get_vara_short(coord->ncid,coord->varid,coord->offsets,counts,&soil))
+          if((rc=nc_get_vara_short(coord->ncid,coord->varid,coord->offsets,counts,&soil)))
           {
             fprintf(stderr,"ERROR410: Cannot read soilcode: %s.\n",
                     nc_strerror(rc));
@@ -294,7 +300,7 @@ Bool seekcoord_netcdf(Coord_netcdf coord,int pos)
       for(coord->offsets[0]=0;coord->offsets[0]<coord->lat_len;coord->offsets[0]++)
         for(coord->offsets[1]=0;coord->offsets[1]<coord->lon_len;coord->offsets[1]++)
         {
-          if(rc=nc_get_vara_float(coord->ncid,coord->varid,coord->offsets,counts,&fsoil))
+          if((rc=nc_get_vara_float(coord->ncid,coord->varid,coord->offsets,counts,&fsoil)))
           {
             fprintf(stderr,"ERROR410: Cannot read soilcode: %s.\n",
                     nc_strerror(rc));
@@ -313,7 +319,7 @@ Bool seekcoord_netcdf(Coord_netcdf coord,int pos)
       for(coord->offsets[0]=0;coord->offsets[0]<coord->lat_len;coord->offsets[0]++)
         for(coord->offsets[1]=0;coord->offsets[1]<coord->lon_len;coord->offsets[1]++)
         {
-          if(rc=nc_get_vara_int(coord->ncid,coord->varid,coord->offsets,counts,&isoil))
+          if((rc=nc_get_vara_int(coord->ncid,coord->varid,coord->offsets,counts,&isoil)))
           {
             fprintf(stderr,"ERROR410: Cannot read soilcode: %s.\n",
                     nc_strerror(rc));
@@ -332,7 +338,7 @@ Bool seekcoord_netcdf(Coord_netcdf coord,int pos)
       for(coord->offsets[0]=0;coord->offsets[0]<coord->lat_len;coord->offsets[0]++)
         for(coord->offsets[1]=0;coord->offsets[1]<coord->lon_len;coord->offsets[1]++)
         {
-          if(rc=nc_get_vara_uchar(coord->ncid,coord->varid,coord->offsets,counts,&bsoil))
+          if((rc=nc_get_vara_uchar(coord->ncid,coord->varid,coord->offsets,counts,&bsoil)))
           {
             fprintf(stderr,"ERROR410: Cannot read soilcode: %s.\n",
                     nc_strerror(rc));
@@ -347,6 +353,9 @@ Bool seekcoord_netcdf(Coord_netcdf coord,int pos)
           }
         }
       break;
+    default:
+      fputs("ERROR428: Invalid data type in NetCDF file.\n",stderr);
+      return TRUE;
   }
 #endif
   return TRUE;
@@ -369,7 +378,7 @@ Bool readcoord_netcdf(Coord_netcdf coord,Coord *c,const Coord *resol,unsigned in
       {
         for(;coord->offsets[1]<coord->lon_len;coord->offsets[1]++)
         {
-          if(rc=nc_get_vara_short(coord->ncid,coord->varid,coord->offsets,counts,&data))
+          if((rc=nc_get_vara_short(coord->ncid,coord->varid,coord->offsets,counts,&data)))
           {
             fprintf(stderr,"ERROR410: Cannot read soilcode: %s.\n",
                     nc_strerror(rc));
@@ -399,7 +408,7 @@ Bool readcoord_netcdf(Coord_netcdf coord,Coord *c,const Coord *resol,unsigned in
       {
         for(;coord->offsets[1]<coord->lon_len;coord->offsets[1]++)
         {
-          if(rc=nc_get_vara_float(coord->ncid,coord->varid,coord->offsets,counts,&fdata))
+          if((rc=nc_get_vara_float(coord->ncid,coord->varid,coord->offsets,counts,&fdata)))
           {
             fprintf(stderr,"ERROR410: Cannot read soilcode: %s.\n",
                     nc_strerror(rc));
@@ -429,7 +438,7 @@ Bool readcoord_netcdf(Coord_netcdf coord,Coord *c,const Coord *resol,unsigned in
       {
         for(;coord->offsets[1]<coord->lon_len;coord->offsets[1]++)
         {
-          if(rc=nc_get_vara_int(coord->ncid,coord->varid,coord->offsets,counts,&idata))
+          if((rc=nc_get_vara_int(coord->ncid,coord->varid,coord->offsets,counts,&idata)))
           {
             fprintf(stderr,"ERROR410: Cannot read soilcode: %s.\n",
                     nc_strerror(rc));
@@ -459,7 +468,7 @@ Bool readcoord_netcdf(Coord_netcdf coord,Coord *c,const Coord *resol,unsigned in
       {
         for(;coord->offsets[1]<coord->lon_len;coord->offsets[1]++)
         {
-          if(rc=nc_get_vara_uchar(coord->ncid,coord->varid,coord->offsets,counts,&bdata))
+          if((rc=nc_get_vara_uchar(coord->ncid,coord->varid,coord->offsets,counts,&bdata)))
           {
             fprintf(stderr,"ERROR410: Cannot read soilcode: %s.\n",
                     nc_strerror(rc));
@@ -484,6 +493,9 @@ Bool readcoord_netcdf(Coord_netcdf coord,Coord *c,const Coord *resol,unsigned in
         coord->offsets[1]=0;
       }
       break;
+    default:
+      fputs("ERROR428: Invalid data type in NetCDF file.\n",stderr);
+      return TRUE;
   }
 #endif
   return TRUE;

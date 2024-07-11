@@ -18,7 +18,7 @@
 #include "agriculture.h"
 #include "grassland.h"
 
-const char *grassland_names[NGRASS]={"others","grassland"};
+char *grassland_names[NGRASS]={"others","grassland"};
 
 Standtype grassland_stand={GRASSLAND,"grassland",new_grassland,
                            free_agriculture,fwrite_grassland,
