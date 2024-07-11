@@ -54,16 +54,12 @@ void update_daily(Cell *cell,            /**< cell pointer           */
   Real bnf;
   Real nh3;
   int index,l,i;
-  Real rootdepth=0.0;
   Livefuel livefuel={0,0,0,0,0};
   const Real prec_save=climate.prec;
   Real agrfrac;
   Real litsum_old_nv[2]={0,0},litsum_new_nv[2]={0,0};
   Real litsum_old_agr[2]={0,0},litsum_new_agr[2]={0,0};
   Irrigation *data;
-
-  forrootmoist(l)
-    rootdepth+=soildepth[l];
 
   updategdd(cell->gdd,config->pftpar,npft,climate.temp);
   cell->balance.aprec+=climate.prec;
@@ -437,7 +433,7 @@ void update_daily(Cell *cell,            /**< cell pointer           */
         cell->balance.aevap_lake+=eeq*PRIESTLEY_TAYLOR*cell->lakefrac;
 #if defined IMAGE && defined COUPLED
         if(cell->ml.image_data!=NULL)
-          cell->ml.image_data->mevapotr[month] += =eeq*PRIESTLEY_TAYLOR*stand->frac;
+          cell->ml.image_data->mevapotr[month] += eeq*PRIESTLEY_TAYLOR*stand->frac;
 #endif
         cell->output.dwflux+=eeq*PRIESTLEY_TAYLOR*cell->lakefrac;
         cell->discharge.dmass_lake=cell->discharge.dmass_lake-eeq*PRIESTLEY_TAYLOR*cell->coord.area*cell->lakefrac;

@@ -26,7 +26,10 @@ static Bool readsocket(Socket *socket,int day,int sizes[],int count[],Type type[
 {
   Token token;
   int index;
-  int year,step;
+  int year;
+#if COUPLER_VERSION == 4
+  int step;
+#endif
   int j,k;
   float *data;
   short *sdata;
@@ -128,7 +131,7 @@ static Bool readyeardata(Socket *socket,int nday_out,int nmonth_out,int n_out,in
 
 int main(int argc,char **argv)
 {
-  FILE *file;
+  FILE *file=NULL;
   Header header;
   Socket *socket;
   float *landuse;
@@ -143,14 +146,16 @@ int main(int argc,char **argv)
   Type type[NOUT];
   int sizes_in[N_IN];
   Type type_in[N_IN];
+#if COUPLER_VERSION == 4
   Type datatype;
+  int ncell_in;
+  int status;
+#endif
   int port;
   int nmonth_out;
   int nday_out;
   int nbands;
   int firstgrid;
-  int ncell_in;
-  int status;
   Bool swap;
   String line;
   const char *progname;
@@ -411,9 +416,9 @@ int main(int argc,char **argv)
           index=COUPLER_OK;
           break;
         default:
-          index=COUPLER_ERR;
           n_err++;
           fprintf(stderr,"Invalid number of steps %d for index %d, must be 1, 12, or 365.\n",nstep[index],index);
+          index=COUPLER_ERR;
       }
     writeint_socket(socket,&index,1);
   }

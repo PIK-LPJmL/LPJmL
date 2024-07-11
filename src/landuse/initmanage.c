@@ -33,7 +33,7 @@ Bool initmanage(Manage *manage,               /**< pointer to management data */
   if(manage->par->laimax_cft==NULL)
   {
     manage->laimax=newvec2(Real,npft,npft+ncft-1);  /* allocate memory for country-specific laimax*/
-    if(manage->laimax+npft==NULL)
+    if(manage->laimax==NULL)
     {
       printallocerr("laimax");
       return TRUE;
