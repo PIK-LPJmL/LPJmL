@@ -217,10 +217,7 @@ void landusechange_for_reservoir(Cell *cell,          /**< pointer to cell */
   Real sum[2];
   Real minnatfrac_res;
   int s;
-#ifndef IMAGE
-  Real totw_before,totw_after;
-  Real balanceW;
-#endif
+  Real totw_before,totw_after,balanceW;
   Stocks tot_before={0,0},tot_after={0,0},balance,stocks; /* to check the water and c balance in the cells */
   Irrigation *data;
 #if defined IMAGE && defined COUPLED
@@ -240,14 +237,12 @@ void landusechange_for_reservoir(Cell *cell,          /**< pointer to cell */
     /* total water and carbon calculation before the correction of fractions
      * for reservoir water
      */
-#ifndef IMAGE
     totw_before=cell->balance.awater_flux+cell->balance.excess_water;
     foreachstand(stand,s,cell->standlist)
       totw_before+=soilwater(&stand->soil)*stand->frac;
     totw_before+=(cell->discharge.dmass_lake)/cell->coord.area;
     totw_before+=cell->ml.resdata->dmass/cell->coord.area;
     totw_before+=cell->ml.resdata->dfout_irrigation/cell->coord.area;
-#endif
     /* carbon */
     foreachstand(stand,s,cell->standlist)
     {
@@ -344,7 +339,6 @@ void landusechange_for_reservoir(Cell *cell,          /**< pointer to cell */
     /* total water and carbon calculation after the correction of fractions
      * for reservoir water
      */
-#ifndef IMAGE /*  Because the timber harvest is not accounted for in the carbon balance check*/
     totw_after=cell->balance.awater_flux+cell->balance.excess_water;
     foreachstand(stand,s,cell->standlist)
       totw_after+=soilwater(&stand->soil)*stand->frac;
@@ -366,13 +360,12 @@ void landusechange_for_reservoir(Cell *cell,          /**< pointer to cell */
     tot_after.nitrogen+=cell->balance.deforest_emissions.nitrogen;
     tot_after.carbon-=cell->balance.flux_estab.carbon;
     tot_after.nitrogen-=cell->balance.flux_estab.nitrogen;
-#endif
     /* check if the same */
     balance.carbon=tot_before.carbon-tot_after.carbon;
     balance.nitrogen=tot_before.nitrogen-tot_after.nitrogen;
+    balanceW=totw_before-totw_after;
 
 #ifndef IMAGE /*  Because the timber harvest is not accounted for in the carbon balance check*/
-    balanceW=totw_before-totw_after;
     if(fabs(balanceW)>0.01)
 #ifdef NO_FAIL_BALANCE
       fprintf(stderr,"ERROR005: "

@@ -115,7 +115,7 @@ static Bool fscancropratio(LPJfile *file,Cropratio *ratio,const char *name,Verbo
   return FALSE;
 } /* of 'fscancropratio' */
 
-char *calcmethod[]={"no calc","prec calc","temp wtyp calc","temp styp calc",
+const char *calcmethod[]={"no calc","prec calc","temp wtyp calc","temp styp calc",
                     "temp prec calc","multi crop"};
 
 Bool fscanpft_crop(LPJfile *file,  /**< pointer to LPJ file */

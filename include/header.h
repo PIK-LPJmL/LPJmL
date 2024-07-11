@@ -73,7 +73,7 @@
 #define MAP_NAME "map"     /**< name of map in JSON files */
 #define BAND_NAMES "band_names" /**< name of band string array in JSON metafiles */
 
-extern char *ordernames[];
+extern const char *ordernames[];
 
 /* Definition of datatypes */
 

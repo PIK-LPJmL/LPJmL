@@ -35,7 +35,7 @@ Bool annual_biomass_tree(Stand *stand,         /**< Pointer to stand */
   Bool *present,isdead;
   int *n_est;
   Pft *pft;
-  Real *fpc_inc,*fpc_inc2=NULL,*fpc_type;
+  Real *fpc_inc,*fpc_inc2,*fpc_type;
   Real fpc_total;
   Stocks flux_estab={0,0};
   Stocks estab_store={0,0};

@@ -42,8 +42,8 @@ void allocation_daily_crop(Pft *pft,             /**< PFT variables */
   Pftcrop *crop;
   Pftcroppar *par;
   Real froot;
-  Real a,b,c,d;
-  Real fhiopt,himind,hi;
+  Real a,b,c,d,nitrogen_before;
+  Real fhiopt,himind,hi,hiopt=0;
   Real ndf=100; /* nitrogen deficit factor in percent, computed as wdf from accumulated n_demand and n_uptake */
   Real df;
   crop=pft->data;

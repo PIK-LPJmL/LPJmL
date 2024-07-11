@@ -260,9 +260,6 @@ int main(int argc,char **argv)
      case 4:
        size=sizeof(Header)/sizeof(int);
        break;
-     default:
-       fprintf(stderr,"Invalid version %d, must be <5.\n",version);
-       return EXIT_FAILURE;
   }
   if(writeheader(file,(int *)&header,size,swap))
     return EXIT_FAILURE;

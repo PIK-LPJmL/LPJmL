@@ -41,8 +41,8 @@ int writecoords(Outputfile *output,  /**< output struct */
   Doublecoord *ddst=NULL;
   MPI_Datatype type;
 #endif
-  Bool rc=FALSE;
-  int cell,count=0;
+  Bool rc;
+  int cell,count;
   int *cellid;
   Intcoord *vec=NULL;
   Floatcoord *fvec=NULL;
@@ -135,9 +135,6 @@ int writecoords(Outputfile *output,  /**< output struct */
           rc=FALSE;
         }
         break;
-      default:
-       fprintf(stderr,"ERROR204: Unsupported datatype in writecoords().\n");
-       rc=TRUE;
     }
   }
   if(iserror(rc,config))
@@ -306,9 +303,6 @@ int writecoords(Outputfile *output,  /**< output struct */
         }
         free(vec);
         break;
-      default:
-       if(isroot(*config))
-         fprintf(stderr,"ERROR204: Unsupported datatype in writecoords().\n");
     }
   }
 #else
@@ -395,8 +389,6 @@ int writecoords(Outputfile *output,  /**< output struct */
       }
       free(vec);
       break;
-    default:
-      fprintf(stderr,"ERROR204: Unsupported datatype in writecoords().\n");
   }
 #endif
   return count;

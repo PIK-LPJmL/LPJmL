@@ -78,7 +78,7 @@ void sowingcft(Stocks *flux_estab,  /**< establishment flux */
   Stand *stand,*cropstand,*setasidestand;
   Pft *pft;
   Real difffrac,landfrac;
-  int s,p,cft_id=0,pos;
+  int s,p,cft_id,pos;
   Irrigation *irrigation,*data;
 
   /* set sowing date for all CFTs not in the land-use data set */

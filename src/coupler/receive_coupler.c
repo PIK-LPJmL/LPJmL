@@ -30,12 +30,8 @@ Bool receive_coupler(int index,           /**< index of input file */
 #ifdef USE_MPI
   int *counts;
   int *offsets;
-#if COUPLER_VERSION == 4
+#endif
   int rc;
-#endif
-#else
-  int rc=TRUE;
-#endif
   if(isroot(*config))
   {
     send_token_coupler(GET_DATA,index,config);

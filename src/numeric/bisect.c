@@ -30,8 +30,7 @@ Real bisect(Real (*fcn)(Real,void *), /**< function */
   int i;
   Real ylow,ymid,xmid;
   Real ymin=1e9,xmin;
-  ylow=(*fcn)(xlow,data);
-  xmin=(xlow+xhigh)*0.5;
+  ylow=(*fcn)(xlow,data); 
   for(i=0;i<maxit;i++)
   {
     xmid=(xlow+xhigh)*0.5;

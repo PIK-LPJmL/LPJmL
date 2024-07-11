@@ -396,17 +396,14 @@ int main(int argc,char **argv)
     switch(gridheader.datatype)
     {
       case LPJ_SHORT:
-        rc=readintcoord(grid,&coord,swap_grid);
-        break;
+       rc=readintcoord(grid,&coord,swap_grid);
+       break;
       case LPJ_FLOAT:
-        rc=freadfloat(fcoord,2,swap_grid,grid)!=2;
-        break;
+       rc=freadfloat(fcoord,2,swap_grid,grid)!=2;
+       break;
       case LPJ_DOUBLE:
-        rc=freaddouble(dcoord,2,swap_grid,grid)!=2;
-        break;
-      default:
-        fprintf(stderr,"Invalid datatype %d in '%s'.\n",gridheader.datatype,argv[2]);
-        return EXIT_FAILURE;
+       rc=freaddouble(dcoord,2,swap_grid,grid)!=2;
+       break;
     }
     if(rc)
     {
@@ -425,8 +422,6 @@ int main(int argc,char **argv)
           break;
         case LPJ_DOUBLE:
           rc=fwrite(dcoord,sizeof(double),2,out)!=2;
-          break;
-        default:
           break;
       }
       if(rc)

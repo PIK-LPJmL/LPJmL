@@ -32,8 +32,8 @@ static Bool readmydata(Climatefile *file,    /* climate data file */
 {
   int t,cell,rc,index,n,start;
   size_t i;
-  float *f=NULL;
-  short *s=NULL;
+  float *f;
+  short *s;
   float data;
   size_t offsets[4];
   size_t address[2];
@@ -93,9 +93,6 @@ static Bool readmydata(Climatefile *file,    /* climate data file */
     case YEAR: case MISSING_TIME:
       n=1;
       break;
-    default:
-      fprintf(stderr,"ERROR421: Time step of second not supported.\n");
-      return TRUE;
   }
   for(t=0;t<file->nyear*n;t++)
   {
@@ -382,9 +379,6 @@ int main(int argc,char **argv)
            fprintf(stderr,"Warning: File size of '%s' is not multiple of %d.\n",argv[iarg],(int)(sizeof(double)*2));
          config.ngridcell=getfilesizep(file)/sizeof(double)/2;
          break;
-       default:
-         fprintf(stderr,"Invalid datatype %d in '%s'.\n",grid_type,argv[iarg]);
-         return TRUE;
     }
     if(config.ngridcell==0)
     {
@@ -422,9 +416,6 @@ int main(int argc,char **argv)
           grid[j].lon=dcoord[0];
           grid[j].lat=dcoord[1];
         }
-        break;
-      default:
-        /* do nothing */
         break;
     }
     config.resolution.lat=cellsize_lat;
@@ -481,8 +472,6 @@ int main(int argc,char **argv)
           case YEAR: case MISSING_TIME:
             header.nstep=1;
             header.timestep=data.delta_year;
-            break;
-          default:
             break;
         }
         if(isclm)

@@ -318,12 +318,10 @@ Real daily_agriculture_tree(Stand *stand,                /**< stand pointer */
     getoutputindex(output,CFT_FPAR,index,config)+=(fpar(pft)*stand->frac*(1.0/(1-stand->cell->lakefrac-stand->cell->ml.reservoirfrac)));
 
     if(config->pft_output_scaled)
-    {
       getoutputindex(output,PFT_NPP,nnat+index,config)+=npp*stand->frac;
-    }
     else
       getoutputindex(output,PFT_NPP,nnat+index,config)+=npp;
-    getoutputindex(output,PFT_LAI,nnat+index,config)+=actual_lai(pft);
+      getoutputindex(output,PFT_LAI,nnat+index,config)+=actual_lai(pft);
   } /* of foreachpft */
   free(gp_pft);
   /* soil outflow: evap and transpiration */

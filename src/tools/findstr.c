@@ -18,10 +18,10 @@
 #include <string.h>
 #include "types.h"
 
-int findstr(const char *s, /**< string to be find in array */
-            char **array,  /**< array of strings */
-            int size       /**< size of array */
-           )               /** \return index of string found or NOT_FOUND */
+int findstr(const char *s,            /**< string to be find in array */
+            const char *const *array, /**< array of strings */
+            int size                  /**< size of array */
+           )                          /** \return index of string found or NOT_FOUND */
 {
   int i;
   if(s!=NULL && array!=NULL)

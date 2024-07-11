@@ -54,10 +54,6 @@ Bool phenology_crop(Pft *pft,            /**< pointer to PFT variables */
     case NEW_CROP_PHU:
       hlimit=(crop->wtype) ? par->hlimit+90 : par->hlimit; /* add 90 days for winter crops for internally computed seasons */
       break;
-    default:
-      hlimit=0;
-      fail(INVALID_CROP_PHU_OPTION_ERR,TRUE,"Invalid crop PHU option %d",
-           config->crop_phu_option);
   }
   crop->senescence0=crop->senescence;
 

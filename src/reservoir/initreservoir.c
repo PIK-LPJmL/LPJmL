@@ -139,7 +139,7 @@ Bool initreservoir(Cell grid[],   /**< LPJ grid */
                   )               /** \return TRUE on error */
 {
   Bool iserr,*visit;
-  int cell,i,j,count,index;
+  int cell,i,j,k,count,index;
   Intlist *back,list,new;
   Item *recv;
 #ifdef USE_MPI
@@ -200,6 +200,7 @@ Bool initreservoir(Cell grid[],   /**< LPJ grid */
       index=cell+config->startgrid-config->firstgrid;
       addintlistitem(&list,index);
       visit[index]=TRUE;
+      k=0;
       while(recv[index].next>=0 )/*&& k<20) */
       {
         index=recv[index].next-config->firstgrid;
@@ -212,6 +213,7 @@ Bool initreservoir(Cell grid[],   /**< LPJ grid */
         }
         visit[index]=TRUE;
         addintlistitem(&list,index);
+        k++;
       }
       for(count=0;count<5;count++) /*Amount of cells upstream in reach of reservoir */
       {

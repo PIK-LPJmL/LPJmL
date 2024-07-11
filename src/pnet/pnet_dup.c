@@ -29,7 +29,7 @@
 #include "pnet.h"
 
 Pnet *pnet_dup(const Pnet *pnet
-              )      /** \return duplicated pnet structure or NULL */
+              )      /** \returs duplicated pnet structure or NULL */
 {
   int i;
   Pnet *ret;
@@ -51,7 +51,7 @@ Pnet *pnet_dup(const Pnet *pnet
   ret->hi=pnet->hi;
   /* allocate memory for connection list array */
   ret->connect=newvec2(Intlist,pnet->lo,pnet->hi);
-  if(ret->connect==NULL) /* was memory allocation successful? */
+  if(ret->connect+pnet->lo==NULL) /* was memory allocation successful? */
   {
     free(ret);
     return NULL; /* no, return NULL */

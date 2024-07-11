@@ -45,9 +45,7 @@ Socket *opentdt_socket(int port, /* port of TCP/IP connection */
   struct timeval tv;
   int rc;
 #ifdef _WIN32
-#if defined IMAGE && defined COUPLED
   int len;
-#endif
   WORD version;
   WSADATA data;
   SOCKET my_socket;
@@ -62,9 +60,7 @@ Socket *opentdt_socket(int port, /* port of TCP/IP connection */
   }
 #else
   int my_socket;
-#if defined IMAGE && defined COUPLED
   socklen_t len;
-#endif
 #ifdef USE_TIMING
   timing=0;
 #endif

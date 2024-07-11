@@ -41,8 +41,6 @@ static void printindex(size_t i,Time time,size_t var_len)
       if(var_len>1)
         fprintf(stderr,"at item %d",(int)(i % var_len)+1);
       break;
-    default:
-      break;
   }
 } /* of 'printindex' */
 
@@ -55,10 +53,10 @@ static Bool readclimate2(Climatefile *file,    /* climate data file */
                         )                      /* returns TRUE on error */
 {
   int cell,rc;
-  short *s=NULL;
-  int *idata=NULL;
-  float *f=NULL;
-  double *d=NULL;
+  short *s;
+  int *idata;
+  float *f;
+  double *d;
   int index,start;
   size_t i,size;
   size_t offsets[4];
@@ -74,9 +72,6 @@ static Bool readclimate2(Climatefile *file,    /* climate data file */
     case YEAR: case MISSING_TIME:
       size=1;
       break;
-    default:
-      fprintf(stderr,"Time step of second not supported.\n");
-      return TRUE;
   }
   if(file->time_step==MISSING_TIME)
     start=0;
@@ -201,8 +196,6 @@ static Bool readclimate2(Climatefile *file,    /* climate data file */
         case LPJ_SHORT:
           free(s);
           break;
-        default:
-          break;
       }
       nc_close(file->ncid);
       return TRUE;
@@ -319,8 +312,6 @@ static Bool readclimate2(Climatefile *file,    /* climate data file */
           }
           data[cell*size*file->var_len+i]=(float)(file->slope*s[file->nlon*(i*file->nlat+offsets[index])+offsets[index+1]]+file->intercept);
           break;
-        default:
-          break;
       } /* of 'switch' */
     }
   }
@@ -338,8 +329,6 @@ static Bool readclimate2(Climatefile *file,    /* climate data file */
     case LPJ_SHORT:
       free(s);
       break;
-    default:
-      break;
   }
   return FALSE;
 } /* of 'readclimate2' */
@@ -352,20 +341,20 @@ int main(int argc,char **argv)
   Coordfile coordfile;
   Climatefile climate;
   Config config;
-  char *units,*var,*outname,*endptr,*time_name,*arglist,*long_name=NULL,*standard_name=NULL,*history=NULL,*source=NULL;
-  float scale,*data=NULL;
+  char *units,*var,*outname,*endptr,*time_name,*arglist,*long_name,*standard_name,*history,*source;
+  float scale,*data;
   Filename coord_filename;
   Coord *coords;
   Header header;
   FILE *file;
   int iarg,j,k,year,version;
-  short *s=NULL;
+  short *s;
   Bool isfloat,verbose,iszero,isjson;
-  Time time=DAY;
-  size_t var_len=0;
+  Time time;
+  size_t var_len;
   char *id,*out_json;
   Attr *attrs=NULL;
-  int n_attr=0,len;
+  int n_attr,len;
   char name[NC_MAX_NAME];
   Filename grid_name;
   Type grid_type;
@@ -587,9 +576,6 @@ int main(int argc,char **argv)
           if(verbose)
             printf((climate.time_step==YEAR) ? "yearly" : "no");
           break;
-        case SECOND:
-          fprintf(stderr,"Time step of second not supported in '%s'.\n",argv[j]);
-          return EXIT_FAILURE;
       }
       if(verbose)
       {

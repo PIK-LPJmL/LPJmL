@@ -24,7 +24,7 @@
 
 #define checkptr(ptr) if(ptr==NULL) { printallocerr(#ptr); return 0;}
 
-char *irrigsys[]={"no irrig","surf","sprink","drip"};
+const char *irrigsys[]={"no irrig","surf","sprink","drip"};
 
 int fscancountrypar(LPJfile *file,           /**< pointer to LPJ file */
                     Countrypar **countrypar, /**< Pointer to countrypar array */
@@ -35,7 +35,7 @@ int fscancountrypar(LPJfile *file,           /**< pointer to LPJ file */
                    )                         /** \return number of elements in array */
 {
   LPJfile *arr,*item;
-  int i,ncountries,n,id,*cftmap=NULL,cftmap_size;
+  int i,ncountries,n,id,*cftmap,cftmap_size;
   Real *laimax_cft;
   const char *s;
   Countrypar *country;

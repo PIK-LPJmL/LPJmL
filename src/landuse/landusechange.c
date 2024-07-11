@@ -407,7 +407,7 @@ static void landexpansion(Cell *cell,            /* cell pointer */
         }
         getoutput(&cell->output,FLUX_ESTABC,config)+=flux_estab.carbon*mixstand->frac;
         getoutput(&cell->output,FLUX_ESTABN,config)+=flux_estab.nitrogen*mixstand->frac;
-        if (pft->par->cultivation_type != WP)
+        if (!pft->par->cultivation_type == WP)
           getoutput(&cell->output,FLUX_ESTABN_MG,config)+=flux_estab.nitrogen*mixstand->frac;
         cell->balance.flux_estab.carbon+=flux_estab.carbon*mixstand->frac;
         cell->balance.flux_estab.nitrogen+=flux_estab.nitrogen*mixstand->frac;

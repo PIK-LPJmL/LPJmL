@@ -86,7 +86,7 @@ Pnet *pnet_init(
   }
   /* allocate memory for connection list array */
   pnet->connect=newvec2(Intlist,pnet->lo,pnet->hi);
-  if(pnet->connect==NULL) /* was memory allocation successful? */
+  if(pnet->connect+pnet->lo==NULL) /* was memory allocation successful? */
   {
     free(pnet);
     return NULL; /* no, return NULL */

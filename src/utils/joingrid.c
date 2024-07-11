@@ -167,8 +167,6 @@ int main(int argc,char **argv)
           dcoord.lat=c[i].lat;
           fwrite(&dcoord,sizeof(dcoord),1,file);
           break;
-        default:
-          break;
       }
       count++;
     }

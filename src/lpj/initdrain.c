@@ -122,7 +122,7 @@ static Bool initirrig(Cell grid[],    /**< Cell grid             */
 {
   Infile irrig_file;
   String line;
-  int cell,neighb_irrig,rc,*index=NULL,n=0;
+  int cell,neighb_irrig,rc,*index=NULL,n;
   /* open neighbour irrigation file */
   irrig_file.fmt=config->neighb_irrig_filename.fmt;
   if(openinputdata(&irrig_file,&config->neighb_irrig_filename,"irrigation",NULL,LPJ_INT,1.0,config))
@@ -211,7 +211,7 @@ static Bool initriver(Cell grid[],Config *config)
   Routing r;
   Header header;
   String headername,line;
-  int *index=NULL,n=0,version,ncoeff;
+  int *index,n,version,ncoeff;
   Real len;
   Bool missing;
   size_t offset;
@@ -238,7 +238,7 @@ static Bool initriver(Cell grid[],Config *config)
   }
   else
   {
-    river.cdf=NULL;
+
     if((drainage.file=openinputfile(&header,&drainage.swap,&config->drainage_filename,
                                     headername,NULL,&version,&offset,FALSE,config))==NULL)
       return TRUE;

@@ -23,10 +23,10 @@ int main(int argc,char **argv)
   Coord *c,*c2;
   Real dist_min;
   Bool swap,isint,issearch,iszero,isjson,ismeta,isbyte;
-  short *data=NULL;
-  int *zero=NULL;
-  int *idata=NULL;
-  Byte *bdata=NULL;
+  short *data;
+  int *zero;
+  int *idata;
+  Byte *bdata;
   long long size;
   Coord res,res2;
   Coordfile grid;

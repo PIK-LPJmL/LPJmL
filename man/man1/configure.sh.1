@@ -3,7 +3,7 @@
 configure.sh \- Configure LPJmL
 .SH SYNOPSIS
 .B configure.sh
-[-h] [-v] [-l] [-prefix \fIdir\fP] [-debug] [-nompi] [-check] [-noerror] [-Dmacro[=value] ...]
+[-h] [-v] [-l] [-prefix \fIdir\fP] [-debug] [-nompi] [-check] [-Dmacro[=value] ...]
 .SH DESCRIPTION
 Script configures LPJmL for specific OS and compiler. File \fIMakefile.inc\fP and scripts \fBlpj_paths.sh\fP, \fBlpj_paths.csh\fP are created.
 If configure script exits with message "Unsupported operating system",
@@ -38,9 +38,6 @@ Set debug flags, enable pointer checking for access out of bounds and disable op
 .TP
 -nompi
 Do not build the MPI version of the code.
-.TP
--noerror
-Compilation continues after warning.
 .TP
 -Dmacro[=value]
 Defines macro for compilation

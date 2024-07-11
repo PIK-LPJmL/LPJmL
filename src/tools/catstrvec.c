@@ -17,7 +17,7 @@
 #include <string.h>
 #include "types.h"
 
-char *catstrvec(char **vec,int n)
+char *catstrvec(const char * const *vec,int n)
 {
   int i;
   size_t len;

@@ -40,7 +40,6 @@ Variable *fscanoutputvar(LPJfile *file, /**< pointer to LPJ file */
   String s,s2;
   Variable *outnames;
   int index,i,size;
-  Bool alldef=TRUE;
   if (verb>=VERB) puts("// Output parameters");
   size=nout_max;
   arr=fscanarray(file,&size,"outputvar",verb);
@@ -135,19 +134,8 @@ Variable *fscanoutputvar(LPJfile *file, /**< pointer to LPJ file */
     if(outnames[i].name==NULL)
     {
       if(verb)
-      {
-        if(alldef)
-          fprintf(stderr,"ERROR230: Output description not defined for index=%d",i);
-        else
-          fprintf(stderr,", %d",i);
-      }
-      alldef=FALSE;
+        fprintf(stderr,"ERROR230: Output description not defined for index=%d in 'outputvar'.\n",i);
+      return NULL;
     }
-  if(!alldef)
-  {
-    if(verb)
-      fprintf(stderr," in 'outputvar'.\n");
-    return NULL;
-  }
   return outnames;
 } /* of 'fscanoutputvar' */

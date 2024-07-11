@@ -34,12 +34,6 @@ static int checksoilcode(Config *config)
     file=fopensoilcode(&config->soil_filename,&map,&swap,&offset,&type,config->nsoil,TRUE);
     if(file==NULL)
       return 1;
-    if(fseek(file,offset,SEEK_SET))
-    {
-      fprintf(stderr,"ERROR107: Cannot seek in soilcode file to position %zu.\n",
-              offset);
-      return 1;
-    }
     ncell=getnsoilcode(&config->soil_filename,config->nsoil,TRUE);
     if(map!=NULL)
     {
@@ -58,14 +52,14 @@ static int checksoilcode(Config *config)
     {
       config->soilmap=defaultsoilmap(&config->soilmap_size,config);
       if(config->soilmap==NULL)
-        return 1;
+        return 0;
     }
     exist=newvec(Bool,config->soilmap_size);
     if(exist==NULL)
     {
       printallocerr("exist");
       fclose(file);
-      return 1;
+      return 0;
     }
     for(i=0;i<config->soilmap_size;i++)
       exist[i]=FALSE;
@@ -74,7 +68,7 @@ static int checksoilcode(Config *config)
     {
       printallocerr("name");
       fclose(file);
-      return 1;
+      return 0;
     }
     for(cell=0;cell<ncell;cell++)
     {
@@ -543,8 +537,6 @@ Bool filesexist(Config config, /**< LPJmL configuration */
   oldpath=strdup("");
   if(config.nall!=-1 && config.n_out)
     size=outputfilesize(&config);
-  else
-    size=0;
   for(i=0;i<config.n_out;i++)
   {
     if(config.outputvars[i].filename.fmt!=SOCK)

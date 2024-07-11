@@ -79,9 +79,6 @@ void convert_water(Soil* soil, /**< pointer to soil data */
       }     
       else if (soil->ice_depth[l]<0)
         fail(PERM_ERR,FALSE,"ice_depth[%d]=%g<0 in convert_water()",l,soil->ice_depth[l]);
-    default:
-      /* do nothing */
-      break;
   } /* of switch */
   /**
   * now use the energy from heat for any additional water/ice conversions

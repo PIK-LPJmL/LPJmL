@@ -241,9 +241,9 @@ typedef struct Pftpar Pftpar;
  * pointer.
  */
 
-extern char *phenology[];
-extern char *cultivation_type[];
-extern char *path[];
+extern const char *phenology[];
+extern const char *cultivation_type[];
+extern const char *path[];
 
 /* Declaration of functions */
 

@@ -65,10 +65,10 @@ static Bool scancoord(FILE *file,const char *fmt,Float_coord *coord,Bool latlon)
 int main(int argc,char **argv)
 {
   FILE *file,*gridfile;
-  Coordfile coordfile=NULL;
+  Coordfile coordfile;
   Filename filename;
   const char *fmt;
-  Coord grid,*grid_ref=NULL,res;
+  Coord grid,*grid_ref,res;
   String line;
   int i,iarg,nskip,n,index;
   Float_coord coord;

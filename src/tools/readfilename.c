@@ -16,8 +16,8 @@
 
 #include "lpj.h"
 
-char *fmt[N_FMT]={"raw","clm","clm2","txt","fms","meta","cdf","sock"};
-char *time_step[]={"annual","monthly","daily"};
+const char *fmt[N_FMT]={"raw","clm","clm2","txt","fms","meta","cdf","sock"};
+const char *time_step[]={"annual","monthly","daily"};
 
 Bool readfilename(LPJfile *file,      /**< pointer to text file read */
                   Filename *filename, /**< returns filename and format */
