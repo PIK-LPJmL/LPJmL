@@ -30,7 +30,7 @@ of `major.minor.patch` with
 - Output `"nbp"` for net biosphere productivity and `"tws"` for total water storage added.
 - `fail` added to mail type in `lpjsubmit_hpc`.
 - Option `-map` added to `cdf2bin` and `cdf2clm` to read map from NetCDF file and write it into JSON metafile.
-- '"sim_name"` is written into JSON file for `cdf2bin` utility.
+- '"sim_name"` and all other global attributes are written into JSON file for `cdf2bin` utility.
 
 ### Fixed
 
