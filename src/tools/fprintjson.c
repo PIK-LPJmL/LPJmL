@@ -20,6 +20,7 @@
 
 void fprintjson(FILE *file,           /**< pointer to text file */
                 const char *filename, /**< filename of clm file */
+                const char *title,   /**< source string or NULL */
                 const char *source,   /**< source string or NULL */
                 const char *history,  /**< history string or NULL */
                 const char *arglist,  /**< argument string or NULL */
@@ -45,6 +46,8 @@ void fprintjson(FILE *file,           /**< pointer to text file */
   time_t t;
   fprintf(file,"{\n"
           "  \"filename\" : \"%s\",\n",strippath(filename));
+  if(title!=NULL)
+    fprintf(file,"  \"sim_name\" : \"%s\",\n",title);
   if(source!=NULL)
     fprintf(file,"  \"source\" : \"%s\",\n",source);
   if(history==NULL)

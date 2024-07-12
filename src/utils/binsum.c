@@ -300,7 +300,7 @@ int main(int argc,char **argv)
       printfcreateerr(out_json);
       return EXIT_FAILURE;
     }
-    fprintjson(file,argv[iarg+1],source,history,arglist,&header,map,map_name,attrs,n_attr,variable,units,standard_name,long_name,(grid_name.name==NULL) ? NULL : &grid_name,grid_type,(isclm) ? CLM : format,LPJOUTPUT_HEADER,FALSE,LPJOUTPUT_VERSION);
+    fprintjson(file,argv[iarg+1],NULL,source,history,arglist,&header,map,map_name,attrs,n_attr,variable,units,standard_name,long_name,(grid_name.name==NULL) ? NULL : &grid_name,grid_type,(isclm) ? CLM : format,LPJOUTPUT_HEADER,FALSE,LPJOUTPUT_VERSION);
     fclose(file);
   }
   return EXIT_SUCCESS;
