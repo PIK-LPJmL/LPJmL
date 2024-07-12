@@ -172,3 +172,6 @@ bin/coupler_demo
 bin/cmpbin
 bin/statclm
 bin/drainage2cdf
+
+# test build folder
+src/test/build

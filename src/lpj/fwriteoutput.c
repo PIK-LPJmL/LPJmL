@@ -1107,6 +1107,7 @@ void fwriteoutput(Outputfile *output,  /**< output file array */
   writeoutputvar(SNOWF,1);
   writeoutputvar(MELT,1);
   writeoutputvar(SWE,ndate1);
+  writeoutputvar(LITTERTEMP,ndate1);
   writeoutputvar(SNOWRUNOFF,1);
   writeoutputvar(RUNOFF_SURF,1);
   writeoutputvar(RUNOFF_LAT,1);

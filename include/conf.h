@@ -81,7 +81,7 @@
 #define NO_FERTILIZER 0
 #define FERTILIZER 1
 #define AUTO_FERTILIZER 2
-#define NOUT 334            /* number of output files */
+#define NOUT 335            /* number of output files */
 #define GRIDBASED 1         /* pft-specific outputs scaled by stand->frac */
 #define PFTBASED 0          /* pft-specific outputs not scaled by stand->frac */
 #define ANNUAL -2
@@ -422,6 +422,7 @@
 #define NAPPLIED_MG 331
 #define BNF_MG 332
 #define NDEPO_MG 333
+#define LITTERTEMP 334
 #define PFT_GCGP_COUNT 0
 #define NDAY_MONTH 1
 #define RANDOM_SEED 0

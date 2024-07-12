@@ -342,6 +342,8 @@ void fprintconfig(FILE *file,          /**< File pointer to text output file */
 #endif
   if(config->johansen)
     len=printsim(file,len,&count,"Johansen conductivity");
+  if(config->percolation_heattransfer)
+    len=printsim(file,len,&count,"percolation heattransfer");
   if(config->prescribe_landcover)
     len=printsim(file,len,&count,(config->prescribe_landcover==LANDCOVEREST) ? "prescribed establishment":"prescribed maximum FPC");
   if(config->gsi_phenology)

@@ -1,10 +1,10 @@
  _     ____     _           _       ____         ___
-| |   |  _ \   | |_ __ ___ | |     | ___|       ( _ )
-| |   | |_) |  | | '_ ` _ \| |     |___ \       / _ \
-| |___|  __/ |_| | | | | | | |___   ___) |  _  | (_) |
-|_____|_|   \___/|_| |_| |_|_____| |____/  (_)  \___/  Version 5.8.17
+| |   |  _ \   | |_ __ ___ | |     | ___|       / _ \
+| |   | |_) |  | | '_ ` _ \| |     |___ \      | (_) |
+| |___|  __/ |_| | | | | | | |___   ___) |  _   \__, |
+|_____|_|   \___/|_| |_| |_|_____| |____/  (_)    /_/  Version 5.9.1
 
-Installation of LPJmL C Version 5.8.17
+Installation of LPJmL C Version 5.9.1
 
 Installation for Unix-like systems
 ----------------------------------
@@ -26,7 +26,7 @@ cd lpjml
 
 untar source files
 
-gzip -cd lpjml-5.8.17.tar.gz|tar -xf -
+gzip -cd lpjml-5.9.1.tar.gz|tar -xf -
 
 Directory tree after extracting the tar files:
 
@@ -89,6 +89,8 @@ Directory tree after extracting the tar files:
      +--netcdf    : NetCDF input/output functions
      |
      +--utils     : utility programs
+     |
+     +--test      : unit tests for src code using ceedling
 
 Configure for your operating system
 
@@ -408,9 +410,10 @@ Error code Description                                   Error type
         41 Invalid time step in soiltemp()               Internal
         42 Cannot read external flow                     External
         43 Opening connection to coupled model failed    External
-        44 Error initializing output data                External
-        45 Invalid crop PHU option                       Internal
-        46 Invalid fire danger index                     Internal
+        44 Invalid uniform temp sign value               Internal
+        45 Error initializing output data                External
+        46 Invalid crop PHU option                       Internal
+        47 Invalid fire danger index                     Internal
 ---------- --------------------------------------------- ----------
 
 External errors are caused by invalid or missing input files while internal
