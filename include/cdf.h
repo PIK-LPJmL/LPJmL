@@ -36,6 +36,7 @@
 #define TIME_DIM_NAME "time"
 #define YEARS_NAME "Years"
 #define NULL_NAME "(null)"
+#define PFT_NAME "NamePFT"
 #define DEPTH_NAME "depth"
 #define DEPTH_STANDARD_NAME "depth_below_surface"
 #define DEPTH_LONG_NAME "Depth of Vertical Layer Center Below Surface"

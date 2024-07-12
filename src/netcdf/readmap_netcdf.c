@@ -135,8 +135,6 @@ Map *readmap_netcdf(int ncid,        /**< id of NetCDF file */
       return NULL;
     }
   }
-  else
-    fprintf(stderr,"ERROR406: Variable '%s' not found for map.\n",name);
   return map;
 } /* of 'readmap_netcdf' */
 
