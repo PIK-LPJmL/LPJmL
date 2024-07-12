@@ -65,7 +65,6 @@ of `major.minor.patch` with
 - `regridclm` now used for regridding of soil file in `regridlpj`.
 - Missing seek to offset added in filesexist.c
 - Misplaced deallocation of memory for unit corrected in `printclm`.
->>>>>>> 485fc96c9f74feb5f0b3a7a6e02be9c2a97779f4
 
 
 ## [5.9.0] - 2024-07-08
