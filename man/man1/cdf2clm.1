@@ -3,7 +3,7 @@
 cdf2clm \- convert NetCDF files into CLM files
 .SH SYNOPSIS
 .B cdf2clm
-[\-h] [\-v] [\-scale factor] [\-units u] [\-var name] [\-time name] [\-id string] [\-version v] [\-float] [\-zero] [\-json] [\-o clmfile]
+[\-h] [\-v] [\-scale factor] [\-units u] [\-var name] [\-time name] [\-map name] [\-id string] [\-version v] [\-float] [\-zero] [\-json] [\-o clmfile]
 gridfile netcdffile ...
 .SH DESCRIPTION
 Program converts NetCDF input data into CLM input data.
@@ -26,6 +26,9 @@ variable name in NetCDF file
 .TP
 \-time name
 name of time in NetCDF file, default is "time" or "TIME"
+.TP
+\-map name
+name of map in NetCDF file. If specified the map is read and put into the JSON metafile.
 .TP
 \-id string
 LPJ header string in clm file
