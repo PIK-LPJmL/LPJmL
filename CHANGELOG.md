@@ -38,7 +38,7 @@ of `major.minor.patch` with
 - Added missing update of FPCs after fire before establishment
 
 
-## [5.9.2] - 2024-07-10
+## [5.9.1] - 2024-07-11
 
 ### Contributors
 
