@@ -6,7 +6,7 @@
 ##   configure script to copy appropriate Makefile.$osname                     ##
 ##                                                                             ##
 ##   Usage: configure.sh [-h] [-v] [-l] [-prefix dir] [-debug] [-check]        ##
-##                       [-nompi] [-Dmacro[=value] ...]                        ##
+##                       [-nompi] [-noerror] [-Dmacro[=value] ...]             ##
 ##                                                                             ##
 ## (C) Potsdam Institute for Climate Impact Research (PIK), see COPYRIGHT file ##
 ## authors, and contributors see AUTHORS file                                  ##
@@ -15,11 +15,12 @@
 ## Contact: https://github.com/PIK-LPJmL/LPJmL                                 ##
 #################################################################################
 
-USAGE="Usage: $0 [-h] [-v] [-l] [-prefix dir] [-debug] [-nompi] [-check] [-Dmacro[=value] ...]"
+USAGE="Usage: $0 [-h] [-v] [-l] [-prefix dir] [-debug] [-nompi] [-check] [-noerror] [-Dmacro[=value] ...]"
 debug=0
 nompi=0
 prefix=$PWD
 macro=""
+warning="-Werror"
 while(( "$#" )); do
   case "$1" in
     -h|--help)
@@ -34,6 +35,7 @@ while(( "$#" )); do
       echo "-prefix dir     set installation directory for LPJmL. Default is current directory"
       echo "-debug          set debug flags and disable optimization"
       echo "-check          set debug flags, enable pointer checking and disable optimization"
+      echo "-noerror        do not stop compilation on warnings"
       echo "-nompi          do not build MPI version"
       echo "-Dmacro[=value] define macro for compilation"
       echo
@@ -67,6 +69,10 @@ while(( "$#" )); do
       ;;
     -check)
       debug=2
+      shift 1
+      ;;
+    -noerror)
+      warning=""
       shift 1
       ;;
     -nompi)
@@ -112,6 +118,7 @@ then
       cp config/Makefile.icx Makefile.inc
     elif which icc >/dev/null 2>/dev/null ;
     then
+      warning=""
       cp config/Makefile.intel Makefile.inc
     elif which gcc >/dev/null 2>/dev/null ;
     then
@@ -135,6 +142,7 @@ then
     elif which mpiicc >/dev/null 2>/dev/null ;
     then
       echo Intel MPI found
+      warning=""
       cp config/Makefile.cluster2015 Makefile.inc
       if which llsubmit >/dev/null 2>/dev/null ;
       then
@@ -154,6 +162,7 @@ then
       echo MPICH found
     elif which icc >/dev/null 2>/dev/null ;
     then
+      warning=""
       cp config/Makefile.intel Makefile.inc
     elif which gcc >/dev/null 2>/dev/null ;
     then
@@ -215,14 +224,14 @@ else
 fi
 if [ "$debug" = "1" ]
 then
-  echo "CFLAGS	= \$(WFLAG) \$(LPJFLAGS) $macro \$(DEBUGFLAGS)" >>Makefile.inc
+  echo "CFLAGS	= \$(WFLAG) \$(LPJFLAGS) $macro $warning \$(DEBUGFLAGS)" >>Makefile.inc
   echo "LNOPTS	= \$(WFLAG) \$(DEBUGFLAGS) -o " >>Makefile.inc
 elif [ "$debug" = "2" ]
 then
-  echo "CFLAGS	= \$(WFLAG) \$(LPJFLAGS) $macro \$(CHECKFLAGS)" >>Makefile.inc
+  echo "CFLAGS	= \$(WFLAG) \$(LPJFLAGS) $macro $warning \$(CHECKFLAGS)" >>Makefile.inc
   echo "LNOPTS	= \$(WFLAG) \$(CHECKFLAGS) -o " >>Makefile.inc
 else
-  echo "CFLAGS	= \$(WFLAG) \$(LPJFLAGS) $macro \$(OPTFLAGS)" >>Makefile.inc
+  echo "CFLAGS	= \$(WFLAG) \$(LPJFLAGS) $macro $warning \$(OPTFLAGS)" >>Makefile.inc
   echo "LNOPTS	= \$(WFLAG) \$(OPTFLAGS) -o " >>Makefile.inc
 fi
 echo LPJROOT	= $prefix >>Makefile.inc

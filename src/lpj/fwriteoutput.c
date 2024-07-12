@@ -1571,6 +1571,9 @@ void fwriteoutput(Outputfile *output,  /**< output file array */
                   }
                 }
                 break;
+              default:
+                /* do nothing */
+                break;
             }
           }
         }
@@ -1632,6 +1635,9 @@ void fwriteoutput(Outputfile *output,  /**< output file array */
                     getoutputindex(&grid[cell].output,PFT_NSAPW,pft->par->id,config)+=tree->ind.sapwood.nitrogen;
                   }
                 }
+                break;
+              default:
+                /* do nothing */
                 break;
             }
           }
@@ -1695,6 +1701,9 @@ void fwriteoutput(Outputfile *output,  /**< output file array */
                   }
                 }
                 break;
+              default:
+                /* do nothing */
+                break;
             }
           }
         }
@@ -1756,6 +1765,9 @@ void fwriteoutput(Outputfile *output,  /**< output file array */
                     getoutputindex(&grid[cell].output,PFT_NHAWO,pft->par->id,config)+=tree->ind.heartwood.nitrogen;
                   }
                 }
+                break;
+              default:
+                /* do nothing */
                 break;
             } /* of switch */
           }

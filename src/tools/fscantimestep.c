@@ -26,7 +26,7 @@ Bool fscantimestep(LPJfile *file, /**< pointer to a LPJ file */
                    Verbosity verb /**< verbosity level (NO_ERR,ERR,VERB) */
                   )               /** \return TRUE on error */
 {
-  const char *time_step[]={"annual","monthly","daily"};
+  char *time_step[]={"annual","monthly","daily"};
   if(isstring(file,"timestep"))
   {
     if(fscankeywords(file,timestep,"timestep",time_step,3,FALSE,verb))

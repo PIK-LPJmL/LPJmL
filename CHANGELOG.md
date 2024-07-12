@@ -19,7 +19,7 @@ of `major.minor.patch` with
 
 ## [Unreleased]
 
-## [5.8.18] - 2024-06-14
+## [5.8.19] - 2024-06-26
 
 ### Contributors
 
@@ -29,7 +29,6 @@ of `major.minor.patch` with
 
 - Warning added if time step of output is longer than output interval.
 - Cycle length of spinup and number of spinup years checked for positive values in `fscanconfig.c`.
-- Missing regridding of wateruse and livestock density input added in `regridlpj`.
 - File size of CLM input files is checked for consistency with header and lpjml is stopped accordingly.
 - Utility `drainage2cdf` added to convert CLM drainage file into a NetCDF file using the soil code NetCDF file (issue #355).
 
@@ -62,11 +61,36 @@ of `major.minor.patch` with
 - Calculation of average fixed in `statclm`.
 - `res_remove` calculation fixed for residue fires in `harvest_crop.c` to close carbon and nitrogen balance.
 - Missing update of `FLUX_ESTABN_MG` added in `turnover_tree.c`.
-- `regridclm` now used for regridding of soil file in `regridlpj`.
-- Missing file seek to offset defined in JSON metafile added and return value fixed in `checksoilcode()`.
+- Function `initdrain()`corrected to handle river routing files in NetCDF format.
+
+
+## [5.8.18] - 2024-06-18
+
+### Contributors
+
+- author: Werner von Bloh (bloh@pik-potsdam.de)
+
+### Added
+
+- Missing regridding of wateruse and livestock density input added in `regridlpj`.
+
+### Changed
+
+- Compile option `-Werror` added to stop compilation of `icx`/`gcc` after warning. This feature can be disabled by using the `-noerror` option of `configure.sh`.
+- Filename and source is written into configuration file created by `regridlpj`.
+
+### Fixed
+
+- Incorrect scaling removed in utility `printharvest`.
+- Uninitialized PFT pointer set to first PFT in `harvest_stand.c`.
+- Uninitialized variable `n_attr` set to zero in utility `printclm`.
 - Prescribed land cover is now read correctly if landcover map size differs from number of natural PFTs.
 - Check for land use type `WP` corrected in `landusechange.c` (issue #354).
-- Function `initdrain()`corrected to handle river routing files in NetCDF format.
+- Code fixed to remove all warnings if compiled with `icx`/`gcc`.
+- `regridclm` now used for regridding of soil file in `regridlpj`.
+- Missing seek to offset added in filesexist.c
+- Debug option in `Makefile.icx` corrected.
+- Misplaced deallocation of memory for unit corrected in `printclm`.
 
 
 ## [5.8.17] - 2024-06-14
