@@ -28,7 +28,10 @@ Map *readmap_netcdf(int ncid,        /**< id of NetCDF file */
   size_t len,offset[2],count[2];
   char *s;
   double *d;
+  float f;
+#ifdef USE_NETCDF4
   char **str_array;
+#endif
   nc_type type;
   int i,rc,var_id,ndims,*dimids;
   rc=nc_inq_varid(ncid,name,&var_id);
@@ -89,7 +92,7 @@ Map *readmap_netcdf(int ncid,        /**< id of NetCDF file */
       free(s);
       free(dimids);
     }
-    else if(type==NC_DOUBLE)
+    else if(type==NC_DOUBLE || type==NC_FLOAT)
     {
       nc_inq_varndims(ncid,var_id,&ndims);
       if(ndims!=1)
@@ -124,7 +127,13 @@ Map *readmap_netcdf(int ncid,        /**< id of NetCDF file */
           printallocerr("map");
           return NULL;
         }
-        rc=nc_get_vara_double(ncid,var_id,offset,count,d);
+        if(type==NC_FLOAT)
+        {
+          rc=nc_get_vara_float(ncid,var_id,offset,count,&f);
+          *d=f;
+        }
+        else
+          rc=nc_get_vara_double(ncid,var_id,offset,count,d);
         getmapitem(map,i)=d;
       }
       free(dimids);
@@ -171,7 +180,11 @@ Map *readmap_netcdf(int ncid,        /**< id of NetCDF file */
 #endif
     else
     {
-      fprintf(stderr,"ERROR428: Invalid dataype for map '%s', must be char or double.\n",
+#ifdef USE_NETCDF4
+      fprintf(stderr,"ERROR428: Invalid dataype for map '%s', must be char, string, float or double.\n",
+#else
+      fprintf(stderr,"ERROR428: Invalid dataype for map '%s', must be char, float or double.\n",
+#endif
               name);
       return NULL;
     }
