@@ -19,7 +19,7 @@ of `major.minor.patch` with
 
 ## [Unreleased]
 
-## [5.9.1] - 2024-07-09
+## [5.9.2] - 2024-07-12
 
 ### Contributors
 
@@ -35,6 +35,37 @@ of `major.minor.patch` with
 - Scaling of `"littertemp"` output fixed.
 - Unit corrected for "rootmoist"` output.
 - Correct number of output files printed in `lpjfiles` utility if separate output files for each year are enabled.
+
+
+## [5.9.1] - 2024-07-11
+
+### Contributors
+
+- author: Werner von Bloh (bloh@pik-potsdam.de)
+- code review: Christoph Mueller (cmueller@pik-potsdam.de), Sebastian Ostberg (ostberg@pik-potsdam.de)
+
+### Added
+
+- Missing regridding of wateruse and livestock density input added in `regridlpj`.
+
+### Changed
+
+- Compile option `-Werror` added to stop compilation of `icx`/`gcc` after warning. This feature can be disabled by using the `-noerror` option of `configure.sh`.
+- Filename and source is written into configuration file created by `regridlpj`.
+- All missing output indices are printed in case that the `"outputvar"` array is too short.
+
+### Fixed
+
+- Incorrect scaling removed in utility `printharvest`.
+- Uninitialized PFT pointer set to first PFT in `harvest_stand.c`.
+- Uninitialized variable `n_attr` set to zero in utility `printclm`.
+- Prescribed land cover is now read correctly if landcover map size differs from number of natural PFTs.
+- Check for land use type `WP` corrected in `landusechange.c` (issue #354).
+- Code fixed to remove all warnings if compiled with `icx`/`gcc`.
+- `regridclm` now used for regridding of soil file in `regridlpj`.
+- Missing seek to offset added in filesexist.c
+- Misplaced deallocation of memory for unit corrected in `printclm`.
+>>>>>>> 485fc96c9f74feb5f0b3a7a6e02be9c2a97779f4
 
 
 ## [5.9.0] - 2024-07-08

@@ -25,11 +25,11 @@ int main(int argc,char **argv)
   FILE *gridfile;
   FILE *areafile;
   FILE **file;
-  int i,n,nyear,cell,year,iarg,firstyear,step,nstep,nbands,band,nyear_min,version;
+  int i,n,nyear,cell,year,iarg,firstyear,step,nstep,nbands,band,nyear_min=0,version;
   char *area_filename;
   Bool isheader,ismean,csv,yearsum,isclm,swap;
   float data;
-  Real sum,area_sum,*sum_array;
+  Real sum,area_sum,*sum_array=NULL;
   char *endptr;
   Header header;
   Coordfile grid;
