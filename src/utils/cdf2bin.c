@@ -455,6 +455,7 @@ int main(int argc,char **argv)
   header.cellsize_lat=(float)config.resolution.lat;
   header.cellsize_lon=(float)config.resolution.lon;
   header.ncell=config.ngridcell;
+  config.missing_value=MISSING_VALUE_FLOAT;
   file=fopen(outname,"wb");
   if(file==NULL)
   {
@@ -604,6 +605,7 @@ int main(int argc,char **argv)
     fprintjson(file,outname,title,source,history,arglist,&header,map,map_name,attrs,n_attr,var,units,standard_name,long_name,&grid_name,grid_type,(isclm) ? CLM : RAW,LPJOUTPUT_HEADER,FALSE,LPJOUTPUT_VERSION);
     fclose(file);
   }
+  freemap(map);
   return EXIT_SUCCESS;
 #else
   fprintf(stderr,"ERROR401: NetCDF is not supported in this version of %s.\n",argv[0]);
