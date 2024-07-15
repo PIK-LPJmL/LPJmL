@@ -36,7 +36,6 @@ Bool phenology_crop(Pft *pft,            /**< pointer to PFT variables */
   int hlimit;
   Real vd_inc=1;
   Real vd_b,vrf,prf;
-//  Real as;
   crop=pft->data;
   par=pft->par->data;
   harvesting=FALSE;
@@ -61,14 +60,6 @@ Bool phenology_crop(Pft *pft,            /**< pointer to PFT variables */
   crop->senescence0=crop->senescence;
 
   laimax=pft->stand->cell->ml.manage.laimax[pft->par->id];
-
-  /* accelerated senescence factor should be between 1 and 2 and applied to mean temperature, following Maiorano et al. 2017 */
-//  as = 1.0;
-// as is disabled until effect on growing season length is better understood
-//  if (tmax > TLOW && tmax < THIGH)
-//    as = 1/(THIGH-TLOW)*(tmax-TLOW)+1;
-//  else if(tmax > THIGH)
-//    as = 2;
 
   if(crop->husum<crop->phu)
   {
