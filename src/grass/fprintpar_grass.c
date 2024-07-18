@@ -25,8 +25,8 @@ void fprintpar_grass(FILE *file,const Pftpar *par,const Config *config)
                "C:N ratio:\t%g %g\n"
                "reprod cost:\t%g\n",
           1.0/pargrass->turnover.leaf,1.0/pargrass->turnover.root,
-          1/pargrass->nc_ratio.leaf,
-          1/pargrass->nc_ratio.root,
+          1.0/pargrass->nc_ratio.leaf,
+          1.0/pargrass->nc_ratio.root,
           pargrass->reprod_cost);
   if(config->with_nitrogen)
     fprintf(file,"rel. ratio:\t%g\n",pargrass->ratio);
