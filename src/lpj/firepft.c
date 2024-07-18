@@ -13,6 +13,7 @@
 /**************************************************************************************/
 
 #include "lpj.h"
+#include "grass.h"
 
 Stocks firepft(Stand *stand,   /**< Litter pool */
                Real fire_frac,    /**< fire fraction (0..1) */
@@ -33,6 +34,14 @@ Stocks firepft(Stand *stand,   /**< Litter pool */
     flux_sum.carbon+=flux.carbon;
     flux_sum.nitrogen+=flux.nitrogen;
   }
+  /* Update FPCs after fire loop because grass FPCs depend
+   * on the aggregated grass cover across all grasses.
+   */
+  foreachpft(pft,p,&stand->pftlist)
+    if(pft->par->type==TREE)
+      fpc_tree(pft);
+    else if(pft->par->type==GRASS)
+      fpc_grass(pft);
   for(p=0;p<litter->n;p++)
   {
     flux_litter.carbon+=litter->item[p].agtop.leaf.carbon;
