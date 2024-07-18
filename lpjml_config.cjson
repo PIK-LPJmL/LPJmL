@@ -2,7 +2,7 @@
 /**                                                                                \n**/
 /**           l  p  j  m  l  _  c  o  n  f  i  g  .  c  j  s  o  n                 \n**/
 /**                                                                                \n**/
-/** Default configuration file for LPJmL C Version 5.9.2                           \n**/
+/** Default configuration file for LPJmL C Version 5.9.3                           \n**/
 /**                                                                                \n**/
 /** Configuration file is divided into five sections:                              \n**/
 /**                                                                                \n**/
@@ -281,6 +281,7 @@ ID                               Fmt                        filename
     { "id" : "lake_area",        "file" : { "name" : "output/lake_area" }},
     { "id" : "fpc",              "file" : { "name" : "output/fpc" }},
     { "id" : "globalflux",       "file" : { "fmt" : "txt", "name" : "output/globalflux.csv"}},
+    { "id" : "nbp",              "file" : { "name" : "output/anbp"}},
     { "id" : "npp",              "file" : { "name" : "output/mnpp"}},
     { "id" : "gpp",              "file" : { "name" : "output/mgpp"}},
     { "id" : "rh",               "file" : { "name" : "output/mrh"}},

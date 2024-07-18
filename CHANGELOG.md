@@ -19,6 +19,32 @@ of `major.minor.patch` with
 
 ## [Unreleased]
 
+## [5.9.3] - 2024-07-18
+
+### Contributors
+
+- author: Werner von Bloh (bloh@pik-potsdam.de), Sebastian Ostberg (ostberg@pik-potsdam.de)
+- code review: Fabian Stenzel (stenzel@pik-potsdam.de), David Hötten (davidho@pik-potsdam.de), Christoph Müller (cmueller@pik-potsdam.de)
+
+### Added
+
+- Output `"nbp"` for net biosphere productivity and `"tws"` for total water storage added.
+- `fail` added to mail type in `lpjsubmit_hpc`.
+- Option `-map` added to `cdf2bin` and `cdf2clm` to read map from NetCDF file and write it into JSON metafile.
+- `"sim_name"` and all other global attributes are written into JSON file for `cdf2bin` utility.
+
+### Fixed
+
+- Scaling of `"littertemp"` output fixed.
+- Unit corrected for `"rootmoist"` output and scaling corrected.
+- Correct number of output files printed in `lpjfiles` utility if separate output files for each year are enabled.
+
+### Changed
+
+- `DEPTH_NAME` and `BNDS_NAME` excluded for search for variable in NetCDF file if no variable name is provided.
+- Check added that dimension must greater 1 for variable in NetCDF file.
+
+
 ## [5.9.2] - 2024-07-18
 
 ### Contributors
@@ -84,6 +110,7 @@ of `major.minor.patch` with
 - Added fast implicit crank nicolson heat conduction scheme for non-phase change conditions `apply_heatconduction_of_a_day.c`.
 
 ### Changed 
+
 - Replaced `soiltemp` soil temperature and snow and litter heat conduction routines with `update_soil_thermal_state.c`;
   `soiltemp` remains in the repository for POEM/FMS coupling.
 - Use enthalpy (thermal energy) as state variable for soil thermal regime instead of temperature.
@@ -93,6 +120,7 @@ of `major.minor.patch` with
 - Snow and litter temperatures are now calculated by interpolating air and top gridpoint temperature.
 - Snow melt by snow temperature greater than 0 deg is removed.
 - Litter heat insulation is now based on literature values for litter thermal conductivity.
+
 
 ## [5.8.17] - 2024-06-14
 

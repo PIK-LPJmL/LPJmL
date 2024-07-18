@@ -207,7 +207,7 @@ int main(int argc,char **argv)
     header.order=CELLYEAR;
     header.cellsize_lon=lon;
     header.cellsize_lat=lat;
-    fprintjson(file,argv[iarg+3],NULL,NULL,arglist,&header,NULL,NULL,NULL,0,NULL,NULL,NULL,NULL,&grid_name,grid_type,RAW,NULL,FALSE,0);
+    fprintjson(file,argv[iarg+3],NULL,NULL,NULL,arglist,&header,NULL,NULL,NULL,0,NULL,NULL,NULL,NULL,&grid_name,grid_type,RAW,NULL,FALSE,0);
     fclose(file);
   }
   return EXIT_SUCCESS;

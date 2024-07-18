@@ -128,8 +128,8 @@ Real daily_agriculture(Stand *stand,                /**< [inout] stand pointer *
         stand->soil.litter.item->agtop.leaf.nitrogen += crop->nmanure*(1-param.nmanure_nh4_frac);
         stand->cell->balance.influx.carbon += crop->nmanure*param.manure_cn*stand->frac;
         stand->cell->balance.influx.nitrogen += crop->nmanure*stand->frac;
-        getoutput(output,NMANURE_AGR,config)+=crop->nmanure*pft->stand->frac;
-        getoutput(output,NAPPLIED_MG,config)+=crop->nmanure*pft->stand->frac;
+        getoutput(output,NMANURE_AGR,config)+=crop->nmanure*stand->frac;
+        getoutput(output,NAPPLIED_MG,config)+=crop->nmanure*stand->frac;
         crop->nmanure=0;
       }
     }
