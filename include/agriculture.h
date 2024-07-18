@@ -27,14 +27,9 @@ extern Real daily_agriculture(Stand *,Real,const Dailyclimate *,int,int,
                               Real,
                               Real,Real,Real,Real,Real,int,int,int,
                               Bool,Real,const Config *);
-extern Bool annual_agriculture(Stand *,int,int,Real,int,Bool,Bool,const Config *);
+extern Bool annual_agriculture(Stand *,int,int,int,Bool,Bool,const Config *);
 
-extern Bool annual_setaside(Stand *,int,int,Real,int,Bool,Bool,const Config *);
-
-extern Real daily_setaside(Stand *,Real,const Dailyclimate *,int,int,
-                           Real,
-                           Real,Real,Real,Real,Real,int,int,int,
-                           Bool,Real,const Config *);
+extern Bool annual_setaside(Stand *,int,int,int,Bool,Bool,const Config *);
 
 extern void output_gbw_agriculture(Output *,const Stand *,Real,Real,Real,Real,
                                    const Real[LASTLAYER],const Real[LASTLAYER],Real,Real,int,int,

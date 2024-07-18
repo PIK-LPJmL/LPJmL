@@ -22,7 +22,6 @@
 Bool annual_natural(Stand *stand,         /**< Pointer to stand */
                     int npft,             /**< number of natural pfts */
                     int UNUSED(ncft),     /**< number of crop PFTs */
-                    Real popdens,         /**< population density (capita/km2) */
                     int year,             /**< year (AD) */
                     Bool isdaily,         /**< daily temperature data? */
                     Bool UNUSED(intercrop), /**< intercropping enabled (TRUE/FALSE) */
@@ -38,7 +37,6 @@ Bool annual_natural(Stand *stand,         /**< Pointer to stand */
 #ifndef DAILY_ESTABLISHMENT
   Stocks flux_estab;
 #endif
-  Stocks firewood={0,0};
   pft_len=getnpft(&stand->pftlist); /* get number of established PFTs */
   if(pft_len>0)
   {
@@ -54,7 +52,7 @@ Bool annual_natural(Stand *stand,         /**< Pointer to stand */
              pft->bm_inc.carbon,vegc_sum(pft),soilcarbon(&stand->soil));
 #endif
       
-      if(annualpft(stand,pft,fpc_inc+p,isdaily,config) || config->black_fallow)
+      if(annualpft(stand,pft,fpc_inc+p,isdaily,config))
       {
         /* PFT killed, delete from list of established PFTs */
         fpc_inc[p]=fpc_inc[getnpft(&stand->pftlist)-1];
@@ -72,22 +70,6 @@ Bool annual_natural(Stand *stand,         /**< Pointer to stand */
 #ifdef DEBUG2
     printf("Number of updated pft: %d\n",stand->pftlist.n);
 #endif
-    if(year>=config->firstyear && config->firewood==FIREWOOD)
-    {
-      firewood=woodconsum(stand,popdens);
-      getoutput(&stand->cell->output,FLUX_FIREWOOD,config)+=firewood.carbon*stand->frac;
-      getoutput(&stand->cell->output,FLUX_FIREWOOD_N,config)+=firewood.nitrogen*stand->frac;
-      stand->cell->balance.flux_firewood.carbon+=firewood.carbon*stand->frac;
-      stand->cell->balance.flux_firewood.nitrogen+=firewood.nitrogen*stand->frac;
-      foreachpft(pft,p,&stand->pftlist)
-        if(pft->nind<epsilon)
-        {
-          fpc_inc[p]=fpc_inc[getnpft(&stand->pftlist)-1];
-          litter_update(&stand->soil.litter,pft,pft->nind,config);
-          delpft(&stand->pftlist,p);
-          p--;  
-        }
-    }
     light(stand,fpc_inc,config);
     free(fpc_inc);
   }
@@ -112,21 +94,18 @@ Bool annual_natural(Stand *stand,         /**< Pointer to stand */
     stand->cell->output.dcflux+=flux.carbon*stand->frac;
   }
 #ifndef DAILY_ESTABLISHMENT
-  if(!config->black_fallow)
-  {
-    flux_estab=establishmentpft(stand,npft,stand->cell->balance.aprec,year,config);
-    getoutput(&stand->cell->output,FLUX_ESTABC,config)+=flux_estab.carbon*stand->frac;
-    getoutput(&stand->cell->output,FLUX_ESTABN,config)+=flux_estab.nitrogen*stand->frac;
-    stand->cell->balance.flux_estab.carbon+=flux_estab.carbon*stand->frac;
-    stand->cell->balance.flux_estab.nitrogen+=flux_estab.nitrogen*stand->frac;
-    stand->cell->output.dcflux-=flux_estab.carbon*stand->frac;
+  flux_estab=establishmentpft(stand,npft,stand->cell->balance.aprec,year,config);
+  getoutput(&stand->cell->output,FLUX_ESTABC,config)+=flux_estab.carbon*stand->frac;
+  getoutput(&stand->cell->output,FLUX_ESTABN,config)+=flux_estab.nitrogen*stand->frac;
+  stand->cell->balance.flux_estab.carbon+=flux_estab.carbon*stand->frac;
+  stand->cell->balance.flux_estab.nitrogen+=flux_estab.nitrogen*stand->frac;
+  stand->cell->output.dcflux-=flux_estab.carbon*stand->frac;
 #if defined IMAGE && defined COUPLED
-    if(stand->type->landusetype==NATURAL)
-    {
-      stand->cell->flux_estab_nat+=flux_estab.carbon*stand->frac;
-    }
-#endif
+  if(stand->type->landusetype==NATURAL)
+  {
+    stand->cell->flux_estab_nat+=flux_estab.carbon*stand->frac;
   }
+#endif
 #endif
   foreachpft(pft,p,&stand->pftlist)
   {

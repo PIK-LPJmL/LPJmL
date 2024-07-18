@@ -87,7 +87,6 @@ typedef struct
   Real mdemand;           /**< monthly irrigation demand */
   Bool dam;               /**< dam inside cell (TRUE/FALSE) */
   Bool with_tillage;      /* simulation with tillage implementation */
-  int fixed_grass_pft;              /**< fix C3 or C4 for GRASS pft */
   GrassScenarioType grass_scenario; /**< 0=default, 1=mowing, 2=ext.grazing, 3=int.grazing */
   Real grassland_lsuha;             /**< livestock density on grassland in LSU/ha */
 #if defined IMAGE && defined COUPLED
@@ -139,7 +138,6 @@ extern Stocks sowing_season(Cell *,int,int,int,Real,int,const Config *);
 extern Stocks sowing_prescribe(Cell *,int,int,int,int,const Config *);
 extern Stocks sowing(Cell *,Real,int,int,int,int,const Config *);
 extern void deforest(Cell *,Real,Bool,int,Bool,Bool,int,int,Real,const Config *);
-extern Stocks woodconsum(Stand*,Real);
 extern void calc_nir(Stand *,Irrigation *,Real,Real [],Real,Bool);
 extern Real rw_irrigation(Stand *,Real,const Real [],Real,const Config *);
 extern void irrig_amount_river(Cell *,const Config *);

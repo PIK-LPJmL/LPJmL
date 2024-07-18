@@ -52,7 +52,6 @@ void fprint_crop(FILE *file,       /**< pointer to text file */
     fprintf(file,"Vscal_sum:\t%g\n",crop->vscal_sum);
   }
   fprintf(file,"Supplysum:\t%g\n",crop->supplysum);
-  fprintf(file,"Frostkill:\t%s\n",bool2str(crop->frostkill));
   if(crop->sh!=NULL)
   {
     fprintf(file,"Petsum:\t%g\n",crop->sh->petsum);

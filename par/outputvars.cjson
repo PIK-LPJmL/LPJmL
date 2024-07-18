@@ -2,7 +2,7 @@
 /**                                                                                \n**/
 /**               o  u  t  p  u  t  v  a  r  s  .  c  j  s  o  n                   \n**/
 /**                                                                                \n**/
-/**  Defines array of output variables for LPJmL 5.9.3                             \n**/
+/**  Defines array of output variables for LPJmL 5.9.4                             \n**/
 /**                                                                                \n**/
 /**  Monthly output rates can be rescaled to 1/day or 1/second by setting the unit \n**/
 /**  to day-1 or sec-1, e.g.:                                                      \n**/
@@ -72,7 +72,6 @@
     { "id" : PFT_HARVESTC, "name": "pft_harvestc", "timestep" : "annual", "var" : "harvestc", "long_name" : "harvested carbon excluding residuals", "unit" : "gC/m2/yr", "scale" : 1.0, "offset" : 0.0},
     { "id" : PFT_RHARVESTC, "name": "pft_rharvestc", "timestep" : "annual", "var" : "rharvestc", "long_name" : "harvested residual carbon", "unit" : "gC/m2/yr", "scale" : 1.0, "offset" : 0.0},
     { "id" : COUNTRY, "name": "country", "timestep" : "annual", "var" : "country", "long_name" : "country code", "unit" : "", "scale" : 1.0, "offset" : 0.0},
-    { "id" : REGION, "name": "region", "timestep" : "annual", "var" : "region", "long_name" : "region code", "unit" : "", "scale" : 1.0, "offset" : 0.0},
     { "id" : MG_VEGC, "name": "mg_vegc", "timestep" : "annual", "var" : "mVegC", "long_name" : "managed vegetation carbon", "unit" : "gC/m2", "scale" : 1.0, "offset" : 0.0},
     { "id" : MG_SOILC, "name": "mg_soilc", "timestep" : "annual", "var" : "mSoilC", "long_name" : "managed soil carbon", "unit" : "gC/m2", "scale" : 1.0, "offset" : 0.0},
     { "id" : MG_LITC, "name": "mg_litc", "timestep" : "annual", "var" : "mLitC", "long_name" : "managed litter carbon", "unit" : "gC/m2", "scale" : 1.0, "offset" : 0.0},
@@ -119,7 +118,6 @@
     { "id" : FIREEMISSION_VOC, "name": "fireemission_voc", "timestep" : "monthly", "var" : "voc_emission", "long_name" :  "VOC fire emission", "unit" : "g/m2/month", "scale" : 1.0, "offset" : 0.0},
     { "id" : FIREEMISSION_TPM, "name": "fireemission_tpm", "timestep" : "monthly", "var" : "tpm_emission", "long_name" :  "TPM fire emission", "unit" : "g/m2/month", "scale" : 1.0, "offset" : 0.0},
     { "id" : FIREEMISSION_NOX, "name": "fireemission_nox", "timestep" : "monthly", "var" : "nox_emission", "long_name" :  "NOX fire emission", "unit" : "g/m2/month", "scale" : 1.0, "offset" : 0.0},
-    { "id" : FLUX_FIREWOOD, "name": "flux_firewood", "timestep" : "annual", "var" :  "flux_firewood", "long_name" :  "wood fire emissions", "unit" : "gC/m2/yr", "scale" : 1.0, "offset" : 0.0},
     { "id" : RHARVEST_BURNTC, "name": "rharvest_burntc", "timestep" : "annual", "var" :  "rharvest_burnt", "long_name" :  "residual burnt carbon", "unit" : "gC/m2/yr", "scale" : 1.0, "offset" : 0.0},
     { "id" : RHARVEST_BURNT_IN_FIELDC, "name": "rharvest_burnt_in_fieldc", "timestep" : "annual", "var" :  "rharvest_burntinfield", "long_name" :  "", "unit" : "gC/m2/yr", "scale" : 1.0, "offset" : 0.0},
     { "id" : TEMP_IMAGE, "name": "temp_image", "timestep" : "monthly", "var" :  "temp", "long_name" :  "temperature received from IMAGE", "unit" : "Celsius", "scale" : 1.0, "offset" : 0.0},
@@ -362,7 +360,6 @@
     { "id" : PRODUCT_POOL_SLOW_N,"name": "product_pool_slow_n", "timestep" : "annual", "var" : "product_pool_slow_n", "long_name" : "nitrogen in the slow product pool", "unit" : "gN/m2", "scale" : 1.0, "offset" : 0.0},
     { "id" : DEFOREST_EMIS_N    ,"name": "deforest_emis_n", "timestep" : "annual", "var" : "deforest_emis_n", "long_name" : "nitrogen emissions from deforestation", "unit" : "gN/m2/yr", "scale" : 1.0, "offset" : 0.0},
     { "id" : PROD_TURNOVER_N    ,"name": "prod_turnover_n", "timestep" : "annual", "var" : "prod_turnover_n", "long_name" : "nitrogen emissions from product turnover", "unit" : "gN/m2/yr", "scale" : 1.0, "offset" : 0.0},
-    { "id" : FLUX_FIREWOOD_N, "name": "flux_firewood_n", "timestep" : "annual", "var" :  "flux_firewood_n", "long_name" :  "nitrogen wood fire emissions", "unit" : "gN/m2/yr", "scale" : 1.0, "offset" : 0.0},
     { "id" : ESTAB_STORAGE_C, "name": "estab_storage_c", "timestep" : "annual", "var" :  "estab_storage_c", "long_name" :  "Carbon storage for establishment of agriculture trees and grasses", "unit" : "gC/m2", "scale" : 1.0, "offset" : 0.0},
     { "id" : ESTAB_STORAGE_N, "name": "estab_storage_n", "timestep" : "annual", "var" :  "estab_storage_n", "long_name" :  "Nitrogen storage for establishment of agriculture trees and grasses", "unit" : "gC/m2", "scale" : 1.0, "offset" : 0.0}
-]
+  ]

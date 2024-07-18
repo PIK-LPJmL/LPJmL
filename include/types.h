@@ -139,7 +139,7 @@ extern long long getfilesize(const char *);
 extern long long getfilesizep(FILE *);
 extern const char *strippath(const char *);
 extern long long diskfree(const char *);
-extern void fprintintf(FILE *,int);
+extern void fprintintf(FILE *,long long);
 extern void getcounts(int [],int [],int,int,int);
 extern char *getbuilddate(void);
 extern time_t getfiledate(const char *);

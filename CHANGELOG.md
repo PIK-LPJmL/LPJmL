@@ -19,6 +19,53 @@ of `major.minor.patch` with
 
 ## [Unreleased]
 
+
+## [5.9.4] - 2024-07-18
+
+### Contributors
+
+- author: Werner von Bloh (bloh@pik-potsdam.de)
+- code review: Jens Heinke (heinke@pik-potsdam.de), Christoph Müller (cmueller@pik-potsdam.de)
+
+### Added
+
+- Warning added if time step of output is longer than output interval.
+- Cycle length of spinup and number of spinup years checked for positive values in `fscanconfig.c`.
+- File size of CLM input files is checked for consistency with header and lpjml is stopped accordingly.
+- Utility `drainage2cdf` added to convert CLM drainage file into a NetCDF file using the soil code NetCDF file (issue #355).
+
+### Changed
+
+- Setting `"const_lai_max"` renamed to `"laimax_const"` for consistency.
+- Keyword `"laimax_interpolate"` renamed to `"laimax_manage"`.
+- Region-specific fractions for residue burning replaced by global parameter `"bifratio"` and `"fuelratio"`.
+- `lpjml` now terminates with an error message instead of a warning on invalid country codes to avoid invalid access to country-specific parameters.
+- Country code files can now have only one band. Files with 2 bands are still supported, but region code ignored.
+- Filename and source is written into configuration file created by `regridlpj`.
+- `null` allowed for `"global_attrs"`, `"inpath"`, `"outpath"`, `"restartpath"`, `"output"`, and `"checkpoint_filename"` to disable the feature.
+
+### Removed
+
+- `"laimax_interpolate"`, `"firewood"`, `"black_fallow"`, `"till_fallow"`, `"cropsheatfrost"`, and `"grassland_fixed_pft"` settings and corresponding code removed (issue #350).
+- Obsolete function `daily_setaside.c` removed. Function is not necessary any more for coupling to POEM.
+- Obsolete constants removed in `conf.h`.
+- Unused parameter `"residue_rate"`, `"residue_pool"`, `"residue_cn"`, `"residue_fbg"` removed.
+- Functions for reading region-specific parameters removed.
+- Obsolete region parameter file `manage_reg.cjson` removed
+- Obsolete outputs `"region"`, `"flux_firewood"`, `"flux_firewood_n"` removed.
+- Region definitions removed from `managepar.h`.
+
+### Fixed
+
+- Typos in error messages corrected in `bin2cdf.c` and `clm2cdf.c`.
+- Output of turnover corrected in `fprintpar_grass.c`.
+- Output of options fixed in `openconfig.c` if environment variable `LPJOPTIONS` is set.
+- Calculation of average fixed in `statclm`.
+- `res_remove` calculation fixed for residue fires in `harvest_crop.c` to close carbon and nitrogen balance.
+- Missing update of `FLUX_ESTABN_MG` added in `turnover_tree.c`.
+- Function `initdrain()`corrected to handle river routing files in NetCDF format.
+
+
 ## [5.9.3] - 2024-07-18
 
 ### Contributors

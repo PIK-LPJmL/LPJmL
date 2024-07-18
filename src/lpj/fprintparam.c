@@ -107,14 +107,6 @@ void fprintparam(FILE *file,    /**< pointer to text file */
       fprintf(file,"cft_fertday_tropic:\t%s\n", config->pftpar[npft+param.cft_fertday_tropic].name);
     }
     fprintf(file,"residues_frac:\t%g\n",param.residue_frac);
-    if(config->residue_treatment)
-    {
-      fprintf(file,"residue rate:\t%g (gC/m2/yr)\n",param.residue_rate);
-      fprintf(file,"residue pool:\t%g (gC/m2)\n",param.residue_pool);
-      fprintf(file,"residue fbg:\t%g\n",param.residue_fbg);
-      if(config->with_nitrogen)
-        fprintf(file,"residue C:N:\t%g\n",param.residue_cn);
-    }
     fprintf(file,"mixing_efficiency:\t%g\n",param.mixing_efficiency);
     fprintf(file,"livestock density on grassland:\t%g\n",
             param.lsuha);
@@ -145,6 +137,11 @@ void fprintparam(FILE *file,    /**< pointer to text file */
       fprintf(file,"product turnover:\t%g %g (1/yr)\n",
               param.product_turnover.fast,param.product_turnover.slow);
     }
+    if(config->residues_fire)
+    {
+      fprintf(file,"bifratio:\t\t%g\n",param.bifratio);
+      fprintf(file,"fuelratio:\t\t%g\n",param.fuelratio);
+    }
     if(config->rw_manage)
     {
       fprintf(file,"esoil reduction:\t%g\n",param.esoil_reduction);
@@ -171,8 +168,6 @@ void fprintparam(FILE *file,    /**< pointer to text file */
     fputs("------------------------------------------------------------------------------\n"
           "Country parameter\n",file);
     fprintcountrypar(file,config->countrypar,npft,ncft,config);
-    fputs("Region parameter\n",file);
-    fprintregionpar(file,config->regionpar,config->nregions);
   }
   else
     for(p=0;p<getnnat(npft,config);p++)

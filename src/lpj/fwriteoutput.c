@@ -583,8 +583,6 @@ void fwriteoutput(Outputfile *output,  /**< output file array */
   writeoutputvar(LITFALLN,1);
   writeoutputvar(FIREC,1);
   writeoutputvar(FIREN,1);
-  writeoutputvar(FLUX_FIREWOOD,1);
-  writeoutputvar(FLUX_FIREWOOD_N,1);
   writeoutputvar(FIREF,1);
   writeoutputvar(BNF_AGR,1);
   writeoutputvar(NFERT_AGR,1);

@@ -69,7 +69,7 @@ extern Real daily_grassland(Stand *,Real,const Dailyclimate *, int,int,
                             Real,
                             Real,Real,Real,Real,
                             Real ,int, int, int,Bool,Real,const Config *);
-extern Bool annual_grassland(Stand *,int,int,Real,int,Bool,Bool,const Config *);
+extern Bool annual_grassland(Stand *,int,int,int,Bool,Bool,const Config *);
 extern void new_grassland(Stand *);
 extern Bool fread_grassland(FILE *,Stand *,Bool);
 extern Bool fwrite_grassland(FILE *,const Stand *);
