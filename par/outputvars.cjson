@@ -2,7 +2,7 @@
 /**                                                                                \n**/
 /**               o  u  t  p  u  t  v  a  r  s  .  c  j  s  o  n                   \n**/
 /**                                                                                \n**/
-/**  Defines array of output variables for LPJmL 5.9.2                             \n**/
+/**  Defines array of output variables for LPJmL 5.9.3                             \n**/
 /**                                                                                \n**/
 /**  Monthly output rates can be rescaled to 1/day or 1/second by setting the unit \n**/
 /**  to day-1 or sec-1, e.g.:                                                      \n**/
@@ -35,6 +35,8 @@
     { "id" : GPP, "name": "gpp", "timestep" : "monthly", "var" : "GPP", "long_name" : "GPP", "unit" : "gC/m2/month", "scale" : 1.0, "offset" : 0.0},
     { "id" : RH, "name": "rh", "timestep" : "monthly", "var" : "RH", "long_name" : "heterotrophic respiration", "unit" : "gC/m2/month", "scale" : 1.0, "offset" : 0.0},
     { "id" : RD, "name": "rd", "timestep" : "monthly", "var" : "RD", "long_name" : "dark respiration", "unit" : "gC/m2/month", "scale" : 1.0, "offset" : 0.0},
+    { "id" : NBP, "name" : "nbp", "timestep" : "annual", "var" : "nbp", "long_name" : "net biosphere productivity", "unit" : "gC/m2/yr", "scale" : 1.0, "offset" : 0.0},
+    { "id" : TWS, "name" : "tws", "timestep" : "monthly", "var" : "tws", "long_name" : "total water storage", "unit" : "mm", "scale" : 1.0, "offset" : 0.0},
     { "id" : TRANSP, "name": "transp", "timestep" : "monthly", "var" : "transp", "long_name" : "transpiration", "unit" : "mm/month", "scale" : 1.0, "offset" : 0.0},
     { "id" : TRANSP_B, "name": "transp_b", "timestep" : "monthly", "var" : "transp_b", "long_name" : "transpired irrigation water", "unit" : "mm/month", "scale" : 1.0, "offset" : 0.0},
     { "id" : RUNOFF, "name": "runoff", "timestep" : "monthly", "var" : "runoff", "long_name" :  "runoff", "unit":  "mm/month", "scale" : 1.0, "offset" : 0.0},
@@ -44,16 +46,16 @@
     { "id" : EVAP_B, "name": "evap_b", "timestep" : "monthly", "var" : "evap_b", "long_name" : "evaporation of irrigation water", "unit" : "mm/month", "scale" : 1.0, "offset" : 0.0},
     { "id" : INTERC, "name": "interc", "timestep" : "monthly", "var" : "interc", "long_name" : "interception", "unit" : "mm/month", "scale" : 1.0, "offset" : 0.0},
     { "id" : INTERC_B, "name": "interc_b", "timestep" : "monthly", "var" : "interc_b", "long_name" : "blue interception", "unit" :  "mm/month", "scale" : 1.0, "offset" : 0.0},
-    { "id" : SWC, "name": "swc", "timestep" : "monthly", "var" : "SWC", "long_name" : "fractional saturation of soil water content", "unit" : "", "scale" : 1.0, "offset" : 0.0},
-    { "id" : SWC_VOL, "name": "swc_vol", "timestep" : "monthly", "var" : "swc_vol", "long_name" : "soil water content for each of the top 5 soillayers", "unit" : "dm3", "scale" : 1.0, "offset" : 0.0},
+    { "id" : SWC, "name": "swc", "timestep" : "monthly", "var" : "SWC", "long_name" : "fractional saturation of soil water content", "unit" : "1", "scale" : 1.0, "offset" : 0.0},
+    { "id" : SWC_VOL, "name": "swc_vol", "timestep" : "monthly", "var" : "swc_vol", "long_name" : "soil water volume for each of the top 5 soillayers", "unit" : "dm3", "scale" : 1.0, "offset" : 0.0},
     { "id" : WHC_NAT, "name": "whc_nat", "timestep" : "monthly", "var" : "whc_nat", "long_name" : "water holding capacity for natural vegetation", "unit" : "", "scale" : 1.0, "offset" : 0.0},
     { "id" : WHC_GRASS, "name": "whc_grass", "timestep" : "monthly", "var" : "whc_grass", "long_name" : "water holding capacity for grassland", "unit" : "", "scale" : 1.0, "offset" : 0.0},
     { "id" : WHC_AGR, "name": "whc_agr", "timestep" : "monthly", "var" : "whc_agr", "long_name" : "water holding capacity for agriculture", "unit" : "", "scale" : 1.0, "offset" : 0.0},
     { "id" : KS_NAT, "name": "ks_nat", "timestep" : "monthly", "var" : "ks_nat", "long_name" : "hydraulic conductivity for natural vegetation", "unit" : "mm/h", "scale" : 1.0, "offset" : 0.0},
     { "id" : KS_GRASS, "name": "ks_grass", "timestep" : "monthly", "var" : "ks_grass", "long_name" : "hydraulic conductivity for grassland", "unit" : "mm/h", "scale" : 1.0, "offset" : 0.0},
     { "id" : KS_AGR, "name": "ks_agr", "timestep" : "monthly", "var" : "ks_agr", "long_name" : "hydraulic conductivity for agriculture", "unit" : "mm/h", "scale" : 1.0, "offset" : 0.0},
-    { "id" : SWC1, "name": "swc1", "timestep" : "monthly", "var" : "SWC1", "long_name" : "fractional saturation of soil water content in layer 1", "unit" : "", "scale" : 1.0, "offset" : 0.0},
-    { "id" : SWC2, "name": "swc2", "timestep" : "monthly", "var" : "SWC2", "long_name" : "fractional saturation of soil water content in layer 2", "unit" : "", "scale" : 1.0, "offset" : 0.0},
+    { "id" : SWC1, "name": "swc1", "timestep" : "monthly", "var" : "SWC1", "long_name" : "fractional saturation of soil water content in layer 1", "unit" : "1", "scale" : 1.0, "offset" : 0.0},
+    { "id" : SWC2, "name": "swc2", "timestep" : "monthly", "var" : "SWC2", "long_name" : "fractional saturation of soil water content in layer 2", "unit" : "1", "scale" : 1.0, "offset" : 0.0},
     { "id" : FIREC, "name": "firec", "timestep" : "annual", "var" : "FireC", "long_name" : "fire carbon emission", "unit" : "gC/m2/yr", "scale" : 1.0, "offset" : 0.0},
     { "id" : FIREF, "name": "firef", "timestep" : "annual", "var" : "Firef", "long_name" : "burned fraction of natural vegetation", "unit" : "1", "scale" : 1.0, "offset" : 0.0},
     { "id" : VEGC, "name": "vegc", "timestep" : "annual", "var" : "VegC", "long_name" : "vegetation carbon", "unit" : "gC/m2", "scale" : 1.0, "offset" : 0.0},
@@ -165,10 +167,10 @@
     { "id" : SEEPAGE, "name": "seepage",  "timestep" : "monthly", "var" :  "seepage", "long_name" :  "seepage water", "unit" : "mm/month", "scale" : 1.0, "offset" : 0.0},
     { "id" : BURNTAREA, "name": "burntarea", "timestep" : "monthly", "var" :  "burntarea", "long_name" :  "area burnt", "unit" : "hectare", "scale" : 1.0, "offset" : 0.0},
     { "id" : SOILC_SLOW, "name": "soilc_slow", "timestep" : "annual", "var" :  "soilc_slow", "long_name" :  "slow soil carbon", "unit" : "gC/m2", "scale" : 1.0, "offset" : 0.0},
-    { "id" : SWC3, "name": "swc3", "timestep" : "monthly", "var" :  "SWC3", "long_name" :  "fractional saturation of soil water content in layer 3", "unit" : "", "scale" : 1.0, "offset" : 0.0},
-    { "id" : SWC4, "name": "swc4", "timestep" : "monthly", "var" :  "SWC4", "long_name" :  "fractional saturation of soil water content in layer 4", "unit" : "", "scale" : 1.0, "offset" : 0.0},
-    { "id" : SWC5, "name": "swc5", "timestep" : "monthly", "var" :  "SWC5", "long_name" :  "fractional saturation of soil water content in layer 5", "unit" : "", "scale" : 1.0, "offset" : 0.0},
-    { "id" : ROOTMOIST, "name": "rootmoist", "timestep" : "monthly", "var" :  "rootmoist", "long_name" :  "root moisture", "unit" : "", "scale" : 1.0, "offset" : 0.0},
+    { "id" : SWC3, "name": "swc3", "timestep" : "monthly", "var" :  "SWC3", "long_name" :  "fractional saturation of soil water content in layer 3", "unit" : "1", "scale" : 1.0, "offset" : 0.0},
+    { "id" : SWC4, "name": "swc4", "timestep" : "monthly", "var" :  "SWC4", "long_name" :  "fractional saturation of soil water content in layer 4", "unit" : "1", "scale" : 1.0, "offset" : 0.0},
+    { "id" : SWC5, "name": "swc5", "timestep" : "monthly", "var" :  "SWC5", "long_name" :  "fractional saturation of soil water content in layer 5", "unit" : "1", "scale" : 1.0, "offset" : 0.0},
+    { "id" : ROOTMOIST, "name": "rootmoist", "timestep" : "monthly", "var" :  "rootmoist", "long_name" :  "root moisture", "unit" : "mm", "scale" : 1.0, "offset" : 0.0},
     { "id" : CFT_SRAD, "name": "cft_srad", "timestep" : "annual", "var" :  "srad", "long_name" :  "CFT-specific shortwave downward radiation", "unit" : "W/m2", "scale" : 1.0, "offset" : 0.0},
     { "id" : CFT_ABOVEGBMC, "name": "cft_abovegbmc", "timestep" : "annual", "var" :  "aboveground_biomassc", "long_name" :  "CFT aboveground biomass", "unit" : "gC/m2", "scale" : 1.0, "offset" : 0.0},
     { "id" : CFT_ABOVEGBMN, "name": "cft_abovegbmn", "timestep" : "annual", "var" :  "aboveground_biomassn", "long_name" :  "CFT aboveground nitrogen", "unit" : "gN/m2", "scale" : 1.0, "offset" : 0.0},

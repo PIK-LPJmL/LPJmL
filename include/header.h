@@ -161,10 +161,11 @@ extern char *getfilefrommeta(const char *,Bool);
 extern void fprintheader(FILE *,const Header *);
 extern char *parse_json_metafile(FILE *,Header *,Map **,const char *,Attr **,int *,char **,char **,char **,char **,char **,char **,Filename *,Type *,int *,size_t *,Bool *,Verbosity);
 extern Map *fscanmap(LPJfile *,const char *,Verbosity);
+extern Map *newmap(Bool,int);
 extern void freemap(Map *);
 extern void fprintmap(FILE *,const Map *);
 extern Bool cmpmap(const Map *,const Map *);
-extern void fprintjson(FILE *,const char *,const char *,const char *,const char *,const Header *,
+extern void fprintjson(FILE *,const char *,const char *,const char *,const char *,const char *,const Header *,
                        Map *,const char *,const Attr *,int,const char *,const char *,const char *,
                        const char *,const Filename *,Type,int,const char *,Bool,int);
 

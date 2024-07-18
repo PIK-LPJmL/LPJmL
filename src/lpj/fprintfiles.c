@@ -180,7 +180,7 @@ void fprintfiles(FILE *file,          /**< pointer to text output file */
       if(config->outputvars[i].filename.fmt!=SOCK)
       {
         if(config->outputvars[i].oneyear)
-          for(j=config->firstyear;j<=config->lastyear;j++)
+          for(j=config->outputyear;j<=config->lastyear;j++)
           {
             fprintf(file,config->outputvars[i].filename.name,j);
             fputc('\n',file);
