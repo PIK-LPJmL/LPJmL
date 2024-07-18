@@ -376,7 +376,7 @@ void update_daily(Cell *cell,            /**< cell pointer           */
                      stand->soil.ice_depth[l]+stand->soil.ice_fw[l])*stand->frac;
     }
     forrootmoist(l)
-      getoutput(&cell->output,ROOTMOIST,config)+=stand->soil.w[l]*stand->soil.whcs[l]*stand->frac*(1.0/(1-cell->lakefrac-cell->ml.reservoirfrac)); /* absolute soil water content between wilting point and field capacity (mm) */
+      getoutput(&cell->output,ROOTMOIST,config)+=stand->soil.w[l]*stand->soil.whcs[l]*stand->frac; /* absolute soil water content between wilting point and field capacity (mm) */
     if(stand->type->landusetype==GRASSLAND || stand->type->landusetype==OTHERS ||
        stand->type->landusetype==AGRICULTURE || stand->type->landusetype==AGRICULTURE_GRASS || stand->type->landusetype==AGRICULTURE_TREE ||
        stand->type->landusetype==BIOMASS_TREE || stand->type->landusetype==BIOMASS_GRASS || stand->type->landusetype==WOODPLANTATION)
