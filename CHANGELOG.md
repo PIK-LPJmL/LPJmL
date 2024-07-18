@@ -19,11 +19,11 @@ of `major.minor.patch` with
 
 ## [Unreleased]
 
-## [5.9.2] - 2024-07-12
 
 ### Contributors
 
 - author: Werner von Bloh (bloh@pik-potsdam.de)
+- code review: Jens Heinke (heinke@pik-potsdam.de), Christoph Müller (cmueller@pik-potsdam.de)
 
 ### Added
 
@@ -62,6 +62,26 @@ of `major.minor.patch` with
 - `res_remove` calculation fixed for residue fires in `harvest_crop.c` to close carbon and nitrogen balance.
 - Missing update of `FLUX_ESTABN_MG` added in `turnover_tree.c`.
 - Function `initdrain()`corrected to handle river routing files in NetCDF format.
+
+## [5.9.2] - 2024-07-18
+
+### Contributors
+
+- author: Sebastian Ostberg (ostberg@pik-potsdam.de)
+- code review: Jens Heinke (heinke@pik-potsdam.de), Christoph Müller (cmueller@pik-potsdam.de)
+
+### Added
+
+- `fire_grass` burns grass leaf biomass based on fire resistence parameter (function did nothing before)
+- Burning of fruits added to `fire_tree`, although stands with fruit trees currently do not experience fire
+
+### Changed
+
+- Unit and description of `FIREF` output changed from fire return interval to fire fraction to harmonize output between GlobFirM and SpitFire
+
+### Fixed
+
+- Added missing update of FPCs after fire before establishment
 
 
 ## [5.9.1] - 2024-07-11
