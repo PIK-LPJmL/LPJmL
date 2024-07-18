@@ -1905,7 +1905,7 @@ void fwriteoutput(Outputfile *output,  /**< output file array */
       for(cell=0;cell<config->ngridcell;cell++)
         if(!grid[cell].skip && grid[cell].lakefrac+grid[cell].ml.reservoirfrac<1)
         {
-          getoutput(&grid[cell].output,NBP,config)+=(grid[cell].balance.anpp-grid[cell].balance.arh-grid[cell].balance.fire.carbon-grid[cell].balance.flux_firewood.carbon+
+          getoutput(&grid[cell].output,NBP,config)+=(grid[cell].balance.anpp-grid[cell].balance.arh-grid[cell].balance.fire.carbon+
                     grid[cell].balance.flux_estab.carbon-grid[cell].balance.flux_harvest.carbon-grid[cell].balance.biomass_yield.carbon-
                     grid[cell].balance.neg_fluxes.carbon+grid[cell].balance.influx.carbon-grid[cell].balance.deforest_emissions.carbon-
                     grid[cell].balance.prod_turnover.fast.carbon-grid[cell].balance.prod_turnover.slow.carbon-grid[cell].balance.trad_biofuel.carbon);
