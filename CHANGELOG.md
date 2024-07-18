@@ -33,12 +33,12 @@ of `major.minor.patch` with
 ### Fixed
 
 - Scaling of `"littertemp"` output fixed.
-- Unit corrected for "rootmoist"` output and scaling corrected.
+- Unit corrected for `"rootmoist"` output and scaling corrected.
 - Correct number of output files printed in `lpjfiles` utility if separate output files for each year are enabled.
 
 ### Changed
 
-- `DEPTH_NAME` and `BNDS_NAME` excluded for search for variable in NetCDF file if no variable name is provided. 
+- `DEPTH_NAME` and `BNDS_NAME` excluded for search for variable in NetCDF file if no variable name is provided.
 - Check added that dimension must greater 1 for variable in NetCDF file.
 
 
@@ -61,7 +61,6 @@ of `major.minor.patch` with
 ### Fixed
 
 - Added missing update of FPCs after fire before establishment
->>>>>>> 35487103462088f421fbdafcc9701cca52c960da
 
 
 ## [5.9.1] - 2024-07-11
