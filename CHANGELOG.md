@@ -20,6 +20,18 @@ of `major.minor.patch` with
 ## [Unreleased]
 
 
+## [5.9.5] - 2024-07-19
+
+### Contributors
+
+- author: Sebastian Ostberg (ostberg@pik-potsdam.de)
+- code review:
+
+### Fixed
+
+- Fix a regression for `NBP` output in `fwriteoutput` introduced in version 5.9.4
+
+
 ## [5.9.4] - 2024-07-18
 
 ### Contributors
