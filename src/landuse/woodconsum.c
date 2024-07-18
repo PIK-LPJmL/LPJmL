@@ -56,6 +56,7 @@ static Stocks woodconsum_tree(Pft *pft,Real restconsum,Litter *litter)
   pft->nind-=disturb;
   flux.carbon*=max_frac;
   flux.nitrogen*=max_frac;
+  fpc_tree(pft);
   return flux; /* harvested wood [gC/m2, gN/m2] */
 } /* of 'woodconsum_tree' */
 

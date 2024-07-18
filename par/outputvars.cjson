@@ -2,7 +2,7 @@
 /**                                                                                \n**/
 /**               o  u  t  p  u  t  v  a  r  s  .  c  j  s  o  n                   \n**/
 /**                                                                                \n**/
-/**  Defines array of output variables for LPJmL 5.9.1                             \n**/
+/**  Defines array of output variables for LPJmL 5.9.2                             \n**/
 /**                                                                                \n**/
 /**  Monthly output rates can be rescaled to 1/day or 1/second by setting the unit \n**/
 /**  to day-1 or sec-1, e.g.:                                                      \n**/
@@ -57,7 +57,7 @@
     { "id" : SWC1, "name": "swc1", "timestep" : "monthly", "var" : "SWC1", "long_name" : "fractional saturation of soil water content in layer 1", "unit" : "1", "scale" : 1.0, "offset" : 0.0},
     { "id" : SWC2, "name": "swc2", "timestep" : "monthly", "var" : "SWC2", "long_name" : "fractional saturation of soil water content in layer 2", "unit" : "1", "scale" : 1.0, "offset" : 0.0},
     { "id" : FIREC, "name": "firec", "timestep" : "annual", "var" : "FireC", "long_name" : "fire carbon emission", "unit" : "gC/m2/yr", "scale" : 1.0, "offset" : 0.0},
-    { "id" : FIREF, "name": "firef", "timestep" : "annual", "var" : "Firef", "long_name" : "fire interval", "unit" : "yr", "scale" : 1.0, "offset" : 0.0},
+    { "id" : FIREF, "name": "firef", "timestep" : "annual", "var" : "Firef", "long_name" : "burned fraction of natural vegetation", "unit" : "1", "scale" : 1.0, "offset" : 0.0},
     { "id" : VEGC, "name": "vegc", "timestep" : "annual", "var" : "VegC", "long_name" : "vegetation carbon", "unit" : "gC/m2", "scale" : 1.0, "offset" : 0.0},
     { "id" : SOILC, "name": "soilc", "timestep" : "annual", "var" : "SoilC", "long_name" : "total soil carbon density", "unit" : "gC/m2", "scale" : 1.0, "offset" : 0.0},
     { "id" : LITC, "name": "litc", "timestep" : "annual", "var" : "LitC", "long_name" : "above-ground and sub litter carbon", "unit" : "gC/m2", "scale" : 1.0, "offset" : 0.0},
