@@ -243,7 +243,7 @@ int main(int argc,char **argv)
   isbyte=swap=verbose=isclm=isjson=FALSE;
   units=NULL;
   var=NULL;
-  map_name=0;
+  map_name=NULL;
   outname="out.bin"; /* default file name for output */
   grid_type=LPJ_SHORT;
   cellsize_lon=cellsize_lat=0.5;      /* default cell size */
@@ -478,14 +478,26 @@ int main(int argc,char **argv)
     history=getattr_netcdf(&data,NC_GLOBAL,"history");
     source=getattr_netcdf(&data,NC_GLOBAL,"source");
     title=getattr_netcdf(&data,NC_GLOBAL,"title");
-    if(map_name!=NULL)
+    if(isjson)
     {
-      map=readmap_netcdf(data.ncid,map_name);
-      if(map==NULL)
-        map_name=NULL;
-      else
-        map_name=BAND_NAMES;
+      if(map_name!=NULL)
+      {
+         map=readmap_netcdf(data.ncid,map_name);
+         if(map==NULL)
+         {
+           fprintf(stderr,"Map '%s' not found in '%s'.\n",map_name,argv[j]);
+           map_name=NULL;
+         }
+         else
+           map_name=BAND_NAMES;
+       }
+       else if((map=readmap_netcdf(data.ncid,config.netcdf.pft.name))!=NULL)
+         map_name=BAND_NAMES;
+       else if((map=readmap_netcdf(data.ncid,config.netcdf.depth.name))!=NULL)
+         map_name=BAND_NAMES;
     }
+    else
+      map_name=NULL;
     if(isclm || isjson)
     {
       if(j==iarg+1)
