@@ -42,6 +42,10 @@ of `major.minor.patch` with
 - Check for correct number of time steps added in `openclimate_netcdf.c`.
 - Option `sum`, `tsum` and `tmean` to `mathclm` added.
 
+### Fixed
+
+- Test for `null` corrected for `"output"` in `fscanoutput.c`.
+
 
 ## [5.9.5] - 2024-07-19
 
@@ -205,9 +209,8 @@ of `major.minor.patch` with
 
 
 ## [5.8.17] - 2024-06-14
->>>>>>> 485fc96c9f74feb5f0b3a7a6e02be9c2a97779f4
 
-## [5.8.17] - 2024-06-14
+### Contributors
 
 - author: Werner von Bloh (bloh@pik-potsdam.de)
 - code review: Sibyll Schaphoff (sibylls@pik-potsdam.de), Sebastian Ostberg (ostberg@pik-potsdam.de)
