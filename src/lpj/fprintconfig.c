@@ -344,6 +344,8 @@ void fprintconfig(FILE *file,          /**< File pointer to text output file */
 #endif
   if(config->johansen)
     len=printsim(file,len,&count,"Johansen conductivity");
+  if(config->percolation_heattransfer)
+    len=printsim(file,len,&count,"percolation heattransfer");
   if(config->black_fallow)
   {
     len=printsim(file,len,&count,"black fallow");

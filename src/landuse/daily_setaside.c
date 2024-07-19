@@ -57,6 +57,7 @@ Real daily_setaside(Stand *stand, /**< stand pointer */
   Real wdf; /* water deficit fraction */
   Real transp;
   Real gc_pft;
+  Real vol_water_enth; /* volumetric enthalpy of water (J/m3) */
   Stocks flux_estab = {0,0};
   Stocks stocks;
   int n_est;
@@ -111,7 +112,11 @@ Real daily_setaside(Stand *stand, /**< stand pointer */
   rainmelt=climate->prec+melt;
   if(rainmelt<0)
     rainmelt=0.0;
-  runoff+=infil_perc_rain(stand,rainmelt-intercep_stand,&return_flow_b,config);
+  if(climate->prec+melt>0)  /* enthalpy of soil infiltration */
+    vol_water_enth = climate->temp*c_water*climate->prec/(climate->prec+melt)+c_water2ice;
+  else
+    vol_water_enth=0;
+  runoff+=infil_perc_rain(stand,rainmelt-intercep_stand,vol_water_enth,&return_flow_b,config);
 
   foreachpft(pft,p,&stand->pftlist)
   {

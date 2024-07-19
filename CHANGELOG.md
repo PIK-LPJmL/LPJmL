@@ -19,7 +19,7 @@ of `major.minor.patch` with
 
 ## [Unreleased]
 
-## [5.8.19] - 2024-06-18
+## [5.9.2] - 2024-07-12
 
 ### Contributors
 
@@ -45,11 +45,12 @@ of `major.minor.patch` with
 - Option `sum`, `tsum` and `tmean` to `mathclm` added.
 
 
-## [5.8.18] - 2024-06-18
+## [5.9.1] - 2024-07-11
 
 ### Contributors
 
 - author: Werner von Bloh (bloh@pik-potsdam.de)
+- code review: Christoph Mueller (cmueller@pik-potsdam.de), Sebastian Ostberg (ostberg@pik-potsdam.de)
 
 ### Added
 
@@ -59,6 +60,7 @@ of `major.minor.patch` with
 
 - Compile option `-Werror` added to stop compilation of `icx`/`gcc` after warning. This feature can be disabled by using the `-noerror` option of `configure.sh`.
 - Filename and source is written into configuration file created by `regridlpj`.
+- All missing output indices are printed in case that the `"outputvar"` array is too short.
 
 ### Fixed
 
@@ -70,10 +72,35 @@ of `major.minor.patch` with
 - Code fixed to remove all warnings if compiled with `icx`/`gcc`.
 - `regridclm` now used for regridding of soil file in `regridlpj`.
 - Missing seek to offset added in filesexist.c
-- Debug option in `Makefile.icx` corrected.
 - Misplaced deallocation of memory for unit corrected in `printclm`.
 
 
+## [5.9.0] - 2024-07-08
+
+### Contributors
+
+- author: David Hötten (davidho@pik-potsdam.de)
+- code review: Sibyll Schaphoff (sibylls@pik-potsdam.de), Werner von Bloh (bloh@pik-potsdam.de) 
+
+### Added
+- Added `GPL_HEAT` macro to change number of gridpoints per soil layer used for heat convection.
+- Added `percolation_heattransfer` switch to disable convection/percolation heattransfer.
+- Added `littertemp` output variable for litter temperature.
+- Added fast implicit crank nicolson heat conduction scheme for non-phase change conditions `apply_heatconduction_of_a_day.c`.
+
+### Changed 
+- Replaced `soiltemp` soil temperature and snow and litter heat conduction routines with `update_soil_thermal_state.c`;
+  `soiltemp` remains in the repository for POEM/FMS coupling.
+- Use enthalpy (thermal energy) as state variable for soil thermal regime instead of temperature.
+- Numeric heat conduction method is a finite element enthalpy scheme `apply_heatconduction_of_a_day.c`.
+- Numeric heat convection method is improved by closing the energy balance for water infil and percolation. 
+- Conduction through snow and litter cover is now part of the numerical method for the soil.
+- Snow and litter temperatures are now calculated by interpolating air and top gridpoint temperature.
+- Snow melt by snow temperature greater than 0 deg is removed.
+- Litter heat insulation is now based on literature values for litter thermal conductivity.
+
+## [5.8.17] - 2024-06-14
+>>>>>>> 485fc96c9f74feb5f0b3a7a6e02be9c2a97779f4
 
 ## [5.8.17] - 2024-06-14
 
