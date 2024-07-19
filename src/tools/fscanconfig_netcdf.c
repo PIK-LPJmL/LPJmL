@@ -108,6 +108,8 @@ Bool fscanconfig_netcdf(LPJfile *file,   /**< pointer to LPJ file */
     return TRUE;
   if(fscanaxis(d,&config->pft,"pft",verb))
     return TRUE;
+  if(fscanaxis(d,&config->pft_name,"pft_name",verb))
+    return TRUE;
   s=fscanstring(d,NULL,"calendar",verb);
   if(s==NULL)
     return TRUE;
@@ -129,6 +131,7 @@ void freeconfig_netcdf(Netcdf_config *config)
   freeaxis(&config->depth);
   freeaxis(&config->bnds);
   freeaxis(&config->pft);
+  freeaxis(&config->pft_name);
   free(config->calendar);
   free(config->years_name);
 } /* of 'freenconfig_netcdf' */

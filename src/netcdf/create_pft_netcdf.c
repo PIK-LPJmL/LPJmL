@@ -45,7 +45,7 @@ Bool create_pft_netcdf(Netcdf *cdf,
 #if defined(USE_NETCDF) || defined(USE_NETCDF4)
   char *s;
   time_t t;
-  int i,j,rc,nyear,size,len;
+  int i,j,rc,nyear,size,len,*pft;
   double *lon=NULL,*lat=NULL;
   double *layer,*bnds;
   double *year=NULL;
@@ -57,7 +57,7 @@ Bool create_pft_netcdf(Netcdf *cdf,
   int pft_len_id;
   size_t offset[2],count[2],pft_len;
 #endif
-  int time_dim_id,lon_dim_id,lat_dim_id,time_var_id,lon_var_id,lat_var_id,pft_dim_id,pft_var_id;
+  int time_dim_id,lon_dim_id,lat_dim_id,time_var_id,lon_var_id,lat_var_id,pft_dim_id,pft_var_id,pft_var_id2;
   if(array==NULL || name==NULL || filename==NULL)
   {
     fputs("ERROR424: Invalid array pointer in create_pft_netcdf().\n",stderr);
@@ -316,6 +316,8 @@ Bool create_pft_netcdf(Netcdf *cdf,
   }
   else
   {
+    rc=nc_def_var(cdf->ncid,config->netcdf.pft.name,NC_INT,1,&pft_dim_id,&pft_var_id2);
+    rc=nc_put_att_text(cdf->ncid,pft_var_id2,"long_name",strlen(config->netcdf.pft.long_name),config->netcdf.pft.long_name);
     pftnames=createpftnames(index,npft,ncft,config);
     if(pftnames==NULL)
     {
@@ -326,7 +328,7 @@ Bool create_pft_netcdf(Netcdf *cdf,
       return TRUE;
     }
 #ifdef USE_NETCDF4
-    rc=nc_def_var(cdf->ncid,config->netcdf.pft.name,NC_STRING,1,&pft_dim_id,&pft_var_id);
+    rc=nc_def_var(cdf->ncid,config->netcdf.pft_name.name,NC_STRING,1,&pft_dim_id,&pft_var_id);
 #else
     pft_len=0;
     for(i=0;i<size;i++)
@@ -337,8 +339,10 @@ Bool create_pft_netcdf(Netcdf *cdf,
     error(rc);
     dimids[0]=pft_dim_id;
     dimids[1]=pft_len_id;
-    rc=nc_def_var(cdf->ncid,config->netcdf.pft.name,NC_CHAR,2,dimids,&pft_var_id);
+    rc=nc_def_var(cdf->ncid,config->netcdf.pft_name.name,NC_CHAR,2,dimids,&pft_var_id);
 #endif
+    rc=nc_put_att_text(cdf->ncid,pft_var_id,"long_name",strlen(config->netcdf.pft_name.long_name),config->netcdf.pft_name.long_name);
+    error(rc);
   }
   error(rc);
   if(year!=NULL)
@@ -501,6 +505,17 @@ Bool create_pft_netcdf(Netcdf *cdf,
   }
   else
   {
+    pft=newvec(int,size);
+    if(pft==NULL)
+    {
+      printallocerr("pft");
+      return TRUE;
+    }
+    for(i=0;i<size;i++)
+      pft[i]=i+1;
+    rc=nc_put_var_int(cdf->ncid,pft_var_id2,pft);
+    error(rc);
+    free(pft);
 #ifdef USE_NETCDF4
     rc=nc_put_var_string(cdf->ncid,pft_var_id,(const char **)pftnames);
     error(rc);

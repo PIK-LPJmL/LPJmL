@@ -11,7 +11,9 @@
     "bnds" : { "name" : "depth_bnds", "dim" : "depth_bnds",
                "long_name" : "bnds=0 for the top of the layer, and bnds=1 for the bottom of the layer",
                "standard_name" : "","unit" :"m", "scale" : 1.0e-3},
-    "pft" : { "name" : "NamePFT", "dim": "npft",
+    "pft" : { "name" : "pft", "dim": "pft",
+              "long_name" : "PFT index" , "standard_name": "","unit" :"", "scale" : 1.0},
+    "pft" : { "name" : "NamePFT", "dim": "",
               "long_name" : "Name of plant functional types" , "standard_name": "","unit" :"", "scale" : 1.0},
     "calendar" : "noleap",
     "years" : "Years"

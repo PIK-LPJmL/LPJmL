@@ -43,10 +43,14 @@
 #define BNDS_DIM_NAME "depth_bnds"
 #define BNDS_LONG_NAME "bnds=0 for the top of the layer, and bnds=1 for the bottom of the layer"
 #define BNDS_STANDARD_NAME ""
-#define PFT_NAME "NamePFT"
-#define PFT_DIM_NAME "npft"
-#define PFT_LONG_NAME "Name of plant functional types"
+#define PFTNAME_NAME "NamePFT"
+#define PFTNAME_DIM_NAME ""
+#define PFTNAME_STANDARD_NAME ""
+#define PFTNAME_LONG_NAME "Name of plant functional types"
+#define PFT_NAME "pft"
+#define PFT_DIM_NAME "pft"
 #define PFT_STANDARD_NAME ""
+#define PFT_LONG_NAME "PFT index"
 #define CALENDAR "noleap"
 
 void initsetting_netcdf(Netcdf_config *config)
@@ -87,6 +91,11 @@ void initsetting_netcdf(Netcdf_config *config)
   config->pft.standard_name=PFT_STANDARD_NAME;
   config->pft.long_name=PFT_LONG_NAME;
   config->pft.unit="";
+  config->pft_name.name=PFTNAME_NAME;
+  config->pft_name.dim=PFTNAME_DIM_NAME;
+  config->pft_name.standard_name=PFTNAME_STANDARD_NAME;
+  config->pft_name.long_name=PFTNAME_LONG_NAME;
+  config->pft_name.unit="";
   config->years_name=YEARS_NAME;
   config->calendar=CALENDAR;
 } /* of 'initsetting_netcdf' */

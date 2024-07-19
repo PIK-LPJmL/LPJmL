@@ -495,7 +495,7 @@ int main(int argc,char **argv)
           else
             map_name=BAND_NAMES;
         }
-        else if((map=readmap_netcdf(data.ncid,config.netcdf.pft.name))!=NULL)
+        else if((map=readmap_netcdf(data.ncid,config.netcdf.pft_name.name))!=NULL)
           map_name=BAND_NAMES;
         else if((map=readmap_netcdf(data.ncid,config.netcdf.depth.name))!=NULL)
           map_name=BAND_NAMES;

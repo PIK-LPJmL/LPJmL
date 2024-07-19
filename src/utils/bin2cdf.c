@@ -61,9 +61,9 @@ static Cdf *create_cdf(const char *filename,
   size_t chunk[4],offset[2],count[2];
   char *s;
   time_t t;
-  int time_var_id,lat_var_id,lon_var_id,time_dim_id,lat_dim_id,lon_dim_id,map_dim_id,len_dim_id,bnds_var_id,bnds_dim_id;
+  int time_var_id,lat_var_id,lon_var_id,time_dim_id,lat_dim_id,lon_dim_id,map_dim_id,len_dim_id,bnds_var_id,bnds_dim_id,pft_var_id;
   int pft_dim_id,varid;
-  int len;
+  int len,*pft;
   cdf=new(Cdf);
   lon=newvec(double,array->nlon);
   if(lon==NULL)
@@ -318,8 +318,18 @@ static Cdf *create_cdf(const char *filename,
       rc=nc_def_dim(cdf->ncid,"len",len+1,&len_dim_id);
       error(rc);
       dim2[1]=len_dim_id;
-      rc=nc_def_var(cdf->ncid,getmapsize(map)==header.nbands ? netcdf_config->pft.name : MAP_NAME,NC_CHAR,2,dim2,&varid);
+      rc=nc_def_var(cdf->ncid,getmapsize(map)==header.nbands ? netcdf_config->pft_name.name : MAP_NAME,NC_CHAR,2,dim2,&varid);
       error(rc);
+      if(getmapsize(map)==header.nbands)
+      {
+        rc=nc_put_att_text(cdf->ncid,varid,"long_name",strlen(netcdf_config->pft_name.long_name),netcdf_config->pft_name.long_name);
+        error(rc);
+        rc=nc_def_var(cdf->ncid,netcdf_config->pft.name,NC_INT,1,&pft_dim_id,&pft_var_id);
+        error(rc);
+        rc=nc_put_att_text(cdf->ncid,pft_var_id,"long_name",strlen(netcdf_config->pft.long_name),netcdf_config->pft.long_name);
+        error(rc);
+      }
+
     }
   }
   else if(ispft)
@@ -436,6 +446,16 @@ static Cdf *create_cdf(const char *filename,
     }
     else
     {
+      if(getmapsize(map)==header.nbands)
+      {
+        pft=newvec(int,header.nbands);
+        check(pft);
+        for(i=0;i<header.nbands;i++)
+          pft[i]=i+1;
+        rc=nc_put_var_int(cdf->ncid,pft_var_id,pft);
+        error(rc);
+        free(pft);
+      }
       count[0]=1;
       offset[1]=0;
       for(i=0;i<getmapsize(map);i++)
