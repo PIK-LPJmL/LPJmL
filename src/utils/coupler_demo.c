@@ -136,7 +136,7 @@ int main(int argc,char **argv)
   Socket *socket;
   float *landuse;
   float *fertilizer;
-  short *country,*region;
+  short *country;
   char *endptr;
   float co2;
   Intcoord *coords;
@@ -452,7 +452,7 @@ int main(int argc,char **argv)
   writeint_socket(socket,&index,1);
   n_out-=n_err;
   /* read all static non time dependent outputs */
-  region=country=NULL;
+  country=NULL;
   coords=NULL;
   fcoords=NULL;
   for(i=0;i<n_out_1;i++)
@@ -494,11 +494,6 @@ int main(int argc,char **argv)
         country=newvec(short,sizes[index]);
         check(country);
         readshort_socket(socket,country,sizes[index]);
-        break;
-      case REGION:
-        region=newvec(short,sizes[index]);
-        check(region);
-        readshort_socket(socket,region,sizes[index]);
         break;
       default:
         fprintf(stderr,"Unsupported index %d of output.\n",index);

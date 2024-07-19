@@ -96,7 +96,6 @@ struct config
   Filename soilph_filename;
   Filename river_filename;
   Filename countrycode_filename;
-  Filename regioncode_filename;
   Filename landuse_filename;
   Filename fertilizer_nr_filename;
   Filename no3deposition_filename;
@@ -117,7 +116,6 @@ struct config
   Filename aquifer_filename;
   Filename wateruse_wd_filename;
 #endif
-  Filename grassfix_filename;
   Filename grassharvest_filename;
   Filename lsuha_filename;
   Filename sowing_cotton_rf_filename;
@@ -152,30 +150,23 @@ struct config
   Soilpar *soilpar;       /**< Soil parameter array */
   int ncountries;         /**< number of countries */
   Countrypar *countrypar; /**< country parameter array */
-  int nregions;           /**< number of regions */
-  Regionpar *regionpar;
   Outputvar *outputvars;
   char *compress_cmd;    /**< command for compressing output files */
   char *compress_suffix; /**< suffix for compressed output files */
   char csv_delimit;      /**< delimiter of CSV files */
   int n_out;     /**< number of output files */
-  int laimax_interpolate;
+  int laimax_manage;
   Real laimax;        /**< maximum LAI for benchmark */
   Bool withdailyoutput; /**< with daily output (TRUE/FALSE) */
   Bool flush_output;   /**< flush output after every simulation year (TRUE/FALSE) */
   Bool nofill;          /**< do not fille NetCDF files at creation (TRUE/FALSE) */
-  int pft_residue;
   int fdi;
   int with_nitrogen;      /**< enable nitrogen cycle */
   Bool crop_resp_fix;      /**< with fixed crop respiration (TRUE/FALSE) */
-  Bool cropsheatfrost;
   int tillage_type;      /**< type of tillage NO_TILLAGE=0, TILLAGE=1, READ_TILLAGE=2 */
   int residue_treatment; /** residue options: READ_RESIDUE_DATA, NO_RESIDUE_REMOVE, FIXED_RESIDUE_REMOVE (uses param residues_in_soil) */
-  Bool black_fallow;      /**< simulation with black fallow */
-  Bool till_fallow;         /**< apply tillage on black fallow */
   Bool fix_fertilization;   /**< simulation with fixed fertilizer application rate */
   Bool no_ndeposition;      /**< turn off atmospheric N deposition */
-  Bool prescribe_residues;  /**< simulation with prescribed residue rate on black fallow */
   int fertilizer_input;     /**< simulation with fertilizer input */
   Bool manure_input;       /**< simulation with manure input */
   Bool prescribe_lsuha;    /**< simulation with prescribed grassland livestock density from file */
@@ -251,7 +242,6 @@ struct config
   int ntask;     /**< number of parallel tasks */
   int count;     /**< number of grid cells with valid soilcode */
   int fire;      /**< fire disturbance enabled */
-  int firewood;  /**< fire wood usage */
   int seed_start;      /**< initial seed for random number generator */
   Bool new_seed;
   Coord resolution;    /**< size of grid cell (deg) */

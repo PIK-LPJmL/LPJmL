@@ -299,8 +299,8 @@ int main(int argc,char **argv)
   Intcoord coord;
   Header header,gridheader,outheader;
   String headername;
-  Code code;
-  Bool swap_country,swap_grid,rc,isjson;
+  int code;
+  Bool swap_country,swap_grid,rc,isregion,isjson;
   float fcoord[2];
   double dcoord[2];
   outheader.nyear=1;
@@ -348,6 +348,16 @@ int main(int argc,char **argv)
     fprintf(stderr,"Error reading header of '%s'.\n",argv[iarg]);
     return EXIT_FAILURE;
   }
+  if(header.nbands==1)
+    isregion=FALSE;
+  else if(header.nbands!=2)
+  {
+    fprintf(stderr,"Invalid number of bands=%d in `%s', must be 1 or 2.\n",
+            header.nbands,argv[iarg]);
+    return EXIT_FAILURE;
+  }
+  else
+   isregion=TRUE;
   grid=fopen(argv[iarg+1],"rb");
   if(grid==NULL)
   {
@@ -393,7 +403,7 @@ int main(int argc,char **argv)
   fwriteheader(out,&outheader,LPJGRID_HEADER,version);
   for(i=0;i<header.ncell;i++)
   {
-    if(readcountrycode(file,&code,header.datatype,swap_country))
+    if(readcountrycode(file,&code,header.datatype,isregion,swap_country))
     {
       fprintf(stderr,"Error reading country code at %d.\n",i+1);
       return EXIT_FAILURE;
@@ -418,7 +428,7 @@ int main(int argc,char **argv)
       fprintf(stderr,"Error reading coordinate at %d.\n",i+1);
       return EXIT_FAILURE;
     }
-    if(findcountry(country,n,code.country))
+    if(findcountry(country,n,code))
     {
       switch(gridheader.datatype)
       {

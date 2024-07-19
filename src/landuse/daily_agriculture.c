@@ -99,12 +99,6 @@ Real daily_agriculture(Stand *stand,                /**< [inout] stand pointer *
     index=(stand->type->landusetype==OTHERS) ? data->irrigation*nirrig+rothers(ncft) : pft->par->id-npft+data->irrigation*nirrig;
     crop=pft->data;
     /* kill crop at frost events */
-    if(config->cropsheatfrost && climate->tmin<(-5))
-    {
-      //if(crop->fphu>0.45 || !crop->wtype) /* frost damage possible for winter crops after storage organs develop, for other crops always possible */
-      if(crop->fphu>0.45) /* frost damage possible after storage organs develop */
-        crop->frostkill=TRUE;
-    }
     if(!config->with_nitrogen)
       pft->vscal=1;
     else
@@ -128,8 +122,8 @@ Real daily_agriculture(Stand *stand,                /**< [inout] stand pointer *
         stand->soil.litter.item->agtop.leaf.nitrogen += crop->nmanure*(1-param.nmanure_nh4_frac);
         stand->cell->balance.influx.carbon += crop->nmanure*param.manure_cn*stand->frac;
         stand->cell->balance.influx.nitrogen += crop->nmanure*stand->frac;
-        getoutput(output,NMANURE_AGR,config)+=crop->nmanure*pft->stand->frac;
-        getoutput(output,NAPPLIED_MG,config)+=crop->nmanure*pft->stand->frac;
+        getoutput(output,NMANURE_AGR,config)+=crop->nmanure*stand->frac;
+        getoutput(output,NAPPLIED_MG,config)+=crop->nmanure*stand->frac;
         crop->nmanure=0;
       }
     }
@@ -148,7 +142,7 @@ Real daily_agriculture(Stand *stand,                /**< [inout] stand pointer *
     if(!isannual(PFT_VEGC,config))
       getoutputindex(output,PFT_VEGC,nnat+index,config)=vegc_sum(pft);
 
-    if(phenology_crop(pft,climate->temp,climate->tmax,daylength,npft,config))
+    if(phenology_crop(pft,climate->temp,daylength,npft,config))
     {
       update_separate_harvests(output,pft,data->irrigation,day,npft,ncft,config);
       harvest_crop(output,stand,pft,npft,ncft,year,config);

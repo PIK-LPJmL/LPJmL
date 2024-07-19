@@ -18,7 +18,7 @@
 extern Standtype woodplantation_stand;
 extern char *woodplantation_names[NWPTYPE];
 
-extern Bool annual_woodplantation(Stand *, int,int,Real,int,Bool,Bool,const Config *);
+extern Bool annual_woodplantation(Stand *, int,int,int,Bool,Bool,const Config *);
 extern Real daily_woodplantation(Stand *, Real, const Dailyclimate *, int,int,
                                  Real, 
                                  Real, Real, Real, Real,

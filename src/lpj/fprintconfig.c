@@ -85,7 +85,7 @@ static size_t isnetcdfinput(const Config *config)
     if(config->landfrac_filename.fmt==CDF)
       width=max(width,strlen(config->landfrac_filename.var));
   }
-  if(config->cropsheatfrost || config->fire==SPITFIRE_TMAX)
+  if(config->fire==SPITFIRE_TMAX)
   {
     if(config->tmin_filename.fmt==CDF)
       width=max(width,strlen(config->tmin_filename.var));
@@ -108,8 +108,6 @@ static size_t isnetcdfinput(const Config *config)
   }
   if(config->ispopulation && config->popdens_filename.fmt==CDF)
     width=max(width,strlen(config->popdens_filename.var));
-  if(config->grassfix_filename.name!=NULL && config->grassfix_filename.fmt==CDF)
-    width=max(width,strlen(config->grassfix_filename.var));
   if(config->grassharvest_filename.name!=NULL && config->grassharvest_filename.fmt==CDF)
     width=max(width,strlen(config->grassharvest_filename.var));
   if(config->withlanduse!=NO_LANDUSE)
@@ -174,7 +172,7 @@ static size_t isnetcdfinput(const Config *config)
 #ifdef IMAGE
   if(config->wateruse_wd_filename.name!=NULL && config->wateruse_wd_filename.fmt==CDF)
     width=max(width,strlen(config->wateruse_wd_filename.var));
-  if(config->aquifer_irrig==AQUIFER_IRRIG && config->aquifer_filename.fmt==CDF)
+  if(config->aquifer_irrig && config->aquifer_filename.fmt==CDF)
     width=max(width,strlen(config->aquifer_filename.var));
 #endif
   if(width)
@@ -346,17 +344,6 @@ void fprintconfig(FILE *file,          /**< File pointer to text output file */
     len=printsim(file,len,&count,"Johansen conductivity");
   if(config->percolation_heattransfer)
     len=printsim(file,len,&count,"percolation heattransfer");
-  if(config->black_fallow)
-  {
-    len=printsim(file,len,&count,"black fallow");
-    if(config->till_fallow)
-      len=printsim(file,len,&count,"tillage fallow");
-    if(config->prescribe_residues)
-    {
-      snprintf(s,STRING_LEN,"prescribe residues of '%s'",config->pftpar[config->pft_residue].name);
-      len=printsim(file,len,&count,s);
-    }
-  }
   if(config->prescribe_landcover)
     len=printsim(file,len,&count,(config->prescribe_landcover==LANDCOVEREST) ? "prescribed establishment":"prescribed maximum FPC");
   if(config->gsi_phenology)
@@ -417,11 +404,6 @@ void fprintconfig(FILE *file,          /**< File pointer to text output file */
                config->pftpar[config->cft_temp+npft].name);
       len=printsim(file,len,&count,s);
     }
-    if (config->cropsheatfrost)
-    {
-      len += fprintf(file, ", ");
-      len = fputstring(file, len, "with crops heat frost", 78);
-    }
     if (config->grassonly)
     {
       len += fprintf(file, ", ");
@@ -467,18 +449,13 @@ void fprintconfig(FILE *file,          /**< File pointer to text output file */
       len+=fprintf(file,", ");
       len=fputstring(file,len,"fire in residuals",78);
     }
-    if(config->laimax_interpolate==LAIMAX_INTERPOLATE)
-    {
-      len+=fprintf(file,", ");
-      len=fputstring(file,len,"interpolated LAImax",78);
-    }
-    else if(config->laimax_interpolate==CONST_LAI_MAX)
+    if(config->laimax_manage==LAIMAX_CONST)
     {
       len+=fprintf(file,", ");
       snprintf(s,STRING_LEN,"const LAImax=%.1f",config->laimax);
       len=fputstring(file,len,s,78);
     }
-    else if(config->laimax_interpolate==LAIMAX_PAR)
+    else if(config->laimax_manage==LAIMAX_PAR)
     {
       len+=fprintf(file,", ");
       len=fputstring(file,len,"pft.cjson LAImax",78);
@@ -517,20 +494,16 @@ void fprintconfig(FILE *file,          /**< File pointer to text output file */
   }
   if(config->separate_harvests)
     len=printsim(file,len,&count,"separate harvests");
-  if(config->grassfix_filename.name!=NULL)
-    len=printsim(file,len,&count,"grassland fixed PFT");
   if(config->grassharvest_filename.name!=NULL)
     len=printsim(file,len,&count,"grassland harvest options");
   if(config->prescribe_lsuha)
     len=printsim(file,len,&count,"prescribed livestock density");
-  if(config->firewood)
-    len=printsim(file,len,&count,"wood fires");
   if(config->reservoir)
     len=printsim(file,len,&count,"dam reservoirs");
 #ifdef IMAGE
-  if(config->groundwater_irrig==GROUNDWATER_IRRIG)
+  if(config->groundwater_irrig)
     len=printsim(file,len,&count,"groundwater irrigation");
-  if(config->aquifer_irrig==AQUIFER_IRRIG)
+  if(config->aquifer_irrig)
     len=printsim(file,len,&count,"aquifer irrigation");
 #endif
   if(config->wateruse)
@@ -607,7 +580,7 @@ void fprintconfig(FILE *file,          /**< File pointer to text output file */
   printinputfile(file,"co2",&config->co2_filename,width,config);
   if(config->with_nitrogen || config->fire==SPITFIRE || config->fire==SPITFIRE_TMAX)
     printinputfile(file,"windspeed",&config->wind_filename,width,config);
-  if(config->cropsheatfrost || config->fire==SPITFIRE_TMAX)
+  if(config->fire==SPITFIRE_TMAX)
   {
     printinputfile(file,"tmin",&config->tmin_filename,width,config);
     printinputfile(file,"tmax",&config->tmax_filename,width,config);
@@ -627,15 +600,11 @@ void fprintconfig(FILE *file,          /**< File pointer to text output file */
     printinputfile(file,"burntarea",&config->burntarea_filename,width,config);
   if(config->prescribe_landcover)
     printinputfile(file,"landcover",&config->landcover_filename,width,config);
-  if(config->grassfix_filename.name!=NULL)
-    printinputfile(file,"Grassfix",&config->grassfix_filename,width,config);
   if(config->grassharvest_filename.name!=NULL)
     printinputfile(file,"Grassharvest",&config->grassharvest_filename,width,config);
   if(config->withlanduse!=NO_LANDUSE)
   {
     printinputfile(file,"countries",&config->countrycode_filename,width,config);
-    if(config->countrycode_filename.fmt==CDF)
-      printinputfile(file,"regions",&config->regioncode_filename,width,config);
     printinputfile(file,"landuse",&config->landuse_filename,width,config);
     if(config->iscotton)
     {
@@ -665,7 +634,7 @@ void fprintconfig(FILE *file,          /**< File pointer to text output file */
     printinputfile(file,"reservoir",&config->reservoir_filename,width,config);
   }
 #ifdef IMAGE
-  if(config->aquifer_irrig==AQUIFER_IRRIG)
+  if(config->aquifer_irrig)
     printinputfile(file,"aquifer",&config->aquifer_filename,width,config);
 #endif
   if(config->wet_filename.name!=NULL)

@@ -31,5 +31,10 @@ Stocks fire_tree(Pft *pft,      /**< pointer to tree PFT */
   flux.nitrogen+=pft->bm_inc.nitrogen*disturb;
   pft->bm_inc.nitrogen*=(1-disturb);
   pft->nind*=(1-disturb);
+  /* Include fruits even though fruit trees do not experience fire at the moment. */
+  flux.carbon+=disturb*tree->fruit.carbon;
+  flux.nitrogen+=disturb*tree->fruit.nitrogen;
+  tree->fruit.carbon*=(1-disturb);
+  tree->fruit.nitrogen*=(1-disturb);
   return flux;
 } /* of 'fire_tree' */

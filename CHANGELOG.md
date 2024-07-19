@@ -43,6 +43,111 @@ of `major.minor.patch` with
 - Option `sum`, `tsum` and `tmean` to `mathclm` added.
 
 
+## [5.9.5] - 2024-07-19
+
+### Contributors
+
+- author: Sebastian Ostberg (ostberg@pik-potsdam.de)
+- code review:
+
+### Fixed
+
+- Fix a regression for `NBP` output in `fwriteoutput` introduced in version 5.9.4
+
+
+## [5.9.4] - 2024-07-18
+
+### Contributors
+
+- author: Werner von Bloh (bloh@pik-potsdam.de)
+- code review: Jens Heinke (heinke@pik-potsdam.de), Christoph Müller (cmueller@pik-potsdam.de)
+
+### Added
+
+- Warning added if time step of output is longer than output interval.
+- Cycle length of spinup and number of spinup years checked for positive values in `fscanconfig.c`.
+- File size of CLM input files is checked for consistency with header and lpjml is stopped accordingly.
+- Utility `drainage2cdf` added to convert CLM drainage file into a NetCDF file using the soil code NetCDF file (issue #355).
+
+### Changed
+
+- Setting `"const_lai_max"` renamed to `"laimax_const"` for consistency.
+- Keyword `"laimax_interpolate"` renamed to `"laimax_manage"`.
+- Region-specific fractions for residue burning replaced by global parameter `"bifratio"` and `"fuelratio"`.
+- `lpjml` now terminates with an error message instead of a warning on invalid country codes to avoid invalid access to country-specific parameters.
+- Country code files can now have only one band. Files with 2 bands are still supported, but region code ignored.
+- Filename and source is written into configuration file created by `regridlpj`.
+- `null` allowed for `"global_attrs"`, `"inpath"`, `"outpath"`, `"restartpath"`, `"output"`, and `"checkpoint_filename"` to disable the feature.
+
+### Removed
+
+- `"laimax_interpolate"`, `"firewood"`, `"black_fallow"`, `"till_fallow"`, `"cropsheatfrost"`, and `"grassland_fixed_pft"` settings and corresponding code removed (issue #350).
+- Obsolete function `daily_setaside.c` removed. Function is not necessary any more for coupling to POEM.
+- Obsolete constants removed in `conf.h`.
+- Unused parameter `"residue_rate"`, `"residue_pool"`, `"residue_cn"`, `"residue_fbg"` removed.
+- Functions for reading region-specific parameters removed.
+- Obsolete region parameter file `manage_reg.cjson` removed
+- Obsolete outputs `"region"`, `"flux_firewood"`, `"flux_firewood_n"` removed.
+- Region definitions removed from `managepar.h`.
+
+### Fixed
+
+- Typos in error messages corrected in `bin2cdf.c` and `clm2cdf.c`.
+- Output of turnover corrected in `fprintpar_grass.c`.
+- Output of options fixed in `openconfig.c` if environment variable `LPJOPTIONS` is set.
+- Calculation of average fixed in `statclm`.
+- `res_remove` calculation fixed for residue fires in `harvest_crop.c` to close carbon and nitrogen balance.
+- Missing update of `FLUX_ESTABN_MG` added in `turnover_tree.c`.
+- Function `initdrain()`corrected to handle river routing files in NetCDF format.
+
+
+## [5.9.3] - 2024-07-18
+
+### Contributors
+
+- author: Werner von Bloh (bloh@pik-potsdam.de), Sebastian Ostberg (ostberg@pik-potsdam.de)
+- code review: Fabian Stenzel (stenzel@pik-potsdam.de), David Hötten (davidho@pik-potsdam.de), Christoph Müller (cmueller@pik-potsdam.de)
+
+### Added
+
+- Output `"nbp"` for net biosphere productivity and `"tws"` for total water storage added.
+- `fail` added to mail type in `lpjsubmit_hpc`.
+- Option `-map` added to `cdf2bin` and `cdf2clm` to read map from NetCDF file and write it into JSON metafile.
+- `"sim_name"` and all other global attributes are written into JSON file for `cdf2bin` utility.
+
+### Fixed
+
+- Scaling of `"littertemp"` output fixed.
+- Unit corrected for `"rootmoist"` output and scaling corrected.
+- Correct number of output files printed in `lpjfiles` utility if separate output files for each year are enabled.
+
+### Changed
+
+- `DEPTH_NAME` and `BNDS_NAME` excluded for search for variable in NetCDF file if no variable name is provided.
+- Check added that dimension must greater 1 for variable in NetCDF file.
+
+
+## [5.9.2] - 2024-07-18
+
+### Contributors
+
+- author: Sebastian Ostberg (ostberg@pik-potsdam.de)
+- code review: Jens Heinke (heinke@pik-potsdam.de), Christoph Müller (cmueller@pik-potsdam.de)
+
+### Added
+
+- `fire_grass` burns grass leaf biomass based on fire resistence parameter (function did nothing before)
+- Burning of fruits added to `fire_tree`, although stands with fruit trees currently do not experience fire
+
+### Changed
+
+- Unit and description of `FIREF` output changed from fire return interval to fire fraction to harmonize output between GlobFirM and SpitFire
+
+### Fixed
+
+- Added missing update of FPCs after fire before establishment
+
+
 ## [5.9.1] - 2024-07-11
 
 ### Contributors
@@ -87,6 +192,7 @@ of `major.minor.patch` with
 - Added fast implicit crank nicolson heat conduction scheme for non-phase change conditions `apply_heatconduction_of_a_day.c`.
 
 ### Changed 
+
 - Replaced `soiltemp` soil temperature and snow and litter heat conduction routines with `update_soil_thermal_state.c`;
   `soiltemp` remains in the repository for POEM/FMS coupling.
 - Use enthalpy (thermal energy) as state variable for soil thermal regime instead of temperature.
@@ -96,6 +202,7 @@ of `major.minor.patch` with
 - Snow and litter temperatures are now calculated by interpolating air and top gridpoint temperature.
 - Snow melt by snow temperature greater than 0 deg is removed.
 - Litter heat insulation is now based on literature values for litter thermal conductivity.
+
 
 ## [5.8.17] - 2024-06-14
 >>>>>>> 485fc96c9f74feb5f0b3a7a6e02be9c2a97779f4

@@ -26,7 +26,6 @@
 Bool annual_agriculture_tree(Stand *stand,         /**< Pointer to stand */
                              int npft,             /**< number of natural pfts */
                              int ncft,             /**< number of crop PFTs */
-                             Real UNUSED(popdens), /**< population density (capita/km2) */
                              int year,             /**< year (AD) */
                              Bool isdaily,         /**< daily temperature data? */
                              Bool intercrop,       /**< enable (intercropping) (TRUE/FALSE) */
@@ -230,11 +229,6 @@ Bool annual_agriculture_tree(Stand *stand,         /**< Pointer to stand */
         reduce(&stand->soil.litter,pft,fpc_total,config);
   stand->cell->balance.estab_storage_tree[data->irrigation.irrigation].carbon-=flux_estab.carbon*stand->frac;
   stand->cell->balance.estab_storage_tree[data->irrigation.irrigation].nitrogen-=flux_estab.nitrogen*stand->frac;
-  flux_estab.carbon=flux_estab.nitrogen=0;
-
-  stand->cell->balance.flux_estab.carbon+=flux_estab.carbon*stand->frac;
-  stand->cell->balance.flux_estab.nitrogen+=flux_estab.nitrogen*stand->frac;
-  stand->cell->output.dcflux-=flux_estab.carbon*stand->frac;
 
   foreachpft(pft,p,&stand->pftlist)
     if(istree(pft))

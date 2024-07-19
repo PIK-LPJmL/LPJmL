@@ -4,7 +4,7 @@
 /**                                                                                \n**/
 /**     C implementation of LPJmL                                                  \n**/
 /**                                                                                \n**/
-/**     Function reads string array from NetCDF file                               \n**/
+/**     Function reads string or numeric array from NetCDF file                    \n**/
 /**                                                                                \n**/
 /** (C) Potsdam Institute for Climate Impact Research (PIK), see COPYRIGHT file    \n**/
 /** authors, and contributors see AUTHORS file                                     \n**/
@@ -28,6 +28,7 @@ Map *readmap_netcdf(int ncid,        /**< id of NetCDF file */
   size_t len,offset[2],count[2];
   char *s;
   double *d;
+  char **str_array;
   nc_type type;
   int i,rc,var_id,ndims,*dimids;
   rc=nc_inq_varid(ncid,name,&var_id);
@@ -88,7 +89,7 @@ Map *readmap_netcdf(int ncid,        /**< id of NetCDF file */
       free(s);
       free(dimids);
     }
-    else if(type==NC_DOUBLE)
+    else if(type==NC_STRING)
     {
       nc_inq_varndims(ncid,var_id,&ndims);
       if(ndims!=1)
@@ -99,7 +100,45 @@ Map *readmap_netcdf(int ncid,        /**< id of NetCDF file */
       }
       dimids=newvec(int,ndims);
       if(dimids==NULL)
-      { 
+      {
+        printallocerr("dimids");
+        return NULL;
+      }
+      nc_inq_vardimid(ncid,var_id,dimids);
+      nc_inq_dimlen(ncid,dimids[0],&len);
+      map=newmap(FALSE,len);
+      if(map==NULL)
+      {
+        free(dimids);
+        printallocerr("map");
+        return NULL;
+      }
+      str_array=newvec(char *,len);
+      if(str_array==NULL)
+      {
+        free(dimids);
+        free(map);
+        printallocerr("map");
+        return NULL;
+      }
+      rc=nc_get_var_string(ncid,var_id,str_array);
+      for(i=0;i<getmapsize(map);i++)
+        getmapitem(map,i)=str_array[i];
+      free(dimids);
+      free(str_array);
+    }
+    else
+    {
+      nc_inq_varndims(ncid,var_id,&ndims);
+      if(ndims!=1)
+      {
+        fprintf(stderr,"ERROR408: Invalid number of dimensions %d for map '%s', must be 1.\n",
+                ndims,name);
+        return NULL;
+      }
+      dimids=newvec(int,ndims);
+      if(dimids==NULL)
+      {
         printallocerr("dimids");
         return NULL;
       }
@@ -107,7 +146,7 @@ Map *readmap_netcdf(int ncid,        /**< id of NetCDF file */
       nc_inq_dimlen(ncid,dimids[0],&len);
       map=newmap(TRUE,len);
       if(map==NULL)
-      { 
+      {
         free(dimids);
         printallocerr("map");
         return NULL;
@@ -124,15 +163,16 @@ Map *readmap_netcdf(int ncid,        /**< id of NetCDF file */
           return NULL;
         }
         rc=nc_get_vara_double(ncid,var_id,offset,count,d);
+        if(rc)
+        {
+          free(dimids);
+          fprintf(stderr,"ERROR403: Cannot read numeric value in map '%s': %s.\n",
+                  name,nc_strerror(rc));
+          return NULL;
+        }
         getmapitem(map,i)=d;
       }
       free(dimids);
-    }
-    else
-    {
-      fprintf(stderr,"ERROR428: Invalid dataype for map '%s', must be char or double.\n",
-              name);
-      return NULL;
     }
   }
   return map;

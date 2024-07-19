@@ -36,18 +36,9 @@
 #define LIM_IRRIGATION 1
 #define POT_IRRIGATION 2
 #define ALL_IRRIGATION 3
-#ifdef IMAGE
-#define GROUNDWATER_IRRIG 1
-#define NO_GROUNDWATER_IRRIG 0 // Flag to allow for irrigation from groundwater reservoir (sustainable gw irrigation)
-#define AQUIFER_IRRIG 1
-#define NO_AQUIFER_IRRIG 0 //Flag to allow for irrigation from aquifers (according to input map for aquifers)
-#endif
-#define GRASS_FIXED_PFT 1
-#define NO_GRASS_FIXED_PFT 0
 #define LAIMAX_CFT 0
-#define LAIMAX_INTERPOLATE 1
-#define CONST_LAI_MAX 2
-#define LAIMAX_PAR 3
+#define LAIMAX_CONST 1
+#define LAIMAX_PAR 2
 #define NO_NITROGEN 0
 #define LIM_NITROGEN 1
 #define UNLIM_NITROGEN 2
@@ -87,28 +78,23 @@
 #define OLD_CROP_PHU 0
 #define NEW_CROP_PHU 1
 #define PRESCRIBED_CROP_PHU 2
-#define NO_FIREWOOD 0
-#define FIREWOOD 1
-#define RANDOM_PREC 1
-#define INTERPOLATE_PREC 0
 #define NO_FERTILIZER 0
 #define FERTILIZER 1
 #define AUTO_FERTILIZER 2
-#define NOUT 338            /* number of output files */
+#define NOUT 337            /* number of output files */
 #define GRIDBASED 1         /* pft-specific outputs scaled by stand->frac */
 #define PFTBASED 0          /* pft-specific outputs not scaled by stand->frac */
-#define CONST_PREC 2
 #define ANNUAL -2
 #define MONTHLY -3
 #define DAILY -4
 /* output*/
 #define GRID 0
 #define COUNTRY 1
-#define REGION 2
-#define GLOBALFLUX 3
-#define TERR_AREA 4
-#define LAKE_AREA 5
-#define FPC 6
+#define GLOBALFLUX 2
+#define TERR_AREA 3
+#define LAKE_AREA 4
+#define FPC 5
+#define PFT_WATER_SUPPLY 6
 #define TRANSP 7
 #define RUNOFF 8
 #define DISCHARGE 9
@@ -168,7 +154,7 @@
 #define FIREDI 63
 #define FIREEMISSION_CO2 64
 #define FAPAR 65
-#define FLUX_FIREWOOD 66
+#define IRRIG_STOR 66
 #define RHARVEST_BURNTC 67
 #define RHARVEST_BURNT_IN_FIELDC 68
 #define TEMP_IMAGE 69
@@ -425,21 +411,20 @@
 #define PRODUCT_POOL_SLOW_N 320
 #define DEFOREST_EMIS_N 321
 #define PROD_TURNOVER_N 322
-#define FLUX_FIREWOOD_N 323
-#define ESTAB_STORAGE_C 324
-#define ESTAB_STORAGE_N 325
-#define PFT_WATER_DEMAND 326
-#define PFT_WATER_SUPPLY 327
-#define RD 328
-#define NDEPOS 329
-#define RIVERVOL 330
-#define SWC_VOL 331
-#define IRRIG_STOR 332
-#define FLUX_ESTABN_MG 333
-#define NAPPLIED_MG 334
-#define BNF_MG 335
-#define NDEPO_MG 336
-#define LITTERTEMP 337
+#define ESTAB_STORAGE_C 323
+#define ESTAB_STORAGE_N 324
+#define PFT_WATER_DEMAND 325
+#define RD 326
+#define NDEPOS 327
+#define RIVERVOL 328
+#define SWC_VOL 329
+#define FLUX_ESTABN_MG 330
+#define NAPPLIED_MG 331
+#define BNF_MG 332
+#define NDEPO_MG 333
+#define LITTERTEMP 334
+#define NBP 335
+#define TWS 336
 #define PFT_GCGP_COUNT 0
 #define NDAY_MONTH 1
 #define RANDOM_SEED 0

@@ -49,7 +49,7 @@ static Bool initreservoir2(Cell grid[],   /**< LPJ grid */
   }
   closeinput(&input);
   if((file=openinputfile(&header,&swap,&config->reservoir_filename,
-                         headername,NULL,
+                         headername,NULL,LPJ_FLOAT,
                          &version,&offset,TRUE,config))==NULL)
     return TRUE;
   if(header.nbands!=10)

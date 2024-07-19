@@ -254,7 +254,8 @@ int main(int argc,char **argv)
         }
         if(version>CLM_MAX_VERSION)
         {
-          fprintf(stderr,"Version=%d must be less than %d.\n",version,CLM_MAX_VERSION);
+          fprintf(stderr,"Version %d greater than maximum version %d supported.\n",
+                  version,CLM_MAX_VERSION);
           return EXIT_FAILURE;
         }
       }

@@ -234,7 +234,10 @@ int main(int argc,char **argv)
   double dcoord[2];
   FILE *file;
   Map *map;
-  int iarg,j;
+  int iarg,j,k;
+  Attr *attrs=NULL;
+  int n_attr=0,len;
+  char name[NC_MAX_NAME];
   float cellsize_lon,cellsize_lat;
   Bool swap,verbose,isclm,isbyte,isjson;
   Header header;
@@ -299,7 +302,6 @@ int main(int argc,char **argv)
         }
         map_name=argv[++iarg];
       }
-
       else if(!strcmp(argv[iarg],"-o"))
       {
         if(argc==iarg+1)
@@ -478,26 +480,53 @@ int main(int argc,char **argv)
     history=getattr_netcdf(&data,NC_GLOBAL,"history");
     source=getattr_netcdf(&data,NC_GLOBAL,"source");
     title=getattr_netcdf(&data,NC_GLOBAL,"title");
-    if(isjson)
+    if(j==iarg+1)
     {
-      if(map_name!=NULL)
+      if(isjson)
       {
-         map=readmap_netcdf(data.ncid,map_name);
-         if(map==NULL)
-         {
-           fprintf(stderr,"Map '%s' not found in '%s'.\n",map_name,argv[j]);
-           map_name=NULL;
-         }
-         else
-           map_name=BAND_NAMES;
-       }
-       else if((map=readmap_netcdf(data.ncid,config.netcdf.pft.name))!=NULL)
-         map_name=BAND_NAMES;
-       else if((map=readmap_netcdf(data.ncid,config.netcdf.depth.name))!=NULL)
-         map_name=BAND_NAMES;
+        if(map_name!=NULL)
+        {
+          map=readmap_netcdf(data.ncid,map_name);
+          if(map==NULL)
+          {
+            fprintf(stderr,"Map '%s' not found in '%s'.\n",map_name,argv[j]);
+            map_name=NULL;
+          }
+          else
+            map_name=BAND_NAMES;
+        }
+        else if((map=readmap_netcdf(data.ncid,config.netcdf.pft.name))!=NULL)
+          map_name=BAND_NAMES;
+        else if((map=readmap_netcdf(data.ncid,config.netcdf.depth.name))!=NULL)
+          map_name=BAND_NAMES;
+        if(nc_inq_natts(data.ncid,&len))
+          n_attr=0;
+        else
+        {
+          attrs=newvec(Attr,len);
+          if(attrs==NULL)
+          {
+            printallocerr("attrs");
+            return EXIT_FAILURE;
+          }
+          n_attr=0;
+          for(k=0;k<len;k++)
+          {
+            if(!nc_inq_attname(data.ncid,NC_GLOBAL,k,name))
+            {
+              if(strcmp(name,"history") && strcmp(name,"source") && strcmp(name,"title"))
+              {
+                attrs[n_attr].value=getattr_netcdf(&data,NC_GLOBAL,name);
+                if(attrs[n_attr].value!=NULL)
+                  attrs[n_attr++].name=strdup(name);
+              }
+            }
+          }
+        }
+      }
+      else
+        map_name=NULL;
     }
-    else
-      map_name=NULL;
     if(isclm || isjson)
     {
       if(j==iarg+1)
@@ -573,9 +602,10 @@ int main(int argc,char **argv)
     }
     grid_name.name=argv[iarg];
     grid_name.fmt=(isclm) ? CLM : RAW;
-    fprintjson(file,outname,title,source,history,arglist,&header,map,map_name,NULL,0,var,units,standard_name,long_name,&grid_name,grid_type,(isclm) ? CLM : RAW,LPJOUTPUT_HEADER,FALSE,LPJOUTPUT_VERSION);
+    fprintjson(file,outname,title,source,history,arglist,&header,map,map_name,attrs,n_attr,var,units,standard_name,long_name,&grid_name,grid_type,(isclm) ? CLM : RAW,LPJOUTPUT_HEADER,FALSE,LPJOUTPUT_VERSION);
     fclose(file);
   }
+  freemap(map);
   return EXIT_SUCCESS;
 #else
   fprintf(stderr,"ERROR401: NetCDF is not supported in this version of %s.\n",argv[0]);

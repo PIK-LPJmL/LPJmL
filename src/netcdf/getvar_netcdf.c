@@ -32,7 +32,7 @@ Bool getvar_netcdf(Climatefile *file,    /**< climate data file */
                   )                      /** \return TRUE on error */
 {
 #if defined(USE_NETCDF) || defined(USE_NETCDF4)
-  int i,nvars,rc;
+  int i,nvars,rc,ndims;
   char name[NC_MAX_NAME+1];
   nc_type type;
 #ifdef USE_UDUNITS
@@ -49,10 +49,14 @@ Bool getvar_netcdf(Climatefile *file,    /**< climate data file */
     for(i=0;i<nvars;i++)
     {
       nc_inq_varname(file->ncid,i,name);
-      if(strcmp(name,config->netcdf.lon.name) && strcmp(name,config->netcdf.lon.standard_name) && strcmp(name,config->netcdf.lat.name) && strcmp(name,config->netcdf.lat.standard_name) && strcmp(name,config->netcdf.time.name) && strcmp(name,config->netcdf.pft.name))
+      if(strcmp(name,config->netcdf.lon.name) && strcmp(name,config->netcdf.lon.standard_name) && strcmp(name,config->netcdf.lat.name) && strcmp(name,config->netcdf.lat.standard_name) && strcmp(name,config->netcdf.time.name) && strcmp(name,config->netcdf.pft.name) && strcmp(name,config->netcdf.depth.name) && strcmp(name,config->netcdf.bnds.name))
       {
-        file->varid=i;
-        break;
+        nc_inq_varndims(file->ncid,i,&ndims);
+        if(ndims>1)
+        {
+          file->varid=i;
+          break;
+        }
       }
     }
     if(i==nvars)

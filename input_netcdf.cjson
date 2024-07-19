@@ -3,7 +3,7 @@
 /**        i  n  p  u  t  _  n  e  t  c  d  f  .  c  j  s  o  n                    \n**/
 /**                                                                                \n**/
 /** Configuration file for NetCDF input dataset for LPJmL                          \n**/
-/** Version 5.9.1                                                                  \n**/
+/** Version 5.9.5                                                                  \n**/
 /**                                                                                \n**/
 /** (C) Potsdam Institute for Climate Impact Research (PIK), see COPYRIGHT file    \n**/
 /** authors, and contributors see AUTHORS file                                     \n**/
@@ -39,7 +39,6 @@
   "nh4deposition" : { "fmt" : "cdf",  "var" : "nh4dep", "name" : "cru_netcdf/nh4_deposition_rcp8p5.nc"},
   "soilpH" :        { "fmt" : "cdf",  "var" : "soilph", "name" : "cru_netcdf/soil_ph.nc"},
   "countrycode" : { "fmt" : "cdf", "var" : "country", "name" : "cru_netcdf/cow_full_2018.nc"},
-  "regioncode" : { "fmt" : "cdf", "var" : "region", "name" : "cru_netcdf/reg_full_2018.nc"},
   "landuse" : { "fmt" : "cdf", "var" :  "landfrac", "name" : "cru_netcdf/cft1700_2005_irrigation_systems_64bands.nc"},
   "fertilizer_nr" : { "fmt" : "cdf",  "var" : "nfert", "name" : "cru_netcdf/fertilizer_ggcmi.nc"},
   "temp" : { "fmt" : "cdf", "var" : "temp", "name" : "cru_netcdf/cru_ts_3_10.1901.2009.tmp.nc"},

@@ -19,7 +19,7 @@
 /* Definition of constants */
 
 #define RESTART_HEADER "LPJRESTART"
-#define RESTART_VERSION 30
+#define RESTART_VERSION 31
 #define LPJ_CLIMATE_HEADER "LPJCLIM"
 #define LPJ_CLIMATE_VERSION 3
 #define LPJ_LANDUSE_HEADER "LPJLUSE"
@@ -155,7 +155,7 @@ extern Bool freadanyheader(FILE *,Header *,Bool *,String,int *,Bool);
 extern Bool freadheaderid(FILE *,String,Bool);
 extern size_t headersize(const char *,int);
 extern FILE *openinputfile(Header *, Bool *,const Filename *,
-                           String,const char *,int *,size_t *,Bool,const Config *);
+                           String,const char *,Type,int *,size_t *,Bool,const Config *);
 extern FILE *openmetafile(Header *,Map **,const char *,Attr **,int *,char **,char **,char **,char **,char **,char **,Filename *,Type *,int *,Bool *,size_t *,const char *,Bool);
 extern char *getfilefrommeta(const char *,Bool);
 extern void fprintheader(FILE *,const Header *);
