@@ -28,6 +28,10 @@ of `major.minor.patch` with
 
 - Utility `cdf2grid` added to convert grid files in NetCDF format into grid CLM files.
 
+### Fixed
+
+- Test for `null` corrected for `"output"` in `fscanoutput.c`.
+
 
 ## [5.9.5] - 2024-07-19
 
