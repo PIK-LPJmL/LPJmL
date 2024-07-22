@@ -28,6 +28,10 @@ of `major.minor.patch` with
 
 - Utility `cdf2grid` added to convert grid files in NetCDF format into grid CLM files.
 
+### Changed
+
+- Check added that dimension must be greater 1 for variable in NetCDF file in `cdf2coord.c`.
+
 ### Fixed
 
 - Test for `null` corrected for `"output"` in `fscanoutput.c`.
@@ -114,7 +118,7 @@ of `major.minor.patch` with
 ### Changed
 
 - `DEPTH_NAME` and `BNDS_NAME` excluded for search for variable in NetCDF file if no variable name is provided.
-- Check added that dimension must greater 1 for variable in NetCDF file.
+- Check added that dimension must be greater 1 for variable in NetCDF file.
 
 
 ## [5.9.2] - 2024-07-18
