@@ -129,10 +129,14 @@ int main(int argc,char **argv)
     for(j=0;j<nvars;j++)
     {
       nc_inq_varname(ncid,j,name);
-      if(strcmp(name,LON_NAME) && strcmp(name,LON_STANDARD_NAME) && strcmp(name,LAT_NAME) && strcmp(name,LAT_STANDARD_NAME) && strcmp(name,"time"))
+      if(strcmp(name,LON_NAME) && strcmp(name,LON_STANDARD_NAME) && strcmp(name,LAT_NAME) && strcmp(name,LAT_STANDARD_NAME) && strcmp(name,TIME_NAME) && strcmp(name,PFT_NAME) && strcmp(name,DEPTH_NAME) && strcmp(name,BNDS_NAME))
       {
-        var_id=j;
-        break;
+        nc_inq_varndims(ncid,j,&ndims);
+        if(ndims>1)
+        {
+          var_id=j;
+          break;
+        }
       }
     }
     if(j==nvars)
