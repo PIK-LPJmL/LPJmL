@@ -54,6 +54,7 @@ int main(int argc,char **argv)
   } coord_f;
   char *var;
   char *out_json,*arglist;
+  char *source,*history,*title;
   FILE *out;
   Data *data;
   int *index;
@@ -243,6 +244,9 @@ int main(int argc,char **argv)
   }
   rc=nc_get_var_int(ncid,var_id,index);
   error(rc);
+  history=getattr_netcdf(ncid,NC_GLOBAL,"history");
+  source=getattr_netcdf(ncid,NC_GLOBAL,"source");
+  title=getattr_netcdf(ncid,NC_GLOBAL,"title");
   nc_close(ncid);
   for(i=0;i<lat_len*lon_len;i++)
     if(index[i]!=missing_value)
@@ -333,8 +337,11 @@ int main(int argc,char **argv)
       return EXIT_FAILURE;
     }
     free(out_json);
-    fprintjson(out,argv[iarg+1],NULL,argv[0],NULL,arglist,&header,NULL,NULL,NULL,0,"grid","degree",NULL,"cell coordinates",NULL,LPJ_SHORT,(israw) ? RAW : CLM,LPJGRID_HEADER,FALSE,LPJGRID_VERSION);
+    fprintjson(out,argv[iarg+1],title,source,history,arglist,&header,NULL,NULL,NULL,0,"grid","degree",NULL,"cell coordinates",NULL,LPJ_SHORT,(israw) ? RAW : CLM,LPJGRID_HEADER,FALSE,LPJGRID_VERSION);
     free(arglist);
+    free(title);
+    free(source);
+    free(history);
     fclose(out);
   }
   return EXIT_SUCCESS;

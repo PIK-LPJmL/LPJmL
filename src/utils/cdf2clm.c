@@ -627,13 +627,13 @@ int main(int argc,char **argv)
         }
       }
       if(units==NULL)
-        units=getattr_netcdf(&climate,climate.varid,"units");
+        units=getattr_netcdf(climate.ncid,climate.varid,"units");
       if(var==NULL)
         var=getvarname_netcdf(&climate);
-      long_name=getattr_netcdf(&climate,climate.varid,"long_name");
-      standard_name=getattr_netcdf(&climate,climate.varid,"standard_name");
-      history=getattr_netcdf(&climate,NC_GLOBAL,"history");
-      source=getattr_netcdf(&climate,NC_GLOBAL,"source");
+      long_name=getattr_netcdf(climate.ncid,climate.varid,"long_name");
+      standard_name=getattr_netcdf(climate.ncid,climate.varid,"standard_name");
+      history=getattr_netcdf(climate.ncid,NC_GLOBAL,"history");
+      source=getattr_netcdf(climate.ncid,NC_GLOBAL,"source");
       if(map_name!=NULL)
       {
         map=readmap_netcdf(climate.ncid,map_name);
@@ -662,7 +662,7 @@ int main(int argc,char **argv)
           {
             if(strcmp(name,"history") && strcmp(name,"source"))
             {
-              attrs[n_attr].value=getattr_netcdf(&climate,NC_GLOBAL,name);
+              attrs[n_attr].value=getattr_netcdf(climate.ncid,NC_GLOBAL,name);
               if(attrs[n_attr].value!=NULL)
                 attrs[n_attr++].name=strdup(name);
             }
