@@ -384,12 +384,7 @@ int main(int argc,char **argv)
     free(title);
     free(source);
     free(history);
-    for(i=0;i<n_attr;i++)
-    {
-      free(attrs[i].value);
-      free(attrs[i].name);
-    }
-    free(attrs);
+    freeattrs(attrs,n_attr);
     fclose(out);
   }
   return EXIT_SUCCESS;
