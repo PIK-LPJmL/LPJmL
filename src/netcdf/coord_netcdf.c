@@ -36,19 +36,19 @@ struct coord_netcdf
     short s;
     float f;
   } missing_value;
-  float *lon;
-  float *lat;
+  double *lon;
+  double *lat;
   size_t lon_len,lat_len;
   size_t offsets[2];
 };
 
-const float *getlon_netcdf(const Coord_netcdf coord,int *nlon)
+const double *getlon_netcdf(const Coord_netcdf coord,int *nlon)
 {
   *nlon=coord->lon_len;
   return coord->lon;
 } /* of 'getlon_netcdf' */
 
-const float *getlat_netcdf(const Coord_netcdf coord,int *nlat)
+const double *getlat_netcdf(const Coord_netcdf coord,int *nlat)
 {
   *nlat=coord->lat_len;
   return coord->lat;
@@ -545,8 +545,12 @@ Coord_netcdf opencoord_netcdf(const char *filename,const char *var,Bool isout)
       nc_inq_varname(coord->ncid,i,name);
       if(strcmp(name,LON_NAME) && strcmp(name,LAT_NAME) && strcmp(name,TIME_NAME))
       {
-        coord->varid=i;
-        break;
+        nc_inq_varndims(coord->ncid,i,&ndims);
+        if(ndims>1)
+        {
+          coord->varid=i;
+          break;
+        }
       }
     }
     if(i==nvars)
@@ -599,7 +603,7 @@ Coord_netcdf opencoord_netcdf(const char *filename,const char *var,Bool isout)
     return NULL;
   }
   nc_inq_dimlen(coord->ncid,dimids[ndims-1],&coord->lon_len);
-  coord->lon=newvec(float,coord->lon_len);
+  coord->lon=newvec(double,coord->lon_len);
   if(coord->lon==NULL)
   {
     printallocerr("lon");
@@ -608,7 +612,7 @@ Coord_netcdf opencoord_netcdf(const char *filename,const char *var,Bool isout)
     free(coord);
     return NULL;
   }
-  rc=nc_get_var_float(coord->ncid,var_id,coord->lon);
+  rc=nc_get_var_double(coord->ncid,var_id,coord->lon);
   if(rc)
   {
     if(isout)
@@ -635,7 +639,7 @@ Coord_netcdf opencoord_netcdf(const char *filename,const char *var,Bool isout)
   }
   nc_inq_dimlen(coord->ncid,dimids[ndims-2],&coord->lat_len);
   free(dimids);
-  coord->lat=newvec(float,coord->lat_len);
+  coord->lat=newvec(double,coord->lat_len);
   if(coord->lat==NULL)
   {
     printallocerr("lat");
@@ -644,7 +648,7 @@ Coord_netcdf opencoord_netcdf(const char *filename,const char *var,Bool isout)
     free(coord);
     return NULL;
   }
-  rc=nc_get_var_float(coord->ncid,var_id,coord->lat);
+  rc=nc_get_var_double(coord->ncid,var_id,coord->lat);
   if(rc)
   {
     if(isout)
