@@ -1,34 +1,36 @@
-.TH cdf2coord 1  "USER COMMANDS"
+.TH cdf2grid 1  "USER COMMANDS"
 .SH NAME
-cdf2coord \- extract CLM grid from NetCDF file
+cdf2grid \- convert grid NetCDF file into grid CLM file
 .SH SYNOPSIS
-.B cdf2coord
-[\-var name] [\-index i] [\-{float|double}] [\-scale s] netcdffile gridfile
+.B cdf2grid
+[\-var name] [\-{float|double}] [\-scale s] [\-raw] [\-json] netcdffile gridfile
 .SH DESCRIPTION
-Program extracts grid file in CLM format from NetCDF input data. All cells with valid input will be put in the grid file.
+Program convert grid file written in NetCDF format to grid file in raw or CLM format.
 .SH OPTIONS
 .TP
 \-var name
 variable name in NetCDF file
-.TP
-\-index i
-Converting from i-th dataset. Default is first (=0).
-.TP
 \-scale factor
 scaling factor for CLM grid file. Default is 0.01
 .TP
 \-{float|double}
 write float or double values in CLM grid file, default is short
 .TP
+\-raw
+Output format is raw without header, default is CLM format
+.TP
+\-json
+An additional JSON metafile with suffix \fI.json\fP is written.
+.TP
 .I netcdffile
-filename of NetCDF file
+filename of grid NetCDF file
 .I gridfile
 filename of grid data file written
 .SH EXAMPLES
 .TP
-Create coord file from temperature data file:
+Create grid binary raw file from grid NetCDF file:
 .B cdf2coord
--var tas temp1901-2010.nc grid.clm
+-raw grid.nc grid.clm
 .PP
 .SH EXIT STATUS
 .B cdf2coord
@@ -44,4 +46,4 @@ For authors and contributors see AUTHORS file
 (C) Potsdam Institute for Climate Impact Research (PIK), see COPYRIGHT file
 
 .SH SEE ALSO
-cdf2grid(1), cdf2clm(1), clm2cdf(1), bin2cdf(1), country2cdf(1), regridlpj(1), lpjml(1), txt2clm(1), cru2clm(1), clm(5)
+cdf2coord(1), cdf2clm(1), clm2cdf(1), bin2cdf(1), country2cdf(1), regridlpj(1), lpjml(1), txt2clm(1), cru2clm(1), clm(5)

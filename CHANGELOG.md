@@ -20,6 +20,15 @@ of `major.minor.patch` with
 ## [Unreleased]
 
 
+### Contributors
+
+- author: Werner von Bloh (bloh@pik-potsdam.de)
+
+### Added
+
+- Utility `cdf2grid` added to convert grid files in NetCDF format into grid CLM files.
+
+
 ## [5.9.5] - 2024-07-19
 
 ### Contributors
