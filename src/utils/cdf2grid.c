@@ -36,7 +36,7 @@ static int cmp(const Data *a,const Data *b)
 int main(int argc,char **argv)
 {
 #if defined(USE_NETCDF) || defined(USE_NETCDF4)
-  int rc,ncid,var_id,dimids[2],i,j,nvars,lon_id,lat_id,ndims,x,y,iarg;
+  int rc,ncid,var_id,dimids[2],i,j,nvars,lon_id,lat_id,ndims,x,y,iarg,len,n_attr;
   double *lat,*lon;
   size_t lat_len,lon_len;
   int missing_value;
@@ -58,6 +58,7 @@ int main(int argc,char **argv)
   FILE *out;
   Data *data;
   int *index;
+  Attr *attrs=NULL;
   var=NULL;
   header.datatype=LPJ_SHORT;
   header.scalar=0.01;
@@ -111,7 +112,7 @@ int main(int argc,char **argv)
       else
       {
         fprintf(stderr,"Invalid option '%s'.\n"
-                USAGE,argv[iarg],argv[0]); 
+                USAGE,argv[iarg],argv[0]);
         return EXIT_FAILURE;
       }
     }
@@ -144,7 +145,7 @@ int main(int argc,char **argv)
     }
     if(j==nvars)
     {
-      fprintf(stderr,"ERRO405: No variable found in '%s'.\n",argv[iarg]);
+      fprintf(stderr,"ERRO405: No variable with 2 dimensions found in '%s'.\n",argv[iarg]);
       nc_close(ncid);
       return EXIT_FAILURE;
     }
@@ -244,9 +245,36 @@ int main(int argc,char **argv)
   }
   rc=nc_get_var_int(ncid,var_id,index);
   error(rc);
-  history=getattr_netcdf(ncid,NC_GLOBAL,"history");
-  source=getattr_netcdf(ncid,NC_GLOBAL,"source");
-  title=getattr_netcdf(ncid,NC_GLOBAL,"title");
+  if(isjson)
+  {
+    history=getattr_netcdf(ncid,NC_GLOBAL,"history");
+    source=getattr_netcdf(ncid,NC_GLOBAL,"source");
+    title=getattr_netcdf(ncid,NC_GLOBAL,"title");
+    if(nc_inq_natts(ncid,&len))
+      n_attr=0;
+    else
+    {
+      attrs=newvec(Attr,len);
+      if(attrs==NULL)
+      {
+        printallocerr("attrs");
+        return EXIT_FAILURE;
+      }
+      n_attr=0;
+      for(i=0;i<len;i++)
+      {
+        if(!nc_inq_attname(ncid,NC_GLOBAL,i,name))
+        {
+          if(strcmp(name,"history") && strcmp(name,"source") && strcmp(name,"title"))
+          {
+            attrs[n_attr].value=getattr_netcdf(ncid,NC_GLOBAL,name);
+            if(attrs[n_attr].value!=NULL)
+              attrs[n_attr++].name=strdup(name);
+          }
+        }
+      }
+    }
+  }
   nc_close(ncid);
   for(i=0;i<lat_len*lon_len;i++)
     if(index[i]!=missing_value)
@@ -277,7 +305,14 @@ int main(int argc,char **argv)
     }
   free(index);
   qsort(data,header.ncell,sizeof(Data),(int(*)(const void *,const void *))cmp);
-  header.firstcell=0;
+  header.firstcell=data[0].index;
+  for(i=1;i<header.ncell;i++)
+    if(data[i].index!=i+header.firstcell)
+    {
+      fprintf(stderr,"Missing or double index in grid NetCDF file '%s' at cell %d.\n",
+              argv[iarg],i);
+      return EXIT_FAILURE;
+    }
   header.nyear=1;
   header.nstep=1;
   header.timestep=1;
@@ -337,11 +372,17 @@ int main(int argc,char **argv)
       return EXIT_FAILURE;
     }
     free(out_json);
-    fprintjson(out,argv[iarg+1],title,source,history,arglist,&header,NULL,NULL,NULL,0,"grid","degree",NULL,"cell coordinates",NULL,LPJ_SHORT,(israw) ? RAW : CLM,LPJGRID_HEADER,FALSE,LPJGRID_VERSION);
+    fprintjson(out,argv[iarg+1],title,source,history,arglist,&header,NULL,NULL,attrs,n_attr,"grid","degree",NULL,"cell coordinates",NULL,LPJ_SHORT,(israw) ? RAW : CLM,LPJGRID_HEADER,FALSE,LPJGRID_VERSION);
     free(arglist);
     free(title);
     free(source);
     free(history);
+    for(i=0;i<n_attr;i++)
+    {
+      free(attrs[i].value);
+      free(attrs[i].name);
+    }
+    free(attrs);
     fclose(out);
   }
   return EXIT_SUCCESS;
