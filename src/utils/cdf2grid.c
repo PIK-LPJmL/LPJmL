@@ -223,18 +223,8 @@ int main(int argc,char **argv)
             argv[iarg],nc_strerror(rc),MISSING_VALUE_INT);
     missing_value=MISSING_VALUE_INT;
   }
-  out=fopen(argv[iarg+1],"wb");
-  if(out==NULL)
-  {
-    fprintf(stderr,"Error creating '%s': %s.\n",argv[iarg+1],strerror(errno));
-    free(lon);
-    free(lat);
-    nc_close(ncid);
-    return EXIT_FAILURE;
-  }
   header.cellsize_lon=(lon[lon_len-1]-lon[0])/(lon_len-1);
   header.cellsize_lat=(float)fabs((lat[lat_len-1]-lat[0])/(lat_len-1));
-  header.ncell=0;
   index=newvec(int,lat_len*lon_len);
   if(index==NULL)
   {
@@ -276,9 +266,16 @@ int main(int argc,char **argv)
     }
   }
   nc_close(ncid);
+  /* find number of valid cells in grid NetCDF file */
+  header.ncell=0;
   for(i=0;i<lat_len*lon_len;i++)
     if(index[i]!=missing_value)
       header.ncell++;
+  if(header.ncell==0)
+  {
+    fprintf(stderr,"No grid cells found in '%s'.\n",argv[iarg]);
+    return EXIT_FAILURE;
+  }
   data=newvec(Data,header.ncell);
   if(data==NULL)
   {
@@ -294,6 +291,7 @@ int main(int argc,char **argv)
     {
       if(index[y*lon_len+x]!=missing_value)
       {
+        /* valid cell found, store index and ilat,ilon */
         data[header.ncell].index=index[y*lon_len+x];
         data[header.ncell].ilon=x;
         data[header.ncell].ilat=y;
@@ -304,6 +302,7 @@ int main(int argc,char **argv)
       }
     }
   free(index);
+  /* sort in ascending order of index */
   qsort(data,header.ncell,sizeof(Data),(int(*)(const void *,const void *))cmp);
   header.firstcell=data[0].index;
   for(i=1;i<header.ncell;i++)
@@ -319,6 +318,14 @@ int main(int argc,char **argv)
   header.firstyear=1901;
   header.nbands=2;
   header.order=CELLYEAR;
+  out=fopen(argv[iarg+1],"wb");
+  if(out==NULL)
+  {
+    fprintf(stderr,"Error creating '%s': %s.\n",argv[iarg+1],strerror(errno));
+    free(lon);
+    free(lat);
+    return EXIT_FAILURE;
+  }
   if(!israw)
     fwriteheader(out,&header,LPJGRID_HEADER,LPJGRID_VERSION);
   for(i=0;i<header.ncell;i++)
