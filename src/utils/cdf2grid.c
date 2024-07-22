@@ -107,7 +107,6 @@ int main(int argc,char **argv)
           return EXIT_FAILURE;
         }
       }
-
       else
       {
         fprintf(stderr,"Invalid option '%s'.\n"
@@ -218,7 +217,7 @@ int main(int argc,char **argv)
     rc=nc_get_att_int(ncid,var_id,"_FillValue",&missing_value);
   if(rc)
   {
-    fprintf(stderr,"WARNING402: Cannot read missing for fill value in '%s': %s, set to %d.\n",
+    fprintf(stderr,"WARNING402: Cannot read missing or fill value in '%s': %s, set to %d.\n",
             argv[iarg],nc_strerror(rc),MISSING_VALUE_INT);
     missing_value=MISSING_VALUE_INT;
   }
@@ -237,20 +236,23 @@ int main(int argc,char **argv)
   index=newvec(int,lat_len*lon_len);
   if(index==NULL)
   {
+    free(lon);
+    free(lat);
     printallocerr("index");
     return EXIT_FAILURE;
   }
   rc=nc_get_var_int(ncid,var_id,index);
   error(rc);
-  for(y=0;y<lat_len;y++)
-    for(x=0;x<lon_len;x++)
-    {
-      if(index[y*lon_len+x]!=missing_value)
-        header.ncell++;
-    }
+  nc_close(ncid);
+  for(i=0;i<lat_len*lon_len;i++)
+    if(index[i]!=missing_value)
+      header.ncell++;
   data=newvec(Data,header.ncell);
   if(data==NULL)
   {
+    free(index);
+    free(lon);
+    free(lat);
     printallocerr("data");
     return EXIT_FAILURE;
   }
@@ -269,6 +271,7 @@ int main(int argc,char **argv)
         header.ncell++;
       }
     }
+  free(index);
   qsort(data,header.ncell,sizeof(Data),(int(*)(const void *,const void *))cmp);
   header.firstcell=0;
   header.nyear=1;
@@ -283,29 +286,35 @@ int main(int argc,char **argv)
   {
     switch(header.datatype)
     {
-       case LPJ_FLOAT:
-         coord_f.lat=(float)lat[data[i].ilat];
-         coord_f.lon=(float)lon[data[i].ilon];
-         fwrite(&coord_f,sizeof(coord_f),1,out);
-         break;
-       case LPJ_DOUBLE:
-         coord_d.lat=lat[data[i].ilat];
-         coord_d.lon=lon[data[i].ilon];
-         fwrite(&coord_d,sizeof(coord_d),1,out);
-         break;
-       default:
-         coord.lat=(short)(lat[data[i].ilat]/header.scalar);
-         coord.lon=(short)(lon[data[i].ilon]/header.scalar);
+      case LPJ_FLOAT:
+        coord_f.lat=(float)lat[data[i].ilat];
+        coord_f.lon=(float)lon[data[i].ilon];
+        rc=fwrite(&coord_f,sizeof(coord_f),1,out);
+        break;
+      case LPJ_DOUBLE:
+        coord_d.lat=lat[data[i].ilat];
+        coord_d.lon=lon[data[i].ilon];
+        rc=fwrite(&coord_d,sizeof(coord_d),1,out);
+        break;
+      default:
+        coord.lat=(short)(lat[data[i].ilat]/header.scalar);
+        coord.lon=(short)(lon[data[i].ilon]/header.scalar);
 #ifdef DEBUG
-            printf("%.3f %3f %d %d\n",lat[data[i].ilat],lon[data[i].ilon],coord.lat,coord.lon);
+        printf("%.3f %3f %d %d\n",lat[data[i].ilat],lon[data[i].ilon],coord.lat,coord.lon);
 #endif
-          fwrite(&coord,sizeof(coord),1,out);
+        rc=fwrite(&coord,sizeof(coord),1,out);
+    } /* of switch() */
+    if(rc!=1)
+    {
+      fprintf(stderr,"Error writing grid file '%s': %s.\n",
+              argv[iarg+1],strerror(errno));
+      return EXIT_FAILURE;
     }
   }
   fclose(out);
+  free(data);
   free(lon);
   free(lat);
-  nc_close(ncid);
   printf("Number of cells: %d\n",header.ncell);
   if(isjson)
   {
@@ -323,7 +332,9 @@ int main(int argc,char **argv)
       printfcreateerr(out_json);
       return EXIT_FAILURE;
     }
+    free(out_json);
     fprintjson(out,argv[iarg+1],NULL,argv[0],NULL,arglist,&header,NULL,NULL,NULL,0,"grid","degree",NULL,"cell coordinates",NULL,LPJ_SHORT,(israw) ? RAW : CLM,LPJGRID_HEADER,FALSE,LPJGRID_VERSION);
+    free(arglist);
     fclose(out);
   }
   return EXIT_SUCCESS;
