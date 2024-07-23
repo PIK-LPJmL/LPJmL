@@ -126,8 +126,12 @@ static Bool setvarinput_netcdf(Input_netcdf input,const Filename *filename,
       nc_inq_varname(input->ncid,i,name);
       if(strcmp(name,LON_NAME) && strcmp(name,LON_STANDARD_NAME) && strcmp(name,LAT_NAME) && strcmp(name,LAT_STANDARD_NAME) && strcmp(name,TIME_NAME))
       {
-        input->varid=i;
-        break;
+        nc_inq_varndims(input->ncid,i,&ndims);
+        if(ndims>1)
+        {
+          input->varid=i;
+          break;
+        }
       }
     }
     if(i==nvars)
@@ -163,8 +167,8 @@ static Bool setvarinput_netcdf(Input_netcdf input,const Filename *filename,
   else
   {
     if(isroot(*config))
-      fprintf(stderr,"ERROR408: Invalid number of dimensions %d in '%s', must be 2 or 3.\n",
-              ndims,filename->name);
+      fprintf(stderr,"ERROR408: Invalid number of dimensions %d for '%s' in '%s', must be 2 or 3.\n",
+              ndims,(filename->var==NULL) ? name : filename->var,filename->name);
     return TRUE;
   }
   nc_inq_vartype(input->ncid,input->varid,&type);
@@ -280,8 +284,8 @@ static Bool setvarinput_netcdf(Input_netcdf input,const Filename *filename,
           }
           nc_get_att_text(input->ncid,input->varid,"units",newstr);
           if(strcmp(newstr,fromstr))
-            fprintf(stderr,"WARNING408: Unit '%s' in '%s' differs from unit '%s' in configuration file.\n",
-                    newstr,filename->name,fromstr);
+            fprintf(stderr,"WARNING408: Unit '%s' for '%s' in '%s' differs from unit '%s' in configuration file.\n",
+                    newstr,(filename->var==NULL) ? name : filename->var,filename->name,fromstr);
           free(newstr);
         }
       }
