@@ -9,7 +9,7 @@ Program extracts grid file in CLM format from NetCDF input data. All cells with 
 .SH OPTIONS
 .TP
 \-var name
-variable name in NetCDF file
+variable name in NetCDF file. If not specified the first variable with more than one dimension is chosen.
 .TP
 \-index i
 Converting from i-th dataset. Default is first (=0).
@@ -22,6 +22,7 @@ write float or double values in CLM grid file, default is short
 .TP
 .I netcdffile
 filename of NetCDF file
+.TP
 .I gridfile
 filename of grid data file written
 .SH EXAMPLES
