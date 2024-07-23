@@ -31,11 +31,12 @@ of `major.minor.patch` with
 ### Changed
 
 - Check added that dimension must be greater 1 for variable in NetCDF file in `cdf2coord.c`, `input_netcdf.c` and `coord_netcdf.c`.
-- Datatype of longitude/latitude array in `coord_netcdf.c` changed from float to double for consistency, variable name correctly printe in error messages.
+- Datatype of longitude/latitude array in `coord_netcdf.c` changed from float to double for consistency, variable name correctly printed in error messages.
 
 ### Fixed
 
 - Test for `null` corrected for `"output"` in `fscanoutput.c`.
+- Missing `break` added in `switch` statement in `receiver_coupler.c`.
 
 
 ## [5.9.5] - 2024-07-19
