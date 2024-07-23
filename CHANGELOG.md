@@ -30,7 +30,8 @@ of `major.minor.patch` with
 
 ### Changed
 
-- Check added that dimension must be greater 1 for variable in NetCDF file in `cdf2coord.c`.
+- Check added that dimension must be greater 1 for variable in NetCDF file in `cdf2coord.c`, `input_netcdf.c` and `coord_netcdf.c`.
+- Datatype of longitude/latitude array in `coord_netcdf.c` changed from float to double for consistency, variable name correctly printe in error messages.
 
 ### Fixed
 
