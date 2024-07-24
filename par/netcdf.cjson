@@ -31,7 +31,7 @@
     "pft" : { "name" : "pft", "dim" : "pft",
               "long_name" : "PFT index", "standard_name" : "",
               "unit" : "", "scale" : 1.0},
-    "pft_name" : { "name" : "NamePFT", "dim" : "",
+    "pft_name" : { "name" : "NamePFT", "dim" : "len",
               "long_name" : "Name of plant functional types", "standard_name" : "",
               "unit" : "", "scale" : 1.0},
     /* calendar name */

@@ -335,7 +335,7 @@ Bool create_pft_netcdf(Netcdf *cdf,
       if(pft_len<strlen(pftnames[i]))
         pft_len=strlen(pftnames[i]);
     pft_len++;
-    rc=nc_def_dim(cdf->ncid,"len",pft_len,&pft_len_id);
+    rc=nc_def_dim(cdf->ncid,config->netcdf.pft_name.dim,pft_len,&pft_len_id);
     error(rc);
     dimids[0]=pft_dim_id;
     dimids[1]=pft_len_id;
