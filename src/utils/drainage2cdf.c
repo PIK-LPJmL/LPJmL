@@ -232,8 +232,8 @@ int main(int argc,char **argv)
   error(rc);
   rc=nc_def_var(ncid,config.lon.name,NC_FLOAT,1,&lon_dim_id,&lon_var_id);
   error(rc);
-  rc=nc_put_att_text(ncid,lon_var_id,"units",strlen("degrees_east"),
-                     "degrees_east");
+  rc=nc_put_att_text(ncid,lon_var_id,"units",strlen(config.lon.unit),
+                     config.lon.unit);
   error(rc);
   rc=nc_put_att_text(ncid, lon_var_id,"long_name",strlen(config.lon.long_name),config.lon.long_name);
   error(rc);
@@ -241,8 +241,8 @@ int main(int argc,char **argv)
   error(rc);
   rc=nc_put_att_text(ncid, lon_var_id,"axis",strlen("X"),"X");
   error(rc);
-  rc=nc_put_att_text(ncid,lat_var_id,"units",strlen("degrees_north"),
-                     "degrees_north");
+  rc=nc_put_att_text(ncid,lat_var_id,"units",strlen(config.lat.unit),
+                     config.lat.unit);
   error(rc);
   rc=nc_put_att_text(ncid, lat_var_id,"long_name",strlen(config.lat.long_name),config.lat.long_name);
   error(rc);
