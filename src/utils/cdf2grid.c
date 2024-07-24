@@ -18,7 +18,6 @@
 
 #if defined(USE_NETCDF) || defined(USE_NETCDF4)
 #include <netcdf.h>
-#endif
 
 #define error(rc) if(rc){ fprintf(stderr,"ERROR421: Cannot read '%s': %s.\n",argv[iarg],nc_strerror(rc)); return EXIT_FAILURE;}
 
@@ -32,6 +31,7 @@ static int cmp(const Data *a,const Data *b)
 {
   return a->index-b->index;
 } /* of 'cmp' */
+#endif
 
 int main(int argc,char **argv)
 {

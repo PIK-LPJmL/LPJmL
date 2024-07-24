@@ -46,6 +46,7 @@ struct input_netcdf
   } missing_value;
 };
 
+#if defined(USE_NETCDF) || defined(USE_NETCDF4)
 static Bool checkinput(const size_t *offsets,const Coord *coord,const Input_netcdf file)
 {
   String line;
@@ -79,6 +80,7 @@ static Bool checkinput(const size_t *offsets,const Coord *coord,const Input_netc
   }
   return FALSE;
 } /* of 'checkinput' */
+#endif
 
 void closeinput(Infile *file)
 {
@@ -99,16 +101,16 @@ Input_netcdf dupinput_netcdf(const Input_netcdf input)
   return copy;
 } /* of 'dupinput_netcdf' */
 
+#if defined(USE_NETCDF) || defined(USE_NETCDF4)
 static Bool setvarinput_netcdf(Input_netcdf input,const Filename *filename,
                                const char *units,const Config *config)
 {
-#if defined(USE_NETCDF) || defined(USE_NETCDF4)
   int i,rc,nvars,ndims;
   int *dimids;
   nc_type type;
-  char *newstr;
   char name[NC_MAX_NAME+1];
 #ifdef USE_UDUNITS
+  char *newstr;
   size_t len;
   char *fromstr;
   utUnit from,to;
@@ -331,10 +333,8 @@ static Bool setvarinput_netcdf(Input_netcdf input,const Filename *filename,
   input->intercept=0;
 #endif
   return FALSE;
-#else
-  return TRUE;
-#endif
 } /* of 'setvarinput_netcdf' */
+#endif
 
 Input_netcdf openinput_netcdf(const Filename *filename, /**< filename */
                               const char *units,    /**< units or NULL */
