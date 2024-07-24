@@ -44,7 +44,7 @@
 #define BNDS_LONG_NAME "bnds=0 for the top of the layer, and bnds=1 for the bottom of the layer"
 #define BNDS_STANDARD_NAME ""
 #define PFTNAME_NAME "NamePFT"
-#define PFTNAME_DIM_NAME ""
+#define PFTNAME_DIM_NAME "len"
 #define PFTNAME_STANDARD_NAME ""
 #define PFTNAME_LONG_NAME "Name of plant functional types"
 #define PFT_NAME "pft"
