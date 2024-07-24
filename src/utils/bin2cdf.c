@@ -18,7 +18,7 @@
 #include <netcdf.h>
 #include <time.h>
 
-#define error(rc) if(rc) {free(lon);free(lat);free(year);fprintf(stderr,"ERROR427: Cannot write '%s': %s.\n",filename,nc_strerror(rc)); nc_close(cdf->ncid); free(cdf);return NULL;}
+#define error(rc) if(rc) {free(lon);free(lat);free(year);fprintf(stderr,"ERROR427: Cannot write '%s': %s.\n",filename,nc_strerror(rc)); abort(); nc_close(cdf->ncid); free(cdf);return NULL;}
 
 #define USAGE "\nUsage: %s [-h] [-v] [-clm] [-floatgrid] [-doublegrid] [-revlat] [-days] [-absyear]\n       [-firstyear y] [-baseyear y] [-nbands n] [-nstep n] [-cellsize size] [-swap]\n       [[-attr name=value]..] [-global] [-short] [-compress level] [-units u] [-descr d]\n       [-missing_value val] [-metafile] [-map name] [-config file] [varname gridfile]\n       binfile netcdffile\n"
 #define ERR_USAGE USAGE "\nTry \"%s --help\" for more information.\n"
@@ -60,8 +60,13 @@ static Cdf *create_cdf(const char *filename,
   int i,j,rc,dim[4],dim2[2],dimids[2];
   size_t chunk[4],offset[2],count[2];
   char *s;
+#ifdef USE_NETCDF4
+  const char *ptr;
+#else
+  int len_dim_id;
+#endif
   time_t t;
-  int time_var_id,lat_var_id,lon_var_id,time_dim_id,lat_dim_id,lon_dim_id,map_dim_id,len_dim_id,bnds_var_id,bnds_dim_id,pft_var_id;
+  int time_var_id,lat_var_id,lon_var_id,time_dim_id,lat_dim_id,lon_dim_id,map_dim_id,bnds_var_id,bnds_dim_id,pft_var_id;
   int pft_dim_id,varid;
   int len,*pft;
   cdf=new(Cdf);
@@ -309,16 +314,20 @@ static Cdf *create_cdf(const char *filename,
     }
     else
     {
+#ifdef USE_NETCDF4
+      rc=nc_def_var(cdf->ncid,getmapsize(map)==header.nbands ? netcdf_config->pft_name.name : MAP_NAME,NC_STRING,1,&pft_dim_id,&varid);
+#else
       len=0;
       for(i=0;i<getmapsize(map);i++)
         if(getmapitem(map,i)==NULL)
           len=max(len,strlen(NULL_NAME));
         else
           len=max(len,strlen(getmapitem(map,i)));
-      rc=nc_def_dim(cdf->ncid,"len",len+1,&len_dim_id);
+      rc=nc_def_dim(cdf->ncid,netcdf_config->pft_name.dim,len+1,&len_dim_id);
       error(rc);
       dim2[1]=len_dim_id;
       rc=nc_def_var(cdf->ncid,getmapsize(map)==header.nbands ? netcdf_config->pft_name.name : MAP_NAME,NC_CHAR,2,dim2,&varid);
+#endif
       error(rc);
       if(getmapsize(map)==header.nbands)
       {
@@ -463,13 +472,23 @@ static Cdf *create_cdf(const char *filename,
         offset[0]=i;
         if(getmapitem(map,i)==NULL)
         {
+#ifdef USE_NETCDF4
+          ptr=NULL_NAME;
+          rc=nc_put_vara_string(cdf->ncid,varid,offset,count,&ptr);
+#else
           count[1]=strlen(NULL_NAME)+1;
           rc=nc_put_vara_text(cdf->ncid,varid,offset,count,NULL_NAME);
+#endif
         }
         else
         {
+#ifdef USE_NETCDF4
+          ptr=getmapitem(map,i);
+          rc=nc_put_vara_string(cdf->ncid,varid,offset,count,&ptr);
+#else
           count[1]=strlen(getmapitem(map,i))+1;
           rc=nc_put_vara_text(cdf->ncid,varid,offset,count,getmapitem(map,i));
+#endif
         }
         error(rc);
       }

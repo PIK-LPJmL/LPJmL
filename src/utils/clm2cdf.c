@@ -55,9 +55,12 @@ static Cdf *create_cdf(const char *filename,
   time_t t;
 #ifdef USE_NETCDF4
   size_t chunk[4];
+  const char *ptr;
+#else
+  int len_dim_id;
 #endif
   size_t offset[2],count[2];
-  int time_var_id,lat_var_id,lon_var_id,time_dim_id,lat_dim_id,lon_dim_id,map_dim_id,len_dim_id;
+  int time_var_id,lat_var_id,lon_var_id,time_dim_id,lat_dim_id,lon_dim_id,map_dim_id;
   int landuse_dim_id;
   int index;
   int len;
@@ -255,6 +258,9 @@ static Cdf *create_cdf(const char *filename,
     }
     else
     {
+#ifdef USE_NETCDF4
+      rc=nc_def_var(cdf->ncid,MAP_NAME,NC_STRING,1,&map_dim_id,&varid);
+#else
       len=0;
       for(i=0;i<getmapsize(map);i++)
         if(getmapitem(map,i)==NULL)
@@ -266,6 +272,7 @@ static Cdf *create_cdf(const char *filename,
       dim[0]=map_dim_id;
       dim[1]=len_dim_id;
       rc=nc_def_var(cdf->ncid,MAP_NAME,NC_CHAR,2,dim,&varid);
+#endif
       error(rc);
     }
   }
@@ -369,13 +376,23 @@ static Cdf *create_cdf(const char *filename,
         offset[0]=i;
         if(getmapitem(map,i)==NULL)
         {
+#ifdef USE_NETCDF4
+          ptr=NULL_NAME;
+          rc=nc_put_vara_string(cdf->ncid,varid,offset,count,&ptr);
+#else
           count[1]=strlen(NULL_NAME)+1;
           rc=nc_put_vara_text(cdf->ncid,varid,offset,count,NULL_NAME);
+#endif
         }
         else
         {
+#ifdef USE_NETCDF4
+          ptr=getmapitem(map,i);
+          rc=nc_put_vara_string(cdf->ncid,varid,offset,count,&ptr);
+#else
           count[1]=strlen(getmapitem(map,i))+1;
           rc=nc_put_vara_text(cdf->ncid,varid,offset,count,getmapitem(map,i));
+#endif
         }
         error(rc);
     }
