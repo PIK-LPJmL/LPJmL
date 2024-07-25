@@ -1,6 +1,6 @@
 .TH cdf2grid 1  "USER COMMANDS"
 .SH NAME
-cdf2grid \- convert grid NetCDF file into grid CLM file
+cdf2grid \- convert grid NetCDF file into grid CLM or raw file
 .SH SYNOPSIS
 .B cdf2grid
 [\-var name] [\-{float|double}] [\-scale s] [\-raw] [\-json] netcdffile gridfile
@@ -30,9 +30,9 @@ filename of grid NetCDF file
 filename of grid data file written
 .SH EXAMPLES
 .TP
-Create grid binary raw file from grid NetCDF file:
+Create grid binary raw file and JSON metafile from grid NetCDF file:
 .B cdf2grid
--raw grid.nc grid.clm
+-raw -json grid.nc grid.bin
 .PP
 .SH EXIT STATUS
 .B cdf2grid

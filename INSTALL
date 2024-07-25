@@ -213,7 +213,7 @@ catclm       - concatenate LPJmL climate data files
 cdf2bin      - convert NetCDF files into raw binary data
 cdf2clm      - convert NetCDF files into CLM files
 cdf2coord    - extract CLM grid file from NetCDF file
-cdf2grid     - convert grid NetCDF file into grid CLM file
+cdf2grid     - convert grid NetCDF file into grid CLM or raw file
 cdf2soil     - convert NetCDF file into binary file
 cft2clm      - convert binary landuse data files to CLM data files for LPJmL
 clm2cdf      - convert CLM files into NetCDF files

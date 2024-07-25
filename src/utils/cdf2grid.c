@@ -2,7 +2,7 @@
 /**                                                                                \n**/
 /**                c  d  f  2  g  r  i  d  .  c                                    \n**/
 /**                                                                                \n**/
-/**     Converts NetCDF data grid file into LPJ coord data file                    \n**/
+/**     Converts NetCDF data grid file into LPJ grid file in raw or CLM format     \n**/
 /**                                                                                \n**/
 /** (C) Potsdam Institute for Climate Impact Research (PIK), see COPYRIGHT file    \n**/
 /** authors, and contributors see AUTHORS file                                     \n**/
