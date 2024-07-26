@@ -361,5 +361,5 @@
     { "id" : DEFOREST_EMIS_N    ,"name": "deforest_emis_n", "timestep" : "annual", "var" : "deforest_emis_n", "long_name" : "nitrogen emissions from deforestation", "unit" : "gN/m2/yr", "scale" : 1.0, "offset" : 0.0},
     { "id" : PROD_TURNOVER_N    ,"name": "prod_turnover_n", "timestep" : "annual", "var" : "prod_turnover_n", "long_name" : "nitrogen emissions from product turnover", "unit" : "gN/m2/yr", "scale" : 1.0, "offset" : 0.0},
     { "id" : ESTAB_STORAGE_C, "name": "estab_storage_c", "timestep" : "annual", "var" :  "estab_storage_c", "long_name" :  "Carbon storage for establishment of agriculture trees and grasses", "unit" : "gC/m2", "scale" : 1.0, "offset" : 0.0},
-    { "id" : ESTAB_STORAGE_N, "name": "estab_storage_n", "timestep" : "annual", "var" :  "estab_storage_n", "long_name" :  "Nitrogen storage for establishment of agriculture trees and grasses", "unit" : "gC/m2", "scale" : 1.0, "offset" : 0.0}
+    { "id" : ESTAB_STORAGE_N, "name": "estab_storage_n", "timestep" : "annual", "var" :  "estab_storage_n", "long_name" :  "Nitrogen storage for establishment of agriculture trees and grasses", "unit" : "gN/m2", "scale" : 1.0, "offset" : 0.0}
   ]

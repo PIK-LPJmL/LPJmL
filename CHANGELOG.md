@@ -39,6 +39,7 @@ of `major.minor.patch` with
 - Test for `null` corrected for `"output"` in `fscanoutput.c`.
 - Missing `break` added in `switch` statement in `receiver_coupler.c`.
 - Code changed to compile successfully without `-DSAFE`, `-DUSE_NETCDF`, and `-DUDUNITS` compilation flag.
+- Unit for `"estab_storage_n"` correctd to `"gN/m2"` in `outputvars.cjson`.
 
 
 ## [5.9.5] - 2024-07-19
