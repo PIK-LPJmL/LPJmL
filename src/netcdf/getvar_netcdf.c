@@ -16,7 +16,7 @@
 
 #include "lpj.h"
 
-#if defined(USE_NETCDF) || defined(USE_NETCDF4)
+#if defined(USE_NETCDF)
 #include <netcdf.h>
 #ifdef USE_UDUNITS
 #include <udunits.h>
@@ -31,7 +31,7 @@ Bool getvar_netcdf(Climatefile *file,    /**< climate data file */
                    const Config *config  /**< LPJ configuration */
                   )                      /** \return TRUE on error */
 {
-#if defined(USE_NETCDF) || defined(USE_NETCDF4)
+#if defined(USE_NETCDF)
   int i,nvars,rc,ndims;
   char name[NC_MAX_NAME+1];
   nc_type type;

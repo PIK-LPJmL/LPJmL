@@ -16,7 +16,7 @@
 
 #include "lpj.h"
 
-#if defined(USE_NETCDF) || defined(USE_NETCDF4)
+#if defined(USE_NETCDF)
 #include <netcdf.h>
 #define error(var,rc) if(rc) {if(isroot(*config))fprintf(stderr,"ERROR403: Cannot read '%s' in '%s': %s.\n",var,filename,nc_strerror(rc)); free_netcdf(file->ncid); return TRUE;}
 #endif
@@ -30,7 +30,7 @@ Bool openclimate_netcdf(Climatefile *file,    /**< climate data file */
                         const Config *config  /**< LPJ configuration */
                        )                      /** \return TRUE on error */
 {
-#if defined(USE_NETCDF) || defined(USE_NETCDF4)
+#if defined(USE_NETCDF)
   char *s,*c,*unit,*name;
   int rc,var_id,time_id,ndims,*dimids;
   int *time;

@@ -13,7 +13,7 @@
 /**************************************************************************************/
 
 #include "lpj.h"
-#if defined(USE_NETCDF) || defined(USE_NETCDF4)
+#if defined(USE_NETCDF)
 #include <netcdf.h>
 #include <time.h>
 #endif
@@ -23,7 +23,7 @@
 
 int main(int argc,char **argv)
 {
-#if defined(USE_NETCDF) || defined(USE_NETCDF4)
+#if defined(USE_NETCDF)
   char *var;
   var=NULL;
   const float *lon,*lat;
@@ -204,11 +204,7 @@ int main(int argc,char **argv)
     return EXIT_FAILURE;
   }
 
-#ifdef USE_NETCDF4
-  rc=nc_create(argv[iarg+3],NC_CLOBBER|NC_NETCDF4,&ncid);
-#else
   rc=nc_create(argv[iarg+3],NC_CLOBBER,&ncid);
-#endif
   if(rc)
   {
     fprintf(stderr,"ERROR426: Cannot create file '%s': %s.\n",

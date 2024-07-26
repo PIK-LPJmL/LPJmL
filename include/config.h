@@ -160,6 +160,7 @@ struct config
   Bool withdailyoutput; /**< with daily output (TRUE/FALSE) */
   Bool flush_output;   /**< flush output after every simulation year (TRUE/FALSE) */
   Bool nofill;          /**< do not fille NetCDF files at creation (TRUE/FALSE) */
+  Bool isnetcdf4;         /**< file is in Netcdf4 format (TRUE/FALSE); */
   int fdi;
   int with_nitrogen;      /**< enable nitrogen cycle */
   Bool crop_resp_fix;      /**< with fixed crop respiration (TRUE/FALSE) */

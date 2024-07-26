@@ -33,14 +33,14 @@ static int checksoilcode(Config *config)
   if(config->soil_filename.fmt!=CDF)
   {
     file=fopensoilcode(&config->soil_filename,&map,&swap,&offset,&type,config->nsoil,TRUE);
+    if(file==NULL)
+      return 1;
     if(fseek(file,offset,SEEK_SET))
     {
       fprintf(stderr,"ERROR107: Cannot seek in soilcode file to position %zu.\n",
               offset);
       return 1;
     }
-    if(file==NULL)
-      return 1;
     ncell=getnsoilcode(&config->soil_filename,&config->netcdf,config->nsoil,TRUE);
     if(map!=NULL)
     {

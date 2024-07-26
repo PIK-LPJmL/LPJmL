@@ -29,6 +29,7 @@ of `major.minor.patch` with
 - Warnings in `addheader` replaced by terminating errors.
 - Function `openinputfile()` returns an error if cell size differs in JSON metafile.
 - Function `openmetafile()` returns an error if binary file is empty.
+- `USE_NETCDF4` compile option replaced by `"netcdf4"` boolean flag in the LPJmL configuration file. If set compression of NetCDF4 files can be enabled.
 
 ### Added
 
@@ -41,10 +42,6 @@ of `major.minor.patch` with
 - Option `-timestep` added to `addheader`.
 - Check for correct number of time steps added in `openclimate_netcdf.c`.
 - Option `sum`, `tsum` and `tmean` to `mathclm` added.
-
-### Fixed
-
-- Test for `null` corrected for `"output"` in `fscanoutput.c`.
 
 
 ## [5.9.5] - 2024-07-19

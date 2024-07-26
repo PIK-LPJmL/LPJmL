@@ -16,7 +16,7 @@
 
 #include "lpj.h"
 
-#if defined(USE_NETCDF) || defined(USE_NETCDF4)
+#if defined(USE_NETCDF)
 #include <netcdf.h>
 
 #define error(var,rc) if(rc){ if(isout) fprintf(stderr,"ERROR403: Cannot read '%s' in '%s': %s.\n",var,filename,nc_strerror(rc)); nc_close(coord->ncid); free(coord); return NULL;}
@@ -54,7 +54,7 @@ const float *getlat_netcdf(const Coord_netcdf coord,int *nlat)
 
 void closecoord_netcdf(Coord_netcdf coord)
 {
-#if defined(USE_NETCDF) || defined(USE_NETCDF4)
+#if defined(USE_NETCDF)
   if(coord!=NULL)
   {
     free(coord->lon);
@@ -67,7 +67,7 @@ void closecoord_netcdf(Coord_netcdf coord)
 
 int numcoord_netcdf(const Coord_netcdf coord)
 {
-#if defined(USE_NETCDF) || defined(USE_NETCDF4)
+#if defined(USE_NETCDF)
   int count;
   size_t i;
   short *soil;
@@ -167,7 +167,7 @@ int numcoord_netcdf(const Coord_netcdf coord)
 
 int *getindexcoord_netcdf(const Coord_netcdf coord)
 {
-#if defined(USE_NETCDF) || defined(USE_NETCDF4)
+#if defined(USE_NETCDF)
   int count;
   size_t i;
   int *index;
@@ -275,7 +275,7 @@ int *getindexcoord_netcdf(const Coord_netcdf coord)
 
 Bool seekcoord_netcdf(Coord_netcdf coord,int pos)
 {
-#if defined(USE_NETCDF) || defined(USE_NETCDF4)
+#if defined(USE_NETCDF)
   size_t counts[2]={1,1};
   short soil;
   int isoil,rc;
@@ -373,7 +373,7 @@ Bool seekcoord_netcdf(Coord_netcdf coord,int pos)
 
 Bool readcoord_netcdf(Coord_netcdf coord,Coord *c,const Coord *resol,unsigned int *soil)
 {
-#if defined(USE_NETCDF) || defined(USE_NETCDF4)
+#if defined(USE_NETCDF)
   short data;
   int idata,rc;
   Byte bdata;
@@ -513,7 +513,7 @@ Bool readcoord_netcdf(Coord_netcdf coord,Coord *c,const Coord *resol,unsigned in
 
 Coord_netcdf opencoord_netcdf(const char *filename,const char *var,const Netcdf_config *config,Bool isout)
 {
-#if defined(USE_NETCDF) || defined(USE_NETCDF4)
+#if defined(USE_NETCDF)
   Coord_netcdf coord;
   int i,rc,var_id,nvars,*dimids,ndims;
   char name[NC_MAX_NAME+1];

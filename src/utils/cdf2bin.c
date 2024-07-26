@@ -20,7 +20,7 @@
 #define USAGE "Usage: %s [-swap] [-v] [-var name] [-map name] [-clm] [-cellsize size] [-byte] [-floatgrid] [-doublegrid] [-o filename] [-json] gridfile netcdffile ...\n"
 #endif
 
-#if defined(USE_NETCDF) || defined(USE_NETCDF4)
+#if defined(USE_NETCDF)
 #include <netcdf.h>
 
 static Bool readmydata(Climatefile *file,    /* climate data file */
@@ -222,7 +222,7 @@ static Bool readmydata(Climatefile *file,    /* climate data file */
 
 int main(int argc,char **argv)
 {
-#if defined(USE_NETCDF) || defined(USE_NETCDF4)
+#if defined(USE_NETCDF)
   Coordfile coordfile;
   Filename coord_filename;
   Climatefile data;

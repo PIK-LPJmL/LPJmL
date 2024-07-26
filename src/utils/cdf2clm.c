@@ -21,7 +21,7 @@
 #endif
 #define ERR_USAGE USAGE "\nTry \"%s --help\" for more information.\n"
 
-#if defined(USE_NETCDF) || defined(USE_NETCDF4)
+#if defined(USE_NETCDF)
 #include <netcdf.h>
 
 static void printindex(size_t i,Time time,size_t var_len)
@@ -349,7 +349,7 @@ static Bool readclimate2(Climatefile *file,    /* climate data file */
 
 int main(int argc,char **argv)
 {
-#if defined(USE_NETCDF) || defined(USE_NETCDF4)
+#if defined(USE_NETCDF)
   Coordfile coordfile;
   Climatefile climate;
   Config config;

@@ -18,7 +18,7 @@
 
 void closeclimate_netcdf(Climatefile *file,Bool isroot)
 {
-#if defined(USE_NETCDF) || defined(USE_NETCDF4)
+#if defined(USE_NETCDF)
   file->isopen=FALSE;
   if(file->oneyear)
     free(file->filename);

@@ -175,7 +175,6 @@ SAFE                code is compiled with additional checks
 STRICT_JSON         strict JSON checking
 USE_MPI             compile parallel version of LPJmL
 USE_NETCDF          enable NetCDF input/output
-USE_NETCDF4         enable NetCDF version 4 input/output
 USE_RAND48          use drand48() random number generator
 USE_UDUNITS         enable unit conversion in NetCDF files
 USE_TIMING          enable timing for socket I/O
