@@ -328,7 +328,7 @@ Bool getlanduse(Landuse landuse,     /**< Pointer to landuse data */
         count+=2*ncft;
     free(dates);
   }
-  if(config->crop_phu_option==PRESCRIBED_CROP_PHU)
+  if(config->crop_phu_option>=PRESCRIBED_CROP_PHU)
   {
     /* assigning crop phus data */
     data=readdata(&landuse->crop_phu,NULL,grid,"crop phus",yearphu,config);
@@ -350,13 +350,13 @@ Bool getlanduse(Landuse landuse,     /**< Pointer to landuse data */
             count++; /* ignore data */
           else
             grid[cell].ml.crop_phu_fixed[config->cftmap[j]+ncft]=data[count++];
-        if(config->crop_phu_option==PRESCRIBED_ALL_IRRIG)
+        if(config->crop_phu_option==PRESCRIBED_CROP_PHU_ALL_IRRIG)
         {
           for(j=0;j<config->cftmap_size;j++)
             if(config->cftmap[j]!=NOT_FOUND)
               grid[cell].ml.crop_phu_fixed[config->cftmap[j]]=grid[cell].ml.crop_phu_fixed[config->cftmap[j]+ncft];
         }
-        else if(config->crop_phu_option==PRESCRIBED_ALL_RAINFED)
+        else if(config->crop_phu_option==PRESCRIBED_CROP_PHU_ALL_RAINFED)
         {
           for(j=0;j<config->cftmap_size;j++)
             if(config->cftmap[j]!=NOT_FOUND)

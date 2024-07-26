@@ -134,7 +134,7 @@ Bool freadcell(FILE *file,             /**< File pointer to binary file */
       if(config->sdate_option_restart)
         fseek(file,sizeof(int)*2*ncft,SEEK_CUR);
     }
-    if(config->crop_phu_option==PRESCRIBED_CROP_PHU)
+    if(config->crop_phu_option>=PRESCRIBED_CROP_PHU)
     {
       cell->ml.crop_phu_fixed=newvec(Real,2*ncft);
       checkptr(cell->ml.crop_phu_fixed);

@@ -25,7 +25,7 @@ of `major.minor.patch` with
 ### Added
 
 - new options `PRESCRIBED_SDATE_ALL_RAINFED` and `PRESCRIBED_SDATE_ALL_IRRIG` to allow using the same sowing dates based on the rainfed or irrigated seasons respectively
-- new options `PRESCRIBED_ALL_RAINFED` and `PRESCRIBED_ALL_IRRIG` to allow using the same PHU requirements based on the rainfed or irrigated seasons respectively
+- new options `PRESCRIBED_CROP_PHU_ALL_RAINFED` and `PRESCRIBED_CROP_PHU_ALL_IRRIG` to allow using the same PHU requirements based on the rainfed or irrigated seasons respectively
 
 ### Fixed
 
