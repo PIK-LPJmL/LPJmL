@@ -19,6 +19,17 @@ of `major.minor.patch` with
 
 ## [Unreleased]
 
+- author: Christoph Müller (cmueller@pik-potsdam.de)
+- code review:
+
+### Added
+
+- new options `PRESCRIBED_SDATE_ALL_RAINFED` and `PRESCRIBED_SDATE_ALL_IRRIG` to allow using the same sowing dates based on the rainfed or irrigated seasons respectively
+- new options `PRESCRIBED_ALL_RAINFED` and `PRESCRIBED_ALL_IRRIG` to allow using the same PHU requirements based on the rainfed or irrigated seasons respectively
+
+### Fixed
+
+- fixed missing initialization of pointer `map` in cft2bin.c that caused abortion of compilation with `-Werror` otherwise
 
 ## [5.9.5] - 2024-07-19
 
