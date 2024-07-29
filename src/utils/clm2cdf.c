@@ -14,12 +14,12 @@
 
 #include "lpj.h"
 
-#if defined(USE_NETCDF) || defined(USE_NETCDF4)
+#if defined(USE_NETCDF)
 #include <netcdf.h>
 
 #define error(rc) if(rc) {free(lon);free(lat);free(year);fprintf(stderr,"ERROR427: Cannot write '%s': %s.\n",filename,nc_strerror(rc)); nc_close(cdf->ncid); free(cdf);return NULL;}
 
-#define USAGE "Usage: %s [-h] [-v] [-scale s] [-longheader] [-global] [-cellsize size] [-byte] [-int] [-float]\n       [[-attr name=value] ...] [-intnetcdf] [-metafile] [-raw] [-nbands n] [-landuse] [-notime] [-compress level] [-units u]\n       [-map name] [-descr d] [-missing_value val] [name gridfile] clmfile netcdffile\n"
+#define USAGE "Usage: %s [-h] [-v] [-scale s] [-longheader] [-global] [-cellsize size] [-byte] [-int] [-float]\n       [[-attr name=value] ...] [-intnetcdf] [-metafile] [-raw] [-nbands n] [-landuse] [-notime] [-compress level] [-units u]\n       [-map name] [-descr d] [-missing_value val] [-netcdf4] [name gridfile] clmfile netcdffile\n"
 
 typedef struct
 {
@@ -46,16 +46,16 @@ static Cdf *create_cdf(const char *filename,
                        Bool landuse,
                        Bool notime,
                        Bool isint,
+                       Bool isnetcdf4,
                        const Coord_array *array)
 {
   Cdf *cdf;
   double *lon,*lat;
   int *year,i,j,rc,dim[4],varid;
   char *s;
+  const char *ptr;
   time_t t;
-#ifdef USE_NETCDF4
   size_t chunk[4];
-#endif
   size_t offset[2],count[2];
   int time_var_id,lat_var_id,lon_var_id,time_dim_id,lat_dim_id,lon_dim_id,map_dim_id,len_dim_id;
   int landuse_dim_id;
@@ -126,11 +126,7 @@ static Cdf *create_cdf(const char *filename,
     }
   }
   cdf->index=array;
-#ifdef USE_NETCDF4
-  rc=nc_create(filename,NC_CLOBBER|NC_NETCDF4,&cdf->ncid);
-#else
-  rc=nc_create(filename,NC_CLOBBER,&cdf->ncid);
-#endif
+  rc=nc_create(filename,(isnetcdf4) ? NC_CLOBBER|NC_NETCDF4 : NC_CLOBBER,&cdf->ncid);
   if(rc)
   {
     fprintf(stderr,"ERROR426: Cannot create file '%s': %s.\n",
@@ -241,17 +237,22 @@ static Cdf *create_cdf(const char *filename,
     }
     else
     {
-      len=0;
-      for(i=0;i<getmapsize(map);i++)
-        if(getmapitem(map,i)==NULL)
-          len=max(len,strlen(NULL_NAME));
-        else
-          len=max(len,strlen(getmapitem(map,i)));
-      rc=nc_def_dim(cdf->ncid,"len",len+1,&len_dim_id);
-      error(rc);
-      dim[0]=map_dim_id;
-      dim[1]=len_dim_id;
-      rc=nc_def_var(cdf->ncid,MAP_NAME,NC_CHAR,2,dim,&varid);
+      if(isnetcdf4)
+        rc=nc_def_var(cdf->ncid,MAP_NAME,NC_STRING,1,&map_dim_id,&varid);
+      else
+      {
+        len=0;
+        for(i=0;i<getmapsize(map);i++)
+          if(getmapitem(map,i)==NULL)
+            len=max(len,strlen(NULL_NAME));
+          else
+            len=max(len,strlen(getmapitem(map,i)));
+        rc=nc_def_dim(cdf->ncid,"len",len+1,&len_dim_id);
+        error(rc);
+        dim[0]=map_dim_id;
+        dim[1]=len_dim_id;
+        rc=nc_def_var(cdf->ncid,MAP_NAME,NC_CHAR,2,dim,&varid);
+      }
       error(rc);
     }
   }
@@ -260,9 +261,7 @@ static Cdf *create_cdf(const char *filename,
   else
   {
     dim[0]=time_dim_id;
-#ifdef USE_NETCDF4
     chunk[0]=1;
-#endif
     index=1;
   }
   if(landuse)
@@ -272,35 +271,32 @@ static Cdf *create_cdf(const char *filename,
     dim[index]=landuse_dim_id;
     dim[index+1]=lat_dim_id;
     dim[index+2]=lon_dim_id;
-#ifdef USE_NETCDF4
     chunk[index]=1;
     chunk[index+1]=array->nlat;
     chunk[index+2]=array->nlon;
-#endif
   }
   else
   {
     dim[index]=lat_dim_id;
     dim[index+1]=lon_dim_id;
-#ifdef USE_NETCDF4
     chunk[index]=array->nlat;
     chunk[index+1]=array->nlon;
-#endif
   }
   if(notime)
     rc=nc_def_var(cdf->ncid,name,(isint) ? NC_INT : NC_FLOAT,(landuse) ? 3 : 2,dim,&cdf->varid);
   else
     rc=nc_def_var(cdf->ncid,name,(isint) ? NC_INT : NC_FLOAT,(landuse) ? 4 : 3,dim,&cdf->varid);
   error(rc);
-#ifdef USE_NETCDF4
-  rc=nc_def_var_chunking(cdf->ncid, cdf->varid, NC_CHUNKED,chunk);
-  error(rc);
-  if(compress)
+  if(isnetcdf4)
   {
-    rc=nc_def_var_deflate(cdf->ncid, cdf->varid, 0, 1,compress);
+    rc=nc_def_var_chunking(cdf->ncid, cdf->varid, NC_CHUNKED,chunk);
     error(rc);
+    if(compress)
+    {
+      rc=nc_def_var_deflate(cdf->ncid, cdf->varid, 0, 1,compress);
+      error(rc);
+    }
   }
-#endif
   if(units!=NULL)
   {
     rc=nc_put_att_text(cdf->ncid, cdf->varid,"units",strlen(units),units);
@@ -355,13 +351,29 @@ static Cdf *create_cdf(const char *filename,
         offset[0]=i;
         if(getmapitem(map,i)==NULL)
         {
-          count[1]=strlen(NULL_NAME)+1;
-          rc=nc_put_vara_text(cdf->ncid,varid,offset,count,NULL_NAME);
+          if(isnetcdf4)
+          {
+            ptr=NULL_NAME;
+            rc=nc_put_vara_string(cdf->ncid,varid,offset,count,&ptr);
+          }
+          else
+          {
+            count[1]=strlen(NULL_NAME)+1;
+            rc=nc_put_vara_text(cdf->ncid,varid,offset,count,NULL_NAME);
+          }
         }
         else
         {
-          count[1]=strlen(getmapitem(map,i))+1;
-          rc=nc_put_vara_text(cdf->ncid,varid,offset,count,getmapitem(map,i));
+          if(isnetcdf4)
+          {
+            ptr=getmapitem(map,i);
+            rc=nc_put_vara_string(cdf->ncid,varid,offset,count,&ptr);
+          }
+          else
+          {
+            count[1]=strlen(getmapitem(map,i))+1;
+            rc=nc_put_vara_text(cdf->ncid,varid,offset,count,getmapitem(map,i));
+          }
         }
         error(rc);
     }
@@ -488,7 +500,7 @@ static void close_cdf(Cdf *cdf)
 #endif
 int main(int argc,char **argv)
 {
-#if defined(USE_NETCDF) || defined(USE_NETCDF4)
+#if defined(USE_NETCDF)
   FILE *file;
   Coordfile coordfile;
   Coord_array *index;
@@ -503,7 +515,7 @@ int main(int argc,char **argv)
   Attr *global_attrs=NULL;
   Attr *global_attrs2=NULL;
   int i,j,k,ngrid,version,iarg,compress,nbands,setversion;
-  Bool swap,landuse,notime,isglobal,istype,israw,ismeta,isint;
+  Bool swap,landuse,notime,isglobal,istype,israw,ismeta,isint,isnetcdf4;
   int n_global,n_global2;
   float *f,scale,cellsize_lon,cellsize_lat;
   int *idata,*iarr;
@@ -530,6 +542,7 @@ int main(int argc,char **argv)
   israw=FALSE;
   ismeta=FALSE;
   isint=FALSE;
+  isnetcdf4=FALSE;
   nbands=1;
   setversion=READ_VERSION;
   map_name=MAP_NAME;
@@ -558,6 +571,7 @@ int main(int argc,char **argv)
                "-int             set data type in CLM file to int, default is short\n"
                "-float           set data type in CLM file to float, default is short\n"
                "-intnetcdf       set datatype in NetCDF file to int, default is float\n"
+               "-netcdf4         file written is in NetCDF4 format\n"
                "-metafile        set the input format to JSON metafile instead of CLM\n"
                "-map name        name of map in JSON metafile, default is \"map\"\n"
                "-raw             set the input format to raw instead of CLM\n"
@@ -600,6 +614,8 @@ int main(int argc,char **argv)
         israw=TRUE;
       else if(!strcmp(argv[iarg],"-metafile"))
         ismeta=TRUE;
+      else if(!strcmp(argv[iarg],"-netdcdf4"))
+        isnetcdf4=TRUE;
       else if(!strcmp(argv[iarg],"-int"))
       {
         istype=TRUE;
@@ -1007,7 +1023,7 @@ int main(int argc,char **argv)
       }
     }
   }
-  cdf=create_cdf(outname,map,source,history,variable,units,var_standard_name,long_name,miss,imiss,arglist,global_attrs,n_global,&header,compress,landuse,notime,isint || ((header.datatype==LPJ_INT || header.datatype==LPJ_BYTE) && header.scalar==1),index);
+  cdf=create_cdf(outname,map,source,history,variable,units,var_standard_name,long_name,miss,imiss,arglist,global_attrs,n_global,&header,compress,landuse,notime,isint || ((header.datatype==LPJ_INT || header.datatype==LPJ_BYTE) && header.scalar==1),isnetcdf4,index);
   free(arglist);
   if(cdf==NULL)
     return EXIT_FAILURE;

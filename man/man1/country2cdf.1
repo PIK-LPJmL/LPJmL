@@ -3,7 +3,7 @@
 country2cdf \- convert country/region code file into NetCDF file
 .SH SYNOPSIS
 .B country2cdf
-[\-global] [-\cellsize size] [\-compress level] [\-descr d] [\-index {0|1}]
+[\-global] [-\cellsize size] [\-compress level] [\-descr d] [\-index {0|1}] [\-netcdf4]
 .I varname gridfile countryfile netcdffile
 .SH DESCRIPTION
 Program converts country/region input file into NetCDF file.
@@ -23,6 +23,9 @@ set long name in NetCDF file
 .TP
 \-index {0|1}
 set country  (0) or region (1) in file. Default is 0
+.TP
+\-netcdf4
+File written is in NetCDF4 format, compress flag is enabled.
 .TP
 varname
 variable name in NetCDF file

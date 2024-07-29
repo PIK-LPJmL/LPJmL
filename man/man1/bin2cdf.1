@@ -3,7 +3,7 @@
 bin2cdf \- convert binary output files into NetCDF files
 .SH SYNOPSIS
 .B bin2cdf
-[\-h] [\-v] [\-clm] [\-floatgrid] [\-doublegrid] [\-revlat] [\-days] [\-absyear] [\-cellsize size] [\-compress level] [\-descr d] [\-missing_value val] [[\-attr name=value] ...] [\-units u] [-global] [-swap] [\-short] [\-nbands n] [\-nstep n] [\-ispft] [\-firstyear y] [\-baseyear y] [\-metafile] [\-map name]
+[\-h] [\-v] [\-clm] [\-floatgrid] [\-doublegrid] [\-revlat] [\-days] [\-absyear] [\-cellsize size] [\-compress level] [\-descr d] [\-missing_value val] [[\-attr name=value] ...] [\-units u] [-global] [-swap] [\-short] [\-nbands n] [\-nstep n] [\-ispft] [\-firstyear y] [\-baseyear y] [\-metafile] [\-map name] [\-netcdf4]
 .I [varname gridfile] binfile netcdffile
 .SH DESCRIPTION
 Program converts binary output files into NetCDF file.
@@ -31,6 +31,9 @@ Reverse latitudinal bands
 Uses days as units for monthly output
 \-absyear
 Uses absolute years as units for annual time axis instead of relative years to base year
+.TP
+\-netcdf4
+File written is in NetCDF4 format, compress flag is enabled.
 .TP
 \-cellsize size
 set cell size in grid file to size. Default is 0.5 deg.

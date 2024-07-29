@@ -18,6 +18,7 @@ country2cdf (1) - convert country/region code file into NetCDF file
 cru2clm (1) - convert raw binary data files to CLM data files for LPJmL
 cutclm (1) - cuts LPJmL climate data files
 cvrtclm (1) - converts version of CLM file to version 3 or 4
+drainage2cdf (1) - convert CLM drainage file into NetCDF file
 failonerror (3) - print error message and terminates program
 fcloseoutput (3) - close LPJmL output files
 flux_sum (3) - calculate global carbon and water fluxes
