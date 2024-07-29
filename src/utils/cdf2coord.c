@@ -14,7 +14,7 @@
 
 #include "lpj.h"
 
-#define USAGE  "Usage: %s [-var name] [-index i] [-{float|double}] [-scale s] netcdffile coordfile\n"
+#define USAGE  "Usage: %s [-var name] [-index i] [-{float|double}] [-scale s] [-raw] [-json] netcdffile coordfile\n"
 
 #if defined(USE_NETCDF) || defined(USE_NETCDF4)
 #include <netcdf.h>
@@ -43,10 +43,13 @@ int main(int argc,char **argv)
     float lon,lat;
   } coord_f;
   char *var;
+  char *out_json,*arglist;
   FILE *out;
+  Bool isjson,israw;
   var=NULL;
   header.datatype=LPJ_SHORT;
   header.scalar=0.01;
+  isjson=israw=FALSE;
   for(i=1;i<argc;i++)
     if(argv[i][0]=='-')
     {
@@ -60,6 +63,10 @@ int main(int argc,char **argv)
         }
         var=argv[++i];
       }
+      else if(!strcmp(argv[i],"-json"))
+        isjson=TRUE;
+      else if(!strcmp(argv[i],"-raw"))
+        israw=TRUE;
       else if(!strcmp(argv[i],"-float"))
       {
         header.datatype=LPJ_FLOAT;
@@ -251,7 +258,8 @@ int main(int argc,char **argv)
   }
   header.cellsize_lon=(lon[lon_len-1]-lon[0])/(lon_len-1);
   header.cellsize_lat=(float)fabs((lat[lat_len-1]-lat[0])/(lat_len-1));
-  fwriteheader(out,&header,LPJGRID_HEADER,LPJGRID_VERSION);
+  if(!israw)
+    fwriteheader(out,&header,LPJGRID_HEADER,LPJGRID_VERSION);
   header.ncell=0;
   for(offsets[first]=0;offsets[first]<lat_len;offsets[first]++)
   {
@@ -286,7 +294,6 @@ int main(int argc,char **argv)
       }
     }
   }
-  rewind(out);
   header.firstcell=0;
   header.nyear=1;
   header.nstep=1;
@@ -294,12 +301,35 @@ int main(int argc,char **argv)
   header.firstyear=1901;
   header.nbands=2;
   header.order=CELLYEAR;
-  fwriteheader(out,&header,LPJGRID_HEADER,LPJGRID_VERSION);
+  if(!israw)
+  {
+    rewind(out);
+    fwriteheader(out,&header,LPJGRID_HEADER,LPJGRID_VERSION);
+  }
   fclose(out);
   free(lon);
   free(lat);
   nc_close(ncid);
   printf("Number of cells: %d\n",header.ncell);
+  if(isjson)
+  {
+    out_json=malloc(strlen(argv[i+1])+strlen(JSON_SUFFIX)+1);
+    if(out_json==NULL)
+    {
+      printallocerr("filename");
+      return EXIT_FAILURE;
+    }
+    strcat(strcpy(out_json,argv[i+1]),JSON_SUFFIX);
+    arglist=catstrvec(argv,argc);
+    out=fopen(out_json,"w");
+    if(out==NULL)
+    {
+      printfcreateerr(out_json);
+      return EXIT_FAILURE;
+    }
+    fprintjson(out,argv[i+1],NULL,argv[0],NULL,arglist,&header,NULL,NULL,NULL,0,"grid","degree",NULL,"cell coordinates",NULL,LPJ_SHORT,(israw) ? RAW : CLM,LPJGRID_HEADER,FALSE,LPJGRID_VERSION);
+    fclose(out);
+  }
   return EXIT_SUCCESS;
 #else
   fprintf(stderr,"ERROR401: NetCDF is not supported in this version of %s.\n",argv[0]);

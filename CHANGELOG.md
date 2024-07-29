@@ -23,10 +23,12 @@ of `major.minor.patch` with
 ### Contributors
 
 - author: Werner von Bloh (bloh@pik-potsdam.de)
+- code review: David Hoetten (davidho@pik-potsdam.de)
 
 ### Added
 
 - Utility `cdf2grid` added to convert grid files in NetCDF format into grid CLM files.
+- Option `-json` and `-raw` added to `cdf2coord` utility to write additional JSON metafile and to write without CLM header.
 
 ### Changed
 
@@ -39,7 +41,7 @@ of `major.minor.patch` with
 - Test for `null` corrected for `"output"` in `fscanoutput.c`.
 - Missing `break` added in `switch` statement in `receiver_coupler.c`.
 - Code changed to compile successfully without `-DSAFE`, `-DUSE_NETCDF`, and `-DUDUNITS` compilation flag.
-- Unit for `"estab_storage_n"` correctd to `"gN/m2"` in `outputvars.cjson`.
+- Unit for `"estab_storage_n"` corrected to `"gN/m2"` in `outputvars.cjson`.
 
 
 ## [5.9.5] - 2024-07-19

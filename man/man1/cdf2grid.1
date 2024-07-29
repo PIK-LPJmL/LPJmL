@@ -12,22 +12,22 @@ Program convert grid file written in NetCDF format to grid file in raw or CLM fo
 variable name in NetCDF file. If not specified the first variable with 2 dimensions is chosen.
 .TP
 \-scale factor
-scaling factor for CLM grid file. Default is 0.01
+scaling factor for CLM grid file. Default is 0.01 for short values in CLM grid file, 1 for float or double values.
 .TP
 \-{float|double}
-write float or double values in CLM grid file, default is short
+write float or double values in CLM grid file, default is short.
 .TP
 \-raw
-Output format is raw without header, default is CLM format
+Output format is raw without header, default is CLM format.
 .TP
 \-json
 An additional JSON metafile with suffix \fI.json\fP is written.
 .TP
 .I netcdffile
-filename of grid NetCDF file
+filename of grid NetCDF file.
 .TP
 .I gridfile
-filename of grid data file written
+filename of grid data file written.
 .SH EXAMPLES
 .TP
 Create grid binary raw file and JSON metafile from grid NetCDF file:
