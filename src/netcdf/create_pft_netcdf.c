@@ -15,7 +15,7 @@
 /**************************************************************************************/
 
 #include "lpj.h"
-#if defined(USE_NETCDF) || defined(USE_NETCDF4)
+#if defined(USE_NETCDF)
 #include <netcdf.h>
 #include <time.h>
 
@@ -42,7 +42,7 @@ Bool create_pft_netcdf(Netcdf *cdf,
                        const Config *config  /**< LPJ configuration */
                       )                      /** \return TRUE on error */
 {
-#if defined(USE_NETCDF) || defined(USE_NETCDF4)
+#if defined(USE_NETCDF)
   char *s;
   time_t t;
   int i,j,rc,nyear,imiss=MISSING_VALUE_INT,size,len;
@@ -55,10 +55,8 @@ Bool create_pft_netcdf(Netcdf *cdf,
   char **pftnames=NULL;
   size_t chunk[4];
   int dimids[2];
-#ifndef USE_NETCDF4
   int pft_len_id;
   size_t offset[2],count[2],pft_len;
-#endif
   int time_dim_id,lon_dim_id,lat_dim_id,time_var_id,lon_var_id,lat_var_id,pft_dim_id,pft_var_id;
   if(array==NULL || name==NULL || filename==NULL)
   {
@@ -76,11 +74,7 @@ Bool create_pft_netcdf(Netcdf *cdf,
       if(cdf->state==ONEFILE || cdf->state==CREATE)
       {
         /* start from checkpoint file, output files exist and have to be opened */
-#ifdef USE_NETCDF4
-        rc=nc_open(filename,NC_WRITE|NC_CLOBBER|NC_NETCDF4,&cdf->ncid);
-#else
-        rc=nc_open(filename,NC_WRITE|NC_CLOBBER,&cdf->ncid);
-#endif
+        rc=nc_open(filename,NC_WRITE|((config->isnetcdf4) ? NC_CLOBBER|NC_NETCDF4 : NC_CLOBBER),&cdf->ncid);
         if(rc)
         {
           fprintf(stderr,"ERROR426: Cannot open file '%s': %s.\n",
@@ -148,7 +142,7 @@ Bool create_pft_netcdf(Netcdf *cdf,
       free(lon);
       free(lat);
       free(year);
-      free(bnds);
+      free(layer);
       printallocerr("bnds");
       return TRUE;
     }
@@ -224,11 +218,7 @@ Bool create_pft_netcdf(Netcdf *cdf,
       free(lat);
       return TRUE;
   }
-#ifdef USE_NETCDF4
-  rc=nc_create(filename,NC_CLOBBER|NC_NETCDF4,&cdf->ncid);
-#else
-  rc=nc_create(filename,NC_CLOBBER,&cdf->ncid);
-#endif
+  rc=nc_create(filename,(config->isnetcdf4) ? NC_CLOBBER|NC_NETCDF4 : NC_CLOBBER,&cdf->ncid);
   if(rc)
   {
     fprintf(stderr,"ERROR426: Cannot create file '%s': %s.\n",
@@ -315,20 +305,23 @@ Bool create_pft_netcdf(Netcdf *cdf,
       printallocerr("pftnames");
       return TRUE;
     }
-#ifdef USE_NETCDF4
-    rc=nc_def_var(cdf->ncid,PFT_NAME,NC_STRING,1,&pft_dim_id,&pft_var_id);
-#else
-    pft_len=0;
-    for(i=0;i<size;i++)
-      if(pft_len<strlen(pftnames[i]))
-        pft_len=strlen(pftnames[i]);
-    pft_len++;
-    rc=nc_def_dim(cdf->ncid,"len",pft_len,&pft_len_id);
-    error(rc);
-    dimids[0]=pft_dim_id;
-    dimids[1]=pft_len_id;
-    rc=nc_def_var(cdf->ncid,PFT_NAME,NC_CHAR,2,dimids,&pft_var_id);
-#endif
+    if(config->isnetcdf4)
+    {
+      rc=nc_def_var(cdf->ncid,PFT_NAME,NC_STRING,1,&pft_dim_id,&pft_var_id);
+    }
+    else
+    {
+      pft_len=0;
+      for(i=0;i<size;i++)
+        if(pft_len<strlen(pftnames[i]))
+          pft_len=strlen(pftnames[i]);
+      pft_len++;
+      rc=nc_def_dim(cdf->ncid,"len",pft_len,&pft_len_id);
+      error(rc);
+      dimids[0]=pft_dim_id;
+      dimids[1]=pft_len_id;
+      rc=nc_def_var(cdf->ncid,PFT_NAME,NC_CHAR,2,dimids,&pft_var_id);
+    }
   }
   error(rc);
   if(year!=NULL)
@@ -397,15 +390,16 @@ Bool create_pft_netcdf(Netcdf *cdf,
   error(rc);
   rc=nc_def_var(cdf->ncid,name,nctype[type],(year==NULL) ? 3 : 4,dim,&cdf->varid);
   error(rc);
-#ifdef USE_NETCDF4
-  rc=nc_def_var_chunking(cdf->ncid, cdf->varid, NC_CHUNKED,chunk);
-  error(rc);
-  if(config->compress)
+  if(config->isnetcdf4)
   {
-    rc=nc_def_var_deflate(cdf->ncid, cdf->varid, 0, 1, config->compress);
+    rc=nc_def_var_chunking(cdf->ncid, cdf->varid, NC_CHUNKED,chunk);
     error(rc);
+    if(config->compress)
+    {
+      rc=nc_def_var_deflate(cdf->ncid, cdf->varid, 0, 1, config->compress);
+      error(rc);
+    }
   }
-#endif
   if(units!=NULL)
   {
     rc=nc_put_att_text(cdf->ncid, cdf->varid,"units",strlen(units),units);
@@ -477,20 +471,23 @@ Bool create_pft_netcdf(Netcdf *cdf,
   }
   else
   {
-#ifdef USE_NETCDF4
-    rc=nc_put_var_string(cdf->ncid,pft_var_id,(const char **)pftnames);
-    error(rc);
-#else
-    count[0]=1;
-    offset[1]=0;
-    for(i=0;i<size;i++)
+    if(config->isnetcdf4)
     {
-      offset[0]=i;
-      count[1]=strlen(pftnames[i])+1;
-      rc=nc_put_vara_text(cdf->ncid,pft_var_id,offset,count,pftnames[i]);
+      rc=nc_put_var_string(cdf->ncid,pft_var_id,(const char **)pftnames);
       error(rc);
     }
-#endif
+    else
+    {
+      count[0]=1;
+      offset[1]=0;
+      for(i=0;i<size;i++)
+      {
+        offset[0]=i;
+        count[1]=strlen(pftnames[i])+1;
+        rc=nc_put_vara_text(cdf->ncid,pft_var_id,offset,count,pftnames[i]);
+        error(rc);
+      }
+    }
     freepftnames(pftnames,index,npft,ncft,config);
   }
   rc=nc_put_var_double(cdf->ncid,lat_var_id,lat);

@@ -134,6 +134,7 @@ struct config
   Bool withdailyoutput; /**< with daily output (TRUE/FALSE) */
   Bool flush_output;   /**< flush output after every simulation year (TRUE/FALSE) */
   Bool nofill;          /**< do not fille NetCDF files at creation (TRUE/FALSE) */
+  Bool isnetcdf4;       /**< output file is in NetCDF4 format (TRUE/FALSE) */
   int fdi;
   char *pft_index;
   char *layer_index;

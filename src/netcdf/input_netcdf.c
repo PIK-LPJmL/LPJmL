@@ -16,7 +16,7 @@
 
 #include "lpj.h"
 
-#if defined(USE_NETCDF) || defined(USE_NETCDF4)
+#if defined(USE_NETCDF)
 #include <netcdf.h>
 #ifdef USE_UDUNITS
 #include <udunits.h>
@@ -102,7 +102,7 @@ Input_netcdf dupinput_netcdf(const Input_netcdf input)
 static Bool setvarinput_netcdf(Input_netcdf input,const Filename *filename,
                                const char *units,const Config *config)
 {
-#if defined(USE_NETCDF) || defined(USE_NETCDF4)
+#if defined(USE_NETCDF)
   int i,rc,nvars,ndims;
   int *dimids;
   nc_type type;
@@ -338,7 +338,7 @@ Input_netcdf openinput_netcdf(const Filename *filename, /**< filename */
                               const Config *config  /**< LPJ configuration */
                              )                      /** \return NULL on error */
 {
-#if defined(USE_NETCDF) || defined(USE_NETCDF4)
+#if defined(USE_NETCDF)
   Input_netcdf input;
   int rc,var_id,*dimids,ndims,index;
   char name[NC_MAX_NAME+1];
@@ -519,7 +519,7 @@ Input_netcdf openinput_netcdf(const Filename *filename, /**< filename */
 
 void closeinput_netcdf(Input_netcdf input)
 {
-#if defined(USE_NETCDF) || defined(USE_NETCDF4)
+#if defined(USE_NETCDF)
   if(input!=NULL)
   {
     nc_close(input->ncid);
@@ -556,7 +556,7 @@ size_t getindexsize_netcdf(const Input_netcdf input)
 Bool readinput_netcdf(const Input_netcdf input,Real *data,
                       const Coord *coord)
 {
-#if defined(USE_NETCDF) || defined(USE_NETCDF4)
+#if defined(USE_NETCDF)
   int rc;
   float *f;
   double *d;
@@ -711,7 +711,7 @@ Bool readinput_netcdf(const Input_netcdf input,Real *data,
 Bool readintinput_netcdf(const Input_netcdf input,int *data,
                          const Coord *coord,Bool *ismissing)
 {
-#if defined(USE_NETCDF) || defined(USE_NETCDF4)
+#if defined(USE_NETCDF)
   int rc,index;
   short *s;
   float *f;
@@ -805,7 +805,7 @@ Bool readintinput_netcdf(const Input_netcdf input,int *data,
 Bool readshortinput_netcdf(const Input_netcdf input,short *data,
                            const Coord *coord)
 {
-#if defined(USE_NETCDF) || defined(USE_NETCDF4)
+#if defined(USE_NETCDF)
   int rc,index;
   size_t i;
   size_t offsets[3];

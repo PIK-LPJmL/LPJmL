@@ -16,7 +16,7 @@
 
 #include "lpj.h"
 
-#if defined(USE_NETCDF) || defined(USE_NETCDF4)
+#if defined(USE_NETCDF)
 #include <netcdf.h>
 #endif
 
@@ -25,7 +25,7 @@ char *getattr_netcdf(const Climatefile *file, /**< climate data file */
                      const char *attr         /**< name of attribute */
                     )                         /** \return attribute string or NULL */
 {
-#if defined(USE_NETCDF) || defined(USE_NETCDF4)
+#if defined(USE_NETCDF)
   char *s;
   size_t len;
   if(nc_inq_attlen(file->ncid, varid, attr, &len))

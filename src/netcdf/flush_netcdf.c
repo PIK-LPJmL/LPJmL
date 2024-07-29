@@ -15,13 +15,13 @@
 /**************************************************************************************/
 
 #include "lpj.h"
-#if defined(USE_NETCDF) || defined(USE_NETCDF4)
+#if defined(USE_NETCDF)
 #include <netcdf.h>
 #endif
 
 void flush_netcdf(Netcdf *cdf)
 {
-#if defined(USE_NETCDF) || defined(USE_NETCDF4)
+#if defined(USE_NETCDF)
   nc_sync(cdf->ncid);
 #endif
 } /* of 'flush_netcdf' */

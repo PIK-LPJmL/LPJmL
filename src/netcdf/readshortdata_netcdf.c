@@ -16,7 +16,7 @@
 
 #include "lpj.h"
 
-#if defined(USE_NETCDF) || defined(USE_NETCDF4)
+#if defined(USE_NETCDF)
 #include <netcdf.h>
 #endif
 
@@ -27,7 +27,7 @@ Bool readshortdata_netcdf(const Climatefile *file, /**< climate data file */
                           const Config *config     /**< LPJmL configuration */
                          )                         /** \return TRUE on error */
 {
-#if defined(USE_NETCDF) || defined(USE_NETCDF4)
+#if defined(USE_NETCDF)
   int cell,rc;
   short *f;
   size_t offsets[4];

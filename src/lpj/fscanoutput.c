@@ -155,6 +155,9 @@ Bool fscanoutput(LPJfile *file,  /**< pointer to LPJ file */
     }
   }
   fscanbool2(file,&config->nofill,"nofill");
+  config->isnetcdf4=FALSE;
+  if(fscanbool(file,&config->isnetcdf4,"netcdf4",!config->pedantic,verbosity))
+    return TRUE;
   config->global_netcdf=FALSE;
   if(iskeydefined(file,"global_netcdf"))
   {
