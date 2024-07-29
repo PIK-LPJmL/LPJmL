@@ -19,6 +19,20 @@ of `major.minor.patch` with
 
 ## [Unreleased]
 
+### Contributors
+
+- author: Werner von Bloh (bloh@pik-potsdam.de)
+
+### Changed
+
+- `USE_NETCDF4` compile option replaced by `"netcdf4"` boolean flag in the LPJmL configuration file. If set compression of NetCDF4 files can be enabled and PFT names are written as strings.
+
+### Added
+
+- Option `-netcdf4` added to `bin2cdf`, `clm2cdf`, `country2cdf`, and `drainage2cdf` utility to enable NetCDF4 format.
+- Option `-compress` added to `drainage2cdf` utility to enable file compression.
+- Man page for `drainage2cdf` added.
+
 
 ## [5.9.5] - 2024-07-19
 
