@@ -674,18 +674,6 @@ Bool fscanconfig(Config *config,    /**< LPJ configuration */
     if(fscanattrs(file,&config->global_attrs,&config->n_global,"global_attrs",verbose))
       return TRUE;
   }
-  config->compress=0;
-  if(fscanint(file,&config->compress,"compress",!config->pedantic,verbose))
-    return TRUE;
-#ifdef USE_NETCDF
-  if(config->compress)
-  {
-    if(verbose)
-      fputs("WARNING403: Compression of NetCDF files is not supported in this version of NetCDF.\n",stderr);
-    if(config->pedantic)
-      return TRUE;
-  }
-#endif
   config->missing_value=MISSING_VALUE_FLOAT;
   if(fscanfloat(file,&config->missing_value,"missing_value",!config->pedantic,verbose))
     return TRUE;

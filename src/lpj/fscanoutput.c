@@ -86,6 +86,7 @@ Bool fscanoutput(LPJfile *file,  /**< pointer to LPJ file */
   checkptr(config->outputvars);
   count=index=0;
   config->withdailyoutput=FALSE;
+  config->compress=0;
   size=nout_max;
   config->json_filename=NULL;
   if(iskeydefined(file,"outpath") && !isnull(file,"outpath"))
@@ -158,6 +159,17 @@ Bool fscanoutput(LPJfile *file,  /**< pointer to LPJ file */
   config->isnetcdf4=FALSE;
   if(fscanbool(file,&config->isnetcdf4,"netcdf4",!config->pedantic,verbosity))
     return TRUE;
+  if(fscanint(file,&config->compress,"compress",!config->pedantic,verbosity))
+    return TRUE;
+#ifdef USE_NETCDF
+  if(!config->isnetcdf4 && config->compress)
+  {
+    if(verbosity)
+      fputs("WARNING403: Compression of NetCDF files is not supported if \"netcdf4\" is not set to true.\n",stderr);
+    if(config->pedantic)
+      return TRUE;
+  }
+#endif
   config->global_netcdf=FALSE;
   if(iskeydefined(file,"global_netcdf"))
   {
