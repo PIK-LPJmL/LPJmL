@@ -155,13 +155,20 @@ Bool fscanoutput(LPJfile *file,  /**< pointer to LPJ file */
       return TRUE;
     }
   }
-  fscanbool2(file,&config->nofill,"nofill");
   config->isnetcdf4=FALSE;
+#ifdef USE_NETCDF
+  fscanbool2(file,&config->nofill,"nofill");
   if(fscanbool(file,&config->isnetcdf4,"netcdf4",!config->pedantic,verbosity))
     return TRUE;
   if(fscanint(file,&config->compress,"compress",!config->pedantic,verbosity))
     return TRUE;
-#ifdef USE_NETCDF
+  if(config->compress<0 || config->compress>9)
+  {
+    if(verbosity)
+      fprintf(stderr,"ERROR438: Invalid compression value %d, must be in [0,9].\n",
+              config->compress);
+    return TRUE;
+  }
   if(!config->isnetcdf4 && config->compress)
   {
     if(verbosity)
