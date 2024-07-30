@@ -83,6 +83,12 @@ int main(int argc,char **argv)
           fprintf(stderr,"Error: Invalid number '%s' for option '-compress'.\n",argv[iarg]);
           return EXIT_FAILURE;
         }
+        if(compress<0 || compress>9)
+        {
+          fprintf(stderr,"Error: Invalid compression value %d, must be in [0,9].\n",
+                  compress);
+          return EXIT_FAILURE;
+        }
       }
       else
       {
