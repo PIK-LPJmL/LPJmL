@@ -534,6 +534,12 @@ int main(int argc,char **argv)
             USAGE,argv[0]);
     return EXIT_FAILURE;
   }
+  if(isfloat && scale!=1)
+  {
+    fprintf(stderr,"Warning: Scaling set to %g but datatype is float, scaling set to 1.\n",
+            scale);
+    scale=1;
+  }
   coord_filename.name=argv[iarg];
   coord_filename.fmt=CLM;
   coordfile=opencoord(&coord_filename,TRUE);
