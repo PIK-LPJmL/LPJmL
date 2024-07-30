@@ -38,9 +38,10 @@ int main(int argc,char **argv)
 #if defined(USE_NETCDF) || defined(USE_NETCDF4)
   int rc,ncid,var_id,dimids[2],i,j,nvars,lon_id,lat_id,ndims,x,y,iarg,len,n_attr;
   double *lat,*lon;
+  float scalar;
   size_t lat_len,lon_len;
   int missing_value;
-  Bool israw,isjson;
+  Bool israw,isjson,scalar_set;
   char name[NC_MAX_NAME+1],*endptr;
   Header header;
   Intcoord coord;
@@ -62,7 +63,7 @@ int main(int argc,char **argv)
   var=NULL;
   header.datatype=LPJ_SHORT;
   header.scalar=0.01;
-  israw=isjson=FALSE;
+  israw=isjson=scalar_set=FALSE;
   for(iarg=1;iarg<argc;iarg++)
     if(argv[iarg][0]=='-')
     {
@@ -102,12 +103,14 @@ int main(int argc,char **argv)
                  USAGE,argv[0]);
           return EXIT_FAILURE;
         }
-        header.scalar=(float)strtod(argv[++iarg],&endptr);
+        scalar=header.scalar=(float)strtod(argv[++iarg],&endptr);
         if(*endptr!='\0')
         {
           fprintf(stderr,"Invalid number '%s' for scale.\n",argv[iarg]);
           return EXIT_FAILURE;
         }
+        if(header.scalar!=1)
+          scalar_set=TRUE;
       }
       else
       {
@@ -123,6 +126,13 @@ int main(int argc,char **argv)
     fprintf(stderr,"Missing argument(s).\n"
             USAGE,argv[0]);
     return EXIT_FAILURE;
+  }
+  if(header.datatype!=LPJ_SHORT && scalar_set)
+  {
+    fprintf(stderr,"Warning: Scaling set to %g but datatype is %s, scaling set to 1.\n",
+            scalar,typenames[header.datatype]);
+
+    header.scalar=1;
   }
   rc=nc_open(argv[iarg],NC_NOWRITE,&ncid);
   if(rc)
@@ -161,7 +171,7 @@ int main(int argc,char **argv)
   {
     fprintf(stderr,"ERROR408: Invalid number of dimensions %d in '%s', must be 2.\n",
             ndims,argv[iarg]);
-    return TRUE;
+    return EXIT_FAILURE;
   }
   nc_inq_vardimid(ncid,var_id,dimids);
   nc_inq_dimname(ncid,dimids[1],name);
@@ -170,7 +180,7 @@ int main(int argc,char **argv)
   {
     fprintf(stderr,"ERROR410: Cannot read %s in '%s': %s.\n",
             name,argv[iarg],nc_strerror(rc));
-    return TRUE;
+    return EXIT_FAILURE;
   }
   nc_inq_dimlen(ncid,dimids[1],&lon_len);
   lon=newvec(double,lon_len);
