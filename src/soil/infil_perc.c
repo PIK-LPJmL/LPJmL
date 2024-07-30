@@ -18,7 +18,7 @@
 #include "agriculture.h"
 #include "crop.h"
 
-#define NPERCO 0.5  /* controls the amount of nitrate removed from the surface layer in runoff relative to the amount removed via percolation.  0.5 in Neitsch:SWAT MANUAL*/
+#define NPERCO 0.3  /* controls the amount of nitrate removed from the surface layer in runoff relative to the amount removed via percolation.  0.5 in Neitsch:SWAT MANUAL*/
 #define OMEGA  6    /* adjustable parameter for impedance factor*/
 #define maxWTP -500 /* max height of standing water [mm]*/
 
@@ -83,6 +83,7 @@ Real infil_perc(Stand *stand,        /**< Stand pointer */
   Real rsub_top_tot, rsub_top_layer, active_wa, tmp_water;
   //Real sat_lev = 0.9;
   Real prec=infil;
+  Bool isrice=FALSE;
 
 #ifdef CHECK_BALANCE
   Real start, end;
@@ -91,7 +92,9 @@ Real infil_perc(Stand *stand,        /**< Stand pointer */
   Real water_after, water_before,balancew;
   water_before=soilwater(&stand->soil);
 #endif
-
+  foreachpft(pft,p,&stand->pftlist)
+    if(!strcmp(pft->par->name,"rice"))
+      isrice=TRUE;
   if(stand->type->landusetype==AGRICULTURE || stand->type->landusetype==SETASIDE_RF || stand->type->landusetype==SETASIDE_IR || stand->type->landusetype==SETASIDE_WETLAND || stand->type->landusetype==BIOMASS_GRASS ||
       stand->type->landusetype==BIOMASS_TREE || stand->type->landusetype==GRASSLAND || stand->type->landusetype==OTHERS  ||  stand->type->landusetype==AGRICULTURE_TREE || stand->type->landusetype==AGRICULTURE_GRASS)
     data_irrig=stand->data;
@@ -102,7 +105,7 @@ Real infil_perc(Stand *stand,        /**< Stand pointer */
   soil_infil=param.soil_infil; /* default to draw square root for infiltration factor*/
   if(config->rw_manage && (stand->type->landusetype==AGRICULTURE || stand->type->landusetype==GRASSLAND || stand->type->landusetype==BIOMASS_GRASS || stand->type->landusetype==OTHERS  ||
       stand->type->landusetype==BIOMASS_TREE || stand->type->landusetype==AGRICULTURE_TREE || stand->type->landusetype==AGRICULTURE_GRASS))
-    soil_infil=param.soil_infil_rw; /* parameter to increase soil infiltration rate */
+    soil_infil=param.soil_infil_rw; /* parameter to increase soil infiltration rate affects only non irrigated fields*/
   for(l=0;l<NTILLLAYER;l++)
     infil_layer[l]=0.0;
 
@@ -168,7 +171,8 @@ Real infil_perc(Stand *stand,        /**< Stand pointer */
     freewater=0.0;
     slug=min(4,infil);
     infil=infil-slug;
-    if(data_irrig!=NULL  && (data_irrig->irrig_system==SPRINK || data_irrig->irrig_system==DRIP))
+    if(data_irrig!=NULL  && ((data_irrig->irrig_system==SPRINK || data_irrig->irrig_system==DRIP) ||
+        (stand->type->landusetype==SETASIDE_WETLAND || (stand->type->landusetype==AGRICULTURE && (stand->soil.iswetland==TRUE || isrice==TRUE)))))
       influx=slug;        /*no surface runoff for DRIP and Sprinkler*/
     else
     {
@@ -181,7 +185,7 @@ Real infil_perc(Stand *stand,        /**< Stand pointer */
       srunoff=slug-influx; /*surface runoff used for leaching */
     }
     frac_g_influx=1; /* first layer has only green influx, but lower layers with percolation have mixed frac_g_influx */
-    if(data_irrig!=NULL && data_irrig->irrig_system==DRIP)
+    if(data_irrig!=NULL && (data_irrig->irrig_system==DRIP || isrice))
     {
       /* in case of Drip: directly fill up field cap of first two soil layers, no surface runoff, lateral runoff or percolation */
       /* -> this allows simulating perfect irrigation: drip + irrg_threshold = 1 (keep in mind: plant can still be somewhat stressed, if roots go deeper than 2. layer) */
@@ -489,13 +493,13 @@ Real infil_perc(Stand *stand,        /**< Stand pointer */
   }
   qcharge_tot= max(-10.0,qcharge_tot);
   qcharge_tot= min(10.0,qcharge_tot);
- if(soil->maxthaw_depth<layerbound[BOTTOMLAYER-1])
- {
-  qcharge_tot1=outflux+lat_runoff_last+runoff;                                //recharge from the upper layer
-  runoff=0;
- }
- else
-  qcharge_tot1=outflux+lat_runoff_last;
+  if(soil->maxthaw_depth<layerbound[BOTTOMLAYER-1])
+  {
+    qcharge_tot1=outflux+lat_runoff_last+runoff;                                //recharge from the upper layer
+    runoff=0;
+  }
+  else
+    qcharge_tot1=outflux+lat_runoff_last;
 
 
   //*******************************//
@@ -659,7 +663,7 @@ Real infil_perc(Stand *stand,        /**< Stand pointer */
   }
   else
   {
-    //==========  Topographic runoff  ==================================
+    //==========  Topographic runoff at WTABLE ==================================
 
     fff=2.5;       //m-1 decay factor originally 2.5 in CLM4.5
     icesum=0;
@@ -745,7 +749,7 @@ Real infil_perc(Stand *stand,        /**< Stand pointer */
           }
           else
             soil->wtable=layerbound[l];
-          nrsub_top[l]-=rsub_top_layer;
+          nrsub_top[l]-=rsub_top_layer;                                              //rsub_top_layer is negative here
         }
         if(rsub_top_tot<0)
         {
@@ -831,7 +835,7 @@ Real infil_perc(Stand *stand,        /**< Stand pointer */
 
       srunoff=0.0; /* not used for lower soil layers */
       if (l==0)
-        NO3lat=NPERCO*concNO3_mobile*(lrunoff[l]+nrsub_top[l]+ndrain_perched_out[l]); /* Eq. 4:2.1.6 */
+        NO3lat=(1-NPERCO)*concNO3_mobile*(lrunoff[l]+nrsub_top[l]+ndrain_perched_out[l]); /* Eq. 4:2.1.6 */
       else
         NO3lat=concNO3_mobile*(lrunoff[l]+nrsub_top[l]+ndrain_perched_out[l]); /* Eq. 4:2.1.7 */
       if(NO3lat>epsilon)

@@ -42,7 +42,7 @@ void fprintcsvflux(FILE *file,          /**< Output file pointer */
       fprintf(file,"%cwd",d);
     if(config->river_routing)
       fprintf(file,"%cdischarge",d);
-    fprintf(file,"%cCH4 emiss.%cCH4 sink%cCH4 fire",d,d,d);
+    fprintf(file,"%cCH4 emiss.%cCH4 oxid%cCH4 sink%cCH4 fire",d,d,d,d);
     if(config->withlanduse!=NO_LANDUSE)
       fprintf(file,"%cCH4 rice%cCH4 seta",d,d);
     fprintf(file,"%cprec%cSoilC%cSoilC_slow%cLitC%cVegC%cSoil_CH4",d,d,d,d,d,d);
@@ -114,6 +114,7 @@ void fprintcsvflux(FILE *file,          /**< Output file pointer */
   if(config->river_routing)
     fprintf(file,"%c%g",d,flux.discharge*scale);
   fprintf(file,"%c%g",d,flux.CH4_emissions*scale);
+  fprintf(file,"%c%g",d,flux.CH4_oxidation*scale);
   fprintf(file,"%c%g",d,flux.CH4_sink*scale);
   fprintf(file,"%c%g",d,flux.CH4_fire*scale);
   if(config->withlanduse!=NO_LANDUSE)

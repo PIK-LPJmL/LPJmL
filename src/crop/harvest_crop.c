@@ -50,7 +50,7 @@ void harvest_crop(Output *output,      /**< Output data */
   else
     res_onfield=stand->cell->ml.residue_on_field[data->irrigation].crop[pft->par->id-npft];
   if(!strcmp(pft->par->name,"rice"))
-     res_onfield=0.7;
+     res_onfield=max(res_onfield*2.5,1);
   res_remove = (1-res_onfield);
   stand->soil.litter.item[pft->litter].agtop.leaf.carbon += (crop->ind.leaf.carbon + crop->ind.pool.carbon)*res_onfield;
   getoutput(output,LITFALLC,config)+=(crop->ind.leaf.carbon + crop->ind.pool.carbon)*res_onfield*stand->frac;

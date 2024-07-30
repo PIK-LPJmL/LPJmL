@@ -41,6 +41,7 @@ void mix_veg_grass(Pft *pft,Real scaler)
   pft->establish.nitrogen*=scaler;
 
   grass->excess_carbon*=scaler;
+  grass->max_leaf*=scaler;
 } /* of 'mix_veg_grass' */
 
 Bool mix_veg_stock_grass(Pft *pft1, Pft *pft2, Real frac1, Real frac2,const Config *config)  /*mix pft1 into pft2*/

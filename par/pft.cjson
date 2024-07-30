@@ -25,7 +25,7 @@
 #define FLAM_TREE 0.3
 #define FLAM_GRASS 0.3
 #endif
-#define K_LITTER10 1.2       /* 0.97 adapted to grass litter decay now only used for crops and value a middle value of C4 grasses; need to be updated with TRY-database*/
+#define K_LITTER10 0.97       /* now only used for crops and value a middle value of C4 grasses; need to be updated with TRY-database*/
 #define APREC_MIN 100.0
 #define ALLOM1 100.0
 #define ALLOM2 40.0
@@ -44,9 +44,9 @@
 #define MORT_MAX_GRASS 0.00
 #define FN_TURNOVER 0.2      /* fraction of N not recovered before turnover */
 #define FN_TURNOVER_EV_BR 0.6   /* fraction of N not recovered before turnover */
-#define FN_TURNOVER_EV 0.8   /* fraction of N not recovered before turnover */
-#define FN_TURNOVER_GR 0.8   /* fraction of N not recovered before turnover */
-#define ALPHAA 0.5            /* alphaa for simulations with nitrogen limitation */
+#define FN_TURNOVER_EV 0.7   /* fraction of N not recovered before turnover */
+#define FN_TURNOVER_GR 0.7   /* fraction of N not recovered before turnover */
+#define ALPHAA 0.65            /* alphaa for simulations with nitrogen limitation */
 #define RATIO_SAPW 13.5 /* relative C:N ratio of sapwood */
 #define CN_BL_EG_MX 46.2
 #define CN_BL_EG_MN 15.6
@@ -173,8 +173,8 @@
       "fn_turnover" : FN_TURNOVER_EV_BR, /* fraction of N not recovered before turnover */
       "windspeed_dampening" : 0.4, /* windspeed dampening */
       "roughness_length" : 2.0,  /* roughness length */
-      "ist_m" : -0.2,             /* inundation stress threshold [m] */
-      "idt_d" : 20.0,             /* inundation duration threshold [days] */
+      "ist_m" : -0.1,             /* inundation stress threshold [m] */
+      "idt_d" : 30.0,             /* inundation duration threshold [days] */
       "irrig_threshold" : { "dry" : IRRIG_THRESHOLD_C3_DRY, "humid" : IRRIG_THRESHOLD_C3_HUMID },
       "leaftype" : "broadleaved",  /* leaftype */
       "turnover" : {"leaf" : 2.0, "sapwood" : 30.0, "root" : 2.0}, /* turnover leaf  sapwood root 9 11 12*/
@@ -289,7 +289,7 @@
       "windspeed_dampening" : 0.4, /* windspeed dampening */
       "roughness_length" : 2.0,  /* roughness length */
       "ist_m" : 0.5,             /* inundation stress threshold [m] */
-      "idt_d" : 50.0,             /* inundation duration threshold [days] */
+      "idt_d" : 150.0,             /* inundation duration threshold [days] */
       "irrig_threshold" : { "dry" : IRRIG_THRESHOLD_C3_DRY, "humid" : IRRIG_THRESHOLD_C3_HUMID },
       "leaftype" : "broadleaved",  /* leaftype */
       "turnover" : {"leaf" : 2.0, "sapwood" : 30.0, "root" : 2.0}, /* turnover leaf  sapwood root 9 11 12*/
@@ -519,7 +519,7 @@
       "windspeed_dampening" : 0.4,  /* windspeed dampening */
       "roughness_length" : 1.0,     /* roughness length */
       "ist_m" : -0.25,             /* inundation stress threshold [m] */
-      "idt_d" : 10.0,             /* inundation duration threshold [days] */
+      "idt_d" : 15.0,             /* inundation duration threshold [days] */
       "irrig_threshold" : { "dry" : IRRIG_THRESHOLD_C3_DRY, "humid" : IRRIG_THRESHOLD_C3_HUMID },
       "leaftype" : "needleleaved",/* leaftype */
       "turnover" : {"leaf" : 4.0, "sapwood" : 25.0, "root" : 4.0}, /* turnover leaf  sapwood root 9 11 12*/
@@ -634,7 +634,7 @@
       "windspeed_dampening" : 0.4,  /* windspeed dampening */
       "roughness_length" : 1.0, /* roughness length */
       "ist_m" : -0.25,            /* inundation stress threshold [m] */
-      "idt_d" : 10.0,             /* inundation duration threshold [days] */
+      "idt_d" : 15.0,             /* inundation duration threshold [days] */
       "irrig_threshold" : { "dry" : IRRIG_THRESHOLD_C3_DRY, "humid" : IRRIG_THRESHOLD_C3_HUMID },
       "leaftype" : "broadleaved",/* leaftype */
       "turnover" : {"leaf" : 2.0, "sapwood" : 25.0, "root" : 2.0}, /* turnover leaf  sapwood root 9 11 12*/
@@ -748,8 +748,8 @@
       "fn_turnover" : FN_TURNOVER, /* fraction of N not recovered before turnover */
       "windspeed_dampening" : 0.4,  /* windspeed dampening */
       "roughness_length" : 1.0, /* roughness length */
-      "ist_m" : -0.2,             /* inundation stress threshold [m] */
-      "idt_d" : 20.0,             /* inundation duration threshold [days] */
+      "ist_m" : -0.1,             /* inundation stress threshold [m] */
+      "idt_d" : 25.0,             /* inundation duration threshold [days] */
       "irrig_threshold" : { "dry" : IRRIG_THRESHOLD_C3_DRY, "humid" : IRRIG_THRESHOLD_C3_HUMID },
       "leaftype" : "broadleaved",/* leaftype */
       "turnover" : {"leaf" : 1.0, "sapwood" : 25.0, "root" : 1.0}, /* turnover leaf  sapwood root 9 11 12*/
@@ -980,8 +980,8 @@
       "fn_turnover" : FN_TURNOVER, /* fraction of N not recovered before turnover */
       "windspeed_dampening" : 0.4,  /* windspeed dampening */
       "roughness_length" : 1.0,     /* roughness length */
-      "ist_m" : -0.25,             /* inundation stress threshold [m] */
-      "idt_d" : 15.0,             /* inundation duration threshold [days] */
+      "ist_m" : -0.2,             /* inundation stress threshold [m] */
+      "idt_d" : 20.0,             /* inundation duration threshold [days] */
       "irrig_threshold" : { "dry" : IRRIG_THRESHOLD_C3_DRY, "humid" : IRRIG_THRESHOLD_C3_HUMID },
       "leaftype" : "broadleaved",/* leaftype */
       "turnover" : {"leaf" : 1.0, "sapwood" : 25.0, "root" : 1.0}, /* turnover leaf  sapwood root 9 11 12*/
@@ -1215,7 +1215,7 @@
       "windspeed_dampening" : 0.6,/* windspeed dampening */
       "roughness_length" : 0.03,  /* roughness length */
       "ist_m" : -0.1,             /* inundation stress threshold [m] */
-      "idt_d" : 15.0,             /* inundation duration threshold [days] */
+      "idt_d" : 20.0,             /* inundation duration threshold [days] */
       "irrig_threshold" : { "dry" : IRRIG_THRESHOLD_C4, "humid" : IRRIG_THRESHOLD_C4 },
       "turnover" : {"leaf" : 1.0, "root" : 2.0}, /* turnover leaf  root 9 12*/
       "cn_ratio" : {"leaf" : CTON_LEAF, "root" : CTON_ROOT}, /* C:N mass ratio for leaf, and root 13,15*/
@@ -1506,7 +1506,7 @@
       "windspeed_dampening" : 0.6,  /* windspeed dampening */
       "roughness_length" : 0.03,    /* roughness length */
       "ist_m" : 0.2,             /* inundation stress threshold [m] */                          
-      "idt_d" : 31.0,             /* inundation duration threshold [days] */                    
+      "idt_d" : 45.0,             /* inundation duration threshold [days] */                    
       "irrig_threshold" : { "dry" : IRRIG_THRESHOLD_C3_DRY, "humid" : IRRIG_THRESHOLD_C3_HUMID },
       "turnover" : {"leaf" : 1.0, "root" : 2.0}, /* turnover leaf  root 9 12*/
       "cn_ratio" : {"leaf" : CTON_LEAF, "root" : CTON_ROOT}, /* C:N mass ratio for leaf, and root 13,15*/
@@ -2136,7 +2136,7 @@
       "flam" : FLAM_GRASS,    /* flam */
       "k_litter10" : { "leaf" : K_LITTER10, "wood" : K_LITTER10}, /* K_LITTER10 turnover rate after Brovkin etal 2012*/
       "k_litter10_q10_wood" : 1, /* Q10_wood */
-      "ist_m" : 0.6,                /* inundation stress threshold [m] */
+      "ist_m" : 1,                /* inundation stress threshold [m] */
       "idt_d" : 200.0,              /* inundation duration threshold [days] */
       "vmax_up" : 5.51,             /* vmax_up, Maximum N uptake capacity per unit fine root mass, Smith et al. 2014 */
       "kNmin": 0.05,                /* kNmin, Rate of N uptake not associated with Michaelis-Menten Kinetics, Zaehle&Friend 2000 */
@@ -2252,7 +2252,7 @@
       "k_litter10" : { "leaf" : K_LITTER10, "wood" : K_LITTER10}, /* K_LITTER10 turnover rate after Brovkin etal 2012*/
       "k_litter10_q10_wood" : 1, /* Q10_wood */
       "ist_m" : -0.2,             /* inundation stress threshold [m] */
-      "idt_d" : 15.0,             /* inundation duration threshold [days] */
+      "idt_d" : 20.0,             /* inundation duration threshold [days] */
       "vmax_up" : 5.51,             /* vmax_up, Maximum N uptake capacity per unit fine root mass, Smith et al. 2014 */
       "kNmin": 0.05,                /* kNmin, Rate of N uptake not associated with Michaelis-Menten Kinetics, Zaehle&Friend 2000 */
       "KNmin" : 1.48,               /* KNmin, Half saturation concentration of fine root N uptake, Smith et al. 2014 */
@@ -2367,7 +2367,7 @@
       "k_litter10" : { "leaf" : K_LITTER10, "wood" : K_LITTER10}, /* K_LITTER10 turnover rate after Brovkin etal 2012*/
       "k_litter10_q10_wood" : 1, /* Q10_wood */
       "ist_m" : -0.2,             /* inundation stress threshold [m] */
-      "idt_d" : 20.0,             /* inundation duration threshold [days] */
+      "idt_d" : 25.0,             /* inundation duration threshold [days] */
       "vmax_up" : 5.51,             /* vmax_up, Maximum N uptake capacity per unit fine root mass, Smith et al. 2014 */
       "kNmin": 0.05,                /* kNmin, Rate of N uptake not associated with Michaelis-Menten Kinetics, Zaehle&Friend 2000 */
       "KNmin" : 1.48,               /* KNmin, Half saturation concentration of fine root N uptake, Smith et al. 2014 */
@@ -2481,8 +2481,8 @@
       "flam" : FLAM_GRASS,    /* flam */
       "k_litter10" : { "leaf" : K_LITTER10, "wood" : K_LITTER10}, /* K_LITTER10 turnover rate after Brovkin etal 2012*/
       "k_litter10_q10_wood" : 1, /* Q10_wood */
-      "ist_m" : -0.3,             /* inundation stress threshold [m] */
-      "idt_d" : 10.0,             /* inundation duration threshold [days] */
+      "ist_m" : -0.2,             /* inundation stress threshold [m] */
+      "idt_d" : 15.0,             /* inundation duration threshold [days] */
       "vmax_up" : 5.51,             /* vmax_up, Maximum N uptake capacity per unit fine root mass, Smith et al. 2014 */
       "kNmin": 0.05,                /* kNmin, Rate of N uptake not associated with Michaelis-Menten Kinetics, Zaehle&Friend 2000 */
       "KNmin" : 1.48,               /* KNmin, Half saturation concentration of fine root N uptake, Smith et al. 2014 */
@@ -3185,8 +3185,8 @@
       "flam" : FLAM_GRASS,    /* flam */
       "k_litter10" : { "leaf" : K_LITTER10, "wood" : K_LITTER10}, /* K_LITTER10 turnover rate after Brovkin etal 2012*/
       "k_litter10_q10_wood" : 1, /* Q10_wood */
-      "ist_m" : -0.3,             /* inundation stress threshold [m] */
-      "idt_d" : 15.0,             /* inundation duration threshold [days] */
+      "ist_m" : -0.2,             /* inundation stress threshold [m] */
+      "idt_d" : 20.0,             /* inundation duration threshold [days] */
       "vmax_up" : 5.51,             /* vmax_up, Maximum N uptake capacity per unit fine root mass, Smith et al. 2014 */
       "kNmin": 0.05,                /* kNmin, Rate of N uptake not associated with Michaelis-Menten Kinetics, Zaehle&Friend 2000 */
       "KNmin" : 1.48,               /* KNmin, Half saturation concentration of fine root N uptake, Smith et al. 2014 */

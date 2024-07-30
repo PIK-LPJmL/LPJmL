@@ -560,6 +560,9 @@ void fprintconfig(FILE *file,          /**< File pointer to text output file */
   }
   fprintcultivations(file,config->pftpar,npft+ncft);
   fprintf(file,"Working directory: %s\n",getdir());
+  if(config->json_filename!=NULL)
+    fprintf(file,"%s processed configuration file written to `%s`.\n",
+            config->filter,config->json_filename);
   if(isreadrestart(config))
     fprintf(file,"Starting from restart file '%s'.\n",config->restart_filename);
   else

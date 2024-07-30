@@ -116,7 +116,7 @@ Bool freadcell(FILE *file,             /**< File pointer to binary file */
     freadreal1(&cell->ground_st, swap, file);
     freadreal1(&cell->ground_st_am, swap, file);
     freadreal1(&cell->ml.cropfrac_rf,swap,file);
-    freadreal(cell->ml.cropfrac_wl,2,swap,file);
+    freadreal1(&cell->ml.cropfrac_wl,swap,file);
     freadreal1(&cell->ml.cropfrac_ir,swap,file);
     if(freadclimbuf(file,&cell->climbuf,ncft,swap))
     {

@@ -33,6 +33,9 @@ Real npp_grass(Pft *pft,               /**< PFT variables */
     nc_root=grass->ind.root.nitrogen/grass->ind.root.carbon;
   else
     nc_root=par->nc_ratio.root;
+  //maximum respiration dependency to NC ratio not higher than measured leaf NC
+  if(nc_root>pft->par->ncleaf.high/par->ratio) nc_root=pft->par->ncleaf.high/par->ratio;
+
   mresp=grass->ind.root.carbon*pft->nind*pft->par->respcoeff*param.k*nc_root*gtemp_soil*pft->phen;
   gresp=(assim-mresp)*param.r_growth;
   if (gresp<0.0) gresp=0.0;

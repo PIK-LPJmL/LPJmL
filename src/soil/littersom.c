@@ -34,8 +34,8 @@
 
 #define MOIST_DENOM 0.63212055882855767841 /* (1.0-exp(-1.0)) */
 #define K10_YEDOMA 0.025/NDAYYEAR
-#define k_red 3                           /*anoxic decomposition is much smaller than oxic decomposition Khovorostyanov et al., 2008*/
-#define k_red_litter 3
+#define k_red 8                           /*anoxic decomposition is much smaller than oxic decomposition Khovorostyanov et al., 2008*/
+#define k_red_litter 8
 #define INTERCEPT 0.10021601               /* changed from 0.04021601*/
 #define MOIST_3 -5.00505434
 #define MOIST_2 4.26937932
@@ -47,7 +47,7 @@
 #define k_N 5e-3 /* Michaelis-Menten parameter k_S,1/2 (gN/m3) */
 #define S 0.2587 // saturation factor MacDougall and Knutti, 2016
 #define KOVCON (0.001*1000) //Constant of diffusion (m2a-1)
-#define WTABTHRES 10
+#define WTABTHRES 30
 
 static Real f_wfps(const Soil *soil,      /* Soil data */
                    int l                  /* soil layer */
@@ -103,6 +103,7 @@ Stocks littersom(Stand *stand,                      /**< [inout] pointer to stan
   Real C_max[LASTLAYER], V;
   Real CN_fast=0, CN_slow=0;
   Real methaneflux_soil;
+  Real oxidation_stand=0;    //oxidation of methane with in the soil column
   Real h2o_mt;   /* methane production */
   //Real CH4_air;
   Real CH4_air,O2_need;
@@ -300,6 +301,7 @@ Stocks littersom(Stand *stand,                      /**< [inout] pointer to stan
           if (soil->O2[l]<0)                                                /* TODO BE CAREFULL FOR THE O2 BALANCE HERE*/
             soil->O2[l]=0;
           soil->CH4[l]-=oxidation;
+          oxidation_stand+=oxidation;
           /*THIS IS DEDICATED TO MICROBIOLOGICAL HEATING*/
 #ifdef MICRO_HEATING
           soil->micro_heating[l]+=oxidation*m_heat_ox;
@@ -334,7 +336,7 @@ Stocks littersom(Stand *stand,                      /**< [inout] pointer to stan
         }
         soil_cflux+=oxidation*WC/WCH4;                                   // CO2 flux into the atmosphere due to oxidation of methane
 #ifdef MICRO_HEATING
-        soil->decomC[l]=flux_soil[l].slow.carbon+flux_soil[l].fast.carbon+oxidation;
+        soil->decomC[l]=flux_soil[l].slow.carbon+flux_soil[l].fast.carbon+oxidation*WC/WCH4;
 #endif
         //soil_cflux+=*methaneflux_soil*WC/WCH4;      //CO2 produced during methane production C6H12O6 -> 3CO2 + 3CH4, already in deomposition?? mass balance not closed than!! Have to think about it
 
@@ -505,7 +507,13 @@ Stocks littersom(Stand *stand,                      /**< [inout] pointer to stan
       decay_litter=1.0-exp(-(param.k_litter10*response_bg_litter));
 #endif
       if(decay_litter>1) decay_litter=1;
+      C_max[0]=soil->O2[0]*WC/WO2*oxid_frac;
       decom=soil->litter.item[p].bg.carbon*decay_litter;
+      if(decom>C_max[0])
+      {
+        decom=C_max[0];
+        decay_litter=decom/soil->litter.item[p].bg.carbon;
+      }
       soil->litter.item[p].bg.carbon-=decom;
       decom_sum.carbon+=decom;
       decom_fast.carbon+=decom;
@@ -784,6 +792,9 @@ Stocks littersom(Stand *stand,                      /**< [inout] pointer to stan
   if(isagriculture(stand->type->landusetype))
     getoutput(&stand->cell->output,RH_AGR,config) += (decom_litter.carbon*param.atmfrac+soil_cflux)*stand->frac;
   flux.carbon=decom_litter.carbon*param.atmfrac+soil_cflux;
+  stand->cell->balance.aCH4_oxid+=oxidation_stand;
+  getoutput(&stand->cell->output,CH4_OXIDATION,config) += oxidation_stand*stand->frac;
+
 #ifdef CHECK_BALANCE
   end = soilstocks(soil);
   end.carbon+=soilmethane(soil)*WC/WCH4;

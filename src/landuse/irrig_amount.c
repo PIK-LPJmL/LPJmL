@@ -42,7 +42,7 @@ void irrig_amount(Stand *stand,        /**< pointer to non-natural stand */
     /* conveyance losses */
     conv_loss=irrig_stand*(1/data->ec-1);
 
-    if(data->irrig_event)
+    if(data->irrig_event||isrice)
     {
 
       /* net irrigation requirement */

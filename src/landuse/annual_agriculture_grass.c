@@ -53,7 +53,7 @@ Bool annual_agriculture_grass(Stand* stand,         /**< Pointer to stand */
   index=agtree(ncft,config->nwptype)+irrigation->pft_id-npft+config->nagtree+irrigation->irrigation*getnirrig(ncft,config);
   foreachpft(pft, p, &stand->pftlist)
   {
-#ifdef DEBUG2
+#ifdef DEBUG3
     printf("PFT:%s fpc=%g\n", pft->par->name, pft->fpc);
     printf("PFT:%s bm_inc=%g vegc=%g soil=%g\n", pft->par->name,
            pft->bm_inc.carbon, vegc_sum(pft), soilcarbon(&stand->soil));

@@ -86,10 +86,10 @@
 #ifdef FROM_RESTART
   "new_seed" : false,       /* read random seed from restart file */
   "population" : false,     /* use population input (for spitfire) */
-  "landuse" : "yes",        /* landuse setting; options: "no", "yes", "const", "all_crops", "only_crops" */
+  "landuse" : "no",        /* landuse setting; options: "no", "yes", "const", "all_crops", "only_crops" */
   "landuse_year_const" : 2100, /* set landuse year for "const" and "only_crops" cases */
   "reservoir" : false,       /* enables reservoirs (changes discharge and allows for irrigation water source), requires river_routing=true and elevation and reservoir input files  */
-  "wateruse" : "all",       /* HIL water withdrawals and return flows, requires wateruse input, options: "no", "yes" (only for years prescribed in input), "all" (use first year for years before and last year of input for years after period prescibed in input file) */
+  "wateruse" : "no",       /* HIL water withdrawals and return flows, requires wateruse input, options: "no", "yes" (only for years prescribed in input), "all" (use first year for years before and last year of input for years after period prescibed in input file) */
   "equilsoil" : false,      /* enables soil equilibration  (natural vegetation spinup) */
 #else
   "equilsoil" : true,       /* enables soil equilibration  (natural vegetation spinup) */
@@ -282,100 +282,100 @@
 /*
 ID                               Fmt                        filename
 -------------------------------- ------------------------- ----------------------------- */
-/*    { "id" : "grid",             "file" : { "fmt" : "raw", "name" : "output_pot/grid.bin" }},*/
-    { "id" : "globalflux",       "file" : { "fmt" : "txt", "name" : "output_pot/globalflux.csv"}},
-/*    { "id" : "terr_area",        "file" : { "fmt" : "raw", "name" : "output_pot/terr_area.bin" }},
-    { "id" : "land_area",        "file" : { "fmt" : "raw", "name" : "output_pot/land_area.bin" }},
-    { "id" : "lake_area",        "file" : { "fmt" : "raw", "name" : "output_pot/lake_area.bin" }},*/
-    { "id" : "terr_area",        "file" : { "fmt" : "cdf", "name" : "output_pot/terr_area.nc" }},
-    { "id" : "land_area",        "file" : { "fmt" : "cdf", "name" : "output_pot/land_area.nc" }},
-    { "id" : "lake_area",        "file" : { "fmt" : "cdf", "name" : "output_pot/lake_area.nc" }},
-    { "id" : "fpc",              "file" : { "fmt" : "cdf", "name" : "output_pot/fpc.nc"}},
-    { "id" : "wpc",              "file" : { "fmt" : "cdf", "name" : "output_pot/wpc.nc"}},
-    { "id" : "npp",              "file" : { "fmt" : "cdf", "timestep" : "annual", "name" : "output_pot/npp.nc"}},
-    { "id" : "gpp",              "file" : { "fmt" : "cdf", "timestep" : "annual", "name" : "output_pot/gpp.nc"}},
-    { "id" : "rh",               "file" : { "fmt" : "cdf", "timestep" : "annual", "name" : "output_pot/rh.nc"}},
-    { "id" : "transp",           "file" : { "fmt" : "cdf", "timestep" : "annual", "name" : "output_pot/transp.nc"}},
-    { "id" : "runoff",           "file" : { "fmt" : "cdf", "timestep" : "annual", "name" : "output_pot/runoff.nc"}},
-    { "id" : "evap",             "file" : { "fmt" : "cdf", "timestep" : "annual", "name" : "output_pot/evap.nc"}},
-    { "id" : "interc",           "file" : { "fmt" : "cdf", "timestep" : "annual", "name" : "output_pot/interc.nc"}},
-    { "id" : "swc1",             "file" : { "fmt" : "cdf", "timestep" : "monthly", "name" : "output_pot/swc1.nc"}},
-    { "id" : "swc2",             "file" : { "fmt" : "cdf", "timestep" : "monthly", "name" : "output_pot/swc2.nc"}},
-    { "id" : "vegc",             "file" : { "fmt" : "cdf", "name" : "output_pot/vegc.nc"}},
-    { "id" : "soilc",            "file" : { "fmt" : "cdf", "name" : "output_pot/soilc.nc"}},
-    { "id" : "litc",             "file" : { "fmt" : "cdf", "name" : "output_pot/litc.nc"}},
-    { "id" : "flux_estabc",      "file" : { "fmt" : "cdf", "name" : "output_pot/flux_estab.nc"}},
-    { "id" : "pft_vegc",         "file" : { "fmt" : "cdf", "name" : "output_pot/pft_vegc.nc"}},
-    { "id" : "pft_npp",          "file" : { "fmt" : "cdf", "name" : "output_pot/pft_npp.nc"}},
-    { "id" : "vegn",             "file" : { "fmt" : "cdf", "name" : "output_pot/vegn.nc"}},
-    { "id" : "soiln",            "file" : { "fmt" : "cdf", "name" : "output_pot/soiln.nc"}},
-    { "id" : "litn",             "file" : { "fmt" : "cdf", "name" : "output_pot/litn.nc"}},
-    { "id" : "soiln_layer",      "file" : { "fmt" : "cdf", "name" : "output_pot/soiln_layer.nc"}},
-    { "id" : "soilno3_layer",    "file" : { "fmt" : "cdf", "name" : "output_pot/soilno3_layer.nc"}},
-    { "id" : "soilnh4_layer",    "file" : { "fmt" : "cdf", "name" : "output_pot/soilnh4_layer.nc"}},
-    { "id" : "soiln_slow",       "file" : { "fmt" : "cdf", "name" : "output_pot/soiln_slow.nc"}},
-    { "id" : "soilnh4",          "file" : { "fmt" : "cdf", "name" : "output_pot/soilnh4.nc"}},
-    { "id" : "soilno3",          "file" : { "fmt" : "cdf", "name" : "output_pot/soilno3.nc"}},
-    { "id" : "bnf",              "file" : { "fmt" : "cdf", "timestep" : "annual", "name" : "output_pot/bnf.nc"}},
-    { "id" : "leaching",         "file" : { "fmt" : "cdf", "timestep" : "annual", "name" : "output_pot/leaching.nc"}},
-    { "id" : "nuptake",          "file" : { "fmt" : "cdf", "timestep" : "annual", "name" : "output_pot/nuptake.nc"}}, 
-    { "id" : "cftfrac",          "file" : { "fmt" : "cdf", "timestep" : "annual", "name" : "output_pot/cftfrac.nc"}},
-    { "id" : "pft_nuptake",      "file" : { "fmt" : "cdf", "name" : "output_pot/pft_nuptake.nc"}},
-    { "id" : "n2o_denit",        "file" : { "fmt" : "cdf", "name" : "output_pot/mn2o_denit.nc"}},
-    { "id" : "n2o_nit",          "file" : { "fmt" : "cdf", "name" : "output_pot/mn2o_nit.nc"}},
-    { "id" : "n2_emis",          "file" : { "fmt" : "cdf", "name" : "output_pot/mn2_emis.nc"}},
-    { "id" : "n_immo",           "file" : { "fmt" : "cdf", "name" : "output_pot/mn_immo.nc"}},
-    { "id" : "pft_ndemand",      "file" : { "fmt" : "cdf", "name" : "output_pot/pft_ndemand.nc"}},
-    { "id" : "firen",            "file" : { "fmt" : "cdf", "name" : "output_pot/firen.nc"}},
-    { "id" : "n_mineralization", "file" : { "fmt" : "cdf", "name" : "output_pot/mn_mineralization.nc"}},
-    { "id" : "n_volatilization", "file" : { "fmt" : "cdf", "name" : "output_pot/mn_volatilization.nc"}},
-    { "id" : "pft_nlimit",       "file" : { "fmt" : "cdf", "name" : "output_pot/pft_nlimit.nc"}},
-    { "id" : "pft_vegn",         "file" : { "fmt" : "cdf", "name" : "output_pot/pft_vegn.nc"}},
-    { "id" : "pft_cleaf",        "file" : { "fmt" : "cdf", "name" : "output_pot/pft_cleaf.nc"}},
-    { "id" : "pft_nleaf",        "file" : { "fmt" : "cdf", "name" : "output_pot/pft_nleaf.nc"}},
-    { "id" : "pft_laimax",       "file" : { "fmt" : "cdf", "name" : "output_pot/pft_laimax.nc"}},
-/*    { "id" : "pft_croot",        "file" : { "fmt" : "cdf", "name" : "output_pot/pft_croot.nc"}},
-    { "id" : "pft_nroot",        "file" : { "fmt" : "cdf", "name" : "output_pot/pft_nroot.nc"}},
-    { "id" : "pft_csapw",        "file" : { "fmt" : "cdf", "name" : "output_pot/pft_csapw.nc"}},
-    { "id" : "pft_nsapw",        "file" : { "fmt" : "cdf", "name" : "output_pot/pft_nsapw.nc"}},
-    { "id" : "pft_chawo",        "file" : { "fmt" : "cdf", "name" : "output_pot/pft_chawo.nc"}},
-    { "id" : "pft_nhawo",        "file" : { "fmt" : "cdf", "name" : "output_pot/pft_nhawo.nc"}},*/
-    { "id" : "wtab",             "file" : { "fmt" : "cdf", "timestep" : "annual", "name" : "output_pot/wtab.nc"}},
-    { "id" : "mwater",           "file" : { "fmt" : "cdf", "timestep" : "annual", "name" : "output_pot/mwater.nc"}},
-    { "id" : "wetfrac",          "file" : { "fmt" : "cdf", "timestep" : "annual", "name" : "output_pot/wetfrac.nc"}},
+/*    { "id" : "grid",             "file" : { "fmt" : "raw", "name" : "output_pnv/grid.bin" }},*/
+    { "id" : "globalflux",       "file" : { "fmt" : "txt", "name" : "output_pnv/globalflux.csv"}},
+/*    { "id" : "terr_area",        "file" : { "fmt" : "raw", "name" : "output_pnv/terr_area.bin" }},
+    { "id" : "land_area",        "file" : { "fmt" : "raw", "name" : "output_pnv/land_area.bin" }},
+    { "id" : "lake_area",        "file" : { "fmt" : "raw", "name" : "output_pnv/lake_area.bin" }},*/
+    { "id" : "terr_area",        "file" : { "fmt" : "cdf", "name" : "output_pnv/terr_area.nc" }},
+    { "id" : "land_area",        "file" : { "fmt" : "cdf", "name" : "output_pnv/land_area.nc" }},
+    { "id" : "lake_area",        "file" : { "fmt" : "cdf", "name" : "output_pnv/lake_area.nc" }},
+    { "id" : "fpc",              "file" : { "fmt" : "cdf", "name" : "output_pnv/fpc.nc"}},
+    { "id" : "wpc",              "file" : { "fmt" : "cdf", "name" : "output_pnv/wpc.nc"}},
+    { "id" : "npp",              "file" : { "fmt" : "cdf", "timestep" : "annual", "name" : "output_pnv/npp.nc"}},
+    { "id" : "gpp",              "file" : { "fmt" : "cdf", "timestep" : "annual", "name" : "output_pnv/gpp.nc"}},
+    { "id" : "rh",               "file" : { "fmt" : "cdf", "timestep" : "annual", "name" : "output_pnv/rh.nc"}},
+    { "id" : "transp",           "file" : { "fmt" : "cdf", "timestep" : "annual", "name" : "output_pnv/transp.nc"}},
+    { "id" : "runoff",           "file" : { "fmt" : "cdf", "timestep" : "annual", "name" : "output_pnv/runoff.nc"}},
+    { "id" : "evap",             "file" : { "fmt" : "cdf", "timestep" : "annual", "name" : "output_pnv/evap.nc"}},
+    { "id" : "interc",           "file" : { "fmt" : "cdf", "timestep" : "annual", "name" : "output_pnv/interc.nc"}},
+    { "id" : "swc1",             "file" : { "fmt" : "cdf", "timestep" : "monthly", "name" : "output_pnv/swc1.nc"}},
+    { "id" : "swc2",             "file" : { "fmt" : "cdf", "timestep" : "monthly", "name" : "output_pnv/swc2.nc"}},
+    { "id" : "vegc",             "file" : { "fmt" : "cdf", "name" : "output_pnv/vegc.nc"}},
+    { "id" : "soilc",            "file" : { "fmt" : "cdf", "name" : "output_pnv/soilc.nc"}},
+    { "id" : "litc",             "file" : { "fmt" : "cdf", "name" : "output_pnv/litc.nc"}},
+    { "id" : "flux_estabc",      "file" : { "fmt" : "cdf", "name" : "output_pnv/flux_estab.nc"}},
+    { "id" : "pft_vegc",         "file" : { "fmt" : "cdf", "name" : "output_pnv/pft_vegc.nc"}},
+    { "id" : "pft_npp",          "file" : { "fmt" : "cdf", "name" : "output_pnv/pft_npp.nc"}},
+    { "id" : "vegn",             "file" : { "fmt" : "cdf", "name" : "output_pnv/vegn.nc"}},
+    { "id" : "soiln",            "file" : { "fmt" : "cdf", "name" : "output_pnv/soiln.nc"}},
+    { "id" : "litn",             "file" : { "fmt" : "cdf", "name" : "output_pnv/litn.nc"}},
+    { "id" : "soiln_layer",      "file" : { "fmt" : "cdf", "name" : "output_pnv/soiln_layer.nc"}},
+    { "id" : "soilno3_layer",    "file" : { "fmt" : "cdf", "name" : "output_pnv/soilno3_layer.nc"}},
+    { "id" : "soilnh4_layer",    "file" : { "fmt" : "cdf", "name" : "output_pnv/soilnh4_layer.nc"}},
+    { "id" : "soiln_slow",       "file" : { "fmt" : "cdf", "name" : "output_pnv/soiln_slow.nc"}},
+    { "id" : "soilnh4",          "file" : { "fmt" : "cdf", "name" : "output_pnv/soilnh4.nc"}},
+    { "id" : "soilno3",          "file" : { "fmt" : "cdf", "name" : "output_pnv/soilno3.nc"}},
+    { "id" : "bnf",              "file" : { "fmt" : "cdf", "timestep" : "annual", "name" : "output_pnv/bnf.nc"}},
+    { "id" : "leaching",         "file" : { "fmt" : "cdf", "timestep" : "annual", "name" : "output_pnv/leaching.nc"}},
+    { "id" : "nuptake",          "file" : { "fmt" : "cdf", "timestep" : "annual", "name" : "output_pnv/nuptake.nc"}}, 
+    { "id" : "cftfrac",          "file" : { "fmt" : "cdf", "timestep" : "annual", "name" : "output_pnv/cftfrac.nc"}},
+    { "id" : "pft_nuptake",      "file" : { "fmt" : "cdf", "name" : "output_pnv/pft_nuptake.nc"}},
+    { "id" : "n2o_denit",        "file" : { "fmt" : "cdf", "name" : "output_pnv/mn2o_denit.nc"}},
+    { "id" : "n2o_nit",          "file" : { "fmt" : "cdf", "name" : "output_pnv/mn2o_nit.nc"}},
+    { "id" : "n2_emis",          "file" : { "fmt" : "cdf", "name" : "output_pnv/mn2_emis.nc"}},
+    { "id" : "n_immo",           "file" : { "fmt" : "cdf", "name" : "output_pnv/mn_immo.nc"}},
+    { "id" : "pft_ndemand",      "file" : { "fmt" : "cdf", "name" : "output_pnv/pft_ndemand.nc"}},
+    { "id" : "firen",            "file" : { "fmt" : "cdf", "name" : "output_pnv/firen.nc"}},
+    { "id" : "n_mineralization", "file" : { "fmt" : "cdf", "name" : "output_pnv/mn_mineralization.nc"}},
+    { "id" : "n_volatilization", "file" : { "fmt" : "cdf", "name" : "output_pnv/mn_volatilization.nc"}},
+    { "id" : "pft_nlimit",       "file" : { "fmt" : "cdf", "name" : "output_pnv/pft_nlimit.nc"}},
+    { "id" : "pft_vegn",         "file" : { "fmt" : "cdf", "name" : "output_pnv/pft_vegn.nc"}},
+    { "id" : "pft_cleaf",        "file" : { "fmt" : "cdf", "name" : "output_pnv/pft_cleaf.nc"}},
+    { "id" : "pft_nleaf",        "file" : { "fmt" : "cdf", "name" : "output_pnv/pft_nleaf.nc"}},
+    { "id" : "pft_laimax",       "file" : { "fmt" : "cdf", "name" : "output_pnv/pft_laimax.nc"}},
+/*    { "id" : "pft_croot",        "file" : { "fmt" : "cdf", "name" : "output_pnv/pft_croot.nc"}},
+    { "id" : "pft_nroot",        "file" : { "fmt" : "cdf", "name" : "output_pnv/pft_nroot.nc"}},
+    { "id" : "pft_csapw",        "file" : { "fmt" : "cdf", "name" : "output_pnv/pft_csapw.nc"}},
+    { "id" : "pft_nsapw",        "file" : { "fmt" : "cdf", "name" : "output_pnv/pft_nsapw.nc"}},
+    { "id" : "pft_chawo",        "file" : { "fmt" : "cdf", "name" : "output_pnv/pft_chawo.nc"}},
+    { "id" : "pft_nhawo",        "file" : { "fmt" : "cdf", "name" : "output_pnv/pft_nhawo.nc"}},*/
+    { "id" : "wtab",             "file" : { "fmt" : "cdf", "timestep" : "annual", "name" : "output_pnv/wtab.nc"}},
+    { "id" : "mwater",           "file" : { "fmt" : "cdf", "timestep" : "annual", "name" : "output_pnv/mwater.nc"}},
+    { "id" : "wetfrac",          "file" : { "fmt" : "cdf", "timestep" : "annual", "name" : "output_pnv/wetfrac.nc"}},
 
 #ifdef WITH_SPITFIRE
-    { "id" : "firec",            "file" : { "fmt" : "cdf", "timestep" : "monthly", "unit" : "gC/m2/month", "name" : "output_pot/mfirec.nc"}},
-    { "id" : "nfire",            "file" : { "fmt" : "cdf", "name" : "output_pot/mnfire.nc"}},
-    { "id" : "burntarea",        "file" : { "fmt" : "cdf", "name" : "output_pot/mburnt_area.nc"}},
+    { "id" : "firec",            "file" : { "fmt" : "cdf", "timestep" : "monthly", "unit" : "gC/m2/month", "name" : "output_pnv/mfirec.nc"}},
+    { "id" : "nfire",            "file" : { "fmt" : "cdf", "name" : "output_pnv/mnfire.nc"}},
+    { "id" : "burntarea",        "file" : { "fmt" : "cdf", "name" : "output_pnv/mburnt_area.nc"}},
 #else
-    { "id" : "firec",            "file" : { "fmt" : "cdf", "name" : "output_pot/firec.nc"}},
+    { "id" : "firec",            "file" : { "fmt" : "cdf", "name" : "output_pnv/firec.nc"}},
 #endif
 
-    { "id" : "discharge",        "file" : { "fmt" : "raw", "timestep" : "monthly", "name" : "output_pot/discharge.bin"}},
-    { "id" : "harvestc",         "file" : { "fmt" : "cdf", "name" : "output_pot/flux_harvest.nc"}},
-    { "id" : "pft_harvestc",     "file" : { "fmt" : "cdf", "name" : mkstr(output_pot/pft_harvest.SUFFIX)}},
-    { "id" : "pet",              "file" : { "fmt" : "cdf", "timestep" : "monthly", "name" : "output_pot/pet.nc"}},
-    { "id" : "albedo",           "file" : { "fmt" : "cdf", "timestep" : "annual", "name" : "output_pot/albedo.nc"}},
-    { "id" : "maxthaw_depth",    "file" : { "fmt" : "cdf", "name" : "output_pot/maxthaw_depth.nc"}},
-    { "id" : "soiltemp1",        "file" : { "fmt" : "cdf", "timestep" : "annual", "name" : "output_pot/soiltemp1.nc"}},
-    { "id" : "soiltemp2",        "file" : { "fmt" : "cdf", "timestep" : "annual", "name" : "output_pot/soiltemp2.nc"}},
-    { "id" : "soiltemp3",        "file" : { "fmt" : "cdf", "timestep" : "annual", "name" : "output_pot/soiltemp3.nc"}},
-    { "id" : "soilc_layer",      "file" : { "fmt" : "cdf", "name" : "output_pot/soilc_layer.nc"}},
-    { "id" : "agb",              "file" : { "fmt" : "cdf", "name" : "output_pot/agb.nc"}},
-    { "id" : "agb_tree",         "file" : { "fmt" : "cdf", "name" : "output_pot/agb_tree.nc"}},
-    { "id" : "soilc_slow",       "file" : { "fmt" : "cdf", "name" : "output_pot/soilc_slow.nc"}},
-    { "id" : "ch4_ebullition",   "file" : { "fmt" : "cdf", "timestep" : "annual", "name" : "output_pot/ch4_ebullition.nc"}},
-    { "id" : "ch4_plant_gas",    "file" : { "fmt" : "cdf", "timestep" : "annual", "name" : "output_pot/ch4_plant_gas.nc"}},
-    { "id" : "ch4_emissions",    "file" : { "fmt" : "cdf", "timestep" : "annual", "name" : "output_pot/ch4_emissions.nc"}},
-    { "id" : "ch4_oxidation",    "file" : { "fmt" : "cdf", "timestep" : "annual", "name" : "output_pot/ch4_oxidation.nc"}},
-    { "id" : "ch4_sink",         "file" : { "fmt" : "cdf", "timestep" : "annual", "name" : "output_pot/ch4_sink.nc"}},
-    { "id" : "ch4_rice_em",      "file" : { "fmt" : "cdf", "timestep" : "annual", "name" : "output_pot/ch4_rice_em_autofert_nofrac.nc"}},
-    { "id" : "ch4_setaside",     "file" : { "fmt" : "cdf", "timestep" : "annual", "name" : "output_pot/ch4_setaside.nc"}},
-    { "id" : "meansoilo2",       "file" : { "fmt" : "cdf", "timestep" : "annual", "name" : "output_pot/meansoilo2.nc"}},
-    { "id" : "gw_storage",       "file" : { "fmt" : "cdf", "timestep" : "annual", "name" : "output_pot/gw_store.nc"}},
-    { "id" : "gw_outflux",       "file" : { "fmt" : "cdf", "timestep" : "annual", "name" : "output_pot/gw_outflux.nc"}},
-    { "id" : "meansoilch4",      "file" : { "fmt" : "cdf", "timestep" : "annual", "name" : "output_pot/meansoilch4.nc"}}
+    { "id" : "discharge",        "file" : { "fmt" : "raw", "timestep" : "monthly", "name" : "output_pnv/discharge.bin"}},
+    { "id" : "harvestc",         "file" : { "fmt" : "cdf", "name" : "output_pnv/flux_harvest.nc"}},
+    { "id" : "pft_harvestc",     "file" : { "fmt" : "cdf", "name" : mkstr(output_pnv/pft_harvest.SUFFIX)}},
+    { "id" : "pet",              "file" : { "fmt" : "cdf", "timestep" : "monthly", "name" : "output_pnv/pet.nc"}},
+    { "id" : "albedo",           "file" : { "fmt" : "cdf", "timestep" : "annual", "name" : "output_pnv/albedo.nc"}},
+    { "id" : "maxthaw_depth",    "file" : { "fmt" : "cdf", "name" : "output_pnv/maxthaw_depth.nc"}},
+    { "id" : "soiltemp1",        "file" : { "fmt" : "cdf", "timestep" : "annual", "name" : "output_pnv/soiltemp1.nc"}},
+    { "id" : "soiltemp2",        "file" : { "fmt" : "cdf", "timestep" : "annual", "name" : "output_pnv/soiltemp2.nc"}},
+    { "id" : "soiltemp3",        "file" : { "fmt" : "cdf", "timestep" : "annual", "name" : "output_pnv/soiltemp3.nc"}},
+    { "id" : "soilc_layer",      "file" : { "fmt" : "cdf", "name" : "output_pnv/soilc_layer.nc"}},
+    { "id" : "agb",              "file" : { "fmt" : "cdf", "name" : "output_pnv/agb.nc"}},
+    { "id" : "agb_tree",         "file" : { "fmt" : "cdf", "name" : "output_pnv/agb_tree.nc"}},
+    { "id" : "soilc_slow",       "file" : { "fmt" : "cdf", "name" : "output_pnv/soilc_slow.nc"}},
+    { "id" : "ch4_ebullition",   "file" : { "fmt" : "cdf", "timestep" : "annual", "name" : "output_pnv/ch4_ebullition.nc"}},
+    { "id" : "ch4_plant_gas",    "file" : { "fmt" : "cdf", "timestep" : "annual", "name" : "output_pnv/ch4_plant_gas.nc"}},
+    { "id" : "ch4_emissions",    "file" : { "fmt" : "cdf", "timestep" : "annual", "name" : "output_pnv/ch4_emissions.nc"}},
+    { "id" : "ch4_oxidation",    "file" : { "fmt" : "cdf", "timestep" : "annual", "name" : "output_pnv/ch4_oxidation.nc"}},
+    { "id" : "ch4_sink",         "file" : { "fmt" : "cdf", "timestep" : "annual", "name" : "output_pnv/ch4_sink.nc"}},
+    { "id" : "ch4_rice_em",      "file" : { "fmt" : "cdf", "timestep" : "annual", "name" : "output_pnv/ch4_rice_em_autofert_nofrac.nc"}},
+    { "id" : "ch4_setaside",     "file" : { "fmt" : "cdf", "timestep" : "annual", "name" : "output_pnv/ch4_setaside.nc"}},
+    { "id" : "meansoilo2",       "file" : { "fmt" : "cdf", "timestep" : "annual", "name" : "output_pnv/meansoilo2.nc"}},
+    { "id" : "gw_storage",       "file" : { "fmt" : "cdf", "timestep" : "annual", "name" : "output_pnv/gw_store.nc"}},
+    { "id" : "gw_outflux",       "file" : { "fmt" : "cdf", "timestep" : "annual", "name" : "output_pnv/gw_outflux.nc"}},
+    { "id" : "meansoilch4",      "file" : { "fmt" : "cdf", "timestep" : "annual", "name" : "output_pnv/meansoilch4.nc"}}
     
 /*------------------------------ ------------------------- ------------------------------- */
   ],
@@ -385,21 +385,21 @@ ID                               Fmt                        filename
 
   "output" :
   [
-    { "id" : "ch4_emissions",    "file" : { "fmt" : "cdf", "timestep" : 100, "name" : "output_pot/ch4_emissions_spinup.nc"}},
-    { "id" : "ch4_sink",         "file" : { "fmt" : "cdf", "timestep" : 100, "name" : "output_pot/ch4_sink_spinup.nc"}},
-    { "id" : "ch4_ebullition",   "file" : { "fmt" : "cdf", "timestep" : 100, "name" : "output_pot/ch4_ebullition_spinup.nc"}},
-    { "id" : "ch4_plant_gas",    "file" : { "fmt" : "cdf", "timestep" : 100, "name" : "output_pot/ch4_plant_gas_spinup.nc"}},
-    { "id" : "soilc",            "file" : { "fmt" : "cdf", "timestep" : 100, "name" : "output_pot/soilc_spinup.nc"}},
-    { "id" : "soilc_slow",       "file" : { "fmt" : "cdf", "timestep" : 100, "name" : "output_pot/soilc_slow_spinup.nc"}},
-    { "id" : "litc",             "file" : { "fmt" : "cdf", "timestep" : 100, "name" : "output_pot/litc_spinup.nc"}},
-    { "id" : "vegc",             "file" : { "fmt" : "cdf", "timestep" : 100, "name" : "output_pot/vegc_spinup.nc"}},
-    { "id" : "fpc",              "file" : { "fmt" : "cdf", "timestep" : 100, "name" : "output_pot/fpc_spinup.nc"}},
-    { "id" : "wpc",              "file" : { "fmt" : "cdf", "timestep" : 100, "name" : "output_pot/wpc_spinup.nc"}},
-    { "id" : "mwater",           "file" : { "fmt" : "cdf", "timestep" : 100, "name" : "output_pot/mwater_spinup.nc"}},
-    { "id" : "npp",              "file" : { "fmt" : "cdf", "timestep" : 100, "name" : "output_pot/npp_spinup.nc"}},
-    { "id" : "pft_npp",              "file" : { "fmt" : "cdf", "timestep" : 100, "name" : "output_pot/pft_npp_spinup.nc"}},
-    { "id" : "gw_storage",       "file" : { "fmt" : "cdf", "timestep" : 100, "name" : "output_pot/gw_store_spinup.nc"}},
-    { "id" : "globalflux",       "file" : { "fmt" : "txt", "name" : "output_pot/globalflux_spinup.csv"}}
+    { "id" : "ch4_emissions",    "file" : { "fmt" : "cdf", "timestep" : 100, "name" : "output_pnv/ch4_emissions_spinup.nc"}},
+    { "id" : "ch4_sink",         "file" : { "fmt" : "cdf", "timestep" : 100, "name" : "output_pnv/ch4_sink_spinup.nc"}},
+    { "id" : "ch4_ebullition",   "file" : { "fmt" : "cdf", "timestep" : 100, "name" : "output_pnv/ch4_ebullition_spinup.nc"}},
+    { "id" : "ch4_plant_gas",    "file" : { "fmt" : "cdf", "timestep" : 100, "name" : "output_pnv/ch4_plant_gas_spinup.nc"}},
+    { "id" : "soilc",            "file" : { "fmt" : "cdf", "timestep" : 100, "name" : "output_pnv/soilc_spinup.nc"}},
+    { "id" : "soilc_slow",       "file" : { "fmt" : "cdf", "timestep" : 100, "name" : "output_pnv/soilc_slow_spinup.nc"}},
+    { "id" : "litc",             "file" : { "fmt" : "cdf", "timestep" : 100, "name" : "output_pnv/litc_spinup.nc"}},
+    { "id" : "vegc",             "file" : { "fmt" : "cdf", "timestep" : 100, "name" : "output_pnv/vegc_spinup.nc"}},
+    { "id" : "fpc",              "file" : { "fmt" : "cdf", "timestep" : 100, "name" : "output_pnv/fpc_spinup.nc"}},
+    { "id" : "wpc",              "file" : { "fmt" : "cdf", "timestep" : 100, "name" : "output_pnv/wpc_spinup.nc"}},
+    { "id" : "mwater",           "file" : { "fmt" : "cdf", "timestep" : 100, "name" : "output_pnv/mwater_spinup.nc"}},
+    { "id" : "npp",              "file" : { "fmt" : "cdf", "timestep" : 100, "name" : "output_pnv/npp_spinup.nc"}},
+    { "id" : "pft_npp",              "file" : { "fmt" : "cdf", "timestep" : 100, "name" : "output_pnv/pft_npp_spinup.nc"}},
+    { "id" : "gw_storage",       "file" : { "fmt" : "cdf", "timestep" : 100, "name" : "output_pnv/gw_store_spinup.nc"}},
+    { "id" : "globalflux",       "file" : { "fmt" : "txt", "name" : "output_pnv/globalflux_spinup.csv"}}
   ],
 #endif
 
@@ -428,7 +428,7 @@ ID                               Fmt                        filename
   "restart" :  true, /* start from restart file */
   "restart_filename" : "restart/restart_1700_nv_stdfire.lpj", /* filename of restart file */
   "write_restart" : true, /* create restart file */
-  "write_restart_filename" : "restart/restart_1900_crop_stdfire.lpj", /* filename of restart file written */
+  "write_restart_filename" : "restart/restart_1900_pnv_stdfire.lpj", /* filename of restart file written */
   "restart_year": 1900 /* write restart at year */
 
 #else

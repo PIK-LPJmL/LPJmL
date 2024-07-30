@@ -24,8 +24,8 @@
 #include "../include/conf.h" /* include constant definitions */
 
   [
-    /* id           name   timestep       variable(NetCDF) long name             unit               scale          offset */
-    { "id" : GRID, "name" : "grid", "timestep" : "annual", "var" : "soil", "long_name" : "coordinates", "unit" : "degree", "scale" : 1.0, "offset" : 0.0},
+    /* id           name   timestep       variable         long_name             unit               scale          offset */
+    { "id" : GRID, "name" : "grid", "timestep" : "annual", "var" : "grid", "long_name" : "grid information (raw: coordinates, cdf: cell_id)", "unit" : "", "scale" : 1.0, "offset" : 0.0},
     { "id" : TERR_AREA, "name" : "terr_area", "timestep" : "annual", "var" : "terr_area", "long_name" : "terrestrial area including lakes", "unit" : "m2", "scale" : 1.0, "offset" : 0.0},
     { "id" : LAND_AREA, "name" : "land_area", "timestep" : "annual", "var" : "land_area", "long_name" : "land area", "unit" : "m2", "scale" : 1.0, "offset" : 0.0},
     { "id" : LAKE_AREA, "name" : "lake_area", "timestep" : "annual", "var" : "lake_area", "long_name" : "lake area", "unit" : "m2", "scale" : 1.0, "offset" : 0.0},
@@ -291,6 +291,10 @@
     { "id" : CFT_LEACHING2, "name": "cft_leaching2", "timestep" : "annual", "var": "leaching_cft2", "long_name": "CFT leaching", "unit" : "gN/m2/growing season","scale": 1.0, "offset" : 0.0},
     { "id" : CFT_C_EMIS, "name": "cft_c_emis", "timestep" : "annual", "var": "c_emis_cft", "long_name": "CFT C emissions", "unit" : "gC/m2/growing season","scale": 1.0, "offset" : 0.0},
     { "id" : CFT_C_EMIS2, "name": "cft_c_emis2", "timestep" : "annual", "var": "c_emis_cft2", "long_name": "CFT C emissions", "unit" : "gC/m2/growing season","scale": 1.0, "offset" : 0.0},
+    { "id" : BNF_MG, "name" : "bnf_mg" , "timestep" : "annual", "var" : "bnf_mg" , "long_name" : "BNF on managed land", "unit" : "gN/m2/yr" , "scale" : 1.0, "offset" : 0.0},
+    { "id" : NDEPO_MG, "name" : "ndepo_mg" , "timestep" : "annual", "var" : "ndepo_mg" , "long_name" : "N input from atmospheric deposition on managed land", "unit" : "gN/m2/yr" , "scale" : 1.0, "offset" : 0.0},
+    { "id" : FLUX_ESTABN_MG, "name": "flux_estabn_mg", "timestep" : "annual", "var": "flux_estabn_mg", "long_name": "establishment flux on managed land", "unit" : "gN/m2/year","scale": 1.0, "offset" : 0.0},
+    { "id" : NAPPLIED_MG, "name" : "napplied_mg" , "timestep" : "annual", "var" : "napplied_mg" , "long_name" : "N input from fertilizer and manure applied to managed land", "unit" : "gN/m2/yr" , "scale" : 1.0, "offset" : 0.0},
     { "id" : BNF_AGR, "name" : "bnf_agr" , "timestep" : "annual", "var" : "ABNF_agr" , "long_name" : "BNF on agricultural stands", "unit" : "gN/m2/yr" , "scale" : 1.0, "offset" : 0.0},
     { "id" : NFERT_AGR, "name" : "nfert_agr" , "timestep" : "annual", "var" : "ANFERT_agr" , "long_name" : "N input from fertilizer on agricultural stands", "unit" : "gN/m2/yr" , "scale" : 1.0, "offset" : 0.0},
     { "id" : NMANURE_AGR, "name" : "nmanure_agr" , "timestep" : "annual", "var" : "ANMANURE_agr" , "long_name" : "N input from manure on  agricultural stands", "unit" : "gN/m2/yr" , "scale" : 1.0, "offset" : 0.0},
@@ -363,8 +367,9 @@
     { "id" : WTAB, "name" :  "wtab" , "timestep" : "monthly" , "var" :   "WTab"  , "long_name" : "monthly water table in wetland", "unit" :  "mm" , "scale" :  1.0, "offset" : 0.0},
     { "id" : CTI_AREA, "name" :  "cti_area"  , "timestep" : "annual" , "var" :  "CTI_area"  , "long_name" : "cti_area", "unit" :  "" , "scale" :  1.0, "offset" : 0.0},
     { "id" : CTI_VAL, "name" :  "cti_val"  , "timestep" : "annual" , "var" :  "CTI_val"  , "long_name" : "cti_val" , "unit" : ""  , "scale" : 1.0, "offset" : 0.0},
-    { "id" : CH4_EMISSIONS, "name" :  "ch4_emissions" , "timestep" : "monthly" , "var" : "CH4_emis"  , "long_name" : " CH4 emmission", "unit" :  "gCH4/m2/month"  , "scale" : 1.0, "offset" : 0.0},
+    { "id" : CH4_OXIDATION, "name" :  "ch4_oxidation" , "timestep" : "monthly" , "var" : "CH4_oxid"  , "long_name" : " CH4 oxidation", "unit" :  "gCH4/m2/month"  , "scale" : 1.0, "offset" : 0.0},
     { "id" : CH4_SINK, "name" :  "ch4_sink" , "timestep" : "monthly" , "var" : "CH4_sink"  , "long_name" : " CH4 soil sink" , "unit" : "gCH4/m2/month"  , "scale" : 1.0, "offset" : 0.0},
+    { "id" : CH4_EMISSIONS, "name" :  "ch4_emissions" , "timestep" : "monthly" , "var" : "CH4_emissions"  , "long_name" : " CH4 emissions", "unit" :  "gCH4/m2/month"  , "scale" : 1.0, "offset" : 0.0},
     { "id" : CH4_SETASIDE, "name" :  "ch4_setaside" , "timestep" : "monthly" , "var" : "CH4_setaside"  , "long_name" : " CH4 setaside", "unit" :  "gCH4/m2/month"  , "scale" : 1.0, "offset" : 0.0},
     { "id" : PCO2, "name" :  "pco2" , "timestep" : "annual" , "var" : "Pco2" , "long_name" :  "atmospheric CO2 content" , "unit" : "ppm"  , "scale" : 1.0, "offset" : 0.0},
     { "id" : PCH4, "name" :  "pch4" , "timestep" : "annual" , "var" : "Pch4"  , "long_name" : "atmospheric CH4 content", "unit" :  "ppm" , "scale" :  1.0, "offset" : 0.0},

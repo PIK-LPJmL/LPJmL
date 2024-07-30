@@ -150,6 +150,8 @@ void sowingcft(Stocks *flux_estab,  /**< establishment flux */
   if(s==NOT_FOUND)
     s=findlandusetype(cell->standlist,(irrig) ? SETASIDE_IR : SETASIDE_RF);
   if(s==NOT_FOUND)
+    s=findlandusetype(cell->standlist,(irrig) ? SETASIDE_RF : SETASIDE_IR);
+  if(s==NOT_FOUND)
     s=findlandusetype(cell->standlist,SETASIDE_WETLAND);
   if(s!=NOT_FOUND)
   {
@@ -158,8 +160,6 @@ void sowingcft(Stocks *flux_estab,  /**< establishment flux */
      if(pft->bm_inc.carbon>0) *alloc_today=FALSE;
 //    if(year==1880) printf("CFT: %d PFT %s on irrig: %d standname: %s landfrac: %g other_ %g\n",
 //        cft,pft->par->name,irrig,setasidestand->type->name,cell->ml.landfrac[irrig].crop[cft],cell->ml.landfrac[irrig].grass[0]);
-    if(cft!=RICE)
-      setasidestand->soil.iswetland=FALSE;
     cultcftstand(flux_estab,alloc_today,cell,setasidestand,irrig,wtype,nofallow,npft,ncft,cft,year,day,isother,config);
   }
   else

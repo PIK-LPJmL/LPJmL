@@ -220,8 +220,8 @@ void waterbalance(Stand *stand,           /**< Stand pointer */
       soil->w_fw[l]=0;
       if (soil->w[l]< -epsilon)
       {
-        fprintf(stderr,"Cell (%s) laye: %d negative soil water after evap and transp w= %.6f w_fw= %.6f evap=  %.6f transp=  %.6f\n",
-            sprintcoord(line,&stand->cell->coord),l,soil->w[l]*soil->whcs[l],soil->w_fw[l],evap_out[l],aet_stand[l]);
+        fprintf(stderr,"Cell (%s) laye: %d negative soil water after evap and transp w= %.6f w_fw= %.6f evap=  %.6f transp=  %.6f iswetland= %d\n",
+            sprintcoord(line,&stand->cell->coord),l,soil->w[l]*soil->whcs[l],soil->w_fw[l],evap_out[l],aet_stand[l],soil->iswetland);
         fflush(stderr);
       }
     }

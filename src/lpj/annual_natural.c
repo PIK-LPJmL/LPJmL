@@ -65,7 +65,7 @@ Bool annual_natural(Stand *stand,         /**< Pointer to stand */
     foreachpft(pft,p,&stand->pftlist)
     {
 
-#ifdef DEBUG2
+#ifdef DEBUG3
       printf("PFT:%s fpc_inc=%g fpc=%g type=%s\n",pft->par->name,fpc_inc[p],pft->fpc,stand->type->name);
       printf("PFT:%s bm_inc=%g vegc=%g soil=%g\n",pft->par->name,
              pft->bm_inc.carbon,vegc_sum(pft),soilcarbon(&stand->soil));
@@ -86,7 +86,7 @@ Bool annual_natural(Stand *stand,         /**< Pointer to stand */
       if(pft->par->type==GRASS)
         fpc_inc[p]=fpc_grass(pft);
 
-#ifdef DEBUG2
+#ifdef DEBUG3
     printf(" 1 Number of updated pft: %d\n",stand->pftlist.n);
 #endif
     if(year>=config->firstyear && config->firewood==FIREWOOD)

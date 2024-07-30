@@ -617,6 +617,10 @@ void fwriteoutput(Outputfile *output,  /**< output file array */
   writeoutputvar(N2_MGRASS,1);
   writeoutputvar(N2O_NIT_MGRASS,1);
   writeoutputvar(N2O_DENIT_MGRASS,1);
+  writeoutputvar(FLUX_ESTABN_MG,1);
+  writeoutputvar(NAPPLIED_MG, 1);
+  writeoutputvar(BNF_MG, 1);
+  writeoutputvar(NDEPO_MG,1);
   writeoutputvar(UPTAKEC_MGRASS,1);
   writeoutputvar(FECESC_MGRASS,1);
   writeoutputvar(URINEC_MGRASS,1);
@@ -1138,6 +1142,7 @@ void fwriteoutput(Outputfile *output,  /**< output file array */
   writeoutputvar(GW_OUTFLUX,1);
   writeoutputvar(GW_STORAGE,ndate1);
   writeoutputvar(CH4_EMISSIONS,1);
+  writeoutputvar(CH4_OXIDATION,1);
   writeoutputvar(CH4_SETASIDE,1);
   writeoutputvar(CH4_RICE_EM,1);
   writeoutputvar(CH4_EBULLITION,1);

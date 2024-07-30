@@ -98,7 +98,8 @@
 #define NO_FERTILIZER 0
 #define FERTILIZER 1
 #define AUTO_FERTILIZER 2
-#define NOUT 352            /* number of output files */
+#define NOUT 357
+/* number of output files */
 #define GRIDBASED 1         /* pft-specific outputs scaled by stand->frac */
 #define PFTBASED 0          /* pft-specific outputs not scaled by stand->frac */
 #define CONST_PREC 2
@@ -458,6 +459,12 @@
 #define TRANSP 349
 #define RUNOFF 350
 #define PFT_WATER_SUPPLY 351
+#define FLUX_ESTABN_MG 352
+#define NAPPLIED_MG 353
+#define BNF_MG 354
+#define NDEPO_MG 355
+#define CH4_OXIDATION 356
+
 #define PFT_GCGP_COUNT 0
 #define NDAY_MONTH 1
 

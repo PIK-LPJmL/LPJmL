@@ -1,10 +1,10 @@
 /**************************************************************************************/
 /**                                                                                \n**/
-/**                  m  p  i  _  w  r  i  t  e  .  c                               \n**/
+/**                c  r  e  a  t  e  c  o  n  f  i  g  .  c                        \n**/
 /**                                                                                \n**/
 /**     C implementation of LPJmL                                                  \n**/
 /**                                                                                \n**/
-/**     Function writes output from all tasks using MPI_Gatherv                    \n**/
+/**     Function write processed LPJ configuration file                            \n**/
 /**                                                                                \n**/
 /** (C) Potsdam Institute for Climate Impact Research (PIK), see COPYRIGHT file    \n**/
 /** authors, and contributors see AUTHORS file                                     \n**/
@@ -16,37 +16,22 @@
 
 #include "lpj.h"
 
-#ifdef USE_MPI
-
-int mpi_write(FILE *file,        /**< File pointer to binary file */
-              void *data,        /**< data to be written to disk */
-              MPI_Datatype type, /**< MPI datatype of data */
-              int size,
-              int counts[],
-              int offsets[],
-              int rank,          /**< MPI rank */
-              MPI_Comm comm      /**< MPI communicator */
-             )                   /** \return number of items written to disk */
+void createconfig(const Config *config)
 {
-  int rc=0;
-  MPI_Aint lb;
-  MPI_Aint extent;
-  MPI_Type_get_extent(type,&lb,&extent);
-  void *vec=NULL;
-  if(rank==0)
+  char *cmd;
+  int rc;
+  if(config->json_filename!=NULL)
   {
-    vec=malloc(size*extent); /* allocate receive buffer */
-    check(vec);
+    cmd=malloc(strlen(config->cmd)+strlen(config->json_filename)+6);
+    if(cmd==NULL)
+    {
+      printallocerr("cmd");
+      return;
+    }
+    cmd=strcat(strcat(strcpy(cmd,config->cmd)," -P >"),config->json_filename);
+    if(rc=system(cmd))
+      fprintf(stderr,"ERROR263: Cannot write '%s', rc=%d.\n",
+              config->json_filename,rc);
+    free(cmd);
   }
-  MPI_Gatherv(data,counts[rank],type,vec,counts,offsets,type,0,comm);
-  if(rank==0)
-  {
-    rc=fwrite(vec,extent,size,file); /* write data to file */
-    if(rc!=size)
-      fprintf(stderr,"ERROR204: Cannot write output: %s.\n",strerror(errno));
-    free(vec);
-  }
-  MPI_Barrier(comm);
-  return rc;
-} /* of 'mpi_write' */
-#endif
+} /* of 'createconfig' */

@@ -47,7 +47,7 @@ Stocks establishmentpft(Stand *stand,        /**< Stand pointer  */
     present[p]=FALSE;
   foreachpft(pft,p,&stand->pftlist)
     present[pft->par->id]=TRUE;
-#ifdef DEBUG2
+#ifdef DEBUG3
   printf("ESTAB %s: %g %d\n",stand->type->name,stand->frac,stand->prescribe_landcover);
   printf("Number of pfts: %d\n",stand->pftlist.n);
   for(p=0;p<npft;p++)
@@ -149,7 +149,7 @@ Stocks establishmentpft(Stand *stand,        /**< Stand pointer  */
   }
 #endif
 
-#ifdef DEBUG2
+#ifdef DEBUG3
   printf("new npft=%d\n",stand->pftlist.n);
 #endif
   free(present);

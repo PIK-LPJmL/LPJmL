@@ -72,7 +72,7 @@ typedef struct
   Cropdates *cropdates;
   Real cropfrac_rf;       /**< rain-fed crop fraction (0..1) */
   Real cropfrac_ir;       /**< irrigated crop fraction (0..1) */
-  Real cropfrac_wl[2];       /**< crop fraction on wetland(0..1) */
+  Real cropfrac_wl;       /**< crop fraction on wetland(0..1) */
   int *sowing_month;      /**< sowing month (index of month, 1..12), rainfed, irrigated*/
   int *gs;                /**< length of growing season (number of consecutive months, 0..11)*/
   int sowing_day_cotton[2];

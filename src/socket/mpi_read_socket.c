@@ -52,6 +52,8 @@ Bool mpi_read_socket(Socket *s,         /* Socket */
       rc=readdouble_socket(s,vec,size); /* read double data from socket */
     else if(type==MPI_LONG_LONG_INT)
       rc=readlong_socket(s,vec,size); /* read long data from socket */
+    else
+      rc=TRUE;
   }
   else
     rc=FALSE;

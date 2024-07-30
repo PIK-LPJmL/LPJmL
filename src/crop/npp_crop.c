@@ -56,6 +56,11 @@ Real npp_crop(Pft *pft,           /**< [inout] PFT variables */
   else
     nc_ratio.pool=par->nc_ratio.pool;
 
+  //maximum respiration dependency to NC ratio not higher than measured leaf NC
+  if(nc_ratio.root>pft->par->ncleaf.high/par->ratio.root) nc_ratio.root=pft->par->ncleaf.high/par->ratio.root;
+  if(nc_ratio.so>pft->par->ncleaf.high/par->ratio.so) nc_ratio.so=pft->par->ncleaf.high/par->nc_ratio.so;
+  if(nc_ratio.pool>pft->par->ncleaf.high/par->ratio.pool) nc_ratio.pool=pft->par->ncleaf.high/par->nc_ratio.pool;
+
   rosoresp=crop->ind.root.carbon*pft->par->respcoeff*param.k*nc_ratio.root*gtemp_soil
            +crop->ind.so.carbon*pft->par->respcoeff*param.k*nc_ratio.so*gtemp_air;
   presp=crop->ind.pool.carbon*pft->par->respcoeff*param.k*nc_ratio.pool*gtemp_air;

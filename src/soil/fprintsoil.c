@@ -38,6 +38,7 @@ void fprintsoil(FILE *file,           /**< pointer to text file */
   forrootsoillayer(l)
     fputs(" -----",file);
   fputc('\n',file);
+/*
   for(p=0;p<ntotpft;p++)
   {
     fprintf(file,"%-40s",pftpar[p].name);
@@ -68,6 +69,7 @@ void fprintsoil(FILE *file,           /**< pointer to text file */
   forrootsoillayer(l)
     fputs(" -----",file);
   fputc('\n',file);
+*/
   fputs("Gas pools:\n"
     "\tlayer  O2 (g/m2)   CH4 (mg/m2)\n"
     "\t----- ------------ ------------\n", file);

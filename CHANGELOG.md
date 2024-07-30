@@ -19,7 +19,118 @@ of `major.minor.patch` with
 
 ## [Unreleased]
 
+## [5.8.16] - 2024-06-03
+
+### Contributors
+
+- author: Werner von Bloh (bloh@pik-potsdam.de)
+
+### Added
+
+- List of required modules on new cluster added in `INSTALL`.
+- `configure.sh` script recognizes new cluster at PIK and sets compiler accordingly.
+
+### Fixed
+
+- Functions `mpi_write.c` and `mpi_write_socket.c` changed to avoid `SEGV` on new cluster.
+
+
+## [5.8.15] - 2024-05-30
+
+### Contributors
+
+- author: Werner von Bloh (bloh@pik-potsdam.de)
+- code review: Jannes Breier (breier@pik-potsdam.de), Christoph Mueller (cmueller@pik-potsdam.de)
+
+### Added
+
+- A preprocessed JSON configuration file can be written if the following setting is added to the `*.cjson` configuration file:
+```java
+"json_config_filename" : "output/lpjml_config_restart.json", /* Filename of preprocessed configuration file written or null to disable this feature */
+```
+
+### Fixed
+
+- The right allocated storage for `config->coupled_model` is checked for `NULL` in `fscanconfig.c`.
+
+
+## [5.8.14] - 2024-05-27
+
+### Contributors
+
+- author: Sebastian Ostberg (ostberg@pik-potsdam.de)
+- code review: Susanne Rolinski (rolinski@pik-potsdam.de), Christoph Mueller (cmueller@pik-potsdam.de)
+
+### Fixed
+
+- fixed PFT pool scaling in mix_veg_grass() and mix_veg_tree()
+
+
+## [5.8.13] - 2024-05-23
+
+### Contributors
+
+- author: Jannes Breier (jannesbr@pik-potsdam.de)
+- code review: Stephen Wirth (wirth@pik-potsdam.de), Jens Heinke (heinke@pik-potsdam.de)
+
+### Changed
+
+- PFT parameter lai_sapl has been set back to its original value of 0.001 for grasses
+(tropical, temperate, polar)
+
+
+## [5.8.12] - 2024-05-07
+
+### Contributors
+
+- author: Sibyll Schaphoff (sibylls@pik-potsdam.de), Werner von Bloh (bloh@pik-potsdam.de)
+- code review: Stephen Wirth (wirth@pik-potsdam.de), Christoph Mueller (cmueller@pik-potsdam.de), Sebastian Ostberg (ostberg@pik-potsdam.de)
+
+### Added
+
+- added link to LPJmL Zenodo archive to README
+
+### Changed
+
+- changed `ifndef` usage in `lpjml_config.cjson` to `ifdef` to avoid confusion
+
+### Fixed
+
+- fixed handling of monthly and daily outputs in `iterateyear.c` to ensure that last annual timestep of outputs is written after `update_annual()` is called
+
+
+## [5.8.11] - 2024-04-10
+
+### Contributors
+
+- author: Johanna Braun (jobraun@pik-potsdam.de)
+- code review: Stephen Wirth (wirth@pik-potsdam.de), Constanze Werner (cowerner@pik-potsdam.de), Jannes Breier (breier@pik-potsdam.de)
+
+### Added
+
+- added four new outputs for managed land: deposition (`NDEPO_MG`), biological nitrogen fixation (`BNF_MG`), applied nitrogen (`NAPPLIED_MG`) and nitrogen establishment flux (`FLUX_ESTABN_MG`)
+
+
+## [5.8.10] - 2024-04-04
+
+### Contributors
+
+- author: Jannes Breier (jannesbr@pik-potsdam.de)
+- code review: Stephen Wirth (wirth@pik-potsdam.de), David Hoetten (davidho@pik-potsdam.de)
+
+
+### Changed
+
+- In outputvars.cjson, the `variable` field for output grid has been changed
+back to `"grid"` (instead of `"soil"`). If NetCDF output is written the variable
+name would be cell id, if raw output is written the variable name would be
+the coordinates. `"grid"` is used as generic naming here, `long_name` is used
+to describe this exception (`"grid information (raw: coordinates, cdf: cell_id)"`)
+
+
 ## [5.8.9] - 2024-03-14
+
+### Contributors
 
 - author: Werner von Bloh (bloh@pik-potsdam.de), Sebastian Ostberg (ostberg@pik-potsdam.de)
 - code review: Jannes Breier (breier@pik-potsdam.de)

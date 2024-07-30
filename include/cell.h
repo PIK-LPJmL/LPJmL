@@ -96,6 +96,7 @@ typedef struct
   Real aCH4_fire;
   Real aCH4_rice;
   Real aCH4_setaside;
+  Real aCH4_oxid;
   Real aMT_water;          /* water produced during Methanogenesis */
   Real temp;               /**< air temperature (celsius) */
   Real gw_withdrawal;

@@ -122,6 +122,7 @@ Real daily_agriculture(Stand *stand,                /**< [inout] stand pointer *
         stand->soil.NH4[0]+=crop->nfertilizer*(1-param.nfert_no3_frac);
         stand->cell->balance.influx.nitrogen+=crop->nfertilizer*stand->frac;
         getoutput(output,NFERT_AGR,config)+=crop->nfertilizer*pft->stand->frac;
+        getoutput(output,NAPPLIED_MG,config)+=crop->nfertilizer*pft->stand->frac;
         crop->nfertilizer=0;
       }
       if(crop->fphu>0.25 && crop->nmanure>0)
@@ -133,6 +134,7 @@ Real daily_agriculture(Stand *stand,                /**< [inout] stand pointer *
         stand->cell->balance.influx.carbon += crop->nmanure*param.manure_cn*stand->frac;
         stand->cell->balance.influx.nitrogen += crop->nmanure*stand->frac;
         getoutput(output,NMANURE_AGR,config)+=crop->nmanure*pft->stand->frac;
+        getoutput(output,NAPPLIED_MG,config)+=crop->nmanure*pft->stand->frac;
         crop->nmanure=0;
       }
     }
@@ -220,7 +222,6 @@ Real daily_agriculture(Stand *stand,                /**< [inout] stand pointer *
   rainmelt=climate->prec+melt;
   if(rainmelt<0)
     rainmelt=0.0;
-
   /* blue water inflow*/
   if((data->irrigation||isrice) && data->irrig_amount>epsilon)
   { /* data->irrigation defines if stand is irrigated in general and not if water is delivered that day, initialized in new_agriculture.c and changed in landusechange.c*/
@@ -412,6 +413,16 @@ Real daily_agriculture(Stand *stand,                /**< [inout] stand pointer *
       stand->type=&kill_stand;
       p--;
     } /* of if(negbm) */
+#if DEBUG2
+  if(stand->type->landusetype!=KILL && !strcmp(pft->par->name,"rice"))
+  {
+    fprintf(stdout,"\n year:%d day:%d isrice: %d bm_inc:%g inun_stress: %g\n",year,day,isrice,pft->bm_inc.carbon,pft->inun_stress);
+    fprintf(stdout,"\n irrig_amount:%g irrig_stor:%g irrig_apply: %g satwater:%g rootwater:%g net_irrig_amount:%g\n",
+        data->irrig_amount,data->irrig_stor,irrig_apply,satwater(&stand->soil),rootwater(&stand->soil),data->net_irrig_amount);
+    if(day==240)
+      fprintstand(stdout,stand,config->pftpar,npft+ncft,config->with_nitrogen);
+  }
+#endif
   } /* of foreachpft */
   free(gp_pft);
   /* soil outflow: evap and transpiration */

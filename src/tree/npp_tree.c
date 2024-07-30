@@ -40,6 +40,11 @@ Real npp_tree(Pft *pft,         /**< PFT variables */
       nc_root=tree->ind.root.nitrogen/tree->ind.root.carbon;
     else
       nc_root=par->nc_ratio.root;
+
+    //maximum respiration dependency to NC ratio not higher than measured leaf NC
+    if(nc_sapwood>pft->par->ncleaf.high/par->ratio.sapwood) nc_sapwood=pft->par->ncleaf.high/par->ratio.sapwood;
+    if(nc_root>pft->par->ncleaf.high/par->ratio.root) nc_root=pft->par->ncleaf.high/par->ratio.root;
+
     mresp=pft->nind*(tree->ind.sapwood.carbon*pft->par->respcoeff*param.k*nc_sapwood*gtemp_air+
           tree->ind.root.carbon*pft->par->respcoeff*param.k*nc_root*gtemp_soil*pft->phen);
   }

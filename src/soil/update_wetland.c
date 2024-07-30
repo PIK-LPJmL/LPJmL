@@ -234,13 +234,13 @@ void update_wetland(Cell *cell,          /**< pointer to cell */
           for (l = 0; l<NSOILLAYER; l++)
             wetstand->frac_g[l] = 1;
 //          //        make sure there is no C in slow pool
-          forrootsoillayer(l)
-          {
-            wetstand->soil.pool[l].fast.carbon += wetstand->soil.pool[l].slow.carbon;
-            wetstand->soil.pool[l].fast.nitrogen+=wetstand->soil.pool[l].slow.nitrogen;
-            wetstand->soil.pool[l].slow.carbon=wetstand->soil.pool[l].slow.nitrogen=0.;
-
-          } /* of forrootsoillayer() */
+//          forrootsoillayer(l)
+//          {
+//            wetstand->soil.pool[l].fast.carbon += wetstand->soil.pool[l].slow.carbon;
+//            wetstand->soil.pool[l].fast.nitrogen+=wetstand->soil.pool[l].slow.nitrogen;
+//            wetstand->soil.pool[l].slow.carbon=wetstand->soil.pool[l].slow.nitrogen=0.;
+//
+//          } /* of forrootsoillayer() */
           //        copy PFT list to wetland stand
           foreachpft(pft, p, &natstand->pftlist)
           {

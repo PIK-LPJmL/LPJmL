@@ -63,8 +63,8 @@ void check_stand_fracs2(const Cell *cell,    /**< pointer to cell */
       fprintf(stderr,"landfrac_rainfed: %g landfrac_irr: %g\n", cell->ml.landfrac[0].crop[j],cell->ml.landfrac[1].crop[j]);
     fprintf(stderr,"grassfrac_rainfed: %g grassfrac_irr: %g\n",(cell->ml.landfrac[0].grass[0]+cell->ml.landfrac[0].grass[1]),
         (cell->ml.landfrac[1].grass[0]+cell->ml.landfrac[1].grass[1]));
-    fprintf(stderr,"ml.cropfrac_rf: %g ml.cropfrac_ir: %g  ml.cropfrac_wl: %g  ml.cropfrac_wl_irr: %g \n",
-        cell->ml.cropfrac_rf,cell->ml.cropfrac_ir,cell->ml.cropfrac_wl[0],cell->ml.cropfrac_wl[1]);
+    fprintf(stderr,"ml.cropfrac_rf: %g ml.cropfrac_ir: %g  ml.cropfrac_wl: %g \n",
+        cell->ml.cropfrac_rf,cell->ml.cropfrac_ir,cell->ml.cropfrac_wl);
     foreachstand(stand,s,cell->standlist)
     {
       frac_sum2+=stand->frac;

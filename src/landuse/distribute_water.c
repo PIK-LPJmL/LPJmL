@@ -86,7 +86,7 @@ void distribute_water(Cell *cell,            /**< pointer to LPJ cell */
 #endif
   foreachstand(stand,s,cell->standlist)
     stand->soil.wa-=cell->discharge.withdrawal_gw/cell->coord.area*stand->frac * (1.0/(1-cell->lakefrac-cell->ml.reservoirfrac));
-
+  //fprintf(stdout,"DISTRIBUTE WATER: \n");
   cell->discharge.withdrawal= cell->discharge.withdrawal_gw=0.0;
   foreachstand(stand,s,cell->standlist)
     if(stand->type->landusetype==AGRICULTURE || stand->type->landusetype==GRASSLAND || stand->type->landusetype==OTHERS || stand->type->landusetype==BIOMASS_GRASS || stand->type->landusetype==BIOMASS_TREE || stand->type->landusetype==WOODPLANTATION || stand->type->landusetype==AGRICULTURE_TREE || stand->type->landusetype==AGRICULTURE_GRASS)
@@ -94,8 +94,6 @@ void distribute_water(Cell *cell,            /**< pointer to LPJ cell */
       data=stand->data;
       data->irrig_event=FALSE;
       data->irrig_amount=0;
-      foreachpft(pft, p, &stand->pftlist)
-       if(!strcmp(pft->par->name,"rice")) isrice=TRUE;
 
       if(data->irrigation||isrice)
       {

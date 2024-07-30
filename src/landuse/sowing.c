@@ -90,5 +90,6 @@ Stocks sowing(Cell *cell,          /**< cell pointer */
      fail(INVALID_NITROGEN_BALANCE_ERR,FAIL_ON_BALANCE,FALSE, "Invalid nitrogen balance in %s: day: %d    %g start: %.3f  end: %.3f influx: %g outflux: %g flux_estab.nitrogen: %g",
           __FUNCTION__,day,end-start.nitrogen-fluxes_in.nitrogen+fluxes_out.nitrogen-flux_estab.nitrogen,start.nitrogen,end,fluxes_in.nitrogen,fluxes_out.nitrogen,flux_estab.nitrogen);
 #endif
+  getoutput(&cell->output,FLUX_ESTABN_MG,config)+=flux_estab.nitrogen;
   return flux_estab;
 } /* of 'sowing' */

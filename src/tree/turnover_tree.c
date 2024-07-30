@@ -82,6 +82,8 @@ Stocks turnover_tree(Litter *litter, /**< Litter pool */
     {
       reprod-=pft->establish.nitrogen;
       getoutput(output,FLUX_ESTABN,config)-=pft->establish.nitrogen*pft->stand->frac;
+      if(pft->stand->type->landusetype!=NATURAL && pft->stand->type->landusetype!=WOODPLANTATION)
+        getoutput(output,FLUX_ESTABN_MG,config)-=pft->establish.nitrogen*pft->stand->frac;
       pft->stand->cell->balance.flux_estab.nitrogen-=pft->establish.nitrogen*pft->stand->frac;
       pft->establish.nitrogen=0;
     }
@@ -173,7 +175,7 @@ Stocks turnover_tree(Litter *litter, /**< Litter pool */
     tree->ind.root.nitrogen=0.0;
   }
 
-#ifdef DEBUG2
+#ifdef DEBUG3
   printf("turn: %s %g %g %g %g %g %g %g %g %g %g\n",pft->par->name,tree->ind.leaf.carbon,tree->ind.root.carbon,
          tree->ind.sapwood.carbon,tree->ind.heartwood.carbon,tree->ind.debt.carbon,pft->fpc,
          pft->nind,tree->height,tree->crownarea,pft->bm_inc.carbon);

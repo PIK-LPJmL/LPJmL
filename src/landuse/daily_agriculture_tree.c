@@ -96,6 +96,7 @@ Real daily_agriculture_tree(Stand *stand,                /**< stand pointer */
     flux_estab=establishment(pft,0,0,1);
     getoutput(output,FLUX_ESTABC,config)+=flux_estab.carbon*stand->frac;
     getoutput(output,FLUX_ESTABN,config)+=flux_estab.nitrogen*stand->frac;
+    getoutput(output,FLUX_ESTABN_MG,config)+=flux_estab.nitrogen*stand->frac;
     stand->cell->balance.flux_estab.carbon+=flux_estab.carbon*stand->frac;
     stand->cell->balance.flux_estab.nitrogen+=flux_estab.nitrogen*stand->frac;
     stand->growing_days=0;
@@ -242,7 +243,7 @@ Real daily_agriculture_tree(Stand *stand,                /**< stand pointer */
     }
     npp=npp(pft,gtemp_air,gtemp_soil,gpp-rd-pft->npp_bnf,config->with_nitrogen);
     pft->npp_bnf=0.0;
-#ifdef DEBUG2
+#ifdef DEBUG3
     printf("day=%d, irrig=%d, npp=%g, c_fruit=%g,phen=%g\n",day,data->irrigation.irrigation,npp,tree->fruit.carbon,pft->phen);
     printf("tmin=%g, tmax=%g, light=%g, wscal=%g\n",pft->phen_gsi.tmin,pft->phen_gsi.tmax,pft->phen_gsi.light,pft->phen_gsi.wscal);
     if(istree(pft))

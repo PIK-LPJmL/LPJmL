@@ -91,9 +91,9 @@ void fprintcell(FILE *file,            /**< file pointer to text file */
         fputs("--------",file);
         for(cft=0;cft<ncft;cft++)
           fputs(" -----",file);
-        fprintf(file,"\nCropfrac (rf/ir/wl[0],wl[1]):\t%g\t%g\t%g\t%g\n",
+        fprintf(file,"\nCropfrac (rf/ir/wl):\t%g\t%g\t%g\n",
                 grid[cell].ml.cropfrac_rf,grid[cell].ml.cropfrac_ir,
-                grid[cell].ml.cropfrac_wl[0],grid[cell].ml.cropfrac_wl[1]);
+                grid[cell].ml.cropfrac_wl);
         fprintcropdates(file,grid[cell].ml.cropdates,config->pftpar+npft,ncft);
       }
       if(config->with_nitrogen)

@@ -150,7 +150,7 @@ fi
 /*                                                                   */
 /* Configuration file for input dataset for LPJ C Version 6.0.1      */
 /*                                                                   */
-/* Created: $(date +"%d.%m.%Y")                                               */
+/* Created: $(date +"%d.%m.%Y")                                      */
 /*                                                                   */
 /*********************************************************************/
 

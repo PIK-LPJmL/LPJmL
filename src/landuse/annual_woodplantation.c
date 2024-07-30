@@ -74,7 +74,7 @@ Bool annual_woodplantation(Stand *stand,         /**< Pointer to stand */
     foreachpft(pft,p,&stand->pftlist)
     {
       present[pft->par->id]=TRUE;
-#ifdef DEBUG2
+#ifdef DEBUG3
       printf("PFT:%s fpc_inc=%g fpc=%g\n",pft->par->name,fpc_inc[p],pft->fpc);
       printf("PFT:%s bm_inc=%g vegc=%g soil=%g\n",pft->par->name,
              pft->bm_inc.carbon,vegc_sum(pft),soilcarbon(&stand->soil));
@@ -106,7 +106,7 @@ Bool annual_woodplantation(Stand *stand,         /**< Pointer to stand */
       }
 
     } /* of foreachpft */
-#ifdef DEBUG2
+#ifdef DEBUG3
     printf("6 Number of updated pft: %d\n",stand->pftlist.n);
 #endif
 

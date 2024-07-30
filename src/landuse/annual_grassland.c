@@ -66,7 +66,7 @@ Bool annual_grassland(Stand *stand,         /**< Pointer to stand */
   nirrig=getnirrig(ncft,config);
   foreachpft(pft,p,&stand->pftlist)
   {
-#ifdef DEBUG2
+#ifdef DEBUG3
     printf("PFT:%s fpc=%g\n",pft->par->name,pft->fpc);
     printf("PFT:%s bm_inc=%g vegc=%g soil=%g\n",pft->par->name,
            pft->bm_inc.carbon,vegc_sum(pft),soilcarbon(&stand->soil));
@@ -87,7 +87,7 @@ Bool annual_grassland(Stand *stand,         /**< Pointer to stand */
   foreachpft(pft,p,&stand->pftlist)
     fpc_grass(pft);
 
-#ifdef DEBUG2
+#ifdef DEBUG3
   printf("4 Number of updated pft: %d\n",stand->pftlist.n);
 #endif
 
@@ -111,6 +111,7 @@ Bool annual_grassland(Stand *stand,         /**< Pointer to stand */
     }
   getoutput(&stand->cell->output,FLUX_ESTABC,config)+=flux_estab.carbon*stand->frac;
   getoutput(&stand->cell->output,FLUX_ESTABN,config)+=flux_estab.nitrogen*stand->frac;
+  getoutput(&stand->cell->output,FLUX_ESTABN_MG,config)+=flux_estab.nitrogen*stand->frac;
   stand->cell->balance.flux_estab.carbon+=flux_estab.carbon*stand->frac;
   stand->cell->balance.flux_estab.nitrogen+=flux_estab.nitrogen*stand->frac;
   stand->cell->output.dcflux-=flux_estab.carbon*stand->frac;

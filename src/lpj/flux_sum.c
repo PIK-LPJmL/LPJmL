@@ -25,7 +25,7 @@ Real flux_sum(Flux *flux_global,   /**< global carbon and water fluxes */
   int s, p, l;
   Stand *stand;
   Pft *pft;
-  Flux flux={0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0};
+  Flux flux={0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0};
 
   for(cell=0;cell<config->ngridcell;cell++)
   {
@@ -68,6 +68,7 @@ Real flux_sum(Flux *flux_global,   /**< global carbon and water fluxes */
       flux.n_outflux+=grid[cell].balance.n_outflux*grid[cell].coord.area;
       flux.excess_water+=grid[cell].balance.excess_water*grid[cell].coord.area;
       flux.CH4_emissions+=grid[cell].balance.aCH4_em*grid[cell].coord.area;
+      flux.CH4_oxidation+=grid[cell].balance.aCH4_oxid*grid[cell].coord.area;
       flux.CH4_sink+=grid[cell].balance.aCH4_sink*grid[cell].coord.area;
       flux.CH4_rice+=grid[cell].balance.aCH4_rice*grid[cell].coord.area;
       flux.CH4_setaside+=grid[cell].balance.aCH4_setaside*grid[cell].coord.area;
@@ -78,7 +79,7 @@ Real flux_sum(Flux *flux_global,   /**< global carbon and water fluxes */
       flux.product_turnover.nitrogen+=(grid[cell].balance.prod_turnover.fast.nitrogen+grid[cell].balance.prod_turnover.slow.nitrogen)*grid[cell].coord.area;
       flux.neg_fluxes.carbon+=grid[cell].balance.neg_fluxes.carbon*grid[cell].coord.area;
       flux.neg_fluxes.nitrogen+=grid[cell].balance.neg_fluxes.nitrogen*grid[cell].coord.area;
-      flux.area_agr+=(grid[cell].ml.cropfrac_rf+grid[cell].ml.cropfrac_ir+grid[cell].ml.cropfrac_wl[0]+grid[cell].ml.cropfrac_wl[1])*grid[cell].coord.area;
+      flux.area_agr+=(grid[cell].ml.cropfrac_rf+grid[cell].ml.cropfrac_ir+grid[cell].ml.cropfrac_wl)*grid[cell].coord.area;
       flux.estab_storage.carbon+=(grid[cell].balance.estab_storage_tree[0].carbon +
                                  grid[cell].balance.estab_storage_tree[1].carbon +
                                  grid[cell].balance.estab_storage_grass[0].carbon +

@@ -42,6 +42,9 @@ Real nuptake_crop(Pft *pft,             /**< pointer to PFT data */
   Real autofert_n=0;
   Real rootdist_n[LASTLAYER];
   Real nc_ratio;
+  Real autofert=config->fertilizer_input;
+  if(!strcmp(pft->par->name,"rice"))
+    autofert=AUTO_FERTILIZER;
   int l,nirrig,nnat,index;
   soil=&pft->stand->soil;
   if(config->permafrost)
@@ -148,6 +151,7 @@ Real nuptake_crop(Pft *pft,             /**< pointer to PFT data */
         getoutput(&pft->stand->cell->output,BNF,config) += fixed_n*pft->stand->frac;
         pft->stand->cell->balance.influx.nitrogen += fixed_n*pft->stand->frac;
         getoutput(&pft->stand->cell->output,BNF_AGR,config) += fixed_n*pft->stand->frac;
+        getoutput(&pft->stand->cell->output,BNF_MG,config) += fixed_n*pft->stand->frac;
         pft->vscal = 1;
       }
       else
@@ -160,6 +164,7 @@ Real nuptake_crop(Pft *pft,             /**< pointer to PFT data */
           getoutput(&pft->stand->cell->output,BNF,config)+=fixed_n*pft->stand->frac;
           pft->stand->cell->balance.influx.nitrogen+=fixed_n*pft->stand->frac;
           getoutput(&pft->stand->cell->output,BNF_AGR,config) += fixed_n*pft->stand->frac;
+          getoutput(&pft->stand->cell->output,BNF_MG,config) += fixed_n*pft->stand->frac;
         }
         else
           pft->npp_bnf=0.0;
@@ -168,7 +173,7 @@ Real nuptake_crop(Pft *pft,             /**< pointer to PFT data */
     }
     else
     {
-      if(config->fertilizer_input==AUTO_FERTILIZER)
+      if(autofert==AUTO_FERTILIZER)
       {
         autofert_n = *n_plant_demand - pft->bm_inc.nitrogen;
         if(autofert_n>0)

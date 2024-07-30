@@ -92,6 +92,7 @@ typedef struct
   Real CH4_fire;
   Real CH4_rice;
   Real CH4_setaside;
+  Real CH4_oxidation;
   Real soil_CH4;
   Real soil_NO3;
   Real soil_NH4;

@@ -19,7 +19,6 @@
 void gasdiffusion(Soil *soil,    /**< [inout] pointer to soil data */
                   Real airtemp,  /**< [in] air temperature (deg C) */
                   Real pch4,     /**< [in] atmospheric CH4 (ppm) */
-                  Real *CH4_sink, /**< [out] CH4 soil sink (gC/m2/day) */
                   Real *CH4_out, /**< [out] CH4 emissions (gC/m2/day) */
                   Real *runoff   /**< [out] runoff (mm/day) */
                  )
@@ -36,7 +35,7 @@ void gasdiffusion(Soil *soil,    /**< [inout] pointer to soil data */
   end=start=tmp_water=out=in=0;
   /*waterbalance needs to be updated*/
   start = soilmethane(soil); //do not multiply by *WC/WCH4, is used for methane fluxes here
-  *runoff=*CH4_sink=*CH4_out=0;
+  *runoff=*CH4_out=0;
   for (l = 0; l<BOTTOMLAYER; l++)
   {
     if ((soil->w[l] * soil->whcs[l] + soil->w_fw[l] + soil->ice_depth[l] + soil->ice_fw[l])>(soil->wsats[l] - soil->wpwps[l]))
@@ -179,8 +178,6 @@ void gasdiffusion(Soil *soil,    /**< [inout] pointer to soil data */
 
         soil->CH4[l]+= dCH4*(soildepth[l] * epsilon_CH4[l]) / 1000;
 
-        if(dCH4>0 && l==0)
-          *CH4_sink+=-dCH4*(soildepth[l] * epsilon_CH4[l]) / 1000;  // sink is defined to be negative
 #ifdef CHECK_BALANCE
         if(dCH4<0 && l==0)
           out+=dCH4*(soildepth[l] * epsilon_CH4[l]) / 1000;
@@ -226,5 +223,5 @@ void gasdiffusion(Soil *soil,    /**< [inout] pointer to soil data */
          __FUNCTION__,start-end+out+in, start, end, in,out);
 #endif
 
-  *CH4_out=start-end-*CH4_sink;
+  *CH4_out=start-end;
 } /* of 'gasdiffusion' */

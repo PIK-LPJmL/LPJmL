@@ -42,7 +42,7 @@ void update_daily(Cell *cell,            /**< cell pointer           */
   int s,p,isrice;
   Pft *pft;
   Real melt=0,eeq,par,daylength,beta,gw_outflux;
-  Real CH4_em=0,CH4_sink=0;
+  Real CH4_em=0;
   Real melt_all=0,runoff,snowrunoff,epsilon_gas,soilmoist,V;
 #ifdef IMAGE
   Real fout_gw; // local variable for groundwater outflow (baseflow)
@@ -229,52 +229,61 @@ void update_daily(Cell *cell,            /**< cell pointer           */
     foreachsoillayer(l)
       getoutputindex(&cell->output,SOILTEMP,l,config)+=stand->soil.temp[l]*stand->frac*(1.0/(1-stand->cell->lakefrac-stand->cell->ml.reservoirfrac));
     plant_gas_transport(stand,climate.temp,ch4,config);   //fluxes in routine written to output
-    gasdiffusion(&stand->soil,climate.temp,ch4,&CH4_sink,&CH4_em,&runoff);
+    gasdiffusion(&stand->soil,climate.temp,ch4,&CH4_em,&runoff);
     cell->discharge.drunoff += runoff*stand->frac;
-    getoutput(&cell->output,CH4_EMISSIONS,config)+=CH4_em*stand->frac;
-    cell->balance.aCH4_em+=CH4_em*stand->frac;
-    getoutput(&cell->output,CH4_SINK,config)+=CH4_sink*stand->frac;
-    cell->balance.aCH4_sink+=CH4_sink*stand->frac;
-    if(stand->type->landusetype==SETASIDE_RF || stand->type->landusetype==SETASIDE_IR || stand->type->landusetype==AGRICULTURE)
+    if(CH4_em>0)
     {
-      stand->cell->balance.aCH4_setaside+=CH4_em*stand->frac;
-      getoutput(&stand->cell->output,CH4_SETASIDE,config)+=CH4_em*stand->frac;
+      getoutput(&cell->output,CH4_EMISSIONS,config)+=CH4_em*stand->frac;
+      cell->balance.aCH4_em+=CH4_em*stand->frac;
     }
-    else if(stand->type->landusetype==SETASIDE_WETLAND)
+    else
     {
-      stand->cell->balance.aCH4_rice+=CH4_em*stand->frac;
-      getoutput(&stand->cell->output,CH4_RICE_EM,config)+=CH4_em*stand->frac;
+      getoutput(&cell->output,CH4_SINK,config)+=CH4_em*stand->frac;
+      cell->balance.aCH4_sink+=CH4_em*stand->frac;
+    }
+    if((stand->type->landusetype==SETASIDE_RF || stand->type->landusetype==SETASIDE_IR || stand->type->landusetype==AGRICULTURE || stand->type->landusetype==SETASIDE_WETLAND)&& CH4_em>0)
+    {
+      foreachpft(pft, p, &stand->pftlist)
+      {
+        if(!strcmp(pft->par->name,"rice"))
+        {
+          getoutput(&stand->cell->output,CH4_RICE_EM,config)+=CH4_em;
+          stand->cell->balance.aCH4_rice+=CH4_em*stand->frac;
+        }
+        else
+        {
+          stand->cell->balance.aCH4_setaside+=CH4_em*stand->frac;
+          getoutput(&stand->cell->output,CH4_SETASIDE,config)+=CH4_em*stand->frac;
+
+        }
+      }
     }
     fpc_total_stand = 0;
     foreachpft(pft, p, &stand->pftlist)
-    {
       fpc_total_stand += pft->fpc;
-      if(!strcmp(pft->par->name,"rice") && CH4_em>0)       //only one time rice per stand included in cell->balance.aCH4_em
-      {
-        getoutput(&stand->cell->output,CH4_RICE_EM,config)+=CH4_em*stand->frac;
-        stand->cell->balance.aCH4_rice+=CH4_em*stand->frac;
-      }
-    }
+
     ebul = ebullition(&stand->soil, fpc_total_stand);
     getoutput(&cell->output,CH4_EMISSIONS,config) += ebul*stand->frac;
     cell->balance.aCH4_em+=ebul*stand->frac;
     getoutput(&cell->output,CH4_EBULLITION,config) += ebul*stand->frac;
-    if(stand->type->landusetype==SETASIDE_RF || stand->type->landusetype==SETASIDE_IR || stand->type->landusetype==AGRICULTURE)
+
+    if((stand->type->landusetype==SETASIDE_RF || stand->type->landusetype==SETASIDE_IR || stand->type->landusetype==AGRICULTURE || stand->type->landusetype==SETASIDE_WETLAND) && ebul>0)
     {
-      stand->cell->balance.aCH4_setaside+=ebul*stand->frac;
-      getoutput(&stand->cell->output,CH4_SETASIDE,config)+=ebul*stand->frac;
-    }
-    else if(stand->type->landusetype==SETASIDE_WETLAND)
-    {
-      stand->cell->balance.aCH4_rice+=ebul*stand->frac;
-      getoutput(&stand->cell->output,CH4_RICE_EM,config)+=ebul*stand->frac;
-    }
-    foreachpft(pft, p, &stand->pftlist)
-      if(!strcmp(pft->par->name,"rice") && ebul>0)
+      foreachpft(pft, p, &stand->pftlist)
       {
-        getoutput(&stand->cell->output,CH4_RICE_EM,config)+=ebul*stand->frac;
-        stand->cell->balance.aCH4_rice+=ebul*stand->frac;
+        if(!strcmp(pft->par->name,"rice"))
+        {
+          getoutput(&stand->cell->output,CH4_RICE_EM,config)+=ebul;
+          stand->cell->balance.aCH4_rice+=CH4_em*stand->frac;
+        }
+        else
+        {
+          stand->cell->balance.aCH4_setaside+=ebul*stand->frac;
+          getoutput(&stand->cell->output,CH4_SETASIDE,config)+=ebul*stand->frac;
+
+        }
       }
+    }
 
     /* update soil and litter properties to account for all changes since last call of littersom */
     if(config->soilpar_option==NO_FIXED_SOILPAR || (config->soilpar_option==FIXED_SOILPAR && year<config->soilpar_fixyear))
@@ -294,6 +303,7 @@ void update_daily(Cell *cell,            /**< cell pointer           */
         for(i=0;i<NFUELCLASS;i++)
           litsum_old_agr[WOOD]+=stand->soil.litter.item[l].agtop.wood[i].carbon+stand->soil.litter.item[l].agsub.wood[i].carbon;
       }
+    CH4_em=0;
     hetres=littersom(stand,gtemp_soil,agrfrac,&CH4_em,climate.temp,ch4,&runoff,&MT_water,npft,ncft,config);
     cell->discharge.drunoff += runoff*stand->frac;
     cell->balance.arh+=hetres.carbon*stand->frac;
@@ -302,22 +312,23 @@ void update_daily(Cell *cell,            /**< cell pointer           */
     cell->balance.n_outflux+=hetres.nitrogen*stand->frac;
     getoutput(&cell->output,CH4_EMISSIONS,config) += CH4_em*stand->frac;
     cell->balance.aCH4_em+=CH4_em*stand->frac;
-    if(stand->type->landusetype==SETASIDE_RF || stand->type->landusetype==SETASIDE_IR || stand->type->landusetype==AGRICULTURE)
+    if((stand->type->landusetype==SETASIDE_RF || stand->type->landusetype==SETASIDE_IR || stand->type->landusetype==AGRICULTURE || stand->type->landusetype==SETASIDE_WETLAND)&& CH4_em>0)
     {
-      stand->cell->balance.aCH4_setaside+=CH4_em*stand->frac;
-      getoutput(&stand->cell->output,CH4_SETASIDE,config)+=CH4_em*stand->frac;
-    }
-    else if(stand->type->landusetype==SETASIDE_WETLAND)
-    {
-      stand->cell->balance.aCH4_rice+=CH4_em*stand->frac;
-      getoutput(&stand->cell->output,CH4_RICE_EM,config)+=CH4_em*stand->frac;
-    }
-    foreachpft(pft, p, &stand->pftlist)
-      if(!strcmp(pft->par->name,"rice") && CH4_em>0)                   //assuming only one CFT/PFT
+      foreachpft(pft, p, &stand->pftlist)
       {
-        getoutput(&stand->cell->output,CH4_RICE_EM,config)+=CH4_em*stand->frac;
-        stand->cell->balance.aCH4_rice+=CH4_em*stand->frac;
+        if(!strcmp(pft->par->name,"rice"))
+        {
+          getoutput(&stand->cell->output,CH4_RICE_EM,config)+=CH4_em;
+          stand->cell->balance.aCH4_rice+=CH4_em*stand->frac;
+        }
+        else
+        {
+          stand->cell->balance.aCH4_setaside+=CH4_em*stand->frac;
+          getoutput(&stand->cell->output,CH4_SETASIDE,config)+=CH4_em*stand->frac;
+
+        }
       }
+    }
     cell->balance.aMT_water+= MT_water*stand->frac;
     getoutput(&cell->output,MT_WATER,config) += MT_water*stand->frac;
 
@@ -405,7 +416,8 @@ void update_daily(Cell *cell,            /**< cell pointer           */
         cell->balance.influx.nitrogen+=2000*stand->frac;
         if (isagriculture(stand->type->landusetype))
           getoutput(&cell->output,NDEPO_AGR,config)+=2000*stand->frac;
-        
+        if(stand->type->landusetype!=NATURAL && stand->type->landusetype!=WOODPLANTATION)
+          getoutput(&cell->output,NDEPO_MG,config)+=2000*stand->frac;
         getoutput(&cell->output,NDEPOS,config)+=2000*stand->frac;
       }
       else if(!config->no_ndeposition)
@@ -426,7 +438,8 @@ void update_daily(Cell *cell,            /**< cell pointer           */
         cell->balance.influx.nitrogen+=(climate.nh4deposition+climate.no3deposition)*stand->frac;
         if (isagriculture(stand->type->landusetype))
           getoutput(&cell->output,NDEPO_AGR,config)+=(climate.nh4deposition+climate.no3deposition)*stand->frac;
-        
+        if(stand->type->landusetype!=NATURAL && stand->type->landusetype!=WOODPLANTATION)
+          getoutput(&cell->output,NDEPO_MG,config)+=(climate.nh4deposition+climate.no3deposition)*stand->frac;
         getoutput(&cell->output,NDEPOS,config)+=(climate.nh4deposition+climate.no3deposition)*stand->frac;
       }
 #ifdef DEBUG_N
@@ -449,6 +462,8 @@ void update_daily(Cell *cell,            /**< cell pointer           */
       bnf=biologicalnfixation(stand, npft, ncft, config);
       stand->soil.NH4[0]+=bnf;
       getoutput(&cell->output,BNF,config)+=bnf*stand->frac;
+      if(stand->type->landusetype!=NATURAL && stand->type->landusetype!=WOODPLANTATION)
+        getoutput(&cell->output,BNF_MG,config)+=bnf*stand->frac;
       cell->balance.influx.nitrogen+=bnf*stand->frac;
     }
 
@@ -541,11 +556,12 @@ void update_daily(Cell *cell,            /**< cell pointer           */
   getoutput(&cell->output,DECAY_WOOD_AGR,config)*=litsum_old_agr[WOOD]>0 ? litsum_new_agr[WOOD]/litsum_old_agr[WOOD] : 1;
 
 
-  gw_outflux = cell->ground_st*cell->kbf;
-  cell->ground_st -= gw_outflux;
-  cell->discharge.drunoff+=(gw_outflux+cell->ground_st_am*cell->kbf/100);
-  getoutput(&cell->output,GW_OUTFLUX,config) += (gw_outflux + cell->ground_st_am*cell->kbf / 100);
-  cell->ground_st_am -= cell->ground_st_am*cell->kbf / 100;
+  //gw_outflux = cell->ground_st*cell->kbf;
+//  gw_outflux =0;
+//  cell->ground_st -= gw_outflux;
+//  cell->discharge.drunoff+=(gw_outflux+cell->ground_st_am*cell->kbf/100);
+//  getoutput(&cell->output,GW_OUTFLUX,config) += (gw_outflux + cell->ground_st_am*cell->kbf / 100);
+//  cell->ground_st_am -= cell->ground_st_am*cell->kbf / 100;
   getoutput(&cell->output,GW_STORAGE,config) += (cell->ground_st + cell->ground_st_am);
 
 /////// replace storage with the new stand specific groundwater storage see above and groundwater discharge are set in infil_perc
@@ -705,9 +721,9 @@ void update_daily(Cell *cell,            /**< cell pointer           */
   }
   fprintf(stdout,"day: %d\n\n",day);
   if(fabs(balanceW)>0.001)
-    fprintf(stderr,"W-BALANCE-ERROR in %s: day %d balanceW: %g  exess_old: %g balance.excess_water: %g water_after: %g water_before: %g prec: %g melt: %g "
+    fprintf(stderr,"W-BALANCE-ERROR in %s: day %d balanceW: %g  exess_old: %g balance.excess_water: %g gw_outflux: %g water_after: %g water_before: %g prec: %g melt: %g "
         "atransp: %g  aevap %g ainterc %g aevap_lake  %g aevap_res: %g    airrig : %g aMT_water : %g MT_water: %g flux_bal: %g runoff %g awater_flux %g lateral_water %g mfin-mfout : %g dmass_lake : %g  dmassriver : %g  \n",
-        __FUNCTION__,day,balanceW,exess_old,cell->balance.excess_water,
+        __FUNCTION__,day,balanceW,exess_old,cell->balance.excess_water,gw_outflux,
         water_after,water_before,climate.prec,melt_all,cell->balance.atransp,cell->balance.aevap,cell->balance.ainterc,cell->balance.aevap_lake,cell->balance.aevap_res,cell->balance.airrig,cell->balance.aMT_water,MT_water,
         ((cell->balance.awater_flux+cell->balance.atransp+cell->balance.aevap+cell->balance.ainterc+cell->balance.aevap_lake+cell->balance.aevap_res-cell->balance.airrig-cell->balance.aMT_water)-wfluxes_old),
         cell->discharge.drunoff,cell->balance.awater_flux,cell->lateral_water,((cell->discharge.mfout-cell->discharge.mfin)/cell->coord.area),cell->discharge.dmass_lake/cell->coord.area,cell->discharge.dmass_river/cell->coord.area);
