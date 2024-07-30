@@ -28,6 +28,7 @@ int main(int argc,char **argv)
   int rc,ncid,var_id,*dimids,i,j,nvars,lon_id,lat_id,ndims,index,first;
 
   double *lat,*lon;
+  float scalar;
   size_t lat_len,lon_len;
   size_t offsets[4]={0,0,0,0},counts[4]={1,1,1,1};
   double missing_value,data;
@@ -45,11 +46,11 @@ int main(int argc,char **argv)
   char *var;
   char *out_json,*arglist;
   FILE *out;
-  Bool isjson,israw;
+  Bool isjson,israw,scalar_set;
   var=NULL;
   header.datatype=LPJ_SHORT;
   header.scalar=0.01;
-  isjson=israw=FALSE;
+  isjson=israw=scalar_set=FALSE;
   for(i=1;i<argc;i++)
     if(argv[i][0]=='-')
     {
@@ -100,14 +101,15 @@ int main(int argc,char **argv)
                  USAGE,argv[0]);
           return EXIT_FAILURE;
         }
-        header.scalar=(float)strtod(argv[++i],&endptr);
+        scalar=header.scalar=(float)strtod(argv[++i],&endptr);
         if(*endptr!='\0')
         {
           fprintf(stderr,"Invalid number '%s' for scale.\n",argv[i]);
           return EXIT_FAILURE;
         }
+        if(header.scalar!=1)
+          scalar_set=TRUE;
       }
-
       else
       {
         fprintf(stderr,"Invalid option '%s'.\n"
@@ -122,6 +124,13 @@ int main(int argc,char **argv)
     fprintf(stderr,"Missing argument(s).\n"
             USAGE,argv[0]);
     return EXIT_FAILURE;
+  }
+  if(header.datatype!=LPJ_SHORT && scalar_set)
+  {
+    fprintf(stderr,"Warning: Scaling set to %g but datatype is %s, scaling set to 1.\n",
+            scalar,typenames[header.datatype]);
+
+    header.scalar=1;
   }
   rc=nc_open(argv[i],NC_NOWRITE,&ncid);
   if(rc)
