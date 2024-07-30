@@ -164,13 +164,13 @@ int main(int argc,char **argv)
   {
     fprintf(stderr,"ERROR408: Invalid number of dimensions %d in '%s', must be >1.\n",
             ndims,argv[i]);
-    return TRUE;
+    return EXIT_FAILURE;
   }
   else if(ndims>4)
   {
     fprintf(stderr,"ERROR408: Invalid number of dimensions %d in '%s', must be <5.\n",
             ndims,argv[i]);
-    return TRUE;
+    return EXIT_FAILURE;
   }
   else
     first=ndims-2;
@@ -179,7 +179,7 @@ int main(int argc,char **argv)
   if(dimids==NULL)
   {
     printallocerr("dimids");
-    return TRUE;
+    return EXIT_FAILURE;
   }
   nc_inq_vardimid(ncid,var_id,dimids);
   nc_inq_dimname(ncid,dimids[index],name);
@@ -189,7 +189,7 @@ int main(int argc,char **argv)
     fprintf(stderr,"ERROR410: Cannot read %s in '%s': %s.\n",
             name,argv[i],nc_strerror(rc));
     free(dimids);
-    return TRUE;
+    return EXIT_FAILURE;
   }
   nc_inq_dimlen(ncid,dimids[index],&lon_len);
   lon=newvec(double,lon_len);
