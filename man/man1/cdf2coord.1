@@ -9,16 +9,16 @@ Program extracts grid file in CLM format from NetCDF input data. All cells with 
 .SH OPTIONS
 .TP
 \-var name
-variable name in NetCDF file. If not specified the first variable with more than one dimension is chosen.
+Variable name in NetCDF file. If not specified the first variable with more than one dimension is chosen.
 .TP
 \-index i
 Converting from i-th dataset. Default is first (=0).
 .TP
 \-scale factor
-scaling factor for CLM grid file. Default is 0.01 for short values in CLM grid file, 1 for float or double values.
+Scaling factor for CLM grid file. Default is 0.01 for short values in CLM grid file, 1 for float or double values. If factor differs from 1 and -float or -double option is set a warning is printed and scaling factor reset to 1.
 .TP
 \-{float|double}
-write float or double values in CLM grid file, default is short.
+Write float or double values in CLM grid file, default is short.
 .TP
 \-raw
 Output format is raw without header, default is CLM format.
@@ -27,10 +27,10 @@ Output format is raw without header, default is CLM format.
 An additional JSON metafile with suffix \fI.json\fP is written.
 .TP
 .I netcdffile
-filename of NetCDF file.
+Filename of NetCDF file.
 .TP
 .I gridfile
-filename of grid data file written.
+Filename of grid data file written.
 .SH EXAMPLES
 .TP
 Create coord file from temperature data file:
