@@ -332,6 +332,7 @@ int main(int argc,char **argv)
   if(out==NULL)
   {
     fprintf(stderr,"Error creating '%s': %s.\n",argv[iarg+1],strerror(errno));
+    free(data);
     free(lon);
     free(lat);
     return EXIT_FAILURE;
@@ -364,6 +365,10 @@ int main(int argc,char **argv)
     {
       fprintf(stderr,"Error writing grid file '%s': %s.\n",
               argv[iarg+1],strerror(errno));
+      fclose(out);
+      free(data);
+      free(lon);
+      free(lat);
       return EXIT_FAILURE;
     }
   }

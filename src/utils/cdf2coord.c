@@ -260,6 +260,7 @@ int main(int argc,char **argv)
   if(out==NULL)
   {
     fprintf(stderr,"Error creating '%s': %s.\n",argv[i+1],strerror(errno));
+    free(dimids);
     free(lon);
     free(lat);
     nc_close(ncid);
