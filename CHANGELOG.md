@@ -23,7 +23,7 @@ of `major.minor.patch` with
 ### Contributors
 
 - author: Werner von Bloh (bloh@pik-potsdam.de)
-- code review: David Hoetten (davidho@pik-potsdam.de)
+- code review: David Hoetten (davidho@pik-potsdam.de), Sebastian Ostberg (ostberg@pik-potsdam.de)
 
 ### Added
 
@@ -42,6 +42,7 @@ of `major.minor.patch` with
 - Missing `break` added in `switch` statement in `receiver_coupler.c`.
 - Code changed to compile successfully without `-DSAFE`, `-DUSE_NETCDF`, and `-DUDUNITS` compilation flag.
 - Unit for `"estab_storage_n"` corrected to `"gN/m2"` in `outputvars.cjson`.
+- Scaling set to 1 if datatype is not short in `cdf2coord.c` and `cdf2clm`.
 
 
 ## [5.9.5] - 2024-07-19
