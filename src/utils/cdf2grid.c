@@ -171,6 +171,7 @@ int main(int argc,char **argv)
   {
     fprintf(stderr,"ERROR408: Invalid number of dimensions %d in '%s', must be 2.\n",
             ndims,argv[iarg]);
+    nc_close(ncid);
     return EXIT_FAILURE;
   }
   nc_inq_vardimid(ncid,var_id,dimids);
@@ -180,6 +181,7 @@ int main(int argc,char **argv)
   {
     fprintf(stderr,"ERROR410: Cannot read %s in '%s': %s.\n",
             name,argv[iarg],nc_strerror(rc));
+    nc_close(ncid);
     return EXIT_FAILURE;
   }
   nc_inq_dimlen(ncid,dimids[1],&lon_len);
@@ -187,6 +189,7 @@ int main(int argc,char **argv)
   if(lon==NULL)
   {
     printallocerr("lon");
+    nc_close(ncid);
     return EXIT_FAILURE;
   }
   rc=nc_get_var_double(ncid,lon_id,lon);
@@ -195,6 +198,7 @@ int main(int argc,char **argv)
     free(lon);
     fprintf(stderr,"ERROR410: Cannot read longitude in '%s': %s.\n",
             argv[iarg],nc_strerror(rc));
+    nc_close(ncid);
     return EXIT_FAILURE;
   }
   nc_inq_dimname(ncid,dimids[0],name);
@@ -204,6 +208,7 @@ int main(int argc,char **argv)
     fprintf(stderr,"ERROR410: Cannot read %s in '%s': %s.\n",
             name,argv[iarg],nc_strerror(rc));
     free(lon);
+    nc_close(ncid);
     return EXIT_FAILURE;
   }
   nc_inq_dimlen(ncid,dimids[0],&lat_len);
@@ -212,6 +217,7 @@ int main(int argc,char **argv)
   {
     free(lon);
     printallocerr("lat");
+    nc_close(ncid);
     return EXIT_FAILURE;
   }
   rc=nc_get_var_double(ncid,lat_id,lat);
@@ -221,6 +227,7 @@ int main(int argc,char **argv)
     free(lat);
     fprintf(stderr,"ERROR410: Cannot read latitude in '%s': %s.\n",
             argv[iarg],nc_strerror(rc));
+    nc_close(ncid);
     return EXIT_FAILURE;
   }
 
@@ -241,6 +248,7 @@ int main(int argc,char **argv)
     free(lon);
     free(lat);
     printallocerr("index");
+    nc_close(ncid);
     return EXIT_FAILURE;
   }
   rc=nc_get_var_int(ncid,var_id,index);
@@ -258,6 +266,10 @@ int main(int argc,char **argv)
       if(attrs==NULL)
       {
         printallocerr("attrs");
+        free(index);
+        free(lon);
+        free(lat);
+        nc_close(ncid);
         return EXIT_FAILURE;
       }
       n_attr=0;
@@ -284,6 +296,9 @@ int main(int argc,char **argv)
   if(header.ncell==0)
   {
     fprintf(stderr,"No grid cells found in '%s'.\n",argv[iarg]);
+    free(index);
+    free(lon);
+    free(lat);
     return EXIT_FAILURE;
   }
   data=newvec(Data,header.ncell);
@@ -320,6 +335,9 @@ int main(int argc,char **argv)
     {
       fprintf(stderr,"Missing or double index in grid NetCDF file '%s' at cell %d.\n",
               argv[iarg],i);
+      free(data);
+      free(lon);
+      free(lat);
       return EXIT_FAILURE;
     }
   header.nyear=1;
