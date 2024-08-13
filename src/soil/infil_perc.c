@@ -668,17 +668,10 @@ Real infil_perc(Stand *stand,        /**< Stand pointer */
     fff=2.5;       //m-1 decay factor originally 2.5 in CLM4.5
     icesum=0;
     depthsum=0;
-    active_wa=0;
+    active_wa=soil->wa;
     rsub_top_tot=0;
 
-    jwt=0;
-    foreachsoillayer(l)
-    if(soil->wtable>layerbound[l])
-      jwt=l;
-    else
-      break;
-    if(soil->wtable<0)
-      jwt=0;
+    jwt=findwtlayer(soil);
 
     for(l=jwt;l<BOTTOMLAYER;l++)
     {
@@ -753,7 +746,10 @@ Real infil_perc(Stand *stand,        /**< Stand pointer */
         }
         if(rsub_top_tot<0)
         {
-          S=soil->wsat[l]*(1.-pow((1.+(soil->wtable/soil->par->psi_sat)),(-1./soil->par->b)));
+          if (soil->wtable>0)
+            S=soil->wsat[l]*(1.-pow((1.+(soil->wtable/soil->par->psi_sat)),(-1./soil->par->b)));
+          else
+            S=soil->wsat[l]*(1.-pow((1.+(1/soil->par->psi_sat)),(-1./soil->par->b)));
           S=max(S,0.02);
           if((soil->wa+rsub_top_tot)<0)
           {
@@ -770,7 +766,6 @@ Real infil_perc(Stand *stand,        /**< Stand pointer */
             stand->cell->discharge.dmass_gw+=rsub_top_tot*stand->frac*stand->cell->coord.area;
             stand->cell->ground_st_am+=(rsub_top_tot)*stand->frac*0.1;
             stand->cell->ground_st+=(rsub_top_tot)*stand->frac*0.9;
-
             soil->wtable+=rsub_top_tot/S;
           }
         }

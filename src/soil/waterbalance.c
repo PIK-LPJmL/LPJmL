@@ -328,8 +328,8 @@ fprintf(stderr,"w[%d] %3.12f, fw[%d] %3.12f, icedepth[%d] %3.12f, whcs[%d] %3.12
   stand->cell->balance.awater_flux+=marginal*stand->frac;
   if(marginal<-2)
   {
-    fprintf(stderr,"end waterbalance Cell (%s) aet= %3.5f evap= %3.5f cover= %3.2f soilwater=%.6f wsats=%.6f layer: %d\n",
-            sprintcoord(line,&stand->cell->coord),aet_stand[l],*evap,cover,allwater(soil,l)+allice(soil,l),soil->wsats[l],l);
+    fprintf(stderr,"end waterbalance Cell (%s) aet= %3.5f evap= %3.5f cover= %3.2f soilwater=%.6f soilice:%.6f wsats=%.6f layer: %d\n",
+            sprintcoord(line,&stand->cell->coord),aet_stand[l],*evap,cover,allwater(soil,l),allice(soil,l),soil->wsats[l],l);
     fprintf(stderr,"MARGINAL: %g\n",marginal*stand->frac);
   }
   } /* soil layer loop */
