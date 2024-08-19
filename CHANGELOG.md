@@ -27,6 +27,15 @@ of `major.minor.patch` with
 - new options `PRESCRIBED_SDATE_ALL_RAINFED` and `PRESCRIBED_SDATE_ALL_IRRIG` to allow using the same sowing dates based on the rainfed or irrigated seasons respectively
 - new options `PRESCRIBED_CROP_PHU_ALL_RAINFED` and `PRESCRIBED_CROP_PHU_ALL_IRRIG` to allow using the same PHU requirements based on the rainfed or irrigated seasons respectively
 
+### Changed
+
+- refactored `crop_option_restart` to `crop_phu_option_restart` in struct `Config` and `crop_option` to `crop_phu_option` in struct `Restartheader` for greater clarity
+- refactored options `"new"` to `"bussel15"` and `"old"` to `"bondau07"` for `crop_phu_options` where `"bussel15"` is an implementation based on [van Bussel et al. 2015](http://dx.doi.org/10.1111/geb.12351) 
+
+### Removed
+
+- removed unnecessary check for file of prescribed `sdates` in `fileexist.c`
+
 ### Fixed
 
 - fixed missing initialization of pointer `map` in cft2bin.c that caused abortion of compilation with `-Werror` otherwise
