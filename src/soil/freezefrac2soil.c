@@ -18,25 +18,52 @@ void freezefrac2soil(Soil *soil,                       /**< pointer to soil to b
 {
   int layer;
 
-  Real n_wi;      /* normal (i.e. all except for free) soil waterice, absolute  */
-  Real f_wi;      /* free soil waterice, absolute  */
+  Real allwaterice;   /* total water+ice content */
+  Real a_wi;          /* plant available soil water+ice, absolute  */
+  Real ua_wi;         /* plant unavailable soil water+ice, absolute  */
+  Real f_wi;          /* free soil water+ice, absolute  */
+  Real ice_target;    /* target ice content in [mm] */
+  Real rest_ice;      /* target ice to freeze in f_wi */
+  Real a_ua_ice_frac; /* target fraction of ice in a_wi and ua_wi */
+  Real f_ice_frac;    /* target fraction of ice in f_wi */
 
   for(layer=0; layer<NSOILLAYER; ++layer)
   {
     soil->freeze_depth[layer] = freezfrac[layer] * soildepth[layer];
-
+    
     /* get the absolute quantities */
-    if(allwater(soil,layer) + allice(soil,layer)<epsilon)
+    allwaterice = allwater(soil,layer) + allice(soil,layer);
+    if(allwaterice<epsilon)
       continue; /* Without any water there is nothing to do */
-
-    n_wi  = soil->w[layer] * soil->whcs[layer] + soil->ice_depth[layer];
+    a_wi  = soil->w[layer] * soil->whcs[layer] + soil->ice_depth[layer];
+    ua_wi  = soil->wpwps[layer];
     f_wi  = soil->w_fw[layer] + soil->ice_fw[layer];
 
-    /* divide n_wi and f_wi to water and ice pools using the freezefrac */
-    soil->ice_depth[layer] = n_wi * freezfrac[layer];
-    soil->w[layer]         = n_wi * (1-freezfrac[layer]) / soil->whcs[layer];
-    soil->ice_pwp[layer]   = freezfrac[layer];
-    soil->ice_fw[layer]    = f_wi * freezfrac[layer];
-    soil->w_fw[layer]      = f_wi * (1-freezfrac[layer]);
+    /* get target ice content */
+    ice_target = freezfrac[layer] * allwaterice;
+
+    /* the target ice is distributed first to a_wi and ua_wi
+     * only if the target ice is higher than the sum of a_wi and ua_wi, the rest is distributed to f_wi
+     *
+     * this guarantees that free ice can only occure when all other water is also frozen,
+     * which means that water losses due to percolation, evaporation and transpiration - which only affect liquid water -
+     * will always first remove all free water (incl. solid form), before reducing plant available water,
+     * and thus at any point, free water (incl. solid form) can only exist if the total amount of water (incl. solid form) is above field capacity */
+
+    a_ua_ice_frac = min(1, ice_target / (a_wi + ua_wi)); /* fraction of ice in a_wi and ua_wi */
+    if(ice_target > a_wi + ua_wi)
+    {
+      rest_ice = ice_target - a_wi - ua_wi; /* remaining ice to freeze */
+      f_ice_frac = rest_ice / f_wi; /* fraction of ice in f_wi */
+    }
+    else
+      f_ice_frac = 0;
+
+    /* set new soil water and ice variables */
+    soil->ice_depth[layer] = a_ua_ice_frac * a_wi;
+    soil->w[layer] = (1 - a_ua_ice_frac) * a_wi / soil->whcs[layer];
+    soil->ice_pwp[layer] = a_ua_ice_frac;
+    soil->ice_fw[layer] = f_ice_frac * f_wi;
+    soil->w_fw[layer] = (1 - f_ice_frac) * f_wi;
   }
 } /* of 'freezefrac2soil' */
