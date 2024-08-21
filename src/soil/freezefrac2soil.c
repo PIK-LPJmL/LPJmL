@@ -34,7 +34,7 @@ void freezefrac2soil(Soil *soil,                       /**< pointer to soil to b
     /* get the absolute quantities */
     allwaterice = allwater(soil,layer) + allice(soil,layer);
     if(allwaterice<epsilon)
-      continue; /* Without any water there is nothing to do */
+      continue; /* without any water there is nothing to do */
     a_wi  = soil->w[layer] * soil->whcs[layer] + soil->ice_depth[layer];
     ua_wi  = soil->wpwps[layer];
     f_wi  = soil->w_fw[layer] + soil->ice_fw[layer];
@@ -42,13 +42,13 @@ void freezefrac2soil(Soil *soil,                       /**< pointer to soil to b
     /* get target ice content */
     ice_target = freezfrac[layer] * allwaterice;
 
-    /* the target ice is distributed first to a_wi and ua_wi
-     * only if the target ice is higher than the sum of a_wi and ua_wi, the rest is distributed to f_wi
-     *
-     * this guarantees that free ice can only occure when all other water is also frozen,
-     * which means that water losses due to percolation, evaporation and transpiration - which only affect liquid water -
-     * will always first remove all free water (incl. solid form), before reducing plant available water,
-     * and thus at any point, free water (incl. solid form) can only exist if the total amount of water (incl. solid form) is above field capacity */
+    /* The target ice is distributed first to a_wi and ua_wi.
+     * Only if the target ice is higher than the sum of a_wi and ua_wi is the rest distributed to f_wi.
+     * 
+     * This guarantees that free ice can only occur when all other water is also frozen,
+     * which means that water losses due to percolation, evaporation, and transpiration — which only affect liquid water — 
+     * will always first remove all free water (of any phase) before reducing plant-available water (of any phase).
+     * Thus, at any point, free water (of any phase) can only exist if the total amount of water (of any phase) is above field capacity. */
 
     a_ua_ice_frac = min(1, ice_target / (a_wi + ua_wi)); /* fraction of ice in a_wi and ua_wi */
     if(ice_target > a_wi + ua_wi)
