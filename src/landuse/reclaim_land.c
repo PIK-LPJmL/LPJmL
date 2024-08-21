@@ -26,7 +26,6 @@ static void remove_vegetation_copy(Soil *soil, /* soil pointer */
 {
   int p;
   Pft *pft;
-  Real nind;
   Stocks harvest;
   Stocks stocks;
   Stocks trad_biofuel;
@@ -45,8 +44,6 @@ static void remove_vegetation_copy(Soil *soil, /* soil pointer */
 
   foreachpft(pft,p,&stand->pftlist)
   {
-    nind = pft->nind;
-
     /* if plot is deforested, wood is returned to litter, harvested or burnt
     * allows for mixed use, first harvesting a fraction of the stand,
     * then burning a fraction, then returning the rest to the litter pools
@@ -62,15 +59,15 @@ static void remove_vegetation_copy(Soil *soil, /* soil pointer */
           (cell->coord.lon-.1<94.25 && cell->coord.lon+.1>94.25 && cell->coord.lat-.1<22.25 && cell->coord.lat+.1>22.25))*/
           (cell->coord.lon>102.2 && cell->coord.lon < 102.3 && cell->coord.lat >28.7 && cell->coord.lat< 28.8)
         {
-          printf("A %g/%g timber_harvest: %s ftimber %g standfrac %g littersum %g vegcsum %g nind %g %g\n",cell->coord.lon,cell->coord.lat,pft->par->name,ftimber,
-                 standfrac,litterstocks(&soil->litter).carbon,vegc_sum(pft),pft->nind,nind);
+          printf("A %g/%g timber_harvest: %s ftimber %g standfrac %g littersum %g vegcsum %g nind %g\n",cell->coord.lon,cell->coord.lat,pft->par->name,ftimber,
+                 standfrac,litterstocks(&soil->litter).carbon,vegc_sum(pft),pft->nind);
           fflush(stdout);
         }
 #endif
         /* harvesting timber */
         getoutput(&cell->output,FTIMBER,config)=ftimber;
         harvest=timber_harvest(pft,soil,&cell->ml.product,
-                               cell->ml.image_data->timber_f,ftimber,standfrac,&nind,&trad_biofuel,config,cell->ml.image_data->timber_frac,cell->ml.image_data->takeaway);
+                               cell->ml.image_data->timber_f,ftimber,standfrac,&trad_biofuel,config,cell->ml.image_data->timber_frac,cell->ml.image_data->takeaway);
         cell->balance.timber_harvest.carbon+=harvest.carbon;
         cell->balance.timber_harvest.nitrogen+=harvest.nitrogen;
         getoutput(&cell->output,TIMBER_HARVESTC,config)+=harvest.carbon;
@@ -84,13 +81,13 @@ static void remove_vegetation_copy(Soil *soil, /* soil pointer */
           (cell->coord.lon-.1<94.25 && cell->coord.lon+.1>94.25 && cell->coord.lat-.1<22.25 && cell->coord.lat+.1>22.25))*/
         if(cell->coord.lon>102.2 && cell->coord.lon < 102.3 && cell->coord.lat >28.7 && cell->coord.lat< 28.8)
         {
-          printf("B %g/%g timber_burn: %s fburn %g standfrac %g littersum %g vegcsum %g nind %g %g\n",cell->coord.lon,cell->coord.lat,pft->par->name,cell->ml.image_data->fburnt,
-                 standfrac,litterstocks(&soil->litter).carbon,vegc_sum(pft),pft->nind,nind);
+          printf("B %g/%g timber_burn: %s fburn %g standfrac %g littersum %g vegcsum %g nind %g\n",cell->coord.lon,cell->coord.lat,pft->par->name,cell->ml.image_data->fburnt,
+                 standfrac,litterstocks(&soil->litter).carbon,vegc_sum(pft),pft->nind);
           fflush(stdout);
         }
 #endif
 #else
-        harvest=timber_harvest(pft,soil,frac,param.ftimber,standfrac,&nind,&trad_biofuel,config);
+        harvest=timber_harvest(pft,soil,frac,param.ftimber,standfrac,&trad_biofuel,config);
 #endif
         getoutput(&cell->output,TRAD_BIOFUEL,config)+=trad_biofuel.carbon;
         cell->balance.trad_biofuel.carbon+=trad_biofuel.carbon;
@@ -106,9 +103,9 @@ static void remove_vegetation_copy(Soil *soil, /* soil pointer */
         printf("fburnt %g %g\n",cell->output.fburn,cell->ml.image_data->fburnt);
         fflush(stdout);
 #endif
-        stocks=timber_burn(pft,cell->ml.image_data->fburnt,&soil->litter,nind,config);
+        stocks=timber_burn(pft,cell->ml.image_data->fburnt,&soil->litter,config);
 #else
-        stocks=timber_burn(pft,param.fburnt,&soil->litter,nind,config);
+        stocks=timber_burn(pft,param.fburnt,&soil->litter,config);
 #endif
         getoutput(&cell->output,DEFOREST_EMIS,config)+=stocks.carbon*standfrac;
         cell->balance.deforest_emissions.carbon+=stocks.carbon*standfrac;
@@ -123,20 +120,20 @@ static void remove_vegetation_copy(Soil *soil, /* soil pointer */
       (cell->coord.lon-.1<94.25 && cell->coord.lon+.1>94.25 && cell->coord.lat-.1<22.25 && cell->coord.lat+.1>22.25))*/
     if(cell->coord.lon>102.2 && cell->coord.lon < 102.3 && cell->coord.lat >28.7 && cell->coord.lat< 28.8)
     {
-      printf("C %g/%g timber_burn: %s fburn %g standfrac %g littersum %g vegcsum %g nind %g %g\n",cell->coord.lon,cell->coord.lat,pft->par->name,cell->ml.image_data->fburnt,
-             standfrac,litterstocks(&soil->litter).carbon,vegc_sum(pft),pft->nind,nind);
+      printf("C %g/%g timber_burn: %s fburn %g standfrac %g littersum %g vegcsum %g nind %g\n",cell->coord.lon,cell->coord.lat,pft->par->name,cell->ml.image_data->fburnt,
+             standfrac,litterstocks(&soil->litter).carbon,vegc_sum(pft),pft->nind);
       fflush(stdout);
     }
 #endif
     /* rest goes to litter */
-    litter_update(&soil->litter,pft,nind,config);
+    litter_update(&soil->litter,pft,pft->nind,config);
 #ifdef DEBUG_IMAGE_CELL
     if(ftimber>0 ||
       (cell->coord.lon-.1<-43.25 && cell->coord.lon+.1>-43.25 && cell->coord.lat-.1<-11.75 && cell->coord.lat+.1>-11.75)||
       (cell->coord.lon-.1<94.25 && cell->coord.lon+.1>94.25 && cell->coord.lat-.1<22.25 && cell->coord.lat+.1>22.25))
     {
-      printf("D %g/%g timber_burn: %s fburn %g standfrac %g littersum %g vegcsum %g nind %g %g\n",cell->coord.lon,cell->coord.lat,pft->par->name,cell->ml.image_data->fburnt,
-             standfrac,litterstocks(&soil->litter).carbon,vegc_sum(pft),pft->nind,nind);
+      printf("D %g/%g timber_burn: %s fburn %g standfrac %g littersum %g vegcsum %g nind %g\n",cell->coord.lon,cell->coord.lat,pft->par->name,cell->ml.image_data->fburnt,
+             standfrac,litterstocks(&soil->litter).carbon,vegc_sum(pft),pft->nind);
       fflush(stdout);
     }
 #endif
@@ -154,6 +151,9 @@ static void remove_vegetation_copy(Soil *soil, /* soil pointer */
 void reclaim_land(const Stand *stand1,Stand *stand2,Cell *cell,Bool luc_timber,int ntotpft,
                   const Config *config)
 {
+/* initializes soil of stand2 (newly created stand) with soils of stand1 and 
+   puts vegetation biomass into the litter of that new stand, eventually harvesting 
+   timber */
   int l,p;
   Soil *soil;
   soil=&stand2->soil;

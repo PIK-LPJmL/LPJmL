@@ -19,6 +19,21 @@ of `major.minor.patch` with
 
 ## [Unreleased]
 
+### Contributors
+
+- author: Stephen Wirth (wirth@pik-potsdam.de), Christoph Müller (cmueller@pik-potsdam.de)
+- code review:
+
+### Removed
+
+- removed unnecessary variable `nind` that was used in place of `pft->nind` but without additional functionality from
+  - remove_vegetation_copy() 
+  - timber_burn()
+  - timber_harvest()
+
+### Fixed
+
+- missing scaling of `bm_inc.nitrogen` after part of it was added to litter in harvest of wood plantations as in issue #358
 
 ## [5.9.5] - 2024-07-19
 
