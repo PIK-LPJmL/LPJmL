@@ -24,6 +24,10 @@ of `major.minor.patch` with
 - author: Stephen Wirth (wirth@pik-potsdam.de), Christoph Müller (cmueller@pik-potsdam.de)
 - code review:
 
+### Added
+
+- tree.fruit biomass is now explicitly handled in timber_harvest() and pools scaled accordingly in annual_woodplantation.c even though these are currently always zero anyways.
+
 ### Fixed
 
 - missing scaling of `bm_inc.nitrogen` after part of it was added to litter in harvest of wood plantations as in issue #358
