@@ -290,11 +290,11 @@ extern Real npp_contr_biol_n_fixation(Pft *,Soil *,Real,const Config *);
 
 /* needed for IMAGE, but can also be used otherwise */
 
-extern Stocks timber_burn(const Pft *, Real,Litter *,const Config *);
+extern Stocks timber_burn(const Pft *, Real,Litter *,Real,const Config *);
 #if defined(IMAGE) && defined(COUPLED)
-extern Stocks timber_harvest(Pft *,Soil *,Pool *,Poolpar,Real,Real,Stocks *,const Config *,Real, Real[] );
+extern Stocks timber_harvest(Pft *,Soil *,Pool *,Poolpar,Real,Real,Real *,Stocks *,const Config *,Real, Real[] );
 #else
-extern Stocks timber_harvest(Pft *,Soil *,Poolpar,Real,Real,Stocks *,const Config *);
+extern Stocks timber_harvest(Pft *,Soil *,Poolpar,Real,Real,Real *,Stocks *,const Config *);
 #endif
 
 /* Definition of macros */

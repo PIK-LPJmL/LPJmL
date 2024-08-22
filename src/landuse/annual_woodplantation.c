@@ -144,9 +144,10 @@ Bool annual_woodplantation(Stand *stand,         /**< Pointer to stand */
         treepar=pft->par->data;
 
         yield=timber_harvest(pft,&stand->soil,&stand->cell->ml.product,
-                             stand->cell->ml.image_data->timber_f,ftimber,stand->frac,
+                             stand->cell->ml.image_data->timber_f,ftimber,stand->frac,&pft->nind,
                              &biofuel,config,stand->cell->ml.image_data->timber_frac_wp,
                              stand->cell->ml.image_data->takeaway);
+        pft->bm_inc.nitrogen*=(1-ftimber);
         getoutput(&stand->cell->output,TRAD_BIOFUEL,config)+=biofuel.carbon;
         stand->cell->balance.trad_biofuel.carbon+=biofuel.carbon;
         stand->cell->balance.trad_biofuel.nitrogen+=biofuel.nitrogen;
@@ -181,7 +182,8 @@ Bool annual_woodplantation(Stand *stand,         /**< Pointer to stand */
         treepar=pft->par->data;
         if(biomass_tree->growing_time>=treepar->rotation && biomass_tree->growing_time%treepar->rotation==0)
         {
-          yield=timber_harvest(pft,&stand->soil,frac,param.ftimber_wp,stand->frac,&biofuel,config);
+          yield=timber_harvest(pft,&stand->soil,frac,param.ftimber_wp,stand->frac,&pft->nind,&biofuel,config);
+          pft->bm_inc.nitrogen*=(1-param.ftimber_wp);
           getoutput(&stand->cell->output,TRAD_BIOFUEL,config)+=biofuel.carbon;
           stand->cell->balance.trad_biofuel.carbon+=biofuel.carbon;
           stand->cell->balance.trad_biofuel.nitrogen+=biofuel.nitrogen;
