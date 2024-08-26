@@ -19,6 +19,14 @@ of `major.minor.patch` with
 
 ## [Unreleased]
 
+### Contributors
+
+- author: Werner von Bloh (bloh@pik-potsdam.de)
+
+### Removed
+
+- Option `"no"` for nitrogen setting removed, only `"lim"` and `"unlim"` allowed. Corresponding parameter files removed.
+
 
 ## [5.9.5] - 2024-07-19
 

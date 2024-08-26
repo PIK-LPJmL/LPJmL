@@ -728,97 +728,94 @@ Bool getlanduse(Landuse landuse,     /**< Pointer to landuse data */
       sum=1;*/
   } /* for(cell=0;...) */
   free(data);
-  if(config->with_nitrogen)
+  for(cell=0; cell<config->ngridcell; cell++)
+  {
+    initlandfrac(grid[cell].ml.fertilizer_nr,ncft,config->nagtree);
+    initlandfrac(grid[cell].ml.manure_nr,ncft,config->nagtree);
+  }
+
+  if(config->fertilizer_input==FERTILIZER)
+  {
+    /* assigning fertilizer Nr data */
+    data=readdata(&landuse->fertilizer_nr,NULL,grid,"fertilizer",yearf,config);
+    if(data==NULL)
+      return TRUE;
+    count=0;
+
+    /* do changes here for the fertilization*/
+    for(cell=0; cell<config->ngridcell; cell++)
+    {
+      for(i=0; i<WIRRIG; i++)
+      {
+        if(readlandfracmap(grid[cell].ml.fertilizer_nr+i,config->fertilizermap,
+                           config->fertilizermap_size,data,&count,ncft,config->nwptype))
+        {
+          fprintf(stderr,"ERROR149: Fertilizer input=%g for band %d less than zero for cell %d (%s) in year %d.\n",
+                  data[count],count % config->fertilizermap_size+i*config->fertilizermap_size,
+                  cell+config->startgrid,sprintcoord(line,&grid[cell].coord),yearf);
+          return TRUE;
+        }
+      }
+    } /* for(cell=0;...) */
+    free(data);
+  }
+
+  if(config->manure_input)
+  {
+    /* assigning manure fertilizer nr data */
+    data=readdata(&landuse->manure_nr,NULL,grid,"manure",yearm,config);
+    if(data==NULL)
+      return TRUE;
+    count=0;
+
+    /* do changes here for the manure*/
+    for(cell=0; cell<config->ngridcell; cell++)
+    {
+      for(i=0; i<WIRRIG; i++)
+      {
+        if(readlandfracmap(grid[cell].ml.manure_nr+i,config->fertilizermap,
+                           config->fertilizermap_size,data,&count,ncft,config->nwptype))
+        {
+          fprintf(stderr,"ERROR149: Manure input=%g for band %d less than zero for cell %d (%s) in year %d.\n",
+                  data[count],count % config->fertilizermap_size+i*config->fertilizermap_size,
+                  cell+config->startgrid,sprintcoord(line,&grid[cell].coord),yearm);
+          return TRUE;
+        }
+      }
+    } /* for(cell=0;...) */
+    free(data);
+  }
+
+  if(config->fix_fertilization)
   {
     for(cell=0; cell<config->ngridcell; cell++)
     {
-      initlandfrac(grid[cell].ml.fertilizer_nr,ncft,config->nagtree);
-      initlandfrac(grid[cell].ml.manure_nr,ncft,config->nagtree);
-    }
-
-    if(config->fertilizer_input==FERTILIZER)
-    {
-      /* assigning fertilizer Nr data */
-      data=readdata(&landuse->fertilizer_nr,NULL,grid,"fertilizer",yearf,config);
-      if(data==NULL)
-        return TRUE;
-      count=0;
-
-      /* do changes here for the fertilization*/
-      for(cell=0; cell<config->ngridcell; cell++)
+      for(i=0; i<WIRRIG; i++)
       {
-        for(i=0; i<WIRRIG; i++)
-        {
-          if(readlandfracmap(grid[cell].ml.fertilizer_nr+i,config->fertilizermap,
-                             config->fertilizermap_size,data,&count,ncft,config->nwptype))
-          {
-            fprintf(stderr,"ERROR149: Fertilizer input=%g for band %d less than zero for cell %d (%s) in year %d.\n",
-                    data[count],count % config->fertilizermap_size+i*config->fertilizermap_size,
-                    cell+config->startgrid,sprintcoord(line,&grid[cell].coord),yearf);
-            return TRUE;
-          }
+        for(j=0; j<ncft; j++)
+       {
+          grid[cell].ml.fertilizer_nr[i].crop[j]=param.fertilizer_rate;
+          grid[cell].ml.manure_nr[i].crop[j]=param.manure_rate;
         }
-      } /* for(cell=0;...) */
-      free(data);
-    }
-
-    if(config->manure_input)
-    {
-      /* assigning manure fertilizer nr data */
-      data=readdata(&landuse->manure_nr,NULL,grid,"manure",yearm,config);
-      if(data==NULL)
-        return TRUE;
-      count=0;
-
-      /* do changes here for the manure*/
-      for(cell=0; cell<config->ngridcell; cell++)
-      {
-        for(i=0; i<WIRRIG; i++)
+        for(j=0; j<NGRASS; j++)
         {
-          if(readlandfracmap(grid[cell].ml.manure_nr+i,config->fertilizermap,
-                             config->fertilizermap_size,data,&count,ncft,config->nwptype))
-          {
-            fprintf(stderr,"ERROR149: Manure input=%g for band %d less than zero for cell %d (%s) in year %d.\n",
-                    data[count],count % config->fertilizermap_size+i*config->fertilizermap_size,
-                    cell+config->startgrid,sprintcoord(line,&grid[cell].coord),yearm);
-            return TRUE;
-          }
+          grid[cell].ml.fertilizer_nr[i].grass[j]=param.fertilizer_rate;
+          grid[cell].ml.manure_nr[i].grass[j]=param.manure_rate;
         }
-      } /* for(cell=0;...) */
-      free(data);
-    }
-
-    if(config->fix_fertilization)
-    {
-      for(cell=0; cell<config->ngridcell; cell++)
-      {
-        for(i=0; i<WIRRIG; i++)
+        for(j=0; j<config->nagtree; j++)
         {
-          for(j=0; j<ncft; j++)
-         {
-            grid[cell].ml.fertilizer_nr[i].crop[j]=param.fertilizer_rate;
-            grid[cell].ml.manure_nr[i].crop[j]=param.manure_rate;
-          }
-          for(j=0; j<NGRASS; j++)
-          {
-            grid[cell].ml.fertilizer_nr[i].grass[j]=param.fertilizer_rate;
-            grid[cell].ml.manure_nr[i].grass[j]=param.manure_rate;
-          }
-          for(j=0; j<config->nagtree; j++)
-          {
-            grid[cell].ml.fertilizer_nr[i].ag_tree[j]=param.fertilizer_rate;
-            grid[cell].ml.manure_nr[i].ag_tree[j]=param.manure_rate;
-          }
-          grid[cell].ml.fertilizer_nr[i].biomass_grass=param.fertilizer_rate;
-          grid[cell].ml.fertilizer_nr[i].biomass_tree=param.fertilizer_rate;
-          grid[cell].ml.manure_nr[i].biomass_grass=param.manure_rate;
-          grid[cell].ml.manure_nr[i].biomass_tree=param.manure_rate;
-          grid[cell].ml.fertilizer_nr[i].woodplantation=param.fertilizer_rate;
-          grid[cell].ml.manure_nr[i].woodplantation=param.manure_rate;
+          grid[cell].ml.fertilizer_nr[i].ag_tree[j]=param.fertilizer_rate;
+          grid[cell].ml.manure_nr[i].ag_tree[j]=param.manure_rate;
         }
+        grid[cell].ml.fertilizer_nr[i].biomass_grass=param.fertilizer_rate;
+        grid[cell].ml.fertilizer_nr[i].biomass_tree=param.fertilizer_rate;
+        grid[cell].ml.manure_nr[i].biomass_grass=param.manure_rate;
+        grid[cell].ml.manure_nr[i].biomass_tree=param.manure_rate;
+        grid[cell].ml.fertilizer_nr[i].woodplantation=param.fertilizer_rate;
+        grid[cell].ml.manure_nr[i].woodplantation=param.manure_rate;
       }
     }
-  } /* of if(config->with_nitrogen) */
+  }
 
   if(config->tillage_type==READ_TILLAGE)
   {

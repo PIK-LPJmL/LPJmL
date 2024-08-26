@@ -93,17 +93,13 @@ void fprintfiles(FILE *file,          /**< pointer to text output file */
   else
     fprintfilename(file,&config->cloud_filename,TRUE);
   fprintf(file,"%s\n",config->co2_filename.name);
-  if(config->with_nitrogen)
+  if(config->with_nitrogen!=UNLIM_NITROGEN)
   {
-    if(config->with_nitrogen!=UNLIM_NITROGEN)
-    {
-      fprintfilename(file,&config->no3deposition_filename,TRUE);
-      fprintfilename(file,&config->nh4deposition_filename,TRUE);
-    }
-    fprintfilename(file,&config->soilph_filename,FALSE);
+    fprintfilename(file,&config->no3deposition_filename,TRUE);
+    fprintfilename(file,&config->nh4deposition_filename,TRUE);
   }
-  if(config->with_nitrogen || config->fire==SPITFIRE || config->fire==SPITFIRE_TMAX)
-    fprintfilename(file,&config->wind_filename,TRUE);
+  fprintfilename(file,&config->soilph_filename,FALSE);
+  fprintfilename(file,&config->wind_filename,TRUE);
   if(config->fire==SPITFIRE_TMAX)
   {
     fprintfilename(file,&config->tmax_filename,TRUE);
@@ -132,9 +128,9 @@ void fprintfiles(FILE *file,          /**< pointer to text output file */
       fprintfilename(file,&config->sdate_filename,TRUE);
     if(config->crop_phu_option==PRESCRIBED_CROP_PHU)
       fprintfilename(file,&config->crop_phu_filename,TRUE);
-    if(config->with_nitrogen && config->fertilizer_input)
+    if(config->fertilizer_input)
       fprintfilename(file,&config->fertilizer_nr_filename,TRUE);
-    if (config->with_nitrogen && config->manure_input)
+    if (config->manure_input)
       fprintfilename(file,&config->manure_nr_filename,TRUE);
     if(config->residue_treatment==READ_RESIDUE_DATA)
       fprintfilename(file,&config->residue_data_filename,TRUE);

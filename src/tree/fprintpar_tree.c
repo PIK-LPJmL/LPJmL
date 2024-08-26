@@ -41,9 +41,8 @@ void fprintpar_tree(FILE *file,       /**< pointer to text file */
           partree->sapl.heartwood.carbon,partree->sapl.root.carbon,partree->k_latosa,
           partree->wood_density,partree->allom1,partree->allom2,partree->allom3,
           partree->allom4);
-  if(config->with_nitrogen)
-    fprintf(file,"rel. C:N ratio:\t%g %g\n",
-            partree->ratio.sapwood,partree->ratio.root);
+  fprintf(file,"rel. C:N ratio:\t%g %g\n",
+          partree->ratio.sapwood,partree->ratio.root);
   if(par->phenology==SUMMERGREEN)
     fprintf(file,"aphen:\t\t%g %g\n",partree->aphen_min,partree->aphen_max);
   fprintf(file,"max height:\t%g (m)\n"
