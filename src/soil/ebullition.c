@@ -35,7 +35,7 @@ Real ebullition(Soil *soil,   /**< pointer to soil data */
                 Real fpc_all  /**< plant cover  (0..1) */
               )
 {
-  Real C_thres, Q_ebull, ratio, Q_ebull_day, soil_moist[NSOILLAYER], V[NSOILLAYER], epsilon_CH4, epsilon_CH4_u;
+  Real C_thres, Q_ebull, ratio, Q_ebull_day, soil_moist[NSOILLAYER], V[NSOILLAYER], epsilon_CH4; //, epsilon_CH4_u;
   int l, i;
   Q_ebull = Q_ebull_day = 0.0;
 #ifdef DEBUG
@@ -52,10 +52,6 @@ Real ebullition(Soil *soil,   /**< pointer to soil data */
   for (l = LASTLAYER - 1; l >= 0; l--)
   {
     epsilon_CH4 = max(0.001, V[l] + soil_moist[l] * soil->wsat[l]*BCH4);
-    if (l == 0)
-      epsilon_CH4_u = epsilon_CH4;
-    else
-      epsilon_CH4_u = max(0.001, V[l - 1] + soil_moist[l - 1] * soil->wsat[l-1]*BCH4);
     ratio = min((layerbound[l] - soil->wtable) / soildepth[l], 1);
     for (i = 1; i <= 24; i++)
     {

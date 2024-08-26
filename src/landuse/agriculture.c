@@ -23,22 +23,12 @@
 Standtype setaside_rf_stand={SETASIDE_RF,"setaside_rf",new_agriculture,
                              free_agriculture,fwrite_agriculture,
                              fread_agriculture,fprint_agriculture,
-#ifdef DAILY_ESTABLISHMENT
-                             daily_setaside,
-#else
-                             daily_grassland,
-#endif
-                             annual_setaside,NULL};
+                             daily_grassland,annual_setaside,NULL};
 
 Standtype setaside_ir_stand={SETASIDE_IR,"setaside_ir",new_agriculture,
                              free_agriculture,fwrite_agriculture,
                              fread_agriculture,fprint_agriculture,
-#ifdef DAILY_ESTABLISHMENT
-                             daily_setaside,
-#else
-                             daily_grassland,
-#endif
-                             annual_setaside,NULL};
+                             daily_grassland,annual_setaside,NULL};
 
 Standtype setaside_wetland_stand={SETASIDE_WETLAND,"setaside_wetland_stand",new_agriculture,
                              free_agriculture,fwrite_agriculture,

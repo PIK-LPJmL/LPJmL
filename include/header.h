@@ -19,7 +19,7 @@
 /* Definition of constants */
 
 #define RESTART_HEADER "LPJRESTART"
-#define RESTART_VERSION 30
+#define RESTART_VERSION 31
 #define LPJ_CLIMATE_HEADER "LPJCLIM"
 #define LPJ_CLIMATE_VERSION 3
 #define LPJ_LANDUSE_HEADER "LPJLUSE"
@@ -83,7 +83,7 @@
 #define MAP_NAME "map"     /**< name of map in JSON files */
 #define BAND_NAMES "band_names" /**< name of band string array in JSON metafiles */
 
-extern const char *ordernames[];
+extern char *ordernames[];
 
 /* Definition of datatypes */
 
@@ -165,16 +165,17 @@ extern Bool freadanyheader(FILE *,Header *,Bool *,String,int *,Bool);
 extern Bool freadheaderid(FILE *,String,Bool);
 extern size_t headersize(const char *,int);
 extern FILE *openinputfile(Header *, Bool *,const Filename *,
-                           String,const char *,int *,size_t *,Bool,const Config *);
+                           String,const char *,Type,int *,size_t *,Bool,const Config *);
 extern FILE *openmetafile(Header *,Map **,const char *,Attr **,int *,char **,char **,char **,char **,char **,char **,Filename *,Type *,int *,Bool *,size_t *,const char *,Bool);
 extern char *getfilefrommeta(const char *,Bool);
 extern void fprintheader(FILE *,const Header *);
 extern char *parse_json_metafile(FILE *,Header *,Map **,const char *,Attr **,int *,char **,char **,char **,char **,char **,char **,Filename *,Type *,int *,size_t *,Bool *,Verbosity);
 extern Map *fscanmap(LPJfile *,const char *,Verbosity);
+extern Map *newmap(Bool,int);
 extern void freemap(Map *);
 extern void fprintmap(FILE *,const Map *);
 extern Bool cmpmap(const Map *,const Map *);
-extern void fprintjson(FILE *,const char *,const char *,const char *,const char *,const Header *,
+extern void fprintjson(FILE *,const char *,const char *,const char *,const char *,const char *,const Header *,
                        Map *,const char *,const Attr *,int,const char *,const char *,const char *,
                        const char *,const Filename *,Type,int,const char *,Bool,int);
 

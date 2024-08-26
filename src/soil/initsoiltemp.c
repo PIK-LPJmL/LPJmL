@@ -102,13 +102,13 @@ Bool initsoiltemp(Climate* climate,    /**< pointer to climate data */
               if (stand->soil.amean_temp[l]<-40) stand->soil.amean_temp[l] = -40;
               stand->soil.w[l]+=balance/nsoilmeanyears/stand->soil.whcs[l]*stand->soil.whcs[l]/whcs_all;
             }
+            stand->soil.temp[SNOWLAYER] = stand->soil.temp[0];
+            stand->soil.amean_temp[SNOWLAYER] = stand->soil.temp[0];
           }
         }
       day+=ndaymonth[month];
     } /* of foreachmonth */
   }
-  stand->soil.temp[SNOWLAYER] = stand->soil.temp[0];
-  stand->soil.amean_temp[SNOWLAYER] = stand->soil.temp[0];
   for(cell=0;cell<config->ngridcell;cell++)
     if(!grid[cell].skip)
       foreachstand(stand,s,grid[cell].standlist)
@@ -133,5 +133,30 @@ Bool initsoiltemp(Climate* climate,    /**< pointer to climate data */
             stand->soil.CH4[l] = p_s / R_gas / (10 + 273.15)*param.pch4*1e-9*WCH4*soildepth[l] * epsilon_gas / 1000;    /* corresponding to atmospheric CH4 concentration to g/m2 per layer*/
           }
         }
+  /* initialse the enthalpy vectors based on temperature */
+  Soil_thermal_prop therm; /* thermal properties of soil for calculation of enthalpy */
+  int i,gridpoint;
+  for(cell=0;cell<config->ngridcell;cell++)
+    if(!grid[cell].skip)
+      foreachstand(stand,s,grid[cell].standlist)
+      {
+        calc_soil_thermal_props(UNKNOWN,&therm,&(stand->soil),NULL,NULL,config->johansen,FALSE); /* thermal properties of soil depend on water content */
+        foreachsoillayer(l)
+        {
+          for(i=0; i<GPLHEAT; ++i)
+          { /* iterate through gridpoints of the refined heatgrid */
+            gridpoint = GPLHEAT*l+i;
+            /* Get the enthalpy corresponding to the temperature.
+               when $temp=0$, we only know that $enth in [0,latent_heat]$,
+               hence there is some freedom in choosing inital enth */
+            stand->soil.enth[gridpoint] =
+               (stand->soil.temp[l]<0 ?
+                stand->soil.temp[l]*therm.c_frozen[gridpoint] :
+                stand->soil.temp[l]*therm.c_unfrozen[gridpoint]+therm.latent_heat[gridpoint]);
+          }
+          stand->soil.wi_abs_enth_adj[l]=allwater((&(stand->soil)),l)+allice((&(stand->soil)),l);
+          stand->soil.sol_abs_enth_adj[l]=soildepth[l]-stand->soil.wsats[l];
+        }
+      }
   return FALSE;
 } /* of 'initsoiltemp' */

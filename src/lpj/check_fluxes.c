@@ -29,8 +29,8 @@ void check_fluxes(Cell *cell,          /**< cell pointer */
   String line;
   int s,i,startyear;
 
-  int p;
-  Pft *pft;
+//  int p;
+//  Pft *pft;
   /* carbon balance check */
   awater_flux = cell->balance.awater_flux;
 
@@ -66,13 +66,14 @@ void check_fluxes(Cell *cell,          /**< cell pointer */
   delta_tot.nitrogen=tot.nitrogen-cell->balance.tot.nitrogen;
   cell->balance.tot=tot;
 ////// Soil->ch4 must be multiplied by WC/WCH4 as well as cell->balance.aCH4_em cell->balance.aCH4_sink, CH4 sink is defined to be negative
-  balance.carbon=cell->balance.anpp-cell->balance.arh-cell->balance.fire.carbon-cell->balance.flux_firewood.carbon+
+  balance.carbon=cell->balance.anpp-cell->balance.arh-cell->balance.fire.carbon+
                  cell->balance.flux_estab.carbon-cell->balance.flux_harvest.carbon-cell->balance.biomass_yield.carbon-delta_tot.carbon-
                  cell->balance.neg_fluxes.carbon+cell->balance.influx.carbon-cell->balance.aCH4_em*WC/WCH4-cell->balance.aCH4_sink*WC/WCH4;
-  balance.nitrogen=cell->balance.influx.nitrogen-cell->balance.fire.nitrogen-cell->balance.flux_firewood.nitrogen-cell->balance.n_outflux+
-                   cell->balance.flux_estab.nitrogen-cell->balance.biomass_yield.nitrogen-cell->balance.flux_harvest.nitrogen-delta_tot.nitrogen-
-                   cell->balance.neg_fluxes.nitrogen;
-  /* for IMAGE but can also be used without IMAGE */
+  balance.nitrogen=cell->balance.influx.nitrogen-cell->balance.fire.nitrogen-cell->balance.n_outflux+cell->balance.flux_estab.nitrogen-
+                   cell->balance.biomass_yield.nitrogen-cell->balance.flux_harvest.nitrogen-delta_tot.nitrogen-cell->balance.neg_fluxes.nitrogen-
+                   cell->balance.deforest_emissions.nitrogen;
+
+   /* for IMAGE but can also be used without IMAGE */
 #ifdef IMAGE
   balance.carbon-=cell->balance.deforest_emissions.carbon+cell->balance.prod_turnover.fast.carbon+cell->balance.prod_turnover.slow.carbon+cell->balance.trad_biofuel.carbon+cell->balance.timber_harvest.carbon;
 #else

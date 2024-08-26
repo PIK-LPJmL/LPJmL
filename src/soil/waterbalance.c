@@ -34,7 +34,7 @@ void waterbalance(Stand *stand,           /**< Stand pointer */
 {
   String line;
   Real w_evap=0,w_evap_ice=0,whcs_evap=0,soildepth_evap=param.soildepth_evap,evap_ratio,green_evap=0,marginal;
-  Real evap_energy,evap_litter,evap_soil, litter_depth,evap_test;
+  Real evap_energy,evap_litter,evap_soil,evap_test;                    //litter_depth,
   Soil *soil;
   int l;
   Real aet=0,updated_soil_water=0,previous_soil_water[NSOILLAYER],evap_out[BOTTOMLAYER];
@@ -66,53 +66,48 @@ void waterbalance(Stand *stand,           /**< Stand pointer */
   {
    if (soil->w[l]< -epsilon || soil->w_fw[l]< -epsilon )
    {
-
-//      fprintf(stderr,"start waterbalance Cell (%s) soilwater=%.6f soilice=%.6f wsats=%.6f agtop_moist=%.6f\n",
+//
+//      fprintf(stderr,"\n\nstart waterbalance Cell (%s) soilwater=%.6f soilice=%.6f wsats=%.6f agtop_moist=%.6f\n",
 //          sprintcoord(line,&stand->cell->coord),allwater(soil,l),allice(soil,l),soil->wsats[l],soil->litter.agtop_moist);
 //      fflush(stderr);
-//      fprintf(stderr,"Cell (%s) 1 Soil-moisture %d negative: w:%g, fw:%g,lutype %s soil_type %s \n",
+//      fprintf(stderr,"Cell (%s) 1 Soil-moisture layer %d negative: w:%g, fw:%g,lutype %s soil_type %s \n\n",
 //          sprintcoord(line,&stand->cell->coord),l,soil->w[l],soil->w_fw[l],stand->type->name,soil->par->name);
+//
+      if (soil->w_fw[l]<0)
+      {
+        if (soil->w[l]>epsilon)
+        {
+          soil->w[l]+=(soil->w_fw[l]/soil->whcs[l]);
+          soil->w_fw[l]=0;
+        }
+        else
+        {
+          marginal+=soil->w_fw[l];
+          soil->w_fw[l]=0;
+        }
+      }
+      if (soil->w[l]<0)
+      {
+        if(soil->w_fw[l]/soil->whcs[l]>epsilon){
+          soil->w_fw[l]+=(soil->w[l]*soil->whcs[l]);
+          soil->w[l]=0;
+        }
+        else
+        {
+          marginal+=soil->w[l] * soil->whcs[l];
+          soil->w[l]=0;
+        }
+      }
 
-     if((allwater(soil,l)-(soil->wpwps[l]*(1-soil->ice_pwp[l]))) > epsilon)
-     {
-       tmpwater=soil->w_fw[l]+soil->w[l]*soil->whcs[l];
-       soil->w[l]=tmpwater/soil->whcs[l];
-       soil->w_fw[l]=0;
-       if(soil->w[l]>1)
-       {
-         soil->w_fw[l]=(1-soil->w[l])*soil->whcs[l];
-         soil->w[l]=1;
-       }
-     }
-     else if ((allice(soil,l)-(soil->wpwps[l]*soil->ice_pwp[l]))>epsilon)
-     {
-      tmpwater=soil->w_fw[l]+soil->w[l]*soil->whcs[l];
-      soil->w_fw[l]=soil->w[l]=0;
-      soil->ice_fw[l]+=tmpwater;
-      if(soil->ice_fw[l]<0)
-      {
-        soil->ice_depth[l]+=soil->ice_fw[l];
-        soil->ice_fw[l]=0;
-      }
-      if(soil->ice_depth[l]<0)
-      {
-        marginal+=soil->ice_depth[l];
-        soil->ice_depth[l]=0;
-      }
-     }
-     else
-     {
-       marginal+=soil->w_fw[l]+soil->w[l]*soil->whcs[l];
-       soil->w_fw[l]=soil->w[l]=0;
-     }
-//     fprintf(stderr,"after recalculation waterbalance Cell (%s) soilwater=%.6f soilice=%.6f wsats=%.6f wpwps=%.6f ice_pwp=%.6f marginal:%.6f\n",
+
+//      fprintf(stderr,"after recalculation waterbalance Cell (%s) soilwater=%.6f soilice=%.6f wsats=%.6f wpwps=%.6f ice_pwp=%.6f marginal:%.6f\n",
 //         sprintcoord(line,&stand->cell->coord),allwater(soil,l),allice(soil,l),soil->wsats[l],soil->wpwps[l],soil->ice_pwp[l],marginal);
 //     fprintf(stderr,"Soil-moisture %d negative: w:%g, fw:%g,lutype %s soil_type %s \n",
 //         l,soil->w[l],soil->w_fw[l],stand->type->name,soil->par->name);
      tmpwater=0;
      if (soil->w[l]< -epsilon || soil->w_fw[l]< -epsilon )
      {
-        fprintf(stderr,"start waterbalance Cell (%s) soilwater=%.6f soilice=%.6f wsats=%.6f agtop_moist=%.6f\n",
+        fprintf(stderr,"second waterbalance Cell (%s) soilwater=%.6f soilice=%.6f wsats=%.6f agtop_moist=%.6f\n",
             sprintcoord(line,&stand->cell->coord),allwater(soil,l),allice(soil,l),soil->wsats[l],soil->litter.agtop_moist);
         fflush(stderr);
         fprintf(stderr,"Cell (%s) 1 Soil-moisture %d negative: w:%g, fw:%g,lutype %s soil_type %s \n",
@@ -155,14 +150,12 @@ void waterbalance(Stand *stand,           /**< Stand pointer */
       else
         evap_soil=evap_energy*(1-soil->litter.agtop_cover);     if above field cap then it's potential evap
      */
-    if(w_evap>epsilon)
+    if(w_evap>0)
      evap_soil=evap_energy/(1+exp(5-10*w_evap/whcs_evap))*max(0.05,(1-soil->litter.agtop_cover));
     else
       evap_soil=0;
     if(evap_soil>tmpwater)
       evap_soil=max(tmpwater,0);
-//    if (evap_soil>(w_evap-w_evap_ice) && (w_evap>w_evap_ice))
-//      evap_soil=w_evap-w_evap_ice;
 
   //*evap=min(*evap,eeq*PRIESTLEY_TAYLOR*(1-wet_all)-aet); /*close the energy balance*/
 
@@ -205,7 +198,7 @@ void waterbalance(Stand *stand,           /**< Stand pointer */
     if(soildepth_evap>0)
     {
       /* release evaporation water */
-      evap_out[l]=(soil->w[l]*soil->whcs[l]+soil->w_fw[l])*evap_ratio*min(1,soildepth_evap/soildepth[l]);
+      evap_out[l]=(soil->w[l]*soil->whcs[l]+soil->w_fw[l])*evap_ratio*min(1,soildepth_evap/soildepth[l]);  // TODO isn't evap_ratio calculated for the whole soildepth_evap, Does it work when looping?
       if(evap_out[l]>0)
         soil->w_fw[l]-=evap_out[l];
       else
@@ -220,9 +213,11 @@ void waterbalance(Stand *stand,           /**< Stand pointer */
       soil->w_fw[l]=0;
       if (soil->w[l]< -epsilon)
       {
-        fprintf(stderr,"Cell (%s) laye: %d negative soil water after evap and transp w= %.6f w_fw= %.6f evap=  %.6f transp=  %.6f iswetland= %d\n",
-            sprintcoord(line,&stand->cell->coord),l,soil->w[l]*soil->whcs[l],soil->w_fw[l],evap_out[l],aet_stand[l],soil->iswetland);
-        fflush(stderr);
+        marginal+=soil->w[l] * soil->whcs[l];
+        soil->w[l]=0;
+//        fprintf(stderr,"NR1 in %s Cell (%s) layer: %d negative soil water after evap and transp w= %.6f w_fw= %.6f evap=  %.6f transp=  %.6f iswetland= %d\n",__FUNCTION__,
+//            sprintcoord(line,&stand->cell->coord),l,soil->w[l]*soil->whcs[l],soil->w_fw[l],evap_out[l],aet_stand[l],soil->iswetland);
+//        fflush(stderr);
       }
     }
     /* reallocate water above field capacity to freewater; needed here since thawing permafrost can increase soil->w */
@@ -245,20 +240,23 @@ fprintf(stderr,"w[%d] %3.12f, fw[%d] %3.12f, icedepth[%d] %3.12f, whcs[%d] %3.12
         soil->w[l]+=(soil->w_fw[l]/soil->whcs[l]);
         soil->w_fw[l]=0;
       }
-      marginal+=soil->w_fw[l];
-      soil->w_fw[l]=0;
+      else
+      {
+        marginal+=soil->w_fw[l];
+        soil->w_fw[l]=0;
+      }
     }
     if (soil->w[l]<0)
     {
-      if (soil->w[l]<-epsilon)
+      if(soil->w_fw[l]/soil->whcs[l]>epsilon){
+        soil->w_fw[l]+=(soil->w[l]*soil->whcs[l]);
+        soil->w[l]=0;
+      }
+      else
       {
-        if(soil->w_fw[l]/soil->whcs[l]>epsilon){
-          soil->w_fw[l]+=(soil->w[l]*soil->whcs[l]);
-          soil->w[l]=0;
-        }
-       }
-       marginal+=soil->w[l] * soil->whcs[l];
-       soil->w[l]=0;
+        marginal+=soil->w[l] * soil->whcs[l];
+        soil->w[l]=0;
+      }
     }
     if(soil->w[l]*soil->whcs[l]+soil->ice_depth[l]+soil->w_fw[l]+soil->ice_fw[l]<1e-12)
       stand->frac_g[l]=1.0;
@@ -324,15 +322,26 @@ fprintf(stderr,"w[%d] %3.12f, fw[%d] %3.12f, icedepth[%d] %3.12f, whcs[%d] %3.12
       stand->frac_g[l]=1;
     if(stand->frac_g[l]<0)
       stand->frac_g[l]=0;
-  stand->cell->discharge.drunoff+=marginal*stand->frac;
-  stand->cell->balance.awater_flux+=marginal*stand->frac;
+    stand->cell->discharge.drunoff+=marginal*stand->frac;
+    stand->cell->balance.awater_flux+=marginal*stand->frac;
+    if(isnan(soil->w[l] )||  isnan(soil->w_fw[l]) || isnan(stand->cell->balance.atransp))
+    {
+      fail(FPE_ERR,TRUE,TRUE,"in waterbalance() Cell (%s) alance.atranspt= %3.5f  aet= %3.5f evap= %3.5f cover= %3.2f soilwater=%.4f soilice:%.4f w=%.4f fw:%.4f wpwps:%.4f wsats=%.6f layer: %d\n",
+                  sprintcoord(line,&stand->cell->coord),stand->cell->balance.atransp,aet_stand[l],*evap,cover,allwater(soil,l),allice(soil,l),soil->w[l]*soil->whcs[l],soil->w_fw[l],soil->wpwps[l],soil->wsats[l],l);
+    }
+
+  } /* soil layer loop */
+
   if(marginal<-2)
   {
-    fprintf(stderr,"end waterbalance Cell (%s) aet= %3.5f evap= %3.5f cover= %3.2f soilwater=%.6f soilice:%.6f wsats=%.6f layer: %d\n",
-            sprintcoord(line,&stand->cell->coord),aet_stand[l],*evap,cover,allwater(soil,l),allice(soil,l),soil->wsats[l],l);
-    fprintf(stderr,"MARGINAL: %g\n",marginal*stand->frac);
+    for (l=0;l<NSOILLAYER;l++){
+      if(soil->w[l]<epsilon || soil->w_fw[l]<epsilon)
+        fprintf(stderr,"end waterbalance Cell (%s) aet= %3.5f evap= %3.5f cover= %3.2f soilwater=%.4f soilice:%.4f w=%.4f fw:%.4f wpwps:%.4f wsats=%.6f layer: %d\n",
+            sprintcoord(line,&stand->cell->coord),aet_stand[l],*evap,cover,allwater(soil,l),allice(soil,l),soil->w[l]*soil->whcs[l],soil->w_fw[l],soil->wpwps[l],soil->wsats[l],l);
+      fprintf(stderr,"MARGINAL: %g\n",marginal);
+    }
   }
-  } /* soil layer loop */
+
 #ifdef CHECK_BALANCE
   water_after=soilwater(&stand->soil);
   balancew=water_after-water_before+marginal+aet+*evap;

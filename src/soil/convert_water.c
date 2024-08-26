@@ -83,7 +83,12 @@ void convert_water(Soil* soil, /**< pointer to soil data */
           soilice2moisture(soil,&melt_heat,l); 
           soil->state[l]=(short)getstate(soil->temp+l);
         }
-      }
+      }     
+      else if (soil->ice_depth[l]<0)
+        fail(PERM_ERR,TRUE,FALSE,"ice_depth[%d]=%g<0 in convert_water()",l,soil->ice_depth[l]);
+      default:
+      /* do nothing */
+      break;
   } /* of switch */
   /**
   * now use the energy from heat for any additional water/ice conversions
@@ -96,13 +101,13 @@ void convert_water(Soil* soil, /**< pointer to soil data */
       moisture2soilice(soil,heat,l);
   }
   if (soil->ice_depth[l]<0)
-        {
-        //fprintf(stderr,"ice_depth[%d]=%g < 0 in convert_water()\n",l,soil->ice_depth[l]);
-        if (soil->ice_depth[l]<-epsilon)
-            soil->ice_depth[l]=0;
-          else
-            fail(PERM_ERR,TRUE,FALSE,"ice_depth[%d]=%g<0 in convert_water()",l,soil->ice_depth[l]);
-        }
+  {
+    //fprintf(stderr,"ice_depth[%d]=%g < 0 in convert_water()\n",l,soil->ice_depth[l]);
+    if (soil->ice_depth[l]<-epsilon)
+      soil->ice_depth[l]=0;
+    else
+      fail(PERM_ERR,TRUE,FALSE,"ice_depth[%d]=%g<0 in convert_water()",l,soil->ice_depth[l]);
+  }
 #ifdef CHECK_BALANCE
   water_after=soilwater(soil);
    balancew=water_after-water_before;

@@ -100,7 +100,7 @@ void plant_gas_transport(Stand *stand,        /**< pointer to soil data */
   /*convert cm h-1 to m d-1*/
   kCH4 = kCH4/100*24;
   kO2 = kO2/100*24;
-  CH4_rice=0;
+  CH4_rice=CH4_plant=0;
   foreachpft(pft, p, &stand->pftlist)
   {
     if (!istree(pft))

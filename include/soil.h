@@ -19,6 +19,14 @@
 #include "hydrotope.h"
 
 
+/* A static keyword that vanishes for unit testing,
+ * then enabling testing with external functions. */
+#ifdef U_TEST
+#define STATIC
+#else
+#define STATIC static
+#endif
+
 /* Definition of constants */
 
 #define NSOILLAYER 6 /* Number of soil layers */
@@ -28,7 +36,10 @@
 #define NFUELCLASS 4 /* Number of fuel classes */
 #define TOPLAYER 0
 #define NTILLLAYER 1 /* number of layers to be tilled */
-
+#ifndef U_TEST
+#define GPLHEAT 1 /* Gripoints per soil layer for the heat conduction scheme  */
+#endif
+#define NHEATGRIDP ((NSOILLAYER)*(GPLHEAT)) /* Total number of gridpoints for the heatflow scheme */
 #define SNOWLAYER NSOILLAYER
 
 #define snow_skin_depth 40.0 /* snow skin layer depth (mm water equivalent)*/
@@ -59,11 +70,34 @@
 #define NSTEP_DAILY 1
 #define LAG_CONV (NDAYYEAR*0.5*M_1_PI)  /* conversion factor for oscillation
                                 lag from angular units to days (=365/(2*PI))*/
-#define MINERALDENS 2700 /* mineral density in kg/m3*/
+#define MINERALDENS 2700.0 /* mineral density in kg/m3*/
 #define ORGDENS 1400     /* density of organic soil substances [kg/m3]*/
 #define PRIESTLEY_TAYLOR 1.32 /* Priestley-Taylor coefficient */
 #define SOILDEPTH_IRRIG 500 /*size of layer considered for calculation of irrigation ammount*/
 #define CDN 1.2         /* shape factor for denitrification from SWAT; beta_denit eq 3:1.4.1, SWAT Manual 2009 , take smaller value as it seems to be to high 1.4 originally*/
+/* The below snowheight per water height is used for thermal calculations;
+ * It is a typical value for settled snow (see Muskett et al (2012): Remote Sensing ... ) 
+ * analogous to c_watertosnow */
+#define SNOWHEIGHT_PER_WATERHEIGHT 4
+#define K_SOLID 8       /* Thermal conductivity of solid components in saturated state */
+#define K_ICE   2.2     /* Thermal conductivity of ice */
+#define K_WATER 0.57    /* Thermal conductivity of liquid water*/
+#define K_SOLID_LOG 0.90308998699
+#define K_ICE_LOG   0.34242268082
+#define K_WATER_LOG -0.24412514432
+/* Litter bulk and particle density are literature mean values for Oi horizon (dry bulk density samples are from the boreal zone)*/
+/* Range for dry bulk density is 39.6 [kg/m^3] (Kasischke et al (2000): Controls on Patterns of ... ) to 90.0 [kg/m^3] (Huang et al (1996): Forms amounts and ... ) */
+/* Range for particle density is 1220 [kg/m^3] (Wickland et al (2007): Decomposition of soil ... ) to 1660 [kg/m^3] (Lauren et al (1997): Physical properties ... ) */
+#define DRY_BULK_DENSITY_LITTER 71.1 /* [kg/m^3] */
+/* Porosity is calculated using f = (p_s - p_b)/p_s
+ * p_b is bulk density; p_s is particle density
+ * Hillel: Environmental Soil Physics, p15 f. */
+#define POROSITY_LITTER 0.952  // [fraction]
+/* Litter thermal properties are based on organic soil values of
+ * (Lawrance and Slater (2007), Incorporating organic soil into a global climate model) */
+#define K_LITTER_DRY 0.05  /* thermal conductivity of organic material when completly dry */
+#define K_LITTER_SAT_FROZEN 2.106374   /* thermal conductivity of fully saturated frozen organic material */
+#define K_LITTER_SAT_UNFROZEN 0.554636  /* thermal conudcitivity of fully saturated unfrozen organic material */
 
 #define WC  12               /*12g/mol*/
 #define WO2 32               /*32g/mol*/
@@ -202,7 +236,7 @@ typedef struct
   Real O2[LASTLAYER];            /*mass of soil oxygen per soil layer*/
   Real CH4[LASTLAYER];           /*mass of soil methane per soil layer in gC*/
   Real w_evap;                   /**< soil moisture content which is not transpired and can evaporate? correct? */
-  Real perc_energy[NSOILLAYER];  /**< energy transfer by percolation */
+  Real perc_energy[NSOILLAYER];  /**< energy transfer by percolation (J) */
 #ifdef MICRO_HEATING
   Real micro_heating[NSOILLAYER]; /**< energy of microbiological heating*/
   Real decomC[NSOILLAYER];
@@ -213,6 +247,7 @@ typedef struct
   Real snowfraction;  /**< fraction of snow-covered ground */
   Real temp[NSOILLAYER+1];      /**< [deg C]; last layer=snow*/
   Real amean_temp[NSOILLAYER + 1];
+  Real enth[NHEATGRIDP];  /**< volumetric enthalpy (i.e. thermal energy/heat) [J/m^3] */
   Real Ks[NSOILLAYER];    /**< saturated hydraulic conductivity (mm/h) per layer*/
   Real wpwp[NSOILLAYER];  /**< relative water content at wilting point */
   Real wfc[NSOILLAYER];   /**< relative water content at field capacity */
@@ -246,7 +281,27 @@ typedef struct
   Real wtable;                /* mm below surface*/
   Real snowdens;
   int iswetland;
+  /* the next two variables allow observation of soil content changes, made without cosidering enthalpy adjustments */
+  Real wi_abs_enth_adj[NSOILLAYER];  /**< absolute water ice content with corresponding enthalpy adjustments (mm) */
+  Real sol_abs_enth_adj[NSOILLAYER]; /**< absolute solid content with adjusted enthalpy (mm) */
 } Soil;
+
+typedef struct
+{
+  Real lam_frozen[NHEATGRIDP];    /**< conductivity of soil in frozen state [W/K/m] */
+  Real lam_unfrozen[NHEATGRIDP];  /**< conductivity of soil in unfrozen state [W/K/m] */
+  Real c_frozen[NHEATGRIDP];      /**< heat capacity of soil in frozen state [J/m3/K] */
+  Real c_unfrozen[NHEATGRIDP];    /**< heat capacity of soil in unfrozen state [J/m3/K] */
+  Real latent_heat[NHEATGRIDP];   /**< latent heat of fusion of soil [J/m3] */
+  /* lam_frozen and lam_unfrozen define thermal conductivities for each element (i.e. intervals between gridpoints)
+   * (e.g. lam_frozen[0] <-> element directly below the surface), while the other variables define
+   * properties at the gridpoints, (e.g. c_frozen[0] <-> first point below surface) */
+} Soil_thermal_prop;
+
+/* states whether the sign of temperatures in soil column and air is
+ * uniformly above/below zero, or mixed or unknown */
+typedef enum {ALL_BELOW_0, MIXED_SIGN, ALL_ABOVE_0, UNKNOWN} Uniform_temp_sign;
+
 
 struct Pftpar; /* forward declaration */
 struct Dailyclimate; /* forward declaration */
@@ -293,7 +348,7 @@ extern Real moistfactor(const Litter *);
 extern void moisture2soilice(Soil *,Real *,int);
 extern void newsoil(Soil *);
 extern int seeksoilcode(FILE *,int,size_t,Type);
-extern Real snow(Soil *,Real *,Real *,Real, Real *,Real *);
+extern Real snow(Soil *,Real *,Real *,Real,Real *);
 extern Real snow_old(Real *,Real *,Real *,Real);
 extern void soiltemp(Soil*, Real,const Config *);
 #ifdef COUPLING_WITH_FMS
@@ -308,11 +363,19 @@ extern Real rootwater(const Soil *);
 extern Real satwater(const Soil *);
 extern Real soilconduct(const Soil *,int,Bool);
 extern Real soilheatcap(const Soil *,int);
+extern void apply_heatconduction_of_a_day(Uniform_temp_sign, Real *, const Real *, Real, const Soil_thermal_prop *);
+extern void calc_soil_thermal_props(Uniform_temp_sign, Soil_thermal_prop *, const Soil *, const Real *, const Real * , Bool, Bool);
+extern void compute_mean_layer_temps_from_enth(Real *, const Real *,const  Soil_thermal_prop *);
+extern void apply_enth_of_untracked_mass_shifts(Real *, const Real *, const Real *, const Real *, const Real *);
+extern void apply_perc_enthalpy(Soil *);
+extern void freezefrac2soil(Soil *, const Real [NSOILLAYER]);
+extern void enth2freezefrac(Real *, const Real * ,const  Soil_thermal_prop *);
 extern void soilice2moisture(Soil *, Real *,int);
 extern void gasdiffusion(Soil*, Real, Real, Real *, Real *);
 extern Real ebullition(Soil*, Real);
 extern Real soilmethane(const Soil *);
 extern Real temp_response(Real, Real);
+extern void update_soil_thermal_state(Soil *,Real,const Config *);
 extern Real litter_agtop_tree(const Litter *,int);
 extern Real litter_agtop_nitrogen_tree(const Litter *,int);
 extern Real biologicalnfixation(const Stand *,int,int,const Config *);
@@ -324,6 +387,7 @@ extern void getrootdist(Real [],const Real[],Real);
 extern Stocks checklitter(Litter *);
 extern Real getwr(const Soil *,const Real []);
 extern void updatelitterproperties(Stand *,Real);
+extern Real calc_litter_dm_sum(const Soil *);
 extern void pedotransfer(Stand *, Real *, Real *,Real);
 extern void soilpar_output(Cell *,Real,const Config *);
 extern int findsoilid(const char *,const Soilpar *,int);
@@ -343,4 +407,17 @@ extern void cmpsoilmap(const int*,int,const Config *);
 #define f_NH4(nh4) (1-exp(-0.0105*(nh4))) /* Parton et al 1996 */
 #define getV(soil,l) (((soil)->wsats[l] - ((soil)->w[l] * (soil)->whcs[l] + (soil)->ice_depth[l] + (soil)->ice_fw[l] + (soil)->wpwps[l] + (soil)->w_fw[l])) / soildepth[l]) /*soil air content (m3 air/m3 soil)*/
 #define getsoilmoist(soil,l) (((soil)->w[l] * (soil)->whcs[l] + ((soil)->wpwps[l] * (1 - (soil)->ice_pwp[l])) + (soil)->w_fw[l]) / (soil)->wsats[l])
+/* Compute the temperature at a gridpoint (gp)
+given an enthalpy vector (enth) and a Soil_thermal_prop (th) */
+#define ENTH2TEMP(e, th, gp)\
+ (((e)[(gp)]<0                       ?  (e)[(gp)]                            / (th)->c_frozen[(gp)]   : 0) +\
+  ((e)[(gp)]>(th)->latent_heat[(gp)] ? ((e)[(gp)] - (th)->latent_heat[(gp)]) / (th)->c_unfrozen[(gp)] : 0))
+/* Calculate the energy of percolating water and add it to perc_energy */
+#define reconcile_layer_energy_with_water_shift(soil, layer, amount, vol_enthalpy, config) ({\
+        if(config->percolation_heattransfer)\
+        {\
+          soil->perc_energy[layer]+=amount/1000*vol_enthalpy; /* add enthalpy of water coming from above */ \
+          soil->wi_abs_enth_adj[layer]+=amount; /* update enth adjusted water ice content */ \
+        }\
+        })
 #endif /* SOIL_H */

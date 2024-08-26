@@ -82,10 +82,6 @@ void denitrification(Stand *stand,        /**< pointer to stand */
 #endif
     N_denit=min(N_denit,soil->NO3[l]);
     soil->NO3[l]-=N_denit;
-#ifdef SAFE
-    if(soil->NO3[l]<-epsilon)
-      fail(NEGATIVE_SOIL_NO3_ERR,TRUE,TRUE,"Negative soil NO3=%g in layer %d",soil->NO3[l],l);
-#endif
     /* Calculation of N2O from denitrification after Bessou 2010 */
     N2O_denit = 0.11 * N_denit;
     N_denit -= N2O_denit;

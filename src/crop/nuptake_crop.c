@@ -27,13 +27,12 @@ Real nuptake_crop(Pft *pft,             /**< pointer to PFT data */
   String line;
   Soil *soil;
   Pftcrop *crop;
-  const Pftcroppar *croppar;
   Irrigation *data;
   Real ndemand_leaf_opt,NO3_up=0;
   Real NCplant=0;
   Real f_NCplant=0;
   Real up_temp_f=0;
-  Real totn,nsum,NC_leaf;
+  Real totn,nsum;
   Real wscaler;
   Real n_uptake=0;
   Real n_upfail=0; /**< track n_uptake that is not available from soil for output reporting */
@@ -57,7 +56,6 @@ Real nuptake_crop(Pft *pft,             /**< pointer to PFT data */
   index=(pft->stand->type->landusetype==AGRICULTURE) ? pft->par->id-npft : rothers(ncft);
 
   crop=pft->data;
-  croppar=pft->par->data;
   data=pft->stand->data;
   if(crop->ind.leaf.carbon+crop->ind.root.carbon==0)
     return 0;

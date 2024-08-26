@@ -250,8 +250,6 @@ int main(int argc,char **argv)
     writearea(output,LAKE_AREA,grid,&config);
   if(isopen(output,COUNTRY) && config.withlanduse)
     writecountrycode(output,COUNTRY,grid,&config);
-  if(isopen(output,REGION) && config.withlanduse)
-    writeregioncode(output,REGION,grid,&config);
   if(isroot(config))
     puts("Simulation begins...");
   time(&tstart); /* Start timing */

@@ -128,12 +128,11 @@ typedef struct
   Real nfertilizer;         /* fertilizer amount */
   Real nmanure;             /* manure ammount */
   Real vscal_sum;
-  Bool frostkill;           /* set to TRUE in daily_agriculture if tmin<-5 and 0.2<fphu<0.95 */
   Real supplysum;
   Separate_harvests *sh;
 } Pftcrop;
 
-extern const char *calcmethod[];
+extern char *calcmethod[];
 
 /* Declaration of functions */
 
@@ -146,8 +145,7 @@ extern Real alphaa_crop(const Pft *,int,int);
 extern void litter_update_crop(Litter *,Pft *,Real,const Config *);
 extern Real lai_crop(const Pft *);
 extern Real actual_lai_crop(const Pft *);
-extern Bool phenology_crop(Pft *,Real,Real,Real,int,const Config *);
-extern void laimax_manage(Manage *,const Pftpar [],int,int,int);
+extern Bool phenology_crop(Pft *,Real,Real,int,const Config *);
 extern Bool fwrite_crop(FILE *,const Pft *);
 extern void fprint_crop(FILE *,const Pft *,int);
 extern Bool fread_crop(FILE *,Pft *,Bool,Bool);

@@ -98,6 +98,8 @@ void copysoil(Soil *dst,       /**< destination */
     dst->Ks[i]=src->Ks[i];
     dst->bulkdens[i]=src->bulkdens[i];
     dst->beta_soil[i]=src->beta_soil[i];
+    dst->wi_abs_enth_adj[i]=src->wi_abs_enth_adj[i];
+    dst->sol_abs_enth_adj[i]=src->sol_abs_enth_adj[i];
 #ifdef MICRO_HEATING
     dst->micro_heating[i]=src->micro_heating[i];
     dst->decomC[i]=src->decomC[i];
@@ -109,6 +111,8 @@ void copysoil(Soil *dst,       /**< destination */
     dst->temp[i]=src->temp[i];
     dst->amean_temp[i] = src->amean_temp[i];
   }
+  for(i=0;i<NHEATGRIDP;i++)
+    dst->enth[i]=src->enth[i];
   dst->rw_buffer=src->rw_buffer;
   dst->wa = src->wa;
   dst->wtable = src->wtable;

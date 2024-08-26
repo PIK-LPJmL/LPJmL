@@ -70,6 +70,7 @@ core-*
 *.dat
 *.DAT
 *.swp
+*.tmp
 
 # output files
 *.lpj
@@ -170,3 +171,7 @@ bin/regriddrain
 bin/coupler_demo
 bin/cmpbin
 bin/statclm
+bin/drainage2cdf
+
+# test build folder
+src/test/build

@@ -93,7 +93,11 @@ int main(int argc,char **argv)
       lpjlat[i]=rbuf2[1];
 
       /* Reading soil input-file */
-      fread(soil+i,sizeof(char),1,soil_file);
+      if(fread(soil+i,sizeof(char),1,soil_file)!=1)
+      {
+        fprintf(stderr,"Cannot read data from file %s \n", argv[3]);
+            return EXIT_FAILURE;
+      }
       /* printf("%d %d %d\n",i,lpjlon[i],lpjlat[i]); */
     }
     else

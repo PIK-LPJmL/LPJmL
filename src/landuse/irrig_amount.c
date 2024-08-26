@@ -110,6 +110,9 @@ void irrig_amount(Stand *stand,        /**< pointer to non-natural stand */
           else
             getoutputindex(&stand->cell->output,CFT_NIR,rbtree(ncft)+nirrig,config)+=data->net_irrig_amount;
           break;
+        default:
+          /* do nothing */
+          break;
       } /* of switch */
 
       data->irrig_amount=data->irrig_stor+irrig_stand;
@@ -227,6 +230,9 @@ void irrig_amount(Stand *stand,        /**< pointer to non-natural stand */
           getoutputindex(&stand->cell->output, CFT_CONV_LOSS_EVAP ,rbtree(ncft)+nirrig,config)+=conv_loss*data->conv_evap;
           getoutputindex(&stand->cell->output, CFT_CONV_LOSS_DRAIN ,rbtree(ncft)+nirrig,config)+=conv_loss*(1-data->conv_evap);
         }
+        break;
+      default:
+        /* do nothing */
         break;
     } /* of switch */
   } /* if data->irrigation */

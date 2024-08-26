@@ -22,7 +22,6 @@
 Bool annual_natural(Stand *stand,         /**< Pointer to stand */
                     int npft,             /**< number of natural pfts */
                     int UNUSED(ncft),     /**< number of crop PFTs */
-                    Real popdens,         /**< population density (capita/km2) */
                     int year,             /**< year (AD) */
                     Bool isdaily,         /**< daily temperature data? */
                     Bool UNUSED(intercrop), /**< intercropping enabled (TRUE/FALSE) */
@@ -38,7 +37,7 @@ Bool annual_natural(Stand *stand,         /**< Pointer to stand */
 #ifndef DAILY_ESTABLISHMENT
   Stocks flux_estab={0,0};
 #endif
-  Stocks firewood={0,0};
+
 #ifdef CHECK_BALANCE
   Stocks start = {0,0};
   Real end = 0;
@@ -48,10 +47,10 @@ Bool annual_natural(Stand *stand,         /**< Pointer to stand */
   start.carbon = standstocks(stand).carbon + soilmethane(&stand->soil)*WC/WCH4;
   start.nitrogen = standstocks(stand).nitrogen;
 
-  fluxes_out.carbon=(stand->cell->balance.arh+stand->cell->balance.fire.carbon+stand->cell->balance.flux_firewood.carbon+stand->cell->balance.neg_fluxes.carbon
+  fluxes_out.carbon=(stand->cell->balance.arh+stand->cell->balance.fire.carbon+stand->cell->balance.neg_fluxes.carbon
       +stand->cell->balance.flux_harvest.carbon+stand->cell->balance.biomass_yield.carbon)/stand->frac;
   fluxes_in.carbon=(stand->cell->balance.anpp+stand->cell->balance.flux_estab.carbon+stand->cell->balance.influx.carbon)/stand->frac;
-  fluxes_out.nitrogen=(stand->cell->balance.fire.nitrogen+stand->cell->balance.flux_firewood.nitrogen+stand->cell->balance.neg_fluxes.nitrogen
+  fluxes_out.nitrogen=(stand->cell->balance.fire.nitrogen+stand->cell->balance.neg_fluxes.nitrogen
       +stand->cell->balance.flux_harvest.nitrogen+stand->cell->balance.biomass_yield.nitrogen)/stand->frac;
   fluxes_in.nitrogen=(stand->cell->balance.flux_estab.nitrogen+stand->cell->balance.influx.nitrogen)/stand->frac;
 #endif
@@ -71,7 +70,7 @@ Bool annual_natural(Stand *stand,         /**< Pointer to stand */
              pft->bm_inc.carbon,vegc_sum(pft),soilcarbon(&stand->soil));
 #endif
       
-      if(annualpft(stand,pft,fpc_inc+p,isdaily,config) || config->black_fallow)
+      if(annualpft(stand,pft,fpc_inc+p,isdaily,config))
       {
         /* PFT killed, delete from list of established PFTs */
         fpc_inc[p]=fpc_inc[getnpft(&stand->pftlist)-1];
@@ -89,30 +88,13 @@ Bool annual_natural(Stand *stand,         /**< Pointer to stand */
 #ifdef DEBUG3
     printf(" 1 Number of updated pft: %d\n",stand->pftlist.n);
 #endif
-    if(year>=config->firstyear && config->firewood==FIREWOOD)
-    {
-      firewood=woodconsum(stand,popdens);
-      getoutput(&stand->cell->output,FLUX_FIREWOOD,config)+=firewood.carbon*stand->frac;
-      getoutput(&stand->cell->output,FLUX_FIREWOOD_N,config)+=firewood.nitrogen*stand->frac;
-      stand->cell->balance.flux_firewood.carbon+=firewood.carbon*stand->frac;
-      stand->cell->balance.flux_firewood.nitrogen+=firewood.nitrogen*stand->frac;
-      foreachpft(pft,p,&stand->pftlist)
-        if(pft->nind<epsilon)
-        {
-          fpc_inc[p]=fpc_inc[getnpft(&stand->pftlist)-1];
-          litter_update(&stand->soil.litter,pft,pft->nind,config);
-          delpft(&stand->pftlist,p);
-          p--;  
-        }
-    }
-
     light(stand,fpc_inc,config);
     free(fpc_inc);
   }
   if(config->fire==FIRE && stand->type->landusetype!=WETLAND)
   {  
     fire_frac=fire_prob(&stand->soil.litter,stand->fire_sum);
-    getoutput(&stand->cell->output,FIREF,config)+=1.0/fire_frac;
+    getoutput(&stand->cell->output,FIREF,config)+=fire_frac;
     flux=firepft(stand,fire_frac,config);
     getoutput(&stand->cell->output,FIREC,config)+=flux.carbon*stand->frac;
     stand->cell->balance.fire.carbon+=flux.carbon*stand->frac;
@@ -131,35 +113,32 @@ Bool annual_natural(Stand *stand,         /**< Pointer to stand */
   }
 
 #ifndef DAILY_ESTABLISHMENT
-  if(!config->black_fallow)
-  {
-    flux_estab=establishmentpft(stand,npft,stand->cell->balance.aprec,year,config);
-    getoutput(&stand->cell->output,FLUX_ESTABC,config)+=flux_estab.carbon*stand->frac;
-    getoutput(&stand->cell->output,FLUX_ESTABN,config)+=flux_estab.nitrogen*stand->frac;
-    stand->cell->balance.flux_estab.carbon+=flux_estab.carbon*stand->frac;
-    stand->cell->balance.flux_estab.nitrogen+=flux_estab.nitrogen*stand->frac;
-    stand->cell->output.dcflux-=flux_estab.carbon*stand->frac;
+  flux_estab=establishmentpft(stand,npft,stand->cell->balance.aprec,year,config);
+  getoutput(&stand->cell->output,FLUX_ESTABC,config)+=flux_estab.carbon*stand->frac;
+  getoutput(&stand->cell->output,FLUX_ESTABN,config)+=flux_estab.nitrogen*stand->frac;
+  stand->cell->balance.flux_estab.carbon+=flux_estab.carbon*stand->frac;
+  stand->cell->balance.flux_estab.nitrogen+=flux_estab.nitrogen*stand->frac;
+  stand->cell->output.dcflux-=flux_estab.carbon*stand->frac;
 #if defined IMAGE && defined COUPLED
     if(stand->type->landusetype==NATURAL || stand->type->landusetype==WETLAND)
       stand->cell->flux_estab_nat+=flux_estab.carbon*stand->frac;
 #endif
-  }
 #endif
 
 #ifdef CHECK_BALANCE
 
-  fluxes_out.carbon=(stand->cell->balance.arh+stand->cell->balance.fire.carbon+stand->cell->balance.flux_firewood.carbon+stand->cell->balance.neg_fluxes.carbon
+  fluxes_out.carbon=(stand->cell->balance.arh+stand->cell->balance.fire.carbon+stand->cell->balance.neg_fluxes.carbon
       +stand->cell->balance.flux_harvest.carbon+stand->cell->balance.biomass_yield.carbon)/stand->frac-fluxes_out.carbon;
   fluxes_in.carbon=(stand->cell->balance.anpp+stand->cell->balance.flux_estab.carbon+stand->cell->balance.influx.carbon)/stand->frac-fluxes_in.carbon;
-  fluxes_out.nitrogen=(stand->cell->balance.fire.nitrogen+stand->cell->balance.flux_firewood.nitrogen+stand->cell->balance.neg_fluxes.nitrogen
+  fluxes_out.nitrogen=(stand->cell->balance.fire.nitrogen+stand->cell->balance.neg_fluxes.nitrogen
       +stand->cell->balance.flux_harvest.nitrogen+stand->cell->balance.biomass_yield.nitrogen)/stand->frac-fluxes_out.nitrogen;
   fluxes_in.nitrogen=(stand->cell->balance.flux_estab.nitrogen+stand->cell->balance.influx.nitrogen)/stand->frac-fluxes_in.nitrogen;
 
   end = standstocks(stand).carbon + soilmethane(&stand->soil)*WC/WCH4;
   if (fabs(end-start.carbon+fluxes_out.carbon-fluxes_in.carbon)>0.01)
   {
-    fprintf(stderr, "C_ERROR: annual natural end %g start:%.3f  end:%.3f  estab: %g fire: %g bm_inc: %g firewood: %g flux_out: %g flux_in: %g\n",
-        end-start.carbon+fluxes_out.carbon-fluxes_in.carbon , start.carbon,end,flux_estab.carbon, flux.carbon, bm_inc.carbon,firewood.carbon,
+    fprintf(stderr, "C_ERROR: annual natural end %g start:%.3f  end:%.3f  estab: %g fire: %g bm_inc: %g flux_out: %g flux_in: %g\n",
+        end-start.carbon+fluxes_out.carbon-fluxes_in.carbon , start.carbon,end,flux_estab.carbon, flux.carbon, bm_inc.carbon,
         fluxes_out.carbon,fluxes_in.carbon);
     //    foreachpft(pft,p,&stand->pftlist)
     //        fprintf(stderr, "\nPFT:%s bm_inc.c=%g vegC=%g soilC=%g establish.carbon=%g\n",pft->par->name,

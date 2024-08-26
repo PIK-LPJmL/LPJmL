@@ -206,6 +206,17 @@ void pedotransfer(Stand *stand,  /**< pointer to stand */
 
     stand->cell->balance.excess_water+=excess*standfrac;
     //stand->cell->discharge.drunoff+=excess*standfrac;
+#ifdef DEBUG_WB
+    foreachsoillayer(l)
+    if (soil->w[l]< -epsilon || soil->w_fw[l]< -epsilon )
+    {   fprintf(stderr,"\n\npedotransfer Cell (%s) soilwater=%.6f soilice=%.6f wsats=%.6f agtop_moist=%.6f\n",
+          sprintcoord(line,&stand->cell->coord),allwater(soil,l),allice(soil,l),soil->wsats[l],soil->litter.agtop_moist);
+      fflush(stderr);
+      fprintf(stderr,"Soil-moisture layer %d negative: w:%g, fw:%g,lutype %s soil_type %s \n\n",
+          l,soil->w[l],soil->w_fw[l],stand->type->name,soil->par->name);
+    }
+#endif
+
 #ifdef CHECK_BALANCE
     w_after=soilwater(&stand->soil)+excess;
     if(fabs(w_before-w_after)>epsilon)

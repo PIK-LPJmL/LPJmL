@@ -61,6 +61,7 @@ Real daily_biomass_grass(Stand *stand,                /**< stand pointer */
   Real transp;
   Real fertil;
   Real manure;
+  Real vol_water_enth; /* volumetric enthalpy of water (J/m3) */
   Bool isphen;
   Irrigation *data;
   Pftgrass *grass;
@@ -180,7 +181,11 @@ Real daily_biomass_grass(Stand *stand,                /**< stand pointer */
     getoutputindex(output,CFT_IRRIG_EVENTS,index,config)++; /* id is consecutively counted over natural pfts, biomass, and the cfts; ids for cfts are from 12-23, that is why npft (=12) is distracted from id */
   }
 
-  runoff+=infil_perc(stand,rainmelt+irrig_apply,&return_flow_b,npft,ncft,config);
+  if((climate->prec+melt+irrig_apply)>0) /* enthalpy of soil infiltration */
+    vol_water_enth = climate->temp*c_water*(climate->prec+irrig_apply)/(climate->prec+irrig_apply+melt)+c_water2ice;
+  else
+    vol_water_enth=0;
+  runoff+=infil_perc(stand,rainmelt+irrig_apply, vol_water_enth,&return_flow_b,npft,ncft,config);
 
   isphen=FALSE;
   foreachpft(pft,p,&stand->pftlist)

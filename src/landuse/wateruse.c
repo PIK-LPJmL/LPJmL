@@ -142,7 +142,7 @@ void wateruse(Cell *grid,          /**< LPJ grid */
       // Increased effect of groundwater irrigation
       grid[cell].discharge.irrig_unmet=grid[cell].discharge.gir>grid[cell].discharge.withdrawal ?
                                        (grid[cell].discharge.gir-grid[cell].discharge.withdrawal) : 0.0;
-      if(config->groundwater_irrig==GROUNDWATER_IRRIG)
+      if(config->groundwater_irrig)
       {
 #ifdef DEBUG2
         fprintf(stdout,"withdrawal_gw:%g dmass_gw: %g ground_st:%g gw_withdrawal:%g irrig_unmet:%g \n",

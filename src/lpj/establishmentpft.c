@@ -75,6 +75,7 @@ Stocks establishmentpft(Stand *stand,        /**< Stand pointer  */
   foreachpft(pft,p,&stand->pftlist)
   {
     fpc_obs_cor = 1;
+    fpc_obs=0;
     if (stand->prescribe_landcover !=NO_LANDCOVER &&  pft->par->cultivation_type==NONE && (stand->type->landusetype==NATURAL || stand->type->landusetype==WETLAND))
     {
       fpc_obs = stand->cell->landcover[pft->par->id];

@@ -32,7 +32,7 @@ Stocks cultivate(Cell *cell,           /**< cell pointer */
   int pos; /*position of new stand in list*/
   int vern_date20;
   Pft *pft;
-  Stand *cropstand,*stand;
+  Stand *cropstand;
   Irrigation *data;
   Stocks bm_inc;
   Pftcrop *crop;
@@ -41,6 +41,7 @@ Stocks cultivate(Cell *cell,           /**< cell pointer */
   Real landfrac;
 #ifdef CHECK_BALANCE
   int s;
+  Stand *stand;
   Stocks start={0,0};
   foreachstand(stand,s,cell->standlist)
   {

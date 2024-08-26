@@ -77,6 +77,7 @@ Real daily_agriculture_tree(Stand *stand,                /**< stand pointer */
   Stocks flux_estab,yield;
   Real fpc_inc,fpc_total,*fpc_type;
   Real cnratio_fruit;
+  Real vol_water_enth; /* volumetric enthalpy of water (J/m3) */
   Biomass_tree *data;
   Soil *soil;
   String line;
@@ -217,7 +218,11 @@ Real daily_agriculture_tree(Stand *stand,                /**< stand pointer */
       getoutputindex(output,CFT_IRRIG_EVENTS,index,config)++;
   }
 
-  runoff+=infil_perc(stand,rainmelt+irrig_apply,&return_flow_b,npft,ncft,config);
+  if((climate->prec+melt+irrig_apply)>0) /* enthalpy of soil infiltration */
+    vol_water_enth = climate->temp*c_water*(climate->prec+irrig_apply)/(climate->prec+irrig_apply+melt)+c_water2ice;
+  else
+    vol_water_enth=0;
+  runoff+=infil_perc(stand,(rainmelt+irrig_apply), vol_water_enth,&return_flow_b,npft,ncft,config);
 
   foreachpft(pft,p,&stand->pftlist)
   {
@@ -312,10 +317,12 @@ Real daily_agriculture_tree(Stand *stand,                /**< stand pointer */
     getoutputindex(output,CFT_FPAR,index,config)+=(fpar(pft)*stand->frac*(1.0/(1-stand->cell->lakefrac-stand->cell->ml.reservoirfrac)));
 
     if(config->pft_output_scaled)
+    {
       getoutputindex(output,PFT_NPP,nnat+index,config)+=npp*stand->frac;
+    }
     else
       getoutputindex(output,PFT_NPP,nnat+index,config)+=npp;
-      getoutputindex(output,PFT_LAI,nnat+index,config)+=actual_lai(pft);
+    getoutputindex(output,PFT_LAI,nnat+index,config)+=actual_lai(pft);
   } /* of foreachpft */
   free(gp_pft);
   /* soil outflow: evap and transpiration */

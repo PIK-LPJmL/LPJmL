@@ -18,13 +18,7 @@ void updatelitterproperties(Stand *stand,  /**< Stand pointer */
                             Real standfrac /**< stand fraction (0..1) */
                            )
 {
-  int l;
-  Real dm_sum=0;
-  for(l=0;l<stand->soil.litter.n;l++)
-    dm_sum+=stand->soil.litter.item[l].agtop.leaf.carbon/0.42; /* Accounting that C content in plant dry matter is 42% (Brady and Weil 2008, p.504)*/
-  if(dm_sum<0)
-    dm_sum=0;
-
+  Real dm_sum = calc_litter_dm_sum(&stand->soil);
   stand->soil.litter.agtop_cover=1-exp(-6e-3*dm_sum);
   stand->soil.litter.agtop_wcap=2e-3*dm_sum;
   if((stand->soil.litter.agtop_moist-stand->soil.litter.agtop_wcap)>epsilon*1e-3)
@@ -33,6 +27,32 @@ void updatelitterproperties(Stand *stand,  /**< Stand pointer */
     stand->soil.w_fw[0]+=(stand->soil.litter.agtop_moist-stand->soil.litter.agtop_wcap);
     stand->soil.litter.agtop_moist=stand->soil.litter.agtop_wcap;
   }
+#ifdef SAFE
+  String line;
+  int l;
+  foreachsoillayer(l)
+  if (stand->soil.w[l]< -epsilon || stand->soil.w_fw[l]< -epsilon )
+  {   fprintf(stderr,"\n\ndenitrification Cell (%s) soilwater=%.6f soilice=%.6f wsats=%.6f agtop_moist=%.6f\n",
+          sprintcoord(line,&stand->cell->coord),allwater((&(stand->soil)),l),allice((&(stand->soil)),l),stand->soil.wsats[l],stand->soil.litter.agtop_moist);
+      fflush(stderr);
+      fprintf(stderr,"Soil-moisture layer %d negative: w:%g, fw:%g,lutype %s  \n\n",
+          l,stand->soil.w[l],stand->soil.w_fw[l],stand->type->name);
+  }
+#endif
+
 } /* of 'updatelitterproperties' */
+
+Real calc_litter_dm_sum(const Soil *soil)
+{
+  int l;
+  Real dm_sum=0;
+  for(l=0;l<soil->litter.n;l++)
+  {
+    dm_sum+=soil->litter.item[l].agtop.leaf.carbon/0.42; /* Accounting that C content in plant dry matter is 42% (Brady and Weil 2008, p.504)*/
+  }
+  if(dm_sum<0)
+    dm_sum=0;
+  return(dm_sum);
+} /* of 'calc_litter_dm_sum' */
 
 /*Brady, N.C., Weil, R.R., The nature and properties of soil, 2008, 14th edition, ISBN 0-13-227938-X*/

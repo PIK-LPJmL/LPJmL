@@ -57,6 +57,7 @@ void iterateyear(Outputfile *output,  /**< Output file data */
   Real popdens=0; /* population density (capita/km2) */
   Real norg_soil_agr,nmin_soil_agr,nveg_soil_agr;
   intercrop=getintercrop(input.landuse);
+  //fprintf(stderr,"year: %d \n",year);
   for(cell=0;cell<config->ngridcell;cell++)
   {
     initoutputdata(&grid[cell].output,ANNUAL,year,config);
@@ -73,15 +74,13 @@ void iterateyear(Outputfile *output,  /**< Output file data */
         {
           if(grid[cell].lakefrac<1)
           {
-            /* calculate landuse change */
-            if(config->laimax_interpolate==LAIMAX_INTERPOLATE)
-              laimax_manage(&grid[cell].ml.manage,config->pftpar+npft,npft,ncft,year);
+             /* calculate landuse change */
             if(year>config->firstyear-config->nspinup || config->from_restart)
               landusechange(grid+cell,npft,ncft,intercrop,year,config);
             else if(grid[cell].ml.dam)
               landusechange_for_reservoir(grid+cell,npft,ncft,
-                  intercrop,year,config);
-          }
+                                        intercrop,year,config);
+         }
 #if defined IMAGE && defined COUPLED
           setoutput_image(grid+cell,ncft,config);
 #endif
@@ -236,7 +235,7 @@ void iterateyear(Outputfile *output,  /**< Output file data */
     if(!grid[cell].skip)
     {
       grid[cell].landcover=(config->prescribe_landcover!=NO_LANDCOVER) ? getlandcover(input.landcover,cell) : NULL;
-      update_annual(grid+cell,npft,ncft,popdens,year,daily.isdailytemp,intercrop,config);
+      update_annual(grid+cell,npft,ncft,year,daily.isdailytemp,intercrop,config);
 #ifdef SAFE
       if(config->withlanduse) check_fluxes(grid+cell,year,cell,config);
 #endif

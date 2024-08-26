@@ -568,6 +568,7 @@ void fwriteoutput(Outputfile *output,  /**< output file array */
   writeoutputarray(WPC,1);
   writeoutputvar(NPP,1);
   writeoutputvar(GPP,1);
+  writeoutputvar(TWS,ndate1);
   writeoutputvar(DAYLENGTH,ndate1);
   writeoutputvar(TEMP,ndate1);
   writeoutputvar(SUN,ndate1);
@@ -583,8 +584,6 @@ void fwriteoutput(Outputfile *output,  /**< output file array */
   writeoutputvar(LITFALLN,1);
   writeoutputvar(FIREC,1);
   writeoutputvar(FIREN,1);
-  writeoutputvar(FLUX_FIREWOOD,1);
-  writeoutputvar(FLUX_FIREWOOD_N,1);
   writeoutputvar(FIREF,1);
   writeoutputvar(BNF_AGR,1);
   writeoutputvar(NFERT_AGR,1);
@@ -1170,6 +1169,7 @@ void fwriteoutput(Outputfile *output,  /**< output file array */
   writeoutputvar(SNOWF,1);
   writeoutputvar(MELT,1);
   writeoutputvar(SWE,ndate1);
+  writeoutputvar(LITTERTEMP,ndate1);
   writeoutputvar(SNOWRUNOFF,1);
   writeoutputvar(RUNOFF_SURF,1);
   writeoutputvar(RUNOFF_LAT,1);
@@ -1634,6 +1634,9 @@ void fwriteoutput(Outputfile *output,  /**< output file array */
                   }
                 }
                 break;
+              default:
+                /* do nothing */
+                break;
             }
           }
         }
@@ -1695,6 +1698,9 @@ void fwriteoutput(Outputfile *output,  /**< output file array */
                     getoutputindex(&grid[cell].output,PFT_NSAPW,pft->par->id,config)+=tree->ind.sapwood.nitrogen;
                   }
                 }
+                break;
+              default:
+                /* do nothing */
                 break;
             }
           }
@@ -1758,6 +1764,9 @@ void fwriteoutput(Outputfile *output,  /**< output file array */
                   }
                 }
                 break;
+              default:
+                /* do nothing */
+                break;
             }
           }
         }
@@ -1819,6 +1828,9 @@ void fwriteoutput(Outputfile *output,  /**< output file array */
                     getoutputindex(&grid[cell].output,PFT_NHAWO,pft->par->id,config)+=tree->ind.heartwood.nitrogen;
                   }
                 }
+                break;
+              default:
+                /* do nothing */
                 break;
             } /* of switch */
           }
@@ -1946,6 +1958,21 @@ void fwriteoutput(Outputfile *output,  /**< output file array */
         }
     }
     writeoutputvar(ESTAB_STORAGE_N,1);
+  }
+  if(isopen(output,NBP))
+  {
+    if(iswrite2(NBP,timestep,year,config) || (timestep==ANNUAL && config->outnames[NBP].timestep>0))
+    {
+      for(cell=0;cell<config->ngridcell;cell++)
+        if(!grid[cell].skip && grid[cell].lakefrac+grid[cell].ml.reservoirfrac<1)
+        {
+          getoutput(&grid[cell].output,NBP,config)+=(grid[cell].balance.anpp-grid[cell].balance.arh-grid[cell].balance.fire.carbon+
+                    grid[cell].balance.flux_estab.carbon-grid[cell].balance.flux_harvest.carbon-grid[cell].balance.biomass_yield.carbon-
+                    grid[cell].balance.neg_fluxes.carbon+grid[cell].balance.influx.carbon-grid[cell].balance.deforest_emissions.carbon-
+                    grid[cell].balance.prod_turnover.fast.carbon-grid[cell].balance.prod_turnover.slow.carbon-grid[cell].balance.trad_biofuel.carbon);
+        }
+    }
+    writeoutputvar(NBP,1);
   }
   writeoutputvar(RD,1);
   writeoutputarray(PFT_WATER_DEMAND,1);

@@ -132,15 +132,18 @@ Real nuptake_tree(Pft *pft,             /**< pointer to PFT data */
       getoutput(&pft->stand->cell->output,FLUX_AUTOFERT,config)+=autofert_n*pft->stand->frac;
       switch(pft->stand->type->landusetype)
       {
-      case BIOMASS_TREE:
-        getoutputindex(&pft->stand->cell->output,CFT_NFERT,rbtree(ncft)+data->irrigation*nirrig,config)+=autofert_n;
-        break;
-      case WOODPLANTATION:
-        getoutputindex(&pft->stand->cell->output,CFT_NFERT,rwp(ncft)+data->irrigation*nirrig,config)+=autofert_n;
-        break;
-      case AGRICULTURE_TREE:
-        getoutputindex(&pft->stand->cell->output,CFT_NFERT,data->pft_id-npft+config->nagtree+agtree(ncft,config->nwptype)+data->irrigation*nirrig,config)+=autofert_n;
-        break;
+        case BIOMASS_TREE:
+          getoutputindex(&pft->stand->cell->output,CFT_NFERT,rbtree(ncft)+data->irrigation*nirrig,config)+=autofert_n;
+          break;
+        case WOODPLANTATION:
+          getoutputindex(&pft->stand->cell->output,CFT_NFERT,rwp(ncft)+data->irrigation*nirrig,config)+=autofert_n;
+          break;
+        case AGRICULTURE_TREE:
+          getoutputindex(&pft->stand->cell->output,CFT_NFERT,data->pft_id-npft+config->nagtree+agtree(ncft,config->nwptype)+data->irrigation*nirrig,config)+=autofert_n;
+          break;
+        default:
+          /* do nothing */
+          break;
       }
     }
     pft->vscal+=1;

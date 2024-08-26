@@ -23,8 +23,8 @@ int main(int argc,char **argv)
   int version,yr,cell,k;
   Bool swap1,swap2,flag;
   String id;
-  float *data1,*data2,*data3;
-  int *idata1,*idata2,*idata3;
+  float *data1=NULL,*data2=NULL,*data3=NULL;
+  int *idata1=NULL,*idata2=NULL,*idata3=NULL;
   float value;
   int iarg,ivalue,setversion;
   char *endptr;
@@ -40,13 +40,13 @@ int main(int argc,char **argv)
   char *units2=NULL;
   Type grid_type,grid_type2;
   Filename grid_name,grid_name2;
-  Type type;
+  Type type=LPJ_SHORT;
   int index,format;
   int *cell_index,*cell_index2;
   char *out_name;
-  Bool isvalue,intvalue,isint,ismeta,israw,isjson,isforce;
+  Bool isvalue=FALSE,intvalue,isint=FALSE,ismeta,israw,isjson,isforce;
   enum {ADD,SUB,MUL,DIV,AVG,MAX,MIN,REPL,FLOAT,INT} op;
-  FILE *in1,*in2,*out;
+  FILE *in1,*in2=NULL,*out;
   struct stat filestat;
   char c;
   setversion=READ_VERSION;
@@ -525,6 +525,8 @@ int main(int argc,char **argv)
               for(k=0;k<header1.nbands*header1.nstep;k++)
                 idata3[k]=min(idata1[k],ivalue);
               break;
+            default:
+              break;
           } /* of switch */
         else
         {
@@ -587,6 +589,8 @@ int main(int argc,char **argv)
                 for(k=0;k<header1.nbands*header1.nstep;k++)
                   idata3[k]=idata1[k];
               break;
+            case FLOAT: case INT:
+              break;
           } /* of switch */
         }
         /* write int data to file */
@@ -637,6 +641,8 @@ int main(int argc,char **argv)
             case MIN:
               for(k=0;k<header1.nbands*header1.nstep;k++)
                 data3[k]=min(data1[k],value);
+              break;
+            default:
               break;
           } /* of switch */
         else
@@ -692,6 +698,8 @@ int main(int argc,char **argv)
                 for(k=0;k<header1.nbands*header1.nstep;k++)
                   data3[k]=data1[k];
               break;
+            case FLOAT: case INT:
+              break;
           } /* of switch */
         }
         /* write float data to file */
@@ -722,7 +730,7 @@ int main(int argc,char **argv)
       printfcreateerr(out_json);
       return EXIT_FAILURE;
     }
-    fprintjson(out,out_name,source,history,arglist,&header3,map,map_name,attrs,n_attr,variable,units,standard_name,long_name,(grid_name.name==NULL) ? NULL : &grid_name,grid_type,format,id,FALSE,max(version,(ismeta) ? 4 : 3));
+    fprintjson(out,out_name,NULL,source,history,arglist,&header3,map,map_name,attrs,n_attr,variable,units,standard_name,long_name,(grid_name.name==NULL) ? NULL : &grid_name,grid_type,format,id,FALSE,max(version,(ismeta) ? 4 : 3));
     fclose(out);
   }
   return EXIT_FAILURE;

@@ -24,6 +24,6 @@ extern Real daily_agriculture_grass(Stand *,Real,const Dailyclimate *,int,int,
                                     Real,Real,Real,Real,Real,int,int,int,
                                     Bool,Real,const Config *);
 
-extern Bool annual_agriculture_grass(Stand *,int,int,Real,int,Bool,Bool,const Config *);
+extern Bool annual_agriculture_grass(Stand *,int,int,int,Bool,Bool,const Config *);
 
 #endif

@@ -36,7 +36,7 @@ Stocks turnover_tree(Litter *litter, /**< Litter pool */
   Stocks sum={0,0};
   Treephys turn;
   Output *output;
-  Real reprod,cmass_excess,payback;
+  Real reprod,payback;
 #ifdef CHECK_BALANCE
   Stocks sum_before,sum_after;
   Stocks turn_diff={0,0};
@@ -52,7 +52,6 @@ Stocks turnover_tree(Litter *litter, /**< Litter pool */
   sum_before.nitrogen+=vegn_sum_tree(pft)+pft->bm_inc.nitrogen-pft->establish.nitrogen;
   turn_diff.nitrogen=0;
 #endif
-  cmass_excess=0;
   /* reproduction */
   if(pft->bm_inc.carbon>=0)
   {
@@ -90,6 +89,8 @@ Stocks turnover_tree(Litter *litter, /**< Litter pool */
     else
     {
       getoutput(output,FLUX_ESTABN,config)-=reprod*pft->stand->frac;
+      if(pft->stand->type->landusetype!=NATURAL && pft->stand->type->landusetype!=WOODPLANTATION)
+        getoutput(output,FLUX_ESTABN_MG,config)-=reprod*pft->stand->frac;
       pft->stand->cell->balance.flux_estab.nitrogen-=reprod*pft->stand->frac;
       pft->establish.nitrogen-=reprod;
       reprod=0;

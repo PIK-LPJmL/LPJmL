@@ -1853,7 +1853,7 @@ void lpj_update_
         }
 #endif
         if(send_image_data(&config,grid,input.climate,npft))
-          fail(SEND_IMAGE_ERR,FALSE,
+          fail(SEND_IMAGE_ERR,FALSE,FALSE,
                "Problem with writing maps for transfer to IMAGE");
       }
 #endif

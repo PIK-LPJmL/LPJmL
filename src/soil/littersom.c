@@ -338,6 +338,15 @@ Stocks littersom(Stand *stand,                      /**< [inout] pointer to stan
 #ifdef MICRO_HEATING
         soil->decomC[l]=flux_soil[l].slow.carbon+flux_soil[l].fast.carbon+oxidation*WC/WCH4;
 #endif
+#ifdef SAFE
+  if (soil->w[l]< -epsilon || soil->w_fw[l]< -epsilon )
+  {   fprintf(stderr,"\n\littersom Cell (%s) soilwater=%.6f soilice=%.6f wsats=%.6f agtop_moist=%.6f\n",
+          sprintcoord(line,&stand->cell->coord),allwater(soil,l),allice(soil,l),soil->wsats[l],soil->litter.agtop_moist);
+      fflush(stderr);
+      fprintf(stderr,"Soil-moisture layer %d negative: w:%g, fw:%g,lutype %s soil_type %s \n\n",
+          l,soil->w[l],soil->w_fw[l],stand->type->name,soil->par->name);
+  }
+#endif
         //soil_cflux+=*methaneflux_soil*WC/WCH4;      //CO2 produced during methane production C6H12O6 -> 3CO2 + 3CH4, already in deomposition?? mass balance not closed than!! Have to think about it
 
 

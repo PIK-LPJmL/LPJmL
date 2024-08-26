@@ -37,7 +37,6 @@ void init_annual(Cell *cell,          /**< Pointer to cell */
   cell->balance.aconv_loss_evap=cell->balance.aconv_loss_drain=0;
   cell->balance.trad_biofuel.carbon=cell->balance.trad_biofuel.nitrogen=0;
   cell->balance.fire.carbon=cell->balance.fire.nitrogen=0;
-  cell->balance.flux_firewood.carbon=cell->balance.flux_firewood.nitrogen=0;
   cell->balance.flux_estab.carbon=cell->balance.flux_estab.nitrogen=0;
   cell->balance.flux_harvest.carbon=cell->balance.flux_harvest.nitrogen=0;
   cell->balance.aCH4_em=cell->balance.aCH4_oxid=cell->balance.aCH4_sink=cell->balance.aCH4_fire=cell->balance.aCH4_rice=cell->balance.aCH4_setaside=cell->balance.aMT_water=0;

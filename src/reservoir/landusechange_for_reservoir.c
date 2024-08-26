@@ -243,12 +243,14 @@ void landusechange_for_reservoir(Cell *cell,          /**< pointer to cell */
     /* total water and carbon calculation before the correction of fractions
      * for reservoir water
      */
+#ifndef IMAGE
     totw_before=cell->balance.awater_flux+cell->balance.excess_water;
     foreachstand(stand,s,cell->standlist)
       totw_before+=soilwater(&stand->soil)*stand->frac;
     totw_before+=(cell->discharge.dmass_lake)/cell->coord.area;
     totw_before+=cell->ml.resdata->dmass/cell->coord.area;
     totw_before+=cell->ml.resdata->dfout_irrigation/cell->coord.area;
+#endif
     /* carbon */
     foreachstand(stand,s,cell->standlist)
     {
@@ -285,7 +287,7 @@ void landusechange_for_reservoir(Cell *cell,          /**< pointer to cell */
         stand=getstand(cell->standlist,s);
         if(stand->frac>minnatfrac_res+epsilon)
         {
-          printf("defor res 1 wrong loop %d %g %g %g %g %g %g %g %g \n in cell lon %.2f lat %.2f\n",
+          printf("defor res 1 wrong loop %d %g %g %g %g %g %g %g \n in cell lon %.2f lat %.2f\n",
                  s,difffrac,
                  1-cell->lakefrac-cell->ml.cropfrac_rf-cell->ml.cropfrac_ir-cell->ml.cropfrac_wl,
                  cell->lakefrac,cell->ml.cropfrac_rf, cell->ml.cropfrac_ir,cell->ml.cropfrac_wl,
@@ -298,7 +300,7 @@ void landusechange_for_reservoir(Cell *cell,          /**< pointer to cell */
           s=findlandusetype(cell->standlist,NATURAL); /* 2 check if everyting is deforested */
           if(s!=NOT_FOUND)
           {
-            printf("defor res 2 wrong loop %d %g %g %g %g %g %g %g %g\n in cell lon %.2f lat %.2f\n",
+            printf("defor res 2 wrong loop %d %g %g %g %g %g %g %g \n in cell lon %.2f lat %.2f\n",
                    s,difffrac,
                    1-cell->lakefrac-cell->ml.cropfrac_rf-cell->ml.cropfrac_ir-cell->ml.cropfrac_wl,
                    cell->lakefrac,cell->ml.cropfrac_rf, cell->ml.cropfrac_ir,cell->ml.cropfrac_wl,
@@ -361,6 +363,7 @@ void landusechange_for_reservoir(Cell *cell,          /**< pointer to cell */
     /* total water and carbon calculation after the correction of fractions
      * for reservoir water
      */
+#ifndef IMAGE /*  Because the timber harvest is not accounted for in the carbon balance check*/
     totw_after=cell->balance.awater_flux+cell->balance.excess_water;
     foreachstand(stand,s,cell->standlist)
       totw_after+=soilwater(&stand->soil)*stand->frac;
@@ -382,12 +385,13 @@ void landusechange_for_reservoir(Cell *cell,          /**< pointer to cell */
     tot_after.nitrogen+=cell->balance.deforest_emissions.nitrogen;
     tot_after.carbon-=cell->balance.flux_estab.carbon;
     tot_after.nitrogen-=cell->balance.flux_estab.nitrogen;
+#endif
     /* check if the same */
     balance.carbon=tot_before.carbon-tot_after.carbon;
     balance.nitrogen=tot_before.nitrogen-tot_after.nitrogen;
-    balanceW=totw_before-totw_after;
 
 #ifndef IMAGE /*  Because the timber harvest is not accounted for in the carbon balance check*/
+    balanceW=totw_before-totw_after;
     if(fabs(balanceW)>0.01)
       fail(INVALID_WATER_BALANCE_ERR,FAIL_ON_BALANCE,FALSE,
            "water balance error in the building of the reservoir, balanceW=%g",

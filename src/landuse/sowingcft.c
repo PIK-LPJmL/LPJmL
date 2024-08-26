@@ -126,7 +126,7 @@ void sowingcft(Stocks *flux_estab,  /**< establishment flux */
   Pft *pft;
   Real difffrac=0;
   Real landfrac;
-  int s,p,cft_id,pos;
+  int s,p,cft_id=0,pos;
   Irrigation *irrigation,*data;
 #ifdef CHECK_BALANCE
   Stocks flux_in={0,0};

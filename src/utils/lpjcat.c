@@ -143,14 +143,20 @@ int main(int argc,char **argv)
     o_offset+=item[i].header.ncell*sizeof(int);
     for(j=0;j<item[i].header.ncell;j++)
     {
-      fread(&ptr,sizeof(ptr),1,item[i].file);
+      if(fread(&ptr,sizeof(ptr),1,item[i].file)!=1){
+        fprintf(stderr,"Error reading %s.\n",argv[i]);
+      exit(1);
+      }
       ptr+=(ncell-item[i].header.ncell)*sizeof(int)+offset;
       fwrite(&ptr,sizeof(ptr),1,out);
     }
     fseek(out,offset+header_offset+ncell*sizeof(int),SEEK_SET);
     offset+=len;
     data=malloc(len);
-    fread(data,len,1,item[i].file);
+    if(fread(data,len,1,item[i].file)!=1){
+      fprintf(stderr,"Error reading %s.\n",argv[i]);
+      exit(1);
+    }
     fwrite(data,len,1,out);
     free(data);
     fclose(item[i].file);

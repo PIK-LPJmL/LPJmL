@@ -34,7 +34,7 @@ int main(int argc,char **argv)
     {name_crop,fscanpft_crop}
   };
   Config config;         /* LPJ configuration */
-  int rc;                /* return code of program */
+  int rc=0;              /* return code of program */
   Bool isout,check;
   const char *progname;
   const char *title[4];

@@ -27,7 +27,7 @@ FILE *openconfig(Config *config,      /**< configuration struct */
                 )                     /** \return file pointer of open file or NULL */
 
 {
-  char *lpjpath,*lpjinc,*env_options,*pos;
+  char *lpjpath=NULL,*lpjinc,*env_options,*pos;
   char **options;
   char *endptr;
   Bool iscpp;
@@ -436,6 +436,11 @@ FILE *openconfig(Config *config,      /**< configuration struct */
     /* adjust argc and argv */
     *argv+=i;
     *argc-=i;
+    if(env_options!=NULL)
+    {
+      options[dcount++]=env_options;
+      len+=strlen(env_options)+1;
+    }
     lpjpath=getenv(LPJROOT);
     if(lpjpath==NULL || !iscpp) /* Is LPJROOT environment variable defined? */
     { /* no */
@@ -450,11 +455,6 @@ FILE *openconfig(Config *config,      /**< configuration struct */
       checkptr(lpjinc);
       options[dcount++]=strcat(strcpy(lpjinc,"-I"),lpjpath);
       len+=strlen(lpjinc)+1;
-    }
-    if(env_options!=NULL)
-    {
-      options[dcount++]=env_options;
-      len+=strlen(env_options)+1;
     }
     len+=strlen(config->filter);
     if(config->rank!=0)

@@ -91,7 +91,11 @@ int main(int argc,char **argv)
     if(fread(&rbuf1,sizeof(short),1,mfp)==1){
       if(swap_grid) rbuf1=swapshort(rbuf1);
       lpjlon[i]=rbuf1;
-      fread(&rbuf1,sizeof(short),1,mfp);
+      if(fread(&rbuf1,sizeof(short),1,mfp)!=1)
+      {
+        fprintf(stderr,"Error reading lpjgridori.\n");
+        exit(1);
+      }
       if(swap_grid) rbuf1=swapshort(rbuf1);
       lpjlat[i]=rbuf1;
       /* printf("%d %d %d\n",i,lpjlon[i],lpjlat[i]); */
@@ -119,7 +123,11 @@ int main(int argc,char **argv)
       if(fread(&rbuf1,sizeof(short),1,ifp)==1){
     if(swap_grid) rbuf1=swapshort(rbuf1);
     lon=rbuf1;
-    fread(&rbuf1,sizeof(short),1,ifp);
+    if(fread(&rbuf1,sizeof(short),1,ifp)!=1)
+    {
+      fprintf(stderr,"Error reading lpjgrid.\n");
+      exit(1);
+    }
     if(swap_grid) rbuf1=swapshort(rbuf1);
     lat=rbuf1;
     /* printf("%d %d %d\n",k,lon,lat); */
@@ -132,7 +140,12 @@ int main(int argc,char **argv)
       for(l=0;l<ncell;l++){
     if(lat==lpjlat[l] && lon==lpjlon[l]){
       fseek(landuse_file,j*ncell*sizeof(short)*header.nbands+header.nbands*sizeof(short)*l+headersize(headername,landuse_version),SEEK_SET);
-      fread(rbuf2,sizeof(short),header.nbands,landuse_file);
+      if(fread(rbuf2,sizeof(short),header.nbands,landuse_file)!=1)
+      {
+        fprintf(stderr,"Error reading landuse file.\n");
+        exit(1);
+
+      }
       if(swap)
         for(m=0;m<header.nbands;m++)
           rbuf2[m]=swapshort(rbuf2[m]);

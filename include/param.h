@@ -88,10 +88,6 @@ typedef struct
   Real nmanure_nh4_frac;  /* fraction of NH4 in manure */
   Real residue_frac; /**< fraction of residues to be submerged with tillage */
   Real mixing_efficiency; /**< density factor to simulate changes in bulk density by tillage */
-  Real residue_rate;        /**< fixed residue rate in gC/m2/yr */
-  Real residue_pool;        /**< fixed residue pool in gC/m2 */
-  Real residue_cn;          /**< CN ratio of prescribed residues */
-  Real residue_fbg;         /**< belowground fraction of prescribed residues */
   Real fertilizer_rate;     /**< fixed fertilizer application rate in gN/m2/yr */
   Real manure_rate;         /**< fixed manure application rate in gN/m2/yr */
   Real min_c_bnf;
@@ -115,6 +111,8 @@ typedef struct
   Real phen_limit;        /**< limit for agricultural trees */
   Real nfrac_grassharvest; /**< fraction of nitrogen from grass harvest not returned to NH4 pool via manure after mowing*/
   Real nfrac_grazing;       /**< fraction of nitrogen from grass harvest not returned to NH4 pool via manure from livestock*/
+  Real bifratio;            /**< fraction of residue burnt in field */
+  Real fuelratio;           /**< fraction of residue burnt outside field */
   int bmgr_harvest_day_nh;  /**< harvest date of biomass grass harvest in northern hemisphere (green/brown)*/
   int bmgr_harvest_day_sh;  /**< harvest date of biomass grass harvest in southern hemisphere (green/brown)*/
   int cft_fertday_temp;     /**< cft index for fertilizer application date for grassland in temperate regions (abs(lat)>30 deg) */

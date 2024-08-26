@@ -57,6 +57,7 @@ Real daily_natural(Stand *stand,                /**< [inout] stand pointer */
   Real wdf; /* water deficit fraction */
   Real gc_pft;
   Real transp;
+  Real vol_water_enth; /* volumetric enthalpy of water (J/m^3) */
 
 #ifdef DAILY_ESTABLISHMENT
   Stocks flux_estab = {0,0};
@@ -126,7 +127,13 @@ Real daily_natural(Stand *stand,                /**< [inout] stand pointer */
   /* soil inflow: infiltration and percolation */
   if (stand->type->landusetype!=WETLAND || stand->frac<0.001)
   {
-    runoff+=infil_perc(stand,climate->prec+melt-intercep_stand,&return_flow_b,npft,ncft,config);
+    /* calc enthalpy of soil infiltration */
+    if(climate->prec+melt-intercep_stand>0)
+      /* assume infiltrating water is liquid and thus contains latent heat, melt water only has latent heat */
+      vol_water_enth=climate->temp*c_water*(climate->prec-intercep_stand)/(climate->prec-intercep_stand+melt)+c_water2ice;
+    else
+      vol_water_enth=0;
+    runoff+=infil_perc(stand,climate->prec+melt-intercep_stand,vol_water_enth,&return_flow_b,npft,ncft,config);
     if (stand->type->landusetype==WETLAND)                  //case stand->frac<0.001
     {
       runoff+= stand->cell->lateral_water/stand->frac;
@@ -135,10 +142,17 @@ Real daily_natural(Stand *stand,                /**< [inout] stand pointer */
   }
   else
   {
-    runoff+= infil_perc(stand,climate->prec+stand->cell->lateral_water/stand->frac+melt-intercep_stand,&return_flow_b,npft,ncft,config);
+    /* calc enthalpy of soil infiltration */
+    if((climate->prec+stand->cell->lateral_water/stand->frac+melt-intercep_stand)>0)
+      /* assume infiltrating water is liquid and thus contains latent heat, melt water only has latent heat */
+      vol_water_enth=climate->temp*c_water*(climate->prec+stand->cell->lateral_water/stand->frac-intercep_stand)/(climate->prec+stand->cell->lateral_water/stand->frac+melt-intercep_stand)+c_water2ice;
+    else
+      vol_water_enth=0;
+    runoff+= infil_perc(stand,climate->prec+stand->cell->lateral_water/stand->frac+melt-intercep_stand,vol_water_enth,&return_flow_b,npft,ncft,config);
     stand->cell->lateral_water=0;
   }
-#ifdef PERMUTE
+
+  #ifdef PERMUTE
   for(p=0;p<getnpft(&stand->pftlist);p++)
 #else
   foreachpft(pft,p,&stand->pftlist)

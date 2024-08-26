@@ -64,6 +64,8 @@ int iterate(Outputfile *output, /**< Output file data */
     data_index = (config->delta_year>1) ? 3 : 1;
   else
     data_index = 0;
+  index=0;
+
   firstspinupyear=(config->isfirstspinupyear) ?  config->firstspinupyear : input.climate->firstyear;
   if(isroot(*config) && config->nspinup && !config->isfirstspinupyear)
     printf("Spinup using climate starting from year %d\n",input.climate->firstyear);
@@ -311,6 +313,7 @@ int iterate(Outputfile *output, /**< Output file data */
         landuse_year=config->fix_landuse_year;
       else
         landuse_year=year;
+#ifndef COUPLED
       /* under constant landuse also keep wateruse at landuse_year_const */
       if(config->withlanduse==CONST_LANDUSE)
         wateruse_year=config->landuse_year_const;
@@ -318,6 +321,7 @@ int iterate(Outputfile *output, /**< Output file data */
         wateruse_year=config->fix_landuse_year;
       else
         wateruse_year=year;
+#endif
 #if defined IMAGE && defined COUPLED
       if(year>=config->start_coupling)
       {
@@ -343,7 +347,6 @@ int iterate(Outputfile *output, /**< Output file data */
       }
       if(config->reservoir)
         allocate_reservoir(grid,year,config);
-    }
 #ifndef COUPLED
     if(config->wateruse)
     {
@@ -376,6 +379,7 @@ int iterate(Outputfile *output, /**< Output file data */
     }
 #endif
 #endif
+    }
     if(config->ispopulation)
     {
       rc=readpopdens(input.popdens,year,grid,config);
@@ -459,7 +463,7 @@ int iterate(Outputfile *output, /**< Output file data */
       }
 #endif
       if(send_image_data(grid,input.climate,npft,ncft,config))
-        fail(SEND_IMAGE_ERR,FALSE,
+        fail(SEND_IMAGE_ERR,FALSE,FALSE,
              "Problem with writing maps for transfer to IMAGE");
     }
 #endif
@@ -495,7 +499,7 @@ int iterate(Outputfile *output, /**< Output file data */
 #if defined IMAGE && defined COUPLED
   /* wait for IMAGE to finish before closing TDT-connections by LPJ */
   if(config->sim_id==LPJML_IMAGE)
-    finish=receive_image_finish(config);
+    receive_image_finish(config);
 #endif
   return year;
 } /* of 'iterate' */

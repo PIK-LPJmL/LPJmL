@@ -122,7 +122,7 @@ void fprintfiles(FILE *file,          /**< pointer to text output file */
   }
   if(config->with_nitrogen || config->fire==SPITFIRE || config->fire==SPITFIRE_TMAX)
     fprintfilename(file,&config->wind_filename,TRUE);
-  if(config->fire==SPITFIRE_TMAX||config->cropsheatfrost)
+  if(config->fire==SPITFIRE_TMAX)
   {
     fprintfilename(file,&config->tmax_filename,TRUE);
     fprintfilename(file,&config->tmin_filename,TRUE);
@@ -140,8 +140,6 @@ void fprintfiles(FILE *file,          /**< pointer to text output file */
   }
   if(config->ispopulation)
     fprintfilename(file,&config->popdens_filename,TRUE);
-  if(config->grassfix_filename.name!=NULL)
-    fprintfilename(file,&config->grassfix_filename,FALSE);
   if(config->grassharvest_filename.name!=NULL)
     fprintfilename(file,&config->grassharvest_filename,FALSE);
   if(config->withlanduse!=NO_LANDUSE)
@@ -170,7 +168,7 @@ void fprintfiles(FILE *file,          /**< pointer to text output file */
     fprintfilename(file,&config->reservoir_filename,FALSE);
   }
 #ifdef IMAGE
-  if(config->aquifer_irrig==AQUIFER_IRRIG)
+  if(config->aquifer_irrig)
     fprintfilename(file,&config->aquifer_filename,FALSE);
 #endif
   if(config->wet_filename.name!=NULL)
@@ -200,7 +198,7 @@ void fprintfiles(FILE *file,          /**< pointer to text output file */
       if(config->outputvars[i].filename.fmt!=SOCK)
       {
         if(config->outputvars[i].oneyear)
-          for(j=config->firstyear;j<=config->lastyear;j++)
+          for(j=config->outputyear;j<=config->lastyear;j++)
           {
             fprintf(file,config->outputvars[i].filename.name,j);
             fputc('\n',file);

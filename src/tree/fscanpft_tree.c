@@ -104,7 +104,7 @@ static Bool fscanratio(LPJfile *file,Treeratio *ratio,const char *name,
   return FALSE;
 } /* of 'fscanratio' */
 
-const char *leaftype[]={"broadleaved","needleleaved","any leaved"};
+char *leaftype[]={"broadleaved","needleleaved","any leaved"};
 
 Bool fscanpft_tree(LPJfile *file, /**< pointer to LPJ file */
                    Pftpar *pft,   /**< Pointer to Pftpar array */

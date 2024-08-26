@@ -7,7 +7,6 @@
 
 Installation of LPJmL C Version 6.0.001
 
-
 Installation for Unix-like systems
 ----------------------------------
 
@@ -91,6 +90,8 @@ Directory tree after extracting the tar files:
      +--netcdf    : NetCDF input/output functions
      |
      +--utils     : utility programs
+     |
+     +--test      : unit tests for src code using ceedling
 
 Configure for your operating system
 
@@ -106,7 +107,8 @@ Or you can simply load the lpjml module:
 
 module load lpjml
 
-On the new cluster you have to set the following modules:
+On the new PIK cluster you have to set the following modules:
+
 module use /p/system/modulefiles/compiler \
                /p/system/modulefiles/gpu \
                /p/system/modulefiles/libraries \
@@ -144,11 +146,10 @@ Makefile.aix         - IBM AIX settings (xlc compiler)
 Makefile.aix_mpi     - IBM AIX and MPI environment
 Makefile.gcc         - GNU C-compiler settings
 Makefile.darwin_gcc  - GNU C-compiler settings for MacOS X
-Makefile.intel       - Intel C-compiler settings
-Makefile.icx         - Intel C-compiler settings on the new cluster at PIK
-Makefile.intel_mpi   - Intel C-compiler and Intel MPI settings
-Makefile.cluster2015 - Intel C-compiler and Intel MPI on HLRS2015 cluster at PIK
-Makefile.hpc2024      - Intel C-compiler and Intel MPI on the new cluster at PIK
+Makefile.intel       - Intel C-compiler (icc) settings
+Makefile.icx         - New Intel C-compiler (icx) settings
+Makefile.cluster2015 - Intel C-compiler and Intel MPI on HLRS2015 PIK cluster
+Makefile.hpc2024     - New Intel C-compiler and Intel MPI on the new PIK cluster
 Makefile.mpich       - GNU C-Compiler and MPI Chameleon settings
 Makefile.win32       - Windows settings (used by configure.bat)
 
@@ -410,11 +411,14 @@ Error code Description                                   Error type
         41 Invalid time step in soiltemp()               Internal
         42 Gamma function error                          Internal
         43 Wetland error                                 Internal
-        44 Imvalid hag_beta error                        External
+        44 Invalid hag_beta error                        External
         45 Cannot read external flow                     External
         46 Opening connection to coupled model failed    External
         47 Invalid inundation stress                     Internal
         48 Error initializing output data                External
+        49 Invalid uniform temp sign value               Internal
+        50 Invalid crop PHU option                       Internal
+        51 Invalid fire danger index                     Internal
 ---------- --------------------------------------------- ----------
 
 External errors are caused by invalid or missing input files while internal

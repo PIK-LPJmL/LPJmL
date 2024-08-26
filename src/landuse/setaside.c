@@ -17,6 +17,8 @@
 #include "tree.h"
 #include "agriculture.h"
 
+void mixsoilenergy(Stand *,const Stand *,const Config *config);
+
 void mixsoil(Stand *stand1,const Stand *stand2,int year,int ntotpft,const Config *config)
 {
   int l,index,i;
@@ -181,7 +183,8 @@ void mixsoil(Stand *stand1,const Stand *stand2,int year,int ntotpft,const Config
     mixpool(stand1->soil.bulkdens[l], stand2->soil.bulkdens[l], stand1->frac, stand2->frac);
     mixpool(stand1->soil.k_dry[l], stand2->soil.k_dry[l], stand1->frac, stand2->frac);
     mixpool(stand1->soil.Ks[l], stand2->soil.Ks[l], stand1->frac, stand2->frac);
-
+    mixpool(stand1->soil.wi_abs_enth_adj[l],stand2->soil.wi_abs_enth_adj[l],stand1->frac,stand2->frac);
+    mixpool(stand1->soil.sol_abs_enth_adj[l],stand2->soil.sol_abs_enth_adj[l],stand1->frac,stand2->frac);
 /*
     absolute_water1[l] = stand1->soil.w[l] * stand1->soil.whcs[l] + stand1->soil.w_fw[l] + stand1->soil.wpwps[l] * (1 - stand1->soil.ice_pwp[l]);
     absolute_water2 = stand2->soil.w[l] * stand2->soil.whcs[l] + stand2->soil.w_fw[l] + stand2->soil.wpwps[l] * (1 - stand2->soil.ice_pwp[l]);
@@ -217,21 +220,38 @@ void mixsoil(Stand *stand1,const Stand *stand2,int year,int ntotpft,const Config
   mixpool(stand1->soil.whc[BOTTOMLAYER], stand2->soil.whc[BOTTOMLAYER], stand1->frac, stand2->frac);
   mixpool(stand1->soil.wpwp[BOTTOMLAYER],stand2->soil.wpwp[BOTTOMLAYER],stand1->frac,stand2->frac);
   mixpool(stand1->soil.wpwps[BOTTOMLAYER], stand2->soil.wpwps[BOTTOMLAYER], stand1->frac, stand2->frac);
+  mixpool(stand1->soil.wi_abs_enth_adj[BOTTOMLAYER], stand2->soil.wi_abs_enth_adj[BOTTOMLAYER], stand1->frac, stand2->frac);
+  mixpool(stand1->soil.sol_abs_enth_adj[BOTTOMLAYER], stand2->soil.sol_abs_enth_adj[BOTTOMLAYER], stand1->frac, stand2->frac);
   mixpool(stand1->soil.beta_soil[BOTTOMLAYER], stand2->soil.beta_soil[BOTTOMLAYER], stand1->frac, stand2->frac);
   mixpool(stand1->soil.bulkdens[BOTTOMLAYER], stand2->soil.bulkdens[BOTTOMLAYER], stand1->frac, stand2->frac);
   mixpool(stand1->soil.k_dry[BOTTOMLAYER], stand2->soil.k_dry[BOTTOMLAYER], stand1->frac, stand2->frac);
   mixpool(stand1->soil.Ks[BOTTOMLAYER], stand2->soil.Ks[BOTTOMLAYER], stand1->frac, stand2->frac);
-
+  mixpool(stand1->soil.mean_maxthaw,stand2->soil.mean_maxthaw,stand1->frac,stand2->frac);
+  mixpool(stand1->soil.alag,stand2->soil.alag,stand1->frac,stand2->frac);
+  mixpool(stand1->soil.amp,stand2->soil.amp,stand1->frac,stand2->frac);
+  mixpool(stand1->soil.rw_buffer,stand2->soil.rw_buffer,stand1->frac,stand2->frac);
+  mixsoilenergy(stand1,stand2,config);
 #ifdef CHECK_BALANCE
   water_after=soilwater(&stand1->soil)*(stand1->frac+stand2->frac)+stand1->cell->balance.excess_water;
-  if(fabs(water_before-water_after)>epsilon*1e-2)
+  if(fabs(water_before-water_after)>epsilon)
   {
     fail(INVALID_WATER_BALANCE_ERR,FAIL_ON_BALANCE,FALSE,
-         "Invalid water balance=%g=%g-%g in mixsoil()",fabs(water_before-water_after),water_before,water_after);
+         "Invalid water balance=%g water_before=%g water_after=%g in mixsoil()",fabs(water_before-water_after),water_before,water_after);
     fflush(stderr);
   }
 #endif
 } /* of 'mixsoil' */
+
+void mixsoilenergy(Stand *stand1, const Stand *stand2, const Config *config)
+{
+  int l;
+  for(l=0;l<NHEATGRIDP;++l)
+    mixpool(stand1->soil.enth[l],stand2->soil.enth[l],stand1->frac,stand2->frac);
+  /* update soil temps */
+  Soil_thermal_prop therm;
+  calc_soil_thermal_props(UNKNOWN, &therm, &(stand1->soil), NULL, NULL ,config->johansen, FALSE);
+  compute_mean_layer_temps_from_enth(stand1->soil.temp,stand1->soil.enth,&therm);
+} /* of 'mixsoilenergy' */
 
 void mixsetaside(Stand *setasidestand,Stand *cropstand,Bool intercrop,int year,int ntotpft,const Config *config)
 {
@@ -431,7 +451,6 @@ Bool setaside(Cell *cell,          /**< Pointer to LPJ cell */
   fluxes_neg=cell->balance.neg_fluxes;
   fluxes_prod.carbon=(cell->balance.deforest_emissions.carbon+cell->balance.prod_turnover.fast.carbon+cell->balance.prod_turnover.slow.carbon+cell->balance.trad_biofuel.carbon);
   fluxes_prod.nitrogen=(cell->balance.deforest_emissions.nitrogen+cell->balance.prod_turnover.fast.nitrogen+cell->balance.prod_turnover.slow.nitrogen+cell->balance.trad_biofuel.nitrogen);
-  fluxes_firewood=cell->balance.flux_firewood;
 #endif
   if(cropstand<0)
     fail(NEGATIVE_STAND_FRAC_ERR,TRUE,TRUE,"setaside: Negative crop stand frac =%g in cell (%s) before update",cropstand->frac,sprintcoord(line,&cell->coord));
@@ -532,9 +551,9 @@ Bool setaside(Cell *cell,          /**< Pointer to LPJ cell */
       cell->balance.estab_storage_grass[0].nitrogen+cell->balance.estab_storage_tree[0].nitrogen+cell->balance.estab_storage_grass[1].nitrogen+cell->balance.estab_storage_tree[1].nitrogen;
 
   balance.carbon=(cell->balance.flux_estab.carbon-fluxes_estab.carbon)-(cell->balance.fire.carbon-fluxes_fire.carbon)-(cell->balance.neg_fluxes.carbon-fluxes_neg.carbon)
-      -((cell->balance.deforest_emissions.carbon+cell->balance.prod_turnover.fast.carbon+cell->balance.prod_turnover.slow.carbon+cell->balance.trad_biofuel.carbon)-fluxes_prod.carbon)-(cell->balance.flux_firewood.carbon-fluxes_firewood.carbon);
+      -((cell->balance.deforest_emissions.carbon+cell->balance.prod_turnover.fast.carbon+cell->balance.prod_turnover.slow.carbon+cell->balance.trad_biofuel.carbon)-fluxes_prod.carbon);
   balance.nitrogen=(cell->balance.flux_estab.nitrogen-fluxes_estab.nitrogen)-(cell->balance.fire.nitrogen-fluxes_fire.nitrogen)-(cell->balance.neg_fluxes.nitrogen-fluxes_neg.nitrogen)
-      -((cell->balance.deforest_emissions.nitrogen+cell->balance.prod_turnover.fast.nitrogen+cell->balance.prod_turnover.slow.nitrogen+cell->balance.trad_biofuel.nitrogen)-fluxes_prod.nitrogen)-(cell->balance.flux_firewood.nitrogen-fluxes_firewood.nitrogen);
+      -((cell->balance.deforest_emissions.nitrogen+cell->balance.prod_turnover.fast.nitrogen+cell->balance.prod_turnover.slow.nitrogen+cell->balance.trad_biofuel.nitrogen)-fluxes_prod.nitrogen);
   if(fabs(start.carbon-end.carbon+balance.carbon)>0.001)
     fail(INVALID_CARBON_BALANCE_ERR,FAIL_ON_BALANCE,FALSE,"Invalid carbon balance in %s at the end: year=%d: C_ERROR=%g start : %g end : %g balance.carbon: %g",
          __FUNCTION__,year,start.carbon-end.carbon+balance.carbon,start.carbon,end.carbon,balance.carbon);

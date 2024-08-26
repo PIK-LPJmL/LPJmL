@@ -70,7 +70,6 @@ Climate *initclimate(const Cell grid[], /**< LPJ grid */
                      Config *config     /**< pointer to LPJ configuration */
                     )                     /** \return allocated climate data struct or NULL on error */
 {
-  char *name;
   int i, ndata; 
   int lastyear;
   Climate *climate;
@@ -241,8 +240,7 @@ Climate *initclimate(const Cell grid[], /**< LPJ grid */
       }
     }
   }
-
-  if(config->cropsheatfrost || config->fire==SPITFIRE_TMAX)
+  if(config->fire==SPITFIRE_TMAX)
   {
     if(openclimate(&climate->file_tmin,&config->tmin_filename,"celsius",LPJ_SHORT,1,0.1,config))
     {
@@ -398,7 +396,7 @@ Climate *initclimate(const Cell grid[], /**< LPJ grid */
     }
   }
 
-  if(config->cropsheatfrost || config->fire==SPITFIRE_TMAX)
+  if(config->fire==SPITFIRE_TMAX)
   {
     for (i = 0; i<ndata; i++)
     {
@@ -416,7 +414,6 @@ Climate *initclimate(const Cell grid[], /**< LPJ grid */
       }
     }
   }
-
   if(config->fire==SPITFIRE)
   {
     if(config->tamp_filename.fmt!=FMS)

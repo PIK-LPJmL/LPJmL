@@ -71,6 +71,7 @@ void update_wetland(Cell *cell,          /**< pointer to cell */
 #endif
   wetlandstandnum=natstandnum=NOT_FOUND;
   wetlandarea_old=wetlandarea_new=crop_wetland=0.;
+  slope=cell->slope_min;
   iswetland_change = iswetland = FALSE;
   s = findlandusetype(cell->standlist, NATURAL);            /*COULD BE AGRICULTURE AS WELL BUT NOT YET*/
   if(s!=NOT_FOUND)
@@ -88,7 +89,7 @@ void update_wetland(Cell *cell,          /**< pointer to cell */
   }
 
   //  modify this to use wtable wanted -> wtable_mean
-  wtable_use = cell->hydrotopes.wtable_mean;        /*mean over stands, NEXT try should cell->hydrotopes.wtable_mean*/
+  wtable_use = cell->hydrotopes.wtable_mean;
   if (wtable_use>0) wtable_use = 0;
 #ifdef CHECK_BALANCE2
   if(year==2010)
@@ -103,6 +104,7 @@ void update_wetland(Cell *cell,          /**< pointer to cell */
 
   if (!cell->hydrotopes.skip_cell && wtable_use >= -4.5 && natstandnum!=NOT_FOUND)
   {
+    natstand = getstand(cell->standlist,natstandnum);
     // -----------------------------------------------------------------------------------------------
     //  determine wetland area
     //  min / max cti values
@@ -504,49 +506,50 @@ void update_wetland(Cell *cell,          /**< pointer to cell */
       {
         wetstand = getstand(cell->standlist, s);
         iswetland = TRUE;
-      }
-      if(cell->slope>0)
-        lambda=1/cell->slope;
-      else
-        lambda=1000;
-      slope=cell->slope_min;
-      if (iswetland && (fabs(cell->slope_min - cell->slope_max)>epsilon))
-      {
-        slope_max=log(1 - wetstand->frac - epsilon)/(-lambda);
-        if(slope_max>cell->slope_max) slope_max=cell->slope_max;
-        if (slope_max<cell->slope_min)
+
+        if(cell->slope>0)
+          lambda=1/cell->slope;
+        else
+          lambda=1000;
+        slope=cell->slope_min;
+
+        if (iswetland && (fabs(cell->slope_min - cell->slope_max)>epsilon))
         {
-          slope_max = cell->slope_min;
-          slope = cell->slope_min;
+          slope_max=log(1 - wetstand->frac - epsilon)/(-lambda);
+          if(slope_max>cell->slope_max) slope_max=cell->slope_max;
+          if (slope_max<cell->slope_min)
+          {
+            slope_max = cell->slope_min;
+            slope = cell->slope_min;
+          }
+          else
+          {
+            slope = (exp(lambda*-slope_max)*(-1 / lambda - slope_max)) - (exp(lambda*-cell->slope_min)*(-1 / lambda - cell->slope_min));  //calculation of the integral of the PDF to get  mean slope
+            //slope /= (-(exp(-lambda*slope_max) - (exp(-lambda*cell->slope_min))));                                                 //normalising the mean slope for a specific range
+          }
+          if(cell->slope<slope)
+            slope=cell->slope;
+          wetstand->slope_mean = slope;
+          wetstand->Hag_Beta = min(1, (0.09*log(slope + 0.1) + 0.22) / 0.43);
+
+          s=findlandusetype(cell->standlist,NATURAL);            /*COULD BE AGRICULTURE AS WELL BUT NOT YET*/
+          if(s!=NOT_FOUND)
+          {
+            natstand = getstand(cell->standlist,s);
+            slope=exp(lambda*-cell->slope_max)*(-1/lambda-cell->slope_max)- exp(lambda*-slope_max)*(-1/lambda-slope_max);  //calculation of the integral of the PDF to get  mean slope
+            slope/=-(exp(-lambda*cell->slope_max)-exp(-lambda*slope_max));                                                 //normalising the mean slope for a specific range
+            natstand->Hag_Beta=min(1,(0.06*log(slope+0.1)+0.22)/0.43);
+            natstand->slope_mean=slope;
+          }
         }
         else
         {
-          slope = (exp(lambda*-slope_max)*(-1 / lambda - slope_max)) - (exp(lambda*-cell->slope_min)*(-1 / lambda - cell->slope_min));  //calculation of the integral of the PDF to get  mean slope
-          //slope /= (-(exp(-lambda*slope_max) - (exp(-lambda*cell->slope_min))));                                                 //normalising the mean slope for a specific range
-        }
-        if(cell->slope<slope)
-          slope=cell->slope;
-        wetstand->slope_mean = slope;
-        wetstand->Hag_Beta = min(1, (0.09*log(slope + 0.1) + 0.22) / 0.43);
-
-        s=findlandusetype(cell->standlist,NATURAL);            /*COULD BE AGRICULTURE AS WELL BUT NOT YET*/
-        if(s!=NOT_FOUND)
-        {
-          natstand = getstand(cell->standlist,s);
-
-          slope=exp(lambda*-cell->slope_max)*(-1/lambda-cell->slope_max)- exp(lambda*-slope_max)*(-1/lambda-slope_max);  //calculation of the integral of the PDF to get  mean slope
-          slope/=-(exp(-lambda*cell->slope_max)-exp(-lambda*slope_max));                                                 //normalising the mean slope for a specific range
-          natstand->Hag_Beta=min(1,(0.06*log(slope+0.1)+0.22)/0.43);
-          natstand->slope_mean=slope;
-        }
-      }
-      else
-      {
-        s=findlandusetype(cell->standlist,NATURAL);            /*COULD BE AGRICULTURE AS WELL BUT NOT YET*/
-        if(s!=NOT_FOUND)
-        {
-          natstand = getstand(cell->standlist,s);
-          natstand->Hag_Beta=min(1,(0.06*log(cell->slope+0.1)+0.22)/0.43);
+          s=findlandusetype(cell->standlist,NATURAL);            /*COULD BE AGRICULTURE AS WELL BUT NOT YET*/
+          if(s!=NOT_FOUND)
+          {
+            natstand = getstand(cell->standlist,s);
+            natstand->Hag_Beta=min(1,(0.06*log(cell->slope+0.1)+0.22)/0.43);
+          }
         }
       }
     }

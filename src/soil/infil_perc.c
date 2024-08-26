@@ -38,6 +38,7 @@ static int findwtlayer(const Soil *soil)
 
 Real infil_perc(Stand *stand,        /**< Stand pointer */
     Real infil,          /**< rainfall + melting water - interception_stand (mm) + rw_irrig */
+    Real infil_vol_enth, /**< volumetric enthalpy contained in infil (J/m^3) */
     Real *return_flow_b, /**< blue water return flow (mm) */
     int npft,            /**< number of natural PFTs */
     int ncft,            /**< number of crop PFTs */
@@ -50,7 +51,7 @@ Real infil_perc(Stand *stand,        /**< Stand pointer */
   Real HC; /*hydraulic conductivity in [mm/h]*/
   Real influx,alpha;
   Real inactive_water[NSOILLAYER],frac_g_influx;
-  Real outflux,grunoff,lat_runoff_last;  // outflux from last layer
+  Real outflux,grunoff,lat_runoff_last,run;  // outflux from last layer
   Real runoff_surface,freewater,soil_infil;
   Real srunoff;
   Real lrunoff[NSOILLAYER],nrsub_top[BOTTOMLAYER],ndrain_perched_out[BOTTOMLAYER];                /* intermediate variable for leaching of lateral runoff */
@@ -69,7 +70,6 @@ Real infil_perc(Stand *stand,        /**< Stand pointer */
   int l,p;
   Real updated_soil_water=0,previous_soil_water[NSOILLAYER];
   Pft *pft;
-  String line;
   Irrigation *data_irrig;
   Pftcrop *crop;
   Real S;                  /*aquifer specific yield (-)*/
@@ -84,14 +84,31 @@ Real infil_perc(Stand *stand,        /**< Stand pointer */
   //Real sat_lev = 0.9;
   Real prec=infil;
   Bool isrice=FALSE;
+  Real vol_water_enth=0; /* volumetric enthalpy of inflowing or outflowing water J/m^3 */
+  int infil_loop_count=1;
+  soil=&stand->soil;
 
 #ifdef CHECK_BALANCE
-  Real start, end;
   Stocks n_before,n_after;
-  start = end = 0;
   Real water_after, water_before,balancew;
   water_before=soilwater(&stand->soil);
+  n_before=soilstocks(soil);
+  n_before.nitrogen=n_before.nitrogen*stand->frac+stand->cell->balance.n_outflux;
+  //fprintf(stderr,"start ground_st_am:%g ground_st:%g dmass_gw:%g wa:%g\n",stand->cell->ground_st_am,stand->cell->ground_st,stand->cell->discharge.dmass_gw,soil->wa);
 #endif
+#ifdef SAFE
+  String line;
+  forrootsoillayer(l)
+   if (soil->w[l]< -epsilon || soil->w_fw[l]< -epsilon )
+    {
+      fprintf(stderr,"1 infil_perc Cell (%s) soilwater=%.6f soilice=%.6f wsats=%.6f\n",
+          sprintcoord(line,&stand->cell->coord),allwater(soil,l),allice(soil,l),soil->wsats[l]);
+      fflush(stderr);
+      fprintf(stderr,"Cell (%s) 2 Soil-moisture %d negative: w:%g, fw:%g,lutype %s soil_type %s lateral_water:%g in infil_perc()\n",
+          sprintcoord(line,&stand->cell->coord),l,soil->w[l],soil->w_fw[l],stand->type->name,soil->par->name, stand->cell->lateral_water);
+    }
+#endif
+
   foreachpft(pft,p,&stand->pftlist)
     if(!strcmp(pft->par->name,"rice"))
       isrice=TRUE;
@@ -101,7 +118,6 @@ Real infil_perc(Stand *stand,        /**< Stand pointer */
   else
     data_irrig=NULL;
 
-  soil=&stand->soil;
   soil_infil=param.soil_infil; /* default to draw square root for infiltration factor*/
   if(config->rw_manage && (stand->type->landusetype==AGRICULTURE || stand->type->landusetype==GRASSLAND || stand->type->landusetype==BIOMASS_GRASS || stand->type->landusetype==OTHERS  ||
       stand->type->landusetype==BIOMASS_TREE || stand->type->landusetype==AGRICULTURE_TREE || stand->type->landusetype==AGRICULTURE_GRASS))
@@ -120,7 +136,7 @@ Real infil_perc(Stand *stand,        /**< Stand pointer */
   foreachsoillayer(l)
    if (soil->w[l]< -epsilon || soil->w_fw[l]< -epsilon )
     {
-      fprintf(stderr,"start infil_perc Cell (%s) soilwater=%.6f soilice=%.6f wsats=%.6f\n",
+      fprintf(stderr,"2 infil_perc Cell (%s) soilwater=%.6f soilice=%.6f wsats=%.6f\n",
           sprintcoord(line,&stand->cell->coord),allwater(soil,l),allice(soil,l),soil->wsats[l]);
       fflush(stderr);
       fprintf(stderr,"Cell (%s) 1 Soil-moisture %d negative: w:%g, fw:%g,lutype %s soil_type %s lateral_water:%g in infil_perc()",
@@ -148,13 +164,6 @@ Real infil_perc(Stand *stand,        /**< Stand pointer */
   foreachsoillayer(l)
   icefrac[l]=(soil->ice_depth[l]+soil->ice_fw[l]+soil->wpwps[l]*soil->ice_pwp[l])/soil->wsats[l];
   Theta_ice=pow(10,-OMEGA*icefrac[jwt]);
-
-#ifdef CHECK_BALANCE
-  start=soil->wa;
-  n_before=soilstocks(soil);
-  n_before.nitrogen=n_before.nitrogen*stand->frac+stand->cell->balance.n_outflux;
-#endif
-
 
   for(l=0;l<NSOILLAYER;l++)
   {
@@ -189,6 +198,7 @@ Real infil_perc(Stand *stand,        /**< Stand pointer */
     {
       /* in case of Drip: directly fill up field cap of first two soil layers, no surface runoff, lateral runoff or percolation */
       /* -> this allows simulating perfect irrigation: drip + irrg_threshold = 1 (keep in mind: plant can still be somewhat stressed, if roots go deeper than 2. layer) */
+      vol_water_enth=infil_vol_enth; /* set enthalpy of water flowing into top layer to the infil enthalpy */
       for(l=0;l<LASTLAYER && influx>epsilon;l++)
       {
         previous_soil_water[l]=soil->w[l]*soil->whcs[l]+soil->ice_depth[l]+soil->w_fw[l]+soil->ice_fw[l];
@@ -202,6 +212,8 @@ Real infil_perc(Stand *stand,        /**< Stand pointer */
           influx=soil->w_fw[l]-(soil->wsats[l]-soil->whcs[l]);
           soil->w_fw[l]-=influx;
         }
+        vol_water_enth=(soil->temp[l]>=0?c_water:c_ice)*soil->temp[l]+(soil->temp[l]>=0?c_water2ice:0); /* set enthalpy of water flowing out of this layer and into the below layer */
+        reconcile_layer_energy_with_water_shift(soil,l,-influx,vol_water_enth,config); /* account for enthalpy of water outflow  */
         /*update frac_g: new green fraction equals old green amount + new green amount divided by total water */
         updated_soil_water=soil->w[l]*soil->whcs[l]+soil->ice_depth[l]+soil->w_fw[l]+soil->ice_fw[l];
         if(updated_soil_water>previous_soil_water[l] && updated_soil_water>0)
@@ -213,6 +225,8 @@ Real infil_perc(Stand *stand,        /**< Stand pointer */
     }
     else
     {
+      /* Sprinkler and Surface water infiltration */
+      vol_water_enth=infil_vol_enth; /* set toplayer vol enth to the infil enthalpy */
       for(l=0;l<NSOILLAYER;l++)
       {
         if(l<NTILLLAYER)
@@ -220,6 +234,7 @@ Real infil_perc(Stand *stand,        /**< Stand pointer */
         previous_soil_water[l]=soil->w[l]*soil->whcs[l]+soil->ice_depth[l]+soil->w_fw[l]+soil->ice_fw[l];
         soil->w[l]+=(soil->w_fw[l]+influx)/soil->whcs[l];
         soil->w_fw[l]=0.0;
+        reconcile_layer_energy_with_water_shift(soil,l,influx,vol_water_enth,config); /* account for enthalpy of water inflow  */
         influx=0.0;
         lrunoff[l]=0.0;
         inactive_water[l]=soil->ice_depth[l]+soil->wpwps[l]+soil->ice_fw[l];
@@ -233,16 +248,19 @@ Real infil_perc(Stand *stand,        /**< Stand pointer */
           fflush(stderr);
         }
          */
-        if(updated_soil_water>previous_soil_water[l] && updated_soil_water>0)
-        {
-          stand->frac_g[l]=(previous_soil_water[l]*stand->frac_g[l] + (updated_soil_water - previous_soil_water[l])*frac_g_influx)/updated_soil_water; /* new green fraction equals old green amount + new green amount divided by total water */
-        }
+//        if(updated_soil_water>previous_soil_water[l] && updated_soil_water>0)
+//        {
+//          stand->frac_g[l]=(previous_soil_water[l]*stand->frac_g[l] + (updated_soil_water - previous_soil_water[l])*frac_g_influx)/updated_soil_water; /* new green fraction equals old green amount + new green amount divided by total water */
+//        }
 
         /* runoff of water above saturation which fills soil bucket and later create lateral runoff */
         if ((soil->w[l]*soil->whcs[l])>(soildepth[l]-soil->freeze_depth[l])*(soil->wsat[l]-soil->wpwp[l]))
         {
           grunoff=(soil->w[l]*soil->whcs[l])-((soildepth[l]-soil->freeze_depth[l])*(soil->wsat[l]-soil->wpwp[l]));
           soil->w[l]-=grunoff/soil->whcs[l];
+          reconcile_layer_energy_with_water_shift(soil,l,-min(grunoff,influx),vol_water_enth,config); /* subtract enth of runoff until influx, assuming vol_enth of above layer  */
+          vol_water_enth=soil->freeze_depth[l]/soildepth[l]*(c_ice*soil->temp[l]) + (1-soil->freeze_depth[l]/soildepth[l])*(c_water*soil->temp[l]+c_water2ice);
+          reconcile_layer_energy_with_water_shift(soil,l,-max(grunoff-influx,0),vol_water_enth, config); /* subtract enth of runoff above influx, assuming vol_enth of current layer */
           *return_flow_b+=grunoff*(1-stand->frac_g[l]);
           if (l<(BOTTOMLAYER-1) || l<jwt || l<icet)
           {
@@ -260,7 +278,10 @@ Real infil_perc(Stand *stand,        /**< Stand pointer */
         {
           grunoff=(inactive_water[l]+soil->w[l]*soil->whcs[l])-soil->wsats[l];
           soil->w[l]-=grunoff/soil->whcs[l];
-          if (l<(BOTTOMLAYER-1) || l<jwt || l<icet)
+          reconcile_layer_energy_with_water_shift(soil,l,-min(grunoff,influx),vol_water_enth, config); /* subtract enth of runoff until influx, assuming vol_enth of above layer  */
+          vol_water_enth=soil->freeze_depth[l]/soildepth[l]*(c_ice*soil->temp[l]) + (1-soil->freeze_depth[l]/soildepth[l])*(c_water*soil->temp[l]+c_water2ice);
+          reconcile_layer_energy_with_water_shift(soil,l,-max(grunoff-influx,0),vol_water_enth, config); /* subtract enth of runoff above influx, assuming vol_enth of current layer */
+         if (l<(BOTTOMLAYER-1) || l<jwt || l<icet)
           {
             runoff+=grunoff;
             lrunoff[l]+=grunoff;
@@ -272,6 +293,8 @@ Real infil_perc(Stand *stand,        /**< Stand pointer */
           }
           *return_flow_b+=grunoff*(1-stand->frac_g[l]);
         }
+        influx=0.0;
+        vol_water_enth=soil->freeze_depth[l]/soildepth[l]*(c_ice*soil->temp[l]) + (1-soil->freeze_depth[l]/soildepth[l])*(c_water*soil->temp[l]+c_water2ice);
 
         if (soildepth[l]>soil->freeze_depth[l])
         {
@@ -300,6 +323,7 @@ Real infil_perc(Stand *stand,        /**< Stand pointer */
               perc+=(soil->w[l])*soil->whcs[l];
               soil->w[l]=0;
             }
+            reconcile_layer_energy_with_water_shift(soil,l,-perc,vol_water_enth,config); /* subtract enthalpy of percolating water */
             getoutputindex(&stand->cell->output,PERC,l,config)+=perc*stand->frac;
             if(l==BOTTOMLAYER)
             {
@@ -318,14 +342,55 @@ Real infil_perc(Stand *stand,        /**< Stand pointer */
         } /* if soil depth > freeze_depth */
       } /* soil layer loop */
     }
+    /* recompute the soil temperature every two iterations, to allow temperature changes to affect following percolation energy transfer */
+    if (infil_loop_count%2==0 && config->percolation_heattransfer)
+    {
+      apply_perc_enthalpy(soil);
+      Soil_thermal_prop th;
+      calc_soil_thermal_props(UNKNOWN,&th,soil,soil->wi_abs_enth_adj,soil->sol_abs_enth_adj,config->johansen,FALSE);
+      compute_mean_layer_temps_from_enth(soil->temp,soil->enth,&th);
+    }
+    infil_loop_count+=1;
   } /* while infil > 0 */
+
+#ifdef CHECK_BALANCE
+
+  n_after=soilstocks(soil);
+  n_after.nitrogen=n_after.nitrogen*stand->frac+stand->cell->balance.n_outflux;
+  if(fabs(n_after.nitrogen-n_before.nitrogen)>0.0001)
+    fail(INVALID_NITROGEN_BALANCE_ERR,FAIL_ON_BALANCE,FALSE,"Invalid nitrogen balance in %s, Cell (lat:%g lon:%g), N balance:%g",
+        __FUNCTION__,stand->cell->coord.lat,stand->cell->coord.lon,n_after.nitrogen-n_before.nitrogen);
+
+  water_after=soilwater(&stand->soil);
+  balancew=water_after-water_before-prec+runoff_surface+runoff_out+drain_perched_out+rsub_top+runoff+lat_runoff_last+outflux;
+  if(fabs(balancew)>epsilon)
+  {
+    fail(INVALID_WATER_BALANCE_ERR,FAIL_ON_BALANCE,FALSE,
+        "1 Invalid water balance in %s: balanceW: %g water_before: %.6f water_after: %.6f standtype: %s standfrac: %g runoff_surface: %g "
+        "drain_perched_out: %g runoff_out: %g rsup_top_lastl: %g runoff: %g rsub_top: %g rw_buff: %g wa: %g infil: %g lat_runoff_last: %g outflux: %g \n",
+        __FUNCTION__,balancew,water_before,water_after,stand->type->name,stand->frac,runoff_surface,drain_perched_out,runoff_out,rsup_top_lastl,runoff,rsub_top,soil->rw_buffer,soil->wa,prec,lat_runoff_last,outflux);
+  }
+#endif
+
+#ifdef SAFE
+  forrootsoillayer(l)
+   if (soil->w[l]< -epsilon || soil->w_fw[l]< -epsilon )
+    {
+      fprintf(stderr,"3 infil_perc Cell (%s) soilwater=%.6f soilice=%.6f wsats=%.6f\n",
+          sprintcoord(line,&stand->cell->coord),allwater(soil,l),allice(soil,l),soil->wsats[l]);
+      fflush(stderr);
+      fprintf(stderr,"Cell (%s) 2 Soil-moisture %d negative: w:%g, fw:%g,lutype %s soil_type %s lateral_water:%g in infil_perc()\n",
+          sprintcoord(line,&stand->cell->coord),l,soil->w[l],soil->w_fw[l],stand->type->name,soil->par->name, stand->cell->lateral_water);
+    }
+#endif
+
   for(l=0;l<NSOILLAYER;l++)
   {
     /*reallocate water above field capacity to freewater */
     if (soil->w[l]+soil->ice_depth[l]/soil->whcs[l]>1)
     {
-      soil->w_fw[l]=(soil->w[l]+soil->ice_depth[l]/soil->whcs[l]-1)*soil->whcs[l];
-      soil->w[l]-=soil->w_fw[l]/soil->whcs[l];
+      soil->w_fw[l]+=(soil->w[l]+soil->ice_depth[l]/soil->whcs[l]-1)*soil->whcs[l];
+      soil->w[l]-=(soil->w[l]+soil->ice_depth[l]/soil->whcs[l]-1);
     }
     if (soil->w_fw[l]<0)
     {
@@ -337,17 +402,29 @@ Real infil_perc(Stand *stand,        /**< Stand pointer */
       runoff_out+=soil->w[l]*soil->whcs[l];
       soil->w[l]=0;
     }
+    if(runoff_out<0)
+    {
+      //fprintf(stderr,"hier3 runoff_out:%g\n", runoff_out);
+        if(soil->w_fw[l]>runoff_out)
+        {
+          soil->w_fw[l]+=runoff_out;
+          runoff_out=0;
+          break;
+        }
+    }
+
     if(soil->w[l]*soil->whcs[l]+soil->ice_depth[l]+soil->w_fw[l]+soil->ice_fw[l]<epsilon)
       stand->frac_g[l]=1.0;
+
 #ifdef SAFE
-    if(stand->frac_g[l]<(-0.01) || stand->frac_g[l]>(1.01))
-    {
-      fprintf(stderr,"Cell (%s) infil perc frac_g error frac_g=  %3.12f standtype= %s\n",sprintcoord(line,&stand->cell->coord),stand->frac_g[l],stand->type->name);
-      fflush(stderr);
-    }
+//    if(stand->frac_g[l]<(-0.01) || stand->frac_g[l]>(1.01))
+//    {
+//      fprintf(stderr,"Cell (%s) infil perc frac_g error frac_g=  %3.12f standtype= %s\n",sprintcoord(line,&stand->cell->coord),stand->frac_g[l],stand->type->name);
+//      fflush(stderr);
+//    }
     if (soil->w[l]<0)
     {
-      if(soil->w[l]<-epsilon)
+      if(soil->w[l]<-epsilon )
       {
         fprintf(stderr,"Cell (%s) infil= %3.10f icedepth[%d]= %3.8f fw_ice= %.6f w_fw=%.6f w=%.6f soilwater=%.6f wsats=%.6f whcs=%f prec=%.6f \n",
             sprintcoord(line,&stand->cell->coord),infil,l,soil->ice_depth[l],soil->ice_fw[l],soil->w_fw[l],soil->w[l]*soil->whcs[l],
@@ -361,6 +438,24 @@ Real infil_perc(Stand *stand,        /**< Stand pointer */
     }
 #endif
   } /* soil layer loop */
+#ifdef CHECK_BALANCE
+
+  n_after=soilstocks(soil);
+  n_after.nitrogen=n_after.nitrogen*stand->frac+stand->cell->balance.n_outflux;
+  if(fabs(n_after.nitrogen-n_before.nitrogen)>0.0001)
+    fail(INVALID_NITROGEN_BALANCE_ERR,FAIL_ON_BALANCE,FALSE,"Invalid nitrogen balance in %s, Cell (lat:%g lon:%g), N balance:%g",
+        __FUNCTION__,stand->cell->coord.lat,stand->cell->coord.lon,n_after.nitrogen-n_before.nitrogen);
+
+  water_after=soilwater(&stand->soil);
+  balancew=water_after-water_before-prec+runoff_surface+runoff_out+drain_perched_out+rsub_top+runoff+lat_runoff_last+outflux;
+  if(fabs(balancew)>epsilon)
+  {
+    fail(INVALID_WATER_BALANCE_ERR,FAIL_ON_BALANCE,FALSE,
+        "2 Invalid water balance in %s: balanceW: %g water_before: %.6f water_after: %.6f standtype: %s standfrac: %g runoff_surface: %g "
+        "drain_perched_out: %g runoff_out: %g rsup_top_lastl: %g runoff: %g rsub_top: %g rw_buff: %g wa: %g infil: %g lat_runoff_last: %g outflux: %g \n",
+        __FUNCTION__,balancew,water_before,water_after,stand->type->name,stand->frac,runoff_surface,drain_perched_out,runoff_out,rsup_top_lastl,runoff,rsub_top,soil->rw_buffer,soil->wa,prec,lat_runoff_last,outflux);
+  }
+#endif
 
 #ifdef SAFE
   if(config->with_nitrogen)
@@ -403,7 +498,45 @@ Real infil_perc(Stand *stand,        /**< Stand pointer */
 
   jwt=findwtlayer(soil);
 
+  if(soil->maxthaw_depth<layerbound[BOTTOMLAYER-1])
+  {
+    qcharge_tot1=outflux+lat_runoff_last+runoff;                                //recharge from the layer above water table
+    runoff=0;
+  }
+  else
+    qcharge_tot1=outflux+lat_runoff_last;
 
+
+ /* if(qcharge_tot1>10)
+  {
+    for(l=(BOTTOMLAYER-1);l==0;l--)
+    {
+      soil->w[l]+=soil->w_fw[l]/soil->whcs[l];
+      soil->w_fw[l]=0;
+      run=0;
+      fprintf(stderr,"Layer:%d qcharge_tot1: %g soil->w:%g \n", l, qcharge_tot1,soil->w[l]);
+      soil->w[l]+=qcharge_tot1/soil->whcs[l];
+      if((soil->w[l]*soil->whcs[l] )> (soil->wsats[l]-soil->wpwps[l]))
+      {
+        run=(soil->w[l]*soil->whcs[l])-(soil->wsats[l]-soil->wpwps[l]);
+        soil->w[l]-=run/soil->whcs[l];
+         qcharge_tot1=run;
+      }
+      else
+      {
+        qcharge_tot1=0;
+        break;
+      }
+      fprintf(stderr,"Layer:%d qcharge_tot1: %g soil->w:%g run:%g \n", l, qcharge_tot1,soil->w[l],run);
+    }
+  }
+  */
+//  for(l=0;l<NSOILLAYER;l++)
+//    if(soil->w[l]>1)
+//    {
+//      soil->w_fw[l]+=(1-soil->w[l])*soil->whcs[l];
+//      soil->w[l]=1;
+//    }
 
   //THIS IS THE IMPLEMENTATION OF THE WATER TABLE DEPTH FOLLOWING CLM4.5
   // use analytical expression for aquifer specific yield
@@ -493,43 +626,61 @@ Real infil_perc(Stand *stand,        /**< Stand pointer */
   }
   qcharge_tot= max(-10.0,qcharge_tot);
   qcharge_tot= min(10.0,qcharge_tot);
-  if(soil->maxthaw_depth<layerbound[BOTTOMLAYER-1])
-  {
-    qcharge_tot1=outflux+lat_runoff_last+runoff;                                //recharge from the upper layer
-    runoff=0;
-  }
-  else
-    qcharge_tot1=outflux+lat_runoff_last;
+  Real qcharge_tot2=qcharge_tot;
 
-
-  //*******************************//
+ //*******************************//
   if (soil->wtable>0)
     S=soil->wsat[jwt]*(1.-pow((1.+(soil->wtable/soil->par->psi_sat)),(-1./soil->par->b)));
   else
     S=soil->wsat[jwt]*(1.-pow((1.+(1/soil->par->psi_sat)),(-1./soil->par->b)));
   S=max(S,0.02);
   qcharge_tot+=qcharge_tot1;
-  //fprintf(stderr,"qcharge_tot:%g qcharge_tot1:%g\n",qcharge_tot,qcharge_tot1);
+
+/*
+  slug=qcharge_tot;
+  while(abs(slug) > epsilon)
+  {
+      qcharge_tot=max(-10,slug);
+      qcharge_tot=min(10,slug);
+      slug-=qcharge_tot;
+*/
+
 
   if(soil->wtable>layerbound[BOTTOMLAYER-1] || soil->wa<5000)
   {
     if(qcharge_tot<0) qcharge_tot=max(-soil->wa,qcharge_tot);
     soil->wa+=qcharge_tot;                      //water in the unconfined aquifer (mm)
     soil->wtable-=(qcharge_tot)/S;
-    runoff_out-=qcharge_tot-qcharge_tot1;
     tmp_water=max(0,(soil->wa-5000));                                                           // is set to be maximum 5000 mm
     soil->w_fw[BOTTOMLAYER-1]+=tmp_water;
     soil->wa-=tmp_water;
+    runoff_out-=qcharge_tot-qcharge_tot1;
+    if(runoff_out<0)
+    {
+      for(l=0;l<NSOILLAYER;l++)
+        if(soil->w_fw[l]>0)
+        {
+          soil->w_fw[l]+=runoff_out;
+          if(soil->w_fw[l]<0)
+          {
+            runoff_out=soil->w_fw[l];
+            soil->w_fw[l]=0;
+          }
+          else{
+            runoff_out=0;
+            break;
+          }
+        }
+    }
     stand->cell->discharge.dmass_gw+=(qcharge_tot-tmp_water)*stand->frac*stand->cell->coord.area;
     stand->cell->ground_st_am+=(qcharge_tot-tmp_water)*stand->frac*0.1;
     stand->cell->ground_st+=(qcharge_tot-tmp_water)*stand->frac*0.9;
-
-    qcharge_tot=qcharge_tot1=tmp_water=0;
     if(soil->w_fw[BOTTOMLAYER]>soil->wsats[BOTTOMLAYER]-soil->wpwps[BOTTOMLAYER]-soil->ice_fw[BOTTOMLAYER]-soil->whcs[BOTTOMLAYER])
     {
       runoff_out+=soil->w_fw[BOTTOMLAYER]-(soil->wsats[BOTTOMLAYER]-soil->wpwps[BOTTOMLAYER]-soil->ice_fw[BOTTOMLAYER]-soil->whcs[BOTTOMLAYER]);
       soil->w_fw[BOTTOMLAYER]=(soil->wsats[BOTTOMLAYER]-soil->wpwps[BOTTOMLAYER]-soil->ice_fw[BOTTOMLAYER]-soil->whcs[BOTTOMLAYER]);
     }
+    qcharge_tot=qcharge_tot1=tmp_water=0;
   }
   else if(qcharge_tot>0)                    // raising water table (positive qcharge)
   {
@@ -601,10 +752,21 @@ Real infil_perc(Stand *stand,        /**< Stand pointer */
         else
           soil->wtable=layerbound[l];                          // PLEASE CHECK AGAIN
       }
-    }
+     }
   }
   runoff_out+=qcharge_tot1;
   qcharge_tot1=0;
+#ifdef SAFE
+  forrootsoillayer(l)
+   if (soil->w[l]< -epsilon || soil->w_fw[l]< -epsilon )
+    {
+      fprintf(stderr,"4 infil_perc Cell (%s) soilwater=%.6f soilice=%.6f wsats=%.6f\n",
+          sprintcoord(line,&stand->cell->coord),allwater(soil,l),allice(soil,l),soil->wsats[l]);
+      fflush(stderr);
+      fprintf(stderr,"Cell (%s) 2 Soil-moisture %d negative: w:%g, fw:%g,lutype %s soil_type %s lateral_water:%g in infil_perc()\n",
+          sprintcoord(line,&stand->cell->coord),l,soil->w[l],soil->w_fw[l],stand->type->name,soil->par->name, stand->cell->lateral_water);
+    }
+#endif
 
   // define frost table as first frozen layer with unfrozen layer above it
   icet=NSOILLAYER-1;
@@ -660,6 +822,7 @@ Real infil_perc(Stand *stand,        /**< Stand pointer */
       drain_perched_out+=drain_perched;
       drain_perched=0;
     }
+    //fprintf(stderr,"HIER1\n");
   }
   else
   {
@@ -701,7 +864,6 @@ Real infil_perc(Stand *stand,        /**< Stand pointer */
       stand->cell->discharge.dmass_gw-=(rsub_top+tmp_water)*stand->frac*stand->cell->coord.area;
       stand->cell->ground_st_am+=(rsub_top+tmp_water)*stand->frac*0.1;
       stand->cell->ground_st+=(rsub_top+tmp_water)*stand->frac*0.9;
-
       nrsub_top[BOTTOMLAYER-1]+=tmp_water;
       rsup_top_lastl+=rsub_top+tmp_water;
       if(soil->w_fw[BOTTOMLAYER-1]>soil->wsats[BOTTOMLAYER-1]-soil->wpwps[BOTTOMLAYER-1]-soil->ice_fw[BOTTOMLAYER-1]-soil->whcs[BOTTOMLAYER-1])
@@ -760,7 +922,7 @@ Real infil_perc(Stand *stand,        /**< Stand pointer */
             stand->cell->ground_st+=(rsub_top_tot-soil->wa)*stand->frac*0.9;
             soil->wtable+=(rsub_top_tot-soil->wa)/S;
             soil->wa=0;
-          }
+         }
           else{
             soil->wa+=rsub_top_tot;
             stand->cell->discharge.dmass_gw+=rsub_top_tot*stand->frac*stand->cell->coord.area;
@@ -770,9 +932,23 @@ Real infil_perc(Stand *stand,        /**< Stand pointer */
           }
         }
       }
+      //fprintf(stderr,"HIER3\n");
+
     }
   }                   //else if not frozen
+//  }  //end while loop
 
+#ifdef SAFE
+  forrootsoillayer(l)
+   if (soil->w[l]< -epsilon || soil->w_fw[l]< -epsilon )
+    {
+      fprintf(stderr,"5.1 infil_perc Cell (%s) soilwater=%.6f soilice=%.6f wsats=%.6f\n",
+          sprintcoord(line,&stand->cell->coord),allwater(soil,l),allice(soil,l),soil->wsats[l]);
+      fflush(stderr);
+      fprintf(stderr,"Cell (%s) 2 Soil-moisture %d negative: w:%g, fw:%g,lutype %s soil_type %s lateral_water:%g  wa: %g rsub_top_tot %g in wtable %g infil_perc()\n",
+          sprintcoord(line,&stand->cell->coord),l,soil->w[l],soil->w_fw[l],stand->type->name,soil->par->name, stand->cell->lateral_water,soil->wtable,soil->wa,rsub_top_tot,outflux,lat_runoff_last,runoff);
+    }
+#endif
   for(l=0;l<NSOILLAYER;l++)
   {
     if (soil->w_fw[l]>soil->wsats[l]-soil->wpwps[l]-soil->ice_fw[l]-soil->whcs[l])
@@ -784,6 +960,7 @@ Real infil_perc(Stand *stand,        /**< Stand pointer */
         soil->w_fw[l+1]+=tmp_water;
       else
         runoff_out+=tmp_water;
+      tmp_water=0;
     }
     if (soil->w[l]<0)
     {
@@ -796,6 +973,47 @@ Real infil_perc(Stand *stand,        /**< Stand pointer */
       soil->w_fw[l]=0;
     }
   } /* of for(l=0;l<NSOILLAYER;l++) */
+  for(l=(BOTTOMLAYER-1);l==0;l--)
+    if(runoff_out<0)
+    {
+        if(soil->w_fw[l]>epsilon)
+        {
+          soil->w_fw[l]+=runoff_out;
+          runoff_out=0;
+          if(soil->w_fw[l]<0)
+          {
+            runoff_out=soil->w_fw[l];
+            soil->w_fw[l]=0;
+          }
+        }
+    }
+
+  for(l=(BOTTOMLAYER-1);l==0;l--)
+    if(runoff_out<0)
+    {
+      if(soil->w[l]>epsilon)
+      {
+        soil->w[l]+=runoff_out/soil->whcs[l];
+        runoff_out=0;
+        if(soil->w[l]<0)
+        {
+          runoff_out=soil->w[l]*soil->whcs[l];
+          soil->w[l]=0;
+        }
+      }
+    }
+
+#ifdef SAFE
+  forrootsoillayer(l)
+   if (soil->w[l]< -epsilon || soil->w_fw[l]< -epsilon )
+    {
+      fprintf(stderr,"5.2 infil_perc Cell (%s) soilwater=%.6f soilice=%.6f wsats=%.6f\n",
+          sprintcoord(line,&stand->cell->coord),allwater(soil,l),allice(soil,l),soil->wsats[l]);
+      fflush(stderr);
+      fprintf(stderr,"Cell (%s) 2 Soil-moisture %d negative: w:%g, fw:%g,lutype %s soil_type %s lateral_water:%g wtable %g   wa: %g rsub_top_tot %g runoff_out %g qcharge_tot2: %g outflux: %g_runoff_last: %g runoff: %g  in infil_perc()\n",
+          sprintcoord(line,&stand->cell->coord),l,soil->w[l],soil->w_fw[l],stand->type->name,soil->par->name, stand->cell->lateral_water,soil->wtable,soil->wa,rsub_top_tot,runoff_out,qcharge_tot2,outflux,lat_runoff_last,runoff);
+    }
+#endif
 
   if(config->with_nitrogen)
   {
@@ -906,6 +1124,17 @@ Real infil_perc(Stand *stand,        /**< Stand pointer */
   getoutput(&stand->cell->output,RUNOFF_LAT,config)+=(drain_perched_out+(rsub_top-rsup_top_lastl)+runoff)*stand->frac;
   getoutput(&stand->cell->output,RUNOFF_SURF,config)+=runoff_surface*stand->frac;
   getoutput(&stand->cell->output,GW_OUTFLUX,config)+=(runoff_out+rsup_top_lastl)*stand->frac;
+#ifdef SAFE
+  forrootsoillayer(l)
+   if (soil->w[l]< -epsilon || soil->w_fw[l]< -epsilon )
+    {
+      fprintf(stderr,"5 infil_perc Cell (%s) soilwater=%.6f soilice=%.6f wsats=%.6f\n",
+          sprintcoord(line,&stand->cell->coord),allwater(soil,l),allice(soil,l),soil->wsats[l]);
+      fflush(stderr);
+      fprintf(stderr,"Cell (%s) 2 Soil-moisture %d negative: w:%g, fw:%g,lutype %s soil_type %s lateral_water:%g in infil_perc()\n",
+          sprintcoord(line,&stand->cell->coord),l,soil->w[l],soil->w_fw[l],stand->type->name,soil->par->name, stand->cell->lateral_water);
+    }
+#endif
 
 #ifdef CHECK_BALANCE
 
@@ -918,27 +1147,27 @@ Real infil_perc(Stand *stand,        /**< Stand pointer */
   water_after=soilwater(&stand->soil);
   balancew=water_after-water_before-prec+runoff_surface+runoff_out+drain_perched_out+rsub_top+runoff;
   if(fabs(balancew)>epsilon)
+  {
     fail(INVALID_WATER_BALANCE_ERR,FAIL_ON_BALANCE,FALSE,
         "Invalid water balance in %s: balanceW: %g water_before: %.6f water_after: %.6f standtype: %s standfrac: %g runoff_surface: %g "
-        "drain_perched_out: %g runoff_out: %g runoff: %g rsub_top: %g rw_buff: %g wa: %g infil: %g\n",
-        __FUNCTION__,balancew,water_before,water_after,stand->type->name,stand->frac,runoff_surface,drain_perched_out,runoff_out,runoff,rsub_top,soil->rw_buffer,soil->wa,prec);
+        "drain_perched_out: %g runoff_out: %g rsup_top_lastl: %g runoff: %g rsub_top: %g rw_buff: %g wa: %g infil: %g qcharge_tot2: %g\n",
+        __FUNCTION__,balancew,water_before,water_after,stand->type->name,stand->frac,runoff_surface,drain_perched_out,runoff_out,rsup_top_lastl,runoff,rsub_top,soil->rw_buffer,soil->wa,prec,qcharge_tot2);
+    fprintf(stderr,"ende ground_st_am:%g ground_st:%g dmass_gw:%g\n",stand->cell->ground_st_am,stand->cell->ground_st,stand->cell->discharge.dmass_gw);
+  }
 #endif
-#ifdef SAFE
-  foreachsoillayer(l)
-   if (soil->w[l]< -epsilon || soil->w_fw[l]< -epsilon )
-    {
-      fprintf(stderr,"end infil_perc Cell (%s) soilwater=%.6f soilice=%.6f wsats=%.6f\n",
-          sprintcoord(line,&stand->cell->coord),allwater(soil,l),allice(soil,l),soil->wsats[l]);
-      fflush(stderr);
-      fprintf(stderr,"Cell (%s) 1 Soil-moisture %d negative: w:%g, fw:%g,lutype %s soil_type %s lateral_water:%g in infil_perc()",
-          sprintcoord(line,&stand->cell->coord),l,soil->w[l],soil->w_fw[l],stand->type->name,soil->par->name, stand->cell->lateral_water);
-    }
-#endif
-  if(stand->cell->discharge.dmass_gw<0) stand->cell->discharge.dmass_gw=0;
-  if(stand->cell->discharge.dmass_gw>10000*stand->cell->coord.area) stand->cell->discharge.dmass_gw=10000*stand->cell->coord.area;
-  if(stand->cell->ground_st<0) stand->cell->ground_st_am=stand->cell->ground_st=0;
 
-  if(stand->type->landusetype!=WETLAND && stand->cell->hydrotopes.skip_cell==FALSE && stand->frac<1-epsilon)
+  if(stand->cell->discharge.dmass_gw<0)
+  {
+    //fprintf(stderr,"dmass_gw:%g \n",stand->cell->discharge.dmass_gw);
+    stand->cell->discharge.dmass_gw=0;
+  }
+  if(stand->cell->discharge.dmass_gw>10000*stand->cell->coord.area) stand->cell->discharge.dmass_gw=10000*stand->cell->coord.area;
+  if(stand->cell->ground_st<0){
+    fprintf(stderr,"ground_st_am:%g ground_st:%g \n",stand->cell->ground_st_am,stand->cell->ground_st);
+    stand->cell->ground_st_am=stand->cell->ground_st=0;
+  }
+
+  if((stand->type->landusetype!=WETLAND || soil->iswetland!=TRUE) && stand->cell->hydrotopes.skip_cell==FALSE && stand->frac<1-epsilon)
   {
     stand->cell->lateral_water+=(runoff_out+drain_perched_out+rsub_top+runoff)*stand->frac;
     if(stand->cell->lateral_water<0)
@@ -957,20 +1186,32 @@ Real infil_perc(Stand *stand,        /**< Stand pointer */
           stand->cell->lateral_water=0;
           break;
         }
-#ifdef SAFE
-    if (soil->w[l]< -epsilon || soil->w_fw[l]< -epsilon )
-    {
-      fprintf(stderr,"infil_perc Cell (%s) soilwater=%.6f soilice=%.6f wsats=%.6f\n",
-          sprintcoord(line,&stand->cell->coord),allwater(soil,l),allice(soil,l),soil->wsats[l]);
-      fflush(stderr);
-      fprintf(stderr,"Cell (%s) 1 Soil-moisture %d negative: w:%g, fw:%g,lutype %s soil_type %s lateral_water:%g in infil_perc()",
-          sprintcoord(line,&stand->cell->coord),l,soil->w[l],soil->w_fw[l],stand->type->name,soil->par->name, stand->cell->lateral_water);
-    }
-#endif
        }
     }
+#ifdef DEBUG
+    if (soil->w[l]< -epsilon || soil->w_fw[l]< -epsilon )
+    {
+      fprintf(stderr,"end infil_perc Cell (%s) soilwater=%.6f soilice=%.6f wsats=%.6f\n",
+          sprintcoord(line,&stand->cell->coord),allwater(soil,l),allice(soil,l),soil->wsats[l]);
+      fflush(stderr);
+      fprintf(stderr,"Cell (%s) 2 Soil-moisture %d negative: w:%g, fw:%g,lutype %s soil_type %s lateral_water:%g iswetland: %d in infil_perc()\n",
+          sprintcoord(line,&stand->cell->coord),l,soil->w[l],soil->w_fw[l],stand->type->name,soil->par->name, stand->cell->lateral_water,soil->iswetland);
+    }
+#endif
+
     return runoff_surface;
   }
   else
+#ifdef DEBUG
+    if (soil->w[l]< -epsilon || soil->w_fw[l]< -epsilon )
+    {
+      fprintf(stderr,"end infil_perc Cell (%s) soilwater=%.6f soilice=%.6f wsats=%.6f\n",
+          sprintcoord(line,&stand->cell->coord),allwater(soil,l),allice(soil,l),soil->wsats[l]);
+      fflush(stderr);
+      fprintf(stderr,"Cell (%s) 2 Soil-moisture %d negative: w:%g, fw:%g,lutype %s soil_type %s lateral_water:%g in infil_perc()\n",
+          sprintcoord(line,&stand->cell->coord),l,soil->w[l],soil->w_fw[l],stand->type->name,soil->par->name, stand->cell->lateral_water);
+    }
+#endif
+
     return runoff_surface+runoff_out+drain_perched_out+rsub_top+runoff;
 } /* of 'infil_perc' */
