@@ -317,6 +317,7 @@ int main(int argc,char **argv)
     fwriteheader(out,&header,LPJGRID_HEADER,LPJGRID_VERSION);
   }
   fclose(out);
+  free(dimids);
   free(lon);
   free(lat);
   nc_close(ncid);
