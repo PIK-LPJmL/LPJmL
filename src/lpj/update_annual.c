@@ -227,7 +227,7 @@ void update_annual(Cell *cell,          /**< Pointer to cell */
   {
     cell->ml.product.fast.carbon=cell->ml.product.fast.nitrogen=0;
     cell->ml.product.slow.carbon=cell->ml.product.slow.nitrogen=0;
-    cell->balance.deforest_emissions.carbon=cell->balance.deforest_emissions.nitrogen=0;
+    cell->balance.deforest_emissions.carbon=cell->balance.deforest_emissions.nitrogen=0;     //this gives trouble for the first year of simulation after restart only for the local balance
   }
   product_turnover(cell,config);
 #endif

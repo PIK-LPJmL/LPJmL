@@ -43,10 +43,13 @@ Stocks cultivate(Cell *cell,           /**< cell pointer */
   int s;
   Stand *stand;
   Stocks start={0,0};
+  Real water_before=(cell->discharge.dmass_lake+cell->discharge.dmass_river)/cell->coord.area;
+  Real water_after=0;
   foreachstand(stand,s,cell->standlist)
   {
     start.carbon+=(standstocks(stand).carbon + soilmethane(&stand->soil)*WC/WCH4)*stand->frac;
     start.nitrogen+=standstocks(stand).nitrogen*stand->frac;
+    water_before+=soilwater(&stand->soil)*stand->frac;
   }
 #endif
 
@@ -145,9 +148,11 @@ Stocks cultivate(Cell *cell,           /**< cell pointer */
   }
 #ifdef CHECK_BALANCE
   Real end=0;
-  foreachstand(stand,s,cell->standlist)
+  water_after=(cell->discharge.dmass_lake+cell->discharge.dmass_river)/cell->coord.area;
+ foreachstand(stand,s,cell->standlist)
   {
     end+=(standstocks(stand).carbon + soilmethane(&stand->soil)*WC/WCH4)*stand->frac;
+    water_after+=soilwater(&stand->soil)*stand->frac;
   }
   if (fabs(end-start.carbon-bm_inc.carbon-manure*param.manure_cn*cropstand->frac*param.nfert_split_frac)>0.01)
   {
@@ -170,6 +175,12 @@ Stocks cultivate(Cell *cell,           /**< cell pointer */
          start, end,bm_inc.nitrogen,manure*cropstand->frac*param.nfert_split_frac,fertil*cropstand->frac*param.nfert_split_frac,
         cropstand->frac,standstocks(cropstand).nitrogen,setasidestand->frac,standstocks(setasidestand).nitrogen,cell->balance.deforest_emissions.nitrogen,cell->balance.timber_harvest.nitrogen);
   }
+  if(fabs(water_before-water_after)>0.001)
+  {
+    fprintf(stderr,"W-BALANCE-ERROR in %s: day %d water_after: %g water_before: %g \n\n",
+        __FUNCTION__,day,water_after,water_before);
+  }
+
 
 #endif
 

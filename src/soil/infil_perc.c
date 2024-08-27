@@ -675,6 +675,7 @@ Real infil_perc(Stand *stand,        /**< Stand pointer */
     stand->cell->discharge.dmass_gw+=(qcharge_tot-tmp_water)*stand->frac*stand->cell->coord.area;
     stand->cell->ground_st_am+=(qcharge_tot-tmp_water)*stand->frac*0.1;
     stand->cell->ground_st+=(qcharge_tot-tmp_water)*stand->frac*0.9;
+    //fprintf(stderr,"hier1 change:%g\n",(qcharge_tot-tmp_water)*stand->frac);
     if(soil->w_fw[BOTTOMLAYER]>soil->wsats[BOTTOMLAYER]-soil->wpwps[BOTTOMLAYER]-soil->ice_fw[BOTTOMLAYER]-soil->whcs[BOTTOMLAYER])
     {
       runoff_out+=soil->w_fw[BOTTOMLAYER]-(soil->wsats[BOTTOMLAYER]-soil->wpwps[BOTTOMLAYER]-soil->ice_fw[BOTTOMLAYER]-soil->whcs[BOTTOMLAYER]);
@@ -864,6 +865,7 @@ Real infil_perc(Stand *stand,        /**< Stand pointer */
       stand->cell->discharge.dmass_gw-=(rsub_top+tmp_water)*stand->frac*stand->cell->coord.area;
       stand->cell->ground_st_am+=(rsub_top+tmp_water)*stand->frac*0.1;
       stand->cell->ground_st+=(rsub_top+tmp_water)*stand->frac*0.9;
+      //fprintf(stderr,"hier2 change:%g\n",(rsub_top+tmp_water)*stand->frac);
       nrsub_top[BOTTOMLAYER-1]+=tmp_water;
       rsup_top_lastl+=rsub_top+tmp_water;
       if(soil->w_fw[BOTTOMLAYER-1]>soil->wsats[BOTTOMLAYER-1]-soil->wpwps[BOTTOMLAYER-1]-soil->ice_fw[BOTTOMLAYER-1]-soil->whcs[BOTTOMLAYER-1])
@@ -920,6 +922,7 @@ Real infil_perc(Stand *stand,        /**< Stand pointer */
             stand->cell->discharge.dmass_gw+=(rsub_top_tot-soil->wa)*stand->frac*stand->cell->coord.area;
             stand->cell->ground_st_am+=(rsub_top_tot-soil->wa)*stand->frac*0.1;
             stand->cell->ground_st+=(rsub_top_tot-soil->wa)*stand->frac*0.9;
+            //fprintf(stderr,"hier3 change:%g\n",(rsub_top_tot-soil->wa)*stand->frac);
             soil->wtable+=(rsub_top_tot-soil->wa)/S;
             soil->wa=0;
          }
@@ -928,7 +931,8 @@ Real infil_perc(Stand *stand,        /**< Stand pointer */
             stand->cell->discharge.dmass_gw+=rsub_top_tot*stand->frac*stand->cell->coord.area;
             stand->cell->ground_st_am+=(rsub_top_tot)*stand->frac*0.1;
             stand->cell->ground_st+=(rsub_top_tot)*stand->frac*0.9;
-            soil->wtable+=rsub_top_tot/S;
+            //fprintf(stderr,"hier4 change:%g\n",(rsub_top_tot)*stand->frac);
+           soil->wtable+=rsub_top_tot/S;
           }
         }
       }
@@ -1169,25 +1173,29 @@ Real infil_perc(Stand *stand,        /**< Stand pointer */
 
   if((stand->type->landusetype!=WETLAND || soil->iswetland!=TRUE) && stand->cell->hydrotopes.skip_cell==FALSE && stand->frac<1-epsilon)
   {
-    stand->cell->lateral_water+=(runoff_out+drain_perched_out+rsub_top+runoff)*stand->frac;
-    if(stand->cell->lateral_water<0)
-    {
-      forrootsoillayer(l)
-      {
-        if(soil->w_fw[l]>stand->cell->lateral_water)
-        {
-          soil->w_fw[l]+=stand->cell->lateral_water;
-          stand->cell->lateral_water=0;
-          break;
-        }
-        if(soil->w[l]*soil->whcs[l]>stand->cell->lateral_water)
-        {
-          soil->w[l]+=stand->cell->lateral_water/soil->whcs[l];
-          stand->cell->lateral_water=0;
-          break;
-        }
-       }
-    }
+    if(runoff_out+drain_perched_out+rsub_top+runoff>0)
+      stand->cell->lateral_water+=(runoff_out+drain_perched_out+rsub_top+runoff)*stand->frac;
+    else
+      return runoff_surface+runoff_out+drain_perched_out+rsub_top+runoff;
+
+//    if(stand->cell->lateral_water<0)
+//    {
+//      forrootsoillayer(l)
+//          {
+//        if(soil->w_fw[l]>stand->cell->lateral_water/stand->frac)
+//        {
+//          soil->w_fw[l]+=stand->cell->lateral_water/stand->frac;
+//          stand->cell->lateral_water=0;
+//          break;
+//        }
+//        if(soil->w[l]*soil->whcs[l]>stand->cell->lateral_water/stand->frac)
+//        {
+//          soil->w[l]+=stand->cell->lateral_water/stand->frac/soil->whcs[l];
+//          stand->cell->lateral_water=0;
+//          break;
+//        }
+//          }
+//    }
 #ifdef DEBUG
     if (soil->w[l]< -epsilon || soil->w_fw[l]< -epsilon )
     {

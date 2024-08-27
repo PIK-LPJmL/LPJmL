@@ -70,8 +70,7 @@ void check_fluxes(Cell *cell,          /**< cell pointer */
                  cell->balance.flux_estab.carbon-cell->balance.flux_harvest.carbon-cell->balance.biomass_yield.carbon-delta_tot.carbon-
                  cell->balance.neg_fluxes.carbon+cell->balance.influx.carbon-cell->balance.aCH4_em*WC/WCH4-cell->balance.aCH4_sink*WC/WCH4;
   balance.nitrogen=cell->balance.influx.nitrogen-cell->balance.fire.nitrogen-cell->balance.n_outflux+cell->balance.flux_estab.nitrogen-
-                   cell->balance.biomass_yield.nitrogen-cell->balance.flux_harvest.nitrogen-delta_tot.nitrogen-cell->balance.neg_fluxes.nitrogen-
-                   cell->balance.deforest_emissions.nitrogen;
+                   cell->balance.biomass_yield.nitrogen-cell->balance.flux_harvest.nitrogen-delta_tot.nitrogen-cell->balance.neg_fluxes.nitrogen;
 
    /* for IMAGE but can also be used without IMAGE */
 #ifdef IMAGE
@@ -148,14 +147,15 @@ void check_fluxes(Cell *cell,          /**< cell pointer */
 #else
     fail(NVALID_NITROGEN_BALANCE_ERR,FAIL_ON_BALANCE,FALSE,
 #endif
-      "N-balance on y %d c %d (%0.2f/%0.2f) BALANCE_N-error %.10f n_influx %g n_outflux %g n_harvest %g n_biomass_yield %g n_estab %g n_defor_emis %g n_product_turnover %g delta_tot=%g total nitrogen=%g estab_storage grass [0] = %g estab_storage grass [1] = %g  estab_storage tree [0] = %g estab_storage tree [1] = %g \n",
+      "N-balance on y %d c %d (%0.2f/%0.2f) BALANCE_N-error %.10f n_influx %g n_outflux %g n_harvest %g n_biomass_yield %g n_estab %g n_defor_emis %g n_product_turnover %g delta_tot=%g total nitrogen=%g timber.harvest: %g "
+      "estab_storage grass [0] = %g estab_storage grass [1] = %g  estab_storage tree [0] = %g estab_storage tree [1]= %g neg_fluxes= %g\n",
       year,cellid+config->startgrid,cell->coord.lon,cell->coord.lat,balance.nitrogen,
       cell->balance.influx.nitrogen,cell->balance.n_outflux,cell->balance.flux_harvest.nitrogen,cell->balance.biomass_yield.nitrogen,cell->balance.flux_estab.nitrogen,
       cell->balance.deforest_emissions.nitrogen,
       cell->balance.prod_turnover.fast.nitrogen+cell->balance.prod_turnover.slow.nitrogen,
-      delta_tot.nitrogen,tot.nitrogen,
+      delta_tot.nitrogen,tot.nitrogen,cell->balance.timber_harvest.nitrogen,
       cell->balance.estab_storage_grass[0].nitrogen,cell->balance.estab_storage_grass[1].nitrogen,cell->balance.estab_storage_tree[0].nitrogen,
-      cell->balance.estab_storage_tree[1].nitrogen);
+      cell->balance.estab_storage_tree[1].nitrogen,cell->balance.neg_fluxes.nitrogen);
 /*
       foreachstand(stand,s,cell->standlist){
         foreachpft(pft,p,&stand->pftlist){

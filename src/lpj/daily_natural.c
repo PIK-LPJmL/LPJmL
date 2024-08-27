@@ -125,7 +125,7 @@ Real daily_natural(Stand *stand,                /**< [inout] stand pointer */
   }
 
   /* soil inflow: infiltration and percolation */
-  if (stand->type->landusetype!=WETLAND || stand->frac<0.001)
+  if ((stand->type->landusetype!=WETLAND || stand->frac<0.001))
   {
     /* calc enthalpy of soil infiltration */
     if(climate->prec+melt-intercep_stand>0)

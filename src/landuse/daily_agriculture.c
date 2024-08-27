@@ -73,6 +73,13 @@ Real daily_agriculture(Stand *stand,                /**< [inout] stand pointer *
   output=&stand->cell->output;
   cover_stand=intercep_stand=intercep_stand_blue=wet_all=rw_apply=intercept=sprink_interc=rainmelt=irrig_apply=0.0;
   evap=evap_blue=runoff=return_flow_b=0.0;
+#ifdef CHECK_BALANCE
+  Real wfluxes_old=(stand->cell->balance.excess_water+stand->cell->lateral_water+stand->cell->balance.awater_flux+stand->cell->balance.aevap_res+stand->cell->balance.aevap_lake-stand->cell->balance.aMT_water);
+  Real wstore_old=(stand->cell->discharge.dmass_lake+stand->cell->discharge.dmass_river)/stand->cell->coord.area;
+  Real water_before=0;
+  Real water_after,wstore_new,balancew;
+  water_before+=soilwater(&stand->soil);
+#endif
 
   stand->growing_days++;
 
@@ -297,7 +304,14 @@ Real daily_agriculture(Stand *stand,                /**< [inout] stand pointer *
     vol_water_enth = climate->temp*c_water*(climate->prec+rw_apply+irrig_apply)/(climate->prec+rw_apply+irrig_apply+melt)+c_water2ice;
   else
     vol_water_enth=0;
-  runoff+=infil_perc(stand,rainmelt+rw_apply+irrig_apply, vol_water_enth,&return_flow_b,npft,ncft,config);
+
+//  if(stand->cell->lateral_water>0 && stand->soil.iswetland==TRUE)
+//  {
+//    runoff+=infil_perc(stand,rainmelt+rw_apply+irrig_apply+stand->cell->lateral_water/stand->frac, vol_water_enth,&return_flow_b,npft,ncft,config);     //enthalpy of lateral influx?? should be the same T as in the local stand
+//    stand->cell->lateral_water=0;
+//  }
+//  else
+    runoff+=infil_perc(stand,rainmelt+rw_apply+irrig_apply, vol_water_enth,&return_flow_b,npft,ncft,config);
 
   foreachpft(pft,p,&stand->pftlist)
   {
@@ -473,5 +487,21 @@ Real daily_agriculture(Stand *stand,                /**< [inout] stand pointer *
 
   free(wet);
 
+#ifdef CHECK_BALANCE
+  transp=0;
+  water_after=0;
+  wstore_new=(stand->cell->discharge.dmass_lake+stand->cell->discharge.dmass_river)/stand->cell->coord.area;
+  water_after+=soilwater(&stand->soil);
+  Real wfluxes_new=(stand->cell->balance.excess_water+stand->cell->lateral_water+stand->cell->balance.awater_flux+stand->cell->balance.aevap_res+stand->cell->balance.aevap_lake-stand->cell->balance.aMT_water);
+  forrootsoillayer(l)
+   transp+=aet_stand[l];
+  balancew=water_after-water_before-(climate->prec+melt+rw_apply+irrig_apply)+(transp+evap+intercep_stand+runoff)+(wfluxes_new-wfluxes_old)/stand->frac+(wstore_new-wstore_old)/stand->frac;
+  if(fabs(balancew)>0.001 && stand->frac>0.00001)
+  {
+
+    fail(INVALID_WATER_BALANCE_ERR,FAIL_ON_BALANCE,FALSE,"Invalid water balance in %s:  y: %d day: %d balanceW: %g water_before: %.6f water_after: %.6f aet: %g evap: %g intercep_stand %g runoff: %g influx: %g fluxes: %g irrig_apply: %g irrig_stor: %g frac: %g rice: %d wstore: %g wstore_new: %g wstore_old: %g \n",
+        __FUNCTION__,year,day,balancew,water_before,water_after,transp,evap,intercep_stand,runoff,(climate->prec+melt+rw_apply+irrig_apply),(wfluxes_new-wfluxes_old)/stand->frac,irrig_apply,data->irrig_stor,stand->frac,isrice,(wstore_new-wstore_old)/stand->frac,wstore_new,wstore_old);
+  }
+ #endif
   return runoff;
 } /* of 'daily_agriculture' */
