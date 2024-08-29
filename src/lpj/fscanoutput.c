@@ -119,7 +119,7 @@ Bool fscanoutput(LPJfile *file,  /**< pointer to LPJ file */
       }
     }
   }
-  if(!iskeydefined(file,"output") && !isnull(file,"output"))
+  if(!iskeydefined(file,"output") || isnull(file,"output"))
   {
     config->pft_output_scaled=FALSE;
     config->n_out=0;

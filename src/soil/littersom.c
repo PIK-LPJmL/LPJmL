@@ -82,7 +82,9 @@ Stocks littersom(Stand *stand,                /**< pointer to stand data */
   Real F_N2O=0;                /* soil nitrification rate gN *m-2*d-1*/
   Real F_Nmineral;  /* net mineralization flux gN *m-2*d-1*/
   Real fac_wfps, fac_temp;
+#ifdef SAFE
   String line;
+#endif
   Pft *pft;
   Pftcrop *crop;
   Irrigation *data;

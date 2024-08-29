@@ -20,15 +20,15 @@
 #include <netcdf.h>
 #endif
 
-char *getattr_netcdf(const Climatefile *file, /**< climate data file */
-                     int varid,               /**< variable id */
-                     const char *attr         /**< name of attribute */
-                    )                         /** \return attribute string or NULL */
+char *getattr_netcdf(int ncid,        /**< Netcdf id  */
+                     int varid,       /**< variable id */
+                     const char *attr /**< name of attribute */
+                    )                 /** \return attribute string or NULL */
 {
 #if defined(USE_NETCDF)
   char *s;
   size_t len;
-  if(nc_inq_attlen(file->ncid, varid, attr, &len))
+  if(nc_inq_attlen(ncid, varid, attr, &len))
     s=NULL;
   else
   {
@@ -38,7 +38,7 @@ char *getattr_netcdf(const Climatefile *file, /**< climate data file */
       printallocerr("s");
       return NULL;
     }
-    nc_get_att_text(file->ncid, varid, attr,s);
+    nc_get_att_text(ncid, varid, attr,s);
     s[len]='\0';
   }
   return s;
