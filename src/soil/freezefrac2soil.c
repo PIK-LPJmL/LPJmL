@@ -19,11 +19,11 @@ void freezefrac2soil(Soil *soil,                       /**< pointer to soil to b
   int layer;
 
   Real allwaterice;   /* total water+ice content */
-  Real a_wi;          /* plant available soil water+ice, absolute  */
-  Real ua_wi;         /* plant unavailable soil water+ice, absolute  */
-  Real f_wi;          /* free soil water+ice, absolute  */
-  Real ice_target;    /* target ice content in [mm] */
-  Real rest_ice;      /* target ice to freeze in f_wi */
+  Real a_wi;          /* plant available soil water+ice [mm] */
+  Real ua_wi;         /* water+ice below wilting point [mm] */
+  Real f_wi;          /* free soil water+ice [mm] */
+  Real ice_target;    /* target ice content [mm] */
+  Real rest_ice;      /* target ice to freeze in f_wi [mm] */
   Real a_ua_ice_frac; /* target fraction of ice in a_wi and ua_wi */
   Real f_ice_frac;    /* target fraction of ice in f_wi */
 
