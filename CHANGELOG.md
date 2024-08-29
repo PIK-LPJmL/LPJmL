@@ -20,6 +20,33 @@ of `major.minor.patch` with
 ## [Unreleased]
 
 
+## [5.9.6] - 2024-08-29
+
+### Contributors
+
+- author: Werner von Bloh (bloh@pik-potsdam.de)
+- code review: David Hoetten (davidho@pik-potsdam.de), Sebastian Ostberg (ostberg@pik-potsdam.de)
+
+### Added
+
+- Utility `cdf2grid` added to convert grid files in NetCDF format into grid CLM files.
+- Option `-json` and `-raw` added to `cdf2coord` utility to write additional JSON metafile and to write without CLM header.
+
+### Changed
+
+- Check added that dimension must be greater 1 for variable in NetCDF file in `cdf2coord.c`, `input_netcdf.c` and `coord_netcdf.c`.
+- Datatype of longitude/latitude array in `coord_netcdf.c` changed from float to double for consistency, variable name correctly printed in error messages.
+- Intel and clang compiler recognized in `printflags.c`.
+
+### Fixed
+
+- Test for `null` corrected for `"output"` in `fscanoutput.c`.
+- Missing `break` added in `switch` statement in `receiver_coupler.c`.
+- Code changed to compile successfully without `-DSAFE`, `-DUSE_NETCDF`, and `-DUDUNITS` compilation flag.
+- Unit for `"estab_storage_n"` corrected to `"gN/m2"` in `outputvars.cjson`.
+- Scaling set to 1 if datatype is not short in `cdf2coord.c` and `cdf2clm`.
+
+
 ## [5.9.5] - 2024-07-19
 
 ### Contributors
@@ -101,7 +128,7 @@ of `major.minor.patch` with
 ### Changed
 
 - `DEPTH_NAME` and `BNDS_NAME` excluded for search for variable in NetCDF file if no variable name is provided.
-- Check added that dimension must greater 1 for variable in NetCDF file.
+- Check added that dimension must be greater 1 for variable in NetCDF file.
 
 
 ## [5.9.2] - 2024-07-18

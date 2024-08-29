@@ -46,6 +46,7 @@ struct input_netcdf
   } missing_value;
 };
 
+#if defined(USE_NETCDF) || defined(USE_NETCDF4)
 static Bool checkinput(const size_t *offsets,const Coord *coord,const Input_netcdf file)
 {
   String line;
@@ -79,6 +80,7 @@ static Bool checkinput(const size_t *offsets,const Coord *coord,const Input_netc
   }
   return FALSE;
 } /* of 'checkinput' */
+#endif
 
 void closeinput(Infile *file)
 {
@@ -99,16 +101,16 @@ Input_netcdf dupinput_netcdf(const Input_netcdf input)
   return copy;
 } /* of 'dupinput_netcdf' */
 
+#if defined(USE_NETCDF) || defined(USE_NETCDF4)
 static Bool setvarinput_netcdf(Input_netcdf input,const Filename *filename,
                                const char *units,const Config *config)
 {
-#if defined(USE_NETCDF) || defined(USE_NETCDF4)
   int i,rc,nvars,ndims;
   int *dimids;
   nc_type type;
-  char *newstr;
   char name[NC_MAX_NAME+1];
 #ifdef USE_UDUNITS
+  char *newstr;
   size_t len;
   char *fromstr;
   utUnit from,to;
@@ -126,8 +128,12 @@ static Bool setvarinput_netcdf(Input_netcdf input,const Filename *filename,
       nc_inq_varname(input->ncid,i,name);
       if(strcmp(name,LON_NAME) && strcmp(name,LON_STANDARD_NAME) && strcmp(name,LAT_NAME) && strcmp(name,LAT_STANDARD_NAME) && strcmp(name,TIME_NAME))
       {
-        input->varid=i;
-        break;
+        nc_inq_varndims(input->ncid,i,&ndims);
+        if(ndims>1)
+        {
+          input->varid=i;
+          break;
+        }
       }
     }
     if(i==nvars)
@@ -163,8 +169,8 @@ static Bool setvarinput_netcdf(Input_netcdf input,const Filename *filename,
   else
   {
     if(isroot(*config))
-      fprintf(stderr,"ERROR408: Invalid number of dimensions %d in '%s', must be 2 or 3.\n",
-              ndims,filename->name);
+      fprintf(stderr,"ERROR408: Invalid number of dimensions %d for '%s' in '%s', must be 2 or 3.\n",
+              ndims,(filename->var==NULL) ? name : filename->var,filename->name);
     return TRUE;
   }
   nc_inq_vartype(input->ncid,input->varid,&type);
@@ -280,8 +286,8 @@ static Bool setvarinput_netcdf(Input_netcdf input,const Filename *filename,
           }
           nc_get_att_text(input->ncid,input->varid,"units",newstr);
           if(strcmp(newstr,fromstr))
-            fprintf(stderr,"WARNING408: Unit '%s' in '%s' differs from unit '%s' in configuration file.\n",
-                    newstr,filename->name,fromstr);
+            fprintf(stderr,"WARNING408: Unit '%s' for '%s' in '%s' differs from unit '%s' in configuration file.\n",
+                    newstr,(filename->var==NULL) ? name : filename->var,filename->name,fromstr);
           free(newstr);
         }
       }
@@ -327,10 +333,8 @@ static Bool setvarinput_netcdf(Input_netcdf input,const Filename *filename,
   input->intercept=0;
 #endif
   return FALSE;
-#else
-  return TRUE;
-#endif
 } /* of 'setvarinput_netcdf' */
+#endif
 
 Input_netcdf openinput_netcdf(const Filename *filename, /**< filename */
                               const char *units,    /**< units or NULL */
