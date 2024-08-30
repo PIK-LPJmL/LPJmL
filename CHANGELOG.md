@@ -19,6 +19,16 @@ of `major.minor.patch` with
 
 ## [Unreleased]
 
+## [5.9.7] - 2024-08-30
+
+### Contributors
+
+- author: David Hoetten (davidho@pik-potsdam.de)
+- code review: Sibyll Schaphoff (sibylls@pik-potsdam.de), Werner von Bloh (bloh@pik-potsdam.de)
+
+### Changed
+
+- order of freezing of different water soil water components changed: free water freezes last to simply mathematical description of model
 
 ## [5.9.6] - 2024-08-29
 
