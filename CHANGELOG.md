@@ -19,6 +19,18 @@ of `major.minor.patch` with
 
 ## [Unreleased]
 
+## [5.9.8] - 2024-09-02
+
+### Contributors
+
+- author: Christoph Müller (cmueller@pik-potsdam.de)
+- code review:
+
+### Changed
+
+- included latest reference in .zenodo.json for syncing github and gitlab repositories. Future transfer of code between gitlab and github should be smoother now as both are at the same commit history now
+
+
 ## [5.9.7] - 2024-08-30
 
 ### Contributors
