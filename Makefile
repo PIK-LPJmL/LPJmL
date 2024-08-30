@@ -38,19 +38,16 @@ HDRS    = $(INC)/buffer.h $(INC)/cell.h $(INC)/climate.h $(INC)/conf.h\
           $(INC)/agriculture_tree.h $(INC)/agriculture_grass.h $(INC)/coupler.h\
           $(INC)/couplerpar.h
 
-DATA    = par/*.js
+DATA    = par/*.cjson
 
-JSON	= lpjml.js input_crumonthly.js param.js lpj.js input_GSWP3-ERA5.js\
-          lpjml_netcdf.js input_netcdf.js lpjml_fms.js input_fms.js\
-          lpjml_vpd.js input_GLDAS.js param_vpd.js param_non.js lpjml_non.js\
-          input_coupler.js
+JSON	= lpjml_config.cjson input.cjson input_netcdf.cjson
 
 SCRIPTS	= configure.bat configure.sh\
           bin/output_bsq bin/lpjsubmit_aix bin/lpjsubmit_intel\
           bin/lpjsubmit_mpich bin/lpjrun bin/backtrace\
           bin/regridlpj bin/lpjsubmit_slurm
 
-FILES	= Makefile config/* README AUTHORS INSTALL VERSION LICENSE STYLESHEET\
+FILES	= Makefile config/* README AUTHORS INSTALL VERSION LICENSE STYLESHEET.md\
           $(JSON) $(DATA) $(HDRS) $(SCRIPTS)
 
 main:
@@ -86,7 +83,7 @@ install: all
 	install bin/* $(LPJROOT)/bin
 	install -m 644 $(HDRS) $(LPJROOT)/include
 	install -m 644 $(DATA) $(LPJROOT)/par
-	install -m 644 README INSTALL VERSION AUTHORS LICENSE COPYRIGHT $(JSON) $(LPJROOT)
+	install -m 644 README INSTALL VERSION AUTHORS LICENSE COPYRIGHT CHANGELOG.md $(JSON) $(LPJROOT)
 	install -m 644 man/whatis $(LPJROOT)/man
 	install -m 644 man/man1/*.1 $(LPJROOT)/man/man1
 	install -m 644 man/man5/*.5 $(LPJROOT)/man/man5

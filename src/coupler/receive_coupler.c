@@ -30,8 +30,12 @@ Bool receive_coupler(int index,           /**< index of input file */
 #ifdef USE_MPI
   int *counts;
   int *offsets;
-#endif
+#if COUPLER_VERSION == 4
   int rc;
+#endif
+#else
+  int rc=TRUE;
+#endif
   if(isroot(*config))
   {
     send_token_coupler(GET_DATA,index,config);
@@ -103,6 +107,7 @@ Bool receive_coupler(int index,           /**< index of input file */
       break;
     case LPJ_SHORT:
       rc=readshort_socket(config->socket,data,config->nall*size);
+      break;
     case LPJ_INT:
       rc=readint_socket(config->socket,data,config->nall*size);
       break;

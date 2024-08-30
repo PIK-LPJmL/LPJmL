@@ -150,20 +150,36 @@ Coord_array *createcoord_all(const Cell grid[],const Config *config)
       }
       array->nlon=(int)((lon_max-array->lon_min)/config->resolution.lon+0.5)+1;
       array->nlat=(int)((lat_max-array->lat_min)/config->resolution.lat+0.5)+1;
-      for(cell=0;cell<config->nall;cell++)
-      {
-        array->index[cell]=(int)((lon[cell]-array->lon_min)/config->resolution.lon+0.5)+
-                         (int)((lat[cell]-array->lat_min)/config->resolution.lat+0.5)*array->nlon;
-#ifdef SAFE
-        if(array->index[cell]<0 || array->index[cell]>=array->nlon*array->nlat)
+      if(config->rev_lat)
+        for(cell=0;cell<config->nall;cell++)
         {
-          fprintf(stderr,"ERROR433: Invalid index %d in createcoord_all(), must be in [0,%d].\n",
-                  array->index[cell],array->nlon*array->nlat-1);
-          free(array->index);
-          break;
-        }
+          array->index[cell]=(int)((lon[cell]-array->lon_min)/config->resolution.lon+0.5)+
+                           (int)((lat_max-lat[cell])/config->resolution.lat+0.5)*array->nlon;
+#ifdef SAFE
+          if(array->index[cell]<0 || array->index[cell]>=array->nlon*array->nlat)
+          {
+            fprintf(stderr,"ERROR433: Invalid index %d in createcoord_all(), must be in [0,%d].\n",
+                    array->index[cell],array->nlon*array->nlat-1);
+            free(array->index);
+            break;
+          }
 #endif
-      }
+        }
+      else
+        for(cell=0;cell<config->nall;cell++)
+        {
+          array->index[cell]=(int)((lon[cell]-array->lon_min)/config->resolution.lon+0.5)+
+                           (int)((lat[cell]-array->lat_min)/config->resolution.lat+0.5)*array->nlon;
+#ifdef SAFE
+          if(array->index[cell]<0 || array->index[cell]>=array->nlon*array->nlat)
+          {
+            fprintf(stderr,"ERROR433: Invalid index %d in createcoord_all(), must be in [0,%d].\n",
+                    array->index[cell],array->nlon*array->nlat-1);
+            free(array->index);
+            break;
+          }
+#endif
+        }
       iserr=(cell<config->nall);
     }
     free(lon);

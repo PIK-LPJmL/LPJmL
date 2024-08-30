@@ -50,8 +50,9 @@ extern int numcoord(const Coordfile);
 extern void getcellsizecoord(float *,float *,const Coordfile);
 extern char *sprintcoord(String,const Coord *);
 extern void fprintcoord(FILE *,const Coord *);
-extern int findcoord(const Coord *,const Coord [],int);
+extern int findcoord(const Coord *,const Coord [],const Coord *,int);
 extern int findnextcoord(Real *,const Coord *,const Coord[],int);
+extern Type getcoordtype(const Coordfile);
 
 /* Definition of macros */
 

@@ -1,0 +1,51 @@
+.TH cdf2grid 1  "USER COMMANDS"
+.SH NAME
+cdf2grid \- convert grid NetCDF file into grid CLM or raw file
+.SH SYNOPSIS
+.B cdf2grid
+[\-var name] [\-{float|double}] [\-scale s] [\-raw] [\-json] netcdffile gridfile
+.SH DESCRIPTION
+Program converts grid file written in NetCDF format to grid file in raw or CLM format.
+.SH OPTIONS
+.TP
+\-var name
+Variable name in NetCDF file. If not specified the first variable with 2 dimensions is chosen.
+.TP
+\-scale factor
+Scaling factor for CLM grid file. Default is 0.01 for short values in CLM grid file, 1 for float or double values. If factor differs from 1 and -float or -double option is set a warning is printed and scaling factor reset to 1.
+.TP
+\-{float|double}
+Write float or double values in CLM grid file, default is short.
+.TP
+\-raw
+Output format is raw without header, default is CLM format.
+.TP
+\-json
+An additional JSON metafile with suffix \fI.json\fP is written.
+.TP
+.I netcdffile
+Filename of grid NetCDF file.
+.TP
+.I gridfile
+Filename of grid data file written.
+.SH EXAMPLES
+.TP
+Create grid binary raw file and JSON metafile from grid NetCDF file:
+.B cdf2grid
+-raw -json grid.nc grid.bin
+.PP
+.SH EXIT STATUS
+.B cdf2grid
+Returns a zero exit status if the CLM file is created.
+Non zero is returned in case of failure.
+
+.SH AUTHORS
+
+For authors and contributors see AUTHORS file
+
+.SH COPYRIGHT
+
+(C) Potsdam Institute for Climate Impact Research (PIK), see COPYRIGHT file
+
+.SH SEE ALSO
+cdf2coord(1), cdf2clm(1), clm2cdf(1), bin2cdf(1), country2cdf(1), regridlpj(1), lpjml(1), txt2clm(1), cru2clm(1), clm(5)

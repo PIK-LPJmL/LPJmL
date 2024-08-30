@@ -52,15 +52,15 @@ void irrig_amount(Stand *stand,        /**< pointer to non-natural stand */
           crop=pft->data;
           if(config->pft_output_scaled)
           {
-            if(crop->dh!=NULL)
-              crop->dh->nirsum+=data->net_irrig_amount*stand->frac;
+            if(crop->sh!=NULL)
+              crop->sh->nirsum+=data->net_irrig_amount*stand->frac;
             else
               getoutputindex(&stand->cell->output,CFT_NIR,pft->par->id-npft+nirrig,config)+=data->net_irrig_amount*stand->frac;
           }
           else
           {
-            if(crop->dh!=NULL)
-              crop->dh->nirsum+=data->net_irrig_amount;
+            if(crop->sh!=NULL)
+              crop->sh->nirsum+=data->net_irrig_amount;
             else
               getoutputindex(&stand->cell->output,CFT_NIR,pft->par->id-npft+nirrig,config)+=data->net_irrig_amount;
           }
@@ -108,6 +108,9 @@ void irrig_amount(Stand *stand,        /**< pointer to non-natural stand */
             getoutputindex(&stand->cell->output,CFT_NIR,rbtree(ncft)+nirrig,config)+=data->net_irrig_amount*stand->frac;
           else
             getoutputindex(&stand->cell->output,CFT_NIR,rbtree(ncft)+nirrig,config)+=data->net_irrig_amount;
+          break;
+        default:
+          /* do nothing */
           break;
       } /* of switch */
 
@@ -226,6 +229,9 @@ void irrig_amount(Stand *stand,        /**< pointer to non-natural stand */
           getoutputindex(&stand->cell->output, CFT_CONV_LOSS_EVAP ,rbtree(ncft)+nirrig,config)+=conv_loss*data->conv_evap;
           getoutputindex(&stand->cell->output, CFT_CONV_LOSS_DRAIN ,rbtree(ncft)+nirrig,config)+=conv_loss*(1-data->conv_evap);
         }
+        break;
+      default:
+        /* do nothing */
         break;
     } /* of switch */
   } /* if data->irrigation */

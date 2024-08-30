@@ -15,9 +15,9 @@
 #include "lpj.h"
 
 #ifdef USE_UDUNITS
-#define USAGE "Usage: %s [-swap] [-v] [-units unit] [-var name] [-clm] [-cellsize size] [-byte] [-o filename] [-json] gridfile netcdffile ...\n"
+#define USAGE "Usage: %s [-swap] [-v] [-units unit] [-var name] [-map name] [-clm] [-cellsize size] [-byte] [-floatgrid] [-doublegrid]  [-o filename] [-json] gridfile netcdffile ...\n"
 #else
-#define USAGE "Usage: %s [-swap] [-v] [-var name] [-clm] [-cellsize size] [-byte] [-o filename] gridfile netcdffile ...\n"
+#define USAGE "Usage: %s [-swap] [-v] [-var name] [-map name] [-clm] [-cellsize size] [-byte] [-floatgrid] [-doublegrid] [-o filename] [-json] gridfile netcdffile ...\n"
 #endif
 
 #if defined(USE_NETCDF) || defined(USE_NETCDF4)
@@ -32,8 +32,8 @@ static Bool readmydata(Climatefile *file,    /* climate data file */
 {
   int t,cell,rc,index,n,start;
   size_t i;
-  float *f;
-  short *s;
+  float *f=NULL;
+  short *s=NULL;
   float data;
   size_t offsets[4];
   size_t address[2];
@@ -93,6 +93,9 @@ static Bool readmydata(Climatefile *file,    /* climate data file */
     case YEAR: case MISSING_TIME:
       n=1;
       break;
+    default:
+      fprintf(stderr,"ERROR421: Time step of second not supported.\n");
+      return TRUE;
   }
   for(t=0;t<file->nyear*n;t++)
   {
@@ -224,78 +227,107 @@ int main(int argc,char **argv)
   Filename coord_filename;
   Climatefile data;
   Config config;
-  char *units,*var,*outname,*endptr,*out_json,*arglist;
+  char *units,*var,*outname,*endptr,*out_json,*arglist,*long_name,*standard_name,*history,*source,*map_name,*title;
   Coord *grid;
   Intcoord intcoord;
+  float fcoord[2];
+  double dcoord[2];
   FILE *file;
-  int i,j;
+  Map *map;
+  int iarg,j,k;
+  Attr *attrs=NULL;
+  int n_attr=0,len;
+  char name[NC_MAX_NAME];
   float cellsize_lon,cellsize_lat;
   Bool swap,verbose,isclm,isbyte,isjson;
   Header header;
+  Filename grid_name;
+  Type grid_type;
   isbyte=swap=verbose=isclm=isjson=FALSE;
   units=NULL;
   var=NULL;
+  map_name=NULL;
   outname="out.bin"; /* default file name for output */
+  grid_type=LPJ_SHORT;
   cellsize_lon=cellsize_lat=0.5;      /* default cell size */
   initconfig(&config);
-  for(i=1;i<argc;i++)
+  for(iarg=1;iarg<argc;iarg++)
   {
-    if(argv[i][0]=='-')
+    if(argv[iarg][0]=='-')
     {
-      if(!strcmp(argv[i],"-swap"))
+      if(!strcmp(argv[iarg],"-swap"))
         swap=TRUE;
-      else if(!strcmp(argv[i],"-v"))
+      else if(!strcmp(argv[iarg],"-v"))
         verbose=TRUE;
-      else if(!strcmp(argv[i],"-clm"))
+      else if(!strcmp(argv[iarg],"-clm"))
         isclm=TRUE;
-      else if(!strcmp(argv[i],"-byte"))
+      else if(!strcmp(argv[iarg],"-byte"))
         isbyte=TRUE;
-      else if(!strcmp(argv[i],"-json"))
+      else if(!strcmp(argv[iarg],"-floatgrid"))
+        grid_type=LPJ_FLOAT;
+      else if(!strcmp(argv[iarg],"-doublegrid"))
+        grid_type=LPJ_DOUBLE;
+      else if(!strcmp(argv[iarg],"-json"))
         isjson=TRUE;
-      else if(!strcmp(argv[i],"-var"))
+      else if(!strcmp(argv[iarg],"-var"))
       {
-        if(argc==i-1)
+        if(argc==iarg+1)
         {
           fprintf(stderr,"Missing argument after option '-var'.\n"
                  USAGE,argv[0]);
           return EXIT_FAILURE;
         }
-        var=argv[++i];
+        var=argv[++iarg];
       }
 #ifdef USE_UDUNITS
-      else if(!strcmp(argv[i],"-units"))
+      else if(!strcmp(argv[iarg],"-units"))
       {
-        if(argc==i-1)
+        if(argc==iarg+1)
         {
           fprintf(stderr,"Missing argument after option '-units'.\n"
                  USAGE,argv[0]);
           return EXIT_FAILURE;
         }
-        units=argv[++i];
+        units=argv[++iarg];
       }
 #endif
-      else if(!strcmp(argv[i],"-o"))
+      else if(!strcmp(argv[iarg],"-map"))
       {
-        if(argc==i-1)
+        if(argc==iarg+1)
+        {
+          fprintf(stderr,"Missing argument after option '-map'.\n"
+                 USAGE,argv[0]);
+          return EXIT_FAILURE;
+        }
+        map_name=argv[++iarg];
+      }
+      else if(!strcmp(argv[iarg],"-o"))
+      {
+        if(argc==iarg+1)
         {
           fprintf(stderr,"Missing argument after option '-o'.\n"
                  USAGE,argv[0]);
           return EXIT_FAILURE;
         }
-        outname=argv[++i];
+        outname=argv[++iarg];
       }
-      else if(!strcmp(argv[i],"-cellsize"))
+      else if(!strcmp(argv[iarg],"-cellsize"))
       {
-        if(i==argc-1)
+        if(argc==iarg+1)
         {
           fprintf(stderr,"Missing argument after option '-cellsize'.\n"
                   USAGE,argv[0]);
           return EXIT_FAILURE;
         }
-        cellsize_lon=(float)strtod(argv[++i],&endptr);
+        cellsize_lon=(float)strtod(argv[++iarg],&endptr);
         if(*endptr!='\0')
         {
-          fprintf(stderr,"Invalid number '%s' for option '-cellsize'.\n",argv[i]);
+          fprintf(stderr,"Invalid number '%s' for option '-cellsize'.\n",argv[iarg]);
+          return EXIT_FAILURE;
+        }
+        if(cellsize_lon<=0)
+        {
+          fprintf(stderr,"Cell size=%g must be greater than zero.\n",cellsize_lon);
           return EXIT_FAILURE;
         }
         cellsize_lat=cellsize_lon;
@@ -303,14 +335,14 @@ int main(int argc,char **argv)
       else
       {
         fprintf(stderr,"Invalid option '%s'.\n"
-                USAGE,argv[i],argv[0]);
+                USAGE,argv[iarg],argv[0]);
         return EXIT_FAILURE;
       }
     }
     else
       break;
   }
-  if(argc<i+2)
+  if(argc<iarg+2)
   {
     fprintf(stderr,"Missing arguments.\n"
             USAGE,argv[0]);
@@ -318,7 +350,7 @@ int main(int argc,char **argv)
   }
   if(isclm)
   {
-    coord_filename.name=argv[i];
+    coord_filename.name=argv[iarg];
     coord_filename.fmt=CLM;
     coordfile=opencoord(&coord_filename,TRUE);
     if(coordfile==NULL)
@@ -330,9 +362,10 @@ int main(int argc,char **argv)
       return EXIT_FAILURE;
     }
     config.ngridcell=numcoord(coordfile);
+    grid_type=getcoordtype(coordfile);
     if(config.ngridcell==0)
     {
-      fprintf(stderr,"Number of cells is zero in '%s'.\n",argv[i]);
+      fprintf(stderr,"Number of cells is zero in '%s'.\n",argv[iarg]);
       return EXIT_FAILURE;
     }
     getcellsizecoord(&cellsize_lon,&cellsize_lat,coordfile);
@@ -345,19 +378,37 @@ int main(int argc,char **argv)
   }
   else
   {
-    file=fopen(argv[i],"rb");
+    file=fopen(argv[iarg],"rb");
     if(file==NULL)
     {
-      fprintf(stderr,"Error opening grid file '%s': %s.\n",argv[i],
+      fprintf(stderr,"Error opening grid file '%s': %s.\n",argv[iarg],
               strerror(errno));
       return EXIT_FAILURE;
     }
-    if(getfilesizep(file) % (sizeof(short)*2)!=0)
-      fprintf(stderr,"Warning: File size of '%s' is not multiple of %d.\n",argv[i],(int)(sizeof(short)*2));
-    config.ngridcell=getfilesizep(file)/sizeof(short)/2;
+    switch(grid_type)
+    {
+       case LPJ_SHORT:
+         if(getfilesizep(file) % (sizeof(short)*2)!=0)
+           fprintf(stderr,"Warning: File size of '%s' is not multiple of %d.\n",argv[iarg],(int)(sizeof(short)*2));
+         config.ngridcell=getfilesizep(file)/sizeof(short)/2;
+         break;
+       case LPJ_FLOAT:
+         if(getfilesizep(file) % (sizeof(float)*2)!=0)
+           fprintf(stderr,"Warning: File size of '%s' is not multiple of %d.\n",argv[iarg],(int)(sizeof(float)*2));
+         config.ngridcell=getfilesizep(file)/sizeof(float)/2;
+         break;
+       case LPJ_DOUBLE:
+         if(getfilesizep(file) % (sizeof(double)*2)!=0)
+           fprintf(stderr,"Warning: File size of '%s' is not multiple of %d.\n",argv[iarg],(int)(sizeof(double)*2));
+         config.ngridcell=getfilesizep(file)/sizeof(double)/2;
+         break;
+       default:
+         fprintf(stderr,"Invalid datatype %d in '%s'.\n",grid_type,argv[iarg]);
+         return TRUE;
+    }
     if(config.ngridcell==0)
     {
-      fprintf(stderr,"Number of cells is zero in '%s'.\n",argv[i]);
+      fprintf(stderr,"Number of cells is zero in '%s'.\n",argv[iarg]);
       return EXIT_FAILURE;
     }
     grid=newvec(Coord,config.ngridcell);
@@ -366,38 +417,119 @@ int main(int argc,char **argv)
       printallocerr("grid");
       return EXIT_FAILURE;
     }
-    for(j=0;j<config.ngridcell;j++)
+    switch(grid_type)
     {
-      readintcoord(file,&intcoord,swap);
-      grid[j].lat=intcoord.lat*0.01;
-      grid[j].lon=intcoord.lon*0.01;
+      case LPJ_SHORT:
+        for(j=0;j<config.ngridcell;j++)
+        {
+          readintcoord(file,&intcoord,swap);
+          grid[j].lat=intcoord.lat*0.01;
+          grid[j].lon=intcoord.lon*0.01;
+        }
+        break;
+      case LPJ_FLOAT:
+        for(j=0;j<config.ngridcell;j++)
+        {
+          freadfloat(fcoord,2,swap,file);
+          grid[j].lon=fcoord[0];
+          grid[j].lat=fcoord[1];
+        }
+        break;
+      case LPJ_DOUBLE:
+        for(j=0;j<config.ngridcell;j++)
+        {
+          freaddouble(dcoord,2,swap,file);
+          grid[j].lon=dcoord[0];
+          grid[j].lat=dcoord[1];
+        }
+        break;
+      default:
+        /* do nothing */
+        break;
     }
     config.resolution.lat=cellsize_lat;
     config.resolution.lon=cellsize_lon;
     header.firstcell=0;
     fclose(file);
   }
-  header.cellsize_lat=config.resolution.lat;
-  header.cellsize_lon=config.resolution.lon;
+  header.cellsize_lat=(float)config.resolution.lat;
+  header.cellsize_lon=(float)config.resolution.lon;
   header.ncell=config.ngridcell;
+  config.missing_value=MISSING_VALUE_FLOAT;
   file=fopen(outname,"wb");
   if(file==NULL)
   {
     fprintf(stderr,"Error creating '%s': %s.\n",outname,strerror(errno));
     return EXIT_FAILURE;
   }
-  for(j=i+1;j<argc;j++)
+  for(j=iarg+1;j<argc;j++)
   {
     if(verbose)
-      printf("%s\n",argv[j]); 
+      printf("%s\n",argv[j]);
     if(openclimate_netcdf(&data,argv[j],NULL,var,NULL,units,&config))
     {
       fprintf(stderr,"Error opening '%s'.\n",argv[j]);
       return EXIT_FAILURE;
     }
+    if(var==NULL)
+      var=getvarname_netcdf(&data);
+    if(units==NULL)
+      units=getattr_netcdf(data.ncid,data.varid,"units");
+    long_name=getattr_netcdf(data.ncid,data.varid,"long_name");
+    standard_name=getattr_netcdf(data.ncid,data.varid,"standard_name");
+    history=getattr_netcdf(data.ncid,NC_GLOBAL,"history");
+    source=getattr_netcdf(data.ncid,NC_GLOBAL,"source");
+    title=getattr_netcdf(data.ncid,NC_GLOBAL,"title");
+    if(j==iarg+1)
+    {
+      if(isjson)
+      {
+        if(map_name!=NULL)
+        {
+          map=readmap_netcdf(data.ncid,map_name);
+          if(map==NULL)
+          {
+            fprintf(stderr,"Map '%s' not found in '%s'.\n",map_name,argv[j]);
+            map_name=NULL;
+          }
+          else
+            map_name=BAND_NAMES;
+        }
+        else if((map=readmap_netcdf(data.ncid,PFT_NAME))!=NULL)
+          map_name=BAND_NAMES;
+        else if((map=readmap_netcdf(data.ncid,DEPTH_NAME))!=NULL)
+          map_name=BAND_NAMES;
+        if(nc_inq_natts(data.ncid,&len))
+          n_attr=0;
+        else
+        {
+          attrs=newvec(Attr,len);
+          if(attrs==NULL)
+          {
+            printallocerr("attrs");
+            return EXIT_FAILURE;
+          }
+          n_attr=0;
+          for(k=0;k<len;k++)
+          {
+            if(!nc_inq_attname(data.ncid,NC_GLOBAL,k,name))
+            {
+              if(strcmp(name,"history") && strcmp(name,"source") && strcmp(name,"title"))
+              {
+                attrs[n_attr].value=getattr_netcdf(data.ncid,NC_GLOBAL,name);
+                if(attrs[n_attr].value!=NULL)
+                  attrs[n_attr++].name=strdup(name);
+              }
+            }
+          }
+        }
+      }
+      else
+        map_name=NULL;
+    }
     if(isclm || isjson)
     {
-      if(j==i+1)
+      if(j==iarg+1)
       {
         header.firstyear=data.firstyear;
         header.nyear=data.nyear;
@@ -417,6 +549,8 @@ int main(int argc,char **argv)
           case YEAR: case MISSING_TIME:
             header.nstep=1;
             header.timestep=data.delta_year;
+            break;
+          default:
             break;
         }
         if(isclm)
@@ -452,13 +586,13 @@ int main(int argc,char **argv)
   fclose(file);
   if(isjson)
   {
-    out_json=malloc(strlen(outname)+strlen(".json")+1);
+    out_json=malloc(strlen(outname)+strlen(JSON_SUFFIX)+1);
     if(out_json==NULL)
     {
       printallocerr("filename");
       return EXIT_FAILURE;
     }
-    strcat(strcpy(out_json,outname),".json");
+    strcat(strcpy(out_json,outname),JSON_SUFFIX);
     arglist=catstrvec(argv,argc);
     file=fopen(out_json,"w");
     if(file==NULL)
@@ -466,9 +600,12 @@ int main(int argc,char **argv)
       printfcreateerr(out_json);
       return EXIT_FAILURE;
     }
-    fprintjson(file,outname,arglist,&header,NULL,NULL,(isclm) ? CLM : RAW,LPJOUTPUT_HEADER,FALSE,LPJOUTPUT_VERSION);
+    grid_name.name=argv[iarg];
+    grid_name.fmt=(isclm) ? CLM : RAW;
+    fprintjson(file,outname,title,source,history,arglist,&header,map,map_name,attrs,n_attr,var,units,standard_name,long_name,&grid_name,grid_type,(isclm) ? CLM : RAW,LPJOUTPUT_HEADER,FALSE,LPJOUTPUT_VERSION);
     fclose(file);
   }
+  freemap(map);
   return EXIT_SUCCESS;
 #else
   fprintf(stderr,"ERROR401: NetCDF is not supported in this version of %s.\n",argv[0]);

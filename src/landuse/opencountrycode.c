@@ -15,11 +15,12 @@
 #include "lpj.h"
 
 FILE *opencountrycode(const Filename *filename, /**< filename */
-                      Bool *swap, /**< byte order has to be swapped (TRUE/FALS) */
-                      Type *type,  /**< LPJ datatype */
-                      size_t *offset, /**< offset in binary file */
-                      Bool isout    /**< enable error output (TRUE/FALSE) */
-                     )              /** \return pointer to open file or NULL */
+                      Bool *swap,               /**< byte order has to be swapped (TRUE/FALSE) */
+                      Bool *isregion,           /**< file contains information about region (TRUE/FALSE) */
+                      Type *type,               /**< LPJ datatype */
+                      size_t *offset,           /**< offset in binary file */
+                      Bool isout                /**< enable error output (TRUE/FALSE) */
+                     )                          /** \return pointer to open file or NULL */
 {
   FILE *file;
   Header header;
@@ -37,17 +38,21 @@ FILE *opencountrycode(const Filename *filename, /**< filename */
     header.ncell=0;
     header.nyear=1;
     header.cellsize_lon=header.cellsize_lat=0.5;
-    file=openmetafile(&header,NULL,NULL,swap,&h_offset,filename->name,isout);
+    file=openmetafile(&header,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,swap,&h_offset,filename->name,isout);
     if(file==NULL)
       return NULL;
-    if(header.nbands!=2)
+    if(header.nbands==1)
+      *isregion=FALSE;
+    else if(header.nbands!=2)
     {
       if(isout)
-        fprintf(stderr,"ERROR218: Number of bands=%d in description file '%s' is not 2.\n",
+        fprintf(stderr,"ERROR218: Number of bands=%d in description file '%s' is not 1 or 2.\n",
                 header.nbands,filename->name);
       fclose(file);
       return NULL;
     }
+    else
+      *isregion=TRUE;
     if(header.nstep!=1)
     {
       if(isout)
@@ -91,14 +96,18 @@ FILE *opencountrycode(const Filename *filename, /**< filename */
       fclose(file);
       return NULL;
     }
-    if(header.nbands!=2)
+    if(header.nbands==1)
+      *isregion=FALSE;
+    else if(header.nbands!=2)
     {
       if(isout)
-        fprintf(stderr,"ERROR218: Number of bands=%d in countrycode file '%s' is not 2.\n",
+        fprintf(stderr,"ERROR218: Number of bands=%d in countrycode file '%s' is not 1 or 2.\n",
                 header.nbands,filename->name);
       fclose(file);
       return NULL;
     }
+    else
+      *isregion=TRUE;
     if(header.nstep!=1)
     {
       if(isout)
@@ -116,8 +125,8 @@ FILE *opencountrycode(const Filename *filename, /**< filename */
       return NULL;
     }
     *type=header.datatype;
-    *offset=headersize(headername,version)-typesizes[header.datatype]*2*header.firstcell;
-    if(isout && getfilesizep(file)!=headersize(headername,version)+typesizes[header.datatype]*2*header.ncell)
+    *offset=headersize(headername,version)-typesizes[header.datatype]*header.nbands*header.firstcell;
+    if(isout && getfilesizep(file)!=headersize(headername,version)+typesizes[header.datatype]*header.nbands*header.ncell)
       fprintf(stderr,"WARNING032: File size of '%s' does not match ncell*nbands.\n",filename->name);
   }
   return file;

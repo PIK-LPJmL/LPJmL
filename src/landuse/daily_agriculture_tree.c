@@ -77,6 +77,7 @@ Real daily_agriculture_tree(Stand *stand,                /**< stand pointer */
   Stocks flux_estab,yield;
   Real fpc_inc,fpc_total,*fpc_type;
   Real cnratio_fruit;
+  Real vol_water_enth; /* volumetric enthalpy of water (J/m3) */
   Biomass_tree *data;
   Soil *soil;
   String line;
@@ -96,6 +97,7 @@ Real daily_agriculture_tree(Stand *stand,                /**< stand pointer */
     flux_estab=establishment(pft,0,0,1);
     getoutput(output,FLUX_ESTABC,config)+=flux_estab.carbon*stand->frac;
     getoutput(output,FLUX_ESTABN,config)+=flux_estab.nitrogen*stand->frac;
+    getoutput(output,FLUX_ESTABN_MG,config)+=flux_estab.nitrogen*stand->frac;
     stand->cell->balance.flux_estab.carbon+=flux_estab.carbon*stand->frac;
     stand->cell->balance.flux_estab.nitrogen+=flux_estab.nitrogen*stand->frac;
     stand->growing_days=0;
@@ -143,7 +145,7 @@ Real daily_agriculture_tree(Stand *stand,                /**< stand pointer */
     rainmelt=0.0;
 
   /* The index for ag_tree in ml.fertilizer_nr.ag_tree structure (fertil)
-     takes PFT id (according to pft.js or similar),
+     takes PFT id (according to pft.cjson or similar),
      subtracts the number of all non-crop PFTs (npft),
      adds the number of ag_trees (config->nagtree),
      so that the first element in ag_tree fertilizer vector (indexed as 0)
@@ -211,12 +213,17 @@ Real daily_agriculture_tree(Stand *stand,                /**< stand pointer */
   /* soil inflow: infiltration and percolation */
   if(irrig_apply>epsilon)
   {
-      runoff+=infil_perc_irr(stand,irrig_apply,&return_flow_b,npft,ncft,config);
+      vol_water_enth = climate->temp*c_water+c_water2ice; /* enthalpy of soil infiltration */
+      runoff+=infil_perc_irr(stand,irrig_apply,vol_water_enth,&return_flow_b,npft,ncft,config);
       /* count irrigation events*/
       getoutputindex(output,CFT_IRRIG_EVENTS,index,config)++;
   }
 
-  runoff+=infil_perc_rain(stand,rainmelt,&return_flow_b,npft,ncft,config);
+  if(climate->prec+melt>0)  /* enthalpy of soil infiltration */
+    vol_water_enth = climate->temp*c_water*climate->prec/(climate->prec+melt)+c_water2ice;
+  else
+    vol_water_enth=0;
+  runoff+=infil_perc_rain(stand,rainmelt,vol_water_enth,&return_flow_b,npft,ncft,config);
 
   foreachpft(pft,p,&stand->pftlist)
   {
@@ -311,10 +318,12 @@ Real daily_agriculture_tree(Stand *stand,                /**< stand pointer */
     getoutputindex(output,CFT_FPAR,index,config)+=(fpar(pft)*stand->frac*(1.0/(1-stand->cell->lakefrac-stand->cell->ml.reservoirfrac)));
 
     if(config->pft_output_scaled)
+    {
       getoutputindex(output,PFT_NPP,nnat+index,config)+=npp*stand->frac;
+    }
     else
       getoutputindex(output,PFT_NPP,nnat+index,config)+=npp;
-      getoutputindex(output,PFT_LAI,nnat+index,config)+=actual_lai(pft);
+    getoutputindex(output,PFT_LAI,nnat+index,config)+=actual_lai(pft);
   } /* of foreachpft */
   free(gp_pft);
   /* soil outflow: evap and transpiration */

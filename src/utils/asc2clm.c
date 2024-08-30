@@ -24,7 +24,7 @@
 #include "lpj.h"
 #include <sys/stat.h>
 
-#define USAGE "Usage: asc2clm [-h] [-f] [-firstyear y] [-grid file] [-nbands n] [-header s]\n       [-{int|float}] [-scale s] infile ... clmfile\n"
+#define USAGE "Usage: asc2clm [-h] [-f] [-firstyear y] [-grid file] [-nbands n] [-nstep n] [-header s]\n       [-version v] [-{int|float}] [-scale s] infile ... clmfile\n"
 #define FIRSTYEAR 1901
 
 int main(int argc,char **argv)
@@ -32,13 +32,13 @@ int main(int argc,char **argv)
   FILE *file,*gridfile,*out;
   Bool first;
   float scale;
-  int row,col,nrows,ncols,nyear,nbands,nodata_int;
+  int row,col,nrows,ncols,nyear,nbands,nodata_int,nstep,version;
   int nrows_first,ncols_first,ncell_first;
   float xllcorner_first,yllcorner_first,cellsize_first;
   float xllcorner,yllcorner,cellsize,nodata,value;
-  short **data;
-  int **data_int,value_int;
-  float **data_float;
+  short **data=NULL;
+  int **data_int=NULL,value_int;
+  float **data_float=NULL;
   char *endptr;
   Coord grid;
   Type type;
@@ -53,36 +53,40 @@ int main(int argc,char **argv)
   header.datatype=LPJ_SHORT;
   nyear=1;
   nbands=NMONTH;
+  nstep=1;
   header.order=CELLYEAR;
   scale=1;
   head=LPJ_CLIMATE_HEADER;
   gridfile=NULL;
   force=FALSE;
   type=LPJ_SHORT;
+  version=LPJ_CLIMATE_VERSION;
   /* parse command line options */
   for(i=1;i<argc;i++)
     if(argv[i][0]=='-')
     {
-      if(!strcmp(argv[i],"-h"))
+      if(!strcmp(argv[i],"-h") || !strcmp(argv[i],"--help"))
       {
         printf("   asc2clm (" __DATE__ ") help\n"
                "   ==========================\n\n"
                "Convert gridded ASCII files to clm data files for LPJmL version " LPJ_VERSION "\n\n"
                USAGE
                "\nArguments:\n"
-               "-h           print this help text\n"
+               "-h,--help    print this help text\n"
                "-f           force overwrite of output file\n"
                "-firstyear y first year, default is %d\n"
                "-grid file   create grid file\n" 
                "-nbands n    number of bands, default is 12\n"
+               "-nstep n     number of steps, default is 1\n"
                "-header s    header string, default is " LPJ_CLIMATE_HEADER "\n"
+               "-version v   version of clm file, default is %d\n"
                "-scale s     scale data by a factor of s\n"
                "-int         write integer data into clm file\n"
                "-float       write float data into clm file\n"
                "infile       filename(s) of gridded data file\n"
                "clmfile      filename of clm data file\n\n"
                 "(C) Potsdam Institute for Climate Impact Research (PIK), see COPYRIGHT file\n",
-                FIRSTYEAR);
+                FIRSTYEAR,LPJ_CLIMATE_VERSION);
         return EXIT_SUCCESS;
       }
       else if(!strcmp(argv[i],"-firstyear"))
@@ -122,7 +126,6 @@ int main(int argc,char **argv)
           return EXIT_FAILURE;
         }
         fwriteheader(gridfile,&header,LPJGRID_HEADER,LPJGRID_VERSION);
-
       }
       else if(!strcmp(argv[i],"-nbands"))
       {
@@ -142,6 +145,48 @@ int main(int argc,char **argv)
         if(nbands<1)
         {
           fputs("Error: number of bands must be >0.\n",stderr);
+          return EXIT_FAILURE;
+        }
+      }
+      else if(!strcmp(argv[i],"-nstep"))
+      {
+        if(i==argc-1)
+        {
+          fputs("Argument missing after '-nstep' option.\n"
+                USAGE,stderr);
+          return EXIT_FAILURE;
+        }
+        nstep=strtol(argv[++i],&endptr,10);
+        if(*endptr!='\0')
+        {
+          fprintf(stderr,"Invalid value '%s' for option '-nstep'.\n",
+                  argv[i]);
+          return EXIT_FAILURE;
+        }
+        if(nstep<1)
+        {
+          fputs("Error: number of steps must be >0.\n",stderr);
+          return EXIT_FAILURE;
+        }
+      }
+      else if(!strcmp(argv[i],"-version"))
+      {
+        if(i==argc-1)
+        {
+          fputs("Argument missing after '-version' option.\n"
+                USAGE,stderr);
+          return EXIT_FAILURE;
+        }
+        version=strtol(argv[++i],&endptr,10);
+        if(*endptr!='\0')
+        {
+          fprintf(stderr,"Invalid value '%s' for option '-version'.\n",
+                  argv[i]);
+          return EXIT_FAILURE;
+        }
+        if(version<1)
+        {
+          fputs("Error: Version must be  >0.\n",stderr);
           return EXIT_FAILURE;
         }
       }
@@ -193,12 +238,12 @@ int main(int argc,char **argv)
   }
   argc-=i;
   argv+=i;
-  if((argc-1)% nbands)
+  if((argc-1)% (nbands*nstep))
   {
     fputs("Number of input files is not multiple of nbands.\n",stderr);
     return EXIT_FAILURE;
   }
-  nyear=(argc-1)/nbands;
+  nyear=(argc-1)/nbands/nstep;
   if(!force)
   {
     if(!stat(argv[argc-1],&buf))
@@ -216,16 +261,22 @@ int main(int argc,char **argv)
     return EXIT_FAILURE;
   }
   header.nbands=nbands;
+  header.nbands=nstep;
   fwriteheader(out,&header,head,LPJ_CLIMATE_VERSION);
   first=TRUE;
+  nrows_first=0;
+  ncols_first=0;
+  xllcorner_first=0;
+  yllcorner_first=0;
+  cellsize_first=0;
   for(y=0;y<nyear;y++)
   {
-    for(m=0;m<nbands;m++)
+    for(m=0;m<nbands*nstep;m++)
     {
-      file=fopen(argv[y*nbands+m],"r");
+      file=fopen(argv[y*nbands*nstep+m],"r");
       if(file==NULL)
       {
-        fprintf(stderr,"Error opening '%s': %s.\n",argv[y],strerror(errno));
+        fprintf(stderr,"Error opening '%s': %s.\n",argv[y*nbands*nstep+m],strerror(errno));
         return EXIT_FAILURE;
       }
       /* parse header  */
@@ -275,7 +326,7 @@ int main(int argc,char **argv)
         switch(type)
         {
           case LPJ_INT:
-            data_int=newmatrix(int,nrows*ncols,nbands);
+            data_int=newmatrix(int,nrows*ncols,nbands*nstep);
             if(data_int==NULL)
             {
               fputs("Error allocating memory for data.\n",stderr);
@@ -283,7 +334,7 @@ int main(int argc,char **argv)
             }
             break;
           case LPJ_SHORT:
-            data=newmatrix(short,nrows*ncols,nbands);
+            data=newmatrix(short,nrows*ncols,nbands*nstep);
             if(data==NULL)
             {
               fputs("Error allocating memory for data.\n",stderr);
@@ -291,12 +342,16 @@ int main(int argc,char **argv)
             }
             break;
           case LPJ_FLOAT:
-            data_float=newmatrix(float,nrows*ncols,nbands);
+            data_float=newmatrix(float,nrows*ncols,nbands*nstep);
             if(data_float==NULL)
             {
               fputs("Error allocating memory for data.\n",stderr);
               return EXIT_FAILURE;
             }
+            break;
+          default:
+            fprintf(stderr,"Invalid datatype %d in '%s'.\n",type,argv[y*nbands*nstep+m]);
+            return EXIT_FAILURE;
         } /* of 'switch' */
         nrows_first=nrows;
         ncols_first=ncols;
@@ -391,7 +446,7 @@ int main(int argc,char **argv)
       else if(header.ncell!=ncell_first)
       {
         fprintf(stderr,"Number of cells %d in '%s' differs from %d.\n",
-                header.ncell,argv[y*nbands+m],ncell_first);
+                header.ncell,argv[y*nbands*nstep+m],ncell_first);
         return EXIT_FAILURE;
       }
       first=FALSE;
@@ -401,7 +456,7 @@ int main(int argc,char **argv)
     {
       case LPJ_INT:
         for(i=0;i<header.ncell;i++)
-          if(fwrite(data_int[i],sizeof(int),nbands,out)!=nbands)
+          if(fwrite(data_int[i],sizeof(int),nbands*nstep,out)!=nbands*nstep)
           {
             fprintf(stderr,"Error writing output: %s.\n",strerror(errno));
             return EXIT_FAILURE;
@@ -409,7 +464,7 @@ int main(int argc,char **argv)
         break;
       case LPJ_SHORT:
         for(i=0;i<header.ncell;i++)
-          if(fwrite(data[i],sizeof(short),nbands,out)!=nbands)
+          if(fwrite(data[i],sizeof(short),nbands*nstep,out)!=nbands*nstep)
           {
             fprintf(stderr,"Error writing output: %s.\n",strerror(errno));
             return EXIT_FAILURE;
@@ -417,13 +472,15 @@ int main(int argc,char **argv)
         break;
       case LPJ_FLOAT:
         for(i=0;i<header.ncell;i++)
-          if(fwrite(data_float[i],sizeof(float),nbands,out)!=nbands)
+          if(fwrite(data_float[i],sizeof(float),nbands*nstep,out)!=nbands*nstep)
           {
             fprintf(stderr,"Error writing output: %s.\n",strerror(errno));
             return EXIT_FAILURE;
           }
         break;
-     }
+      default:
+        break;
+    }
   }  
   if(gridfile!=NULL)
   {
@@ -431,6 +488,8 @@ int main(int argc,char **argv)
     rewind(gridfile);
     header.nbands=2;
     header.nyear=1;
+    header.nstep=1;
+    header.timestep=1;
     header.scalar=1;
     header.datatype=LPJ_FLOAT;
     fwriteheader(gridfile,&header,LPJGRID_HEADER,LPJGRID_VERSION);
@@ -441,8 +500,10 @@ int main(int argc,char **argv)
   header.nyear=nyear;
   header.datatype=type;
   header.nbands=nbands;
-  header.scalar=(type==LPJ_SHORT) ? 1./scale : 1;
-  fwriteheader(out,&header,head,LPJ_CLIMATE_VERSION);
+  header.timestep=1;
+  header.nbands=nstep;
+  header.scalar=(type==LPJ_SHORT) ? (float)(1./scale) : 1;
+  fwriteheader(out,&header,head,version);
   fclose(out);
   return EXIT_SUCCESS;
 } /* of 'main' */

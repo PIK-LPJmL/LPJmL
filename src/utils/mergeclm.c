@@ -23,12 +23,12 @@ int main(int argc,char **argv)
   FILE *out;
   int i,iarg,year,cell,version,version_out,*nbands,setversion,numfiles,nbands_sum,index;
   Bool swapnstep;
-  Byte *bvec;
-  short *svec;
-  int *ivec;
-  float *fvec;
-  double *dvec;
-  void *vec;
+  Byte *bvec=NULL;
+  short *svec=NULL;
+  int *ivec=NULL;
+  float *fvec=NULL;
+  double *dvec=NULL;
+  void *vec=NULL;
   struct stat filestat;
   char c;
   int rc;
@@ -42,13 +42,14 @@ int main(int argc,char **argv)
   size4=FALSE;
   swapnstep=FALSE;
   setversion=READ_VERSION;
+  version_out=READ_VERSION;
   /* process command options */
   for(iarg=1;iarg<argc;iarg++)
     if(argv[iarg][0]=='-')
     {
       if(!strcmp(argv[iarg],"-f"))
         force=TRUE;
-      else if(!strcmp(argv[iarg],"-v"))
+      else if(!strcmp(argv[iarg],"-v") || !strcmp(argv[iarg],"--verbose"))
         verbose=TRUE;
       else if(!strcmp(argv[iarg],"-size4"))
         size4=TRUE;
@@ -180,7 +181,7 @@ int main(int argc,char **argv)
                   header.firstyear,argv[i+iarg],header_out.firstyear);
           return EXIT_FAILURE;
         }
-        else if(version==3 && header.datatype!=header_out.datatype)
+        else if(version>=3 && header.datatype!=header_out.datatype)
         {
           fprintf(stderr,"Data type=%s in file '%s' differs from %s.\n",
                   typenames[header.datatype],argv[i+iarg],typenames[header_out.datatype]);

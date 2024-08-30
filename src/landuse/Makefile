@@ -18,12 +18,12 @@ include ../../Makefile.inc
 OBJS    = cultivate.$O landuse.$O landusechange.$O\
           sowing_season.$O sowing_prescribe.$O\
           check_lu.$O agriculture.$O reclaim_land.$O allocation_today.$O\
-          initmanage.$O fscancountrypar.$O fscanregionpar.$O\
+          initmanage.$O fscancountrypar.$O\
           findlandusetype.$O findstand.$O setaside.$O harvest_stand.$O\
           opencountrycode.$O readcountrycode.$O grassland.$O\
-          biomass_tree.$O biomass_grass.$O daily_setaside.$O\
-          createcountrycode.$O freecountrypar.$O freeregionpar.$O\
-          writecountrycode.$O writeregioncode.$O freemanage.$O\
+          biomass_tree.$O biomass_grass.$O\
+          createcountrycode.$O freecountrypar.$O\
+          writecountrycode.$O freemanage.$O\
           timber_burn.$O timber_harvest.$O annual_grassland.$O\
           annual_agriculture.$O annual_biomass_grass.$O annual_setaside.$O\
           annual_woodplantation.$O daily_woodplantation.$O\
@@ -31,9 +31,9 @@ OBJS    = cultivate.$O landuse.$O landusechange.$O\
           daily_agriculture.$O daily_biomass_tree.$O output_gbw.$O\
           woodplantation.$O\
           output_gbw_agriculture.$O calc_nir.$O irrig_amount.$O killstand.$O\
-          landfrac.$O cutpfts.$O crop_sum_frac.$O woodconsum.$O\
+          landfrac.$O cutpfts.$O crop_sum_frac.$O\
           new_agriculture.$O free_agriculture.$O fwrite_agriculture.$O\
-          fread_agriculture.$O fprint_agriculture.$O fprintregionpar.$O\
+          fread_agriculture.$O fprint_agriculture.$O\
           fprintcountrypar.$O wateruse.$O withdrawal_demand.$O\
           distribute_water.$O sowing.$O rw_irrigation.$O\
           fwrite_irrigation.$O fread_irrigation.$O fprint_irrigation.$O\
@@ -45,7 +45,7 @@ OBJS    = cultivate.$O landuse.$O landusechange.$O\
           daily_agriculture_tree.$O daily_agriculture_grass.$O fscantreedens.$O\
           findstandpft.$O isirrigevent.$O\
           annual_agriculture_tree.$O annual_agriculture_grass.$O readcottondays.$O\
-          update_irrig.$O update_double_harvest.$O fscanagtreemap.$O sowingcft.$O\
+          update_irrig.$O update_separate_harvests.$O fscanagtreemap.$O sowingcft.$O\
           fertday_biomass.$O fertilize_tree.$O setotherstocrop.$O
 
 INC     = ../../include

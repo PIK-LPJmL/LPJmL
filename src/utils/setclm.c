@@ -14,7 +14,16 @@
 
 #include "lpj.h"
 
-#define USAGE "Usage: %s id|version|order|firstyear|nyear|firstcell|ncell|nbands value filename\n"
+#define USAGE "Usage: %s id|version|order|firstyear|nyear|firstcell|ncell|nbands|nstep|type|cellsize|cellsize_lon|cellsize_lat value filename\n"
+
+static Bool writeheader(FILE *file,int *header,int size,Bool swap)
+{
+  int i;
+  if(swap)
+    for(i=0;i<size;i++)
+      header[i]=swapint(header[i]);
+  return (fwrite(header,sizeof(int),size,file)!=size);
+} /* of 'writeheader' */
 
 int main(int argc,char **argv)
 {
@@ -26,6 +35,7 @@ int main(int argc,char **argv)
   Bool swap;
   const char *progname;
   char *endptr;
+  int index,size;
   progname=strippath(argv[0]);
   if(argc<4)
   {
@@ -125,12 +135,88 @@ int main(int argc,char **argv)
       return EXIT_FAILURE;
     }
   }
+  else if(!strcmp(argv[1],"nstep"))
+  {
+    if(version<4)
+    {
+      fprintf(stderr,"Version=%d for nstep of '%s' must be >3.\n",version,argv[3]);
+      return EXIT_FAILURE;
+    }
+    header.nstep=strtol(argv[2],&endptr,10);
+    if(*endptr!='\0')
+    {
+      fprintf(stderr,"Invalid number '%s' for nstep.\n",argv[2]);
+      return EXIT_FAILURE;
+    }
+  }
+  else if(!strcmp(argv[1],"-type"))
+  {
+    if(version<3)
+    {
+      fprintf(stderr,"Version=%d for type of '%s' must be >2.\n",version,argv[3]);
+      return EXIT_FAILURE;
+    }
+    index=findstr(argv[2],typenames,5);
+    if(index==NOT_FOUND)
+    {
+      fprintf(stderr,"Invalid argument '%s' for type.\n",argv[2]);
+      return EXIT_FAILURE;
+    }
+    header.datatype=(Type)index;
+  }
   else if(!strcmp(argv[1],"scalar"))
   {
+    if(version<2)
+    {
+      fprintf(stderr,"Version=%d for scalar of '%s' must be >1.\n",version,argv[3]);
+      return EXIT_FAILURE;
+    }
     header.scalar=(float)strtod(argv[2],&endptr);
     if(*endptr!='\0')
     {
       fprintf(stderr,"Invalid number '%s' for scalar.\n",argv[2]);
+      return EXIT_FAILURE;
+    }
+  }
+  else if(!strcmp(argv[1],"cellsize"))
+  {
+    if(version<2)
+    {
+      fprintf(stderr,"Version=%d for cellsize of '%s' must be >1.\n",version,argv[3]);
+      return EXIT_FAILURE;
+    }
+    header.cellsize_lon=header.cellsize_lat=(float)strtod(argv[2],&endptr);
+    if(*endptr!='\0')
+    {
+      fprintf(stderr,"Invalid number '%s' for cellsize.\n",argv[2]);
+      return EXIT_FAILURE;
+    }
+  }
+  else if(!strcmp(argv[1],"cellsize_lon"))
+  {
+    if(version<3)
+    {
+      fprintf(stderr,"Version=%d for cellsize_lon of '%s' must be >2.\n",version,argv[3]);
+      return EXIT_FAILURE;
+    }
+    header.cellsize_lon=(float)strtod(argv[2],&endptr);
+    if(*endptr!='\0')
+    {
+      fprintf(stderr,"Invalid number '%s' for cellsize_lon.\n",argv[2]);
+      return EXIT_FAILURE;
+    }
+  }
+  else if(!strcmp(argv[1],"cellsize_lat"))
+  {
+    if(version<3)
+    {
+      fprintf(stderr,"Version=%d for cellsize_lat of '%s' must be >2.\n",version,argv[3]);
+      return EXIT_FAILURE;
+    }
+    header.cellsize_lat=(float)strtod(argv[2],&endptr);
+    if(*endptr!='\0')
+    {
+      fprintf(stderr,"Invalid number '%s' for cellsize_lat.\n",argv[2]);
       return EXIT_FAILURE;
     }
   }
@@ -156,9 +242,29 @@ int main(int argc,char **argv)
   rewind(file);
   if(fwrite(id,strlen(id),1,file)!=1)
     return EXIT_FAILURE;
+  if(swap)
+     version=swapint(version);
   if(fwrite(&version,sizeof(version),1,file)!=1)
     return EXIT_FAILURE;
-  if(fwrite(&header,sizeof(Header_old),1,file)!=1)
+  switch(version)
+  {
+     case 1:
+       size=sizeof(Header_old)/sizeof(int);
+       break;
+     case 2:
+       size=sizeof(Header2)/sizeof(int);
+       break;
+     case 3:
+       size=sizeof(Header3)/sizeof(int);
+       break;
+     case 4:
+       size=sizeof(Header)/sizeof(int);
+       break;
+     default:
+       fprintf(stderr,"Invalid version %d, must be <5.\n",version);
+       return EXIT_FAILURE;
+  }
+  if(writeheader(file,(int *)&header,size,swap))
     return EXIT_FAILURE;
   fclose(file); 
   return EXIT_SUCCESS;

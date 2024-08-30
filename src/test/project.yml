@@ -1,0 +1,130 @@
+# =========================================================================
+#   Ceedling - Test-Centered Build System for C
+#   ThrowTheSwitch.org
+#   Copyright (c) 2010-24 Mike Karlesky, Mark VanderVoord, & Greg Williams
+#   SPDX-License-Identifier: MIT
+# =========================================================================
+
+# This is a ceedling configuration for unit testing LPJmL on the new 2024 hpc cluster.
+# It requires the the following modules to be loaded
+# - intel/oneAPI/2023.2.0 module (or later versions)
+# - ruby
+# Additionally the ceedling gem version > 0.32 needs to be installed or added to the the PATH variable.
+---
+:project:
+  # how to use ceedling. If you're not sure, leave this as `gem` and `?`
+  :which_ceedling: gem
+  :ceedling_version: '?'
+
+  # optional features. If you don't need them, keep them turned off for performance
+  :use_mocks: FALSE
+  :use_test_preprocessor: FALSE
+  :use_backtrace: :none
+
+  # tweak the way ceedling handles automatic tasks
+  :build_root: build
+  :test_file_prefix: test_
+  :default_tasks:
+    - test:all
+
+  # performance options. If your tools start giving mysterious errors, consider 
+  # dropping this to 1 to force single-tasking
+  :test_threads: 4
+  :compile_thread: 4
+
+  # enable release build (more details in release_build section below)
+  :release_build: FALSE
+
+# further details to configure the way Ceedling handles test code
+:test_build:
+  :use_assembly: FALSE
+
+# Configure additional command line flags provided to tools used in each build step
+:flags:
+  :test:
+    :compile:
+      :*:
+        - -O0
+      :high_res:
+        - -O2
+    :link:
+      :*:
+        - -O0
+      :high_res:
+        - -O2
+
+# Plugins are optional Ceedling features which can be enabled. Ceedling supports
+# a variety of plugins which may effect the way things are compiled, reported, 
+# or may provide new command options. Refer to the readme in each plugin for 
+# details on how to use it.
+:plugins:
+  :load_paths: []
+  :enabled:
+    - report_tests_pretty_stdout
+
+# Ceedling defaults to using gcc for compiling, linking, etc.
+# As [:tools] is blank, gcc will be used (so long as it's in your system path)
+# See documentation to configure a given toolchain for use
+:tools:
+  :test_compiler: 
+    :executable: icx              # Exists in system search path
+    :name: 'icx compiler'
+    :arguments:
+       - -I"${5}"                      # Expands to -I search paths from `:paths` section + build directive path macros
+       - -D"${6}"                      # Expands to all -D defined symbols from `:defines` section
+       - -c ${1}                       # Source code input file
+       - -o ${2}                       # Object file output
+  :test_linker:
+     :executable: icx  
+     :name: 'icx linker'
+     :arguments:
+        - ${1}               # List of object files to link
+        - -o ${2}            # Binary output artifact
+
+# This is where Ceedling should look for your source and test files.
+# see documentation for the many options for specifying this.
+:paths:
+  :test:
+    - .
+  :source:
+    - ../soil/**
+    - ../landuse/**
+  :include:
+    - ../../include
+  :support:
+    - support/**
+  :libraries: []
+
+:unity:
+  :defines:
+    - UNITY_INCLUDE_DOUBLE
+
+# Compilation symbols to be injected into builds
+# See documentation for advanced options:
+#  - Test name matchers for different symbols per test executable build
+#  - Referencing symbols in multiple lists using advanced YAML
+#  - Specifiying symbols used during test preprocessing
+:defines:
+  :test:
+    :*:
+    - TEST # Simple list option to add symbol 'TEST' to compilation of all files in all test executables
+    - U_TEST
+    - GPLHEAT=5
+    :update_soil_thermal_state_high_resolution:
+      - GPLHEAT=140
+    :apply_heatconduction_of_a_day:
+      - GPLHEAT=1
+
+# LIBRARIES
+# These libraries are automatically injected into the build process. Those specified as
+# common will be used in all types of builds. Otherwise, libraries can be injected in just
+# tests or releases. These options are MERGED with the options in supplemental yaml files.
+:libraries:
+  :placement: :end
+  :flag: "-l${1}"
+  :path_flag: "-L ${1}"
+  :system:
+    - m
+  :test: []
+  :release: []
+...

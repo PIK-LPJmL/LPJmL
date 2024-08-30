@@ -79,12 +79,16 @@ Stocks turnover_tree(Litter *litter, /**< Litter pool */
     {
       reprod-=pft->establish.nitrogen;
       getoutput(output,FLUX_ESTABN,config)-=pft->establish.nitrogen*pft->stand->frac;
+      if(pft->stand->type->landusetype!=NATURAL && pft->stand->type->landusetype!=WOODPLANTATION)
+        getoutput(output,FLUX_ESTABN_MG,config)-=pft->establish.nitrogen*pft->stand->frac;
       pft->stand->cell->balance.flux_estab.nitrogen-=pft->establish.nitrogen*pft->stand->frac;
       pft->establish.nitrogen=0;
     }
     else
     {
       getoutput(output,FLUX_ESTABN,config)-=reprod*pft->stand->frac;
+      if(pft->stand->type->landusetype!=NATURAL && pft->stand->type->landusetype!=WOODPLANTATION)
+        getoutput(output,FLUX_ESTABN_MG,config)-=reprod*pft->stand->frac;
       pft->stand->cell->balance.flux_estab.nitrogen-=reprod*pft->stand->frac;
       pft->establish.nitrogen-=reprod;
       reprod=0;

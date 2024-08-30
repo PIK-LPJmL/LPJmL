@@ -51,10 +51,10 @@ void check_fluxes(Cell *cell,          /**< cell pointer */
   delta_tot.nitrogen=tot.nitrogen-cell->balance.tot.nitrogen;
   cell->balance.tot=tot;
 
-  balance.carbon=cell->balance.anpp-cell->balance.arh-cell->balance.fire.carbon-cell->balance.flux_firewood.carbon+
+  balance.carbon=cell->balance.anpp-cell->balance.arh-cell->balance.fire.carbon+
                  cell->balance.flux_estab.carbon-cell->balance.flux_harvest.carbon-cell->balance.biomass_yield.carbon-delta_tot.carbon-
                  cell->balance.neg_fluxes.carbon+cell->balance.influx.carbon;
-  balance.nitrogen=cell->balance.influx.nitrogen-cell->balance.fire.nitrogen-cell->balance.flux_firewood.nitrogen-cell->balance.n_outflux+cell->balance.flux_estab.nitrogen-
+  balance.nitrogen=cell->balance.influx.nitrogen-cell->balance.fire.nitrogen-cell->balance.n_outflux+cell->balance.flux_estab.nitrogen-
     cell->balance.biomass_yield.nitrogen-cell->balance.flux_harvest.nitrogen-delta_tot.nitrogen-cell->balance.neg_fluxes.nitrogen-
     cell->balance.deforest_emissions.nitrogen;//cell->balance.timber_harvest.nitrogen;
   /* for IMAGE but can also be used without IMAGE */
@@ -69,7 +69,7 @@ void check_fluxes(Cell *cell,          /**< cell pointer */
   else
     startyear=config->firstyear+1;
 
-  if(year>startyear && fabs(balance.carbon)>1)
+  if(year>startyear && fabs(balance.carbon)>param.error_limit.stocks.carbon)
   {
 #if defined IMAGE && defined COUPLED
     if(config->sim_id==LPJML_IMAGE)
@@ -112,7 +112,7 @@ void check_fluxes(Cell *cell,          /**< cell pointer */
          cell->balance.deforest_emissions.carbon,cell->balance.prod_turnover.fast.carbon+cell->balance.prod_turnover.slow.carbon,cell->balance.influx.carbon);
 #endif
   }
-  if(config->with_nitrogen && year>startyear && fabs(balance.nitrogen)>.2)
+  if(config->with_nitrogen && year>startyear && fabs(balance.nitrogen)>param.error_limit.stocks.nitrogen)
   {
 #ifdef NO_FAIL_BALANCE
     fprintf(stderr,"ERROR032: "
@@ -152,7 +152,7 @@ void check_fluxes(Cell *cell,          /**< cell pointer */
   }
   cell->balance.awater_flux+=cell->balance.atransp+cell->balance.aevap+cell->balance.ainterc+cell->balance.aevap_lake+cell->balance.aevap_res-cell->balance.airrig;
   balanceW=totw-cell->balance.totw-cell->balance.aprec+cell->balance.awater_flux+cell->balance.excess_water;
-  if(year>startyear && fabs(balanceW)>1.5)
+  if(year>startyear && fabs(balanceW)>param.error_limit.w_local)
   //if(year>1511 && fabs(balanceW)>1.5)
 #ifdef NO_FAIL_BALANCE
     fprintf(stderr,"ERROR005: "

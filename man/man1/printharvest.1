@@ -3,10 +3,13 @@
 printharvest \- Print global harvested carbon for crops and managed grasslands
 .SH SYNOPSIS
 .B printharvest
-[\-pp cmd] [\-inpath \fIdir\fP] [\-outpath \fIdir\fP] [[\-Dmacro[=value]] [\-I\fIdir\fP] ...] \fIfilename\fP
+[\-nopp] [\-pp cmd] [\-inpath \fIdir\fP] [\-outpath \fIdir\fP] [[\-Dmacro[=value]] [\-I\fIdir\fP] ...] \fIfilename\fP
 .SH DESCRIPTION
 Program prints total harvested carbon of a LPJmL model run as comma-separated values. The LPJmL configuration file is read in order to find the location and name of the harvest data file, the name of the terrestrial area file and the name of the land-use fraction file.
 .SH OPTIONS
+.TP
+\-nopp
+Disabling preprocessing of configuration file by \fBcpp\fP.
 .TP
 \-pp cmd
 Set preprocessor program to cmd. Default is \fBcpp\fP.
@@ -28,8 +31,8 @@ name of configuration file
 
 .SH EXAMPLE
 .TP
-Print harvest carbon with configuration file \fIlpjml.js\fP into \fIharvest.csv\fP.
-.B printharvest -DFROM_RESTART lpjml.js >harvest.csv
+Print harvest carbon with configuration file \fIlpjml.cjson\fP into \fIharvest.csv\fP.
+.B printharvest -DFROM_RESTART lpjml.cjson >harvest.csv
 .PP
 .SH ENVIRONMENT
 .TP

@@ -75,7 +75,7 @@ Stocks cultivate(Cell *cell,           /**< cell pointer */
     reclaim_land(setasidestand,cropstand,cell,config->luc_timber,npft+ncft,config);
     setasidestand->frac-=landfrac;
   }
-  if(cell->ml.with_tillage && year>=config->till_startyear)
+  if(cell->ml.with_tillage)
   {
     tillage(&cropstand->soil,param.residue_frac);
     updatelitterproperties(cropstand,cropstand->frac);
@@ -98,6 +98,7 @@ Stocks cultivate(Cell *cell,           /**< cell pointer */
     cell->balance.influx.carbon += manure*param.manure_cn*cropstand->frac*param.nfert_split_frac;
     cell->balance.influx.nitrogen += manure*cropstand->frac*param.nfert_split_frac;
     getoutput(&cell->output,NMANURE_AGR,config)+=manure*cropstand->frac*param.nfert_split_frac;
+    getoutput(&cell->output,NAPPLIED_MG,config)+=manure*cropstand->frac*param.nfert_split_frac;
     /* store remainder of manure for second application */
     crop = pft->data;
     crop->nmanure=manure*(1-param.nfert_split_frac);
@@ -109,6 +110,7 @@ Stocks cultivate(Cell *cell,           /**< cell pointer */
     cropstand->soil.NH4[0] += fertil*(1 - param.nfert_no3_frac)*param.nfert_split_frac;
     cell->balance.influx.nitrogen += fertil*param.nfert_split_frac*cropstand->frac;
     getoutput(&cell->output,NFERT_AGR,config)+=fertil*param.nfert_split_frac*cropstand->frac;
+    getoutput(&cell->output,NAPPLIED_MG,config)+=fertil*param.nfert_split_frac*cropstand->frac;
     /* store remainder of fertilizer for second application */
     crop = pft->data;
     crop->nfertilizer = fertil*(1-param.nfert_split_frac);

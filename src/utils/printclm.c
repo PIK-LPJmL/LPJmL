@@ -33,11 +33,14 @@ static void printclm(const char *filename,int output,int nbands,int version,
   char byte;
   float fdata;
   double ddata;
-  int year,cell,i,*index,rc,t;
+  int year,cell,i,*index=NULL,rc,t;
+  char *unit=NULL,*long_name=NULL,*standard_name=NULL;
   Bool swap,isrestart,isreservoir;
   size_t offset;
   Reservoir reservoir;
-  List *map=NULL;
+  Map *map=NULL;
+  Attr *attrs=NULL;
+  int n_attr=0;
   if(ismeta)
   {
     isrestart=isreservoir=FALSE;
@@ -51,7 +54,7 @@ static void printclm(const char *filename,int output,int nbands,int version,
     header.timestep=1;
     header.datatype=type;
     header.order=CELLYEAR;
-    file=openmetafile(&header,&map,map_name,&swap,&offset,filename,TRUE);
+    file=openmetafile(&header,&map,map_name,&attrs,&n_attr,NULL,NULL,NULL,&unit,&standard_name,&long_name,NULL,NULL,NULL,&swap,&offset,filename,TRUE);
     if(file==NULL)
       return;
     if(fseek(file,offset,SEEK_CUR))
@@ -66,6 +69,9 @@ static void printclm(const char *filename,int output,int nbands,int version,
   }
   else
   {
+    unit=NULL;
+    standard_name=NULL;
+    long_name=NULL;
     file=fopen(filename,"rb");
     if(file==NULL)
     {
@@ -89,9 +95,12 @@ static void printclm(const char *filename,int output,int nbands,int version,
   }
   if(isjon)
   {
-    fprintjson(stdout,filename,NULL,&header,NULL,NULL,CLM,id,swap,version);
+    fprintjson(stdout,filename,NULL,NULL,NULL,NULL,&header,map,map_name,attrs,n_attr,NULL,unit,standard_name,long_name,NULL,LPJ_SHORT,CLM,id,swap,version);
     return;
   }
+  free(long_name);
+  freemap(map);
+  freeattrs(attrs,n_attr);
   if((output & NO_HEADER)==0)
   {
     mod_date=getfiledate(filename);
@@ -113,6 +122,8 @@ static void printclm(const char *filename,int output,int nbands,int version,
       printf("\n");
       freemap(map);
     }
+    if(unit!=NULL && strlen(unit)>0)
+      printf("Unit:\t\t%s\n",unit);
     if(isrestart)
     {
       if(RESTART_VERSION==version)
@@ -127,7 +138,7 @@ static void printclm(const char *filename,int output,int nbands,int version,
                bool2str(restartheader.river_routing),
                bool2str(restartheader.sdate_option),
                bool2str(restartheader.crop_option),
-               bool2str(restartheader.double_harvest));
+               bool2str(restartheader.separate_harvests));
         printf("Random seed:\t");
         for(i=0;i<NSEED;i++)
           printf(" %d",restartheader.seed[i]);
@@ -138,6 +149,7 @@ static void printclm(const char *filename,int output,int nbands,int version,
                 version,RESTART_VERSION);
     }
   }
+  free(unit);
   if(!ismeta && !isrestart && version>CLM_MAX_VERSION)
     fprintf(stderr,"Warning: Unsupported version %d, must be less than %d.\n",
             version,CLM_MAX_VERSION+1);

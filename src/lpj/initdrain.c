@@ -86,7 +86,10 @@ static int *getindex(const Input_netcdf input,const Cell grid[],
   n=getindexsize_netcdf(input);
   index=newvec(int,n);
   if(index==NULL)
+  {
+    printallocerr("index");
     iserr=TRUE;
+  }
   else if(isroot(*config))
   {
     for(i=0;i<n;i++)
@@ -116,30 +119,13 @@ static int *getindex(const Input_netcdf input,const Cell grid[],
   return index;
 } /* of 'getindex' */
 
-static Bool getroute(FILE *file, /**< pointer to binary file */
-                     Routing *r, /**< River route read */
-                     Bool swap   /**< Byte order has to be changed */
-                    )            /** \return TRUE on error */
-{
-  /* Function reads river route from file */
-  if(fread(r,sizeof(Routing),1,file)!=1)
-    return TRUE;
-  if(swap)
-  {
-    /* byte order has to be changed */
-    r->index=swapint(r->index);
-    r->len=swapint(r->len);
-  }
-  return FALSE;
-} /* of 'getroute' */
-
 static Bool initirrig(Cell grid[],    /**< Cell grid             */
                       Config *config  /**< LPJ configuration     */
               )                       /** \return TRUE on error */
 {
   Infile irrig_file;
   String line;
-  int cell,neighb_irrig,rc,*index=NULL,n;
+  int cell,neighb_irrig,rc,*index=NULL,n=0;
   /* open neighbour irrigation file */
   irrig_file.fmt=config->neighb_irrig_filename.fmt;
   if(openinputdata(&irrig_file,&config->neighb_irrig_filename,"irrigation",NULL,LPJ_INT,1.0,config))
@@ -228,7 +214,7 @@ static Bool initriver(Cell grid[],Config *config)
   Routing r;
   Header header;
   String headername,line;
-  int *index,n,version,ncoeff;
+  int *index=NULL,n=0,version,ncoeff;
   Real len;
   Bool missing;
   size_t offset;
@@ -255,11 +241,11 @@ static Bool initriver(Cell grid[],Config *config)
   }
   else
   {
-
+    river.cdf=NULL;
     if((drainage.file=openinputfile(&header,&drainage.swap,&config->drainage_filename,
-                                    headername,&version,&offset,FALSE,config))==NULL)
+                                    headername,NULL,LPJ_INT,&version,&offset,FALSE,config))==NULL)
       return TRUE;
-    if(version>=3 && header.datatype!=LPJ_INT)
+    if(header.datatype!=LPJ_INT)
     {
       if(isroot(*config))
         fprintf(stderr,"ERROR217: Datatype %s in drainage file '%s' is not int.\n",typenames[header.datatype],config->drainage_filename.name);
@@ -274,8 +260,6 @@ static Bool initriver(Cell grid[],Config *config)
       fclose(drainage.file);
       return TRUE;
     }
-    if(isroot(*config) && config->drainage_filename.fmt!=META && getfilesizep(drainage.file)!=sizeof(Routing)*header.ncell+headersize(headername,version)+offset)
-      fprintf(stderr,"WARNING032: File size of '%s' does not match nyear*ncell*nbands.\n",config->drainage_filename.name);
     /* seek startgrid positions in drainage file */
     if(fseek(drainage.file,sizeof(Routing)*(config->startgrid-header.firstcell)+offset,SEEK_CUR))
     {
@@ -307,29 +291,34 @@ static Bool initriver(Cell grid[],Config *config)
     {
       if(readintinput_netcdf(drainage.cdf,&r.index,&grid[cell].coord,&missing) || missing)
       {
+        fprintf(stderr,"ERROR203: Cannot read drainage of cell %d (%s).\n",
+               cell+config->startgrid,sprintcoord(line,&grid[cell].coord));
         closeinput_netcdf(drainage.cdf);
         closeinput_netcdf(river.cdf);
         free(index);
         return TRUE;
       }
-      if(r.index<0 ||  r.index>=n)
+      if(r.index<-1 ||  r.index>=n)
       {
-        fprintf(stderr,"ERROR203: Invalid irrigation neighbour %d of cell %d (%s).\n",
+        fprintf(stderr,"ERROR203: Invalid drainage  %d of cell %d (%s).\n",
                 r.index,cell+config->startgrid,sprintcoord(line,&grid[cell].coord));
         closeinput_netcdf(drainage.cdf);
         closeinput_netcdf(river.cdf);
         free(index);
         return TRUE;
       }
-      r.index=index[r.index];
-      if(r.index==-1)
+      if(r.index>0)
       {
-        fprintf(stderr,"ERROR203: Invalid irrigation neighbour %d of cell %d (%s).\n",
-                r.index,cell+config->startgrid,sprintcoord(line,&grid[cell].coord));
-        closeinput_netcdf(drainage.cdf);
-        closeinput_netcdf(river.cdf);
-        free(index);
-        return TRUE;
+        r.index=index[r.index];
+        if(r.index==-1)
+        {
+          fprintf(stderr,"ERROR203: Invalid drainage %d of cell %d (%s).\n",
+                  r.index,cell+config->startgrid,sprintcoord(line,&grid[cell].coord));
+          closeinput_netcdf(drainage.cdf);
+          closeinput_netcdf(river.cdf);
+          free(index);
+          return TRUE;
+        }
       }
       if(readinput_netcdf(drainage.cdf,&len,&grid[cell].coord))
       {

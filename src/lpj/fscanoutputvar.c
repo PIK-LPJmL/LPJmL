@@ -40,6 +40,7 @@ Variable *fscanoutputvar(LPJfile *file, /**< pointer to LPJ file */
   String s,s2;
   Variable *outnames;
   int index,i,size;
+  Bool alldef=TRUE;
   if (verb>=VERB) puts("// Output parameters");
   size=nout_max;
   arr=fscanarray(file,&size,"outputvar",verb);
@@ -84,9 +85,15 @@ Variable *fscanoutputvar(LPJfile *file, /**< pointer to LPJ file */
     fscanname(item,name,"var",outnames[index].name);
     outnames[index].var=strdup(name);
     checkptr(outnames[index].var);
-    fscanname(item,name,"descr",outnames[index].name);
-    outnames[index].descr=strdup(name);
-    checkptr(outnames[index].descr);
+    if(iskeydefined(item,"standard_name"))
+    {
+      fscanname(item,name,"standard_name",outnames[index].name);
+    }
+    outnames[index].standard_name=strdup(name);
+    checkptr(outnames[index].standard_name);
+    fscanname(item,name,"long_name",outnames[index].name);
+    outnames[index].long_name=strdup(name);
+    checkptr(outnames[index].long_name);
     fscanname(item,name,"unit",outnames[index].name);
     if(strstr(name,"/month")!=NULL)
       outnames[index].time=MONTH;
@@ -128,8 +135,19 @@ Variable *fscanoutputvar(LPJfile *file, /**< pointer to LPJ file */
     if(outnames[i].name==NULL)
     {
       if(verb)
-        fprintf(stderr,"ERROR230: Output description not defined for index=%d in 'outputvar'.\n",i);
-      return NULL;
+      {
+        if(alldef)
+          fprintf(stderr,"ERROR230: Output description not defined for index=%d",i);
+        else
+          fprintf(stderr,", %d",i);
+      }
+      alldef=FALSE;
     }
+  if(!alldef)
+  {
+    if(verb)
+      fprintf(stderr," in 'outputvar'.\n");
+    return NULL;
+  }
   return outnames;
 } /* of 'fscanoutputvar' */

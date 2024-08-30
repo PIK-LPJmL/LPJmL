@@ -22,7 +22,6 @@
 Bool annual_grassland(Stand *stand,         /**< Pointer to stand */
                       int npft,             /**< number of natural pfts */
                       int ncft,             /**< number of crop PFTs */
-                      Real UNUSED(popdens), /**< population density (capita/km2) */
                       int year,             /**< simulation year (AD) */
                       Bool isdaily,         /**< daily temperature data? */
                       Bool UNUSED(intercrop), /**< enable intercropping (TRUE/FALSE) */
@@ -100,6 +99,7 @@ Bool annual_grassland(Stand *stand,         /**< Pointer to stand */
     }
   getoutput(&stand->cell->output,FLUX_ESTABC,config)+=flux_estab.carbon*stand->frac;
   getoutput(&stand->cell->output,FLUX_ESTABN,config)+=flux_estab.nitrogen*stand->frac;
+  getoutput(&stand->cell->output,FLUX_ESTABN_MG,config)+=flux_estab.nitrogen*stand->frac;
   stand->cell->balance.flux_estab.carbon+=flux_estab.carbon*stand->frac;
   stand->cell->balance.flux_estab.nitrogen+=flux_estab.nitrogen*stand->frac;
   stand->cell->output.dcflux-=flux_estab.carbon*stand->frac;

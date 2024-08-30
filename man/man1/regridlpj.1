@@ -1,22 +1,31 @@
 .TH regridlpj 1  "USER COMMANDS"
 .SH NAME
-regridlpj \- regrid CRU input data set for selected countries or specified grid file
+regridlpj \- regrid input data set for selected countries or specified grid file
 .SH SYNOPSIS
 .B regridlpj
-[\-dir path] 
+[\-dir path] [-crumontly] [-oldlu] [-madrat]
 .I filesuffix  [countrycode ...]
 .SH DESCRIPTION
-Program regrids CRU input files for selected countries if country codes are provided. If country code is missing grid file grid_filesuffix.clm is used for regridding. Configuration file input_filesuffix.js are created in the current directory.
+Program regrids input files for selected countries if country codes are provided. If country code is missing grid file grid_filesuffix.clm is used for regridding. Configuration file input_filesuffix.cjson is created in the current directory.
 .SH OPTIONS
 .TP
 \-dir path
 set directory for regridded input files
 .TP
+\-crumonthly
+Instead of GSWP3-W5E5 climate data monthly CRU data is used
+.TP
+\-oldlu
+Instead of LandInG land-use data old data is used
+.TP
+\-madrat
+Instead of LandInG land-use data MADRAT data is used
+.TP
 .I filesuffix
 File suffix for regridded input files and configuration file
 .TP
 .I countrycode
-ISO 3166-1 alpha-3 abbreviations for countries or rountry 
+ISO 3166-1 alpha-3 abbreviations for countries or country 
 codes as numbers defined in
 .I include/managepar.h
 .SH EXAMPLES
@@ -42,4 +51,4 @@ For authors and contributors see AUTHORS file
 (C) Potsdam Institute for Climate Impact Research (PIK), see COPYRIGHT file
 
 .SH SEE ALSO
-getcountry(1), lpjml(1), txt2clm(1), cru2clm(1), clm(5) 
+getcountry(1), regridclm(1), regridsoil(1), lpjml(1), txt2clm(1), cru2clm(1), clm(5)

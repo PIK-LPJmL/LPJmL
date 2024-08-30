@@ -102,7 +102,7 @@ typedef struct
   Real c_emissum;
   int sdate;
   int sowing_year;
-} Double_harvest;
+} Separate_harvests;
 
 typedef struct
 {
@@ -128,12 +128,11 @@ typedef struct
   Real nfertilizer;         /* fertilizer amount */
   Real nmanure;             /* manure ammount */
   Real vscal_sum;
-  Bool frostkill;           /* set to TRUE in daily_agriculture if tmin<-5 and 0.2<fphu<0.95 */
   Real supplysum;
-  Double_harvest *dh;
+  Separate_harvests *sh;
 } Pftcrop;
 
-extern const char *calcmethod[];
+extern char *calcmethod[];
 
 /* Declaration of functions */
 
@@ -146,8 +145,7 @@ extern Real alphaa_crop(const Pft *,int,int);
 extern void litter_update_crop(Litter *,Pft *,Real,const Config *);
 extern Real lai_crop(const Pft *);
 extern Real actual_lai_crop(const Pft *);
-extern Bool phenology_crop(Pft *,Real,Real,Real,int,const Config *);
-extern void laimax_manage(Manage *,const Pftpar [],int,int,int);
+extern Bool phenology_crop(Pft *,Real,Real,int,const Config *);
 extern Bool fwrite_crop(FILE *,const Pft *);
 extern void fprint_crop(FILE *,const Pft *,int);
 extern Bool fread_crop(FILE *,Pft *,Bool,Bool);
@@ -166,7 +164,7 @@ extern void fprintpar_crop(FILE *,const Pftpar *,const Config *);
 extern void output_daily_crop(Output *,const Pft *,Real,Real,const Config *);
 extern void calc_seasonality(Cell *,int,int,const Config *);
 extern void albedo_crop(Pft *,Real,Real);
-extern void double_harvest(int, Real *, Real *, Real);
+extern void separate_harvests(int, Real *, Real *, Real);
 extern Real nuptake_crop(Pft *,Real *,Real *,int,int,const Config *);
 extern Real ndemand_crop(const Pft *,Real *,Real,Real,Real);
 extern Real vmaxlimit_crop(const Pft *,Real,Real);

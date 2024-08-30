@@ -24,7 +24,7 @@ Real flux_sum(Flux *flux_global,   /**< global carbon and water fluxes */
   int cell,s,p,l;
   Stand *stand;
   Pft *pft;
-  Flux flux={0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0};
+  Flux flux={};
   for(cell=0;cell<config->ngridcell;cell++)
   {
     if(!grid[cell].skip)
@@ -33,8 +33,8 @@ Real flux_sum(Flux *flux_global,   /**< global carbon and water fluxes */
       flux.npp+=grid[cell].balance.anpp*grid[cell].coord.area;
       flux.gpp+=grid[cell].balance.agpp*grid[cell].coord.area;
       flux.rh+=grid[cell].balance.arh*grid[cell].coord.area;
-      flux.fire.carbon+=(grid[cell].balance.fire.carbon+grid[cell].balance.flux_firewood.carbon+grid[cell].balance.deforest_emissions.carbon)*grid[cell].coord.area;
-      flux.fire.nitrogen+=(grid[cell].balance.fire.nitrogen+grid[cell].balance.flux_firewood.nitrogen+grid[cell].balance.deforest_emissions.nitrogen)*grid[cell].coord.area;
+      flux.fire.carbon+=(grid[cell].balance.fire.carbon+grid[cell].balance.deforest_emissions.carbon)*grid[cell].coord.area;
+      flux.fire.nitrogen+=(grid[cell].balance.fire.nitrogen+grid[cell].balance.deforest_emissions.nitrogen)*grid[cell].coord.area;
       flux.estab.carbon+=grid[cell].balance.flux_estab.carbon*grid[cell].coord.area;
       flux.estab.nitrogen+=grid[cell].balance.flux_estab.nitrogen*grid[cell].coord.area;
       flux.harvest.carbon+=(grid[cell].balance.flux_harvest.carbon+grid[cell].balance.biomass_yield.carbon)*grid[cell].coord.area;
@@ -60,7 +60,8 @@ Real flux_sum(Flux *flux_global,   /**< global carbon and water fluxes */
       flux.wateruse+=grid[cell].balance.awateruse_hil;
       flux.n_demand+=grid[cell].balance.n_demand*grid[cell].coord.area;
       flux.n_uptake+=grid[cell].balance.n_uptake*grid[cell].coord.area;
-      flux.n_influx+=grid[cell].balance.influx.nitrogen*grid[cell].coord.area;
+      flux.influx.carbon+=grid[cell].balance.influx.carbon*grid[cell].coord.area;
+      flux.influx.nitrogen+=grid[cell].balance.influx.nitrogen*grid[cell].coord.area;
       flux.n_outflux+=grid[cell].balance.n_outflux*grid[cell].coord.area;
       flux.excess_water+=grid[cell].balance.excess_water*grid[cell].coord.area;
       flux.product.carbon+=(grid[cell].ml.product.fast.carbon+grid[cell].ml.product.slow.carbon)*grid[cell].coord.area;
@@ -126,5 +127,5 @@ Real flux_sum(Flux *flux_global,   /**< global carbon and water fluxes */
 #else
   *flux_global=flux;
 #endif
-  return flux_global->npp-flux_global->rh-flux_global->fire.carbon-flux_global->harvest.carbon+flux_global->estab.carbon-flux_global->product_turnover.carbon-flux_global->neg_fluxes.carbon;
+  return flux_global->npp+flux_global->influx.carbon-flux_global->rh-flux_global->fire.carbon-flux_global->harvest.carbon+flux_global->estab.carbon-flux_global->product_turnover.carbon-flux_global->neg_fluxes.carbon;
 } /* of 'flux_sum' */

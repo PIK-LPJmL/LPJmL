@@ -250,6 +250,17 @@ int main(int argc,char **argv)
           fprintf(stderr,"Invalid number '%s' for option '-version'.\n",argv[index]);
           return EXIT_FAILURE;
         }
+        if(version<1)
+        {
+          fprintf(stderr,"Version=%d must be greater than zero.\n",version);
+          return EXIT_FAILURE;
+        }
+        if(version>CLM_MAX_VERSION)
+        {
+          fprintf(stderr,"Version %d greater than maximum version %d supported.\n",
+                  version,CLM_MAX_VERSION);
+          return EXIT_FAILURE;
+        }
       }
       else if(!strcmp(argv[index],"-type"))
       {

@@ -114,10 +114,13 @@ Real water_stressed(Pft *pft,                  /**< [inout] pointer to PFT varia
   supply_pft=supply*pft->fpc;
   demand=(gp_stand>0) ? (1.0-*wet)*eeq*param.ALPHAM/(1+(param.GM*param.ALPHAM)/gp_stand) : 0;
   demand_pft=(gp_pft>0) ? (1.0-*wet)*eeq*param.ALPHAM/(1+(param.GM*param.ALPHAM)/gp_pft) : 0;
-  
+
   if (pft->stand->type->landusetype!=SETASIDE_RF && pft->stand->type->landusetype!=SETASIDE_IR)
+  {
     getoutputindex(&pft->stand->cell->output,PFT_WATER_DEMAND,index,config)+=demand_pft;
-  
+    getoutputindex(&pft->stand->cell->output,PFT_WATER_SUPPLY,index,config)+=(supply_pft<=demand_pft) ? supply_pft : demand_pft;
+  }
+
   *wdf=wdf(pft,demand,supply);
 
   if(eeq>0 && gp_stand_leafon>0 && pft->fpc>0)
@@ -194,7 +197,7 @@ Real water_stressed(Pft *pft,                  /**< [inout] pointer to PFT varia
     data.b=pft->par->b;
     data.co2=ppm2Pa(co2);
     data.compvm=FALSE;
-    data.apar=par*(1-getpftpar(pft, albedo_leaf))*alphaa(pft,config->with_nitrogen,config->laimax_interpolate)*fpar(pft); /** par calculation do not include albedo*/
+    data.apar=par*(1-getpftpar(pft, albedo_leaf))*alphaa(pft,config->with_nitrogen,config->laimax_manage)*fpar(pft); /** par calculation do not include albedo*/
     data.daylength=daylength;
     data.vmax=pft->vmax;
     lambda=bisect((Bisectfcn)fcn,0.02,LAMBDA_OPT+0.05,&data,0,EPSILON,30,&iter);

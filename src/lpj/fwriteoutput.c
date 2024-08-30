@@ -19,6 +19,19 @@
 #include "tree.h"
 #include "agriculture.h"
 
+static void flush_output(Outputfile *output,int index)
+{
+  switch(output->files[index].fmt)
+  {
+    case RAW: case CLM: case TXT:
+      fflush(output->files[index].fp.file);
+      break;
+    case CDF:
+      flush_netcdf(&output->files[index].fp.cdf);
+      break;
+  }
+}
+
 #define iswrite(output,index) (isopen(output,index) && iswrite2(index,timestep,year,config))
 
 #define writeoutputvar(index,scale) if(iswrite(output,index))\
@@ -28,6 +41,8 @@
       if(!grid[cell].skip)\
         vec[count++]=(float)(grid[cell].output.data[config->outputmap[index]]*scale);\
     writedata(output,index,vec,year,date,ndata,config);\
+    if(isroot(*config) && config->flush_output)\
+      flush_output(output,index);\
   }
 
 #define writeoutputarray(index,scale) if(iswrite(output,index))\
@@ -41,6 +56,8 @@
           vec[count++]=(float)(grid[cell].output.data[config->outputmap[index]+i]*scale);\
       writepft(output,index,vec,year,date,ndata,i,config);\
     }\
+    if(isroot(*config) && config->flush_output)\
+      flush_output(output,index);\
   }
 
 #define writeoutputshortvar(index) if(iswrite(output,index))\
@@ -56,6 +73,8 @@
           svec[count++]=(short)(grid[cell].output.data[config->outputmap[index]+i]);\
       writeshortpft(output,index,svec,year,date,ndata,i,config);\
     }\
+    if(isroot(*config) && config->flush_output)\
+      flush_output(output,index);\
     free(svec);\
   }
 
@@ -106,7 +125,7 @@ static Real getscale(int date,int ndata,int timestep,Time time)
       break;
     case NDAYYEAR: /* daily output */
       if(time==SECOND)
-        scale=1/NSECONDSDAY;
+        scale=1./NSECONDSDAY;
       else
         scale=1;
       break;
@@ -548,6 +567,7 @@ void fwriteoutput(Outputfile *output,  /**< output file array */
   writeoutputarray(FPC,1);
   writeoutputvar(NPP,1);
   writeoutputvar(GPP,1);
+  writeoutputvar(TWS,ndate1);
   writeoutputvar(DAYLENGTH,ndate1);
   writeoutputvar(TEMP,ndate1);
   writeoutputvar(SUN,ndate1);
@@ -563,8 +583,6 @@ void fwriteoutput(Outputfile *output,  /**< output file array */
   writeoutputvar(LITFALLN,1);
   writeoutputvar(FIREC,1);
   writeoutputvar(FIREN,1);
-  writeoutputvar(FLUX_FIREWOOD,1);
-  writeoutputvar(FLUX_FIREWOOD_N,1);
   writeoutputvar(FIREF,1);
   writeoutputvar(BNF_AGR,1);
   writeoutputvar(NFERT_AGR,1);
@@ -597,6 +615,10 @@ void fwriteoutput(Outputfile *output,  /**< output file array */
   writeoutputvar(N2_MGRASS,1);
   writeoutputvar(N2O_NIT_MGRASS,1);
   writeoutputvar(N2O_DENIT_MGRASS,1);
+  writeoutputvar(FLUX_ESTABN_MG,1);
+  writeoutputvar(NAPPLIED_MG, 1);
+  writeoutputvar(BNF_MG, 1);
+  writeoutputvar(NDEPO_MG,1);
   writeoutputvar(UPTAKEC_MGRASS,1);
   writeoutputvar(FECESC_MGRASS,1);
   writeoutputvar(URINEC_MGRASS,1);
@@ -1086,6 +1108,7 @@ void fwriteoutput(Outputfile *output,  /**< output file array */
   writeoutputvar(SNOWF,1);
   writeoutputvar(MELT,1);
   writeoutputvar(SWE,ndate1);
+  writeoutputvar(LITTERTEMP,ndate1);
   writeoutputvar(SNOWRUNOFF,1);
   writeoutputvar(RUNOFF_SURF,1);
   writeoutputvar(RUNOFF_LAT,1);
@@ -1101,7 +1124,7 @@ void fwriteoutput(Outputfile *output,  /**< output file array */
   writeoutputvar(GCONS_IRR,1);
   writeoutputvar(BCONS_IRR,1);
   writeoutputvar(IRRIG_RW,1);
-  writeoutputvar(LAKEVOL,ndate1);  
+  writeoutputvar(LAKEVOL,ndate1);
   writeoutputvar(RIVERVOL,ndate1);
   writeoutputarray(SWC_VOL,ndate1);
   writeoutputvar(IRRIG_STOR,ndate1);
@@ -1550,6 +1573,9 @@ void fwriteoutput(Outputfile *output,  /**< output file array */
                   }
                 }
                 break;
+              default:
+                /* do nothing */
+                break;
             }
           }
         }
@@ -1611,6 +1637,9 @@ void fwriteoutput(Outputfile *output,  /**< output file array */
                     getoutputindex(&grid[cell].output,PFT_NSAPW,pft->par->id,config)+=tree->ind.sapwood.nitrogen;
                   }
                 }
+                break;
+              default:
+                /* do nothing */
                 break;
             }
           }
@@ -1674,6 +1703,9 @@ void fwriteoutput(Outputfile *output,  /**< output file array */
                   }
                 }
                 break;
+              default:
+                /* do nothing */
+                break;
             }
           }
         }
@@ -1735,6 +1767,9 @@ void fwriteoutput(Outputfile *output,  /**< output file array */
                     getoutputindex(&grid[cell].output,PFT_NHAWO,pft->par->id,config)+=tree->ind.heartwood.nitrogen;
                   }
                 }
+                break;
+              default:
+                /* do nothing */
                 break;
             } /* of switch */
           }
@@ -1863,20 +1898,27 @@ void fwriteoutput(Outputfile *output,  /**< output file array */
     }
     writeoutputvar(ESTAB_STORAGE_N,1);
   }
-  if(isopen(output,RD))
+  if(isopen(output,NBP))
   {
-    writeoutputvar(RD,1);
+    if(iswrite2(NBP,timestep,year,config) || (timestep==ANNUAL && config->outnames[NBP].timestep>0))
+    {
+      for(cell=0;cell<config->ngridcell;cell++)
+        if(!grid[cell].skip && grid[cell].lakefrac+grid[cell].ml.reservoirfrac<1)
+        {
+          getoutput(&grid[cell].output,NBP,config)+=(grid[cell].balance.anpp-grid[cell].balance.arh-grid[cell].balance.fire.carbon+
+                    grid[cell].balance.flux_estab.carbon-grid[cell].balance.flux_harvest.carbon-grid[cell].balance.biomass_yield.carbon-
+                    grid[cell].balance.neg_fluxes.carbon+grid[cell].balance.influx.carbon-grid[cell].balance.deforest_emissions.carbon-
+                    grid[cell].balance.prod_turnover.fast.carbon-grid[cell].balance.prod_turnover.slow.carbon-grid[cell].balance.trad_biofuel.carbon);
+        }
+    }
+    writeoutputvar(NBP,1);
   }
-  if(isopen(output,PFT_WATER_DEMAND))
-  {
-    writeoutputarray(PFT_WATER_DEMAND,1);
-  }
-  if(isopen(output,NDEPOS)) 
-  {
-    writeoutputvar(NDEPOS,1);
-  }
+  writeoutputvar(RD,1);
+  writeoutputarray(PFT_WATER_DEMAND,1);
+  writeoutputarray(PFT_WATER_SUPPLY,1);
+  writeoutputvar(NDEPOS,1);
 
-  if(config->double_harvest)
+  if(config->separate_harvests)
   {
     writeoutputarray(PFT_HARVESTC2,1);
     writeoutputarray(PFT_HARVESTN2,1);

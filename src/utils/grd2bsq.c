@@ -18,7 +18,7 @@
 #include <math.h>
 
 int main(int argc,char **argv)
-{  
+{
   int bytel[]={sizeof(float),sizeof(short),sizeof(double),sizeof(int),sizeof(char)};
   short rbuf;
   int i;
@@ -34,33 +34,32 @@ int main(int argc,char **argv)
   FILE *ofp;
   FILE *gfp;
   float slat, elat, slon, elon;
-  int npix,nrec,nyrs,type;
+  int npix,nrec,type;
   int ilat,ilon;
   float res;
   int **lw;
   int ip,ny,sy,ey;
-  
+
   if(argc!=15){
-    fprintf(stdout,"Usage:\n");
-    fprintf(stdout,"grd2bsq infilename outfilename gridfilename output-start-lon output-end-lon output-start-lat output-end-lat output-start-year(1) output-end-year(103) numberpixels resolution-in-degs number-records-per-pixel number-years data-type(float=0,short=1,double=2,int=3,char=4)\n");
-    fprintf(stdout,"argc is: %d\n",argc);
-    puts("TEST 1");
+    fprintf(stderr,"Missing arguments.\nUsage: ");
+    fprintf(stderr,"grd2bsq infilename outfilename gridfilename output-start-lon output-end-lon output-start-lat output-end-lat output-start-year(1) output-end-year(103) numberpixels resolution-in-degs number-records-per-pixel number-years data-type(float=0,short=1,double=2,int=3,char=4)\n");
     exit(1);
   }
-
+#ifdef DEBUG
   puts("1");
+#endif
   
   /* PARSE COMMAND LINE */
   if((ifp=fopen(argv[1],"rb"))==NULL){
-    fprintf(stderr,"Warning: File open failed on input-file.\n");
+    fprintf(stderr,"Error: File open failed on input-file.\n");
     exit(1);
   }
   if((ofp=fopen(argv[2],"wb"))==NULL){
-    fprintf(stderr,"Warning: File open failed on output-file.\n");
+    fprintf(stderr,"Error: File open failed on output-file.\n");
     exit(1);
   }
   if((gfp=fopen(argv[3],"rb"))==NULL){
-    fprintf(stderr,"Warning: File open failed on grid-file.\n");
+    fprintf(stderr,"Error: File open failed on grid-file.\n");
     exit(1);
   }
 
@@ -82,8 +81,6 @@ int main(int argc,char **argv)
 
   nrec=atoi(argv[12]);
 
-  nyrs=atoi(argv[13]);
-
   type=atoi(argv[14]);
   if(type<0 || type>4)
   {
@@ -91,8 +88,9 @@ int main(int argc,char **argv)
      exit(99);
   }
   data=malloc(sizeof(double));
-  puts("bef alloc");   
-  
+#ifdef DEBUG
+  puts("bef alloc");
+#endif
   lw=(int **)calloc((int)(180./res),sizeof(int *));
   for(i=0;i<(int)(180./res);i++) 
     lw[i]=(int *)calloc((int)(360./res),sizeof(int));

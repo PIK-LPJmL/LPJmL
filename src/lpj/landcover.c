@@ -20,6 +20,7 @@ struct landcover
 {
   Climatefile file;
   Real *frac;
+  int size;
 };
 
 Landcover initlandcover(int npft,            /**< number of natural PFTs */
@@ -27,7 +28,7 @@ Landcover initlandcover(int npft,            /**< number of natural PFTs */
                        )                     /** \return landcover data or NULL */
 {
   Landcover landcover;
-  int i,len;
+  int i;
   
   landcover=new(struct landcover);
   if(landcover==NULL)
@@ -35,20 +36,20 @@ Landcover initlandcover(int npft,            /**< number of natural PFTs */
     printallocerr("landcover");
     return NULL;
   }
-  if(opendata(&landcover->file,&config->landcover_filename,"landcover","1",LPJ_FLOAT,LPJ_SHORT,0.01,getnnat(npft,config),TRUE,config))
+  if(opendata(&landcover->file,&config->landcover_filename,"landcover","1",LPJ_FLOAT,LPJ_SHORT,0.01,config->landcovermap_size,TRUE,config))
   {
     free(landcover);
     return NULL;
   }
-  len=config->ngridcell*landcover->file.var_len;
-  if((landcover->frac=newvec(Real,len))==NULL)
+  landcover->size=getnnat(npft,config);
+  if((landcover->frac=newvec(Real,landcover->size*config->ngridcell))==NULL)
   {
     printallocerr("frac");
     closeclimatefile(&landcover->file,isroot(*config));
     free(landcover);
     return NULL;
   }
-  for(i=0;i<len;i++)
+  for(i=0;i<landcover->size*config->ngridcell;i++)
     landcover->frac[i]=0;
   return landcover;
 } /* of 'initlandcover' */
@@ -65,14 +66,30 @@ Bool readlandcover(Landcover landcover, /**< landcover data */
                    const Config *config /**< LPJmL configuration */
                   )                     /** \return TRUE on error */
 {
-  return (readdata(&landcover->file,landcover->frac,grid,"landcover",year,config)==NULL);
+  Real *data;
+  int i,j,count;
+  for(i=0;i<landcover->size*config->ngridcell;i++)
+    landcover->frac[i]=0;
+  data=readdata(&landcover->file,NULL,grid,"landcover",year,config);
+  if(data==NULL)
+    return TRUE;
+  count=0;
+  for(i=0;i<config->ngridcell;i++)
+    for(j=0;j<config->landcovermap_size;j++)
+    {
+      if(config->landcovermap[j]!=NOT_FOUND)
+        landcover->frac[i*landcover->size+config->landcovermap[j]]+=data[count];
+      count++;
+    }
+  free(data);
+  return FALSE;
 } /* of 'readlandcover */
 
 Real *getlandcover(Landcover landcover, /**< landcover data */
                    int index            /**< cell index */
                   )                     /** \return land cover array of specified cell */
 {
-  return landcover->frac+index*landcover->file.var_len;
+  return landcover->frac+index*landcover->size;
 } /* of 'getlandcover' */
 
 void freelandcover(Landcover landcover, /**< landcover data */

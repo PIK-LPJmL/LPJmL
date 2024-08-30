@@ -59,20 +59,16 @@ Real snow(Soil *soil,       /**< pointer to soil data */
           Real *prec,       /**< Precipitation (mm) */
           Real *snowmelt,   /**< snowmelt (mm) */
           Real temp,        /**< air temperature (deg C) */
-          Real *temp_bsnow, /**< temperature below snow (deg C) */
           Real *evap        /**< evaporation (mm) */
          )                  /** \return runoff (mm) */
 {
   Real runoff=0;
   Real melt_heat,      /*[J/m2]*/
-       dt,             /* change in time [s]*/
        dT,             /* change in temperature [K]*/
        heatflux,
        depth;
   Real frsg;  /* Snow cover of the ground below the canopy (0-1) */
   Real HS;    /* Height of the Snow (m) */
-
-  unsigned long int heat_steps,t;
 
   *snowmelt=0.0;
   /* precipitation falls as snow */
@@ -112,53 +108,13 @@ Real snow(Soil *soil,       /**< pointer to soil data */
       soil->snowpack-=melt_heat/c_water2ice*1000;
       if (soil->snowpack<epsilon)
       {
-        *temp_bsnow=temp;
         soil->snowpack=0.0;
         soil->snowheight=0.0;
         soil->snowfraction=0.0;
         return runoff;
       }
     }
-    /* stability criterion for finite-difference solution */
-    dt=0.5*(soil->snowpack*soil->snowpack*1e-6)/th_diff_snow;
-    heat_steps= (unsigned long int)(timestep2sec(1.0,NSTEP_DAILY)/dt)+1;
-    *temp_bsnow=temp;
-    for (t=0; t<heat_steps;++t)
-    {
-      /*temperature change of remaining snow layer */
-      dT=th_diff_snow*timestep2sec(1.0,heat_steps)/(soil->snowpack*soil->snowpack*1e-6)
-         *(temp+(soil->temp[TOPLAYER]*(1-soil->litter.agtop_cover)+soil->litter.agtop_temp*soil->litter.agtop_cover)-2*soil->temp[SNOWLAYER]);
-      if(fabs(dT)<epsilon || t==maxheatsteps)
-        break;
-      /* melting of the whole snow layer*/
-      if(soil->temp[SNOWLAYER]+dT-T_zero>0)
-      {
-        heatflux=lambda_snow*(soil->temp[SNOWLAYER]-T_zero+dT)/soil->snowpack*1000;
-        soil->temp[SNOWLAYER]=T_zero;
-        melt_heat=min(heatflux*timestep2sec(1.0,heat_steps),soil->snowpack*1e-3*c_water2ice);/*[J/m2]*/
-        *snowmelt+=melt_heat/c_water2ice*1000; /* [J/m2]/[J/m3]*1000 = [mm] */
-        soil->snowpack-=melt_heat/c_water2ice*1000;
-        if (soil->snowpack<epsilon)
-        {
-          *temp_bsnow=temp;
-          soil->snowpack=0.0;
-          break;
-        }
-        heatflux-=melt_heat/timestep2sec(1.0,heat_steps);/*[W/m2]*/
-        if(fabs(heatflux) < epsilon)
-          heatflux=0.0;
-        dT=heatflux*soil->snowpack*1e-3/lambda_snow;
-        *temp_bsnow=soil->temp[SNOWLAYER]+dT;
-      }
-      else
-      {
-        soil->temp[SNOWLAYER]+=dT;
-        *temp_bsnow=soil->temp[SNOWLAYER];
-      }
-    } /*foreach heatstep*/
   } /* snow present?*/
-  else
-    *temp_bsnow=temp;
 
   /* calculate snow height and fraction of snow coverage */
   if(soil->snowpack>epsilon)

@@ -16,7 +16,55 @@
 
 #include "lpj.h"
 
-#define USAGE "Usage: txt2clm [-h] [-version v] [-cellindex] [-scale s] [-float] [-int] [-nbands n] [-nstep n] [-cellsize size]\n               [-firstcell n] [-ncell n] [-firstyear f] [-header id] txtfile clmfile\n"
+#define USAGE "Usage: txt2clm [-h] [-version v] [-cellindex] [-scale s] [-float] [-int] [-nbands n] [-nstep n] [-cellsize size]\n               [-firstcell n] [-ncell n] [-firstyear f] [-header id] [-csv c] txtfile clmfile\n"
+
+static int getfloat(FILE *file,char sep,float *value)
+{
+  String s;
+  int c,len;
+  char *endptr;
+  len=0;
+  while((c=fgetc(file))!=EOF)
+  {
+    if(len==STRING_LEN)
+      return 0;
+    if(c=='\n' || c==sep)
+    {
+      s[len]='\0';
+      *value=(float)strtod(s,&endptr);
+      if(*endptr=='\0')
+        return 1;
+      fprintf(stderr,"Invalid number '%s'.\n",s);
+      return 0;
+    }
+    s[len++]=(char)c;
+  }
+  return 0;
+} /* of 'getfloat' */
+
+static int getint(FILE *file,char sep,int *value)
+{
+  String s;
+  int c,len;
+  char *endptr;
+  len=0;
+  while((c=fgetc(file))!=EOF)
+  {
+    if(len==STRING_LEN)
+      return 0;
+    if(c=='\n' || c==sep)
+    {
+      s[len]='\0';
+      *value=strtol(s,&endptr,10);
+      if(*endptr=='\0')
+        return 1;
+      fprintf(stderr,"Invalid number '%s'.\n",s);
+      return 0;
+    }
+    s[len++]=(char)c;
+  }
+  return 0;
+} /* of 'getint' */
 
 int main(int argc,char **argv)
 {
@@ -30,6 +78,7 @@ int main(int argc,char **argv)
   int version;
   char *id;
   int i,iarg,rc;
+  char sep;
   /* set default values */
   header.order=CELLYEAR;
   header.firstyear=1901;
@@ -43,20 +92,22 @@ int main(int argc,char **argv)
   header.cellsize_lon=header.cellsize_lat=0.5;
   id=LPJ_CLIMATE_HEADER;
   version=LPJ_CLIMATE_VERSION;
+  sep='\0';
   /* parse command line options */
   for(iarg=1;iarg<argc;iarg++)
     if(argv[iarg][0]=='-')
     {
-      if(!strcmp(argv[iarg],"-h"))
+      if(!strcmp(argv[iarg],"-h") || !strcmp(argv[iarg],"--help"))
       {
         printf("   txt2clm (" __DATE__ ") Help\n"
                "   ==========================\n\n"
                "Convert text files to clm data files for LPJmL version " LPJ_VERSION "\n\n");
         printf(USAGE
                "Arguments:\n"
-               "-h           print this help text\n"
+               "-h,--help    print this help text\n"
                "-version     set version, default is %d\n"
                "-cellindex   set order to cell index\n"
+               "-csv c       file is in CSV format with separator c\n"
                "-float       write data as float, default is short\n"
                "-int         write data as int, default is short\n"
                "-nbands n    number of bands, default is %d\n"
@@ -142,6 +193,17 @@ int main(int argc,char **argv)
           return EXIT_FAILURE;
         }
       }
+      else if(!strcmp(argv[iarg],"-csv"))
+      {
+        if(iarg==argc-1)
+        {
+          fputs("Argument missing after '-csv' option.\n"
+                USAGE,stderr);
+          return EXIT_FAILURE;
+        }
+        sep=argv[++iarg][0];
+      }
+
       else if(!strcmp(argv[iarg],"-nstep"))
       {
         if(iarg==argc-1)
@@ -185,7 +247,8 @@ int main(int argc,char **argv)
         }
         if(version>CLM_MAX_VERSION)
         {
-          fprintf(stderr,"Version=%d must be less than %d.\n",version,CLM_MAX_VERSION);
+          fprintf(stderr,"Version %d greater than maximum version %d supported.\n",
+                  version,CLM_MAX_VERSION);
           return EXIT_FAILURE;
         }
       }
@@ -286,7 +349,11 @@ int main(int argc,char **argv)
   {
     for(i=0;i<header.ncell;i++)
     {
-      if(fscanf(file,"%d",&data)!=1)
+      if(sep)
+        rc=getint(file,sep,&data);
+      else
+        rc=fscanf(file,"%d",&data);
+      if(rc!=1)
       {
         fprintf(stderr,"Unexpected end of file in '%s' reading cell index.\n",argv[iarg]);
         return EXIT_FAILURE;
@@ -304,7 +371,10 @@ int main(int argc,char **argv)
     {
       for(i=0;i<header.ncell*header.nbands*header.nstep;i++)
       {
-        rc=fscanf(file,"%d",&data);
+        if(sep)
+          rc=getint(file,sep,&data);
+        else
+          rc=fscanf(file,"%d",&data);
         if(rc!=1)
           break;
         if(fwrite(&data,sizeof(data),1,out)!=1)
@@ -317,7 +387,10 @@ int main(int argc,char **argv)
     else
       for(i=0;i<header.ncell*header.nbands*header.nstep;i++)
       {
-        rc=fscanf(file,"%g",&value);
+        if(sep)
+          rc=getfloat(file,sep,&value);
+        else
+          rc=fscanf(file,"%g",&value);
         if(rc!=1)
           break;
         if(header.datatype==LPJ_SHORT)

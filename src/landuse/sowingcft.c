@@ -53,7 +53,7 @@ static void cultcftstand(Stocks *flux_estab,  /**< establishment flux */
     flux_estab->nitrogen+=stocks.nitrogen;
     if(irrig)
       cft+=ncft;
-    if(!config->double_harvest)
+    if(!config->separate_harvests)
       getoutputindex(&cell->output,SDATE,cft,config)=day;
     if(config->sdate_option==FIXED_SDATE)
       cell->ml.sdate_fixed[cft]=day;
@@ -78,7 +78,7 @@ void sowingcft(Stocks *flux_estab,  /**< establishment flux */
   Stand *stand,*cropstand,*setasidestand;
   Pft *pft;
   Real difffrac,landfrac;
-  int s,p,cft_id,pos;
+  int s,p,cft_id=0,pos;
   Irrigation *irrigation,*data;
 
   /* set sowing date for all CFTs not in the land-use data set */

@@ -121,7 +121,7 @@ int main(int argc,char **argv)
   progname=strippath(argv[0]); /* strip path from program name */
   if(argc>1)
   {
-    if(!strcmp(argv[1],"-h")) /* check for help option */
+    if(!strcmp(argv[1],"-h") || !strcmp(argv[1],"--help")) /* check for help option */
     {
       if(isroot(config))
       {
@@ -132,7 +132,7 @@ int main(int argc,char **argv)
 #endif
       return EXIT_SUCCESS;
     }
-    if(!strcmp(argv[1],"-l")) /* check for license option */
+    if(!strcmp(argv[1],"-l") || !strcmp(argv[1],"--license")) /* check for license option */
     {
       if(isroot(config))
         printlicense();
@@ -141,7 +141,7 @@ int main(int argc,char **argv)
 #endif
       return EXIT_SUCCESS;
     }
-    else if(!strcmp(argv[1],"-v")) /* check for version option */
+    else if(!strcmp(argv[1],"-v") || !strcmp(argv[1],"--version")) /* check for version option */
     {
       if(isroot(config))
         printflags(progname);
@@ -167,9 +167,21 @@ int main(int argc,char **argv)
   failonerror(&config,rc,READ_CONFIG_ERR,"Cannot read configuration");
   if(isroot(config) && argc)
     fputs("WARNING018: Arguments listed after configuration filename, will be ignored.\n",stderr);
+  if(config.ofiles)
+  {
+    if(isroot(config))
+      fprintoutputvar(stdout,config.outnames,NOUT,config.npft[GRASS]+config.npft[TREE],config.npft[CROP],&config);
+#ifdef USE_MPI
+    MPI_Finalize();
+#endif
+    return EXIT_SUCCESS;
+  }
   if(isroot(config))
+  {
+    createconfig(&config);
     printconfig(config.npft[GRASS]+config.npft[TREE],
                 config.npft[CROP],&config);
+  }
   if(config.sim_id==LPJML_FMS)
   {
     if(isroot(config))
@@ -215,8 +227,11 @@ int main(int argc,char **argv)
   }
   /* open output files */  
   output=fopenoutput(grid,NOUT,&config);
+  rc=(output==NULL);
+  failonerror(&config,rc,INIT_OUTPUT_ERR,
+              "Initialization of output data failed");
   rc=initoutput(output,grid,config.npft[GRASS]+config.npft[TREE],config.npft[CROP],&config);
-  failonerror(&config,rc,INIT_INPUT_ERR,
+  failonerror(&config,rc,INIT_OUTPUT_ERR,
               "Initialization of output data failed");
   if(iscoupled(config))
   {
@@ -232,8 +247,6 @@ int main(int argc,char **argv)
     writearea(output,LAKE_AREA,grid,&config);
   if(isopen(output,COUNTRY) && config.withlanduse)
     writecountrycode(output,COUNTRY,grid,&config);
-  if(isopen(output,REGION) && config.withlanduse)
-    writeregioncode(output,REGION,grid,&config);
   if(isroot(config))
     puts("Simulation begins...");
   time(&tstart); /* Start timing */

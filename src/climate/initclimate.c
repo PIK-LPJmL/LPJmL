@@ -58,8 +58,8 @@ static void initdata(Climate *climate)
   climate->data.nh4deposition=NULL;
 } /* of 'initdata' */
 
-Climate *initclimate(const Cell grid[],   /**< LPJ grid */
-                     const Config *config /**< pointer to LPJ configuration */
+Climate *initclimate(const Cell grid[], /**< LPJ grid */
+                     Config *config     /**< pointer to LPJ configuration */
                     )                     /** \return allocated climate data struct or NULL on error */
 {
   Climate *climate;
@@ -193,7 +193,7 @@ Climate *initclimate(const Cell grid[],   /**< LPJ grid */
       }
     }
   }
-  if(config->cropsheatfrost || config->fire==SPITFIRE_TMAX)
+  if(config->fire==SPITFIRE_TMAX)
   {
     if(openclimate(&climate->file_tmin,&config->tmin_filename,"celsius",LPJ_SHORT,0.1,config))
     {
@@ -266,13 +266,16 @@ Climate *initclimate(const Cell grid[],   /**< LPJ grid */
   }
   if(readco2(&climate->co2,&config->co2_filename,config))
   {
+    if(isroot(*config))
+      fprintf(stderr,"ERROR236: Cannot read CO2 data file.\n");
     freeclimate(climate,isroot(*config));
     return NULL;
   }
-  if(isroot(*config) && climate->co2.firstyear>climate->file_temp.firstyear)
-      fprintf(stderr,"WARNING001: First year in '%s'=%d greater than climate->file_temp.firstyear=%d.\n"
-              "            Preindustrial value=%g is used.\n",
-              config->co2_filename.name,climate->co2.firstyear,climate->file_temp.firstyear,param.co2_p);
+  if(isroot(*config) && climate->co2.firstyear>config->firstyear-config->nspinup)
+      fprintf(stderr,"WARNING001: First year in CO2 data file '%s'=%d greater than first simulation year %d,\n"
+              "            value=%g ppm of year %d is used.\n",
+              config->co2_filename.name,climate->co2.firstyear,config->firstyear-config->nspinup,
+              climate->co2.data[0],climate->co2.firstyear);
 #ifdef DEBUG7
   printf("climate->file_temp.firstyear: %d  co2-year: %d  value: %f\n",
          climate->file_temp.firstyear, climate->co2.firstyear,climate->co2.data[0]);
@@ -322,7 +325,7 @@ Climate *initclimate(const Cell grid[],   /**< LPJ grid */
       }
     }
   }
-  if(config->cropsheatfrost || config->fire==SPITFIRE_TMAX)
+  if(config->fire==SPITFIRE_TMAX)
   {
     if((climate->data.tmax=newvec(Real,climate->file_tmax.n))==NULL)
     {

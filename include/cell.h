@@ -68,7 +68,6 @@ typedef struct
   Real awd_unsustainable;   /**< annual withdrawal from unsustainable source (mm) */
   Real soil_storage;        /**< Water stored in the soil column by the end of year (dm3) */
   Stocks fire;              /**< annual fire carbon and nitrogen emissions (g/m2)*/
-  Stocks flux_firewood;     /**< carbon and nitrogen emissions from domestic wood use [g/m2/a]*/
   Stocks flux_estab;        /**< establishment flux (gC/m2,gN/m2) */
   Stocks flux_harvest;      /**< harvest flux (gC/m2,g/N/m2) */
   Stocks timber_harvest;    /**< timber flux (gC/m2,g/N/m2) */
@@ -146,7 +145,7 @@ extern void freecell(Cell *,int,const Config *);
 extern void update_daily(Cell *,Real,Real,Dailyclimate,int,
                          int,int,int,int,Bool,const Config *);
 extern void update_annual(Cell *,int,int,
-                          Real,int,Bool,Bool,const Config *);
+                          int,Bool,Bool,const Config *);
 extern void update_monthly(Cell *,Real,Real,int,const Config *);
 extern void init_annual(Cell *,int,const Config *);
 extern int fwritecell(FILE *,long long [],const Cell [],int,int,int,Bool,const Config *);
@@ -156,7 +155,6 @@ extern Bool freadcell(FILE *,Cell *,int,int,const Soilpar *,
 extern int writecoords(Outputfile *,int,const Cell [],const Config *);
 extern int writearea(Outputfile *,int,const Cell [],const Config *);
 extern int writecountrycode(Outputfile *,int,const Cell [],const Config *);
-extern int writeregioncode(Outputfile *,int,const Cell [],const Config *);
 extern int iterate(Outputfile *,Cell [],Input,
                    int,int,Config *);
 extern void iterateyear(Outputfile *,Cell [],Input,

@@ -44,11 +44,8 @@ void fprintcountrypar(FILE *file,          /**< pointer to text file */
     if(countrypar[i].laimax_cft!=NULL)
       for(j=0;j<ncft;j++)
         fprintf(file," %2.0g",countrypar[i].laimax_cft[j]);
-    else
-      fprintf(file," %6.1g %5.1g",countrypar[i].laimax_tempcer,
-              countrypar[i].laimax_maize);
     for(j=0;j<config->nagtree;j++)
-      fprintf(file," %15.2f",countrypar[i].k_est[j]);
+      fprintf(file," %15.4f",countrypar[i].k_est[j]);
     fprintf(file," %s\n",irrigsys[countrypar[i].default_irrig_system]);
   }
   fputs("--------------------------------------------",file);

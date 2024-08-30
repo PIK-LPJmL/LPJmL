@@ -24,13 +24,13 @@ void fprintparam(FILE *file,    /**< pointer to text file */
 {
   int p;
   fprintf(file,"Parameter settings\n"
+               "Error limits:\t%g (gC/m2) %g (gN/m2) %g (mm) %g (mm)\n"
                "k_litter10:\t%g (1/yr)\n"
                "k_soil10:\t%g %g (1/yr)\n"
                "max snow pack:\t%g (mm)\n"
                "evap soildepth:\t%g (mm)\n"
                "soil infil:\t%g\n"
                "soil infil litt:\t%g\n"
-               "pre. CO2:\t%g (ppm)\n"
                "k:\t\t%g (1/yr)\n"
                "theta:\t\t%g\n"
                "alphac3:\t%g\n"
@@ -47,9 +47,11 @@ void fprintparam(FILE *file,    /**< pointer to text file */
                "fpc_tree_max:\t%g\n"
                "temp_response:\t%g\n"
                "percthres:\t%g\n",
+          param.error_limit.stocks.carbon,param.error_limit.stocks.nitrogen,
+          param.error_limit.w_local,param.error_limit.w_global,
           param.k_litter10*NDAYYEAR,param.k_soil10.fast*NDAYYEAR,
           param.k_soil10.slow*NDAYYEAR,param.maxsnowpack,param.soildepth_evap,
-          param.soil_infil,param.soil_infil_litter,param.co2_p,
+          param.soil_infil,param.soil_infil_litter,
           param.k,param.theta,param.alphac3,param.alphac4,
           param.r_growth,param.GM,param.ALPHAM,
           param.ko25,param.kc25,param.atmfrac,param.fastfrac,1-pow(1-param.bioturbate,NDAYYEAR),param.k_mort,
@@ -101,16 +103,10 @@ void fprintparam(FILE *file,    /**< pointer to text file */
       fprintf(file,"nmanure_nh4_frac:\t%g\n",param.nmanure_nh4_frac);
       fprintf(file,"manure_cn:\t%g\n", param.manure_cn);
       fprintf(file,"manure_rate:\t%g\n", param.manure_rate);
+      fprintf(file,"cft_fertday_temp:\t%s\n", config->pftpar[npft+param.cft_fertday_temp].name);
+      fprintf(file,"cft_fertday_tropic:\t%s\n", config->pftpar[npft+param.cft_fertday_tropic].name);
     }
     fprintf(file,"residues_frac:\t%g\n",param.residue_frac);
-    if(config->residue_treatment)
-    {
-      fprintf(file,"residue rate:\t%g (gC/m2/yr)\n",param.residue_rate);
-      fprintf(file,"residue pool:\t%g (gC/m2)\n",param.residue_pool);
-      fprintf(file,"residue fbg:\t%g\n",param.residue_fbg);
-      if(config->with_nitrogen)
-        fprintf(file,"residue C:N:\t%g\n",param.residue_cn);
-    }
     fprintf(file,"mixing_efficiency:\t%g\n",param.mixing_efficiency);
     fprintf(file,"livestock density on grassland:\t%g\n",
             param.lsuha);
@@ -124,15 +120,14 @@ void fprintparam(FILE *file,    /**< pointer to text file */
     fprintf(file,"saturation level drip:\t%g\n",param.sat_level[3]);
     fprintf(file,"drip evap. reduction:\t%g\n",param.drip_evap);
     fprintf(file,"residues in soil:\t%g\n",param.residues_in_soil);
-    fprintf(file,"residues in soil before till_startyear:\t%g\n",param.residues_in_soil_notillage);
     if(config->with_nitrogen)
     {
       fprintf(file,"nfert split:\t%g\n",param.nfert_split);
       fprintf(file,"nfrac grazing:\t%g\n",param.nfrac_grazing);
       fprintf(file,"nfrac grassharvest:\t%g\n",param.nfrac_grassharvest);
     }
-    fprintf(file,"harvest date biomass grass NH:\t%g\n",param.bmgr_harvest_day_nh);    
-    fprintf(file,"harvest date biomass grass SH:\t%g\n",param.bmgr_harvest_day_sh); 
+    fprintf(file,"harvest date biomass grass NH:\t%d\n",param.bmgr_harvest_day_nh);
+    fprintf(file,"harvest date biomass grass SH:\t%d\n",param.bmgr_harvest_day_sh);
     fprintf(file,"timber fraction wp:\t%g\n",param.ftimber_wp);
     if(config->luc_timber)
     {
@@ -141,6 +136,11 @@ void fprintparam(FILE *file,    /**< pointer to text file */
       fprintf(file,"harvest fast frac:\t%g\n",param.harvest_fast_frac);
       fprintf(file,"product turnover:\t%g %g (1/yr)\n",
               param.product_turnover.fast,param.product_turnover.slow);
+    }
+    if(config->residues_fire)
+    {
+      fprintf(file,"bifratio:\t\t%g\n",param.bifratio);
+      fprintf(file,"fuelratio:\t\t%g\n",param.fuelratio);
     }
     if(config->rw_manage)
     {
@@ -168,8 +168,6 @@ void fprintparam(FILE *file,    /**< pointer to text file */
     fputs("------------------------------------------------------------------------------\n"
           "Country parameter\n",file);
     fprintcountrypar(file,config->countrypar,npft,ncft,config);
-    fputs("Region parameter\n",file);
-    fprintregionpar(file,config->regionpar,config->nregions);
   }
   else
     for(p=0;p<getnnat(npft,config);p++)

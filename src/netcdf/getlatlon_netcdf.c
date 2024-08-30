@@ -30,7 +30,7 @@ Bool getlatlon_netcdf(Climatefile *file,    /**< Climate data */
 #if defined(USE_NETCDF) || defined(USE_NETCDF4)
   int rc,var_id,*dimids,ndims,index;
   char name[NC_MAX_NAME+1];
-  float *dim;
+  double *dim;
   nc_inq_varndims(file->ncid,file->varid,&ndims);
   if(ndims<2)
   {
@@ -57,15 +57,24 @@ Bool getlatlon_netcdf(Climatefile *file,    /**< Climate data */
     free(dimids);
     return TRUE;
   }
+  nc_inq_varndims(file->ncid,var_id,&ndims);
+  if(ndims!=1)
+  {
+    if(isroot(*config))
+      fprintf(stderr,"ERROR408: Invalid number of dimensions %d for longitude '%s' in %s', must be 1.\n",
+              ndims,name,filename);
+    free(dimids);
+    return TRUE;
+  }
   nc_inq_dimlen(file->ncid,dimids[index],&file->nlon);
-  dim=newvec(float,file->nlon);
+  dim=newvec(double,file->nlon);
   if(dim==NULL)
   {
     free(dimids);
     printallocerr("dim");
     return TRUE;
   }
-  rc=nc_get_var_float(file->ncid,var_id,dim);
+  rc=nc_get_var_double(file->ncid,var_id,dim);
   file->is360=(dim[file->nlon-1]>180);
   if(isroot(*config) && file->is360)
    fprintf(stderr,"REMARK401: Longitudinal values>180 in '%s', will be transformed.\n",filename);
@@ -80,7 +89,7 @@ Bool getlatlon_netcdf(Climatefile *file,    /**< Climate data */
   }
   file->lon_min=dim[0];
   if(file->nlon==1)
-    file->lon_res=(float)config->resolution.lon;
+    file->lon_res=config->resolution.lon;
   else
     file->lon_res=(dim[file->nlon-1]-dim[0])/(file->nlon-1);
   if(fabs(file->lon_res-config->resolution.lon)/config->resolution.lon>1e-3)
@@ -103,15 +112,24 @@ Bool getlatlon_netcdf(Climatefile *file,    /**< Climate data */
     free(dimids);
     return TRUE;
   }
+  nc_inq_varndims(file->ncid,var_id,&ndims);
+  if(ndims!=1)
+  {
+    if(isroot(*config))
+      fprintf(stderr,"ERROR408: Invalid number of dimensions %d for latitude '%s' in %s', must be 1.\n",
+              ndims,name,filename);
+    free(dimids);
+    return TRUE;
+  }
   nc_inq_dimlen(file->ncid,dimids[index-1],&file->nlat);
   free(dimids);
-  dim=newvec(float,file->nlat);
+  dim=newvec(double,file->nlat);
   if(dim==NULL)
   {
     printallocerr("dim");
     return TRUE;
   }
-  rc=nc_get_var_float(file->ncid,var_id,dim);
+  rc=nc_get_var_double(file->ncid,var_id,dim);
   if(rc)
   {
     free(dim);
@@ -123,7 +141,7 @@ Bool getlatlon_netcdf(Climatefile *file,    /**< Climate data */
   if(file->nlat==1)
   {
     file->lat_min=dim[0];
-    file->lat_res=(float)config->resolution.lat;
+    file->lat_res=config->resolution.lat;
     file->offset=0;
   }
   else if(dim[1]>dim[0])

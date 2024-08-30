@@ -1,0 +1,301 @@
+#!/bin/bash
+#################################################################################
+##                                                                             ##
+##           l  p  j  s  u  b  m  i  t  _  h  p  c                             ##
+##                                                                             ##
+##    sh script to generate and submit parallel SLURM jobs using               ##
+##    Intel MPI.                                                               ##
+##                                                                             ##
+##    Usage: lpjsubmit [-h] [-class c] [-group g] [-wtime time] [-blocking n]  ##
+##                     [-o output] [-e error] [-q] [-nocheck] [-norun]         ##
+##                     [-dependency id] [-couple progran] [-constraint c]      ##
+##                     [-option a=b] ntask LPJargs...                          ##
+##                                                                             ##
+## (C) Potsdam Institute for Climate Impact Research (PIK), see COPYRIGHT file ##
+## authors, and contributors see AUTHORS file                                  ##
+## This file is part of LPJmL and licensed under GNU AGPL Version 3            ##
+## or later. See LICENSE file or go to http://www.gnu.org/licenses/            ##
+## Contact: https://github.com/PIK-LPJmL/LPJmL                                 ##
+##                                                                             ##
+#################################################################################
+
+USAGE="Usage: lpjsubmit [-h] [-class c] [-group g] [-wtime time] [-blocking n] [-o output] [-e error]\n[-q] [-nocheck] [-norun] [-dependency id] [-couple program] [-constraint c] [[-option a=b] ...] ntasks args ..."
+
+class=short
+group=""
+wtime=""
+depend=""
+constraint=""
+blocking="unlimited"
+output="lpjml.%j.out"
+error="lpjml.%j.err"
+norun=0
+couple=""
+options=""
+
+while(( "$#" )); do
+  case "$1" in
+    -h|--help)
+      echo -e "lpjsubmit - Submit parallel SLURM job for LPJmL simulations\n"
+      echo -e $USAGE
+      echo -e "\nArguments"
+      echo "-h,--help      print this help text"
+      echo "-class c       set SLURM class, default is 'short'"
+      echo "-group g       set SLURM group"
+      echo "-wtime time    set wall clock limit of job. Time must be in the format hh:mm:ss"
+      echo "-blocking n    set blocking (number of tasks per node), default is unlimited"
+      echo "-o output      set filename of output file"
+      echo "-e error       set filename of error file"
+      echo "-q,--quiet     only error messages are displayed, other output is suppressed"
+
+      echo "-nocheck       do not check input files and output directories"
+
+      echo "-norun         do not submit job to batch queue, creates slurm.jcf file only"
+      echo "-dependency id job will be scheduled after job with job id id finished successfully"
+
+      echo "-constraint c  define constraint c for SLURM job"
+      echo "-option op=txt set option op to txt for SLURM job. This option can be repeated multiple times"
+      echo "-couple prg    start couple prg in the background before starting LPJmL"
+      echo "ntasks         number of MPI tasks"
+      echo "args           arguments and options of lpjml"
+      echo -e "\n(C) Potsdam Institute for Climate Impact Research (PIK), see COPYRIGHT file"
+      exit 0
+      ;;
+    -class)
+    if [ $# -lt 2 ]
+    then
+      echo >&2 Error: class missing
+      echo -e >&2 $USAGE
+      exit 1
+    fi
+    shift 1
+    class=$1
+    shift 1
+    ;;
+    -group)
+      if [ $# -lt 2 ]
+      then
+        echo >&2 Error: group missing
+        echo -e >&2 $USAGE
+        exit 1
+      fi
+      shift 1
+      group=$1
+      shift 1
+      ;;
+    -wtime)
+      if [ $# -lt 2 ]
+      then
+        echo >&2 Error: wall clock time missing
+        echo -e >&2 $USAGE
+        exit 1
+      fi
+      shift 1
+      wtime=$1
+      shift 1
+      ;;
+   -blocking)
+      if [ $# -lt 2 ]
+      then
+        echo >&2 Error: blocking factor missing
+        echo -e >&2 $USAGE
+        exit 1
+      fi
+      shift 1
+      blocking=$1
+      shift 1
+      ;;
+   -o)
+     if [ $# -lt 2 ]
+     then
+       echo >&2 Error: output filename missing
+       echo -e >&2 $USAGE
+       exit 1
+     fi
+     shift 1
+     output=$1
+     shift 1
+     ;;
+   -e)
+     if [ $# -lt 2 ]
+     then
+       echo >&2 Error: error filename  missing
+       echo -e >&2 $USAGE
+       exit 1
+     fi
+     shift 1
+     error=$1
+     shift 1
+     ;;
+   -q|--quiet)
+     shift 1
+     quiet="-Q"
+     ;;
+   -dependency)
+     if [ $# -lt 2 ]
+     then
+       echo >&2 Error: jobid missing
+       echo -e >&2 $USAGE
+       exit 1
+     fi
+     shift 1
+     depend="--dependency=afterok:"$1
+     shift 1
+     ;;
+   -couple)
+     if [ $# -lt 2 ]
+     then
+       echo >&2 Error: program name missing
+       echo -e >&2 $USAGE
+       exit 1
+     fi
+     shift 1
+     couple=$1
+     shift 1
+     ;;
+   -constraint)
+     if [ $# -lt 2 ]
+     then
+       echo >&2 Error: constraint missing
+       echo -e >&2 $USAGE
+       exit 1
+     fi
+     shift 1
+     constraint=$1
+     shift 1
+     ;;
+   -option)
+     if [ $# -lt 2 ]
+     then
+       echo >&2 Error: option missing
+       echo -e >&2 $USAGE
+       exit 1
+     fi
+     shift 1
+     options="$options $1"
+     shift 1
+     ;;
+   -nocheck)
+     shift 1
+     nocheck="-nocheck"
+     ;;
+   -norun)
+     shift 1
+     norun=1
+     ;;
+   -*)
+     echo >&2 Invalid option $1
+     echo -e >&2 $USAGE
+     exit 1
+     ;;
+   *)
+     break
+     ;;
+  esac
+done
+
+if [ $# -lt 1 ]
+then
+  echo >&2 Error: Number of tasks missing
+  echo -e >&2 $USAGE
+  exit 1
+fi
+
+if [ "$LPJROOT" = "" ]
+then
+  echo >&2 Error: environment variable LPJROOT is not set
+  echo >&2 "Set by export LPJROOT=<path to lpjml directory>"
+  exit 1
+fi
+
+ntask=$1 # number of tasks
+shift 1
+args=$*  # runtime arguments for lpjml
+
+# check, whether LPJ configuration is valid
+
+if $LPJROOT/bin/lpjcheck $quiet $nocheck $args ;
+then
+# yes, create SLURM job control file
+  cat <<EOF >slurm.jcf
+#!/bin/bash
+###############################################################################
+##                                                                           ##
+##                     s  l  u  r  m  .  j  c  f                             ##
+##                                                                           ##
+##  SLURM JCF file for running an Intel MPI job on the HPC2024 cluster       ##
+##  at PIK                                                                   ##
+##                                                                           ##
+##  Automatically generated by lpjsubmit shell script                        ##
+##                                                                           ##
+##  Created: $(date +"%d.%m.%Y")                                                      ##
+##                                                                           ##
+###############################################################################
+
+#SBATCH --ntasks=$ntask
+#SBATCH --qos=$class
+#SBATCH --signal=15@180
+EOF
+echo "#SBATCH -J LPJmL$(cat $LPJROOT/VERSION)" >>slurm.jcf
+echo "#SBATCH --comment=\"LPJmL Version" $(cat $LPJROOT/VERSION) "args:" $args"\"" >>slurm.jcf
+cat <<EOF >>slurm.jcf
+#SBATCH --mail-user=$(whoami)
+#SBATCH --mail-type=end,fail
+EOF
+if [ "$wtime" != "" ]
+then
+  echo "#SBATCH --time="$wtime >>slurm.jcf
+fi
+if [ "$group" != "" ]
+then
+  echo "#SBATCH --account="$group >>slurm.jcf
+fi
+if [ "$blocking" != "unlimited" ]
+then
+  echo "#SBATCH --tasks-per-node="$blocking >>slurm.jcf
+fi
+if [ "$constraint" != "" ]
+then
+  echo "#SBATCH --constraint="$constraint >>slurm.jcf
+fi
+for o in $options
+do
+  echo "#SBATCH --$o" >>slurm.jcf
+done
+cat <<EOF >>slurm.jcf
+#SBATCH -o  $output
+#SBATCH -e  $error
+
+export LPJROOT=$LPJROOT
+
+ulimit -c unlimited
+
+EOF
+if [ "$couple" != "" ]
+then
+  echo $couple " &" >>slurm.jcf
+  echo >>slurm.jcf
+fi
+cat <<EOF >>slurm.jcf
+mpirun \$LPJROOT/bin/lpjml $args
+
+rc=\$?  # save return code of mpirun
+exit \$rc # exit with return code
+EOF
+  if [ "$norun" = "0" ]
+  then
+#   submit job
+    if sbatch $quiet $depend slurm.jcf ;
+    then
+      if [ "$quiet" != "-Q" ]
+      then
+        squeue -u $(whoami)
+      fi
+    else
+      exit 1
+    fi
+  fi
+else
+  echo >&2 "Error in LPJ configuration, job not submitted"
+  exit 1
+fi

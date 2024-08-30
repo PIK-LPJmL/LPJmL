@@ -36,12 +36,12 @@ static Cell *newgrid2(Config *config,          /* Pointer to LPJ configuration *
   Celldata celldata;
   Bool swap_restart;
   Bool missing;
-  Infile grassfix_file;
   Infile grassharvest_file;
   unsigned int soilcode;
   int soil_id;
   char *name;
   size_t offset;
+  Bool isregion;
 #ifdef IMAGE
   Infile aquifers;
 #ifdef COUPLED
@@ -49,9 +49,9 @@ static Cell *newgrid2(Config *config,          /* Pointer to LPJ configuration *
   Product *productpool;
 #endif
 #endif
-  Code code;
+  int code;
   FILE *file_restart;
-  Infile countrycode,regioncode;
+  Infile countrycode;
 
   /* Open coordinate and soil file */
   celldata=opencelldata(config);
@@ -84,26 +84,18 @@ static Cell *newgrid2(Config *config,          /* Pointer to LPJ configuration *
         closecelldata(celldata,config);
         return NULL;
       }
-      regioncode.fmt=config->regioncode_filename.fmt;
-      regioncode.cdf=openinput_netcdf(&config->regioncode_filename,NULL,0,config);
-      if(regioncode.cdf==NULL)
-      {
-        closeinput_netcdf(countrycode.cdf);
-        closecelldata(celldata,config);
-        return NULL;
-      }
     }
     else
     {
       /* Open countrycode file */
       countrycode.file=opencountrycode(&config->countrycode_filename,
-                                       &countrycode.swap,&countrycode.type,&offset,isroot(*config));
+                                       &countrycode.swap,&isregion,&countrycode.type,&offset,isroot(*config));
       if(countrycode.file==NULL)
       {
         closecelldata(celldata,config);
         return NULL;
       }
-      if(seekcountrycode(countrycode.file,config->startgrid,countrycode.type,offset))
+      if(seekcountrycode(countrycode.file,config->startgrid,(isregion) ? 2 : 1,countrycode.type,offset))
       {
         /* seeking to position of first grid cell failed */
         fprintf(stderr,
@@ -111,20 +103,6 @@ static Cell *newgrid2(Config *config,          /* Pointer to LPJ configuration *
                 config->startgrid);
         closecelldata(celldata,config);
         fclose(countrycode.file);
-        return NULL;
-      }
-    }
-    if(config->grassfix_filename.name!=NULL)
-    {
-      if(openinputdata(&grassfix_file,&config->grassfix_filename,"grassfix",NULL,LPJ_BYTE,1.0,config))
-      {
-        closecelldata(celldata,config);
-        if(config->countrypar!=NULL)
-        {
-          closeinput(&countrycode);
-          if(config->countrycode_filename.fmt==CDF)
-            closeinput(&regioncode);
-        }
         return NULL;
       }
     }
@@ -137,18 +115,14 @@ static Cell *newgrid2(Config *config,          /* Pointer to LPJ configuration *
         if(config->countrypar!=NULL)
         {
           closeinput(&countrycode);
-          if(config->countrycode_filename.fmt==CDF)
-            closeinput(&regioncode);
         }
-        if(config->grassfix_filename.name!=NULL)
-          closeinput(&grassfix_file);
         return NULL;
       }
     }
   }
 
 #if defined IMAGE
-  if(config->aquifer_irrig==AQUIFER_IRRIG)
+  if(config->aquifer_irrig)
   {
     /* Open file with aquifer locations */
     if(openinputdata(&aquifers,&config->aquifer_filename,"aquifer",NULL,LPJ_BYTE,1.0,config))
@@ -157,11 +131,7 @@ static Cell *newgrid2(Config *config,          /* Pointer to LPJ configuration *
       if(config->countrypar!=NULL)
       {
         closeinput(&countrycode);
-        if(config->countrycode_filename.fmt==CDF)
-          closeinput(&regioncode);
       }
-      if(config->grassfix_filename.name!=NULL)
-        closeinput(&grassfix_file);
       if(config->grassharvest_filename.name!=NULL)
          closeinput(&grassharvest_file);
       return NULL;
@@ -195,17 +165,13 @@ static Cell *newgrid2(Config *config,          /* Pointer to LPJ configuration *
     printallocerr("grid");
     closecelldata(celldata,config);
 #ifdef IMAGE
-    if(config->aquifer_irrig==AQUIFER_IRRIG)
+    if(config->aquifer_irrig)
       closeinput(&aquifers);
 #endif
     if(config->countrypar!=NULL)
     {
       closeinput(&countrycode);
-      if(config->countrycode_filename.fmt==CDF)
-        closeinput(&regioncode);
     }
-    if(config->grassfix_filename.name!=NULL)
-      closeinput(&grassfix_file);
     if(config->grassharvest_filename.name!=NULL)
       closeinput(&grassharvest_file);
     return NULL;
@@ -229,11 +195,7 @@ static Cell *newgrid2(Config *config,          /* Pointer to LPJ configuration *
       if(config->countrypar!=NULL)
       {
         closeinput(&countrycode);
-        if(config->countrycode_filename.fmt==CDF)
-          closeinput(&regioncode);
       }
-      if(config->grassfix_filename.name!=NULL)
-        closeinput(&grassfix_file);
       if(config->grassharvest_filename.name!=NULL)
         closeinput(&grassharvest_file);
       return NULL;
@@ -253,20 +215,16 @@ static Cell *newgrid2(Config *config,          /* Pointer to LPJ configuration *
       if(config->countrycode_filename.fmt==CDF)
       {
         if(readintinput_netcdf(countrycode.cdf,&data,&grid[i].coord,&missing) || missing)
-          code.country=-1;
+          code=-1;
         else
-          code.country=(short)data;
-        if(readintinput_netcdf(regioncode.cdf,&data,&grid[i].coord,&missing) || missing)
-          code.region=-1;
-        else
-          code.region=(short)data;
+          code=data;
       }
       else
       {
-        if(readcountrycode(countrycode.file,&code,countrycode.type,countrycode.swap))
+        if(readcountrycode(countrycode.file,&code,countrycode.type,isregion,countrycode.swap))
         {
           name=getrealfilename(&config->countrycode_filename);
-          fprintf(stderr,"ERROR190: Unexpected end of file in '%s' for cell %d.\n",
+          fprintf(stderr,"ERROR190: Cannot read country code from '%s' for cell %d.\n",
                   name,i+config->startgrid);
           free(name);
           return NULL;
@@ -274,25 +232,21 @@ static Cell *newgrid2(Config *config,          /* Pointer to LPJ configuration *
       }
       if(config->soilmap[soilcode]>0)
       {
-        if(code.country<0 || code.country>=config->ncountries ||
-           code.region<0 || code.region>=config->nregions)
-          fprintf(stderr,"WARNING009: Invalid countrycode=%d or regioncode=%d with valid soilcode in cell %d (not skipped)\n",code.country,code.region,i+config->startgrid);
+        if(code<0 || code>=config->ncountries)
+        {
+          name=getrealfilename(&config->countrycode_filename);
+          fprintf(stderr,"ERROR190: Invalid country code=%d read from '%s' in cell %d, must be in [0,%d].\n",
+                  code,name,i+config->startgrid,config->ncountries-1);
+          free(name);
+          return NULL;
+        }
         else
         {
-          if(initmanage(&grid[i].ml.manage,config->countrypar+code.country,
-                        config->regionpar+code.region,config->pftpar,npft,config->nagtree,ncft,
-                        config->laimax_interpolate,config->laimax))
+          if(initmanage(&grid[i].ml.manage,code,npft,ncft,config))
             return NULL;
         }
       }
 
-      if(config->grassfix_filename.name != NULL)
-      {
-        if(readintinputdata(&grassfix_file,&grid[i].ml.fixed_grass_pft,NULL,&grid[i].coord,i+config->startgrid,&config->grassfix_filename))
-          return NULL;
-      }
-      else
-        grid[i].ml.fixed_grass_pft= -1;
       if(config->grassharvest_filename.name != NULL)
       {
         if(readintinputdata(&grassharvest_file,(int *)&grid[i].ml.grass_scenario,NULL,&grid[i].coord,i+config->startgrid,&config->grassharvest_filename))
@@ -304,7 +258,7 @@ static Cell *newgrid2(Config *config,          /* Pointer to LPJ configuration *
     }
 #ifdef IMAGE
     grid[i].discharge.aquifer=0;
-    if(config->aquifer_irrig==AQUIFER_IRRIG)
+    if(config->aquifer_irrig)
     {
       if(readintinputdata(&aquifers,&grid[i].discharge.aquifer,NULL,&grid[i].coord,i+config->startgrid,&config->aquifer_filename))
         return NULL;
@@ -463,7 +417,7 @@ static Cell *newgrid2(Config *config,          /* Pointer to LPJ configuration *
                    config->soilpar+soil_id,standtype,nstand,
                    swap_restart,config))
       {
-        fprintf(stderr,"ERROR190: Unexpected end of file in '%s' for cell %d.\n",
+        fprintf(stderr,"ERROR190: Cannot read restart data from '%s' for cell %d.\n",
                 (config->ischeckpoint) ? config->checkpoint_restart_filename : config->restart_filename,i+config->startgrid);
         return NULL;
       }
@@ -499,15 +453,11 @@ static Cell *newgrid2(Config *config,          /* Pointer to LPJ configuration *
   if(file_restart!=NULL)
     fclose(file_restart);
   closecelldata(celldata,config);
-  if(config->grassfix_filename.name!=NULL)
-    closeinput(&grassfix_file);
   if(config->grassharvest_filename.name!=NULL)
     closeinput(&grassharvest_file);
   if(config->countrypar!=NULL)
   {
     closeinput(&countrycode);
-    if(config->countrycode_filename.fmt==CDF)
-      closeinput(&regioncode);
   }
 #if defined IMAGE && defined COUPLED
   if(config->sim_id==LPJML_IMAGE)
@@ -517,7 +467,7 @@ static Cell *newgrid2(Config *config,          /* Pointer to LPJ configuration *
   }
 #endif
 #ifdef IMAGE
-  if(config->aquifer_irrig==AQUIFER_IRRIG)
+  if(config->aquifer_irrig)
     closeinput(&aquifers);
 #endif
   return grid;

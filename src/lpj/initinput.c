@@ -19,7 +19,7 @@
 Bool initinput(Input *input,        /**< Input data */
                const Cell grid[],   /**< LPJ grid */
                int npft,            /**< number of natural PFTs */
-               const Config *config /**< LPJ configuration */
+               Config *config       /**< LPJ configuration */
               )                     /** \return TRUE on error */
 {
   if((input->climate=initclimate(grid,config))==NULL)

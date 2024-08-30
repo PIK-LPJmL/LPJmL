@@ -28,7 +28,7 @@
 #define NTYPES 3
 #define NSTANDTYPES 13 /* number of stand types */
 
-#define USAGE "Usage: %s [-h] [-pp cmd] [-inpath dir] [-restartpath dir]\n"\
+#define USAGE "Usage: %s [-h] [-v]  [-nopp] [-pp cmd] [-inpath dir] [-restartpath dir]\n"\
               "       [[-Dmacro[=value]] [-Idir] ...] filename [-check] [start [end]]\n"
 
 
@@ -41,14 +41,14 @@ static Bool printgrid(Config *config, /* Pointer to LPJ configuration */
 {
   Cell grid;
   int i,soil_id,data;
-  Bool swap,missing;
+  Bool swap,missing,isregion;
   unsigned int soilcode;
-  Code code;
+  int code;
   size_t offset;
   FILE *file_restart;
   char *name;
   Celldata celldata;
-  Infile countrycode,regioncode;
+  Infile countrycode;
 
   /* Open coordinate file */
   celldata=opencelldata(config);
@@ -71,26 +71,18 @@ static Bool printgrid(Config *config, /* Pointer to LPJ configuration */
         closecelldata(celldata,config);
         return TRUE;
       }
-      regioncode.fmt=config->regioncode_filename.fmt;
-      regioncode.cdf=openinput_netcdf(&config->regioncode_filename,NULL,0,config);
-      if(regioncode.cdf==NULL)
-      {
-        closeinput_netcdf(countrycode.cdf);
-        closecelldata(celldata,config);
-        return TRUE;
-      }
     }
     else
     {
       /* Open countrycode file */
       countrycode.file=opencountrycode(&config->countrycode_filename,
-                                       &countrycode.swap,&countrycode.type,&offset,isroot(*config));
+                                       &countrycode.swap,&isregion,&countrycode.type,&offset,isroot(*config));
       if(countrycode.file==NULL)
       {
         closecelldata(celldata,config);
         return TRUE;
       }
-      if(seekcountrycode(countrycode.file,config->startgrid,countrycode.type,offset))
+      if(seekcountrycode(countrycode.file,config->startgrid,(isregion) ? 2 : 1,countrycode.type,offset))
       {
         /* seeking to position of first grid cell failed */
         fprintf(stderr,
@@ -120,44 +112,35 @@ static Bool printgrid(Config *config, /* Pointer to LPJ configuration */
        if(config->countrycode_filename.fmt==CDF)
       {
         if(readintinput_netcdf(countrycode.cdf,&data,&grid.coord,&missing) || missing)
-          code.country=-1;
+          code=-1;
         else
-          code.country=(short)data;
-        if(readintinput_netcdf(regioncode.cdf,&data,&grid.coord,&missing) || missing)
-          code.region=-1;
-        else
-          code.region=(short)data;
+          code=data;
       }
       else
       {
-        if(readcountrycode(countrycode.file,&code,countrycode.type,countrycode.swap))
+        if(readcountrycode(countrycode.file,&code,countrycode.type,isregion,countrycode.swap))
         {
           name=getrealfilename(&config->countrycode_filename);
-          fprintf(stderr,"ERROR190: Unexpected end of file in '%s' for cell %d.\n",
+          fprintf(stderr,"ERROR190: Cannot read restart data from '%s' for cell %d.\n",
                   name,i+config->startgrid);
           free(name);
           break;
         }
       }
-      if(code.country<0 || code.country>=config->ncountries ||
-         code.region<0 || code.region>=config->nregions)
+      if(code<0 || code>=config->ncountries)
       {
           if(config->soilmap[soilcode]>0)
-            fprintf(stderr,"WARNING009: Invalid countrycode=%d or regioncode=%d with valid soilcode in cell (not skipped)\n",code.country,code.region);
+            fprintf(stderr,"WARNING009: Invalid countrycode=%d with valid soilcode in cell (not skipped)\n",code);
           grid.ml.manage.laimax=NULL;
           grid.ml.manage.par=NULL;
-          grid.ml.manage.regpar=NULL;
       }
       else
-        initmanage(&grid.ml.manage,config->countrypar+code.country,
-                   config->regionpar+code.region,config->pftpar,npft,config->nagtree,ncft,
-                   config->laimax_interpolate,config->laimax);
+        initmanage(&grid.ml.manage,code,npft,ncft,config);
     }
     else
     {
       grid.ml.manage.laimax=NULL;
       grid.ml.manage.par=NULL;
-      grid.ml.manage.regpar=NULL;
     }
     /* Init cells */
     grid.ml.cropfrac_rf=grid.ml.cropfrac_ir=0;
@@ -206,8 +189,6 @@ static Bool printgrid(Config *config, /* Pointer to LPJ configuration */
   if(config->countrypar!=NULL)
   {
     closeinput(&countrycode);
-    if(config->countrycode_filename.fmt==CDF)
-      closeinput(&regioncode);
   }
   return FALSE;
 }
@@ -230,28 +211,38 @@ int main(int argc,char **argv)
   Standtype standtype[NSTANDTYPES];
 
   progname=strippath(argv[0]);
-  if(argc>1 && !strcmp(argv[1],"-h"))
+  if(argc>1)
   {
-    fputs("     ",stdout);
-    rc=printf("%s (" __DATE__ ") Help",
-              progname);
-    fputs("\n     ",stdout);
-    repeatch('=',rc);
-    fputs("\n\nPrint content of restart files for LPJmL " LPJ_VERSION "\n\n",stdout);
-    printf(USAGE,progname);
-    printf("\nArguments:\n"
-           "-h               print this help text\n"
-           "-pp cmd          set preprocessor program. Default is '" cpp_cmd "'\n"
-           "-inpath dir      directory appended to input filenames\n"
-           "-restartpath dir directory appended to restart filename\n"
-           "-Dmacro[=value]  define macro for preprocessor of configuration file\n"
-           "-Idir            directory to search for include files\n"
-           "filename         configuration filename\n"
-           "-check           check only restart file, do not print\n"
-           "start            index of first grid cell to print\n"
-           "end              index of last grid cell to print\n\n"
-           "(C) Potsdam Institute for Climate Impact Research (PIK), see COPYRIGHT file\n");
-    return EXIT_SUCCESS;
+    if(!strcmp(argv[1],"-h") || !strcmp(argv[1],"--help"))
+    {
+      fputs("     ",stdout);
+      rc=printf("%s (" __DATE__ ") Help",
+                progname);
+      fputs("\n     ",stdout);
+      repeatch('=',rc);
+      fputs("\n\nPrint content of restart files for LPJmL " LPJ_VERSION "\n\n",stdout);
+      printf(USAGE,progname);
+      printf("\nArguments:\n"
+             "-h,--help        print this help text\n"
+             "-v,--version     print LPJmL version\n"
+             "-nopp            disable preprocessing\n"
+             "-pp cmd          set preprocessor program. Default is '" cpp_cmd "'\n"
+             "-inpath dir      directory appended to input filenames\n"
+             "-restartpath dir directory appended to restart filename\n"
+             "-Dmacro[=value]  define macro for preprocessor of configuration file\n"
+             "-Idir            directory to search for include files\n"
+             "filename         configuration filename\n"
+             "-check           check only restart file, do not print\n"
+             "start            index of first grid cell to print\n"
+             "end              index of last grid cell to print\n\n"
+             "(C) Potsdam Institute for Climate Impact Research (PIK), see COPYRIGHT file\n");
+      return EXIT_SUCCESS;
+    }
+    else if(!strcmp(argv[1],"-v") || !strcmp(argv[1],"--version"))
+    {
+      puts(LPJ_VERSION);
+      return EXIT_SUCCESS;
+    }
   }
   snprintf(line,78-10,
            "%s (" __DATE__ ")",progname);

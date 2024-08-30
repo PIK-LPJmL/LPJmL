@@ -17,6 +17,14 @@
 #include "lpj.h"
 #include "grass.h"
 #include "grassland.h"
+#define w_C_in_CP  0.53  // mass fraction of carbon in crude protein (estimated from chemical composition)
+#define w_C_in_CHO 0.44  // mass fraction of carbon in carbohydrates (estimated from chemical composition)
+#define w_C_in_L   0.66  // mass fraction of carbon in lignin (estimated from chemical composition)
+#define w_C_in_FA  0.78  // mass fraction of carbon in fat (estimated from chemical composition)
+#define w_N_in_CP  0.16  // mass fraction of nitrogen in crude protein (Santos and Huber, 2002)
+#define w_FA_in_milk 0.04
+#define w_CP_in_milk 0.032
+#define w_CHO_in_milk 0.0485
 
 static Harvest harvest_grass(Stand *stand, /**< pointer to stand */
                              Real hfrac,   /**< harvest fraction */
@@ -26,7 +34,6 @@ static Harvest harvest_grass(Stand *stand, /**< pointer to stand */
   Harvest harvest;
   Harvest sum={{0,0},{0,0},{0,0},{0,0}};
   Pftgrass *grass;
-  Pftgrasspar *grasspar;
   Pft *pft;
   int p;
   Output *output;
@@ -35,13 +42,14 @@ static Harvest harvest_grass(Stand *stand, /**< pointer to stand */
   foreachpft(pft,p,&stand->pftlist)
   {
     grass=pft->data;
-    grasspar=pft->par->data; //grasspar=getpftpar(pft,data);
     if(pft->stand->type->landusetype==BIOMASS_GRASS)
     {
       pft->bm_inc.nitrogen+=(grass->ind.leaf.nitrogen)*(1-pft->par->fn_turnover)*hfrac*pft->nind;
       harvest.harvest.nitrogen=grass->ind.leaf.nitrogen*pft->par->fn_turnover*hfrac;
-    } else {
-      harvest.harvest.nitrogen=grass->ind.leaf.nitrogen*hfrac*param.nfrac_grassharvest; 
+    }
+    else
+    {
+      harvest.harvest.nitrogen=grass->ind.leaf.nitrogen*hfrac*param.nfrac_grassharvest;
       stand->soil.NH4[0]+=grass->ind.leaf.nitrogen*hfrac*(1-param.nfrac_grassharvest)*pft->nind;
     }
     harvest.harvest.carbon=grass->ind.leaf.carbon*hfrac;
@@ -111,8 +119,6 @@ static Harvest harvest_grass_grazing_ext(Stand *stand,const Config *config)
   Real fact;
   Stocks bm_tot =  {0.0,0.0};
   Stocks bm_grazed_pft;
-  Grassland *grassland;
-  grassland=stand->data;
   Real fpc_sum=0.0;
   Real hfrac;
   Output *output;
@@ -273,8 +279,8 @@ static Harvest harvest_grass_grazing_live(Stand *stand,const Config *config)
   Stocks bm_gra =  {0.0,0.0};
   Real sum_lai = 0;
   Real hfrac,n2cn,lsu2area,K;
-  Real w_C_in_CP,w_C_in_CHO,w_C_in_L,w_C_in_FA,w_N_in_CP,w_FA_in_milk,w_CP_in_milk,w_CHO_in_milk,nreq_milk,nfrac_milk,cfrac_milk;
-  Real cfrac_methane,n2c_urine,fcfrac,fnfrac,cp,dmi_max,fdmi,dmi,ne,nem,dign,ne4milk,n4milk,milk,digc;
+  Real nreq_milk,nfrac_milk,cfrac_milk;
+  Real cfrac_methane,n2c_urine,fcfrac,fnfrac,cp,dmi_max,fdmi,dmi,ne,dign,ne4milk,n4milk,milk,digc;
   Real c_intake,c_methane,c_feces,c_urine,c_milk,c_co2;
   Real n_intake,n_milk,n_feces,n_urine;
   Real Wone=500.0;
@@ -293,14 +299,6 @@ static Harvest harvest_grass_grazing_live(Stand *stand,const Config *config)
     n2cn = bm_tot.nitrogen/(bm_tot.nitrogen+bm_tot.carbon);
   lsu2area = stand->cell->ml.grassland_lsuha * 1e3 * 1e-4;
 
-  w_C_in_CP  = 0.53; // mass fraction of carbon in crude protein (estimated from chemical composition)
-  w_C_in_CHO = 0.44; // mass fraction of carbon in carbohydrates (estimated from chemical composition)
-  w_C_in_L   = 0.66; // mass fraction of carbon in lignin (estimated from chemical composition)
-  w_C_in_FA  = 0.78; // mass fraction of carbon in fat (estimated from chemical composition)
-  w_N_in_CP  = 0.16; // mass fraction of nitrogen in crude protein (Santos and Huber, 2002)
-  w_FA_in_milk = 0.04;
-  w_CP_in_milk = 0.032;
-  w_CHO_in_milk = 0.0485;
   nreq_milk  = w_CP_in_milk / 0.67 * w_N_in_CP; // N requirement for milk kg kg-1
   nfrac_milk = w_CP_in_milk * w_N_in_CP; // mass fraction of nitrogen in milk kg kg-1
   cfrac_milk = w_FA_in_milk * w_C_in_FA + w_CP_in_milk * w_C_in_CP + w_CHO_in_milk * w_C_in_CHO; // mass fraction of carbon in milk kg kg-1
@@ -426,6 +424,9 @@ static Harvest harvest_grass_grazing_live(Stand *stand,const Config *config)
     }
 
     sum.harvest.carbon   += c_methane+c_milk+c_co2;       // sum of losses
+    if(isempty(&stand->pftlist))
+      fail(IS_EMPTY_ERR,TRUE,"PFT list must no be empty in harvest_stand()");
+    pft=getpft(&stand->pftlist,0);
     stand->soil.litter.item[pft->litter].agtop.leaf.carbon+=c_feces+c_urine; // to litter
     sum.harvest.nitrogen += n_milk;                       // sum of losses
     stand->soil.litter.item[pft->litter].agtop.leaf.nitrogen+=n_feces; // to litter

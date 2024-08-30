@@ -20,9 +20,9 @@ Bool isannual_output(int index /**< index for output file */
   switch(index)
   {
     case CFTFRAC: case SDATE : case SDATE2 : case HDATE : case HDATE2:
-    case SYEAR: case SYEAR2: case LAND_AREA:
+    case SYEAR: case SYEAR2: case LAND_AREA: case NBP:
       return TRUE;
     default:
       return FALSE;
   }
-} /* of 'isannual_output' */ 
+} /* of 'isannual_output' */

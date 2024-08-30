@@ -16,13 +16,14 @@
 
 #include "lpj.h"
 
-const char *fmt[N_FMT]={"raw","clm","clm2","txt","fms","meta","cdf","sock"};
-const char *time_step[]={"annual","monthly","daily"};
+char *fmt[N_FMT]={"raw","clm","clm2","txt","fms","meta","cdf","sock"};
+char *time_step[]={"annual","monthly","daily"};
 
 Bool readfilename(LPJfile *file,      /**< pointer to text file read */
                   Filename *filename, /**< returns filename and format */
                   const char *key,    /**< name of json object */
                   const char *path,   /**< path added to filename or NULL */
+                  Bool isfmt,         /**< format name supplied */
                   Bool isvar,         /**< variable name supplied */
                   Bool isid,          /**< id for socket supplied */
                   Verbosity verb      /**< verbosity level (NO_ERR,ERR,VERB) */
@@ -33,8 +34,11 @@ Bool readfilename(LPJfile *file,      /**< pointer to text file read */
   f=fscanstruct(file,key,verb);
   if(f==NULL)
     return TRUE;
-  if(fscankeywords(f,&filename->fmt,"fmt",fmt,N_FMT,FALSE,verb))
-    return TRUE;
+  if(isfmt || iskeydefined(f,"fmt"))
+  {
+    if(fscankeywords(f,&filename->fmt,"fmt",fmt,N_FMT,FALSE,verb))
+      return TRUE;
+  }
   filename->issocket=FALSE;
   if(filename->fmt==FMS)
   {

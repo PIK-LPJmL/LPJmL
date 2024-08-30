@@ -19,10 +19,10 @@
 #include "crop.h"
 
 #define NTYPES 3 /* number of PFT types: grass, tree, crop */
-#define USAGE "Usage: %s [-h] [-q] [-nocheck] [-param] [-vv]\n"\
+#define USAGE "Usage: %s [-h] [-v] [-q] [-nocheck] [-ofiles] [-param] [-vv]\n"\
               "       [-couple hostname[:port]]\n"\
               "       [-outpath dir] [-inpath dir] [-restartpath dir]\n"\
-              "       [-pp cmd] [[-Dmacro[=value]] [-Idir] ...] filename\n"
+              "       [-nopp] [-pp cmd] [[-Dmacro[=value]] [-Idir] ...] filename\n"
 
 int main(int argc,char **argv)
 {
@@ -34,7 +34,7 @@ int main(int argc,char **argv)
     {name_crop,fscanpft_crop}
   };
   Config config;         /* LPJ configuration */
-  int rc;                /* return code of program */
+  int rc=0;              /* return code of program */
   Bool isout,check;
   const char *progname;
   const char *title[4];
@@ -45,13 +45,18 @@ int main(int argc,char **argv)
   progname=strippath(argv[0]);
   if(argc>1)
   {
-    if(!strcmp(argv[1],"-q")) /* checks for '-q' flag */
+    if(!strcmp(argv[1],"-q") || !strcmp(argv[1],"--quiet")) /* checks for '-q' flag */
     {
       argc--; /* adjust command line options */
       argv++;
       isout=FALSE; /* no output */
     }
-    else if(!strcmp(argv[1],"-h"))
+    else if(!strcmp(argv[1],"-v") || !strcmp(argv[1],"--version"))
+    {
+      puts(LPJ_VERSION);
+      return EXIT_SUCCESS;
+    }
+    else if(!strcmp(argv[1],"-h") || !strcmp(argv[1],"--help"))
     {
       file=popen("more","w");
       if(file==NULL)
@@ -61,14 +66,18 @@ int main(int argc,char **argv)
               progname);
       fprintf(file,"\n     ");
       frepeatch(file,'=',rc);
-      fprintf(file,"\n\nChecks syntax of LPJmL version " LPJ_VERSION " configuration files\n\n");
+      fprintf(file,"\n\nChecks syntax of LPJmL version " LPJ_VERSION " configuration (*.cjson) files\n\n");
       fprintf(file,USAGE,progname);
-      fprintf(file,"Arguments:\n"
-             "-h                  print this help text\n"
-             "-q                  print error messsages only\n"
+      fprintf(file,"\nArguments:\n"
+             "-h,--help           print this help text\n"
+             "-v,--version        print LPJmL version\n"
+             "-q,--quiet          print error messsages only\n"
              "-vv                 verbosely print the actual values during reading of the\n"
              "                    configuration files\n"
+             "-pedantic           stops on warnings\n"
+             "-ofiles             list only all available output variables\n"
              "-param              print LPJ parameter\n"
+             "-nopp               disable preprocessing\n"
              "-pp cmd             set preprocessor program. Default is '" cpp_cmd "'\n"
              "-couple host[:port] set host and port where coupled model is running\n"
              "-outpath dir        directory appended to output filenames\n"
@@ -108,6 +117,12 @@ int main(int argc,char **argv)
   {
     if(argc)
       fputs("WARNING018: Arguments listed after configuration filename, will be ignored.\n",stderr);
+    if(config.ofiles)
+    {
+      fprintoutputvar(stdout,config.outnames,NOUT,config.npft[GRASS]+config.npft[TREE],config.npft[CROP],&config);
+      return EXIT_SUCCESS;
+    }
+
     if(isout)
     {
       /* print LPJ configuration on stdout if '-q' option is not set */

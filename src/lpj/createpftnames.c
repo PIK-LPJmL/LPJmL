@@ -45,7 +45,7 @@ static Bool addpfts(char **pftnames,int *index,Bool iscft,int irr,const Pftpar *
   return FALSE;
 } /* of addnames' */
 
-static Bool addnames(char **pftnames,int *index,Bool iscft,int irr,const char **names,int size)
+static Bool addnames(char **pftnames,int *index,Bool iscft,int irr,char **names,int size)
 {
   int i;
   for(i=0;i<size;i++)
@@ -96,7 +96,7 @@ char **createpftnames(int index,           /**< output index */
     case PFT_VEGC: case PFT_VEGN: case PFT_CLEAF: case PFT_NLEAF:
     case PFT_CROOT: case PFT_NROOT: case PFT_CSAPW: case PFT_NSAPW:
     case PFT_CHAWO: case PFT_NHAWO: case PFT_LAIMAX: case PFT_NLIMIT:
-    case PFT_LAI: case PFT_NUPTAKE2:  case PFT_BNF: case PFT_WATER_DEMAND:
+    case PFT_LAI: case PFT_NUPTAKE2:  case PFT_BNF: case PFT_WATER_DEMAND: case PFT_WATER_SUPPLY:
       if(addpfts(pftnames,&incr,FALSE,0,config->pftpar,nnat))
         return NULL;
       for(i=0;i<2;i++)

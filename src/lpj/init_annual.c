@@ -37,7 +37,6 @@ void init_annual(Cell *cell,          /**< Pointer to cell */
   cell->balance.aconv_loss_evap=cell->balance.aconv_loss_drain=0;
   cell->balance.trad_biofuel.carbon=cell->balance.trad_biofuel.nitrogen=0;
   cell->balance.fire.carbon=cell->balance.fire.nitrogen=0;
-  cell->balance.flux_firewood.carbon=cell->balance.flux_firewood.nitrogen=0;
   cell->balance.flux_estab.carbon=cell->balance.flux_estab.nitrogen=0;
   cell->balance.flux_harvest.carbon=cell->balance.flux_harvest.nitrogen=0;
   cell->balance.timber_harvest.carbon=cell->balance.timber_harvest.nitrogen=0;
@@ -46,7 +45,7 @@ void init_annual(Cell *cell,          /**< Pointer to cell */
   cell->balance.prod_turnover.slow.carbon=cell->balance.prod_turnover.slow.nitrogen=0;
   cell->balance.neg_fluxes.carbon=cell->balance.neg_fluxes.nitrogen=0;
   cell->balance.excess_water=cell->balance.agpp=0;
-  if(config->double_harvest)
+  if(config->separate_harvests)
     for(p=0;p<2*ncft;p++)
       cell->output.syear2[p]=cell->output.syear[p]=0;
   foreachstand(stand,s,cell->standlist)

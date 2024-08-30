@@ -19,6 +19,7 @@
 Bool openclmdata(Climatefile *file,        /**< pointer to file */
                  const Filename *filename, /**< filename */
                  const char *name,         /**< name of data */
+                 const char *unit,         /**< unit of data or NULL */
                  Type datatype,            /**< datatype for version 2 files */
                  Real scalar,              /**< scalar for version 1 files */
                  int nbands,               /**< number of bands */
@@ -30,7 +31,7 @@ Bool openclmdata(Climatefile *file,        /**< pointer to file */
   int version;
   size_t offset,filesize;
   if((file->file=openinputfile(&header,&file->swap,
-                               filename,headername,
+                               filename,headername,unit,datatype,
                                &version,&offset,TRUE,config))==NULL)
   {
     if(isroot(*config))
@@ -46,7 +47,7 @@ Bool openclmdata(Climatefile *file,        /**< pointer to file */
   }
   else
   {
-    file->datatype=(version<=2) ? datatype : header.datatype;
+    file->datatype=header.datatype;
     file->offset=(config->startgrid-header.firstcell)*header.nbands*typesizes[file->datatype]+headersize(headername,version)+offset;
     if(isroot(*config) && filename->fmt!=META)
     {

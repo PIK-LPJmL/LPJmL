@@ -36,12 +36,37 @@ Bool fscanparam(LPJfile *file,       /**< File pointer to text file */
                )                     /** \return TRUE on error  */
 {
   LPJfile *f;
+  int l;
   Verbosity verbosity;
   verbosity=(isroot(*config))  ? config->scan_verbose : NO_ERR;
   if(verbosity>=VERB)
     printf("// LPJ parameters\n");
   f=fscanstruct(file,"param",verbosity);
   if(f==NULL)
+    return TRUE;
+  if(fscanerrorlimit(f,&param.error_limit,"error_limits",verbosity))
+    return TRUE;
+  if(fscanrealarray(f,soildepth,NSOILLAYER,"soildepth",verbosity))
+    return TRUE;
+  /* calculate layerbound and midlayer from soildepth */
+  layerbound[0]=soildepth[0];
+  midlayer[0]=soildepth[0]*0.5;
+  for(l=1;l<NSOILLAYER;l++)
+  {
+    layerbound[l]=layerbound[l-1]+soildepth[l];
+    midlayer[l]=layerbound[l-1]+soildepth[l]*0.5;
+  }
+  foreachsoillayer(l)
+  {
+    if(soildepth[l]<=0)
+    {
+      if(verbosity)
+        fprintf(stderr,"ERROR234: Soil depth of layer %d=%g must be greater than zero.\n",l,soildepth[l]);
+      return TRUE;
+    }
+    logmidlayer[l]=log10(midlayer[l]/midlayer[NSOILLAYER-2]);
+  }
+  if(fscanrealarray(f,fbd_fac,NFUELCLASS,"fbd_fac",verbosity))
     return TRUE;
   if(config->landfrac_from_file)
   {
@@ -99,7 +124,6 @@ Bool fscanparam(LPJfile *file,       /**< File pointer to text file */
     return TRUE;
   }
   fscanparamreal(f,&param.soil_infil_litter,"soil_infil_litter");
-  fscanparamreal(f,&param.co2_p,"co2_p");
   fscanparamreal(f,&param.k,"k");
   if(param.k<=0)
   {
@@ -159,34 +183,16 @@ Bool fscanparam(LPJfile *file,       /**< File pointer to text file */
       return TRUE;
     }
     fscanparamreal(f,&param.fertilizer_rate,"fertilizer_rate");
-    if(config->residue_treatment)
-    {
-      fscanparamreal(f,&param.residue_cn,"residue_cn");
-      if(param.residue_cn<=0)
-      {
-        if(isroot(*config))
-          fprintf(stderr,"ERROR238: Parameter residue_cn=%g must be greater than zero.\n",
-                  param.residue_cn);
-        return TRUE;
-      }
-    }
   }
   else
   {
     param.q_ash=param.sapwood_recovery=param.fertilizer_rate=0;
-    param.residue_cn=1;
   }
   if(config->fire==SPITFIRE || config->fire==SPITFIRE_TMAX)
   {
     fscanparamreal(f,&param.firedura,"firedura");
     fscanparamreal(f,&param.fire_intens,"fire_intens");
     fscanparamreal(f,&param.hum_ign,"hum_ign");
-  }
-  if(config->residue_treatment)
-  {
-    fscanparamreal(f,&param.residue_rate,"residue_rate");
-    fscanparamreal(f,&param.residue_pool,"residue_pool");
-    fscanparamreal01(f,&param.residue_fbg,"residue_fbg");
   }
   fscanparamreal01(f,&param.residue_frac,"residue_frac");
   fscanparamreal01(f,&param.mixing_efficiency,"mixing_efficiency");
@@ -206,7 +212,6 @@ Bool fscanparam(LPJfile *file,       /**< File pointer to text file */
     fscanparamreal(f,&param.sat_level[3],"saturation_level_drip");
     fscanparamreal01(f,&param.drip_evap,"drip_evap_reduction");
     fscanparamreal01(f,&param.residues_in_soil,"residues_in_soil");
-    fscanparamreal01(f,&param.residues_in_soil_notillage,"residues_in_soil_notillage");
     if(config->with_nitrogen)
     {
       fscanparamreal(f,&param.manure_cn,"manure_cn");
@@ -224,6 +229,11 @@ Bool fscanparam(LPJfile *file,       /**< File pointer to text file */
       fscanparamreal01(f,&param.harvest_fast_frac,"harvest_fast_frac");
       fscanparampoolpar(f,&param.product_turnover,"product_turnover");
     }
+    if(config->residues_fire)
+    {
+      fscanparamreal01(f,&param.bifratio,"bifratio");
+      fscanparamreal01(f,&param.fuelratio,"fuelratio");
+    }
     if(config->rw_manage)
     {
       fscanparamreal01(f,&param.esoil_reduction,"esoil_reduction");
@@ -235,6 +245,8 @@ Bool fscanparam(LPJfile *file,       /**< File pointer to text file */
       {
         if(isroot(*config))
           fprintf(stderr,"WARNING030: Parameter 'soil_infil_rw'=%g less than 'soil_infil', set to %g.\n",param.soil_infil_rw,param.soil_infil);
+        if(config->pedantic)
+          return TRUE;
         param.soil_infil_rw=param.soil_infil;
       }
       fscanparamreal(f,&param.yield_gap_bridge,"yield_gap_bridge");
@@ -251,11 +263,58 @@ Bool fscanparam(LPJfile *file,       /**< File pointer to text file */
     fscanparamreal01(f,&param.hfrac_biomass,"hfrac_biomass");
     fscanparamreal01(f,&param.rootreduction,"rootreduction");
     fscanparamreal01(f,&param.phen_limit,"phen_limit");
-    fscanparamreal(f,&param.bmgr_harvest_day_nh,"bmgr_harvest_day_nh");
-    fscanparamreal(f,&param.bmgr_harvest_day_sh,"bmgr_harvest_day_sh");
+    fscanparamint(f,&param.bmgr_harvest_day_nh,"bmgr_harvest_day_nh");
+    fscanparamint(f,&param.bmgr_harvest_day_sh,"bmgr_harvest_day_sh");
   }
   param.k_litter10/=NDAYYEAR;
   param.k_soil10.fast/=NDAYYEAR;
   param.k_soil10.slow/=NDAYYEAR;
   return FALSE;
 } /* of 'fscanparam' */
+
+Bool fscanparamcft(LPJfile *file,       /**< File pointer to text file */
+                   const Config *config /**< LPJ configuration */
+                  )                     /** \return TRUE on error  */
+{
+  LPJfile *f;
+  const char *name;
+  Verbosity verbosity;
+  verbosity=(isroot(*config))  ? config->scan_verbose : NO_ERR;
+  if(verbosity>=VERB)
+    printf("// LPJ parameters\n");
+  f=fscanstruct(file,"param",verbosity);
+  if(f==NULL)
+    return TRUE;
+  if(config->withlanduse!=NO_LANDUSE && config->with_nitrogen)
+  {
+    name=fscanstring(f,NULL,"cft_fertday_temp",verbosity);
+    if(name==NULL)
+      return TRUE;
+    param.cft_fertday_temp=findpftname(name,config->pftpar+config->npft[GRASS]+config->npft[TREE],config->npft[CROP]);
+    if(param.cft_fertday_temp==NOT_FOUND)
+    {
+      if(verbosity)
+      {
+        fprintf(stderr,"ERROR230: Invalid CFT '%s' for 'cft_fertday_temp', must be ",name);
+        fprintpftnames(stderr,config->pftpar+config->npft[GRASS]+config->npft[TREE],config->npft[CROP]);
+        fputs(".\n",stderr);
+      }
+      return TRUE;
+    }
+    name=fscanstring(f,NULL,"cft_fertday_tropic",verbosity);
+    if(name==NULL)
+      return TRUE;
+    param.cft_fertday_tropic=findpftname(name,config->pftpar+config->npft[GRASS]+config->npft[TREE],config->npft[CROP]);
+    if(param.cft_fertday_tropic==NOT_FOUND)
+    {
+      if(verbosity)
+      {
+        fprintf(stderr,"ERROR230: Invalid CFT '%s' for 'cft_fertday_tropic', must be ",name);
+        fprintpftnames(stderr,config->pftpar+config->npft[GRASS]+config->npft[TREE],config->npft[CROP]);
+        fputs(".\n",stderr);
+      }
+      return TRUE;
+    }
+  }
+  return FALSE;
+} /* of 'fscanparamcft' */

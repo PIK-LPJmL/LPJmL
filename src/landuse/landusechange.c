@@ -407,6 +407,8 @@ static void landexpansion(Cell *cell,            /* cell pointer */
         }
         getoutput(&cell->output,FLUX_ESTABC,config)+=flux_estab.carbon*mixstand->frac;
         getoutput(&cell->output,FLUX_ESTABN,config)+=flux_estab.nitrogen*mixstand->frac;
+        if (pft->par->cultivation_type != WP)
+          getoutput(&cell->output,FLUX_ESTABN_MG,config)+=flux_estab.nitrogen*mixstand->frac;
         cell->balance.flux_estab.carbon+=flux_estab.carbon*mixstand->frac;
         cell->balance.flux_estab.nitrogen+=flux_estab.nitrogen*mixstand->frac;
       } /* of foreachpft */
@@ -475,7 +477,7 @@ static void grasslandreduction(Cell *cell,            /* cell pointer */
 
     cutpfts(grassstand,config);
     /*force one tillage event on new stand upon cultivation of previous grassland,  */
-    if(setaside(cell,getstand(cell->standlist,s),TRUE,intercrop,npft,ncft,data->irrigation,max(config->till_startyear,year),config))
+    if(setaside(cell,getstand(cell->standlist,s),TRUE,intercrop,npft,ncft,data->irrigation,year,config))
       delstand(cell->standlist,s);
   }
   else

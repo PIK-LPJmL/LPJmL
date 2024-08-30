@@ -22,8 +22,8 @@
 
 Bool fscankeywords(LPJfile *file,    /**< pointer to LPJ file */
                    int *value,       /**< integer to be read from file */
-                   const char *name, /**< variable name */
-                   const char *const *array, /**< array of keywords defined */
+                   const char *name, /**< variable name or NULL */
+                   char **array,     /**< array of keywords defined */
                    int size,          /**< size of array */
                    Bool with_default, /**< allow default value */
                    Verbosity verb    /**< verbosity level (NO_ERR,ERR,VERB) */
@@ -32,20 +32,25 @@ Bool fscankeywords(LPJfile *file,    /**< pointer to LPJ file */
   const char *str;
   int i;
   struct json_object *item;
-  if(!json_object_object_get_ex(file,name,&item))
+  if(name==NULL)
+    item=file;
+  else
   {
-    if(with_default)
+    if(!json_object_object_get_ex(file,name,&item))
     {
-      if(verb)
-        fprintf(stderr,"WARNING027: Name '%s' for keyword not found, set to \"%s\".\n",
-                name,array[*value]);
-      return FALSE;
-    }
-    else
-    {
-      if(verb)
-        fprintf(stderr,"ERROR225: Name '%s' for keyword not found.\n",name);
-      return TRUE;
+      if(with_default)
+      {
+        if(verb)
+          fprintf(stderr,"WARNING027: Name '%s' for keyword not found, set to \"%s\".\n",
+                  name,array[*value]);
+        return FALSE;
+      }
+      else
+      {
+        if(verb)
+          fprintf(stderr,"ERROR225: Name '%s' for keyword not found.\n",name);
+        return TRUE;
+      }
     }
   }
   if(json_object_get_type(item)==json_type_string)
@@ -72,7 +77,7 @@ Bool fscankeywords(LPJfile *file,    /**< pointer to LPJ file */
   if(json_object_get_type(item)!=json_type_int)
   {
     if(verb)
-      fprintf(stderr,"ERROR226: Name '%s' not of type int.\n",name);
+      fprintf(stderr,"ERROR226: Name '%s' not of type int or string.\n",name);
     return TRUE;
   }
   *value=json_object_get_int(item);
@@ -91,6 +96,9 @@ Bool fscankeywords(LPJfile *file,    /**< pointer to LPJ file */
     }
     return TRUE;
   }
+  if(verb)
+    fprintf(stderr,"REMARK001: Use of number for keywords for '%s' is deprecated, use string \"%s\" instead.\n",
+            name,array[*value]);
   if (verb >= VERB)
     printf("\"%s\" : %d\n", name, *value);
   return FALSE;

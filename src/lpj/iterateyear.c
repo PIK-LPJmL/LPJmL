@@ -69,8 +69,6 @@ void iterateyear(Outputfile *output,  /**< Output file data */
         if(grid[cell].lakefrac<1)
         {
           /* calculate landuse change */
-          if(config->laimax_interpolate==LAIMAX_INTERPOLATE)
-            laimax_manage(&grid[cell].ml.manage,config->pftpar+npft,npft,ncft,year);
           if(year>config->firstyear-config->nspinup || config->from_restart)
             landusechange(grid+cell,npft,ncft,intercrop,year,config);
           else if(grid[cell].ml.dam)
@@ -195,7 +193,8 @@ void iterateyear(Outputfile *output,  /**< Output file data */
           wateruse(grid,npft,ncft,month,config);
       }
 
-      if(config->withdailyoutput && year>=config->outputyear)
+      if(config->withdailyoutput && day<NDAYYEAR && year>=config->outputyear)
+        /* postpone last timestep until after annual processes */
         fwriteoutput(output,grid,year,day-1,DAILY,npft,ncft,config);
 
       day++;
@@ -209,8 +208,8 @@ void iterateyear(Outputfile *output,  /**< Output file data */
                        cell,month),month,config);
     } /* of 'for(cell=0;...)' */
 
-    if(year>=config->outputyear)
-      /* write out monthly output */
+    if(year>=config->outputyear && month<NMONTH-1)
+      /* write out monthly output, postpone last timestep until after annual processes */
       fwriteoutput(output,grid,year,month,MONTHLY,npft,ncft,config);
 
   } /* of 'foreachmonth */
@@ -220,7 +219,7 @@ void iterateyear(Outputfile *output,  /**< Output file data */
     if(!grid[cell].skip)
     {
       grid[cell].landcover=(config->prescribe_landcover!=NO_LANDCOVER) ? getlandcover(input.landcover,cell) : NULL;
-      update_annual(grid+cell,npft,ncft,popdens,year,daily.isdailytemp,intercrop,config);
+      update_annual(grid+cell,npft,ncft,year,daily.isdailytemp,intercrop,config);
 #ifdef SAFE
       check_fluxes(grid+cell,year,cell,config);
 #endif
@@ -283,6 +282,10 @@ void iterateyear(Outputfile *output,  /**< Output file data */
 
   if(year>=config->outputyear)
   {
+    /* write last monthly/daily output timestep after annual processes */
+    fwriteoutput(output,grid,year,NMONTH-1,MONTHLY,npft,ncft,config);
+    if(config->withdailyoutput)
+      fwriteoutput(output,grid,year,NDAYYEAR-1,DAILY,npft,ncft,config);
     /* write out annual output */
     fwriteoutput(output,grid,year,0,ANNUAL,npft,ncft,config);
   }

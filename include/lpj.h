@@ -28,7 +28,7 @@
 #ifndef LPJ_H /* Already included? */
 #define LPJ_H
 
-#define LPJ_VERSION  "5.7.9"
+#define LPJ_VERSION  "5.9.7"
 
 /* Necessary header files */
 
@@ -58,6 +58,7 @@ typedef struct config Config; /* forward declaration of stand */
 #include "types.h"
 #include "swap.h"
 #include "numeric.h"
+#include "header.h"
 #include "channel.h"
 #include "queue.h"
 #include "pnet.h"
@@ -74,7 +75,6 @@ typedef struct config Config; /* forward declaration of stand */
 #include "cdf.h"
 #include "outfile.h"
 #include "param.h"
-#include "header.h"
 #include "climate.h"
 #include "image.h"
 #include "coupler.h"

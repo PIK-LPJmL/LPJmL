@@ -27,13 +27,19 @@ static int checksoilcode(Config *config)
   int cell,ncell;
   unsigned int i,soilcode;
   char *name;
-  List *map;
+  Map *map;
   int *soilmap;
   if(config->soil_filename.fmt!=CDF)
   {
     file=fopensoilcode(&config->soil_filename,&map,&swap,&offset,&type,config->nsoil,TRUE);
     if(file==NULL)
       return 1;
+    if(fseek(file,offset,SEEK_SET))
+    {
+      fprintf(stderr,"ERROR107: Cannot seek in soilcode file to position %zu.\n",
+              offset);
+      return 1;
+    }
     ncell=getnsoilcode(&config->soil_filename,config->nsoil,TRUE);
     if(map!=NULL)
     {
@@ -41,10 +47,10 @@ static int checksoilcode(Config *config)
       if(soilmap!=NULL)
       {
         if(config->soilmap!=NULL)
-          cmpsoilmap(soilmap,getlistlen(map),config);
+          cmpsoilmap(soilmap,getmapsize(map),config);
         free(config->soilmap);
         config->soilmap=soilmap;
-        config->soilmap_size=getlistlen(map);
+        config->soilmap_size=getmapsize(map);
       }
       freemap(map);
     }
@@ -52,14 +58,14 @@ static int checksoilcode(Config *config)
     {
       config->soilmap=defaultsoilmap(&config->soilmap_size,config);
       if(config->soilmap==NULL)
-        return 0;
+        return 1;
     }
     exist=newvec(Bool,config->soilmap_size);
     if(exist==NULL)
     {
       printallocerr("exist");
       fclose(file);
-      return 0;
+      return 1;
     }
     for(i=0;i<config->soilmap_size;i++)
       exist[i]=FALSE;
@@ -68,7 +74,7 @@ static int checksoilcode(Config *config)
     {
       printallocerr("name");
       fclose(file);
-      return 0;
+      return 1;
     }
     for(cell=0;cell<ncell;cell++)
     {
@@ -130,7 +136,7 @@ static int checkinputdata(const Config *config,const Filename *filename,const ch
   return 0;
 } /* of 'checkinputdata' */
 
-static int checkinputfile(const Config *config,const Filename *filename,const char *unit,size_t len)
+static int checkinputfile(const Config *config,const Filename *filename,const char *unit,Type datatype,size_t len)
 {
   FILE *file;
   Header header;
@@ -148,7 +154,7 @@ static int checkinputfile(const Config *config,const Filename *filename,const ch
   }
   else
   {
-    file=openinputfile(&header,&swap,filename,headername,&version,&offset,FALSE,config);
+    file=openinputfile(&header,&swap,filename,headername,unit,datatype,&version,&offset,FALSE,config);
     if(file==NULL)
       return 1;
     fclose(file);
@@ -162,6 +168,37 @@ static int checkinputfile(const Config *config,const Filename *filename,const ch
   }
   return 0;
 } /* of 'checkinputfile' */
+
+static int checkcountryfile(const Config *config,const Filename *filename)
+{
+  FILE *file;
+  Header header;
+  String headername;
+  int version;
+  Bool swap;
+  Input_netcdf input;
+  size_t offset;
+  if(filename->fmt==CDF)
+  {
+    input=openinput_netcdf(filename,NULL,0,config);
+    if(input==NULL)
+      return 1;
+    closeinput_netcdf(input);
+  }
+  else
+  {
+    file=openinputfile(&header,&swap,filename,headername,NULL,LPJ_SHORT,&version,&offset,FALSE,config);
+    if(file==NULL)
+      return 1;
+    fclose(file);
+    if(header.nbands!=1 && header.nbands!=2)
+    {
+      fprintf(stderr,"ERROR218: Number of bands %d in '%s' is not 1 or 2.\n",header.nbands,filename->name);
+      return 1;
+    }
+  }
+  return 0;
+} /* of 'checkcountryfile' */
 
 static int checklanduse(const Config *config)
 {
@@ -205,7 +242,7 @@ static int checkdatafile(const Config *config,const Filename *filename,char *nam
   return 0;
 } /* of 'checkdatafile' */
 
-static int checkclmfile(const Config *config,const char *data_name,const Filename *filename,const char *unit,Bool check)
+static int checkclmfile(const Config *config,const char *data_name,const Filename *filename,const char *unit,Type datatype,Bool check)
 {
   FILE *file;
   Header header;
@@ -281,7 +318,7 @@ static int checkclmfile(const Config *config,const char *data_name,const Filenam
   }
   else
   {
-    file=openinputfile(&header,&swap,filename,headername,&version,&offset,FALSE,config);
+    file=openinputfile(&header,&swap,filename,headername,unit,datatype,&version,&offset,FALSE,config);
     if(file==NULL)
       return 1;
     fclose(file);
@@ -405,8 +442,8 @@ Bool filesexist(Config config, /**< LPJmL configuration */
   if(config.river_routing)
   {
     if(config.extflow)
-      bad+=checkclmfile(&config,"extflow",&config.extflow_filename,NULL,0);
-    bad+=checkinputfile(&config,&config.drainage_filename,NULL,(config.drainage_filename.fmt==CDF) ? 0 : 2);
+      bad+=checkclmfile(&config,"extflow",&config.extflow_filename,NULL,LPJ_FLOAT,0);
+    bad+=checkinputfile(&config,&config.drainage_filename,NULL,LPJ_INT,(config.drainage_filename.fmt==CDF) ? 0 : 2);
     if(config.withlanduse!=NO_LANDUSE)
       bad+=checkinputdata(&config,&config.neighb_irrig_filename,"neigbour irrigation",NULL,LPJ_INT);
   }
@@ -416,37 +453,37 @@ Bool filesexist(Config config, /**< LPJmL configuration */
   {
     if(config.with_nitrogen==LIM_NITROGEN && !config.no_ndeposition)
     {
-      bad+=checkclmfile(&config,"NO3 deposition",&config.no3deposition_filename,"g/m2/day",FALSE);
-      bad+=checkclmfile(&config,"NH4 deposition",&config.nh4deposition_filename,"g/m2/day",FALSE);
+      bad+=checkclmfile(&config,"NO3 deposition",&config.no3deposition_filename,"g/m2/day",LPJ_FLOAT,FALSE);
+      bad+=checkclmfile(&config,"NH4 deposition",&config.nh4deposition_filename,"g/m2/day",LPJ_FLOAT,FALSE);
     }
     bad+=checkinputdata(&config,&config.soilph_filename,"soilPH",NULL,LPJ_SHORT);
   }
-  if(config.grassfix_filename.name!=NULL)
-    bad+=checkinputdata(&config,&config.grassfix_filename,"grassfix",NULL,LPJ_SHORT);
   if(config.grassharvest_filename.name!=NULL)
     bad+=checkinputdata(&config,&config.grassharvest_filename,"grassharvest",NULL,LPJ_SHORT);
   if(config.with_nitrogen || config.fire==SPITFIRE || config.fire==SPITFIRE_TMAX)
-    bad+=checkclmfile(&config,"wind speed",&config.wind_filename,"m/s",TRUE);
+    bad+=checkclmfile(&config,"wind speed",&config.wind_filename,"m/s",LPJ_SHORT,TRUE);
   if(config.fire==SPITFIRE || config.fire==SPITFIRE_TMAX)
   {
     if(config.fdi==WVPD_INDEX)
-      bad+=checkclmfile(&config,"humidity",&config.humid_filename,NULL,TRUE);
+      bad+=checkclmfile(&config,"humidity",&config.humid_filename,NULL,LPJ_SHORT,TRUE);
+    if(config.prescribe_burntarea)
+      bad+=checkclmfile(&config,"burnt area",&config.burntarea_filename,"hectare",LPJ_SHORT,TRUE);
     bad+=checkdatafile(&config,&config.lightning_filename,"lightning",NULL,LPJ_INT,12);
-    bad+=checkclmfile(&config,"human ignition",&config.human_ignition_filename,"yr-1",TRUE);
+    bad+=checkclmfile(&config,"human ignition",&config.human_ignition_filename,"yr-1",LPJ_SHORT,TRUE);
   }
-  if(config.cropsheatfrost || config.fire==SPITFIRE_TMAX)
+  if(config.fire==SPITFIRE_TMAX)
   {
-    bad+=checkclmfile(&config,"tmin",&config.tmin_filename,"celsius",TRUE);
-    bad+=checkclmfile(&config,"tmax",&config.tmax_filename,"celsius",TRUE);
+    bad+=checkclmfile(&config,"tmin",&config.tmin_filename,"celsius",LPJ_SHORT,TRUE);
+    bad+=checkclmfile(&config,"tmax",&config.tmax_filename,"celsius",LPJ_SHORT,TRUE);
   }
   if(config.fire==SPITFIRE)
   {
-    bad+=checkclmfile(&config,"tamp",&config.tamp_filename,NULL,TRUE);
+    bad+=checkclmfile(&config,"tamp",&config.tamp_filename,NULL,LPJ_SHORT,TRUE);
   }
   if(config.wateruse)
     bad+=checkdatafile(&config,&config.wateruse_filename,"wateruse","dm3/yr",LPJ_INT,1);
-  bad+=checkclmfile(&config,"temp",&config.temp_filename,"celsius",TRUE);
-  bad+=checkclmfile(&config,"precipitation",&config.prec_filename,"kg/m2/day",TRUE);
+  bad+=checkclmfile(&config,"temp",&config.temp_filename,"celsius",LPJ_SHORT,TRUE);
+  bad+=checkclmfile(&config,"precipitation",&config.prec_filename,"kg/m2/day",LPJ_SHORT,TRUE);
 #ifdef IMAGE
   if (config.wateruse_wd_filename.name != NULL)
     bad += checkdatafile(&config, &config.wateruse_wd_filename,"wateruse_wd","dm3/yr",LPJ_INT,1);
@@ -454,20 +491,20 @@ Bool filesexist(Config config, /**< LPJmL configuration */
   if(config.with_radiation)
   {
     if(config.with_radiation==RADIATION || config.with_radiation==RADIATION_LWDOWN)
-      bad+=checkclmfile(&config,"lwnet",&config.lwnet_filename,"W/m2",TRUE);
-    bad+=checkclmfile(&config,"swdown",&config.swdown_filename,"W/m2",TRUE);
+      bad+=checkclmfile(&config,"lwnet",&config.lwnet_filename,"W/m2",LPJ_SHORT,TRUE);
+    bad+=checkclmfile(&config,"swdown",&config.swdown_filename,"W/m2",LPJ_SHORT,TRUE);
   }
   else
-    bad+=checkclmfile(&config,"cloudiness",&config.cloud_filename,"%",TRUE);
+    bad+=checkclmfile(&config,"cloudiness",&config.cloud_filename,"%",LPJ_SHORT,TRUE);
   bad+=checkfile(&config,"co2",&config.co2_filename);
   if(config.wet_filename.name!=NULL)
-    bad+=checkclmfile(&config,"wet days",&config.wet_filename,"day",FALSE);
+    bad+=checkclmfile(&config,"wet days",&config.wet_filename,"day",LPJ_SHORT,FALSE);
 #ifdef IMAGE
   if(config.sim_id==LPJML_IMAGE)
   {
-    bad+=checkclmfile(&config,"temp var",&config.temp_var_filename,NULL,FALSE);
-    bad+=checkclmfile(&config,"prec var",&config.prec_var_filename,NULL,FALSE);
-    bad+=checkclmfile(&config,"prodpool",&config.prodpool_init_filename,NULL,FALSE);
+    bad+=checkclmfile(&config,"temp var",&config.temp_var_filename,NULL,LPJ_SHORT,FALSE);
+    bad+=checkclmfile(&config,"prec var",&config.prec_var_filename,NULL,LPJ_SHORT,FALSE);
+    bad+=checkclmfile(&config,"prodpool",&config.prodpool_init_filename,NULL,LPJ_SHORT,FALSE);
   }
 #endif
   if(ischeckpointrestart(&config) && getfilesize(config.checkpoint_restart_filename)!=-1)
@@ -485,7 +522,7 @@ Bool filesexist(Config config, /**< LPJmL configuration */
     bad+=checkrestartfile(&config,config.restart_filename);
   }
   if(config.prescribe_landcover!=NO_LANDCOVER)
-    bad+=checkinputfile(&config,&config.landcover_filename,"1",config.npft[GRASS]+config.npft[TREE]-config.nbiomass);
+    bad+=checkinputfile(&config,&config.landcover_filename,"1",LPJ_SHORT,config.npft[GRASS]+config.npft[TREE]-config.nbiomass);
   if(config.withlanduse!=NO_LANDUSE)
   {
     bad+=checklanduse(&config);
@@ -499,27 +536,21 @@ Bool filesexist(Config config, /**< LPJmL configuration */
       bad+=checkinputdata(&config,&config.harvest_cotton_ir_filename,"harvest cotton ir",NULL,LPJ_SHORT);
     }
     if(config.sdate_option==PRESCRIBED_SDATE)
-      bad+=checkinputfile(&config,&config.sdate_filename,NULL,2*config.npft[CROP]);
+      bad+=checkinputfile(&config,&config.sdate_filename,NULL,LPJ_SHORT,2*config.npft[CROP]);
     if(config.crop_phu_option==PRESCRIBED_CROP_PHU)
       bad+=checkdatafile(&config,&config.crop_phu_filename,"crop phu",NULL,LPJ_SHORT,2*config.cftmap_size);
-    if(config.countrycode_filename.fmt==CDF)
-    {
-      bad+=checkinputfile(&config,&config.countrycode_filename,NULL,0);
-      bad+=checkinputfile(&config,&config.regioncode_filename,NULL,0);
-    }
-    else
-      bad+=checkinputfile(&config,&config.countrycode_filename,NULL,2);
+    bad+=checkcountryfile(&config,&config.countrycode_filename);
     if(config.reservoir)
     {
       bad+=checkinputdata(&config,&config.elevation_filename,"elevation","m",LPJ_SHORT);
-      bad+=checkinputfile(&config,&config.reservoir_filename,NULL,10);
+      bad+=checkinputfile(&config,&config.reservoir_filename,NULL,LPJ_FLOAT,10);
     }
     if(config.with_nitrogen&& config.fertilizer_input==FERTILIZER &&!config.fix_fertilization)
       bad+=checkdatafile(&config,&config.fertilizer_nr_filename,"fertilizer","g/m2",LPJ_SHORT,2*config.fertilizermap_size);
 #ifdef IMAGE
-    if(config.aquifer_irrig==AQUIFER_IRRIG)
+    if(config.aquifer_irrig)
     {
-      bad+=checkinputfile(&config,&config.aquifer_filename,NULL,0);
+      bad+=checkinputfile(&config,&config.aquifer_filename,NULL,LPJ_SHORT,0);
     }
 #endif
     if (config.with_nitrogen&&config.manure_input&&!config.fix_fertilization)
@@ -535,6 +566,8 @@ Bool filesexist(Config config, /**< LPJmL configuration */
   oldpath=strdup("");
   if(config.nall!=-1 && config.n_out)
     size=outputfilesize(&config);
+  else
+    size=0;
   for(i=0;i<config.n_out;i++)
   {
     if(config.outputvars[i].filename.fmt!=SOCK)

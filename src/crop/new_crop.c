@@ -49,34 +49,33 @@ void new_crop(Pft *pft, /**< pointer to PFT data */
   crop->demandsum=0;
   crop->ndemandsum=crop->nuptakesum=0;
   crop->supplysum=0;
-  crop->frostkill=FALSE;
   pft->vmax=0;
-  if(pft->stand->type->landusetype==AGRICULTURE && config->double_harvest)
+  if(pft->stand->type->landusetype==AGRICULTURE && config->separate_harvests)
   {
-    crop->dh=new(Double_harvest);
-    check(crop->dh);
-    crop->dh->petsum=0.0;
-    crop->dh->evapsum=0.0;
-    crop->dh->transpsum=0.0;
-    crop->dh->intercsum=0.0;
-    crop->dh->precsum=0.0;
-    crop->dh->sradsum=0.0;
-    crop->dh->irrig_apply=0.0;
-    crop->dh->tempsum=0.0;
-    crop->dh->nirsum=0.0;
-    crop->dh->lgp=0.0;
-    crop->dh->sowing_year=year;
-    crop->dh->sdate=day;
-    crop->dh->runoffsum=0.0;
-    crop->dh->n2o_denitsum=0.0;
-    crop->dh->n2o_nitsum=0.0;
-    crop->dh->n2_emissum=0.0;
-    crop->dh->leachingsum=0.0;
-    crop->dh->c_emissum=0.0;
-    crop->dh->nfertsum=0.0;
+    crop->sh=new(Separate_harvests);
+    check(crop->sh);
+    crop->sh->petsum=0.0;
+    crop->sh->evapsum=0.0;
+    crop->sh->transpsum=0.0;
+    crop->sh->intercsum=0.0;
+    crop->sh->precsum=0.0;
+    crop->sh->sradsum=0.0;
+    crop->sh->irrig_apply=0.0;
+    crop->sh->tempsum=0.0;
+    crop->sh->nirsum=0.0;
+    crop->sh->lgp=0.0;
+    crop->sh->sowing_year=year;
+    crop->sh->sdate=day;
+    crop->sh->runoffsum=0.0;
+    crop->sh->n2o_denitsum=0.0;
+    crop->sh->n2o_nitsum=0.0;
+    crop->sh->n2_emissum=0.0;
+    crop->sh->leachingsum=0.0;
+    crop->sh->c_emissum=0.0;
+    crop->sh->nfertsum=0.0;
   }
   else
-    crop->dh=NULL;
+    crop->sh=NULL;
   crop->lai=crop->lai000=crop->flaimax*par->laimax;
   crop->lai_nppdeficit=0.0;
   pft->phen=crop->lai/par->laimax;

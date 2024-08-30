@@ -41,6 +41,11 @@ struct config
   char *inputdir;             /**< input directory */
   char *outputdir;            /**< output directory */
   char *restartdir;           /**< restart directory */
+  char *cmd;                  /**< command line to process configuration file */
+  char *filter;               /**< preprocessor for configuration file */
+  int n_global;               /**< number of global attributes in output files */
+  Attr *global_attrs;         /**< array of global attributes */
+  char *json_filename;        /**< filename of preprocessed JSON file */
   Filename temp_filename;
   Filename prec_filename;
   Filename cloud_filename;
@@ -65,7 +70,6 @@ struct config
   Filename soilph_filename;
   Filename river_filename;
   Filename countrycode_filename;
-  Filename regioncode_filename;
   Filename landuse_filename;
   Filename fertilizer_nr_filename;
   Filename no3deposition_filename;
@@ -86,7 +90,6 @@ struct config
   Filename aquifer_filename;
   Filename wateruse_wd_filename;
 #endif
-  Filename grassfix_filename;
   Filename grassharvest_filename;
   Filename lsuha_filename;
   Filename sowing_cotton_rf_filename;
@@ -104,6 +107,8 @@ struct config
 #endif
 #endif
   int wait;               /**< time to wait for connection (sec) */
+  Bool nopp;              /**< no piping thru preprocessor (TRUE/FALSE) */
+  Bool pedantic;          /**< enables pedantic mode, stops on some warnings (TRUE/FALSE) */
   char *sim_name;         /**< Desciption of LPJ simulation */
   char *coupled_model;    /**< name of coupled model or NULL */
   int sim_id;             /**< Simulation type */
@@ -113,42 +118,40 @@ struct config
   int nwft;               /**< numer of WFTs */
   int ngrass;             /**< number of grass PFTs not biomass */
   int nwptype;
+  int *cult_types;        /**< array of cultivation types to read from pft.js */
+  int ncult_types;        /**< size of cult_types array */
   int nsoil;              /**< number of soil types */
   Soilpar *soilpar;       /**< Soil parameter array */
   int ncountries;         /**< number of countries */
   Countrypar *countrypar; /**< country parameter array */
-  int nregions;           /**< number of regions */
-  Regionpar *regionpar;
   Outputvar *outputvars;
   char *compress_cmd;    /**< command for compressing output files */
   char *compress_suffix; /**< suffix for compressed output files */
   char csv_delimit;      /**< delimiter of CSV files */
   int n_out;     /**< number of output files */
-  int laimax_interpolate;
+  int laimax_manage;
   Real laimax;        /**< maximum LAI for benchmark */
   Bool withdailyoutput; /**< with daily output (TRUE/FALSE) */
-  int pft_residue;
+  Bool flush_output;   /**< flush output after every simulation year (TRUE/FALSE) */
+  Bool nofill;          /**< do not fille NetCDF files at creation (TRUE/FALSE) */
   int fdi;
   char *pft_index;
   char *layer_index;
   int with_nitrogen;      /**< enable nitrogen cycle */
   Bool crop_resp_fix;      /**< with fixed crop respiration (TRUE/FALSE) */
-  Bool cropsheatfrost;
   int tillage_type;      /**< type of tillage NO_TILLAGE=0, TILLAGE=1, READ_TILLAGE=2 */
-  int till_startyear;    /**< year in which tillage should start */
   int residue_treatment; /** residue options: READ_RESIDUE_DATA, NO_RESIDUE_REMOVE, FIXED_RESIDUE_REMOVE (uses param residues_in_soil) */
-  Bool black_fallow;      /**< simulation with black fallow */
-  Bool till_fallow;         /**< apply tillage on black fallow */
   Bool fix_fertilization;   /**< simulation with fixed fertilizer application rate */
   Bool no_ndeposition;      /**< turn off atmospheric N deposition */
-  Bool prescribe_residues;  /**< simulation with prescribed residue rate on black fallow */
   int fertilizer_input;     /**< simulation with fertilizer input */
   Bool manure_input;       /**< simulation with manure input */
   Bool prescribe_lsuha;    /**< simulation with prescribed grassland livestock density from file */
   Bool global_netcdf;     /**< enable global grid for NetCDF output */
-  Bool float_grid;        /**< enable float datatype for binary grid file */
+  Bool rev_lat;           /**< reverse lat coordinates in NetCDF output */
+  Bool with_days;         /**< using days as a unit for monthly output */
+  Type grid_type;         /**<  datatype for binary grid file */
   Bool landuse_restart;   /**< land use enabled in restart file */
-  Bool double_harvest;
+  Bool separate_harvests;
   int wateruse;           /**< enable wateruse (NO_WATERUSE, WATERUSE, ALL_WATERUSE) */
   int sdate_option_restart;     /**< sdate option in restart file */
   int crop_option_restart;      /**< crop option in restart file */
@@ -176,6 +179,7 @@ struct config
   Bool landfrac_from_file;      /**< land fraction read from file (TRUE/FALSE) */
   Bool residues_fire;           /**< use parameters for agricultural fires */
   Bool param_out;               /**< print LPJmL parameter */
+  Bool ofiles;                  /**< list only all output files */
   Bool check_climate;           /**< check climate input data for NetCDF files */
   Bool others_to_crop;          /**< move PFT type others into PFT crop, cft_tropic for tropical, cft_temp for temperate */
   int cft_temp;
@@ -204,6 +208,8 @@ struct config
   int lastyear;  /**< last simulation year (AD) */
   int firstyear; /**< first simulation year (AD) */
   int outputyear; /**< first year for output (AD) */
+  int baseyear; /**< base year for NETCDF output (AD) */
+  Bool absyear; /**< set absolute years in NetCDF output */
   Bool isfirstspinupyear; /**< set first year for climate in spinup (TRUE/FALSE) */
   int firstspinupyear;   /**< first year for climate in spinup */
   int total;     /**< total number of grid cells with valid soilcode */
@@ -212,7 +218,6 @@ struct config
   int ntask;     /**< number of parallel tasks */
   int count;     /**< number of grid cells with valid soilcode */
   int fire;      /**< fire disturbance enabled */
-  int firewood;  /**< fire wood usage */
   int seed_start;      /**< initial seed for random number generator */
   Bool new_seed;
   Coord resolution;    /**< size of grid cell (deg) */
@@ -221,6 +226,7 @@ struct config
   Bool with_lakes;     /**< enable lakes (TRUE/FALSE) */
   Bool extflow;        /** external flow enabled */
   Bool permafrost;     /**< permafrost module enabled */
+  Bool percolation_heattransfer; /**< water heat transfer enabled */
   Bool johansen;       /**< johansen enabled */
   Bool gsi_phenology;	/**< GSI phenology enabled (TRUE/FALSE) */
   Bool transp_suction_fcn; /**< transpiration reduction function enabled */
@@ -242,6 +248,8 @@ struct config
 #ifdef COUPLING_WITH_FMS
   Bool nitrogen_coupled;
 #endif
+  int *landcovermap;        /**< landcover map */
+  int landcovermap_size;    /**< size landcover map */
   int *landusemap;          /**< mapping of bands in land-use file to CFTs */
   int landusemap_size;      /**< size of landusmap */
   int *fertilizermap;
@@ -288,8 +296,8 @@ typedef struct
   Bool (*fcn)(LPJfile *,Pftpar *,const Config *); /**< pointer to PFT-specific scan function */
 } Pfttype;
 
-extern const char *crop_phu_options[];
-extern const char *grazing_type[];
+extern char *crop_phu_options[];
+extern char *grazing_type[];
 
 /* Declaration of functions */
 
@@ -311,11 +319,14 @@ extern Bool fscanoutput(LPJfile *,int,int,Config *,int);
 extern Bool readconfig(Config *,Pfttype [],int,int,int *,
                        char ***,const char *);
 extern Bool fscanconfig(Config *,LPJfile *,Pfttype [],int,int);
+extern Bool fscancultivationtypes(LPJfile *,const char *,int **,int *,Verbosity);
 extern void fprintparam(FILE *,int,int,const Config *);
 extern void fprintfiles(FILE *,Bool,Bool,const Config *);
 extern Bool getextension(Extension *,const Config *);
 extern void fprintincludes(FILE *,const char *,int,char **);
 extern size_t getsize(int,const Config *);
+extern int *fscanlandcovermap(LPJfile *,int *,const char *,int,const Config *);
+extern void createconfig(const Config *);
 extern void closeconfig(LPJfile *);
 
 /* Definition of macros */

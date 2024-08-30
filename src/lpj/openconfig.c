@@ -27,16 +27,18 @@ FILE *openconfig(Config *config,      /**< configuration struct */
                 )                     /** \return file pointer of open file or NULL */
 
 {
-  char *cmd,*lpjpath,*lpjinc,*filter,*env_options,*pos;
+  char *lpjpath=NULL,*lpjinc,*env_options,*pos;
   char **options;
   char *endptr;
   Bool iscpp;
   FILE *file;
   int i,len,dcount;
-  filter=getenv(LPJPREP);
-  if(filter==NULL)
+  config->nopp=FALSE;
+  config->cmd=NULL;
+  config->filter=getenv(LPJPREP);
+  if(config->filter==NULL)
   {
-    filter=cpp_cmd;
+    config->filter=cpp_cmd;
     iscpp=TRUE;
   }
   else
@@ -66,6 +68,8 @@ FILE *openconfig(Config *config,      /**< configuration struct */
     checkptr(config->restartdir);
   }
   config->param_out=FALSE;
+  config->pedantic=FALSE;
+  config->ofiles=FALSE;
   config->scan_verbose=ERR; /* NO_ERR would suppress also error messages */
   pos=getenv(LPJWAIT);
   if(pos!=NULL)
@@ -283,6 +287,8 @@ FILE *openconfig(Config *config,      /**< configuration struct */
         }
       }
 #endif
+      else if(!strcmp((*argv)[i],"-nopp"))
+        config->nopp=TRUE;
       else if(!strcmp((*argv)[i],"-pp"))
       {
         if(i==*argc-1)
@@ -296,11 +302,15 @@ FILE *openconfig(Config *config,      /**< configuration struct */
           free(options);
           return NULL;
         }
-        filter=(*argv)[++i];
+        config->filter=(*argv)[++i];
         iscpp=FALSE;
       }
       else if(!strcmp((*argv)[i],"-param"))
         config->param_out=TRUE;
+      else if(!strcmp((*argv)[i],"-pedantic"))
+        config->pedantic=TRUE;
+      else if(!strcmp((*argv)[i],"-ofiles"))
+        config->ofiles=TRUE;
       else if(!strcmp((*argv)[i],"-vv"))
         config->scan_verbose=VERB;
       else if(!strcmp((*argv)[i],"-inpath"))
@@ -419,53 +429,57 @@ FILE *openconfig(Config *config,      /**< configuration struct */
     free(options);
     return NULL;
   }
-  /* adjust argc and argv */
-  *argv+=i;
-  *argc-=i;
-  lpjpath=getenv(LPJROOT);
-  if(lpjpath==NULL || !iscpp) /* Is LPJROOT environment variable defined? */
-  { /* no */
-    if(isroot(*config))
-      fprintf(stderr,"WARNING019: Environment variable '%s' not set.\n",
-              LPJROOT);
-    lpjpath=NULL;
-  }
+  if(config->nopp)
+    file=fopen(config->filename,"r");
   else
-  { /* yes, include LPJROOT directory in search path for includes */
-    lpjinc=malloc(strlen(lpjpath)+3);
-    checkptr(lpjinc);
-    options[dcount++]=strcat(strcpy(lpjinc,"-I"),lpjpath);
-    len+=strlen(lpjinc)+1;
-  }
-  if(env_options!=NULL)
   {
-    options[dcount++]=env_options;
-    len+=strlen(env_options)+1;
+    /* adjust argc and argv */
+    *argv+=i;
+    *argc-=i;
+    if(env_options!=NULL)
+    {
+      options[dcount++]=env_options;
+      len+=strlen(env_options)+1;
+    }
+    lpjpath=getenv(LPJROOT);
+    if(lpjpath==NULL || !iscpp) /* Is LPJROOT environment variable defined? */
+    { /* no */
+      if(isroot(*config))
+        fprintf(stderr,"WARNING019: Environment variable '%s' not set.\n",
+                LPJROOT);
+      lpjpath=NULL;
+    }
+    else
+    { /* yes, include LPJROOT directory in search path for includes */
+      lpjinc=malloc(strlen(lpjpath)+3);
+      checkptr(lpjinc);
+      options[dcount++]=strcat(strcpy(lpjinc,"-I"),lpjpath);
+      len+=strlen(lpjinc)+1;
+    }
+    len+=strlen(config->filter);
+    if(config->rank!=0)
+#ifdef _WIN32
+      len+=strlen(" 2>nul:");
+#else
+      len+=strlen(" 2>/dev/null");
+#endif
+    config->cmd=malloc(strlen(config->filename)+len+1);
+    checkptr(config->cmd);
+    strcat(strcpy(config->cmd,config->filter)," ");
+    /* concatenate options for cpp command */
+    for(i=0;i<dcount;i++)
+      strcat(strcat(config->cmd,options[i])," ");
+    strcat(config->cmd,config->filename);
+    if(config->rank!=0)
+#ifdef _WIN32
+      strcat(config->cmd," 2>nul:"); /* only task 0 sends error messages */
+#else
+      strcat(config->cmd," 2>/dev/null"); /* only task 0 sends error messages */
+#endif
+    if(lpjpath!=NULL)
+      free(lpjinc);
+    file=popen(config->cmd,"r"); /* open pipe, output of cpp goes to file */
   }
-  len+=strlen(filter);
-  if(config->rank!=0)
-#ifdef _WIN32
-    len+=strlen(" 2>nul:");
-#else
-    len+=strlen(" 2>/dev/null");
-#endif
-  cmd=malloc(strlen(config->filename)+len+1);
-  checkptr(cmd);
-  strcat(strcpy(cmd,filter)," ");
-  /* concatenate options for cpp command */
-  for(i=0;i<dcount;i++)
-    strcat(strcat(cmd,options[i])," ");
-  strcat(cmd,config->filename);
-  if(config->rank!=0)
-#ifdef _WIN32
-    strcat(cmd," 2>nul:"); /* only task 0 sends error messages */
-#else
-    strcat(cmd," 2>/dev/null"); /* only task 0 sends error messages */
-#endif
-  if(lpjpath!=NULL)
-    free(lpjinc);
-  file=popen(cmd,"r"); /* open pipe, output of cpp goes to file */
-  free(cmd);
   if(file==NULL)
   {
     if(isroot(*config))
@@ -477,7 +491,7 @@ FILE *openconfig(Config *config,      /**< configuration struct */
   if(isroot(*config))
   {
     len=printf("Reading configuration from '%s'",config->filename);
-    if(dcount>1 || (dcount && lpjpath==NULL))
+    if(!config->nopp && (dcount>1 || (dcount && lpjpath==NULL)))
     {
       len+=printf(" with options ");
       if(lpjpath!=NULL)

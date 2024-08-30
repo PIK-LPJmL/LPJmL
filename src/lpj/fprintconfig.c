@@ -85,7 +85,7 @@ static size_t isnetcdfinput(const Config *config)
     if(config->landfrac_filename.fmt==CDF)
       width=max(width,strlen(config->landfrac_filename.var));
   }
-  if(config->cropsheatfrost || config->fire==SPITFIRE_TMAX)
+  if(config->fire==SPITFIRE_TMAX)
   {
     if(config->tmin_filename.fmt==CDF)
       width=max(width,strlen(config->tmin_filename.var));
@@ -108,8 +108,6 @@ static size_t isnetcdfinput(const Config *config)
   }
   if(config->ispopulation && config->popdens_filename.fmt==CDF)
     width=max(width,strlen(config->popdens_filename.var));
-  if(config->grassfix_filename.name!=NULL && config->grassfix_filename.fmt==CDF)
-    width=max(width,strlen(config->grassfix_filename.var));
   if(config->grassharvest_filename.name!=NULL && config->grassharvest_filename.fmt==CDF)
     width=max(width,strlen(config->grassharvest_filename.var));
   if(config->withlanduse!=NO_LANDUSE)
@@ -174,7 +172,7 @@ static size_t isnetcdfinput(const Config *config)
 #ifdef IMAGE
   if(config->wateruse_wd_filename.name!=NULL && config->wateruse_wd_filename.fmt==CDF)
     width=max(width,strlen(config->wateruse_wd_filename.var));
-  if(config->aquifer_irrig==AQUIFER_IRRIG && config->aquifer_filename.fmt==CDF)
+  if(config->aquifer_irrig && config->aquifer_filename.fmt==CDF)
     width=max(width,strlen(config->aquifer_filename.var));
 #endif
   if(width)
@@ -235,6 +233,23 @@ static void printinputfile(FILE *file,const char *descr,const Filename *filename
   fputc('\n',file);
 } /* of 'printinputfile' */
 
+static void fprintcultivations(FILE *file,const Pftpar *pftpar,int ntotpft)
+{
+  int p;
+  int cult;
+  cult=pftpar[0].cultivation_type;
+  fprintf(file,"Cultivation types: %s",cultivation_type[cult]);
+  for(p=1;p<ntotpft;p++)
+  {
+    if(cult!=pftpar[p].cultivation_type)
+    {
+      cult=pftpar[p].cultivation_type;
+      fprintf(file,", %s",cultivation_type[cult]);
+    }
+  }
+  fputc('\n',file);
+} /* of 'fprintcultivations' */
+
 void fprintconfig(FILE *file,          /**< File pointer to text output file */
                   int npft,            /**< Number of natural PFTs */
                   int ncft,            /**< Number of crop PFTs */
@@ -249,6 +264,7 @@ void fprintconfig(FILE *file,          /**< File pointer to text output file */
   int i,count=0,width,width_unit,index;
   Bool isnetcdf;
   fputs("==============================================================================\n",file);
+  fprintattrs(file,config->global_attrs,config->n_global);
   fprintf(file,"Simulation \"%s\"",config->sim_name);
   if(config->ntask>1)
     fprintf(file," running on %d tasks\n",config->ntask);
@@ -326,17 +342,8 @@ void fprintconfig(FILE *file,          /**< File pointer to text output file */
 #endif
   if(config->johansen)
     len=printsim(file,len,&count,"Johansen conductivity");
-  if(config->black_fallow)
-  {
-    len=printsim(file,len,&count,"black fallow");
-    if(config->till_fallow)
-      len=printsim(file,len,&count,"tillage fallow");
-    if(config->prescribe_residues)
-    {
-      snprintf(s,STRING_LEN,"prescribe residues of '%s'",config->pftpar[config->pft_residue].name);
-      len=printsim(file,len,&count,s);
-    }
-  }
+  if(config->percolation_heattransfer)
+    len=printsim(file,len,&count,"percolation heattransfer");
   if(config->prescribe_landcover)
     len=printsim(file,len,&count,(config->prescribe_landcover==LANDCOVEREST) ? "prescribed establishment":"prescribed maximum FPC");
   if(config->gsi_phenology)
@@ -397,11 +404,6 @@ void fprintconfig(FILE *file,          /**< File pointer to text output file */
                config->pftpar[config->cft_temp+npft].name);
       len=printsim(file,len,&count,s);
     }
-    if (config->cropsheatfrost)
-    {
-      len += fprintf(file, ", ");
-      len = fputstring(file, len, "with crops heat frost", 78);
-    }
     if (config->grassonly)
     {
       len += fprintf(file, ", ");
@@ -412,10 +414,25 @@ void fprintconfig(FILE *file,          /**< File pointer to text output file */
       len+=fprintf(file,", ");
       len=fputstring(file,len,"land-use change timber",78);
     }
-    if(config->tillage_type)
+    if(config->residue_treatment==FIXED_RESIDUE_REMOVE)
     {
-      snprintf(s,STRING_LEN,"with tillage at year %d",config->till_startyear);
-      len=printsim(file,len,&count,s);
+      len+=fprintf(file,", ");
+      len=fputstring(file,len,"fixed residue remove",78);
+    }
+    else if(config->residue_treatment==READ_RESIDUE_DATA)
+    {
+      len+=fprintf(file,", ");
+      len=fputstring(file,len,"residue remove read from file",78);
+    }
+    if(config->tillage_type==TILLAGE)
+    {
+      len+=fprintf(file,", ");
+      len=fputstring(file,len,"with tillage",78);
+    }
+    else if(config->tillage_type==READ_TILLAGE)
+    {
+      len+=fprintf(file,", ");
+      len=fputstring(file,len,"with tillage read from file",78);
     }
     if (config->crop_resp_fix)
     {
@@ -432,21 +449,16 @@ void fprintconfig(FILE *file,          /**< File pointer to text output file */
       len+=fprintf(file,", ");
       len=fputstring(file,len,"fire in residuals",78);
     }
-    if(config->laimax_interpolate==LAIMAX_INTERPOLATE)
-    {
-      len+=fprintf(file,", ");
-      len=fputstring(file,len,"interpolated LAImax",78);
-    }
-    else if(config->laimax_interpolate==CONST_LAI_MAX)
+    if(config->laimax_manage==LAIMAX_CONST)
     {
       len+=fprintf(file,", ");
       snprintf(s,STRING_LEN,"const LAImax=%.1f",config->laimax);
       len=fputstring(file,len,s,78);
     }
-    else if(config->laimax_interpolate==LAIMAX_PAR)
+    else if(config->laimax_manage==LAIMAX_PAR)
     {
       len+=fprintf(file,", ");
-      len=fputstring(file,len,"pft.js LAImax",78);
+      len=fputstring(file,len,"pft.cjson LAImax",78);
     }
     if(config->sdate_option==FIXED_SDATE)
     {
@@ -480,22 +492,18 @@ void fprintconfig(FILE *file,          /**< File pointer to text output file */
     snprintf(s,STRING_LEN,"%s crop PHU option",crop_phu_options[config->crop_phu_option]);
     len=fputstring(file,len,s,78);
   }
-  if(config->double_harvest)
-    len=printsim(file,len,&count,"double harvest");
-  if(config->grassfix_filename.name!=NULL)
-    len=printsim(file,len,&count,"grassland fixed PFT");
+  if(config->separate_harvests)
+    len=printsim(file,len,&count,"separate harvests");
   if(config->grassharvest_filename.name!=NULL)
     len=printsim(file,len,&count,"grassland harvest options");
   if(config->prescribe_lsuha)
     len=printsim(file,len,&count,"prescribed livestock density");
-  if(config->firewood)
-    len=printsim(file,len,&count,"wood fires");
   if(config->reservoir)
     len=printsim(file,len,&count,"dam reservoirs");
 #ifdef IMAGE
-  if(config->groundwater_irrig==GROUNDWATER_IRRIG)
+  if(config->groundwater_irrig)
     len=printsim(file,len,&count,"groundwater irrigation");
-  if(config->aquifer_irrig==AQUIFER_IRRIG)
+  if(config->aquifer_irrig)
     len=printsim(file,len,&count,"aquifer irrigation");
 #endif
   if(config->wateruse)
@@ -511,8 +519,13 @@ void fprintconfig(FILE *file,          /**< File pointer to text output file */
     fprintf(file,"Mowing days for grassland:");
     for(i=0;i<config->mowingdays_size;i++)
       fprintf(file," %d",config->mowingdays[i]);
+    fputc('\n',file);
   }
-  fprintf(file,"\nWorking directory: %s\n",getdir());
+  fprintcultivations(file,config->pftpar,npft+ncft);
+  fprintf(file,"Working directory: %s\n",getdir());
+  if(config->json_filename!=NULL)
+    fprintf(file,"%s processed configuration file written to `%s`.\n",
+            config->filter,config->json_filename);
   if(isreadrestart(config))
     fprintf(file,"Starting from restart file '%s'.\n",config->restart_filename);
   else
@@ -567,7 +580,7 @@ void fprintconfig(FILE *file,          /**< File pointer to text output file */
   printinputfile(file,"co2",&config->co2_filename,width,config);
   if(config->with_nitrogen || config->fire==SPITFIRE || config->fire==SPITFIRE_TMAX)
     printinputfile(file,"windspeed",&config->wind_filename,width,config);
-  if(config->cropsheatfrost || config->fire==SPITFIRE_TMAX)
+  if(config->fire==SPITFIRE_TMAX)
   {
     printinputfile(file,"tmin",&config->tmin_filename,width,config);
     printinputfile(file,"tmax",&config->tmax_filename,width,config);
@@ -587,15 +600,11 @@ void fprintconfig(FILE *file,          /**< File pointer to text output file */
     printinputfile(file,"burntarea",&config->burntarea_filename,width,config);
   if(config->prescribe_landcover)
     printinputfile(file,"landcover",&config->landcover_filename,width,config);
-  if(config->grassfix_filename.name!=NULL)
-    printinputfile(file,"Grassfix",&config->grassfix_filename,width,config);
   if(config->grassharvest_filename.name!=NULL)
     printinputfile(file,"Grassharvest",&config->grassharvest_filename,width,config);
   if(config->withlanduse!=NO_LANDUSE)
   {
     printinputfile(file,"countries",&config->countrycode_filename,width,config);
-    if(config->countrycode_filename.fmt==CDF)
-      printinputfile(file,"regions",&config->regioncode_filename,width,config);
     printinputfile(file,"landuse",&config->landuse_filename,width,config);
     if(config->iscotton)
     {
@@ -625,7 +634,7 @@ void fprintconfig(FILE *file,          /**< File pointer to text output file */
     printinputfile(file,"reservoir",&config->reservoir_filename,width,config);
   }
 #ifdef IMAGE
-  if(config->aquifer_irrig==AQUIFER_IRRIG)
+  if(config->aquifer_irrig)
     printinputfile(file,"aquifer",&config->aquifer_filename,width,config);
 #endif
   if(config->wet_filename.name!=NULL)
@@ -745,16 +754,17 @@ void fprintconfig(FILE *file,          /**< File pointer to text output file */
       if(config->compress)
         fprintf(file,"Compression level for NetCDF: %d\n",config->compress);
       fprintf(file,"Missing value in NetCDF:      %g\n"
+                   "Base year in NetCDF:          %d\n"
                    "NetCDF grid:                  %s\n",
-              config->missing_value,
+              config->missing_value,config->baseyear,
               config->global_netcdf ? "global" : "local");
     }
-    fprintf(file,"%*s Fmt  %*s Type  dt  nbd Filename\n",-width,"Variable",-width_unit,"Unit");
+    fprintf(file,"%*s Fmt  %*s Type   tstep nbd Filename\n",-width,"Variable",-width_unit,"Unit");
     frepeatch(file,'-',width);
     fputs(" ---- ",file);
     frepeatch(file,'-',width_unit);
-    fputs(" ----- --- --- ",file);
-    frepeatch(file,'-',76-width-4-width_unit-7-3-4);
+    fputs(" ------ ----- --- ",file);
+    frepeatch(file,'-',76-width-4-width_unit-7-3-7);
     putc('\n',file);
     for(i=0;i<config->n_out;i++)
     {
@@ -763,9 +773,9 @@ void fprintconfig(FILE *file,          /**< File pointer to text output file */
         fprintf(file,"%*d",-width,config->outputvars[index].id);
       else
         fprintf(file,"%*s",-width,config->outnames[config->outputvars[index].id].name);
-      fprintf(file," %-4s %*s %-5s %-3s %3d ",fmt[config->outputvars[index].filename.fmt],
+      fprintf(file," %-4s %*s %-6s %-5s %3d ",fmt[config->outputvars[index].filename.fmt],
               -width_unit,strlen(config->outnames[config->outputvars[index].id].unit)==0 ? "-" : config->outnames[config->outputvars[index].id].unit,
-              typenames[getoutputtype(config->outputvars[index].id,config->float_grid)],
+              typenames[getoutputtype(config->outputvars[index].id,config->grid_type)],
               sprinttimestep(s,config->outnames[config->outputvars[index].id].timestep),outputsize(config->outputvars[index].id,npft,ncft,config));
       printoutname(file,&config->outputvars[index].filename,config->outputvars[index].oneyear,config);
       putc('\n',file);
@@ -774,8 +784,8 @@ void fprintconfig(FILE *file,          /**< File pointer to text output file */
     frepeatch(file,'-',width);
     fputs(" ---- ",file);
     frepeatch(file,'-',width_unit);
-    fputs(" ----- --- --- ",file);
-    frepeatch(file,'-',76-width-4-width_unit-7-3-4);
+    fputs(" ------ ----- --- ",file);
+    frepeatch(file,'-',76-width-4-width_unit-7-3-7);
     putc('\n',file);
     if(config->pft_output_scaled)
       fputs("PFT-specific output is grid scaled.\n",file);

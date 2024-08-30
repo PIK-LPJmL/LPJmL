@@ -70,6 +70,7 @@ core-*
 *.dat
 *.DAT
 *.swp
+*.tmp
 
 # output files
 *.lpj
@@ -166,4 +167,12 @@ bin/mergeclm
 bin/country2cdf
 bin/binsum
 bin/arr2clm
+bin/regriddrain
 bin/coupler_demo
+bin/cmpbin
+bin/statclm
+bin/drainage2cdf
+bin/cdf2grid
+
+# test build folder
+src/test/build
