@@ -24,7 +24,7 @@ of `major.minor.patch` with
 ### Contributors
 
 - author: Christoph Müller (cmueller@pik-potsdam.de)
-- code review:
+- code review: Susanne Rolinski (rolinski@pik-potsdam.de), Fabian Stenzel (stenzel@pik-potsdam.de)
 
 ### Changed
 
