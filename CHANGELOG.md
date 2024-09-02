@@ -33,6 +33,18 @@ of `major.minor.patch` with
 - missing scaling of `bm_inc.nitrogen` after part of it was added to litter in harvest of wood plantations as in issue #358
 
 
+## [5.9.8] - 2024-09-02
+
+### Contributors
+
+- author: Christoph Müller (cmueller@pik-potsdam.de)
+- code review: Susanne Rolinski (rolinski@pik-potsdam.de), Fabian Stenzel (stenzel@pik-potsdam.de)
+
+### Changed
+
+- included latest reference in .zenodo.json for syncing github and gitlab repositories. Future transfer of code between gitlab and github should be smoother now as both are at the same commit history now
+
+
 ## [5.9.7] - 2024-08-30
 
 ### Contributors
