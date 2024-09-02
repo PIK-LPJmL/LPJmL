@@ -28,7 +28,7 @@
 #ifndef LPJ_H /* Already included? */
 #define LPJ_H
 
-#define LPJ_VERSION  "5.8.17-SPITFIRE"
+#define LPJ_VERSION  "5.9.5-SPITFIRE"
 
 /* Necessary header files */
 

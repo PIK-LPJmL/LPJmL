@@ -37,4 +37,5 @@ void update_reservoir_daily(Cell *cell, /**< pointer to cell */
 #endif
   cell->ml.resdata->dmass=max(cell->ml.resdata->dmass-eeq*PRIESTLEY_TAYLOR*cell->coord.area*cell->ml.reservoirfrac,0.0);
   getoutput(&cell->output,RES_STORAGE,config)+=cell->ml.resdata->dmass;
+  getoutput(&cell->output,TWS,config)+=reservoir_surface_storage(cell->ml.resdata)/cell->coord.area;
 } /* of 'update_reservoir_daily' */

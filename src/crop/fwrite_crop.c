@@ -53,7 +53,6 @@ Bool fwrite_crop(FILE *file,    /**< pointer to file data */
   fwrite1(&crop->nfertilizer,sizeof(Real),file);
   fwrite1(&crop->nmanure,sizeof(Real),file);
   fwrite1(&crop->vscal_sum,sizeof(Real),file);
-  fwrite1(&crop->frostkill,sizeof(int),file);
   if(crop->sh!=NULL)
   {
     fwrite1(&crop->sh->petsum,sizeof(Real),file);

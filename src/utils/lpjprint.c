@@ -42,14 +42,14 @@ static Bool printgrid(Config *config, /* Pointer to LPJ configuration */
 {
   Cell grid;
   int i,soil_id,data;
-  Bool swap,missing;
+  Bool swap,missing,isregion;
   unsigned int soilcode;
-  Code code;
+  int code;
   size_t offset;
   FILE *file_restart;
   char *name;
   Celldata celldata;
-  Infile countrycode,regioncode;
+  Infile countrycode;
 
   /* Open coordinate file */
   celldata=opencelldata(config);
@@ -72,26 +72,18 @@ static Bool printgrid(Config *config, /* Pointer to LPJ configuration */
         closecelldata(celldata,config);
         return TRUE;
       }
-      regioncode.fmt=config->regioncode_filename.fmt;
-      regioncode.cdf=openinput_netcdf(&config->regioncode_filename,NULL,0,config);
-      if(regioncode.cdf==NULL)
-      {
-        closeinput_netcdf(countrycode.cdf);
-        closecelldata(celldata,config);
-        return TRUE;
-      }
     }
     else
     {
       /* Open countrycode file */
       countrycode.file=opencountrycode(&config->countrycode_filename,
-                                       &countrycode.swap,&countrycode.type,&offset,isroot(*config));
+                                       &countrycode.swap,&isregion,&countrycode.type,&offset,isroot(*config));
       if(countrycode.file==NULL)
       {
         closecelldata(celldata,config);
         return TRUE;
       }
-      if(seekcountrycode(countrycode.file,config->startgrid,countrycode.type,offset))
+      if(seekcountrycode(countrycode.file,config->startgrid,(isregion) ? 2 : 1,countrycode.type,offset))
       {
         /* seeking to position of first grid cell failed */
         fprintf(stderr,
@@ -121,17 +113,13 @@ static Bool printgrid(Config *config, /* Pointer to LPJ configuration */
        if(config->countrycode_filename.fmt==CDF)
       {
         if(readintinput_netcdf(countrycode.cdf,&data,&grid.coord,&missing) || missing)
-          code.country=-1;
+          code=-1;
         else
-          code.country=(short)data;
-        if(readintinput_netcdf(regioncode.cdf,&data,&grid.coord,&missing) || missing)
-          code.region=-1;
-        else
-          code.region=(short)data;
+          code=data;
       }
       else
       {
-        if(readcountrycode(countrycode.file,&code,countrycode.type,countrycode.swap))
+        if(readcountrycode(countrycode.file,&code,countrycode.type,isregion,countrycode.swap))
         {
           name=getrealfilename(&config->countrycode_filename);
           fprintf(stderr,"ERROR190: Cannot read restart data from '%s' for cell %d.\n",
@@ -140,25 +128,20 @@ static Bool printgrid(Config *config, /* Pointer to LPJ configuration */
           break;
         }
       }
-      if(code.country<0 || code.country>=config->ncountries ||
-         code.region<0 || code.region>=config->nregions)
+      if(code<0 || code>=config->ncountries)
       {
           if(config->soilmap[soilcode]>0)
-            fprintf(stderr,"WARNING009: Invalid countrycode=%d or regioncode=%d with valid soilcode in cell (not skipped)\n",code.country,code.region);
+            fprintf(stderr,"WARNING009: Invalid countrycode=%d with valid soilcode in cell (not skipped)\n",code);
           grid.ml.manage.laimax=NULL;
           grid.ml.manage.par=NULL;
-          grid.ml.manage.regpar=NULL;
       }
       else
-        initmanage(&grid.ml.manage,config->countrypar+code.country,
-                   config->regionpar+code.region,config->pftpar,npft,config->nagtree,ncft,
-                   config->laimax_interpolate,config->laimax);
+        initmanage(&grid.ml.manage,code,npft,ncft,config);
     }
     else
     {
       grid.ml.manage.laimax=NULL;
       grid.ml.manage.par=NULL;
-      grid.ml.manage.regpar=NULL;
     }
     /* Init cells */
     grid.ml.cropfrac_rf=grid.ml.cropfrac_ir=0;
@@ -207,8 +190,6 @@ static Bool printgrid(Config *config, /* Pointer to LPJ configuration */
   if(config->countrypar!=NULL)
   {
     closeinput(&countrycode);
-    if(config->countrycode_filename.fmt==CDF)
-      closeinput(&regioncode);
   }
   return FALSE;
 }

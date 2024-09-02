@@ -88,7 +88,7 @@ Bool fscanoutput(LPJfile *file,  /**< pointer to LPJ file */
   config->withdailyoutput=FALSE;
   size=nout_max;
   config->json_filename=NULL;
-  if(iskeydefined(file,"outpath"))
+  if(iskeydefined(file,"outpath") && !isnull(file,"outpath"))
   {
     outpath=fscanstring(file,NULL,"outpath",verbosity);
     if(outpath==NULL)
@@ -118,7 +118,7 @@ Bool fscanoutput(LPJfile *file,  /**< pointer to LPJ file */
       }
     }
   }
-  if(!iskeydefined(file,"output"))
+  if(!iskeydefined(file,"output") && !isnull(file,"output"))
   {
     config->pft_output_scaled=FALSE;
     config->n_out=0;

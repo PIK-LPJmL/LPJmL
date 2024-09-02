@@ -15,11 +15,11 @@
 #include <stdio.h>
 #include "types.h"
 
-void fprintintf(FILE *file, /**< pointer to text file */
-                int num     /** integer to be print */
+void fprintintf(FILE *file,   /**< pointer to text file */
+                long long num /**< long integer to be print */
                )
 {
-  int i,count,d;
+  long long i,count,d;
   if(num<0)
   {
     fprintf(file,"-");
@@ -32,11 +32,11 @@ void fprintintf(FILE *file, /**< pointer to text file */
     d*=1000;
     count++;
   }
-  fprintf(file,"%d",i);
+  fprintf(file,"%lld",i);
   for(i=0;i<count;i++)
   {
     num=num % d;
     d/=1000;
-    fprintf(file,",%03d",num/d);
+    fprintf(file,",%03lld",num/d);
   }
 } /* of fprintintf' */

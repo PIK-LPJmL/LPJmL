@@ -16,16 +16,16 @@
 
 #include "lpj.h"
 
-Bool readcountrycode(FILE *file, /**< pointer to binary file */
-                     Code *code, /**< country and region code read */
-                     Type type,  /**< LPJ datatypes */
-                     Bool swap   /**< byte order has to be swapped */
-                    )            /** \return TRUE on error */
+Bool readcountrycode(FILE *file,    /**< pointer to binary file */
+                     int *code,     /**< country code read */
+                     Type type,     /**< LPJ datatypes */
+                     Bool isregion, /**< file contains information about region (TRUE/FALSE) */
+                     Bool swap      /**< byte order has to be swapped */
+                    )               /** \return TRUE on error */
 {
   int data[2];
-  if(readintvec(file,data,2,swap,type))
+  if(readintvec(file,data,(isregion) ? 2 : 1,swap,type))
     return TRUE;
-  code->country=(short)data[0];
-  code->region=(short)data[1];
+  *code=data[0];
   return FALSE;
 } /* of *readcountrycode' */

@@ -161,6 +161,18 @@ void fprintsoil(FILE *file,           /**< pointer to text file */
   fputs("\nIce pwph    ",file);
   foreachsoillayer(l)
     fprintf(file," %12.2f",soil->ice_pwp[l]);
+  fputs("\nwi_abs_enth ",file);
+  foreachsoillayer(l)
+    fprintf(file," %12.2f",soil->wi_abs_enth_adj[l]);
+  fputs("\nsol_abs_enth",file);
+  foreachsoillayer(l)
+    fprintf(file," %12.2f",soil->sol_abs_enth_adj[l]);
+  for(p=0;p<GPLHEAT;p++)
+  {
+    fprintf(file,"\nenth[%d]     ",p);
+    foreachsoillayer(l)
+      fprintf(file," %12.1f",soil->enth[l*GPLHEAT+p]);
+  }
   fputs("\n------------",file);
   for(l=0;l<NSOILLAYER+1;l++)
     fputs(" ------------",file);

@@ -22,7 +22,6 @@
 void update_annual(Cell *cell,          /**< Pointer to cell */
                    int npft,            /**< number of natural pfts */
                    int ncft,            /**< number of crop pfts */
-                   Real popdens,        /**< population density (capita/km2) */
                    int year,            /**< simulation year (AD) */
                    Bool isdaily,        /**< daily temperature data (TRUE/FALSE) */
                    Bool intercrop,      /**< intercropping (TRUE/FALSE) */
@@ -77,7 +76,7 @@ void update_annual(Cell *cell,          /**< Pointer to cell */
     if(!config->with_nitrogen)
       foreachpft(pft,p,&stand->pftlist)
         pft->vscal=NDAYYEAR;
-    if(annual_stand(stand,npft,ncft,popdens,year,isdaily,intercrop,config))
+    if(annual_stand(stand,npft,ncft,year,isdaily,intercrop,config))
     {
       /* stand has to be deleted */
       delstand(cell->standlist,s);

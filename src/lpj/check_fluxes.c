@@ -51,10 +51,10 @@ void check_fluxes(Cell *cell,          /**< cell pointer */
   delta_tot.nitrogen=tot.nitrogen-cell->balance.tot.nitrogen;
   cell->balance.tot=tot;
 
-  balance.carbon=cell->balance.anpp-cell->balance.arh-cell->balance.fire.carbon-cell->balance.flux_firewood.carbon+
+  balance.carbon=cell->balance.anpp-cell->balance.arh-cell->balance.fire.carbon+
                  cell->balance.flux_estab.carbon-cell->balance.flux_harvest.carbon-cell->balance.biomass_yield.carbon-delta_tot.carbon-
                  cell->balance.neg_fluxes.carbon+cell->balance.influx.carbon;
-  balance.nitrogen=cell->balance.influx.nitrogen-cell->balance.fire.nitrogen-cell->balance.flux_firewood.nitrogen-cell->balance.n_outflux+cell->balance.flux_estab.nitrogen-
+  balance.nitrogen=cell->balance.influx.nitrogen-cell->balance.fire.nitrogen-cell->balance.n_outflux+cell->balance.flux_estab.nitrogen-
     cell->balance.biomass_yield.nitrogen-cell->balance.flux_harvest.nitrogen-delta_tot.nitrogen-cell->balance.neg_fluxes.nitrogen-
     cell->balance.deforest_emissions.nitrogen;//cell->balance.timber_harvest.nitrogen;
   /* for IMAGE but can also be used without IMAGE */

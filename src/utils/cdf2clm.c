@@ -15,9 +15,9 @@
 #include "lpj.h"
 
 #ifdef USE_UDUNITS
-#define USAGE "Usage: %s [-h] [-v] [-units unit] [-var name] [-time name] [-o filename] [-scale factor] [-id s] [-version v] [-float] [-zero] [-json] gridfile netcdffile ...\n"
+#define USAGE "Usage: %s [-h] [-v] [-units unit] [-var name] [-time name] [-map name] [-o filename] [-scale factor] [-id s] [-version v] [-float] [-zero] [-json] gridfile netcdffile ...\n"
 #else
-#define USAGE "Usage: %s [-h] [-v] [-var name] [-o filename] [-scale factor] [-id s] [-version v] [-float] [-zero] [-json] gridfile netcdffile ...\n"
+#define USAGE "Usage: %s [-h] [-v] [-var name] [-time name] [-map name] [-o filename] [-scale factor] [-id s] [-version v] [-float] [-zero] [-json] gridfile netcdffile ...\n"
 #endif
 
 #if defined(USE_NETCDF) || defined(USE_NETCDF4)
@@ -41,6 +41,8 @@ static void printindex(size_t i,Time time,size_t var_len)
       if(var_len>1)
         fprintf(stderr,"at item %d",(int)(i % var_len)+1);
       break;
+    default:
+      break;
   }
 } /* of 'printindex' */
 
@@ -53,10 +55,10 @@ static Bool readclimate2(Climatefile *file,    /* climate data file */
                         )                      /* returns TRUE on error */
 {
   int cell,rc;
-  short *s;
-  int *idata;
-  float *f;
-  double *d;
+  short *s=NULL;
+  int *idata=NULL;
+  float *f=NULL;
+  double *d=NULL;
   int index,start;
   size_t i,size;
   size_t offsets[4];
@@ -72,6 +74,9 @@ static Bool readclimate2(Climatefile *file,    /* climate data file */
     case YEAR: case MISSING_TIME:
       size=1;
       break;
+    default:
+      fprintf(stderr,"Time step of second not supported.\n");
+      return TRUE;
   }
   if(file->time_step==MISSING_TIME)
     start=0;
@@ -196,6 +201,8 @@ static Bool readclimate2(Climatefile *file,    /* climate data file */
         case LPJ_SHORT:
           free(s);
           break;
+        default:
+          break;
       }
       nc_close(file->ncid);
       return TRUE;
@@ -312,6 +319,8 @@ static Bool readclimate2(Climatefile *file,    /* climate data file */
           }
           data[cell*size*file->var_len+i]=(float)(file->slope*s[file->nlon*(i*file->nlat+offsets[index])+offsets[index+1]]+file->intercept);
           break;
+        default:
+          break;
       } /* of 'switch' */
     }
   }
@@ -329,6 +338,8 @@ static Bool readclimate2(Climatefile *file,    /* climate data file */
     case LPJ_SHORT:
       free(s);
       break;
+    default:
+      break;
   }
   return FALSE;
 } /* of 'readclimate2' */
@@ -341,20 +352,22 @@ int main(int argc,char **argv)
   Coordfile coordfile;
   Climatefile climate;
   Config config;
-  char *units,*var,*outname,*endptr,*time_name,*arglist,*long_name,*standard_name,*history,*source;
-  float scale,*data;
+  char *units,*var,*outname,*endptr,*time_name,*arglist,*long_name=NULL,*standard_name=NULL,*history=NULL,*source=NULL;
+  char *map_name=NULL;
+  Map *map=NULL;
+  float scale,*data=NULL;
   Filename coord_filename;
   Coord *coords;
   Header header;
   FILE *file;
   int iarg,j,k,year,version;
-  short *s;
+  short *s=NULL;
   Bool isfloat,verbose,iszero,isjson;
-  Time time;
-  size_t var_len;
+  Time time=DAY;
+  size_t var_len=0;
   char *id,*out_json;
   Attr *attrs=NULL;
-  int n_attr,len;
+  int n_attr=0,len;
   char name[NC_MAX_NAME];
   Filename grid_name;
   Type grid_type;
@@ -431,6 +444,16 @@ int main(int argc,char **argv)
         units=argv[++iarg];
       }
 #endif
+      else if(!strcmp(argv[iarg],"-map"))
+      {
+        if(argc==iarg+1)
+        {
+          fprintf(stderr,"Missing argument after option '-map'.\n"
+                 USAGE,argv[0]);
+          return EXIT_FAILURE;
+        }
+        map_name=argv[++iarg];
+      }
       else if(!strcmp(argv[iarg],"-o"))
       {
         if(argc==iarg+1)
@@ -576,6 +599,9 @@ int main(int argc,char **argv)
           if(verbose)
             printf((climate.time_step==YEAR) ? "yearly" : "no");
           break;
+        case SECOND:
+          fprintf(stderr,"Time step of second not supported in '%s'.\n",argv[j]);
+          return EXIT_FAILURE;
       }
       if(verbose)
       {
@@ -608,6 +634,17 @@ int main(int argc,char **argv)
       standard_name=getattr_netcdf(&climate,climate.varid,"standard_name");
       history=getattr_netcdf(&climate,NC_GLOBAL,"history");
       source=getattr_netcdf(&climate,NC_GLOBAL,"source");
+      if(map_name!=NULL)
+      {
+        map=readmap_netcdf(climate.ncid,map_name);
+        if(map==NULL)
+        {
+          fprintf(stderr,"Map '%s' not found in '%s'.\n",map_name,argv[j]);
+          map_name=NULL;
+        }
+        else
+          map_name=BAND_NAMES;
+      }
       if(nc_inq_natts(climate.ncid,&len))
         n_attr=0;
       else
@@ -715,7 +752,7 @@ int main(int argc,char **argv)
       header.nbands/=header.nstep;
     grid_name.name=argv[iarg];
     grid_name.fmt=CLM;
-    fprintjson(file,outname,source,history,arglist,&header,NULL,NULL,attrs,n_attr,var,units,standard_name,long_name,&grid_name,grid_type,CLM,id,FALSE,version);
+    fprintjson(file,outname,NULL,source,history,arglist,&header,map,map_name,attrs,n_attr,var,units,standard_name,long_name,&grid_name,grid_type,CLM,id,FALSE,version);
     fclose(file);
   }
   return EXIT_SUCCESS;

@@ -21,6 +21,7 @@
 #include "types.h"
 #include "errmsg.h"
 
+#define __USE_GNU
 static void fpehandler(int UNUSED(sig_num))
 {
   fail(FPE_ERR,TRUE,"Floating point exception occurred");

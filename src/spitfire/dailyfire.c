@@ -28,24 +28,20 @@ void dailyfire(Stand *stand,                /**< pointer to stand */
               )
 {
   Real fire_danger_index,human_ignition,num_fires,windsp_cover,ros_forward;
-  Real burnt_area,fire_frac,fire_frac_base;
-  Real fuel_consump;
+  Real burnt_area,fire_frac;
   Real fireduration;
   Real ndayfire;
   Real firedurationdays;
   Real burnt_area_max;
   Stocks deadfuel_consump,livefuel_consump,livefuel_consump_pft;
   Real surface_fi;
-  Real fpc_tree;
-  Real FAPAR12;
-  Real GPP_index;
   Stocks total_fire;
   Fuel fuel;
   Bool isdead;
   int p; 
   Output *output;
   Pft *pft;
-  Livefuel livefuel={0,0,0,0,0,0,0,0,0,0,0,0,0,0,0};
+  Livefuel livefuel={};
   Tracegas emission={0,0,0,0,0,0};
   output=&stand->cell->output;
   initfuel(&fuel);
@@ -136,7 +132,7 @@ void dailyfire(Stand *stand,                /**< pointer to stand */
     stand->afire_frac = 1.0;
   }
   /*fuel consumption in gBiomass/m2 for calculation of surface fire intensity*/
-  fuel_consump=deadfuel_consumption(&stand->soil.litter,&fuel,fire_frac);
+  deadfuel_consumption(&stand->soil.litter,&fuel,fire_frac);
   surface_fi=surface_fire_intensity(ros_forward,&fuel);
   /* if not enough surface fire energy to sustain burning */
   //printf("surface_fi: %g\n", surface_fi);
@@ -213,6 +209,9 @@ void dailyfire(Stand *stand,                /**< pointer to stand */
       getoutputindex(output,STAND_FDI,3,config) += fire_danger_index;
       getoutputindex(output,STAND_SURFACE_FI,3,config) += surface_fi;
       getoutputindex(output,STAND_FIREDURATION,3,config) += fireduration;
+      break;
+    default:
+      /* do nothing */
       break;
   }
   getoutput(output,FIREC,config) += total_fire.carbon;

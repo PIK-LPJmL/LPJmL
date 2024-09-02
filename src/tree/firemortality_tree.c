@@ -20,7 +20,7 @@ Real firemortality_tree(Pft *pft,const Fuel *fuel, Livefuel *livefuel,
   Pfttree *tree;
   const Pfttreepar *treepar;
   Real tau_c,tau_l,crown_length_tree,scorch_height;
-  Real ck,postfire_mort_ck,postfire_mort_camb;
+  Real ck,postfire_mort_ck;
   Real postfire_mort_total;
   Real nind_fa,nind_kill;
 

@@ -41,15 +41,15 @@ Landcover initlandcover(int npft,            /**< number of natural PFTs */
     free(landcover);
     return NULL;
   }
-  landcover->size=config->ngridcell*getnnat(npft,config);
-  if((landcover->frac=newvec(Real,landcover->size))==NULL)
+  landcover->size=getnnat(npft,config);
+  if((landcover->frac=newvec(Real,landcover->size*config->ngridcell))==NULL)
   {
     printallocerr("frac");
     closeclimatefile(&landcover->file,isroot(*config));
     free(landcover);
     return NULL;
   }
-  for(i=0;i<landcover->size;i++)
+  for(i=0;i<landcover->size*config->ngridcell;i++)
     landcover->frac[i]=0;
   return landcover;
 } /* of 'initlandcover' */
@@ -68,7 +68,7 @@ Bool readlandcover(Landcover landcover, /**< landcover data */
 {
   Real *data;
   int i,j,count;
-  for(i=0;i<landcover->size;i++)
+  for(i=0;i<landcover->size*config->ngridcell;i++)
     landcover->frac[i]=0;
   data=readdata(&landcover->file,NULL,grid,"landcover",year,config);
   if(data==NULL)
@@ -77,8 +77,8 @@ Bool readlandcover(Landcover landcover, /**< landcover data */
   for(i=0;i<config->ngridcell;i++)
     for(j=0;j<config->landcovermap_size;j++)
     {
-      if(data[count]!=NOT_FOUND)
-        landcover->frac[i*landcover->size/config->ngridcell+config->landcovermap[j]]+=data[count];
+      if(config->landcovermap[j]!=NOT_FOUND)
+        landcover->frac[i*landcover->size+config->landcovermap[j]]+=data[count];
       count++;
     }
   free(data);
@@ -89,7 +89,7 @@ Real *getlandcover(Landcover landcover, /**< landcover data */
                    int index            /**< cell index */
                   )                     /** \return land cover array of specified cell */
 {
-  return landcover->frac+index*landcover->file.var_len;
+  return landcover->frac+index*landcover->size;
 } /* of 'getlandcover' */
 
 void freelandcover(Landcover landcover, /**< landcover data */

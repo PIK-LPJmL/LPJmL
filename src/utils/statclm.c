@@ -68,6 +68,12 @@ int main(int argc,char **argv)
                   argv[iarg]);
           return EXIT_FAILURE;
         }
+        if(setversion>CLM_MAX_VERSION)
+        {
+          fprintf(stderr,"Version %d greater than maximum version %d supported.\n",
+                  setversion,CLM_MAX_VERSION);
+          return EXIT_FAILURE;
+        }
       }
       else if(!strcmp(argv[iarg],"-type"))
       {
@@ -241,7 +247,7 @@ int main(int argc,char **argv)
       if(argc-iarg>1)
         printf("%s: ",argv[i]);
       if(unit!=NULL && strlen(unit))
-        printf("min=%g %s, max=%g %s, avg=%g %s\n",fmin,unit,fmax,unit,favg/header.ncell,unit);
+        printf("min=%g %s, max=%g %s, avg=%g %s\n",fmin,unit,fmax,unit,favg/header.nyear,unit);
       else
         printf("min=%g, max=%g, avg=%g\n",fmin,fmax,favg/header.nyear);
     }

@@ -57,6 +57,15 @@ Bool getlatlon_netcdf(Climatefile *file,    /**< Climate data */
     free(dimids);
     return TRUE;
   }
+  nc_inq_varndims(file->ncid,var_id,&ndims);
+  if(ndims!=1)
+  {
+    if(isroot(*config))
+      fprintf(stderr,"ERROR408: Invalid number of dimensions %d for longitude '%s' in %s', must be 1.\n",
+              ndims,name,filename);
+    free(dimids);
+    return TRUE;
+  }
   nc_inq_dimlen(file->ncid,dimids[index],&file->nlon);
   dim=newvec(double,file->nlon);
   if(dim==NULL)
@@ -100,6 +109,15 @@ Bool getlatlon_netcdf(Climatefile *file,    /**< Climate data */
     if(isroot(*config))
       fprintf(stderr,"ERROR410: Cannot read %s in '%s': %s.\n",
               name,filename,nc_strerror(rc));
+    free(dimids);
+    return TRUE;
+  }
+  nc_inq_varndims(file->ncid,var_id,&ndims);
+  if(ndims!=1)
+  {
+    if(isroot(*config))
+      fprintf(stderr,"ERROR408: Invalid number of dimensions %d for latitude '%s' in %s', must be 1.\n",
+              ndims,name,filename);
     free(dimids);
     return TRUE;
   }

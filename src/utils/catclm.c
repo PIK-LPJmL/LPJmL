@@ -18,13 +18,13 @@
 
 int main(int argc,char **argv)
 {
-  Header header,oldheader;
+  Header header,oldheader={};
   String id;
-  int i,j,k,firstyear,version,n,setversion,iarg,firstversion;
+  int i,j,k,firstyear=0,version,n,setversion,iarg,firstversion=0;
   FILE *in,*out;
   short *values;
   int *ivals;
-  int *index,*index2;
+  int *index=NULL,*index2=NULL;
   Byte *bvals;
   long long *lvals;
   struct stat filestat;

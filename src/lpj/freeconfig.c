@@ -109,8 +109,6 @@ void freeconfig(Config *config /**< LPJmL configuration */
     freefilename(&config->popdens_filename);
   if(config->ishuman_ign_prob)
     freefilename(&config->human_ign_prob_filename);
-  if(config->grassfix_filename.name!=NULL)
-    freefilename(&config->grassfix_filename);
   if(config->grassharvest_filename.name!=NULL)
     freefilename(&config->grassharvest_filename);
   if(config->with_nitrogen  || isspitfire(config))
@@ -131,7 +129,7 @@ void freeconfig(Config *config /**< LPJmL configuration */
     if(config->prescribe_burntarea)
       freefilename(&config->burntarea_filename);
   }
-  if(config->fire==SPITFIRE_TMAX || config->cropsheatfrost)
+  if(config->fire==SPITFIRE_TMAX)
   {
     freefilename(&config->tmin_filename);
     freefilename(&config->tmax_filename);
@@ -149,11 +147,8 @@ void freeconfig(Config *config /**< LPJmL configuration */
     if(config->tillage_type==READ_TILLAGE)
       freefilename(&config->with_tillage_filename);
     freecountrypar(config->countrypar,config->ncountries);
-    freeregionpar(config->regionpar,config->nregions);
     freefilename(&config->landuse_filename);
     freefilename(&config->countrycode_filename);
-    if(config->countrycode_filename.fmt==CDF)
-      freefilename(&config->regioncode_filename);
     if(config->iscotton)
     {
       freefilename(&config->sowing_cotton_rf_filename);

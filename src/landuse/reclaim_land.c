@@ -27,17 +27,16 @@ static void remove_vegetation_copy(Soil *soil, /* soil pointer */
   int p;
   Pft *pft;
   Real nind;
-  Real ftimber; /* fraction harvested for timber */
   Stocks harvest;
   Stocks stocks;
   Stocks trad_biofuel;
 #if defined IMAGE && defined COUPLED
+  Real ftimber; /* fraction harvested for timber */
   Bool tharvest=FALSE;
   if(luc_timber)
     ftimber=min(1,cell->ml.image_data->timber_frac/standfrac);
 #else
   Poolpar frac;
-  ftimber=1;
   /* fast and slow separation based on wood demand for pulpwood and particles (fast) and sawlog, veneer and others (slow) */
   /* remainder is burnt, if param.fburn is set to 1.0 */
   frac.fast=param.harvest_fast_frac; /* 76% of cut trees is harvested and 26% of harvested wood into fast pools, so 34% of harvested wood goes to fast pools */

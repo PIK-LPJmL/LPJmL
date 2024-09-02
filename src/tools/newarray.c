@@ -1,6 +1,8 @@
 /**************************************************************************************/
 /**                                                                                \n**/
-/**        f  p  r  i  n  t  r  e  g  i  o  n  p  a  r  .  c                       \n**/
+/**                     n  e  w  a  r  r  a  y  .  c                               \n**/
+/**                                                                                \n**/
+/** Function allocates storage for an array with bounds [lo,hi]                    \n**/
 /**                                                                                \n**/
 /** (C) Potsdam Institute for Climate Impact Research (PIK), see COPYRIGHT file    \n**/
 /** authors, and contributors see AUTHORS file                                     \n**/
@@ -10,18 +12,18 @@
 /**                                                                                \n**/
 /**************************************************************************************/
 
-#include "lpj.h"
+#include <stdlib.h>
+#include <stdio.h>
+#include "types.h"
 
-void fprintregionpar(FILE *file, /**< pointer to text file */
-                     const Regionpar regionpar[], /**< array of region params */
-                     int nregions /**< size of array */
-                    )
+void *newarray(size_t size, /**< size of array element */
+               int lo,      /**< lower bound of array */
+               int hi       /**< upper bound of array */
+              )             /** \return pointer to array or NULL */
 {
-  int i;
-  fputs("Region                                       bifratio fuelratio woodconsum\n"
-        "-------------------------------------------- -------- --------- ----------\n",file);
-  for(i=0;i<nregions;i++)
-   fprintf(file,"%-44s %8.5f %9.5f %10.5f\n",regionpar[i].name,
-           regionpar[i].bifratio,regionpar[i].fuelratio,regionpar[i].woodconsum);
-  fputs("-------------------------------------------- -------- --------- ----------\n",file);
-} /* of 'fprintregionpar' */
+  void *ptr;
+  ptr=malloc(size*(hi-lo+1));
+  if(ptr==NULL)
+    return NULL;
+  return ptr-lo*size;
+} /* of 'newarray' */

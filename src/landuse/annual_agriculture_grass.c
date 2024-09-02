@@ -23,7 +23,6 @@
 Bool annual_agriculture_grass(Stand* stand,         /**< Pointer to stand */
                               int npft,             /**< number of natural pfts */
                               int ncft,             /**< number of crop PFTs */
-                              Real UNUSED(popdens), /**< population density (capita/km2) */
                               int year,
                               Bool isdaily,         /**< daily temperature data? */
                               Bool UNUSED(intercrop),

@@ -22,7 +22,7 @@ int main(int argc,char **argv)
   float *data;
   float *data_sum;
   size_t offset;
-  int i,j,ngrid,iarg,nitem,nsum,nyear,version,format;
+  int i,j,ngrid=0,iarg,nitem,nsum,nyear,version,format;
   char *endptr;
   char *map_name=BAND_NAMES;
   char *arglist;
@@ -125,20 +125,23 @@ int main(int argc,char **argv)
     }
     switch(grid_type)
     {
-       case LPJ_SHORT:
-         ngrid=getfilesizep(file)/sizeof(short)/2;
-         break;
-       case LPJ_FLOAT:
-         ngrid=getfilesizep(file)/sizeof(float)/2;
-         break;
-       case LPJ_DOUBLE:
-         ngrid=getfilesizep(file)/sizeof(double)/2;
-         break;
+      case LPJ_SHORT:
+        ngrid=getfilesizep(file)/sizeof(short)/2;
+        break;
+      case LPJ_FLOAT:
+        ngrid=getfilesizep(file)/sizeof(float)/2;
+        break;
+      case LPJ_DOUBLE:
+        ngrid=getfilesizep(file)/sizeof(double)/2;
+        break;
+      default:
+        fprintf(stderr,"Invalid datatype %d in '%s'.\n",grid_type,argv[iarg]);
+        return EXIT_FAILURE;
     }
     if(ngrid==0)
     {
-       fprintf(stderr,"Error: Number of grid cells in '%s' is zero.\n",argv[iarg]);
-       return EXIT_FAILURE;
+      fprintf(stderr,"Error: Number of grid cells in '%s' is zero.\n",argv[iarg]);
+      return EXIT_FAILURE;
     }
     fclose(file);
     iarg++;
@@ -228,7 +231,7 @@ int main(int argc,char **argv)
   }
   else
   {
-    /* raw binary format, get numnber of years from file size */
+    /* raw binary format, get number of years from file size */
     nyear=getfilesizep(file)/sizeof(float)/ngrid/nitem;
     if(getfilesizep(file) % (sizeof(float)*ngrid*nitem))
       fprintf(stderr,"Warning: file size of '%s' is not multiple of bands %d and number of cells %d.\n",argv[iarg],nitem,ngrid);
@@ -297,7 +300,7 @@ int main(int argc,char **argv)
       printfcreateerr(out_json);
       return EXIT_FAILURE;
     }
-    fprintjson(file,argv[iarg+1],source,history,arglist,&header,map,map_name,attrs,n_attr,variable,units,standard_name,long_name,(grid_name.name==NULL) ? NULL : &grid_name,grid_type,(isclm) ? CLM : format,LPJOUTPUT_HEADER,FALSE,LPJOUTPUT_VERSION);
+    fprintjson(file,argv[iarg+1],NULL,source,history,arglist,&header,map,map_name,attrs,n_attr,variable,units,standard_name,long_name,(grid_name.name==NULL) ? NULL : &grid_name,grid_type,(isclm) ? CLM : format,LPJOUTPUT_HEADER,FALSE,LPJOUTPUT_VERSION);
     fclose(file);
   }
   return EXIT_SUCCESS;

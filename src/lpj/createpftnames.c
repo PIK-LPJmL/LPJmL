@@ -45,7 +45,7 @@ static Bool addpfts(char **pftnames,int *index,Bool iscft,int irr,const Pftpar *
   return FALSE;
 } /* of addnames' */
 
-static Bool addnames(char **pftnames,int *index,Bool iscft,int irr,const char **names,int size)
+static Bool addnames(char **pftnames,int *index,Bool iscft,int irr,char **names,int size)
 {
   int i;
   for(i=0;i<size;i++)

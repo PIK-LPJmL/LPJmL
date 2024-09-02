@@ -26,7 +26,10 @@ static Bool readsocket(Socket *socket,int day,int sizes[],int count[],Type type[
 {
   Token token;
   int index;
-  int year,step;
+  int year;
+#if COUPLER_VERSION == 4
+  int step;
+#endif
   int j,k;
   float *data;
   short *sdata;
@@ -128,12 +131,12 @@ static Bool readyeardata(Socket *socket,int nday_out,int nmonth_out,int n_out,in
 
 int main(int argc,char **argv)
 {
-  FILE *file;
+  FILE *file=NULL;
   Header header;
   Socket *socket;
   float *landuse;
   float *fertilizer;
-  short *country,*region;
+  short *country;
   char *endptr;
   float co2;
   Intcoord *coords;
@@ -143,14 +146,16 @@ int main(int argc,char **argv)
   Type type[NOUT];
   int sizes_in[N_IN];
   Type type_in[N_IN];
+#if COUPLER_VERSION == 4
   Type datatype;
+  int ncell_in;
+  int status;
+#endif
   int port;
   int nmonth_out;
   int nday_out;
   int nbands;
   int firstgrid;
-  int ncell_in;
-  int status;
   Bool swap;
   String line;
   const char *progname;
@@ -411,9 +416,9 @@ int main(int argc,char **argv)
           index=COUPLER_OK;
           break;
         default:
-          index=COUPLER_ERR;
           n_err++;
           fprintf(stderr,"Invalid number of steps %d for index %d, must be 1, 12, or 365.\n",nstep[index],index);
+          index=COUPLER_ERR;
       }
     writeint_socket(socket,&index,1);
   }
@@ -447,7 +452,7 @@ int main(int argc,char **argv)
   writeint_socket(socket,&index,1);
   n_out-=n_err;
   /* read all static non time dependent outputs */
-  region=country=NULL;
+  country=NULL;
   coords=NULL;
   fcoords=NULL;
   for(i=0;i<n_out_1;i++)
@@ -489,11 +494,6 @@ int main(int argc,char **argv)
         country=newvec(short,sizes[index]);
         check(country);
         readshort_socket(socket,country,sizes[index]);
-        break;
-      case REGION:
-        region=newvec(short,sizes[index]);
-        check(region);
-        readshort_socket(socket,region,sizes[index]);
         break;
       default:
         fprintf(stderr,"Unsupported index %d of output.\n",index);

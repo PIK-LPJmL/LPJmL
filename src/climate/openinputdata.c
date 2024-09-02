@@ -44,7 +44,7 @@ Bool openinputdata(Infile *file,             /**< pointer to file */
   else
   {
     if((file->file=openinputfile(&header,&file->swap,
-                                 filename,headername,unit,
+                                 filename,headername,unit,datatype,
                                  &version,&offset,FALSE,config))==NULL)
     {
       if(isroot(*config))
@@ -60,7 +60,7 @@ Bool openinputdata(Infile *file,             /**< pointer to file */
     }
     else
     {
-      file->type=(version<=2) ? datatype : header.datatype;
+      file->type=header.datatype;
       if(isroot(*config) && filename->fmt!=META)
       {
         filesize=getfilesizep(file->file)-headersize(headername,version)-offset;

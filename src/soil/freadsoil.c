@@ -63,6 +63,9 @@ Bool freadsoil(FILE *file,             /**< pointer to binary file */
   freadreal1(&soil->snowheight,swap,file);
   freadreal1(&soil->snowfraction,swap,file);
   freadreal(soil->temp,NSOILLAYER+1,swap,file);
+  freadreal(soil->enth,NHEATGRIDP,swap,file);
+  freadreal(soil->wi_abs_enth_adj,NSOILLAYER,swap,file);
+  freadreal(soil->sol_abs_enth_adj,NSOILLAYER,swap,file);
   freadreal(soil->ice_depth,NSOILLAYER,swap,file);
   freadreal(soil->ice_fw,NSOILLAYER,swap,file);
   freadreal(soil->freeze_depth,NSOILLAYER,swap,file);

@@ -23,12 +23,12 @@ int main(int argc,char **argv)
   FILE *out;
   int i,iarg,year,cell,version,version_out,*nbands,setversion,numfiles,nbands_sum,index;
   Bool swapnstep;
-  Byte *bvec;
-  short *svec;
-  int *ivec;
-  float *fvec;
-  double *dvec;
-  void *vec;
+  Byte *bvec=NULL;
+  short *svec=NULL;
+  int *ivec=NULL;
+  float *fvec=NULL;
+  double *dvec=NULL;
+  void *vec=NULL;
   struct stat filestat;
   char c;
   int rc;
@@ -42,6 +42,7 @@ int main(int argc,char **argv)
   size4=FALSE;
   swapnstep=FALSE;
   setversion=READ_VERSION;
+  version_out=READ_VERSION;
   /* process command options */
   for(iarg=1;iarg<argc;iarg++)
     if(argv[iarg][0]=='-')

@@ -34,7 +34,7 @@ int main(int argc,char **argv)
   FILE *ofp;
   FILE *gfp;
   float slat, elat, slon, elon;
-  int npix,nrec,nyrs,type;
+  int npix,nrec,type;
   int ilat,ilon;
   float res;
   int **lw;
@@ -80,8 +80,6 @@ int main(int argc,char **argv)
   res=atof(argv[11]);
 
   nrec=atoi(argv[12]);
-
-  nyrs=atoi(argv[13]);
 
   type=atoi(argv[14]);
   if(type<0 || type>4)

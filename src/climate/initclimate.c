@@ -194,7 +194,7 @@ Climate *initclimate(Config *config /**< pointer to LPJ configuration */
       }
     }
   }
-  if(config->cropsheatfrost || config->fire==SPITFIRE_TMAX)
+  if(config->fire==SPITFIRE_TMAX)
   {
     if(openclimate(&climate->file_tmin,&config->tmin_filename,"celsius",LPJ_SHORT,0.1,config))
     {
@@ -341,7 +341,7 @@ Climate *initclimate(Config *config /**< pointer to LPJ configuration */
       }
     }
   }
-  if(config->cropsheatfrost || config->fire==SPITFIRE_TMAX)
+  if(config->fire==SPITFIRE_TMAX)
   {
     if((climate->data.tmax=newvec(Real,climate->file_tmax.n))==NULL)
     {

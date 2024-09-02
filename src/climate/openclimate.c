@@ -146,7 +146,7 @@ Bool openclimate(Climatefile *file,        /**< pointer to climate file */
   }
   if((file->file=openinputfile(&header,&file->swap,
                                filename,
-                               headername,units,
+                               headername,units,datatype,
                                &version,&offset,TRUE,config))==NULL)
     return TRUE;
   if (header.order!=CELLYEAR)
@@ -204,7 +204,7 @@ Bool openclimate(Climatefile *file,        /**< pointer to climate file */
   file->firstyear=header.firstyear;
   file->scalar=(version<=1) ? scalar : header.scalar;
   file->nyear=header.nyear;
-  file->datatype=(file->version<=2) ? datatype : header.datatype;
+  file->datatype=header.datatype;
   if(filename->fmt==RAW)
   {
     header.nbands=12;

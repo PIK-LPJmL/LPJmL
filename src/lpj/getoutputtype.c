@@ -25,7 +25,7 @@ Type getoutputtype(int index,     /**< index of output */
     case GRID:
       return grid_type;
     case SEASONALITY: case SDATE: case HDATE: case COUNTRY:
-    case REGION: case SDATE2: case HDATE2: case SYEAR: case SYEAR2:
+    case SDATE2: case HDATE2: case SYEAR: case SYEAR2:
       return LPJ_SHORT;
     default:
       return LPJ_FLOAT;
