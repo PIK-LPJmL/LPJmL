@@ -2,9 +2,9 @@
 | |   |  _ \   | |_ __ ___ | |     | ___|       / _ \
 | |   | |_) |  | | '_ ` _ \| |     |___ \      | (_) |
 | |___|  __/ |_| | | | | | | |___   ___) |  _   \__, |
-|_____|_|   \___/|_| |_| |_|_____| |____/  (_)    /_/  Version 5.9.5
+|_____|_|   \___/|_| |_| |_|_____| |____/  (_)    /_/  Version 5.9.7
 
-Installation of LPJmL C Version 5.9.5
+Installation of LPJmL C Version 5.9.7
 
 Installation for Unix-like systems
 ----------------------------------
@@ -26,7 +26,7 @@ cd lpjml
 
 untar source files
 
-gzip -cd lpjml-5.9.5.tar.gz|tar -xf -
+gzip -cd lpjml-5.9.7.tar.gz|tar -xf -
 
 Directory tree after extracting the tar files:
 
@@ -213,6 +213,7 @@ catclm       - concatenate LPJmL climate data files
 cdf2bin      - convert NetCDF files into raw binary data
 cdf2clm      - convert NetCDF files into CLM files
 cdf2coord    - extract CLM grid file from NetCDF file
+cdf2grid     - convert grid NetCDF file into grid CLM or raw file
 cdf2soil     - convert NetCDF file into binary file
 cft2clm      - convert binary landuse data files to CLM data files for LPJmL
 clm2cdf      - convert CLM files into NetCDF files
