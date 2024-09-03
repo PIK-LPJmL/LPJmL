@@ -17,42 +17,42 @@ Id,Lon,Lat,X_CRU,Y_CRU
 .SH OPTIONS
 .TP
 \-h,\--help
-display a short help text
+Display a short help text.
 .TP
 \-v,\--verbose
-verbose output
+Verbose output.
 .TP
 \-latlon
-read first latitude then longitude value from text file
+read first latitude then longitude value from text file.
 .TP
 \-map refgridfile
-map cell coordinate to nearest cell in refgridfile
+Map cell coordinate to nearest cell in refgridfile.
 .TP
 \-fmt s
-input format string for the scanf function in 
+Input format string for the scanf function in
 .B txt2grid
-, default is "%*d,%f,%f,%*d,%*d"
+, default is "%*d,%f,%f,%*d,%*d".
 .TP
 \-skip n
-skip first n lines in text file, default is one
+Skip first n lines in text file, default is 1.
 .TP
 \-cellsize size
-set latitudinal and longitudinal cell size, default is 0.5
+Set latitudinal and longitudinal cell size, default is 0.5.
 .TP
 \-cellsize_lon size
-set longitudinal cell size, default is 0.5
+Set longitudinal cell size, default is 0.5.
 .TP
 \-cellsize_lat size
-set latitudinal cell size, default is 0.5
+Set latitudinal cell size, default is 0.5.
 .TP
 \-float
-longitude/latitude values written in float format to clm file, default is short
+Longitude/latitude values written in float format to clm file, default is short.
 .TP
-.I textfile    
-filename of text file to convert
+.I textfile
+Filename of text file to convert.
 .TP
-.I gridfile     
-filename of clm grid data file written
+.I gridfile
+Filename of clm grid data file written.
 .SH EXAMPLES
 .TP
 Create clm grid data file from text file containing longitude/latitude values in each line:

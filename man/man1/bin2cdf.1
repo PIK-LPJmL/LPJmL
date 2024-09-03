@@ -10,90 +10,90 @@ Program converts binary output files into NetCDF file.
 .SH OPTIONS
 .TP
 \-h,\--help
-Print help text
+Print help text.
 .TP
 \-v,\--version
-Print LPJmL version
+Print LPJmL version.
 .TP
 \-clm
 File is in clm format, default is raw.
 .TP
 \-floatgrid
-set datatype of grid file to float, default is short.
+Set datatype of grid file to float, default is short.
 .TP
 \-doublegrid
-set datatype of grid file to double, default is short.
+Set datatype of grid file to double, default is short.
 .TP
 \-revlat
-Reverse latitudinal bands
+Reverse latitudinal bands.
 .TP
 \-days
-Uses days as units for monthly output
+Use days as units for monthly output.
 \-absyear
-Uses absolute years as units for annual time axis instead of relative years to base year
+Uses absolute years as units for annual time axis instead of relative years to base year.
 .TP
 \-netcdf4
 File written is in NetCDF4 format, compress flag is enabled.
 .TP
 \-cellsize size
-set cell size in grid file to size. Default is 0.5 deg.
+Set cell size in grid file to size. Default is 0.5 deg.
 .TP
 \-compress level
-compression level for NetCDF4 files
+Compression level for NetCDF4 files. Valid levels are 0 (no compression) to 9.
 .TP
 \-descr d
-set long name in NetCDF file
+Set long name in NetCDF file.
 .TP
 \-missing_value val
-set missing value in NetCDF file to val
+Set missing value in NetCDF file to val.
 .TP
 \-attr name=value
-set global attribute name in NETCDF file to value
+Set global attribute name in NETCDF file to value.
 .TP
 \-units u
-set units in NetCDF file
+Set units in NetCDF file.
 .TP
 \-global
-use global grid for NetCDF file
+Use global grid for NetCDF file.
 .TP
-\-swap 
-change byte order in binary file
+\-swap
+Change byte order in binary file.
 .TP
-\-short 
-Data type of output is short, default is float
+\-short
+Data type of output is short, default is float.
 .TP
 \-nstep n
-set number of outputs per year, default is one
+Set number of outputs per year, default is 1.
 .TP
 \-nbands n
-set number of PFTs or layers, default is one
+Set number of PFTs or layers, default is 1.
 .TP
 \-ispft
-output is PFT specific. 
+Output is PFT specific.
 .TP
 \-firstyear y
-set first year in NetCDF file. Default is 1901.
+Set first year in NetCDF file. Default is 1901.
 .TP
 \-baseyear y
-set base year of time axis in NetCDF file. Default is firstyear.
+Set base year of time axis in NetCDF file. Default is firstyear.
 .TP
 \-metafile
-set the input format to JSON metafile instead of raw
+Set the input format to JSON metafile instead of raw.
 .TP
 \-map name
-name of map in JSON metafile, default is "band_names"
+Name of map in JSON metafile, default is "band_names".
 .TP
 varname
-variable name in NetCDF file. If not specified variable name is read from metafile
+Variable name in NetCDF file. If not specified variable name is read from metafile.
 .TP
-.I gridfile    
-filename of grid data file. If not specified filename is read from metafile
+.I gridfile
+Filename of grid data file. If not specified filename is read from metafile.
 .TP
 .I binfile
-filename of binary data file or JSON metafile if -metafile option is set
+Filename of binary data file or JSON metafile if -metafile option is set.
 .TP
-.I netcdffile     
-filename of NetCDF file created
+.I netcdffile
+Filename of NetCDF file created.
 .SH EXAMPLES
 .TP
 Create NetCDF file for vegetation carbon:

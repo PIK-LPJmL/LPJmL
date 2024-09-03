@@ -1,30 +1,30 @@
 .TH lpjcheck 1  "USER COMMANDS"
 .SH NAME
-lpjcheck \- Checks syntax of LPJmL configuration files 
+lpjcheck \- Checks syntax of LPJmL configuration files
 .SH SYNOPSIS
 .B lpjcheck
 [\-h] [\-v] [\-q] [\-nocheck] [-vv] [\-ofiles] [\-param] [-nopp] [-pp cmd] [\-couple host[:port]] [\-outpath \fIdir\fP]
 [\-inpath \fIdir\fP] [\-restartpath \fIdir\fP] [[\-Dmacro[=value]] [\-I\fIdir\fP] ...]
 \fIfilename\fP
 .SH DESCRIPTION
-Program checks the syntax of LPJmL configuration files. It is checked additionally whether all input files and output directories are present. 
+Program checks the syntax of LPJmL configuration files. It is checked additionally whether all input files and output directories are present.
 \fBlpjcheck\fP will print the total amount of disk space used for the output files.
 .SH OPTIONS
 .TP
 \-h,\--help
-display a short help text
+Display a short help text.
 .TP
 \-v,\--version
-print LPJmL version
+Print LPJmL version.
 .TP
 \-q,\--quiet
 Only error messages are displayed, other output is suppressed.
 .TP
 \-nocheck
-Does not check for input/output files
+Do not check for input/output files.
 .TP
 \-vv
-verbosely print the actual values during reading of the configuration files.
+Verbosely print the actual values during reading of the configuration files.
 .TP
 \-ofiles
 List only all available output variables.
@@ -39,22 +39,22 @@ Disabling preprocessing of configuration file by \fBcpp\fP.
 Set preprocessor program to cmd. Default is \fBcpp\fP.
 .TP
 \-couple host[:port]
-set host where the coupled model is running. Default is localhost. Port is the port number for ingoing and outgoing data. Default port number is 2224.
+Set host where the coupled model is running. Default is localhost. Port is the port number for ingoing and outgoing data. Default port number is 2224.
 .TP
 \-outpath \fIdir\fP
-set the output directory path. The path is added to the output filenames if they do not contain an absolute path.
+Set the output directory path. The path is added to the output filenames if they do not contain an absolute path.
 .TP
 \-inpath \fIdir\fP
-set the input directory path. The path is added to the input filenames if they do not contain an absolute path.
+Set the input directory path. The path is added to the input filenames if they do not contain an absolute path.
 .TP
 \-Dmacro[=value]
-define macro for the preprocessor of the configuration file
+Define macro for the preprocessor of the configuration file.
 .TP
 \-I\fIdir\fP
-define include directory for the preprocessor of the configuration file
+Define include directory for the preprocessor of the configuration file.
 .TP
 .I filename
-name of configuration file
+Name of configuration file.
 .SH EXAMPLES
 .TP
 Check configuration file lpjml.cjson with input files located in the /p/projects/lpjml file system
@@ -63,7 +63,7 @@ Check configuration file lpjml.cjson with input files located in the /p/projects
 .PP
 .SH ENVIRONMENT
 .TP
-LPJPREP 
+LPJPREP
 defines preprocessor command for LPJmL configuration file, default is \fBcpp\fP. Same as '-pp' option.
 .TP
 LPJROOT
@@ -73,7 +73,7 @@ include directories of the preprocessor
 LPJINPATH
 Path appended to the input filenames. Only done for filenames without absolute path.
 .TP
-LPJOPTIONS     
+LPJOPTIONS
 runtime options for the preprocessor of LPJmL configuration files
 .TP
 LPJOUTPATH
