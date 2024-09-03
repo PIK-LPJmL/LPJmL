@@ -246,7 +246,7 @@ of `major.minor.patch` with
 
 - List of required modules on new PIK cluster added in `INSTALL`.
 - `configure.sh` script recognizes new PIK cluster and sets `mpiicx`/`icx` compiler accordingly.
-- New site-specific `Makefile.hpc2024` and Makefile.icx` for parallel/sequential compilation on new cluster added.
+- New site-specific `Makefile.hpc2024` and `Makefile.icx` for parallel/sequential compilation on new cluster added.
 - New `lpjsubmit_hpc` slurm script added for new PIK cluster. `configure.sh` sets symbolic link of `lpjsubmit` to this script.
 
 ### Changed
