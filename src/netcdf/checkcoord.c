@@ -22,7 +22,7 @@ Bool checkcoord(const size_t offsets[], /**< offsets in NetCDF file */
                 const Climatefile *file /**< climate data file */
                )                        /** \return cell is within NetCDF data (TRUE/FALSE) */
 {
-#if defined(USE_NETCDF)
+#ifdef USE_NETCDF
   String line;
   if(offsets[0]>=file->nlat)
   {

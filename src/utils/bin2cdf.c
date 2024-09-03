@@ -14,7 +14,7 @@
 
 #include "lpj.h"
 
-#if defined(USE_NETCDF)
+#ifdef USE_NETCDF
 #include <netcdf.h>
 #include <time.h>
 
@@ -562,7 +562,7 @@ static void close_cdf(Cdf *cdf)
 
 int main(int argc,char **argv)
 {
-#if defined(USE_NETCDF)
+#ifdef USE_NETCDF
   FILE *file,*gridfile;
   Intcoord intcoord;
   Coord_array *index;

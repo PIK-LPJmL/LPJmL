@@ -16,13 +16,13 @@
 
 #include "lpj.h"
 
-#if defined(USE_NETCDF)
+#ifdef USE_NETCDF
 #include <netcdf.h>
 #endif
 
 Bool write_int_netcdf(const Netcdf *cdf,const int vec[],int year,int size)
 {
-#if defined(USE_NETCDF)
+#ifdef USE_NETCDF
   int i,rc;
   size_t offsets[3],counts[3];
   int *grid;

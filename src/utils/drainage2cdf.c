@@ -13,7 +13,7 @@
 /**************************************************************************************/
 
 #include "lpj.h"
-#if defined(USE_NETCDF)
+#ifdef USE_NETCDF
 #include <netcdf.h>
 #include <time.h>
 #endif
@@ -23,7 +23,7 @@
 
 int main(int argc,char **argv)
 {
-#if defined(USE_NETCDF)
+#ifdef USE_NETCDF
   char *var;
   var=NULL;
   const double *lon,*lat;

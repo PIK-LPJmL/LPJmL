@@ -16,7 +16,7 @@
 
 #define USAGE  "Usage: %s [-var name] [-{float|double}] [-scale s] [-raw] [-json] netcdffile gridfile\n"
 
-#if defined(USE_NETCDF)
+#ifdef USE_NETCDF
 #include <netcdf.h>
 
 #define error(rc) if(rc){ fprintf(stderr,"ERROR421: Cannot read '%s': %s.\n",argv[iarg],nc_strerror(rc)); return EXIT_FAILURE;}
@@ -35,7 +35,7 @@ static int cmp(const Data *a,const Data *b)
 
 int main(int argc,char **argv)
 {
-#if defined(USE_NETCDF)
+#ifdef USE_NETCDF
   int rc,ncid,var_id,dimids[2],i,j,nvars,lon_id,lat_id,ndims,x,y,iarg,len,n_attr;
   double *lat,*lon;
   float scalar;

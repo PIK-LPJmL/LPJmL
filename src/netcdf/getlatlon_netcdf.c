@@ -16,7 +16,7 @@
 
 #include "lpj.h"
 
-#if defined(USE_NETCDF)
+#ifdef USE_NETCDF
 #include <netcdf.h>
 
 #define error(var,rc) if(rc) {if(isroot(*config))fprintf(stderr,"ERROR403: Cannot read '%s' in '%s': %s.\n",var,filename,nc_strerror(rc)); return TRUE;}
@@ -27,7 +27,7 @@ Bool getlatlon_netcdf(Climatefile *file,    /**< Climate data */
                       const Config *config  /**< LPJ configuration */
                      )                      /** \return TRUE on error */
 {
-#if defined(USE_NETCDF)
+#ifdef USE_NETCDF
   int rc,var_id,*dimids,ndims,index;
   char name[NC_MAX_NAME+1];
   double *dim;

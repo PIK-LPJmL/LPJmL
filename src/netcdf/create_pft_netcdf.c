@@ -15,7 +15,7 @@
 /**************************************************************************************/
 
 #include "lpj.h"
-#if defined(USE_NETCDF)
+#ifdef USE_NETCDF
 #include <netcdf.h>
 #include <time.h>
 
@@ -42,7 +42,7 @@ Bool create_pft_netcdf(Netcdf *cdf,
                        const Config *config  /**< LPJ configuration */
                       )                      /** \return TRUE on error */
 {
-#if defined(USE_NETCDF)
+#ifdef USE_NETCDF
   char *s;
   time_t t;
   int i,j,rc,nyear,imiss=MISSING_VALUE_INT,size,len;
