@@ -67,19 +67,19 @@ No time dimension in NetCDF file.
 Compression level for NetCDF4 files. Valid levels are 0 (no compression) to 9.
 .TP
 \-units u
-Set units in NetCDF file.
+Set units for variable in NetCDF file.
 .TP
 \-descr d
-Set long name in NetCDF file.
+Set long name for variable in NetCDF file.
 .TP
 \-missing_value val
-Set missing value in NetCDF file to val.
+Set missing value for variable in NetCDF file to val.
 .TP
 varname
-Variable name in NetCDF file. If not specified variable name is read from metafile.
+Variable name in NetCDF file. Variable name can be omitted if -metafile option is set. Then variable name is read from from metafile.
 .TP
 .I gridfile
-Filename of grid data file. If not specified grid name is read from metafile.
+Filename of grid data file. Grid filename can be omitted if -metafile option is set.Then grid filename is read from metafile.
 .TP
 .I clmfile
 Filename of CLM data file.
