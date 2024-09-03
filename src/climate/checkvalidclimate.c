@@ -128,7 +128,7 @@ Bool checkvalidclimate(Climate *climate, /**< pointer to climate data */
     if(checkvalid(&climate->file_lightning,config->lightning_filename.name,grid,config))
       return TRUE;
   }
-  if(config->with_nitrogen==LIM_NITROGEN)
+  if(!config->unlim_nitrogen)
   {
     if(checkvalid(&climate->file_no3deposition,config->no3deposition_filename.name,grid,config))
       return TRUE;

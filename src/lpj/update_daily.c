@@ -218,7 +218,7 @@ void update_daily(Cell *cell,            /**< cell pointer           */
     if(config->fire==FIRE && climate.temp>0)
       stand->fire_sum+=fire_sum(&stand->soil.litter,stand->soil.w[0]);
 
-    if(config->with_nitrogen==UNLIM_NITROGEN ||
+    if(config->unlim_nitrogen ||
        (config->equilsoil && param.veg_equil_unlim && year<=(config->firstyear-config->nspinup+param.veg_equil_year)))
     {
       if(stand->soil.par->type==ROCK)

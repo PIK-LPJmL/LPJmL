@@ -449,7 +449,7 @@ Bool filesexist(Config config, /**< LPJmL configuration */
   }
   if(config.ispopulation)
     bad+=checkdatafile(&config,&config.popdens_filename,"popdens","km-2",LPJ_SHORT,1);
-  if(config.with_nitrogen==LIM_NITROGEN && !config.no_ndeposition)
+  if(!config.unlim_nitrogen && !config.no_ndeposition)
   {
     bad+=checkclmfile(&config,"NO3 deposition",&config.no3deposition_filename,"g/m2/day",LPJ_FLOAT,FALSE);
     bad+=checkclmfile(&config,"NH4 deposition",&config.nh4deposition_filename,"g/m2/day",LPJ_FLOAT,FALSE);

@@ -265,11 +265,11 @@ Bool fscanconfig(Config *config,    /**< LPJ configuration */
   if(config->seed_start==RANDOM_SEED)
     config->seed_start=time(NULL);
   setseed(config->seed,config->seed_start);
-  config->with_nitrogen=LIM_NITROGEN;
+  config->unlim_nitrogen=FALSE;
 #ifdef COUPLING_WITH_FMS
   config->nitrogen_coupled=FALSE;
 #endif
-  if(fscankeywords(file,&config->with_nitrogen,"with_nitrogen",nitrogen,2,!config->pedantic,verbose))
+  if(fscankeywords(file,&config->unlim_nitrogen,"with_nitrogen",nitrogen,2,!config->pedantic,verbose))
     return TRUE;
   if(fscankeywords(file,&config->with_radiation,"radiation",radiation,4,FALSE,verbose))
     return TRUE;
@@ -373,7 +373,7 @@ Bool fscanconfig(Config *config,    /**< LPJ configuration */
   }
   config->fix_deposition=FALSE;
   config->fix_deposition_with_climate=FALSE;
-  if(config->with_nitrogen==LIM_NITROGEN)
+  if(!config->unlim_nitrogen)
   {
     if(fscanbool(file,&config->no_ndeposition,"no_ndeposition",!config->pedantic,verbose))
       return TRUE;
@@ -453,7 +453,7 @@ Bool fscanconfig(Config *config,    /**< LPJ configuration */
       config->crop_resp_fix=FALSE;
       if(fscanbool(file,&config->crop_resp_fix,"crop_resp_fix",!config->pedantic,verbose))
         return TRUE;
-      if(config->with_nitrogen==LIM_NITROGEN)
+      if(!config->unlim_nitrogen)
       {
         if(fscanbool(file,&config->fix_fertilization,"fix_fertilization",!config->pedantic,verbose))
           return TRUE;
@@ -844,7 +844,7 @@ Bool fscanconfig(Config *config,    /**< LPJ configuration */
         fprintf(stderr,"ERROR213: Invalid setting %d for radiation.\n",config->with_radiation);
       return TRUE;
   }
-  if(config->with_nitrogen!=UNLIM_NITROGEN && !config->no_ndeposition)
+  if(!config->unlim_nitrogen && !config->no_ndeposition)
   {
     scanclimatefilename(input,&config->no3deposition_filename,TRUE,TRUE,"no3deposition");
     scanclimatefilename(input,&config->nh4deposition_filename,TRUE,TRUE,"nh4deposition");

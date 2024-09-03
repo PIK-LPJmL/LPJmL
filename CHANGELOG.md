@@ -22,10 +22,11 @@ of `major.minor.patch` with
 ### Contributors
 
 - author: Werner von Bloh (bloh@pik-potsdam.de)
+- code review:
 
 ### Removed
 
-- Option `"no"` for nitrogen setting removed, only `"lim"` and `"unlim"` allowed. Corresponding parameter files removed.
+- Option `"no"` for nitrogen setting removed, only `"lim"` and `"unlim"` allowed. Corresponding parameter files `lpjparam_on.cjson` and `pft_non.cjson` removed.
 
 
 ## [5.9.7] - 2024-08-30

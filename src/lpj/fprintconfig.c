@@ -68,7 +68,7 @@ static size_t isnetcdfinput(const Config *config)
   }
   else if(config->cloud_filename.fmt==CDF)
     width=max(width,strlen(config->cloud_filename.var));
-  if(config->with_nitrogen!=UNLIM_NITROGEN && !config->no_ndeposition)
+  if(!config->unlim_nitrogen && !config->no_ndeposition)
   {
     if(config->no3deposition_filename.fmt==CDF)
       width=max(width,strlen(config->no3deposition_filename.var));
@@ -328,7 +328,7 @@ void fprintconfig(FILE *file,          /**< File pointer to text output file */
     len=printsim(file,len,&count,"external flow");
   if(config->equilsoil)
     len=printsim(file,len,&count,"equilsoil is called");
-  len=printsim(file,len,&count,(config->with_nitrogen==UNLIM_NITROGEN) ? "unlimited nitrogen" : "nitrogen limitation");
+  len=printsim(file,len,&count,(config->unlim_nitrogen) ? "unlimited nitrogen" : "nitrogen limitation");
   if(config->permafrost)
     len=printsim(file,len,&count,"permafrost");
 #ifdef COUPLING_WITH_FMS
@@ -563,7 +563,7 @@ void fprintconfig(FILE *file,          /**< File pointer to text output file */
   }
   else
     printinputfile(file,"cloud",&config->cloud_filename,width,config);
-  if(config->with_nitrogen!=UNLIM_NITROGEN && !config->no_ndeposition)
+  if(!config->unlim_nitrogen && !config->no_ndeposition)
   {
     printinputfile(file,"no3_depo",&config->no3deposition_filename,width,config);
     printinputfile(file,"nh4_depo",&config->nh4deposition_filename,width,config);

@@ -93,7 +93,7 @@ void fprintfiles(FILE *file,          /**< pointer to text output file */
   else
     fprintfilename(file,&config->cloud_filename,TRUE);
   fprintf(file,"%s\n",config->co2_filename.name);
-  if(config->with_nitrogen!=UNLIM_NITROGEN)
+  if(!config->unlim_nitrogen && !config->no_ndeposition)
   {
     fprintfilename(file,&config->no3deposition_filename,TRUE);
     fprintfilename(file,&config->nh4deposition_filename,TRUE);

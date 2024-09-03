@@ -39,8 +39,6 @@
 #define LAIMAX_CFT 0
 #define LAIMAX_CONST 1
 #define LAIMAX_PAR 2
-#define LIM_NITROGEN 0
-#define UNLIM_NITROGEN 1
 #define NO_WATERUSE 0
 #define WATERUSE 1
 #define ALL_WATERUSE 2

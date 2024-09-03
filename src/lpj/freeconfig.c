@@ -154,7 +154,7 @@ void freeconfig(Config *config /**< LPJmL configuration */
     if(config->crop_phu_option==PRESCRIBED_CROP_PHU)
       freefilename(&config->crop_phu_filename);
   }
-  if(config->with_nitrogen!=UNLIM_NITROGEN && !config->no_ndeposition)
+  if(!config->unlim_nitrogen && !config->no_ndeposition)
   {
     freefilename(&config->no3deposition_filename);
     freefilename(&config->nh4deposition_filename);
