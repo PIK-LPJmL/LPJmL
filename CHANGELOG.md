@@ -29,6 +29,18 @@ of `major.minor.patch` with
 - Option `"no"` for nitrogen setting removed, only `"lim"` and `"unlim"` allowed. Corresponding parameter files `lpjparam_on.cjson` and `pft_non.cjson` removed.
 
 
+## [5.9.8] - 2024-09-02
+
+### Contributors
+
+- author: Christoph Müller (cmueller@pik-potsdam.de)
+- code review: Susanne Rolinski (rolinski@pik-potsdam.de), Fabian Stenzel (stenzel@pik-potsdam.de)
+
+### Changed
+
+- included latest reference in .zenodo.json for syncing github and gitlab repositories. Future transfer of code between gitlab and github should be smoother now as both are at the same commit history now
+
+
 ## [5.9.7] - 2024-08-30
 
 ### Contributors
