@@ -25,7 +25,7 @@ of `major.minor.patch` with
 
 ### Changed
 
-- `USE_NETCDF4` compile option replaced by `"netcdf4"` boolean flag in the LPJmL configuration file. If set compression of NetCDF4 files can be enabled and PFT names are written as strings.
+- `USE_NETCDF4` compile option replaced by `"netcdf4"` boolean flag in the LPJmL configuration file. If set compression of NetCDF4 files can be enabled and PFT names are written as strings instead of character arrays.
 
 ### Added
 
@@ -33,6 +33,18 @@ of `major.minor.patch` with
 - Option `-compress` added to `drainage2cdf` utility to enable file compression.
 - Man page for `drainage2cdf` added.
 - Check for valid compression value added for lpjml and utilities.
+
+
+## [5.9.8] - 2024-09-02
+
+### Contributors
+
+- author: Christoph Müller (cmueller@pik-potsdam.de)
+- code review: Susanne Rolinski (rolinski@pik-potsdam.de), Fabian Stenzel (stenzel@pik-potsdam.de)
+
+### Changed
+
+- included latest reference in .zenodo.json for syncing github and gitlab repositories. Future transfer of code between gitlab and github should be smoother now as both are at the same commit history now
 
 
 ## [5.9.7] - 2024-08-30
