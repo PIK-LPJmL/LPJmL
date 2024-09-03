@@ -221,7 +221,7 @@ country2cdf  - convert country/region code file into NetCDF file
 cru2clm      - convert CRU data into file format suitable for LPJmL.
                CRU data files have to be in the format specified in
                http://www.cru.uea.ac.uk/~timm/grid/CRU_TS_2_1.html.
-cutclm       - cuts LPJmL climate data files
+cutclm       - cut LPJmL climate data files
 cvrtclm      - convert version of CLM file to version 3 or 4
 drainage2cdf - convert CLM drainage file into NetCDF file
 getcellindex - get cell index from latitude, longitude values
