@@ -216,6 +216,8 @@ Bool create_pft_netcdf(Netcdf *cdf,
       free(year);
       free(lon);
       free(lat);
+      free(layer);
+      free(bnds);
       return TRUE;
   }
   rc=nc_create(filename,(config->isnetcdf4) ? NC_CLOBBER|NC_NETCDF4 : NC_CLOBBER,&cdf->ncid);
@@ -232,7 +234,7 @@ Bool create_pft_netcdf(Netcdf *cdf,
   }
   if(config->nofill)
   {
-    ncsetfill(cdf->ncid,NC_NOFILL);
+    rc=ncsetfill(cdf->ncid,NC_NOFILL);
     error(rc);
   }
   if(year!=NULL)
@@ -302,6 +304,8 @@ Bool create_pft_netcdf(Netcdf *cdf,
       free(lat);
       free(lon);
       free(year);
+      free(layer);
+      free(bnds);
       printallocerr("pftnames");
       return TRUE;
     }
@@ -434,6 +438,8 @@ Bool create_pft_netcdf(Netcdf *cdf,
       free(lat);
       free(lon);
       free(year);
+      free(layer);
+      free(bnds);
       return TRUE;
   }
   error(rc);
