@@ -46,7 +46,7 @@ struct input_netcdf
   } missing_value;
 };
 
-#if defined(USE_NETCDF) || defined(USE_NETCDF4)
+#if defined(USE_NETCDF)
 static Bool checkinput(const size_t *offsets,const Coord *coord,const Input_netcdf file)
 {
   String line;
