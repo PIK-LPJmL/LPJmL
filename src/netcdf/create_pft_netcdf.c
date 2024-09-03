@@ -22,7 +22,7 @@
 static nc_type nctype[]={NC_BYTE,NC_SHORT,NC_INT,NC_FLOAT,NC_DOUBLE};
 #endif
 
-#define error(rc) if(rc) {free(lon);free(lat);free(year);free(layer);free(bnds);fprintf(stderr,"ERROR427: Cannot write '%s': %s.\n",filename,nc_strerror(rc)); nc_close(cdf->ncid); return TRUE;}
+#define error(rc) if(rc) {free(lon);free(lat);free(year);free(layer);free(bnds);free(pftnames); fprintf(stderr,"ERROR427: Cannot write '%s': %s.\n",filename,nc_strerror(rc)); nc_close(cdf->ncid); return TRUE;}
 
 Bool create_pft_netcdf(Netcdf *cdf,
                        const char *filename, /**< filename of NetCDF file */
@@ -234,8 +234,7 @@ Bool create_pft_netcdf(Netcdf *cdf,
   }
   if(config->nofill)
   {
-    rc=ncsetfill(cdf->ncid,NC_NOFILL);
-    error(rc);
+    ncsetfill(cdf->ncid,NC_NOFILL);
   }
   if(year!=NULL)
   {
@@ -304,8 +303,6 @@ Bool create_pft_netcdf(Netcdf *cdf,
       free(lat);
       free(lon);
       free(year);
-      free(layer);
-      free(bnds);
       printallocerr("pftnames");
       return TRUE;
     }
@@ -495,6 +492,7 @@ Bool create_pft_netcdf(Netcdf *cdf,
       }
     }
     freepftnames(pftnames,index,npft,ncft,config);
+    pftnames=NULL;
   }
   rc=nc_put_var_double(cdf->ncid,lat_var_id,lat);
   error(rc);
