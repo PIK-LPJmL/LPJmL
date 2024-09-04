@@ -49,6 +49,12 @@ Bool phenology_crop(Pft *pft,            /**< pointer to PFT variables */
     case PRESCRIBED_CROP_PHU:
       hlimit=par->hlimit;
       break;
+    case PRESCRIBED_CROP_PHU_ALL_IRRIG:
+      hlimit=par->hlimit;
+      break;
+    case PRESCRIBED_CROP_PHU_ALL_RAINFED:
+      hlimit=par->hlimit;
+      break;
     case NEW_CROP_PHU:
       hlimit=(crop->wtype) ? par->hlimit+90 : par->hlimit; /* add 90 days for winter crops for internally computed seasons */
       break;
