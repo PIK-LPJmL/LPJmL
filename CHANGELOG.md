@@ -66,6 +66,7 @@ of `major.minor.patch` with
 
 - order of freezing of different water soil water components changed: free water freezes last to simply mathematical description of model
 
+
 ## [5.9.6] - 2024-08-29
 
 ### Contributors

@@ -123,7 +123,7 @@
   "prescribe_lsuha" : true,             /* prescribe livestock unit per hectare, input required (needed for "grazing" = "livestock") */
   "mowing_days" : [152, 335],           /* Mowing days (day-of-year) for grassland if "grazing" = "mowing" */
   "crop_resp_fix" : false,              /* C:N ratio setting affecting crop respiration - options: true (fixed - avoids yield reductions at high n inputs); false (variable/dynamic) */
-  "crop_phu_option" : "prescribed",     /* defines setting for phenological heat unit and vernalization requirements for crops; options: "bondeau2017" (i.e. based on Bondeau et al. 2007 vernalization), "vbussel2015" (i.e. based on van Bussel et al. 2015 vernalization), "prescribed", ,"prescribed_all_rainfed", "prescribed_all_irrig" */
+  "crop_phu_option" : "prescribed",     /* defines setting for phenological heat unit and vernalization requirements for crops; options: "bondeau2017" (i.e. based on Bondeau et al. 2007 vernalization), "vbussel2015" (i.e. based on van Bussel et al. 2015 vernalization), "prescribed", "prescribed_all_rainfed", "prescribed_all_irrig" */
   "separate_harvests" : true,           /* true: enables outputs for second growing season (e.g. harvest2.bin; sdate2.bin - have to be explicitly added to outputs); false: crop specific outputs over all growing seasons are added up/overwritten - caution: this interplays with the setting "grid_scaled" */
   "npp_controlled_bnf" : true,          /* enable npp controlled bnf based on Ma et al. 2022, alternatively old Cleveland et al. 1999*/
   "percolation_heattransfer" : true,    /* enable heat transfer by percolation of water through the soil */
