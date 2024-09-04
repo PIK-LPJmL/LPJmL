@@ -417,7 +417,7 @@ void update_daily(Cell *cell,            /**< cell pointer           */
             cell->balance.aevap_lake+=eeq*PRIESTLEY_TAYLOR*cell->lakefrac;
 #if defined IMAGE && defined COUPLED
             if(cell->ml.image_data!=NULL)
-              cell->ml.image_data->mevapotr[month] += =eeq*PRIESTLEY_TAYLOR*stand->frac;
+              cell->ml.image_data->mevapotr[month] += eeq*PRIESTLEY_TAYLOR*stand->frac;
 #endif
             cell->discharge.dmass_lake=max(cell->discharge.dmass_lake-eeq*PRIESTLEY_TAYLOR*cell->coord.area*cell->lakefrac,0.0);
           }
