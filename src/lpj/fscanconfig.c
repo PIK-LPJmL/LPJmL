@@ -46,7 +46,7 @@
 
 #define checkptr(ptr) if(ptr==NULL) { printallocerr(#ptr); return TRUE; }
 
-char *crop_phu_options[]={"bondau2007","bussel2015","prescribed","prescribed_all_rainfed","prescribed_all_irrig"};
+char *crop_phu_options[]={"bondau2007","vbussel2015","prescribed","prescribed_all_rainfed","prescribed_all_irrig"};
 char *grazing_type[]={"default","mowing","ext","int","livestock","none"};
 
 static Bool readfilename2(LPJfile *file,Filename *name,const char *key,const char *path,Verbosity verbose)

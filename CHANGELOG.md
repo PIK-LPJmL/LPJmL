@@ -19,8 +19,10 @@ of `major.minor.patch` with
 
 ## [Unreleased]
 
+## [5.9.9] - 2024-09-04
+
 - author: Christoph Müller (cmueller@pik-potsdam.de)
-- code review:
+- code review: Stephen Wirth (wirth@pik-potsdam.de), Fabian Stenzel (stenzel@pik-potsdam.de)
 
 ### Added
 
@@ -30,7 +32,7 @@ of `major.minor.patch` with
 ### Changed
 
 - refactored `crop_option_restart` to `crop_phu_option_restart` in struct `Config` and `crop_option` to `crop_phu_option` in struct `Restartheader` for greater clarity
-- refactored options `"new"` to `"bussel15"` and `"old"` to `"bondau07"` for `crop_phu_options` where `"bussel15"` is an implementation based on [van Bussel et al. 2015](http://dx.doi.org/10.1111/geb.12351) 
+- refactored options `"new"` to `"vbussel15"` and `"old"` to `"bondau07"` for `crop_phu_options` where `"vbussel15"` is an implementation based on [van Bussel et al. 2015](http://dx.doi.org/10.1111/geb.12351) 
 
 ### Removed
 
@@ -39,6 +41,8 @@ of `major.minor.patch` with
 ### Fixed
 
 - fixed missing initialization of pointer `map` in cft2bin.c that caused abortion of compilation with `-Werror` otherwise
+
+
 ## [5.9.8] - 2024-09-02
 
 ### Contributors
