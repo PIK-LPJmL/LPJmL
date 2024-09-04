@@ -494,7 +494,12 @@ Cell *newgrid(Config *config,          /**< Pointer to LPJ configuration */
     iserr=TRUE;
 #endif
   if(iserror(iserr,config))
+  {
+#ifdef USE_MPI
+    free(counts);
+#endif
     return NULL;
+  }
 #ifdef USE_MPI
   MPI_Allgather(&config->count,1,MPI_INT,counts,1,MPI_INT,
                 config->comm);

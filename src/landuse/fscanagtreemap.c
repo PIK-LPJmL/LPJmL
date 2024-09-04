@@ -50,6 +50,7 @@ int *fscanagtreemap(LPJfile *file,       /**< pointer to LPJ config file */
     undef=newvec(Bool,config->nagtree);
     if(undef==NULL)
     {
+      free(cftmap);
       printallocerr(name);
       return NULL;
     }
@@ -69,12 +70,14 @@ int *fscanagtreemap(LPJfile *file,       /**< pointer to LPJ config file */
           fprintf(stderr,"ERROR226: Datatype of element %d in map '%s' is not of type string.\n",
                   cft+1,name);
         free(cftmap);
+        free(undef);
         return NULL;
       }
       s=fscanstring(item,NULL,NULL,verbose);
       if(s==NULL)
       {
         free(cftmap);
+        free(undef);
         return NULL;
       }
       cftmap[cft]=findpftname(s,config->pftpar+npft-config->nagtree,config->nagtree);
@@ -85,6 +88,7 @@ int *fscanagtreemap(LPJfile *file,       /**< pointer to LPJ config file */
         if(verbose)
           fprintf(stderr,"ERROR244: Unknown agricultural tree \"%s\" in map '%s'.\n",s,name);
         free(cftmap);
+        free(undef);
         return NULL;
       }
     } /* of for(cft=0...) */
@@ -95,6 +99,7 @@ int *fscanagtreemap(LPJfile *file,       /**< pointer to LPJ config file */
            fprintf(stderr,"ERROR244: Map '%s' not defined for '%s'.\n",
                    name,config->pftpar[npft-config->nagtree+cft].name);
         free(cftmap);
+        free(undef);
         return NULL;
       }
     free(undef);

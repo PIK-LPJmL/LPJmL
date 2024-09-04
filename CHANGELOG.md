@@ -39,6 +39,10 @@ of `major.minor.patch` with
 
 - Obsolete man page for `writeregioncode()` removed.
 
+### Fixed
+
+- Missing deallocation of memory added in `fscanlandcovermap.c`, `writearea.c`, `create_pft_netcdf.c`, `newgrid.c`,  `fscanagtreemap.c`,  `celldata.c` in case of error.
+
 
 ## [5.9.8] - 2024-09-02
 
