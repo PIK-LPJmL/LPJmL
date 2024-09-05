@@ -22,6 +22,7 @@ of `major.minor.patch` with
 ### Contributors
 
 - author: Werner von Bloh (bloh@pik-potsdam.de)
+- code review: Sebastian Ostberg (ostberg@pik-potsdam.de)
 
 ### Changed
 
@@ -42,7 +43,8 @@ of `major.minor.patch` with
 ### Fixed
 
 - Missing deallocation of memory added in `fscanlandcovermap.c`, `writearea.c`, `create_pft_netcdf.c`, `newgrid.c`,  `fscanagtreemap.c`,  `celldata.c` in case of error.
-
+- Syntax error fixed in `update_daily.c` in IMAGE coupling.
+- Typo in `README` corrected.
 
 ## [5.9.8] - 2024-09-02
 
@@ -238,6 +240,7 @@ of `major.minor.patch` with
 - code review: Sibyll Schaphoff (sibylls@pik-potsdam.de), Werner von Bloh (bloh@pik-potsdam.de) 
 
 ### Added
+
 - Added `GPL_HEAT` macro to change number of gridpoints per soil layer used for heat convection.
 - Added `percolation_heattransfer` switch to disable convection/percolation heattransfer.
 - Added `littertemp` output variable for litter temperature.
