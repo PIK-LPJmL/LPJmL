@@ -134,7 +134,7 @@ typedef struct
   Bool landuse;        /**< land use enabled (TRUE/FALSE) */
   Bool river_routing;  /**< river routing enabled (TRUE/FALSE) */
   int sdate_option;    /**< sowing date option (0-2)*/
-  Bool crop_option;    /**< prescribe crop PHU? (TRUE/FALSE) */
+  Bool crop_phu_option;    /**< prescribe crop PHU? (TRUE/FALSE) */
   Bool separate_harvests; /**< double harvest output enabled */
   Seed seed;           /**< Random seed */
 } Restartheader;

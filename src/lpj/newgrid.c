@@ -392,7 +392,7 @@ static Cell *newgrid2(Config *config,          /* Pointer to LPJ configuration *
         }
         else
           grid[i].ml.sdate_fixed=NULL;
-        if(config->crop_phu_option==PRESCRIBED_CROP_PHU)
+        if(config->crop_phu_option>=PRESCRIBED_CROP_PHU)
         {
           grid[i].ml.crop_phu_fixed=newvec(Real,2*ncft);
           checkptr(grid[i].ml.crop_phu_fixed);

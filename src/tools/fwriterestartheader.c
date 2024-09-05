@@ -24,7 +24,7 @@ Bool fwriterestartheader(FILE *file,                 /**< file pointer of binary
     return TRUE;
   if(fwrite(&header->sdate_option,sizeof(int),1,file)!=1)
     return TRUE;
-  if(fwrite(&header->crop_option,sizeof(int),1,file)!=1)
+  if(fwrite(&header->crop_phu_option,sizeof(int),1,file)!=1)
     return TRUE;
   if(fwrite(&header->separate_harvests,sizeof(int),1,file)!=1)
     return TRUE;

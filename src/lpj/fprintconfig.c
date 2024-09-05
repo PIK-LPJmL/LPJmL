@@ -123,9 +123,9 @@ static size_t isnetcdfinput(const Config *config)
       if(config->harvest_cotton_ir_filename.fmt==CDF)
         width=max(width,strlen(config->harvest_cotton_ir_filename.var));
     }
-    if(config->sdate_option==PRESCRIBED_SDATE && config->sdate_filename.fmt==CDF)
+    if(config->sdate_option>=PRESCRIBED_SDATE && config->sdate_filename.fmt==CDF)
       width=max(width,strlen(config->sdate_filename.var));
-    if(config->crop_phu_option==PRESCRIBED_CROP_PHU && config->crop_phu_filename.fmt==CDF)
+    if(config->crop_phu_option>=PRESCRIBED_CROP_PHU && config->crop_phu_filename.fmt==CDF)
       width=max(width,strlen(config->crop_phu_filename.var));
     if (config->fertilizer_input==FERTILIZER && config->fertilizer_nr_filename.fmt == CDF)
       width = max(width, strlen(config->fertilizer_nr_filename.var));
@@ -462,7 +462,7 @@ void fprintconfig(FILE *file,          /**< File pointer to text output file */
       snprintf(s,STRING_LEN,"fixed sowing date after %d",config->sdate_fixyear);
       len=fputstring(file,len,s,78);
     }
-    else if(config->sdate_option==PRESCRIBED_SDATE)
+    else if(config->sdate_option>=PRESCRIBED_SDATE)
     {
       len=fputstring(file,len,", ",78);
       count++;
@@ -604,9 +604,9 @@ void fprintconfig(FILE *file,          /**< File pointer to text output file */
       printinputfile(file,"sowing_ir",&config->sowing_cotton_ir_filename,width,config);
       printinputfile(file,"harvest_ir",&config->harvest_cotton_ir_filename,width,config);
     }
-    if(config->sdate_option==PRESCRIBED_SDATE)
+    if(config->sdate_option>=PRESCRIBED_SDATE)
       printinputfile(file,"sdates",&config->sdate_filename,width,config);
-    if(config->crop_phu_option==PRESCRIBED_CROP_PHU)
+    if(config->crop_phu_option>=PRESCRIBED_CROP_PHU)
       printinputfile(file,"crop_phu",&config->crop_phu_filename,width,config);
     if(config->fertilizer_input==FERTILIZER)
       printinputfile(file,"fertilizer",&config->fertilizer_nr_filename, width,config);

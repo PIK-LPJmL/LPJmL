@@ -124,9 +124,9 @@ void fprintfiles(FILE *file,          /**< pointer to text output file */
   {
     fprintfilename(file,&config->countrycode_filename,FALSE);
     fprintfilename(file,&config->landuse_filename,TRUE);
-    if(config->sdate_option==PRESCRIBED_SDATE)
+    if(config->sdate_option>=PRESCRIBED_SDATE)
       fprintfilename(file,&config->sdate_filename,TRUE);
-    if(config->crop_phu_option==PRESCRIBED_CROP_PHU)
+    if(config->crop_phu_option>=PRESCRIBED_CROP_PHU)
       fprintfilename(file,&config->crop_phu_filename,TRUE);
     if(config->fertilizer_input)
       fprintfilename(file,&config->fertilizer_nr_filename,TRUE);
