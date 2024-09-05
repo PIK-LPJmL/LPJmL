@@ -94,7 +94,7 @@ int fwritecell(FILE *file,        /**< File pointer of binary file */
         if(fwrite(grid[cell].ml.sdate_fixed,sizeof(int),2*ncft,file)!=2*ncft)
           break;
       }
-      if(config->crop_phu_option==PRESCRIBED_CROP_PHU)
+      if(config->crop_phu_option>=PRESCRIBED_CROP_PHU)
       {
         if(fwrite(grid[cell].ml.crop_phu_fixed,sizeof(Real),2*ncft,file)!=2*ncft)
           break;
