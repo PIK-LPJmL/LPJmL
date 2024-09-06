@@ -35,6 +35,7 @@ of `major.minor.patch` with
 - Option `-compress` added to `drainage2cdf` utility to enable file compression.
 - Man page for `drainage2cdf` added.
 - Check for valid compression value added for lpjml and utilities.
+- Missing option `"global_netcdf"` added to LPJmL config file.
 
 ### Removed
 
@@ -42,7 +43,7 @@ of `major.minor.patch` with
 
 ### Fixed
 
-- Missing deallocation of memory added in `fscanlandcovermap.c`, `writearea.c`, `create_pft_netcdf.c`, `newgrid.c`,  `fscanagtreemap.c`,  `celldata.c` in case of error.
+- Missing deallocation of memory added in `fscanlandcovermap.c`, `fscanoutput.c`, `writearea.c`, `create_pft_netcdf.c`, `newgrid.c`, `fscanagtreemap.c`, `celldata.c` in case of error.
 - Syntax error fixed in `update_daily.c` in IMAGE coupling.
 - Typo in `README` corrected.
 
