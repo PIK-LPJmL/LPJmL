@@ -474,12 +474,12 @@ int main(int argc,char **argv)
     if(var==NULL)
       var=getvarname_netcdf(&data);
     if(units==NULL)
-      units=getattr_netcdf(&data,data.varid,"units");
-    long_name=getattr_netcdf(&data,data.varid,"long_name");
-    standard_name=getattr_netcdf(&data,data.varid,"standard_name");
-    history=getattr_netcdf(&data,NC_GLOBAL,"history");
-    source=getattr_netcdf(&data,NC_GLOBAL,"source");
-    title=getattr_netcdf(&data,NC_GLOBAL,"title");
+      units=getattr_netcdf(data.ncid,data.varid,"units");
+    long_name=getattr_netcdf(data.ncid,data.varid,"long_name");
+    standard_name=getattr_netcdf(data.ncid,data.varid,"standard_name");
+    history=getattr_netcdf(data.ncid,NC_GLOBAL,"history");
+    source=getattr_netcdf(data.ncid,NC_GLOBAL,"source");
+    title=getattr_netcdf(data.ncid,NC_GLOBAL,"title");
     if(j==iarg+1)
     {
       if(isjson)
@@ -516,7 +516,7 @@ int main(int argc,char **argv)
             {
               if(strcmp(name,"history") && strcmp(name,"source") && strcmp(name,"title"))
               {
-                attrs[n_attr].value=getattr_netcdf(&data,NC_GLOBAL,name);
+                attrs[n_attr].value=getattr_netcdf(data.ncid,NC_GLOBAL,name);
                 if(attrs[n_attr].value!=NULL)
                   attrs[n_attr++].name=strdup(name);
               }

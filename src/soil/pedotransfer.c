@@ -39,7 +39,9 @@ void pedotransfer(Stand *stand,  /**< pointer to stand */
 #endif
   soil=&stand->soil;
   soilpar = soil->par;
+#ifdef SAFE
   String line;
+#endif
 #ifdef CHECK_BALANCE
   if(abswmm==NULL)
     w_before=soilwater(soil);
