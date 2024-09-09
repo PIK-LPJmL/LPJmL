@@ -48,6 +48,7 @@ of `major.minor.patch` with
 - Syntax error fixed in `update_daily.c` in IMAGE coupling.
 - Typo in `README` corrected.
 - `cdf2coord.c` and `cdf2grid` modified to compile without warnings using gcc.
+- Debug flag in `send_token_coupler.c` corrected to `DEBUG_COUPLER`.
 
 
 ## [5.9.9] - 2024-09-04
