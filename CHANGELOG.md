@@ -46,6 +46,7 @@ of `major.minor.patch` with
 - Missing deallocation of memory added in `fscanlandcovermap.c`, `fscanoutput.c`, `writearea.c`, `create_pft_netcdf.c`, `newgrid.c`, `fscanagtreemap.c`, `celldata.c` in case of error.
 - Syntax error fixed in `update_daily.c` in IMAGE coupling.
 - Typo in `README` corrected.
+- `cdf2coord.c` and `cdf2grid` modified to compile without warnings using gcc.
 
 
 ## [5.9.9] - 2024-09-04

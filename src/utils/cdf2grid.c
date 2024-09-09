@@ -36,9 +36,9 @@ static int cmp(const Data *a,const Data *b)
 int main(int argc,char **argv)
 {
 #ifdef USE_NETCDF
-  int rc,ncid,var_id,dimids[2],i,j,nvars,lon_id,lat_id,ndims,x,y,iarg,len,n_attr;
+  int rc,ncid,var_id,dimids[2],i,j,nvars,lon_id,lat_id,ndims,x,y,iarg,len,n_attr=0;
   double *lat,*lon;
-  float scalar;
+  float scalar=0.0;
   size_t lat_len,lon_len;
   int missing_value;
   Bool israw,isjson,scalar_set;
@@ -55,7 +55,7 @@ int main(int argc,char **argv)
   } coord_f;
   char *var;
   char *out_json,*arglist;
-  char *source,*history,*title;
+  char *source=NULL,*history=NULL,*title=NULL;
   FILE *out;
   Data *data;
   int *index;

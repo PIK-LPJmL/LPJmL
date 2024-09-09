@@ -28,7 +28,7 @@ int main(int argc,char **argv)
   int rc,ncid,var_id,*dimids,i,j,nvars,lon_id,lat_id,ndims,index,first;
 
   double *lat,*lon;
-  float scalar;
+  float scalar=0.0;
   size_t lat_len,lon_len;
   size_t offsets[4]={0,0,0,0},counts[4]={1,1,1,1};
   double missing_value,data;
