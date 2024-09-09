@@ -190,15 +190,8 @@ Bool fscanoutput(LPJfile *file,  /**< pointer to LPJ file */
       return TRUE;
     }
   }
-#endif
   config->global_netcdf=FALSE;
   if(fscanbool(file,&config->global_netcdf,"global_netcdf",!config->pedantic,verbosity))
-  {
-    free(default_suffix);
-    return TRUE;
-  }
-  config->flush_output=FALSE;
-  if(fscanbool(file,&config->flush_output,"flush_output",!config->pedantic,verbosity))
   {
     free(default_suffix);
     return TRUE;
@@ -211,6 +204,19 @@ Bool fscanoutput(LPJfile *file,  /**< pointer to LPJ file */
   }
   config->with_days=TRUE;
   if(fscanbool(file,&config->with_days,"with_days",!config->pedantic,verbosity))
+  {
+    free(default_suffix);
+    return TRUE;
+  }
+  config->absyear=FALSE;
+  if(fscanbool(file,&config->absyear,"absyear",!config->pedantic,verbosity))
+  {
+    free(default_suffix);
+    return TRUE;
+  }
+#endif
+  config->flush_output=FALSE;
+  if(fscanbool(file,&config->flush_output,"flush_output",!config->pedantic,verbosity))
   {
     free(default_suffix);
     return TRUE;
@@ -241,12 +247,6 @@ Bool fscanoutput(LPJfile *file,  /**< pointer to LPJ file */
       free(default_suffix);
       return TRUE;
     }
-  }
-  config->absyear=FALSE;
-  if(fscanbool(file,&config->absyear,"absyear",!config->pedantic,verbosity))
-  {
-    free(default_suffix);
-    return TRUE;
   }
   if(iskeydefined(file,"grid_scaled"))
   {
@@ -431,6 +431,16 @@ Bool fscanoutput(LPJfile *file,  /**< pointer to LPJ file */
             config->outnames[flag].time=MISSING_TIME;
         }
       }
+#ifndef USE_NETCDF
+      if(config->outputvars[count].filename.fmt==CDF)
+      {
+        if(verbosity)
+          fprintf(stderr,"ERROR401: NetCDF output '%s' is not supported by this version of LPJmL.\n",
+                  config->outputvars[count].filename.name);
+        free(default_suffix);
+        return TRUE;
+      }
+#endif
       if(config->outputvars[count].filename.isscale)
         config->outnames[flag].scale=(float)config->outputvars[count].filename.scale;
       if(config->outputvars[count].filename.fmt!=SOCK)

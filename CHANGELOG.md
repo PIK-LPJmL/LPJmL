@@ -28,11 +28,12 @@ of `major.minor.patch` with
 
 - `USE_NETCDF4` compile option replaced by `"netcdf4"` boolean flag in the LPJmL configuration file. If set compression of NetCDF4 files can be enabled and PFT names are written as strings instead of character arrays.
 - Formatting of man pages harmonized.
+- If lpjml is compiled without `-DUSE_NETCDF` flag then `fscanconfig.c` and `fscanoutput.c` return with an error for NetCDF files specified for input/output.
 
 ### Added
 
 - Option `-netcdf4` added to `bin2cdf`, `clm2cdf`, `country2cdf`, and `drainage2cdf` utility to enable NetCDF4 format.
-- Boolean Flag `"netcdf4"` to LPJmL configuration file added to enable NetCDF4 format.
+- Boolean flag `"netcdf4"` added to LPJmL configuration file in order to enable NetCDF4 format.
 - Option `-compress` added to `drainage2cdf` utility to enable file compression.
 - Man page for `drainage2cdf` added.
 - Check for valid compression value added for lpjml and utilities.

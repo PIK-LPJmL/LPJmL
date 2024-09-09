@@ -129,6 +129,14 @@ static Bool readclimatefilename(LPJfile *file,Filename *name,const char *key,Boo
       fprintf(stderr,"ERROR197: text file is not supported for input '%s' in this version of LPJmL.\n",name->name);
     return TRUE;
   }
+#ifndef USE_NETCDF
+  if(name->fmt==CDF)
+  {
+    if(verbose)
+      fprintf(stderr,"ERROR197: NetCDF is not supported for input '%s' in this version of LPJmL.\n",name->name);
+    return TRUE;
+  }
+#endif
   return FALSE;
 } /* of 'readclimatefilename' */
 
