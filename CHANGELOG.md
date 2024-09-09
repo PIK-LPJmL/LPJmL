@@ -32,6 +32,7 @@ of `major.minor.patch` with
 ### Added
 
 - Option `-netcdf4` added to `bin2cdf`, `clm2cdf`, `country2cdf`, and `drainage2cdf` utility to enable NetCDF4 format.
+- Boolean Flag `"netcdf4"` to LPJmL configuration file added to enable NetCDF4 format.
 - Option `-compress` added to `drainage2cdf` utility to enable file compression.
 - Man page for `drainage2cdf` added.
 - Check for valid compression value added for lpjml and utilities.
