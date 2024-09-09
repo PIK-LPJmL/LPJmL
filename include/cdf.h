@@ -140,8 +140,8 @@ extern Bool readintdata_netcdf(const Climatefile *,int *,const Cell *,
 extern Bool readshortdata_netcdf(const Climatefile *,short *,const Cell *,
                                  int,const Config *);
 extern Coord_netcdf opencoord_netcdf(const char *,const char *,const Netcdf_config *,Bool);
-extern const float *getlon_netcdf(Coord_netcdf,int *);
-extern const float *getlat_netcdf(Coord_netcdf,int *);
+extern const double *getlon_netcdf(Coord_netcdf,int *);
+extern const double *getlat_netcdf(Coord_netcdf,int *);
 extern void closecoord_netcdf(Coord_netcdf);
 extern Bool seekcoord_netcdf(Coord_netcdf,int);
 extern Bool readcoord_netcdf(Coord_netcdf,Coord *,const Coord *,unsigned int *);
@@ -167,7 +167,7 @@ extern int open_netcdf(const char *,int *,Bool *);
 extern void free_netcdf(int);
 extern Bool checkcoord(const size_t *,int,const Coord *,const Climatefile *);
 extern Map *readmap_netcdf(int,const char *);
-extern char *getattr_netcdf(const Climatefile *,int,const char *);
+extern char *getattr_netcdf(int,int,const char *);
 extern char *getvarname_netcdf(const Climatefile *);
 extern void initsetting_netcdf(Netcdf_config *);
 extern Bool parse_config_netcdf(Netcdf_config *,const char *);

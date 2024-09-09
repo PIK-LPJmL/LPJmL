@@ -1,18 +1,15 @@
-.TH cdf2coord 1  "USER COMMANDS"
+.TH cdf2grid 1  "USER COMMANDS"
 .SH NAME
-cdf2coord \- extract CLM grid from NetCDF file
+cdf2grid \- convert grid NetCDF file into grid CLM or raw file
 .SH SYNOPSIS
-.B cdf2coord
-[\-var name] [\-index i] [\-{float|double}] [\-scale s] [\-raw] [\-json] netcdffile gridfile
+.B cdf2grid
+[\-var name] [\-{float|double}] [\-scale s] [\-raw] [\-json] netcdffile gridfile
 .SH DESCRIPTION
-Program extracts grid file in CLM format from NetCDF input data. All cells with valid input will be put in the grid file.
+Program converts grid file written in NetCDF format to grid file in raw or CLM format.
 .SH OPTIONS
 .TP
 \-var name
-Variable name in NetCDF file. If not specified the first variable with more than one dimension is chosen.
-.TP
-\-index i
-Converting from i-th dataset. Default is first (=0).
+Variable name in NetCDF file. If not specified the first variable with 2 dimensions is chosen.
 .TP
 \-scale factor
 Scaling factor for CLM grid file. Default is 0.01 for short values in CLM grid file, 1 for float or double values. If factor differs from 1 and -float or -double option is set a warning is printed and scaling factor reset to 1.
@@ -26,23 +23,20 @@ Output format is raw without header, default is CLM format.
 \-json
 An additional JSON metafile with suffix \fI.json\fP is written.
 .TP
-\-json
-JSON metafile is created with suffix '.json'
-.TP
 .I netcdffile
-Filename of NetCDF file.
+Filename of grid NetCDF file.
 .TP
 .I gridfile
 Filename of grid data file written.
 .SH EXAMPLES
 .TP
-Create coord file from temperature data file:
-.B cdf2coord
--var tas temp1901-2010.nc grid.clm
+Create grid binary raw file and JSON metafile from grid NetCDF file:
+.B cdf2grid
+-raw -json grid.nc grid.bin
 .PP
 .SH EXIT STATUS
-.B cdf2coord
-returns a zero exit status if the CLM file is created.
+.B cdf2grid
+Returns a zero exit status if the CLM file is created.
 Non zero is returned in case of failure.
 
 .SH AUTHORS
@@ -54,4 +48,4 @@ For authors and contributors see AUTHORS file
 (C) Potsdam Institute for Climate Impact Research (PIK), see COPYRIGHT file
 
 .SH SEE ALSO
-cdf2grid(1), cdf2clm(1), clm2cdf(1), bin2cdf(1), country2cdf(1), regridlpj(1), lpjml(1), txt2clm(1), cru2clm(1), clm(5)
+cdf2coord(1), cdf2clm(1), clm2cdf(1), bin2cdf(1), country2cdf(1), regridlpj(1), lpjml(1), txt2clm(1), cru2clm(1), clm(5)

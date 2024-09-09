@@ -10,49 +10,49 @@ Program converts NetCDF input data into CLM input data.
 .SH OPTIONS
 .TP
 \-h,\--help
-print help text
+Print help text.
 .TP
 \-v,\--verbose
-print name of NetCDF files
+Print name of NetCDF files.
 .TP
 \-scale factor
-scaling factor for CLM files. Default is one
+Scaling factor for CLM files. Default is 1. If factor differs from 1 and -float option is set a warning is printed and scaling factor reset to 1.
 .TP
 \-units u
 set unit to convert from NetCDF file
 .TP
 \-var name
-variable name in NetCDF file
+Variable name in NetCDF file.
 .TP
 \-time name
-name of time in NetCDF file, default is "time" or "TIME"
+Name of time in NetCDF file, default is "time" or "TIME".
 .TP
 \-map name
-name of map in NetCDF file. If specified the map is read and put into the JSON metafile.
+Name of map in NetCDF file. If specified the map is read and put into the JSON metafile.
 .TP
 \-id string
-LPJ header string in clm file
+LPJ header string in clm file.
 .TP
 \-version v
-version of clm header, default is 3
+Version of clm header, default is 3.
 .TP
 \-float
-write float values in clm file, default is short
+Write float values in clm file, default is short.
 .TP
 \-zero
-write zero values in clm file if data is not found
+Write zero values in clm file if data is not found.
 .TP
 \-json
-JSON metafile is created with suffix '.json'
+JSON metafile is created with suffix '.json'.
 .TP
 .I -o clmfile
-filename of CLM data file written. Default is out.clm
+Filename of CLM data file written. Default is out.clm.
 .TP
 .I gridfile
-filename of grid data file
+Filename of grid data file.
 .TP
 .I netcdffile
-filename of NetCDF file(s) converted
+Filename of NetCDF file(s) converted.
 .SH EXAMPLES
 .TP
 Create CLM data file and corresponding JSON metafile for temperature:
@@ -73,4 +73,4 @@ For authors and contributors see AUTHORS file
 (C) Potsdam Institute for Climate Impact Research (PIK), see COPYRIGHT file
 
 .SH SEE ALSO
-cdf2coord(1), cdf2bin(1), clm2cdf(1), bin2cdf(1), country2cdf(1), regridlpj(1), lpjml(1), txt2clm(1), cru2clm(1), arr2clm(1), clm(5)
+cdf2grid(1), cdf2coord(1), cdf2bin(1), clm2cdf(1), bin2cdf(1), country2cdf(1), regridlpj(1), lpjml(1), txt2clm(1), cru2clm(1), arr2clm(1), clm(5)

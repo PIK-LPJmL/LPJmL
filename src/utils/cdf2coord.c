@@ -14,7 +14,7 @@
 
 #include "lpj.h"
 
-#define USAGE  "Usage: %s [-var name] [-index i] [-{float|double}] [-scale s] [-json] netcdffile coordfile\n"
+#define USAGE  "Usage: %s [-var name] [-index i] [-{float|double}] [-scale s] [-raw] [-json] netcdffile coordfile\n"
 
 #if defined(USE_NETCDF)
 #include <netcdf.h>
@@ -28,6 +28,7 @@ int main(int argc,char **argv)
   int rc,ncid,var_id,*dimids,i,j,nvars,lon_id,lat_id,ndims,index,first;
 
   double *lat,*lon;
+  float scalar;
   size_t lat_len,lon_len;
   size_t offsets[4]={0,0,0,0},counts[4]={1,1,1,1};
   double missing_value,data;
@@ -46,11 +47,11 @@ int main(int argc,char **argv)
   char *var;
   char *out_json,*arglist;
   FILE *out;
-  Bool isjson;
+  Bool isjson,israw,scalar_set;
   var=NULL;
   header.datatype=LPJ_SHORT;
   header.scalar=0.01;
-  isjson=FALSE;
+  isjson=israw=scalar_set=FALSE;
   initsetting_netcdf(&netcdf_config);
   for(i=1;i<argc;i++)
     if(argv[i][0]=='-')
@@ -67,6 +68,8 @@ int main(int argc,char **argv)
       }
       else if(!strcmp(argv[i],"-json"))
         isjson=TRUE;
+      else if(!strcmp(argv[i],"-raw"))
+        israw=TRUE;
       else if(!strcmp(argv[i],"-float"))
       {
         header.datatype=LPJ_FLOAT;
@@ -100,14 +103,15 @@ int main(int argc,char **argv)
                  USAGE,argv[0]);
           return EXIT_FAILURE;
         }
-        header.scalar=(float)strtod(argv[++i],&endptr);
+        scalar=header.scalar=(float)strtod(argv[++i],&endptr);
         if(*endptr!='\0')
         {
           fprintf(stderr,"Invalid number '%s' for scale.\n",argv[i]);
           return EXIT_FAILURE;
         }
+        if(header.scalar!=1)
+          scalar_set=TRUE;
       }
-
       else
       {
         fprintf(stderr,"Invalid option '%s'.\n"
@@ -123,6 +127,13 @@ int main(int argc,char **argv)
             USAGE,argv[0]);
     return EXIT_FAILURE;
   }
+  if(header.datatype!=LPJ_SHORT && scalar_set)
+  {
+    fprintf(stderr,"Warning: Scaling set to %g but datatype is %s, scaling set to 1.\n",
+            scalar,typenames[header.datatype]);
+
+    header.scalar=1;
+  }
   rc=nc_open(argv[i],NC_NOWRITE,&ncid);
   if(rc)
   {
@@ -136,10 +147,14 @@ int main(int argc,char **argv)
     for(j=0;j<nvars;j++)
     {
       nc_inq_varname(ncid,j,name);
-      if(strcmp(name,netcdf_config.lon.name) && strcmp(name,netcdf_config.lon.standard_name) && strcmp(name,netcdf_config.lat.name) && strcmp(name,netcdf_config.lat.standard_name) && strcmp(name,netcdf_config.time.name))
+      if(strcmp(name,netcdf_config.lon.name) && strcmp(name,netcdf_config.lon.standard_name) && strcmp(name,netcdf_config.lat.name) && strcmp(name,netcdf_config.lat.standard_name) && strcmp(name,netcdf_config.time.name) && strcmp(name,netcdf_config.pft.name) && strcmp(name,netcdf_config.depth.name) && strcmp(name,netcdf_config.bnds.name))
       {
-        var_id=j;
-        break;
+        nc_inq_varndims(ncid,j,&ndims);
+        if(ndims>1)
+        {
+          var_id=j;
+          break;
+        }
       }
     }
     if(j==nvars)
@@ -160,13 +175,13 @@ int main(int argc,char **argv)
   {
     fprintf(stderr,"ERROR408: Invalid number of dimensions %d in '%s', must be >1.\n",
             ndims,argv[i]);
-    return TRUE;
+    return EXIT_FAILURE;
   }
   else if(ndims>4)
   {
     fprintf(stderr,"ERROR408: Invalid number of dimensions %d in '%s', must be <5.\n",
             ndims,argv[i]);
-    return TRUE;
+    return EXIT_FAILURE;
   }
   else
     first=ndims-2;
@@ -175,7 +190,7 @@ int main(int argc,char **argv)
   if(dimids==NULL)
   {
     printallocerr("dimids");
-    return TRUE;
+    return EXIT_FAILURE;
   }
   nc_inq_vardimid(ncid,var_id,dimids);
   nc_inq_dimname(ncid,dimids[index],name);
@@ -185,14 +200,14 @@ int main(int argc,char **argv)
     fprintf(stderr,"ERROR410: Cannot read %s in '%s': %s.\n",
             name,argv[i],nc_strerror(rc));
     free(dimids);
-    return TRUE;
+    return EXIT_FAILURE;
   }
   nc_inq_dimlen(ncid,dimids[index],&lon_len);
   lon=newvec(double,lon_len);
   if(lon==NULL)
   {
     free(dimids);
-    printallocerr("dimids");
+    printallocerr("lon");
     return EXIT_FAILURE;
   }
   rc=nc_get_var_double(ncid,lon_id,lon);
@@ -247,6 +262,7 @@ int main(int argc,char **argv)
   if(out==NULL)
   {
     fprintf(stderr,"Error creating '%s': %s.\n",argv[i+1],strerror(errno));
+    free(dimids);
     free(lon);
     free(lat);
     nc_close(ncid);
@@ -254,7 +270,8 @@ int main(int argc,char **argv)
   }
   header.cellsize_lon=(float)((lon[lon_len-1]-lon[0])/(lon_len-1));
   header.cellsize_lat=(float)fabs((lat[lat_len-1]-lat[0])/(lat_len-1));
-  fwriteheader(out,&header,LPJGRID_HEADER,LPJGRID_VERSION);
+  if(!israw)
+    fwriteheader(out,&header,LPJGRID_HEADER,LPJGRID_VERSION);
   header.ncell=0;
   for(offsets[first]=0;offsets[first]<lat_len;offsets[first]++)
   {
@@ -289,7 +306,6 @@ int main(int argc,char **argv)
       }
     }
   }
-  rewind(out);
   header.firstcell=0;
   header.nyear=1;
   header.nstep=1;
@@ -297,8 +313,13 @@ int main(int argc,char **argv)
   header.firstyear=1901;
   header.nbands=2;
   header.order=CELLYEAR;
-  fwriteheader(out,&header,LPJGRID_HEADER,LPJGRID_VERSION);
+  if(!israw)
+  {
+    rewind(out);
+    fwriteheader(out,&header,LPJGRID_HEADER,LPJGRID_VERSION);
+  }
   fclose(out);
+  free(dimids);
   free(lon);
   free(lat);
   nc_close(ncid);
@@ -319,7 +340,7 @@ int main(int argc,char **argv)
       printfcreateerr(out_json);
       return EXIT_FAILURE;
     }
-    fprintjson(out,argv[i+1],NULL,argv[0],NULL,arglist,&header,NULL,NULL,NULL,0,"grid","degree",NULL,"cell coordinates",NULL,LPJ_SHORT,CLM,LPJGRID_HEADER,FALSE,LPJGRID_VERSION);
+    fprintjson(out,argv[i+1],NULL,argv[0],NULL,arglist,&header,NULL,NULL,NULL,0,"grid","degree",NULL,"cell coordinates",NULL,LPJ_SHORT,(israw) ? RAW : CLM,LPJGRID_HEADER,FALSE,LPJGRID_VERSION);
     fclose(out);
   }
   return EXIT_SUCCESS;
