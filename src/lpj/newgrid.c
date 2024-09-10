@@ -45,8 +45,8 @@ static Cell *newgrid2(Config *config,          /* Pointer to LPJ configuration *
 #ifdef IMAGE
   Infile aquifers;
 #ifdef COUPLED
-  Productinit *productinit;
-  Product *productpool;
+  Productinit *productinit=NULL;
+  Product *productpool=NULL;
 #endif
 #endif
   int code;

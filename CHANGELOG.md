@@ -48,8 +48,9 @@ of `major.minor.patch` with
 - Missing deallocation of memory added in `fscanlandcovermap.c`, `fscanoutput.c`, `writearea.c`, `create_pft_netcdf.c`, `newgrid.c`, `fscanagtreemap.c`, `celldata.c` in case of error.
 - Syntax error fixed in `update_daily.c` in IMAGE coupling.
 - Typo in `README` corrected.
-- `cdf2coord.c` and `cdf2grid` modified to compile without warnings using gcc.
+- `establishmentpft.c`, `cdf2coord.c` and `cdf2grid.c` modified to compile without warnings using gcc.
 - Debug flag in `send_token_coupler.c` corrected to `DEBUG_COUPLER`.
+- Code changed to compile without errors/warnings for `-DIMAGE -DCOUPLED` setting.
 
 
 ## [5.9.9] - 2024-09-04
