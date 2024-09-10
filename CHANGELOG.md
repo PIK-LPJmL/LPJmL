@@ -49,11 +49,13 @@ of `major.minor.patch` with
 - Syntax error fixed in `update_daily.c` in IMAGE coupling.
 - Typo in `README` corrected.
 - `establishmentpft.c`, `cdf2coord.c` and `cdf2grid.c` modified to compile without warnings using gcc.
-- Debug flag in `send_token_coupler.c` corrected to `DEBUG_COUPLER`.
+- Debug flag in `send_token_coupler.c` and `openoutput_coupler.c` corrected to `DEBUG_COUPLER`.
 - Code changed to compile without errors/warnings for `-DIMAGE -DCOUPLED` setting.
 
 
 ## [5.9.9] - 2024-09-04
+
+### Contributors
 
 - author: Christoph Müller (cmueller@pik-potsdam.de)
 - code review: Stephen Wirth (wirth@pik-potsdam.de), Fabian Stenzel (stenzel@pik-potsdam.de)
