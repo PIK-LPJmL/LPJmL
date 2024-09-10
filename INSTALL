@@ -166,6 +166,8 @@ COUPLING_WITH_FMS   enable coupling to FMS
 DAILY_ESTABLISHMENT enable daily establishment
 DEBUG               diagnostic output is generated for debugging purposes
 DEBUG_COUPLER       diagnostic output is generated for the coupler
+DEBUG_IMAGE         diagnostic output is generated for the IMAGE coupler
+DEBUG_N             diagnistic output is generated for the nitrogen cycle
 IMAGE               include coupler to IMAGE model
 LINEAR_DECAY        use linearized functions for litter decay
 MICRO_HEATING       enable microbial heating
