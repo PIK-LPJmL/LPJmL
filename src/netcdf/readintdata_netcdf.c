@@ -4,7 +4,7 @@
 /**                                                                                \n**/
 /**     C implementation of LPJmL                                                  \n**/
 /**                                                                                \n**/
-/**     Function reads data in NetCDF format                                       \n**/
+/**     Function reads integer data in NetCDF format                               \n**/
 /**                                                                                \n**/
 /** (C) Potsdam Institute for Climate Impact Research (PIK), see COPYRIGHT file    \n**/
 /** authors, and contributors see AUTHORS file                                     \n**/
@@ -34,12 +34,12 @@ Bool readintdata_netcdf(const Climatefile *file, /**< climate data file */
   size_t offsets[4];
   size_t counts[4];
   String line;
-  offsets[0]=year-file->firstyear;
+  offsets[0]=year;
   offsets[1]=offsets[2]=offsets[3]=0;
   counts[0]=1;
-  counts[1]=file->nlat;
-  counts[2]=file->nlon;
-  counts[3]=file->var_len;
+  counts[1]=file->var_len;
+  counts[2]=file->nlat;
+  counts[3]=file->nlon;
   switch(file->datatype)
   {
     case LPJ_INT:
