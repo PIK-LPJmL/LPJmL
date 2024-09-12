@@ -5,7 +5,8 @@
 ##                                                                             ##
 ##    sh script to regrid input files to specified countries or grid file      ##
 ##                                                                             ##
-##    Usage: regridlpj [-dir path] filesuffix [countrycode ...]                ##
+##    Usage: regridlpj [-dir path] [-crumonthly] [-oldlu] [-madrat] suffix     ##
+##                     [countrycode ...]                                       ##
 ##                                                                             ##
 ## (C) Potsdam Institute for Climate Impact Research (PIK), see COPYRIGHT file ##
 ## authors, and contributors see AUTHORS file                                  ##
@@ -66,6 +67,12 @@ if [ "$LPJINPATH" = "" ]
 then
   LPJINPATH=/p/projects/lpjml/input/historical
   echo >&2 Error: Environment variable LPJINPATH is not set, set to $LPJINPATH
+fi
+if [ "$LPJROOT" = "" ]
+then
+  echo >&2 Error: environment variable LPJROOT is not set
+  echo >&2 "Set by export LPJROOT=<path to lpjml directory>"
+  exit 1
 fi
 
 name=$1
@@ -149,9 +156,8 @@ then
 EOF
   printf "/** File: %-58s **/\n" input_$name.cjson >>input_$name.cjson
   printf "/** Source: %-56s **/\n" "$args" >>input_$name.cjson
+  printf "/** Configuration file for input dataset for LPJmL C Version %-7s **/\n" $(cat $LPJROOT/VERSION)  >>input_$name.cjson
   cat << EOF >>input_$name.cjson
-/**                                                                  **/
-/** Configuration file for input dataset for LPJmL C Version 5.8.17  **/
 /**                                                                  **/
 /** Created: $(date +"%d.%m.%Y")                                              **/
 /**                                                                  **/

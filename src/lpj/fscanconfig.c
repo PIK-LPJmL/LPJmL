@@ -46,8 +46,8 @@
 
 #define checkptr(ptr) if(ptr==NULL) { printallocerr(#ptr); return TRUE; }
 
-const char *crop_phu_options[]={"old","new","prescribed"};
-const char *grazing_type[]={"default","mowing","ext","int","livestock","none"};
+char *crop_phu_options[]={"old","new","prescribed"};
+char *grazing_type[]={"default","mowing","ext","int","livestock","none"};
 
 static Bool readfilename2(LPJfile *file,Filename *name,const char *key,const char *path,Verbosity verbose)
 {
@@ -196,20 +196,20 @@ Bool fscanconfig(Config *config,    /**< LPJ configuration */
   Bool israndom;
   int i,restart,endgrid,grassharvest;
   Verbosity verbose;
-  const char *landuse[]={"no","yes","const","all_crops","only_crops"};
-  const char *fertilizer[]={"no","yes","auto"};
-  const char *irrigation[]={"no","lim","pot","all"};
-  const char *radiation[]={"cloudiness","radiation","radiation_swonly","radiation_lwdown"};
-  const char *fire[]={"no_fire","fire","spitfire","spitfire_tmax"};
-  const char *sowing_data_option[]={"no_fixed_sdate","fixed_sdate","prescribed_sdate"};
-  const char *soilpar_option[]={"no_fixed_soilpar","fixed_soilpar","prescribed_soilpar"};
-  const char *wateruse[]={"no","yes","all"};
-  const char *prescribe_landcover[]={"no_landcover","landcoverest","landcoverfpc"};
-  const char *laimax_manage[]={"laimax_cft","laimax_const","laimax_par"};
-  const char *fdi[]={"nesterov","wvpd"};
-  const char *nitrogen[]={"no","lim","unlim"};
-  const char *tillage[]={"no","all","read"};
-  const char *residue_treatment[]={"no_residue_remove","fixed_residue_remove","read_residue_data"};
+  char *landuse[]={"no","yes","const","all_crops","only_crops"};
+  char *fertilizer[]={"no","yes","auto"};
+  char *irrigation[]={"no","lim","pot","all"};
+  char *radiation[]={"cloudiness","radiation","radiation_swonly","radiation_lwdown"};
+  char *fire[]={"no_fire","fire","spitfire","spitfire_tmax"};
+  char *sowing_data_option[]={"no_fixed_sdate","fixed_sdate","prescribed_sdate"};
+  char *soilpar_option[]={"no_fixed_soilpar","fixed_soilpar","prescribed_soilpar"};
+  char *wateruse[]={"no","yes","all"};
+  char *prescribe_landcover[]={"no_landcover","landcoverest","landcoverfpc"};
+  char *laimax_manage[]={"laimax_cft","laimax_const","laimax_par"};
+  char *fdi[]={"nesterov","wvpd"};
+  char *nitrogen[]={"no","lim","unlim"};
+  char *tillage[]={"no","all","read"};
+  char *residue_treatment[]={"no_residue_remove","fixed_residue_remove","read_residue_data"};
   Bool def[N_IN];
   verbose=(isroot(*config)) ? config->scan_verbose : NO_ERR;
 

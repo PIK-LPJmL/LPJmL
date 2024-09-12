@@ -37,7 +37,7 @@ int main(int argc,char **argv)
   Filename name;
   Header header;
   Bool swap;
-  int iarg,i,n,nlon,nlat,j,offset[2];
+  int iarg,i,n,nlon,nlat,j,offset[2]={0,0};
   int ncid,rc,lat_dim_id,lon_dim_id,lon_var_id,lat_var_id;
   int dim[2];
   int index_varid,len_varid;
@@ -50,7 +50,7 @@ int main(int argc,char **argv)
   char *s;
   time_t t;
   char *cmdline;
-  float *len,fmiss,glon,glat;
+  float *len=NULL,fmiss,glon,glat;
   unsigned int soilcode;
   String headername,line;
   for(iarg=1;iarg<argc;iarg++)

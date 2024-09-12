@@ -19,7 +19,7 @@ of `major.minor.patch` with
 
 ## [Unreleased]
 
-## [5.8.18] - 2024-06-18
+## [5.8.19] - 2024-06-18
 
 ### Contributors
 
@@ -56,8 +56,6 @@ of `major.minor.patch` with
 - Region-specific fractions for residue burning replaced by global parameter `"bifratio"` and `"fuelratio"`.
 - `lpjml` now terminates with an error message instead of a warning on invalid country codes to avoid invalid access to country-specific parameters.
 - Country code files can now have only one band. Files with 2 bands are still supported, but region code ignored.
-- Filename and source is written into configuration file created by `regridlpj`.
-- All occurrences of the deprecated function `MPI_Type_extent` replaced by `MPI_Type_get_extent`.
 - `null` allowed for `"global_attrs"`, `"inpath"`, `"outpath"`, `"restartpath"`, `"output"`, and `"checkpoint_filename"` to disable the feature.
 
 ### Removed
@@ -80,12 +78,35 @@ of `major.minor.patch` with
 - Calculation of average fixed in `statclm`.
 - `res_remove` calculation fixed for residue fires in `harvest_crop.c` to close carbon and nitrogen balance.
 - Missing update of `FLUX_ESTABN_MG` added in `turnover_tree.c`.
-- `regridclm` now used for regridding of soil file in `regridlpj`.
-- Missing file seek to offset defined in JSON metafile added and return value fixed in `checksoilcode()`.
-- Prescribed land cover is now read correctly if landcover map size differs from number of natural PFTs.
-- Check for land use type `WP` corrected in `landusechange.c` (issue #354).
 - Function `initdrain()`corrected to handle river routing files in NetCDF format.
 
+
+## [5.8.18] - 2024-06-18
+
+### Contributors
+
+- author: Werner von Bloh (bloh@pik-potsdam.de)
+
+### Added
+
+- Missing regridding of wateruse and livestock density input added in `regridlpj`.
+
+### Changed
+
+- Compile option `-Werror` added to stop compilation of `icx`/`gcc` after warning. This feature can be disabled by using the `-noerror` option of `configure.sh`.
+- Filename and source is written into configuration file created by `regridlpj`.
+
+### Fixed
+
+- Incorrect scaling removed in utility `printharvest`.
+- Uninitialized PFT pointer set to first PFT in `harvest_stand.c`.
+- Uninitialized variable `n_attr` set to zero in utility `printclm`.
+- Prescribed land cover is now read correctly if landcover map size differs from number of natural PFTs.
+- Check for land use type `WP` corrected in `landusechange.c` (issue #354).
+- Code fixed to remove all warnings if compiled with `icx`/`gcc`.
+- `regridclm` now used for regridding of soil file in `regridlpj`.
+- Missing seek to offset added in filesexist.c
+- Debug option in `Makefile.icx` corrected.
 
 ## [5.8.17] - 2024-06-14
 

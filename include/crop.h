@@ -132,7 +132,7 @@ typedef struct
   Separate_harvests *sh;
 } Pftcrop;
 
-extern const char *calcmethod[];
+extern char *calcmethod[];
 
 /* Declaration of functions */
 

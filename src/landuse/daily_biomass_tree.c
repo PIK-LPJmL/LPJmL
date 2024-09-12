@@ -58,7 +58,6 @@ Real daily_biomass_tree(Stand *stand,                /**< stand pointer */
   Real wdf; /* water deficit fraction */
   Real transp;
   Real gc_pft;
-  Real fertil;
   Biomass_tree *data;
   Soil *soil;
   irrig_apply=0.0;

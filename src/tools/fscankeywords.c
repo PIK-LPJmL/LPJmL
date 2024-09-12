@@ -23,7 +23,7 @@
 Bool fscankeywords(LPJfile *file,    /**< pointer to LPJ file */
                    int *value,       /**< integer to be read from file */
                    const char *name, /**< variable name or NULL */
-                   const char *const *array, /**< array of keywords defined */
+                   char **array,     /**< array of keywords defined */
                    int size,          /**< size of array */
                    Bool with_default, /**< allow default value */
                    Verbosity verb    /**< verbosity level (NO_ERR,ERR,VERB) */

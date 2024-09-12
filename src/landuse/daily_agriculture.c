@@ -37,7 +37,7 @@ Real daily_agriculture(Stand *stand,                /**< [inout] stand pointer *
                        const Config *config         /**< [in] LPJ config */
                       )                             /** \return runoff (mm/day) */
 {
-  int p,l,nnat,nirrig,index;
+  int p,l,nnat,nirrig,index=0;
   Pft *pft;
   Real *gp_pft;         /**< pot. canopy conductance for PFTs & CFTs (mm/s) */
   Real gp_stand;               /**< potential stomata conductance  (mm/s) */

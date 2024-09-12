@@ -47,5 +47,8 @@ void soilpar_output(Cell *cell,          /**< pointer to cell */
             getoutputindex(&cell->output,KS_GRASS,l,config)+=stand->soil.Ks[l];
           }
           break;
+        default:
+          /* do nothing */
+          break;
     }
 } /* of 'soilpar_output' */

@@ -56,16 +56,12 @@ void update_daily(Cell *cell,            /**< cell pointer           */
   Real bnf;
   Real nh3;
   int l,i;
-  Real rootdepth=0.0;
   Livefuel livefuel={0,0,0,0,0};
   const Real prec_save=climate.prec;
   Real agrfrac;
   Real litsum_old_nv[2]={0,0},litsum_new_nv[2]={0,0};
   Real litsum_old_agr[2]={0,0},litsum_new_agr[2]={0,0};
   Irrigation *data;
-
-  forrootmoist(l)
-    rootdepth+=soildepth[l];
 
   updategdd(cell->gdd,config->pftpar,npft,climate.temp);
   cell->balance.aprec+=climate.prec;

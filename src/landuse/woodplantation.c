@@ -18,7 +18,7 @@
 #include "agriculture.h"
 #include "woodplantation.h"
 
-const char *woodplantation_names[NWPTYPE]={"woodplantation"};
+char *woodplantation_names[NWPTYPE]={"woodplantation"};
 
 Standtype woodplantation_stand={WOODPLANTATION,"woodplantation",new_biomass_tree,
                                 free_agriculture,fwrite_biomass_tree,

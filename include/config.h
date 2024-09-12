@@ -300,8 +300,8 @@ typedef struct
   Bool (*fcn)(LPJfile *,Pftpar *,const Config *); /**< pointer to PFT-specific scan function */
 } Pfttype;
 
-extern const char *crop_phu_options[];
-extern const char *grazing_type[];
+extern char *crop_phu_options[];
+extern char *grazing_type[];
 
 /* Declaration of functions */
 
