@@ -123,15 +123,15 @@ Stocks timber_harvest(Pft *pft,      /**< Pointer to tree PFT */
 #endif
   soil->pool[0].fast.carbon+=harvest.carbon*biofuel*0.1/standfrac;
   soil->pool[0].fast.nitrogen+=harvest.nitrogen*biofuel*0.1/standfrac;
-  /* transfer non-harvested wood, leaves, and roots of trees cut to litter */
+  /* transfer non-harvested wood, leaves, fruits and roots of trees cut to litter */
   soil->litter.item[pft->litter].agtop.leaf.carbon+=tree->ind.leaf.carbon*ftimber*(*nind);
   getoutput(output,LITFALLC,config)+=tree->ind.leaf.carbon*ftimber*(*nind)*standfrac;
+  soil->litter.item[pft->litter].agtop.leaf.carbon+=tree->fruit.carbon*ftimber;
+  getoutput(output,LITFALLC,config)+=tree->fruit.carbon*ftimber*standfrac;
   soil->litter.item[pft->litter].agtop.leaf.nitrogen+=tree->ind.leaf.nitrogen*ftimber*(*nind);
   getoutput(output,LITFALLN,config)+=tree->ind.leaf.nitrogen*ftimber*(*nind)*standfrac;
   soil->litter.item[pft->litter].agtop.leaf.nitrogen+=(pft->bm_inc.nitrogen+tree->fruit.nitrogen)*ftimber;
   getoutput(output,LITFALLN,config)+=(pft->bm_inc.nitrogen+tree->fruit.nitrogen)*ftimber*standfrac;
-  soil->litter.item[pft->litter].agtop.leaf.carbon+=tree->fruit.carbon*ftimber;
-  getoutput(output,LITFALLC,config)+=tree->fruit.carbon*ftimber*standfrac;
   for(i=0;i<NFUELCLASS;i++)
   {
     soil->litter.item[pft->litter].agtop.wood[i].carbon+=(tree->ind.sapwood.carbon/3.0-tree->ind.debt.carbon+tree->excess_carbon)*

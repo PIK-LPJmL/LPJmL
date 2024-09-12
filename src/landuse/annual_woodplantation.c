@@ -150,6 +150,7 @@ Bool annual_woodplantation(Stand *stand,         /**< Pointer to stand */
                              &biofuel,config,stand->cell->ml.image_data->timber_frac_wp,
                              stand->cell->ml.image_data->takeaway);
         pft->bm_inc.nitrogen*=(1-ftimber);
+        /* fruits are not currently considered in woodplantations but for cleanly processing the full `tree` structure */
         tree->fruit.nitrogen*=(1-ftimber);
         tree->fruit.carbon*=(1-ftimber);
         getoutput(&stand->cell->output,TRAD_BIOFUEL,config)+=biofuel.carbon;
@@ -189,6 +190,7 @@ Bool annual_woodplantation(Stand *stand,         /**< Pointer to stand */
         {
           yield=timber_harvest(pft,&stand->soil,frac,param.ftimber_wp,stand->frac,&pft->nind,&biofuel,config);
           pft->bm_inc.nitrogen*=(1-param.ftimber_wp);
+          /* fruits are not currently considered in woodplantations but for cleanly processing the full `tree` structure */
           tree->fruit.nitrogen*=(1-param.ftimber_wp);
           tree->fruit.carbon*=(1-param.ftimber_wp);
           getoutput(&stand->cell->output,TRAD_BIOFUEL,config)+=biofuel.carbon;
