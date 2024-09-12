@@ -46,7 +46,7 @@
 
 #define checkptr(ptr) if(ptr==NULL) { printallocerr(#ptr); return TRUE; }
 
-char *crop_phu_options[]={"old","new","prescribed"};
+char *crop_phu_options[]={"bondau2007","vbussel2015","prescribed","prescribed_all_rainfed","prescribed_all_irrig"};
 char *grazing_type[]={"default","mowing","ext","int","livestock","none"};
 
 static Bool readfilename2(LPJfile *file,Filename *name,const char *key,const char *path,Verbosity verbose)
@@ -201,7 +201,7 @@ Bool fscanconfig(Config *config,    /**< LPJ configuration */
   char *irrigation[]={"no","lim","pot","all"};
   char *radiation[]={"cloudiness","radiation","radiation_swonly","radiation_lwdown"};
   char *fire[]={"no_fire","fire","spitfire","spitfire_tmax"};
-  char *sowing_data_option[]={"no_fixed_sdate","fixed_sdate","prescribed_sdate"};
+  char *sowing_data_option[]={"no_fixed_sdate","fixed_sdate","prescribed_sdate","prescribed_all_rainfed_sdate","prescribed_all_irrig_sdate"};
   char *soilpar_option[]={"no_fixed_soilpar","fixed_soilpar","prescribed_soilpar"};
   char *wateruse[]={"no","yes","all"};
   char *prescribe_landcover[]={"no_landcover","landcoverest","landcoverfpc"};
@@ -324,6 +324,9 @@ Bool fscanconfig(Config *config,    /**< LPJ configuration */
   config->johansen = TRUE;
   if(fscanbool(file,&config->johansen,"johansen",!config->pedantic,verbose))
     return TRUE;
+  config->percolation_heattransfer = TRUE;
+  if(fscanbool(file,&config->percolation_heattransfer,"percolation_heattransfer",!config->pedantic,verbose))
+    return TRUE;
   config->sdate_option=NO_FIXED_SDATE;
   config->crop_phu_option=NEW_CROP_PHU;
   config->rw_manage=FALSE;
@@ -441,7 +444,7 @@ Bool fscanconfig(Config *config,    /**< LPJ configuration */
       }
       if(fscankeywords(file,&config->sdate_option,"sowing_date_option",sowing_data_option,3,FALSE,verbose))
         return TRUE;
-      if(config->sdate_option==FIXED_SDATE || config->sdate_option==PRESCRIBED_SDATE)
+      if(config->sdate_option==FIXED_SDATE || config->sdate_option>=PRESCRIBED_SDATE)
         fscanint2(file,&config->sdate_fixyear,"sdate_fixyear");
       if(fscankeywords(file,&config->irrig_scenario,"irrigation",irrigation,4,FALSE,verbose))
         return TRUE;
@@ -741,7 +744,7 @@ Bool fscanconfig(Config *config,    /**< LPJ configuration */
       if(config->fertilizermap==NULL)
         return TRUE;
     }
-    if(config->sdate_option==PRESCRIBED_SDATE || config->crop_phu_option==PRESCRIBED_CROP_PHU)
+    if(config->sdate_option>=PRESCRIBED_SDATE || config->crop_phu_option>=PRESCRIBED_CROP_PHU)
     {
       config->cftmap=scancftmap(file,&config->cftmap_size,"cftmap",TRUE,config->npft[GRASS]+config->npft[TREE],config->npft[CROP],config);
       if(config->cftmap==NULL)
@@ -756,11 +759,11 @@ Bool fscanconfig(Config *config,    /**< LPJ configuration */
       scanclimatefilename(input,&config->sowing_cotton_ir_filename,FALSE,FALSE,"sowing_ag_tree_ir");
       scanclimatefilename(input,&config->harvest_cotton_ir_filename,FALSE,FALSE,"harvest_ag_tree_ir");
     }
-    if(config->sdate_option==PRESCRIBED_SDATE)
+    if(config->sdate_option>=PRESCRIBED_SDATE)
     {
       scanclimatefilename(input,&config->sdate_filename,FALSE,TRUE,"sdate");
     }
-    if(config->crop_phu_option==PRESCRIBED_CROP_PHU)
+    if(config->crop_phu_option>=PRESCRIBED_CROP_PHU)
     {
       scanclimatefilename(input,&config->crop_phu_filename,FALSE,TRUE,"crop_phu");
     }

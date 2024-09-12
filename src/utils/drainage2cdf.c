@@ -293,16 +293,16 @@ int main(int argc,char **argv)
      out[index[src_cell]]=data[0];
     else
     {
-      if(data[0]<0 || data[0]>=n)
+      if(data[0]>=n)
       {
-        fprintf(stderr,"Index for cell (%s)=%d in '%s' must be in [0,%d].\n",
+        fprintf(stderr,"Index for cell (%s)=%d in '%s' must be in <=%d.\n",
                 sprintcoord(line,grid+i),data[0],argv[iarg+2],n-1);
         return EXIT_FAILURE;
       }
       dst_cell=findcoord(grid+data[0],grid_soil,&resolution,n);
       if(dst_cell==NOT_FOUND)
       {
-        fprintf(stderr,"Dest cell (%s) not found in `%s`.\n",
+        fprintf(stderr,"Destination cell (%s) not found in `%s`.\n",
                 sprintcoord(line,grid+data[0]),argv[iarg]);
         return EXIT_FAILURE;
       }

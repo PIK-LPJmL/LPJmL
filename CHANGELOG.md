@@ -19,22 +19,15 @@ of `major.minor.patch` with
 
 ## [Unreleased]
 
-## [5.8.19] - 2024-06-18
-
 ### Contributors
 
 - author: Werner von Bloh (bloh@pik-potsdam.de)
 
 ### Added
 
-- Warning added if time step of output is longer than output interval.
-- Cycle length of spinup and number of spinup years checked for positive values in `fscanconfig.c`.
-- Missing regridding of wateruse and livestock density input added in `regridlpj`.
-- File size of CLM input files is checked for consistency with header and lpjml is stopped accordingly.
 - Option `-int` added to utility `cdf2clm`.
 - Option `-latlon` added to utility `cdf2coord` in order to change the order of the CLM grid file.
 - Utility `cdf2reservoir` added to convert NetCDF reservoir file to CLM file.
-- Utility `drainage2cdf` added to convert CLM drainage and neighbor irrigation file into a NetCDF file using the soil code NetCDF file (issue #355).
 - Utility `reservoir2cdf` added to convert CLM reservoir file into a NetCDF file using the soil code NetCDF file.
 - Reservoir, irrigation neighbor and drainage data can now be in NetCDF format:
 ```java
@@ -49,6 +42,112 @@ of `major.minor.patch` with
 "purpose_reservoir" :  { "fmt" : "cdf", "var" : "purpose", "name" : "cru_netcdf/reservoir.nc"},
 ```
 
+### Fixed
+
+- Option `type` corrected in `setclm`.
+
+
+## [5.9.9] - 2024-09-04
+
+- author: Christoph Müller (cmueller@pik-potsdam.de)
+- code review: Stephen Wirth (wirth@pik-potsdam.de), Fabian Stenzel (stenzel@pik-potsdam.de)
+
+### Added
+
+- new options `PRESCRIBED_SDATE_ALL_RAINFED` and `PRESCRIBED_SDATE_ALL_IRRIG` to allow using the same sowing dates based on the rainfed or irrigated seasons respectively
+- new options `PRESCRIBED_CROP_PHU_ALL_RAINFED` and `PRESCRIBED_CROP_PHU_ALL_IRRIG` to allow using the same PHU requirements based on the rainfed or irrigated seasons respectively
+
+### Changed
+
+- refactored `crop_option_restart` to `crop_phu_option_restart` in struct `Config` and `crop_option` to `crop_phu_option` in struct `Restartheader` for greater clarity
+- refactored options `"new"` to `"vbussel15"` and `"old"` to `"bondau07"` for `crop_phu_options` where `"vbussel15"` is an implementation based on [van Bussel et al. 2015](http://dx.doi.org/10.1111/geb.12351) 
+
+### Removed
+
+- removed unnecessary check for file of prescribed `sdates` in `fileexist.c`
+
+### Fixed
+
+- fixed missing initialization of pointer `map` in cft2bin.c that caused abortion of compilation with `-Werror` otherwise
+
+
+## [5.9.8] - 2024-09-02
+
+### Contributors
+
+- author: Christoph Müller (cmueller@pik-potsdam.de)
+- code review: Susanne Rolinski (rolinski@pik-potsdam.de), Fabian Stenzel (stenzel@pik-potsdam.de)
+
+### Changed
+
+- included latest reference in .zenodo.json for syncing github and gitlab repositories. Future transfer of code between gitlab and github should be smoother now as both are at the same commit history now
+
+
+## [5.9.7] - 2024-08-30
+
+### Contributors
+
+- author: David Hoetten (davidho@pik-potsdam.de)
+- code review: Sibyll Schaphoff (sibylls@pik-potsdam.de), Werner von Bloh (bloh@pik-potsdam.de)
+
+### Changed
+
+- order of freezing of different water soil water components changed: free water freezes last to simply mathematical description of model
+
+
+## [5.9.6] - 2024-08-29
+
+### Contributors
+
+- author: Werner von Bloh (bloh@pik-potsdam.de)
+- code review: David Hoetten (davidho@pik-potsdam.de), Sebastian Ostberg (ostberg@pik-potsdam.de)
+
+### Added
+
+- Utility `cdf2grid` added to convert grid files in NetCDF format into grid CLM files.
+- Option `-json` and `-raw` added to `cdf2coord` utility to write additional JSON metafile and to write without CLM header.
+
+### Changed
+
+- Check added that dimension must be greater 1 for variable in NetCDF file in `cdf2coord.c`, `input_netcdf.c` and `coord_netcdf.c`.
+- Datatype of longitude/latitude array in `coord_netcdf.c` changed from float to double for consistency, variable name correctly printed in error messages.
+- Intel and clang compiler recognized in `printflags.c`.
+
+### Fixed
+
+- Test for `null` corrected for `"output"` in `fscanoutput.c`.
+- Missing `break` added in `switch` statement in `receiver_coupler.c`.
+- Code changed to compile successfully without `-DSAFE`, `-DUSE_NETCDF`, and `-DUDUNITS` compilation flag.
+- Unit for `"estab_storage_n"` corrected to `"gN/m2"` in `outputvars.cjson`.
+- Scaling set to 1 if datatype is not short in `cdf2coord.c` and `cdf2clm`.
+
+
+## [5.9.5] - 2024-07-19
+
+### Contributors
+
+- author: Sebastian Ostberg (ostberg@pik-potsdam.de)
+- code review: Christoph Mueller (cmueller@pik-potsdam.de), Werner von Bloh (bloh@pik-potsdam.de)
+
+### Fixed
+
+- Fix a regression for `NBP` output in `fwriteoutput` introduced in version 5.9.4
+
+
+## [5.9.4] - 2024-07-18
+
+### Contributors
+
+- author: Werner von Bloh (bloh@pik-potsdam.de)
+- code review: Jens Heinke (heinke@pik-potsdam.de), Christoph Müller (cmueller@pik-potsdam.de)
+
+### Added
+
+- Warning added if time step of output is longer than output interval.
+- Cycle length of spinup and number of spinup years checked for positive values in `fscanconfig.c`.
+- File size of CLM input files is checked for consistency with header and lpjml is stopped accordingly.
+- Utility `drainage2cdf` added to convert CLM drainage file into a NetCDF file using the soil code NetCDF file (issue #355).
+
 ### Changed
 
 - Setting `"const_lai_max"` renamed to `"laimax_const"` for consistency.
@@ -56,6 +155,7 @@ of `major.minor.patch` with
 - Region-specific fractions for residue burning replaced by global parameter `"bifratio"` and `"fuelratio"`.
 - `lpjml` now terminates with an error message instead of a warning on invalid country codes to avoid invalid access to country-specific parameters.
 - Country code files can now have only one band. Files with 2 bands are still supported, but region code ignored.
+- Filename and source is written into configuration file created by `regridlpj`.
 - `null` allowed for `"global_attrs"`, `"inpath"`, `"outpath"`, `"restartpath"`, `"output"`, and `"checkpoint_filename"` to disable the feature.
 
 ### Removed
@@ -72,7 +172,6 @@ of `major.minor.patch` with
 ### Fixed
 
 - Typos in error messages corrected in `bin2cdf.c` and `clm2cdf.c`.
-- Option `type` corrected in `setclm`.
 - Output of turnover corrected in `fprintpar_grass.c`.
 - Output of options fixed in `openconfig.c` if environment variable `LPJOPTIONS` is set.
 - Calculation of average fixed in `statclm`.
@@ -81,11 +180,59 @@ of `major.minor.patch` with
 - Function `initdrain()`corrected to handle river routing files in NetCDF format.
 
 
-## [5.8.18] - 2024-06-18
+## [5.9.3] - 2024-07-18
+
+### Contributors
+
+- author: Werner von Bloh (bloh@pik-potsdam.de), Sebastian Ostberg (ostberg@pik-potsdam.de)
+- code review: Fabian Stenzel (stenzel@pik-potsdam.de), David Hötten (davidho@pik-potsdam.de), Christoph Müller (cmueller@pik-potsdam.de)
+
+### Added
+
+- Output `"nbp"` for net biosphere productivity and `"tws"` for total water storage added.
+- `fail` added to mail type in `lpjsubmit_hpc`.
+- Option `-map` added to `cdf2bin` and `cdf2clm` to read map from NetCDF file and write it into JSON metafile.
+- `"sim_name"` and all other global attributes are written into JSON file for `cdf2bin` utility.
+
+### Fixed
+
+- Scaling of `"littertemp"` output fixed.
+- Unit corrected for `"rootmoist"` output and scaling corrected.
+- Correct number of output files printed in `lpjfiles` utility if separate output files for each year are enabled.
+
+### Changed
+
+- `DEPTH_NAME` and `BNDS_NAME` excluded for search for variable in NetCDF file if no variable name is provided.
+- Check added that dimension must be greater 1 for variable in NetCDF file.
+
+
+## [5.9.2] - 2024-07-18
+
+### Contributors
+
+- author: Sebastian Ostberg (ostberg@pik-potsdam.de)
+- code review: Jens Heinke (heinke@pik-potsdam.de), Christoph Müller (cmueller@pik-potsdam.de)
+
+### Added
+
+- `fire_grass` burns grass leaf biomass based on fire resistence parameter (function did nothing before)
+- Burning of fruits added to `fire_tree`, although stands with fruit trees currently do not experience fire
+
+### Changed
+
+- Unit and description of `FIREF` output changed from fire return interval to fire fraction to harmonize output between GlobFirM and SpitFire
+
+### Fixed
+
+- Added missing update of FPCs after fire before establishment
+
+
+## [5.9.1] - 2024-07-11
 
 ### Contributors
 
 - author: Werner von Bloh (bloh@pik-potsdam.de)
+- code review: Christoph Mueller (cmueller@pik-potsdam.de), Sebastian Ostberg (ostberg@pik-potsdam.de)
 
 ### Added
 
@@ -95,6 +242,7 @@ of `major.minor.patch` with
 
 - Compile option `-Werror` added to stop compilation of `icx`/`gcc` after warning. This feature can be disabled by using the `-noerror` option of `configure.sh`.
 - Filename and source is written into configuration file created by `regridlpj`.
+- All missing output indices are printed in case that the `"outputvar"` array is too short.
 
 ### Fixed
 
@@ -106,7 +254,34 @@ of `major.minor.patch` with
 - Code fixed to remove all warnings if compiled with `icx`/`gcc`.
 - `regridclm` now used for regridding of soil file in `regridlpj`.
 - Missing seek to offset added in filesexist.c
-- Debug option in `Makefile.icx` corrected.
+- Misplaced deallocation of memory for unit corrected in `printclm`.
+
+
+## [5.9.0] - 2024-07-08
+
+### Contributors
+
+- author: David Hötten (davidho@pik-potsdam.de)
+- code review: Sibyll Schaphoff (sibylls@pik-potsdam.de), Werner von Bloh (bloh@pik-potsdam.de) 
+
+### Added
+- Added `GPL_HEAT` macro to change number of gridpoints per soil layer used for heat convection.
+- Added `percolation_heattransfer` switch to disable convection/percolation heattransfer.
+- Added `littertemp` output variable for litter temperature.
+- Added fast implicit crank nicolson heat conduction scheme for non-phase change conditions `apply_heatconduction_of_a_day.c`.
+
+### Changed 
+
+- Replaced `soiltemp` soil temperature and snow and litter heat conduction routines with `update_soil_thermal_state.c`;
+  `soiltemp` remains in the repository for POEM/FMS coupling.
+- Use enthalpy (thermal energy) as state variable for soil thermal regime instead of temperature.
+- Numeric heat conduction method is a finite element enthalpy scheme `apply_heatconduction_of_a_day.c`.
+- Numeric heat convection method is improved by closing the energy balance for water infil and percolation. 
+- Conduction through snow and litter cover is now part of the numerical method for the soil.
+- Snow and litter temperatures are now calculated by interpolating air and top gridpoint temperature.
+- Snow melt by snow temperature greater than 0 deg is removed.
+- Litter heat insulation is now based on literature values for litter thermal conductivity.
+
 
 ## [5.8.17] - 2024-06-14
 

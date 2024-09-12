@@ -25,7 +25,9 @@ Stocks establishment_tree(Pft *pft,               /**< pointer to tree PFT */
   Real nind_old;
   Stocks flux_est={0,0};
   Real est_pft, frac_old;
+#ifdef SAFE
   String line;
+#endif
   /* establishment rate for a particular PFT on modelled area
    * basis (for trees, indiv/m2; for grasses, fraction of
    * modelled area colonised establishment rate for a particular

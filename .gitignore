@@ -173,3 +173,7 @@ bin/cmpbin
 bin/statclm
 bin/reservoir2cdf
 bin/drainage2cdf
+bin/cdf2grid
+
+# test build folder
+src/test/build

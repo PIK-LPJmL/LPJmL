@@ -316,7 +316,7 @@ Bool create_pft_netcdf(Netcdf *cdf,
       return TRUE;
     }
 #ifdef USE_NETCDF4
-    rc=nc_def_var(cdf->ncid,"NamePFT",NC_STRING,1,&pft_dim_id,&pft_var_id);
+    rc=nc_def_var(cdf->ncid,PFT_NAME,NC_STRING,1,&pft_dim_id,&pft_var_id);
 #else
     pft_len=0;
     for(i=0;i<size;i++)
@@ -327,7 +327,7 @@ Bool create_pft_netcdf(Netcdf *cdf,
     error(rc);
     dimids[0]=pft_dim_id;
     dimids[1]=pft_len_id;
-    rc=nc_def_var(cdf->ncid,"NamePFT",NC_CHAR,2,dimids,&pft_var_id);
+    rc=nc_def_var(cdf->ncid,PFT_NAME,NC_CHAR,2,dimids,&pft_var_id);
 #endif
   }
   error(rc);

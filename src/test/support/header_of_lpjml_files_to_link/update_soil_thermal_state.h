@@ -1,0 +1,10 @@
+void update_soil_thermal_state(Soil *, Real, const Config *);
+void setup_heatgrid(Real *);
+void get_unaccounted_changes_in_water_and_solids(Real *, Real *, Soil *);
+void get_abs_waterice_cont(Real *, Soil *);
+void modify_enth_due_to_masschanges(Soil *, Real *, const Config *);
+void compute_maxthaw_depth(Soil *);
+Real calc_litter_therm_conductivity(Real, Real);
+void adjust_grid_and_therm_cond_for_litter(Real *, Soil_thermal_prop *, Soil *);
+void adjust_grid_and_therm_cond_for_snow(Real *, Soil_thermal_prop *, Soil *);
+void compute_litter_and_snow_temp_from_enth(Soil *, Real, const Soil_thermal_prop *);

@@ -29,6 +29,8 @@
 #define NO_FIXED_SDATE 0
 #define FIXED_SDATE 1
 #define PRESCRIBED_SDATE 2
+#define PRESCRIBED_SDATE_ALL_RAINFED 3
+#define PRESCRIBED_SDATE_ALL_IRRIG 4
 #define NO_FIXED_SOILPAR 0
 #define FIXED_SOILPAR 1
 #define PRESCRIBED_SOILPAR 2
@@ -78,10 +80,12 @@
 #define OLD_CROP_PHU 0
 #define NEW_CROP_PHU 1
 #define PRESCRIBED_CROP_PHU 2
+#define PRESCRIBED_CROP_PHU_ALL_RAINFED 3
+#define PRESCRIBED_CROP_PHU_ALL_IRRIG 4
 #define NO_FERTILIZER 0
 #define FERTILIZER 1
 #define AUTO_FERTILIZER 2
-#define NOUT 334            /* number of output files */
+#define NOUT 337            /* number of output files */
 #define GRIDBASED 1         /* pft-specific outputs scaled by stand->frac */
 #define PFTBASED 0          /* pft-specific outputs not scaled by stand->frac */
 #define ANNUAL -2
@@ -422,6 +426,9 @@
 #define NAPPLIED_MG 331
 #define BNF_MG 332
 #define NDEPO_MG 333
+#define LITTERTEMP 334
+#define NBP 335
+#define TWS 336
 #define PFT_GCGP_COUNT 0
 #define NDAY_MONTH 1
 #define RANDOM_SEED 0

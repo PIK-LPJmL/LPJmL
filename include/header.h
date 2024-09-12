@@ -134,7 +134,7 @@ typedef struct
   Bool landuse;        /**< land use enabled (TRUE/FALSE) */
   Bool river_routing;  /**< river routing enabled (TRUE/FALSE) */
   int sdate_option;    /**< sowing date option (0-2)*/
-  Bool crop_option;    /**< prescribe crop PHU? (TRUE/FALSE) */
+  Bool crop_phu_option;    /**< prescribe crop PHU? (TRUE/FALSE) */
   Bool separate_harvests; /**< double harvest output enabled */
   Seed seed;           /**< Random seed */
 } Restartheader;
@@ -161,10 +161,11 @@ extern char *getfilefrommeta(const char *,Bool);
 extern void fprintheader(FILE *,const Header *);
 extern char *parse_json_metafile(FILE *,Header *,Map **,const char *,Attr **,int *,char **,char **,char **,char **,char **,char **,Filename *,Type *,int *,size_t *,Bool *,Verbosity);
 extern Map *fscanmap(LPJfile *,const char *,Verbosity);
+extern Map *newmap(Bool,int);
 extern void freemap(Map *);
 extern void fprintmap(FILE *,const Map *);
 extern Bool cmpmap(const Map *,const Map *);
-extern void fprintjson(FILE *,const char *,const char *,const char *,const char *,const Header *,
+extern void fprintjson(FILE *,const char *,const char *,const char *,const char *,const char *,const Header *,
                        Map *,const char *,const Attr *,int,const char *,const char *,const char *,
                        const char *,const Filename *,Type,int,const char *,Bool,int);
 

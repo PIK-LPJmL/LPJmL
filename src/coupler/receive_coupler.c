@@ -34,7 +34,7 @@ Bool receive_coupler(int index,           /**< index of input file */
   int rc;
 #endif
 #else
-  int rc;
+  int rc=TRUE;
 #endif
   if(isroot(*config))
   {
@@ -107,6 +107,7 @@ Bool receive_coupler(int index,           /**< index of input file */
       break;
     case LPJ_SHORT:
       rc=readshort_socket(config->socket,data,config->nall*size);
+      break;
     case LPJ_INT:
       rc=readint_socket(config->socket,data,config->nall*size);
       break;

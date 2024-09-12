@@ -36,7 +36,6 @@ Bool phenology_crop(Pft *pft,            /**< pointer to PFT variables */
   int hlimit;
   Real vd_inc=1;
   Real vd_b,vrf,prf;
-//  Real as;
   crop=pft->data;
   par=pft->par->data;
   harvesting=FALSE;
@@ -50,25 +49,23 @@ Bool phenology_crop(Pft *pft,            /**< pointer to PFT variables */
     case PRESCRIBED_CROP_PHU:
       hlimit=par->hlimit;
       break;
+    case PRESCRIBED_CROP_PHU_ALL_IRRIG:
+      hlimit=par->hlimit;
+      break;
+    case PRESCRIBED_CROP_PHU_ALL_RAINFED:
+      hlimit=par->hlimit;
+      break;
     case NEW_CROP_PHU:
       hlimit=(crop->wtype) ? par->hlimit+90 : par->hlimit; /* add 90 days for winter crops for internally computed seasons */
       break;
     default:
-      fprintf(stderr,"ERROR265: Invalid crop PHU option %d.\n",
-              config->crop_phu_option);
       hlimit=0;
+      fail(INVALID_CROP_PHU_OPTION_ERR,TRUE,"Invalid crop PHU option %d",
+           config->crop_phu_option);
   }
   crop->senescence0=crop->senescence;
 
   laimax=pft->stand->cell->ml.manage.laimax[pft->par->id];
-
-  /* accelerated senescence factor should be between 1 and 2 and applied to mean temperature, following Maiorano et al. 2017 */
-//  as = 1.0;
-// as is disabled until effect on growing season length is better understood
-//  if (tmax > TLOW && tmax < THIGH)
-//    as = 1/(THIGH-TLOW)*(tmax-TLOW)+1;
-//  else if(tmax > THIGH)
-//    as = 2;
 
   if(crop->husum<crop->phu)
   {

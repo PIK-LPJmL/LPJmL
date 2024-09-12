@@ -159,7 +159,7 @@ struct config
   Bool separate_harvests;
   int wateruse;           /**< enable wateruse (NO_WATERUSE, WATERUSE, ALL_WATERUSE) */
   int sdate_option_restart;     /**< sdate option in restart file */
-  int crop_option_restart;      /**< crop option in restart file */
+  int crop_phu_option_restart;  /**< crop phu option in restart file */
   int landuse_year_const;       /**< year landuse is fixed for LANDUSE_CONST case */
   Bool intercrop;               /**< intercropping (TRUE/FALSE) */
   Bool grassonly;               /**< set all cropland including others to zero but keep managed grasslands */
@@ -231,6 +231,7 @@ struct config
   Bool with_lakes;     /**< enable lakes (TRUE/FALSE) */
   Bool extflow;        /** external flow enabled */
   Bool permafrost;     /**< permafrost module enabled */
+  Bool percolation_heattransfer; /**< water heat transfer enabled */
   Bool johansen;       /**< johansen enabled */
   Bool gsi_phenology;	/**< GSI phenology enabled (TRUE/FALSE) */
   Bool transp_suction_fcn; /**< transpiration reduction function enabled */

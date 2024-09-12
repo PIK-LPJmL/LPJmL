@@ -36,6 +36,7 @@
 #define TIME_DIM_NAME "time"
 #define YEARS_NAME "Years"
 #define NULL_NAME "(null)"
+#define PFT_NAME "NamePFT"
 #define DEPTH_NAME "depth"
 #define DEPTH_STANDARD_NAME "depth_below_surface"
 #define DEPTH_LONG_NAME "Depth of Vertical Layer Center Below Surface"
@@ -190,7 +191,8 @@ extern void closeinput(Infile *);
 extern int open_netcdf(const char *,int *,Bool *);
 extern void free_netcdf(int);
 extern Bool checkcoord(const size_t *,int,const Coord *,const Climatefile *);
-extern char *getattr_netcdf(const Climatefile *,int,const char *);
+extern Map *readmap_netcdf(int,const char *);
+extern char *getattr_netcdf(int,int,const char *);
 extern char *getvarname_netcdf(const Climatefile *);
 
 #ifdef USE_MPI

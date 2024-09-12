@@ -128,9 +128,9 @@ void fprintfiles(FILE *file,          /**< pointer to text output file */
   {
     fprintfilename(file,&config->countrycode_filename,FALSE);
     fprintfilename(file,&config->landuse_filename,TRUE);
-    if(config->sdate_option==PRESCRIBED_SDATE)
+    if(config->sdate_option>=PRESCRIBED_SDATE)
       fprintfilename(file,&config->sdate_filename,TRUE);
-    if(config->crop_phu_option==PRESCRIBED_CROP_PHU)
+    if(config->crop_phu_option>=PRESCRIBED_CROP_PHU)
       fprintfilename(file,&config->crop_phu_filename,TRUE);
     if(config->with_nitrogen && config->fertilizer_input)
       fprintfilename(file,&config->fertilizer_nr_filename,TRUE);
@@ -180,7 +180,7 @@ void fprintfiles(FILE *file,          /**< pointer to text output file */
       if(config->outputvars[i].filename.fmt!=SOCK)
       {
         if(config->outputvars[i].oneyear)
-          for(j=config->firstyear;j<=config->lastyear;j++)
+          for(j=config->outputyear;j<=config->lastyear;j++)
           {
             fprintf(file,config->outputvars[i].filename.name,j);
             fputc('\n',file);

@@ -483,7 +483,7 @@ int main(int argc,char **argv)
     }
     if(data_version<4)
       header2.nbands/=header2.nstep;
-    fprintjson(file,argv[index_datafile+1],source,history,arglist,&header2,map,map_name,global_attrs,n_global,var_name,var_units,var_standard_name,var_long_name,&filename,grid_type,format,id,FALSE,data_version);
+    fprintjson(file,argv[index_datafile+1],NULL,source,history,arglist,&header2,map,map_name,global_attrs,n_global,var_name,var_units,var_standard_name,var_long_name,&filename,grid_type,format,id,FALSE,data_version);
     fclose(file);
   }
   return EXIT_SUCCESS;

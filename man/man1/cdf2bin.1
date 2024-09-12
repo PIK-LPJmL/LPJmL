@@ -3,7 +3,7 @@
 cdf2bin \- convert NetCDF files into raw binary data
 .SH SYNOPSIS
 .B cdf2bin
-[\-v] [\-swap] [\-units u] [\-var name] [\-clm] [\-byte] [\-cellsize size] [\-floatgrid] [\-doublegrid] [\-json] [\-o binfile]
+[\-v] [\-swap] [\-units u] [\-var name] [\-map name] [\-clm] [\-byte] [\-cellsize size] [\-floatgrid] [\-doublegrid] [\-json] [\-o binfile]
 gridfile netcdffile ...
 .SH DESCRIPTION
 Program converts NetCDF output data into raw binary output data.
@@ -19,6 +19,9 @@ units to convert data from NetCDF file
 .TP
 \-var name
 variable name in NetCDF file
+.TP
+\-map name
+name of map in NetCDF file. If specified the map is read and put into the JSON metafile.
 .TP
 \-floatgrid
 set datatype of grid file to float, default is short.
@@ -42,7 +45,7 @@ JSON metafile is created with suffix '.json'
 filename of raw binary data file written. Default is out.bin
 .TP
 .I gridfile
-filename of binary grid data file consisting of short, float or double  values or clm file if -clm option is set
+filename of binary grid data file consisting of short, float or double values or clm file if -clm option is set
 .TP
 .I netcdffile
 filename of NetCDF file(s) converted
@@ -50,7 +53,7 @@ filename of NetCDF file(s) converted
 .TP
 Create output file for vegetation carbon:
 .B cdf2bin
--var vegc -o vegc1901-2010.bin  grid.bin vegc.nc
+-var vegc -o vegc1901-2010.bin grid.bin vegc.nc
 .PP
 .SH EXIT STATUS
 .B cdf2bin
@@ -66,4 +69,4 @@ For authors and contributors see AUTHORS file
 (C) Potsdam Institute for Climate Impact Research (PIK), see COPYRIGHT file
 
 .SH SEE ALSO
-bin2cdf(1), cmpbin(1), cdf2clm(1), country2cdf(1), regridlpj(1), lpjml(1), txt2clm(1), cru2clm(1), clm(5)
+bin2cdf(1), cmpbin(1), cdf2clm(1), cdf2grid(1), country2cdf(1), regridlpj(1), lpjml(1), txt2clm(1), cru2clm(1), clm(5)

@@ -15,9 +15,9 @@
 #include "lpj.h"
 
 #ifdef USE_UDUNITS
-#define USAGE "Usage: %s [-h] [-v] [-units unit] [-var name] [-time name] [-o filename] [-scale factor] [-id s] [-version v] [-int] [-float] [-zero] [-json] gridfile netcdffile ...\n"
+#define USAGE "Usage: %s [-h] [-v] [-units unit] [-var name] [-time name] [-map name] [-o filename] [-scale factor] [-id s] [-version v] [-int] [-float] [-zero] [-json] gridfile netcdffile ...\n"
 #else
-#define USAGE "Usage: %s [-h] [-v] [-var name] [-o filename] [-scale factor] [-id s] [-version v] [-int] [-float] [-zero] [-json] gridfile netcdffile ...\n"
+#define USAGE "Usage: %s [-h] [-v] [-var name] [-time name] [-map name] [-o filename] [-scale factor] [-id s] [-version v] [-int] [-float] [-zero] [-json] gridfile netcdffile ...\n"
 #endif
 
 #if defined(USE_NETCDF) || defined(USE_NETCDF4)
@@ -353,6 +353,8 @@ int main(int argc,char **argv)
   Climatefile climate;
   Config config;
   char *units,*var,*outname,*endptr,*time_name,*arglist,*long_name=NULL,*standard_name=NULL,*history=NULL,*source=NULL;
+  char *map_name=NULL;
+  Map *map=NULL;
   float scale,*data=NULL;
   Filename coord_filename;
   Coord *coords;
@@ -446,6 +448,16 @@ int main(int argc,char **argv)
         units=argv[++iarg];
       }
 #endif
+      else if(!strcmp(argv[iarg],"-map"))
+      {
+        if(argc==iarg+1)
+        {
+          fprintf(stderr,"Missing argument after option '-map'.\n"
+                 USAGE,argv[0]);
+          return EXIT_FAILURE;
+        }
+        map_name=argv[++iarg];
+      }
       else if(!strcmp(argv[iarg],"-o"))
       {
         if(argc==iarg+1)
@@ -527,6 +539,12 @@ int main(int argc,char **argv)
     fprintf(stderr,"Missing arguments.\n"
             USAGE,argv[0]);
     return EXIT_FAILURE;
+  }
+  if(datatype==LPJ_FLOAT && scale!=1)
+  {
+    fprintf(stderr,"Warning: Scaling set to %g but datatype is float, scaling set to 1.\n",
+            scale);
+    scale=1;
   }
   coord_filename.name=argv[iarg];
   coord_filename.fmt=CLM;
@@ -636,13 +654,24 @@ int main(int argc,char **argv)
            return EXIT_FAILURE;
       }
       if(units==NULL)
-        units=getattr_netcdf(&climate,climate.varid,"units");
+        units=getattr_netcdf(climate.ncid,climate.varid,"units");
       if(var==NULL)
         var=getvarname_netcdf(&climate);
-      long_name=getattr_netcdf(&climate,climate.varid,"long_name");
-      standard_name=getattr_netcdf(&climate,climate.varid,"standard_name");
-      history=getattr_netcdf(&climate,NC_GLOBAL,"history");
-      source=getattr_netcdf(&climate,NC_GLOBAL,"source");
+      long_name=getattr_netcdf(climate.ncid,climate.varid,"long_name");
+      standard_name=getattr_netcdf(climate.ncid,climate.varid,"standard_name");
+      history=getattr_netcdf(climate.ncid,NC_GLOBAL,"history");
+      source=getattr_netcdf(climate.ncid,NC_GLOBAL,"source");
+      if(map_name!=NULL)
+      {
+        map=readmap_netcdf(climate.ncid,map_name);
+        if(map==NULL)
+        {
+          fprintf(stderr,"Map '%s' not found in '%s'.\n",map_name,argv[j]);
+          map_name=NULL;
+        }
+        else
+          map_name=BAND_NAMES;
+      }
       if(nc_inq_natts(climate.ncid,&len))
         n_attr=0;
       else
@@ -660,7 +689,7 @@ int main(int argc,char **argv)
           {
             if(strcmp(name,"history") && strcmp(name,"source"))
             {
-              attrs[n_attr].value=getattr_netcdf(&climate,NC_GLOBAL,name);
+              attrs[n_attr].value=getattr_netcdf(climate.ncid,NC_GLOBAL,name);
               if(attrs[n_attr].value!=NULL)
                 attrs[n_attr++].name=strdup(name);
             }
@@ -762,7 +791,7 @@ int main(int argc,char **argv)
       header.nbands/=header.nstep;
     grid_name.name=argv[iarg];
     grid_name.fmt=CLM;
-    fprintjson(file,outname,source,history,arglist,&header,NULL,NULL,attrs,n_attr,var,units,standard_name,long_name,&grid_name,grid_type,CLM,id,FALSE,version);
+    fprintjson(file,outname,NULL,source,history,arglist,&header,map,map_name,attrs,n_attr,var,units,standard_name,long_name,&grid_name,grid_type,CLM,id,FALSE,version);
     fclose(file);
   }
   return EXIT_SUCCESS;

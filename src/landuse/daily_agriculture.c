@@ -37,7 +37,7 @@ Real daily_agriculture(Stand *stand,                /**< [inout] stand pointer *
                        const Config *config         /**< [in] LPJ config */
                       )                             /** \return runoff (mm/day) */
 {
-  int p,l,nnat,nirrig,index=0;
+  int p,l,nnat,nirrig,index=-1;
   Pft *pft;
   Real *gp_pft;         /**< pot. canopy conductance for PFTs & CFTs (mm/s) */
   Real gp_stand;               /**< potential stomata conductance  (mm/s) */
@@ -59,6 +59,7 @@ Real daily_agriculture(Stand *stand,                /**< [inout] stand pointer *
   Real wdf; /* water deficit fraction */
   Real transp;
   Real cft_rm=0.0; /* cft-specific monthly root moisture */
+  Real vol_water_enth; /* volumetric enthalpy of water (J/m3) */
   Bool negbm;
   Irrigation *data;
   Output *output;
@@ -121,8 +122,8 @@ Real daily_agriculture(Stand *stand,                /**< [inout] stand pointer *
         stand->soil.litter.item->agtop.leaf.nitrogen += crop->nmanure*(1-param.nmanure_nh4_frac);
         stand->cell->balance.influx.carbon += crop->nmanure*param.manure_cn*stand->frac;
         stand->cell->balance.influx.nitrogen += crop->nmanure*stand->frac;
-        getoutput(output,NMANURE_AGR,config)+=crop->nmanure*pft->stand->frac;
-        getoutput(output,NAPPLIED_MG,config)+=crop->nmanure*pft->stand->frac;
+        getoutput(output,NMANURE_AGR,config)+=crop->nmanure*stand->frac;
+        getoutput(output,NAPPLIED_MG,config)+=crop->nmanure*stand->frac;
         crop->nmanure=0;
       }
     }
@@ -219,6 +220,7 @@ Real daily_agriculture(Stand *stand,                /**< [inout] stand pointer *
       if(getnpft(&stand->pftlist)>0)
       {
         pft=getpft(&stand->pftlist,0);
+        index=(stand->type->landusetype==OTHERS) ? data->irrigation*nirrig+rothers(ncft) : pft->par->id-npft+data->irrigation*nirrig;
         crop=pft->data;
         if(crop->sh!=NULL)
         {
@@ -259,14 +261,18 @@ Real daily_agriculture(Stand *stand,                /**< [inout] stand pointer *
   /* INFILTRATION and PERCOLATION */
   if(irrig_apply>epsilon)
   {
-    runoff+=infil_perc_irr(stand,irrig_apply,&return_flow_b,npft,ncft,config);
+    vol_water_enth = climate->temp*c_water+c_water2ice; /* enthalpy of soil infiltration */
+    runoff+=infil_perc_irr(stand,irrig_apply,vol_water_enth,&return_flow_b,npft,ncft,config);
     /* count irrigation events*/
-    pft=getpft(&stand->pftlist,0);
-    index=(stand->type->landusetype==OTHERS) ? data->irrigation*nirrig+rothers(ncft) : pft->par->id-npft+data->irrigation*nirrig;
-    getoutputindex(output,CFT_IRRIG_EVENTS,index,config)++; /* id is consecutively counted over natural pfts, biomass, and the cfts; ids for cfts are from 12-23, that is why npft (=12) is distracted from id */
+    if(index!=-1)
+      getoutputindex(output,CFT_IRRIG_EVENTS,index,config)++; /* id is consecutively counted over natural pfts, biomass, and the cfts; ids for cfts are from 12-23, that is why npft (=12) is distracted from id */
   }
 
-  runoff+=infil_perc_rain(stand,rainmelt+rw_apply,&return_flow_b,npft,ncft,config);
+  if(climate->prec+melt>0)  /* enthalpy of soil infiltration */
+    vol_water_enth = climate->temp*c_water*climate->prec/(climate->prec+melt)+c_water2ice;
+  else
+    vol_water_enth=0;
+  runoff+=infil_perc_rain(stand,rainmelt+rw_apply, vol_water_enth, &return_flow_b,npft,ncft,config);
 
   foreachpft(pft,p,&stand->pftlist)
   {
