@@ -4,7 +4,7 @@
 /**                                                                                \n**/
 /**     C implementation of LPJmL                                                  \n**/
 /**                                                                                \n**/
-/**     Function reads interger data in NetCDF format                              \n**/
+/**     Function reads integer data in NetCDF format                               \n**/
 /**                                                                                \n**/
 /** (C) Potsdam Institute for Climate Impact Research (PIK), see COPYRIGHT file    \n**/
 /** authors, and contributors see AUTHORS file                                     \n**/
@@ -28,7 +28,8 @@ Bool readintdata_netcdf(const Climatefile *file, /**< climate data file */
                        )                         /** \return TRUE on error */
 {
 #ifdef USE_NETCDF
-  int cell,rc,i;
+  int cell,rc,start;
+  size_t i;
   int *f;
   short *s;
   size_t offsets[4];
@@ -37,9 +38,15 @@ Bool readintdata_netcdf(const Climatefile *file, /**< climate data file */
   offsets[0]=year;
   offsets[1]=offsets[2]=offsets[3]=0;
   counts[0]=1;
-  counts[1]=file->var_len;
-  counts[2]=file->nlat;
-  counts[3]=file->nlon;
+  if(file->var_len>1)
+  {
+    counts[1]=file->var_len;
+    start=2;
+  }
+  else
+    start=1;
+  counts[start]=file->nlat;
+  counts[start+1]=file->nlon;
   switch(file->datatype)
   {
     case LPJ_INT:
@@ -68,28 +75,28 @@ Bool readintdata_netcdf(const Climatefile *file, /**< climate data file */
       for(cell=0;cell<config->ngridcell;cell++)
       {
         if(file->offset)
-          offsets[2]=file->offset-(int)((grid[cell].coord.lat-file->lat_min)/file->lat_res+0.5);
+          offsets[start]=file->offset-(int)((grid[cell].coord.lat-file->lat_min)/file->lat_res+0.5);
         else
-          offsets[2]=(int)((grid[cell].coord.lat-file->lat_min)/file->lat_res+0.5);
+          offsets[start]=(int)((grid[cell].coord.lat-file->lat_min)/file->lat_res+0.5);
         if(file->is360 && grid[cell].coord.lon<0)
-          offsets[3]=(int)((360+grid[cell].coord.lon-file->lon_min)/file->lon_res+0.5);
+          offsets[start+1]=(int)((360+grid[cell].coord.lon-file->lon_min)/file->lon_res+0.5);
         else
-          offsets[3]=(int)((grid[cell].coord.lon-file->lon_min)/file->lon_res+0.5);
-        if(checkcoord(offsets+2,cell+config->startgrid,&grid[cell].coord,file))
+          offsets[start+1]=(int)((grid[cell].coord.lon-file->lon_min)/file->lon_res+0.5);
+        if(checkcoord(offsets+start,cell+config->startgrid,&grid[cell].coord,file))
         {
           free(f);
           return TRUE;
         }
         for(i=0;i<file->var_len;i++)
         {
-          if(!grid[cell].skip && f[file->nlon*file->nlat*i+file->nlon*offsets[2]+offsets[3]]==file->missing_value.i)
+          if(!grid[cell].skip && f[file->nlon*file->nlat*i+file->nlon*offsets[start]+offsets[start+1]]==file->missing_value.i)
           {
             fprintf(stderr,"ERROR423: Missing value for cell=%d (%s).\n",
                     cell+config->startgrid,sprintcoord(line,&grid[cell].coord));
             free(f);
             return TRUE;
           }
-          data[cell*file->var_len+i]=f[file->nlon*file->nlat*i+file->nlon*offsets[2]+offsets[3]];
+          data[cell*file->var_len+i]=f[file->nlon*file->nlat*i+file->nlon*offsets[start]+offsets[start+1]];
         }
       }
       free(f);
@@ -120,14 +127,14 @@ Bool readintdata_netcdf(const Climatefile *file, /**< climate data file */
       for(cell=0;cell<config->ngridcell;cell++)
       {
         if(file->offset)
-          offsets[2]=file->offset-(int)((grid[cell].coord.lat-file->lat_min)/file->lat_res+0.5);
+          offsets[start]=file->offset-(int)((grid[cell].coord.lat-file->lat_min)/file->lat_res+0.5);
         else
-          offsets[2]=(int)((grid[cell].coord.lat-file->lat_min)/file->lat_res+0.5);
+          offsets[start]=(int)((grid[cell].coord.lat-file->lat_min)/file->lat_res+0.5);
         if(file->is360 && grid[cell].coord.lon<0)
-          offsets[3]=(int)((360+grid[cell].coord.lon-file->lon_min)/file->lon_res+0.5);
+          offsets[start+1]=(int)((360+grid[cell].coord.lon-file->lon_min)/file->lon_res+0.5);
         else
-          offsets[3]=(int)((grid[cell].coord.lon-file->lon_min)/file->lon_res+0.5);
-        if(checkcoord(offsets+2,cell+config->startgrid,&grid[cell].coord,file))
+          offsets[start+1]=(int)((grid[cell].coord.lon-file->lon_min)/file->lon_res+0.5);
+        if(checkcoord(offsets+start,cell+config->startgrid,&grid[cell].coord,file))
         {
           free(s);
           return TRUE;
@@ -135,14 +142,14 @@ Bool readintdata_netcdf(const Climatefile *file, /**< climate data file */
 
         for(i=0;i<file->var_len;i++)
         {
-          if(!grid[cell].skip && s[file->nlon*file->nlat*i+file->nlon*offsets[2]+offsets[3]]==file->missing_value.s)
+          if(!grid[cell].skip && s[file->nlon*file->nlat*i+file->nlon*offsets[start]+offsets[start+1]]==file->missing_value.s)
           {
             fprintf(stderr,"ERROR423: Missing value for cell=%d (%s).\n",
                     cell+config->startgrid,sprintcoord(line,&grid[cell].coord));
             free(s);
             return TRUE;
           }
-          data[cell*file->var_len+i]=s[file->nlon*file->nlat*i+file->nlon*offsets[2]+offsets[3]];
+          data[cell*file->var_len+i]=s[file->nlon*file->nlat*i+file->nlon*offsets[start]+offsets[start+1]];
         }
       }
       free(s);
