@@ -51,7 +51,7 @@ of `major.minor.patch` with
 - `establishmentpft.c`, `cdf2coord.c` and `cdf2grid.c` modified to compile without warnings using gcc.
 - Debug flag in `send_token_coupler.c` and `openoutput_coupler.c` corrected to `DEBUG_COUPLER`.
 - Code changed to compile without errors/warnings for `-DIMAGE -DCOUPLED` setting.
-- Calculation of offsets and counts corrected in `readint_netdf.c`.
+- Calculation of offsets and counts corrected in `readint_netdf.c` and missing loop over bands added.
 
 
 ## [5.9.9] - 2024-09-04
