@@ -55,13 +55,14 @@ static Cdf *create_cdf(const char *filename,
 {
   Cdf *cdf;
   double *lon,*lat;
-  double *layer=NULL,*bnds=NULL,*midlayer=NULL;
+  double *layer=NULL,*bnds=NULL,*midlayer=NULL,*time_bnds=NULL;
   double *year;
   int i,j,rc,dim[4],dim2[2],dimids[2];
   size_t chunk[4],offset[2],count[2];
   char *s;
   time_t t;
   int time_var_id,lat_var_id,lon_var_id,time_dim_id,lat_dim_id,lon_dim_id,map_dim_id,len_dim_id,bnds_var_id,bnds_dim_id;
+  int time_bnds_var_id,time_bnds_dim_id;
   int pft_dim_id,varid;
   int len;
   cdf=new(Cdf);
@@ -97,15 +98,33 @@ static Cdf *create_cdf(const char *filename,
     free(cdf);
     return NULL;
   }
+  time_bnds=newvec(double,2*header.nyear*header.nstep);
+  if(time_bnds==NULL)
+  {
+    printallocerr("year");
+    free(lon);
+    free(lat);
+    free(cdf);
+    free(year);
+    return NULL;
+  }
   switch(header.nstep)
   {
     case 1:
       if(absyear)
         for(i=0;i<header.nyear;i++)
+        {
           year[i]=header.firstyear+i*header.timestep+header.timestep/2;
+          time_bnds[2*i]=header.firstyear+i*header.timestep;
+          time_bnds[2*i+1]=header.firstyear+(i+1)*header.timestep;
+        }
         else
         for(i=0;i<header.nyear;i++)
+        {
           year[i]=header.firstyear-baseyear+i*header.timestep+header.timestep/2;
+          time_bnds[2*i]=header.firstyear-baseyear+i*header.timestep;
+          time_bnds[2*i+1]=header.firstyear-baseyear+(i+1)*header.timestep;
+        }
       break;
     case 12:
       if(with_days)
@@ -113,17 +132,25 @@ static Cdf *create_cdf(const char *filename,
         for(i=0;i<header.nyear;i++)
           for(j=0;j<12;j++)
             if(i==0 && j==0)
+            {
               year[0]=ndaymonth[j]-1+(header.firstyear-baseyear)*NDAYYEAR;
+              time_bnds[0]=(header.firstyear-baseyear)*NDAYYEAR;
+              time_bnds[1]=year[0];
+            }
             else
+            {
               year[i*12+j]=year[i*12+j-1]+ndaymonth[j];
+              time_bnds[2*(i*12+j)]=year[i*12+j-1];
+              time_bnds[2*(i*12+j)+1]=year[i*12+j];
+            }
       }
       else
         for(i=0;i<header.nyear*12;i++)
-           year[i]=i+(header.firstyear-baseyear)*12;
+           year[i]=time_bnds[2*i]=time_bnds[2*i+1]=i+(header.firstyear-baseyear)*12;
       break;
     case NDAYYEAR:
       for(i=0;i<header.nyear*NDAYYEAR;i++)
-        year[i]=i+(header.firstyear-baseyear)*NDAYYEAR;
+        year[i]=time_bnds[2*i]=time_bnds[2*i+1]=i+(header.firstyear-baseyear)*NDAYYEAR;
       break;
     default:
       fprintf(stderr,"ERROR425: Invalid value=%d for number of data points per year, must be 1, 12 or 365.\n",
@@ -151,6 +178,12 @@ static Cdf *create_cdf(const char *filename,
     return NULL;
   }
   rc=nc_def_dim(cdf->ncid,TIME_DIM_NAME,header.nyear*header.nstep,&time_dim_id);
+  error(rc);
+  rc=nc_def_dim(cdf->ncid,TIME_BNDS_NAME,2,&time_bnds_dim_id);
+  error(rc);
+  dimids[0]=time_dim_id;
+  dimids[1]=time_bnds_dim_id;
+  rc=nc_def_var(cdf->ncid,TIME_BNDS_NAME,NC_DOUBLE,2,dimids,&time_bnds_var_id);
   error(rc);
   rc=nc_def_var(cdf->ncid,TIME_NAME,NC_DOUBLE,1,&time_dim_id,&time_var_id);
   error(rc);
@@ -374,6 +407,8 @@ static Cdf *create_cdf(const char *filename,
   rc=nc_enddef(cdf->ncid);
   error(rc);
   rc=nc_put_var_double(cdf->ncid,time_var_id,year);
+  error(rc);
+  rc=nc_put_var_double(cdf->ncid,time_bnds_var_id,time_bnds);
   error(rc);
   rc=nc_put_var_double(cdf->ncid,lat_var_id,lat);
   error(rc);

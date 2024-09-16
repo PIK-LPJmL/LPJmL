@@ -41,6 +41,7 @@
 #define DEPTH_STANDARD_NAME "depth_below_surface"
 #define DEPTH_LONG_NAME "Depth of Vertical Layer Center Below Surface"
 #define BNDS_NAME "depth_bnds"
+#define TIME_BNDS_NAME "time_bnds"
 #define BNDS_LONG_NAME "bnds=0 for the top of the layer, and bnds=1 for the bottom of the layer"
 #define CALENDAR "noleap"
 

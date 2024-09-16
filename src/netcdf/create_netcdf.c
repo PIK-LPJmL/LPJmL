@@ -44,10 +44,13 @@ Bool create_netcdf(Netcdf *cdf,
   char *s;
   time_t t;
   int i,j,rc,nyear,imiss=MISSING_VALUE_INT,len;
+  int dimids[2];
+  int bnds_dim_id,bnds_var_id;
   short smiss=MISSING_VALUE_SHORT;
   double *lon=NULL,*lat=NULL;
   float miss=config->missing_value;
   double *year=NULL;
+  double *bnds=NULL;
 #ifdef USE_NETCDF4
   size_t chunk[3];
 #endif
@@ -134,10 +137,16 @@ Bool create_netcdf(Netcdf *cdf,
       else
       {
         if(n==1)
+        {
           year=newvec(double,nyear/timestep);
+          bnds=newvec(double,(nyear/timestep)*2);
+        }
         else
+        {
           year=newvec(double,nyear*n);
-        if(year==NULL)
+          bnds=newvec(double,nyear*n*2);
+        }
+        if(year==NULL || bnds==NULL)
         {
           printallocerr("year");
           free(lon);
@@ -157,10 +166,18 @@ Bool create_netcdf(Netcdf *cdf,
         {
           if(config->absyear)
             for(i=0;i<nyear/timestep;i++)
+            {
               year[i]=config->outputyear+i*timestep+timestep/2;
+              bnds[2*i]=config->outputyear+i*timestep;
+              bnds[2*i+1]=config->outputyear+(i+1)*timestep;
+            }
           else
             for(i=0;i<nyear/timestep;i++)
+            {
               year[i]=config->outputyear-config->baseyear+i*timestep+timestep/2;
+              bnds[2*i]=config->outputyear-config->baseyear+i*timestep;
+              bnds[2*i+1]=config->outputyear-config->baseyear+(i+1)*timestep;
+            }
         }
         break;
       case 12:
@@ -171,30 +188,42 @@ Bool create_netcdf(Netcdf *cdf,
               if(i==0 && j==0)
               {
                 if(oneyear)
+                {
                   year[0]=ndaymonth[j]-1;
+                  bnds[0]=0;
+                  bnds[1]=year[0];
+                }
                 else
+                {
                   year[0]=ndaymonth[j]-1+(config->outputyear-config->baseyear)*NDAYYEAR;
+                  bnds[0]=(config->outputyear-config->baseyear)*NDAYYEAR;
+                  bnds[1]=year[0];
+                }
               }
               else
+              {
                 year[i*12+j]=year[i*12+j-1]+ndaymonth[j];
+                bnds[2*(i*12+j)]=year[i*12+j-1];
+                bnds[2*(i*12+j)+1]=year[i*12+j];
+              }
         }
         else
         {
           if(oneyear)
             for(i=0;i<12;i++)
-              year[i]=i;
+              year[i]=bnds[2*i]=bnds[2*i+1]=i;
           else
             for(i=0;i<nyear*12;i++)
-              year[i]=(config->outputyear-config->baseyear)*NMONTH+i;
+              year[i]=bnds[2*i]=bnds[2*i+1]=(config->outputyear-config->baseyear)*NMONTH+i;
         }
         break;
       case NDAYYEAR:
         if(oneyear)
           for(i=0;i<n;i++)
-            year[i]=i;
+            year[i]=bnds[2*i]=bnds[2*i+1]=i;
         else
           for(i=0;i<nyear*n;i++)
-            year[i]=(config->outputyear-config->baseyear)*NDAYYEAR+i;
+            year[i]=bnds[2*i]=bnds[2*i+1]=(config->outputyear-config->baseyear)*NDAYYEAR+i;
         break;
       default:
         fprintf(stderr,"ERROR425: Invalid value=%d for number of data points per year in '%s'.\n",n,filename);
@@ -237,6 +266,12 @@ Bool create_netcdf(Netcdf *cdf,
       rc=nc_put_att_text(cdf->ncid, cdf->time_var_id,"standard_name",strlen(TIME_STANDARD_NAME),TIME_STANDARD_NAME);
       error(rc);
       rc=nc_put_att_text(cdf->ncid, cdf->time_var_id,"long_name",strlen(TIME_LONG_NAME),TIME_LONG_NAME);
+      error(rc);
+      rc=nc_def_dim(cdf->ncid,TIME_BNDS_NAME,2,&bnds_dim_id);
+      error(rc);
+      dimids[0]=cdf->time_dim_id;
+      dimids[1]=bnds_dim_id;
+      rc=nc_def_var(cdf->ncid,TIME_BNDS_NAME,NC_DOUBLE,2,dimids,&bnds_var_id);
       error(rc);
     }
     rc=nc_def_dim(cdf->ncid,LAT_DIM_NAME,array->nlat,&cdf->lat_dim_id);
@@ -394,6 +429,8 @@ Bool create_netcdf(Netcdf *cdf,
     {
       rc=nc_put_var_double(cdf->ncid,cdf->time_var_id,year);
       error(rc);
+      rc=nc_put_var_double(cdf->ncid,bnds_var_id,bnds);
+      error(rc);
     }
     rc=nc_put_var_double(cdf->ncid,cdf->lat_var_id,lat);
     error(rc);
@@ -402,6 +439,7 @@ Bool create_netcdf(Netcdf *cdf,
     free(lat);
     free(lon);
     free(year);
+    free(bnds);
   }
   return FALSE;
 #else
