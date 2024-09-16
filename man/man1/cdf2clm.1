@@ -3,7 +3,7 @@
 cdf2clm \- convert NetCDF files into CLM files
 .SH SYNOPSIS
 .B cdf2clm
-[\-h] [\-v] [\-scale factor] [\-units u] [\-var name] [\-time name] [\-map name] [\-id string] [\-version v] [\-float] [\-zero] [\-json] [\-o clmfile]
+[\-h] [\-v] [\-scale factor] [\-units u] [\-var name] [\-time name] [\-map name] [\-id string] [\-version v] [\-float] [\-zero] [\-json] [\-o clmfile] [\-config file]
 gridfile netcdffile ...
 .SH DESCRIPTION
 Program converts NetCDF input data into CLM input data.
@@ -47,6 +47,9 @@ JSON metafile is created with suffix '.json'.
 .TP
 .I -o clmfile
 Filename of CLM data file written. Default is out.clm.
+.TP
+\-config file
+read missing values and axis names from JSON file
 .TP
 .I gridfile
 Filename of grid data file.
