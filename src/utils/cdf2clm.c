@@ -15,9 +15,9 @@
 #include "lpj.h"
 
 #ifdef USE_UDUNITS
-#define USAGE "Usage: %s [-h] [-v] [-units unit] [-var name] [-time name] [-map name] [-o filename] [-scale factor] [-id s] [-version v] [-float] [-zero] [-json] gridfile netcdffile ...\n"
+#define USAGE "Usage: %s [-h] [-v] [-units unit] [-var name] [-time name] [-map name] [-o filename] [-scale factor] [-id s] [-version v] [-float] [-zero] [-json] [-config file] filegridfile netcdffile ...\n"
 #else
-#define USAGE "Usage: %s [-h] [-v] [-var name] [-time name] [-map name] [-o filename] [-scale factor] [-id s] [-version v] [-float] [-zero] [-json] gridfile netcdffile ...\n"
+#define USAGE "Usage: %s [-h] [-v] [-var name] [-time name] [-map name] [-o filename] [-scale factor] [-id s] [-version v] [-float] [-zero] [-json] [-config file] gridfile netcdffile ...\n"
 #endif
 #define ERR_USAGE USAGE "\nTry \"%s --help\" for more information.\n"
 
@@ -355,6 +355,7 @@ int main(int argc,char **argv)
   Config config;
   char *units,*var,*outname,*endptr,*time_name,*arglist,*long_name=NULL,*standard_name=NULL,*history=NULL,*source=NULL;
   char *map_name=NULL;
+  char * config_filename=NULL;
   Map *map=NULL;
   float scale,*data=NULL;
   Filename coord_filename;
@@ -410,6 +411,7 @@ int main(int argc,char **argv)
                "-zero         write zero values in clm file if data is not found\n"
                "-json         JSON metafile is created with suffix '.json'\n"
                "-o clmfile    filename of CLM data file written. Default is out.clm\n"
+               "-config file  v  read NetCDF setting from JSON file\n"
                "gridfile      filename of grid data file\n"
                "netcdffile    filename of NetCDF file(s) converted\n\n"
                "(C) Potsdam Institute for Climate Impact Research (PIK), see COPYRIGHT file\n",
@@ -486,6 +488,16 @@ int main(int argc,char **argv)
         iszero=TRUE;
       else if(!strcmp(argv[iarg],"-json"))
         isjson=TRUE;
+      else if(!strcmp(argv[iarg],"-config"))
+      {
+        if(argc==iarg+1)
+        {
+          fprintf(stderr,"Error: Missing argument after option '-config'.\n"
+                  ERR_USAGE,progname,progname);
+          return EXIT_FAILURE;
+        }
+        config_filename=argv[++iarg];
+      }
       else if(!strcmp(argv[iarg],"-scale"))
       {
         if(argc==iarg+1)
@@ -553,6 +565,14 @@ int main(int argc,char **argv)
     fprintf(stderr,"Warning: Scaling set to %g but datatype is float, scaling set to 1.\n",
             scale);
     scale=1;
+  }
+  if(config_filename!=NULL)
+  {
+    if(parse_config_netcdf(&config.netcdf,config_filename))
+    {
+      fprintf(stderr,"Error reading NetCDF configuration file `%s`.\n",config_filename);
+      return EXIT_FAILURE;
+    }
   }
   coord_filename.name=argv[iarg];
   coord_filename.fmt=CLM;
