@@ -574,6 +574,8 @@ int main(int argc,char **argv)
       return EXIT_FAILURE;
     }
   }
+  if(time_name==NULL)
+    time_name=config.netcdf.time.name;
   coord_filename.name=argv[iarg];
   coord_filename.fmt=CLM;
   coordfile=opencoord(&coord_filename,TRUE);
