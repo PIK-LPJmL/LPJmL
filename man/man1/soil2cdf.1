@@ -3,7 +3,7 @@
 soil2cdf \- convert binary files into NetCDF files
 .SH SYNOPSIS
 .B soil2cdf
-[\-global] [\-cellsize size] [\-compress level] [\-descr d]
+[\-global] [\-cellsize size] [\-compress level] [[\-attr name=value] ...] [\-descr d] [\-netcdf4]
 .I varname gridfile soilfile netcdffile
 .SH DESCRIPTION
 Program converts binary input files into NetCDF file.
@@ -18,8 +18,14 @@ Set cell size in grid file to size.
 \-compress level
 Compression level for NetCDF4 files. Valid levels are 0 (no compression) to 9.
 .TP
+\-attr name=value
+Set global attribute name in output files to value.
+.TP
 \-descr d
 Set long name in NetCDF file.
+.TP
+\-netcdf4
+File written is in NetCDF4 format, compress flag is enabled.
 .TP
 varname
 Variable name in NetCDF file.
