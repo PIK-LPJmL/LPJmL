@@ -62,7 +62,7 @@ static Cdf *create_cdf(const char *filename,
   char *s;
   time_t t;
   int time_var_id,lat_var_id,lon_var_id,time_dim_id,lat_dim_id,lon_dim_id,map_dim_id,len_dim_id,bnds_var_id,bnds_dim_id;
-  int time_bnds_var_id,time_bnds_dim_id;
+  int time_bnds_var_id;
   int pft_dim_id,varid;
   int len;
   cdf=new(Cdf);
@@ -191,10 +191,10 @@ static Cdf *create_cdf(const char *filename,
   }
   rc=nc_def_dim(cdf->ncid,TIME_DIM_NAME,header.nyear*header.nstep,&time_dim_id);
   error(rc);
-  rc=nc_def_dim(cdf->ncid,TIME_BNDS_NAME,2,&time_bnds_dim_id);
+  rc=nc_def_dim(cdf->ncid,BNDS_NAME,2,&bnds_dim_id);
   error(rc);
   dimids[0]=time_dim_id;
-  dimids[1]=time_bnds_dim_id;
+  dimids[1]=bnds_dim_id;
   rc=nc_def_var(cdf->ncid,TIME_BNDS_NAME,NC_DOUBLE,2,dimids,&time_bnds_var_id);
   error(rc);
   rc=nc_def_var(cdf->ncid,TIME_NAME,NC_DOUBLE,1,&time_dim_id,&time_var_id);
@@ -265,14 +265,21 @@ static Cdf *create_cdf(const char *filename,
     sprintf(s,"days since %d-1-1 0:0:0",baseyear);
   }
   rc=nc_put_att_text(cdf->ncid,time_var_id,"units",strlen(s),s);
+  rc=nc_put_att_text(cdf->ncid,time_bnds_var_id,"units",strlen(s),s);
   free(s);
   error(rc);
   rc=nc_put_att_text(cdf->ncid,time_var_id,"calendar",strlen(CALENDAR),
+                     CALENDAR);
+  rc=nc_put_att_text(cdf->ncid,time_bnds_var_id,"calendar",strlen(CALENDAR),
                      CALENDAR);
   error(rc);
   rc=nc_put_att_text(cdf->ncid, time_var_id,"standard_name",strlen(TIME_STANDARD_NAME),TIME_STANDARD_NAME);
   error(rc);
   rc=nc_put_att_text(cdf->ncid, time_var_id,"long_name",strlen(TIME_LONG_NAME),TIME_LONG_NAME);
+  error(rc);
+  rc=nc_put_att_text(cdf->ncid, time_var_id,"bounds",strlen(TIME_BNDS_NAME),TIME_BNDS_NAME);
+  error(rc);
+  rc=nc_put_att_text(cdf->ncid, time_bnds_var_id,"long_name",strlen(TIME_BNDS_LONG_NAME),TIME_BNDS_LONG_NAME);
   error(rc);
   rc=nc_put_att_text(cdf->ncid, time_var_id,"axis",strlen("T"),"T");
   error(rc);
@@ -319,17 +326,15 @@ static Cdf *create_cdf(const char *filename,
       error(rc);
       rc=nc_put_att_text(cdf->ncid,varid,"long_name",strlen(DEPTH_LONG_NAME),DEPTH_LONG_NAME);
       error(rc);
-      rc=nc_put_att_text(cdf->ncid,varid,"bounds",strlen(BNDS_NAME),BNDS_NAME);
+      rc=nc_put_att_text(cdf->ncid,varid,"bounds",strlen(DEPTH_BNDS_NAME),DEPTH_BNDS_NAME);
       error(rc);
       rc=nc_put_att_text(cdf->ncid,varid,"positive",strlen("down"),"down");
       error(rc);
       rc=nc_put_att_text(cdf->ncid,varid,"axis",strlen("Z"),"Z");
       error(rc);
-      rc=nc_def_dim(cdf->ncid,BNDS_NAME,2,&bnds_dim_id);
-      error(rc);
       dimids[0]=dim2[0];
       dimids[1]=bnds_dim_id;
-      rc=nc_def_var(cdf->ncid,BNDS_NAME,NC_DOUBLE,2,dimids,&bnds_var_id);
+      rc=nc_def_var(cdf->ncid,DEPTH_BNDS_NAME,NC_DOUBLE,2,dimids,&bnds_var_id);
       error(rc);
       rc=nc_put_att_text(cdf->ncid,bnds_var_id,"units",strlen("m"),"m");
       error(rc);
