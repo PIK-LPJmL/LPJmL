@@ -437,6 +437,7 @@ Bool create_pft_netcdf(Netcdf *cdf,
       free(year);
       free(layer);
       free(bnds);
+      freepftnames(pftnames,index,npft,ncft,config);
       return TRUE;
   }
   error(rc);
