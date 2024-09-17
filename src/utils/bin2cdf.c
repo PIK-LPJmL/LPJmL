@@ -115,7 +115,7 @@ static Cdf *create_cdf(const char *filename,
       {
         for(i=0;i<header.nyear;i++)
         {
-          year[i]=(header.firstyear-baseyear+i*header.timestep+header.timestep)/2*365;
+          year[i]=(header.firstyear-baseyear+i*header.timestep)*365+header.timestep*365/2;
           time_bnds[2*i]=(header.firstyear-baseyear+i*header.timestep)*365;
           time_bnds[2*i+1]=(header.firstyear-baseyear+(i+1)*header.timestep)*365;
         }
