@@ -67,7 +67,6 @@ Map *fscanmap(LPJfile *file,   /**< pointer to LPJ file */
         freemap(map);
         return NULL;
      }
-      getlistitem(map->list,i)=NULL;
     }
     else if(json_object_get_type(item)==json_type_string)
     {
@@ -75,6 +74,7 @@ Map *fscanmap(LPJfile *file,   /**< pointer to LPJ file */
       {
         if(verb)
           fprintf(stderr,"ERROR226: Type of item %d in array '%s' is not float.\n",i,key);
+        freemap(map);
         return NULL;
       }
       getlistitem(map->list,i)=strdup(json_object_get_string(item));
