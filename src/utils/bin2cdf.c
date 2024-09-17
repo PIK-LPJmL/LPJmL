@@ -111,20 +111,32 @@ static Cdf *create_cdf(const char *filename,
   switch(header.nstep)
   {
     case 1:
-      if(absyear)
+      if(with_days)
+      {
         for(i=0;i<header.nyear;i++)
         {
-          year[i]=header.firstyear+i*header.timestep+header.timestep/2;
-          time_bnds[2*i]=header.firstyear+i*header.timestep;
-          time_bnds[2*i+1]=header.firstyear+(i+1)*header.timestep;
+          year[i]=(header.firstyear-baseyear+i*header.timestep+header.timestep)/2*365;
+          time_bnds[2*i]=(header.firstyear-baseyear+i*header.timestep)*365;
+          time_bnds[2*i+1]=(header.firstyear-baseyear+(i+1)*header.timestep)*365;
         }
+      }
+      else
+      {
+        if(absyear)
+          for(i=0;i<header.nyear;i++)
+          {
+            year[i]=header.firstyear+i*header.timestep+header.timestep/2;
+            time_bnds[2*i]=header.firstyear+i*header.timestep;
+            time_bnds[2*i+1]=header.firstyear+(i+1)*header.timestep;
+          }
         else
-        for(i=0;i<header.nyear;i++)
-        {
-          year[i]=header.firstyear-baseyear+i*header.timestep+header.timestep/2;
-          time_bnds[2*i]=header.firstyear-baseyear+i*header.timestep;
-          time_bnds[2*i+1]=header.firstyear-baseyear+(i+1)*header.timestep;
-        }
+          for(i=0;i<header.nyear;i++)
+          {
+            year[i]=header.firstyear-baseyear+i*header.timestep+header.timestep/2;
+            time_bnds[2*i]=header.firstyear-baseyear+i*header.timestep;
+            time_bnds[2*i+1]=header.firstyear-baseyear+(i+1)*header.timestep;
+          }
+      }
       break;
     case 12:
       if(with_days)
@@ -133,15 +145,15 @@ static Cdf *create_cdf(const char *filename,
           for(j=0;j<12;j++)
             if(i==0 && j==0)
             {
-              year[0]=ndaymonth[j]-1+(header.firstyear-baseyear)*NDAYYEAR;
+              year[0]=15+(header.firstyear-baseyear)*NDAYYEAR;
               time_bnds[0]=(header.firstyear-baseyear)*NDAYYEAR;
-              time_bnds[1]=year[0];
+              time_bnds[1]=ndaymonth[j]-1+(header.firstyear-baseyear)*NDAYYEAR;
             }
             else
             {
-              year[i*12+j]=year[i*12+j-1]+ndaymonth[j];
-              time_bnds[2*(i*12+j)]=year[i*12+j-1];
-              time_bnds[2*(i*12+j)+1]=year[i*12+j];
+              year[i*12+j]=year[i*12+j-1]+15;
+              time_bnds[2*(i*12+j)]=year[i*12+j-1]+1;
+              time_bnds[2*(i*12+j)+1]=year[i*12+j-1]+ndaymonth[j];
             }
       }
       else
@@ -222,13 +234,22 @@ static Cdf *create_cdf(const char *filename,
   error(rc);
   if(header.nstep==1)
   {
-    if(absyear)
-      s=strdup(YEARS_NAME);
+    if(with_days)
+    {
+      len=snprintf(NULL,0,"days since %d-1-1 0:0:0",baseyear);
+      s=malloc(len+1);
+      sprintf(s,"days since %d-1-1 0:0:0",baseyear);
+    }
     else
     {
-      len=snprintf(NULL,0,"years since %d-1-1 0:0:0",baseyear);
-      s=malloc(len+1);
-      sprintf(s,"years since %d-1-1 0:0:0",baseyear);
+      if(absyear)
+        s=strdup(YEARS_NAME);
+      else
+      {
+        len=snprintf(NULL,0,"years since %d-1-1 0:0:0",baseyear);
+        s=malloc(len+1);
+        sprintf(s,"years since %d-1-1 0:0:0",baseyear);
+      }
     }
   }
   else if(header.nstep==12)
