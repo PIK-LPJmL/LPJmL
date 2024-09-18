@@ -147,13 +147,13 @@ static Cdf *create_cdf(const char *filename,
             {
               year[0]=15+(header.firstyear-baseyear)*NDAYYEAR;
               time_bnds[0]=(header.firstyear-baseyear)*NDAYYEAR;
-              time_bnds[1]=ndaymonth[j]-1+(header.firstyear-baseyear)*NDAYYEAR;
+              time_bnds[1]=ndaymonth[j]+(header.firstyear-baseyear)*NDAYYEAR;
             }
             else
             {
-              year[i*12+j]=year[i*12+j-1]+15;
-              time_bnds[2*(i*12+j)]=year[i*12+j-1]+1;
-              time_bnds[2*(i*12+j)+1]=year[i*12+j-1]+ndaymonth[j];
+              year[i*12+j]=year[i*12+j-1]+ndaymonth[(j==0) ? 11 : j-1];
+              time_bnds[2*(i*12+j)]=time_bnds[2*(i*12+j)-1];
+              time_bnds[2*(i*12+j)+1]=time_bnds[2*(i*12+j)]+ndaymonth[j];
             }
       }
       else
@@ -612,7 +612,7 @@ int main(int argc,char **argv)
   Header header;
   float *data=NULL;
   short *data_short=NULL;
-  int i,j,k,ngrid,iarg,compress,version,n_global,n_global2,baseyear;
+  int i,j,k,ngrid,iarg,compress,version,n_global,n_global2,baseyear,cell;
   Bool swap,ispft,isshort,isglobal,isclm,ismeta,isbaseyear,revlat,withdays,absyear;
   Type gridtype;
   float cellsize,fcoord[2];
@@ -641,6 +641,7 @@ int main(int argc,char **argv)
   header.nbands=1;
   header.nstep=1;
   header.timestep=1;
+  header.scalar=1;
   ispft=FALSE;
   isshort=FALSE;
   gridtype=LPJ_SHORT;
@@ -1229,6 +1230,8 @@ int main(int argc,char **argv)
             close_cdf(cdf);
             return EXIT_FAILURE;
           }
+          for(cell=0;cell<ngrid;cell++)
+             data[cell]*=header.scalar;
           if(write_float_cdf(cdf,data,i*header.nstep+j,ngrid,ispft,k,miss))
             return EXIT_FAILURE;
         }
