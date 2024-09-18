@@ -760,7 +760,7 @@ int main(int argc,char **argv)
         header.nbands=strtol(argv[++iarg],&endptr,10);
         if(*endptr!='\0')
         {
-          fprintf(stderr,"Error: Invalid number '%s' for option '-nitem'.\n",argv[iarg]);
+          fprintf(stderr,"Error: Invalid number '%s' for option '-nbands'.\n",argv[iarg]);
           return EXIT_FAILURE;
         }
         if(header.nbands<=0)
