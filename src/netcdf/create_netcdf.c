@@ -23,7 +23,7 @@
 static nc_type nctype[]={NC_BYTE,NC_SHORT,NC_INT,NC_FLOAT,NC_DOUBLE};
 #endif
 
-#define error(rc) if(rc) {if(cdf->state==ONEFILE || cdf->state==CLOSE) {free(lon);free(lat);free(year);}fprintf(stderr,"ERROR427: Cannot write '%s': %s.\n",filename,nc_strerror(rc)); nc_close(cdf->ncid); return TRUE;}
+#define error(rc) if(rc) {if(cdf->state==ONEFILE || cdf->state==CLOSE) {free(lon);free(lat);free(year);free(bnds);}fprintf(stderr,"ERROR427: Cannot write '%s': %s.\n",filename,nc_strerror(rc)); nc_close(cdf->ncid); return TRUE;}
 
 Bool create_netcdf(Netcdf *cdf,
                    const char *filename,     /**< filename of NetCDF file */
@@ -164,20 +164,32 @@ Bool create_netcdf(Netcdf *cdf,
       case 1:
         if(year!=NULL)
         {
-          if(config->absyear)
+          if(config->with_days)
+          {
             for(i=0;i<nyear/timestep;i++)
             {
-              year[i]=config->outputyear+i*timestep+timestep/2;
-              bnds[2*i]=config->outputyear+i*timestep;
-              bnds[2*i+1]=config->outputyear+(i+1)*timestep;
+              year[i]=(config->outputyear-config->baseyear+i*timestep)*365+timestep*365/2;
+              bnds[2*i]=(config->outputyear-config->baseyear+i*timestep)*365;
+              bnds[2*i+1]=(config->outputyear-config->baseyear+(i+1)*timestep)*365;
             }
+          }
           else
-            for(i=0;i<nyear/timestep;i++)
-            {
-              year[i]=config->outputyear-config->baseyear+i*timestep+timestep/2;
-              bnds[2*i]=config->outputyear-config->baseyear+i*timestep;
-              bnds[2*i+1]=config->outputyear-config->baseyear+(i+1)*timestep;
-            }
+          {
+            if(config->absyear)
+              for(i=0;i<nyear/timestep;i++)
+              {
+                year[i]=config->outputyear+i*timestep+timestep/2;
+                bnds[2*i]=config->outputyear+i*timestep;
+                bnds[2*i+1]=config->outputyear+(i+1)*timestep;
+              }
+            else
+              for(i=0;i<nyear/timestep;i++)
+              {
+                year[i]=config->outputyear-config->baseyear+i*timestep+timestep/2;
+                bnds[2*i]=config->outputyear-config->baseyear+i*timestep;
+                bnds[2*i+1]=config->outputyear-config->baseyear+(i+1)*timestep;
+              }
+          }
         }
         break;
       case 12:
@@ -189,45 +201,58 @@ Bool create_netcdf(Netcdf *cdf,
               {
                 if(oneyear)
                 {
-                  year[0]=ndaymonth[j]-1;
+                  year[0]=15;
                   bnds[0]=0;
-                  bnds[1]=year[0];
+                  bnds[1]=ndaymonth[0];
                 }
                 else
                 {
-                  year[0]=ndaymonth[j]-1+(config->outputyear-config->baseyear)*NDAYYEAR;
+                  year[0]=15+(config->outputyear-config->baseyear)*NDAYYEAR;
                   bnds[0]=(config->outputyear-config->baseyear)*NDAYYEAR;
-                  bnds[1]=year[0];
+                  bnds[1]=ndaymonth[j]+(config->outputyear-config->baseyear)*NDAYYEAR;
                 }
               }
               else
               {
-                year[i*12+j]=year[i*12+j-1]+ndaymonth[j];
-                bnds[2*(i*12+j)]=year[i*12+j-1];
-                bnds[2*(i*12+j)+1]=year[i*12+j];
+                year[i*12+j]=year[i*12+j-1]+ndaymonth[(j==0) ? 11 : j-1];
+                bnds[2*(i*12+j)]=bnds[2*(i*12+j)-1];
+                bnds[2*(i*12+j)+1]=bnds[2*(i*12+j)]+ndaymonth[j];
               }
         }
         else
         {
           if(oneyear)
             for(i=0;i<12;i++)
-              year[i]=bnds[2*i]=bnds[2*i+1]=i;
+            {
+              year[i]=bnds[2*i]=i;
+              bnds[2*i+1]=i+1;
+            }
           else
             for(i=0;i<nyear*12;i++)
-              year[i]=bnds[2*i]=bnds[2*i+1]=(config->outputyear-config->baseyear)*NMONTH+i;
+            {
+              year[i]=bnds[2*i]=(config->outputyear-config->baseyear)*NMONTH+i;
+              bnds[2*i+1]=(config->outputyear-config->baseyear)*NMONTH+i+1;
+            }
         }
         break;
       case NDAYYEAR:
         if(oneyear)
           for(i=0;i<n;i++)
-            year[i]=bnds[2*i]=bnds[2*i+1]=i;
+          {
+            year[i]=bnds[2*i]=i;
+            bnds[2*i+1]=i+1;
+          }
         else
           for(i=0;i<nyear*n;i++)
-            year[i]=bnds[2*i]=bnds[2*i+1]=(config->outputyear-config->baseyear)*NDAYYEAR+i;
+          {
+            year[i]=bnds[2*i]=(config->outputyear-config->baseyear)*NDAYYEAR+i;
+            bnds[2*i+1]=(config->outputyear-config->baseyear)*NDAYYEAR+i+1;
+          }
         break;
       default:
         fprintf(stderr,"ERROR425: Invalid value=%d for number of data points per year in '%s'.\n",n,filename);
         free(year);
+        free(bnds);
         free(lon);
         free(lat);
         return TRUE;
@@ -247,6 +272,7 @@ Bool create_netcdf(Netcdf *cdf,
       if(cdf->state==ONEFILE)
       {
         free(year);
+        free(bnds);
         free(lon);
         free(lat);
       }
@@ -267,12 +293,16 @@ Bool create_netcdf(Netcdf *cdf,
       error(rc);
       rc=nc_put_att_text(cdf->ncid, cdf->time_var_id,"long_name",strlen(TIME_LONG_NAME),TIME_LONG_NAME);
       error(rc);
-      rc=nc_def_dim(cdf->ncid,TIME_BNDS_NAME,2,&bnds_dim_id);
+      rc=nc_put_att_text(cdf->ncid, cdf->time_var_id,"bounds",strlen(TIME_BNDS_NAME),TIME_BNDS_NAME);
+      error(rc);
+      rc=nc_def_dim(cdf->ncid,BNDS_NAME,2,&bnds_dim_id);
       error(rc);
       dimids[0]=cdf->time_dim_id;
       dimids[1]=bnds_dim_id;
       rc=nc_def_var(cdf->ncid,TIME_BNDS_NAME,NC_DOUBLE,2,dimids,&bnds_var_id);
       error(rc);
+      rc=nc_put_att_text(cdf->ncid, bnds_var_id,"long_name",strlen(TIME_BNDS_LONG_NAME),TIME_BNDS_LONG_NAME);
+      error(rc)
     }
     rc=nc_def_dim(cdf->ncid,LAT_DIM_NAME,array->nlat,&cdf->lat_dim_id);
     error(rc);
@@ -307,9 +337,9 @@ Bool create_netcdf(Netcdf *cdf,
           s=strdup(YEARS_NAME);
         else
         {
-          len=snprintf(NULL,0,"years since %d-1-1 0:0:0",(oneyear) ? actualyear : config->baseyear);
+          len=snprintf(NULL,0,"%s since %d-1-1 0:0:0",(config->with_days) ? "days" : "years",config->baseyear);
           s=malloc(len+1);
-          sprintf(s,"years since %d-1-1 0:0:0",(oneyear) ? actualyear : config->baseyear);
+          sprintf(s,"%s since %d-1-1 0:0:0",(config->with_days) ? "days" : "years",config->baseyear);
         }
       }
       else if(n==12)
@@ -325,9 +355,13 @@ Bool create_netcdf(Netcdf *cdf,
         sprintf(s,"days since %d-1-1 0:0:0",(oneyear) ? actualyear : config->baseyear);
       }
       rc=nc_put_att_text(cdf->ncid,cdf->time_var_id,"units",strlen(s),s);
+      rc=nc_put_att_text(cdf->ncid,bnds_var_id,"units",strlen(s),s);
       free(s);
       error(rc);
       rc=nc_put_att_text(cdf->ncid,cdf->time_var_id,"calendar",strlen(CALENDAR),
+                         CALENDAR);
+      error(rc);
+      rc=nc_put_att_text(cdf->ncid,bnds_var_id,"calendar",strlen(CALENDAR),
                          CALENDAR);
       error(rc);
       rc=nc_put_att_text(cdf->ncid, cdf->time_var_id,"axis",strlen("T"),"T");
@@ -417,6 +451,7 @@ Bool create_netcdf(Netcdf *cdf,
       free(lat);
       free(lon);
       free(year);
+      free(bnds);
       return TRUE;
 
   }
