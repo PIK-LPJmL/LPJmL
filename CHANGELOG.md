@@ -19,6 +19,18 @@ of `major.minor.patch` with
 
 ## [Unreleased]
 
+- author: Werner von Bloh (bloh@pik-potsdam.de)
+
+### Added
+
+- Option`-scale` added to `bin2cdf` in order to scale output.
+- `time_bnds` array added to output for NetCDF output for `lpjml` and `bin2cdf`.
+
+### Changed
+
+- If `"with_days"` is set to true in the lpjml configuation file, yearly output is also set in units of days instead of years.
+
+
 ## [5.9.9] - 2024-09-04
 
 - author: Christoph Müller (cmueller@pik-potsdam.de)
