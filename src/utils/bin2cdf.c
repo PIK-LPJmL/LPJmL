@@ -20,7 +20,7 @@
 
 #define error(rc) if(rc) {free(lon);free(lat);free(year);fprintf(stderr,"ERROR427: Cannot write '%s': %s.\n",filename,nc_strerror(rc)); nc_close(cdf->ncid); free(cdf);return NULL;}
 
-#define USAGE "Usage: %s [-h] [-v] [-clm] [-floatgrid] [-doublegrid] [-revlat] [-days] [-absyear] [-firstyear y] [-baseyear y] [-nbands n] [-nstep n] [-cellsize size] [-swap]\n       [[-attr name=value]..] [-global] [-short] [-compress level] [-units u] [-descr d] [-missing_value val] [-metafile] [-map name] [varname gridfile]\n       binfile netcdffile\n"
+#define USAGE "Usage: %s [-h] [-v] [-clm] [-floatgrid] [-doublegrid] [-revlat] [-days] [-absyear] [-firstyear y] [-baseyear y] [-nbands n] [-nstep n] [-cellsize size] [-swap]\n       [[-attr name=value]..] [-global] [-short] [-compress level] [-units u] [-descr d] [-missing_value val] [-scale s] [-metafile] [-map name] [varname gridfile]\n       binfile netcdffile\n"
 
 typedef struct
 {
@@ -685,6 +685,7 @@ int main(int argc,char **argv)
                "-ispft           output is PFT-specific\n"
                "-firstyear f     first year, default is %d\n"
                "-baseyear y      base year of annual time axis, default is firstyear\n"
+               "-scale s         scale output with factor s, default is 1\n"
                "-metafile        set the input format to JSON metafile instead of raw\n"
                "-map name        name of map in JSON metafile, default is \"band_names\"\n"
                "varname          variable name in NetCDF file\n"
@@ -805,6 +806,26 @@ int main(int argc,char **argv)
         if(header.nbands<=0)
         {
           fputs("Error: Number of bands must be greater than zero.\n",stderr);
+          return EXIT_FAILURE;
+        }
+      }
+      else if(!strcmp(argv[iarg],"-scale"))
+      {
+        if(iarg==argc-1)
+        {
+          fprintf(stderr,"Error: Missing argument after option '-scale'.\n"
+                  USAGE,argv[0]);
+          return EXIT_FAILURE;
+        }
+        header.scalar=strtod(argv[++iarg],&endptr);
+        if(*endptr!='\0')
+        {
+          fprintf(stderr,"Error: Invalid number '%s' for option '-scale'.\n",argv[iarg]);
+          return EXIT_FAILURE;
+        }
+        if(header.scalar==0)
+        {
+          fputs("Error: Scaling factot must not be zero.\n",stderr);
           return EXIT_FAILURE;
         }
       }
