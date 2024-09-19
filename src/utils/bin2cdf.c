@@ -18,7 +18,7 @@
 #include <netcdf.h>
 #include <time.h>
 
-#define error(rc) if(rc) {free(lon);free(lon_bnds);free(lat);free(lat_bnds);free(year);fprintf(stderr,"ERROR427: Cannot write '%s': %s.\n",filename,nc_strerror(rc)); nc_close(cdf->ncid); free(cdf);return NULL;}
+#define error(rc) if(rc) {free(lon);free(lon_bnds);free(lat);free(lat_bnds);free(year);free(time_bnds);fprintf(stderr,"ERROR427: Cannot write '%s': %s.\n",filename,nc_strerror(rc)); nc_close(cdf->ncid); free(cdf);return NULL;}
 
 #define USAGE "Usage: %s [-h] [-v] [-clm] [-floatgrid] [-doublegrid] [-revlat] [-days] [-absyear] [-firstyear y] [-baseyear y] [-nbands n] [-nstep n] [-cellsize size] [-swap]\n       [[-attr name=value]..] [-global] [-short] [-compress level] [-units u] [-descr d] [-missing_value val] [-scale s] [-metafile] [-map name] [varname gridfile]\n       binfile netcdffile\n"
 
@@ -204,6 +204,7 @@ static Cdf *create_cdf(const char *filename,
       fprintf(stderr,"ERROR425: Invalid value=%d for number of data points per year, must be 1, 12 or 365.\n",
               header.nstep);
       free(year);
+      free(time_bnds);
       free(lon);
       free(lat);
       free(lon_bnds);
@@ -222,6 +223,7 @@ static Cdf *create_cdf(const char *filename,
     fprintf(stderr,"ERROR426: Cannot create file '%s': %s.\n",
             filename,nc_strerror(rc));
     free(year);
+    free(time_bnds);
     free(lon);
     free(lat);
     free(lon_bnds);
@@ -556,6 +558,7 @@ static Cdf *create_cdf(const char *filename,
   free(lon_bnds);
   free(lon);
   free(year);
+  free(time_bnds);
   return cdf;
 } /* of 'create_cdf' */
 
