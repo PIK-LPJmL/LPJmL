@@ -24,11 +24,11 @@ of `major.minor.patch` with
 ### Added
 
 - Option`-scale` added to `bin2cdf` in order to scale output.
-- `time_bnds` array added to output for NetCDF output for `lpjml` and `bin2cdf`.
+- `time_bnds`, `lat_bnds`, and `lon_bnds` arrays added to NetCDF output for `lpjml` and `bin2cdf`.
 
 ### Changed
 
-- If `"with_days"` is set to true in the lpjml configuation file, yearly output is also set in units of days instead of years.
+- If `"with_days"` is set to true in the lpjml configuration file, time axis of yearly output is also set in units of days instead of years.
 
 
 ## [5.9.9] - 2024-09-04

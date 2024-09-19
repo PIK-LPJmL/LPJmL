@@ -18,7 +18,7 @@
 #include <netcdf.h>
 #include <time.h>
 
-#define error(rc) if(rc) {free(lon);free(lat);free(year);fprintf(stderr,"ERROR427: Cannot write '%s': %s.\n",filename,nc_strerror(rc)); nc_close(cdf->ncid); free(cdf);return NULL;}
+#define error(rc) if(rc) {free(lon);free(lon_bnds);free(lat);free(lat_bnds);free(year);fprintf(stderr,"ERROR427: Cannot write '%s': %s.\n",filename,nc_strerror(rc)); nc_close(cdf->ncid); free(cdf);return NULL;}
 
 #define USAGE "Usage: %s [-h] [-v] [-clm] [-floatgrid] [-doublegrid] [-revlat] [-days] [-absyear] [-firstyear y] [-baseyear y] [-nbands n] [-nstep n] [-cellsize size] [-swap]\n       [[-attr name=value]..] [-global] [-short] [-compress level] [-units u] [-descr d] [-missing_value val] [-scale s] [-metafile] [-map name] [varname gridfile]\n       binfile netcdffile\n"
 
@@ -54,7 +54,7 @@ static Cdf *create_cdf(const char *filename,
                        Bool absyear)
 {
   Cdf *cdf;
-  double *lon,*lat;
+  double *lon,*lat,*lon_bnds,*lat_bnds;
   double *layer=NULL,*bnds=NULL,*midlayer=NULL,*time_bnds=NULL;
   double *year;
   int i,j,rc,dim[4],dim2[2],dimids[2];
@@ -63,6 +63,7 @@ static Cdf *create_cdf(const char *filename,
   time_t t;
   int time_var_id,lat_var_id,lon_var_id,time_dim_id,lat_dim_id,lon_dim_id,map_dim_id,len_dim_id,bnds_var_id,bnds_dim_id;
   int time_bnds_var_id;
+  int lon_bnds_var_id,lat_bnds_var_id;
   int pft_dim_id,varid;
   int len;
   cdf=new(Cdf);
@@ -73,28 +74,61 @@ static Cdf *create_cdf(const char *filename,
     free(cdf);
     return NULL;
   }
+  lon_bnds=newvec(double,2*array->nlon);
+  if(lon_bnds==NULL)
+  {
+    printallocerr("lon_bnds");
+    free(lon);
+    free(cdf);
+    return NULL;
+  }
   lat=newvec(double,array->nlat);
   if(lat==NULL)
   {
     printallocerr("lat");
     free(lon);
+    free(lon_bnds);
+    free(cdf);
+    return NULL;
+  }
+  lat_bnds=newvec(double,2*array->nlat);
+  if(lat_bnds==NULL)
+  {
+    printallocerr("lat_bnds");
+    free(lon);
+    free(lon_bnds);
+    free(lat);
     free(cdf);
     return NULL;
   }
   for(i=0;i<array->nlon;i++)
+  {
     lon[i]=array->lon_min+i*header.cellsize_lon;
+    lon_bnds[2*i]=array->lon_min-header.cellsize_lon*0.5+i*header.cellsize_lon;
+    lon_bnds[2*i+1]=array->lon_min+header.cellsize_lon*0.5+i*header.cellsize_lon;
+  }
   if(revlat)
     for(i=0;i<array->nlat;i++)
+    {
       lat[i]=array->lat_min+(array->nlat-1-i)*header.cellsize_lat;
+      lat_bnds[2*i]=array->lat_min+(array->nlat-1-i)*header.cellsize_lat+header.cellsize_lat*0.5;;
+      lat_bnds[2*i+1]=array->lat_min+(array->nlat-1-i)*header.cellsize_lat-header.cellsize_lat*0.5;;
+    }
   else
     for(i=0;i<array->nlat;i++)
+    {
       lat[i]=array->lat_min+i*header.cellsize_lat;
+      lat_bnds[2*i]=array->lat_min-header.cellsize_lat*0.5+i*header.cellsize_lat;
+      lat_bnds[2*i+1]=array->lat_min+header.cellsize_lat*0.5+i*header.cellsize_lat;
+    }
   year=newvec(double,header.nyear*header.nstep);
   if(year==NULL)
   {
     printallocerr("year");
     free(lon);
     free(lat);
+    free(lon_bnds);
+    free(lat_bnds);
     free(cdf);
     return NULL;
   }
@@ -104,6 +138,8 @@ static Cdf *create_cdf(const char *filename,
     printallocerr("year");
     free(lon);
     free(lat);
+    free(lon_bnds);
+    free(lat_bnds);
     free(cdf);
     free(year);
     return NULL;
@@ -170,6 +206,8 @@ static Cdf *create_cdf(const char *filename,
       free(year);
       free(lon);
       free(lat);
+      free(lon_bnds);
+      free(lat_bnds);
       free(cdf);
       return NULL;
   }
@@ -186,6 +224,8 @@ static Cdf *create_cdf(const char *filename,
     free(year);
     free(lon);
     free(lat);
+    free(lon_bnds);
+    free(lat_bnds);
     free(cdf);
     return NULL;
   }
@@ -230,7 +270,15 @@ static Cdf *create_cdf(const char *filename,
   }
   rc=nc_def_var(cdf->ncid,LAT_NAME,NC_DOUBLE,1,&lat_dim_id,&lat_var_id);
   error(rc);
+  dimids[0]=lat_dim_id;
+  dimids[1]=bnds_dim_id;
+  rc=nc_def_var(cdf->ncid,LAT_BNDS_NAME,NC_DOUBLE,2,dimids,&lat_bnds_var_id);
+  error(rc);
   rc=nc_def_var(cdf->ncid,LON_NAME,NC_DOUBLE,1,&lon_dim_id,&lon_var_id);
+  error(rc);
+  dimids[0]=lon_dim_id;
+  dimids[1]=bnds_dim_id;
+  rc=nc_def_var(cdf->ncid,LON_BNDS_NAME,NC_DOUBLE,2,dimids,&lon_bnds_var_id);
   error(rc);
   if(header.nstep==1)
   {
@@ -286,18 +334,27 @@ static Cdf *create_cdf(const char *filename,
   rc=nc_put_att_text(cdf->ncid,lon_var_id,"units",strlen("degrees_east"),
                      "degrees_east");
   error(rc);
+  rc=nc_put_att_text(cdf->ncid,lon_bnds_var_id,"units",strlen("degrees_east"),
+                     "degrees_east");
+  error(rc);
   rc=nc_put_att_text(cdf->ncid, lon_var_id,"long_name",strlen(LON_LONG_NAME),LON_LONG_NAME);
   error(rc);
   rc=nc_put_att_text(cdf->ncid, lon_var_id,"standard_name",strlen(LON_STANDARD_NAME),LON_STANDARD_NAME);
+  error(rc);
+  rc=nc_put_att_text(cdf->ncid, lon_var_id,"bounds",strlen(LON_BNDS_NAME),LON_BNDS_NAME);
   error(rc);
   rc=nc_put_att_text(cdf->ncid, lon_var_id,"axis",strlen("X"),"X");
   error(rc);
   rc=nc_put_att_text(cdf->ncid,lat_var_id,"units",strlen("degrees_north"),
                      "degrees_north");
   error(rc);
+  rc=nc_put_att_text(cdf->ncid,lat_bnds_var_id,"units",strlen("degrees_north"),
+                     "degrees_north");
   rc=nc_put_att_text(cdf->ncid, lat_var_id,"long_name",strlen(LAT_LONG_NAME),LAT_LONG_NAME);
   error(rc);
   rc=nc_put_att_text(cdf->ncid, lat_var_id,"standard_name",strlen(LAT_STANDARD_NAME),LAT_STANDARD_NAME);
+  error(rc);
+  rc=nc_put_att_text(cdf->ncid, lat_var_id,"bounds",strlen(LAT_BNDS_NAME),LAT_BNDS_NAME);
   error(rc);
   rc=nc_put_att_text(cdf->ncid, lat_var_id,"axis",strlen("Y"),"Y");
   error(rc);
@@ -438,7 +495,11 @@ static Cdf *create_cdf(const char *filename,
   error(rc);
   rc=nc_put_var_double(cdf->ncid,lat_var_id,lat);
   error(rc);
+  rc=nc_put_var_double(cdf->ncid,lat_bnds_var_id,lat_bnds);
+  error(rc);
   rc=nc_put_var_double(cdf->ncid,lon_var_id,lon);
+  error(rc);
+  rc=nc_put_var_double(cdf->ncid,lon_bnds_var_id,lon_bnds);
   error(rc);
   if(map!=NULL)
   {
@@ -491,6 +552,8 @@ static Cdf *create_cdf(const char *filename,
     }
   }
   free(lat);
+  free(lat_bnds);
+  free(lon_bnds);
   free(lon);
   free(year);
   return cdf;
