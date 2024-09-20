@@ -24,7 +24,7 @@ of `major.minor.patch` with
 ### Added
 
 - Option `-scale` added to `bin2cdf` in order to scale output.
-- `time_bnds`, `lat_bnds`, and `lon_bnds` arrays added to NetCDF output for `lpjml` and `bin2cdf`.
+- `time_bnds`, `lat_bnds`, and `lon_bnds` arrays added to NetCDF output for lpjml runs and the `bin2cdf` utility.
 
 ### Changed
 
