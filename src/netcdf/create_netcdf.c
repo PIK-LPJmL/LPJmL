@@ -43,7 +43,7 @@ Bool create_netcdf(Netcdf *cdf,
 #if defined(USE_NETCDF) || defined(USE_NETCDF4)
   char *s;
   time_t t;
-  int i,j,rc,nyear,imiss=MISSING_VALUE_INT,len;
+  int i,rc,nyear,imiss=MISSING_VALUE_INT,len;
   int dimids[2];
   int bnds_dim_id,bnds_var_id,lat_bnds_var_id,lon_bnds_var_id;
   short smiss=MISSING_VALUE_SHORT;
@@ -109,186 +109,26 @@ Bool create_netcdf(Netcdf *cdf,
   }
   if(cdf->state==ONEFILE || cdf->state==CLOSE)
   {
-    lon=newvec(double,array->nlon);
-    if(lon==NULL)
-    {
-      printallocerr("lon");
+    if(setlatlon(&lat,&lon,&lat_bnds,&lon_bnds,array))
       return TRUE;
-    }
-    lon_bnds=newvec(double,2*array->nlon);
-    if(lon_bnds==NULL)
-    {
-      printallocerr("lon_bnds");
-      free(lon);
-      return TRUE;
-    }
-    lat=newvec(double,array->nlat);
-    if(lat==NULL)
-    {
-      printallocerr("lat");
-      free(lon);
-      return TRUE;
-    }
-    lat_bnds=newvec(double,2*array->nlat);
-    if(lat_bnds==NULL)
-    {
-      printallocerr("lat_bnds");
-      free(lon);
-      free(lon_bnds);
-      free(lat);
-      return TRUE;
-    }
-    for(i=0;i<array->nlon;i++)
-    {
-      lon[i]=array->lon_min+i*config->resolution.lon;
-      lon_bnds[2*i]=array->lon_min-config->resolution.lon*0.5+i*config->resolution.lon;
-      lon_bnds[2*i+1]=array->lon_min+config->resolution.lon*0.5+i*config->resolution.lon;
-    }
-    if(config->rev_lat)
-      for(i=0;i<array->nlat;i++)
-      {
-        lat[i]=array->lat_min+(array->nlat-1-i)*config->resolution.lat;
-        lat_bnds[2*i]=array->lat_min+config->resolution.lat*0.5+(array->nlat-1-i)*config->resolution.lat;
-        lat_bnds[2*i+1]=array->lat_min-config->resolution.lat*0.5+(array->nlat-1-i)*config->resolution.lat;
-      }
-    else
-      for(i=0;i<array->nlat;i++)
-      {
-        lat[i]=array->lat_min+i*config->resolution.lat;
-        lat_bnds[2*i]=array->lat_min-config->resolution.lat*0.5+i*config->resolution.lat;
-        lat_bnds[2*i+1]=array->lat_min+config->resolution.lat*0.5+i*config->resolution.lat;
-      }
     if(n)
     {
       if(n==1 && oneyear)
         year=NULL;
       else
       {
-        if(n==1)
+        if(settimeaxis(&year,&bnds,nyear,n,timestep,config->outputyear,config->baseyear,oneyear,config->with_days,config->absyear,filename))
         {
-          year=newvec(double,nyear/timestep);
-          bnds=newvec(double,(nyear/timestep)*2);
-        }
-        else
-        {
-          year=newvec(double,nyear*n);
-          bnds=newvec(double,nyear*n*2);
-        }
-        if(year==NULL || bnds==NULL)
-        {
-          printallocerr("year");
-          free(lon);
-          free(lon_bnds);
           free(lat);
           free(lat_bnds);
+          free(lon);
+          free(lon_bnds);
           return TRUE;
         }
       }
     }
     else
       year=NULL;
-    switch(n)
-    {
-      case 0:
-        break;
-      case 1:
-        if(year!=NULL)
-        {
-          if(config->with_days)
-          {
-            for(i=0;i<nyear/timestep;i++)
-            {
-              year[i]=(config->outputyear-config->baseyear+i*timestep)*365+timestep*365/2;
-              bnds[2*i]=(config->outputyear-config->baseyear+i*timestep)*365;
-              bnds[2*i+1]=(config->outputyear-config->baseyear+(i+1)*timestep)*365;
-            }
-          }
-          else
-          {
-            if(config->absyear)
-              for(i=0;i<nyear/timestep;i++)
-              {
-                year[i]=config->outputyear+i*timestep+timestep/2;
-                bnds[2*i]=config->outputyear+i*timestep;
-                bnds[2*i+1]=config->outputyear+(i+1)*timestep;
-              }
-            else
-              for(i=0;i<nyear/timestep;i++)
-              {
-                year[i]=config->outputyear-config->baseyear+i*timestep+timestep/2;
-                bnds[2*i]=config->outputyear-config->baseyear+i*timestep;
-                bnds[2*i+1]=config->outputyear-config->baseyear+(i+1)*timestep;
-              }
-          }
-        }
-        break;
-      case 12:
-        if(config->with_days)
-        {
-          for(i=0;i<nyear;i++)
-            for(j=0;j<12;j++)
-              if(i==0 && j==0)
-              {
-                if(oneyear)
-                {
-                  year[0]=15;
-                  bnds[0]=0;
-                  bnds[1]=ndaymonth[0];
-                }
-                else
-                {
-                  year[0]=15+(config->outputyear-config->baseyear)*NDAYYEAR;
-                  bnds[0]=(config->outputyear-config->baseyear)*NDAYYEAR;
-                  bnds[1]=ndaymonth[j]+(config->outputyear-config->baseyear)*NDAYYEAR;
-                }
-              }
-              else
-              {
-                year[i*12+j]=year[i*12+j-1]+ndaymonth[(j==0) ? 11 : j-1];
-                bnds[2*(i*12+j)]=bnds[2*(i*12+j)-1];
-                bnds[2*(i*12+j)+1]=bnds[2*(i*12+j)]+ndaymonth[j];
-              }
-        }
-        else
-        {
-          if(oneyear)
-            for(i=0;i<12;i++)
-            {
-              year[i]=bnds[2*i]=i;
-              bnds[2*i+1]=i+1;
-            }
-          else
-            for(i=0;i<nyear*12;i++)
-            {
-              year[i]=bnds[2*i]=(config->outputyear-config->baseyear)*NMONTH+i;
-              bnds[2*i+1]=(config->outputyear-config->baseyear)*NMONTH+i+1;
-            }
-        }
-        break;
-      case NDAYYEAR:
-        if(oneyear)
-          for(i=0;i<n;i++)
-          {
-            year[i]=bnds[2*i]=i;
-            bnds[2*i+1]=i+1;
-          }
-        else
-          for(i=0;i<nyear*n;i++)
-          {
-            year[i]=bnds[2*i]=(config->outputyear-config->baseyear)*NDAYYEAR+i;
-            bnds[2*i+1]=(config->outputyear-config->baseyear)*NDAYYEAR+i+1;
-          }
-        break;
-      default:
-        fprintf(stderr,"ERROR425: Invalid value=%d for number of data points per year in '%s'.\n",n,filename);
-        free(year);
-        free(bnds);
-        free(lon);
-        free(lon_bnds);
-        free(lat);
-        free(lat_bnds);
-        return TRUE;
-    }
   }
   if(cdf->state==ONEFILE || cdf->state==CREATE)
   {

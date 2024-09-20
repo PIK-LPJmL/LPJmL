@@ -49,7 +49,6 @@ static Cdf *create_cdf(const char *filename,
                        Bool ispft,
                        int compress,
                        const Coord_array *array,
-                       Bool revlat,
                        Bool with_days,
                        Bool absyear)
 {
@@ -57,7 +56,7 @@ static Cdf *create_cdf(const char *filename,
   double *lon,*lat,*lon_bnds,*lat_bnds;
   double *layer=NULL,*bnds=NULL,*midlayer=NULL,*time_bnds=NULL;
   double *year;
-  int i,j,rc,dim[4],dim2[2],dimids[2];
+  int i,rc,dim[4],dim2[2],dimids[2];
   size_t chunk[4],offset[2],count[2];
   char *s;
   time_t t;
@@ -67,150 +66,22 @@ static Cdf *create_cdf(const char *filename,
   int pft_dim_id,varid;
   int len;
   cdf=new(Cdf);
-  lon=newvec(double,array->nlon);
-  if(lon==NULL)
+  /* set lon/lat vectors */
+  if(setlatlon(&lat,&lon,&lat_bnds,&lon_bnds,array))
   {
-    printallocerr("lon");
     free(cdf);
     return NULL;
   }
-  lon_bnds=newvec(double,2*array->nlon);
-  if(lon_bnds==NULL)
+  /* set time vectors */
+  if(settimeaxis(&year,&time_bnds,header.nyear,header.nstep,header.timestep,
+                 header.firstyear,baseyear,FALSE,with_days,absyear,filename))
   {
-    printallocerr("lon_bnds");
-    free(lon);
-    free(cdf);
-    return NULL;
-  }
-  lat=newvec(double,array->nlat);
-  if(lat==NULL)
-  {
-    printallocerr("lat");
-    free(lon);
-    free(lon_bnds);
-    free(cdf);
-    return NULL;
-  }
-  lat_bnds=newvec(double,2*array->nlat);
-  if(lat_bnds==NULL)
-  {
-    printallocerr("lat_bnds");
-    free(lon);
-    free(lon_bnds);
     free(lat);
-    free(cdf);
-    return NULL;
-  }
-  for(i=0;i<array->nlon;i++)
-  {
-    lon[i]=array->lon_min+i*header.cellsize_lon;
-    lon_bnds[2*i]=array->lon_min-header.cellsize_lon*0.5+i*header.cellsize_lon;
-    lon_bnds[2*i+1]=array->lon_min+header.cellsize_lon*0.5+i*header.cellsize_lon;
-  }
-  if(revlat)
-    for(i=0;i<array->nlat;i++)
-    {
-      lat[i]=array->lat_min+(array->nlat-1-i)*header.cellsize_lat;
-      lat_bnds[2*i]=array->lat_min+(array->nlat-1-i)*header.cellsize_lat+header.cellsize_lat*0.5;;
-      lat_bnds[2*i+1]=array->lat_min+(array->nlat-1-i)*header.cellsize_lat-header.cellsize_lat*0.5;;
-    }
-  else
-    for(i=0;i<array->nlat;i++)
-    {
-      lat[i]=array->lat_min+i*header.cellsize_lat;
-      lat_bnds[2*i]=array->lat_min-header.cellsize_lat*0.5+i*header.cellsize_lat;
-      lat_bnds[2*i+1]=array->lat_min+header.cellsize_lat*0.5+i*header.cellsize_lat;
-    }
-  year=newvec(double,header.nyear*header.nstep);
-  if(year==NULL)
-  {
-    printallocerr("year");
-    free(lon);
-    free(lat);
-    free(lon_bnds);
     free(lat_bnds);
-    free(cdf);
-    return NULL;
-  }
-  time_bnds=newvec(double,2*header.nyear*header.nstep);
-  if(time_bnds==NULL)
-  {
-    printallocerr("year");
     free(lon);
-    free(lat);
     free(lon_bnds);
-    free(lat_bnds);
     free(cdf);
-    free(year);
     return NULL;
-  }
-  switch(header.nstep)
-  {
-    case 1:
-      if(with_days)
-      {
-        for(i=0;i<header.nyear;i++)
-        {
-          year[i]=(header.firstyear-baseyear+i*header.timestep)*365+header.timestep*365/2;
-          time_bnds[2*i]=(header.firstyear-baseyear+i*header.timestep)*365;
-          time_bnds[2*i+1]=(header.firstyear-baseyear+(i+1)*header.timestep)*365;
-        }
-      }
-      else
-      {
-        if(absyear)
-          for(i=0;i<header.nyear;i++)
-          {
-            year[i]=header.firstyear+i*header.timestep+header.timestep/2;
-            time_bnds[2*i]=header.firstyear+i*header.timestep;
-            time_bnds[2*i+1]=header.firstyear+(i+1)*header.timestep;
-          }
-        else
-          for(i=0;i<header.nyear;i++)
-          {
-            year[i]=header.firstyear-baseyear+i*header.timestep+header.timestep/2;
-            time_bnds[2*i]=header.firstyear-baseyear+i*header.timestep;
-            time_bnds[2*i+1]=header.firstyear-baseyear+(i+1)*header.timestep;
-          }
-      }
-      break;
-    case 12:
-      if(with_days)
-      {
-        for(i=0;i<header.nyear;i++)
-          for(j=0;j<12;j++)
-            if(i==0 && j==0)
-            {
-              year[0]=15+(header.firstyear-baseyear)*NDAYYEAR;
-              time_bnds[0]=(header.firstyear-baseyear)*NDAYYEAR;
-              time_bnds[1]=ndaymonth[j]+(header.firstyear-baseyear)*NDAYYEAR;
-            }
-            else
-            {
-              year[i*12+j]=year[i*12+j-1]+ndaymonth[(j==0) ? 11 : j-1];
-              time_bnds[2*(i*12+j)]=time_bnds[2*(i*12+j)-1];
-              time_bnds[2*(i*12+j)+1]=time_bnds[2*(i*12+j)]+ndaymonth[j];
-            }
-      }
-      else
-        for(i=0;i<header.nyear*12;i++)
-           year[i]=time_bnds[2*i]=time_bnds[2*i+1]=i+(header.firstyear-baseyear)*12;
-      break;
-    case NDAYYEAR:
-      for(i=0;i<header.nyear*NDAYYEAR;i++)
-        year[i]=time_bnds[2*i]=time_bnds[2*i+1]=i+(header.firstyear-baseyear)*NDAYYEAR;
-      break;
-    default:
-      fprintf(stderr,"ERROR425: Invalid value=%d for number of data points per year, must be 1, 12 or 365.\n",
-              header.nstep);
-      free(year);
-      free(time_bnds);
-      free(lon);
-      free(lat);
-      free(lon_bnds);
-      free(lat_bnds);
-      free(cdf);
-      return NULL;
   }
   cdf->index=array;
 #ifdef USE_NETCDF4
@@ -448,6 +319,12 @@ static Cdf *create_cdf(const char *filename,
       break;
     default:
       fprintf(stderr,"Invalid datatype %d.\n",type);
+      free(year);
+      free(time_bnds);
+      free(lon);
+      free(lat);
+      free(lon_bnds);
+      free(lat_bnds);
       return NULL;
   }
   error(rc);
@@ -1272,7 +1149,7 @@ int main(int argc,char **argv)
     }
   }
 
-  cdf=create_cdf(outname,map,map_name,cmdline,source,history,variable,units,var_standard_name,long_name,miss,miss_short,global_attrs,n_global,(isshort) ? LPJ_SHORT : LPJ_FLOAT,header,baseyear,ispft,compress,index,revlat,withdays,absyear);
+  cdf=create_cdf(outname,map,map_name,cmdline,source,history,variable,units,var_standard_name,long_name,miss,miss_short,global_attrs,n_global,(isshort) ? LPJ_SHORT : LPJ_FLOAT,header,baseyear,ispft,compress,index,withdays,absyear);
   free(cmdline);
   if(cdf==NULL)
     return EXIT_FAILURE;

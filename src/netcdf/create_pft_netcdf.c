@@ -45,7 +45,7 @@ Bool create_pft_netcdf(Netcdf *cdf,
 #if defined(USE_NETCDF) || defined(USE_NETCDF4)
   char *s;
   time_t t;
-  int i,j,rc,nyear,imiss=MISSING_VALUE_INT,size,len;
+  int i,rc,nyear,imiss=MISSING_VALUE_INT,size,len;
   short smiss=MISSING_VALUE_SHORT;
   double *lon=NULL,*lat=NULL,*lat_bnds,*lon_bnds;
   float miss=config->missing_value;
@@ -101,57 +101,18 @@ Bool create_pft_netcdf(Netcdf *cdf,
     }
     nyear=config->lastyear-config->outputyear+1;
   }
-  lon=newvec(double,array->nlon);
-  if(lon==NULL)
-  {
-    printallocerr("lon");
-    return TRUE;
-  }
-  lon_bnds=newvec(double,2*array->nlon);
-  if(lon_bnds==NULL)
-  {
-    printallocerr("lon_bnds");
-    free(lon);
-    return TRUE;
-  }
-  lat=newvec(double,array->nlat);
-  if(lat==NULL)
-  {
-    free(lon);
-    free(lon_bnds);
-    printallocerr("lat");
-    return TRUE;
-  }
-  lat_bnds=newvec(double,2*array->nlat);
-  if(lat_bnds==NULL)
-  {
-    printallocerr("lat_bnds");
-    free(lon);
-    free(lon_bnds);
-    free(lat);
-    return TRUE;
-  }
+  if(setlatlon(&lat,&lon,&lat_bnds,&lon_bnds,array))
+      return TRUE;
   if(n==1 && oneyear)
     year=NULL;
   else
   {
-    if(n==1)
+    if(settimeaxis(&year,&time_bnds,nyear,n,timestep,config->outputyear,config->baseyear,oneyear,config->with_days,config->absyear,filename))
     {
-      year=newvec(double,nyear/timestep);
-      time_bnds=newvec(double,(nyear/timestep)*2);
-    }
-    else
-    {
-      year=newvec(double,nyear*n);
-      time_bnds=newvec(double,nyear*n*2);
-    }
-    if(year==NULL || time_bnds==NULL)
-    {
-      free(lon);
-      free(lon_bnds);
       free(lat);
       free(lat_bnds);
-      printallocerr("year");
+      free(lon);
+      free(lon_bnds);
       return TRUE;
     }
   }
@@ -194,126 +155,6 @@ Bool create_pft_netcdf(Netcdf *cdf,
     }
   }
   else bnds=layer=NULL;
-  for(i=0;i<array->nlon;i++)
-  {
-    lon[i]=array->lon_min+i*config->resolution.lon;
-    lon_bnds[2*i]=array->lon_min-config->resolution.lon*0.5+i*config->resolution.lon;
-    lon_bnds[2*i+1]=array->lon_min+config->resolution.lon*0.5+i*config->resolution.lon;
-  }
-  if(config->rev_lat)
-    for(i=0;i<array->nlat;i++)
-    {
-      lat[i]=array->lat_min+(array->nlat-1-i)*config->resolution.lat;
-      lat_bnds[2*i]=array->lat_min+config->resolution.lat*0.5+(array->nlat-1-i)*config->resolution.lat;
-      lat_bnds[2*i+1]=array->lat_min-config->resolution.lat*0.5+(array->nlat-1-i)*config->resolution.lat;
-    }
-  else
-    for(i=0;i<array->nlat;i++)
-    {
-      lat[i]=array->lat_min+i*config->resolution.lat;
-      lat_bnds[2*i]=array->lat_min-config->resolution.lat*0.5+i*config->resolution.lat;
-      lat_bnds[2*i+1]=array->lat_min+config->resolution.lat*0.5+i*config->resolution.lat;
-    }
-  switch(n)
-  {
-    case 1:
-      if(year!=NULL)
-      {
-        if(config->with_days)
-        {
-          for(i=0;i<nyear/timestep;i++)
-          {
-            year[i]=(config->outputyear-config->baseyear+i*timestep)*365+timestep*365/2;
-            time_bnds[2*i]=(config->outputyear-config->baseyear+i*timestep)*365;
-            time_bnds[2*i+1]=(config->outputyear-config->baseyear+(i+1)*timestep)*365;
-          }
-        }
-        else
-        {
-          if(config->absyear)
-            for(i=0;i<nyear/timestep;i++)
-            {
-              year[i]=config->outputyear+i*timestep+timestep/2;
-              time_bnds[2*i]=config->outputyear+i*timestep;
-              time_bnds[2*i+1]=config->outputyear+(i+1)*timestep;
-            }
-          else
-            for(i=0;i<nyear/timestep;i++)
-            {
-              year[i]=config->outputyear-config->baseyear+i*timestep+timestep/2;
-              time_bnds[2*i]=config->outputyear-config->baseyear+i*timestep;
-              time_bnds[2*i+1]=config->outputyear-config->baseyear+(i+1)*timestep;
-            }
-        }
-      }
-      break;
-    case 12:
-      if(config->with_days)
-      {
-        for(i=0;i<nyear;i++)
-          for(j=0;j<12;j++)
-            if(i==0 && j==0)
-            {
-              if(oneyear)
-              {
-                year[0]=15;
-                time_bnds[0]=0;
-                time_bnds[1]=ndaymonth[0];
-              }
-              else
-              {
-                year[0]=15+(config->outputyear-config->baseyear)*NDAYYEAR;
-                time_bnds[0]=(config->outputyear-config->baseyear)*NDAYYEAR;
-                time_bnds[1]=ndaymonth[j]+(config->outputyear-config->baseyear)*NDAYYEAR;
-              }
-            }
-            else
-            {
-              year[i*12+j]=year[i*12+j-1]+ndaymonth[(j==0) ? 11 : j-1];
-              time_bnds[2*(i*12+j)]=time_bnds[2*(i*12+j)-1];
-              time_bnds[2*(i*12+j)+1]=time_bnds[2*(i*12+j)]+ndaymonth[j];
-            }
-      }
-      else
-      {
-        if(oneyear)
-          for(i=0;i<12;i++)
-          {
-            year[i]=time_bnds[2*i]=i;
-            time_bnds[2*i+1]=i+1;
-          }
-        else
-          for(i=0;i<nyear*12;i++)
-          {
-            year[i]=time_bnds[2*i]=(config->outputyear-config->baseyear)*NMONTH+i;
-            time_bnds[2*i+1]=(config->outputyear-config->baseyear)*NMONTH+i+1;
-          }
-      }
-      break;
-    case NDAYYEAR:
-      if(oneyear)
-        for(i=0;i<n;i++)
-        {
-          year[i]=time_bnds[2*i]=i;
-          time_bnds[2*i+1]=i+1;
-        }
-      else
-        for(i=0;i<nyear*n;i++)
-        {
-          year[i]=time_bnds[2*i]=(config->outputyear-config->baseyear)*NDAYYEAR+i;
-          time_bnds[2*i+1]=(config->outputyear-config->baseyear)*NDAYYEAR+i+1;
-        }
-      break;
-    default:
-      fprintf(stderr,"ERROR425: Invalid value=%d for number of data points per year in '%s'.\n",n,filename);
-      free(year);
-      free(lon);
-      free(lon_bnds);
-      free(lat);
-      free(lat_bnds);
-      free(time_bnds);
-      return TRUE;
-  }
 #ifdef USE_NETCDF4
   rc=nc_create(filename,NC_CLOBBER|NC_NETCDF4,&cdf->ncid);
 #else
