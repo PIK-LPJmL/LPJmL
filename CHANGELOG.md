@@ -33,6 +33,7 @@ of `major.minor.patch` with
 ### Fixed
 
 - Separate output for each year by setting `"name" : "filename_%d"` is now written correctly.
+- Number of bands set to 1 in metafile of grid NetCDF output.
 
 
 ## [5.9.9] - 2024-09-04
