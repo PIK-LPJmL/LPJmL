@@ -94,34 +94,31 @@ Real daily_biomass_grass(Stand *stand,                /**< stand pointer */
 
   for(l=0;l<LASTLAYER;l++)
     aet_stand[l]=green_transp[l]=0;
-  if (config->with_nitrogen)
+  if(stand->cell->ml.fertilizer_nr!=NULL) /* has to be adapted if fix_fertilization option is added */
   {
-    if(stand->cell->ml.fertilizer_nr!=NULL) /* has to be adapted if fix_fertilization option is added */
+    if(day==fertday_biomass(stand->cell,config))
     {
-      if(day==fertday_biomass(stand->cell,config))
-      {
-        fertil = stand->cell->ml.fertilizer_nr[data->irrigation].biomass_grass;
-        stand->soil.NO3[0]+=fertil*param.nfert_no3_frac;
-        stand->soil.NH4[0]+=fertil*(1-param.nfert_no3_frac);
-        stand->cell->balance.influx.nitrogen+=fertil*stand->frac;
-        getoutput(output,NFERT_AGR,config)+=fertil*stand->frac;
-        getoutput(output,NAPPLIED_MG,config)+=fertil*stand->frac;
-      } /* end fday==day */
-    }
-    if(stand->cell->ml.manure_nr!=NULL) /* has to be adapted if fix_fertilization option is added */
+      fertil = stand->cell->ml.fertilizer_nr[data->irrigation].biomass_grass;
+      stand->soil.NO3[0]+=fertil*param.nfert_no3_frac;
+      stand->soil.NH4[0]+=fertil*(1-param.nfert_no3_frac);
+      stand->cell->balance.influx.nitrogen+=fertil*stand->frac;
+      getoutput(output,NFERT_AGR,config)+=fertil*stand->frac;
+      getoutput(output,NAPPLIED_MG,config)+=fertil*stand->frac;
+    } /* end fday==day */
+  }
+  if(stand->cell->ml.manure_nr!=NULL) /* has to be adapted if fix_fertilization option is added */
+  {
+    if(day==fertday_biomass(stand->cell,config) && stand->soil.litter.n>0)
     {
-      if(day==fertday_biomass(stand->cell,config) && stand->soil.litter.n>0)
-      {
-        manure = stand->cell->ml.manure_nr[data->irrigation].biomass_grass;
-        stand->soil.NH4[0] += manure*param.nmanure_nh4_frac;
-        stand->soil.litter.item->agsub.leaf.carbon += manure*param.manure_cn;
-        stand->soil.litter.item->agsub.leaf.nitrogen += manure*(1-param.nmanure_nh4_frac);
-        stand->cell->balance.influx.carbon += manure*param.manure_cn*stand->frac;
-        stand->cell->balance.influx.nitrogen += manure*stand->frac;
-        getoutput(&stand->cell->output,NMANURE_AGR,config)+=manure*stand->frac;
-        getoutput(&stand->cell->output,NAPPLIED_MG,config)+=manure*stand->frac;
-      } /* end fday==day */
-    }
+      manure = stand->cell->ml.manure_nr[data->irrigation].biomass_grass;
+      stand->soil.NH4[0] += manure*param.nmanure_nh4_frac;
+      stand->soil.litter.item->agsub.leaf.carbon += manure*param.manure_cn;
+      stand->soil.litter.item->agsub.leaf.nitrogen += manure*(1-param.nmanure_nh4_frac);
+      stand->cell->balance.influx.carbon += manure*param.manure_cn*stand->frac;
+      stand->cell->balance.influx.nitrogen += manure*stand->frac;
+      getoutput(&stand->cell->output,NMANURE_AGR,config)+=manure*stand->frac;
+      getoutput(&stand->cell->output,NAPPLIED_MG,config)+=manure*stand->frac;
+    } /* end fday==day */
   }
 
   /* green water inflow */
@@ -216,7 +213,7 @@ Real daily_biomass_grass(Stand *stand,                /**< stand pointer */
         getoutputindex(output,PFT_GCGP,nnat+index,config)+=gcgp;
       }
     }
-    npp=npp_grass(pft,gtemp_air,gtemp_soil,gpp-rd-pft->npp_bnf,config->with_nitrogen);
+    npp=npp_grass(pft,gtemp_air,gtemp_soil,gpp-rd-pft->npp_bnf);
     pft->npp_bnf=0.0;
     getoutput(output,NPP,config)+=npp*stand->frac;
     stand->cell->balance.anpp+=npp*stand->frac;
@@ -245,58 +242,47 @@ Real daily_biomass_grass(Stand *stand,                /**< stand pointer */
                &frac_g_evap,config->rw_manage);
 
   /* allocation, turnover and harvest AFTER photosynthesis */
-  if(config->with_nitrogen)
+  if(n_pft>0)
   {
-    if(n_pft>0)
-    {
-      fpc_inc=newvec(Real,n_pft);
-      check(fpc_inc);
+    fpc_inc=newvec(Real,n_pft);
+    check(fpc_inc);
 
-      foreachpft(pft,p,&stand->pftlist)
+    foreachpft(pft,p,&stand->pftlist)
+    {
+      grass=pft->data;
+      grasspar=pft->par->data;
+      if (pft->bm_inc.carbon > 5.0|| day==NDAYYEAR)
       {
-        grass=pft->data;
-        grasspar=pft->par->data;
-        if (pft->bm_inc.carbon > 5.0|| day==NDAYYEAR)
+        turnover_grass(&stand->soil.litter,pft,1.0/NDAYYEAR,config);
+        if(allocation_grass(&stand->soil.litter,pft,fpc_inc+p,config))
         {
-          turnover_grass(&stand->soil.litter,pft,1.0/NDAYYEAR,config);
-          if(allocation_grass(&stand->soil.litter,pft,fpc_inc+p,config))
-          {
-            /* kill PFT from list of established PFTs */
-            fpc_inc[p]=fpc_inc[getnpft(&stand->pftlist)-1]; /*moved here by W. von Bloh */
-            litter_update_grass(&stand->soil.litter,pft,pft->nind,config);
-            delpft(&stand->pftlist,p);
-            p--; /* adjust loop variable */
-          }
-          else
-           // pft->bm_inc.carbon=pft->bm_inc.nitrogen=0;
-           pft->bm_inc.carbon=0;
+          /* kill PFT from list of established PFTs */
+          fpc_inc[p]=fpc_inc[getnpft(&stand->pftlist)-1]; /*moved here by W. von Bloh */
+          litter_update_grass(&stand->soil.litter,pft,pft->nind,config);
+          delpft(&stand->pftlist,p);
+          p--; /* adjust loop variable */
         }
         else
-        {
-          grass->turn.root.carbon+=grass->ind.root.carbon*grasspar->turnover.root/NDAYYEAR;
-          stand->soil.litter.item[pft->litter].bg.carbon+=grass->ind.root.carbon*grasspar->turnover.root/NDAYYEAR*pft->nind;
-          getoutput(output,LITFALLC,config)+=grass->ind.root.carbon*grasspar->turnover.root/NDAYYEAR*pft->nind*stand->frac;
-          grass->turn_litt.root.carbon+=grass->ind.root.carbon*grasspar->turnover.root/NDAYYEAR*pft->nind;
-          grass->turn.root.nitrogen+=grass->ind.root.nitrogen*grasspar->turnover.root/NDAYYEAR;
-          stand->soil.litter.item[pft->litter].bg.nitrogen+=grass->ind.root.nitrogen*grasspar->turnover.root/NDAYYEAR*pft->nind*pft->par->fn_turnover;
-          getoutput(output,LITFALLN,config)+=grass->ind.root.nitrogen*grasspar->turnover.root/NDAYYEAR*pft->nind*pft->par->fn_turnover*stand->frac;
-          grass->turn_litt.root.nitrogen+=grass->ind.root.nitrogen*grasspar->turnover.root/NDAYYEAR*pft->nind;
-
-          grass->growing_days++;
-          fpc_inc[p]=0;
-        }
+         // pft->bm_inc.carbon=pft->bm_inc.nitrogen=0;
+         pft->bm_inc.carbon=0;
       }
-      light(stand,fpc_inc,config);
-      free(fpc_inc);
+      else
+      {
+        grass->turn.root.carbon+=grass->ind.root.carbon*grasspar->turnover.root/NDAYYEAR;
+        stand->soil.litter.item[pft->litter].bg.carbon+=grass->ind.root.carbon*grasspar->turnover.root/NDAYYEAR*pft->nind;
+        getoutput(output,LITFALLC,config)+=grass->ind.root.carbon*grasspar->turnover.root/NDAYYEAR*pft->nind*stand->frac;
+        grass->turn_litt.root.carbon+=grass->ind.root.carbon*grasspar->turnover.root/NDAYYEAR*pft->nind;
+        grass->turn.root.nitrogen+=grass->ind.root.nitrogen*grasspar->turnover.root/NDAYYEAR;
+        stand->soil.litter.item[pft->litter].bg.nitrogen+=grass->ind.root.nitrogen*grasspar->turnover.root/NDAYYEAR*pft->nind*pft->par->fn_turnover;
+        getoutput(output,LITFALLN,config)+=grass->ind.root.nitrogen*grasspar->turnover.root/NDAYYEAR*pft->nind*pft->par->fn_turnover*stand->frac;
+        grass->turn_litt.root.nitrogen+=grass->ind.root.nitrogen*grasspar->turnover.root/NDAYYEAR*pft->nind;
+
+        grass->growing_days++;
+        fpc_inc[p]=0;
+      }
     }
-  }
-  else
-  {
-    stand->growing_days = 1;
-    /* turnover must happen before allocation */
-    foreachpft(pft,p,&stand->pftlist)
-      turnover_grass(&stand->soil.litter,pft,(Real)stand->growing_days/NDAYYEAR,config);
-    allocation_today(stand,config);
+    light(stand,fpc_inc,config);
+    free(fpc_inc);
   }
   /* daily turnover and harvest check*/
   isphen=FALSE;

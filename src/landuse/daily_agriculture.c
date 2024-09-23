@@ -99,33 +99,28 @@ Real daily_agriculture(Stand *stand,                /**< [inout] stand pointer *
     index=(stand->type->landusetype==OTHERS) ? data->irrigation*nirrig+rothers(ncft) : pft->par->id-npft+data->irrigation*nirrig;
     crop=pft->data;
     /* kill crop at frost events */
-    if(!config->with_nitrogen)
-      pft->vscal=1;
-    else
+    /* trigger 2nd fertilization */
+    /* GGCMI phase 3 rule: apply second dosis at fphu=0.25*/
+    if(crop->fphu>0.25 && crop->nfertilizer>0)
     {
-      /* trigger 2nd fertilization */
-      /* GGCMI phase 3 rule: apply second dosis at fphu=0.25*/
-      if(crop->fphu>0.25 && crop->nfertilizer>0)
-      {
-        stand->soil.NO3[0]+=crop->nfertilizer*param.nfert_no3_frac;
-        stand->soil.NH4[0]+=crop->nfertilizer*(1-param.nfert_no3_frac);
-        stand->cell->balance.influx.nitrogen+=crop->nfertilizer*stand->frac;
-        getoutput(output,NFERT_AGR,config)+=crop->nfertilizer*pft->stand->frac;
-        getoutput(output,NAPPLIED_MG,config)+=crop->nfertilizer*pft->stand->frac;
-        crop->nfertilizer=0;
-      }
-      if(crop->fphu>0.25 && crop->nmanure>0)
-      {
-        stand->soil.NH4[0] += crop->nmanure*param.nmanure_nh4_frac;
-        /* no tillage at second application, so manure goes to ag litter not agsub as at cultivation */
-        stand->soil.litter.item->agtop.leaf.carbon += crop->nmanure*param.manure_cn;
-        stand->soil.litter.item->agtop.leaf.nitrogen += crop->nmanure*(1-param.nmanure_nh4_frac);
-        stand->cell->balance.influx.carbon += crop->nmanure*param.manure_cn*stand->frac;
-        stand->cell->balance.influx.nitrogen += crop->nmanure*stand->frac;
-        getoutput(output,NMANURE_AGR,config)+=crop->nmanure*stand->frac;
-        getoutput(output,NAPPLIED_MG,config)+=crop->nmanure*stand->frac;
-        crop->nmanure=0;
-      }
+      stand->soil.NO3[0]+=crop->nfertilizer*param.nfert_no3_frac;
+      stand->soil.NH4[0]+=crop->nfertilizer*(1-param.nfert_no3_frac);
+      stand->cell->balance.influx.nitrogen+=crop->nfertilizer*stand->frac;
+      getoutput(output,NFERT_AGR,config)+=crop->nfertilizer*pft->stand->frac;
+      getoutput(output,NAPPLIED_MG,config)+=crop->nfertilizer*pft->stand->frac;
+      crop->nfertilizer=0;
+    }
+    if(crop->fphu>0.25 && crop->nmanure>0)
+    {
+      stand->soil.NH4[0] += crop->nmanure*param.nmanure_nh4_frac;
+      /* no tillage at second application, so manure goes to ag litter not agsub as at cultivation */
+      stand->soil.litter.item->agtop.leaf.carbon += crop->nmanure*param.manure_cn;
+      stand->soil.litter.item->agtop.leaf.nitrogen += crop->nmanure*(1-param.nmanure_nh4_frac);
+      stand->cell->balance.influx.carbon += crop->nmanure*param.manure_cn*stand->frac;
+      stand->cell->balance.influx.nitrogen += crop->nmanure*stand->frac;
+      getoutput(output,NMANURE_AGR,config)+=crop->nmanure*stand->frac;
+      getoutput(output,NAPPLIED_MG,config)+=crop->nmanure*stand->frac;
+      crop->nmanure=0;
     }
     if(!isannual(PFT_NLEAF,config))
       getoutputindex(output,PFT_NLEAF,nnat+index,config)=crop->ind.leaf.nitrogen;

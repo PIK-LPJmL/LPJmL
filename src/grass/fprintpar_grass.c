@@ -28,6 +28,5 @@ void fprintpar_grass(FILE *file,const Pftpar *par,const Config *config)
           1.0/pargrass->nc_ratio.leaf,
           1.0/pargrass->nc_ratio.root,
           pargrass->reprod_cost);
-  if(config->with_nitrogen)
-    fprintf(file,"rel. ratio:\t%g\n",pargrass->ratio);
+  fprintf(file,"rel. ratio:\t%g\n",pargrass->ratio);
 } /* of 'fprintpar_grass' */
