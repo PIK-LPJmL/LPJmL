@@ -19,6 +19,8 @@ of `major.minor.patch` with
 
 ## [Unreleased]
 
+## [5.9.10] - 2024-09-23
+
 ### Contributors
 
 - author: Werner von Bloh (bloh@pik-potsdam.de)
@@ -27,6 +29,7 @@ of `major.minor.patch` with
 ### Removed
 
 - Option `"no"` for nitrogen setting removed, only `"lim"` and `"unlim"` allowed. Corresponding parameter files `lpjparam_non.cjson` and `pft_non.cjson` removed.
+- Removed commented-out code in `allocation_tree.c`
 
 ### Fixed
 

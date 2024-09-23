@@ -332,26 +332,18 @@ Bool allocation_tree(Litter *litter,   /**< litter pool */
       if(tree->ind.leaf.nitrogen/tree->ind.leaf.carbon<pft->par->ncleaf.low)
       {
         cleaf=tree->ind.leaf.nitrogen/pft->par->ncleaf.low;
-        //litter->item[pft->litter].agtop.leaf.carbon+=(tree->ind.leaf.carbon-cleaf)*pft->nind;
         tree->excess_carbon+=(tree->ind.leaf.carbon-cleaf);
         tree->ind.leaf.carbon=cleaf;
       }
       if(tree->ind.root.nitrogen/tree->ind.root.carbon<pft->par->ncleaf.low/treepar->ratio.root)
       {
         croot=tree->ind.root.nitrogen/pft->par->ncleaf.low*treepar->ratio.root;
-        //litter->bg[pft->litter].carbon+=(tree->ind.root.carbon-croot)*pft->nind;
         tree->excess_carbon+=(tree->ind.root.carbon-croot);
         tree->ind.root.carbon=croot;
       }
       if(tree->ind.sapwood.carbon>0 && tree->ind.sapwood.nitrogen/tree->ind.sapwood.carbon<pft->par->ncleaf.low/treepar->ratio.sapwood)
       {
         csapwood=tree->ind.sapwood.nitrogen/pft->par->ncleaf.low*treepar->ratio.sapwood;
-        /*for(i=0;i<NFUELCLASS;i++)
-        {
-          litter->item[pft->litter].agtop.wood[i].carbon+=(tree->ind.sapwood.carbon-csapwood)*pft->nind*treepar->fuelfrac[i];
-          update_fbd_tree(litter,pft->par->fuelbulkdensity,
-                          (tree->ind.sapwood.carbon-csapwood)*pft->nind*treepar->fuelfrac[i],i);
-        }*/
         tree->excess_carbon+=(tree->ind.sapwood.carbon-csapwood);
         tree->ind.sapwood.carbon=csapwood;
       }
