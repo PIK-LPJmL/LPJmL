@@ -46,12 +46,9 @@ void fprintflux(FILE *file,          /**< Output file pointer */
     else
       frepeatch(file,' ',(config->withlanduse==NO_LANDUSE) ? 5 : 9);
     fprintf(file,"Water (%sm3/yr)",(convert==1e-15)  ? "k" : "da");
-    if(config->with_nitrogen)
-    {
-      if(config->river_routing)
-        frepeatch(file,' ',(config->withlanduse==NO_LANDUSE) ? 1 : 5);
-      fprintf(file,"                Nitrogen (%cgN/yr)",(convert==1e-15)  ? 'T' : 'M');
-    }
+    if(config->river_routing)
+      frepeatch(file,' ',(config->withlanduse==NO_LANDUSE) ? 1 : 5);
+    fprintf(file,"                Nitrogen (%cgN/yr)",(convert==1e-15)  ? 'T' : 'M');
     fputs("\n       ",file);
     frepeatch(file,'-',tabs*8-1);
     if(config->withlanduse!=NO_LANDUSE)
@@ -60,8 +57,7 @@ void fprintflux(FILE *file,          /**< Output file pointer */
       fputs(" --------------------------",file);
     if(config->river_routing)
       fputs("-----------",file);
-    if(config->with_nitrogen)
-      fputs(" --------------------------------",file);
+    fputs(" --------------------------------",file);
     fputc('\n',file);
     if(year<config->firstyear)
       fputs("Spinup ",file);
@@ -78,8 +74,7 @@ void fprintflux(FILE *file,          /**< Output file pointer */
       fputs(" wd     ",file);
     if(config->river_routing)
       fputs(" discharge ",file);
-    if(config->with_nitrogen)
-      fputs(" nuptake ndemand  nlosses ninflux",file);
+    fputs(" nuptake ndemand  nlosses ninflux",file);
     fputc('\n',file);
     fputs("------",file);
     for(i=0;i<tabs;i++)
@@ -89,8 +84,7 @@ void fprintflux(FILE *file,          /**< Output file pointer */
       fputs(" -------",file);
     if(config->river_routing)
       fputs(" ----------",file);
-    if(config->with_nitrogen)
-      fputs(" ------- -------- ------- -------",file);
+    fputs(" ------- -------- ------- -------",file);
     fputc('\n',file);
   }
   /* print data */
@@ -106,8 +100,7 @@ void fprintflux(FILE *file,          /**< Output file pointer */
     fprintf(file," %7.1f",flux.wd*convert*1000);
   if(config->river_routing)
     fprintf(file," %10.1f",flux.discharge*convert*1000);
-  if(config->with_nitrogen)
-    fprintf(file," %7.1f %8.1f %7.1f %7.1f",flux.n_uptake*convert*1000,flux.n_demand*convert*1000,flux.n_outflux*convert*1000,
+  fprintf(file," %7.1f %8.1f %7.1f %7.1f",flux.n_uptake*convert*1000,flux.n_demand*convert*1000,flux.n_outflux*convert*1000,
             flux.influx.nitrogen*convert*1000);
   fputc('\n',file);
 } /* of 'fprintflux' */

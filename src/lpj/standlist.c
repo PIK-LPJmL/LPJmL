@@ -33,8 +33,7 @@ int fwritestandlist(FILE *file,                /**< pointer to binary file */
 void fprintstandlist(FILE *file,                /**< Pointer to text file */
                      const Standlist standlist, /**< Stand list */
                      const Pftpar *pftpar,      /**< PFT parameter array */
-                     int ntotpft,               /**< total number of PFTs */
-                     int with_nitrogen          /**< nitrogen cycle enabled */
+                     int ntotpft                /**< total number of PFTs */
                     )
 {
   const Stand *stand;
@@ -43,7 +42,7 @@ void fprintstandlist(FILE *file,                /**< Pointer to text file */
   foreachstand(stand,s,standlist)
   {
     fprintf(file,"Stand:\t\t%d\n",s);
-    fprintstand(file,stand,pftpar,ntotpft,with_nitrogen);
+    fprintstand(file,stand,pftpar,ntotpft);
   }
 } /* of 'fprintstandlist' */
 

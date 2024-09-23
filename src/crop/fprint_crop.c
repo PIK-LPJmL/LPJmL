@@ -17,9 +17,8 @@
 #include "lpj.h"
 #include "crop.h"
 
-void fprint_crop(FILE *file,       /**< pointer to text file */
-                 const Pft *pft,   /**< pointer to PFT data to print */
-                 int with_nitrogen /**< nitrogen cycle enabled */
+void fprint_crop(FILE *file,    /**< pointer to text file */
+                 const Pft *pft /**< pointer to PFT data to print */
                 )
 {
   const Pftcrop *crop;
@@ -35,22 +34,16 @@ void fprint_crop(FILE *file,       /**< pointer to text file */
   fprintf(file,"Vdsum:\t\t%g\n",crop->vdsum);
   fprintf(file,"Fphu:\t\t%g\n",crop->fphu);
   fprintf(file,"Ind:\t\t");
-  if(with_nitrogen)
-    fprintcropphys2(file,crop->ind,pft->nind);
-  else
-    fprintcropphys2carbon(file,crop->ind,pft->nind);
+  fprintcropphys2(file,crop->ind,pft->nind);
   fprintf(file,"\nLAImax:\t%g\n",crop->flaimax);
   fprintf(file,"LAI:\t\t%g\n",crop->lai);
   fprintf(file,"LAI000:\t\t%g\n",crop->lai000);
   fprintf(file,"LAImax_adjusted:\t%g\n",crop->laimax_adjusted);
   fprintf(file,"Demandsum:\t%g\n",crop->demandsum);
-  if(with_nitrogen)
-  {
-    fprintf(file,"Ndemandsum:\t%g\n",crop->ndemandsum);
-    fprintf(file,"Nuptakesum:\t%g\n",crop->nuptakesum);
-    fprintf(file,"Nfertilizer:\t%g\n",crop->nfertilizer);
-    fprintf(file,"Vscal_sum:\t%g\n",crop->vscal_sum);
-  }
+  fprintf(file,"Ndemandsum:\t%g\n",crop->ndemandsum);
+  fprintf(file,"Nuptakesum:\t%g\n",crop->nuptakesum);
+  fprintf(file,"Nfertilizer:\t%g\n",crop->nfertilizer);
+  fprintf(file,"Vscal_sum:\t%g\n",crop->vscal_sum);
   fprintf(file,"Supplysum:\t%g\n",crop->supplysum);
   if(crop->sh!=NULL)
   {

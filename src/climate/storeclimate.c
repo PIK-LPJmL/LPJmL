@@ -84,13 +84,8 @@ Bool storeclimate(Climatedata *store,  /**< pointer to climate data to be stored
   }
   else
     store->wet=NULL;
-  if(climate->data.wind!=NULL)
-  {
-    store->wind=newvec(Real,climate->file_wind.n*nyear);
-    checkptr(store->wind);
-  }
-  else
-    store->wind=NULL;
+  store->wind=newvec(Real,climate->file_wind.n*nyear);
+  checkptr(store->wind);
   if(climate->data.tamp!=NULL)
   {
     store->tamp=newvec(Real,climate->file_tamp.n*nyear);
@@ -177,12 +172,9 @@ Bool storeclimate(Climatedata *store,  /**< pointer to climate data to be stored
       for(j=0;j<climate->file_wet.n;j++)
         store->wet[count++]=climate->data.wet[j];
     }
-    if(store->wind!=NULL)
-    {
-      count=climate->file_wind.n*(year-firstyear);
-      for(j=0;j<climate->file_wind.n;j++)
-        store->wind[count++]=climate->data.wind[j];
-    }
+    count=climate->file_wind.n*(year-firstyear);
+    for(j=0;j<climate->file_wind.n;j++)
+      store->wind[count++]=climate->data.wind[j];
     if(store->tamp!=NULL)
     {
       count=climate->file_tamp.n*(year-firstyear);
@@ -266,12 +258,9 @@ void restoreclimate(Climate *climate,         /**< pointer to climate data */
     for(i=0;i<climate->file_wet.n;i++)
       climate->data.wet[i]=store->wet[index++];
   }
-  if(store->wind!=NULL)
-  {
-    index=year*climate->file_wind.n;
-    for(i=0;i<climate->file_wind.n;i++)
-      climate->data.wind[i]=store->wind[index++];
-  }
+  index=year*climate->file_wind.n;
+  for(i=0;i<climate->file_wind.n;i++)
+    climate->data.wind[i]=store->wind[index++];
   if(store->tamp!=NULL)
   {
     index=year*climate->file_tamp.n;
@@ -315,8 +304,7 @@ void moveclimate(Climate *climate,  /**< Pointer to climate data */
     climate->data.swdown=store->swdown+climate->file_swdown.n*year;
   if(climate->data.wet!=NULL)
     climate->data.wet=store->wet+climate->file_wet.n*year;
-  if(climate->data.wind!=NULL)
-    climate->data.wind=store->wind+climate->file_wind.n*year;
+  climate->data.wind=store->wind+climate->file_wind.n*year;
   if(climate->data.tamp!=NULL)
     climate->data.tamp=store->tamp+climate->file_tamp.n*year;
   if(climate->data.burntarea!=NULL)

@@ -81,7 +81,6 @@ void fprintpar_crop(FILE *file,          /**< pointer to text file */
                  "tv_opt:\t\t%g %g (deg C)\n",
             croppar->tv_eff.low,croppar->tv_eff.high,
             croppar->tv_opt.low,croppar->tv_opt.high);
-  if(config->with_nitrogen)
-    fprintf(file,"rel. C:N ratio:\t%g %g %g\n",
-            croppar->ratio.root,croppar->ratio.so,croppar->ratio.pool);
+  fprintf(file,"rel. C:N ratio:\t%g %g %g\n",
+          croppar->ratio.root,croppar->ratio.so,croppar->ratio.pool);
 } /* of 'fprintpar_crop' */

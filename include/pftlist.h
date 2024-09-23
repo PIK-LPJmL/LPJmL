@@ -30,7 +30,7 @@ extern void freepftlist(Pftlist *);
 extern Real gp_sum(const Pftlist *,Real,Real,Real,Real,Real *,Real [],Real *,const Config *);
 extern Real fpc_sum(Real [],int,const Pftlist *);
 extern int fwritepftlist(FILE *,const Pftlist *);
-extern void fprintpftlist(FILE *,const Pftlist *,int);
+extern void fprintpftlist(FILE *,const Pftlist *);
 extern Bool freadpftlist(FILE *,Stand *,Pftlist *,const Pftpar[],int,
                          Bool,Bool);
 extern Stocks firepft(Stand *,Real,const Config *);

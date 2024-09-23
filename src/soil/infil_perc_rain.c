@@ -204,7 +204,7 @@ Real infil_perc_rain(Stand *stand,        /**< Stand pointer */
             influx=perc;
             frac_g_influx=stand->frac_g[l];
           }
-          if(config->with_nitrogen && l<BOTTOMLAYER)
+          if(l<BOTTOMLAYER)
           {
             /* nitrate movement with percolation */
             /* nitrate percolating from overlying layer */
@@ -265,7 +265,7 @@ Real infil_perc_rain(Stand *stand,        /**< Stand pointer */
                   getoutputindex(&stand->cell->output,CFT_LEACHING,pft->par->id-npft+data_irrig->irrigation*ncft,config)+=NO3surf + NO3lat;
               }
             }
-          } /* end of if(config->with_nitrogen) */
+          } /* end of if(l<BOTTOMLAYER) */
         } /*end percolation*/
       } /* if soil depth > freeze_depth */
     } /* soil layer loop */
@@ -338,10 +338,9 @@ Real infil_perc_rain(Stand *stand,        /**< Stand pointer */
   } /* soil layer loop */
 
 #ifdef SAFE
-  if(config->with_nitrogen)
-    forrootsoillayer(l)
-      if (soil->NO3[l]<-epsilon)
-        fail(NEGATIVE_SOIL_NO3_ERR,TRUE,"infil_prec_rain: Cell(%s) NO3=%g<0 in layer %d",sprintcoord(line,&stand->cell->coord),soil->NO3[l],l);
+  forrootsoillayer(l)
+    if (soil->NO3[l]<-epsilon)
+      fail(NEGATIVE_SOIL_NO3_ERR,TRUE,"infil_prec_rain: Cell(%s) NO3=%g<0 in layer %d",sprintcoord(line,&stand->cell->coord),soil->NO3[l],l);
 #endif
 
   /* Rainwater Harvesting: store part of surface runoff for supplementary irrigation */

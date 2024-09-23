@@ -112,7 +112,7 @@ void check_fluxes(Cell *cell,          /**< cell pointer */
          cell->balance.deforest_emissions.carbon,cell->balance.prod_turnover.fast.carbon+cell->balance.prod_turnover.slow.carbon,cell->balance.influx.carbon);
 #endif
   }
-  if(config->with_nitrogen && year>startyear && fabs(balance.nitrogen)>param.error_limit.stocks.nitrogen)
+  if(year>startyear && fabs(balance.nitrogen)>param.error_limit.stocks.nitrogen)
   {
 #ifdef NO_FAIL_BALANCE
     fprintf(stderr,"ERROR032: "

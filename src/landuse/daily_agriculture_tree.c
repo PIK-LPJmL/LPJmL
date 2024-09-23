@@ -154,11 +154,10 @@ Real daily_agriculture_tree(Stand *stand,                /**< stand pointer */
   index=agtree(ncft,config->nwptype)+data->irrigation.pft_id-npft+config->nagtree+data->irrigation.irrigation*getnirrig(ncft,config);
 
   /* Apply fertilizers */
-  if(config->with_nitrogen)
-    fertilize_tree(stand,
-                   (stand->cell->ml.fertilizer_nr==NULL) ? 0.0 : stand->cell->ml.fertilizer_nr[data->irrigation.irrigation].ag_tree[data->irrigation.pft_id-npft+config->nagtree],
-                   (stand->cell->ml.manure_nr==NULL) ? 0.0 : stand->cell->ml.manure_nr[data->irrigation.irrigation].ag_tree[data->irrigation.pft_id-npft+config->nagtree],
-                   day, config);
+  fertilize_tree(stand,
+                 (stand->cell->ml.fertilizer_nr==NULL) ? 0.0 : stand->cell->ml.fertilizer_nr[data->irrigation.irrigation].ag_tree[data->irrigation.pft_id-npft+config->nagtree],
+                 (stand->cell->ml.manure_nr==NULL) ? 0.0 : stand->cell->ml.manure_nr[data->irrigation.irrigation].ag_tree[data->irrigation.pft_id-npft+config->nagtree],
+                 day, config);
 
   /* Apply irrigation */
   if(data->irrigation.irrigation && data->irrigation.irrig_amount>epsilon)
@@ -247,7 +246,7 @@ Real daily_agriculture_tree(Stand *stand,                /**< stand pointer */
       getoutputindex(output,PFT_GCGP_COUNT,nnat+index,config)++;
       getoutputindex(output,PFT_GCGP,nnat+index,config)+=gc_pft/gp_pft[getpftpar(pft,id)];
     }
-    npp=npp(pft,gtemp_air,gtemp_soil,gpp-rd-pft->npp_bnf,config->with_nitrogen);
+    npp=npp(pft,gtemp_air,gtemp_soil,gpp-rd-pft->npp_bnf);
     pft->npp_bnf=0.0;
 #ifdef DEBUG2
     printf("day=%d, irrig=%d, npp=%g, c_fruit=%g,phen=%g\n",day,data->irrigation.irrigation,npp,tree->fruit.carbon,pft->phen);

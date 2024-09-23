@@ -34,7 +34,7 @@ Bool initsoil(Stand *stand,           /**< Pointer to stand data */
   {
     soil->pool[l].fast.carbon=soil->pool[l].slow.carbon=soil->k_mean[l].fast=soil->k_mean[l].slow=0.0;
     soil->decay_rate[l].fast=soil->decay_rate[l].slow=0.0;
-    if(!config->with_nitrogen || soilpar->type==ROCK || soilpar->type==ICE)
+    if(soilpar->type==ROCK || soilpar->type==ICE)
       soil->pool[l].slow.nitrogen=soil->pool[l].fast.nitrogen=soil->NH4[l]=soil->NO3[l]=0.0;
     else
     {
