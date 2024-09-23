@@ -19,10 +19,12 @@ of `major.minor.patch` with
 
 ## [Unreleased]
 
+## [5.9.11] - 2024-09-23
+
 ### Contributors
 
 - author: Stephen Wirth (wirth@pik-potsdam.de), Christoph Müller (cmueller@pik-potsdam.de)
-- code review:
+- code review: Alja Vrieling (alja.vrieling@vortech.nl), Johanna Braun (jobraun@pik-potsdam.de)
 
 ### Added
 
@@ -31,6 +33,23 @@ of `major.minor.patch` with
 ### Fixed
 
 - missing scaling of `bm_inc.nitrogen` after part of it was added to litter in harvest of wood plantations as in issue #358
+
+
+## [5.9.10] - 2024-09-23
+
+### Contributors
+
+- author: Werner von Bloh (bloh@pik-potsdam.de)
+- code review: Sibyll Schaphoff (sibylls@pik-potsdam.de), Christoph Müller (cmueller@pik-potsdam.de)
+
+### Removed
+
+- Option `"no"` for nitrogen setting removed, only `"lim"` and `"unlim"` allowed. Corresponding parameter files `lpjparam_non.cjson` and `pft_non.cjson` removed.
+- Removed commented-out code in `allocation_tree.c`
+
+### Fixed
+
+- Missing check for zero added in `allocation_grass.c` to avoid division by zero.
 
 
 ## [5.9.9] - 2024-09-04
