@@ -76,33 +76,30 @@ void fprintoutputvar(FILE *file,              /**< pointer to text file */
   for(i=0;i<size;i++)
   {
     index=(item==NULL) ? i : item[i].index;
-    if(config->with_nitrogen || !isnitrogen_output(index))
+    switch(output[index].time)
     {
-      switch(output[index].time)
-      {
-        case YEAR:
-          sc="/y";
-          break;
-        case SECOND:
-          sc="/s";
-          break;
-        case MONTH:
-          sc="/m";
-          break;
-        case DAY:
-          sc="/d";
-          break;
-        default:
-          sc="";
-      }
-      fprintf(file,"%-*s %-*s %-*s %-5s %3d %5s %5g%-2s %6g %-*s %s\n",width,output[index].name,
-              width_var,output[index].var,
-              width_unit,strlen(output[index].unit)==0 ? "-" : output[index].unit,sprinttimestep(s,output[index].timestep),
-              outputsize(index,npft,ncft,config),
-              typenames[getoutputtype(index,config->grid_type)],output[index].scale,sc,output[index].offset,
-              width_standard_name,output[index].standard_name,output[index].long_name);
-
+      case YEAR:
+        sc="/y";
+        break;
+      case SECOND:
+        sc="/s";
+        break;
+      case MONTH:
+        sc="/m";
+        break;
+      case DAY:
+        sc="/d";
+        break;
+      default:
+        sc="";
     }
+    fprintf(file,"%-*s %-*s %-*s %-5s %3d %5s %5g%-2s %6g %-*s %s\n",width,output[index].name,
+            width_var,output[index].var,
+            width_unit,strlen(output[index].unit)==0 ? "-" : output[index].unit,sprinttimestep(s,output[index].timestep),
+            outputsize(index,npft,ncft,config),
+            typenames[getoutputtype(index,config->grid_type)],output[index].scale,sc,output[index].offset,
+            width_standard_name,output[index].standard_name,output[index].long_name);
+
   }
   free(item);
   frepeatch(file,'-',width);

@@ -70,7 +70,7 @@ void update_daily(Cell *cell,            /**< cell pointer           */
   getoutput(&cell->output,RAIN,config)+=climate.temp<tsnow ? 0 : climate.prec;
 
   if(config->withlanduse) /* landuse enabled? */
-    flux_estab=sowing(cell,climate.prec,day,year,npft,ncft,config); 
+    flux_estab=sowing(cell,climate.prec,day,year,npft,ncft,config);
   cell->discharge.drunoff=0.0;
 
   if(config->fire==SPITFIRE || config->fire==SPITFIRE_TMAX)
@@ -218,68 +218,64 @@ void update_daily(Cell *cell,            /**< cell pointer           */
     if(config->fire==FIRE && climate.temp>0)
       stand->fire_sum+=fire_sum(&stand->soil.litter,stand->soil.w[0]);
 
-    if(config->with_nitrogen)
+    if(config->unlim_nitrogen ||
+       (config->equilsoil && param.veg_equil_unlim && year<=(config->firstyear-config->nspinup+param.veg_equil_year)))
     {
-      if(config->with_nitrogen==UNLIM_NITROGEN || 
-         (config->equilsoil && param.veg_equil_unlim && year<=(config->firstyear-config->nspinup+param.veg_equil_year)))
+      if(stand->soil.par->type==ROCK)
       {
-        if(stand->soil.par->type==ROCK)
-        {
-          getoutput(&cell->output,LEACHING,config)+=2000*stand->frac;
-          cell->balance.n_outflux+=2000*stand->frac;
-          if (isagriculture(stand->type->landusetype))
-            getoutput(&cell->output,NLEACHING_AGR,config)+=2000*stand->frac;
-        }
-        else
-        {
-          stand->soil.NH4[0]+=1000;
-          stand->soil.NO3[0]+=1000;
-        }
-        cell->balance.influx.nitrogen+=2000*stand->frac;
+        getoutput(&cell->output,LEACHING,config)+=2000*stand->frac;
+        cell->balance.n_outflux+=2000*stand->frac;
         if (isagriculture(stand->type->landusetype))
-          getoutput(&cell->output,NDEPO_AGR,config)+=2000*stand->frac;
-        if(stand->type->landusetype!=NATURAL && stand->type->landusetype!=WOODPLANTATION)
-          getoutput(&cell->output,NDEPO_MG,config)+=2000*stand->frac;
-        getoutput(&cell->output,NDEPOS,config)+=2000*stand->frac;
+          getoutput(&cell->output,NLEACHING_AGR,config)+=2000*stand->frac;
       }
-      else if(!config->no_ndeposition)
+      else
       {
-        if(stand->soil.par->type==ROCK)
-        {
-          getoutput(&cell->output,LEACHING,config)+=(climate.nh4deposition+climate.no3deposition)*stand->frac;
-          cell->balance.n_outflux+=(climate.nh4deposition+climate.no3deposition)*stand->frac;
-          if (isagriculture(stand->type->landusetype))
-            getoutput(&cell->output,NLEACHING_AGR,config)+=(climate.nh4deposition+climate.no3deposition)*stand->frac;
-        }
-        else
-        {
-          /*adding daily N deposition to upper soil layer*/
-          stand->soil.NH4[0]+=climate.nh4deposition;
-          stand->soil.NO3[0]+=climate.no3deposition;
-        }
-        cell->balance.influx.nitrogen+=(climate.nh4deposition+climate.no3deposition)*stand->frac;
-        if (isagriculture(stand->type->landusetype))
-          getoutput(&cell->output,NDEPO_AGR,config)+=(climate.nh4deposition+climate.no3deposition)*stand->frac;
-        if(stand->type->landusetype!=NATURAL && stand->type->landusetype!=WOODPLANTATION)
-          getoutput(&cell->output,NDEPO_MG,config)+=(climate.nh4deposition+climate.no3deposition)*stand->frac;
-        getoutput(&cell->output,NDEPOS,config)+=(climate.nh4deposition+climate.no3deposition)*stand->frac;
+        stand->soil.NH4[0]+=1000;
+        stand->soil.NO3[0]+=1000;
       }
+      cell->balance.influx.nitrogen+=2000*stand->frac;
+      if (isagriculture(stand->type->landusetype))
+        getoutput(&cell->output,NDEPO_AGR,config)+=2000*stand->frac;
+      if(stand->type->landusetype!=NATURAL && stand->type->landusetype!=WOODPLANTATION)
+        getoutput(&cell->output,NDEPO_MG,config)+=2000*stand->frac;
+      getoutput(&cell->output,NDEPOS,config)+=2000*stand->frac;
+    }
+    else if(!config->no_ndeposition)
+    {
+      if(stand->soil.par->type==ROCK)
+      {
+        getoutput(&cell->output,LEACHING,config)+=(climate.nh4deposition+climate.no3deposition)*stand->frac;
+        cell->balance.n_outflux+=(climate.nh4deposition+climate.no3deposition)*stand->frac;
+        if (isagriculture(stand->type->landusetype))
+          getoutput(&cell->output,NLEACHING_AGR,config)+=(climate.nh4deposition+climate.no3deposition)*stand->frac;
+      }
+      else
+      {
+        /*adding daily N deposition to upper soil layer*/
+        stand->soil.NH4[0]+=climate.nh4deposition;
+        stand->soil.NO3[0]+=climate.no3deposition;
+      }
+      cell->balance.influx.nitrogen+=(climate.nh4deposition+climate.no3deposition)*stand->frac;
+      if (isagriculture(stand->type->landusetype))
+       getoutput(&cell->output,NDEPO_AGR,config)+=(climate.nh4deposition+climate.no3deposition)*stand->frac;
+      if(stand->type->landusetype!=NATURAL && stand->type->landusetype!=WOODPLANTATION)
+        getoutput(&cell->output,NDEPO_MG,config)+=(climate.nh4deposition+climate.no3deposition)*stand->frac;
+      getoutput(&cell->output,NDEPOS,config)+=(climate.nh4deposition+climate.no3deposition)*stand->frac;
+    }
 #ifdef DEBUG_N
-      printf("BEFORE_STRESS[%s], day %d: ",stand->type->name,day);
-      for(l=0;l<NSOILLAYER-1;l++)
-        printf("%g ",stand->soil.NO3[l]);
-      printf("\n");
+    printf("BEFORE_STRESS[%s], day %d: ",stand->type->name,day);
+    for(l=0;l<NSOILLAYER-1;l++)
+      printf("%g ",stand->soil.NO3[l]);
+    printf("\n");
 #endif
 #ifdef DEBUG_N
-      printf("AFTER_STRESS: ");
-      for(l=0;l<NSOILLAYER-1;l++)
-        printf("%g ",stand->soil.NO3[l]);
-      printf("\n");
+    printf("AFTER_STRESS: ");
+    for(l=0;l<NSOILLAYER-1;l++)
+      printf("%g ",stand->soil.NO3[l]);
+    printf("\n");
 #endif
 
-    } /* of if(config->with_nitrogen) */
-
-    if(config->with_nitrogen && !config->npp_controlled_bnf)
+    if(!config->npp_controlled_bnf)
     {
       bnf=biologicalnfixation(stand, npft, ncft, config);
       stand->soil.NH4[0]+=bnf;
@@ -292,23 +288,20 @@ void update_daily(Cell *cell,            /**< cell pointer           */
     runoff=daily_stand(stand,co2,&climate,day,month,daylength,
                        gtemp_air,gtemp_soil[0],eeq,par,
                        melt,npft,ncft,year,intercrop,agrfrac,config);
-    if(config->with_nitrogen)
-    {
-      denitrification(stand,npft,ncft,config);
+    denitrification(stand,npft,ncft,config);
 
-      nh3=volatilization(stand->soil.NH4[0],climate.windspeed,climate.temp,
-                         length,cell->soilph);
-      if(nh3>stand->soil.NH4[0])
-        nh3=stand->soil.NH4[0];
-      stand->soil.NH4[0]-=nh3;
-      getoutput(&cell->output,N_VOLATILIZATION,config)+=nh3*stand->frac;
-      if (isagriculture(stand->type->landusetype))
-        getoutput(&cell->output,NH3_AGR,config)+=nh3*stand->frac;
-      if(stand->type->landusetype==GRASSLAND)
-        getoutput(&cell->output,NH3_MGRASS,config)+=nh3*stand->frac;
+    nh3=volatilization(stand->soil.NH4[0],climate.windspeed,climate.temp,
+                       length,cell->soilph);
+    if(nh3>stand->soil.NH4[0])
+      nh3=stand->soil.NH4[0];
+    stand->soil.NH4[0]-=nh3;
+    getoutput(&cell->output,N_VOLATILIZATION,config)+=nh3*stand->frac;
+    if (isagriculture(stand->type->landusetype))
+      getoutput(&cell->output,NH3_AGR,config)+=nh3*stand->frac;
+    if(stand->type->landusetype==GRASSLAND)
+      getoutput(&cell->output,NH3_MGRASS,config)+=nh3*stand->frac;
 
-      cell->balance.n_outflux+=nh3*stand->frac;
-    }
+    cell->balance.n_outflux+=nh3*stand->frac;
 
     cell->discharge.drunoff+=runoff*stand->frac;
     climate.prec=prec_save;

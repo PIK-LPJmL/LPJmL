@@ -54,6 +54,23 @@ of `major.minor.patch` with
 - Calculation of offsets and counts corrected in `readintdata_netdf.c` and missing loop over bands added.
 
 
+## [5.9.10] - 2024-09-23
+
+### Contributors
+
+- author: Werner von Bloh (bloh@pik-potsdam.de)
+- code review: Sibyll Schaphoff (sibylls@pik-potsdam.de), Christoph Müller (cmueller@pik-potsdam.de)
+
+### Removed
+
+- Option `"no"` for nitrogen setting removed, only `"lim"` and `"unlim"` allowed. Corresponding parameter files `lpjparam_non.cjson` and `pft_non.cjson` removed.
+- Removed commented-out code in `allocation_tree.c`
+
+### Fixed
+
+- Missing check for zero added in `allocation_grass.c` to avoid division by zero.
+
+
 ## [5.9.9] - 2024-09-04
 
 ### Contributors
