@@ -26,7 +26,7 @@ of `major.minor.patch` with
 
 ### Added
 
-- added SLURM option `--cpus-per-task=1` to avoid that mpirun uses several CPUs per process
+- added SLURM option `--cpus-per-task=1` to `lpjsubmit` template `bin/lpjsubmit_hpc` to avoid that mpirun uses several CPUs per process
 
 ## [5.9.11] - 2024-09-23
 
