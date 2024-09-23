@@ -19,6 +19,29 @@ of `major.minor.patch` with
 
 ## [Unreleased]
 
+### Contributors
+
+- author: Luke Oberhagemann (lukeober@pik-potsdam.de), Markus Drüke (Markus.Drueke@dwd.de), Maik Billing (billing@pik-potsdam.de) , Werner von Bloh (bloh@pik-potsdam.de)
+
+### Added
+
+- Fire related outputs and settings added:
+```java
+  "gsilivefuel" : true,
+  "human_ign_prob" : false,   /* read human ignition probability from file */
+  "max_firesize" : false,     /* read maximum fire size from file */
+  "fireduration" : [{"stand" : "grassland", "duration" : [1,120] ,"ndayfire" : 1},
+                    {"stand" : "natural", "duration" : [120,480], "ndayfire" : 3}], /* fire duration intervals and maximum days of fire for each stand */
+
+  "prescribe_ignition" : false, /* read ignitions from file */
+```
+
+### Changed
+
+- SPITFIRE fire model updated, multi-day fire implemented.
+- The default fire model in `lpjml_config.cjson` is now set to SPITFIRE.
+
+
 ## [5.9.11] - 2024-09-23
 
 ### Contributors

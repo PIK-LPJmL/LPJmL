@@ -64,9 +64,9 @@
   "human_ign_prob" : false,   /* read human ignition probability from file */
   "max_firesize" : false,     /* read maximum fire size from file */
   "fireduration" : [{"stand" : "grassland", "duration" : [1,120] ,"ndayfire" : 1},
-                    {"stand" : "natural", "duration" : [120,480], "ndayfire" : 3}], /* fire duration inztervals and maximum days of fire for each stand */
+                    {"stand" : "natural", "duration" : [120,480], "ndayfire" : 3}], /* fire duration intervals and maximum days of fire for each stand */
 
-  "prescribe_ignition" : false, /* read ingnitions from file */
+  "prescribe_ignition" : false, /* read ignitions from file */
   "random_seed" : 2,        /* seed for random number generator */
   "gsi_phenology" : true,   /* enable GSI phenology */
   "transp_suction_fcn" : false, /* enable new transpiration reduction function - NOT TESTED */
