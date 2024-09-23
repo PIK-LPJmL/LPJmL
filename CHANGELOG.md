@@ -32,7 +32,7 @@ of `major.minor.patch` with
 
 ### Fixed
 
-- missing scaling of `bm_inc.nitrogen` after part of it was added to litter in harvest of wood plantations as in issue #358
+- added missing scaling of `bm_inc.nitrogen` after part of it was added to litter in harvest of wood plantations as in issue #358
 
 
 ## [5.9.10] - 2024-09-23
