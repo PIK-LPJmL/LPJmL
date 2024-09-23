@@ -19,6 +19,15 @@ of `major.minor.patch` with
 
 ## [Unreleased]
 
+### Contributors
+
+- author: Christoph Müller (cmueller@pik-potsdam.de)
+- code review:
+
+### Added
+
+- added SLURM option `--cpus-per-task=1` to avoid that mpirun uses several CPUs per process
+
 ## [5.9.11] - 2024-09-23
 
 ### Contributors
