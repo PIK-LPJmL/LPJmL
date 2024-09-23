@@ -54,6 +54,22 @@ of `major.minor.patch` with
 - Calculation of offsets and counts corrected in `readintdata_netdf.c` and missing loop over bands added.
 
 
+## [5.9.11] - 2024-09-23
+
+### Contributors
+
+- author: Stephen Wirth (wirth@pik-potsdam.de), Christoph Müller (cmueller@pik-potsdam.de)
+- code review: Alja Vrieling (alja.vrieling@vortech.nl), Johanna Braun (jobraun@pik-potsdam.de)
+
+### Added
+
+- tree.fruit biomass is now explicitly handled in timber_harvest() and pools scaled accordingly in annual_woodplantation.c even though these are currently always zero anyways.
+
+### Fixed
+
+- added missing scaling of `bm_inc.nitrogen` after part of it was added to litter in harvest of wood plantations as in issue #358
+
+
 ## [5.9.10] - 2024-09-23
 
 ### Contributors
