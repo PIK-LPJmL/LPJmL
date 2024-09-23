@@ -158,7 +158,7 @@ Bool allocation_grass(Litter *litter,   /**< litter pool */
       grass->ind.root.nitrogen += (1 - a)*bm_inc_ind.nitrogen;
       pft->bm_inc.nitrogen = 0;
       /* testing if there is too much carbon for allowed NC ratios */
-      if (grass->ind.leaf.nitrogen / grass->ind.leaf.carbon<pft->par->ncleaf.low)
+      if (grass->ind.leaf.carbon>0 && grass->ind.leaf.nitrogen / grass->ind.leaf.carbon<pft->par->ncleaf.low)
       {
         lastday.leaf.carbon = grass->ind.leaf.carbon;
         grass->ind.leaf.carbon = grass->ind.leaf.nitrogen / pft->par->ncleaf.low;
@@ -167,7 +167,7 @@ Bool allocation_grass(Litter *litter,   /**< litter pool */
         update_fbd_grass(litter, pft->par->fuelbulkdensity,
           (lastday.leaf.carbon - grass->ind.leaf.carbon)*pft->nind);
       }
-      if (grass->ind.root.nitrogen/grass->ind.root.carbon<pft->par->ncleaf.low/grasspar->ratio)
+      if (grass->ind.root.carbon>0 && grass->ind.root.nitrogen/grass->ind.root.carbon<pft->par->ncleaf.low/grasspar->ratio)
       {
         lastday.root.carbon = grass->ind.root.carbon;
         grass->ind.root.carbon = grass->ind.root.nitrogen / pft->par->ncleaf.low*grasspar->ratio;

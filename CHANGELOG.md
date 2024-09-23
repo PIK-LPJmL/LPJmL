@@ -26,7 +26,7 @@ of `major.minor.patch` with
 
 ### Removed
 
-- Option `"no"` for nitrogen setting removed, only `"lim"` and `"unlim"` allowed. Corresponding parameter files `lpjparam_on.cjson` and `pft_non.cjson` removed.
+- Option `"no"` for nitrogen setting removed, only `"lim"` and `"unlim"` allowed. Corresponding parameter files `lpjparam_non.cjson` and `pft_non.cjson` removed.
 
 
 ## [5.9.9] - 2024-09-04
