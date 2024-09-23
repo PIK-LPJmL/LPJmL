@@ -57,7 +57,7 @@ void update_annual(Cell *cell,          /**< Pointer to cell */
   annual_climbuf(&cell->climbuf,cell->balance.aevap+cell->balance.atransp,ncft,config->crop_phu_option!=OLD_CROP_PHU && (config->sdate_option==NO_FIXED_SDATE || year<=config->sdate_fixyear));
   if(config->sdate_option==NO_FIXED_SDATE ||
     (config->sdate_option==FIXED_SDATE && year<=config->sdate_fixyear)||
-    (config->sdate_option==PRESCRIBED_SDATE && year<=config->sdate_fixyear))
+    (config->sdate_option>=PRESCRIBED_SDATE && year<=config->sdate_fixyear))
     cell->climbuf.atemp_mean20_fix=cell->climbuf.atemp_mean20;
 
   /* count number of years without harvest
@@ -65,7 +65,7 @@ void update_annual(Cell *cell,          /**< Pointer to cell */
    * occurred within the last 10 years
    */
 
-   if((year<config->firstyear && config->sdate_option!=PRESCRIBED_SDATE) || config->sdate_option==NO_FIXED_SDATE)
+   if((year<config->firstyear && config->sdate_option<PRESCRIBED_SDATE) || config->sdate_option==NO_FIXED_SDATE)
      update_cropdates(cell->ml.cropdates,ncft);
 
   foreachstand(stand,s,cell->standlist)

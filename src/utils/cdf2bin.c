@@ -233,7 +233,7 @@ int main(int argc,char **argv)
   float fcoord[2];
   double dcoord[2];
   FILE *file;
-  Map *map;
+  Map *map=NULL;
   int iarg,j,k;
   Attr *attrs=NULL;
   int n_attr=0,len;

@@ -19,7 +19,7 @@ int fertday_biomass(const Cell *cell,    /**< pointer to cell */
                    )                     /** \return day of application (1..365) */
 {
   int fday;
-  if (config->sdate_option==PRESCRIBED_SDATE)
+  if (config->sdate_option>=PRESCRIBED_SDATE)
   {
     if(fabs(cell->coord.lat) > 30)
       fday=cell->ml.sdate_fixed[param.cft_fertday_temp];  /* wheat sowing date */
