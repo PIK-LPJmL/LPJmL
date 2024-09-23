@@ -162,7 +162,7 @@ struct config
   Bool nofill;          /**< do not fille NetCDF files at creation (TRUE/FALSE) */
   Bool isnetcdf4;         /**< file is in Netcdf4 format (TRUE/FALSE); */
   int fdi;
-  int with_nitrogen;      /**< enable nitrogen cycle */
+  Bool unlim_nitrogen;      /**< enable unlimited nitrogen (TRUE/FALSE) */
   Bool crop_resp_fix;      /**< with fixed crop respiration (TRUE/FALSE) */
   int tillage_type;      /**< type of tillage NO_TILLAGE=0, TILLAGE=1, READ_TILLAGE=2 */
   int residue_treatment; /** residue options: READ_RESIDUE_DATA, NO_RESIDUE_REMOVE, FIXED_RESIDUE_REMOVE (uses param residues_in_soil) */

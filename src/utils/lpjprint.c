@@ -154,10 +154,7 @@ static Bool printgrid(Config *config, /* Pointer to LPJ configuration */
     if(config->withlanduse!=NO_LANDUSE)
     {
       grid.ml.landfrac=newlandfrac(ncft,config->nagtree);
-      if(config->with_nitrogen)
-        grid.ml.fertilizer_nr=newlandfrac(ncft,config->nagtree);
-      else
-        grid.ml.fertilizer_nr=NULL;
+      grid.ml.fertilizer_nr=newlandfrac(ncft,config->nagtree);
 
     }
     else

@@ -73,9 +73,8 @@ void update_annual(Cell *cell,          /**< Pointer to cell */
     stand->prescribe_landcover = config->prescribe_landcover;
 
     stand->soil.mean_maxthaw=(stand->soil.mean_maxthaw-stand->soil.mean_maxthaw/CLIMBUFSIZE)+stand->soil.maxthaw_depth/CLIMBUFSIZE;
-    if(!config->with_nitrogen)
-      foreachpft(pft,p,&stand->pftlist)
-        pft->vscal=NDAYYEAR;
+    foreachpft(pft,p,&stand->pftlist)
+      pft->vscal=NDAYYEAR;
     if(annual_stand(stand,npft,ncft,year,isdaily,intercrop,config))
     {
       /* stand has to be deleted */
@@ -85,14 +84,11 @@ void update_annual(Cell *cell,          /**< Pointer to cell */
   } /* of foreachstand */
   foreachstand(stand,s,cell->standlist)
   {
-    if(config->with_nitrogen)
-    {
-      litter_neg=checklitter(&stand->soil.litter);
-      getoutput(&cell->output,NEGC_FLUXES,config)+=litter_neg.carbon*stand->frac;
-      getoutput(&cell->output,NEGN_FLUXES,config)+=litter_neg.nitrogen*stand->frac;
-      cell->balance.neg_fluxes.carbon+=litter_neg.carbon*stand->frac;
-      cell->balance.neg_fluxes.nitrogen+=litter_neg.nitrogen*stand->frac;
-    }
+    litter_neg=checklitter(&stand->soil.litter);
+    getoutput(&cell->output,NEGC_FLUXES,config)+=litter_neg.carbon*stand->frac;
+    getoutput(&cell->output,NEGN_FLUXES,config)+=litter_neg.nitrogen*stand->frac;
+    cell->balance.neg_fluxes.carbon+=litter_neg.carbon*stand->frac;
+    cell->balance.neg_fluxes.nitrogen+=litter_neg.nitrogen*stand->frac;
     stand->cell->balance.soil_storage+=soilwater(&stand->soil)*stand->frac*stand->cell->coord.area;
   }
   getoutput(&cell->output,LAND_AREA,config)+=cell->coord.area*(1-cell->lakefrac-cell->ml.reservoirfrac);

@@ -160,7 +160,7 @@ void iterateyear(Outputfile *output,  /**< Output file data */
               fail(INVALID_CLIMATE_ERR,FALSE,"Cloudiness=%g%% not in [0,100] for cell %d at day %d",daily.sun,cell+config->startgrid,day);
             getoutput(&grid[cell].output,SUN,config)+=daily.sun;
           }
-          if(config->with_nitrogen && daily.windspeed<0)
+          if(daily.windspeed<0)
             fail(INVALID_CLIMATE_ERR,FALSE,"Wind speed=%g less than zero for cell %d at day %d",daily.windspeed,cell+config->startgrid,day);
 #endif
           if(config->with_radiation==CLOUDINESS && daily.sun<0)

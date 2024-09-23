@@ -52,11 +52,8 @@ void allocation_daily_crop(Pft *pft,             /**< PFT variables */
   pft->bm_inc.carbon+=npp;
 
   /* root growth */
-  if(config->with_nitrogen)
-  {
-    crop->vscal_sum+=pft->vscal;
-    ndf=(crop->growingdays>0.0) ? crop->vscal_sum/crop->growingdays*100 : 100.0;
-  }
+  crop->vscal_sum+=pft->vscal;
+  ndf=(crop->growingdays>0.0) ? crop->vscal_sum/crop->growingdays*100 : 100.0;
   /* this work also without with_nitrogen, as ndf is initialized to 100 */
   df=min(wdf,ndf);
   froot=FROOTMAX-(FROOTMIN*crop->fphu)*df/(df+exp(6.13-0.0883*df));
@@ -93,7 +90,7 @@ void allocation_daily_crop(Pft *pft,             /**< PFT variables */
   fhiopt=100*crop->fphu/(100*crop->fphu+exp(11.1-10.0*crop->fphu));
   hi=(par->hiopt>1.0) ? fhiopt*(par->hiopt-1.0)+1.0 : fhiopt*par->hiopt;
   himind=(par->himin>1.0) ? fhiopt*(par->himin-1.0)+1.0 : fhiopt*par->himin;
-  
+
   if(wdf>=0)
     hi=(hi-himind)*wdf/(wdf+exp(6.13-0.0883*wdf))+himind;
 
@@ -135,29 +132,26 @@ void allocation_daily_crop(Pft *pft,             /**< PFT variables */
       crop->ind.pool.carbon=0;
     }
   }
-  if(config->with_nitrogen)
+  /* Nitrogen allocation */
+  if(crop->ind.leaf.carbon>epsilon && pft->bm_inc.nitrogen>0)
   {
-    /* Nitrogen allocation */
-    if(crop->ind.leaf.carbon>epsilon && pft->bm_inc.nitrogen>0)
-    {
-      /* all of bm_inc.nitrogen is allocated, so setting current allocation to zero first */
-      crop->ind.leaf.nitrogen=crop->ind.root.nitrogen=crop->ind.so.nitrogen=crop->ind.pool.nitrogen=0;
-      solve(&a,&b,&c,&d,
-            crop->ind.leaf.nitrogen,crop->ind.root.nitrogen,crop->ind.so.nitrogen,crop->ind.pool.nitrogen,
-            crop->ind.leaf.carbon,crop->ind.root.carbon,crop->ind.so.carbon,crop->ind.pool.carbon,
-            par->ratio.root,par->ratio.so,par->ratio.pool,pft->bm_inc.nitrogen);
-    
-      crop->ind.leaf.nitrogen+=a*pft->bm_inc.nitrogen;
-      crop->ind.root.nitrogen+=b*pft->bm_inc.nitrogen;
-      crop->ind.so.nitrogen+=c*pft->bm_inc.nitrogen;
-      crop->ind.pool.nitrogen+=d*pft->bm_inc.nitrogen;
+    /* all of bm_inc.nitrogen is allocated, so setting current allocation to zero first */
+    crop->ind.leaf.nitrogen=crop->ind.root.nitrogen=crop->ind.so.nitrogen=crop->ind.pool.nitrogen=0;
+    solve(&a,&b,&c,&d,
+          crop->ind.leaf.nitrogen,crop->ind.root.nitrogen,crop->ind.so.nitrogen,crop->ind.pool.nitrogen,
+          crop->ind.leaf.carbon,crop->ind.root.carbon,crop->ind.so.carbon,crop->ind.pool.carbon,
+          par->ratio.root,par->ratio.so,par->ratio.pool,pft->bm_inc.nitrogen);
+
+    crop->ind.leaf.nitrogen+=a*pft->bm_inc.nitrogen;
+    crop->ind.root.nitrogen+=b*pft->bm_inc.nitrogen;
+    crop->ind.so.nitrogen+=c*pft->bm_inc.nitrogen;
+    crop->ind.pool.nitrogen+=d*pft->bm_inc.nitrogen;
 #ifdef DEBUG_N
-      printf("%g %g %g %g\n",crop->ind.leaf.carbon/crop->ind.leaf.nitrogen,
-             crop->ind.root.carbon/crop->ind.root.nitrogen,
-             crop->ind.so.carbon/crop->ind.so.nitrogen,
-             crop->ind.pool.carbon/crop->ind.pool.nitrogen);
+    printf("%g %g %g %g\n",crop->ind.leaf.carbon/crop->ind.leaf.nitrogen,
+           crop->ind.root.carbon/crop->ind.root.nitrogen,
+           crop->ind.so.carbon/crop->ind.so.nitrogen,
+           crop->ind.pool.carbon/crop->ind.pool.nitrogen);
 #endif
-    }
   }
   pft->nleaf=crop->ind.leaf.nitrogen;
 } /* of 'allocation_daily_crop' */

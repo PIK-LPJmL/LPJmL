@@ -174,15 +174,15 @@ typedef struct Pft
     void (*newpft)(struct Pft *,int,int,const Config *);
     void (*init)(struct Pft *);
     Real (*wdf)(struct Pft *,Real,Real);
-    Real (*npp)(struct Pft*,Real,Real,Real,int);
+    Real (*npp)(struct Pft*,Real,Real,Real);
     Real (*fpar) (const struct Pft*);
     void (*snow_canopy) (struct Pft*, Real, Real);
-    Real (*alphaa_manage) (const struct Pft*,int,int);
+    Real (*alphaa_manage) (const struct Pft*,int);
     void (*leaf_phenology)(struct Pft *,Real,int,Bool,const Config *);
     void (*albedo_pft) (struct Pft *, Real, Real);
     Bool (*fwrite)(FILE *,const struct Pft *);
     Bool (*fread)(FILE *,struct Pft *,Bool,Bool);
-    void (*fprint)(FILE *,const struct Pft *,int);
+    void (*fprint)(FILE *,const struct Pft *);
     void (*litter_update)(Litter *,struct Pft *,Real,const Config *);
     Stocks (*establishment)(struct Pft *,Real,Real,int);
     Stocks (*fire)(struct Pft *,Real *);
@@ -258,7 +258,7 @@ extern void initgdd(Real [],int);
 extern void updategdd(Real [],const Pftpar [],int,Real);
 extern Real gp(Pft *,Real,Real,Real,Real);
 extern Bool fwritepft(FILE *,const Pft *);
-extern void fprintpft(FILE *,const Pft *,int);
+extern void fprintpft(FILE *,const Pft *);
 extern Bool freadpft(FILE *,Stand *,Pft *,const Pftpar[],int,Bool,Bool);
 extern void noinit(Pft *);
 extern Stocks nofire(Pft *,Real *);
@@ -311,8 +311,8 @@ extern Stocks timber_harvest(Pft *,Soil *,Poolpar,Real,Real,Real *,Stocks *,cons
 #define fpar(pft) pft->par->fpar(pft)
 #define turnover_monthly(litter,pft,config) pft->par->turnover_monthly(litter,pft,config)
 #define turnover_daily(litter,pft,temp,day,isdaily,config) pft->par->turnover_daily(litter,pft,temp,day,isdaily,config)
-#define alphaa(pft,with_nitrogen,lai_opt) pft->par->alphaa_manage(pft,with_nitrogen,lai_opt)
-#define npp(pft,gtemp_air,gtemp_soil,assim,with_nitrogen) pft->par->npp(pft,gtemp_air,gtemp_soil,assim,with_nitrogen)
+#define alphaa(pft,lai_opt) pft->par->alphaa_manage(pft,lai_opt)
+#define npp(pft,gtemp_air,gtemp_soil,assim) pft->par->npp(pft,gtemp_air,gtemp_soil,assim)
 #define leaf_phenology(pft,temp,day,isdaily,config) pft->par->leaf_phenology(pft,temp,day,isdaily,config)
 #define litter_update(litter,pft,frac,config) pft->par->litter_update(litter,pft,frac,config)
 #define fire(pft,fireprob) pft->par->fire(pft,fireprob)

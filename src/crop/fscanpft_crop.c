@@ -247,10 +247,7 @@ Bool fscanpft_crop(LPJfile *file,  /**< pointer to LPJ file */
   fscanpftreal(verb,file,&crop->shapesenescencenorm,pft->name,
                "shapesenescencenorm");
   fscancropphys2(verb,file,&crop->nc_ratio,pft->name,"cn_ratio");
-  if(config->with_nitrogen)
-  {
-    fscancropratio2(verb,file,&crop->ratio,pft->name,"ratio");
-  }
+  fscancropratio2(verb,file,&crop->ratio,pft->name,"ratio");
   crop->nc_ratio.root=1/crop->nc_ratio.root;
   crop->nc_ratio.so=1/crop->nc_ratio.so;
   crop->nc_ratio.pool=1/crop->nc_ratio.pool;
