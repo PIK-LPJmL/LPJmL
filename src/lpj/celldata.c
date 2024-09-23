@@ -135,22 +135,19 @@ Celldata opencelldata(Config *config /**< LPJmL configuration */
       return NULL;
     }
   }
-  if(config->with_nitrogen)
+  if(openinputdata(&celldata->soilph,&config->soilph_filename,"soilph",NULL,LPJ_SHORT,0.01,config))
   {
-    if(openinputdata(&celldata->soilph,&config->soilph_filename,"soilph",NULL,LPJ_SHORT,0.01,config))
+    if(config->soil_filename.fmt==CDF)
+      closecoord_netcdf(celldata->soil.cdf);
+    else
     {
-      if(config->soil_filename.fmt==CDF)
-        closecoord_netcdf(celldata->soil.cdf);
-      else
-      {
-        closecoord(celldata->soil.bin.file_coord);
-        fclose(celldata->soil.bin.file);
-      }
-      if(config->with_lakes)
-        closeinput(&celldata->lakes);
-      free(celldata);
-      return NULL;
+      closecoord(celldata->soil.bin.file_coord);
+      fclose(celldata->soil.bin.file);
     }
+    if(config->with_lakes)
+      closeinput(&celldata->lakes);
+    free(celldata);
+    return NULL;
   }
   if(config->landfrac_from_file)
   {
@@ -165,8 +162,7 @@ Celldata opencelldata(Config *config /**< LPJmL configuration */
       }
       if(config->with_lakes)
         closeinput(&celldata->lakes);
-      if(config->with_nitrogen)
-        closeinput(&celldata->soilph);
+      closeinput(&celldata->soilph);
       free(celldata);
       return NULL;
     }
@@ -257,11 +253,8 @@ Bool readcelldata(Celldata celldata,      /**< pointer to celldata */
     free(name);
     return TRUE;
   }
-  if(config->with_nitrogen)
-  {
-    if(readinputdata(&celldata->soilph,&grid->soilph,&grid->coord,cell+config->startgrid,&config->soilph_filename))
-      return TRUE;
-  }
+  if(readinputdata(&celldata->soilph,&grid->soilph,&grid->coord,cell+config->startgrid,&config->soilph_filename))
+    return TRUE;
   if(config->landfrac_from_file)
   {
     if(readinputdata(&celldata->landfrac,&grid->landfrac,&grid->coord,cell+config->startgrid,&config->landfrac_filename))
@@ -312,8 +305,7 @@ void closecelldata(Celldata celldata,   /**< pointer to celldata */
     closecoord(celldata->soil.bin.file_coord);
     fclose(celldata->soil.bin.file);
   }
-  if(config->with_nitrogen)
-    closeinput(&celldata->soilph);
+  closeinput(&celldata->soilph);
   if(config->landfrac_from_file)
     closeinput(&celldata->landfrac);
   if(config->with_lakes)
