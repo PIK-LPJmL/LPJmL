@@ -23,12 +23,17 @@ of `major.minor.patch` with
 
 - author: Werner von Bloh (bloh@pik-potsdam.de)
 
+### Changed
+
+- `input_netcdf.cjson` changed to the same dataset of `input.cjson` but in NetCDF format.
+
 ### Added
 
 - Option `-int` added to utility `cdf2clm`.
 - Option `-latlon` added to utility `cdf2coord` in order to change the order of the CLM grid file.
 - Utility `cdf2reservoir` added to convert NetCDF reservoir file to CLM file.
 - Utility `reservoir2cdf` added to convert CLM reservoir file into a NetCDF file using the soil code NetCDF file.
+- Macro `NETCDF_INPUT` added in `lpjml_config.cjson` to enable NetCDF input.
 - Reservoir, irrigation neighbor and drainage data can now be in NetCDF format:
 ```java
 "drainage" :           { "fmt" : "cdf", "var" : "index", "name" : "cru_netcdf/drainage.nc"},
