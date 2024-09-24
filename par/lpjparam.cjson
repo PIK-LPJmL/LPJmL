@@ -115,8 +115,6 @@
     "cg_ratio" : 0.2,                   /* cloud to ground ratio for lightning flashes */
     "fireduration" : [120,480],         /* default fire duration interval (min) */
     "max_ndayfire" : 5,                 /* maximum fire days (days) */
-    "fburnt" : 1.0,                     /* fraction of trees burnt at deforestation, refers to remainder after timber harvest */
-    "ftimber_wp" : 0.76,                /* timber fraction for wood plantations */
     "allocation_threshold" : 35.0,      /* allocation threshold for daily grassland allocation */
     "hfrac2" : 2500.0,
     "hfrac_biomass" : 0.75,             /* harvest fraction of biomass grass */
