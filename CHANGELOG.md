@@ -54,6 +54,18 @@ of `major.minor.patch` with
 - Calculation of offsets and counts corrected in `readintdata_netdf.c` and missing loop over bands added.
 
 
+## [5.9.12] - 2024-09-24
+
+### Contributors
+
+- author: Christoph Müller (cmueller@pik-potsdam.de)
+- code review: Werner von Bloh (bloh@pik-potsdam.de), Sebastian Ostberg (ostberg@pik-potsdam.de)
+
+### Added
+
+- added SLURM option `--cpus-per-task=1` to `lpjsubmit` template `bin/lpjsubmit_hpc` to avoid that mpirun uses several CPUs per process
+
+
 ## [5.9.11] - 2024-09-23
 
 ### Contributors
