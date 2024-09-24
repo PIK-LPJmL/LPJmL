@@ -443,11 +443,11 @@ static void landexpansion(Cell *cell,            /* cell pointer */
           mixstand->type = &urban_stand;
           mixstand->fires=NULL;
           mixstand->type->newstand(mixstand);
-        break;
-          default:
-            fail(WRONG_CULTIVATION_TYPE_ERR,TRUE,
-                 "WRONG CULTIVATION TYPE in landexpansion()");
-            break;
+          break;
+        default:
+          fail(WRONG_CULTIVATION_TYPE_ERR,TRUE,
+               "WRONG CULTIVATION TYPE in landexpansion()");
+          break;
       } /* of switch */
       data=mixstand->data;
       data->irrigation=irrigation;
