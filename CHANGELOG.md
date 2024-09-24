@@ -25,6 +25,7 @@ of `major.minor.patch` with
 
 ### Added
 
+- Urban stand added.
 - Fire related outputs and settings added:
 ```java
   "gsilivefuel" : true,
