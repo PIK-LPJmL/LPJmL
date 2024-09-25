@@ -53,7 +53,7 @@ Bool setlatlon(double **lat,            /**< latitude array allocated and set */
   }
   for(i=0;i<array->nlon;i++)
   {
-    (*lon[i])=array->lon_min+i*array->lon_res;
+    (*lon)[i]=array->lon_min+i*array->lon_res;
     (*lon_bnds)[2*i]=array->lon_min-array->lon_res*0.5+i*array->lon_res;
     (*lon_bnds)[2*i+1]=array->lon_min+array->lon_res*0.5+i*array->lon_res;
   }
