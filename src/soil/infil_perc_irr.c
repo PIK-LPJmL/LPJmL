@@ -216,7 +216,7 @@ Real infil_perc_irr(Stand *stand,        /**< Stand pointer */
               influx=perc;
               frac_g_influx=stand->frac_g[l];
             }
-            if(config->with_nitrogen && l<BOTTOMLAYER)
+            if(l<BOTTOMLAYER)
             {
               /* determination of nitrate concentration in mobile water */
               w_mobile=vno3=concNO3_mobile=0;
@@ -277,7 +277,7 @@ Real infil_perc_irr(Stand *stand,        /**< Stand pointer */
                     getoutputindex(&stand->cell->output,CFT_LEACHING,pft->par->id-npft+data_irrig->irrigation*ncft,config)+=NO3surf + NO3lat;
                 }
               }
-            } /* end of if(config->with_nitrogen) */
+            } /* end of if(l<BOTTOMLAYER) */
           } /*end percolation*/
         } /* if soil depth > freeze_depth */
       } /* soil layer loop */
@@ -367,10 +367,9 @@ Real infil_perc_irr(Stand *stand,        /**< Stand pointer */
   getoutput(&stand->cell->output,UNMET_DEMAND,config)+=deficit; /* daily irrigation deficit in mm*/
 
 #ifdef SAFE
-  if(config->with_nitrogen)
-    forrootsoillayer(l)
-      if (soil->NO3[l]<-epsilon)
-        fail(NEGATIVE_SOIL_NO3_ERR,TRUE,"infil_prec_irr: Cell (%s) NO3=%g<0 in layer %d",sprintcoord(line,&stand->cell->coord),soil->NO3[l],l);
+  forrootsoillayer(l)
+    if (soil->NO3[l]<-epsilon)
+      fail(NEGATIVE_SOIL_NO3_ERR,TRUE,"infil_prec_irr: Cell (%s) NO3=%g<0 in layer %d",sprintcoord(line,&stand->cell->coord),soil->NO3[l],l);
 #endif
 
   /* write outputs */

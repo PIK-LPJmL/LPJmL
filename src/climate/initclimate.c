@@ -145,7 +145,7 @@ Climate *initclimate(const Cell grid[], /**< LPJ grid */
       climate->file_wet.ready=FALSE;
     }
   }
-  if(config->with_nitrogen && config->with_nitrogen!=UNLIM_NITROGEN && !config->no_ndeposition)
+  if(!config->unlim_nitrogen && !config->no_ndeposition)
   {
     if(openclimate(&climate->file_no3deposition,&config->no3deposition_filename,"g/m2/day",LPJ_FLOAT,1.0,config))
     {
@@ -168,18 +168,15 @@ Climate *initclimate(const Cell grid[], /**< LPJ grid */
                 config->nh4deposition_filename.name,climate->file_nh4deposition.firstyear+climate->file_nh4deposition.nyear-1,lastyear);
     }
   }
-  if(config->fire==SPITFIRE || config->fire==SPITFIRE_TMAX || config->with_nitrogen)
+  if(openclimate(&climate->file_wind,&config->wind_filename,"m/s",LPJ_SHORT,0.001,config))
   {
-    if(openclimate(&climate->file_wind,&config->wind_filename,"m/s",LPJ_SHORT,0.001,config))
-    {
-      if(isroot(*config))
-        fprintf(stderr,"ERROR236: Cannot open wind data file.\n");
-      freeclimate(climate,isroot(*config));
-      return NULL;
-    }
-    if(climate->firstyear<climate->file_wind.firstyear)
-      climate->firstyear=climate->file_wind.firstyear;
+    if(isroot(*config))
+      fprintf(stderr,"ERROR236: Cannot open wind data file.\n");
+    freeclimate(climate,isroot(*config));
+    return NULL;
   }
+  if(climate->firstyear<climate->file_wind.firstyear)
+    climate->firstyear=climate->file_wind.firstyear;
   if(config->fire==SPITFIRE || config->fire==SPITFIRE_TMAX)
   {
     if(config->fdi==WVPD_INDEX)
@@ -298,7 +295,7 @@ Climate *initclimate(const Cell grid[], /**< LPJ grid */
       return NULL;
     }
   }
-  if(config->with_nitrogen && config->with_nitrogen!=UNLIM_NITROGEN && !config->no_ndeposition)
+  if(!config->unlim_nitrogen && !config->no_ndeposition)
   {
     if((climate->data.no3deposition=newvec(Real,climate->file_no3deposition.n))==NULL)
     {
@@ -313,16 +310,13 @@ Climate *initclimate(const Cell grid[], /**< LPJ grid */
       return NULL;
     }
   }
-  if(config->with_nitrogen || config->fire==SPITFIRE || config->fire==SPITFIRE_TMAX)
+  if(config->wind_filename.fmt!=FMS)
   {
-    if(config->wind_filename.fmt!=FMS)
+    if((climate->data.wind=newvec(Real,climate->file_wind.n))==NULL)
     {
-      if((climate->data.wind=newvec(Real,climate->file_wind.n))==NULL)
-      {
-        printallocerr("wind");
-        freeclimate(climate,isroot(*config));
-        return NULL;
-      }
+      printallocerr("wind");
+      freeclimate(climate,isroot(*config));
+      return NULL;
     }
   }
   if(config->fire==SPITFIRE_TMAX)

@@ -392,39 +392,33 @@ Bool fscanpftpar(LPJfile *file,       /**< pointer to LPJ file */
     fscanpftreal(verb,subitem,&pft->k_litter10.wood,pft->name,"wood");
     fscanpftreal(verb,item,&pft->k_litter10.q10_wood,pft->name,
                  "k_litter10_q10_wood");
-    if(config->with_nitrogen)
+    fscanpftbool(verb,item,&pft->nfixing,pft->name,"nfixing");
+    fscanpftreal(verb,item,&pft->vmax_up,pft->name,"vmax_up");
+    fscanpftreal(verb,item,&pft->kNmin,pft->name,"kNmin");
+    fscanpftreal(verb,item,&pft->KNmin,pft->name,"KNmin");
+    fscanpftreal(verb,item,&pft->knstore,pft->name,"knstore");
+    fscanpftreal01(verb,item,&pft->fn_turnover,pft->name,"fn_turnover");
+    fscanpftcnratio(verb,item,&cnratio,pft->name,"cnratio_leaf");
+    if(cnratio.low<=0 || cnratio.high<=0 || cnratio.median<=0)
     {
-      fscanpftbool(verb,item,&pft->nfixing,pft->name,"nfixing");
-      fscanpftreal(verb,item,&pft->vmax_up,pft->name,"vmax_up");
-      fscanpftreal(verb,item,&pft->kNmin,pft->name,"kNmin");
-      fscanpftreal(verb,item,&pft->KNmin,pft->name,"KNmin");
-      fscanpftreal(verb,item,&pft->knstore,pft->name,"knstore");
-      fscanpftreal01(verb,item,&pft->fn_turnover,pft->name,"fn_turnover");
-      fscanpftcnratio(verb,item,&cnratio,pft->name,"cnratio_leaf");
-      if(cnratio.low<=0 || cnratio.high<=0 || cnratio.median<=0)
-      {
-        if(verb)
-          fprintf(stderr,"ERROR235: C:N ratio limits=(%g,%g,%g) must be greater than zero for PFT '%s'.\n",
-                  cnratio.low,cnratio.median,cnratio.high,pft->name);
-        return TRUE;
-      }
-      pft->ncleaf.median=1/cnratio.median;
-      pft->ncleaf.low=1/cnratio.high;
-      pft->ncleaf.high=1/cnratio.low;
-      if(config->npp_controlled_bnf && pft->nfixing)
-      {
-        fscanpftlimit(verb,item,&pft->temp_bnf_lim,pft->name,"temp_bnf_lim");
-        fscanpftlimit(verb,item,&pft->temp_bnf_opt,pft->name,"temp_bnf_opt");
-        fscanpftlimit(verb,item,&pft->swc_bnf,pft->name,"swc_bnf");
-        fscanpftrealarray(verb,item,pft->phi_bnf,2,pft->name,"phi_bnf");
-        fscanpftreal(verb,item,&pft->nfixpot,pft->name,"nfixpot");
-        fscanpftreal(verb,item,&pft->maxbnfcost,pft->name,"maxbnfcost");
-        fscanpftreal(verb,item,&pft->bnf_cost,pft->name,"bnf_cost");
-        
-      }
+      if(verb)
+        fprintf(stderr,"ERROR235: CN ratio limits=(%g,%g,%g) must be greater than zero for PFT '%s'.\n",
+                cnratio.low,cnratio.median,cnratio.high,pft->name);
+      return TRUE;
     }
-    else
-      pft->fn_turnover=0;
+    pft->ncleaf.median=1/cnratio.median;
+    pft->ncleaf.low=1/cnratio.high;
+    pft->ncleaf.high=1/cnratio.low;
+    if(config->npp_controlled_bnf && pft->nfixing)
+    {
+      fscanpftlimit(verb,item,&pft->temp_bnf_lim,pft->name,"temp_bnf_lim");
+      fscanpftlimit(verb,item,&pft->temp_bnf_opt,pft->name,"temp_bnf_opt");
+      fscanpftlimit(verb,item,&pft->swc_bnf,pft->name,"swc_bnf");
+      fscanpftrealarray(verb,item,pft->phi_bnf,2,pft->name,"phi_bnf");
+      fscanpftreal(verb,item,&pft->nfixpot,pft->name,"nfixpot");
+      fscanpftreal(verb,item,&pft->maxbnfcost,pft->name,"maxbnfcost");
+      fscanpftreal(verb,item,&pft->bnf_cost,pft->name,"bnf_cost");
+    }
     fscanpftreal(verb,item,&pft->windspeed,pft->name,"windspeed_dampening");
     fscanpftreal(verb,item,&pft->roughness,pft->name,"roughness_length");
     fscanpftirrig2(verb,item,&pft->irrig_threshold,pft->name,"irrig_threshold");

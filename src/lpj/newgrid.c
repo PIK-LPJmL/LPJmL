@@ -311,18 +311,10 @@ static Cell *newgrid2(Config *config,          /* Pointer to LPJ configuration *
     {
       grid[i].ml.landfrac=newlandfrac(ncft,config->nagtree);
       checkptr(grid[i].ml.landfrac);
-      if(config->with_nitrogen)
-      {
-        grid[i].ml.fertilizer_nr=newlandfrac(ncft,config->nagtree);
-        checkptr(grid[i].ml.fertilizer_nr);
-        grid[i].ml.manure_nr=newlandfrac(ncft,config->nagtree);
-        checkptr(grid[i].ml.manure_nr);
-      }
-      else
-      {
-        grid[i].ml.fertilizer_nr = NULL;
-        grid[i].ml.manure_nr = NULL;
-      }
+      grid[i].ml.fertilizer_nr=newlandfrac(ncft,config->nagtree);
+      checkptr(grid[i].ml.fertilizer_nr);
+      grid[i].ml.manure_nr=newlandfrac(ncft,config->nagtree);
+      checkptr(grid[i].ml.manure_nr);
       grid[i].ml.irrig_system=new(Irrig_system);
       checkptr(grid[i].ml.irrig_system);
       grid[i].ml.residue_on_field=newlandfrac(ncft,config->nagtree);
