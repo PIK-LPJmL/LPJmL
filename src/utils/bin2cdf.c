@@ -612,7 +612,7 @@ int main(int argc,char **argv)
                "-floatgrid       set data type of grid file to float, default is short\n"
                "-doublegrid      set data type of grid file to double, default is short\n"
                "-revlat          reverse order of latitudes in NetCDF file\n"
-               "-days            use days as units for monthly output\n"
+               "-days            use days as units for time axis in  output\n"
                "-absyear         absolute year instead of relative to base year\n"
                "-cellsize s      set cell size, default is %g\n"
                "-compress l      set compression level for NetCDF4 files\n"

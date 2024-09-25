@@ -18,7 +18,7 @@
 
 Bool settimeaxis(double **time,       /**< allocated and initialized time vector */
                  double **time_bnds,  /**< allocated and initialized time bnd vector */
-                 int nyear,           /** number of years */
+                 int nyear,           /**< number of years */
                  int nstep,           /**< number of samples per year (1/12/365) */
                  int timestep,        /**< time step for annual output (yrs) */
                  int outputyear,      /**< first year of output */
@@ -26,7 +26,7 @@ Bool settimeaxis(double **time,       /**< allocated and initialized time vector
                  Bool oneyear,        /**< output is for one year only (TRUE/FALSE) */
                  Bool with_days,      /**< time axis in units of days (TRUE/FALSE) */
                  Bool absyear,        /**< absolute years instead of relative years (TRUE/FALSE) */
-                 const char *filename /** filename of NetCDF file */
+                 const char *filename /**< filename of NetCDF file */
                 )                     /** \return TRUE on error */
 {
   int i,j;
