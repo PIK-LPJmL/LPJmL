@@ -43,7 +43,7 @@ Bool send_token_coupler(Token token,         /**< Token (GET_DATA,PUT_DATA, ...)
     rc=writeint_socket(config->socket,&index,1);
   else
     rc=FALSE;
-#ifdef DEBUG_COPAN
+#ifdef DEBUG_COUPLER
   printf(", done.\n");
   fflush(stdout);
 #endif

@@ -13,17 +13,17 @@
 /**************************************************************************************/
 
 #include "lpj.h"
-#if defined(USE_NETCDF) || defined(USE_NETCDF4)
+#ifdef USE_NETCDF
 #include <netcdf.h>
 #include <time.h>
 #endif
 #define error(rc) if(rc) {fprintf(stderr,"ERROR427: Cannot write '%s': %s.\n",argv[iarg+3],nc_strerror(rc)); nc_close(ncid);return EXIT_FAILURE;}
 
-#define USAGE "Usage: %s [-var name] soilcode.nc grid.clm drainage.clm drainage.nc\n"
+#define USAGE "Usage: %s [-var name] [-compress level] [-netcdf4] soilcode.nc grid.clm drainage.clm drainage.nc\n"
 
 int main(int argc,char **argv)
 {
-#if defined(USE_NETCDF) || defined(USE_NETCDF4)
+#ifdef USE_NETCDF
   char *var;
   var=NULL;
   const double *lon,*lat;
@@ -35,23 +35,25 @@ int main(int argc,char **argv)
   Coord resolution;
   Filename name;
   Header header;
-  Bool swap;
+  Bool swap,isnetcdf4;
   int iarg,i,n,nlon,nlat,j,offset[2]={0,0};
   int ncid,rc,lat_dim_id,lon_dim_id,lon_var_id,lat_var_id;
   int dim[2];
   int index_varid,len_varid;
   int miss=-9999;
   int data[2];
-  int version;
+  int version,compress;
   int src_cell,dst_cell;
   int *out;
   int s_len;
-  char *s;
+  char *s,*endptr;
   time_t t;
   char *cmdline;
   float *len=NULL,fmiss,glon,glat;
   unsigned int soilcode;
   String headername,line;
+  compress=0;
+  isnetcdf4=FALSE;
   for(iarg=1;iarg<argc;iarg++)
     if(argv[iarg][0]=='-')
     {
@@ -64,6 +66,29 @@ int main(int argc,char **argv)
           return EXIT_FAILURE;
         }
         var=argv[++iarg];
+      }
+      else if(!strcmp(argv[iarg],"-netcdf4"))
+        isnetcdf4=TRUE;
+      else if(!strcmp(argv[iarg],"-compress"))
+      {
+        if(argc==iarg+1)
+        {
+          fprintf(stderr,"Error: Missing argument after option '-compress'.\n"
+                  USAGE,argv[0]);
+          return EXIT_FAILURE;
+        }
+        compress=strtol(argv[++iarg],&endptr,10);
+        if(*endptr!='\0')
+        {
+          fprintf(stderr,"Error: Invalid number '%s' for option '-compress'.\n",argv[iarg]);
+          return EXIT_FAILURE;
+        }
+        if(compress<0 || compress>9)
+        {
+          fprintf(stderr,"Error: Invalid compression value %d, must be in [0,9].\n",
+                  compress);
+          return EXIT_FAILURE;
+        }
       }
       else
       {
@@ -79,7 +104,7 @@ int main(int argc,char **argv)
     fprintf(stderr,"Error: Missing argument(s).\n"
             USAGE,argv[0]);
     return EXIT_FAILURE;
-  } 
+  }
   soil=opencoord_netcdf(argv[iarg],var,TRUE);
   if(soil==NULL)
     return EXIT_FAILURE;
@@ -152,7 +177,7 @@ int main(int argc,char **argv)
     }
   }
   closecoord(gridfile);
-  file=fopen(argv[iarg+2],"rb"); 
+  file=fopen(argv[iarg+2],"rb");
   if(file==NULL)
   {
     printfopenerr(argv[iarg+2]);
@@ -181,13 +206,11 @@ int main(int argc,char **argv)
     fprintf(stderr,"Number of bands=%d in '%s' must be 1 or 2.\n",
             header.nbands,argv[iarg+2]);
     return EXIT_FAILURE;
-  } 
-  
-#ifdef USE_NETCDF4
-  rc=nc_create(argv[iarg+3],NC_CLOBBER|NC_NETCDF4,&ncid);
-#else
-  rc=nc_create(argv[iarg+3],NC_CLOBBER,&ncid);
-#endif
+  }
+  if(isnetcdf4)
+    rc=nc_create(argv[iarg+3],(compress) ? NC_CLOBBER|NC_NETCDF4 : NC_CLOBBER,&ncid);
+  else
+    rc=nc_create(argv[iarg+3],NC_CLOBBER,&ncid);
   if(rc)
   {
     fprintf(stderr,"ERROR426: Cannot create file '%s': %s.\n",
@@ -233,6 +256,11 @@ int main(int argc,char **argv)
   dim[1]=lon_dim_id;
   rc=nc_def_var(ncid,"index",NC_INT,2,dim,&index_varid);
   error(rc);
+  if(isnetcdf4 && compress)
+  {
+    rc=nc_def_var_deflate(ncid, index_varid, 0, 1,compress);
+    error(rc);
+  }
   rc=nc_put_att_text(ncid, index_varid,"standard_name",strlen("index"),"index");
   error(rc);
   //rc=nc_put_att_text(ncid, index_varid,"long_name",strlen(long_name),long_name);
@@ -243,6 +271,11 @@ int main(int argc,char **argv)
   if(header.nbands==2)
   {
     rc=nc_def_var(ncid,"riverlen",NC_FLOAT,2,dim,&len_varid);
+    if(isnetcdf4 && compress)
+    {
+      rc=nc_def_var_deflate(ncid, len_varid, 0, 1,compress);
+      error(rc);
+    }
     rc=nc_put_att_text(ncid,len_varid,"units",strlen("m"),"m");
     error(rc);
     rc=nc_put_att_text(ncid, len_varid,"standard_name",strlen("river_length"),"river_length");
@@ -263,13 +296,13 @@ int main(int argc,char **argv)
   out=newvec(int,nlon*nlat);
   check(out);
   for(i=0;i<nlon*nlat;i++)
-    out[i]=miss; 
+    out[i]=miss;
   if(header.nbands==2)
   {
     len=newvec(float,nlon*nlat);
     check(len);
     for(i=0;i<nlon*nlat;i++)
-      len[i]=fmiss; 
+      len[i]=fmiss;
   }
   for(i=0;i<n;i++)
   {

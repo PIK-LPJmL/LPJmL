@@ -16,14 +16,14 @@
 
 #include "lpj.h"
 
-#if defined(USE_NETCDF) || defined(USE_NETCDF4)
+#ifdef USE_NETCDF
 #include <netcdf.h>
 #endif
 
 char *getvarname_netcdf(const Climatefile *file /**< climate data file */
                        )                        /** \return name or NULL */
 {
-#if defined(USE_NETCDF) || defined(USE_NETCDF4)
+#ifdef USE_NETCDF
   char name[NC_MAX_NAME];
   if(nc_inq_varname(file->ncid,file->varid,name))
     return NULL;
