@@ -152,7 +152,6 @@ Bool fprintoutputjson(int index,           /**< index in outputvars array */
   nbands=outputsize(id,
                     config->npft[GRASS]+config->npft[TREE],
                     config->npft[CROP],config);
-  
   fprintf(file,"  \"nbands\" : %d,\n",(id==GRID) ? ((config->outputvars[GRID].filename.fmt==CDF) ? 1 : 2) : nbands);
   if(nbands>1)
   {

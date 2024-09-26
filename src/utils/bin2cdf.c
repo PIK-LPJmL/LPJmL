@@ -1195,7 +1195,7 @@ int main(int argc,char **argv)
             return EXIT_FAILURE;
           }
           for(cell=0;cell<ngrid;cell++)
-             data[cell]*=header.scalar;
+            data[cell]*=header.scalar;
           if(write_float_cdf(cdf,data,i*header.nstep+j,ngrid,ispft,k,miss))
             return EXIT_FAILURE;
         }
