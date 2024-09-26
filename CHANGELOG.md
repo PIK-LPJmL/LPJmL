@@ -36,6 +36,8 @@ of `major.minor.patch` with
 - Separate output for each year by setting `"name" : "filename_%d"` is now written correctly.
 - Number of bands set to 1 in metafile of grid NetCDF output.
 - Name of longitude/latitude variables correctly derived in `getlatlon_netcdf.c`.
+- Misspelled option `-netdcdf4` corrected to `-netcdf4` in `clm2cdf.c`.
+
 
 ## [5.9.13] - 2024-09-26
 
