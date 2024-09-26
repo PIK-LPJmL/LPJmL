@@ -220,8 +220,10 @@ void landusechange_for_reservoir(Cell *cell,          /**< pointer to cell */
 #ifndef IMAGE
   Real totw_before,totw_after;
   Real balanceW;
+  Stocks balance;
+  Stocks tot_after={0,0};
 #endif
-  Stocks tot_before={0,0},tot_after={0,0},balance,stocks; /* to check the water and c balance in the cells */
+  Stocks tot_before={0,0},stocks; /* to check the water and c balance in the cells */
   Irrigation *data;
 #if defined IMAGE && defined COUPLED
   minnatfrac_res=0.0002;
@@ -366,10 +368,10 @@ void landusechange_for_reservoir(Cell *cell,          /**< pointer to cell */
     tot_after.nitrogen+=cell->balance.deforest_emissions.nitrogen;
     tot_after.carbon-=cell->balance.flux_estab.carbon;
     tot_after.nitrogen-=cell->balance.flux_estab.nitrogen;
-#endif
     /* check if the same */
     balance.carbon=tot_before.carbon-tot_after.carbon;
     balance.nitrogen=tot_before.nitrogen-tot_after.nitrogen;
+#endif
 
 #ifndef IMAGE /*  Because the timber harvest is not accounted for in the carbon balance check*/
     balanceW=totw_before-totw_after;

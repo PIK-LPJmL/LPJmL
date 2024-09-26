@@ -34,7 +34,10 @@ int writearea(Outputfile *output,  /**< output file array */
   else
     rc=FALSE;
   if(iserror(rc,config))
+  {
+    free(vec);
     return 0;
+  }
   count=0;
   switch(index)
   {

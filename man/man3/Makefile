@@ -26,7 +26,7 @@ SRC	= pnet_addconnect.3 pnet_hi.3 pnet_input.3 pnet_outlen.3 pnet_strerror.3\
           getco2.3 getlanduse.3 getwateruse.3 initconfig.3 isopen.3\
           isroot.3 iterateyear.3 open_image.3 open_socket.3 printlicense.3\
           printflags.3 readint_socket.3 writecoords.3 writecountrycode.3\
-          writeregioncode.3 writeint_socket.3 initmpiconfig.3 readpopdens.3
+          writeint_socket.3 initmpiconfig.3 readpopdens.3
 
 
 HTMLDIR	= ../../html

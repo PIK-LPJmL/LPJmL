@@ -117,7 +117,10 @@ Celldata opencelldata(Config *config /**< LPJmL configuration */
   {
     config->soilmap=defaultsoilmap(&config->soilmap_size,config);
     if(config->soilmap==NULL)
+    {
+      free(celldata);
       return NULL;
+    }
   }
   if(config->with_lakes)
   {

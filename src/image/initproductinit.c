@@ -39,7 +39,7 @@ Productinit *initproductinit(const Config *config)
   } 
   if((productinit->file=openinputfile(&header,&productinit->swap,
                                       &config->prodpool_init_filename,
-                                      headername,
+                                      headername,NULL,LPJ_FLOAT,
                                       &version,&offset,TRUE,config))==NULL)
   {
     free(productinit);
@@ -47,10 +47,7 @@ Productinit *initproductinit(const Config *config)
   }
   productinit->firstyear=header.firstyear;
   productinit->nband=header.nbands;
-  if(version<3)
-    productinit->datatype=LPJ_FLOAT;
-  else
-    productinit->datatype=header.datatype;
+  productinit->datatype=header.datatype;
   productinit->size=header.ncell*typesizes[productinit->datatype]*2;
   if(config->prodpool_init_filename.fmt==RAW)
     productinit->offset=sizeof(float)*config->startgrid*2;

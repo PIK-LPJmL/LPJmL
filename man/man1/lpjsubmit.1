@@ -1,6 +1,6 @@
 .TH lpjsubmit 1  "USER COMMANDS"
 .SH NAME
-lpjsubmit \- Submit parallel SLURM/LoadLeveler job for LPJmL simulations 
+lpjsubmit \- Submit parallel SLURM/LoadLeveler job for LPJmL simulations
 .SH SYNOPSIS
 .B lpjsubmit
 [\-h] [\-class c] [\-group g] [\-wtime time] [\-blocking n] [\-o output] [\-e error] [\-q] [\-nocheck] [\-norun] [\-dependency id] [-couple program] [-constraint c][[-option op=text] ...] ntasks args ...
@@ -18,42 +18,42 @@ program. Can only be used for the MPI version of \fBlpjml\fP.
 .SH OPTIONS
 .TP
 \-h,\--help
-print help text.
+Print a short help text.
 .TP
 \-class c
-set the SLURM/LoadLeveler class to which the job will be submitted. Default class is 'short'. Valid classes can be obtained by the
-.B llclass
+Set the SLURM/LoadLeveler class to which the job will be submitted. Default class is 'short'. Valid classes can be obtained by the
+.B sinfo/llclass
 command.
 .TP
 \-group g
-set the SLURM/LoadLeveler group. Valid groups are user-specific and set in the \fI/home/loadl/LoadL_admin\fP file.
+Set the SLURM/LoadLeveler group. Valid groups are user-specific and set in the \fI/home/loadl/LoadL_admin\fP file.
 .TP
 \-wtime time
-set wall clock limit of SLURM/LoadLeveler job. time must be in the format hh:mm:ss.
+Set wall clock limit of SLURM/LoadLeveler job. time must be in the format hh:mm:ss.
 .TP
 \-blocking n
-set blocking (number of tasks per node) for parallel job to n. Default is unlimited.
+Set blocking (number of tasks per node) for parallel job to n. Default is unlimited.
 .TP
 \-o output
-set filename of output file, default is \fIlpjml.$(cluster).out\fP.
+Set filename of output file, default is \fIlpjml.$(cluster).out\fP.
 .TP
 \-e error
-set filename of error file, default is \fIlpjml.$(cluster).err\fP.
+Set filename of error file, default is \fIlpjml.$(cluster).err\fP.
 .TP
 \-q,\--quiet
-only error messages are displayed, other output is suppressed.
+Only error messages are displayed, other output is suppressed.
 .TP
 \-nocheck
-does not check input files and output directories.
+Do not check input files and output directories.
 .TP
 \-norun
-does not submit job to batch queue, creates \fIslurm.jcf\fP file only.
+Do not submit job to batch queue, creates \fIslurm.jcf\fP file only.
 .TP
 \-dependency id
-slurm job will be scheduled after job with job id id finished successfully.
+Slurm job will be scheduled after job with job id id finished successfully.
 .TP
 \-constraint c
-Defines constraint c for slurm job.
+Define constraint c for slurm job.
 .TP
 \-option op=test
 Set option op to test for slurm job. This option can be repeated multiple times.
@@ -62,10 +62,10 @@ Set option op to test for slurm job. This option can be repeated multiple times.
 Start couple program in the background before starting LPJmL.
 .TP
 ntasks
-set the number of parallel MPI tasks.
+Set the number of parallel MPI tasks.
 .TP
 args
-set command line arguments for the 
+Set command line arguments for the
 .B
 lpjml
 program.
@@ -78,11 +78,11 @@ Submit job with 32 parallel MPI tasks starting from a restart file with a wall c
 .SH ENVIRONMENT
 .TP
 LPJROOT
-defines the root directory for LPJmL. The variable has to be defined before calling 
+Defines the root directory for LPJmL. The variable has to be defined before calling
 \fBlpjsubmit\fP. This is usually done by the \fBlpj_paths.sh\fP script.
 
 .SH EXIT STATUS
-.B lpjsubmit 
+.B lpjsubmit
 returns a zero exit status if job has been submitted.
 Non zero is returned in case of failure.
 
