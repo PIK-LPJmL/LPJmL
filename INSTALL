@@ -2,9 +2,9 @@
 | |   |  _ \   | |_ __ ___ | |     | ___|       / _ \
 | |   | |_) |  | | '_ ` _ \| |     |___ \      | (_) |
 | |___|  __/ |_| | | | | | | |___   ___) |  _   \__, |
-|_____|_|   \___/|_| |_| |_|_____| |____/  (_)    /_/  Version 5.9.12
+|_____|_|   \___/|_| |_| |_|_____| |____/  (_)    /_/  Version 5.9.13
 
-Installation of LPJmL C Version 5.9.12
+Installation of LPJmL C Version 5.9.13
 
 Installation for Unix-like systems
 ----------------------------------
@@ -26,7 +26,7 @@ cd lpjml
 
 untar source files
 
-gzip -cd lpjml-5.9.12.tar.gz|tar -xf -
+gzip -cd lpjml-5.9.13.tar.gz|tar -xf -
 
 Directory tree after extracting the tar files:
 
@@ -167,7 +167,7 @@ DAILY_ESTABLISHMENT enable daily establishment
 DEBUG               diagnostic output is generated for debugging purposes
 DEBUG_COUPLER       diagnostic output is generated for the coupler
 DEBUG_IMAGE         diagnostic output is generated for the IMAGE coupler
-DEBUG_N             diagnistic output is generated for the nitrogen cycle
+DEBUG_N             diagnostic output is generated for the nitrogen cycle
 IMAGE               include coupler to IMAGE model
 LINEAR_DECAY        use linearized functions for litter decay
 MICRO_HEATING       enable microbial heating
