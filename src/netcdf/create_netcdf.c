@@ -355,7 +355,6 @@ Bool create_netcdf(Netcdf *cdf,
     error(rc);
     rc=nc_put_var_double(cdf->ncid,lon_bnds_var_id,lon_bnds);
     error(rc);
-    error(rc);
     free(lat);
     free(lat_bnds);
     free(lon);
