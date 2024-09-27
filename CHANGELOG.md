@@ -24,6 +24,7 @@ of `major.minor.patch` with
 ### Fixed
 
 - `pft->vscal` not set to `NDAYEAR` in `update_annual.c`. (issue #364).
+- `freezefrac2soil.c corrected to avoid division by zero.
 
 
 ## [5.9.13] - 2024-09-26
