@@ -16,7 +16,7 @@ Print a short help text.
 Print name of NetCDF files.
 .TP
 \-scale factor
-Scaling factor for CLM files. Default is 1. If factor differs from 1 and -float option is set a warning is printed and scaling factor reset to 1.
+Scaling factor for CLM files. Default is 1. If factor differs from 1 and -float option is set a warning is printed and scaling factor reset to 1. The factor will be written in the header and all data read divided by this factor. A warning is printed if the resulting value exceeds the limit of a short datatype.
 .TP
 \-units u
 Set unit to convert from  NetCDF file.
