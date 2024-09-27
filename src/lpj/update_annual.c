@@ -28,8 +28,7 @@ void update_annual(Cell *cell,          /**< Pointer to cell */
                    const Config *config /**< LPJ configuration */
                   )
 {
-  int s,p,m,cft;
-  Pft *pft;
+  int s,m,cft;
   Stand *stand;
   Pftcroppar *croppar;
   Real mintemp[N];
