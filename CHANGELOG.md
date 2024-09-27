@@ -19,6 +19,13 @@ of `major.minor.patch` with
 
 ## [Unreleased]
 
+- author: Werner von Bloh (bloh@pik-potsdam.de)
+
+### Fixed
+
+- `pft->vscal` not set to `NDAYEAR` in `update_annual.c`. (issue #364).
+
+
 ## [5.9.13] - 2024-09-26
 
 ### Contributors
