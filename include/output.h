@@ -61,6 +61,7 @@ typedef struct
   Real npp;      /**< Total NPP (gC/yr) */
   Real gpp;      /**< Total GPP (gC/yr) */
   Real rh;       /**< Total heterotrophic respiration (gC/yr) */
+  Real ra;       /**< Total autotrophic respiration (gC/yr) */
   Stocks fire;   /**< Total fire (gC/yr,gN/yr) */
   Stocks estab;  /**< Total extablishment flux (gC/yr,gN/yr) */
   Stocks harvest;/**< Total harvested carbon (gC/yr,gN/yr) */
@@ -106,6 +107,7 @@ typedef struct
   Stocks neg_fluxes;
   Stocks estab_storage;       /**< Storage for establishment (gC, gN) */
   Real area_agr;              /**< agriculture area (m2) */
+  Real nat_nbpflux;
 
 } Flux;
 

@@ -212,7 +212,11 @@ void update_annual(Cell *cell,          /**< Pointer to cell */
       getoutput(&cell->output,NEGC_FLUXES,config)+=litter_neg.carbon*stand->frac;
       getoutput(&cell->output,NEGN_FLUXES,config)+=litter_neg.nitrogen*stand->frac;
       cell->balance.neg_fluxes.carbon+=litter_neg.carbon*stand->frac;
+      if(stand->type->landusetype==NATURAL || stand->type->landusetype==WETLAND)
+        cell->balance.nat_fluxes-=litter_neg.carbon*stand->frac;
       cell->balance.neg_fluxes.nitrogen+=litter_neg.nitrogen*stand->frac;
+      if(stand->type->landusetype==NATURAL || stand->type->landusetype==WETLAND)
+        cell->balance.nat_fluxes-=litter_neg.carbon*stand->frac;
     }
     stand->cell->balance.soil_storage+=soilwater(&stand->soil)*stand->frac*stand->cell->coord.area;
   }

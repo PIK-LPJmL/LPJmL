@@ -21,12 +21,14 @@ Real npp_tree(Pft *pft,         /**< PFT variables */
               Real gtemp_air,   /**< value of air temperature response function */
               Real gtemp_soil,  /**< value of soil temperature response function */
               Real assim,       /**< assimilation (gC/m2) */
+              const Config *config,       /**< [in] LPJ configuration */
               int with_nitrogen /**< with nitrogen */
              )                  /** \return net primary productivity (gC/m2) */
 {
   Pfttree *tree;
   const Pfttreepar *par;
   Real mresp,npp;
+  Real resp=0;
   Real nc_root,nc_sapwood;
   tree=pft->data;
   par=pft->par->data;
@@ -52,5 +54,7 @@ Real npp_tree(Pft *pft,         /**< PFT variables */
     mresp=pft->nind*(tree->ind.sapwood.carbon*pft->par->respcoeff*param.k*par->nc_ratio.sapwood*gtemp_air+tree->ind.root.carbon*pft->par->respcoeff*param.k*par->nc_ratio.root*gtemp_soil*pft->phen);
   npp=(assim<mresp) ? assim-mresp : (assim-mresp)*(1-param.r_growth);
   pft->bm_inc.carbon+=npp;
+  resp=(assim<mresp) ? mresp : mresp*(1-param.r_growth);
+  getoutput(&pft->stand->cell->output,RA,config)+=resp*pft->stand->frac;
   return npp;
 } /* of 'npp_tree' */

@@ -44,6 +44,7 @@ Real flux_sum(Flux *flux_global,   /**< global carbon and water fluxes */
       flux.harvest.nitrogen+=(grid[cell].balance.flux_harvest.nitrogen+grid[cell].balance.biomass_yield.nitrogen)*grid[cell].coord.area;
       flux.transp+=grid[cell].balance.atransp*grid[cell].coord.area;
       flux.evap+=grid[cell].balance.aevap*grid[cell].coord.area;
+      flux.nat_nbpflux+=grid[cell].balance.nat_fluxes*grid[cell].coord.area;
       flux.interc+=grid[cell].balance.ainterc*grid[cell].coord.area;
       flux.wd+=(grid[cell].balance.airrig+grid[cell].balance.aconv_loss_evap+grid[cell].balance.aconv_loss_drain)*grid[cell].coord.area;
 #ifdef IMAGE

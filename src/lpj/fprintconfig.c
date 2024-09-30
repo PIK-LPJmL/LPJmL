@@ -377,6 +377,8 @@ void fprintconfig(FILE *file,          /**< File pointer to text output file */
   }
   if(config->npp_controlled_bnf)
       len=printsim(file,len,&count,"NPP controlled BNF");
+  if(config->natNBP_only)
+    len=printsim(file,len,&count,"NBP written out for nat veg only");
   if(config->withlanduse)
   {
     switch(config->withlanduse)

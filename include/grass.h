@@ -58,7 +58,7 @@ typedef struct
 /* Declaration of functions */
 
 extern void new_grass(Pft *,int,int,const Config *);
-extern Real npp_grass(Pft *,Real,Real,Real,int);
+extern Real npp_grass(Pft *,Real,Real,Real,const Config *,int);
 extern Real fpc_grass(Pft *);
 extern Real fpar_grass(const Pft *);
 extern Real alphaa_grass(const Pft *,int,int);

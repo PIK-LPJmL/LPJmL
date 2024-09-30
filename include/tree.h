@@ -106,7 +106,7 @@ extern char *leaftype[];
 
 extern void new_tree(Pft *,int,int,const Config *);
 extern Pft *newpftage(Pftpar *,int);
-extern Real npp_tree(Pft *,Real,Real,Real,int);
+extern Real npp_tree(Pft *,Real,Real,Real,const Config *,int);
 extern Bool mortality_tree(Litter *,Pft *,Real,Real,Bool,const Config *);
 extern Real fpc_tree(Pft *);
 extern Real fpar_tree(const Pft *);

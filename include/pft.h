@@ -177,7 +177,7 @@ typedef struct Pft
     void (*newpft)(struct Pft *,int,int,const Config *);
     void (*init)(struct Pft *);
     Real (*wdf)(struct Pft *,Real,Real);
-    Real (*npp)(struct Pft*,Real,Real,Real,int);
+    Real (*npp)(struct Pft*,Real,Real,Real,const Config *,int);
     Real (*fpar) (const struct Pft*);
     void (*snow_canopy) (struct Pft*, Real, Real);
     Real (*alphaa_manage) (const struct Pft*,int,int);
@@ -321,7 +321,7 @@ extern Stocks timber_harvest(Pft *,Soil *,Poolpar,Real,Real,Real *,Stocks *,cons
 #define turnover_monthly(litter,pft,config) pft->par->turnover_monthly(litter,pft,config)
 #define turnover_daily(litter,pft,temp,day,isdaily,config) pft->par->turnover_daily(litter,pft,temp,day,isdaily,config)
 #define alphaa(pft,with_nitrogen,lai_opt) pft->par->alphaa_manage(pft,with_nitrogen,lai_opt)
-#define npp(pft,gtemp_air,gtemp_soil,assim,with_nitrogen) pft->par->npp(pft,gtemp_air,gtemp_soil,assim,with_nitrogen)
+#define npp(pft,gtemp_air,gtemp_soil,assim,config,with_nitrogen) pft->par->npp(pft,gtemp_air,gtemp_soil,assim,config,with_nitrogen)
 #define leaf_phenology(pft,temp,day,isdaily,config) pft->par->leaf_phenology(pft,temp,day,isdaily,config)
 #define litter_update(litter,pft,frac,config) pft->par->litter_update(litter,pft,frac,config)
 #define fire(pft,fireprob) pft->par->fire(pft,fireprob)

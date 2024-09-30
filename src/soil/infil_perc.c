@@ -24,16 +24,16 @@
 
 static int findwtlayer(const Soil *soil)
 {
-  int l,jwt;
+  int l,lwt;              /**< layer index, index of layer in which the water table is located */
   if(soil->wtable<0)
     return 0;
-  jwt=0;
+  lwt=0;
   foreachsoillayer(l)
   if (soil->wtable >= layerbound[l])
-    jwt = l;
+    lwt = l;
   else
     break;
-  return jwt;
+  return lwt;
 } /* of 'findwtlayer' */
 
 Real infil_perc(Stand *stand,        /**< Stand pointer */
@@ -63,7 +63,7 @@ Real infil_perc(Stand *stand,        /**< Stand pointer */
   Real concNO3_mobile; /* concentration of nitrate in solution gN/mm */
   Real vno3; /* temporary for calculating concNO3_mobile */
   Real ww; /* temporary for calculating concNO3_mobile */
-  int jwt,icet;
+  int lwt,icet; /**< index of layer in which the water table is located resp. freezing depth*/
   Real infil_layer[NTILLLAYER];
   Real sz,f;
   Soil *soil;
@@ -150,7 +150,7 @@ Real infil_perc(Stand *stand,        /**< Stand pointer */
   // The layer index of the first unsaturated layer, i.e., the layer right above the water table
   forrootsoillayer(l)
   lrunoff[l]=pperc[l]=ndrain_perched_out[l]=nrsub_top[l]=0.0;
-  jwt=findwtlayer(soil);
+  lwt=findwtlayer(soil);
   if (soil->wtable<maxWTP)
     soil->wtable=maxWTP;
   icet=NSOILLAYER-1;
@@ -163,7 +163,7 @@ Real infil_perc(Stand *stand,        /**< Stand pointer */
   frost_depth=layerbound[icet]-soil->freeze_depth[icet];
   foreachsoillayer(l)
   icefrac[l]=(soil->ice_depth[l]+soil->ice_fw[l]+soil->wpwps[l]*soil->ice_pwp[l])/soil->wsats[l];
-  Theta_ice=pow(10,-OMEGA*icefrac[jwt]);
+  Theta_ice=pow(10,-OMEGA*icefrac[lwt]);
 
   for(l=0;l<NSOILLAYER;l++)
   {
@@ -262,7 +262,7 @@ Real infil_perc(Stand *stand,        /**< Stand pointer */
           vol_water_enth=soil->freeze_depth[l]/soildepth[l]*(c_ice*soil->temp[l]) + (1-soil->freeze_depth[l]/soildepth[l])*(c_water*soil->temp[l]+c_water2ice);
           reconcile_layer_energy_with_water_shift(soil,l,-max(grunoff-influx,0),vol_water_enth, config); /* subtract enth of runoff above influx, assuming vol_enth of current layer */
           *return_flow_b+=grunoff*(1-stand->frac_g[l]);
-          if (l<(BOTTOMLAYER-1) || l<jwt || l<icet)
+          if (l<(BOTTOMLAYER-1) || l<lwt || l<icet)
           {
             runoff+=grunoff;
             lrunoff[l]+=grunoff;
@@ -281,7 +281,7 @@ Real infil_perc(Stand *stand,        /**< Stand pointer */
           reconcile_layer_energy_with_water_shift(soil,l,-min(grunoff,influx),vol_water_enth, config); /* subtract enth of runoff until influx, assuming vol_enth of above layer  */
           vol_water_enth=soil->freeze_depth[l]/soildepth[l]*(c_ice*soil->temp[l]) + (1-soil->freeze_depth[l]/soildepth[l])*(c_water*soil->temp[l]+c_water2ice);
           reconcile_layer_energy_with_water_shift(soil,l,-max(grunoff-influx,0),vol_water_enth, config); /* subtract enth of runoff above influx, assuming vol_enth of current layer */
-         if (l<(BOTTOMLAYER-1) || l<jwt || l<icet)
+         if (l<(BOTTOMLAYER-1) || l<lwt || l<icet)
           {
             runoff+=grunoff;
             lrunoff[l]+=grunoff;
@@ -496,7 +496,7 @@ Real infil_perc(Stand *stand,        /**< Stand pointer */
     stand->soil.df_tillage[l]+=f*(1 - stand->soil.df_tillage[l]);
   }
 
-  jwt=findwtlayer(soil);
+  lwt=findwtlayer(soil);
 
   if(soil->maxthaw_depth<layerbound[BOTTOMLAYER-1])
   {
@@ -541,88 +541,88 @@ Real infil_perc(Stand *stand,        /**< Stand pointer */
   //THIS IS THE IMPLEMENTATION OF THE WATER TABLE DEPTH FOLLOWING CLM4.5
   // use analytical expression for aquifer specific yield
 
-  Theta_ice=pow(10,-OMEGA*icefrac[jwt+1]);
-  s_node=(allwater(soil,jwt)/soildepth[jwt] + allice(soil,jwt)/soildepth[jwt])/soil->wsat[jwt];
+  Theta_ice=pow(10,-OMEGA*icefrac[lwt+1]);
+  s_node=(allwater(soil,lwt)/soildepth[lwt] + allice(soil,lwt)/soildepth[lwt])/soil->wsat[lwt];
   s_node=max(s_node,0.02);
   s_node=min(1, s_node);
 
   //  this is the expression for unsaturated hydraulic conductivity
-  //  q_recharge=-ka*(-soil->par->psi_sat/(wtable-layerbound[jwt-1]))*24
-  //  if (wtable==layerbound[jwt]) q_recharge=-ka*(-soil->par->psi_sat/(wtable+1))*24
-  //  equilibrium soil matric potential = soil->par->psi_sat*((soil->par->wsat*((soil->par->psi_sat+wtable-soildepth[jwt])/soil->par->psi_sat)^(-1/soil->par->b))/soil->par->wsat)^-soil->par->b
-  //  equilibrium volumetric water content = (soil->par->wsat*((soil->par->psi_sat+wtable-soildepth[jwt])/soil->par->psi_sat)^(-1/soil->par->b))
+  //  q_recharge=-ka*(-soil->par->psi_sat/(wtable-layerbound[lwt-1]))*24
+  //  if (wtable==layerbound[lwt]) q_recharge=-ka*(-soil->par->psi_sat/(wtable+1))*24
+  //  equilibrium soil matric potential = soil->par->psi_sat*((soil->par->wsat*((soil->par->psi_sat+wtable-soildepth[lwt])/soil->par->psi_sat)^(-1/soil->par->b))/soil->par->wsat)^-soil->par->b
+  //  equilibrium volumetric water content = (soil->par->wsat*((soil->par->psi_sat+wtable-soildepth[lwt])/soil->par->psi_sat)^(-1/soil->par->b))
   //  calculate the equilibrium water content based on the water table depth
 
   //  If water table is below soil column calculate zq for the last layer
   if(soil->wtable > layerbound[BOTTOMLAYER])
   {
-    if (soil->wtable==layerbound[jwt] || (soil->wtable-layerbound[jwt])<epsilon)
-      vol_eq=soil->wsat[jwt];
+    if (soil->wtable==layerbound[lwt] || (soil->wtable-layerbound[lwt])<epsilon)
+      vol_eq=soil->wsat[lwt];
     else
     {
       tempi=1;
-      temp0=pow(((soil->par->psi_sat+soil->wtable-layerbound[jwt])/soil->par->psi_sat),(1-1/soil->par->b));
-      vol_eq=-soil->par->psi_sat*soil->wsat[jwt]/(1-1/soil->par->b)/(soil->wtable-layerbound[jwt])*(tempi-temp0);
+      temp0=pow(((soil->par->psi_sat+soil->wtable-layerbound[lwt])/soil->par->psi_sat),(1-1/soil->par->b));
+      vol_eq=-soil->par->psi_sat*soil->wsat[lwt]/(1-1/soil->par->b)/(soil->wtable-layerbound[lwt])*(tempi-temp0);
       vol_eq=max(vol_eq,0.0);
-      vol_eq=min(soil->wsat[jwt],vol_eq);
+      vol_eq=min(soil->wsat[lwt],vol_eq);
     }
   }
   else
   {
-    if (soil->wtable==layerbound[jwt] || (soil->par->psi_sat+soil->wtable-layerbound[jwt])<epsilon || soil->wtable<0)
+    if (soil->wtable==layerbound[lwt] || (soil->par->psi_sat+soil->wtable-layerbound[lwt])<epsilon || soil->wtable<0)
     {
-      vol_eq = soil->wsat[jwt];
+      vol_eq = soil->wsat[lwt];
     }
-    else if (jwt==0)
+    else if (lwt==0)
     {
-      temp0 =pow(((soil->par->psi_sat+soil->wtable-layerbound[jwt])/soil->par->psi_sat),(1-1/soil->par->b));
+      temp0 =pow(((soil->par->psi_sat+soil->wtable-layerbound[lwt])/soil->par->psi_sat),(1-1/soil->par->b));
       tempi = 1;
-      voleq1 = -soil->par->psi_sat*soil->wsat[jwt]/(1-1/soil->par->b)/(soil->wtable-layerbound[jwt])*(tempi-temp0);
-      vol_eq = (voleq1*(soil->wtable) + soil->wsat[jwt]*(layerbound[jwt]-soil->wtable))/soildepth[jwt];
+      voleq1 = -soil->par->psi_sat*soil->wsat[lwt]/(1-1/soil->par->b)/(soil->wtable-layerbound[lwt])*(tempi-temp0);
+      vol_eq = (voleq1*(soil->wtable) + soil->wsat[lwt]*(layerbound[lwt]-soil->wtable))/soildepth[lwt];
     }
-    else if (soil->wtable<layerbound[jwt] && soil->wtable>layerbound[jwt-1])
+    else if (soil->wtable<layerbound[lwt] && soil->wtable>layerbound[lwt-1])
     {
-      temp0=pow(((soil->par->psi_sat+soil->wtable-layerbound[jwt-1])/soil->par->psi_sat),(1-1/soil->par->b));
+      temp0=pow(((soil->par->psi_sat+soil->wtable-layerbound[lwt-1])/soil->par->psi_sat),(1-1/soil->par->b));
       tempi= 1.0;
-      voleq1= -soil->par->psi_sat*soil->wsat[jwt]/(1-1/soil->par->b)/(soil->wtable-layerbound[jwt-1])*(tempi-temp0);
-      vol_eq = (voleq1*(soil->wtable-layerbound[jwt-1]) + soil->wsat[jwt]*(layerbound[jwt]-soil->wtable))/soildepth[jwt];
-      vol_eq = min(soil->wsat[jwt],vol_eq);
+      voleq1= -soil->par->psi_sat*soil->wsat[lwt]/(1-1/soil->par->b)/(soil->wtable-layerbound[lwt-1])*(tempi-temp0);
+      vol_eq = (voleq1*(soil->wtable-layerbound[lwt-1]) + soil->wsat[lwt]*(layerbound[lwt]-soil->wtable))/soildepth[lwt];
+      vol_eq = min(soil->wsat[lwt],vol_eq);
       vol_eq = max(vol_eq,0);
     }
     else
     {
-      tempi =pow(((soil->par->psi_sat+soil->wtable-layerbound[jwt])/soil->par->psi_sat),(1-1/soil->par->b));
-      temp0 = pow(((soil->par->psi_sat+soil->wtable-layerbound[jwt-1])/soil->par->psi_sat),(1-1/soil->par->b));
-      vol_eq = -soil->par->psi_sat*soil->wsat[jwt]/(1-1/soil->par->b)/(layerbound[jwt]-layerbound[jwt-1])*(tempi-temp0);
+      tempi =pow(((soil->par->psi_sat+soil->wtable-layerbound[lwt])/soil->par->psi_sat),(1-1/soil->par->b));
+      temp0 = pow(((soil->par->psi_sat+soil->wtable-layerbound[lwt-1])/soil->par->psi_sat),(1-1/soil->par->b));
+      vol_eq = -soil->par->psi_sat*soil->wsat[lwt]/(1-1/soil->par->b)/(layerbound[lwt]-layerbound[lwt-1])*(tempi-temp0);
       vol_eq = max(vol_eq,0.0);
-      vol_eq = min(soil->wsat[jwt],vol_eq);
+      vol_eq = min(soil->wsat[lwt],vol_eq);
     }
   }
   smpmin =-1e8;                                             // restriction of soil potential (mm)
-  tmp_vol=max(vol_eq/soil->wsat[jwt],0.01);                 // equilibrium volumetric water
+  tmp_vol=max(vol_eq/soil->wsat[lwt],0.01);                 // equilibrium volumetric water
   zq=-soil->par->psi_sat*pow(tmp_vol,-soil->par->b);        // eq. 7.126 equilibrium soil matric potential
   zq= max(smpmin, zq);                                      // equilibrium matric potential for layer [mm]
   smp = -soil->par->psi_sat*pow(s_node,-soil->par->b);      // mm (soil matric potential)
   smp1=max(smpmin,smp);
   wh=smp1-zq;
   wh_zwt=0;                                                 // water head at the water table depth (mm) always zero
-  if(jwt<(NSOILLAYER-1))
+  if(lwt<(NSOILLAYER-1))
   {
-    s_node=(allwater(soil,jwt+1)/soildepth[jwt+1] + allice(soil,jwt+1)/soildepth[jwt+1])/soil->wsat[jwt+1];      // soil wetness
+    s_node=(allwater(soil,lwt+1)/soildepth[lwt+1] + allice(soil,lwt+1)/soildepth[lwt+1])/soil->wsat[lwt+1];      // soil wetness
     s_node=max(s_node,0.02);
     s_node=min(1, s_node);
-    ka=Theta_ice*soil->Ks[jwt+1]*24*pow(s_node,2*soil->par->b+3);
+    ka=Theta_ice*soil->Ks[lwt+1]*24*pow(s_node,2*soil->par->b+3);
   }
   else
   {
-    ka=Theta_ice*soil->Ks[jwt]*24*pow(s_node,2*soil->par->b+3);
+    ka=Theta_ice*soil->Ks[lwt]*24*pow(s_node,2*soil->par->b+3);
   }
   if(soil->wtable<=layerbound[BOTTOMLAYER])  //SiS-TEST
   {
-    if((soil->wtable-layerbound[jwt])<(soil->par->psi_sat*0.1) || jwt==0)
+    if((soil->wtable-layerbound[lwt])<(soil->par->psi_sat*0.1) || lwt==0)
       qcharge_tot+= -ka*(wh_zwt-wh)/(soil->wtable+1);
     else                                                                     //assuming flux is at water table interface, saturation deeper than water table
-      qcharge_tot+= -ka*(wh_zwt-wh)/((soil->wtable-layerbound[jwt])*2);
+      qcharge_tot+= -ka*(wh_zwt-wh)/((soil->wtable-layerbound[lwt])*2);
   }
   qcharge_tot= max(-10.0,qcharge_tot);
   qcharge_tot= min(10.0,qcharge_tot);
@@ -630,9 +630,9 @@ Real infil_perc(Stand *stand,        /**< Stand pointer */
 
  //*******************************//
   if (soil->wtable>0)
-    S=soil->wsat[jwt]*(1.-pow((1.+(soil->wtable/soil->par->psi_sat)),(-1./soil->par->b)));
+    S=soil->wsat[lwt]*(1.-pow((1.+(soil->wtable/soil->par->psi_sat)),(-1./soil->par->b)));
   else
-    S=soil->wsat[jwt]*(1.-pow((1.+(1/soil->par->psi_sat)),(-1./soil->par->b)));
+    S=soil->wsat[lwt]*(1.-pow((1.+(1/soil->par->psi_sat)),(-1./soil->par->b)));
   S=max(S,0.02);
   qcharge_tot+=qcharge_tot1;
 
@@ -685,7 +685,7 @@ Real infil_perc(Stand *stand,        /**< Stand pointer */
   }
   else if(qcharge_tot>0)                    // raising water table (positive qcharge)
   {
-    for(l=jwt;l>=0;l--)
+    for(l=lwt;l>=0;l--)
     {
       layerbound2=(l==0 && layerbound[l]>soil->wtable) ?  maxWTP : layerbound[l];
       if(soil->wtable!=layerbound2 && l<icet)
@@ -719,7 +719,7 @@ Real infil_perc(Stand *stand,        /**< Stand pointer */
   }
   else
   {                                                           // deepening water table (negative qcharge)
-    for(l=jwt;l<BOTTOMLAYER;l++)
+    for(l=lwt;l<BOTTOMLAYER;l++)
     {
       layerbound2=(layerbound[l]>soil->wtable) ?  layerbound[l] : layerbound[l+1]; // TODO TEST IF REALLY NECESSARY
       if(soil->wtable!=layerbound2 && l<icet)
@@ -777,7 +777,7 @@ Real infil_perc(Stand *stand,        /**< Stand pointer */
     icet=l;
     break;
   }
-  jwt=findwtlayer(soil);
+  lwt=findwtlayer(soil);
 
   //=================  LATERAL FLOW =======================================
   // water table above frost table
@@ -791,7 +791,7 @@ Real infil_perc(Stand *stand,        /**< Stand pointer */
     {
       k_perch=0;
       wtsub=0;
-      for(l=jwt;l<=icet;l++)
+      for(l=lwt;l<=icet;l++)
       {
         Theta_ice=pow(10,(-OMEGA*(((icefrac[l]*soildepth[l])+(icefrac[l+1]*soildepth[l+1]))/(soildepth[l]+soildepth[l+1]))));
         k_perch+=(Theta_ice*soil->Ks[l]*24*soildepth[l]);                         // ks in mm/h converted to day
@@ -802,7 +802,7 @@ Real infil_perc(Stand *stand,        /**< Stand pointer */
       drain_perched = q_perch_max*k_perch*(frost_depth-soil->wtable);
       drain_perched_out=drain_perched;
       drain_perched*=-1;
-      for(l=jwt;l<=icet;l++)
+      for(l=lwt;l<=icet;l++)
       {
         drain_perched_layer=0.0;
         if(soil->w_fw[l]>epsilon)
@@ -835,15 +835,15 @@ Real infil_perc(Stand *stand,        /**< Stand pointer */
     active_wa=soil->wa;
     rsub_top_tot=0;
 
-    jwt=findwtlayer(soil);
+    lwt=findwtlayer(soil);
 
-    for(l=jwt;l<BOTTOMLAYER;l++)
+    for(l=lwt;l<BOTTOMLAYER;l++)
     {
       icesum+=icefrac[l]*soildepth[l];
       depthsum+=soildepth[l];
       active_wa+=soil->w_fw[l];
     }
-    if(jwt>=(BOTTOMLAYER-1))
+    if(lwt>=(BOTTOMLAYER-1))
       depthsum=layerbound[BOTTOMLAYER-1];
     Theta_ice=pow(10,(-OMEGA*(icesum/depthsum)));                                               // OMEGA of 6 gives a high impact on low ice fractions (0.1 -> 0.2511886)
     rsub_top_max=50*tan(stand->slope_mean*M_PI/180);                                        // 20 mm day-1 suggested by Karpouzas etal, 2006, Christen etal, 2006 ->50 mm day-1, slope converted from degrees to radians
@@ -887,7 +887,7 @@ Real infil_perc(Stand *stand,        /**< Stand pointer */
       }
       else
       {                                         //deepening water table
-        for(l=(jwt+1);l<BOTTOMLAYER-1;l++)
+        for(l=(lwt+1);l<BOTTOMLAYER-1;l++)
         {
           layerbound2=(layerbound[l]>soil->wtable) ?  layerbound[l] : layerbound[l+1];
           if (soil->wtable>0)

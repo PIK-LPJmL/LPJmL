@@ -33,7 +33,8 @@ Stocks turnover_grass(Litter *litter, /**< Litter pool */
   Pftgrass *grass;
   const Pftgrasspar *grasspar;
   Output *output;
-  Real reprod;
+  Real reprod=0;
+  Real reprod_out=0;
   Grassphys gturn={{0,0},{0,0}};
   grass=pft->data;
   grasspar=getpftpar(pft,data);
@@ -59,17 +60,23 @@ Stocks turnover_grass(Litter *litter, /**< Litter pool */
     reprod1=reprod;
 #endif
     pft->bm_inc.carbon-=reprod;
+    reprod_out=reprod;
     if(pft->establish.carbon<reprod)
     {
       reprod-=pft->establish.carbon;
       getoutput(output,FLUX_ESTABC,config)-=pft->establish.carbon*pft->stand->frac;
       pft->stand->cell->balance.flux_estab.carbon-=pft->establish.carbon*pft->stand->frac;
+      if(pft->stand->type->landusetype==NATURAL || pft->stand->type->landusetype==WETLAND)
+        pft->stand->cell->balance.nat_fluxes-=pft->establish.carbon*pft->stand->frac;
       pft->establish.carbon=0;
     }
     else
     {
       getoutput(output,FLUX_ESTABC,config)-=reprod*pft->stand->frac;
       pft->stand->cell->balance.flux_estab.carbon-=reprod*pft->stand->frac;
+      if(pft->stand->type->landusetype==NATURAL || pft->stand->type->landusetype==WETLAND)
+        pft->stand->cell->balance.nat_fluxes-=reprod*pft->stand->frac;
+
       pft->establish.carbon-=reprod;
       reprod=0;
     }
@@ -169,6 +176,7 @@ Stocks turnover_grass(Litter *litter, /**< Litter pool */
   grass->excess_carbon-=grass->excess_carbon*grasspar->turnover.root;
   gturn.leaf.carbon+=gturn.root.carbon;
   gturn.leaf.nitrogen+=gturn.root.nitrogen;
+  getoutput(&pft->stand->cell->output,RA,config)+=(reprod_out)*pft->stand->frac;
 #ifdef CHECK_BALANCE
   litter_alt=stocks.nitrogen;
   stocks=litterstocks(litter);

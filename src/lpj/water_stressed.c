@@ -284,5 +284,6 @@ Real water_stressed(Pft *pft,                  /**< [inout] pointer to PFT varia
     if (aet_layer[l]>pft->stand->soil.w[l]*pft->stand->soil.whcs[l])
       aet_layer[l]=pft->stand->soil.w[l]*pft->stand->soil.whcs[l];
   }
+  getoutput(&pft->stand->cell->output,RA,config)+=*rd*pft->stand->frac;
   return agd;
 } /* of 'water_stressed' */

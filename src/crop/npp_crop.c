@@ -78,6 +78,7 @@ Real npp_crop(Pft *pft,           /**< [inout] PFT variables */
   }
   else
     allocation_daily_crop(pft,npp,wdf,config);
+  getoutput(&pft->stand->cell->output,RA,config)+=(rosoresp+presp+gresp)*pft->stand->frac;
   return npp;
 } /* of 'npp_crop' */
 

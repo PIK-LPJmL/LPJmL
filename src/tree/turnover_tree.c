@@ -37,6 +37,7 @@ Stocks turnover_tree(Litter *litter, /**< Litter pool */
   Treephys turn;
   Output *output;
   Real reprod,payback;
+  Real reprod_out=0;
 #ifdef CHECK_BALANCE
   Stocks sum_before,sum_after;
   Stocks turn_diff={0,0};
@@ -57,17 +58,22 @@ Stocks turnover_tree(Litter *litter, /**< Litter pool */
   {
     reprod=pft->bm_inc.carbon*treepar->reprod_cost;
     pft->bm_inc.carbon-=reprod;
+    reprod_out=reprod;
     if(pft->establish.carbon<reprod)
     {
       reprod-=pft->establish.carbon;
       getoutput(output,FLUX_ESTABC,config)-=pft->establish.carbon*pft->stand->frac;
       pft->stand->cell->balance.flux_estab.carbon-=pft->establish.carbon*pft->stand->frac;
+      if(pft->stand->type->landusetype==NATURAL || pft->stand->type->landusetype==WETLAND)
+        pft->stand->cell->balance.nat_fluxes-=pft->establish.carbon*pft->stand->frac;
       pft->establish.carbon=0;
     }
     else
     {
       getoutput(output,FLUX_ESTABC,config)-=reprod*pft->stand->frac;
       pft->stand->cell->balance.flux_estab.carbon-=reprod*pft->stand->frac;
+      if(pft->stand->type->landusetype==NATURAL || pft->stand->type->landusetype==WETLAND)
+        pft->stand->cell->balance.nat_fluxes-=reprod*pft->stand->frac;
       pft->establish.carbon-=reprod;
       reprod=0;
     }
@@ -184,6 +190,8 @@ Stocks turnover_tree(Litter *litter, /**< Litter pool */
   
   sum.carbon=turn.leaf.carbon+turn.sapwood.carbon+turn.root.carbon;
   sum.nitrogen=turn.leaf.nitrogen+turn.sapwood.nitrogen+turn.root.nitrogen;
+  getoutput(&pft->stand->cell->output,RA,config)+=(reprod_out)*pft->stand->frac;
+
 #ifdef CHECK_BALANCE
   sum_after=litterstocks(litter);
   sum_after.carbon+=vegc_sum_tree(pft)+pft->bm_inc.carbon-pft->establish.carbon;

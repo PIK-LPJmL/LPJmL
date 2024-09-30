@@ -103,7 +103,7 @@
       "beta_root" : 0.952,    /* beta_root original 0.962*/
       "minwscal" : 0.0,       /* minwscal 3*/
       "gmin"  : 1.5,          /* gmin 4*/
-      "respcoeff" : 0.8,      /* respcoeff 5*/
+      "respcoeff" : 0.2,      /* respcoeff 5*/
       "nmax" : 100.,          /* nmax 7*/
       "resist" : 0.12,        /* resist 8*/
       "longevity" : 1.6,      /* leaf longevity 10*/
@@ -173,8 +173,8 @@
       "fn_turnover" : FN_TURNOVER_EV_BR, /* fraction of N not recovered before turnover */
       "windspeed_dampening" : 0.4, /* windspeed dampening */
       "roughness_length" : 2.0,  /* roughness length */
-      "ist_m" : -0.1,             /* inundation stress threshold [m] */
-      "idt_d" : 40.0,             /* inundation duration threshold [days] */
+      "ist_m" : 0.0,             /* inundation stress threshold [m] */
+      "idt_d" : 55.0,             /* inundation duration threshold [days] */
       "irrig_threshold" : { "dry" : IRRIG_THRESHOLD_C3_DRY, "humid" : IRRIG_THRESHOLD_C3_HUMID },
       "leaftype" : "broadleaved",  /* leaftype */
       "turnover" : {"leaf" : 2.0, "sapwood" : 30.0, "root" : 2.0}, /* turnover leaf  sapwood root 9 11 12*/
@@ -218,7 +218,7 @@
       "beta_root" : 0.952,    /* beta_root original 0.962*/
       "minwscal" : 0.0,       /* minwscal 3*/
       "gmin"  : 1.5,          /* gmin 4*/
-      "respcoeff" : 0.8,      /* respcoeff 5*/
+      "respcoeff" : 0.2,      /* respcoeff 5*/
       "nmax" : 100.,          /* nmax 7*/
       "resist" : 0.12,        /* resist 8*/
       "longevity" : 1.6,      /* leaf longevity 10*/
@@ -333,7 +333,7 @@
       "beta_root" : 0.981,    /* beta_root  original 0.962*/
       "minwscal" : 0.35,      /* minwscal 3*/
       "gmin"  : 1.5,          /* gmin 4*/
-      "respcoeff" : 0.8,      /* respcoeff 5*/
+      "respcoeff" : 0.2,      /* respcoeff 5*/
       "nmax" : 100.,          /* nmax 7*/
       "resist" : 0.5,         /* resist 8*/
       "longevity" : 0.5,      /* leaf longevity 10*/
@@ -910,7 +910,7 @@
       "beta_root" : 0.95,    /* beta_root original 0.943*/
       "minwscal" : 0.00,      /* minwscal 3*/
       "gmin"  : 0.8,          /* gmin 4*/
-      "respcoeff" : 0.8,      /* respcoeff 5*/
+      "respcoeff" : 1.2,      /* respcoeff 5*/
       "nmax" : 100.0,          /* nmax 7*/
       "resist" : 0.12,         /* resist 8*/
       "longevity" : 0.5,      /* leaf longevity 10*/
@@ -1027,7 +1027,7 @@
       "beta_root" : 0.943,     /* beta_root original 0.943*/
       "minwscal" : 0.00,      /* minwscal 3*/
       "gmin"  : 0.8,          /* gmin 4*/
-      "respcoeff" : 0.6,      /* respcoeff 5*/
+      "respcoeff" : 0.8,      /* respcoeff 5*/
       "nmax" : 100.0,          /* nmax 7*/
       "resist" : 0.12,        /* resist 8*/
       "longevity" : 0.65,     /* leaf longevity 10*/
@@ -1435,7 +1435,7 @@
       "beta_root" : 0.95,     /* beta_root */
       "minwscal" : 0.10,      /* minwscal 3*/
       "gmin"  : 0.2,          /* gmin 4*/
-      "respcoeff" : 0.2,      /* respcoeff 5*/
+      "respcoeff" : 0.6,      /* respcoeff 5*/
       "nmax" : 30.0,          /* nmax 7*/
       "resist" : 0.01,        /* resist 8*/
       "longevity" : 0.2,     /* leaf longevity 10*/

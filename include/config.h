@@ -307,6 +307,7 @@ struct config
   int totalsize;          /**< size of shared output storage */
   int outputmap[NOUT];    /**< index into output storage */
   int outputsize[NOUT];   /**< number of bands for each output */
+  int natNBP_only;
 }; /* LPJ configuration */
 
 typedef struct

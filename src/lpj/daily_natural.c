@@ -176,7 +176,7 @@ Real daily_natural(Stand *stand,                /**< [inout] stand pointer */
       getoutputindex(output,PFT_GCGP,pft->par->id,config)+=gc_pft/gp_pft[getpftpar(pft,id)];
     }
 
-    npp=npp(pft,gtemp_air,gtemp_soil,gpp-rd-pft->npp_bnf,config->with_nitrogen);
+    npp=npp(pft,gtemp_air,gtemp_soil,gpp-rd-pft->npp_bnf,config,config->with_nitrogen);
     pft->npp_bnf=0.0;
     output->dcflux-=npp*stand->frac;
 #ifdef CHECK_BALANCE
@@ -189,6 +189,8 @@ Real daily_natural(Stand *stand,                /**< [inout] stand pointer */
       stand->cell->npp_nat+=npp*stand->frac;
     }
 #endif
+    if(stand->type->landusetype==NATURAL || stand->type->landusetype==WETLAND)
+      stand->cell->balance.nat_fluxes+=npp*stand->frac;
     stand->cell->balance.anpp+=npp*stand->frac;
     stand->cell->balance.agpp+=gpp*stand->frac;
     getoutput(output,NPP,config)+=npp*stand->frac;
@@ -252,9 +254,14 @@ Real daily_natural(Stand *stand,                /**< [inout] stand pointer */
   getoutput(output,FLUX_ESTABN,config)+=flux_estab.nitrogen*stand->frac;
   stand->cell->balance.flux_estab.carbon+=flux_estab.carbon*stand->frac;
   stand->cell->balance.flux_estab.nitrogen+=flux_estab.nitrogen*stand->frac;
+  if(stand->type->landusetype==NATURAL || stand->type->landusetype==WETLAND)
+    stand->cell->balance.nat_fluxes+=flux_estab.carbon*stand->frac;
   //output->dcflux-=flux_estab.carbon*stand->frac;
   dcflux+=flux_estab.carbon;
+  if(stand->type->landusetype==NATURAL || stand->type->landusetype==WETLAND)
+    stand->cell->balance.nat_fluxes+=flux_estab.carbon*stand->frac;
 #endif
+
 #ifdef CHECK_BALANCE
   end = standstocks(stand).carbon + soilmethane(&stand->soil)*WC/WCH4;
   if (fabs(end -start -dcflux )>0.01)

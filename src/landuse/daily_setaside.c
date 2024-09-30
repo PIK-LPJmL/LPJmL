@@ -131,7 +131,7 @@ Real daily_setaside(Stand *stand, /**< stand pointer */
       output->pft_gcgp[pft->par->id]+=gc_pft/gp_pft[getpftpar(pft,id)];
     }
 
-    npp=npp(pft,gtemp_air,gtemp_soil,gpp-rd-pft->npp_bnf,config->with_nitrogen);
+    npp=npp(pft,gtemp_air,gtemp_soil,gpp-rd-pft->npp_bnf,config,config->with_nitrogen);
     pft->npp_bnf=0.0;
     if(output->daily.cft==ALLSTAND)
     {

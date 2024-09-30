@@ -273,7 +273,7 @@ Real daily_grassland(Stand *stand,                /**< stand pointer */
         getoutputindex(output,PFT_GCGP,nnat+index,config)+=gcgp;
       }
     }
-    npp=npp_grass(pft,gtemp_air,gtemp_soil,gpp-rd-pft->npp_bnf,config->with_nitrogen);
+    npp=npp_grass(pft,gtemp_air,gtemp_soil,gpp-rd-pft->npp_bnf,config,config->with_nitrogen);
     getoutput(output,NPP,config)+=npp*stand->frac;
 #if defined IMAGE && defined COUPLED
     stand->cell->npp_grass+=npp*stand->frac;

@@ -97,6 +97,8 @@ Bool annual_natural(Stand *stand,         /**< Pointer to stand */
     getoutput(&stand->cell->output,FIREF,config)+=fire_frac;
     flux=firepft(stand,fire_frac,config);
     getoutput(&stand->cell->output,FIREC,config)+=flux.carbon*stand->frac;
+    if(stand->type->landusetype==NATURAL || stand->type->landusetype==WETLAND)
+      stand->cell->balance.nat_fluxes-=flux.carbon*stand->frac;
     stand->cell->balance.fire.carbon+=flux.carbon*stand->frac;
     if(flux.nitrogen<0)
     {
@@ -116,6 +118,8 @@ Bool annual_natural(Stand *stand,         /**< Pointer to stand */
   flux_estab=establishmentpft(stand,npft,stand->cell->balance.aprec,year,config);
   getoutput(&stand->cell->output,FLUX_ESTABC,config)+=flux_estab.carbon*stand->frac;
   getoutput(&stand->cell->output,FLUX_ESTABN,config)+=flux_estab.nitrogen*stand->frac;
+  if(stand->type->landusetype==NATURAL || stand->type->landusetype==WETLAND)
+    stand->cell->balance.nat_fluxes+=flux_estab.carbon*stand->frac;
   stand->cell->balance.flux_estab.carbon+=flux_estab.carbon*stand->frac;
   stand->cell->balance.flux_estab.nitrogen+=flux_estab.nitrogen*stand->frac;
   stand->cell->output.dcflux-=flux_estab.carbon*stand->frac;

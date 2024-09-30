@@ -98,6 +98,7 @@ typedef struct
   Real aCH4_oxid;
   Real aMT_water;          /* water produced during Methanogenesis */
   Real temp;               /**< air temperature (celsius) */
+  Real nat_fluxes;         //at the moment only
   Real gw_withdrawal;
 } Balance;
 

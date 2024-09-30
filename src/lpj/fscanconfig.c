@@ -348,6 +348,7 @@ Bool fscanconfig(Config *config,    /**< LPJ configuration */
   config->fertilizer_input=NO_FERTILIZER;
   config->npp_controlled_bnf = FALSE;
   config->prescribe_lsuha=FALSE;
+  config->natNBP_only=FALSE;
   if(config->with_nitrogen)
   {
     if(fscanbool(file,&config->npp_controlled_bnf,"npp_controlled_bnf",!config->pedantic,verbose))
@@ -358,6 +359,8 @@ Bool fscanconfig(Config *config,    /**< LPJ configuration */
       return TRUE;
 #endif
   }
+  if(fscanbool(file,&config->natNBP_only,"natNBP_only",!config->pedantic,verbose))
+    return TRUE;
   config->soilpar_option=NO_FIXED_SOILPAR;
   if(fscankeywords(file,&config->soilpar_option,"soilpar_option",soilpar_option,3,!config->pedantic,verbose))
     return TRUE;

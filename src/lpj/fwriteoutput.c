@@ -532,6 +532,8 @@ void fwriteoutput(Outputfile *output,  /**< output file array */
   const Irrigation *data;
   float *vec;
   short *svec;
+  Real depth=0;
+
   nirrig=2*getnirrig(ncft,config);
   nnat=getnnat(npft,config);
   switch(timestep)
@@ -574,6 +576,7 @@ void fwriteoutput(Outputfile *output,  /**< output file array */
   writeoutputvar(SUN,ndate1);
   writeoutputvar(NPP_AGR,1);
   writeoutputvar(RH,1);
+  writeoutputvar(RA,1);
   writeoutputvar(RH_AGR,1);
   writeoutputvar(EVAP,1);
   writeoutputvar(INTERC,1);
@@ -724,6 +727,31 @@ void fwriteoutput(Outputfile *output,  /**< output file array */
     }
     writeoutputvar(SOILC,1);
   }
+  if(isopen(output,SOILC_1m))
+  {
+    if(iswrite2(SOILC_1m,timestep,year,config) || (timestep==ANNUAL && config->outnames[SOILC_1m].timestep>0))
+    {
+      for(cell=0;cell<config->ngridcell;cell++)
+        if(!grid[cell].skip)
+        {
+          foreachstand(stand,s,grid[cell].standlist)
+          {
+            for(p=0;p<stand->soil.litter.n;p++)
+              getoutput(&grid[cell].output,SOILC_1m,config)+=stand->soil.litter.item[p].bg.carbon*stand->frac;
+            forrootsoillayer(l)
+            {
+              depth+=soildepth[l];
+              if(depth>=100)
+                break;
+              else
+               getoutput(&grid[cell].output,SOILC_1m,config)+=(stand->soil.pool[l].slow.carbon+stand->soil.pool[l].fast.carbon)*stand->frac;
+            }
+          }
+        }
+    }
+    writeoutputvar(SOILC_1m,1);
+  }
+
   if(isopen(output,SOILN))
   {
     if(iswrite2(SOILN,timestep,year,config) || (timestep==ANNUAL && config->outnames[SOILN].timestep>0))
@@ -1966,11 +1994,16 @@ void fwriteoutput(Outputfile *output,  /**< output file array */
       for(cell=0;cell<config->ngridcell;cell++)
         if(!grid[cell].skip && grid[cell].lakefrac+grid[cell].ml.reservoirfrac<1)
         {
-          getoutput(&grid[cell].output,NBP,config)+=(grid[cell].balance.anpp-grid[cell].balance.arh-grid[cell].balance.fire.carbon+
+          if(config->natNBP_only)
+          {
+            getoutput(&grid[cell].output,NBP,config)+=grid[cell].balance.nat_fluxes;
+          }
+          else
+            getoutput(&grid[cell].output,NBP,config)+=(grid[cell].balance.anpp-grid[cell].balance.arh-grid[cell].balance.fire.carbon+
                     grid[cell].balance.flux_estab.carbon-grid[cell].balance.flux_harvest.carbon-grid[cell].balance.biomass_yield.carbon-
                     grid[cell].balance.neg_fluxes.carbon+grid[cell].balance.influx.carbon-grid[cell].balance.deforest_emissions.carbon-
                     grid[cell].balance.prod_turnover.fast.carbon-grid[cell].balance.prod_turnover.slow.carbon-grid[cell].balance.trad_biofuel.carbon);
-        }
+       }
     }
     writeoutputvar(NBP,1);
   }
