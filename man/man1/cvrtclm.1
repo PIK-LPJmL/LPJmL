@@ -4,7 +4,7 @@ cvrtclm \- convert version of clm file to version 3 or 4
 .SH SYNOPSIS
 .B cvtrclm
 [\-4] [\-type {byte|short|int|float|double}] [\-scale s] [\-cellsize size] [\-swapnstep] [-timestep n]
-.I infile outfile 
+.I infile outfile
 .SH DESCRIPTION
 Program converts clm file into clm file with version 3 or 4. For version 1 file cellsize and scaling factor have to be specified, if they differ from default values. For version 2 type has to be specified if different from short.
 .SH OPTIONS
@@ -13,13 +13,13 @@ Program converts clm file into clm file with version 3 or 4. For version 1 file 
 Convert to version 4 clm file, default is 3.
 .TP
 \-type {byte|short|int|float|double}
-Set type of data in header, default is short
+Set type of data in header, default is short.
 .TP
 \-scale s
-set scaling factor in header, default is 1.
+Set scaling factor in header, default is 1.0.
 .TP
 \-cellsize size
-set cell size in header, default is 0.5.
+Set cell size in header, default is 0.5.
 .TP
 \-swapnstep
 Swap nbands for nstep for version 4 clm files.
@@ -27,11 +27,11 @@ Swap nbands for nstep for version 4 clm files.
 \-timestep n
 Swap time step for version 4 clm files, default is 1.
 .TP
-.I infile    
-filename of clm file to convert
+.I infile
+Filename of clm file to convert.
 .TP
-.I outfile     
-filename of clm data file written. Must differ from infile.
+.I outfile
+Filename of clm data file written. Must differ from infile.
 .SH EXAMPLES
 .TP
 Convert clm wateruse data file to version 3:

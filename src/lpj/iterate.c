@@ -94,12 +94,14 @@ int iterate(Outputfile *output, /**< Output file data */
       co2=receive_image_co2(config);
     else
 #endif
-    if(config->fix_co2 && year>config->fix_co2_year)
-      year_co2=config->fix_co2_year;
-    else
-      year_co2=year;
-    if(getco2(input.climate,&co2,year_co2,config)) /* get atmospheric CO2 concentration */
-      break;
+    {
+      if(config->fix_co2 && year>config->fix_co2_year)
+        year_co2=config->fix_co2_year;
+      else
+        year_co2=year;
+      if(getco2(input.climate,&co2,year_co2,config)) /* get atmospheric CO2 concentration */
+        break;
+    }
     climate_year=year;
     if(year<input.climate->firstyear) /* are we in spinup phase? */
     {

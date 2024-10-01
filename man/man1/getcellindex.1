@@ -3,28 +3,28 @@
 getcellindex \- get cell index for coordinates in grid clm file
 .SH SYNOPSIS
 .B getcellindex
-[\-search] [\-longheader] 
-.I gridfile 
+[\-search] [\-longheader]
+.I gridfile
 [lat[N|S] lon[E|W]] ...]
 .SH DESCRIPTION
 Program gets cell index for coordinates in grid file. If no cell coordinates are provided, all coordinates in the grid file are listed.
 .SH OPTIONS
 .TP
 \-search
-search for nearest coordinate in grid file if coordinate was not found
+Search for nearest coordinate in grid file if coordinate was not found.
 .TP
-.I gridfile    
-filename of binary grid data file in CLM format
+.I gridfile
+Filename of binary grid data file in CLM format.
 .TP
 .I lat
-latitude in degree
+Latitude in degree.
 .TP
 .I lon
-longitude in degree
+Longitude in degree.
 .SH EXAMPLES
 .TP
 Get cell index for 48.25 12.25:
-.B getcountry
+.B getcellindex
 grid.clm 48.25 12.25
 .PP
 .SH EXIT STATUS

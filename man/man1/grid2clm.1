@@ -6,26 +6,26 @@ grid2clm \- convert grid data file to clm data files for LPJmL
 [\-h] [\-swap] [\-scale s] [\-cellsize c]
 .I gridfile clmfile
 .SH DESCRIPTION
-Program converts raw binary data file consisting of 16bit integer values in a file format suitable for LPJmL. 
+Program converts raw binary data file consisting of 16bit integer values in a file format suitable for LPJmL.
 .SH OPTIONS
 .TP
 \-h
-display a short help text
+Print a short help text.
 .TP
 \-swap
-change byte order in grid file
+Change byte order in grid file.
 .TP
 \-scale s
-set scale factor, default is 0.01
+Set scale factor, default is 0.01.
 .TP
 \-cellsize c
-set cell size, default is 0.5
+Set cell size, default is 0.5.
 .TP
-.I gridfile    
-filename of binary grid data file
+.I gridfile
+Filename of binary grid data file.
 .TP
-.I clmfile     
-filename of clm data file written
+.I clmfile
+Filename of clm data file written.
 .SH EXAMPLES
 .TP
 Create clm data file from grid dataset changing byte order:

@@ -6,32 +6,32 @@ cft2clm \- convert binary land use data files to clm data files for LPJmL
 [\-h] [\-firstyear first] [\-lastyear last] [\-nyear n] [\-nbands n] [\-swap]
 .I cftfile clmfile
 .SH DESCRIPTION
-Program converts a raw binary land use data file consisting of 16bit integer values into a file format suitable for LPJmL. 
+Program converts a raw binary land use data file consisting of 16bit integer values into a file format suitable for LPJmL.
 .SH OPTIONS
 .TP
 \-h
-display a short help text
+Print a short help text.
 .TP
 \-firstyear first
-first year in land use file (default is 1700)
+First year in land use file (default is 1700).
 .TP
 \-lastyear  last
-last year in land use file
+Last year in land use file (default is 2005).
 .TP
 \-nyear  n
-number of years in land use file (default is 306)
+Number of years in land use file (default is 306).
 .TP
 \-nbands n
-number of bands in output file (default is 26)
+Number of bands in output file (default is 26).
 .TP
 \-swap
-change byte order in CRU file
+Change byte order in CRU file
 .TP
-.I cftfile    
-filename of binary land use data file
+.I cftfile
+Filename of binary land use data file.
 .TP
-.I clmfile     
-filename of clm data file written
+.I clmfile
+Filename of clm data file written.
 .SH EXAMPLES
 .TP
 Create clm data file from land use dataset changing byte order:

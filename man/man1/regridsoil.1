@@ -10,28 +10,28 @@ Program reads soil file and corresponding grid file to regrid the soil data to a
 .SH OPTIONS
 .TP
 \-search
-If grid coordinate cannot be found in old grid nearest grid cell is used
+If grid coordinate cannot be found in old grid nearest grid cell is used.
 .TP
 \-zero
-If grid coordinate cannot be found in old grid soil code is set to zero
+If grid coordinate cannot be found in old grid soil code is set to zero.
 .TP
 \-longheader
-Version of CLM grid file is set to 2. By default version is read from file header
+Version of CLM grid file is set to 2. By default version is read from file header.
 .TP
 \-json
 An additional JSON metafile with suffix \fI.json\fP is written.
 .TP
 .I grid_old.clm
-Corresponding grid filename of input data
+Corresponding grid filename of input data.
 .TP
 .I grid_new.clm
-New grid filename data should be regridded to
+New grid filename data should be regridded to.
 .TP
 .I  soil_old.clm
-Filename of soil file that should be regridded
+Filename of soil file that should be regridded.
 .TP
 .I soil_new.clm
-Filename of soil file where regridded data is written
+Filename of soil file where regridded data is written.
 .SH EXAMPLES
 .TP
 Regrid soil file to the grid file of the amazon basin:

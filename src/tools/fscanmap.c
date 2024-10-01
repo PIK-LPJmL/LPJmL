@@ -50,8 +50,11 @@ Map *fscanmap(LPJfile *file,   /**< pointer to LPJ file */
   if(map->list==NULL)
   {
     printallocerr("array");
+    free(map);
     return NULL;
   }
+  for(i=0;i<size;i++)
+    getlistitem(map->list,i)=NULL;
   for(i=0;i<size;i++)
   {
     item =json_object_array_get_idx(array,i);
@@ -61,9 +64,9 @@ Map *fscanmap(LPJfile *file,   /**< pointer to LPJ file */
       {
         if(verb)
           fprintf(stderr,"ERROR226: Type of item %d in array '%s' is null, not float.\n",i,key);
+        freemap(map);
         return NULL;
      }
-      getlistitem(map->list,i)=NULL;
     }
     else if(json_object_get_type(item)==json_type_string)
     {
@@ -71,11 +74,16 @@ Map *fscanmap(LPJfile *file,   /**< pointer to LPJ file */
       {
         if(verb)
           fprintf(stderr,"ERROR226: Type of item %d in array '%s' is not float.\n",i,key);
+        freemap(map);
         return NULL;
       }
       getlistitem(map->list,i)=strdup(json_object_get_string(item));
       if(getlistitem(map->list,i)==NULL)
+      {
         printallocerr("array");
+        freemap(map);
+        return NULL;
+      }
     }
     else if(json_object_get_type(item)==json_type_double)
     {
@@ -83,6 +91,7 @@ Map *fscanmap(LPJfile *file,   /**< pointer to LPJ file */
       {
         if(verb)
           fprintf(stderr,"ERROR226: Type of item %d in array '%s' is not string.\n",i,key);
+        freemap(map);
         return NULL;
       }
       map->isfloat=TRUE;
@@ -90,6 +99,7 @@ Map *fscanmap(LPJfile *file,   /**< pointer to LPJ file */
       if(value==NULL)
       {
         printallocerr("value");
+        freemap(map);
         return NULL;
       }
       *value=json_object_get_double(item);
@@ -101,6 +111,7 @@ Map *fscanmap(LPJfile *file,   /**< pointer to LPJ file */
       {
         if(verb)
           fprintf(stderr,"ERROR226: Type of item %d in array '%s' is not string.\n",i,key);
+        freemap(map);
         return NULL;
       }
       map->isfloat=TRUE;
@@ -108,6 +119,7 @@ Map *fscanmap(LPJfile *file,   /**< pointer to LPJ file */
       if(value==NULL)
       {
         printallocerr("value");
+        freemap(map);
         return NULL;
       }
       *value=json_object_get_int(item);
@@ -117,6 +129,7 @@ Map *fscanmap(LPJfile *file,   /**< pointer to LPJ file */
     {
       if(verb)
         fprintf(stderr,"ERROR226: Type of item %d in array '%s' is not string or float.\n",i,key);
+      freemap(map);
       return NULL;
     }
     if (verb >= VERB)

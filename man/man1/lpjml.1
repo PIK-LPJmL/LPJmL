@@ -20,61 +20,61 @@ file can be created to save compute time for the spin-up phase. If the Message P
 .SH OPTIONS
 .TP
 \-h,\--help
-print a short help text
+Print a short help text.
 .TP
 \-l,\--license
-print the license file
+Print the license file.
 .TP
 \-v,\--version
-print information about program version, operating system, compiler used, and compiler flags set.
+Print information about program version, operating system, compiler used, and compiler flags set.
 .TP
 \-vv
-verbosely print the actual values during reading of the configuration files.
+Verbosely print the actual values during reading of the configuration files.
 .TP
 \-pedantic
-stops on warnings.
+Stop on warnings.
 .TP
 \-ofiles
-list only all available output variables.
+List only all available output variables.
 .TP
 \-param
-print LPJmL parameter for soils and PFTs and list of all available output files.
+Print LPJmL parameter for soils and PFTs and list of all available output files.
 .TP
 \-nopp
-disable preprocessing of configuration file by cpp or command specified by -pp option.
+Disable preprocessing of configuration file by cpp or command specified by -pp option.
 .TP
 \-pp cmd
-set preprocessor program to cmd. Default is \fBcpp\fP.
+Set preprocessor program to cmd. Default is \fBcpp\fP.
 .TP
 \-fpe
-enable floating point exceptions. A core file is generated in case of an arithmetic error. Option is only available if \fBlpjml\fP has been compiled with -DWITH_FPE flag.
+Enable floating point exceptions. A core file is generated in case of an arithmetic error. Option is only available if \fBlpjml\fP has been compiled with -DWITH_FPE flag.
 .TP
 \-image host[:inport[,outport]]
-set host where IMAGE model is running. Default is localhost. inport and outport are the port numbers for ingoing and outgoing data. Default port numbers are 2225 and 2224, respectively. This option is only available for the IMAGE version of the code.
+Set host where IMAGE model is running. Default is localhost. inport and outport are the port numbers for ingoing and outgoing data. Default port numbers are 2225 and 2224, respectively. This option is only available for the IMAGE version of the code.
 .TP
 \-couple host[:port]
-set host where the coupled model is running. Default is localhost. Port is the port number for ingoing and outgoing data. Default port number is 2224.
+Set host where the coupled model is running. Default is localhost. Port is the port number for ingoing and outgoing data. Default port number is 2224.
 .TP
 \-wait time
-set time to wait for connection to coupled/IMAGE model. Time is measured in seconds.
+Set time to wait for connection to coupled/IMAGE model. Time is measured in seconds.
 .TP
 \-outpath \fIdir\fP
-set the output directory path. The path is added to the output filenames if they do not contain an absolute path.
+Set the output directory path. The path is added to the output filenames if they do not contain an absolute path.
 .TP
 \-inpath \fIdir\fP
-set the input directory path. The path is added to the input filenames if they do not contain an absolute path.
+Set the input directory path. The path is added to the input filenames if they do not contain an absolute path.
 .TP
 \-restartpath \fIdir\fP
-set the restart directory path. The path is added to the restart filenames if they do not contain an absolute path.
+Set the restart directory path. The path is added to the restart filenames if they do not contain an absolute path.
 .TP
 \-Dmacro[=value]
-define macro for the preprocessor of the configuration file
+Define macro for the preprocessor of the configuration file.
 .TP
 \-I\fIdir\fP
-define include directory for the preprocessor of the configuration file
+Define include directory for the preprocessor of the configuration file.
 .TP
 .I filename
-name of configuration file
+Name of configuration file.
 .SH EXAMPLES
 .TP
 Perform simulation with input from the /p/projects/lpjml file system:

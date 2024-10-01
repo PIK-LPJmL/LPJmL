@@ -16,7 +16,7 @@
 
 #include "lpj.h"
 
-#if defined(USE_NETCDF) || defined(USE_NETCDF4)
+#ifdef USE_NETCDF
 #include <netcdf.h>
 #include <time.h>
 
@@ -40,7 +40,7 @@ Bool create_netcdf(Netcdf *cdf,
                    const Config *config      /**< LPJ configuration */
                   )                          /** \return TRUE on error */
 {
-#if defined(USE_NETCDF) || defined(USE_NETCDF4)
+#ifdef USE_NETCDF
   char *s;
   time_t t;
   int i,j,rc,nyear,imiss=MISSING_VALUE_INT,len;
@@ -48,9 +48,7 @@ Bool create_netcdf(Netcdf *cdf,
   double *lon=NULL,*lat=NULL;
   float miss=config->missing_value;
   double *year=NULL;
-#ifdef USE_NETCDF4
   size_t chunk[3];
-#endif
   int dim[3];
   if(array==NULL || name==NULL || filename==NULL)
   {
@@ -79,11 +77,7 @@ Bool create_netcdf(Netcdf *cdf,
       if(cdf->state==ONEFILE || cdf->state==CREATE)
       {
         /* start from checkpoint file, output files exist and have to be opened */
-#ifdef USE_NETCDF4
-        rc=nc_open(filename,NC_WRITE|NC_CLOBBER|NC_NETCDF4,&cdf->ncid);
-#else
-        rc=nc_open(filename,NC_WRITE|NC_CLOBBER,&cdf->ncid);
-#endif
+        rc=nc_open(filename,NC_WRITE|((config->isnetcdf4) ? NC_CLOBBER|NC_NETCDF4 : NC_CLOBBER),&cdf->ncid);
         if(rc)
         {
           fprintf(stderr,"ERROR426: Cannot open file '%s': %s.\n",
@@ -92,7 +86,7 @@ Bool create_netcdf(Netcdf *cdf,
         }
       }
       if(config->nofill)
-         ncsetfill(cdf->ncid,NC_NOFILL);
+        ncsetfill(cdf->ncid,NC_NOFILL);
       /* get id of output variable */
       rc=nc_inq_varid(cdf->ncid,name,&cdf->varid);
       if(rc)
@@ -206,11 +200,7 @@ Bool create_netcdf(Netcdf *cdf,
   }
   if(cdf->state==ONEFILE || cdf->state==CREATE)
   {
-#ifdef USE_NETCDF4
-    rc=nc_create(filename,NC_CLOBBER|NC_NETCDF4,&cdf->ncid);
-#else
-    rc=nc_create(filename,NC_CLOBBER,&cdf->ncid);
-#endif
+    rc=nc_create(filename,(config->isnetcdf4) ? NC_CLOBBER|NC_NETCDF4 : NC_CLOBBER,&cdf->ncid);
     if(rc)
     {
       fprintf(stderr,"ERROR426: Cannot create file '%s': %s.\n",
@@ -322,32 +312,29 @@ Bool create_netcdf(Netcdf *cdf,
     dim[0]=cdf->time_dim_id;
     dim[1]=cdf->lat_dim_id;
     dim[2]=cdf->lon_dim_id;
-#ifdef USE_NETCDF4
     chunk[0]=1;
     chunk[1]=array->nlat;
     chunk[2]=array->nlon;
-#endif
   }
   else
   {
     dim[0]=cdf->lat_dim_id;
     dim[1]=cdf->lon_dim_id;
-#ifdef USE_NETCDF4
     chunk[0]=array->nlat;
     chunk[1]=array->nlon;
-#endif
   }
   rc=nc_def_var(cdf->ncid,name,nctype[type],(year==NULL) ? 2 : 3,dim,&cdf->varid);
   error(rc);
-#ifdef USE_NETCDF4
-  rc=nc_def_var_chunking(cdf->ncid, cdf->varid, NC_CHUNKED,chunk);
-  error(rc);
-  if(config->compress)
+  if(config->isnetcdf4)
   {
-    rc=nc_def_var_deflate(cdf->ncid, cdf->varid, 0, 1, config->compress);
+    rc=nc_def_var_chunking(cdf->ncid, cdf->varid, NC_CHUNKED,chunk);
     error(rc);
+    if(config->compress)
+    {
+      rc=nc_def_var_deflate(cdf->ncid, cdf->varid, 0, 1, config->compress);
+      error(rc);
+    }
   }
-#endif
   if(units!=NULL)
   {
     rc=nc_put_att_text(cdf->ncid, cdf->varid,"units",strlen(units),units);

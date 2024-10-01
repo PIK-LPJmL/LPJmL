@@ -47,10 +47,11 @@ int *fscanlandcovermap(LPJfile *file,       /**< pointer to LPJ config file */
     if(undef==NULL)
     {
       printallocerr(name);
+      free(pftmap);
       return NULL;
     }
     for(pft=0;pft<nnat;pft++)
-        undef[pft]=TRUE;
+      undef[pft]=TRUE;
     for(pft=0;pft<*size;pft++)
     {
       item=fscanarrayindex(array,pft);
@@ -65,12 +66,14 @@ int *fscanlandcovermap(LPJfile *file,       /**< pointer to LPJ config file */
           fprintf(stderr,"ERROR226: Datatype of element %d in map '%s' is not of type string.\n",
                   pft+1,name);
         free(pftmap);
+        free(undef);
         return NULL;
       }
       s=fscanstring(item,NULL,NULL,verbose);
       if(s==NULL)
       {
         free(pftmap);
+        free(undef);
         return NULL;
       }
       pftmap[pft]=findpftname(s,config->pftpar,nnat);
@@ -81,6 +84,7 @@ int *fscanlandcovermap(LPJfile *file,       /**< pointer to LPJ config file */
         if(verbose)
           fprintf(stderr,"ERROR244: Unknown PFT \"%s\" in map '%s'.\n",s,name);
         free(pftmap);
+        free(undef);
         return NULL;
       }
     } /* of for(pft=0...) */

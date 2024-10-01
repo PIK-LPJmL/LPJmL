@@ -29,8 +29,8 @@
 #define NTYPES 3 /* number of PFT types: grass, tree, crop */
 #define NSTANDTYPES 14 /* number of stand types / land use types as defined in landuse.h*/
 
-#define USAGE "Usage: %s [-h] [-v] [-q] [-nocheck] [-ofiles] [-param] [-vv]\n"\
-              "       [-couple hostname[:port]]\n"\
+#define USAGE "\nUsage: %s [-h] [-v] [-q] [-nocheck] [-ofiles] [-param] [-vv]\n"\
+              "       [-couple hostname[:port]] [-pedantic]\n"\
               "       [-outpath dir] [-inpath dir] [-restartpath dir]\n"\
               "       [-nopp] [-pp cmd] [[-Dmacro[=value]] [-Idir] ...] filename\n"
 

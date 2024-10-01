@@ -28,8 +28,7 @@ void update_annual(Cell *cell,          /**< Pointer to cell */
                    const Config *config /**< LPJ configuration */
                   )
 {
-  int s,p,m,cft;
-  Pft *pft;
+  int s,m,cft;
   Stand *stand;
   Pftcroppar *croppar;
   Real mintemp[N];
@@ -73,8 +72,6 @@ void update_annual(Cell *cell,          /**< Pointer to cell */
     stand->prescribe_landcover = config->prescribe_landcover;
 
     stand->soil.mean_maxthaw=(stand->soil.mean_maxthaw-stand->soil.mean_maxthaw/CLIMBUFSIZE)+stand->soil.maxthaw_depth/CLIMBUFSIZE;
-    foreachpft(pft,p,&stand->pftlist)
-      pft->vscal=NDAYYEAR;
     if(annual_stand(stand,npft,ncft,year,isdaily,intercrop,config))
     {
       /* stand has to be deleted */

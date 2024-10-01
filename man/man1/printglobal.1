@@ -9,44 +9,44 @@ Program prints global area weighted sums or means of LPJmL binary output files.
 .SH OPTIONS
 .TP
 \-clm
-Input files are in clm format
+Input files are in clm format.
 .TP
 \-firstyear year
-Set first year in output, default is 1901
+Set first year in output, default is 1901.
 .TP
 \-nbands n
-Set number of bands, default is 1
+Set number of bands, default is 1.
 .TP
 \-cellsize size
-Set size of cell in degrees, default is 0.5 degree
+Set size of cell in degrees, default is 0.5 degree.
 .TP
 \-day|month
-Set time step of input file to day or month, default is year
+Set time step of input file to day or month, default is year.
 .TP
 \-noheader
-Do not print header for columns
+Do not print header for columns.
 .TP
 \-csv
-Set ',' as separator in output, default is space
+Set ',' as separator in output, default is space.
 .TP
 \-mean
-Print global mean value instead of global sum
+Print global mean value instead of global sum.
 .TP
 \-yearsum
-Print yearly sum of monthly or daily data
+Print yearly sum of monthly or daily data.
 .TP
 \-area file.bin
-Read cell area from file
+Read cell area from file.
 .TP
 .I gridfile
-Filename of binary grid file
+Filename of binary grid file.
 .TP
 .I outfile
-Filename(s) of raw binary output files
+Filename(s) of raw binary output files.
 .SH EXAMPLE
 .TP
 Print global annual sum of NPP and heterotrophic respiration:
-.B printglobal 
+.B printglobal
 -month -yearsum grid.bin mnpp.bin mrh.bin
 .PP
 .SH EXIT STATUS

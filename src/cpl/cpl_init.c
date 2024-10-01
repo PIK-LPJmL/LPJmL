@@ -106,6 +106,7 @@ Cpl *cpl_init(const Cpl_coord grid[],     /**< local coordinate list */
       fprintf(stderr,"ERROR502: x coordinate %d out of bounds.\n",grid[i].x);
       free(xdisp);
       free(ydisp);
+      free(c);
       free(cpl);
       return NULL;
     }
@@ -117,6 +118,7 @@ Cpl *cpl_init(const Cpl_coord grid[],     /**< local coordinate list */
       fprintf(stderr,"ERROR502: y coordinate %d out of bounds.\n",grid[i].y);
       free(xdisp);
       free(ydisp);
+      free(c);
       free(cpl);
       return NULL;
     }

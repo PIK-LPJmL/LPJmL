@@ -32,7 +32,7 @@ Stocks establishmentpft(Stand *stand,        /**< Stand pointer  */
                        )  /** \return establishment flux (gC/m2,gN/m2) */
 {
   Stocks flux_est={0,0},stocks;
-  Real fpc_total,*fpc_type, fpc_obs_cor, fpc_obs;
+  Real fpc_total,*fpc_type, fpc_obs_cor, fpc_obs=0;
   int *n_est;
   Bool *present;
   int p,t;

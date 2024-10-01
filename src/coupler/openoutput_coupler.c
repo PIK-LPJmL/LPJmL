@@ -40,7 +40,7 @@ Bool openoutput_coupler(int id,              /**< id of output stream */
   fflush(stdout);
 #endif
   readint_socket(config->socket,&status,1);
-#ifdef DEBUG_COPAN
+#ifdef DEBUG_COUPLER
   printf(", %d received.\n",status);
   fflush(stdout);
 #endif

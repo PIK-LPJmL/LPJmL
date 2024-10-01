@@ -16,14 +16,14 @@
 
 #include "lpj.h"
 
-#if defined(USE_NETCDF) || defined(USE_NETCDF4)
+#ifdef USE_NETCDF
 #include <netcdf.h>
 #endif
 
 Bool write_pft_short_netcdf(const Netcdf *cdf,const short vec[],int year,
                             int pft,int size)
 {
-#if defined(USE_NETCDF) || defined(USE_NETCDF4)
+#ifdef USE_NETCDF
   int i,rc,index;
   size_t offsets[4],counts[4];
   short *grid;
