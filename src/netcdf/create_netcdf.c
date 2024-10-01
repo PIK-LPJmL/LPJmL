@@ -16,7 +16,7 @@
 
 #include "lpj.h"
 
-#if defined(USE_NETCDF)
+#ifdef USE_NETCDF
 #include <netcdf.h>
 #include <time.h>
 
@@ -40,7 +40,7 @@ Bool create_netcdf(Netcdf *cdf,
                    const Config *config      /**< LPJ configuration */
                   )                          /** \return TRUE on error */
 {
-#if defined(USE_NETCDF)
+#ifdef USE_NETCDF
   char *s;
   time_t t;
   int i,j,rc,nyear,imiss=config->netcdf.missing_value.i,len;
@@ -77,10 +77,7 @@ Bool create_netcdf(Netcdf *cdf,
       if(cdf->state==ONEFILE || cdf->state==CREATE)
       {
         /* start from checkpoint file, output files exist and have to be opened */
-        if(config->isnetcdf4)
-          rc=nc_open(filename,NC_WRITE|NC_CLOBBER|NC_NETCDF4,&cdf->ncid);
-        else
-          rc=nc_open(filename,NC_WRITE|NC_CLOBBER,&cdf->ncid);
+        rc=nc_open(filename,NC_WRITE|((config->isnetcdf4) ? NC_CLOBBER|NC_NETCDF4 : NC_CLOBBER),&cdf->ncid);
         if(rc)
         {
           fprintf(stderr,"ERROR426: Cannot open file '%s': %s.\n",
@@ -89,7 +86,7 @@ Bool create_netcdf(Netcdf *cdf,
         }
       }
       if(config->nofill)
-         ncsetfill(cdf->ncid,NC_NOFILL);
+        ncsetfill(cdf->ncid,NC_NOFILL);
       /* get id of output variable */
       rc=nc_inq_varid(cdf->ncid,name,&cdf->varid);
       if(rc)
@@ -203,10 +200,7 @@ Bool create_netcdf(Netcdf *cdf,
   }
   if(cdf->state==ONEFILE || cdf->state==CREATE)
   {
-    if(config->isnetcdf4)
-      rc=nc_create(filename,NC_CLOBBER|NC_NETCDF4,&cdf->ncid);
-    else
-      rc=nc_create(filename,NC_CLOBBER,&cdf->ncid);
+    rc=nc_create(filename,(config->isnetcdf4) ? NC_CLOBBER|NC_NETCDF4 : NC_CLOBBER,&cdf->ncid);
     if(rc)
     {
       fprintf(stderr,"ERROR426: Cannot create file '%s': %s.\n",

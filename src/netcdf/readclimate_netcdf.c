@@ -16,7 +16,7 @@
 
 #include "lpj.h"
 
-#if defined(USE_NETCDF)
+#ifdef USE_NETCDF
 #include <netcdf.h>
 
 static Bool myopen_netcdf(Climatefile *file,int year,const Config *config)
@@ -103,7 +103,7 @@ Bool readclimate_netcdf(Climatefile *file,   /**< climate data file */
                         const Config *config /**< LPJ configuration */
                        )                     /** \return TRUE on error */
 {
-#if defined(USE_NETCDF)
+#ifdef USE_NETCDF
   int i,cell,rc;
   float *f;
   double *d;
@@ -357,7 +357,7 @@ Bool readintclimate_netcdf(Climatefile *file,   /* climate data file */
                            const Config *config /* LPJ configuration */
                           )                     /* returns TRUE on error */
 {
-#if defined(USE_NETCDF)
+#ifdef USE_NETCDF
   int i,cell,rc;
   int *f;
   short *s;
@@ -529,7 +529,7 @@ int checkvalidclimate_netcdf(Climatefile *file,   /* climate data file */
                              const Config *config /* LPJ configuration */
                             )  /* returns number of invalid cells or -1 */
 {
-#if defined(USE_NETCDF)
+#ifdef USE_NETCDF
   int i,cell,rc;
   float *f;
   short *s;

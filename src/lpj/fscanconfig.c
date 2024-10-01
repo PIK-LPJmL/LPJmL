@@ -129,6 +129,14 @@ static Bool readclimatefilename(LPJfile *file,Filename *name,const char *key,Boo
       fprintf(stderr,"ERROR197: text file is not supported for input '%s' in this version of LPJmL.\n",name->name);
     return TRUE;
   }
+#ifndef USE_NETCDF
+  if(name->fmt==CDF)
+  {
+    if(verbose)
+      fprintf(stderr,"ERROR197: NetCDF is not supported for input '%s' in this version of LPJmL.\n",name->name);
+    return TRUE;
+  }
+#endif
   return FALSE;
 } /* of 'readclimatefilename' */
 
@@ -666,23 +674,10 @@ Bool fscanconfig(Config *config,    /**< LPJ configuration */
     if(fscanattrs(file,&config->global_attrs,&config->n_global,"global_attrs",verbose))
       return TRUE;
   }
-  config->compress=0;
-  if(fscanint(file,&config->compress,"compress",!config->pedantic,verbose))
-    return TRUE;
-#ifdef USE_NETCDF
-  if(config->compress)
-  {
-    if(verbose)
-      fputs("WARNING403: Compression of NetCDF files is not supported in this version of NetCDF.\n",stderr);
-    if(config->pedantic)
-      return TRUE;
-  }
-#endif
   if(fscanconfig_netcdf(file,&config->netcdf,"netcdf_config",verbose))
   {
     if(verbose)
       fputs("ERRROR230: Cannot read setting for NetCDF output.\n",stderr);
-    return TRUE;
   }
   config->outnames=fscanoutputvar(file,NOUT,verbose);
   if(config->outnames==NULL)

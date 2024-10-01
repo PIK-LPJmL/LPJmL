@@ -3,23 +3,23 @@
 cmpbin \- compares two binary output files
 .SH SYNOPSIS
 .B cmpbin
-[-metafile] [-verbose] [-csv] \fIfile1.bin\fP \fIfile2.bin\fP
+[\-metafile] [\-verbose] [\-csv] \fIfile1.bin\fP \fIfile2.bin\fP
 
 .SH DESCRIPTION
 Program compares two binary output files. The maximum difference and its location, the sum of all absolute differences and the average difference are printed.
 .SH OPTIONS
 .TP
--metafile
-Output files are JSON metafiles describing the structure of the raw binary file
+\-metafile
+Output files are JSON metafiles describing the structure of the raw binary file.
 .TP
--verbose
-Print values and absolute difference for each different data item
+\-verbose
+Print values and absolute difference for each different data item.
 .TP
--csv
-Print output in comma-separated format
+\-csv
+Print output in comma-separated format.
 .TP
 .I file1.bin file2.bin
-filenames of binary output data files to compare
+Filenames of binary output data files to compare.
 .SH EXAMPLE
 .TP
 Compare two binary files in the current directory:

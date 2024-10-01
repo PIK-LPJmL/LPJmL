@@ -2,9 +2,9 @@
 | |   |  _ \   | |_ __ ___ | |     | ___|       / _ \
 | |   | |_) |  | | '_ ` _ \| |     |___ \      | (_) |
 | |___|  __/ |_| | | | | | | |___   ___) |  _   \__, |
-|_____|_|   \___/|_| |_| |_|_____| |____/  (_)    /_/  Version 5.9.11
+|_____|_|   \___/|_| |_| |_|_____| |____/  (_)    /_/  Version 5.9.13
 
-Installation of LPJmL C Version 5.9.11
+Installation of LPJmL C Version 5.9.13
 
 Installation for Unix-like systems
 ----------------------------------
@@ -26,7 +26,7 @@ cd lpjml
 
 untar source files
 
-gzip -cd lpjml-5.9.11.tar.gz|tar -xf -
+gzip -cd lpjml-5.9.13.tar.gz|tar -xf -
 
 Directory tree after extracting the tar files:
 
@@ -166,6 +166,8 @@ COUPLING_WITH_FMS   enable coupling to FMS
 DAILY_ESTABLISHMENT enable daily establishment
 DEBUG               diagnostic output is generated for debugging purposes
 DEBUG_COUPLER       diagnostic output is generated for the coupler
+DEBUG_IMAGE         diagnostic output is generated for the IMAGE coupler
+DEBUG_N             diagnostic output is generated for the nitrogen cycle
 IMAGE               include coupler to IMAGE model
 LINEAR_DECAY        use linearized functions for litter decay
 MICRO_HEATING       enable microbial heating
@@ -221,8 +223,9 @@ country2cdf  - convert country/region code file into NetCDF file
 cru2clm      - convert CRU data into file format suitable for LPJmL.
                CRU data files have to be in the format specified in
                http://www.cru.uea.ac.uk/~timm/grid/CRU_TS_2_1.html.
-cutclm       - cuts LPJmL climate data files
+cutclm       - cut LPJmL climate data files
 cvrtclm      - convert version of CLM file to version 3 or 4
+drainage2cdf - convert CLM drainage file into NetCDF file
 getcellindex - get cell index from latitude, longitude values
 grid2clm     - convert grid data file to CLM data files for LPJmL
 headersize   - print header size of CLM files

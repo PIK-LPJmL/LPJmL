@@ -15,14 +15,14 @@
 /**************************************************************************************/
 
 #include "lpj.h"
-#if defined(USE_NETCDF)
+#ifdef USE_NETCDF
 #include <netcdf.h>
 #include <time.h>
 
 static nc_type nctype[]={NC_BYTE,NC_SHORT,NC_INT,NC_FLOAT,NC_DOUBLE};
 #endif
 
-#define error(rc) if(rc) {free(lon);free(lat);free(year);free(layer);free(bnds);fprintf(stderr,"ERROR427: Cannot write '%s': %s.\n",filename,nc_strerror(rc)); nc_close(cdf->ncid); return TRUE;}
+#define error(rc) if(rc) {free(lon);free(lat);free(year);free(layer);free(bnds);free(pftnames); fprintf(stderr,"ERROR427: Cannot write '%s': %s.\n",filename,nc_strerror(rc)); nc_close(cdf->ncid); return TRUE;}
 
 Bool create_pft_netcdf(Netcdf *cdf,
                        const char *filename, /**< filename of NetCDF file */
@@ -42,7 +42,7 @@ Bool create_pft_netcdf(Netcdf *cdf,
                        const Config *config  /**< LPJ configuration */
                       )                      /** \return TRUE on error */
 {
-#if defined(USE_NETCDF)
+#ifdef USE_NETCDF
   char *s;
   time_t t;
   int i,j,rc,nyear,size,len,*pft;
@@ -72,10 +72,7 @@ Bool create_pft_netcdf(Netcdf *cdf,
       if(cdf->state==ONEFILE || cdf->state==CREATE)
       {
         /* start from checkpoint file, output files exist and have to be opened */
-        if(config->isnetcdf4)
-          rc=nc_open(filename,NC_WRITE|NC_CLOBBER|NC_NETCDF4,&cdf->ncid);
-        else
-          rc=nc_open(filename,NC_WRITE|NC_CLOBBER,&cdf->ncid);
+        rc=nc_open(filename,NC_WRITE|((config->isnetcdf4) ? NC_CLOBBER|NC_NETCDF4 : NC_CLOBBER),&cdf->ncid);
         if(rc)
         {
           fprintf(stderr,"ERROR426: Cannot open file '%s': %s.\n",
@@ -217,12 +214,11 @@ Bool create_pft_netcdf(Netcdf *cdf,
       free(year);
       free(lon);
       free(lat);
+      free(layer);
+      free(bnds);
       return TRUE;
   }
-  if(config->isnetcdf4)
-    rc=nc_create(filename,NC_CLOBBER|NC_NETCDF4,&cdf->ncid);
-  else
-    rc=nc_create(filename,NC_CLOBBER,&cdf->ncid);
+  rc=nc_create(filename,(config->isnetcdf4) ? NC_CLOBBER|NC_NETCDF4 : NC_CLOBBER,&cdf->ncid);
   if(rc)
   {
     fprintf(stderr,"ERROR426: Cannot create file '%s': %s.\n",
@@ -237,7 +233,6 @@ Bool create_pft_netcdf(Netcdf *cdf,
   if(config->nofill)
   {
     ncsetfill(cdf->ncid,NC_NOFILL);
-    error(rc);
   }
   if(year!=NULL)
   {
@@ -465,6 +460,9 @@ Bool create_pft_netcdf(Netcdf *cdf,
       free(lat);
       free(lon);
       free(year);
+      free(layer);
+      free(bnds);
+      freepftnames(pftnames,index,npft,ncft,config);
       return TRUE;
   }
   error(rc);
@@ -531,6 +529,7 @@ Bool create_pft_netcdf(Netcdf *cdf,
       }
     }
     freepftnames(pftnames,index,npft,ncft,config);
+    pftnames=NULL;
   }
   rc=nc_put_var_double(cdf->ncid,lat_var_id,lat);
   error(rc);

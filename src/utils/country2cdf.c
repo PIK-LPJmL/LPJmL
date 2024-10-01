@@ -14,13 +14,13 @@
 
 #include "lpj.h"
 
-#if defined(USE_NETCDF)
+#ifdef USE_NETCDF
 #include <netcdf.h>
 
 #define error(rc) if(rc) {free(lon);free(lat);fprintf(stderr,"ERROR427: Cannot write '%s': %s.\n",filename,nc_strerror(rc)); nc_close(cdf->ncid); free(cdf);return NULL;}
 
 #define MISSING_VALUE 999
-#define USAGE "Usage: %s [-global] [-index i] [-cellsize size] [-compress level] [-descr d] [-config file] [netcdf4] name\n       gridfile countryfile netcdffile\n"
+#define USAGE "Usage: %s [-global] [-index i] [-cellsize size] [-compress level] [-descr d] [-netcdf4] name\n       gridfile countryfile netcdffile\n"
 
 typedef struct
 {
@@ -180,7 +180,7 @@ static void close_cdf(Cdf *cdf)
 #endif
 int main(int argc,char **argv)
 {
-#if defined(USE_NETCDF)
+#ifdef USE_NETCDF
   FILE *file;
   Coordfile coordfile;
   Coord_array *index;
@@ -265,6 +265,12 @@ int main(int argc,char **argv)
         if(*endptr!='\0')
         {
           fprintf(stderr,"Error: Invalid number '%s' for option '-compress'.\n",argv[iarg]);
+          return EXIT_FAILURE;
+        }
+        if(compress<0 || compress>9)
+        {
+          fprintf(stderr,"Error: Invalid compression value %d, must be in [0,9].\n",
+                  compress);
           return EXIT_FAILURE;
         }
       }

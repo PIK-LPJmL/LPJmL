@@ -20,7 +20,7 @@
 
 #define NTYPES 3 /* number of PFT types: grass, tree, crop */
 #define USAGE "\nUsage: %s [-h] [-v] [-q] [-nocheck] [-ofiles] [-param] [-vv]\n"\
-              "       [-couple hostname[:port]]\n"\
+              "       [-couple hostname[:port]] [-pedantic]\n"\
               "       [-outpath dir] [-inpath dir] [-restartpath dir]\n"\
               "       [-nopp] [-pp cmd] [[-Dmacro[=value]] [-Idir] ...] filename\n"
 #define LPJ_USAGE USAGE  "\nTry \"%s --help\" for more information.\n"

@@ -10,37 +10,37 @@ Program converts binary 2-D float arrays into CLM input data. The array has to b
 .SH OPTIONS
 .TP
 \-firstyear y
-Set first year in CLM file, default is 1901
+Set first year in CLM file, default is 1901.
 .TP
 \-scale factor
-scaling factor for CLM files. Default is one
+Scaling factor for CLM files. Default is 1.0.
 .TP
 \-id string
-LPJ header string in clm file
+LPJ header string in clm file.
 .TP
 \-version v
-version of clm header, default is 3
+Version of clm header, default is 3.
 .TP
 \-float
-write float values in clm file, default is short
+Write float values in clm file, default is short.
 .TP
 \-invalid value
-value of invalid data in array file, default is -9999.
+Value of invalid data in array file, default is -9999.
 .TP
 \-r value
-value to replace invalid data in CLM file, default is the invalid value.
+Value to replace invalid data in CLM file, default is the invalid value.
 .TP
 \-json
 JSON metafile is created with suffix '.json'
 .TP
 .I gridfile
-filename of grid data file
+Filename of grid data file.
 .TP
 .I arrfile
-filename of array file to convert
+Filename of array file to convert.
 .TP
 .I clmfile
-filename of CLM file
+Filename of CLM file.
 .SH EXAMPLES
 .TP
 Create CLM data file replacing invalid data by 10.

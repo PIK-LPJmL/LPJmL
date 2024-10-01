@@ -17,7 +17,7 @@
 
 #include "lpj.h"
 
-#if defined(USE_NETCDF)
+#ifdef USE_NETCDF
 #include <netcdf.h>
 #endif
 
@@ -27,7 +27,7 @@ Bool mpi_openclimate_netcdf(Climatefile *file,    /**< climate data file */
                             const Config *config  /**< LPJ configuration */
                            )                      /** \return TRUE on error */
 {
-#if defined(USE_NETCDF)
+#ifdef USE_NETCDF
   int rc;
   if(isroot(*config))
     rc=openclimate_netcdf(file,filename->name,filename->time,filename->var,filename->unit,units,config);

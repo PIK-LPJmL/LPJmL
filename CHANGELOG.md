@@ -44,6 +44,55 @@ of `major.minor.patch` with
 - Option `sum`, `tsum` and `tmean` to `mathclm` added.
 
 
+## [5.9.13] - 2024-09-26
+
+### Contributors
+
+- author: Werner von Bloh (bloh@pik-potsdam.de)
+- code review: Sebastian Ostberg (ostberg@pik-potsdam.de), Marie Hemmen (hemmen@pik-potsdam.de)
+
+### Changed
+
+- `USE_NETCDF4` compile option replaced by `"netcdf4"` boolean flag in the LPJmL configuration file. If set compression of NetCDF4 files can be enabled and PFT names are written as strings instead of character arrays.
+- Formatting of man pages harmonized.
+- If lpjml is compiled without `-DUSE_NETCDF` flag then `fscanconfig.c` and `fscanoutput.c` return with an error for NetCDF files specified for input/output.
+
+### Added
+
+- Option `-netcdf4` added to `bin2cdf`, `clm2cdf`, `country2cdf`, and `drainage2cdf` utility to enable NetCDF4 format.
+- Boolean flag `"netcdf4"` added to LPJmL configuration file in order to enable NetCDF4 format.
+- Option `-compress` added to `drainage2cdf` utility to enable file compression.
+- Man page for `drainage2cdf` added.
+- Check for valid compression value added for lpjml and utilities.
+- Missing option `"global_netcdf"` added to LPJmL config file.
+
+### Removed
+
+- Obsolete man page for `writeregioncode()` removed.
+
+### Fixed
+
+- Missing deallocation of memory added in `cpl_init.c`, `fscanlandcovermap.c`, `fscanoutput.c`, `writearea.c`, `create_pft_netcdf.c`, `newgrid.c`, `fscanagtreemap.c`, `celldata.c` in case of error.
+- Syntax error fixed in `update_daily.c` in IMAGE coupling.
+- Typo in `README` corrected.
+- `establishmentpft.c`, `cdf2coord.c` and `cdf2grid.c` modified to compile without warnings using gcc.
+- Debug flag in `send_token_coupler.c` and `openoutput_coupler.c` corrected to `DEBUG_COUPLER`.
+- Code changed to compile without errors/warnings for `-DIMAGE -DCOUPLED` setting.
+- Calculation of offsets and counts corrected in `readintdata_netdf.c` and missing loop over bands added.
+
+
+## [5.9.12] - 2024-09-24
+
+### Contributors
+
+- author: Christoph Müller (cmueller@pik-potsdam.de)
+- code review: Werner von Bloh (bloh@pik-potsdam.de), Sebastian Ostberg (ostberg@pik-potsdam.de)
+
+### Added
+
+- added SLURM option `--cpus-per-task=1` to `lpjsubmit` template `bin/lpjsubmit_hpc` to avoid that mpirun uses several CPUs per process
+
+
 ## [5.9.11] - 2024-09-23
 
 ### Contributors
@@ -78,6 +127,8 @@ of `major.minor.patch` with
 
 
 ## [5.9.9] - 2024-09-04
+
+### Contributors
 
 - author: Christoph Müller (cmueller@pik-potsdam.de)
 - code review: Stephen Wirth (wirth@pik-potsdam.de), Fabian Stenzel (stenzel@pik-potsdam.de)
@@ -295,6 +346,7 @@ of `major.minor.patch` with
 - code review: Sibyll Schaphoff (sibylls@pik-potsdam.de), Werner von Bloh (bloh@pik-potsdam.de) 
 
 ### Added
+
 - Added `GPL_HEAT` macro to change number of gridpoints per soil layer used for heat convection.
 - Added `percolation_heattransfer` switch to disable convection/percolation heattransfer.
 - Added `littertemp` output variable for litter temperature.
@@ -324,7 +376,7 @@ of `major.minor.patch` with
 
 - List of required modules on new PIK cluster added in `INSTALL`.
 - `configure.sh` script recognizes new PIK cluster and sets `mpiicx`/`icx` compiler accordingly.
-- New site-specific `Makefile.hpc2024` and Makefile.icx` for parallel/sequential compilation on new cluster added.
+- New site-specific `Makefile.hpc2024` and `Makefile.icx` for parallel/sequential compilation on new cluster added.
 - New `lpjsubmit_hpc` slurm script added for new PIK cluster. `configure.sh` sets symbolic link of `lpjsubmit` to this script.
 
 ### Changed

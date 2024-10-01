@@ -15,19 +15,19 @@ Disabling preprocessing of configuration file by \fBcpp\fP.
 Set preprocessor program to cmd. Default is \fBcpp\fP.
 .TP
 \-inpath \fIdir\fP
-set the input directory path. The path is added to the input filenames if they do not contain an absolute path.
+Set the input directory path. The path is added to the input filenames if they do not contain an absolute path.
 .TP
 \-outpath \fIdir\fP
-set the output directory path. The path is added to the output filenames if they do not contain an absolute path.
+Set the output directory path. The path is added to the output filenames if they do not contain an absolute path.
 .TP
 \-Dmacro{=value]
-define macro for the preprocessor of the configuration file
+Define macro for the preprocessor of the configuration file.
 .TP
 \-I\fIdir\fP
-define include directory for the preprocessor of the configuration file
+Define include directory for the preprocessor of the configuration file.
 .TP
 .I filename
-name of configuration file
+name of configuration file.
 
 .SH EXAMPLE
 .TP
@@ -37,23 +37,22 @@ Print harvest carbon with configuration file \fIlpjml.cjson\fP into \fIharvest.c
 .SH ENVIRONMENT
 .TP
 LPJNOPP
-disables preprocessor if set to "true", same as -nopp option
+Disables preprocessor if set to "true", same as -nopp option
 .TP
 LPJPEDANTIC
-enables pedantic mode if set to "true", same as -pedantic option
-.TP
-LPJPREP 
-defines preprocessor command for LPJmL configuration file, default is \fBcpp\fP.
+Enables pedantic mode if set to "true", same as -pedantic option
+LPJPREP
+Defines preprocessor command for LPJmL configuration file, default is \fBcpp\fP.
 .TP
 LPJROOT
-defines the root directory for LPJmL. This directory is added to the
-include directories of the preprocessor
+Defines the root directory for LPJmL. This directory is added to the
+include directories of the preprocessor.
 .TP
 LPJINPATH
 Path appended to the input filenames. Only done for filenames without absolute path.
 .TP
-LPJOPTIONS     
-runtime options for the preprocessor of LPJmL configuration files
+LPJOPTIONS
+Runtime options for the preprocessor of LPJmL configuration files.
 .TP
 LPJOUTPATH
 Path appended to the output filenames. Only done for filenames without absolute path.

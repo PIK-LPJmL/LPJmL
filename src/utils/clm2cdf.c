@@ -14,12 +14,12 @@
 
 #include "lpj.h"
 
-#if defined(USE_NETCDF)
+#ifdef USE_NETCDF
 #include <netcdf.h>
 
 #define error(rc) if(rc) {free(lon);free(lat);free(year);fprintf(stderr,"ERROR427: Cannot write '%s': %s.\n",filename,nc_strerror(rc)); nc_close(cdf->ncid); free(cdf);return NULL;}
 
-#define USAGE "\nUsage: %s [-h] [-v] [-scale s] [-longheader] [-global] [-cellsize size] [-byte] [-int] [-float]\n       [[-attr name=value] ...] [-intnetcdf] [-metafile] [-raw] [-nbands n] [-landuse] [-notime] [-compress level] [-units u]\n       [-map name] [-descr d] [-missing_value val] [-config file] [name gridfile] clmfile netcdffile\n"
+#define USAGE "Usage: %s [-h] [-v] [-scale s] [-longheader] [-global] [-cellsize size]\n       [-byte] [-int] [-float] [[-attr name=value] ...] [-intnetcdf]\n       [-metafile] [-raw] [-nbands n] [-landuse] [-notime] [-compress level]\n       [-units u] [-map name] [-descr d] [-missing_value val] [-config file] [-netcdf4]\n       [name gridfile] clmfile netcdffile\n"
 #define ERR_USAGE USAGE "\nTry \"%s --help\" for more information.\n"
 
 typedef struct
@@ -53,9 +53,9 @@ static Cdf *create_cdf(const char *filename,
   double *lon,*lat;
   int *year,i,j,rc,dim[4],varid;
   char *s;
+  const char *ptr;
   time_t t;
   size_t chunk[4];
-  const char *ptr;
   int len_dim_id;
   size_t offset[2],count[2];
   int time_var_id,lat_var_id,lon_var_id,time_dim_id,lat_dim_id,lon_dim_id,map_dim_id;
@@ -127,10 +127,7 @@ static Cdf *create_cdf(const char *filename,
     }
   }
   cdf->index=array;
-  if(isnetcdf4)
-    rc=nc_create(filename,NC_CLOBBER|NC_NETCDF4,&cdf->ncid);
-  else
-    rc=nc_create(filename,NC_CLOBBER,&cdf->ncid);
+  rc=nc_create(filename,(isnetcdf4) ? NC_CLOBBER|NC_NETCDF4 : NC_CLOBBER,&cdf->ncid);
   if(rc)
   {
     fprintf(stderr,"ERROR426: Cannot create file '%s': %s.\n",
@@ -518,7 +515,7 @@ static void close_cdf(Cdf *cdf)
 #endif
 int main(int argc,char **argv)
 {
-#if defined(USE_NETCDF)
+#ifdef USE_NETCDF
   FILE *file;
   Coordfile coordfile;
   Coord_array *index;
@@ -601,7 +598,7 @@ int main(int argc,char **argv)
                "-descr d         set long name in NetCDF file\n"
                "-units u         set units in NetCDF file\n"
                "-missing_value v set missing value to v\n"
-               "-config file  v  read NetCDF setting from JSON file\n"
+               "-config file     read NetCDF setting from JSON file\n"
                "name             variable name in NetCDF file\n"
                "gridfile         filename of grid data file\n"
                "clmfile          filename of CLM data file\n"
@@ -793,6 +790,12 @@ int main(int argc,char **argv)
         if(*endptr!='\0')
         {
           fprintf(stderr,"Error: Invalid number '%s' for option '-compress'.\n",argv[iarg]);
+          return EXIT_FAILURE;
+        }
+        if(compress<0 || compress>9)
+        {
+          fprintf(stderr,"Error: Invalid compression value %d, must be in [0,9].\n",
+                  compress);
           return EXIT_FAILURE;
         }
       }

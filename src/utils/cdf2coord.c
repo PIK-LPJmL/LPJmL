@@ -16,7 +16,7 @@
 
 #define USAGE  "Usage: %s [-var name] [-index i] [-{float|double}] [-scale s] [-raw] [-json] netcdffile coordfile\n"
 
-#if defined(USE_NETCDF)
+#ifdef USE_NETCDF
 #include <netcdf.h>
 #endif
 
@@ -24,11 +24,11 @@
 
 int main(int argc,char **argv)
 {
-#if defined(USE_NETCDF)
+#ifdef USE_NETCDF
   int rc,ncid,var_id,*dimids,i,j,nvars,lon_id,lat_id,ndims,index,first;
 
   double *lat,*lon;
-  float scalar;
+  float scalar=0.0;
   size_t lat_len,lon_len;
   size_t offsets[4]={0,0,0,0},counts[4]={1,1,1,1};
   double missing_value,data;

@@ -15,13 +15,13 @@
 /**************************************************************************************/
 
 #include "lpj.h"
-#if defined(USE_NETCDF)
+#ifdef USE_NETCDF
 #include <netcdf.h>
 #endif
 
 Bool close_netcdf(Netcdf *cdf)
 {
-#if defined(USE_NETCDF)
+#ifdef USE_NETCDF
   if(cdf->state==APPEND || cdf->state==CREATE)
     return FALSE;
   return nc_close(cdf->ncid)!=NC_NOERR;

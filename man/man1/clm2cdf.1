@@ -6,41 +6,44 @@ clm2cdf \- convert CLM files into NetCDF files
 [\-h] [\-v] [\-global] [\-scale factor] [\-cellsize size] [\-byte] [\-int] [\-float] [[\-attr name=value] ...] [\-intnetcdf] [\-metafile] [\-config file] [\-map name] [\-raw] [\-nbands n] [\-landuse] [\-notime] [\-compress level] [\-units u] [\-descr d] [\-netcdf4] [\-missing_value val]
 .I [varname gridfile] clmfile netcdffile
 .SH DESCRIPTION
-Program converts CLM input data into NetCDF input data. 
+Program converts CLM input data into NetCDF input data.
 .SH OPTIONS
 .TP
 \-h,\--help
-print help text
+Print a short help text.
 .TP
 \-v,\--version
-print LPJmL version
+Print LPJmL version.
 .TP
 \-global
-use global grid for NetCDF file
+Use global grid for NetCDF file.
 .TP
 \-longheader
-force version of CLM file to 2
+Force version of CLM file to 2.
 .TP
 \-scale factor
-scaling factor for CLM version 1 files. Default is one
+Scaling factor for CLM version 1 files. Default is 1.0.
 .TP
 \-cellsize size
-set cell size of grid file to size
+Set cell size of grid file to size.
 .TP
 \-byte
-set data type in CLM file to byte, default is short or read from CLM header
+Set data type in CLM file to byte, default is short or read from CLM header.
 .TP
 \-int
-set data type in CLM file to int, default is short or read from CLM header
+Set data type in CLM file to int, default is short or read from CLM header.
 .TP
 \-float
-set data type in CLM file to float, default is short or read from CLM header
+Set data type in CLM file to float, default is short or read from CLM header.
 .TP
 \-attr name=value
-set global attribute name in output files to value
+Set global attribute name in output files to value.
 .TP
 \-intnetcdf
-set data type in NetCDF file to int, default is float for short and float datatypes in CLM files
+Set data type in NetCDF file to int, default is float for short and float datatypes in CLM files.
+.TP
+\-netcdf4
+File written is in NetCDF4 format, compress flag is enabled.
 .TP
 \-netcdf4
 File written is in NetCDF4 format, compress flag is enabled.
@@ -49,49 +52,49 @@ File written is in NetCDF4 format, compress flag is enabled.
 set data type in CLM file to int, default is short or read from CLM header
 .TP
 \-metafile
-set the input format to JSON metafile instead of CLM.
+Set the input format to JSON metafile instead of CLM.
 .TP
 \-config file
 read missing values and axis names from JSON file
 .TP
 \-map name
-name of map in JSON metafile, default is "map"
+Name of map in JSON metafile, default is "map".
 .TP
 \-raw
-set the input format to raw instead of CLM
+Set the input format to raw instead of CLM.
 .TP
 \-nbands n
-set the number of bands to n. This is only active if raw format is set. Default is one
+Set the number of bands to n. This is only active if raw format is set. Default is 1.
 .TP
 -landuse
-convert land-use input data
+Convert land-use input data.
 .TP
 -notime
-No time dimension in NetCDF file
+No time dimension in NetCDF file.
 .TP
 \-compress level
-compression level for NetCDF4 files
+Compression level for NetCDF4 files. Valid levels are 0 (no compression) to 9.
 .TP
 \-units u
-set units in NetCDF file
+Set units for variable in NetCDF file.
 .TP
 \-descr d
-set long name in NetCDF file
+Set long name for variable in NetCDF file.
 .TP
 \-missing_value val
-set missing value in NetCDF file to val
+Set missing value for variable in NetCDF file to val.
 .TP
 varname
-variable name in NetCDF file. If not specified variable name is read from metafile
+Variable name in NetCDF file. Variable name can be omitted if -metafile option is set. Then variable name is read from metafile.
 .TP
-.I gridfile    
-filename of grid data file. If not specified grid name is read from metafile
+.I gridfile
+Filename of grid data file. Grid filename can be omitted if -metafile option is set.Then grid filename is read from metafile.
 .TP
 .I clmfile
-filename of CLM data file
+Filename of CLM data file.
 .TP
-.I netcdffile     
-filename of NetCDF file created
+.I netcdffile
+Filename of NetCDF file created.
 .SH EXAMPLES
 .TP
 Create data file for temperature:
@@ -116,4 +119,4 @@ See AUTHORS file
 (C) Potsdam Institute for Climate Impact Research (PIK), see COPYRIGHT file
 
 .SH SEE ALSO
-bin2cdf(1), country2cdf(1), regridlpj(1), lpjml(1), txt2clm(1), cru2clm(1), clm(5)
+bin2cdf(1), country2cdf(1), drainage2cdf(1), regridlpj(1), lpjml(1), txt2clm(1), cru2clm(1), clm(5)

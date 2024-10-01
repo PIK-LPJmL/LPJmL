@@ -15,13 +15,13 @@
 #include "lpj.h"
 
 #ifdef USE_UDUNITS
-#define USAGE "Usage: %s [-h] [-v] [-units unit] [-var name] [-time name] [-map name] [-o filename] [-scale factor] [-id s] [-version v] [-float] [-zero] [-json] [-config file] filegridfile netcdffile ...\n"
+#define USAGE "Usage: %s [-h] [-v] [-units unit] [-var name] [-time name] [-map name]\n       [-o filename] [-scale factor] [-id s] [-version v] [-float] [-zero]\n       [-json] [-config file] gridfile netcdffile ...\n"
 #else
-#define USAGE "Usage: %s [-h] [-v] [-var name] [-time name] [-map name] [-o filename] [-scale factor] [-id s] [-version v] [-float] [-zero] [-json] [-config file] gridfile netcdffile ...\n"
+#define USAGE "Usage: %s [-h] [-v] [-var name] [-time name] [-map name]\n       [-o filename] [-scale factor] [-id s] [-version v] [-float] [-zero] [-json] [-config file] gridfile netcdffile ...\n"
 #endif
 #define ERR_USAGE USAGE "\nTry \"%s --help\" for more information.\n"
 
-#if defined(USE_NETCDF)
+#ifdef USE_NETCDF
 #include <netcdf.h>
 
 static void printindex(size_t i,Time time,size_t var_len)
@@ -349,7 +349,7 @@ static Bool readclimate2(Climatefile *file,    /* climate data file */
 
 int main(int argc,char **argv)
 {
-#if defined(USE_NETCDF)
+#ifdef USE_NETCDF
   Coordfile coordfile;
   Climatefile climate;
   Config config;
@@ -411,7 +411,7 @@ int main(int argc,char **argv)
                "-zero         write zero values in clm file if data is not found\n"
                "-json         JSON metafile is created with suffix '.json'\n"
                "-o clmfile    filename of CLM data file written. Default is out.clm\n"
-               "-config file  v  read NetCDF setting from JSON file\n"
+               "-config file  read NetCDF setting from JSON file\n"
                "gridfile      filename of grid data file\n"
                "netcdffile    filename of NetCDF file(s) converted\n\n"
                "(C) Potsdam Institute for Climate Impact Research (PIK), see COPYRIGHT file\n",

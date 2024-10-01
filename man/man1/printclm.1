@@ -1,6 +1,6 @@
 .TH printclm 1  "USER COMMANDS"
 .SH NAME
-printclm, printheader \- Print contents of clm files for LPJmL                   
+printclm, printheader \- Print contents of clm files for LPJmL
 .SH SYNOPSIS
 .B printclm
 [-metafile] [-header] [-data] [-text] [-json] [-scale] [-longheader] [-type {byte|short|int|float|double}] [\-map name] [\-nbands n] [\-start s] [\-end e] [\-first f] [\-last l] \fIclmfile\fP ...
@@ -12,25 +12,25 @@ Program prints file header and data stored in clm data files for LPJmL. \fBprint
 .SH OPTIONS
 .TP
 -metafile
-File is a JSON metafile describing the structure of the raw binary file
+File is a JSON metafile describing the structure of the raw binary file.
 .TP
 -header
-Print without header
+Print without header.
 .TP
 -data
-Print without data
+Print without data.
 .TP
 -text
 Print data only without header and cell index
 .TP
 -json
-Print header in JSON format only
+Print header in JSON format only.
 .TP
 -scale
-Scale data with scale factor defined in header
+Scale data with scale factor defined in header.
 .TP
 -longheader
-set long header in CLM files.
+Set long header in CLM files.
 .TP
 -type {byte|short|int|float|double}
 Set datatype of clm file. Default is short.
@@ -48,21 +48,21 @@ Start output of data at year s.
 End output of data at year e.
 .TP
 -first f
-index of first cell for output.
+Index of first cell for output.
 .TP
 -last l
-index of last cell for output.
+Index of last cell for output.
 .TP
 .I clmfile
-filename of clm data file(s)
+Filename of clm data file(s).
 .SH EXAMPLE
 .TP
 Print headers of all clm files in the current directory:
-.B printclm 
+.B printclm
 -data *.clm
 .TP
 or
-.B printheader 
+.B printheader
 *.clm
 .PP
 .SH EXIT STATUS

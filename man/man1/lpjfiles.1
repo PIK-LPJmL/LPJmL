@@ -1,6 +1,6 @@
 .TH lpjfiles 1  "USER COMMANDS"
 .SH NAME
-lpjfiles \- Prints list of input/output files of LPJmL 
+lpjfiles \- Prints list of input/output files of LPJmL
 .SH SYNOPSIS
 .B lpjfiles
 [\-h] [\-v] [\-noinput] [-nopp] [-pp cmd] [\-outpath \fIdir\fP]
@@ -11,13 +11,13 @@ Program prints list of all input and output files of LPJmL configuration files. 
 .SH OPTIONS
 .TP
 \-h,\--help
-display a short help text
+Print a short help text.
 .TP
 \-v,\--version
-print LPJmL version
+Print LPJmL version.
 .TP
 \-noinput
-does not list input data files
+Do not list input data files.
 .TP
 \-nopp
 Disabling preprocessing of configuration file by \fBcpp\fP.
@@ -26,19 +26,19 @@ Disabling preprocessing of configuration file by \fBcpp\fP.
 Set preprocessor program to cmd. Default is \fBcpp\fP.
 .TP
 \-outpath \fIdir\fP
-set the output directory path. The path is added to the output filenames if they do not contain an absolute path.
+Set the output directory path. The path is added to the output filenames if they do not contain an absolute path.
 .TP
 \-inpath \fIdir\fP
-set the input directory path. The path is added to the input filenames if they do not contain an absolute path.
+Set the input directory path. The path is added to the input filenames if they do not contain an absolute path.
 .TP
 \-Dmacro[=value]
-define macro for the preprocessor of the configuration file
+Define macro for the preprocessor of the configuration file.
 .TP
 \-I\fIdir\fP
-define include directory for the preprocessor of the configuration file
+Define include directory for the preprocessor of the configuration file.
 .TP
 .I filename
-name of configuration file
+Name of configuration file.
 .SH EXAMPLES
 .TP
 Archive files for configuration file lpjml.cjson with input files located in the /p/projects/lpjml file system
@@ -48,22 +48,22 @@ Archive files for configuration file lpjml.cjson with input files located in the
 .SH ENVIRONMENT
 .TP
 LPJNOPP
-disables preprocessor if set to "true", same as -nopp option
+Disables preprocessor if set to "true", same as -nopp option.
 .TP
 LPJPEDANTIC
-enables pedantic mode if set to "true", same as -pedantic option
+Enables pedantic mode if set to "true", same as -pedantic option.
 .TP
-LPJPREP 
-defines preprocessor command for LPJmL configuration file, default is \fBcpp\fP. Same as '-pp' option.
+LPJPREP
+Defines preprocessor command for LPJmL configuration file, default is \fBcpp\fP. Same as '-pp' option.
 .TP
 LPJROOT
-defines the root directory for LPJmL. This directory is added to the
-include directories of the preprocessor
+Defines the root directory for LPJmL. This directory is added to the
+include directories of the preprocessor.
 .TP
 LPJINPATH
 Path appended to the input filenames. Only done for filenames without absolute path.
 .TP
-LPJOPTIONS     
+LPJOPTIONS
 runtime options for the preprocessor of LPJmL configuration files
 .TP
 LPJOUTPATH

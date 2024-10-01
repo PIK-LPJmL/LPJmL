@@ -14,13 +14,13 @@
 
 #include "lpj.h"
 
-#if defined(USE_NETCDF)
+#ifdef USE_NETCDF
 #include <netcdf.h>
 #include <time.h>
 
 #define error(rc) if(rc) {free(lon);free(lat);free(year);fprintf(stderr,"ERROR427: Cannot write '%s': %s.\n",filename,nc_strerror(rc)); nc_close(cdf->ncid); free(cdf);return NULL;}
 
-#define USAGE "\nUsage: %s [-h] [-v] [-clm] [-floatgrid] [-doublegrid] [-revlat] [-days] [-absyear]\n       [-firstyear y] [-baseyear y] [-nbands n] [-nstep n] [-cellsize size] [-swap]\n       [[-attr name=value]..] [-global] [-short] [-compress level] [-units u] [-descr d]\n       [-missing_value val] [-metafile] [-map name] [-config file] [-netcdf4] [varname gridfile]\n       binfile netcdffile\n"
+#define USAGE "Usage: %s [-h] [-v] [-clm] [-floatgrid] [-doublegrid] [-revlat] [-days]\n       [-absyear] [-firstyear y] [-baseyear y] [-nbands n] [-nstep n]\n       [-cellsize size] [-swap] [[-attr name=value]..] [-global] [-short]\n       [-compress level] [-units u] [-descr d] [-missing_value val] [-metafile]\n       [-map name] [-config file] [-netcdf4] [varname gridfile] binfile netcdffile\n"
 #define ERR_USAGE USAGE "\nTry \"%s --help\" for more information.\n"
 
 typedef struct
@@ -138,10 +138,7 @@ static Cdf *create_cdf(const char *filename,
       return NULL;
   }
   cdf->index=array;
-  if(isnetcdf4)
-    rc=nc_create(filename,NC_CLOBBER|NC_NETCDF4,&cdf->ncid);
-  else
-    rc=nc_create(filename,NC_CLOBBER,&cdf->ncid);
+  rc=nc_create(filename,(isnetcdf4) ? NC_CLOBBER|NC_NETCDF4 : NC_CLOBBER,&cdf->ncid);
   if(rc)
   {
     fprintf(stderr,"ERROR426: Cannot create file '%s': %s.\n",
@@ -612,7 +609,7 @@ static void close_cdf(Cdf *cdf)
 
 int main(int argc,char **argv)
 {
-#if defined(USE_NETCDF)
+#ifdef USE_NETCDF
   FILE *file,*gridfile;
   Intcoord intcoord;
   Coord_array *index;
@@ -644,7 +641,7 @@ int main(int argc,char **argv)
   grid_name.fmt=RAW;
   units=long_name=NULL;
   compress=0;
-  swap=isglobal=absyear=FALSE;
+  swap=isglobal=absyear=isnetcdf4=FALSE;
   res.lon=res.lat=header.cellsize_lon=header.cellsize_lat=0.5;
   header.firstyear=1901;
   header.nbands=1;
@@ -824,7 +821,7 @@ int main(int argc,char **argv)
         header.nbands=strtol(argv[++iarg],&endptr,10);
         if(*endptr!='\0')
         {
-          fprintf(stderr,"Error: Invalid number '%s' for option '-nitem'.\n",argv[iarg]);
+          fprintf(stderr,"Error: Invalid number '%s' for option '-nbands'.\n",argv[iarg]);
           return EXIT_FAILURE;
         }
         if(header.nbands<=0)
@@ -917,6 +914,12 @@ int main(int argc,char **argv)
         if(*endptr!='\0')
         {
           fprintf(stderr,"Error: Invalid number '%s' for option '-compress'.\n",argv[iarg]);
+          return EXIT_FAILURE;
+        }
+        if(compress<0 || compress>9)
+        {
+          fprintf(stderr,"Error: Invalid compression value %d, must be in [0,9].\n",
+                  compress);
           return EXIT_FAILURE;
         }
       }

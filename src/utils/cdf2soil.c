@@ -14,7 +14,7 @@
 
 #include "lpj.h"
 
-#if defined(USE_NETCDF)
+#ifdef USE_NETCDF
 #include <netcdf.h>
 #endif
 
@@ -26,7 +26,7 @@
 
 int main(int argc,char **argv)
 {
-#if defined(USE_NETCDF)
+#ifdef USE_NETCDF
   int rc,ncid,var_id,i,ndims,dimids[2],latlon_id;
   char name[NC_MAX_NAME+1];
   size_t ilat,ilon;
