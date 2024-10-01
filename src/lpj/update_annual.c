@@ -29,7 +29,6 @@ void update_annual(Cell *cell,          /**< Pointer to cell */
                   )
 {
   int s,p,m,l,cft;
-  Pft *pft;
   Stand *stand;
   Pftcroppar *croppar;
   Real mintemp[N];
@@ -109,8 +108,6 @@ void update_annual(Cell *cell,          /**< Pointer to cell */
 
     stand->soil.mean_maxthaw=(stand->soil.mean_maxthaw-stand->soil.mean_maxthaw/CLIMBUFSIZE)+stand->soil.maxthaw_depth/CLIMBUFSIZE;
     getoutput(&cell->output,MAXTHAW_DEPTH,config)+=stand->soil.maxthaw_depth*stand->frac*(1.0/(1-stand->cell->lakefrac));
-    foreachpft(pft,p,&stand->pftlist)
-      pft->vscal=NDAYYEAR;
     if(annual_stand(stand,npft,ncft,year,isdaily,intercrop,config))
     {
       /* stand has to be deleted */

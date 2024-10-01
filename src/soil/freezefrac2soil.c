@@ -53,7 +53,7 @@ void freezefrac2soil(Soil *soil,                       /**< pointer to soil to b
     if(ice_target > a_wi + ua_wi)
     {
       rest_ice = ice_target - a_wi - ua_wi; /* remaining ice to freeze */
-      f_ice_frac = rest_ice / f_wi; /* fraction of ice in f_wi */
+      f_ice_frac = (f_wi==0) ? 0.0 : rest_ice / f_wi; /* fraction of ice in f_wi */
     }
     else
       f_ice_frac = 0;
