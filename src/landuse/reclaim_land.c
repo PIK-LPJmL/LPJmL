@@ -49,6 +49,8 @@ void remove_vegetation_copy(Soil *soil, /* soil pointer */
 
   foreachpft(pft,p,&stand->pftlist)
   {
+    /* do not change pft->nind, as this is from the stand from which a copy is made
+       and it should not be modified */
     nind = pft->nind;
     /* if plot is deforested, wood is returned to litter, harvested or burnt
     * allows for mixed use, first harvesting a fraction of the stand,

@@ -144,11 +144,12 @@ struct config
   Real laimax;        /**< maximum LAI for benchmark */
   Bool withdailyoutput; /**< with daily output (TRUE/FALSE) */
   Bool flush_output;   /**< flush output after every simulation year (TRUE/FALSE) */
-  Bool nofill;          /**< do not fille NetCDF files at creation (TRUE/FALSE) */
+  Bool nofill;          /**< do not fill NetCDF files at creation (TRUE/FALSE) */
+  Bool isnetcdf4;       /**< output file is in NetCDF4 format (TRUE/FALSE) */
   int fdi;
   char *pft_index;
   char *layer_index;
-  int with_nitrogen;      /**< enable nitrogen cycle */
+  Bool unlim_nitrogen;      /**< enable unlimited nitrogen (TRUE/FALSE) */
   Bool crop_resp_fix;      /**< with fixed crop respiration (TRUE/FALSE) */
   int tillage_type;      /**< type of tillage NO_TILLAGE=0, TILLAGE=1, READ_TILLAGE=2 */
   int residue_treatment; /** residue options: READ_RESIDUE_DATA, NO_RESIDUE_REMOVE, FIXED_RESIDUE_REMOVE (uses param residues_in_soil) */
@@ -166,7 +167,7 @@ struct config
   Bool separate_harvests;
   int wateruse;           /**< enable wateruse (NO_WATERUSE, WATERUSE, ALL_WATERUSE) */
   int sdate_option_restart;     /**< sdate option in restart file */
-  int crop_option_restart;      /**< crop option in restart file */
+  int crop_phu_option_restart;  /**< crop phu option in restart file */
   int landuse_year_const;       /**< year landuse is fixed for LANDUSE_CONST case */
   Bool intercrop;               /**< intercropping (TRUE/FALSE) */
   Bool grassonly;               /**< set all cropland including others to zero but keep managed grasslands */

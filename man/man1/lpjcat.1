@@ -5,7 +5,7 @@ lpjcat \- Concatenates restart files from distributed LPJmL simulations.
 .B lpjcat
 [\-o \fIoutfile\fP] \fIfilename\fP ...
 .SH DESCRIPTION
-Program concatenates restart files from the LPJmL model to one joint restart file. Is used to create a restart file from distributed runs started by the 
+Program concatenates restart files from the LPJmL model to one joint restart file. Is used to create a restart file from distributed runs started by the
 .B
 lpjdistribute
 and
@@ -14,10 +14,10 @@ scripts.  Program is obsolete for the MPI version of \fBlpjml\fP.
 .SH OPTIONS
 .TP
 \-o \fIoutfile\fP
-sets filename of the concatenated restart file. Default is output to stdout.
+Set filename of the concatenated restart file. Default is output to stdout.
 .TP
 .I filename
-name of restart file(s).
+Name of restart file(s).
 .SH EXAMPLE
 .TP
 Concatenates restart files to the file \fIrestart.lpj\fP:
@@ -26,7 +26,7 @@ Concatenates restart files to the file \fIrestart.lpj\fP:
 .PP
 
 .SH EXIT STATUS
-.B lpjcat 
+.B lpjcat
 returns a zero exit status if the restart files have been concatenated.
 Non zero is returned in case of failure.
 

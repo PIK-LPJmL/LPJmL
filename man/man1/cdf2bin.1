@@ -10,45 +10,45 @@ Program converts NetCDF output data into raw binary output data.
 .SH OPTIONS
 .TP
 \-v
-print name of netcdf files
+Print name of netcdf files.
 .TP
 \-swap
-byte order of grid file has to be swapped
+Byte order of grid file has to be swapped.
 \-units u
-units to convert data from NetCDF file
+Units to convert data from NetCDF file.
 .TP
 \-var name
-variable name in NetCDF file
+Variable name in NetCDF file.
 .TP
 \-map name
-name of map in NetCDF file. If specified the map is read and put into the JSON metafile.
+Name of map in NetCDF file. If specified the map is read and put into the JSON metafile.
 .TP
 \-floatgrid
-set datatype of grid file to float, default is short.
+Set datatype of grid file to float, default is short.
 .TP
 \-doublegrid
-set datatype of grid file to double, default is short.
+Set datatype of grid file to double, default is short.
 .TP
 \-clm
-gridfile is in CLM format, default is raw
+Gridfile is in CLM format, default is raw.
 .TP
 \-byte
-output data is converted to byte
+Output data is converted to byte.
 .TP
 \-cellsize size
-cell size in grid file, default is 0.5
+Cell size in grid file, default is 0.5.
 .TP
 \-json
-JSON metafile is created with suffix '.json'
+JSON metafile is created with suffix '.json'.
 .TP
 \-o binfile
-filename of raw binary data file written. Default is out.bin
+Filename of raw binary data file written. Default is out.bin.
 .TP
 .I gridfile
-filename of binary grid data file consisting of short, float or double values or clm file if -clm option is set
+Filename of binary grid data file consisting of short, float or double values or clm file if -clm option is set.
 .TP
 .I netcdffile
-filename of NetCDF file(s) converted
+Filename of NetCDF file(s) converted.
 .SH EXAMPLES
 .TP
 Create output file for vegetation carbon:
@@ -69,4 +69,4 @@ For authors and contributors see AUTHORS file
 (C) Potsdam Institute for Climate Impact Research (PIK), see COPYRIGHT file
 
 .SH SEE ALSO
-bin2cdf(1), cmpbin(1), cdf2clm(1), country2cdf(1), regridlpj(1), lpjml(1), txt2clm(1), cru2clm(1), clm(5)
+bin2cdf(1), cmpbin(1), cdf2clm(1), cdf2grid(1), country2cdf(1), regridlpj(1), lpjml(1), txt2clm(1), cru2clm(1), clm(5)

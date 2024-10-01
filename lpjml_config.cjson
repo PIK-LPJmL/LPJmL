@@ -61,11 +61,7 @@
   "johansen" : true,        /* enable johansen way of temp. conductivity in soils (see src/soil/soilconduct.c) */
   "soilpar_option" : "no_fixed_soilpar", /* calculation of soil parameters, options "no_fixed_soilpar", "fixed_soilpar", "prescribed_soilpar" */
   "soilpar_fixyear" : 1900, /* year to fix soilpars for soilpar_option fixed_soilpar */
-  #ifdef WITHOUT_NITROGEN
-  "with_nitrogen" : "no",   /* options: "no", "lim", "unlim" */
-  #else
-  "with_nitrogen" : "lim",  /* options: "no", "lim", "unlim" */
-  #endif
+  "with_nitrogen" : "lim",  /* options: "lim", "unlim" */
   "store_climate" : true,   /* store climate data in spin-up phase */
   "landfrac_from_file" : true, /* read cell area from file (true/false) */
   "shuffle_spinup_climate" : true, /* shuffle spinup climate and/or climate in fix_climate run */
@@ -100,7 +96,7 @@
   "cultivation_types" : ["none","biomass","annual crop"], /* cultivation types to read from pft.cjson. Cultivations types are "none" (natural PFTs), "biomass" (bioenergy PFTs), "wp" (wood plantation PFTs),  "annual tree" (agriculture tree PFTs) and "annual crop" (CFTs)*/
   "prescribe_burntarea" : false, /* prescribe burned area on nat vegetation (for spitfire)  */
   "prescribe_landcover" : "no_landcover", /* prescribe natural veg composition, options: "no_landcover", "landcoverfpc" (FPC), "landcoverest" (establishment) */
-  "sowing_date_option" : "prescribed_sdate",   /* options: no_fixed_sdate, fixed_sdate, prescribed_sdate */
+  "sowing_date_option" : "prescribed_sdate",   /* options: "no_fixed_sdate","fixed_sdate","prescribed_sdate","prescribed_all_rainfed_sdate","prescribed_all_irrig_sdate" */
   "sdate_fixyear" : 1970,               /* year in which sowing dates shall be fixed, when using fixed_sdate */
   "intercrop" : true,                  /* enables intercrops on setaside */
   "residue_treatment" : "read_residue_data", /* residue options: "read_residue_data" (requires input dataset on fraction to remain on field), "no_residue_remove" (all non-harvested plant components to litter), "fixed_residue_remove" (fraction of non-harvested above ground biomass to remain in soil according to param residues_in_soil) */
@@ -124,8 +120,8 @@
   "grass_harvest_options" : false,      /* true: grid-specific grassland management, requires input file; false: default management (setting "grazing") everywhere */
   "prescribe_lsuha" : true,             /* prescribe livestock unit per hectare, input required (needed for "grazing" = "livestock") */
   "mowing_days" : [152, 335],           /* Mowing days (day-of-year) for grassland if "grazing" = "mowing" */
-  "crop_resp_fix" : true,              /* C:N ratio setting affecting crop respiration - options: true (fixed - avoids yield reductions at high n inputs); false (variable/dynamic) */
-  "crop_phu_option" : "prescribed",     /* defines setting for phenological heat unit and vernalization requirements for crops; options: "old", "new", "prescribed" */
+  "crop_resp_fix" : false,              /* C:N ratio setting affecting crop respiration - options: true (fixed - avoids yield reductions at high n inputs); false (variable/dynamic) */
+  "crop_phu_option" : "prescribed",     /* defines setting for phenological heat unit and vernalization requirements for crops; options: "bondeau2017" (i.e. based on Bondeau et al. 2007 vernalization), "vbussel2015" (i.e. based on van Bussel et al. 2015 vernalization), "prescribed", "prescribed_all_rainfed", "prescribed_all_irrig" */
   "separate_harvests" : true,           /* true: enables outputs for second growing season (e.g. harvest2.bin; sdate2.bin - have to be explicitly added to outputs); false: crop specific outputs over all growing seasons are added up/overwritten - caution: this interplays with the setting "grid_scaled" */
   "npp_controlled_bnf" : true,          /* enable npp controlled bnf based on Ma et al. 2022, alternatively old Cleveland et al. 1999*/
   "percolation_heattransfer" : true,    /* enable heat transfer by percolation of water through the soil */
@@ -137,11 +133,7 @@
 
   /* LPJmL parameter file */
   "param" :
-#ifdef WITHOUT_NITROGEN
-    #include "par/lpjparam_non.cjson"
-#else
     #include "par/lpjparam.cjson"
-#endif
   ,
 
   /* Soil parameter file */
@@ -156,11 +148,7 @@
 
   /* PFT parameter file*/
   "pftpar" :
- #ifdef WITHOUT_NITROGEN
-    #include "par/pft_non.cjson"
-#else
     #include "par/pft.cjson"
-#endif
   ,
 
   /* Management parameter file */
@@ -243,6 +231,8 @@
   "rev_lat" : false,          /* reverse order of latitudes in NetCDF output (true/false) */
   "with_days" : true,         /* use days as units for monthly output in NetCDF files */
   "nofill" : false,           /* do not fill NetCDF files at creation (true/false) */
+  "global_netcdf" : false,    /* use global grid for NetCDF files (true/false) */
+  "netcdf4" : false,          /* NetCDF files are in NetCDF4 format (true/false) */
   "compress" : 0,             /* compression level (1-9, 0= no compression) */
   "missing_value" : -1e32,    /* missing value in NetCDF files */
   "pft_index" : "npft",       /* name of index variable for PFT output */

@@ -156,12 +156,12 @@ Bool allocation_tree(Litter *litter,   /**< litter pool */
   if(!strcmp(pft->par->name,"cotton"))
   {
     wscal=pft->wscal_mean/(Real)pft->stand->growing_days;
-    vscal=(config->with_nitrogen) ? min(1,pft->vscal/(Real)pft->stand->growing_days) : 1;
+    vscal= min(1,pft->vscal/(Real)pft->stand->growing_days);
     lmtorm=getpftpar(pft,lmro_ratio)*(getpftpar(pft,lmro_offset)+(1-getpftpar(pft,lmro_offset))*min(vscal,wscal));
   }
   else
   {
-    vscal=(config->with_nitrogen) ? min(1,pft->vscal/NDAYYEAR) : 1;
+    vscal=min(1,pft->vscal/NDAYYEAR);
     wscal=pft->wscal_mean/NDAYYEAR;
     lmtorm=getpftpar(pft,lmro_ratio)*(getpftpar(pft,lmro_offset)+(1-getpftpar(pft,lmro_offset))*min(vscal,wscal));
   }
@@ -288,76 +288,73 @@ Bool allocation_tree(Litter *litter,   /**< litter pool */
   /* all carbon from bm_inc_ind.carbon has been allocated according to rules*/
   /* check if there is too much carbon for allowed CN ratios and eventually put
      some carbon back to bm_inc_ind.carbon */
-  if(config->with_nitrogen)
-  {
 
-    /* nitrogen allocation */
-    if(tree->ind.leaf.carbon>0 && bm_inc_ind.nitrogen>0)
+  /* nitrogen allocation */
+  if(tree->ind.leaf.carbon>0 && bm_inc_ind.nitrogen>0)
+  {
+    nitrogen_allocation_tree(&a,&b,&c,tree->ind.leaf,tree->ind.root,tree->ind.sapwood,
+        treepar->ratio.root,treepar->ratio.sapwood,bm_inc_ind.nitrogen);
+    /* check if there is too much nitrogen, fill up leaves, roots sapwood to max allowed */
+    if((tree->ind.leaf.nitrogen+a*bm_inc_ind.nitrogen)/tree->ind.leaf.carbon>pft->par->ncleaf.high)
     {
-      nitrogen_allocation_tree(&a,&b,&c,tree->ind.leaf,tree->ind.root,tree->ind.sapwood,
-                               treepar->ratio.root,treepar->ratio.sapwood,bm_inc_ind.nitrogen);
-      /* check if there is too much nitrogen, fill up leaves, roots sapwood to max allowed */
-      if((tree->ind.leaf.nitrogen+a*bm_inc_ind.nitrogen)/tree->ind.leaf.carbon>pft->par->ncleaf.high)
+      nitrogen_before=tree->ind.leaf.nitrogen;
+      tree->ind.leaf.nitrogen=tree->ind.leaf.carbon*pft->par->ncleaf.high;
+      bm_inc_ind.nitrogen-=tree->ind.leaf.nitrogen-nitrogen_before;
+      if(bm_inc_ind.nitrogen>=tree->ind.root.carbon*pft->par->ncleaf.high/treepar->ratio.root-tree->ind.root.nitrogen)
       {
-        nitrogen_before=tree->ind.leaf.nitrogen;
-        tree->ind.leaf.nitrogen=tree->ind.leaf.carbon*pft->par->ncleaf.high;
-        bm_inc_ind.nitrogen-=tree->ind.leaf.nitrogen-nitrogen_before;
-        if(bm_inc_ind.nitrogen>=tree->ind.root.carbon*pft->par->ncleaf.high/treepar->ratio.root-tree->ind.root.nitrogen)
-        {
-          nitrogen_before=tree->ind.root.nitrogen;
-          tree->ind.root.nitrogen=tree->ind.root.carbon*pft->par->ncleaf.high/treepar->ratio.root;
-          bm_inc_ind.nitrogen-=tree->ind.root.nitrogen-nitrogen_before;
-        }
-        else
-        {
-          tree->ind.root.nitrogen+= bm_inc_ind.nitrogen;
-          bm_inc_ind.nitrogen=0;
-        }
-        if( bm_inc_ind.nitrogen>=tree->ind.sapwood.carbon*pft->par->ncleaf.high/treepar->ratio.sapwood-tree->ind.sapwood.nitrogen)
-        {
-          nitrogen_before=tree->ind.sapwood.nitrogen;
-          tree->ind.sapwood.nitrogen=tree->ind.sapwood.carbon*pft->par->ncleaf.high/treepar->ratio.sapwood;
-          bm_inc_ind.nitrogen-=tree->ind.sapwood.nitrogen-nitrogen_before;
-        }
-        else
-        {
-          tree->ind.sapwood.nitrogen+= bm_inc_ind.nitrogen;
-          bm_inc_ind.nitrogen=0;
-        }
+        nitrogen_before=tree->ind.root.nitrogen;
+        tree->ind.root.nitrogen=tree->ind.root.carbon*pft->par->ncleaf.high/treepar->ratio.root;
+        bm_inc_ind.nitrogen-=tree->ind.root.nitrogen-nitrogen_before;
       }
-      else /* not too much nitrogen, allocate normally */
+      else
       {
-        tree->ind.leaf.nitrogen+=a*bm_inc_ind.nitrogen;
-        tree->ind.root.nitrogen+=b*bm_inc_ind.nitrogen;
-        tree->ind.sapwood.nitrogen+=c*bm_inc_ind.nitrogen;
+        tree->ind.root.nitrogen+= bm_inc_ind.nitrogen;
         bm_inc_ind.nitrogen=0;
-        /* testing if there is too much carbon for allowed NC ratios */
-        if(tree->ind.leaf.nitrogen/tree->ind.leaf.carbon<pft->par->ncleaf.low)
-        {
-          cleaf=tree->ind.leaf.nitrogen/pft->par->ncleaf.low;
-          tree->excess_carbon+=(tree->ind.leaf.carbon-cleaf);
-          tree->ind.leaf.carbon=cleaf;
-        }
-        if(tree->ind.root.carbon>0 && tree->ind.root.nitrogen/tree->ind.root.carbon<pft->par->ncleaf.low/treepar->ratio.root)
-        {
-          croot=tree->ind.root.nitrogen/pft->par->ncleaf.low*treepar->ratio.root;
-          tree->excess_carbon+=(tree->ind.root.carbon-croot);
-          tree->ind.root.carbon=croot;
-        }
-        if(tree->ind.sapwood.carbon>0 && tree->ind.sapwood.nitrogen/tree->ind.sapwood.carbon<pft->par->ncleaf.low/treepar->ratio.sapwood)
-        {
-          csapwood=tree->ind.sapwood.nitrogen/pft->par->ncleaf.low*treepar->ratio.sapwood;
-          tree->excess_carbon+=(tree->ind.sapwood.carbon-csapwood);
-          tree->ind.sapwood.carbon=csapwood;
-        }
+      }
+      if( bm_inc_ind.nitrogen>=tree->ind.sapwood.carbon*pft->par->ncleaf.high/treepar->ratio.sapwood-tree->ind.sapwood.nitrogen)
+      {
+        nitrogen_before=tree->ind.sapwood.nitrogen;
+        tree->ind.sapwood.nitrogen=tree->ind.sapwood.carbon*pft->par->ncleaf.high/treepar->ratio.sapwood;
+        bm_inc_ind.nitrogen-=tree->ind.sapwood.nitrogen-nitrogen_before;
+      }
+      else
+      {
+        tree->ind.sapwood.nitrogen+= bm_inc_ind.nitrogen;
+        bm_inc_ind.nitrogen=0;
       }
     }
-    pft->bm_inc.nitrogen=bm_inc_ind.nitrogen*pft->nind;
-  } /* of config->with_nitrogen */
-  if(tree->ind.leaf.carbon<=0 && tree->ind.root.carbon>0)   //QUICK-FIX very occasional it happens that leaf carbon is ZERO and a lot of carbon is in roots
+    else /* not too much nitrogen, allocate normally */
+    {
+      tree->ind.leaf.nitrogen+=a*bm_inc_ind.nitrogen;
+      tree->ind.root.nitrogen+=b*bm_inc_ind.nitrogen;
+      tree->ind.sapwood.nitrogen+=c*bm_inc_ind.nitrogen;
+      bm_inc_ind.nitrogen=0;
+      /* testing if there is too much carbon for allowed NC ratios */
+      if(tree->ind.leaf.nitrogen/tree->ind.leaf.carbon<pft->par->ncleaf.low)
+      {
+        cleaf=tree->ind.leaf.nitrogen/pft->par->ncleaf.low;
+        tree->excess_carbon+=(tree->ind.leaf.carbon-cleaf);
+        tree->ind.leaf.carbon=cleaf;
+      }
+      if(tree->ind.root.carbon>0 && tree->ind.root.nitrogen/tree->ind.root.carbon<pft->par->ncleaf.low/treepar->ratio.root)
+      {
+        croot=tree->ind.root.nitrogen/pft->par->ncleaf.low*treepar->ratio.root;
+        tree->excess_carbon+=(tree->ind.root.carbon-croot);
+        tree->ind.root.carbon=croot;
+      }
+      if(tree->ind.sapwood.carbon>0 && tree->ind.sapwood.nitrogen/tree->ind.sapwood.carbon<pft->par->ncleaf.low/treepar->ratio.sapwood)
+      {
+        csapwood=tree->ind.sapwood.nitrogen/pft->par->ncleaf.low*treepar->ratio.sapwood;
+        tree->excess_carbon+=(tree->ind.sapwood.carbon-csapwood);
+        tree->ind.sapwood.carbon=csapwood;
+      }
+    }
+  }
+  pft->bm_inc.nitrogen=bm_inc_ind.nitrogen*pft->nind;
+  if(tree->ind.leaf.carbon<epsilon && tree->ind.root.carbon>epsilon)   //QUICK-FIX very occasional it happens that leaf carbon is ZERO and a lot of carbon is in roots
   {
-      tree->ind.leaf.carbon+=tree->ind.root.carbon/lmtorm;
-      tree->ind.root.carbon-=tree->ind.root.carbon/lmtorm;
+    tree->ind.leaf.carbon+=tree->ind.root.carbon/lmtorm;
+    tree->ind.root.carbon-=tree->ind.root.carbon/lmtorm;
   }
   pft->bm_inc.carbon=0;
   allometry_tree(pft);

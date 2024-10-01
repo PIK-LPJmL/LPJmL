@@ -15,12 +15,12 @@
 #include "lpj.h"
 
 #ifdef USE_UDUNITS
-#define USAGE "Usage: %s [-h] [-v] [-units unit] [-var name] [-time name] [-map name] [-o filename] [-scale factor] [-id s] [-version v] [-float] [-zero] [-json] gridfile netcdffile ...\n"
+#define USAGE "Usage: %s [-h] [-v] [-units unit] [-var name] [-time name] [-map name]\n       [-o filename] [-scale factor] [-id s] [-version v] [-float] [-zero]\n       [-json] gridfile netcdffile ...\n"
 #else
-#define USAGE "Usage: %s [-h] [-v] [-var name] [-time name] [-map name] [-o filename] [-scale factor] [-id s] [-version v] [-float] [-zero] [-json] gridfile netcdffile ...\n"
+#define USAGE "Usage: %s [-h] [-v] [-var name] [-time name] [-map name]\n       [-o filename] [-scale factor] [-id s] [-version v] [-float] [-zero] [-json] gridfile netcdffile ...\n"
 #endif
 
-#if defined(USE_NETCDF) || defined(USE_NETCDF4)
+#ifdef USE_NETCDF
 #include <netcdf.h>
 
 static void printindex(size_t i,Time time,size_t var_len)
@@ -348,7 +348,7 @@ static Bool readclimate2(Climatefile *file,    /* climate data file */
 
 int main(int argc,char **argv)
 {
-#if defined(USE_NETCDF) || defined(USE_NETCDF4)
+#ifdef USE_NETCDF
   Coordfile coordfile;
   Climatefile climate;
   Config config;
@@ -534,6 +534,12 @@ int main(int argc,char **argv)
             USAGE,argv[0]);
     return EXIT_FAILURE;
   }
+  if(isfloat && scale!=1)
+  {
+    fprintf(stderr,"Warning: Scaling set to %g but datatype is float, scaling set to 1.\n",
+            scale);
+    scale=1;
+  }
   coord_filename.name=argv[iarg];
   coord_filename.fmt=CLM;
   coordfile=opencoord(&coord_filename,TRUE);
@@ -627,13 +633,13 @@ int main(int argc,char **argv)
         }
       }
       if(units==NULL)
-        units=getattr_netcdf(&climate,climate.varid,"units");
+        units=getattr_netcdf(climate.ncid,climate.varid,"units");
       if(var==NULL)
         var=getvarname_netcdf(&climate);
-      long_name=getattr_netcdf(&climate,climate.varid,"long_name");
-      standard_name=getattr_netcdf(&climate,climate.varid,"standard_name");
-      history=getattr_netcdf(&climate,NC_GLOBAL,"history");
-      source=getattr_netcdf(&climate,NC_GLOBAL,"source");
+      long_name=getattr_netcdf(climate.ncid,climate.varid,"long_name");
+      standard_name=getattr_netcdf(climate.ncid,climate.varid,"standard_name");
+      history=getattr_netcdf(climate.ncid,NC_GLOBAL,"history");
+      source=getattr_netcdf(climate.ncid,NC_GLOBAL,"source");
       if(map_name!=NULL)
       {
         map=readmap_netcdf(climate.ncid,map_name);
@@ -662,7 +668,7 @@ int main(int argc,char **argv)
           {
             if(strcmp(name,"history") && strcmp(name,"source"))
             {
-              attrs[n_attr].value=getattr_netcdf(&climate,NC_GLOBAL,name);
+              attrs[n_attr].value=getattr_netcdf(climate.ncid,NC_GLOBAL,name);
               if(attrs[n_attr].value!=NULL)
                 attrs[n_attr++].name=strdup(name);
             }

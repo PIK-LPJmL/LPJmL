@@ -15,7 +15,7 @@ The registration is free of costs.
 
 Outside joint collaborative agreements with PIK, there is absolutely no support in model download, setup, development, application or similar.
 
-New model development can be submitted to the LPJmL git repository in separate repository branches and pull requests can be issued. There is no guarantee or obligation that external model features, bug fixes or other developemnts will be merged into the standard LPJmL distribution at PIK.
+New model development can be submitted to the LPJmL git repository in separate repository branches and pull requests can be issued. There is no guarantee or obligation that external model features, bug fixes or other developments will be merged into the standard LPJmL distribution at PIK.
 Discussions on model development features can only be initiated via issues at https://github.com/PIK-LPJmL/LPJmL.
 
 We strongly encourrage considering the coding standards and style recommendations in LPJmL. For details see the file STYLESHEET.md.

@@ -15,12 +15,12 @@
 #include "lpj.h"
 
 #ifdef USE_UDUNITS
-#define USAGE "Usage: %s [-swap] [-v] [-units unit] [-var name] [-map name] [-clm] [-cellsize size] [-byte] [-floatgrid] [-doublegrid]  [-o filename] [-json] gridfile netcdffile ...\n"
+#define USAGE "Usage: %s [-swap] [-v] [-units unit] [-var name] [-map name] [-clm]\n       [-cellsize size] [-byte] [-floatgrid] [-doublegrid]  [-o filename]\n       [-json] gridfile netcdffile ...\n"
 #else
 #define USAGE "Usage: %s [-swap] [-v] [-var name] [-map name] [-clm] [-cellsize size] [-byte] [-floatgrid] [-doublegrid] [-o filename] [-json] gridfile netcdffile ...\n"
 #endif
 
-#if defined(USE_NETCDF) || defined(USE_NETCDF4)
+#ifdef USE_NETCDF
 #include <netcdf.h>
 
 static Bool readmydata(Climatefile *file,    /* climate data file */
@@ -222,7 +222,7 @@ static Bool readmydata(Climatefile *file,    /* climate data file */
 
 int main(int argc,char **argv)
 {
-#if defined(USE_NETCDF) || defined(USE_NETCDF4)
+#ifdef USE_NETCDF
   Coordfile coordfile;
   Filename coord_filename;
   Climatefile data;
@@ -233,7 +233,7 @@ int main(int argc,char **argv)
   float fcoord[2];
   double dcoord[2];
   FILE *file;
-  Map *map;
+  Map *map=NULL;
   int iarg,j,k;
   Attr *attrs=NULL;
   int n_attr=0,len;
@@ -475,12 +475,12 @@ int main(int argc,char **argv)
     if(var==NULL)
       var=getvarname_netcdf(&data);
     if(units==NULL)
-      units=getattr_netcdf(&data,data.varid,"units");
-    long_name=getattr_netcdf(&data,data.varid,"long_name");
-    standard_name=getattr_netcdf(&data,data.varid,"standard_name");
-    history=getattr_netcdf(&data,NC_GLOBAL,"history");
-    source=getattr_netcdf(&data,NC_GLOBAL,"source");
-    title=getattr_netcdf(&data,NC_GLOBAL,"title");
+      units=getattr_netcdf(data.ncid,data.varid,"units");
+    long_name=getattr_netcdf(data.ncid,data.varid,"long_name");
+    standard_name=getattr_netcdf(data.ncid,data.varid,"standard_name");
+    history=getattr_netcdf(data.ncid,NC_GLOBAL,"history");
+    source=getattr_netcdf(data.ncid,NC_GLOBAL,"source");
+    title=getattr_netcdf(data.ncid,NC_GLOBAL,"title");
     if(j==iarg+1)
     {
       if(isjson)
@@ -517,7 +517,7 @@ int main(int argc,char **argv)
             {
               if(strcmp(name,"history") && strcmp(name,"source") && strcmp(name,"title"))
               {
-                attrs[n_attr].value=getattr_netcdf(&data,NC_GLOBAL,name);
+                attrs[n_attr].value=getattr_netcdf(data.ncid,NC_GLOBAL,name);
                 if(attrs[n_attr].value!=NULL)
                   attrs[n_attr++].name=strdup(name);
               }

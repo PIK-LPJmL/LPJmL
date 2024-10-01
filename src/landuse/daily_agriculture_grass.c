@@ -93,7 +93,7 @@ Real daily_agriculture_grass(Stand *stand,                /**< stand pointer */
 
   for (l = 0; l < LASTLAYER; l++)
     aet_stand[l] = green_transp[l] = 0;
-  if (config->with_nitrogen && stand->cell->ml.fertilizer_nr!=NULL) /* has to be adapted if fix_fertilization option is added */
+  if (stand->cell->ml.fertilizer_nr!=NULL) /* has to be adapted if fix_fertilization option is added */
   {
     if(day==fertday_biomass(stand->cell,config))
     {
@@ -105,7 +105,7 @@ Real daily_agriculture_grass(Stand *stand,                /**< stand pointer */
       getoutput(output,NAPPLIED_MG,config)+=fertil*stand->frac;
     } /* end fday==day */
   }
-  if (config->with_nitrogen && stand->cell->ml.manure_nr!=NULL)
+  if (stand->cell->ml.manure_nr!=NULL)
   {
     if(day==fertday_biomass(stand->cell,config))
     {
@@ -222,7 +222,7 @@ Real daily_agriculture_grass(Stand *stand,                /**< stand pointer */
          getoutputindex(output,PFT_GCGP,nnat + index,config) += gcgp;
       }
     }
-    npp = npp_grass(pft, gtemp_air, gtemp_soil, gpp - rd - pft->npp_bnf,config,config->with_nitrogen);
+    npp = npp_grass(pft, gtemp_air, gtemp_soil, gpp - rd - pft->npp_bnf,config);
     pft->npp_bnf=0.0;
     stand->cell->balance.anpp+=npp*stand->frac;
     stand->cell->balance.agpp+=gpp*stand->frac;

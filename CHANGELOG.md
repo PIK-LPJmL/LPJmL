@@ -19,6 +19,164 @@ of `major.minor.patch` with
 
 ## [Unreleased]
 
+## [5.9.13] - 2024-09-26
+
+### Contributors
+
+- author: Werner von Bloh (bloh@pik-potsdam.de)
+- code review: Sebastian Ostberg (ostberg@pik-potsdam.de), Marie Hemmen (hemmen@pik-potsdam.de)
+
+### Changed
+
+- `USE_NETCDF4` compile option replaced by `"netcdf4"` boolean flag in the LPJmL configuration file. If set compression of NetCDF4 files can be enabled and PFT names are written as strings instead of character arrays.
+- Formatting of man pages harmonized.
+- If lpjml is compiled without `-DUSE_NETCDF` flag then `fscanconfig.c` and `fscanoutput.c` return with an error for NetCDF files specified for input/output.
+
+### Added
+
+- Option `-netcdf4` added to `bin2cdf`, `clm2cdf`, `country2cdf`, and `drainage2cdf` utility to enable NetCDF4 format.
+- Boolean flag `"netcdf4"` added to LPJmL configuration file in order to enable NetCDF4 format.
+- Option `-compress` added to `drainage2cdf` utility to enable file compression.
+- Man page for `drainage2cdf` added.
+- Check for valid compression value added for lpjml and utilities.
+- Missing option `"global_netcdf"` added to LPJmL config file.
+
+### Removed
+
+- Obsolete man page for `writeregioncode()` removed.
+
+### Fixed
+
+- Missing deallocation of memory added in `cpl_init.c`, `fscanlandcovermap.c`, `fscanoutput.c`, `writearea.c`, `create_pft_netcdf.c`, `newgrid.c`, `fscanagtreemap.c`, `celldata.c` in case of error.
+- Syntax error fixed in `update_daily.c` in IMAGE coupling.
+- Typo in `README` corrected.
+- `establishmentpft.c`, `cdf2coord.c` and `cdf2grid.c` modified to compile without warnings using gcc.
+- Debug flag in `send_token_coupler.c` and `openoutput_coupler.c` corrected to `DEBUG_COUPLER`.
+- Code changed to compile without errors/warnings for `-DIMAGE -DCOUPLED` setting.
+- Calculation of offsets and counts corrected in `readintdata_netdf.c` and missing loop over bands added.
+
+
+## [5.9.12] - 2024-09-24
+
+### Contributors
+
+- author: Christoph Müller (cmueller@pik-potsdam.de)
+- code review: Werner von Bloh (bloh@pik-potsdam.de), Sebastian Ostberg (ostberg@pik-potsdam.de)
+
+### Added
+
+- added SLURM option `--cpus-per-task=1` to `lpjsubmit` template `bin/lpjsubmit_hpc` to avoid that mpirun uses several CPUs per process
+
+
+## [5.9.11] - 2024-09-23
+
+### Contributors
+
+- author: Stephen Wirth (wirth@pik-potsdam.de), Christoph Müller (cmueller@pik-potsdam.de)
+- code review: Alja Vrieling (alja.vrieling@vortech.nl), Johanna Braun (jobraun@pik-potsdam.de)
+
+### Added
+
+- tree.fruit biomass is now explicitly handled in timber_harvest() and pools scaled accordingly in annual_woodplantation.c even though these are currently always zero anyways.
+
+### Fixed
+
+- added missing scaling of `bm_inc.nitrogen` after part of it was added to litter in harvest of wood plantations as in issue #358
+
+
+## [5.9.10] - 2024-09-23
+
+### Contributors
+
+- author: Werner von Bloh (bloh@pik-potsdam.de)
+- code review: Sibyll Schaphoff (sibylls@pik-potsdam.de), Christoph Müller (cmueller@pik-potsdam.de)
+
+### Removed
+
+- Option `"no"` for nitrogen setting removed, only `"lim"` and `"unlim"` allowed. Corresponding parameter files `lpjparam_non.cjson` and `pft_non.cjson` removed.
+- Removed commented-out code in `allocation_tree.c`
+
+### Fixed
+
+- Missing check for zero added in `allocation_grass.c` to avoid division by zero.
+
+
+## [5.9.9] - 2024-09-04
+
+### Contributors
+
+- author: Christoph Müller (cmueller@pik-potsdam.de)
+- code review: Stephen Wirth (wirth@pik-potsdam.de), Fabian Stenzel (stenzel@pik-potsdam.de)
+
+### Added
+
+- new options `PRESCRIBED_SDATE_ALL_RAINFED` and `PRESCRIBED_SDATE_ALL_IRRIG` to allow using the same sowing dates based on the rainfed or irrigated seasons respectively
+- new options `PRESCRIBED_CROP_PHU_ALL_RAINFED` and `PRESCRIBED_CROP_PHU_ALL_IRRIG` to allow using the same PHU requirements based on the rainfed or irrigated seasons respectively
+
+### Changed
+
+- refactored `crop_option_restart` to `crop_phu_option_restart` in struct `Config` and `crop_option` to `crop_phu_option` in struct `Restartheader` for greater clarity
+- refactored options `"new"` to `"vbussel15"` and `"old"` to `"bondau07"` for `crop_phu_options` where `"vbussel15"` is an implementation based on [van Bussel et al. 2015](http://dx.doi.org/10.1111/geb.12351) 
+
+### Removed
+
+- removed unnecessary check for file of prescribed `sdates` in `fileexist.c`
+
+### Fixed
+
+- fixed missing initialization of pointer `map` in cft2bin.c that caused abortion of compilation with `-Werror` otherwise
+
+
+## [5.9.8] - 2024-09-02
+
+### Contributors
+
+- author: Christoph Müller (cmueller@pik-potsdam.de)
+- code review: Susanne Rolinski (rolinski@pik-potsdam.de), Fabian Stenzel (stenzel@pik-potsdam.de)
+
+### Changed
+
+- included latest reference in .zenodo.json for syncing github and gitlab repositories. Future transfer of code between gitlab and github should be smoother now as both are at the same commit history now
+
+
+## [5.9.7] - 2024-08-30
+
+### Contributors
+
+- author: David Hoetten (davidho@pik-potsdam.de)
+- code review: Sibyll Schaphoff (sibylls@pik-potsdam.de), Werner von Bloh (bloh@pik-potsdam.de)
+
+### Changed
+
+- order of freezing of different water soil water components changed: free water freezes last to simply mathematical description of model
+
+
+## [5.9.6] - 2024-08-29
+
+### Contributors
+
+- author: Werner von Bloh (bloh@pik-potsdam.de)
+- code review: David Hoetten (davidho@pik-potsdam.de), Sebastian Ostberg (ostberg@pik-potsdam.de)
+
+### Added
+
+- Utility `cdf2grid` added to convert grid files in NetCDF format into grid CLM files.
+- Option `-json` and `-raw` added to `cdf2coord` utility to write additional JSON metafile and to write without CLM header.
+
+### Changed
+
+- Check added that dimension must be greater 1 for variable in NetCDF file in `cdf2coord.c`, `input_netcdf.c` and `coord_netcdf.c`.
+- Datatype of longitude/latitude array in `coord_netcdf.c` changed from float to double for consistency, variable name correctly printed in error messages.
+- Intel and clang compiler recognized in `printflags.c`.
+
+### Fixed
+
+- Test for `null` corrected for `"output"` in `fscanoutput.c`.
+- Missing `break` added in `switch` statement in `receiver_coupler.c`.
+- Code changed to compile successfully without `-DSAFE`, `-DUSE_NETCDF`, and `-DUDUNITS` compilation flag.
+- Unit for `"estab_storage_n"` corrected to `"gN/m2"` in `outputvars.cjson`.
+- Scaling set to 1 if datatype is not short in `cdf2coord.c` and `cdf2clm`.
+
 
 ## [5.9.5] - 2024-07-19
 
@@ -101,7 +259,7 @@ of `major.minor.patch` with
 ### Changed
 
 - `DEPTH_NAME` and `BNDS_NAME` excluded for search for variable in NetCDF file if no variable name is provided.
-- Check added that dimension must greater 1 for variable in NetCDF file.
+- Check added that dimension must be greater 1 for variable in NetCDF file.
 
 
 ## [5.9.2] - 2024-07-18
@@ -163,6 +321,7 @@ of `major.minor.patch` with
 - code review: Sibyll Schaphoff (sibylls@pik-potsdam.de), Werner von Bloh (bloh@pik-potsdam.de) 
 
 ### Added
+
 - Added `GPL_HEAT` macro to change number of gridpoints per soil layer used for heat convection.
 - Added `percolation_heattransfer` switch to disable convection/percolation heattransfer.
 - Added `littertemp` output variable for litter temperature.
@@ -192,7 +351,7 @@ of `major.minor.patch` with
 
 - List of required modules on new PIK cluster added in `INSTALL`.
 - `configure.sh` script recognizes new PIK cluster and sets `mpiicx`/`icx` compiler accordingly.
-- New site-specific `Makefile.hpc2024` and Makefile.icx` for parallel/sequential compilation on new cluster added.
+- New site-specific `Makefile.hpc2024` and `Makefile.icx` for parallel/sequential compilation on new cluster added.
 - New `lpjsubmit_hpc` slurm script added for new PIK cluster. `configure.sh` sets symbolic link of `lpjsubmit` to this script.
 
 ### Changed

@@ -128,7 +128,7 @@ void soiltemp(Soil *soil,          /**< pointer to soil data */
     if(isnan(dt))
     {
       fail(INVALID_TIMESTEP_ERR,TRUE,TRUE,"Invalid time step in soiltemp() lambda: %g heatcap %g",lambda[l],heatcap[l]);
-      fprintsoil(stdout,soil,config->pftpar,config->npft[TREE]+config->npft[GRASS]+config->npft[CROP],config->with_nitrogen);
+      fprintsoil(stdout,soil,config->pftpar,config->npft[TREE]+config->npft[GRASS]+config->npft[CROP]);
     }
 #endif
     heat_steps=max(heat_steps,(unsigned long)(timestep2sec(1.0,NSTEP_DAILY)/dt)+1);

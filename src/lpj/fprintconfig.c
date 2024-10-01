@@ -76,18 +76,15 @@ static size_t isnetcdfinput(const Config *config)
   }
   else if(config->cloud_filename.fmt==CDF)
     width=max(width,strlen(config->cloud_filename.var));
-  if(config->with_nitrogen)
+  if(!config->unlim_nitrogen && !config->no_ndeposition)
   {
-    if(config->with_nitrogen!=UNLIM_NITROGEN && !config->no_ndeposition)
-    {
-      if(config->no3deposition_filename.fmt==CDF)
-        width=max(width,strlen(config->no3deposition_filename.var));
-      if(config->nh4deposition_filename.fmt==CDF)
-        width=max(width,strlen(config->nh4deposition_filename.var));
-    }
-    if(config->soilph_filename.fmt==CDF)
-      width=max(width,strlen(config->soilph_filename.var));
+    if(config->no3deposition_filename.fmt==CDF)
+      width=max(width,strlen(config->no3deposition_filename.var));
+    if(config->nh4deposition_filename.fmt==CDF)
+      width=max(width,strlen(config->nh4deposition_filename.var));
   }
+  if(config->soilph_filename.fmt==CDF)
+    width=max(width,strlen(config->soilph_filename.var));
   if(config->landfrac_from_file)
   {
     if(config->landfrac_filename.fmt==CDF)
@@ -102,8 +99,7 @@ static size_t isnetcdfinput(const Config *config)
   }
   if(config->fire==SPITFIRE && config->tamp_filename.fmt==CDF)
     width=max(width,strlen(config->tamp_filename.var));
-  if((config->with_nitrogen || config->fire==SPITFIRE  || config->fire==SPITFIRE_TMAX) &&
-     config->wind_filename.fmt==CDF)
+  if(config->wind_filename.fmt==CDF)
     width=max(width,strlen(config->wind_filename.var));
   if(config->fire==SPITFIRE  || config->fire==SPITFIRE_TMAX)
   {
@@ -135,13 +131,13 @@ static size_t isnetcdfinput(const Config *config)
       if(config->harvest_cotton_ir_filename.fmt==CDF)
         width=max(width,strlen(config->harvest_cotton_ir_filename.var));
     }
-    if(config->sdate_option==PRESCRIBED_SDATE && config->sdate_filename.fmt==CDF)
+    if(config->sdate_option>=PRESCRIBED_SDATE && config->sdate_filename.fmt==CDF)
       width=max(width,strlen(config->sdate_filename.var));
-    if(config->crop_phu_option==PRESCRIBED_CROP_PHU && config->crop_phu_filename.fmt==CDF)
+    if(config->crop_phu_option>=PRESCRIBED_CROP_PHU && config->crop_phu_filename.fmt==CDF)
       width=max(width,strlen(config->crop_phu_filename.var));
-    if (config->with_nitrogen && config->fertilizer_input==FERTILIZER && config->fertilizer_nr_filename.fmt == CDF)
+    if (config->fertilizer_input==FERTILIZER && config->fertilizer_nr_filename.fmt == CDF)
       width = max(width, strlen(config->fertilizer_nr_filename.var));
-    if (config->with_nitrogen && config->manure_input && config->manure_nr_filename.fmt == CDF)
+    if (config->manure_input && config->manure_nr_filename.fmt == CDF)
       width = max(width, strlen(config->manure_nr_filename.var));
     if(config->residue_treatment==READ_RESIDUE_DATA && config->residue_data_filename.fmt==CDF)
       width=max(width, strlen(config->residue_data_filename.var));
@@ -342,8 +338,7 @@ void fprintconfig(FILE *file,          /**< File pointer to text output file */
     len=printsim(file,len,&count,"equilsoil is called");
   if (config->with_dynamic_ch4)
     len=printsim(file,len,&count,"dynamic CH4");
-  if(config->with_nitrogen)
-    len=printsim(file,len,&count,(config->with_nitrogen==UNLIM_NITROGEN) ? "unlimited nitrogen" : "nitrogen limitation");
+  len=printsim(file,len,&count,(config->unlim_nitrogen) ? "unlimited nitrogen" : "nitrogen limitation");
   if(config->permafrost)
     len=printsim(file,len,&count,"permafrost");
   if (config->isanomaly)
@@ -481,7 +476,7 @@ void fprintconfig(FILE *file,          /**< File pointer to text output file */
       snprintf(s,STRING_LEN,"fixed sowing date after %d",config->sdate_fixyear);
       len=fputstring(file,len,s,78);
     }
-    else if(config->sdate_option==PRESCRIBED_SDATE)
+    else if(config->sdate_option>=PRESCRIBED_SDATE)
     {
       len=fputstring(file,len,", ",78);
       count++;
@@ -589,20 +584,16 @@ void fprintconfig(FILE *file,          /**< File pointer to text output file */
   }
   else
     printinputfile(file,"cloud",&config->cloud_filename,width,config);
-  if(config->with_nitrogen)
+  if(!config->unlim_nitrogen && !config->no_ndeposition)
   {
-    if(config->with_nitrogen!=UNLIM_NITROGEN && !config->no_ndeposition)
-    {
-      printinputfile(file,"no3_depo",&config->no3deposition_filename,width,config);
-      printinputfile(file,"nh4_depo",&config->nh4deposition_filename,width,config);
-    }
-    printinputfile(file,"soilpH",&config->soilph_filename,width,config);
+    printinputfile(file,"no3_depo",&config->no3deposition_filename,width,config);
+    printinputfile(file,"nh4_depo",&config->nh4deposition_filename,width,config);
   }
+  printinputfile(file,"soilpH",&config->soilph_filename,width,config);
   printinputfile(file,"co2",&config->co2_filename,width,config);
   if (!config->with_dynamic_ch4)
     printinputfile(file,"ch4",&config->ch4_filename,width,config);
-  if(config->with_nitrogen || config->fire==SPITFIRE || config->fire==SPITFIRE_TMAX)
-    printinputfile(file,"windspeed",&config->wind_filename,width,config);
+  printinputfile(file,"windspeed",&config->wind_filename,width,config);
   if(config->fire==SPITFIRE_TMAX)
   {
     printinputfile(file,"tmin",&config->tmin_filename,width,config);
@@ -644,13 +635,13 @@ void fprintconfig(FILE *file,          /**< File pointer to text output file */
       printinputfile(file,"sowing_ir",&config->sowing_cotton_ir_filename,width,config);
       printinputfile(file,"harvest_ir",&config->harvest_cotton_ir_filename,width,config);
     }
-    if(config->sdate_option==PRESCRIBED_SDATE)
+    if(config->sdate_option>=PRESCRIBED_SDATE)
       printinputfile(file,"sdates",&config->sdate_filename,width,config);
-    if(config->crop_phu_option==PRESCRIBED_CROP_PHU)
+    if(config->crop_phu_option>=PRESCRIBED_CROP_PHU)
       printinputfile(file,"crop_phu",&config->crop_phu_filename,width,config);
-    if(config->with_nitrogen&&config->fertilizer_input==FERTILIZER)
+    if(config->fertilizer_input==FERTILIZER)
       printinputfile(file,"fertilizer",&config->fertilizer_nr_filename, width,config);
-    if(config->with_nitrogen&&config->manure_input)
+    if(config->manure_input)
       printinputfile(file,"manure_nr",&config->manure_nr_filename, width,config);
     if(config->residue_treatment==READ_RESIDUE_DATA)
       printinputfile(file,"residue",&config->residue_data_filename,width,config);

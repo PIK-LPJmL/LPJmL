@@ -337,4 +337,5 @@ void moveclimate(Climate *climate,  /**< Pointer to climate data */
     climate->data[index].no3deposition=store->no3deposition+climate->file_no3deposition.n*year;
   if(climate->data[0].nh4deposition!=NULL)
     climate->data[index].nh4deposition=store->nh4deposition+climate->file_nh4deposition.n*year;
+
 } /* of 'moveclimate' */

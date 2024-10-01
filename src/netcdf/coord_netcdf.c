@@ -16,7 +16,7 @@
 
 #include "lpj.h"
 
-#if defined(USE_NETCDF) || defined(USE_NETCDF4)
+#ifdef USE_NETCDF
 #include <netcdf.h>
 
 #define error(var,rc) if(rc){ if(isout) fprintf(stderr,"ERROR403: Cannot read '%s' in '%s': %s.\n",var,filename,nc_strerror(rc)); nc_close(coord->ncid); free(coord); return NULL;}
@@ -36,19 +36,19 @@ struct coord_netcdf
     short s;
     float f;
   } missing_value;
-  float *lon;
-  float *lat;
+  double *lon;
+  double *lat;
   size_t lon_len,lat_len;
   size_t offsets[2];
 };
 
-const float *getlon_netcdf(const Coord_netcdf coord,int *nlon)
+const double *getlon_netcdf(const Coord_netcdf coord,int *nlon)
 {
   *nlon=coord->lon_len;
   return coord->lon;
 } /* of 'getlon_netcdf' */
 
-const float *getlat_netcdf(const Coord_netcdf coord,int *nlat)
+const double *getlat_netcdf(const Coord_netcdf coord,int *nlat)
 {
   *nlat=coord->lat_len;
   return coord->lat;
@@ -56,7 +56,7 @@ const float *getlat_netcdf(const Coord_netcdf coord,int *nlat)
 
 void closecoord_netcdf(Coord_netcdf coord)
 {
-#if defined(USE_NETCDF) || defined(USE_NETCDF4)
+#ifdef USE_NETCDF
   if(coord!=NULL)
   {
     free(coord->lon);
@@ -69,7 +69,7 @@ void closecoord_netcdf(Coord_netcdf coord)
 
 int numcoord_netcdf(const Coord_netcdf coord)
 {
-#if defined(USE_NETCDF) || defined(USE_NETCDF4)
+#ifdef USE_NETCDF
   int count;
   size_t i;
   short *soil;
@@ -169,7 +169,7 @@ int numcoord_netcdf(const Coord_netcdf coord)
 
 int *getindexcoord_netcdf(const Coord_netcdf coord)
 {
-#if defined(USE_NETCDF) || defined(USE_NETCDF4)
+#ifdef USE_NETCDF
   int count;
   size_t i;
   int *index;
@@ -277,7 +277,7 @@ int *getindexcoord_netcdf(const Coord_netcdf coord)
 
 Bool seekcoord_netcdf(Coord_netcdf coord,int pos)
 {
-#if defined(USE_NETCDF) || defined(USE_NETCDF4)
+#ifdef USE_NETCDF
   size_t counts[2]={1,1};
   short soil;
   int isoil,rc;
@@ -375,7 +375,7 @@ Bool seekcoord_netcdf(Coord_netcdf coord,int pos)
 
 Bool readcoord_netcdf(Coord_netcdf coord,Coord *c,const Coord *resol,unsigned int *soil)
 {
-#if defined(USE_NETCDF) || defined(USE_NETCDF4)
+#ifdef USE_NETCDF
   short data;
   int idata,rc;
   Byte bdata;
@@ -515,7 +515,7 @@ Bool readcoord_netcdf(Coord_netcdf coord,Coord *c,const Coord *resol,unsigned in
 
 Coord_netcdf opencoord_netcdf(const char *filename,const char *var,Bool isout)
 {
-#if defined(USE_NETCDF) || defined(USE_NETCDF4)
+#ifdef USE_NETCDF
   Coord_netcdf coord;
   int i,rc,var_id,nvars,*dimids,ndims;
   char name[NC_MAX_NAME+1];
@@ -545,8 +545,12 @@ Coord_netcdf opencoord_netcdf(const char *filename,const char *var,Bool isout)
       nc_inq_varname(coord->ncid,i,name);
       if(strcmp(name,LON_NAME) && strcmp(name,LAT_NAME) && strcmp(name,TIME_NAME))
       {
-        coord->varid=i;
-        break;
+        nc_inq_varndims(coord->ncid,i,&ndims);
+        if(ndims>1)
+        {
+          coord->varid=i;
+          break;
+        }
       }
     }
     if(i==nvars)
@@ -571,8 +575,8 @@ Coord_netcdf opencoord_netcdf(const char *filename,const char *var,Bool isout)
   if(ndims!=2)
   {
     if(isout)
-      fprintf(stderr,"ERROR408: Invalid number of dimensions %d in '%s', must be 2.\n",
-              ndims,filename);
+      fprintf(stderr,"ERROR408: Invalid number of dimensions %d for '%s' in '%s', must be 2.\n",
+              ndims,(var==NULL) ? name : var,filename);
     nc_close(coord->ncid);
     free(coord);
     return NULL;
@@ -599,7 +603,7 @@ Coord_netcdf opencoord_netcdf(const char *filename,const char *var,Bool isout)
     return NULL;
   }
   nc_inq_dimlen(coord->ncid,dimids[ndims-1],&coord->lon_len);
-  coord->lon=newvec(float,coord->lon_len);
+  coord->lon=newvec(double,coord->lon_len);
   if(coord->lon==NULL)
   {
     printallocerr("lon");
@@ -608,7 +612,7 @@ Coord_netcdf opencoord_netcdf(const char *filename,const char *var,Bool isout)
     free(coord);
     return NULL;
   }
-  rc=nc_get_var_float(coord->ncid,var_id,coord->lon);
+  rc=nc_get_var_double(coord->ncid,var_id,coord->lon);
   if(rc)
   {
     if(isout)
@@ -635,7 +639,7 @@ Coord_netcdf opencoord_netcdf(const char *filename,const char *var,Bool isout)
   }
   nc_inq_dimlen(coord->ncid,dimids[ndims-2],&coord->lat_len);
   free(dimids);
-  coord->lat=newvec(float,coord->lat_len);
+  coord->lat=newvec(double,coord->lat_len);
   if(coord->lat==NULL)
   {
     printallocerr("lat");
@@ -644,7 +648,7 @@ Coord_netcdf opencoord_netcdf(const char *filename,const char *var,Bool isout)
     free(coord);
     return NULL;
   }
-  rc=nc_get_var_float(coord->ncid,var_id,coord->lat);
+  rc=nc_get_var_double(coord->ncid,var_id,coord->lat);
   if(rc)
   {
     if(isout)
@@ -653,6 +657,7 @@ Coord_netcdf opencoord_netcdf(const char *filename,const char *var,Bool isout)
     closecoord_netcdf(coord);
     return NULL;
   }
+  nc_inq_varname(coord->ncid,coord->varid,name);
   nc_inq_vartype(coord->ncid,coord->varid,&type);
   switch(type)
   {

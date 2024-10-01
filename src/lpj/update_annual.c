@@ -34,7 +34,7 @@ void update_annual(Cell *cell,          /**< Pointer to cell */
   Pftcroppar *croppar;
   Real mintemp[N];
   Stocks litter_neg;
-  Real soilc_agr,litc_agr,stand_fracs;
+  Real soilc_agr,litc_agr;
   Real natfrac,wetlandfrac;
 #ifdef CHECK_BALANCE
 //anpp, influx and arh do not change
@@ -74,7 +74,7 @@ void update_annual(Cell *cell,          /**< Pointer to cell */
   annual_climbuf(&cell->climbuf,cell->balance.aevap+cell->balance.atransp,ncft,config->crop_phu_option!=OLD_CROP_PHU && (config->sdate_option==NO_FIXED_SDATE || year<=config->sdate_fixyear));
   if(config->sdate_option==NO_FIXED_SDATE ||
     (config->sdate_option==FIXED_SDATE && year<=config->sdate_fixyear)||
-    (config->sdate_option==PRESCRIBED_SDATE && year<=config->sdate_fixyear))
+    (config->sdate_option>=PRESCRIBED_SDATE && year<=config->sdate_fixyear))
     cell->climbuf.atemp_mean20_fix=cell->climbuf.atemp_mean20;
 
   /* count number of years without harvest
@@ -100,8 +100,7 @@ void update_annual(Cell *cell,          /**< Pointer to cell */
   fluxes_prod.carbon=(cell->balance.deforest_emissions.carbon+cell->balance.prod_turnover.fast.carbon+cell->balance.prod_turnover.slow.carbon);
   fluxes_prod.nitrogen=(cell->balance.deforest_emissions.nitrogen+cell->balance.prod_turnover.fast.nitrogen+cell->balance.prod_turnover.slow.nitrogen);
 #endif
-    if((year<config->firstyear && config->sdate_option!=PRESCRIBED_SDATE) ||
-       config->sdate_option==NO_FIXED_SDATE)
+   if((year<config->firstyear && config->sdate_option<PRESCRIBED_SDATE) || config->sdate_option==NO_FIXED_SDATE)
      update_cropdates(cell->ml.cropdates,ncft);
 
   foreachstand(stand,s,cell->standlist)
@@ -110,9 +109,8 @@ void update_annual(Cell *cell,          /**< Pointer to cell */
 
     stand->soil.mean_maxthaw=(stand->soil.mean_maxthaw-stand->soil.mean_maxthaw/CLIMBUFSIZE)+stand->soil.maxthaw_depth/CLIMBUFSIZE;
     getoutput(&cell->output,MAXTHAW_DEPTH,config)+=stand->soil.maxthaw_depth*stand->frac*(1.0/(1-stand->cell->lakefrac));
-    if(!config->with_nitrogen)
-      foreachpft(pft,p,&stand->pftlist)
-        pft->vscal=NDAYYEAR;
+    foreachpft(pft,p,&stand->pftlist)
+      pft->vscal=NDAYYEAR;
     if(annual_stand(stand,npft,ncft,year,isdaily,intercrop,config))
     {
       /* stand has to be deleted */
@@ -189,7 +187,6 @@ void update_annual(Cell *cell,          /**< Pointer to cell */
   if (fabs(start.nitrogen-end.nitrogen+balance.nitrogen)>0.001) fprintf(stderr,"N_ERROR update annual after update_wetland: year=%d: error=%g start : %g end : %g balance.nitrogen: %g\n",
       year, start.nitrogen-end.nitrogen+balance.nitrogen, start.nitrogen, end.nitrogen,balance.nitrogen);
 #endif
-  stand_fracs=0;
   soilc_agr=0;
   litc_agr=0;
   foreachstand(stand,s,cell->standlist)
@@ -197,7 +194,6 @@ void update_annual(Cell *cell,          /**< Pointer to cell */
     if (stand->type->landusetype == SETASIDE_RF || stand->type->landusetype == SETASIDE_IR ||
          stand->type->landusetype == AGRICULTURE || stand->type->landusetype == SETASIDE_WETLAND)
     {
-      stand_fracs += stand->frac;
       for (p = 0; p<stand->soil.litter.n; p++)
         soilc_agr+=stand->soil.litter.item[p].bg.carbon*stand->frac;
       forrootsoillayer(l)
@@ -206,18 +202,11 @@ void update_annual(Cell *cell,          /**< Pointer to cell */
     }
     if(stand->soil.iswetland==TRUE || stand->type->landusetype==WETLAND)
       getoutput(&cell->output,WETFRAC,config)+=stand->frac;
-    if(config->with_nitrogen)
-    {
-      litter_neg=checklitter(&stand->soil.litter);
-      getoutput(&cell->output,NEGC_FLUXES,config)+=litter_neg.carbon*stand->frac;
-      getoutput(&cell->output,NEGN_FLUXES,config)+=litter_neg.nitrogen*stand->frac;
-      cell->balance.neg_fluxes.carbon+=litter_neg.carbon*stand->frac;
-      if(stand->type->landusetype==NATURAL || stand->type->landusetype==WETLAND)
-        cell->balance.nat_fluxes-=litter_neg.carbon*stand->frac;
-      cell->balance.neg_fluxes.nitrogen+=litter_neg.nitrogen*stand->frac;
-      if(stand->type->landusetype==NATURAL || stand->type->landusetype==WETLAND)
-        cell->balance.nat_fluxes-=litter_neg.carbon*stand->frac;
-    }
+    litter_neg=checklitter(&stand->soil.litter);
+    getoutput(&cell->output,NEGC_FLUXES,config)+=litter_neg.carbon*stand->frac;
+    getoutput(&cell->output,NEGN_FLUXES,config)+=litter_neg.nitrogen*stand->frac;
+    cell->balance.neg_fluxes.carbon+=litter_neg.carbon*stand->frac;
+    cell->balance.neg_fluxes.nitrogen+=litter_neg.nitrogen*stand->frac;
     stand->cell->balance.soil_storage+=soilwater(&stand->soil)*stand->frac*stand->cell->coord.area;
   }
   getoutput(&cell->output,LAND_AREA,config)+=cell->coord.area*(1-cell->lakefrac-cell->ml.reservoirfrac);

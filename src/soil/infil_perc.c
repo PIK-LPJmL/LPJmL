@@ -458,8 +458,7 @@ Real infil_perc(Stand *stand,        /**< Stand pointer */
 #endif
 
 #ifdef SAFE
-  if(config->with_nitrogen)
-    forrootsoillayer(l)
+  forrootsoillayer(l)
     if (soil->NO3[l]<-epsilon)
       fail(NEGATIVE_SOIL_NO3_ERR,TRUE,TRUE,"infil_perc: Cell(%s) NO3=%g<0 in layer %d",sprintcoord(line,&stand->cell->coord),soil->NO3[l],l);
 #endif
@@ -1019,90 +1018,87 @@ Real infil_perc(Stand *stand,        /**< Stand pointer */
     }
 #endif
 
-  if(config->with_nitrogen)
+  srunoff=runoff_surface;
+  forrootsoillayer(l)
+  if (soildepth[l]>soil->freeze_depth[l])
   {
-    srunoff=runoff_surface;
-    forrootsoillayer(l)
-    if (soildepth[l]>soil->freeze_depth[l])
+    /* determination of nitrate concentration in mobile water */
+    w_mobile=vno3=concNO3_mobile=0;
+    /* w_mobile as in Neitsch et al. 2005: Eq. 4:2.1.3 */
+    w_mobile = pperc[l]+srunoff+lrunoff[l]+nrsub_top[l]+ndrain_perched_out[l];
+    if (w_mobile>epsilon)
     {
-      /* determination of nitrate concentration in mobile water */
-      w_mobile=vno3=concNO3_mobile=0;
-      /* w_mobile as in Neitsch et al. 2005: Eq. 4:2.1.3 */
-      w_mobile = pperc[l]+srunoff+lrunoff[l]+nrsub_top[l]+ndrain_perched_out[l];
-      if (w_mobile>epsilon)
-      {
-        ww=-w_mobile/((1-soil->par->anion_excl)*soil->wsats[l]);  /* Eq 4:2.1.2 */
-        vno3=soil->NO3[l]*(1-exp(ww));
-        concNO3_mobile=max(vno3/w_mobile, 0);
-      }
-      /* nitrate movement with percolation */
-      /* nitrate percolating from overlying layer */
+      ww=-w_mobile/((1-soil->par->anion_excl)*soil->wsats[l]);  /* Eq 4:2.1.2 */
+      vno3=soil->NO3[l]*(1-exp(ww));
+      concNO3_mobile=max(vno3/w_mobile, 0);
+    }
+    /* nitrate movement with percolation */
+    /* nitrate percolating from overlying layer */
 
-      soil->NO3[l]+=NO3perc_ly;
-      NO3perc_ly=NO3surf=NO3lat=0;
-      /* calculate nitrate in surface runoff */
-      if(l==0 && srunoff>epsilon)
-      {
-        NO3surf=NPERCO*concNO3_mobile*srunoff; /* Eq. 4:2.1.5 */
-        NO3surf=min(NO3surf,soil->NO3[l]);
-        soil->NO3[l]-=NO3surf;
-      }
-      else
-        NO3surf=0;
+    soil->NO3[l]+=NO3perc_ly;
+    NO3perc_ly=NO3surf=NO3lat=0;
+    /* calculate nitrate in surface runoff */
+    if(l==0 && srunoff>epsilon)
+    {
+      NO3surf=NPERCO*concNO3_mobile*srunoff; /* Eq. 4:2.1.5 */
+      NO3surf=min(NO3surf,soil->NO3[l]);
+      soil->NO3[l]-=NO3surf;
+    }
+    else
+      NO3surf=0;
 
-      srunoff=0.0; /* not used for lower soil layers */
-      if (l==0)
-        NO3lat=(1-NPERCO)*concNO3_mobile*(lrunoff[l]+nrsub_top[l]+ndrain_perched_out[l]); /* Eq. 4:2.1.6 */
-      else
-        NO3lat=concNO3_mobile*(lrunoff[l]+nrsub_top[l]+ndrain_perched_out[l]); /* Eq. 4:2.1.7 */
-      if(NO3lat>epsilon)
-      {
-        NO3lat=min(NO3lat,soil->NO3[l]);
-      }
-      else
-        NO3lat=0;
-
+    srunoff=0.0; /* not used for lower soil layers */
+    if (l==0)
+      NO3lat=(1-NPERCO)*concNO3_mobile*(lrunoff[l]+nrsub_top[l]+ndrain_perched_out[l]); /* Eq. 4:2.1.6 */
+    else
+      NO3lat=concNO3_mobile*(lrunoff[l]+nrsub_top[l]+ndrain_perched_out[l]); /* Eq. 4:2.1.7 */
+    if(NO3lat>epsilon)
+    {
       NO3lat=min(NO3lat,soil->NO3[l]);
-      soil->NO3[l]-=NO3lat;
+    }
+    else
+      NO3lat=0;
 
-      /* nitrate percolating from this layer */
-      NO3perc_ly=concNO3_mobile*(pperc[l]);  /*Eq 4:2.1.8*/
-      if(NO3perc_ly>epsilon)
-      {
-        NO3perc_ly=min(NO3perc_ly,soil->NO3[l]);
-        soil->NO3[l]-=NO3perc_ly;
-      }
-      else
-        NO3perc_ly=0;
+    NO3lat=min(NO3lat,soil->NO3[l]);
+    soil->NO3[l]-=NO3lat;
 
-      getoutput(&stand->cell->output,LEACHING,config)+=(NO3surf+NO3lat)*stand->frac;
-      stand->cell->balance.n_outflux+=(NO3surf + NO3lat)*stand->frac;
-      if(isagriculture(stand->type->landusetype))
-        getoutput(&stand->cell->output,NLEACHING_AGR,config)+=(NO3surf+NO3lat)*stand->frac;
-      if(stand->type->landusetype==AGRICULTURE)
-      {
-        foreachpft(pft,p,&stand->pftlist)
-              {
-          if(config->separate_harvests)
-          {
-            crop=pft->data;
-            crop->sh->leachingsum+=NO3perc_ly;
-          }
-          else
-            getoutputindex(&stand->cell->output,CFT_LEACHING,pft->par->id-npft+data_irrig->irrigation*ncft,config)+=NO3perc_ly;
-              }
-      }
-    } /* if soil depth > freeze_depth */
-    getoutput(&stand->cell->output,LEACHING,config)+=NO3perc_ly*stand->frac;
-    stand->cell->balance.n_outflux+=NO3perc_ly*stand->frac;
+    /* nitrate percolating from this layer */
+    NO3perc_ly=concNO3_mobile*(pperc[l]);  /*Eq 4:2.1.8*/
+    if(NO3perc_ly>epsilon)
+    {
+      NO3perc_ly=min(NO3perc_ly,soil->NO3[l]);
+      soil->NO3[l]-=NO3perc_ly;
+    }
+    else
+      NO3perc_ly=0;
+
+    getoutput(&stand->cell->output,LEACHING,config)+=(NO3surf+NO3lat)*stand->frac;
+    stand->cell->balance.n_outflux+=(NO3surf + NO3lat)*stand->frac;
     if(isagriculture(stand->type->landusetype))
-      getoutput(&stand->cell->output,NLEACHING_AGR,config)+=NO3perc_ly*stand->frac;
+      getoutput(&stand->cell->output,NLEACHING_AGR,config)+=(NO3surf+NO3lat)*stand->frac;
+    if(stand->type->landusetype==AGRICULTURE)
+    {
+      foreachpft(pft,p,&stand->pftlist)
+                  {
+        if(config->separate_harvests)
+        {
+          crop=pft->data;
+          crop->sh->leachingsum+=NO3perc_ly;
+        }
+        else
+          getoutputindex(&stand->cell->output,CFT_LEACHING,pft->par->id-npft+data_irrig->irrigation*ncft,config)+=NO3perc_ly;
+                  }
+    }
+  } /* if soil depth > freeze_depth */
+  getoutput(&stand->cell->output,LEACHING,config)+=NO3perc_ly*stand->frac;
+  stand->cell->balance.n_outflux+=NO3perc_ly*stand->frac;
+  if(isagriculture(stand->type->landusetype))
+    getoutput(&stand->cell->output,NLEACHING_AGR,config)+=NO3perc_ly*stand->frac;
 #ifdef SAFE
-    forrootsoillayer(l)
-    if (soil->NO3[l]<-epsilon)
-      fail(NEGATIVE_SOIL_NO3_ERR,TRUE,TRUE,"infil_perc: Cell(%s) NO3=%g<0 in layer %d",sprintcoord(line,&stand->cell->coord),soil->NO3[l],l);
+  forrootsoillayer(l)
+  if (soil->NO3[l]<-epsilon)
+    fail(NEGATIVE_SOIL_NO3_ERR,TRUE,TRUE,"infil_perc: Cell(%s) NO3=%g<0 in layer %d",sprintcoord(line,&stand->cell->coord),soil->NO3[l],l);
 #endif
-  } /* end of if(config->with_nitrogen) */
 
   /* Rainwater Harvesting: store part of surface runoff for supplementary irrigation */
   if(config->rw_manage && ((stand->type->landusetype==AGRICULTURE && !data_irrig->irrigation) || stand->type->landusetype==SETASIDE_RF))

@@ -14,13 +14,13 @@
 
 #include "lpj.h"
 
-#if defined(USE_NETCDF) || defined(USE_NETCDF4)
+#ifdef USE_NETCDF
 #include <netcdf.h>
 #include <time.h>
 
 #define error(rc) if(rc) {free(lon);free(lat);free(year);fprintf(stderr,"ERROR427: Cannot write '%s': %s.\n",filename,nc_strerror(rc)); nc_close(cdf->ncid); free(cdf);return NULL;}
 
-#define USAGE "Usage: %s [-h] [-v] [-clm] [-floatgrid] [-doublegrid] [-revlat] [-days] [-absyear] [-firstyear y] [-baseyear y] [-nbands n] [-nstep n] [-cellsize size] [-swap]\n       [[-attr name=value]..] [-global] [-short] [-compress level] [-units u] [-descr d] [-missing_value val] [-metafile] [-map name] [varname gridfile]\n       binfile netcdffile\n"
+#define USAGE "Usage: %s [-h] [-v] [-clm] [-floatgrid] [-doublegrid] [-revlat] [-days]\n       [-absyear] [-firstyear y] [-baseyear y] [-nbands n] [-nstep n]\n       [-cellsize size] [-swap] [[-attr name=value]..] [-global] [-short]\n       [-compress level] [-units u] [-descr d] [-missing_value val] [-metafile]\n       [-map name] [-netcdf4] [varname gridfile] binfile netcdffile\n"
 
 typedef struct
 {
@@ -51,7 +51,8 @@ static Cdf *create_cdf(const char *filename,
                        const Coord_array *array,
                        Bool revlat,
                        Bool with_days,
-                       Bool absyear)
+                       Bool absyear,
+                       Bool isnetcdf4)
 {
   Cdf *cdf;
   double *lon,*lat;
@@ -60,6 +61,7 @@ static Cdf *create_cdf(const char *filename,
   int i,j,rc,dim[4],dim2[2],dimids[2];
   size_t chunk[4],offset[2],count[2];
   char *s;
+  const char *ptr;
   time_t t;
   int time_var_id,lat_var_id,lon_var_id,time_dim_id,lat_dim_id,lon_dim_id,map_dim_id,len_dim_id,bnds_var_id,bnds_dim_id;
   int pft_dim_id,varid;
@@ -135,11 +137,7 @@ static Cdf *create_cdf(const char *filename,
       return NULL;
   }
   cdf->index=array;
-#ifdef USE_NETCDF4
-  rc=nc_create(filename,NC_CLOBBER|NC_NETCDF4,&cdf->ncid);
-#else
-  rc=nc_create(filename,NC_CLOBBER,&cdf->ncid);
-#endif
+  rc=nc_create(filename,(isnetcdf4) ? NC_CLOBBER|NC_NETCDF4 : NC_CLOBBER,&cdf->ncid);
   if(rc)
   {
     fprintf(stderr,"ERROR426: Cannot create file '%s': %s.\n",
@@ -283,16 +281,21 @@ static Cdf *create_cdf(const char *filename,
     }
     else
     {
-      len=0;
-      for(i=0;i<getmapsize(map);i++)
-        if(getmapitem(map,i)==NULL)
-          len=max(len,strlen(NULL_NAME));
-        else
-          len=max(len,strlen(getmapitem(map,i)));
-      rc=nc_def_dim(cdf->ncid,"len",len+1,&len_dim_id);
-      error(rc);
-      dim2[1]=len_dim_id;
-      rc=nc_def_var(cdf->ncid,MAP_NAME,NC_CHAR,2,dim2,&varid);
+      if(isnetcdf4)
+        rc=nc_def_var(cdf->ncid,getmapsize(map)==header.nbands ? PFT_NAME : MAP_NAME,NC_STRING,1,&pft_dim_id,&varid);
+      else
+      {
+        len=0;
+        for(i=0;i<getmapsize(map);i++)
+          if(getmapitem(map,i)==NULL)
+            len=max(len,strlen(NULL_NAME));
+          else
+            len=max(len,strlen(getmapitem(map,i)));
+        rc=nc_def_dim(cdf->ncid,"len",len+1,&len_dim_id);
+        error(rc);
+        dim2[1]=len_dim_id;
+        rc=nc_def_var(cdf->ncid,getmapsize(map)==header.nbands ? PFT_NAME : MAP_NAME,NC_CHAR,2,dim2,&varid);
+      }
       error(rc);
     }
   }
@@ -333,15 +336,16 @@ static Cdf *create_cdf(const char *filename,
       return NULL;
   }
   error(rc);
-#ifdef USE_NETCDF4
-  rc=nc_def_var_chunking(cdf->ncid, cdf->varid, NC_CHUNKED,chunk);
-  error(rc);
-  if(compress)
+  if(isnetcdf4)
   {
-    rc=nc_def_var_deflate(cdf->ncid, cdf->varid, 0, 1,compress);
+    rc=nc_def_var_chunking(cdf->ncid, cdf->varid, NC_CHUNKED,chunk);
     error(rc);
+    if(compress)
+    {
+      rc=nc_def_var_deflate(cdf->ncid, cdf->varid, 0, 1,compress);
+      error(rc);
+    }
   }
-#endif
   if(units!=NULL)
   {
     rc=nc_put_att_text(cdf->ncid, cdf->varid,"units",strlen(units),units);
@@ -417,13 +421,29 @@ static Cdf *create_cdf(const char *filename,
         offset[0]=i;
         if(getmapitem(map,i)==NULL)
         {
-          count[1]=strlen(NULL_NAME)+1;
-          rc=nc_put_vara_text(cdf->ncid,varid,offset,count,NULL_NAME);
+          if(isnetcdf4)
+          {
+            ptr=NULL_NAME;
+            rc=nc_put_vara_string(cdf->ncid,varid,offset,count,&ptr);
+          }
+          else
+          {
+            count[1]=strlen(NULL_NAME)+1;
+            rc=nc_put_vara_text(cdf->ncid,varid,offset,count,NULL_NAME);
+          }
         }
         else
         {
-          count[1]=strlen(getmapitem(map,i))+1;
-          rc=nc_put_vara_text(cdf->ncid,varid,offset,count,getmapitem(map,i));
+          if(isnetcdf4)
+          {
+            ptr=getmapitem(map,i);
+            rc=nc_put_vara_string(cdf->ncid,varid,offset,count,&ptr);
+          }
+          else
+          {
+            count[1]=strlen(getmapitem(map,i))+1;
+            rc=nc_put_vara_text(cdf->ncid,varid,offset,count,getmapitem(map,i));
+          }
         }
         error(rc);
       }
@@ -542,7 +562,7 @@ static void close_cdf(Cdf *cdf)
 
 int main(int argc,char **argv)
 {
-#if defined(USE_NETCDF) || defined(USE_NETCDF4)
+#ifdef USE_NETCDF
   FILE *file,*gridfile;
   Intcoord intcoord;
   Coord_array *index;
@@ -552,7 +572,7 @@ int main(int argc,char **argv)
   float *data=NULL;
   short *data_short=NULL;
   int i,j,k,ngrid,iarg,compress,version,n_global,n_global2,baseyear;
-  Bool swap,ispft,isshort,isglobal,isclm,ismeta,isbaseyear,revlat,withdays,absyear;
+  Bool swap,ispft,isshort,isglobal,isclm,ismeta,isbaseyear,revlat,withdays,absyear,isnetcdf4;
   Type gridtype;
   float cellsize,fcoord[2];
   double dcoord[2];
@@ -574,7 +594,7 @@ int main(int argc,char **argv)
   grid_name.fmt=RAW;
   units=long_name=NULL;
   compress=0;
-  swap=isglobal=absyear=FALSE;
+  swap=isglobal=absyear=isnetcdf4=FALSE;
   res.lon=res.lat=header.cellsize_lon=header.cellsize_lat=0.5;
   header.firstyear=1901;
   header.nbands=1;
@@ -609,6 +629,7 @@ int main(int argc,char **argv)
                "-revlat          reverse order of latitudes in NetCDF file\n"
                "-days            use days as units for monthly output\n"
                "-absyear         absolute year instead of relative to base year\n"
+               "-netcdf4         file written is in NetCDF4 format\n"
                "-cellsize s      set cell size, default is %g\n"
                "-compress l      set compression level for NetCDF4 files\n"
                "-attr name=value set global attribute name to value in NetCDF file\n"
@@ -670,6 +691,8 @@ int main(int argc,char **argv)
         withdays=TRUE;
       else if(!strcmp(argv[iarg],"-absyear"))
         absyear=TRUE;
+      else if(!strcmp(argv[iarg],"-netcdf4"))
+        isnetcdf4=TRUE;
       else if(!strcmp(argv[iarg],"-descr"))
       {
         if(iarg==argc-1)
@@ -737,7 +760,7 @@ int main(int argc,char **argv)
         header.nbands=strtol(argv[++iarg],&endptr,10);
         if(*endptr!='\0')
         {
-          fprintf(stderr,"Error: Invalid number '%s' for option '-nitem'.\n",argv[iarg]);
+          fprintf(stderr,"Error: Invalid number '%s' for option '-nbands'.\n",argv[iarg]);
           return EXIT_FAILURE;
         }
         if(header.nbands<=0)
@@ -825,6 +848,12 @@ int main(int argc,char **argv)
         if(*endptr!='\0')
         {
           fprintf(stderr,"Error: Invalid number '%s' for option '-compress'.\n",argv[iarg]);
+          return EXIT_FAILURE;
+        }
+        if(compress<0 || compress>9)
+        {
+          fprintf(stderr,"Error: Invalid compression value %d, must be in [0,9].\n",
+                  compress);
           return EXIT_FAILURE;
         }
       }
@@ -1123,7 +1152,7 @@ int main(int argc,char **argv)
     }
   }
 
-  cdf=create_cdf(outname,map,map_name,cmdline,source,history,variable,units,var_standard_name,long_name,miss,miss_short,global_attrs,n_global,(isshort) ? LPJ_SHORT : LPJ_FLOAT,header,baseyear,ispft,compress,index,revlat,withdays,absyear);
+  cdf=create_cdf(outname,map,map_name,cmdline,source,history,variable,units,var_standard_name,long_name,miss,miss_short,global_attrs,n_global,(isshort) ? LPJ_SHORT : LPJ_FLOAT,header,baseyear,ispft,compress,index,revlat,withdays,absyear,isnetcdf4);
   free(cmdline);
   if(cdf==NULL)
     return EXIT_FAILURE;

@@ -58,10 +58,10 @@ typedef struct
 /* Declaration of functions */
 
 extern void new_grass(Pft *,int,int,const Config *);
-extern Real npp_grass(Pft *,Real,Real,Real,const Config *,int);
+extern Real npp_grass(Pft *,Real,Real,Real,const Config *);
 extern Real fpc_grass(Pft *);
 extern Real fpar_grass(const Pft *);
-extern Real alphaa_grass(const Pft *,int,int);
+extern Real alphaa_grass(const Pft *,int);
 extern void litter_update_grass(Litter *, Pft*,Real,const Config *);
 extern Bool allocation_grass(Litter *,Pft *,Real *,const Config *);
 extern void output_daily_grass(const Pft *,Real, Real,const Config *);
@@ -70,7 +70,7 @@ extern Real actual_lai_grass(const Pft *);
 extern Stocks turnover_grass(Litter *,Pft *,Real,const Config *);
 extern void phenology_grass(Pft *,Real,int,Bool,const Config *);
 extern Bool fwrite_grass(FILE *,const Pft *);
-extern void fprint_grass(FILE *,const Pft *,int);
+extern void fprint_grass(FILE *,const Pft *);
 extern Bool fread_grass(FILE *,Pft *,Bool,Bool);
 extern Bool fscanpft_grass(LPJfile *,Pftpar *,const Config *);
 extern Stocks establishment_grass(Pft *,Real,Real,int);

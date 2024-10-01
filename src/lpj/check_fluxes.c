@@ -128,8 +128,8 @@ void check_fluxes(Cell *cell,          /**< cell pointer */
          cell->balance.flux_estab.carbon,cell->balance.flux_harvest.carbon,delta_tot.carbon,tot.carbon,cell->balance.biomass_yield.carbon,
          cell->balance.estab_storage_grass[0].carbon,cell->balance.estab_storage_grass[1].carbon,cell->balance.estab_storage_tree[0].carbon,cell->balance.estab_storage_tree[1].carbon,
          cell->balance.deforest_emissions.carbon,cell->balance.prod_turnover.fast.carbon+cell->balance.prod_turnover.slow.carbon,cell->balance.timber_harvest.carbon,cell->balance.influx.carbon);
-
-
+#endif
+  }
 #ifdef CHECK_BALANCE
          foreachstand(stand,s,cell->standlist)
              fprintf(stderr,"standfrac: %g standtype: %s s= %d iswetland: %d cropfraction_rf: %g cropfraction_irr: %g grasfrac_rf: %g grasfrac_irr: %g\n",
@@ -138,9 +138,7 @@ void check_fluxes(Cell *cell,          /**< cell pointer */
                      cell->ml.landfrac[0].grass[0]+cell->ml.landfrac[0].grass[1],cell->ml.landfrac[1].grass[0]+cell->ml.landfrac[1].grass[1]);
 
 #endif
-#endif
-  } /* end carbon balance error */
-  if(config->with_nitrogen && year>startyear && fabs(balance.nitrogen)>param.error_limit.stocks.nitrogen)
+  if(year>startyear && fabs(balance.nitrogen)>param.error_limit.stocks.nitrogen)
   {
 #ifdef NO_FAIL_BALANCE
     fprintf(stderr,"ERROR037: "

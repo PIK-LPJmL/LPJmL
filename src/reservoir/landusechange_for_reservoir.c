@@ -385,10 +385,10 @@ void landusechange_for_reservoir(Cell *cell,          /**< pointer to cell */
     tot_after.nitrogen+=cell->balance.deforest_emissions.nitrogen;
     tot_after.carbon-=cell->balance.flux_estab.carbon;
     tot_after.nitrogen-=cell->balance.flux_estab.nitrogen;
-#endif
     /* check if the same */
     balance.carbon=tot_before.carbon-tot_after.carbon;
     balance.nitrogen=tot_before.nitrogen-tot_after.nitrogen;
+#endif
 
 #ifndef IMAGE /*  Because the timber harvest is not accounted for in the carbon balance check*/
     balanceW=totw_before-totw_after;

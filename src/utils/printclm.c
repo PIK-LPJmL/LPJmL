@@ -14,7 +14,7 @@
 
 #include "lpj.h"
 
-#define USAGE "Usage: %s [-metafile] [-header] [-data] [-text] [-json] [-scale] [-longheader] [-type {byte|short|int|float|double}]\n       [-map name] [-nbands n] [-start s] [-end e] [-first f] [-last l] filename ...\n"
+#define USAGE "Usage: %s [-metafile] [-header] [-data] [-text] [-json] [-scale]\n       [-longheader] [-type {byte|short|int|float|double}] [-map name]\n       [-nbands n] [-start s] [-end e] [-first f] [-last l] filename ...\n"
 #define NO_HEADER 1
 #define NO_DATA 2
 #define NO_TEXT 4
@@ -137,7 +137,7 @@ static void printclm(const char *filename,int output,int nbands,int version,
                bool2str(restartheader.landuse),
                bool2str(restartheader.river_routing),
                bool2str(restartheader.sdate_option),
-               bool2str(restartheader.crop_option),
+               bool2str(restartheader.crop_phu_option),
                bool2str(restartheader.separate_harvests));
         printf("Random seed:\t");
         for(i=0;i<NSEED;i++)

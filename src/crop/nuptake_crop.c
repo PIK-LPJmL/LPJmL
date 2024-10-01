@@ -24,7 +24,9 @@ Real nuptake_crop(Pft *pft,             /**< pointer to PFT data */
                   const Config *config  /**< LPJmL configuration */
                  )                      /** \return nitrogen uptake (gN/m2/day) */
 {
+#ifdef SAFE
   String line;
+#endif
   Soil *soil;
   Pftcrop *crop;
   Irrigation *data;

@@ -45,8 +45,8 @@ static Cell *newgrid2(Config *config,          /* Pointer to LPJ configuration *
 #ifdef IMAGE
   Infile aquifers;
 #ifdef COUPLED
-  Productinit *productinit;
-  Product *productpool;
+  Productinit *productinit=NULL;
+  Product *productpool=NULL;
 #endif
 #endif
   int code;
@@ -325,18 +325,10 @@ static Cell *newgrid2(Config *config,          /* Pointer to LPJ configuration *
     {
       grid[i].ml.landfrac=newlandfrac(ncft,config->nagtree);
       checkptr(grid[i].ml.landfrac);
-      if(config->with_nitrogen)
-      {
-        grid[i].ml.fertilizer_nr=newlandfrac(ncft,config->nagtree);
-        checkptr(grid[i].ml.fertilizer_nr);
-        grid[i].ml.manure_nr=newlandfrac(ncft,config->nagtree);
-        checkptr(grid[i].ml.manure_nr);
-      }
-      else
-      {
-        grid[i].ml.fertilizer_nr = NULL;
-        grid[i].ml.manure_nr = NULL;
-      }
+      grid[i].ml.fertilizer_nr=newlandfrac(ncft,config->nagtree);
+      checkptr(grid[i].ml.fertilizer_nr);
+      grid[i].ml.manure_nr=newlandfrac(ncft,config->nagtree);
+      checkptr(grid[i].ml.manure_nr);
       grid[i].ml.irrig_system=new(Irrig_system);
       checkptr(grid[i].ml.irrig_system);
       grid[i].ml.residue_on_field=newlandfrac(ncft,config->nagtree);
@@ -416,7 +408,7 @@ static Cell *newgrid2(Config *config,          /* Pointer to LPJ configuration *
         }
         else
           grid[i].ml.sdate_fixed=NULL;
-        if(config->crop_phu_option==PRESCRIBED_CROP_PHU)
+        if(config->crop_phu_option>=PRESCRIBED_CROP_PHU)
         {
           grid[i].ml.crop_phu_fixed=newvec(Real,2*ncft);
           checkptr(grid[i].ml.crop_phu_fixed);
@@ -509,7 +501,12 @@ Cell *newgrid(Config *config,          /**< Pointer to LPJ configuration */
     iserr=TRUE;
 #endif
   if(iserror(iserr,config))
+  {
+#ifdef USE_MPI
+    free(counts);
+#endif
     return NULL;
+  }
 #ifdef USE_MPI
   MPI_Allgather(&config->count,1,MPI_INT,counts,1,MPI_INT,
                 config->comm);

@@ -95,23 +95,20 @@ Bool fscanparam(LPJfile *file,       /**< File pointer to text file */
               param.k_soil10.fast);
     return TRUE;
   }
-  if(config->with_nitrogen)
+  fscanparampoolpar(f,&param.init_soiln,"init_soiln");
+  if(param.init_soiln.slow<=0)
   {
-    fscanparampoolpar(f,&param.init_soiln,"init_soiln");
-    if(param.init_soiln.slow<=0)
-    {
-      if(isroot(*config))
-        fprintf(stderr,"ERROR234: Parameter 'init_soiln.slow'=%g must be greater than zero.\n",
-                param.init_soiln.slow);
-      return TRUE;
-    }
-    if(param.init_soiln.fast<=0)
-    {
-      if(isroot(*config))
-        fprintf(stderr,"ERROR234: Parameter 'init_soiln.fast'=%g must be greater than zero.\n",
-                param.init_soiln.fast);
-      return TRUE;
-    }
+    if(isroot(*config))
+      fprintf(stderr,"ERROR234: Parameter 'init_soiln.slow'=%g must be greater than zero.\n",
+              param.init_soiln.slow);
+    return TRUE;
+  }
+  if(param.init_soiln.fast<=0)
+  {
+    if(isroot(*config))
+      fprintf(stderr,"ERROR234: Parameter 'init_soiln.fast'=%g must be greater than zero.\n",
+              param.init_soiln.fast);
+    return TRUE;
   }
   fscanparamreal(f,&param.maxsnowpack,"maxsnowpack");
   fscanparamreal(f,&param.soildepth_evap,"soildepth_evap");
@@ -162,33 +159,26 @@ Bool fscanparam(LPJfile *file,       /**< File pointer to text file */
   fscanparamreal01(f,&param.fpc_tree_max,"fpc_tree_max");
   fscanparamreal(f,&param.temp_response,"temp_response");
   fscanparamreal01(f,&param.percthres,"percthres");
-  if(config->with_nitrogen)
+  fscanparamreal(f,&param.k_max,"k_max");
+  fscanparamreal(f,&param.k_2,"k_2");
+  fscanparamreal(f,&param.p,"p");
+  fscanparamreal(f,&param.n0,"n0");
+  fscanparamreal(f,&param.k_temp,"k_temp");
+  fscanparamreal(f,&param.min_c_bnf,"min_c_bnf");
+  fscanparamreal(f,&param.par_sink_limit,"par_sink_limit");
+  fscanparamreal01(f,&param.q_ash,"q_ash");
+  fscanparamreal01(f,&param.sapwood_recovery,"sapwood_recovery");
+  fscanparamreal(f,&param.T_m,"T_m");
+  fscanparamreal(f,&param.T_0,"T_0");
+  fscanparamreal(f,&param.T_r,"T_r");
+  if(param.T_r==param.T_0)
   {
-    fscanparamreal(f,&param.k_max,"k_max");
-    fscanparamreal(f,&param.k_2,"k_2");
-    fscanparamreal(f,&param.p,"p");
-    fscanparamreal(f,&param.n0,"n0");
-    fscanparamreal(f,&param.k_temp,"k_temp");
-    fscanparamreal(f,&param.min_c_bnf,"min_c_bnf");
-    fscanparamreal(f,&param.par_sink_limit,"par_sink_limit");
-    fscanparamreal01(f,&param.q_ash,"q_ash");
-    fscanparamreal01(f,&param.sapwood_recovery,"sapwood_recovery");
-    fscanparamreal(f,&param.T_m,"T_m");
-    fscanparamreal(f,&param.T_0,"T_0");
-    fscanparamreal(f,&param.T_r,"T_r");
-    if(param.T_r==param.T_0)
-    {
-      if(isroot(*config))
-        fprintf(stderr,"ERROR238: Parameter T_0=%g must not be identical to parameter T_r=%g.\n",
-                param.T_0,param.T_r);
-      return TRUE;
-    }
-    fscanparamreal(f,&param.fertilizer_rate,"fertilizer_rate");
+    if(isroot(*config))
+      fprintf(stderr,"ERROR238: Parameter T_0=%g must not be identical to parameter T_r=%g.\n",
+              param.T_0,param.T_r);
+    return TRUE;
   }
-  else
-  {
-    param.q_ash=param.sapwood_recovery=param.fertilizer_rate=0;
-  }
+  fscanparamreal(f,&param.fertilizer_rate,"fertilizer_rate");
   if(config->fire==SPITFIRE || config->fire==SPITFIRE_TMAX)
   {
     fscanparamreal(f,&param.firedura,"firedura");
@@ -213,15 +203,12 @@ Bool fscanparam(LPJfile *file,       /**< File pointer to text file */
     fscanparamreal(f,&param.sat_level[3],"saturation_level_drip");
     fscanparamreal01(f,&param.drip_evap,"drip_evap_reduction");
     fscanparamreal01(f,&param.residues_in_soil,"residues_in_soil");
-    if(config->with_nitrogen)
-    {
-      fscanparamreal(f,&param.manure_cn,"manure_cn");
-      fscanparamreal(f,&param.manure_rate,"manure_rate");
-      fscanparamreal(f,&param.nfert_split,"nfert_split");
-      fscanparamreal01(f,&param.nfert_split_frac,"nfert_split_frac");
-      fscanparamreal01(f,&param.nfert_no3_frac,"nfert_no3_frac");
-      fscanparamreal01(f,&param.nmanure_nh4_frac,"nmanure_nh4_frac");
-    }
+    fscanparamreal(f,&param.manure_cn,"manure_cn");
+    fscanparamreal(f,&param.manure_rate,"manure_rate");
+    fscanparamreal(f,&param.nfert_split,"nfert_split");
+    fscanparamreal01(f,&param.nfert_split_frac,"nfert_split_frac");
+    fscanparamreal01(f,&param.nfert_no3_frac,"nfert_no3_frac");
+    fscanparamreal01(f,&param.nmanure_nh4_frac,"nmanure_nh4_frac");
     fscanparamreal01(f,&param.ftimber_wp,"ftimber_wp");
     if(config->luc_timber)
     {
@@ -252,14 +239,9 @@ Bool fscanparam(LPJfile *file,       /**< File pointer to text file */
       }
       fscanparamreal(f,&param.yield_gap_bridge,"yield_gap_bridge");
     }
-    if(config->with_nitrogen)
-    {
-      fscanparamreal(f,&param.allocation_threshold,"allocation_threshold");
-      fscanparamreal01(f,&param.nfrac_grassharvest,"nfrac_grassharvest");
-      fscanparamreal01(f,&param.nfrac_grazing,"nfrac_grazing");
-    }
-    else
-      param.nfrac_grassharvest=param.nfrac_grazing=0;
+    fscanparamreal(f,&param.allocation_threshold,"allocation_threshold");
+    fscanparamreal01(f,&param.nfrac_grassharvest,"nfrac_grassharvest");
+    fscanparamreal01(f,&param.nfrac_grazing,"nfrac_grazing");
     fscanparamreal(f,&param.hfrac2,"hfrac2");
     fscanparamreal01(f,&param.hfrac_biomass,"hfrac_biomass");
     fscanparamreal01(f,&param.rootreduction,"rootreduction");
@@ -286,7 +268,7 @@ Bool fscanparamcft(LPJfile *file,       /**< File pointer to text file */
   f=fscanstruct(file,"param",verbosity);
   if(f==NULL)
     return TRUE;
-  if(config->withlanduse!=NO_LANDUSE && config->with_nitrogen)
+  if(config->withlanduse!=NO_LANDUSE)
   {
     name=fscanstring(f,NULL,"cft_fertday_temp",verbosity);
     if(name==NULL)

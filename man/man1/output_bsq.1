@@ -2,7 +2,7 @@
 .SH NAME
 output_bsq \- Concatenates all output files from distributed LPJmL simulations.
 .SH SYNOPSIS
-.B output_bsq 
+.B output_bsq
 [-outpath \fIdir\fP] [-inpath \fIdir\fP] [-nyear year]
 .SH DESCRIPTION
 Script concatenates all output files created by the LPJmL model to one output file. It used to join output files from
@@ -14,15 +14,15 @@ scripts. Script is obsolete for the MPI version of \fBlpjml\fP.
 .SH OPTIONS
 .TP
 \-outpath \fIdir\fP
-sets directory of the concatenated output files. Default is output.
+Set directory of the concatenated output files. Default is output.
 .TP
 \-inpath \fIdir\fP
-sets directory of the output files to be joined. Default is output.
-.TP 
+Set directory of the output files to be joined. Default is output.
+.TP
 \-nyear n
 Number of simulation years. Default is 103.
 .SH EXIT STATUS
-.B output_bsq 
+.B output_bsq
 returns a zero exit status if the output files have been concatenated.
 Non zero is returned in case of failure.
 

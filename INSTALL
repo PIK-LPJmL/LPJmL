@@ -167,6 +167,8 @@ COUPLING_WITH_FMS   enable coupling to FMS
 DAILY_ESTABLISHMENT enable daily establishment
 DEBUG               diagnostic output is generated for debugging purposes
 DEBUG_COUPLER       diagnostic output is generated for the coupler
+DEBUG_IMAGE         diagnostic output is generated for the IMAGE coupler
+DEBUG_N             diagnostic output is generated for the nitrogen cycle
 IMAGE               include coupler to IMAGE model
 LINEAR_DECAY        use linearized functions for litter decay
 MICRO_HEATING       enable microbial heating
@@ -176,7 +178,6 @@ SAFE                code is compiled with additional checks
 STRICT_JSON         strict JSON checking
 USE_MPI             compile parallel version of LPJmL
 USE_NETCDF          enable NetCDF input/output
-USE_NETCDF4         enable NetCDF version 4 input/output
 USE_RAND48          use drand48() random number generator
 USE_UDUNITS         enable unit conversion in NetCDF files
 USE_TIMING          enable timing for socket I/O
@@ -214,6 +215,7 @@ catclm       - concatenate LPJmL climate data files
 cdf2bin      - convert NetCDF files into raw binary data
 cdf2clm      - convert NetCDF files into CLM files
 cdf2coord    - extract CLM grid file from NetCDF file
+cdf2grid     - convert grid NetCDF file into grid CLM or raw file
 cdf2soil     - convert NetCDF file into binary file
 cft2clm      - convert binary landuse data files to CLM data files for LPJmL
 clm2cdf      - convert CLM files into NetCDF files
@@ -222,8 +224,9 @@ country2cdf  - convert country/region code file into NetCDF file
 cru2clm      - convert CRU data into file format suitable for LPJmL.
                CRU data files have to be in the format specified in
                http://www.cru.uea.ac.uk/~timm/grid/CRU_TS_2_1.html.
-cutclm       - cuts LPJmL climate data files
+cutclm       - cut LPJmL climate data files
 cvrtclm      - convert version of CLM file to version 3 or 4
+drainage2cdf - convert CLM drainage file into NetCDF file
 getcellindex - get cell index from latitude, longitude values
 grid2clm     - convert grid data file to CLM data files for LPJmL
 headersize   - print header size of CLM files

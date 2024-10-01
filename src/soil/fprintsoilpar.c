@@ -31,17 +31,13 @@ void fprintsoilpar(FILE *file,          /**< pointer to text file */
   if(config->soilpar_option==PRESCRIBED_SOILPAR)
     fputs(" w_pwp  w_fc  w_sat",file);
   fputs(" hsg tdiff0 tdiff15 tdiff100 condpwp cond100 cond100ice psi_sat b      efold ctimax",file);
-  if(config->with_nitrogen)
-    fputs(" a_nit   b_nit   c_nit   d_nit   anion_excl cn_ratio",file);
+  fputs(" a_nit   b_nit   c_nit   d_nit   anion_excl cn_ratio",file);
   fputs("\n------------------ ------ ----- ----- ------",file);
   if(config->soilpar_option==PRESCRIBED_SOILPAR)
     fputs(" ------ ----- -----",file);
   fputs(" --- ------ ------- -------- ------- ------- ---------- ------- ------ ----- ------",file);
-  if(config->with_nitrogen)
-    fputs(" ------- ------- ------- ------- ---------- --------\n",file);
-  else
-    fputc('\n',file);
-  for(i=0;i<config->nsoil;i++)
+  fputs(" ------- ------- ------- ------- ---------- --------\n",file);
+ for(i=0;i<config->nsoil;i++)
   {
     fprintf(file,"%-18s %6.2f %5.2f %5.2f %6.2f",
             config->soilpar[i].name,config->soilpar[i].sand,config->soilpar[i].silt,config->soilpar[i].clay,config->soilpar[i].Ks);
@@ -53,8 +49,7 @@ void fprintsoilpar(FILE *file,          /**< pointer to text file */
             config->soilpar[i].tdiff_0,config->soilpar[i].tdiff_15,config->soilpar[i].tdiff_100,
             config->soilpar[i].tcond_pwp,config->soilpar[i].tcond_100,config->soilpar[i].tcond_100_ice,
             config->soilpar[i].psi_sat,config->soilpar[i].b,config->soilpar[i].efold,config->soilpar[i].ctimax);
-    if(config->with_nitrogen)
-      fprintf(file," %7.3f %7.3f %7.4f %7.3f %10.3f %8.1f",
+    fprintf(file," %7.3f %7.3f %7.4f %7.3f %10.3f %8.1f",
               config->soilpar[i].a_nit,config->soilpar[i].b_nit,config->soilpar[i].c_nit,
               config->soilpar[i].d_nit,config->soilpar[i].anion_excl,config->soilpar[i].cn_ratio);
     fputc('\n',file);
@@ -62,8 +57,7 @@ void fprintsoilpar(FILE *file,          /**< pointer to text file */
   fputs("------------------ ------ ----- ----- ------",file);
   if(config->soilpar_option==PRESCRIBED_SOILPAR)
     fputs(" ------ ----- -----",file);
-  fputs(" --- ------ ------- -------- ------- ------- ---------- ------- ------ ----- ------",file);
-  if(config->with_nitrogen)
-    fputs(" ------- ------- ------- ------- ---------- --------",file);
+  fputs(" --- ------ ------- -------- ------- ------- ----------",file);
+  fputs(" ------- ------- ------- ------- ---------- --------",file);
   fputc('\n',file);
 } /* of 'fprintsoilpar' */

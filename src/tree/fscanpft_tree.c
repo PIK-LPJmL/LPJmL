@@ -189,10 +189,7 @@ Bool fscanpft_tree(LPJfile *file, /**< pointer to LPJ file */
   tree->nc_ratio.leaf=1/tree->nc_ratio.leaf;
   tree->nc_ratio.sapwood=1/tree->nc_ratio.sapwood;
   tree->nc_ratio.root=1/tree->nc_ratio.root;
-  if(config->with_nitrogen)
-  {
-    fscanratio2(verb,file,&tree->ratio,pft->name,"ratio");
-  }
+  fscanratio2(verb,file,&tree->ratio,pft->name,"ratio");
   fscanreal2(verb,file,&tree->crownarea_max,pft->name,"crownarea_max");
   fscanreal2(verb,file,&wood_sapl,pft->name,"wood_sapl");
   if(pft->phenology==SUMMERGREEN)

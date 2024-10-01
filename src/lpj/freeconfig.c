@@ -114,8 +114,7 @@ void freeconfig(Config *config /**< LPJmL configuration */
     freefilename(&config->popdens_filename);
   if(config->grassharvest_filename.name!=NULL)
     freefilename(&config->grassharvest_filename);
-  if(config->with_nitrogen  || config->fire==SPITFIRE || config->fire==SPITFIRE_TMAX)
-    freefilename(&config->wind_filename);
+  freefilename(&config->wind_filename);
   if(config->fire==SPITFIRE || config->fire==SPITFIRE_TMAX)
   {
     if(config->fdi==WVPD_INDEX)
@@ -138,7 +137,7 @@ void freeconfig(Config *config /**< LPJmL configuration */
      if(config->fertilizer_input==FERTILIZER || config->residue_treatment==READ_RESIDUE_DATA || config->tillage_type==READ_TILLAGE)
       free(config->fertilizermap);
     free(config->mowingdays);
-    if(config->sdate_option==PRESCRIBED_SDATE || config->crop_phu_option==PRESCRIBED_CROP_PHU)
+    if(config->sdate_option>=PRESCRIBED_SDATE || config->crop_phu_option>=PRESCRIBED_CROP_PHU)
       free(config->cftmap);
     if(config->tillage_type==READ_TILLAGE)
       freefilename(&config->with_tillage_filename);
@@ -152,28 +151,25 @@ void freeconfig(Config *config /**< LPJmL configuration */
       freefilename(&config->sowing_cotton_ir_filename);
       freefilename(&config->harvest_cotton_ir_filename);
     }
-    if(config->sdate_option==PRESCRIBED_SDATE)
+    if(config->sdate_option>=PRESCRIBED_SDATE)
       freefilename(&config->sdate_filename);
     if(config->prescribe_lsuha)
       freefilename(&config->lsuha_filename);
     if (config->residue_treatment == READ_RESIDUE_DATA)
       freefilename(&config->residue_data_filename);
-    if(config->crop_phu_option==PRESCRIBED_CROP_PHU)
+    if(config->crop_phu_option>=PRESCRIBED_CROP_PHU)
       freefilename(&config->crop_phu_filename);
   }
-  if(config->with_nitrogen)
+  if(!config->unlim_nitrogen && !config->no_ndeposition)
   {
-    if(config->with_nitrogen!=UNLIM_NITROGEN && !config->no_ndeposition)
-    {
-      freefilename(&config->no3deposition_filename);
-      freefilename(&config->nh4deposition_filename);
-    }
-    freefilename(&config->soilph_filename);
-    if(config->withlanduse!=NO_LANDUSE && config->fertilizer_input==FERTILIZER)
-      freefilename(&config->fertilizer_nr_filename);
-    if(config->withlanduse!=NO_LANDUSE&&config->manure_input)
-      freefilename(&config->manure_nr_filename);
+    freefilename(&config->no3deposition_filename);
+    freefilename(&config->nh4deposition_filename);
   }
+  freefilename(&config->soilph_filename);
+  if(config->withlanduse!=NO_LANDUSE && config->fertilizer_input==FERTILIZER)
+    freefilename(&config->fertilizer_nr_filename);
+  if(config->withlanduse!=NO_LANDUSE&&config->manure_input)
+    freefilename(&config->manure_nr_filename);
   if(config->prescribe_landcover != NO_LANDCOVER)
     freefilename(&config->landcover_filename);
 

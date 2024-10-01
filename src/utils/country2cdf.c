@@ -14,13 +14,13 @@
 
 #include "lpj.h"
 
-#if defined(USE_NETCDF) || defined(USE_NETCDF4)
+#ifdef USE_NETCDF
 #include <netcdf.h>
 
 #define error(rc) if(rc) {free(lon);free(lat);fprintf(stderr,"ERROR427: Cannot write '%s': %s.\n",filename,nc_strerror(rc)); nc_close(cdf->ncid); free(cdf);return NULL;}
 
 #define MISSING_VALUE 999
-#define USAGE "Usage: %s [-global] [-index i] [-cellsize size] [-compress level] [-descr d] name\n       gridfile countryfile netcdffile\n"
+#define USAGE "Usage: %s [-global] [-index i] [-cellsize size] [-compress level] [-descr d] [-netcdf4] name\n       gridfile countryfile netcdffile\n"
 
 typedef struct
 {
@@ -35,6 +35,7 @@ static Cdf *create_cdf(const char *filename,
                        const char *descr,
                        Coord res,
                        int compress,
+                       Bool isnetcdf4,
                        const Coord_array *array)
 {
   Cdf *cdf;
@@ -65,11 +66,10 @@ static Cdf *create_cdf(const char *filename,
   for(i=0;i<array->nlat;i++)
     lat[i]=array->lat_min+i*res.lat;
 
-#ifdef USE_NETCDF4
-  rc=nc_create(filename,(compress) ? NC_CLOBBER|NC_NETCDF4 : NC_CLOBBER,&cdf->ncid);
-#else
-  rc=nc_create(filename,NC_CLOBBER,&cdf->ncid);
-#endif
+  if(isnetcdf4)
+    rc=nc_create(filename,(compress) ? NC_CLOBBER|NC_NETCDF4 : NC_CLOBBER,&cdf->ncid);
+ else
+    rc=nc_create(filename,NC_CLOBBER,&cdf->ncid);
   if(rc)
   {
     fprintf(stderr,"ERROR426: Cannot create file '%s': %s.\n",
@@ -118,13 +118,11 @@ static Cdf *create_cdf(const char *filename,
   dim[1]=lon_dim_id;
   rc=nc_def_var(cdf->ncid,name,NC_SHORT,2,dim,&cdf->varid);
   error(rc);
-#ifdef USE_NETCDF4
-  if(compress)
+  if(isnetcdf4 && compress)
   {
     rc=nc_def_var_deflate(cdf->ncid, cdf->varid, 0, 1,compress);
     error(rc);
   }
-#endif
   if(descr!=NULL)
   {
     rc=nc_put_att_text(cdf->ncid, cdf->varid,"long_name",strlen(descr),descr);
@@ -177,7 +175,7 @@ static void close_cdf(Cdf *cdf)
 #endif
 int main(int argc,char **argv)
 {
-#if defined(USE_NETCDF) || defined(USE_NETCDF4)
+#ifdef USE_NETCDF
   FILE *file;
   Coordfile coordfile;
   Coord_array *index;
@@ -189,14 +187,14 @@ int main(int argc,char **argv)
   Header header;
   short *f;
   float cellsize,lon,lat;
-  Bool swap,isglobal;
+  Bool swap,isglobal,isnetcdf4;
   char *descr,*endptr;
   Filename filename;
   descr=NULL;
   compress=0;
   inum=0;
   cellsize=0;
-  isglobal=FALSE;
+  isglobal=isnetcdf4=FALSE;
   for(iarg=1;iarg<argc;iarg++)
     if(argv[iarg][0]=='-')
     {
@@ -212,6 +210,8 @@ int main(int argc,char **argv)
       }
       else if(!strcmp(argv[iarg],"-global"))
         isglobal=TRUE;
+      else if(!strcmp(argv[iarg],"-netcdf4"))
+        isnetcdf4=TRUE;
       else if(!strcmp(argv[iarg],"-cellsize"))
       {
         if(argc==iarg+1)
@@ -255,6 +255,12 @@ int main(int argc,char **argv)
         if(*endptr!='\0')
         {
           fprintf(stderr,"Error: Invalid number '%s' for option '-compress'.\n",argv[iarg]);
+          return EXIT_FAILURE;
+        }
+        if(compress<0 || compress>9)
+        {
+          fprintf(stderr,"Error: Invalid compression value %d, must be in [0,9].\n",
+                  compress);
           return EXIT_FAILURE;
         }
       }
@@ -347,7 +353,7 @@ int main(int argc,char **argv)
     fclose(file);
     return EXIT_FAILURE;
   }
-  cdf=create_cdf(argv[iarg+3],argv[iarg+2],argv[iarg],descr,res,compress,index);
+  cdf=create_cdf(argv[iarg+3],argv[iarg+2],argv[iarg],descr,res,compress,isnetcdf4,index);
   if(cdf==NULL)
     return EXIT_FAILURE;
   data=newvec(short,ngrid*header.nbands);

@@ -121,17 +121,16 @@ void fprintpftpar(FILE *file,           /**< pointer to text file */
     if(config->fdi==WVPD_INDEX)
       fprintf(file,"vpd_par:\t%g\n",pftpar->vpd_par);
   }
-  if(config->with_nitrogen)
-    fprintf(file,"vmax_up:\t%g (gN/kgC)\n"
-                 "kNmin:\t\t%g\n"
-                 "KNmin:\t\t%g\n"
-                 "CNleaf:\t\t%g %g %g\n"
-                 "kNstore:\t%g\n"
-                 "fN_turnover:\t%g\n"
-                 "N fixing:\t%s\n",
-            pftpar->vmax_up,pftpar->kNmin,pftpar->KNmin,1/pftpar->ncleaf.high,
-            1/pftpar->ncleaf.median,1/pftpar->ncleaf.low,pftpar->knstore,
-            pftpar->fn_turnover,bool2str(pftpar->nfixing));
+  fprintf(file,"vmax_up:\t%g (gN/kgC)\n"
+               "kNmin:\t\t%g\n"
+               "KNmin:\t\t%g\n"
+               "CNleaf:\t\t%g %g %g\n"
+               "kNstore:\t%g\n"
+               "fN_turnover:\t%g\n"
+               "N fixing:\t%s\n",
+          pftpar->vmax_up,pftpar->kNmin,pftpar->KNmin,1/pftpar->ncleaf.high,
+          1/pftpar->ncleaf.median,1/pftpar->ncleaf.low,pftpar->knstore,
+          pftpar->fn_turnover,bool2str(pftpar->nfixing));
   if(config->npp_controlled_bnf && pftpar->nfixing)
   {
     fprintf(file,"temp_bnf_lim:\t%g %g\n"

@@ -151,11 +151,11 @@ Bool freadcell(FILE *file,             /**< File pointer to binary file */
       if(config->sdate_option_restart)
         fseek(file,sizeof(int)*2*ncft,SEEK_CUR);
     }
-    if(config->crop_phu_option==PRESCRIBED_CROP_PHU)
+    if(config->crop_phu_option>=PRESCRIBED_CROP_PHU)
     {
       cell->ml.crop_phu_fixed=newvec(Real,2*ncft);
       checkptr(cell->ml.crop_phu_fixed);
-      if(config->crop_option_restart)
+      if(config->crop_phu_option_restart)
       {
         if(freadreal(cell->ml.crop_phu_fixed,2*ncft,swap,file)!=2*ncft)
         {
@@ -170,7 +170,7 @@ Bool freadcell(FILE *file,             /**< File pointer to binary file */
     else
     {
       cell->ml.crop_phu_fixed=NULL;
-      if(config->crop_option_restart)
+      if(config->crop_phu_option_restart)
         fseek(file,sizeof(Real)*2*ncft,SEEK_CUR);
     }
     cell->ml.sowing_month=newvec(int,2*ncft);

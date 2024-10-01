@@ -125,16 +125,13 @@ Bool fscanpft_grass(LPJfile *file, /**< pointer to LPJ file */
   grass->turnover.leaf=1.0/grass->turnover.leaf;
   grass->turnover.root=1.0/grass->turnover.root;
   fscangrassphys2(verb,file,&grass->nc_ratio,pft->name,"cn_ratio");
-  if(config->with_nitrogen)
+  fscanreal2(verb,file,&grass->ratio,pft->name,"ratio");
+  if(grass->ratio<=0)
   {
-    fscanreal2(verb,file,&grass->ratio,pft->name,"ratio");
-    if(grass->ratio<=0)
-    {
-      if(verb)
-        fprintf(stderr,"ERROR235: Grass ratio=%g must be greater than zero for PFT '%s'.\n",
-                grass->ratio,pft->name);
-      return TRUE;
-    }
+    if(verb)
+      fprintf(stderr,"ERROR235: Grass ratio=%g must be greater than zero for PFT '%s'.\n",
+              grass->ratio,pft->name);
+    return TRUE;
   }
   fscanreal012(verb,file,&grass->reprod_cost,pft->name,"reprod_cost");
   grass->nc_ratio.leaf=1/grass->nc_ratio.leaf;

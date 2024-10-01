@@ -21,8 +21,7 @@ Real npp_grass(Pft *pft,               /**< PFT variables */
                Real UNUSED(gtemp_air), /**< value of air temperature response function */
                Real gtemp_soil,        /**< value of soil temperature response function */
                Real assim,             /**< assimilation (gC/m2) */
-               const Config *config,       /**< [in] LPJ configuration */
-               int with_nitrogen       /**< with nitrogen (TRUE/FALSE) */
+               const Config *config       /**< [in] LPJ configuration */
               )                        /** \return net primary productivity (gC/m2) */
 {
   Pftgrass *grass;
@@ -30,7 +29,7 @@ Real npp_grass(Pft *pft,               /**< PFT variables */
   Real npp,mresp,gresp,nc_root;
   grass=pft->data;
   par=pft->par->data;
-  if(with_nitrogen && grass->ind.root.carbon>epsilon)
+  if(grass->ind.root.carbon>epsilon)
     nc_root=grass->ind.root.nitrogen/grass->ind.root.carbon;
   else
     nc_root=par->nc_ratio.root;
