@@ -447,13 +447,13 @@ Bool fscanconfig(Config *config,    /**< LPJ configuration */
           fscanint2(file,&config->fix_landuse_year,"fix_landuse_year");
         }
       }
-      if(fscankeywords(file,&config->sdate_option,"sowing_date_option",sowing_data_option,3,FALSE,verbose))
+      if(fscankeywords(file,&config->sdate_option,"sowing_date_option",sowing_data_option,5,FALSE,verbose))
         return TRUE;
       if(config->sdate_option==FIXED_SDATE || config->sdate_option>=PRESCRIBED_SDATE)
         fscanint2(file,&config->sdate_fixyear,"sdate_fixyear");
       if(fscankeywords(file,&config->irrig_scenario,"irrigation",irrigation,4,FALSE,verbose))
         return TRUE;
-      if(fscankeywords(file,&config->crop_phu_option,"crop_phu_option",crop_phu_options,3,!config->pedantic,verbose))
+      if(fscankeywords(file,&config->crop_phu_option,"crop_phu_option",crop_phu_options,5,!config->pedantic,verbose))
         return TRUE;
       fscanbool2(file,&config->intercrop,"intercrop");
       config->manure_input=FALSE;

@@ -29,7 +29,6 @@ of `major.minor.patch` with
 - Warnings in `addheader` replaced by terminating errors.
 - Function `openinputfile()` returns an error if cell size differs in JSON metafile.
 - Function `openmetafile()` returns an error if binary file is empty.
-- `USE_NETCDF4` compile option replaced by `"netcdf4"` boolean flag in the LPJmL configuration file. If set compression of NetCDF4 files can be enabled.
 
 ### Added
 
@@ -42,6 +41,18 @@ of `major.minor.patch` with
 - Option `-timestep` added to `addheader`.
 - Check for correct number of time steps added in `openclimate_netcdf.c`.
 - Option `sum`, `tsum` and `tmean` to `mathclm` added.
+
+
+## [5.9.14] - 2024-09-30
+
+- author: Werner von Bloh (bloh@pik-potsdam.de), Stephen Wirth (wirth@pik-potsdam.de)
+- code review: Sibyll Schaphoff (sibylls@pik-potsdam.de), Christoph Müller (cmueller@pik-potsdam.de)
+
+### Fixed
+
+- `pft->vscal` not set to `NDAYEAR` in `update_annual.c`. (issue #364).
+- `freezefrac2soil.c` corrected to avoid division by zero.
+- size of option array for `sowing_date_option` and `crop_phu_option` now correctly specified in `fscanconfig.c`.
 
 
 ## [5.9.13] - 2024-09-26
