@@ -19,6 +19,18 @@ of `major.minor.patch` with
 
 ## [Unreleased]
 
+## [5.9.14] - 2024-09-30
+
+- author: Werner von Bloh (bloh@pik-potsdam.de), Stephen Wirth (wirth@pik-potsdam.de)
+- code review: Sibyll Schaphoff (sibylls@pik-potsdam.de), Christoph Müller (cmueller@pik-potsdam.de)
+
+### Fixed
+
+- `pft->vscal` not set to `NDAYEAR` in `update_annual.c`. (issue #364).
+- `freezefrac2soil.c` corrected to avoid division by zero.
+- size of option array for `sowing_date_option` and `crop_phu_option` now correctly specified in `fscanconfig.c`.
+
+
 ## [5.9.13] - 2024-09-26
 
 ### Contributors
