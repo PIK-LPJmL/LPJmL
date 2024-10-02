@@ -678,6 +678,7 @@ Bool fscanconfig(Config *config,    /**< LPJ configuration */
   {
     if(verbose)
       fputs("ERRROR230: Cannot read setting for NetCDF output.\n",stderr);
+    return TRUE;
   }
   config->outnames=fscanoutputvar(file,NOUT,verbose);
   if(config->outnames==NULL)

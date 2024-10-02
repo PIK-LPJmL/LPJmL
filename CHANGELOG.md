@@ -42,6 +42,35 @@ of `major.minor.patch` with
 - Check for correct number of time steps added in `openclimate_netcdf.c`.
 - Option `sum`, `tsum` and `tmean` to `mathclm` added.
 
+## [5.9.15] - 2024-09-30
+
+### Contributors
+
+- author: Werner von Bloh (bloh@pik-potsdam.de)
+- code review: Sibyll Schaphoff (sibylls@pik-potsdam.de)
+
+### Added
+
+- Option `-scale` added to `bin2cdf` in order to scale output.
+- `time_bnds`, `lat_bnds`, and `lon_bnds` arrays added to NetCDF output for lpjml runs and the `bin2cdf` utility.
+
+### Changed
+
+- If `"with_days"` is set to true in the lpjml configuration file, time axis of yearly output is also set in units of days instead of years.
+
+### Removed
+
+- Unused file `cflux_sum.c` removed.
+- Conversion of obsolete file `manage.par` removed from utility `manage2js`.
+
+### Fixed
+
+- Separate output for each year by setting `"name" : "filename_%d"` is now written correctly.
+- Number of bands set to 1 in metafile of grid NetCDF output.
+- Name of longitude/latitude variables correctly derived in `getlatlon_netcdf.c`.
+- Misspelled option `-netdcdf4` corrected to `-netcdf4` in `clm2cdf.c`.
+- `lpj_climber4.c` updated to compile without errors.
+
 
 ## [5.9.14] - 2024-09-30
 

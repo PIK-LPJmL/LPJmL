@@ -27,7 +27,7 @@ OBJS    = create_netcdf.$O close_netcdf.$O write_float_netcdf.$O\
           write_int_netcdf.$O mpi_openclimate_netcdf.$O open_netcdf.$O\
           openfile_netcdf.$O flush_netcdf.$O initsetting_netcdf.$O\
           checkcoord.$O getattr_netcdf.$O getvarname_netcdf.$O\
-          parse_config_netcdf.$O readmap_netcdf.$O
+          parse_config_netcdf.$O readmap_netcdf.$O setlatlon.$O settimeaxis.$O
 
 INC     = ../../include
 LIBDIR  = ../../lib

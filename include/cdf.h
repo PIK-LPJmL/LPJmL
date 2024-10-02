@@ -26,8 +26,11 @@ typedef struct
 {
   Real lon_min;
   Real lat_min;
+  Real lon_res;
+  Real lat_res;
   int nlon;
   int nlat;
+  Bool rev_lat;
   int *index;
 } Coord_array;
 
@@ -171,6 +174,8 @@ extern char *getattr_netcdf(int,int,const char *);
 extern char *getvarname_netcdf(const Climatefile *);
 extern void initsetting_netcdf(Netcdf_config *);
 extern Bool parse_config_netcdf(Netcdf_config *,const char *);
+extern Bool setlatlon(double **,double **,double **,double **,const Coord_array *);
+extern Bool settimeaxis(double **,double **,int,int,int,int,int,Bool,Bool,Bool,const char *);
 
 #ifdef USE_MPI
 extern Bool mpi_write_netcdf(const Netcdf *,void *,MPI_Datatype,int,int,

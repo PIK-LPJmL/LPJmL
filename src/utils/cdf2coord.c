@@ -147,7 +147,7 @@ int main(int argc,char **argv)
     for(j=0;j<nvars;j++)
     {
       nc_inq_varname(ncid,j,name);
-      if(strcmp(name,netcdf_config.lon.name) && strcmp(name,netcdf_config.lon.standard_name) && strcmp(name,netcdf_config.lat.name) && strcmp(name,netcdf_config.lat.standard_name) && strcmp(name,netcdf_config.time.name) && strcmp(name,netcdf_config.pft.name) && strcmp(name,netcdf_config.depth.name) && strcmp(name,netcdf_config.bnds.name))
+      if(strcmp(name,netcdf_config.lon.name) && strcmp(name,netcdf_config.lon.standard_name) && strcmp(name,netcdf_config.lat.name) && strcmp(name,netcdf_config.lat.standard_name) && strcmp(name,netcdf_config.time.name) && strcmp(name,netcdf_config.pft.name) && strcmp(name,netcdf_config.depth.name) && strcmp(name,netcdf_config.depth_bnds.name))
       {
         nc_inq_varndims(ncid,j,&ndims);
         if(ndims>1)

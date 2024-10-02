@@ -21,10 +21,12 @@
 #define MISSING_VALUE_INT -999999
 #define MISSING_VALUE_BYTE 99
 #define LON_NAME "lon"
+#define LON_BNDS_NAME "lon_bnds"
 #define LON_STANDARD_NAME "longitude"
 #define LON_LONG_NAME "Longitude"
 #define LON_UNITS "degrees_east"
 #define LAT_NAME "lat"
+#define LAT_BNDS_NAME "lat_bnds"
 #define LAT_LONG_NAME "Latitude"
 #define LAT_STANDARD_NAME "latitude"
 #define LAT_UNITS "degrees_north"
@@ -36,13 +38,16 @@
 #define LAT_DIM_NAME "lat"
 #define TIME_DIM_NAME "time"
 #define DEPTH_NAME "depth"
+#define DEPTH_BNDS_NAME "depth_bnds"
 #define DEPTH_DIM_NAME "layer"
 #define DEPTH_STANDARD_NAME "depth_below_surface"
 #define DEPTH_LONG_NAME "Depth of Vertical Layer Center Below Surface"
-#define BNDS_NAME "depth_bnds"
+#define BNDS_NAME "bnds"
+#define TIME_BNDS_NAME "time_bnds"
+#define TIME_BNDS_LONG_NAME "start and end points of each time step"
 #define BNDS_DIM_NAME "depth_bnds"
-#define BNDS_LONG_NAME "bnds=0 for the top of the layer, and bnds=1 for the bottom of the layer"
-#define BNDS_STANDARD_NAME ""
+#define DEPTH_BNDS_LONG_NAME "bnds=0 for the top of the layer, and bnds=1 for the bottom of the layer"
+#define DEPTH_BNDS_STANDARD_NAME ""
 #define PFTNAME_NAME "NamePFT"
 #define PFTNAME_DIM_NAME "len"
 #define PFTNAME_STANDARD_NAME ""
@@ -64,28 +69,36 @@ void initsetting_netcdf(Netcdf_config *config)
   config->time.standard_name=TIME_STANDARD_NAME;
   config->time.long_name=TIME_LONG_NAME;
   config->time.unit="";
+  config->time_bnds.name=TIME_BNDS_NAME;
+  config->time_bnds.long_name=TIME_BNDS_LONG_NAME;
   config->lon.name=LON_NAME;
   config->lon.dim=LON_DIM_NAME;
   config->lon.standard_name=LON_STANDARD_NAME;
   config->lon.long_name=LON_LONG_NAME;
   config->lon.unit=LON_UNITS;
+  config->lon_bnds.name=LON_BNDS_NAME;
+  config->lon_bnds.long_name=LON_LONG_NAME;
+  config->lon_bnds.unit=LON_UNITS;
   config->lat.name=LAT_NAME;
   config->lat.dim=LAT_DIM_NAME;
   config->lat.standard_name=LAT_STANDARD_NAME;
   config->lat.long_name=LAT_LONG_NAME;
   config->lat.unit=LAT_UNITS;
+  config->lat_bnds.name=LAT_BNDS_NAME;
+  config->lat_bnds.long_name=LAT_LONG_NAME;
+  config->lat_bnds.unit=LAT_UNITS;
   config->depth.name=DEPTH_NAME;
   config->depth.dim=DEPTH_DIM_NAME;
   config->depth.standard_name=DEPTH_STANDARD_NAME;
   config->depth.long_name=DEPTH_LONG_NAME;
   config->depth.unit="m";
   config->depth.scale=1e-3;
-  config->bnds.name=BNDS_NAME;
-  config->bnds.dim=BNDS_DIM_NAME;
-  config->bnds.standard_name=BNDS_STANDARD_NAME;
-  config->bnds.long_name=BNDS_LONG_NAME;
-  config->bnds.unit="m";
-  config->bnds.scale=1e-3;
+  config->depth_bnds.name=DEPTH_BNDS_NAME;
+  config->depth_bnds.dim=BNDS_DIM_NAME;
+  config->depth_bnds.standard_name=DEPTH_BNDS_STANDARD_NAME;
+  config->depth_bnds.long_name=DEPTH_BNDS_LONG_NAME;
+  config->depth_bnds.unit="m";
+  config->depth_bnds.scale=1e-3;
   config->pft.name=PFT_NAME;
   config->pft.dim=PFT_DIM_NAME;
   config->pft.standard_name=PFT_STANDARD_NAME;
@@ -96,6 +109,7 @@ void initsetting_netcdf(Netcdf_config *config)
   config->pft_name.standard_name=PFTNAME_STANDARD_NAME;
   config->pft_name.long_name=PFTNAME_LONG_NAME;
   config->pft_name.unit="";
+  config->bnds_name=BNDS_NAME;
   config->years_name=YEARS_NAME;
   config->calendar=CALENDAR;
 } /* of 'initsetting_netcdf' */

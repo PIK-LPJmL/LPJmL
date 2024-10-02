@@ -98,18 +98,29 @@ Bool fscanconfig_netcdf(LPJfile *file,   /**< pointer to LPJ file */
   config->missing_value.b=(Byte)i;
   if(fscanaxis(d,&config->lat,"latitude",verb))
     return TRUE;
+  if(fscanaxis(d,&config->lat_bnds,"latitude_bnds",verb))
+    return TRUE;
   if(fscanaxis(d,&config->lon,"longitude",verb))
+    return TRUE;
+  if(fscanaxis(d,&config->lon_bnds,"longitude_bnds",verb))
     return TRUE;
   if(fscanaxis(d,&config->time,"time",verb))
     return TRUE;
+  if(fscanaxis(d,&config->time_bnds,"time_bnds",verb))
+    return TRUE;
   if(fscanaxis(d,&config->depth,"depth",verb))
     return TRUE;
-  if(fscanaxis(d,&config->bnds,"bnds",verb))
+  if(fscanaxis(d,&config->depth_bnds,"depth_bnds",verb))
     return TRUE;
   if(fscanaxis(d,&config->pft,"pft",verb))
     return TRUE;
   if(fscanaxis(d,&config->pft_name,"pft_name",verb))
     return TRUE;
+  s=fscanstring(d,NULL,"bnds_name",verb);
+  if(s==NULL)
+    return TRUE;
+  config->bnds_name=strdup(s);
+  checkptr(config->bnds_name);
   s=fscanstring(d,NULL,"calendar",verb);
   if(s==NULL)
     return TRUE;
@@ -126,12 +137,16 @@ Bool fscanconfig_netcdf(LPJfile *file,   /**< pointer to LPJ file */
 void freeconfig_netcdf(Netcdf_config *config)
 {
   freeaxis(&config->lat);
+  freeaxis(&config->lat_bnds);
   freeaxis(&config->lon);
+  freeaxis(&config->lon_bnds);
   freeaxis(&config->time);
+  freeaxis(&config->time_bnds);
   freeaxis(&config->depth);
-  freeaxis(&config->bnds);
+  freeaxis(&config->depth_bnds);
   freeaxis(&config->pft);
   freeaxis(&config->pft_name);
+  free(config->bnds_name);
   free(config->calendar);
   free(config->years_name);
 } /* of 'freenconfig_netcdf' */
