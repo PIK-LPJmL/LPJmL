@@ -71,6 +71,7 @@ typedef struct cdf
   int varid;
   int time_dim_id,lon_dim_id,lat_dim_id;
   int time_var_id,lon_var_id,lat_var_id;
+  int time_bnds_var_id,lon_bnds_var_id,lat_bnds_var_id;
   int n;
   const Coord_array *index;
   float missing_value;

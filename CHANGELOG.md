@@ -19,8 +19,10 @@ of `major.minor.patch` with
 
 ## [Unreleased]
 
+### Contributors
+
 - author: Werner von Bloh (bloh@pik-potsdam.de)
-- code review: Sibyll Schaphoff (sibylls@pik-potsdam.de)
+- code review: Sibyll Schaphoff (sibylls@pik-potsdam.de), Sebastian Ostberg (ostberg@pik-potsdam.de)
 
 ### Added
 
@@ -43,9 +45,12 @@ of `major.minor.patch` with
 - Name of longitude/latitude variables correctly derived in `getlatlon_netcdf.c`.
 - Misspelled option `-netdcdf4` corrected to `-netcdf4` in `clm2cdf.c`.
 - `lpj_climber4.c` updated to compile without errors.
+- Writing different variables into one NetCDF file fixed in `create_netcdf.c`.
 
 
 ## [5.9.14] - 2024-09-30
+
+### Contributors
 
 - author: Werner von Bloh (bloh@pik-potsdam.de), Stephen Wirth (wirth@pik-potsdam.de)
 - code review: Sibyll Schaphoff (sibylls@pik-potsdam.de), Christoph Müller (cmueller@pik-potsdam.de)

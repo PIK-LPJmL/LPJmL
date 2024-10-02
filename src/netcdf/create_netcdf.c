@@ -44,8 +44,8 @@ Bool create_netcdf(Netcdf *cdf,
   char *s;
   time_t t;
   int i,rc,nyear,imiss=MISSING_VALUE_INT,len;
+  int bnds_dim_id;
   int dimids[2];
-  int bnds_dim_id,bnds_var_id,lat_bnds_var_id,lon_bnds_var_id;
   short smiss=MISSING_VALUE_SHORT;
   double *lon=NULL,*lat=NULL,*lon_bnds,*lat_bnds;
   float miss=config->missing_value;
@@ -69,6 +69,9 @@ Bool create_netcdf(Netcdf *cdf,
      cdf->time_var_id=cdf->root->time_var_id;
      cdf->lat_var_id=cdf->root->lat_var_id;
      cdf->lon_var_id=cdf->root->lon_var_id;
+     cdf->time_bnds_var_id=cdf->root->time_bnds_var_id;
+     cdf->lat_bnds_var_id=cdf->root->lat_bnds_var_id;
+     cdf->lon_bnds_var_id=cdf->root->lon_bnds_var_id;
   }
   if(oneyear)
     nyear=1;
@@ -146,7 +149,7 @@ Bool create_netcdf(Netcdf *cdf,
       ncsetfill(cdf->ncid,NC_NOFILL);
     rc=nc_def_dim(cdf->ncid,BNDS_NAME,2,&bnds_dim_id);
     error(rc);
-    if(year!=NULL)
+    if(n>1 || !oneyear)
     {
       if(n==1)
         rc=nc_def_dim(cdf->ncid,TIME_DIM_NAME,nyear/timestep,&cdf->time_dim_id);
@@ -163,9 +166,9 @@ Bool create_netcdf(Netcdf *cdf,
       error(rc);
       dimids[0]=cdf->time_dim_id;
       dimids[1]=bnds_dim_id;
-      rc=nc_def_var(cdf->ncid,TIME_BNDS_NAME,NC_DOUBLE,2,dimids,&bnds_var_id);
+      rc=nc_def_var(cdf->ncid,TIME_BNDS_NAME,NC_DOUBLE,2,dimids,&cdf->time_bnds_var_id);
       error(rc);
-      rc=nc_put_att_text(cdf->ncid, bnds_var_id,"long_name",strlen(TIME_BNDS_LONG_NAME),TIME_BNDS_LONG_NAME);
+      rc=nc_put_att_text(cdf->ncid, cdf->time_bnds_var_id,"long_name",strlen(TIME_BNDS_LONG_NAME),TIME_BNDS_LONG_NAME);
       error(rc)
     }
     rc=nc_def_dim(cdf->ncid,LAT_DIM_NAME,array->nlat,&cdf->lat_dim_id);
@@ -193,15 +196,15 @@ Bool create_netcdf(Netcdf *cdf,
     error(rc);
     dimids[0]=cdf->lat_dim_id;
     dimids[1]=bnds_dim_id;
-    rc=nc_def_var(cdf->ncid,LAT_BNDS_NAME,NC_DOUBLE,2,dimids,&lat_bnds_var_id);
+    rc=nc_def_var(cdf->ncid,LAT_BNDS_NAME,NC_DOUBLE,2,dimids,&cdf->lat_bnds_var_id);
     error(rc);
     rc=nc_def_var(cdf->ncid,LON_NAME,NC_DOUBLE,1,&cdf->lon_dim_id,&cdf->lon_var_id);
     error(rc);
     dimids[0]=cdf->lon_dim_id;
     dimids[1]=bnds_dim_id;
-    rc=nc_def_var(cdf->ncid,LON_BNDS_NAME,NC_DOUBLE,2,dimids,&lon_bnds_var_id);
+    rc=nc_def_var(cdf->ncid,LON_BNDS_NAME,NC_DOUBLE,2,dimids,&cdf->lon_bnds_var_id);
     error(rc);
-    if(year!=NULL)
+    if(n>1 || !oneyear)
     {
       if(n==1)
       {
@@ -227,13 +230,13 @@ Bool create_netcdf(Netcdf *cdf,
         sprintf(s,"days since %d-1-1 0:0:0",(oneyear) ? actualyear : config->baseyear);
       }
       rc=nc_put_att_text(cdf->ncid,cdf->time_var_id,"units",strlen(s),s);
-      rc=nc_put_att_text(cdf->ncid,bnds_var_id,"units",strlen(s),s);
+      rc=nc_put_att_text(cdf->ncid,cdf->time_bnds_var_id,"units",strlen(s),s);
       free(s);
       error(rc);
       rc=nc_put_att_text(cdf->ncid,cdf->time_var_id,"calendar",strlen(CALENDAR),
                          CALENDAR);
       error(rc);
-      rc=nc_put_att_text(cdf->ncid,bnds_var_id,"calendar",strlen(CALENDAR),
+      rc=nc_put_att_text(cdf->ncid,cdf->time_bnds_var_id,"calendar",strlen(CALENDAR),
                          CALENDAR);
       error(rc);
       rc=nc_put_att_text(cdf->ncid, cdf->time_var_id,"axis",strlen("T"),"T");
@@ -242,7 +245,7 @@ Bool create_netcdf(Netcdf *cdf,
     rc=nc_put_att_text(cdf->ncid,cdf->lon_var_id,"units",strlen("degrees_east"),
                      "degrees_east");
     error(rc);
-    rc=nc_put_att_text(cdf->ncid,lon_bnds_var_id,"units",strlen("degrees_east"),
+    rc=nc_put_att_text(cdf->ncid,cdf->lon_bnds_var_id,"units",strlen("degrees_east"),
                      "degrees_east");
     error(rc);
     rc=nc_put_att_text(cdf->ncid, cdf->lon_var_id,"long_name",strlen(LON_LONG_NAME),LON_LONG_NAME);
@@ -256,18 +259,18 @@ Bool create_netcdf(Netcdf *cdf,
     rc=nc_put_att_text(cdf->ncid,cdf->lat_var_id,"units",strlen("degrees_north"),
                      "degrees_north");
     error(rc);
-    rc=nc_put_att_text(cdf->ncid,lat_bnds_var_id,"units",strlen("degrees_north"),
+    rc=nc_put_att_text(cdf->ncid,cdf->lat_bnds_var_id,"units",strlen("degrees_north"),
                      "degrees_north");
     rc=nc_put_att_text(cdf->ncid, cdf->lat_var_id,"long_name",strlen(LAT_LONG_NAME),LAT_LONG_NAME);
     error(rc);
     rc=nc_put_att_text(cdf->ncid, cdf->lat_var_id,"standard_name",strlen(LAT_STANDARD_NAME),LAT_STANDARD_NAME);
     error(rc);
-    rc=nc_put_att_text(cdf->ncid, cdf-> lat_var_id,"bounds",strlen(LAT_BNDS_NAME),LAT_BNDS_NAME);
+    rc=nc_put_att_text(cdf->ncid, cdf->lat_var_id,"bounds",strlen(LAT_BNDS_NAME),LAT_BNDS_NAME);
     error(rc);
     rc=nc_put_att_text(cdf->ncid, cdf->lat_var_id,"axis",strlen("Y"),"Y");
     error(rc);
   }
-  if(year!=NULL)
+  if(n>1 || !oneyear)
   {
     dim[0]=cdf->time_dim_id;
     dim[1]=cdf->lat_dim_id;
@@ -344,16 +347,16 @@ Bool create_netcdf(Netcdf *cdf,
     {
       rc=nc_put_var_double(cdf->ncid,cdf->time_var_id,year);
       error(rc);
-      rc=nc_put_var_double(cdf->ncid,bnds_var_id,bnds);
+      rc=nc_put_var_double(cdf->ncid,cdf->time_bnds_var_id,bnds);
       error(rc);
     }
     rc=nc_put_var_double(cdf->ncid,cdf->lat_var_id,lat);
     error(rc);
-    rc=nc_put_var_double(cdf->ncid,lat_bnds_var_id,lat_bnds);
+    rc=nc_put_var_double(cdf->ncid,cdf->lat_bnds_var_id,lat_bnds);
     error(rc);
     rc=nc_put_var_double(cdf->ncid,cdf->lon_var_id,lon);
     error(rc);
-    rc=nc_put_var_double(cdf->ncid,lon_bnds_var_id,lon_bnds);
+    rc=nc_put_var_double(cdf->ncid,cdf->lon_bnds_var_id,lon_bnds);
     error(rc);
     free(lat);
     free(lat_bnds);
