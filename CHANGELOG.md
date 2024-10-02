@@ -33,6 +33,7 @@ of `major.minor.patch` with
 ### Changed
 
 - If `"with_days"` is set to true in the lpjml configuration file, time axis of yearly output is also set in units of days instead of years.
+- Time in NetCDF output is always set in the middle between the lower and upper time boundaries.
 
 ### Removed
 
