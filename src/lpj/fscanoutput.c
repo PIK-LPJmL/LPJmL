@@ -470,5 +470,7 @@ Bool fscanoutput(LPJfile *file,  /**< pointer to LPJ file */
   }
   free(default_suffix);
   config->n_out=count;
+  if(checkuniqoutput(npft,ncft,config))
+    return TRUE;
   return FALSE;
 } /* of 'fscanoutput' */

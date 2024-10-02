@@ -1,6 +1,6 @@
 /**************************************************************************************/
 /**                                                                                \n**/
-/**              o  u  t  p  u  t  n  a  m  e  s  .  c                             \n**/
+/**              c  h  e  c  k  u  n i  q  o  u  t  p  u  t  .  c                  \n**/
 /**                                                                                \n**/
 /**     C implementation of LPJmL                                                  \n**/
 /**                                                                                \n**/
@@ -17,36 +17,42 @@
 
 #include "lpj.h"
 
-void outputnames(Outputfile *outfile, /**< output file array */
-                 const Config *config /**< LPJmL configuration */
-                )
+Bool checkuniqoutput(int npft,            /**< number of natural PFTs */
+                     int ncft,            /**< number of crop PFTs */
+                     const Config *config /**< LPJmL configuration */
+                )                         /** \return TRUE on error */
 {
   int i,j;
   for(i=0;i<config->n_out;i++)
   {
-    if(config->outputvars[i].filename.fmt==CDF)
+    if(config->outputvars[i].filename.fmt==CDF && outputsize(config->outputvars[i].id,npft,ncft,config)==1)
     {
-      outfile->files[config->outputvars[i].id].fp.cdf.state=ONEFILE;
       /* check whether filename has already been used */
       for(j=i-1;j>=0;j--)
         if(config->outputvars[j].filename.fmt!=SOCK && !strcmp(config->outputvars[j].filename.name,config->outputvars[i].filename.name))
         {
-          if(config->outputvars[j].filename.fmt==CDF)
+          if(config->outputvars[j].filename.fmt!=CDF || outputsize(config->outputvars[j].id,npft,ncft,config)>1)
           {
-            outfile->files[config->outputvars[i].id].fp.cdf.state=CLOSE;
-            if( outfile->files[config->outputvars[j].id].fp.cdf.state==ONEFILE)
-            {
-              outfile->files[config->outputvars[j].id].fp.cdf.state=CREATE;
-              outfile->files[config->outputvars[i].id].fp.cdf.root=&outfile->files[config->outputvars[j].id].fp.cdf;
-            }
-            else
-            {
-              outfile->files[config->outputvars[j].id].fp.cdf.state=APPEND;
-              outfile->files[config->outputvars[i].id].fp.cdf.root=outfile->files[config->outputvars[j].id].fp.cdf.root;
-            }
+            if(isroot(*config))
+              fprintf(stderr,"ERROR265: Filename is identical for output '%s' and '%s'.\n",
+                      config->outnames[config->outputvars[i].id].name,
+                      config->outnames[config->outputvars[j].id].name);
+            return TRUE;
           }
-          break;
+        }
+    }
+    else if(config->outputvars[i].filename.fmt!=SOCK)
+    {
+      for(j=i-1;j>=0;j--)
+        if(config->outputvars[j].filename.fmt!=SOCK && !strcmp(config->outputvars[j].filename.name,config->outputvars[i].filename.name))
+        {
+          if(isroot(*config))
+            fprintf(stderr,"ERROR265: Filename is identical for output '%s' and '%s'.\n",
+                    config->outnames[config->outputvars[i].id].name,
+                    config->outnames[config->outputvars[j].id].name);
+          return TRUE;
         }
     }
   }
-} /* of 'outputnames' */
+  return FALSE;
+} /* of 'checkuniqoutput' */

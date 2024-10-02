@@ -28,6 +28,7 @@ of `major.minor.patch` with
 
 - Option `-scale` added to `bin2cdf` in order to scale output.
 - `time_bnds`, `lat_bnds`, and `lon_bnds` arrays added to NetCDF output for lpjml runs and the `bin2cdf` utility.
+- Check for identical output filenames added in `fscanoutput.c`. 
 
 ### Changed
 
@@ -45,7 +46,7 @@ of `major.minor.patch` with
 - Name of longitude/latitude variables correctly derived in `getlatlon_netcdf.c`.
 - Misspelled option `-netdcdf4` corrected to `-netcdf4` in `clm2cdf.c`.
 - `lpj_climber4.c` updated to compile without errors.
-- Writing different variables into one NetCDF file fixed in `create_netcdf.c`.
+- Writing different variables into one NetCDF file fixed in `create_netcdf.c`. Only NetCDF outputs with one band can be written to one file.
 
 
 ## [5.9.14] - 2024-09-30
