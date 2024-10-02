@@ -185,7 +185,6 @@ static Cdf *create_cdf(const char *filename,
       break;
     default:
       fprintf(stderr,"Invalid time step %d in '%s'.\n",header.nstep,filename);
-      free(s);
       free(year);
       free(time_bnds);
       free(lon);
