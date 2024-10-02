@@ -610,6 +610,7 @@ int main(int argc,char **argv)
   Filename grid_name;
   char *variable,*grid_filename,*path;
   grid_name.fmt=RAW;
+  grid_name.name=NULL;
   units=long_name=NULL;
   compress=0;
   swap=isglobal=absyear=isnetcdf4=FALSE;

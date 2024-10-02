@@ -67,14 +67,14 @@ Bool settimeaxis(double **time,       /**< allocated and initialized time vector
         if(absyear)
           for(i=0;i<nyear/timestep;i++)
           {
-            (*time)[i]=outputyear+i*timestep+timestep/2;
+            (*time)[i]=outputyear+i*timestep+timestep*0.5;
             (*time_bnds)[2*i]=outputyear+i*timestep;
             (*time_bnds)[2*i+1]=outputyear+(i+1)*timestep;
           }
         else
           for(i=0;i<nyear/timestep;i++)
           {
-            (*time)[i]=outputyear-baseyear+i*timestep+timestep/2;
+            (*time)[i]=outputyear-baseyear+i*timestep+timestep*0.5;
             (*time_bnds)[2*i]=outputyear-baseyear+i*timestep;
             (*time_bnds)[2*i+1]=outputyear-baseyear+(i+1)*timestep;
           }
