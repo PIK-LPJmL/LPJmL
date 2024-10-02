@@ -341,6 +341,8 @@ static Cdf *create_cdf(const char *filename,
       free(lat);
       free(lon_bnds);
       free(lat_bnds);
+      nc_close(cdf->ncid);
+      free(cdf);
       return NULL;
   }
   error(rc);
@@ -1162,6 +1164,8 @@ int main(int argc,char **argv)
       }
     }
   }
+  if(isshort && header.scalar!=1)
+    fprintf(stderr,"Scaling factor %g not equal 1 set for short output datatype, set to 1.\n",header.scalar); 
   if(!isbaseyear)
     baseyear=header.firstyear;
   index=createindex(grid,ngrid,res,isglobal,revlat);
@@ -1201,6 +1205,8 @@ int main(int argc,char **argv)
     if(data_short==NULL)
     {
       printallocerr("data");
+      fclose(file);
+      close_cdf(cdf);
       return EXIT_FAILURE;
     }
   }
@@ -1210,6 +1216,8 @@ int main(int argc,char **argv)
     if(data==NULL)
     {
       printallocerr("data");
+      fclose(file);
+      close_cdf(cdf);
       return EXIT_FAILURE;
     }
   }
@@ -1222,24 +1230,38 @@ int main(int argc,char **argv)
           if(freadshort(data_short,ngrid,swap,file)!=ngrid)
           {
             fprintf(stderr,"Error reading data in year %d.\n",i+header.firstyear);
+            free(data_short);
+            fclose(file);
             close_cdf(cdf);
             return EXIT_FAILURE;
           }
           if(write_short_cdf(cdf,data_short,i*header.nstep+j,ngrid,ispft,k,miss_short))
+          {
+            free(data_short);
+            fclose(file);
+            close_cdf(cdf);
             return EXIT_FAILURE;
+          }
         }
         else
         {
           if(freadfloat(data,ngrid,swap,file)!=ngrid)
           {
             fprintf(stderr,"Error reading data in year %d.\n",i+header.firstyear);
+            free(data);
+            fclose(file);
             close_cdf(cdf);
             return EXIT_FAILURE;
           }
           for(cell=0;cell<ngrid;cell++)
             data[cell]*=header.scalar;
           if(write_float_cdf(cdf,data,i*header.nstep+j,ngrid,ispft,k,miss))
+          {
+            free(data);
+            fclose(file);
+            close_cdf(cdf);
             return EXIT_FAILURE;
+          }
         }
       }
   close_cdf(cdf);
