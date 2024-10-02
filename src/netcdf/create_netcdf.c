@@ -149,7 +149,7 @@ Bool create_netcdf(Netcdf *cdf,
       ncsetfill(cdf->ncid,NC_NOFILL);
     rc=nc_def_dim(cdf->ncid,BNDS_NAME,2,&bnds_dim_id);
     error(rc);
-    if(n>1 || !oneyear)
+    if(n!=0 && (n>1 || !oneyear))
     {
       if(n==1)
         rc=nc_def_dim(cdf->ncid,TIME_DIM_NAME,nyear/timestep,&cdf->time_dim_id);
@@ -204,7 +204,7 @@ Bool create_netcdf(Netcdf *cdf,
     dimids[1]=bnds_dim_id;
     rc=nc_def_var(cdf->ncid,LON_BNDS_NAME,NC_DOUBLE,2,dimids,&cdf->lon_bnds_var_id);
     error(rc);
-    if(n>1 || !oneyear)
+    if(n!=0 && (n>1 || !oneyear))
     {
       if(n==1)
       {
@@ -274,7 +274,7 @@ Bool create_netcdf(Netcdf *cdf,
     rc=nc_put_att_text(cdf->ncid, cdf->lat_var_id,"axis",strlen("Y"),"Y");
     error(rc);
   }
-  if(n>1 || !oneyear)
+  if(n!=0 && (n>1 || !oneyear))
   {
     dim[0]=cdf->time_dim_id;
     dim[1]=cdf->lat_dim_id;
