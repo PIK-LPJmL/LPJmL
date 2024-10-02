@@ -19,6 +19,7 @@
 #include <time.h>
 
 #define error(rc) if(rc) {free(lon);free(lon_bnds);free(lat);free(lat_bnds);free(year);free(time_bnds);fprintf(stderr,"ERROR427: Cannot write '%s': %s.\n",filename,nc_strerror(rc)); nc_close(cdf->ncid); free(cdf);return NULL;}
+#define checkptr(ptr) if(ptr==NULL) { printallocerr(#ptr); free(lon);free(lon_bnds);free(lat);free(lat_bnds);free(year);free(time_bnds); free(layer); free(midlayer); free(bnds); nc_close(cdf->ncid); free(cdf);return NULL;}
 
 #define USAGE "Usage: %s [-h] [-v] [-clm] [-floatgrid] [-doublegrid] [-revlat] [-days]\n       [-absyear] [-firstyear y] [-baseyear y] [-nbands n] [-nstep n]\n       [-cellsize size] [-swap] [[-attr name=value]..] [-global] [-short]\n       [-compress level] [-units u] [-descr d] [-missing_value val] [-scale s] [-metafile]\n       [-map name] [-netcdf4] [varname gridfile] binfile netcdffile\n"
 
@@ -151,38 +152,50 @@ static Cdf *create_cdf(const char *filename,
   dimids[1]=bnds_dim_id;
   rc=nc_def_var(cdf->ncid,LON_BNDS_NAME,NC_DOUBLE,2,dimids,&lon_bnds_var_id);
   error(rc);
-  if(header.nstep==1)
+  switch(header.nstep)
   {
-    if(with_days)
-    {
+    case 1:
+      if(with_days)
+      {
+        len=snprintf(NULL,0,"days since %d-1-1 0:0:0",baseyear);
+        s=malloc(len+1);
+        sprintf(s,"days since %d-1-1 0:0:0",baseyear);
+      }
+      else
+      {
+        if(absyear)
+          s=strdup(YEARS_NAME);
+        else
+        {
+          len=snprintf(NULL,0,"years since %d-1-1 0:0:0",baseyear);
+          s=malloc(len+1);
+          sprintf(s,"years since %d-1-1 0:0:0",baseyear);
+        }
+      }
+      break;
+    case NMONTH:
+      len=snprintf(NULL,0,"%s since %d-1-1 0:0:0",(with_days) ? "days" : "months",baseyear);
+      s=malloc(len+1);
+      sprintf(s,"%s since %d-1-1 0:0:0",(with_days) ? "days" : "months",baseyear);
+      break;
+    case NDAYYEAR:
       len=snprintf(NULL,0,"days since %d-1-1 0:0:0",baseyear);
       s=malloc(len+1);
       sprintf(s,"days since %d-1-1 0:0:0",baseyear);
-    }
-    else
-    {
-      if(absyear)
-        s=strdup(YEARS_NAME);
-      else
-      {
-        len=snprintf(NULL,0,"years since %d-1-1 0:0:0",baseyear);
-        s=malloc(len+1);
-        sprintf(s,"years since %d-1-1 0:0:0",baseyear);
-      }
-    }
-  }
-  else if(header.nstep==12)
-  {
-    len=snprintf(NULL,0,"%s since %d-1-1 0:0:0",(with_days) ? "days" : "months",baseyear);
-    s=malloc(len+1);
-    sprintf(s,"%s since %d-1-1 0:0:0",(with_days) ? "days" : "months",baseyear);
-  }
-  else if(header.nstep==1)
-  {
-    len=snprintf(NULL,0,"days since %d-1-1 0:0:0",baseyear);
-    s=malloc(len+1);
-    sprintf(s,"days since %d-1-1 0:0:0",baseyear);
-  }
+      break;
+    default:
+      fprintf(stderr,"Invalid time step %d in '%s'.\n",header.nstep,filename);
+      free(s);
+      free(year);
+      free(time_bnds);
+      free(lon);
+      free(lat);
+      free(lon_bnds);
+      free(lat_bnds);
+      nc_close(cdf->ncid);
+      free(cdf);
+      return NULL;
+  } /* of switch(header.step) */
   rc=nc_put_att_text(cdf->ncid,time_var_id,"units",strlen(s),s);
   rc=nc_put_att_text(cdf->ncid,time_bnds_var_id,"units",strlen(s),s);
   free(s);
@@ -389,11 +402,11 @@ static Cdf *create_cdf(const char *filename,
     if(map->isfloat)
     {
       layer=newvec(double,getmapsize(map));
-      check(layer);
+      checkptr(layer);
       midlayer=newvec(double,getmapsize(map));
-      check(midlayer);
+      checkptr(midlayer);
       bnds=newvec(double,2*getmapsize(map));
-      check(bnds);
+      checkptr(bnds);
       for(i=0;i<getmapsize(map);i++)
         layer[i]=*((double *)getmapitem(map,i))/1000;
       bnds[0]=0;
@@ -405,13 +418,13 @@ static Cdf *create_cdf(const char *filename,
         bnds[2*i+1]=layer[i];
         midlayer[i]=0.5*(layer[i-1]+layer[i]);
       }
+      free(layer);
       rc=nc_put_var_double(cdf->ncid,varid,midlayer);
+      free(midlayer);
       error(rc);
       rc=nc_put_var_double(cdf->ncid,bnds_var_id,bnds);
-      error(rc);
-      free(layer);
-      free(midlayer);
       free(bnds);
+      error(rc);
     }
     else
     {
@@ -791,7 +804,7 @@ int main(int argc,char **argv)
         }
         if(header.scalar==0)
         {
-          fputs("Error: Scaling factot must not be zero.\n",stderr);
+          fputs("Error: Scaling factor must not be zero.\n",stderr);
           return EXIT_FAILURE;
         }
       }
