@@ -344,6 +344,7 @@ Bool openclimate_netcdf(Climatefile *file,    /**< climate data file */
     case MISSING_TIME:
       file->firstyear=0;
       file->nyear=1;
+      file->delta_year=1;
       file->n=config->ngridcell;
       break;
     case SECOND:
