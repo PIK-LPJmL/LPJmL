@@ -498,7 +498,7 @@ static Cdf *create_cdf(const char *filename,
 static Bool write_float_cdf(const Cdf *cdf,const float vec[],int year,
                             int size,Bool ispft,int nband,float miss)
 {
-  int i,rc;
+  int i,rc,start;
   size_t offsets[4],counts[4];
   float *grid;
   grid=newvec(float,cdf->index->nlon*cdf->index->nlat);
@@ -512,27 +512,28 @@ static Bool write_float_cdf(const Cdf *cdf,const float vec[],int year,
   for(i=0;i<size;i++)
     grid[cdf->index->index[i]]=vec[i];
   if(year==NO_TIME)
-    rc=nc_put_var_float(cdf->ncid,cdf->varid,grid);
+    start=0;
   else
   {
     offsets[0]=year;
     counts[0]=1;
-    if(ispft)
-    {
-      counts[1]=1;
-      counts[2]=cdf->index->nlat;
-      counts[3]=cdf->index->nlon;
-      offsets[1]=nband;
-      offsets[2]=offsets[3]=0;
-    }
-    else
-    {
-      counts[1]=cdf->index->nlat;
-      counts[2]=cdf->index->nlon;
-      offsets[1]=offsets[2]=0;
-    }
-    rc=nc_put_vara_float(cdf->ncid,cdf->varid,offsets,counts,grid);
+    start=1;
   }
+  if(ispft)
+  {
+    counts[start]=1;
+    counts[start+1]=cdf->index->nlat;
+    counts[start+2]=cdf->index->nlon;
+    offsets[start]=nband;
+    offsets[start+1]=offsets[start+2]=0;
+  }
+  else
+  {
+    counts[start]=cdf->index->nlat;
+    counts[start+1]=cdf->index->nlon;
+    offsets[start]=offsets[start+1]=0;
+  }
+  rc=nc_put_vara_float(cdf->ncid,cdf->varid,offsets,counts,grid);
   free(grid);
   if(rc!=NC_NOERR)
   {
@@ -546,7 +547,7 @@ static Bool write_float_cdf(const Cdf *cdf,const float vec[],int year,
 static Bool write_short_cdf(const Cdf *cdf,const short vec[],int year,
                             int size,Bool ispft,int nband,short miss)
 {
-  int i,rc;
+  int i,rc,start;
   size_t offsets[4],counts[4];
   short *grid;
   grid=newvec(short,cdf->index->nlon*cdf->index->nlat);
@@ -560,27 +561,28 @@ static Bool write_short_cdf(const Cdf *cdf,const short vec[],int year,
   for(i=0;i<size;i++)
     grid[cdf->index->index[i]]=vec[i];
   if(year==NO_TIME)
-    rc=nc_put_var_short(cdf->ncid,cdf->varid,grid);
+    start=0;
   else
   {
     offsets[0]=year;
     counts[0]=1;
-    if(ispft)
-    {
-      counts[1]=1;
-      counts[2]=cdf->index->nlat;
-      counts[3]=cdf->index->nlon;
-      offsets[1]=nband;
-      offsets[2]=offsets[3]=0;
-    }
-    else
-    {
-      counts[1]=cdf->index->nlat;
-      counts[2]=cdf->index->nlon;
-      offsets[1]=offsets[2]=0;
-    }
-    rc=nc_put_vara_short(cdf->ncid,cdf->varid,offsets,counts,grid);
+    start=1;
   }
+  if(ispft)
+  {
+    counts[start]=1;
+    counts[start+1]=cdf->index->nlat;
+    counts[start+2]=cdf->index->nlon;
+    offsets[start]=nband;
+    offsets[start+1]=offsets[start+2]=0;
+  }
+  else
+  {
+    counts[start]=cdf->index->nlat;
+    counts[start+1]=cdf->index->nlon;
+    offsets[start]=offsets[start+1]=0;
+  }
+  rc=nc_put_vara_short(cdf->ncid,cdf->varid,offsets,counts,grid);
   free(grid);
   if(rc!=NC_NOERR)
   {
