@@ -21,7 +21,7 @@
 #define error(rc) if(rc) {free(lon);free(lon_bnds);free(lat);free(lat_bnds);free(year);free(time_bnds);fprintf(stderr,"ERROR427: Cannot write '%s': %s.\n",filename,nc_strerror(rc)); nc_close(cdf->ncid); free(cdf);return NULL;}
 #define checkptr(ptr) if(ptr==NULL) { printallocerr(#ptr); free(lon);free(lon_bnds);free(lat);free(lat_bnds);free(year);free(time_bnds); free(layer); free(midlayer); free(bnds); nc_close(cdf->ncid); free(cdf);return NULL;}
 
-#define USAGE "Usage: %s [-h] [-v] [-clm] [-floatgrid] [-doublegrid] [-revlat] [-days]\n       [-absyear] [-firstyear y] [-baseyear y] [-nbands n] [-nstep n]\n       [-cellsize size] [-swap] [[-attr name=value]..] [-global] [-short]\n       [-compress level] [-units u] [-descr d] [-missing_value val] [-scale s] [-metafile]\n       [-map name] [-netcdf4] [varname gridfile] binfile netcdffile\n"
+#define USAGE "Usage: %s [-h] [-v] [-clm] [-floatgrid] [-doublegrid] [-revlat] [-days]\n       [-absyear] [-firstyear y] [-baseyear y] [-nbands n] [-nstep n]\n       [-cellsize size] [-swap] [[-attr name=value]..] [-global] [-short]\n       [-compress level] [-units u] [-descr d] [-missing_value val] [-scale s] [-metafile] [-notime] \n       [-map name] [-netcdf4] [varname gridfile] binfile netcdffile\n"
 
 typedef struct
 {
@@ -52,13 +52,14 @@ static Cdf *create_cdf(const char *filename,
                        const Coord_array *array,
                        Bool with_days,
                        Bool absyear,
+                       Bool notime,
                        Bool isnetcdf4)
 {
   Cdf *cdf;
   double *lon,*lat,*lon_bnds,*lat_bnds;
   double *layer=NULL,*bnds=NULL,*midlayer=NULL,*time_bnds=NULL;
-  double *year;
-  int i,rc,dim[4],dim2[2],dimids[2];
+  double *year=NULL;
+  int i,rc,dim[4],dim2[2],dimids[2],start;
   size_t chunk[4],offset[2],count[2];
   char *s;
   const char *ptr;
@@ -75,16 +76,19 @@ static Cdf *create_cdf(const char *filename,
     free(cdf);
     return NULL;
   }
-  /* set time vectors */
-  if(settimeaxis(&year,&time_bnds,header.nyear,header.nstep,header.timestep,
-                 header.firstyear,baseyear,FALSE,with_days,absyear,filename))
+  if(!notime)
   {
-    free(lat);
-    free(lat_bnds);
-    free(lon);
-    free(lon_bnds);
-    free(cdf);
-    return NULL;
+    /* set time vectors */
+    if(settimeaxis(&year,&time_bnds,header.nyear,header.nstep,header.timestep,
+                   header.firstyear,baseyear,FALSE,with_days,absyear,filename))
+    {
+      free(lat);
+      free(lat_bnds);
+      free(lon);
+      free(lon_bnds);
+      free(cdf);
+      return NULL;
+    }
   }
   cdf->index=array;
   rc=nc_create(filename,(isnetcdf4) ? NC_CLOBBER|NC_NETCDF4 : NC_CLOBBER,&cdf->ncid);
@@ -101,16 +105,19 @@ static Cdf *create_cdf(const char *filename,
     free(cdf);
     return NULL;
   }
-  rc=nc_def_dim(cdf->ncid,TIME_DIM_NAME,header.nyear*header.nstep,&time_dim_id);
-  error(rc);
   rc=nc_def_dim(cdf->ncid,BNDS_NAME,2,&bnds_dim_id);
   error(rc);
-  dimids[0]=time_dim_id;
-  dimids[1]=bnds_dim_id;
-  rc=nc_def_var(cdf->ncid,TIME_BNDS_NAME,NC_DOUBLE,2,dimids,&time_bnds_var_id);
-  error(rc);
-  rc=nc_def_var(cdf->ncid,TIME_NAME,NC_DOUBLE,1,&time_dim_id,&time_var_id);
-  error(rc);
+  if(!notime)
+  {
+    rc=nc_def_dim(cdf->ncid,TIME_DIM_NAME,header.nyear*header.nstep,&time_dim_id);
+    error(rc);
+    dimids[0]=time_dim_id;
+    dimids[1]=bnds_dim_id;
+    rc=nc_def_var(cdf->ncid,TIME_BNDS_NAME,NC_DOUBLE,2,dimids,&time_bnds_var_id);
+    error(rc);
+    rc=nc_def_var(cdf->ncid,TIME_NAME,NC_DOUBLE,1,&time_dim_id,&time_var_id);
+    error(rc);
+  }
   rc=nc_def_dim(cdf->ncid,LAT_DIM_NAME,array->nlat,&lat_dim_id);
   error(rc);
   rc=nc_def_dim(cdf->ncid,LON_DIM_NAME,array->nlon,&lon_dim_id);
@@ -152,68 +159,71 @@ static Cdf *create_cdf(const char *filename,
   dimids[1]=bnds_dim_id;
   rc=nc_def_var(cdf->ncid,LON_BNDS_NAME,NC_DOUBLE,2,dimids,&lon_bnds_var_id);
   error(rc);
-  switch(header.nstep)
+  if(!notime)
   {
-    case 1:
-      if(with_days)
-      {
+    switch(header.nstep)
+    {
+      case 1:
+        if(with_days)
+        {
+          len=snprintf(NULL,0,"days since %d-1-1 0:0:0",baseyear);
+          s=malloc(len+1);
+          sprintf(s,"days since %d-1-1 0:0:0",baseyear);
+        }
+        else
+        {
+          if(absyear)
+            s=strdup(YEARS_NAME);
+          else
+          {
+            len=snprintf(NULL,0,"years since %d-1-1 0:0:0",baseyear);
+            s=malloc(len+1);
+            sprintf(s,"years since %d-1-1 0:0:0",baseyear);
+          }
+        }
+        break;
+      case NMONTH:
+        len=snprintf(NULL,0,"%s since %d-1-1 0:0:0",(with_days) ? "days" : "months",baseyear);
+        s=malloc(len+1);
+        sprintf(s,"%s since %d-1-1 0:0:0",(with_days) ? "days" : "months",baseyear);
+        break;
+      case NDAYYEAR:
         len=snprintf(NULL,0,"days since %d-1-1 0:0:0",baseyear);
         s=malloc(len+1);
         sprintf(s,"days since %d-1-1 0:0:0",baseyear);
-      }
-      else
-      {
-        if(absyear)
-          s=strdup(YEARS_NAME);
-        else
-        {
-          len=snprintf(NULL,0,"years since %d-1-1 0:0:0",baseyear);
-          s=malloc(len+1);
-          sprintf(s,"years since %d-1-1 0:0:0",baseyear);
-        }
-      }
-      break;
-    case NMONTH:
-      len=snprintf(NULL,0,"%s since %d-1-1 0:0:0",(with_days) ? "days" : "months",baseyear);
-      s=malloc(len+1);
-      sprintf(s,"%s since %d-1-1 0:0:0",(with_days) ? "days" : "months",baseyear);
-      break;
-    case NDAYYEAR:
-      len=snprintf(NULL,0,"days since %d-1-1 0:0:0",baseyear);
-      s=malloc(len+1);
-      sprintf(s,"days since %d-1-1 0:0:0",baseyear);
-      break;
-    default:
-      fprintf(stderr,"Invalid time step %d in '%s'.\n",header.nstep,filename);
-      free(year);
-      free(time_bnds);
-      free(lon);
-      free(lat);
-      free(lon_bnds);
-      free(lat_bnds);
-      nc_close(cdf->ncid);
-      free(cdf);
-      return NULL;
-  } /* of switch(header.step) */
-  rc=nc_put_att_text(cdf->ncid,time_var_id,"units",strlen(s),s);
-  rc=nc_put_att_text(cdf->ncid,time_bnds_var_id,"units",strlen(s),s);
-  free(s);
-  error(rc);
-  rc=nc_put_att_text(cdf->ncid,time_var_id,"calendar",strlen(CALENDAR),
-                     CALENDAR);
-  rc=nc_put_att_text(cdf->ncid,time_bnds_var_id,"calendar",strlen(CALENDAR),
-                     CALENDAR);
-  error(rc);
-  rc=nc_put_att_text(cdf->ncid, time_var_id,"standard_name",strlen(TIME_STANDARD_NAME),TIME_STANDARD_NAME);
-  error(rc);
-  rc=nc_put_att_text(cdf->ncid, time_var_id,"long_name",strlen(TIME_LONG_NAME),TIME_LONG_NAME);
-  error(rc);
-  rc=nc_put_att_text(cdf->ncid, time_var_id,"bounds",strlen(TIME_BNDS_NAME),TIME_BNDS_NAME);
-  error(rc);
-  rc=nc_put_att_text(cdf->ncid, time_bnds_var_id,"long_name",strlen(TIME_BNDS_LONG_NAME),TIME_BNDS_LONG_NAME);
-  error(rc);
-  rc=nc_put_att_text(cdf->ncid, time_var_id,"axis",strlen("T"),"T");
-  error(rc);
+        break;
+      default:
+        fprintf(stderr,"Invalid time step %d in '%s'.\n",header.nstep,filename);
+        free(year);
+        free(time_bnds);
+        free(lon);
+        free(lat);
+        free(lon_bnds);
+        free(lat_bnds);
+        nc_close(cdf->ncid);
+        free(cdf);
+        return NULL;
+    } /* of switch(header.step) */
+    rc=nc_put_att_text(cdf->ncid,time_var_id,"units",strlen(s),s);
+    rc=nc_put_att_text(cdf->ncid,time_bnds_var_id,"units",strlen(s),s);
+    free(s);
+    error(rc);
+    rc=nc_put_att_text(cdf->ncid,time_var_id,"calendar",strlen(CALENDAR),
+                       CALENDAR);
+    rc=nc_put_att_text(cdf->ncid,time_bnds_var_id,"calendar",strlen(CALENDAR),
+                       CALENDAR);
+    error(rc);
+    rc=nc_put_att_text(cdf->ncid, time_var_id,"standard_name",strlen(TIME_STANDARD_NAME),TIME_STANDARD_NAME);
+    error(rc);
+    rc=nc_put_att_text(cdf->ncid, time_var_id,"long_name",strlen(TIME_LONG_NAME),TIME_LONG_NAME);
+    error(rc);
+    rc=nc_put_att_text(cdf->ncid, time_var_id,"bounds",strlen(TIME_BNDS_NAME),TIME_BNDS_NAME);
+    error(rc);
+    rc=nc_put_att_text(cdf->ncid, time_bnds_var_id,"long_name",strlen(TIME_BNDS_LONG_NAME),TIME_BNDS_LONG_NAME);
+    error(rc);
+    rc=nc_put_att_text(cdf->ncid, time_var_id,"axis",strlen("T"),"T");
+    error(rc);
+  }
   rc=nc_put_att_text(cdf->ncid,lon_var_id,"units",strlen("degrees_east"),
                      "degrees_east");
   error(rc);
@@ -309,32 +319,37 @@ static Cdf *create_cdf(const char *filename,
     rc=nc_def_dim(cdf->ncid,"npft",header.nbands,&pft_dim_id);
     error(rc);
   }
-  if(ispft)
+  if(!notime)
   {
     dim[0]=time_dim_id;
-    dim[1]=pft_dim_id;
-    dim[2]=lat_dim_id;
-    dim[3]=lon_dim_id;
-    chunk[0]=chunk[1]=1;
-    chunk[2]=array->nlat;
-    chunk[3]=array->nlon;
+    chunk[0]=1;
+    start=1;
+  }
+  else
+    start=0;
+  if(ispft)
+  {
+    dim[start]=pft_dim_id;
+    dim[start+1]=lat_dim_id;
+    dim[start+2]=lon_dim_id;
+    chunk[start]=1;
+    chunk[start+1]=array->nlat;
+    chunk[start+2]=array->nlon;
   }
   else
   {
-    dim[0]=time_dim_id;
-    dim[1]=lat_dim_id;
-    dim[2]=lon_dim_id;
-    chunk[0]=1;
-    chunk[1]=array->nlat;
-    chunk[2]=array->nlon;
+    dim[start]=lat_dim_id;
+    dim[start+1]=lon_dim_id;
+    chunk[start]=array->nlat;
+    chunk[start+1]=array->nlon;
   }
   switch(type)
   {
     case LPJ_FLOAT:
-      rc=nc_def_var(cdf->ncid,name,NC_FLOAT,(ispft) ? 4 : 3,dim,&cdf->varid);
+      rc=nc_def_var(cdf->ncid,name,NC_FLOAT,(ispft) ? 3+start : 2+start,dim,&cdf->varid);
       break;
     case LPJ_SHORT:
-      rc=nc_def_var(cdf->ncid,name,NC_SHORT,(ispft) ? 4 : 3,dim,&cdf->varid);
+      rc=nc_def_var(cdf->ncid,name,NC_SHORT,(ispft) ? 3+start : 2+start,dim,&cdf->varid);
       break;
     default:
       fprintf(stderr,"Invalid datatype %d.\n",type);
@@ -390,10 +405,13 @@ static Cdf *create_cdf(const char *filename,
   error(rc);
   rc=nc_enddef(cdf->ncid);
   error(rc);
-  rc=nc_put_var_double(cdf->ncid,time_var_id,year);
-  error(rc);
-  rc=nc_put_var_double(cdf->ncid,time_bnds_var_id,time_bnds);
-  error(rc);
+  if(!notime)
+  {
+    rc=nc_put_var_double(cdf->ncid,time_var_id,year);
+    error(rc);
+    rc=nc_put_var_double(cdf->ncid,time_bnds_var_id,time_bnds);
+    error(rc);
+  }
   rc=nc_put_var_double(cdf->ncid,lat_var_id,lat);
   error(rc);
   rc=nc_put_var_double(cdf->ncid,lat_bnds_var_id,lat_bnds);
@@ -594,7 +612,7 @@ int main(int argc,char **argv)
   float *data=NULL;
   short *data_short=NULL;
   int i,j,k,ngrid,iarg,compress,version,n_global,n_global2,baseyear,cell;
-  Bool swap,ispft,isshort,isglobal,isclm,ismeta,isbaseyear,revlat,withdays,absyear,isnetcdf4;
+  Bool swap,ispft,isshort,isglobal,isclm,ismeta,isbaseyear,revlat,withdays,absyear,isnetcdf4,notime;
   Type gridtype;
   float cellsize,fcoord[2];
   double dcoord[2];
@@ -635,6 +653,7 @@ int main(int argc,char **argv)
   map_name=BAND_NAMES;
   n_global=0;
   missing_value=NULL;
+  notime=FALSE;
   for(iarg=1;iarg<argc;iarg++)
     if(argv[iarg][0]=='-')
     {
@@ -669,6 +688,7 @@ int main(int argc,char **argv)
                "-firstyear f     first year, default is %d\n"
                "-baseyear y      base year of annual time axis, default is firstyear\n"
                "-scale s         scale output with factor s, default is 1\n"
+               "-notime          omit time axis\n"
                "-metafile        set the input format to JSON metafile instead of raw\n"
                "-map name        name of map in JSON metafile, default is \"band_names\"\n"
                "varname          variable name in NetCDF file\n"
@@ -700,6 +720,8 @@ int main(int argc,char **argv)
         gridtype=LPJ_DOUBLE;
       else if(!strcmp(argv[iarg],"-ispft"))
         ispft=TRUE;
+      else if(!strcmp(argv[iarg],"-notime"))
+        notime=TRUE;
       else if(!strcmp(argv[iarg],"-clm"))
         isclm=TRUE;
       else if(!strcmp(argv[iarg],"-metafile"))
@@ -1007,10 +1029,10 @@ int main(int argc,char **argv)
     }
     switch(gridtype)
     {
-      case LPJ_SHORT:
-        ngrid=getfilesizep(gridfile)/sizeof(short)/2;
-        if(getfilesizep(gridfile) % (sizeof(short)/2))
-          fprintf(stderr,"Size of grid file '%s' is non multiple of coord size.\n",grid_filename);
+case LPJ_SHORT:
+ngrid=getfilesizep(gridfile)/sizeof(short)/2;
+if(getfilesizep(gridfile) % (sizeof(short)/2))
+  fprintf(stderr,"Size of grid file '%s' is non multiple of coord size.\n",grid_filename);
         break;
       case LPJ_FLOAT:
         ngrid=getfilesizep(gridfile)/sizeof(float)/2;
@@ -1170,6 +1192,11 @@ int main(int argc,char **argv)
   }
   if(isshort && header.scalar!=1)
     fprintf(stderr,"Scaling factor %g not equal 1 set for short output datatype, set to 1.\n",header.scalar); 
+  if(notime && (header.nstep>1 || header.nyear>1))
+  {
+    fprintf(stderr,"Setting not time axis option not allowed for more than one time step.\n");
+    return EXIT_FAILURE;
+  }
   if(!isbaseyear)
     baseyear=header.firstyear;
   index=createindex(grid,ngrid,res,isglobal,revlat);
@@ -1199,7 +1226,7 @@ int main(int argc,char **argv)
     }
   }
 
-  cdf=create_cdf(outname,map,map_name,cmdline,source,history,variable,units,var_standard_name,long_name,miss,miss_short,global_attrs,n_global,(isshort) ? LPJ_SHORT : LPJ_FLOAT,header,baseyear,ispft,compress,index,withdays,absyear,isnetcdf4);
+  cdf=create_cdf(outname,map,map_name,cmdline,source,history,variable,units,var_standard_name,long_name,miss,miss_short,global_attrs,n_global,(isshort) ? LPJ_SHORT : LPJ_FLOAT,header,baseyear,ispft,compress,index,withdays,absyear,notime,isnetcdf4);
   free(cmdline);
   if(cdf==NULL)
     return EXIT_FAILURE;
@@ -1239,7 +1266,7 @@ int main(int argc,char **argv)
             close_cdf(cdf);
             return EXIT_FAILURE;
           }
-          if(write_short_cdf(cdf,data_short,i*header.nstep+j,ngrid,ispft,k,miss_short))
+          if(write_short_cdf(cdf,data_short,(notime) ? NO_TIME : i*header.nstep+j,ngrid,ispft,k,miss_short))
           {
             free(data_short);
             fclose(file);
@@ -1259,7 +1286,7 @@ int main(int argc,char **argv)
           }
           for(cell=0;cell<ngrid;cell++)
             data[cell]*=header.scalar;
-          if(write_float_cdf(cdf,data,i*header.nstep+j,ngrid,ispft,k,miss))
+          if(write_float_cdf(cdf,data,(notime) ? NO_TIME : i*header.nstep+j,ngrid,ispft,k,miss))
           {
             free(data);
             fclose(file);
