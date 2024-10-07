@@ -25,32 +25,37 @@ Bool checkuniqoutput(int npft,            /**< number of natural PFTs */
   int i,j;
   for(i=0;i<config->n_out;i++)
   {
-    if(config->outputvars[i].filename.fmt==CDF && outputsize(config->outputvars[i].id,npft,ncft,config)==1)
+    if(config->outputvars[i].filename.fmt!=SOCK)
     {
       /* check whether filename has already been used */
       for(j=i-1;j>=0;j--)
         if(config->outputvars[j].filename.fmt!=SOCK && !strcmp(config->outputvars[j].filename.name,config->outputvars[i].filename.name))
         {
-          if(config->outputvars[j].filename.fmt!=CDF || outputsize(config->outputvars[j].id,npft,ncft,config)>1)
+          if(config->outputvars[i].filename.fmt!=CDF || config->outputvars[j].filename.fmt!=CDF)
           {
             if(isroot(*config))
-              fprintf(stderr,"ERROR265: Filename is identical for output '%s' and '%s'.\n",
+              fprintf(stderr,"ERROR265: Filename is identical for output '%s' and '%s' and file type is not NetCDF.\n",
                       config->outnames[config->outputvars[i].id].name,
                       config->outnames[config->outputvars[j].id].name);
             return TRUE;
           }
-        }
-    }
-    else if(config->outputvars[i].filename.fmt!=SOCK)
-    {
-      for(j=i-1;j>=0;j--)
-        if(config->outputvars[j].filename.fmt!=SOCK && !strcmp(config->outputvars[j].filename.name,config->outputvars[i].filename.name))
-        {
-          if(isroot(*config))
-            fprintf(stderr,"ERROR265: Filename is identical for output '%s' and '%s'.\n",
-                    config->outnames[config->outputvars[i].id].name,
-                    config->outnames[config->outputvars[j].id].name);
-          return TRUE;
+          else if(outputsize(config->outputvars[i].id,npft,ncft,config)>1 ||
+                  outputsize(config->outputvars[j].id,npft,ncft,config)>1)
+          {
+            if(isroot(*config))
+              fprintf(stderr,"ERROR265: Filename is identical for output '%s' and '%s' and number of bands>1.\n",
+                      config->outnames[config->outputvars[i].id].name,
+                      config->outnames[config->outputvars[j].id].name);
+            return TRUE;
+          }
+          else if(getnyear(config->outnames,config->outputvars[i].id)!=getnyear(config->outnames,config->outputvars[j].id))
+          {
+            if(isroot(*config))
+              fprintf(stderr,"ERROR265: Filename is identical for output '%s' and '%s' and time steps differ.\n",
+                      config->outnames[config->outputvars[i].id].name,
+                      config->outnames[config->outputvars[j].id].name);
+            return TRUE;
+          }
         }
     }
   }
