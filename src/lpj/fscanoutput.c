@@ -209,10 +209,13 @@ Bool fscanoutput(LPJfile *file,  /**< pointer to LPJ file */
     return TRUE;
   }
   config->absyear=FALSE;
-  if(fscanbool(file,&config->absyear,"absyear",!config->pedantic,verbosity))
+  if(!config->with_days)
   {
-    free(default_suffix);
-    return TRUE;
+    if(fscanbool(file,&config->absyear,"absyear",!config->pedantic,verbosity))
+    {
+      free(default_suffix);
+      return TRUE;
+    }
   }
 #endif
   config->flush_output=FALSE;
