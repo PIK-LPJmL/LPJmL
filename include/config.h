@@ -355,6 +355,7 @@ extern int *fscanlandcovermap(LPJfile *,int *,const char *,int,const Config *);
 extern Bool fscanconfig_netcdf(LPJfile *,Netcdf_config *,const char *,Verbosity);
 extern void freeconfig_netcdf(Netcdf_config *);
 extern void createconfig(const Config *);
+extern Bool checkuniqoutput(int,int,const Config *);
 extern void closeconfig(LPJfile *);
 
 /* Definition of macros */

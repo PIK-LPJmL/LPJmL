@@ -49,7 +49,7 @@ Bool getvar_netcdf(Climatefile *file,    /**< climate data file */
     for(i=0;i<nvars;i++)
     {
       nc_inq_varname(file->ncid,i,name);
-      if(strcmp(name,config->netcdf.lon.name) && strcmp(name,config->netcdf.lon.standard_name) && strcmp(name,config->netcdf.lat.name) && strcmp(name,config->netcdf.lat.standard_name) && strcmp(name,config->netcdf.time.name) && strcmp(name,config->netcdf.pft_name.name) && strcmp(name,config->netcdf.depth.name) && strcmp(name,config->netcdf.depth_bnds.name))
+      if(strcmp(name,config->netcdf.lon_bnds.name) && strcmp(name,config->netcdf.lon.standard_name) && strcmp(name,config->netcdf.lat_bnds.name) && strcmp(name,config->netcdf.lat.standard_name) && strcmp(name,config->netcdf.time.name) && strcmp(name,config->netcdf.pft_name.name) && strcmp(name,config->netcdf.depth_bnds.name) && strcmp(name,config->netcdf.time_bnds.name))
       {
         nc_inq_varndims(file->ncid,i,&ndims);
         if(ndims>1)

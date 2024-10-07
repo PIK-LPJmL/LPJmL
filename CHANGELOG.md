@@ -42,21 +42,25 @@ of `major.minor.patch` with
 - Check for correct number of time steps added in `openclimate_netcdf.c`.
 - Option `sum`, `tsum` and `tmean` to `mathclm` added.
 
+
 ## [5.9.15] - 2024-09-30
 
 ### Contributors
 
 - author: Werner von Bloh (bloh@pik-potsdam.de)
-- code review: Sibyll Schaphoff (sibylls@pik-potsdam.de)
+- code review: Sibyll Schaphoff (sibylls@pik-potsdam.de), Sebastian Ostberg (ostberg@pik-potsdam.de)
 
 ### Added
 
 - Option `-scale` added to `bin2cdf` in order to scale output.
+- Option `-notime` added to `bin2cdf` in order to omit time axis.
 - `time_bnds`, `lat_bnds`, and `lon_bnds` arrays added to NetCDF output for lpjml runs and the `bin2cdf` utility.
+- Check for identical output filenames added in `fscanoutput.c`. 
 
 ### Changed
 
 - If `"with_days"` is set to true in the lpjml configuration file, time axis of yearly output is also set in units of days instead of years.
+- Time in NetCDF output is always set in the middle between the lower and upper time boundaries.
 
 ### Removed
 
@@ -70,9 +74,12 @@ of `major.minor.patch` with
 - Name of longitude/latitude variables correctly derived in `getlatlon_netcdf.c`.
 - Misspelled option `-netdcdf4` corrected to `-netcdf4` in `clm2cdf.c`.
 - `lpj_climber4.c` updated to compile without errors.
+- Writing different variables into one NetCDF file fixed in `create_netcdf.c`. Only NetCDF outputs with one band can be written to one file.
 
 
 ## [5.9.14] - 2024-09-30
+
+### Contributors
 
 - author: Werner von Bloh (bloh@pik-potsdam.de), Stephen Wirth (wirth@pik-potsdam.de)
 - code review: Sibyll Schaphoff (sibylls@pik-potsdam.de), Christoph Müller (cmueller@pik-potsdam.de)

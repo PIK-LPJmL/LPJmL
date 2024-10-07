@@ -18,11 +18,11 @@
     /* axis names */
     "longitude" : { "name" : "lon", "dim" : "lon", "long_name" : "Longitude",
                     "standard_name" : "longitude", "unit" : "degrees_east", "scale" : 1.0},
-    "longitude_bnds" : { "name" : "lon_bnds", "dim" : "lon", "long_name" : "Longitude",
+    "longitude_bnds" : { "name" : "lon_bnds", "dim" : "lon", "long_name" : "Longitude boundary",
                     "standard_name" : "longitude", "unit" : "degrees_east", "scale" : 1.0},
     "latitude" : { "name" : "lat", "dim" : "lat", "long_name" : "Latitude",
                    "standard_name" : "latitude","unit" : "degrees_north", "scale" : 1.0},
-    "latitude_bnds" : { "name" : "lat_bnds", "dim" : "lat", "long_name" : "Latitude",
+    "latitude_bnds" : { "name" : "lat_bnds", "dim" : "lat", "long_name" : "Latitude boundary",
                    "standard_name" : "latitude","unit" : "degrees_north", "scale" : 1.0},
     "time" : { "name" : "time", "dim": "time", "long_name" : "Time", "standard_name": "time",
                "unit" : "", "scale" : 1.0},

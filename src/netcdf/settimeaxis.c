@@ -67,14 +67,14 @@ Bool settimeaxis(double **time,       /**< allocated and initialized time vector
         if(absyear)
           for(i=0;i<nyear/timestep;i++)
           {
-            (*time)[i]=outputyear+i*timestep+timestep/2;
+            (*time)[i]=outputyear+i*timestep+timestep*0.5;
             (*time_bnds)[2*i]=outputyear+i*timestep;
             (*time_bnds)[2*i+1]=outputyear+(i+1)*timestep;
           }
         else
           for(i=0;i<nyear/timestep;i++)
           {
-            (*time)[i]=outputyear-baseyear+i*timestep+timestep/2;
+            (*time)[i]=outputyear-baseyear+i*timestep+timestep*0.5;
             (*time_bnds)[2*i]=outputyear-baseyear+i*timestep;
             (*time_bnds)[2*i+1]=outputyear-baseyear+(i+1)*timestep;
           }
@@ -112,13 +112,15 @@ Bool settimeaxis(double **time,       /**< allocated and initialized time vector
         if(oneyear)
           for(i=0;i<NMONTH;i++)
           {
-            (*time)[i]=(*time_bnds)[2*i]=i;
+            (*time)[i]=i+0.5;
+            (*time_bnds)[2*i]=i;
             (*time_bnds)[2*i+1]=i+1;
           }
         else
           for(i=0;i<nyear*NMONTH;i++)
           {
-            (*time)[i]=(*time_bnds)[2*i]=(outputyear-baseyear)*NMONTH+i;
+            (*time)[i]=(*time_bnds)[2*i]=(outputyear-baseyear)*NMONTH+i+0.5;
+            (*time_bnds)[2*i]=(outputyear-baseyear)*NMONTH+i;
             (*time_bnds)[2*i+1]=(outputyear-baseyear)*NMONTH+i+1;
           }
       }
@@ -133,7 +135,8 @@ Bool settimeaxis(double **time,       /**< allocated and initialized time vector
       else
         for(i=0;i<nyear*nstep;i++)
         {
-          (*time)[i]=(*time_bnds)[2*i]=(outputyear-baseyear)*NDAYYEAR+i;
+          (*time)[i]=(outputyear-baseyear)*NDAYYEAR+i+0.5;
+          (*time_bnds)[2*i]=(outputyear-baseyear)*NDAYYEAR+i;
           (*time_bnds)[2*i+1]=(outputyear-baseyear)*NDAYYEAR+i+1;
         }
       break;
