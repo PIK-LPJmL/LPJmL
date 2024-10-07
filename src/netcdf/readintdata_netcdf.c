@@ -4,7 +4,7 @@
 /**                                                                                \n**/
 /**     C implementation of LPJmL                                                  \n**/
 /**                                                                                \n**/
-/**     Function reads data in NetCDF format                                       \n**/
+/**     Function reads integer data in NetCDF format                               \n**/
 /**                                                                                \n**/
 /** (C) Potsdam Institute for Climate Impact Research (PIK), see COPYRIGHT file    \n**/
 /** authors, and contributors see AUTHORS file                                     \n**/
@@ -16,7 +16,7 @@
 
 #include "lpj.h"
 
-#if defined(USE_NETCDF) || defined(USE_NETCDF4)
+#ifdef USE_NETCDF
 #include <netcdf.h>
 #endif
 
@@ -27,7 +27,7 @@ Bool readintdata_netcdf(const Climatefile *file, /**< climate data file */
                         const Config *config     /**< LPJmL configuration */
                        )                         /** \return TRUE on error */
 {
-#if defined(USE_NETCDF) || defined(USE_NETCDF4)
+#ifdef USE_NETCDF
   int cell,rc,start;
   size_t i;
   int *f;

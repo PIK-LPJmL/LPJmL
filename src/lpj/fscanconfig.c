@@ -129,6 +129,14 @@ static Bool readclimatefilename(LPJfile *file,Filename *name,const char *key,Boo
       fprintf(stderr,"ERROR197: text file is not supported for input '%s' in this version of LPJmL.\n",name->name);
     return TRUE;
   }
+#ifndef USE_NETCDF
+  if(name->fmt==CDF)
+  {
+    if(verbose)
+      fprintf(stderr,"ERROR197: NetCDF is not supported for input '%s' in this version of LPJmL.\n",name->name);
+    return TRUE;
+  }
+#endif
   return FALSE;
 } /* of 'readclimatefilename' */
 
@@ -439,13 +447,13 @@ Bool fscanconfig(Config *config,    /**< LPJ configuration */
           fscanint2(file,&config->fix_landuse_year,"fix_landuse_year");
         }
       }
-      if(fscankeywords(file,&config->sdate_option,"sowing_date_option",sowing_data_option,3,FALSE,verbose))
+      if(fscankeywords(file,&config->sdate_option,"sowing_date_option",sowing_data_option,5,FALSE,verbose))
         return TRUE;
       if(config->sdate_option==FIXED_SDATE || config->sdate_option>=PRESCRIBED_SDATE)
         fscanint2(file,&config->sdate_fixyear,"sdate_fixyear");
       if(fscankeywords(file,&config->irrig_scenario,"irrigation",irrigation,4,FALSE,verbose))
         return TRUE;
-      if(fscankeywords(file,&config->crop_phu_option,"crop_phu_option",crop_phu_options,3,!config->pedantic,verbose))
+      if(fscankeywords(file,&config->crop_phu_option,"crop_phu_option",crop_phu_options,5,!config->pedantic,verbose))
         return TRUE;
       fscanbool2(file,&config->intercrop,"intercrop");
       config->manure_input=FALSE;
@@ -666,18 +674,6 @@ Bool fscanconfig(Config *config,    /**< LPJ configuration */
     if(fscanattrs(file,&config->global_attrs,&config->n_global,"global_attrs",verbose))
       return TRUE;
   }
-  config->compress=0;
-  if(fscanint(file,&config->compress,"compress",!config->pedantic,verbose))
-    return TRUE;
-#ifdef USE_NETCDF
-  if(config->compress)
-  {
-    if(verbose)
-      fputs("WARNING403: Compression of NetCDF files is not supported in this version of NetCDF.\n",stderr);
-    if(config->pedantic)
-      return TRUE;
-  }
-#endif
   config->missing_value=MISSING_VALUE_FLOAT;
   if(fscanfloat(file,&config->missing_value,"missing_value",!config->pedantic,verbose))
     return TRUE;

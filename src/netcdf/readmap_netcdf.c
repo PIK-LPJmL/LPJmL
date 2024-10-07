@@ -16,7 +16,7 @@
 
 #include "lpj.h"
 
-#if defined(USE_NETCDF) || defined(USE_NETCDF4)
+#ifdef USE_NETCDF
 
 #include <netcdf.h>
 

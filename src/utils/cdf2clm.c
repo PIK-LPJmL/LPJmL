@@ -15,12 +15,12 @@
 #include "lpj.h"
 
 #ifdef USE_UDUNITS
-#define USAGE "Usage: %s [-h] [-v] [-units unit] [-var name] [-time name] [-map name] [-o filename] [-scale factor] [-id s] [-version v] [-int] [-float] [-zero] [-json] gridfile netcdffile ...\n"
+#define USAGE "Usage: %s [-h] [-v] [-units unit] [-var name] [-time name] [-map name]\n       [-o filename] [-scale factor] [-id s] [-version v] [-int] [-float] [-zero]\n       [-json] gridfile netcdffile ...\n"
 #else
-#define USAGE "Usage: %s [-h] [-v] [-var name] [-time name] [-map name] [-o filename] [-scale factor] [-id s] [-version v] [-int] [-float] [-zero] [-json] gridfile netcdffile ...\n"
+#define USAGE "Usage: %s [-h] [-v] [-var name] [-time name] [-map name]\n       [-o filename] [-scale factor] [-id s] [-version v] [-int] [-float] [-zero] [-json] gridfile netcdffile ...\n"
 #endif
 
-#if defined(USE_NETCDF) || defined(USE_NETCDF4)
+#ifdef USE_NETCDF
 #include <netcdf.h>
 
 static void printindex(size_t i,Time time,size_t var_len)
@@ -348,7 +348,7 @@ static Bool readclimate2(Climatefile *file,    /* climate data file */
 
 int main(int argc,char **argv)
 {
-#if defined(USE_NETCDF) || defined(USE_NETCDF4)
+#ifdef USE_NETCDF
   Coordfile coordfile;
   Climatefile climate;
   Config config;

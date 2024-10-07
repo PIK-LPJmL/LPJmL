@@ -4,52 +4,52 @@ txt2clm \- convert text files to clm data files for LPJmL
 .SH SYNOPSIS
 .B txt2clm
 [\-h] [\-version v] [\-float] [\-int] [\-csv c] [\-scale s] [\-nbands n] [-nstep n] [\-firstyear f] [\-firstcell c] [\-ncell n]  [\-header id]
-.I txtfile clmfile 
+.I txtfile clmfile
 .SH DESCRIPTION
 Program converts text files containing white space separated numbers into LPJ climate data files. File is read until end of file is reached.
 .SH OPTIONS
 .TP
 \-h,\--help
-display a short help text
+Print a short help text.
 .TP
 \-version v
-set clm version, default is 3
+Set clm version, default is 3.
 .TP
-\-float 
-write data as float, default is short
+\-float
+Write data as float, default is short.
 .TP
-\-int 
-write data as int, default is short
+\-int
+Write data as int, default is short.
 .TP
 \-csv c
-text file is in CSV format with separator character c
+Text file is in CSV format with separator character c.
 .TP
 \-scale s
-scale data by a factor
+Scale data by a factor.
 .TP
 \-nbands n
-set number of bands, default is 12
+Set number of bands, default is 12.
 .TP
 \-nstep n
-set number of steps, default is 1
+Set number of steps, default is 1.
 .TP
 \-firstyear f
-set first year, default is 1901
+Set first year, default is 1901.
 .TP
 \-firstcell c
-set first cell, default is 0
+Set first cell, default is 0.
 .TP
 \-ncell n
-set number of cells, default is 67420
+Set number of cells, default is 67420.
 .TP
-\-header id 
-set header string in clm file, default is LPJCLIM
+\-header id
+Set header string in clm file, default is LPJCLIM.
 .TP
-.I txtfile    
-filename of text file
+.I txtfile
+Filename of text file.
 .TP
-.I clmfile     
-filename of clm data file written
+.I clmfile
+Filename of clm data file written.
 .SH EXAMPLES
 .TP
 Create clm data from text file:

@@ -93,7 +93,7 @@ typedef struct
   const char *units;/**< variable units or NULL */
   Bool oneyear;     /**< one file for each year (TRUE/FALSE) */
   size_t var_len;
-#if defined(USE_NETCDF) || defined(USE_NETCDF4)
+#ifdef USE_NETCDF
   int ncid;         /**< id of NetCDF file to read */
   int varid;        /**< NetCDF id of variable to read */
   Bool isleap;      /**< leap days in file (TRUE/FALSE) */
