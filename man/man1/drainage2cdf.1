@@ -3,7 +3,7 @@
 drainage2cdf \- convert CLM drainage file into NetCDF file
 .SH SYNOPSIS
 .B drainage2cdf
-[\-var name] [\-compress level] [–\netcdf4]
+[\-var name] [\-compress level] [\-netcdf4]
 .I soilfile.nc gridfile drainagefile netcdffile
 .SH DESCRIPTION
 Program converts CLM drainage data into NetCDF input data using the soil code NetCDF file. If drainage CLM file has 2 bands, then the second band is the length of the river and written as variable "riverlen" into the NetCDF file.
