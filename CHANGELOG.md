@@ -34,9 +34,10 @@ of `major.minor.patch` with
 
 - Environment variables `LPJNOPP` and `LPJPEDANTIC` added. If set to `true`, preprocessor is disabled and pedantic checking is enabled, respectively.
 - Info about `--help` option added in case of error in command line arguments.
-- Option `-config` added to `bin2cdf`, `country2cdf` and `clm2cdf` in order to read axis names and missing values from a JSON file. File `netcdf.json` added as a template.
+- Option `-config` added to `cdf2clm`, `bin2cdf`, `country2cdf` and `clm2cdf` in order to read axis names and missing values from a JSON file. File `netcdf.json` added as a template.
 - Option `-json` added to `arr2clm`, `asc2clm`, `txt2grid`, `txt2clm`, `getcountry`, and `cdf2coord` in order to create additional JSON metafiles.
 - Option `-inpath` added to `regridlpj` in order to set directory where data can be found.
+- Options `-zero` and `-search` added to `regridlpj`.
 - Option `-double` added to `txt2grid` in order to create grid files with coordinate values of type double.
 - Option `-timestep` added to `addheader`.
 - Check for correct number of time steps added in `openclimate_netcdf.c`.
