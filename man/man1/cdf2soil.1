@@ -2,8 +2,9 @@
 .SH NAME
 cdf2soil \- convert NetCDF file into binary file
 .SH SYNOPSIS
-.B cdf2soil [\-var name] [\-float] [\-scale s] [\-soilmap]
-netcdffile gridfile soilfile
+.B cdf2soil
+[\-var name] [\-float] [\-scale s] [\-soilmap]
+.I netcdffile gridfile soilfile
 .SH DESCRIPTION
 Program converts NetCDF input data into soil code or binary input data and writes grid file.
 .SH OPTIONS
@@ -29,7 +30,6 @@ Filename of grid data file written.
 .I soilfile
 Filename of soil code data file written.
 .SH EXAMPLES
-.TP
 .B cdf2soil
 -var soilcode soilcode.nc grid.clm soilcode.bin
 .PP

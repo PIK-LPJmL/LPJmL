@@ -2,16 +2,16 @@
 .SH NAME
 lpjrun \- Run parallel LPJmL program interactively.
 .SH SYNOPSIS
-.B lpjrun [-hostfile hosts.lists]
-ntasks [args ...]
+.B lpjrun
+[-hostfile \fIhosts.list\fP] ntasks [args ...]
 .SH DESCRIPTION
 Script runs LPJmL simulation in parallel invoking the
 .B mpirun
 command.  Has been tested on Apple MacOS X and Ubuntu.
 .SH OPTIONS
 .TP
--hostfile hosts.list
-Distribute tasks on hosts specified in the host.lists file. The number of entries in hosts.list must be at least the number of task specified.
+-hostfile \fIhosts.list\fP
+Distribute tasks on hosts specified in the \fIhost.list\fP file. The number of entries in \fIhosts.list\fP must be at least the number of task specified.
 .TP
 ntasks
 Set the number of parallel MPI tasks.
@@ -22,9 +22,9 @@ Set command line arguments for the
 program.
 .SH EXAMPLES
 .TP
-Run program job with 8 parallel MPI tasks starting from a restart file:
+Run program with 8 parallel MPI tasks starting from a restart file:
 .B lpjrun
-8 -DFROM_RESTART
+8 -DFROM_RESTART lpjml_config.cjson
 .PP
 .SH ENVIRONMENT
 .TP

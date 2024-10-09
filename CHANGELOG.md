@@ -56,7 +56,7 @@ of `major.minor.patch` with
 - Option `-scale` added to `bin2cdf` in order to scale output.
 - Option `-notime` added to `bin2cdf` in order to omit time axis.
 - `time_bnds`, `lat_bnds`, and `lon_bnds` arrays added to NetCDF output for lpjml runs and the `bin2cdf` utility.
-- Check for identical output filenames added in `fscanoutput.c`. 
+- Check for identical output filenames added in `fscanoutput.c`.
 
 ### Changed
 
@@ -76,6 +76,8 @@ of `major.minor.patch` with
 - Misspelled option `-netdcdf4` corrected to `-netcdf4` in `clm2cdf.c`.
 - `lpj_climber4.c` updated to compile without errors.
 - Writing different variables into one NetCDF file fixed in `create_netcdf.c`. Only NetCDF outputs with one band can be written to one file.
+- Formatting of man pages corrected.
+- Missing `shift 1` for `-crumonthly` case added in `regridlpj`.
 
 
 ## [5.9.14] - 2024-09-30
@@ -87,7 +89,7 @@ of `major.minor.patch` with
 
 ### Fixed
 
-- `pft->vscal` not set to `NDAYEAR` in `update_annual.c`. (issue #364).
+- `pft->vscal` not set to `NDAYYEAR` in `update_annual.c`. (issue #364).
 - `freezefrac2soil.c` corrected to avoid division by zero.
 - size of option array for `sowing_date_option` and `crop_phu_option` now correctly specified in `fscanconfig.c`.
 
