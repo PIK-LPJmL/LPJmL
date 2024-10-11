@@ -40,7 +40,7 @@ void albedo_crop(Pft *pft,         /**< pointer to PFT variables */
     frs = 1;
 
   /* albedo of PFT with green foliage */
-  albedo_green_leaves = pft->fpc * pft->phen * getpftpar(pft, albedo_leaf);
+  albedo_green_leaves = (1-exp(-pft->par->lightextcoeff*max(0,(crop->lai-crop->lai_nppdeficit)))) * getpftpar(pft, albedo_leaf);
   
   /* albedo of PFT without green foliage (litter background albedo) */
   albedo_brown_litter = pft->fpc * (1 - pft->phen) * getpftpar(pft, albedo_litter);
