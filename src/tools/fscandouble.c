@@ -20,12 +20,12 @@
 #include <json-c/json.h>
 #include "types.h"
 
-Bool fscandouble(LPJfile *file,    /**< pointer to LPJ file */
-                 double *value,     /**< float to be read from file */
-                 const char *name, /**< name of variable */
+Bool fscandouble(LPJfile *file,     /**< pointer to LPJ file */
+                 double *value,     /**< double to be read from file */
+                 const char *name,  /**< name of variable */
                  Bool with_default, /**< allow default value */
-                 Verbosity verb    /**< verbosity level (NO_ERR,ERR,VERB) */
-                )                  /** \return TRUE on error */
+                 Verbosity verb     /**< verbosity level (NO_ERR,ERR,VERB) */
+                )                   /** \return TRUE on error */
 {
   struct json_object *item;
   if(!json_object_object_get_ex(file,name,&item))

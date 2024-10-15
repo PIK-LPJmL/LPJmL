@@ -23,6 +23,7 @@
 #define LON_NAME "lon"
 #define LON_BNDS_NAME "lon_bnds"
 #define LON_STANDARD_NAME "longitude"
+#define LON_BNDS_STANDARD_NAME NULL
 #define LON_LONG_NAME "Longitude"
 #define LON_BNDS_LONG_NAME "Longitude bounds"
 #define LON_UNITS "degrees_east"
@@ -31,6 +32,7 @@
 #define LAT_LONG_NAME "Latitude"
 #define LAT_BNDS_LONG_NAME "Latitude bounds"
 #define LAT_STANDARD_NAME "latitude"
+#define LAT_BNDS_STANDARD_NAME NULL
 #define LAT_UNITS "degrees_north"
 #define YEARS_NAME "Years"
 #define TIME_NAME "time"
@@ -80,6 +82,7 @@ void initsetting_netcdf(Netcdf_config *config)
   config->lon.unit=LON_UNITS;
   config->lon_bnds.name=LON_BNDS_NAME;
   config->lon_bnds.long_name=LON_BNDS_LONG_NAME;
+  config->lon_bnds.standard_name=LON_BNDS_STANDARD_NAME;
   config->lon_bnds.unit=LON_UNITS;
   config->lat.name=LAT_NAME;
   config->lat.dim=LAT_DIM_NAME;
@@ -88,6 +91,7 @@ void initsetting_netcdf(Netcdf_config *config)
   config->lat.unit=LAT_UNITS;
   config->lat_bnds.name=LAT_BNDS_NAME;
   config->lat_bnds.long_name=LAT_BNDS_LONG_NAME;
+  config->lat_bnds.standard_name=LAT_BNDS_STANDARD_NAME;
   config->lat_bnds.unit=LAT_UNITS;
   config->depth.name=DEPTH_NAME;
   config->depth.dim=DEPTH_DIM_NAME;

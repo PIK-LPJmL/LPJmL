@@ -352,7 +352,7 @@ int main(int argc,char **argv)
            fprintf(stderr,"Warning: Latitude of %.6g at %d cannot be represented by short value of %g.\n",
                    coord.lat,header.ncell,round(coord.lat*100));
          writecoord(gridfile,&grid);
-    }
+    } /* of switch(type) */
     header.ncell++;
   }
   if(header.ncell==0)
@@ -364,6 +364,7 @@ int main(int argc,char **argv)
   fclose(gridfile);
   if(isjson)
   {
+    /* write JSON metafile */
     out_json=malloc(strlen(argv[iarg+1])+strlen(JSON_SUFFIX)+1);
     if(out_json==NULL)
     {
@@ -380,7 +381,6 @@ int main(int argc,char **argv)
     }
     fprintjson(gridfile,argv[iarg+1],NULL,"txt2grid",NULL,arglist,&header,NULL,NULL,NULL,0,"grid","degree",NULL,"cell coordinates",NULL,LPJ_SHORT,CLM,LPJGRID_HEADER,FALSE,LPJGRID_VERSION);
     fclose(gridfile);
-
   }
   if(map_name!=NULL)
     closecoord(coordfile);

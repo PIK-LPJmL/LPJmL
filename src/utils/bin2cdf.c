@@ -20,6 +20,7 @@
 
 #define error(rc) if(rc) {free(lon);free(lon_bnds);free(lat);free(lat_bnds);free(year);free(time_bnds);fprintf(stderr,"ERROR427: Cannot write '%s': %s.\n",filename,nc_strerror(rc)); nc_close(cdf->ncid); free(cdf);return NULL;}
 #define checkptr(ptr) if(ptr==NULL) { printallocerr(#ptr); free(lon);free(lon_bnds);free(lat);free(lat_bnds);free(year);free(time_bnds); free(layer); free(midlayer); free(bnds); nc_close(cdf->ncid); free(cdf);return NULL;}
+#define put_att_text(ncid,var,name,s) if(s!=NULL && strlen(s)) {rc=nc_put_att_text(ncid,var,name,strlen(s),s); error(rc);}
 
 #define USAGE "Usage: %s [-h] [-v] [-clm] [-floatgrid] [-doublegrid] [-revlat] [-days]\n       [-absyear] [-firstyear y] [-baseyear y] [-nbands n] [-nstep n]\n       [-cellsize size] [-swap] [[-attr name=value]..] [-global] [-short]\n       [-compress level] [-units u] [-descr d] [-missing_value val] [-scale s] [-notime] [-metafile]\n       [-map name] [-config file] [-netcdf4] [varname gridfile] binfile netcdffile\n"
 #define ERR_USAGE USAGE "\nTry \"%s --help\" for more information.\n"
@@ -205,84 +206,32 @@ static Cdf *create_cdf(const char *filename,
         free(cdf);
         return NULL;
     } /* of switch(header.step) */
-    rc=nc_put_att_text(cdf->ncid,time_var_id,"calendar",strlen(netcdf_config->calendar),
-                       netcdf_config->calendar);
-    rc=nc_put_att_text(cdf->ncid,time_bnds_var_id,"calendar",strlen(netcdf_config->calendar),
-                       netcdf_config->calendar);
-    error(rc);
-    rc=nc_put_att_text(cdf->ncid, time_var_id,"standard_name",
-                       strlen(netcdf_config->time.standard_name),
-                       netcdf_config->time.standard_name);
-    error(rc);
-    rc=nc_put_att_text(cdf->ncid, time_var_id,"long_name",
-                       strlen(netcdf_config->time.long_name),
-                       netcdf_config->time.long_name);
-    error(rc);
+    put_att_text(cdf->ncid,time_var_id,"calendar",netcdf_config->calendar);
+    put_att_text(cdf->ncid,time_bnds_var_id,"calendar",netcdf_config->calendar);
+    put_att_text(cdf->ncid, time_var_id,"standard_name",netcdf_config->time.standard_name);
+    put_att_text(cdf->ncid, time_var_id,"long_name",netcdf_config->time.long_name);
     rc=nc_put_att_text(cdf->ncid, time_var_id,"bounds",strlen(netcdf_config->time_bnds.name),netcdf_config->time_bnds.name);
     error(rc);
-    if(strlen(netcdf_config->time_bnds.long_name))
-    {
-      rc=nc_put_att_text(cdf->ncid, time_bnds_var_id,"long_name",strlen(netcdf_config->time_bnds.long_name),netcdf_config->time_bnds.long_name);
-      error(rc);
-    }
+    put_att_text(cdf->ncid, time_bnds_var_id,"long_name",netcdf_config->time_bnds.long_name);
     rc=nc_put_att_text(cdf->ncid, time_var_id,"axis",strlen("T"),"T");
     error(rc);
   }
-  rc=nc_put_att_text(cdf->ncid,lon_var_id,"units",
-                     strlen(netcdf_config->lon.unit),
-                     netcdf_config->lon.unit);
-  error(rc);
-  rc=nc_put_att_text(cdf->ncid, lon_var_id,"standard_name",
-                     strlen(netcdf_config->lon.standard_name),
-                     netcdf_config->lon.standard_name);
-  error(rc);
-  rc=nc_put_att_text(cdf->ncid, lon_var_id,"long_name",
-                     strlen(netcdf_config->lon.long_name),
-                     netcdf_config->lon.long_name);
-  error(rc);
-  if(strlen(netcdf_config->lon_bnds.long_name))
-  {
-    rc=nc_put_att_text(cdf->ncid, lon_bnds_var_id,"long_name",
-                       strlen(netcdf_config->lon_bnds.long_name),
-                       netcdf_config->lon_bnds.long_name);
-    error(rc);
-  }
-  if(strlen(netcdf_config->lon_bnds.unit))
-  {
-    rc=nc_put_att_text(cdf->ncid,lon_bnds_var_id,"units",
-                       strlen(netcdf_config->lon_bnds.unit),
-                       netcdf_config->lon_bnds.unit);
-    error(rc);
-  }
+  put_att_text(cdf->ncid,lon_var_id,"units",netcdf_config->lon.unit);
+  put_att_text(cdf->ncid, lon_var_id,"standard_name",netcdf_config->lon.standard_name);
+  put_att_text(cdf->ncid, lon_bnds_var_id,"standard_name",netcdf_config->lon_bnds.standard_name);
+  put_att_text(cdf->ncid, lon_var_id,"long_name",netcdf_config->lon.long_name);
+  put_att_text(cdf->ncid, lon_bnds_var_id,"long_name",netcdf_config->lon_bnds.long_name);
+  put_att_text(cdf->ncid,lon_bnds_var_id,"units", netcdf_config->lon_bnds.unit);
   rc=nc_put_att_text(cdf->ncid, lon_var_id,"bounds",strlen(netcdf_config->lon_bnds.name),netcdf_config->lon_bnds.name);
   error(rc);
   rc=nc_put_att_text(cdf->ncid, lon_var_id,"axis",strlen("X"),"X");
   error(rc);
-  rc=nc_put_att_text(cdf->ncid,lat_var_id,"units",
-                     strlen(netcdf_config->lat.unit),
-                     netcdf_config->lat.unit);
-  rc=nc_put_att_text(cdf->ncid, lat_var_id,"long_name",
-                     strlen(netcdf_config->lat.long_name),
-                     netcdf_config->lat.long_name);
-  error(rc);
-  if(strlen(netcdf_config->lat_bnds.long_name))
-  {
-    rc=nc_put_att_text(cdf->ncid, lat_bnds_var_id,"long_name",
-                       strlen(netcdf_config->lat_bnds.long_name),
-                       netcdf_config->lat_bnds.long_name);
-    error(rc);
-  }
-  if(strlen(netcdf_config->lat_bnds.unit))
-  {
-    rc=nc_put_att_text(cdf->ncid,lat_bnds_var_id,"units",
-                       strlen(netcdf_config->lat_bnds.unit),
-                       netcdf_config->lat_bnds.unit);
-    error(rc);
-  }
-  rc=nc_put_att_text(cdf->ncid, lat_var_id,"standard_name",
-                     strlen(netcdf_config->lat.standard_name),
-                     netcdf_config->lat.standard_name);
-  error(rc);
+  put_att_text(cdf->ncid,lat_var_id,"units",netcdf_config->lat.unit);
+  put_att_text(cdf->ncid, lat_var_id,"long_name", netcdf_config->lat.long_name);
+  put_att_text(cdf->ncid, lat_bnds_var_id,"long_name",netcdf_config->lat_bnds.long_name);
+  put_att_text(cdf->ncid,lat_bnds_var_id,"units",netcdf_config->lat_bnds.unit);
+  put_att_text(cdf->ncid, lat_var_id,"standard_name",netcdf_config->lat.standard_name);
+  put_att_text(cdf->ncid, lat_bnds_var_id,"standard_name",netcdf_config->lat_bnds.standard_name);
   rc=nc_put_att_text(cdf->ncid, lat_var_id,"bounds",strlen(netcdf_config->lat_bnds.name),netcdf_config->lat_bnds.name);
   error(rc);
   rc=nc_put_att_text(cdf->ncid, lat_var_id,"axis",strlen("Y"),"Y");
@@ -306,18 +255,9 @@ static Cdf *create_cdf(const char *filename,
     {
       rc=nc_def_var(cdf->ncid,netcdf_config->depth.name,NC_DOUBLE,1,dim2,&varid);
       error(rc);
-      rc=nc_put_att_text(cdf->ncid,varid,"units",
-                         strlen(netcdf_config->depth.unit),
-                         netcdf_config->depth.unit);
-      error(rc);
-      rc=nc_put_att_text(cdf->ncid,varid,"standard_name",
-                         strlen(netcdf_config->depth.standard_name),
-                         netcdf_config->depth.standard_name);
-      error(rc);
-      rc=nc_put_att_text(cdf->ncid,varid,"long_name",
-                         strlen(netcdf_config->depth.long_name),
-                         netcdf_config->depth.long_name);
-      error(rc);
+      put_att_text(cdf->ncid,varid,"units",netcdf_config->depth.unit);
+      put_att_text(cdf->ncid,varid,"standard_name",netcdf_config->depth.standard_name);
+      put_att_text(cdf->ncid,varid,"long_name",netcdf_config->depth.long_name);
       rc=nc_put_att_text(cdf->ncid,varid,"bounds",
                          strlen(netcdf_config->depth_bnds.name),
                          netcdf_config->depth_bnds.name);
@@ -330,13 +270,8 @@ static Cdf *create_cdf(const char *filename,
       dimids[1]=bnds_dim_id;
       rc=nc_def_var(cdf->ncid,netcdf_config->depth_bnds.name,NC_DOUBLE,2,dimids,&bnds_var_id);
       error(rc);
-      rc=nc_put_att_text(cdf->ncid,bnds_var_id,"units",
-                         strlen(netcdf_config->depth_bnds.unit),
-                         netcdf_config->depth_bnds.unit);
-      error(rc);
-      rc=nc_put_att_text(cdf->ncid,bnds_var_id,"comment",
-                         strlen(netcdf_config->depth_bnds.long_name),
-                         netcdf_config->depth_bnds.long_name);
+      put_att_text(cdf->ncid,bnds_var_id,"units",netcdf_config->depth_bnds.unit);
+      put_att_text(cdf->ncid,bnds_var_id,"comment",netcdf_config->depth_bnds.long_name);
     }
     else
     {
@@ -358,12 +293,10 @@ static Cdf *create_cdf(const char *filename,
       error(rc);
       if(getmapsize(map)==header.nbands)
       {
-        rc=nc_put_att_text(cdf->ncid,varid,"long_name",strlen(netcdf_config->pft_name.long_name),netcdf_config->pft_name.long_name);
-        error(rc);
+        put_att_text(cdf->ncid,varid,"long_name",netcdf_config->pft_name.long_name);
         rc=nc_def_var(cdf->ncid,netcdf_config->pft.name,NC_INT,1,&pft_dim_id,&pft_var_id);
         error(rc);
-        rc=nc_put_att_text(cdf->ncid,pft_var_id,"long_name",strlen(netcdf_config->pft.long_name),netcdf_config->pft.long_name);
-        error(rc);
+        put_att_text(cdf->ncid,pft_var_id,"long_name",netcdf_config->pft.long_name);
       }
 
     }

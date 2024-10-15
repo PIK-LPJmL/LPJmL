@@ -4,7 +4,7 @@
 /**                                                                                \n**/
 /**     C implementation of LPJmL                                                  \n**/
 /**                                                                                \n**/
-/**     Function reads missing values and axis from a LPJ file                     \n**/
+/**     Function reads missing values and axis from a JSON file                    \n**/
 /**                                                                                \n**/
 /** (C) Potsdam Institute for Climate Impact Research (PIK), see COPYRIGHT file    \n**/
 /** authors, and contributors see AUTHORS file                                     \n**/
@@ -18,11 +18,11 @@
 
 #define checkptr(ptr) if(ptr==NULL) { printallocerr(#ptr); return TRUE;}
 
-static Bool fscanaxis(LPJfile *file,      /**< pointer to LPJ file */
-                      Axis *axis,         /**< axis definition */
-                      const char *key,    /**< name of axis definition */
-                      Verbosity verb      /**< verbosity level (NO_ERR,ERR,VERB) */
-                     )                    /** \return TRUE on error */
+static Bool fscanaxis(LPJfile *file,   /**< pointer to LPJ file */
+                      Axis *axis,      /**< axis definition */
+                      const char *key, /**< name of axis definition */
+                      Verbosity verb   /**< verbosity level (NO_ERR,ERR,VERB) */
+                     )                 /** \return TRUE on error */
 {
   const char *s;
   LPJfile *d;
@@ -39,27 +39,43 @@ static Bool fscanaxis(LPJfile *file,      /**< pointer to LPJ file */
     return TRUE;
   axis->dim=strdup(s);
   checkptr(axis->dim);
-  s=fscanstring(d,NULL,"standard_name",verb);
-  if(s==NULL)
-    return TRUE;
-  axis->standard_name=strdup(s);
-  checkptr(axis->standard_name);
-  s=fscanstring(d,NULL,"long_name",verb);
-  if(s==NULL)
-    return TRUE;
-  axis->long_name=strdup(s);
-  checkptr(axis->long_name);
-  s=fscanstring(d,NULL,"unit",verb);
-  if(s==NULL)
-    return TRUE;
-  axis->unit=strdup(s);
-  checkptr(axis->unit);
+  if(isnull(d,"standard_name"))
+    axis->standard_name=NULL;
+  else
+  {
+    s=fscanstring(d,NULL,"standard_name",verb);
+    if(s==NULL)
+      return TRUE;
+    axis->standard_name=strdup(s);
+    checkptr(axis->standard_name);
+  }
+  if(isnull(d,"long_name"))
+    axis->long_name=NULL;
+  else
+  {
+    s=fscanstring(d,NULL,"long_name",verb);
+    if(s==NULL)
+      return TRUE;
+    axis->long_name=strdup(s);
+    checkptr(axis->long_name);
+  }
+  if(isnull(d,"unit"))
+    axis->unit=NULL;
+  else
+  {
+    s=fscanstring(d,NULL,"unit",verb);
+    if(s==NULL)
+      return TRUE;
+    axis->unit=strdup(s);
+    checkptr(axis->unit);
+  }
   if(fscandouble(d,&axis->scale,"scale",FALSE,verb))
     return TRUE;
   return FALSE;
 } /* of 'fscanaxis' */
 
-static void freeaxis(Axis *axis)
+static void freeaxis(Axis *axis /**< axis definition */
+                    )
 {
   free(axis->name);
   free(axis->dim);
@@ -68,11 +84,11 @@ static void freeaxis(Axis *axis)
   free(axis->unit);
 } /* of 'freeaxis' */
 
-Bool fscanconfig_netcdf(LPJfile *file,   /**< pointer to LPJ file */
-                       Netcdf_config *config,
-                       const char *key, /**< name of NetCDF configuration  or NULL*/
-                       Verbosity verb   /**< verbosity level (NO_ERR,ERR,VERB) */
-                      )                 /** \return TRUE on error */
+Bool fscanconfig_netcdf(LPJfile *file,         /**< pointer to LPJ file */
+                        Netcdf_config *config, /**< NetCDF settings */
+                        const char *key,       /**< name of NetCDF configuration or NULL*/
+                        Verbosity verb         /**< verbosity level (NO_ERR,ERR,VERB) */
+                       )                       /** \return TRUE on error */
 {
   LPJfile *d,*m;
   const char *s;
@@ -134,7 +150,8 @@ Bool fscanconfig_netcdf(LPJfile *file,   /**< pointer to LPJ file */
   return FALSE;
 } /* of 'fscanconfig_netcdf' */
 
-void freeconfig_netcdf(Netcdf_config *config)
+void freeconfig_netcdf(Netcdf_config *config /**< NetCDF settings */
+                      )
 {
   freeaxis(&config->lat);
   freeaxis(&config->lat_bnds);

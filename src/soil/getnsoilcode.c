@@ -16,11 +16,11 @@
 
 #include "lpj.h"
 
-int getnsoilcode(const Filename *filename, /**< filename of soil code file */
-                 const Netcdf_config *config,
-                 unsigned int nsoil,       /**< number of soil types */
-                 Bool isout                /**< error output? (TRUE/FALSE) */
-                )                          /** \return number of soil codes */
+int getnsoilcode(const Filename *filename,    /**< filename of soil code file */
+                 const Netcdf_config *config, /**< NetCDF settings */
+                 unsigned int nsoil,          /**< number of soil types */
+                 Bool isout                   /**< error output? (TRUE/FALSE) */
+                )                             /** \return number of soil codes */
 {
   Coord_netcdf coord;
   int n, version;

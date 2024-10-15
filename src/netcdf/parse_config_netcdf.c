@@ -16,7 +16,7 @@
 
 #include "lpj.h"
 
-Bool parse_config_netcdf(Netcdf_config *config,
+Bool parse_config_netcdf(Netcdf_config *config, /**< NetCDF settings */
                          const char *filename   /**< filename of JSON file */
                         )                       /** \return TRUE on error */
 {
