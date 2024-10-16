@@ -672,7 +672,7 @@ int main(int argc,char **argv)
                "-floatgrid       set data type of grid file to float, default is short\n"
                "-doublegrid      set data type of grid file to double, default is short\n"
                "-revlat          reverse order of latitudes in NetCDF file\n"
-               "-days            use days as units for time axis in  output\n"
+               "-days            use days as units for time axis in output\n"
                "-absyear         absolute year instead of relative to base year\n"
                "-netcdf4         file written is in NetCDF4 format\n"
                "-cellsize s      set cell size, default is %g\n"
@@ -1225,7 +1225,7 @@ if(getfilesizep(gridfile) % (sizeof(short)/2))
     }
   }
   if(isshort && header.scalar!=1)
-    fprintf(stderr,"Scaling factor %g not equal 1 set for short output datatype, set to 1.\n",header.scalar); 
+    fprintf(stderr,"Scaling factor %g not equal 1 set for short output datatype, set to 1.\n",header.scalar);
   if(notime && (header.nstep>1 || header.nyear>1))
   {
     fprintf(stderr,"Setting not time axis option not allowed for more than one time step.\n");
