@@ -232,8 +232,11 @@ static Cdf *create_cdf(const char *filename,
   error(rc);
   rc=nc_put_att_text(cdf->ncid, lon_var_id,"long_name",strlen(LON_LONG_NAME),LON_LONG_NAME);
   error(rc);
-  rc=nc_put_att_text(cdf->ncid, lon_bnds_var_id,"long_name",strlen(LON_BNDS_LONG_NAME),LON_BNDS_LONG_NAME);
-  error(rc);
+  if(strlen(LON_BNDS_LONG_NAME))
+  {
+    rc=nc_put_att_text(cdf->ncid, lon_bnds_var_id,"long_name",strlen(LON_BNDS_LONG_NAME),LON_BNDS_LONG_NAME);
+    error(rc);
+  }
   rc=nc_put_att_text(cdf->ncid, lon_var_id,"standard_name",strlen(LON_STANDARD_NAME),LON_STANDARD_NAME);
   error(rc);
   rc=nc_put_att_text(cdf->ncid, lon_var_id,"bounds",strlen(LON_BNDS_NAME),LON_BNDS_NAME);
@@ -247,8 +250,11 @@ static Cdf *create_cdf(const char *filename,
                      "degrees_north");
   rc=nc_put_att_text(cdf->ncid, lat_var_id,"long_name",strlen(LAT_LONG_NAME),LAT_LONG_NAME);
   error(rc);
-  rc=nc_put_att_text(cdf->ncid, lat_bnds_var_id,"long_name",strlen(LAT_BNDS_LONG_NAME),LAT_BNDS_LONG_NAME);
-  error(rc);
+  if(strlen(LAT_BNDS_LONG_NAME))
+  {
+    rc=nc_put_att_text(cdf->ncid, lat_bnds_var_id,"long_name",strlen(LAT_BNDS_LONG_NAME),LAT_BNDS_LONG_NAME);
+    error(rc);
+  }
   rc=nc_put_att_text(cdf->ncid, lat_var_id,"standard_name",strlen(LAT_STANDARD_NAME),LAT_STANDARD_NAME);
   error(rc);
   rc=nc_put_att_text(cdf->ncid, lat_var_id,"bounds",strlen(LAT_BNDS_NAME),LAT_BNDS_NAME);
@@ -672,7 +678,7 @@ int main(int argc,char **argv)
                "-floatgrid       set data type of grid file to float, default is short\n"
                "-doublegrid      set data type of grid file to double, default is short\n"
                "-revlat          reverse order of latitudes in NetCDF file\n"
-               "-days            use days as units for time axis in  output\n"
+               "-days            use days as units for time axis in output\n"
                "-absyear         absolute year instead of relative to base year\n"
                "-netcdf4         file written is in NetCDF4 format\n"
                "-cellsize s      set cell size, default is %g\n"
@@ -1193,7 +1199,7 @@ if(getfilesizep(gridfile) % (sizeof(short)/2))
     }
   }
   if(isshort && header.scalar!=1)
-    fprintf(stderr,"Scaling factor %g not equal 1 set for short output datatype, set to 1.\n",header.scalar); 
+    fprintf(stderr,"Scaling factor %g not equal 1 set for short output datatype, set to 1.\n",header.scalar);
   if(notime && (header.nstep>1 || header.nyear>1))
   {
     fprintf(stderr,"Setting not time axis option not allowed for more than one time step.\n");
