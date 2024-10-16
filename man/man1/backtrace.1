@@ -3,14 +3,11 @@
 backtrace \- Print backtrace from core file
 .SH SYNOPSIS
 .B backtrace
-[\fIexe\fP [\fIcore\fP]]
+[\fIcore\fP]
 .SH DESCRIPTION
-Script prints backtrace from core file using the \fBgdb\fP debugger. Full information of
-failed program is obtained if it was compiled with \fBconfigure.sh -debug\fP option.
+Script prints backtrace from core file using the \fBgdb\fP debugger. Executable of lpjml must be \fI$LPJROOT/bin/lpjml\fP or \fIbin/lpjml\fP. Full information of
+failed program is obtained if it was compiled with \fBconfigure.sh\fP -debug option.
 .SH OPTIONS
-.TP
-\fIexe\fP
-Name of the executable. Default name is \fI$LPJROOT/bin/lpjml\fP.
 .TP
 \fIcore\fP
 Name of the core file. Default name is \fIcore\fP.
