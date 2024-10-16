@@ -3,8 +3,8 @@
 cdf2clm \- convert NetCDF files into CLM files
 .SH SYNOPSIS
 .B cdf2clm
-[\-h] [\-v] [\-scale factor] [\-units u] [\-var name] [\-time name] [\-map name] [\-id string] [\-version v] [\-float] [\-zero] [\-json] [\-o clmfile] [\-config file]
-gridfile netcdffile ...
+[\-h] [\-v] [\-scale factor] [\-units u] [\-var name] [\-time name] [\-map name] [\-id string] [\-version v] [\-float] [\-zero] [\-json] [\-o \fIclmfile\fP] [\-config \fIfile\fP]
+.I gridfile netcdffile ...
 .SH DESCRIPTION
 Program converts NetCDF input data into CLM input data.
 .SH OPTIONS
@@ -45,10 +45,10 @@ Write zero values in clm file if data is not found.
 \-json
 JSON metafile is created with suffix '.json'.
 .TP
-.I -o clmfile
+ -o \fIclmfile\fP
 Filename of CLM data file written. Default is out.clm.
 .TP
-\-config file
+\-config \fIfile\fP
 Read missing values and axis names from JSON file. The names are used to find time, longitude and latitude values.
 .TP
 .I gridfile
