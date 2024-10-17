@@ -44,8 +44,8 @@ void help(const char *progname /**< program filename */
     file=stdout;
   }
   fprintf(file,"    ");
-  count=fprintf(file,"%s C Version " LPJ_VERSION " (%s) Help",
-                progname,getbuilddate());
+  count=fprintf(file,"%s C Version %s (%s) Help",
+                progname,getversion(),getbuilddate());
   fprintf(file,"\n    ");
   frepeatch(file,'=',count);
   fprintf(file,"\n\nDynamic global vegetation model with managed land\n");

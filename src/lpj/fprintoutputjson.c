@@ -127,7 +127,7 @@ Bool fprintoutputjson(int index,           /**< index in outputvars array */
   }
   fprintf(file,"{\n");
   fprintf(file,"  \"sim_name\" : \"%s\",\n",config->sim_name);
-  fprintf(file,"  \"source\" : \"LPJmL C Version " LPJ_VERSION"\",\n");
+  fprintf(file,"  \"source\" : \"LPJmL C Version %s\",\n",getversion());
   time(&t);
   fprintf(file,"  \"history\" : \"%s: %s\",\n",strdate(&t),config->arglist);
   if(config->n_global)
