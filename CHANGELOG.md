@@ -19,6 +19,17 @@ of `major.minor.patch` with
 
 ## [Unreleased]
 
+- author: Werner von Bloh (bloh@pik-potsdam.de)
+
+### Added
+
+- GIT hash printed in LPJmL banner and in output NetCDF and JSON files.
+
+### Changed
+
+- `LPJ_VERSION` macro in `lpj.h` replaced by function `getversion()`.
+
+
 ## [5.9.14] - 2024-09-30
 
 - author: Werner von Bloh (bloh@pik-potsdam.de), Stephen Wirth (wirth@pik-potsdam.de)

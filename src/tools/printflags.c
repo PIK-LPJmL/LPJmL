@@ -24,7 +24,7 @@ void printflags(const char *progname /**< program name */
 {
   printf("%s C Version %s (%s)\n",progname,getversion(),
                getbuilddate());
-  printf("GIT hash: %s\n",gethash());
+  printf("GIT hash:         %s\n",gethash());
   printf("Operating system: %s, %s endian\n",sysname(),
          (bigendian()) ? "big" : "little");
   printf("Compiler:         ");
