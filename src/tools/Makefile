@@ -16,8 +16,6 @@
 include ../../Makefile.inc
 
 VERSION = $(shell cat ../../VERSION)
-GIT_HASH= $(shell git rev-parse HEAD)
-
 
 OBJS    = swap.$O freadheader.$O coord.$O openinputfile.$O\
           fscanreal.$O fail.$O list.$O headersize.$O\
@@ -40,7 +38,7 @@ OBJS    = swap.$O freadheader.$O coord.$O openinputfile.$O\
           getfilefrommeta.$O isint.$O parse_json.$O closeconfig.$O isdir.$O\
           fscanmap.$O fprintjson.$O mrun.$O fscanintarray.$O cmpmap.$O\
           hasanysuffix.$O fprintattrs.$O fscanattrs.$O mergeattrs.$O\
-          freadheaderid.$O newarray.$O getversion.$O gethash.$O
+          freadheaderid.$O newarray.$O getversion.$O
 
 INC     = ../../include
 LIBDIR  = ../../lib
@@ -60,19 +58,11 @@ $(LIBDIR)/$(LIB): $(OBJS)
 
 $(OBJS): $(HDRS)
 
-gethash.$O: FORCE
-
-.PHONY: FORCE
-FORCE:
-
 printflags.$O: printflags.c
 	$(CC) $(CFLAGS) -DCFLAGS='"$(CFLAGS)"' -I$(INC) -c $*.c
 
 getversion.$O: getversion.c ../../VERSION
 	$(CC) $(CFLAGS) -DLPJ_VERSION=\"$(VERSION)\" -I$(INC) -c $*.c
-
-gethash.$O: gethash.c
-	$(CC) $(CFLAGS) -DGIT_HASH=\"$(GIT_HASH)\" -I$(INC) -c $*.c
 
 .c.$O: 
 	$(CC) $(CFLAGS) -I$(INC) $(JSON_INC) -c $*.c

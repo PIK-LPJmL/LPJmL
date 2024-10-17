@@ -14,6 +14,8 @@
 
 include ../Makefile.inc
 
+GIT_HASH= $(shell git rev-parse HEAD)
+
 OBJ    = lpjml.$O  
 
 SRC    = lpjml.c
@@ -98,5 +100,5 @@ $(OBJ): $(HDRS)
 
 
 $(EXE): $(LPJLIBS) $(OBJ)
-	$(CC) $(CFLAGS) -I$(INC) -c getbuild.c
+	$(CC) $(CFLAGS) -I$(INC) -DGIT_HASH=\"$(GIT_HASH)\"  -c getbuild.c
 	$(LINKMAIN) $(LNOPTS)$(EXE) $(OBJ) $(LPJLIBS) $(LIBS) getbuild.$O 

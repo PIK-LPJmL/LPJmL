@@ -242,6 +242,9 @@ Bool create_netcdf(Netcdf *cdf,
     rc=nc_put_att_text(cdf->ncid,NC_GLOBAL,"source",strlen(s),s);
     free(s);
     error(rc);
+    rc=nc_put_att_text(cdf->ncid,NC_GLOBAL,"GIT_hash",
+                       strlen(gethash()),gethash());
+    error(rc);
     time(&t);
     len=snprintf(NULL,0,"%s: %s",strdate(&t),config->arglist);
     s=malloc(len+1);

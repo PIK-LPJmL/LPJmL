@@ -20,3 +20,9 @@ char *getbuilddate(void)
   static char *s=__DATE__;
   return s;
 } /* of 'getbuilddate' */
+
+char *gethash(void)
+{
+  static char *s=GIT_HASH;
+  return s;
+} /* of 'gethash' */
