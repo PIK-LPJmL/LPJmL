@@ -193,28 +193,49 @@ Bool openclimate_netcdf(Climatefile *file,    /**< climate data file */
         }
         else if(!strcmp(name,"days"))
         {
-          if(time[1]-time[0]==1)
-            file->time_step=DAY;
-          else if(time[1]-time[0]==NDAYYEAR)
+          if(time_len==1)
           {
             file->time_step=YEAR;
-            file->delta_year=(time[1]-time[0])/NDAYYEAR;
+            file->delta_year=1;
           }
           else
           {
-            file->delta_year=1;
-            file->time_step=MONTH;
+            if(time[1]-time[0]==1)
+            {
+              file->time_step=DAY;
+              file->delta_year=1;
+            }
+            else if(time[1]-time[0]>=NDAYYEAR)
+            {
+              file->time_step=YEAR;
+              file->delta_year=(time[1]-time[0])/NDAYYEAR;
+            }
+            else
+            {
+              file->delta_year=1;
+              file->time_step=MONTH;
+            }
           }
           file->firstyear+=time[0]/NDAYYEAR;
         }
         else if(strstr(name,"months")!=NULL)
         {
           if(time_len==1)
+          {
             file->time_step=YEAR;
-          else
+            file->delta_year=1;
+          }
+          else if(time[1]-time[0]==1)
+          {
             file->time_step=MONTH;
-          file->firstyear+=time[0]/12;
-          file->delta_year=1;
+            file->delta_year=1;
+          }
+          else  if((time[1]-time[0]) % NMONTH==0)
+          {
+            file->time_step=YEAR;
+            file->delta_year=(time[1]-time[0])/NMONTH;
+          }
+          file->firstyear+=time[0]/NMONTH;
         }
         else if(!strcmp(name,"hours"))
         {
@@ -229,7 +250,7 @@ Bool openclimate_netcdf(Climatefile *file,    /**< climate data file */
               time_diff=time[1]-time[0];
             if(time_diff<24)
             {
-              fprintf(stderr,"ERROR437: Sub-daily time step %dh not allowed '%s'.\n",
+              fprintf(stderr,"ERROR437: Sub-daily time step %dh not allowed in '%s'.\n",
                       time_diff,filename);
               free(name);
               free(time);
