@@ -150,6 +150,15 @@ int main(int argc,char **argv)
 #endif
       return EXIT_SUCCESS;
     }
+    else if(!strcmp(argv[1],"-hash")) /* check for hash option */
+    {
+      if(isroot(config))
+        puts(gethash());
+#ifdef USE_MPI
+      MPI_Finalize();
+#endif
+      return EXIT_SUCCESS;
+    }
   }
   if(isroot(config))
   { /* Output only for the root task 0 */
