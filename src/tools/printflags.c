@@ -22,7 +22,7 @@
 void printflags(const char *progname /**< program name */
                )
 {
-  printf("%s C Version " LPJ_VERSION " (%s)\n",progname,
+  printf("%s C Version %s (%s)\n",progname,getversion(),
                getbuilddate());
   printf("Operating system: %s, %s endian\n",sysname(),
          (bigendian()) ? "big" : "little");

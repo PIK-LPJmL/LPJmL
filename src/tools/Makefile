@@ -18,10 +18,6 @@ include ../../Makefile.inc
 VERSION = $(shell cat ../../VERSION)
 GIT_HASH= $(shell git rev-parse HEAD)
 
-gethash.$O: FORCE
-
-.PHONY: FORCE
-FORCE:
 
 OBJS    = swap.$O freadheader.$O coord.$O openinputfile.$O\
           fscanreal.$O fail.$O list.$O headersize.$O\
@@ -63,6 +59,11 @@ $(LIBDIR)/$(LIB): $(OBJS)
 	$(AR) $(ARFLAGS)$(LIBDIR)/$(LIB) $(OBJS)
 
 $(OBJS): $(HDRS)
+
+gethash.$O: FORCE
+
+.PHONY: FORCE
+FORCE:
 
 printflags.$O: printflags.c
 	$(CC) $(CFLAGS) -DCFLAGS='"$(CFLAGS)"' -I$(INC) -c $*.c
