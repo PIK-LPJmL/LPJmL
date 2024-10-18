@@ -143,6 +143,7 @@ extern void fprintintf(FILE *,long long);
 extern void getcounts(int [],int [],int,int,int);
 extern char *getbuilddate(void);
 extern char *gethash(void);
+extern char *getrepo(void);
 extern time_t getfiledate(const char *);
 extern char *stripsuffix(const char *);
 extern Bool hassuffix(const char *,const char *);

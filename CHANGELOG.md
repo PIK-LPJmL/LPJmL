@@ -23,7 +23,8 @@ of `major.minor.patch` with
 
 ### Added
 
-- GIT hash printed in LPJmL banner and in output NetCDF and JSON files.
+- GIT repository and GIT hash printed in LPJmL banner and in output of NetCDF and JSON files.
+- Option `-hash` added to `lpjml` to print GIT hash.
 
 ### Changed
 

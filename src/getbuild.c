@@ -21,6 +21,12 @@ char *getbuilddate(void)
   return s;
 } /* of 'getbuilddate' */
 
+char *getrepo(void)
+{
+  static char *s=GIT_REPO;
+  return s;
+} /* of 'getrepo' */
+
 char *gethash(void)
 {
   static char *s=GIT_HASH;

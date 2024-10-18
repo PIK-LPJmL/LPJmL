@@ -15,6 +15,7 @@
 include ../Makefile.inc
 
 GIT_HASH= $(shell git rev-parse HEAD)
+GIT_REPO= $(shell git remote -v|head -1|cut  -f2|cut -d' ' -f1)
 
 OBJ    = lpjml.$O  
 
@@ -100,5 +101,5 @@ $(OBJ): $(HDRS)
 
 
 $(EXE): $(LPJLIBS) $(OBJ)
-	$(CC) $(CFLAGS) -I$(INC) -DGIT_HASH=\"$(GIT_HASH)\"  -c getbuild.c
+	$(CC) $(CFLAGS) -I$(INC) -DGIT_HASH=\"$(GIT_HASH)\"  -DGIT_REPO=\"$(GIT_REPO)\" -c getbuild.c
 	$(LINKMAIN) $(LNOPTS)$(EXE) $(OBJ) $(LPJLIBS) $(LIBS) getbuild.$O 

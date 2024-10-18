@@ -130,13 +130,14 @@ Bool fprintoutputjson(int index,           /**< index in outputvars array */
   fprintf(file,"  \"source\" : \"LPJmL C Version %s\",\n",getversion());
   time(&t);
   fprintf(file,"  \"history\" : \"%s: %s\",\n",strdate(&t),config->arglist);
-  fprintf(file,"  \"global_attrs\" : {");
-  fprintf(file,"\"GIT_hash\" : \"%s\"",gethash());
+  fprintf(file,"  \"global_attrs\" :\n  {\n");
+  fprintf(file,"    \"GIT_repo\" : \"%s\",\n",getrepo());
+  fprintf(file,"    \"GIT_hash\" : \"%s\"",gethash());
   for(p=0;p<config->n_global;p++)
   {
-    fprintf(file,", \"%s\" : \"%s\"",config->global_attrs[p].name,config->global_attrs[p].value);
+    fprintf(file,",\n    \"%s\" : \"%s\"",config->global_attrs[p].name,config->global_attrs[p].value);
   }
-  fprintf(file,"},\n");
+  fprintf(file,"\n  },\n");
   fprintf(file,"  \"name\" : \"%s\",\n",config->outnames[id].name);
   fprintf(file,"  \"variable\" : \"%s\",\n",config->outnames[id].var);
   fprintf(file,"  \"firstcell\" : %d,\n",config->firstgrid);

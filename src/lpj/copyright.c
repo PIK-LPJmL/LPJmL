@@ -47,14 +47,14 @@ void copyright(const char *progname /**< program name */
   t[7]="Dynamic global vegetation model with natural and managed land";
   t[8]=os;
   snprintf(hash,78-10,"GIT hash: %s",gethash());
-  t[9]=hash;
-  t[10]="(C) Potsdam Institute for Climate Impact Research (PIK),";
-  t[11]="see COPYRIGHT file";
-  t[12]="Authors, and contributors see AUTHORS file";
-  t[13]="This version of LPJmL is licensed under GNU AGPL Version 3 or later";
-  t[14]="See LICENSE file or go to http://www.gnu.org/licenses/";
-  t[15]="or invoke lpjml -l to print license";
-  t[16]="Contact: https://github.com/PIK-LPJmL/LPJmL";
+  t[9]="(C) Potsdam Institute for Climate Impact Research (PIK),";
+  t[10]="see COPYRIGHT file";
+  t[11]="Authors, and contributors see AUTHORS file";
+  t[12]="This version of LPJmL is licensed under GNU AGPL Version 3 or later";
+  t[13]="See LICENSE file or go to http://www.gnu.org/licenses/";
+  t[14]="or invoke lpjml -l to print license";
+  t[15]=getrepo();
+  t[16]=hash;
   t[17]="";
   banner(t,18,78);
 } /* of 'copyright' */
