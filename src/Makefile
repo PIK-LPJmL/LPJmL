@@ -73,6 +73,10 @@ libs:
 	(cd cpl && $(MAKE))
 	(cd coupler && $(MAKE))
 
+hash:
+	$(RM) $(RMFLAGS) $(EXE)
+	$(MAKE) $(EXE)
+
 clean:
 	(cd climate && $(MAKE) clean)
 	(cd lpj && $(MAKE) clean)

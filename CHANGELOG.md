@@ -27,6 +27,7 @@ of `major.minor.patch` with
 - Option `-hash` added to `lpjml` to print GIT hash.
 - The JSON file created by `createconfig` contains now name and hash of GIT repository.
 - Command `lpjml -v` prints GIT repository and hash.
+- target `hash` added to Makefile to update hash aftter committing changes to the GIT repository.
 
 ### Changed
 
