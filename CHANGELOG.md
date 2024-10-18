@@ -23,9 +23,10 @@ of `major.minor.patch` with
 
 ### Added
 
-- GIT repository and GIT hash printed in LPJmL banner and in output of NetCDF and JSON files.
+- GIT repository and GIT hash printed in the LPJmL banner and in output of NetCDF and JSON files.
 - Option `-hash` added to `lpjml` to print GIT hash.
 - The JSON file created by `createconfig` contains now name and hash of GIT repository.
+- Command `lpjml -v` prints GIT repository and hash.
 
 ### Changed
 
