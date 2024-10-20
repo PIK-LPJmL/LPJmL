@@ -42,7 +42,7 @@
     "lgm_ch4" : 460,           /* Eemian (460) LGM (466) atmospheric CH4 (ppb) */
     "ch4_ip" : 1790,           /* initial  pre-industrial amount of atmospheric CH4 (ppb) */
     "k" : 0.0548,              /* k    k = 7.4e-7 * atomic_mass_C / atomic_mass_N * seconds_per_day = 0.0548 Sprugel et al. 1996, Eqn 7*/
-    "theta" : 0.98,             /* theta */
+    "theta" : 0.99,             /* theta */
     "alphac3" : 0.06,          /* alphac3 Intrinsic quantum efficiency of CO2 uptake in C3 plants 0.08 */
     "alphac4" : 0.043,          /* alphac4 Intrinsic quantum efficiency of CO2 uptake in C4 plants 0.04 0.053*/
     "r_growth" : 0.25,         /* r_growthgrowth respiration per unit NPP 0.3*/

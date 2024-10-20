@@ -23,4 +23,6 @@ void newsoil(Soil *soil /**< pointer to soil data */)
   forrootsoillayer(l)
     soil->pool[l].fast.carbon=soil->pool[l].slow.carbon=soil->pool[l].fast.nitrogen=soil->pool[l].slow.nitrogen=soil->YEDOMA=0.0;
   soil->snowheight=soil->snowfraction=0;
+  for(l=0;l<NTILLLAYER;l++)
+    soil->df_tillage[l]=1.0;
 } /* of 'newsoil' */

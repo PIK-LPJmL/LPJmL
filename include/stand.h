@@ -89,7 +89,7 @@ extern Real water_stressed(Pft *,Real [LASTLAYER],Real,Real,
                            Real,Real *,Real *,Real *,Real,Real,
                            Real,Real,Real,Real *,int,int,int,const Config *);
 
-extern Real infil_perc(Stand *,Real,Real,Real *,int,int,const Config *);
+extern Real infil_perc(Stand *,Real,Real,Real,Real *,int,int,const Config *);
 extern void plant_gas_transport(Stand*, Real, Real,const Config *);
 extern Real albedo_stand(const Stand *);                            
 extern Landcover initlandcover(int,const Config *);
@@ -102,6 +102,7 @@ extern void freelandcover(Landcover,Bool);
 #define getstand(list,index) ((Stand *)getlistitem(list,index))
 #define foreachstand(stand,i,list) for(i=0;i<getlistlen(list) && (stand=getstand(list,i));i++)
 #define check_stand_fracs(cell,lakefrac) check_stand_fracs2(cell,lakefrac,__FUNCTION__,__LINE__)
+#define isnatural(type) (type==NATURAL || type==WETLAND)
 
 /*
  * The following macros allow to call the stand-specific functions like virtual

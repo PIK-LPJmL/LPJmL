@@ -31,6 +31,7 @@ void gasdiffusion(Soil *soil,    /**< [inout] pointer to soil data */
   Real dt, CH4_air, CH4_upper, CH4_lower, dCH4;
   Real tmp_water;
   Real end, start, out,in;
+  Bool stop;
   unsigned long int steps, t;
   end=start=tmp_water=out=in=0;
   /*waterbalance needs to be updated*/
@@ -80,10 +81,10 @@ void gasdiffusion(Soil *soil,    /**< [inout] pointer to soil data */
 
   for (t = 0; t<steps; ++t)
   {
+    stop=TRUE;
     for (l = 0; l<BOTTOMLAYER; l++)
     {
       O2_upper = (l == 0) ? O2_air : soil->O2[l - 1] / soildepth[l - 1] / epsilon_O2[l - 1] * 1000;
-      O2_lower = (l == BOTTOMLAYER - 1) ? 0 : soil->O2[l + 1] / soildepth[l + 1] / epsilon_O2[l + 1] * 1000;
 
       if (D_O2[l]>0)
       {
@@ -106,6 +107,7 @@ void gasdiffusion(Soil *soil,    /**< [inout] pointer to soil data */
          soil->O2[l] = 0;
         }
 
+        O2_lower = (l == BOTTOMLAYER - 1) ? 0 : soil->O2[l + 1] / soildepth[l + 1] / epsilon_O2[l + 1] * 1000;
         dO2 = 0.5*(D_O2[l] + ((l == BOTTOMLAYER - 1) ? D_O2[l] : D_O2[l + 1]))*timestep2sec(1.0, steps) / ((l==BOTTOMLAYER-1) ? soildepth[l] : (0.5* (soildepth[l]+ soildepth[l+1]))) * 1000
           *(O2_lower - soil->O2[l] / soildepth[l] / epsilon_O2[l] * 1000)*0.5;
         if (dO2>0 && l != (BOTTOMLAYER - 1))
@@ -125,10 +127,12 @@ void gasdiffusion(Soil *soil,    /**< [inout] pointer to soil data */
            soil->O2[l] = 0;
         }
 
-        if (fabs(dO2)<1e-18 || t == maxheatsteps)
-          break;
+        if (fabs(dO2)>1e-18)
+          stop=FALSE;
       }
     }
+    if (stop || t == maxheatsteps)
+      break;
   }
   /*********************Diffusion of methane*************************************/
 
@@ -160,6 +164,7 @@ void gasdiffusion(Soil *soil,    /**< [inout] pointer to soil data */
 
   for (t = 0; t<steps; ++t)
   {
+    stop=TRUE;
     for (l = 0; l<BOTTOMLAYER; l++)
     {
       CH4_upper = (l == 0) ? CH4_air : soil->CH4[l - 1] / soildepth[l - 1] / epsilon_CH4[l - 1] * 1000;
@@ -211,10 +216,12 @@ void gasdiffusion(Soil *soil,    /**< [inout] pointer to soil data */
           if (l != BOTTOMLAYER - 1) soil->CH4[l+1]-=soil->CH4[l];
           soil->CH4[l]=0;
         }
-        if (fabs(dCH4)<1e-18 || t == maxheatsteps)
-          break;
+        if (fabs(dCH4)>1e-18)
+          stop=FALSE;
       }
     }
+    if (stop || t == maxheatsteps)
+      break;
   }
   end = soilmethane(soil); //do not multiply by *WC/WCH4, is used for methane fluxes here
 #ifdef SAFE

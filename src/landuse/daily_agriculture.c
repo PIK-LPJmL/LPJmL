@@ -300,13 +300,8 @@ Real daily_agriculture(Stand *stand,                /**< [inout] stand pointer *
   else
     vol_water_enth=0;
 
-//  if(stand->cell->lateral_water>0 && stand->soil.iswetland==TRUE)
-//  {
-//    runoff+=infil_perc(stand,rainmelt+rw_apply+irrig_apply+stand->cell->lateral_water/stand->frac, vol_water_enth,&return_flow_b,npft,ncft,config);     //enthalpy of lateral influx?? should be the same T as in the local stand
-//    stand->cell->lateral_water=0;
-//  }
-//  else
-    runoff+=infil_perc(stand,rainmelt+rw_apply+irrig_apply, vol_water_enth,&return_flow_b,npft,ncft,config);
+
+  runoff+=infil_perc(stand,rainmelt+rw_apply+irrig_apply, vol_water_enth,climate->prec,&return_flow_b,npft,ncft,config);
 
   foreachpft(pft,p,&stand->pftlist)
   {

@@ -182,7 +182,7 @@ Real daily_biomass_grass(Stand *stand,                /**< stand pointer */
     vol_water_enth = climate->temp*c_water*(climate->prec+irrig_apply)/(climate->prec+irrig_apply+melt)+c_water2ice;
   else
     vol_water_enth=0;
-  runoff+=infil_perc(stand,rainmelt+irrig_apply, vol_water_enth,&return_flow_b,npft,ncft,config);
+  runoff+=infil_perc(stand,rainmelt+irrig_apply, vol_water_enth,climate->prec,&return_flow_b,npft,ncft,config);
 
   isphen=FALSE;
   foreachpft(pft,p,&stand->pftlist)

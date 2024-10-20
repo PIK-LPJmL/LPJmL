@@ -44,6 +44,8 @@ Bool fwritesoil(FILE *file, /**< pointer to binary file */
   fwriten(soil->bulkdens, sizeof(Real), NSOILLAYER, file);
   fwriten(soil->k_dry, sizeof(Real), NSOILLAYER, file);
   fwriten(soil->Ks, sizeof(Real), NSOILLAYER, file);
+  fwriten(soil->b,  sizeof(Real), NSOILLAYER, file);
+  fwriten(soil->psi_sat, sizeof(Real), NSOILLAYER, file);
   fwriten(soil->df_tillage, sizeof(Real), NTILLLAYER, file);
   fwriten(soil->w,sizeof(Real),NSOILLAYER,file);
   fwrite1(&soil->w_evap,sizeof(Real),file);

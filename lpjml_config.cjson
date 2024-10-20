@@ -110,7 +110,7 @@
   "fertilizer_input" : "yes",           /* fertilizer input setting, options: "no" (crops only depend on N in soils and from deposition), "yes", "auto" (applies exact N demand required by managed vegetation directly to plants - removes any N stress) */
   "manure_input" : true,                /* enable manure input */
   "fix_fertilization" : false,          /* fertilizer and manure input setting, options: "false" (prescribed time/cell/cft specific input), "true" (global constant rates from lpjmlparam.cjson) */
-  "others_to_crop" : true,              /* true: cultivate others as a separate stand of cft according to setting "cft_temp"/"cft_trop"; false: simulate others as grassland with setting "grazing_others" */
+  "others_to_crop" : false,              /* true: cultivate others as a separate stand of cft according to setting "cft_temp"/"cft_trop"; false: simulate others as grassland with setting "grazing_others" */
   "cft_temp" : "temperate cereals",     /* cft name (see pft.cjson) to simulate others in temperate regions (abs(lat)>30 deg), if others_to_crop is true  */
   "cft_tropic" : "maize",               /* cft name (see pft.cjson) to simulate others in tropical regions (abs(lat)<30 deg), if others_to_crop is true  */
   "grazing_others" : "default",         /* default grazing type for others, options : "default", "mowing", "ext", "int", "livestock", "none" */
@@ -327,6 +327,9 @@ ID                               Fmt                        filename
     { "id" : "wtab",             "file" : { "fmt" : "raw", "timestep" : "annual", "name" : "output_pot/wtab.bin"}},
     { "id" : "mwater",           "file" : { "fmt" : "raw", "timestep" : "annual", "name" : "output_pot/mwater.bin"}},
     { "id" : "wetfrac",          "file" : { "fmt" : "raw", "timestep" : "annual", "name" : "output_pot/wetfrac.bin"}},
+    { "id" : "seepage",          "file" : { "fmt" : "raw", "timestep" : "monthly", "name" : "output_pot/seepage.bin"}},
+    { "id" : "runoff_surf",      "file" : { "fmt" : "raw", "timestep" : "monthly", "name" : "output_pot/runoff_surf.bin"}},
+    { "id" : "runoff_lat",       "file" : { "fmt" : "raw", "timestep" : "monthly", "name" : "output_pot/runoff_lat.bin"}},
 #ifdef WITH_SPITFIRE
     { "id" : "firec",            "file" : { "fmt" : "raw", "timestep" : "monthly", "unit" : "gC/m2/month", "name" : "output_pot/mfirec.bin"}},
     { "id" : "nfire",            "file" : { "fmt" : "raw", "name" : "output_pot/mnfire.bin"}},
@@ -351,9 +354,10 @@ ID                               Fmt                        filename
     { "id" : "ch4_ebullition",   "file" : { "fmt" : "raw", "timestep" : "monthly", "name" : "output_pot/ch4_ebullition.bin"}},
     { "id" : "ch4_plant_gas",    "file" : { "fmt" : "raw", "timestep" : "monthly", "name" : "output_pot/ch4_plant_gas.bin"}},
     { "id" : "ch4_emissions",    "file" : { "fmt" : "raw", "timestep" : "monthly", "name" : "output_pot/ch4_emissions.bin"}},
+    { "id" : "ch4_emissions_wet",    "file" : { "fmt" : "raw", "timestep" : "monthly", "name" : "output_pot/ch4_emissions_wet.bin"}},
     { "id" : "ch4_oxidation",    "file" : { "fmt" : "raw", "timestep" : "monthly", "name" : "output_pot/ch4_oxidation.bin"}},
     { "id" : "ch4_sink",         "file" : { "fmt" : "raw", "timestep" : "monthly", "name" : "output_pot/ch4_sink.bin"}},
-    { "id" : "ch4_rice_em",      "file" : { "fmt" : "raw", "timestep" : "monthly", "name" : "output_pot/ch4_rice_em_autofert_nofrac.bin"}},
+    { "id" : "ch4_rice_em",      "file" : { "fmt" : "raw", "timestep" : "monthly", "name" : "output_pot/ch4_rice_em.bin"}},
     { "id" : "ch4_setaside",     "file" : { "fmt" : "raw", "timestep" : "monthly", "name" : "output_pot/ch4_setaside.bin"}},
     { "id" : "meansoilo2",       "file" : { "fmt" : "raw", "timestep" : "annual", "name" : "output_pot/meansoilo2.bin"}},
     { "id" : "gw_storage",       "file" : { "fmt" : "raw", "timestep" : "annual", "name" : "output_pot/gw_store.bin"}},

@@ -300,6 +300,7 @@ static Cell *newgrid2(Config *config,          /* Pointer to LPJ configuration *
     grid[i].discharge.afin_ext=0.0;
     grid[i].discharge.queue=NULL;
     grid[i].icefrac = 0;
+    grid[i].wetlandfrac=0;
     grid[i].hydrotopes.meanwater = 0.;
     grid[i].hydrotopes.changecount = 0;
     grid[i].hydrotopes.wetland_area = 0.;

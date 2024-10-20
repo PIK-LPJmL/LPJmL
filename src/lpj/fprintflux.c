@@ -47,11 +47,11 @@ void fprintflux(FILE *file,          /**< Output file pointer */
       frepeatch(file,' ',(config->withlanduse==NO_LANDUSE) ? 8 : 12);
     fprintf(file,"  Water (%sm3)",(convert==1e-15)  ? "k" : "da");
     fprintf(file,"       CH4 fluxes (%cgCH4)",(convert==1e-15)  ? 'T' : 'M');
-      fprintf(file,"               Carbon (%cgC)    ",(convert==1e-15)  ? 'P' : 'G');
-      frepeatch(file,' ',(config->withlanduse==NO_LANDUSE) ? 5 : 9);
-      if(config->river_routing)
-        frepeatch(file,' ',(config->withlanduse==NO_LANDUSE) ? 1 : 5);
-      fprintf(file,"         Nitrogen (%cgN)            Nitrogen fluxes  %cgN/yr)",(convert==1e-15)  ? 'P' : 'M',(convert==1e-15)  ? 'T' : 'M');
+    fprintf(file,"               Carbon (%cgC)    ",(convert==1e-15)  ? 'P' : 'G');
+    frepeatch(file,' ',(config->withlanduse==NO_LANDUSE) ? 5 : 9);
+    if(config->river_routing)
+      frepeatch(file,' ',(config->withlanduse==NO_LANDUSE) ? 1 : 5);
+    fprintf(file,"         Nitrogen (%cgN)            Nitrogen fluxes  %cgN/yr)",(convert==1e-15)  ? 'P' : 'M',(convert==1e-15)  ? 'T' : 'M');
     fputs("\n       ",file);
     frepeatch(file,'-',tabs*8-1);
     if(config->withlanduse!=NO_LANDUSE)
@@ -65,6 +65,7 @@ void fprintflux(FILE *file,          /**< Output file pointer */
     else
       fputs(" -----------------------",file);
     fputs(" ----------------------------- -------",file);
+    fputs(" -------------------------------------------------------",file);
     fputc('\n',file);
     if(year<config->firstyear)
       fputs("Spinup ",file);
@@ -100,6 +101,7 @@ void fprintflux(FILE *file,          /**< Output file pointer */
     if(config->withlanduse!=NO_LANDUSE)
       fputs(" ------- -------", file);
     fputs(" --------- --------- --------- -------", file);
+    fputs(" ------- ------- ------- ------- ------- ------- -------",file);
     fputc('\n',file);
   }
   /* print data */

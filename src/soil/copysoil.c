@@ -96,6 +96,8 @@ void copysoil(Soil *dst,       /**< destination */
     dst->wpwps[i]=src->wpwps[i];
     dst->k_dry[i]=src->k_dry[i];
     dst->Ks[i]=src->Ks[i];
+    dst->psi_sat[l]=src->psi_sat[l];
+    dst->b[l]=src->b[l];
     dst->bulkdens[i]=src->bulkdens[i];
     dst->beta_soil[i]=src->beta_soil[i];
     dst->wi_abs_enth_adj[i]=src->wi_abs_enth_adj[i];

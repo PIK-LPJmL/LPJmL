@@ -252,6 +252,8 @@ typedef struct
   Real wpwp[NSOILLAYER];  /**< relative water content at wilting point */
   Real wfc[NSOILLAYER];   /**< relative water content at field capacity */
   Real wsat[NSOILLAYER];  /**< relative water content at saturation */
+  Real psi_sat[NSOILLAYER]; /**< soil suction at saturation (mm), depends on SOM */
+  Real b[NSOILLAYER];       /**<  Clapp Hornberger exponent */
   Real whcs_all;
   Real whc[NSOILLAYER];   /**< water holding capacity (fraction), whc = wfc - wpwp */
   Real wsats[NSOILLAYER]; /**< absolute water content at saturation (mm), wsats = wsat * soildepth */

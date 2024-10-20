@@ -65,7 +65,7 @@ static int fscanspace(FILE *file /* file pointer of a text file       */
           if(isspace(c))
             break;
         /* read line number */
-        if(fscanf(file,"%d",&line_count));
+        fscanf(file,"%d",&line_count);
         while((c=fgetc(file))!=EOF)
           if(!isspace(c)|| c=='\n')
             break;

@@ -115,6 +115,7 @@ struct cell
   Real *gdd;                /**< Growing degree days array */
   Real lakefrac;            /**< lake fraction (0..1) */
   Real icefrac;             /**< ice fraction (0..1) */
+  Real wetlandfrac;
 #ifdef COUPLING_WITH_FMS
   Real laketemp;            /**< temperatures in this cell, for now only one layer */
   Real day_after_snowfall;  /**< days after snowfall, to compute the albedo of lakes following:

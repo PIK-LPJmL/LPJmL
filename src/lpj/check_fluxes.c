@@ -130,7 +130,7 @@ void check_fluxes(Cell *cell,          /**< cell pointer */
          cell->balance.deforest_emissions.carbon,cell->balance.prod_turnover.fast.carbon+cell->balance.prod_turnover.slow.carbon,cell->balance.timber_harvest.carbon,cell->balance.influx.carbon);
 #endif
   }
-#ifdef CHECK_BALANCE
+#ifdef CHECK_BALANCE2
          foreachstand(stand,s,cell->standlist)
              fprintf(stderr,"standfrac: %g standtype: %s s= %d iswetland: %d cropfraction_rf: %g cropfraction_irr: %g grasfrac_rf: %g grasfrac_irr: %g\n",
                      stand->frac, stand->type->name,s,stand->soil.iswetland, crop_sum_frac(cell->ml.landfrac,12,config->nagtree,cell->ml.reservoirfrac+cell->lakefrac,FALSE),

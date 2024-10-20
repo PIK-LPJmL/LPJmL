@@ -43,7 +43,7 @@ void update_daily(Cell *cell,            /**< cell pointer           */
   Pft *pft;
   Real melt=0,eeq,par,daylength,beta,gw_outflux;
   Real CH4_em=0;
-  Real melt_all=0,runoff,snowrunoff,epsilon_gas,soilmoist,V;
+  Real melt_all,runoff,snowrunoff,epsilon_gas,soilmoist,V;
 #ifdef IMAGE
   Real fout_gw; // local variable for groundwater outflow (baseflow)
 #endif
@@ -67,6 +67,8 @@ void update_daily(Cell *cell,            /**< cell pointer           */
   Real litsum_old_agr[2]={0,0},litsum_new_agr[2]={0,0};
   isrice=FALSE;
   Real groundwater= cell->ground_st+cell->ground_st_am;
+  runoff=snowrunoff=melt_all=0;
+  Irrigation *data;
 
 #ifdef CHECK_BALANCE
   Real end=0;
@@ -84,6 +86,7 @@ void update_daily(Cell *cell,            /**< cell pointer           */
   fluxes_in.nitrogen=cell->balance.flux_estab.nitrogen+cell->balance.influx.nitrogen; //influxes
   fluxes_out.nitrogen=cell->balance.fire.nitrogen+cell->balance.n_outflux+cell->balance.neg_fluxes.nitrogen
       +cell->balance.flux_harvest.nitrogen+cell->balance.biomass_yield.nitrogen+cell->balance.deforest_emissions.nitrogen; //outfluxes
+  Real irrigstore=0;
   foreachstand(stand,s,cell->standlist)
   {
     if(stand->type->landusetype!=KILL)
@@ -91,6 +94,15 @@ void update_daily(Cell *cell,            /**< cell pointer           */
       water_before+=soilwater(&stand->soil)*stand->frac;
       start1.carbon+=(standstocks(stand).carbon + soilmethane(&stand->soil)*WC/WCH4)*stand->frac;
       start1.nitrogen+=standstocks(stand).nitrogen*stand->frac;
+    }
+    if(stand->type->landusetype==GRASSLAND || stand->type->landusetype==OTHERS ||
+       stand->type->landusetype==AGRICULTURE || stand->type->landusetype==AGRICULTURE_GRASS || stand->type->landusetype==AGRICULTURE_TREE ||
+       stand->type->landusetype==BIOMASS_TREE || stand->type->landusetype==BIOMASS_GRASS || stand->type->landusetype==WOODPLANTATION)
+    {
+      foreachpft(pft, p, &stand->pftlist)
+       if(!strcmp(pft->par->name,"rice")) isrice=TRUE;
+      data = stand->data;
+      if(data->irrigation||isrice) irrigstore+=data->irrig_stor;
     }
   }
   start1.carbon+=cell->ml.product.fast.carbon+cell->ml.product.slow.carbon+
@@ -107,7 +119,6 @@ void update_daily(Cell *cell,            /**< cell pointer           */
   }
   start=start1;
 #endif
-  Irrigation *data;
 
   updategdd(cell->gdd,config->pftpar,npft,climate.temp);
   cell->balance.aprec+=climate.prec;
@@ -197,6 +208,10 @@ void update_daily(Cell *cell,            /**< cell pointer           */
     {
       getoutput(&cell->output,CH4_EMISSIONS,config)+=CH4_em*stand->frac;
       cell->balance.aCH4_em+=CH4_em*stand->frac;
+      if(stand->soil.iswetland && stand->cell->wetlandfrac>epsilon)
+        getoutput(&stand->cell->output,CH4_EMISSIONS_WET,config)+=CH4_em*stand->frac/stand->cell->wetlandfrac;
+      else
+        getoutput(&stand->cell->output,CH4_EMISSIONS_WET,config)+=CH4_em;
     }
     else
     {
@@ -226,6 +241,10 @@ void update_daily(Cell *cell,            /**< cell pointer           */
 
     ebul = ebullition(&stand->soil, fpc_total_stand);
     getoutput(&cell->output,CH4_EMISSIONS,config) += ebul*stand->frac;
+    if(stand->soil.iswetland && stand->cell->wetlandfrac>epsilon)
+      getoutput(&stand->cell->output,CH4_EMISSIONS_WET,config)+=ebul*stand->frac/stand->cell->wetlandfrac;
+    else
+      getoutput(&stand->cell->output,CH4_EMISSIONS_WET,config)+=ebul;
     cell->balance.aCH4_em+=ebul*stand->frac;
     getoutput(&cell->output,CH4_EBULLITION,config) += ebul*stand->frac;
 
@@ -276,6 +295,10 @@ void update_daily(Cell *cell,            /**< cell pointer           */
     cell->balance.n_outflux+=hetres.nitrogen*stand->frac;
     getoutput(&cell->output,CH4_EMISSIONS,config) += CH4_em*stand->frac;
     cell->balance.aCH4_em+=CH4_em*stand->frac;
+    if(stand->soil.iswetland && stand->cell->wetlandfrac>epsilon)
+      getoutput(&stand->cell->output,CH4_EMISSIONS_WET,config)+=CH4_em*stand->frac/stand->cell->wetlandfrac;
+    else
+      getoutput(&stand->cell->output,CH4_EMISSIONS_WET,config)+=CH4_em;
     if((stand->type->landusetype==SETASIDE_RF || stand->type->landusetype==SETASIDE_IR || stand->type->landusetype==AGRICULTURE || stand->type->landusetype==SETASIDE_WETLAND)&& CH4_em>0)
     {
       foreachpft(pft, p, &stand->pftlist)
@@ -432,7 +455,6 @@ void update_daily(Cell *cell,            /**< cell pointer           */
       getoutput(&cell->output,NH3_MGRASS,config)+=nh3*stand->frac;
 
     cell->balance.n_outflux+=nh3*stand->frac;
-
     cell->discharge.drunoff+=runoff*stand->frac;
     climate.prec=prec_save;
     foreachpft(pft, p, &stand->pftlist)
@@ -495,11 +517,17 @@ void update_daily(Cell *cell,            /**< cell pointer           */
                      stand->soil.ice_depth[l]+stand->soil.ice_fw[l])*stand->frac*cell->coord.area;
     }
     if(stand->soil.iswetland)
+    {
      getoutput(&cell->output,WTAB,config) += cell->hydrotopes.wetland_wtable_current;
    // getoutput(&cell->output,GW_STORAGE,config) += stand->soil.wa*stand->frac;
-
+    }
 
   } /* of foreachstand */
+  if (cell->lateral_water>100)
+  {
+    cell->discharge.drunoff+=cell->lateral_water-100;
+    cell->lateral_water=100;
+  }
 
   getoutput(&cell->output,CELLFRAC_AGR,config)+=agrfrac;
   getoutput(&cell->output,DECAY_LEAF_NV,config)*=litsum_old_nv[LEAF]>0 ? litsum_new_nv[LEAF]/litsum_old_nv[LEAF] : 1;
@@ -624,8 +652,18 @@ void update_daily(Cell *cell,            /**< cell pointer           */
   water_after=(cell->discharge.dmass_lake+cell->discharge.dmass_river)/cell->coord.area;
   CH4_fluxes-=(cell->balance.aCH4_em+cell->balance.aCH4_sink)*WC/WCH4;                                 //will be negative, because emissions at the end are higher, thus we have to substract
   end=0;
+  Real irrigstore_end=0;
   foreachstand(stand,s,cell->standlist)
   {
+    if(stand->type->landusetype==GRASSLAND || stand->type->landusetype==OTHERS ||
+        stand->type->landusetype==AGRICULTURE || stand->type->landusetype==AGRICULTURE_GRASS || stand->type->landusetype==AGRICULTURE_TREE ||
+        stand->type->landusetype==BIOMASS_TREE || stand->type->landusetype==BIOMASS_GRASS || stand->type->landusetype==WOODPLANTATION)
+     {
+       foreachpft(pft, p, &stand->pftlist)
+        if(!strcmp(pft->par->name,"rice")) isrice=TRUE;
+       data = stand->data;
+       if(data->irrigation||isrice) irrigstore_end+=data->irrig_stor;
+     }
     if(stand->type->landusetype!=KILL)
     {
       water_after+=soilwater(&stand->soil)*stand->frac;
@@ -675,12 +713,13 @@ void update_daily(Cell *cell,            /**< cell pointer           */
   if(fabs(balanceW)>0.001)
   {
     fprintf(stderr,"W-BALANCE-ERROR in %s: day %d balanceW: %g  exess_old: %g balance.excess_water: %g gw_outflux: %g water_after: %g water_before: %g prec: %g melt: %g "
-        "atransp: %g  aevap %g ainterc %g aevap_lake  %g aevap_res: %g    airrig : %g aMT_water : %g MT_water: %g flux_bal: %g runoff %g awater_flux %g lateral_water %g mfin-mfout: %g dmass_lake: %g  dmassriver : %g  ground_st_am: %g\ ground_st: %g gw_balance:%g\n\n",
+        "atransp: %g  aevap %g ainterc %g aevap_lake  %g aevap_res: %g    airrig : %g aMT_water : %g MT_water: %g flux_bal: %g runoff %g awater_flux %g lateral_water %g mfin-mfout: %g dmass_lake: %g  dmassriver : %g"
+        "  ground_st_am: %g\ ground_st: %g gw_balance: %g  dmass_gw: %g  irrigstore_bal: %g\n\n",
         __FUNCTION__,day,balanceW,exess_old,cell->balance.excess_water,gw_outflux,
         water_after,water_before,climate.prec,melt_all,cell->balance.atransp,cell->balance.aevap,cell->balance.ainterc,cell->balance.aevap_lake,cell->balance.aevap_res,cell->balance.airrig,cell->balance.aMT_water,MT_water,
         ((cell->balance.awater_flux+cell->balance.atransp+cell->balance.aevap+cell->balance.ainterc+cell->balance.aevap_lake+cell->balance.aevap_res-cell->balance.airrig-cell->balance.aMT_water)-wfluxes_old),
         cell->discharge.drunoff,cell->balance.awater_flux,cell->lateral_water,((cell->discharge.mfout-cell->discharge.mfin)/cell->coord.area),cell->discharge.dmass_lake/cell->coord.area,cell->discharge.dmass_river/cell->coord.area,
-        cell->ground_st_am,cell->ground_st,groundwater-(cell->ground_st_am+cell->ground_st));
+        cell->ground_st_am,cell->ground_st,groundwater-(cell->ground_st_am+cell->ground_st),cell->discharge.dmass_gw,irrigstore_end-irrigstore);
   }
  //if(year==-4407) fprintf(stderr,"day: %d\n",day);
 #endif

@@ -123,6 +123,8 @@ Bool initsoil(Stand *stand,           /**< Pointer to stand data */
       soil->bulkdens[l]=(1-soilpar->wsat)*MINERALDENS;
       soil->beta_soil[l]=-2.655/log10(soilpar->wfc/soilpar->wsat);
       soil->Ks[l] = soilpar->Ks;
+      soil->b[l]=soil->par->b;
+      soil->psi_sat[l]=soil->par->psi_sat;
     }
     /*assume last layer is bedrock in 6-layer version */
     soil->wfc[BOTTOMLAYER]=soilpar->wfc;
@@ -135,6 +137,8 @@ Bool initsoil(Stand *stand,           /**< Pointer to stand data */
     soil->bulkdens[BOTTOMLAYER]=(1-soil->wsats[BOTTOMLAYER]/soildepth[BOTTOMLAYER])*MINERALDENS;
     soil->beta_soil[BOTTOMLAYER]=-2.655/log10(soilpar->wfc/soilpar->wsat);
     soil->Ks[BOTTOMLAYER] = soilpar->Ks;
+    soil->b[BOTTOMLAYER]=2.91 + 0.159*1*100;
+    soil->psi_sat[BOTTOMLAYER]=10*pow(10,1.88-0.0131*99*100);
   }
   else
   {
@@ -152,7 +156,9 @@ Bool initsoil(Stand *stand,           /**< Pointer to stand data */
         soil->bulkdens[l] = (1 - soil->wsats[l] / soildepth[l])*MINERALDENS;
         soil->Ks[l] = 0.1;
         soil->beta_soil[l] = -2.655 / log10(soil->wfc[l] / soil->wsat[l]);
-      }
+        soil->b[l]=2.91 + 0.159*soil->par->clay*100;
+        soil->psi_sat[l]=10*pow(10,1.88-0.0131*soil->par->sand*100);
+       }
     }
     else
     {
@@ -168,6 +174,8 @@ Bool initsoil(Stand *stand,           /**< Pointer to stand data */
         soil->bulkdens[l] = (1 - soil->wsat[l])*MINERALDENS;
         soil->k_dry[l] = (0.135*soil->bulkdens[l] + 64.7) / (MINERALDENS - 0.947*soil->bulkdens[l]);
         soil->Ks[l] = 3.5;
+        soil->b[l]=soil->par->b;
+        soil->psi_sat[l]=soil->par->psi_sat;
       }
       pedotransfer(stand,NULL,NULL,stand->frac);
     }
@@ -184,6 +192,9 @@ Bool initsoil(Stand *stand,           /**< Pointer to stand data */
   soil->k_dry[BOTTOMLAYER] = 0.039*pow(soil->wsats[BOTTOMLAYER] / soildepth[BOTTOMLAYER], -2.2);
   soil->Ks[BOTTOMLAYER] = 0.1;
   soil->beta_soil[BOTTOMLAYER] = -2.655 / log10(soil->wfc[BOTTOMLAYER] / soil->wsat[BOTTOMLAYER]);
+  soil->b[BOTTOMLAYER]=2.91 + 0.159*1*100;
+  soil->psi_sat[BOTTOMLAYER]=10*pow(10,1.88-0.0131*99*100);
+
   for (l=0;l<LASTLAYER;l++)
   {
     V=getV(soil,l);  /*soil air content (m3 air/m3 soil)*/

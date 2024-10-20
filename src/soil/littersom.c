@@ -34,8 +34,8 @@
 
 #define MOIST_DENOM 0.63212055882855767841 /* (1.0-exp(-1.0)) */
 #define K10_YEDOMA 0.025/NDAYYEAR
-#define k_red 5                           /*anoxic decomposition is much smaller than oxic decomposition Khovorostyanov et al., 2008*/
-#define k_red_litter 5
+#define k_red 10                           /*anoxic decomposition is much smaller than oxic decomposition Khovorostyanov et al., 2008*/
+#define k_red_litter 10
 #define INTERCEPT 0.10021601               /* changed from 0.04021601*/
 #define MOIST_3 -5.00505434
 #define MOIST_2 4.26937932
@@ -47,7 +47,7 @@
 #define k_N 5e-3 /* Michaelis-Menten parameter k_S,1/2 (gN/m3) */
 #define S 0.2587 // saturation factor MacDougall and Knutti, 2016
 #define KOVCON (0.001*1000) //Constant of diffusion (m2a-1)
-#define WTABTHRES 30
+#define WTABTHRES 20
 
 static Real f_wfps(const Soil *soil,      /* Soil data */
                    int l                  /* soil layer */
@@ -342,7 +342,7 @@ Stocks littersom(Stand *stand,                      /**< [inout] pointer to stan
 #endif
 #ifdef SAFE
   if (soil->w[l]< -epsilon || soil->w_fw[l]< -epsilon )
-  {   fprintf(stderr,"\n\littersom Cell (%s) soilwater=%.6f soilice=%.6f wsats=%.6f agtop_moist=%.6f\n",
+  {   fprintf(stderr,"\nlittersom Cell (%s) soilwater=%.6f soilice=%.6f wsats=%.6f agtop_moist=%.6f\n",
           sprintcoord(line,&stand->cell->coord),allwater(soil,l),allice(soil,l),soil->wsats[l],soil->litter.agtop_moist);
       fflush(stderr);
       fprintf(stderr,"Soil-moisture layer %d negative: w:%g, fw:%g,lutype %s soil_type %s \n\n",

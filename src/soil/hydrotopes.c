@@ -22,11 +22,14 @@ void hydrotopes(Cell *cell /**< Pointer to cell */
   int s,w=0;
 
   wtable=wtable_h=0;
+  cell->wetlandfrac=0;
   // 	determine mean water table position
 
   // Latest formulation: Follow Habets & Saulnier (2001) and use mean wetness as indicator of water table depth.
   foreachstand(stand,s,cell->standlist)
   {
+    if(stand->soil.iswetland)
+      cell->wetlandfrac+=stand->frac;
     wtable += stand->soil.wtable*stand->frac*(1.0 / (1 - stand->cell->lakefrac));
     if(stand->type->landusetype==WETLAND || stand->type->landusetype==SETASIDE_WETLAND)
     {

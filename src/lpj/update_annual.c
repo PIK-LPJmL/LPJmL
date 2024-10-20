@@ -33,7 +33,6 @@ void update_annual(Cell *cell,          /**< Pointer to cell */
   Pftcroppar *croppar;
   Real mintemp[N];
   Stocks litter_neg;
-  Real soilc_agr,litc_agr;
   Real natfrac,wetlandfrac;
 #ifdef CHECK_BALANCE
 //anpp, influx and arh do not change
@@ -107,7 +106,7 @@ void update_annual(Cell *cell,          /**< Pointer to cell */
     stand->prescribe_landcover = config->prescribe_landcover;
 
     stand->soil.mean_maxthaw=(stand->soil.mean_maxthaw-stand->soil.mean_maxthaw/CLIMBUFSIZE)+stand->soil.maxthaw_depth/CLIMBUFSIZE;
-    getoutput(&cell->output,MAXTHAW_DEPTH,config)+=stand->soil.maxthaw_depth*stand->frac*(1.0/(1-stand->cell->lakefrac));
+    //getoutput(&cell->output,MAXTHAW_DEPTH,config)+=stand->soil.maxthaw_depth*stand->frac*(1.0/(1-stand->cell->lakefrac));
     if(annual_stand(stand,npft,ncft,year,isdaily,intercrop,config))
     {
       /* stand has to be deleted */
@@ -115,18 +114,10 @@ void update_annual(Cell *cell,          /**< Pointer to cell */
       s--; /* adjust stand index */
       continue;
     }
-    if (stand->type->landusetype == WETLAND)
-      foreachpft(pft, p, &stand->pftlist)
-        getoutputindex(&cell->output,WPC,getpftpar(pft, id) + 1,config) += pft->fpc;
-    else if(stand->type->landusetype == NATURAL)
-      foreachpft(pft, p, &stand->pftlist)
-        getoutputindex(&cell->output,FPC,getpftpar(pft, id) + 1,config) += pft->fpc;
     if(stand->type->landusetype == NATURAL)
       natfrac+=stand->frac;
     if(stand->type->landusetype == WETLAND)
       wetlandfrac+=stand->frac;
-
-
   } /* of foreachstand */
 #ifdef CHECK_BALANCE
   foreachstand(stand,s,cell->standlist)
@@ -184,19 +175,8 @@ void update_annual(Cell *cell,          /**< Pointer to cell */
   if (fabs(start.nitrogen-end.nitrogen+balance.nitrogen)>0.001) fprintf(stderr,"N_ERROR update annual after update_wetland: year=%d: error=%g start : %g end : %g balance.nitrogen: %g\n",
       year, start.nitrogen-end.nitrogen+balance.nitrogen, start.nitrogen, end.nitrogen,balance.nitrogen);
 #endif
-  soilc_agr=0;
-  litc_agr=0;
   foreachstand(stand,s,cell->standlist)
   {
-    if (stand->type->landusetype == SETASIDE_RF || stand->type->landusetype == SETASIDE_IR ||
-         stand->type->landusetype == AGRICULTURE || stand->type->landusetype == SETASIDE_WETLAND)
-    {
-      for (p = 0; p<stand->soil.litter.n; p++)
-        soilc_agr+=stand->soil.litter.item[p].bg.carbon*stand->frac;
-      forrootsoillayer(l)
-        soilc_agr+=(stand->soil.pool[l].slow.carbon + stand->soil.pool[l].fast.carbon)*stand->frac;
-      litc_agr +=(litter_agtop_sum(&stand->soil.litter) + litter_agsub_sum(&stand->soil.litter))*stand->frac;
-    }
     if(stand->soil.iswetland==TRUE || stand->type->landusetype==WETLAND)
       getoutput(&cell->output,WETFRAC,config)+=stand->frac;
     litter_neg=checklitter(&stand->soil.litter);

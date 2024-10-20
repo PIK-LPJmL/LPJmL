@@ -40,6 +40,7 @@ STATIC void use_temp_scheme_implicit(Real *, const Real *, const Real *, const R
 STATIC void arrange_matrix(Real *, Real *, Real *, const Real *, const Real *, const Real *, const Real);
 STATIC void thomas_algorithm(const double *, const double *, const double *,const double *, double *);
 STATIC void timestep_implicit(Real *, const Real *, const Real *, const Real *, const Real);
+#define MAXTIMESTEP 1000
 
 /******** main function *********/
 void apply_heatconduction_of_a_day(Uniform_temp_sign uniform_temp_sign, /**< flag to indicate if the temperatures all have the same signs */
@@ -159,6 +160,14 @@ STATIC void use_enth_scheme(Real * enth,
                             * inv_element_midpoint_dist[j];
     if (dt_inv < dt_inv_temporary)
       dt_inv = dt_inv_temporary;
+  }
+  if(dt_inv>MAXTIMESTEP)
+  {
+    for (j=0; j<NHEATGRIDP; ++j)
+      {
+       fprintf(stderr,"problems in use_enth_scheme dt_inv:%g inv_c_unfro=%g inv_c_fro=%g lam_unfro_dBh=%g lam_fro_dBh=%g \n",dt_inv,inv_c_unfro[j],inv_c_fro[j],lam_unfro_dBh[j],lam_fro_dBh[j]);
+      }
+    dt_inv=MAXTIMESTEP;
   }
 #ifdef SAFE
   if(isnan(dt_inv))

@@ -174,6 +174,10 @@ Bool annual_natural(Stand *stand,         /**< Pointer to stand */
       if (pft->fpc > fpc_obs_cor)
         pft->fpc = fpc_obs_cor;
     }
+    if (stand->type->landusetype == WETLAND)
+        getoutputindex(&stand->cell->output,WPC,getpftpar(pft, id) + 1,config) += pft->fpc;
+    else if(stand->type->landusetype == NATURAL)
+        getoutputindex(&stand->cell->output,FPC,getpftpar(pft, id) + 1,config) += pft->fpc;
 #ifdef SAFE
     if(pft->fpc<0)
       fail(INVALID_FPC_ERR,TRUE,TRUE,"FPC=%g for '%s' less than zero",pft->fpc,pft->par->name);

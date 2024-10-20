@@ -83,6 +83,7 @@ Real daily_grassland(Stand *stand,                /**< stand pointer */
   Real manure;
   int n_pft,index,nnat;
   Real *fpc_inc;
+  Real lateral_in=0;
 #ifdef PERMUTE
   int *pvec;
 #endif
@@ -96,6 +97,13 @@ Real daily_grassland(Stand *stand,                /**< stand pointer */
   output=&stand->cell->output;
   evap=evap_blue=cover_stand=intercep_stand=intercep_stand_blue=wet_all=rw_apply=intercept=sprink_interc=rainmelt=0.0;
   runoff=return_flow_b=0.0;
+#ifdef CHECK_BALANCE
+  Real wfluxes_old=(stand->cell->balance.excess_water+stand->cell->lateral_water+stand->cell->balance.awater_flux+stand->cell->balance.aevap_res+stand->cell->balance.aevap_lake-stand->cell->balance.aMT_water);
+  Real wstore_old=(stand->cell->discharge.dmass_lake+stand->cell->discharge.dmass_river)/stand->cell->coord.area;
+  Real water_before=0;
+  Real water_after,wstore_new,balancew;
+  water_before+=soilwater(&stand->soil);
+#endif
   if(getnpft(&stand->pftlist)>0)
   {
     wet=newvec(Real,getnpft(&stand->pftlist)); /* wet from pftlist */
@@ -236,7 +244,19 @@ Real daily_grassland(Stand *stand,                /**< stand pointer */
     vol_water_enth = climate->temp*c_water*(climate->prec+rw_apply+irrig_apply)/(climate->prec+irrig_apply+irrig_apply+melt)+c_water2ice;
   else
     vol_water_enth=0;
-  runoff+=infil_perc(stand,rainmelt+rw_apply+irrig_apply, vol_water_enth,&return_flow_b,npft,ncft,config);
+
+  if(stand->cell->lateral_water>0 && stand->soil.iswetland==TRUE && stand->frac>0.001)
+  {
+    if(stand->cell->lateral_water/stand->frac>300)
+      lateral_in=300;
+    else
+      lateral_in=stand->cell->lateral_water/stand->frac;
+
+    runoff+=infil_perc(stand,rainmelt+rw_apply+irrig_apply+lateral_in, vol_water_enth,climate->prec,&return_flow_b,npft,ncft,config);     //enthalpy of lateral influx?? should be the same T as in the local stand
+    stand->cell->lateral_water-=lateral_in*stand->frac;
+  }
+  else
+    runoff+=infil_perc(stand,rainmelt+rw_apply+irrig_apply, vol_water_enth,climate->prec,&return_flow_b,npft,ncft,config);
 
   isphen = FALSE;
 #ifdef PERMUTE
@@ -551,6 +571,23 @@ Real daily_grassland(Stand *stand,                /**< stand pointer */
     }
 
   }
+
+#ifdef CHECK_BALANCE
+  transp=0;
+  water_after=0;
+  wstore_new=(stand->cell->discharge.dmass_lake+stand->cell->discharge.dmass_river)/stand->cell->coord.area;
+  water_after+=soilwater(&stand->soil);
+  Real wfluxes_new=(stand->cell->balance.excess_water+stand->cell->lateral_water+stand->cell->balance.awater_flux+stand->cell->balance.aevap_res+stand->cell->balance.aevap_lake-stand->cell->balance.aMT_water);
+  forrootsoillayer(l)
+   transp+=aet_stand[l];
+  balancew=water_after-water_before-(climate->prec+melt+rw_apply+irrig_apply)+(transp+evap+intercep_stand+runoff)+(wfluxes_new-wfluxes_old)/stand->frac+(wstore_new-wstore_old)/stand->frac;
+  if(fabs(balancew)>0.001 && stand->frac>0.00001)
+  {
+
+    fail(INVALID_WATER_BALANCE_ERR,FAIL_ON_BALANCE,FALSE,"Invalid water balance in %s:  y: %d day: %d balanceW: %g water_before: %.6f water_after: %.6f aet: %g evap: %g intercep_stand %g runoff: %g influx: %g fluxes: %g irrig_apply: %g irrig_stor: %g frac: %g wstore: %g wstore_new: %g wstore_old: %g \n",
+        __FUNCTION__,year,day,balancew,water_before,water_after,transp,evap,intercep_stand,runoff,(climate->prec+melt+rw_apply+irrig_apply),(wfluxes_new-wfluxes_old)/stand->frac,irrig_apply,data->irrigation.irrig_stor,stand->frac,(wstore_new-wstore_old)/stand->frac,wstore_new,wstore_old);
+  }
+ #endif
 
   /* output for green and blue water for evaporation, transpiration and interception */
   output_gbw(output,stand,frac_g_evap,evap,evap_blue,return_flow_b,aet_stand,green_transp,

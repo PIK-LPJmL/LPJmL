@@ -28,7 +28,17 @@ void update_monthly(Cell *cell,  /**< Pointer to cell */
   Pft *pft;
   int s;
   Stand *stand;
-
+#ifdef CHECK_BALANCE
+  Stocks start = {0,0};
+  Stocks end = {0,0};
+  Stocks st;
+  foreachstand(stand, s, cell->standlist)
+  {
+    st= standstocks(stand);
+    start.carbon+=(st.carbon+soilmethane(&stand->soil)*WC/WCH4)*stand->frac;
+    start.nitrogen+=st.nitrogen*stand->frac;
+  }
+#endif
   monthly_climbuf(&cell->climbuf,mtemp,mprec,cell->output.mpet,month);
   if(cell->ml.dam) /* to store the monthly inflow and demand */
     update_reservoir_monthly(cell,month,config);
@@ -64,5 +74,20 @@ void update_monthly(Cell *cell,  /**< Pointer to cell */
   cell->hydrotopes.wtable_mean+=cell->hydrotopes.wtable_monthly;
   /* for water balance check */
   cell->balance.awater_flux+=((cell->discharge.mfout-cell->discharge.mfin)/cell->coord.area);
+#ifdef CHECK_BALANCE
+  foreachstand(stand, s, cell->standlist)
+  {
+    st= standstocks(stand);
+    end.carbon+=(st.carbon+soilmethane(&stand->soil)*WC/WCH4)*stand->frac;
+    end.nitrogen+=st.nitrogen*stand->frac;
+  }
+  if(fabs(start.carbon-end.carbon)>0.001)
+      fail(INVALID_CARBON_BALANCE_ERR,FAIL_ON_BALANCE,FALSE,"Invalid carbon balance in %s at the end: month=%d: C_ERROR=%g start : %g end : %g ",
+           __FUNCTION__,month,start.carbon-end.carbon,start.carbon,end.carbon);
+  if(fabs(start.nitrogen-end.nitrogen)>0.001)
+      fail(INVALID_NITROGEN_BALANCE_ERR,FAIL_ON_BALANCE,FALSE,"Invalid nitrogen balance in %s at the end: month=%d: N_ERROR=%g start : %g end : %g ",
+           __FUNCTION__,month,start.nitrogen-end.nitrogen,start.nitrogen,end.nitrogen);
+#endif
+
 
 } /* of 'monthly_update' */

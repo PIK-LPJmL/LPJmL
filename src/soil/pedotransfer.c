@@ -13,6 +13,9 @@
 /**************************************************************************************/
 
 #include "lpj.h"
+#define maxSOM_dens 130000 //g*m-3
+#define psi_som 10.3 /**> saturated suction (mm) for organic matter (Letts, 2000)*/
+#define b_som   2.7   /**> ! Clapp Hornberger paramater for oragnic soil (Letts, 2000)*/
 
 void pedotransfer(Stand *stand,  /**< pointer to stand */
                   Real *abswmm,
@@ -34,6 +37,7 @@ void pedotransfer(Stand *stand,  /**< pointer to stand */
   Real lambda;
   Real excess = 0;
   Real dispose=0,dispose2=0;
+  Real f_sc=0.0;
 #ifdef CHECK_BALANCE
   Real w_before,w_after;
 #endif
@@ -82,6 +86,10 @@ void pedotransfer(Stand *stand,  /**< pointer to stand */
       w_fc = (wfct + (((1.283*wfct)*(1.283*wfct)) - 0.374*wfct - 0.015));
 
       w_sat = w_fc + ws33 - 0.097*soilpar->sand + 0.043;
+      f_sc=((soil->pool[l].fast.carbon + soil->pool[l].slow.carbon)*soildepth[l]/1000)/maxSOM_dens;
+      //psi_sat_min=10*pow(1,1.88-0.0131*soilpar->sand*100);  // lawrence and slater caluclate it this way, I take precsribed parameter for the moment
+      soil->psi_sat[l]=(1-f_sc)*soil->par->psi_sat + psi_som*f_sc;
+      soil->b[l]=(1-f_sc)*soil->par->b + b_som*f_sc;
 
       if(l<NTILLLAYER)
       {
