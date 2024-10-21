@@ -252,11 +252,11 @@ Real daily_grassland(Stand *stand,                /**< stand pointer */
     else
       lateral_in=stand->cell->lateral_water/stand->frac;
 
-    runoff+=infil_perc(stand,rainmelt+rw_apply+irrig_apply+lateral_in, vol_water_enth,climate->prec,&return_flow_b,npft,ncft,config);     //enthalpy of lateral influx?? should be the same T as in the local stand
+    runoff+=infil_perc(stand,rainmelt+rw_apply+irrig_apply+lateral_in, vol_water_enth,climate->prec+rw_apply+irrig_apply,&return_flow_b,npft,ncft,config);     //enthalpy of lateral influx?? should be the same T as in the local stand
     stand->cell->lateral_water-=lateral_in*stand->frac;
   }
   else
-    runoff+=infil_perc(stand,rainmelt+rw_apply+irrig_apply, vol_water_enth,climate->prec,&return_flow_b,npft,ncft,config);
+    runoff+=infil_perc(stand,rainmelt+rw_apply+irrig_apply, vol_water_enth,climate->prec+rw_apply+irrig_apply,&return_flow_b,npft,ncft,config);
 
   isphen = FALSE;
 #ifdef PERMUTE
