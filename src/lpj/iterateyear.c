@@ -210,8 +210,11 @@ void iterateyear(Outputfile *output,  /**< Output file data */
       }
 
       if(config->withdailyoutput && day<NDAYYEAR && year>=config->outputyear)
+      {
         /* postpone last timestep until after annual processes */
-        fwriteoutput(output,grid,year,day-1,DAILY,npft,ncft,config);
+        if(fwriteoutput(output,grid,year,day-1,DAILY,npft,ncft,config))
+          fail(WRITE_OUTPUT_ERR,TRUE,FALSE,"Cannot write output");
+      }
 
       day++;
     } /* of 'foreachdayofmonth */
@@ -225,8 +228,11 @@ void iterateyear(Outputfile *output,  /**< Output file data */
     } /* of 'for(cell=0;...)' */
 
     if(year>=config->outputyear && month<NMONTH-1)
+    {
       /* write out monthly output, postpone last timestep until after annual processes */
-      fwriteoutput(output,grid,year,month,MONTHLY,npft,ncft,config);
+      if(fwriteoutput(output,grid,year,month,MONTHLY,npft,ncft,config))
+        fail(WRITE_OUTPUT_ERR,TRUE,FALSE,"Cannot write output");
+    }
 
   } /* of 'foreachmonth */
 
@@ -315,10 +321,15 @@ void iterateyear(Outputfile *output,  /**< Output file data */
   if(year>=config->outputyear)
   {
     /* write last monthly/daily output timestep after annual processes */
-    fwriteoutput(output,grid,year,NMONTH-1,MONTHLY,npft,ncft,config);
+    if(fwriteoutput(output,grid,year,NMONTH-1,MONTHLY,npft,ncft,config))
+      fail(WRITE_OUTPUT_ERR,TRUE,FALSE,"Cannot write output");
     if(config->withdailyoutput)
-      fwriteoutput(output,grid,year,NDAYYEAR-1,DAILY,npft,ncft,config);
+    {
+      if(fwriteoutput(output,grid,year,NDAYYEAR-1,DAILY,npft,ncft,config))
+        fail(WRITE_OUTPUT_ERR,TRUE,FALSE,"Cannot write output");
+    }
     /* write out annual output */
-    fwriteoutput(output,grid,year,0,ANNUAL,npft,ncft,config);
+    if(fwriteoutput(output,grid,year,0,ANNUAL,npft,ncft,config))
+      fail(WRITE_OUTPUT_ERR,TRUE,FALSE,"Cannot write output");
   }
 } /* of 'iterateyear' */

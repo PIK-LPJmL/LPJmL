@@ -77,6 +77,7 @@ int mpi_write_txt(FILE *file,        /**< File pointer to text file */
       rc=write_short(file,vec,size,d); /* write short data to file */
     free(vec);
   }
+  MPI_Bcast(&rc,1,MPI_INT,0,comm);
   MPI_Barrier(comm);
   return rc;
 } /* of 'mpi_write_txt' */

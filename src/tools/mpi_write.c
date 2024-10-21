@@ -18,7 +18,7 @@
 
 #ifdef USE_MPI
 
-int mpi_write(FILE *file,        /**< File pointer to binary file */
+Bool mpi_write(FILE *file,        /**< File pointer to binary file */
               void *data,        /**< data to be written to disk */
               MPI_Datatype type, /**< MPI datatype of data */
               int size,
@@ -26,9 +26,10 @@ int mpi_write(FILE *file,        /**< File pointer to binary file */
               int offsets[],
               int rank,          /**< MPI rank */
               MPI_Comm comm      /**< MPI communicator */
-             )                   /** \return number of items written to disk */
+             )                   /** \return TRUE on error */
 {
-  int rc=0;
+  Bool rc=FALSE;
+  int n;
   MPI_Aint lb;
   MPI_Aint extent;
   MPI_Type_get_extent(type,&lb,&extent);
@@ -41,11 +42,15 @@ int mpi_write(FILE *file,        /**< File pointer to binary file */
   MPI_Gatherv(data,counts[rank],type,vec,counts,offsets,type,0,comm);
   if(rank==0)
   {
-    rc=fwrite(vec,extent,size,file); /* write data to file */
-    if(rc!=size)
+    n=fwrite(vec,extent,size,file); /* write data to file */
+    if(n!=size)
+    {
       fprintf(stderr,"ERROR204: Cannot write output: %s.\n",strerror(errno));
+      rc=TRUE;
+    }
     free(vec);
   }
+  MPI_Bcast(&rc,1,MPI_INT,0,comm);
   MPI_Barrier(comm);
   return rc;
 } /* of 'mpi_write' */

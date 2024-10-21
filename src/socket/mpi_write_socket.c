@@ -51,6 +51,7 @@ Bool mpi_write_socket(Socket *socket,    /* socket */
   }
   else
     rc=FALSE;
+  MPI_Bcast(&rc,1,MPI_INT,0,comm);
   MPI_Barrier(comm);
   return rc;
 } /* of 'mpi_write_socket' */

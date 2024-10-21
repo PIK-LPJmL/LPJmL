@@ -40,7 +40,8 @@ static void flush_output(Outputfile *output,int index)
     for(cell=0;cell<config->ngridcell;cell++)\
       if(!grid[cell].skip)\
         vec[count++]=(float)(grid[cell].output.data[config->outputmap[index]]*scale);\
-    writedata(output,index,vec,year,date,ndata,config);\
+    if(writedata(output,index,vec,year,date,ndata,config))\
+      return TRUE;\
     if(isroot(*config) && config->flush_output)\
       flush_output(output,index);\
   }
@@ -54,7 +55,8 @@ static void flush_output(Outputfile *output,int index)
       for(cell=0;cell<config->ngridcell;cell++)\
         if(!grid[cell].skip)\
           vec[count++]=(float)(grid[cell].output.data[config->outputmap[index]+i]*scale);\
-      writepft(output,index,vec,year,date,ndata,i,config);\
+      if(writepft(output,index,vec,year,date,ndata,i,config))\
+        return TRUE;\
     }\
     if(isroot(*config) && config->flush_output)\
       flush_output(output,index);\
@@ -71,7 +73,8 @@ static void flush_output(Outputfile *output,int index)
       for(cell=0;cell<config->ngridcell;cell++)\
         if(!grid[cell].skip)\
           svec[count++]=(short)(grid[cell].output.data[config->outputmap[index]+i]);\
-      writeshortpft(output,index,svec,year,date,ndata,i,config);\
+      if(writeshortpft(output,index,svec,year,date,ndata,i,config))\
+        return TRUE;\
     }\
     if(isroot(*config) && config->flush_output)\
       flush_output(output,index);\
@@ -135,11 +138,11 @@ static Real getscale(int date,int ndata,int timestep,Time time)
   return scale;
 } /* of 'getscale' */
 
-static void writedata(Outputfile *output,int index,float data[],int year,int date,int ndata,
+static Bool writedata(Outputfile *output,int index,float data[],int year,int date,int ndata,
                       const Config *config)
 {
   Real scale;
-  int i,offset;
+  int i,offset,rc=FALSE;
   scale=getscale(date,ndata,(config->outnames[index].timestep==ANNUAL) ? 1 : config->outnames[index].timestep,config->outnames[index].time);
   for(i=0;i<config->count;i++)
     data[i]=(float)(config->outnames[index].scale*scale*data[i]+config->outnames[index].offset);
@@ -148,11 +151,11 @@ static void writedata(Outputfile *output,int index,float data[],int year,int dat
     switch(output->files[index].fmt)
     {
       case RAW: case CLM:
-        mpi_write(output->files[index].fp.file,data,MPI_FLOAT,config->total,
+        rc=mpi_write(output->files[index].fp.file,data,MPI_FLOAT,config->total,
                   output->counts,output->offsets,config->rank,config->comm);
         break;
       case TXT:
-        mpi_write_txt(output->files[index].fp.file,data,MPI_FLOAT,config->total,
+        rc=mpi_write_txt(output->files[index].fp.file,data,MPI_FLOAT,config->total,
                   output->counts,output->offsets,config->rank,config->csv_delimit,config->comm);
         break;
       case CDF:
@@ -165,11 +168,13 @@ static void writedata(Outputfile *output,int index,float data[],int year,int dat
         }
         else
           offset=(config->outnames[index].timestep>0) ? (year-config->outputyear)/config->outnames[index].timestep : (year-config->outputyear)*ndata+date;
-        mpi_write_netcdf(&output->files[index].fp.cdf,data,MPI_FLOAT,config->total,
+        rc=mpi_write_netcdf(&output->files[index].fp.cdf,data,MPI_FLOAT,config->total,
                          offset,
                          output->counts,output->offsets,config->rank,config->comm);
         break;
     }
+  if(rc)
+    return TRUE;
   if(output->files[index].issocket)
   {
     send_output_coupler(index,year,date,config);
@@ -182,7 +187,10 @@ static void writedata(Outputfile *output,int index,float data[],int year,int dat
     {
       case RAW: case CLM:
         if(fwrite(data,sizeof(float),config->count,output->files[index].fp.file)!=config->count)
+        {
           fprintf(stderr,"ERROR204: Cannot write output: %s.\n",strerror(errno));
+          rc=TRUE;
+        }
         break;
       case TXT:
         for(i=0;i<config->count-1;i++)
@@ -199,33 +207,36 @@ static void writedata(Outputfile *output,int index,float data[],int year,int dat
         }
         else
           offset=(config->outnames[index].timestep>0) ? (year-config->outputyear)/config->outnames[index].timestep : (year-config->outputyear)*ndata+date;
-        write_float_netcdf(&output->files[index].fp.cdf,data,
+        rc=write_float_netcdf(&output->files[index].fp.cdf,data,
                            offset,
                            config->count);
         break;
     }
+  if(rc)
+    return TRUE;
   if(output->files[index].issocket)
   {
     send_output_coupler(index,year,date,config);
-    writefloat_socket(config->socket,data,config->count);
+    rc=writefloat_socket(config->socket,data,config->count);
   }
 #endif
+  return rc;
 } /* of 'writedata' */
 
-static void writeshortdata(Outputfile *output,int index,short data[],int year,int date,int ndata,
+static Bool writeshortdata(Outputfile *output,int index,short data[],int year,int date,int ndata,
                            const Config *config)
 {
-  int offset;
+  int rc=FALSE,offset;
 #ifdef USE_MPI
   if(output->files[index].isopen)
     switch(output->files[index].fmt)
     {
       case RAW: case CLM:
-        mpi_write(output->files[index].fp.file,data,MPI_SHORT,config->total,
+        rc=mpi_write(output->files[index].fp.file,data,MPI_SHORT,config->total,
                   output->counts,output->offsets,config->rank,config->comm);
         break;
       case TXT:
-        mpi_write_txt(output->files[index].fp.file,data,MPI_SHORT,config->total,
+        rc=mpi_write_txt(output->files[index].fp.file,data,MPI_SHORT,config->total,
                       output->counts,output->offsets,config->rank,config->csv_delimit,config->comm);
         break;
       case CDF:
@@ -238,15 +249,17 @@ static void writeshortdata(Outputfile *output,int index,short data[],int year,in
         }
         else
           offset=(config->outnames[index].timestep>0) ? (year-config->outputyear)/config->outnames[index].timestep : (year-config->outputyear)*ndata+date;
-        mpi_write_netcdf(&output->files[index].fp.cdf,data,MPI_SHORT,config->total,
+        rc=mpi_write_netcdf(&output->files[index].fp.cdf,data,MPI_SHORT,config->total,
                          offset,
                          output->counts,output->offsets,config->rank,config->comm);
         break;
     }
+  if(rc)
+    return TRUE;
   if(output->files[index].issocket)
   {
     send_output_coupler(index,year,date,config);
-    mpi_write_socket(config->socket,data,MPI_SHORT,config->total,
+    rc=mpi_write_socket(config->socket,data,MPI_SHORT,config->total,
                      output->counts,output->offsets,config->rank,config->comm);
   }
 #else
@@ -255,7 +268,11 @@ static void writeshortdata(Outputfile *output,int index,short data[],int year,in
     switch(output->files[index].fmt)
     {
       case RAW: case CLM:
-        fwrite(data,sizeof(short),config->count,output->files[index].fp.file);
+        if(fwrite(data,sizeof(short),config->count,output->files[index].fp.file)!=config->count)
+        {
+          fprintf(stderr,"ERROR204: Cannot write output: %s.\n",strerror(errno));
+          rc=TRUE;
+        }
         break;
       case TXT:
         for(i=0;i<config->count-1;i++)
@@ -272,24 +289,27 @@ static void writeshortdata(Outputfile *output,int index,short data[],int year,in
         }
         else
           offset=(config->outnames[index].timestep>0) ? (year-config->outputyear)/config->outnames[index].timestep : (year-config->outputyear)*ndata+date;
-        write_short_netcdf(&output->files[index].fp.cdf,data,
+        rc=write_short_netcdf(&output->files[index].fp.cdf,data,
                            offset,
                            config->count);
         break;
     }
+  if(rc)
+    return TRUE;
   if(output->files[index].issocket)
   {
     send_output_coupler(index,year,date,config);
-    writeshort_socket(config->socket,data,config->count);
+    rc=writeshort_socket(config->socket,data,config->count);
   }
 #endif
+  return rc;
 } /* of 'writeshortdata' */
 
-static void writealldata(Outputfile *output,int index,float data[],int year,int date,int ndata,
+static Bool writealldata(Outputfile *output,int index,float data[],int year,int date,int ndata,
                          const Config *config)
 {
   Real scale;
-  int i,offset;
+  int i,offset,rc=FALSE;
 #ifdef USE_MPI
   int *counts,*offsets;
 #endif
@@ -306,11 +326,11 @@ static void writealldata(Outputfile *output,int index,float data[],int year,int 
     switch(output->files[index].fmt)
     {
       case RAW: case CLM:
-        mpi_write(output->files[index].fp.file,data,MPI_FLOAT,config->nall,counts,
+        rc=mpi_write(output->files[index].fp.file,data,MPI_FLOAT,config->nall,counts,
                   offsets,config->rank,config->comm);
         break;
       case TXT:
-        mpi_write_txt(output->files[index].fp.file,data,MPI_FLOAT,config->nall,counts,
+        rc=mpi_write_txt(output->files[index].fp.file,data,MPI_FLOAT,config->nall,counts,
                       offsets,config->rank,config->csv_delimit,config->comm);
         break;
       case CDF:
@@ -323,15 +343,17 @@ static void writealldata(Outputfile *output,int index,float data[],int year,int 
         }
         else
           offset=(year-config->outputyear)*ndata+date;
-        mpi_write_netcdf(&output->files[index].fp.cdf,data,MPI_FLOAT,config->nall,
+        rc=mpi_write_netcdf(&output->files[index].fp.cdf,data,MPI_FLOAT,config->nall,
                          offset,
                          counts,offsets,config->rank,config->comm);
         break;
     }
+  if(rc)
+    return TRUE;
   if(output->files[index].issocket)
   {
     send_output_coupler(index,year,date,config);
-    mpi_write_socket(config->socket,data,MPI_FLOAT,config->nall,counts,
+    rc=mpi_write_socket(config->socket,data,MPI_FLOAT,config->nall,counts,
                      offsets,config->rank,config->comm);
   }
   free(counts);
@@ -341,7 +363,11 @@ static void writealldata(Outputfile *output,int index,float data[],int year,int 
     switch(output->files[index].fmt)
     {
       case RAW: case CLM:
-        fwrite(data,sizeof(float),config->ngridcell,output->files[index].fp.file);
+        if(fwrite(data,sizeof(float),config->ngridcell,output->files[index].fp.file)!=config->ngridcell)
+        {
+          fprintf(stderr,"ERROR204: Cannot write output: %s.\n",strerror(errno));
+          rc=TRUE;
+        }
         break;
       case TXT:
         for(i=0;i<config->ngridcell-1;i++)
@@ -358,24 +384,27 @@ static void writealldata(Outputfile *output,int index,float data[],int year,int 
         }
         else
           offset=(year-config->outputyear)*ndata+date;
-        write_float_netcdf(&output->files[index].fp.cdf,data,
+        rc=write_float_netcdf(&output->files[index].fp.cdf,data,
                            offset,
                            config->ngridcell);
         break;
     }
+  if(rc)
+    return TRUE;
   if(output->files[index].issocket)
   {
     send_output_coupler(index,year,date,config);
-    writefloat_socket(config->socket,data,config->ngridcell);
+    rc=writefloat_socket(config->socket,data,config->ngridcell);
   }
 #endif
+  return rc;
 } /* of 'writealldata' */
 
-static void writepft(Outputfile *output,int index,float *data,int year,
+static Bool writepft(Outputfile *output,int index,float *data,int year,
                      int date,int ndata,int layer,const Config *config)
 {
   Real scale;
-  int i,offset;
+  int i,offset,rc=FALSE;
   scale=getscale(date,ndata,(config->outnames[index].timestep==ANNUAL) ? 1 : config->outnames[index].timestep,config->outnames[index].time);
   for(i=0;i<config->count;i++)
     data[i]=(float)(config->outnames[index].scale*scale*data[i]+config->outnames[index].offset);
@@ -384,11 +413,11 @@ static void writepft(Outputfile *output,int index,float *data,int year,
     switch(output->files[index].fmt)
     {
       case RAW: case CLM:
-        mpi_write(output->files[index].fp.file,data,MPI_FLOAT,config->total,
+        rc=mpi_write(output->files[index].fp.file,data,MPI_FLOAT,config->total,
                   output->counts,output->offsets,config->rank,config->comm);
         break;
       case TXT:
-        mpi_write_txt(output->files[index].fp.file,data,MPI_FLOAT,config->total,
+        rc=mpi_write_txt(output->files[index].fp.file,data,MPI_FLOAT,config->total,
                       output->counts,output->offsets,config->rank,config->csv_delimit,config->comm);
         break;
       case CDF:
@@ -401,15 +430,17 @@ static void writepft(Outputfile *output,int index,float *data,int year,
         }
         else
           offset=(config->outnames[index].timestep>0) ? (year-config->outputyear)/config->outnames[index].timestep : (year-config->outputyear)*ndata+date;
-        mpi_write_pft_netcdf(&output->files[index].fp.cdf,data,MPI_FLOAT,
+        rc=mpi_write_pft_netcdf(&output->files[index].fp.cdf,data,MPI_FLOAT,
                              config->total,offset,layer,
                              output->counts,output->offsets,config->rank,
                              config->comm);
         break;
     }
+  if(rc)
+    return TRUE;
   if(output->files[index].issocket)
   {
-    mpi_write_socket(config->socket,data,MPI_FLOAT,config->total,
+    rc=mpi_write_socket(config->socket,data,MPI_FLOAT,config->total,
                      output->counts,output->offsets,config->rank,config->comm);
   }
 #else
@@ -418,7 +449,10 @@ static void writepft(Outputfile *output,int index,float *data,int year,
     {
       case RAW: case CLM:
         if(fwrite(data,sizeof(float),config->count,output->files[index].fp.file)!=config->count)
+        {
           fprintf(stderr,"ERROR204: Cannot write output: %s.\n",strerror(errno));
+          rc=TRUE;
+        }
         break;
       case TXT:
         for(i=0;i<config->count-1;i++)
@@ -435,19 +469,22 @@ static void writepft(Outputfile *output,int index,float *data,int year,
         }
         else
           offset=(config->outnames[index].timestep>0) ? (year-config->outputyear)/config->outnames[index].timestep : (year-config->outputyear)*ndata+date;
-        write_pft_float_netcdf(&output->files[index].fp.cdf,data,
+        rc=write_pft_float_netcdf(&output->files[index].fp.cdf,data,
                                offset,layer,config->count);
         break;
     }
+  if(rc)
+    return TRUE;
   if(output->files[index].issocket)
-    writefloat_socket(config->socket,data,config->count);
+    rc=writefloat_socket(config->socket,data,config->count);
 #endif
+  return rc;
 } /* of 'writepft' */
 
-static void writeshortpft(Outputfile *output,int index,short *data,int year,
+static Bool writeshortpft(Outputfile *output,int index,short *data,int year,
                           int date,int ndata,int layer,const Config *config)
 {
-  int i,offset;
+  int i,offset,rc=FALSE;
   for(i=0;i<config->count;i++)
     data[i]=(short)(config->outnames[index].scale*data[i]+config->outnames[index].offset);
 #ifdef USE_MPI
@@ -455,11 +492,11 @@ static void writeshortpft(Outputfile *output,int index,short *data,int year,
     switch(output->files[index].fmt)
     {
       case RAW: case CLM:
-        mpi_write(output->files[index].fp.file,data,MPI_SHORT,config->total,
+        rc=mpi_write(output->files[index].fp.file,data,MPI_SHORT,config->total,
                   output->counts,output->offsets,config->rank,config->comm);
         break;
       case TXT:
-        mpi_write_txt(output->files[index].fp.file,data,MPI_SHORT,config->total,
+        rc=mpi_write_txt(output->files[index].fp.file,data,MPI_SHORT,config->total,
                       output->counts,output->offsets,config->rank,config->csv_delimit,config->comm);
         break;
       case CDF:
@@ -472,14 +509,16 @@ static void writeshortpft(Outputfile *output,int index,short *data,int year,
         }
         else
           offset=(year-config->outputyear)*ndata+date;
-        mpi_write_pft_netcdf(&output->files[index].fp.cdf,data,MPI_SHORT,
+        rc=mpi_write_pft_netcdf(&output->files[index].fp.cdf,data,MPI_SHORT,
                              config->total,offset,layer,
                              output->counts,output->offsets,config->rank,
                              config->comm);
         break;
     }
+  if(rc)
+    return TRUE;
   if(output->files[index].issocket)
-    mpi_write_socket(config->socket,data,MPI_SHORT,config->total,
+    rc=mpi_write_socket(config->socket,data,MPI_SHORT,config->total,
                      output->counts,output->offsets,config->rank,config->comm);
 #else
   if(output->files[index].isopen)
@@ -487,7 +526,10 @@ static void writeshortpft(Outputfile *output,int index,short *data,int year,
     {
       case RAW: case CLM:
         if(fwrite(data,sizeof(short),config->count,output->files[index].fp.file)!=config->count)
+        {
           fprintf(stderr,"ERROR204: Cannot write output: %s.\n",strerror(errno));
+          rc=TRUE;
+        }
         break;
       case TXT:
         for(i=0;i<config->count-1;i++)
@@ -504,16 +546,19 @@ static void writeshortpft(Outputfile *output,int index,short *data,int year,
         }
         else
           offset=(year-config->outputyear)*ndata+date;
-        write_pft_short_netcdf(&output->files[index].fp.cdf,data,
+        rc=write_pft_short_netcdf(&output->files[index].fp.cdf,data,
                                offset,layer,config->count);
         break;
     }
+  if(rc)
+    return TRUE;
   if(output->files[index].issocket)
-    writeshort_socket(config->socket,data,config->count);
+    rc=writeshort_socket(config->socket,data,config->count);
 #endif
+  return rc;
 } /* of 'writeshortpft' */
 
-void fwriteoutput(Outputfile *output,  /**< output file array */
+Bool fwriteoutput(Outputfile *output,  /**< output file array */
                   Cell grid[],         /**< grid cell array */
                   int year,            /**< simulation year (AD) */
                   int date,            /**< day or month */
@@ -521,7 +566,7 @@ void fwriteoutput(Outputfile *output,  /**< output file array */
                   int npft,            /**< number of natural PFTs */
                   int ncft,            /**< number of crop PFTs */
                   const Config *config /**< LPJ configuration */
-                 )
+                 )                     /** \return TRUE on error */
 {
   int i,count,s,p,cell,l,ndata,nirrig,nnat;
   Real ndate1,sumfrac;
@@ -2047,4 +2092,5 @@ void fwriteoutput(Outputfile *output,  /**< output file array */
     writeoutputarray(PFT_NUPTAKE2,1);
   }
   free(vec);
+  return FALSE;
 } /* of 'fwriteoutput' */
