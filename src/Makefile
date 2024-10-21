@@ -15,7 +15,6 @@
 include ../Makefile.inc
 
 GIT_HASH= $(shell git rev-parse HEAD)
-GIT_REPO= $(shell git remote -v|head -1|cut  -f2|cut -d' ' -f1)
 
 OBJ    = lpjml.$O  
 
