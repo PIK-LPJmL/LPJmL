@@ -1,15 +1,16 @@
-/*----------------------------------------------------------*/
-/*                                                          */
-/*                  update_wetland.c                        */
-/*  check for and create wetland in climLPJ                 */
-/*                                                          */
-/*  Thomas Kleinen (thomas.kleinen@zmaw.de)                 */
-/*  28/04/2009                                              */
-/*                                                          */
-/*  Last change: $Date:: 2019-06-24 16:13:15 +0200 (Mo, 2#$ */
-/*  By         : $Author:: sibylls                        $ */
-/*                                                          */
-/*----------------------------------------------------------*/
+/**************************************************************************************/
+/**                                                                                \n**/
+/**             u p d a t e _ w e t l a n d .  c                                   \n**/
+/**                                                                                \n**/
+/**        Scheme to update wetland area using a gamma distribution                \n**/
+/**                                                                                \n**/
+/** (C) Potsdam Institute for Climate Impact Research (PIK), see COPYRIGHT file    \n**/
+/** authors, and contributors see AUTHORS file                                     \n**/
+/** This file is part of LPJmL and licensed under GNU AGPL Version 3               \n**/
+/** or later. See LICENSE file or go to http://www.gnu.org/licenses/               \n**/
+/** Contact: https://github.com/PIK-LPJmL/LPJmL                                    \n**/
+/**                                                                                \n**/
+/**************************************************************************************/
 
 #include "lpj.h"
 #include "natural.h"
@@ -28,12 +29,12 @@ void update_wetland(Cell *cell,          /**< pointer to cell */
   Stand *stand;
   Pft *pft, *wetpft, *pft_save;
   int p,pn, l;
-  int s, pos;
+  int s,s2, pos;
   int wetlandstandnum,natstandnum;
   int *position;
   Bool *present;
-  Real wetlandarea_old, wetlandarea_new, delta_wetland;
-  Stand *natstand, *wetstand;
+  Real wetlandarea_old, wetlandarea_new, delta_wetland,frac;
+  Stand *natstand, *wetstand, *wetstand2;
   Real tmp, slope, slope_max;
   Real wtable_use, lambda;
   Real cti_min, cti_max, p_min, p_max;
@@ -59,6 +60,7 @@ void update_wetland(Cell *cell,          /**< pointer to cell */
   check(present);
   for (p = 0; p<ntotpft; p++)
     present[p] = FALSE;
+  s2=NOT_FOUND;
 #ifdef CHECK_BALANCE
   water_before=cell->balance.excess_water;
   foreachstand(stand, s, cell->standlist)
@@ -499,12 +501,20 @@ void update_wetland(Cell *cell,          /**< pointer to cell */
           }
         }
       }  // shrink wetland end
-      s = findlandusetype(cell->standlist, NATURAL);            /*COULD BE AGRICULTURE AS WELL BUT NOT YET*/
-      natstand = getstand(cell->standlist, s);
       s = findlandusetype(cell->standlist, WETLAND);            /*COULD BE AGRICULTURE AS WELL BUT NOT YET*/
+      if(s == NOT_FOUND)
+        s = findlandusetype(cell->standlist, SETASIDE_WETLAND);
+      else
+        s2 = findlandusetype(cell->standlist, SETASIDE_WETLAND);
       if (s != NOT_FOUND)
       {
         wetstand = getstand(cell->standlist, s);
+        frac=wetstand->frac;
+        if(s2 != NOT_FOUND)
+        {
+          wetstand2 = getstand(cell->standlist, s);
+          frac=wetstand2->frac;
+        }
         iswetland = TRUE;
 
         if(cell->slope>0)
@@ -515,7 +525,7 @@ void update_wetland(Cell *cell,          /**< pointer to cell */
 
         if (iswetland && (fabs(cell->slope_min - cell->slope_max)>epsilon))
         {
-          slope_max=log(1 - wetstand->frac - epsilon)/(-lambda);
+          slope_max=log(1 - frac - epsilon)/(-lambda);
           if(slope_max>cell->slope_max) slope_max=cell->slope_max;
           if (slope_max<cell->slope_min)
           {
@@ -533,6 +543,10 @@ void update_wetland(Cell *cell,          /**< pointer to cell */
           wetstand->Hag_Beta = min(1, (0.09*log(slope + 0.1) + 0.22) / 0.43);
 
           s=findlandusetype(cell->standlist,NATURAL);            /*COULD BE AGRICULTURE AS WELL BUT NOT YET*/
+          if(s == NOT_FOUND)
+            s = findlandusetype(cell->standlist, AGRICULTURE);
+          if(s == NOT_FOUND)
+            s = findlandusetype(cell->standlist, GRASSLAND);
           if(s!=NOT_FOUND)
           {
             natstand = getstand(cell->standlist,s);
@@ -545,12 +559,37 @@ void update_wetland(Cell *cell,          /**< pointer to cell */
         else
         {
           s=findlandusetype(cell->standlist,NATURAL);            /*COULD BE AGRICULTURE AS WELL BUT NOT YET*/
+          if(s == NOT_FOUND)
+            s = findlandusetype(cell->standlist, AGRICULTURE);
+          if(s == NOT_FOUND)
+            s = findlandusetype(cell->standlist, GRASSLAND);
           if(s!=NOT_FOUND)
           {
             natstand = getstand(cell->standlist,s);
+            natstand->slope_mean=cell->slope;
             natstand->Hag_Beta=min(1,(0.06*log(cell->slope+0.1)+0.22)/0.43);
           }
         }
+        foreachstand(stand, s, cell->standlist)
+        {
+          if(stand->type->landusetype!=WETLAND ||stand->type->landusetype!=SETASIDE_WETLAND)
+          {
+            if(natstand!=NULL)
+            {
+              stand->slope_mean=natstand->slope_mean;
+              stand->Hag_Beta=natstand->Hag_Beta;
+            }
+          }
+          else
+          {
+            if(wetstand!=NULL)
+            {
+              stand->slope_mean=wetstand->slope_mean;
+              stand->Hag_Beta=wetstand->Hag_Beta;
+            }
+          }
+        }
+
       }
     }
   } /* of' if cell->hydrotopes.skip_cell*/

@@ -16,7 +16,7 @@
 #include "lpj.h"
 #include "crop.h"
 #include "agriculture.h"
-#define min_denit 0.0426    //original 0.0326 not at very high T
+#define min_denit 0.0326    //original 0.0326 not at very high T
 
 void denitrification(Stand *stand,        /**< pointer to stand */
                      int npft,            /**< number of natural PFTs */
