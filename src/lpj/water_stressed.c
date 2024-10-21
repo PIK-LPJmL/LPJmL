@@ -87,7 +87,7 @@ Real water_stressed(Pft *pft,                  /**< [inout] pointer to PFT varia
   if (-pft->stand->soil.wtable >= pft->par->inun_thres)
     pft->inun_count++;
   else
-    pft->inun_count-=2;
+    pft->inun_count-=5;
   if (pft->inun_count<0)
     pft->inun_count = 0;
 
