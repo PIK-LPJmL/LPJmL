@@ -572,7 +572,7 @@ void update_wetland(Cell *cell,          /**< pointer to cell */
         }
         foreachstand(stand, s, cell->standlist)
         {
-          if(stand->type->landusetype!=WETLAND ||stand->type->landusetype!=SETASIDE_WETLAND)
+          if(stand->type->landusetype!=WETLAND && stand->type->landusetype!=SETASIDE_WETLAND)
           {
             if(natstand!=NULL)
             {
