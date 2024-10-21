@@ -33,7 +33,7 @@ void update_wetland(Cell *cell,          /**< pointer to cell */
   int wetlandstandnum,natstandnum;
   int *position;
   Bool *present;
-  Real wetlandarea_old, wetlandarea_new, delta_wetland,frac;
+  Real wetlandarea_old, wetlandarea_new, delta_wetland;
   Stand *natstand, *wetstand, *wetstand2;
   Real tmp, slope, slope_max;
   Real wtable_use, lambda;
@@ -513,7 +513,7 @@ void update_wetland(Cell *cell,          /**< pointer to cell */
         if(s2 != NOT_FOUND)
         {
           wetstand2 = getstand(cell->standlist, s);
-          frac=wetstand2->frac;
+          frac+=wetstand2->frac;
         }
         iswetland = TRUE;
 
