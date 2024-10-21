@@ -69,6 +69,7 @@
 #define INVALID_TEMP_SIGN_ERR 49
 #define INVALID_CROP_PHU_OPTION_ERR 50
 #define INVALID_FIRE_INDEX_ERR 51
+#define WRITE_OUTPUT_ERR 52
 
 /* Definition of macros */
 

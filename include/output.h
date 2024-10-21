@@ -142,7 +142,7 @@ extern int outputindex(int,int,const Config *);
 extern int getmintimestep(int);
 extern Bool fprintoutputjson(int,int,const Config *);
 #ifdef USE_MPI
-extern int mpi_write(FILE *,void *,MPI_Datatype,int,int *,
+extern Bool mpi_write(FILE *,void *,MPI_Datatype,int,int *,
                      int *,int,MPI_Comm);
 extern int mpi_write_txt(FILE *,void *,MPI_Datatype,int,int *,
                          int *,int,char,MPI_Comm);
