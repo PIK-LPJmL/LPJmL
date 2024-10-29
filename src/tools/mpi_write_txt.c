@@ -67,7 +67,7 @@ int mpi_write_txt(FILE *file,        /**< File pointer to text file */
   }
   MPI_Bcast(&rc,1,MPI_INT,0,comm);
   if(rc)
-    return 0;
+    return TRUE;
   MPI_Gatherv(data,counts[rank],type,vec,counts,offsets,type,0,comm);
   if(rank==0)
   {
