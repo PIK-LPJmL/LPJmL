@@ -290,6 +290,8 @@ then
   echo $cmd >>slurm.jcf
   echo >>slurm.jcf
 fi
+echo "module list 2>&1 # show all loaded modules" >>slurm.jcf
+echo >>slurm.jcf
 if [ "$couple" != "" ]
 then
   echo $couple " &" >>slurm.jcf

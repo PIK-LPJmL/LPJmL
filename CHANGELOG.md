@@ -26,6 +26,7 @@ of `major.minor.patch` with
 ### Added
 
 - Option `-cmd` added to `lpjsubmit` in order to execute a command before lpjml is called.
+- Command `module list` added to slurm script to show all loaded modules.
 
 
 ## [5.9.14] - 2024-09-30
