@@ -19,6 +19,15 @@ of `major.minor.patch` with
 
 ## [Unreleased]
 
+### Contributors
+
+- author: Werner von Bloh (bloh@pik-potsdam.de)
+
+### Added
+
+- Option `-cmd` added to `lpjsubmit` in order to execute a command before lpjml is called.
+
+
 ## [5.9.14] - 2024-09-30
 
 - author: Werner von Bloh (bloh@pik-potsdam.de), Stephen Wirth (wirth@pik-potsdam.de)
