@@ -213,7 +213,11 @@ void iterateyear(Outputfile *output,  /**< Output file data */
       {
         /* postpone last timestep until after annual processes */
         if(fwriteoutput(output,grid,year,day-1,DAILY,npft,ncft,config))
-          fail(WRITE_OUTPUT_ERR,TRUE,FALSE,"Cannot write output");
+        {
+          if(isroot(*config))
+            printfailerr(WRITE_OUTPUT_ERR,TRUE,"Cannot write output");
+          exit(WRITE_OUTPUT_ERR);
+        }
       }
 
       day++;
@@ -231,7 +235,11 @@ void iterateyear(Outputfile *output,  /**< Output file data */
     {
       /* write out monthly output, postpone last timestep until after annual processes */
       if(fwriteoutput(output,grid,year,month,MONTHLY,npft,ncft,config))
-        fail(WRITE_OUTPUT_ERR,TRUE,FALSE,"Cannot write output");
+      {
+        if(isroot(*config))
+          printfailerr(WRITE_OUTPUT_ERR,TRUE,"Cannot write output");
+        exit(WRITE_OUTPUT_ERR);
+      }
     }
 
   } /* of 'foreachmonth */
@@ -322,14 +330,26 @@ void iterateyear(Outputfile *output,  /**< Output file data */
   {
     /* write last monthly/daily output timestep after annual processes */
     if(fwriteoutput(output,grid,year,NMONTH-1,MONTHLY,npft,ncft,config))
-      fail(WRITE_OUTPUT_ERR,TRUE,FALSE,"Cannot write output");
+    {
+      if(isroot(*config))
+        printfailerr(WRITE_OUTPUT_ERR,TRUE,"Cannot write output");
+      exit(WRITE_OUTPUT_ERR);
+    }
     if(config->withdailyoutput)
     {
       if(fwriteoutput(output,grid,year,NDAYYEAR-1,DAILY,npft,ncft,config))
-        fail(WRITE_OUTPUT_ERR,TRUE,FALSE,"Cannot write output");
+      {
+        if(isroot(*config))
+          printfailerr(WRITE_OUTPUT_ERR,TRUE,"Cannot write output");
+        exit(WRITE_OUTPUT_ERR);
+      }
     }
     /* write out annual output */
     if(fwriteoutput(output,grid,year,0,ANNUAL,npft,ncft,config))
-      fail(WRITE_OUTPUT_ERR,TRUE,FALSE,"Cannot write output");
+    {
+      if(isroot(*config))
+        printfailerr(WRITE_OUTPUT_ERR,TRUE,"Cannot write output");
+      exit(WRITE_OUTPUT_ERR);
+    }
   }
 } /* of 'iterateyear' */
