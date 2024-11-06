@@ -230,7 +230,7 @@ Bool openclimate_netcdf(Climatefile *file,    /**< climate data file */
             file->time_step=MONTH;
             file->delta_year=1;
           }
-          else  if((time[1]-time[0]) % NMONTH==0)
+          else if((time[1]-time[0]) % NMONTH==0)
           {
             file->time_step=YEAR;
             file->delta_year=(time[1]-time[0])/NMONTH;

@@ -1064,10 +1064,10 @@ int main(int argc,char **argv)
     }
     switch(gridtype)
     {
-case LPJ_SHORT:
-ngrid=getfilesizep(gridfile)/sizeof(short)/2;
-if(getfilesizep(gridfile) % (sizeof(short)/2))
-  fprintf(stderr,"Size of grid file '%s' is non multiple of coord size.\n",grid_filename);
+      case LPJ_SHORT:
+        ngrid=getfilesizep(gridfile)/sizeof(short)/2;
+        if(getfilesizep(gridfile) % (sizeof(short)/2))
+          fprintf(stderr,"Size of grid file '%s' is non multiple of coord size.\n",grid_filename);
         break;
       case LPJ_FLOAT:
         ngrid=getfilesizep(gridfile)/sizeof(float)/2;
