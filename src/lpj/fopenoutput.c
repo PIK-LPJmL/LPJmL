@@ -227,7 +227,7 @@ Outputfile *fopenoutput(const Cell grid[],   /**< LPJ grid */
   output->n=n;
   output->index=output->index_all=NULL; 
   for(i=0;i<n;i++)
-    output->files[i].isopen=output->files[i].issocket=FALSE;
+    output->files[i].isopen=output->files[i].issocket=output->files[i].oneyear=FALSE;
 #ifdef USE_MPI
   output->counts=newvec(int,config->ntask);
   check(output->counts);

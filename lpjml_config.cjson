@@ -2,7 +2,7 @@
 /**                                                                                \n**/
 /**           l  p  j  m  l  _  c  o  n  f  i  g  .  c  j  s  o  n                 \n**/
 /**                                                                                \n**/
-/** Default configuration file for LPJmL C Version 5.9.14                          \n**/
+/** Default configuration file for LPJmL C Version 5.9.15                          \n**/
 /**                                                                                \n**/
 /** Configuration file is divided into five sections:                              \n**/
 /**                                                                                \n**/
@@ -227,7 +227,7 @@
   "flush_output" : false,     /* flush output to file every time step */
   "absyear" : false,          /* absolute years instead of years relative to baseyear (true/false) */
   "rev_lat" : false,          /* reverse order of latitudes in NetCDF output (true/false) */
-  "with_days" : true,         /* use days as units for monthly output in NetCDF files */
+  "with_days" : true,         /* use days as units for output in NetCDF files */
   "nofill" : false,           /* do not fill NetCDF files at creation (true/false) */
   "global_netcdf" : false,    /* use global grid for NetCDF files (true/false) */
   "netcdf4" : false,          /* NetCDF files are in NetCDF4 format (true/false) */
