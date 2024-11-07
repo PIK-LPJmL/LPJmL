@@ -23,10 +23,14 @@
 #define MISSING_VALUE_BYTE 99
 #define NO_TIME -1
 #define LON_NAME "lon"
+#define LON_BNDS_NAME "lon_bnds"
 #define LON_STANDARD_NAME "longitude"
 #define LON_LONG_NAME "Longitude"
+#define LON_BNDS_LONG_NAME "Longitude bounds"
 #define LAT_NAME "lat"
+#define LAT_BNDS_NAME "lat_bnds"
 #define LAT_LONG_NAME "Latitude"
+#define LAT_BNDS_LONG_NAME "Latitude bounds"
 #define LAT_STANDARD_NAME "latitude"
 #define TIME_NAME "time"
 #define TIME_STANDARD_NAME "time"
@@ -38,9 +42,12 @@
 #define NULL_NAME "(null)"
 #define PFT_NAME "NamePFT"
 #define DEPTH_NAME "depth"
+#define DEPTH_BNDS_NAME "depth_bnds"
 #define DEPTH_STANDARD_NAME "depth_below_surface"
 #define DEPTH_LONG_NAME "Depth of Vertical Layer Center Below Surface"
-#define BNDS_NAME "depth_bnds"
+#define BNDS_NAME "bnds"
+#define TIME_BNDS_NAME "time_bnds"
+#define TIME_BNDS_LONG_NAME "start and end points of each time step"
 #define BNDS_LONG_NAME "bnds=0 for the top of the layer, and bnds=1 for the bottom of the layer"
 #define CALENDAR "noleap"
 
@@ -50,8 +57,11 @@ typedef struct
 {
   Real lon_min;
   Real lat_min;
+  Real lon_res;
+  Real lat_res;
   int nlon;
   int nlat;
+  Bool rev_lat;
   int *index;
 } Coord_array;
 
@@ -63,6 +73,7 @@ typedef struct cdf
   int varid;
   int time_dim_id,lon_dim_id,lat_dim_id;
   int time_var_id,lon_var_id,lat_var_id;
+  int time_bnds_var_id,lon_bnds_var_id,lat_bnds_var_id;
   int n;
   const Coord_array *index;
   float missing_value;
@@ -193,6 +204,8 @@ extern Bool checkcoord(const size_t *,int,const Coord *,const Climatefile *);
 extern Map *readmap_netcdf(int,const char *);
 extern char *getattr_netcdf(int,int,const char *);
 extern char *getvarname_netcdf(const Climatefile *);
+extern Bool setlatlon(double **,double **,double **,double **,const Coord_array *);
+extern Bool settimeaxis(double **,double **,int,int,int,int,int,Bool,Bool,Bool,const char *);
 
 #ifdef USE_MPI
 extern Bool mpi_write_netcdf(const Netcdf *,void *,MPI_Datatype,int,int,

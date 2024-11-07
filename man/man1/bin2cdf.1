@@ -3,7 +3,7 @@
 bin2cdf \- convert binary output files into NetCDF files
 .SH SYNOPSIS
 .B bin2cdf
-[\-h] [\-v] [\-clm] [\-floatgrid] [\-doublegrid] [\-revlat] [\-days] [\-absyear] [\-cellsize size] [\-compress level] [\-descr d] [\-missing_value val] [[\-attr name=value] ...] [\-units u] [-global] [-swap] [\-short] [\-nbands n] [\-nstep n] [\-ispft] [\-firstyear y] [\-baseyear y] [\-metafile] [\-map name] [\-netcdf4]
+[\-h] [\-v] [\-clm] [\-floatgrid] [\-doublegrid] [\-revlat] [\-days] [\-absyear] [\-cellsize size] [\-compress level] [\-descr d] [\-missing_value val] [[\-attr name=value] ...] [\-units u] [-global] [-swap] [\-short] [\-nbands n] [\-nstep n] [\-ispft] [\-firstyear y] [\-baseyear y] [\-scale s] [\-notime] [\-metafile] [\-map name] [\-netcdf4]
 .I [varname gridfile] binfile netcdffile
 .SH DESCRIPTION
 Program converts binary output files into NetCDF file.
@@ -28,7 +28,8 @@ Set datatype of grid file to double, default is short.
 Reverse latitudinal bands.
 .TP
 \-days
-Use days as units for monthly output.
+Use days as units for time axis in output.
+.TP
 \-absyear
 Use absolute years as units for annual time axis instead of relative years to base year.
 .TP
@@ -76,6 +77,12 @@ Set first year in NetCDF file. Default is 1901.
 .TP
 \-baseyear y
 Set base year of time axis in NetCDF file. Default is firstyear.
+.TP
+\-scale s
+Scale output with factor s, default is 1.
+.TP
+\-notime
+Omit time axis.
 .TP
 \-metafile
 Set the input format to JSON metafile instead of raw.

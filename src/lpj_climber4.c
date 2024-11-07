@@ -51,12 +51,12 @@
 
 #include "cpl.h"
 
-#ifndef DAILY_ESTABLISHMENT
-#error for coupling with FMS/MOM4/Climber-4 , DAILY_ESTABLISHMENT must be #defined
-#endif
+//#ifndef DAILY_ESTABLISHMENT
+//#error for coupling with FMS/MOM4/Climber-4 , DAILY_ESTABLISHMENT must be #defined
+//#endif
 
 #define NTYPES 3 /*< number of plant functional types: grass, tree, crop, bioenergy */
-#define NSTANDTYPES 12 /*< number of stand types / land use types as defined in landuse.h */
+#define NSTANDTYPES 13 /*< number of stand types / land use types as defined in landuse.h */
 
 static const char *progname;
 
@@ -73,9 +73,6 @@ static int ncft;           /*< Number of crop PFT's */
 static Real co2,cflux_total;
 static Flux flux;
 static int year, landuse_year, wateruse_year;
-#ifdef STORECLIMATE
-static Climatedata store,data_save;
-#endif
 
 static double glon_min, glon_max, glat_min, glat_max;
 
@@ -85,9 +82,6 @@ static MPI_Comm comm;         ///< MPI communicator for the atmosphere domain
 static int pe, root_pe, npes; ///< our own MPI rank, root MPI rank, total number of atmosphere ranks
 
 static Cpl *cpl;              ///< mapping between LPJ grid cell list and FMS rectangular domain decomposition
-static Cpl *cpl_runoff;       ///< mapping between LPJ runoff2ocean targets and FMS rectangular domain decomposition
-static int nrunoff2ocean = 0; ///< number of cells from which runoff goes into the ocean
-static int *runoff2oceancells; ///< vector of indices of those cells from which runoff goes into the ocean
 
 static int dt_fast; /*< fast time step [sec] */
 
@@ -119,10 +113,6 @@ static Real *mevap_lake_yesterday = NULL, /* from lakes */
 // in its river routing map (cell.discharge.next == -1).
 // Here we store for each such cell the index of the target ocean cell,
 // where its runoff enters the ocean.
-static struct Runoff_map {
-  int from_i, from_j; // just for debugging / visualisation
-  int to; // destination index in regular grid on LPJ resolution
-} *runoff_map = NULL;
 
 // The DDM30 data set used as source for LPJ runoff does not have data for antarctica.
 // Thus use runoff from land_lad for that region, if use_runoff_antarctica_from_lpj = .false.
@@ -346,7 +336,9 @@ void lpj_init_
   }
 
   if (*use_runoff_antarctica_from_lpj_in) use_runoff_antarctica_from_lpj = 1;
+#ifdef USE_FMSCLOCK
   lpj_update_cpl_clock_id = *lpj_update_cpl_clock_id_in;
+#endif
 
   /*! LPJ must begin all its runs at start of a fresh year ! */
   /*! TODO: check that here. */
@@ -380,6 +372,7 @@ void lpj_init_
   standtype[AGRICULTURE]=agriculture_stand;
   standtype[MANAGEDFOREST]=managedforest_stand;
   standtype[GRASSLAND]=grassland_stand;
+  standtype[OTHERS]=others_stand;
   standtype[BIOMASS_TREE]=biomass_tree_stand;
   standtype[BIOMASS_GRASS]=biomass_grass_stand;
   standtype[AGRICULTURE_TREE]=agriculture_tree_stand;
@@ -402,8 +395,7 @@ void lpj_init_
     {
       if(isroot(config))
       {
-        help(progname,
-             (strcmp(progname,"lpj")) ? dflt_conf_filename_ml : dflt_conf_filename);
+        help(progname);
       }
       MPI_Finalize();
       /*return EXIT_SUCCESS*/ exit(0);
@@ -431,19 +423,32 @@ void lpj_init_
    * crops must have last id-number */
   /* Read configuration file */
   rc=readconfig(&config,
-                (strcmp(progname,"lpj")) ? dflt_conf_filename_ml :
-                                           dflt_conf_filename,
                 scanfcn,NTYPES,NOUT,&argc,&argv,lpj_usage);
   failonerror(&config,rc,READ_CONFIG_ERR,"Cannot read configuration");
   if(isroot(config) && argc)
     fprintf(stderr,"WARNING018: Arguments listed after configuration filename, will be ignored.\n");
+
+  standtype[NATURAL]=natural_stand;
+  standtype[SETASIDE_RF]=setaside_rf_stand;
+  standtype[SETASIDE_IR]=setaside_ir_stand;
+  standtype[AGRICULTURE]=agriculture_stand;
+  standtype[MANAGEDFOREST]=managedforest_stand;
+  standtype[GRASSLAND]=grassland_stand;
+  standtype[OTHERS]=others_stand;
+  standtype[BIOMASS_TREE]=biomass_tree_stand;
+  standtype[BIOMASS_GRASS]=biomass_grass_stand;
+  standtype[AGRICULTURE_TREE]=agriculture_tree_stand;
+  standtype[AGRICULTURE_GRASS]=agriculture_grass_stand;
+  standtype[WOODPLANTATION]=woodplantation_stand;
+  standtype[KILL]=kill_stand;
 
   /*! check that the date passed from FMS matches the date from the LPJ configuration */
   /* alternate TODO: set the date from FMS to the LPJ configuration structure */
   if(isroot(config))
     printf("Current FMS date: %04d-%02d-%02d. Current LPJ year: %04d\n",
            *Time_year, *Time_month, *Time_day, config.firstyear);
-  if (isroot(config) && 1 != *Time_month || 1 != *Time_day) {
+  if (isroot(config) && (1 != *Time_month || 1 != *Time_day))
+  {
     printf("Warning: FMS start time is not at begin of new year\n");
     /*fflush(stdout); abort();*/
   }
@@ -463,13 +468,6 @@ void lpj_init_
     abort();
   }
 
-#ifdef IMAGE
-  if(config.sim_id==LPJML_IMAGE)
-  {
-    rc=open_image(&config);
-    failonerror(&config,rc,OPEN_IMAGE_ERR,"Cannot open IMAGE coupler");
-  }
-#endif
   if(isroot(config))
     printconfig(config.npft[GRASS]+config.npft[TREE],
                 config.npft[CROP],&config);
@@ -499,8 +497,6 @@ void lpj_init_
     writearea(output,LAKE_AREA,grid,&config);
   if(isopen(output,COUNTRY) && config.withlanduse)
     writecountrycode(output,COUNTRY,grid,&config);
-  if(isopen(output,REGION) && config.withlanduse)
-    writeregioncode(output,REGION,grid,&config);
   if(isroot(config))
     printf("Simulation begins...\n");
 
@@ -521,22 +517,6 @@ void lpj_init_
 
   // from iterate()
   //Bool rc;
-#ifdef STORECLIMATE
-  if(config.nspinup)
-  {
-    //fprintf(stderr, "Error: The current LPJ configuration specifies %d spinup years, but when coupled to Climber-4, no Spinup is possible\n",
-    //        config.nspinup);
-    //fflush(stderr);
-    //abort();
-
-    /* climate for the first nspinyear years is stored in memory
-       to avoid reading repeatedly from disk */
-    rc = storeclimate(&store,input.climate,grid,input.climate->firstyear,config.nspinyear,&config);
-    failonerror(&config,rc,STORE_CLIMATE_ERR,"Storage of climate failed");
-
-    data_save=input.climate->data;
-  }
-#endif
   if(config.initsoiltemp)
     initsoiltemp(input.climate,grid,&config);
 
@@ -549,8 +529,9 @@ void lpj_init_
    */
 
   //lpj_update_cpl_clock_id = fmsclock_id("LPJ_update_cpl"); already done in lpj_driver.F90 to pull in the fmsclock.o object file
+#ifdef USE_FMSCLOCK
   lpj_laketemp_clock_id = fmsclock_id("LPJ_update_laketemp");
-
+#endif
   /**
    * Create a mapping from Fortran90-lat-lon arrays to LPJ cell indices.
    * The mapping is needed for storing input data from land_lad/FMS into LPJ,
@@ -801,85 +782,6 @@ void lpj_init_
   //17                                                                             960 1152 1023  951  458
   //18                                                                             511 1313  901 1164  655
   //19                                                                             362 1033   49 1068 2032
-
-
-  // set up CPL mapping for runoff2ocean.
-  // Only those cells are considered where the destination indices are != -1
-  { int *cpl_xlen, *cpl_ylen;
-    int *cpl_ranks;
-    Cpl_coord *runoff_coords;
-    cpl_xlen = newvec(int, layout[0]);
-    for (i = 0; i < layout[0]; i++) {
-      cpl_xlen[i] = nlons;  // all FMS domains have same number of columns
-      //printf("cpl_xlen[%d] %d\n", i, cpl_xlen[i]);
-    }
-    cpl_ylen = newvec(int, layout[1]);
-    for (j = 0; j < layout[1]; j++) {
-      cpl_ylen[j] = nlats; // all FMS domains have same number of rows
-      //printf("cpl_ylen[%d] %d\n", j, cpl_ylen[j]);
-    }
-    //for (i = 0; i < layout[0]; i++) printf("cpl_xlen[%d] %d\n", i, cpl_xlen[i]);
-    //for (j = 0; j < layout[1]; j++) printf("cpl_ylen[%d] %d\n", j, cpl_ylen[j]);
-    cpl_ranks = newvec(int, layout[0]*layout[1]);
-    for (j = 0; j < layout[1]; j++) {
-      for (i = 0; i < layout[0]; i++) {
-        //printf("cpl_ranks [%d,%d] = %d\n", i, j, i+layout[0]*j);
-        cpl_ranks[i+layout[0]*j] = i+layout[0]*j;
-      }
-    }
-    for (i = 0; i < config.ngridcell; i++) {
-      if (grid[i].discharge.runoff2ocean_coord.lon != -1) nrunoff2ocean++;
-    }
-    runoff2oceancells = newvec(int, nrunoff2ocean);
-    runoff_coords = newvec(Cpl_coord, nrunoff2ocean);
-    for (i = 0, j = 0; i < config.ngridcell; i++) {
-      if (grid[i].discharge.runoff2ocean_coord.lon != -1) {
-        int global_i, global_j; // indices of this cell in global land_lad grid
-        runoff2oceancells[j] = i;
-        global_i=grid[i].discharge.runoff2ocean_coord.lon;
-        global_j=grid[i].discharge.runoff2ocean_coord.lat;
-        runoff_coords[j].x = global_i;
-        runoff_coords[j].y = global_j;
-        { // just for debugging
-          int local_i, local_j; // indices of this cell in its local land_lad grid domain
-          int lad_pe_i, lad_pe_j; // 2-D indices of the land_lad domain in the global grid.
-          int lad_pe; // PE number of the land_lad domain
-          lad_pe_i = global_i / nlons; //assert(0 <= lad_pe_i); assert(lad_pe_i < layout[0]);
-          lad_pe_j = global_j / nlats; //assert(0 <= lad_pe_j); assert(lad_pe_j < layout[1]);
-          lad_pe = lad_pe_i + lad_pe_j * layout[0];
-          //assert(0 <= lad_pe);
-          //assert(lad_pe < layout[0]*layout[1]);
-          local_i = global_i - lad_pe_i * nlons;
-          local_j = global_j - lad_pe_j * nlats;
-          printf("runoff2ocean pe %2d cell %5d/%5d lon %7.2f lat %6.2f -> %3d %3d pe %dx%d= %2d at local i/j %3d %3d\n",
-                 pe, i, j, grid[i].coord.lon, grid[i].coord.lat,
-                 global_i, global_j,
-                 lad_pe_i, lad_pe_j, lad_pe,
-                 local_i, local_j);
-        } // just for debugging
-        j++;
-      }
-    }
-    assert(j == nrunoff2ocean);
-    cpl_runoff = cpl_init(runoff_coords, nrunoff2ocean, cpl_xlen, cpl_ylen, cpl_ranks, layout[0], layout[1], comm);
-    free(cpl_ranks); free(cpl_ylen); free(cpl_xlen);
-    free(runoff_coords);
-  }
-  if (!cpl_runoff) { fprintf(stderr, "Error: cpl_init() for runoff failed\n"); exit(1); }
-  printf("cpl_init() for runoff got cpl_size %d\n", cpl_size(cpl_runoff));
-  for (i = 0; i < npes; i++) {
-    printf("  for pe %2d: inlen %5d indisp %5d outlen %5d outdisp %5d\n",
-           i, cpl_runoff->inlen[i], cpl_runoff->indisp[i], cpl_runoff->outlen[i], cpl_runoff->outdisp[i]);
-    for (j = cpl_runoff->indisp[i]; j < cpl_runoff->indisp[i] + cpl_runoff->inlen[i]; j++) {
-      if (j < 0 || j >= nrunoff2ocean) printf("index %d outside src array\n", j);
-    }
-    for (j = cpl_runoff->outdisp[i]; j < cpl_runoff->outdisp[i] + cpl_runoff->outlen[i]; j++) {
-      if (j < 0 || j >= cpl_size(cpl_runoff)) printf("index %d outside dst array\n", j);
-    }
-  }
-
-  fflush(stdout); fflush(stderr);
-  MPI_Barrier(comm);
 
   mevap_yesterday = newvec(Real, config.ngridcell);
   mtransp_yesterday = newvec(Real, config.ngridcell);
@@ -1146,7 +1048,9 @@ cpl_fms_to_lpj(const double *from_fms_in, //< input data on 2-D fms compute doma
   double *buf_lpj;
   double *buf_cpl;
 
+#ifdef USE_FMSCLOCK
   fmsclock_begin_(&lpj_update_cpl_clock_id);
+#endif
   buf_lpj = alloca(sizeof(double) * config.ngridcell);
   buf_cpl = alloca(sizeof(double) * cpl_size(cpl));
 
@@ -1166,7 +1070,9 @@ cpl_fms_to_lpj(const double *from_fms_in, //< input data on 2-D fms compute doma
     assert(cpl_src_index(cpl,i) < config.ngridcell);
     to_lpj_out[i] = buf_lpj[cpl_src_index(cpl,i)];
   }
+#ifdef USE_FMSCLOCK
   fmsclock_end_(&lpj_update_cpl_clock_id);
+#endif
 }
 
 /** helper function for conversion from LPJ grid cells to FMS/land_lad domain */
@@ -1178,7 +1084,9 @@ cpl_lpj_to_fms(const double *from_lpj, //< input data, 1-D, for each LPJ grid ce
   double *buf_lpj;
   double *buf_cpl;
 
+#ifdef USE_FMSCLOCK
   fmsclock_begin_(&lpj_update_cpl_clock_id);
+#endif
   buf_lpj = alloca(sizeof(double) * config.ngridcell);
   buf_cpl = alloca(sizeof(double) * cpl_size(cpl));
 
@@ -1199,7 +1107,9 @@ cpl_lpj_to_fms(const double *from_lpj, //< input data, 1-D, for each LPJ grid ce
     to_fms[cpl_xcoord(cpl,i) + cpl_ycoord(cpl,i) * nlons] = buf_cpl[i];
     //printf("cpl_lpj_to_fms: to_fms[%d] = buf_cpl[%d] = %f\n", cpl_xcoord(cpl,i) + cpl_ycoord(cpl,i) * nlons, i);
   }
+#ifdef USE_FMSCLOCK
   fmsclock_end_(&lpj_update_cpl_clock_id);
+#endif
 }
 
 
@@ -1285,14 +1195,9 @@ void lpj_update_
     /* some things must be done at start of a new year only */
     if (happynewyear) { /* from iterate() */
 
-#ifdef IMAGE
-      if(year>=config.start_imagecoupling)
-        co2=receive_image_co2(&config);
-      else
-#endif
       if (input.climate->co2.data) // invoke getco2() when reading from real file, not FMS
       {
-        if(getco2(input.climate,&co2,year)) /* get atmospheric CO2 concentration */
+        if(getco2(input.climate,&co2,year,&config)) /* get atmospheric CO2 concentration */
           fprintf(stderr,"ERROR015: Invalid year %d in getco2().\n",year);
       }
       /* else: use CO2 as given by LPJ coupler - done below in daily loop-over-cells */
@@ -1307,27 +1212,7 @@ void lpj_update_
 //#endif
       //else
       {
-#ifdef STORECLIMATE
-        if(year==input.climate->firstyear && config.nspinup)
-        {
-          /* restore climate data pointers to initial data */
-          input.climate->data=data_save;
-          freeclimatedata(&store); /* free data not used anymore */
-        }
-#endif
         /* read climate from files */
-#ifdef IMAGE
-        if(year>=config.start_imagecoupling)
-        {
-          if(receive_image_climate(input.climate,grid,year,&config))
-          {
-            fprintf(stderr,"ERROR104: Simulation stopped in receive_image_climate().\n");
-            fflush(stderr);
-            /*break;*/ /* leave time loop */ abort();
-          }
-        }
-        else
-#endif
           if(getclimate(input.climate,grid,year,&config))
           {
             fprintf(stderr,"ERROR104: Simulation stopped in getclimate().\n");
@@ -1347,18 +1232,6 @@ void lpj_update_
           wateruse_year=config.landuse_year_const;
         else
            wateruse_year=year;
-#ifdef IMAGE
-        if(year>=config.start_imagecoupling)
-        {
-          if (receive_image_data(grid,npft,ncft,&config))
-          {
-            fprintf(stderr,"ERROR104: Simulation stopped in receive_image_data().\n");
-            fflush(stderr);
-            /*break;*/ /* leave time loop */ abort();
-          }
-        }
-        else
-#endif
           /* read landuse pattern from file */
           if(getlanduse(input.landuse,grid,landuse_year,year,ncft,&config))
           {
@@ -1405,11 +1278,10 @@ void lpj_update_
 
     /* perform iteration for one year */
     /* broken up iterateyear_river() to be called on every time step */
-    if(output->method==LPJ_SOCKET || config.river_routing) {
       /*iterateyear_river(output,grid,input,co2,npft,ncft,&config,year);*/
       { /* begin iterateyear_river() */
         static Dailyclimate daily;
-        static Bool intercrop,istimber;
+        static Bool intercrop;
         /* dailyclimate.c: month (0..11) day (1..365) */
         static int /*month,*/ /*dayofmonth,*/ dayofyear;
         int cell,i;
@@ -1417,11 +1289,6 @@ void lpj_update_
 
         if (happynewyear) { /* things from iterateyear_river() to be done at begin of year */
           popdens=0;
-#ifdef IMAGE
-          istimber=(config.start_imagecoupling!=INT_MAX);
-#else
-          istimber=FALSE;
-#endif
           intercrop=getintercrop(input.landuse);
           for(cell=0;cell<config.ngridcell;cell++)
           {
@@ -1436,17 +1303,12 @@ void lpj_update_
                 if(grid[cell].lakefrac<1)
                 {
                   /* calculate landuse change */
-                  if(config.laimax_interpolate!=CONST_LAI_MAX)
-                    laimax_manage(&grid[cell].ml.manage,config.pftpar+npft,npft,ncft,year);
                   if(year>config.firstyear-config.nspinup)
                     landusechange(grid+cell,npft,ncft,intercrop,year,&config);
                   else if(grid[cell].ml.dam)
                     landusechange_for_reservoir(grid+cell,npft,ncft,
                                                 intercrop,year,&config);
                 }
-#ifdef IMAGE
-                setoutput_image(grid+cell,ncft);
-#endif
               }
               initgdd(grid[cell].gdd,npft);
             } /*gridcell skipped*/
@@ -1472,9 +1334,6 @@ void lpj_update_
               mevap_lake_yesterday[cell] = mevap_res_yesterday[cell] = 0.0;
               minterc_yesterday[cell] = 0.0; 
               initclimate_monthly(input.climate,&grid[cell].climbuf,cell,month,grid[cell].seed);
-#ifdef IMAGE
-              monthlyoutput_image(&grid[cell].output,input.climate,cell,month);
-#endif
 
 #ifdef DEBUG
               printf("temp = %.2f prec = %.2f wet = %.2f",
@@ -1758,7 +1617,7 @@ void lpj_update_
             if(!grid[cell].skip)
             {
               grid[cell].landcover=(config.prescribe_landcover!=NO_LANDCOVER) ? getlandcover(input.landcover,cell) : NULL;
-              update_annual(grid+cell,npft,ncft,popdens,year,TRUE,intercrop,&config);
+              update_annual(grid+cell,npft,ncft,year,TRUE,intercrop,&config);
 #ifdef SAFE
               check_fluxes(grid+cell,year,cell,&config);
 #endif
@@ -1773,26 +1632,26 @@ void lpj_update_
 #endif
               if(config.equilsoil)
               {
-                if((year-(config->firstyear-config->nspinup+param.veg_equil_year-param.equisoil_years))%param.equisoil_interval==0 && 
-                  (year-(config->firstyear-config->nspinup+param.veg_equil_year-param.equisoil_years))/param.equisoil_interval>=0 && 
-                  (year-(config->firstyear-config->nspinup+param.veg_equil_year-param.equisoil_years))/param.equisoil_interval<param.nequilsoil)
+                if((year-(config.firstyear-config.nspinup+param.veg_equil_year-param.equisoil_years))%param.equisoil_interval==0 && 
+                  (year-(config.firstyear-config.nspinup+param.veg_equil_year-param.equisoil_years))/param.equisoil_interval>=0 && 
+                  (year-(config.firstyear-config.nspinup+param.veg_equil_year-param.equisoil_years))/param.equisoil_interval<param.nequilsoil)
                   equilveg(grid+cell,npft+ncft);
 
-                if(year==(config->firstyear-config->nspinup+param.veg_equil_year))
-                  equilsom(grid+cell,npft+ncft,config->pftpar,TRUE);
+                if(year==(config.firstyear-config.nspinup+param.veg_equil_year))
+                  equilsom(grid+cell,npft+ncft,config.pftpar,TRUE);
         
-                if((year-(config->firstyear-config->nspinup+param.veg_equil_year))%param.equisoil_interval==0 && 
-                  (year-(config->firstyear-config->nspinup+param.veg_equil_year))/param.equisoil_interval>0 && 
-                  (year-(config->firstyear-config->nspinup+param.veg_equil_year))/param.equisoil_interval<param.nequilsoil)
-                  equilsom(grid+cell,npft+ncft,config->pftpar,FALSE);
+                if((year-(config.firstyear-config.nspinup+param.veg_equil_year))%param.equisoil_interval==0 && 
+                  (year-(config.firstyear-config.nspinup+param.veg_equil_year))/param.equisoil_interval>0 && 
+                  (year-(config.firstyear-config.nspinup+param.veg_equil_year))/param.equisoil_interval<param.nequilsoil)
+                  equilsom(grid+cell,npft+ncft,config.pftpar,FALSE);
 
                 if(param.equisoil_fadeout>0)
                 {
-                  if(year==(config->firstyear-config->nspinup+param.veg_equil_year+param.equisoil_interval*param.nequilsoil))
+                  if(year==(config.firstyear-config.nspinup+param.veg_equil_year+param.equisoil_interval*param.nequilsoil))
                     equilveg(grid+cell,npft+ncft);
 
-                  if(year==(config->firstyear-config->nspinup+param.veg_equil_year+param.equisoil_interval*param.nequilsoil+param.equisoil_fadeout))
-                    equilsom(grid+cell,npft+ncft,config->pftpar,FALSE);
+                  if(year==(config.firstyear-config.nspinup+param.veg_equil_year+param.equisoil_interval*param.nequilsoil+param.equisoil_fadeout))
+                    equilsom(grid+cell,npft+ncft,config.pftpar,FALSE);
                 }
               }
 
@@ -1814,12 +1673,6 @@ void lpj_update_
 
         } /* if (silvester) */ /* end iterateyear_river() */
       } /* end iterateyear_river */
-    } else {
-      /* iteration without river routing */
-      /*iterateyear(output,grid,input,co2,npft,ncft,&config,year);*/
-      fprintf(stderr, "Oops, river routing was not enabled in the LPJ configuration\n");
-      exit(1);
-    }
 
     if (silvester) { /* from iterate() */
       if(year>=config.outputyear)
@@ -1831,31 +1684,16 @@ void lpj_update_
       {
         /* output of total carbon flux and water on stdout on root task */
         printflux(flux,cflux_total,year,&config);
-        if(output->method==LPJ_SOCKET && output->socket!=NULL &&
-           year>=config.outputyear)
-          output_flux(output,flux);
+        if(isopen(output,GLOBALFLUX))
+          fprintcsvflux(output->files[GLOBALFLUX].fp.file,flux,cflux_total,
+                        config.outnames[GLOBALFLUX].scale,year,&config);
+        if(output->files[GLOBALFLUX].issocket)
+          send_flux_coupler(&flux,config.outnames[GLOBALFLUX].scale,year,&config);
         fflush(stdout); /* force output to console */
 #ifdef SAFE
         check_balance(flux,year,&config);
 #endif
       }
-#ifdef IMAGE
-      if(year>=config.start_imagecoupling)
-      {
-        /* send data to IMAGE */
-#ifdef DEBUG_IMAGE
-        if(config.rank==0)
-        {
-          printf("sending data to image? year %d startimagecoupling %d\n",
-                 year,config.start_imagecoupling);
-          fflush(stdout);
-        }
-#endif
-        if(send_image_data(&config,grid,input.climate,npft))
-          fail(SEND_IMAGE_ERR,FALSE,
-               "Problem with writing maps for transfer to IMAGE");
-      }
-#endif
       if(iswriterestart(&config) && year==config.restartyear)
         fwriterestart(grid,npft,ncft,year,config.write_restart_filename,FALSE,&config); /* write restart file */
     } /* if (silvester) */
@@ -1864,14 +1702,6 @@ void lpj_update_
 
   } /* of 'for(year=...)' */
 
-#ifdef STORECLIMATE
-  if(config.nspinup && (config.lastyear<input.climate->firstyear || year<input.climate->firstyear))
-  {
-    /* restore climate data pointers to initial data */
-    input.climate->data=data_save;
-    freeclimatedata(&store); /* free data not used anymore */
-  }
-#endif
   return /*year*/;
 }
 
@@ -1895,10 +1725,6 @@ void lpj_end_() {
            config.total
            );
   }
-#ifdef IMAGE
-  if(config.sim_id==LPJML_IMAGE)
-    close_image(&config);
-#endif
   freeconfig(&config);
   cpl_free(cpl);
 
