@@ -34,6 +34,9 @@ Coord_array *createindex(const Coord *grid, /**< coordinate array of LPJ grid */
     free(array);
     return NULL;
   }
+  array->lon_res=resolution.lon;
+  array->lat_res=resolution.lat;
+  array->rev_lat=revlat;
   if(global)
   {
     array->lon_min=-180+0.5*resolution.lon;

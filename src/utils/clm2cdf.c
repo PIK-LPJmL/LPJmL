@@ -614,7 +614,7 @@ int main(int argc,char **argv)
         israw=TRUE;
       else if(!strcmp(argv[iarg],"-metafile"))
         ismeta=TRUE;
-      else if(!strcmp(argv[iarg],"-netdcdf4"))
+      else if(!strcmp(argv[iarg],"-netcdf4"))
         isnetcdf4=TRUE;
       else if(!strcmp(argv[iarg],"-int"))
       {

@@ -23,6 +23,7 @@ void outputnames(Outputfile *outfile, /**< output file array */
 {
   int i,j;
   for(i=0;i<config->n_out;i++)
+  {
     if(config->outputvars[i].filename.fmt==CDF)
     {
       outfile->files[config->outputvars[i].id].fp.cdf.state=ONEFILE;
@@ -44,19 +45,8 @@ void outputnames(Outputfile *outfile, /**< output file array */
               outfile->files[config->outputvars[i].id].fp.cdf.root=outfile->files[config->outputvars[j].id].fp.cdf.root;
             }
           }
-          else if(isroot(*config))
-            fprintf(stderr,"WARNING023: Filename is identical for %s and %s.\n",
-                    config->outnames[config->outputvars[i].id].name,
-                    config->outnames[config->outputvars[j].id].name);
           break;
         }
     }
-    else if(isroot(*config) && config->outputvars[i].filename.fmt!=SOCK)
-    {
-      for(j=i-1;j>=0;j--)
-        if(config->outputvars[j].filename.fmt!=SOCK && !strcmp(config->outputvars[j].filename.name,config->outputvars[i].filename.name))
-          fprintf(stderr,"WARNING023: Filename is identical for %s and %s.\n",
-                  config->outnames[config->outputvars[i].id].name,
-                  config->outnames[config->outputvars[j].id].name);
-    }
+  }
 } /* of 'outputnames' */

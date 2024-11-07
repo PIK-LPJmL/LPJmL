@@ -2,7 +2,8 @@
 .SH NAME
 mergeclm \- merge LPJmL climate data files
 .SH SYNOPSIS
-.B mergeclm [\-v] [\-f] [\-longheader] [\-size4]
+.B mergeclm
+[\-v] [\-f] [\-longheader] [\-size4]
 \fIinfile\fP ... \fIoutfile\fP
 .SH DESCRIPTION
 Program merges bands of climate data files in clm format into one clm file.
@@ -19,6 +20,7 @@ Long (version 2) header assumed for clm files.
 .TP
 \-size4
 Size of data is set to 4 bytes for version 2 clm files, default is 2 bytes.
+.TP
 .I infile
 Filename(s) of clm files to paste. If filename is "zero" one band containing all zero values is added.
 .TP
@@ -27,7 +29,8 @@ Filename of merged clm file.
 .SH EXAMPLE
 .TP
 Merge clm data file from 12 clm files:
-.B mergeclm temp_1901-2003_01.clm temp_1901-2003_02.clm temp_1901-2003_03.clm temp_1901-2003_04.clm temp_1901-2003_05.clm temp_1901-2003_06.clm temp_1901-2003_07.clm temp_1901-2003_08.clm temp_1901-2003_09.clm temp_1901-2003_10.clm temp_1901-2003_11.clm temp_1901-2003_12.clm temp_1901-2003.clm
+.B mergeclm
+temp_1901-2003_01.clm temp_1901-2003_02.clm temp_1901-2003_03.clm temp_1901-2003_04.clm temp_1901-2003_05.clm temp_1901-2003_06.clm temp_1901-2003_07.clm temp_1901-2003_08.clm temp_1901-2003_09.clm temp_1901-2003_10.clm temp_1901-2003_11.clm temp_1901-2003_12.clm temp_1901-2003.clm
 .PP
 .SH EXIT STATUS
 .B mergeclm

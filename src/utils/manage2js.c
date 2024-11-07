@@ -2,7 +2,7 @@
 /**                                                                                \n**/
 /**                      m  a  n  a  g  e  2  j  s  .  c                           \n**/
 /**                                                                                \n**/
-/**     Converts management parameter files in *.conf format into JSON format.     \n**/
+/**     Converts management parameter files in *.par format into JSON format.      \n**/
 /**                                                                                \n**/
 /** (C) Potsdam Institute for Climate Impact Research (PIK), see COPYRIGHT file    \n**/
 /** authors, and contributors see AUTHORS file                                     \n**/
@@ -162,14 +162,15 @@ static Bool fscanstr(FILE *file, /**< pointer to text file */
 
 int main(int argc,char **argv)
 {
-  int i,j,n,n2;
-  FILE *file,*file2;
+  const char *irrig[]={"no","surface","sprinkler","drip"};
+  int i,j,n,irrig_system;
+  FILE *file;
   char *ptr;
-  String s,s2;
-  if(argc<3)
+  String s;
+  if(argc<2)
   {
     fprintf(stderr,"Error: Missing arguments.\n"
-           "Usage: %s laimax.par manage.par\n",argv[0]);
+           "Usage: %s laimax.par\n",argv[0]);
     return EXIT_FAILURE;
   }
   file=fopen(argv[1],"r");
@@ -185,36 +186,10 @@ int main(int argc,char **argv)
     fprintf(stderr,"Cannot read int in '%s', found '%s'.\n", argv[1],s);
     return EXIT_FAILURE;
   }
-  file2=fopen(argv[2],"r");
-  if(file2==NULL)
-  {
-    fprintf(stderr,"Error opening '%s': %s.\n",argv[2],strerror(errno));
-    return EXIT_FAILURE;
-  }
-  fscanstr2(file2,s);
-  n2=strtol(s,&ptr,10);
-  if(*ptr!='\0')
-  {
-    fprintf(stderr,"Cannot read int in '%s', found '%s'.\n", argv[2],s);
-    return EXIT_FAILURE;
-  }
-  if(n2!=n)
-  {
-    fprintf(stderr,"Number of countries=%d in '%s' not equal number of countries=%d in '%s'.\n",n,argv[1],n2,argv[2]);
-    return EXIT_FAILURE;
-  }
-  printf("\"countrypar\" :\n"
-         "[\n");
+  printf("[\n");
   for(i=0;i<n;i++)
   {
-    fscanstr2(file2,s2);
-    fscanstr2(file2,s);
     fscanstr2(file,s);
-    if(strcmp(s,s2))
-    {
-      fprintf(stderr,"Country '%s' in '%s' not equal country '%s' in '%s'.\n",s,argv[1],s2,argv[2]);
-      return EXIT_FAILURE;
-    }
     printf("  { \"id\" : %s,",s);
     fscanstr2(file,s);
     printf(" \"name\" : \"%s\",",s);
@@ -226,18 +201,25 @@ int main(int argc,char **argv)
       if(j<11)
         printf(",");
     }
-    fscanstr2(file2,s);
-    printf("], \"laimax_tempcer\" : %s,",s);
-    fscanstr2(file2,s);
-    printf(" \"laimax_maize\" : %s,",s);
-    fscanstr2(file2,s);
     fscanstr2(file,s);
-    printf(" \"default_irrig_system\" : %s}",s);
+    irrig_system=strtol(s,&ptr,10);
+    if(*ptr!='\0')
+      printf("] \"default_irrig_system\" : %s}",s);
+    else
+    {
+      if(irrig_system<0 || irrig_system>3)
+      {
+        fprintf(stderr,"Invalid number %d for irrigation system in '%s', must be in [0,3].\n",
+                irrig_system,argv[1]);
+        return EXIT_FAILURE;
+      }
+      printf("] \"default_irrig_system\" : \"%s\"}",irrig[irrig_system]);
+    }
     if(i<n-1)
       printf(",\n");
     else 
       printf("\n");
   }
-  printf("],\n");
+  printf("]\n");
   return EXIT_SUCCESS;
 } /* of 'main' */
