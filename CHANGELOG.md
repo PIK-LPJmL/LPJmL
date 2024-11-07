@@ -19,6 +19,8 @@ of `major.minor.patch` with
 
 ## [Unreleased]
 
+## [5.9.15] - 2024-11-07
+
 ### Contributors
 
 - author: Werner von Bloh (bloh@pik-potsdam.de)
@@ -43,12 +45,12 @@ of `major.minor.patch` with
 
 ### Fixed
 
-- Separate output for each year by setting `"name" : "filename_%d"` is now written correctly.
+- Separate output for each year by setting `"name" : "filename_%d"` is now written correctly (issue #360).
 - Number of bands set to 1 in metafile of grid NetCDF output.
 - Name of longitude/latitude variables correctly derived in `getlatlon_netcdf.c`.
 - Misspelled option `-netdcdf4` corrected to `-netcdf4` in `clm2cdf.c`.
 - `lpj_climber4.c` updated to compile without errors.
-- Writing different variables into one NetCDF file fixed in `create_netcdf.c`. Only NetCDF outputs with one band can be written to one file.
+- Writing different variables into one NetCDF file fixed in `create_netcdf.c`. Only NetCDF outputs with one band and same time step can be written to one file.
 - Formatting of man pages corrected.
 - Missing `shift 1` for `-crumonthly` case added in `regridlpj`.
 
