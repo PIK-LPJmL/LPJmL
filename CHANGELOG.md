@@ -35,6 +35,10 @@ of `major.minor.patch` with
 
 - `LPJ_VERSION` macro in `lpj.h` replaced by function `getversion()`.
 
+### Fixed
+
+- Missing dependency on `gebuild.c` for target `lpjml` added in `src/Makefile`.
+
 
 ## [5.9.15] - 2024-11-07
 

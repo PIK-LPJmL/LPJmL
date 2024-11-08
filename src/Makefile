@@ -103,6 +103,6 @@ $(OBJ): $(HDRS)
 	$(CC) $(CFLAGS) -I$(INC) -c $*.c
 
 
-$(EXE): $(LPJLIBS) $(OBJ)
+$(EXE): $(LPJLIBS) $(OBJ) getbuild.c
 	$(CC) $(CFLAGS) -I$(INC) -DGIT_HASH=\"$(GIT_HASH)\"  -DGIT_REPO=\"$(GIT_REPO)\" -c getbuild.c
 	$(LINKMAIN) $(LNOPTS)$(EXE) $(OBJ) $(LPJLIBS) $(LIBS) getbuild.$O 
