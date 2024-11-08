@@ -159,6 +159,15 @@ int main(int argc,char **argv)
 #endif
       return EXIT_SUCCESS;
     }
+    else if(!strcmp(argv[1],"-repo")) /* check for repo option */
+    {
+      if(isroot(config))
+        puts(getrepo());
+#ifdef USE_MPI
+      MPI_Finalize();
+#endif
+      return EXIT_SUCCESS;
+    }
   }
   if(isroot(config))
   { /* Output only for the root task 0 */
