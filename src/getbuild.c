@@ -23,7 +23,7 @@ char *getbuilddate(void)
 
 char *getrepo(void)
 {
-  static char *s=GIT_REPO;
+  static char *s=(strlen(GIT_REPO)==0) ?  "https://github.com/PIK-LPJmL/LPJmL" : GIT_REPO;
   return s;
 } /* of 'getrepo' */
 
