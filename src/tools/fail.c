@@ -20,19 +20,9 @@
 #include <string.h>
 #include "types.h"
 
-void fail(int errcode,     /**< Error code (0...999) */
-          Bool stop,       /**< terminate program */
-          Bool core,       /**< generate core file (TRUE/FALSE) */
-          const char *msg, /**< error format string */
-          ...              /**< optional parameter for output */
-         )
+static void printfailerr2(int errcode,Bool stop,const char *msg,va_list ap)
 {
   char *s;
-  va_list ap;
-  /*
-   * Output is put in one printf statement. This has to be done because output
-   * in multiple printf's is mixed up in the parallel version using MPI
-   */
   if(stop)
     s=alloca(strlen(msg)+strlen("ERROR000: ")+strlen(", program terminated unsuccessfully.\n")+1);
   else
@@ -44,9 +34,32 @@ void fail(int errcode,     /**< Error code (0...999) */
   sprintf(s,"ERROR%03d: ",errcode);
   strcat(s,msg);
   strcat(s,(stop) ? ", program terminated unsuccessfully.\n" : ".\n");
-  va_start(ap,msg);
   vfprintf(stderr,s,ap);
   fflush(stderr);
+}  /* of 'printfailerr2' */
+
+void printfailerr(int errcode,     /**< Error code (0...999) */
+                  Bool stop,       /**< terminate program */
+                  const char *msg, /**< error format string */
+                  ...              /**< optional parameter for output */
+                 )
+{
+  va_list ap;
+  va_start(ap,msg);
+  printfailerr2(errcode,stop,msg,ap);
+  va_end(ap);
+}  /* of 'printfailerr' */
+
+void fail(int errcode,     /**< Error code (0...999) */
+          Bool stop,       /**< terminate program */
+          Bool core,       /**< generate core file (TRUE/FALSE) */
+          const char *msg, /**< error format string */
+          ...              /**< optional parameter for output */
+         )
+{
+  va_list ap;
+  va_start(ap,msg);
+  printfailerr2(errcode,stop,msg,ap);
   va_end(ap);
   if(stop && core)
     abort(); /* generate core file for post-mortem analysis */

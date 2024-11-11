@@ -105,6 +105,7 @@ typedef struct
 
 /* Declaration of functions */
 
+extern void printfailerr(int,Bool,const char *,...);
 extern void fail(int,Bool,Bool,const char *,...);
 extern Bool fscanreal(LPJfile *,Real *,const char *,Bool,Verbosity);
 extern Bool ffscanreal(FILE *,Real *,const char *,Verbosity);

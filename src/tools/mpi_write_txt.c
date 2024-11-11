@@ -47,7 +47,7 @@ int mpi_write_txt(FILE *file,        /**< File pointer to text file */
                   int rank,          /**< MPI rank */
                   char d,            /**< delimiter */
                   MPI_Comm comm      /**< MPI communicator */
-                 )                   /** \return number of items written to disk */
+                 )                   /** \return TRUE on error */
 {
   int rc;
   MPI_Aint lb;
@@ -67,7 +67,7 @@ int mpi_write_txt(FILE *file,        /**< File pointer to text file */
   }
   MPI_Bcast(&rc,1,MPI_INT,0,comm);
   if(rc)
-    return 0;
+    return TRUE;
   MPI_Gatherv(data,counts[rank],type,vec,counts,offsets,type,0,comm);
   if(rank==0)
   {
@@ -75,6 +75,7 @@ int mpi_write_txt(FILE *file,        /**< File pointer to text file */
       rc=write_float(file,vec,size,d); /* write float data to file */
     else if(type==MPI_SHORT)
       rc=write_short(file,vec,size,d); /* write short data to file */
+    rc=(rc==0);
     free(vec);
   }
   MPI_Bcast(&rc,1,MPI_INT,0,comm);
