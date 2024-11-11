@@ -430,7 +430,6 @@ Bool setaside(Cell *cell,          /**< Pointer to LPJ cell */
   Stocks fluxes_estab= {0,0};
   Stocks fluxes_neg= {0,0};
   Stocks fluxes_prod= {0,0};
-  Stocks fluxes_firewood={0,0};
   Stocks balance= {0,0};
   Real start_w = 0;
   Real end_w = 0;

@@ -40,7 +40,7 @@ Stocks turnover_grass(Litter *litter, /**< Litter pool */
   grasspar=getpftpar(pft,data);
   output=&pft->stand->cell->output;
 #ifdef CHECK_BALANCE
-  Real end,litter_alt,establish_alt,reprod1,vegsum_alt,bminc_alt,ecxess_carbon_alt,correction;
+  Real end,litter_alt,establish_alt,reprod1,vegsum_alt,bminc_alt,ecxess_carbon_alt;
   Stocks start={0,0};
   Stocks stocks;
   stocks=litterstocks(litter);

@@ -58,7 +58,6 @@ void deforest(Cell *cell,          /**< pointer to cell */
 #ifdef CHECK_BALANCE
 //anpp, influx and arh do not change
   Stand *checkstand;
-  Pft *pft;
   Stocks start = {0,0};
   Stocks end = {0,0};
   Stocks st;
@@ -70,7 +69,6 @@ void deforest(Cell *cell,          /**< pointer to cell */
   Stocks balance= {0,0};
   Real start_w = cell->balance.excess_water;
   Real end_w = 0;
-  int p;
   foreachstand(checkstand, s, cell->standlist)
   {
     st=standstocks(checkstand);
@@ -328,10 +326,10 @@ static void regrowth(Cell *cell, /* pointer to cell */
   Stocks flux_estab;
   Pft *pft;
   Stand *setasidestand,*natstand,*mixstand;
-  int where=0;
 
 #ifdef CHECK_BALANCE
 //anpp, influx and arh do not change
+  int where=0;
   Stand *checkstand;
   Stocks start = {0,0};
   Stocks end = {0,0};
@@ -340,7 +338,6 @@ static void regrowth(Cell *cell, /* pointer to cell */
   Stocks fluxes_estab= {0,0};
   Stocks fluxes_neg= {0,0};
   Stocks fluxes_prod= {0,0};
-  Stocks fluxes_firewood={0,0};
   Stocks balance={0,0};
   Real start_w=cell->balance.excess_water;
   Real end_w=0;
@@ -399,7 +396,9 @@ static void regrowth(Cell *cell, /* pointer to cell */
       cutpfts(mixstand,config);
       difffrac=-mixstand->frac;
       pos=s;
+#ifdef CHECK_BALANCE
       where=1;
+#endif
     }
     else
     {
@@ -411,7 +410,9 @@ static void regrowth(Cell *cell, /* pointer to cell */
       mixstand->frac= -difffrac;
       reclaim_land(setasidestand,mixstand,cell,config->luc_timber,npft+ncft,config);
       setasidestand->frac+=difffrac;
+#ifdef CHECK_BALANCE
       where=2;
+#endif
     }
 #endif
 
@@ -430,7 +431,9 @@ static void regrowth(Cell *cell, /* pointer to cell */
       natstand->frac+=mixstand->frac;
       natstand->soil.iswetland=iswetland;
       delstand(cell->standlist,pos);
+#ifdef CHECK_BALANCE
       where+=10;
+#endif
     }
     else
     {
@@ -442,7 +445,9 @@ static void regrowth(Cell *cell, /* pointer to cell */
       mixstand->type->newstand(mixstand);
       natstand=mixstand;
       natstand->soil.iswetland=iswetland;
+#ifdef CHECK_BALANCE
       where+=20;
+#endif
     }
     natstand->prescribe_landcover = NO_LANDCOVER;
 
@@ -528,7 +533,6 @@ static void landexpansion(Cell *cell,            /* cell pointer */
   Stocks fluxes_estab= {0,0};
   Stocks fluxes_neg= {0,0};
   Stocks fluxes_prod= {0,0};
-  Stocks fluxes_firewood={0,0};
   Stocks balance= {0,0};
   Real start_w = cell->balance.excess_water;
   foreachstand(checkstand, s, cell->standlist)
@@ -913,7 +917,6 @@ static void grasslandreduction(Cell *cell,            /* cell pointer */
   Stocks fluxes_estab= {0,0};
   Stocks fluxes_neg= {0,0};
   Stocks fluxes_prod= {0,0};
-  Stocks fluxes_firewood={0,0};
   Stocks balance= {0,0};
   Real start_w = 0;
   Real end_w = 0;
@@ -1395,7 +1398,6 @@ void landusechange(Cell *cell,          /**< pointer to cell */
   Stocks fluxes_estab= {0,0};
   Stocks fluxes_neg= {0,0};
   Stocks fluxes_prod= {0,0};
-  Stocks fluxes_firewood={0,0};
   Stocks balance= {0,0};
   Real start_w=cell->balance.excess_water;
   Real end_w = 0;

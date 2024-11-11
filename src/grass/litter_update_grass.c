@@ -26,7 +26,7 @@ void litter_update_grass(Litter *litter, /**< Litter pool */
   grass=pft->data;
   output=&pft->stand->cell->output; 
 #ifdef CHECK_BALANCE
-  Real end,vegcsum_alt,bminc_alt,ecxess_carbon_alt,vegnsum_alt,turn_old,correc_old;
+  Real end,vegcsum_alt,bminc_alt,ecxess_carbon_alt,vegnsum_alt,turn_old;
   Stocks start={0,0};
   Stocks stocks,litter_alt;
   stocks=litterstocks(litter);

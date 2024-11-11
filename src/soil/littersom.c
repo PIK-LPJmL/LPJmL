@@ -791,7 +791,7 @@ Stocks littersom(Stand *stand,                      /**< [inout] pointer to stan
   water_after=soilwater(soil);
   if (fabs(start.carbon - end.carbon - (flux.carbon + *methaneflux_litter*WC/WCH4))>0.0001){
         fprintf(stderr,
-            "C_ERROR in littersom: iswetland: %d type: %s %.8f start:%.8f  ende:%.8f decomCO2: %%.8f methane_em: %.8f\n", soil->iswetland,
+            "C_ERROR in littersom: iswetland: %d type: %s %.8f start:%.8f  ende:%.8f decomCO2: %.8f methane_em: %.8f\n", soil->iswetland,
             stand->type->name,start.carbon - end.carbon - (flux.carbon + *methaneflux_litter*WC/WCH4), start.carbon, end.carbon, flux.carbon, *methaneflux_litter*WC/WCH4);
   }
   if (fabs(end.nitrogen-start.nitrogen+flux.nitrogen)>0.00001)

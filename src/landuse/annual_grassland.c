@@ -42,7 +42,6 @@ Bool annual_grassland(Stand *stand,         /**< Pointer to stand */
 #ifdef CHECK_BALANCE
   Stocks start = {0,0};
   Real end = 0;
-  Real firec=0;
   Stocks bm_inc={0,0};
   start.carbon = standstocks(stand).carbon + soilmethane(&stand->soil)*WC/WCH4;
   start.nitrogen = standstocks(stand).nitrogen;

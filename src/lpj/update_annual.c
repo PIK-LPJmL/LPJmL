@@ -28,8 +28,7 @@ void update_annual(Cell *cell,          /**< Pointer to cell */
                    const Config *config /**< LPJ configuration */
                   )
 {
-  int s,p,m,l,cft;
-  String line;
+  int s,m,cft;
   Stand *stand;
   Pftcroppar *croppar;
   Real mintemp[N];
@@ -44,7 +43,6 @@ void update_annual(Cell *cell,          /**< Pointer to cell */
   Stocks fluxes_estab= {0,0};
   Stocks fluxes_neg= {0,0};
   Stocks fluxes_prod= {0,0};
-  Stocks fluxes_firewood={0,0};
   Stocks balance= {0,0};
   Real start_w = 0;
   Real end_w = 0;

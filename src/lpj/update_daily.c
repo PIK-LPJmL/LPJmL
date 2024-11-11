@@ -64,11 +64,11 @@ void update_daily(Cell *cell,            /**< cell pointer           */
   Real litsum_old_nv[2]={0,0},litsum_new_nv[2]={0,0};
   Real litsum_old_agr[2]={0,0},litsum_new_agr[2]={0,0};
   isrice=FALSE;
-  Real groundwater= cell->ground_st+cell->ground_st_am;
   runoff=snowrunoff=melt_all=0;
   Irrigation *data;
 
 #ifdef CHECK_BALANCE
+  Real groundwater= cell->ground_st+cell->ground_st_am;
   Real end=0;
   Stocks start={0,0};
   Stocks start1={0,0};
@@ -717,7 +717,7 @@ void update_daily(Cell *cell,            /**< cell pointer           */
   {
     fprintf(stderr,"W-BALANCE-ERROR in %s: day %d balanceW: %g  exess_old: %g balance.excess_water: %g gw_outflux: %g water_after: %g water_before: %g prec: %g melt: %g "
         "atransp: %g  aevap %g ainterc %g aevap_lake  %g aevap_res: %g    airrig : %g aMT_water : %g MT_water: %g flux_bal: %g runoff %g awater_flux %g lateral_water %g mfin-mfout: %g dmass_lake: %g  dmassriver : %g"
-        "  ground_st_am: %g\ ground_st: %g gw_balance: %g  groundwater: %g  irrigstore_bal: %g\n\n",
+        "  ground_st_am: %g ground_st: %g gw_balance: %g  groundwater: %g  irrigstore_bal: %g\n\n",
         __FUNCTION__,day,balanceW,exess_old,cell->balance.excess_water,gw_outflux,
         water_after,water_before,climate.prec,melt_all,cell->balance.atransp,cell->balance.aevap,cell->balance.ainterc,cell->balance.aevap_lake,cell->balance.aevap_res,cell->balance.airrig,cell->balance.aMT_water,MT_water,
         ((cell->balance.awater_flux+cell->balance.atransp+cell->balance.aevap+cell->balance.ainterc+cell->balance.aevap_lake+cell->balance.aevap_res-cell->balance.airrig-cell->balance.aMT_water)-wfluxes_old),
