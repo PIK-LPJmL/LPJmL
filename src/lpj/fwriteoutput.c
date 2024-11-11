@@ -1212,7 +1212,18 @@ Bool fwriteoutput(Outputfile *output,  /**< output file array */
   writeoutputvar(N_IMMO,1);
   writeoutputvar(RES_STORAGE,ndate1);
   writeoutputvar(GW_OUTFLUX,1);
-  writeoutputvar(GW_STORAGE,ndate1);
+  if(isopen(output,GW_STORAGE))
+  {
+    if(iswrite2(GW_STORAGE,timestep,year,config) || (timestep==ANNUAL && config->outnames[GW_STORAGE].timestep>0))
+    {
+      for(cell=0;cell<config->ngridcell;cell++)
+        if(!grid[cell].skip)
+        {
+          getoutput(&grid[cell].output,GW_STORAGE,config) += (grid[cell].ground_st + grid[cell].ground_st_am);
+        }
+    }
+    writeoutputvar(GW_STORAGE,1);
+  }
   writeoutputvar(CH4_EMISSIONS,1);
   writeoutputvar(CH4_EMISSIONS_WET,1);
   writeoutputvar(CH4_OXIDATION,1);

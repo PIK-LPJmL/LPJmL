@@ -75,7 +75,7 @@ Real daily_agriculture(Stand *stand,                /**< [inout] stand pointer *
   evap=evap_blue=runoff=return_flow_b=0.0;
 #ifdef CHECK_BALANCE
   Real wfluxes_old=(stand->cell->balance.excess_water+stand->cell->lateral_water+stand->cell->balance.awater_flux+stand->cell->balance.aevap_res+stand->cell->balance.aevap_lake-stand->cell->balance.aMT_water);
-  Real wstore_old=(stand->cell->discharge.dmass_lake+stand->cell->discharge.dmass_river)/stand->cell->coord.area;
+  Real wstore_old=(stand->cell->discharge.dmass_lake+stand->cell->discharge.dmass_river)/stand->cell->coord.area+stand->cell->ground_st+stand->cell->ground_st_am;
   Real water_before=0;
   Real water_after,wstore_new,balancew;
   water_before+=soilwater(&stand->soil);
@@ -480,7 +480,7 @@ Real daily_agriculture(Stand *stand,                /**< [inout] stand pointer *
 #ifdef CHECK_BALANCE
   transp=0;
   water_after=0;
-  wstore_new=(stand->cell->discharge.dmass_lake+stand->cell->discharge.dmass_river)/stand->cell->coord.area;
+  wstore_new=(stand->cell->discharge.dmass_lake+stand->cell->discharge.dmass_river)/stand->cell->coord.area+stand->cell->ground_st+stand->cell->ground_st_am;
   water_after+=soilwater(&stand->soil);
   Real wfluxes_new=(stand->cell->balance.excess_water+stand->cell->lateral_water+stand->cell->balance.awater_flux+stand->cell->balance.aevap_res+stand->cell->balance.aevap_lake-stand->cell->balance.aMT_water);
   forrootsoillayer(l)

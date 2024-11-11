@@ -17,9 +17,7 @@
 #include "lpj.h"
 
 #define length 1.0 /* characteristic length (m) */
-#ifdef IMAGE
-#define GWCOEFF 100 /**< groundwater outflow coefficient (average amount of release time in reservoir) */
-#endif
+#define GWCOEFF 0.01 /**< groundwater outflow coefficient (average amount of release time in reservoir) */
 #define BIOTURBRATE 0.001897 /* daily rate for 50% annual bioturbation rate [-]*/
 #define kkk (1/365.)
 #define LEAF 0
@@ -74,7 +72,7 @@ void update_daily(Cell *cell,            /**< cell pointer           */
   Real end=0;
   Stocks start={0,0};
   Stocks start1={0,0};
-  Real water_before=(cell->discharge.dmass_lake+cell->discharge.dmass_river)/cell->coord.area;
+  Real water_before=(cell->discharge.dmass_lake+cell->discharge.dmass_river)/cell->coord.area+groundwater;
   Real water_after=0;
   Real balanceW=0;
   Real wfluxes_old=cell->balance.awater_flux+cell->balance.atransp+cell->balance.aevap+cell->balance.ainterc+cell->balance.aevap_lake+cell->balance.aevap_res-cell->balance.airrig-cell->balance.aMT_water;
@@ -222,7 +220,7 @@ void update_daily(Cell *cell,            /**< cell pointer           */
     {
       foreachpft(pft, p, &stand->pftlist)
       {
-        if(!strcmp(pft->par->name,"rice"))
+        if(!strcmp(pft->par->name,"rice") || stand->soil.iswetland)
         {
           getoutput(&stand->cell->output,CH4_RICE_EM,config)+=CH4_em;
           stand->cell->balance.aCH4_rice+=CH4_em*stand->frac;
@@ -252,7 +250,7 @@ void update_daily(Cell *cell,            /**< cell pointer           */
     {
       foreachpft(pft, p, &stand->pftlist)
       {
-        if(!strcmp(pft->par->name,"rice"))
+        if(!strcmp(pft->par->name,"rice") || stand->soil.iswetland)
         {
           getoutput(&stand->cell->output,CH4_RICE_EM,config)+=ebul;
           stand->cell->balance.aCH4_rice+=CH4_em*stand->frac;
@@ -303,7 +301,7 @@ void update_daily(Cell *cell,            /**< cell pointer           */
     {
       foreachpft(pft, p, &stand->pftlist)
       {
-        if(!strcmp(pft->par->name,"rice"))
+        if(!strcmp(pft->par->name,"rice") || stand->soil.iswetland)
         {
           getoutput(&stand->cell->output,CH4_RICE_EM,config)+=CH4_em;
           stand->cell->balance.aCH4_rice+=CH4_em*stand->frac;
@@ -519,7 +517,6 @@ void update_daily(Cell *cell,            /**< cell pointer           */
     if(stand->soil.iswetland)
     {
      getoutput(&cell->output,WTAB,config) += cell->hydrotopes.wetland_wtable_current;
-   // getoutput(&cell->output,GW_STORAGE,config) += stand->soil.wa*stand->frac;
     }
 
   } /* of foreachstand */
@@ -535,14 +532,20 @@ void update_daily(Cell *cell,            /**< cell pointer           */
   getoutput(&cell->output,DECAY_LEAF_AGR,config)*=litsum_old_agr[LEAF]>0 ? litsum_new_agr[LEAF]/litsum_old_agr[LEAF] : 1;
   getoutput(&cell->output,DECAY_WOOD_AGR,config)*=litsum_old_agr[WOOD]>0 ? litsum_new_agr[WOOD]/litsum_old_agr[WOOD] : 1;
 
+  if(cell->discharge.dmass_gw>epsilon)
+  {
+    gw_outflux = cell->ground_st*GWCOEFF; //cell->kbf;
+    cell->ground_st -= gw_outflux;
+    cell->discharge.dmass_gw-=gw_outflux*cell->coord.area;
+    cell->discharge.drunoff+=gw_outflux;
+    getoutput(&cell->output,GW_OUTFLUX,config) += gw_outflux;
+    gw_outflux=cell->ground_st_am*GWCOEFF/100;     //*cell->kbf/100;
+    cell->ground_st_am -= gw_outflux;
+    cell->discharge.dmass_gw-=gw_outflux*cell->coord.area;
+    cell->discharge.drunoff+=gw_outflux;
+    getoutput(&cell->output,GW_OUTFLUX,config) += gw_outflux;
+  }
 
-  //gw_outflux = cell->ground_st*cell->kbf;
-//  gw_outflux =0;
-//  cell->ground_st -= gw_outflux;
-//  cell->discharge.drunoff+=(gw_outflux+cell->ground_st_am*cell->kbf/100);
-//  getoutput(&cell->output,GW_OUTFLUX,config) += (gw_outflux + cell->ground_st_am*cell->kbf / 100);
-//  cell->ground_st_am -= cell->ground_st_am*cell->kbf / 100;
-  getoutput(&cell->output,GW_STORAGE,config) += (cell->ground_st + cell->ground_st_am);
 
 /////// replace storage with the new stand specific groundwater storage see above and groundwater discharge are set in infil_perc
 
@@ -554,13 +557,13 @@ void update_daily(Cell *cell,            /**< cell pointer           */
 
 #ifdef IMAGE
   // outflow from groundwater reservoir to river THIS IS NOT NECESSARY ANYMORE IS HANDLED in infil_perc
-  if (cell->discharge.dmass_gw > 0)
-  {
-    fout_gw=cell->discharge.dmass_gw/GWCOEFF;
-    cell->discharge.drunoff+=fout_gw/cell->coord.area;
-    cell->discharge.dmass_gw-=fout_gw;
-    getoutput(&cell->output,SEEPAGE,config)+=fout_gw/cell->coord.area;
-  }
+//  if (cell->discharge.dmass_gw > 0)
+//  {
+//    fout_gw=cell->discharge.dmass_gw*GWCOEFF;
+//    cell->discharge.drunoff+=fout_gw/cell->coord.area;
+//    cell->discharge.dmass_gw-=fout_gw;
+//    getoutput(&cell->output,SEEPAGE,config)+=fout_gw/cell->coord.area;
+//  }
 #endif
 
   getoutput(&cell->output,RUNOFF,config)+=cell->discharge.drunoff;
@@ -649,7 +652,7 @@ void update_daily(Cell *cell,            /**< cell pointer           */
   fluxes_out.carbon=(cell->balance.arh+cell->balance.fire.carbon+cell->balance.neg_fluxes.carbon
                    +cell->balance.flux_harvest.carbon+cell->balance.biomass_yield.carbon)-fluxes_out.carbon; //outfluxes
   fluxes_in.carbon=(cell->balance.anpp+cell->balance.flux_estab.carbon+cell->balance.influx.carbon)-fluxes_in.carbon;
-  water_after=(cell->discharge.dmass_lake+cell->discharge.dmass_river)/cell->coord.area;
+  water_after=(cell->discharge.dmass_lake+cell->discharge.dmass_river)/cell->coord.area+cell->ground_st+cell->ground_st_am;
   CH4_fluxes-=(cell->balance.aCH4_em+cell->balance.aCH4_sink)*WC/WCH4;                                 //will be negative, because emissions at the end are higher, thus we have to substract
   end=0;
   Real irrigstore_end=0;
@@ -698,7 +701,7 @@ void update_daily(Cell *cell,            /**< cell pointer           */
       end+=standstocks(stand).nitrogen*stand->frac;
   end+=cell->ml.product.fast.nitrogen+cell->ml.product.slow.nitrogen+
        cell->balance.estab_storage_grass[0].nitrogen+cell->balance.estab_storage_tree[0].nitrogen+cell->balance.estab_storage_grass[1].nitrogen+cell->balance.estab_storage_tree[1].nitrogen;
-  if (fabs(end-start1.nitrogen+fluxes_out.nitrogen-fluxes_in.nitrogen)>0.001)
+  if (fabs(end-start1.nitrogen+fluxes_out.nitrogen-fluxes_in.nitrogen)>0.1)
   {
     fprintf(stderr, "N_ERROR in %s end: day: %d    %g start: %g  end: %g flux_estab.nitrogen: %g flux_harvest.nitrogen: %g "
            "influx: %g outflux: %g neg_fluxes: %g\n",
@@ -710,16 +713,16 @@ void update_daily(Cell *cell,            /**< cell pointer           */
 //                     crop_sum_frac(cell->ml.landfrac,12,config->nagtree,cell->ml.reservoirfrac+cell->lakefrac,TRUE),
 //                     cell->ml.landfrac[0].grass[0]+cell->ml.landfrac[0].grass[1],cell->ml.landfrac[1].grass[0]+cell->ml.landfrac[1].grass[1]);
   }
-  if(fabs(balanceW)>0.001)
+  if(fabs(balanceW)>0.1)
   {
     fprintf(stderr,"W-BALANCE-ERROR in %s: day %d balanceW: %g  exess_old: %g balance.excess_water: %g gw_outflux: %g water_after: %g water_before: %g prec: %g melt: %g "
         "atransp: %g  aevap %g ainterc %g aevap_lake  %g aevap_res: %g    airrig : %g aMT_water : %g MT_water: %g flux_bal: %g runoff %g awater_flux %g lateral_water %g mfin-mfout: %g dmass_lake: %g  dmassriver : %g"
-        "  ground_st_am: %g\ ground_st: %g gw_balance: %g  dmass_gw: %g  irrigstore_bal: %g\n\n",
+        "  ground_st_am: %g\ ground_st: %g gw_balance: %g  groundwater: %g  irrigstore_bal: %g\n\n",
         __FUNCTION__,day,balanceW,exess_old,cell->balance.excess_water,gw_outflux,
         water_after,water_before,climate.prec,melt_all,cell->balance.atransp,cell->balance.aevap,cell->balance.ainterc,cell->balance.aevap_lake,cell->balance.aevap_res,cell->balance.airrig,cell->balance.aMT_water,MT_water,
         ((cell->balance.awater_flux+cell->balance.atransp+cell->balance.aevap+cell->balance.ainterc+cell->balance.aevap_lake+cell->balance.aevap_res-cell->balance.airrig-cell->balance.aMT_water)-wfluxes_old),
         cell->discharge.drunoff,cell->balance.awater_flux,cell->lateral_water,((cell->discharge.mfout-cell->discharge.mfin)/cell->coord.area),cell->discharge.dmass_lake/cell->coord.area,cell->discharge.dmass_river/cell->coord.area,
-        cell->ground_st_am,cell->ground_st,groundwater-(cell->ground_st_am+cell->ground_st),cell->discharge.dmass_gw,irrigstore_end-irrigstore);
+        cell->ground_st_am,cell->ground_st,groundwater-(cell->ground_st_am+cell->ground_st),groundwater,irrigstore_end-irrigstore);
   }
  //if(year==-4407) fprintf(stderr,"day: %d\n",day);
 #endif

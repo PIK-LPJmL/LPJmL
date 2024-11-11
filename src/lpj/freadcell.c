@@ -75,7 +75,7 @@ Bool freadcell(FILE *file,             /**< File pointer to binary file */
     }
     else
     {
-      cell->discharge.dmass_gw=5000*cell->coord.area;;
+      cell->discharge.dmass_gw=(cell->ground_st+cell->ground_st_am)*cell->coord.area;;
       cell->discharge.withdrawal=cell->discharge.withdrawal_gw=0;
 #ifdef COUPLING_WITH_FMS
       cell->laketemp=0;

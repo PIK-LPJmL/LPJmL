@@ -59,7 +59,7 @@ void fprintflux(FILE *file,          /**< Output file pointer */
     else
       fputs(" -----------------------",file);
     if(config->river_routing)
-      fputs("-----------",file);
+      fputs("---------------",file);
     if(config->withlanduse!=NO_LANDUSE)
       fputs(" ---------------------------------------",file);
     else

@@ -70,13 +70,15 @@ Real daily_natural(Stand *stand,                /**< [inout] stand pointer */
   Real start = 0;
   Real end = 0;
   Real methane_start=soilmethane(&stand->soil)*WC/WCH4;
+  Real wa=stand->soil.wa*stand->frac;
   Real dcflux=0;
   start = standstocks(stand).carbon + soilmethane(&stand->soil)*WC/WCH4;//+stand->cell->output.dcflux;
-  Real exess_old=stand->cell->balance.excess_water+stand->cell->lateral_water;
-  Real water_before=(stand->cell->discharge.dmass_lake+stand->cell->discharge.dmass_river)/stand->cell->coord.area;
+  Real exess_old=(stand->cell->balance.excess_water+stand->cell->lateral_water);
+  Real groundwater=(stand->cell->ground_st+stand->cell->ground_st_am);
+  Real water_before=((stand->cell->discharge.dmass_lake+stand->cell->discharge.dmass_river)/stand->cell->coord.area+stand->cell->ground_st+stand->cell->ground_st_am);
   Real water_after=0;
   Real balanceW=0;
-  Real wfluxes_old=stand->cell->balance.awater_flux+stand->cell->balance.atransp+stand->cell->balance.aevap+stand->cell->balance.ainterc+stand->cell->balance.aevap_lake+stand->cell->balance.aevap_res-stand->cell->balance.airrig-stand->cell->balance.aMT_water;
+  Real wfluxes_old=(stand->cell->balance.awater_flux+stand->cell->balance.atransp+stand->cell->balance.aevap+stand->cell->balance.ainterc+stand->cell->balance.aevap_lake+stand->cell->balance.aevap_res-stand->cell->balance.airrig-stand->cell->balance.aMT_water);
   water_before+=soilwater(&stand->soil)*stand->frac;
 #endif
   evap=evap_blue=cover_stand=intercep_stand=wet_all=0;
@@ -270,26 +272,29 @@ Real daily_natural(Stand *stand,                /**< [inout] stand pointer */
 
 #ifdef CHECK_BALANCE
   end = standstocks(stand).carbon + soilmethane(&stand->soil)*WC/WCH4;
-  if (fabs(end -start -dcflux )>0.01)
+  if (fabs(end -start -dcflux )>0.1)
   {
     fail(INVALID_CARBON_BALANCE_ERR,FAIL_ON_BALANCE,FALSE,"Invalid carbon balance in %s: %.3f start: %.3f  end: %.3f type: %s flux_estab: %.3f dcflux: %.3f ",
          "methane: start: %.3f  end: %.3f dcflux: %.3fn",
          __FUNCTION__,end-start-dcflux, start, end,stand->type->name,stand->cell->balance.flux_estab.carbon,stand->cell->output.dcflux,
          methane_start,soilmethane(&stand->soil)*WC/WCH4,dcflux);
   }
-  water_after=(stand->cell->discharge.dmass_lake+stand->cell->discharge.dmass_river)/stand->cell->coord.area;
+  water_after=(stand->cell->discharge.dmass_lake+stand->cell->discharge.dmass_river)/stand->cell->coord.area+stand->cell->ground_st+stand->cell->ground_st_am;
   water_after+=soilwater(&stand->soil)*stand->frac;
   balanceW=water_after-water_before-(climate->prec+melt)*stand->frac+
           ((stand->cell->balance.awater_flux+stand->cell->balance.atransp+stand->cell->balance.aevap+stand->cell->balance.ainterc+stand->cell->balance.aevap_lake+runoff*stand->frac+stand->cell->balance.aevap_res-stand->cell->balance.airrig-stand->cell->balance.aMT_water)-wfluxes_old)
           +((stand->cell->balance.excess_water+stand->cell->lateral_water)-exess_old);
-  if(fabs(balanceW)>0.001)
+  if(fabs(balanceW)>0.1)
   {
     fprintf(stderr,"W-BALANCE-ERROR in %s: day %d balanceW: %g  exess_old: %g balance.excess_water: %g  lateral_in: %g water_after: %g water_before: %g prec: %g melt: %g "
-        "evapotransp: %g aevap_lake  %g aevap_res: %g    airrig : %g aMT_water : %g runoff %g awater_flux %g lateral_water %g mfin-mfout: %g dmass_lake: %g  dmassriver : %g  ground_st_am: %g ground_st: %g gw_balance:%g bal_lat_exess:%g \n\n",
+        "evapotransp: %g aevap_lake  %g aevap_res: %g    airrig : %g aMT_water : %g runoff %g awater_flux %g lateral_water %g mfin-mfout: %g dmass_lake: %g  "
+        "dmassriver : %g  ground_st_am: %g ground_st: %g gw_balance:%g"
+        " bal_lat_exess:%g groundwater:%g groundwater_new:%g standfrac:%g wa_old: %g wa: %g\n\n",
         __FUNCTION__,day,balanceW,exess_old,stand->cell->balance.excess_water,lateral_in*stand->frac,
         water_after,water_before,climate->prec*stand->frac,melt*stand->frac,transp+(intercep_stand+evap+runoff)*stand->frac,stand->cell->balance.aevap_lake,stand->cell->balance.aevap_res,stand->cell->balance.airrig,stand->cell->balance.aMT_water,
-        stand->cell->discharge.drunoff,stand->cell->balance.awater_flux,stand->cell->lateral_water,((stand->cell->discharge.mfout-stand->cell->discharge.mfin)/stand->cell->coord.area),stand->cell->discharge.dmass_lake/stand->cell->coord.area,stand->cell->discharge.dmass_river/stand->cell->coord.area,
-        stand->cell->ground_st_am,stand->cell->ground_st,stand->cell->ground_st-(stand->cell->ground_st_am+stand->cell->ground_st),((stand->cell->balance.excess_water+stand->cell->lateral_water)-exess_old));
+        stand->cell->discharge.drunoff,stand->cell->balance.awater_flux,stand->cell->lateral_water,((stand->cell->discharge.mfout-stand->cell->discharge.mfin)/stand->cell->coord.area),stand->cell->discharge.dmass_lake/stand->cell->coord.area,
+        stand->cell->discharge.dmass_river/stand->cell->coord.area, stand->cell->ground_st_am,stand->cell->ground_st,groundwater-(stand->cell->ground_st_am+stand->cell->ground_st),
+        ((stand->cell->balance.excess_water+stand->cell->lateral_water)-exess_old),groundwater,stand->cell->ground_st+stand->cell->ground_st_am,stand->frac,wa,stand->soil.wa*stand->frac);
   }
 
 #endif

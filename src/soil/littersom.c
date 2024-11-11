@@ -34,8 +34,8 @@
 
 #define MOIST_DENOM 0.63212055882855767841 /* (1.0-exp(-1.0)) */
 #define K10_YEDOMA 0.025/NDAYYEAR
-#define k_red 10                           /*anoxic decomposition is much smaller than oxic decomposition Khovorostyanov et al., 2008*/
-#define k_red_litter 10
+#define k_red 2                           /*anoxic decomposition is much smaller than oxic decomposition Khovorostyanov et al., 2008*/
+#define k_red_litter 2
 #define INTERCEPT 0.04021601              /* changed from 0.10021601 now again original value*/
 #define MOIST_3 -5.00505434
 #define MOIST_2 4.26937932

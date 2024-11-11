@@ -29,6 +29,7 @@ void update_annual(Cell *cell,          /**< Pointer to cell */
                   )
 {
   int s,p,m,l,cft;
+  String line;
   Stand *stand;
   Pftcroppar *croppar;
   Real mintemp[N];
@@ -91,7 +92,7 @@ void update_annual(Cell *cell,          /**< Pointer to cell */
       cell->balance.estab_storage_grass[0].carbon+cell->balance.estab_storage_tree[0].carbon+cell->balance.estab_storage_grass[1].carbon+cell->balance.estab_storage_tree[1].carbon;
   start.nitrogen+=cell->ml.product.fast.nitrogen+cell->ml.product.slow.nitrogen+
       cell->balance.estab_storage_grass[0].nitrogen+cell->balance.estab_storage_tree[0].nitrogen+cell->balance.estab_storage_grass[1].nitrogen+cell->balance.estab_storage_tree[1].nitrogen;
-
+  start_w+=cell->balance.excess_water;
   fluxes_fire=cell->balance.fire;
   fluxes_estab=cell->balance.flux_estab;
   fluxes_neg=cell->balance.neg_fluxes;
@@ -120,6 +121,7 @@ void update_annual(Cell *cell,          /**< Pointer to cell */
       wetlandfrac+=stand->frac;
   } /* of foreachstand */
 #ifdef CHECK_BALANCE
+  end_w+=cell->balance.excess_water;
   foreachstand(stand,s,cell->standlist)
   {
     st=standstocks(stand);
@@ -152,6 +154,7 @@ void update_annual(Cell *cell,          /**< Pointer to cell */
     update_wetland(cell, npft + ncft,year,config);
 #ifdef CHECK_BALANCE
   end.carbon=end.nitrogen = end_w=0;
+  end_w+=cell->balance.excess_water;
   foreachstand(stand, s, cell->standlist)
   {
     st=standstocks(stand);
@@ -201,8 +204,13 @@ void update_annual(Cell *cell,          /**< Pointer to cell */
   }
   product_turnover(cell,config);
 #endif
+  if(cell->discharge.dmass_gw<0)
+  {
+    //fprintf(stderr,"y: %d cell: (%s) negative GW dmass_gw:%g ground_st_am:%g ground_st:%g drunoff:%g \n",year,sprintcoord(line,&cell->coord),cell->discharge.dmass_gw,cell->ground_st_am,cell->ground_st,cell->discharge.drunoff,cell->kbf);
+  }
 #ifdef CHECK_BALANCE
   end.carbon=end.nitrogen = end_w=0;
+  end_w+=cell->balance.excess_water;
   foreachstand(stand, s, cell->standlist)
   {
     st=standstocks(stand);

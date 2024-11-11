@@ -271,9 +271,10 @@ void iterateyear(Outputfile *output,  /**< Output file data */
       }*/
       if(config->equilsoil)
       {
-        if((year-(config->firstyear-config->nspinup+param.veg_equil_year-param.equisoil_years))%param.equisoil_interval==0 && 
-            (year-(config->firstyear-config->nspinup+param.veg_equil_year-param.equisoil_years))/param.equisoil_interval>=0 &&
-            (year-(config->firstyear-config->nspinup+param.veg_equil_year-param.equisoil_years))/param.equisoil_interval<param.nequilsoil)
+//        if((year-(config->firstyear-config->nspinup+param.veg_equil_year-param.equisoil_years))%param.equisoil_interval==0 &&
+//            (year-(config->firstyear-config->nspinup+param.veg_equil_year-param.equisoil_years))/param.equisoil_interval>=0 &&
+//            (year-(config->firstyear-config->nspinup+param.veg_equil_year-param.equisoil_years))/param.equisoil_interval<param.nequilsoil)
+        if(year==(config->firstyear-config->nspinup+param.veg_equil_year-param.equisoil_years))
           equilveg(grid+cell,npft+ncft);
 
         if(year==(config->firstyear-config->nspinup+param.veg_equil_year))
@@ -282,12 +283,15 @@ void iterateyear(Outputfile *output,  /**< Output file data */
         if((year-(config->firstyear-config->nspinup+param.veg_equil_year))%param.equisoil_interval==0 && 
             (year-(config->firstyear-config->nspinup+param.veg_equil_year))/param.equisoil_interval>0 &&
             (year-(config->firstyear-config->nspinup+param.veg_equil_year))/param.equisoil_interval<param.nequilsoil)
+        {
           equilsom(grid+cell,npft+ncft,config->pftpar,FALSE);
+          equilveg(grid+cell,npft+ncft);
+        }
 
         if(param.equisoil_fadeout>0)
         {
-          if(year==(config->firstyear-config->nspinup+param.veg_equil_year+param.equisoil_interval*param.nequilsoil))
-            equilveg(grid+cell,npft+ncft);
+//          if(year==(config->firstyear-config->nspinup+param.veg_equil_year+param.equisoil_interval*param.nequilsoil))
+//            equilveg(grid+cell,npft+ncft);
 
           if(year==(config->firstyear-config->nspinup+param.veg_equil_year+param.equisoil_interval*param.nequilsoil+param.equisoil_fadeout))
             equilsom(grid+cell,npft+ncft,config->pftpar,FALSE);

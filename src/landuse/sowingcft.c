@@ -153,14 +153,19 @@ void sowingcft(Stocks *flux_estab,  /**< establishment flux */
     s=findlandusetype(cell->standlist,(irrig) ? SETASIDE_RF : SETASIDE_IR);
   if(s==NOT_FOUND)
     s=findlandusetype(cell->standlist,SETASIDE_WETLAND);
+
+//  if(s!=NOT_FOUND)
+//    {
+//      setasidestand=getstand(cell->standlist,s);
+//      if(setasidestand->frac<(param.tinyfrac)) s=NOT_FOUND;
+//    }
+//
   if(s!=NOT_FOUND)
   {
     setasidestand=getstand(cell->standlist,s);
     foreachpft(pft,p,&setasidestand->pftlist)
      if(pft->bm_inc.carbon>0) *alloc_today=FALSE;
-//    if(year==1880) printf("CFT: %d PFT %s on irrig: %d standname: %s landfrac: %g other_ %g\n",
-//        cft,pft->par->name,irrig,setasidestand->type->name,cell->ml.landfrac[irrig].crop[cft],cell->ml.landfrac[irrig].grass[0]);
-    cultcftstand(flux_estab,alloc_today,cell,setasidestand,irrig,wtype,nofallow,npft,ncft,cft,year,day,isother,config);
+     cultcftstand(flux_estab,alloc_today,cell,setasidestand,irrig,wtype,nofallow,npft,ncft,cft,year,day,isother,config);
   }
   else
   {

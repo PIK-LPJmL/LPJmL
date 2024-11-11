@@ -14,7 +14,7 @@
 
 #include "lpj.h"
 #include "tree.h"
-#define inun_mort 0.8
+#define inun_mort 0.9
 
 #define ramp_gddtw 400.0 /* ramp for heat damage function. Above 200      */
                          /* growing degree days above the upper limit tw, */

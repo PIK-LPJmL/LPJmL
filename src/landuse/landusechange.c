@@ -142,7 +142,7 @@ void deforest(Cell *cell,          /**< pointer to cell */
     if(iswetland)
       difffrac_wetland=difffrac_old-difffrac;
   }
-  if(difffrac>0)
+  if(difffrac>epsilon)
   {
     difffrac_old=difffrac;
     if(iswetland)

@@ -82,8 +82,6 @@ Real water_stressed(Pft *pft,                  /**< [inout] pointer to PFT varia
   Real istress=0;
   aet_frac = 1;
   aet=0;
-  if(pft->inun_count>pft->par->inun_dur)
-    pft->inun_count=pft->par->inun_dur;
   if (-pft->stand->soil.wtable >= pft->par->inun_thres)
     pft->inun_count++;
   else
@@ -92,9 +90,10 @@ Real water_stressed(Pft *pft,                  /**< [inout] pointer to PFT varia
     pft->inun_count = 0;
 
   if(pft->inun_count>pft->par->inun_dur)
-    istress=1;
-  else
-    istress=pft->inun_count/pft->par->inun_dur;
+    pft->inun_count=pft->par->inun_dur;
+
+  istress=1.2*pft->inun_count/(pft->inun_count+pft->par->inun_dur);
+
   if(istress>1 || istress<0)
     fail(INVALID_INUNDSTRESS_ERR,TRUE,TRUE,"Inundation stress %g>1, isstress inun_count=%d, inun_dur=%d",
          pft->nind,istress,pft->inun_count,pft->par->inun_dur);

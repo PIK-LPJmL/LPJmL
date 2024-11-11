@@ -322,8 +322,8 @@ fprintf(stderr,"w[%d] %3.12f, fw[%d] %3.12f, icedepth[%d] %3.12f, whcs[%d] %3.12
       stand->frac_g[l]=1;
     if(stand->frac_g[l]<0)
       stand->frac_g[l]=0;
-    stand->cell->discharge.drunoff+=marginal*stand->frac;
-    stand->cell->balance.awater_flux+=marginal*stand->frac;
+    stand->cell->discharge.drunoff+=marginal*stand->frac;    // drunoff included in awater_flux rm next line
+    //stand->cell->balance.awater_flux+=marginal*stand->frac;
     if(isnan(soil->w[l] )||  isnan(soil->w_fw[l]) || isnan(stand->cell->balance.atransp))
     {
       fail(FPE_ERR,TRUE,TRUE,"in waterbalance() Cell (%s) alance.atranspt= %3.5f  aet= %3.5f evap= %3.5f cover= %3.2f soilwater=%.4f soilice:%.4f w=%.4f fw:%.4f wpwps:%.4f wsats=%.6f layer: %d\n",
