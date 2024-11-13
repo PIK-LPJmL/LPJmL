@@ -38,6 +38,7 @@ of `major.minor.patch` with
 ### Fixed
 
 - Missing dependency on `gebuild.c` for target `lpjml` added in `src/Makefile`.
+- `xiar` replaced by `ar` in `Makefile.hpc2024` in order to compile with `intel/oneAPI/2025.0.0`.
 
 
 ## [5.9.15] - 2024-11-07
