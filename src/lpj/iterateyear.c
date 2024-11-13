@@ -322,7 +322,7 @@ void iterateyear(Outputfile *output,  /**< Output file data */
 #ifdef IMAGE
       grid[cell].balance.surface_storage = grid[cell].discharge.dmass_lake + grid[cell].discharge.dmass_river + grid[cell].discharge.dmass_gw;
 #else
-      grid[cell].balance.surface_storage=grid[cell].discharge.dmass_lake+grid[cell].discharge.dmass_river;
+      grid[cell].balance.surface_storage=grid[cell].discharge.dmass_lake+grid[cell].discharge.dmass_river + grid[cell].discharge.dmass_gw;
 #endif
       if(grid[cell].ml.dam)
         grid[cell].balance.surface_storage+=reservoir_surface_storage(grid[cell].ml.resdata);

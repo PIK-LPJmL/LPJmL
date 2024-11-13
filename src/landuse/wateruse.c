@@ -160,8 +160,8 @@ void wateruse(Cell *grid,          /**< LPJ grid */
             grid[cell].ground_st_am+=grid[cell].ground_st;
             grid[cell].ground_st=0;
           }
-          grid[cell].balance.awater_flux+=grid[cell].discharge.irrig_unmet/grid[cell].coord.area;
-          grid[cell].balance.gw_withdrawal+=grid[cell].discharge.irrig_unmet/grid[cell].coord.area;                            //water pool changes
+          grid[cell].balance.awater_flux-=grid[cell].discharge.irrig_unmet/grid[cell].coord.area;
+          grid[cell].balance.gw_withdrawal+=grid[cell].discharge.irrig_unmet;                            //water pool changes
           getoutput(&grid[cell].output,WD_GW,config)+=grid[cell].discharge.irrig_unmet/grid[cell].coord.area;
           grid[cell].discharge.irrig_unmet=0; // no unmet demand
         }
@@ -175,8 +175,8 @@ void wateruse(Cell *grid,          /**< LPJ grid */
             grid[cell].ground_st_am+=grid[cell].ground_st;
             grid[cell].ground_st=0;
           }
-          grid[cell].balance.awater_flux+=wd_gw/grid[cell].coord.area;
-          grid[cell].balance.gw_withdrawal+=wd_gw/grid[cell].coord.area;                            //water pool changes
+          grid[cell].balance.awater_flux-=wd_gw/grid[cell].coord.area;
+          grid[cell].balance.gw_withdrawal+=wd_gw;                            //water pool changes
           getoutput(&grid[cell].output,WD_GW,config)+=grid[cell].discharge.dmass_gw/grid[cell].coord.area;
           grid[cell].discharge.irrig_unmet-=wd_gw; //rest of unmet demand
           grid[cell].discharge.dmass_gw=0.0;

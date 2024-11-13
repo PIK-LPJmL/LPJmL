@@ -167,7 +167,7 @@ void check_fluxes(Cell *cell,          /**< cell pointer */
 #ifdef IMAGE
   totw=(cell->discharge.dmass_lake+cell->discharge.dmass_river+cell->discharge.dmass_gw)/cell->coord.area;            //CAREFULL HERE IT HAS CHANGED
 #else
-  totw=(cell->discharge.dmass_lake+cell->discharge.dmass_river+cell->discharge.dmass_gw)/cell->coord.area;                   // dmass_gw not needed! should be accounted for in soil->wa pool taken out from soilwater
+  totw=(cell->discharge.dmass_lake+cell->discharge.dmass_river)/cell->coord.area+cell->ground_st+cell->ground_st_am;
 #endif
   foreachstand(stand,s,cell->standlist)
   {

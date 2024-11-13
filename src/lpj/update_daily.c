@@ -253,7 +253,7 @@ void update_daily(Cell *cell,            /**< cell pointer           */
         if(!strcmp(pft->par->name,"rice") || stand->soil.iswetland)
         {
           getoutput(&stand->cell->output,CH4_RICE_EM,config)+=ebul;
-          stand->cell->balance.aCH4_rice+=CH4_em*stand->frac;
+          stand->cell->balance.aCH4_rice+=ebul*stand->frac;
         }
         else
         {

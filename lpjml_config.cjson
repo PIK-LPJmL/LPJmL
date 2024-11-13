@@ -55,6 +55,7 @@
   "with_lakes" : true,      /* enable lakes (true/false) */
   "river_routing" : true,   /* enable river routing (requires input matching grid and lakes/reservoirs) */
   "extflow" : false,        /* enable discharge inflow for regional runs (requires extflow_filename) */
+  "groundwater_irrig" : true, /* enable groundwater use for irrigation */
   "permafrost" : true,      /* enable permafrost */
   "dynamic_CH4" : false,
   "anomaly" : false,

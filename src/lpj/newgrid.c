@@ -294,7 +294,7 @@ static Cell *newgrid2(Config *config,          /* Pointer to LPJ configuration *
     grid[i].discharge.wd_neighbour=grid[i].discharge.wd_deficit=0.0;
     grid[i].discharge.mfout=grid[i].discharge.mfin=0.0;
     grid[i].ground_st = 5000*0.3;
-    grid[i].ground_st_am = 500*0.7;
+    grid[i].ground_st_am = 5000*0.7;
     grid[i].discharge.dmass_sum=0.0;
     grid[i].discharge.fin_ext=0.0;
     grid[i].discharge.afin_ext=0.0;
