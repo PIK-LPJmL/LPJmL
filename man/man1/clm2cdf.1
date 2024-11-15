@@ -3,8 +3,9 @@
 clm2cdf \- convert CLM files into NetCDF files
 .SH SYNOPSIS
 .B clm2cdf
-[\-h] [\-v] [\-global] [\-scale factor] [\-cellsize size] [\-byte] [\-int] [\-float] [[\-attr name=value] ...] [\-intnetcdf] [\-metafile] [\-map name] [\-raw] [\-nbands n] [\-landuse] [\-notime] [\-compress level] [\-units u] [\-descr d] [\-missing_value val] [\-netcdf4]
-.I [varname gridfile] clmfile netcdffile
+[\-h] [\-v] [\-global] [\-longheader] [\-scale factor] [\-cellsize size] [\-byte] [\-int] [\-float] [[\-attr name=value] ...] [\-intnetcdf] [\-metafile] [\-map name] [\-raw] [\-nbands n] [\-landuse] [\-notime] [\-compress level] [\-units u] [\-descr d] [\-missing_value val] [\-netcdf4]
+[varname \fIgridfile\fP]
+.I clmfile netcdffile
 .SH DESCRIPTION
 Program converts CLM input data into NetCDF input data.
 .SH OPTIONS
@@ -79,7 +80,7 @@ varname
 Variable name in NetCDF file. Variable name can be omitted if -metafile option is set. Then variable name is read from metafile.
 .TP
 .I gridfile
-Filename of grid data file. Grid filename can be omitted if -metafile option is set.Then grid filename is read from metafile.
+Filename of grid data file. Grid filename can be omitted if -metafile option is set. Then grid filename is read from metafile.
 .TP
 .I clmfile
 Filename of CLM data file.
@@ -103,7 +104,7 @@ Non zero is returned in case of failure.
 
 .SH AUTHORS
 
-See AUTHORS file
+For authors and contributors see AUTHORS file
 
 .SH COPYRIGHT
 

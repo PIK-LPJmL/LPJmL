@@ -145,6 +145,9 @@ Coord_array *createcoord(Outputfile *output,
       }
       array->nlon=(int)((lon_max-array->lon_min)/config->resolution.lon+0.5)+1;
       array->nlat=(int)((lat_max-array->lat_min)/config->resolution.lat+0.5)+1;
+      array->lon_res=config->resolution.lon;
+      array->lat_res=config->resolution.lat;
+      array->rev_lat=config->rev_lat;
       if(config->rev_lat)
         for(cell=0;cell<config->total;cell++)
         {

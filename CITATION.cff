@@ -117,7 +117,7 @@ authors:
     affiliation: "Potsdam Institute for Climate Impact Research (PIK)"
 
 title: "LPJmL: central open-source github repository of LPJmL at PIK"
-version: "5.9.14"
+version: "5.9.15"
 repository-code: https://github.com/PIK-LPJmL/LPJmL
 
 keywords:
