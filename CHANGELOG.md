@@ -45,6 +45,7 @@ of `major.minor.patch` with
 - Missing dependency on `gebuild.c` for target `lpjml` added in `src/Makefile`.
 - `xiar` replaced by `ar` in `Makefile.hpc2024` in order to compile with `intel/oneAPI/2025.0.0`.
 - Typos in error messages in `filesexist.c` and `cdf2soil.c`fixed.
+- Missing check for open file added to `joingrid.c`.
 
 
 ## [5.9.15] - 2024-11-07
