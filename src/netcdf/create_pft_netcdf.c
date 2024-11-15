@@ -418,8 +418,17 @@ Bool create_pft_netcdf(Netcdf *cdf,
   rc=nc_put_att_text(cdf->ncid,NC_GLOBAL,"title",
                      strlen(config->sim_name),config->sim_name);
   error(rc);
-  rc=nc_put_att_text(cdf->ncid,NC_GLOBAL,"source",strlen("LPJmL C Version " LPJ_VERSION),
-                     "LPJmL C Version " LPJ_VERSION);
+  len=snprintf(NULL,0,"LPJmL C Version %s",getversion());
+  s=malloc(len+1);
+  sprintf(s,"LPJmL C Version %s",getversion());
+  rc=nc_put_att_text(cdf->ncid,NC_GLOBAL,"source",strlen(s),s);
+  free(s);
+  error(rc);
+  rc=nc_put_att_text(cdf->ncid,NC_GLOBAL,"GIT_repo",
+                     strlen(getrepo()),getrepo());
+  error(rc);
+  rc=nc_put_att_text(cdf->ncid,NC_GLOBAL,"GIT_hash",
+                     strlen(gethash()),gethash());
   error(rc);
   time(&t);
   len=snprintf(NULL,0,"%s: %s",strdate(&t),config->arglist);

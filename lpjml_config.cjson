@@ -2,7 +2,7 @@
 /**                                                                                \n**/
 /**           l  p  j  m  l  _  c  o  n  f  i  g  .  c  j  s  o  n                 \n**/
 /**                                                                                \n**/
-/** Default configuration file for LPJmL C Version 5.9.15                          \n**/
+/** Default configuration file for LPJmL C Version 5.9.16                          \n**/
 /**                                                                                \n**/
 /** Configuration file is divided into five sections:                              \n**/
 /**                                                                                \n**/
@@ -30,6 +30,12 @@
 /*  I. Simulation description and type section                       */
 /*===================================================================*/
 
+#ifdef GIT_REPO
+  "GIT_repo" : GIT_REPO,   /* name of repository will be put in by createconfig() */
+#endif
+#ifdef GIT_HASH
+  "GIT_hash" : GIT_HASH,   /* hash of repository will be put in by createconfig() */
+#endif
   "sim_name" : "LPJmL Run", /* Simulation description */
   "sim_id"   : "lpjml",     /* LPJML Simulation type with managed land use */
   "coupled_model" : null,   /* Coupled model: null (no model coupled), string (name of coupled model) */
