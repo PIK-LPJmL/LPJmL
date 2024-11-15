@@ -36,6 +36,10 @@ of `major.minor.patch` with
 
 - `LPJ_VERSION` macro in `lpj.h` replaced by function `getversion()`.
 
+### Removed
+
+- Obsolete header columns cereal and maize removed from `fprintcountrypar.c`.
+
 ### Fixed
 
 - Missing dependency on `gebuild.c` for target `lpjml` added in `src/Makefile`.
