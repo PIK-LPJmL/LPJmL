@@ -378,6 +378,7 @@ ID                               Fmt                        filename
     { "id" : "ch4_plant_gas",    "file" : { "fmt" : "cdf", "timestep" : 100, "name" : "output/ch4_plant_gas_spinup.nc"}},
     { "id" : "soilc",            "file" : { "fmt" : "cdf", "timestep" : 100, "name" : "output/soilc_spinup.nc"}},
     { "id" : "soilc_slow",       "file" : { "fmt" : "cdf", "timestep" : 100, "name" : "output/soilc_slow_spinup.nc"}},
+    { "id" : "soilc_layer",      "file" : { "fmt" : "cdf", "timestep" : 100, "name" : "output/soilc_layer.nc"}},
     { "id" : "litc",             "file" : { "fmt" : "cdf", "timestep" : 100, "name" : "output/litc_spinup.nc"}},
     { "id" : "vegc",             "file" : { "fmt" : "cdf", "timestep" : 100, "name" : "output/vegc_spinup.nc"}},
     { "id" : "fpc",              "file" : { "fmt" : "cdf", "timestep" : 100, "name" : "output/fpc_spinup_2.nc"}},
