@@ -70,10 +70,10 @@ Bool readconfig(Config *config,        /**< LPJ configuration */
       closeconfig(lpjfile);
       return TRUE;
     }
-    if(strncmp(s,LPJ_VERSION,strlen(s)))
+    if(strncmp(s,getversion(),strlen(s)))
     {
       if(verbosity)
-        fprintf(stderr,"WARNING025: LPJ version '%s' does not match '" LPJ_VERSION "'.\n",s);
+        fprintf(stderr,"WARNING025: LPJ version '%s' does not match '%s'.\n",s,getversion());
       if(config->pedantic)
       {
         closeconfig(lpjfile);

@@ -58,11 +58,12 @@ filename of clm data file.
 .SH EXAMPLE
 .TP
 Add header to daily climate float data:
-.B  addheader -type float -lastyear 2018 -nbands 365 floatdata.bin file.clm
+.B  addheader
+-type float -lastyear 2018 -nbands 365 floatdata.bin file.clm
 .PP
 .SH EXIT STATUS
 .B addheader
-return a zero exit status if clm file could be created.
+returns a zero exit status if clm file could be created.
 Non zero is returned in case of failure.
 
 .SH AUTHORS

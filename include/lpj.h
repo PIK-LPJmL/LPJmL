@@ -28,8 +28,6 @@
 #ifndef LPJ_H /* Already included? */
 #define LPJ_H
 
-#define LPJ_VERSION  "5.9.14"
-
 /* Necessary header files */
 
 /* Standard C header files */

@@ -328,6 +328,7 @@ extern void fprintincludes(FILE *,const char *,int,char **);
 extern size_t getsize(int,const Config *);
 extern int *fscanlandcovermap(LPJfile *,int *,const char *,int,const Config *);
 extern void createconfig(const Config *);
+extern Bool checkuniqoutput(int,int,const Config *);
 extern void closeconfig(LPJfile *);
 
 /* Definition of macros */
