@@ -18,6 +18,8 @@
 
 #define checkptr(ptr) if(ptr==NULL) { printallocerr(#ptr); return TRUE;}
 
+#define isopen2(output,index)  (isopen(output,index) || output->files[index].oneyear)
+
 Bool initoutput(Outputfile *outputfile, /**< Output data */
                 Cell grid[],            /**< LPJ grid */
                 int npft,               /**< number of natural PFTs */
@@ -36,7 +38,7 @@ Bool initoutput(Outputfile *outputfile, /**< Output data */
     config->outputsize[i]=outputsize(i,npft,ncft,config);
     if(config->outputsize[i]>maxsize)
       maxsize=config->outputsize[i];
-    if(isopen(outputfile,i))
+    if(isopen2(outputfile,i))
       totalsize+=config->outputsize[i];
     else
       isall=FALSE;
@@ -53,9 +55,9 @@ Bool initoutput(Outputfile *outputfile, /**< Output data */
   }
   config->outputsize[PFT_GCGP_COUNT]=config->outputsize[PFT_GCGP];
   config->outputsize[NDAY_MONTH]=config->outputsize[CFT_SWC];
-  if(isopen(outputfile,PFT_GCGP))
+  if(isopen2(outputfile,PFT_GCGP))
     totalsize+=config->outputsize[PFT_GCGP];
-  if(isopen(outputfile,CFT_SWC))
+  if(isopen2(outputfile,CFT_SWC))
     totalsize+=config->outputsize[CFT_SWC];
   if(!isall)
   {
@@ -68,7 +70,7 @@ Bool initoutput(Outputfile *outputfile, /**< Output data */
   /* calculate indices into output storage */
   for(i=FPC;i<NOUT;i++)
   {
-    if(isopen(outputfile,i))
+    if(isopen2(outputfile,i))
     {
       config->outputmap[i]=index;
       index+=config->outputsize[i];
@@ -86,14 +88,14 @@ Bool initoutput(Outputfile *outputfile, /**< Output data */
     else
       config->outputmap[i]=0; /* no output used, point to trash */
   }
-  if(isopen(outputfile,PFT_GCGP))
+  if(isopen2(outputfile,PFT_GCGP))
   {
     config->outputmap[PFT_GCGP_COUNT]=index;
     index+=config->outputsize[PFT_GCGP];
   }
   else
     config->outputmap[PFT_GCGP_COUNT]=0;
-  if(isopen(outputfile,CFT_SWC))
+  if(isopen2(outputfile,CFT_SWC))
   {
     config->outputmap[NDAY_MONTH]=index;
     index+=config->outputsize[CFT_SWC];

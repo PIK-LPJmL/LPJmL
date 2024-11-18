@@ -38,6 +38,7 @@ while(( "$#" )); do
     ;;
     -crumonthly)
     cru=1
+    shift 1
     ;;
     -oldlu)
     lu=1

@@ -1,12 +1,12 @@
 .TH country2cdf 1  "USER COMMANDS"
 .SH NAME
-country2cdf \- convert country/region code file into NetCDF file
+country2cdf \- convert country code file into NetCDF file
 .SH SYNOPSIS
 .B country2cdf
-[\-global] [-\cellsize size] [\-compress level] [\-descr d] [\-index {0|1}] [\-netcdf4]
-.I varname gridfile countryfile netcdffile
+[\-global] [\-cellsize size] [\-compress level] [\-descr d] [\-index {0|1}] [\-netcdf4] varname
+.I gridfile countryfile netcdffile
 .SH DESCRIPTION
-Program converts country/region input file into NetCDF file.
+Program converts country input file into NetCDF file.
 .SH OPTIONS
 .TP
 \-global
@@ -40,11 +40,9 @@ Filename of country/region code data file.
 Filename of NetCDF file created.
 .SH EXAMPLES
 .TP
-Create data file for country and region:
+Create data file for country:
 .B country2cdf
 country  grid.bin cow.bin country.nc
-.B country2cdf
-[-index 1] region  grid.bin cow.bin region.nc
 .PP
 .SH EXIT STATUS
 .B country2cdf
@@ -53,7 +51,7 @@ Non zero is returned in case of failure.
 
 .SH AUTHORS
 
-See AUTHORS file
+For authors and contributors see AUTHORS file
 
 .SH COPYRIGHT
 

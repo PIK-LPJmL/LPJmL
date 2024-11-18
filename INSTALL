@@ -29,7 +29,6 @@ untar source files
 
 gzip -cd lpjml-6.0.1.tar.gz|tar -xf -
 
-
 Directory tree after extracting the tar files:
 
 --lpjml

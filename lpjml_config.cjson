@@ -53,7 +53,7 @@
   "gsi_phenology" : true,   /* enable GSI phenology */
   "transp_suction_fcn" : false, /* enable new transpiration reduction function - NOT TESTED */
   "with_lakes" : true,      /* enable lakes (true/false) */
-  "river_routing" : true,   /* enable river routing (requires input matching grid and lakes/reservoirs) */
+  "river_routing" : false,   /* enable river routing (requires input matching grid and lakes/reservoirs) */
   "extflow" : false,        /* enable discharge inflow for regional runs (requires extflow_filename) */
   "permafrost" : true,      /* enable permafrost */
   "dynamic_CH4" : false,
@@ -229,7 +229,7 @@
   "flush_output" : false,     /* flush output to file every time step */
   "absyear" : false,          /* absolute years instead of years relative to baseyear (true/false) */
   "rev_lat" : false,          /* reverse order of latitudes in NetCDF output (true/false) */
-  "with_days" : true,         /* use days as units for monthly output in NetCDF files */
+  "with_days" : true,         /* use days as units for output in NetCDF files */
   "nofill" : false,           /* do not fill NetCDF files at creation (true/false) */
   "global_netcdf" : false,    /* use global grid for NetCDF files (true/false) */
   "netcdf4" : false,          /* NetCDF files are in NetCDF4 format (true/false) */

@@ -252,26 +252,26 @@ STATIC void timestep_implicit(Real * temp,
                              )
 {
   Real sub[NHEATGRIDP];  /* sub diagonal elements */
-  Real main[NHEATGRIDP]; /* main diagonal elements */
+  Real maind[NHEATGRIDP]; /* main diagonal elements */
   Real sup[NHEATGRIDP];  /* super diagonal elements */
 
   /* --- arrange matrix --- */
-  arrange_matrix(sub, main, sup, h, hcap, lam, dt);
+  arrange_matrix(sub, maind, sup, h, hcap, lam, dt);
 
   /* --- compute right-hand side ---  */
   /* See supplement of master thesis equation (6) */
   Real rhs[NHEATGRIDP];
   int j;
   /* matrix vector product Y * temp */
-  rhs[0] =  temp[1] * (2-main[0]) - temp[2] * sup[0];
+  rhs[0] =  temp[1] * (2-maind[0]) - temp[2] * sup[0];
   for (j=1; j<(NHEATGRIDP-1); ++j)
-    rhs[j] = temp[j+1] * (2-main[j]) - temp[j] * sub[j] - temp[j+2] * sup[j]; // equation (10-12)
-  rhs[NHEATGRIDP-1] = temp[NHEATGRIDP] * (2-main[NHEATGRIDP-1]) - temp[NHEATGRIDP-1] * sub[NHEATGRIDP-1];
+    rhs[j] = temp[j+1] * (2-maind[j]) - temp[j] * sub[j] - temp[j+2] * sup[j]; // equation (10-12)
+  rhs[NHEATGRIDP-1] = temp[NHEATGRIDP] * (2-maind[NHEATGRIDP-1]) - temp[NHEATGRIDP-1] * sub[NHEATGRIDP-1];
   /* add vector L */
   rhs[0] -= 2 * temp[0] * sub[0];
 
   /* --- solve tridiagonal system with the thomas algorithm --- */
-  thomas_algorithm(sub, main, sup, rhs, &temp[1]);
+  thomas_algorithm(sub, maind, sup, rhs, &temp[1]);
 } /* of 'timestep_implicit' */
 
 /* This function arranges the matrix for the implicit timestep.
