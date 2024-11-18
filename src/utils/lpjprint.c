@@ -197,7 +197,7 @@ int main(int argc,char **argv)
   char *endptr;
   const char *progname;
   const char *title[4];
-  String line;
+  String line,line2;
   Pfttype scanfcn[NTYPES]=
   {
     {name_grass,fscanpft_grass},
@@ -217,7 +217,7 @@ int main(int argc,char **argv)
                 progname);
       fputs("\n     ",stdout);
       repeatch('=',rc);
-      fputs("\n\nPrint content of restart files for LPJmL " LPJ_VERSION "\n\n",stdout);
+      printf("\n\nPrint content of restart files for LPJmL %s\n\n",getversion());
       printf(USAGE,progname);
       printf("\nArguments:\n"
              "-h,--help        print this help text\n"
@@ -237,14 +237,15 @@ int main(int argc,char **argv)
     }
     else if(!strcmp(argv[1],"-v") || !strcmp(argv[1],"--version"))
     {
-      puts(LPJ_VERSION);
+      puts(getversion());
       return EXIT_SUCCESS;
     }
   }
   snprintf(line,78-10,
            "%s (" __DATE__ ")",progname);
+  snprintf(line2,78-10,"Printing restart file for LPJmL Version %s",getversion());
   title[0]=line;
-  title[1]="Printing restart file for LPJmL Version " LPJ_VERSION;
+  title[1]=line2;
   title[2]="(C) Potsdam Institute for Climate Impact Research (PIK),";
   title[3]="see COPYRIGHT file";
   banner(title,4,78);

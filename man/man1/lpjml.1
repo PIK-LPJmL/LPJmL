@@ -3,7 +3,7 @@
 lpjml \- Dynamic global vegetation model with managed land and river routing
 .SH SYNOPSIS
 .B lpjml
-[\-h] [\-l] [\-v] [-vv] [-pedantic] [-ofiles] [-param] [-nopp] [-pp cmd] [-fpe] [-image host[:inport[,outport]]] [-couple host[:port]] [\-wait time] [\-outpath \fIdir\fP]
+[\-h] [\-l] [\-v] [\-repo] [\-hash] [-vv] [-pedantic] [-ofiles] [-param] [-nopp] [-pp cmd] [-fpe] [-image host[:inport[,outport]]] [-couple host[:port]] [\-wait time] [\-outpath \fIdir\fP]
 [\-inpath \fIdir\fP] [\-restartpath \fIdir\fP]
 [[\-Dmacro[=value]] [\-I\fIdir\fP] ...] \fIfilename\fP
 
@@ -27,6 +27,12 @@ Print the license file.
 .TP
 \-v,\--version
 Print information about program version, operating system, compiler used, and compiler flags set.
+.TP
+\-repo
+Print GIT repository.
+.TP
+\-hash
+Print GIT hash.
 .TP
 \-vv
 Verbosely print the actual values during reading of the configuration files.

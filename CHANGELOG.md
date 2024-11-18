@@ -29,6 +29,37 @@ of `major.minor.patch` with
 - Command `module list` added to slurm script to show all loaded modules.
 
 
+## [5.9.16] - 2024-11-15
+
+### Contributors
+
+- author: Werner von Bloh (bloh@pik-potsdam.de)
+- code review: Jens Heinke (heinke@pik-potsdam.de), Christoph Müller (cmueller@pik-potsdam.de)
+
+### Added
+
+- GIT repository and GIT hash printed in the LPJmL banner and in output of NetCDF and JSON files.
+- Options `-repo` and `-hash` added to `lpjml` to print GIT repository and hash.
+- The JSON file created by `createconfig` contains now name and hash of GIT repository.
+- Command `lpjml -v` prints GIT repository and hash.
+- Target `hash` added to Makefile to update hash after committing changes to the GIT repository.
+
+### Changed
+
+- `LPJ_VERSION` macro in `lpj.h` replaced by function `getversion()`.
+
+### Removed
+
+- Obsolete header columns cereal and maize removed from `fprintcountrypar.c`.
+
+### Fixed
+
+- Missing dependency on `gebuild.c` for target `lpjml` added in `src/Makefile`.
+- `xiar` replaced by `ar` in `Makefile.hpc2024` in order to compile with `intel/oneAPI/2025.0.0`.
+- Typos in error messages in `filesexist.c` and `cdf2soil.c`fixed.
+- Missing check for open file added to `joingrid.c`.
+
+
 ## [5.9.15] - 2024-11-07
 
 ### Contributors
