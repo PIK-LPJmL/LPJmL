@@ -10,7 +10,7 @@ Installation for Unix-like systems
 ----------------------------------
 
 This text describes how to install LPJmL on your system.
-The code has been tested for AIX, Linux, Mac OS X, and Windows
+The code has been tested for Linux, Mac OS X, and Windows
 with cygwin and Microsoft C compiler (sequential version without MPI).
 Cygwin is a Linux-like environment for Windows (http://www.cygwin.com)
 On Mac OS the xcode suite must be installed in order to have the gcc
@@ -94,19 +94,7 @@ Directory tree after extracting the tar files:
 
 Configure for your operating system
 
-On the HLRS2015 cluster at PIK you have to set several modules for compilation and linking:
-
-module load gmp/4.3.2
-module load mpi/intel/5.1.1
-module load compiler/intel/15.0.3
-module load compiler/gnu/4.9.2
-module load netcdf-c/4.3.3.1/serial udunits/2.2.19 expat/2.1.0
-
-Or you can simply load the lpjml module:
-
-module load lpjml
-
-On the new PIK cluster you have to set the following modules:
+On the PIK cluster you have to set the following modules:
 
 module use /p/system/modulefiles/compiler \
                /p/system/modulefiles/gpu \
@@ -141,14 +129,11 @@ If the configure script finds a MPI environment a parallel version of lpjml is b
 The configure script creates a copy of the following OS-specific makefiles from
 directory config:
 
-Makefile.aix         - IBM AIX settings (xlc compiler)
-Makefile.aix_mpi     - IBM AIX and MPI environment
 Makefile.gcc         - GNU C-compiler settings
-Makefile.darwin_gcc  - GNU C-compiler settings for MacOS X
-Makefile.intel       - Intel C-compiler (icc) settings
 Makefile.icx         - New Intel C-compiler (icx) settings
-Makefile.cluster2015 - Intel C-compiler and Intel MPI on HLRS2015 PIK cluster
-Makefile.hpc2024     - New Intel C-compiler and Intel MPI on the new PIK cluster
+Makefile.icc         - Intel C-compiler (icc) settings
+Makefile.mpiicc      - Intel C-compiler icc and Intel MPI
+Makefile.hpc2024     - Intel C-compiler icx and Intel MPI
 Makefile.mpich       - GNU C-Compiler and MPI Chameleon settings
 Makefile.win32       - Windows settings (used by configure.bat)
 
@@ -283,8 +268,8 @@ Create output and restart directory:
 
 make test
 
-On the compute cluster at PIK it is better to create symbolic links of the
-input, output, and restart directory to the parallel GPFS filesystem /scratch.
+On the compute cluster at PIK it is better to create
+input, output, and restart directories in the parallel GPFS filesystem /p/projects.
 This improves performance in particular for the parallel code.
 
 Man pages
@@ -352,8 +337,7 @@ The following runtime options are defined:
 
 The first two options will be sent to the preprocessor.
 
-For the parallel version SLURM and LoadLeveler files for Linux and AIX are provided.
-A job can be submitted by invoking the bin/lpjsubmit script:
+For the parallel version SLURM files can be created and submitted via the bin/lpjsubmit script:
 
 bin/lpjsubmit ntasks LPJmL_args...
 

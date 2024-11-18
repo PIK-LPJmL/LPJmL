@@ -1,10 +1,11 @@
 #################################################################################
 ##                                                                             ##
-##               M  a  k  e  f  i  l  e  .  a  i  x                            ##
+##    M  a  k  e  f  i  l  e  .  m  p  i  i  c  x                              ##
 ##                                                                             ##
 ##   Make include file for compiler and os specific settings                   ##
-##   Compile and link options are set for IBM compiler for Power4              ##
-##   and AIX                                                                   ##
+##   Compile and link options for Intel compiler mpiicx and library            ##
+##   settings for the new PIK cluster                                          ##
+##   Parallel MPI is enabled                                                   ##
 ##                                                                             ##
 ## (C) Potsdam Institute for Climate Impact Research (PIK), see COPYRIGHT file ##
 ## authors, and contributors see AUTHORS file                                  ##
@@ -14,21 +15,21 @@
 ##                                                                             ##
 #################################################################################
 
-CC	= xlc
-DEBUGFLAGS  = -g -ma
-OPTFLAGS  = -O2 -qipa  -qarch=pwr4 -qtune=pwr4 -ma
-LPJFLAGS  = -DUSE_RAND48 -DWITH_FPE -DUSE_NETCDF -D_LARGE_FILES
-NETCDF_INC      = -I/usr/local/include
-NETCDF_LIB      = /usr/local/lib
+CC	= mpiicx
+OPTFLAGS= -g -O3 -no-vec
+DEBUGFLAGS = -g -O0
+CHECKFLAGS = -g -O0 -check-pointers=rw
+LPJFLAGS=  -DUSE_RAND48 -DUSE_MPI -DSAFE -DWITH_FPE -DUSE_NETCDF -DUSE_UDUNITS -DPERMUTE -DUSE_TIMING -DSTRICT_JSON #-DDAILY_ESTABLISHMENT
+WFLAG   = -Wall
 O	= o
 A	= a
-E	= 
-AR	= ar 
-ARFLAGS	= -r 
+E	=
+AR	= xiar
+ARFLAGS	= r 
 RM	= rm 
 RMFLAGS	= -f
-LINK	= cc
-LINKMAIN= cc
-MKDIR	= mkdir -p
-LIBS	= -lm -lmass -bmaxdata:0x80000000 -L$(NETCDF_LIB) -lnetcdf
+LIBS    = -lnetcdf -ludunits2 -ljson-c
+LINKMAIN= mpiicx
+LINK	= icx
 SLASH	= /
+MKDIR	= mkdir -p

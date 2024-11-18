@@ -1,14 +1,11 @@
 .TH lpjsubmit 1  "USER COMMANDS"
 .SH NAME
-lpjsubmit \- Submit parallel SLURM/LoadLeveler job for LPJmL simulations
+lpjsubmit \- Submit parallel SLURM job for LPJmL simulations
 .SH SYNOPSIS
 .B lpjsubmit
-[\-h] [\-class c] [\-group g] [\-wtime time] [\-blocking n] [\-o output] [\-e error] [\-q] [\-nocheck] [\-norun] [\-dependency id] [-couple program] [-constraint c][[-option op=text] ...] ntasks args ...
+[\-h] [\-class c] [\-group g] [\-partition p] [\-wtime time] [\-blocking n] [\-o output] [\-e error] [\-q] [\-nocheck] [\-norun] [\-dependency id] [-couple program] [-constraint c] [[-option op=text] ...] ntasks args ...
 .SH DESCRIPTION
-Script creates SLURM/LoadLeveler job control file \fIjob.jcf\fP and submits the job to the SLURM/LoadLeveler queue via
-.B
-llsubmit
-or to SLURM via
+Script creates SLURM job control file \fIslurm.jcf\fP and submits the job to the SLURM queue via
 .B
 sbatch
 for the LPJmL simulation program. Before submitting syntax of configuration file is checked by calling the
@@ -21,24 +18,31 @@ program. Can only be used for the MPI version of \fBlpjml\fP.
 Print a short help text.
 .TP
 \-class c
-Set the SLURM/LoadLeveler class to which the job will be submitted. Default class is 'short'. Valid classes can be obtained by the
-.B sinfo/llclass
+Set the SLURM QOS to which the job will be submitted. Default class is 'short'. Valid classes can be obtained by the
+.B sacctmgr show qos
 command.
 .TP
 \-group g
-Set the SLURM/LoadLeveler group. Valid groups are user-specific and set in the \fI/home/loadl/LoadL_admin\fP file.
+set the SLURM account. Valid accounts can be listed via
+.B sacctmgr show assoc where user=$USER
+command.
+.TP
+\-partition p
+Set the SLURM partition. Valid partitions can be obtained by the
+.B sinfo
+command.
 .TP
 \-wtime time
-Set wall clock limit of SLURM/LoadLeveler job. time must be in the format hh:mm:ss.
+Set wall clock limit of SLURM job. Time must be in the format hh:mm:ss.
 .TP
 \-blocking n
 Set blocking (number of tasks per node) for parallel job to n. Default is unlimited.
 .TP
 \-o output
-Set filename of output file, default is \fIlpjml.$(cluster).out\fP.
+Set filename of output file, default is \fIlpjml.%j.out\fP.
 .TP
 \-e error
-Set filename of error file, default is \fIlpjml.$(cluster).err\fP.
+Set filename of error file, default is \fIlpjml.%j.err\fP.
 .TP
 \-q,\--quiet
 Only error messages are displayed, other output is suppressed.
@@ -47,10 +51,10 @@ Only error messages are displayed, other output is suppressed.
 Do not check input files and output directories.
 .TP
 \-norun
-Do not submit job to batch queue, creates \fIslurm.jcf\fP file only.
+Do not submit job to batch queue, create \fIslurm.jcf\fP file only.
 .TP
-\-dependency id
-Slurm job will be scheduled after job with job id id finished successfully.
+\-dependency \fIid\fP
+Slurm job will be scheduled after job with job id \fIid\fP finished successfully.
 .TP
 \-constraint c
 Define constraint c for slurm job.
