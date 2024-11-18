@@ -609,8 +609,11 @@ void fprintconfig(FILE *file,          /**< File pointer to text output file */
       printinputfile(file,(config->relative_humidity) ? "rhumid" : "humid",&config->humid_filename,width,config);
     if(config->prescribe_ignition)
       printinputfile(file,"ignition",&config->ignition_filename,width,config);
-    printinputfile(file,"lightning",&config->lightning_filename,width,config);
-    printinputfile(file,"human ign",&config->human_ignition_filename,width,config);
+    else
+    {
+      printinputfile(file,"lightning",&config->lightning_filename,width,config);
+      printinputfile(file,"human ign",&config->human_ignition_filename,width,config);
+    }
     if(config->max_firesize)
       printinputfile(file,"maxfire",&config->max_firesize_filename,width,config);
   }
