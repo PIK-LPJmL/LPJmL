@@ -663,7 +663,7 @@ int main(int argc,char **argv)
       {
         printf("   bin2cdf (" __DATE__ ") Help\n"
                "   ==========================\n\n"
-               "Convert binary output into NetCDF files for LPJmL version " LPJ_VERSION "\n");
+               "Convert binary output into NetCDF files for LPJmL version %s\n",getversion());
         printf(USAGE
                "\nArguments:\n"
                "-h,--help        print this help text\n"
@@ -704,7 +704,7 @@ int main(int argc,char **argv)
       }
       else if(!strcmp(argv[iarg],"-v") || !strcmp(argv[iarg],"--version"))
       {
-        puts(LPJ_VERSION);
+        puts(getversion());
         return EXIT_SUCCESS;
       }
       else if(!strcmp(argv[iarg],"-units"))

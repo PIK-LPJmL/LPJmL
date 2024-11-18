@@ -54,7 +54,7 @@ int main(int argc,char **argv)
               progname);
       fputs("\n     ",file);
       frepeatch(file,'=',rc);
-      fputs("\n\nPrint input/output files of LPJmL version " LPJ_VERSION "\n\n",file);
+      fprintf(file,"\n\nPrint input/output files of LPJmL version %s\n\n",getversion());
       fprintf(file,USAGE,progname);
       fprintf(file,"\nArguments:\n"
              "-h,--help        print this help text\n"
@@ -76,7 +76,7 @@ int main(int argc,char **argv)
     }
     else if(!strcmp(argv[1],"-v") || !strcmp(argv[1],"--version"))
     {
-      puts(LPJ_VERSION);
+      puts(getversion());
       return EXIT_SUCCESS;
     }
   }

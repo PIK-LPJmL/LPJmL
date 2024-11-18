@@ -15,6 +15,8 @@
 
 include ../../Makefile.inc
 
+VERSION = $(shell cat ../../VERSION)
+
 OBJS    = swap.$O freadheader.$O coord.$O openinputfile.$O\
           fscanreal.$O fail.$O list.$O headersize.$O\
           bigendian.$O fprintheader.$O sysname.$O queue.$O\
@@ -36,7 +38,8 @@ OBJS    = swap.$O freadheader.$O coord.$O openinputfile.$O\
           getfilefrommeta.$O isint.$O parse_json.$O closeconfig.$O isdir.$O\
           fscanmap.$O fprintjson.$O mrun.$O fscanintarray.$O cmpmap.$O\
           hasanysuffix.$O fprintattrs.$O fscanattrs.$O mergeattrs.$O\
-          freadheaderid.$O fscanconfig_netcdf.$O fscandouble.$O newarray.$O
+          freadheaderid.$O fscanconfig_netcdf.$O fscandouble.$O newarray.$O\
+          getversion.$O
 
 INC     = ../../include
 LIBDIR  = ../../lib
@@ -58,6 +61,9 @@ $(OBJS): $(HDRS)
 
 printflags.$O: printflags.c
 	$(CC) $(CFLAGS) -DCFLAGS='"$(CFLAGS)"' -I$(INC) -c $*.c
+
+getversion.$O: getversion.c ../../VERSION
+	$(CC) $(CFLAGS) -DLPJ_VERSION=\"$(VERSION)\" -I$(INC) -c $*.c
 
 .c.$O: 
 	$(CC) $(CFLAGS) -I$(INC) $(JSON_INC) -c $*.c

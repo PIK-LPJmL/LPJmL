@@ -105,9 +105,9 @@ int main(int argc,char **argv)
       {
         printf("   txt2clm (" __DATE__ ") Help\n"
                "   ==========================\n\n"
-               "Convert text files to clm data files for LPJmL version " LPJ_VERSION "\n");
+               "Convert text files to clm data files for LPJmL version %s\n",getversion());
         printf(USAGE
-               "Arguments:\n"
+               "\nArguments:\n"
                "-h,--help    print this help text\n"
                "-version     set version, default is %d\n"
                "-cellindex   set order to cell index\n"

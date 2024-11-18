@@ -446,7 +446,7 @@ int main(int argc,char **argv)
     {
       if(!strcmp(argv[i],"-v") || !strcmp(argv[i],"--version"))
       {
-        puts(LPJ_VERSION);
+        puts(getversion());
         return EXIT_SUCCESS;
       }
       else if(!strcmp(argv[i],"-header"))

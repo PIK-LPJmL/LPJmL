@@ -71,7 +71,7 @@ int main(int argc,char **argv)
       {
         printf("   asc2clm (" __DATE__ ") help\n"
                "   ==========================\n\n"
-               "Convert gridded ASCII files to clm data files for LPJmL version " LPJ_VERSION "\n\n"
+               "Convert gridded ASCII files to clm data files for LPJmL version %s\n\n"
                USAGE
                "\nArguments:\n"
                "-h,--help    print this help text\n"
@@ -88,7 +88,7 @@ int main(int argc,char **argv)
                "infile       filename(s) of gridded data file\n"
                "clmfile      filename of clm data file\n\n"
                 "(C) Potsdam Institute for Climate Impact Research (PIK), see COPYRIGHT file\n",
-                FIRSTYEAR,LPJ_CLIMATE_VERSION);
+                getversion(),FIRSTYEAR,LPJ_CLIMATE_VERSION);
         return EXIT_SUCCESS;
       }
       else if(!strcmp(argv[i],"-firstyear"))

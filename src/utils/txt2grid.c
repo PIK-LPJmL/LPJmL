@@ -124,7 +124,7 @@ int main(int argc,char **argv)
       {
         printf("   txt2grid (" __DATE__ ") Help\n"
                "   ===========================\n\n"
-               "Convert text file to clm grid file for LPJmL version " LPJ_VERSION "\n"
+               "Convert text file to clm grid file for LPJmL version %s\n\n"
                USAGE
                "\nArguments:\n"
                "-h,--help          print this help text\n"
@@ -142,7 +142,7 @@ int main(int argc,char **argv)
                "gridfile           filename of grid text file\n"
                "clmfile            filename of clm data file\n\n"
                "(C) Potsdam Institute for Climate Impact Research (PIK), see COPYRIGHT file\n",
-               fmt,header.cellsize_lon,header.cellsize_lat,header.cellsize_lon);
+               getversion(),fmt,header.cellsize_lon,header.cellsize_lat,header.cellsize_lon);
         return EXIT_SUCCESS;
       }
       if(!strcmp(argv[iarg],"-fmt"))
