@@ -35,7 +35,7 @@
 #define MOIST_DENOM 0.63212055882855767841 /* (1.0-exp(-1.0)) */
 #define K10_YEDOMA 0.025/NDAYYEAR
 #define k_red 2                           /*anoxic decomposition is much smaller than oxic decomposition Khovorostyanov et al., 2008*/
-#define k_red_litter 2
+#define k_red_litter 1
 #define INTERCEPT 0.04021601              /* changed from 0.10021601 now again original value*/
 #define MOIST_3 -5.00505434
 #define MOIST_2 4.26937932
@@ -47,7 +47,7 @@
 #define k_N 5e-3 /* Michaelis-Menten parameter k_S,1/2 (gN/m3) */
 #define S 0.2587 // saturation factor MacDougall and Knutti, 2016
 #define KOVCON (0.001*1000) //Constant of diffusion (m2a-1)
-#define WTABTHRES 20
+#define WTABTHRES 30
 
 static Real f_wfps(const Soil *soil,      /* Soil data */
                    int l                  /* soil layer */
@@ -81,7 +81,7 @@ Stocks littersom(Stand *stand,                      /**< [inout] pointer to stan
   Real response_agtop_leaves,response_agtop_wood,response_agsub_leaves,response_agsub_wood,response_bg_litter,w_agtop;
   Real decay_litter, oxidation, litter_flux;
   Pool flux_soil[LASTLAYER];
-  Real decom,soil_cflux;
+  Real decom,soil_cflux,decom_O2;
   Stocks decom_fast,decom_slow;
   Stocks decom_litter;
   Stocks decom_sum,flux;
@@ -102,7 +102,7 @@ Stocks littersom(Stand *stand,                      /**< [inout] pointer to stan
   Pftcrop *crop;
   Irrigation *data;
   /* FOR METHANE IMPLEMENTATION */
-  Real C_max[LASTLAYER], V;
+  Real C_max[LASTLAYER], V,C_max_all;
   Real CN_fast=0, CN_slow=0;
   Real methaneflux_soil;
   Real oxidation_stand=0;    //oxidation of methane with in the soil column
@@ -518,12 +518,25 @@ Stocks littersom(Stand *stand,                      /**< [inout] pointer to stan
       decay_litter=1.0-exp(-(param.k_litter10*response_bg_litter));
 #endif
       if(decay_litter>1) decay_litter=1;
-      C_max[0]=soil->O2[0]*WC/WO2*oxid_frac;
+      C_max_all=0;
+      foreachsoillayer(l)
+       C_max_all+=soil->O2[l]*WC/WO2*oxid_frac*config->pftpar[p].rootdist[l];
       decom=soil->litter.item[p].bg.carbon*decay_litter;
-      if(decom>C_max[0])
+      if(decom>C_max_all)
       {
-        decom=C_max[0];
+        decom=C_max_all;
         decay_litter=decom/soil->litter.item[p].bg.carbon;
+      }
+      decom_O2=decom*WO2/WC;
+      foreachsoillayer(l)
+      {
+        soil->O2[l]-=decom_O2*config->pftpar[p].rootdist[l];
+        decom_O2-=decom_O2*config->pftpar[p].rootdist[l];
+        if(soil->O2[l]<0)
+        {
+          decom_O2-=soil->O2[l];
+          soil->O2[l]=0;
+        }
       }
       soil->litter.item[p].bg.carbon-=decom;
       decom_sum.carbon+=decom;

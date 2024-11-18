@@ -786,7 +786,7 @@ Bool fwriteoutput(Outputfile *output,  /**< output file array */
             forrootsoillayer(l)
             {
               depth+=soildepth[l];
-              if(depth>=100)
+              if(depth>=1000)
                 break;
               else
                getoutput(&grid[cell].output,SOILC_1m,config)+=(stand->soil.pool[l].slow.carbon+stand->soil.pool[l].fast.carbon)*stand->frac;

@@ -324,7 +324,8 @@ Bool fscanconfig(Config *config,    /**< LPJ configuration */
       return TRUE;
   }
   config->reservoir=FALSE;
-  config->groundwater_irrig = GROUNDWATER_IRRIG;
+  config->groundwater_irrig = TRUE;
+  fscanbool(file,&config->groundwater_irrig,"groundwater_irrigation", !config->pedantic,verbose);
 
 #ifdef IMAGE
   config->aquifer_irrig = NO_AQUIFER_IRRIG;

@@ -1658,7 +1658,7 @@ void lpj_update_
 
             }
 
-            grid[cell].balance.surface_storage=grid[cell].discharge.dmass_lake+grid[cell].discharge.dmass_river;
+            grid[cell].balance.surface_storage=grid[cell].discharge.dmass_lake+grid[cell].discharge.dmass_river + grid[cell].discharge.dmass_gw;
             if(grid[cell].ml.dam)
             {
               grid[cell].balance.surface_storage+=grid[cell].ml.resdata->dmass;

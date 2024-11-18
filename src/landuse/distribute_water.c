@@ -79,8 +79,8 @@ void distribute_water(Cell *cell,            /**< pointer to LPJ cell */
     getoutput(&cell->output,WD_UNSUST,config)+=frac_unsustainable*cell->discharge.gir;
   }
 #endif
-  foreachstand(stand,s,cell->standlist)
-    stand->soil.wa-=cell->discharge.withdrawal_gw/cell->coord.area*stand->frac * (1.0/(1-cell->lakefrac-cell->ml.reservoirfrac));
+//  foreachstand(stand,s,cell->standlist)
+//    stand->soil.wa-=cell->discharge.withdrawal_gw/cell->coord.area*stand->frac * (1.0/(1-cell->lakefrac-cell->ml.reservoirfrac));
   //fprintf(stdout,"DISTRIBUTE WATER: \n");
   cell->discharge.withdrawal= cell->discharge.withdrawal_gw=0.0;
   foreachstand(stand,s,cell->standlist)
