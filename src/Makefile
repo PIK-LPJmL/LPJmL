@@ -14,6 +14,8 @@
 
 include ../Makefile.inc
 
+GIT_HASH= $(shell git rev-parse HEAD)
+
 OBJ    = lpjml.$O  
 
 SRC    = lpjml.c
@@ -70,6 +72,10 @@ libs:
 	(cd cpl && $(MAKE))
 	(cd coupler && $(MAKE))
 
+hash:
+	$(RM) $(RMFLAGS) $(EXE)
+	$(MAKE) $(EXE)
+
 clean:
 	(cd climate && $(MAKE) clean)
 	(cd lpj && $(MAKE) clean)
@@ -97,6 +103,6 @@ $(OBJ): $(HDRS)
 	$(CC) $(CFLAGS) -I$(INC) -c $*.c
 
 
-$(EXE): $(LPJLIBS) $(OBJ)
-	$(CC) $(CFLAGS) -I$(INC) -c getbuild.c
+$(EXE): $(LPJLIBS) $(OBJ) getbuild.c
+	$(CC) $(CFLAGS) -I$(INC) -DGIT_HASH=\"$(GIT_HASH)\"  -DGIT_REPO=\"$(GIT_REPO)\" -c getbuild.c
 	$(LINKMAIN) $(LNOPTS)$(EXE) $(OBJ) $(LPJLIBS) $(LIBS) getbuild.$O 

@@ -24,8 +24,6 @@ void fprintcountrypar(FILE *file,          /**< pointer to text file */
   if(countrypar[0].laimax_cft!=NULL)
     for(i=0;i<ncft;i++)
       fprintf(file," %2d",i+1);
-  else
-    fputs(" cereal maize",file);
   for(i=0;i<config->nagtree;i++)
     fprintf(file," %15s",config->pftpar[i+npft-config->nagtree].name);
   fputs(" Irrigsys\n",file);
@@ -33,8 +31,6 @@ void fprintcountrypar(FILE *file,          /**< pointer to text file */
   if(countrypar[0].laimax_cft!=NULL)
     for(i=0;i<ncft;i++)
       fputs(" --",file);
-  else
-    fputs(" ------ -----",file);
   for(i=0;i<config->nagtree;i++)
     fputs(" ---------------",file);
   fputs(" --------\n",file);
@@ -52,8 +48,6 @@ void fprintcountrypar(FILE *file,          /**< pointer to text file */
   if(countrypar[0].laimax_cft!=NULL)
     for(i=0;i<ncft;i++)
       fputs(" --",file);
-  else
-    fputs(" ------ -----",file);
   for(i=0;i<config->nagtree;i++)
     fputs(" ---------------",file);
   fputs(" --------\n",file);

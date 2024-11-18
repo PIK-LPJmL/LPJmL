@@ -143,6 +143,8 @@ extern long long diskfree(const char *);
 extern void fprintintf(FILE *,long long);
 extern void getcounts(int [],int [],int,int,int);
 extern char *getbuilddate(void);
+extern char *gethash(void);
+extern char *getrepo(void);
 extern time_t getfiledate(const char *);
 extern char *stripsuffix(const char *);
 extern Bool hassuffix(const char *,const char *);
@@ -183,6 +185,7 @@ extern LPJfile *parse_json(FILE *,Verbosity);
 extern Bool isdir(const char *);
 extern double mrun(void);
 void mergeattrs(Attr **,int *,const Attr *, int,Bool);
+extern char *getversion(void);
 #ifdef WITH_FPE
 extern void enablefpe(void);
 #endif

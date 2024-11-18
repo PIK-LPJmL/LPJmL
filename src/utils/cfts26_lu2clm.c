@@ -57,7 +57,7 @@ int main(int argc,char **argv)
       if(!strcmp(argv[i],"-h"))
       {
         printf("cfts26_luc2clm (" __DATE__ ") - convert cfts26 and lu5 data files to\n"
-               "       clm data files for LPJmL version " LPJ_VERSION "\n\n");
+               "       clm data files for LPJmL version %s\n\n",getversion());
         printf(USAGE
                "\nArguments:\n"
                "-h               print this help text\n" 

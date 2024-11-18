@@ -234,6 +234,7 @@ else
   echo "CFLAGS	= \$(WFLAG) \$(LPJFLAGS) $macro $warning \$(OPTFLAGS)" >>Makefile.inc
   echo "LNOPTS	= \$(WFLAG) \$(OPTFLAGS) -o " >>Makefile.inc
 fi
+echo "GIT_REPO=" $(git remote -v|head -1|cut  -f2|cut -d' ' -f1) >>Makefile.inc
 echo LPJROOT	= $prefix >>Makefile.inc
 cat >bin/lpj_paths.sh <<EOF
 #################################################################################
