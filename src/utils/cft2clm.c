@@ -44,7 +44,7 @@ int main(int argc,char **argv)
     {
       if(!strcmp(argv[i],"-h"))
       {
-        printf("%s (" __DATE__ ") - adds header to cftfile for LPJmL version "LPJ_VERSION "\n\n",argv[0]);
+        printf("%s (" __DATE__ ") - adds header to cftfile for LPJmL version %s\n\n",argv[0],getversion());
         printf(USAGE
                "\nArguments:\n"
                "-h           print this help text\n" 

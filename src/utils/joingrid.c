@@ -62,6 +62,11 @@ int main(int argc,char **argv)
     return EXIT_FAILURE;
   version=setversion;
   file=fopen(argv[1],"rb");
+  if(file==NULL)
+  {
+    printfopenerr(argv[1]);
+    return EXIT_FAILURE;
+  }
   if(freadheader(file,&header,&swap,LPJGRID_HEADER,&version,TRUE))
   {
     fprintf(stderr,"Error reading header in '%s'.\n",argv[1]);

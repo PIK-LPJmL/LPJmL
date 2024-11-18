@@ -127,20 +127,17 @@ Bool fprintoutputjson(int index,           /**< index in outputvars array */
   }
   fprintf(file,"{\n");
   fprintf(file,"  \"sim_name\" : \"%s\",\n",config->sim_name);
-  fprintf(file,"  \"source\" : \"LPJmL C Version " LPJ_VERSION"\",\n");
+  fprintf(file,"  \"source\" : \"LPJmL C Version %s\",\n",getversion());
   time(&t);
   fprintf(file,"  \"history\" : \"%s: %s\",\n",strdate(&t),config->arglist);
-  if(config->n_global)
+  fprintf(file,"  \"global_attrs\" :\n  {\n");
+  fprintf(file,"    \"GIT_repo\" : \"%s\",\n",getrepo());
+  fprintf(file,"    \"GIT_hash\" : \"%s\"",gethash());
+  for(p=0;p<config->n_global;p++)
   {
-    fprintf(file,"  \"global_attrs\" : {");
-    for(p=0;p<config->n_global;p++)
-    {
-      fprintf(file,"\"%s\" : \"%s\"",config->global_attrs[p].name,config->global_attrs[p].value);
-      if(p<config->n_global-1)
-        fprintf(file,", ");
-    }
-    fprintf(file,"},\n");
+    fprintf(file,",\n    \"%s\" : \"%s\"",config->global_attrs[p].name,config->global_attrs[p].value);
   }
+  fprintf(file,"\n  },\n");
   fprintf(file,"  \"name\" : \"%s\",\n",config->outnames[id].name);
   fprintf(file,"  \"variable\" : \"%s\",\n",config->outnames[id].var);
   fprintf(file,"  \"firstcell\" : %d,\n",config->firstgrid);

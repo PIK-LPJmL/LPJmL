@@ -1,8 +1,8 @@
 /**************************************************************************************/
 /**                                                                                \n**/
-/**                     g  e  t  b  u  i  l  d  .  c                               \n**/
+/**                       g  e  t  v  e  r  s  i  o  n  .  c                       \n**/
 /**                                                                                \n**/
-/**     Get build number, build date and SVN revision number                       \n**/
+/**     Function gets LPJmL version  as string                                     \n**/
 /**                                                                                \n**/
 /** (C) Potsdam Institute for Climate Impact Research (PIK), see COPYRIGHT file    \n**/
 /** authors, and contributors see AUTHORS file                                     \n**/
@@ -13,23 +13,12 @@
 /**************************************************************************************/
 
 #include <stdio.h>
+#include <stdlib.h>
 #include <string.h>
 #include "types.h"
 
-char *getbuilddate(void)
+char *getversion(void)
 {
-  static char *s=__DATE__;
+  static char *s=LPJ_VERSION;
   return s;
-} /* of 'getbuilddate' */
-
-char *getrepo(void)
-{
-  static char *s=(strlen(GIT_REPO)==0) ?  "https://github.com/PIK-LPJmL/LPJmL" : GIT_REPO;
-  return s;
-} /* of 'getrepo' */
-
-char *gethash(void)
-{
-  static char *s=GIT_HASH;
-  return s;
-} /* of 'gethash' */
+} /* of 'getversion' */

@@ -157,7 +157,7 @@ int main(int argc,char **argv)
   int nbands;
   int firstgrid;
   Bool swap;
-  String line;
+  String line,line2;
   const char *progname;
   const char *title[4];
   char *filename;
@@ -230,7 +230,8 @@ int main(int argc,char **argv)
   snprintf(line,STRING_LEN,
            "%s (" __DATE__ ")",progname);
   title[0]=line;
-  title[1]="Coupler demo for LPJmL version " LPJ_VERSION;
+  snprintf(line2,STRING_LEN,"Coupler demo for LPJmL version %s",getversion());
+  title[1]=line2;
   title[2]="(c) Potsdam Institute for Climate Impact Research (PIK),";
   title[3]="see COPYRIGHT file";
   banner(title,4,78);

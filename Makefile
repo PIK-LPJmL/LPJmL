@@ -93,6 +93,9 @@ test: main
 	$(MKDIR) output
 	$(MKDIR) restart
 
+hash:
+	(cd src && $(MAKE) hash)
+
 clean:
 	(cd src  && $(MAKE) clean)
 

@@ -58,7 +58,7 @@ int main(int argc,char **argv)
     {
       if(!strcmp(argv[1],"-v") || !strcmp(argv[1],"--version"))
       {
-        puts(LPJ_VERSION);
+        puts(getversion());
         return EXIT_SUCCESS;
       }
       else if(!strcmp(argv[iarg],"-longheader"))

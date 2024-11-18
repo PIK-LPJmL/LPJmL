@@ -26,7 +26,8 @@
 #else
 #define IMAGE_OPT ""
 #endif
-#define USAGE "\nUsage: %s [-h] [-l] [-v] [-vv] [-pedantic] [-ofiles] [-param] [-nopp] [-pp cmd] " FPE_OPT "\n" IMAGE_OPT\
+#define USAGE "\nUsage: %s [-h] [-l] [-v] [-repo] [-hash] [-vv] [-pedantic] [-ofiles]\n"\
+                "       [-param] [-nopp] [-pp cmd] " FPE_OPT "\n" IMAGE_OPT\
                 "       [-couple host[:port]] [-wait time]\n"\
                 "       [-outpath dir] [-inpath dir] [-restartpath dir]\n"\
                 "       [[-Dmacro[=value]] [-Idir] ...] filename\n"
@@ -44,8 +45,8 @@ void help(const char *progname /**< program filename */
     file=stdout;
   }
   fprintf(file,"    ");
-  count=fprintf(file,"%s C Version " LPJ_VERSION " (%s) Help",
-                progname,getbuilddate());
+  count=fprintf(file,"%s C Version %s (%s) Help",
+                progname,getversion(),getbuilddate());
   fprintf(file,"\n    ");
   frepeatch(file,'=',count);
   fprintf(file,"\n\nDynamic global vegetation model with managed land\n");
@@ -57,6 +58,8 @@ void help(const char *progname /**< program filename */
           "-h,--help           print this help text\n"
           "-l,--license        print license file\n"
           "-v,--version        print version, compiler and compile flags\n"
+          "-repo               print GIT repository\n"
+          "-hash               print GIT hash\n"
           "-vv                 verbosely print the actual values during reading of the\n"
           "                    configuration files\n"
           "-pedantic           stops on warnings\n"
