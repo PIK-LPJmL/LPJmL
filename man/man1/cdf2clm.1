@@ -3,8 +3,8 @@
 cdf2clm \- convert NetCDF files into CLM files
 .SH SYNOPSIS
 .B cdf2clm
-[\-h] [\-v] [\-scale factor] [\-units u] [\-var name] [\-time name] [\-map name] [\-id string] [\-version v] [\-int] [\-float] [\-zero] [\-json] [\-o clmfile]
-gridfile netcdffile ...
+[\-h] [\-v] [\-scale factor] [\-units u] [\-var name] [\-time name] [\-map name] [\-id string] [\-version v] [\-int] [\-float] [\-zero] [\-json] [\-o \fIclmfile\fP]
+.I gridfile netcdffile ...
 .SH DESCRIPTION
 Program converts NetCDF input data into CLM input data.
 .SH OPTIONS
@@ -16,10 +16,10 @@ Print a short help text.
 Print name of NetCDF files.
 .TP
 \-scale factor
-Scaling factor for CLM files. Default is 1. If factor differs from 1 and -float option is set a warning is printed and scaling factor reset to 1.
+Scaling factor for CLM files. Default is 1. If factor differs from 1 and -float option is set a warning is printed and scaling factor reset to 1. The factor will be written in the header and all data read divided by this factor. A warning is printed if the resulting value exceeds the limit of a short datatype.
 .TP
 \-units u
-Set unit to convert from  NetCDF file.
+Set unit to convert from NetCDF file.
 .TP
 \-var name
 Variable name in NetCDF file.
@@ -48,7 +48,7 @@ Write zero values in clm file if data is not found.
 \-json
 JSON metafile is created with suffix '.json'.
 .TP
-.I -o clmfile
+ -o \fIclmfile\fP
 Filename of CLM data file written. Default is out.clm.
 .TP
 .I gridfile

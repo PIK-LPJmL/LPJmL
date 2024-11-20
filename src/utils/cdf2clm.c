@@ -392,7 +392,7 @@ int main(int argc,char **argv)
       {
         printf("   cdf2clm (" __DATE__ ") Help\n"
                "   ==========================\n\n"
-               "Convert NetCDF data into CLM input data for LPJmL version " LPJ_VERSION "\n\n");
+               "Convert NetCDF data into CLM input data for LPJmL version %s\n\n",getversion());
         printf(USAGE
                "\nArguments:\n"
                "-h,--help     print this help text\n"

@@ -114,7 +114,7 @@ static int checkfile(const Config *config,const char *name,const Filename *filen
   {
     if(config->start_coupling<=config->firstyear-config->nspinup)
       return 0;
-    fprintf(stderr,"ERROR149: No filename specified for %s data required for socket connection before coupling year %d, first simulatiomn year=%d.\n",
+    fprintf(stderr,"ERROR149: No filename specified for %s data required for socket connection before coupling year %d, first simulation year=%d.\n",
             name,config->start_coupling,config->firstyear-config->nspinup);
     return 1;
   }
@@ -207,7 +207,7 @@ static int checklanduse(const Config *config)
   {
     if(config->start_coupling<=config->firstyear-config->nspinup)
       return 0;
-    fprintf(stderr,"ERROR149: No filename specified for landuse data required for socket connection before coupling year %d, first simulatiomn year=%d.\n",
+    fprintf(stderr,"ERROR149: No filename specified for landuse data required for socket connection before coupling year %d, first simulation year=%d.\n",
             config->start_coupling,config->firstyear-config->nspinup);
     return 1;
   }
