@@ -152,10 +152,8 @@ void plant_gas_transport(Stand *stand,        /**< pointer to soil data */
   if (CH4_plant_all>0)
   {
     getoutput(&stand->cell->output,CH4_EMISSIONS,config)+=CH4_plant_all*stand->frac;
-    if(stand->soil.iswetland && stand->cell->wetlandfrac>epsilon)
-      getoutput(&stand->cell->output,CH4_EMISSIONS_WET,config)+=CH4_plant_all*stand->frac/stand->cell->wetlandfrac;
-    else
-      getoutput(&stand->cell->output,CH4_EMISSIONS_WET,config)+=CH4_plant_all;
+    if(stand->type->landusetype==WETLAND)
+      getoutput(&stand->cell->output,CH4_EMISSIONS_WET,config)+=CH4_plant_all*WC/WCH4;
     stand->cell->balance.aCH4_em+=CH4_plant_all*stand->frac;
     if(CH4_rice>0) stand->cell->balance.aCH4_rice+=CH4_rice*stand->frac;
     getoutput(&stand->cell->output,CH4_PLANT_GAS,config)+=CH4_plant_all*stand->frac;
