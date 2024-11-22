@@ -300,7 +300,6 @@ Real infil_perc(Stand *stand,        /**< Stand pointer */
           else
           {
             lat_runoff_last+=grunoff;
-            //lrunoff[l]+=grunoff;
           }
           *return_flow_b+=grunoff*(1-stand->frac_g[l]);
         }
@@ -420,7 +419,6 @@ Real infil_perc(Stand *stand,        /**< Stand pointer */
     }
     if(runoff_out<0)
     {
-      //fprintf(stderr,"hier3 runoff_out:%g\n", runoff_out);
         if(soil->w_fw[l]>runoff_out)
         {
           soil->w_fw[l]+=runoff_out;
@@ -522,37 +520,6 @@ Real infil_perc(Stand *stand,        /**< Stand pointer */
     qcharge_tot1=lat_runoff_last;
 
 
- /* if(qcharge_tot1>10)
-  {
-    for(l=(BOTTOMLAYER-1);l==0;l--)
-    {
-      soil->w[l]+=soil->w_fw[l]/soil->whcs[l];
-      soil->w_fw[l]=0;
-      run=0;
-      fprintf(stderr,"Layer:%d qcharge_tot1: %g soil->w:%g \n", l, qcharge_tot1,soil->w[l]);
-      soil->w[l]+=qcharge_tot1/soil->whcs[l];
-      if((soil->w[l]*soil->whcs[l] )> (soil->wsats[l]-soil->wpwps[l]))
-      {
-        run=(soil->w[l]*soil->whcs[l])-(soil->wsats[l]-soil->wpwps[l]);
-        soil->w[l]-=run/soil->whcs[l];
-         qcharge_tot1=run;
-      }
-      else
-      {
-        qcharge_tot1=0;
-        break;
-      }
-      fprintf(stderr,"Layer:%d qcharge_tot1: %g soil->w:%g run:%g \n", l, qcharge_tot1,soil->w[l],run);
-    }
-  }
-  */
-//  for(l=0;l<NSOILLAYER;l++)
-//    if(soil->w[l]>1)
-//    {
-//      soil->w_fw[l]+=(1-soil->w[l])*soil->whcs[l];
-//      soil->w[l]=1;
-//    }
-
   //THIS IS THE IMPLEMENTATION OF THE WATER TABLE DEPTH FOLLOWING CLM4.5
   // use analytical expression for aquifer specific yield
 
@@ -562,8 +529,8 @@ Real infil_perc(Stand *stand,        /**< Stand pointer */
   s_node=min(1, s_node);
 
   //  this is the expression for unsaturated hydraulic conductivity
-  //  q_recharge=-ka*(-soil->par->psi_sat/(wtable-layerbound[lwt-1]))*24
-  //  if (wtable==layerbound[lwt]) q_recharge=-ka*(-soil->par->psi_sat/(wtable+1))*24
+  //  q_recharge=-ka*(-soil->par->psi_sat/(wtable-layerbound[lwt-1]))
+  //  if (wtable==layerbound[lwt]) q_recharge=-ka*(-soil->par->psi_sat/(soil->wtable+1))
   //  equilibrium soil matric potential = soil->par->psi_sat*((soil->par->wsat*((soil->par->psi_sat+wtable-soildepth[lwt])/soil->par->psi_sat)^(-1/soil->b[l]))/soil->par->wsat)^-soil->b[l]
   //  equilibrium volumetric water content = (soil->par->wsat*((soil->par->psi_sat+wtable-soildepth[lwt])/soil->par->psi_sat)^(-1/soil->b[l]))
   //  calculate the equilibrium water content based on the water table depth
@@ -615,7 +582,7 @@ Real infil_perc(Stand *stand,        /**< Stand pointer */
   }
   smpmin =-1e8;                                             // restriction of soil potential (mm)
   tmp_vol=max(vol_eq/soil->wsat[lwt],0.01);                 // equilibrium volumetric water
-  zq=-soil->psi_sat[lwt]*pow(tmp_vol,-soil->b[lwt]);        // eq. 7.126 equilibrium soil matric potential
+  zq=-soil->psi_sat[lwt]*pow(tmp_vol,-soil->b[lwt]);        // eq. 7.126 CLM4 Documentation equilibrium soil matric potential
   zq= max(smpmin, zq);                                      // equilibrium matric potential for layer [mm]
   smp = -soil->psi_sat[lwt]*pow(s_node,-soil->b[lwt]);      // mm (soil matric potential ps_i Lawrence and Slater 2008)
   smp1=max(smpmin,smp);
@@ -636,7 +603,7 @@ Real infil_perc(Stand *stand,        /**< Stand pointer */
   {
     if((soil->wtable-layerbound[lwt])<(soil->psi_sat[lwt]*0.1) || lwt==0)
       qcharge_tot+= -ka*(wh_zwt-wh)/(soil->wtable+1);
-    else                                                                     //assuming flux is at water table interface, saturation deeper than water table
+    else                                                                     // assuming flux is at water table interface, saturation deeper than water table
       qcharge_tot+= -ka*(wh_zwt-wh)/((soil->wtable-layerbound[lwt])*2);
   }
   qcharge_tot= max(-10.0,qcharge_tot);
@@ -651,21 +618,12 @@ Real infil_perc(Stand *stand,        /**< Stand pointer */
   S=max(S,0.02);
   qcharge_tot+=qcharge_tot1;
 
-/*
-  slug=qcharge_tot;
-  while(abs(slug) > epsilon)
-  {
-      qcharge_tot=max(-10,slug);
-      qcharge_tot=min(10,slug);
-      slug-=qcharge_tot;
-*/
-
   if(soil->wtable>layerbound[BOTTOMLAYER-1])
   {
     if(qcharge_tot<0) qcharge_tot=max(-soil->wa,qcharge_tot);
     soil->wa+=qcharge_tot;                                                                      //water in the unconfined aquifer (mm)
     soil->wtable-=(qcharge_tot)/S;
-    tmp_water=max(0,(soil->wa-5000));                                                           // is set to be maximum 5000 mm
+    tmp_water=max(0,(soil->wa-5000));                                                           // is set to be maximum 5000 mm (wa is needed to calculate the water table depth below the ROOTLAYERS
     soil->w_fw[BOTTOMLAYER-1]+=tmp_water;
     soil->wa-=tmp_water;
     runoff_out-=(qcharge_tot-qcharge_tot1);
@@ -686,7 +644,6 @@ Real infil_perc(Stand *stand,        /**< Stand pointer */
           }
         }
     }
-    //fprintf(stderr,"hier1 change:%g\n",(qcharge_tot-tmp_water)*stand->frac);
     if(soil->w_fw[BOTTOMLAYER]>soil->wsats[BOTTOMLAYER]-soil->wpwps[BOTTOMLAYER]-soil->ice_fw[BOTTOMLAYER]-soil->whcs[BOTTOMLAYER])
     {
       runoff_out+=soil->w_fw[BOTTOMLAYER]-(soil->wsats[BOTTOMLAYER]-soil->wpwps[BOTTOMLAYER]-soil->ice_fw[BOTTOMLAYER]-soil->whcs[BOTTOMLAYER]);
@@ -798,7 +755,7 @@ Real infil_perc(Stand *stand,        /**< Stand pointer */
 
   if(frost_depth<layerbound[BOTTOMLAYER-1])
   {
-    if(soil->wtable<frost_depth)                                               //ONLY IF WATER_TABLE ABOVE FROST_DEPTH
+    if(soil->wtable<frost_depth)                                               //ONLY IF WATER_TABLE IS ABOVE FROST_DEPTH
     {
       k_perch=0;
       wtsub=0;
@@ -809,7 +766,7 @@ Real infil_perc(Stand *stand,        /**< Stand pointer */
         wtsub+=soildepth[l];                                                      // summation of soildepth for layers below water table (mm**2/s)
       }
       if (wtsub > 0)
-        k_perch=k_perch/wtsub;                                                   // ks is adjusted as in pedotransfer.c
+        k_perch=k_perch/wtsub;                                                   // ks is adjusted in pedotransfer.c
       drain_perched = q_perch_max*k_perch*(frost_depth-soil->wtable);
       drain_perched_out=drain_perched;
       drain_perched*=-1;
@@ -835,7 +792,7 @@ Real infil_perc(Stand *stand,        /**< Stand pointer */
       drain_perched=0;
     }
   }
-  else
+  else   //if not frozen
   {
     //==========  Topographic runoff at WTABLE ==================================
 
@@ -858,8 +815,8 @@ Real infil_perc(Stand *stand,        /**< Stand pointer */
     }
     if(lwt>=(BOTTOMLAYER-1))
       depthsum=layerbound[BOTTOMLAYER-1];
-    Theta_ice=pow(10,(-OMEGA*(icesum/depthsum)));                                               // OMEGA of 6 gives a high impact on low ice fractions (0.1 -> 0.2511886)
-    rsub_top_max=20*tan(stand->slope_mean*M_PI/180);                                        // 20 mm day-1 suggested by Karpouzas etal, 2006, Christen etal, 2006 ->50 mm day-1, slope converted from degrees to radians
+    Theta_ice=pow(10,(-OMEGA*(icesum/depthsum)));                           // OMEGA of 6 gives a high impact on low ice fractions (0.1 -> 0.2511886)
+    rsub_top_max=20*tan(stand->slope_mean*M_PI/180);                        // 20 mm day-1 suggested by Karpouzas etal, 2006, Christen etal, 2006 ->50 mm day-1, slope converted from degrees to radians
     if (soil->wtable<maxWTP)
       soil->wtable=maxWTP;
     rsub_top=Theta_ice*rsub_top_max*exp(-fff*soil->wtable/1000);
@@ -940,9 +897,7 @@ Real infil_perc(Stand *stand,        /**< Stand pointer */
         }
       }
     }
-  }                   //else if not frozen
-//  }  //end while loop
-
+  }
 
 
 #ifdef SAFE
@@ -1175,14 +1130,13 @@ Real infil_perc(Stand *stand,        /**< Stand pointer */
 
   if(stand->cell->discharge.dmass_gw<0)
   {
-    //fprintf(stderr,"dmass_gw:%g ground_st_am:%g ground_st:%g outflux:%g  lat_runoff_last:%g  runoff_out:%g  rsup_top_lastl:%g \n",stand->cell->discharge.dmass_gw,stand->cell->ground_st_am,stand->cell->ground_st,outflux,lat_runoff_last,runoff_out,rsup_top_lastl);
     rsub_top-=stand->cell->discharge.dmass_gw/stand->cell->coord.area;
     stand->cell->discharge.dmass_gw=stand->cell->ground_st_am=stand->cell->ground_st=0;
   }
   if((stand->type->landusetype!=WETLAND || soil->iswetland!=TRUE) && stand->cell->lateral_water<100 && stand->cell->hydrotopes.skip_cell==FALSE && stand->frac<1-epsilon)
   {
     if(runoff_out+drain_perched_out+rsub_top+runoff>0)
-      stand->cell->lateral_water+=(runoff_out+drain_perched_out+rsub_top+runoff)*stand->frac;
+      stand->cell->lateral_water+=(runoff_out+drain_perched_out+rsub_top+runoff)*stand->frac;                         // HERE RUNOFF FROM UPLAND IS COLLECTED FOR LOWLAND INPUT (src/lpj/update_daily.c)
 
     else
       return runoff_surface+runoff_out+drain_perched_out+rsub_top+runoff;

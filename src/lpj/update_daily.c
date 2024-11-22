@@ -206,10 +206,8 @@ void update_daily(Cell *cell,            /**< cell pointer           */
     {
       getoutput(&cell->output,CH4_EMISSIONS,config)+=CH4_em*stand->frac;
       cell->balance.aCH4_em+=CH4_em*stand->frac;
-      if(stand->soil.iswetland && stand->cell->wetlandfrac>epsilon)
-        getoutput(&stand->cell->output,CH4_EMISSIONS_WET,config)+=CH4_em*stand->frac/stand->cell->wetlandfrac;
-      else
-        getoutput(&stand->cell->output,CH4_EMISSIONS_WET,config)+=CH4_em;
+      if(stand->type->landusetype==WETLAND)
+        getoutput(&stand->cell->output,CH4_EMISSIONS_WET,config)+=CH4_em*WC/WCH4;
     }
     else
     {
@@ -239,10 +237,8 @@ void update_daily(Cell *cell,            /**< cell pointer           */
 
     ebul = ebullition(&stand->soil, fpc_total_stand);
     getoutput(&cell->output,CH4_EMISSIONS,config) += ebul*stand->frac;
-    if(stand->soil.iswetland && stand->cell->wetlandfrac>epsilon)
-      getoutput(&stand->cell->output,CH4_EMISSIONS_WET,config)+=ebul*stand->frac/stand->cell->wetlandfrac;
-    else
-      getoutput(&stand->cell->output,CH4_EMISSIONS_WET,config)+=ebul;
+    if(stand->type->landusetype==WETLAND)
+      getoutput(&stand->cell->output,CH4_EMISSIONS_WET,config)+=ebul*WC/WCH4;
     cell->balance.aCH4_em+=ebul*stand->frac;
     getoutput(&cell->output,CH4_EBULLITION,config) += ebul*stand->frac;
 
@@ -293,10 +289,8 @@ void update_daily(Cell *cell,            /**< cell pointer           */
     cell->balance.n_outflux+=hetres.nitrogen*stand->frac;
     getoutput(&cell->output,CH4_EMISSIONS,config) += CH4_em*stand->frac;
     cell->balance.aCH4_em+=CH4_em*stand->frac;
-    if(stand->soil.iswetland && stand->cell->wetlandfrac>epsilon)
-      getoutput(&stand->cell->output,CH4_EMISSIONS_WET,config)+=CH4_em*stand->frac/stand->cell->wetlandfrac;
-    else
-      getoutput(&stand->cell->output,CH4_EMISSIONS_WET,config)+=CH4_em;
+    if(stand->type->landusetype==WETLAND)
+      getoutput(&stand->cell->output,CH4_EMISSIONS_WET,config)+=CH4_em*WC/WCH4;
     if((stand->type->landusetype==SETASIDE_RF || stand->type->landusetype==SETASIDE_IR || stand->type->landusetype==AGRICULTURE || stand->type->landusetype==SETASIDE_WETLAND)&& CH4_em>0)
     {
       foreachpft(pft, p, &stand->pftlist)
