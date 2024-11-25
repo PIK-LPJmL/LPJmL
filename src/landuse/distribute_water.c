@@ -72,11 +72,14 @@ void distribute_water(Cell *cell,            /**< pointer to LPJ cell */
   else
   {
     /* potential irrigation requirement */
-    frac_irrig_amount=cell->discharge.gir>0 ? 1.0 : 0.0;
-    frac_unsustainable=cell->discharge.gir>0 ? 1 - (cell->discharge.withdrawal+cell->discharge.withdrawal_gw)/cell->discharge.gir : 0.0;
+    /* potential irrigation requirement */
+    frac_irrig_amount=cell->discharge.gir>0 ? (cell->discharge.withdrawal+cell->discharge.withdrawal_gw+cell->discharge.irrig_unmet)/cell->discharge.gir : 0.0;
+    frac_unsustainable=cell->discharge.gir>0 ? (cell->discharge.irrig_unmet/cell->discharge.gir) : 0.0;
     frac_unsustainable=frac_unsustainable>0 ? frac_unsustainable : 0.0;
-    cell->balance.awd_unsustainable+=frac_unsustainable*cell->discharge.gir;
+    // coord area added to change to mm
+    cell->balance.awd_unsustainable+=frac_unsustainable*cell->discharge.gir/cell->coord.area;
     getoutput(&cell->output,WD_UNSUST,config)+=frac_unsustainable*cell->discharge.gir;
+    getoutput(&cell->output,WD_AQ,config)+=frac_unsustainable*cell->discharge.gir/cell->coord.area;
   }
 #endif
 //  foreachstand(stand,s,cell->standlist)
