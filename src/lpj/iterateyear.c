@@ -39,14 +39,14 @@
 #include "lpj.h"
 
 void iterateyear(Outputfile *output,  /**< Output file data */
-    Cell grid[],         /**< cell array */
-    Input input,         /**< input data */
-    Real co2,            /**< atmospheric CO2 (ppmv) */
-    Real ch4,            /**< CH4 concentration (ppmv) */
-    int npft,            /**< number of natural PFTs */
-    int ncft,            /**< number of crop PFTs */
-    int year,            /**< simulation year (AD) */
-    const Config *config /**< LPJ configuration */
+                 Cell grid[],         /**< cell array */
+                 Input input,         /**< input data */
+                 Real co2,            /**< atmospheric CO2 (ppmv) */
+                 Real ch4,            /**< CH4 concentration (ppmv) */
+                 int npft,            /**< number of natural PFTs */
+                 int ncft,            /**< number of crop PFTs */
+                 int year,            /**< simulation year (AD) */
+                 const Config *config /**< LPJ configuration */
 )
 {
   Dailyclimate daily;

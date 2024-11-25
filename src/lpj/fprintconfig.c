@@ -509,10 +509,10 @@ void fprintconfig(FILE *file,          /**< File pointer to text output file */
     len=printsim(file,len,&count,"prescribed livestock density");
   if(config->reservoir)
     len=printsim(file,len,&count,"dam reservoirs");
-  if(config->groundwater_irrig==GROUNDWATER_IRRIG)
+  if(config->groundwater_irrig)
     len=printsim(file,len,&count,"groundwater irrigation");
 #ifdef IMAGE
-  if(config->aquifer_irrig==AQUIFER_IRRIG)
+  if(config->aquifer_irrig)
     len=printsim(file,len,&count,"aquifer irrigation");
 #endif
   if(config->wateruse)

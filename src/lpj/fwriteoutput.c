@@ -916,7 +916,7 @@ Bool fwriteoutput(Outputfile *output,  /**< output file array */
           foreachstand(stand,s,grid[cell].standlist)
           {
             if (stand->type->landusetype == SETASIDE_RF || stand->type->landusetype == SETASIDE_IR ||
-                 stand->type->landusetype == AGRICULTURE|| stand->type->landusetype == SETASIDE_WETLAND)
+                stand->type->landusetype == AGRICULTURE|| stand->type->landusetype == SETASIDE_WETLAND)
             {
               for (p = 0; p<stand->soil.litter.n; p++)
                 grid[cell].output.soilc_agr+=stand->soil.litter.item[p].bg.carbon*stand->frac;
@@ -940,10 +940,10 @@ Bool fwriteoutput(Outputfile *output,  /**< output file array */
           foreachstand(stand,s,grid[cell].standlist)
           {
             if (stand->type->landusetype == SETASIDE_RF || stand->type->landusetype == SETASIDE_IR ||
-                 stand->type->landusetype == AGRICULTURE || stand->type->landusetype == SETASIDE_WETLAND)
+                stand->type->landusetype == AGRICULTURE || stand->type->landusetype == SETASIDE_WETLAND)
             {
               grid[cell].output.litc_agr +=(litter_ag_sum(&stand->soil.litter) + litter_agsub_sum(&stand->soil.litter))*stand->frac;            }
-          }
+            }
         }
     }
     writeoutputvar(LITC_AGR,litc_agr);
@@ -2057,9 +2057,9 @@ Bool fwriteoutput(Outputfile *output,  /**< output file array */
           }
           else
             getoutput(&grid[cell].output,NBP,config)+=(grid[cell].balance.anpp-grid[cell].balance.arh-grid[cell].balance.fire.carbon+
-                    grid[cell].balance.flux_estab.carbon-grid[cell].balance.flux_harvest.carbon-grid[cell].balance.biomass_yield.carbon-
-                    grid[cell].balance.neg_fluxes.carbon+grid[cell].balance.influx.carbon-grid[cell].balance.deforest_emissions.carbon-
-                    grid[cell].balance.prod_turnover.fast.carbon-grid[cell].balance.prod_turnover.slow.carbon-grid[cell].balance.trad_biofuel.carbon);
+                      grid[cell].balance.flux_estab.carbon-grid[cell].balance.flux_harvest.carbon-grid[cell].balance.biomass_yield.carbon-
+                      grid[cell].balance.neg_fluxes.carbon+grid[cell].balance.influx.carbon-grid[cell].balance.deforest_emissions.carbon-
+                      grid[cell].balance.prod_turnover.fast.carbon-grid[cell].balance.prod_turnover.slow.carbon-grid[cell].balance.trad_biofuel.carbon);
        }
     }
     writeoutputvar(NBP,1);

@@ -38,14 +38,6 @@
 #define LIM_IRRIGATION 1
 #define POT_IRRIGATION 2
 #define ALL_IRRIGATION 3
-#define GROUNDWATER_IRRIG 1
-#define NO_GROUNDWATER_IRRIG 0 // Flag to allow for irrigation from groundwater reservoir (sustainable gw irrigation)
-#ifdef IMAGE
-#define AQUIFER_IRRIG 1
-#define NO_AQUIFER_IRRIG 0 //Flag to allow for irrigation from aquifers (according to input map for aquifers)
-#endif
-#define GRASS_FIXED_PFT 1
-#define NO_GRASS_FIXED_PFT 0
 #define LAIMAX_CFT 0
 #define LAIMAX_CONST 1
 #define LAIMAX_PAR 2
@@ -58,10 +50,6 @@
 #define NO_RESIDUE_REMOVE 0
 #define FIXED_RESIDUE_REMOVE 1
 #define READ_RESIDUE_DATA 2
-#define ANOMALY 1
-#define NO_ANOMALY 0
-#define PRESCRIBE_CH4 0
-#define DYNAMIC_CH4 1
 #define BMGR_GREEN 0
 #define BMGR_BROWN 1
 #define RADIATION_LWDOWN 3

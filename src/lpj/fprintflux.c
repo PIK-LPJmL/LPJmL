@@ -132,6 +132,6 @@ void fprintflux(FILE *file,          /**< Output file pointer */
   fprintf(file, " %7.2f", flux.soil_NH4*convert);
   fprintf(file, " %7.1f", flux.soil.nitrogen*convert);
   fprintf(file," %7.1f %7.1f %7.1f %7.1f",flux.n_uptake*convert*1000,flux.n_demand*convert*1000,flux.n_outflux*convert*1000,
-      flux.influx.nitrogen*convert*1000);
+          flux.influx.nitrogen*convert*1000);
   fputc('\n',file);
 } /* of 'fprintflux' */

@@ -27,7 +27,7 @@ Stocks standstocks(const Stand *stand /**< pointer to stand */
   foreachpft(pft,p,&stand->pftlist)
   {
     if(stand->type->landusetype!=AGRICULTURE)
-     tot.carbon+=vegc_sum(pft)+pft->bm_inc.carbon; /* sum up carbon in PFTs */
+      tot.carbon+=vegc_sum(pft)+pft->bm_inc.carbon; /* sum up carbon in PFTs */
     else
       tot.carbon+=vegc_sum(pft); /* sum up carbon in PFTs */
 

@@ -84,7 +84,7 @@ Bool freadcell(FILE *file,             /**< File pointer to binary file */
       cell->ml.dam=FALSE;
       cell->discharge.queue=NULL;
     }
-  } 
+  }
   if(!cell->skip)
   {
     freadreal((Real *)cell->balance.estab_storage_tree,2*sizeof(Stocks)/sizeof(Real),swap,file);
@@ -182,7 +182,7 @@ Bool freadcell(FILE *file,             /**< File pointer to binary file */
     {
       fprintf(stderr,"ERROR254: Cannot read gs data.\n");
       return TRUE;
-    } 
+    }
     if (freadhydrotope(file, &cell->hydrotopes, swap))
       return TRUE;
     if(cell->ml.landfrac!=NULL && config->landuse_restart)

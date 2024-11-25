@@ -65,7 +65,6 @@ typedef struct
   Queue queue;            /**< Delay queue */
   Real *tfunct;           /**< pointer to the factors of the cell's transfer function */
   int next;               /**< index to outflow cell */
-  Intcoord runoff2ocean_coord;   /**< i,j index in the global grid of the ocean cell where this cells drains into, or -1,-1 for non-coast-cells */
 } Discharge;
 
 typedef struct wateruse *Wateruse;

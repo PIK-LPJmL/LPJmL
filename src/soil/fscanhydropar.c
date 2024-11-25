@@ -20,10 +20,10 @@
 #define fscanhydroreal(isout,file,var,name) \
   if(fscanreal(file,var,name,FALSE,isout)) return TRUE;
 
-Bool fscanhydropar(LPJfile *file,  /**< file  pointer */ 
+Bool fscanhydropar(LPJfile *file,      /**< file pointer */
                    Hydropar *hydropar, /**< hydrologic parameter read */
-                   Verbosity verb  /**< generate error output */
-                  )                /**< returns TRUE on error */
+                   Verbosity verb      /**< generate error output */
+                  )                    /**< returns TRUE on error */
 {
   LPJfile *f;
   f=fscanstruct(file,"hydropar",verb);
