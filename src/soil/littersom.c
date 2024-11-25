@@ -528,7 +528,7 @@ Stocks littersom(Stand *stand,                      /**< [inout] pointer to stan
 #endif
       if(decay_litter>1) decay_litter=1;
       C_max_all=0;
-      foreachsoillayer(l)
+      forrootsoillayer(l)
        C_max_all+=soil->O2[l]*WC/WO2*oxid_frac*config->pftpar[p].rootdist[l];
       decom=soil->litter.item[p].bg.carbon*decay_litter;
       if(decom>C_max_all)
@@ -537,7 +537,7 @@ Stocks littersom(Stand *stand,                      /**< [inout] pointer to stan
         decay_litter=decom/soil->litter.item[p].bg.carbon;
       }
       decom_O2=decom*WO2/WC;
-      foreachsoillayer(l)
+      forrootsoillayer(l)
       {
         soil->O2[l]-=decom_O2*config->pftpar[p].rootdist[l];
         decom_O2-=decom_O2*config->pftpar[p].rootdist[l];
