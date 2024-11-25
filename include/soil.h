@@ -99,23 +99,23 @@
 #define K_LITTER_SAT_FROZEN 2.106374   /* thermal conductivity of fully saturated frozen organic material */
 #define K_LITTER_SAT_UNFROZEN 0.554636  /* thermal conudcitivity of fully saturated unfrozen organic material */
 
-#define WC  12               /*12g/mol*/
-#define WO2 32               /*32g/mol*/
-#define WCH4 16
-#define WH2O 18
-#define WCO2 44
-#define O2star 3             /*g/m3*/
+#define WC  12.0             /*12g/mol*/
+#define WO2 32.0             /*32g/mol*/
+#define WCH4 16.0
+#define WH2O 18.0
+#define WCO2 44-0
+#define O2star 3.0           /*g/m3*/
 #define BO2 0.038            /*Bunsen coefficient of oxygen*/
 #define BCH4 0.043           /*Bunsen coefficient of methane  0.043 Khvorostynov etal. 2008*/
-#define Vmax_CH4 10          /*Michaelis-Menten coefficient in mikroM/h =  mikro mol/l/h = 10−3 mol/m3/h  20 original */
-#define km_CH4 5             /*mikroM Michaelis-Menten coefficient in mikroM  convert  to 10−3 mol/m3*/
-#define km_O2 200            /*mikroM Michaelis-Menten coefficient in mikroM  convert  to 10−3 mol/m3 Seger 1998*/
+#define Vmax_CH4 10.0        /*Michaelis-Menten coefficient in mikroM/h =  mikro mol/l/h = 10−3 mol/m3/h  20 original */
+#define km_CH4 5.0           /*mikroM Michaelis-Menten coefficient in mikroM  convert  to 10−3 mol/m3*/
+#define km_O2 200.0          /*mikroM Michaelis-Menten coefficient in mikroM  convert  to 10−3 mol/m3 Seger 1998*/
 #define tau_CH4 12.5 /* life time of methane (yr) */
 #define R_gas 8.314          /* universal gas constant J mol-1 K-1 */
 #define p_s 1.01e5           /* atmospheric pressure (Pa=kg m-1 s-2) */
 #define D_O2_air 1.596e-5    /* free air oxygen diffusivity (m2s-1)*/
 #define D_O2_water 1.6e-9    /* O2 diffusivity in water (m2s-1)*/
-#define eta 2/3              /* tortuosity factor ( 2/3 )*/
+#define eta (2.0/3.0)        /* tortuosity factor ( 2/3 )*/
 #define O2s 0.209            /* atmospheric content of oxygen */
 #define D_CH4_air 1.702e-5   /* free air methane diffusivity (m2s-1)*/
 #define D_CH4_water 2e-9     /* methane diffusivity in water (m2s-1)*/
@@ -233,8 +233,8 @@ typedef struct
   Real NH4[LASTLAYER];           /**< NH4 per soillayer (gN/m2) */
   Real w[NSOILLAYER],            /**< soil water as fraction of whc (fractional water holding capacity) */
     w_fw[NSOILLAYER];            /**< free water or gravitational water (mm), absolute water content between field capacity and saturation */
-  Real O2[LASTLAYER];            /*mass of soil oxygen per soil layer*/
-  Real CH4[LASTLAYER];           /*mass of soil methane per soil layer in gC*/
+  Real O2[LASTLAYER];            /**< mass of soil oxygen per soil layer*/
+  Real CH4[LASTLAYER];           /**< mass of soil methane per soil layer in gC*/
   Real w_evap;                   /**< soil moisture content which is not transpired and can evaporate? correct? */
   Real perc_energy[NSOILLAYER];  /**< energy transfer by percolation (J) */
 #ifdef MICRO_HEATING
@@ -260,8 +260,8 @@ typedef struct
   Real whcs[NSOILLAYER];  /**< absolute water holding capacity (mm), whcs = whc * soildepth */
   Real wpwps[NSOILLAYER]; /**< water at permanent wilting point in mm, depends on soildepth */
   Real ice_depth[NSOILLAYER];   /**< mm */
-  Real icefrac;               /* fraction covered by ice */
-  Real ice_fw[NSOILLAYER];      /**< mm */
+  Real icefrac;                  /**< fraction covered by ice */
+  Real ice_fw[NSOILLAYER];       /**< mm */
   Real freeze_depth[NSOILLAYER]; /**< mm */
   Real ice_pwp[NSOILLAYER];      /**< fraction of water below pwp frozen */
   Real k_dry[NSOILLAYER];        /**< thermal conductivity of dry soil */
