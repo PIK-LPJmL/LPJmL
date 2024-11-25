@@ -22,6 +22,7 @@
 
 void update_wetland(Cell *cell,          /**< pointer to cell */
                     int ntotpft,         /**< total number of PFTs */
+                    int ncft,            /**< number of crop PFTs */
                     int year,            /**< simulation year */
                     const Config *config /**< LPJmL configuration */
 )
@@ -379,7 +380,7 @@ void update_wetland(Cell *cell,          /**< pointer to cell */
           fail(INVALID_WATER_BALANCE_ERR,FAIL_ON_BALANCE,FALSE, "1 Invalid water balance in %s: %g start:%g  end:%g excess_water:%g\n",
                __FUNCTION__, water_before - water_after, water_before, water_after,cell->balance.excess_water);
 #endif
-        check_stand_fracs(cell,cell->lakefrac+cell->ml.reservoirfrac);
+        check_stand_fracs(cell,cell->lakefrac+cell->ml.reservoirfrac,ncft);
 
       }
       // -----------------------------------------------------------------------------------------------
@@ -659,7 +660,7 @@ void update_wetland(Cell *cell,          /**< pointer to cell */
   }
 #endif
 
-  check_stand_fracs(cell,cell->lakefrac+cell->ml.reservoirfrac);
+  check_stand_fracs(cell,cell->lakefrac+cell->ml.reservoirfrac,ncft);
 
 
 #ifdef CHECK_BALANCE

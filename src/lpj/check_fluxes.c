@@ -28,9 +28,10 @@ void check_fluxes(Cell *cell,          /**< cell pointer */
   Stand *stand;
   String line;
   int s,i,startyear;
-
-//  int p;
-//  Pft *pft;
+#if defined IMAGE && defined COUPLED
+  int p;
+  Pft *pft;
+#endif
   /* carbon balance check */
   awater_flux = cell->balance.awater_flux;
 
@@ -110,9 +111,9 @@ void check_fluxes(Cell *cell,          /**< cell pointer */
          year,cellid+config->startgrid,sprintcoord(line,&cell->coord),balance.carbon,cell->balance.anpp-cell->balance.arh,
          cell->balance.fire.carbon,
          cell->balance.flux_estab.carbon,cell->balance.flux_harvest.carbon,delta_tot.carbon,
-         cell->balance.deforest_emissions.carbon,cell->balance.prod_turnover,cell->balance.trad_biofuel.carbon,
+         cell->balance.deforest_emissions.carbon,cell->balance.prod_turnover.fast.carbon,cell->balance.trad_biofuel.carbon,
          cell->ml.product.slow.carbon,cell->ml.product.fast.carbon,cell->balance.timber_harvest.carbon,
-         cell->ml.image_data->timber_f,cell->ml.image_data->fburnt,cell->balance.influx.carbon);
+         cell->ml.image_data->timber_f.fast,cell->ml.image_data->fburnt,cell->balance.influx.carbon);
 #else
 #ifdef NO_FAIL_BALANCE
     fprintf(stderr,"ERROR004: "

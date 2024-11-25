@@ -55,6 +55,7 @@ Stocks cultivate(Cell *cell,           /**< cell pointer */
 
 #ifdef IMAGE
   int nagr,s;
+  Stand *stand;
 #endif
   vern_date20=cell->ml.cropdates[cft].vern_date20;
   landfrac=(isother) ? cell->ml.landfrac[irrigation].grass[0] : cell->ml.landfrac[irrigation].crop[cft];

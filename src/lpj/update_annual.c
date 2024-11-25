@@ -149,7 +149,7 @@ void update_annual(Cell *cell,          /**< Pointer to cell */
   cell->hydrotopes.wetland_wtable_mean /= NMONTH;
   cell->hydrotopes.wtable_mean /= NMONTH;
   if(cell->lakefrac<1)
-    update_wetland(cell, npft + ncft,year,config);
+    update_wetland(cell, npft + ncft,ncft,year,config);
 #ifdef CHECK_BALANCE
   end.carbon=end.nitrogen = end_w=0;
   end_w+=cell->balance.excess_water;

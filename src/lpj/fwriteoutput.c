@@ -152,11 +152,11 @@ static Bool writedata(Outputfile *output,int index,float data[],int year,int dat
     {
       case RAW: case CLM:
         rc=mpi_write(output->files[index].fp.file,data,MPI_FLOAT,config->total,
-                  output->counts,output->offsets,config->rank,config->comm);
+                     output->counts,output->offsets,config->rank,config->comm);
         break;
       case TXT:
         rc=mpi_write_txt(output->files[index].fp.file,data,MPI_FLOAT,config->total,
-                  output->counts,output->offsets,config->rank,config->csv_delimit,config->comm);
+                         output->counts,output->offsets,config->rank,config->csv_delimit,config->comm);
         break;
       case CDF:
         if(output->files[index].oneyear)
@@ -169,8 +169,8 @@ static Bool writedata(Outputfile *output,int index,float data[],int year,int dat
         else
           offset=(config->outnames[index].timestep>0) ? (year-config->outputyear)/config->outnames[index].timestep : (year-config->outputyear)*ndata+date;
         rc=mpi_write_netcdf(&output->files[index].fp.cdf,data,MPI_FLOAT,config->total,
-                         offset,
-                         output->counts,output->offsets,config->rank,config->comm);
+                            offset,
+                            output->counts,output->offsets,config->rank,config->comm);
         break;
     }
   if(rc)
@@ -208,8 +208,8 @@ static Bool writedata(Outputfile *output,int index,float data[],int year,int dat
         else
           offset=(config->outnames[index].timestep>0) ? (year-config->outputyear)/config->outnames[index].timestep : (year-config->outputyear)*ndata+date;
         rc=write_float_netcdf(&output->files[index].fp.cdf,data,
-                           offset,
-                           config->count);
+                              offset,
+                              config->count);
         break;
     }
   if(rc)
@@ -233,11 +233,11 @@ static Bool writeshortdata(Outputfile *output,int index,short data[],int year,in
     {
       case RAW: case CLM:
         rc=mpi_write(output->files[index].fp.file,data,MPI_SHORT,config->total,
-                  output->counts,output->offsets,config->rank,config->comm);
+                     output->counts,output->offsets,config->rank,config->comm);
         break;
       case TXT:
         rc=mpi_write_txt(output->files[index].fp.file,data,MPI_SHORT,config->total,
-                      output->counts,output->offsets,config->rank,config->csv_delimit,config->comm);
+                         output->counts,output->offsets,config->rank,config->csv_delimit,config->comm);
         break;
       case CDF:
         if(output->files[index].oneyear)
@@ -250,8 +250,8 @@ static Bool writeshortdata(Outputfile *output,int index,short data[],int year,in
         else
           offset=(config->outnames[index].timestep>0) ? (year-config->outputyear)/config->outnames[index].timestep : (year-config->outputyear)*ndata+date;
         rc=mpi_write_netcdf(&output->files[index].fp.cdf,data,MPI_SHORT,config->total,
-                         offset,
-                         output->counts,output->offsets,config->rank,config->comm);
+                            offset,
+                            output->counts,output->offsets,config->rank,config->comm);
         break;
     }
   if(rc)
@@ -260,7 +260,7 @@ static Bool writeshortdata(Outputfile *output,int index,short data[],int year,in
   {
     send_output_coupler(index,year,date,config);
     rc=mpi_write_socket(config->socket,data,MPI_SHORT,config->total,
-                     output->counts,output->offsets,config->rank,config->comm);
+                        output->counts,output->offsets,config->rank,config->comm);
   }
 #else
   int i;
@@ -290,8 +290,8 @@ static Bool writeshortdata(Outputfile *output,int index,short data[],int year,in
         else
           offset=(config->outnames[index].timestep>0) ? (year-config->outputyear)/config->outnames[index].timestep : (year-config->outputyear)*ndata+date;
         rc=write_short_netcdf(&output->files[index].fp.cdf,data,
-                           offset,
-                           config->count);
+                              offset,
+                              config->count);
         break;
     }
   if(rc)
@@ -327,11 +327,11 @@ static Bool writealldata(Outputfile *output,int index,float data[],int year,int 
     {
       case RAW: case CLM:
         rc=mpi_write(output->files[index].fp.file,data,MPI_FLOAT,config->nall,counts,
-                  offsets,config->rank,config->comm);
+                     offsets,config->rank,config->comm);
         break;
       case TXT:
         rc=mpi_write_txt(output->files[index].fp.file,data,MPI_FLOAT,config->nall,counts,
-                      offsets,config->rank,config->csv_delimit,config->comm);
+                         offsets,config->rank,config->csv_delimit,config->comm);
         break;
       case CDF:
         if(output->files[index].oneyear)
@@ -344,8 +344,8 @@ static Bool writealldata(Outputfile *output,int index,float data[],int year,int 
         else
           offset=(year-config->outputyear)*ndata+date;
         rc=mpi_write_netcdf(&output->files[index].fp.cdf,data,MPI_FLOAT,config->nall,
-                         offset,
-                         counts,offsets,config->rank,config->comm);
+                            offset,
+                            counts,offsets,config->rank,config->comm);
         break;
     }
   if(rc)
@@ -354,7 +354,7 @@ static Bool writealldata(Outputfile *output,int index,float data[],int year,int 
   {
     send_output_coupler(index,year,date,config);
     rc=mpi_write_socket(config->socket,data,MPI_FLOAT,config->nall,counts,
-                     offsets,config->rank,config->comm);
+                        offsets,config->rank,config->comm);
   }
   free(counts);
   free(offsets);
@@ -385,8 +385,8 @@ static Bool writealldata(Outputfile *output,int index,float data[],int year,int 
         else
           offset=(year-config->outputyear)*ndata+date;
         rc=write_float_netcdf(&output->files[index].fp.cdf,data,
-                           offset,
-                           config->ngridcell);
+                              offset,
+                              config->ngridcell);
         break;
     }
   if(rc)
@@ -414,11 +414,11 @@ static Bool writepft(Outputfile *output,int index,float *data,int year,
     {
       case RAW: case CLM:
         rc=mpi_write(output->files[index].fp.file,data,MPI_FLOAT,config->total,
-                  output->counts,output->offsets,config->rank,config->comm);
+                     output->counts,output->offsets,config->rank,config->comm);
         break;
       case TXT:
         rc=mpi_write_txt(output->files[index].fp.file,data,MPI_FLOAT,config->total,
-                      output->counts,output->offsets,config->rank,config->csv_delimit,config->comm);
+                         output->counts,output->offsets,config->rank,config->csv_delimit,config->comm);
         break;
       case CDF:
         if(output->files[index].oneyear)
@@ -431,9 +431,9 @@ static Bool writepft(Outputfile *output,int index,float *data,int year,
         else
           offset=(config->outnames[index].timestep>0) ? (year-config->outputyear)/config->outnames[index].timestep : (year-config->outputyear)*ndata+date;
         rc=mpi_write_pft_netcdf(&output->files[index].fp.cdf,data,MPI_FLOAT,
-                             config->total,offset,layer,
-                             output->counts,output->offsets,config->rank,
-                             config->comm);
+                                config->total,offset,layer,
+                                output->counts,output->offsets,config->rank,
+                                config->comm);
         break;
     }
   if(rc)
@@ -441,7 +441,7 @@ static Bool writepft(Outputfile *output,int index,float *data,int year,
   if(output->files[index].issocket)
   {
     rc=mpi_write_socket(config->socket,data,MPI_FLOAT,config->total,
-                     output->counts,output->offsets,config->rank,config->comm);
+                        output->counts,output->offsets,config->rank,config->comm);
   }
 #else
   if(output->files[index].isopen)
@@ -470,7 +470,7 @@ static Bool writepft(Outputfile *output,int index,float *data,int year,
         else
           offset=(config->outnames[index].timestep>0) ? (year-config->outputyear)/config->outnames[index].timestep : (year-config->outputyear)*ndata+date;
         rc=write_pft_float_netcdf(&output->files[index].fp.cdf,data,
-                               offset,layer,config->count);
+                                  offset,layer,config->count);
         break;
     }
   if(rc)
@@ -493,11 +493,11 @@ static Bool writeshortpft(Outputfile *output,int index,short *data,int year,
     {
       case RAW: case CLM:
         rc=mpi_write(output->files[index].fp.file,data,MPI_SHORT,config->total,
-                  output->counts,output->offsets,config->rank,config->comm);
+                     output->counts,output->offsets,config->rank,config->comm);
         break;
       case TXT:
         rc=mpi_write_txt(output->files[index].fp.file,data,MPI_SHORT,config->total,
-                      output->counts,output->offsets,config->rank,config->csv_delimit,config->comm);
+                         output->counts,output->offsets,config->rank,config->csv_delimit,config->comm);
         break;
       case CDF:
         if(output->files[index].oneyear)
@@ -510,16 +510,16 @@ static Bool writeshortpft(Outputfile *output,int index,short *data,int year,
         else
           offset=(year-config->outputyear)*ndata+date;
         rc=mpi_write_pft_netcdf(&output->files[index].fp.cdf,data,MPI_SHORT,
-                             config->total,offset,layer,
-                             output->counts,output->offsets,config->rank,
-                             config->comm);
+                                config->total,offset,layer,
+                                output->counts,output->offsets,config->rank,
+                                config->comm);
         break;
     }
   if(rc)
     return TRUE;
   if(output->files[index].issocket)
     rc=mpi_write_socket(config->socket,data,MPI_SHORT,config->total,
-                     output->counts,output->offsets,config->rank,config->comm);
+                        output->counts,output->offsets,config->rank,config->comm);
 #else
   if(output->files[index].isopen)
     switch(output->files[index].fmt)
@@ -547,7 +547,7 @@ static Bool writeshortpft(Outputfile *output,int index,short *data,int year,
         else
           offset=(year-config->outputyear)*ndata+date;
         rc=write_pft_short_netcdf(&output->files[index].fp.cdf,data,
-                               offset,layer,config->count);
+                                  offset,layer,config->count);
         break;
     }
   if(rc)

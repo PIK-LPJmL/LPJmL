@@ -21,8 +21,8 @@
 #define HYD_AV_TIME 50
 #define WTAB_THRES 0.1
 #define WLAND_MIN_THRES 0.
-#define WLAND_MAX_THRES 0.9 
-#define CTI_THRES 5.5 
+#define WLAND_MAX_THRES 0.9
+#define CTI_THRES 5.5
 #define EFOLD_HYD 2.3
 
 #define cfrac_oxic  0.50	/* carbon fraction acrotelm g/g  -- Malmer & Wallen (2004):    */

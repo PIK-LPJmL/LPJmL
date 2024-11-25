@@ -53,12 +53,11 @@ int iterate(Outputfile *output, /**< Output file data */
 {
   Real co2, ch4, pch4,cflux_total;
   Flux flux;
-  int year,landuse_year,wateruse_year,startyear,firstspinupyear,spinup_year,climate_year,year_co2,index,data_index,rnd_year,depos_year;
+  int year,landuse_year,startyear,firstspinupyear,spinup_year,climate_year,year_co2,index,data_index,rnd_year,depos_year;
   Bool rc;
   Climatedata store,data_save;
-
-#if defined IMAGE && defined COUPLED
-  Real finish;
+#ifndef COUPLED
+  int wateruse_year;
 #endif
   if (config->isanomaly)
     data_index = (config->delta_year>1) ? 3 : 1;

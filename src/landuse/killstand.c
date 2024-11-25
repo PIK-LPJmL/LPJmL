@@ -47,7 +47,7 @@ void killstand(Cell *cell,          /**< cell pointer */
       else
         irrig=FALSE;
       if(stand->frac>0)
-        check_stand_fracs(cell,cell->lakefrac+cell->ml.reservoirfrac);
+        check_stand_fracs(cell,cell->lakefrac+cell->ml.reservoirfrac,ncft);
       if(setaside(cell,stand,with_tillage,intercrop,npft,ncft,irrig,stand->soil.iswetland,year,config))
       {
         delstand(cell->standlist,s);
@@ -55,5 +55,5 @@ void killstand(Cell *cell,          /**< cell pointer */
       }
     }
   }
-  check_stand_fracs(cell,cell->lakefrac+cell->ml.reservoirfrac);
+  check_stand_fracs(cell,cell->lakefrac+cell->ml.reservoirfrac,ncft);
 } /* of 'killstand' */

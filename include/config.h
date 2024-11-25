@@ -178,7 +178,6 @@ struct config
   Bool fix_climate;             /**< fix climate after specified year */
   int fix_climate_year;         /**< year at which climate is fixed */
   int fix_climate_interval[2];  /**< interval for fixed climate */
-  int fix_climate_cycle;        /**< number of years for climate shuffle for fixed climate */
   Bool fix_climate_shuffle;     /**< randomly shuffle climate */
   Bool fix_deposition;          /**< fix deposition after specified year */
   int fix_deposition_year;      /**< year at which deposition is fixed */
@@ -203,8 +202,6 @@ struct config
   int compress;           /**< compress NetCDF output (0: no compression) */
   float missing_value;    /**< Missing value in NetCDF files */
   Variable *outnames;
-  char *hostname;               /**< hostname to send data */
-  int port;                     /**< port of socket connection */
   Bool isanomaly;
   int delta_year;
   Bool with_glacier;

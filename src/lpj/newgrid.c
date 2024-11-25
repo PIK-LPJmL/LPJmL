@@ -433,7 +433,7 @@ static Cell *newgrid2(Config *config,          /* Pointer to LPJ configuration *
       if(!config->ischeckpoint && config->new_seed)
         setseed(grid[i].seed,config->seed_start+(i+config->startgrid)*36363);
       if(!grid[i].skip)
-        check_stand_fracs(grid+i,grid[i].lakefrac+grid[i].ml.reservoirfrac);
+        check_stand_fracs(grid+i,grid[i].lakefrac+grid[i].ml.reservoirfrac,ncft);
       else
         (*count)++;
     }

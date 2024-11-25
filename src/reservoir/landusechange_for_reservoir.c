@@ -223,8 +223,10 @@ void landusechange_for_reservoir(Cell *cell,          /**< pointer to cell */
   Real sum[2],sum_wl;
   Real minnatfrac_res;
   int s,p;
+#ifndef IMAGE
   Real totw_before,totw_after,balanceW;
   Stocks tot_before={0,0},tot_after={0,0},balance,stocks; /* to check the water and c balance in the cells */
+#endif
   Irrigation *data;
 #if defined IMAGE && defined COUPLED
   minnatfrac_res=0.0002;
@@ -250,7 +252,6 @@ void landusechange_for_reservoir(Cell *cell,          /**< pointer to cell */
     totw_before+=(cell->discharge.dmass_lake)/cell->coord.area;
     totw_before+=cell->ml.resdata->dmass/cell->coord.area;
     totw_before+=cell->ml.resdata->dfout_irrigation/cell->coord.area;
-#endif
     /* carbon */
     foreachstand(stand,s,cell->standlist)
     {
@@ -266,6 +267,7 @@ void landusechange_for_reservoir(Cell *cell,          /**< pointer to cell */
     tot_before.nitrogen+=cell->balance.deforest_emissions.nitrogen;
     tot_before.carbon-=cell->balance.flux_estab.carbon;
     tot_before.nitrogen-=cell->balance.flux_estab.nitrogen;
+#endif
     /* cut cut entire natural stand if lakefraction+reservoir fraction equals 1 */
     if(difffrac>=1-cell->lakefrac-minnatfrac_res)
       minnatfrac_res=0.0;
@@ -409,7 +411,7 @@ void landusechange_for_reservoir(Cell *cell,          /**< pointer to cell */
            balance.carbon);
 #endif
     /* check if total fractions add up to 1 again */
-    check_stand_fracs(cell,cell->lakefrac+cell->ml.reservoirfrac);
+    check_stand_fracs(cell,cell->lakefrac+cell->ml.reservoirfrac,ncft);
 
   }
 } /* end of function */

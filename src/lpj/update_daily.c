@@ -43,7 +43,7 @@ void update_daily(Cell *cell,            /**< cell pointer           */
   Real CH4_em=0;
   Real melt_all,runoff,snowrunoff,epsilon_gas,soilmoist,V;
 #ifdef IMAGE
-  Real fout_gw; // local variable for groundwater outflow (baseflow)
+  //Real fout_gw; // local variable for groundwater outflow (baseflow)
 #endif
   Real gtemp_air;  /* value of air temperature response function */
   Real gtemp_soil[NSOILLAYER]; /* value of soil temperature response function */
@@ -638,7 +638,7 @@ void update_daily(Cell *cell,            /**< cell pointer           */
   soilpar_output(cell,agrfrac,config);
   killstand(cell,npft, ncft,cell->ml.with_tillage,intercrop,year,config);
 #ifdef SAFE
-  check_stand_fracs(cell,cell->lakefrac+cell->ml.reservoirfrac);
+  check_stand_fracs(cell,cell->lakefrac+cell->ml.reservoirfrac,ncft);
 #endif
   /* Establishment fluxes are area weighted in subroutines */
   getoutput(&cell->output,FLUX_ESTABC,config)+=flux_estab.carbon;

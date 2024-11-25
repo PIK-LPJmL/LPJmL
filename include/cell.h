@@ -209,7 +209,7 @@ extern Bool readcelldata(Celldata,Cell *,unsigned int *,int,Config *);
 extern void closecelldata(Celldata,const Config *);
 extern Real albedo(Cell *, Real , Real );
 extern void hydrotopes(Cell*);
-extern void update_wetland(Cell *, int, int,const Config *);
+extern void update_wetland(Cell *, int, int,int,const Config *);
 extern void check_glaciated(Cell *,const Config *);
 extern Bool initoutput(Outputfile *,Cell [],int,int,Config *);
 
