@@ -34,7 +34,7 @@
 
 #define MOIST_DENOM 0.63212055882855767841 /* (1.0-exp(-1.0)) */
 #define K10_YEDOMA 0.025/NDAYYEAR
-#define k_red 3                           /*anoxic decomposition is much smaller than oxic decomposition Khovorostyanov et al., 2008*/
+#define k_red 4                           /*anoxic decomposition is much smaller than oxic decomposition Khovorostyanov et al., 2008*/
 #define k_red_litter 1
 #define INTERCEPT 0.04021601              /* changed from 0.10021601 now again original value*/
 #define MOIST_3 -5.00505434
@@ -424,7 +424,7 @@ Stocks littersom(Stand *stand,                      /**< [inout] pointer to stan
 
       /* agtop wood */
 #ifdef LINEAR_DECAY
-      decay_litter=soil->litter.item[p].pft->k_litter10.wood*response_agtop_wood;
+      decay_litter=soil->litter.item[p].pft->k_litter10.wood*response_agtop_wood;      // no methane production from above wood litter
 #else
       decay_litter=1.0-exp(-(soil->litter.item[p].pft->k_litter10.wood*response_agtop_wood));
 #endif
@@ -440,19 +440,9 @@ Stocks littersom(Stand *stand,                      /**< [inout] pointer to stan
         decom_sum.nitrogen+=decom;
         decom_slow.nitrogen+=decom;
 
-        if (soil->wtable<=0 && soil->litter.item[p].agtop.wood[i].carbon>0)
-        {
-          litter_flux = soil->litter.item[p].agtop.wood[i].carbon*soil->litter.item[p].pft->k_litter10.wood/k_red_litter*gtemp_soil[0]*exp((-soil->O2[0]/soildepth[0]*1000)/O2star);
-          soil->litter.item[p].agtop.wood[i].carbon-=litter_flux*WC/WCH4;
-          *methaneflux_litter += litter_flux;
-          litter_flux= soil->litter.item[p].agtop.wood[i].nitrogen*soil->litter.item[p].pft->k_litter10.wood/k_red_litter*gtemp_soil[0]*exp((-soil->O2[0] / soildepth[0] * 1000) / O2star);
-          soil->litter.item[p].bg.nitrogen-=litter_flux;
-          decom_sum.nitrogen+=litter_flux;
-          decom_slow.nitrogen+=litter_flux;
-        }
       }
 
-      /* agsub leaves */
+      /* agsub leaves only on agricultural stands in the first layer*/
 #ifdef LINEAR_DECAY
       decay_litter=soil->litter.item[p].pft->k_litter10.leaf*response_agsub_leaves;
 #else
@@ -509,7 +499,7 @@ Stocks littersom(Stand *stand,                      /**< [inout] pointer to stan
         soil->litter.item[p].agsub.wood[i].nitrogen-=decom;
         decom_sum.nitrogen+=decom;
         decom_slow.nitrogen+=decom;
-        if (soil->wtable<=150 && soil->litter.item[p].agsub.wood[i].carbon>0)
+        if (soil->wtable<=WTABTHRES && soil->litter.item[p].agsub.wood[i].carbon>0)
         {
           litter_flux=soil->litter.item[p].agsub.wood[i].carbon*soil->litter.item[p].pft->k_litter10.wood/k_red_litter*gtemp_soil[0]* exp((-soil->O2[0] / soildepth[0] * 1000) / O2star);
           soil->litter.item[p].agsub.wood[i].carbon-=litter_flux*WC/WCH4;
