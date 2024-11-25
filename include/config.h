@@ -280,6 +280,7 @@ struct config
   int soilmap_size;
   int grazing;
   int grazing_others;
+  int rice_pft;             /**< PFT index of rice */
   Bool groundwater_irrig;   /**< Irrigation from groundwater reservoir */
 #ifdef IMAGE
   Bool aquifer_irrig;       /**< Aquifer irrigation possible?*/
@@ -308,7 +309,7 @@ struct config
   int totalsize;          /**< size of shared output storage */
   int outputmap[NOUT];    /**< index into output storage */
   int outputsize[NOUT];   /**< number of bands for each output */
-  int natNBP_only;
+  Bool natNBP_only;
 }; /* LPJ configuration */
 
 typedef struct

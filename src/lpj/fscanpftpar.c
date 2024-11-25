@@ -190,7 +190,6 @@ Bool fscanpftpar(LPJfile *file,       /**< pointer to LPJ file */
     }
     pft->name=strdup(s); /* store PFT name */
     checkptr(pft->name);
-    npft++;
     if(fscankeywords(item,&pft->type,"type",config->pfttypes,config->ntypes,FALSE,verb))
     {
       if(verb)
@@ -270,6 +269,8 @@ Bool fscanpftpar(LPJfile *file,       /**< pointer to LPJ file */
         break;
       case ANNUAL_CROP:
         iscrop=TRUE;
+        if(!strcmp(pft->name,"rice"))
+          config->rice_pft=npft;
         break;
       case WP:
         iswp=TRUE;
@@ -439,6 +440,7 @@ Bool fscanpftpar(LPJfile *file,       /**< pointer to LPJ file */
     /* Now scan PFT-specific parameters and set specific functions */
     if(scanfcn[pft->type].fcn(item,pft,config))
       return TRUE;
+    npft++;
   }
   return FALSE;
 } /* of 'fscanpftpar' */

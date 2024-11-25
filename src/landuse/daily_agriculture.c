@@ -195,13 +195,13 @@ Real daily_agriculture(Stand *stand,                /**< [inout] stand pointer *
 //      if(!strcmp(pft->par->name,"rice") && stand->growing_days<300)
 //      {
 //    	  flux_estab=cultivate(stand->cell,data->irrigation,day,FALSE,stand,
-//    	                     npft,ncft,RICE,year,config);
+//    	                     npft,ncft,config->rice_pft-npft,year,config);
 //    	    if(data->irrigation)
-//    	      c=ncft+RICE;
+//    	      c=ncft+config->rice_pft-npft;
 //    	    if(!config->double_harvest)
 //    	      getoutputindex(&stand->cell->output,SDATE,c,config)=day;
 //    	    if(config->sdate_option==FIXED_SDATE)
-//    	    	stand->cell->ml.sdate_fixed[RICE]=day;
+//    	    	stand->cell->ml.sdate_fixed[config->rice_pft-npft]=day;
 //         getoutput(&stand->cell->output,FLUX_ESTABC,config)+=flux_estab.carbon;
 //         getoutput(&stand->cell->output,FLUX_ESTABN,config)+=flux_estab.nitrogen;
 //         stand->cell->balance.flux_estab.nitrogen+=flux_estab.nitrogen;

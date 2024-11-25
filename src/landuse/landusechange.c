@@ -1423,8 +1423,8 @@ void landusechange(Cell *cell,          /**< pointer to cell */
    if(cell->ml.dam)
     landusechange_for_reservoir(cell,npft,ncft,intercrop,year,config);
   /* test if land needs to be reallocated between setaside stands */
-  difffrac=crop_sum_frac(cell->ml.landfrac,ncft,config->nagtree,cell->ml.reservoirfrac+cell->lakefrac,FALSE)-cell->ml.cropfrac_rf-cell->ml.landfrac[0].crop[RICE]; //cropfrac is without wetland setaside
-  difffrac2=crop_sum_frac(cell->ml.landfrac,ncft,config->nagtree,cell->ml.reservoirfrac+cell->lakefrac,TRUE)-cell->ml.cropfrac_ir-cell->ml.landfrac[1].crop[RICE];
+  difffrac=crop_sum_frac(cell->ml.landfrac,ncft,config->nagtree,cell->ml.reservoirfrac+cell->lakefrac,FALSE)-cell->ml.cropfrac_rf-cell->ml.landfrac[0].crop[config->rice_pft-npft]; //cropfrac is without wetland setaside
+  difffrac2=crop_sum_frac(cell->ml.landfrac,ncft,config->nagtree,cell->ml.reservoirfrac+cell->lakefrac,TRUE)-cell->ml.cropfrac_ir-cell->ml.landfrac[1].crop[config->rice_pft-npft];
   if(difffrac*difffrac2<-epsilon*epsilon) /* if one increases while the other decreases */
   {
     s=findlandusetype(cell->standlist,SETASIDE_RF);
@@ -1520,7 +1520,7 @@ void landusechange(Cell *cell,          /**< pointer to cell */
       -((cell->balance.deforest_emissions.nitrogen+cell->balance.prod_turnover.fast.nitrogen+cell->balance.prod_turnover.slow.nitrogen+cell->balance.trad_biofuel.nitrogen)-fluxes_prod.nitrogen);
   if(fabs(start.carbon-end.carbon+balance.carbon)>0.001)
     fail(INVALID_CARBON_BALANCE_ERR,FAIL_ON_BALANCE,FALSE,"Invalid carbon balance in %s after moving setaside year=%d: C_ERROR=%g start : %g end : %g balance.carbon: %g difffrac: %g difffrac2: %g rice_rainfed: %g rice_irr: %g wl: %g \n",
-         __FUNCTION__,year,start.carbon-end.carbon+balance.carbon,start.carbon,end.carbon,balance.carbon,difffrac,difffrac2,cell->ml.landfrac[0].crop[RICE],cell->ml.landfrac[1].crop[RICE],cell->ml.cropfrac_wl);
+         __FUNCTION__,year,start.carbon-end.carbon+balance.carbon,start.carbon,end.carbon,balance.carbon,difffrac,difffrac2,cell->ml.landfrac[0].crop[config->rice_pft-npft],cell->ml.landfrac[1].crop[config->rice_pft-npft],cell->ml.cropfrac_wl);
   if (fabs(start_w - end_w)>0.001)
     fail(INVALID_WATER_BALANCE_ERR,FAIL_ON_BALANCE,FALSE, "Invalid water balance in %s after moving setaside: year=%d: W_ERROR=%g start : %g end : %g\n",
          __FUNCTION__,year, start_w - end_w, start_w, end_w);
@@ -1536,7 +1536,7 @@ void landusechange(Cell *cell,          /**< pointer to cell */
    }
 #endif
 
-  difffrac_rice=cell->ml.landfrac[1].crop[RICE]+cell->ml.landfrac[0].crop[RICE]-sum_wl;
+  difffrac_rice=cell->ml.landfrac[1].crop[config->rice_pft-npft]+cell->ml.landfrac[0].crop[config->rice_pft-npft]-sum_wl;
 
   for(i=0;i<2;i++)
   {
@@ -1544,7 +1544,7 @@ void landusechange(Cell *cell,          /**< pointer to cell */
     cropfrac= i==0 ? cell->ml.cropfrac_rf : cell->ml.cropfrac_ir;
     grassfrac=cell->ml.landfrac[i].grass[0]+cell->ml.landfrac[i].grass[1]; /* pasture + others */
 
-    difffrac=(crop_sum_frac(cell->ml.landfrac,ncft,config->nagtree,cell->ml.reservoirfrac+cell->lakefrac,i)-cell->ml.landfrac[i].crop[RICE])-cropfrac;; /*  added the resfrac, see function AND replaced to BEFORE next three lines */
+    difffrac=(crop_sum_frac(cell->ml.landfrac,ncft,config->nagtree,cell->ml.reservoirfrac+cell->lakefrac,i)-cell->ml.landfrac[i].crop[config->rice_pft-npft])-cropfrac;; /*  added the resfrac, see function AND replaced to BEFORE next three lines */
 
 
     // FIRST CONVERTION OF WETLANDS BECAUSE RICE SHOULD BE PREFERRED
@@ -1570,7 +1570,7 @@ void landusechange(Cell *cell,          /**< pointer to cell */
       fprintf(stderr,"LANDUSECHANGE difffrac_crops: %g cropfrac_rf: %g cropfrac_ir: %g cropfrac_wl: %g difffrac_rice: %g grassfrac: %g irrgation:%d "
           "cropsum: %g land_ricefrac: %g cropfrac: %g sumwl: %g sum[%d]: %g \n",
           difffrac,cell->ml.cropfrac_rf,cell->ml.cropfrac_ir,cell->ml.cropfrac_wl,difffrac_rice,grassfrac, i,crop_sum_frac(cell->ml.landfrac,ncft,
-              config->nagtree,cell->ml.reservoirfrac+cell->lakefrac,i),cell->ml.landfrac[i].crop[RICE],cropfrac,sum_wl,i,sum[i]);
+              config->nagtree,cell->ml.reservoirfrac+cell->lakefrac,i),cell->ml.landfrac[i].crop[config->rice_pft-npft],cropfrac,sum_wl,i,sum[i]);
    }
 #endif
     /* pasture */

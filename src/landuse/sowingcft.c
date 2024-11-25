@@ -145,7 +145,7 @@ void sowingcft(Stocks *flux_estab,  /**< establishment flux */
   if(config->sdate_option==FIXED_SDATE)
     cell->ml.sdate_fixed[cft+irrig*ncft]=day;
 
-  if(cft==RICE)
+  if(cft==config->rice_pft-npft)
     s=findlandusetype(cell->standlist,SETASIDE_WETLAND);
   if(s==NOT_FOUND)
     s=findlandusetype(cell->standlist,(irrig) ? SETASIDE_IR : SETASIDE_RF);

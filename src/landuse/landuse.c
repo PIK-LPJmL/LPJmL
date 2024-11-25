@@ -268,6 +268,7 @@ Bool getlanduse(Landuse landuse,     /**< Pointer to landuse data */
                 Cell grid[],         /**< LPJ cell array */
                 int year,            /**< year (AD) */
                 int actual_year,     /**< year (AD) but not the static in case of CONST_LANDUSE */
+                int npft,            /**< number of natural PFTs */
                 int ncft,            /**< number of crop PFTs */
                 const Config *config /**< LPJ configuration */
                )                     /** \return TRUE on error */
@@ -453,7 +454,7 @@ Bool getlanduse(Landuse landuse,     /**< Pointer to landuse data */
               {
                 grid[cell].ml.landfrac[i].crop[config->landusemap[j]]+=data[count++];
                 grid[cell].ml.irrig_system->crop[config->landusemap[j]]=p;
-                grid[cell].ml.irrig_system->crop[RICE]=SURF;                               //TODO this should be a flag
+                grid[cell].ml.irrig_system->crop[config->rice_pft-npft]=SURF;                               //TODO this should be a flag
               }
               else if(config->landusemap[j]<ncft+NGRASS)
               {
