@@ -59,7 +59,8 @@ void withdrawal_demand(Cell *grid,          /**< LPJ grid */
            stand->type->landusetype==WOODPLANTATION)
         {
           foreachpft(pft, p, &stand->pftlist)
-           if(!strcmp(pft->par->name,"rice")) isrice=TRUE;
+            if(pft->par->id==config->rice_pft)
+              isrice=TRUE;
           data=stand->data;
           if(data->irrigation||isrice)
           {

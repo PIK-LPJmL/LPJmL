@@ -140,7 +140,7 @@ extern Stocks sowing_season(Cell *,int,int,int,Real,int,const Config *);
 extern Stocks sowing_prescribe(Cell *,int,int,int,int,const Config *);
 extern Stocks sowing(Cell *,Real,int,int,int,int,const Config *);
 extern void deforest(Cell *,Real,Bool,int,Bool,Bool,Bool,int,int,Real,const Config *);
-extern void calc_nir(Stand *,Irrigation *,Real,Real [],Real,Bool);
+extern void calc_nir(Stand *,Irrigation *,Real,Real [],Real,const Config *);
 extern Real rw_irrigation(Stand *,Real,const Real [],Real,const Config *);
 extern void irrig_amount_river(Cell *,const Config *);
 extern void irrig_amount(Stand *,Irrigation *,int,int,int,const Config *);

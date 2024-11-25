@@ -14,12 +14,12 @@
 
 #include "lpj.h"
 
-void calc_nir(Stand *stand,     /**< pointer to non-natural stand */
-              Irrigation *data, /**< irrigation data */
-              Real gp_stand,    /**< potential canopy conductivity */
-              Real wet[],       /**< wet array for PFT list */
-              Real eeq,          /**< equilibrium evapotranspiration (mm) */
-              Bool others_to_crop
+void calc_nir(Stand *stand,        /**< pointer to non-natural stand */
+              Irrigation *data,    /**< irrigation data */
+              Real gp_stand,       /**< potential canopy conductivity */
+              Real wet[],          /**< wet array for PFT list */
+              Real eeq,            /**< equilibrium evapotranspiration (mm) */
+              const Config *config /**< LPJmL configuration */
              )
 {
   Pft *pft;
@@ -32,7 +32,7 @@ void calc_nir(Stand *stand,     /**< pointer to non-natural stand */
   {
     wr=getwr(&stand->soil,pft->par->rootdist);
 
-    if(stand->type->landusetype==AGRICULTURE || (stand->type->landusetype==OTHERS && others_to_crop))
+    if(stand->type->landusetype==AGRICULTURE || (stand->type->landusetype==OTHERS && config->others_to_crop))
     {
       supply=pft->par->emax*wr*(1-exp(-0.04*((Pftcrop *)pft->data)->ind.root.carbon));
       demand=(gp_stand>0 && pft->phen>0 && fpar(pft)>0) ? eeq*param.ALPHAM/(1+(param.GM*param.ALPHAM)/(gp_stand/pft->phen*fpar(pft))) : 0;
@@ -42,7 +42,7 @@ void calc_nir(Stand *stand,     /**< pointer to non-natural stand */
       supply=pft->par->emax*wr*pft->phen;
       demand=(gp_stand>0) ? eeq*param.ALPHAM/(1+(param.GM*param.ALPHAM)/gp_stand) : 0;
     }
-    if(!strcmp(pft->par->name,"rice"))
+    if(pft->par->id==config->rice_pft)
     {
       demand=satwater(&stand->soil)-rootwater(&stand->soil);
       nir=demand;
@@ -75,15 +75,16 @@ void calc_nir(Stand *stand,     /**< pointer to non-natural stand */
 #endif
     }
     /* avoid large irrigation amounts for dist if nir is zero */
-    if(nir<1) dist=0;
+    if(nir<1)
+      dist=0;
     if(nir>data->net_irrig_amount) /* for pft loop */
       data->net_irrig_amount=nir;
     if(dist>data->dist_irrig_amount)
       data->dist_irrig_amount=dist;
 
 #ifdef DEBUG2
-      if(!strcmp(pft->par->name,"rice"))
-        fprintf(stdout,"nir: %g dist: %g supply: %g demand: %g net_irrig_amount: %g dist_irrig_amount: %g\n",nir,dist,supply,demand,data->net_irrig_amount,data->dist_irrig_amount);
+    if(pft->par->id==config->rice_pft)
+      fprintf(stdout,"nir: %g dist: %g supply: %g demand: %g net_irrig_amount: %g dist_irrig_amount: %g\n",nir,dist,supply,demand,data->net_irrig_amount,data->dist_irrig_amount);
 #endif
   } /* of foreachpft() */
 

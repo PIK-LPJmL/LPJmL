@@ -213,7 +213,7 @@ Real daily_biomass_tree(Stand *stand,                /**< stand pointer */
                &frac_g_evap,config->rw_manage);
 
   if(data->irrigation.irrigation && stand->pftlist.n>0) /*second element to avoid irrigation on just harvested fields */
-    calc_nir(stand,&data->irrigation,gp_stand,wet,eeq,config->others_to_crop);
+    calc_nir(stand,&data->irrigation,gp_stand,wet,eeq,config);
   transp=0;
   forrootsoillayer(l)
   {

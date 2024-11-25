@@ -417,7 +417,7 @@ Real daily_agriculture_tree(Stand *stand,                /**< stand pointer */
     // return TRUE;
   }
   if(data->irrigation.irrigation && stand->pftlist.n>0) /*second element to avoid irrigation on just harvested fields */
-    calc_nir(stand,&data->irrigation,gp_stand,wet,eeq,config->others_to_crop);
+    calc_nir(stand,&data->irrigation,gp_stand,wet,eeq,config);
   free(wet);
 
   return runoff;

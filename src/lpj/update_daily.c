@@ -63,7 +63,6 @@ void update_daily(Cell *cell,            /**< cell pointer           */
   Real agrfrac,fpc_total_stand;
   Real litsum_old_nv[2]={0,0},litsum_new_nv[2]={0,0};
   Real litsum_old_agr[2]={0,0},litsum_new_agr[2]={0,0};
-  isrice=FALSE;
   runoff=snowrunoff=melt_all=0;
   Irrigation *data;
 
@@ -97,8 +96,10 @@ void update_daily(Cell *cell,            /**< cell pointer           */
        stand->type->landusetype==AGRICULTURE || stand->type->landusetype==AGRICULTURE_GRASS || stand->type->landusetype==AGRICULTURE_TREE ||
        stand->type->landusetype==BIOMASS_TREE || stand->type->landusetype==BIOMASS_GRASS || stand->type->landusetype==WOODPLANTATION)
     {
+      isrice=FALSE;
       foreachpft(pft, p, &stand->pftlist)
-       if(!strcmp(pft->par->name,"rice")) isrice=TRUE;
+        if(pft->par->id==config->rice_pft)
+          isrice=TRUE;
       data = stand->data;
       if(data->irrigation||isrice) irrigstore+=data->irrig_stor;
     }
@@ -218,7 +219,7 @@ void update_daily(Cell *cell,            /**< cell pointer           */
     {
       foreachpft(pft, p, &stand->pftlist)
       {
-        if(!strcmp(pft->par->name,"rice") || stand->soil.iswetland)
+        if(pft->par->id==config->rice_pft || stand->soil.iswetland)
         {
           getoutput(&stand->cell->output,CH4_RICE_EM,config)+=CH4_em;
           stand->cell->balance.aCH4_rice+=CH4_em*stand->frac;
@@ -246,7 +247,7 @@ void update_daily(Cell *cell,            /**< cell pointer           */
     {
       foreachpft(pft, p, &stand->pftlist)
       {
-        if(!strcmp(pft->par->name,"rice") || stand->soil.iswetland)
+        if(pft->par->id==config->rice_pft || stand->soil.iswetland)
         {
           getoutput(&stand->cell->output,CH4_RICE_EM,config)+=ebul;
           stand->cell->balance.aCH4_rice+=ebul*stand->frac;
@@ -295,7 +296,7 @@ void update_daily(Cell *cell,            /**< cell pointer           */
     {
       foreachpft(pft, p, &stand->pftlist)
       {
-        if(!strcmp(pft->par->name,"rice") || stand->soil.iswetland)
+        if(pft->par->id==config->rice_pft || stand->soil.iswetland)
         {
           getoutput(&stand->cell->output,CH4_RICE_EM,config)+=CH4_em;
           stand->cell->balance.aCH4_rice+=CH4_em*stand->frac;
@@ -494,8 +495,10 @@ void update_daily(Cell *cell,            /**< cell pointer           */
        stand->type->landusetype==BIOMASS_TREE || stand->type->landusetype==BIOMASS_GRASS || stand->type->landusetype==WOODPLANTATION)
     {
       data = stand->data;
+      isrice=FALSE;
       foreachpft(pft, p, &stand->pftlist)
-       if(!strcmp(pft->par->name,"rice")) isrice=TRUE;
+        if(pft->par->id==config->rice_pft)
+          isrice=TRUE;
       if(data->irrigation||isrice)
       {
         getoutput(&cell->output,IRRIG_STOR,config)+=data->irrig_stor*stand->frac*cell->coord.area;
@@ -653,11 +656,12 @@ void update_daily(Cell *cell,            /**< cell pointer           */
   foreachstand(stand,s,cell->standlist)
   {
     if(stand->type->landusetype==GRASSLAND || stand->type->landusetype==OTHERS ||
-        stand->type->landusetype==AGRICULTURE || stand->type->landusetype==AGRICULTURE_GRASS || stand->type->landusetype==AGRICULTURE_TREE ||
-        stand->type->landusetype==BIOMASS_TREE || stand->type->landusetype==BIOMASS_GRASS || stand->type->landusetype==WOODPLANTATION)
+       stand->type->landusetype==AGRICULTURE || stand->type->landusetype==AGRICULTURE_GRASS || stand->type->landusetype==AGRICULTURE_TREE ||
+       stand->type->landusetype==BIOMASS_TREE || stand->type->landusetype==BIOMASS_GRASS || stand->type->landusetype==WOODPLANTATION)
      {
-       foreachpft(pft, p, &stand->pftlist)
-        if(!strcmp(pft->par->name,"rice")) isrice=TRUE;
+       isrice=FALSE;
+        if(pft->par->id==config->rice_pft)
+          isrice=TRUE;
        data = stand->data;
        if(data->irrigation||isrice) irrigstore_end+=data->irrig_stor;
      }
@@ -666,7 +670,7 @@ void update_daily(Cell *cell,            /**< cell pointer           */
       water_after+=soilwater(&stand->soil)*stand->frac;
       end+=(standstocks(stand).carbon + soilmethane(&stand->soil)*WC/WCH4)*stand->frac ;
     }
-   }
+  }
   end+=cell->ml.product.fast.carbon+cell->ml.product.slow.carbon+
        cell->balance.estab_storage_grass[0].carbon+cell->balance.estab_storage_tree[0].carbon+cell->balance.estab_storage_grass[1].carbon+cell->balance.estab_storage_tree[1].carbon;
   if(cell->ml.dam)

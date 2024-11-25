@@ -110,7 +110,8 @@ Real daily_agriculture(Stand *stand,                /**< [inout] stand pointer *
   {
     index=(stand->type->landusetype==OTHERS) ? data->irrigation*nirrig+rothers(ncft) : pft->par->id-npft+data->irrigation*nirrig;
     crop=pft->data;
-    if(!strcmp(pft->par->name,"rice")) isrice=TRUE;
+    if(pft->par->id==config->rice_pft)
+      isrice=TRUE;
     /* kill crop at frost events */
     /* trigger 2nd fertilization */
     /* GGCMI phase 3 rule: apply second dosis at fphu=0.25*/
@@ -192,7 +193,7 @@ Real daily_agriculture(Stand *stand,                /**< [inout] stand pointer *
       delpft(&stand->pftlist,p);
       /* adjust index */
       p--;
-//      if(!strcmp(pft->par->name,"rice") && stand->growing_days<300)
+//      if(pft->par->id==config->rice_pft && stand->growing_days<300)
 //      {
 //    	  flux_estab=cultivate(stand->cell,data->irrigation,day,FALSE,stand,
 //    	                     npft,ncft,config->rice_pft-npft,year,config);
@@ -417,7 +418,7 @@ Real daily_agriculture(Stand *stand,                /**< [inout] stand pointer *
       p--;
     } /* of if(negbm) */
 #if DEBUG2
-  if(stand->type->landusetype!=KILL && !strcmp(pft->par->name,"rice"))
+  if(stand->type->landusetype!=KILL && pft->par->id==config->rice_pft)
   {
     fprintf(stdout,"\n year:%d day:%d isrice: %d bm_inc:%g inun_stress: %g\n",year,day,isrice,pft->bm_inc.carbon,pft->inun_stress);
     fprintf(stdout,"\n irrig_amount:%g irrig_stor:%g irrig_apply: %g satwater:%g rootwater:%g net_irrig_amount:%g\n",
@@ -440,7 +441,7 @@ Real daily_agriculture(Stand *stand,                /**< [inout] stand pointer *
 
   /* calculate net irrigation requirements (NIR) for next days irrigation */
   if((data->irrigation||isrice) && stand->pftlist.n>0) /* second element to avoid irrigation on just harvested fields */
-    calc_nir(stand,data,gp_stand,wet,eeq,config->others_to_crop);
+    calc_nir(stand,data,gp_stand,wet,eeq,config);
 
   getoutput(output,TRANSP,config)+=transp;
   stand->cell->balance.atransp+=transp;

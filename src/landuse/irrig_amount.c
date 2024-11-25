@@ -28,7 +28,8 @@ void irrig_amount(Stand *stand,        /**< pointer to non-natural stand */
   Pftcrop *crop;
   isrice=FALSE;
   foreachpft(pft, p, &stand->pftlist)
-   if(!strcmp(pft->par->name,"rice")) isrice=TRUE;
+    if(pft->par->id==config->rice_pft)
+      isrice=TRUE;
   /* determine if today irrigation dependent on threshold */
   data->irrig_event=FALSE;
   data->irrig_amount=0;

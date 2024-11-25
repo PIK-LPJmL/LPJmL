@@ -133,7 +133,7 @@ void plant_gas_transport(Stand *stand,        /**< pointer to soil data */
             }
             CH4_plant_all+=CH4_plant;
           }
-          if((!strcmp(pft->par->name,"rice")) && CH4_plant>0)
+          if(pft->par->id==config->rice_pft && CH4_plant>0)
             CH4_rice+=CH4_plant;
           /*OXYGEN*/
           Conc_new = 0;

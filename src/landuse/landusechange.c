@@ -1485,8 +1485,9 @@ void landusechange(Cell *cell,          /**< pointer to cell */
     {
       data=stand->data;
       foreachpft(pft, p, &stand->pftlist)
-        if(!strcmp(pft->par->name,"rice")) isrice=TRUE;
-      if(isrice==TRUE||stand->type->landusetype==SETASIDE_WETLAND)
+        if(pft->par->id==config->rice_pft)
+          isrice=TRUE;
+      if(isrice || stand->type->landusetype==SETASIDE_WETLAND)
         sum_wl+=stand->frac;
       else
         sum[data->irrigation]+=stand->frac;
@@ -1745,7 +1746,8 @@ void landusechange(Cell *cell,          /**< pointer to cell */
     {
       data=stand->data;
       foreachpft(pft, p, &stand->pftlist)
-        if(!strcmp(pft->par->name,"rice")) isrice=TRUE;
+        if(pft->par->id==config->rice_pft)
+          isrice=TRUE;
       if(isrice==TRUE||stand->type->landusetype==SETASIDE_WETLAND)
         sum_wl+=stand->frac;
       else

@@ -307,7 +307,7 @@ Real daily_agriculture_grass(Stand *stand,                /**< stand pointer */
   }
 
   if (data->irrigation && stand->pftlist.n > 0) /*second element to avoid irrigation on just harvested fields */
-    calc_nir(stand,data,gp_stand, wet, eeq,config->others_to_crop);
+    calc_nir(stand,data,gp_stand, wet, eeq,config);
   transp=0;
   forrootsoillayer(l)
   {
