@@ -72,14 +72,10 @@ typedef struct
 
 } Hydrotope;
 
-/* Declaration of global variable */
-
-extern Hydropar hydropar;
-
 /* Declaration of functions */
 
-extern Bool fscanhydropar(LPJfile *, Verbosity);
-extern void fprinthydropar(FILE *);
+extern Bool fscanhydropar(LPJfile *,Hydropar *,Verbosity);
+extern void fprinthydropar(FILE *,const Hydropar *);
 extern Bool freadhydrotope(FILE *, Hydrotope *,Bool);
 extern Bool fwritehydrotope(FILE *,const Hydrotope *);
 extern void fprinthydrotope(FILE *,const Hydrotope *);

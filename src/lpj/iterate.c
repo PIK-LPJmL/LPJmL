@@ -229,7 +229,8 @@ int iterate(Outputfile *output, /**< Output file data */
           if(getclimate(input.climate,grid,0,year,config))
           {
             fputs("ERROR104: Simulation stopped in getclimate().\n",stderr);
-            fflush(stderr);             break; /* leave time loop */
+            fflush(stderr);
+            break; /* leave time loop */
           }
           if (readicefrac(input.icefrac,grid,0,year,config))
           {
@@ -242,8 +243,8 @@ int iterate(Outputfile *output, /**< Output file data */
       }
       else
       {
-      	if(config->fix_climate && year>config->fix_climate_year)
-      	{
+        if(config->fix_climate && year>config->fix_climate_year)
+        {
           if(config->fix_climate_shuffle)
           {
             if(isroot(*config))
@@ -332,7 +333,7 @@ int iterate(Outputfile *output, /**< Output file data */
       else
 #endif
       /* read landuse pattern from file */
-      rc=getlanduse(input.landuse,grid,landuse_year,year,ncft,config);
+      rc=getlanduse(input.landuse,grid,landuse_year,year,npft,ncft,config);
       if(iserror(rc,config))
       {
         if(isroot(*config))

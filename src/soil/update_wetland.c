@@ -106,7 +106,7 @@ void update_wetland(Cell *cell,          /**< pointer to cell */
     // -----------------------------------------------------------------------------------------------
     //  determine wetland area
     //  min / max cti values
-    cti_min = natstand->soil.par->efold*(hydropar.wland_min - wtable_use) + cell->hydrotopes.cti_mean;   //Gleichung 10 Kleinen etal 2013
+    cti_min = natstand->soil.par->efold*(config->hydropar.wland_min - wtable_use) + cell->hydrotopes.cti_mean;   //Gleichung 10 Kleinen etal 2013
     cti_max = natstand->soil.par->ctimax;
     //cti_min_max = natstand->soil.par->efold*(hydropar.wland_min - cell->hydrotopes.wtable_max) + cell->hydrotopes.cti_mean; /*maximum should be cell->hydrotopes.wetland_wtable_max*/
 

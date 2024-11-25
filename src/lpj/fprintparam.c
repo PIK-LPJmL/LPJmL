@@ -153,7 +153,7 @@ void fprintparam(FILE *file,    /**< pointer to text file */
   }
   fputs("Soil parameter\n",file);
   fprintsoilpar(file,config);
-  fprinthydropar(file);
+  fprinthydropar(file,&config->hydropar);
   fputs("PFT parameter\n",file);
   if(config->withlanduse!=NO_LANDUSE)
   {

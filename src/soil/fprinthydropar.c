@@ -16,7 +16,8 @@
 
 #include "lpj.h"
 
-void fprinthydropar(FILE *file  /* pointer to text file */
+void fprinthydropar(FILE *file,              /**< pointer to text file */
+                    const Hydropar *hydropar /**< hydrological parameter */
                    )
 {
   fprintf(file, "wland_min:\t%g\n"
@@ -24,6 +25,6 @@ void fprinthydropar(FILE *file  /* pointer to text file */
           "lat_min:\t%g\n"
           "wtab_thres:\t%g\n"
           "cti_thres:\t%g\n",
-          hydropar.wland_min, hydropar.cti_max, hydropar.lat_min,
-          hydropar.wtab_thres, hydropar.cti_thres);
+          hydropar->wland_min, hydropar->cti_max, hydropar->lat_min,
+          hydropar->wtab_thres, hydropar->cti_thres);
 } /* of 'fprinthydropar' */

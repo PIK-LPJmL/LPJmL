@@ -587,7 +587,7 @@ Bool fscanconfig(Config *config,    /**< LPJ configuration */
       fputs("ERROR230: Cannot read soil parameter 'soilpar'.\n",stderr);
     return TRUE;
   }
-  if (fscanhydropar(file,verbose))
+  if (fscanhydropar(file,&config->hydropar,verbose))
   {
     if(verbose)
       fputs("ERROR230: Cannot read hydrotope parameter.\n",stderr);

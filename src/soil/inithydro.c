@@ -68,10 +68,10 @@ Bool inithydro(Cell *grid,    /**< LPJ grid */
       return TRUE;
     }
     grid[cell].hydrotopes.skip_cell = TRUE;
-    if (grid[cell].coord.lat > hydropar.lat_min)
+    if (grid[cell].coord.lat > config->hydropar.lat_min)
     {
       grid[cell].hydrotopes.cti_mean = (float)ctidata_in[0] / header.scalar;
-      if (grid[cell].hydrotopes.cti_mean > hydropar.cti_thres)
+      if (grid[cell].hydrotopes.cti_mean > config->hydropar.cti_thres)
       {
         grid[cell].hydrotopes.cti_chi = ((float)ctidata_in[1] / header.scalar*(float)ctidata_in[2] / header.scalar) / 2;
         if (grid[cell].hydrotopes.cti_chi > 0.)

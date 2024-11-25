@@ -133,6 +133,7 @@ struct config
   int ncult_types;        /**< size of cult_types array */
   int nsoil;              /**< number of soil types */
   Soilpar *soilpar;       /**< Soil parameter array */
+  Hydropar hydropar;      /** Hydrology parameter */
   int ncountries;         /**< number of countries */
   Countrypar *countrypar; /**< country parameter array */
   Outputvar *outputvars;
