@@ -19,6 +19,18 @@ of `major.minor.patch` with
 
 ## [Unreleased]
 
+- author: Werner von Bloh (bloh@pik-potsdam.de)
+
+### Changed
+
+- Function `freegrid()` is calling `freecell()` to avoid redundant code.
+
+### Fixed
+
+- Memory leaks in utility `lpjprint` closed.
+- NaN as missing value handling corrected in reading NetCDF file.
+
+
 ## [5.9.16] - 2024-11-15
 
 ### Contributors
