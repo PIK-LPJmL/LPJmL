@@ -24,11 +24,12 @@ of `major.minor.patch` with
 ### Changed
 
 - Function `freegrid()` is calling `freecell()` to avoid redundant code.
+- References in man pages updated.
 
 ### Fixed
 
 - Memory leaks in utility `lpjprint` closed.
-- NaN as missing value handling corrected in reading NetCDF file.
+- Handling of NaN as missing value corrected in reading NetCDF files.
 
 
 ## [5.9.16] - 2024-11-15
