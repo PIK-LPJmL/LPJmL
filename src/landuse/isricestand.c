@@ -24,4 +24,4 @@ Bool isricestand(const Pftlist *pftlist, /**< array of PFTs */
     if(pft->par->id==rice_pft)
       return TRUE;
   return FALSE;
-} /* of 'isricestand' */ 
+} /* of 'isricestand' */
