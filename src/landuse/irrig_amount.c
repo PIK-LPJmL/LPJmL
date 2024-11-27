@@ -22,14 +22,12 @@ void irrig_amount(Stand *stand,        /**< pointer to non-natural stand */
                   const Config *config /**< LPJmL configuration */
                  )
 {
-  int nirrig,isrice,p;
+  int nirrig;
+  Bool isrice;
   Pft *pft;
   Real conv_loss,irrig_stand;
   Pftcrop *crop;
-  isrice=FALSE;
-  foreachpft(pft, p, &stand->pftlist)
-    if(pft->par->id==config->rice_pft)
-      isrice=TRUE;
+  isrice=isricestand(&stand->pftlist,config->rice_pft);
   /* determine if today irrigation dependent on threshold */
   data->irrig_event=FALSE;
   data->irrig_amount=0;

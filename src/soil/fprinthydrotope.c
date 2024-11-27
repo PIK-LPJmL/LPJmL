@@ -18,12 +18,15 @@
 
 void fprinthydrotope(FILE *file,const  Hydrotope *hydrotopes)
 {
-  fprintf(file, "cti_mean:\t%g\n", hydrotopes->cti_mean);
-  fprintf(file, "cti_chi:\t%g\n", hydrotopes->cti_chi);
-  fprintf(file, "cti_phi:\t%g\n", hydrotopes->cti_phi);
-  fprintf(file, "cti_mu:\t\t%g\n", hydrotopes->cti_mu);
-
   fprintf(file, "skip_cell:\t%s\n", bool2str(hydrotopes->skip_cell));
+  if(!hydrotopes->skip_cell)
+  {
+    fprintf(file, "cti_mean:\t%g\n", hydrotopes->cti_mean);
+    fprintf(file, "cti_chi:\t%g\n", hydrotopes->cti_chi);
+    fprintf(file, "cti_phi:\t%g\n", hydrotopes->cti_phi);
+    fprintf(file, "cti_mu:\t\t%g\n", hydrotopes->cti_mu);
+  }
+
 
   fprintf(file, "wtable_mean:\t%g\n", hydrotopes->wtable_mean);
   fprintf(file, "wtable_min:\t%g\n", hydrotopes->wtable_min);

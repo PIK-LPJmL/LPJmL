@@ -32,12 +32,11 @@ void withdrawal_demand(Cell *grid,          /**< LPJ grid */
                        const Config *config /**< LPJ configuration */
                       )
 {
-  int cell,i,s,p,isrice;
+  int cell,i,s;
   Real *in,*out;
   Irrigation *data;
   Stand *stand;
-  Pft *pft;
-  isrice=FALSE;
+  Bool isrice;
 
   in=(Real *)pnet_input(config->irrig_neighbour);
   out=(Real *)pnet_output(config->irrig_neighbour);
@@ -58,9 +57,7 @@ void withdrawal_demand(Cell *grid,          /**< LPJ grid */
            stand->type->landusetype==AGRICULTURE_TREE ||
            stand->type->landusetype==WOODPLANTATION)
         {
-          foreachpft(pft, p, &stand->pftlist)
-            if(pft->par->id==config->rice_pft)
-              isrice=TRUE;
+          isrice=isricestand(&stand->pftlist,config->rice_pft);
           data=stand->data;
           if((data->irrigation||isrice) && config->irrig_scenario!=NO_IRRIGATION)
           {

@@ -47,7 +47,7 @@ LPJLIBS = $(LIBDIR)/liblpj.$A $(LIBDIR)/libgrass.$A $(LIBDIR)/liblanduse.$A $(LI
           $(LIBDIR)/libsocket.$A $(LIBDIR)/liblpj.$A $(LIBDIR)/libcdf.$A $(LIBDIR)/liblpj.$A\
           $(LIBDIR)/libtools.$A $(LIBDIR)/libcpl.$A $(LIBDIR)/libsoil.$A
 
-EXE     = $(BINDIR)/lpjml$E
+EXE     = $(BINDIR)/lpjml_new$E
 
 bin: 
 	$(MAKE) libs

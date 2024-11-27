@@ -1375,7 +1375,6 @@ void landusechange(Cell *cell,          /**< pointer to cell */
 {
   Real difffrac,difffrac2,movefrac,difffrac_rice;
   Stand *stand, *tempstand, *irrigstand;
-  Pft *pft;
   Bool irrigation,isrice;
   Irrigation *data;
   Cultivation_type cultivation_type;
@@ -1420,7 +1419,6 @@ void landusechange(Cell *cell,          /**< pointer to cell */
   fluxes_prod.carbon=(cell->balance.deforest_emissions.carbon+cell->balance.prod_turnover.fast.carbon+cell->balance.prod_turnover.slow.carbon+cell->balance.trad_biofuel.carbon);
   fluxes_prod.nitrogen=(cell->balance.deforest_emissions.nitrogen+cell->balance.prod_turnover.fast.nitrogen+cell->balance.prod_turnover.slow.nitrogen+cell->balance.trad_biofuel.nitrogen);
 #endif
-  isrice=FALSE;
    if(cell->ml.dam)
     landusechange_for_reservoir(cell,npft,ncft,intercrop,year,config);
   /* test if land needs to be reallocated between setaside stands */
@@ -1485,15 +1483,12 @@ void landusechange(Cell *cell,          /**< pointer to cell */
     if(stand->type->landusetype!=NATURAL && stand->type->landusetype!=WETLAND && stand->type->landusetype!=KILL)
     {
       data=stand->data;
-      foreachpft(pft, p, &stand->pftlist)
-        if(pft->par->id==config->rice_pft)
-          isrice=TRUE;
+      isrice=isricestand(&stand->pftlist,config->rice_pft);
       if(isrice || stand->type->landusetype==SETASIDE_WETLAND)
         sum_wl+=stand->frac;
       else
         sum[data->irrigation]+=stand->frac;
     }
-    isrice=FALSE;
 
     //if(year>1989) fprintf(stdout,"stand': %s frac: %g\n",stand->type->name, stand->frac);
   }
@@ -1746,16 +1741,13 @@ void landusechange(Cell *cell,          /**< pointer to cell */
     if(stand->type->landusetype!=NATURAL && stand->type->landusetype!=WETLAND && stand->type->landusetype!=KILL)
     {
       data=stand->data;
-      foreachpft(pft, p, &stand->pftlist)
-        if(pft->par->id==config->rice_pft)
-          isrice=TRUE;
-      if(isrice==TRUE||stand->type->landusetype==SETASIDE_WETLAND)
+      isrice=isricestand(&stand->pftlist,config->rice_pft);
+      if(isrice||stand->type->landusetype==SETASIDE_WETLAND)
         sum_wl+=stand->frac;
       else
         sum[data->irrigation]+=stand->frac;
 
     }
-    isrice=FALSE;
 //    if(stand->soil.iswetland)
 //      forrootsoillayer(l)
 //      {

@@ -35,7 +35,8 @@ void distribute_water(Cell *cell,            /**< pointer to LPJ cell */
                       const Config *config   /**< LPJmL configuration */
                      )
 {
-  int s,p,nirrig,isrice;
+  int s,nirrig;
+  Bool isrice;
   Real conv_loss,irrig_stand;
   Real frac_irrig_amount,frac_unsustainable;
   Stand *stand;
@@ -44,7 +45,6 @@ void distribute_water(Cell *cell,            /**< pointer to LPJ cell */
   Pftcrop *crop;
   conv_loss=0.0;
   nirrig=getnirrig(ncft,config);
-  isrice=FALSE;
 #ifdef IMAGE
   /* actual irrigation requirement */
   if(config->irrig_scenario==LIM_IRRIGATION && cell->discharge.aquifer==0)
@@ -92,8 +92,7 @@ void distribute_water(Cell *cell,            /**< pointer to LPJ cell */
       data=stand->data;
       data->irrig_event=FALSE;
       data->irrig_amount=0;
-      foreachpft(pft,p,&stand->pftlist)
-             if(!strcmp(pft->par->name,"rice")) isrice=TRUE;
+      isrice=isricestand(&stand->pftlist,config->rice_pft);
 
       if((data->irrigation||isrice) && config->irrig_scenario!=NO_IRRIGATION)
       {
