@@ -67,13 +67,13 @@ void distribute_water(Cell *cell,            /**< pointer to LPJ cell */
    /* actual irrigation requirement */
   if(config->irrig_scenario==LIM_IRRIGATION)
   {
-    frac_irrig_amount=cell->discharge.gir>0 ? (cell->discharge.withdrawal+cell->discharge.withdrawal_gw+cell->discharge.irrig_unmet)/cell->discharge.gir : 0.0;
+    frac_irrig_amount=cell->discharge.gir>0 ? (cell->discharge.withdrawal+cell->discharge.withdrawal_gw)/cell->discharge.gir : 0.0;
   }
   else
   {
     /* potential irrigation requirement */
     /* potential irrigation requirement */
-    frac_irrig_amount=cell->discharge.gir>0 ? 1.0 : 0.0;
+    frac_irrig_amount=cell->discharge.gir>0 ? (cell->discharge.withdrawal+cell->discharge.withdrawal_gw+cell->discharge.irrig_unmet)/cell->discharge.gir : 0.0;  // should be 1 in case of positive gir (BUT SHOULD BE ALWAYS POSITIVE)
     frac_unsustainable=cell->discharge.gir>0 ? (cell->discharge.irrig_unmet/cell->discharge.gir) : 0.0;
     frac_unsustainable=frac_unsustainable>0 ? frac_unsustainable : 0.0;
     // coord area added to change to mm
@@ -92,6 +92,7 @@ void distribute_water(Cell *cell,            /**< pointer to LPJ cell */
       data=stand->data;
       data->irrig_event=FALSE;
       data->irrig_amount=0;
+      isrice=FALSE;
       foreachpft(pft,p,&stand->pftlist)
              if(!strcmp(pft->par->name,"rice")) isrice=TRUE;
 

@@ -46,6 +46,16 @@ void calc_nir(Stand *stand,     /**< pointer to non-natural stand */
     {
       demand=satwater(&stand->soil)-rootwater(&stand->soil);
       nir=demand;
+      dist=0;
+      l=0;
+      do
+      {
+        if (stand->soil.freeze_depth[l]< soildepth[l])
+        {
+          dist+=max(0,((stand->soil.wsats[l]-stand->soil.wpwps[l]-stand->soil.whcs[l])*param.sat_level[0]-stand->soil.w_fw[l])*min(1,soildepth_irrig/soildepth[l])*(1-stand->soil.freeze_depth[l]/soildepth[l]));
+        }
+         l++;
+       }while((soildepth_irrig-=soildepth[l-1])>0);
     }
     else if(supply<demand && pft->phen>0.0)
     {
