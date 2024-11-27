@@ -205,7 +205,7 @@ Real infil_perc(Stand *stand,        /**< Stand pointer */
     dprec-=influx;
     if(dprec<0) enth=FALSE;
 
-    if(data_irrig!=NULL && (data_irrig->irrig_system==DRIP || isrice))
+    if(data_irrig!=NULL && (data_irrig->irrig_system==DRIP || isrice) && config->irrig_scenario!=NO_IRRIGATION)
     {
       /* in case of Drip: directly fill up field cap of first two soil layers, no surface runoff, lateral runoff or percolation */
       /* -> this allows simulating perfect irrigation: drip + irrg_threshold = 1 (keep in mind: plant can still be somewhat stressed, if roots go deeper than 2. layer) */

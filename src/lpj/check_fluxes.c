@@ -24,7 +24,7 @@ void check_fluxes(Cell *cell,          /**< cell pointer */
                  )
 {
   Stocks tot={0,0},stocks,delta_tot,balance;
-  Real balanceW,totw,awater_flux;
+  Real balanceW,totw,awater_flux,fraction;
   Stand *stand;
   String line;
   int s,i,startyear;
@@ -34,7 +34,7 @@ void check_fluxes(Cell *cell,          /**< cell pointer */
 #endif
   /* carbon balance check */
   awater_flux = cell->balance.awater_flux;
-
+  fraction=0;
 /*
   if(year>=1940 && year<=1980)
   {
@@ -53,6 +53,7 @@ void check_fluxes(Cell *cell,          /**< cell pointer */
     tot.nitrogen+=stocks.nitrogen*stand->frac;
     ////// Soil->ch4 must be multiplied by WC/WCH4 as well as cell->balance.aCH4_em cell->balance.aCH4_sink
     tot.carbon += soilmethane(&stand->soil)*stand->frac*WC/WCH4;
+    fraction+=stand->frac;
   }
   if(cell->ml.dam)
   {
@@ -107,13 +108,13 @@ void check_fluxes(Cell *cell,          /**< cell pointer */
     fail(INVALID_CARBON_BALANCE_ERR,FAIL_ON_BALANCE,FALSE,
 #endif
          "y: %d c: %d (%s) BALANCE_C-error %.10f nep: %.2f firec: %.2f flux_estab: %.2f flux_harvest: %.2f delta_totc: %.2f\ndeforest_emissions: %.2f product_turnover: %.2f "
-         "trad_biofuel: %.2f product pools %.2f %.2f timber_harvest %.2f ftimber %.2f fburn %.2f c_influx %.2f\n",
+         "trad_biofuel: %.2f product pools %.2f %.2f timber_harvest %.2f ftimber %.2f fburn %.2f c_influx %.2f totalfrac: %.5f\n",
          year,cellid+config->startgrid,sprintcoord(line,&cell->coord),balance.carbon,cell->balance.anpp-cell->balance.arh,
          cell->balance.fire.carbon,
          cell->balance.flux_estab.carbon,cell->balance.flux_harvest.carbon,delta_tot.carbon,
          cell->balance.deforest_emissions.carbon,cell->balance.prod_turnover.fast.carbon,cell->balance.trad_biofuel.carbon,
          cell->ml.product.slow.carbon,cell->ml.product.fast.carbon,cell->balance.timber_harvest.carbon,
-         cell->ml.image_data->timber_f.fast,cell->ml.image_data->fburnt,cell->balance.influx.carbon);
+         cell->ml.image_data->timber_f.fast,cell->ml.image_data->fburnt,cell->balance.influx.carbon,fraction);
 #else
 #ifdef NO_FAIL_BALANCE
     fprintf(stderr,"ERROR004: "
@@ -124,19 +125,20 @@ void check_fluxes(Cell *cell,          /**< cell pointer */
          "                            firec: %.2f flux_estab: %.2f flux_harvest: %.2f \n"
          "                            delta_totc: %.2f tot.carbon: %.2f biomass_yield: %.2f\n"
          "                            estab_storage_grass: %.2f %.2f estab_storage_tree %.2f %.2f\n"
-         "                            deforest_emissions: %.2f product_turnover: %.2f timber_harvest.carbon: %.2f c_influx %.2f\n",
+         "                            deforest_emissions: %.2f product_turnover: %.2f trad_biofuel: %.2f product pools %.2f %.2f timber_harvest.carbon: %.2f c_influx %.2f totalfrac: %.5f\n",
          year,cellid+config->startgrid,sprintcoord(line,&cell->coord),balance.carbon,cell->balance.anpp,cell->balance.arh,cell->balance.fire.carbon,
          cell->balance.flux_estab.carbon,cell->balance.flux_harvest.carbon,delta_tot.carbon,tot.carbon,cell->balance.biomass_yield.carbon,
          cell->balance.estab_storage_grass[0].carbon,cell->balance.estab_storage_grass[1].carbon,cell->balance.estab_storage_tree[0].carbon,cell->balance.estab_storage_tree[1].carbon,
-         cell->balance.deforest_emissions.carbon,cell->balance.prod_turnover.fast.carbon+cell->balance.prod_turnover.slow.carbon,cell->balance.timber_harvest.carbon,cell->balance.influx.carbon);
+         cell->balance.deforest_emissions.carbon,cell->balance.prod_turnover.fast.carbon+cell->balance.prod_turnover.slow.carbon,cell->balance.trad_biofuel.carbon,
+         cell->ml.product.slow.carbon,cell->ml.product.fast.carbon,cell->balance.timber_harvest.carbon,cell->balance.influx.carbon,fraction);
 #endif
   }
 #ifdef CHECK_BALANCE2
          foreachstand(stand,s,cell->standlist)
-             fprintf(stderr,"standfrac: %g standtype: %s s= %d iswetland: %d cropfraction_rf: %g cropfraction_irr: %g grasfrac_rf: %g grasfrac_irr: %g\n",
+             fprintf(stderr,"standfrac: %g standtype: %s s= %d iswetland: %d cropfraction_rf: %g cropfraction_irr: %g grasfrac_rf: %g grasfrac_irr: %g totalfrac: %.5f \n",
                      stand->frac, stand->type->name,s,stand->soil.iswetland, crop_sum_frac(cell->ml.landfrac,12,config->nagtree,cell->ml.reservoirfrac+cell->lakefrac,FALSE),
                      crop_sum_frac(cell->ml.landfrac,12,config->nagtree,cell->ml.reservoirfrac+cell->lakefrac,TRUE),
-                     cell->ml.landfrac[0].grass[0]+cell->ml.landfrac[0].grass[1],cell->ml.landfrac[1].grass[0]+cell->ml.landfrac[1].grass[1]);
+                     cell->ml.landfrac[0].grass[0]+cell->ml.landfrac[0].grass[1],cell->ml.landfrac[1].grass[0]+cell->ml.landfrac[1].grass[1],fraction);
 
 #endif
   if(year>startyear && fabs(balance.nitrogen)>param.error_limit.stocks.nitrogen)
@@ -147,14 +149,14 @@ void check_fluxes(Cell *cell,          /**< cell pointer */
     fail(NVALID_NITROGEN_BALANCE_ERR,FAIL_ON_BALANCE,FALSE,
 #endif
       "N-balance on y %d c %d (%0.2f/%0.2f) BALANCE_N-error %.10f n_influx %g n_outflux %g n_harvest %g n_biomass_yield %g n_estab %g n_defor_emis %g n_product_turnover %g delta_tot=%g total nitrogen=%g timber.harvest: %g "
-      "estab_storage grass [0] = %g estab_storage grass [1] = %g  estab_storage tree [0] = %g estab_storage tree [1]= %g neg_fluxes= %g\n",
+      "estab_storage grass [0] = %g estab_storage grass [1] = %g  estab_storage tree [0] = %g estab_storage tree [1]= %g neg_fluxes= %g totalfrac: %.5f\n",
       year,cellid+config->startgrid,cell->coord.lon,cell->coord.lat,balance.nitrogen,
       cell->balance.influx.nitrogen,cell->balance.n_outflux,cell->balance.flux_harvest.nitrogen,cell->balance.biomass_yield.nitrogen,cell->balance.flux_estab.nitrogen,
       cell->balance.deforest_emissions.nitrogen,
       cell->balance.prod_turnover.fast.nitrogen+cell->balance.prod_turnover.slow.nitrogen,
       delta_tot.nitrogen,tot.nitrogen,cell->balance.timber_harvest.nitrogen,
       cell->balance.estab_storage_grass[0].nitrogen,cell->balance.estab_storage_grass[1].nitrogen,cell->balance.estab_storage_tree[0].nitrogen,
-      cell->balance.estab_storage_tree[1].nitrogen,cell->balance.neg_fluxes.nitrogen);
+      cell->balance.estab_storage_tree[1].nitrogen,cell->balance.neg_fluxes.nitrogen,fraction);
 /*
       foreachstand(stand,s,cell->standlist){
         foreachpft(pft,p,&stand->pftlist){

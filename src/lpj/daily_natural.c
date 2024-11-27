@@ -272,10 +272,10 @@ Real daily_natural(Stand *stand,                /**< [inout] stand pointer */
 
 #ifdef CHECK_BALANCE
   end = standstocks(stand).carbon + soilmethane(&stand->soil)*WC/WCH4;
-  if (fabs(end -start -dcflux )>0.1)
+  if (fabs(end -start -dcflux )>0.001)
   {
-    fail(INVALID_CARBON_BALANCE_ERR,FAIL_ON_BALANCE,FALSE,"Invalid carbon balance in %s: %.3f start: %.3f  end: %.3f type: %s flux_estab: %.3f dcflux: %.3f ",
-         "methane: start: %.3f  end: %.3f dcflux: %.3fn",
+    fail(INVALID_CARBON_BALANCE_ERR,FAIL_ON_BALANCE,FALSE,"Invalid carbon balance in %s: %.3f start: %.3f  end: %.3f type: %s flux_estab: %.3f dcflux: %.3f "
+         "methane: start: %.3f  end: %.3f dcflux: %.3f \n",
          __FUNCTION__,end-start-dcflux, start, end,stand->type->name,stand->cell->balance.flux_estab.carbon,stand->cell->output.dcflux,
          methane_start,soilmethane(&stand->soil)*WC/WCH4,dcflux);
   }

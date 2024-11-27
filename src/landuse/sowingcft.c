@@ -210,7 +210,7 @@ void sowingcft(Stocks *flux_estab,  /**< establishment flux */
   foreachstand(stand,s,cell->standlist)
     end+=(standstocks(stand).carbon + soilmethane(&stand->soil)*WC/WCH4)*stand->frac;
 
-  if (fabs(end-start.carbon-flux_in.carbon)>0.01)
+  if (fabs(end-start.carbon-flux_in.carbon)>0.001)
   {
     fail(INVALID_CARBON_BALANCE_ERR,FAIL_ON_BALANCE,FALSE, "Invalid carbon balance in %s: day: %d  CFT: %d  %g start: %.3f  end: %.3f  "
         "flux_estab.carbon: %g balance.flux_estab: %g flux_in.carbon: %g "

@@ -79,7 +79,15 @@ Real daily_agriculture(Stand *stand,                /**< [inout] stand pointer *
   Real water_before=0;
   Real water_after,wstore_new,balancew;
   water_before+=soilwater(&stand->soil);
-#endif
+  Stocks start={0,0};
+  Stocks end={0,0};
+  Stocks harvest={0,0};
+  harvest.carbon=(stand->cell->balance.flux_estab.carbon+stand->cell->balance.influx.carbon-stand->cell->balance.flux_harvest.carbon)/stand->frac;
+  Real dcflux=0;
+  Stocks influx={0,0};
+  start = standstocks(stand);
+  start.carbon+= soilmethane(&stand->soil)*WC/WCH4;
+ #endif
 
   stand->growing_days++;
 
@@ -136,6 +144,10 @@ Real daily_agriculture(Stand *stand,                /**< [inout] stand pointer *
       getoutput(output,NAPPLIED_MG,config)+=crop->nmanure*stand->frac;
       crop->nmanure=0;
     }
+#ifdef CHECK_BALANCE
+    if(crop->fphu>0.25 && crop->nmanure>0) influx.carbon+=crop->nmanure*param.manure_cn;
+#endif
+
     if(!isannual(PFT_NLEAF,config))
       getoutputindex(output,PFT_NLEAF,nnat+index,config)=crop->ind.leaf.nitrogen;
     if(!isannual(PFT_NLIMIT,config))
@@ -221,7 +233,7 @@ Real daily_agriculture(Stand *stand,                /**< [inout] stand pointer *
   if(rainmelt<0)
     rainmelt=0.0;
   /* blue water inflow*/
-  if((data->irrigation||isrice) && data->irrig_amount>epsilon)
+  if((data->irrigation||isrice) && data->irrig_amount>epsilon && config->irrig_scenario!=NO_IRRIGATION)
   { /* data->irrigation defines if stand is irrigated in general and not if water is delivered that day, initialized in new_agriculture.c and changed in landusechange.c*/
     irrig_apply=max(data->irrig_amount-rainmelt,0);  /*irrigate only missing deficit after rain, remainder goes to stor */
     data->irrig_stor+=data->irrig_amount-irrig_apply;
@@ -337,6 +349,9 @@ Real daily_agriculture(Stand *stand,                /**< [inout] stand pointer *
     getoutput(output,FAPAR,config) += pft->fapar * stand->frac * (1.0/(1-stand->cell->lakefrac-stand->cell->ml.reservoirfrac));
     getoutput(output,WSCAL,config) += pft->fpc * pft->wscal * stand->frac * (1.0/(1-stand->cell->lakefrac-stand->cell->ml.reservoirfrac));
     getoutputindex(output,CFT_FPAR,index,config)+=(fpar(pft)*stand->frac*(1.0/(1-stand->cell->lakefrac-stand->cell->ml.reservoirfrac)))*(1-pft->albedo);
+#ifdef CHECK_BALANCE
+    dcflux+=npp;
+#endif
 
     if(config->pft_output_scaled)
       getoutputindex(output,PFT_NPP,nnat+index,config)+=npp*stand->frac;
@@ -377,7 +392,7 @@ Real daily_agriculture(Stand *stand,                /**< [inout] stand pointer *
     {
       update_separate_harvests(output,pft,data->irrigation,day,npft,ncft,config);
       harvest_crop(output,stand,pft,npft,ncft,year,config);
-      if(data->irrigation||isrice)
+      if((data->irrigation||isrice) && config->irrig_scenario!=NO_IRRIGATION)
       {
         stand->cell->discharge.dmass_lake+=(data->irrig_stor+data->irrig_amount)*stand->cell->coord.area*stand->frac;
         stand->cell->balance.awater_flux-=(data->irrig_stor+data->irrig_amount)*stand->frac;
@@ -479,6 +494,17 @@ Real daily_agriculture(Stand *stand,                /**< [inout] stand pointer *
   free(wet);
 
 #ifdef CHECK_BALANCE
+  end = standstocks(stand);
+  end.carbon+= soilmethane(&stand->soil)*WC/WCH4;
+  if (stand->type->landusetype!= KILL && fabs(end.carbon -start.carbon -dcflux-((stand->cell->balance.flux_estab.carbon+stand->cell->balance.influx.carbon-stand->cell->balance.flux_harvest.carbon)/stand->frac-harvest.carbon))>0.001)
+  {
+    fail(INVALID_CARBON_BALANCE_ERR,FAIL_ON_BALANCE,FALSE,"Invalid carbon balance in %s: %.3f at day: %d start: %.3f  end: %.3f type: %s influx: %.3f flux_estab: %.3f "
+         "dcflux: %.3f flux_estab: %.3f dcflux: %.3f  harvest: %.3f stand->cell->balance.flux_harvest: %.3f \n",
+         __FUNCTION__,end.carbon -start.carbon -dcflux-((stand->cell->balance.flux_estab.carbon+stand->cell->balance.influx.carbon-stand->cell->balance.flux_harvest.carbon)/stand->frac-harvest.carbon)-influx.carbon ,day,
+         start.carbon, end.carbon,stand->type->name,influx.carbon,
+         stand->cell->balance.flux_estab.carbon,stand->cell->output.dcflux,stand->cell->balance.flux_estab.carbon/stand->frac,
+         dcflux,harvest.carbon,stand->cell->balance.flux_harvest.carbon/stand->frac);
+  }
   transp=0;
   water_after=0;
   wstore_new=(stand->cell->discharge.dmass_lake+stand->cell->discharge.dmass_river)/stand->cell->coord.area+stand->cell->ground_st+stand->cell->ground_st_am;
