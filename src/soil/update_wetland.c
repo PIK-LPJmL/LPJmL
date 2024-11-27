@@ -91,7 +91,7 @@ void update_wetland(Cell *cell,          /**< pointer to cell */
   //  modify this to use wtable wanted -> wtable_mean
   wtable_use = cell->hydrotopes.wtable_mean;
   if (wtable_use>0) wtable_use = 0;
-#ifdef CHECK_BALANCE
+#ifdef CHECK_BALANCE2
   if(year==1846)
   {
     foreachstand(stand,s,cell->standlist)

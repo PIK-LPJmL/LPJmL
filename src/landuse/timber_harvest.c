@@ -122,7 +122,7 @@ Stocks timber_harvest(Pft *pft,      /**< Pointer to tree PFT */
   pft->stand->cell->ml.product.slow.carbon+=harvest.carbon*f.slow;
 
 #endif
-  soil->pool[0].fast.carbon+=harvest.carbon*biofuel*0.1/standfrac;
+  soil->pool[0].fast.carbon+=harvest.carbon*biofuel*0.1/standfrac;    // when bioful greater zero balance not closed
   soil->pool[0].fast.nitrogen+=harvest.nitrogen*biofuel*0.1/standfrac;
   /* transfer non-harvested wood, leaves, fruits and roots of trees cut to litter */
   soil->litter.item[pft->litter].agtop.leaf.carbon+=tree->ind.leaf.carbon*ftimber*(*nind);

@@ -61,7 +61,7 @@ void withdrawal_demand(Cell *grid,          /**< LPJ grid */
           foreachpft(pft, p, &stand->pftlist)
            if(!strcmp(pft->par->name,"rice")) isrice=TRUE;
           data=stand->data;
-          if(data->irrigation||isrice)
+          if((data->irrigation||isrice) && config->irrig_scenario!=NO_IRRIGATION)
           {
             grid[cell].discharge.gir+=max((data->net_irrig_amount+data->dist_irrig_amount-data->irrig_stor)/data->ec,0)*stand->frac*grid[cell].coord.area; /* interception losses is fraction (GIR-interception) / GIR from day before */
           }

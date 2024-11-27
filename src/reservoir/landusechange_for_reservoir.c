@@ -396,14 +396,14 @@ void landusechange_for_reservoir(Cell *cell,          /**< pointer to cell */
       fail(INVALID_WATER_BALANCE_ERR,FAIL_ON_BALANCE,FALSE,
            "water balance error in the building of the reservoir, balanceW=%g",
            balanceW);
-    if(fabs(balance.nitrogen)>0.1)
+    if(fabs(balance.nitrogen)>0.001)
     {
       fail(INVALID_NITROGEN_BALANCE_ERR,FAIL_ON_BALANCE,FALSE,
            "nitrogen balance error in cell (%g,%g) in the building of the reservoir, balanceN=%g",
            cell->coord.lat,cell->coord.lon,balance.nitrogen);
       fflush(stderr);
     }
-    if(fabs(balance.carbon)>2)
+    if(fabs(balance.carbon)>0.001)
       fail(INVALID_CARBON_BALANCE_ERR,FAIL_ON_BALANCE,FALSE,
            "carbon balance error in the building of the reservoir, balanceC=%g",
            balance.carbon);

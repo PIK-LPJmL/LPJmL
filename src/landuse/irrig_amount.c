@@ -34,7 +34,7 @@ void irrig_amount(Stand *stand,        /**< pointer to non-natural stand */
   data->irrig_amount=0;
   nirrig=getnirrig(ncft,config);
 
-  if((data->irrigation||isrice) && stand->pftlist.n>0)
+  if((data->irrigation||isrice) && stand->pftlist.n>0 && config->irrig_scenario!=NO_IRRIGATION)
   {
     data->irrig_event=isirrigevent(stand);
     irrig_stand=max(data->net_irrig_amount+data->dist_irrig_amount-data->irrig_stor,0);

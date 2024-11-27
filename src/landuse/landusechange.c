@@ -918,7 +918,7 @@ static void grasslandreduction(Cell *cell,            /* cell pointer */
   Stocks fluxes_neg= {0,0};
   Stocks fluxes_prod= {0,0};
   Stocks balance= {0,0};
-  Real start_w = 0;
+  Real start_w = cell->balance.excess_water;
   Real end_w = 0;
   foreachstand(checkstand, s, cell->standlist)
   {
@@ -1041,6 +1041,7 @@ static void grasslandreduction(Cell *cell,            /* cell pointer */
   }
 #ifdef CHECK_BALANCE
   end.carbon=end.nitrogen = end_w=0;
+  end_w=cell->balance.excess_water;
   foreachstand(checkstand, s, cell->standlist)
   {
     st=standstocks(checkstand);

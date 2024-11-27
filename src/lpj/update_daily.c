@@ -93,6 +93,8 @@ void update_daily(Cell *cell,            /**< cell pointer           */
       start1.carbon+=(standstocks(stand).carbon + soilmethane(&stand->soil)*WC/WCH4)*stand->frac;
       start1.nitrogen+=standstocks(stand).nitrogen*stand->frac;
     }
+    else
+      fprintf(stderr, "landuse== KILL ind update_daily stand.C= %.3f  standfrac:%.3f \n", (standstocks(stand).carbon + soilmethane(&stand->soil)*WC/WCH4),stand->frac);
     if(stand->type->landusetype==GRASSLAND || stand->type->landusetype==OTHERS ||
        stand->type->landusetype==AGRICULTURE || stand->type->landusetype==AGRICULTURE_GRASS || stand->type->landusetype==AGRICULTURE_TREE ||
        stand->type->landusetype==BIOMASS_TREE || stand->type->landusetype==BIOMASS_GRASS || stand->type->landusetype==WOODPLANTATION)
@@ -100,7 +102,7 @@ void update_daily(Cell *cell,            /**< cell pointer           */
       foreachpft(pft, p, &stand->pftlist)
        if(!strcmp(pft->par->name,"rice")) isrice=TRUE;
       data = stand->data;
-      if(data->irrigation||isrice) irrigstore+=data->irrig_stor;
+      if((data->irrigation||isrice) && config->irrig_scenario!=NO_IRRIGATION) irrigstore+=data->irrig_stor;
     }
   }
   start1.carbon+=cell->ml.product.fast.carbon+cell->ml.product.slow.carbon+
@@ -496,7 +498,7 @@ void update_daily(Cell *cell,            /**< cell pointer           */
       data = stand->data;
       foreachpft(pft, p, &stand->pftlist)
        if(!strcmp(pft->par->name,"rice")) isrice=TRUE;
-      if(data->irrigation||isrice)
+      if((data->irrigation||isrice) && config->irrig_scenario!=NO_IRRIGATION)
       {
         getoutput(&cell->output,IRRIG_STOR,config)+=data->irrig_stor*stand->frac*cell->coord.area;
         getoutput(&cell->output,TWS,config)+=data->irrig_stor*stand->frac;
@@ -528,7 +530,7 @@ void update_daily(Cell *cell,            /**< cell pointer           */
 
   if(cell->discharge.dmass_gw>epsilon)
   {
-    gw_outflux = cell->ground_st*GWCOEFF; //cell->kbf;
+    gw_outflux = cell->ground_st*cell->kbf; //cell->kbf;GWCOEFF
     cell->ground_st -= gw_outflux;
     cell->discharge.dmass_gw-=gw_outflux*cell->coord.area;
     cell->discharge.drunoff+=gw_outflux;
@@ -659,13 +661,15 @@ void update_daily(Cell *cell,            /**< cell pointer           */
        foreachpft(pft, p, &stand->pftlist)
         if(!strcmp(pft->par->name,"rice")) isrice=TRUE;
        data = stand->data;
-       if(data->irrigation||isrice) irrigstore_end+=data->irrig_stor;
+       if((data->irrigation||isrice) && config->irrig_scenario!=NO_IRRIGATION) irrigstore_end+=data->irrig_stor;
      }
     if(stand->type->landusetype!=KILL)
     {
       water_after+=soilwater(&stand->soil)*stand->frac;
       end+=(standstocks(stand).carbon + soilmethane(&stand->soil)*WC/WCH4)*stand->frac ;
     }
+    else
+      fprintf(stderr, "landuse== KILL ind update_daily stand.C= %.3f  standfrac:%.3f \n", (standstocks(stand).carbon + soilmethane(&stand->soil)*WC/WCH4),stand->frac);
    }
   end+=cell->ml.product.fast.carbon+cell->ml.product.slow.carbon+
        cell->balance.estab_storage_grass[0].carbon+cell->balance.estab_storage_tree[0].carbon+cell->balance.estab_storage_grass[1].carbon+cell->balance.estab_storage_tree[1].carbon;
@@ -679,7 +683,7 @@ void update_daily(Cell *cell,            /**< cell pointer           */
   balanceW=water_after-water_before-climate.prec+
           ((cell->balance.awater_flux+cell->balance.atransp+cell->balance.aevap+cell->balance.ainterc+cell->balance.aevap_lake+cell->balance.aevap_res-cell->balance.airrig-cell->balance.aMT_water)-wfluxes_old)
           +((cell->balance.excess_water+cell->lateral_water)-exess_old);
-  if (fabs(end-start1.carbon-CH4_fluxes+fluxes_out.carbon-fluxes_in.carbon)>0.001)
+  if (fabs(end-start1.carbon-CH4_fluxes+fluxes_out.carbon-fluxes_in.carbon)>0.0001)
   {
     fprintf(stderr, "C_ERROR in %s : day: %d  %g start: %g  end: %g CH4_fluxes: %g flux_estab.carbon: %g flux_harvest.carbon: %g dcflux: %g fluxes_in.carbon: %g "
         "fluxes_out.carbon: %g neg_fluxes: %g bm_inc: %g rh: %g aCH4_sink: %g aCH4_em : %g \n",
@@ -695,7 +699,7 @@ void update_daily(Cell *cell,            /**< cell pointer           */
       end+=standstocks(stand).nitrogen*stand->frac;
   end+=cell->ml.product.fast.nitrogen+cell->ml.product.slow.nitrogen+
        cell->balance.estab_storage_grass[0].nitrogen+cell->balance.estab_storage_tree[0].nitrogen+cell->balance.estab_storage_grass[1].nitrogen+cell->balance.estab_storage_tree[1].nitrogen;
-  if (fabs(end-start1.nitrogen+fluxes_out.nitrogen-fluxes_in.nitrogen)>0.1)
+  if (fabs(end-start1.nitrogen+fluxes_out.nitrogen-fluxes_in.nitrogen)>0.001)
   {
     fprintf(stderr, "N_ERROR in %s end: day: %d    %g start: %g  end: %g flux_estab.nitrogen: %g flux_harvest.nitrogen: %g "
            "influx: %g outflux: %g neg_fluxes: %g\n",
