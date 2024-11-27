@@ -37,7 +37,8 @@ void update_daily(Cell *cell,            /**< cell pointer           */
                   const Config *config   /**< LPJmL configuration */
                  )
 {
-  int s,p,isrice;
+  int s,p;
+  Bool isrice;
   Pft *pft;
   Real melt=0,eeq,par,daylength,beta,gw_outflux;
   Real CH4_em=0;
@@ -98,10 +99,7 @@ void update_daily(Cell *cell,            /**< cell pointer           */
        stand->type->landusetype==AGRICULTURE || stand->type->landusetype==AGRICULTURE_GRASS || stand->type->landusetype==AGRICULTURE_TREE ||
        stand->type->landusetype==BIOMASS_TREE || stand->type->landusetype==BIOMASS_GRASS || stand->type->landusetype==WOODPLANTATION)
     {
-      isrice=FALSE;
-      foreachpft(pft, p, &stand->pftlist)
-        if(pft->par->id==config->rice_pft)
-          isrice=TRUE;
+      isrice=isricestand(&stand->pftlist,config->rice_pft);
       data = stand->data;
       if((data->irrigation||isrice) && config->irrig_scenario!=NO_IRRIGATION) irrigstore+=data->irrig_stor;
     }
@@ -497,10 +495,7 @@ void update_daily(Cell *cell,            /**< cell pointer           */
        stand->type->landusetype==BIOMASS_TREE || stand->type->landusetype==BIOMASS_GRASS || stand->type->landusetype==WOODPLANTATION)
     {
       data = stand->data;
-      isrice=FALSE;
-      foreachpft(pft, p, &stand->pftlist)
-        if(pft->par->id==config->rice_pft)
-          isrice=TRUE;
+      isrice=isricestand(&stand->pftlist,config->rice_pft);
       if((data->irrigation||isrice) && config->irrig_scenario!=NO_IRRIGATION)
       {
         getoutput(&cell->output,IRRIG_STOR,config)+=data->irrig_stor*stand->frac*cell->coord.area;
@@ -661,24 +656,19 @@ void update_daily(Cell *cell,            /**< cell pointer           */
        stand->type->landusetype==AGRICULTURE || stand->type->landusetype==AGRICULTURE_GRASS || stand->type->landusetype==AGRICULTURE_TREE ||
        stand->type->landusetype==BIOMASS_TREE || stand->type->landusetype==BIOMASS_GRASS || stand->type->landusetype==WOODPLANTATION)
      {
-       isrice=FALSE;
-        if(pft->par->id==config->rice_pft)
-          isrice=TRUE;
+       isrice=isricestand(&stand->pftlist,config->rice_pft);
        data = stand->data;
-       if((data->irrigation||isrice) && config->irrig_scenario!=NO_IRRIGATION) irrigstore_end+=data->irrig_stor;
+       if((data->irrigation||isrice) && config->irrig_scenario!=NO_IRRIGATION)
+         irrigstore_end+=data->irrig_stor;
      }
     if(stand->type->landusetype!=KILL)
     {
       water_after+=soilwater(&stand->soil)*stand->frac;
       end+=(standstocks(stand).carbon + soilmethane(&stand->soil)*WC/WCH4)*stand->frac ;
     }
-<<<<<<< HEAD
-  }
-=======
     else
       fprintf(stderr, "landuse== KILL ind update_daily stand.C= %.3f  standfrac:%.3f \n", (standstocks(stand).carbon + soilmethane(&stand->soil)*WC/WCH4),stand->frac);
-   }
->>>>>>> eb7901f1972120a8a521ee2c3db28212fd35636d
+  }
   end+=cell->ml.product.fast.carbon+cell->ml.product.slow.carbon+
        cell->balance.estab_storage_grass[0].carbon+cell->balance.estab_storage_tree[0].carbon+cell->balance.estab_storage_grass[1].carbon+cell->balance.estab_storage_tree[1].carbon;
   if(cell->ml.dam)
