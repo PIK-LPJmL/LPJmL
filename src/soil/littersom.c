@@ -240,6 +240,8 @@ Stocks littersom(Stand *stand,                      /**< [inout] pointer to stan
           flux_soil[l].slow.carbon=C_max[l];
           flux_soil[l].slow.nitrogen=flux_soil[l].slow.carbon/CN_slow;
         }
+        else
+          C_max[l]-=flux_soil[l].slow.carbon;
 
 /* TODO nitrogen limitation of decomposition including variable decay rates Brovkin,
         fn_som=flux_soil[l].fast.carbon/CN_ratio_fast+flux_soil[l].slow.carbon/CN_ratio_slow;
@@ -417,7 +419,7 @@ Stocks littersom(Stand *stand,                      /**< [inout] pointer to stan
         soil->litter.item[p].agtop.leaf.carbon -= litter_flux*WC/WCH4;
         *methaneflux_litter+=litter_flux;
         litter_flux= soil->litter.item[p].agtop.leaf.nitrogen*soil->litter.item[p].pft->k_litter10.leaf / k_red_litter*gtemp_soil[0]* exp((-soil->O2[0] / soildepth[0] * 1000) / O2star);
-        soil->litter.item[p].bg.nitrogen-=litter_flux;
+        soil->litter.item[p].agtop.leaf.nitrogen-=litter_flux;
         decom_sum.nitrogen+=litter_flux;
         decom_fast.nitrogen+=litter_flux;
      }
@@ -471,7 +473,7 @@ Stocks littersom(Stand *stand,                      /**< [inout] pointer to stan
         soil->litter.item[p].agsub.leaf.carbon -= litter_flux*WC/WCH4;
         *methaneflux_litter += litter_flux;
         litter_flux=soil->litter.item[p].agsub.leaf.nitrogen * soil->litter.item[p].pft->k_litter10.leaf/ k_red_litter*gtemp_soil[0]* exp((-soil->O2[0] / soildepth[0] * 1000) / O2star);
-        soil->litter.item[p].bg.nitrogen-=litter_flux;
+        soil->litter.item[p].agsub.leaf.nitrogen-=litter_flux;
         decom_sum.nitrogen+=litter_flux;
         decom_fast.nitrogen+=litter_flux;
       }
@@ -806,7 +808,7 @@ Stocks littersom(Stand *stand,                      /**< [inout] pointer to stan
             "C_ERROR in littersom: iswetland: %d type: %s %.8f start:%.8f  ende:%.8f decomCO2: %.8f methane_em: %.8f\n", soil->iswetland,
             stand->type->name,start.carbon - end.carbon - (flux.carbon + *methaneflux_litter*WC/WCH4), start.carbon, end.carbon, flux.carbon, *methaneflux_litter*WC/WCH4);
   }
-  if (fabs(end.nitrogen-start.nitrogen+flux.nitrogen)>0.00001)
+  if (fabs(end.nitrogen-start.nitrogen+flux.nitrogen)>0.0001)
     fprintf(stderr, "N_ERROR in littersom: iswetland: %d %.8f start:%.8f  end:%.8f flux.nitrogen: %g F_Nmineral: %g  decom_sum.nitrogen: %g\n", soil->iswetland,end.nitrogen-start.nitrogen+flux.nitrogen,
         start.nitrogen, end.nitrogen, flux.nitrogen,F_Nmineral_all,decom_sum.nitrogen);
   balanceW=water_after-water_before-*MT_water+*runoff;
