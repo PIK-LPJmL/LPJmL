@@ -1621,15 +1621,17 @@ void landusechange(Cell *cell,          /**< pointer to cell */
         else if(difffrac<-epsilon)
           landexpansion(cell,difffrac,npft,stand,irrigation,cultivation_type,0,ncft,year,config);
 #ifdef DEBUG4
-    fprintf(stderr,"3landexp./grassred difffrac: %g grassfrac: %g s= %d\n",
-        difffrac,grassfrac,s);
+        fprintf(stderr,"3landexp./grassred difffrac: %g grassfrac: %g s= %d\n",
+                difffrac,grassfrac,s);
+#endif
       }
       else if(grassfrac>epsilon)
       {
         difffrac= -grassfrac;
         landexpansion(cell,difffrac,npft,NULL,irrigation,cultivation_type,0,ncft,year,config);
-    fprintf(stderr,"4landexp./grassred difffrac: %g grassfrac: %g s= %d irrigation: %d \n",
-        difffrac,grassfrac,s,i);
+#ifdef DEBUG4
+        fprintf(stderr,"4landexp./grassred difffrac: %g grassfrac: %g s= %d irrigation: %d \n",
+                difffrac,grassfrac,s,i);
 #endif
       }
     }
