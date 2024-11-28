@@ -161,7 +161,8 @@ section of Makefile.inc:
 LPJFLAGS= -Dflag1 ...
 
 Flag                Description
-------------------- ------------------------------------------------------------
+------------------- --------------------------------------------------------------
+CHECK_BALANCE       Local checks of water, carbon and nitrogen balance are enabled
 CHECK_BOUNDARY      check array boundaries of output
 COUPLING_WITH_FMS   enable coupling to FMS
 DAILY_ESTABLISHMENT enable daily establishment
@@ -183,7 +184,7 @@ USE_UDUNITS         enable unit conversion in NetCDF files
 USE_TIMING          enable timing for socket I/O
 WITH_FIRE_MOISTURE  enable moisture dependent fire emissions
 WITH_FPE            floating point exceptions are enabled for debugging purposes
-------------------- ------------------------------------------------------------
+------------------- --------------------------------------------------------------
 
 Create executables:
 
