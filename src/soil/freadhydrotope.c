@@ -18,12 +18,6 @@
 
 Bool freadhydrotope(FILE *file, Hydrotope *hydrotopes, Bool swap)
 {
-  freadreal(&hydrotopes->cti_mean, 1, swap, file);
-  freadreal(&hydrotopes->cti_chi, 1, swap, file);
-  freadreal(&hydrotopes->cti_phi, 1, swap, file);
-  freadreal(&hydrotopes->cti_mu, 1, swap, file);
-
-  freadint(&hydrotopes->skip_cell, 1, swap, file);
 
   freadreal(&hydrotopes->wtable_mean, 1, swap, file);
   freadreal(&hydrotopes->wtable_min, 1, swap, file);
