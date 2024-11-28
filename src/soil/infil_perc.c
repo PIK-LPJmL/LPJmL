@@ -84,7 +84,7 @@ Real infil_perc(Stand *stand,        /**< Stand pointer */
   Real rsub_top_tot, rsub_top_layer, active_wa, tmp_water;
   //Real sat_lev = 0.9;
   Real prec=infil;
-  Bool isrice=FALSE;
+  Bool isrice;
   Bool enth=TRUE;
   Real dprec=dprec1;
   Real vol_water_enth=0; /* volumetric enthalpy of inflowing or outflowing water J/m^3 */
@@ -114,10 +114,7 @@ Real infil_perc(Stand *stand,        /**< Stand pointer */
           sprintcoord(line,&stand->cell->coord),l,soil->w[l],soil->w_fw[l],stand->type->name,soil->par->name, stand->cell->lateral_water);
     }
 #endif
-
-  foreachpft(pft,p,&stand->pftlist)
-    if(!strcmp(pft->par->name,"rice"))
-      isrice=TRUE;
+  isrice=ispftinstand(&stand->pftlist,config->rice_pft);
   if(stand->type->landusetype==AGRICULTURE || stand->type->landusetype==SETASIDE_RF || stand->type->landusetype==SETASIDE_IR || stand->type->landusetype==SETASIDE_WETLAND || stand->type->landusetype==BIOMASS_GRASS ||
       stand->type->landusetype==BIOMASS_TREE || stand->type->landusetype==GRASSLAND || stand->type->landusetype==OTHERS  ||  stand->type->landusetype==AGRICULTURE_TREE || stand->type->landusetype==AGRICULTURE_GRASS)
     data_irrig=stand->data;
