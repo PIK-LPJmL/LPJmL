@@ -422,6 +422,7 @@ Error code Description                                   Error type
         49 Invalid uniform temp sign value               Internal
         50 Invalid crop PHU option                       Internal
         51 Invalid fire danger index                     Internal
+        52 Error writing output                          External
 ---------- --------------------------------------------- ----------
 
 External errors are caused by invalid or missing input files while internal
