@@ -1,6 +1,6 @@
 /**************************************************************************************/
 /**                                                                                \n**/
-/**                i  s  r  i  c  e  s  t  a  n  d  .  c                           \n**/
+/**                i  s  p  f  t  i  n  s  t  a  n  d  .  c                        \n**/
 /**                                                                                \n**/
 /**     C implementation of LPJmL                                                  \n**/
 /**                                                                                \n**/
@@ -14,14 +14,14 @@
 
 #include "lpj.h"
 
-Bool isricestand(const Pftlist *pftlist, /**< array of PFTs */
-                 int rice_pft            /**< PFT index of rice */
-                )                        /**< return TRUE if rice was found */
+Bool ispftinstand(const Pftlist *pftlist, /**< array of PFTs */
+                  int pft_id              /**< PFT index to find */
+                 )                        /**< return TRUE if PFT was found */
 {
   const Pft *pft;
   int p;
   foreachpft(pft,p,pftlist)
-    if(pft->par->id==rice_pft)
+    if(pft->par->id==pft_id)
       return TRUE;
   return FALSE;
-} /* of 'isricestand' */
+} /* of 'ispftinstand' */

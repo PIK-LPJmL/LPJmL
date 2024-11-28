@@ -92,7 +92,7 @@ void distribute_water(Cell *cell,            /**< pointer to LPJ cell */
       data=stand->data;
       data->irrig_event=FALSE;
       data->irrig_amount=0;
-      isrice=isricestand(&stand->pftlist,config->rice_pft);
+      isrice=ispftinstand(&stand->pftlist,config->rice_pft);
 
       if((data->irrigation||isrice) && config->irrig_scenario!=NO_IRRIGATION)
       {

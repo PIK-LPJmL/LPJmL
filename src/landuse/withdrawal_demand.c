@@ -57,7 +57,7 @@ void withdrawal_demand(Cell *grid,          /**< LPJ grid */
            stand->type->landusetype==AGRICULTURE_TREE ||
            stand->type->landusetype==WOODPLANTATION)
         {
-          isrice=isricestand(&stand->pftlist,config->rice_pft);
+          isrice=ispftinstand(&stand->pftlist,config->rice_pft);
           data=stand->data;
           if((data->irrigation||isrice) && config->irrig_scenario!=NO_IRRIGATION)
           {

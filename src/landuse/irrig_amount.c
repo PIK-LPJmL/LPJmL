@@ -27,7 +27,7 @@ void irrig_amount(Stand *stand,        /**< pointer to non-natural stand */
   Pft *pft;
   Real conv_loss,irrig_stand;
   Pftcrop *crop;
-  isrice=isricestand(&stand->pftlist,config->rice_pft);
+  isrice=ispftinstand(&stand->pftlist,config->rice_pft);
   /* determine if today irrigation dependent on threshold */
   data->irrig_event=FALSE;
   data->irrig_amount=0;

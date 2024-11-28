@@ -1483,7 +1483,7 @@ void landusechange(Cell *cell,          /**< pointer to cell */
     if(stand->type->landusetype!=NATURAL && stand->type->landusetype!=WETLAND && stand->type->landusetype!=KILL)
     {
       data=stand->data;
-      isrice=isricestand(&stand->pftlist,config->rice_pft);
+      isrice=ispftinstand(&stand->pftlist,config->rice_pft);
       if(isrice || stand->type->landusetype==SETASIDE_WETLAND)
         sum_wl+=stand->frac;
       else
@@ -1741,7 +1741,7 @@ void landusechange(Cell *cell,          /**< pointer to cell */
     if(stand->type->landusetype!=NATURAL && stand->type->landusetype!=WETLAND && stand->type->landusetype!=KILL)
     {
       data=stand->data;
-      isrice=isricestand(&stand->pftlist,config->rice_pft);
+      isrice=ispftinstand(&stand->pftlist,config->rice_pft);
       if(isrice||stand->type->landusetype==SETASIDE_WETLAND)
         sum_wl+=stand->frac;
       else
