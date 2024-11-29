@@ -99,7 +99,7 @@ void update_daily(Cell *cell,            /**< cell pointer           */
        stand->type->landusetype==AGRICULTURE || stand->type->landusetype==AGRICULTURE_GRASS || stand->type->landusetype==AGRICULTURE_TREE ||
        stand->type->landusetype==BIOMASS_TREE || stand->type->landusetype==BIOMASS_GRASS || stand->type->landusetype==WOODPLANTATION)
     {
-      isrice=isricestand(&stand->pftlist,config->rice_pft);
+      isrice=ispftinstand(&stand->pftlist,config->rice_pft);
       data = stand->data;
       if((data->irrigation||isrice) && config->irrig_scenario!=NO_IRRIGATION) irrigstore+=data->irrig_stor;
     }
