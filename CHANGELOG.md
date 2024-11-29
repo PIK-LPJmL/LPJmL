@@ -21,12 +21,17 @@ of `major.minor.patch` with
 
 ### Contributors
 
-- author: Werner von Bloh (bloh@pik-potsdam.de)
+- author: Werner von Bloh (bloh@pik-potsdam.de), Sebastion Ostberh (ostberg@pik-potsdam.de)
 
 ### Added
 
 - Option `-cmd` added to `lpjsubmit` in order to execute a command before lpjml is called.
 - Command `module list` added to slurm script to show all loaded modules.
+
+
+### Removed
+
+- Obsolete `#ifdef WITHOUT_NITROGEN` check removed from `pft.cjson`.
 
 
 ## [5.9.16] - 2024-11-15
