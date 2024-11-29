@@ -35,7 +35,6 @@
  */
 
 #include <time.h>
-#include <math.h>
 #include <assert.h>
 #include "lpj.h"
 #include "grass.h"
@@ -48,6 +47,7 @@
 #include "agriculture.h"
 #include "agriculture_tree.h"
 #include "agriculture_grass.h"
+#include "wetland.h"
 
 #include "cpl.h"
 
@@ -70,7 +70,7 @@ static int npft;           /*< Number of natural PFT's */
 static int ncft;           /*< Number of crop PFT's */
 
 /// from iterate()
-static Real co2,cflux_total;
+static Real co2,ch4,pch4,cflux_total;
 static Flux flux;
 static int year, landuse_year, wateruse_year;
 
@@ -366,20 +366,6 @@ void lpj_init_
     {name_crop,fscanpft_crop}
   };
 
-  standtype[NATURAL]=natural_stand;
-  standtype[SETASIDE_RF]=setaside_rf_stand;
-  standtype[SETASIDE_IR]=setaside_ir_stand;
-  standtype[SETASIDE_WETLAND]=setaside_wetland_stand;
-  standtype[AGRICULTURE]=agriculture_stand;
-  standtype[MANAGEDFOREST]=managedforest_stand;
-  standtype[GRASSLAND]=grassland_stand;
-  standtype[OTHERS]=others_stand;
-  standtype[BIOMASS_TREE]=biomass_tree_stand;
-  standtype[BIOMASS_GRASS]=biomass_grass_stand;
-  standtype[AGRICULTURE_TREE]=agriculture_tree_stand;
-  standtype[AGRICULTURE_GRASS]=agriculture_grass_stand;
-  standtype[WOODPLANTATION]=woodplantation_stand;
-  standtype[KILL]=kill_stand;
 
   /*
    * Use default communicator containing all processors. In defining your own
@@ -430,6 +416,7 @@ void lpj_init_
     fprintf(stderr,"WARNING018: Arguments listed after configuration filename, will be ignored.\n");
 
   standtype[NATURAL]=natural_stand;
+  standtype[WETLAND]=wetland_stand;
   standtype[SETASIDE_RF]=setaside_rf_stand;
   standtype[SETASIDE_IR]=setaside_ir_stand;
   standtype[AGRICULTURE]=agriculture_stand;
@@ -486,6 +473,8 @@ void lpj_init_
   rc=initinput(&input,grid,config.npft[GRASS]+config.npft[TREE],&config);
   failonerror(&config,rc,INIT_INPUT_ERR,
               "Initialization of input data failed");
+  pch4 = param.pch4*1e-3;
+  ch4 = pch4*1e15*2.123; /* convert ppm to gC */
 
   /* open output files */
   output=fopenoutput(grid,NOUT,&config);
@@ -1212,9 +1201,19 @@ void lpj_update_
       //getclimate(input.climate,grid,input.climate->firstyear+(year-config.firstyear+config.nspinup) % config.nspinyear,&config);
 //#endif
       //else
+      if(!config.with_dynamic_ch4  && config.from_restart)
+      {
+        if(getch4(input.climate,&ch4,year,&config)) /* get atmospheric CH4 concentration */
+        {
+          if(isroot(config))
+            fprintf(stderr,"ERROR015: Invalid year %d in getch4().\n",year);
+          abort();
+        }
+        pch4=ch4*1e-3; /*convert to ppm*/
+      }
       {
         /* read climate from files */
-          if(getclimate(input.climate,grid,year,&config))
+          if(getclimate(input.climate,grid,year,1,&config))
           {
             fprintf(stderr,"ERROR104: Simulation stopped in getclimate().\n");
             fflush(stderr);
@@ -1234,7 +1233,7 @@ void lpj_update_
         else
            wateruse_year=year;
           /* read landuse pattern from file */
-          if(getlanduse(input.landuse,grid,landuse_year,year,ncft,&config))
+          if(getlanduse(input.landuse,grid,landuse_year,year,npft,ncft,&config))
           {
             fprintf(stderr,"ERROR104: Simulation stopped in getlanduse().\n");
             fflush(stderr);
@@ -1428,7 +1427,7 @@ void lpj_update_
 #ifdef DEBUG
               //printf("day=%d cell=%d CO2=%g\n",dayofyear,cell, co2);
 #endif
-              update_daily(grid+cell,co2,popdens,daily,dayofyear,npft,ncft,
+              update_daily(grid+cell,co2,pch4,popdens,daily,dayofyear,npft,ncft,
                            year,month,intercrop,&config);
             }
           }
@@ -1683,6 +1682,11 @@ void lpj_update_
       cflux_total=flux_sum(&flux,grid,&config);
       if(config.rank==0)
       {
+        if (config.with_dynamic_ch4)
+        {
+          ch4 += flux.CH4_emissions - flux.CH4_sink + flux.CH4_fire - 1 / tau_CH4*ch4;
+          pch4 = ch4*1e-15 / 2.123;
+        }
         /* output of total carbon flux and water on stdout on root task */
         printflux(flux,cflux_total,year,&config);
         if(isopen(output,GLOBALFLUX))
@@ -1695,6 +1699,10 @@ void lpj_update_
         check_balance(flux,year,&config);
 #endif
       }
+#ifdef USE_MPI
+      if (config.with_dynamic_ch4)
+        MPI_Bcast(&pch4, sizeof(Real), MPI_BYTE, 0, comm);
+#endif
       if(iswriterestart(&config) && year==config.restartyear)
         fwriterestart(grid,npft,ncft,year,config.write_restart_filename,FALSE,&config); /* write restart file */
     } /* if (silvester) */
