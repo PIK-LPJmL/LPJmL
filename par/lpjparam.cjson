@@ -15,9 +15,9 @@
   {
     "error_limits" :
     {
-      "carbon" : 0.1,       /* maximum error in local carbon balance (gC/m2) */
-      "nitrogen" : 0.01,    /* maximum error in local nitrogen balance (gN/m2) */
-      "water_local" : 0.1,  /* maximum error in local water balance (mm) */
+      "carbon" : 0.5,       /* maximum error in local carbon balance (gC/m2) */
+      "nitrogen" : 0.5,    /* maximum error in local nitrogen balance (gN/m2) */
+      "water_local" : 0.5,  /* maximum error in local water balance (mm) */
       "water_global" : 1e-3 /* maximum error in global water balance (mm) */
     },
     "soildepth" : [

@@ -55,7 +55,7 @@
   "with_lakes" : true,      /* enable lakes (true/false) */
   "river_routing" : true,   /* enable river routing (requires input matching grid and lakes/reservoirs) */
   "extflow" : false,        /* enable discharge inflow for regional runs (requires extflow_filename) */
-  "groundwater_irrig" : true, /* enable groundwater use for irrigation */
+  "groundwater_irrig" : false, /* enable groundwater use for irrigation */
   "permafrost" : true,      /* enable permafrost */
   "dynamic_CH4" : false,
   "anomaly" : false,
@@ -404,7 +404,7 @@ ID                               Fmt                        filename
 
 #ifdef FROM_RESTART
 
-  "nspinup" : 420,   /* spinup years */
+  "nspinup" : 600,   /* spinup years */
   "nspinyear" : 30,  /* cycle length during spinup (yr)*/
   "firstyear": 1901, /* first year of simulation */
 #if defined CRU_MONTHLY || defined CRU_NETCDF
