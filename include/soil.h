@@ -103,7 +103,7 @@
 #define WO2 32.0             /*32g/mol*/
 #define WCH4 16.0
 #define WH2O 18.0
-#define WCO2 44-0
+#define WCO2 44.0
 #define O2star 3.0           /*g/m3*/
 #define BO2 0.038            /*Bunsen coefficient of oxygen*/
 #define BCH4 0.043           /*Bunsen coefficient of methane  0.043 Khvorostynov etal. 2008*/
