@@ -33,6 +33,10 @@ of `major.minor.patch` with
 
 - Obsolete `#ifdef WITHOUT_NITROGEN` check removed from `pft.cjson`.
 
+### Fixed
+
+- `ALLOM3` parameter corrrected to 4.0 for oil palm in `pft.cjson` (issue #369).
+
 
 ## [5.9.16] - 2024-11-15
 
