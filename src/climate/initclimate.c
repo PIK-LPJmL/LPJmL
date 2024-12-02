@@ -324,7 +324,7 @@ Climate *initclimate(const Cell grid[], /**< LPJ grid */
   printf("climate->file_temp.firstyear: %d  co2-year: %d  value: %f\n",
          climate->file_temp.firstyear, climate->co2.firstyear,climate->co2.data[0]);
 #endif
-  if (!config->with_dynamic_ch4)
+  if (config->with_dynamic_ch4==PRESCRIBED_CH4)
   {
     if (readtracegas(&climate->ch4, &config->ch4_filename,config))
     {
