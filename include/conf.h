@@ -56,6 +56,9 @@
 #define RADIATION_SWONLY 2
 #define RADIATION 1
 #define CLOUDINESS 0
+#define FIXED_CH4 0
+#define PRESCRIBED_CH4 1
+#define DYNAMIC_CH4 2
 #define ALL -1
 #define RAW 0
 #define CLM 1

@@ -1201,7 +1201,7 @@ void lpj_update_
       //getclimate(input.climate,grid,input.climate->firstyear+(year-config.firstyear+config.nspinup) % config.nspinyear,&config);
 //#endif
       //else
-      if(!config.with_dynamic_ch4  && config.from_restart)
+      if(config.with_dynamic_ch4==PRESCRIBED_CH4)
       {
         if(getch4(input.climate,&ch4,year,&config)) /* get atmospheric CH4 concentration */
         {
@@ -1682,7 +1682,7 @@ void lpj_update_
       cflux_total=flux_sum(&flux,grid,&config);
       if(config.rank==0)
       {
-        if (config.with_dynamic_ch4)
+        if (config.with_dynamic_ch4==DYNAMIC_CH4)
         {
           ch4 += flux.CH4_emissions - flux.CH4_sink + flux.CH4_fire - 1 / tau_CH4*ch4;
           pch4 = ch4*1e-15 / 2.123;
@@ -1700,7 +1700,7 @@ void lpj_update_
 #endif
       }
 #ifdef USE_MPI
-      if (config.with_dynamic_ch4)
+      if (config.with_dynamic_ch4==DYNAMIC_CH4)
         MPI_Bcast(&pch4, sizeof(Real), MPI_BYTE, 0, comm);
 #endif
       if(iswriterestart(&config) && year==config.restartyear)

@@ -109,9 +109,9 @@ int iterate(Outputfile *output, /**< Output file data */
       break;
 
     if(config->isanomaly)
-      year_co2+=2000; //CLIMBER's year zero= year 2000
+      year_co2+=config->time_shift; //CLIMBER's year zero= year 2000
 
-    if(!config->with_dynamic_ch4  && config->from_restart)
+    if(config->with_dynamic_ch4==PRESCRIBED_CH4)
     {
       if(getch4(input.climate,&ch4,year_co2,config)) /* get atmospheric CH4 concentration */
       {
@@ -426,7 +426,7 @@ int iterate(Outputfile *output, /**< Output file data */
     cflux_total=flux_sum(&flux,grid,config);
     if(isroot(*config))
     {
-      if (config->with_dynamic_ch4)
+      if (config->with_dynamic_ch4==DYNAMIC_CH4)
       {
         ch4 += flux.CH4_emissions - flux.CH4_sink + flux.CH4_fire - 1 / tau_CH4*ch4;
         pch4 = ch4*1e-15 / 2.123;
@@ -444,7 +444,7 @@ int iterate(Outputfile *output, /**< Output file data */
 #endif
     }
 #ifdef USE_MPI
-    if (config->with_dynamic_ch4)
+    if (config->with_dynamic_ch4==DYNAMIC_CH4)
       MPI_Bcast(&pch4, sizeof(Real), MPI_BYTE, 0, config->comm);
 #endif
 #if defined IMAGE && defined COUPLED

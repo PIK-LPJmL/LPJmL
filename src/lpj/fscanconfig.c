@@ -216,6 +216,7 @@ Bool fscanconfig(Config *config,    /**< LPJ configuration */
   char *laimax_manage[]={"laimax_cft","laimax_const","laimax_par"};
   char *fdi[]={"nesterov","wvpd"};
   char *nitrogen[]={"lim","unlim"};
+  char *methane[]={"fixed","prescribed","dynamic"};
   char *tillage[]={"no","all","read"};
   char *residue_treatment[]={"no_residue_remove","fixed_residue_remove","read_residue_data"};
   Bool def[N_IN];
@@ -334,8 +335,13 @@ Bool fscanconfig(Config *config,    /**< LPJ configuration */
   config->johansen = TRUE;
   if(fscanbool(file,&config->johansen,"johansen",!config->pedantic,verbose))
     return TRUE;
-  fscanbool2(file, &config->with_dynamic_ch4, "dynamic_CH4");
+  if(fscankeywords(file,&config->with_dynamic_ch4,"methane",methane,3,FALSE,verbose))
+    return TRUE;
   fscanbool2(file, &config->isanomaly, "anomaly");
+  if(config->isanomaly)
+  {
+    fscanint2(file,&config->time_shift,"time_shift");
+  }
   if(config->isanomaly && config->with_radiation!=RADIATION)
   {
     if(isroot(*config))
@@ -956,7 +962,7 @@ Bool fscanconfig(Config *config,    /**< LPJ configuration */
       fprintf(stderr,"ERROR209: Cannot read filename for CO2 input.\n");
     return TRUE;
   }
-  if (!config->with_dynamic_ch4)
+  if (config->with_dynamic_ch4==PRESCRIBED_CH4)
   {
     if (readclimatefilename(input, &config->ch4_filename, "ch4",def,TRUE,TRUE,TRUE,config))
     {

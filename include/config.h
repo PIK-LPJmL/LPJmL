@@ -203,9 +203,10 @@ struct config
   float missing_value;    /**< Missing value in NetCDF files */
   Variable *outnames;
   Bool isanomaly;
+  int time_shift;
   int delta_year;
   Bool with_glacier;
-  Bool with_dynamic_ch4;
+  int  with_dynamic_ch4;
 #ifdef USE_MPI
   MPI_Comm comm; /**< MPI communicator */
   int offset;

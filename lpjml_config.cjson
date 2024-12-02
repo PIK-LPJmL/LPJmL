@@ -63,8 +63,8 @@
   "extflow" : false,        /* enable discharge inflow for regional runs (requires extflow_filename) */
   "groundwater_irrigation" : true, /* enable groundwater use for irrigation */
   "permafrost" : true,      /* enable permafrost */
-  "dynamic_CH4" : false,
   "anomaly" : false,
+  "time_shift" : 2000,      /* CLIMBER's year zero= year 2000 */
   "johansen" : true,        /* enable johansen way of temp. conductivity in soils (see src/soil/soilconduct.c) */
   "soilpar_option" : "no_fixed_soilpar", /* calculation of soil parameters, options "no_fixed_soilpar", "fixed_soilpar", "prescribed_soilpar" */
   "soilpar_fixyear" : 1900, /* year to fix soilpars for soilpar_option fixed_soilpar */
@@ -86,6 +86,7 @@
   "fix_co2" : false,                     /* fix atmospheric CO2  after specfied year */
   "fix_co2_year" : 1901,                 /* year after CO2 is fixed */
 #ifdef FROM_RESTART
+  "methane" : "prescribed",
   "new_seed" : false,       /* read random seed from restart file */
   "population" : false,     /* use population input (for spitfire) */
   "landuse" : "yes",        /* landuse setting; options: "no", "yes", "const", "all_crops", "only_crops" */
@@ -94,6 +95,7 @@
   "wateruse" : "all",       /* HIL water withdrawals and return flows, requires wateruse input, options: "no", "yes" (only for years prescribed in input), "all" (use first year for years before and last year of input for years after period prescibed in input file) */
   "equilsoil" : false,      /* enables soil equilibration  (natural vegetation spinup) */
 #else
+  "methane" : "fixed",
   "equilsoil" : true,       /* enables soil equilibration  (natural vegetation spinup) */
   "population" : false,     /* use population input (for spitfire) */
   "landuse" : "no",         /* landuse setting; options: "no", "yes", "const", "all_crops", "only_crops" */

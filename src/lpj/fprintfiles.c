@@ -111,7 +111,7 @@ void fprintfiles(FILE *file,          /**< pointer to text output file */
     fprintfilename(file,&config->cloud_filename,TRUE);
   fprintfilename(file,&config->hydrotopes_filename,FALSE);
   fprintf(file,"%s\n",config->co2_filename.name);
-  if (config->with_dynamic_ch4)
+  if (config->with_dynamic_ch4==PRESCRIBED_CH4)
     fprintf(file,"%s\n",config->ch4_filename.name);
   if(!config->unlim_nitrogen && !config->no_ndeposition)
   {
