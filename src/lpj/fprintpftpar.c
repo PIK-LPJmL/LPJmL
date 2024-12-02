@@ -26,8 +26,10 @@ void fprintpftpar(FILE *file,           /**< pointer to text file */
   fprintf(file,"Id:\t\t%d\n"
                "Name:\t\t%s\n"
                "Type:\t\t%s\n"
+               "Preatland:\t%s\n"
                "Cult. type:\t%s\n",
-          pftpar->id,pftpar->name,config->pfttypes[pftpar->type],cultivation_type[pftpar->cultivation_type]);
+          pftpar->id,pftpar->name,config->pfttypes[pftpar->type],
+          bool2str(pftpar->peatland),cultivation_type[pftpar->cultivation_type]);
   fprintf(file,"rootdist:\t");
   for(i=0;i<LASTLAYER;i++)
     fprintf(file,"%g ",pftpar->rootdist[i]);
@@ -71,6 +73,8 @@ void fprintpftpar(FILE *file,           /**< pointer to text file */
                "k_litter10:\t%g %g (1/yr)\n"
                "k_litter10_q10_wood:\t%g\n"
                "soc_k:\t\t%g\n"
+               "inun_thres:\t%g (m)\n"
+               "inun_dur:\t%g (day)\n"
                "fuel bulk dens.:\t%g (kg/m3)\n"
                "wind damp.:\t%g\n"
                "roughness length:\t%g\n"
@@ -89,7 +93,8 @@ void fprintpftpar(FILE *file,           /**< pointer to text file */
           pftpar->temp_photos.high,pftpar->b,pftpar->temp.low,pftpar->temp.high,
           pftpar->aprec_min,pftpar->k_litter10.leaf*NDAYYEAR,
           pftpar->k_litter10.wood*NDAYYEAR,pftpar->k_litter10.q10_wood,
-          pftpar->soc_k,pftpar->fuelbulkdensity,pftpar->windspeed,pftpar->roughness,
+          pftpar->soc_k,pftpar->inun_thres,pftpar->inun_dur,
+          pftpar->fuelbulkdensity,pftpar->windspeed,pftpar->roughness,
           pftpar->emissionfactor.co2,
           pftpar->emissionfactor.co,pftpar->emissionfactor.ch4,
           pftpar->emissionfactor.voc,pftpar->emissionfactor.tpm,
