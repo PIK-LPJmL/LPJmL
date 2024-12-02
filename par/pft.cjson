@@ -2031,7 +2031,7 @@
       "reprod_cost" : REPROD_COST, /* reproduction cost */
       "allom1" : 100,         /* allometry */
       "allom2" : 20,
-      "allom3" : 0.4,
+      "allom3" : 4.0,
       "allom4" : ALLOM4,
       "k_latosa" : K_LATOSA,
       "wood_density" : WOOD_DENSITY, /* wood density in gC/m3 */
