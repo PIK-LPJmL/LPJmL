@@ -94,7 +94,8 @@ void freeconfig(Config *config /**< LPJmL configuration */
   else
     freefilename(&config->cloud_filename);
   freefilename(&config->co2_filename);
-  freefilename(&config->ch4_filename);
+  if (config->with_dynamic_ch4==PRESCRIBED_CH4)
+    freefilename(&config->ch4_filename);
   if(config->wet_filename.name!=NULL)
     freefilename(&config->wet_filename);
   for(i=0;i<config->n_out;i++)
