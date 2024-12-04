@@ -45,6 +45,7 @@ void calc_nir(Stand *stand,        /**< pointer to non-natural stand */
     if(pft->par->id==config->rice_pft)
     {
       demand=satwater(&stand->soil)-rootwater(&stand->soil);
+      soildepth_irrig=SOILDEPTH_IRRIG;
       nir=demand;
       dist=0;
       l=0;
