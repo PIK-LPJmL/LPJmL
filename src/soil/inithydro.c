@@ -67,8 +67,7 @@ Bool inithydro(Cell *grid,    /**< LPJ grid */
       fclose(hydrofile);
       return TRUE;
     }
-    grid[cell].hydrotopes.skip_cell = TRUE;
-    if (grid[cell].coord.lat > hydropar.lat_min)
+    if (grid[cell].coord.lat > hydropar.lat_min && grid[cell].hydrotopes.skip_cell)
     {
       grid[cell].hydrotopes.cti_mean = (float)ctidata_in[0] / header.scalar;
       if (grid[cell].hydrotopes.cti_mean > hydropar.cti_thres)
