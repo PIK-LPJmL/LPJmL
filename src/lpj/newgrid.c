@@ -547,6 +547,6 @@ Cell *newgrid(Config *config,          /**< Pointer to LPJ configuration */
      return NULL;
   }
   if(inithydro(grid,config))
-      return NULL;
+    return NULL;
   return grid;
 } /* of 'newgrid' */

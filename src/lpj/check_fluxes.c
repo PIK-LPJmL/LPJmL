@@ -15,7 +15,6 @@
 /**************************************************************************************/
 
 #include "lpj.h"
-#define NO_FAIL_BALANCE
 
 void check_fluxes(Cell *cell,          /**< cell pointer */
                   int year,            /**< simulation year (AD) */
@@ -146,7 +145,7 @@ void check_fluxes(Cell *cell,          /**< cell pointer */
 #ifdef NO_FAIL_BALANCE
     fprintf(stderr,"ERROR037: "
 #else
-    fail(NVALID_NITROGEN_BALANCE_ERR,FAIL_ON_BALANCE,FALSE,
+    fail(INVALID_NITROGEN_BALANCE_ERR,FAIL_ON_BALANCE,FALSE,
 #endif
       "N-balance on y %d c %d (%0.2f/%0.2f) BALANCE_N-error %.10f n_influx %g n_outflux %g n_harvest %g n_biomass_yield %g n_estab %g n_defor_emis %g n_product_turnover %g delta_tot=%g total nitrogen=%g timber.harvest: %g "
       "estab_storage grass [0] = %g estab_storage grass [1] = %g  estab_storage tree [0] = %g estab_storage tree [1]= %g neg_fluxes= %g totalfrac: %.5f\n",

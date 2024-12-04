@@ -18,7 +18,7 @@
 
 Bool readtracegas(Tracedata *trace,         /**< pointer to trace gas data */
                   const Filename *filename, /**< file name */
-                  const Config *config      /**< LPJmL configuration */
+                  Config *config            /**< LPJmL configuration */
                  )                          /** \return TRUE on error */
 {
   FILE *file;
@@ -68,7 +68,7 @@ Bool readtracegas(Tracedata *trace,         /**< pointer to trace gas data */
     if(ffscanint(file,&yr,"year",verbose) || ffscanreal(file,trace->data,"trace",verbose))
     {
       if(verbose)
-        fprintf(stderr,"ERROR129: Cannot read CO2 data in first line of '%s'.\n",
+        fprintf(stderr,"ERROR129: Cannot read tracegas data in first line of '%s'.\n",
                 filename->name);
       free(trace->data);
       fclose(file);
@@ -111,6 +111,38 @@ Bool readtracegas(Tracedata *trace,         /**< pointer to trace gas data */
       yr_old=yr;
     }
     fclose(file);
+    if(config->fix_co2 && trace->firstyear+trace->nyear-1<min(config->lastyear,config->fix_co2_year))
+    {
+      if(config->firstyear>trace->firstyear+trace->nyear-1)
+      {
+        if(verbose)
+          fprintf(stderr,"ERROR259: Last year=%d in tracegas data '%s' less than first simulation year %d.\n",
+                  trace->firstyear+trace->nyear-1,filename->name,config->firstyear);
+        return TRUE;
+      }
+      if(verbose)
+        fprintf(stderr,"ERROR260: Last year=%d in tracegas data '%s' less than tracegas fix year %d, last year set to %d.\n",
+                trace->firstyear+trace->nyear-1,filename->name,min(config->lastyear,config->fix_co2_year),trace->firstyear+trace->nyear-1);
+      if(config->pedantic)
+        return TRUE;
+      config->lastyear=trace->firstyear+trace->nyear-1;
+    }
+    if(!config->fix_co2 && trace->firstyear+trace->nyear-1<config->lastyear)
+    {
+      if(config->firstyear>trace->firstyear+trace->nyear-1)
+      {
+        if(verbose)
+          fprintf(stderr,"ERROR259: Last year=%d in tracegas data '%s' less than first simulation year %d.\n",
+                  trace->firstyear+trace->nyear-1,filename->name,config->firstyear);
+        return TRUE;
+      }
+      if(verbose)
+        fprintf(stderr,"ERROR260: Last year=%d in tracegas data '%s' less than last simulation year %d, last year set to %d.\n",
+                trace->firstyear+trace->nyear-1,filename->name,config->lastyear,trace->firstyear+trace->nyear-1);
+      if(config->pedantic)
+        return TRUE;
+      config->lastyear=trace->firstyear+trace->nyear-1;
+    }
   }
   else if(filename->fmt==SOCK && config->start_coupling>config->firstyear-config->nspinup)
   {

@@ -339,14 +339,29 @@ void fprintconfig(FILE *file,          /**< File pointer to text output file */
   if (config->with_dynamic_ch4==PRESCRIBED_CH4)
     len=printsim(file,len,&count,"prescribed CH4");
   else if (config->with_dynamic_ch4==FIXED_CH4)
-    len=printsim(file,len,&count,"fixed CH4");
+  {
+    len=fputstring(file,len,", ",78);
+    count++;
+    snprintf(s,STRING_LEN,"fixed CH4 to %g ppb",param.pch4);
+    len=fputstring(file,len,s,78);
+  }
   else
     len=printsim(file,len,&count,"dynamic CH4");
   len=printsim(file,len,&count,(config->unlim_nitrogen) ? "unlimited nitrogen" : "nitrogen limitation");
   if(config->permafrost)
     len=printsim(file,len,&count,"permafrost");
   if (config->isanomaly)
-    len=printsim(file,len,&count,"anomalies");
+  {
+    if(config->time_shift==0)
+      len=printsim(file,len,&count,"anomalies");
+    else
+    {
+      len=fputstring(file,len,", ",78);
+      count++;
+      snprintf(s,STRING_LEN,"with time shifted by %d yrs",config->time_shift);
+      len=fputstring(file,len,s,78);
+    }
+  }
 #ifdef COUPLING_WITH_FMS
   if(!config->nitrogen_coupled)
     len=printsim(file,len,&count,"water and nitrogen limitations uncoupled");

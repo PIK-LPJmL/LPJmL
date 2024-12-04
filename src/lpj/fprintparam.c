@@ -31,7 +31,7 @@ void fprintparam(FILE *file,    /**< pointer to text file */
                "evap soildepth:\t%g (mm)\n"
                "soil infil:\t%g\n"
                "soil infil litt:\t%g\n"
-               "pCH4:\t%g (ppb)\n"
+               "pCH4:\t\t%g (ppb)\n"
                "k:\t\t%g (1/yr)\n"
                "theta:\t\t%g\n"
                "alphac3:\t%g\n"

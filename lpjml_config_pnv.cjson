@@ -55,11 +55,10 @@
   "with_lakes" : true,      /* enable lakes (true/false) */
   "river_routing" : true,   /* enable river routing (requires input matching grid and lakes/reservoirs) */
   "extflow" : false,        /* enable discharge inflow for regional runs (requires extflow_filename) */
-  "groundwater_irrig" : true, /* enable groundwater use for irrigation */
+  "groundwater_irrigation" : true, /* enable groundwater use for irrigation */
   "permafrost" : true,      /* enable permafrost */
-  "dynamic_CH4" : false,
   "anomaly" : false,
-  "johansen" : true,        /* enable johansen way of temp. conductivity in soils (see src/soil/soilconduct.c) */
+  "johansen" : true,        /* enable johansen way of temp. oonductivity in soils (see src/soil/soilconduct.c) */
   "soilpar_option" : "no_fixed_soilpar", /* calculation of soil parameters, options "no_fixed_soilpar", "fixed_soilpar", "prescribed_soilpar" */
   "soilpar_fixyear" : 1900, /* year to fix soilpars for soilpar_option fixed_soilpar */
   "with_nitrogen" : "lim",  /* options: "lim", "unlim" */
@@ -80,6 +79,7 @@
   "fix_co2" : false,                     /* fix atmospheric CO2  after specfied year */
   "fix_co2_year" : 1901,                 /* year after CO2 is fixed */
 #ifdef FROM_RESTART
+  "methane" : "prescribed", /* methane fixed, other values: "fixed", "prescribed", "dynamic" */
   "new_seed" : false,       /* read random seed from restart file */
   "population" : false,     /* use population input (for spitfire) */
   "landuse" : "no",        /* landuse setting; options: "no", "yes", "const", "all_crops", "only_crops" */
@@ -88,6 +88,7 @@
   "wateruse" : "no",       /* HIL water withdrawals and return flows, requires wateruse input, options: "no", "yes" (only for years prescribed in input), "all" (use first year for years before and last year of input for years after period prescibed in input file) */
   "equilsoil" : false,      /* enables soil equilibration  (natural vegetation spinup) */
 #else
+  "methane" : "fixed",      /* methane value prescribed, other values: "fixed", "prescribed", "dynamic" */
   "equilsoil" : true,       /* enables soil equilibration  (natural vegetation spinup) */
   "population" : false,     /* use population input (for spitfire) */
   "landuse" : "no",         /* landuse setting; options: "no", "yes", "const", "all_crops", "only_crops" */
