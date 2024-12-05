@@ -67,24 +67,18 @@ Bool inithydro(Cell *grid,    /**< LPJ grid */
       fclose(hydrofile);
       return TRUE;
     }
-    if(!grid[cell].hydrotopes.skip_cell)
+    grid[cell].hydrotopes.skip_cell = TRUE;
+    grid[cell].hydrotopes.cti_mean = (float)ctidata_in[0] / header.scalar;
+    if (grid[cell].hydrotopes.cti_mean > config->hydropar.cti_thres)
     {
-      grid[cell].hydrotopes.skip_cell = TRUE;
-      if (grid[cell].coord.lat > config->hydropar.lat_min)
+      grid[cell].hydrotopes.cti_chi = ((float)ctidata_in[1] / header.scalar*(float)ctidata_in[2] / header.scalar) / 2;
+      if (grid[cell].hydrotopes.cti_chi > 0.)
       {
-        grid[cell].hydrotopes.cti_mean = (float)ctidata_in[0] / header.scalar;
-        if (grid[cell].hydrotopes.cti_mean > config->hydropar.cti_thres)
-        {
-          grid[cell].hydrotopes.cti_chi = ((float)ctidata_in[1] / header.scalar*(float)ctidata_in[2] / header.scalar) / 2;
-          if (grid[cell].hydrotopes.cti_chi > 0.)
-          {
-            grid[cell].hydrotopes.cti_phi = ((float)ctidata_in[1] / header.scalar*(float)ctidata_in[1] / header.scalar) / (grid[cell].hydrotopes.cti_chi*grid[cell].hydrotopes.cti_chi);
-            if (grid[cell].hydrotopes.cti_phi > 100.)
-              grid[cell].hydrotopes.cti_phi = 100.;
-            grid[cell].hydrotopes.cti_mu = (float)ctidata_in[0] / header.scalar - (grid[cell].hydrotopes.cti_phi*grid[cell].hydrotopes.cti_chi);
-            grid[cell].hydrotopes.skip_cell = FALSE;
-          }
-        }
+        grid[cell].hydrotopes.cti_phi = ((float)ctidata_in[1] / header.scalar*(float)ctidata_in[1] / header.scalar) / (grid[cell].hydrotopes.cti_chi*grid[cell].hydrotopes.cti_chi);
+        if (grid[cell].hydrotopes.cti_phi > 100.)
+          grid[cell].hydrotopes.cti_phi = 100.;
+        grid[cell].hydrotopes.cti_mu = (float)ctidata_in[0] / header.scalar - (grid[cell].hydrotopes.cti_phi*grid[cell].hydrotopes.cti_chi);
+        grid[cell].hydrotopes.skip_cell = FALSE;
       }
     }
   }

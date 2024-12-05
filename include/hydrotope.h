@@ -40,7 +40,6 @@ typedef struct
 {
   Real wland_min;
   Real cti_max;
-  Real lat_min;
   Real wtab_thres;
   Real cti_thres;
 } Hydropar;

@@ -15,7 +15,6 @@
   {
     "wland_min" : 0.5,  /* wland_min */
     "cti_max" : 12.0,   /* maximum compound topographic index (cti_max)*/
-    "lat_min" : -80.0,  /* lat_min */
     "wtab_thres" : 0.1, /* wtab_thres */
     "cti_thres" :  5.5  /* cti_thres */
   }

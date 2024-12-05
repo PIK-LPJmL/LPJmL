@@ -18,7 +18,6 @@
 
 Bool fwritehydrotope(FILE *file,const  Hydrotope *hydrotopes)
 {
-  fwrite(&hydrotopes->skip_cell, sizeof(Bool), 1, file);
   fwrite(&hydrotopes->wtable_mean, sizeof(Real), 1, file);
   fwrite(&hydrotopes->wtable_min, sizeof(Real), 1, file);
   fwrite(&hydrotopes->wtable_max, sizeof(Real), 1, file);

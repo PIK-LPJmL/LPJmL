@@ -31,7 +31,6 @@ Bool fscanhydropar(LPJfile *file,      /**< file pointer */
     return TRUE;
   fscanhydroreal(verb,f,&hydropar->wland_min,"wland_min");
   fscanhydroreal(verb,f,&hydropar->cti_max,"cti_max");
-  fscanhydroreal(verb,f,&hydropar->lat_min,"lat_min");
   fscanhydroreal(verb,f,&hydropar->wtab_thres,"wtab_thres");
   fscanhydroreal(verb,f,&hydropar->cti_thres,"cti_thres");
   return FALSE;

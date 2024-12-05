@@ -118,7 +118,6 @@ void update_wetland(Cell *cell,          /**< pointer to cell */
     else
     {
       p_max = 0.;
-      cell->hydrotopes.skip_cell = TRUE;
     }
 
     //p_min_max = gammp(cell->hydrotopes.cti_phi,((cti_min_max - cell->hydrotopes.cti_mu) / cell->hydrotopes.cti_chi));

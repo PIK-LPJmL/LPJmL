@@ -22,9 +22,8 @@ void fprinthydropar(FILE *file,              /**< pointer to text file */
 {
   fprintf(file, "wland_min:\t%g\n"
           "cti_max:\t%g\n"
-          "lat_min:\t%g\n"
           "wtab_thres:\t%g\n"
           "cti_thres:\t%g\n",
-          hydropar->wland_min, hydropar->cti_max, hydropar->lat_min,
+          hydropar->wland_min, hydropar->cti_max,
           hydropar->wtab_thres, hydropar->cti_thres);
 } /* of 'fprinthydropar' */
