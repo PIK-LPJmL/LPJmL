@@ -216,7 +216,7 @@ void deforest(Cell *cell,          /**< pointer to cell */
       }
     }
 #endif
-   fprintf(stderr,"WARNING: No natural stand or wetland for deforest in (%s), difffrac= %g iswetland: %d  \n",sprintcoord(line,&cell->coord),difffrac, iswetland);
+   fprintf(stderr,"WARNING041: No natural stand or wetland for deforest in (%s), difffrac= %g iswetland: %d  \n",sprintcoord(line,&cell->coord),difffrac, iswetland);
 #ifdef DEBUG3
     for(j=0;j<ncft;j++)
       fprintf(stderr,"landfrac_rainfed: %g landfrac_irr: %g\n", cell->ml.landfrac[0].crop[j],cell->ml.landfrac[1].crop[j]);

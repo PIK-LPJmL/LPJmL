@@ -25,7 +25,7 @@ void update_wetland(Cell *cell,          /**< pointer to cell */
                     int ncft,            /**< number of crop PFTs */
                     int year,            /**< simulation year */
                     const Config *config /**< LPJmL configuration */
-)
+                   )
 {
   Stand *stand;
   Pft *pft, *wetpft, *pft_save;

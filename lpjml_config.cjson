@@ -107,12 +107,12 @@
   "prescribe_landcover" : "no_landcover", /* prescribe natural veg composition, options: "no_landcover", "landcoverfpc" (FPC), "landcoverest" (establishment) */
   "sowing_date_option" : "prescribed_sdate",   /* options: "no_fixed_sdate","fixed_sdate","prescribed_sdate","prescribed_all_rainfed_sdate","prescribed_all_irrig_sdate" */
   "sdate_fixyear" : 1970,               /* year in which sowing dates shall be fixed, when using fixed_sdate */
-  "intercrop" : true,                  /* enables intercrops on setaside */
+  "intercrop" : true,                   /* enables intercrops on setaside */
   "residue_treatment" : "read_residue_data", /* residue options: "read_residue_data" (requires input dataset on fraction to remain on field), "no_residue_remove" (all non-harvested plant components to litter), "fixed_residue_remove" (fraction of non-harvested above ground biomass to remain in soil according to param residues_in_soil) */
   "residues_fire" : false,              /* enables burning of residuals on cropland - non-functional? */
   "irrigation" : "lim",                 /* options: "no", "lim", "pot", "all" */
-  "laimax_manage" : "laimax_par",       /* laimax settings, options:  "laimax_par" (values from pft.cjson), "laimax_cft" (values from manage_irrig_*.cjson), "const_lai_max" (constant values set in flag laimax), "laimax_interpolate" (interpolates laimin and laimax based on values from pft.cjson - non-functional?) */
-  "laimax" : 5,                         /* maximum LAI for laimax_interpolate = "const_lai_max" */
+  "laimax_manage" : "laimax_par",       /* laimax settings, options:  "laimax_par" (values from pft.cjson), "laimax_cft" (values from manage_irrig_*.cjson), "laimax_const" (constant values set in flag laimax) */
+  "laimax" : 5,                         /* maximum LAI for laimax_manage = "laimax_const" */
   "tillage_type" : "read",              /* Options: "all" (all agr. cells tilled), "no" (no cells tilled) and "read" (tillage dataset used) */
   "no_ndeposition" : false,             /* turn off atmospheric N deposition */
   "rw_manage" : false,                  /* enable rain water management; specific parameters in lpjparam.cjson */

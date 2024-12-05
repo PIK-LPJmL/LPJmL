@@ -19,6 +19,7 @@
 Bool freadhydrotope(FILE *file, Hydrotope *hydrotopes, Bool swap)
 {
 
+  freadint(&hydrotopes->skip_cell, 1, swap, file);
   freadreal(&hydrotopes->wtable_mean, 1, swap, file);
   freadreal(&hydrotopes->wtable_min, 1, swap, file);
   freadreal(&hydrotopes->wtable_max, 1, swap, file);
