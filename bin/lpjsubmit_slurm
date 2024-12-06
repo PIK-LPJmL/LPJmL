@@ -19,7 +19,7 @@
 ##                                                                             ##
 #################################################################################
 
-USAGE="Usage: lpjsubmit [-h] [-class c] [-group g] [-wtime time] [-blocking n] [-o output] [-e error]\n[-q] [-nocheck] [-norun] [-dependency id] [-couple program] [-constraint c] [[-option a=b] ...] [-cmd exe] ntasks args ..."
+USAGE="Usage: lpjsubmit [-h] [-class c] [-group g] [-wtime time] [-blocking n] [-o output] [-e error]\n[-q] [-nocheck] [-norun] [-dependency id] [-couple program] [-constraint c] [[-option a=b] ...] [-cmd prg] ntasks args ..."
 
 class=short
 group=""
@@ -56,7 +56,7 @@ while(( "$#" )); do
 
       echo "-constraint c  define constraint c for SLURM job"
       echo "-option op=txt set option op to txt for SLURM job. This option can be repeated multiple times"
-      echo "-cmd exe       execute exe before lpjml is started"
+      echo "-cmd prg       execute program prg before lpjml is started"
       echo "-couple prg    start couple prg in the background before starting LPJmL"
       echo "ntasks         number of MPI tasks"
       echo "args           arguments and options of lpjml"
