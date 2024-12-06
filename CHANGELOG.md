@@ -21,7 +21,8 @@ of `major.minor.patch` with
 
 ### Contributors
 
-- author: Werner von Bloh (bloh@pik-potsdam.de), Sebastion Ostberh (ostberg@pik-potsdam.de)
+- author: Werner von Bloh (bloh@pik-potsdam.de), Sebastion Ostberg (ostberg@pik-potsdam.de), Christoph Müller (cmueller@pik-potsdam.de)
+- code review: Marie Hemmen (hemmen@pik-potsdam.de), Jens Heinke (heinke@pik-potsdam.de)
 
 ### Added
 
@@ -36,6 +37,7 @@ of `major.minor.patch` with
 ### Fixed
 
 - `ALLOM3` parameter corrrected to 4.0 for oil palm in `pft.cjson` (issue #369).
+- Missing `break` added in `convert_water.c`.
 
 
 ## [5.9.16] - 2024-11-15
