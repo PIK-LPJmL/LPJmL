@@ -47,7 +47,7 @@
 #define k_N 5e-3 /* Michaelis-Menten parameter k_S,1/2 (gN/m3) */
 #define S 0.2587 // saturation factor MacDougall and Knutti, 2016
 #define KOVCON (0.001*1000) //Constant of diffusion (m2a-1)
-#define WTABTHRES 300
+#define WTABTHRES 200
 
 static Real f_wfps(const Soil *soil,      /* Soil data */
                    int l                  /* soil layer */

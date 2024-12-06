@@ -61,7 +61,7 @@
   "with_lakes" : true,      /* enable lakes (true/false) */
   "river_routing" : true,   /* enable river routing (requires input matching grid and lakes/reservoirs) */
   "extflow" : false,        /* enable discharge inflow for regional runs (requires extflow_filename) */
-  "groundwater_irrigation" : true, /* enable groundwater use for irrigation */
+  "groundwater_irrig" : true, /* enable groundwater use for irrigation */
   "permafrost" : true,      /* enable permafrost */
   "anomaly" : false,
   "time_shift" : 2000,      /* CLIMBER's year zero= year 2000 */
@@ -327,12 +327,6 @@ ID                               Fmt                        filename
     { "id" : "pft_cleaf",        "file" : { "name" : "output/pft_cleaf"}},
     { "id" : "pft_nleaf",        "file" : { "name" : "output/pft_nleaf"}},
     { "id" : "pft_laimax",       "file" : { "name" : "output/pft_laimax"}},
-/*    { "id" : "pft_croot",        "file" : { "name" : "output/pft_croot"}},
-    { "id" : "pft_nroot",        "file" : { "name" : "output/pft_nroot"}},
-    { "id" : "pft_csapw",        "file" : { "name" : "output/pft_csapw"}},
-    { "id" : "pft_nsapw",        "file" : { "name" : "output/pft_nsapw"}},
-    { "id" : "pft_chawo",        "file" : { "name" : "output/pft_chawo"}},
-    { "id" : "pft_nhawo",        "file" : { "name" : "output/pft_nhawo"}},*/
     { "id" : "wtab",             "file" : { "timestep" : "annual", "name" : "output/wtab"}},
     { "id" : "mwater",           "file" : { "timestep" : "annual", "name" : "output/mwater"}},
     { "id" : "wetfrac",          "file" : { "timestep" : "annual", "name" : "output/wetfrac"}},
@@ -389,8 +383,8 @@ ID                               Fmt                        filename
     { "id" : "soilc_layer",      "file" : { "fmt" : "cdf", "timestep" : 100, "name" : "output/soilc_layer.nc"}},
     { "id" : "litc",             "file" : { "fmt" : "cdf", "timestep" : 100, "name" : "output/litc_spinup.nc"}},
     { "id" : "vegc",             "file" : { "fmt" : "cdf", "timestep" : 100, "name" : "output/vegc_spinup.nc"}},
-    { "id" : "fpc",              "file" : { "fmt" : "cdf", "timestep" : 100, "name" : "output/fpc_spinup_2.nc"}},
-    { "id" : "wpc",              "file" : { "fmt" : "cdf", "timestep" : 100, "name" : "output/wpc_spinup_2.nc"}},
+    { "id" : "fpc",              "file" : { "fmt" : "cdf", "timestep" : 100, "name" : "output/fpc_spinup.nc"}},
+    { "id" : "wpc",              "file" : { "fmt" : "cdf", "timestep" : 100, "name" : "output/wpc_spinup.nc"}},
     { "id" : "mwater",           "file" : { "fmt" : "cdf", "timestep" : 100, "name" : "output/mwater_spinup.nc"}},
     { "id" : "npp",              "file" : { "fmt" : "cdf", "timestep" : 100, "name" : "output/npp_spinup.nc"}},
     { "id" : "pft_npp",          "file" : { "fmt" : "cdf", "timestep" : 100, "name" : "output/pft_npp_spinup.nc"}},
@@ -412,7 +406,7 @@ ID                               Fmt                        filename
 
 #ifdef FROM_RESTART
 
-  "nspinup" : 600,   /* spinup years */
+  "nspinup" : 420,   /* spinup years */
   "nspinyear" : 30,  /* cycle length during spinup (yr)*/
   "firstyear": 1901, /* first year of simulation */
 #if defined CRU_MONTHLY || defined CRU_NETCDF

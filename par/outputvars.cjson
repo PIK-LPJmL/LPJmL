@@ -183,7 +183,7 @@
     { "id" : WATERUSECONS, "name": "waterusecons", "timestep" : "annual","var" :  "waterusecons", "long_name" :  "", "unit" : "m3/day", "scale" : 1.0, "offset" : 0.0},
     { "id" : WATERUSEDEM, "name": "waterusedem", "timestep" : "annual","var" :  "waterusedem", "long_name" :  "", "unit" : "m3/day", "scale" : 1.0, "offset" : 0.0},
     { "id" : FAPAR, "name": "fapar", "timestep" : "monthly", "var" :  "FPAR", "long_name" :  "fraction of absorbed PAR", "unit" : "", "scale" : 1.0, "offset" : 0.0},
-    { "id" : ALBEDO, "name": "albedo", "timestep" : "monthly", "var" :  "albedo", "long_name" :  "", "unit" : "1", "scale" : 1.0, "offset" : 0.0},
+    { "id" : ALBEDO, "name": "albedo", "timestep" : "monthly", "var" :  "albedo", "long_name" :  "", "unit" : "unitless", "scale" : 1.0, "offset" : 0.0},
     { "id" : PHEN_TMIN, "name": "phen_tmin", "timestep" : "monthly", "var" :  "phen_tmin", "long_name" :  "", "unit" : "", "scale" : 1.0, "offset" : 0.0},
     { "id" : PHEN_TMAX, "name": "phen_tmax", "timestep" : "monthly", "var" :  "phen_tmax", "long_name" :  "", "unit" : "", "scale" : 1.0, "offset" : 0.0},
     { "id" : PHEN_LIGHT, "name": "phen_light", "timestep" : "monthly", "var" :  "phen_light", "long_name" :  "", "unit" : "", "scale" : 1.0, "offset" : 0.0},
