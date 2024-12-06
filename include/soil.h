@@ -66,7 +66,7 @@
 /* assuming lambda_air=0.025 and c_air = 1300; admit_air=sqrt(lambda_air*c_air)*/
 #define admit_air 5.7009
 #define T_zero 0   /* [deg C] */
-#define maxheatsteps 100
+#define MAXHEATSTEPS 100 /* Maximum time step in gas diffusion */
 #define NSTEP_DAILY 1
 #define LAG_CONV (NDAYYEAR*0.5*M_1_PI)  /* conversion factor for oscillation
                                 lag from angular units to days (=365/(2*PI))*/

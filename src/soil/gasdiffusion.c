@@ -73,6 +73,12 @@ void gasdiffusion(Soil *soil,    /**< [inout] pointer to soil data */
         dt = 0.5*(soildepth[l] * soildepth[l] * 1e-6) / D_O2[l];
       else
         dt = 0.5*(soildepth[l] * soildepth[l-1] * 1e-6) / (0.5*(D_O2[l] + D_O2[l - 1]));
+#ifdef SAFE
+      if(isnan(dt))
+      {
+        fail(INVALID_TIMESTEP_ERR,TRUE,TRUE,"Invalid time step in gasdiffusion(), D_O2[%d]=%g",l,D_O2[l]);
+      }
+#endif
       steps = max(steps, (unsigned long)(timestep2sec(1.0, NSTEP_DAILY) / dt) + 1);
     }
     else
@@ -131,11 +137,11 @@ void gasdiffusion(Soil *soil,    /**< [inout] pointer to soil data */
           stop=FALSE;
       }
     }
-    if (stop || t == maxheatsteps)
+    if (stop || t == MAXHEATSTEPS)
       break;
-  }
-  /*********************Diffusion of methane*************************************/
+  } /* of for (t = 0; t<steps; ++t) */
 
+  /*********************Diffusion of methane*************************************/
 
   CH4_air = p_s / R_gas / degCtoK(airtemp)*pch4*1e-6*WCH4;    /*g/m3 air methane concentration*/
   CH4_upper = CH4_air;
@@ -156,6 +162,12 @@ void gasdiffusion(Soil *soil,    /**< [inout] pointer to soil data */
         dt = 0.5*(soildepth[l] * soildepth[l] * 1e-6) / D_CH4[l];
       else
         dt = 0.5*(soildepth[l] * soildepth[l-1] * 1e-6) / (0.5*(D_CH4[l] + D_CH4[l - 1]));
+#ifdef SAFE
+      if(isnan(dt))
+      {
+        fail(INVALID_TIMESTEP_ERR,TRUE,TRUE,"Invalid time step in gasdiffusion(), D_CH4[%d]=%g",l,D_CH4[l]);
+      }
+#endif
       steps = max(steps, (unsigned long)(timestep2sec(1.0, NSTEP_DAILY) / dt) + 1);
     }
     else
@@ -220,9 +232,9 @@ void gasdiffusion(Soil *soil,    /**< [inout] pointer to soil data */
           stop=FALSE;
       }
     }
-    if (stop || t == maxheatsteps)
+    if (stop || t == MAXHEATSTEPS)
       break;
-  }
+  } /* of for (t = 0; t<steps; ++t) */
   end = soilmethane(soil); //do not multiply by *WC/WCH4, is used for methane fluxes here
 #ifdef SAFE
   if (soil->w[l]< -epsilon || soil->w_fw[l]< -epsilon )
