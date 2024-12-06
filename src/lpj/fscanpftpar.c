@@ -159,6 +159,7 @@ Bool fscanpftpar(LPJfile *file,       /**< pointer to LPJ file */
   for(n=0;n<count;n++)
     config->pftpar[n].id=UNDEF;
   isbiomass=isagtree=iscrop=iswp=FALSE;
+  config->rice_pft=NOT_FOUND;
   npft=0;
   for(n=0;n<count;n++)
   {
@@ -441,6 +442,13 @@ Bool fscanpftpar(LPJfile *file,       /**< pointer to LPJ file */
     if(scanfcn[pft->type].fcn(item,pft,config))
       return TRUE;
     npft++;
+  }
+  if(config->withlanduse && config->rice_pft==NOT_FOUND)
+  {
+    if(verb)
+      fprintf(stderr,"WARNING043: No rice CFT found in PFT parameter array.\n");
+    if(config->pedantic)
+      return TRUE;
   }
   return FALSE;
 } /* of 'fscanpftpar' */
