@@ -3,7 +3,7 @@
 lpjsubmit \- Submit parallel SLURM/LoadLeveler job for LPJmL simulations
 .SH SYNOPSIS
 .B lpjsubmit
-[\-h] [\-class c] [\-group g] [\-wtime time] [\-blocking n] [\-o output] [\-e error] [\-q] [\-nocheck] [\-norun] [\-dependency id] [-couple program] [-constraint c][[-option op=text] ...]  [-cmd exe] ntasks args ...
+[\-h] [\-class c] [\-group g] [\-wtime time] [\-blocking n] [\-o output] [\-e error] [\-q] [\-nocheck] [\-norun] [\-dependency id] [-couple program] [-constraint c][[-option op=text] ...]  [-cmd prg] ntasks args ...
 .SH DESCRIPTION
 Script creates SLURM/LoadLeveler job control file \fIjob.jcf\fP and submits the job to the SLURM/LoadLeveler queue via
 .B
@@ -58,8 +58,8 @@ Define constraint c for slurm job.
 \-option op=test
 Set option op to test for slurm job. This option can be repeated multiple times.
 .TP
-\-cmd exe
-Execute program exe before lpjml is called.
+\-cmd prg
+Execute program prg before lpjml is called.
 .TP
 \-couple program
 Start couple program in the background before starting LPJmL.
