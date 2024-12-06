@@ -42,6 +42,9 @@ void check_balance(Flux flux,           /**< global carbon and water fluxes */
     fail(GLOBAL_WATER_BALANCE_ERR,FAIL_ON_BALANCE,FALSE,
 #endif
          "Global water balance not closed in year %d: diff=%.5g(%.5g), prec=%.5g, wd_unsustainable=%.5g, vapour_flux=%.5g, discharge=%.5g, delta_storage=%.5g, excess_water=%.5g"
+#ifdef NO_FAIL_BALANCE
+         ".\n"
+#endif
          ,year,balance*flux.area,balance,flux.prec,flux.wd_unsustainable,
          (flux.evap+flux.transp+flux.interc+flux.evap_lake+flux.evap_res+flux.conv_loss_evap),
          flux.discharge,(flux.delta_surface_storage+flux.delta_soil_storage),flux.excess_water);
