@@ -19,12 +19,19 @@ of `major.minor.patch` with
 
 ## [Unreleased]
 
+### Contributors
+
 - author: Werner von Bloh (bloh@pik-potsdam.de)
+
+### Added
+
+- Check for correct number of time steps added in `openclimate_netcdf.c`.
 
 ### Changed
 
 - Function `freegrid()` is calling `freecell()` to avoid redundant code.
 - References in man pages updated.
+- `-v` option of `cdf2clm` prints leap days setting for daily time step.
 
 ### Fixed
 

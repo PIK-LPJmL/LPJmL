@@ -611,7 +611,10 @@ int main(int argc,char **argv)
       }
       if(verbose)
       {
-        printf(" time step from %d",climate.firstyear);
+        printf(" time step");
+        if(climate.isleap && climate.time_step==DAY)
+          printf(" with leap days");
+        printf(" from %d",climate.firstyear);
         if(climate.slope!=1 || climate.intercept!=0)
           printf(", convert by %g*data%+g\n",climate.slope,climate.intercept);
         else
