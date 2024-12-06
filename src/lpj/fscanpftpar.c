@@ -176,7 +176,6 @@ Bool fscanpftpar(LPJfile *file,       /**< pointer to LPJ file */
       return TRUE;
     }
 
-    fscanpftbool(verb,item,&pft->peatland,pft->name,"peatland_pft");
     /* Read pft->type, defined in pftpar.h */
     if(fscankeywords(item,&pft->cultivation_type,"cultivation_type",cultivation_type,5,FALSE,verb))
     {
@@ -191,6 +190,7 @@ Bool fscanpftpar(LPJfile *file,       /**< pointer to LPJ file */
     }
     pft->name=strdup(s); /* store PFT name */
     checkptr(pft->name);
+    fscanpftbool(verb,item,&pft->peatland,pft->name,"peatland_pft");
     if(fscankeywords(item,&pft->type,"type",config->pfttypes,config->ntypes,FALSE,verb))
     {
       if(verb)
