@@ -19,6 +19,9 @@ of `major.minor.patch` with
 
 ## [Unreleased]
 
+
+## [5.9.17] - 2024-12-06
+
 ### Contributors
 
 - author: Werner von Bloh (bloh@pik-potsdam.de), Sebastion Ostberg (ostberg@pik-potsdam.de), Christoph Müller (cmueller@pik-potsdam.de)
