@@ -100,6 +100,7 @@ typedef struct
   Real temp;               /**< air temperature (celsius) */
   Real nat_fluxes;         //at the moment only
   Real gw_withdrawal;
+  Real ricefrac;
 } Balance;
 
 typedef struct celldata *Celldata;

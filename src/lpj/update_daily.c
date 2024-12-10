@@ -221,7 +221,7 @@ void update_daily(Cell *cell,            /**< cell pointer           */
       {
         if(pft->par->id==config->rice_pft || stand->soil.iswetland)
         {
-          getoutput(&stand->cell->output,CH4_RICE_EM,config)+=CH4_em;
+          getoutput(&stand->cell->output,CH4_RICE_EM,config)+=CH4_em*stand->frac/cell->balance.ricefrac;
           stand->cell->balance.aCH4_rice+=CH4_em*stand->frac;
         }
         else
@@ -249,7 +249,7 @@ void update_daily(Cell *cell,            /**< cell pointer           */
       {
         if(pft->par->id==config->rice_pft || stand->soil.iswetland)
         {
-          getoutput(&stand->cell->output,CH4_RICE_EM,config)+=ebul;
+          getoutput(&stand->cell->output,CH4_RICE_EM,config)+=ebul*stand->frac/cell->balance.ricefrac;
           stand->cell->balance.aCH4_rice+=ebul*stand->frac;
         }
         else
@@ -298,7 +298,7 @@ void update_daily(Cell *cell,            /**< cell pointer           */
       {
         if(pft->par->id==config->rice_pft || stand->soil.iswetland)
         {
-          getoutput(&stand->cell->output,CH4_RICE_EM,config)+=CH4_em;
+          getoutput(&stand->cell->output,CH4_RICE_EM,config)+=CH4_em*stand->frac/cell->balance.ricefrac;
           stand->cell->balance.aCH4_rice+=CH4_em*stand->frac;
         }
         else
@@ -533,7 +533,7 @@ void update_daily(Cell *cell,            /**< cell pointer           */
     cell->discharge.dmass_gw-=gw_outflux*cell->coord.area;
     cell->discharge.drunoff+=gw_outflux;
     getoutput(&cell->output,GW_OUTFLUX,config) += gw_outflux;
-    gw_outflux=cell->ground_st_am*GWCOEFF/100;     //*cell->kbf/100;
+    gw_outflux=cell->ground_st_am*cell->kbf/100;     //*cell->kbf/100;
     cell->ground_st_am -= gw_outflux;
     cell->discharge.dmass_gw-=gw_outflux*cell->coord.area;
     cell->discharge.drunoff+=gw_outflux;

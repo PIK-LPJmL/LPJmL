@@ -112,6 +112,7 @@ Stocks cultivate(Cell *cell,           /**< cell pointer */
     cropstand->slope_mean=0;
     cropstand->Hag_Beta=min(1,(0.09*log(cropstand->slope_mean+0.1)+0.22)/0.43);
     cropstand->soil.iswetland=TRUE;
+    cell->balance.ricefrac+=cropstand->frac;
  }
   pft=addpft(cropstand,config->pftpar+npft+cft,year,day,config);
   phen_variety(pft,vern_date20,cell->coord.lat,day,wtype,npft,ncft,config);

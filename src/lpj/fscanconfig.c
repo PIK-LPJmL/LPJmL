@@ -326,7 +326,7 @@ Bool fscanconfig(Config *config,    /**< LPJ configuration */
   }
   config->reservoir=FALSE;
   config->groundwater_irrig = TRUE;
-  fscanbool(file,&config->groundwater_irrig,"groundwater_irrigation", !config->pedantic,verbose);
+  fscanbool(file,&config->groundwater_irrig,"groundwater_irrig", !config->pedantic,verbose);
 
 #ifdef IMAGE
   config->aquifer_irrig = FALSE;
@@ -518,7 +518,7 @@ Bool fscanconfig(Config *config,    /**< LPJ configuration */
       {
         fscanbool2(file,&config->reservoir,"reservoir");
 #ifdef IMAGE
-        fscanbool(file,&config->groundwater_irrig,"groundwater_irrigation", !config->pedantic,verbose);
+        fscanbool(file,&config->groundwater_irrig,"groundwater_irrig", !config->pedantic,verbose);
         fscanbool(file,&config->aquifer_irrig,"aquifer_irrigation",!config->pedantic,verbose);
 #endif
       }
