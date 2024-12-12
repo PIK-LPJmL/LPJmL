@@ -21,7 +21,7 @@
 #define NPERCO 0.3  /* controls the amount of nitrate removed from the surface layer in runoff relative to the amount removed via percolation.  0.5 in Neitsch:SWAT MANUAL*/
 #define OMEGA  6    /* adjustable parameter for impedance factor*/
 #define maxWTP -500 /* max height of standing water [mm]*/
-#define MAXITER 250 /* maximum number of iterations */
+#define MAXITER 1000 /* maximum number of iterations */
 
 static int findwtlayer(const Soil *soil)
 {

@@ -319,11 +319,7 @@ void iterateyear(Outputfile *output,  /**< Output file data */
     }
     if(config->river_routing)
     {
-#ifdef IMAGE
-      grid[cell].balance.surface_storage = grid[cell].discharge.dmass_lake + grid[cell].discharge.dmass_river + grid[cell].discharge.dmass_gw+grid[cell].lateral_water;
-#else
-      grid[cell].balance.surface_storage=grid[cell].discharge.dmass_lake+grid[cell].discharge.dmass_river + grid[cell].discharge.dmass_gw+grid[cell].lateral_water;
-#endif
+      grid[cell].balance.surface_storage = grid[cell].discharge.dmass_lake + grid[cell].discharge.dmass_river + grid[cell].discharge.dmass_gw+grid[cell].lateral_water*grid[cell].coord.area;
       if(grid[cell].ml.dam)
         grid[cell].balance.surface_storage+=reservoir_surface_storage(grid[cell].ml.resdata);
     }
