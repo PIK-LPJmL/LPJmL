@@ -32,12 +32,14 @@ of `major.minor.patch` with
 - Function `freegrid()` is calling `freecell()` to avoid redundant code.
 - References in man pages updated.
 - `-v` option of `cdf2clm` prints leap days setting for daily time step.
+- Missing file `CHANGELOG.md` added to tar and zip file.
 
 ### Fixed
 
 - Memory leaks in utility `lpjprint` closed.
 - Handling of NaN as missing value corrected in reading NetCDF files.
-
+- Doubled initialization of standtype array corrected in `lpj_clinber4.c`.
+ 
 
 ## [5.9.16] - 2024-11-15
 
