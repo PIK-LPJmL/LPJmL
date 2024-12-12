@@ -87,8 +87,9 @@ typedef struct
   Real n_uptake;              /**< total N uptake by plants (gN/yr) */
   Stocks influx;              /**< total influx  (gC/yr,gN/yr) */
   Real n_outflux;             /**< total N losses (gN/yr) */
-  Real excess_water;          /**< Exess water (dm3) */
-  Real CH4_emissions;         /* Total Emissions (gCH4/yr)) positive and negative*/
+  Real excess_water;          /**< Excess water (dm3) */
+  Real MT_Water;              /**< water from methanogenis  (dm3) */
+  Real CH4_emissions;         /**< Total Emissions (gCH4/yr)) positive and negative*/
   Real CH4_sink;
   Real CH4_fire;
   Real CH4_rice;
