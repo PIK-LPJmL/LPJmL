@@ -16,11 +16,12 @@
 
 #include "lpj.h"
 
-void gasdiffusion(Soil *soil,    /**< [inout] pointer to soil data */
-                  Real airtemp,  /**< [in] air temperature (deg C) */
-                  Real pch4,     /**< [in] atmospheric CH4 (ppm) */
-                  Real *CH4_out, /**< [out] CH4 emissions (gC/m2/day) */
-                  Real *runoff   /**< [out] runoff (mm/day) */
+void gasdiffusion(Soil *soil,     /**< [inout] pointer to soil data */
+                  Real airtemp,   /**< [in] air temperature (deg C) */
+                  Real pch4,      /**< [in] atmospheric CH4 (ppm) */
+                  Real *CH4_out,  /**< [out] CH4 emissions (gC/m2/day) */
+                  Real *runoff,   /**< [out] runoff (mm/day) */
+                  Real *CH4_sink  /**< [out] CH4 soil sink (gC/m2/day) */
                  )
 {
   int l;
@@ -177,7 +178,7 @@ void gasdiffusion(Soil *soil,    /**< [inout] pointer to soil data */
   for (t = 0; t<steps; ++t)
   {
     stop=TRUE;
-    for (l = 0; l<BOTTOMLAYER; l++)
+   for (l = 0; l<BOTTOMLAYER; l++)
     {
       CH4_upper = (l == 0) ? CH4_air : soil->CH4[l - 1] / soildepth[l - 1] / epsilon_CH4[l - 1] * 1000;
 
@@ -251,6 +252,7 @@ void gasdiffusion(Soil *soil,    /**< [inout] pointer to soil data */
     fail(INVALID_CARBON_BALANCE_ERR,FAIL_ON_BALANCE,TRUE,"Invalid carbon balance in %s: gasdiff %g start:%g  end:%g gasdiff-in: %g gasdiff-out: %g",
          __FUNCTION__,start-end+out+in, start, end, in,out);
 #endif
-
+  if((start-end)<0)
+   *CH4_sink=start-end;
   *CH4_out=start-end;
 } /* of 'gasdiffusion' */

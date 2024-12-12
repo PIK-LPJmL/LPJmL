@@ -27,6 +27,7 @@ Real npp_grass(Pft *pft,               /**< PFT variables */
   Pftgrass *grass;
   const Pftgrasspar *par;
   Real npp,mresp,gresp,nc_root;
+  int l;
   grass=pft->data;
   par=pft->par->data;
   if(grass->ind.root.carbon>epsilon)
@@ -45,5 +46,11 @@ Real npp_grass(Pft *pft,               /**< PFT variables */
   npp=assim-mresp-gresp;
   pft->bm_inc.carbon+=npp;
   getoutput(&pft->stand->cell->output,RA,config)+=(mresp+gresp)*pft->stand->frac;
+  forrootsoillayer(l)
+  {
+    pft->stand->soil.O2[l]-=pft->nind*(grass->ind.root.carbon*pft->par->respcoeff*param.k*nc_root*gtemp_soil*pft->phen)*pft->par->rootdist[l];
+    if(pft->stand->soil.O2[l]<0) pft->stand->soil.O2[l]=0.0;
+  }
+
   return npp;
 } /* of 'npp_grass' */
