@@ -76,7 +76,7 @@ void update_daily(Cell *cell,            /**< cell pointer           */
   Real water_after=0;
   Real balanceW=0;
   Real wfluxes_old=cell->balance.awater_flux+cell->balance.atransp+cell->balance.aevap+cell->balance.ainterc+cell->balance.aevap_lake+cell->balance.aevap_res-cell->balance.airrig-cell->balance.aMT_water;
-  Real exess_old=cell->balance.excess_water+cell->lateral_water;
+  Real excess_old=cell->balance.excess_water+cell->lateral_water;
   Real CH4_fluxes=(cell->balance.aCH4_em+cell->balance.aCH4_sink)*WC/WCH4;
   Stocks fluxes_in,fluxes_out;
   fluxes_in.carbon=cell->balance.anpp+cell->balance.flux_estab.carbon+cell->balance.influx.carbon; //influxes
@@ -478,9 +478,9 @@ void update_daily(Cell *cell,            /**< cell pointer           */
       V = getV(&stand->soil,l);  /*soil air content (m3 air/m3 soil)*/
       soilmoist = getsoilmoist(&stand->soil,l);
       epsilon_gas = max(0.1, V + soilmoist*stand->soil.wsat[l]*BO2);
-      getoutput(&cell->output,MEANSOILO2,config) += stand->soil.O2[l] / soildepth[l] / epsilon_gas * 1000 / LASTLAYER*stand->frac;
+      getoutput(&cell->output,MEANSOILO2,config) += stand->soil.O2[l] / soildepth[l] / epsilon_gas * 1000 / LASTLAYER*stand->frac/(1-cell->lakefrac-cell->ml.reservoirfrac);
       epsilon_gas = max(0.1, V + soilmoist*stand->soil.wsat[l]*BCH4);
-      getoutput(&cell->output,MEANSOILCH4,config) += stand->soil.CH4[l] / soildepth[l] / epsilon_gas * 1000 / LASTLAYER*stand->frac;
+      getoutput(&cell->output,MEANSOILCH4,config) += stand->soil.CH4[l] / soildepth[l] / epsilon_gas * 1000 / LASTLAYER*stand->frac/(1-cell->lakefrac-cell->ml.reservoirfrac);
 #ifdef DEBUG
       if (p_s / R_gas / (climate.temp + 273.15)*ch4*1e-6*WCH4 * 100000<stand->soil.CH4[l] / soildepth[l] / epsilon_gas * 1000)
       {
@@ -680,7 +680,7 @@ void update_daily(Cell *cell,            /**< cell pointer           */
 
   balanceW=water_after-water_before-climate.prec+
           ((cell->balance.awater_flux+cell->balance.atransp+cell->balance.aevap+cell->balance.ainterc+cell->balance.aevap_lake+cell->balance.aevap_res-cell->balance.airrig-cell->balance.aMT_water)-wfluxes_old)
-          +((cell->balance.excess_water+cell->lateral_water)-exess_old);
+          +((cell->balance.excess_water+cell->lateral_water)-excess_old);
   if (fabs(end-start1.carbon-CH4_fluxes+fluxes_out.carbon-fluxes_in.carbon)>0.0001)
   {
     fprintf(stderr, "C_ERROR in %s : day: %d  %g start: %g  end: %g CH4_fluxes: %g flux_estab.carbon: %g flux_harvest.carbon: %g dcflux: %g fluxes_in.carbon: %g "
@@ -711,10 +711,10 @@ void update_daily(Cell *cell,            /**< cell pointer           */
   }
   if(fabs(balanceW)>0.1)
   {
-    fprintf(stderr,"W-BALANCE-ERROR in %s: day %d balanceW: %g  exess_old: %g balance.excess_water: %g gw_outflux: %g water_after: %g water_before: %g prec: %g melt: %g "
+    fprintf(stderr,"W-BALANCE-ERROR in %s: day %d balanceW: %g  excess_old: %g balance.excess_water: %g gw_outflux: %g water_after: %g water_before: %g prec: %g melt: %g "
         "atransp: %g  aevap %g ainterc %g aevap_lake  %g aevap_res: %g    airrig : %g aMT_water : %g MT_water: %g flux_bal: %g runoff %g awater_flux %g lateral_water %g mfin-mfout: %g dmass_lake: %g  dmassriver : %g"
         "  ground_st_am: %g ground_st: %g gw_balance: %g  groundwater: %g  irrigstore_bal: %g\n\n",
-        __FUNCTION__,day,balanceW,exess_old,cell->balance.excess_water,gw_outflux,
+        __FUNCTION__,day,balanceW,excess_old,cell->balance.excess_water,gw_outflux,
         water_after,water_before,climate.prec,melt_all,cell->balance.atransp,cell->balance.aevap,cell->balance.ainterc,cell->balance.aevap_lake,cell->balance.aevap_res,cell->balance.airrig,cell->balance.aMT_water,MT_water,
         ((cell->balance.awater_flux+cell->balance.atransp+cell->balance.aevap+cell->balance.ainterc+cell->balance.aevap_lake+cell->balance.aevap_res-cell->balance.airrig-cell->balance.aMT_water)-wfluxes_old),
         cell->discharge.drunoff,cell->balance.awater_flux,cell->lateral_water,((cell->discharge.mfout-cell->discharge.mfin)/cell->coord.area),cell->discharge.dmass_lake/cell->coord.area,cell->discharge.dmass_river/cell->coord.area,
