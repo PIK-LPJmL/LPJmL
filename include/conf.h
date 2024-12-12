@@ -85,7 +85,7 @@
 #define NO_FERTILIZER 0
 #define FERTILIZER 1
 #define AUTO_FERTILIZER 2
-#define NOUT 360
+#define NOUT 358
 /* number of output files */
 #define GRIDBASED 1         /* pft-specific outputs scaled by stand->frac */
 #define PFTBASED 0          /* pft-specific outputs not scaled by stand->frac */
@@ -427,32 +427,30 @@
 #define SDATE 331
 #define WETFRAC 332
 #define WTAB 333
-#define CTI_AREA 334
-#define CTI_VAL 335
-#define CH4_EMISSIONS 336
-#define CH4_SINK 337
-#define CH4_SETASIDE 338
-#define MT_WATER 339
-#define MEANSOILO2 340
-#define MEANSOILCH4 341
-#define CH4_EBULLITION 342
-#define CH4_PLANT_GAS 343
-#define WPC 344
-#define GW_STORAGE 345
-#define GW_OUTFLUX 346
-#define CH4_RICE_EM 347
-#define MWATER 348
-#define FLUX_ESTABN_MG 349
-#define NAPPLIED_MG 350
-#define BNF_MG 351
-#define NDEPO_MG 352
-#define LITTERTEMP 353
-#define TWS 354
-#define HARVESTC 355
-#define IRRIG 356
-#define RA 357
-#define SOILC_1m 358
-#define CH4_EMISSIONS_WET 359
+#define CH4_EMISSIONS 334
+#define CH4_SINK 335
+#define CH4_SETASIDE 336
+#define MT_WATER 337
+#define MEANSOILO2 338
+#define MEANSOILCH4 339
+#define CH4_EBULLITION 340
+#define CH4_PLANT_GAS 341
+#define WPC 342
+#define GW_STORAGE 343
+#define GW_OUTFLUX 344
+#define CH4_RICE_EM 345
+#define MWATER 346
+#define FLUX_ESTABN_MG 347
+#define NAPPLIED_MG 348
+#define BNF_MG 349
+#define NDEPO_MG 350
+#define LITTERTEMP 351
+#define TWS 352
+#define HARVESTC 353
+#define IRRIG 354
+#define RA 355
+#define SOILC_1m 356
+#define CH4_EMISSIONS_WET 357
 
 
 #define PFT_GCGP_COUNT 0
