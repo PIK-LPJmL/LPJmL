@@ -33,13 +33,14 @@ of `major.minor.patch` with
 - References in man pages updated.
 - `-v` option of `cdf2clm` prints leap days setting for daily time step.
 - Missing file `CHANGELOG.md` added to tar and zip file.
+- Longitude and latitude boundaries excluded as variables in `cdf2grud`.
 
 ### Fixed
 
 - Memory leaks in utility `lpjprint` closed.
 - Handling of NaN as missing value corrected in reading NetCDF files.
 - Doubled initialization of standtype array corrected in `lpj_clinber4.c`.
-- Option `type` corrected in `setclm`. 
+- Option `type` corrected in `setclm`.
 
 ## [5.9.16] - 2024-11-15
 
