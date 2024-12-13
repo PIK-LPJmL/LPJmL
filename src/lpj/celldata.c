@@ -126,7 +126,7 @@ Celldata opencelldata(Config *config /**< LPJmL configuration */
       return NULL;
     }
   }
-  if(openinputdata(&celldata->kbf,&config->kbf_filename,"Kbf",NULL,LPJ_FLOAT,0.001,config))
+  if(openinputdata(&celldata->kbf,&config->kbf_filename,"Kbf",NULL,LPJ_FLOAT,0.001,0,config))
   {
     if (config->soil_filename.fmt == CDF)
       closecoord_netcdf(celldata->soil.cdf);
@@ -141,7 +141,7 @@ Celldata opencelldata(Config *config /**< LPJmL configuration */
   if(config->with_lakes)
   {
     /* Open file for lake fraction */
-    if(openinputdata(&celldata->lakes,&config->lakes_filename,"lakes","1",LPJ_BYTE,0.01,config))
+    if(openinputdata(&celldata->lakes,&config->lakes_filename,"lakes","1",LPJ_BYTE,0.01,0,config))
     {
       if(config->soil_filename.fmt==CDF)
         closecoord_netcdf(celldata->soil.cdf);
@@ -155,7 +155,7 @@ Celldata opencelldata(Config *config /**< LPJmL configuration */
       return NULL;
     }
   }
-  if(openinputdata(&celldata->soilph,&config->soilph_filename,"soilph",NULL,LPJ_SHORT,0.01,config))
+  if(openinputdata(&celldata->soilph,&config->soilph_filename,"soilph",NULL,LPJ_SHORT,0.01,0,config))
   {
       if(config->soil_filename.fmt==CDF)
         closecoord_netcdf(celldata->soil.cdf);
@@ -170,7 +170,7 @@ Celldata opencelldata(Config *config /**< LPJmL configuration */
       free(celldata);
       return NULL;
   }
-  if(openinputdata(&celldata->slope,&config->slope_filename,"slope",NULL,LPJ_FLOAT,1,config))
+  if(openinputdata(&celldata->slope,&config->slope_filename,"slope",NULL,LPJ_FLOAT,1,0,config))
   {
     if(config->soil_filename.fmt==CDF)
       closecoord_netcdf(celldata->soil.cdf);
@@ -186,7 +186,7 @@ Celldata opencelldata(Config *config /**< LPJmL configuration */
     free(celldata);
     return NULL;
   }
-  if(openinputdata(&celldata->slope_min,&config->slope_min_filename,"slope_min",NULL,LPJ_FLOAT,1,config))
+  if(openinputdata(&celldata->slope_min,&config->slope_min_filename,"slope_min",NULL,LPJ_FLOAT,1,0,config))
   {
     if(config->soil_filename.fmt==CDF)
       closecoord_netcdf(celldata->soil.cdf);
@@ -203,7 +203,7 @@ Celldata opencelldata(Config *config /**< LPJmL configuration */
     free(celldata);
     return NULL;
   }
-  if(openinputdata(&celldata->slope_max,&config->slope_max_filename,"slope_max",NULL,LPJ_FLOAT,1,config))
+  if(openinputdata(&celldata->slope_max,&config->slope_max_filename,"slope_max",NULL,LPJ_FLOAT,1,0,config))
   {
     if(config->soil_filename.fmt==CDF)
       closecoord_netcdf(celldata->soil.cdf);
@@ -223,7 +223,7 @@ Celldata opencelldata(Config *config /**< LPJmL configuration */
   }
   if(config->landfrac_from_file)
   {
-    if(openinputdata(&celldata->landfrac,&config->landfrac_filename,"landfrac","1",LPJ_SHORT,0.01,config))
+    if(openinputdata(&celldata->landfrac,&config->landfrac_filename,"landfrac","1",LPJ_SHORT,0.01,0,config))
     {
       if(config->soil_filename.fmt==CDF)
         closecoord_netcdf(celldata->soil.cdf);

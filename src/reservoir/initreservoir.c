@@ -36,7 +36,7 @@ static Bool initreservoir2(Cell grid[],   /**< LPJ grid */
   Infile input;
   Reservoir reservoir;
   size_t offset;
-  if(openinputdata(&input,&config->elevation_filename,"elevation","m",LPJ_SHORT,1.0,config))
+  if(openinputdata(&input,&config->elevation_filename,"elevation","m",LPJ_SHORT,1.0,0,config))
     return TRUE;
   for(cell=0;cell<config->ngridcell;cell++)
   {

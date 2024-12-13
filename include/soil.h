@@ -42,6 +42,7 @@
 #define NHEATGRIDP ((NSOILLAYER)*(GPLHEAT)) /* Total number of gridpoints for the heatflow scheme */
 #define SNOWLAYER NSOILLAYER
 
+#define CTI_DATA_LENGTH 3
 #define snow_skin_depth 40.0 /* snow skin layer depth (mm water equivalent)*/
 #define c_water 4.2e6 /* J/m3/K */
 #define c_ice   2.1e6 /* J/m3/K */

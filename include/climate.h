@@ -149,7 +149,7 @@ extern Bool opendata(Climatefile *,const Filename *,const char *,const char *,
 extern Bool opendata_seq(Climatefile *,const Filename *,const char *,const char *,
                          Type,Real,int,Bool,const Config *config);
 extern Bool openinputdata(Infile *,const Filename *,const char *,const char *,
-                          Type,Real,const Config *config);
+                          Type,Real,int,const Config *config);
 extern Bool readinputdata(Infile *,Real *,const Coord *,int,const Filename *);
 extern Bool readintinputdata(Infile *,int *,Bool *,const Coord *,int,const Filename *);
 

@@ -24,7 +24,7 @@
   "slope_min"  :   { "fmt" : "clm", "name" : "input_VERSION2/GloSlope-30as_min.clm"},
   "slope_max"  :   { "fmt" : "clm", "name" : "input_VERSION2/GloSlope-30as_max.clm"},
   "ch4" :          { "fmt" : "txt", "name" : "input_VERSION2/CH4_concentration_1841-2022.dat"},
-  "hydrotopes" :   { "fmt" : "clm", "name" : "input_VERSION2/hydro2_shuffle.bin"},
+  "hydrotopes" :   { "fmt" : "clm", "name" : "input_VERSION2/hydro2_shuffle_new.clm"},
 #ifdef CRU_MONTHLY
   "temp" :         { "id" : 1, "fmt" : "clm",  "name" : "CRUDATA_TS3_23/cru_ts3.23.1901.2014.tmp.dat.clm"},
   "prec" :         { "id" : 2, "fmt" : "clm",  "name" : "CRUDATA_TS3_23/gpcc_v7_cruts3_23_precip_1901_2013.clm"},
