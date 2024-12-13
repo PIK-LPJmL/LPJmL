@@ -34,7 +34,7 @@
 
 #define MOIST_DENOM 0.63212055882855767841 /* (1.0-exp(-1.0)) */
 #define K10_YEDOMA 0.025/NDAYYEAR
-#define k_red 4                           /*anoxic decomposition is much smaller than oxic decomposition Khovorostyanov et al., 2008*/
+#define k_red 6                           /*anoxic decomposition is much smaller than oxic decomposition Khovorostyanov et al., 2008*/
 #define k_red_litter 1
 #define INTERCEPT 0.04021601              /* changed from 0.10021601 now again original value*/
 #define MOIST_3 -5.00505434
@@ -110,7 +110,9 @@ Stocks littersom(Stand *stand,                      /**< [inout] pointer to stan
   //Real CH4_air;
   Real CH4_air,O2_need;
   Real epsilon_O2 = 0;
-  Real oxid_frac = 0.5;  // Assume that 1/2 of the O2 is utilized by other electron acceptors (Wania etal.,2010)
+  Real oxid_frac = 0.85;  // Assume that 1/2 of the O2 is utilized by other electron acceptors (Wania etal.,2010) only nitrification and oxidation of Reduced Compounds is left assumed to be together 15%
+
+
 // IMPLEMENTATION OF THE EFFECTIVE CARBON CONCENTRATION
 #if 0
   Real C_eff[LASTLAYER];
@@ -195,7 +197,7 @@ Stocks littersom(Stand *stand,                      /**< [inout] pointer to stan
       if(l<LASTLAYER)
       {
         oxidation = h2o_mt = 0;
-        C_max[l]=soil->O2[l]*WC/WO2*oxid_frac;                                     //soil->O2[l] * oxid_frac*WC / WO2;       // C_max[l]=soil->O2[l]*V*WC/WO2;
+        C_max[l]=max(0,soil->O2[l]*WC/WO2*oxid_frac);                                     //soil->O2[l] * oxid_frac*WC / WO2;       // C_max[l]=soil->O2[l]*V*WC/WO2;
         if(stand->type->landusetype==NATURAL || stand->type->landusetype==WETLAND)
           getoutputindex(&stand->cell->output,RESPONSE_LAYER_NV,l,config)+=response[l];
         if(isagriculture(stand->type->landusetype))
@@ -250,7 +252,7 @@ Stocks littersom(Stand *stand,                      /**< [inout] pointer to stan
         {
           fnlim=max(0,(flux_soil[l].fast.nitrogen+flux_soil[l].slow.nitrogen)/fn_som);
         }*/
-        h2o_mt=(flux_soil[l].slow.carbon+flux_soil[l].fast.carbon)*WH2O/WC/1000; // water produced during oxic decomposition C6H12O6 + O2 -> CO2 + H2O
+        h2o_mt=(flux_soil[l].slow.carbon+flux_soil[l].fast.carbon)*WH2O/WC/1000; // water produced during oxic decomposition C6H12O6 + 6O2 -> 6CO2 + 6H2O
         soil->O2[l]-=(flux_soil[l].slow.carbon + flux_soil[l].fast.carbon)*WO2/WC;
         if(soil->pool[l].slow.carbon>epsilon)
           soil->decay_rate[l].slow+=flux_soil[l].slow.carbon/soil->pool[l].slow.carbon;
@@ -453,7 +455,7 @@ Stocks littersom(Stand *stand,                      /**< [inout] pointer to stan
       if(decay_litter>1) decay_litter=1;
 
       decom=soil->litter.item[p].agsub.leaf.carbon*decay_litter;
-      C_max[0]=soil->O2[0]*WC/WO2*oxid_frac;
+      C_max[0]=max(0,soil->O2[0]*WC/WO2*oxid_frac);
       if(decom>C_max[0])
         decom=C_max[0];
       soil->O2[0]-=decom*WO2/WC;
@@ -487,7 +489,7 @@ Stocks littersom(Stand *stand,                      /**< [inout] pointer to stan
       if(decay_litter>1) decay_litter=1;
       for(i=0;i<NFUELCLASS;i++)
       {
-        C_max[0]=soil->O2[0]*WC/WO2*oxid_frac;
+        C_max[0]=max(0,soil->O2[0]*WC/WO2*oxid_frac);
         decom=soil->litter.item[p].agsub.wood[i].carbon*decay_litter;
         if(decom>C_max[0])
           decom=C_max[0];
@@ -521,7 +523,8 @@ Stocks littersom(Stand *stand,                      /**< [inout] pointer to stan
       if(decay_litter>1) decay_litter=1;
       C_max_all=0;
       forrootsoillayer(l)
-       C_max_all+=soil->O2[l]*WC/WO2*oxid_frac*config->pftpar[p].rootdist[l];
+       C_max_all+=max(0,soil->O2[l]*WC/WO2*oxid_frac*config->pftpar[p].rootdist[l]);
+
       decom=soil->litter.item[p].bg.carbon*decay_litter;
       if(decom>C_max_all)
       {

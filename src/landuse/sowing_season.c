@@ -41,7 +41,7 @@ Stocks sowing_season(Cell *cell,          /**< pointer to cell */
   fluxes_in.nitrogen=cell->balance.flux_estab.nitrogen+cell->balance.influx.nitrogen; //influxes
   fluxes_out.nitrogen=cell->balance.fire.nitrogen+cell->balance.n_outflux+cell->balance.neg_fluxes.nitrogen
       +cell->balance.flux_harvest.nitrogen+cell->balance.biomass_yield.nitrogen+cell->balance.deforest_emissions.nitrogen; //outfluxes
-  CH4_fluxes=(cell->balance.aCH4_em+cell->balance.aCH4_sink)*WC/WCH4;                                 //will be negative, because emissions at the end are higher, thus we have to substract
+  CH4_fluxes=(cell->balance.aCH4_em)*WC/WCH4;                                 //will be negative, because emissions at the end are higher, thus we have to substract
   foreachstand(stand,s,cell->standlist)
   {
      start.carbon+=(standstocks(stand).carbon + soilmethane(&stand->soil)*WC/WCH4)*stand->frac;
@@ -136,7 +136,7 @@ Stocks sowing_season(Cell *cell,          /**< pointer to cell */
   fluxes_out.carbon=(cell->balance.arh+cell->balance.fire.carbon+cell->balance.neg_fluxes.carbon
                    +cell->balance.flux_harvest.carbon+cell->balance.biomass_yield.carbon)-fluxes_out.carbon; //outfluxes
   fluxes_in.carbon=(cell->balance.anpp+cell->balance.flux_estab.carbon+cell->balance.influx.carbon)-fluxes_in.carbon;
-  CH4_fluxes-=(cell->balance.aCH4_em+cell->balance.aCH4_sink)*WC/WCH4;                                 //will be negative, because emissions at the end are higher, thus we have to substract
+  CH4_fluxes-=(cell->balance.aCH4_em)*WC/WCH4;                                 //will be negative, because emissions at the end are higher, thus we have to substract
   foreachstand(stand,s,cell->standlist)
   {
     end+=(standstocks(stand).carbon + soilmethane(&stand->soil)*WC/WCH4)*stand->frac;

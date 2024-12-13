@@ -374,7 +374,7 @@ extern void apply_perc_enthalpy(Soil *);
 extern void freezefrac2soil(Soil *, const Real [NSOILLAYER]);
 extern void enth2freezefrac(Real *, const Real * ,const  Soil_thermal_prop *);
 extern void soilice2moisture(Soil *, Real *,int);
-extern void gasdiffusion(Soil*, Real, Real, Real *, Real *);
+extern void gasdiffusion(Soil*, Real, Real, Real *, Real *, Real *);
 extern Real ebullition(Soil*, Real);
 extern Real soilmethane(const Soil *);
 extern Real temp_response(Real, Real);

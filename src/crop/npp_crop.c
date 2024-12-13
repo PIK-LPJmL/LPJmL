@@ -40,6 +40,7 @@ Real npp_crop(Pft *pft,           /**< [inout] PFT variables */
   const Pftcroppar *par;
   Real npp;
   Real rosoresp,presp,gresp;
+  int l;
   Cropratio nc_ratio;
   crop=pft->data;
   par=pft->par->data;
@@ -79,6 +80,12 @@ Real npp_crop(Pft *pft,           /**< [inout] PFT variables */
   else
     allocation_daily_crop(pft,npp,wdf,config);
   getoutput(&pft->stand->cell->output,RA,config)+=(rosoresp+presp+gresp)*pft->stand->frac;
+  forrootsoillayer(l)
+  {
+    pft->stand->soil.O2[l]-=pft->nind*(crop->ind.root.carbon*pft->par->respcoeff*param.k*nc_ratio.root*gtemp_soil)*pft->par->rootdist[l];
+    if(pft->stand->soil.O2[l]<0) pft->stand->soil.O2[l]=0.0;
+  }
+
   return npp;
 } /* of 'npp_crop' */
 

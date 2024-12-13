@@ -428,7 +428,7 @@ int iterate(Outputfile *output, /**< Output file data */
     {
       if (config->with_dynamic_ch4==DYNAMIC_CH4)
       {
-        ch4 += flux.CH4_emissions - flux.CH4_sink + flux.CH4_fire - 1 / tau_CH4*ch4;
+        ch4 += flux.CH4_emissions + flux.CH4_fire - 1 / tau_CH4*ch4;
         pch4 = ch4*1e-15 / 2.123;
       }
       /* output of total carbon flux and water on stdout on root task */
