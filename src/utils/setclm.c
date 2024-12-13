@@ -14,7 +14,7 @@
 
 #include "lpj.h"
 
-#define USAGE "Usage: %s id|version|order|firstyear|nyear|firstcell|ncell|nbands|nstep|type|cellsize|cellsize_lon|cellsize_lat value filename\n"
+#define USAGE "Usage: %s id|version|order|firstyear|nyear|firstcell|ncell|nbands|nstep|type|scalar|cellsize|cellsize_lon|cellsize_lat value filename\n"
 
 static Bool writeheader(FILE *file,int *header,int size,Bool swap)
 {
@@ -149,7 +149,7 @@ int main(int argc,char **argv)
       return EXIT_FAILURE;
     }
   }
-  else if(!strcmp(argv[1],"-type"))
+  else if(!strcmp(argv[1],"type"))
   {
     if(version<3)
     {

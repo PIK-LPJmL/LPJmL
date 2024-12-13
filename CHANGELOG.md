@@ -39,7 +39,7 @@ of `major.minor.patch` with
 - Memory leaks in utility `lpjprint` closed.
 - Handling of NaN as missing value corrected in reading NetCDF files.
 - Doubled initialization of standtype array corrected in `lpj_clinber4.c`.
- 
+- Option `type` corrected in `setclm`. 
 
 ## [5.9.16] - 2024-11-15
 
