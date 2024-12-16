@@ -133,7 +133,7 @@ struct config
   int ncult_types;        /**< size of cult_types array */
   int nsoil;              /**< number of soil types */
   Soilpar *soilpar;       /**< Soil parameter array */
-  Hydropar hydropar;      /** Hydrology parameter */
+  Hydropar hydropar;      /**< Hydrology parameter */
   int ncountries;         /**< number of countries */
   Countrypar *countrypar; /**< country parameter array */
   Outputvar *outputvars;
@@ -153,7 +153,7 @@ struct config
   Bool unlim_nitrogen;      /**< enable unlimited nitrogen (TRUE/FALSE) */
   Bool crop_resp_fix;      /**< with fixed crop respiration (TRUE/FALSE) */
   int tillage_type;      /**< type of tillage NO_TILLAGE=0, TILLAGE=1, READ_TILLAGE=2 */
-  int residue_treatment; /** residue options: READ_RESIDUE_DATA, NO_RESIDUE_REMOVE, FIXED_RESIDUE_REMOVE (uses param residues_in_soil) */
+  int residue_treatment; /**< residue options: READ_RESIDUE_DATA, NO_RESIDUE_REMOVE, FIXED_RESIDUE_REMOVE (uses param residues_in_soil) */
   Bool fix_fertilization;   /**< simulation with fixed fertilizer application rate */
   Bool no_ndeposition;      /**< turn off atmospheric N deposition */
   int fertilizer_input;     /**< simulation with fertilizer input */

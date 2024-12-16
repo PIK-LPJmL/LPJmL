@@ -56,8 +56,6 @@ extern Real delta2c(Real, Real);
 extern Real c2delta(Real, Real);
 extern Real DELTA2delta(Real, Real);
 extern Real delta2DELTA(Real, Real);
-extern Real gamma(Real);
-extern Real gammln(Real);
 extern Real gammq(Real,Real);
 extern void gcf(Real *, Real, Real, Real *);
 extern void gser(Real *, Real, Real, Real *);

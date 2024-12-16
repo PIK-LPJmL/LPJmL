@@ -225,7 +225,7 @@ typedef struct
 
 typedef struct
 {
-  const Soilpar *par; /**< pointer to soil parameters */
+  const Soilpar *par;            /**< pointer to soil parameters */
   Pool pool[LASTLAYER];          /**< fast and slow carbon pool for all layers*/
   Poolpar k_mean[LASTLAYER];     /**< fast and slow decay constant */
   Poolpar decay_rate[LASTLAYER]; /**< fast and slow decay rate */
@@ -280,10 +280,10 @@ typedef struct
   Real YEDOMA;       /**< g/m2 */
   Litter litter;     /**< Litter pool */
   Real rw_buffer;    /**< available rain water amount in buffer (mm) */
-  Real wa;                    /* water in the unconfined aquifer (mm) */
-  Real wtable;                /* mm below surface*/
+  Real wa;           /**< water in the unconfined aquifer (mm) */
+  Real wtable;       /**< mm below surface*/
   Real snowdens;
-  int iswetland;
+  int iswetland;     /**< stand is wetland (TRUE/FALSE) */
   /* the next two variables allow observation of soil content changes, made without cosidering enthalpy adjustments */
   Real wi_abs_enth_adj[NSOILLAYER];  /**< absolute water ice content with corresponding enthalpy adjustments (mm) */
   Real sol_abs_enth_adj[NSOILLAYER]; /**< absolute solid content with adjusted enthalpy (mm) */

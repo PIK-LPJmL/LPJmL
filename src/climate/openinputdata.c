@@ -90,7 +90,7 @@ Bool openinputdata(Infile *file,             /**< pointer to file */
     {
       if(isroot(*config))
         fprintf(stderr,"ERROR147: Invalid number of bands=%d in %s data file '%s', must be %d.\n",
-               header.nbands,name,filename->name,file->nbands);
+                header.nbands,name,filename->name,file->nbands);
       closeinput(file);
       return TRUE;
     }

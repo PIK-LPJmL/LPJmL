@@ -17,9 +17,9 @@ include ../../Makefile.inc
 
 OBJS    = leftmostzero.$O bisect.$O linreg.$O date.$O interpolate.$O\
           buffer.$O rand.$O petpar.$O interpolate_data.$O\
-          ivec_sum.$O int2date.$O petpar2.$O gamma.$O\
+          ivec_sum.$O int2date.$O petpar2.$O itersolve.$O\
           petpar3.$O gammafunc.$O interpolate_data.$O\
-          permute.$O setseed.$O freadseed.$O
+          permute.$O setseed.$O freadseed.$O runmean_add.$O
 
 INC     = ../../include
 LIBDIR  = ../../lib
