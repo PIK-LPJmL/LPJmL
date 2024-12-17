@@ -593,7 +593,7 @@ Real infil_perc(Stand *stand,        /**< Stand pointer */
     s_node=(allwater(soil,lwt+1)/soildepth[lwt+1] + allice(soil,lwt+1)/soildepth[lwt+1])/soil->wsat[lwt+1];      // soil wetness
     s_node=max(s_node,0.02);
     s_node=min(1, s_node);
-    ka=Theta_ice*soil->Ks[lwt+1]*24*pow(s_node,2*soil->b[lwt+1]+3);
+    ka=Theta_ice*soil->Ks[lwt+1]*24*pow(s_node,2*soil->b[lwt+1]+3);    //hydraulic conductivity of the layer which contains the water table
   }
   else
   {
@@ -1042,6 +1042,9 @@ Real infil_perc(Stand *stand,        /**< Stand pointer */
       stand->cell->balance.n_outflux+=(NO3surf + NO3lat)*stand->frac;
       if(isagriculture(stand->type->landusetype))
         getoutput(&stand->cell->output,NLEACHING_AGR,config)+=(NO3surf+NO3lat)*stand->frac;
+      if(stand->type->landusetype==GRASSLAND)
+        getoutput(&stand->cell->output,NO3_LEACHING_MGRASS,config)+=(NO3surf+NO3lat)*stand->frac;
+
       if(stand->type->landusetype==AGRICULTURE)
       {
         foreachpft(pft,p,&stand->pftlist)
@@ -1061,6 +1064,8 @@ Real infil_perc(Stand *stand,        /**< Stand pointer */
   stand->cell->balance.n_outflux+=NO3perc_ly*stand->frac;
   if(isagriculture(stand->type->landusetype))
     getoutput(&stand->cell->output,NLEACHING_AGR,config)+=NO3perc_ly*stand->frac;
+  if(stand->type->landusetype==GRASSLAND)
+    getoutput(&stand->cell->output,NO3_LEACHING_MGRASS,config)+=NO3perc_ly*stand->frac;
 #ifdef SAFE
   forrootsoillayer(l)
   if (soil->NO3[l]<-epsilon)
