@@ -253,8 +253,8 @@ void mixsoil(Stand *stand1,const Stand *stand2,int year,int ntotpft,const Config
   if(fabs(water_before-water_after)>0.001)
   {
     fail(INVALID_WATER_BALANCE_ERR,FAIL_ON_BALANCE,FALSE,
-         "Invalid water balance=%g water_before=%g water_after=%g balance.excess_water: %g excess_water: %g stand1: %s stand2: %s water_f: %g wa1: %g  wa2: %g  in mixsoil()",
-         fabs(water_before-water_after),water_before,water_after,stand1->cell->balance.excess_water,excess_water, stand1->type->name,stand2->type->name,water_f,water_w1,water_w2);
+         "Invalid water balance in %s: e=%g water_before=%g water_after=%g balance.excess_water: %g excess_water: %g stand1: %s stand2: %s water_f: %g wa1: %g  wa2: %g  in mixsoil()",
+         __FUNCTION__,fabs(water_before-water_after),water_before,water_after,stand1->cell->balance.excess_water,excess_water, stand1->type->name,stand2->type->name,water_f,water_w1,water_w2);
     fflush(stderr);
   }
 #endif

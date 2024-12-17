@@ -16,6 +16,8 @@
 
 #include "lpj.h"
 
+#ifdef WITH_GLACIERS
+
 void check_glaciated(Cell *cell,const Config *config)
 {
   int s, p;
@@ -34,3 +36,5 @@ void check_glaciated(Cell *cell,const Config *config)
     }
   }
 } /* of 'check_glaciated */
+
+#endif

@@ -124,8 +124,8 @@ Bool annual_natural(Stand *stand,         /**< Pointer to stand */
   stand->cell->balance.flux_estab.nitrogen+=flux_estab.nitrogen*stand->frac;
   stand->cell->output.dcflux-=flux_estab.carbon*stand->frac;
 #if defined IMAGE && defined COUPLED
-    if(stand->type->landusetype==NATURAL || stand->type->landusetype==WETLAND)
-      stand->cell->flux_estab_nat+=flux_estab.carbon*stand->frac;
+  if(stand->type->landusetype==NATURAL || stand->type->landusetype==WETLAND)
+    stand->cell->flux_estab_nat+=flux_estab.carbon*stand->frac;
 #endif
 #endif
 
@@ -141,9 +141,9 @@ Bool annual_natural(Stand *stand,         /**< Pointer to stand */
   end = standstocks(stand).carbon + soilmethane(&stand->soil)*WC/WCH4;
   if (fabs(end-start.carbon+fluxes_out.carbon-fluxes_in.carbon)>0.01)
   {
-    fprintf(stderr, "C_ERROR: annual natural end %g start:%.3f  end:%.3f  estab: %g fire: %g bm_inc: %g flux_out: %g flux_in: %g\n",
-        end-start.carbon+fluxes_out.carbon-fluxes_in.carbon , start.carbon,end,flux_estab.carbon, flux.carbon, bm_inc.carbon,
-        fluxes_out.carbon,fluxes_in.carbon);
+    fail(INVALID_CARBON_BALANCE_ERR,FAIL_ON_BALANCE,FALSE,"Invalid carbon balance in %s: end %g start:%.3f  end:%.3f  estab: %g fire: %g bm_inc: %g flux_out: %g flux_in: %g\n",
+         __FUNCTION__,end-start.carbon+fluxes_out.carbon-fluxes_in.carbon , start.carbon,end,flux_estab.carbon, flux.carbon, bm_inc.carbon,
+         fluxes_out.carbon,fluxes_in.carbon);
     //    foreachpft(pft,p,&stand->pftlist)
     //        fprintf(stderr, "\nPFT:%s bm_inc.c=%g vegC=%g soilC=%g establish.carbon=%g\n",pft->par->name,
     //                 pft->bm_inc.carbon,vegc_sum(pft),soilstocks(&stand->soil).carbon,pft->establish.carbon);
@@ -156,9 +156,9 @@ Bool annual_natural(Stand *stand,         /**< Pointer to stand */
     //    foreachpft(pft,p,&stand->pftlist)
     //        fprintf(stderr, "\nPFT:%s bm_inc.N=%g vegN=%g soilN=%g establish.nitrogen=%g\n",pft->par->name,
     //                 pft->bm_inc.nitrogen,vegn_sum(pft),soilstocks(&stand->soil).nitrogen,pft->establish.nitrogen);
-    fprintf(stderr, "N_ERROR: annual natural end %g start:%g  end:%g flux_in: %g flux_out %g  bm_inc: %g standfrac: %g landusetype: %s\n \n \n",
-        end-start.nitrogen+fluxes_out.nitrogen-fluxes_in.nitrogen, start.nitrogen,end,
-        fluxes_in.nitrogen, fluxes_out.nitrogen, bm_inc.nitrogen,stand->frac, stand->type->name);
+    fail(INVALID_NITROGEN_BALANCE_ERR,FAIL_ON_BALANCE,FALSE,"Invalid carbon balance in %s: end %g start:%g  end:%g flux_in: %g flux_out %g  bm_inc: %g standfrac: %g landusetype: %s\n \n \n",
+         __FUNCTION__,end-start.nitrogen+fluxes_out.nitrogen-fluxes_in.nitrogen, start.nitrogen,end,
+         fluxes_in.nitrogen, fluxes_out.nitrogen, bm_inc.nitrogen,stand->frac, stand->type->name);
   }
 #endif
   foreachpft(pft,p,&stand->pftlist)
@@ -175,9 +175,9 @@ Bool annual_natural(Stand *stand,         /**< Pointer to stand */
         pft->fpc = fpc_obs_cor;
     }
     if (stand->type->landusetype == WETLAND)
-        getoutputindex(&stand->cell->output,WPC,getpftpar(pft, id) + 1,config) += pft->fpc;
+      getoutputindex(&stand->cell->output,WPC,getpftpar(pft, id) + 1,config) += pft->fpc;
     else if(stand->type->landusetype == NATURAL)
-        getoutputindex(&stand->cell->output,FPC,getpftpar(pft, id) + 1,config) += pft->fpc;
+      getoutputindex(&stand->cell->output,FPC,getpftpar(pft, id) + 1,config) += pft->fpc;
 #ifdef SAFE
     if(pft->fpc<0)
       fail(INVALID_FPC_ERR,TRUE,TRUE,"FPC=%g for '%s' less than zero",pft->fpc,pft->par->name);

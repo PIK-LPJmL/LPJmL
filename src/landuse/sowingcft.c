@@ -86,10 +86,10 @@ static void cultcftstand(Stocks *flux_estab,  /**< establishment flux */
 
   if (fabs(end-start.carbon-flux_in.carbon)>0.01)
   {
-    fprintf(stderr, "C_ERROR-cultcftstand: day: %d  CFT: %d  %g start: %.3f  end: %.3f  "
-        "flux_estab.carbon: %g balance.flux_estab: %g flux_in.carbon: %g \n",
-        day,cft,end-start.carbon-flux_in.carbon,start.carbon, end,flux_estab->carbon,cell->balance.flux_estab.carbon,
-        flux_in.carbon);
+    fail(INVALID_CARBON_BALANCE_ERR,FAIL_ON_BALANCE,FALSE, "Invalid carbon balance in %s at the end: year=%d: day: %d  CFT: %d  %g start: %.3f  end: %.3f  "
+         "flux_estab.carbon: %g balance.flux_estab: %g flux_in.carbon: %g \n",
+         __FUNCTION__,day,cft,end-start.carbon-flux_in.carbon,start.carbon, end,flux_estab->carbon,cell->balance.flux_estab.carbon,
+         flux_in.carbon);
    }
   end=0;
   foreachstand(stand,s,cell->standlist)
@@ -97,10 +97,10 @@ static void cultcftstand(Stocks *flux_estab,  /**< establishment flux */
 
   if (fabs(end-start.nitrogen-flux_in.nitrogen)>0.01)
   {
-    fprintf(stderr, "N_ERROR-cultcftstand: day: %d  CFT: %d  %g start: %.3f  end: %.3f  "
-        "flux_estab.nitrogen: %g balance.flux_estab: %g flux_in.nitrogen: %g \n",
-        day,cft,end-start.nitrogen-flux_in.nitrogen,start.nitrogen, end,flux_estab->nitrogen,cell->balance.flux_estab.nitrogen,
-        flux_in.nitrogen);
+    fail(INVALID_NITROGEN_BALANCE_ERR,FAIL_ON_BALANCE,FALSE, "Invalid nitrogen balance in %s at the end: day: %d  CFT: %d  %g start: %.3f  end: %.3f  "
+         "flux_estab.nitrogen: %g balance.flux_estab: %g flux_in.nitrogen: %g \n",
+         __FUNCTION__,day,cft,end-start.nitrogen-flux_in.nitrogen,start.nitrogen, end,flux_estab->nitrogen,cell->balance.flux_estab.nitrogen,
+         flux_in.nitrogen);
    }
 
 #endif
@@ -144,7 +144,6 @@ void sowingcft(Stocks *flux_estab,  /**< establishment flux */
   /* set sowing date for all CFTs not in the land-use data set */
   if(config->sdate_option==FIXED_SDATE)
     cell->ml.sdate_fixed[cft+irrig*ncft]=day;
-
   if(cft==config->rice_pft-npft)
     s=findlandusetype(cell->standlist,SETASIDE_WETLAND);
   if(s==NOT_FOUND)

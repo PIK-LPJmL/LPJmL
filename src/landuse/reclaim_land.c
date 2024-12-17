@@ -32,7 +32,7 @@ void remove_vegetation_copy(Soil *soil, /* soil pointer */
   Stocks harvest;
   Stocks stocks={0,0};
   Stocks trad_biofuel;
-  if(usefrac==TRUE)
+  if(usefrac)
     sfrac=standfrac;
 #if defined IMAGE && defined COUPLED
   Real ftimber; /* fraction harvested for timber */

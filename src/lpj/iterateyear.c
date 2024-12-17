@@ -66,9 +66,11 @@ void iterateyear(Outputfile *output,  /**< Output file data */
     if(!grid[cell].skip)
     {
       init_annual(grid+cell,ncft,config);
+#ifdef WITH_GLACIERS
       if (grid[cell].is_glaciated)
         check_glaciated(grid + cell,config);
       else
+#endif
       {
         if(config->withlanduse)
         {

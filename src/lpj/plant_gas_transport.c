@@ -173,7 +173,9 @@ void plant_gas_transport(Stand *stand,        /**< pointer to soil data */
 #endif
 #ifdef CHECK_BALANCE
   end = standstocks(stand).carbon + soilmethane(&stand->soil)*WC/WCH4;
-  if (fabs(start - end - CH4_plant_all*WC/WCH4)>epsilon) fprintf(stderr, "C_ERROR: plant_gas %g start:%g  end:%g Plant_gas_transp: %g\n", start - end - CH4_plant_all*WC/WCH4, start, end, CH4_plant_all*WC/WCH4);
+  if (fabs(start - end - CH4_plant_all*WC/WCH4)>epsilon)
+    fail(INVALID_CARBON_BALANCE_ERR,FAIL_ON_BALANCE,FALSE,"Invalid carbon balance in %s: %g start:%g  end:%g Plant_gas_transp: %g",
+         __FUNCTION__, start - end - CH4_plant_all*WC/WCH4, start, end, CH4_plant_all*WC/WCH4);
 #endif
 
 } /* of 'plant_gas_transport' */

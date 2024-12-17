@@ -179,8 +179,8 @@ Stocks cultivate(Cell *cell,           /**< cell pointer */
   }
   if(fabs(water_before-water_after)>0.001)
   {
-    fprintf(stderr,"W-BALANCE-ERROR in %s: day %d water_after: %g water_before: %g \n\n",
-        __FUNCTION__,day,water_after,water_before);
+    fail(INVALID_WATER_BALANCE_ERR,FAIL_ON_BALANCE,FALSE, "Invalid water balance in %s: day %d water_after: %g water_before: %g",
+          __FUNCTION__,day,water_after,water_before);
   }
 
 

@@ -48,6 +48,7 @@
 #define S 0.2587 // saturation factor MacDougall and Knutti, 2016
 #define KOVCON (0.001*1000) //Constant of diffusion (m2a-1)
 #define WTABTHRES 200
+//#define CALC_EFF_CARBON
 
 static Real f_wfps(const Soil *soil,      /* Soil data */
                    int l                  /* soil layer */
@@ -114,7 +115,7 @@ Stocks littersom(Stand *stand,                      /**< [inout] pointer to stan
 
 
 // IMPLEMENTATION OF THE EFFECTIVE CARBON CONCENTRATION
-#if 0
+#ifdef CALC_EFF_CARBON
   Real C_eff[LASTLAYER];
   Real C_tot[LASTLAYER];
   Real K_v[NSOILLAYER][2];
@@ -139,7 +140,7 @@ Stocks littersom(Stand *stand,                      /**< [inout] pointer to stan
     response[l]=0.0;
   decom_litter.carbon=decom_litter.nitrogen=soil_cflux=yedoma_flux=decom_sum.carbon=decom_sum.nitrogen=decom_fast.carbon=decom_slow.carbon=decom_fast.nitrogen=decom_slow.nitrogen=F_Nmineral_all=0.0;
   CH4_air = p_s / R_gas / (airtemp + 273.15)*pch4*1e-6*WCH4;    /*g/m3 methane concentration*/
-#if 0
+#ifdef CALC_EFF_CARBON
   K_vdiff[0][0]=2./(midlayer[0]*(midlayer[0]+(midlayer[1]-midlayer[0])));
   K_vdiff[0][1]=-2./(midlayer[0]*(midlayer[1]-midlayer[0]));
   K_vdiff[0][2]=2./((midlayer[1]-midlayer[0])*(midlayer[0]+(midlayer[1]-midlayer[0])));
@@ -147,7 +148,7 @@ Stocks littersom(Stand *stand,                      /**< [inout] pointer to stan
   foreachsoillayer(l)
   {
     response[l] = epsilon + epsilon;
-#if 0
+#ifdef CALC_EFF_CARBON
     if(l>0 && l<LASTLAYER)
     {
       K_vdiff[l][0]=2./((midlayer[l]-midlayer[l-1])*((midlayer[l]-midlayer[l-1])+(midlayer[l+1]-midlayer[l])));
@@ -345,13 +346,14 @@ Stocks littersom(Stand *stand,                      /**< [inout] pointer to stan
         soil->decomC[l]=flux_soil[l].slow.carbon+flux_soil[l].fast.carbon+oxidation*WC/WCH4;
 #endif
 #ifdef SAFE
-  if (soil->w[l]< -epsilon || soil->w_fw[l]< -epsilon )
-  {   fprintf(stderr,"\nlittersom Cell (%s) soilwater=%.6f soilice=%.6f wsats=%.6f agtop_moist=%.6f\n",
-          sprintcoord(line,&stand->cell->coord),allwater(soil,l),allice(soil,l),soil->wsats[l],soil->litter.agtop_moist);
-      fflush(stderr);
-      fprintf(stderr,"Soil-moisture layer %d negative: w:%g, fw:%g,lutype %s soil_type %s \n\n",
-          l,soil->w[l],soil->w_fw[l],stand->type->name,soil->par->name);
-  }
+        if (soil->w[l]< -epsilon || soil->w_fw[l]< -epsilon )
+        {
+          fprintf(stderr,"\nlittersom Cell (%s) soilwater=%.6f soilice=%.6f wsats=%.6f agtop_moist=%.6f\n",
+                  sprintcoord(line,&stand->cell->coord),allwater(soil,l),allice(soil,l),soil->wsats[l],soil->litter.agtop_moist);
+          fflush(stderr);
+          fprintf(stderr,"Soil-moisture layer %d negative: w:%g, fw:%g,lutype %s soil_type %s \n\n",
+                  l,soil->w[l],soil->w_fw[l],stand->type->name,soil->par->name);
+        }
 #endif
         //soil_cflux+=*methaneflux_soil*WC/WCH4;      //CO2 produced during methane production C6H12O6 -> 3CO2 + 3CH4, already in deomposition?? mass balance not closed than!! Have to think about it
 
@@ -443,7 +445,6 @@ Stocks littersom(Stand *stand,                      /**< [inout] pointer to stan
         soil->litter.item[p].agtop.wood[i].nitrogen-=decom;
         decom_sum.nitrogen+=decom;
         decom_slow.nitrogen+=decom;
-
       }
 
       /* agsub leaves only on agricultural stands in the first layer*/
@@ -460,7 +461,7 @@ Stocks littersom(Stand *stand,                      /**< [inout] pointer to stan
         decom=C_max[0];
       soil->O2[0]-=decom*WO2/WC;
       if(soil->litter.item[p].agsub.leaf.carbon>epsilon)
-       decay_litter=decom/soil->litter.item[p].agsub.leaf.carbon;
+        decay_litter=decom/soil->litter.item[p].agsub.leaf.carbon;
       soil->litter.item[p].agsub.leaf.carbon-=decom;
       decom_sum.carbon+=decom;
       decom_fast.carbon+=decom;
@@ -513,7 +514,7 @@ Stocks littersom(Stand *stand,                      /**< [inout] pointer to stan
           decom_sum.nitrogen+=litter_flux;
           decom_slow.nitrogen+=litter_flux;
         }
-      }
+      } /* of  for(i=0;i<NFUELCLASS;i++) */
       /* bg litter */
 #ifdef LINEAR_DECAY
       decay_litter=param.k_litter10*response_bg_litter;
@@ -702,94 +703,115 @@ Stocks littersom(Stand *stand,                      /**< [inout] pointer to stan
         }
       }
     }
-  } /* of forrootlayer */
+  } /* of forrootsoillayer */
 
 //saturation soil carbon calculation (I WOULD LIKE TO KEEP IT FOR NOW)
-
- /* forrootsoillayer(l)
+#ifdef CALC_EFF_CARBON
+  forrootsoillayer(l)
   {
-	  C_tot[l]=(soil->pool[l].slow.carbon+soil->pool[l].fast.carbon)/soildepth[l];
-      soilold[l].slow.nitrogen=soil->pool[l].slow.nitrogen;
-      soilold[l].slow.carbon=soil->pool[l].slow.carbon;
-      soilold[l].fast.nitrogen=soil->pool[l].fast.nitrogen;
-      soilold[l].fast.carbon=soil->pool[l].fast.carbon;
-      soilall[l].carbon=soil->pool[l].fast.carbon+soil->pool[l].slow.carbon;
-      soilall[l].nitrogen=soil->pool[l].fast.nitrogen+soil->pool[l].slow.nitrogen;
-      C_eff[l]=C_tot[l]/(S*soil->wsat[l]);
+    C_tot[l]=(soil->pool[l].slow.carbon+soil->pool[l].fast.carbon)/soildepth[l];
+    soilold[l].slow.nitrogen=soil->pool[l].slow.nitrogen;
+    soilold[l].slow.carbon=soil->pool[l].slow.carbon;
+    soilold[l].fast.nitrogen=soil->pool[l].fast.nitrogen;
+    soilold[l].fast.carbon=soil->pool[l].fast.carbon;
+    soilall[l].carbon=soil->pool[l].fast.carbon+soil->pool[l].slow.carbon;
+    soilall[l].nitrogen=soil->pool[l].fast.nitrogen+soil->pool[l].slow.nitrogen;
+    C_eff[l]=C_tot[l]/(S*soil->wsat[l]);
   }
 
   K_v[0][0]=KOVCON*(K_vdiff[0][0]*C_eff[0]+K_vdiff[0][1]*C_eff[0]+K_vdiff[0][2]*C_eff[1]);
   if(K_v[0][0]>0)
-	if(C_eff[1]>C_eff[0]) {
-	  K_v[0][1]=-1;
-	 } else {
-	    K_v[0][1]=0;
+  {
+    if(C_eff[1]>C_eff[0])
+    {
+      K_v[0][1]=-1;
     }
-
+    else
+    {
+      K_v[0][1]=0;
+    }
+  }
   for(l=1;l<LASTLAYER;l++)
   {
-    if(layerbound[l]<=soil->maxthaw_depth){
-	    dKOVCON=KOVCON;
-    }else{
-        dKOVCON=0.0;
+    if(layerbound[l]<=soil->maxthaw_depth)
+    {
+      dKOVCON=KOVCON;
+    }
+    else
+    {
+      dKOVCON=0.0;
     }
     K_v[l][0]=dKOVCON*(K_vdiff[l][0]*C_eff[l-1]+ K_vdiff[l][1]*C_eff[l]+K_vdiff[l][2]*C_eff[l+1]);
-    if(K_v[l][0]>0) {
-	  if(C_eff[l+1]>C_eff[l])
-		K_v[l][1]=-1;
-    } else if (C_eff[l-1]>C_eff[l]) {
-    	K_v[l][1]=1;
-	} else {
-	  	K_v[l][1]=0;
+    if(K_v[l][0]>0)
+    {
+      if(C_eff[l+1]>C_eff[l])
+        K_v[l][1]=-1;
+    }
+    else if (C_eff[l-1]>C_eff[l])
+    {
+      K_v[l][1]=1;
+    }
+    else
+    {
+      K_v[l][1]=0;
     }
   }
 
   K_v[LASTLAYER-1][0]=dKOVCON*(K_vdiff[LASTLAYER-1][0]*C_eff[LASTLAYER-2]+ K_vdiff[LASTLAYER-1][1]*C_eff[LASTLAYER-1]+K_vdiff[LASTLAYER-1][2]*C_eff[LASTLAYER-1]);
 
-  if(K_v[LASTLAYER-1][0]> 0.) {
-	  K_v[LASTLAYER-1][0]=1;
-  } else {
-	  K_v[LASTLAYER-1][0]=0;
+  if(K_v[LASTLAYER-1][0]> 0.)
+  {
+    K_v[LASTLAYER-1][0]=1;
+  }
+  else
+  {
+    K_v[LASTLAYER-1][0]=0;
   }
 
   for(l=(LASTLAYER-1);l==0;l--)
   {
-    if(K_v[l][1] == 1) {
-  	    if((K_v[l][0]*(soildepth[l]/soildepth[l-1])) > (0.5*C_tot[l-1]))
-  	    	K_v[l][0]=(0.5*C_tot[l-1])*(soildepth[l-1]/soildepth[l]);
+    if(K_v[l][1] == 1)
+    {
+      if((K_v[l][0]*(soildepth[l]/soildepth[l-1])) > (0.5*C_tot[l-1]))
+        K_v[l][0]=(0.5*C_tot[l-1])*(soildepth[l-1]/soildepth[l]);
 
-			C_tot[l-1]-=(K_v[l][0]*(soildepth[l]/soildepth[l-1]));
-  	} else if (K_v[l][1] == -1) {
-  	    if((K_v[l][0]*(soildepth[l]/soildepth[l+1])) > (0.5*C_tot[l+1]))
-  	    	K_v[l][0]=(0.5*C_tot[l+1])*(soildepth[l+1]/soildepth[l]);
+      C_tot[l-1]-=(K_v[l][0]*(soildepth[l]/soildepth[l-1]));
+    }
+    else if (K_v[l][1] == -1)
+     {
+      if((K_v[l][0]*(soildepth[l]/soildepth[l+1])) > (0.5*C_tot[l+1]))
+        K_v[l][0]=(0.5*C_tot[l+1])*(soildepth[l+1]/soildepth[l]);
     }
   }
-*/
-
-  //printf("vorher: TOTalCarbon: %.4f\n", soilstocks(soil).carbon);
-/*
+#ifdef DEBUG
+  printf("before: TOTalCarbon: %.4f\n", soilstocks(soil).carbon);
+#endif
 
   forrootsoillayer(l)
     if(l>0 && l<(NSOILLAYER-1))
     {
       if(soilall[l].carbon>epsilon && soilall[l+1].carbon>epsilon && soilall[l-1].carbon>epsilon)
-	  {
-        if(K_v[l][1]==1){
+      {
+        if(K_v[l][1]==1)
+        {
           soil->pool[l-1].fast.carbon-=(K_v[l][0]*(soildepth[l]/soildepth[l-1])*(soilold[l-1].fast.carbon/soilall[l-1].carbon));
           soil->pool[l].fast.carbon+=(K_v[l][0]*(soildepth[l]/soildepth[l-1])*(soilold[l-1].fast.carbon/soilall[l-1].carbon));
           soil->pool[l-1].slow.carbon-=(K_v[l][0]*(soildepth[l]/soildepth[l-1])*((soilold[l-1].slow.carbon/soilall[l-1].carbon)));
           soil->pool[l].slow.carbon+=(K_v[l][0]*(soildepth[l]/soildepth[l-1])*(soilold[l-1].slow.carbon/soilall[l-1].carbon));
-        }else if (K_v[l][1]==-1){
+        }
+        else if (K_v[l][1]==-1)
+        {
           soil->pool[l+1].fast.carbon-=(K_v[l][0]*(soildepth[l]/soildepth[l+1])*(soilold[l+1].fast.carbon/soilall[l+1].carbon));
           soil->pool[l].fast.carbon+=(K_v[l][0]*(soildepth[l]/soildepth[l+1])*(soilold[l+1].fast.carbon/soilall[l+1].carbon));
           soil->pool[l+1].slow.carbon-=(K_v[l][0]*(soildepth[l]/soildepth[l+1])*(soilold[l+1].slow.carbon/soilall[l+1].carbon));
           soil->pool[l].slow.carbon+=(K_v[l][0]*(soildepth[l]/soildepth[l+1])*(soilold[l+1].slow.carbon/soilall[l+1].carbon));
         }
-	  }
+      }
     }
-*/
-//printf("nachher: TOTalCarbon: %.4f\n", soilstocks(soil).carbon);
-
+#ifdef DEBUG
+  printf("after: TOTalCarbon: %.4f\n", soilstocks(soil).carbon);
+#endif
+#endif
 
 #ifdef MICRO_HEATING
   soil->litter.decomC=decom_litter.carbon*param.atmfrac; /*only for mircobiological heating*/
@@ -806,18 +828,19 @@ Stocks littersom(Stand *stand,                      /**< [inout] pointer to stan
   end = soilstocks(soil);
   end.carbon+=soilmethane(soil)*WC/WCH4;
   water_after=soilwater(soil);
-  if (fabs(start.carbon - end.carbon - (flux.carbon + *methaneflux_litter*WC/WCH4))>0.0001){
-        fprintf(stderr,
-            "C_ERROR in littersom: iswetland: %d type: %s %.8f start:%.8f  ende:%.8f decomCO2: %.8f methane_em: %.8f\n", soil->iswetland,
-            stand->type->name,start.carbon - end.carbon - (flux.carbon + *methaneflux_litter*WC/WCH4), start.carbon, end.carbon, flux.carbon, *methaneflux_litter*WC/WCH4);
+  if (fabs(start.carbon - end.carbon - (flux.carbon + *methaneflux_litter*WC/WCH4))>0.0001)
+  {
+    fail(INVALID_CARBON_BALANCE_ERR,FAIL_ON_BALANCE,FALSE, "Invalid carbon balance in %s at the end: iswetland: %d type: %s %.8f start:%.8f  end:%.8f decomCO2: %.8f methane_em: %.8f\n",
+         __FUNCTION__,soil->iswetland,stand->type->name,start.carbon - end.carbon - (flux.carbon + *methaneflux_litter*WC/WCH4), start.carbon, end.carbon, flux.carbon, *methaneflux_litter*WC/WCH4);
   }
   if (fabs(end.nitrogen-start.nitrogen+flux.nitrogen)>0.0001)
-    fprintf(stderr, "N_ERROR in littersom: iswetland: %d %.8f start:%.8f  end:%.8f flux.nitrogen: %g F_Nmineral: %g  decom_sum.nitrogen: %g\n", soil->iswetland,end.nitrogen-start.nitrogen+flux.nitrogen,
-        start.nitrogen, end.nitrogen, flux.nitrogen,F_Nmineral_all,decom_sum.nitrogen);
+    fail(INVALID_NITROGEN_BALANCE_ERR,FAIL_ON_BALANCE,FALSE, "Invalid nitrogen balance in %s at the end: iswetland: %d %.8f start:%.8f  end:%.8f flux.nitrogen: %g F_Nmineral: %g  decom_sum.nitrogen: %g\n",
+         __FUNCTION__,soil->iswetland,end.nitrogen-start.nitrogen+flux.nitrogen,
+         start.nitrogen, end.nitrogen, flux.nitrogen,F_Nmineral_all,decom_sum.nitrogen);
   balanceW=water_after-water_before-*MT_water+*runoff;
   if(fabs(balanceW)>epsilon)
-    fprintf(stderr,"W-BALANCE-ERROR in littersom: balanceW: %g  water_after: %.5f water_before: %.5f balance_stocks: %.5f w1: %g w2: %g\n"
-        "*MT_water_local: %g runoff_local= %g \n",balanceW,water_after,water_before,water_after-water_before,*MT_water,*runoff,soil->w[0],soil->w[1]);
+    fail(INVALID_NITROGEN_BALANCE_ERR,FAIL_ON_BALANCE,FALSE, "Invalid water balance in %s at the end: balanceW: %g  water_after: %.5f water_before: %.5f balance_stocks: %.5f w1: %g w2: %g\n"
+         "MT_water_local: %g runoff_local= %g\n",__FUNCTION__,balanceW,water_after,water_before,water_after-water_before,soil->w[0],soil->w[1],*MT_water,*runoff);
 #endif
   return flux;
 } /* of 'littersom' */

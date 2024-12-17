@@ -90,17 +90,17 @@ typedef struct
   Real n_outflux;           /**< all N outputs: n2onit, n2odenit, n2denit, leaching */
   Real n_demand;            /**< N demand by plants (gN)*/
   Real n_uptake;            /**< N uptake by plants (gN) */
-  Real aCH4_em;            /* includes mCH4_em */
-  Real aCH4_sink;          /* mCH4_sink */
-  Real aCH4_fire;
-  Real aCH4_rice;
+  Real aCH4_em;             /**< includes mCH4_em */
+  Real aCH4_sink;           /**< mCH4_sink */
+  Real aCH4_fire;           /**< CH4 emissions from fire */
+  Real aCH4_rice;           /**< CH4 emissions from rice stands*/
   Real aCH4_setaside;
   Real aCH4_oxid;
-  Real aMT_water;          /* water produced during Methanogenesis */
+  Real aMT_water;          /**< water produced during Methanogenesis */
   Real temp;               /**< air temperature (celsius) */
   Real nat_fluxes;         //at the moment only
-  Real gw_withdrawal;
-  Real ricefrac;
+  Real gw_withdrawal;      /**< ground water withdrawal */
+  Real ricefrac;           /**< rice fraction (0..1) */
 } Balance;
 
 typedef struct celldata *Celldata;
@@ -116,7 +116,7 @@ struct cell
   Real *gdd;                /**< Growing degree days array */
   Real lakefrac;            /**< lake fraction (0..1) */
   Real icefrac;             /**< ice fraction (0..1) */
-  Real wetlandfrac;
+  Real wetlandfrac;         /**< wetland fraction (0..1) */
 #ifdef COUPLING_WITH_FMS
   Real laketemp;            /**< temperatures in this cell, for now only one layer */
   Real day_after_snowfall;  /**< days after snowfall, to compute the albedo of lakes following:
@@ -131,8 +131,10 @@ Received 19 November 1997; accepted 15 January 1999*/
 #endif
   Real soilph;              /**< soil pH */
   Bool skip;                /**< Invalid soil code in cell (TRUE/FALSE) */
+#ifdef WITH_GLACIERS
   Bool was_glaciated;
   Bool is_glaciated;
+#endif
   Managed_land ml;          /**< Managed land */
   Output output;            /**< Output data */
   Discharge discharge;
@@ -141,18 +143,18 @@ Received 19 November 1997; accepted 15 January 1999*/
   Real slope;
   Real slope_min;
   Real slope_max;
-  Real kbf;                 /* baseflow recession coefficient */
-  Real Hag_beta;            /* Haggard et al. 2005, effects of slope on runoff 2005*/
+  Real kbf;                 /**< baseflow recession coefficient */
+  Real Hag_beta;            /**< Haggard et al. 2005, effects of slope on runoff 2005*/
   Real ground_st;
   Real ground_st_am;
-  Real lateral_water;       /* water which will be transported from upland area to lowland area */
+  Real lateral_water;       /**< water which will be transported from upland area to lowland area */
   Hydrotope hydrotopes;
   Balance balance;          /**< balance checks */
   Seed seed;                /**< seed for random generator */
 #if defined IMAGE && defined COUPLED
   Real npp_nat;             /**< NPP natural stand */
   Real npp_wp;              /**< NPP woodplantation */
-  Real npp_grass;           /**< NPP woodplantation */
+  Real npp_grass;           /**< NPP grassland */
   Real flux_estab_nat;      /**< flux_estab natural stand */
   Real rh_nat;              /**< soil respiration natural stand */
   Real flux_estab_wp;       /**< flux_estab woodplantation */
