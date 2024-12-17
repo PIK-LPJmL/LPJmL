@@ -550,7 +550,7 @@ Stocks littersom(Stand *stand,                      /**< [inout] pointer to stan
       decom_sum.nitrogen+=decom;
       decom_fast.nitrogen+=decom;
 
-      if (soil->wtable<=500 && soil->litter.item[p].bg.carbon>0)
+      if (soil->wtable<=600 && soil->litter.item[p].bg.carbon>0)
       {
         litter_flux=soil->litter.item[p].bg.carbon*param.k_litter10/k_red_litter*gtemp_soil[0]* exp((-soil->O2[0] / soildepth[0] * 1000) / O2star);
         soil->litter.item[p].bg.carbon-=litter_flux*WC/WCH4;
