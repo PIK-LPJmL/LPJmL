@@ -43,16 +43,6 @@ Bool initoutput(Outputfile *outputfile, /**< Output data */
     else
       isall=FALSE;
   }
-  for(i=WPC;i<NOUT;i++)
-  {
-    config->outputsize[i]=outputsize(i,npft,ncft,config);
-    if(config->outputsize[i]>maxsize)
-      maxsize=config->outputsize[i];
-    if(isopen(outputfile,i))
-      totalsize+=config->outputsize[i];
-    else
-      isall=FALSE;
-  }
   config->outputsize[PFT_GCGP_COUNT]=config->outputsize[PFT_GCGP];
   config->outputsize[NDAY_MONTH]=config->outputsize[CFT_SWC];
   if(isopen2(outputfile,PFT_GCGP))
@@ -71,16 +61,6 @@ Bool initoutput(Outputfile *outputfile, /**< Output data */
   for(i=FPC;i<NOUT;i++)
   {
     if(isopen2(outputfile,i))
-    {
-      config->outputmap[i]=index;
-      index+=config->outputsize[i];
-    }
-    else
-      config->outputmap[i]=0; /* no output used, point to trash */
-  }
-  for(i=WPC;i<NOUT;i++)
-  {
-    if(isopen(outputfile,i))
     {
       config->outputmap[i]=index;
       index+=config->outputsize[i];

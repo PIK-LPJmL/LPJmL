@@ -98,9 +98,9 @@
 #define GLOBALFLUX 2
 #define TERR_AREA 3
 #define LAKE_AREA 4
-#define FPC 5
-#define PCH4 6
-#define PCO2 7
+#define PCH4 5
+#define PCO2 6
+#define FPC 7
 #define NBP 8
 #define PFT_WATER_SUPPLY 9
 #define TRANSP 10

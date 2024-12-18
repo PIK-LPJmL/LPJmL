@@ -16,7 +16,6 @@
 
 #ifndef SOIL_H /* Already included? */
 #define SOIL_H
-#include "hydrotope.h"
 
 
 /* A static keyword that vanishes for unit testing,
@@ -102,16 +101,16 @@
 
 #define WC  12.0             /*12g/mol*/
 #define WO2 32.0             /*32g/mol*/
-#define WCH4 16.0
-#define WH2O 18.0
-#define WCO2 44.0
+#define WCH4 16.0            /*16g/mol*/
+#define WH2O 18.0            /*18g/mol*/
+#define WCO2 44.0            /*44g/mol*/
 #define O2star 3.0           /*g/m3*/
 #define BO2 0.038            /*Bunsen coefficient of oxygen*/
 #define BCH4 0.043           /*Bunsen coefficient of methane  0.043 Khvorostynov etal. 2008*/
 #define Vmax_CH4 10.0        /*Michaelis-Menten coefficient in mikroM/h =  mikro mol/l/h = 10−3 mol/m3/h  20 original */
 #define km_CH4 5.0           /*mikroM Michaelis-Menten coefficient in mikroM  convert  to 10−3 mol/m3*/
 #define km_O2 200.0          /*mikroM Michaelis-Menten coefficient in mikroM  convert  to 10−3 mol/m3 Seger 1998*/
-#define tau_CH4 12.5 /* life time of methane (yr) */
+#define tau_CH4 12.5         /* life time of methane (yr) */
 #define R_gas 8.314          /* universal gas constant J mol-1 K-1 */
 #define p_s 1.01e5           /* atmospheric pressure (Pa=kg m-1 s-2) */
 #define D_O2_air 1.596e-5    /* free air oxygen diffusivity (m2s-1)*/
