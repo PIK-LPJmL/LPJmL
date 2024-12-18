@@ -33,7 +33,7 @@ of `major.minor.patch` with
 - References in man pages updated.
 - `-v` option of `cdf2clm` prints leap days setting for daily time step.
 - Missing file `CHANGELOG.md` added to tar and zip file.
-- Longitude and latitude boundaries excluded as variables in `cdf2grud`.
+- Longitude and latitude boundaries excluded as variables in `cdf2grid`.
 
 ### Fixed
 
