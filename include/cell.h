@@ -185,7 +185,7 @@ extern int iterate(Outputfile *,Cell [],Input,
                    int,int,Config *);
 extern void iterateyear(Outputfile *,Cell [],Input,
                         Real,Real,int,int,int,const Config *);
-extern void fwriteoutput_ch4(Outputfile *,Real,Real,const Config *);
+extern void fwriteoutput_ch4(Outputfile *,Real,Real,int,const Config *);
 extern void initoutputdata(Output *,int,int,const Config *);
 extern Bool fwriteoutput(Outputfile *,Cell [],int,int,int,int,int,const Config *);
 extern void equilsom(Cell *,int, const Pftpar [],Bool);

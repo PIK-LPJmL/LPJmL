@@ -371,6 +371,14 @@ Bool fscanoutput(LPJfile *file,  /**< pointer to LPJ file */
         free(default_suffix);
         return TRUE;
       }
+      else if ((flag==PCO2 || flag==PCH4) && config->outputvars[count].filename.fmt==CDF)
+      {
+        if(verbosity)
+          fprintf(stderr,"ERROR224: Format 'cdf' not allowed for '%s' output.\n",
+                  config->outnames[flag].name);
+        free(default_suffix);
+        return TRUE;
+      }
       if(config->outputvars[count].filename.issocket)
         config->coupler_out++;
       if(config->outputvars[count].filename.var!=NULL)

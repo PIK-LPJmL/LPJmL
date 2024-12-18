@@ -17,6 +17,7 @@
 void fwriteoutput_ch4(Outputfile *output,  /**< output file array */
                       Real pch4,           /**< atmnospheric CH4 (ppb) */
                       Real pco2,           /**< atmospheric CO2 (ppm) */
+                      int year,            /**< simulation year */
                       const Config *config /**< LPJmL configuration */
                      )
 {
@@ -51,5 +52,9 @@ void fwriteoutput_ch4(Outputfile *output,  /**< output file array */
           break;
       }
     }
+    if(output->files[PCO2].issocket)
+      send_conc_coupler(PCO2,&pco2,year,config);
+    if(output->files[PCH4].issocket)
+      send_conc_coupler(PCO2,&pch4,year,config);
   }
 } /* of 'fwriteoutput_ch4' */

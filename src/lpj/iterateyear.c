@@ -327,7 +327,7 @@ void iterateyear(Outputfile *output,  /**< Output file data */
     }
   } /* of for(cell=0,...) */
 
-  fwriteoutput_ch4(output,ch4,co2,config);
+  fwriteoutput_ch4(output,ch4,co2,year,config);
   if(year>=config->outputyear)
   {
     /* write last monthly/daily output timestep after annual processes */
