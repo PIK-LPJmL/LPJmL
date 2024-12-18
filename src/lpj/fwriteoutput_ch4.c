@@ -55,6 +55,6 @@ void fwriteoutput_ch4(Outputfile *output,  /**< output file array */
     if(output->files[PCO2].issocket)
       send_conc_coupler(PCO2,&pco2,year,config);
     if(output->files[PCH4].issocket)
-      send_conc_coupler(PCO2,&pch4,year,config);
+      send_conc_coupler(PCH4,&pch4,year,config);
   }
 } /* of 'fwriteoutput_ch4' */
