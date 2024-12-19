@@ -41,6 +41,8 @@ static size_t isnetcdfinput(const Config *config)
 {
   size_t width;
   width=0;
+  if(config->with_glaciers && config->icefrac_filename.fmt==CDF)
+    width=max(width,strlen(config->icefrac_filename.var));
   if(config->soil_filename.fmt==CDF)
     width=max(width,strlen(config->soil_filename.var));
   if(config->temp_filename.fmt==CDF)
@@ -361,6 +363,8 @@ void fprintconfig(FILE *file,          /**< File pointer to text output file */
       snprintf(s,STRING_LEN,"with time shifted by %d yrs",config->time_shift);
       len=fputstring(file,len,s,78);
     }
+    if(config->with_glaciers)
+      len=printsim(file,len,&count,"with glaciers");
   }
 #ifdef COUPLING_WITH_FMS
   if(!config->nitrogen_coupled)
@@ -629,7 +633,8 @@ void fprintconfig(FILE *file,          /**< File pointer to text output file */
   }
   if (config->isanomaly)
   {
-    printinputfile(file, "icefrac", &config->icefrac_filename, width,config);
+    if(config->with_glaciers)
+      printinputfile(file, "icefrac", &config->icefrac_filename, width,config);
     printinputfile(file, "delta temp", &config->delta_temp_filename, width,config);
     printinputfile(file, "delta prec", &config->delta_prec_filename, width,config);
     printinputfile(file, "delta lwnet", &config->delta_lwnet_filename, width,config);

@@ -148,7 +148,7 @@ void iterateyear(Outputfile *output,  /**< Output file data */
         {
           if(config->ispopulation)
             popdens=getpopdens(input.popdens,cell);
-          if (config->isanomaly)
+          if (config->with_glaciers)
             grid[cell].icefrac = geticefrac(input.icefrac, cell);
           grid[cell].output.dcflux=grid[cell].output.bm_inc=0;
           initoutputdata(&((grid+cell)->output),DAILY,year,config);

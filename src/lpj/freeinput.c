@@ -27,6 +27,7 @@ void freeinput(Input input,          /**< Input struct */
   freewateruse(input.wateruse_wd,isroot(*config));
 #endif
   freelanduse(input.landuse,config);
+  freeicefrac(input.icefrac,isroot(*config));
   freepopdens(input.popdens,isroot(*config));
   freehumanignition(input.human_ignition,isroot(*config));
   freelandcover(input.landcover,isroot(*config));

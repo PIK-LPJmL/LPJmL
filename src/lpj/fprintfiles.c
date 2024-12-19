@@ -82,7 +82,8 @@ void fprintfiles(FILE *file,          /**< pointer to text output file */
   fprintfilename(file,&config->prec_filename,TRUE);
   if(config->isanomaly)
   {
-    fprintfilename(file,&config->icefrac_filename,TRUE);
+    if(config->with_glaciers)
+      fprintfilename(file,&config->icefrac_filename,TRUE);
     fprintfilename(file,&config->delta_temp_filename,TRUE);
     fprintfilename(file,&config->delta_prec_filename,TRUE);
     fprintfilename(file,&config->delta_lwnet_filename,TRUE);

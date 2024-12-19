@@ -63,7 +63,8 @@
   "extflow" : false,        /* enable discharge inflow for regional runs (requires extflow_filename) */
   "groundwater_irrig" : true, /* enable groundwater use for irrigation */
   "permafrost" : true,      /* enable permafrost */
-  "anomaly" : false,
+  "anomaly" : false,        /* simulation with climate anomalies (true/false) */
+  "with_glaciers" : false,  /* simulation with ice cover for run with anomalies (true/false)  */
   "time_shift" : 2000,      /* CLIMBER's year zero= year 2000 */
   "johansen" : true,        /* enable johansen way of temp. conductivity in soils (see src/soil/soilconduct.c) */
   "soilpar_option" : "no_fixed_soilpar", /* calculation of soil parameters, options "no_fixed_soilpar", "fixed_soilpar", "prescribed_soilpar" */
