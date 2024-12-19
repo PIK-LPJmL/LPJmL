@@ -115,18 +115,21 @@ Bool annual_natural(Stand *stand,         /**< Pointer to stand */
   }
 
 #ifndef DAILY_ESTABLISHMENT
-  flux_estab=establishmentpft(stand,npft,stand->cell->balance.aprec,year,config);
-  getoutput(&stand->cell->output,FLUX_ESTABC,config)+=flux_estab.carbon*stand->frac;
-  getoutput(&stand->cell->output,FLUX_ESTABN,config)+=flux_estab.nitrogen*stand->frac;
-  if(stand->type->landusetype==NATURAL || stand->type->landusetype==WETLAND)
-    stand->cell->balance.nat_fluxes+=flux_estab.carbon*stand->frac;
-  stand->cell->balance.flux_estab.carbon+=flux_estab.carbon*stand->frac;
-  stand->cell->balance.flux_estab.nitrogen+=flux_estab.nitrogen*stand->frac;
-  stand->cell->output.dcflux-=flux_estab.carbon*stand->frac;
+  if(!stand->cell->is_glaciated)
+  {
+    flux_estab=establishmentpft(stand,npft,stand->cell->balance.aprec,year,config);
+    getoutput(&stand->cell->output,FLUX_ESTABC,config)+=flux_estab.carbon*stand->frac;
+    getoutput(&stand->cell->output,FLUX_ESTABN,config)+=flux_estab.nitrogen*stand->frac;
+    if(stand->type->landusetype==NATURAL || stand->type->landusetype==WETLAND)
+      stand->cell->balance.nat_fluxes+=flux_estab.carbon*stand->frac;
+    stand->cell->balance.flux_estab.carbon+=flux_estab.carbon*stand->frac;
+    stand->cell->balance.flux_estab.nitrogen+=flux_estab.nitrogen*stand->frac;
+    stand->cell->output.dcflux-=flux_estab.carbon*stand->frac;
 #if defined IMAGE && defined COUPLED
-  if(stand->type->landusetype==NATURAL || stand->type->landusetype==WETLAND)
-    stand->cell->flux_estab_nat+=flux_estab.carbon*stand->frac;
+    if(stand->type->landusetype==NATURAL || stand->type->landusetype==WETLAND)
+      stand->cell->flux_estab_nat+=flux_estab.carbon*stand->frac;
 #endif
+  }
 #endif
 
 #ifdef CHECK_BALANCE
