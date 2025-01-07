@@ -38,7 +38,6 @@ of `major.minor.patch` with
 - Support for old PIK cluster removed.
 - Support for LoadLeveler batch queueing system removed.
 - Support for AIX OS removed.
-- Support for old PIK cluster removed.
 
 ## [5.9.16] - 2024-11-15
 
