@@ -133,7 +133,7 @@ Makefile.gcc         - GNU C-compiler settings
 Makefile.icx         - New Intel C-compiler (icx) settings
 Makefile.icc         - Intel C-compiler (icc) settings
 Makefile.mpiicc      - Intel C-compiler icc and Intel MPI
-Makefile.hpc2024     - Intel C-compiler icx and Intel MPI
+Makefile.mpiicx      - Intel C-compiler icx and Intel MPI
 Makefile.mpich       - GNU C-Compiler and MPI Chameleon settings
 Makefile.win32       - Windows settings (used by configure.bat)
 
