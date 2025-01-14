@@ -13,12 +13,7 @@
 /**     {                                                                          \n**/
 /**       co2=getco2();                                                            \n**/
 /**       getclimate();                                                            \n**/
-/**       if(landuse) getlanduse();                                                \n**/
-/**       if(wateruse) getwateruse();                                              \n**/
 /**       iterateyear();                                                           \n**/
-/**       flux_sum();                                                              \n**/
-/**       if(year==config->restartyear)                                            \n**/
-/**         fwriterestart();                                                       \n**/
 /**     }                                                                          \n**/
 /**                                                                                \n**/
 /** (C) Potsdam Institute for Climate Impact Research (PIK), see COPYRIGHT file    \n**/
@@ -51,12 +46,8 @@ int iterate(Outputfile *output, /**< Output file data */
             Config *config      /**< LPJ configuration data */
            )                    /** \return last year+1 on success */
 {
-  Real co2,cflux_total;
-  Flux flux;
-  int year,landuse_year,startyear,firstspinupyear,spinup_year,climate_year,year_co2,depos_year;
-#ifndef COUPLED
-  int wateruse_year;
-#endif
+  Real co2;
+  int year,startyear,firstspinupyear,spinup_year,climate_year,year_co2,depos_year;
   Bool rc;
   Climatedata store,data_save;
 
@@ -201,143 +192,8 @@ int iterate(Outputfile *output, /**< Output file data */
       }
       break; /* leave time loop */
     }
-    if(input.landuse!=NULL)
-    {
-      calc_seasonality(grid,npft,ncft,config);
-      if(config->withlanduse==CONST_LANDUSE || config->withlanduse == ONLY_CROPS) /* constant landuse? */
-        landuse_year=config->landuse_year_const;
-      else if(config->fix_landuse && year>config->fix_landuse_year)
-        landuse_year=config->fix_landuse_year;
-      else
-        landuse_year=year;
-#ifndef COUPLED
-      /* under constant landuse also keep wateruse at landuse_year_const */
-      if(config->withlanduse==CONST_LANDUSE)
-        wateruse_year=config->landuse_year_const;
-      else if(config->fix_landuse && year>config->fix_landuse_year)
-        wateruse_year=config->fix_landuse_year;
-      else
-        wateruse_year=year;
-#endif
-#if defined IMAGE && defined COUPLED
-      if(year>=config->start_coupling)
-      {
-        if(receive_image_data(grid,npft,ncft,config))
-        {
-          fprintf(stderr,"ERROR104: Simulation stopped in receive_image_data().\n");
-          fflush(stderr);
-          break; /* leave time loop */
-        }
-      }
-      else
-#endif
-      /* read landuse pattern from file */
-      rc=getlanduse(input.landuse,grid,landuse_year,year,ncft,config);
-      if(iserror(rc,config))
-      {
-        if(isroot(*config))
-        {
-          fprintf(stderr,"ERROR104: Simulation stopped in getlanduse().\n");
-          fflush(stderr);
-        }
-        break; /* leave time loop */
-      }
-      if(config->reservoir)
-        allocate_reservoir(grid,year,config);
-#ifndef COUPLED
-    if(config->wateruse)
-    {
-      /* read wateruse data from file */
-      rc=getwateruse(input.wateruse,grid,wateruse_year,config);
-      if(iserror(rc,config))
-      {
-        if(isroot(*config))
-        {
-          fprintf(stderr,"ERROR104: Simulation stopped in getwateruse().\n");
-          fflush(stderr);
-        }
-        break; /* leave time loop */
-      }
-    }
-#ifdef IMAGE
-    if (input.wateruse_wd!= NULL && input.landuse!=NULL)
-    {
-      /* read wateruse data from file */
-      rc=getwateruse_wd(input.wateruse_wd, grid, wateruse_year, config);
-      if(iserror(rc,config))
-      {
-        if(isroot(*config))
-        {
-          fprintf(stderr, "ERROR104: Simulation stopped in getwateruse_wd().\n");
-          fflush(stderr);
-        }
-        break; /* leave time loop */
-      }
-    }
-#endif
-#endif
-    }
-    if(config->ispopulation)
-    {
-      rc=readpopdens(input.popdens,year,grid,config);
-      if(iserror(rc,config))
-      {
-        if(isroot(*config))
-        {
-          fprintf(stderr,"ERROR104: Simulation stopped in readpopdens().\n");
-          fflush(stderr);
-        }
-        break; /* leave time loop */
-      }
-    }
-    if(config->fire==SPITFIRE || config->fire==SPITFIRE_TMAX)
-    {
-      rc=gethumanignition(input.human_ignition,year,grid,config);
-      if(iserror(rc,config))
-      {
-        if(isroot(*config))
-        {
-          fprintf(stderr,"ERROR104: Simulation stopped in gethumanignition().\n");
-          fflush(stderr);
-        }
-        break; /* leave time loop */
-      }
-    }
-    if (config->prescribe_landcover != NO_LANDCOVER)
-    {
-      rc=readlandcover(input.landcover,grid,year,config);
-      if(iserror(rc,config))
-      {
-        if(isroot(*config))
-        {
-          fprintf(stderr,"ERROR104: Simulation stopped in readlandcover().\n");
-          fflush(stderr);
-        }
-        break; /* leave time loop */
-      }
-    }
-    /* perform iteration for one year */
-    if(year>=config->outputyear)
-      openoutput_yearly(output,year,config);
-    iterateyear(output,grid,input,co2,npft,ncft,year,config);
-    if(year>=config->outputyear)
-      closeoutput_yearly(output,config);
-    /* calculating total carbon and water fluxes collected from all tasks */
-    cflux_total=flux_sum(&flux,grid,config);
-    if(isroot(*config))
-    {
-      /* output of total carbon flux and water on stdout on root task */
-      printflux(flux,cflux_total,year,config);
-      if(output->files[GLOBALFLUX].isopen)
-        fprintcsvflux(output->files[GLOBALFLUX].fp.file,flux,cflux_total,
-                      config->outnames[GLOBALFLUX].scale,year,config);
-      if(output->files[GLOBALFLUX].issocket)
-        send_flux_coupler(&flux,config->outnames[GLOBALFLUX].scale,year,config);
-      fflush(stdout); /* force output to console */
-#ifdef SAFE
-      check_balance(flux,year,config);
-#endif
-    }
+    if(iterateyear(output,grid,input,co2,npft,ncft,year,config))
+      break;
 #if defined IMAGE && defined COUPLED
     if(year>=config->start_coupling)
     {
@@ -355,8 +211,6 @@ int iterate(Outputfile *output, /**< Output file data */
              "Problem with writing maps for transfer to IMAGE");
     }
 #endif
-    if(iswriterestart(config) && year==config->restartyear)
-      fwriterestart(grid,npft,ncft,year,config->write_restart_filename,FALSE,config); /* write restart file */
     if(year<config->lastyear && ischeckpointrestart(config))
     {
 #ifdef USE_MPI

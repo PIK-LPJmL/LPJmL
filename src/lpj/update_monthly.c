@@ -17,36 +17,49 @@
 
 #include "lpj.h"
 
-void update_monthly(Cell *cell,  /**< Pointer to cell */
-                    Real mtemp,  /**< monthly average temperature (deg C) */
-                    Real mprec,  /**< monthly average precipitation (mm) */
-                    int month,   /**< month (0..11) */
-                    const Config *config /**< LPJmL configuration */
+void update_monthly(Outputfile *output,  /**< Output file data */
+                    Cell grid[],         /**< cell array */
+                    Climate *climate,    /**< pointer to climate data */
+                    int month,           /**< month (0..11) */
+                    int year,            /**< simulation year (AD) */
+                    int npft,            /**< number of natural PFTs */
+                    int ncft,            /**< number of crop PFTs */
+                    const Config *config /**< LPJ configuration */
                    )
 {
-  int p;
   Pft *pft;
-  int s;
   Stand *stand;
-
-  monthly_climbuf(&cell->climbuf,mtemp,mprec,cell->output.mpet,month);
-  if(cell->ml.dam) /* to store the monthly inflow and demand */
-    update_reservoir_monthly(cell,month,config);
-  foreachstand(stand,s,cell->standlist)
+  Real mtemp,mprec;
+  int p,s,cell;
+  for(cell=0;cell<config->ngridcell;cell++)
   {
-    getlag(&stand->soil,month);
-    foreachpft(pft,p,&stand->pftlist)
-      turnover_monthly(&stand->soil.litter,pft,config);
-  } /* of foreachstand */
+    if(!grid[cell].skip)
+    {
+      mtemp=getmtemp(climate,&grid[cell].climbuf,cell,month);
+      mprec=getmprec(climate,&grid[cell].climbuf,cell,month);
+      monthly_climbuf(&grid[cell].climbuf,mtemp,mprec,grid[cell].output.mpet,month);
+      if(grid[cell].ml.dam) /* to store the monthly inflow and demand */
+        update_reservoir_monthly(grid+cell,month,config);
+      foreachstand(stand,s,grid[cell].standlist)
+      {
+        getlag(&stand->soil,month);
+        foreachpft(pft,p,&stand->pftlist)
+          turnover_monthly(&stand->soil.litter,pft,config);
+      } /* of foreachstand */
 #if defined IMAGE && defined COUPLED
-  if(cell->ml.image_data!=NULL)
-  {
-    //cell->ml.image_data->mirrwatdem[month]+=cell->output.irrig+cell->output.mconv_loss_evap+cell->output.mconv_loss_drain;
-    //cell->ml.image_data->mevapotr[month] += (cell->output.transp + cell->output.evap + cell->output.interc + cell->output.mevap_lake + cell->output.mevap_res + cell->output.mconv_loss_evap + cell->output.mconv_loss_drain);
-    cell->ml.image_data->mpetim[month] += cell->output.mpet;
-  }
+      if(grid[cell].ml.image_data!=NULL)
+      {
+        //grid[cell].ml.image_data->mirrwatdem[month]+=grid[cell].output.irrig+grid[cell].output.mconv_loss_evap+grid[cell].output.mconv_loss_drain;
+        //grid[cell].ml.image_data->mevapotr[month] += (grid[cell].output.transp + grid[cell].output.evap + grid[cell].output.interc + grid[cell].output.mevap_lake + grid[cell].output.mevap_res + grid[cell].output.mconv_loss_evap + grid[cell].output.mconv_loss_drain);
+        grid[cell].ml.image_data->mpetim[month] += grid[cell].output.mpet;
+      }
 #endif
-  /* for water balance check */
-  cell->balance.awater_flux+=((cell->discharge.mfout-cell->discharge.mfin)/cell->coord.area);
+      /* for water balance check */
+      grid[cell].balance.awater_flux+=((grid[cell].discharge.mfout-grid[cell].discharge.mfin)/grid[cell].coord.area);
+    } /* if(!grid[cell].skip) */
+  } /* of 'for(cell=0;...)' */
 
+  if(year>=config->outputyear && month<NMONTH-1)
+    /* write out monthly output, postpone last timestep until after annual processes */
+    fwriteoutput(output,grid,year,month,MONTHLY,npft,ncft,config);
 } /* of 'monthly_update' */
