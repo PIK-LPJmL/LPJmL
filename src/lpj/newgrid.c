@@ -276,6 +276,7 @@ static Cell *newgrid2(Config *config,          /* Pointer to LPJ configuration *
     grid[i].balance.estab_storage_grass[0].carbon=grid[i].balance.estab_storage_grass[1].carbon=20.0;
     grid[i].balance.estab_storage_grass[0].nitrogen=grid[i].balance.estab_storage_grass[1].nitrogen=2.0;
     grid[i].balance.surface_storage_last=grid[i].balance.soil_storage_last=0.0;
+    grid[i].balance.ricefrac=0.0;
     grid[i].discharge.waterdeficit=0.0;
     grid[i].discharge.wateruse=0.0;
 #ifdef IMAGE

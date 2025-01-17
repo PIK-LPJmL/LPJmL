@@ -167,6 +167,11 @@ Real daily_agriculture(Stand *stand,                /**< [inout] stand pointer *
     {
       update_separate_harvests(output,pft,data->irrigation,day,npft,ncft,config);
       harvest_crop(output,stand,pft,npft,ncft,year,config);
+      if(isrice)
+      {
+        stand->cell->balance.ricefrac-=stand->frac;
+        if(stand->cell->balance.ricefrac<epsilon) stand->cell->balance.ricefrac=0;
+      }
       /* return irrig_stor and irrig_amount */
       if(data->irrigation||isrice)
       {
@@ -225,7 +230,7 @@ Real daily_agriculture(Stand *stand,                /**< [inout] stand pointer *
         stand->type=&kill_stand;
         stand->growing_days=0;
 //      }
-    }
+    }   //if more than on cft is on rice field it could be that isrice needs to be set FALSE, but it is used later on
   } /* of foreachpft() */
 
   /* green water inflow */

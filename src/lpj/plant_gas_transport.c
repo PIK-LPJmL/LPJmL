@@ -135,8 +135,7 @@ void plant_gas_transport(Stand *stand,        /**< pointer to soil data */
               CH4_sink+=CH4_plant;
             CH4_plant_all+=CH4_plant;
           }
-          if((stand->type->landusetype==SETASIDE_RF || stand->type->landusetype==SETASIDE_IR || stand->type->landusetype==AGRICULTURE  || stand->type->landusetype==SETASIDE_WETLAND) &&
-              ((pft->par->id==config->rice_pft || stand->soil.iswetland) && CH4_plant>0))
+          if((stand->type->landusetype==AGRICULTURE) && (pft->par->id==config->rice_pft && CH4_plant>0))
             CH4_rice+=CH4_plant;
           /*OXYGEN*/
           Conc_new = 0;
@@ -158,8 +157,8 @@ void plant_gas_transport(Stand *stand,        /**< pointer to soil data */
   stand->cell->balance.aCH4_em+=CH4_plant_all*stand->frac;
   if(CH4_rice>0) stand->cell->balance.aCH4_rice+=CH4_rice*stand->frac;
   getoutput(&stand->cell->output,CH4_PLANT_GAS,config)+=CH4_plant_all*stand->frac;
-  if(CH4_rice>0) getoutput(&stand->cell->output,CH4_RICE_EM,config)+=CH4_rice*stand->frac/stand->cell->balance.ricefrac;
-  if((stand->type->landusetype==SETASIDE_RF || stand->type->landusetype==SETASIDE_IR || stand->type->landusetype==AGRICULTURE  || stand->type->landusetype==SETASIDE_WETLAND) && CH4_rice==0)
+  if(CH4_rice>0 && stand->cell->balance.ricefrac>epsilon) getoutput(&stand->cell->output,CH4_RICE_EM,config)+=CH4_rice*stand->frac/stand->cell->balance.ricefrac;
+  if((stand->type->landusetype==SETASIDE_RF || stand->type->landusetype==SETASIDE_IR || stand->type->landusetype==AGRICULTURE  || stand->type->landusetype==SETASIDE_WETLAND || stand->type->landusetype==GRASSLAND) && CH4_rice==0)
   {
     stand->cell->balance.aCH4_setaside+=CH4_plant_all*stand->frac;
     getoutput(&stand->cell->output,CH4_SETASIDE,config)+=CH4_plant_all*stand->frac;

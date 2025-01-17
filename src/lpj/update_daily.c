@@ -211,11 +211,11 @@ void update_daily(Cell *cell,            /**< cell pointer           */
     getoutput(&cell->output,CH4_SINK,config)+=CH4_sink*stand->frac;
     cell->balance.aCH4_sink+=CH4_sink*stand->frac;
 
-    if((stand->type->landusetype==SETASIDE_RF || stand->type->landusetype==SETASIDE_IR || stand->type->landusetype==AGRICULTURE || stand->type->landusetype==SETASIDE_WETLAND)&& CH4_em>0)
+    if((stand->type->landusetype==SETASIDE_RF || stand->type->landusetype==SETASIDE_IR || stand->type->landusetype==AGRICULTURE || stand->type->landusetype==SETASIDE_WETLAND || stand->type->landusetype==GRASSLAND)&& CH4_em>0)
     {
       foreachpft(pft, p, &stand->pftlist)
       {
-        if(pft->par->id==config->rice_pft || stand->soil.iswetland)
+        if(pft->par->id==config->rice_pft  && stand->cell->balance.ricefrac>epsilon)
         {
           getoutput(&cell->output,CH4_RICE_EM,config)+=CH4_em*stand->frac/cell->balance.ricefrac;
           cell->balance.aCH4_rice+=CH4_em*stand->frac;
@@ -239,11 +239,11 @@ void update_daily(Cell *cell,            /**< cell pointer           */
     cell->balance.aCH4_em+=ebul*stand->frac;
     getoutput(&cell->output,CH4_EBULLITION,config) += ebul*stand->frac;
 
-    if((stand->type->landusetype==SETASIDE_RF || stand->type->landusetype==SETASIDE_IR || stand->type->landusetype==AGRICULTURE || stand->type->landusetype==SETASIDE_WETLAND) && ebul>0)
+    if((stand->type->landusetype==SETASIDE_RF || stand->type->landusetype==SETASIDE_IR || stand->type->landusetype==AGRICULTURE || stand->type->landusetype==SETASIDE_WETLAND || stand->type->landusetype==GRASSLAND) && ebul>0)
     {
       foreachpft(pft, p, &stand->pftlist)
       {
-        if(pft->par->id==config->rice_pft || stand->soil.iswetland)
+        if(pft->par->id==config->rice_pft && stand->cell->balance.ricefrac>epsilon)
         {
           getoutput(&cell->output,CH4_RICE_EM,config)+=ebul*stand->frac/cell->balance.ricefrac;
           cell->balance.aCH4_rice+=ebul*stand->frac;
@@ -288,11 +288,11 @@ void update_daily(Cell *cell,            /**< cell pointer           */
     cell->balance.aCH4_em+=CH4_em*stand->frac;
     if(stand->type->landusetype==WETLAND)
       getoutput(&stand->cell->output,CH4_EMISSIONS_WET,config)+=CH4_em;
-    if((stand->type->landusetype==SETASIDE_RF || stand->type->landusetype==SETASIDE_IR || stand->type->landusetype==AGRICULTURE || stand->type->landusetype==SETASIDE_WETLAND)&& CH4_em>0)
+    if((stand->type->landusetype==SETASIDE_RF || stand->type->landusetype==SETASIDE_IR || stand->type->landusetype==AGRICULTURE || stand->type->landusetype==SETASIDE_WETLAND || stand->type->landusetype==GRASSLAND)&& CH4_em>0)
     {
       foreachpft(pft, p, &stand->pftlist)
       {
-        if(pft->par->id==config->rice_pft || stand->soil.iswetland)
+        if(pft->par->id==config->rice_pft && stand->cell->balance.ricefrac>epsilon)
         {
           getoutput(&cell->output,CH4_RICE_EM,config)+=CH4_em*stand->frac/cell->balance.ricefrac;
           cell->balance.aCH4_rice+=CH4_em*stand->frac;
