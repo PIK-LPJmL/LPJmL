@@ -312,10 +312,8 @@ static Cell *newgrid2(Config *config,          /* Pointer to LPJ configuration *
     grid[i].hydrotopes.wetland_wtable_max = -40;
     grid[i].hydrotopes.wetland_wtable_mean = -40;
     grid[i].hydrotopes.wtable_mean = -40;
-#ifdef WITH_GLACIERS
     grid[i].is_glaciated = FALSE;
     grid[i].was_glaciated = FALSE;
-#endif
     grid[i].lateral_water = 0.0;
     grid[i].ignition.nesterov_accum=0;
     grid[i].ignition.nesterov_max=0;

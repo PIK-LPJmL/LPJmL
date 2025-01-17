@@ -66,11 +66,14 @@ void iterateyear(Outputfile *output,  /**< Output file data */
     if(!grid[cell].skip)
     {
       init_annual(grid+cell,ncft,config);
-#ifdef WITH_GLACIERS
+      if (config->with_glaciers)
+      {
+        grid[cell].icefrac = geticefrac(input.icefrac, cell);
+        grid[cell].is_glaciated=grid[cell].icefrac>=1-epsilon;
+      }
       if (grid[cell].is_glaciated)
         check_glaciated(grid + cell,config);
       else
-#endif
       {
         if(config->withlanduse)
         {
@@ -95,6 +98,7 @@ void iterateyear(Outputfile *output,  /**< Output file data */
             getoutput(&grid[cell].output,DELTAC_MGRASS,config)-=standstocks(stand).carbon*stand->frac;
         }
       }
+      grid[cell].was_glaciated=grid[cell].is_glaciated;
       initgdd(grid[cell].gdd,npft);
     } /*gridcell skipped*/
   } /* of for(cell=...) */
@@ -148,8 +152,6 @@ void iterateyear(Outputfile *output,  /**< Output file data */
         {
           if(config->ispopulation)
             popdens=getpopdens(input.popdens,cell);
-          if (config->isanomaly)
-            grid[cell].icefrac = geticefrac(input.icefrac, cell);
           grid[cell].output.dcflux=grid[cell].output.bm_inc=0;
           initoutputdata(&((grid+cell)->output),DAILY,year,config);
           /* get daily values for temperature, precipitation and sunshine */

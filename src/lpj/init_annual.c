@@ -54,7 +54,7 @@ void init_annual(Cell *cell,          /**< Pointer to cell */
       cell->output.syear2[p]=cell->output.syear[p]=0;
   foreachstand(stand,s,cell->standlist)
   {
-	stand->soil.icefrac=cell->icefrac;
+    stand->soil.icefrac=cell->icefrac;
 #ifdef DEBUG3
     printf("init npft=%d\n",stand->pftlist.n);
 #endif

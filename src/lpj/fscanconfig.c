@@ -338,9 +338,12 @@ Bool fscanconfig(Config *config,    /**< LPJ configuration */
   if(fscankeywords(file,&config->with_dynamic_ch4,"methane",methane,3,FALSE,verbose))
     return TRUE;
   fscanbool2(file, &config->isanomaly, "anomaly");
+  config->with_glaciers=FALSE;
   if(config->isanomaly)
   {
     fscanint2(file,&config->time_shift,"time_shift");
+    if(fscanbool(file,&config->with_glaciers,"with_glaciers",!config->pedantic,verbose))
+      return TRUE;
   }
   if(config->isanomaly && config->with_radiation!=RADIATION)
   {
@@ -865,7 +868,10 @@ Bool fscanconfig(Config *config,    /**< LPJ configuration */
   if (config->isanomaly)
   {
     scanclimatefilename(input, &config->delta_temp_filename,FALSE,TRUE,"delta_temp");
-    scanclimatefilename(input,&config->icefrac_filename,TRUE,TRUE,"icefrac");
+    if(config->with_glaciers)
+    {
+      scanclimatefilename(input,&config->icefrac_filename,TRUE,TRUE,"icefrac");
+    }
     scanclimatefilename(input, &config->delta_prec_filename,FALSE,TRUE, "delta_prec");
   }
   scanclimatefilename(input,&config->prec_filename,TRUE,TRUE,"prec");

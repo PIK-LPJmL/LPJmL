@@ -54,7 +54,7 @@ Bool initinput(Input *input,        /**< Input data */
     input->wateruse_wd=NULL;
 #endif
   }
-  if (config->isanomaly)
+  if (config->with_glaciers)
   {
     if ((input->icefrac = initicefrac(config)) == NULL)
       return TRUE;

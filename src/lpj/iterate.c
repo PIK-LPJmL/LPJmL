@@ -142,7 +142,8 @@ int iterate(Outputfile *output, /**< Output file data */
       if (config->isanomaly)
       {
         getclimate(input.climate,grid,0,config->firstyear,config);
-        readicefrac(input.icefrac,grid,0,config->firstyear,config);
+        if(config->with_glaciers)
+          readicefrac(input.icefrac,grid,0,config->firstyear,config);
         addanomaly_climate(input.climate,data_index);
       }
     }
@@ -190,17 +191,20 @@ int iterate(Outputfile *output, /**< Output file data */
               fflush(stderr);
               break; /* leave time loop */
             }
-            if (readicefrac(input.icefrac, grid, 1, year, config))
+            if(config->with_glaciers)
             {
-              fprintf(stderr, "ERROR104: Simulation stopped in readicefrac().\n");
-              fflush(stderr);
-              break; /* leave time loop */
-            }
-            if (readicefrac(input.icefrac, grid, 2, year + config->delta_year, config))
-            {
-              fprintf(stderr, "ERROR104: Simulation stopped in readicefrac().\n");
-              fflush(stderr);
-              break; /* leave time loop */
+              if (readicefrac(input.icefrac, grid, 1, year, config))
+              {
+                fprintf(stderr, "ERROR104: Simulation stopped in readicefrac().\n");
+                fflush(stderr);
+                break; /* leave time loop */
+              }
+              if (readicefrac(input.icefrac, grid, 2, year + config->delta_year, config))
+              {
+                fprintf(stderr, "ERROR104: Simulation stopped in readicefrac().\n");
+                fflush(stderr);
+                break; /* leave time loop */
+              }
             }
             index = 0;
           }
@@ -212,16 +216,20 @@ int iterate(Outputfile *output, /**< Output file data */
               fflush(stderr);
               break; /* leave time loop */
             }
-            if (readicefrac(input.icefrac, grid, index + 1, year, config))
+            if(config->with_glaciers)
             {
-              fprintf(stderr, "ERROR104: Simulation stopped in readicefrac().\n");
-              fflush(stderr);
-              break; /* leave time loop */
+              if (readicefrac(input.icefrac, grid, index + 1, year, config))
+              {
+                fprintf(stderr, "ERROR104: Simulation stopped in readicefrac().\n");
+                fflush(stderr);
+                break; /* leave time loop */
+              }
             }
             index = (index + 1) % 2;
           }
           interpolate_climate(input.climate, index, (Real)((year - config->firstyear) % config->delta_year) / config->delta_year);
-          interpolate_icefrac(input.icefrac, index, (Real)((year - config->firstyear) % config->delta_year) / config->delta_year);
+          if(config->with_glaciers)
+            interpolate_icefrac(input.icefrac, index, (Real)((year - config->firstyear) % config->delta_year) / config->delta_year);
         }
         else
         {
@@ -231,11 +239,14 @@ int iterate(Outputfile *output, /**< Output file data */
             fflush(stderr);
             break; /* leave time loop */
           }
-          if (readicefrac(input.icefrac,grid,0,year,config))
+          if(config->with_glaciers)
           {
-            fprintf(stderr, "ERROR104: Simulation stopped in readicefrac().\n");
-            fflush(stderr);
-            break; /* leave time loop */
+            if (readicefrac(input.icefrac,grid,0,year,config))
+            {
+              fprintf(stderr, "ERROR104: Simulation stopped in readicefrac().\n");
+              fflush(stderr);
+              break; /* leave time loop */
+            }
           }
         }
         addanomaly_climate(input.climate,data_index);

@@ -202,10 +202,10 @@ struct config
   int compress;           /**< compress NetCDF output (0: no compression) */
   float missing_value;    /**< Missing value in NetCDF files */
   Variable *outnames;
-  Bool isanomaly;
+  Bool isanomaly;        /**< with climate anomalies (TRUE/FALSE) */
   int time_shift;
   int delta_year;
-  Bool with_glacier;
+  Bool with_glaciers;    /**< read ice fraction (TRUE/FALSE) */
   int  with_dynamic_ch4;
 #ifdef USE_MPI
   MPI_Comm comm; /**< MPI communicator */

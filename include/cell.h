@@ -131,10 +131,8 @@ Received 19 November 1997; accepted 15 January 1999*/
 #endif
   Real soilph;              /**< soil pH */
   Bool skip;                /**< Invalid soil code in cell (TRUE/FALSE) */
-#ifdef WITH_GLACIERS
-  Bool was_glaciated;
-  Bool is_glaciated;
-#endif
+  Bool was_glaciated;       /**< cell was fully covered with ice in previous year*/
+  Bool is_glaciated;        /**< cell is fully covered with ice */
   Managed_land ml;          /**< Managed land */
   Output output;            /**< Output data */
   Discharge discharge;

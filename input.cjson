@@ -13,7 +13,7 @@
 /**************************************************************************************/
 
 {
-  "delta_year" : 100,
+  "delta_year" : 100, /* time step in anomalies (yrs) */
   "icefrac" :      { "fmt" : "clm", "name" : "/p/projects/open/sibyll/palmod/climber_experiment/climber2_lgc_ice_0.5.clm"},
   "delta_temp" :   { "fmt" : "clm", "name" : "/p/projects/open/sibyll/palmod/climber_experiment/climber2_lgc_temp_0.5.clm"},
   "delta_prec" :   { "fmt" : "clm", "name" : "/p/projects/open/sibyll/palmod/climber_experiment/climber2_lgc_prec_0.5.clm"},
