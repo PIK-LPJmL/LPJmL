@@ -100,7 +100,7 @@ void gasdiffusion(Soil *soil,     /**< [inout] pointer to soil data */
       {
         dO2 = 0.5*(D_O2[l] + ((l == 0) ? D_O2[l] : D_O2[l - 1]))*timestep2sec(1.0, steps) /((l==0) ? soildepth[l] : (0.5* (soildepth[l]+ soildepth[l-1]))) * 1000
           *(O2_upper - soil->O2[l] / soildepth[l] / epsilon_O2[l] * 1000);
-        if(l==0)
+        if(l)
           dO2*=0.5;
         if(dO2>0 && l>0)
         {
