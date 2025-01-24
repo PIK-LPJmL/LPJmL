@@ -72,7 +72,7 @@ Real ebullition(Soil *soil,   /**< pointer to soil data */
       {
 */
         Q_ebull2=k_e*(soil->CH4[l]/soildepth[l]/epsilon_CH4[l]*1000*ratio-C_thres)*soildepth[l]*epsilon_CH4[l]*1e3;
-        Q_ebull2= max(0,min(soil->CH4[l]/soildepth[l]/epsilon_CH4[l]*1000,Q_ebull2));
+        Q_ebull2= max(0,min(soil->CH4[l],Q_ebull2));
         soil->CH4[l] -= Q_ebull2;
         Q_ebull[l]+=Q_ebull2;
       }
