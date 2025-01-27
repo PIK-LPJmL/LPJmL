@@ -4,7 +4,7 @@
 /**                                                                                \n**/
 /**     C implementation of LPJmL                                                  \n**/
 /**                                                                                \n**/
-/**     Function prints formated output into string                                \n**/
+/**     Function prints formated output into allocated string                      \n**/
 /**                                                                                \n**/
 /** (C) Potsdam Institute for Climate Impact Research (PIK), see COPYRIGHT file    \n**/
 /** authors, and contributors see AUTHORS file                                     \n**/
@@ -22,7 +22,7 @@
 
 char *getsprintf(const char *fmt, /**< format string */
                  ...              /**< optional parameter for output */
-                )                 /** \return allocate string with output or NULL on error */
+                )                 /** \return allocated string with output or NULL on error */
 {
   char *s;
   size_t len;
@@ -45,4 +45,4 @@ char *getsprintf(const char *fmt, /**< format string */
 #endif
   va_end(ap);
   return s;
-} /* of 'fail' */
+} /* of 'getsprintf' */
