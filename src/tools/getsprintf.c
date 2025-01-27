@@ -39,7 +39,7 @@ char *getsprintf(const char *fmt, /**< format string */
     return NULL;
   va_start(ap,fmt);
 #ifdef _WIN32
-  _vsntprintf_s(s, len+1, _TRUNCATE, fmt, ap);
+  _vsnprintf_s(s, len+1, _TRUNCATE, fmt, ap);
 #else
   vsnprintf(s,len+1,fmt, ap);
 #endif
