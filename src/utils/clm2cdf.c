@@ -160,7 +160,7 @@ static Cdf *create_cdf(const char *filename,
   }
   else
   {
-    s=getprintf("%s: %s",strdate(&t),args);
+    s=getsprintf("%s: %s",strdate(&t),args);
   }
   check(s);
   rc=nc_put_att_text(cdf->ncid,NC_GLOBAL,"history",strlen(s),s);

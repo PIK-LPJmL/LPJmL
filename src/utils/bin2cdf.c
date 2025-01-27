@@ -130,7 +130,7 @@ static Cdf *create_cdf(const char *filename,
   time(&t);
   if(history!=NULL)
   {
-    s=getprintf("%s\n%s: %s",history,strdate(&t),cmdline);
+    s=getsprintf("%s\n%s: %s",history,strdate(&t),cmdline);
   }
   else
   {
