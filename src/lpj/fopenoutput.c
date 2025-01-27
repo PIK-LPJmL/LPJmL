@@ -305,108 +305,98 @@ void openoutput_yearly(Outputfile *output,int year,const Config *config)
 {
   char *filename;
   Header header;
-  int i,size,count;
+  int i,size;
   for(i=0;i<config->n_out;i++)
     if(config->outputvars[i].oneyear)
     {
       if(isroot(*config))
       {
-        count=snprintf(NULL,0,config->outputvars[i].filename.name,year);
-        if(count==-1)
+        filename=getsprintf(config->outputvars[i].filename.name,year);
+        check(filename);
+        if(config->outputvars[i].filename.meta)
+          fprintoutputjson(i,year,config);
+        switch(config->outputvars[i].filename.fmt)
         {
-          fprintf(stderr,"ERROR247: Invalid format in filename '%s'.\n",config->outputvars[i].filename.name);
-          output->files[config->outputvars[i].id].isopen=FALSE;
-        }
-        else
-        {
-          filename=malloc(count+1);
-          check(filename);
-          snprintf(filename,count+1,config->outputvars[i].filename.name,year);
-          if(config->outputvars[i].filename.meta)
-            fprintoutputjson(i,year,config);
-          switch(config->outputvars[i].filename.fmt)
-          {
-            case CLM:
-              if((output->files[config->outputvars[i].id].fp.file=fopen(filename,"wb"))==NULL)
-              {
-                printfcreateerr(filename);
-                output->files[config->outputvars[i].id].isopen=FALSE;
-              }
-              else
-              {
-                output->files[config->outputvars[i].id].isopen=TRUE;
-                header.firstyear=year;
-                header.nyear=1;
-                header.ncell=config->total;
-                header.firstcell=config->firstgrid;
-                header.cellsize_lon=(float)config->resolution.lon;
-                header.cellsize_lat=(float)config->resolution.lat;
-                header.scalar=1;
-                header.order=CELLSEQ;
-                header.timestep=1;
-                header.nstep=getnyear(config->outnames,config->outputvars[i].id);
-                header.nbands=outputsize(config->outputvars[i].id,
-                                         config->npft[GRASS]+config->npft[TREE],
-                                         config->npft[CROP],config);
-                if(config->outputvars[i].id==SDATE || config->outputvars[i].id==HDATE || config->outputvars[i].id==SEASONALITY)
-                  header.datatype=LPJ_SHORT;
-                else
-                  header.datatype=LPJ_FLOAT;
-                fwriteheader(output->files[config->outputvars[i].id].fp.file,
-                             &header,LPJOUTPUT_HEADER,config->outputvars[i].filename.version);
-
-              }
-              break;
-          case RAW:
+          case CLM:
             if((output->files[config->outputvars[i].id].fp.file=fopen(filename,"wb"))==NULL)
             {
               printfcreateerr(filename);
               output->files[config->outputvars[i].id].isopen=FALSE;
             }
             else
-              output->files[config->outputvars[i].id].isopen=TRUE;
-            break;
-          case TXT:
-            if((output->files[config->outputvars[i].id].fp.file=fopen(filename,"w"))==NULL)
             {
-              output->files[config->outputvars[i].id].isopen=FALSE;
-              printfcreateerr(filename);
-            }
-            else
               output->files[config->outputvars[i].id].isopen=TRUE;
-            break;
-          case CDF:
-            size=outputsize(config->outputvars[i].id,
-                            config->npft[GRASS]+config->npft[TREE],
-                            config->npft[CROP],config);
-           if(size==1)
-             output->files[config->outputvars[i].id].isopen=!create_netcdf(&output->files[config->outputvars[i].id].fp.cdf,filename,
-                           config->outnames[config->outputvars[i].id].var,
-                           config->outnames[config->outputvars[i].id].standard_name,
-                           config->outnames[config->outputvars[i].id].long_name,
-                           config->outnames[config->outputvars[i].id].unit,
-                           getoutputtype(config->outputvars[i].id,config->grid_type),
-                           getnyear(config->outnames,config->outputvars[i].id),1,year,TRUE,
-                           (config->outputvars[i].id==ADISCHARGE) ? output->index_all : output->index,config);
-           else
-             output->files[config->outputvars[i].id].isopen=!create_pft_netcdf(&output->files[config->outputvars[i].id].fp.cdf,filename,
-                           config->outputvars[i].id,
-                           config->npft[GRASS]+config->npft[TREE],
-                           config->npft[CROP],
-                           config->outnames[config->outputvars[i].id].var,
-                           config->outnames[config->outputvars[i].id].standard_name,
-                           config->outnames[config->outputvars[i].id].long_name,
-                           config->outnames[config->outputvars[i].id].unit,
-                           getoutputtype(config->outputvars[i].id,config->grid_type),
-                           getnyear(config->outnames,config->outputvars[i].id),1,year,TRUE,
-                               output->index,config);
+              header.firstyear=year;
+              header.nyear=1;
+              header.ncell=config->total;
+              header.firstcell=config->firstgrid;
+              header.cellsize_lon=(float)config->resolution.lon;
+              header.cellsize_lat=(float)config->resolution.lat;
+              header.scalar=1;
+              header.order=CELLSEQ;
+              header.timestep=1;
+              header.nstep=getnyear(config->outnames,config->outputvars[i].id);
+              header.nbands=outputsize(config->outputvars[i].id,
+                                       config->npft[GRASS]+config->npft[TREE],
+                                       config->npft[CROP],config);
+              if(config->outputvars[i].id==SDATE || config->outputvars[i].id==HDATE || config->outputvars[i].id==SEASONALITY)
+                header.datatype=LPJ_SHORT;
+              else
+                header.datatype=LPJ_FLOAT;
+              fwriteheader(output->files[config->outputvars[i].id].fp.file,
+                           &header,LPJOUTPUT_HEADER,config->outputvars[i].filename.version);
 
-          } /* of switch */
-          free(filename);
-        }
-     } /* of(isroot(*config)) */
+            }
+            break;
+        case RAW:
+          if((output->files[config->outputvars[i].id].fp.file=fopen(filename,"wb"))==NULL)
+          {
+            printfcreateerr(filename);
+            output->files[config->outputvars[i].id].isopen=FALSE;
+          }
+          else
+            output->files[config->outputvars[i].id].isopen=TRUE;
+          break;
+        case TXT:
+          if((output->files[config->outputvars[i].id].fp.file=fopen(filename,"w"))==NULL)
+          {
+            output->files[config->outputvars[i].id].isopen=FALSE;
+            printfcreateerr(filename);
+          }
+          else
+            output->files[config->outputvars[i].id].isopen=TRUE;
+          break;
+        case CDF:
+          size=outputsize(config->outputvars[i].id,
+                          config->npft[GRASS]+config->npft[TREE],
+                          config->npft[CROP],config);
+         if(size==1)
+           output->files[config->outputvars[i].id].isopen=!create_netcdf(&output->files[config->outputvars[i].id].fp.cdf,filename,
+                         config->outnames[config->outputvars[i].id].var,
+                         config->outnames[config->outputvars[i].id].standard_name,
+                         config->outnames[config->outputvars[i].id].long_name,
+                         config->outnames[config->outputvars[i].id].unit,
+                         getoutputtype(config->outputvars[i].id,config->grid_type),
+                         getnyear(config->outnames,config->outputvars[i].id),1,year,TRUE,
+                         (config->outputvars[i].id==ADISCHARGE) ? output->index_all : output->index,config);
+         else
+           output->files[config->outputvars[i].id].isopen=!create_pft_netcdf(&output->files[config->outputvars[i].id].fp.cdf,filename,
+                         config->outputvars[i].id,
+                         config->npft[GRASS]+config->npft[TREE],
+                         config->npft[CROP],
+                         config->outnames[config->outputvars[i].id].var,
+                         config->outnames[config->outputvars[i].id].standard_name,
+                         config->outnames[config->outputvars[i].id].long_name,
+                         config->outnames[config->outputvars[i].id].unit,
+                         getoutputtype(config->outputvars[i].id,config->grid_type),
+                         getnyear(config->outnames,config->outputvars[i].id),1,year,TRUE,
+                             output->index,config);
+
+        } /* of switch */
+        free(filename);
+      } /* of(isroot(*config)) */
 #ifdef USE_MPI
-     MPI_Bcast(&output->files[config->outputvars[i].id].isopen,1,MPI_INT,0,config->comm);
+      MPI_Bcast(&output->files[config->outputvars[i].id].isopen,1,MPI_INT,0,config->comm);
 #endif
-   }
+    }
 } /* of 'openoutput_yearly */

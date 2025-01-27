@@ -130,16 +130,13 @@ static Cdf *create_cdf(const char *filename,
   time(&t);
   if(history!=NULL)
   {
-    len=snprintf(NULL,0,"%s\n%s: %s",history,strdate(&t),cmdline);
-    s=malloc(len+1);
-    sprintf(s,"%s\n%s: %s",history,strdate(&t),cmdline);
+    s=getprintf("%s\n%s: %s",history,strdate(&t),cmdline);
   }
   else
   {
-    len=snprintf(NULL,0,"%s: %s",strdate(&t),cmdline);
-    s=malloc(len+1);
-    sprintf(s,"%s: %s",strdate(&t),cmdline);
+    s=getsprintf("%s: %s",strdate(&t),cmdline);
   }
+  check(s);
   rc=nc_put_att_text(cdf->ncid,NC_GLOBAL,"history",strlen(s),s);
   free(s);
   for(i=0;i<n_global;i++)
@@ -166,9 +163,7 @@ static Cdf *create_cdf(const char *filename,
       case 1:
         if(with_days)
         {
-          len=snprintf(NULL,0,"days since %d-1-1 0:0:0",baseyear);
-          s=malloc(len+1);
-          sprintf(s,"days since %d-1-1 0:0:0",baseyear);
+          s=getsprintf("days since %d-1-1 0:0:0",baseyear);
         }
         else
         {
@@ -176,21 +171,15 @@ static Cdf *create_cdf(const char *filename,
             s=strdup(YEARS_NAME);
           else
           {
-            len=snprintf(NULL,0,"years since %d-1-1 0:0:0",baseyear);
-            s=malloc(len+1);
-            sprintf(s,"years since %d-1-1 0:0:0",baseyear);
+            s=getsprintf("years since %d-1-1 0:0:0",baseyear);
           }
         }
         break;
       case NMONTH:
-        len=snprintf(NULL,0,"%s since %d-1-1 0:0:0",(with_days) ? "days" : "months",baseyear);
-        s=malloc(len+1);
-        sprintf(s,"%s since %d-1-1 0:0:0",(with_days) ? "days" : "months",baseyear);
+        s=getsprintf("%s since %d-1-1 0:0:0",(with_days) ? "days" : "months",baseyear);
         break;
       case NDAYYEAR:
-        len=snprintf(NULL,0,"days since %d-1-1 0:0:0",baseyear);
-        s=malloc(len+1);
-        sprintf(s,"days since %d-1-1 0:0:0",baseyear);
+        s=getsprintf("days since %d-1-1 0:0:0",baseyear);
         break;
       default:
         fprintf(stderr,"Invalid time step %d in '%s'.\n",header.nstep,filename);

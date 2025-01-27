@@ -87,20 +87,16 @@ Bool fprintoutputjson(int index,           /**< index in outputvars array */
   char **pftnames;
   time_t t;
   Type type;
-  int p,nbands,len,count,id;
+  int p,nbands,len,id;
   id=config->outputvars[index].id;
   if(config->outputvars[index].oneyear)
   {
-    count=snprintf(NULL,0,config->outputvars[index].filename.name,year);
-    if(count==-1)
-      return TRUE;
-    filename=malloc(count+1);
+    filename=getsprintf(config->outputvars[index].filename.name,year);
     if(filename==NULL)
     {
       printallocerr("filename");
       return TRUE;
     }
-    snprintf(filename,count+1,config->outputvars[index].filename.name,year);
   }
   else
     filename=config->outputvars[index].filename.name;
