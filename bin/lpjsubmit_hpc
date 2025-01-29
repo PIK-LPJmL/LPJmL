@@ -9,7 +9,8 @@
 ##    Usage: lpjsubmit [-h] [-class c] [-group g] -partition p] [-wtime time]  ##
 ##                     [-blocking n] [-o output] [-e error] [-q] [-nocheck]    ##
 ##                     [-norun] [-dependency id] [-couple progran]             ##
-##                     [-constraint c] [-option a=b] ntask LPJargs...          ##
+##                     [-constraint c] [-option a=b] [-cmd prg]                ##
+##                     ntask LPJargs...                                        ##
 ##                                                                             ##
 ## (C) Potsdam Institute for Climate Impact Research (PIK), see COPYRIGHT file ##
 ## authors, and contributors see AUTHORS file                                  ##
@@ -19,13 +20,14 @@
 ##                                                                             ##
 #################################################################################
 
-USAGE="Usage: lpjsubmit [-h] [-class c] [-group g] [-partition p][-wtime time] [-blocking n] [-o output] [-e error]\n[-q] [-nocheck] [-norun] [-dependency id] [-couple program] [-constraint c] [[-option a=b] ...] ntasks args ..."
+USAGE="Usage: lpjsubmit [-h] [-class c] [-group g] [-partition p] [-wtime time] [-blocking n] [-o output] [-e error]\n[-q] [-nocheck] [-norun] [-dependency id] [-couple program] [-constraint c] [[-option a=b] ...] [-cmd prg] ntasks args ..."
 
 class=short
 group=""
 wtime=""
 depend=""
 partition=""
+cmd=""
 constraint=""
 blocking="unlimited"
 output="lpjml.%j.out"
@@ -39,7 +41,7 @@ while(( "$#" )); do
     -h|--help)
       echo -e "lpjsubmit - Submit parallel SLURM job for LPJmL simulations\n"
       echo -e $USAGE
-      echo -e "\nArguments"
+      echo -e "\nArguments:"
       echo "-h,--help      print this help text"
       echo "-class c       set SLURM QOS, default is 'short'"
       echo "-group g       set SLURM account"
@@ -57,6 +59,7 @@ while(( "$#" )); do
 
       echo "-constraint c  define constraint c for SLURM job"
       echo "-option op=txt set option op to txt for SLURM job. This option can be repeated multiple times"
+      echo "-cmd prg       execute program prg before lpjml is started"
       echo "-couple prg    start couple prg in the background before starting LPJmL"
       echo "ntasks         number of MPI tasks"
       echo "args           arguments and options of lpjml"
@@ -164,6 +167,17 @@ while(( "$#" )); do
      fi
      shift 1
      couple=$1
+     shift 1
+     ;;
+   -cmd)
+     if [ $# -lt 2 ]
+     then
+       echo >&2 Error: program to execute missing
+       echo -e >&2 $USAGE
+       exit 1
+     fi
+     shift 1
+     cmd=$1
      shift 1
      ;;
    -constraint)
@@ -289,12 +303,21 @@ export LPJROOT=$LPJROOT
 ulimit -c unlimited
 
 EOF
+if [ "$cmd" != "" ]
+then
+  echo $cmd >>slurm.jcf
+  echo >>slurm.jcf
+fi
+echo "module list 2>&1 # show all loaded modules" >>slurm.jcf
+echo >>slurm.jcf
 if [ "$couple" != "" ]
 then
   echo $couple " &" >>slurm.jcf
   echo >>slurm.jcf
 fi
 cat <<EOF >>slurm.jcf
+mpirun \$LPJROOT/bin/lpjml --version
+
 mpirun \$LPJROOT/bin/lpjml $args
 
 rc=\$?  # save return code of mpirun
