@@ -31,13 +31,14 @@ void test_finite_volume_diffusion_timestep_resistances(void)
   Real amount[3] = {0.0, 0.0, 0.0};
   int n = 3;
   Real h[3] = {0.1, 0.2, 0.4};
-  Real gas_con_air = 0.0;
   Real diff[3] = {0.5, 0.1, 0.2};
-  Real porosity[3] = {0.1, 0.1, 0.1};
 
-  finite_volume_diffusion_timestep(amount, n, 10, h, gas_con_air, diff, porosity);
+  Real res_expected[3] = {0.1, 1.1, 2.0};
 
-  /* expected print = 0.1, 1.1, 2*/
+  Real res[3];
+  calculate_resistances(res, h, diff, n);
+
+  TEST_ASSERT_DOUBLE_ARRAY_WITHIN(TOLERANCE, res_expected, res, 3);
 }
 
 void test_finite_volume_diffusion_timestep_equilibrium(void)
@@ -196,9 +197,6 @@ void test_finte_volume_diffusion_analytical_solution_should_be_met_after_day(voi
   /* get analytical solution */
   Real analytical_solution = analytical_solution1d_heateq_semiinfinite(x[gp], day2sec(1.0), diff[0], porosity[0], init_gas_conc, gas_con_air);
 
-  printf("numerical solution: %f\n", numerical_solution);
-  printf("analytical solution: %f\n", analytical_solution);
-
   TEST_ASSERT_FLOAT_WITHIN(TOLERANCE, analytical_solution, numerical_solution);
 }
 
@@ -227,7 +225,7 @@ void test_finite_volume_stability(void)
   /* define physical quantities */
   for (int i = 0; i < n; i++)
   {
-    h[i] = 20000.0 / n; /* length of slab = 100 m */
+    h[i] = 20000.0 / n; 
     porosity[i] = 0.5;
 
     diff[i] = 0.01;
@@ -269,7 +267,113 @@ void test_finite_volume_stability(void)
   
   /* check that solution remained bounded  */
   TEST_ASSERT_TRUE(is_solution_bounded(amount, n));
+}
 
+void test_finite_volume_diffusion_error_is_thrown_too_many_timesteps(void)
+{
+  int n = 1000;
+  Real amount[n];
+  Real h[n];
+  Real gas_con_air = -20.0;
+  Real init_gas_conc = 10.0;
+  Real diff[n];
+  Real porosity[n];
+
+  /* define physical quantities */
+  for (int i = 0; i < n; i++)
+  {
+    h[i] = 20000.0 / n; 
+    porosity[i] = 0.001;
+
+    diff[i] = 100;
+  }
+
+  /* confirm that error is thrown */
+  TEST_ASSERT_EQUAL(-1, apply_finite_volume_diffusion_of_a_day(amount, n, h, gas_con_air, diff, porosity));
+}
+
+void test_total_amount_is_conserved(void)
+{
+  int n = 1000;
+  Real amount[n];
+  Real h[n];
+  Real gas_con_air = 10.0;
+  Real init_gas_conc = 10.0;
+  Real diff[n];
+  Real porosity[n];
+
+  /* define physical quantities */
+  for (int i = 0; i < n; i++)
+  {
+    h[i] = 20000.0 / n; /* length of slab = 100 m */
+    porosity[i] = 0.5;
+
+    diff[i] = 0.001;
+  }
+
+  for (int i = 700; i < 800; i++)
+  {
+    h[i] = h[i] * 0.3;
+    diff[i] = 0.002;
+  }
+
+  for (int i = 820; i < 840; i++)
+  {
+    porosity[i] = 0.8 ; /* g/m^2 */
+    diff[i] = 0.0001;
+  }
+
+  for (int i = 0; i < n; i++)
+  {
+    amount[i] = init_gas_conc * h[i] * porosity[i]; /* g/m^2 */
+  }
+
+  for (int i = 800; i < 900; i++)
+  {
+    amount[i] *= 2;
+  }
+
+  for (int i = 600; i < 620; i++)
+  {
+    amount[i] *= 0.5;
+  }
+
+  amount[500] *= 10000;
+
+  /* get total amount before */
+  Real total_amount_before = 0.0;
+  for (int i = 0; i < n; i++)
+  {
+    total_amount_before += amount[i];
+  }
+
+  /* print gas concentration before */
+  for (int i = 0; i < n; i++)
+  {
+    printf("b: %f\n", amount[i]/h[i]/porosity[i]);
+  }
+
+  /* apply one day of diffusion using apply_finite_volume_diffusion_of_a_day */
+  int r;
+  for (int i = 0; i < 100; i++)
+  {
+    r = apply_finite_volume_diffusion_of_a_day(amount, n, h, gas_con_air, diff, porosity);
+  }
+
+  /* print gas concentration after */
+  for (int i = 0; i < n; i++)
+  {
+    printf("a: %f\n", amount[i]/h[i]/porosity[i]);
+  }
+  printf("r: %d\n", r);
+  
+  /* check that total gas amount is conserved */
+  Real total_amount_after = 0.0;
+  for (int i = 0; i < n; i++)
+  {
+    total_amount_after += amount[i];
+  }  
+  TEST_ASSERT_EQUAL_DOUBLE(total_amount_after, total_amount_before);
 }
 
 // /* ------- helper functions ------- */
