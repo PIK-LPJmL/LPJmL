@@ -70,6 +70,9 @@ void gasdiffusion(Soil *soil,     /**< [inout] pointer to soil data */
       V = 0;
     }
     D_O2[l]=(D_O2_air*V + D_O2_water*soil_moist*soil->wsat[l]*BO2)*eta;  // eq. 11 in Khvorostyanov part 1 diffusivity (m2 s-1)
+  }
+  for (l = 0; l<BOTTOMLAYER; l++)
+  {
     if(l==0)
           diff_u[l] = D_O2[l];
     else
@@ -86,7 +89,7 @@ void gasdiffusion(Soil *soil,     /**< [inout] pointer to soil data */
       if (l == 0)
         dt = (soildepth[l]*0.5*epsilon_O2[l] * 1e-6) /diff[l];
       else
-        dt = (0.5*soildepth[l] * soildepth[l-1] * 1e-6*epsilon_O2[l] * 1e-6) / diff[l];
+        dt = (0.5*soildepth[l] * soildepth[l-1] * 1e-6*epsilon_O2[l]) / diff[l];
 
 #ifdef SAFE
       if(isnan(dt))
@@ -156,7 +159,7 @@ void gasdiffusion(Soil *soil,     /**< [inout] pointer to soil data */
       soil->O2[l]+=delta[l];
     }
 
-    if (stop || t == MAXHEATSTEPS)
+    if (stop)
       break;
   } /* of for (t = 0; t<steps; ++t) */
 
@@ -175,6 +178,9 @@ void gasdiffusion(Soil *soil,     /**< [inout] pointer to soil data */
       V = 0;
     }
     D_CH4[l] = (D_CH4_air*V + D_CH4_water*soil_moist*soil->wsat[l]*BCH4)*eta;  // eq. 11 in Khvorostyanov part 1 diffusivity (m2 s-1)
+  }
+  for (l = 0; l<BOTTOMLAYER; l++)
+  {
     if(l==0)
           diff_u[l] = D_CH4[l];
     else
@@ -192,7 +198,7 @@ void gasdiffusion(Soil *soil,     /**< [inout] pointer to soil data */
       if (l == 0)
         dt = (soildepth[l]*0.5*epsilon_CH4[l] * 1e-6) /diff[l];
       else
-        dt = (0.5*soildepth[l] * soildepth[l-1] * 1e-6*epsilon_CH4[l] * 1e-6) / diff[l];
+        dt = (0.5*soildepth[l] * soildepth[l-1] * 1e-6*epsilon_CH4[l]) / diff[l];
 #ifdef SAFE
       if(isnan(dt))
       {
@@ -265,7 +271,7 @@ void gasdiffusion(Soil *soil,     /**< [inout] pointer to soil data */
    {
      soil->CH4[l]+=delta[l];
    }
-    if (stop || t == MAXHEATSTEPS)
+    if (stop)
       break;
   } /* of for (t = 0; t<steps; ++t) */
   end = soilmethane(soil); //do not multiply by *WC/WCH4, is used for methane fluxes here
