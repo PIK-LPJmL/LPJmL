@@ -42,6 +42,8 @@ of `major.minor.patch` with
 - Handling of NaN as missing value corrected in reading NetCDF files.
 - Doubled initialization of standtype array corrected in `lpj_clinber4.c`.
 - Option `type` corrected in `setclm`.
+- Check that CO2 data is coming completely from socket corrected in `readco2.c`.
+
 
 ## [5.9.16] - 2024-11-15
 
