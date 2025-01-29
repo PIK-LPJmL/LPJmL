@@ -1,6 +1,19 @@
 {
     "files.associations": {
         "limits": "c",
-        "format": "c"
+        "format": "c",
+        "array": "c",
+        "chrono": "c",
+        "deque": "c",
+        "string": "c",
+        "unordered_map": "c",
+        "unordered_set": "c",
+        "vector": "c",
+        "string_view": "c",
+        "initializer_list": "c",
+        "span": "c",
+        "text_encoding": "c",
+        "regex": "c",
+        "__bit_reference": "c"
     }
 }

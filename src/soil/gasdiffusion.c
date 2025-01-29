@@ -60,6 +60,8 @@ void gasdiffusion(Soil *soil,     /**< [inout] pointer to soil data */
   /*********************Diffusion of oxygen*************************************/
 
   O2_air = p_s / R_gas / degCtoK(airtemp)*O2s*WO2;       /*g/m3 oxygen concentration*/
+  Bool do_diffusion = TRUE;
+  Bool r = FALSE;
   for (l = 0; l<BOTTOMLAYER; l++)
   {
     soil_moist = getsoilmoist(soil,l);
@@ -70,14 +72,25 @@ void gasdiffusion(Soil *soil,     /**< [inout] pointer to soil data */
       V = 0;
     }
     D_O2[l]=(D_O2_air*V + D_O2_water*soil_moist*soil->wsat[l]*BO2)*eta;  // eq. 11 in Khvorostyanov part 1 diffusivity (m2 s-1)
+    if (epsilon_O2[l] <= 0.001)
+      do_diffusion = FALSE;
   }
+  if (do_diffusion)
+    r = apply_finite_volume_diffusion_of_a_day(soil->O2, BOTTOMLAYER, h, O2_air, D_O2, epsilon_O2);
+  if(r)
+  {
+    /* print all diffusivities and porosities */
+    for (l = 0; l<BOTTOMLAYER; l++)
+      printf("D_O2[%d]=%g, epsilon_O2[%d]=%g\n", l, D_O2[l], l, epsilon_O2[l]);
   
-  apply_finite_volume_diffusion_of_a_day(soil->O2, BOTTOMLAYER, h, O2_air, D_O2, epsilon_O2);
 
+    perror("Error in gasdiffusion: apply_finite_volume_diffusion_of_a_day for O2 returned TRUE");
+  }
 
   /*********************Diffusion of methane*************************************/
 
   CH4_air = p_s / R_gas / degCtoK(airtemp)*pch4*1e-6*WCH4;    /*g/m3 air methane concentration*/
+  do_diffusion = TRUE;
   for (l = 0; l<BOTTOMLAYER; l++)
   {
     soil_moist = getsoilmoist(soil,l);
@@ -88,9 +101,19 @@ void gasdiffusion(Soil *soil,     /**< [inout] pointer to soil data */
       V = 0;
     }
     D_CH4[l] = (D_CH4_air*V + D_CH4_water*soil_moist*soil->wsat[l]*BCH4)*eta;  // eq. 11 in Khvorostyanov part 1 diffusivity (m2 s-1)
+    if (epsilon_CH4[l] <= 0.001)
+      do_diffusion = FALSE;
   }
 
-  apply_finite_volume_diffusion_of_a_day(soil->CH4, BOTTOMLAYER, h, CH4_air, D_CH4, epsilon_CH4);
+  if (do_diffusion)
+    r = apply_finite_volume_diffusion_of_a_day(soil->CH4, BOTTOMLAYER, h, CH4_air, D_CH4, epsilon_CH4);
+  if(r)
+  {
+        /* print all diffusivities and porosities */
+    for (l = 0; l<BOTTOMLAYER; l++)
+      printf("D_CH4[%d]=%g, epsilon_CH4[%d]=%g\n", l, D_CH4[l], l, epsilon_CH4[l]);
+    perror("Error in gasdiffusion: apply_finite_volume_diffusion_of_a_day for CH4 returned TRUE");
+  }
 
   end = soilmethane(soil); //do not multiply by *WC/WCH4, is used for methane fluxes here
 #ifdef SAFE
