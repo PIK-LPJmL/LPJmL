@@ -2,7 +2,7 @@
 /**                                                                                \n**/
 /**              p  f  t  .  c  j  s  o  n                                         \n**/
 /**                                                                                \n**/
-/**  PFT and CFT parameter file for LPJmL version 5.9.16                           \n**/
+/**  PFT and CFT parameter file for LPJmL version 5.9.17                           \n**/
 /**  CFTs parameters must be put after PFTs                                        \n**/
 /**                                                                                \n**/
 /** (C) Potsdam Institute for Climate Impact Research (PIK), see COPYRIGHT file    \n**/
@@ -51,11 +51,7 @@
 #else
 #define FN_TURNOVER_BMGR 0.69    /* 0.68 for green harvest + specific harvest dates */
 #endif
-#ifdef WITHOUT_NITROGEN
-#define ALPHAA 0.4  /* alphaa for simulations with nitrogen limitation */
-#else
 #define ALPHAA 0.5
-#endif
 #define RATIO_SAPW 13.5 /* relative C:N ratio of sapwood */
 #define CN_BL_EG_MX 46.2
 #define CN_BL_EG_MN 15.6
@@ -76,11 +72,7 @@
 #define CN_GC4_MN 17.4
 #define CN_GC4_MD 34.0
 #define CN_CROPS_MEAN 25.0 /* cnleaf mean for grasses, table A.3.1, White et al. 2000 doi: 10.1175/1087-3562(2000)004<0003:PASAOT>2.0.CO;2*/
-#ifdef WITHOUT_NITROGEN
-#define K_LATOSA 4e3      /* leaf area to sapwood area */
-#else
 #define K_LATOSA 6e3      /* leaf area to sapwood area */
-#endif
 #define BC3 0.015         /*leaf respiration as fraction of Vmax for C3 plants */
 #define BC4 0.035         /* leaf respiration as fraction of Vmax for C4 plants */
 #define IRRIG_THRESHOLD_C3_DRY   0.8 /* irrigation threshold C3, prec < aprec_lim */
@@ -2039,7 +2031,7 @@
       "reprod_cost" : REPROD_COST, /* reproduction cost */
       "allom1" : 100,         /* allometry */
       "allom2" : 20,
-      "allom3" : 0.4,
+      "allom3" : 4.0,
       "allom4" : ALLOM4,
       "k_latosa" : K_LATOSA,
       "wood_density" : WOOD_DENSITY, /* wood density in gC/m3 */

@@ -19,6 +19,30 @@ of `major.minor.patch` with
 
 ## [Unreleased]
 
+
+## [5.9.17] - 2024-12-19
+
+### Contributors
+
+- author: Werner von Bloh (bloh@pik-potsdam.de), Sebastion Ostberg (ostberg@pik-potsdam.de), Christoph Müller (cmueller@pik-potsdam.de)
+- code review: Marie Hemmen (hemmen@pik-potsdam.de), Jens Heinke (heinke@pik-potsdam.de)
+
+### Added
+
+- Option `-cmd` added to `lpjsubmit` in order to execute a command before lpjml is called.
+- Command `module list` added to slurm script to show all loaded modules.
+
+
+### Removed
+
+- Obsolete `#ifdef WITHOUT_NITROGEN` check removed from `pft.cjson`.
+
+### Fixed
+
+- `ALLOM3` parameter corrrected to 4.0 for oil palm in `pft.cjson` (issue #369).
+- Missing `break` added in `convert_water.c`.
+
+
 ## [5.9.16] - 2024-11-15
 
 ### Contributors
