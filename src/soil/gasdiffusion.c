@@ -26,7 +26,7 @@ void gasdiffusion(Soil *soil,     /**< [inout] pointer to soil data */
 {
   int l;
   Real D_O2[BOTTOMLAYER], D_CH4[BOTTOMLAYER]; /* oxygen/methane diffusivity [m2/s]*/
-  Real delta[BOTTOMLAYER],diff[BOTTOMLAYER];
+  Real delta[BOTTOMLAYER],diff_u[BOTTOMLAYER], diff_l[BOTTOMLAYER], diff[BOTTOMLAYER];
   Real epsilon_CH4[BOTTOMLAYER], epsilon_O2[BOTTOMLAYER];
   Real V;                 /* total oxygen porosity */
   Real soil_moist, O2_air, O2_upper, O2_lower, dO2;
@@ -65,16 +65,22 @@ void gasdiffusion(Soil *soil,     /**< [inout] pointer to soil data */
     soil_moist = getsoilmoist(soil,l);
     V = getV(soil,l);  /*soil air content (m3 air/m3 soil)*/
     epsilon_O2[l] = max(0.001, V + soil_moist*soil->wsat[l]*BO2);
-    if(l==0)
-          diff[l] = D_O2[l];
-    else
-          diff[l] = (soildepth[l] + soildepth[l-1])/(soildepth[l]/D_O2[l] + soildepth[l-1] /  D_O2[l - 1]);
-
     if (V<0)
     {
       V = 0;
     }
     D_O2[l]=(D_O2_air*V + D_O2_water*soil_moist*soil->wsat[l]*BO2)*eta;  // eq. 11 in Khvorostyanov part 1 diffusivity (m2 s-1)
+    if(l==0)
+          diff_u[l] = D_O2[l];
+    else
+          diff_u[l] = (soildepth[l] + soildepth[l-1])/ (soildepth[l]/D_O2[l] + soildepth[l-1] /  D_O2[l - 1]);
+
+    if(l == BOTTOMLAYER - 1)
+          diff_l[l] = D_O2[l];
+    else
+          diff_l[l] = (soildepth[l] + soildepth[l+1])/ (soildepth[l]/D_O2[l] + soildepth[l+1] /  D_O2[l + 1]);
+
+    diff[l]=max(diff_l[l],diff_u[l]);
     if (D_O2[l]>0 && epsilon_O2[l]>0.001)
     {
       if (l == 0)
@@ -105,7 +111,7 @@ void gasdiffusion(Soil *soil,     /**< [inout] pointer to soil data */
 
       if (D_O2[l]>0)
       {
-        dO2 = diff[l]*timestep2sec(1.0, steps) /((l==0) ? (soildepth[l] *0.5): (0.5* (soildepth[l]+ soildepth[l-1]))) * 1000
+        dO2 = diff_u[l]*timestep2sec(1.0, steps) /((l==0) ? (soildepth[l] *0.5): (0.5* (soildepth[l]+ soildepth[l-1]))) * 1000
                   *(O2_upper - soil->O2[l] / soildepth[l] / epsilon_O2[l] * 1000);
         if(l)
            dO2*=0.5;
@@ -124,14 +130,17 @@ void gasdiffusion(Soil *soil,     /**< [inout] pointer to soil data */
         }
         O2_lower = (l == BOTTOMLAYER - 1) ? 0 : soil->O2[l + 1] / soildepth[l + 1] / epsilon_O2[l + 1] * 1000;
 
-        dO2 = diff[l]*timestep2sec(1.0, steps) /((l==BOTTOMLAYER-1) ? soildepth[l] : (0.5* (soildepth[l]+ soildepth[l+1]))) * 1000
-            *(O2_lower - soil->O2[l] / soildepth[l] / epsilon_O2[l] * 1000)*0.5;
-
+        dO2 = diff_l[l]*timestep2sec(1.0, steps) /((l==BOTTOMLAYER-1) ? (soildepth[l]*0.5) : (0.5* (soildepth[l]+ soildepth[l+1]))) * 1000
+            *(O2_lower - soil->O2[l] / soildepth[l] / epsilon_O2[l] * 1000);
+        if (l != (BOTTOMLAYER - 1))
+          dO2*=0.5;
         if (l != (BOTTOMLAYER - 1))
         {
           delta[l + 1] -=dO2;
           delta[l]+= dO2;
         }
+        if(isnan(soil->O2[l]) || isinf(soil->O2[l]))
+          fail(FPE_ERR,TRUE,TRUE,"Invalid values layer: %d steps: %d O2: %g  step in gasdiffusion(), delta=%g dO2= %g epsilon_O2= %g O2_lower: %g O2_upper: %g",l,steps,soil->O2[l],delta[l],dO2,epsilon_O2[l],O2_lower,O2_upper);
         if (soil->O2[l]< 0) {
           if (l != BOTTOMLAYER - 1)
             soil->O2[l + 1] -= soil->O2[l];
@@ -144,10 +153,6 @@ void gasdiffusion(Soil *soil,     /**< [inout] pointer to soil data */
     }
     for (l = 0; l<BOTTOMLAYER; l++)
     {
-
-      if(isnan(soil->O2[l]) || isinf(soil->O2[l]))
-        fail(FPE_ERR,TRUE,TRUE,"Invalid values layer: %d O2: %g  step in gasdiffusion(), delta=%g",l,soil->O2[l],delta[l]);
-     // if(l==0) fprintf(stdout,"layer:%d steps: %lu O2: %g delta: %g next O2: %g epsilon: %g O2_conc : %g  O2_air: %g\n",l, steps, soil->O2[l],delta[l],soil->O2[l]+delta[l], epsilon_O2[l],soil->O2[l] / soildepth[l] / epsilon_O2[l] * 1000, O2_air);
       soil->O2[l]+=delta[l];
     }
 
@@ -165,16 +170,23 @@ void gasdiffusion(Soil *soil,     /**< [inout] pointer to soil data */
     soil_moist = getsoilmoist(soil,l);
     V = getV(soil,l);  /*soil air content (m3 air/m3 soil)*/
     epsilon_CH4[l] = max(0.001, V + soil_moist*soil->wsat[l]*BCH4);
-    if(l==0)
-          diff[l] = D_CH4[l];
-    else
-          diff[l] = (soildepth[l] + soildepth[l-1])/(soildepth[l]/D_CH4[l] + soildepth[l-1] /  D_CH4[l - 1]);
-
     if (V<0)
     {
       V = 0;
     }
     D_CH4[l] = (D_CH4_air*V + D_CH4_water*soil_moist*soil->wsat[l]*BCH4)*eta;  // eq. 11 in Khvorostyanov part 1 diffusivity (m2 s-1)
+    if(l==0)
+          diff_u[l] = D_CH4[l];
+    else
+          diff_u[l] = (soildepth[l] + soildepth[l-1])/(soildepth[l]/D_CH4[l] + soildepth[l-1] /  D_CH4[l - 1]);
+
+    if(l == BOTTOMLAYER - 1)
+          diff_l[l] = D_CH4[l];
+    else
+          diff_l[l] = (soildepth[l] + soildepth[l+1])/(soildepth[l]/D_CH4[l] + soildepth[l+1] /  D_CH4[l + 1]);
+
+    diff[l]=max(diff_l[l],diff_u[l]);
+
     if (D_CH4[l]>epsilon && epsilon_CH4[l]>0.001)
     {
       if (l == 0)
@@ -203,7 +215,7 @@ void gasdiffusion(Soil *soil,     /**< [inout] pointer to soil data */
 
       if (D_CH4[l]>0)
       {
-        dCH4 = diff[l]*timestep2sec(1.0, steps) /((l==0) ? (soildepth[l] *0.5): (0.5* (soildepth[l]+ soildepth[l-1]))) * 1000
+        dCH4 = diff_u[l]*timestep2sec(1.0, steps) /((l==0) ? (soildepth[l] *0.5): (0.5* (soildepth[l]+ soildepth[l-1]))) * 1000
                   *(CH4_upper - soil->CH4[l] / soildepth[l] / epsilon_O2[l] * 1000);
         if(l)
           dCH4*=0.5;
@@ -228,8 +240,10 @@ void gasdiffusion(Soil *soil,     /**< [inout] pointer to soil data */
 
         CH4_lower = (l == BOTTOMLAYER - 1) ? 0 : soil->CH4[l + 1] / soildepth[l + 1] / epsilon_CH4[l + 1] * 1000;
 
-        dCH4 = diff[l]*timestep2sec(1.0, steps)/(0.5* (soildepth[l]+ soildepth[l+1])) * 1000
-            *(CH4_lower - soil->CH4[l] / soildepth[l] / epsilon_CH4[l] * 1000)*0.5;
+        dCH4 = diff_l[l]*timestep2sec(1.0, steps)/((l==BOTTOMLAYER-1) ? (soildepth[l]*0.5) : (0.5* (soildepth[l]+ soildepth[l+1]))) * 1000
+            *(CH4_lower - soil->CH4[l] / soildepth[l] / epsilon_CH4[l] * 1000);
+        if (l != (BOTTOMLAYER - 1))
+          dCH4*=0.5;
         if (l != (BOTTOMLAYER - 1))
         {
           delta[l + 1] -= dCH4;
