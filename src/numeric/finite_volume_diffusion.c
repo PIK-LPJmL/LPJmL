@@ -20,14 +20,16 @@
  * See Khovorostyanov 2008 Vulnerability of permafrost ... p. 254
 */
 
+#define MAXTIMESTEP 100000
+
 void finite_volume_diffusion_timestep(Real * amount,           /* g/m^2, substance absolute amount */
-                                    const int n,               /* number of gridpoints */
-                                    const Real dt,             /* s, timestep */
-                                    const Real * h,            /* m, layer thicknesses (delta_x) */
-                                    const Real gas_con_air,    /* g/m^2, gas concentration of substance */
-                                    const Real * res,          /* resistance */
-                                    const Real * porosity      /* m^3/m^3, porosity */
-                                    )
+                                      const int n,               /* number of gridpoints */
+                                      const Real dt,             /* s, timestep */
+                                      const Real * h,            /* m, layer thicknesses (delta_x) */
+                                      const Real gas_con_air,    /* g/m^2, gas concentration of substance */
+                                      const Real * res,          /* resistance */
+                                      const Real * porosity      /* m^3/m^3, porosity */
+                                      )
 {
   /* define variables */
   Real gas_con[n+1]; /* g/m^3, gas concentration of substance */
@@ -46,23 +48,31 @@ void finite_volume_diffusion_timestep(Real * amount,           /* g/m^2, substan
 
   /* update the substance amount */
   for (j=0; j<n; ++j)
-    amount[j] += dt * (flux[j] - flux[j+1]); /* equation (13) p. 187 multiplied with delta_x */
+    /* the below equation is equation (13) p. 187 multiplied with h[j]
+     * the second derivative is visible when the below equation is divided by h[j]
+     */
+    amount[j] += dt * (flux[j] - flux[j+1]); 
 } /* of 'finite_volume_diffusion_timestep' */
 
-void apply_finite_volume_diffusion_of_a_day(Real * amount,             /* g/m^2, substance absolute amount */
-                                const int n,               /* number of gridpoints */
-                                const Real * h,            /* m, layer thicknesses (delta_x) */
-                                const Real gas_con_air,    /* g/m^2, gas concentration of substance */
-                                const Real * diff,         /* m^2/s, diffusivity */
-                                const Real * porosity      /* m^3/m^3, porosity */
-                                )
+void calculate_resistances(Real * res, const Real * h, const Real * diff, const int n)
 {
-  /* calculate resistances */
-  Real res[n];       /* resistance */
   res[0] = (h[0]/2)/diff[0]; /* equation (25) p. 191 */
   int j;
   for (j=1; j<n; ++j)
     res[j] = (h[j-1]/2)/diff[j-1] + (h[j]/2)/diff[j]; /* equation (17) p. 189 */
+} /* of 'calculate_resistances' */
+
+Bool apply_finite_volume_diffusion_of_a_day(Real * amount,             /* g/m^2, substance absolute amount */
+                                           const int n,               /* number of gridpoints */
+                                           const Real * h,            /* m, layer thicknesses (delta_x) */
+                                           const Real gas_con_air,    /* g/m^2, gas concentration of substance */
+                                           const Real * diff,         /* m^2/s, diffusivity */
+                                           const Real * porosity      /* m^3/m^3, porosity */
+                                           )
+{
+  /* calculate resistances */
+  Real res[n];
+  calculate_resistances(res, h, diff, n);
   
   /* get max possible timestep that gurantess stability */
   Real dt_temp;
@@ -74,9 +84,13 @@ void apply_finite_volume_diffusion_of_a_day(Real * amount,             /* g/m^2,
     dt_temp = min(dt_temp, (porosity[j]*h[j])/((1/res[j-1]+1/res[j]))); /* equation (39) p. 196*/
   }
   int steps = (int)floor((day2sec(1.0)/dt_temp)) + 1; /* get number timesteps that ensures small enough timestep */
+  if (steps <= 0 || steps > MAXTIMESTEP)
+    return TRUE; /* timestep too large or too small */
   Real dt = day2sec(1.0)/steps; /* final timestep */
 
   /* apply timesteps */
   for (int i=0; i<steps; ++i)
     finite_volume_diffusion_timestep(amount, n, dt, h, gas_con_air, res, porosity);
+
+  return FALSE;
 } /* of 'apply_finite_volume_diffusion_of_a_day' */
