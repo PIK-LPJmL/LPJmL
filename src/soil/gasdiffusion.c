@@ -80,7 +80,7 @@ void gasdiffusion(Soil *soil,     /**< [inout] pointer to soil data */
       if (l == 0)
         dt = (soildepth[l]*0.5*epsilon_O2[l] * 1e-6) /diff[l];
       else
-        dt = ((soildepth[l] + soildepth[l-1])/(soildepth[l] + soildepth[l-1])*epsilon_O2[l] * 1e-6) / diff[l];
+        dt = (0.5*soildepth[l] * soildepth[l-1] * 1e-6*epsilon_O2[l] * 1e-6) / diff[l];
 
 #ifdef SAFE
       if(isnan(dt))
@@ -180,7 +180,7 @@ void gasdiffusion(Soil *soil,     /**< [inout] pointer to soil data */
       if (l == 0)
         dt = (soildepth[l]*0.5*epsilon_CH4[l] * 1e-6) /diff[l];
       else
-        dt = ((soildepth[l] + soildepth[l-1])/(soildepth[l] + soildepth[l-1])*epsilon_CH4[l] * 1e-6) / diff[l];
+        dt = (0.5*soildepth[l] * soildepth[l-1] * 1e-6*epsilon_CH4[l] * 1e-6) / diff[l];
 #ifdef SAFE
       if(isnan(dt))
       {
