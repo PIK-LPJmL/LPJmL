@@ -21,6 +21,8 @@
 
 /* ------- prototypes ------- */
 Real analytical_solution1d_heateq_semiinfinite(Real, Real, Real, Real, Real, Real);
+int is_solution_bounded(Real * amount, int n);
+void get_layer_midpoints(Real * x, Real * h, int n);
 
 /* ------- tests ------- */
 #define TOLERANCE 0.001 /* TOLERANCE for comparison with analytical solution */
@@ -69,21 +71,6 @@ void test_finte_volume_diffusion_higher_air_gas_concentration_should_increase_su
   finite_volume_diffusion_timestep(amount, n, 10, h, gas_con_air, diff, porosity);
   
   TEST_ASSERT(amount[0] > 0.0);
-}
-
-void get_layer_midpoints(Real * x, Real * h, int n)
-{
-  Real loc[n+1];
-  loc[0] = 0.0;
-  for (int i = 0; i < n; i++)
-  {
-    loc[i+1] = loc[i] + h[i];
-  }
-  /* get layer midpoint locations */
-  for (int i = 0; i < n; i++)
-  {
-    x[i] = loc[i] + h[i] / 2;
-  }
 }
 
 void test_finte_volume_diffusion_analytical_solution_should_be_met(void)
@@ -200,18 +187,6 @@ void test_finte_volume_diffusion_analytical_solution_should_be_met_after_day(voi
   TEST_ASSERT_FLOAT_WITHIN(TOLERANCE, analytical_solution, numerical_solution);
 }
 
-int is_solution_bounded(Real * amount, int n)
-{
-  for (int i = 0; i < n; i++)
-  {
-    if (amount[i] > 1e4 || amount[i] < -1e4)
-    {
-      return 0;
-    }
-  }
-  return 1;
-}
-
 void test_finite_volume_stability(void)
 {
   int n = 1000;
@@ -289,7 +264,7 @@ void test_finite_volume_diffusion_error_is_thrown_too_many_timesteps(void)
   }
 
   /* confirm that error is thrown */
-  TEST_ASSERT_EQUAL(-1, apply_finite_volume_diffusion_of_a_day(amount, n, h, gas_con_air, diff, porosity));
+  TEST_ASSERT_EQUAL(TRUE, apply_finite_volume_diffusion_of_a_day(amount, n, h, gas_con_air, diff, porosity));
 }
 
 void test_total_amount_is_conserved(void)
@@ -347,25 +322,12 @@ void test_total_amount_is_conserved(void)
     total_amount_before += amount[i];
   }
 
-  /* print gas concentration before */
-  for (int i = 0; i < n; i++)
-  {
-    printf("b: %f\n", amount[i]/h[i]/porosity[i]);
-  }
-
   /* apply one day of diffusion using apply_finite_volume_diffusion_of_a_day */
-  int r;
+  Bool r;
   for (int i = 0; i < 100; i++)
   {
     r = apply_finite_volume_diffusion_of_a_day(amount, n, h, gas_con_air, diff, porosity);
   }
-
-  /* print gas concentration after */
-  for (int i = 0; i < n; i++)
-  {
-    printf("a: %f\n", amount[i]/h[i]/porosity[i]);
-  }
-  printf("r: %d\n", r);
   
   /* check that total gas amount is conserved */
   Real total_amount_after = 0.0;
@@ -376,9 +338,9 @@ void test_total_amount_is_conserved(void)
   TEST_ASSERT_EQUAL_DOUBLE(total_amount_after, total_amount_before);
 }
 
-// /* ------- helper functions ------- */
-// /* analytical solution for temps all above or all below zero degree i.e. without
-//  * phase change */
+ /* ------- helper functions ------- */
+ /* analytical solution for temps all above or all below zero degree i.e. without
+  * phase change */
 Real analytical_solution1d_heateq_semiinfinite(Real x, Real t, Real k, Real c, Real init, Real DB)
 {
   Real alpha = k / c; // calculate the thermal diffusivity
@@ -388,4 +350,31 @@ Real analytical_solution1d_heateq_semiinfinite(Real x, Real t, Real k, Real c, R
   /* Source:
    * https://community.ptc.com/sejnu66972/attachments/sejnu66972/PTCMathcad/176513/1/2.2_Transient_Conduction_in_Semi-Infinite_Slab.pdf
    */
+}
+
+int is_solution_bounded(Real * amount, int n)
+{
+  for (int i = 0; i < n; i++)
+  {
+    if (amount[i] > 1e4 || amount[i] < -1e4)
+    {
+      return 0;
+    }
+  }
+  return 1;
+}
+
+void get_layer_midpoints(Real * x, Real * h, int n)
+{
+  Real loc[n+1];
+  loc[0] = 0.0;
+  for (int i = 0; i < n; i++)
+  {
+    loc[i+1] = loc[i] + h[i];
+  }
+  /* get layer midpoint locations */
+  for (int i = 0; i < n; i++)
+  {
+    x[i] = loc[i] + h[i] / 2;
+  }
 }
