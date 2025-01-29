@@ -38,6 +38,8 @@ of `major.minor.patch` with
 - Support for old PIK cluster removed.
 - Support for LoadLeveler batch queueing system removed.
 - Support for AIX OS removed.
+- Alias for `lpjml` and obsolete `lpjml.sh`removed in `lpj_paths.sh`.
+
 
 ## [5.9.16] - 2024-11-15
 
