@@ -113,6 +113,7 @@ Stocks littersom(Stand *stand,                      /**< [inout] pointer to stan
   //Real CH4_air;
   Real CH4_air,O2_need;
   Real epsilon_O2 = 0;
+  Real epsilon_CH4 = 0;
   Real oxid_frac = 0.85;  // Assume that 1/2 of the O2 is utilized by other electron acceptors (Wania etal.,2010) only nitrification and oxidation of Reduced Compounds is left assumed to be together 15%
 
 
@@ -192,6 +193,7 @@ Stocks littersom(Stand *stand,                      /**< [inout] pointer to stan
       if (V<=epsilon)
          V=epsilon+epsilon;
       epsilon_O2=max(0.00004,V+soil_moist[l]*soil->wsat[l]*BO2);
+      epsilon_CH4=max(0.00004,V+soil_moist[l]*soil->wsat[l]*BCH4);
 
       response[l]=gtemp_soil[l]*(INTERCEPT+MOIST_3*(moist[l]*moist[l]*moist[l])+MOIST_2*(moist[l]*moist[l])+MOIST*moist[l]);
       if (response[l]<epsilon)
@@ -300,10 +302,10 @@ Stocks littersom(Stand *stand,                      /**< [inout] pointer to stan
         soil->k_mean[l].slow+=(k_soil10.slow*response[l]);
 
         /*methanotrophy */
-        if((soil_moist[l]<0.9) && layerbound[l]<=soil->wtable && soil->CH4[l]/soildepth[l]/epsilon_O2*1000>CH4_air)
+        if((soil_moist[l]<0.9) && layerbound[l]<=soil->wtable && soil->CH4[l]/soildepth[l]/epsilon_CH4*1000>CH4_air)
         {
            /*maybe calculating during diffusivity */
-          oxidation=(Vmax_CH4*1e-3*24*WCH4*soil->CH4[l]/soildepth[l]/epsilon_O2*1000)/(km_CH4*1e-3*WCH4+soil->CH4[l]/soildepth[l]/epsilon_O2*1000)*gtemp_soil[l]*soildepth[l]*epsilon_O2/1000;   // gCH4/m3/h*24 = gCH4/m3/d ->g/layer/m2
+          oxidation=(Vmax_CH4*1e-3*24*WCH4*soil->CH4[l]/soildepth[l]/epsilon_CH4*1000)/(km_CH4*1e-3*WCH4+soil->CH4[l]/soildepth[l]/epsilon_CH4*1000)*gtemp_soil[l]*soildepth[l]*epsilon_CH4/1000;   // gCH4/m3/h*24 = gCH4/m3/d ->g/layer/m2
           O2_need=min(oxidation*soildepth[l]*epsilon_O2/1000*2*WO2/WCH4,soil->O2[l]*oxid_frac);
           oxidation=O2_need/(2*WO2)*WCH4;
           oxidation=min(oxidation,soil->CH4[l]);

@@ -60,7 +60,7 @@ Real ebullition(Soil *soil,   /**< pointer to soil data */
       ratio=1;
       if(l<LASTLAYER-1)
       {
-        if(soil_moist[l]>0.9 && soil->temp[l]>0)
+        if(soil_moist[l]>0.9)
           Q_ebull[l]=Q_ebull[l+1];
         else
           soil->CH4[l]+=Q_ebull[l+1];

@@ -201,7 +201,18 @@ void update_daily(Cell *cell,            /**< cell pointer           */
     foreachsoillayer(l)
       getoutputindex(&cell->output,SOILTEMP,l,config)+=stand->soil.temp[l]*stand->frac*(1.0/(1-cell->lakefrac-cell->ml.reservoirfrac));
     getoutput(&cell->output,TWS,config)+=stand->soil.litter.agtop_moist*stand->frac;
+    fpc_total_stand = 0;
+    foreachpft(pft, p, &stand->pftlist)
+      fpc_total_stand += pft->fpc;
+
+    ebul = ebullition(&stand->soil, fpc_total_stand);
+    getoutput(&cell->output,CH4_EMISSIONS,config) += ebul*stand->frac;
+    if(stand->type->landusetype==WETLAND)
+      getoutput(&stand->cell->output,CH4_EMISSIONS_WET,config)+=ebul;
+    cell->balance.aCH4_em+=ebul*stand->frac;
+    getoutput(&cell->output,CH4_EBULLITION,config) += ebul*stand->frac;
     plant_gas_transport(stand,climate.temp,ch4,config);   //fluxes in routine written to output
+    //fprintf(stdout,"year: %d day: %d stand: %s \n",year,day,stand->type->name);
     gasdiffusion(&stand->soil,climate.temp,ch4,&CH4_em,&runoff,&CH4_sink);
     cell->discharge.drunoff += runoff*stand->frac;
     getoutput(&cell->output,CH4_EMISSIONS,config)+=CH4_em*stand->frac;
@@ -228,16 +239,6 @@ void update_daily(Cell *cell,            /**< cell pointer           */
         }
       }
     }
-    fpc_total_stand = 0;
-    foreachpft(pft, p, &stand->pftlist)
-      fpc_total_stand += pft->fpc;
-
-    ebul = ebullition(&stand->soil, fpc_total_stand);
-    getoutput(&cell->output,CH4_EMISSIONS,config) += ebul*stand->frac;
-    if(stand->type->landusetype==WETLAND)
-      getoutput(&stand->cell->output,CH4_EMISSIONS_WET,config)+=ebul;
-    cell->balance.aCH4_em+=ebul*stand->frac;
-    getoutput(&cell->output,CH4_EBULLITION,config) += ebul*stand->frac;
 
     if((stand->type->landusetype==SETASIDE_RF || stand->type->landusetype==SETASIDE_IR || stand->type->landusetype==AGRICULTURE || stand->type->landusetype==SETASIDE_WETLAND || stand->type->landusetype==GRASSLAND) && ebul>0)
     {
