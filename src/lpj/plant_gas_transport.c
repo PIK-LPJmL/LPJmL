@@ -73,12 +73,6 @@ void plant_gas_transport(Stand *stand,        /**< pointer to soil data */
   CH4_plant_all=0;
   CH4_air=p_s/R_gas/degCtoK(airtemp)*pch4*1e-6*WCH4; /*g/m3 methane concentration*/
   O2_air=p_s/R_gas/degCtoK(airtemp)*O2s*WO2;         /*g/m3 oxygen concentration*/
-#ifdef DEBUG
-  printf("plantgas before");
-  printch4(stand->soil.CH4);
-  printO2(stand->soil.O2);
-  printf("CH4_air:%g O2_air:%g\n",CH4_air,O2_air);
-#endif
 
   /* Calculate Schmidt number and gas transfer velocity in the*/
   /* top soil layer.*/
@@ -165,12 +159,8 @@ void plant_gas_transport(Stand *stand,        /**< pointer to soil data */
   }
   getoutput(&stand->cell->output,CH4_SINK,config)+=CH4_sink*stand->frac;
   stand->cell->balance.aCH4_sink+=CH4_sink*stand->frac;
-#ifdef DEBUG
-  printf("plantgas after");
-  printch4(stand->soil.CH4);
-  printO2(stand->soil.O2);
-#endif
-#ifdef CHECK_BALANCE
+
+ #ifdef CHECK_BALANCE
   end = standstocks(stand).carbon + soilmethane(&stand->soil)*WC/WCH4;
   if (fabs(start - end - CH4_plant_all*WC/WCH4)>epsilon)
     fail(INVALID_CARBON_BALANCE_ERR,FAIL_ON_BALANCE,FALSE,"Invalid carbon balance in %s: %g start:%g  end:%g Plant_gas_transp: %g",

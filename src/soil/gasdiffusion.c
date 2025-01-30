@@ -49,6 +49,7 @@ void gasdiffusion(Soil *soil,     /**< [inout] pointer to soil data */
         soil->w_fw[l + 1] += tmp_water;
       else
         *runoff += tmp_water;
+      if(soil->w_fw[l]<0 && soil->w_fw[l]>-epsilon) soil->w_fw[l]=0;
     }
   }
 

@@ -37,6 +37,7 @@ Real ebullition(Soil *soil,   /**< pointer to soil data */
 {
   Real C_thres, Q_ebull[BOTTOMLAYER], ratio, soil_moist[BOTTOMLAYER], V, epsilon_CH4[BOTTOMLAYER]; //, epsilon_CH4_u;
   Real Q_ebull2;
+  Real Q_ebull_day=0;
   int l, i;
 #ifdef DEBUG
   printf("EBULL before:");
@@ -60,7 +61,7 @@ Real ebullition(Soil *soil,   /**< pointer to soil data */
       ratio=1;
       if(l<LASTLAYER-1)
       {
-        if(soil_moist[l]>0.9 && soil->temp[l]>0)
+        if(soil_moist[l]>0.9)
           Q_ebull[l]=Q_ebull[l+1];
         else
           soil->CH4[l]+=Q_ebull[l+1];
@@ -79,11 +80,12 @@ Real ebullition(Soil *soil,   /**< pointer to soil data */
       else
         break;
     }
+    Q_ebull_day+=Q_ebull[0];
   }
 
 #ifdef DEBUG
   printf("EBULL after:");
   printch4(soil->CH4);
 #endif
-  return Q_ebull[0];
+  return Q_ebull_day;
 } /* of 'ebullition */
