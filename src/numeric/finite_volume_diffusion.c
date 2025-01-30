@@ -78,10 +78,10 @@ Bool apply_finite_volume_diffusion_of_a_day(Real * amount,             /* g/m^2,
   Real dt_temp;
   /* get possible timestep for top boundary */
   Real alpha = diff[0]/porosity[0]; /* rho * c = volumetric heat capacity <-> porosity */
-  dt_temp = h[0]*h[0]/(alpha*3)*0.5; /* equation (40a) p. 196 */
+  dt_temp = h[0]*h[0]/(alpha*3)*0.3; /* equation (40a) p. 196 */
   for (int j=1; j<n; ++j)
   {
-    dt_temp = min(dt_temp, (porosity[j]*h[j])/((1/res[j-1]+1/res[j]))*0.5); /* equation (39) p. 196*/
+    dt_temp = min(dt_temp, (porosity[j]*h[j])/((1/res[j-1]+1/res[j]))*0.3); /* equation (39) p. 196*/
   }
   int steps = (int)(day2sec(1.0)/dt_temp) + 1; /* get number timesteps that ensures small enough timestep */
   if (steps <= 0 || steps > MAXTIMESTEPFV)
