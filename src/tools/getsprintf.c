@@ -4,7 +4,7 @@
 /**                                                                                \n**/
 /**     C implementation of LPJmL                                                  \n**/
 /**                                                                                \n**/
-/**     Function prints formated output into allocated string                      \n**/
+/**     Function prints formatted output into allocated string                     \n**/
 /**                                                                                \n**/
 /** (C) Potsdam Institute for Climate Impact Research (PIK), see COPYRIGHT file    \n**/
 /** authors, and contributors see AUTHORS file                                     \n**/

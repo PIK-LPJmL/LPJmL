@@ -193,6 +193,7 @@ static Cdf *create_cdf(const char *filename,
         free(cdf);
         return NULL;
     } /* of switch(header.step) */
+    check(s);
     rc=nc_put_att_text(cdf->ncid,time_var_id,"units",strlen(s),s);
     rc=nc_put_att_text(cdf->ncid,time_bnds_var_id,"units",strlen(s),s);
     free(s);

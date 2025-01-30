@@ -42,7 +42,7 @@ static Cdf *create_cdf(const char *filename,
   double *lon,*lat;
   short miss=MISSING_VALUE;
   int i,rc,dim[2];
-  String s;
+  char *s;
   time_t t;
   int lat_var_id,lon_var_id,lat_dim_id,lon_dim_id;
   cdf=new(Cdf);
@@ -83,14 +83,17 @@ static Cdf *create_cdf(const char *filename,
   error(rc);
   rc=nc_def_dim(cdf->ncid,LON_DIM_NAME,array->nlon,&lon_dim_id);
   error(rc);
-  snprintf(s,STRING_LEN,"country2cdf %s",clm_filename);
+  s=getsprintf(s,"country2cdf %s",clm_filename);
+  check(s);
   rc=nc_put_att_text(cdf->ncid,NC_GLOBAL,"source",strlen(s),s);
+  free(s);
   error(rc);
   time(&t);
-  snprintf(s,STRING_LEN,"Created for user %s on %s at %s",getuser(),gethost(),
-           ctime(&t));
-  s[strlen(s)-1]='\0';
+  s=getsprintf("Created for user %s on %s at %s",getuser(),gethost(),
+               ctime(&t));
+  check(s);
   rc=nc_put_att_text(cdf->ncid,NC_GLOBAL,"history",strlen(s),s);
+  free(s);
   error(rc);
   rc=nc_def_var(cdf->ncid,LAT_NAME,NC_DOUBLE,1,&lat_dim_id,&lat_var_id);
   error(rc);

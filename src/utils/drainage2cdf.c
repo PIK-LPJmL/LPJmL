@@ -225,6 +225,7 @@ int main(int argc,char **argv)
   time(&t);
   cmdline=catstrvec(argv,argc);
   s=getsprintf("%s: %s",strdate(&t),cmdline);
+  check(s);
   rc=nc_put_att_text(ncid,NC_GLOBAL,"history",strlen(s),s);
   error(rc);
   free(s);

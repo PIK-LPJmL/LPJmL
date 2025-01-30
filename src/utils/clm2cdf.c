@@ -180,13 +180,12 @@ static Cdf *create_cdf(const char *filename,
     if(landuse || header->nbands==1)
     {
       s=getsprintf("years since %d-1-1 0:0:0",header->firstyear);
-      check(s);
     }
     else if(header->nbands>1)
     {
       s=getsprintf("days since %d-1-1 0:0:0",header->firstyear);
-      check(s);
     }
+    check(s);
     rc=nc_put_att_text(cdf->ncid,time_var_id,"units",strlen(s),s);
     free(s);
     error(rc);

@@ -285,6 +285,7 @@ Bool create_pft_netcdf(Netcdf *cdf,
     {
       s=getsprintf("days since %d-1-1 0:0:0",(oneyear) ? actualyear : config->baseyear);
     }
+    check(s);
     rc=nc_put_att_text(cdf->ncid,time_var_id,"units",strlen(s),s);
     rc=nc_put_att_text(cdf->ncid,time_bnds_var_id,"units",strlen(s),s);
     free(s);
@@ -413,6 +414,7 @@ Bool create_pft_netcdf(Netcdf *cdf,
                      strlen(config->sim_name),config->sim_name);
   error(rc);
   s=getsprintf("LPJmL C Version %s",getversion());
+  check(s);
   rc=nc_put_att_text(cdf->ncid,NC_GLOBAL,"source",strlen(s),s);
   free(s);
   error(rc);
@@ -424,6 +426,7 @@ Bool create_pft_netcdf(Netcdf *cdf,
   error(rc);
   time(&t);
   s=getsprintf("%s: %s",strdate(&t),config->arglist);
+  check(s);
   rc=nc_put_att_text(cdf->ncid,NC_GLOBAL,"history",strlen(s),s);
   free(s);
   error(rc);
