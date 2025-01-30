@@ -20,6 +20,14 @@ of `major.minor.patch` with
 ## [Unreleased]
 
 
+### Contributors
+
+- author: Werner von Bloh (bloh@pik-potsdam.de)
+
+### Added
+
+- `"coupled_host"` and `"coupler_port"` added to LPJmL configuration to specify where the coupled model is running and which port is used for communication.
+
 ## [5.9.17] - 2024-12-19
 
 ### Contributors

@@ -242,6 +242,26 @@ Bool fscanconfig(Config *config,    /**< LPJ configuration */
       }
       config->coupled_model=strdup(name);
       checkptr(config->coupled_model);
+#if !defined IMAGE || !defined COUPLED
+      if(!config->coupled_host_set && iskeydefined(file,"coupled_host"))
+      {
+        fscanname(file,name,"coupled_host");
+        free(config->coupled_host);
+        config->coupled_host=strdup(name);
+        checkptr(config->coupled_host);
+      }
+      if(!config->coupler_port_set && iskeydefined(file,"coupler_port"))
+      {
+        fscanint2(file,&config->coupler_port,"coupler_port");
+        if(config->coupler_port<1 || config->coupler_port>USHRT_MAX)
+        {
+          if(verbose)
+            fprintf(stderr,"ERROR193: Invalid number %d for coupler port.\n",
+                    config->coupler_port);
+          return TRUE;
+        }
+      }
+#endif
     }
   }
   else

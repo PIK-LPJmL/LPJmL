@@ -128,24 +128,29 @@ FILE *openconfig(Config *config,      /**< configuration struct */
     }
   }
 #else
+  config->coupled_host_set=FALSE;
+  config->coupler_port_set=FALSE;
   config->coupler_port=DEFAULT_COUPLER_PORT;
   config->coupled_host=getenv(LPJCOUPLEDHOST);
   if(config->coupled_host==NULL)
-    config->coupled_host=DEFAULT_COUPLED_HOST;
+    config->coupled_host=strdup(DEFAULT_COUPLED_HOST);
   else
   {
+    config->coupled_host=strdup(getenv(LPJCOUPLEDHOST));
+    config->coupled_host_set=TRUE;
     pos=strchr(config->coupled_host,':');
     if(pos!=NULL)
     {
+      config->coupler_port_set=TRUE;
       *pos='\0';
-       config->coupler_port=strtol(pos+1,&endptr,10);
-       if(pos+1==endptr || config->coupler_port<1 || config->coupler_port>USHRT_MAX)
-       {
-         if(isroot(*config))
-           fprintf(stderr,"ERROR193: Invalid number %d for coupled port.\n",
-                   config->coupler_port);
-         return NULL;
-       }
+      config->coupler_port=strtol(pos+1,&endptr,10);
+      if(pos+1==endptr || config->coupler_port<1 || config->coupler_port>USHRT_MAX)
+      {
+        if(isroot(*config))
+          fprintf(stderr,"ERROR193: Invalid number %d for coupled port.\n",
+                  config->coupler_port);
+        return NULL;
+      }
     }
   }
 #endif
