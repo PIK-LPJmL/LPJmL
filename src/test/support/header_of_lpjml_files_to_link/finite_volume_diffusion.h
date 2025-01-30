@@ -1,0 +1,3 @@
+void finite_volume_diffusion_timestep(Real * amount,   const int n,   const Real dt,   const Real * h,     const Real gas_con_air, const Real * diff,    const Real * porosity );
+int apply_finite_volume_diffusion_of_a_day(Real * amount,   const int n,  const Real * h,     const Real gas_con_air, const Real * diff,    const Real * porosity );
+void calculate_resistances(Real * res, const Real * h, const Real * diff, const int n);
