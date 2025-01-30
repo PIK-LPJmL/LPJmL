@@ -87,9 +87,9 @@ void gasdiffusion(Soil *soil,     /**< [inout] pointer to soil data */
     if (D_O2[l]>0 && epsilon_O2[l]>0.001)
     {
       if (l == 0)
-        dt = (soildepth[l]*0.5*epsilon_O2[l] * 1e-6) /diff[l];
+        dt = (soildepth[l]  * soildepth[l] * 1e-6 * epsilon_O2[l]* epsilon_O2[l]) /diff[l];
       else
-        dt = (0.5*soildepth[l] * soildepth[l-1] * 1e-6*epsilon_O2[l]) / diff[l];
+        dt = (0.5 * soildepth[l] * epsilon_O2[l] * soildepth[l-1]* epsilon_O2[l-1] * 1e-6 ) / diff[l];
 
 #ifdef SAFE
       if(isnan(dt))
@@ -112,11 +112,11 @@ void gasdiffusion(Soil *soil,     /**< [inout] pointer to soil data */
     {
       O2_upper = (l == 0) ? O2_air : soil->O2[l - 1] / soildepth[l - 1] / epsilon_O2[l - 1] * 1000;
 
-      if (D_O2[l]>0)
+      if (D_O2[l]>0 && epsilon_O2[l]>0.001)
       {
         dO2 = diff_u[l]*timestep2sec(1.0, steps) /((l==0) ? (soildepth[l] *0.5): (0.5* (soildepth[l]+ soildepth[l-1]))) * 1000
                   *(O2_upper - soil->O2[l] / soildepth[l] / epsilon_O2[l] * 1000);
-        if(l)
+        if(l!=0)
            dO2*=0.5;
 
         if(l>0)
@@ -193,12 +193,12 @@ void gasdiffusion(Soil *soil,     /**< [inout] pointer to soil data */
 
     diff[l]=max(diff_l[l],diff_u[l]);
 
-    if (D_CH4[l]>epsilon && epsilon_CH4[l]>0.001)
+    if (diff[l]>epsilon && epsilon_CH4[l]>0.001)
     {
       if (l == 0)
-        dt = (soildepth[l]*0.5*epsilon_CH4[l] * 1e-6) /diff[l];
+        dt = (soildepth[l] * soildepth[l] * 1e-6 * epsilon_CH4[l]* epsilon_CH4[l]) /diff[l];
       else
-        dt = (0.5*soildepth[l] * soildepth[l-1] * 1e-6*epsilon_CH4[l]) / diff[l];
+        dt = (0.5 * soildepth[l] * soildepth[l-1] * 1e-6 * epsilon_CH4[l]* epsilon_CH4[l-1]) / diff[l];
 #ifdef SAFE
       if(isnan(dt))
       {
@@ -219,11 +219,11 @@ void gasdiffusion(Soil *soil,     /**< [inout] pointer to soil data */
    {
       CH4_upper = (l == 0) ? CH4_air : soil->CH4[l - 1] / soildepth[l - 1] / epsilon_CH4[l - 1] * 1000;
 
-      if (D_CH4[l]>0)
+      if (D_CH4[l]>0&& epsilon_CH4[l]>0.001)
       {
         dCH4 = diff_u[l]*timestep2sec(1.0, steps) /((l==0) ? (soildepth[l] *0.5): (0.5* (soildepth[l]+ soildepth[l-1]))) * 1000
                   *(CH4_upper - soil->CH4[l] / soildepth[l] / epsilon_O2[l] * 1000);
-        if(l)
+        if(l!=0)
           dCH4*=0.5;
 
         if (l>0)
