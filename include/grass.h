@@ -75,6 +75,7 @@ extern Bool fread_grass(FILE *,Pft *,Bool,Bool);
 extern Bool fscanpft_grass(LPJfile *,Pftpar *,const Config *);
 extern Stocks establishment_grass(Pft *,Real,Real,int);
 extern Real vegc_sum_grass(const Pft *);
+extern Real leafc_grass(const Pft *);
 extern Real vegn_sum_grass(const Pft *);
 extern Real agb_grass(const Pft *);
 extern void mix_veg_grass(Pft *,Real);

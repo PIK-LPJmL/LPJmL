@@ -153,6 +153,7 @@ extern Bool fscanpft_crop(LPJfile *,Pftpar *,const Config *);
 extern Stocks establishment_crop(Pft *,Real,Real,int);
 extern void init_crop(Pft *);
 extern Real vegc_sum_crop(const Pft *);
+extern Real leafc_crop(const Pft *);
 extern Real vegn_sum_crop(const Pft *);
 extern Real agb_crop(const Pft *);
 extern void free_crop(Pft *);
