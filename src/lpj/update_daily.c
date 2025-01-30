@@ -211,8 +211,7 @@ void update_daily(Cell *cell,            /**< cell pointer           */
       getoutput(&stand->cell->output,CH4_EMISSIONS_WET,config)+=ebul;
     cell->balance.aCH4_em+=ebul*stand->frac;
     getoutput(&cell->output,CH4_EBULLITION,config) += ebul*stand->frac;
-    plant_gas_transport(stand,climate.temp,ch4,config);   //fluxes in routine written to output
-    //fprintf(stdout,"year: %d day: %d stand: %s \n",year,day,stand->type->name);
+
     gasdiffusion(&stand->soil,climate.temp,ch4,&CH4_em,&runoff,&CH4_sink);
     cell->discharge.drunoff += runoff*stand->frac;
     getoutput(&cell->output,CH4_EMISSIONS,config)+=CH4_em*stand->frac;
@@ -228,35 +227,18 @@ void update_daily(Cell *cell,            /**< cell pointer           */
       {
         if(pft->par->id==config->rice_pft  && stand->cell->balance.ricefrac>epsilon)
         {
-          getoutput(&cell->output,CH4_RICE_EM,config)+=CH4_em*stand->frac/cell->balance.ricefrac;
-          cell->balance.aCH4_rice+=CH4_em*stand->frac;
+          getoutput(&cell->output,CH4_RICE_EM,config)+=(CH4_em+ebul)*stand->frac/cell->balance.ricefrac;
+          cell->balance.aCH4_rice+=(CH4_em+ebul)*stand->frac;
         }
         else
         {
-          cell->balance.aCH4_setaside+=CH4_em*stand->frac;
-          getoutput(&cell->output,CH4_SETASIDE,config)+=CH4_em*stand->frac;
+          cell->balance.aCH4_setaside+=(CH4_em+ebul)*stand->frac;
+          getoutput(&cell->output,CH4_SETASIDE,config)+=(CH4_em+ebul)*stand->frac;
 
         }
       }
     }
-
-    if((stand->type->landusetype==SETASIDE_RF || stand->type->landusetype==SETASIDE_IR || stand->type->landusetype==AGRICULTURE || stand->type->landusetype==SETASIDE_WETLAND || stand->type->landusetype==GRASSLAND) && ebul>0)
-    {
-      foreachpft(pft, p, &stand->pftlist)
-      {
-        if(pft->par->id==config->rice_pft && stand->cell->balance.ricefrac>epsilon)
-        {
-          getoutput(&cell->output,CH4_RICE_EM,config)+=ebul*stand->frac/cell->balance.ricefrac;
-          cell->balance.aCH4_rice+=ebul*stand->frac;
-        }
-        else
-        {
-          cell->balance.aCH4_setaside+=ebul*stand->frac;
-          getoutput(&cell->output,CH4_SETASIDE,config)+=ebul*stand->frac;
-
-        }
-      }
-    }
+    plant_gas_transport(stand,climate.temp,ch4,config);   //fluxes in routine written to output
 
     /* update soil and litter properties to account for all changes since last call of littersom */
     if(config->soilpar_option==NO_FIXED_SOILPAR || (config->soilpar_option==FIXED_SOILPAR && year<config->soilpar_fixyear))
