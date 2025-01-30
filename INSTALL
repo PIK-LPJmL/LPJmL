@@ -96,19 +96,10 @@ Configure for your operating system
 
 On the PIK cluster you have to set the following modules:
 
-module use /p/system/modulefiles/compiler \
-               /p/system/modulefiles/gpu \
-               /p/system/modulefiles/libraries \
-               /p/system/modulefiles/parallel \
-               /p/system/modulefiles/tools
-
 module load intel/oneAPI/2024.0.0
 module load udunits/2.2.28
 module load json-c/0.17
-module load openssl/3.0.12
 module load netcdf-c
-module load curl/8.4.0
-module load expat/2.5.0
 
 On a Linux system you have to install the NetCDF, Udunits2, and JSON-C library:
 
