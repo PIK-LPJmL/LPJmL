@@ -6,10 +6,10 @@
 ##    sh script to generate and submit parallel SLURM jobs using               ##
 ##    Intel MPI.                                                               ##
 ##                                                                             ##
-##    Usage: lpjsubmit [-h] [-class c] [-group g] -partition p] [-wtime time]  ##
+##    Usage: lpjsubmit [-h] [-class c] [-group g] [-partition p] [-wtime time] ##
 ##                     [-blocking n] [-o output] [-e error] [-q] [-nocheck]    ##
-##                     [-norun] [-dependency id] [-couple progran]             ##
-##                     [-constraint c] [-option a=b] [-cmd prg]                ##
+##                     [-norun] [-dependency id] [-couple program]             ##
+##                     [-constraint c] [[-option a=b] ...] [-cmd prg]          ##
 ##                     ntask LPJargs...                                        ##
 ##                                                                             ##
 ## (C) Potsdam Institute for Climate Impact Research (PIK), see COPYRIGHT file ##
