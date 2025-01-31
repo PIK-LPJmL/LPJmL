@@ -53,7 +53,7 @@ void plant_gas_transport(Stand *stand,        /**< pointer to soil data */
   Pft *pft;
   Real CH4_air, ScCH4, k_600, kCH4;
   Real O2_air, ScO2, kO2;
-  Real soil_moist, V, epsilon_CH4, epsilon_O2;                /*in mm*/
+  Real soil_moist, V, epsilon_CH4, epsilon_O2,soil_water_vol;                /*in mm*/
   Real tillers, tiller_area, tiller_frac;
   Real CH4, CH4_plant, CH4_plant_all,CH4_rice,CH4_sink;
   Real O2, O2_plant;
@@ -107,36 +107,33 @@ void plant_gas_transport(Stand *stand,        /**< pointer to soil data */
         V=getV(&stand->soil,l);  /*soil air content (m3 air/m3 soil)*/
         epsilon_CH4=getepsilon_CH4(V,soil_moist,stand->soil.wsat[l]);
         epsilon_O2=getepsilon_O2(V,soil_moist,stand->soil.wsat[l]);
-        if (stand->soil.w[l]>water_min)
+        soil_water_vol=(stand->soil.w[l]*stand->soil.whcs[l]+stand->soil.wpwps[l]*(1-stand->soil.ice_pwp[l])+stand->soil.w_fw[l])/soildepth[l];  //in  m-3 *1000/1000/soildepth
+        if (soil_water_vol>water_min && tiller_area>0)
         {
           Conc_new = 0;
           CH4 = stand->soil.CH4[l] /epsilon_CH4 /soildepth[l] * 1000;
-          if (tiller_area>0 && epsilon_CH4>epsilon)
+          Conc_new=CH4_air+(CH4-CH4_air)*exp(-kCH4/(soil_water_vol*soildepth[l]/1000/tiller_area));
+          CH4_plant=(CH4-Conc_new)*epsilon_CH4*soildepth[l]/1000;
+          stand->soil.CH4[l]-= CH4_plant;
+          if(stand->soil.CH4[l]<0)
           {
-            Conc_new=CH4_air+(CH4-CH4_air)*exp(-kCH4/(epsilon_CH4/tiller_area));
-            CH4_plant=(CH4-Conc_new)*epsilon_CH4*soildepth[l]/1000;
-            stand->soil.CH4[l]-= CH4_plant;
-            if(stand->soil.CH4[l]<0)
-            {
-              CH4_plant+=stand->soil.CH4[l];
-              stand->soil.CH4[l]=0;
-            }
-            if(CH4_plant<0)
-              CH4_sink+=CH4_plant;
-            CH4_plant_all+=CH4_plant;
+            CH4_plant+=stand->soil.CH4[l];
+            stand->soil.CH4[l]=0;
           }
+          if(CH4_plant<0)
+            CH4_sink+=CH4_plant;
+          else
+           CH4_plant_all+=CH4_plant;
+
           if((stand->type->landusetype==AGRICULTURE) && (pft->par->id==config->rice_pft && CH4_plant>0))
             CH4_rice+=CH4_plant;
           /*OXYGEN*/
           Conc_new = 0;
           O2=stand->soil.O2[l]/epsilon_O2/soildepth[l]*1000;
-          if (tiller_area>0 && epsilon_O2>epsilon)
-          {
-            Conc_new=O2_air+(O2-O2_air)*exp(-kO2/(epsilon_O2/tiller_area));
-            O2_plant=(O2-Conc_new)*epsilon_O2*soildepth[l]/1000;
-            stand->soil.O2[l]-= O2_plant;
-            if(stand->soil.O2[l]<0) stand->soil.O2[l]=0;
-          }
+          Conc_new=O2_air+(O2-O2_air)*exp(-kO2/(soil_water_vol*soildepth[l]/1000/tiller_area));
+          O2_plant=(O2-Conc_new)*epsilon_O2*soildepth[l]/1000;
+          stand->soil.O2[l]-= O2_plant;
+          if(stand->soil.O2[l]<0) stand->soil.O2[l]=0;
         }
       }
     }
