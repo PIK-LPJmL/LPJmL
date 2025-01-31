@@ -105,8 +105,8 @@ void plant_gas_transport(Stand *stand,        /**< pointer to soil data */
       {
         soil_moist=getsoilmoist(&stand->soil,l);
         V=getV(&stand->soil,l);  /*soil air content (m3 air/m3 soil)*/
-        epsilon_CH4=max(0.0001,V+soil_moist*stand->soil.wsat[l]*BCH4);
-        epsilon_O2=max(0.0001,V+soil_moist*stand->soil.wsat[l]*BO2);
+        epsilon_CH4=getepsilon_CH4(V,soil_moist,stand->soil.wsat[l]);
+        epsilon_O2=getepsilon_O2(V,soil_moist,stand->soil.wsat[l]);
         if (stand->soil.w[l]>water_min)
         {
           Conc_new = 0;
