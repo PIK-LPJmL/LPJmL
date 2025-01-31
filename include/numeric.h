@@ -54,6 +54,7 @@ extern Real itersolve(Real, Real, Real, Real, Real, Real, Real, Real, int);
 extern void interpolate_data(Real *, Real *, Real *, int n, Real);
 extern void permute(int [],int,Seed);
 extern Bool apply_finite_volume_diffusion_of_a_day(Real *, const int, const Real *, const Real, const Real *, const Real *);
+extern Bool apply_finite_volume_diffusion_impl(Real *, const int, const Real *, const Real, const Real *, const Real *, const Real);
 
 #ifndef USE_RAND48
 /* if erand48() function is not defined, use randfrac instead */

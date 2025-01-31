@@ -20,7 +20,7 @@
  * See Khovorostyanov 2008 Vulnerability of permafrost ... p. 254
 */
 
-#define MAXTIMESTEPFV 1000000
+#define MAXTIMESTEPFV 10000000
 
 void finite_volume_diffusion_timestep(Real * amount,           /* g/m^2, substance absolute amount */
                                       const int n,               /* number of gridpoints */
@@ -91,6 +91,79 @@ Bool apply_finite_volume_diffusion_of_a_day(Real * amount,             /* g/m^2,
   /* apply timesteps */
   for (int i=0; i<steps; ++i)
     finite_volume_diffusion_timestep(amount, n, dt, h, gas_con_air, res, porosity);
+
+  return FALSE;
+} /* of 'apply_finite_volume_diffusion_of_a_day' */
+
+
+
+/* This function arranges the matrix for the implicit timestep.
+ * The equations can be found in the master thesis supplement equation (7-9). */
+STATIC void arrange_matrix_fv(Real * a,          /* sub diagonal elements  */
+                           Real * b,          /* main diagonal elements */
+                           Real * c,          /* super diagonal elements */
+                           const Real * h,    /* distances between adjacent gridpoints  */
+                           const Real * por,  /* porosities */
+                           const Real * res , /* resitances */
+                           const Real dt,      /* timestep */
+                           const int n
+                          )
+{
+
+  /* --- precompute some values --- */
+
+  /* --- arrange all rows except last --- */
+  int j;
+  for (j=0; j<(n-1); ++j)
+  {
+    /* loop over the rows of the matrix */
+    a[j] = - 1/res[j] * 1/(por[j] * h[j]) * dt;
+    c[j] = - 1/res[j+1] * 1/(por[j] * h[j]) * dt;
+    b[j] = 1 - a[j] - c[j];
+  }
+
+  /* --- arrange last row --- */
+  a[n-1] = - 1/res[n-1] * 1/(por[n-1] * h[n-1]) * dt;
+  c[n-1] = 0;
+  b[n-1] = 1 - a[n-1];
+
+} /* of 'arrange_matrix' */
+
+Bool apply_finite_volume_diffusion_impl(Real * amount,             /* g/m^2, substance absolute amount */
+                                           const int n,               /* number of gridpoints */
+                                           const Real * h,            /* m, layer thicknesses (delta_x) */
+                                           const Real gas_con_air,    /* g/m^2, gas concentration of substance */
+                                           const Real * diff,         /* m^2/s, diffusivity */
+                                           const Real * porosity,      /* m^3/m^3, porosity */
+                                           const Real dt
+                                           )
+{
+  /* calculate resistances */
+  Real res[n];
+  calculate_resistances(res, h, diff, n);
+  Real gas_con_new[n]; 
+  Real gas_con_current[n];
+
+  /* get current gas condcentration */
+  int j;
+  for (j=0; j<n; ++j)
+    gas_con_current[j] = (amount[j] / h[j]) / porosity[j];
+  
+  Real a[n], b[n], c[n]; /* matrix diagonals */
+  Real rhs[n] = {}; /* right hand side of the equation */
+  arrange_matrix_fv(a, b, c, h, porosity, res, dt, n);
+  rhs[0] = dt * gas_con_air/(porosity[0] * h[0]) / res[0];
+
+  /* add gas con current to rhs */
+  for (j=0; j<n; ++j)
+    rhs[j] += gas_con_current[j];
+
+  /* Solve the equation A x = rhs, for x */
+  thomas_algorithm(a, b, c, rhs, gas_con_new, n);
+
+  /* get back amounts */
+  for (j=0; j<n; ++j)
+    amount[j] = gas_con_new[j] * porosity[j] * h[j];
 
   return FALSE;
 } /* of 'apply_finite_volume_diffusion_of_a_day' */

@@ -77,7 +77,7 @@ void gasdiffusion(Soil *soil,     /**< [inout] pointer to soil data */
       do_diffusion = FALSE;
   }
   if (do_diffusion)
-    r = apply_finite_volume_diffusion_of_a_day(soil->O2, BOTTOMLAYER, h, O2_air, D_O2, epsilon_O2);
+    r = apply_finite_volume_diffusion_impl(soil->O2, BOTTOMLAYER, h, O2_air, D_O2, epsilon_O2, day2sec(1));
   if(r)
   {
     /* print all diffusivities and porosities */
@@ -107,7 +107,7 @@ void gasdiffusion(Soil *soil,     /**< [inout] pointer to soil data */
   }
 
   if (do_diffusion)
-    r = apply_finite_volume_diffusion_of_a_day(soil->CH4, BOTTOMLAYER, h, CH4_air, D_CH4, epsilon_CH4);
+    r = apply_finite_volume_diffusion_impl(soil->CH4, BOTTOMLAYER, h, CH4_air, D_CH4, epsilon_CH4, day2sec(1));
   if(r)
   {
         /* print all diffusivities and porosities */
