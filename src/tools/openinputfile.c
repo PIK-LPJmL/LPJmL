@@ -63,7 +63,7 @@ FILE *openinputfile(Header *header,           /**< [out] pointer to file header 
     if(fabs(header->cellsize_lon-config->resolution.lon)>epsilon)
     {
       if(isroot(*config))
-        fprintf(stderr,"ERROR154: Longitudinal cell size %g different from %g in '%s'.\n",
+        fprintf(stderr,"ERROR154: Longitudinal cell size %.8g different from %.8g in '%s'.\n",
                 header->cellsize_lon,config->resolution.lon,filename->name);
       fclose(file);  
       return NULL;
@@ -71,7 +71,7 @@ FILE *openinputfile(Header *header,           /**< [out] pointer to file header 
     if(fabs(header->cellsize_lat-config->resolution.lat)>epsilon)
     {
       if(isroot(*config))
-        fprintf(stderr,"ERROR154: Latitudinal cell size %g different from %g in '%s'.\n",
+        fprintf(stderr,"ERROR154: Latitudinal cell size %.8g different from %.8g in '%s'.\n",
                 header->cellsize_lat,config->resolution.lat,filename->name);
       fclose(file);  
       return NULL;
