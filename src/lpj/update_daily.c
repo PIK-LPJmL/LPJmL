@@ -205,6 +205,7 @@ void update_daily(Cell *cell,            /**< cell pointer           */
     foreachpft(pft, p, &stand->pftlist)
       fpc_total_stand += pft->fpc;
 
+    plant_gas_transport(stand,climate.temp,ch4,config);   //fluxes in routine written to output
     ebul = ebullition(&stand->soil, fpc_total_stand);
     getoutput(&cell->output,CH4_EMISSIONS,config) += ebul*stand->frac;
     if(stand->type->landusetype==WETLAND)
@@ -221,7 +222,7 @@ void update_daily(Cell *cell,            /**< cell pointer           */
     getoutput(&cell->output,CH4_SINK,config)+=CH4_sink*stand->frac;
     cell->balance.aCH4_sink+=CH4_sink*stand->frac;
 
-    if((stand->type->landusetype==SETASIDE_RF || stand->type->landusetype==SETASIDE_IR || stand->type->landusetype==AGRICULTURE || stand->type->landusetype==SETASIDE_WETLAND || stand->type->landusetype==GRASSLAND)&& CH4_em>0)
+    if(stand->type->landusetype==SETASIDE_RF || stand->type->landusetype==SETASIDE_IR || stand->type->landusetype==AGRICULTURE || stand->type->landusetype==SETASIDE_WETLAND || stand->type->landusetype==GRASSLAND)
     {
       foreachpft(pft, p, &stand->pftlist)
       {
@@ -238,7 +239,6 @@ void update_daily(Cell *cell,            /**< cell pointer           */
         }
       }
     }
-    plant_gas_transport(stand,climate.temp,ch4,config);   //fluxes in routine written to output
 
     /* update soil and litter properties to account for all changes since last call of littersom */
     if(config->soilpar_option==NO_FIXED_SOILPAR || (config->soilpar_option==FIXED_SOILPAR && year<config->soilpar_fixyear))
