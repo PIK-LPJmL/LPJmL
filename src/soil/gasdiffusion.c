@@ -67,7 +67,7 @@ void gasdiffusion(Soil *soil,     /**< [inout] pointer to soil data */
   {
     soil_moist = getsoilmoist(soil,l);
     V = getV(soil,l);  /*soil air content (m3 air/m3 soil)*/
-    epsilon_O2[l] = max(0.001, V + soil_moist*soil->wsat[l]*BO2);
+    epsilon_O2[l] = getepsilon_O2(V,soil_moist,soil->wsat[l]);
     if (V<0)
     {
       V = 0;
@@ -96,7 +96,7 @@ void gasdiffusion(Soil *soil,     /**< [inout] pointer to soil data */
   {
     soil_moist = getsoilmoist(soil,l);
     V = getV(soil,l);  /*soil air content (m3 air/m3 soil)*/
-    epsilon_CH4[l] = max(0.001, V + soil_moist*soil->wsat[l]*BCH4);
+    epsilon_CH4[l] = getepsilon_CH4(V,soil_moist,soil->wsat[l]);
     if (V<0)
     {
       V = 0;
@@ -118,13 +118,15 @@ void gasdiffusion(Soil *soil,     /**< [inout] pointer to soil data */
 
   end = soilmethane(soil); //do not multiply by *WC/WCH4, is used for methane fluxes here
 #ifdef SAFE
-  if (soil->w[l]< -epsilon || soil->w_fw[l]< -epsilon )
-  {   fprintf(stderr,"\n\ngasdiffusion soilwater=%.6f soilice=%.6f wsats=%.6f agtop_moist=%.6f\n",
-          allwater(soil,l),allice(soil,l),soil->wsats[l],soil->litter.agtop_moist);
+  for (l = 0; l<BOTTOMLAYER; l++)
+    if (soil->w[l]< -epsilon || soil->w_fw[l]< -epsilon )
+    {
+      fprintf(stderr,"\n\ngasdiffusion soilwater=%.6f soilice=%.6f wsats=%.6f agtop_moist=%.6f\n",
+              allwater(soil,l),allice(soil,l),soil->wsats[l],soil->litter.agtop_moist);
       fflush(stderr);
       fprintf(stderr,"Soil-moisture layer %d negative: w:%g, fw:%g, soil_type %s \n\n",
-          l,soil->w[l],soil->w_fw[l],soil->par->name);
-  }
+              l,soil->w[l],soil->w_fw[l],soil->par->name);
+    }
 #endif
 
 #ifdef CHECK_BALANCE

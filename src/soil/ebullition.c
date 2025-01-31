@@ -47,7 +47,7 @@ Real ebullition(Soil *soil,   /**< pointer to soil data */
   {
     soil_moist[l] = getsoilmoist(soil,l);
     V = getV(soil,l);  /*soil air content (m3 air/m3 soil)*/
-    epsilon_CH4[l] = max(0.001, V + soil_moist[l]*soil->wsat[l]*BCH4);
+    epsilon_CH4[l] = getepsilon_CH4(V,soil_moist[l],soil->wsat[l]);
   }
   C_thres = CH4_min*(2 - fpc_all);
 

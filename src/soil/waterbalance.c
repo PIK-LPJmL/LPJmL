@@ -366,7 +366,7 @@ fprintf(stderr,"w[%d] %3.12f, fw[%d] %3.12f, icedepth[%d] %3.12f, whcs[%d] %3.12
     fputs("\nfree ice              ",stderr);
     foreachsoillayer(l)
       fprintf(stderr," %12.2f",soil->ice_fw[l]);
-     fputs("\nIce depth             ",stderr);
+    fputs("\nIce depth             ",stderr);
     foreachsoillayer(l)
       fprintf(stderr," %12.2f",soil->ice_depth[l]);
     fputs("\nFreeze depth          ",stderr);
@@ -376,7 +376,7 @@ fprintf(stderr,"w[%d] %3.12f, fw[%d] %3.12f, icedepth[%d] %3.12f, whcs[%d] %3.12
     foreachsoillayer(l)
       fprintf(stderr," %12.2f",soil->ice_pwp[l]);
     fputs("\nAET_L                 ",stderr);
-    foreachsoillayer(l)
+    foreachrootlayer(l)
       fprintf(stderr," %12.2f",    aet_stand[l]);
     fputs("\n---------------------\n",stderr);
 

@@ -192,8 +192,8 @@ Stocks littersom(Stand *stand,                      /**< [inout] pointer to stan
       V = getV(soil,l);  /*soil air content (m3 air/m3 soil)*/
       if (V<=epsilon)
          V=epsilon+epsilon;
-      epsilon_O2=max(0.00004,V+soil_moist[l]*soil->wsat[l]*BO2);
-      epsilon_CH4=max(0.00004,V+soil_moist[l]*soil->wsat[l]*BCH4);
+      epsilon_O2=getepsilon_O2(V,soil_moist[l],soil->wsat[l]);
+      epsilon_CH4=getepsilon_CH4(V,soil_moist[l],soil->wsat[l]);
 
       response[l]=gtemp_soil[l]*(INTERCEPT+MOIST_3*(moist[l]*moist[l]*moist[l])+MOIST_2*(moist[l]*moist[l])+MOIST*moist[l]);
       if (response[l]<epsilon)

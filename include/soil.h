@@ -422,4 +422,7 @@ given an enthalpy vector (enth) and a Soil_thermal_prop (th) */
           soil->wi_abs_enth_adj[layer]+=amount; /* update enth adjusted water ice content */ \
         }\
         })
+#define getepsilon_O2(V,soil_moist,wsat) max(0.001, V + (soil_moist)*(wsat)*BO2)
+#define getepsilon_CH4(V,soil_moist,wsat) max(0.001, V + (soil_moist)*(wsat)*BCH4)
+
 #endif /* SOIL_H */
