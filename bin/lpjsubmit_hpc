@@ -44,7 +44,7 @@ while(( "$#" )); do
       echo -e "\nArguments:"
       echo "-h,--help      print this help text"
       echo "-class c       set SLURM QOS, default is 'short'"
-      echo "-group g       set SLURM account"
+      echo "-group g       set SLURM group account"
       echo "-partition p   set SLURM partition"
       echo "-wtime time    set wall clock limit of job. Time must be in the format hh:mm:ss"
       echo "-blocking n    set blocking (number of tasks per node), default is unlimited"

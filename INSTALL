@@ -319,7 +319,7 @@ The following runtime options are defined:
 -pp cmd            - set preprocessor program. Default is 'cpp'
 -fpe               - enable floating point exceptions
 -image host        - set host where IMAGE model is running. Option is only
-                    available for the IMAGE version
+                     available for the IMAGE version
 -couple host[:port]- set host and port where the coupled model is running
 -wait time         - set time to wait for connection to IMAGE/coupled model
 -inpath dir        - input directory path
