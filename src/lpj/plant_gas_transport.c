@@ -98,7 +98,7 @@ void plant_gas_transport(Stand *stand,        /**< pointer to soil data */
   {
     if (!istree(pft))
     {
-      tillers = leafc(pft)*pft->nind*pft->phen / tiller_weight;
+      tillers = leafc(pft)*pft->phen / tiller_weight;
       tiller_frac = tillers*pft->par->rootdist[l];
       tiller_area = max(0.001,tiller_radius*tiller_radius*M_PI*tiller_frac*tiller_por);
       for (l = 0; l<LASTLAYER; l++)
