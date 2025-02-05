@@ -18,10 +18,11 @@
 #include "grass.h"
 
 #define np -0.5              /* parameter given in Riera et al. 1999*/
-#define tiller_weight  0.22  /* [gc] PARAMETER*/
+#define tiller_weight  0.15  /* [gc] PARAMETER*/
 #define tiller_radius 0.003
-#define tiller_por 0.7
-#define water_min 0.01
+#define tiller_por 0.8
+#define water_min 0.001
+#define wind_speed 3.28      // average global wind speed in m/s over lands https://web.stanford.edu/group/efmh/winds/global_winds.html
 //#define DEBUG
 
 #ifdef DEBUG
@@ -80,14 +81,12 @@ void plant_gas_transport(Stand *stand,        /**< pointer to soil data */
     ScCH4 = 20;
   else
     ScCH4 = 1898 - 110.1 * airtemp + 2.834 * airtemp*airtemp - 0.02791 * airtemp*airtemp*airtemp;
-  k_600 = 2.07;                        /*should be k_600=2.07 + 0.215 * pow(wind_speed,1.7);  HERE wind speed is set to zero*/
+  k_600 = 2.07 + 0.215 * pow(wind_speed,1.7);
   kCH4 = k_600*pow((ScCH4 / 600), np);   //piston velocity
-  O2_air = p_s / R_gas / degCtoK(airtemp)*O2s*WO2;   /*g/m3 oxygen concentration*/
   if (airtemp >= 40)
     ScO2 = 8;
   else
     ScO2 = 1800.6-120.1*airtemp+3.7818*airtemp*airtemp-0.047608 * airtemp*airtemp*airtemp;
-  k_600 = 2.07;                        /*should be k_600=2.07 + 0.215 * pow(wind_speed,1.7);  HERE wind speed is set to zero*/
   kO2 = k_600*pow((ScO2/600),np);
 
   /*convert cm h-1 to m d-1*/
@@ -96,24 +95,24 @@ void plant_gas_transport(Stand *stand,        /**< pointer to soil data */
   CH4_rice=CH4_plant=CH4_sink=0;
   foreachpft(pft, p, &stand->pftlist)
   {
-    if (!istree(pft))
+    if (!istree(pft) || pft->par->peatland)
     {
       tillers = leafc(pft)*pft->phen / tiller_weight;
-      tiller_frac = tillers*pft->par->rootdist[l];
-      tiller_area = max(0.001,tiller_radius*tiller_radius*M_PI*tiller_frac*tiller_por);
       for (l = 0; l<LASTLAYER; l++)
       {
+        tiller_frac = tillers*pft->par->rootdist[l];
+        tiller_area = max(0.01,tiller_radius*tiller_radius*M_PI*tiller_frac*tiller_por);
         soil_moist=getsoilmoist(&stand->soil,l);
         V=getV(&stand->soil,l);  /*soil air content (m3 air/m3 soil)*/
         epsilon_CH4=getepsilon_CH4(V,soil_moist,stand->soil.wsat[l]);
         epsilon_O2=getepsilon_O2(V,soil_moist,stand->soil.wsat[l]);
-        soil_water_vol=(stand->soil.w[l]*stand->soil.whcs[l]+stand->soil.wpwps[l]*(1-stand->soil.ice_pwp[l])+stand->soil.w_fw[l])/soildepth[l];  //in  m-3 *1000/1000/soildepth
+        soil_water_vol=(stand->soil.w[l]*stand->soil.whcs[l]+stand->soil.wpwps[l]*(1-stand->soil.ice_pwp[l])+stand->soil.w_fw[l])/soildepth[l];
         if (soil_water_vol>water_min && tiller_area>0)
         {
           Conc_new = 0;
-          CH4 = stand->soil.CH4[l] /epsilon_CH4 /soildepth[l] * 1000;
+          CH4 = stand->soil.CH4[l] /soil_water_vol /soildepth[l] * 1000;
           Conc_new=CH4_air+(CH4-CH4_air)*exp(-kCH4/(soil_water_vol*soildepth[l]/1000/tiller_area));
-          CH4_plant=(CH4-Conc_new)*epsilon_CH4*soildepth[l]/1000;
+          CH4_plant=(CH4-Conc_new)*soil_water_vol*soildepth[l]/1000;
           stand->soil.CH4[l]-= CH4_plant;
           if(stand->soil.CH4[l]<0)
           {
@@ -129,9 +128,9 @@ void plant_gas_transport(Stand *stand,        /**< pointer to soil data */
             CH4_rice+=CH4_plant;
           /*OXYGEN*/
           Conc_new = 0;
-          O2=stand->soil.O2[l]/epsilon_O2/soildepth[l]*1000;
+          O2=stand->soil.O2[l]/soil_water_vol/soildepth[l]*1000;
           Conc_new=O2_air+(O2-O2_air)*exp(-kO2/(soil_water_vol*soildepth[l]/1000/tiller_area));
-          O2_plant=(O2-Conc_new)*epsilon_O2*soildepth[l]/1000;
+          O2_plant=(O2-Conc_new)*soil_water_vol*soildepth[l]/1000;
           stand->soil.O2[l]-= O2_plant;
           if(stand->soil.O2[l]<0) stand->soil.O2[l]=0;
         }

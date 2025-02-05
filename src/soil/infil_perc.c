@@ -796,7 +796,7 @@ Real infil_perc(Stand *stand,        /**< Stand pointer */
   {
     //==========  Topographic runoff at WTABLE ==================================
 
-    fff=2.5;       //m-1 decay factor originally 2.5 in CLM4.5
+    fff=2;       //m-1 decay factor originally 2.5 in CLM4.5
     icesum=0;
     depthsum=0;
     if (soil->wa>epsilon)
@@ -898,7 +898,6 @@ Real infil_perc(Stand *stand,        /**< Stand pointer */
       }
     }
   }
-
 
 #ifdef SAFE
   forrootsoillayer(l)

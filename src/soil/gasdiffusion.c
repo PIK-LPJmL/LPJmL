@@ -136,5 +136,6 @@ void gasdiffusion(Soil *soil,     /**< [inout] pointer to soil data */
 #endif
   if((start-end)<0)
    *CH4_sink=start-end;
-  *CH4_out=start-end;
+  else
+   *CH4_out=start-end;
 } /* of 'gasdiffusion' */

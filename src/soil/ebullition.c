@@ -35,7 +35,7 @@ Real ebullition(Soil *soil,   /**< pointer to soil data */
                 Real fpc_all  /**< plant cover  (0..1) */
               )
 {
-  Real C_thres, Q_ebull[BOTTOMLAYER], ratio, soil_moist[BOTTOMLAYER], V, epsilon_CH4[BOTTOMLAYER]; //, epsilon_CH4_u;
+  Real C_thres, Q_ebull[BOTTOMLAYER], soil_moist[BOTTOMLAYER], V, epsilon_CH4[BOTTOMLAYER]; //, epsilon_CH4_u;
   Real Q_ebull2;
   Real Q_ebull_day=0;
   int l, i;
@@ -57,8 +57,6 @@ Real ebullition(Soil *soil,   /**< pointer to soil data */
       Q_ebull[l]=0;
     for (l = LASTLAYER - 1; l >= 0; l--)
     {
-  //    ratio = min((layerbound[l] - soil->wtable) / soildepth[l], 1);
-      ratio=1;
       if(l<LASTLAYER-1)
       {
         if(soil_moist[l]>0.9)
@@ -66,13 +64,13 @@ Real ebullition(Soil *soil,   /**< pointer to soil data */
         else
           soil->CH4[l]+=Q_ebull[l+1];
       } 
-      if ((soil->CH4[l]/soildepth[l]/epsilon_CH4[l]*1000*ratio)>C_thres ) // && soil->CH4[l] / soildepth[l] * 1000 / epsilon_CH4 > soil->CH4[l - 1] / soildepth[l - 1] * 1000 / epsilon_CH4_u)
+      if ((soil->CH4[l]/soildepth[l]/epsilon_CH4[l]*1000)>C_thres ) // && soil->CH4[l] / soildepth[l] * 1000 / epsilon_CH4 > soil->CH4[l - 1] / soildepth[l - 1] * 1000 / epsilon_CH4_u)
       {
 /*
       if ((soil->CH4[l] / soildepth[l] * 1000 / epsilon_CH4*ratio)>C_thres && soil->wtable<layerbound[l] && soil->CH4[l] / soildepth[l] * 1000 / epsilon_CH4 > soil->CH4[l - 1] / soildepth[l - 1] * 1000 / epsilon_CH4_u)
       {
 */
-        Q_ebull2=k_e*(soil->CH4[l]/soildepth[l]/epsilon_CH4[l]*1000*ratio-C_thres)*soildepth[l]*epsilon_CH4[l]*1e-3;
+        Q_ebull2=k_e*(soil->CH4[l]/soildepth[l]/epsilon_CH4[l]*1000-C_thres)*soildepth[l]*epsilon_CH4[l]*1e-3;
         Q_ebull2= max(0,min(soil->CH4[l],Q_ebull2));
         soil->CH4[l] -= Q_ebull2;
         Q_ebull[l]+=Q_ebull2;
