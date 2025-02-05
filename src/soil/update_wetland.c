@@ -616,11 +616,7 @@ void update_wetland(Cell *cell,          /**< pointer to cell */
         kmean_pft.fast = kmean_pft.slow = 0.;
         forrootsoillayer(l)
         {
-          if (stand->type->landusetype == WETLAND)
-            socfraction = pow(10, stand->soil.litter.item[p].pft->soc_k*0.9*logmidlayer[l])
-            - (l>0 ? pow(10, stand->soil.litter.item[p].pft->soc_k*0.9*logmidlayer[l - 1]) : 0);
-          else
-            socfraction = pow(10, stand->soil.litter.item[p].pft->soc_k*logmidlayer[l])
+          socfraction = pow(10, stand->soil.litter.item[p].pft->soc_k*logmidlayer[l])
             - (l>0 ? pow(10, stand->soil.litter.item[p].pft->soc_k*logmidlayer[l - 1]) : 0);
 
           kmean_pft.fast += socfraction*stand->soil.k_mean[l].fast / (stand->soil.count / NDAYYEAR);
@@ -629,13 +625,8 @@ void update_wetland(Cell *cell,          /**< pointer to cell */
 
         forrootsoillayer(l)
         {
-          if (stand->type->landusetype == WETLAND)
-            socfraction = pow(10, stand->soil.litter.item[p].pft->soc_k*0.9*logmidlayer[l])
-            - (l>0 ? pow(10, stand->soil.litter.item[p].pft->soc_k*0.9*logmidlayer[l - 1]) : 0);
-          else
-            socfraction = pow(10, stand->soil.litter.item[p].pft->soc_k*logmidlayer[l])
+          socfraction = pow(10, stand->soil.litter.item[p].pft->soc_k*logmidlayer[l])
             - (l>0 ? pow(10, stand->soil.litter.item[p].pft->soc_k*logmidlayer[l - 1]) : 0);
-
 
           if (stand->soil.decomp_litter_mean.carbon>100)
           {

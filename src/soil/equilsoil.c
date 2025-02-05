@@ -60,12 +60,8 @@ void equilsoil(Soil *soil,            /**< pointer to soil data */
     }
     for(p=0;p<ntotpft;p++)
     {
-      if (iswetland)
-        socfraction=pow(10,pftpar[p].soc_k*0.9*logmidlayer[l])
-                      -(l>0 ? pow(10,pftpar[p].soc_k*0.9*logmidlayer[l-1]): 0);
-      else
-        socfraction=pow(10,pftpar[p].soc_k*logmidlayer[l])
-                  - (l>0 ? pow(10,pftpar[p].soc_k*logmidlayer[l-1]): 0);
+      socfraction=pow(10,pftpar[p].soc_k*logmidlayer[l])
+                - (l>0 ? pow(10,pftpar[p].soc_k*logmidlayer[l-1]): 0);
       soil->c_shift[l][p].fast=soil->decay_rate[l].fast*socfraction;
       soil->c_shift[l][p].slow=soil->decay_rate[l].slow*socfraction;
       sum[p].fast+=soil->c_shift[l][p].fast;
