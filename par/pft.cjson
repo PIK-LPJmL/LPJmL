@@ -2400,7 +2400,7 @@
       "reprod_cost" : REPROD_COST, /* reproduction cost */
       "allom1" : 100,         /* allometry */
       "allom2" : 20,
-      "allom3" : 0.4,
+      "allom3" : 4.0,
       "allom4" : ALLOM4,
       "k_latosa" : K_LATOSA,
       "wood_density" : WOOD_DENSITY, /* wood density in gC/m3 */
@@ -2734,7 +2734,7 @@
       "irrig_threshold" : { "dry" : IRRIG_THRESHOLD_C3_DRY, "humid" : IRRIG_THRESHOLD_C3_HUMID },
       "calcmethod_sdate" : "temp wtyp calc", /* calc_sdate: method to calculate the sowing date*/
       "sdatenh" : 258, "sdatesh" : 90, /* sdatenh,sdatesh: init sowing date for northern and southern hemisphere (julian day) */
-      "hlimit" : 330,         /* hlimit: max length of crop cycle  */
+      "hlimit" : 360,         /* hlimit: max length of crop cycle  */
       "fallow_days" : 30,     /* fallow_days: wait after harvest until next sowing */
       "temp_fall" : 12, "temp_spring" :  5, "temp_vern" : 12, /* temp_fall, temp_spring, temp_vernalization: thresholds for sowing date f(T)*/
       "tv_eff" : { "low" : -4, "high" : 17 }, /* min & max tv: lower and upper temperature threshold under which vernalization is possible (deg C)*/
@@ -2755,7 +2755,7 @@
       "flaimaxk" : 0.95,      /* flaimaxk: fraction of plant maximal LAI 2 [0-1]*/
       "fphusen" : 0.7,        /* fphusen: fraction of growing period at which LAI starts decreasing [0-1]*/
       "flaimaxharvest" : 0.00, /* flaimaxharvest: fraction of plant maximal LAI still present at harvest [0-1]*/
-      "laimax" : 5.0,         /* laimax: plant maximal LAI (m2leaf/m2)*/
+      "laimax" : 7.0,         /* laimax: plant maximal LAI (m2leaf/m2)*/
       "laimin" : 2.0,         /* laimin: plant maximal LAI (m2leaf/m2) in 1950*/
       "hiopt" : 0.50,         /* hiopt: optimum harvest index HI reached at harvest*/
       "himin" : 0.20,         /* himin: minimum harvest index HI reached at harvest*/
@@ -2849,7 +2849,7 @@
       "irrig_threshold" : { "dry" : 1.0, "humid" : 1.0 },
       "calcmethod_sdate" : "prec calc", /* calc_sdate: method to calculate the sowing date*/
       "sdatenh" : 100, "sdatesh" : 180, /* sdatenh,sdatesh: init sowing date for northern and southern hemisphere (julian day) */
-      "hlimit" : 180,         /* hlimit: max length of crop cycle  */
+      "hlimit" : 288,         /* hlimit: max length of crop cycle  */
       "fallow_days" : 30,     /* fallow_days: wait after harvest until next sowing */
       "temp_fall" : 1000, "temp_spring" :  18, "temp_vern" : 1000, /* temp_fall, temp_spring, temp_vernalization: thresholds for sowing date f(T)*/
       "tv_eff" : { "low" : 1000, "high" : 1000 }, /* min & max tv: lower and upper temperature threshold under which vernalization is possible (deg C)*/
@@ -2863,14 +2863,14 @@
       "phuw" : { "low" : 0.0,  "high" : 0.0}, /* min & max phu: potential heat units required for plant maturity winter(deg C)*/
       "phus" : { "low" : 1600.0,  "high" : 1800.0}, /* min & max phu: potential heat units required for plant maturity summer(deg C)*/
       "phu_par" : 9999,        /* phu parameter for determining the variability of phu */
-      "basetemp": { "low" : 10.0, "high" :  10.0}, /* min & max basetemp: base temperature */
+      "basetemp": { "low" : 8.0, "high" :  8.0}, /* min & max basetemp: base temperature */
       "fphuc" : 0.10,         /* fphuc: fraction of growing season 1 [0-1]*/
       "flaimaxc" : 0.05,      /* flaimaxc: fraction of plant maximal LAI 1 [0-1]*/
       "fphuk" : 0.50,         /* fphuk: fraction of growing season 2 [0-1]*/
       "flaimaxk" : 0.95,      /* flaimaxk: fraction of plant maximal LAI 2 [0-1]*/
       "fphusen" : 0.80,       /* fphusen: fraction of growing period at which LAI starts decreasing [0-1]*/
       "flaimaxharvest" : 0.00, /* flaimaxharvest: fraction of plant maximal LAI still present at harvest [0-1]*/
-      "laimax" : 5.0,         /* laimax: plant maximal LAI (m2leaf/m2)*/
+      "laimax" : 7.0,         /* laimax: plant maximal LAI (m2leaf/m2)*/
       "laimin" : 5.0,         /* laimin: plant maximal LAI (m2leaf/m2) in 1950*/
       "hiopt" : 0.50,         /* hiopt: optimum harvest index HI reached at harvest*/
       "himin" : 0.25,         /* himin: minimum harvest index HI reached at harvest*/
@@ -2964,7 +2964,7 @@
       "irrig_threshold" : { "dry" : IRRIG_THRESHOLD_C4, "humid" : IRRIG_THRESHOLD_C4 },
       "calcmethod_sdate" : "temp prec calc", /* calc_sdate: method to calculate the sowing date*/
       "sdatenh" : 1, "sdatesh" : 181, /* sdatenh,sdatesh: init sowing date for northern and southern hemisphere (julian day) */
-      "hlimit" : 240,         /* hlimit: max length of crop cycle  */
+      "hlimit" : 334,         /* hlimit: max length of crop cycle  */
       "fallow_days" : 30,     /* fallow_days: wait after harvest until next sowing */
       "temp_fall" : 1000, "temp_spring" :  14, "temp_vern" : 1000, /* temp_fall, temp_spring, temp_vernalization: thresholds for sowing date f(T)*/
       "tv_eff" : { "low" : 1000, "high" : 1000 }, /* min & max tv: lower and upper temperature threshold under which vernalization is possible (deg C)*/
@@ -2978,7 +2978,7 @@
       "phuw" : { "low" : 0.0,  "high" : 0.0}, /* min & max phu: potential heat units required for plant maturity winter(deg C)*/
       "phus" : { "low" : 1600.0,  "high" : 1600.0}, /* min & max phu: potential heat units required for plant maturity summer(deg C)*/
       "phu_par" : 9999,        /* phu parameter for determining the variability of phu */
-      "basetemp": { "low" : 5.0, "high" :  15.0}, /* min & max basetemp: base temperature */
+      "basetemp": { "low" : 5.0, "high" :  5.0}, /* min & max basetemp: base temperature */
       "fphuc" : 0.10,         /* fphuc: fraction of growing season 1 [0-1]*/
       "flaimaxc" : 0.05,      /* flaimaxc: fraction of plant maximal LAI 1 [0-1]*/
       "fphuk" : 0.50,         /* fphuk: fraction of growing season 2 [0-1]*/
@@ -3079,7 +3079,7 @@
       "irrig_threshold" : { "dry" : IRRIG_THRESHOLD_C4, "humid" : IRRIG_THRESHOLD_C4 },
       "calcmethod_sdate" : "prec calc", /* calc_sdate: method to calculate the sowing date*/
       "sdatenh" : 80, "sdatesh" : 260, /* sdatenh,sdatesh: init sowing date for northern and southern hemisphere (julian day) */
-      "hlimit" : 240,         /* hlimit: max length of crop cycle  */
+      "hlimit" : 299,         /* hlimit: max length of crop cycle  */
       "fallow_days" : 30,     /* fallow_days: wait after harvest until next sowing */
       "temp_fall" : 1000, "temp_spring" :  12, "temp_vern" : 1000, /* temp_fall, temp_spring, temp_vernalization: thresholds for sowing date f(T)*/
       "tv_eff" : { "low" : 1000, "high" : 1000 }, /* min & max tv: lower and upper temperature threshold under which vernalization is possible (deg C)*/
@@ -3093,14 +3093,14 @@
       "phuw" : { "low" : 0.0,  "high" : 0.0}, /* min & max phu: potential heat units required for plant maturity winter(deg C)*/
       "phus" : { "low" : 1500.0,  "high" : 1500.0}, /* min & max phu: potential heat units required for plant maturity summer(deg C)*/
       "phu_par" : 9999,        /* phu parameter for determining the variability of phu */
-      "basetemp": { "low" : 10.0, "high" :  10.0}, /* min & max basetemp: base temperature */
+      "basetemp": { "low" : 8.0, "high" :  8.0}, /* min & max basetemp: base temperature */
       "fphuc" : 0.15,         /* fphuc: fraction of growing season 1 [0-1]*/
       "flaimaxc" : 0.01,      /* flaimaxc: fraction of plant maximal LAI 1 [0-1]*/
       "fphuk" : 0.50,         /* fphuk: fraction of growing season 2 [0-1]*/
       "flaimaxk" : 0.95,      /* flaimaxk: fraction of plant maximal LAI 2 [0-1]*/
       "fphusen" : 0.85,       /* fphusen: fraction of growing period at which LAI starts decreasing [0-1]*/
       "flaimaxharvest" : 0.00, /* flaimaxharvest: fraction of plant maximal LAI still present at harvest [0-1]*/
-      "laimax" : 5.0,         /* laimax: plant maximal LAI (m2leaf/m2)*/
+      "laimax" : 7.0,         /* laimax: plant maximal LAI (m2leaf/m2)*/
       "laimin" : 5.0,         /* laimin: plant maximal LAI (m2leaf/m2) in 1950*/
       "hiopt" : 0.25,         /* hiopt: optimum harvest index HI reached at harvest*/
       "himin" : 0.10,         /* himin: minimum harvest index HI reached at harvest*/
@@ -3194,7 +3194,7 @@
       "irrig_threshold" : { "dry" : IRRIG_THRESHOLD_C3_DRY, "humid" : IRRIG_THRESHOLD_C3_HUMID },
       "calcmethod_sdate" : "temp prec calc", /* calc_sdate: method to calculate the sowing date*/
       "sdatenh" : 1, "sdatesh" : 181, /* sdatenh,sdatesh: init sowing date for northern and southern hemisphere (julian day) */
-      "hlimit" : 300,         /* hlimit: max length of crop cycle  */
+      "hlimit" : 282,         /* hlimit: max length of crop cycle  */
       "fallow_days" : 30,     /* fallow_days: wait after harvest until next sowing */
       "temp_fall" : 1000, "temp_spring" :  10, "temp_vern" : 1000, /* temp_fall, temp_spring, temp_vernalization: thresholds for sowing date f(T)*/
       "tv_eff" : { "low" : 1000, "high" : 1000 }, /* min & max tv: lower and upper temperature threshold under which vernalization is possible (deg C)*/
@@ -3316,7 +3316,7 @@
       "roughness_length" : 0.03,     /* roughness length */
       "calcmethod_sdate" : "temp styp calc", /* calc_sdate: method to calculate the sowing date*/
       "sdatenh" : 90, "sdatesh" : 270, /* sdatenh,sdatesh: init sowing date for northern and southern hemisphere (julian day) */
-      "hlimit" : 260,         /* hlimit: max length of crop cycle  */
+      "hlimit" : 299,         /* hlimit: max length of crop cycle  */
       "fallow_days" : 30,     /* fallow_days: wait after harvest until next sowing */
       "temp_fall" : 1000, "temp_spring" :  8, "temp_vern" : 1000, /* temp_fall, temp_spring, temp_vernalization: thresholds for sowing date f(T)*/
       "tv_eff" : { "low" : 1000, "high" : 1000 }, /* min & max tv: lower and upper temperature threshold under which vernalization is possible (deg C)*/
@@ -3431,7 +3431,7 @@
       "calcmethod_sdate" : "prec calc", /* calc_sdate: method to calculate the sowing date*/
       "irrig_threshold" : { "dry" : IRRIG_THRESHOLD_C3_DRY, "humid" : IRRIG_THRESHOLD_C3_HUMID },
       "sdatenh" : 80, "sdatesh" :  180, /* sdatenh,sdatesh: init sowing date for northern and southern hemisphere (julian day) */
-      "hlimit" : 330,         /* hlimit: max length of crop cycle  */
+      "hlimit" : 360,         /* hlimit: max length of crop cycle  */
       "fallow_days" : 30,     /* fallow_days: wait after harvest until next sowing */
       "temp_fall" : 1000, "temp_spring" :  22, "temp_vern" : 1000, /* temp_fall, temp_spring, temp_vernalization: thresholds for sowing date f(T)*/
       "tv_eff" : { "low" : 1000, "high" : 1000 }, /* min & max tv: lower and upper temperature threshold under which vernalization is possible (deg C)*/
@@ -3546,7 +3546,7 @@
       "irrig_threshold" : { "dry" : IRRIG_THRESHOLD_C3_DRY, "humid" : IRRIG_THRESHOLD_C3_HUMID },
       "calcmethod_sdate" : "temp styp calc", /* calc_sdate: method to calculate the sowing date*/
       "sdatenh" : 1, "sdatesh" :  181, /* sdatenh,sdatesh: init sowing date for northern and southern hemisphere (julian day) */
-      "hlimit" : 240,         /* hlimit: max length of crop cycle  */
+      "hlimit" : 282,         /* hlimit: max length of crop cycle  */
       "fallow_days" : 30,     /* fallow_days: wait after harvest until next sowing */
       "temp_fall" : 1000, "temp_spring" :  13, "temp_vern" : 1000, /* temp_fall, temp_spring, temp_vernalization: thresholds for sowing date f(T)*/
       "tv_eff" : { "low" : 1000, "high" : 1000 }, /* min & max tv: lower and upper temperature threshold under which vernalization is possible (deg C)*/
@@ -3661,7 +3661,7 @@
       "irrig_threshold" : { "dry" : IRRIG_THRESHOLD_C3_DRY, "humid" : IRRIG_THRESHOLD_C3_HUMID },
       "calcmethod_sdate" : "prec calc", /* calc_sdate: method to calculate the sowing date*/
       "sdatenh" : 140, "sdatesh" :  320, /* sdatenh,sdatesh: init sowing date for northern and southern hemisphere (julian day) */
-      "hlimit" : 240,         /* hlimit: max length of crop cycle  */
+      "hlimit" : 282,         /* hlimit: max length of crop cycle  */
       "fallow_days" : 30,     /* fallow_days: wait after harvest until next sowing */
       "temp_fall" : 1000, "temp_spring" :  13, "temp_vern" : 1000, /* temp_fall, temp_spring, temp_vernalization: thresholds for sowing date f(T)*/
       "tv_eff" : { "low" : 1000, "high" : 1000 }, /* min & max tv: lower and upper temperature threshold under which vernalization is possible (deg C)*/
@@ -3675,7 +3675,7 @@
       "phuw" : { "low" : 0.0,  "high" : 0.0}, /* min & max phu: potential heat units required for plant maturity winter(deg C)*/
       "phus" : { "low" : 1000.0,  "high" : 1000.0}, /* min & max phu: potential heat units required for plant maturity summer(deg C)*/
       "phu_par" : 9999,        /* phu parameter for determining the variability of phu */
-      "basetemp": { "low" : 10.0, "high" :  10.0}, /* min & max basetemp: base temperature */
+      "basetemp": { "low" : 7.0, "high" :  7.0}, /* min & max basetemp: base temperature */
       "fphuc" : 0.15,         /* fphuc: fraction of growing season 1 [0-1]*/
       "flaimaxc" : 0.05,      /* flaimaxc: fraction of plant maximal LAI 1 [0-1]*/
       "fphuk" : 0.50,         /* fphuk: fraction of growing season 2 [0-1]*/
@@ -3783,7 +3783,7 @@
       "irrig_threshold" : { "dry" : IRRIG_THRESHOLD_C3_DRY, "humid" : IRRIG_THRESHOLD_C3_HUMID },
       "calcmethod_sdate" : "prec calc", /* calc_sdate: method to calculate the sowing date*/
       "sdatenh" : 100, "sdatesh" :  280, /* sdatenh,sdatesh: init sowing date for northern and southern hemisphere (julian day) */
-      "hlimit" : 240,         /* hlimit: max length of crop cycle  */
+      "hlimit" : 282,         /* hlimit: max length of crop cycle  */
       "fallow_days" : 30,     /* fallow_days: wait after harvest until next sowing */
       "temp_fall" : 1000, "temp_spring" :  15, "temp_vern" : 1000, /* temp_fall, temp_spring, temp_vernalization: thresholds for sowing date f(T)*/
       "tv_eff" : { "low" : 1000, "high" : 1000 }, /* min & max tv: lower and upper temperature threshold under which vernalization is possible (deg C)*/
@@ -3898,7 +3898,7 @@
       "irrig_threshold" : { "dry" : IRRIG_THRESHOLD_C3_DRY, "humid" : IRRIG_THRESHOLD_C3_HUMID },
       "calcmethod_sdate" : "temp wtyp calc", /* calc_sdate: method to calculate the sowing date*/
       "sdatenh" : 241, "sdatesh" :  61, /* sdatenh,sdatesh: init sowing date for northern and southern hemisphere (julian day) */
-      "hlimit" : 210,         /* hlimit: max length of crop cycle  */
+      "hlimit" : 360,         /* hlimit: max length of crop cycle  */
       "fallow_days" : 0,      /* fallow_days: wait after harvest until next sowing */
       "temp_fall" : 17, "temp_spring" :  5, "temp_vern" : 12, /* temp_fall, temp_spring, temp_vernalization: thresholds for sowing date f(T)*/
       "tv_eff" : { "low" : -4, "high" : 17 }, /* min & max tv: lower and upper temperature threshold under which vernalization is possible (deg C)*/
@@ -4027,7 +4027,7 @@
       "phuw" : { "low" : 0.0,  "high" : 0.0}, /* min & max phu: potential heat units required for plant maturity winter(deg C)*/
       "phus" : { "low" : 2000.0,  "high" : 4000.0}, /* min & max phu: potential heat units required for plant maturity summer(deg C)*/
       "phu_par" : 9999,       /* phu parameter for determining the variability of phu */
-      "basetemp": { "low" : 11.0, "high" :  15.0}, /* min & max basetemp: base temperature */
+      "basetemp": { "low" : 12.0, "high" :  12.0}, /* min & max basetemp: base temperature */
       "fphuc" : 0.01,         /* fphuc: fraction of growing season 1 [0-1]*/
       "flaimaxc" : 0.01,      /* flaimaxc: fraction of plant maximal LAI 1 [0-1]*/
       "fphuk" : 0.40,         /* fphuk: fraction of growing season 2 [0-1]*/

@@ -86,7 +86,8 @@ void convert_water(Soil* soil, /**< pointer to soil data */
       }     
       else if (soil->ice_depth[l]<0)
         fail(PERM_ERR,TRUE,FALSE,"ice_depth[%d]=%g<0 in convert_water()",l,soil->ice_depth[l]);
-      default:
+      break;
+    default:
       /* do nothing */
       break;
   } /* of switch */
