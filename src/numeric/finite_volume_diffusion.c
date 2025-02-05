@@ -167,3 +167,87 @@ Bool apply_finite_volume_diffusion_impl(Real * amount,             /* g/m^2, sub
 
   return FALSE;
 } /* of 'apply_finite_volume_diffusion_of_a_day' */
+
+
+
+/* This function arranges the matrix for the implicit timestep.
+ * The equations can be found in the master thesis supplement equation (7-9). */
+STATIC void arrange_matrix_fv_crank_nicolson(Real * a,          /* sub diagonal elements  */
+                           Real * b,          /* main diagonal elements */
+                           Real * c,          /* super diagonal elements */
+                           const Real * h,    /* distances between adjacent gridpoints  */
+                           const Real * por,  /* porosities */
+                           const Real * res , /* resitances */
+                           const Real dt,      /* timestep */
+                           const int n
+                          )
+{
+
+  /* --- precompute some values --- */
+
+  /* --- arrange all rows except last --- */
+  int j;
+  for (j=0; j<(n-1); ++j)
+  {
+    /* loop over the rows of the matrix */
+    a[j] = - 1/res[j] * 1/(por[j] * h[j]) * dt * 0.5;
+    c[j] = - 1/res[j+1] * 1/(por[j] * h[j]) * dt * 0.5;
+    b[j] = 1 - a[j] - c[j];
+  }
+
+  /* --- arrange last row --- */
+  a[n-1] = - 1/res[n-1] * 1/(por[n-1] * h[n-1]) * dt * 0.5;
+  c[n-1] = 0;
+  b[n-1] = 1 - a[n-1];
+
+} /* of 'arrange_matrix' */
+
+Bool apply_finite_volume_diffusion_impl_crank_nicolson(Real * amount,             /* g/m^2, substance absolute amount */
+                                           const int n,               /* number of gridpoints */
+                                           const Real * h,            /* m, layer thicknesses (delta_x) */
+                                           const Real gas_con_air,    /* g/m^2, gas concentration of substance */
+                                           const Real * diff,         /* m^2/s, diffusivity */
+                                           const Real * porosity,      /* m^3/m^3, porosity */
+                                           const Real dt
+                                           )
+{
+  /* calculate resistances */
+  Real res[n];
+  calculate_resistances(res, h, diff, n);
+  Real gas_con_new[n]; 
+  Real gas_con_current[n];
+
+  /* get current gas condcentration */
+  int j;
+  for (j=0; j<n; ++j)
+    gas_con_current[j] = (amount[j] / h[j]) / porosity[j];
+  
+  Real a[n], b[n], c[n]; /* matrix diagonals */
+  Real rhs[n] = {}; /* right hand side of the equation */
+  arrange_matrix_fv_crank_nicolson(a, b, c, h, porosity, res, dt, n);
+  rhs[0] = dt * gas_con_air/(porosity[0] * h[0]) / res[0]; /* incorporates Tair of next and current time */
+
+  /* add gas con current to rhs */
+  for (j=0; j<n; ++j)
+    rhs[j] += gas_con_current[j];
+
+  /* add fluxes from current timesteps to rhs */
+  rhs[0] += 0.5 * dt / (h[0] * porosity[0]) * ( -1 * gas_con_current[0] * (1/res[0] + 1/res[1]) + 
+                                                gas_con_current[1] / res[1] );
+  for (j=1; j<n-1; ++j)
+    rhs[j] += 0.5 * dt / (h[j] * porosity[j]) * ( gas_con_current[j-1] / res[j] - 
+                                                  gas_con_current[j] * (1/res[j] + 1/res[j+1]) + 
+                                                  gas_con_current[j+1] / res[j+1] );
+
+  rhs[n-1] += 0.5 * dt / (h[n-1] * porosity[n-1]) * ( gas_con_current[n-2] / res[n-1] - 
+                                                      gas_con_current[n-1] / res[n-1]);
+
+  /* Solve the equation A x = rhs, for x */
+  thomas_algorithm(a, b, c, rhs, gas_con_new, n);
+
+  /* get back amounts */
+  for (j=0; j<n; ++j)
+    amount[j] = gas_con_new[j] * porosity[j] * h[j];
+
+  return FALSE;
+} /* of 'apply_finite_volume_diffusion_of_a_day' */

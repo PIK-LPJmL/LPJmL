@@ -54,7 +54,7 @@ void plant_gas_transport(Stand *stand,        /**< pointer to soil data */
   Pft *pft;
   Real CH4_air, ScCH4, k_600, kCH4;
   Real O2_air, ScO2, kO2;
-  Real soil_moist, V, epsilon_CH4, epsilon_O2,soil_water_vol;                /*in mm*/
+  Real soil_water_vol;                /*in mm*/
   Real tillers, tiller_area, tiller_frac;
   Real CH4, CH4_plant, CH4_plant_all,CH4_rice,CH4_sink;
   Real O2, O2_plant;
@@ -102,10 +102,6 @@ void plant_gas_transport(Stand *stand,        /**< pointer to soil data */
       {
         tiller_frac = tillers*pft->par->rootdist[l];
         tiller_area = max(0.01,tiller_radius*tiller_radius*M_PI*tiller_frac*tiller_por);
-        soil_moist=getsoilmoist(&stand->soil,l);
-        V=getV(&stand->soil,l);  /*soil air content (m3 air/m3 soil)*/
-        epsilon_CH4=getepsilon_CH4(V,soil_moist,stand->soil.wsat[l]);
-        epsilon_O2=getepsilon_O2(V,soil_moist,stand->soil.wsat[l]);
         soil_water_vol=(stand->soil.w[l]*stand->soil.whcs[l]+stand->soil.wpwps[l]*(1-stand->soil.ice_pwp[l])+stand->soil.w_fw[l])/soildepth[l];
         if (soil_water_vol>water_min && tiller_area>0)
         {
