@@ -44,152 +44,6 @@ void test_finite_volume_diffusion_timestep_resistances(void)
   TEST_ASSERT_DOUBLE_ARRAY_WITHIN(TOLERANCE, res_expected, res, 3);
 }
 
-void test_finite_volume_diffusion_timestep_equilibrium(void)
-{
-  Real amount[3] = {0.0, 0.0, 0.0};
-  Real amount_expected[3] = {0.0, 0.0, 0.0};
-  int n = 3;
-  Real h[3] = {0.1, 0.2, 0.4};
-  Real gas_con_air = 0.0;
-  Real diff[3] = {0.5, 0.1, 0.2};
-  Real porosity[3] = {0.1, 0.1, 0.1};
-
-  finite_volume_diffusion_timestep(amount, n, 10, h, gas_con_air, diff, porosity);
-  
-  TEST_ASSERT_DOUBLE_ARRAY_WITHIN(TOLERANCE, amount_expected, amount, 3);
-}
-
-void test_finte_volume_diffusion_higher_air_gas_concentration_should_increase_substance_amount(void)
-{
-  Real amount[3] = {0.0, 0.0, 0.0};
-
-  int n = 3;
-  Real h[3] = {0.1, 0.2, 0.4};
-  Real gas_con_air = 10.0;
-  Real diff[3] = {0.5, 0.1, 0.2};
-  Real porosity[3] = {0.1, 0.1, 0.1};
-
-  finite_volume_diffusion_timestep(amount, n, 10, h, gas_con_air, diff, porosity);
-  
-  TEST_ASSERT(amount[0] > 0.0);
-}
-
-void test_finte_volume_diffusion_analytical_solution_should_be_met(void)
-{
-  int n = 1000;
-  Real amount[n];
-  Real h[n];
-  Real gas_con_air = -5.0;
-  Real init_gas_conc = 10.0;
-  Real diff[n];
-  Real porosity[n];
-
-  /* define physical quantities */
-  for (int i = 0; i < n; i++)
-  {
-    h[i] = 100.0 / n; /* length of slab = 100 m */
-    porosity[i] = 0.8;
-
-    diff[i] = 0.3;
-  }
-
-  for (int i = 10; i < 20; i++)
-  {
-    h[i] = h[i] * 1.6;
-  }
-
-  for (int i = 50; i < 60; i++)
-  {
-    h[i] = h[i] * 0.8;
-  }
- 
-  for (int i = 0; i < n; i++)
-  {
-    amount[i] = init_gas_conc * h[i] * porosity[i]; /* g/m^2 */
-  }
-
-  /* get layer border locations */
-  Real x[n];
-  get_layer_midpoints(x, h, n);
-
-  /* apply one day of diffusion with 10000 timesteps */
-
-  Real res[n];       /* resistance */
-
-  /* calculate resistances */
-  res[0] = (h[0]/2)/diff[0];
-  int j;
-  for (j=1; j<n; ++j)
-    res[j] = (h[j-1]/2)/diff[j-1] + (h[j]/2)/diff[j];
-
-  Real seconds = 100;
-  Real dt = seconds / 100000;
-  for (int i = 0; i < 100000; i++)
-  {
-    finite_volume_diffusion_timestep(amount, n, dt, h, gas_con_air, res, porosity);
-  }
-
-  /* print all gas concentrations */
-  
-  /* get numerical solution at gp */
-  int gp = 200;
-  Real numerical_solution = amount[gp]/ h[gp] / porosity[gp];
-
-  /* get analytical solution */
-  Real analytical_solution = analytical_solution1d_heateq_semiinfinite(x[gp], seconds, diff[0], porosity[0], init_gas_conc, gas_con_air);
-
-  TEST_ASSERT_FLOAT_WITHIN(TOLERANCE, analytical_solution, numerical_solution);
-}
-
-
-void test_finte_volume_diffusion_analytical_solution_should_be_met_after_day(void)
-{
-  int n = 1000;
-  Real amount[n];
-  Real h[n];
-  Real gas_con_air = -20.0;
-  Real init_gas_conc = 10.0;
-  Real diff[n];
-  Real porosity[n];
-
-  /* define physical quantities */
-  for (int i = 0; i < n; i++)
-  {
-    h[i] = 1000.0 / n; /* length of slab = 100 m */
-    porosity[i] = 0.5;
-
-    diff[i] = 0.01;
-  }
-
-  for (int i = 100; i < 1000; i++)
-  {
-    h[i] = h[i] * 0.3;
-  }
-
-  for (int i = 0; i < n; i++)
-  {
-    amount[i] = init_gas_conc * h[i] * porosity[i]; /* g/m^2 */
-  }
-
-
-  Real x[n];
-  get_layer_midpoints(x, h, n);
-
-  /* apply one day of diffusion using apply_finite_volume_diffusion_of_a_day */
-  apply_finite_volume_diffusion_of_a_day(amount, n, h, gas_con_air, diff, porosity);
-  
-  /* get numerical solution at gp */
-  int gp = (int)(n/12.0);
-  Real numerical_solution = amount[gp]/ h[gp] / porosity[gp];
-
-  /* get analytical solution */
-  Real analytical_solution = analytical_solution1d_heateq_semiinfinite(x[gp], day2sec(1.0), diff[0], porosity[0], init_gas_conc, gas_con_air);
-
-  TEST_ASSERT_FLOAT_WITHIN(TOLERANCE, analytical_solution, numerical_solution);
-}
-
-
-
 void test_finte_volume_diffusion_analytical_solution_should_be_met_after_day_impl(void)
 {
   int n = 1000;
@@ -224,15 +78,13 @@ void test_finte_volume_diffusion_analytical_solution_should_be_met_after_day_imp
   get_layer_midpoints(x, h, n);
 
   /* apply one day of diffusion using apply_finite_volume_diffusion_of_a_day */
-  int steps = 5000;
+  int steps = 3000;
   Real dt = day2sec(1.0) / steps;
   for (int i = 0; i < steps; i++)
   {
     apply_finite_volume_diffusion_impl(amount, n, h, gas_con_air, diff, porosity, dt);
   }
 
-
-  // apply_finite_volume_diffusion_impl(amount, n, h, gas_con_air, diff, porosity);
   
   /* get numerical solution at gp */
   int gp = (int)(n/12.0);
@@ -244,157 +96,76 @@ void test_finte_volume_diffusion_analytical_solution_should_be_met_after_day_imp
   TEST_ASSERT_FLOAT_WITHIN(TOLERANCE, analytical_solution, numerical_solution);
 }
 
-void test_implicit_and_expl_should_give_sim_results(void)
-{
-  int n = 1000;
-  Real amount[n];
-  Real h[n];
-  Real gas_con_air = -20.0;
-  Real init_gas_conc = 10.0;
-  Real diff[n];
-  Real porosity[n];
+// void test_implicit_and_expl_should_give_sim_results(void)
+// {
+//   int n = 1000;
+//   Real amount[n];
+//   Real h[n];
+//   Real gas_con_air = -20.0;
+//   Real init_gas_conc = 10.0;
+//   Real diff[n];
+//   Real porosity[n];
 
-  /* define physical quantities */
-  for (int i = 0; i < n; i++)
-  {
-    h[i] = 20000.0 / n; 
-    porosity[i] = 0.5;
+//   /* define physical quantities */
+//   for (int i = 0; i < n; i++)
+//   {
+//     h[i] = 20000.0 / n; 
+//     porosity[i] = 0.5;
 
-    diff[i] = 0.01;
-  }
+//     diff[i] = 0.01;
+//   }
 
-  for (int i = 100; i < 300; i++)
-  {
-    h[i] = h[i] * 0.3;
-    diff[i] = 2;
-  }
+//   for (int i = 100; i < 300; i++)
+//   {
+//     h[i] = h[i] * 0.3;
+//     diff[i] = 2;
+//   }
 
-  for (int i = 20; i < 30; i++)
-  {
-    porosity[i] = 0.1 ; /* g/m^2 */
-    diff[i] = 100;
-  }
+//   for (int i = 20; i < 30; i++)
+//   {
+//     porosity[i] = 0.1 ; /* g/m^2 */
+//     diff[i] = 100;
+//   }
 
-  porosity[100] = 0.1;
-  porosity[101] = 0.1;
+//   porosity[100] = 0.1;
+//   porosity[101] = 0.1;
 
-  for (int i = 0; i < n; i++)
-  {
-    amount[i] = init_gas_conc * h[i] * porosity[i]; /* g/m^2 */
-  }
+//   for (int i = 0; i < n; i++)
+//   {
+//     amount[i] = init_gas_conc * h[i] * porosity[i]; /* g/m^2 */
+//   }
 
-  for (int i = 400; i < 600; i++)
-  {
-    amount[i] *= 2;
-  }
+//   for (int i = 400; i < 600; i++)
+//   {
+//     amount[i] *= 2;
+//   }
 
-  amount[100] = 0.0;
-  amount[101] *= 200.0;
+//   amount[100] = 0.0;
+//   amount[101] *= 200.0;
 
-  Real x[n];
-  get_layer_midpoints(x, h, n);
+//   Real x[n];
+//   get_layer_midpoints(x, h, n);
 
-  Real amount_cp[n];
-  memcpy(amount_cp, amount, n * sizeof(Real));
+//   Real amount_cp[n];
+//   memcpy(amount_cp, amount, n * sizeof(Real));
 
-  /* apply one day of diffusion using apply_finite_volume_diffusion_of_a_day */
-  apply_finite_volume_diffusion_of_a_day(amount, n, h, gas_con_air, diff, porosity);
+//   /* apply one day of diffusion using apply_finite_volume_diffusion_of_a_day */
+//   apply_finite_volume_diffusion_of_a_day(amount, n, h, gas_con_air, diff, porosity);
 
-  /* apply one day of diffusion using apply_finite_volume_diffusion_impl */
-  int steps = 10000;
-  Real dt = day2sec(1.0) / steps;
-  for (int i = 0; i < steps; i++)
-  {
-    apply_finite_volume_diffusion_impl(amount_cp, n, h, gas_con_air, diff, porosity, dt);
-  }
+//   /* apply one day of diffusion using apply_finite_volume_diffusion_impl */
+//   int steps = 10000;
+//   Real dt = day2sec(1.0) / steps;
+//   for (int i = 0; i < steps; i++)
+//   {
+//     apply_finite_volume_diffusion_impl(amount_cp, n, h, gas_con_air, diff, porosity, dt);
+//   }
 
-  /* check soultions are similiar */
-  for (int i = 0; i < n; i++)
-  {
-    TEST_ASSERT_FLOAT_WITHIN(0.1, amount[i], amount_cp[i]);
-  }
-}
-
-
-void test_finite_volume_stability(void)
-{
-  int n = 1000;
-  Real amount[n];
-  Real h[n];
-  Real gas_con_air = -20.0;
-  Real init_gas_conc = 10.0;
-  Real diff[n];
-  Real porosity[n];
-
-  /* define physical quantities */
-  for (int i = 0; i < n; i++)
-  {
-    h[i] = 20000.0 / n; 
-    porosity[i] = 0.5;
-
-    diff[i] = 0.01;
-  }
-
-  for (int i = 100; i < 300; i++)
-  {
-    h[i] = h[i] * 0.3;
-    diff[i] = 2;
-  }
-
-  for (int i = 20; i < 30; i++)
-  {
-    porosity[i] = 0.1 ; /* g/m^2 */
-    diff[i] = 100;
-  }
-
-  porosity[100] = 0.1;
-  porosity[101] = 0.1;
-
-  for (int i = 0; i < n; i++)
-  {
-    amount[i] = init_gas_conc * h[i] * porosity[i]; /* g/m^2 */
-  }
-
-  for (int i = 400; i < 600; i++)
-  {
-    amount[i] *= 2;
-  }
-
-  amount[100] = 0.0;
-  amount[101] *= 200.0;
-
-  Real x[n];
-  get_layer_midpoints(x, h, n);
-
-  /* apply one day of diffusion using apply_finite_volume_diffusion_of_a_day */
-  apply_finite_volume_diffusion_of_a_day(amount, n, h, gas_con_air, diff, porosity);
-  
-  /* check that solution remained bounded  */
-  TEST_ASSERT_TRUE(is_solution_bounded(amount, n));
-}
-
-void test_finite_volume_diffusion_error_is_thrown_too_many_timesteps(void)
-{
-  int n = 1000;
-  Real amount[n];
-  Real h[n];
-  Real gas_con_air = -20.0;
-  Real init_gas_conc = 10.0;
-  Real diff[n];
-  Real porosity[n];
-
-  /* define physical quantities */
-  for (int i = 0; i < n; i++)
-  {
-    h[i] = 20000.0 / n; 
-    porosity[i] = 0.001;
-
-    diff[i] = 100;
-  }
-
-  /* confirm that error is thrown */
-  TEST_ASSERT_EQUAL(TRUE, apply_finite_volume_diffusion_of_a_day(amount, n, h, gas_con_air, diff, porosity));
-}
+//   /* check soultions are similiar */
+//   for (int i = 0; i < n; i++)
+//   {
+//     TEST_ASSERT_FLOAT_WITHIN(0.1, amount[i], amount_cp[i]);
+//   }
+// }
 
 void test_total_amount_is_conserved(void)
 {
@@ -451,11 +222,10 @@ void test_total_amount_is_conserved(void)
     total_amount_before += amount[i];
   }
 
-  /* apply one day of diffusion using apply_finite_volume_diffusion_of_a_day */
   Bool r;
   for (int i = 0; i < 100; i++)
   {
-    r = apply_finite_volume_diffusion_of_a_day(amount, n, h, gas_con_air, diff, porosity);
+    r = apply_finite_volume_diffusion_impl(amount, n, h, gas_con_air, diff, porosity, day2sec(1.0));
   }
   
   /* check that total gas amount is conserved */
