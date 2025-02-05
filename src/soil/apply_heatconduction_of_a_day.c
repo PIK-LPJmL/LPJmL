@@ -38,7 +38,6 @@
 STATIC void use_enth_scheme(Real *, const Real *, const Real, const Soil_thermal_prop *);
 STATIC void use_temp_scheme_implicit(Real *, const Real *, const Real *, const Real *, int);
 STATIC void arrange_matrix(Real *, Real *, Real *, const Real *, const Real *, const Real *, const Real);
-STATIC void thomas_algorithm(const double *, const double *, const double *,const double *, double *);
 STATIC void timestep_implicit(Real *, const Real *, const Real *, const Real *, const Real);
 #define MAXTIMESTEP 1000
 
@@ -271,7 +270,7 @@ STATIC void timestep_implicit(Real * temp,
   rhs[0] -= 2 * temp[0] * sub[0];
 
   /* --- solve tridiagonal system with the thomas algorithm --- */
-  thomas_algorithm(sub, maind, sup, rhs, &temp[1]);
+  thomas_algorithm(sub, maind, sup, rhs, &temp[1], NHEATGRIDP);
 } /* of 'timestep_implicit' */
 
 /* This function arranges the matrix for the implicit timestep.
@@ -313,29 +312,30 @@ STATIC void arrange_matrix(Real * a,          /* sub diagonal elements  */
 
 /* This function performs the standard thomas algorithm to solve a
    tridiagonal matrix system. */
-STATIC void thomas_algorithm(const double *a, /* sub diagonal elements */
+void thomas_algorithm(const double *a, /* sub diagonal elements */
                              const double *b, /* main diagonal elements */
                              const double *c, /* super diagonal elements */
                              const double *d, /* right hand side */
-                             double *x        /* solution */
+                             double *x,        /* solution */
+                             const int n
                             )
 {
-  double c_prime[NHEATGRIDP-1];
-  double d_prime[NHEATGRIDP];
+  double c_prime[n-1];
+  double d_prime[n];
   int i;
 
   /* modify coefficients by progressing in forward direction */
   /* this codes eliminiates the sub diagnal a an norms the diagonal b 1 */
   c_prime[0] = c[0] / b[0];
-  for (i=1; i<NHEATGRIDP-1; i++)
+  for (i=1; i<n-1; i++)
     c_prime[i] = c[i] / (b[i] - a[i] * c_prime[i-1]);
 
   d_prime[0] = d[0] / b[0];
-  for (i=1; i<NHEATGRIDP; i++)
+  for (i=1; i<n; i++)
     d_prime[i] = (d[i] - a[i] * d_prime[i - 1]) / (b[i] - a[i] * c_prime[i-1]);
 
   /* back substitution */
-  x[NHEATGRIDP-1] = d_prime[NHEATGRIDP-1];
-  for (i = NHEATGRIDP-2; i>=0; i--)
+  x[n-1] = d_prime[n-1];
+  for (i = n-2; i>=0; i--)
     x[i] = d_prime[i] - c_prime[i] * x[i+1];
 } /* of 'thomas_algorithm' */
