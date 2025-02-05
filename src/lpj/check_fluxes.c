@@ -66,10 +66,10 @@ void check_fluxes(Cell *cell,          /**< cell pointer */
   delta_tot.carbon=tot.carbon-cell->balance.tot.carbon;
   delta_tot.nitrogen=tot.nitrogen-cell->balance.tot.nitrogen;
   cell->balance.tot=tot;
-////// Soil->ch4 must be multiplied by WC/WCH4 as well as cell->balance.aCH4_em; cell->balance.aCH4_sink is included in cell->balance.aCH4_em
+////// Soil->ch4 must be multiplied by WC/WCH4 as well as cell->balance.aCH4_em;
   balance.carbon=cell->balance.anpp-cell->balance.arh-cell->balance.fire.carbon+
                  cell->balance.flux_estab.carbon-cell->balance.flux_harvest.carbon-cell->balance.biomass_yield.carbon-delta_tot.carbon-
-                 cell->balance.neg_fluxes.carbon+cell->balance.influx.carbon-cell->balance.aCH4_em*WC/WCH4;
+                 cell->balance.neg_fluxes.carbon+cell->balance.influx.carbon-(cell->balance.aCH4_em+cell->balance.aCH4_sink)*WC/WCH4;
   balance.nitrogen=cell->balance.influx.nitrogen-cell->balance.fire.nitrogen-cell->balance.n_outflux+cell->balance.flux_estab.nitrogen-
                    cell->balance.biomass_yield.nitrogen-cell->balance.flux_harvest.nitrogen-delta_tot.nitrogen-cell->balance.neg_fluxes.nitrogen;
 

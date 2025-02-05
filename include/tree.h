@@ -128,6 +128,7 @@ extern Stocks establishment_tree(Pft *,Real,Real,int);
 extern void init_tree(Pft *);
 extern Stocks fire_tree(Pft *,Real *);
 extern Real vegc_sum_tree(const Pft *);
+extern Real leafc_tree(const Pft *);
 extern Real vegn_sum_tree(const Pft *);
 extern Real agb_tree(const Pft *);
 extern void mix_veg_tree(Pft *,Real);

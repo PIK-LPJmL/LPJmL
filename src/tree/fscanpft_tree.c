@@ -135,6 +135,7 @@ Bool fscanpft_tree(LPJfile *file, /**< pointer to LPJ file */
   pft->lai=lai_tree;
   pft->actual_lai=actual_lai_tree;
   pft->free=free_tree;
+  pft->leafc=leafc_tree;
   pft->vegc_sum=vegc_sum_tree;
   pft->vegn_sum=vegn_sum_tree;
   pft->adjust=adjust_tree;

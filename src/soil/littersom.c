@@ -34,7 +34,7 @@
 
 #define MOIST_DENOM 0.63212055882855767841 /* (1.0-exp(-1.0)) */
 #define K10_YEDOMA 0.025/NDAYYEAR
-#define k_red 6                           /*anoxic decomposition is much smaller than oxic decomposition*/
+#define k_red 1                           /*anoxic decomposition is much smaller than oxic decomposition*/
 #define k_red_litter 1
 #define INTERCEPT 0.04021601              /* changed from 0.10021601 now again original value*/
 #define MOIST_3 -5.00505434
@@ -47,7 +47,7 @@
 #define k_N 5e-3 /* Michaelis-Menten parameter k_S,1/2 (gN/m3) */
 #define S 0.2587 // saturation factor MacDougall and Knutti, 2016
 #define KOVCON (0.001*1000) //Constant of diffusion (m2a-1)
-#define WTABTHRES 200
+#define WTABTHRES 300
 
 //#define CALC_EFF_CARBON
 
@@ -192,8 +192,8 @@ Stocks littersom(Stand *stand,                      /**< [inout] pointer to stan
       V = getV(soil,l);  /*soil air content (m3 air/m3 soil)*/
       if (V<=epsilon)
          V=epsilon+epsilon;
-      epsilon_O2=max(0.00004,V+soil_moist[l]*soil->wsat[l]*BO2);
-      epsilon_CH4=max(0.00004,V+soil_moist[l]*soil->wsat[l]*BCH4);
+      epsilon_O2=getepsilon_O2(V,soil_moist[l],soil->wsat[l]);
+      epsilon_CH4=getepsilon_CH4(V,soil_moist[l],soil->wsat[l]);
 
       response[l]=gtemp_soil[l]*(INTERCEPT+MOIST_3*(moist[l]*moist[l]*moist[l])+MOIST_2*(moist[l]*moist[l])+MOIST*moist[l]);
       if (response[l]<epsilon)
@@ -304,7 +304,7 @@ Stocks littersom(Stand *stand,                      /**< [inout] pointer to stan
         /*methanotrophy */
         if((soil_moist[l]<0.9) && layerbound[l]<=soil->wtable && soil->CH4[l]/soildepth[l]/epsilon_CH4*1000>CH4_air)
         {
-           /*maybe calculating during diffusivity */
+           /*maybe calculating during diffusion */
           oxidation=(Vmax_CH4*1e-3*24*WCH4*soil->CH4[l]/soildepth[l]/epsilon_CH4*1000)/(km_CH4*1e-3*WCH4+soil->CH4[l]/soildepth[l]/epsilon_CH4*1000)*gtemp_soil[l]*soildepth[l]*epsilon_CH4/1000;   // gCH4/m3/h*24 = gCH4/m3/d ->g/layer/m2
           O2_need=min(oxidation*soildepth[l]*epsilon_O2/1000*2*WO2/WCH4,soil->O2[l]*oxid_frac);
           oxidation=O2_need/(2*WO2)*WCH4;

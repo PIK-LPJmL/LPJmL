@@ -195,6 +195,7 @@ typedef struct Pft
     void (*reduce)(Litter *,struct Pft *,Real,const Config *);
     void (*free)(struct Pft *);
     Real (*vegc_sum)(const struct Pft *);
+    Real (*leafc)(const struct Pft *);
     Real (*vegn_sum)(const struct Pft *);
     Real (*agb)(const struct Pft *);
     void (*mix_veg)(struct Pft *,Real);
@@ -328,6 +329,7 @@ extern Stocks timber_harvest(Pft *,Soil *,Poolpar,Real,Real,Real *,Stocks *,cons
 #define actual_lai(pft) pft->par->actual_lai(pft)
 #define init(pft) pft->par->init(pft)
 #define vegc_sum(pft) pft->par->vegc_sum(pft)
+#define leafc(pft) pft->par->leafc(pft)
 #define vegn_sum(pft) pft->par->vegn_sum(pft)
 #define agb(pft) pft->par->agb(pft)
 #define mix_veg(pft,scaler) pft->par->mix_veg(pft,scaler)
