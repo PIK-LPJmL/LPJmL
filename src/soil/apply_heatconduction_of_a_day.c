@@ -309,33 +309,3 @@ STATIC void arrange_matrix(Real * a,          /* sub diagonal elements  */
   b[NHEATGRIDP-1] = 1 - a[NHEATGRIDP-1];
   c[NHEATGRIDP-1] = 0;
 } /* of 'arrange_matrix' */
-
-/* This function performs the standard thomas algorithm to solve a
-   tridiagonal matrix system. */
-void thomas_algorithm(const double *a, /* sub diagonal elements */
-                             const double *b, /* main diagonal elements */
-                             const double *c, /* super diagonal elements */
-                             const double *d, /* right hand side */
-                             double *x,        /* solution */
-                             const int n
-                            )
-{
-  double c_prime[n-1];
-  double d_prime[n];
-  int i;
-
-  /* modify coefficients by progressing in forward direction */
-  /* this codes eliminiates the sub diagnal a an norms the diagonal b 1 */
-  c_prime[0] = c[0] / b[0];
-  for (i=1; i<n-1; i++)
-    c_prime[i] = c[i] / (b[i] - a[i] * c_prime[i-1]);
-
-  d_prime[0] = d[0] / b[0];
-  for (i=1; i<n; i++)
-    d_prime[i] = (d[i] - a[i] * d_prime[i - 1]) / (b[i] - a[i] * c_prime[i-1]);
-
-  /* back substitution */
-  x[n-1] = d_prime[n-1];
-  for (i = n-2; i>=0; i--)
-    x[i] = d_prime[i] - c_prime[i] * x[i+1];
-} /* of 'thomas_algorithm' */

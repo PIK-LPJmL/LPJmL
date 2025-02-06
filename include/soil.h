@@ -394,7 +394,6 @@ extern void pedotransfer(Stand *, Real *, Real *,Real);
 extern void soilpar_output(Cell *,Real,const Config *);
 extern int findsoilid(const char *,const Soilpar *,int);
 extern void cmpsoilmap(const int*,int,const Config *);
-extern void thomas_algorithm(const Real *, const Real *, const Real *, const Real *, Real *, const int n);
 
 
 /* Definition of macros */

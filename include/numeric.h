@@ -63,6 +63,7 @@ Bool apply_finite_volume_diffusion_impl_crank_nicolson(Real * amount,           
                                            const Real * porosity,      /* m^3/m^3, porosity */
                                            const Real dt
                                            );
+extern void thomas_algorithm(const Real *, const Real *, const Real *, const Real *, Real *, const int n);
 
 #ifndef USE_RAND48
 /* if erand48() function is not defined, use randfrac instead */
