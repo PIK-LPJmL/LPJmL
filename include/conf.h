@@ -85,7 +85,7 @@
 #define NO_FERTILIZER 0
 #define FERTILIZER 1
 #define AUTO_FERTILIZER 2
-#define NOUT 358
+#define NOUT 360
 /* number of output files */
 #define GRIDBASED 1         /* pft-specific outputs scaled by stand->frac */
 #define PFTBASED 0          /* pft-specific outputs not scaled by stand->frac */
@@ -451,7 +451,8 @@
 #define RA 355
 #define SOILC_1m 356
 #define CH4_EMISSIONS_WET 357
-
+#define METHANOGENESIS 358
+#define CH4_LITTER 359
 
 #define PFT_GCGP_COUNT 0
 #define NDAY_MONTH 1

@@ -71,7 +71,7 @@ Stocks littersom(Stand *stand,                      /**< [inout] pointer to stan
                  Real cellfrac_agr,                 /**< [in] stand fraction of agricultural cells (0..1) */
                  Real *methaneflux_litter,          /**< [out] CH4 emissions (gC/m2/day) */
                  Real airtemp,                      /**< [in] air temperature (deg C) */
-                 Real pch4,                         /**< [in] atmoshoperic methane (ppm) */
+                 Real pch4,                         /**< [in] atmospheric methane (ppm) */
                  Real *runoff,                      /**< [out] runoff (mm/day) */
                  Real *MT_water,                    /**< [out] water from oxidized methane (mm/day) */
                  int npft,                          /**< [in] number of natural PFTs */
@@ -274,7 +274,8 @@ Stocks littersom(Stand *stand,                      /**< [inout] pointer to stan
         soil->NH4[l]+=F_Nmineral;
 #ifdef SAFE
         if(soil->NH4[l]<-epsilon)
-         fail(NEGATIVE_SOIL_NH4_ERR,TRUE,TRUE,"1 Negative soil NH4=%g in layer %d in cell (%s) at mineralization",soil->NH4[l],l,sprintcoord(line,&stand->cell->coord));
+          fail(NEGATIVE_SOIL_NH4_ERR,TRUE,TRUE,"1 Negative soil NH4=%g in layer %d in cell (%s) at mineralization",
+               soil->NH4[l],l,sprintcoord(line,&stand->cell->coord));
 #endif
         getoutput(&stand->cell->output,N_MINERALIZATION,config)+=F_Nmineral*stand->frac;
         if(isagriculture(stand->type->landusetype))
@@ -287,9 +288,11 @@ Stocks littersom(Stand *stand,                      /**< [inout] pointer to stan
         }
         /*Methane production (Rprod) (anoxic decomposition rate is taken from Khovorostyanov et al., 2008) C6H12O6 -> 3CO2 + 3CH4*/
         methaneflux_soil=soil->pool[l].fast.carbon*k_soil10.fast/k_red*gtemp_soil[l]*exp(-(soil->O2[l]/soildepth[l]*1000)/O2star);
-        if(methaneflux_soil<0) methaneflux_soil=0;
+        if(methaneflux_soil<0)
+          methaneflux_soil=0;
         soil->pool[l].fast.carbon-=methaneflux_soil*WC/WCH4;                                                      ///// *WC/WCH4 correct for CH4 mass
         soil->CH4[l]+=methaneflux_soil;
+        getoutput(&stand->cell->output,METHANOGENESIS,config) += methaneflux_soil*stand->frac;
         NH4_mineral=min(soil->pool[l].fast.nitrogen,methaneflux_soil*WC/WCH4/CN_fast);
         soil->pool[l].fast.nitrogen-=NH4_mineral;
         soil->NH4[l]+=NH4_mineral;
@@ -432,7 +435,7 @@ Stocks littersom(Stand *stand,                      /**< [inout] pointer to stan
         soil->litter.item[p].agtop.leaf.nitrogen-=litter_flux;
         decom_sum.nitrogen+=litter_flux;
         decom_fast.nitrogen+=litter_flux;
-     }
+      }
 
       /* agtop wood */
 #ifdef LINEAR_DECAY
