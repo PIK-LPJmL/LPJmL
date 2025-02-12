@@ -220,7 +220,7 @@ char *parse_json_metafile(FILE *file,         /**< pointer to JSON file */
       {
         if(iskeydefined(item,"datatype"))
         {
-          if(fscankeywords(item,(int *)grid_type,"datatype",typenames,5,FALSE,verbosity))
+          if(fscankeywords(item,(int *)grid_type,"datatype",typenames,N_TYPES,FALSE,verbosity))
           {
             closeconfig(lpjfile);
             return NULL;
@@ -388,7 +388,7 @@ char *parse_json_metafile(FILE *file,         /**< pointer to JSON file */
     }
     if(iskeydefined(lpjfile,"datatype"))
     {
-      if(fscankeywords(lpjfile,(int *)&header->datatype,"datatype",typenames,5,FALSE,verbosity))
+      if(fscankeywords(lpjfile,(int *)&header->datatype,"datatype",typenames,N_TYPES,FALSE,verbosity))
       {
         closeconfig(lpjfile);
         return NULL;

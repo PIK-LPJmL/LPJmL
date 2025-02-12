@@ -18,7 +18,7 @@ void fprintheader(FILE *file, /**< pointer to text file */
                   const Header *header /**< file header to print */
                  )
 {
-  if(header->datatype>=0 && header->datatype<5)
+  if(header->datatype>=0 && header->datatype<N_TYPES)
     fprintf(file,"Type:\t\t%s\n",typenames[header->datatype]);
   else
     fprintf(file,"Type:\t\t%d\n",(int)header->datatype);

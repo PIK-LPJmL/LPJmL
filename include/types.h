@@ -54,6 +54,7 @@
 #endif
 
 #define N_FMT 8 /* number of format types for input/output files */
+#define N_TYPES 5 /* number of different types */
 
 /* Definition of datatypes */
 
@@ -65,8 +66,8 @@ typedef unsigned char Byte;
 
 typedef char String[STRING_LEN+1];
 
-extern const size_t typesizes[];
-extern char *typenames[];
+extern const size_t typesizes[N_TYPES];
+extern char *typenames[N_TYPES];
 extern char *fmt[N_FMT];
 
 typedef enum {LPJ_BYTE,LPJ_SHORT,LPJ_INT,LPJ_FLOAT,LPJ_DOUBLE} Type;

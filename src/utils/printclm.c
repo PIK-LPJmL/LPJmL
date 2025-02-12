@@ -566,7 +566,7 @@ int main(int argc,char **argv)
                   USAGE,progname);
           return EXIT_FAILURE;
         }
-        index=findstr(argv[++i],typenames,5);
+        index=findstr(argv[++i],typenames,N_TYPES);
         if(index==NOT_FOUND)
         {
           fprintf(stderr,"Invalid argument '%s' for option '-type'.\n"

@@ -156,7 +156,7 @@ int main(int argc,char **argv)
       fprintf(stderr,"Version=%d for type of '%s' must be >2.\n",version,argv[3]);
       return EXIT_FAILURE;
     }
-    index=findstr(argv[2],typenames,5);
+    index=findstr(argv[2],typenames,N_TYPES);
     if(index==NOT_FOUND)
     {
       fprintf(stderr,"Invalid argument '%s' for type.\n",argv[2]);

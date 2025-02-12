@@ -38,6 +38,7 @@ int main(int argc,char **argv)
   int n_attr;
   char *units=NULL,*long_name=NULL,*variable=NULL,*standard_name=NULL,*source=NULL,*history=NULL;
   char *units2=NULL;
+  const char *progname;
   Type grid_type,grid_type2;
   Filename grid_name,grid_name2;
   Type type=LPJ_SHORT;
@@ -53,6 +54,7 @@ int main(int argc,char **argv)
   index=NOT_FOUND;
   ismeta=israw=isjson=isforce=FALSE;
   format=CLM;
+  progname=strippath(argv[0]);
   for(iarg=1;iarg<argc;iarg++)
     if(argv[iarg][0]=='-')
     {
@@ -79,14 +81,14 @@ int main(int argc,char **argv)
         if(argc-1==iarg)
         {
           fprintf(stderr,"Argument missing for option '-type'.\n"
-                  USAGE,argv[0]);
+                  USAGE,progname);
           return EXIT_FAILURE;
         }
-        index=findstr(argv[++iarg],typenames,5);
+        index=findstr(argv[++iarg],typenames,N_TYPES);
         if(index==NOT_FOUND)
         {
           fprintf(stderr,"Invalid argument '%s' for option '-type'.\n"
-                  USAGE,argv[iarg],argv[0]);
+                  USAGE,argv[iarg],progname);
           return EXIT_FAILURE;
         }
         type=(Type)index;
@@ -94,7 +96,7 @@ int main(int argc,char **argv)
       else
       {
         fprintf(stderr,"Invalid option '%s'.\n",argv[iarg]);
-        fprintf(stderr,USAGE,argv[0]);
+        fprintf(stderr,USAGE,progname);
         return EXIT_FAILURE;
       }
     }
@@ -103,7 +105,7 @@ int main(int argc,char **argv)
   if(argc<iarg+3)
   {
     fprintf(stderr,"Missing argument(s).\n"
-            USAGE,argv[0]);
+            USAGE,progname);
     return EXIT_FAILURE;
   }
   if(!strcmp(argv[iarg],"add"))
@@ -135,13 +137,13 @@ int main(int argc,char **argv)
   else
   {
     fprintf(stderr,"Invalid operator '%s'.\n",argv[iarg]);
-    fprintf(stderr,USAGE,argv[0]);
+    fprintf(stderr,USAGE,progname);
     return EXIT_FAILURE;
   }
   if(op!=FLOAT && op!=INT && op!=SUM && op!=TMEAN && op!=TSUM && argc<iarg+4)
   {
     fprintf(stderr,"Missing argument(s).\n"
-            USAGE,argv[0]);
+            USAGE,progname);
     return EXIT_FAILURE;
   }
   if(ismeta)
