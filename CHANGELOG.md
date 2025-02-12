@@ -28,7 +28,21 @@ of `major.minor.patch` with
 
 - `"coupled_host"` and `"coupler_port"` added to LPJmL configuration to specify where the coupled model is running and which port is used for communication.
 
-## [5.9.17] - 2024-12-19
+
+## [5.9.18] - 2025-01-31
+
+### Contributors
+
+- author: Christoph Müller (cmueller@pik-potsdam.de)
+- code review: Sebastion Ostberg (ostberg@pik-potsdam.de), Marie Hemmen (hemmen@pik-potsdam.de)
+
+### Fixed
+
+- `basetemp` and `hlimit` parameters fixed to fit to standard growing season inputs (issue #346).
+- `laimax` values corrected from 5 to 7 for `temperate cereals`, `rice`, and `tropical cereals`
+
+
+## [5.9.17] - 2025-01-29
 
 ### Contributors
 
@@ -39,7 +53,6 @@ of `major.minor.patch` with
 
 - Option `-cmd` added to `lpjsubmit` in order to execute a command before lpjml is called.
 - Command `module list` added to slurm script to show all loaded modules.
-
 
 ### Removed
 
