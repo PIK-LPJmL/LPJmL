@@ -259,7 +259,7 @@ Create output and restart directory:
 
 make test
 
-On the compute cluster at PIK it is better to create
+On the HPC cluster at PIK it is better to create
 input, output, and restart directories in the parallel GPFS filesystem /p/projects.
 This improves performance in particular for the parallel code.
 
