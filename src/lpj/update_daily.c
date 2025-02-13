@@ -261,6 +261,7 @@ void update_daily(Cell *cell,            /**< cell pointer           */
       }
     CH4_em=0;
     hetres=littersom(stand,gtemp_soil,agrfrac,&CH4_em,climate.temp,ch4,&runoff,&MT_water,npft,ncft,config);
+    getoutput(&cell->output,CH4_LITTER,config)+=CH4_em*stand->frac;
     cell->discharge.drunoff += runoff*stand->frac;
     if(stand->type->landusetype==NATURAL || stand->type->landusetype==WETLAND)
       cell->balance.nat_fluxes-=hetres.carbon*stand->frac;

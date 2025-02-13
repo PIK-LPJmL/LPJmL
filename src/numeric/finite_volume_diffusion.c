@@ -1,3 +1,17 @@
+/**************************************************************************************/
+/**                                                                                \n**/
+/**                   finite_volume_diffusion.c                                    \n**/
+/**                                                                                \n**/
+/**     C implementation of LPJmL                                                  \n**/
+/**                                                                                \n**/
+/** (C) Potsdam Institute for Climate Impact Research (PIK), see COPYRIGHT file    \n**/
+/** authors, and contributors see AUTHORS file                                     \n**/
+/** This file is part of LPJmL and licensed under GNU AGPL Version 3               \n**/
+/** or later. See LICENSE file or go to http://www.gnu.org/licenses/               \n**/
+/** Contact: https://github.com/PIK-LPJmL/LPJmL                                    \n**/
+/**                                                                                \n**/
+/**************************************************************************************/
+
 #include "lpj.h"
 
 /* source of method : alexiades, mathematical modeling of melting and freezing processes p.181 ff.
@@ -22,14 +36,14 @@
 
 #define MAXTIMESTEPFV 10000000
 
-void finite_volume_diffusion_timestep(Real * amount,           /* g/m^2, substance absolute amount */
-                                      const int n,               /* number of gridpoints */
-                                      const Real dt,             /* s, timestep */
-                                      const Real * h,            /* m, layer thicknesses (delta_x) */
-                                      const Real gas_con_air,    /* g/m^2, gas concentration of substance */
-                                      const Real * res,          /* resistance */
-                                      const Real * porosity      /* m^3/m^3, porosity */
-                                      )
+void finite_volume_diffusion_timestep(Real * amount,          /**< g/m^2, substance absolute amount */
+                                      const int n,            /**< number of gridpoints */
+                                      const Real dt,          /**< s, timestep */
+                                      const Real * h,         /**< m, layer thicknesses (delta_x) */
+                                      const Real gas_con_air, /**< g/m^2, gas concentration of substance */
+                                      const Real * res,       /**< resistance */
+                                      const Real * porosity   /**< m^3/m^3, porosity */
+                                     )
 {
   /* define variables */
   Real gas_con[n+1]; /* g/m^3, gas concentration of substance */
@@ -62,13 +76,13 @@ void calculate_resistances(Real * res, const Real * h, const Real * diff, const 
     res[j] = (h[j-1]/2)/diff[j-1] + (h[j]/2)/diff[j]; /* equation (17) p. 189 */
 } /* of 'calculate_resistances' */
 
-Bool apply_finite_volume_diffusion_of_a_day(Real * amount,             /* g/m^2, substance absolute amount */
-                                           const int n,               /* number of gridpoints */
-                                           const Real * h,            /* m, layer thicknesses (delta_x) */
-                                           const Real gas_con_air,    /* g/m^2, gas concentration of substance */
-                                           const Real * diff,         /* m^2/s, diffusivity */
-                                           const Real * porosity      /* m^3/m^3, porosity */
-                                           )
+Bool apply_finite_volume_diffusion_of_a_day(Real * amount,         /**< g/m^2, substance absolute amount */
+                                           const int n,            /**< number of gridpoints */
+                                           const Real * h,         /**< m, layer thicknesses (delta_x) */
+                                           const Real gas_con_air, /**< g/m^2, gas concentration of substance */
+                                           const Real * diff,      /**< m^2/s, diffusivity */
+                                           const Real * porosity   /**< m^3/m^3, porosity */
+                                          )                        /** \return TRUE on error */
 {
   /* calculate resistances */
   Real res[n];
@@ -100,14 +114,14 @@ Bool apply_finite_volume_diffusion_of_a_day(Real * amount,             /* g/m^2,
 /* This function arranges the matrix for the implicit timestep.
  * The equations can be found in the master thesis supplement equation (7-9). */
 STATIC void arrange_matrix_fv(Real * a,          /* sub diagonal elements  */
-                           Real * b,          /* main diagonal elements */
-                           Real * c,          /* super diagonal elements */
-                           const Real * h,    /* distances between adjacent gridpoints  */
-                           const Real * por,  /* porosities */
-                           const Real * res , /* resitances */
-                           const Real dt,      /* timestep */
-                           const int n
-                          )
+                              Real * b,          /* main diagonal elements */
+                              Real * c,          /* super diagonal elements */
+                              const Real * h,    /* distances between adjacent gridpoints  */
+                              const Real * por,  /* porosities */
+                              const Real * res,  /* resitances */
+                              const Real dt,     /* timestep */
+                              const int n        /* number of gridpoints */
+                             )
 {
 
   /* --- precompute some values --- */
@@ -129,14 +143,14 @@ STATIC void arrange_matrix_fv(Real * a,          /* sub diagonal elements  */
 
 } /* of 'arrange_matrix' */
 
-Bool apply_finite_volume_diffusion_impl(Real * amount,             /* g/m^2, substance absolute amount */
-                                           const int n,               /* number of gridpoints */
-                                           const Real * h,            /* m, layer thicknesses (delta_x) */
-                                           const Real gas_con_air,    /* g/m^2, gas concentration of substance */
-                                           const Real * diff,         /* m^2/s, diffusivity */
-                                           const Real * porosity,      /* m^3/m^3, porosity */
-                                           const Real dt
-                                           )
+Bool apply_finite_volume_diffusion_impl(Real * amount,          /**< g/m^2, substance absolute amount */
+                                        const int n,            /**< number of gridpoints */
+                                        const Real * h,         /**< m, layer thicknesses (delta_x) */
+                                        const Real gas_con_air, /**< g/m^2, gas concentration of substance */
+                                        const Real * diff,      /**< m^2/s, diffusivity */
+                                        const Real * porosity,  /**< m^3/m^3, porosity */
+                                        const Real dt           /**< timestep */
+                                       )                        /** \return TRUE on error */
 {
   /* calculate resistances */
   Real res[n];
@@ -173,14 +187,14 @@ Bool apply_finite_volume_diffusion_impl(Real * amount,             /* g/m^2, sub
 /* This function arranges the matrix for the implicit timestep.
  * The equations can be found in the master thesis supplement equation (7-9). */
 STATIC void arrange_matrix_fv_crank_nicolson(Real * a,          /* sub diagonal elements  */
-                           Real * b,          /* main diagonal elements */
-                           Real * c,          /* super diagonal elements */
-                           const Real * h,    /* distances between adjacent gridpoints  */
-                           const Real * por,  /* porosities */
-                           const Real * res , /* resitances */
-                           const Real dt,      /* timestep */
-                           const int n
-                          )
+                                              Real * b,         /* main diagonal elements */
+                                              Real * c,         /* super diagonal elements */
+                                              const Real * h,   /* distances between adjacent gridpoints  */
+                                              const Real * por, /* porosities */
+                                              const Real * res, /* resitances */
+                                              const Real dt,    /* timestep */
+                                              const int n       /* number of gridpoints */
+                                             )
 {
 
   /* --- precompute some values --- */
@@ -202,14 +216,14 @@ STATIC void arrange_matrix_fv_crank_nicolson(Real * a,          /* sub diagonal 
 
 } /* of 'arrange_matrix' */
 
-Bool apply_finite_volume_diffusion_impl_crank_nicolson(Real * amount,             /* g/m^2, substance absolute amount */
-                                           const int n,               /* number of gridpoints */
-                                           const Real * h,            /* m, layer thicknesses (delta_x) */
-                                           const Real gas_con_air,    /* g/m^2, gas concentration of substance */
-                                           const Real * diff,         /* m^2/s, diffusivity */
-                                           const Real * porosity,      /* m^3/m^3, porosity */
-                                           const Real dt
-                                           )
+Bool apply_finite_volume_diffusion_impl_crank_nicolson(Real * amount,          /**< g/m^2, substance absolute amount */
+                                                       const int n,            /**< number of gridpoints */
+                                                       const Real * h,         /**< m, layer thicknesses (delta_x) */
+                                                       const Real gas_con_air, /**< g/m^2, gas concentration of substance */
+                                                       const Real * diff,      /**< m^2/s, diffusivity */
+                                                       const Real * porosity,  /**< m^3/m^3, porosity */
+                                                       const Real dt           /**< timestep */
+                                                      )                        /** \return TRUE on error */
 {
   /* calculate resistances */
   Real res[n];

@@ -359,6 +359,8 @@ ID                               Fmt                        filename
     { "id" : "ch4_emissions",    "file" : { "timestep" : "monthly", "name" : "output/ch4_emissions"}},
     { "id" : "ch4_emissions_wet","file" : { "timestep" : "monthly", "name" : "output/ch4_emissions_wet"}},
     { "id" : "ch4_oxidation",    "file" : { "timestep" : "monthly", "name" : "output/ch4_oxidation"}},
+    { "id" : "methanogenesis",   "file" : { "timestep" : "monthly", "name" : "output/methanogenesis"}},
+    { "id" : "ch4_litter",       "file" : { "timestep" : "monthly", "name" : "output/ch4_litter"}},
     { "id" : "ch4_sink",         "file" : { "timestep" : "monthly", "name" : "output/ch4_sink"}},
     { "id" : "ch4_rice_em",      "file" : { "timestep" : "monthly", "name" : "output/ch4_rice_em"}},
     { "id" : "ch4_setaside",     "file" : { "timestep" : "monthly", "name" : "output/ch4_setaside"}},
@@ -417,7 +419,10 @@ ID                               Fmt                        filename
 
   "output" :
   [
+    { "id" : "methanogenesis",   "file" : { "fmt" : "cdf", "timestep" : 100, "name" : "output/methanogenesis_spinup.nc"}},
+    { "id" : "ch4_litter",       "file" : { "fmt" : "cdf", "timestep" : 100, "name" : "output/ch4_litter_spinup.nc"}},
     { "id" : "ch4_emissions",    "file" : { "fmt" : "cdf", "timestep" : 100, "name" : "output/ch4_emissions_spinup.nc"}},
+    { "id" : "ch4_oxidation",   "file" : { "fmt" : "cdf", "timestep" : 100, "name" : "output/ch4_oxidation_spinup.nc"}},
     { "id" : "ch4_sink",         "file" : { "fmt" : "cdf", "timestep" : 100, "name" : "output/ch4_sink_spinup.nc"}},
     { "id" : "ch4_ebullition",   "file" : { "fmt" : "cdf", "timestep" : 100, "name" : "output/ch4_ebullition_spinup.nc"}},
     { "id" : "ch4_plant_gas",    "file" : { "fmt" : "cdf", "timestep" : 100, "name" : "output/ch4_plant_gas_spinup.nc"}},
