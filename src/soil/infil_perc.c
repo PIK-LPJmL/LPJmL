@@ -816,7 +816,7 @@ Real infil_perc(Stand *stand,        /**< Stand pointer */
     if(lwt>=(BOTTOMLAYER-1))
       depthsum=layerbound[BOTTOMLAYER-1];
     Theta_ice=pow(10,(-OMEGA*(icesum/depthsum)));                           // OMEGA of 6 gives a high impact on low ice fractions (0.1 -> 0.2511886)
-    rsub_top_max=50*tan(stand->slope_mean*M_PI/180);                        // 20 mm day-1 suggested by Karpouzas etal, 2006, Christen etal, 2006 ->50 mm day-1, slope converted from degrees to radians
+    rsub_top_max=20*tan(stand->slope_mean*M_PI/180);                        // 20 mm day-1 suggested by Karpouzas etal, 2006, Christen etal, 2006 ->50 mm day-1, slope converted from degrees to radians
     if (soil->wtable<maxWTP)
       soil->wtable=maxWTP;
     rsub_top=Theta_ice*rsub_top_max*exp(-fff*soil->wtable/1000);

@@ -207,11 +207,12 @@ void update_daily(Cell *cell,            /**< cell pointer           */
 
     plant_gas_transport(stand,climate.temp,ch4,config);   //fluxes in routine written to output
     ebul = ebullition(&stand->soil, fpc_total_stand);
+
+    getoutput(&cell->output,CH4_EBULLITION,config) += ebul*stand->frac;
     getoutput(&cell->output,CH4_EMISSIONS,config) += ebul*stand->frac;
+    cell->balance.aCH4_em+=ebul*stand->frac;
     if(stand->type->landusetype==WETLAND)
       getoutput(&stand->cell->output,CH4_EMISSIONS_WET,config)+=ebul;
-    cell->balance.aCH4_em+=ebul*stand->frac;
-    getoutput(&cell->output,CH4_EBULLITION,config) += ebul*stand->frac;
 
     gasdiffusion(&stand->soil,climate.temp,ch4,&CH4_em,&runoff,&CH4_sink);
     cell->discharge.drunoff += runoff*stand->frac;

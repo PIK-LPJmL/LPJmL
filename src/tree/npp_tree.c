@@ -52,7 +52,7 @@ Real npp_tree(Pft *pft,         /**< PFT variables */
   getoutput(&pft->stand->cell->output,RA,config)+=resp*pft->stand->frac;
   forrootsoillayer(l)
   {
-    pft->stand->soil.O2[l]-=pft->nind*(tree->ind.root.carbon*pft->par->respcoeff*param.k*nc_root*gtemp_soil*pft->phen)*pft->par->rootdist[l];
+    pft->stand->soil.O2[l]-=pft->nind*(tree->ind.root.carbon*pft->par->respcoeff*param.k*nc_root*gtemp_soil*pft->phen)*pft->par->rootdist[l]*WO2/WC;
     if(pft->stand->soil.O2[l]<0) pft->stand->soil.O2[l]=0.0;
   }
   return npp;

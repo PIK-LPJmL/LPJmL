@@ -25,7 +25,7 @@
 
 #include "lpj.h"
 
-#define e0 268.56 /* parameter in Arrhenius temp response function 308.56 (Sitch)  268.56 (neu) */
+#define e0 308.56 /* parameter in Arrhenius temp response function 308.56 (Sitch)  268.56 (neu) */
 #define Q10 1.8
 //#define USE_Q10
 
@@ -42,7 +42,7 @@ Real temp_response(Real temp, /**< air or soil temperature (deg C) */
   if (temp>30) temp = 30;
   gtemp = (temp >= -30.0) ? pow(Q10, (temp - temp_mean) / 10) : 0.0;
 #else
-  if (temp>30) temp = 30;
+  if (temp>35) temp = 35;
   gtemp= (temp>=-20.0) ? exp(e0*(1.0/(param.temp_response+10)-1.0/(temp+param.temp_response))) : 0.0;
 #endif
   return gtemp;

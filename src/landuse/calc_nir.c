@@ -45,7 +45,7 @@ void calc_nir(Stand *stand,        /**< pointer to non-natural stand */
     if(pft->par->id==config->rice_pft)
     {
       demand=satwater(&stand->soil)-rootwater(&stand->soil);
-      soildepth_irrig=SOILDEPTH_IRRIG;
+      soildepth_irrig=layerbound[BOTTOMLAYER-1];  // the whole water bucket needs to be filled
       nir=demand;
       dist=0;
       l=0;
@@ -53,7 +53,7 @@ void calc_nir(Stand *stand,        /**< pointer to non-natural stand */
       {
         if (stand->soil.freeze_depth[l]< soildepth[l])
         {
-          dist+=max(0,((stand->soil.wsats[l]-stand->soil.wpwps[l]-stand->soil.whcs[l])*param.sat_level[0]-stand->soil.w_fw[l])*min(1,soildepth_irrig/soildepth[l])*(1-stand->soil.freeze_depth[l]/soildepth[l]));
+          dist+=max(0,((stand->soil.wsats[l]-stand->soil.wpwps[l]-stand->soil.whcs[l])*param.sat_level[0]*1.2-stand->soil.w_fw[l])*min(1,soildepth_irrig/soildepth[l])*(1-stand->soil.freeze_depth[l]/soildepth[l]));
         }
          l++;
        }while((soildepth_irrig-=soildepth[l-1])>0);

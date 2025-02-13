@@ -107,7 +107,7 @@ void plant_gas_transport(Stand *stand,        /**< pointer to soil data */
         {
           Conc_new = 0;
           CH4 = stand->soil.CH4[l] /soil_water_vol /soildepth[l] * 1000;
-          Conc_new=CH4_air+(CH4-CH4_air)*exp(-kCH4/(soil_water_vol*soildepth[l]/1000/tiller_area));
+          Conc_new=CH4+(CH4_air-CH4)*exp(-kCH4/(soil_water_vol*soildepth[l]/1000/tiller_area));
           CH4_plant=(CH4-Conc_new)*soil_water_vol*soildepth[l]/1000;
           stand->soil.CH4[l]-= CH4_plant;
           if(stand->soil.CH4[l]<0)
@@ -125,7 +125,7 @@ void plant_gas_transport(Stand *stand,        /**< pointer to soil data */
           /*OXYGEN*/
           Conc_new = 0;
           O2=stand->soil.O2[l]/soil_water_vol/soildepth[l]*1000;
-          Conc_new=O2_air+(O2-O2_air)*exp(-kO2/(soil_water_vol*soildepth[l]/1000/tiller_area));
+          Conc_new=O2+(O2_air-O2)*exp(-kO2/(soil_water_vol*soildepth[l]/1000/tiller_area));
           O2_plant=(O2-Conc_new)*soil_water_vol*soildepth[l]/1000;
           stand->soil.O2[l]-= O2_plant;
           if(stand->soil.O2[l]<0) stand->soil.O2[l]=0;
@@ -137,9 +137,11 @@ void plant_gas_transport(Stand *stand,        /**< pointer to soil data */
   if(stand->type->landusetype==WETLAND)
     getoutput(&stand->cell->output,CH4_EMISSIONS_WET,config)+=CH4_plant_all;
   stand->cell->balance.aCH4_em+=CH4_plant_all*stand->frac;
+
   if(CH4_rice>0) stand->cell->balance.aCH4_rice+=CH4_rice*stand->frac;
-  getoutput(&stand->cell->output,CH4_PLANT_GAS,config)+=CH4_plant_all*stand->frac;
   if(CH4_rice>0 && stand->cell->balance.ricefrac>epsilon) getoutput(&stand->cell->output,CH4_RICE_EM,config)+=CH4_rice*stand->frac/stand->cell->balance.ricefrac;
+
+  getoutput(&stand->cell->output,CH4_PLANT_GAS,config)+=CH4_plant_all*stand->frac;
   if((stand->type->landusetype==SETASIDE_RF || stand->type->landusetype==SETASIDE_IR || stand->type->landusetype==AGRICULTURE  || stand->type->landusetype==SETASIDE_WETLAND || stand->type->landusetype==GRASSLAND) && CH4_rice==0)
   {
     stand->cell->balance.aCH4_setaside+=CH4_plant_all*stand->frac;

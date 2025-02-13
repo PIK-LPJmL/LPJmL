@@ -36,17 +36,13 @@
 #define HEIGHT_MAX 100.0  /* maximum height of trees */
 #define REPROD_COST 0.1 /* reproduction cost */
 #define K_EST 0.12 /* maximum overall sapling establishment rate (indiv/m2) */
-#ifdef WITH_SPITFIRE
-#define MORT_MAX 0.02
-#else
-#define MORT_MAX 0.02
-#endif
+#define MORT_MAX 0.01
 #define MORT_MAX_GRASS 0.00
 #define FN_TURNOVER 0.2      /* fraction of N not recovered before turnover */
 #define FN_TURNOVER_EV_BR 0.6   /* fraction of N not recovered before turnover */
 #define FN_TURNOVER_EV 0.7   /* fraction of N not recovered before turnover */
 #define FN_TURNOVER_GR 0.7   /* fraction of N not recovered before turnover */
-#define ALPHAA 0.5            /* alphaa for simulations with nitrogen limitation */
+#define ALPHAA 0.52            /* alphaa for simulations with nitrogen limitation */
 #define RATIO_SAPW 13.5 /* relative C:N ratio of sapwood */
 #define CN_BL_EG_MX 46.2
 #define CN_BL_EG_MN 15.6
@@ -163,7 +159,7 @@
       "emission_factor" : { "co2" : 1580.0, "co" :  103.0, "ch4" : 6.80, "voc" : 8.10, "tpm" : 8.50, "nox" : 1.999}, /* emission factors */
       "aprec_min" : APREC_MIN,  /* minimum annual precipitation to establish */
       "flam" : FLAM_TREE,  /* flam */
-      "k_litter10" : { "leaf" : 0.93, "wood" : 0.104}, /* 0.039K_LITTER10 turnover rate after Brovkin etal 2012{ "leaf" : 1.17, "wood" : 0.124 }*/
+      "k_litter10" : { "leaf" : 0.93, "wood" : 0.039}, /* 0.039K_LITTER10 turnover rate after Brovkin etal 2012{ "leaf" : 1.17, "wood" : 0.124 }*/
       "k_litter10_q10_wood" : 2.75, /* Q10_wood 3*/
       "vmax_up" : 2.8,             /* vmax_up, Maximum N uptake capacity per unit fine root mass, Smith et al. 2014 */
       "kNmin": 0.05,                /* kNmin, Rate of N uptake not associated with Michaelis-Menten Kinetics, Zaehle&Friend 2000 */
@@ -278,7 +274,7 @@
       "emission_factor" : { "co2" : 1580.0, "co" :  103.0, "ch4" : 6.80, "voc" : 8.10, "tpm" : 8.50, "nox" : 1.999}, /* emission factors */
       "aprec_min" : APREC_MIN,  /* minimum annual precipitation to establish */
       "flam" : FLAM_TREE,  /* flam */
-      "k_litter10" : { "leaf" : 0.93, "wood" : 0.104}, /* 0.039K_LITTER10 turnover rate after Brovkin etal 2012{ "leaf" : 1.17, "wood" : 0.124 }*/
+      "k_litter10" : { "leaf" : 0.93, "wood" : 0.039}, /* 0.039K_LITTER10 turnover rate after Brovkin etal 2012{ "leaf" : 1.17, "wood" : 0.104 }*/
       "k_litter10_q10_wood" : 2.75, /* Q10_wood 3*/
       "vmax_up" : 3,             /* vmax_up, Maximum N uptake capacity per unit fine root mass, Smith et al. 2014 */
       "kNmin": 0.05,                /* kNmin, Rate of N uptake not associated with Michaelis-Menten Kinetics, Zaehle&Friend 2000 */
@@ -393,7 +389,7 @@
       "emission_factor" : { "co2" : 1664.0, "co" :  63.0, "ch4" : 2.20, "voc" : 3.40, "tpm" : 8.50, "nox" : 2.540}, /* emission factors */
       "aprec_min" : APREC_MIN,/* minimum annual precipitation to establish */
       "flam" : FLAM_TREE,     /* flam */
-      "k_litter10" : { "leaf" : 1.17, "wood" : 0.104 }, /* K_LITTER10 turnover rate after Brovkin etal 2012{ "leaf" : 1.17, "wood" : 0.039 },*/
+      "k_litter10" : { "leaf" : 1.17, "wood" : 0.039 }, /* K_LITTER10 turnover rate after Brovkin etal 2012{ "leaf" : 1.17, "wood" : 0.039 },*/
       "k_litter10_q10_wood" : 2.75, /* Q10_wood */
       "vmax_up" : 2.8,              /* vmax_up, Maximum N uptake capacity per unit fine root mass, Smith et al. 2014 */
       "kNmin": 0.05,                /* kNmin, Rate of N uptake not associated with Michaelis-Menten Kinetics, Zaehle&Friend 2000 */

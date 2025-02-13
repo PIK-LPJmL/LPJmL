@@ -38,6 +38,8 @@ void gasdiffusion(Soil *soil,     /**< [inout] pointer to soil data */
   /*waterbalance needs to be updated*/
   start = soilmethane(soil); //do not multiply by *WC/WCH4, is used for methane fluxes here
   *runoff=*CH4_out=*CH4_sink=0;
+
+
   for (l = 0; l<BOTTOMLAYER; l++)
   {
     if ((soil->w[l] * soil->whcs[l] + soil->w_fw[l] + soil->ice_depth[l] + soil->ice_fw[l])>(soil->wsats[l] - soil->wpwps[l]))
@@ -74,7 +76,7 @@ void gasdiffusion(Soil *soil,     /**< [inout] pointer to soil data */
     {
       V = 0;
     }
-    D_O2[l]=(D_O2_air*V + D_O2_water*soil_moist*soil->wsat[l]*BO2)*eta;  // eq. 11 in Khvorostyanov part 1 diffusivity (m2 s-1)
+    D_O2[l]=D_O2_air*V*eta + D_O2_water*soil_moist*soil->wsat[l];  // eq. 11 in Khvorostyanov part 1 diffusivity (m2 s-1)
     if (epsilon_O2[l] <= 0.001)
       do_diffusion = FALSE;
   }
@@ -104,7 +106,7 @@ void gasdiffusion(Soil *soil,     /**< [inout] pointer to soil data */
     {
       V = 0;
     }
-    D_CH4[l] = (D_CH4_air*V + D_CH4_water*soil_moist*soil->wsat[l]*BCH4)*eta;  // eq. 11 in Khvorostyanov part 1 diffusivity (m2 s-1)
+    D_CH4[l] = D_CH4_air*V*eta + D_CH4_water*soil_moist*soil->wsat[l];  // eq. 11 in Khvorostyanov part 1 diffusivity (m2 s-1)
     if (epsilon_CH4[l] <= 0.001)
       do_diffusion = FALSE;
   }

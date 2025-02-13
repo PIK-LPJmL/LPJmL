@@ -104,6 +104,7 @@
 #define WCH4 16.0            /*16g/mol*/
 #define WH2O 18.0            /*18g/mol*/
 #define WCO2 44.0            /*44g/mol*/
+#define WN 14.0              /*14g/mol*/
 #define O2star 3.0           /*g/m3*/
 #define BO2 0.038            /*Bunsen coefficient of oxygen*/
 #define BCH4 0.043           /*Bunsen coefficient of methane  0.043 Khvorostynov etal. 2008*/
@@ -113,13 +114,13 @@
 #define tau_CH4 12.5         /* life time of methane (yr) */
 #define R_gas 8.314          /* universal gas constant J mol-1 K-1 */
 #define p_s 1.01e5           /* atmospheric pressure (Pa=kg m-1 s-2) */
-#define D_O2_air 1.596e-5    /* free air oxygen diffusivity (m2s-1)*/
+#define D_O2_air 1.82e-5    /* free air oxygen diffusivity (m2s-1) Khvorostynov etal. 2008 1.82e-5 Wassmann etal 1998*/
 #define D_O2_water 1.6e-9    /* O2 diffusivity in water (m2s-1)*/
 #define eta (2.0/3.0)        /* tortuosity factor ( 2/3 )*/
 #define O2s 0.209            /* atmospheric content of oxygen */
-#define D_CH4_air 1.702e-5   /* free air methane diffusivity (m2s-1)*/
+#define D_CH4_air 1.952e-5   /* free air methane diffusivity (m2s-1) Wassmann etal 1998*/
 #define D_CH4_water 2e-9     /* methane diffusivity in water (m2s-1)*/
-                                //#define CH4s 0.00000179      /* atmospheric CH4 content (mol/mol)*/
+//#define CH4s 0.00000179      /* atmospheric CH4 content (mol/mol)*/
 #define snowdens_first 150
 #define snowdens_end 500
 

@@ -93,8 +93,8 @@ void equilsoil(Soil *soil,            /**< pointer to soil data */
   /* resest soil C and N pools*/
   forrootsoillayer(l)
   {
-    soil->pool[l].slow.carbon=soil->pool[l].fast.carbon=0;
-    soil->pool[l].slow.nitrogen=soil->pool[l].fast.nitrogen=0;
+    soil->pool[l].fast.carbon=soil->pool[l].fast.nitrogen=0;
+    soil->pool[l].slow.carbon=soil->pool[l].slow.nitrogen=0;
   }
      
   /* caluclate equilibrium C and N pools for given C and N from litter and decay rates */
@@ -106,7 +106,7 @@ void equilsoil(Soil *soil,            /**< pointer to soil data */
     }
   forrootsoillayer(l)
   {
-    if(soil->decay_rate[l].fast>0)
+    if(soil->decay_rate[l].fast>epsilon)
     {
       for(p=0;p<ntotpft;p++)
       {
@@ -114,7 +114,7 @@ void equilsoil(Soil *soil,            /**< pointer to soil data */
         soil->pool[l].fast.nitrogen+=param.fastfrac*soil->decomp_litter_pft[p].nitrogen*soil->c_shift[l][p].fast/soil->decay_rate[l].fast;
       }
     }
-    if(soil->decay_rate[l].slow>0)
+    if(soil->decay_rate[l].slow>epsilon)
     {
       for(p=0;p<ntotpft;p++)
       {

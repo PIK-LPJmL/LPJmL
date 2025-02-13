@@ -70,6 +70,7 @@
 #define INVALID_CROP_PHU_OPTION_ERR 50
 #define INVALID_FIRE_INDEX_ERR 51
 #define WRITE_OUTPUT_ERR 52
+#define NEGATIV_SOIL_CARBON 53
 
 /* Definition of macros */
 
