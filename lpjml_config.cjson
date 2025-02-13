@@ -40,7 +40,7 @@
   "sim_id"   : "lpjml",     /* LPJML Simulation type with managed land use */
   "coupled_model" : null,   /* Coupled model: null (no model coupled), string (name of coupled model) */
   "coupled_host" : "localhost", /* host where the coupled model is running */
-  "coupler_port" : 2224,    /* port for socket communication */
+  "coupled_port" : 2224,    /* port for socket communication */
   "start_coupling": null,   /* Start year of model coupling: null (start_coupling is set to firstyear if coupled_model != null), int (start year of coupling) */
   "version"  : "5.9",       /* LPJmL version expected */
   "global_attrs" : {"institution" : "Potsdam Institute for Climate Impact Research",

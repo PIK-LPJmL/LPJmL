@@ -250,14 +250,14 @@ Bool fscanconfig(Config *config,    /**< LPJ configuration */
         config->coupled_host=strdup(name);
         checkptr(config->coupled_host);
       }
-      if(!config->coupler_port_set && iskeydefined(file,"coupler_port"))
+      if(!config->coupled_port_set && iskeydefined(file,"coupled_port"))
       {
-        fscanint2(file,&config->coupler_port,"coupler_port");
-        if(config->coupler_port<1 || config->coupler_port>USHRT_MAX)
+        fscanint2(file,&config->coupled_port,"coupled_port");
+        if(config->coupled_port<1 || config->coupled_port>USHRT_MAX)
         {
           if(verbose)
             fprintf(stderr,"ERROR193: Invalid number %d for coupler port.\n",
-                    config->coupler_port);
+                    config->coupled_port);
           return TRUE;
         }
       }

@@ -129,8 +129,8 @@ FILE *openconfig(Config *config,      /**< configuration struct */
   }
 #else
   config->coupled_host_set=FALSE;
-  config->coupler_port_set=FALSE;
-  config->coupler_port=DEFAULT_COUPLER_PORT;
+  config->coupled_port_set=FALSE;
+  config->coupled_port=DEFAULT_COUPLER_PORT;
   config->coupled_host=getenv(LPJCOUPLEDHOST);
   if(config->coupled_host==NULL)
     config->coupled_host=strdup(DEFAULT_COUPLED_HOST);
@@ -141,14 +141,14 @@ FILE *openconfig(Config *config,      /**< configuration struct */
     pos=strchr(config->coupled_host,':');
     if(pos!=NULL)
     {
-      config->coupler_port_set=TRUE;
+      config->coupled_port_set=TRUE;
       *pos='\0';
-      config->coupler_port=strtol(pos+1,&endptr,10);
-      if(pos+1==endptr || config->coupler_port<1 || config->coupler_port>USHRT_MAX)
+      config->coupled_port=strtol(pos+1,&endptr,10);
+      if(pos+1==endptr || config->coupled_port<1 || config->coupled_port>USHRT_MAX)
       {
         if(isroot(*config))
           fprintf(stderr,"ERROR193: Invalid number %d for coupled port.\n",
-                  config->coupler_port);
+                  config->coupled_port);
         return NULL;
       }
     }
@@ -277,14 +277,14 @@ FILE *openconfig(Config *config,      /**< configuration struct */
            if(pos!=NULL)
            {
              *pos='\0';
-             config->coupler_port=strtol(pos+1,&endptr,10);
-             if(pos+1==endptr || config->coupler_port<1
-                              || config->coupler_port>USHRT_MAX)
+             config->coupled_port=strtol(pos+1,&endptr,10);
+             if(pos+1==endptr || config->coupled_port<1
+                              || config->coupled_port>USHRT_MAX)
              {
                if(isroot(*config))
                  fprintf(stderr,
                          "ERROR193: Invalid number %d for coupled port.\n",
-                         config->coupler_port);
+                         config->coupled_port);
                free(options);
                return NULL;
              }
