@@ -357,11 +357,17 @@ Bool openclimate_netcdf(Climatefile *file,    /**< climate data file */
         free_netcdf(file->ncid);
         return TRUE;
       }
-      else if(file->isleap && (time_len-nleapyears(file->firstyear,time_len/NDAYYEAR+file->firstyear)) % NDAYYEAR)
-        fprintf(stderr,"ERROR439: Number of days=%zu in '%s' is not multiple of %d excluding leap days.\n",time_len,filename,NDAYYEAR);
-      else if(!file->isleap && time_len % NDAYYEAR)
-        fprintf(stderr,"ERROR439: Number of days=%zu in '%s' is not multiple of %d.\n",time_len,filename,NDAYYEAR);
-      file->nyear=time_len/NDAYYEAR;
+      if(file->isleap)
+      {
+        if(!getnyearfromdays(&file->nyear,file->firstyear,time_len))
+          fprintf(stderr,"ERROR439: Number of days=%zu in '%s' is not multiple of %d excluding leap days.\n",time_len,filename,NDAYYEAR);
+      }
+      else
+      {
+        if(time_len % NDAYYEAR)
+          fprintf(stderr,"ERROR439: Number of days=%zu in '%s' is not multiple of %d.\n",time_len,filename,NDAYYEAR);
+        file->nyear=time_len/NDAYYEAR;
+      }
       file->n=config->ngridcell*NDAYYEAR;
       break;
     case MONTH:

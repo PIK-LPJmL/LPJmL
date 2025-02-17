@@ -43,6 +43,7 @@ of `major.minor.patch` with
 - Doubled initialization of standtype array corrected in `lpj_clinber4.c`.
 - Option `type` corrected in `setclm`.
 - Check that CO2 data is coming completely from socket corrected in `readco2.c`.
+- Number of years are now calculated correctly from number of days in case of leap days if number of leap days reaches 365.
 
 
 ## [5.9.18] - 2025-01-31
