@@ -36,7 +36,7 @@ int main(int argc,char **argv)
   const char *progname;
   char *endptr;
   int index,size;
-  Bool setversion=FALSE:
+  Bool setversion=FALSE;
   progname=strippath(argv[0]);
   if(argc<4)
   {
