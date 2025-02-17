@@ -36,6 +36,7 @@ int main(int argc,char **argv)
   const char *progname;
   char *endptr;
   int index,size;
+  Bool setversion=FALSE:
   progname=strippath(argv[0]);
   if(argc<4)
   {
@@ -75,6 +76,7 @@ int main(int argc,char **argv)
       fprintf(stderr,"Invalid number '%s' for version.\n",argv[2]);
       return EXIT_FAILURE;
     }
+    setversion=TRUE;
   }
   else if(!strcmp(argv[1],"order"))
   {
@@ -229,23 +231,18 @@ int main(int argc,char **argv)
   }
   if(id==NULL)
     id=s;
-  if(swap)
-  {
-    version=swapint(version);
-    header.order=swapint(header.order);
-    header.firstyear=swapint(header.firstyear);
-    header.nyear=swapint(header.nyear);
-    header.firstcell=swapint(header.firstcell);
-    header.ncell=swapint(header.ncell);
-    header.nbands=swapint(header.nbands);
-  }
   rewind(file);
   if(fwrite(id,strlen(id),1,file)!=1)
     return EXIT_FAILURE;
   if(swap)
-     version=swapint(version);
+    version=swapint(version);
   if(fwrite(&version,sizeof(version),1,file)!=1)
     return EXIT_FAILURE;
+  if(setversion)
+  {
+    fclose(file);
+    return EXIT_SUCCESS;
+  }
   switch(version)
   {
      case 1:
@@ -266,6 +263,6 @@ int main(int argc,char **argv)
   }
   if(writeheader(file,(int *)&header,size,swap))
     return EXIT_FAILURE;
-  fclose(file); 
+  fclose(file);
   return EXIT_SUCCESS;
 } /* of 'main' */
