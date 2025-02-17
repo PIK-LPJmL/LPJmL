@@ -139,7 +139,7 @@ int main(int argc,char **argv)
   }
   if(data_version>2 && header.datatype!=LPJ_INT)
   {
-    fprintf(stderr,"Invalid datatype %s in '%s', muste bei int.\n",typenames[header.datatype],argv[3]);
+    fprintf(stderr,"Invalid datatype %s in '%s', must be int.\n",typenames[header.datatype],argv[3]);
     return EXIT_FAILURE;
   }
   if(header.ncell!=n1)
