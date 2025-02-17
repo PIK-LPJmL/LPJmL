@@ -22,10 +22,12 @@ of `major.minor.patch` with
 ### Contributors
 
 - author: Werner von Bloh (bloh@pik-potsdam.de)
+- code review: Sebastion Ostberg (ostberg@pik-potsdam.de)
 
 ### Added
 
 - Check for correct number of time steps added in `openclimate_netcdf.c`.
+- Option `timestep` added to `setclm`. 
 
 ### Changed
 
@@ -43,6 +45,7 @@ of `major.minor.patch` with
 - Doubled initialization of standtype array corrected in `lpj_clinber4.c`.
 - Option `type` corrected in `setclm`.
 - Handling of different endianness corrected in `setclm`.
+- If version is changed with `setclm` only version is updated in the clm file.
 - Check that CO2 data is coming completely from socket corrected in `readco2.c`.
 - Number of years are now calculated correctly from number of days in case of leap days if number of leap days reaches 365.
 

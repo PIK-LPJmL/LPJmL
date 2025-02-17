@@ -14,7 +14,7 @@
 
 #include "lpj.h"
 
-#define USAGE "Usage: %s id|version|order|firstyear|nyear|firstcell|ncell|nbands|nstep|type|scalar|cellsize|cellsize_lon|cellsize_lat value filename\n"
+#define USAGE "Usage: %s id|version|order|firstyear|nyear|firstcell|ncell|nbands|nstep|type|scalar|cellsize|cellsize_lon|cellsize_lat|timestep value filename\n"
 
 static Bool writeheader(FILE *file,int *header,int size,Bool swap)
 {
@@ -148,6 +148,20 @@ int main(int argc,char **argv)
     if(*endptr!='\0')
     {
       fprintf(stderr,"Invalid number '%s' for nstep.\n",argv[2]);
+      return EXIT_FAILURE;
+    }
+  }
+  else if(!strcmp(argv[1],"timestep"))
+  {
+    if(version<4)
+    {
+      fprintf(stderr,"Version=%d for timestep of '%s' must be >3.\n",version,argv[3]);
+      return EXIT_FAILURE;
+    }
+    header.timestep=strtol(argv[2],&endptr,10);
+    if(*endptr!='\0')
+    {
+      fprintf(stderr,"Invalid number '%s' for timestep.\n",argv[2]);
       return EXIT_FAILURE;
     }
   }
