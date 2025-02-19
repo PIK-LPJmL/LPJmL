@@ -37,6 +37,7 @@ of `major.minor.patch` with
 - Missing file `CHANGELOG.md` added to tar and zip file.
 - Longitude and latitude boundaries excluded as variables in `cdf2grid`.
 - Ids for sowing date and crop PHU input added to `couplerpar.h`.
+- Length of GIT repository output limited in `copyright.c`.
 
 ### Fixed
 
@@ -48,7 +49,7 @@ of `major.minor.patch` with
 - If version is changed with `setclm` only version is updated in the clm file.
 - Check that CO2 data is coming completely from socket corrected in `readco2.c`.
 - Number of years are now calculated correctly from number of days in case of leap days if number of leap days reaches 365.
-
+- Check for indentical filenames corrcected in `cutclm.c`.
 
 ## [5.9.18] - 2025-01-31
 
