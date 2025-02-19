@@ -19,6 +19,14 @@ of `major.minor.patch` with
 
 ## [Unreleased]
 
+### Contributors
+
+- author: Werner von Bloh (bloh@pik-potsdam.de)
+
+### Changed
+
+- New functions `initmonthly_grid()`, `updatedaily_grid()` and `updateannual_grid()` defined to minimize lines of code in `iterateyear.c` and minimize duplicate code in `lpj_climber4.c`.
+
 
 ## [5.9.18] - 2025-01-31
 
