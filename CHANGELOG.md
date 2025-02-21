@@ -27,7 +27,7 @@ of `major.minor.patch` with
 ### Added
 
 - Check for correct number of time steps added in `openclimate_netcdf.c`.
-- Option `timestep` added to `setclm`. 
+- Option `timestep` added to `setclm`.
 
 ### Changed
 
@@ -50,6 +50,8 @@ of `major.minor.patch` with
 - Check that CO2 data is coming completely from socket corrected in `readco2.c`.
 - Number of years are now calculated correctly from number of days in case of leap days if number of leap days reaches 365.
 - Check for indentical filenames corrcected in `cutclm.c`.
+- Missing `else` added in `readclimate()`.
+
 
 ## [5.9.18] - 2025-01-31
 
