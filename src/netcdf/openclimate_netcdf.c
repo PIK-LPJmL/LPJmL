@@ -38,7 +38,7 @@ Bool openclimate_netcdf(Climatefile *file,    /**< climate data file */
   double *date;
   size_t len,time_len;
   char var_name[NC_MAX_NAME];
-  Bool isopen,isdim;
+  Bool isopen,isdim,isfullyear;
   file->isopen=FALSE;
   if(filename==NULL || file==NULL)
     return TRUE;
@@ -359,7 +359,8 @@ Bool openclimate_netcdf(Climatefile *file,    /**< climate data file */
       }
       if(file->isleap)
       {
-        if(!getnyearfromdays(&file->nyear,file->firstyear,time_len))
+        file->nyear=getnyearfromdays(&isfullyear,file->firstyear,time_len);
+        if(!isfullyear)
           fprintf(stderr,"ERROR439: Number of days=%zu in '%s' is not multiple of %d excluding leap days.\n",time_len,filename,NDAYYEAR);
       }
       else

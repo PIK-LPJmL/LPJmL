@@ -49,7 +49,7 @@ of `major.minor.patch` with
 - If version is changed with `setclm` only version is updated in the clm file.
 - Check that CO2 data is coming completely from socket corrected in `readco2.c`.
 - Number of years are now calculated correctly from number of days in case of leap days if number of leap days reaches 365.
-- Check for indentical filenames corrcected in `cutclm.c`.
+- Check for identical filenames corrected in `cutclm.c`.
 - Missing `else` added in `readclimate()`.
 
 
@@ -84,7 +84,7 @@ of `major.minor.patch` with
 
 ### Fixed
 
-- `ALLOM3` parameter corrrected to 4.0 for oil palm in `pft.cjson` (issue #369).
+- `ALLOM3` parameter corrected to 4.0 for oil palm in `pft.cjson` (issue #369).
 - Missing `break` added in `convert_water.c`.
 
 
