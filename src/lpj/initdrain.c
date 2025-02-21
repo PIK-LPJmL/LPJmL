@@ -320,7 +320,7 @@ static Bool initriver(Cell grid[],Config *config)
           return TRUE;
         }
       }
-      if(readinput_netcdf(drainage.cdf,&len,&grid[cell].coord))
+      if(readinput_netcdf(river.cdf,&len,&grid[cell].coord))
       {
         closeinput_netcdf(drainage.cdf);
         closeinput_netcdf(river.cdf);
