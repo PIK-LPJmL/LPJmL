@@ -19,6 +19,14 @@ of `major.minor.patch` with
 
 ## [Unreleased]
 
+### Contributors
+
+- author: Werner von Bloh (bloh@pik-potsdam.de), Hester Biemans (hester.biemans@wur.nl)
+
+### Fixed
+
+- River length is now correctly read in `initdrain.c` for data in NetCDF format.
+
 
 ## [5.9.18] - 2025-01-31
 
