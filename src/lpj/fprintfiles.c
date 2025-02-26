@@ -16,12 +16,38 @@
 
 #include "lpj.h"
 
-static void fprintfilename(FILE *file,               /**< pointer to text file */
-                           const Filename *filename, /**< filename */
-                           Bool isyear               /**< input is year dependent */
-                          )
+typedef struct
+{
+  char **names; /** array of filenames */
+  int size;     /** size of array */
+} Table;
+
+static int cmpstringp(const void *p1, const void *p2)
+{
+   return strcmp(* (char * const *) p1, * (char * const *) p2);
+} /* of 'cmpstringp' */
+
+static void fprintfilenames(FILE *file,const Table *table)
+{
+  int i;
+  qsort(table->names,table->size,sizeof(char *),cmpstringp);
+  for(i=0;i<table->size;i++)
+    if(i)
+    {
+      if(strcmp(table->names[i-1],table->names[i]))
+       fprintf(file,"%s\n",table->names[i]);
+    }
+    else
+     fprintf(file,"%s\n",table->names[i]);
+} /* of 'fprintfilenames' */
+
+static void addfilename(Table *table,             /**< pointer to table */
+                        const Filename *filename, /**< filename */
+                        Bool isyear               /**< input is year dependent */
+                       )
 {
   char *s;
+  size_t len;
   int first,last,year;
   if(filename->fmt==FMS || filename->fmt==SOCK)
     return;
@@ -35,28 +61,55 @@ static void fprintfilename(FILE *file,               /**< pointer to text file *
         fprintf(stderr,"ERROR225: Cannot parse filename '%s'.\n",filename->name);
       else
       {
+        table->names=(char **)realloc(table->names,(table->size+last-first+1)*sizeof(char *));
         for(year=first;year<=last;year++)
         {
-          fprintf(file,s,year);
-          fputc('\n',file);
+          len=snprintf(NULL,0,s,year);
+          table->names[table->size+year-first]=malloc(len+1);
+          sprintf(table->names[table->size+year-first],s,year);
         }
         free(s);
+        table->size+=last-first+1;
       }
     }
     else
-      fprintf(file,"%s\n",filename->name);
+    {
+      table->names=(char **)realloc(table->names,(table->size+1)*sizeof(char *));
+      table->names[table->size]=strdup(filename->name);
+      table->size++;
+    }
   }
   else if(filename->fmt==META)
   {
-    fprintf(file,"%s\n",filename->name);
+    table->names=(char **)realloc(table->names,(table->size+1)*sizeof(char *));
+    table->names[table->size]=strdup(filename->name);
+    table->size++;
     s=getfilefrommeta(filename->name,TRUE);
     if(s!=NULL)
-      fprintf(file,"%s\n",s);
-    free(s);
+    {
+      table->names=(char **)realloc(table->names,(table->size+1)*sizeof(char *));
+      table->names[table->size]=strdup(s);
+      table->size++;
+      free(s);
+    }
   }
   else
-    fprintf(file,"%s\n",filename->name);
-} /* of 'fprintfilename' */
+  {
+    table->names=(char **)realloc(table->names,(table->size+1)*sizeof(char *));
+    table->names[table->size]=strdup(filename->name);
+    table->size++;
+  }
+} /* of 'addfilename' */
+
+static void freetable(Table *table)
+{
+  int i;
+  for(i=0;i<table->size;i++)
+    free(table->names[i]);
+  free(table->names);
+  table->names=NULL;
+  table->size=0;
+} /* of 'freetable' */
 
 void fprintfiles(FILE *file,          /**< pointer to text output file */
                  Bool withinput,      /**< list input data files (TRUE/FALSE) */
@@ -64,107 +117,120 @@ void fprintfiles(FILE *file,          /**< pointer to text output file */
                  const Config *config /**< LPJmL configuration */
                 )
 {
+  Table table={NULL,0};
+  size_t len;
   int i,j;
   if(isreadrestart(config))
     fprintf(file,"%s\n",config->restart_filename);
   if(withinput)
   {
   if(config->soil_filename.fmt!=CDF)
-    fprintfilename(file,&config->coord_filename,FALSE);
-  fprintfilename(file,&config->soil_filename,FALSE);
+    addfilename(&table,&config->coord_filename,FALSE);
+  addfilename(&table,&config->soil_filename,FALSE);
   if(config->landfrac_from_file)
-    fprintfilename(file,&config->landfrac_filename,FALSE);
-  fprintfilename(file,&config->temp_filename,TRUE);
-  fprintfilename(file,&config->prec_filename,TRUE);
+    addfilename(&table,&config->landfrac_filename,FALSE);
+  addfilename(&table,&config->temp_filename,TRUE);
+  addfilename(&table,&config->prec_filename,TRUE);
 #if defined IMAGE && defined COUPLED
   if(config->sim_id==LPJML_IMAGE)
   {
-    fprintfilename(file,&config->temp_var_filename,TRUE);
-    fprintfilename(file,&config->prec_var_filename,TRUE);
-    fprintfilename(file,&config->prodpool_init_filename,FALSE);
+    addfilename(&table,&config->temp_var_filename,TRUE);
+    addfilename(&table,&config->prec_var_filename,TRUE);
+    addfilename(&table,&config->prodpool_init_filename,FALSE);
   }
 #endif
   if(config->with_radiation)
   {
     if(config->with_radiation!=RADIATION_SWONLY)
-      fprintfilename(file,&config->lwnet_filename,TRUE);
-    fprintfilename(file,&config->swdown_filename,TRUE);
+      addfilename(&table,&config->lwnet_filename,TRUE);
+    addfilename(&table,&config->swdown_filename,TRUE);
   }
   else
-    fprintfilename(file,&config->cloud_filename,TRUE);
+    addfilename(&table,&config->cloud_filename,TRUE);
   fprintf(file,"%s\n",config->co2_filename.name);
   if(!config->unlim_nitrogen && !config->no_ndeposition)
   {
-    fprintfilename(file,&config->no3deposition_filename,TRUE);
-    fprintfilename(file,&config->nh4deposition_filename,TRUE);
+    addfilename(&table,&config->no3deposition_filename,TRUE);
+    addfilename(&table,&config->nh4deposition_filename,TRUE);
   }
-  fprintfilename(file,&config->soilph_filename,FALSE);
-  fprintfilename(file,&config->wind_filename,TRUE);
+  addfilename(&table,&config->soilph_filename,FALSE);
+  addfilename(&table,&config->wind_filename,TRUE);
   if(config->fire==SPITFIRE_TMAX)
   {
-    fprintfilename(file,&config->tmax_filename,TRUE);
-    fprintfilename(file,&config->tmin_filename,TRUE);
+    addfilename(&table,&config->tmax_filename,TRUE);
+    addfilename(&table,&config->tmin_filename,TRUE);
   }
   if(config->fire==SPITFIRE)
-    fprintfilename(file,&config->tamp_filename,TRUE);
+    addfilename(&table,&config->tamp_filename,TRUE);
   if(config->fire==SPITFIRE || config->fire==SPITFIRE_TMAX)
   {
     if(config->fdi==WVPD_INDEX)
-      fprintfilename(file,&config->humid_filename,TRUE);
+      addfilename(&table,&config->humid_filename,TRUE);
     if(config->prescribe_burntarea)
-      fprintfilename(file,&config->burntarea_filename,TRUE);
-    fprintfilename(file,&config->lightning_filename,FALSE);
-    fprintfilename(file,&config->human_ignition_filename,FALSE);
+      addfilename(&table,&config->burntarea_filename,TRUE);
+    addfilename(&table,&config->lightning_filename,FALSE);
+    addfilename(&table,&config->human_ignition_filename,FALSE);
   }
   if(config->ispopulation)
-    fprintfilename(file,&config->popdens_filename,TRUE);
+    addfilename(&table,&config->popdens_filename,TRUE);
   if(config->grassharvest_filename.name!=NULL)
-    fprintfilename(file,&config->grassharvest_filename,FALSE);
+    addfilename(&table,&config->grassharvest_filename,FALSE);
   if(config->withlanduse!=NO_LANDUSE)
   {
-    fprintfilename(file,&config->countrycode_filename,FALSE);
-    fprintfilename(file,&config->landuse_filename,TRUE);
+    addfilename(&table,&config->countrycode_filename,FALSE);
+    addfilename(&table,&config->landuse_filename,TRUE);
     if(config->sdate_option>=PRESCRIBED_SDATE)
-      fprintfilename(file,&config->sdate_filename,TRUE);
+      addfilename(&table,&config->sdate_filename,TRUE);
     if(config->crop_phu_option>=PRESCRIBED_CROP_PHU)
-      fprintfilename(file,&config->crop_phu_filename,TRUE);
+      addfilename(&table,&config->crop_phu_filename,TRUE);
     if(config->fertilizer_input)
-      fprintfilename(file,&config->fertilizer_nr_filename,TRUE);
+      addfilename(&table,&config->fertilizer_nr_filename,TRUE);
     if (config->manure_input)
-      fprintfilename(file,&config->manure_nr_filename,TRUE);
+      addfilename(&table,&config->manure_nr_filename,TRUE);
     if(config->residue_treatment==READ_RESIDUE_DATA)
-      fprintfilename(file,&config->residue_data_filename,TRUE);
+      addfilename(&table,&config->residue_data_filename,TRUE);
     if(config->tillage_type==READ_TILLAGE)
-      fprintfilename(file,&config->with_tillage_filename,TRUE);
+      addfilename(&table,&config->with_tillage_filename,TRUE);
 
     if(config->prescribe_lsuha)
-      fprintfilename(file,&config->lsuha_filename,FALSE);
+      addfilename(&table,&config->lsuha_filename,FALSE);
   }
   if(config->reservoir)
   {
-    fprintfilename(file,&config->elevation_filename,FALSE);
-    fprintfilename(file,&config->reservoir_filename,FALSE);
+    addfilename(&table,&config->elevation_filename,FALSE);
+    if(config->reservoir_filename.fmt==CDF)
+    {
+      addfilename(&table,&config->reservoir_filename,FALSE);
+      addfilename(&table,&config->capacity_reservoir_filename,FALSE);
+      addfilename(&table,&config->area_reservoir_filename,FALSE);
+      addfilename(&table,&config->height_reservoir_filename,FALSE);
+      addfilename(&table,&config->purpose_reservoir_filename,FALSE);
+    }
+    else
+      addfilename(&table,&config->reservoir_filename,FALSE);
   }
 #ifdef IMAGE
   if(config->aquifer_irrig)
-    fprintfilename(file,&config->aquifer_filename,FALSE);
+    addfilename(&table,&config->aquifer_filename,FALSE);
 #endif
   if(config->wet_filename.name!=NULL)
-    fprintfilename(file,&config->wet_filename,TRUE);
+    addfilename(&table,&config->wet_filename,TRUE);
   if(config->with_lakes)
-    fprintfilename(file,&config->lakes_filename,FALSE);
+    addfilename(&table,&config->lakes_filename,FALSE);
   if(config->river_routing)
   {
-    fprintfilename(file,&config->drainage_filename,FALSE);
+    addfilename(&table,&config->drainage_filename,FALSE);
     if(config->withlanduse!=NO_LANDUSE)
-      fprintfilename(file,&config->neighb_irrig_filename,FALSE);
+      addfilename(&table,&config->neighb_irrig_filename,FALSE);
   }
   if(config->wateruse)
-    fprintfilename(file,&config->wateruse_filename,TRUE);
+    addfilename(&table,&config->wateruse_filename,TRUE);
 #ifdef IMAGE
   if (config->wateruse_wd_filename.name != NULL)
-    fprintfilename(file,&config->wateruse_wd_filename,TRUE);
+    addfilename(&table,&config->wateruse_wd_filename,TRUE);
 #endif
+  fprintfilenames(file,&table);
+  freetable(&table);
   }
   if(withoutput)
   {
@@ -176,22 +242,40 @@ void fprintfiles(FILE *file,          /**< pointer to text output file */
       if(config->outputvars[i].filename.fmt!=SOCK)
       {
         if(config->outputvars[i].oneyear)
+        {
+          if(config->outputvars[i].filename.meta)
+            table.names=(char **)realloc(table.names,(table.size+(config->lastyear-config->outputyear+1)*2)*sizeof(char *));
+          else
+            table.names=(char **)realloc(table.names,(table.size+config->lastyear-config->outputyear+1)*sizeof(char *));
           for(j=config->outputyear;j<=config->lastyear;j++)
           {
-            fprintf(file,config->outputvars[i].filename.name,j);
-            fputc('\n',file);
+            len=snprintf(NULL,0,config->outputvars[i].filename.name,j);
+            table.names[table.size]=malloc(len+1);
+            sprintf(table.names[table.size],config->outputvars[i].filename.name,j);
+            table.size++;
             if(config->outputvars[i].filename.meta)
             {
-              fprintf(file,config->outputvars[i].filename.name,j);
-              fprintf(file,"%s\n",config->json_suffix);
+              table.names[table.size]=malloc(len+1+strlen(config->json_suffix));
+              strcat(strcpy(table.names[table.size],table.names[table.size-1]),config->json_suffix);
+              table.size++;
             }
           }
+        }
         else
         {
-          fprintf(file,"%s\n",config->outputvars[i].filename.name);
+          table.names=(char **)realloc(table.names,(table.size+1)*sizeof(char *));
+          table.names[table.size]=strdup(config->outputvars[i].filename.name);
+          table.size++;
           if(config->outputvars[i].filename.meta)
-            fprintf(file,"%s%s\n",config->outputvars[i].filename.name,config->json_suffix);
+          {
+            table.names=(char **)realloc(table.names,(table.size+1)*sizeof(char *));
+            table.names[table.size]=malloc(strlen(table.names[table.size-1])+1+strlen(config->json_suffix));
+            strcat(strcpy(table.names[table.size],table.names[table.size-1]),config->json_suffix);
+            table.size++;
+          }
         }
-     }
+    }
+    fprintfilenames(file,&table);
+    freetable(&table);
   }
 } /* of 'fprintfiles' */
