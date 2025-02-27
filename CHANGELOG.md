@@ -25,13 +25,15 @@ of `major.minor.patch` with
 
 ### Changed
 
-- Axis names and missing values for NetCDF output are read from JSON file `netcdf.cjson`.
+- Axis names and missing values for NetCDF output are read from JSON file `netcdf.cjson` instead of being hard coded.
 - Warnings in `addheader` replaced by terminating errors.
 - Function `openinputfile()` returns an error if cell size differs in JSON metafile.
 - Function `openmetafile()` returns an error if binary file is empty.
+- Output format for cell size updated in `fprintheader.c`, `fprintoutputjson.c`, `fprintjson.c`, and `openinputfile.c`.
 
 ### Added
 
+- New utility `splitclm` added to copy specific bands from clm file.
 - Environment variables `LPJNOPP` and `LPJPEDANTIC` added. If set to `true`, preprocessor is disabled and pedantic checking is enabled, respectively.
 - Info about `--help` option added in case of error in command line arguments.
 - Option `-config` added to `cdf2clm`, `bin2cdf`, `country2cdf` and `clm2cdf` in order to read axis names and missing values from a JSON file. File `netcdf.json` added as a template.
@@ -40,7 +42,6 @@ of `major.minor.patch` with
 - Options `-zero` and `-search` added to `regridlpj`.
 - Option `-double` added to `txt2grid` in order to create grid files with coordinate values of type double.
 - Option `-timestep` added to `addheader`.
-- Check for correct number of time steps added in `openclimate_netcdf.c`.
 - Option `sum`, `tsum` and `tmean` to `mathclm` added.
 
 

@@ -16,7 +16,7 @@
 SRC	= cat2bsq.1 lpjml.1 txt2grid.1 printglobal.1\
           cft2clm.1 lpjcat.1 lpj_paths.csh.1 lpjsubmit.1\
           configure.sh.1 lpjcheck.1 lpj_paths.sh.1 txt2clm.1\
-          cru2clm.1 lpjprint.1 output_bsq.1 asc2clm.1\
+          cru2clm.1 lpjprint.1 output_bsq.1 asc2clm.1 splitclm.1\
           grid2clm.1 lpjrun.1 cdf2bin.1 cdf2coord.1\
           backtrace.1 catclm.1 printclm.1 adddrain.1 regridsoil.1\
           printreservoir.1 printharvest.1 setclm.1 lpjfiles.1 regridclm.1\

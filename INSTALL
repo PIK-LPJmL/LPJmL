@@ -246,6 +246,7 @@ regridsoil   - regrid soil file to new grid
 regridsoil   - regrid binary soil file to different grid file
 setclm       - set value in header of CLM files for LPJmL
 soil2cdf     - convert binary files into NetCDF files
+splitclm     - copy specific bands of clm data files
 statclm      - print statistics of clm files
 txt2grid     - convert text files to CLM grid data files for LPJmL
 txt2clm      - convert text files to CLM data files for LPJmL

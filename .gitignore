@@ -173,6 +173,7 @@ bin/cmpbin
 bin/statclm
 bin/drainage2cdf
 bin/cdf2grid
+bin/splitclm
 
 # test build folder
 src/test/build
