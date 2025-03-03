@@ -25,7 +25,10 @@ of `major.minor.patch` with
 
 ### Changed
 
-- `input_netcdf.cjson` changed to the same dataset of `input.cjson` but in NetCDF format.
+- `input_netcdf.cjson` changed to the default dataset of `input.cjson` but in NetCDF format.
+- Code change to compile under Windows OS.
+- New function `getsprintf()` added to allocate and print formatted output into string. Function replaces call to `snprintf()` function.
+- Default settings for `GIT_HASH` and `GIT_REPO` added.
 
 ### Added
 
