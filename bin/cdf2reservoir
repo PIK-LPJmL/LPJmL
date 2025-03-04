@@ -51,6 +51,7 @@ area=$(mktemp)_area.clm
 inst_cap=$(mktemp)_inst_cap.clm
 height=$(mktemp)_height.clm
 purpose=$(mktemp)_purpose.clm
+set -e # exit on error
 cdf2clm -id LPJDAMS -var year -int -o $year $1 $2
 cdf2clm -id LPJDAMS -var capacity -float -o $capacity $1 $2
 cdf2clm -id LPJDAMS -var area -float -o $area $1 $2
