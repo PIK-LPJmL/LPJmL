@@ -113,7 +113,6 @@ Stocks littersom(Stand *stand,                      /**< [inout] pointer to stan
   Real h2o_mt;   /* methane production */
   //Real CH4_air;
   Real CH4_air,O2_need;
-  Real epsilon_O2 = 0;
   Real epsilon_CH4 = 0;
   Real oxid_frac = 0.95;  // Assume that 1/2 of the O2 is utilized by other electron acceptors (Wania etal.,2010) only oxidation of Reduced Compounds is left assumed to be together 15%
   Real temp;
@@ -194,7 +193,6 @@ Stocks littersom(Stand *stand,                      /**< [inout] pointer to stan
       V = getV(soil,l);  /*soil air content (m3 air/m3 soil)*/
       if (V<=epsilon)
          V=epsilon+epsilon;
-      epsilon_O2=getepsilon_O2(V,soil_moist[l],soil->wsat[l]);
       epsilon_CH4=getepsilon_CH4(V,soil_moist[l],soil->wsat[l]);
 
       response[l]=gtemp_soil[l]*(INTERCEPT+MOIST_3*(moist[l]*moist[l]*moist[l])+MOIST_2*(moist[l]*moist[l])+MOIST*moist[l]);

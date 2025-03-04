@@ -130,7 +130,7 @@ static int checkfile(const Config *config,const char *name,const Filename *filen
 static int checkinputdata(const Config *config,const Filename *filename,const char *name,const char *unit,Type datatype,int size)
 {
   Infile file;
-  if(openinputdata(&file,filename,name,unit,datatype,1,size,config))
+  if(openinputdata(&file,filename,name,unit,datatype,1.0,size,config))
     return 1;
   closeinput(&file);
   return 0;
@@ -551,7 +551,17 @@ Bool filesexist(Config config, /**< LPJmL configuration */
     if(config.reservoir)
     {
       bad+=checkinputdata(&config,&config.elevation_filename,"elevation","m",LPJ_SHORT,0);
-      bad+=checkinputfile(&config,&config.reservoir_filename,NULL,LPJ_FLOAT,10);
+      if(config.reservoir_filename.fmt==CDF)
+      {
+        bad+=checkinputdata(&config,&config.reservoir_filename,"year reservoir",NULL,LPJ_INT,0);
+        bad+=checkinputdata(&config,&config.capacity_reservoir_filename,"capacity reservoir",NULL,LPJ_FLOAT,0);
+        bad+=checkinputdata(&config,&config.area_reservoir_filename,"area reservoir",NULL,LPJ_FLOAT,0);
+        bad+=checkinputdata(&config,&config.inst_cap_reservoir_filename,"inst cap reservoir",NULL,LPJ_INT,0);
+        bad+=checkinputdata(&config,&config.height_reservoir_filename,"height reservoir","m",LPJ_INT,0);
+        bad+=checkinputdata(&config,&config.purpose_reservoir_filename,"purpose reservoir",NULL,LPJ_INT,NPURPOSE);
+      }
+      else
+        bad+=checkinputfile(&config,&config.reservoir_filename,NULL,LPJ_FLOAT,10);
     }
     if(config.fertilizer_input==FERTILIZER &&!config.fix_fertilization)
       bad+=checkdatafile(&config,&config.fertilizer_nr_filename,"fertilizer","g/m2",LPJ_SHORT,2*config.fertilizermap_size);

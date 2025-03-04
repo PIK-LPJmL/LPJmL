@@ -93,6 +93,11 @@ struct config
   Filename wateruse_filename;
   Filename elevation_filename;
   Filename reservoir_filename;
+  Filename capacity_reservoir_filename;
+  Filename area_reservoir_filename;
+  Filename inst_cap_reservoir_filename;
+  Filename height_reservoir_filename;
+  Filename purpose_reservoir_filename;
   Filename sdate_filename;
   Filename crop_phu_filename;
   Filename burntarea_filename;

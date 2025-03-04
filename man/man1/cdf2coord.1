@@ -3,7 +3,7 @@
 cdf2coord \- extract CLM grid from NetCDF file
 .SH SYNOPSIS
 .B cdf2coord
-[\-var name] [\-index i] [\-{float|double}] [\-scale s] [\-raw] [\-json]
+[\-var name] [\-index i] [\-{float|double}] [\-scale s] [\-latlon] [\-raw] [\-json]
 .I netcdffile gridfile
 .SH DESCRIPTION
 Program extracts grid file in CLM format from NetCDF input data. All cells with valid input will be put in the grid file.
@@ -19,7 +19,10 @@ Converting from i-th dataset. Default is first (=0).
 Scaling factor for CLM grid file. Default is 0.01 for short values in CLM grid file, 1 for float or double values. If factor differs from 1 and -float or -double option is set a warning is printed and scaling factor reset to 1.
 .TP
 \-{float|double}
-Write float or double values in CLM grid file, default is short.
+write float or double values in CLM grid file without applying the scaling factor, default is short
+.TP
+\-latlon
+The order of grid cells set to change latitude first, default is longitude first
 .TP
 \-raw
 Output format is raw without header, default is CLM format.
@@ -34,7 +37,7 @@ Filename of NetCDF file.
 Filename of grid data file written.
 .SH EXAMPLES
 .TP
-Create coord file from temperature data file:
+Create grid file from temperature data file:
 .B cdf2coord
 -var tas temp1901-2010.nc grid.clm
 .PP

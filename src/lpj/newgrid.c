@@ -535,12 +535,20 @@ Cell *newgrid(Config *config,          /**< Pointer to LPJ configuration */
   {
     /* initialize river-routing network */
     if(initdrain(grid,config))
+    {
+      if(isroot(*config))
+        fputs("ERROR207: Cannot initialize river network.\n",stderr);
       return NULL;
+    }
   }
   if(config->reservoir)
   {
     if(initreservoir(grid,config))
+    {
+      if(isroot(*config))
+        fputs("ERROR207: Cannot initialize reservoir data.\n",stderr);
       return NULL;
+    }
   }
   if(config->withlanduse!=NO_LANDUSE && config->iscotton)
   {

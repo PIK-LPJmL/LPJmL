@@ -21,7 +21,8 @@
 /**************************************************************************************/
 
 //#define BMGR_BROWN    /* enables brown harvest of biomass grass, instead of green harvest (default) */
-//#define CRU_MONTHLY /* Set macro for climate input selection. Options are  CRU_MONTHLY, CRU_NETCDF. If no makro is provided the default (GSWP3-W5E5) is used.*/
+//#define CRU_MONTHLY /* Set macro for climate input selection. If no makro is provided the default (GSWP3-W5E5) is used.*/
+//#define NETCDF_INPUT /* use NetCDF files as input */
 //#define OLD_LU /* Set macro for landuse, fertilizer and manure input selection. Options are  OLD_LU and MADRAT. If no makro is provided the default (LandInG toolbox) is used.*/
 
 {   /* LPJmL configuration in JSON format */
@@ -47,7 +48,7 @@
                     "contact" : "", /* name and email address */
                     "comment" : ""  /* additional comments */
                    },       /* Global attributes for NetCDF output files */
-  #if defined CRU_MONTHLY || defined CRU_NETCDF
+  #ifdef CRU_MONTHLY
     "random_prec" : true,     /* Random weather generator for precipitation enabled */
     "radiation" : "radiation",/* type of radiation input to be used, options: "cloudiness", "radiation", "radiation_swonly", "radiation_lwdown" */
   #else
@@ -215,12 +216,15 @@
 /*  III. Input data section                                          */
 /*===================================================================*/
 
-
   "inpath" : "/p/projects/lpjml/input/historical",
 
-  /* Input files of CRU dataset */
+  /* Input files */
   "input" :
+#ifdef NETCDF_INPUT
+    #include "input_netcdf.cjson"
+#else
     #include "input.cjson"
+#endif
   ,
 
 /*===================================================================*/

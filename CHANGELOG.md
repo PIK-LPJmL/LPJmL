@@ -19,6 +19,38 @@ of `major.minor.patch` with
 
 ## [Unreleased]
 
+### Contributors
+
+- author: Werner von Bloh (bloh@pik-potsdam.de), Hester Biemans (hester.biemans@wur.nl)
+
+### Changed
+
+- `input_netcdf.cjson` changed to the same dataset of `input.cjson` but in NetCDF format.
+
+### Added
+
+- Option `-int` added to utility `cdf2clm`.
+- Option `-latlon` added to utility `cdf2coord` in order to change the order of the CLM grid file.
+- Utility `cdf2reservoir` added to convert NetCDF reservoir file to CLM file.
+- Utility `reservoir2cdf` added to convert CLM reservoir file into a NetCDF file using the soil code NetCDF file.
+- Macro `NETCDF_INPUT` added in `lpjml_config.cjson` to enable NetCDF input.
+- Reservoir, irrigation neighbor and drainage data can now be in NetCDF format:
+```java
+"drainage" :           { "fmt" : "cdf", "var" : "index", "name" : "cru_netcdf/drainage.nc"},
+"neighb_irrig" :       { "fmt" : "cdf", "var" : "index", "name" : "cru_netcdf/neighb_irrig.nc"},
+"river" :              { "fmt" : "cdf", "var" : "riverlen", "name" : "cru_netcdf/drainage.nc"},
+"reservoir" :          { "fmt" : "cdf", "var" : "year", "name" : "cru_netcdf/reservoir.nc"},
+"capacity_reservoir" : { "fmt" : "cdf", "var" : "capacity", "name" : "cru_netcdf/reservoir.nc"},
+"area_reservoir" :     { "fmt" : "cdf", "var" : "area", "name" : "cru_netcdf/reservoir.nc"},
+"inst_cap_reservoir" : { "fmt" : "cdf", "var" : "inst_cap", "name" : "cru_netcdf/reservoir.nc"},
+"height_reservoir" :   { "fmt" : "cdf", "var" : "height", "name" : "cru_netcdf/reservoir.nc"},
+"purpose_reservoir" :  { "fmt" : "cdf", "var" : "purpose", "name" : "cru_netcdf/reservoir.nc"},
+```
+
+### Fixed
+
+- River length is now correctly read in `initdrain.c` for data in NetCDF format.
+
 
 ## [5.9.21] - 2025-01-31
 
