@@ -623,6 +623,12 @@ int main(int argc,char **argv)
         else
           printf("\n");
       }
+      data=newvec(float,config.ngridcell*header.nbands*header.nstep);
+      if(data==NULL)
+      {
+        printallocerr("data");
+        return EXIT_FAILURE;
+      }
       switch(header.datatype)
       {
          case LPJ_SHORT:
@@ -642,12 +648,6 @@ int main(int argc,char **argv)
            }
            break;
          case LPJ_FLOAT:
-           data=newvec(float,config.ngridcell*header.nbands*header.nstep);
-           if(data==NULL)
-           {
-             printallocerr("data");
-             return EXIT_FAILURE;
-           }
            break;
          default:
            fprintf(stderr,"Datatype %s not supported.\n",typenames[header.datatype]);
