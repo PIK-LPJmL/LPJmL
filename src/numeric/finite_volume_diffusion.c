@@ -158,7 +158,7 @@ Bool apply_finite_volume_diffusion_impl(Real * amount,          /**< g/m^2, subs
   Real gas_con_new[n]; 
   Real gas_con_current[n];
 
-  /* get current gas condcentration */
+  /* get current gas concentration */
   int j;
   for (j=0; j<n; ++j)
     gas_con_current[j] = (amount[j] / h[j]) / porosity[j];

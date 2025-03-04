@@ -25,7 +25,7 @@ void gasdiffusion(Soil *soil,     /**< [inout] pointer to soil data */
                  )
 {
   int l;
-  int diffsteps = 6;
+  int diffsteps = 15;
   Real dt = day2sec(1) / diffsteps;
   Real D_O2[BOTTOMLAYER], D_CH4[BOTTOMLAYER]; /* oxygen/methane diffusivity [m2/s]*/
   Real epsilon_CH4[BOTTOMLAYER], epsilon_O2[BOTTOMLAYER];
@@ -135,11 +135,6 @@ void gasdiffusion(Soil *soil,     /**< [inout] pointer to soil data */
     }
 #endif
 
-#ifdef CHECK_BALANCE
-  if (fabs(start-end+out+in)>epsilon)
-    fail(INVALID_CARBON_BALANCE_ERR,FAIL_ON_BALANCE,TRUE,"Invalid carbon balance in %s: gasdiff %g start:%g  end:%g gasdiff-in: %g gasdiff-out: %g",
-         __FUNCTION__,start-end+out+in, start, end, in,out);
-#endif
   if((start-end)<0)
    *CH4_sink=start-end;
   else

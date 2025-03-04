@@ -805,7 +805,7 @@
       "twmax_daily" : 25.0,    /* twmax_daily 31*/
       "gddbase" : 5.0,        /* gddbase (deg C) 33*/
       "min_temprange" : -1000.0, /* min_temprange 34*/
-      "emax": 5.0, //7.0,            /* emax 35*/
+      "emax": 7.0, //7.0,            /* emax 35*/
       "intc" : 0.04,          /* intc 36*/
       "alphaa" : ALPHAA, /* alphaa, fraction of PAR assimilated at ecosystem level, relative to leaf level */
       "albedo_leaf" : 0.18,   /* albedo of green leaves */
@@ -1445,7 +1445,7 @@
       "twmax_daily" : 1000.0,  /* twmax_daily 31*/
       "gddbase" : 5.0,        /* gddbase (deg C) 33*/
       "min_temprange" : -1000,  /* min_temprange 34*/
-      "emax": 5.0,            /* emax 35*/
+      "emax": 7.0,            /* emax 35*/
       "intc" : 0.01,          /* intc 36*/
       "alphaa" : ALPHAA, /* alphaa, fraction of PAR assimilated at ecosystem level, relative to leaf level */
       "albedo_leaf" : 0.18,   /* albedo of green leaves */

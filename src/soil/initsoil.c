@@ -65,8 +65,8 @@ Bool initsoil(Stand *stand,           /**< Pointer to stand data */
 #endif
   soil->w_evap=0.0;
   soil->count=0;
-  soil->wa = 5000;
-  soil->wtable = layerbound[BOTTOMLAYER];
+  soil->wa = 6000;
+  soil->wtable = layerbound[BOTTOMLAYER-1]+layerbound[0];
   soil->iswetland = FALSE;
   for (l=0;l<NSOILLAYER;l++)
   {

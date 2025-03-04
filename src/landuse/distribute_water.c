@@ -28,6 +28,20 @@
 
 #include "lpj.h"
 
+static int findwtlayer(const Soil *soil)
+{
+  int l,lwt;              /**< layer index, index of layer in which the water table is located */
+  if(soil->wtable<0)
+    return 0;
+  lwt=0;
+  foreachsoillayer(l)
+    if (soil->wtable >= layerbound[l])
+      lwt = l;
+    else
+      break;
+  return lwt;
+} /* of 'findwtlayer' */
+
 void distribute_water(Cell *cell,            /**< pointer to LPJ cell */
                       int npft,              /**< number of natural PFTs */
                       int ncft,              /**< number of crop PFTs */
@@ -35,9 +49,9 @@ void distribute_water(Cell *cell,            /**< pointer to LPJ cell */
                       const Config *config   /**< LPJmL configuration */
                      )
 {
-  int s,nirrig;
+  int s,nirrig,l,lwt;
   Bool isrice;
-  Real conv_loss,irrig_stand;
+  Real conv_loss,irrig_stand,wtable_cor,S;
   Real frac_irrig_amount,frac_unsustainable;
   Stand *stand;
   Pft *pft;
@@ -82,9 +96,29 @@ void distribute_water(Cell *cell,            /**< pointer to LPJ cell */
     getoutput(&cell->output,WD_AQ,config)+=frac_unsustainable*cell->discharge.gir/cell->coord.area;
   }
 #endif
-//  foreachstand(stand,s,cell->standlist)
-//    stand->soil.wa-=cell->discharge.withdrawal_gw/cell->coord.area*stand->frac * (1.0/(1-cell->lakefrac-cell->ml.reservoirfrac));
-  //fprintf(stdout,"DISTRIBUTE WATER: \n");
+  if(cell->discharge.withdrawal_gw>epsilon) // lower water table due to irrigation
+  {
+    foreachstand(stand,s,cell->standlist)
+    {
+      lwt=findwtlayer(&stand->soil);
+      wtable_cor=cell->discharge.withdrawal_gw/cell->coord.area*stand->frac * (1.0/(1-cell->lakefrac-cell->ml.reservoirfrac));
+      if(stand->soil.wtable>=layerbound[BOTTOMLAYER-1])
+      {
+        S=stand->soil.wsat[lwt]*(1.-pow((1.+(stand->soil.wtable/stand->soil.psi_sat[lwt])),(-1./stand->soil.b[lwt])));
+        S=max(S,0.02);
+        stand->soil.wtable+=wtable_cor/S;
+      }
+      else
+      {
+          if ( stand->soil.wtable>0)
+            S=stand->soil.wsat[lwt]*(1.-pow((1.+(stand->soil.wtable/stand->soil.psi_sat[lwt])),(-1./stand->soil.b[lwt])));
+          else
+            S=stand->soil.wsat[lwt]*(1.-pow((1.+(1/stand->soil.psi_sat[lwt])),(-1./stand->soil.b[lwt])));
+          S=max(S,0.02);
+            stand->soil.wtable+=wtable_cor/S;
+      }
+    }
+  }
   cell->discharge.withdrawal= cell->discharge.withdrawal_gw=0.0;
   foreachstand(stand,s,cell->standlist)
     if(stand->type->landusetype==AGRICULTURE || stand->type->landusetype==GRASSLAND || stand->type->landusetype==OTHERS || stand->type->landusetype==BIOMASS_GRASS || stand->type->landusetype==BIOMASS_TREE || stand->type->landusetype==WOODPLANTATION || stand->type->landusetype==AGRICULTURE_TREE || stand->type->landusetype==AGRICULTURE_GRASS)

@@ -78,7 +78,8 @@ Real daily_natural(Stand *stand,                /**< [inout] stand pointer */
   Real water_before=((stand->cell->discharge.dmass_lake+stand->cell->discharge.dmass_river)/stand->cell->coord.area+stand->cell->ground_st+stand->cell->ground_st_am);
   Real water_after=0;
   Real balanceW=0;
-  Real wfluxes_old=(stand->cell->balance.awater_flux+stand->cell->balance.atransp+stand->cell->balance.aevap+stand->cell->balance.ainterc+stand->cell->balance.aevap_lake+stand->cell->balance.aevap_res-stand->cell->balance.airrig-stand->cell->balance.aMT_water);
+  Real wfluxes_old=(stand->cell->balance.awater_flux+stand->cell->balance.atransp+stand->cell->balance.aevap+stand->cell->balance.ainterc+stand->cell->balance.aevap_lake
+      +stand->cell->balance.aevap_res-stand->cell->balance.airrig-stand->cell->balance.aMT_water);
   water_before+=soilwater(&stand->soil)*stand->frac;
 #endif
   evap=evap_blue=cover_stand=intercep_stand=wet_all=0;
@@ -143,7 +144,7 @@ Real daily_natural(Stand *stand,                /**< [inout] stand pointer */
   if ((stand->type->landusetype!=WETLAND || stand->frac<0.001))
   {
     runoff+=infil_perc(stand,climate->prec+melt-intercep_stand,vol_water_enth,climate->prec,&return_flow_b,npft,ncft,config);
-    if (stand->type->landusetype==WETLAND)
+    if (stand->type->landusetype==WETLAND)     //if stand frac is very small
     {
       runoff+= stand->cell->lateral_water/stand->frac;
       stand->cell->lateral_water=0;
@@ -282,7 +283,8 @@ Real daily_natural(Stand *stand,                /**< [inout] stand pointer */
   water_after=(stand->cell->discharge.dmass_lake+stand->cell->discharge.dmass_river)/stand->cell->coord.area+stand->cell->ground_st+stand->cell->ground_st_am;
   water_after+=soilwater(&stand->soil)*stand->frac;
   balanceW=water_after-water_before-(climate->prec+melt)*stand->frac+
-          ((stand->cell->balance.awater_flux+stand->cell->balance.atransp+stand->cell->balance.aevap+stand->cell->balance.ainterc+stand->cell->balance.aevap_lake+runoff*stand->frac+stand->cell->balance.aevap_res-stand->cell->balance.airrig-stand->cell->balance.aMT_water)-wfluxes_old)
+          ((stand->cell->balance.awater_flux+stand->cell->balance.atransp+stand->cell->balance.aevap+stand->cell->balance.ainterc+stand->cell->balance.aevap_lake+runoff*stand->frac+stand->cell->balance.aevap_res
+              -stand->cell->balance.airrig-stand->cell->balance.aMT_water)-wfluxes_old)
           +((stand->cell->balance.excess_water+stand->cell->lateral_water)-exess_old);
   if(fabs(balanceW)>0.1)
   {

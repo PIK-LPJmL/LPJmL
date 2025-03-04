@@ -142,5 +142,5 @@ Real flux_sum(Flux *flux_global,   /**< global carbon and water fluxes */
 #endif
   if(flux_global->area>epsilon)
     flux_global->temp/=flux_global->area;
-  return flux_global->npp-flux_global->rh-flux_global->fire.carbon-flux_global->harvest.carbon+flux_global->estab.carbon-flux_global->product_turnover.carbon-flux_global->neg_fluxes.carbon-flux.CH4_emissions*WC/WCH4;
+  return flux_global->npp-flux_global->rh-flux_global->fire.carbon-flux_global->harvest.carbon+flux_global->estab.carbon-flux_global->product_turnover.carbon-flux_global->neg_fluxes.carbon;
 } /* of 'flux_sum' */

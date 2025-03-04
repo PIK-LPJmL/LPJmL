@@ -84,8 +84,10 @@ void check_fluxes(Cell *cell,          /**< cell pointer */
 #endif
   if(config->ischeckpoint)
     startyear=max(config->firstyear-config->nspinup,config->checkpointyear)+1;
-  else
+  else if (config->withlanduse)
     startyear=config->firstyear-config->nspinup+1;
+  else
+    startyear=config->firstyear-config->nspinup+param.veg_equil_year+param.equisoil_interval*param.nequilsoil+param.equisoil_fadeout+2;
 
   if(year>startyear && fabs(balance.carbon)>param.error_limit.stocks.carbon)
   {

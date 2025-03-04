@@ -180,8 +180,10 @@ void deforest(Cell *cell,          /**< pointer to cell */
           delstand(cell->standlist,pos);
       }
     }
-    if(iswetland)
+    if(iswetland){
       difffrac_wetland=difffrac_old-difffrac;
+      stand->Hag_Beta = min(1, (0.03*log(stand->slope_mean + 0.1) + 0.22) / 0.43);
+    }
 
   }
   check_stand_fracs(cell,cell->lakefrac+cell->ml.reservoirfrac,ncft);
