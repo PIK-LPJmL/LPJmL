@@ -19,6 +19,27 @@ of `major.minor.patch` with
 
 ## [Unreleased]
 
+### Contributors
+
+- author: Werner von Bloh (bloh@pik-potsdam.de)
+- code review:
+
+### Added
+
+- Option `-partition` added to `lpjsubmit` script.
+
+### Changed
+
+- Man page of lpjsubmit refers only to slurm commands.
+- If `icc` compiler is found, this compiler is used.
+
+### Removed
+
+- Support for old PIK cluster removed.
+- Support for LoadLeveler batch queueing system removed.
+- Support for AIX OS removed.
+- Alias for `lpjml` and obsolete `lpjml.sh`removed in `lpj_paths.sh`.
+
 
 ## [5.9.18] - 2025-01-31
 
