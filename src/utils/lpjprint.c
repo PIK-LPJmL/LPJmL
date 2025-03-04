@@ -151,6 +151,7 @@ static Bool printgrid(Config *config, /* Pointer to LPJ configuration */
     grid.discharge.next=0;
     grid.ml.fraction=NULL;
     grid.ml.resdata=NULL;
+    grid.discharge.tfunct=NULL;
     grid.ml.dam=FALSE;
     if(config->withlanduse!=NO_LANDUSE)
     {
@@ -163,6 +164,9 @@ static Bool printgrid(Config *config, /* Pointer to LPJ configuration */
       grid.ml.landfrac=NULL;
       grid.ml.fertilizer_nr=NULL;
     }
+    grid.ml.manure_nr=NULL;
+    grid.ml.residue_on_field=NULL;
+    grid. ml.irrig_system=NULL;
     grid.output.data=NULL;
     grid.output.syear2=NULL;
     grid.output.syear=NULL;
@@ -178,8 +182,6 @@ static Bool printgrid(Config *config, /* Pointer to LPJ configuration */
     }
     if(isout)
       printcell(&grid,1,npft,ncft,config);
-    freelandfrac(grid.ml.landfrac);
-    freelandfrac(grid.ml.fertilizer_nr);
     freecell(&grid,npft,config);
   } /* of for(i=0;...) */
   fclose(file_restart);
@@ -319,5 +321,6 @@ int main(int argc,char **argv)
   standtype[WOODPLANTATION]=woodplantation_stand,
   standtype[KILL]=kill_stand;
   rc=printgrid(&config,standtype,config.npft[TREE]+config.npft[GRASS],config.npft[CROP],isout);
+  freeconfig(&config);
   return (rc) ? EXIT_FAILURE : EXIT_SUCCESS;
 } /* of 'main' */

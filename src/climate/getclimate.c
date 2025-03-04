@@ -44,7 +44,8 @@ Bool readclimate(Climatefile *file,   /**< climate data file */
       }
       rc=TRUE;
     }
-    rc=FALSE;
+    else
+      rc=FALSE;
   }
   else
   {

@@ -47,7 +47,7 @@ SCRIPTS	= configure.bat configure.sh\
           bin/output_bsq bin/lpjrun bin/backtrace\
           bin/regridlpj bin/lpjsubmit_hpc
 
-FILES	= Makefile config/* README AUTHORS INSTALL VERSION LICENSE STYLESHEET.md\
+FILES	= Makefile config/* README AUTHORS INSTALL VERSION LICENSE STYLESHEET.md CHANGELOG.md\
           $(JSON) $(DATA) $(HDRS) $(SCRIPTS)
 
 main:

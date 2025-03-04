@@ -366,7 +366,6 @@ void lpj_init_
     {name_crop,fscanpft_crop}
   };
 
-
   /*
    * Use default communicator containing all processors. In defining your own
    * communicator it is possible to run LPJ on a subset of processors
