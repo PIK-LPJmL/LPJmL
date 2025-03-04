@@ -52,7 +52,7 @@ Bool open_coupler(Config *config /**< LPJmL configuration */
       alarm(config->wait);
 #endif
     }
-    config->socket=connecttdt_socket(config->coupled_host,config->coupler_port);
+    config->socket=connecttdt_socket(config->coupled_host,config->coupled_port);
 #ifndef _WIN32
     if(config->wait)
     {

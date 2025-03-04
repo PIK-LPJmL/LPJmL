@@ -302,7 +302,9 @@ struct config
 #endif
   Socket *socket;         /**< socket for in- and outgoing data */
   char *coupled_host;     /**< hostname for computer running the IMAGE model */
-  int coupler_port;       /**< port number for in- and outgoing data */
+  Bool coupled_port_set;  /**< coupler port set on command line */
+  Bool coupled_host_set;  /**< coupler host set on command line */
+  int coupled_port;       /**< port number for in- and outgoing data */
   int coupler_out;        /**< number of outgoing data streams */
   int coupler_in;         /**< number of ingoing data streams */
   int totalsize;          /**< size of shared output storage */
