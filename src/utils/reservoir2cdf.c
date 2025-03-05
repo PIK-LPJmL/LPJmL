@@ -214,6 +214,7 @@ static Bool write_reservoir_cdf(const Cdf *cdf,const Reservoir r[],int size,floa
   igrid=newvec(int,cdf->index->nlon*cdf->index->nlat);
   if(igrid==NULL)
   {
+    free(grid);
     printallocerr("grid");
     return TRUE;
   }
@@ -227,6 +228,8 @@ static Bool write_reservoir_cdf(const Cdf *cdf,const Reservoir r[],int size,floa
   rc=nc_put_var_int(cdf->ncid,cdf->varid_year,igrid);
   if(rc!=NC_NOERR)
   {
+    free(grid);
+    free(igrid);
     fprintf(stderr,"ERROR431: Cannot write output data for year: %s.\n",
             nc_strerror(rc));
     return TRUE;
@@ -255,6 +258,8 @@ static Bool write_reservoir_cdf(const Cdf *cdf,const Reservoir r[],int size,floa
     rc=nc_put_vara_int(cdf->ncid,cdf->varid_purpose,offsets,counts,igrid);
     if(rc!=NC_NOERR)
     {
+      free(grid);
+      free(igrid);
       fprintf(stderr,"ERROR431: Cannot write output data for purpose[%d]: %s.\n",
               index,nc_strerror(rc));
       return TRUE;
@@ -490,7 +495,7 @@ int main(int argc,char **argv)
     grid_filename=addpath(grid_name.name,path);
     if(grid_filename==NULL)
     {
-     printallocerr("name");
+      printallocerr("name");
       return EXIT_FAILURE;
     }
     free(grid_name.name);
@@ -633,7 +638,7 @@ int main(int argc,char **argv)
   fclose(file);
   return EXIT_SUCCESS;
 #else
-  fprintf(stderr,"ERROR401: NetCDF is not supported in this version of %s.\n",argv[0]);
+  fprintf(stderr,"ERROR401: NetCDF is not supported in this version of %s.\n",strippath(argv[0]));
   return EXIT_FAILURE;
 #endif
 } /* of 'main' */
