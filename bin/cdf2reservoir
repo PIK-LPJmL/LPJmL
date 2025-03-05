@@ -53,10 +53,10 @@ height=$(mktemp)_height.clm
 purpose=$(mktemp)_purpose.clm
 set -e # exit on error
 cdf2clm -id LPJDAMS -var year -int -o $year $1 $2
-cdf2clm -id LPJDAMS -var capacity -float -o $capacity $1 $2
-cdf2clm -id LPJDAMS -var area -float -o $area $1 $2
+cdf2clm -id LPJDAMS -var capacity -float -units km3 -o $capacity $1 $2
+cdf2clm -id LPJDAMS -var area -float -units km2 -o $area $1 $2
 cdf2clm -id LPJDAMS -var inst_cap -int -o $inst_cap $1 $2
-cdf2clm -id LPJDAMS -var height -int -o $height $1 $2
+cdf2clm -id LPJDAMS -var height -int -units m -o $height $1 $2
 cdf2clm -id LPJDAMS -var purpose -int -o $purpose $1 $2
 # convert all datatypes to float
 setclm type float $year
