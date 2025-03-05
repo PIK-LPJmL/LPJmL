@@ -388,7 +388,7 @@ ID                               Fmt                        filename
   "nspinup" : 420,   /* spinup years */
   "nspinyear" : 30,  /* cycle length during spinup (yr)*/
   "firstyear": 1901, /* first year of simulation */
-#if defined CRU_MONTHLY || defined CRU_NETCDF
+#ifdef CRU_MONTHLY
   "lastyear" : 2011, /* last year of simulation */
 #else
   "lastyear" : 2019, /* last year of simulation */
