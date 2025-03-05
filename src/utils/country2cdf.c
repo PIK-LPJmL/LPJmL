@@ -49,6 +49,7 @@ static Cdf *create_cdf(const char *filename,
   lon=newvec(double,array->nlon);
   if(lon==NULL)
   {
+    free(cdf);
     printallocerr("lon");
     return NULL;
   }
@@ -83,7 +84,7 @@ static Cdf *create_cdf(const char *filename,
   error(rc);
   rc=nc_def_dim(cdf->ncid,LON_DIM_NAME,array->nlon,&lon_dim_id);
   error(rc);
-  s=getsprintf(s,"country2cdf %s",clm_filename);
+  s=getsprintf("country2cdf %s",clm_filename);
   check(s);
   rc=nc_put_att_text(cdf->ncid,NC_GLOBAL,"source",strlen(s),s);
   free(s);
