@@ -14,12 +14,12 @@
 
 #include "lpj.h"
 
-#if defined(USE_NETCDF) || defined(USE_NETCDF4)
+#ifdef USE_NETCDF
 #include <netcdf.h>
 
 #define error(rc) if(rc) {free(lon);free(lat);fprintf(stderr,"ERROR427: Cannot write '%s': %s.\n",filename,nc_strerror(rc)); nc_close(cdf->ncid); free(cdf);return NULL;}
 
-#define USAGE "Usage: %s [-h] [-v] [-metafile] [-longheader] [-global] [-cellsize size]\n       [[-attr name=value] ...] [-raw] [-compress level]\n       [gridfile] clmfile netcdffile\n"
+#define USAGE "Usage: %s [-h] [-v] [-metafile] [-longheader] [-global] [-cellsize size]\n       [[-attr name=value] ...] [-raw] [-netcdf4] [-compress level]\n       [gridfile] clmfile netcdffile\n"
 
 typedef struct
 {
@@ -43,6 +43,7 @@ static Cdf *create_cdf(const char *filename,
                        int n_global,
                        const Header *header,
                        int compress,
+                       Bool isnetcdf4,
                        const Coord_array *array)
 {
   Cdf *cdf;
@@ -74,11 +75,7 @@ static Cdf *create_cdf(const char *filename,
   for(i=0;i<array->nlat;i++)
     lat[i]=array->lat_min+i*header->cellsize_lat;
   cdf->index=array;
-#ifdef USE_NETCDF4
-  rc=nc_create(filename,NC_CLOBBER|NC_NETCDF4,&cdf->ncid);
-#else
-  rc=nc_create(filename,NC_CLOBBER,&cdf->ncid);
-#endif
+  rc=nc_create(filename,(isnetcdf4) ? NC_CLOBBER|NC_NETCDF4 : NC_CLOBBER,&cdf->ncid);
   if(rc)
   {
     fprintf(stderr,"ERROR426: Cannot create file '%s': %s.\n",
@@ -181,8 +178,7 @@ static Cdf *create_cdf(const char *filename,
   error(rc);
   nc_put_att_int(cdf->ncid, cdf->varid_purpose,"missing_value",NC_INT,1,&imiss);
   rc=nc_put_att_int(cdf->ncid, cdf->varid_height,"_FillValue",NC_INT,1,&imiss);
-#ifdef USE_NETCDF4
-  if(compress)
+  if(isnetcdf4 && compress)
   {
     rc=nc_def_var_deflate(cdf->ncid, cdf->varid_year, 0, 1,compress);
     rc=nc_def_var_deflate(cdf->ncid, cdf->varid_area, 0, 1,compress);
@@ -192,7 +188,6 @@ static Cdf *create_cdf(const char *filename,
     rc=nc_def_var_deflate(cdf->ncid, cdf->varid_purpose, 0, 1,compress);
     error(rc);
   }
-#endif
   rc=nc_enddef(cdf->ncid);
   error(rc);
   rc=nc_put_var_double(cdf->ncid,lat_var_id,lat);
@@ -279,7 +274,7 @@ static void close_cdf(Cdf *cdf)
 #endif
 int main(int argc,char **argv)
 {
-#if defined(USE_NETCDF) || defined(USE_NETCDF4)
+#ifdef USE_NETCDF
   FILE *file;
   Coordfile coordfile;
   Coord_array *index;
@@ -291,7 +286,7 @@ int main(int argc,char **argv)
   Attr *global_attrs=NULL;
   Attr *global_attrs2=NULL;
   int i,ngrid,version,iarg,compress,setversion;
-  Bool swap,isglobal,israw,ismeta;
+  Bool swap,isglobal,israw,ismeta,isnetcdf4;
   int n_global,n_global2;
   float cellsize_lon,cellsize_lat;
   Reservoir *rdata;
@@ -310,6 +305,7 @@ int main(int argc,char **argv)
   isglobal=FALSE;
   israw=FALSE;
   ismeta=FALSE;
+  isnetcdf4=FALSE;
   setversion=READ_VERSION;
   grid_name.fmt=CLM;
   n_global=0;
@@ -332,6 +328,7 @@ int main(int argc,char **argv)
                "-cellsize s      set cell size, default is 0.5\n"
                "-metafile        set the input format to JSON metafile instead of CLM\n"
                "-raw             set the input format to raw instead of CLM\n"
+               "-netcdf4         file written is in NetCDF4 format\n"
                "-compress l      set compression level for NetCDF4 files\n"
                "-attr name=value set global attribute name to value in NetCDF file\n"
                "gridfile         filename of grid data file\n"
@@ -354,6 +351,8 @@ int main(int argc,char **argv)
         israw=TRUE;
       else if(!strcmp(argv[iarg],"-metafile"))
         ismeta=TRUE;
+      else if(!strcmp(argv[iarg],"-netcdf4"))
+        isnetcdf4=TRUE;
       else if(!strcmp(argv[iarg],"-attr"))
       {
         if(argc==iarg+1)
@@ -407,6 +406,12 @@ int main(int argc,char **argv)
         if(*endptr!='\0')
         {
           fprintf(stderr,"Error: Invalid number '%s' for option '-compress'.\n",argv[iarg]);
+          return EXIT_FAILURE;
+        }
+        if(compress<0 || compress>9)
+        {
+          fprintf(stderr,"Error: Invalid compression value %d, must be in [0,9].\n",
+                  compress);
           return EXIT_FAILURE;
         }
       }
@@ -603,7 +608,7 @@ int main(int argc,char **argv)
     return EXIT_FAILURE;
   free(grid);
   arglist=catstrvec(argv,argc);
-  cdf=create_cdf(outname,source,history,miss,imiss,arglist,global_attrs,n_global,&header,compress,index);
+  cdf=create_cdf(outname,source,history,miss,imiss,arglist,global_attrs,n_global,&header,compress,isnetcdf4,index);
   free(arglist);
   if(cdf==NULL)
     return EXIT_FAILURE;
