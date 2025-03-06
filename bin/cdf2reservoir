@@ -69,4 +69,5 @@ rm -f $year
 rm -f $area
 rm -f $capacity
 rm -f $inst_cap
+rm -f $height
 rm -f $purpose
