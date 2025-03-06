@@ -26,7 +26,7 @@ of `major.minor.patch` with
 ### Changed
 
 - `input_netcdf.cjson` changed to the default dataset of `input.cjson` but in NetCDF format.
-- Code change to compile under Windows OS.
+- Code changed to compile under Windows OS.
 - New function `getsprintf()` added to allocate and print formatted output into string. Function replaces call to `snprintf()` function.
 - Default settings for `GIT_HASH` and `GIT_REPO` added.
 
@@ -34,7 +34,7 @@ of `major.minor.patch` with
 
 - Option `-int` added to utility `cdf2clm`.
 - Option `-latlon` added to utility `cdf2coord` in order to change the order of the CLM grid file.
-- Utility `cdf2reservoir` added to convert NetCDF reservoir file to CLM file.
+- Utility `cdf2reservoir` added to convert NetCDF reservoir file into CLM file.
 - Utility `reservoir2cdf` added to convert CLM reservoir file into a NetCDF file using the soil code NetCDF file.
 - Macro `NETCDF_INPUT` added in `lpjml_config.cjson` to enable NetCDF input.
 - Reservoir, irrigation neighbor and drainage data can now be in NetCDF format:
@@ -53,6 +53,7 @@ of `major.minor.patch` with
 ### Fixed
 
 - River length is now correctly read in `initdrain.c` for data in NetCDF format.
+- Man page of `cvrtclm` corrected.
 
 
 ## [5.9.18] - 2025-01-31
@@ -60,7 +61,7 @@ of `major.minor.patch` with
 ### Contributors
 
 - author: Christoph Müller (cmueller@pik-potsdam.de)
-- code review: Sebastion Ostberg (ostberg@pik-potsdam.de), Marie Hemmen (hemmen@pik-potsdam.de)
+- code review: Sebastian Ostberg (ostberg@pik-potsdam.de), Marie Hemmen (hemmen@pik-potsdam.de)
 
 ### Fixed
 
@@ -86,7 +87,7 @@ of `major.minor.patch` with
 
 ### Fixed
 
-- `ALLOM3` parameter corrrected to 4.0 for oil palm in `pft.cjson` (issue #369).
+- `ALLOM3` parameter corrected to 4.0 for oil palm in `pft.cjson` (issue #369).
 - Missing `break` added in `convert_water.c`.
 
 

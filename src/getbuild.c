@@ -2,7 +2,7 @@
 /**                                                                                \n**/
 /**                     g  e  t  b  u  i  l  d  .  c                               \n**/
 /**                                                                                \n**/
-/**     Get build number, build date and SVN revision number                       \n**/
+/**     Get build date, git hash and repository                                    \n**/
 /**                                                                                \n**/
 /** (C) Potsdam Institute for Climate Impact Research (PIK), see COPYRIGHT file    \n**/
 /** authors, and contributors see AUTHORS file                                     \n**/
