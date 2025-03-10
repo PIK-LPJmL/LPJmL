@@ -214,8 +214,6 @@ void fprintfiles(FILE *file,          /**< pointer to text output file */
       addfilename(&table,&config->height_reservoir_filename,FALSE);
       addfilename(&table,&config->purpose_reservoir_filename,FALSE);
     }
-    else
-      addfilename(&table,&config->reservoir_filename,FALSE);
   }
 #ifdef IMAGE
   if(config->aquifer_irrig)
