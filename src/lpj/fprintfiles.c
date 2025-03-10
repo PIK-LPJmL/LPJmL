@@ -47,7 +47,6 @@ static void addfilename(Table *table,             /**< pointer to table */
                        )
 {
   char *s;
-  size_t len;
   int first,last,year;
   if(filename->fmt==FMS || filename->fmt==SOCK)
     return;
@@ -62,11 +61,11 @@ static void addfilename(Table *table,             /**< pointer to table */
       else
       {
         table->names=(char **)realloc(table->names,(table->size+last-first+1)*sizeof(char *));
+        check(table->names);
         for(year=first;year<=last;year++)
         {
-          len=snprintf(NULL,0,s,year);
-          table->names[table->size+year-first]=malloc(len+1);
-          sprintf(table->names[table->size+year-first],s,year);
+          table->names[table->size+year-first]=getsprintf(table->names[table->size+year-first],s,year);
+          check(table->names[table->size+year-first]);
         }
         free(s);
         table->size+=last-first+1;
@@ -75,20 +74,26 @@ static void addfilename(Table *table,             /**< pointer to table */
     else
     {
       table->names=(char **)realloc(table->names,(table->size+1)*sizeof(char *));
+      check(table->names);
       table->names[table->size]=strdup(filename->name);
+      check(table->names[table->size]);
       table->size++;
     }
   }
   else if(filename->fmt==META)
   {
     table->names=(char **)realloc(table->names,(table->size+1)*sizeof(char *));
+    check(table->names);
     table->names[table->size]=strdup(filename->name);
+    check(table->names[table->size]);
     table->size++;
     s=getfilefrommeta(filename->name,TRUE);
     if(s!=NULL)
     {
       table->names=(char **)realloc(table->names,(table->size+1)*sizeof(char *));
+      check(table->names);
       table->names[table->size]=strdup(s);
+      check(table->names[table->size]);
       table->size++;
       free(s);
     }
@@ -96,7 +101,9 @@ static void addfilename(Table *table,             /**< pointer to table */
   else
   {
     table->names=(char **)realloc(table->names,(table->size+1)*sizeof(char *));
+    check(table->names);
     table->names[table->size]=strdup(filename->name);
+    table->names[table->size]=strdup(s);
     table->size++;
   }
 } /* of 'addfilename' */
