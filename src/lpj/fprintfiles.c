@@ -205,10 +205,11 @@ void fprintfiles(FILE *file,          /**< pointer to text output file */
   if(config->reservoir)
   {
     addfilename(&table,&config->elevation_filename,FALSE);
+    addfilename(&table,&config->reservoir_filename,FALSE);
     if(config->reservoir_filename.fmt==CDF)
     {
-      addfilename(&table,&config->reservoir_filename,FALSE);
       addfilename(&table,&config->capacity_reservoir_filename,FALSE);
+      addfilename(&table,&config->inst_cap_reservoir_filename,FALSE);
       addfilename(&table,&config->area_reservoir_filename,FALSE);
       addfilename(&table,&config->height_reservoir_filename,FALSE);
       addfilename(&table,&config->purpose_reservoir_filename,FALSE);
