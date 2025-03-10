@@ -26,7 +26,7 @@ Bool openclimate(Climatefile *file,        /**< pointer to climate file */
 {
   Header header;
   String headername;
-  int last,version,nbands;
+  int last,version,nbands,rc;
   char *s;
   size_t offset,filesize;
   file->fmt=filename->fmt;
@@ -85,12 +85,15 @@ Bool openclimate(Climatefile *file,        /**< pointer to climate file */
       {
         s=getsprintf(file->filename,file->firstyear);
         check(s);
-        openclimate_netcdf(file,s,filename->time,filename->var,filename->unit,units,config);
+        rc=openclimate_netcdf(file,s,filename->time,filename->var,filename->unit,units,config);
         free(s);
       }
 #ifdef USE_MPI
+      MPI_Bcast(&rc,1,MPI_INT,0,config->comm);
       MPI_Bcast(&file->time_step,1,MPI_INT,0,config->comm);
 #endif
+      if(rc)
+        return TRUE;
       closeclimate_netcdf(file,isroot(*config));
       if(file->time_step==MISSING_TIME)
       {

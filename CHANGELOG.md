@@ -54,6 +54,7 @@ of `major.minor.patch` with
 
 - River length is now correctly read in `initdrain.c` for data in NetCDF format.
 - Man page of `cvrtclm` corrected.
+- Missing check for open NetCDF file added to `openclimate.c`.
 
 
 ## [5.9.18] - 2025-01-31
