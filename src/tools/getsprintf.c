@@ -34,6 +34,11 @@ char *getsprintf(const char *fmt, /**< format string */
   len = vsnprintf(NULL,0,fmt, ap);
 #endif
   va_end(ap);
+  if(len<0)
+  {
+    fprintf(stderr,"ERROR247: Invalid format in '%s'.\n",fmt);
+    return NULL;
+  }
   s=malloc(len+1);
   if(s==NULL)
     return NULL;

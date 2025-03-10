@@ -312,7 +312,11 @@ void openoutput_yearly(Outputfile *output,int year,const Config *config)
       if(isroot(*config))
       {
         filename=getsprintf(config->outputvars[i].filename.name,year);
-        check(filename);
+        if(filename==NULL)
+        {
+          output->files[config->outputvars[i].id].isopen=FALSE;
+          continue;
+        }
         if(config->outputvars[i].filename.meta)
           fprintoutputjson(i,year,config);
         switch(config->outputvars[i].filename.fmt)
