@@ -22,6 +22,7 @@ of `major.minor.patch` with
 ### Contributors
 
 - author: Werner von Bloh (bloh@pik-potsdam.de), Hester Biemans (hester.biemans@wur.nl)
+- code review: Susanne Rolinski (rolinski@pik-potsdam.de), Marie Hemmen (hemmen@pik-potsdam.de)
 
 ### Changed
 
@@ -29,6 +30,7 @@ of `major.minor.patch` with
 - Code changed to compile under Windows OS.
 - New function `getsprintf()` added to allocate and print formatted output into string. Function replaces call to `snprintf()` function.
 - Default settings for `GIT_HASH` and `GIT_REPO` added.
+- Duplicate filenames removed from list of inpute/output filenames in utility `lpjfiles`.
 
 ### Added
 
