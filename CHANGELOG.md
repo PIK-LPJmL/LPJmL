@@ -17,12 +17,12 @@ of `major.minor.patch` with
   - Fixed
   - Security
 
-## [Unreleased]
+## [5.9.19] - 2025-02-12
 
 ### Contributors
 
 - author: Werner von Bloh (bloh@pik-potsdam.de)
-- code review:
+- code review: Sibyll Schaphoff (sibylls@pik-potsdam.de), Christoph Müller (cmueller@pik-potsdam.de)
 
 ### Added
 
