@@ -125,7 +125,6 @@ void fprintfiles(FILE *file,          /**< pointer to text output file */
                 )
 {
   Table table={NULL,0};
-  size_t len;
   int i,j;
   if(isreadrestart(config))
     fprintf(file,"%s\n",config->restart_filename);
@@ -256,8 +255,6 @@ void fprintfiles(FILE *file,          /**< pointer to text output file */
           check(table.names);
           for(j=config->outputyear;j<=config->lastyear;j++)
           {
-            len=snprintf(NULL,0,config->outputvars[i].filename.name,j);
-            table.names[table.size]=malloc(len+1);
             table.names[table.size]=getsprintf(config->outputvars[i].filename.name,j);
             check(table.names[table.size]);
             table.size++;
