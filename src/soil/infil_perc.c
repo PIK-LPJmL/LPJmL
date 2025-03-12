@@ -188,7 +188,7 @@ Real infil_perc(Stand *stand,        /**< Stand pointer */
     slug=min(4,infil);
     infil=infil-slug;
     if(data_irrig!=NULL  && ((data_irrig->irrig_system==SPRINK || data_irrig->irrig_system==DRIP) ||
-        (stand->type->landusetype==SETASIDE_WETLAND || (stand->type->landusetype==AGRICULTURE && (stand->soil.iswetland==TRUE || isrice==TRUE)))))
+        (stand->type->landusetype==SETASIDE_WETLAND || (stand->type->landusetype==AGRICULTURE &&  isrice==TRUE))))
       influx=slug;        /*no surface runoff for DRIP and Sprinkler*/
     else
     {
@@ -295,7 +295,7 @@ Real infil_perc(Stand *stand,        /**< Stand pointer */
           if(enth)
             reconcile_layer_energy_with_water_shift(soil,l,-grunoff,vol_water_enth, config); /* subtract enth of runoff until influx, assuming vol_enth of above layer  */
           vol_water_enth=soil->freeze_depth[l]/soildepth[l]*(c_ice*soil->temp[l]) + (1-soil->freeze_depth[l]/soildepth[l])*(c_water*soil->temp[l]+c_water2ice);
-          if (l<(BOTTOMLAYER-1) || l<lwt || l<(icet-1))
+          if (l<(BOTTOMLAYER-1) || l<lwt || l<icet)
           {
             runoff+=grunoff;
             lrunoff[l]+=grunoff;
@@ -535,7 +535,13 @@ Real infil_perc(Stand *stand,        /**< Stand pointer */
 //     runoff=0;
 //   }
 //   else
-   qcharge_tot1=lat_runoff_last+outflux;
+
+  if(outflux>=-runoff_neg)
+  {
+    outflux+=runoff_neg;
+    runoff_neg=0;
+  }
+   qcharge_tot1=outflux;
   //qcharge_tot1=0;
 
   //THIS IS THE IMPLEMENTATION OF THE WATER TABLE DEPTH FOLLOWING CLM4.5
@@ -747,7 +753,6 @@ Real infil_perc(Stand *stand,        /**< Stand pointer */
      }
   }
   runoff_out+=qcharge_tot1;
-  //qcharge_tot1=0;
 #ifdef SAFE
   forrootsoillayer(l)
    if (soil->w[l]< -epsilon || soil->w_fw[l]< -epsilon )
@@ -773,7 +778,7 @@ Real infil_perc(Stand *stand,        /**< Stand pointer */
   //=================  LATERAL FLOW =======================================
   // water table above frost table
 
-  q_perch_max = 0.864 * tan(stand->slope_mean*M_PI/180);                          //1e-5mm/s specify maximum drainage rate for partially frozen soil 0.864 mm/d
+  q_perch_max = 50 * tan(stand->slope_mean*M_PI/180);                          //1e-5mm/s specify maximum drainage rate for partially frozen soil 0.864 mm/d
   frost_depth=layerbound[icet]-soil->freeze_depth[icet];
 
   if(frost_depth<layerbound[BOTTOMLAYER-1])
@@ -815,7 +820,7 @@ Real infil_perc(Stand *stand,        /**< Stand pointer */
       drain_perched=0;
     }
   }
-  else   //if not frozen
+  else if(!isrice)  //if not frozen
   {
     //==========  Topographic runoff at WTABLE ==================================
 
@@ -918,6 +923,8 @@ Real infil_perc(Stand *stand,        /**< Stand pointer */
       }
     }
   }
+  else
+    soil->wtable=-200;
 
 #ifdef SAFE
   forrootsoillayer(l)
@@ -1111,7 +1118,7 @@ Real infil_perc(Stand *stand,        /**< Stand pointer */
   }
 
 
-  qcharge_tot2=(drain_perched_out+rsub_top+runoff_out);
+  qcharge_tot2=(drain_perched_out+rsub_top+runoff_out+lat_runoff_last);
 
   stand->cell->discharge.dmass_gw+=qcharge_tot2*stand->frac*stand->cell->coord.area;
   stand->cell->ground_st_am+=qcharge_tot2*stand->frac*0.05;
@@ -1158,7 +1165,7 @@ Real infil_perc(Stand *stand,        /**< Stand pointer */
 
   if(stand->cell->discharge.dmass_gw<0)
   {
-    rsub_top-=stand->cell->discharge.dmass_gw/stand->cell->coord.area;
+    runoff-=stand->cell->discharge.dmass_gw/stand->cell->coord.area;
     stand->cell->discharge.dmass_gw=stand->cell->ground_st_am=stand->cell->ground_st=0;
   }
   if((stand->type->landusetype!=WETLAND || soil->iswetland!=TRUE) && stand->cell->lateral_water<100 && stand->cell->hydrotopes.skip_cell==FALSE && stand->frac<1-epsilon)

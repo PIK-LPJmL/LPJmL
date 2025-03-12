@@ -118,6 +118,7 @@ Real daily_agriculture(Stand *stand,                /**< [inout] stand pointer *
   {
     index=(stand->type->landusetype==OTHERS) ? data->irrigation*nirrig+rothers(ncft) : pft->par->id-npft+data->irrigation*nirrig;
     crop=pft->data;
+    isrice=FALSE;
     if(pft->par->id==config->rice_pft)
       isrice=TRUE;
     /* kill crop at frost events */
@@ -167,11 +168,6 @@ Real daily_agriculture(Stand *stand,                /**< [inout] stand pointer *
     {
       update_separate_harvests(output,pft,data->irrigation,day,npft,ncft,config);
       harvest_crop(output,stand,pft,npft,ncft,year,config);
-      if(isrice)
-      {
-        stand->cell->balance.ricefrac-=stand->frac;
-        if(stand->cell->balance.ricefrac<epsilon) stand->cell->balance.ricefrac=0;
-      }
       /* return irrig_stor and irrig_amount */
       if(data->irrigation||isrice)
       {

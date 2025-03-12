@@ -109,7 +109,6 @@ void deforest(Cell *cell,          /**< pointer to cell */
       cutstand->frac=min(difffrac,stand->frac-minnatfrac);
       reclaim_land(stand,cutstand,cell,config->luc_timber,npft+ncft,config);
       /*force one tillage event on new stand upon cultivation after deforestation of natural land */
-      tillage(&cutstand->soil, param.residue_frac);
       updatelitterproperties(cutstand,cutstand->frac);
       if(config->soilpar_option==NO_FIXED_SOILPAR || (config->soilpar_option==FIXED_SOILPAR && year<config->soilpar_fixyear))
         pedotransfer(cutstand,NULL,NULL,cutstand->frac);
@@ -176,15 +175,12 @@ void deforest(Cell *cell,          /**< pointer to cell */
       }
       if(!timberharvest)
       {
-        if(setaside(cell,getstand(cell->standlist,pos),cell->ml.with_tillage,intercrop,npft,ncft,irrig,iswetland,year,config))
+        if(setaside(cell,getstand(cell->standlist,pos),FALSE,intercrop,npft,ncft,irrig,iswetland,year,config))
           delstand(cell->standlist,pos);
       }
     }
-    if(iswetland){
+    if(iswetland)
       difffrac_wetland=difffrac_old-difffrac;
-      stand->Hag_Beta = min(1, (0.03*log(stand->slope_mean + 0.1) + 0.22) / 0.43);
-    }
-
   }
   check_stand_fracs(cell,cell->lakefrac+cell->ml.reservoirfrac,ncft);
   cell->hydrotopes.wetland_area-=difffrac_wetland;
@@ -997,8 +993,6 @@ static void grasslandreduction(Cell *cell,            /* cell pointer */
     cutstand->frac=difffrac;
     reclaim_land(grassstand,cutstand,cell,config->luc_timber,npft+ncft,config);
     grassstand->frac-=difffrac;
-    /*force one tillage event on new stand upon cultivation of previous grassland */
-    tillage(&cutstand->soil, param.residue_frac);
     updatelitterproperties(cutstand,cutstand->frac);
     if(config->soilpar_option==NO_FIXED_SOILPAR || (config->soilpar_option==FIXED_SOILPAR && year<config->soilpar_fixyear))
       pedotransfer(cutstand,NULL,NULL,cutstand->frac);
@@ -1450,7 +1444,7 @@ void landusechange(Cell *cell,          /**< pointer to cell */
           tempstand->frac=movefrac;
           reclaim_land(irrigstand,tempstand,cell,FALSE,npft+ncft,config);
           irrigstand->frac-=movefrac;
-          if(setaside(cell,getstand(cell->standlist,pos),cell->ml.with_tillage,intercrop,npft,ncft,TRUE,FALSE,year,config))
+          if(setaside(cell,getstand(cell->standlist,pos),FALSE,intercrop,npft,ncft,TRUE,FALSE,year,config))
             delstand(cell->standlist,pos);
         }
       }
@@ -1472,7 +1466,7 @@ void landusechange(Cell *cell,          /**< pointer to cell */
           tempstand->frac=movefrac;
           reclaim_land(stand,tempstand,cell,FALSE,npft+ncft,config);
           stand->frac-=movefrac;
-          if(setaside(cell,getstand(cell->standlist,pos),cell->ml.with_tillage,intercrop,npft,ncft,TRUE,stand->soil.iswetland,year,config))
+          if(setaside(cell,getstand(cell->standlist,pos),FALSE,intercrop,npft,ncft,TRUE,stand->soil.iswetland,year,config))
              delstand(cell->standlist,pos);
         }
       }

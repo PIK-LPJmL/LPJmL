@@ -96,29 +96,7 @@ void distribute_water(Cell *cell,            /**< pointer to LPJ cell */
     getoutput(&cell->output,WD_AQ,config)+=frac_unsustainable*cell->discharge.gir/cell->coord.area;
   }
 #endif
-  if(cell->discharge.withdrawal_gw>epsilon) // lower water table due to irrigation
-  {
-    foreachstand(stand,s,cell->standlist)
-    {
-      lwt=findwtlayer(&stand->soil);
-      wtable_cor=cell->discharge.withdrawal_gw/cell->coord.area*stand->frac * (1.0/(1-cell->lakefrac-cell->ml.reservoirfrac));
-      if(stand->soil.wtable>=layerbound[BOTTOMLAYER-1])
-      {
-        S=stand->soil.wsat[lwt]*(1.-pow((1.+(stand->soil.wtable/stand->soil.psi_sat[lwt])),(-1./stand->soil.b[lwt])));
-        S=max(S,0.02);
-        stand->soil.wtable+=wtable_cor/S;
-      }
-      else
-      {
-          if ( stand->soil.wtable>0)
-            S=stand->soil.wsat[lwt]*(1.-pow((1.+(stand->soil.wtable/stand->soil.psi_sat[lwt])),(-1./stand->soil.b[lwt])));
-          else
-            S=stand->soil.wsat[lwt]*(1.-pow((1.+(1/stand->soil.psi_sat[lwt])),(-1./stand->soil.b[lwt])));
-          S=max(S,0.02);
-            stand->soil.wtable+=wtable_cor/S;
-      }
-    }
-  }
+
   cell->discharge.withdrawal= cell->discharge.withdrawal_gw=0.0;
   foreachstand(stand,s,cell->standlist)
     if(stand->type->landusetype==AGRICULTURE || stand->type->landusetype==GRASSLAND || stand->type->landusetype==OTHERS || stand->type->landusetype==BIOMASS_GRASS || stand->type->landusetype==BIOMASS_TREE || stand->type->landusetype==WOODPLANTATION || stand->type->landusetype==AGRICULTURE_TREE || stand->type->landusetype==AGRICULTURE_GRASS)

@@ -52,7 +52,7 @@ void update_daily(Cell *cell,            /**< cell pointer           */
                  )
 {
   int s,p;
-  Bool isrice;
+  Bool isrice=FALSE;
   Pft *pft;
   Real melt=0,eeq,par,daylength,beta,gw_outflux,S,wtable_cor,gw_out_total;
   Real CH4_em=0;
@@ -218,32 +218,27 @@ void update_daily(Cell *cell,            /**< cell pointer           */
     fpc_total_stand = 0;
     foreachpft(pft, p, &stand->pftlist)
       fpc_total_stand += pft->fpc;
-
+    isrice=FALSE;
+    isrice=ispftinstand(&stand->pftlist,config->rice_pft);
+    cell->balance.ricefrac=0;
     plant_gas_transport(stand,climate.temp,ch4,config);   //fluxes in routine written to output
     ebul = ebullition(&stand->soil, fpc_total_stand);
-
     getoutput(&cell->output,CH4_EBULLITION,config) += ebul*stand->frac;
-    getoutput(&cell->output,CH4_EMISSIONS,config) += ebul*stand->frac;
-    cell->balance.aCH4_em+=ebul*stand->frac;
-    if(stand->type->landusetype==WETLAND)
-      getoutput(&stand->cell->output,CH4_EMISSIONS_WET,config)+=ebul;
 
     gasdiffusion(&stand->soil,climate.temp,ch4,&CH4_em,&runoff,&CH4_sink);
     cell->discharge.drunoff += runoff*stand->frac;
-    getoutput(&cell->output,CH4_EMISSIONS,config)+=CH4_em*stand->frac;
-    cell->balance.aCH4_em+=CH4_em*stand->frac;
+    getoutput(&cell->output,CH4_EMISSIONS,config)+=(CH4_em+ebul)*stand->frac;
+    cell->balance.aCH4_em+=(CH4_em+ebul)*stand->frac;
     if(stand->type->landusetype==WETLAND)
-      getoutput(&stand->cell->output,CH4_EMISSIONS_WET,config)+=CH4_em;
+      getoutput(&stand->cell->output,CH4_EMISSIONS_WET,config)+=(CH4_em+ebul);
     getoutput(&cell->output,CH4_SINK,config)+=CH4_sink*stand->frac;
     cell->balance.aCH4_sink+=CH4_sink*stand->frac;
 
     if(stand->type->landusetype==SETASIDE_RF || stand->type->landusetype==SETASIDE_IR || stand->type->landusetype==AGRICULTURE || stand->type->landusetype==SETASIDE_WETLAND || stand->type->landusetype==GRASSLAND)
     {
-      foreachpft(pft, p, &stand->pftlist)
-      {
-        if(pft->par->id==config->rice_pft  && stand->cell->balance.ricefrac>epsilon)
+        if(isrice)
         {
-          getoutput(&cell->output,CH4_RICE_EM,config)+=(CH4_em+ebul)*stand->frac/cell->balance.ricefrac;
+          getoutput(&cell->output,CH4_RICE_EM,config)+=(CH4_em+ebul)*stand->frac;
           cell->balance.aCH4_rice+=(CH4_em+ebul)*stand->frac;
         }
         else
@@ -252,7 +247,6 @@ void update_daily(Cell *cell,            /**< cell pointer           */
           getoutput(&cell->output,CH4_SETASIDE,config)+=(CH4_em+ebul)*stand->frac;
 
         }
-      }
     }
 
     /* update soil and litter properties to account for all changes since last call of littersom */
@@ -287,21 +281,18 @@ void update_daily(Cell *cell,            /**< cell pointer           */
     cell->balance.aCH4_em+=CH4_em*stand->frac;
     if(stand->type->landusetype==WETLAND)
       getoutput(&stand->cell->output,CH4_EMISSIONS_WET,config)+=CH4_em;
-    if((stand->type->landusetype==SETASIDE_RF || stand->type->landusetype==SETASIDE_IR || stand->type->landusetype==AGRICULTURE || stand->type->landusetype==SETASIDE_WETLAND || stand->type->landusetype==GRASSLAND)&& CH4_em>0)
+    if(stand->type->landusetype==SETASIDE_RF || stand->type->landusetype==SETASIDE_IR || stand->type->landusetype==AGRICULTURE || stand->type->landusetype==SETASIDE_WETLAND || stand->type->landusetype==GRASSLAND)
     {
-      foreachpft(pft, p, &stand->pftlist)
+      if(isrice)
       {
-        if(pft->par->id==config->rice_pft && stand->cell->balance.ricefrac>epsilon)
-        {
-          getoutput(&cell->output,CH4_RICE_EM,config)+=CH4_em*stand->frac/cell->balance.ricefrac;
-          cell->balance.aCH4_rice+=CH4_em*stand->frac;
-        }
-        else
-        {
-          cell->balance.aCH4_setaside+=CH4_em*stand->frac;
-          getoutput(&cell->output,CH4_SETASIDE,config)+=CH4_em*stand->frac;
-
-        }
+        cell->balance.ricefrac+=stand->frac;
+        getoutput(&cell->output,CH4_RICE_EM,config)+=CH4_em*stand->frac;
+        cell->balance.aCH4_rice+=CH4_em*stand->frac;
+      }
+      else
+      {
+        cell->balance.aCH4_setaside+=CH4_em*stand->frac;
+        getoutput(&cell->output,CH4_SETASIDE,config)+=CH4_em*stand->frac;
       }
     }
     cell->balance.aMT_water+= MT_water*stand->frac;
@@ -509,6 +500,7 @@ void update_daily(Cell *cell,            /**< cell pointer           */
     }
 
   } /* of foreachstand */
+  if(cell->balance.ricefrac>0.0001) getoutput(&cell->output,CH4_RICE_EM,config)/=cell->balance.ricefrac;
   if (cell->lateral_water>100)
   {
     cell->discharge.drunoff+=cell->lateral_water-100;
@@ -524,39 +516,15 @@ void update_daily(Cell *cell,            /**< cell pointer           */
   if(cell->discharge.dmass_gw>epsilon &&  cell->hydrotopes.wetland_wtable_current<50000)
   {
     wtable_cor=0;
-    gw_outflux = cell->ground_st*cell->kbf*0.5; //cell->kbf;GWCOEFF as the kbf value seems to be too strong it is set down by 0.8
+    gw_outflux = cell->ground_st*cell->kbf*0.7; //cell->kbf;GWCOEFF as the kbf value seems to be too strong it is set down by 0.8
     gw_out_total=gw_outflux;
     cell->ground_st -= gw_outflux;
-    gw_outflux=cell->ground_st_am*cell->kbf*0.5/100;     //*cell->kbf/100;
+    gw_outflux=cell->ground_st_am*cell->kbf*0.7/100;     //*cell->kbf/100;
     gw_out_total+=gw_outflux;
     cell->ground_st_am -= gw_outflux;
     cell->discharge.dmass_gw-=gw_out_total*cell->coord.area;
-
-    if(gw_out_total>epsilon)
-    {
-      foreachstand(stand,s,cell->standlist)
-      {
-        lwt=findwtlayer(&stand->soil);
-        wtable_cor=gw_out_total*stand->frac * (1.0/(1-cell->lakefrac-cell->ml.reservoirfrac));
-        if(stand->soil.wtable>=layerbound[BOTTOMLAYER-1])
-        {
-          S=stand->soil.wsat[lwt]*(1.-pow((1.+(stand->soil.wtable/stand->soil.psi_sat[lwt])),(-1./stand->soil.b[lwt])));
-          S=max(S,0.02);
-          stand->soil.wtable+=wtable_cor/S;
-        }
-        else
-        {
-            if ( stand->soil.wtable>0)
-              S=stand->soil.wsat[lwt]*(1.-pow((1.+(stand->soil.wtable/stand->soil.psi_sat[lwt])),(-1./stand->soil.b[lwt])));
-            else
-              S=stand->soil.wsat[lwt]*(1.-pow((1.+(1/stand->soil.psi_sat[lwt])),(-1./stand->soil.b[lwt])));
-            S=max(S,0.02);
-              stand->soil.wtable+=wtable_cor/S;
-        }
-      }
-      cell->discharge.drunoff+=gw_out_total;
-      getoutput(&cell->output,GW_OUTFLUX,config) += gw_out_total;
-    }
+    cell->discharge.drunoff+=gw_out_total;
+    getoutput(&cell->output,GW_OUTFLUX,config) += gw_out_total;
   }
 
 /////// replace storage with the new stand specific groundwater storage see above and groundwater discharge are set in infil_perc

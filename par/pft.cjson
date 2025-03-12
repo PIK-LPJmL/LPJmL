@@ -36,13 +36,13 @@
 #define HEIGHT_MAX 100.0  /* maximum height of trees */
 #define REPROD_COST 0.1 /* reproduction cost */
 #define K_EST 0.12 /* maximum overall sapling establishment rate (indiv/m2) */
-#define MORT_MAX 0.01
+#define MORT_MAX 0.02
 #define MORT_MAX_GRASS 0.00
 #define FN_TURNOVER 0.2      /* fraction of N not recovered before turnover */
 #define FN_TURNOVER_EV_BR 0.6   /* fraction of N not recovered before turnover */
 #define FN_TURNOVER_EV 0.7   /* fraction of N not recovered before turnover */
 #define FN_TURNOVER_GR 0.7   /* fraction of N not recovered before turnover */
-#define ALPHAA 0.52            /* alphaa for simulations with nitrogen limitation */
+#define ALPHAA 0.5            /* alphaa for simulations with nitrogen limitation */
 #define RATIO_SAPW 13.5 /* relative C:N ratio of sapwood */
 #define CN_BL_EG_MX 46.2
 #define CN_BL_EG_MN 15.6
@@ -674,7 +674,7 @@
       "beta_root" : 0.966,    /* beta_root */
       "minwscal" : 0.00,      /* minwscal 3*/
       "gmin"  : 1.0,          /* gmin 4*/
-      "respcoeff" : 1.2,      /* respcoeff 5*/
+      "respcoeff" : 0.8,      /* respcoeff 5*/
       "nmax" : 120.0,          /* nmax 7*/
       "resist" : 0.3,         /* resist 8*/
       "longevity" : 0.45,     /* leaf longevity 10*/
@@ -1145,7 +1145,7 @@
       "resist" : 0.01,        /* resist 8*/
       "longevity" : 0.4,      /* leaf longevity 10*/
       "sla" : 0.040373,        /* specific leaf area */
-      "lmro_ratio" : 0.4,     /* lmro_ratio 18*/
+      "lmro_ratio" : 0.6,     /* lmro_ratio 18*/
       "lmro_offset" : 0.5,     /* lmro_ratio 18*/
       "ramp" : 100.0,          /* ramp 19*/
       "lai_sapl" : 0.001,     /* lai_sapl 21*/
@@ -1242,7 +1242,7 @@
       "resist" : 0.01,        /* resist 8*/
       "longevity" : 0.35,     /* leaf longevity 10*/
       "sla" : 0.042242,        /* specific leaf area */
-      "lmro_ratio" : 0.4,     /* lmro_ratio 18*/
+      "lmro_ratio" : 0.8,     /* lmro_ratio 18*/
       "lmro_offset" : 0.5,     /* lmro_ratio 18*/
       "ramp" : 100.0,          /* ramp 19*/
       "lai_sapl" : 0.001,     /* lai_sapl 21*/
@@ -1339,7 +1339,7 @@
       "resist" : 0.01,        /* resist 8*/
       "longevity" : 0.35,     /* leaf longevity 10*/
       "sla" : 0.045242,        /* specific leaf area */
-      "lmro_ratio" : 0.4,     /* lmro_ratio 18*/
+      "lmro_ratio" : 0.6,     /* lmro_ratio 18*/
       "lmro_offset" : 0.5,     /* lmro_ratio 18*/
       "ramp" : 100.0,          /* ramp 19*/
       "lai_sapl" : 0.001,     /* lai_sapl 21*/
@@ -1436,7 +1436,7 @@
       "resist" : 0.01,        /* resist 8*/
       "longevity" : 0.2,     /* leaf longevity 10*/
       "sla" : 0.042242,        /* specific leaf area */
-      "lmro_ratio" : 0.4,     /* lmro_ratio 18*/
+      "lmro_ratio" : 0.6,     /* lmro_ratio 18*/
       "lmro_offset" : 0.5,     /* lmro_ratio 18*/
       "ramp" : 75.0,          /* ramp 19*/
       "lai_sapl" : 0.001,     /* lai_sapl 21*/
@@ -2771,7 +2771,7 @@
       "beta_root" : 0.969,    /* beta_root */
       "minwscal" : 0.30,      /* minwscal 3*/
       "gmin"  : 0.5,          /* gmin 4*/
-      "respcoeff" : 1.0,      /* respcoeff 5*/
+      "respcoeff" : 0.6,      /* respcoeff 5*/
       "nmax" : 100.0,          /* nmax 7*/
       "resist" : 0.5,         /* resist 8*/
       "longevity" : 0.33,     /* leaf longevity 10*/
@@ -2886,7 +2886,7 @@
       "beta_root" : 0.969,    /* beta_root */
       "minwscal" : 0.30,      /* minwscal 3*/
       "gmin"  : 0.5,          /* gmin 4*/
-      "respcoeff" : 1.0,      /* respcoeff 5*/
+      "respcoeff" : 0.6,      /* respcoeff 5*/
       "nmax" : 100.0,          /* nmax 7*/
       "resist" : 0.5,         /* resist 8*/
       "longevity" : 0.33,     /* leaf longevity 10*/

@@ -471,10 +471,10 @@ Bool setaside(Cell *cell,          /**< Pointer to LPJ cell */
 #endif
   if(cropstand<0)
     fail(NEGATIVE_STAND_FRAC_ERR,TRUE,TRUE,"setaside: Negative crop stand frac =%g in cell (%s) before update",cropstand->frac,sprintcoord(line,&cell->coord));
-
   /* call tillage before */
   if(with_tillage)
     tillage(&cropstand->soil,param.residue_frac);
+
 #ifdef SAFE
   if (!isempty(&cropstand->pftlist))
     fail(LIST_NOT_EMPTY_ERR,TRUE, TRUE, "Pftlist is not empty in setaside().");

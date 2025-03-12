@@ -542,7 +542,7 @@ void update_wetland(Cell *cell,          /**< pointer to cell */
           if(cell->slope<slope)
             slope=cell->slope;
           wetstand->slope_mean = slope;
-          wetstand->Hag_Beta = min(1, (0.03*log(slope + 0.1) + 0.22) / 0.43);
+          wetstand->Hag_Beta = min(1, (0.09*log(slope + 0.1) + 0.22) / 0.43);
 
           s=findlandusetype(cell->standlist,NATURAL);            /*COULD BE AGRICULTURE AS WELL BUT NOT YET*/
           if(s == NOT_FOUND)
@@ -587,7 +587,7 @@ void update_wetland(Cell *cell,          /**< pointer to cell */
             if(wetstand!=NULL)
             {
               stand->slope_mean=wetstand->slope_mean;
-              stand->Hag_Beta=min(1,(0.03*log(stand->slope_mean+0.1)+0.22)/0.43);
+              stand->Hag_Beta=min(1,(0.09*log(stand->slope_mean+0.1)+0.22)/0.43);
             }
           }
         }
