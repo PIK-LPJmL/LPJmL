@@ -78,6 +78,9 @@ void freeconfig(Config *config /**< LPJmL configuration */
   if (config->wateruse_wd_filename.name != NULL)
     freefilename(&config->wateruse_wd_filename);
 #endif
+#if !defined IMAGE || !defined COUPLED
+  free(config->coupled_host);
+#endif
   freefilename(&config->temp_filename);
   freefilename(&config->prec_filename);
   if(config->with_radiation)

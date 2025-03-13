@@ -20,6 +20,18 @@ of `major.minor.patch` with
 ## [Unreleased]
 
 
+## [5.9.21] - 2025-03-13
+
+### Contributors
+
+- author: Werner von Bloh (bloh@pik-potsdam.de)
+- code review: Jannes Breier (breier@pik-potsdam.de), Sebastian Ostberg (ostberg@pik-potsdam.de)
+
+### Added
+
+- `"coupled_host"` and `"coupled_port"` added to LPJmL configuration to specify where the coupled model is running and which port is used for communication.
+
+
 ## [5.9.20] - 2025-03-13
 
 ### Contributors
@@ -80,6 +92,7 @@ of `major.minor.patch` with
 - Support for AIX OS removed.
 - Alias for `lpjml` and obsolete `lpjml.sh` removed in `lpj_paths.sh`.
 >>>>>>> cb07ea7be163fa8e750c515b5df2a7c9eab92023
+>>>>>>> 0ba0d9321e1ad817fc1306e1f2c3b51523b74fe1
 
 
 ## [5.9.18] - 2025-01-31

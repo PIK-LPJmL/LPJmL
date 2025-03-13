@@ -206,7 +206,7 @@ static void printoutname(FILE *file,const Filename *filename,Bool isoneyear,
   {
     if(filename->fmt!=SOCK)
       fputs(", ",file);
-    fprintf(file,"%d -> %s:%d",filename->id,config->coupled_host,config->coupler_port);
+    fprintf(file,"%d -> %s:%d",filename->id,config->coupled_host,config->coupled_port);
   }
 } /* of printoutname' */
 
@@ -225,7 +225,7 @@ static void printinputfile(FILE *file,const char *descr,const Filename *filename
       fputs(", ",file);
   }
   if(iscoupled(*config) && filename->issocket)
-    fprintf(file,"%d <- %s:%d",filename->id,config->coupled_host,config->coupler_port);
+    fprintf(file,"%d <- %s:%d",filename->id,config->coupled_host,config->coupled_port);
   fputc('\n',file);
 } /* of 'printinputfile' */
 
@@ -679,7 +679,7 @@ void fprintconfig(FILE *file,          /**< File pointer to text output file */
   if(iscoupled(*config))
   {
     fprintf(file,"Coupled to %s model running on host %s using port %d.\n",
-            config->coupled_model,config->coupled_host,config->coupler_port);
+            config->coupled_model,config->coupled_host,config->coupled_port);
     if(config->wait)
       fprintf(file,"Time to wait for connection: %5d sec\n",config->wait);
     fprintf(file,"Number of inputs from %s: %5d\n"
