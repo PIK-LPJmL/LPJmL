@@ -19,12 +19,49 @@ of `major.minor.patch` with
 
 ## [Unreleased]
 
+
+## [5.9.20] - 2025-03-13
+
+### Contributors
+
+- author: Werner von Bloh (bloh@pik-potsdam.de)
+- code review: Sebastian Ostberg (ostberg@pik-potsdam.de), Jens Heinke (heinke@pik-potsdam.de)
+
+### Added
+
+- Check for correct number of time steps added in `openclimate_netcdf.c`.
+- Option `timestep` added to `setclm`.
+
+### Changed
+
+- Function `freegrid()` is calling `freecell()` to avoid redundant code.
+- References in man pages updated.
+- `-v` option of `cdf2clm` prints leap days setting for daily time step.
+- Missing file `CHANGELOG.md` added to tar and zip file.
+- Longitude and latitude boundaries excluded as variables in `cdf2grid`.
+- Ids for sowing date and crop PHU input added to `couplerpar.h`.
+- Length of GIT repository output limited in `copyright.c`.
+
+### Fixed
+
+- Memory leaks in utility `lpjprint` closed.
+- Handling of NaN as missing value corrected in reading NetCDF files.
+- Doubled initialization of standtype array corrected in `lpj_clinber4.c`.
+- Option `type` corrected in `setclm`.
+- Handling of different endianness corrected in `setclm`.
+- If version is changed with `setclm` only version is updated in the clm file.
+- Check that CO2 data is coming completely from socket corrected in `readco2.c`.
+- Number of years are now calculated correctly from number of days in case of leap days if number of leap days reaches 365.
+- Check for identical filenames corrected in `cutclm.c`.
+- Missing `else` added in `readclimate()`.
+
+
 ## [5.9.19] - 2025-03-12
 
 ### Contributors
 
 - author: Werner von Bloh (bloh@pik-potsdam.de)
-- code review: Fbian Stenzel (stenzel@pik-potsdam.de), Jens Heinke (heinke@pik-potsdam.de)
+- code review: Fabian Stenzel (stenzel@pik-potsdam.de), Jens Heinke (heinke@pik-potsdam.de)
 
 ### Added
 
@@ -42,6 +79,7 @@ of `major.minor.patch` with
 - Support for LoadLeveler batch queueing system removed.
 - Support for AIX OS removed.
 - Alias for `lpjml` and obsolete `lpjml.sh` removed in `lpj_paths.sh`.
+>>>>>>> cb07ea7be163fa8e750c515b5df2a7c9eab92023
 
 
 ## [5.9.18] - 2025-01-31
@@ -75,7 +113,7 @@ of `major.minor.patch` with
 
 ### Fixed
 
-- `ALLOM3` parameter corrrected to 4.0 for oil palm in `pft.cjson` (issue #369).
+- `ALLOM3` parameter corrected to 4.0 for oil palm in `pft.cjson` (issue #369).
 - Missing `break` added in `convert_water.c`.
 
 

@@ -19,7 +19,8 @@
 void copyright(const char *progname /**< program name */
               )
 {
-  String os,title,hash;
+  String os,title,hash,s;
+  const char *repo;
   const char *t[18];
   /* large letters created by figlet */
   t[0]=" _     ____     _           _       ____         ___  ";
@@ -53,7 +54,14 @@ void copyright(const char *progname /**< program name */
   t[12]="This version of LPJmL is licensed under GNU AGPL Version 3 or later";
   t[13]="See LICENSE file or go to http://www.gnu.org/licenses/";
   t[14]="or invoke lpjml -l to print license";
-  t[15]=getrepo();
+  repo=getrepo();
+  if(strlen(repo)>78-10)
+  {
+    sprintf(s,"...%s",repo+strlen(repo)-78+10+3);
+    t[15]=s;
+  }
+  else
+    t[15]=repo;
   t[16]=hash;
   t[17]="";
   banner(t,18,78);

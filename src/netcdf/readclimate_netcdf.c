@@ -178,7 +178,7 @@ Bool readclimate_netcdf(Climatefile *file,   /**< climate data file */
           }
           for(i=0;i<size;i++)
           {
-            if(f[file->nlon*(i*file->nlat+offsets[1])+offsets[2]]==file->missing_value.f)
+            if(ismissingvalue(f[file->nlon*(i*file->nlat+offsets[1])+offsets[2]],file->missing_value.f))
             {
               fprintf(stderr,"ERROR423: Missing value for cell=%d (%s) at %s %d.\n",
                       cell+config->startgrid,sprintcoord(line,&grid[cell].coord),isdaily(*file) ? "day" : "month",i+1);
@@ -249,7 +249,7 @@ Bool readclimate_netcdf(Climatefile *file,   /**< climate data file */
           }
           for(i=0;i<size;i++)
           {
-            if(d[file->nlon*(i*file->nlat+offsets[1])+offsets[2]]==file->missing_value.d)
+            if(ismissingvalue(d[file->nlon*(i*file->nlat+offsets[1])+offsets[2]],file->missing_value.d))
             {
               fprintf(stderr,"ERROR423: Missing value for cell=%d (%s) at %s %d.\n",
                       cell+config->startgrid,sprintcoord(line,&grid[cell].coord),isdaily(*file) ? "day" : "month",i+1);
@@ -431,7 +431,7 @@ Bool readintclimate_netcdf(Climatefile *file,   /* climate data file */
           }
           for(i=0;i<size;i++)
           {
-            if(f[file->nlon*(i*file->nlat+offsets[1])+offsets[2]]==file->missing_value.i)
+            if(ismissingvalue(f[file->nlon*(i*file->nlat+offsets[1])+offsets[2]],file->missing_value.i))
             {
               fprintf(stderr,"ERROR423: Missing value for cell=%d (%s) at %s %d.\n",
                       cell+config->startgrid,sprintcoord(line,&grid[cell].coord),isdaily(*file) ? "day" : "month",i+1);
@@ -602,7 +602,7 @@ int checkvalidclimate_netcdf(Climatefile *file,   /* climate data file */
           }
           for(i=0;i<size;i++)
           {
-            if(f[file->nlon*(i*file->nlat+offsets[1])+offsets[2]]==file->missing_value.f)
+            if(ismissingvalue(f[file->nlon*(i*file->nlat+offsets[1])+offsets[2]],file->missing_value.f))
             {
               count++;
               grid[cell].skip=TRUE;
@@ -657,7 +657,7 @@ int checkvalidclimate_netcdf(Climatefile *file,   /* climate data file */
           }
           for(i=0;i<size;i++)
           {
-            if(d[file->nlon*(i*file->nlat+offsets[1])+offsets[2]]==file->missing_value.d)
+            if(ismissingvalue(d[file->nlon*(i*file->nlat+offsets[1])+offsets[2]],file->missing_value.d))
             {
               count++;
               grid[cell].skip=TRUE;

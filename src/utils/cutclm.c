@@ -60,7 +60,7 @@ int main(int argc,char **argv)
     fprintf(stderr,"Invalid number '%s' for year.\n",argv[index]);
     return EXIT_FAILURE;
   }
-  if(!strcmp(argv[index],argv[index+1]))
+  if(!strcmp(argv[index+1],argv[index+2]))
   {
     fputs("Error: source and destination filename are the same.\n",stderr);
     return EXIT_FAILURE;
