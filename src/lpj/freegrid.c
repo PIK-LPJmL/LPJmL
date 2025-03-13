@@ -25,55 +25,7 @@ void freegrid(Cell grid[],         /**< cell grid */
   /* iterate over all cells */
   for(cell=0;cell<config->ngridcell;cell++)
   {
-    if(config->river_routing)
-    {
-      freequeue(grid[cell].discharge.queue);
-      free(grid[cell].discharge.tfunct);
-    }
-    freelandfrac(grid[cell].ml.fertilizer_nr);
-    freelandfrac(grid[cell].ml.manure_nr);
-    freelandfrac(grid[cell].ml.residue_on_field);
-    if(grid[cell].ml.irrig_system!=NULL)
-    {
-      free(grid[cell].ml.irrig_system->crop);
-      free(grid[cell].ml.irrig_system->ag_tree);
-      free(grid[cell].ml.irrig_system);
-    }
-    if(config->reservoir)
-    {
-      if(grid[cell].ml.resdata!=NULL)
-      {
-        free(grid[cell].ml.resdata->fraction);
-        free(grid[cell].ml.resdata);
-      }
-      free(grid[cell].ml.fraction);
-    }
-    freelandfrac(grid[cell].ml.landfrac);
-    freeoutput(&grid[cell].output);
-    if(!grid[cell].skip)
-    {
-      if(config->withlanduse!=NO_LANDUSE)
-        freemanage(&grid[cell].ml.manage,npft);
-      /* free all stands */
-      while(!isempty(grid[cell].standlist))
-        delstand(grid[cell].standlist,0);
-
-      freelist(grid[cell].standlist);
-      freeclimbuf(&grid[cell].climbuf);
-      freecropdates(grid[cell].ml.cropdates);
-      free(grid[cell].gdd);
-      free(grid[cell].ml.sowing_month);
-      free(grid[cell].ml.gs);
-      if(config->sdate_option>NO_FIXED_SDATE)
-        free(grid[cell].ml.sdate_fixed);
-      if(config->crop_phu_option>=PRESCRIBED_CROP_PHU)
-        free(grid[cell].ml.crop_phu_fixed);
-
-#if defined IMAGE && defined COUPLED
-      free(grid[cell].ml.image_data);
-      free(grid[cell].pft_harvest);
-#endif
-    }
+    freecell(grid+cell,npft,config);
   } /* of 'for(cell=...)' */
   free(grid);
 } /* of 'freegrid' */

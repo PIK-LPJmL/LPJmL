@@ -148,7 +148,7 @@ static Bool readmydata(Climatefile *file,    /* climate data file */
         }
         if(file->datatype==LPJ_FLOAT)
         {
-          if(f[file->nlon*address[0]+address[1]]==file->missing_value.f)
+          if(ismissingvalue(f[file->nlon*address[0]+address[1]],file->missing_value.f))
           {
             fprintf(stderr,"ERROR423: Missing value for cell=%d (",cell);
             fprintcoord(stderr,coords+cell);
