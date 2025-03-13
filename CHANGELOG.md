@@ -19,10 +19,11 @@ of `major.minor.patch` with
 
 ## [Unreleased]
 
+
 ### Contributors
 
 - author: Werner von Bloh (bloh@pik-potsdam.de)
-- code review: Sebastion Ostberg (ostberg@pik-potsdam.de)
+- code review: Sebastion Ostberg (ostberg@pik-potsdam.de), Jens Heinke (heinke@pik-potsdam.de)
 
 ### Added
 
@@ -53,12 +54,38 @@ of `major.minor.patch` with
 - Missing `else` added in `readclimate()`.
 
 
+## [5.9.19] - 2025-03-12
+
+### Contributors
+
+- author: Werner von Bloh (bloh@pik-potsdam.de)
+- code review: Fbian Stenzel (stenzel@pik-potsdam.de), Jens Heinke (heinke@pik-potsdam.de)
+
+### Added
+
+- Option `-partition` added to `lpjsubmit` script.
+
+### Changed
+
+- Man page of lpjsubmit refers only to slurm commands.
+- If `icc` compiler is found, this compiler is used.
+- `enablefpc.c` updated to compile under Mac OS.
+
+### Removed
+
+- Support for old PIK cluster removed.
+- Support for LoadLeveler batch queueing system removed.
+- Support for AIX OS removed.
+- Alias for `lpjml` and obsolete `lpjml.sh` removed in `lpj_paths.sh`.
+>>>>>>> cb07ea7be163fa8e750c515b5df2a7c9eab92023
+
+
 ## [5.9.18] - 2025-01-31
 
 ### Contributors
 
 - author: Christoph Müller (cmueller@pik-potsdam.de)
-- code review: Sebastion Ostberg (ostberg@pik-potsdam.de), Marie Hemmen (hemmen@pik-potsdam.de)
+- code review: Sebastian Ostberg (ostberg@pik-potsdam.de), Marie Hemmen (hemmen@pik-potsdam.de)
 
 ### Fixed
 

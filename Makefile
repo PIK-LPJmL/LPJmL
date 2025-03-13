@@ -43,9 +43,8 @@ DATA    = par/*.cjson
 JSON	= lpjml_config.cjson input.cjson input_netcdf.cjson
 
 SCRIPTS	= configure.bat configure.sh\
-          bin/output_bsq bin/lpjsubmit_aix bin/lpjsubmit_intel\
-          bin/lpjsubmit_mpich bin/lpjrun bin/backtrace\
-          bin/regridlpj bin/lpjsubmit_slurm
+          bin/output_bsq bin/lpjrun bin/backtrace\
+          bin/regridlpj bin/lpjsubmit_hpc
 
 FILES	= Makefile config/* README AUTHORS INSTALL VERSION LICENSE STYLESHEET.md CHANGELOG.md\
           $(JSON) $(DATA) $(HDRS) $(SCRIPTS)
