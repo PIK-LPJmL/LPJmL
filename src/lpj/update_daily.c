@@ -16,6 +16,20 @@
 
 #include "lpj.h"
 
+static int findwtlayer(const Soil *soil)
+{
+  int l,lwt;              /**< layer index, index of layer in which the water table is located */
+  if(soil->wtable<0)
+    return 0;
+  lwt=0;
+  foreachsoillayer(l)
+    if (soil->wtable >= layerbound[l])
+      lwt = l;
+    else
+      break;
+  return lwt;
+} /* of 'findwtlayer' */
+
 #define length 1.0 /* characteristic length (m) */
 #define GWCOEFF 0.01 /**< groundwater outflow coefficient (average amount of release time in reservoir) */
 #define BIOTURBRATE 0.001897 /* daily rate for 50% annual bioturbation rate [-]*/
@@ -38,9 +52,9 @@ void update_daily(Cell *cell,            /**< cell pointer           */
                  )
 {
   int s,p;
-  Bool isrice;
+  Bool isrice=FALSE;
   Pft *pft;
-  Real melt=0,eeq,par,daylength,beta,gw_outflux;
+  Real melt=0,eeq,par,daylength,beta,gw_outflux,S,wtable_cor,gw_out_total;
   Real CH4_em=0;
   Real CH4_sink=0;
   Real melt_all,runoff,snowrunoff,epsilon_gas,soilmoist,V;
@@ -59,7 +73,7 @@ void update_daily(Cell *cell,            /**< cell pointer           */
   ebul = 0;
   Real bnf;
   Real nh3;
-  int l,i;
+  int l,i,lwt;
   Livefuel livefuel={0,0,0,0,0};
   const Real prec_save=climate.prec;
   Real agrfrac,fpc_total_stand;
@@ -78,7 +92,7 @@ void update_daily(Cell *cell,            /**< cell pointer           */
   Real balanceW=0;
   Real wfluxes_old=cell->balance.awater_flux+cell->balance.atransp+cell->balance.aevap+cell->balance.ainterc+cell->balance.aevap_lake+cell->balance.aevap_res-cell->balance.airrig-cell->balance.aMT_water;
   Real excess_old=cell->balance.excess_water+cell->lateral_water;
-  Real CH4_fluxes=cell->balance.aCH4_em*WC/WCH4;
+  Real CH4_fluxes=(cell->balance.aCH4_em+cell->balance.aCH4_sink)*WC/WCH4;
   Stocks fluxes_in,fluxes_out;
   fluxes_in.carbon=cell->balance.anpp+cell->balance.flux_estab.carbon+cell->balance.influx.carbon; //influxes
   fluxes_out.carbon=cell->balance.arh+cell->balance.fire.carbon+cell->balance.neg_fluxes.carbon+cell->balance.flux_harvest.carbon+cell->balance.biomass_yield.carbon; //outfluxes
@@ -204,32 +218,27 @@ void update_daily(Cell *cell,            /**< cell pointer           */
     fpc_total_stand = 0;
     foreachpft(pft, p, &stand->pftlist)
       fpc_total_stand += pft->fpc;
-
+    isrice=FALSE;
+    isrice=ispftinstand(&stand->pftlist,config->rice_pft);
+    cell->balance.ricefrac=0;
     plant_gas_transport(stand,climate.temp,ch4,config);   //fluxes in routine written to output
     ebul = ebullition(&stand->soil, fpc_total_stand);
-
     getoutput(&cell->output,CH4_EBULLITION,config) += ebul*stand->frac;
-    getoutput(&cell->output,CH4_EMISSIONS,config) += ebul*stand->frac;
-    cell->balance.aCH4_em+=ebul*stand->frac;
-    if(stand->type->landusetype==WETLAND)
-      getoutput(&stand->cell->output,CH4_EMISSIONS_WET,config)+=ebul;
 
     gasdiffusion(&stand->soil,climate.temp,ch4,&CH4_em,&runoff,&CH4_sink);
     cell->discharge.drunoff += runoff*stand->frac;
-    getoutput(&cell->output,CH4_EMISSIONS,config)+=CH4_em*stand->frac;
-    cell->balance.aCH4_em+=CH4_em*stand->frac;
+    getoutput(&cell->output,CH4_EMISSIONS,config)+=(CH4_em+ebul)*stand->frac;
+    cell->balance.aCH4_em+=(CH4_em+ebul)*stand->frac;
     if(stand->type->landusetype==WETLAND)
-      getoutput(&stand->cell->output,CH4_EMISSIONS_WET,config)+=CH4_em;
+      getoutput(&stand->cell->output,CH4_EMISSIONS_WET,config)+=(CH4_em+ebul);
     getoutput(&cell->output,CH4_SINK,config)+=CH4_sink*stand->frac;
     cell->balance.aCH4_sink+=CH4_sink*stand->frac;
 
     if(stand->type->landusetype==SETASIDE_RF || stand->type->landusetype==SETASIDE_IR || stand->type->landusetype==AGRICULTURE || stand->type->landusetype==SETASIDE_WETLAND || stand->type->landusetype==GRASSLAND)
     {
-      foreachpft(pft, p, &stand->pftlist)
-      {
-        if(pft->par->id==config->rice_pft  && stand->cell->balance.ricefrac>epsilon)
+        if(isrice)
         {
-          getoutput(&cell->output,CH4_RICE_EM,config)+=(CH4_em+ebul)*stand->frac/cell->balance.ricefrac;
+          getoutput(&cell->output,CH4_RICE_EM,config)+=(CH4_em+ebul)*stand->frac;
           cell->balance.aCH4_rice+=(CH4_em+ebul)*stand->frac;
         }
         else
@@ -238,7 +247,6 @@ void update_daily(Cell *cell,            /**< cell pointer           */
           getoutput(&cell->output,CH4_SETASIDE,config)+=(CH4_em+ebul)*stand->frac;
 
         }
-      }
     }
 
     /* update soil and litter properties to account for all changes since last call of littersom */
@@ -273,21 +281,18 @@ void update_daily(Cell *cell,            /**< cell pointer           */
     cell->balance.aCH4_em+=CH4_em*stand->frac;
     if(stand->type->landusetype==WETLAND)
       getoutput(&stand->cell->output,CH4_EMISSIONS_WET,config)+=CH4_em;
-    if((stand->type->landusetype==SETASIDE_RF || stand->type->landusetype==SETASIDE_IR || stand->type->landusetype==AGRICULTURE || stand->type->landusetype==SETASIDE_WETLAND || stand->type->landusetype==GRASSLAND)&& CH4_em>0)
+    if(stand->type->landusetype==SETASIDE_RF || stand->type->landusetype==SETASIDE_IR || stand->type->landusetype==AGRICULTURE || stand->type->landusetype==SETASIDE_WETLAND || stand->type->landusetype==GRASSLAND)
     {
-      foreachpft(pft, p, &stand->pftlist)
+      if(isrice)
       {
-        if(pft->par->id==config->rice_pft && stand->cell->balance.ricefrac>epsilon)
-        {
-          getoutput(&cell->output,CH4_RICE_EM,config)+=CH4_em*stand->frac/cell->balance.ricefrac;
-          cell->balance.aCH4_rice+=CH4_em*stand->frac;
-        }
-        else
-        {
-          cell->balance.aCH4_setaside+=CH4_em*stand->frac;
-          getoutput(&cell->output,CH4_SETASIDE,config)+=CH4_em*stand->frac;
-
-        }
+        cell->balance.ricefrac+=stand->frac;
+        getoutput(&cell->output,CH4_RICE_EM,config)+=CH4_em*stand->frac;
+        cell->balance.aCH4_rice+=CH4_em*stand->frac;
+      }
+      else
+      {
+        cell->balance.aCH4_setaside+=CH4_em*stand->frac;
+        getoutput(&cell->output,CH4_SETASIDE,config)+=CH4_em*stand->frac;
       }
     }
     cell->balance.aMT_water+= MT_water*stand->frac;
@@ -459,9 +464,9 @@ void update_daily(Cell *cell,            /**< cell pointer           */
       V = getV(&stand->soil,l);  /*soil air content (m3 air/m3 soil)*/
       soilmoist = getsoilmoist(&stand->soil,l);
       epsilon_gas = max(0.1, V + soilmoist*stand->soil.wsat[l]*BO2);
-      getoutput(&cell->output,MEANSOILO2,config) += stand->soil.O2[l] / soildepth[l] / epsilon_gas * 1000 / LASTLAYER*stand->frac/(1-cell->lakefrac-cell->ml.reservoirfrac);
+      getoutput(&cell->output,MEANSOILO2,config) += stand->soil.O2[l] / soildepth[l] * 1000 / LASTLAYER*stand->frac/(1-cell->lakefrac-cell->ml.reservoirfrac);
       epsilon_gas = max(0.1, V + soilmoist*stand->soil.wsat[l]*BCH4);
-      getoutput(&cell->output,MEANSOILCH4,config) += stand->soil.CH4[l] / soildepth[l] / epsilon_gas * 1000 / LASTLAYER*stand->frac/(1-cell->lakefrac-cell->ml.reservoirfrac);
+      getoutput(&cell->output,MEANSOILCH4,config) += stand->soil.CH4[l] / soildepth[l] * 1000 / LASTLAYER*stand->frac/(1-cell->lakefrac-cell->ml.reservoirfrac);
 #ifdef DEBUG
       if (p_s / R_gas / (climate.temp + 273.15)*ch4*1e-6*WCH4 * 100000<stand->soil.CH4[l] / soildepth[l] / epsilon_gas * 1000)
       {
@@ -495,6 +500,7 @@ void update_daily(Cell *cell,            /**< cell pointer           */
     }
 
   } /* of foreachstand */
+  if(cell->balance.ricefrac>0.0001) getoutput(&cell->output,CH4_RICE_EM,config)/=cell->balance.ricefrac;
   if (cell->lateral_water>100)
   {
     cell->discharge.drunoff+=cell->lateral_water-100;
@@ -507,20 +513,19 @@ void update_daily(Cell *cell,            /**< cell pointer           */
   getoutput(&cell->output,DECAY_LEAF_AGR,config)*=litsum_old_agr[LEAF]>0 ? litsum_new_agr[LEAF]/litsum_old_agr[LEAF] : 1;
   getoutput(&cell->output,DECAY_WOOD_AGR,config)*=litsum_old_agr[WOOD]>0 ? litsum_new_agr[WOOD]/litsum_old_agr[WOOD] : 1;
 
-  if(cell->discharge.dmass_gw>epsilon)
+  if(cell->discharge.dmass_gw>epsilon &&  cell->hydrotopes.wetland_wtable_current<50000)
   {
-    gw_outflux = cell->ground_st*cell->kbf; //cell->kbf;GWCOEFF
+    wtable_cor=0;
+    gw_outflux = cell->ground_st*cell->kbf*0.7; //cell->kbf;GWCOEFF as the kbf value seems to be too strong it is set down by 0.8
+    gw_out_total=gw_outflux;
     cell->ground_st -= gw_outflux;
-    cell->discharge.dmass_gw-=gw_outflux*cell->coord.area;
-    cell->discharge.drunoff+=gw_outflux;
-    getoutput(&cell->output,GW_OUTFLUX,config) += gw_outflux;
-    gw_outflux=cell->ground_st_am*cell->kbf/100;     //*cell->kbf/100;
+    gw_outflux=cell->ground_st_am*cell->kbf*0.7/100;     //*cell->kbf/100;
+    gw_out_total+=gw_outflux;
     cell->ground_st_am -= gw_outflux;
-    cell->discharge.dmass_gw-=gw_outflux*cell->coord.area;
-    cell->discharge.drunoff+=gw_outflux;
-    getoutput(&cell->output,GW_OUTFLUX,config) += gw_outflux;
+    cell->discharge.dmass_gw-=gw_out_total*cell->coord.area;
+    cell->discharge.drunoff+=gw_out_total;
+    getoutput(&cell->output,GW_OUTFLUX,config) += gw_out_total;
   }
-
 
 /////// replace storage with the new stand specific groundwater storage see above and groundwater discharge are set in infil_perc
 
@@ -628,7 +633,7 @@ void update_daily(Cell *cell,            /**< cell pointer           */
                    +cell->balance.flux_harvest.carbon+cell->balance.biomass_yield.carbon)-fluxes_out.carbon; //outfluxes
   fluxes_in.carbon=(cell->balance.anpp+cell->balance.flux_estab.carbon+cell->balance.influx.carbon)-fluxes_in.carbon;
   water_after=(cell->discharge.dmass_lake+cell->discharge.dmass_river)/cell->coord.area+cell->ground_st+cell->ground_st_am;
-  CH4_fluxes-=(cell->balance.aCH4_em)*WC/WCH4;                                 //will be negative, because emissions at the end are higher, thus we have to substract
+  CH4_fluxes-=(cell->balance.aCH4_em+cell->balance.aCH4_sink)*WC/WCH4;                                 //will be negative, because emissions at the end are higher, thus we have to substract
   end=0;
   Real irrigstore_end=0;
   foreachstand(stand,s,cell->standlist)
@@ -662,7 +667,7 @@ void update_daily(Cell *cell,            /**< cell pointer           */
   balanceW=water_after-water_before-climate.prec+
           ((cell->balance.awater_flux+cell->balance.atransp+cell->balance.aevap+cell->balance.ainterc+cell->balance.aevap_lake+cell->balance.aevap_res-cell->balance.airrig-cell->balance.aMT_water)-wfluxes_old)
           +((cell->balance.excess_water+cell->lateral_water)-excess_old);
-  if (fabs(end-start1.carbon-CH4_fluxes+fluxes_out.carbon-fluxes_in.carbon)>0.0001)
+  if (fabs(end-start1.carbon-CH4_fluxes+fluxes_out.carbon-fluxes_in.carbon)>epsilon)
   {
     fail(INVALID_CARBON_BALANCE_ERR,FAIL_ON_BALANCE,FALSE,"Invalid carbon balance in %s: day: %d  %g start: %g  end: %g CH4_fluxes: %g flux_estab.carbon: %g flux_harvest.carbon: %g dcflux: %g fluxes_in.carbon: %g "
         "fluxes_out.carbon: %g neg_fluxes: %g bm_inc: %g rh: %g aCH4_sink: %g aCH4_em : %g \n",
@@ -690,7 +695,7 @@ void update_daily(Cell *cell,            /**< cell pointer           */
 //                     crop_sum_frac(cell->ml.landfrac,12,config->nagtree,cell->ml.reservoirfrac+cell->lakefrac,TRUE),
 //                     cell->ml.landfrac[0].grass[0]+cell->ml.landfrac[0].grass[1],cell->ml.landfrac[1].grass[0]+cell->ml.landfrac[1].grass[1]);
   }
-  if(fabs(balanceW)>0.1)
+  if(fabs(balanceW)>0.001)
   {
     fail(INVALID_WATER_BALANCE_ERR,FAIL_ON_BALANCE,FALSE,"Invalid water balance in %s: day: day %d balanceW: %g  exess_old: %g balance.excess_water: %g gw_outflux: %g water_after: %g water_before: %g prec: %g melt: %g "
         "atransp: %g  aevap %g ainterc %g aevap_lake  %g aevap_res: %g    airrig : %g aMT_water : %g MT_water: %g flux_bal: %g runoff %g awater_flux %g lateral_water %g mfin-mfout: %g dmass_lake: %g  dmassriver : %g"

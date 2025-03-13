@@ -33,17 +33,14 @@ Real temp_response(Real temp, /**< air or soil temperature (deg C) */
                    Real temp_mean
                   )          /** \return respiration temperature response */
 {
-  //return (temp>=-40.0) ? exp(e0*(1.0/56.02-1.0/(temp+46.02))) : 0.0;
-  //return (temp>=-40.0) ? exp(e0*(1.0/66.02-1.0/(temp+56.02))) : 0.0;
-  //return (temp>=-40.0) ? exp(e0*(1.0/param.temp_response_a-1.0/(temp+param.temp_response_b))) : 0.0;
+
   Real gtemp;
-  /*	  return (temp>=-40.0) ? exp(e0*(1.0/56.02-1.0/(temp+46.02))) : 0.0;*/      //OLD IMPLEMENTATION
 #ifdef USE_Q10
   if (temp>30) temp = 30;
   gtemp = (temp >= -30.0) ? pow(Q10, (temp - temp_mean) / 10) : 0.0;
 #else
-  if (temp>35) temp = 35;
-  gtemp= (temp>=-20.0) ? exp(e0*(1.0/(param.temp_response+10)-1.0/(temp+param.temp_response))) : 0.0;
+  if (temp>40) temp = 40;
+  gtemp= (temp>=-15.0) ? exp(e0*(1.0/(param.temp_response+10)-1.0/(temp+param.temp_response))) : 0.0;
 #endif
   return gtemp;
 } /* of 'temp_response' */

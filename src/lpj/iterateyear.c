@@ -255,7 +255,10 @@ void iterateyear(Outputfile *output,  /**< Output file data */
       grid[cell].landcover=(config->prescribe_landcover!=NO_LANDCOVER) ? getlandcover(input.landcover,cell) : NULL;
       update_annual(grid+cell,npft,ncft,year,daily.isdailytemp,intercrop,config);
 #ifdef SAFE
-      if(config->withlanduse) check_fluxes(grid+cell,year,cell,config);
+      if(config->withlanduse)
+         check_fluxes(grid+cell,year,cell,config);
+      else if(year>(config->firstyear-config->nspinup+param.veg_equil_year+param.equisoil_interval*param.nequilsoil+param.equisoil_fadeout+1))
+         check_fluxes(grid+cell,year,cell,config);
 #endif
 
 #ifdef DEBUG

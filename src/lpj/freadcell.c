@@ -47,7 +47,6 @@ Bool freadcell(FILE *file,             /**< File pointer to binary file */
       freadreal1(&cell->discharge.dfout,swap,file);
       freadreal1(&cell->discharge.dmass_river,swap,file);
       freadreal1(&cell->discharge.dmass_sum,swap,file);
-      freadreal1(&cell->lateral_water, swap, file);
       cell->discharge.withdrawal=cell->discharge.withdrawal_gw=0;
 #ifdef COUPLING_WITH_FMS
       freadreal1(&cell->laketemp,swap,file);
@@ -75,7 +74,6 @@ Bool freadcell(FILE *file,             /**< File pointer to binary file */
     }
     else
     {
-      cell->discharge.dmass_gw=(cell->ground_st+cell->ground_st_am)*cell->coord.area;;
       cell->discharge.withdrawal=cell->discharge.withdrawal_gw=0;
 #ifdef COUPLING_WITH_FMS
       cell->laketemp=0;
@@ -87,6 +85,7 @@ Bool freadcell(FILE *file,             /**< File pointer to binary file */
   }
   if(!cell->skip)
   {
+    freadreal1(&cell->lateral_water, swap, file);
     freadreal((Real *)cell->balance.estab_storage_tree,2*sizeof(Stocks)/sizeof(Real),swap,file);
     freadreal((Real *)cell->balance.estab_storage_grass,2*sizeof(Stocks)/sizeof(Real),swap,file);
     if(freadignition(file,&cell->ignition,swap))
@@ -118,6 +117,7 @@ Bool freadcell(FILE *file,             /**< File pointer to binary file */
     freadreal1(&cell->ml.cropfrac_rf,swap,file);
     freadreal1(&cell->ml.cropfrac_wl,swap,file);
     freadreal1(&cell->ml.cropfrac_ir,swap,file);
+    cell->discharge.dmass_gw=(cell->ground_st+cell->ground_st_am)*cell->coord.area;;
     if(freadclimbuf(file,&cell->climbuf,ncft,swap))
     {
       fprintf(stderr,"ERROR254: Cannot read climbuf data.\n");

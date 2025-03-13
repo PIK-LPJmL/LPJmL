@@ -66,7 +66,7 @@ Bool mortality_tree(Litter *litter,   /**< Litter                              *
       else
           heatstress=0;
 
-//inuntationstress
+//inundation stress
       mort+=mort_max*max(0,(1-pow(inun_mort,pft->inun_stress)));
       nind_kill=(mort>1) ? pft->nind : pft->nind*mort;
       litter_update_tree(litter,pft,nind_kill,config);

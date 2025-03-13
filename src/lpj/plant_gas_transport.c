@@ -19,8 +19,8 @@
 
 #define np -0.5              /* parameter given in Riera et al. 1999*/
 #define tiller_weight  0.15  /* [gc] PARAMETER*/
-#define tiller_radius 0.003
-#define tiller_por 0.8
+#define tiller_radius 0.03   //https://link.springer.com/article/10.1007/s10457-020-00590-7/tables/7 (maximum) tiller sqrt(area/pi* 0.0001) (conversion from cm2 to radius in m)
+#define tiller_por 0.7
 #define water_min 0.001
 #define wind_speed 3.28      // average global wind speed in m/s over lands https://web.stanford.edu/group/efmh/winds/global_winds.html
 //#define DEBUG
@@ -55,6 +55,7 @@ void plant_gas_transport(Stand *stand,        /**< pointer to soil data */
   Real CH4_air, ScCH4, k_600, kCH4;
   Real O2_air, ScO2, kO2;
   Real soil_water_vol;                /*in mm*/
+  Real soilmoist,epsilon_gas,V;
   Real tillers, tiller_area, tiller_frac;
   Real CH4, CH4_plant, CH4_plant_all,CH4_rice,CH4_sink;
   Real O2, O2_plant;
@@ -100,6 +101,10 @@ void plant_gas_transport(Stand *stand,        /**< pointer to soil data */
       tillers = leafc(pft)*pft->phen / tiller_weight;
       for (l = 0; l<LASTLAYER; l++)
       {
+        V = getV(&stand->soil,l);  /*soil air content (m3 air/m3 soil)*/
+        soilmoist = getsoilmoist(&stand->soil,l);
+        epsilon_gas=getepsilon_CH4(V,soilmoist,stand->soil.wsat[l]);
+
         tiller_frac = tillers*pft->par->rootdist[l];
         tiller_area = max(0.01,tiller_radius*tiller_radius*M_PI*tiller_frac*tiller_por);
         soil_water_vol=(stand->soil.w[l]*stand->soil.whcs[l]+stand->soil.wpwps[l]*(1-stand->soil.ice_pwp[l])+stand->soil.w_fw[l])/soildepth[l];
@@ -109,26 +114,23 @@ void plant_gas_transport(Stand *stand,        /**< pointer to soil data */
           CH4 = stand->soil.CH4[l] /soil_water_vol /soildepth[l] * 1000;
           Conc_new=CH4+(CH4_air-CH4)*exp(-kCH4/(soil_water_vol*soildepth[l]/1000/tiller_area));
           CH4_plant=(CH4-Conc_new)*soil_water_vol*soildepth[l]/1000;
-          stand->soil.CH4[l]-= CH4_plant;
-          if(stand->soil.CH4[l]<0)
-          {
-            CH4_plant+=stand->soil.CH4[l];
-            stand->soil.CH4[l]=0;
-          }
+          CH4_plant= min(stand->soil.CH4[l],CH4_plant);
+          stand->soil.CH4[l]-=CH4_plant;
           if(CH4_plant<0)
             CH4_sink+=CH4_plant;
           else
            CH4_plant_all+=CH4_plant;
 
-          if((stand->type->landusetype==AGRICULTURE) && (pft->par->id==config->rice_pft && CH4_plant>0))
+          if((stand->type->landusetype==AGRICULTURE && pft->par->id==config->rice_pft && CH4_plant>0) || (stand->type->landusetype==SETASIDE_WETLAND && CH4_plant>0))
             CH4_rice+=CH4_plant;
           /*OXYGEN*/
           Conc_new = 0;
+          epsilon_gas=getepsilon_O2(V,soilmoist,stand->soil.wsat[l]);
           O2=stand->soil.O2[l]/soil_water_vol/soildepth[l]*1000;
           Conc_new=O2+(O2_air-O2)*exp(-kO2/(soil_water_vol*soildepth[l]/1000/tiller_area));
           O2_plant=(O2-Conc_new)*soil_water_vol*soildepth[l]/1000;
+          O2_plant= min(stand->soil.O2[l],O2_plant);
           stand->soil.O2[l]-= O2_plant;
-          if(stand->soil.O2[l]<0) stand->soil.O2[l]=0;
         }
       }
     }
@@ -139,10 +141,10 @@ void plant_gas_transport(Stand *stand,        /**< pointer to soil data */
   stand->cell->balance.aCH4_em+=CH4_plant_all*stand->frac;
 
   if(CH4_rice>0) stand->cell->balance.aCH4_rice+=CH4_rice*stand->frac;
-  if(CH4_rice>0 && stand->cell->balance.ricefrac>epsilon) getoutput(&stand->cell->output,CH4_RICE_EM,config)+=CH4_rice*stand->frac/stand->cell->balance.ricefrac;
+  if(CH4_rice>0) getoutput(&stand->cell->output,CH4_RICE_EM,config)+=CH4_rice*stand->frac;
 
   getoutput(&stand->cell->output,CH4_PLANT_GAS,config)+=CH4_plant_all*stand->frac;
-  if((stand->type->landusetype==SETASIDE_RF || stand->type->landusetype==SETASIDE_IR || stand->type->landusetype==AGRICULTURE  || stand->type->landusetype==SETASIDE_WETLAND || stand->type->landusetype==GRASSLAND) && CH4_rice==0)
+  if((stand->type->landusetype!=NATURAL && stand->type->landusetype!=WETLAND) && CH4_rice==0)
   {
     stand->cell->balance.aCH4_setaside+=CH4_plant_all*stand->frac;
     getoutput(&stand->cell->output,CH4_SETASIDE,config)+=CH4_plant_all*stand->frac;
@@ -152,7 +154,7 @@ void plant_gas_transport(Stand *stand,        /**< pointer to soil data */
 
  #ifdef CHECK_BALANCE
   end = standstocks(stand).carbon + soilmethane(&stand->soil)*WC/WCH4;
-  if (fabs(start - end - CH4_plant_all*WC/WCH4)>epsilon)
+  if (fabs(start - end - CH4_plant_all*WC/WCH4)>0.001)
     fail(INVALID_CARBON_BALANCE_ERR,FAIL_ON_BALANCE,FALSE,"Invalid carbon balance in %s: %g start:%g  end:%g Plant_gas_transp: %g",
          __FUNCTION__, start - end - CH4_plant_all*WC/WCH4, start, end, CH4_plant_all*WC/WCH4);
 #endif

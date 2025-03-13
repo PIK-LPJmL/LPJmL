@@ -579,7 +579,7 @@ void update_wetland(Cell *cell,          /**< pointer to cell */
             if(natstand!=NULL)
             {
               stand->slope_mean=natstand->slope_mean;
-              stand->Hag_Beta=natstand->Hag_Beta;
+              stand->Hag_Beta=min(1,(0.06*log(stand->slope_mean+0.1)+0.22)/0.43);
             }
           }
           else
@@ -587,7 +587,7 @@ void update_wetland(Cell *cell,          /**< pointer to cell */
             if(wetstand!=NULL)
             {
               stand->slope_mean=wetstand->slope_mean;
-              stand->Hag_Beta=wetstand->Hag_Beta;
+              stand->Hag_Beta=min(1,(0.09*log(stand->slope_mean+0.1)+0.22)/0.43);
             }
           }
         }
