@@ -146,11 +146,15 @@ int main(int argc,char **argv)
     nc_inq_nvars(ncid,&nvars);
     for(j=0;j<nvars;j++)
     {
-      nc_inq_varndims(ncid,j,&ndims);
-      if(ndims==2)
+      nc_inq_varname(ncid,j,name);
+      if(strcmp(name,LON_BNDS_NAME) && strcmp(name,LAT_BNDS_NAME))
       {
-        var_id=j;
-        break;
+        nc_inq_varndims(ncid,j,&ndims);
+        if(ndims==2)
+        {
+          var_id=j;
+          break;
+        }
       }
     }
     if(j==nvars)

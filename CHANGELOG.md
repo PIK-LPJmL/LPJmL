@@ -20,6 +20,8 @@ of `major.minor.patch` with
 ## [Unreleased]
 
 
+## [5.9.22] - 2025-03-14
+
 ### Contributors
 
 - author: Werner von Bloh (bloh@pik-potsdam.de), Hester Biemans (hester.biemans@wur.nl)
@@ -60,12 +62,61 @@ of `major.minor.patch` with
 - Missing check for open NetCDF file added to `openclimate.c`.
 
 
+## [5.9.21] - 2025-03-13
+
+### Contributors
+
+- author: Werner von Bloh (bloh@pik-potsdam.de)
+- code review: Jannes Breier (breier@pik-potsdam.de), Sebastian Ostberg (ostberg@pik-potsdam.de)
+
+### Added
+
+- `"coupled_host"` and `"coupled_port"` added to LPJmL configuration to specify where the coupled model is running and which port is used for communication.
+
+
+## [5.9.20] - 2025-03-13
+
+### Contributors
+
+- author: Werner von Bloh (bloh@pik-potsdam.de)
+- code review: Sebastian Ostberg (ostberg@pik-potsdam.de), Jens Heinke (heinke@pik-potsdam.de)
+
+### Added
+
+- Check for correct number of time steps added in `openclimate_netcdf.c`.
+- Option `timestep` added to `setclm`.
+
+### Changed
+
+- Function `freegrid()` is calling `freecell()` to avoid redundant code.
+- References in man pages updated.
+- `-v` option of `cdf2clm` prints leap days setting for daily time step.
+- Missing file `CHANGELOG.md` added to tar and zip file.
+- Longitude and latitude boundaries excluded as variables in `cdf2grid`.
+- Ids for sowing date and crop PHU input added to `couplerpar.h`.
+- Length of GIT repository output limited in `copyright.c`.
+
+### Fixed
+
+- Memory leaks in utility `lpjprint` closed.
+- Handling of NaN as missing value corrected in reading NetCDF files.
+- Doubled initialization of standtype array corrected in `lpj_clinber4.c`.
+- Option `type` corrected in `setclm`.
+- Handling of different endianness corrected in `setclm`.
+- If version is changed with `setclm` only version is updated in the clm file.
+- Check that CO2 data is coming completely from socket corrected in `readco2.c`.
+- Number of years are now calculated correctly from number of days in case of leap days if number of leap days reaches 365.
+- Check for identical filenames corrected in `cutclm.c`.
+- Missing `else` added in `readclimate()`.
+>>>>>>> 26ea21fd2c081d40f262d754843df56b0c880730
+
+
 ## [5.9.19] - 2025-03-12
 
 ### Contributors
 
 - author: Werner von Bloh (bloh@pik-potsdam.de)
-- code review: Fbian Stenzel (stenzel@pik-potsdam.de), Jens Heinke (heinke@pik-potsdam.de)
+- code review: Fabian Stenzel (stenzel@pik-potsdam.de), Jens Heinke (heinke@pik-potsdam.de)
 
 ### Added
 
@@ -83,6 +134,8 @@ of `major.minor.patch` with
 - Support for LoadLeveler batch queueing system removed.
 - Support for AIX OS removed.
 - Alias for `lpjml` and obsolete `lpjml.sh` removed in `lpj_paths.sh`.
+>>>>>>> cb07ea7be163fa8e750c515b5df2a7c9eab92023
+>>>>>>> 0ba0d9321e1ad817fc1306e1f2c3b51523b74fe1
 
 
 ## [5.9.18] - 2025-01-31

@@ -218,5 +218,6 @@ extern Bool mpi_write_pft_netcdf(const Netcdf *,void *,MPI_Datatype,int,
 /* Definition of macros */
 
 #define isdaily(climate) ((climate).time_step==DAY)
+#define ismissingvalue(f,miss) ((isnan(miss) && isnan(f)) || (!isnan(miss) && f==miss))
 
 #endif

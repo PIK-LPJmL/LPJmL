@@ -212,7 +212,7 @@ static Bool readclimate2(Climatefile *file,    /* climate data file */
       switch(file->datatype)
       {
         case LPJ_FLOAT:
-          if(f[file->nlon*(i*file->nlat+offsets[index])+offsets[index+1]]==file->missing_value.f)
+          if(ismissingvalue(f[file->nlon*(i*file->nlat+offsets[index])+offsets[index+1]],file->missing_value.f))
           {
             fprintf(stderr,"ERROR423: Missing value for cell=%d (",cell);
             fprintcoord(stderr,coords+cell);
@@ -247,7 +247,7 @@ static Bool readclimate2(Climatefile *file,    /* climate data file */
           data[cell*size*file->var_len+i]=(float)(file->slope*f[file->nlon*(i*file->nlat+offsets[index])+offsets[index+1]]+file->intercept);
           break;
         case LPJ_DOUBLE:
-          if(d[file->nlon*(i*file->nlat+offsets[index])+offsets[index+1]]==file->missing_value.d)
+          if(ismissingvalue(d[file->nlon*(i*file->nlat+offsets[index])+offsets[index+1]],file->missing_value.d))
           {
             fprintf(stderr,"ERROR423: Missing value for cell=%d (",cell);
             fprintcoord(stderr,coords+cell);
@@ -617,7 +617,10 @@ int main(int argc,char **argv)
       }
       if(verbose)
       {
-        printf(" time step from %d",climate.firstyear);
+        printf(" time step");
+        if(climate.isleap && climate.time_step==DAY)
+          printf(" with leap days");
+        printf(" from %d",climate.firstyear);
         if(climate.slope!=1 || climate.intercept!=0)
           printf(", convert by %g*data%+g\n",climate.slope,climate.intercept);
         else
