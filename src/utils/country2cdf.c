@@ -19,8 +19,7 @@
 
 #define error(rc) if(rc) {free(lon);free(lat);fprintf(stderr,"ERROR427: Cannot write '%s': %s.\n",filename,nc_strerror(rc)); nc_close(cdf->ncid); free(cdf);return NULL;}
 
-#define MISSING_VALUE 999
-#define USAGE "Usage: %s [-global] [-index i] [-cellsize size] [-compress level] [-descr d] [-netcdf4] name\n       gridfile countryfile netcdffile\n"
+#define USAGE "Usage: %s [-global] [-index i] [-cellsize size] [-compress level] [-descr d] [-netcdf4] [-config file]\n       name gridfile countryfile netcdffile\n"
 
 typedef struct
 {
