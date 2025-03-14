@@ -25,5 +25,5 @@ void *newarray(size_t size, /**< size of array element */
   ptr=malloc(size*(hi-lo+1));
   if(ptr==NULL)
     return NULL;
-  return ptr-lo*size;
+  return (char*)ptr-lo*size;
 } /* of 'newarray' */

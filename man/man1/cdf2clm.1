@@ -3,7 +3,7 @@
 cdf2clm \- convert NetCDF files into CLM files
 .SH SYNOPSIS
 .B cdf2clm
-[\-h] [\-v] [\-scale factor] [\-units u] [\-var name] [\-time name] [\-map name] [\-id string] [\-version v] [\-float] [\-zero] [\-json] [\-o \fIclmfile\fP] [\-config \fIfile\fP]
+[\-h] [\-v] [\-scale factor] [\-units u] [\-var name] [\-time name] [\-map name] [\-id string] [\-version v] [\-int] [\-float] [\-zero] [\-json] [\-o \fIclmfile\fP] [\-config \fIfile\fP]
 .I gridfile netcdffile ...
 .SH DESCRIPTION
 Program converts NetCDF input data into CLM input data.
@@ -35,6 +35,9 @@ LPJ header string in clm file.
 .TP
 \-version v
 Version of clm header, default is 3.
+.TP
+\-int
+write int values in clm file, default is short
 .TP
 \-float
 Write float values in clm file, default is short.

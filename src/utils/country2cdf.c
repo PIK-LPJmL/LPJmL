@@ -45,11 +45,12 @@ static Cdf *create_cdf(const char *filename,
   int i,rc,dim[2];
   char *s;
   time_t t;
-  int lat_var_id,lon_var_id,lat_dim_id,lon_dim_id,len;
+  int lat_var_id,lon_var_id,lat_dim_id,lon_dim_id;
   cdf=new(Cdf);
   lon=newvec(double,array->nlon);
   if(lon==NULL)
   {
+    free(cdf);
     printallocerr("lon");
     return NULL;
   }
@@ -85,11 +86,9 @@ static Cdf *create_cdf(const char *filename,
   rc=nc_def_dim(cdf->ncid,netcdf_config->lon.dim,array->nlon,&lon_dim_id);
   error(rc);
   time(&t);
-  len=snprintf(NULL,0,"%s: %s",strdate(&t),arglist);
-  s=malloc(len+1);
-  check(s);
-  sprintf(s,"%s: %s",strdate(&t),arglist);
+  s=getsprintf("%s: %s",strdate(&t),arglist);
   rc=nc_put_att_text(cdf->ncid,NC_GLOBAL,"history",strlen(s),s);
+  free(s);
   error(rc);
   rc=nc_put_att_text(cdf->ncid,NC_GLOBAL,"source",strlen(progname),progname);
   error(rc);

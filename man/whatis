@@ -97,6 +97,7 @@ readpopdens (3) - read population density data
 regridclm (1) - regrid CLM file to new grid
 regridlpj (1) - regrid input data set for selected countries or specified grid file
 regridsoil (1) - regrid soil file to new grid
+reservoir2cdf (1) - convert CLM reservoir file into NetCDF file
 setclm (1) - set value in header of CLM files for LPJmL
 soil2cdf (1) - convert binary files into NetCDF files
 splitclm (1) - copy specific bands of clm data files

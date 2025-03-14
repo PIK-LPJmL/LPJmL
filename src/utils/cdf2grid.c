@@ -148,11 +148,15 @@ int main(int argc,char **argv)
     nc_inq_nvars(ncid,&nvars);
     for(j=0;j<nvars;j++)
     {
-      nc_inq_varndims(ncid,j,&ndims);
-      if(ndims==2)
+      nc_inq_varname(ncid,j,name);
+      if(strcmp(name,netcdf_config.lon_bnds.name) && strcmp(name,netcdf_config.lat_bnds.name))
       {
-        var_id=j;
-        break;
+        nc_inq_varndims(ncid,j,&ndims);
+        if(ndims==2)
+        {
+          var_id=j;
+          break;
+        }
       }
     }
     if(j==nvars)

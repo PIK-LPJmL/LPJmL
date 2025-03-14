@@ -15,9 +15,9 @@
 #include "lpj.h"
 
 #ifdef USE_UDUNITS
-#define USAGE "Usage: %s [-h] [-v] [-units unit] [-var name] [-time name] [-map name]\n       [-o filename] [-scale factor] [-id s] [-version v] [-float] [-zero]\n       [-json] [-config file] gridfile netcdffile ...\n"
+#define USAGE "Usage: %s [-h] [-v] [-units unit] [-var name] [-time name] [-map name]\n       [-o filename] [-scale factor] [-id s] [-version v] [-int] [-float] [-zero]\n       [-json] [-config file] gridfile netcdffile ...\n"
 #else
-#define USAGE "Usage: %s [-h] [-v] [-var name] [-time name] [-map name]\n       [-o filename] [-scale factor] [-id s] [-version v] [-float] [-zero] [-json] [-config file] gridfile netcdffile ...\n"
+#define USAGE "Usage: %s [-h] [-v] [-var name] [-time name] [-map name]\n       [-o filename] [-scale factor] [-id s] [-version v] [-int] [-float] [-zero] [-json] [-config file] gridfile netcdffile ...\n"
 #endif
 #define ERR_USAGE USAGE "\nTry \"%s --help\" for more information.\n"
 
@@ -213,7 +213,7 @@ static Bool readclimate2(Climatefile *file,    /* climate data file */
       switch(file->datatype)
       {
         case LPJ_FLOAT:
-          if(f[file->nlon*(i*file->nlat+offsets[index])+offsets[index+1]]==file->missing_value.f)
+          if(ismissingvalue(f[file->nlon*(i*file->nlat+offsets[index])+offsets[index+1]],file->missing_value.f))
           {
             fprintf(stderr,"ERROR423: Missing value for cell=%d (",cell);
             fprintcoord(stderr,coords+cell);
@@ -248,7 +248,7 @@ static Bool readclimate2(Climatefile *file,    /* climate data file */
           data[cell*size*file->var_len+i]=(float)(file->slope*f[file->nlon*(i*file->nlat+offsets[index])+offsets[index+1]]+file->intercept);
           break;
         case LPJ_DOUBLE:
-          if(d[file->nlon*(i*file->nlat+offsets[index])+offsets[index+1]]==file->missing_value.d)
+          if(ismissingvalue(d[file->nlon*(i*file->nlat+offsets[index])+offsets[index+1]],file->missing_value.d))
           {
             fprintf(stderr,"ERROR423: Missing value for cell=%d (",cell);
             fprintcoord(stderr,coords+cell);
@@ -364,7 +364,8 @@ int main(int argc,char **argv)
   FILE *file;
   int iarg,j,k,year,version;
   short *s=NULL;
-  Bool isfloat,verbose,iszero,isjson;
+  int *idata=NULL;
+  Bool verbose,iszero,isjson;
   Time time=DAY;
   size_t var_len=0;
   char *id,*out_json;
@@ -374,12 +375,14 @@ int main(int argc,char **argv)
   const char *progname;
   Filename grid_name;
   Type grid_type;
+  Type datatype;
   /* set default values */
   units=NULL;
   var=NULL;
   time_name=NULL;
   scale=1;
-  isfloat=verbose=iszero=isjson=FALSE;
+  datatype=LPJ_SHORT;
+  verbose=iszero=isjson=FALSE;
   outname="out.clm"; /* default file name for output */
   id=LPJ_CLIMATE_HEADER;
   version=LPJ_CLIMATE_VERSION;
@@ -407,6 +410,7 @@ int main(int argc,char **argv)
                "-time name    name of time in NetCDF file, default is 'time' or 'TIME'\n"
                "-id string    LPJ header string in clm file\n"
                "-version v    version of clm header, default is 3\n"
+               "-int          write int values in clm file, default is short\n"
                "-float        write float values in clm file, default is short\n"
                "-zero         write zero values in clm file if data is not found\n"
                "-json         JSON metafile is created with suffix '.json'\n"
@@ -481,7 +485,9 @@ int main(int argc,char **argv)
         id=argv[++iarg];
       }
       else if(!strcmp(argv[iarg],"-float"))
-        isfloat=TRUE;
+        datatype=LPJ_FLOAT;
+      else if(!strcmp(argv[iarg],"-int"))
+        datatype=LPJ_INT;
       else if(!strcmp(argv[iarg],"-v") || !strcmp(argv[iarg],"--verbose"))
         verbose=TRUE;
       else if(!strcmp(argv[iarg],"-zero"))
@@ -560,9 +566,9 @@ int main(int argc,char **argv)
             ERR_USAGE,progname,progname);
     return EXIT_FAILURE;
   }
-  if(isfloat && scale!=1)
+  if(datatype==LPJ_FLOAT && scale!=1)
   {
-    fprintf(stderr,"Warning: Scaling set to %g but datatype is float, scaling set to 1.\n",
+    fprintf(stderr,"Warning: Scaling was set to %g but datatype is float. As scaling factor will be ignored for datatype float, scaling is set to 1.",
             scale);
     scale=1;
   }
@@ -601,7 +607,7 @@ int main(int argc,char **argv)
   header.order=CELLYEAR;
   header.firstcell=0;
   header.timestep=1;
-  header.datatype=(isfloat) ? LPJ_FLOAT : LPJ_SHORT;
+  header.datatype=datatype;
   file=fopen(outname,"wb");
   if(file==NULL)
   {
@@ -647,7 +653,10 @@ int main(int argc,char **argv)
       }
       if(verbose)
       {
-        printf(" time step from %d",climate.firstyear);
+        printf(" time step");
+        if(climate.isleap && climate.time_step==DAY)
+          printf(" with leap days");
+        printf(" from %d",climate.firstyear);
         if(climate.slope!=1 || climate.intercept!=0)
           printf(", convert by %g*data%+g\n",climate.slope,climate.intercept);
         else
@@ -659,14 +668,29 @@ int main(int argc,char **argv)
         printallocerr("data");
         return EXIT_FAILURE;
       }
-      if(!isfloat)
+      switch(header.datatype)
       {
-        s=newvec(short,config.ngridcell*header.nbands*header.nstep);
-        if(s==NULL)
-        {
-          printallocerr("short");
-          return EXIT_FAILURE;
-        }
+         case LPJ_SHORT:
+           s=newvec(short,config.ngridcell*header.nbands*header.nstep);
+           if(s==NULL)
+           {
+             printallocerr("short");
+             return EXIT_FAILURE;
+           }
+           break;
+         case LPJ_INT:
+           idata=newvec(int,config.ngridcell*header.nbands*header.nstep);
+           if(idata==NULL)
+           {
+             printallocerr("int");
+             return EXIT_FAILURE;
+           }
+           break;
+         case LPJ_FLOAT:
+           break;
+         default:
+           fprintf(stderr,"Datatype %s not supported.\n",typenames[header.datatype]);
+           return EXIT_FAILURE;
       }
       if(units==NULL)
         units=getattr_netcdf(climate.ncid,climate.varid,"units");
@@ -739,31 +763,43 @@ int main(int argc,char **argv)
         fprintf(stderr,"Error reading '%s' in year %d.\n",argv[j],year+climate.firstyear);
         return EXIT_FAILURE;
       }
-      if(isfloat)
+      switch(header.datatype)
       {
-        if(fwrite(data,sizeof(float),config.ngridcell*header.nbands*header.nstep,file)!=config.ngridcell*header.nbands*header.nstep)
-        {
-          fprintf(stderr,"Error writing data in '%s' in year %d.\n",outname,year+climate.firstyear);
-          return EXIT_FAILURE;
-        }
-      }
-      else
-      {
-        for(k=0;k<config.ngridcell*header.nbands*header.nstep;k++)
-        {
-          if(round(data[k]/scale)<SHRT_MIN || round(data[k]/scale)>SHRT_MAX)
+         case LPJ_FLOAT:
+          if(fwrite(data,sizeof(float),config.ngridcell*header.nbands*header.nstep,file)!=config.ngridcell*header.nbands*header.nstep)
           {
-            fprintf(stderr,"WARNING: Data overflow for cell %d ",k/header.nbands/header.nstep);
-            fprintcoord(stderr,coords+k/header.nbands/header.nstep);
-            fprintf(stderr,") at %s %d in %d.\n",isdaily(climate) ? "day" : "month",(k % (header.nbands*header.nstep))+1,climate.firstyear+year);
+            fprintf(stderr,"Error writing data in '%s' in year %d.\n",outname,year+climate.firstyear);
+            return EXIT_FAILURE;
           }
-          s[k]=(short)round(data[k]/scale);
-        }
-        if(fwrite(s,sizeof(short),config.ngridcell*header.nbands*header.nstep,file)!=config.ngridcell*header.nbands*header.nstep)
-        {
-          fprintf(stderr,"Error writing data in '%s' in year %d.\n",outname,year+climate.firstyear);
-          return EXIT_FAILURE;
-        }
+          break;
+        case LPJ_SHORT:
+          for(k=0;k<config.ngridcell*header.nbands*header.nstep;k++)
+          {
+            if(round(data[k]/scale)<SHRT_MIN || round(data[k]/scale)>SHRT_MAX)
+            {
+              fprintf(stderr,"WARNING: Data overflow for cell %d ",k/header.nbands/header.nstep);
+              fprintcoord(stderr,coords+k/header.nbands/header.nstep);
+              fprintf(stderr,") at %s %d in %d.\n",isdaily(climate) ? "day" : "month",(k % (header.nbands*header.nstep))+1,climate.firstyear+year);
+            }
+            s[k]=(short)round(data[k]/scale);
+          }
+          if(fwrite(s,sizeof(short),config.ngridcell*header.nbands*header.nstep,file)!=config.ngridcell*header.nbands*header.nstep)
+          {
+            fprintf(stderr,"Error writing data in '%s' in year %d.\n",outname,year+climate.firstyear);
+            return EXIT_FAILURE;
+          }
+          break;
+        case LPJ_INT:
+          for(k=0;k<config.ngridcell*header.nbands*header.nstep;k++)
+            idata[k]=(int)round(data[k]/scale);
+          if(fwrite(idata,sizeof(int),config.ngridcell*header.nbands*header.nstep,file)!=config.ngridcell*header.nbands*header.nstep)
+          {
+            fprintf(stderr,"Error writing data in '%s' in year %d.\n",outname,year+climate.firstyear);
+            return EXIT_FAILURE;
+          }
+          break;
+        default:
+          break;
       }
     } /* of for(year=0;...) */
     header.nyear+=climate.nyear;

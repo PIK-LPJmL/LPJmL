@@ -19,7 +19,8 @@
 #endif
 #define error(rc) if(rc) {fprintf(stderr,"ERROR427: Cannot write '%s': %s.\n",argv[iarg+3],nc_strerror(rc)); nc_close(ncid);return EXIT_FAILURE;}
 
-#define USAGE "Usage: %s [-var name] [-config file] [-netcdf4] soilcode.nc grid.clm drainage.clm drainage.nc\n"
+#define USAGE "Usage: %s [-var name] [-config file] [-compress level] [-netcdf4] soilcode.nc grid.clm drainage.clm drainage.nc\n"
+#define INDEX_LONG_NAME "index of cell into/from which water flows (ilat*nlon+ilon)"
 
 int main(int argc,char **argv)
 {
@@ -45,7 +46,6 @@ int main(int argc,char **argv)
   int version,compress;
   int src_cell,dst_cell;
   int *out;
-  int s_len;
   char *s,*endptr;
   char *config_filename;
   time_t t;
@@ -228,6 +228,11 @@ int main(int argc,char **argv)
             header.nbands,argv[iarg+2]);
     return EXIT_FAILURE;
   }
+  if(version>2 && header.datatype!=LPJ_INT)
+  {
+    fprintf(stderr,"Datatype of file '%s' is %s, must be int.\n",argv[iarg+2],typenames[header.datatype]);
+    return EXIT_FAILURE;
+  }
   if(isnetcdf4)
     rc=nc_create(argv[iarg+3],(compress) ? NC_CLOBBER|NC_NETCDF4 : NC_CLOBBER,&ncid);
   else
@@ -240,9 +245,8 @@ int main(int argc,char **argv)
   }
   time(&t);
   cmdline=catstrvec(argv,argc);
-  s_len=snprintf(NULL,0,"%s: %s",strdate(&t),cmdline);
-  s=malloc(s_len+1);
-  sprintf(s,"%s: %s",strdate(&t),cmdline);
+  s=getsprintf("%s: %s",strdate(&t),cmdline);
+  check(s);
   rc=nc_put_att_text(ncid,NC_GLOBAL,"history",strlen(s),s);
   error(rc);
   free(s);
@@ -284,7 +288,7 @@ int main(int argc,char **argv)
   }
   rc=nc_put_att_text(ncid, index_varid,"standard_name",strlen("index"),"index");
   error(rc);
-  //rc=nc_put_att_text(ncid, index_varid,"long_name",strlen(long_name),long_name);
+  rc=nc_put_att_text(ncid, index_varid,"long_name",strlen(INDEX_LONG_NAME),INDEX_LONG_NAME);
   error(rc);
   nc_put_att_int(ncid, index_varid,"missing_value",NC_INT,1,&config.missing_value.i);
   rc=nc_put_att_int(ncid, index_varid,"_FillValue",NC_INT,1,&config.missing_value.i);
@@ -337,14 +341,20 @@ int main(int argc,char **argv)
 #ifdef DEBUG
     printf("data[0]=%d\n",data[0]);
 #endif
-    if(data[0]==-1)
-     out[index[src_cell]]=-1;
+    if(data[0]<0)
+     out[index[src_cell]]=data[0];
     else
     {
+      if(data[0]>=n)
+      {
+        fprintf(stderr,"Index for cell (%s)=%d in '%s' must be in <=%d.\n",
+                sprintcoord(line,grid+i),data[0],argv[iarg+2],n-1);
+        return EXIT_FAILURE;
+      }
       dst_cell=findcoord(grid+data[0],grid_soil,&resolution,n);
       if(dst_cell==NOT_FOUND)
       {
-        fprintf(stderr,"Dest cell (%s) not found in `%s`.\n",
+        fprintf(stderr,"Destination cell (%s) not found in `%s`.\n",
                 sprintcoord(line,grid+data[0]),argv[iarg]);
         return EXIT_FAILURE;
       }
@@ -366,4 +376,4 @@ int main(int argc,char **argv)
   fprintf(stderr,"ERROR401: NetCDF is not supported in this version of %s.\n",argv[0]);
   return EXIT_FAILURE;
 #endif
-}
+} /* of 'main' */

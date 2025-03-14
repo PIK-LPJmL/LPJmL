@@ -132,16 +132,13 @@ static Cdf *create_cdf(const char *filename,
   time(&t);
   if(history!=NULL)
   {
-    len=snprintf(NULL,0,"%s\n%s: %s",history,strdate(&t),cmdline);
-    s=malloc(len+1);
-    sprintf(s,"%s\n%s: %s",history,strdate(&t),cmdline);
+    s=getsprintf("%s\n%s: %s",history,strdate(&t),cmdline);
   }
   else
   {
-    len=snprintf(NULL,0,"%s: %s",strdate(&t),cmdline);
-    s=malloc(len+1);
-    sprintf(s,"%s: %s",strdate(&t),cmdline);
+    s=getsprintf("%s: %s",strdate(&t),cmdline);
   }
+  check(s);
   rc=nc_put_att_text(cdf->ncid,NC_GLOBAL,"history",strlen(s),s);
   free(s);
   for(i=0;i<n_global;i++)
@@ -168,9 +165,7 @@ static Cdf *create_cdf(const char *filename,
       case 1:
         if(with_days)
         {
-          len=snprintf(NULL,0,"days since %d-1-1 0:0:0",baseyear);
-          s=malloc(len+1);
-          sprintf(s,"days since %d-1-1 0:0:0",baseyear);
+          s=getsprintf("days since %d-1-1 0:0:0",baseyear);
         }
         else
         {
@@ -178,21 +173,15 @@ static Cdf *create_cdf(const char *filename,
             s=strdup(netcdf_config->years_name);
           else
           {
-            len=snprintf(NULL,0,"years since %d-1-1 0:0:0",baseyear);
-            s=malloc(len+1);
-            sprintf(s,"years since %d-1-1 0:0:0",baseyear);
+            s=getsprintf("years since %d-1-1 0:0:0",baseyear);
           }
         }
         break;
       case NMONTH:
-        len=snprintf(NULL,0,"%s since %d-1-1 0:0:0",(with_days) ? "days" : "months",baseyear);
-        s=malloc(len+1);
-        sprintf(s,"%s since %d-1-1 0:0:0",(with_days) ? "days" : "months",baseyear);
+        s=getsprintf("%s since %d-1-1 0:0:0",(with_days) ? "days" : "months",baseyear);
         break;
       case NDAYYEAR:
-        len=snprintf(NULL,0,"days since %d-1-1 0:0:0",baseyear);
-        s=malloc(len+1);
-        sprintf(s,"days since %d-1-1 0:0:0",baseyear);
+        s=getsprintf("days since %d-1-1 0:0:0",baseyear);
         break;
       default:
         fprintf(stderr,"Invalid time step %d in '%s'.\n",header.nstep,filename);
@@ -206,15 +195,18 @@ static Cdf *create_cdf(const char *filename,
         free(cdf);
         return NULL;
     } /* of switch(header.step) */
+    check(s);
+    rc=nc_put_att_text(cdf->ncid,time_var_id,"units",strlen(s),s);
+    rc=nc_put_att_text(cdf->ncid,time_bnds_var_id,"units",strlen(s),s);
+    free(s);
+    error(rc);
     put_att_text(cdf->ncid,time_var_id,"calendar",netcdf_config->calendar);
     put_att_text(cdf->ncid,time_bnds_var_id,"calendar",netcdf_config->calendar);
     put_att_text(cdf->ncid, time_var_id,"standard_name",netcdf_config->time.standard_name);
     put_att_text(cdf->ncid, time_var_id,"long_name",netcdf_config->time.long_name);
-    rc=nc_put_att_text(cdf->ncid, time_var_id,"bounds",strlen(netcdf_config->time_bnds.name),netcdf_config->time_bnds.name);
-    error(rc);
+    put_att_text(cdf->ncid, time_var_id,"bounds",netcdf_config->time_bnds.name);
     put_att_text(cdf->ncid, time_bnds_var_id,"long_name",netcdf_config->time_bnds.long_name);
-    rc=nc_put_att_text(cdf->ncid, time_var_id,"axis",strlen("T"),"T");
-    error(rc);
+    put_att_text(cdf->ncid, time_var_id,"axis","T");
   }
   put_att_text(cdf->ncid,lon_var_id,"units",netcdf_config->lon.unit);
   put_att_text(cdf->ncid, lon_var_id,"standard_name",netcdf_config->lon.standard_name);
@@ -222,20 +214,16 @@ static Cdf *create_cdf(const char *filename,
   put_att_text(cdf->ncid, lon_var_id,"long_name",netcdf_config->lon.long_name);
   put_att_text(cdf->ncid, lon_bnds_var_id,"long_name",netcdf_config->lon_bnds.long_name);
   put_att_text(cdf->ncid,lon_bnds_var_id,"units", netcdf_config->lon_bnds.unit);
-  rc=nc_put_att_text(cdf->ncid, lon_var_id,"bounds",strlen(netcdf_config->lon_bnds.name),netcdf_config->lon_bnds.name);
-  error(rc);
-  rc=nc_put_att_text(cdf->ncid, lon_var_id,"axis",strlen("X"),"X");
-  error(rc);
+  put_att_text(cdf->ncid, lon_var_id,"bounds",netcdf_config->lon_bnds.name);
+  put_att_text(cdf->ncid, lon_var_id,"axis","X");
   put_att_text(cdf->ncid,lat_var_id,"units",netcdf_config->lat.unit);
   put_att_text(cdf->ncid, lat_var_id,"long_name", netcdf_config->lat.long_name);
   put_att_text(cdf->ncid, lat_bnds_var_id,"long_name",netcdf_config->lat_bnds.long_name);
   put_att_text(cdf->ncid,lat_bnds_var_id,"units",netcdf_config->lat_bnds.unit);
   put_att_text(cdf->ncid, lat_var_id,"standard_name",netcdf_config->lat.standard_name);
   put_att_text(cdf->ncid, lat_bnds_var_id,"standard_name",netcdf_config->lat_bnds.standard_name);
-  rc=nc_put_att_text(cdf->ncid, lat_var_id,"bounds",strlen(netcdf_config->lat_bnds.name),netcdf_config->lat_bnds.name);
-  error(rc);
-  rc=nc_put_att_text(cdf->ncid, lat_var_id,"axis",strlen("Y"),"Y");
-  error(rc);
+  put_att_text(cdf->ncid, lat_var_id,"bounds",netcdf_config->lat_bnds.name);
+  put_att_text(cdf->ncid, lat_var_id,"axis","Y");
   if(map!=NULL)
   {
     if(ispft)
