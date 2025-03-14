@@ -33,7 +33,7 @@ of `major.minor.patch` with
 - Code changed to compile under Windows OS.
 - New function `getsprintf()` added to allocate and print formatted output into string. Function replaces call to `snprintf()` function.
 - Default settings for `GIT_HASH` and `GIT_REPO` added.
-- Duplicate filenames removed from list of inpute/output filenames in utility `lpjfiles`.
+- Duplicate filenames removed from list of input/output filenames in utility `lpjfiles`.
 
 ### Added
 
@@ -108,7 +108,6 @@ of `major.minor.patch` with
 - Number of years are now calculated correctly from number of days in case of leap days if number of leap days reaches 365.
 - Check for identical filenames corrected in `cutclm.c`.
 - Missing `else` added in `readclimate()`.
->>>>>>> 26ea21fd2c081d40f262d754843df56b0c880730
 
 
 ## [5.9.19] - 2025-03-12
@@ -134,8 +133,6 @@ of `major.minor.patch` with
 - Support for LoadLeveler batch queueing system removed.
 - Support for AIX OS removed.
 - Alias for `lpjml` and obsolete `lpjml.sh` removed in `lpj_paths.sh`.
->>>>>>> cb07ea7be163fa8e750c515b5df2a7c9eab92023
->>>>>>> 0ba0d9321e1ad817fc1306e1f2c3b51523b74fe1
 
 
 ## [5.9.18] - 2025-01-31
