@@ -66,6 +66,14 @@ void freeconfig(Config *config /**< LPJmL configuration */
         pnet_free(config->irrig_res_back);
         freefilename(&config->elevation_filename);
         freefilename(&config->reservoir_filename);
+        if(config->reservoir_filename.fmt==CDF)
+        {
+          freefilename(&config->capacity_reservoir_filename);
+          freefilename(&config->area_reservoir_filename);
+          freefilename(&config->inst_cap_reservoir_filename);
+          freefilename(&config->height_reservoir_filename);
+          freefilename(&config->purpose_reservoir_filename);
+        }
       }
       pnet_free(config->irrig_neighbour);
       pnet_free(config->irrig_back);

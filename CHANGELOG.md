@@ -20,6 +20,48 @@ of `major.minor.patch` with
 ## [Unreleased]
 
 
+## [5.9.22] - 2025-03-14
+
+### Contributors
+
+- author: Werner von Bloh (bloh@pik-potsdam.de), Hester Biemans (hester.biemans@wur.nl)
+- code review: Susanne Rolinski (rolinski@pik-potsdam.de), Marie Hemmen (hemmen@pik-potsdam.de)
+
+### Changed
+
+- `input_netcdf.cjson` changed to the default dataset of `input.cjson` but in NetCDF format.
+- Code changed to compile under Windows OS.
+- New function `getsprintf()` added to allocate and print formatted output into string. Function replaces call to `snprintf()` function.
+- Default settings for `GIT_HASH` and `GIT_REPO` added.
+- Duplicate filenames removed from list of input/output filenames in utility `lpjfiles`.
+
+### Added
+
+- Option `-int` added to utility `cdf2clm`.
+- Option `-latlon` added to utility `cdf2coord` in order to change the order of the CLM grid file.
+- Utility `cdf2reservoir` added to convert NetCDF reservoir file into CLM file.
+- Utility `reservoir2cdf` added to convert CLM reservoir file into a NetCDF file using the soil code NetCDF file.
+- Macro `NETCDF_INPUT` added in `lpjml_config.cjson` to enable NetCDF input.
+- Reservoir, irrigation neighbor and drainage data can now be in NetCDF format:
+```java
+"drainage" :           { "fmt" : "cdf", "var" : "index", "name" : "cru_netcdf/drainage.nc"},
+"neighb_irrig" :       { "fmt" : "cdf", "var" : "index", "name" : "cru_netcdf/neighb_irrig.nc"},
+"river" :              { "fmt" : "cdf", "var" : "riverlen", "name" : "cru_netcdf/drainage.nc"},
+"reservoir" :          { "fmt" : "cdf", "var" : "year", "name" : "cru_netcdf/reservoir.nc"},
+"capacity_reservoir" : { "fmt" : "cdf", "var" : "capacity", "name" : "cru_netcdf/reservoir.nc"},
+"area_reservoir" :     { "fmt" : "cdf", "var" : "area", "name" : "cru_netcdf/reservoir.nc"},
+"inst_cap_reservoir" : { "fmt" : "cdf", "var" : "inst_cap", "name" : "cru_netcdf/reservoir.nc"},
+"height_reservoir" :   { "fmt" : "cdf", "var" : "height", "name" : "cru_netcdf/reservoir.nc"},
+"purpose_reservoir" :  { "fmt" : "cdf", "var" : "purpose", "name" : "cru_netcdf/reservoir.nc"},
+```
+
+### Fixed
+
+- River length is now correctly read in `initdrain.c` for data in NetCDF format.
+- Man page of `cvrtclm` corrected.
+- Missing check for open NetCDF file added to `openclimate.c`.
+
+
 ## [5.9.21] - 2025-03-13
 
 ### Contributors
@@ -91,8 +133,6 @@ of `major.minor.patch` with
 - Support for LoadLeveler batch queueing system removed.
 - Support for AIX OS removed.
 - Alias for `lpjml` and obsolete `lpjml.sh` removed in `lpj_paths.sh`.
->>>>>>> cb07ea7be163fa8e750c515b5df2a7c9eab92023
->>>>>>> 0ba0d9321e1ad817fc1306e1f2c3b51523b74fe1
 
 
 ## [5.9.18] - 2025-01-31

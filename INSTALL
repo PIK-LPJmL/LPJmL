@@ -2,9 +2,9 @@
 | |   |  _ \   | |_ __ ___ | |     | ___|       / _ \
 | |   | |_) |  | | '_ ` _ \| |     |___ \      | (_) |
 | |___|  __/ |_| | | | | | | |___   ___) |  _   \__, |
-|_____|_|   \___/|_| |_| |_|_____| |____/  (_)    /_/  Version 5.9.21
+|_____|_|   \___/|_| |_| |_|_____| |____/  (_)    /_/  Version 5.9.22
 
-Installation of LPJmL C Version 5.9.21
+Installation of LPJmL C Version 5.9.22
 
 Installation for Unix-like systems
 ----------------------------------
@@ -26,7 +26,7 @@ cd lpjml
 
 untar source files
 
-gzip -cd lpjml-5.9.21.tar.gz|tar -xf -
+gzip -cd lpjml-5.9.22.tar.gz|tar -xf -
 
 Directory tree after extracting the tar files:
 
@@ -178,53 +178,54 @@ make utils
 
 The following programs are created in the bin directory:
 
-adddrain     - add river basin to coordinate file
-addheader    - add CLM header to binary file
-arr2clm      - convert 2-D float arrays into CLM file
-asc2clm      - convert ARC/Info ASCII files to CLM data files for LPJmL
-backtrace    - print backtrace from core
-bin2cdf      - convert binary output files into NetCDF files
-binsum       - aggregate daily and monthly binary output
-cat2bsq      - concatenate output files from distributed LPJmL simulations
-catclm       - concatenate LPJmL climate data files
-cdf2bin      - convert NetCDF files into raw binary data
-cdf2clm      - convert NetCDF files into CLM files
-cdf2coord    - extract CLM grid file from NetCDF file
-cdf2grid     - convert grid NetCDF file into grid CLM or raw file
-cdf2soil     - convert NetCDF file into binary file
-cft2clm      - convert binary landuse data files to CLM data files for LPJmL
-clm2cdf      - convert CLM files into NetCDF files
-cmpbin       - compare two binary output files
-country2cdf  - convert country/region code file into NetCDF file
-cru2clm      - convert CRU data into file format suitable for LPJmL.
-               CRU data files have to be in the format specified in
-               http://www.cru.uea.ac.uk/~timm/grid/CRU_TS_2_1.html.
-cutclm       - cut LPJmL climate data files
-cvrtclm      - convert version of CLM file to version 3 or 4
-drainage2cdf - convert CLM drainage file into NetCDF file
-getcellindex - get cell index from latitude, longitude values
-grid2clm     - convert grid data file to CLM data files for LPJmL
-headersize   - print header size of CLM files
-lpjcat       - concatenate restart files from distributed LPJmL simulations.
-lpjcheck     - check syntax of LPJmL configuration files
-lpjfiles     - print list of input/output files of LPJmL
-lpjprint     - print contents of restart file of LPJmL model runs
-printclm     - print contents of CLM files for LPJmL
-output_bsq   - concatenate all output files from distributed LPJmL simulations
-manage2js    - convert management  *.par files to JSON files
-mathclm      - perform mathematical operations with CLM files
-mergeclm     - merge LPJmL climate data files
-printglobal  - print global values for raw binary output files
-printharvest - print global harvested carbon for crops and managed grasslands
-regridclm    - regrid CLM file to new grid
-regridlpj    - regrid input data set for selected countries or specified grid file
-regridsoil   - regrid soil file to new grid
-regridsoil   - regrid binary soil file to different grid file
-setclm       - set value in header of CLM files for LPJmL
-soil2cdf     - convert binary files into NetCDF files
-statclm      - print statistics of clm files
-txt2grid     - convert text files to CLM grid data files for LPJmL
-txt2clm      - convert text files to CLM data files for LPJmL
+adddrain      - add river basin to coordinate file
+addheader     - add CLM header to binary file
+arr2clm       - convert 2-D float arrays into CLM file
+asc2clm       - convert ARC/Info ASCII files to CLM data files for LPJmL
+backtrace     - print backtrace from core
+bin2cdf       - convert binary output files into NetCDF files
+binsum        - aggregate daily and monthly binary output
+cat2bsq       - concatenate output files from distributed LPJmL simulations
+catclm        - concatenate LPJmL climate data files
+cdf2bin       - convert NetCDF files into raw binary data
+cdf2clm       - convert NetCDF files into CLM files
+cdf2coord     - extract CLM grid file from NetCDF file
+cdf2grid      - convert grid NetCDF file into grid CLM or raw file
+cdf2soil      - convert NetCDF file into binary file
+cft2clm       - convert binary landuse data files to CLM data files for LPJmL
+clm2cdf       - convert CLM files into NetCDF files
+cmpbin        - compare two binary output files
+country2cdf   - convert country/region code file into NetCDF file
+cru2clm       - convert CRU data into file format suitable for LPJmL.
+                CRU data files have to be in the format specified in
+                http://www.cru.uea.ac.uk/~timm/grid/CRU_TS_2_1.html.
+cutclm        - cut LPJmL climate data files
+cvrtclm       - convert version of CLM file to version 3 or 4
+drainage2cdf  - convert CLM drainage file into NetCDF file
+getcellindex  - get cell index from latitude, longitude values
+grid2clm      - convert grid data file to CLM data files for LPJmL
+headersize    - print header size of CLM files
+lpjcat        - concatenate restart files from distributed LPJmL simulations.
+lpjcheck      - check syntax of LPJmL configuration files
+lpjfiles      - print list of input/output files of LPJmL
+lpjprint      - print contents of restart file of LPJmL model runs
+printclm      - print contents of CLM files for LPJmL
+output_bsq    - concatenate all output files from distributed LPJmL simulations
+manage2js     - convert management  *.par files to JSON files
+mathclm       - perform mathematical operations with CLM files
+mergeclm      - merge LPJmL climate data files
+printglobal   - print global values for raw binary output files
+printharvest  - print global harvested carbon for crops and managed grasslands
+regridclm     - regrid CLM file to new grid
+regridlpj     - regrid input data set for selected countries or specified grid file
+regridsoil    - regrid soil file to new grid
+regridsoil    - regrid binary soil file to different grid file
+reservoir2cdf - convert CLM reservoir file into NetCDF file
+setclm        - set value in header of CLM files for LPJmL
+soil2cdf      - convert binary files into NetCDF files
+statclm       - print statistics of clm files
+txt2grid      - convert text files to CLM grid data files for LPJmL
+txt2clm       - convert text files to CLM data files for LPJmL
 
 The binaries can be copied in an installation directory by invoking
 

@@ -829,7 +829,15 @@ Bool fscanconfig(Config *config,    /**< LPJ configuration */
       if(config->reservoir)
       {
         scanclimatefilename(input,&config->elevation_filename,FALSE,FALSE,"elevation");
-        scanfilename(input,&config->reservoir_filename,config->inputdir,"reservoir");
+        scanclimatefilename(input,&config->reservoir_filename,FALSE,FALSE,"reservoir");
+        if(config->reservoir_filename.fmt==CDF)
+        {
+          scanclimatefilename(input,&config->capacity_reservoir_filename,FALSE,FALSE,"capacity_reservoir");
+          scanclimatefilename(input,&config->area_reservoir_filename,FALSE,FALSE,"area_reservoir");
+          scanclimatefilename(input,&config->inst_cap_reservoir_filename,FALSE,FALSE,"inst_cap_reservoir");
+          scanclimatefilename(input,&config->height_reservoir_filename,FALSE,FALSE,"height_reservoir");
+          scanclimatefilename(input,&config->purpose_reservoir_filename,FALSE,FALSE,"purpose_reservoir");
+        }
       }
 #ifdef IMAGE
       if(config->aquifer_irrig)
