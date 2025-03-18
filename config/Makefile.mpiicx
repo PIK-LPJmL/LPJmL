@@ -18,7 +18,7 @@
 CC	= mpiicx
 OPTFLAGS= -g -O3 -no-vec
 DEBUGFLAGS = -g -O0
-CHECKFLAGS = -g -O0 -check-pointers=rw
+CHECKFLAGS = -g -O0 -fsanitize=address -fsanitize=bounds
 LPJFLAGS=  -DUSE_RAND48 -DUSE_MPI -DSAFE -DWITH_FPE -DUSE_NETCDF -DUSE_UDUNITS -DPERMUTE -DUSE_TIMING -DSTRICT_JSON #-DDAILY_ESTABLISHMENT
 WFLAG   = -Wall
 O	= o
