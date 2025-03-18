@@ -20,6 +20,20 @@ of `major.minor.patch` with
 ## [Unreleased]
 
 
+### Contributors
+
+- author: Werner von Bloh (bloh@pik-potsdam.de)
+
+### Changed
+
+- Option `-check` now checks memory leaks and memory access out of bounds for gcc and icx compiler.
+- Datatype `List` used in `fprintfiles.c` .
+
+### Fixed
+
+- Check for missing values for integer input corrected in `readclimate_netcdf.c`.
+
+
 ## [5.9.22] - 2025-03-14
 
 ### Contributors
