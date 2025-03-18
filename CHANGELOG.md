@@ -28,6 +28,7 @@ of `major.minor.patch` with
 
 - Option `-check` of `configure.sh` enables now checks of memory leaks and memory access out of bounds for gcc and icx compiler.
 - Datatype `List` used in `fprintfiles.c` .
+- All allocated memory is now freed in `lpjfiles.c`, `lpjcheck.c` and `printharvest.c`.
 
 ### Fixed
 
