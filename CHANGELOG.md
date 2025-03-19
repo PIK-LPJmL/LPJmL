@@ -26,14 +26,15 @@ of `major.minor.patch` with
 
 ### Changed
 
-- Option `-check` of `configure.sh` enables now checks of memory leaks and memory access out of bounds for gcc and icx compiler.
+- Option `-check` of `configure.sh` enables now run-time checks of memory leaks and memory access out of bounds for gcc and icx compiler.
 - Datatype `List` used in `fprintfiles.c` .
-- All allocated memory is now freed in `lpjfiles.c`, `lpjcheck.c` and `printharvest.c`.
+- All allocated memory is now freed in `lpjfiles.c`, `lpjcheck.c`, `printglobal.c` and `printharvest.c`.
 
 ### Fixed
 
 - Check for missing values for integer input corrected in `readclimate_netcdf.c`.
 - Memory leak fixed in `filesexist.c`.
+- Calculation of global area fixed in `printglobal.c`.
 
 
 ## [5.9.22] - 2025-03-14
