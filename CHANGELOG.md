@@ -27,8 +27,8 @@ of `major.minor.patch` with
 ### Changed
 
 - Option `-check` of `configure.sh` enables now run-time checks of memory leaks and memory access out of bounds for gcc and icx compiler.
-- Datatype `List` used in `fprintfiles.c` .
-- All allocated memory is now freed in `lpjfiles.c`, `lpjcheck.c`, `mathclm.c`, `printglobal.c` and `printharvest.c`.
+- Datatype `List` used in `fprintfiles.c`.
+- All allocated memory is now freed in `lpjfiles.c`, `lpjcheck.c`, `mathclm.c`, `reservoir2cdf.c`, `printglobal.c` and `printharvest.c`.
 
 ### Fixed
 
@@ -37,6 +37,7 @@ of `major.minor.patch` with
 - Calculation of global area fixed in `printglobal.c`.
 - Check for null attribute pointer added in `fprintjson.c`.
 - Uninitialized grid name initialized in `mathclm.c`.
+- Call to `snprintf()` replaced by `getsprintf()` in `reservoir2cdf.c`.
 
 
 ## [5.9.22] - 2025-03-14
