@@ -35,9 +35,11 @@ static int compare(const Item *a,const Item *b)
 
 int main(int argc,char **argv)
 {
-  int i,len,header_offset,o_offset,offset,j,ncell,swap,count;
+  int i,len,j,ncell,swap,count;
+  size_t header_offset,o_offset,offset;
   Item *item;
-  int ptr,version;
+  long long ptr;
+  int version;
   void *data;
   Header header;
   Restartheader restartheader;
@@ -128,32 +130,39 @@ int main(int argc,char **argv)
       fprintf(stderr,"Warning: year=%d in %d differs from %d\n",
               item[i].header.firstyear,i,header.firstyear);
   }
-  header.firstcell=item[0].header.firstcell;
-  header.firstyear=item[0].header.firstyear;
+  header=item[0].header;
   header.ncell=ncell;
   fwriteheader(out,&header,RESTART_HEADER,RESTART_VERSION);
   fwriterestartheader(out,&restartheader);
-  header_offset=strlen(RESTART_HEADER)+restartsize()+sizeof(int)+sizeof(Header);
+  header_offset=headersize(RESTART_HEADER,version)+restartsize();
   o_offset=header_offset;
   offset=0;
   for(i=0;i<count;i++)
   { 
-    len=getfilesizep(item[i].file)-header_offset-item[i].header.ncell*sizeof(int);
+    len=getfilesizep(item[i].file)-header_offset-item[i].header.ncell*sizeof(ptr);
     fseek(out,o_offset,SEEK_SET);
-    o_offset+=item[i].header.ncell*sizeof(int);
+    o_offset+=item[i].header.ncell*sizeof(ptr);
     for(j=0;j<item[i].header.ncell;j++)
     {
       fread(&ptr,sizeof(ptr),1,item[i].file);
-      ptr+=(ncell-item[i].header.ncell)*sizeof(int)+offset;
+      ptr+=(ncell-item[i].header.ncell)*sizeof(ptr)+offset;
       fwrite(&ptr,sizeof(ptr),1,out);
     }
-    fseek(out,offset+header_offset+ncell*sizeof(int),SEEK_SET);
+    fseek(out,offset+header_offset+ncell*sizeof(ptr),SEEK_SET);
     offset+=len;
     data=malloc(len);
+    if(data==NULL)
+    {
+      fclose(item[i].file);
+      free(item);
+      printallocerr("data");
+      return EXIT_FAILURE;
+    }
     fread(data,len,1,item[i].file);
     fwrite(data,len,1,out);
     free(data);
     fclose(item[i].file);
   }
+  free(item);  
   return EXIT_SUCCESS;
 } /* of 'main' */
