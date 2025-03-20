@@ -15,7 +15,7 @@
 
 CC	= gcc
 DEBUGFLAGS= -g
-CHECKFLAGS = -fsanitize=address -fsanitize=bounds
+CHECKFLAGS = -fsanitize=address -fsanitize=bounds -fsanitize=undefined
 WFLAG = -Wall
 LPJFLAGS= -DSAFE -DUSE_RAND48 -DWITH_FPE -DUSE_NETCDF -DUSE_UDUNITS -DPERMUTE -DSTRICT_JSON # -DDAILY_ESTABLISHMENT
 OPTFLAGS  = -O2
