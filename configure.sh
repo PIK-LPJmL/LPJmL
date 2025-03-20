@@ -167,10 +167,10 @@ fi
 if [ "$debug" = "1" ]
 then
   echo "CFLAGS	= \$(WFLAG) \$(LPJFLAGS) $macro $warning $checking \$(DEBUGFLAGS)" >>Makefile.inc
-  echo "LNOPTS	= \$(WFLAG) \$(DEBUGFLAGS) -o " >>Makefile.inc
+  echo "LNOPTS	= \$(WFLAG) \$(DEBUGFLAGS) $checking -o " >>Makefile.inc
 else
   echo "CFLAGS	= \$(WFLAG) \$(LPJFLAGS) $macro $warning $checking \$(OPTFLAGS)" >>Makefile.inc
-  echo "LNOPTS	= \$(WFLAG) \$(OPTFLAGS) -o " >>Makefile.inc
+  echo "LNOPTS	= \$(WFLAG) \$(OPTFLAGS) $checking -o " >>Makefile.inc
 fi
 echo "GIT_REPO=" $(git remote -v|head -1|cut  -f2|cut -d' ' -f1) >>Makefile.inc
 echo LPJROOT	= $prefix >>Makefile.inc
