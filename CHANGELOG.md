@@ -26,9 +26,9 @@ of `major.minor.patch` with
 
 ### Changed
 
-- Option `-check` of `configure.sh` enables now run-time checks of memory leaks and memory access out of bounds for gcc and icx compiler. Optimization is not disabled. Use options `-debug -check` to disable.
+- Option `-check` of `configure.sh` enables now run-time checks of memory leaks and memory access out of bounds and udefined variables for gcc and icx compiler. Optimization is not disabled. Use options `-debug -check` to disable.
 - Datatype `List` used in `fprintfiles.c`.
-- All allocated memory is now freed in `lpjfiles.c`, `lpjcheck.c`, `mathclm.c`, `reservoir2cdf.c`, `printglobal.c` and `printharvest.c`.
+- All allocated memory is now freed in `getcountry.c`, `lpjfiles.c`, `lpjcheck.c`, `mathclm.c`, `reservoir2cdf.c`, `printglobal.c` and `printharvest.c`.
 
 ### Fixed
 
@@ -39,6 +39,10 @@ of `major.minor.patch` with
 - Uninitialized grid name initialized in `mathclm.c`.
 - Call to `snprintf()` replaced by `getsprintf()` in `reservoir2cdf.c`.
 - Datatype for index and writing the header corrected in `lpjcat.c`.
+- Functions for qsort(), bisect(), and leftmostzero() changed to avoid run-time errors with `-check` option.
+- Pointer set to zero  if `k_est`is zero in `initmanage.c`.
+- Missing argument added in opening aquifer file for IMAGE.
+- Scaling of coordinates fixed in `joingrid.c`.
 
 
 ## [5.9.22] - 2025-03-14
