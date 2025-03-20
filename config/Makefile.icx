@@ -15,7 +15,7 @@
 
 CC	= icx
 DEBUGFLAGS  = -g -O0
-CHECKFLAGS = -g -O0 -fsanitize=address -fsanitize=bounds
+CHECKFLAGS = -fsanitize=address -fsanitize=bounds
 OPTFLAGS = -g -O3 -no-vec
 WFLAG	= -Wall
 LPJFLAGS  = -DUSE_RAND48 -DSAFE -DWITH_FPE -DUSE_NETCDF -DUSE_UDUNITS -DPERMUTE -DUSE_TIMING -DSTRICT_JSON #-DDAILY_ESTABLISHMENT
