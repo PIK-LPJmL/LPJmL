@@ -94,6 +94,7 @@ int main(int argc,char **argv)
   {
     if(readcoord(grid,c+i,&res))
     {
+      free(c);
       closecoord(grid);
       fprintf(stderr,"Error reading cell %d in '%s'.\n",i,argv[1]);
       return EXIT_FAILURE;
@@ -104,22 +105,28 @@ int main(int argc,char **argv)
   filename.name=argv[2];
   grid=opencoord(&filename,TRUE);
   if(grid==NULL)
+  {
+    free(c);
     return EXIT_FAILURE;
+  }
   ngrid2=numcoord(grid);
   getcellsizecoord(&lon,&lat,grid);
   if(lon!=res.lon || lat!=res.lat)
   {
     fprintf(stderr,"Error resolution (%g,%g) in '%s' differs from (%g,%g) in '%s'.\n",
             lat,lon,argv[2],res.lat,res.lon,argv[1]);
+    closecoord(grid);
+    free(c);
     return EXIT_FAILURE;
   }
   res.lon=lon;
   res.lat=lat;
   c2=newvec(Coord,ngrid2);
-  if(c==NULL)
+  if(c2==NULL)
   {
+    free(c);
     closecoord(grid);
-    printallocerr("c");
+    printallocerr("c2");
     return EXIT_FAILURE;
   }
   for(i=0;i<ngrid2;i++)
@@ -128,6 +135,8 @@ int main(int argc,char **argv)
     {
       closecoord(grid);
       fprintf(stderr,"Error reading cell %d in '%s'.\n",i,argv[2]);
+      free(c);
+      free(c2);
       return EXIT_FAILURE;
     }
     //printf("c:%g %g\n",c[i].lon,c[i].lat);
@@ -136,12 +145,17 @@ int main(int argc,char **argv)
   file=fopen(argv[3],"wb");
   if(file==NULL)
   {
+    free(c);
+    free(c2);
     fprintf(stderr,"Error opening '%s': %s.\n",argv[3],strerror(errno));
     return EXIT_FAILURE;
   }
   if(fwriteheader(file,&header,LPJGRID_HEADER,version))
   {
+    free(c);
+    free(c2);
     fprintf(stderr,"Error writing header in '%s'.\n",argv[3]);
+    fclose(file);
     return EXIT_FAILURE;
   }
   count=0;
@@ -158,8 +172,8 @@ int main(int argc,char **argv)
       switch(header.datatype)
       {
         case LPJ_SHORT:
-          scoord.lon=(short)(c[i].lon*0.01);
-          scoord.lat=(short)(c[i].lat*0.01);
+          scoord.lon=(short)(c[i].lon/header.scalar);
+          scoord.lat=(short)(c[i].lat/header.scalar);
           fwrite(&scoord,sizeof(Intcoord),1,file);
           break;
         case LPJ_FLOAT:
@@ -178,6 +192,8 @@ int main(int argc,char **argv)
       count++;
     }
   }
+  free(c);
+  free(c2);
   printf("\nNumber of cells in file %d, %d skipped.\n",
          count,ngrid-count);
   header.ncell=count;
