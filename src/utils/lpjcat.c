@@ -23,11 +23,11 @@ typedef struct
   Header header;
 } Item;
 
-static int compare(const Item *a,const Item *b)
+static int compare(const void *a,const void *b)
 {
-  if(a->header.firstcell<b->header.firstcell)
+  if(((const Item *)a)->header.firstcell<((const Item *)b)->header.firstcell)
     return -1;
-  else if(a->header.firstcell==b->header.firstcell)
+  else if(((const Item *)a)->header.firstcell==((const Item *)b)->header.firstcell)
     return 0;
   else
     return 1;
@@ -113,7 +113,7 @@ int main(int argc,char **argv)
     ncell+=item[count].header.ncell;
     count++;
   }
-  qsort(item,count,sizeof(Item),(int(*)(const void *,const void *))compare);
+  qsort(item,count,sizeof(Item),compare);
   header.firstyear=item[0].header.firstyear;
   if(count==0)
   {
