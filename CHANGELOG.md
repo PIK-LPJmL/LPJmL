@@ -26,7 +26,7 @@ of `major.minor.patch` with
 
 ### Changed
 
-- Option `-check` of `configure.sh` enables now run-time checks of memory leaks and memory access out of bounds and udefined variables for gcc and icx compiler. Optimization is not disabled. Use options `-debug -check` to disable.
+- Option `-check` of `configure.sh` enables now run-time checks of memory leaks and memory access out of bounds and undefined variables for gcc and icx compiler. Optimization is not disabled. Use options `-debug -check` to disable.
 - Datatype `List` used in `fprintfiles.c`.
 - All allocated memory is now freed in `getcountry.c`, `lpjfiles.c`, `lpjcheck.c`, `mathclm.c`, `reservoir2cdf.c`, `printglobal.c` and `printharvest.c`.
 
@@ -40,10 +40,12 @@ of `major.minor.patch` with
 - Call to `snprintf()` replaced by `getsprintf()` in `reservoir2cdf.c`.
 - Datatype for index and writing the header corrected in `lpjcat.c`.
 - Functions for qsort(), bisect(), and leftmostzero() changed to avoid run-time errors with `-check` option.
-- Pointer set to zero  if `k_est`is zero in `initmanage.c`.
+- Pointer set to NULL  if `k_est`is NULL in `initmanage.c`.
 - Missing argument added in opening aquifer file for IMAGE.
 - Scaling of coordinates fixed in `joingrid.c`.
 - Fraction pointer initialized to NULL in `freadresdata.c` to avoid SEGV in `lpjprint.c` if reservoir data is read from restart file.
+- Index set correctly for outflow cells in `regriddrain.c`.
+- Check for maximum discharge length corrected in `printdrain.c`.
 
 
 ## [5.9.22] - 2025-03-14
