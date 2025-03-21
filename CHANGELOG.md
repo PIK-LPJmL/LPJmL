@@ -46,6 +46,7 @@ of `major.minor.patch` with
 - Fraction pointer initialized to NULL in `freadresdata.c` to avoid SEGV in `lpjprint.c` if reservoir data is read from restart file.
 - Index set correctly for outflow cells in `regriddrain.c`.
 - Check for maximum discharge length corrected in `printdrain.c`.
+- Number of years of clm file set to 1 in `grid2clm.c`.
 
 
 ## [5.9.22] - 2025-03-14
