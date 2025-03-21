@@ -43,6 +43,7 @@ of `major.minor.patch` with
 - Pointer set to zero  if `k_est`is zero in `initmanage.c`.
 - Missing argument added in opening aquifer file for IMAGE.
 - Scaling of coordinates fixed in `joingrid.c`.
+- Fraction pointer initialized to NULL in `freadresdata.c` to avoid SEGV in `lpjprint.c` if reservoir data is read from restart file.
 
 
 ## [5.9.22] - 2025-03-14
