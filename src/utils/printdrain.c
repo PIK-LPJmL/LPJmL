@@ -19,16 +19,13 @@
 static int getdrain(FILE *file,int *index,int pos,char *headername,
                     int version,Bool swap,Bool *iserror)
 {
-  struct
-  {
-    int index,len;
-  } buf;
+  Routing buf;
   if(fseek(file,headersize(headername,version)+sizeof(buf)*pos,SEEK_SET))
   {
     *iserror=TRUE;
     return 0;
   }
-  if(fread(&buf,sizeof(buf),1,file)!=1)
+  if(getroute(file,&buf,swap))
   {
     *iserror=TRUE;
     return 0;
@@ -119,9 +116,9 @@ int main(int argc,char **argv)
     }
     while(v>len && vec[count]>=0)
     {
-      if(count==COUNT_SIZE)
+      if(count==COUNT_SIZE-1)
       {
-        fprintf(stderr,"River route too long, must be < %d.\n",COUNT_SIZE);
+        fprintf(stderr,"River route too long, must be < %d.\n",COUNT_SIZE-1);
         return EXIT_FAILURE;
       }  
       len+=getdrain(drainage,vec+count+1,vec[count],headername,version,swap,&iserror);
