@@ -132,12 +132,12 @@ void fuelload(const Stand *stand,  /**< pointer to stand */
 
   if(livegrass > 0)
   {
-        /*compute live fuel moisture based on phen-LFMC empirical relation for each grass PFT, weighted by FPC */
     if(config->gsilivefuel)
-    /* use GSI based phenolgy */
+      /* use GSI based phenolgy */
       livefuel->M[0]=max(0.3,min(2.5,4.4*stand->cell->gsi_cum-1.9));
     else
     {
+      /*compute live fuel moisture based on phen-LFMC empirical relation for each grass PFT, weighted by FPC */
       fpc_grass_sum=0;
       livefuel->M[0]=0;
 
@@ -152,7 +152,7 @@ void fuelload(const Stand *stand,  /**< pointer to stand */
       }
       if(fpc_grass_sum>0)
         livefuel->M[0] = livefuel->M[0]/fpc_grass_sum;
-    } 
+    }
 
     ratio_c3_livegrass = livefuel->pot_fc_lg_c3 / livegrass;
     ratio_c4_livegrass = livefuel->pot_fc_lg_c4 / livegrass;
