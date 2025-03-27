@@ -16,9 +16,9 @@
 
 #include "lpj.h"
 
-Bool parse_config_netcdf(Netcdf_config *config, /**< NetCDF settings */
-                         const char *filename   /**< filename of JSON file */
-                        )                       /** \return TRUE on error */
+Bool parse_config_netcdf(Netcdf_config *nc_config, /**< NetCDF settings */
+                         const char *filename      /**< filename of JSON file */
+                        )                          /** \return TRUE on error */
 {
   FILE *file;
   LPJfile *lpjfile;
@@ -36,7 +36,7 @@ Bool parse_config_netcdf(Netcdf_config *config, /**< NetCDF settings */
     fclose(file);
     return TRUE;
   }
-  rc=fscanconfig_netcdf(lpjfile,config,NULL,ERR);
+  rc=fscanconfig_netcdf(lpjfile,nc_config,NULL,ERR);
   closeconfig(lpjfile);
   fclose(file);
   return rc;

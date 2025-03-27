@@ -37,7 +37,7 @@ int main(int argc,char **argv)
   Filename name;
   Header header;
   Bool swap,isnetcdf4;
-  Netcdf_config config;
+  Netcdf_config nc_config;
   int iarg,i,n,nlon,nlat,j,offset[2]={0,0};
   int ncid,rc,lat_dim_id,lon_dim_id,lon_var_id,lat_var_id;
   int dim[2];
@@ -54,7 +54,7 @@ int main(int argc,char **argv)
   unsigned int soilcode;
   String headername,line;
   config_filename=NULL;
-  initsetting_netcdf(&config);
+  initsetting_netcdf(&nc_config);
   compress=0;
   isnetcdf4=FALSE;
   for(iarg=1;iarg<argc;iarg++)
@@ -120,13 +120,13 @@ int main(int argc,char **argv)
   }
   if(config_filename!=NULL)
   {
-    if(parse_config_netcdf(&config,config_filename))
+    if(parse_config_netcdf(&nc_config,config_filename))
     {
       fprintf(stderr,"Error reading NetCDF configuration file `%s`.\n",config_filename);
       return EXIT_FAILURE;
     }
   }
-  soil=opencoord_netcdf(argv[iarg],var,&config,TRUE);
+  soil=opencoord_netcdf(argv[iarg],var,&nc_config,TRUE);
   if(soil==NULL)
     return EXIT_FAILURE;
   getresolution_netcdf(soil,&resolution);
@@ -251,29 +251,29 @@ int main(int argc,char **argv)
   error(rc);
   free(s);
   free(cmdline);
-  rc=nc_def_dim(ncid,config.lat.dim,nlat,&lat_dim_id);
+  rc=nc_def_dim(ncid,nc_config.lat.dim,nlat,&lat_dim_id);
   error(rc);
-  rc=nc_def_dim(ncid,config.lon.dim,nlon,&lon_dim_id);
+  rc=nc_def_dim(ncid,nc_config.lon.dim,nlon,&lon_dim_id);
   error(rc);
-  rc=nc_def_var(ncid,config.lat.name,NC_DOUBLE,1,&lat_dim_id,&lat_var_id);
+  rc=nc_def_var(ncid,nc_config.lat.name,NC_DOUBLE,1,&lat_dim_id,&lat_var_id);
   error(rc);
-  rc=nc_def_var(ncid,config.lon.name,NC_DOUBLE,1,&lon_dim_id,&lon_var_id);
+  rc=nc_def_var(ncid,nc_config.lon.name,NC_DOUBLE,1,&lon_dim_id,&lon_var_id);
   error(rc);
-  rc=nc_put_att_text(ncid,lon_var_id,"units",strlen(config.lon.unit),
-                     config.lon.unit);
+  rc=nc_put_att_text(ncid,lon_var_id,"units",strlen(nc_config.lon.unit),
+                     nc_config.lon.unit);
   error(rc);
-  rc=nc_put_att_text(ncid, lon_var_id,"long_name",strlen(config.lon.long_name),config.lon.long_name);
+  rc=nc_put_att_text(ncid, lon_var_id,"long_name",strlen(nc_config.lon.long_name),nc_config.lon.long_name);
   error(rc);
-  rc=nc_put_att_text(ncid, lon_var_id,"standard_name",strlen(config.lon.standard_name),config.lon.standard_name);
+  rc=nc_put_att_text(ncid, lon_var_id,"standard_name",strlen(nc_config.lon.standard_name),nc_config.lon.standard_name);
   error(rc);
   rc=nc_put_att_text(ncid, lon_var_id,"axis",strlen("X"),"X");
   error(rc);
-  rc=nc_put_att_text(ncid,lat_var_id,"units",strlen(config.lat.unit),
-                     config.lat.unit);
+  rc=nc_put_att_text(ncid,lat_var_id,"units",strlen(nc_config.lat.unit),
+                     nc_config.lat.unit);
   error(rc);
-  rc=nc_put_att_text(ncid, lat_var_id,"long_name",strlen(config.lat.long_name),config.lat.long_name);
+  rc=nc_put_att_text(ncid, lat_var_id,"long_name",strlen(nc_config.lat.long_name),nc_config.lat.long_name);
   error(rc);
-  rc=nc_put_att_text(ncid, lat_var_id,"standard_name",strlen(config.lat.standard_name),config.lat.standard_name);
+  rc=nc_put_att_text(ncid, lat_var_id,"standard_name",strlen(nc_config.lat.standard_name),nc_config.lat.standard_name);
   error(rc);
   rc=nc_put_att_text(ncid, lat_var_id,"axis",strlen("Y"),"Y");
   error(rc);
@@ -290,8 +290,8 @@ int main(int argc,char **argv)
   error(rc);
   rc=nc_put_att_text(ncid, index_varid,"long_name",strlen(INDEX_LONG_NAME),INDEX_LONG_NAME);
   error(rc);
-  nc_put_att_int(ncid, index_varid,"missing_value",NC_INT,1,&config.missing_value.i);
-  rc=nc_put_att_int(ncid, index_varid,"_FillValue",NC_INT,1,&config.missing_value.i);
+  nc_put_att_int(ncid, index_varid,"missing_value",NC_INT,1,&nc_config.missing_value.i);
+  rc=nc_put_att_int(ncid, index_varid,"_FillValue",NC_INT,1,&nc_config.missing_value.i);
   error(rc);
   if(header.nbands==2)
   {
@@ -307,8 +307,8 @@ int main(int argc,char **argv)
     error(rc);
     rc=nc_put_att_text(ncid, len_varid,"long_name",strlen("length of river"),"length of river");
     error(rc);
-    nc_put_att_float(ncid, len_varid,"missing_value",NC_FLOAT,1,&config.missing_value.f);
-    rc=nc_put_att_float(ncid, len_varid,"_FillValue",NC_FLOAT,1,&config.missing_value.f);
+    nc_put_att_float(ncid, len_varid,"missing_value",NC_FLOAT,1,&nc_config.missing_value.f);
+    rc=nc_put_att_float(ncid, len_varid,"_FillValue",NC_FLOAT,1,&nc_config.missing_value.f);
     error(rc);
   }
   rc=nc_enddef(ncid);
@@ -320,13 +320,13 @@ int main(int argc,char **argv)
   out=newvec(int,nlon*nlat);
   check(out);
   for(i=0;i<nlon*nlat;i++)
-    out[i]=config.missing_value.i;
+    out[i]=nc_config.missing_value.i;
   if(header.nbands==2)
   {
     len=newvec(float,nlon*nlat);
     check(len);
     for(i=0;i<nlon*nlat;i++)
-      len[i]=config.missing_value.f;
+      len[i]=nc_config.missing_value.f;
   }
   for(i=0;i<n;i++)
   {

@@ -84,11 +84,11 @@ static void freeaxis(Axis *axis /**< axis definition */
   free(axis->unit);
 } /* of 'freeaxis' */
 
-Bool fscanconfig_netcdf(LPJfile *file,         /**< pointer to LPJ file */
-                        Netcdf_config *config, /**< NetCDF settings */
-                        const char *key,       /**< name of NetCDF configuration or NULL*/
-                        Verbosity verb         /**< verbosity level (NO_ERR,ERR,VERB) */
-                       )                       /** \return TRUE on error */
+Bool fscanconfig_netcdf(LPJfile *file,            /**< pointer to LPJ file */
+                        Netcdf_config *nc_config, /**< NetCDF settings */
+                        const char *key,          /**< name of NetCDF configuration or NULL*/
+                        Verbosity verb            /**< verbosity level (NO_ERR,ERR,VERB) */
+                       )                          /** \return TRUE on error */
 {
   LPJfile *d,*m;
   const char *s;
@@ -102,51 +102,51 @@ Bool fscanconfig_netcdf(LPJfile *file,         /**< pointer to LPJ file */
   m=fscanstruct(d,"missing_value",verb);
   if(m==NULL)
     return TRUE;
-  if(fscanfloat(m,&config->missing_value.f,"float",FALSE,verb))
+  if(fscanfloat(m,&nc_config->missing_value.f,"float",FALSE,verb))
     return TRUE;
-  if(fscanint(m,&config->missing_value.i,"int",FALSE,verb))
+  if(fscanint(m,&nc_config->missing_value.i,"int",FALSE,verb))
     return TRUE;
   if(fscanint(m,&i,"short",FALSE,verb))
     return TRUE;
-  config->missing_value.s=(short)i;
+  nc_config->missing_value.s=(short)i;
   if(fscanint(m,&i,"byte",FALSE,verb))
     return TRUE;
-  config->missing_value.b=(Byte)i;
-  if(fscanaxis(d,&config->lat,"latitude",verb))
+  nc_config->missing_value.b=(Byte)i;
+  if(fscanaxis(d,&nc_config->lat,"latitude",verb))
     return TRUE;
-  if(fscanaxis(d,&config->lat_bnds,"latitude_bnds",verb))
+  if(fscanaxis(d,&nc_config->lat_bnds,"latitude_bnds",verb))
     return TRUE;
-  if(fscanaxis(d,&config->lon,"longitude",verb))
+  if(fscanaxis(d,&nc_config->lon,"longitude",verb))
     return TRUE;
-  if(fscanaxis(d,&config->lon_bnds,"longitude_bnds",verb))
+  if(fscanaxis(d,&nc_config->lon_bnds,"longitude_bnds",verb))
     return TRUE;
-  if(fscanaxis(d,&config->time,"time",verb))
+  if(fscanaxis(d,&nc_config->time,"time",verb))
     return TRUE;
-  if(fscanaxis(d,&config->time_bnds,"time_bnds",verb))
+  if(fscanaxis(d,&nc_config->time_bnds,"time_bnds",verb))
     return TRUE;
-  if(fscanaxis(d,&config->depth,"depth",verb))
+  if(fscanaxis(d,&nc_config->depth,"depth",verb))
     return TRUE;
-  if(fscanaxis(d,&config->depth_bnds,"depth_bnds",verb))
+  if(fscanaxis(d,&nc_config->depth_bnds,"depth_bnds",verb))
     return TRUE;
-  if(fscanaxis(d,&config->pft,"pft",verb))
+  if(fscanaxis(d,&nc_config->pft,"pft",verb))
     return TRUE;
-  if(fscanaxis(d,&config->pft_name,"pft_name",verb))
+  if(fscanaxis(d,&nc_config->pft_name,"pft_name",verb))
     return TRUE;
   s=fscanstring(d,NULL,"bnds_name",verb);
   if(s==NULL)
     return TRUE;
-  config->bnds_name=strdup(s);
-  checkptr(config->bnds_name);
+  nc_config->bnds_name=strdup(s);
+  checkptr(nc_config->bnds_name);
   s=fscanstring(d,NULL,"calendar",verb);
   if(s==NULL)
     return TRUE;
-  config->calendar=strdup(s);
-  checkptr(config->calendar);
+  nc_config->calendar=strdup(s);
+  checkptr(nc_config->calendar);
   s=fscanstring(d,NULL,"years",verb);
   if(s==NULL)
     return TRUE;
-  config->years_name=strdup(s);
-  checkptr(config->years_name);
+  nc_config->years_name=strdup(s);
+  checkptr(nc_config->years_name);
   return FALSE;
 } /* of 'fscanconfig_netcdf' */
 
