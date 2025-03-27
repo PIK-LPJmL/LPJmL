@@ -29,7 +29,7 @@ Files are JSON metafiles describing the structure of the data. An additional JSO
 -type {byte|short|int|float|double}
 Set datatype of clm file. Default is short.
 .TP
-add|sub|mul|div|avg|max|min|repl|float|int|sum
+add|sub|mul|div|avg|max|min|repl|float|int|sum|tsum|mean
 Mathematical operation to be performed. The following operations are defined:
 .TP
 add
@@ -85,7 +85,7 @@ Add data of 2 files
 .B mathclm
 add infile1.clm infile2.clm outfile.clm
 .TP
-Convert data of file to float
+Convert data of file to float.
 .B mathclm
 float infile.clm outfile.clm
 .TP

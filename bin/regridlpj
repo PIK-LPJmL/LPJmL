@@ -17,7 +17,7 @@
 #################################################################################
 
 cmd=$(basename $0)
-USAGE="Usage: $0 [-dir path] [-inpath path] [-crumonthly] [-oldlu] [-madrat] [-zero] [-search] suffix [countrycode ...]"
+USAGE="Usage: $0 [-dir path] [-inpath path] [-crumonthly] [-oldlu] [-madrat] [-zero] [-search] filesuffix [countrycode ...]"
 args="$cmd $*"
 opt=""
 cru=0
