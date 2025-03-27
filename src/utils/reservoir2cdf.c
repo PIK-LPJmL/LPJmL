@@ -551,6 +551,9 @@ int main(int argc,char **argv)
     {
       fprintf(stderr,"No time axis set, but number of time steps>1 in '%s'.\n",
               filename);
+      free(source);
+      free(history);
+      freeattrs(global_attrs,n_global);
       free(grid);
       fclose(file);
       return EXIT_FAILURE;
@@ -560,6 +563,9 @@ int main(int argc,char **argv)
     {
       fprintf(stderr,"Number of cells=%d in '%s' is different from %d in '%s'.\n",
               header.ncell,filename,ngrid,grid_filename);
+      free(source);
+      free(history);
+      freeattrs(global_attrs,n_global);
       free(grid);
       fclose(file);
       return EXIT_FAILURE;
@@ -573,6 +579,9 @@ int main(int argc,char **argv)
     {
       fprintf(stderr,"Longitudinal cell size=%g in '%s' differs from %g in '%s'.\n",
               header.cellsize_lon,filename,res.lon,grid_filename);
+      free(source);
+      free(history);
+      freeattrs(global_attrs,n_global);
       free(grid);
       fclose(file);
       return EXIT_FAILURE;
@@ -581,6 +590,9 @@ int main(int argc,char **argv)
     {
       fprintf(stderr,"Latitudinal cell size=%g in '%s' differs from %g in '%s'.\n",
               header.cellsize_lat,filename,res.lat,grid_filename);
+      free(source);
+      free(history);
+      freeattrs(global_attrs,n_global);
       free(grid);
       fclose(file);
       return EXIT_FAILURE;
@@ -606,6 +618,9 @@ int main(int argc,char **argv)
   {
     fprintf(stderr,"Number of bands=%d in '%s' must be 10.\n",
             header.nbands,filename);
+    free(source);
+    free(history);
+    freeattrs(global_attrs,n_global);
     free(grid);
     fclose(file);
     return EXIT_FAILURE;
@@ -613,6 +628,9 @@ int main(int argc,char **argv)
   index=createindex(grid,ngrid,res,isglobal,FALSE);
   if(index==NULL)
   {
+    free(source);
+    free(history);
+    freeattrs(global_attrs,n_global);
     free(grid);
     fclose(file);
     return EXIT_FAILURE;
@@ -629,7 +647,7 @@ int main(int argc,char **argv)
     freecoordarray(index);
     fclose(file);
     return EXIT_FAILURE;
-  } 
+  }
   rdata=newvec(Reservoir,ngrid);
   if(rdata==NULL)
   {

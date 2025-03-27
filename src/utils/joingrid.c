@@ -26,11 +26,11 @@ int main(int argc,char **argv)
   setversion=READ_VERSION;
   struct
   {
-   float lon,lat;
+    float lon,lat;
   } fcoord;
   struct
   {
-   double lon,lat;
+    double lon,lat;
   } dcoord;
   Intcoord scoord;
   for(i=1;i<argc;i++)

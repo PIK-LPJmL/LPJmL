@@ -28,7 +28,7 @@ of `major.minor.patch` with
 
 - Option `-check` of `configure.sh` enables now run-time checks of memory leaks and memory access out of bounds and undefined variables for gcc and icx compiler. Optimization is not disabled. Use options `-debug -check` to disable.
 - Datatype `List` used in `fprintfiles.c`.
-- All allocated memory is now freed in `getcountry.c`, `lpjfiles.c`, `lpjcheck.c`, `mathclm.c`, `reservoir2cdf.c`, `printglobal.c` and `printharvest.c`.
+- All allocated memory is now freed in utilities.
 
 ### Fixed
 

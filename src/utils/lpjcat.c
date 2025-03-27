@@ -122,7 +122,7 @@ int main(int argc,char **argv)
   }
   for(i=1;i<count;i++)
   {
-    if(item[i-1].header.firstcell+item[i-1].header.ncell!=item[i].header.firstcell) 
+    if(item[i-1].header.firstcell+item[i-1].header.ncell!=item[i].header.firstcell)
       fprintf(stderr,"Warning: first cell in %d=%d not last cell+1=%d\n",i,
               item[i].header.firstcell,
               item[i-1].header.firstcell+item[i-1].header.ncell);
@@ -138,7 +138,7 @@ int main(int argc,char **argv)
   o_offset=header_offset;
   offset=0;
   for(i=0;i<count;i++)
-  { 
+  {
     len=getfilesizep(item[i].file)-header_offset-item[i].header.ncell*sizeof(ptr);
     fseek(out,o_offset,SEEK_SET);
     o_offset+=item[i].header.ncell*sizeof(ptr);
@@ -163,6 +163,6 @@ int main(int argc,char **argv)
     free(data);
     fclose(item[i].file);
   }
-  free(item);  
+  free(item);
   return EXIT_SUCCESS;
 } /* of 'main' */
