@@ -47,6 +47,7 @@ of `major.minor.patch` with
 - Index set correctly for outflow cells in `regriddrain.c`.
 - Check for maximum discharge length corrected in `printdrain.c`.
 - Number of years of clm file set to 1 in `grid2clm.c`.
+- Function `fscanlandcovermap.c` corrected (issue https://github.com/PIK-LPJmL/LPJmL/issues/48).
 
 
 ## [5.9.22] - 2025-03-14
