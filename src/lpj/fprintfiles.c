@@ -43,8 +43,8 @@ static void addfilename(List *table,              /**< pointer to table */
                         Bool isyear               /**< input is year dependent */
                        )
 {
-  char *s,*name,n;
-  int first,last,year;
+  char *s,*name;
+  int first,last,year,n;
   if(filename->fmt==FMS || filename->fmt==SOCK)
     return;
   if(filename->fmt==CDF && isyear)
