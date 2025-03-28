@@ -748,6 +748,8 @@ int main(int argc,char **argv)
   free(grid_name.name);
   freemap(map);
   freeattrs(attrs,n_attr);
+  free(history);
+  free(source);
   free(variable);
   free(units);
   free(standard_name);
