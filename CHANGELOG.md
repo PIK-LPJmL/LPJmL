@@ -63,12 +63,12 @@ of `major.minor.patch` with
 - `"coupled_host"` and `"coupler_port"` added to LPJmL configuration to specify where the coupled model is running and which port is used for communication.
 
 
-## [5.9.20] - 2025-01-31
+## [5.9.20] - 2025-03-13
 
 ### Contributors
 
 - author: Werner von Bloh (bloh@pik-potsdam.de)
-- code review: Sebastion Ostberg (ostberg@pik-potsdam.de)
+- code review: Sebastian Ostberg (ostberg@pik-potsdam.de), Jens Heinke (heinke@pik-potsdam.de)
 
 ### Added
 
@@ -99,10 +99,12 @@ of `major.minor.patch` with
 - Missing `else` added in `readclimate()`.
 
 
-## [5.9.19] - 2025-01-31
+## [5.9.19] - 2025-03-12
+
+### Contributors
 
 - author: Werner von Bloh (bloh@pik-potsdam.de)
-- code review:
+- code review: Fabian Stenzel (stenzel@pik-potsdam.de), Jens Heinke (heinke@pik-potsdam.de)
 
 ### Added
 
@@ -112,13 +114,14 @@ of `major.minor.patch` with
 
 - Man page of lpjsubmit refers only to slurm commands.
 - If `icc` compiler is found, this compiler is used.
+- `enablefpc.c` updated to compile under Mac OS.
 
 ### Removed
 
 - Support for old PIK cluster removed.
 - Support for LoadLeveler batch queueing system removed.
 - Support for AIX OS removed.
-- Alias for `lpjml` and obsolete `lpjml.sh`removed in `lpj_paths.sh`.
+- Alias for `lpjml` and obsolete `lpjml.sh` removed in `lpj_paths.sh`.
 
 
 ## [5.9.18] - 2025-01-31
@@ -126,7 +129,7 @@ of `major.minor.patch` with
 ### Contributors
 
 - author: Christoph Müller (cmueller@pik-potsdam.de)
-- code review: Sebastion Ostberg (ostberg@pik-potsdam.de), Marie Hemmen (hemmen@pik-potsdam.de)
+- code review: Sebastian Ostberg (ostberg@pik-potsdam.de), Marie Hemmen (hemmen@pik-potsdam.de)
 
 ### Fixed
 

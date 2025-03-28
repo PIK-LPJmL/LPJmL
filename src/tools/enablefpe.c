@@ -46,6 +46,9 @@ void enablefpe(void)
   fenv.trapstate=1;
   fesetenv(&fenv);
   fp_enable(TRP_INVALID|TRP_OVERFLOW|TRP_DIV_BY_ZERO);
+#elif __clang__
+  /* for Clang C compiler */
+  feraiseexcept(FE_DIVBYZERO|FE_OVERFLOW|FE_INVALID);
 #else
   /* for GNU C and Intel C compiler */
   feenableexcept(FE_DIVBYZERO|FE_OVERFLOW|FE_INVALID);
