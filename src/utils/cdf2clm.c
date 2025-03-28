@@ -542,7 +542,7 @@ int main(int argc,char **argv)
   }
   if(datatype==LPJ_FLOAT && scale!=1)
   {
-    fprintf(stderr,"Warning: Scaling set to %g but datatype is float, scaling set to 1.\n",
+    fprintf(stderr,"Warning: Scaling was set to %g but datatype is float. As scaling factor will be ignored for datatype float, scaling is set to 1.",
             scale);
     scale=1;
   }
@@ -626,6 +626,12 @@ int main(int argc,char **argv)
         else
           printf("\n");
       }
+      data=newvec(float,config.ngridcell*header.nbands*header.nstep);
+      if(data==NULL)
+      {
+        printallocerr("data");
+        return EXIT_FAILURE;
+      }
       switch(header.datatype)
       {
          case LPJ_SHORT:
@@ -645,12 +651,6 @@ int main(int argc,char **argv)
            }
            break;
          case LPJ_FLOAT:
-           data=newvec(float,config.ngridcell*header.nbands*header.nstep);
-           if(data==NULL)
-           {
-             printallocerr("data");
-             return EXIT_FAILURE;
-           }
            break;
          default:
            fprintf(stderr,"Datatype %s not supported.\n",typenames[header.datatype]);

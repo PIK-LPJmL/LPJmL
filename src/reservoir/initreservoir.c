@@ -61,7 +61,7 @@ static Bool initreservoir2(Cell grid[],   /**< LPJ grid */
       return TRUE;
     if(openinputdata(&inst_cap,&config->inst_cap_reservoir_filename,"inst cap reservoir",NULL,LPJ_INT,1.0,0,config))
       return TRUE;
-    if(openinputdata(&height,&config->height_reservoir_filename,"heigbt reservoir","m",LPJ_INT,1.0,0,config))
+    if(openinputdata(&height,&config->height_reservoir_filename,"height reservoir","m",LPJ_INT,1.0,0,config))
       return TRUE;
     if(openinputdata(&purpose,&config->purpose_reservoir_filename,"purpose reservoir",NULL,LPJ_INT,1.0,NPURPOSE,config))
       return TRUE;

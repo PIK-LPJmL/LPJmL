@@ -115,6 +115,7 @@ Stocks littersom(Stand *stand,                      /**< [inout] pointer to stan
   //Real CH4_air;
   Real CH4_air,O2_need;
   Real epsilon_CH4 = 0;
+  Real epsilon_O2 = 0;
   Real oxid_frac = 0.95;  // Assume that 1/2 of the O2 is utilized by other electron acceptors (Wania etal.,2010) only oxidation of Reduced Compounds is left assumed to be together 5%
   Real temp;
   Real socfraction[BOTTOMLAYER];

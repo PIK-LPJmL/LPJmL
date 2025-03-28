@@ -46,7 +46,6 @@ int main(int argc,char **argv)
   int version,compress;
   int src_cell,dst_cell;
   int *out;
-  int s_len;
   char *s,*endptr;
   time_t t;
   char *cmdline;
@@ -225,9 +224,8 @@ int main(int argc,char **argv)
   }
   time(&t);
   cmdline=catstrvec(argv,argc);
-  s_len=snprintf(NULL,0,"%s: %s",strdate(&t),cmdline);
-  s=malloc(s_len+1);
-  sprintf(s,"%s: %s",strdate(&t),cmdline);
+  s=getsprintf("%s: %s",strdate(&t),cmdline);
+  check(s);
   rc=nc_put_att_text(ncid,NC_GLOBAL,"history",strlen(s),s);
   error(rc);
   free(s);

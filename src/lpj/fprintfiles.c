@@ -47,7 +47,6 @@ static void addfilename(Table *table,             /**< pointer to table */
                        )
 {
   char *s;
-  size_t len;
   int first,last,year;
   if(filename->fmt==FMS || filename->fmt==SOCK)
     return;
@@ -62,11 +61,11 @@ static void addfilename(Table *table,             /**< pointer to table */
       else
       {
         table->names=(char **)realloc(table->names,(table->size+last-first+1)*sizeof(char *));
+        check(table->names);
         for(year=first;year<=last;year++)
         {
-          len=snprintf(NULL,0,s,year);
-          table->names[table->size+year-first]=malloc(len+1);
-          sprintf(table->names[table->size+year-first],s,year);
+          table->names[table->size+year-first]=getsprintf(s,year);
+          check(table->names[table->size+year-first]);
         }
         free(s);
         table->size+=last-first+1;
@@ -75,20 +74,26 @@ static void addfilename(Table *table,             /**< pointer to table */
     else
     {
       table->names=(char **)realloc(table->names,(table->size+1)*sizeof(char *));
+      check(table->names);
       table->names[table->size]=strdup(filename->name);
+      check(table->names[table->size]);
       table->size++;
     }
   }
   else if(filename->fmt==META)
   {
     table->names=(char **)realloc(table->names,(table->size+1)*sizeof(char *));
+    check(table->names);
     table->names[table->size]=strdup(filename->name);
+    check(table->names[table->size]);
     table->size++;
     s=getfilefrommeta(filename->name,TRUE);
     if(s!=NULL)
     {
       table->names=(char **)realloc(table->names,(table->size+1)*sizeof(char *));
+      check(table->names);
       table->names[table->size]=strdup(s);
+      check(table->names[table->size]);
       table->size++;
       free(s);
     }
@@ -96,7 +101,9 @@ static void addfilename(Table *table,             /**< pointer to table */
   else
   {
     table->names=(char **)realloc(table->names,(table->size+1)*sizeof(char *));
+    check(table->names);
     table->names[table->size]=strdup(filename->name);
+    check(table->names[table->size]);
     table->size++;
   }
 } /* of 'addfilename' */
@@ -118,7 +125,6 @@ void fprintfiles(FILE *file,          /**< pointer to text output file */
                 )
 {
   Table table={NULL,0};
-  size_t len;
   int i,j;
   if(isreadrestart(config))
     fprintf(file,"%s\n",config->restart_filename);
@@ -217,16 +223,15 @@ void fprintfiles(FILE *file,          /**< pointer to text output file */
   if(config->reservoir)
   {
     addfilename(&table,&config->elevation_filename,FALSE);
+    addfilename(&table,&config->reservoir_filename,FALSE);
     if(config->reservoir_filename.fmt==CDF)
     {
-      addfilename(&table,&config->reservoir_filename,FALSE);
       addfilename(&table,&config->capacity_reservoir_filename,FALSE);
+      addfilename(&table,&config->inst_cap_reservoir_filename,FALSE);
       addfilename(&table,&config->area_reservoir_filename,FALSE);
       addfilename(&table,&config->height_reservoir_filename,FALSE);
       addfilename(&table,&config->purpose_reservoir_filename,FALSE);
     }
-    else
-      addfilename(&table,&config->reservoir_filename,FALSE);
   }
 #ifdef IMAGE
   if(config->aquifer_irrig)
@@ -266,15 +271,15 @@ void fprintfiles(FILE *file,          /**< pointer to text output file */
             table.names=(char **)realloc(table.names,(table.size+(config->lastyear-config->outputyear+1)*2)*sizeof(char *));
           else
             table.names=(char **)realloc(table.names,(table.size+config->lastyear-config->outputyear+1)*sizeof(char *));
+          check(table.names);
           for(j=config->outputyear;j<=config->lastyear;j++)
           {
-            len=snprintf(NULL,0,config->outputvars[i].filename.name,j);
-            table.names[table.size]=malloc(len+1);
-            sprintf(table.names[table.size],config->outputvars[i].filename.name,j);
+            table.names[table.size]=getsprintf(config->outputvars[i].filename.name,j);
+            check(table.names[table.size]);
             table.size++;
             if(config->outputvars[i].filename.meta)
             {
-              table.names[table.size]=malloc(len+1+strlen(config->json_suffix));
+              table.names[table.size]=malloc(strlen(table.names[table.size-1])+1+strlen(config->json_suffix));
               strcat(strcpy(table.names[table.size],table.names[table.size-1]),config->json_suffix);
               table.size++;
             }
@@ -283,12 +288,16 @@ void fprintfiles(FILE *file,          /**< pointer to text output file */
         else
         {
           table.names=(char **)realloc(table.names,(table.size+1)*sizeof(char *));
+          check(table.names);
           table.names[table.size]=strdup(config->outputvars[i].filename.name);
+          check(table.names[table.size]);
           table.size++;
           if(config->outputvars[i].filename.meta)
           {
             table.names=(char **)realloc(table.names,(table.size+1)*sizeof(char *));
+            check(table.names);
             table.names[table.size]=malloc(strlen(table.names[table.size-1])+1+strlen(config->json_suffix));
+            check(table.names[table.size]);
             strcat(strcpy(table.names[table.size],table.names[table.size-1]),config->json_suffix);
             table.size++;
           }
