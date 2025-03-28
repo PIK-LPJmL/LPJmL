@@ -25,7 +25,7 @@
 
 #include "lpj.h"
 
-#define e0 308.56 /* parameter in Arrhenius temp response function 308.56 (Sitch)  268.56 (neu) */
+#define e0 308.56 /* parameter in Arrhenius temp response function 308.56 (Sitch)*/
 #define Q10 1.8
 //#define USE_Q10
 

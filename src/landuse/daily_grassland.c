@@ -172,7 +172,7 @@ Real daily_grassland(Stand *stand,                /**< stand pointer */
 
   index=data->irrigation.irrigation*getnirrig(ncft,config)+(stand->type->landusetype==GRASSLAND ? rmgrass(ncft) : rothers(ncft));
 
-  if(data->irrigation.irrigation && data->irrigation.irrig_amount>epsilon)
+  if(data->irrigation.irrigation && data->irrigation.irrig_amount>epsilon && (stand->type->landusetype==GRASSLAND || stand->type->landusetype==OTHERS))
   {
     irrig_apply=max(data->irrigation.irrig_amount-rainmelt,0);  /*irrigate only missing deficit after rain, remainder goes to stor */
     data->irrigation.irrig_stor+=data->irrigation.irrig_amount-irrig_apply;
@@ -394,12 +394,12 @@ Real daily_grassland(Stand *stand,                /**< stand pointer */
     cleaf_max+=grass->max_leaf;
   }
 
-  if (stand->type->landusetype != SETASIDE_RF && stand->type->landusetype != SETASIDE_IR)
+  if (stand->type->landusetype != SETASIDE_RF && stand->type->landusetype != SETASIDE_IR && stand->type->landusetype != SETASIDE_WETLAND)
   {
     switch(stand->type->landusetype==GRASSLAND ? stand->cell->ml.grass_scenario : config->grazing_others)
     {
       case GS_DEFAULT: // default
-        if(cleaf>cleaf_max && stand->growing_days>=20)
+        if(cleaf>cleaf_max && stand->growing_days>=30)
         {
           isphen=TRUE;
           hfrac=1-param.hfrac2/(param.hfrac2+cleaf);

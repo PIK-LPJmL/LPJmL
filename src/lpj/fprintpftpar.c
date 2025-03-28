@@ -75,6 +75,7 @@ void fprintpftpar(FILE *file,           /**< pointer to text file */
                "soc_k:\t\t%g\n"
                "inun_thres:\t%g (m)\n"
                "inun_dur:\t%g (day)\n"
+               "alpha_e:\t\t%g\n"
                "fuel bulk dens.:\t%g (kg/m3)\n"
                "wind damp.:\t%g\n"
                "roughness length:\t%g\n"
@@ -93,7 +94,7 @@ void fprintpftpar(FILE *file,           /**< pointer to text file */
           pftpar->temp_photos.high,pftpar->b,pftpar->temp.low,pftpar->temp.high,
           pftpar->aprec_min,pftpar->k_litter10.leaf*NDAYYEAR,
           pftpar->k_litter10.wood*NDAYYEAR,pftpar->k_litter10.q10_wood,
-          pftpar->soc_k,pftpar->inun_thres,pftpar->inun_dur,
+          pftpar->soc_k,pftpar->inun_thres,pftpar->inun_dur,pftpar->alpha_e,
           pftpar->fuelbulkdensity,pftpar->windspeed,pftpar->roughness,
           pftpar->emissionfactor.co2,
           pftpar->emissionfactor.co,pftpar->emissionfactor.ch4,

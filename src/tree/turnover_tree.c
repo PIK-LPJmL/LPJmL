@@ -163,6 +163,7 @@ Stocks turnover_tree(Litter *litter, /**< Litter pool */
     litter->item[pft->litter].bg.carbon+=tree->ind.root.carbon*pft->nind;
     getoutput(output,LITFALLC,config)+=tree->ind.root.carbon*pft->nind*pft->stand->frac;
     tree->ind.root.carbon=0.0;
+    if(litter->item[pft->litter].bg.carbon<0) fprintf(stderr," turnover_tree bg.carbon: %g root.carbon: %g excess_carbon: %g\n",litter->item[pft->litter].bg.carbon,tree->ind.root.carbon,tree->excess_carbon);
   }
   turn.sapwood.nitrogen=tree->ind.sapwood.nitrogen*treepar->turnover.sapwood*(1-param.sapwood_recovery);   /*0.7 is a bit arbitrary (check for literature values), but not all nitrogen of the sapwood should go to heartwood*/
   tree->ind.leaf.nitrogen-= turn.leaf.nitrogen;
