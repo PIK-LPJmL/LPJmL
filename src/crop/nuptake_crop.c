@@ -43,7 +43,7 @@ Real nuptake_crop(Pft *pft,             /**< pointer to PFT data */
   Real autofert_n=0;
   Real rootdist_n[LASTLAYER];
   Real nc_ratio;
-  Real autofert=config->fertilizer_input;
+  int autofert=config->fertilizer_input;
 //  if(!strcmp(pft->par->name,"rice"))
 //    autofert=AUTO_FERTILIZER;
   int l,nirrig,nnat,index;

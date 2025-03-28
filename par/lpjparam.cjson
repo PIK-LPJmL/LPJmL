@@ -32,17 +32,17 @@
     "minlandfrac" : 1e-6,      /* minimum land fraction used if landfrac=0 */
     "tinyfrac" : 1e-6,         /* minimum land-use fraction used by all_crops */
     "k_litter10" : 0.3,        /* 0.3 k_litter10 only for belowground litter  (1/yr) */
-    "k_soil10" : { "fast" : 0.03, "slow":  0.001}, /* fast, slow k_soil10  (1/yr) */
+    "k_soil10" : { "fast" : 0.04, "slow":  0.001}, /* fast, slow k_soil10  (1/yr) */
     "init_soiln" : { "fast" : 2000.0, "slow":  1000.0}, /* initial fast and slow soil nitrogen (gN/m2) 2500 2500*/
     "maxsnowpack": 20000.0,    /* max. snow pack (mm) */
-    "soildepth_evap" : 300.0,  /* depth of sublayer at top of upper soil layer (mm) */
+    "soildepth_evap" : 350.0,  /* depth of sublayer at top of upper soil layer (mm) */
     "soil_infil" : 2.0,        /* default soil infiltration */
     "soil_infil_litter" : 0.6, /* soil infiltration intensification by litter cover was 2 but it had a really strong effect*/
     "pch4" :  801,             /* pre-industrial atmospheric CH4 (801 ppb) */
     "lgm_ch4" : 460,           /* Eemian (460) LGM (466) atmospheric CH4 (ppb) */
     "ch4_ip" : 1790,           /* initial  pre-industrial amount of atmospheric CH4 (ppb) */
     "k" : 0.0548,              /* k    k = 7.4e-7 * atomic_mass_C / atomic_mass_N * seconds_per_day = 0.0548 Sprugel et al. 1996, Eqn 7*/
-    "theta" : 0.95,             /* theta */
+    "theta" : 0.95,            /* theta */
     "alphac3" : 0.065,          /* alphac3 Intrinsic quantum efficiency of CO2 uptake in C3 plants 0.08 */
     "alphac4" : 0.05,          /* alphac4 Intrinsic quantum efficiency of CO2 uptake in C4 plants 0.04 0.053*/
     "r_growth" : 0.25,         /* r_growthgrowth respiration per unit NPP 0.3*/
@@ -50,8 +50,8 @@
     "ALPHAM" : 1.485,          /* ALPHAM Priestley-Taylor coefficient*/
     "ko25" : 3.0e4,            /* Michaelis constant for O2 (Pa) at 25 deg C */
     "kc25" : 30.0,              /* Michaelis constant for CO2 (Pa) at 25 deg C */
-    "atmfrac" : 0.6,           /* atmfrac */
-    "fastfrac" : 0.973,         /* fastfrac */
+    "atmfrac" : 0.55,           /* atmfrac */
+    "fastfrac" : 0.98,         /* fastfrac */
     "bioturbate" : 0.5,        /* bioturbation (0 = no bioturbation) */
     "veg_equil_year" : 900,
     "veg_equil_unlim" : false, /* enable vegetation spinup without nitrogen limitation */
@@ -61,7 +61,7 @@
     "equisoil_fadeout": 120,     /* number of years for equisoil fadeout (for final call of equisoil); set to zero for no fadeout  */
     "k_max": 0.10,             /* k_max, maximum fraction of soil->NH4 assumed to be nitrified Parton, 2001*/
     "fpc_tree_max" : 0.95,     /* maximum foliage projective cover for trees */
-    "temp_response" : 46.02,   /* Parameter in temperature response function */
+    "temp_response" : 40.02,   /* Parameter in temperature response function */
     "percthres" : 1.0,
     "k_2": 0.01,               /* k_2, fraction of nitrified N lost as N20 flux Parton, 2001*/
     "p" : 25,                  /* Haxeltine & Prentice regression coefficient */
@@ -75,11 +75,11 @@
     "T_0" : -25.0,             /* parameter in N uptake temperature function */
     "T_r" : 15.0,              /* parameter in N uptake temperature function */
     "lsuha" : 0.0,             /* livestock density applied for daily or rotational grazing on mangement grasslands */
-    "k_mort" : 0.3,            /* coefficient of growth efficiency in mortality equation (k_mort2) */
+    "k_mort" : 0.2,            /* coefficient of growth efficiency in mortality equation (k_mort2) */
     "residue_frac" : 0.95,      /* fraction of residues to be submerged by tillage */
     "manure_cn": 14.5,        /* CN ration of manure gC/gN */
     "fertilizer_rate" : 10,     /* default: 20; fixed fertilizer application rate in gN/m2/yr */
-    "manure_rate" : 20,          /* default: 20; fixed manure application rate in gN/m2/yr */
+    "manure_rate" :  0,          /* default: 20; fixed manure application rate in gN/m2/yr */
     "mixing_efficiency" : 0.9,  /* mixing efficiency of tillage */
     "aprec_lim" : 900,         /* annual prec limit for C3 threshold (mm) */
     "irrig_soilfrac" : 1.0,             /* fraction of soil filled with water during irrigation event */
@@ -115,7 +115,7 @@
     "firedura" : -11.06,                /* scaling factor for fire duration for the WVPD*/
     "hum_ign" : -0.50,		      /* a parameter for scaling the human ignintions within SPITFIRE */
     "fire_intens" : 0.000001,           /* threshold of fireintensity for which burnt area can be modeled */
-    "rootreduction" : 0.5,              /* fraction used to calculate amount of roots dying at harvest in managed grasslands */
+    "rootreduction" : 0.3,              /* fraction used to calculate amount of roots dying at harvest in managed grasslands */
     "phen_limit" : 0.5,                 /* phen. limit for agricultural trees */
     "cft_fertday_temp" : "temperate cereals", /* cft name (see pft.cjson) for fertilizer application date for grassland in temperate regions (abs(lat)>30 deg) */
     "cft_fertday_tropic" : "maize",           /* cft name (see pft.cjson) for fertilizer application date for grassland in tropical regions (abs(lat)<30 deg) */

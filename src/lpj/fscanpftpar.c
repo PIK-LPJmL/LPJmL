@@ -426,6 +426,7 @@ Bool fscanpftpar(LPJfile *file,       /**< pointer to LPJ file */
     fscanpftreal(verb,item,&pft->inun_thres,pft->name,"ist_m");
     fscanpftreal(verb,item,&pft->inun_dur,pft->name,"idt_d");
     pft->inun_thres*=1000;
+    fscanpftreal(verb,item,&pft->alpha_e,pft->name,"alpha_e");
     fscanpftirrig2(verb,item,&pft->irrig_threshold,pft->name,"irrig_threshold");
     pft->k_litter10.leaf/=NDAYYEAR;
     pft->k_litter10.wood/=NDAYYEAR;

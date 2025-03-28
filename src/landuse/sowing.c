@@ -24,6 +24,7 @@ Stocks sowing(Cell *cell,          /**< cell pointer */
              )                     /** \return establishment flux (gC/m2,g/N/m2) */
 {
   Stocks flux_estab={0,0};
+
 #ifdef CHECK_BALANCE
   Stand *stand;
   Stocks start={0,0};

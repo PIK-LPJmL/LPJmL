@@ -22,12 +22,3 @@
 Standtype wetland_stand = {WETLAND,"wetland",new_natural,free_natural,
                            fwrite_natural,fread_natural,fprint_natural,
                            daily_natural,annual_natural,dailyfire};
-Standtype setaside_wetland = {SETASIDE_WETLAND,"wetland setaside",new_agriculture,
-                              free_agriculture,fwrite_agriculture,
-                              fread_agriculture,fprint_agriculture,
-#ifdef DAILY_ESTABLISHMENT
-        daily_setaside,
-#else
-        daily_natural,
-#endif
-        annual_setaside,NULL};

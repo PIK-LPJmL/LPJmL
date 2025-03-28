@@ -45,6 +45,7 @@ Bool allocation_grass(Litter *litter,   /**< litter pool */
   output=&pft->stand->cell->output;
   bm_inc_ind.carbon=pft->bm_inc.carbon/pft->nind;
   bm_inc_ind.nitrogen=pft->bm_inc.nitrogen/pft->nind;
+
   if(pft->stand->type->landusetype!=GRASSLAND && pft->stand->type->landusetype!=OTHERS && pft->stand->type->landusetype!=BIOMASS_GRASS && pft->stand->type->landusetype!=SETASIDE_RF && pft->stand->type->landusetype!=SETASIDE_IR)
     growing_days=NDAYYEAR;
   else
@@ -100,6 +101,7 @@ Bool allocation_grass(Litter *litter,   /**< litter pool */
     {
       inc_ind.leaf.carbon=0.0;
       inc_ind.root.carbon=bm_inc_ind.carbon;
+
     }
     else
     {
@@ -123,6 +125,7 @@ Bool allocation_grass(Litter *litter,   /**< litter pool */
         if(bm_inc_ind.carbon>0 && inc_ind.leaf.carbon>bm_inc_ind.carbon)
           inc_ind.leaf.carbon=bm_inc_ind.carbon;
         inc_ind.root.carbon=bm_inc_ind.carbon-inc_ind.leaf.carbon;
+
       }
     }
     output->bm_inc=pft->bm_inc.carbon;
@@ -136,6 +139,27 @@ Bool allocation_grass(Litter *litter,   /**< litter pool */
 
   grass->ind.leaf.carbon+=inc_ind.leaf.carbon;
   grass->ind.root.carbon+=inc_ind.root.carbon;
+  if(grass->ind.root.carbon<0){
+    litter->item[pft->litter].bg.carbon+=grass->ind.root.carbon;
+    grass->ind.root.carbon=0;
+    if(litter->item[pft->litter].bg.carbon<0)
+    {
+      pft->stand->cell->balance.neg_fluxes.carbon+=litter->item[pft->litter].bg.carbon;
+      litter->item[pft->litter].bg.carbon=0;
+    }
+  }
+  if(grass->ind.leaf.carbon<0){
+    litter->item[pft->litter].bg.carbon+=grass->ind.leaf.carbon;
+    grass->ind.leaf.carbon=0;
+    if(litter->item[pft->litter].agtop.leaf.carbon<0)
+    {
+      pft->stand->cell->balance.neg_fluxes.carbon+=litter->item[pft->litter].agtop.leaf.carbon;
+      litter->item[pft->litter].agtop.leaf.carbon=0;
+    }
+  }
+
+
+
   lastday.leaf.nitrogen = grass->ind.leaf.nitrogen;
   lastday.root.nitrogen = grass->ind.root.nitrogen;
 #ifdef DEBUG_N
@@ -171,21 +195,24 @@ Bool allocation_grass(Litter *litter,   /**< litter pool */
       grass->ind.root.nitrogen += (1 - a)*bm_inc_ind.nitrogen;
       pft->bm_inc.nitrogen = 0;
       /* testing if there is too much carbon for allowed NC ratios */
+
       if (grass->ind.leaf.carbon>0 && grass->ind.leaf.nitrogen / grass->ind.leaf.carbon<pft->par->ncleaf.low)
       {
         lastday.leaf.carbon = grass->ind.leaf.carbon;
         grass->ind.leaf.carbon = grass->ind.leaf.nitrogen / pft->par->ncleaf.low;
-        litter->item[pft->litter].agtop.leaf.carbon += (lastday.leaf.carbon - grass->ind.leaf.carbon)*pft->nind;
-        getoutput(output,LITFALLC,config) += (lastday.leaf.carbon - grass->ind.leaf.carbon)*pft->nind*pft->stand->frac;
-        update_fbd_grass(litter, pft->par->fuelbulkdensity,
-          (lastday.leaf.carbon - grass->ind.leaf.carbon)*pft->nind);
+        grass->excess_carbon+= (lastday.leaf.carbon - grass->ind.leaf.carbon);
+        //litter->item[pft->litter].agtop.leaf.carbon += (lastday.leaf.carbon - grass->ind.leaf.carbon)*pft->nind;
+        //getoutput(output,LITFALLC,config) += (lastday.leaf.carbon - grass->ind.leaf.carbon)*pft->nind*pft->stand->frac;
+        //update_fbd_grass(litter, pft->par->fuelbulkdensity,
+        //  (lastday.leaf.carbon - grass->ind.leaf.carbon)*pft->nind);
       }
       if (grass->ind.root.carbon>0 && grass->ind.root.nitrogen/grass->ind.root.carbon<pft->par->ncleaf.low/grasspar->ratio)
       {
         lastday.root.carbon = grass->ind.root.carbon;
         grass->ind.root.carbon = grass->ind.root.nitrogen / pft->par->ncleaf.low*grasspar->ratio;
-        litter->item[pft->litter].bg.carbon += (lastday.root.carbon - grass->ind.root.carbon)*pft->nind;
-        getoutput(output,LITFALLC,config) += (lastday.root.carbon - grass->ind.root.carbon)*pft->nind*pft->stand->frac;
+        grass->excess_carbon+= (lastday.root.carbon - grass->ind.root.carbon);
+        //litter->item[pft->litter].bg.carbon += (lastday.root.carbon - grass->ind.root.carbon)*pft->nind;
+        //getoutput(output,LITFALLC,config) += (lastday.root.carbon - grass->ind.root.carbon)*pft->nind*pft->stand->frac;
       }
     }
   }
@@ -203,26 +230,29 @@ Bool allocation_grass(Litter *litter,   /**< litter pool */
       pft->bm_inc.nitrogen += (lastday.root.nitrogen-grass->ind.root.nitrogen)*pft->nind;
     }
     /* testing if there is too much carbon for allowed NC ratios */
+
     if(grass->ind.leaf.carbon>0 && grass->ind.leaf.nitrogen / grass->ind.leaf.carbon<pft->par->ncleaf.low)
     {
       lastday.leaf.carbon = grass->ind.leaf.carbon;
       grass->ind.leaf.carbon = grass->ind.leaf.nitrogen / pft->par->ncleaf.low;
-      litter->item[pft->litter].agtop.leaf.carbon += (lastday.leaf.carbon - grass->ind.leaf.carbon)*pft->nind;
-      getoutput(output,LITFALLC,config) += (lastday.leaf.carbon - grass->ind.leaf.carbon)*pft->nind*pft->stand->frac;
-      update_fbd_grass(litter, pft->par->fuelbulkdensity,
-        (lastday.leaf.carbon - grass->ind.leaf.carbon)*pft->nind);
+      grass->excess_carbon+= (lastday.leaf.carbon - grass->ind.leaf.carbon);
+      //litter->item[pft->litter].agtop.leaf.carbon += (lastday.leaf.carbon - grass->ind.leaf.carbon)*pft->nind;
+      //getoutput(output,LITFALLC,config) += (lastday.leaf.carbon - grass->ind.leaf.carbon)*pft->nind*pft->stand->frac;
+      //update_fbd_grass(litter, pft->par->fuelbulkdensity,
+        //(lastday.leaf.carbon - grass->ind.leaf.carbon)*pft->nind);
     }
     if(grass->ind.root.carbon>0 && grass->ind.root.nitrogen/grass->ind.root.carbon<pft->par->ncleaf.low/grasspar->ratio)
     {
       lastday.root.carbon = grass->ind.root.carbon;
       grass->ind.root.carbon = grass->ind.root.nitrogen / pft->par->ncleaf.low*grasspar->ratio;
-      litter->item[pft->litter].bg.carbon += (lastday.root.carbon - grass->ind.root.carbon)*pft->nind;
-      getoutput(output,LITFALLC,config) += (lastday.root.carbon - grass->ind.root.carbon)*pft->nind*pft->stand->frac;
+      grass->excess_carbon+= (lastday.root.carbon - grass->ind.root.carbon);
+      //litter->item[pft->litter].bg.carbon += (lastday.root.carbon - grass->ind.root.carbon)*pft->nind;
+      //getoutput(output,LITFALLC,config) += (lastday.root.carbon - grass->ind.root.carbon)*pft->nind*pft->stand->frac;
     }
+
   }
   pft->nleaf = grass->ind.leaf.nitrogen*pft->nind;
   *fpc_inc=fpc_grass(pft);
-
 #ifdef CHECK_BALANCE
   stocks=litterstocks(litter);
   end = vegc_sum(pft)+stocks.carbon;

@@ -164,6 +164,7 @@ typedef struct Pft
     Real roughness;             /**< roughness length */
     Real inun_thres;            /**< inund_height: max WTP tolerated [m]*/
     Real inun_dur;              /**< max days of inundation tolerated */
+    Real alpha_e;               /**< ebullition suppression factor  */
     Real alpha_fuelp;           /**< fire danger parameter */
     Real vpd_par;               /**< scaling factor for VPD fire danger index  */
     Real fuelbulkdensity;       /**< fuel bulk density*/

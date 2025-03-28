@@ -993,6 +993,8 @@ static void grasslandreduction(Cell *cell,            /* cell pointer */
     cutstand->frac=difffrac;
     reclaim_land(grassstand,cutstand,cell,config->luc_timber,npft+ncft,config);
     grassstand->frac-=difffrac;
+    /*force one tillage event on new stand upon cultivation of previous grassland */
+    tillage(&cutstand->soil, param.residue_frac);
     updatelitterproperties(cutstand,cutstand->frac);
     if(config->soilpar_option==NO_FIXED_SOILPAR || (config->soilpar_option==FIXED_SOILPAR && year<config->soilpar_fixyear))
       pedotransfer(cutstand,NULL,NULL,cutstand->frac);

@@ -45,7 +45,7 @@ static void printO2(const Real O2[LASTLAYER])
 
 #endif
 
-void plant_gas_transport(Stand *stand,        /**< pointer to soil data */
+Real plant_gas_transport(Stand *stand,        /**< pointer to stand */
                          Real airtemp,        /**< air temperature (deg C) */
                          Real pch4,           /**< atmospheric CH4 content (ppm) */
                          const Config *config /**< LPJmL configutation */
@@ -60,6 +60,7 @@ void plant_gas_transport(Stand *stand,        /**< pointer to soil data */
   Real CH4, CH4_plant, CH4_plant_all,CH4_rice,CH4_sink;
   Real O2, O2_plant;
   Real Conc_new;
+  Real rice_em=0;
   int l, p;
 #ifdef CHECK_BALANCE
   Real start = 0;
@@ -141,10 +142,10 @@ void plant_gas_transport(Stand *stand,        /**< pointer to soil data */
   stand->cell->balance.aCH4_em+=CH4_plant_all*stand->frac;
 
   if(CH4_rice>0) stand->cell->balance.aCH4_rice+=CH4_rice*stand->frac;
-  if(CH4_rice>0) getoutput(&stand->cell->output,CH4_RICE_EM,config)+=CH4_rice*stand->frac;
-
+  //if(CH4_rice>0) getoutput(&stand->cell->output,CH4_RICE_EM,config)+=CH4_rice*stand->frac;
+  if(CH4_rice>0) rice_em=CH4_rice;
   getoutput(&stand->cell->output,CH4_PLANT_GAS,config)+=CH4_plant_all*stand->frac;
-  if((stand->type->landusetype!=NATURAL && stand->type->landusetype!=WETLAND) && CH4_rice==0)
+  if((stand->type->landusetype!=NATURAL && stand->type->landusetype!=WETLAND && stand->type->landusetype!=GRASSLAND) && CH4_rice==0)
   {
     stand->cell->balance.aCH4_setaside+=CH4_plant_all*stand->frac;
     getoutput(&stand->cell->output,CH4_SETASIDE,config)+=CH4_plant_all*stand->frac;
@@ -158,5 +159,5 @@ void plant_gas_transport(Stand *stand,        /**< pointer to soil data */
     fail(INVALID_CARBON_BALANCE_ERR,FAIL_ON_BALANCE,FALSE,"Invalid carbon balance in %s: %g start:%g  end:%g Plant_gas_transp: %g",
          __FUNCTION__, start - end - CH4_plant_all*WC/WCH4, start, end, CH4_plant_all*WC/WCH4);
 #endif
-
+ return rice_em;
 } /* of 'plant_gas_transport' */
