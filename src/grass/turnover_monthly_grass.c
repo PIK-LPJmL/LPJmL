@@ -30,7 +30,6 @@ void turnover_monthly_grass(Litter *litter,Pft *pft,const Config *config)
     grass->turn_litt.root.carbon+=grass->ind.root.carbon*grasspar->turnover.root/NMONTH*pft->nind;
     grass->turn_litt.root.nitrogen+=grass->ind.root.nitrogen*grasspar->turnover.root/NMONTH*pft->nind;
     litter->item[pft->litter].bg.carbon+=grass->ind.root.carbon*grasspar->turnover.root/NMONTH*pft->nind;
-    if(litter->item[pft->litter].bg.carbon<0) fprintf(stderr," turnover_monthly_grass bg.carbon: %g root.carbon: %g\n",litter->item[pft->litter].bg.carbon,grass->ind.root.carbon);
     getoutput(output,LITFALLC,config)+=grass->ind.root.carbon*grasspar->turnover.root/NMONTH*pft->nind*pft->stand->frac;
     litter->item[pft->litter].bg.nitrogen+=grass->ind.root.nitrogen*grasspar->turnover.root/NMONTH*pft->nind*pft->par->fn_turnover;
     getoutput(output,LITFALLN,config)+=grass->ind.root.nitrogen*grasspar->turnover.root/NMONTH*pft->nind*pft->par->fn_turnover*pft->stand->frac;
