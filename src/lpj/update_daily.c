@@ -233,7 +233,7 @@ void update_daily(Cell *cell,            /**< cell pointer           */
     getoutput(&cell->output,CH4_SINK,config)+=CH4_sink*stand->frac;
     cell->balance.aCH4_sink+=CH4_sink*stand->frac;
 
-    if(stand->type->landusetype==SETASIDE_RF || stand->type->landusetype==SETASIDE_IR || stand->type->landusetype==AGRICULTURE || stand->type->landusetype==SETASIDE_WETLAND)
+    if(stand->type->landusetype==SETASIDE_RF || stand->type->landusetype==SETASIDE_IR || stand->type->landusetype==AGRICULTURE || stand->type->landusetype==SETASIDE_WETLAND ||  stand->type->landusetype==GRASSLAND)
     {
         if(isrice || stand->type->landusetype==SETASIDE_WETLAND)
         {
@@ -286,7 +286,7 @@ void update_daily(Cell *cell,            /**< cell pointer           */
     cell->balance.aCH4_em+=CH4_em*stand->frac;
     if(stand->type->landusetype==WETLAND)
       getoutput(&stand->cell->output,CH4_EMISSIONS_WET,config)+=CH4_em;
-    if(stand->type->landusetype==SETASIDE_RF || stand->type->landusetype==SETASIDE_IR || stand->type->landusetype==AGRICULTURE || stand->type->landusetype==SETASIDE_WETLAND)
+    if(stand->type->landusetype==SETASIDE_RF || stand->type->landusetype==SETASIDE_IR || stand->type->landusetype==AGRICULTURE || stand->type->landusetype==SETASIDE_WETLAND ||  stand->type->landusetype==GRASSLAND)
     {
       if(isrice || stand->type->landusetype==SETASIDE_WETLAND)
       {
