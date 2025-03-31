@@ -30,6 +30,7 @@ of `major.minor.patch` with
 - Datatype `List` used in `fprintfiles.c`.
 - All allocated memory is now freed in utilities.
 - Prescribed landcover input file changed in `input.cjson` to a file with the same number of natural PFTs.
+- All remaining unsafe calls to `sprintf()` replaced by calls to `snprinf()` or `getsprinf()`.
 
 ### Fixed
 
