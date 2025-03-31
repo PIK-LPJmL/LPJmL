@@ -27,9 +27,9 @@ typedef struct
   int ilon,ilat;
 } Data;
 
-static int cmp(const Data *a,const Data *b)
+static int cmp(const void *a,const void *b)
 {
-  return a->index-b->index;
+  return ((const Data *)a)->index-((const Data *)b)->index;
 } /* of 'cmp' */
 #endif
 
@@ -332,7 +332,7 @@ int main(int argc,char **argv)
     }
   free(index);
   /* sort in ascending order of index */
-  qsort(data,header.ncell,sizeof(Data),(int(*)(const void *,const void *))cmp);
+  qsort(data,header.ncell,sizeof(Data),cmp);
   header.firstcell=data[0].index;
   for(i=1;i<header.ncell;i++)
     if(data[i].index!=i+header.firstcell)

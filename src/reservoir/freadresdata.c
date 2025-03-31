@@ -24,6 +24,7 @@ Bool freadresdata(FILE *file,  /**< pointer to restart file */
     return TRUE;
   /*initialize other characteristics of this reservoir*/
   cell->ml.resdata->reservoir.area=0; /* to avoid uninitialized variable */
+  cell->ml.resdata->fraction=NULL;
   initresdata(cell);
   /* read from restart file */
   freadreal1(&cell->ml.reservoirfrac,swap,file);

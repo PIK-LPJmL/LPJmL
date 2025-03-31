@@ -20,14 +20,15 @@
 typedef struct
 {
   FILE *file;
+  char *name;
   Header header;
 } Item;
 
-static int compare(const Item *a,const Item *b)
+static int compare(const void *a,const void *b)
 {
-  if(a->header.firstcell<b->header.firstcell)
+  if(((const Item *)a)->header.firstcell<((const Item *)b)->header.firstcell)
     return -1;
-  else if(a->header.firstcell==b->header.firstcell)
+  else if(((const Item *)a)->header.firstcell==((const Item *)b)->header.firstcell)
     return 0;
   else
     return 1;
@@ -35,9 +36,11 @@ static int compare(const Item *a,const Item *b)
 
 int main(int argc,char **argv)
 {
-  int i,len,header_offset,o_offset,offset,j,ncell,swap,count;
+  int i,len,j,ncell,swap,count;
+  size_t header_offset,o_offset,offset;
   Item *item;
-  int ptr,version;
+  long long ptr;
+  int version;
   void *data;
   Header header;
   Restartheader restartheader;
@@ -75,6 +78,7 @@ int main(int argc,char **argv)
   for(;i<argc;i++)
   {
     item[count].file=fopen(argv[i],"rb");
+    item[count].name=argv[i];
     if(item[count].file==NULL)
     {
       fprintf(stderr,"Error opening '%s': %s\n",argv[i],strerror(errno));
@@ -111,7 +115,7 @@ int main(int argc,char **argv)
     ncell+=item[count].header.ncell;
     count++;
   }
-  qsort(item,count,sizeof(Item),(int(*)(const void *,const void *))compare);
+  qsort(item,count,sizeof(Item),compare);
   header.firstyear=item[0].header.firstyear;
   if(count==0)
   {
@@ -120,7 +124,7 @@ int main(int argc,char **argv)
   }
   for(i=1;i<count;i++)
   {
-    if(item[i-1].header.firstcell+item[i-1].header.ncell!=item[i].header.firstcell) 
+    if(item[i-1].header.firstcell+item[i-1].header.ncell!=item[i].header.firstcell)
       fprintf(stderr,"Warning: first cell in %d=%d not last cell+1=%d\n",i,
               item[i].header.firstcell,
               item[i-1].header.firstcell+item[i-1].header.ncell);
@@ -128,38 +132,47 @@ int main(int argc,char **argv)
       fprintf(stderr,"Warning: year=%d in %d differs from %d\n",
               item[i].header.firstyear,i,header.firstyear);
   }
-  header.firstcell=item[0].header.firstcell;
-  header.firstyear=item[0].header.firstyear;
+  header=item[0].header;
   header.ncell=ncell;
   fwriteheader(out,&header,RESTART_HEADER,RESTART_VERSION);
   fwriterestartheader(out,&restartheader);
-  header_offset=strlen(RESTART_HEADER)+restartsize()+sizeof(int)+sizeof(Header);
+  header_offset=headersize(RESTART_HEADER,version)+restartsize();
   o_offset=header_offset;
   offset=0;
   for(i=0;i<count;i++)
-  { 
-    len=getfilesizep(item[i].file)-header_offset-item[i].header.ncell*sizeof(int);
+  {
+    len=getfilesizep(item[i].file)-header_offset-item[i].header.ncell*sizeof(ptr);
     fseek(out,o_offset,SEEK_SET);
-    o_offset+=item[i].header.ncell*sizeof(int);
+    o_offset+=item[i].header.ncell*sizeof(ptr);
     for(j=0;j<item[i].header.ncell;j++)
     {
-      if(fread(&ptr,sizeof(ptr),1,item[i].file)!=1){
-        fprintf(stderr,"Error reading %s.\n",argv[i]);
-      exit(1);
+      if(fread(&ptr,sizeof(ptr),1,item[i].file)!=1)
+      {
+        fprintf(stderr,"Error reading '%s'.\n",item[i].name);
+        return EXIT_FAILURE;
       }
-      ptr+=(ncell-item[i].header.ncell)*sizeof(int)+offset;
+      ptr+=(ncell-item[i].header.ncell)*sizeof(ptr)+offset;
       fwrite(&ptr,sizeof(ptr),1,out);
     }
-    fseek(out,offset+header_offset+ncell*sizeof(int),SEEK_SET);
+    fseek(out,offset+header_offset+ncell*sizeof(ptr),SEEK_SET);
     offset+=len;
     data=malloc(len);
-    if(fread(data,len,1,item[i].file)!=1){
-      fprintf(stderr,"Error reading %s.\n",argv[i]);
-      exit(1);
+    if(data==NULL)
+    {
+      fclose(item[i].file);
+      free(item);
+      printallocerr("data");
+      return EXIT_FAILURE;
+    }
+    if(fread(data,len,1,item[i].file)!=1)
+    {
+      fprintf(stderr,"Error reading '%s'.\n",item[i].name);
+      return EXIT_FAILURE;
     }
     fwrite(data,len,1,out);
     free(data);
     fclose(item[i].file);
   }
+  free(item);
   return EXIT_SUCCESS;
 } /* of 'main' */

@@ -81,11 +81,11 @@ Stocks littersom(Stand *stand,                      /**< [inout] pointer to stan
                 )                                   /** \return decomposed carbon/nitrogen (g/m2) */
 {
   Real response[NSOILLAYER];
-  Real response_agtop_leaves,response_agtop_wood,response_agsub_leaves,response_agsub_wood,response_bg_litter,w_agtop;
+  Real response_agtop_leaves,response_agtop_wood,response_agsub_leaves,response_agsub_wood,w_agtop;
   Real decay_litter, oxidation, litter_flux;
   Pool flux_soil[LASTLAYER];
   Poolpar k_soil10;
-  Real decom,soil_cflux,decom_O2;
+  Real decom,soil_cflux;
   Stocks decom_fast,decom_slow;
   Stocks decom_litter;
   Stocks decom_sum,flux;
@@ -106,14 +106,13 @@ Stocks littersom(Stand *stand,                      /**< [inout] pointer to stan
   Pftcrop *crop;
   Irrigation *data;
   /* FOR METHANE IMPLEMENTATION */
-  Real C_max[LASTLAYER], V,C_max_all;
+  Real C_max[LASTLAYER], V;
   Real CN_fast=0, CN_slow=0;
   Real cn_bg;
   Real methaneflux_soil;
   Real oxidation_stand=0;    //oxidation of methane with in the soil column
   Real h2o_mt;   /* methane production */
-  //Real CH4_air;
-  Real CH4_air,O2_need;
+  Real O2_need;
   Real epsilon_CH4 = 0;
   Real epsilon_O2 = 0;
   Real oxid_frac = 0.95;  // Assume that 1/2 of the O2 is utilized by other electron acceptors (Wania etal.,2010) only oxidation of Reduced Compounds is left assumed to be together 5%
@@ -155,7 +154,6 @@ Stocks littersom(Stand *stand,                      /**< [inout] pointer to stan
     response[l]=0.0;
   decom_litter.carbon=decom_litter.nitrogen=soil_cflux=yedoma_flux=decom_sum.carbon=decom_sum.nitrogen=decom_fast.carbon=decom_slow.carbon=decom_fast.nitrogen=
       decom_slow.nitrogen=F_Nmineral_all=oxidation=litter_flux=0.0;
-  CH4_air = p_s / R_gas / (airtemp + 273.15)*pch4*1e-6*WCH4;    /*g/m3 methane concentration*/
 #ifdef CALC_EFF_CARBON
   K_vdiff[0][0]=2./(midlayer[0]*(midlayer[0]+(midlayer[1]-midlayer[0])));
   K_vdiff[0][1]=-2./(midlayer[0]*(midlayer[1]-midlayer[0]));
@@ -430,7 +428,6 @@ Stocks littersom(Stand *stand,                      /**< [inout] pointer to stan
       response_agtop_leaves=temp_response(soil->litter.agtop_temp,soil->amean_temp[0])*(INTERCEPT+MOIST_3*(w_agtop*w_agtop*w_agtop)+MOIST_2*(w_agtop*w_agtop)+MOIST*w_agtop);
       //response_agtop_leaves=temp_response(soil->amean_temp[0],soil->amean_temp[0])*(INTERCEPT+MOIST_3*(w_agtop*w_agtop*w_agtop)+MOIST_2*(w_agtop*w_agtop)+MOIST*w_agtop);
       response_agtop_wood=pow(soil->litter.item[p].pft->k_litter10.q10_wood,(soil->litter.agtop_temp-10)/10.0)*(INTERCEPT+MOIST_3*(w_agtop*w_agtop*w_agtop)+MOIST_2*(w_agtop*w_agtop)+MOIST*w_agtop);
-      response_bg_litter=response[0];
       response_agtop_wood=max(epsilon+epsilon,response_agtop_wood);
       //response_agtop_leaves=temp_response(soil->amean_temp[0],soil->amean_temp[0])*(INTERC+MOIST_3*(moist[0]*moist[0]*moist[0])+MOIST_2*(moist[0]*moist[0])+MOIST*moist[0]);
       //response_agtop_wood=pow(soil->litter.item[p].pft->k_litter10.q10_wood,(soil->temp[0]-10)/10.0)*(INTERCEPT+MOIST_3*(moist[0]*moist[0]*moist[0])+MOIST_2*(moist[0]*moist[0])+MOIST*moist[0]);

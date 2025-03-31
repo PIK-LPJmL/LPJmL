@@ -142,5 +142,6 @@ int main(int argc,char **argv)
     else
       rc=EXIT_SUCCESS;
   }
+  freeconfig(&config);
   return rc;
 } /* of 'main' */

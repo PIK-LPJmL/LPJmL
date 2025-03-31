@@ -39,7 +39,6 @@ void waterbalance(Stand *stand,           /**< Stand pointer */
   int l;
   Real aet=0,updated_soil_water=0,previous_soil_water[NSOILLAYER],evap_out[BOTTOMLAYER];
   Irrigation *data_irrig;
-  Real min_evap=0.05;
 #ifdef CHECK_BALANCE
   Real water_after, water_before,balancew;
   water_before=soilwater(&stand->soil);
@@ -49,10 +48,6 @@ void waterbalance(Stand *stand,           /**< Stand pointer */
     data_irrig=stand->data;
   else
     data_irrig=NULL;
-
-  if(stand->type->landusetype==AGRICULTURE || stand->type->landusetype==SETASIDE_RF || stand->type->landusetype==SETASIDE_IR || stand->type->landusetype==SETASIDE_WETLAND ||
-      stand->type->landusetype==OTHERS || stand->type->landusetype==AGRICULTURE_TREE || stand->type->landusetype==AGRICULTURE_GRASS)
-    min_evap=0.2;
 
   soil=&stand->soil;
   evap_ratio=evap_test=0.0;

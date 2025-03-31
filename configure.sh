@@ -19,6 +19,7 @@ USAGE="Usage: $0 [-h] [-v] [-l] [-prefix dir] [-debug] [-nompi] [-check] [-noerr
 debug=0
 nompi=0
 prefix=$PWD
+checking=""
 macro=""
 warning="-Werror"
 while(( "$#" )); do
@@ -34,7 +35,7 @@ while(( "$#" )); do
       echo "-l,--license    print license"
       echo "-prefix dir     set installation directory for LPJmL. Default is current directory"
       echo "-debug          set debug flags and disable optimization"
-      echo "-check          set debug flags, enable pointer checking and disable optimization"
+      echo "-check          enable run-time checking of memory leaks and access out of bounds"
       echo "-noerror        do not stop compilation on warnings"
       echo "-nompi          do not build MPI version"
       echo "-Dmacro[=value] define macro for compilation"
@@ -68,7 +69,7 @@ while(( "$#" )); do
       shift 1
       ;;
     -check)
-      debug=2
+      checking="\$(CHECKFLAGS)"
       shift 1
       ;;
     -noerror)
@@ -165,15 +166,11 @@ else
 fi
 if [ "$debug" = "1" ]
 then
-  echo "CFLAGS	= \$(WFLAG) \$(LPJFLAGS) $macro $warning \$(DEBUGFLAGS)" >>Makefile.inc
-  echo "LNOPTS	= \$(WFLAG) \$(DEBUGFLAGS) -o " >>Makefile.inc
-elif [ "$debug" = "2" ]
-then
-  echo "CFLAGS	= \$(WFLAG) \$(LPJFLAGS) $macro $warning \$(CHECKFLAGS)" >>Makefile.inc
-  echo "LNOPTS	= \$(WFLAG) \$(CHECKFLAGS) -o " >>Makefile.inc
+  echo "CFLAGS	= \$(WFLAG) \$(LPJFLAGS) $macro $warning $checking \$(DEBUGFLAGS)" >>Makefile.inc
+  echo "LNOPTS	= \$(WFLAG) \$(DEBUGFLAGS) $checking -o " >>Makefile.inc
 else
-  echo "CFLAGS	= \$(WFLAG) \$(LPJFLAGS) $macro $warning \$(OPTFLAGS)" >>Makefile.inc
-  echo "LNOPTS	= \$(WFLAG) \$(OPTFLAGS) -o " >>Makefile.inc
+  echo "CFLAGS	= \$(WFLAG) \$(LPJFLAGS) $macro $warning $checking \$(OPTFLAGS)" >>Makefile.inc
+  echo "LNOPTS	= \$(WFLAG) \$(OPTFLAGS) $checking -o " >>Makefile.inc
 fi
 echo "GIT_REPO=" $(git remote -v|head -1|cut  -f2|cut -d' ' -f1) >>Makefile.inc
 echo LPJROOT	= $prefix >>Makefile.inc

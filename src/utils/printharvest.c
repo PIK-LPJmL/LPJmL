@@ -318,8 +318,11 @@ int main(int argc,char **argv)
     }
     printf(",%g\n",harvest_total);
   }
+  free(area);
+  freelandfrac(harvest_sum);
   fclose(file);
   if(!config.pft_output_scaled)
     fclose(frac_file);
+  freeconfig(&config);
   return EXIT_SUCCESS;
 } /* of 'main' */

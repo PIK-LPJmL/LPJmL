@@ -172,7 +172,8 @@ Stocks turnover_grass(Litter *litter, /**< Litter pool */
 
   /* turnover of excess carbon as root exudates */
   litter->item[pft->litter].bg.carbon+=grass->excess_carbon*pft->nind*grasspar->turnover.root;
-  if(litter->item[pft->litter].bg.carbon<0) fprintf(stderr," turnover_grass bg.carbon: %g root.carbon: %g excess_carbon: %g\n",litter->item[pft->litter].bg.carbon,grass->ind.root.carbon,grass->excess_carbon);
+  if(litter->item[pft->litter].bg.carbon<0)
+    fprintf(stderr," turnover_grass bg.carbon: %g root.carbon: %g excess_carbon: %g\n",litter->item[pft->litter].bg.carbon,grass->ind.root.carbon,grass->excess_carbon);
   getoutput(output,LITFALLC,config)+=grass->excess_carbon*pft->nind*grasspar->turnover.root*pft->stand->frac;
   grass->excess_carbon-=grass->excess_carbon*grasspar->turnover.root;
   gturn.leaf.carbon+=gturn.root.carbon;

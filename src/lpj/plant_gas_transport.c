@@ -55,7 +55,6 @@ Real plant_gas_transport(Stand *stand,        /**< pointer to stand */
   Real CH4_air, ScCH4, k_600, kCH4;
   Real O2_air, ScO2, kO2;
   Real soil_water_vol;                /*in mm*/
-  Real soilmoist,epsilon_gas,V;
   Real tillers, tiller_area, tiller_frac;
   Real CH4, CH4_plant, CH4_plant_all,CH4_rice,CH4_sink;
   Real O2, O2_plant;
@@ -102,9 +101,6 @@ Real plant_gas_transport(Stand *stand,        /**< pointer to stand */
       tillers = leafc(pft)*pft->phen / tiller_weight;
       for (l = 0; l<LASTLAYER; l++)
       {
-        V = getV(&stand->soil,l);  /*soil air content (m3 air/m3 soil)*/
-        soilmoist = getsoilmoist(&stand->soil,l);
-        epsilon_gas=getepsilon_CH4(V,soilmoist,stand->soil.wsat[l]);
 
         tiller_frac = tillers*pft->par->rootdist[l];
         tiller_area = max(0.01,tiller_radius*tiller_radius*M_PI*tiller_frac*tiller_por);
@@ -126,7 +122,6 @@ Real plant_gas_transport(Stand *stand,        /**< pointer to stand */
             CH4_rice+=CH4_plant;
           /*OXYGEN*/
           Conc_new = 0;
-          epsilon_gas=getepsilon_O2(V,soilmoist,stand->soil.wsat[l]);
           O2=stand->soil.O2[l]/soil_water_vol/soildepth[l]*1000;
           Conc_new=O2+(O2_air-O2)*exp(-kO2/(soil_water_vol*soildepth[l]/1000/tiller_area));
           O2_plant=(O2-Conc_new)*soil_water_vol*soildepth[l]/1000;

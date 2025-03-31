@@ -176,6 +176,9 @@ int main(int argc,char **argv)
       fwrite(soil+j,1,1,file);
   }
   putchar('\n');
+  free(soil);
+  free(c);
+  free(c2);
   if(count)
     fprintf(stderr,"Warning: %d cells not found.\n",count);
   fclose(file);
@@ -208,6 +211,8 @@ int main(int argc,char **argv)
     header.cellsize_lon=lon;
     header.cellsize_lat=lat;
     fprintjson(file,argv[iarg+3],NULL,NULL,NULL,arglist,&header,NULL,NULL,NULL,0,NULL,NULL,NULL,NULL,&grid_name,grid_type,RAW,NULL,FALSE,0);
+    free(out_json);
+    free(arglist);
     fclose(file);
   }
   return EXIT_SUCCESS;

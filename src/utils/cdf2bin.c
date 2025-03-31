@@ -278,7 +278,8 @@ int main(int argc,char **argv)
                  USAGE,argv[0]);
           return EXIT_FAILURE;
         }
-        var=argv[++iarg];
+        var=strdup(argv[++iarg]);
+        check(var);
       }
 #ifdef USE_UDUNITS
       else if(!strcmp(argv[iarg],"-units"))
@@ -289,7 +290,8 @@ int main(int argc,char **argv)
                  USAGE,argv[0]);
           return EXIT_FAILURE;
         }
-        units=argv[++iarg];
+        units=strdup(argv[++iarg]);
+        check(units);
       }
 #endif
       else if(!strcmp(argv[iarg],"-map"))
@@ -604,10 +606,19 @@ int main(int argc,char **argv)
     grid_name.name=argv[iarg];
     grid_name.fmt=(isclm) ? CLM : RAW;
     fprintjson(file,outname,title,source,history,arglist,&header,map,map_name,attrs,n_attr,var,units,standard_name,long_name,&grid_name,grid_type,(isclm) ? CLM : RAW,LPJOUTPUT_HEADER,FALSE,LPJOUTPUT_VERSION);
+    freeattrs(attrs,n_attr);
+    free(out_json);
+    free(arglist);
     fclose(file);
   }
-  if(map!=NULL)
-    freemap(map);
+  free(var);
+  free(units);
+  free(long_name);
+  free(standard_name);
+  free(history);
+  free(source);
+  freemap(map);
+  free(grid);
   return EXIT_SUCCESS;
 #else
   fprintf(stderr,"ERROR401: NetCDF is not supported in this version of %s.\n",argv[0]);

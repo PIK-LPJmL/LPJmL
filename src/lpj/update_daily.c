@@ -16,20 +16,6 @@
 
 #include "lpj.h"
 
-static int findwtlayer(const Soil *soil)
-{
-  int l,lwt;              /**< layer index, index of layer in which the water table is located */
-  if(soil->wtable<0)
-    return 0;
-  lwt=0;
-  foreachsoillayer(l)
-    if (soil->wtable >= layerbound[l])
-      lwt = l;
-    else
-      break;
-  return lwt;
-} /* of 'findwtlayer' */
-
 #define length 1.0 /* characteristic length (m) */
 #define GWCOEFF 0.01 /**< groundwater outflow coefficient (average amount of release time in reservoir) */
 #define BIOTURBRATE 0.001897 /* daily rate for 50% annual bioturbation rate [-]*/
@@ -54,10 +40,13 @@ void update_daily(Cell *cell,            /**< cell pointer           */
   int s,p;
   Bool isrice=FALSE;
   Pft *pft;
-  Real melt=0,eeq,par,daylength,beta,gw_outflux,S,wtable_cor,gw_out_total;
+  Real melt=0,eeq,par,daylength,beta,gw_outflux,gw_out_total;
   Real CH4_em=0;
   Real CH4_sink=0;
-  Real melt_all,runoff,snowrunoff,epsilon_gas,soilmoist,V;
+  Real melt_all,runoff,snowrunoff;
+#ifdef DEBUG
+  Real epsilon_gas,soilmoist,V;
+#endif
 #ifdef IMAGE
   //Real fout_gw; // local variable for groundwater outflow (baseflow)
 #endif
@@ -74,10 +63,10 @@ void update_daily(Cell *cell,            /**< cell pointer           */
   ebul = 0;
   Real bnf;
   Real nh3;
-  int l,i,lwt;
+  int l,i;
   Livefuel livefuel={0,0,0,0,0};
   const Real prec_save=climate.prec;
-  Real agrfrac,fpc_total_stand;
+  Real agrfrac;
   Real litsum_old_nv[2]={0,0},litsum_new_nv[2]={0,0};
   Real litsum_old_agr[2]={0,0},litsum_new_agr[2]={0,0};
   Real rice_em=0;
@@ -467,13 +456,12 @@ void update_daily(Cell *cell,            /**< cell pointer           */
     //getoutput(&cell->output,SOILC1,config)+=(stand->soil.pool[l].slow.carbon+stand->soil.pool[l].fast.carbon)*stand->frac;
     forrootsoillayer(l)
     {
-      V = getV(&stand->soil,l);  /*soil air content (m3 air/m3 soil)*/
-      soilmoist = getsoilmoist(&stand->soil,l);
-      epsilon_gas = max(0.1, V + soilmoist*stand->soil.wsat[l]*BO2);
       getoutput(&cell->output,MEANSOILO2,config) += stand->soil.O2[l] / soildepth[l] * 1000 / LASTLAYER*stand->frac/(1-cell->lakefrac-cell->ml.reservoirfrac);
-      epsilon_gas = max(0.1, V + soilmoist*stand->soil.wsat[l]*BCH4);
       getoutput(&cell->output,MEANSOILCH4,config) += stand->soil.CH4[l] / soildepth[l] * 1000 / LASTLAYER*stand->frac/(1-cell->lakefrac-cell->ml.reservoirfrac);
 #ifdef DEBUG
+      V = getV(&stand->soil,l);  /*soil air content (m3 air/m3 soil)*/
+      soilmoist = getsoilmoist(&stand->soil,l);
+      epsilon_gas = max(0.1, V + soilmoist*stand->soil.wsat[l]*BCH4);
       if (p_s / R_gas / (climate.temp + 273.15)*ch4*1e-6*WCH4 * 100000<stand->soil.CH4[l] / soildepth[l] / epsilon_gas * 1000)
       {
         fprintf(stdout, "Cell lat %.2f lon %.2f CH4[%d]:%.8f\n", cell->coord.lat, cell->coord.lon, l, stand->soil.CH4[l]);
@@ -521,7 +509,6 @@ void update_daily(Cell *cell,            /**< cell pointer           */
 
   if(cell->discharge.dmass_gw>epsilon &&  cell->hydrotopes.wetland_wtable_current<50000)
   {
-    wtable_cor=0;
     gw_outflux = cell->ground_st*cell->kbf*0.7; //cell->kbf;GWCOEFF as the kbf value seems to be too strong it is set down by 0.8
     gw_out_total=gw_outflux;
     cell->ground_st -= gw_outflux;
