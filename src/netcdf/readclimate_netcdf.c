@@ -23,13 +23,12 @@ static Bool myopen_netcdf(Climatefile *file,int year,const Config *config)
 {
   int rc,ndims;
   char *s;
-  s=malloc(strlen(file->filename)+12);
+  s=getsprintf(file->filename,year+file->firstyear);
   if(s==NULL)
   {
     printallocerr("filename");
     return TRUE;
   }    
-  sprintf(s,file->filename,year+file->firstyear);
   rc=nc_open(s,NC_NOWRITE,&file->ncid);
   if(rc)
   {
