@@ -1,4 +1,4 @@
-# Alphabetical list of authors of LPJmL C-version
+# Alphabetical list of authors of the LPJmL C-version
 
 | Last Name         | First Name        | Email                               | Active Developer |
 |-------------------|-------------------|-------------------------------------|------------------|
@@ -38,7 +38,7 @@
 | Waha              | Katharina         | Katharina.Waha@csiro.au             |                  |
 | Werner            | Constanze         | Constanze.Werner@pik-potsdam.de     |                  |
 
-## Based on Fortran/C++ version
+## Based on the Fortran/C++ version
 
 | Last Name         | First Name        | Email                         |
 |-------------------|-------------------|-------------------------------|
