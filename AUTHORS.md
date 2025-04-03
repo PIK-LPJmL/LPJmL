@@ -18,9 +18,7 @@
 | Stenzel           | Fabian            | Fabian.Stenzel@pik-potsdam.de       | Yes              |
 | Thonicke          | Kirsten           | Kirsten.Thonike@pik-potsdam.de      | Yes              |
 | Wirth             | Stephen Bjoern    | Stephen.Wirth@pik-potsdam.de        | Yes              |
-
----
-
+||-------------------|-------------------------------------|------------------|
 | Drüke             | Markus            | Markus.Drueke@dwd.de                |                  |
 | Fader             | Marianela         |                                     |                  |
 | Forkel            | Matthias          | Matthias.Forkel@tu-dresden.de       |                  |
