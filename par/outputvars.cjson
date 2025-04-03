@@ -372,7 +372,7 @@
     { "id" : CH4_SINK, "name" :  "ch4_sink" , "timestep" : "monthly" , "var" : "CH4_sink"  , "long_name" : " CH4 soil sink" , "unit" : "gCH4/m2/month"  , "scale" : 1.0, "offset" : 0.0},
     { "id" : CH4_LITTER, "name" :  "ch4_litter" , "timestep" : "monthly" , "var" : "CH4_litter"  , "long_name" : " CH4 emissions from litter", "unit" :  "gCH4/m2/month"  , "scale" : 1.0, "offset" : 0.0},
     { "id" : CH4_EMISSIONS, "name" :  "ch4_emissions" , "timestep" : "monthly" , "var" : "CH4_emissions"  , "long_name" : " CH4 emissions", "unit" :  "gCH4/m2/month"  , "scale" : 1.0, "offset" : 0.0},
-    { "id" : CH4_EMISSIONS_WET, "name" :  "ch4_emissions_wet" , "timestep" : "monthly" , "var" : "FCH4"  , "long_name" : " CH4 emissions on wetlands", "unit" :  "gC/m2/month"  , "scale" : 1.0, "offset" : 0.0},
+    { "id" : CH4_EMISSIONS_WET, "name" :  "ch4_emissions_wet" , "timestep" : "monthly" , "var" : "FCH4"  , "long_name" : " CH4 emissions on wetlands", "unit" :  "gCH4/m2/month"  , "scale" : 1.0, "offset" : 0.0},
     { "id" : CH4_SETASIDE, "name" :  "ch4_setaside" , "timestep" : "monthly" , "var" : "CH4_setaside"  , "long_name" : " CH4 setaside", "unit" :  "gCH4/m2/month"  , "scale" : 1.0, "offset" : 0.0},
     { "id" : PCO2, "name" :  "pco2" , "timestep" : "annual" , "var" : "Pco2" , "long_name" :  "atmospheric CO2 content" , "unit" : "ppm"  , "scale" : 1.0, "offset" : 0.0},
     { "id" : PCH4, "name" :  "pch4" , "timestep" : "annual" , "var" : "Pch4"  , "long_name" : "atmospheric CH4 content", "unit" :  "ppm" , "scale" :  1.0, "offset" : 0.0},

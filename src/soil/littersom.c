@@ -118,6 +118,7 @@ Stocks littersom(Stand *stand,                      /**< [inout] pointer to stan
   Real oxid_frac = 0.95;  // Assume that 1/2 of the O2 is utilized by other electron acceptors (Wania etal.,2010) only oxidation of Reduced Compounds is left assumed to be together 5%
   Real temp;
   Real socfraction[BOTTOMLAYER];
+  Real min_O2;
 
 
 // IMPLEMENTATION OF THE EFFECTIVE CARBON CONCENTRATION
@@ -575,7 +576,10 @@ Stocks littersom(Stand *stand,                      /**< [inout] pointer to stan
              V=epsilon+epsilon;
           epsilon_O2=getepsilon_O2(V,soil_moist[l],soil->wsat[l]);
           epsilon_CH4=getepsilon_CH4(V,soil_moist[0],soil->wsat[l]);
-          litter_flux=soil->litter.item[p].bg.carbon*param.k_litter10/k_red_litter*socfraction[l]*gtemp_soil[l]*  exp(-(max(soil->O2[l],0.05)/soildepth[l]/epsilon_O2*1000)/O2star);
+          min_O2=0.1;
+          if(soil->wtable<layerbound[l])
+            min_O2=0;
+          litter_flux=soil->litter.item[p].bg.carbon*param.k_litter10/k_red_litter*socfraction[l]*gtemp_soil[l]*  exp(-(max(soil->O2[l],min_O2)/soildepth[l]/epsilon_O2*1000)/O2star);
           soil->litter.item[p].bg.carbon-=max(0,litter_flux*WC/WCH4);
           soil->CH4[l]+=litter_flux;
           getoutput(&stand->cell->output,METHANOGENESIS,config) += litter_flux*stand->frac;

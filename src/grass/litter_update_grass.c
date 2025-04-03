@@ -51,7 +51,8 @@ void litter_update_grass(Litter *litter, /**< Litter pool */
   grass->turn.root.carbon=grass->turn.leaf.carbon=grass->turn_litt.leaf.carbon=grass->turn_litt.root.carbon=0.0;
   grass->turn.root.nitrogen=grass->turn.leaf.nitrogen=grass->turn_litt.leaf.nitrogen=grass->turn_litt.root.nitrogen=0.0;
   litter->item[pft->litter].agtop.leaf.carbon+=grass->ind.leaf.carbon*frac;
-  getoutput(output,LITFALLC,config)+=grass->ind.leaf.carbon*frac*pft->stand->frac;
+  litter->item[pft->litter].agtop.leaf.carbon+=grass->excess_carbon*frac;
+  getoutput(output,LITFALLC,config)+=(grass->excess_carbon+grass->ind.leaf.carbon)*frac*pft->stand->frac;
   litter->item[pft->litter].agtop.leaf.nitrogen+=grass->ind.leaf.nitrogen*frac;
   getoutput(output,LITFALLN,config)+=grass->ind.leaf.nitrogen*frac*pft->stand->frac;
   litter->item[pft->litter].agtop.leaf.nitrogen+=pft->bm_inc.nitrogen*frac;

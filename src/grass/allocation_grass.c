@@ -38,11 +38,14 @@ Bool allocation_grass(Litter *litter,   /**< litter pool */
   Real end;
   Stocks start;
   Stocks stocks;
+  Real neg_flux=0;
   stocks=litterstocks(litter);
   start.carbon= vegc_sum(pft)+pft->bm_inc.carbon+stocks.carbon;
   start.nitrogen=vegn_sum(pft)+pft->bm_inc.nitrogen+stocks.nitrogen;
 #endif
   output=&pft->stand->cell->output;
+  pft->bm_inc.carbon+=grass->excess_carbon*pft->nind;
+  grass->excess_carbon=0;
   bm_inc_ind.carbon=pft->bm_inc.carbon/pft->nind;
   bm_inc_ind.nitrogen=pft->bm_inc.nitrogen/pft->nind;
 
@@ -144,7 +147,10 @@ Bool allocation_grass(Litter *litter,   /**< litter pool */
     grass->ind.root.carbon=0;
     if(litter->item[pft->litter].bg.carbon<0)
     {
-      pft->stand->cell->balance.neg_fluxes.carbon+=litter->item[pft->litter].bg.carbon;
+#ifdef CHECK_BALANCE
+      neg_flux+=litter->item[pft->litter].bg.carbon;
+#endif
+      pft->stand->cell->balance.neg_fluxes.carbon+=litter->item[pft->litter].bg.carbon*pft->stand->frac;
       litter->item[pft->litter].bg.carbon=0;
     }
   }
@@ -153,7 +159,10 @@ Bool allocation_grass(Litter *litter,   /**< litter pool */
     grass->ind.leaf.carbon=0;
     if(litter->item[pft->litter].agtop.leaf.carbon<0)
     {
-      pft->stand->cell->balance.neg_fluxes.carbon+=litter->item[pft->litter].agtop.leaf.carbon;
+#ifdef CHECK_BALANCE
+      neg_flux+=litter->item[pft->litter].agtop.leaf.carbon;
+#endif
+      pft->stand->cell->balance.neg_fluxes.carbon+=litter->item[pft->litter].agtop.leaf.carbon*pft->stand->frac;
       litter->item[pft->litter].agtop.leaf.carbon=0;
     }
   }
@@ -255,11 +264,11 @@ Bool allocation_grass(Litter *litter,   /**< litter pool */
   *fpc_inc=fpc_grass(pft);
 #ifdef CHECK_BALANCE
   stocks=litterstocks(litter);
-  end = vegc_sum(pft)+stocks.carbon;
+  end = vegc_sum(pft)+stocks.carbon+neg_flux;
 
   if(fabs(end-start.carbon)>0.01)
-    fprintf(stderr, "C_ERROR allocation_grass: %g start : %g end : %g  bm_inc.carbon: %g  PFT:%s nind: %g leaf_turn_litt: %g root_turn_litt: %g  root_turn: %g  leaf_turn: %g \n",
-        end-start.carbon, start.carbon,end,pft->bm_inc.carbon,pft->par->name,pft->nind,grass->turn_litt.root.carbon,grass->turn_litt.leaf.carbon,grass->turn.root.carbon,grass->turn.leaf.carbon);
+    fprintf(stderr, "C_ERROR allocation_grass: %g start : %g end : %g  bm_inc.carbon: %g  PFT:%s nind: %g leaf_turn_litt: %g root_turn_litt: %g  root_turn: %g  leaf_turn: %g .neg_fluxes.carbon: %g\n",
+        end-start.carbon, start.carbon,end,pft->bm_inc.carbon,pft->par->name,pft->nind,grass->turn_litt.root.carbon,grass->turn_litt.leaf.carbon,grass->turn.root.carbon,grass->turn.leaf.carbon,neg_flux);
 
   end = vegn_sum(pft)+pft->bm_inc.nitrogen+stocks.nitrogen;
 
