@@ -7,8 +7,8 @@ It is currently developed and maintained mainly by the **Potsdam Institute for C
 
 ## Features
 
-- **Dynamic Vegetation Modeling**: Dynamic vegetation composition based on climate and the underlying biophysical processes.
-- **Land-Use Integration**: Accounts for human land-use impacts and irrigation.
+- **Dynamic Vegetation Modeling**: Dynamic natural vegetation composition based on climate and underlying biophysical processes.
+- **Land-Use Integration**: Representation of land use such as cropping systems, managed grassland and wood plantations
 - **Flexible Configuration**: Highly configurable through input files and parameters.
 - **Scalability**: Designed for global-scale simulations, with support for parallel computation.
 
