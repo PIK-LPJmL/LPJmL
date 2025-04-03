@@ -50,6 +50,7 @@ of `major.minor.patch` with
 - Check for maximum discharge length corrected in `printdrain.c`.
 - Number of years of clm file set to 1 in `grid2clm.c`.
 - Function `fscanlandcovermap.c` corrected (issue https://github.com/PIK-LPJmL/LPJmL/issues/48).
+- Access out of bounds for `soil->freezdepth` fixed in `soiltemp.c`.
 
 
 ## [5.9.22] - 2025-03-14
