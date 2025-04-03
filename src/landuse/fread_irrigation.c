@@ -17,30 +17,35 @@
 #include "lpj.h"
 
 Bool fread_irrigation(FILE *file,             /**< pointer to binary file */
+                      const char *name,       /**< name of object */
                       Irrigation *irrigation, /**< irrigation pointer */
                       Bool swap               /**< byte order has to be changed */
                      )                        /** \return TRUE on error */
 {
-  Byte b;
-  if(fread(&b,sizeof(b),1,file)!=1)
+  if(readstruct(file,name,swap))
     return TRUE;
-  if(b>1)
-  {
-    fprintf(stderr,"ERROR195: Invalid value %d for irrigation, must be 0 or 1.\n",b);
+  if(readbool(file,"irrigation",&irrigation->irrigation,swap))
     return TRUE;
-  }
-  irrigation->irrigation=b;
-  freadint1(&irrigation->pft_id,swap,file);
+  if(readint(file,"pft_id",&irrigation->pft_id,swap))
+    return TRUE;
   if(irrigation->irrigation)
   {
-    freadint1(&irrigation->irrig_event,swap,file);
-    freadint1((int *)(&irrigation->irrig_system),swap,file);
-    freadreal1(&irrigation->ec,swap,file);
-    freadreal1(&irrigation->conv_evap,swap,file);
-    freadreal1(&irrigation->net_irrig_amount,swap,file);
-    freadreal1(&irrigation->dist_irrig_amount,swap,file);
-    freadreal1(&irrigation->irrig_amount,swap,file);
-    return freadreal1(&irrigation->irrig_stor,swap,file)!=1;
+    if(readbool(file,"irrig_event",&irrigation->irrig_event,swap))
+      return TRUE;
+    if(readint(file,"irrig_system",(int *)(&irrigation->irrig_system),swap))
+      return TRUE;
+    if(readreal(file,"ec",&irrigation->ec,swap))
+      return TRUE;
+    if(readreal(file,"conv_evap",&irrigation->conv_evap,swap))
+      return TRUE;
+    if(readreal(file,"net_irrig_amount",&irrigation->net_irrig_amount,swap))
+      return TRUE;
+    if(readreal(file,"dist_irrig_amount",&irrigation->dist_irrig_amount,swap))
+      return TRUE;
+    if(readreal(file,"irrig_amount",&irrigation->irrig_amount,swap))
+      return TRUE;
+    if(readreal(file,"irrig_stor",&irrigation->irrig_stor,swap))
+      return TRUE;
   }
   else
   {
@@ -49,5 +54,5 @@ Bool fread_irrigation(FILE *file,             /**< pointer to binary file */
     irrigation->ec=1;
     irrigation->conv_evap=irrigation->net_irrig_amount=irrigation->dist_irrig_amount=irrigation->irrig_amount=irrigation->irrig_stor=0.0;
   }
-  return FALSE;
+  return readendstruct(file);
 } /* of 'fread_irrigation' */

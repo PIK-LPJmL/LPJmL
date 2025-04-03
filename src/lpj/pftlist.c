@@ -50,17 +50,17 @@ int delpft(Pftlist *pftlist, /**< PFT list */
 } /* of 'delpft ' */
 
 int fwritepftlist(FILE *file,            /**< file pointer of binary file */
+                  const char *name,      /**< name of object */
                   const Pftlist *pftlist /**< PFT list */
                  )                       /** \return number of PFTs written */
 {
-  Byte b;
   int p;
+  writearray(file,name,pftlist->n);
   /* write number of established PFTs */
-  b=(Byte)pftlist->n;
-  fwrite(&b,sizeof(b),1,file);
   for(p=0;p<pftlist->n;p++)
     if(fwritepft(file,pftlist->pft+p)) /* write PFT-specific data */
       break;
+  writeendarray(file);
   return p;
 } /* of 'fwritepftlist' */
 
@@ -76,6 +76,7 @@ void fprintpftlist(FILE *file,            /**< pointer of text file */
 } /* of 'fprintpftlist' */
 
 Bool freadpftlist(FILE *file,            /**< file pointer of a binary file */
+                  const char *name,      /**< name of object */
                   Stand *stand,          /**< Stand pointer */
                   Pftlist *pftlist,      /**< PFT list */
                   const Pftpar pftpar[], /**< PFT parameter array */
@@ -84,12 +85,10 @@ Bool freadpftlist(FILE *file,            /**< file pointer of a binary file */
                   Bool swap              /**< if true data is in different byte order */
                  )                       /** \return TRUE on error */
 {
-  Byte b;
   int p;
   /* read number of established PFTs */
-  if(fread(&b,sizeof(b),1,file)!=1)
+  if(readarray(file,name,&pftlist->n,swap))
     return TRUE;
-  pftlist->n=b;
   if(pftlist->n)
   {
     /* allocate memory for PFT array */
@@ -110,7 +109,7 @@ Bool freadpftlist(FILE *file,            /**< file pointer of a binary file */
   }
   else
     pftlist->pft=NULL;
-  return FALSE;
+  return readendarray(file);
 } /* of 'freadpftlist' */
 
 void freepftlist(Pftlist *pftlist /**< PFT list */

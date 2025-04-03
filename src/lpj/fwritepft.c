@@ -21,27 +21,30 @@ Bool fwritepft(FILE *file,    /**< File pointer to binary file */
                const Pft *pft /**< PFT variables */
               )               /** \return TRUE on error */
 {
-  Byte b;
-  b=(Byte)pft->par->id;
-  fwrite1(&b,sizeof(b),file);
-  fwrite(&pft->phen_gsi,sizeof(Phenology),1,file);
-  fwrite1(&pft->wscal,sizeof(Real),file);
-  fwrite1(&pft->wscal_mean,sizeof(Real),file);
-  fwrite1(&pft->vscal,sizeof(Real),file);
-  fwrite1(&pft->aphen,sizeof(Real),file);
-  fwrite1(&pft->phen,sizeof(Real),file);
+  writestruct(file,NULL);
+  writeint(file,"id",pft->par->id);
+  writestruct(file,"phen_gsi");
+  writereal(file,"tmin",pft->phen_gsi.tmin);
+  writereal(file,"tmax",pft->phen_gsi.tmax);
+  writereal(file,"wscal",pft->phen_gsi.wscal);
+  writereal(file,"light",pft->phen_gsi.light);
+  writeendstruct(file);
+  writereal(file,"wscal",pft->wscal);
+  writereal(file,"wscal_mean",pft->wscal_mean);
+  writereal(file,"vscal",pft->vscal);
+  writereal(file,"aphen",pft->aphen);
+  writereal(file,"phen",pft->phen);
   /* write type-dependent PFT variables */
   if(pft->par->fwrite(file,pft))
     return TRUE;
-  fwrite1(&pft->bm_inc,sizeof(Stocks),file);
-  fwrite1(&pft->nind,sizeof(Real),file);
-  fwrite1(&pft->gdd,sizeof(Real),file); 
-  fwrite1(&pft->fpc,sizeof(Real),file);
-  fwrite1(&pft->albedo,sizeof(Real),file);
-  fwrite1(&pft->fapar,sizeof(Real),file);
-  fwrite1(&pft->nleaf,sizeof(Real),file);
-  fwrite1(&pft->establish,sizeof(Stocks),file);
-  b=(Byte)pft->litter;
-  fwrite1(&b,sizeof(b),file);
-  return FALSE;
+  writestocks(file,"bm_inc",&pft->bm_inc);
+  writereal(file,"nind",pft->nind);
+  writereal(file,"gdd",pft->gdd);
+  writereal(file,"fpc",pft->fpc);
+  writereal(file,"albdo",pft->albedo);
+  writereal(file,"fapae",pft->fapar);
+  writereal(file,"nleaf",pft->nleaf);
+  writestocks(file,"establish",&pft->establish);
+  writeint(file,"litter",pft->litter);
+  return writeendstruct(file);
 } /* of 'fwritepft' */

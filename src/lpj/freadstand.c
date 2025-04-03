@@ -16,7 +16,8 @@
 
 #include "lpj.h"
 
-Stand *freadstand(FILE *file, /**< File pointer to binary file */
+Stand *freadstand(FILE *file, /**< File pointer to restart file */
+                  const char *name,    /**< name of object */
                   Cell *cell, /**< Cell pointer */
                   const Pftpar pftpar[],/**< Pft parameter array */
                   int ntotpft,          /**<  total number of PFTs */
@@ -29,6 +30,8 @@ Stand *freadstand(FILE *file, /**< File pointer to binary file */
 {
   Stand *stand;
   Byte landusetype;
+  if(readstruct(file,name,swap))
+    return NULL;
   stand=new(Stand);
   if(stand==NULL)
   {
@@ -36,7 +39,7 @@ Stand *freadstand(FILE *file, /**< File pointer to binary file */
     return NULL;
   }
   stand->cell=cell;
-  if(fread(&landusetype,sizeof(landusetype),1,file)!=1)
+  if(readbyte(file,"landusetype",&landusetype,swap))
   {
     free(stand);
     return NULL;
@@ -49,29 +52,38 @@ Stand *freadstand(FILE *file, /**< File pointer to binary file */
     return NULL;
   }
   stand->type=standtype+landusetype;
-  if(freadpftlist(file,stand,&stand->pftlist,pftpar,ntotpft,separate_harvests,swap))
+  if(freadpftlist(file,"pftlist",stand,&stand->pftlist,pftpar,ntotpft,separate_harvests,swap))
   {
-    fprintf(stderr,"ERROR254: Cannot read PFT list.\n");
+    fprintf(stderr,"ERROR254: Cannot read PFT list for %s stand.\n",stand->type->name);
     free(stand);
     return NULL;
   }
   initstand(stand);
-  if(freadsoil(file,&stand->soil,soilpar,pftpar,ntotpft,swap))
+  if(freadsoil(file,"soil",&stand->soil,soilpar,pftpar,ntotpft,swap))
   {
-    fprintf(stderr,"ERROR254: Cannot read soil data.\n");
+    fprintf(stderr,"ERROR254: Cannot read soil data for %s stand.\n",stand->type->name);
     free(stand);
     return NULL;
   }
-  freadreal1(&stand->frac,swap,file);
+  if(readreal(file,"frac",&stand->frac,swap))
+  {
+    free(stand);
+    return NULL;
+  }
   stand->data=NULL;
   /* read stand-specific data */
   if(stand->type->fread(file,stand,swap))
   {
-    fprintf(stderr,"ERROR254: Cannot read stand-specific data.\n");
+    fprintf(stderr,"ERROR254: Cannot read stand-specific data for %s stand.\n",stand->type->name);
     freestand(stand);
     return NULL;
   }
-  if(freadreal(stand->frac_g,NSOILLAYER,swap,file)!=NSOILLAYER)
+  if(readrealarray(file,"frac_g",stand->frac_g,NSOILLAYER,swap))
+  {
+    freestand(stand);
+    return NULL;
+  }
+  if(readendstruct(file))
   {
     freestand(stand);
     return NULL;

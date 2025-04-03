@@ -235,6 +235,8 @@ int main(int argc,char **argv)
     case LPJ_DOUBLE:
       vec=dvec=newvec(double,nbands_sum);
       break;
+    default:
+      return EXIT_FAILURE;
   }
   if(vec==NULL)
   {
@@ -280,6 +282,8 @@ int main(int argc,char **argv)
             else
               rc=freaddouble(dvec+index,nbands[i],swap[i],files[i]);
             break;
+          default:
+            return EXIT_FAILURE;
         }
         if(rc!=nbands[i])
         {

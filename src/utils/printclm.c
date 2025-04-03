@@ -333,6 +333,8 @@ static void printclm(const char *filename,int output,int nbands,int version,
                   }
                   printf("%6g\n",ddata);
                   break;
+                default:
+                  return;
                }
             }
             fseek(file,typesizes[type]*(header.ncell-last-first+header.firstcell),SEEK_CUR);
@@ -412,6 +414,8 @@ static void printclm(const char *filename,int output,int nbands,int version,
                 }
                 printf(" %6g",ddata);
                 break;
+              default:
+                return;
             }
           putchar('\n');
         } /* of for(cell=...) */

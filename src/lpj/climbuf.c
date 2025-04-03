@@ -16,6 +16,8 @@
 
 #define k (1.0/12.0)
 #define kk 0.05
+#define readreal2(file,name,val,swap) if(readreal(file,name,val,swap)) return TRUE
+#define readrealarray2(file,name,val,size,swap) if(readrealarray(file,name,val,size,swap)) return TRUE
 
 Bool new_climbuf(Climbuf *climbuf, /**< pointer to climate buffer */
                  int ncft          /**< number of crop pfts */
@@ -166,71 +168,79 @@ void annual_climbuf(Climbuf *climbuf,    /**< pointer to climate buffer */
   }
 } /* of 'annual_climbuf' */
 
-Bool fwriteclimbuf(FILE *file,             /**< pointer to binary file */
+Bool fwriteclimbuf(FILE *file,             /**< pointer to restart file */
+                   const char *name,       /**< name of object */
                    const Climbuf *climbuf, /**< pointer to climate buffer written */
                    int ncft                /**< number of crop pfts */
                   )                        /** \return TRUE on error */
 {
-  fwrite(&climbuf->temp_max,sizeof(Real),1,file);
-  fwrite(&climbuf->temp_min,sizeof(Real),1,file);
-  fwrite(&climbuf->atemp_mean,sizeof(Real),1,file);
-  fwrite(&climbuf->aetp_mean,sizeof(Real),1,file);
-  fwrite(&climbuf->atemp_mean20,sizeof(Real),1,file);
-  fwrite(&climbuf->atemp_mean20_fix,sizeof(Real),1,file);
-  fwrite(&climbuf->gdd5,sizeof(Real),1,file);
-  fwrite(climbuf->dval_prec,sizeof(Real),1,file);
-  fwrite(climbuf->temp,sizeof(Real),NDAYS,file);
-  fwrite(climbuf->prec,sizeof(Real),NDAYS,file);
-  fwrite(climbuf->mpet20,sizeof(Real),NMONTH,file);
-  fwrite(climbuf->mprec20,sizeof(Real),NMONTH,file);
-  fwrite(climbuf->mtemp20,sizeof(Real),NMONTH,file);
-  fwrite(climbuf->V_req,sizeof(Real),ncft,file);
-  fwrite(climbuf->V_req_a,sizeof(Real),ncft,file);
-  fwritebuffer(file,climbuf->min);
-  return fwritebuffer(file,climbuf->max);
+  writestruct(file,name);
+  writereal(file,"temp_max",climbuf->temp_max);
+  writereal(file,"temp_min",climbuf->temp_min);
+  writereal(file,"atemp_mean",climbuf->atemp_mean);
+  writereal(file,"aetp_mean",climbuf->aetp_mean);
+  writereal(file,"atemp_mean20",climbuf->atemp_mean20);
+  writereal(file,"atemp_mean20_fix",climbuf->atemp_mean20_fix);
+  writereal(file,"gdd5",climbuf->gdd5);
+  writereal(file,"dval_prec",climbuf->dval_prec[0]);
+  writerealarray(file,"temp",climbuf->temp,NDAYS);
+  writerealarray(file,"prec",climbuf->prec,NDAYS);
+  writerealarray(file,"mpet20",climbuf->mpet20,NMONTH);
+  writerealarray(file,"mprec20",climbuf->mprec20,NMONTH);
+  writerealarray(file,"mtemp20",climbuf->mtemp20,NMONTH);
+  writerealarray(file,"V_req",climbuf->V_req,ncft);
+  writerealarray(file,"V_req_a",climbuf->V_req_a,ncft);
+  fwritebuffer(file,"min",climbuf->min);
+  fwritebuffer(file,"max",climbuf->max);
+  return writeendstruct(file);
 } /* of 'fwriteclimbuf' */
 
-Bool freadclimbuf(FILE *file,       /**< pointer to binary file */
+Bool freadclimbuf(FILE *file,       /**< pointer to restart file */
+                  const char *name, /**< name of object */
                   Climbuf *climbuf, /**< pointer to climate buffer read */
                   int ncft,         /**< number of crop pfts */
                   Bool swap         /**< byte order has to be swapped (TRUE/FALSE) */
                  )                  /** \return TRUE on error */
 {
   int m;
-  freadreal1(&climbuf->temp_max,swap,file);
-  freadreal1(&climbuf->temp_min,swap,file);
-  freadreal1(&climbuf->atemp_mean,swap,file);
-  freadreal1(&climbuf->aetp_mean,swap,file);
-  freadreal1(&climbuf->atemp_mean20,swap,file);
-  freadreal1(&climbuf->atemp_mean20_fix,swap,file);
-  freadreal1(&climbuf->gdd5,swap,file);
-  freadreal1(climbuf->dval_prec,swap,file);
-  freadreal(climbuf->temp,NDAYS,swap,file);
-  freadreal(climbuf->prec,NDAYS,swap,file);
-  freadreal(climbuf->mpet20,NMONTH,swap,file);
-  freadreal(climbuf->mprec20,NMONTH,swap,file);
-  freadreal(climbuf->mtemp20,NMONTH,swap,file);
+  if(readstruct(file,name,swap))
+    return TRUE;
+  readreal2(file,"temp_max",&climbuf->temp_max,swap);
+  readreal2(file,"temp_min",&climbuf->temp_min,swap);
+  readreal2(file,"atemp_mean",&climbuf->atemp_mean,swap);
+  readreal2(file,"aetp_mean",&climbuf->aetp_mean,swap);
+  readreal2(file,"atemp_mean20",&climbuf->atemp_mean20,swap);
+  readreal2(file,"atemp_mean20_fix",&climbuf->atemp_mean20_fix,swap);
+  readreal2(file,"gdd5",&climbuf->gdd5,swap);
+  readreal2(file,"dval_prec",climbuf->dval_prec,swap);
+  readrealarray2(file,"temp",climbuf->temp,NDAYS,swap);
+  readrealarray2(file,"prec",climbuf->prec,NDAYS,swap);
+  readrealarray2(file,"mpet20",climbuf->mpet20,NMONTH,swap);
+  readrealarray2(file,"mprec20",climbuf->mprec20,NMONTH,swap);
+  readrealarray2(file,"mtemp20",climbuf->mtemp20,NMONTH,swap);
   climbuf->V_req=newvec(Real,ncft);
   if(climbuf->V_req==NULL)
     return TRUE;
-  freadreal(climbuf->V_req,ncft,swap,file);
+  readrealarray2(file,"V_req",climbuf->V_req,ncft,swap);
   climbuf->V_req_a=newvec(Real,ncft);
   if(climbuf->V_req_a==NULL)
     return TRUE;
-  freadreal(climbuf->V_req_a,ncft,swap,file);
-  climbuf->min=freadbuffer(file,swap);
+  readrealarray2(file,"V_req_a",climbuf->V_req_a,ncft,swap);
+  climbuf->min=freadbuffer(file,"min",swap);
   if(climbuf->min==NULL)
   {
     climbuf->max=NULL;
     return TRUE;
   }
-  climbuf->max=freadbuffer(file,swap);
+  climbuf->max=freadbuffer(file,"max",swap);
   climbuf->mtemp_min20 = getbufferavg(climbuf->min);
   climbuf->atemp=0;
   climbuf->aprec=0;
   for(m=0;m<NMONTH;m++)
     climbuf->aprec+=climbuf->mprec20[m];
-  return (climbuf->max==NULL);
+  if(climbuf->max==NULL)
+    return TRUE;
+  return readendstruct(file);
 } /* of 'freadclimbuf' */
 
 void freeclimbuf(Climbuf *climbuf /**< pointer to binary file */

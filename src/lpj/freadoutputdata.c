@@ -17,18 +17,12 @@
 #include "lpj.h"
 
 Bool freadoutputdata(FILE *file,          /**< pointer to restart file */
+                     const char *name,    /**< name of object */
                      Output *output,      /**< output data */
                      Bool swap,           /**< byte order has to be changed? */
                      Config *config /**< LPJ configuration */
                     )
 {
-  if(freadint(&config->totalsize,1,swap,file)!=1)
-    return TRUE;
-  output->data=newvec(Real,config->totalsize);
-  if(output->data==NULL)
-  {
-    printallocerr("data");
-    return TRUE;
-  }
-  return freadreal(output->data,config->totalsize,swap,file)!=config->totalsize;
+  output->data=readvarrealarray(file,name,&config->totalsize,swap);
+  return (output->data==NULL);
 } /* of 'freadoutputdata' */

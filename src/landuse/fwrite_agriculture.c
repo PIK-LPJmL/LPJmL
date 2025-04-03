@@ -21,9 +21,8 @@ Bool fwrite_agriculture(FILE *file,        /**< pointer to binary file */
                         const Stand *stand /**< stand pointer */
                        )                   /** \return TRUE on error */
 {
-  Irrigation *irrigation;
+  const Irrigation *irrigation;
   irrigation=stand->data;
-  fwrite_irrigation(file,irrigation);
-  fwrite1(&stand->growing_days,sizeof(int),file);
-  return FALSE;
+  fwrite_irrigation(file,"irrigation",irrigation);
+  return writeint(file,"growing_days",stand->growing_days);
 } /* of 'fwrite_agriculture' */

@@ -70,23 +70,28 @@ void updatebuffer(Buffer buffer, /**< pointer to buffer */
 } /* of 'updatebuffer' */
 
 Bool fwritebuffer(FILE *file,         /**< file pointer */
+                  const char *name,   /**< name of object */
                   const Buffer buffer /**< pointer to buffer */
                  )                    /** \return TRUE on error */
 {
-  fwrite(&buffer->size,sizeof(int),1,file);
-  fwrite(&buffer->n,sizeof(int),1,file);
-  fwrite(&buffer->index,sizeof(int),1,file);
-  fwrite(&buffer->sum,sizeof(Real),1,file);
-  return (fwrite(buffer->data,sizeof(Real),buffer->n,file)!=buffer->n);
+  writestruct(file,name);
+  writeint(file,"size",buffer->size);
+  writeint(file,"index",buffer->index);
+  writereal(file,"sum",buffer->sum);
+  writerealarray(file,"data",buffer->data,buffer->n);
+  return writeendstruct(file);
 } /* of 'fwritebuffer' */
 
-Buffer freadbuffer(FILE *file, /**< file pointer */
-                   Bool swap   /**< byte order has to be changed */
-                  )            /** \return allocated buffer or NULL */
+Buffer freadbuffer(FILE *file,       /**< file pointer */
+                   const char *name, /**< name of object */
+                   Bool swap         /**< byte order has to be changed */
+                  )                  /** \return allocated buffer or NULL */
 {
-  int size;
+  int i,size;
   Buffer buffer;
-  if(freadint1(&size,swap,file)!=1)
+  if(readstruct(file,name,swap))
+    return NULL;
+  if(readint(file,"size",&size,swap))
     return NULL;
   buffer=new(struct buffer);
   if(buffer==NULL)
@@ -102,16 +107,47 @@ Buffer freadbuffer(FILE *file, /**< file pointer */
     free(buffer);
     return NULL;
   }
-  freadint1(&buffer->n,swap,file);
-  if(buffer->n>buffer->size)
+  if(readint(file,"index",&buffer->index,swap))
   {
     free(buffer->data);
     free(buffer);
     return NULL;
   }
-  freadint1(&buffer->index,swap,file);
-  freadreal1(&buffer->sum,swap,file);
-  if(freadreal(buffer->data,buffer->n,swap,file)!=buffer->n)
+  if(readreal(file,"sum",&buffer->sum,swap))
+  {
+    free(buffer->data);
+    free(buffer);
+    return NULL;
+  }
+  if(readarray(file,"data",&buffer->n,swap))
+  {
+    free(buffer->data);
+    free(buffer);
+    return NULL;
+  }
+  if(buffer->n>buffer->size)
+  {
+    fprintf(stderr,"ERROR250: Size of buffer '%s'=%d is >%d.\n",
+            name,buffer->n,buffer->size);
+    free(buffer->data);
+    free(buffer);
+    return NULL;
+  }
+  for(i=0;i<buffer->n;i++)
+    if(readreal(file,NULL,buffer->data+i,swap))
+    {
+      free(buffer->data);
+      free(buffer);
+      return NULL;
+    }
+  if(readendarray(file))
+  {
+    /* read error occured */
+    free(buffer->data);
+    free(buffer);
+    return NULL;
+  }
+  if(readendstruct(file))
   {
     /* read error occured */
     free(buffer->data);

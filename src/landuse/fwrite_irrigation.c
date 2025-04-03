@@ -16,24 +16,24 @@
 
 #include "lpj.h"
 
-Bool fwrite_irrigation(FILE *file,        /**< pointer to binary file */
+Bool fwrite_irrigation(FILE *file,                  /**< pointer to binary file */
+                       const char *name,            /**< name of object */
                        const Irrigation *irrigation /**< irrigation pointer */
-                      )                   /** \return TRUE on error */
+                      )                             /** \return TRUE on error */
 {
-  Byte b;
-  b=(Byte)irrigation->irrigation;
-  fwrite(&b,sizeof(b),1,file);
-  fwrite1(&irrigation->pft_id,sizeof(int),file);
+  writestruct(file,name);
+  writebool(file,"irrigation",irrigation->irrigation);
+  writeint(file,"pft_id",irrigation->pft_id);
   if(irrigation->irrigation)
   {
-    fwrite1(&irrigation->irrig_event,sizeof(int),file);
-    fwrite1((int *)(&irrigation->irrig_system),sizeof(int),file);
-    fwrite1(&irrigation->ec,sizeof(Real),file);
-    fwrite1(&irrigation->conv_evap,sizeof(Real),file);
-    fwrite1(&irrigation->net_irrig_amount,sizeof(Real),file);
-    fwrite1(&irrigation->dist_irrig_amount,sizeof(Real),file);
-    fwrite1(&irrigation->irrig_amount,sizeof(Real),file);
-    fwrite1(&irrigation->irrig_stor,sizeof(Real),file);
+    writebool(file,"irrig_event",irrigation->irrig_event);
+    writeint(file,"irrig_system",irrigation->irrig_system);
+    writereal(file,"ec",irrigation->ec);
+    writereal(file,"conv_evap",irrigation->conv_evap);
+    writereal(file,"net_irrig_amount",irrigation->net_irrig_amount);
+    writereal(file,"dist_irrig_amount",irrigation->dist_irrig_amount);
+    writereal(file,"irrig_amount",irrigation->irrig_amount);
+    writereal(file,"irrig_stor",irrigation->irrig_stor);
   }
-  return FALSE;
+  return writeendstruct(file);
 } /* of 'fwrite_irrigation' */

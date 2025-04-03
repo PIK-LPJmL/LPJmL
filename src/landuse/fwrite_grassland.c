@@ -17,15 +17,25 @@
 #include "lpj.h"
 #include "grassland.h"
 
+static Bool writerotation(FILE *file,const char *name,const Rotation *rotation)
+{
+  writestruct(file,name);
+  writeint(file,"grazing_days",rotation->grazing_days);
+  writeint(file,"recovery_dates",rotation->recovery_days);
+  writeint(file,"paddocks",rotation->paddocks);
+  writeint(file,"mode",rotation->mode);
+  return writeendstruct(file);
+}
+
 Bool fwrite_grassland(FILE *file,        /**< pointer to binary file */
                       const Stand *stand /**< stand pointer */
                      )                   /** \return TRUE on error */
 {
   const Grassland *grassland;
   grassland=stand->data;
-  fwrite_irrigation(file,&grassland->irrigation);
-  fwrite(&stand->growing_days,sizeof(int),1,file);
-  fwrite(&grassland->deficit_lsu_ne,sizeof(Real),1,file);
-  fwrite(&grassland->deficit_lsu_mp,sizeof(Real),1,file);
-  return (fwrite(&grassland->rotation,sizeof(Rotation),1,file)!=1);
+  fwrite_irrigation(file,"irrigation",&grassland->irrigation);
+  writeint(file,"growing_days",stand->growing_days);
+  writereal(file,"deficit_lsu_ne",grassland->deficit_lsu_ne);
+  writereal(file,"deficit_lsu_mp",grassland->deficit_lsu_mp);
+  return writerotation(file,"rotation",&grassland->rotation);
 } /* of 'fwrite_grassland' */

@@ -28,94 +28,98 @@ int fwritecell(FILE *file,        /**< File pointer of binary file */
               )                   /** \return number of cells written */
 {
   int cell;
-  Byte b;
   for(cell=0;cell<ncell;cell++)
   {
     if(index!=NULL)
       index[cell]=ftell(file); /* store actual position in index vector */
-    b=(Byte)grid[cell].skip;
-    fwrite(&b,sizeof(b),1,file);
-    fwrite(grid[cell].seed,sizeof(Seed),1,file);
-    if(fwrite(&grid[cell].discharge.dmass_lake,sizeof(Real),1,file)!=1)
+    writestruct(file,NULL);
+    writebool(file,"skip",grid[cell].skip);
+    fwriteseed(file,"seed",grid[cell].seed);
+    if(writereal(file,"dmass_lake",grid[cell].discharge.dmass_lake))
       break;
     if(config->river_routing)
     {
 #ifdef IMAGE
-    if(fwrite(&grid[cell].discharge.dmass_gw,sizeof(Real),1,file)!=1)
+    if(writereal(file,"dmass_gw",grid[cell].discharge.dmass_gw))
       break;
 #endif
-      if(fwrite(&grid[cell].discharge.dfout,sizeof(Real),1,file)!=1)
+      if(writereal(file,"dfout",grid[cell].discharge.dfout))
         break;
-      if(fwrite(&grid[cell].discharge.dmass_river,sizeof(Real),1,file)!=1)
+      if(writereal(file,"dmass_river",grid[cell].discharge.dmass_river))
         break;
-      if(fwrite(&grid[cell].discharge.dmass_sum,sizeof(Real),1,file)!=1)
+      if(writereal(file,"dmass_sum",grid[cell].discharge.dmass_sum))
         break;
 #ifdef COUPLING_WITH_FMS
-      if(fwrite(&grid[cell].laketemp,sizeof(Real),1,file)!=1)
+      if(writereal(file,"laketemp",&grid[cell].laketemp))
         break;
 #endif
-      if(fwritequeue(file,grid[cell].discharge.queue))
+      if(fwritequeue(file,"queue",grid[cell].discharge.queue))
         break;
-      b=(Byte)grid[cell].ml.dam;
-      fwrite(&b,sizeof(b),1,file);
+      writebool(file,"dam",grid[cell].ml.dam);
       if(grid[cell].ml.dam)
       {
-        if(fwriteresdata(file,grid+cell))
+        if(fwriteresdata(file,"resdata",grid+cell))
           break;
       }
     }
     if(!grid[cell].skip)
     {
-      if(fwrite(grid[cell].balance.estab_storage_tree,sizeof(Stocks),2,file)!=2)
+      if(writestocks(file,"estab_storage_tree_rf",grid[cell].balance.estab_storage_tree))
         break;
-      if(fwrite(grid[cell].balance.estab_storage_grass,sizeof(Stocks),2,file)!=2)
+      if(writestocks(file,"estab_storage_tree_ir",grid[cell].balance.estab_storage_tree+1))
         break;
-      if(fwriteignition(file,&grid[cell].ignition))
+      if(writestocks(file,"estab_storage_grass_rf",grid[cell].balance.estab_storage_grass))
         break;
-      if(fwrite(&grid[cell].balance.excess_water,sizeof(Real),1,file)!=1)
+      if(writestocks(file,"estab_storage_grass_ir",grid[cell].balance.estab_storage_grass+1))
         break;
-      if(fwrite(&grid[cell].discharge.waterdeficit,sizeof(Real),1,file)!=1)
+      if(fwriteignition(file,"ignition",&grid[cell].ignition))
         break;
-      if(fwrite(grid[cell].gdd,sizeof(Real),npft, file)!=npft)
+      if(writereal(file,"excess_water",grid[cell].balance.excess_water))
         break;
-      if(fwritestandlist(file,grid[cell].standlist,npft+ncft)!=
-         grid[cell].standlist->n)
+      if(writereal(file,"waterdeficit",grid[cell].discharge.waterdeficit))
         break;
-      if(fwrite(&grid[cell].ml.cropfrac_rf,sizeof(Real),1,file)!=1)
+      if(writerealarray(file,"gdd",grid[cell].gdd,npft))
         break;
-      if(fwrite(&grid[cell].ml.cropfrac_ir,sizeof(Real),1,file)!=1)
+      if(fwritestandlist(file,"standlist",grid[cell].standlist,npft+ncft))
         break;
-      if(fwriteclimbuf(file,&grid[cell].climbuf,ncft))
+      if(writereal(file,"cropfrac_rf",grid[cell].ml.cropfrac_rf))
         break;
-      if(fwritecropdates(file,grid[cell].ml.cropdates,ncft))
+      if(writereal(file,"cropfrac_ir",grid[cell].ml.cropfrac_ir))
+        break;
+      if(fwriteclimbuf(file,"climbuf",&grid[cell].climbuf,ncft))
+        break;
+      if(fwritecropdates(file,"cropdates",grid[cell].ml.cropdates,ncft))
         break;
       if(config->sdate_option>NO_FIXED_SDATE)
       {
-        if(fwrite(grid[cell].ml.sdate_fixed,sizeof(int),2*ncft,file)!=2*ncft)
+        if(writeintarray(file,"sdate_fixed",grid[cell].ml.sdate_fixed,2*ncft))
           break;
       }
       if(config->crop_phu_option>=PRESCRIBED_CROP_PHU)
       {
-        if(fwrite(grid[cell].ml.crop_phu_fixed,sizeof(Real),2*ncft,file)!=2*ncft)
+        if(writerealarray(file,"crop_phu_fixed",grid[cell].ml.crop_phu_fixed,2*ncft))
           break;
       }
-      if(fwrite(grid[cell].ml.sowing_month,sizeof(int),2*ncft,file)!=2*ncft)
+      if(writeintarray(file,"sowing_month",grid[cell].ml.sowing_month,2*ncft))
         break;
-      if(fwrite(grid[cell].ml.gs,sizeof(int),2*ncft,file)!=2*ncft)
+      if(writeintarray(file,"gs",grid[cell].ml.gs,2*ncft))
         break;
       if(grid[cell].ml.landfrac!=NULL)
       {
-        fwritelandfrac(file,grid[cell].ml.landfrac,ncft,config->nagtree);
+        fwritelandfrac(file,"landfrac",grid[cell].ml.landfrac,ncft,config->nagtree);
 #ifndef IMAGE
-        fwrite(&grid[cell].ml.product,sizeof(Pool),1,file);
+        writestruct(file,"product");
+        writestocks(file,"slow",&grid[cell].ml.product.slow);
+        writestocks(file,"fast",&grid[cell].ml.product.fast);
+        writeendstruct(file);
 #endif
       }
       if(grid[cell].ml.fertilizer_nr!=NULL)
-        fwritelandfrac(file,grid[cell].ml.fertilizer_nr,ncft,config->nagtree);
+        fwritelandfrac(file,"fertilizer_nr",grid[cell].ml.fertilizer_nr,ncft,config->nagtree);
       if(ischeckpoint && config->n_out)
-       fwriteoutputdata(file,&grid[cell].output,config);
-
+       fwriteoutputdata(file,"outputdata",&grid[cell].output,config);
     }
+    writeendstruct(file);
   } /* of 'for(cell=...)' */
   return cell;
 } /* of 'fwritecell' */

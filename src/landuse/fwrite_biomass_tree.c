@@ -23,7 +23,7 @@ Bool fwrite_biomass_tree(FILE *file,        /**< pointer to binary file */
 {
   const Biomass_tree *biomass_tree;
   biomass_tree=stand->data;
-  fwrite_irrigation(file,&biomass_tree->irrigation);
+  fwrite_irrigation(file,"irrigation",&biomass_tree->irrigation);
   fwrite(&stand->growing_days,sizeof(int),1,file);
   fwrite(&biomass_tree->growing_time,sizeof(int),1,file);
   return (fwrite(&biomass_tree->age,sizeof(int),1,file)!=1);

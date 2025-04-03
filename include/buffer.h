@@ -23,8 +23,8 @@ typedef struct buffer *Buffer;
 
 extern Buffer newbuffer(int);
 extern void updatebuffer(Buffer,Real); 
-extern Bool fwritebuffer(FILE *,const Buffer);
-extern Buffer freadbuffer(FILE *,Bool);
+extern Bool fwritebuffer(FILE *,const char *,const Buffer);
+extern Buffer freadbuffer(FILE *,const char *,Bool);
 extern void freebuffer(Buffer);
 extern Real getbufferavg(const Buffer);
 extern Bool isemptybuffer(const Buffer);

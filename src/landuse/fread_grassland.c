@@ -17,6 +17,21 @@
 #include "lpj.h"
 #include "grassland.h"
 
+static Bool readrotation(FILE *file,const char *name,Rotation *rotation,Bool swap)
+{
+  if(readstruct(file,name,swap))
+    return TRUE;
+  if(readint(file,"grazing_days",&rotation->grazing_days,swap))
+    return TRUE;
+  if(readint(file,"recovery_dates",&rotation->recovery_days,swap))
+    return TRUE;
+  if(readint(file,"paddocks",&rotation->paddocks,swap))
+    return TRUE;
+  if(readint(file,"mode",(int *)(&rotation->mode),swap))
+    return TRUE;
+  return readendstruct(file);
+} /* of 'readrotation' */
+
 Bool fread_grassland(FILE *file,   /**< pointer to binary file */
                      Stand *stand, /**< stand pointer */
                      Bool swap     /**< byte order has to be changed */
@@ -30,13 +45,13 @@ Bool fread_grassland(FILE *file,   /**< pointer to binary file */
     printallocerr("grassland");
     return TRUE;
   }
-  if(fread_irrigation(file,&grassland->irrigation,swap))
+  if(fread_irrigation(file,"irrigation",&grassland->irrigation,swap))
     return TRUE;
-  freadint1(&stand->growing_days,swap,file);
-  freadreal1(&grassland->deficit_lsu_ne,swap,file);
-  freadreal1(&grassland->deficit_lsu_mp,swap,file);
-  freadint1(&grassland->rotation.grazing_days,swap,file);
-  freadint1(&grassland->rotation.recovery_days,swap,file);
-  freadint1(&grassland->rotation.paddocks,swap,file);
-  return freadint1((int *)(&grassland->rotation.mode),swap,file)!=1;
+  if(readint(file,"growing_days",&stand->growing_days,swap))
+    return TRUE;
+  if(readreal(file,"deficit_lsu_ne",&grassland->deficit_lsu_ne,swap))
+    return TRUE;
+  if(readreal(file,"deficit_lsu_mp",&grassland->deficit_lsu_mp,swap))
+    return TRUE;
+  return readrotation(file,"rotation",&grassland->rotation,swap);
 } /* of 'fread_grassland' */

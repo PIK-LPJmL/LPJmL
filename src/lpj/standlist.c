@@ -16,18 +16,19 @@
 
 #include "lpj.h"
 
-int fwritestandlist(FILE *file,                /**< pointer to binary file */
+Bool fwritestandlist(FILE *file,               /**< pointer to restart file */
+                    const char *key,           /**< name of object */
                     const Standlist standlist, /**< stand list */
                     int ntotpft                /**< total number of PFTs */
-                   ) /** \return number of stands written */
+                   ) /** \return TRUE on error */
 {
   const Stand *stand;
   int s;
-  fwrite(&standlist->n,sizeof(int),1,file);
+  writearray(file,key,standlist->n);
   foreachstand(stand,s,standlist)
-    if(fwritestand(file,stand,ntotpft))
-      return s;
-  return s;
+    if(fwritestand(file,NULL,stand,ntotpft))
+      return TRUE;
+  return writeendarray(file);
 } /* of 'fwritestandlist' */
 
 void fprintstandlist(FILE *file,                /**< Pointer to text file */
@@ -47,6 +48,7 @@ void fprintstandlist(FILE *file,                /**< Pointer to text file */
 } /* of 'fprintstandlist' */
 
 Standlist freadstandlist(FILE *file,            /**< File pointer to binary file */
+                         const char *name,      /**< name of object */
                          Cell *cell,            /**< Cell pointer */
                          const Pftpar pftpar[], /**< pft parameter array */
                          int ntotpft,           /**< total number of PFTs */
@@ -60,9 +62,9 @@ Standlist freadstandlist(FILE *file,            /**< File pointer to binary file
   /* Function reads stand list from file */
   int s,n;
   Standlist standlist;
-  /* Read number of stands */
-  if(freadint1(&n,swap,file)!=1)
+  if(readarray(file,name,&n,swap))
     return NULL;
+  /* Read number of stands */
   standlist=newlist(n);
   if(standlist==NULL)
   {
@@ -71,12 +73,16 @@ Standlist freadstandlist(FILE *file,            /**< File pointer to binary file
   }
   /* Read all stand data */
   for(s=0;s<standlist->n;s++)
-    if((getlistitem(standlist,s)=freadstand(file,cell,pftpar,ntotpft,soilpar,
+    if((getlistitem(standlist,s)=freadstand(file,NULL,cell,pftpar,ntotpft,soilpar,
                                             standtype,nstand,separate_harvests,swap))==NULL)
     {
       fprintf(stderr,"ERROR254: Cannot read stand %d.\n",s);
       return NULL;
     }
+  if(readendarray(file))
+  {
+    return NULL;
+  }
   return standlist;
 } /* of 'freadstandlist' */
 

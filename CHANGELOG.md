@@ -19,6 +19,18 @@ of `major.minor.patch` with
 
 ## [Unreleased]
 
+### Contributors
+
+- author: Werner von Bloh (bloh@pik-potsdam.de)
+
+### Added
+
+- Utility `restart2yaml` added to convert the new restart files into human readable YAML files.
+
+### Changed
+
+- Restart file format changed to include metadata. A binary JSON-like structure has been implemented.
+
 
 ## [5.9.22] - 2025-03-14
 

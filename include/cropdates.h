@@ -62,8 +62,8 @@ extern void calc_cropdates(const Pftpar *,const Climbuf *,Cropdates *,Real,
 extern void update_fallowdays(Cropdates *,Real,int,int);
 extern void update_cropdates(Cropdates [],int);
 extern void freecropdates(Cropdates *);
-extern Bool fwritecropdates(FILE *,const Cropdates *,int);
-extern Cropdates *freadcropdates(FILE *,int,Bool);
+extern Bool fwritecropdates(FILE *,const char *,const Cropdates *,int);
+extern Cropdates *freadcropdates(FILE *,const char *,int,Bool);
 extern void fprintcropdates(FILE *,const Cropdates [],const Pftpar *,int);
 
 /* Definitions of macros */

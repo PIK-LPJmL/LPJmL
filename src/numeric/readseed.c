@@ -1,10 +1,8 @@
 /**************************************************************************************/
 /**                                                                                \n**/
-/**            f  w  r  i  t  e  i  g  n  i  t  i  o  n  .  c                      \n**/
+/**                            r  e  a  d  s  e  e  d  .  c                        \n**/
 /**                                                                                \n**/
-/**     C implementation of LPJmL                                                  \n**/
-/**                                                                                \n**/
-/**     Function writes ignition data to binary file                               \n**/
+/**     Read seed of random number generator from restart file                     \n**/
 /**                                                                                \n**/
 /** (C) Potsdam Institute for Climate Impact Research (PIK), see COPYRIGHT file    \n**/
 /** authors, and contributors see AUTHORS file                                     \n**/
@@ -14,13 +12,20 @@
 /**                                                                                \n**/
 /**************************************************************************************/
 
-#include "lpj.h"
+#include <stdio.h>
+#include "types.h"
+#include "swap.h"
+#include "numeric.h"
 
-Bool fwriteignition(FILE *file,const char *name,const Ignition *ignition)
+Bool readseed(FILE *file, /**< pointer to restart file */
+              const char *name, /**< name of object */
+              Seed seed,  /**< seed of random number generator read */
+              Bool swap   /**< byte order has to be swapped */
+             )            /** \return TRUE on error */
 {
-  writestruct(file,name);
-  writereal(file,"nesterov_accum",ignition->nesterov_accum);
-  writereal(file,"nesterov_max",ignition->nesterov_max);
-  writeint(file,"nesterov_day",ignition->nesterov_day);
-  return writeendstruct(file);
-} /* of 'fwriteignition' */
+#ifdef USE_RAND48
+  return readushortarray(file,name,seed,NSEED,swap);
+#else
+  return readintarray(file,name,seed,NSEED,swap);
+#endif
+} /* of 'readseed' */

@@ -56,8 +56,8 @@ extern Real wildfire_ignitions(Real,Real,Real);
 extern Real windspeed_fpc(Real,const Pftlist *);
 extern void dailyfire(Stand *,Livefuel *,Real,Real,const Dailyclimate *,const Config *);
 extern void update_nesterov(Cell *,const Dailyclimate *);
-extern Bool fwriteignition(FILE *,const Ignition *);
-extern Bool freadignition(FILE *,Ignition *,Bool);
+extern Bool fwriteignition(FILE *,const char *,const Ignition *);
+extern Bool freadignition(FILE *,const char *,Ignition *,Bool);
 extern void fprintignition(FILE *,const Ignition *);
 
 /* Definition of constants */

@@ -55,13 +55,13 @@ typedef struct landcover *Landcover;
 
 /* Declaration of functions */
 
-extern Bool fwritestand(FILE *,const Stand *,int);
+extern Bool fwritestand(FILE *,const char *,const Stand *,int);
 extern void fprintstand(FILE *,const Stand *,const Pftpar[],int);
-extern int fwritestandlist(FILE *,const Standlist,int);
+extern int fwritestandlist(FILE *,const char *,const Standlist,int);
 extern void fprintstandlist(FILE *,const Standlist,const Pftpar[],int);
-extern Stand *freadstand(FILE *,Cell *,const Pftpar[],int,
+extern Stand *freadstand(FILE *,const char *,Cell *,const Pftpar[],int,
                          const Soilpar *,const Standtype [],int,Bool,Bool);
-extern Standlist freadstandlist(FILE *,Cell *,const Pftpar [],int,
+extern Standlist freadstandlist(FILE *,const char *,Cell *,const Pftpar [],int,
                                 const Soilpar *,const Standtype [],int,Bool,Bool);
 extern int addstand(const Standtype *,Cell *);
 extern void initstand (Stand *);

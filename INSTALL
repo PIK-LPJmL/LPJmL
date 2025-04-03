@@ -221,6 +221,7 @@ regridlpj     - regrid input data set for selected countries or specified grid f
 regridsoil    - regrid soil file to new grid
 regridsoil    - regrid binary soil file to different grid file
 reservoir2cdf - convert CLM reservoir file into NetCDF file
+restart2yaml  - convert LPJmL restart file into YAML
 setclm        - set value in header of CLM files for LPJmL
 soil2cdf      - convert binary files into NetCDF files
 statclm       - print statistics of clm files

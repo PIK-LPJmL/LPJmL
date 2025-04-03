@@ -14,19 +14,31 @@
 
 #include "lpj.h"
 
+static Bool fwritehist(FILE *file,const char *name,Real hist[HIST_YEARS][NMONTH])
+{
+  int i;
+  writearray(file,name,HIST_YEARS);
+  for(i=0;i<HIST_YEARS;i++)
+    writerealarray(file,NULL,hist[i],NMONTH);
+  return writeendarray(file);
+} /* of 'fwritehist' */
+
 Bool fwriteresdata(FILE *file,       /**< pointer to restart file */
+                   const char *name,
                    const Cell *cell  /**< pointer to cell */
                    )                 /** \return TRUE on error */
 {
-  fwrite(&cell->ml.reservoirfrac,sizeof(Real),1,file);
-  fwrite(&cell->ml.resdata->pool,sizeof(Stocks),1,file);
-  fwrite(&cell->ml.resdata->dmass,sizeof(Real),1,file);
-  fwrite(&cell->ml.resdata->k_rls,sizeof(Real),1,file);
-  fwrite(&cell->ml.resdata->target_release_year,sizeof(Real), 1,file);
-  fwrite(&cell->ml.resdata->reservoir.capacity,sizeof(float), 1,file); /* reservoir input is only loaded in initreservoir but capacity used in update_reservoir_annual called from freadresdata */
-  fwrite(cell->ml.resdata->dfout_irrigation_daily,sizeof(Real),NIRRIGDAYS,file);
-  fwrite(cell->ml.resdata->target_release_month,sizeof(Real),NMONTH,file);
-  fwrite(cell->ml.resdata->demand_hist,sizeof(Real),NMONTH*HIST_YEARS,file);
-  fwrite(cell->ml.resdata->inflow_hist,sizeof(Real),NMONTH*HIST_YEARS,file);
-  return fwrite(cell->ml.resdata->level_hist,sizeof(Real),NMONTH*HIST_YEARS,file)!=NMONTH*HIST_YEARS;
+  writestruct(file,name);
+  writereal(file,"reservoirfrac",cell->ml.reservoirfrac);
+  writestocks(file,"pool",&cell->ml.resdata->pool);
+  writereal(file,"dmass",cell->ml.resdata->dmass);
+  writereal(file,"k_rls",cell->ml.resdata->k_rls);
+  writereal(file,"target_release_year",cell->ml.resdata->target_release_year);
+  writefloat(file,"reservoir_capacity",cell->ml.resdata->reservoir.capacity); /* reservoir input is only loaded in initreservoir but capacity used in update_reservoir_annual called from freadresdata */
+  writerealarray(file,"dfout_irrigation_daily",cell->ml.resdata->dfout_irrigation_daily,NIRRIGDAYS);
+  writerealarray(file,"target_release_month",cell->ml.resdata->target_release_month,NMONTH);
+  fwritehist(file,"demand_hist",cell->ml.resdata->demand_hist);
+  fwritehist(file,"inflow_hist",cell->ml.resdata->inflow_hist);
+  fwritehist(file,"level_hist",cell->ml.resdata->level_hist);
+  return writeendstruct(file);
 } /* of 'fwriteresdata' */

@@ -30,7 +30,7 @@ Bool fread_agriculture(FILE *file,   /**< pointer to binary file */
     printallocerr("agriculture");
     return TRUE;
   }
-  if(fread_irrigation(file,irrigation,swap))
+  if(fread_irrigation(file,"irrigation",irrigation,swap))
     return TRUE;
-  return freadint1(&stand->growing_days,swap,file)!=1;
+  return readint(file,"growing_days",&stand->growing_days,swap);
 } /* of 'fread_agriculture' */

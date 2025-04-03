@@ -16,9 +16,15 @@
 
 #include "lpj.h"
 
-Bool freadignition(FILE *file,Ignition *ignition,Bool swap)
+Bool freadignition(FILE *file,const char *name,Ignition *ignition,Bool swap)
 {
-  freadreal1(&ignition->nesterov_accum,swap,file);
-  freadreal1(&ignition->nesterov_max,swap,file);
-  return freadint(&ignition->nesterov_day,1,swap,file)!=1;
+  if(readstruct(file,name,swap))
+    return TRUE;
+  if(readreal(file,"nesterov_accum",&ignition->nesterov_accum,swap))
+    return TRUE;
+  if(readreal(file,"nesterov_max",&ignition->nesterov_max,swap))
+    return TRUE;
+  if(readint(file,"nesterov_day",&ignition->nesterov_day,swap))
+    return TRUE;
+  return readendstruct(file);
 } /* of 'freadignition' */
