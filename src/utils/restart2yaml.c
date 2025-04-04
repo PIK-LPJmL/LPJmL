@@ -16,8 +16,11 @@
 
 #include "lpj.h"
 
+#define readname2(file,name) if(readname(file,name)) {fprintf(stderr,"Error reading name of %s in '%s'.\n",typenames[token],argv[1]); puts("..."); fclose(file); return EXIT_FAILURE; }
+
 static Bool readname(FILE *file,String name)
 {
+  /* Function reads name of object */
   Byte len;
   if(fread(&len,1,1,file)!=1)
     return TRUE;
@@ -104,13 +107,13 @@ int main(int argc,char **argv)
   }
   if(last>header.ncell)
   {
-    fprintf(stderr,"Last cell %d is greater then upper number of cells %d.\n",last,header.ncell-1);
+    fprintf(stderr,"Last cell %d is greater than upper number of cells %d.\n",last,header.ncell-1);
     fclose(file);
     return EXIT_FAILURE;
   }
   if(firstcell>header.ncell)
   {
-    fprintf(stderr,"First cell %d is greater then upper number of cells %d.\n",firstcell,header.ncell-1);
+    fprintf(stderr,"First cell %d is greater than upper number of cells %d.\n",firstcell,header.ncell-1);
     fclose(file);
     return EXIT_FAILURE;
   }
@@ -127,7 +130,7 @@ int main(int argc,char **argv)
     fclose(file);
     return EXIT_FAILURE;
   }
-  if(fread(index,sizeof(long long),header.ncell,file)!=header.ncell)
+  if(freadlong(index,header.ncell,swap,file)!=header.ncell)
   {
     fprintf(stderr,"Error reading index vector in '%s.\n",argv[1]);
     free(index);
@@ -136,7 +139,7 @@ int main(int argc,char **argv)
   }
   if(fseek(file,index[firstcell],SEEK_SET))
   {
-    fprintf(stderr,"Error seeking to cell %d  in '%s.\n",firstcell,argv[1]);
+    fprintf(stderr,"Error seeking to cell %d in '%s'.\n",firstcell,argv[1]);
     free(index);
     fclose(file);
     return EXIT_FAILURE;
@@ -170,11 +173,12 @@ int main(int argc,char **argv)
     {
       case LPJ_ENDSTRUCT: case LPJ_ENDARRAY:
         level--;
+        /* if level reached 1 data for one cell has been read completely, increase cell counter */
         if(level==1)
           cell++;
         break;
       case LPJ_STRUCT: case LPJ_ARRAY:
-        readname(file,name);
+        readname2(file,name);
         if(token==LPJ_ARRAY)
           fseek(file,sizeof(int),SEEK_CUR);
         if(first)
@@ -193,8 +197,8 @@ int main(int argc,char **argv)
         }
         level++;
         break;
-       case LPJ_ZERO:
-        readname(file,name);
+      case LPJ_ZERO:
+        readname2(file,name);
         if(first)
           first=FALSE;
         else
@@ -206,7 +210,7 @@ int main(int argc,char **argv)
         printf("0\n");
         break;
       case LPJ_BYTE:
-        readname(file,name);
+        readname2(file,name);
         fread(&b,1,1,file);
         if(first)
           first=FALSE;
@@ -219,7 +223,7 @@ int main(int argc,char **argv)
         printf("%d\n",b);
         break;
       case LPJ_BOOL:
-        readname(file,name);
+        readname2(file,name);
         fread(&b,1,1,file);
         if(first)
           first=FALSE;
@@ -232,7 +236,7 @@ int main(int argc,char **argv)
         printf("%s\n",bool2str(b));
         break;
       case LPJ_SHORT:
-        readname(file,name);
+        readname2(file,name);
         freadshort(&s,1,swap,file);
         if(first)
           first=FALSE;
@@ -245,7 +249,7 @@ int main(int argc,char **argv)
         printf("%d\n",s);
         break;
       case LPJ_USHORT:
-        readname(file,name);
+        readname2(file,name);
         freadushort(&us,1,swap,file);
         if(first)
           first=FALSE;
@@ -258,7 +262,7 @@ int main(int argc,char **argv)
         printf("%d\n",us);
         break;
       case LPJ_INT:
-        readname(file,name);
+        readname2(file,name);
         freadint(&i,1,swap,file);
         if(first)
           first=FALSE;
@@ -271,7 +275,7 @@ int main(int argc,char **argv)
         printf("%d\n",i);
         break;
       case LPJ_FLOAT:
-        readname(file,name);
+        readname2(file,name);
         freadfloat(&f,1,swap,file);
         if(first)
           first=FALSE;
@@ -284,7 +288,7 @@ int main(int argc,char **argv)
         printf("%g\n",f);
         break;
       case LPJ_DOUBLE:
-        readname(file,name);
+        readname2(file,name);
         freaddouble(&d,1,swap,file);
         if(first)
           first=FALSE;
@@ -297,12 +301,19 @@ int main(int argc,char **argv)
         printf("%g\n",d);
         break;
       case LPJ_STRING:
-        readname(file,name);
-        freadint(&len,1,swap,file);
+        readname2(file,name);
+        if(freadint(&len,1,swap,file))
+        {
+          fprintf(stderr,"Error reading string '%s' in '%s'.\n",name,argv[1]);
+          printf("...\n");
+          fclose(file);
+          return EXIT_FAILURE;
+        }
         string=malloc(len+1);
         if(string==NULL)
         {
           printallocerr("string");
+          printf("...\n");
           fclose(file);
           return EXIT_SUCCESS;
         }

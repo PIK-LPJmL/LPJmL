@@ -24,7 +24,7 @@ static Bool fwritehist(FILE *file,const char *name,Real hist[HIST_YEARS][NMONTH]
 } /* of 'fwritehist' */
 
 Bool fwriteresdata(FILE *file,       /**< pointer to restart file */
-                   const char *name,
+                   const char *name, /**< name of object */
                    const Cell *cell  /**< pointer to cell */
                    )                 /** \return TRUE on error */
 {

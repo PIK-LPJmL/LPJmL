@@ -25,6 +25,7 @@
 
 static Bool writename(FILE *file,const String name)
 {
+  /* Function write name of object into restar file */
   Bool rc;
   Byte b;
   if(name==NULL)
@@ -208,8 +209,8 @@ Bool writestring(FILE *file,       /**< pointer to restart file */
                  const char *value /**< string written to file */
                 )                  /** \return TRUE on error */
 {
-  Byte b;
   int len;
+  Byte b;
   b=LPJ_STRING;
   fwrite(&b,1,1,file);
   if(writename(file,name))
@@ -276,9 +277,7 @@ Bool writestruct(FILE *file,      /**< pointer to restart file */
   Byte b;
   b=LPJ_STRUCT;
   fwrite(&b,1,1,file);
-  if(writename(file,name))
-    return TRUE;
-  return FALSE;
+  return writename(file,name);
 } /* of 'writestruct' */
 
 Bool writeendstruct(FILE *file /**< pointer to restart file */

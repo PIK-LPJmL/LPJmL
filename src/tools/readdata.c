@@ -27,18 +27,18 @@ static Bool readtoken(FILE *file,Byte *b,int token)
 {
   if(fread(b,1,1,file)!=1)
   {
-    fprintf(stderr,"ERROR604: Cannot read token: %s.\n",
+    fprintf(stderr,"ERROR501: Cannot read token: %s.\n",
             strerror(errno));
     return TRUE;
   }
   if(*b>LPJ_ENDARRAY)
   {
-    fprintf(stderr,"ERRRO606: Invalid token %d.\n",*b);
+    fprintf(stderr,"ERROR502: Invalid token %d.\n",*b);
     return TRUE;
   }
   if(*b==LPJ_ENDARRAY || *b==LPJ_ENDSTRUCT)
   {
-    fprintf(stderr,"ERROR605: Unexpected %s found, %s expected.\n",
+    fprintf(stderr,"ERROR503: Unexpected %s token found, %s expected.\n",
             typenames[*b],typenames[token]);
     return TRUE;
   }
@@ -57,7 +57,7 @@ static Bool cmpkey(FILE *file,Byte *token,const char *name,Bool swap)
       s=malloc((int)b+1);
       s[b]='\0';
       fread(s,1,b,file);
-      fprintf(stderr,"ERROR601: Expected no key, but '%s' found.\n",s);
+      fprintf(stderr,"ERROR504: Expected no object name, but '%s' found.\n",s);
       free(s);
       return TRUE;
     }
@@ -73,11 +73,15 @@ static Bool cmpkey(FILE *file,Byte *token,const char *name,Bool swap)
       {
         //printf("%s not found, %s\n",name,s);
         if(skipdata(file,*token,swap))
+        {
+          fprintf(stderr,"ERROR505: Cannot skip to next object.\n");
+          free(s);
           return TRUE;
+        }
         fread(token,1,1,file);
         if(*token==LPJ_ENDSTRUCT || *token==LPJ_ENDARRAY)
         {
-          fprintf(stderr,"ERROR601: Key '%s' not found.\n",name);
+          fprintf(stderr,"ERROR506: Object '%s' not found.\n",name);
           free(s);
           return TRUE;
         }
@@ -100,6 +104,7 @@ Bool skipdata(FILE *file, /**< pointer to restart file */
               Bool swap   /**< byte order has to be swapped */
              )            /** \return TRUE on error */
 {
+  /* Function skips one object in restart file */
   int string_len;
   Byte len,b;
   switch(token)
@@ -107,48 +112,65 @@ Bool skipdata(FILE *file, /**< pointer to restart file */
     case LPJ_STRUCT:
       do
       {
-         fread(&b,1,1,file);
-         if(b==LPJ_ENDARRAY)
-         {
-            fprintf(stderr,"ERROR607: Unexpected end of array found.\n");
+        /* skip whole array */
+         if(fread(&b,1,1,file)!=1)
+          return TRUE;
+        if(b==LPJ_ENDARRAY)
+        {
+          fprintf(stderr,"ERROR507: Unexpected end of array token found in struct found.\n");
+          return TRUE;
+        }
+        if(b!=LPJ_ENDSTRUCT)
+        {
+           /*skip object name */
+          if(fread(&len,1,1,file))
             return TRUE;
-         }
-         if(b!=LPJ_ENDSTRUCT)
-         {
-           fread(&len,1,1,file);
-           fseek(file,len,SEEK_CUR);
-           if(skipdata(file,b,swap))
-             return TRUE;
-         }
-       }while(b!=LPJ_ENDSTRUCT);
-       break;
+          if(fseek(file,len,SEEK_CUR))
+            return TRUE;
+          /* call skipdata() recursively */
+          if(skipdata(file,b,swap))
+            return TRUE;
+        }
+      } while(b!=LPJ_ENDSTRUCT);
+      break;
     case LPJ_ARRAY:
-      fseek(file,sizeof(int),SEEK_CUR);
+      /* skip array size */
+      if(fseek(file,sizeof(int),SEEK_CUR))
+        return TRUE;
+      /* skip whole array */
       do
       {
-         fread(&b,1,1,file);
+         if(fread(&b,1,1,file)!=1)
+           return TRUE;
          if(b==LPJ_ENDSTRUCT)
          {
-            fprintf(stderr,"ERROR607: Unexpected end of struct found.\n");
+            fprintf(stderr,"ERROR508: Unexpected end of struct token in array found.\n");
             return TRUE;
          }
          if(b!=LPJ_ENDARRAY)
          {
-           fread(&len,1,1,file);
-           fseek(file,len,SEEK_CUR);
+           /*skip object name */
+           if(fread(&len,1,1,file))
+             return TRUE;
+           if(fseek(file,len,SEEK_CUR))
+             return TRUE;
+           /* call skipdata() recursively */
            if(skipdata(file,b,swap))
              return TRUE;
           }
-       }while(b!=LPJ_ENDARRAY);
+       } while(b!=LPJ_ENDARRAY);
        break;
      case LPJ_STRING:
        if(freadint(&string_len,1,swap,file))
          return TRUE;
-       fseek(file,string_len,SEEK_CUR);
+       if(fseek(file,string_len,SEEK_CUR))
+         return TRUE;
        break;
      default:
-       fseek(file,typesizes[token],SEEK_CUR);
-  }
+       /* skip object data */
+       if(fseek(file,typesizes[token],SEEK_CUR))
+         return TRUE;
+  } /* of switch(token) */
   return FALSE;
 } /* of 'skipdata' */
 
@@ -165,7 +187,8 @@ Bool readbool(FILE *file,       /**< pointer to restart file */
     return TRUE;
   if(b!=LPJ_BOOL)
   {
-    fprintf(stderr,"ERROR601: Type of '%s'=%s is not bool.\n",name,typenames[b]);
+    fprintf(stderr,"ERROR509: Type of '%s'=%s is not bool.\n",
+            name,typenames[b]);
     return TRUE;
   }
   if(fread(&b,sizeof(b),1,file)!=1)
@@ -193,7 +216,7 @@ int readbyte(FILE *file,       /**< pointer to restart file */
   }
   if(b!=LPJ_BYTE)
   {
-    fprintf(stderr,"ERROR601: Type of '%s'=%s is not byte.\n",name,typenames[b]);
+    fprintf(stderr,"ERROR509: Type of '%s'=%s is not byte.\n",name,typenames[b]);
     return TRUE;
   }
   return fread(value,1,1,file)!=1;
@@ -217,7 +240,7 @@ Bool readint(FILE *file,       /**< pointer to restart file */
   }
   if(b!=LPJ_INT)
   {
-    fprintf(stderr,"ERROR601: Type of '%s'=%s is not int.\n",name,typenames[b]);
+    fprintf(stderr,"ERROR509: Type of '%s'=%s is not int.\n",name,typenames[b]);
     return TRUE;
   }
   return freadint(value,1,swap,file)!=1;
@@ -241,7 +264,7 @@ Bool readshort(FILE *file,       /**< pointer to restart file */
   }
   if(b!=LPJ_SHORT)
   {
-    fprintf(stderr,"ERROR601: Type of '%s'=%s is not short.\n",name,typenames[b]);
+    fprintf(stderr,"ERROR509: Type of '%s'=%s is not short.\n",name,typenames[b]);
     return TRUE;
   }
   return freadshort(value,1,swap,file)!=1;
@@ -265,7 +288,7 @@ Bool readushort(FILE *file,            /**< pointer to restart file */
   }
   if(b!=LPJ_USHORT)
   {
-    fprintf(stderr,"ERROR601: Type of '%s'=%s is not unsigned short.\n",name,typenames[b]);
+    fprintf(stderr,"ERROR509: Type of '%s'=%s is not unsigned short.\n",name,typenames[b]);
     return TRUE;
   }
   return freadushort(value,1,swap,file)!=1;
@@ -289,7 +312,7 @@ Bool readfloat(FILE *file,       /**< pointer to restart file */
   }
   if(b!=LPJ_FLOAT)
   {
-    fprintf(stderr,"ERROR601: Type of '%s'=%s is not float.\n",name,typenames[b]);
+    fprintf(stderr,"ERROR509: Type of '%s'=%s is not float.\n",name,typenames[b]);
     return TRUE;
   }
   return freadfloat(value,1,swap,file)!=1;
@@ -313,7 +336,7 @@ Bool readreal(FILE *file,        /**< pointer to restart file */
   }
   if(b!=((sizeof(Real)==sizeof(double)) ? LPJ_DOUBLE : LPJ_FLOAT))
   {
-    fprintf(stderr,"ERROR601: Type of '%s'=%s is not real.\n",name,typenames[b]);
+    fprintf(stderr,"ERROR509: Type of '%s'=%s is not real.\n",name,typenames[b]);
     return TRUE;
   }
   return freadreal(value,1,swap,file)!=1;
@@ -333,7 +356,7 @@ char *readstring(FILE *file,       /**< pointer to restart file */
     return NULL;
   if(b!=LPJ_STRING)
   {
-    fprintf(stderr,"ERROR601: Type of '%s'=%s is not string.\n",name,typenames[b]);
+    fprintf(stderr,"ERROR509: Type of '%s'=%s is not string.\n",name,typenames[b]);
     return NULL;
   }
   if(freadint(&len,1,swap,file))
@@ -366,7 +389,7 @@ Bool readarray(FILE *file,       /**< pointer to restart file */
     return TRUE;
   if(b!=LPJ_ARRAY)
   {
-    fprintf(stderr,"ERROR601: Type of '%s'=%s is not array.\n",name,typenames[b]);
+    fprintf(stderr,"ERROR509: Type of '%s'=%s is not array.\n",name,typenames[b]);
     return TRUE;
   }
   return freadint(size,1,swap,file)!=1;
@@ -374,8 +397,8 @@ Bool readarray(FILE *file,       /**< pointer to restart file */
 
 Bool readshortarray(FILE *file,       /**< pointer to restart file */
                     const char *name, /**< name of object or NULL */
-                    short data[],
-                    int size,
+                    short data[],     /**< array read from file */
+                    int size,         /**< size of array */
                     Bool swap         /**< byte order has to be swapped */
                    )                  /** \return TRUE on error */
 {
@@ -384,7 +407,7 @@ Bool readshortarray(FILE *file,       /**< pointer to restart file */
     return TRUE;
   if(size!=n)
   {
-    fprintf(stderr,"ERROR602: Size of array '%s'=%d is not %d.\n",name,n,size);
+    fprintf(stderr,"ERROR510: Size of array '%s'=%d is not %d.\n",name,n,size);
     return TRUE;
   }
   for(i=0;i<n;i++)
@@ -405,7 +428,7 @@ Bool readushortarray(FILE *file,            /**< pointer to restart file */
     return TRUE;
   if(size!=n)
   {
-    fprintf(stderr,"ERROR602: Size of array '%s'=%d is not %d.\n",name,n,size);
+    fprintf(stderr,"ERROR510: Size of array '%s'=%d is not %d.\n",name,n,size);
     return TRUE;
   }
   for(i=0;i<n;i++)
@@ -426,7 +449,7 @@ Bool readintarray(FILE *file,       /**< pointer to restart file */
     return TRUE;
   if(size!=n)
   {
-    fprintf(stderr,"ERROR602: Size of array '%s'=%d is not %d.\n",name,n,size);
+    fprintf(stderr,"ERROR510: Size of array '%s'=%d is not %d.\n",name,n,size);
     return TRUE;
   }
   for(i=0;i<n;i++)
@@ -447,7 +470,7 @@ Bool readrealarray(FILE *file,       /**< pointer to restart file */
     return TRUE;
   if(size!=n)
   {
-    fprintf(stderr,"ERROR602: Size of array '%s'=%d is not %d.\n",name,n,size);
+    fprintf(stderr,"ERROR510: Size of array '%s'=%d is not %d.\n",name,n,size);
     return TRUE;
   }
   for(i=0;i<n;i++)
@@ -468,7 +491,7 @@ Bool readstocksarray(FILE *file,       /**< pointer to restart file */
     return TRUE;
   if(size!=n)
   {
-    fprintf(stderr,"ERROR602: Size of array '%s'=%d is not %d.\n",name,n,size);
+    fprintf(stderr,"ERROR510: Size of array '%s'=%d is not %d.\n",name,n,size);
     return TRUE;
   }
   for(i=0;i<n;i++)
@@ -534,7 +557,7 @@ Bool readstruct(FILE *file,       /**< pointer to restart file */
     return TRUE;
   if(b!=LPJ_STRUCT)
   { 
-    fprintf(stderr,"ERROR601: Type of '%s'=%s is not struct.\n",name,typenames[b]);
+    fprintf(stderr,"ERROR509: Type of '%s'=%s is not struct.\n",name,typenames[b]);
     return TRUE;
   }
   return FALSE;
@@ -547,7 +570,7 @@ Bool readendstruct(FILE *file /**< pointer to restart file */
   fread(&b,1,1,file);
   if(b!=LPJ_ENDSTRUCT)
   {
-    fprintf(stderr,"ERROR601: Type=%s is not endstruct.\n",typenames[b]);
+    fprintf(stderr,"ERROR509: Type=%s is not endstruct.\n",typenames[b]);
     return TRUE;
   }
   return FALSE;
@@ -560,7 +583,7 @@ Bool readendarray(FILE *file /**< pointer to restart file */
   fread(&b,1,1,file);
   if(b!=LPJ_ENDARRAY)
   { 
-    fprintf(stderr,"ERROR601: Type=%s is not endarrary.\n",typenames[b]);
+    fprintf(stderr,"ERROR509: Type=%s is not endarrary.\n",typenames[b]);
     return TRUE;
   }
   return FALSE;
