@@ -155,7 +155,7 @@ then
        echo SLURM found
        ln -sf lpjsubmit_hpc bin/lpjsubmit
     else
-       echo >2 No batch system found
+       echo >&2 No batch system found
     fi
   fi
   echo Create executables with make all
