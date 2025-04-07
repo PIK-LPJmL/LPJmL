@@ -267,6 +267,7 @@ int main(int argc,char **argv)
   {
     fprintf(stderr,"Error writing header in '%s'.\n",argv[4]);
     free(cnew);
+    fclose(file);
     return EXIT_FAILURE;
   }
   if(isshort)
