@@ -51,6 +51,7 @@ of `major.minor.patch` with
 - Number of years of clm file set to 1 in `grid2clm.c`.
 - Function `fscanlandcovermap.c` corrected (issue https://github.com/PIK-LPJmL/LPJmL/issues/48).
 - Access out of bounds for `soil->freezdepth` fixed in `soiltemp.c`.
+- Format specifier changed in `cat2bsq.c` and `cutclm.c` to compile without warnings using the clang compiler (issue #372).
 
 
 ## [5.9.22] - 2025-03-14
