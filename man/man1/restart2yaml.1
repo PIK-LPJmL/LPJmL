@@ -3,11 +3,18 @@
 restart2yml \- Convert LPJmL restart file into YAML.
 .SH SYNOPSIS
 .B restart2yaml
-\fIrestartfile\fP [-check] [start [end]]
+\fIrestartfile\fP [\-name key] [\-first] [start [end]]
 .SH DESCRIPTION
 Program prints contents of restart file of a LPJmL model run in YAML format.
 .SH OPTIONS
-.I restartfie
+.TP
+\-name key
+Print only variables/array/structures with name key.
+.TP
+\-first
+Stop at first occurence of key specified by the \-name option.
+.TP
+.I restartfile
 Name of restart file.
 .TP
 .I start
@@ -18,7 +25,7 @@ Index of last grid cell to be printed.
 
 .SH EXAMPLE
 .TP
-Print restart file 
+Print restart file
 .B restart2yaml
 restart.lpj >restart.yaml
 .PP

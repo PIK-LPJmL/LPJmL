@@ -14,18 +14,17 @@
 
 #include <stdio.h>
 #include "types.h"
-#include "swap.h"
+#include "bstruct.h"
 #include "numeric.h"
 
-Bool readseed(FILE *file, /**< pointer to restart file */
+Bool readseed(Bstruct file,     /**< pointer to restart file */
               const char *name, /**< name of object */
-              Seed seed,  /**< seed of random number generator read */
-              Bool swap   /**< byte order has to be swapped */
-             )            /** \return TRUE on error */
+              Seed seed         /**< seed of random number generator read */
+             )                  /** \return TRUE on error */
 {
 #ifdef USE_RAND48
-  return readushortarray(file,name,seed,NSEED,swap);
+  return bstruct_readushortarray(file,name,seed,NSEED);
 #else
-  return readintarray(file,name,seed,NSEED,swap);
+  return bstruct_readintarray(file,name,seed,NSEED);
 #endif
 } /* of 'readseed' */

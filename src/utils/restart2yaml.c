@@ -4,7 +4,7 @@
 /**                                                                                \n**/
 /**     C implementation of LPJmL                                                  \n**/
 /**                                                                                \n**/
-/**     Utility converts restarrt file into yaml file                              \n**/
+/**     Utility converts restart file into yaml file                               \n**/
 /**                                                                                \n**/
 /** (C) Potsdam Institute for Climate Impact Research (PIK), see COPYRIGHT file    \n**/
 /** authors, and contributors see AUTHORS file                                     \n**/
@@ -14,9 +14,20 @@
 /**                                                                                \n**/
 /**************************************************************************************/
 
-#include "lpj.h"
+#include <stdlib.h>
+#include <stdio.h>
+#include <errno.h>
+#include <string.h>
+#include "types.h"
+#include "errmsg.h"
+#include "swap.h"
+#include "bstruct.h"
 
-#define readname2(file,name) if(readname(file,name)) {fprintf(stderr,"Error reading name of %s in '%s'.\n",typenames[token],argv[1]); puts("..."); fclose(file); return EXIT_FAILURE; }
+//#define DEBUG
+
+#define USAGE "Usage: %s [-name key] [-first] restartfile [first [last]]\n"
+
+#define readname2(file,name) if(readname(file,name)) {fprintf(stderr,"Error reading name of %s in '%s'.\n",bstruct_typenames[token],argv[1]); puts("..."); fclose(file); return EXIT_FAILURE; }
 
 static Bool readname(FILE *file,String name)
 {
@@ -39,40 +50,64 @@ static void printname(const char *name)
 int main(int argc,char **argv)
 {
   FILE *file;
-  long long *index;
+  long long filepos;
   char *endptr;
   char *string;
-  Header header;
-  int version,level;
-  Bool swap;
+  char *key=NULL;
+  int version,level,iarg,keylevel;
+  Bool swap,notend,isarray=FALSE,iskey=TRUE,stop=FALSE;
   Byte token,b;
   short s;
   unsigned short us;
   int i,len;
   double d;
   float f;
-  int firstcell,last,cell;
-  Bool first=FALSE;
+  int firstcell,lastcell,last,cell;
+  Bool first=FALSE,islastcell=FALSE;
   String name;
-  Restartheader restartheader;
-  if(argc<2)
+  for(iarg=1;iarg<argc;iarg++)
+    if(argv[iarg][0]=='-')
+    {
+      if(!strcmp(argv[iarg],"-name"))
+      {
+        if(argc==iarg+1)
+        {
+          fprintf(stderr,"Missing argument after option '-name'.\n"
+                 USAGE,argv[0]);
+          return EXIT_FAILURE;
+        }
+        key=argv[++iarg];
+        iskey=FALSE;
+      }
+      else if(!strcmp(argv[iarg],"-first"))
+        stop=TRUE;
+      else
+      {
+        fprintf(stderr,"Invalid option '%s'.\n"
+                USAGE,argv[iarg],argv[0]);
+        return EXIT_FAILURE;
+      }
+    }
+    else
+      break;
+  if(argc<iarg+1)
   {
-    fprintf(stderr,"Usage: %s restartfile [first [last]]\n",argv[0]);
+    fprintf(stderr,USAGE,argv[0]);
     return EXIT_FAILURE;
   }
-  file=fopen(argv[1],"rb");
+  file=fopen(argv[iarg],"rb");
   if(file==NULL)
   {
-    printfopenerr(argv[1]);
+    printfopenerr(argv[iarg]);
     return EXIT_FAILURE;
   }
   firstcell=0;
-  if(argc>2)
+  if(argc>iarg+1)
   {
-    firstcell=strtol(argv[2],&endptr,10);
+    firstcell=strtol(argv[iarg+1],&endptr,10);
     if(*endptr!='\0')
     {
-      fprintf(stderr,"Invalid number '%s' for first grid.\n",argv[2]);
+      fprintf(stderr,"Invalid number '%s' for first grid.\n",argv[iarg+1]);
       return EXIT_FAILURE;
     }
     if(firstcell<0)
@@ -82,109 +117,82 @@ int main(int argc,char **argv)
     }
   }
   version=READ_VERSION;
-  if(freadheader(file,&header,&swap,RESTART_HEADER,&version,TRUE))
+  if(freadtopheader(file,&swap,BSTRUCT_HEADER,&version,TRUE))
   {
     fprintf(stderr,"ERROR154: Invalid header in restart file '%s'.\n",argv[1]);
     fclose(file);
     return EXIT_FAILURE;
   }
-  if(version!=RESTART_VERSION)
+  if(version!=BSTRUCT_VERSION)
   {
     fprintf(stderr,"ERROR154: Invalid version %d in restart file '%s', must be %d.\n",
-            version,argv[1],RESTART_VERSION);
+            version,argv[1],BSTRUCT_VERSION);
     fclose(file);
     return EXIT_FAILURE;
   }
-  last=header.ncell-1;
-  if(argc>3)
+  if(argc>iarg+2)
   {
-    last=strtol(argv[3],&endptr,10);
+    lastcell=strtol(argv[iarg+2],&endptr,10);
     if(*endptr!='\0')
     {
-      fprintf(stderr,"Invalid number '%s' for last grid.\n",argv[3]);
+      fprintf(stderr,"Invalid number '%s' for last grid.\n",argv[iarg+2]);
       return EXIT_FAILURE;
     }
+    islastcell=TRUE;
   }
-  if(last>header.ncell)
-  {
-    fprintf(stderr,"Last cell %d is greater than upper number of cells %d.\n",last,header.ncell-1);
-    fclose(file);
-    return EXIT_FAILURE;
-  }
-  if(firstcell>header.ncell)
-  {
-    fprintf(stderr,"First cell %d is greater than upper number of cells %d.\n",firstcell,header.ncell-1);
-    fclose(file);
-    return EXIT_FAILURE;
-  }
-  if(freadrestartheader(file,&restartheader,swap))
-  {
-    fprintf(stderr,"ERROR154: Invalid restart header in restart file '%s'.\n",argv[1]);
-    fclose(file);
-    return EXIT_FAILURE;
-  }
-  index=newvec(long long,header.ncell);
-  if(index==NULL)
-  {
-    printallocerr("index");
-    fclose(file);
-    return EXIT_FAILURE;
-  }
-  if(freadlong(index,header.ncell,swap,file)!=header.ncell)
-  {
-    fprintf(stderr,"Error reading index vector in '%s.\n",argv[1]);
-    free(index);
-    fclose(file);
-    return EXIT_FAILURE;
-  }
-  if(fseek(file,index[firstcell],SEEK_SET))
-  {
-    fprintf(stderr,"Error seeking to cell %d in '%s'.\n",firstcell,argv[1]);
-    free(index);
-    fclose(file);
-    return EXIT_FAILURE;
-  }
-  free(index);
   printf("%% YAML 1.2\n"
          "---\n"
-         "filename: %s\n"
-         "year: %d\n"
-         "firstcell: %d\n"
-         "cellsize_lon: %g\n"
-         "cellsize_lat: %g\n"
-         "datatype: %s\n"
-         "ntotpft: %d\n"
-         "seed:\n",
-         argv[1],header.firstyear,header.firstcell,
-         header.cellsize_lon,header.cellsize_lat,typenames[header.datatype],header.nbands);
-  for(i=0;i<NSEED;i++)
-    printf("  - %d\n",restartheader.seed[i]);
-  puts("grid:");
-  level=1;
-  cell=first;
-  while(cell<=last)
+         "filename: %s\n",
+         argv[iarg]);
+  level=0;
+  cell=firstcell;
+  notend=TRUE;
+  keylevel=0;
+  while(notend)
   {
     if(fread(&token,1,1,file)!=1)
     {
-      fprintf(stderr,"Error reading cell %d in '%s'.\n",cell,argv[1]);
+      fprintf(stderr,"Error reading cell %d in '%s'.\n",cell,argv[iarg]);
       break;
     }
+#ifdef DEBUG
+    printf("%d,%d,%s:",cell,level,bstruct_typenames[token]);
+#endif
     switch(token)
     {
-      case LPJ_ENDSTRUCT: case LPJ_ENDARRAY:
+      case BSTRUCT_ENDSTRUCT: case BSTRUCT_ENDARRAY:
         level--;
+        if(key!=NULL && level==keylevel)
+        {
+          if(iskey && stop)
+            notend=FALSE;
+          iskey=FALSE;
+        }
         /* if level reached 1 data for one cell has been read completely, increase cell counter */
-        if(level==1)
+        if(isarray && level==1)
+        {
           cell++;
+          if(cell>last)
+            notend=FALSE;
+        }
         break;
-      case LPJ_STRUCT: case LPJ_ARRAY:
+      case BSTRUCT_STRUCT: case BSTRUCT_ARRAY: case BSTRUCT_ARRAY1:
         readname2(file,name);
-        if(token==LPJ_ARRAY)
-          fseek(file,sizeof(int),SEEK_CUR);
+        if(key!=NULL && !strcmp(name,key))
+        {
+          iskey=TRUE;
+          keylevel=level;
+        }
+        if(token==BSTRUCT_ARRAY || token==BSTRUCT_ARRAY1)
+        {
+          fseek(file,(token==BSTRUCT_ARRAY) ? sizeof(int) : 1,SEEK_CUR);
+        }
+        if(iskey)
+        {
         if(first)
           first=FALSE;
         else
-          repeatch(' ',2*level);
+          repeatch(' ',2*(level-keylevel));
         if(name[0]=='\0')
         {
           fputs("- ",stdout);
@@ -195,116 +203,210 @@ int main(int argc,char **argv)
           printname(name);
           fputc('\n',stdout);
         }
+        }
         level++;
         break;
-      case LPJ_ZERO:
+      case BSTRUCT_INDEXARRAY:
+        isarray=TRUE;
+        if(freadint(&len,1,swap,file)!=1)
+        {
+          fprintf(stderr,"Error reading size of index array in '%s'.\n",argv[iarg]);
+          printf("...\n");
+          fclose(file);
+          return EXIT_FAILURE;
+        }
+        if(islastcell)
+          last=lastcell;
+        else
+          last=len-1;
+        if(last>=len)
+        {
+          fprintf(stderr,"Last cell %d is greater than upper number of cells %d.\n",last,len-1);
+          fclose(file);
+          return EXIT_FAILURE;
+        }
+        if(firstcell>=len)
+        {
+          fprintf(stderr,"First cell %d is greater than upper number of cells %d.\n",firstcell,len-1);
+          fclose(file);
+          return EXIT_FAILURE;
+        }
+        fseek(file,sizeof(long long)*firstcell,SEEK_CUR);
+        freadlong(&filepos,1,swap,file);
+        fseek(file,filepos,SEEK_SET);
+        break;
+      case BSTRUCT_ZERO:
         readname2(file,name);
+        if(key!=NULL && !strcmp(name,key))
+        {
+          if(stop)
+            notend=FALSE;
+          iskey=TRUE;
+        }
+        if(!iskey)
+          break;
         if(first)
           first=FALSE;
         else
-          repeatch(' ',2*level);
+          repeatch(' ',2*(level-keylevel));
         if(name[0]=='\0')
           fputs("- ",stdout);
         else
           printname(name);
         printf("0\n");
         break;
-      case LPJ_BYTE:
+      case BSTRUCT_BYTE:
         readname2(file,name);
+        if(key!=NULL && !strcmp(name,key))
+        {
+          if(stop)
+            notend=FALSE;
+          iskey=TRUE;
+        }
         fread(&b,1,1,file);
+        if(!iskey)
+          break;
         if(first)
           first=FALSE;
         else
-        repeatch(' ',2*level);
+        repeatch(' ',2*(level-keylevel));
         if(name[0]=='\0')
           fputs("- ",stdout);
         else
           printname(name);
         printf("%d\n",b);
         break;
-      case LPJ_BOOL:
+      case BSTRUCT_BOOL:
         readname2(file,name);
         fread(&b,1,1,file);
+        if(key!=NULL && !strcmp(name,key))
+        {
+          if(stop)
+            notend=FALSE;
+          iskey=TRUE;
+        }
+        if(!iskey)
+          break;
         if(first)
           first=FALSE;
         else
-        repeatch(' ',2*level);
+        repeatch(' ',2*(level-keylevel));
         if(name[0]=='\0')
           fputs("- ",stdout);
         else
           printname(name);
         printf("%s\n",bool2str(b));
         break;
-      case LPJ_SHORT:
+      case BSTRUCT_SHORT:
         readname2(file,name);
         freadshort(&s,1,swap,file);
+        if(key!=NULL && !strcmp(name,key))
+        {
+          if(stop)
+            notend=FALSE;
+          iskey=TRUE;
+        }
+        if(!iskey)
+          break;
         if(first)
           first=FALSE;
         else
-          repeatch(' ',2*level);
+          repeatch(' ',2*(level-keylevel));
         if(name[0]=='\0')
           fputs("- ",stdout);
         else
           printname(name);
         printf("%d\n",s);
         break;
-      case LPJ_USHORT:
+      case BSTRUCT_USHORT:
         readname2(file,name);
         freadushort(&us,1,swap,file);
+        if(key!=NULL && !strcmp(name,key))
+        {
+          if(stop)
+            notend=FALSE;
+          iskey=TRUE;
+        }
+        if(!iskey)
+          break;
         if(first)
           first=FALSE;
         else
-          repeatch(' ',2*level);
+          repeatch(' ',2*(level-keylevel));
         if(name[0]=='\0')
           fputs("- ",stdout);
         else
           printname(name);
         printf("%d\n",us);
         break;
-      case LPJ_INT:
+      case BSTRUCT_INT:
         readname2(file,name);
         freadint(&i,1,swap,file);
+        if(key!=NULL && !strcmp(name,key))
+        {
+          if(stop)
+            notend=FALSE;
+          iskey=TRUE;
+        }
+        if(!iskey)
+          break;
         if(first)
           first=FALSE;
         else
-          repeatch(' ',2*level);
+          repeatch(' ',2*(level-keylevel));
         if(name[0]=='\0')
           fputs("- ",stdout);
         else
           printname(name);
         printf("%d\n",i);
         break;
-      case LPJ_FLOAT:
+      case BSTRUCT_FLOAT:
         readname2(file,name);
         freadfloat(&f,1,swap,file);
+        if(key!=NULL && !strcmp(name,key))
+        {
+          if(stop)
+            notend=FALSE;
+          iskey=TRUE;
+        }
+        if(!iskey)
+          break;
         if(first)
           first=FALSE;
         else
-          repeatch(' ',2*level);
+          repeatch(' ',2*(level-keylevel));
         if(name[0]=='\0')
           fputs("- ",stdout);
         else
           printname(name);
         printf("%g\n",f);
         break;
-      case LPJ_DOUBLE:
+      case BSTRUCT_DOUBLE:
         readname2(file,name);
         freaddouble(&d,1,swap,file);
+        if(key!=NULL && !strcmp(name,key))
+        {
+          if(stop)
+            notend=FALSE;
+          iskey=TRUE;
+        }
+        if(!iskey)
+          break;
         if(first)
           first=FALSE;
         else
-          repeatch(' ',2*level);
+          repeatch(' ',2*(level-keylevel));
         if(name[0]=='\0')
           fputs("- ",stdout);
         else
           printname(name);
         printf("%g\n",d);
         break;
-      case LPJ_STRING:
+      case BSTRUCT_STRING:
         readname2(file,name);
-        if(freadint(&len,1,swap,file))
+        if(freadint(&len,1,swap,file)!=1)
         {
-          fprintf(stderr,"Error reading string '%s' in '%s'.\n",name,argv[1]);
+          fprintf(stderr,"Error reading string '%s' in '%s'.\n",name,argv[iarg]);
           printf("...\n");
           fclose(file);
           return EXIT_FAILURE;
@@ -319,19 +421,27 @@ int main(int argc,char **argv)
         }
         fread(string,1,len,file);
         string[len]='\0';
+        if(key!=NULL && !strcmp(name,key))
+        {
+          if(stop)
+            notend=FALSE;
+          iskey=TRUE;
+        }
+        if(!iskey)
+          break;
         if(first)
           first=FALSE;
         else
-          repeatch(' ',2*level);
+          repeatch(' ',2*(level-keylevel));
         if(name[0]=='\0')
           fputs("- ",stdout);
         else
           printname(name);
-        printf("%s\n",string);
+        printf("\"%s\"\n",string);
         free(string);
         break;
       default:
-        fprintf(stderr,"Invalid token %d in '%s'.\n",token,argv[1]);
+        fprintf(stderr,"Invalid token %d in '%s'.\n",token,argv[iarg]);
         printf("...\n");
         fclose(file);
         return EXIT_FAILURE;

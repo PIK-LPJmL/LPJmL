@@ -14,8 +14,8 @@
 
 #include "lpj.h"
 
-const size_t typesizes[]={1,sizeof(short),sizeof(int),sizeof(float),sizeof(double),1,sizeof(unsigned short),0};
-char *typenames[]={"byte","short","int","float","double","bool","ushort","zero","string","array","struct","endstruct","endarray"};
+const size_t typesizes[]={1,sizeof(short),sizeof(int),sizeof(float),sizeof(double)};
+char *typenames[]={"byte","short","int","float","double"};
 
 size_t headersize(const char *headername, /**< header string in CLM file */
                   int version             /**< version of CLM file */

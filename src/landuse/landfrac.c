@@ -103,7 +103,7 @@ void freelandfrac(Landfrac *landfrac /**< land fractions (non-irrig., irrig.) */
   }
 } /* of 'freelandfrac' */
 
-Bool fwritelandfrac(FILE *file,                 /**< pointer to restart file */
+Bool fwritelandfrac(Bstruct file,               /**< pointer to restart file */
                     const char *name,           /**< name of object */
                     const Landfrac landfrac[2], /**< land fractions (non-irrig., irrig.) */
                     int ncft,                   /**< number of crop PFTs */
@@ -111,19 +111,19 @@ Bool fwritelandfrac(FILE *file,                 /**< pointer to restart file */
                    )                            /** \return TRUE on error */
 {
   int i;
-  writearray(file,name,2);
+  bstruct_writearray(file,name,2);
   for(i=0;i<2;i++)
   {
-    writestruct(file,NULL);
-    writerealarray(file,"crop",landfrac[i].crop,ncft);
-    writerealarray(file,"ag_tree",landfrac[i].ag_tree,nagtree);
-    writerealarray(file,"grass",landfrac[i].grass,NGRASS);
-    writereal(file,"woodplantation",landfrac[i].woodplantation);
-    writereal(file,"biomass_grass",landfrac[i].biomass_grass);
-    writereal(file,"biomass_tree",landfrac[i].biomass_tree);
-    writeendstruct(file);
+    bstruct_writestruct(file,NULL);
+    bstruct_writerealarray(file,"crop",landfrac[i].crop,ncft);
+    bstruct_writerealarray(file,"ag_tree",landfrac[i].ag_tree,nagtree);
+    bstruct_writerealarray(file,"grass",landfrac[i].grass,NGRASS);
+    bstruct_writereal(file,"woodplantation",landfrac[i].woodplantation);
+    bstruct_writereal(file,"biomass_grass",landfrac[i].biomass_grass);
+    bstruct_writereal(file,"biomass_tree",landfrac[i].biomass_tree);
+    bstruct_writeendstruct(file);
   }
-  return writeendarray(file);
+  return bstruct_writeendarray(file);
 } /* of 'fwritelandfrac' */
 
 void fprintlandfrac(FILE *file,               /**< pointer to text file */
@@ -144,16 +144,15 @@ void fprintlandfrac(FILE *file,               /**< pointer to text file */
   fprintf(file," %g",landfrac->biomass_tree);
 } /* of 'fprintlandfrac' */
 
-Bool freadlandfrac(FILE *file,           /**< pointer to restart file */
+Bool freadlandfrac(Bstruct file,         /**< pointer to restart file */
                    const char *name,     /**< name of object */
                    Landfrac landfrac[2], /**< land fractions (non-irrig., irrig.) */
                    int ncft,             /**< number of crop PFTs */
-                   int nagtree,          /**< number of agriculture tree PFTs */
-                   Bool swap             /**< byte order has to be swapped (TRUE/FALSE) */
+                   int nagtree           /**< number of agriculture tree PFTs */
                   )                      /** \return TRUE on error */
 {
   int size,i;
-  if(readarray(file,name,&size,swap))
+  if(bstruct_readarray(file,name,&size))
     return TRUE;
   if(size!=2)
   {
@@ -163,24 +162,24 @@ Bool freadlandfrac(FILE *file,           /**< pointer to restart file */
   }
   for(i=0;i<2;i++)
   {
-    if(readstruct(file,NULL,swap))
+    if(bstruct_readstruct(file,NULL))
       return TRUE;
-    if(readrealarray(file,"crop",landfrac[i].crop,ncft,swap))
+    if(bstruct_readrealarray(file,"crop",landfrac[i].crop,ncft))
       return TRUE;
-    if(readrealarray(file,"ag_tree",landfrac[i].ag_tree,nagtree,swap))
+    if(bstruct_readrealarray(file,"ag_tree",landfrac[i].ag_tree,nagtree))
       return TRUE;
-    if(readrealarray(file,"grass",landfrac[i].grass,NGRASS,swap))
+    if(bstruct_readrealarray(file,"grass",landfrac[i].grass,NGRASS))
       return TRUE;
-    if(readreal(file,"woodplantation",&landfrac[i].woodplantation,swap))
+    if(bstruct_readreal(file,"woodplantation",&landfrac[i].woodplantation))
       return TRUE;
-    if(readreal(file,"biomass_grass",&landfrac[i].biomass_grass,swap))
+    if(bstruct_readreal(file,"biomass_grass",&landfrac[i].biomass_grass))
       return TRUE;
-    if(readreal(file,"biomass_tree",&landfrac[i].biomass_tree,swap))
+    if(bstruct_readreal(file,"biomass_tree",&landfrac[i].biomass_tree))
       return TRUE;
-    if(readendstruct(file))
+    if(bstruct_readendstruct(file))
       return TRUE;
   }
-  return readendarray(file);
+  return bstruct_readendarray(file);
 } /* of 'freadlandfrac' */
 
 Real landfrac_sum(const Landfrac landfrac[2], /**< land fractions (non-irrig., irrig.) */

@@ -39,7 +39,7 @@ OBJS    = swap.$O freadheader.$O coord.$O openinputfile.$O\
           fscanmap.$O fprintjson.$O mrun.$O fscanintarray.$O cmpmap.$O\
           hasanysuffix.$O fprintattrs.$O fscanattrs.$O mergeattrs.$O\
           freadheaderid.$O newarray.$O getversion.$O getsprintf.$O\
-          readdata.$O writedata.$O
+          freadtopheader.$O bstruct.$O
 
 INC     = ../../include
 LIBDIR  = ../../lib
@@ -50,7 +50,7 @@ HDRS    = $(INC)/buffer.h $(INC)/coord.h $(INC)/lpj.h\
           $(INC)/pftpar.h $(INC)/types.h $(INC)/header.h\
           $(INC)/errmsg.h $(INC)/numeric.h $(INC)/channel.h\
           $(INC)/conf.h $(INC)/swap.h $(INC)/soilpar.h\
-          $(INC)/list.h $(INC)/cell.h $(INC)/units.h\
+          $(INC)/list.h $(INC)/cell.h $(INC)/units.h $(INC)/bstruct.h\
           $(INC)/config.h $(INC)/queue.h $(INC)/output.h $(INC)/coupler.h
 
 

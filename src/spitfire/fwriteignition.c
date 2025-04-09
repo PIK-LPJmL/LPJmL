@@ -16,11 +16,11 @@
 
 #include "lpj.h"
 
-Bool fwriteignition(FILE *file,const char *name,const Ignition *ignition)
+Bool fwriteignition(Bstruct file,const char *name,const Ignition *ignition)
 {
-  writestruct(file,name);
-  writereal(file,"nesterov_accum",ignition->nesterov_accum);
-  writereal(file,"nesterov_max",ignition->nesterov_max);
-  writeint(file,"nesterov_day",ignition->nesterov_day);
-  return writeendstruct(file);
+  bstruct_writestruct(file,name);
+  bstruct_writereal(file,"nesterov_accum",ignition->nesterov_accum);
+  bstruct_writereal(file,"nesterov_max",ignition->nesterov_max);
+  bstruct_writeint(file,"nesterov_day",ignition->nesterov_day);
+  return bstruct_writeendstruct(file);
 } /* of 'fwriteignition' */

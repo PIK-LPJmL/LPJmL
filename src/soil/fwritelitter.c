@@ -16,34 +16,34 @@
 
 #include "lpj.h"
 
-static Bool fwritetrait(FILE *file,const char *name,const Trait *trait)
+static Bool fwritetrait(Bstruct file,const char *name,const Trait *trait)
 {
-  writestruct(file,name);
-  writestocks(file,"leaf",&trait->leaf);
-  writestocksarray(file,"wood",trait->wood,NFUELCLASS);
-  return writeendstruct(file);
+  bstruct_writestruct(file,name);
+  fwritestocks(file,"leaf",&trait->leaf);
+  fwritestocksarray(file,"wood",trait->wood,NFUELCLASS);
+  return bstruct_writeendstruct(file);
 } /* of ' fwritetrait' */
 
-Bool fwritelitter(FILE *file,          /**< pointer to restart file */
+Bool fwritelitter(Bstruct file,        /**< pointer to restart file */
                   const char *name,    /**< name of object */
                   const Litter *litter /**< pointer to litter data written */
                  )                     /** \return TRUE on error */
 {
   int l;
-  writerealarray(file,"avg_fbd",litter->avg_fbd,NFUELCLASS+1);
-  writearray(file,name,litter->n);
+  bstruct_writerealarray(file,"avg_fbd",litter->avg_fbd,NFUELCLASS+1);
+  bstruct_writearray(file,name,litter->n);
   for(l=0;l<litter->n;l++)
   {
-    writestruct(file,NULL);
-    writeint(file,"pft_id",litter->item[l].pft->id);
+    bstruct_writestruct(file,NULL);
+    bstruct_writeint(file,"pft_id",litter->item[l].pft->id);
     fwritetrait(file,"agtop",&litter->item[l].agtop);
     fwritetrait(file,"agsub",&litter->item[l].agsub);
-    writestocks(file,"bg",&litter->item[l].bg);
-    writeendstruct(file);
+    fwritestocks(file,"bg",&litter->item[l].bg);
+    bstruct_writeendstruct(file);
   }
-  writeendarray(file);
-  writereal(file,"agtop_wcap",litter->agtop_wcap);
-  writereal(file,"agtop_moist",litter->agtop_moist);
-  writereal(file,"agtop_cover",litter->agtop_cover);
-  return writereal(file,"agtop_temp",litter->agtop_temp);
+  bstruct_writeendarray(file);
+  bstruct_writereal(file,"agtop_wcap",litter->agtop_wcap);
+  bstruct_writereal(file,"agtop_moist",litter->agtop_moist);
+  bstruct_writereal(file,"agtop_cover",litter->agtop_cover);
+  return bstruct_writereal(file,"agtop_temp",litter->agtop_temp);
 } /* of 'fwritelitter' */

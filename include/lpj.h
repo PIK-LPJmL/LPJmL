@@ -54,6 +54,7 @@ typedef struct config Config; /* forward declaration of stand */
 #include "conf.h"
 #include "list.h"
 #include "types.h"
+#include "bstruct.h"
 #include "swap.h"
 #include "numeric.h"
 #include "header.h"
@@ -123,7 +124,7 @@ extern char *lpj_usage;
 
 extern Cell *newgrid(Config *,const Standtype [],int,int,int);
 extern Bool fwriterestart(const Cell[],int,int,int,const char *,Bool,const Config *);
-extern FILE *openrestart(const char *,Config *,int,Bool *);
+extern Bstruct openrestart(const char *,Config *,int,int);
 extern void copyright(const char *);
 extern void printlicense(void);
 extern void help(const char *);

@@ -16,24 +16,24 @@
 
 #include "lpj.h"
 
-Bool fwritestand(FILE *file,         /**< pointer to restart file */
+Bool fwritestand(Bstruct file,       /**< pointer to restart file */
                  const char *name,   /**< name of object */
                  const Stand *stand, /**< pointer to stand */
                  int ntotpft         /**< total number of PFTs*/
                 )                    /** \return TRUE on error */
 {
-  writestruct(file,name);
-  writebyte(file,"landusetype",stand->type->landusetype);
+  bstruct_writestruct(file,name);
+  bstruct_writebyte(file,"landusetype",stand->type->landusetype);
   /* write PFT list to file */
   if(fwritepftlist(file,"pftlist",&stand->pftlist)!=getnpft(&stand->pftlist))
     return TRUE;
   /* write soil data to file */
   if(fwritesoil(file,"soil",&stand->soil,ntotpft))
     return TRUE;
-  writereal(file,"frac",stand->frac);
+  bstruct_writereal(file,"frac",stand->frac);
   /* write stand-specific data */
   if(stand->type->fwrite(file,stand))
     return TRUE;
-  writerealarray(file,"frac_g",stand->frac_g,NSOILLAYER);
-  return writeendstruct(file);
+  bstruct_writerealarray(file,"frac_g",stand->frac_g,NSOILLAYER);
+  return bstruct_writeendstruct(file);
 } /* of 'fwritestand' */

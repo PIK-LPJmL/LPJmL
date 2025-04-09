@@ -17,23 +17,23 @@
 #include "lpj.h"
 #include "grass.h"
 
-static Bool fwritegrassphys(FILE *file,const char *name,const Grassphys *grass)
+static Bool fwritegrassphys(Bstruct file,const char *name,const Grassphys *grass)
 {
-  writestruct(file,name);
-  writestocks(file,"leaf",&grass->leaf);
-  writestocks(file,"root",&grass->root);
-  return writeendstruct(file);
+  bstruct_writestruct(file,name);
+  fwritestocks(file,"leaf",&grass->leaf);
+  fwritestocks(file,"root",&grass->root);
+  return bstruct_writeendstruct(file);
 }
 
-static Bool fwritegrassphyspar(FILE *file,const char *name,const Grassphyspar *grass)
+static Bool fwritegrassphyspar(Bstruct file,const char *name,const Grassphyspar *grass)
 {
-  writestruct(file,name);
-  writereal(file,"leaf",grass->leaf);
-  writereal(file,"root",grass->root);
-  return writeendstruct(file);
+  bstruct_writestruct(file,name);
+  bstruct_writereal(file,"leaf",grass->leaf);
+  bstruct_writereal(file,"root",grass->root);
+  return bstruct_writeendstruct(file);
 }
 
-Bool fwrite_grass(FILE *file,    /**< pointer to binary file */
+Bool fwrite_grass(Bstruct file,  /**< pointer to binary file */
                   const Pft *pft /**< pointer to grass PFT */
                  )               /** \return TRUE on error */
 {
@@ -41,9 +41,9 @@ Bool fwrite_grass(FILE *file,    /**< pointer to binary file */
   grass=pft->data;
   fwritegrassphys(file,"turn",&grass->turn);
   fwritegrassphys(file,"turn_litt",&grass->turn_litt);
-  writereal(file,"max_leaf",grass->max_leaf);
-  writereal(file,"excess_carbon",grass->excess_carbon);
+  bstruct_writereal(file,"max_leaf",grass->max_leaf);
+  bstruct_writereal(file,"excess_carbon",grass->excess_carbon);
   fwritegrassphys(file,"ind",&grass->ind);
   fwritegrassphyspar(file,"falloc",&grass->falloc);
-  return writeint(file,"growing_days",grass->growing_days);
+  return bstruct_writeint(file,"growing_days",grass->growing_days);
 } /* of 'fwrite_grass' */

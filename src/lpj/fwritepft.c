@@ -17,34 +17,34 @@
 #include "lpj.h"
 
 
-Bool fwritepft(FILE *file,    /**< File pointer to binary file */
+Bool fwritepft(Bstruct file,  /**< File pointer to binary file */
                const Pft *pft /**< PFT variables */
               )               /** \return TRUE on error */
 {
-  writestruct(file,NULL);
-  writeint(file,"id",pft->par->id);
-  writestruct(file,"phen_gsi");
-  writereal(file,"tmin",pft->phen_gsi.tmin);
-  writereal(file,"tmax",pft->phen_gsi.tmax);
-  writereal(file,"wscal",pft->phen_gsi.wscal);
-  writereal(file,"light",pft->phen_gsi.light);
-  writeendstruct(file);
-  writereal(file,"wscal",pft->wscal);
-  writereal(file,"wscal_mean",pft->wscal_mean);
-  writereal(file,"vscal",pft->vscal);
-  writereal(file,"aphen",pft->aphen);
-  writereal(file,"phen",pft->phen);
+  bstruct_writestruct(file,NULL);
+  bstruct_writeint(file,"id",pft->par->id);
+  bstruct_writestruct(file,"phen_gsi");
+  bstruct_writereal(file,"tmin",pft->phen_gsi.tmin);
+  bstruct_writereal(file,"tmax",pft->phen_gsi.tmax);
+  bstruct_writereal(file,"wscal",pft->phen_gsi.wscal);
+  bstruct_writereal(file,"light",pft->phen_gsi.light);
+  bstruct_writeendstruct(file);
+  bstruct_writereal(file,"wscal",pft->wscal);
+  bstruct_writereal(file,"wscal_mean",pft->wscal_mean);
+  bstruct_writereal(file,"vscal",pft->vscal);
+  bstruct_writereal(file,"aphen",pft->aphen);
+  bstruct_writereal(file,"phen",pft->phen);
   /* write type-dependent PFT variables */
   if(pft->par->fwrite(file,pft))
     return TRUE;
-  writestocks(file,"bm_inc",&pft->bm_inc);
-  writereal(file,"nind",pft->nind);
-  writereal(file,"gdd",pft->gdd);
-  writereal(file,"fpc",pft->fpc);
-  writereal(file,"albdo",pft->albedo);
-  writereal(file,"fapae",pft->fapar);
-  writereal(file,"nleaf",pft->nleaf);
-  writestocks(file,"establish",&pft->establish);
-  writeint(file,"litter",pft->litter);
-  return writeendstruct(file);
+  fwritestocks(file,"bm_inc",&pft->bm_inc);
+  bstruct_writereal(file,"nind",pft->nind);
+  bstruct_writereal(file,"gdd",pft->gdd);
+  bstruct_writereal(file,"fpc",pft->fpc);
+  bstruct_writereal(file,"albdo",pft->albedo);
+  bstruct_writereal(file,"fapae",pft->fapar);
+  bstruct_writereal(file,"nleaf",pft->nleaf);
+  fwritestocks(file,"establish",&pft->establish);
+  bstruct_writeint(file,"litter",pft->litter);
+  return bstruct_writeendstruct(file);
 } /* of 'fwritepft' */

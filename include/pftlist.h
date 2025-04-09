@@ -29,10 +29,10 @@ extern int delpft(Pftlist *,int);
 extern void freepftlist(Pftlist *);
 extern Real gp_sum(const Pftlist *,Real,Real,Real,Real,Real *,Real [],Real *,const Config *);
 extern Real fpc_sum(Real [],int,const Pftlist *);
-extern int fwritepftlist(FILE *,const char *,const Pftlist *);
+extern int fwritepftlist(Bstruct,const char *,const Pftlist *);
 extern void fprintpftlist(FILE *,const Pftlist *);
-extern Bool freadpftlist(FILE *,const char *,Stand *,Pftlist *,const Pftpar[],int,
-                         Bool,Bool);
+extern Bool freadpftlist(Bstruct,const char *,Stand *,Pftlist *,const Pftpar[],int,
+                         Bool);
 extern Stocks firepft(Stand *,Real,const Config *);
 extern void newpftlist(Pftlist *);
 extern Pft *addpft(Stand *,const Pftpar *,int,int,const Config *);

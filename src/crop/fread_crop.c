@@ -17,25 +17,24 @@
 #include "lpj.h"
 #include "crop.h"
 
-#define readreal2(file,name,val,swap) if(readreal(file,#name,&val->name,swap)) return TRUE
-#define readint2(file,name,val,swap) if(readint(file,#name,&val->name,swap)) return TRUE
-#define readstocks2(file,name,val,swap) if(readstocks(file,name,val,swap)) return TRUE
+#define readreal2(file,name,val) if(bstruct_readreal(file,#name,&val->name)) return TRUE
+#define readint2(file,name,val) if(bstruct_readint(file,#name,&val->name)) return TRUE
+#define readstocks2(file,name,val) if(freadstocks(file,name,val)) return TRUE
 
-static Bool freadcropphys2(FILE *file,const char *name,Cropphys2 *crop,Bool swap)
+static Bool freadcropphys2(Bstruct file,const char *name,Cropphys2 *crop)
 {
-  if(readstruct(file,name,swap))
+  if(bstruct_readstruct(file,name))
     return TRUE;
-  readstocks2(file,"leaf",&crop->leaf,swap);
-  readstocks2(file,"root",&crop->root,swap);
-  readstocks2(file,"pool",&crop->pool,swap);
-  readstocks2(file,"so",&crop->so,swap);
-  return readendstruct(file);
+  readstocks2(file,"leaf",&crop->leaf);
+  readstocks2(file,"root",&crop->root);
+  readstocks2(file,"pool",&crop->pool);
+  readstocks2(file,"so",&crop->so);
+  return bstruct_readendstruct(file);
 }
 
-Bool fread_crop(FILE *file,          /**< file pointer */
+Bool fread_crop(Bstruct file,          /**< file pointer */
                 Pft *pft,            /**< PFT data to be read */
-                Bool separate_harvests, /**< double harvest output enabled? */
-                Bool swap            /**< if true data is in different byte order */
+                Bool separate_harvests /**< double harvest output enabled? */
                )                     /** \return TRUE on error */
 {
   Pftcrop *crop;
@@ -46,30 +45,30 @@ Bool fread_crop(FILE *file,          /**< file pointer */
     printallocerr("crop");
     return TRUE;
   }
-  readreal2(file,nlimit,pft,swap);
-  readint2(file,wtype,crop,swap);
-  readint2(file,growingdays,crop,swap);
-  readreal2(file,pvd,crop,swap);
-  readreal2(file,phu,crop,swap);
-  readreal2(file,basetemp,crop,swap);
-  readint2(file,senescence,crop,swap);
-  readint2(file,senescence0,crop,swap);
-  readreal2(file,husum,crop,swap);
-  readreal2(file,vdsum,crop,swap);
-  readreal2(file,fphu,crop,swap);
-  if(freadcropphys2(file,"ind",&crop->ind,swap))
+  readreal2(file,nlimit,pft);
+  readint2(file,wtype,crop);
+  readint2(file,growingdays,crop);
+  readreal2(file,pvd,crop);
+  readreal2(file,phu,crop);
+  readreal2(file,basetemp,crop);
+  readint2(file,senescence,crop);
+  readint2(file,senescence0,crop);
+  readreal2(file,husum,crop);
+  readreal2(file,vdsum,crop);
+  readreal2(file,fphu,crop);
+  if(freadcropphys2(file,"ind",&crop->ind))
     return TRUE;
-  readreal2(file,flaimax,crop,swap);
-  readreal2(file,lai,crop,swap);
-  readreal2(file,lai000,crop,swap);
-  readreal2(file,laimax_adjusted,crop,swap);
-  readreal2(file,lai_nppdeficit,crop,swap);
-  readreal2(file,demandsum,crop,swap);
-  readreal2(file,ndemandsum,crop,swap);
-  readreal2(file,nuptakesum,crop,swap);
-  readreal2(file,nfertilizer,crop,swap);
-  readreal2(file,nmanure,crop,swap);
-  readreal2(file,vscal_sum,crop,swap);
+  readreal2(file,flaimax,crop);
+  readreal2(file,lai,crop);
+  readreal2(file,lai000,crop);
+  readreal2(file,laimax_adjusted,crop);
+  readreal2(file,lai_nppdeficit,crop);
+  readreal2(file,demandsum,crop);
+  readreal2(file,ndemandsum,crop);
+  readreal2(file,nuptakesum,crop);
+  readreal2(file,nfertilizer,crop);
+  readreal2(file,nmanure,crop);
+  readreal2(file,vscal_sum,crop);
   if(pft->stand->type->landusetype==AGRICULTURE && separate_harvests)
   {
     crop->sh=new(Separate_harvests);
@@ -79,31 +78,31 @@ Bool fread_crop(FILE *file,          /**< file pointer */
       free(crop);
       return TRUE;
     }
-    if(readstruct(file,"sh",swap))
+    if(bstruct_readstruct(file,"sh"))
       return TRUE;
-    readreal2(file,petsum,crop->sh,swap);
-    readreal2(file,evapsum,crop->sh,swap);
-    readreal2(file,transpsum,crop->sh,swap);
-    readreal2(file,intercsum,crop->sh,swap);
-    readreal2(file,precsum,crop->sh,swap);
-    readreal2(file,sradsum,crop->sh,swap);
-    readreal2(file,irrig_apply,crop->sh,swap);
-    readreal2(file,tempsum,crop->sh,swap);
-    readreal2(file,nirsum,crop->sh,swap);
-    readreal2(file,lgp,crop->sh,swap);
-    readreal2(file,runoffsum,crop->sh,swap);
-    readreal2(file,n2o_denitsum,crop->sh,swap);
-    readreal2(file,n2o_nitsum,crop->sh,swap);
-    readreal2(file,n2_emissum,crop->sh,swap);
-    readreal2(file,leachingsum,crop->sh,swap);
-    readreal2(file,c_emissum,crop->sh,swap);
-    readreal2(file,nfertsum,crop->sh,swap);
-    readint2(file,sdate,crop->sh,swap);
-    readint2(file,sowing_year,crop->sh,swap);
-    if(readendstruct(file))
+    readreal2(file,petsum,crop->sh);
+    readreal2(file,evapsum,crop->sh);
+    readreal2(file,transpsum,crop->sh);
+    readreal2(file,intercsum,crop->sh);
+    readreal2(file,precsum,crop->sh);
+    readreal2(file,sradsum,crop->sh);
+    readreal2(file,irrig_apply,crop->sh);
+    readreal2(file,tempsum,crop->sh);
+    readreal2(file,nirsum,crop->sh);
+    readreal2(file,lgp,crop->sh);
+    readreal2(file,runoffsum,crop->sh);
+    readreal2(file,n2o_denitsum,crop->sh);
+    readreal2(file,n2o_nitsum,crop->sh);
+    readreal2(file,n2_emissum,crop->sh);
+    readreal2(file,leachingsum,crop->sh);
+    readreal2(file,c_emissum,crop->sh);
+    readreal2(file,nfertsum,crop->sh);
+    readint2(file,sdate,crop->sh);
+    readint2(file,sowing_year,crop->sh);
+    if(bstruct_readendstruct(file))
       return TRUE;
   }
   else
     crop->sh=NULL;
-  return readreal(file,"supplysum",&crop->supplysum,swap);
+  return bstruct_readreal(file,"supplysum",&crop->supplysum);
 } /* of 'fread_crop' */

@@ -40,8 +40,8 @@ extern Real leftmostzero(Real (*)(Real,void *),Real,Real,void *,Real,Real,int); 
 extern void linreg(Real *,Real *,const Real[],int); /* linear regression */
 extern void setseed(Seed,int); /* set seed of random number generator */
 extern Bool freadseed(FILE *,Seed, Bool);
-extern Bool readseed(FILE *,const char *,Seed, Bool);
-extern Bool fwriteseed(FILE *,const char *,const Seed);
+extern Bool readseed(Bstruct,const char *,Seed);
+extern Bool fwriteseed(Bstruct,const char *,const Seed);
 extern Real randfrac(int *); /* random number generator */
 extern void petpar(Real *,Real *,Real *,Real *,Real,int,Real,Real,Real);
 extern void petpar2(Real *,Real *,Real *,Real,int,Real,Real,Real,Bool,Real);

@@ -14,34 +14,33 @@
 
 #include "lpj.h"
 
-static Bool readcropdate(FILE *file,Cropdates *cropdates,Bool swap)
+static Bool readcropdate(Bstruct file,Cropdates *cropdates)
 {
-  if(readstruct(file,NULL,swap))
+  if(bstruct_readstruct(file,NULL))
     return TRUE;
-  if(readint(file,"fall_sdate20",&cropdates->fall_sdate20,swap))
+  if(bstruct_readint(file,"fall_sdate20",&cropdates->fall_sdate20))
     return TRUE;
-  if(readint(file,"last_update_fall",&cropdates->last_update_fall,swap))
+  if(bstruct_readint(file,"last_update_fall",&cropdates->last_update_fall))
     return TRUE;
-  if(readint(file,"spring_sdate20",&cropdates->spring_sdate20,swap))
+  if(bstruct_readint(file,"spring_sdate20",&cropdates->spring_sdate20))
     return TRUE;
-  if(readint(file,"last_update_spring",&cropdates->last_update_spring,swap))
+  if(bstruct_readint(file,"last_update_spring",&cropdates->last_update_spring))
     return TRUE;
-  if(readint(file,"vern_date20",&cropdates->vern_date20,swap))
+  if(bstruct_readint(file,"vern_date20",&cropdates->vern_date20))
     return TRUE;
-  if(readint(file,"last_update_vern",&cropdates->last_update_vern,swap))
+  if(bstruct_readint(file,"last_update_vern",&cropdates->last_update_vern))
     return TRUE;
-  return readendstruct(file);
+  return bstruct_readendstruct(file);
 } /* of 'readcropdate' */
 
-Cropdates *freadcropdates(FILE *file, /**< Pointer to binary file */
+Cropdates *freadcropdates(Bstruct file, /**< Pointer to binary file */
                           const char *name, /**< name of object */
-                          int ncft,   /**< Number of crop PFTs */
-                          Bool swap   /**< byte order has to be changed */
+                          int ncft    /**< Number of crop PFTs */
                          )            /** \return allocated cropdates */
 {
   int size,cft;
   Cropdates *cropdates;
-  if(readarray(file,name,&size,swap))
+  if(bstruct_readarray(file,name,&size))
     return NULL;
   if(size!=ncft)
     return NULL;
@@ -53,13 +52,13 @@ Cropdates *freadcropdates(FILE *file, /**< Pointer to binary file */
   }
   for(cft=0;cft<ncft;cft++)
   {
-    if(readcropdate(file,cropdates+cft,swap))
+    if(readcropdate(file,cropdates+cft))
     {
       free(cropdates);
       return NULL;
     }
   }
-  if(readendarray(file))
+  if(bstruct_readendarray(file))
   {
     free(cropdates);
     return NULL;

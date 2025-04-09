@@ -84,8 +84,8 @@ extern void update_reservoir_monthly(Cell *,int,const Config *);
 extern void update_reservoir_annual(Cell *);
 extern void initresdata(Cell *);
 extern void drain_reservoir(Cell *,const Config *,int,Real);
-extern Bool fwriteresdata(FILE *,const char *,const Cell *);
-extern Bool freadresdata(FILE *,const char *,Cell *,Bool);
+extern Bool fwriteresdata(Bstruct,const char *,const Cell *);
+extern Bool freadresdata(Bstruct,const char *,Cell *);
 extern void fprintresdata(FILE *,const Cell *);
 extern Real reservoir_surface_storage(const Resdata *);
 

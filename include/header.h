@@ -68,7 +68,6 @@
 #define YEARCELL 2
 #define CELLINDEX 3
 #define CELLSEQ 4
-#define READ_VERSION -1
 #define CLM_MAX_VERSION 4  /**< highest version for clm files supported */
 #define MAP_NAME "map"     /**< name of map in JSON files */
 #define BAND_NAMES "band_names" /**< name of band string array in JSON metafiles */

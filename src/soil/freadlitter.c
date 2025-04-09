@@ -16,29 +16,28 @@
 
 #include "lpj.h"
 
-static Bool freadtrait(FILE *file,const char *name,Trait *trait,Bool swap)
+static Bool freadtrait(Bstruct file,const char *name,Trait *trait)
 {
-  if(readstruct(file,name,swap))
+  if(bstruct_readstruct(file,name))
     return TRUE;
-  if(readstocks(file,"leaf",&trait->leaf,swap))
+  if(freadstocks(file,"leaf",&trait->leaf))
     return TRUE;
-  if(readstocksarray(file,"wood",trait->wood,NFUELCLASS,swap))
+  if(freadstocksarray(file,"wood",trait->wood,NFUELCLASS))
     return TRUE;
-  return readendstruct(file);
+  return bstruct_readendstruct(file);
 } /* of ' freadtrait' */
 
-Bool freadlitter(FILE *file, /**< File pointer to restrart file */
+Bool freadlitter(Bstruct file, /**< File pointer to restrart file */
                  const char  *name, /**< name of object */
                  Litter *litter, /**< Litter pool to be read */
                  const Pftpar pftpar[], /**< PFT parameter array */
-                 int ntotpft, /**< total number of PFTs */
-                 Bool swap /**< Byte order has to be changed (TRUE/FALSE) */
+                 int ntotpft  /**< total number of PFTs */
               )            /** \return TRUE on error */
 {
   int i,pft_id;
-  if(readrealarray(file,"avg_fbd",litter->avg_fbd,NFUELCLASS+1,swap))
+  if(bstruct_readrealarray(file,"avg_fbd",litter->avg_fbd,NFUELCLASS+1))
     return TRUE;
-  if(readarray(file,name,&litter->n,swap)) 
+  if(bstruct_readarray(file,name,&litter->n))
     return TRUE;
   if(litter->n)
   {
@@ -50,9 +49,9 @@ Bool freadlitter(FILE *file, /**< File pointer to restrart file */
     }
     for(i=0;i<litter->n;i++)
     {
-      if(readstruct(file,NULL,swap))
+      if(bstruct_readstruct(file,NULL))
         return TRUE;
-      if(readint(file,"pft_id",&pft_id,swap))
+      if(bstruct_readint(file,"pft_id",&pft_id))
       {
         free(litter->item);
         litter->n=0;
@@ -69,25 +68,25 @@ Bool freadlitter(FILE *file, /**< File pointer to restrart file */
         litter->item=NULL;
         return TRUE;
       }
-      if(freadtrait(file,"agtop",&litter->item[i].agtop,swap))
+      if(freadtrait(file,"agtop",&litter->item[i].agtop))
         return TRUE;
-      if(freadtrait(file,"agsub",&litter->item[i].agsub,swap))
+      if(freadtrait(file,"agsub",&litter->item[i].agsub))
         return TRUE;
-      if(readstocks(file,"bg",&litter->item[i].bg,swap))
+      if(freadstocks(file,"bg",&litter->item[i].bg))
         return TRUE;
-      if(readendstruct(file))
+      if(bstruct_readendstruct(file))
         return TRUE;
     }
   }
   else
     litter->item=NULL;
-  if(readendarray(file))
+  if(bstruct_readendarray(file))
     return TRUE;
-  if(readreal(file,"agtop_wcap",&litter->agtop_wcap,swap))
+  if(bstruct_readreal(file,"agtop_wcap",&litter->agtop_wcap))
     return TRUE;
-  if(readreal(file,"agtop_moist",&litter->agtop_moist,swap))
+  if(bstruct_readreal(file,"agtop_moist",&litter->agtop_moist))
     return TRUE;
-  if(readreal(file,"agtop_cover",&litter->agtop_cover,swap))
+  if(bstruct_readreal(file,"agtop_cover",&litter->agtop_cover))
     return TRUE;
-  return readreal(file,"agtop_temp",&litter->agtop_temp,swap);
+  return bstruct_readreal(file,"agtop_temp",&litter->agtop_temp);
 } /* of 'freadlitter' */

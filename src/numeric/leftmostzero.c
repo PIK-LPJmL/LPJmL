@@ -14,6 +14,7 @@
 
 #include <stdio.h>
 #include "types.h"
+#include "bstruct.h"
 #include "numeric.h"
 
 #define NSEG 20

@@ -17,14 +17,14 @@
 #include "lpj.h"
 #include "biomass_tree.h"
 
-Bool fwrite_biomass_tree(FILE *file,        /**< pointer to binary file */
+Bool fwrite_biomass_tree(Bstruct file,      /**< pointer to binary file */
                          const Stand *stand /**< stand pointer */
                         )                   /** \return TRUE on error */
 {
   const Biomass_tree *biomass_tree;
   biomass_tree=stand->data;
   fwrite_irrigation(file,"irrigation",&biomass_tree->irrigation);
-  fwrite(&stand->growing_days,sizeof(int),1,file);
-  fwrite(&biomass_tree->growing_time,sizeof(int),1,file);
-  return (fwrite(&biomass_tree->age,sizeof(int),1,file)!=1);
+  bstruct_writeint(file,"growing_days",stand->growing_days);
+  bstruct_writeint(file,"growing_time",biomass_tree->growing_time);
+  return bstruct_writeint(file,"age",biomass_tree->age);
 } /* of 'fwrite_biomass_tree' */

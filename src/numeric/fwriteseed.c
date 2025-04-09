@@ -14,17 +14,18 @@
 
 #include <stdio.h>
 #include "types.h"
+#include "bstruct.h"
 #include "swap.h"
 #include "numeric.h"
 
-Bool fwriteseed(FILE *file,       /**< pointer to restart file */
+Bool fwriteseed(Bstruct file,     /**< pointer to restart file */
                 const char *name, /**< name of object */
                 const Seed seed   /**< seed of random number generator read */
                )                  /** \return TRUE on error */
 {
 #ifdef USE_RAND48
-  return writeushortarray(file,name,seed,NSEED);
+  return bstruct_writeushortarray(file,name,seed,NSEED);
 #else
-  return writeintarray(file,name,seed,NSEED);
+  return bstruct_writeintarray(file,name,seed,NSEED);
 #endif
 } /* of 'fwriteseed' */

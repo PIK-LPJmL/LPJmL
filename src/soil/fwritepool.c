@@ -1,10 +1,10 @@
 /**************************************************************************************/
 /**                                                                                \n**/
-/**      f  w  r  i  t  e  _  g  r  a  s  s  l  a  n  d  .  c                      \n**/
+/**               f  w  r  i  t  e  p  o  o  l  .  c                               \n**/
 /**                                                                                \n**/
 /**     C implementation of LPJmL                                                  \n**/
 /**                                                                                \n**/
-/**     Function writes grassland data of stand                                    \n**/
+/**     Function writes pool variables into restart file                           \n**/
 /**                                                                                \n**/
 /** (C) Potsdam Institute for Climate Impact Research (PIK), see COPYRIGHT file    \n**/
 /** authors, and contributors see AUTHORS file                                     \n**/
@@ -15,27 +15,15 @@
 /**************************************************************************************/
 
 #include "lpj.h"
-#include "grassland.h"
 
-static Bool writerotation(Bstruct file,const char *name,const Rotation *rotation)
+Bool fwritepool(Bstruct file,     /**< pointer to restart file */
+                const char *name, /**< name of object */
+                const Pool *pool  /**<  pointer to pool to write */
+               )                  /** \return TRUE on error */
 {
   bstruct_writestruct(file,name);
-  bstruct_writeint(file,"grazing_days",rotation->grazing_days);
-  bstruct_writeint(file,"recovery_dates",rotation->recovery_days);
-  bstruct_writeint(file,"paddocks",rotation->paddocks);
-  bstruct_writeint(file,"mode",rotation->mode);
+  fwritestocks(file,"slow",&pool->slow);
+  fwritestocks(file,"fast",&pool->fast);
   return bstruct_writeendstruct(file);
-}
+} /* of 'fwritepool' */
 
-Bool fwrite_grassland(Bstruct file,      /**< pointer to binary file */
-                      const Stand *stand /**< stand pointer */
-                     )                   /** \return TRUE on error */
-{
-  const Grassland *grassland;
-  grassland=stand->data;
-  fwrite_irrigation(file,"irrigation",&grassland->irrigation);
-  bstruct_writeint(file,"growing_days",stand->growing_days);
-  bstruct_writereal(file,"deficit_lsu_ne",grassland->deficit_lsu_ne);
-  bstruct_writereal(file,"deficit_lsu_mp",grassland->deficit_lsu_mp);
-  return writerotation(file,"rotation",&grassland->rotation);
-} /* of 'fwrite_grassland' */

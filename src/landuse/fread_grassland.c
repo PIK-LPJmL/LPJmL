@@ -17,24 +17,23 @@
 #include "lpj.h"
 #include "grassland.h"
 
-static Bool readrotation(FILE *file,const char *name,Rotation *rotation,Bool swap)
+static Bool readrotation(Bstruct file,const char *name,Rotation *rotation)
 {
-  if(readstruct(file,name,swap))
+  if(bstruct_readstruct(file,name))
     return TRUE;
-  if(readint(file,"grazing_days",&rotation->grazing_days,swap))
+  if(bstruct_readint(file,"grazing_days",&rotation->grazing_days))
     return TRUE;
-  if(readint(file,"recovery_dates",&rotation->recovery_days,swap))
+  if(bstruct_readint(file,"recovery_dates",&rotation->recovery_days))
     return TRUE;
-  if(readint(file,"paddocks",&rotation->paddocks,swap))
+  if(bstruct_readint(file,"paddocks",&rotation->paddocks))
     return TRUE;
-  if(readint(file,"mode",(int *)(&rotation->mode),swap))
+  if(bstruct_readint(file,"mode",(int *)(&rotation->mode)))
     return TRUE;
-  return readendstruct(file);
+  return bstruct_readendstruct(file);
 } /* of 'readrotation' */
 
-Bool fread_grassland(FILE *file,   /**< pointer to binary file */
-                     Stand *stand, /**< stand pointer */
-                     Bool swap     /**< byte order has to be changed */
+Bool fread_grassland(Bstruct file, /**< pointer to binary file */
+                     Stand *stand  /**< stand pointer */
                     )              /** \return TRUE on error */
 {
   Grassland *grassland;
@@ -45,13 +44,13 @@ Bool fread_grassland(FILE *file,   /**< pointer to binary file */
     printallocerr("grassland");
     return TRUE;
   }
-  if(fread_irrigation(file,"irrigation",&grassland->irrigation,swap))
+  if(fread_irrigation(file,"irrigation",&grassland->irrigation))
     return TRUE;
-  if(readint(file,"growing_days",&stand->growing_days,swap))
+  if(bstruct_readint(file,"growing_days",&stand->growing_days))
     return TRUE;
-  if(readreal(file,"deficit_lsu_ne",&grassland->deficit_lsu_ne,swap))
+  if(bstruct_readreal(file,"deficit_lsu_ne",&grassland->deficit_lsu_ne))
     return TRUE;
-  if(readreal(file,"deficit_lsu_mp",&grassland->deficit_lsu_mp,swap))
+  if(bstruct_readreal(file,"deficit_lsu_mp",&grassland->deficit_lsu_mp))
     return TRUE;
-  return readrotation(file,"rotation",&grassland->rotation,swap);
+  return readrotation(file,"rotation",&grassland->rotation);
 } /* of 'fread_grassland' */

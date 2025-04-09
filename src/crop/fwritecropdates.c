@@ -14,28 +14,27 @@
 
 #include "lpj.h"
 
-static Bool writecropdate(FILE *file,const Cropdates *cropdates)
+static Bool writecropdate(Bstruct file,const Cropdates *cropdates)
 {
-  writestruct(file,NULL);
-  writeint(file,"fall_sdate20",cropdates->fall_sdate20);
-  writeint(file,"last_update_fall",cropdates->last_update_fall);
-  writeint(file,"spring_sdate20",cropdates->spring_sdate20);
-  writeint(file,"last_update_spring",cropdates->last_update_spring);
-  writeint(file,"vern_date20",cropdates->vern_date20);
-  writeint(file,"last_update_vern",cropdates->last_update_vern);
-  return writeendstruct(file);
+  bstruct_writestruct(file,NULL);
+  bstruct_writeint(file,"fall_sdate20",cropdates->fall_sdate20);
+  bstruct_writeint(file,"last_update_fall",cropdates->last_update_fall);
+  bstruct_writeint(file,"spring_sdate20",cropdates->spring_sdate20);
+  bstruct_writeint(file,"last_update_spring",cropdates->last_update_spring);
+  bstruct_writeint(file,"vern_date20",cropdates->vern_date20);
+  bstruct_writeint(file,"last_update_vern",cropdates->last_update_vern);
+  return bstruct_writeendstruct(file);
 }
 
-
-Bool fwritecropdates(FILE *file, /**< pointer to binary file */
+Bool fwritecropdates(Bstruct file, /**< pointer to binary file */
                      const char *name, /**< name of object */
                      const Cropdates *cropdates, /**< array of crop dates to write */
                      int ncft /**< number of crop dates */
                     )         /** \return TRUE on error */
 {
   int cft;
-  writearray(file,name,ncft);
+  bstruct_writearray(file,name,ncft);
   for(cft=0;cft<ncft;cft++)
     writecropdate(file,cropdates+cft);
-  return writeendarray(file);
+  return bstruct_writeendarray(file);
 } /* of 'fwritecropdates' */

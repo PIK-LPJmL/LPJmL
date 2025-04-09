@@ -14,15 +14,26 @@
 
 #include "lpj.h"
 
+
+Bool fwritetopheader(FILE *file,             /**< file pointer of binary file */
+                     const char *headername, /**< header string */
+                     int version             /**< header version */
+                    )                        /** \return TRUE on error */
+{
+  if(fwrite(headername,strlen(headername),1,file)!=1)
+    return TRUE;
+  if(fwrite(&version,sizeof(version),1,file)!=1)
+    return TRUE;
+  return FALSE;
+} /* of 'fwritetopheader' */
+
 Bool fwriteheader(FILE *file,             /**< file pointer of binary file */
                   const Header *header,   /**< file header */
                   const char *headername, /**< header string */
                   int version             /**< header version */
                  )                        /** \return TRUE on error */
 {
-  if(fwrite(headername,strlen(headername),1,file)!=1)
-    return TRUE;
-  if(fwrite(&version,sizeof(version),1,file)!=1)
+  if(fwritetopheader(file,headername,version))
     return TRUE;
   switch(version)
   {

@@ -14,6 +14,7 @@
 
 #include <stdio.h>
 #include "types.h"
+#include "bstruct.h"
 #include "swap.h"
 #include "numeric.h"
 

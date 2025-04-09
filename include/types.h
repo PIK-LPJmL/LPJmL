@@ -33,6 +33,8 @@
 #endif
 
 #define STRING_LEN 255 /* Maximum length of default strings  */
+#define READ_VERSION -1
+
 
 #ifdef _WIN32
 #ifndef isnan /* isnan is already defined in math.h of Microsoft Visual Studio 2015, but not in 2010 */
@@ -69,7 +71,7 @@ extern const size_t typesizes[];
 extern char *typenames[];
 extern char *fmt[N_FMT];
 
-typedef enum {LPJ_BYTE,LPJ_SHORT,LPJ_INT,LPJ_FLOAT,LPJ_DOUBLE,LPJ_BOOL,LPJ_USHORT,LPJ_ZERO,LPJ_STRING,LPJ_ARRAY,LPJ_STRUCT,LPJ_ENDSTRUCT,LPJ_ENDARRAY} Type;
+typedef enum {LPJ_BYTE,LPJ_SHORT,LPJ_INT,LPJ_FLOAT,LPJ_DOUBLE} Type;
 typedef enum {NO_ERR, ERR, VERB } Verbosity;
 
 typedef struct
@@ -186,46 +188,8 @@ extern double mrun(void);
 void mergeattrs(Attr **,int *,const Attr *, int,Bool);
 extern char *getversion(void);
 extern char *getsprintf(const char *,...);
-extern Bool writebool(FILE *,const char *name,Bool);
-extern Bool writebyte(FILE *,const char *name,Byte);
-extern Bool writebool(FILE *,const char *name,Bool);
-extern Bool writeint(FILE *,const char *name,int);
-extern Bool writeshort(FILE *,const char *name,short);
-extern Bool writeushort(FILE *,const char *name,unsigned short);
-extern Bool writeintarray(FILE *,const char *name,const int[],int);
-extern Bool writeshortarray(FILE *,const char *name,const short[],int);
-extern Bool writeushortarray(FILE *,const char *name,const unsigned short[],int);
-extern Bool writereal(FILE *,const char *name,Real);
-extern Bool writefloat(FILE *,const char *name,float);
-extern Bool writerealarray(FILE *,const char *name,const Real [],int);
-extern Bool writestring(FILE *,const char *name,const char *);
-extern Bool writearray(FILE *,const char *name,int);
-extern Bool writerealarray(FILE *,const char *name,const Real[],int);
-extern Bool writestruct(FILE *,const char *name);
-extern Bool writeendstruct(FILE *);
-extern Bool writeendarray(FILE *);
-extern Bool readarray(FILE *,const char *,int *,Bool);
-extern Bool readbool(FILE *,const char *,Bool *,Bool);
-extern Bool readbyte(FILE *,const char *,Byte *,Bool);
-extern Bool readint(FILE *,const char *,int *,Bool);
-extern Bool readintarray(FILE *,const char *,int *,int,Bool);
-extern Bool readshort(FILE *,const char *,short *,Bool);
-extern Bool readushort(FILE *,const char *,unsigned short *,Bool);
-extern Bool readfloat(FILE *,const char *,float *,Bool);
-extern Bool readreal(FILE *,const char *,Real *,Bool);
-extern Bool readstocks(FILE *,const char *,Stocks *,Bool);
-extern Bool readstocksarray(FILE *,const char *,Stocks [],int,Bool);
-extern Bool readstruct(FILE *,const char *,Bool);
-extern char *readstring(FILE *,const char *,Bool);
-extern Bool readendstruct(FILE *);
-extern Bool readendarray(FILE *);
-extern Bool readushortarray(FILE *,const char *,unsigned short[],int,Bool);
-extern Bool readshortarray(FILE *,const char *,short[],int,Bool);
-extern Bool readrealarray(FILE *,const char *,Real [],int,Bool);
-extern Real *readvarrealarray(FILE *,const char *,int *,Bool);
-extern Bool writestocks(FILE *,const char *,const Stocks *);
-extern Bool writestocksarray(FILE *,const char *,const Stocks [],int);
-extern Bool skipdata(FILE *,Byte,Bool);
+extern Bool fwritetopheader(FILE *, const char *,int);
+extern Bool freadtopheader(FILE *,Bool *,const char *,int *,Bool);
 #ifdef WITH_FPE
 extern void enablefpe(void);
 #endif

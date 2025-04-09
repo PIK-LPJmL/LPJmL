@@ -1,10 +1,10 @@
 /**************************************************************************************/
 /**                                                                                \n**/
-/**                f  r  e  a  d  o  u  t  p  u  t  d  a  t  a  .  c               \n**/
+/**                 f  r  e  a  d   p  o  o  l  .  c                               \n**/
 /**                                                                                \n**/
 /**     C implementation of LPJmL                                                  \n**/
 /**                                                                                \n**/
-/**     Function reads output data from restart file                               \n**/
+/**     Function reads pool variables into restart file                            \n**/
 /**                                                                                \n**/
 /** (C) Potsdam Institute for Climate Impact Research (PIK), see COPYRIGHT file    \n**/
 /** authors, and contributors see AUTHORS file                                     \n**/
@@ -16,12 +16,19 @@
 
 #include "lpj.h"
 
-Bool freadoutputdata(Bstruct file,     /**< pointer to restart file */
-                     const char *name, /**< name of object */
-                     Output *output,   /**< output data */
-                     Config *config    /**< LPJ configuration */
-                    )
+Bool freadpool(Bstruct file,     /**< pointer to restart file */
+               const char *name, /**< name oj object */
+               Pool *pool        /**< pointer to pool to read */
+              )                  /** \return TRUE on error */
 {
-  output->data=bstruct_readvarrealarray(file,name,&config->totalsize);
-  return (output->data==NULL);
-} /* of 'freadoutputdata' */
+  if(bstruct_readstruct(file,name))
+    return TRUE;
+  if(freadstocks(file,"slow",&pool->slow))
+    return TRUE;
+  if(freadstocks(file,"fast",&pool->fast))
+    return TRUE;
+  if(bstruct_readendstruct(file))
+    return TRUE;
+  return FALSE;
+} /* of 'freadpool' */
+

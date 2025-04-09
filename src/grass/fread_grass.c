@@ -15,32 +15,31 @@
 #include "lpj.h"
 #include "grass.h"
 
-static Bool freadgrassphys(FILE *file,const char *name,Grassphys *grass,Bool swap)
+static Bool freadgrassphys(Bstruct file,const char *name,Grassphys *grass)
 {
-  if(readstruct(file,name,swap))
+  if(bstruct_readstruct(file,name))
     return TRUE;
-  if(readstocks(file,"leaf",&grass->leaf,swap))
+  if(freadstocks(file,"leaf",&grass->leaf))
     return TRUE;
-  if(readstocks(file,"root",&grass->root,swap))
+  if(freadstocks(file,"root",&grass->root))
     return TRUE;
-  return readendstruct(file);
-}
+  return bstruct_readendstruct(file);
+} /* of 'freadgrassphys' */
 
-static Bool freadgrassphyspar(FILE *file,const char *name,Grassphyspar *grass,Bool swap)
+static Bool freadgrassphyspar(Bstruct file,const char *name,Grassphyspar *grass)
 {
-  if(readstruct(file,name,swap))
+  if(bstruct_readstruct(file,name))
     return TRUE;
-  if(readreal(file,"leaf",&grass->leaf,swap))
+  if(bstruct_readreal(file,"leaf",&grass->leaf))
     return TRUE;
-  if(readreal(file,"root",&grass->root,swap))
+  if(bstruct_readreal(file,"root",&grass->root))
     return TRUE;
-  return readendstruct(file);
-}
+  return bstruct_readendstruct(file);
+} /* of 'freadgrassphyspar' */
 
-Bool fread_grass(FILE *file, /**< pointer to binary file */
+Bool fread_grass(Bstruct file, /**< pointer to binary file */
                  Pft *pft,   /**< pointer to PFT data read */
-                 Bool UNUSED(separate_harvests),
-                 Bool swap   /**< byte order has to be swapped (TRUE/FALSE) */
+                 Bool UNUSED(separate_harvests)
                 )            /** \return TRUE on error */
 {
   Pftgrass *grass;
@@ -52,17 +51,17 @@ Bool fread_grass(FILE *file, /**< pointer to binary file */
     return TRUE;
   }
   pft->nlimit=0.0;
-  if(freadgrassphys(file,"turn",&grass->turn,swap))
+  if(freadgrassphys(file,"turn",&grass->turn))
     return TRUE;
-  if(freadgrassphys(file,"turn_litt",&grass->turn_litt,swap))
+  if(freadgrassphys(file,"turn_litt",&grass->turn_litt))
     return TRUE;
-  if(readreal(file,"max_leaf",&grass->max_leaf,swap))
+  if(bstruct_readreal(file,"max_leaf",&grass->max_leaf))
     return TRUE;
-  if(readreal(file,"excess_carbon",&grass->excess_carbon,swap))
+  if(bstruct_readreal(file,"excess_carbon",&grass->excess_carbon))
     return TRUE;
-  if(freadgrassphys(file,"ind",&grass->ind,swap))
+  if(freadgrassphys(file,"ind",&grass->ind))
     return TRUE;
-  if(freadgrassphyspar(file,"falloc",&grass->falloc,swap))
+  if(freadgrassphyspar(file,"falloc",&grass->falloc))
     return TRUE;
-  return readint(file,"growing_days",&grass->growing_days,swap);
+  return bstruct_readint(file,"growing_days",&grass->growing_days);
 } /* of 'fread_grass' */

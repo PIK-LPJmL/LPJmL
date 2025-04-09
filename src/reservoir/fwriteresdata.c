@@ -14,31 +14,31 @@
 
 #include "lpj.h"
 
-static Bool fwritehist(FILE *file,const char *name,Real hist[HIST_YEARS][NMONTH])
+static Bool fwritehist(Bstruct file,const char *name,Real hist[HIST_YEARS][NMONTH])
 {
   int i;
-  writearray(file,name,HIST_YEARS);
+  bstruct_writearray(file,name,HIST_YEARS);
   for(i=0;i<HIST_YEARS;i++)
-    writerealarray(file,NULL,hist[i],NMONTH);
-  return writeendarray(file);
+    bstruct_writerealarray(file,NULL,hist[i],NMONTH);
+  return bstruct_writeendarray(file);
 } /* of 'fwritehist' */
 
-Bool fwriteresdata(FILE *file,       /**< pointer to restart file */
+Bool fwriteresdata(Bstruct file,     /**< pointer to restart file */
                    const char *name, /**< name of object */
                    const Cell *cell  /**< pointer to cell */
-                   )                 /** \return TRUE on error */
+                  )                  /** \return TRUE on error */
 {
-  writestruct(file,name);
-  writereal(file,"reservoirfrac",cell->ml.reservoirfrac);
-  writestocks(file,"pool",&cell->ml.resdata->pool);
-  writereal(file,"dmass",cell->ml.resdata->dmass);
-  writereal(file,"k_rls",cell->ml.resdata->k_rls);
-  writereal(file,"target_release_year",cell->ml.resdata->target_release_year);
-  writefloat(file,"reservoir_capacity",cell->ml.resdata->reservoir.capacity); /* reservoir input is only loaded in initreservoir but capacity used in update_reservoir_annual called from freadresdata */
-  writerealarray(file,"dfout_irrigation_daily",cell->ml.resdata->dfout_irrigation_daily,NIRRIGDAYS);
-  writerealarray(file,"target_release_month",cell->ml.resdata->target_release_month,NMONTH);
+  bstruct_writestruct(file,name);
+  bstruct_writereal(file,"reservoirfrac",cell->ml.reservoirfrac);
+  fwritestocks(file,"pool",&cell->ml.resdata->pool);
+  bstruct_writereal(file,"dmass",cell->ml.resdata->dmass);
+  bstruct_writereal(file,"k_rls",cell->ml.resdata->k_rls);
+  bstruct_writereal(file,"target_release_year",cell->ml.resdata->target_release_year);
+  bstruct_writefloat(file,"reservoir_capacity",cell->ml.resdata->reservoir.capacity); /* reservoir input is only loaded in initreservoir but capacity used in update_reservoir_annual called from freadresdata */
+  bstruct_writerealarray(file,"dfout_irrigation_daily",cell->ml.resdata->dfout_irrigation_daily,NIRRIGDAYS);
+  bstruct_writerealarray(file,"target_release_month",cell->ml.resdata->target_release_month,NMONTH);
   fwritehist(file,"demand_hist",cell->ml.resdata->demand_hist);
   fwritehist(file,"inflow_hist",cell->ml.resdata->inflow_hist);
   fwritehist(file,"level_hist",cell->ml.resdata->level_hist);
-  return writeendstruct(file);
+  return bstruct_writeendstruct(file);
 } /* of 'fwriteresdata' */

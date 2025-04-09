@@ -16,89 +16,81 @@
 
 #include "lpj.h"
 
-static Bool fwritepool(FILE *file,const char *name,const Pool *pool)
-{
-  writestruct(file,name);
-  writestocks(file,"slow",&pool->slow);
-  writestocks(file,"fast",&pool->fast);
-  return writeendstruct(file);
-} /* of 'fwritepool' */
-
-static Bool fwritepoolpararray(FILE *file,const char *name,const Poolpar *pool,int size)
+static Bool fwritepoolpararray(Bstruct file,const char *name,const Poolpar *pool,int size)
 {
   int i;
-  writearray(file,name,size);
+  bstruct_writearray(file,name,size);
   for(i=0;i<size;i++)
   {
-    writestruct(file,NULL);
-    writereal(file,"slow",pool[i].slow);
-    writereal(file,"fast",pool[i].fast);
-    writeendstruct(file);
+    bstruct_writestruct(file,NULL);
+    bstruct_writereal(file,"slow",pool[i].slow);
+    bstruct_writereal(file,"fast",pool[i].fast);
+    bstruct_writeendstruct(file);
   }
-  return writeendarray(file);
+  return bstruct_writeendarray(file);
 } /* of 'fwritepoolpararray' */
 
-Bool fwritesoil(FILE *file,       /**< pointer to restart file */
+Bool fwritesoil(Bstruct file,     /**< pointer to restart file */
                 const char *name, /**< name of object */
                 const Soil *soil, /**< soil data to be written */
                 int ntotpft       /**< total number of PFTs */
                )                  /** \return TRUE on error */
 {
   int l;
-  writestruct(file,name);
-  writearray(file,"pool",LASTLAYER);
+  bstruct_writestruct(file,name);
+  bstruct_writearray(file,"pool",LASTLAYER);
   forrootsoillayer(l)
   {
     fwritepool(file,NULL,soil->pool+l);
   }
-  writeendarray(file);
-  writearray(file,"c_shift",LASTLAYER);
+  bstruct_writeendarray(file);
+  bstruct_writearray(file,"c_shift",LASTLAYER);
   forrootsoillayer(l)
   {
     fwritepoolpararray(file,NULL,soil->c_shift[l],ntotpft);
   }
-  writeendarray(file);
+  bstruct_writeendarray(file);
   if(fwritelitter(file,"litter",&soil->litter))
     return TRUE;
-  writerealarray(file,"NO3",soil->NO3,LASTLAYER);
-  writerealarray(file,"NH4",soil->NH4,LASTLAYER);
-  writerealarray(file,"wsat",soil->wsat, NSOILLAYER);
-  writerealarray(file,"wpwp",soil->wpwp, NSOILLAYER);
-  writerealarray(file,"wfc",soil->wfc, NSOILLAYER);
-  writerealarray(file,"whc",soil->whc, NSOILLAYER);
-  writerealarray(file,"whcs",soil->whcs, NSOILLAYER);
-  writerealarray(file,"wpwwps",soil->wpwps, NSOILLAYER);
-  writerealarray(file,"wsats",soil->wsats, NSOILLAYER);
-  writerealarray(file,"beta_soil",soil->beta_soil, NSOILLAYER);
-  writerealarray(file,"bulkdens",soil->bulkdens, NSOILLAYER);
-  writerealarray(file,"k_dry",soil->k_dry, NSOILLAYER);
-  writerealarray(file,"Ks",soil->Ks, NSOILLAYER);
-  writerealarray(file,"df_tillage",soil->df_tillage, NTILLLAYER);
-  writerealarray(file,"w",soil->w,NSOILLAYER);
-  writereal(file,"w_evap",soil->w_evap);
-  writerealarray(file,"w_fw",soil->w_fw,NSOILLAYER);
-  writereal(file,"snowpack",soil->snowpack);
-  writereal(file,"snowheight",soil->snowheight);
-  writereal(file,"snowfraction",soil->snowfraction);
-  writerealarray(file,"temp",soil->temp,NSOILLAYER+1);
-  writerealarray(file,"enth",soil->enth,NHEATGRIDP);
-  writerealarray(file,"wi_abs_enth_adj",soil->wi_abs_enth_adj,NSOILLAYER);
-  writerealarray(file,"soil_abs_enth_adj",soil->sol_abs_enth_adj,NSOILLAYER);
-  writerealarray(file,"ice_depth",soil->ice_depth,NSOILLAYER);
-  writerealarray(file,"ice_fw",soil->ice_fw,NSOILLAYER);
-  writerealarray(file,"freeze_depth",soil->freeze_depth,NSOILLAYER);
-  writerealarray(file,"ice_pwp",soil->ice_pwp,NSOILLAYER);
-  writerealarray(file,"perc_energy",soil->perc_energy,NSOILLAYER);
-  writeshortarray(file,"state",soil->state,NSOILLAYER);
-  writereal(file,"mean_maxthaw",soil->mean_maxthaw);
-  writereal(file,"alag",soil->alag);
-  writereal(file,"amp",soil->amp);
-  writereal(file,"rw_buffer",soil->rw_buffer);
+  bstruct_writerealarray(file,"NO3",soil->NO3,LASTLAYER);
+  bstruct_writerealarray(file,"NH4",soil->NH4,LASTLAYER);
+  bstruct_writerealarray(file,"wsat",soil->wsat, NSOILLAYER);
+  bstruct_writerealarray(file,"wpwp",soil->wpwp, NSOILLAYER);
+  bstruct_writerealarray(file,"wfc",soil->wfc, NSOILLAYER);
+  bstruct_writerealarray(file,"whc",soil->whc, NSOILLAYER);
+  bstruct_writerealarray(file,"whcs",soil->whcs, NSOILLAYER);
+  bstruct_writerealarray(file,"wpwwps",soil->wpwps, NSOILLAYER);
+  bstruct_writerealarray(file,"wsats",soil->wsats, NSOILLAYER);
+  bstruct_writerealarray(file,"beta_soil",soil->beta_soil, NSOILLAYER);
+  bstruct_writerealarray(file,"bulkdens",soil->bulkdens, NSOILLAYER);
+  bstruct_writerealarray(file,"k_dry",soil->k_dry, NSOILLAYER);
+  bstruct_writerealarray(file,"Ks",soil->Ks, NSOILLAYER);
+  bstruct_writerealarray(file,"df_tillage",soil->df_tillage, NTILLLAYER);
+  bstruct_writerealarray(file,"w",soil->w,NSOILLAYER);
+  bstruct_writereal(file,"w_evap",soil->w_evap);
+  bstruct_writerealarray(file,"w_fw",soil->w_fw,NSOILLAYER);
+  bstruct_writereal(file,"snowpack",soil->snowpack);
+  bstruct_writereal(file,"snowheight",soil->snowheight);
+  bstruct_writereal(file,"snowfraction",soil->snowfraction);
+  bstruct_writerealarray(file,"temp",soil->temp,NSOILLAYER+1);
+  bstruct_writerealarray(file,"enth",soil->enth,NHEATGRIDP);
+  bstruct_writerealarray(file,"wi_abs_enth_adj",soil->wi_abs_enth_adj,NSOILLAYER);
+  bstruct_writerealarray(file,"soil_abs_enth_adj",soil->sol_abs_enth_adj,NSOILLAYER);
+  bstruct_writerealarray(file,"ice_depth",soil->ice_depth,NSOILLAYER);
+  bstruct_writerealarray(file,"ice_fw",soil->ice_fw,NSOILLAYER);
+  bstruct_writerealarray(file,"freeze_depth",soil->freeze_depth,NSOILLAYER);
+  bstruct_writerealarray(file,"ice_pwp",soil->ice_pwp,NSOILLAYER);
+  bstruct_writerealarray(file,"perc_energy",soil->perc_energy,NSOILLAYER);
+  bstruct_writeshortarray(file,"state",soil->state,NSOILLAYER);
+  bstruct_writereal(file,"mean_maxthaw",soil->mean_maxthaw);
+  bstruct_writereal(file,"alag",soil->alag);
+  bstruct_writereal(file,"amp",soil->amp);
+  bstruct_writereal(file,"rw_buffer",soil->rw_buffer);
   fwritepoolpararray(file,"k_mean",soil->k_mean,LASTLAYER);
   fwritepoolpararray(file,"decay_rate",soil->decay_rate,LASTLAYER);
-  writestocks(file,"decomp_litter_mean",&soil->decomp_litter_mean);
-  writestocksarray(file,"decomp_litter_pft",soil->decomp_litter_pft,ntotpft);
-  writeint(file,"count",soil->count);
-  writereal(file,"meanw1",soil->meanw1);
-  return writeendstruct(file);
+  fwritestocks(file,"decomp_litter_mean",&soil->decomp_litter_mean);
+  fwritestocksarray(file,"decomp_litter_pft",soil->decomp_litter_pft,ntotpft);
+  bstruct_writeint(file,"count",soil->count);
+  bstruct_writereal(file,"meanw1",soil->meanw1);
+  return bstruct_writeendstruct(file);
 } /* of 'fwritesoil' */

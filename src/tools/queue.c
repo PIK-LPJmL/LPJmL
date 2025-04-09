@@ -15,6 +15,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include "types.h"
+#include "bstruct.h"
 #include "swap.h"
 #include "errmsg.h"
 #include "queue.h"
@@ -52,17 +53,17 @@ Queue newqueue(int size /**< size of queue */
   return queue;
 } /* of 'newqueue' */
 
-Bool fwritequeue(FILE *file,      /**< pointer to restart file */
+Bool fwritequeue(Bstruct file,    /**< pointer to restart file */
                 const char *name, /**< name of object */
                 const Queue queue /**< pointer to queue written */
                )                  /** \return TRUE on error */
 {
   int i;
-  writearray(file,name,queue->size);
+  bstruct_writearray(file,name,queue->size);
   for(i=0;i<queue->size;i++)
-    if(writereal(file,NULL,queue->data[(queue->first+i) % queue->size]))
+    if(bstruct_writereal(file,NULL,queue->data[(queue->first+i) % queue->size]))
       return TRUE;
-  return writeendarray(file);
+  return bstruct_writeendarray(file);
 } /* of 'fwritequeue' */
 
 void fprintqueue(FILE *file,       /**< pointer to text file */
@@ -74,10 +75,9 @@ void fprintqueue(FILE *file,       /**< pointer to text file */
     fprintf(file," %g",queue->data[(queue->first+i) % queue->size]);
 } /* of 'fprintqueue' */
 
-Queue freadqueue(FILE *file,      /**< pointer to restart file */
-                const char *name, /**< name of object */
-                Bool swap         /**< byte order has to be swapped */
-               )                  /** \return pointer to queue read or NULL */
+Queue freadqueue(Bstruct file,    /**< pointer to restart file */
+                 const char *name /**< name of object */
+                )                 /** \return pointer to queue read or NULL */
 {
   Queue queue;
   queue=new(struct queue);
@@ -86,7 +86,7 @@ Queue freadqueue(FILE *file,      /**< pointer to restart file */
     printallocerr("queue");
     return NULL;
   }
-  queue->data=readvarrealarray(file,name,&queue->size,swap);
+  queue->data=bstruct_readvarrealarray(file,name,&queue->size);
   if(queue->data==NULL)
   {
     free(queue);

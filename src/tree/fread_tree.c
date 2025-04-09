@@ -17,51 +17,50 @@
 #include "lpj.h"
 #include "tree.h"
 
-static Bool freadtreephys2(FILE *file,const char *name,Treephys2 *tree,Bool swap)
+static Bool freadtreephys2(Bstruct file,const char *name,Treephys2 *tree)
 {
-  if(readstruct(file,name,swap))
+  if(bstruct_readstruct(file,name))
     return TRUE;
-  if(readstocks(file,"leaf",&tree->leaf,swap))
+  if(freadstocks(file,"leaf",&tree->leaf))
     return TRUE;
-  if(readstocks(file,"sapwood",&tree->sapwood,swap))
+  if(freadstocks(file,"sapwood",&tree->sapwood))
     return TRUE;
-  if(readstocks(file,"heartwood",&tree->heartwood,swap))
+  if(freadstocks(file,"heartwood",&tree->heartwood))
     return TRUE;
-  if(readstocks(file,"root",&tree->root,swap))
+  if(freadstocks(file,"root",&tree->root))
     return TRUE;
-  if(readstocks(file,"debt",&tree->debt,swap))
+  if(freadstocks(file,"debt",&tree->debt))
     return TRUE;
-  return readendstruct(file);
-}
+  return bstruct_readendstruct(file);
+} /* of 'freadtreephys2' */
 
-static Bool freadtreeturn(FILE *file,const char *name,Treeturn *tree,Bool swap)
+static Bool freadtreeturn(Bstruct file,const char *name,Treeturn *tree)
 {
-  if(readstruct(file,name,swap))
+  if(bstruct_readstruct(file,name))
     return TRUE;
-  if(readstocks(file,"leaf",&tree->leaf,swap))
+  if(freadstocks(file,"leaf",&tree->leaf))
     return TRUE;
-  if(readstocks(file,"root",&tree->root,swap))
+  if(freadstocks(file,"root",&tree->root))
     return TRUE;
-  return readendstruct(file);
-}
+  return bstruct_readendstruct(file);
+} /* of 'freadtreeturn' */
 
-static Bool freadtreephyspar(FILE *file,const char *name,Treephyspar *tree,Bool swap)
+static Bool freadtreephyspar(Bstruct file,const char *name,Treephyspar *tree)
 {
-  if(readstruct(file,name,swap))
+  if(bstruct_readstruct(file,name))
     return TRUE;
-  if(readreal(file,"leaf",&tree->leaf,swap))
+  if(bstruct_readreal(file,"leaf",&tree->leaf))
     return TRUE;
-  if(readreal(file,"sapwood",&tree->sapwood,swap))
+  if(bstruct_readreal(file,"sapwood",&tree->sapwood))
     return TRUE;
-  if(readreal(file,"root",&tree->root,swap))
+  if(bstruct_readreal(file,"root",&tree->root))
     return TRUE;
-  return readendstruct(file);
-}
+  return bstruct_readendstruct(file);
+} /* of 'freadtreephyspar' */
 
-Bool fread_tree(FILE *file, /**< pointer to binary file */
+Bool fread_tree(Bstruct file, /**< pointer to binary file */
                 Pft *pft,   /**< pointer to PFT read */
-                Bool UNUSED(separate_harvests),
-                Bool swap   /**< Byte order has to be changed (TRUE/FALSE) */
+                Bool UNUSED(separate_harvests)
                )            /** \return TRUE on error */
 {
   Pfttree *tree;
@@ -73,42 +72,42 @@ Bool fread_tree(FILE *file, /**< pointer to binary file */
     return TRUE;
   }
   pft->nlimit=0.0;
-  if(readreal(file,"height",&tree->height,swap))
+  if(bstruct_readreal(file,"height",&tree->height))
     return TRUE;
-  if(readreal(file,"crownarea",&tree->crownarea,swap))
+  if(bstruct_readreal(file,"crownarea",&tree->crownarea))
     return TRUE;
-  if(readreal(file,"barkthickness",&tree->barkthickness,swap))
+  if(bstruct_readreal(file,"barkthickness",&tree->barkthickness))
     return TRUE;
-  if(readreal(file,"gddtw",&tree->gddtw,swap))
+  if(bstruct_readreal(file,"gddtw",&tree->gddtw))
     return TRUE;
-  if(readreal(file,"aphen_raingreen",&tree->aphen_raingreen,swap))
+  if(bstruct_readreal(file,"aphen_raingreen",&tree->aphen_raingreen))
     return TRUE;
-  if(readbool(file,"isphen",&tree->isphen,swap))
+  if(bstruct_readbool(file,"isphen",&tree->isphen))
     return TRUE;
-  if(freadtreeturn(file,"turn",&tree->turn,swap))
+  if(freadtreeturn(file,"turn",&tree->turn))
     return TRUE;
-  if(freadtreeturn(file,"turn_litt",&tree->turn_litt,swap))
+  if(freadtreeturn(file,"turn_litt",&tree->turn_litt))
     return TRUE;
-  if(readreal(file,"turn_nbminc",&tree->turn_nbminc,swap))
+  if(bstruct_readreal(file,"turn_nbminc",&tree->turn_nbminc))
     return TRUE;
-  if(freadtreephys2(file,"ind",&tree->ind,swap))
+  if(freadtreephys2(file,"ind",&tree->ind))
     return TRUE;
   if(pft->par->cultivation_type==ANNUAL_TREE)
   {
-    if(readstocks(file,"fruit",&tree->fruit,swap))
+    if(freadstocks(file,"fruit",&tree->fruit))
       return TRUE;
-    if(readint(file,"boll_age",&tree->boll_age,swap))
+    if(bstruct_readint(file,"boll_age",&tree->boll_age))
       return TRUE;
   }
   else
     tree->fruit.carbon=tree->fruit.nitrogen=0;
-  if(readreal(file,"excess_carbon",&tree->excess_carbon,swap))
+  if(bstruct_readreal(file,"excess_carbon",&tree->excess_carbon))
     return TRUE;
-  if(readreal(file,"nfertilizer",&tree->nfertilizer,swap))
+  if(bstruct_readreal(file,"nfertilizer",&tree->nfertilizer))
     return TRUE;
-  if(readreal(file,"nmanure",&tree->nmanure,swap))
+  if(bstruct_readreal(file,"nmanure",&tree->nmanure))
     return TRUE;
-  if(readint(file,"nfert_event",&tree->nfert_event,swap))
+  if(bstruct_readint(file,"nfert_event",&tree->nfert_event))
     return TRUE;
-  return freadtreephyspar(file,"falloc",&tree->falloc,swap);
+  return freadtreephyspar(file,"falloc",&tree->falloc);
 } /* of 'fread_tree' */

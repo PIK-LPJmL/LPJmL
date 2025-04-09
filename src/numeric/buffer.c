@@ -17,7 +17,7 @@
 #include <string.h>
 #include <errno.h>
 #include "types.h"
-#include "swap.h"
+#include "bstruct.h"   /* Definition of datatype Real  */
 #include "errmsg.h"
 #include "buffer.h"
 
@@ -69,29 +69,28 @@ void updatebuffer(Buffer buffer, /**< pointer to buffer */
   }
 } /* of 'updatebuffer' */
 
-Bool fwritebuffer(FILE *file,         /**< file pointer */
+Bool fwritebuffer(Bstruct file,       /**< file pointer */
                   const char *name,   /**< name of object */
                   const Buffer buffer /**< pointer to buffer */
                  )                    /** \return TRUE on error */
 {
-  writestruct(file,name);
-  writeint(file,"size",buffer->size);
-  writeint(file,"index",buffer->index);
-  writereal(file,"sum",buffer->sum);
-  writerealarray(file,"data",buffer->data,buffer->n);
-  return writeendstruct(file);
+  bstruct_writestruct(file,name);
+  bstruct_writeint(file,"size",buffer->size);
+  bstruct_writeint(file,"index",buffer->index);
+  bstruct_writereal(file,"sum",buffer->sum);
+  bstruct_writerealarray(file,"data",buffer->data,buffer->n);
+  return bstruct_writeendstruct(file);
 } /* of 'fwritebuffer' */
 
-Buffer freadbuffer(FILE *file,       /**< file pointer */
-                   const char *name, /**< name of object */
-                   Bool swap         /**< byte order has to be changed */
-                  )                  /** \return allocated buffer or NULL */
+Buffer freadbuffer(Bstruct file,    /**< file pointer */
+                   const char *name /**< name of object */
+                  )                 /** \return allocated buffer or NULL */
 {
   int i,size;
   Buffer buffer;
-  if(readstruct(file,name,swap))
+  if(bstruct_readstruct(file,name))
     return NULL;
-  if(readint(file,"size",&size,swap))
+  if(bstruct_readint(file,"size",&size))
     return NULL;
   buffer=new(struct buffer);
   if(buffer==NULL)
@@ -107,19 +106,19 @@ Buffer freadbuffer(FILE *file,       /**< file pointer */
     free(buffer);
     return NULL;
   }
-  if(readint(file,"index",&buffer->index,swap))
+  if(bstruct_readint(file,"index",&buffer->index))
   {
     free(buffer->data);
     free(buffer);
     return NULL;
   }
-  if(readreal(file,"sum",&buffer->sum,swap))
+  if(bstruct_readreal(file,"sum",&buffer->sum))
   {
     free(buffer->data);
     free(buffer);
     return NULL;
   }
-  if(readarray(file,"data",&buffer->n,swap))
+  if(bstruct_readarray(file,"data",&buffer->n))
   {
     free(buffer->data);
     free(buffer);
@@ -134,20 +133,20 @@ Buffer freadbuffer(FILE *file,       /**< file pointer */
     return NULL;
   }
   for(i=0;i<buffer->n;i++)
-    if(readreal(file,NULL,buffer->data+i,swap))
+    if(bstruct_readreal(file,NULL,buffer->data+i))
     {
       free(buffer->data);
       free(buffer);
       return NULL;
     }
-  if(readendarray(file))
+  if(bstruct_readendarray(file))
   {
     /* read error occured */
     free(buffer->data);
     free(buffer);
     return NULL;
   }
-  if(readendstruct(file))
+  if(bstruct_readendstruct(file))
   {
     /* read error occured */
     free(buffer->data);
