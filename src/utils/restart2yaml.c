@@ -189,20 +189,20 @@ int main(int argc,char **argv)
         }
         if(iskey)
         {
-        if(first)
-          first=FALSE;
-        else
-          repeatch(' ',2*(level-keylevel));
-        if(name[0]=='\0')
-        {
-          fputs("- ",stdout);
-          first=TRUE;
-        }
-        else
-        {
-          printname(name);
-          fputc('\n',stdout);
-        }
+          if(first)
+            first=FALSE;
+          else
+            repeatch(' ',2*(level-keylevel));
+          if(name[0]=='\0')
+          {
+            fputs("- ",stdout);
+            first=TRUE;
+          }
+          else
+          {
+            printname(name);
+            fputc('\n',stdout);
+          }
         }
         level++;
         break;
