@@ -34,7 +34,7 @@ void printflags(const char *progname /**< program name */
 #elif !defined(SYCL_LANGUAGE_VERSION) && defined (__INTEL_LLVM_COMPILER)
   printf( __VERSION__);
 #elif defined( __clang__)
-  printf(__clang_version__);
+  printf("Clang version " __clang_version__);
 #elif defined( __GNUC__)
   printf("GNU C version %d.%d",__GNUC__,__GNUC_MINOR__);
 #elif defined( __xlc__)
