@@ -227,6 +227,7 @@ Bstruct bstruct_create(const char *filename)
     printfcreateerr(filename);
     free(bstruct->file);
     free(bstruct);
+    return NULL;
   }
   fwritetopheader(bstruct->file,BSTRUCT_HEADER,BSTRUCT_VERSION);
   return bstruct;
@@ -248,8 +249,9 @@ Bstruct bstruct_open(const char *filename,Bool isout)
   if(bstruct->file==NULL)
   {
     if(isout)
-      printfcreateerr(filename);
+      printfopenerr(filename);
     free(bstruct);
+    return NULL;
   }
   version=READ_VERSION;
   if(freadtopheader(bstruct->file,&bstruct->swap,BSTRUCT_HEADER,&version,isout))
@@ -289,6 +291,7 @@ Bstruct bstruct_append(const char *filename,Bool isout)
     if(isout)
       printfopenerr(filename);
     free(bstruct);
+    return NULL;
   }
   fseek(bstruct->file,0,SEEK_END); /* seek to end of file for append */
   return bstruct;
