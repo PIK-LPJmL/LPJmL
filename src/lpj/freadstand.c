@@ -66,6 +66,7 @@ Stand *freadstand(Bstruct file, /**< File pointer to restart file */
   }
   if(bstruct_readreal(file,"frac",&stand->frac))
   {
+    fprintf(stderr,"ERROR254: Cannot read stand fraction for %s stand.\n",stand->type->name);
     free(stand);
     return NULL;
   }
@@ -79,6 +80,7 @@ Stand *freadstand(Bstruct file, /**< File pointer to restart file */
   }
   if(bstruct_readrealarray(file,"frac_g",stand->frac_g,NSOILLAYER))
   {
+    fprintf(stderr,"ERROR254: Cannot read frac_g array for %s stand.\n",stand->type->name);
     freestand(stand);
     return NULL;
   }

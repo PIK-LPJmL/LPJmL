@@ -4,7 +4,7 @@
 /**                                                                                \n**/
 /**     C implementation of LPJmL                                                  \n**/
 /**                                                                                \n**/
-/**     Functions writes restart file.                                             \n**/
+/**     Functions writes restart/checkpoint file.                                  \n**/
 /**                                                                                \n**/
 /** (C) Potsdam Institute for Climate Impact Research (PIK), see COPYRIGHT file    \n**/
 /** authors, and contributors see AUTHORS file                                     \n**/
@@ -23,7 +23,7 @@ Bool fwriterestart(const Cell grid[],   /**< cell array               */
                    int ncft,            /**< number of crop PFTs      */
                    int year,            /**< year                     */
                    const char *filename,/**< filename of restart file */
-                   Bool ischeckpoint,
+                   Bool ischeckpoint,   /**< file is checkpoint file  */
                    const Config *config /**< LPJ configuration        */
                   )                     /** \return TRUE on error     */
 {
@@ -38,7 +38,7 @@ Bool fwriterestart(const Cell grid[],   /**< cell array               */
   time_t t;
   int p;
   if(isroot(*config))
-    /* create file */
+    /* create restart file */
     file=bstruct_create(filename);
   else
   {
@@ -69,6 +69,7 @@ Bool fwriterestart(const Cell grid[],   /**< cell array               */
   }
   if(isroot(*config))
   {
+    /* write header in restart file */
     bstruct_writestruct(file,"header");
     bstruct_writestring(file,"version",getversion());
     bstruct_writestring(file,"sim_name",config->sim_name);

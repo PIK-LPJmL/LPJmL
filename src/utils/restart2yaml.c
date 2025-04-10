@@ -92,7 +92,8 @@ int main(int argc,char **argv)
       break;
   if(argc<iarg+1)
   {
-    fprintf(stderr,USAGE,argv[0]);
+    fprintf(stderr,"Missing argument(s).\n"
+            USAGE,argv[0]);
     return EXIT_FAILURE;
   }
   file=fopen(argv[iarg],"rb");
@@ -183,10 +184,10 @@ int main(int argc,char **argv)
           iskey=TRUE;
           keylevel=level;
         }
-        if(token==BSTRUCT_ARRAY || token==BSTRUCT_ARRAY1)
-        {
-          fseek(file,(token==BSTRUCT_ARRAY) ? sizeof(int) : 1,SEEK_CUR);
-        }
+        if(token==BSTRUCT_ARRAY)
+          fseek(file, sizeof(int),SEEK_CUR);
+        else if(token==BSTRUCT_ARRAY1)
+          fseek(file,1,SEEK_CUR);
         if(iskey)
         {
           if(first)
@@ -242,6 +243,7 @@ int main(int argc,char **argv)
           if(stop)
             notend=FALSE;
           iskey=TRUE;
+          keylevel=level;
         }
         if(!iskey)
           break;
@@ -254,6 +256,8 @@ int main(int argc,char **argv)
         else
           printname(name);
         printf("0\n");
+        if(key!=NULL && !strcmp(name,key))
+          iskey=FALSE;
         break;
       case BSTRUCT_BYTE:
         readname2(file,name);
@@ -262,6 +266,7 @@ int main(int argc,char **argv)
           if(stop)
             notend=FALSE;
           iskey=TRUE;
+          keylevel=level;
         }
         fread(&b,1,1,file);
         if(!iskey)
@@ -275,6 +280,8 @@ int main(int argc,char **argv)
         else
           printname(name);
         printf("%d\n",b);
+        if(key!=NULL && !strcmp(name,key))
+          iskey=FALSE;
         break;
       case BSTRUCT_BOOL:
         readname2(file,name);
@@ -284,6 +291,7 @@ int main(int argc,char **argv)
           if(stop)
             notend=FALSE;
           iskey=TRUE;
+          keylevel=level;
         }
         if(!iskey)
           break;
@@ -296,6 +304,8 @@ int main(int argc,char **argv)
         else
           printname(name);
         printf("%s\n",bool2str(b));
+        if(key!=NULL && !strcmp(name,key))
+          iskey=FALSE;
         break;
       case BSTRUCT_SHORT:
         readname2(file,name);
@@ -305,6 +315,7 @@ int main(int argc,char **argv)
           if(stop)
             notend=FALSE;
           iskey=TRUE;
+          keylevel=level;
         }
         if(!iskey)
           break;
@@ -317,6 +328,8 @@ int main(int argc,char **argv)
         else
           printname(name);
         printf("%d\n",s);
+        if(key!=NULL && !strcmp(name,key))
+          iskey=FALSE;
         break;
       case BSTRUCT_USHORT:
         readname2(file,name);
@@ -326,6 +339,7 @@ int main(int argc,char **argv)
           if(stop)
             notend=FALSE;
           iskey=TRUE;
+          keylevel=level;
         }
         if(!iskey)
           break;
@@ -338,6 +352,8 @@ int main(int argc,char **argv)
         else
           printname(name);
         printf("%d\n",us);
+        if(key!=NULL && !strcmp(name,key))
+          iskey=FALSE;
         break;
       case BSTRUCT_INT:
         readname2(file,name);
@@ -346,6 +362,7 @@ int main(int argc,char **argv)
         {
           if(stop)
             notend=FALSE;
+          keylevel=level;
           iskey=TRUE;
         }
         if(!iskey)
@@ -359,6 +376,8 @@ int main(int argc,char **argv)
         else
           printname(name);
         printf("%d\n",i);
+        if(key!=NULL && !strcmp(name,key))
+          iskey=FALSE;
         break;
       case BSTRUCT_FLOAT:
         readname2(file,name);
@@ -367,6 +386,7 @@ int main(int argc,char **argv)
         {
           if(stop)
             notend=FALSE;
+          keylevel=level;
           iskey=TRUE;
         }
         if(!iskey)
@@ -380,6 +400,8 @@ int main(int argc,char **argv)
         else
           printname(name);
         printf("%g\n",f);
+        if(key!=NULL && !strcmp(name,key))
+          iskey=FALSE;
         break;
       case BSTRUCT_DOUBLE:
         readname2(file,name);
@@ -389,6 +411,7 @@ int main(int argc,char **argv)
           if(stop)
             notend=FALSE;
           iskey=TRUE;
+          keylevel=level;
         }
         if(!iskey)
           break;
@@ -401,6 +424,8 @@ int main(int argc,char **argv)
         else
           printname(name);
         printf("%g\n",d);
+        if(key!=NULL && !strcmp(name,key))
+          iskey=FALSE;
         break;
       case BSTRUCT_STRING:
         readname2(file,name);
@@ -426,19 +451,23 @@ int main(int argc,char **argv)
           if(stop)
             notend=FALSE;
           iskey=TRUE;
+          keylevel=level;
         }
-        if(!iskey)
-          break;
-        if(first)
-          first=FALSE;
-        else
-          repeatch(' ',2*(level-keylevel));
-        if(name[0]=='\0')
-          fputs("- ",stdout);
-        else
-          printname(name);
-        printf("\"%s\"\n",string);
+        if(iskey)
+        {
+          if(first)
+            first=FALSE;
+          else
+            repeatch(' ',2*(level-keylevel));
+          if(name[0]=='\0')
+            fputs("- ",stdout);
+          else
+            printname(name);
+          printf("\"%s\"\n",string);
+        }
         free(string);
+        if(key!=NULL && !strcmp(name,key))
+          iskey=FALSE;
         break;
       default:
         fprintf(stderr,"Invalid token %d in '%s'.\n",token,argv[iarg]);

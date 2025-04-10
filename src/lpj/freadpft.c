@@ -17,6 +17,7 @@
 #include "lpj.h"
 
 #define readreal2(file,key,var) if(bstruct_readreal(file,key,var)) { fprintf(stderr,"ERROR254: Cannot read %s for PFT '%s'.\n",key,pft->par->name); return TRUE;}
+#define readint2(file,key,var) if(bstruct_readint(file,key,var)) { fprintf(stderr,"ERROR254: Cannot read %s for PFT '%s'.\n",key,pft->par->name); return TRUE;}
 
 Bool freadpft(Bstruct file,          /**< pointer to restart file */
               Stand *stand,          /**< Stand pointer */
@@ -63,7 +64,10 @@ Bool freadpft(Bstruct file,          /**< pointer to restart file */
     return TRUE;
   }
   if(freadstocks(file,"bm_inc",&pft->bm_inc))
+  {
+    fprintf(stderr,"ERROR254: Cannot read bm_inc for PFT '%s'.\n",pft->par->name);
     return TRUE;
+  }
   readreal2(file,"nind",&pft->nind);
   readreal2(file,"gdd",&pft->gdd);
   readreal2(file,"fpc",&pft->fpc);
@@ -71,9 +75,11 @@ Bool freadpft(Bstruct file,          /**< pointer to restart file */
   readreal2(file,"fapae",&pft->fapar);
   readreal2(file,"nleaf",&pft->nleaf);
   if(freadstocks(file,"establish",&pft->establish))
+  {
+    fprintf(stderr,"ERROR254: Cannot read establish for PFT '%s'.\n",pft->par->name);
     return TRUE;
-  if(bstruct_readint(file,"litter",&pft->litter))
-    return TRUE;
+  }
+  readint2(file,"litter_id",&pft->litter);
   pft->vmax=0;
   pft->npp_bnf=0;
   return bstruct_readendstruct(file);

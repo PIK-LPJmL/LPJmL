@@ -174,7 +174,7 @@ static Bool printgrid(Config *config, /* Pointer to LPJ configuration */
     if(freadcell(file_restart,&grid,npft,ncft,
                  config->soilpar+soil_id,standtype,NSTANDTYPES,config))
     {
-      fprintf(stderr,"WARNING008: Unexpected end of file in '%s', number of gridcells truncated to %d.\n",
+      fprintf(stderr,"ERRROR190: Cannot read cell data from '%s', number of gridcells truncated to %d.\n",
               (config->ischeckpoint) ? config->checkpoint_restart_filename : config->write_restart_filename,i);
       config->ngridcell=i;
       break;

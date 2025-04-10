@@ -41,7 +41,7 @@ Bool freadpoolpararray(Bstruct file,const char *name,Poolpar *pool,int size)
       return TRUE;
   }
   return bstruct_readendarray(file);
-} /* of 'freadpoolopararray' */
+} /* of 'freadpoolpararray' */
 
 Bool freadsoil(Bstruct file,           /**< pointer to restart file */
                const char *name,       /**< name of object */

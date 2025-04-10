@@ -69,7 +69,7 @@ void updatebuffer(Buffer buffer, /**< pointer to buffer */
   }
 } /* of 'updatebuffer' */
 
-Bool fwritebuffer(Bstruct file,       /**< file pointer */
+Bool fwritebuffer(Bstruct file,       /**< pointer to restart file */
                   const char *name,   /**< name of object */
                   const Buffer buffer /**< pointer to buffer */
                  )                    /** \return TRUE on error */
@@ -82,7 +82,7 @@ Bool fwritebuffer(Bstruct file,       /**< file pointer */
   return bstruct_writeendstruct(file);
 } /* of 'fwritebuffer' */
 
-Buffer freadbuffer(Bstruct file,    /**< file pointer */
+Buffer freadbuffer(Bstruct file,    /**< pointer to restart file */
                    const char *name /**< name of object */
                   )                 /** \return allocated buffer or NULL */
 {

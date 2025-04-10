@@ -59,7 +59,7 @@ Bool freadlitter(Bstruct file, /**< File pointer to restrart file */
         return TRUE;
       }
       litter->item[i].pft=pftpar+pft_id;
-      if(pft_id>=ntotpft)
+      if(pft_id<0 || pft_id>=ntotpft)
       {
         fprintf(stderr,"ERROR195: Invalid value %d for PFT index litter, must be in [0,%d].\n",
                 pft_id,ntotpft-1);
