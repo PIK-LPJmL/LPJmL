@@ -24,7 +24,7 @@ OBJS    = swap.$O freadheader.$O coord.$O openinputfile.$O\
           getpath.$O getuser.$O gethost.$O failonerror.$O\
           addpath.$O frepeatch.$O isabspath.$O mpi_write.$O\
           printflags.$O getfilesize.$O enablefpe.$O getfilesizep.$O\
-          strippath.$O diskfree.$O fprintintf.$O freadrestartheader.$O\
+          strippath.$O diskfree.$O fprintintf.$O\
           fwriteheader.$O getcounts.$O getfiledate.$O fscanint.$O\
           iserror.$O mpi_write_txt.$O mkfilename.$O stripsuffix.$O\
           hassuffix.$O checkfmt.$O findstr.$O fputstring.$O fscanfloat.$O\
@@ -34,7 +34,7 @@ OBJS    = swap.$O freadheader.$O coord.$O openinputfile.$O\
           fscaninteof.$O fputprintable.$O fscanrealarray.$O fscanstruct.$O\
           fscanarray.$O fscanarrayindex.$O fscanbool.$O iskeydefined.$O\
           isboolean.$O fscanreal01.$O fscankeywords.$O isstring.$O\
-          sprinttimestep.$O fscantimestep.$O isnull.$O fwriterestartheader.$O\
+          sprinttimestep.$O fscantimestep.$O isnull.$O\
           getfilefrommeta.$O isint.$O parse_json.$O closeconfig.$O isdir.$O\
           fscanmap.$O fprintjson.$O mrun.$O fscanintarray.$O cmpmap.$O\
           hasanysuffix.$O fprintattrs.$O fscanattrs.$O mergeattrs.$O\

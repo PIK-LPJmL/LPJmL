@@ -1,6 +1,6 @@
 /**************************************************************************************/
 /**                                                                                \n**/
-/**                 f  r  e  a  d   p  o  o  l  .  c                               \n**/
+/**                 f  r  e  a  d  p  o  o  l  .  c                                \n**/
 /**                                                                                \n**/
 /**     C implementation of LPJmL                                                  \n**/
 /**                                                                                \n**/
@@ -31,4 +31,3 @@ Bool freadpool(Bstruct file,     /**< pointer to restart file */
     return TRUE;
   return FALSE;
 } /* of 'freadpool' */
-

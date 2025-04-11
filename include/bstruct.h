@@ -30,6 +30,7 @@ typedef struct bstruct *Bstruct;
 extern Bstruct bstruct_create(const char *);
 extern Bstruct bstruct_open(const char *,Bool);
 extern Bstruct bstruct_append(const char *,Bool);
+extern FILE *bstruct_getfile(Bstruct);
 extern Bool bstruct_isdefined(Bstruct,const char *);
 extern Bool bstruct_writearrayindex(Bstruct,long long,long long vec[],int,int);
 extern void bstruct_close(Bstruct);

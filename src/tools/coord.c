@@ -308,6 +308,18 @@ Bool readcoord(Coordfile coordfile, /**< open coord file */
   return FALSE;
 } /* of 'readcoord' */
 
+Bool bstruct_writecoord(Bstruct file,      /**< pointer to restart file */
+                        const char *name,  /**< name of object */
+                        const Coord *coord /**< cell coordinate written to file */
+                       )                   /** \return FALSE for successful write */
+{
+  if(bstruct_writestruct(file,name))
+    return TRUE;
+  bstruct_writereal(file,"lon",coord->lon);
+  bstruct_writereal(file,"lat",coord->lat);
+  return bstruct_writeendstruct(file);
+} /* of 'bstruct_writecoord' */
+
 Bool writecoord(FILE *file,        /**< pointer to binary file */
                 const Coord *coord /**< cell coordinate written to file */
                )                   /** \return FALSE for successful write */

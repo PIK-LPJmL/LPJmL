@@ -26,4 +26,3 @@ Bool fwritepool(Bstruct file,     /**< pointer to restart file */
   fwritestocks(file,"fast",&pool->fast);
   return bstruct_writeendstruct(file);
 } /* of 'fwritepool' */
-

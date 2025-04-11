@@ -34,7 +34,7 @@ Bool freadcell(Bstruct file,           /**< File pointer to restart file */
     return TRUE;
   if(bstruct_readbool(file,"skip",&cell->skip))
     return TRUE;
-  if(readseed(file,"seed",cell->seed))
+  if(freadseed(file,"seed",cell->seed))
     return TRUE;
   readreal2(file,"dmass_lake",&cell->discharge.dmass_lake);
   if(config->river_routing)

@@ -41,6 +41,7 @@ extern Bool readintcoord(FILE *,Intcoord *,Bool);
 extern int seekcoord(Coordfile,int);
 extern Bool readcoord(Coordfile,Coord *,const Coord *);
 extern void closecoord(Coordfile);
+extern Bool bstruct_writecoord(Bstruct,const char *,const Coord *);
 extern Bool writecoord(FILE *,const Coord *);
 extern Bool writefloatcoord(FILE *,const Coord *);
 extern Real cellarea(const Coord *,const Coord *);

@@ -38,6 +38,8 @@ Bstruct openrestart(const char *filename, /**< filename of restart file */
   /* read header */
   if(bstruct_readstruct(file,"header"))
   {
+    if(isroot(*config))
+      fprintf(stderr,"ERROR245: No header found in %s file '%s'.\n",type,filename);
     bstruct_close(file);
     return NULL;
   }
@@ -55,66 +57,92 @@ Bstruct openrestart(const char *filename, /**< filename of restart file */
   free(lpjversion);
   if(bstruct_readint(file,"year",&firstyear))
   {
+    if(isroot(*config))
+      fprintf(stderr,"ERROR245: Cannot read header in %s file '%s'.\n",type,filename);
     bstruct_close(file);
     return NULL;
   }
   if(bstruct_readint(file,"firstcell",&firstcell))
   {
+    if(isroot(*config))
+      fprintf(stderr,"ERROR245: Cannot read header in %s file '%s'.\n",type,filename);
     bstruct_close(file);
     return NULL;
   }
   if(bstruct_readint(file,"npft",&restart_npft))
   {
+    if(isroot(*config))
+      fprintf(stderr,"ERROR245: Cannot read header in %s file '%s'.\n",type,filename);
     bstruct_close(file);
     return NULL;
   }
   if(bstruct_readint(file,"ncft",&restart_ncft))
   {
+    if(isroot(*config))
+      fprintf(stderr,"ERROR245: Cannot read header in %s file '%s'.\n",type,filename);
     bstruct_close(file);
     return NULL;
   }
   if(bstruct_readreal(file,"cellsize_lat",&cellsize_lat))
   {
+    if(isroot(*config))
+      fprintf(stderr,"ERROR245: Cannot read header in %s file '%s'.\n",type,filename);
     bstruct_close(file);
     return NULL;
   }
   if(bstruct_readreal(file,"cellsize_lon",&cellsize_lon))
   {
+    if(isroot(*config))
+      fprintf(stderr,"ERROR245: Cannot read header in %s file '%s'.\n",type,filename);
     bstruct_close(file);
     return NULL;
   }
   if(bstruct_readint(file,"datatype",(int *)(&datatype)))
   {
+    if(isroot(*config))
+      fprintf(stderr,"ERROR245: Cannot read header in %s file '%s'.\n",type,filename);
     bstruct_close(file);
     return NULL;
   }
   if(bstruct_readbool(file,"landuse",&config->landuse_restart))
   {
+    if(isroot(*config))
+      fprintf(stderr,"ERROR245: Cannot read header in %s file '%s'.\n",type,filename);
     bstruct_close(file);
     return NULL;
   }
   if(bstruct_readint(file,"sdate_option",&config->sdate_option_restart))
   {
+    if(isroot(*config))
+      fprintf(stderr,"ERROR245: Cannot read header in %s file '%s'.\n",type,filename);
     bstruct_close(file);
     return NULL;
   }
   if(bstruct_readbool(file,"crop_phu_option",&config->crop_phu_option_restart))
   {
+    if(isroot(*config))
+      fprintf(stderr,"ERROR245: Cannot read header in %s file '%s'.\n",type,filename);
     bstruct_close(file);
     return NULL;
   }
   if(bstruct_readbool(file,"river_routing",&river_routing))
   {
+    if(isroot(*config))
+      fprintf(stderr,"ERROR245: Cannot read header in %s file '%s'.\n",type,filename);
     bstruct_close(file);
     return NULL;
   }
   if(bstruct_readbool(file,"separate_harvests",&separate_harvest))
   {
+    if(isroot(*config))
+      fprintf(stderr,"ERROR245: Cannot read header in %s file '%s'.\n",type,filename);
     bstruct_close(file);
     return NULL;
   }
-  if(readseed(file,"seed",config->seed))
+  if(freadseed(file,"seed",config->seed))
   {
+    if(isroot(*config))
+      fprintf(stderr,"ERROR245: Cannot read header in %s file '%s'.\n",type,filename);
     bstruct_close(file);
     return NULL;
   }

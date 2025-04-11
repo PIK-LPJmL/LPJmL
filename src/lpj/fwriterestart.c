@@ -97,6 +97,10 @@ Bool fwriterestart(const Cell grid[],   /**< cell array               */
     bstruct_writebool(file,"crop_phu_option",config->crop_phu_option>=PRESCRIBED_CROP_PHU);
     bstruct_writebool(file,"river_routing",config->river_routing);
     bstruct_writebool(file,"separate_harvests",config->separate_harvests);
+    bstruct_writearray(file,"pfts",npft+ncft);
+    for(p=0;p<npft+ncft;p++)
+      bstruct_writestring(file,NULL,config->pftpar[p].name);
+    bstruct_writeendarray(file);
     fwriteseed(file,"seed",config->seed);
     bstruct_writeendstruct(file);
     /* define array with index vector and get position of first element of index vector */

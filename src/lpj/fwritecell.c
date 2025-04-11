@@ -33,6 +33,7 @@ int fwritecell(Bstruct file,        /**< File pointer of binary file */
     if(index!=NULL)
       index[cell]=bstruct_getarrayindex(file); /* store actual position in index vector */
     bstruct_writestruct(file,NULL);
+    bstruct_writecoord(file,"coord",&grid[cell].coord);
     bstruct_writebool(file,"skip",grid[cell].skip);
     fwriteseed(file,"seed",grid[cell].seed);
     if(bstruct_writereal(file,"dmass_lake",grid[cell].discharge.dmass_lake))

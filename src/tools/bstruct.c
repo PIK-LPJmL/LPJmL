@@ -43,33 +43,48 @@ struct bstruct
 
 static Bool skipdata(Bstruct,Byte);
 
-static Bool readtoken(Bstruct bstr,Byte *b,int token)
+static Bool readtoken(Bstruct bstr,Byte *b,int token,const char *name)
 {
   if(fread(b,1,1,bstr->file)!=1)
   {
     if(bstr->isout)
-      fprintf(stderr,"ERROR501: Cannot read token: %s.\n",
-              strerror(errno));
+      fprintf(stderr,"ERROR501: Cannot read '%s': %s.\n",
+              name,strerror(errno));
     return TRUE;
   }
   if(*b>BSTRUCT_ENDARRAY)
   {
     if(bstr->isout)
-      fprintf(stderr,"ERROR502: Invalid token %d.\n",*b);
+    {
+      if(name==NULL)
+        fprintf(stderr,"ERROR502: Invalid token %d reading %s.\n",*b,bstruct_typenames[token]);
+      else
+        fprintf(stderr,"ERROR502: Invalid token %d reading '%s'.\n",*b,name);
+    }
     return TRUE;
   }
   if(*b==BSTRUCT_ENDARRAY)
   {
     if(bstr->isout)
-      fprintf(stderr,"ERROR503: End of array found, %s expected.\n",
-              bstruct_typenames[token]);
+    {
+      if(name==NULL)
+        fprintf(stderr,"ERROR503: End of array found, %s expected.\n",
+                bstruct_typenames[token]);
+      else
+        fprintf(stderr,"ERROR508: Object '%s' not found in array.\n",name);
+    }
     return TRUE;
   }
   if(*b==BSTRUCT_ENDSTRUCT)
   {
     if(bstr->isout)
-      fprintf(stderr,"ERROR503: End of struct found, %s expected.\n",
-              bstruct_typenames[token]);
+    {
+      if(name==NULL)
+        fprintf(stderr,"ERROR503: End of struct found, %s expected.\n",
+                bstruct_typenames[token]);
+      else
+        fprintf(stderr,"ERROR503: Object '%s' not found in struct.\n",name);
+    }
     return TRUE;
   }
   return FALSE;
@@ -81,8 +96,8 @@ static Bool cmpkey(Bstruct bstr,    /**< pointer to restart file */
                   )                 /** \return TRUE if name was not found */
 {
   char *s;
-  Byte b;
-  if(fread(&b,1,1,bstr->file)!=1)
+  Byte name_length;
+  if(fread(&name_length,1,1,bstr->file)!=1)
   {
     if(bstr->isout)
       fprintf(stderr,"ERROR513: Unexpected end of file reading object name length.\n");
@@ -90,16 +105,16 @@ static Bool cmpkey(Bstruct bstr,    /**< pointer to restart file */
   }
   if(name==NULL)
   {
-    if(b!=0)
+    if(name_length!=0)
     {
-      s=malloc((int)b+1);
+      s=malloc((int)name_length+1);
       if(s==NULL)
       {
         printallocerr("name");
         return TRUE;
       }
-      s[b]='\0';
-      if(fread(s,1,b,bstr->file)!=b)
+      s[name_length]='\0';
+      if(fread(s,1,name_length,bstr->file)!=name_length)
       {
         if(bstr->isout)
           fprintf(stderr,"ERROR513: Unexpected end of file reading object name.\n");
@@ -114,14 +129,14 @@ static Bool cmpkey(Bstruct bstr,    /**< pointer to restart file */
   }
   else
   {
-    s=malloc((int)b+1);
+    s=malloc((int)name_length+1);
     if(s==NULL)
     {
       printallocerr("name");
       return TRUE;
     }
-    s[b]='\0';
-    if(fread(s,1,b,bstr->file)!=b)
+    s[name_length]='\0';
+    if(fread(s,1,name_length,bstr->file)!=name_length)
     {
       if(bstr->isout)
         fprintf(stderr,"ERROR513: Unexpected end of file reading object name.\n");
@@ -161,20 +176,20 @@ static Bool cmpkey(Bstruct bstr,    /**< pointer to restart file */
         }
         free(s);
         /* read next name */
-        if(fread(&b,1,1,bstr->file)!=1)
+        if(fread(&name_length,1,1,bstr->file)!=1)
         {
           if(bstr->isout)
             fprintf(stderr,"ERROR513: Unexpected end of file reading object name length.\n");
           return TRUE;
         }
-        s=malloc((int)b+1);
+        s=malloc((int)name_length+1);
         if(s==NULL)
         {
           printallocerr("name");
           return TRUE;
         }
-        s[b]='\0';
-        if(fread(s,1,b,bstr->file)!=b)
+        s[name_length]='\0';
+        if(fread(s,1,name_length,bstr->file)!=name_length)
         {
           if(bstr->isout)
             fprintf(stderr,"ERROR513: Unexpected end of file reading object name.\n");
@@ -273,6 +288,11 @@ Bstruct bstruct_open(const char *filename,Bool isout)
   }
   return bstruct;
 } /* of 'bstruct_open' */
+
+FILE *bstruct_getfile(Bstruct bstruct)
+{
+  return bstruct->file;
+} /* of 'bstruct_getfile' */
 
 Bstruct bstruct_append(const char *filename,Bool isout)
 {
@@ -729,7 +749,7 @@ Bool bstruct_readbool(Bstruct bstr,     /**< pointer to restart file */
                      )                  /** \return TRUE on error */
 {
   Byte b;
-  if(readtoken(bstr,&b,BSTRUCT_BOOL))
+  if(readtoken(bstr,&b,BSTRUCT_BOOL,name))
     return TRUE;
   if(cmpkey(bstr,&b,name))
     return TRUE;
@@ -753,7 +773,7 @@ Bool bstruct_readbyte(Bstruct bstr,     /**< pointer to restart file */
                      )                  /** \return TRUE on error */
 {
   Byte b;
-  if(readtoken(bstr,&b,BSTRUCT_BYTE))
+  if(readtoken(bstr,&b,BSTRUCT_BYTE,name))
     return TRUE;
   if(cmpkey(bstr,&b,name))
     return TRUE;
@@ -778,7 +798,7 @@ Bool bstruct_readint(Bstruct bstr,     /**< pointer to restart file */
                     )                  /** \return TRUE on error */
 {
   Byte b;
-  if(readtoken(bstr,&b,BSTRUCT_INT))
+  if(readtoken(bstr,&b,BSTRUCT_INT,name))
     return TRUE;
   if(cmpkey(bstr,&b,name))
     return TRUE;
@@ -803,7 +823,7 @@ Bool bstruct_readshort(Bstruct bstr,     /**< pointer to restart file */
                       )                  /** \return TRUE on error */
 {
   Byte b;
-  if(readtoken(bstr,&b,BSTRUCT_SHORT))
+  if(readtoken(bstr,&b,BSTRUCT_SHORT,name))
     return TRUE;
   if(cmpkey(bstr,&b,name))
     return TRUE;
@@ -828,7 +848,7 @@ Bool bstruct_readushort(Bstruct bstr,         /**< pointer to restart file */
                        )                      /** \return TRUE on error */
 {
   Byte b;
-  if(readtoken(bstr,&b,BSTRUCT_USHORT))
+  if(readtoken(bstr,&b,BSTRUCT_USHORT,name))
     return TRUE;
   if(cmpkey(bstr,&b,name))
     return TRUE;
@@ -853,7 +873,7 @@ Bool bstruct_readfloat(Bstruct bstr,     /**< pointer to restart file */
                       )                  /** \return TRUE on error */
 {
   Byte b;
-  if(readtoken(bstr,&b,BSTRUCT_FLOAT))
+  if(readtoken(bstr,&b,BSTRUCT_FLOAT,name))
     return TRUE;
   if(cmpkey(bstr,&b,name))
     return TRUE;
@@ -878,7 +898,7 @@ Bool bstruct_readreal(Bstruct bstr,     /**< pointer to restart file */
                      )                  /** \return TRUE on error */
 {
   Byte b;
-  if(readtoken(bstr,&b,(sizeof(Real)==sizeof(double)) ? BSTRUCT_DOUBLE : BSTRUCT_FLOAT))
+  if(readtoken(bstr,&b,(sizeof(Real)==sizeof(double)) ? BSTRUCT_DOUBLE : BSTRUCT_FLOAT,name))
     return TRUE;
   if(cmpkey(bstr,&b,name))
     return TRUE;
@@ -904,7 +924,7 @@ char *bstruct_readstring(Bstruct bstr,    /**< pointer to restart file */
   char *s;
   int len;
   Byte b;
-  if(readtoken(bstr,&b,BSTRUCT_STRING))
+  if(readtoken(bstr,&b,BSTRUCT_STRING,name))
     return NULL;
   if(cmpkey(bstr,&b,name))
     return NULL;
@@ -944,7 +964,7 @@ Bool bstruct_readarray(Bstruct bstr,     /**< pointer to restart file */
                       )                  /** \return TRUE on error */
 {
   Byte b;
-  if(readtoken(bstr,&b,BSTRUCT_ARRAY))
+  if(readtoken(bstr,&b,BSTRUCT_ARRAY,name))
     return TRUE;
   if(cmpkey(bstr,&b,name))
     return TRUE;
@@ -976,7 +996,7 @@ Bool bstruct_readindexarray(Bstruct bstr,    /**< pointer to restart file */
 {
   int n;
   Byte b;
-  if(readtoken(bstr,&b,BSTRUCT_ARRAY))
+  if(readtoken(bstr,&b,BSTRUCT_ARRAY,NULL))
     return TRUE;
   if(b!=BSTRUCT_INDEXARRAY)
   {
@@ -1008,7 +1028,7 @@ Bool bstruct_seekindexarray(Bstruct bstr, /**< pointer to restart file */
   long long pos;
   int n;
   Byte b;
-  if(readtoken(bstr,&b,BSTRUCT_INDEXARRAY))
+  if(readtoken(bstr,&b,BSTRUCT_INDEXARRAY,NULL))
     return TRUE;
   if(b!=BSTRUCT_INDEXARRAY)
   {
@@ -1189,7 +1209,7 @@ Bool bstruct_readstruct(Bstruct bstr,    /**< pointer to restart file */
                        )                 /** \return TRUE on error */
 {
   Byte b;
-  if(readtoken(bstr,&b,BSTRUCT_STRUCT))
+  if(readtoken(bstr,&b,BSTRUCT_STRUCT,name))
     return TRUE;
   if(cmpkey(bstr,&b,name))
     return TRUE;
