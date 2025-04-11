@@ -111,7 +111,7 @@ typedef struct netcdf_config Netcdf_config; /* forward declaration of NetCDF set
 
 #define LPJROOT "LPJROOT"            /* LPJ root directory */
 #define LPJPREP "LPJPREP"            /* preprocessor command */
-#define LPJNOPP "LPJNOPP"            /* disable prepocessor */
+#define LPJNOPP "LPJNOPP"            /* disable preprocessor */
 #define LPJPEDANTIC "LPJPEDANTIC"    /* enable pedantic mode */
 #define LPJOPTIONS "LPJOPTIONS"      /* LPJ runtime options */
 #define LPJINPUT "LPJINPATH"         /* path for input files */
