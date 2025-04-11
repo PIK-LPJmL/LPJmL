@@ -261,8 +261,8 @@ void soiltemp(Soil *soil,          /**< pointer to soil data */
     if(soil->freeze_depth[l]>epsilon)
       break;
   }
-  if (soil->maxthaw_depth<layer-soil->freeze_depth[l])
-    soil->maxthaw_depth=layer-soil->freeze_depth[l];
+  if (soil->maxthaw_depth<layer-soil->freeze_depth[min(l,BOTTOMLAYER)])
+    soil->maxthaw_depth=layer-soil->freeze_depth[min(l,BOTTOMLAYER)];
 #ifdef CHECK_BALANCE
   foreachsoillayer(l)
    if (soil->w[l]< -epsilon || soil->w_fw[l]< -epsilon )
@@ -277,5 +277,4 @@ void soiltemp(Soil *soil,          /**< pointer to soil data */
     fail(INVALID_WATER_BALANCE_ERR,FAIL_ON_BALANCE,FALSE,"Invalid water balance in %s:  balanceW: %g water_before: %g water_after: %g \n",
       __FUNCTION__,balancew,water_before,water_after);
 #endif
-
 } /* of 'soiltemp' */

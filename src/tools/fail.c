@@ -23,15 +23,21 @@
 static void printfailerr2(int errcode,Bool stop,const char *msg,va_list ap)
 {
   char *s;
+  int len;
   if(stop)
-    s=alloca(strlen(msg)+strlen("ERROR000: ")+strlen(", program terminated unsuccessfully.\n")+1);
+    len=strlen(msg)+strlen("ERROR000: ")+strlen(", program terminated unsuccessfully.\n")+1;
   else
-    s=alloca(strlen(msg)+strlen("ERROR000: ")+strlen(".\n")+1);
+    len=strlen(msg)+strlen("ERROR000: ")+strlen(".\n")+1;
+  /*
+   * Output is put in one printf statement. This has to be done because output
+   * in multiple printf's is mixed up in the parallel version using MPI
+   */
+  s=alloca(len);
   if(errcode>999)
     errcode=999;
   if(errcode<0)
     errcode=1;
-  sprintf(s,"ERROR%03d: ",errcode);
+  snprintf(s,len,"ERROR%03d: ",errcode);
   strcat(s,msg);
   strcat(s,(stop) ? ", program terminated unsuccessfully.\n" : ".\n");
   vfprintf(stderr,s,ap);

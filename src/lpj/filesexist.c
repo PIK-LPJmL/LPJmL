@@ -279,20 +279,19 @@ static int checkclmfile(const Config *config,const char *data_name,const Filenam
         fprintf(stderr,"ERROR225: Cannot parse filename '%s'.\n",filename->name);
         return 0;
       }
-      name=malloc(strlen(s)+8);
       count=0;
       for(year=first;year<=last;year++)
       {
-        sprintf(name,s,year);
+        name=getsprintf(s,year);
         if(openclimate_netcdf(&input,name,filename->time,filename->var,filename->unit,unit,config))
         {
           count++;
         }
         else
           closeclimate_netcdf(&input,TRUE);
+        free(name);
       }
       free(s);
-      free(name);
       return count;
     }
     else
