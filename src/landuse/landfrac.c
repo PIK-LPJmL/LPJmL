@@ -103,25 +103,27 @@ void freelandfrac(Landfrac *landfrac /**< land fractions (non-irrig., irrig.) */
   }
 } /* of 'freelandfrac' */
 
-Bool fwritelandfrac(FILE *file,                 /**< pointer to binary file */
+Bool fwritelandfrac(Bstruct file,               /**< pointer to restart file */
+                    const char *name,           /**< name of object */
                     const Landfrac landfrac[2], /**< land fractions (non-irrig., irrig.) */
                     int ncft,                   /**< number of crop PFTs */
                     int nagtree                 /**< number of agriculture tree PFTs */
                    )                            /** \return TRUE on error */
 {
   int i;
+  bstruct_writearray(file,name,2);
   for(i=0;i<2;i++)
   {
-    fwrite(landfrac[i].crop,sizeof(Real),ncft,file);
-    fwrite(landfrac[i].ag_tree,sizeof(Real),nagtree,file);
-    fwrite(landfrac[i].grass,sizeof(Real),NGRASS,file);
-    fwrite(&landfrac[i].woodplantation,sizeof(Real),1,file);
-    fwrite(&landfrac[i].biomass_grass,sizeof(Real),1,file);
-    if(fwrite(&landfrac[i].biomass_tree,sizeof(Real),1,file)!=1)
-      return TRUE;
-
+    bstruct_writestruct(file,NULL);
+    bstruct_writerealarray(file,"crop",landfrac[i].crop,ncft);
+    bstruct_writerealarray(file,"ag_tree",landfrac[i].ag_tree,nagtree);
+    bstruct_writerealarray(file,"grass",landfrac[i].grass,NGRASS);
+    bstruct_writereal(file,"woodplantation",landfrac[i].woodplantation);
+    bstruct_writereal(file,"biomass_grass",landfrac[i].biomass_grass);
+    bstruct_writereal(file,"biomass_tree",landfrac[i].biomass_tree);
+    bstruct_writeendstruct(file);
   }
-  return FALSE;
+  return bstruct_writeendarray(file);
 } /* of 'fwritelandfrac' */
 
 void fprintlandfrac(FILE *file,               /**< pointer to text file */
@@ -142,25 +144,42 @@ void fprintlandfrac(FILE *file,               /**< pointer to text file */
   fprintf(file," %g",landfrac->biomass_tree);
 } /* of 'fprintlandfrac' */
 
-Bool freadlandfrac(FILE *file,           /**< pointer to binary file */
+Bool freadlandfrac(Bstruct file,         /**< pointer to restart file */
+                   const char *name,     /**< name of object */
                    Landfrac landfrac[2], /**< land fractions (non-irrig., irrig.) */
                    int ncft,             /**< number of crop PFTs */
-                   int nagtree,          /**< number of agriculture tree PFTs */
-                   Bool swap             /**< byte order has to be swapped (TRUE/FALSE) */
+                   int nagtree           /**< number of agriculture tree PFTs */
                   )                      /** \return TRUE on error */
 {
-  int i;
+  int size,i;
+  if(bstruct_readarray(file,name,&size))
+    return TRUE;
+  if(size!=2)
+  {
+    fprintf(stderr,"ERROR227: Size of %s=%d is not 2.\n",
+            name,size);
+    return TRUE;
+  }
   for(i=0;i<2;i++)
   {
-    freadreal(landfrac[i].crop,ncft,swap,file);
-    freadreal(landfrac[i].ag_tree,nagtree,swap,file);
-    freadreal(landfrac[i].grass,NGRASS,swap,file);
-    freadreal(&landfrac[i].woodplantation,1,swap,file);
-    freadreal(&landfrac[i].biomass_grass,1,swap,file);
-    if(freadreal(&landfrac[i].biomass_tree,1,swap,file)!=1)
+    if(bstruct_readstruct(file,NULL))
+      return TRUE;
+    if(bstruct_readrealarray(file,"crop",landfrac[i].crop,ncft))
+      return TRUE;
+    if(bstruct_readrealarray(file,"ag_tree",landfrac[i].ag_tree,nagtree))
+      return TRUE;
+    if(bstruct_readrealarray(file,"grass",landfrac[i].grass,NGRASS))
+      return TRUE;
+    if(bstruct_readreal(file,"woodplantation",&landfrac[i].woodplantation))
+      return TRUE;
+    if(bstruct_readreal(file,"biomass_grass",&landfrac[i].biomass_grass))
+      return TRUE;
+    if(bstruct_readreal(file,"biomass_tree",&landfrac[i].biomass_tree))
+      return TRUE;
+    if(bstruct_readendstruct(file))
       return TRUE;
   }
-  return FALSE;
+  return bstruct_readendarray(file);
 } /* of 'freadlandfrac' */
 
 Real landfrac_sum(const Landfrac landfrac[2], /**< land fractions (non-irrig., irrig.) */

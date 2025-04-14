@@ -45,7 +45,7 @@ void freezefrac2soil(Soil *soil,                       /**< pointer to soil to b
      * Only if the target ice is higher than the sum of a_wi and ua_wi is the rest distributed to f_wi.
      *
      * This guarantees that free ice can only occur when all other water is also frozen,
-     * which means that water losses due to percolation, evaporation, and transpiration — which only affect liquid water —
+     * which means that water losses due to percolation, evaporation, and transpiration - which only affect liquid water -
      * will always first remove all free water (of any phase) before reducing plant-available water (of any phase).
      * Thus, at any point, free water (of any phase) can only exist if the total amount of water (of any phase) is above field capacity. */
 

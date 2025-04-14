@@ -1,10 +1,10 @@
 /**************************************************************************************/
 /**                                                                                \n**/
-/**            f  r  e  a  d  i  g  n  i  t  i  o  n  .  c                         \n**/
+/**                  f  r  e  a  d  s  t  o  c  k  s  .  c                         \n**/
 /**                                                                                \n**/
 /**     C implementation of LPJmL                                                  \n**/
 /**                                                                                \n**/
-/**     Function read ignition data from binary file                               \n**/
+/**     Function reads stock data from binary file                                 \n**/
 /**                                                                                \n**/
 /** (C) Potsdam Institute for Climate Impact Research (PIK), see COPYRIGHT file    \n**/
 /** authors, and contributors see AUTHORS file                                     \n**/
@@ -13,18 +13,39 @@
 /** Contact: https://github.com/PIK-LPJmL/LPJmL                                    \n**/
 /**                                                                                \n**/
 /**************************************************************************************/
-
 #include "lpj.h"
 
-Bool freadignition(Bstruct file,const char *name,Ignition *ignition)
+Bool freadstocks(Bstruct file,     /**< pointer to restart file */
+                 const char *name, /**< name of object or NULL */
+                 Stocks *stocks    /**< data read from file */
+                )                  /** \return TRUE on error */
 {
   if(bstruct_readstruct(file,name))
     return TRUE;
-  if(bstruct_readreal(file,"nesterov_accum",&ignition->nesterov_accum))
+  if(bstruct_readreal(file,"C",&stocks->carbon))
     return TRUE;
-  if(bstruct_readreal(file,"nesterov_max",&ignition->nesterov_max))
-    return TRUE;
-  if(bstruct_readint(file,"nesterov_day",&ignition->nesterov_day))
+  if(bstruct_readreal(file,"N",&stocks->nitrogen))
     return TRUE;
   return bstruct_readendstruct(file);
-} /* of 'freadignition' */
+} /* of 'freadstocks' */
+
+Bool freadstocksarray(Bstruct file,     /**< pointer to restart file */
+                      const char *name, /**< name of object or NULL */
+                      Stocks data[],    /**< array read from file */
+                      int size          /**< size of array */
+                     )                  /** \return TRUE on error */
+{
+  int i,n;
+  if(bstruct_readarray(file,name,&n))
+    return TRUE;
+  if(size!=n)
+  {
+    fprintf(stderr,"ERROR510: Size of array '%s'=%d is not %d.\n",name,n,size);
+    return TRUE;
+  }
+  for(i=0;i<n;i++)
+    if(freadstocks(file,NULL,data+i))
+      return TRUE;
+  return bstruct_readendarray(file);
+} /* of 'freadstocksarray' */
+

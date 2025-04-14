@@ -14,10 +14,27 @@
 
 #include "lpj.h"
 
-Bool fwritecropdates(FILE *file, /**< pointer to binary file */
+static Bool writecropdate(Bstruct file,const Cropdates *cropdates)
+{
+  bstruct_writestruct(file,NULL);
+  bstruct_writeint(file,"fall_sdate20",cropdates->fall_sdate20);
+  bstruct_writeint(file,"last_update_fall",cropdates->last_update_fall);
+  bstruct_writeint(file,"spring_sdate20",cropdates->spring_sdate20);
+  bstruct_writeint(file,"last_update_spring",cropdates->last_update_spring);
+  bstruct_writeint(file,"vern_date20",cropdates->vern_date20);
+  bstruct_writeint(file,"last_update_vern",cropdates->last_update_vern);
+  return bstruct_writeendstruct(file);
+}
+
+Bool fwritecropdates(Bstruct file, /**< pointer to binary file */
+                     const char *name, /**< name of object */
                      const Cropdates *cropdates, /**< array of crop dates to write */
                      int ncft /**< number of crop dates */
                     )         /** \return TRUE on error */
 {
-  return fwrite(cropdates,sizeof(Cropdates),ncft,file)!=ncft;
+  int cft;
+  bstruct_writearray(file,name,ncft);
+  for(cft=0;cft<ncft;cft++)
+    writecropdate(file,cropdates+cft);
+  return bstruct_writeendarray(file);
 } /* of 'fwritecropdates' */

@@ -45,7 +45,7 @@ LPJLIBS = $(LIBDIR)/liblpj.$A $(LIBDIR)/libgrass.$A $(LIBDIR)/liblanduse.$A $(LI
           $(LIBDIR)/libclimate.$A $(LIBDIR)/libnum.$A $(LIBDIR)/libtools.$A\
           $(LIBDIR)/libcrop.$A $(LIBDIR)/libreservoir.$A $(LIBDIR)/libpnet.$A $(LIBDIR)/libcoupler.$A\
           $(LIBDIR)/libsocket.$A $(LIBDIR)/liblpj.$A $(LIBDIR)/libcdf.$A $(LIBDIR)/liblpj.$A\
-          $(LIBDIR)/libtools.$A $(LIBDIR)/libcpl.$A $(LIBDIR)/libsoil.$A
+          $(LIBDIR)/libtools.$A $(LIBDIR)/libcpl.$A $(LIBDIR)/libsoil.$A $(LIBDIR)/libnum.$A
 
 EXE     = $(BINDIR)/lpjml$E
 

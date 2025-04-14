@@ -17,10 +17,50 @@
 #include "lpj.h"
 #include "tree.h"
 
-Bool fread_tree(FILE *file, /**< pointer to binary file */
+static Bool freadtreephys2(Bstruct file,const char *name,Treephys2 *tree)
+{
+  if(bstruct_readstruct(file,name))
+    return TRUE;
+  if(freadstocks(file,"leaf",&tree->leaf))
+    return TRUE;
+  if(freadstocks(file,"sapwood",&tree->sapwood))
+    return TRUE;
+  if(freadstocks(file,"heartwood",&tree->heartwood))
+    return TRUE;
+  if(freadstocks(file,"root",&tree->root))
+    return TRUE;
+  if(freadstocks(file,"debt",&tree->debt))
+    return TRUE;
+  return bstruct_readendstruct(file);
+} /* of 'freadtreephys2' */
+
+static Bool freadtreeturn(Bstruct file,const char *name,Treeturn *tree)
+{
+  if(bstruct_readstruct(file,name))
+    return TRUE;
+  if(freadstocks(file,"leaf",&tree->leaf))
+    return TRUE;
+  if(freadstocks(file,"root",&tree->root))
+    return TRUE;
+  return bstruct_readendstruct(file);
+} /* of 'freadtreeturn' */
+
+static Bool freadtreephyspar(Bstruct file,const char *name,Treephyspar *tree)
+{
+  if(bstruct_readstruct(file,name))
+    return TRUE;
+  if(bstruct_readreal(file,"leaf",&tree->leaf))
+    return TRUE;
+  if(bstruct_readreal(file,"sapwood",&tree->sapwood))
+    return TRUE;
+  if(bstruct_readreal(file,"root",&tree->root))
+    return TRUE;
+  return bstruct_readendstruct(file);
+} /* of 'freadtreephyspar' */
+
+Bool fread_tree(Bstruct file, /**< pointer to binary file */
                 Pft *pft,   /**< pointer to PFT read */
-                Bool UNUSED(separate_harvests),
-                Bool swap   /**< Byte order has to be changed (TRUE/FALSE) */
+                Bool UNUSED(separate_harvests)
                )            /** \return TRUE on error */
 {
   Pfttree *tree;
@@ -32,25 +72,40 @@ Bool fread_tree(FILE *file, /**< pointer to binary file */
     return TRUE;
   }
   pft->nlimit=0.0;
-  freadreal1(&tree->height,swap,file);
-  freadreal1(&tree->crownarea,swap,file);
-  freadreal1(&tree->barkthickness,swap,file);
-  freadreal1(&tree->gddtw,swap,file);
-  freadreal1(&tree->aphen_raingreen,swap,file);
-  freadint1(&tree->isphen,swap,file);
-  freadreal((Real *)&tree->turn,sizeof(Treeturn)/sizeof(Real),swap,file);
-  freadreal((Real *)&tree->turn_litt,sizeof(Treeturn)/sizeof(Real),swap,file);
-  freadreal((Real *)&tree->ind,sizeof(Treephys2)/sizeof(Real),swap,file);
+  if(bstruct_readreal(file,"height",&tree->height))
+    return TRUE;
+  if(bstruct_readreal(file,"crownarea",&tree->crownarea))
+    return TRUE;
+  if(bstruct_readreal(file,"barkthickness",&tree->barkthickness))
+    return TRUE;
+  if(bstruct_readreal(file,"gddtw",&tree->gddtw))
+    return TRUE;
+  if(bstruct_readreal(file,"aphen_raingreen",&tree->aphen_raingreen))
+    return TRUE;
+  if(bstruct_readbool(file,"isphen",&tree->isphen))
+    return TRUE;
+  if(freadtreeturn(file,"turn",&tree->turn))
+    return TRUE;
+  if(freadtreeturn(file,"turn_litt",&tree->turn_litt))
+    return TRUE;
+  if(freadtreephys2(file,"ind",&tree->ind))
+    return TRUE;
   if(pft->par->cultivation_type==ANNUAL_TREE)
   {
-    freadreal((Real *)&tree->fruit,sizeof(Stocks)/sizeof(Real),swap,file);
-    freadint1(&tree->boll_age,swap,file);
+    if(freadstocks(file,"fruit",&tree->fruit))
+      return TRUE;
+    if(bstruct_readint(file,"boll_age",&tree->boll_age))
+      return TRUE;
   }
   else
     tree->fruit.carbon=tree->fruit.nitrogen=0;
-  freadreal1(&tree->excess_carbon,swap,file);
-  freadreal1(&tree->nfertilizer,swap,file);
-  freadreal1(&tree->nmanure,swap,file);
-  freadint1(&tree->nfert_event,swap,file);
-  return freadreal((Real *)&tree->falloc,sizeof(Treephyspar)/sizeof(Real),swap,file)!=sizeof(Treephyspar)/sizeof(Real);
+  if(bstruct_readreal(file,"excess_carbon",&tree->excess_carbon))
+    return TRUE;
+  if(bstruct_readreal(file,"nfertilizer",&tree->nfertilizer))
+    return TRUE;
+  if(bstruct_readreal(file,"nmanure",&tree->nmanure))
+    return TRUE;
+  if(bstruct_readint(file,"nfert_event",&tree->nfert_event))
+    return TRUE;
+  return freadtreephyspar(file,"falloc",&tree->falloc);
 } /* of 'fread_tree' */

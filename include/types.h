@@ -33,6 +33,8 @@
 #endif
 
 #define STRING_LEN 255 /* Maximum length of default strings  */
+#define READ_VERSION -1
+
 
 #ifdef _WIN32
 #ifndef isnan /* isnan is already defined in math.h of Microsoft Visual Studio 2015, but not in 2010 */
@@ -187,6 +189,8 @@ extern double mrun(void);
 void mergeattrs(Attr **,int *,const Attr *, int,Bool);
 extern char *getversion(void);
 extern char *getsprintf(const char *,...);
+extern Bool fwritetopheader(FILE *, const char *,int);
+extern Bool freadtopheader(FILE *,Bool *,const char *,int *,Bool);
 #ifdef WITH_FPE
 extern void enablefpe(void);
 #endif

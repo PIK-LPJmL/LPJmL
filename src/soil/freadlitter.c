@@ -16,19 +16,29 @@
 
 #include "lpj.h"
 
-Bool freadlitter(FILE *file, /**< File pointer to binary file */
+static Bool freadtrait(Bstruct file,const char *name,Trait *trait)
+{
+  if(bstruct_readstruct(file,name))
+    return TRUE;
+  if(freadstocks(file,"leaf",&trait->leaf))
+    return TRUE;
+  if(freadstocksarray(file,"wood",trait->wood,NFUELCLASS))
+    return TRUE;
+  return bstruct_readendstruct(file);
+} /* of ' freadtrait' */
+
+Bool freadlitter(Bstruct file, /**< File pointer to restrart file */
+                 const char  *name, /**< name of object */
                  Litter *litter, /**< Litter pool to be read */
                  const Pftpar pftpar[], /**< PFT parameter array */
-                 int ntotpft, /**< total number of PFTs */
-                 Bool swap /**< Byte order has to be changed (TRUE/FALSE) */
+                 int ntotpft  /**< total number of PFTs */
               )            /** \return TRUE on error */
 {
-  Byte b;
-  int i;
-  freadreal(litter->avg_fbd,NFUELCLASS+1,swap,file);
-  if(fread(&b,sizeof(b),1,file)!=1)
+  int i,pft_id;
+  if(bstruct_readrealarray(file,"avg_fbd",litter->avg_fbd,NFUELCLASS+1))
     return TRUE;
-  litter->n=b;
+  if(bstruct_readarray(file,name,&litter->n))
+    return TRUE;
   if(litter->n)
   {
     litter->item=newvec(Litteritem,litter->n);
@@ -39,37 +49,44 @@ Bool freadlitter(FILE *file, /**< File pointer to binary file */
     }
     for(i=0;i<litter->n;i++)
     {
-      if(fread(&b,sizeof(b),1,file)!=1)
+      if(bstruct_readstruct(file,NULL))
+        return TRUE;
+      if(bstruct_readint(file,"pft_id",&pft_id))
       {
         free(litter->item);
         litter->n=0;
         litter->item=NULL;
         return TRUE;
       }
-      litter->item[i].pft=pftpar+b;
-      if(b>=ntotpft)
+      litter->item[i].pft=pftpar+pft_id;
+      if(pft_id<0 || pft_id>=ntotpft)
       {
         fprintf(stderr,"ERROR195: Invalid value %d for PFT index litter, must be in [0,%d].\n",
-                (int)b,ntotpft-1);
+                pft_id,ntotpft-1);
         free(litter->item);
         litter->n=0;
         litter->item=NULL;
         return TRUE;
       }
-      if(freadreal((Real *)&litter->item[i].agtop,sizeof(Trait)/sizeof(Real),
-                   swap,file)!=sizeof(Trait)/sizeof(Real))
+      if(freadtrait(file,"agtop",&litter->item[i].agtop))
         return TRUE;
-      if(freadreal((Real *)&litter->item[i].agsub,sizeof(Trait)/sizeof(Real),
-                   swap,file)!=sizeof(Trait)/sizeof(Real))
+      if(freadtrait(file,"agsub",&litter->item[i].agsub))
         return TRUE;
-      freadreal((Real *)(&litter->item[i].bg),sizeof(Stocks)/sizeof(Real),swap,file);
+      if(freadstocks(file,"bg",&litter->item[i].bg))
+        return TRUE;
+      if(bstruct_readendstruct(file))
+        return TRUE;
     }
   }
   else
     litter->item=NULL;
-  freadreal1(&litter->agtop_wcap,swap,file);
-  freadreal1(&litter->agtop_moist,swap,file);
-  freadreal1(&litter->agtop_cover,swap,file);
-  freadreal1(&litter->agtop_temp,swap,file);
-  return FALSE;
+  if(bstruct_readendarray(file))
+    return TRUE;
+  if(bstruct_readreal(file,"agtop_wcap",&litter->agtop_wcap))
+    return TRUE;
+  if(bstruct_readreal(file,"agtop_moist",&litter->agtop_moist))
+    return TRUE;
+  if(bstruct_readreal(file,"agtop_cover",&litter->agtop_cover))
+    return TRUE;
+  return bstruct_readreal(file,"agtop_temp",&litter->agtop_temp);
 } /* of 'freadlitter' */

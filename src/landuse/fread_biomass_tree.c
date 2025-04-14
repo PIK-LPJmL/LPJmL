@@ -17,9 +17,10 @@
 #include "lpj.h"
 #include "biomass_tree.h"
 
-Bool fread_biomass_tree(FILE *file,   /**< pointer to binary file */
-                        Stand *stand, /**< stand pointer */
-                        Bool swap     /**< byte order has to be changed */
+#define readint2(file,name,val) if(bstruct_readint(file,name,val)) return TRUE
+
+Bool fread_biomass_tree(Bstruct file, /**< pointer to binary file */
+                        Stand *stand  /**< stand pointer */
                        )              /** \return TRUE on error */
 {
   Biomass_tree *biomass_tree;
@@ -30,9 +31,9 @@ Bool fread_biomass_tree(FILE *file,   /**< pointer to binary file */
     printallocerr("biomass_tree");
     return TRUE;
   }
-  if(fread_irrigation(file,&biomass_tree->irrigation,swap))
+  if(fread_irrigation(file,"irrigation",&biomass_tree->irrigation))
     return TRUE;
-  freadint1(&stand->growing_days,swap,file);
-  freadint1(&biomass_tree->growing_time,swap,file);
-  return freadint1(&biomass_tree->age,swap,file)!=1;
+  readint2(file,"growing_days",&stand->growing_days);
+  readint2(file,"growing_time",&biomass_tree->growing_time);
+  return bstruct_readint(file,"age",&biomass_tree->age);
 } /* of 'fread_biomass_tree' */

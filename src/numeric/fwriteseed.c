@@ -1,8 +1,8 @@
 /**************************************************************************************/
 /**                                                                                \n**/
-/**      f  w  r  i  t  e  r  e  s  t  a  r  t  h  e  a  d  e  r  .  c             \n**/
+/**                         f  w  r  i  t  e  s  e  e  d  .  c                     \n**/
 /**                                                                                \n**/
-/**     Writing file header for LPJ restart files.                                 \n**/
+/**     Write seed of random number generator in JSON-like format in restart file  \n**/
 /**                                                                                \n**/
 /** (C) Potsdam Institute for Climate Impact Research (PIK), see COPYRIGHT file    \n**/
 /** authors, and contributors see AUTHORS file                                     \n**/
@@ -12,21 +12,20 @@
 /**                                                                                \n**/
 /**************************************************************************************/
 
-#include "lpj.h"
+#include <stdio.h>
+#include "types.h"
+#include "bstruct.h"
+#include "swap.h"
+#include "numeric.h"
 
-Bool fwriterestartheader(FILE *file,                 /**< file pointer of binary file */
-                         const Restartheader *header /**< file header to be written */
-                        )                            /** \return TRUE on error */
+Bool fwriteseed(Bstruct file,     /**< pointer to restart file */
+                const char *name, /**< name of object */
+                const Seed seed   /**< seed of random number generator read */
+               )                  /** \return TRUE on error */
 {
-  if(fwrite(&header->landuse,sizeof(int),1,file)!=1)
-    return TRUE;
-  if(fwrite(&header->river_routing,sizeof(int),1,file)!=1)
-    return TRUE;
-  if(fwrite(&header->sdate_option,sizeof(int),1,file)!=1)
-    return TRUE;
-  if(fwrite(&header->crop_phu_option,sizeof(int),1,file)!=1)
-    return TRUE;
-  if(fwrite(&header->separate_harvests,sizeof(int),1,file)!=1)
-    return TRUE;
-  return fwrite(header->seed,sizeof(Seed),1,file)!=1;
-} /* of 'fwriterestartheader' */
+#ifdef USE_RAND48
+  return bstruct_writeushortarray(file,name,seed,NSEED);
+#else
+  return bstruct_writeintarray(file,name,seed,NSEED);
+#endif
+} /* of 'fwriteseed' */

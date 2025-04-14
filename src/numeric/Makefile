@@ -20,14 +20,15 @@ OBJS    = leftmostzero.$O bisect.$O linreg.$O date.$O interpolate.$O\
           ivec_sum.$O int2date.$O petpar2.$O itersolve.$O\
           petpar3.$O gammafunc.$O interpolate_data.$O\
           permute.$O setseed.$O freadseed.$O runmean_add.$O\
-          finite_volume_diffusion.$O thomas_algorithm.$O
+          finite_volume_diffusion.$O thomas_algorithm.$O\
+          fwriteseed.$O
 
 INC     = ../../include
 LIBDIR  = ../../lib
 LIB     = libnum.$A
 
 HDRS    = $(INC)/types.h $(INC)/numeric.h $(INC)/date.h\
-          $(INC)/list.h $(INC)/buffer.h $(INC)/errmsg.h 
+          $(INC)/list.h $(INC)/buffer.h $(INC)/errmsg.h $(INC)/bstruct.h
 
 $(LIBDIR)/$(LIB): $(OBJS)
 	$(AR) $(ARFLAGS)$(LIBDIR)/$(LIB) $(OBJS)

@@ -1,10 +1,10 @@
 /**************************************************************************************/
 /**                                                                                \n**/
-/**      f  w  r  i  t  e  _  g  r  a  s  s  l  a  n  d  .  c                      \n**/
+/**                 f  w  r  i  t  e  s  t  o  c  k  s  .  c                       \n**/
 /**                                                                                \n**/
 /**     C implementation of LPJmL                                                  \n**/
 /**                                                                                \n**/
-/**     Function writes grassland data of stand                                    \n**/
+/**     Function writes stock data to binary file                                  \n**/
 /**                                                                                \n**/
 /** (C) Potsdam Institute for Climate Impact Research (PIK), see COPYRIGHT file    \n**/
 /** authors, and contributors see AUTHORS file                                     \n**/
@@ -15,27 +15,27 @@
 /**************************************************************************************/
 
 #include "lpj.h"
-#include "grassland.h"
 
-static Bool writerotation(Bstruct file,const char *name,const Rotation *rotation)
+Bool fwritestocks(Bstruct file,        /**< pointer to restart file */
+                  const char *name,    /**< name of object or NULL */
+                  const Stocks *stocks /**< stocks written to file */
+                 )                     /** \return TRUE on error */
 {
   bstruct_writestruct(file,name);
-  bstruct_writeint(file,"grazing_days",rotation->grazing_days);
-  bstruct_writeint(file,"recovery_dates",rotation->recovery_days);
-  bstruct_writeint(file,"paddocks",rotation->paddocks);
-  bstruct_writeint(file,"mode",rotation->mode);
+  bstruct_writereal(file,"C",stocks->carbon);
+  bstruct_writereal(file,"N",stocks->nitrogen);
   return bstruct_writeendstruct(file);
-}
+} /* of 'fwritestocks' */
 
-Bool fwrite_grassland(Bstruct file,      /**< pointer to binary file */
-                      const Stand *stand /**< stand pointer */
-                     )                   /** \return TRUE on error */
+Bool fwritestocksarray(Bstruct file,       /**< pointer to restart file */
+                       const char *name,   /**< name of object or NULL */
+                       const Stocks vec[], /**< array written to file */
+                       int size            /**< size of arary */
+                      )                    /** \return TRUE on error */
 {
-  const Grassland *grassland;
-  grassland=stand->data;
-  fwrite_irrigation(file,"irrigation",&grassland->irrigation);
-  bstruct_writeint(file,"growing_days",stand->growing_days);
-  bstruct_writereal(file,"deficit_lsu_ne",grassland->deficit_lsu_ne);
-  bstruct_writereal(file,"deficit_lsu_mp",grassland->deficit_lsu_mp);
-  return writerotation(file,"rotation",&grassland->rotation);
-} /* of 'fwrite_grassland' */
+  int i;
+  bstruct_writearray(file,name,size);
+  for(i=0;i<size;i++)
+    fwritestocks(file,NULL,vec+i);
+  return bstruct_writeendarray(file);
+} /* of 'fwritestocksarray' */

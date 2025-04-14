@@ -16,20 +16,24 @@
 
 #include "lpj.h"
 
-Bool fwritehydrotope(FILE *file,const  Hydrotope *hydrotopes)
+Bool fwritehydrotope(Bstruct file,
+                     const char *name,
+                     const  Hydrotope *hydrotopes)
 {
-  fwrite(&hydrotopes->wtable_mean, sizeof(Real), 1, file);
-  fwrite(&hydrotopes->wtable_min, sizeof(Real), 1, file);
-  fwrite(&hydrotopes->wtable_max, sizeof(Real), 1, file);
+  bstruct_writestruct(file,name);
+  bstruct_writereal(file,"wtable_mean",hydrotopes->wtable_mean);
+  bstruct_writereal(file,"wtable_min",hydrotopes->wtable_min);
+  bstruct_writereal(file,"wtable_max",hydrotopes->wtable_max);
 
-  fwrite(&hydrotopes->meanwater, sizeof(Real), 1, file);
-  fwrite(&hydrotopes->wetland_area, sizeof(Real), 1, file);
-  fwrite(&hydrotopes->wetland_area_runmean, sizeof(Real), 1, file);
-  fwrite(&hydrotopes->wetland_cti, sizeof(Real), 1, file);
-  fwrite(&hydrotopes->wetland_cti_runmean, sizeof(Real), 1, file);
+  bstruct_writereal(file,"meanwater",hydrotopes->meanwater);
+  bstruct_writereal(file,"wetland_area",hydrotopes->wetland_area);
+  bstruct_writereal(file,"wetland_area_runmean",hydrotopes->wetland_area_runmean);
+  bstruct_writereal(file,"wetland_cti",hydrotopes->wetland_cti);
+  bstruct_writereal(file,"wetland_cti_mean",hydrotopes->wetland_cti_runmean);
 
-  fwrite(&hydrotopes->wetland_wtable_current, sizeof(Real), 1, file);
-  fwrite(&hydrotopes->wetland_wtable_max, sizeof(Real), 1, file);
-  return  (fwrite(&hydrotopes->wetland_wtable_mean, sizeof(Real), 1, file) != 1);
+  bstruct_writereal(file,"wetland_wtable_current",hydrotopes->wetland_wtable_current);
+  bstruct_writereal(file,"wetland_wtable_max",hydrotopes->wetland_wtable_max);
+  bstruct_writereal(file,"wetland_wtable_mean",hydrotopes->wetland_wtable_mean);
+  return bstruct_writeendstruct(file);
 } /* of 'fwritehydrotope' */
 

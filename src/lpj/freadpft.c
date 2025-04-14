@@ -16,20 +16,22 @@
 
 #include "lpj.h"
 
-Bool freadpft(FILE *file,            /**< pointer to binary file */
+#define readreal2(file,key,var) if(bstruct_readreal(file,key,var)) { fprintf(stderr,"ERROR254: Cannot read %s for PFT '%s'.\n",key,pft->par->name); return TRUE;}
+#define readint2(file,key,var) if(bstruct_readint(file,key,var)) { fprintf(stderr,"ERROR254: Cannot read %s for PFT '%s'.\n",key,pft->par->name); return TRUE;}
+
+Bool freadpft(Bstruct file,          /**< pointer to restart file */
               Stand *stand,          /**< Stand pointer */
               Pft *pft,              /**< PFT variables to read */
               const Pftpar pftpar[], /**< PFT parameter array */
               int ntotpft,           /**< total number of PFTs */
-              Bool separate_harvests,
-              Bool swap              /**< Byte order has to be changed
-                                        (TRUE/FALSE) */
+              Bool separate_harvests
              )                       /** \return TRUE on error */
 {
-  Byte id;
+  int id;
 
-
-  if(fread(&id,sizeof(id),1,file)!=1)
+  if(bstruct_readstruct(file,NULL))
+    return TRUE;
+  if(bstruct_readint(file,"id",&id))
     return TRUE;
   if(id>=ntotpft)
   {
@@ -38,32 +40,49 @@ Bool freadpft(FILE *file,            /**< pointer to binary file */
   }
   pft->par=pftpar+id;
   pft->stand=stand;
-  freadreal((Real *)(&pft->phen_gsi),sizeof(Phenology)/sizeof(Real),swap,file);
-  freadreal1(&pft->wscal,swap,file);
-  freadreal1(&pft->wscal_mean,swap,file);
-  freadreal1(&pft->vscal,swap,file);
-  freadreal1(&pft->aphen,swap,file);
-  freadreal1(&pft->phen,swap,file);
-  freadint1(&pft->inun_count, swap, file);
-  freadreal1(&pft->inun_stress, swap, file);
-  /* read class-dependent PFT variables */
-  if(pft->par->fread(file,pft,separate_harvests,swap))
+  if(bstruct_readstruct(file,"phen_gsi"))
   {
-    fprintf(stderr,"ERROR254: Cannot read PFT-specific data.\n");
+    fprintf(stderr,"ERROR254: Cannot read phen_gsi for PFT '%s'.\n",pft->par->name);
     return TRUE;
   }
-  freadreal((Real *)&pft->bm_inc,sizeof(Stocks)/sizeof(Real),swap,file);
-  freadreal1(&pft->nind,swap,file);
-  freadreal1(&pft->gdd,swap,file);
-  freadreal1(&pft->fpc,swap,file);
-  freadreal1(&pft->albedo,swap,file);
-  freadreal1(&pft->fapar,swap,file);
-  freadreal1(&pft->nleaf,swap,file);
-  freadreal((Real *)&pft->establish,sizeof(Stocks)/sizeof(Real),swap,file);
+  readreal2(file,"tmin",&pft->phen_gsi.tmin);
+  readreal2(file,"tmax",&pft->phen_gsi.tmax);
+  readreal2(file,"wscal",&pft->phen_gsi.wscal);
+  readreal2(file,"light",&pft->phen_gsi.light);
+  if(bstruct_readendstruct(file))
+    return TRUE;
+  readreal2(file,"wscal",&pft->wscal);
+  readreal2(file,"wscal_mean",&pft->wscal_mean);
+  readreal2(file,"vscal",&pft->vscal);
+  readreal2(file,"aphen",&pft->aphen);
+  readreal2(file,"phen",&pft->phen);
+  readint2(file,"inun_count",&pft->inun_count);
+  readreal2(file,"inun_stress",&pft->inun_stress);
+  /* write type-dependent PFT variables */
+  if(pft->par->fread(file,pft,separate_harvests))
+  {
+    fprintf(stderr,"ERROR254: Cannot read PFT-specific data for '%s'.\n",
+            pft->par->name);
+    return TRUE;
+  }
+  if(freadstocks(file,"bm_inc",&pft->bm_inc))
+  {
+    fprintf(stderr,"ERROR254: Cannot read bm_inc for PFT '%s'.\n",pft->par->name);
+    return TRUE;
+  }
+  readreal2(file,"nind",&pft->nind);
+  readreal2(file,"gdd",&pft->gdd);
+  readreal2(file,"fpc",&pft->fpc);
+  readreal2(file,"albdo",&pft->albedo);
+  readreal2(file,"fapae",&pft->fapar);
+  readreal2(file,"nleaf",&pft->nleaf);
+  if(freadstocks(file,"establish",&pft->establish))
+  {
+    fprintf(stderr,"ERROR254: Cannot read establish for PFT '%s'.\n",pft->par->name);
+    return TRUE;
+  }
+  readint2(file,"litter_id",&pft->litter);
   pft->vmax=0;
   pft->npp_bnf=0;
-  if(fread(&id,sizeof(id),1,file)!=1)
-    return TRUE;
-  pft->litter=id;
-  return FALSE;
+  return bstruct_readendstruct(file);
 } /* of 'freadpft' */

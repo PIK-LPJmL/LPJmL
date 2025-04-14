@@ -172,10 +172,10 @@ extern void update_annual(Cell *,int,int,
                           int,Bool,Bool,const Config *);
 extern void update_monthly(Cell *,Real,Real,int,const Config *);
 extern void init_annual(Cell *,int,const Config *);
-extern int fwritecell(FILE *,long long [],const Cell [],int,int,int,Bool,const Config *);
+extern int fwritecell(Bstruct,long long [],const Cell [],int,int,int,Bool,const Config *);
 extern void fprintcell(FILE *,const Cell [],int,int,int,const Config *);
-extern Bool freadcell(FILE *,Cell *,int,int,const Soilpar *,
-                      const Standtype [],int,Bool,Config *);
+extern Bool freadcell(Bstruct,Cell *,int,int,const Soilpar *,
+                      const Standtype [],int,Config *);
 extern int writecoords(Outputfile *,int,const Cell [],const Config *);
 extern int writearea(Outputfile *,int,const Cell [],const Config *);
 extern int writecountrycode(Outputfile *,int,const Cell [],const Config *);
@@ -213,6 +213,10 @@ extern void hydrotopes(Cell*);
 extern void update_wetland(Cell *, int, int,int,const Config *);
 extern void check_glaciated(Cell *,const Config *);
 extern Bool initoutput(Outputfile *,Cell [],int,int,Config *);
+extern Bool fwritestocks(Bstruct,const char *,const Stocks *);
+extern Bool fwritestocksarray(Bstruct,const char *,const Stocks [],int);
+extern Bool freadstocks(Bstruct,const char *,Stocks *);
+extern Bool freadstocksarray(Bstruct,const char *,Stocks [],int);
 
 /* Definition of macros */
 

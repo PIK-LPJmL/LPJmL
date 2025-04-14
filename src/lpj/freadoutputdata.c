@@ -16,19 +16,12 @@
 
 #include "lpj.h"
 
-Bool freadoutputdata(FILE *file,          /**< pointer to restart file */
-                     Output *output,      /**< output data */
-                     Bool swap,           /**< byte order has to be changed? */
-                     Config *config /**< LPJ configuration */
+Bool freadoutputdata(Bstruct file,     /**< pointer to restart file */
+                     const char *name, /**< name of object */
+                     Output *output,   /**< output data */
+                     Config *config    /**< LPJ configuration */
                     )
 {
-  if(freadint(&config->totalsize,1,swap,file)!=1)
-    return TRUE;
-  output->data=newvec(Real,config->totalsize);
-  if(output->data==NULL)
-  {
-    printallocerr("data");
-    return TRUE;
-  }
-  return freadreal(output->data,config->totalsize,swap,file)!=config->totalsize;
+  output->data=bstruct_readvarrealarray(file,name,&config->totalsize);
+  return (output->data==NULL);
 } /* of 'freadoutputdata' */

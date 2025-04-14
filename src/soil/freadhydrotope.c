@@ -16,23 +16,25 @@
 
 #include "lpj.h"
 
-Bool freadhydrotope(FILE *file, Hydrotope *hydrotopes, Bool swap)
+#define readreal(file,name,var) if(bstruct_readreal(file,name,var)) return TRUE
+
+Bool freadhydrotope(Bstruct file,const char *name, Hydrotope *hydrotopes)
 {
-
-  freadreal(&hydrotopes->wtable_mean, 1, swap, file);
-  freadreal(&hydrotopes->wtable_min, 1, swap, file);
-  freadreal(&hydrotopes->wtable_max, 1, swap, file);
-
-  freadreal(&hydrotopes->meanwater, 1, swap, file);
-  freadreal(&hydrotopes->wetland_area, 1, swap, file);
-  freadreal(&hydrotopes->wetland_area_runmean, 1, swap, file);
-  freadreal(&hydrotopes->wetland_cti, 1, swap, file);
-  freadreal(&hydrotopes->wetland_cti_runmean, 1, swap, file);
-
-  freadreal(&hydrotopes->wetland_wtable_current, 1, swap, file);
-  freadreal(&hydrotopes->wetland_wtable_max, 1, swap, file);
-  if (freadreal(&hydrotopes->wetland_wtable_mean, 1, swap, file) != 1)
+  if(bstruct_readstruct(file,name))
     return TRUE;
-  return FALSE;
+  readreal(file,"wtable_mean",&hydrotopes->wtable_mean);
+  readreal(file,"wtable_min",&hydrotopes->wtable_min);
+  readreal(file,"wtable_max",&hydrotopes->wtable_max);
+
+  readreal(file,"meanwater",&hydrotopes->meanwater);
+  readreal(file,"wetland_area",&hydrotopes->wetland_area);
+  readreal(file,"wetland_area_runmean",&hydrotopes->wetland_area_runmean);
+  readreal(file,"wetland_cti",&hydrotopes->wetland_cti);
+  readreal(file,"wetland_cti_mean",&hydrotopes->wetland_cti_runmean);
+
+  readreal(file,"wetland_wtable_current",&hydrotopes->wetland_wtable_current);
+  readreal(file,"wetland_wtable_max",&hydrotopes->wetland_wtable_max);
+  readreal(file,"wetland_wtable_mean",&hydrotopes->wetland_wtable_mean);
+  return bstruct_readendstruct(file);
 } /* of 'freadhydrotope' */
 

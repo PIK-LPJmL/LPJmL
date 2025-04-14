@@ -4,7 +4,7 @@
 /**                                                                                \n**/
 /**     C implementation of LPJmL                                                  \n**/
 /**                                                                                \n**/
-/**     Function writes litter variables into binary file                          \n**/
+/**     Function writes litter variables into restart file                         \n**/
 /**                                                                                \n**/
 /** (C) Potsdam Institute for Climate Impact Research (PIK), see COPYRIGHT file    \n**/
 /** authors, and contributors see AUTHORS file                                     \n**/
@@ -16,26 +16,34 @@
 
 #include "lpj.h"
 
-Bool fwritelitter(FILE *file, /**< pointer to binary file */
+static Bool fwritetrait(Bstruct file,const char *name,const Trait *trait)
+{
+  bstruct_writestruct(file,name);
+  fwritestocks(file,"leaf",&trait->leaf);
+  fwritestocksarray(file,"wood",trait->wood,NFUELCLASS);
+  return bstruct_writeendstruct(file);
+} /* of ' fwritetrait' */
+
+Bool fwritelitter(Bstruct file,        /**< pointer to restart file */
+                  const char *name,    /**< name of object */
                   const Litter *litter /**< pointer to litter data written */
                  )                     /** \return TRUE on error */
 {
-  Byte b;
   int l;
-  fwrite(litter->avg_fbd,sizeof(Real),NFUELCLASS+1,file);
-  b=(Byte)litter->n;
-  fwrite1(&b,sizeof(b),file);
+  bstruct_writerealarray(file,"avg_fbd",litter->avg_fbd,NFUELCLASS+1);
+  bstruct_writearray(file,name,litter->n);
   for(l=0;l<litter->n;l++)
   {
-    b=(Byte)litter->item[l].pft->id;
-    fwrite1(&b,sizeof(b),file);
-    fwrite1(&litter->item[l].agtop,sizeof(Trait),file);
-    fwrite1(&litter->item[l].agsub,sizeof(Trait),file);
-    fwrite1(&litter->item[l].bg,sizeof(Stocks),file);
+    bstruct_writestruct(file,NULL);
+    bstruct_writeint(file,"pft_id",litter->item[l].pft->id);
+    fwritetrait(file,"agtop",&litter->item[l].agtop);
+    fwritetrait(file,"agsub",&litter->item[l].agsub);
+    fwritestocks(file,"bg",&litter->item[l].bg);
+    bstruct_writeendstruct(file);
   }
-  fwrite1(&litter->agtop_wcap,sizeof(Real),file);
-  fwrite1(&litter->agtop_moist,sizeof(Real),file);
-  fwrite1(&litter->agtop_cover,sizeof(Real),file);
-  fwrite1(&litter->agtop_temp,sizeof(Real),file);
-  return FALSE;
+  bstruct_writeendarray(file);
+  bstruct_writereal(file,"agtop_wcap",litter->agtop_wcap);
+  bstruct_writereal(file,"agtop_moist",litter->agtop_moist);
+  bstruct_writereal(file,"agtop_cover",litter->agtop_cover);
+  return bstruct_writereal(file,"agtop_temp",litter->agtop_temp);
 } /* of 'fwritelitter' */

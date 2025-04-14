@@ -1,0 +1,47 @@
+.TH restart2yml 1  "USER COMMANDS"
+.SH NAME
+restart2yml \- Convert LPJmL restart file into YAML.
+.SH SYNOPSIS
+.B restart2yaml
+\fIrestartfile\fP [\-name key] [\-first] [start [end]]
+.SH DESCRIPTION
+Program prints contents of restart file of a LPJmL model run in YAML format.
+.SH OPTIONS
+.TP
+\-name key
+Print only variables/array/structures with name key.
+.TP
+\-first
+Stop at first occurence of key specified by the \-name option.
+.TP
+.I restartfile
+Name of restart file.
+.TP
+.I start
+Index of first grid cell to be printed.
+.TP
+.I end
+Index of last grid cell to be printed.
+
+.SH EXAMPLE
+.TP
+Print restart file
+.B restart2yaml
+restart.lpj >restart.yaml
+.PP
+.SH EXIT STATUS
+.B
+restart2yaml
+returns a zero exit status if the restart file has been printed.
+Non zero is returned in case of failure.
+
+.SH AUTHORS
+
+For authors and contributors see AUTHORS file
+
+.SH COPYRIGHT
+
+(C) Potsdam Institute for Climate Impact Research (PIK), see COPYRIGHT file
+
+.SH SEE ALSO
+lpjprint(1), lpjml(1), lpjcheck(1), lpjfiles(1)

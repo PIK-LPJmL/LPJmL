@@ -34,7 +34,6 @@ static Cell *newgrid2(Config *config,          /* Pointer to LPJ configuration *
   int i,n,l,j,data;
   int cft;
   Celldata celldata;
-  Bool swap_restart;
   Bool missing;
   Infile grassharvest_file;
   unsigned int soilcode;
@@ -50,7 +49,7 @@ static Cell *newgrid2(Config *config,          /* Pointer to LPJ configuration *
 #endif
 #endif
   int code;
-  FILE *file_restart;
+  Bstruct file_restart;
   Infile countrycode;
 
   /* Open coordinate and soil file */
@@ -187,9 +186,12 @@ static Cell *newgrid2(Config *config,          /* Pointer to LPJ configuration *
   }
   else
   {
-    file_restart=openrestart((config->ischeckpoint) ? config->checkpoint_restart_filename : config->restart_filename,config,npft+ncft,&swap_restart);
+    file_restart=openrestart((config->ischeckpoint) ? config->checkpoint_restart_filename : config->restart_filename,config,npft,ncft);
     if(file_restart==NULL)
     {
+      if(isroot(*config))
+        fprintf(stderr,"ERROR254: Cannot open %s file '%s'.\n",(config->ischeckpoint) ? "checkpoint" : "restart",
+                (config->ischeckpoint) ? config->checkpoint_restart_filename : config->restart_filename);
       free(grid);
       closecelldata(celldata,config);
       if(config->countrypar!=NULL)
@@ -425,7 +427,7 @@ static Cell *newgrid2(Config *config,          /* Pointer to LPJ configuration *
     {
       if(freadcell(file_restart,grid+i,npft,ncft,
                    config->soilpar+soil_id,standtype,nstand,
-                   swap_restart,config))
+                   config))
       {
         fprintf(stderr,"ERROR190: Cannot read restart data from '%s' for cell %d.\n",
                 (config->ischeckpoint) ? config->checkpoint_restart_filename : config->restart_filename,i+config->startgrid);
@@ -460,7 +462,7 @@ static Cell *newgrid2(Config *config,          /* Pointer to LPJ configuration *
     }
   } /* of for(i=0;...) */
   if(file_restart!=NULL)
-    fclose(file_restart);
+    bstruct_close(file_restart);
   closecelldata(celldata,config);
   if(config->grassharvest_filename.name!=NULL)
     closeinput(&grassharvest_file);

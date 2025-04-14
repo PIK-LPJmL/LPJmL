@@ -75,8 +75,8 @@ typedef struct
 
 extern Bool fscanhydropar(LPJfile *,Hydropar *,Verbosity);
 extern void fprinthydropar(FILE *,const Hydropar *);
-extern Bool freadhydrotope(FILE *, Hydrotope *,Bool);
-extern Bool fwritehydrotope(FILE *,const Hydrotope *);
+extern Bool freadhydrotope(Bstruct,const char *, Hydrotope *);
+extern Bool fwritehydrotope(Bstruct,const char *,const Hydrotope *);
 extern void fprinthydrotope(FILE *,const Hydrotope *);
 
 #endif

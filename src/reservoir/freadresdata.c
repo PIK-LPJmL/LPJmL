@@ -14,11 +14,36 @@
 
 #include "lpj.h"
 
-Bool freadresdata(FILE *file,  /**< pointer to restart file */
-                  Cell *cell,  /**< pointer to cell */
-                  Bool swap    /**< need to swap data read from restart file */
-                  )            /**\return TRUE on error */
+#define readreal2(file,name,val) if(bstruct_readreal(file,name,val)) return TRUE
+#define readfloat2(file,name,val) if(bstruct_readfloat(file,name,val)) return TRUE
+#define readrealarray2(file,name,val,size) if(bstruct_readrealarray(file,name,val,size)) return TRUE
+
+static Bool freadhist(Bstruct file,const char *name,Real hist[HIST_YEARS][NMONTH])
 {
+  int size,i;
+  if(bstruct_readarray(file,name,&size))
+    return TRUE;
+  if(size!=HIST_YEARS)
+  {
+    fprintf(stderr,"ERROR227: Size of %s=%d is not %d.\n",
+            name,size,HIST_YEARS);
+    return TRUE;
+  }
+  for(i=0;i<HIST_YEARS;i++)
+  {
+    if(bstruct_readrealarray(file,NULL,hist[i],NMONTH))
+      return TRUE;
+  }
+  return bstruct_readendarray(file);
+} /* of 'freadhist' */
+
+Bool freadresdata(Bstruct file,     /**< pointer to restart file */
+                  const char *name, /**< name of object */
+                  Cell *cell        /**< pointer to cell */
+                  )                 /**\return TRUE on error */
+{
+  if(bstruct_readstruct(file,name))
+    return TRUE;
   cell->ml.resdata=new(Resdata);
   if(cell->ml.resdata==NULL)
     return TRUE;
@@ -27,19 +52,23 @@ Bool freadresdata(FILE *file,  /**< pointer to restart file */
   cell->ml.resdata->fraction=NULL;
   initresdata(cell);
   /* read from restart file */
-  freadreal1(&cell->ml.reservoirfrac,swap,file);
-  freadreal((Real *)&cell->ml.resdata->pool,sizeof(Stocks)/sizeof(Real),swap,file);
-  freadreal1(&cell->ml.resdata->dmass,swap,file);
-  freadreal1(&cell->ml.resdata->k_rls,swap,file);
-  freadreal1(&cell->ml.resdata->target_release_year,swap,file);
-  freadfloat1(&cell->ml.resdata->reservoir.capacity,swap,file); /* reservoir input is only loaded in initreservoir but capacity used in update_reservoir_annual below */
-  freadreal(cell->ml.resdata->dfout_irrigation_daily, NIRRIGDAYS, swap, file);
-  freadreal(cell->ml.resdata->target_release_month, NMONTH, swap, file);
-  freadreal(cell->ml.resdata->demand_hist[0],NMONTH*HIST_YEARS,swap,file);
-  freadreal(cell->ml.resdata->inflow_hist[0],NMONTH*HIST_YEARS,swap,file);
-  freadreal(cell->ml.resdata->level_hist[0],NMONTH*HIST_YEARS,swap,file);
+  readreal2(file,"reservoirfrac",&cell->ml.reservoirfrac);
+  if(freadstocks(file,"pool",&cell->ml.resdata->pool))
+    return TRUE;
+  readreal2(file,"dmass",&cell->ml.resdata->dmass);
+  readreal2(file,"k_rls",&cell->ml.resdata->k_rls);
+  readreal2(file,"target_release_year",&cell->ml.resdata->target_release_year);
+  readfloat2(file,"reservoir_capacity",&cell->ml.resdata->reservoir.capacity); /* reservoir input is only loaded in initreservoir but capacity used in update_reservoir_annual below */
+  readrealarray2(file,"dfout_irrigation_daily",cell->ml.resdata->dfout_irrigation_daily, NIRRIGDAYS);
+  readrealarray2(file,"target_release_month",cell->ml.resdata->target_release_month, NMONTH);
+  if(freadhist(file,"demand_hist",cell->ml.resdata->demand_hist))
+    return TRUE;
+  if(freadhist(file,"inflow_hist",cell->ml.resdata->inflow_hist))
+    return TRUE;
+  if(freadhist(file,"level_hist",cell->ml.resdata->level_hist))
+    return TRUE;
   /* restore additional reservoir characteristics based on reservoir history */
   update_reservoir_annual(cell);
 
-  return FALSE;
+  return bstruct_readendstruct(file);
 } /* of 'freadresdata' */

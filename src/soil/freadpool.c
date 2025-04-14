@@ -1,9 +1,10 @@
 /**************************************************************************************/
 /**                                                                                \n**/
-/**      f  r  e  a  d  r  e  s  t  a  r  t  h  e  a  d  e  r  .  c                \n**/
+/**                 f  r  e  a  d  p  o  o  l  .  c                                \n**/
 /**                                                                                \n**/
-/**     Reading file header for LPJ restart files. Detects                         \n**/
-/**     whether byte order has to be changed                                       \n**/
+/**     C implementation of LPJmL                                                  \n**/
+/**                                                                                \n**/
+/**     Function reads pool variables into restart file                            \n**/
 /**                                                                                \n**/
 /** (C) Potsdam Institute for Climate Impact Research (PIK), see COPYRIGHT file    \n**/
 /** authors, and contributors see AUTHORS file                                     \n**/
@@ -15,20 +16,18 @@
 
 #include "lpj.h"
 
-Bool freadrestartheader(FILE *file,            /**< file pointer of binary file */
-                        Restartheader *header, /**< file header to be read */
-                        Bool swap              /**< set to TRUE if data is in different byte order */
-                       )                       /** \return TRUE on error */
+Bool freadpool(Bstruct file,     /**< pointer to restart file */
+               const char *name, /**< name oj object */
+               Pool *pool        /**< pointer to pool to read */
+              )                  /** \return TRUE on error */
 {
-  if(freadint(&header->landuse,1,swap,file)!=1)
+  if(bstruct_readstruct(file,name))
     return TRUE;
-  if(freadint(&header->river_routing,1,swap,file)!=1)
+  if(freadstocks(file,"slow",&pool->slow))
     return TRUE;
-  if(freadint(&header->sdate_option,1,swap,file)!=1)
+  if(freadstocks(file,"fast",&pool->fast))
     return TRUE;
-  if(freadint(&header->crop_phu_option,1,swap,file)!=1)
+  if(bstruct_readendstruct(file))
     return TRUE;
-  if(freadint(&header->separate_harvests,1,swap,file)!=1)
-    return TRUE;
-  return freadseed(file,header->seed,swap);
-} /* of 'freadrestartheader' */
+  return FALSE;
+} /* of 'freadpool' */

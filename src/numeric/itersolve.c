@@ -15,6 +15,7 @@
 #include <stdio.h>
 #include <math.h>
 #include "types.h"   /* Definition of datatype Real  */
+#include "bstruct.h"
 #include "numeric.h"
 #include "errmsg.h"
 

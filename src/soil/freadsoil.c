@@ -16,94 +16,149 @@
 
 #include "lpj.h"
 
-Bool freadsoil(FILE *file,             /**< pointer to binary file */
+#define readrealarray2(file,name,var,size) if(bstruct_readrealarray(file,name,var,size)) return TRUE
+#define readreal2(file,name,var) if(bstruct_readreal(file,name,var)) return TRUE
+#define readint2(file,name,var) if(bstruct_readint(file,name,var)) return TRUE
+#define readbool2(file,name,var) if(bstruct_readbool(file,name,var)) return TRUE
+
+Bool freadpoolpararray(Bstruct file,const char *name,Poolpar *pool,int size)
+{
+  int i,n;
+  if(bstruct_readarray(file,name,&n))
+    return TRUE;
+  if(n!=size)
+  {
+    fprintf(stderr,"ERROR227: Size of %s=%d is not %d.\n",
+            name,n,size);
+    return TRUE;
+  }
+  for(i=0;i<size;i++)
+  {
+    if(bstruct_readstruct(file,NULL))
+      return TRUE;
+    readreal2(file,"slow",&pool[i].slow);
+    readreal2(file,"fast",&pool[i].fast);
+    if(bstruct_readendstruct(file))
+      return TRUE;
+  }
+  return bstruct_readendarray(file);
+} /* of 'freadpoolpararray' */
+
+Bool freadsoil(Bstruct file,           /**< pointer to restart file */
+               const char *name,       /**< name of object */
                Soil *soil,             /**< Pointer to soil data */
                const Soilpar *soilpar, /**< soil parameter array */
                const Pftpar pftpar[],  /**< PFT parameter array */
-               int ntotpft,            /**< total number of PFTs */
-               Bool swap   /**< Byte order has to be changed (TRUE/FALSE) */
+               int ntotpft             /**< total number of PFTs */
               )            /** \return TRUE on error */
 {
-  int l;
+  int l,size;
   soil->par=soilpar;
+  if(bstruct_readstruct(file,name))
+    return TRUE;
+  if(bstruct_readarray(file,"pool",&size))
+    return TRUE;
+  if(size!=LASTLAYER)
+  {
+    fprintf(stderr,"ERROR227: Size of pool=%d is not %d.\n",
+            size,LASTLAYER);
+    return TRUE;
+  }
   forrootsoillayer(l)
   {
-    freadreal((Real *)&soil->pool[l],sizeof(Pool)/sizeof(Real),swap,file);
+    if(freadpool(file,NULL,soil->pool+l))
+      return TRUE;
+  }
+  if(bstruct_readendarray(file))
+    return TRUE;
+  if(bstruct_readarray(file,"c_shift",&size))
+    return TRUE;
+  if(size!=LASTLAYER)
+  {
+    fprintf(stderr,"ERROR227: Size of c_shift=%d is not %d.\n",
+            size,LASTLAYER);
+    return TRUE;
+  }
+  forrootsoillayer(l)
+  {
     soil->c_shift[l]=newvec(Poolpar,ntotpft);
     if(soil->c_shift[l]==NULL)
     {
       printallocerr("c_shift");
       return TRUE;
     }
-    freadreal((Real *)soil->c_shift[l],ntotpft*sizeof(Poolpar)/sizeof(Real),swap,file);
+    if(freadpoolpararray(file,NULL,soil->c_shift[l],ntotpft))
+      return TRUE;
   }
-  if(freadlitter(file,&soil->litter,pftpar,ntotpft,swap))
-  {
-    fprintf(stderr,"ERROR254: Cannot read litter data.\n");
+  if(bstruct_readendarray(file))
     return TRUE;
-  }
-  freadreal(soil->NO3,LASTLAYER,swap,file);
-  freadreal(soil->NH4,LASTLAYER,swap,file);
-  freadreal(soil->CH4, LASTLAYER, swap, file);
-  freadreal(soil->O2, LASTLAYER, swap, file);
-  freadreal(soil->wsat, NSOILLAYER, swap, file);
-  freadreal(soil->wpwp, NSOILLAYER, swap, file);
-  freadreal(soil->wfc, NSOILLAYER, swap, file);
-  freadreal(soil->whc, NSOILLAYER, swap, file);
-  freadreal(soil->whcs, NSOILLAYER, swap, file);
-  freadreal(soil->wpwps, NSOILLAYER, swap, file);
-  freadreal(soil->wsats, NSOILLAYER, swap, file);
-  freadreal(soil->beta_soil,NSOILLAYER, swap,file);
-  freadreal(soil->bulkdens, NSOILLAYER, swap, file);
-  freadreal(soil->k_dry, NSOILLAYER, swap, file);
-  freadreal(soil->Ks, NSOILLAYER, swap, file);
-  freadreal(soil->b, NSOILLAYER, swap, file);
-  freadreal(soil->psi_sat, NSOILLAYER, swap, file);
-  freadreal(soil->df_tillage, NTILLLAYER, swap, file);
-  freadreal(soil->w,NSOILLAYER,swap,file);
-  freadreal1(&soil->w_evap,swap,file);
-  freadreal(soil->w_fw,NSOILLAYER,swap,file);
-  freadreal1(&soil->snowpack,swap,file);
-  freadreal1(&soil->snowheight,swap,file);
-  freadreal1(&soil->snowfraction,swap,file);
-  freadreal(soil->temp,NSOILLAYER+1,swap,file);
-  freadreal(soil->amean_temp, NSOILLAYER + 1, swap, file);
-  freadreal(soil->enth,NHEATGRIDP,swap,file);
-  freadreal(soil->wi_abs_enth_adj,NSOILLAYER,swap,file);
-  freadreal(soil->sol_abs_enth_adj,NSOILLAYER,swap,file);
-  freadreal(soil->ice_depth,NSOILLAYER,swap,file);
-  freadreal(soil->ice_fw,NSOILLAYER,swap,file);
-  freadreal(soil->freeze_depth,NSOILLAYER,swap,file);
-  freadreal(soil->ice_pwp,NSOILLAYER,swap,file);
-  freadreal(soil->perc_energy,NSOILLAYER,swap,file);
-  freadshort(soil->state,NSOILLAYER,swap,file);
-  freadreal1(&soil->mean_maxthaw,swap,file);
-  freadreal1(&soil->alag,swap,file);
-  freadreal1(&soil->amp,swap,file);
-  freadreal1(&soil->rw_buffer,swap,file);
-#ifdef MICRO_HEATING
-  foreachsoillayer(l) soil->decomC[l]=soil->micro_heating[l]=0;
-#endif
-  freadreal((Real *)soil->k_mean,LASTLAYER*sizeof(Poolpar)/sizeof(Real),swap,file);
-  freadreal((Real *)soil->decay_rate,LASTLAYER*sizeof(Poolpar)/sizeof(Real),swap,file);
-  freadreal((Real *)&soil->decomp_litter_mean,sizeof(Stocks)/sizeof(Real),swap,file);
+  if(freadlitter(file,"litter",&soil->litter,pftpar,ntotpft))
+    return TRUE;
+  readrealarray2(file,"NO3",soil->NO3,LASTLAYER);
+  readrealarray2(file,"NH4",soil->NH4,LASTLAYER);
+  readrealarray2(file,"CH4",soil->CH4,LASTLAYER);
+  readrealarray2(file,"O2",soil->O2,LASTLAYER);
+  readrealarray2(file,"wsat",soil->wsat, NSOILLAYER);
+  readrealarray2(file,"wpwp",soil->wpwp, NSOILLAYER);
+  readrealarray2(file,"wfc",soil->wfc, NSOILLAYER);
+  readrealarray2(file,"whc",soil->whc, NSOILLAYER);
+  readrealarray2(file,"whcs",soil->whcs, NSOILLAYER);
+  readrealarray2(file,"wpwwps",soil->wpwps, NSOILLAYER);
+  readrealarray2(file,"wsats",soil->wsats, NSOILLAYER);
+  readrealarray2(file,"beta_soil",soil->beta_soil, NSOILLAYER);
+  readrealarray2(file,"bulkdens",soil->bulkdens, NSOILLAYER);
+  readrealarray2(file,"k_dry",soil->k_dry, NSOILLAYER);
+  readrealarray2(file,"Ks",soil->Ks, NSOILLAYER);
+  readrealarray2(file,"b",soil->b, NSOILLAYER);
+  readrealarray2(file,"psi_sat",soil->psi_sat, NSOILLAYER);
+  readrealarray2(file,"df_tillage",soil->df_tillage, NTILLLAYER);
+  readrealarray2(file,"w",soil->w,NSOILLAYER);
+  readreal2(file,"w_evap",&soil->w_evap);
+  readrealarray2(file,"w_fw",soil->w_fw,NSOILLAYER);
+  readreal2(file,"snowpack",&soil->snowpack);
+  readreal2(file,"snowheight",&soil->snowheight);
+  readreal2(file,"snowfraction",&soil->snowfraction);
+  readrealarray2(file,"temp",soil->temp,NSOILLAYER+1);
+  readrealarray2(file,"amean_temp",soil->amean_temp,NSOILLAYER+1);
+  readrealarray2(file,"enth",soil->enth,NHEATGRIDP);
+  readrealarray2(file,"wi_abs_enth_adj",soil->wi_abs_enth_adj,NSOILLAYER);
+  readrealarray2(file,"soil_abs_enth_adj",soil->sol_abs_enth_adj,NSOILLAYER);
+  readrealarray2(file,"ice_depth",soil->ice_depth,NSOILLAYER);
+  readrealarray2(file,"ice_fw",soil->ice_fw,NSOILLAYER);
+  readrealarray2(file,"freeze_depth",soil->freeze_depth,NSOILLAYER);
+  readrealarray2(file,"ice_pwp",soil->ice_pwp,NSOILLAYER);
+  readrealarray2(file,"perc_energy",soil->perc_energy,NSOILLAYER);
+  if(bstruct_readshortarray(file,"state",soil->state,NSOILLAYER))
+    return TRUE;
+  readreal2(file,"mean_maxthaw",&soil->mean_maxthaw);
+  readreal2(file,"alag",&soil->alag);
+  readreal2(file,"amp",&soil->amp);
+  readreal2(file,"rw_buffer",&soil->rw_buffer);
+  if(freadpoolpararray(file,"k_mean",soil->k_mean,LASTLAYER))
+    return TRUE;
+  if(freadpoolpararray(file,"decay_rate",soil->decay_rate,LASTLAYER))
+    return TRUE;
+  if(freadstocks(file,"decomp_litter_mean",&soil->decomp_litter_mean))
+    return TRUE;
   soil->decomp_litter_pft=newvec(Stocks,ntotpft);
   if(soil->decomp_litter_pft==NULL)
   {
     printallocerr("decomp_litter_pft");
     return TRUE;
   }
-  freadreal((Real *)soil->decomp_litter_pft,ntotpft*sizeof(Stocks)/sizeof(Real),swap,file);
-  freadint1(&soil->count,swap,file);
+  if(freadstocksarray(file,"decomp_litter_pft",soil->decomp_litter_pft,ntotpft))
+    return TRUE;
+  readint2(file,"count",&soil->count);
+  readreal2(file,"meanw1",&soil->meanw1);
 #ifdef MICRO_HEATING
-  soil->litter.decomC=0;
+  foreachsoillayer(l) soil->decomC[l]=soil->micro_heating[l]=0;
 #endif
   soil->YEDOMA=0;
 //  soil->snowheight=soil->snowfraction=0;
-  freadreal1(&soil->meanw1, swap, file);
-  freadreal1(&soil->wtable, swap, file);
-  freadreal1(&soil->wa, swap, file);
-  freadint1(&soil->iswetland, swap, file);
-  freadreal1(&soil->snowdens, swap, file);
-  return (freadreal1(&soil->fastfrac, swap, file) != 1);
+  readreal2(file,"wtable",&soil->wtable);
+  readreal2(file,"wa",&soil->wa);
+  readbool2(file,"iswetland",&soil->iswetland);
+  readreal2(file,"snowdens",&soil->snowdens);
+  readreal2(file,"fastfrac",&soil->fastfrac);
+  return bstruct_readendstruct(file);
 } /* of 'freadsoil' */

@@ -52,7 +52,7 @@ OBJS    = update_daily.$O update_annual.$O init_annual.$O\
           fscancultivationtypes.$O fscanlandcovermap.$O getroute.$O\
           fscanerrorlimit.$O createconfig.$O\
           wetland.$O copypft.$O plant_gas_transport.$O\
-          check_glaciated.$O fwriteoutput_ch4.$O
+          check_glaciated.$O fwriteoutput_ch4.$O freadstocks.$O fwritestocks.$O
 
 INC     = ../../include
 LIBDIR  = ../../lib
@@ -70,7 +70,7 @@ HDRS    = $(INC)/buffer.h $(INC)/coord.h $(INC)/lpj.h $(INC)/pftlist.h\
           $(INC)/natural.h $(INC)/reservoir.h $(INC)/spitfire.h $(INC)/grass.h\
           $(INC)/cropdates.h $(INC)/tree.h $(INC)/outfile.h $(INC)/cdf.h\
           $(INC)/wetland.h $(INC)/hydrotope.h $(INC)/icefrac.h\
-          $(INC)/coupler.h $(INC)/couplerpar.h
+          $(INC)/coupler.h $(INC)/couplerpar.h $(INC)/bstruct.h
 
 
 $(LIBDIR)/$(LIB): $(OBJS)
