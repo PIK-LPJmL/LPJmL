@@ -4,7 +4,7 @@
 /**                                                                                \n**/
 /**     C implementation of LPJmL                                                  \n**/
 /**                                                                                \n**/
-/**     Functions for reading/writing JSON-like objects from binayt file           \n**/
+/**     Functions for reading/writing JSON-like objects from binary file           \n**/
 /**                                                                                \n**/
 /** (C) Potsdam Institute for Climate Impact Research (PIK), see COPYRIGHT file    \n**/
 /** authors, and contributors see AUTHORS file                                     \n**/
@@ -16,6 +16,8 @@
 
 #ifndef BSTRUCT_H
 
+/* Definition of datatypes */
+
 typedef enum {BSTRUCT_BYTE,BSTRUCT_SHORT,BSTRUCT_INT,BSTRUCT_FLOAT,BSTRUCT_DOUBLE,
               BSTRUCT_BOOL,BSTRUCT_USHORT,BSTRUCT_ZERO,BSTRUCT_STRING,BSTRUCT_ARRAY,BSTRUCT_ARRAY1,
               BSTRUCT_STRUCT,BSTRUCT_INDEXARRAY,BSTRUCT_ENDSTRUCT,BSTRUCT_ENDARRAY} Bstruct_token;
@@ -23,8 +25,8 @@ typedef enum {BSTRUCT_BYTE,BSTRUCT_SHORT,BSTRUCT_INT,BSTRUCT_FLOAT,BSTRUCT_DOUBL
 typedef struct
 {
   Byte token;
-  int size;
-  char *name;
+  int size;     /**< size of array */
+  char *name;   /**< name of data object */
   union
   {
     char *string;
@@ -35,12 +37,14 @@ typedef struct
     unsigned short us;
     int i;
     Byte b;
-  } data;
+  } data;       /**< data content */
 } Bstruct_data;
+
+typedef struct bstruct *Bstruct;
 
 extern char *bstruct_typenames[];
 
-typedef struct bstruct *Bstruct;
+/* Declaration of functions */
 
 extern Bstruct bstruct_create(const char *);
 extern Bstruct bstruct_open(const char *,Bool);
@@ -91,5 +95,9 @@ extern Bool bstruct_readshortarray(Bstruct,const char *,short[],int);
 extern Bool bstruct_readrealarray(Bstruct,const char *,Real [],int);
 extern Real *bstruct_readvarrealarray(Bstruct,const char *,int *);
 extern long long bstruct_getarrayindex(Bstruct);
+
+/* Definition of macros */
+
+#define bstruct_printdata(data) bstruct_fprintdata(stdout,data)
 
 #endif /* of BSTRUCT_H */

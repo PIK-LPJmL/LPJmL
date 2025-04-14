@@ -4,7 +4,7 @@
 /**                                                                                \n**/
 /**     C implementation of LPJmL                                                  \n**/
 /**                                                                                \n**/
-/**     Utility converts restart file into yaml file                               \n**/
+/**     Utility converts restart file into yaml or JSON file                       \n**/
 /**                                                                                \n**/
 /** (C) Potsdam Institute for Climate Impact Research (PIK), see COPYRIGHT file    \n**/
 /** authors, and contributors see AUTHORS file                                     \n**/
@@ -31,7 +31,7 @@ static void printname(const char *name)
 {
   fputprintable(stdout,name);
   fputs(": ",stdout);
-}
+} /* of 'printname' */
 
 int main(int argc,char **argv)
 {
@@ -109,7 +109,7 @@ int main(int argc,char **argv)
   if(isjson)
     printf("{\n\"filename\" : \"%s\"",argv[iarg]);
   else
-    printf("%% YAML 1.2\n"
+    printf("%%YAML 1.2\n"
            "---\n"
            "filename: %s\n",
            argv[iarg]);
@@ -244,7 +244,7 @@ int main(int argc,char **argv)
           else
             printname(data.name);
         }
-        bstruct_fprintdata(stdout,&data);
+        bstruct_printdata(&data);
         if(!isjson)
           fputc('\n',stdout);
         if(key!=NULL && !strcmp(data.name,key))
@@ -253,7 +253,7 @@ int main(int argc,char **argv)
     } /* of switch(token) */
     bstruct_freedata(&data);
   } /* of while */
-  puts(isjson ? "}" : "...");
+  puts(isjson ? "]}" : "...");
   bstruct_close(file);
   return EXIT_SUCCESS;
 } /* of 'main' */

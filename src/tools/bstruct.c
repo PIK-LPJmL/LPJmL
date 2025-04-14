@@ -39,7 +39,7 @@ char *bstruct_typenames[]={"byte","short","int","float","double","bool","ushort"
 
 struct bstruct
 {
-  FILE *file; /**< pointer to binary */
+  FILE *file; /**< pointer to binary file */
   Bool swap;  /**< byte order has to be changed at reading */
   Bool isout; /**< error output on stderr enabled */
 };            /**< Definition of opaque datatype Bstruct */
@@ -835,7 +835,7 @@ Bool bstruct_readdata(Bstruct bstr,      /**< pointer to restart file */
       return freadlong(data->data.index,data->size,bstr->swap,bstr->file)!=data->size;
     default:
       return FALSE;
-  }
+  } /* of  switch(data->token) */
   return FALSE;
 } /* of 'bstruct_readdata' */
 
@@ -855,7 +855,9 @@ void bstruct_freedata(Bstruct_data *data)
   }
 } /* of 'bstruct_freedata' */
 
-void bstruct_fprintdata(FILE *file,const Bstruct_data *data)
+void bstruct_fprintdata(FILE *file,              /* pointer to text file */
+                        const Bstruct_data *data /* ponter to data object to print */
+                       )
 {
   switch(data->token)
   {

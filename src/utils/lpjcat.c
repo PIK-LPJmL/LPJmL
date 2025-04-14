@@ -62,7 +62,7 @@ int main(int argc,char **argv)
   long long len,filepos,offset;
   void *data;
   char *s,*arglist;
-  char *outfile="out.lpj";
+  char *outfile="out.lpj"; /* default name for restart file written */
   Bstruct out;
   time_t t;
   for(i=1;i<argc;i++)
@@ -89,6 +89,7 @@ int main(int argc,char **argv)
     else
       break;
   item=(Item *)malloc(sizeof(Item)*(argc-i));
+  check(item);
   ncell=count=0;
   if(i==argc)
   {
@@ -96,6 +97,7 @@ int main(int argc,char **argv)
             USAGE,argv[0]);
     return EXIT_FAILURE;
   }
+  /* open all restart files for reading */
   for(;i<argc;i++)
   {
     item[count].filename=argv[i];
@@ -104,6 +106,7 @@ int main(int argc,char **argv)
     {
       continue;
     }
+    /* read header */
     if(bstruct_readstruct(item[count].file,"header"))
     {
       bstruct_close(item[count].file);
@@ -216,6 +219,7 @@ int main(int argc,char **argv)
     }
     if(count)
     {
+      /* compare settings in header to first file */
       if(strcmp(header.version,header_first.version))
       {
         fprintf(stderr,"ERROR154: LPJ version %s differs from %s in file '%s'.\n",
@@ -235,7 +239,7 @@ int main(int argc,char **argv)
       if(header.cellsize_lat!=header_first.cellsize_lat)
       {
         fprintf(stderr,"ERROR154: Cell size latitude %g different from %g in file '%s'.\n",
-                header.cellsize_lon,header_first.cellsize_lon,argv[i]);
+                header.cellsize_lat,header_first.cellsize_lat,argv[i]);
         bstruct_close(item[count].file);
         return EXIT_FAILURE;
       }
@@ -300,12 +304,13 @@ int main(int argc,char **argv)
       header_first=header;
     ncell+=item[count].ncell;
     count++;
-  }
+  } /*  for(;i<argc;i++) */
   if(count==0)
   {
     fprintf(stderr,"No restart file successfully read.\n");
     return EXIT_FAILURE;
   }
+  /* sort files by first cell index */
   qsort(item,count,sizeof(Item),(int(*)(const void *,const void *))compare);
   for(i=1;i<count;i++)
   {
@@ -318,15 +323,19 @@ int main(int argc,char **argv)
       return EXIT_FAILURE;
     }
   }
+  /* create concatenated restart file */
   out=bstruct_create(outfile);
   if(out==NULL)
     return EXIT_FAILURE;
+  /* write header */
   bstruct_writestruct(out,"header");
   bstruct_writestring(out,"version",header_first.version);
   free(header_first.version);
   time(&t);
   arglist=catstrvec(argv,argc);
+  check(arglist);
   s=getsprintf("%s: %s",strdate(&t),arglist);
+  check(s);
   bstruct_writestring(out,"history",s);
   free(arglist);
   free(s);
@@ -350,6 +359,7 @@ int main(int argc,char **argv)
   index=newvec(long long,ncell);
   check(index);
   k=0;
+  /* copy LPJ grids */
   for(i=0;i<count;i++)
   {
     len=getfilesizep(bstruct_getfile(item[i].file))-item[i].index[0]-1;
