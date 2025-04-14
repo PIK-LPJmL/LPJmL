@@ -105,7 +105,7 @@ int main(int argc,char **argv)
     islastcell=TRUE;
   }
   if(isjson)
-    puts("{");
+    printf("{\n\"filename\" : \"%s\"",argv[iarg]);
   else
     printf("%% YAML 1.2\n"
            "---\n"
@@ -238,8 +238,8 @@ int main(int argc,char **argv)
             fputs("- ",stdout);
           else
             printname(data.name);
-          }
-          bstruct_fprintdata(stdout,&data);
+        }
+        bstruct_fprintdata(stdout,&data);
         if(!isjson)
           fputc('\n',stdout);
         if(key!=NULL && !strcmp(data.name,key))
