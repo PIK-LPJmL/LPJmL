@@ -214,6 +214,7 @@ export MANPATH=\$LPJROOT/man:\$MANPATH
 
 alias printheader="printclm -data"
 alias soil2cdf="clm2cdf -notime -raw -byte"
+alias restart2json="restart2yaml -json"
 EOF
 
 chmod +x bin/lpj_paths.sh
@@ -257,6 +258,7 @@ setenv MANPATH \$LPJROOT/man\:\$MANPATH
 
 alias printheader "printclm -data"
 alias soil2cdf "clm2cdf -notime -raw -byte"
+alias restart2json "restart2yaml -json"
 EOF
 chmod +x bin/lpj_paths.csh
 echo Put . $prefix/bin/lpj_paths.sh in your ~/.profile

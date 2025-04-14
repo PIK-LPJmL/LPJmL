@@ -25,7 +25,8 @@ of `major.minor.patch` with
 
 ### Added
 
-- Utility `restart2yaml` added to convert the new restart files into human readable YAML files.
+- Utility `restart2yaml` added to convert the new restart files into human readable YAML or JSON files.
+- alias `restart2json` added for `restart2yaml -json`.
 
 ### Changed
 

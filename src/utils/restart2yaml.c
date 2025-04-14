@@ -4,7 +4,7 @@
 /**                                                                                \n**/
 /**     C implementation of LPJmL                                                  \n**/
 /**                                                                                \n**/
-/**     Utility converts restart file into yaml file                               \n**/
+/**     Utility converts restart file into yaml or JSON file                       \n**/
 /**                                                                                \n**/
 /** (C) Potsdam Institute for Climate Impact Research (PIK), see COPYRIGHT file    \n**/
 /** authors, and contributors see AUTHORS file                                     \n**/
@@ -25,13 +25,13 @@
 
 //#define DEBUG
 
-#define USAGE "Usage: %s [-name key] [-first] [-json] restartfile [first [last]]\n"
+#define USAGE "Usage: %s [-name key] [-first] [-json] [-noindent] restartfile [first [last]]\n"
 
 static void printname(const char *name)
 {
   fputprintable(stdout,name);
   fputs(": ",stdout);
-}
+} /* of 'printname' */
 
 int main(int argc,char **argv)
 {
@@ -42,7 +42,7 @@ int main(int argc,char **argv)
   int level,iarg,keylevel;
   Bool notend,isarray=FALSE,iskey=TRUE,stop=FALSE;
   int firstcell,lastcell,last,cell;
-  Bool first=FALSE,islastcell=FALSE,isjson=FALSE;
+  Bool first=FALSE,islastcell=FALSE,isjson=FALSE,indent=TRUE;
   for(iarg=1;iarg<argc;iarg++)
     if(argv[iarg][0]=='-')
     {
@@ -59,6 +59,8 @@ int main(int argc,char **argv)
       }
       else if(!strcmp(argv[iarg],"-json"))
         isjson=TRUE;
+      else if(!strcmp(argv[iarg],"-noindent"))
+        indent=FALSE;
       else if(!strcmp(argv[iarg],"-first"))
         stop=TRUE;
       else
@@ -107,7 +109,7 @@ int main(int argc,char **argv)
   if(isjson)
     printf("{\n\"filename\" : \"%s\"",argv[iarg]);
   else
-    printf("%% YAML 1.2\n"
+    printf("%%YAML 1.2\n"
            "---\n"
            "filename: %s\n",
            argv[iarg]);
@@ -132,7 +134,8 @@ int main(int argc,char **argv)
         if(isjson && iskey)
         {
           putchar('\n');
-          repeatch(' ',2*(level-keylevel));
+          if(indent)
+            repeatch(' ',2*(level-keylevel));
           putchar(data.token==BSTRUCT_ENDSTRUCT ? '}' : ']');
         }
         if(key!=NULL && level==keylevel)
@@ -162,7 +165,8 @@ int main(int argc,char **argv)
             if(!first)
               puts(",");
             first=TRUE;
-            repeatch(' ',2*(level-keylevel));
+            if(indent)
+              repeatch(' ',2*(level-keylevel));
             if(data.name[0]=='\0')
               puts(data.token==BSTRUCT_STRUCT ? "{" : "[");
             else
@@ -224,7 +228,8 @@ int main(int argc,char **argv)
             first=FALSE;
           else
             puts(",");
-          repeatch(' ',2*(level-keylevel));
+          if(indent)
+            repeatch(' ',2*(level-keylevel));
           if(data.name[0]!='\0')
             printf("\"%s\" : ",data.name);
         }
@@ -239,7 +244,7 @@ int main(int argc,char **argv)
           else
             printname(data.name);
         }
-        bstruct_fprintdata(stdout,&data);
+        bstruct_printdata(&data);
         if(!isjson)
           fputc('\n',stdout);
         if(key!=NULL && !strcmp(data.name,key))
@@ -248,7 +253,7 @@ int main(int argc,char **argv)
     } /* of switch(token) */
     bstruct_freedata(&data);
   } /* of while */
-  puts(isjson ? "}" : "...");
+  puts(isjson ? "]}" : "...");
   bstruct_close(file);
   return EXIT_SUCCESS;
 } /* of 'main' */
