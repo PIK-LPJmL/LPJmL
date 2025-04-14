@@ -25,7 +25,7 @@
 
 //#define DEBUG
 
-#define USAGE "Usage: %s [-name key] [-first] [-json] restartfile [first [last]]\n"
+#define USAGE "Usage: %s [-name key] [-first] [-json] [-noindent] restartfile [first [last]]\n"
 
 static void printname(const char *name)
 {
@@ -42,7 +42,7 @@ int main(int argc,char **argv)
   int level,iarg,keylevel;
   Bool notend,isarray=FALSE,iskey=TRUE,stop=FALSE;
   int firstcell,lastcell,last,cell;
-  Bool first=FALSE,islastcell=FALSE,isjson=FALSE;
+  Bool first=FALSE,islastcell=FALSE,isjson=FALSE,indent=TRUE;
   for(iarg=1;iarg<argc;iarg++)
     if(argv[iarg][0]=='-')
     {
@@ -59,6 +59,8 @@ int main(int argc,char **argv)
       }
       else if(!strcmp(argv[iarg],"-json"))
         isjson=TRUE;
+      else if(!strcmp(argv[iarg],"-noindent"))
+        indent=FALSE;
       else if(!strcmp(argv[iarg],"-first"))
         stop=TRUE;
       else
@@ -132,7 +134,8 @@ int main(int argc,char **argv)
         if(isjson && iskey)
         {
           putchar('\n');
-          repeatch(' ',2*(level-keylevel));
+          if(indent)
+            repeatch(' ',2*(level-keylevel));
           putchar(data.token==BSTRUCT_ENDSTRUCT ? '}' : ']');
         }
         if(key!=NULL && level==keylevel)
@@ -162,7 +165,8 @@ int main(int argc,char **argv)
             if(!first)
               puts(",");
             first=TRUE;
-            repeatch(' ',2*(level-keylevel));
+            if(indent)
+              repeatch(' ',2*(level-keylevel));
             if(data.name[0]=='\0')
               puts(data.token==BSTRUCT_STRUCT ? "{" : "[");
             else
@@ -224,7 +228,8 @@ int main(int argc,char **argv)
             first=FALSE;
           else
             puts(",");
-          repeatch(' ',2*(level-keylevel));
+          if(indent)
+            repeatch(' ',2*(level-keylevel));
           if(data.name[0]!='\0')
             printf("\"%s\" : ",data.name);
         }

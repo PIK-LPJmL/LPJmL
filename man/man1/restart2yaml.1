@@ -3,7 +3,7 @@
 restart2yml \- Convert LPJmL restart file into YAML.
 .SH SYNOPSIS
 .B restart2yaml
-\fIrestartfile\fP [\-name key] [\-first] [\-json] [start [end]]
+\fIrestartfile\fP [\-name key] [\-first] [\-json] [\-noindent] [start [end]]
 .SH DESCRIPTION
 Program prints contents of restart file of a LPJmL model run in YAML format.
 .SH OPTIONS
@@ -17,6 +17,9 @@ Stop at first occurence of key specified by the \-name option.
 \-json
 Ouput format is set to JSON, default ist YAML.
 .TP
+\-noindent
+Disable indentations in JSON files to save storage space, default is 2 spaces per level.
+.TP
 .I restartfile
 Name of restart file.
 .TP
@@ -28,9 +31,14 @@ Index of last grid cell to be printed.
 
 .SH EXAMPLE
 .TP
-Print restart file
+Print restart file:
 .B restart2yaml
 restart.lpj >restart.yaml
+.PP
+.TP
+Print restart file as JSON file without indentation:
+.B restart2yaml
+-json -noindent restart.lpj >restart.yaml
 .PP
 .SH EXIT STATUS
 .B
