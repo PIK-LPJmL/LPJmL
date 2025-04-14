@@ -25,7 +25,7 @@
 
 //#define DEBUG
 
-#define USAGE "Usage: %s [-name key] [-first] restartfile [first [last]]\n"
+#define USAGE "Usage: %s [-name key] [-first] [-json] restartfile [first [last]]\n"
 
 static void printname(const char *name)
 {
@@ -42,7 +42,7 @@ int main(int argc,char **argv)
   int level,iarg,keylevel;
   Bool notend,isarray=FALSE,iskey=TRUE,stop=FALSE;
   int firstcell,lastcell,last,cell;
-  Bool first=FALSE,islastcell=FALSE;
+  Bool first=FALSE,islastcell=FALSE,isjson=FALSE;
   for(iarg=1;iarg<argc;iarg++)
     if(argv[iarg][0]=='-')
     {
@@ -57,6 +57,8 @@ int main(int argc,char **argv)
         key=argv[++iarg];
         iskey=FALSE;
       }
+      else if(!strcmp(argv[iarg],"-json"))
+        isjson=TRUE;
       else if(!strcmp(argv[iarg],"-first"))
         stop=TRUE;
       else
@@ -102,10 +104,13 @@ int main(int argc,char **argv)
     }
     islastcell=TRUE;
   }
-  printf("%% YAML 1.2\n"
-         "---\n"
-         "filename: %s\n",
-         argv[iarg]);
+  if(isjson)
+    puts("{");
+  else
+    printf("%% YAML 1.2\n"
+           "---\n"
+           "filename: %s\n",
+           argv[iarg]);
   level=0;
   cell=firstcell;
   notend=TRUE;
@@ -124,6 +129,12 @@ int main(int argc,char **argv)
     {
       case BSTRUCT_ENDSTRUCT: case BSTRUCT_ENDARRAY:
         level--;
+        if(isjson && iskey)
+        {
+          putchar('\n');
+          repeatch(' ',2*(level-keylevel));
+          putchar(data.token==BSTRUCT_ENDSTRUCT ? '}' : ']');
+        }
         if(key!=NULL && level==keylevel)
         {
           if(iskey && stop)
@@ -146,19 +157,33 @@ int main(int argc,char **argv)
         }
         if(iskey)
         {
-          if(first)
-            first=FALSE;
-          else
-            repeatch(' ',2*(level-keylevel));
-          if(data.name[0]=='\0')
+          if(isjson)
           {
-            fputs("- ",stdout);
+            if(!first)
+              puts(",");
             first=TRUE;
+            repeatch(' ',2*(level-keylevel));
+            if(data.name[0]=='\0')
+              puts(data.token==BSTRUCT_STRUCT ? "{" : "[");
+            else
+              printf("\"%s\" : %c\n",data.name,data.token==BSTRUCT_STRUCT ? '{' : '[');
           }
           else
           {
-            printname(data.name);
-            fputc('\n',stdout);
+            if(first)
+              first=FALSE;
+            else
+              repeatch(' ',2*(level-keylevel));
+            if(data.name[0]=='\0')
+            {
+              fputs("- ",stdout);
+              first=TRUE;
+            }
+            else
+            {
+              printname(data.name);
+              fputc('\n',stdout);
+            }
           }
         }
         level++;
@@ -183,7 +208,7 @@ int main(int argc,char **argv)
         }
         fseek(bstruct_getfile(file),data.data.index[firstcell],SEEK_SET);
         break;
-      default: 
+      default:
         if(key!=NULL && !strcmp(data.name,key))
         {
           if(stop)
@@ -193,23 +218,37 @@ int main(int argc,char **argv)
         }
         if(!iskey)
           break;
-        if(first)
-          first=FALSE;
-        else
+        if(isjson)
+        {
+          if(first)
+            first=FALSE;
+          else
+            puts(",");
           repeatch(' ',2*(level-keylevel));
-        if(data.name[0]=='\0')
-          fputs("- ",stdout);
+          if(data.name[0]!='\0')
+            printf("\"%s\" : ",data.name);
+        }
         else
-          printname(data.name);
-        bstruct_fprintdata(stdout,&data);
-        fputc('\n',stdout);
+        {
+          if(first)
+            first=FALSE;
+          else
+            repeatch(' ',2*(level-keylevel));
+          if(data.name[0]=='\0')
+            fputs("- ",stdout);
+          else
+            printname(data.name);
+          }
+          bstruct_fprintdata(stdout,&data);
+        if(!isjson)
+          fputc('\n',stdout);
         if(key!=NULL && !strcmp(data.name,key))
           iskey=FALSE;
         break;
     } /* of switch(token) */
     bstruct_freedata(&data);
   } /* of while */
-  printf("...\n");
+  puts(isjson ? "}" : "...");
   bstruct_close(file);
   return EXIT_SUCCESS;
 } /* of 'main' */
