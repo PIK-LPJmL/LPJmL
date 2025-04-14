@@ -19,7 +19,7 @@
 
 #define error(rc) if(rc) {free(lon);free(lat);free(year);fprintf(stderr,"ERROR427: Cannot write '%s': %s.\n",filename,nc_strerror(rc)); nc_close(cdf->ncid); free(cdf);return NULL;}
 
-#define USAGE "Usage: %s [-h] [-v] [-scale s] [-longheader] [-global] [-cellsize size]\n       [-byte] [-int] [-float] [[-attr name=value] ...] [-intnetcdf]\n       [-metafile] [-raw] [-nbands n] [-landuse] [-notime] [-compress level]\n       [-units u] [-map name] [-descr d] [-missing_value val] [-config file] [-netcdf4]\n       [name gridfile] clmfile netcdffile\n"
+#define USAGE "Usage: %s [-h] [-v] [-scale s] [-longheader] [-global] [-cellsize size]\n       [-byte] [-int] [-float] [[-attr name=value] ...] [-intnetcdf]\n       [-metafile] [-raw] [-nbands n] [-landuse] [-notime] [-compress level]\n       [-units u] [-map name] [-descr d] [-missing_value val] [-config file] [-netcdf4]\n       [varname gridfile] clmfile netcdffile\n"
 #define ERR_USAGE USAGE "\nTry \"%s --help\" for more information.\n"
 
 typedef struct
@@ -589,7 +589,7 @@ int main(int argc,char **argv)
                "-units u         set units in NetCDF file\n"
                "-missing_value v set missing value to v\n"
                "-config file     read NetCDF setting from JSON file\n"
-               "name             variable name in NetCDF file\n"
+               "varname          variable name in NetCDF file\n"
                "gridfile         filename of grid data file\n"
                "clmfile          filename of CLM data file\n"
                "netcdffile       filename of NetCDF file created\n\n"
