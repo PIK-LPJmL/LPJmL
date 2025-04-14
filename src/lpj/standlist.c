@@ -78,7 +78,7 @@ Standlist freadstandlist(Bstruct file,          /**< File pointer to binary file
       fprintf(stderr,"ERROR254: Cannot read stand %d.\n",s);
       return NULL;
     }
-  if(bstruct_readendarray(file))
+  if(bstruct_readendarray(file,name))
   {
     return NULL;
   }

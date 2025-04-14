@@ -35,6 +35,6 @@ Bool freadhydrotope(Bstruct file,const char *name, Hydrotope *hydrotopes)
   readreal(file,"wetland_wtable_current",&hydrotopes->wetland_wtable_current);
   readreal(file,"wetland_wtable_max",&hydrotopes->wetland_wtable_max);
   readreal(file,"wetland_wtable_mean",&hydrotopes->wetland_wtable_mean);
-  return bstruct_readendstruct(file);
+  return bstruct_readendstruct(file,name);
 } /* of 'freadhydrotope' */
 

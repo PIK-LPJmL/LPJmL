@@ -23,7 +23,7 @@ static Bool freadgrassphys(Bstruct file,const char *name,Grassphys *grass)
     return TRUE;
   if(freadstocks(file,"root",&grass->root))
     return TRUE;
-  return bstruct_readendstruct(file);
+  return bstruct_readendstruct(file,name);
 } /* of 'freadgrassphys' */
 
 static Bool freadgrassphyspar(Bstruct file,const char *name,Grassphyspar *grass)
@@ -34,7 +34,7 @@ static Bool freadgrassphyspar(Bstruct file,const char *name,Grassphyspar *grass)
     return TRUE;
   if(bstruct_readreal(file,"root",&grass->root))
     return TRUE;
-  return bstruct_readendstruct(file);
+  return bstruct_readendstruct(file,name);
 } /* of 'freadgrassphyspar' */
 
 Bool fread_grass(Bstruct file, /**< pointer to binary file */

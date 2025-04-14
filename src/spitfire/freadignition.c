@@ -26,5 +26,5 @@ Bool freadignition(Bstruct file,const char *name,Ignition *ignition)
     return TRUE;
   if(bstruct_readint(file,"nesterov_day",&ignition->nesterov_day))
     return TRUE;
-  return bstruct_readendstruct(file);
+  return bstruct_readendstruct(file,name);
 } /* of 'freadignition' */

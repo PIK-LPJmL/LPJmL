@@ -139,14 +139,14 @@ Buffer freadbuffer(Bstruct file,    /**< pointer to restart file */
       free(buffer);
       return NULL;
     }
-  if(bstruct_readendarray(file))
+  if(bstruct_readendarray(file,"data"))
   {
     /* read error occured */
     free(buffer->data);
     free(buffer);
     return NULL;
   }
-  if(bstruct_readendstruct(file))
+  if(bstruct_readendstruct(file,name))
   {
     /* read error occured */
     free(buffer->data);

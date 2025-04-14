@@ -108,7 +108,7 @@ Bool freadpftlist(Bstruct file,          /**< file pointer of a binary file */
   }
   else
     pftlist->pft=NULL;
-  return bstruct_readendarray(file);
+  return bstruct_readendarray(file,name);
 } /* of 'freadpftlist' */
 
 void freepftlist(Pftlist *pftlist /**< PFT list */

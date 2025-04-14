@@ -29,7 +29,7 @@ static Bool readrotation(Bstruct file,const char *name,Rotation *rotation)
     return TRUE;
   if(bstruct_readint(file,"mode",(int *)(&rotation->mode)))
     return TRUE;
-  return bstruct_readendstruct(file);
+  return bstruct_readendstruct(file,name);
 } /* of 'readrotation' */
 
 Bool fread_grassland(Bstruct file, /**< pointer to binary file */

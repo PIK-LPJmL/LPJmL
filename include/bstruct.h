@@ -16,12 +16,27 @@
 
 #ifndef BSTRUCT_H
 
-#define BSTRUCT_HEADER "BSTRUCT"
-#define BSTRUCT_VERSION 1
-
 typedef enum {BSTRUCT_BYTE,BSTRUCT_SHORT,BSTRUCT_INT,BSTRUCT_FLOAT,BSTRUCT_DOUBLE,
               BSTRUCT_BOOL,BSTRUCT_USHORT,BSTRUCT_ZERO,BSTRUCT_STRING,BSTRUCT_ARRAY,BSTRUCT_ARRAY1,
               BSTRUCT_STRUCT,BSTRUCT_INDEXARRAY,BSTRUCT_ENDSTRUCT,BSTRUCT_ENDARRAY} Bstruct_token;
+
+typedef struct
+{
+  Byte token;
+  int size;
+  char *name;
+  union
+  {
+    char *string;
+    long long *index;
+    double d;
+    float f;
+    short s;
+    unsigned short us;
+    int i;
+    Byte b;
+  } data;
+} Bstruct_data;
 
 extern char *bstruct_typenames[];
 
@@ -53,6 +68,9 @@ extern Bool bstruct_writeindexarray(Bstruct,const char *,long long *,int);
 extern Bool bstruct_writestruct(Bstruct,const char *);
 extern Bool bstruct_writeendstruct(Bstruct);
 extern Bool bstruct_writeendarray(Bstruct);
+extern void bstruct_fprintdata(FILE *,const Bstruct_data *);
+extern Bool bstruct_readdata(Bstruct,Bstruct_data *);
+extern void bstruct_freedata(Bstruct_data *);
 extern Bool bstruct_readarray(Bstruct,const char *,int *);
 extern Bool bstruct_readindexarray(Bstruct,long long *,int);
 extern Bool bstruct_seekindexarray(Bstruct,int,int);
@@ -66,8 +84,8 @@ extern Bool bstruct_readfloat(Bstruct,const char *,float *);
 extern Bool bstruct_readreal(Bstruct,const char *,Real *);
 extern Bool bstruct_readstruct(Bstruct,const char *);
 extern char *bstruct_readstring(Bstruct,const char *);
-extern Bool bstruct_readendstruct(Bstruct);
-extern Bool bstruct_readendarray(Bstruct);
+extern Bool bstruct_readendstruct(Bstruct,const char *);
+extern Bool bstruct_readendarray(Bstruct,const char *);
 extern Bool bstruct_readushortarray(Bstruct,const char *,unsigned short[],int);
 extern Bool bstruct_readshortarray(Bstruct,const char *,short[],int);
 extern Bool bstruct_readrealarray(Bstruct,const char *,Real [],int);

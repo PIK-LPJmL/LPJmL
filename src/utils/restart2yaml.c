@@ -25,21 +25,7 @@
 
 //#define DEBUG
 
-#define USAGE "Usage: %s [-name key] [-first] restartfile [first [last]]\n"
-
-#define readname2(file,name) if(readname(file,name)) {fprintf(stderr,"Error reading name of %s in '%s'.\n",bstruct_typenames[token],argv[1]); puts("..."); fclose(file); return EXIT_FAILURE; }
-
-static Bool readname(FILE *file,String name)
-{
-  /* Function reads name of object */
-  Byte len;
-  if(fread(&len,1,1,file)!=1)
-    return TRUE;
-  if(fread(name,1,len,file)!=len)
-    return TRUE;
-  name[len]='\0';
-  return FALSE;
-} /* of 'readname' */
+#define USAGE "Usage: %s [-name key] [-first] [-json] restartfile [first [last]]\n"
 
 static void printname(const char *name)
 {
@@ -49,22 +35,14 @@ static void printname(const char *name)
 
 int main(int argc,char **argv)
 {
-  FILE *file;
-  long long filepos;
+  Bstruct file;
+  Bstruct_data data;
   char *endptr;
-  char *string;
   char *key=NULL;
-  int version,level,iarg,keylevel;
-  Bool swap,notend,isarray=FALSE,iskey=TRUE,stop=FALSE;
-  Byte token,b;
-  short s;
-  unsigned short us;
-  int i,len;
-  double d;
-  float f;
+  int level,iarg,keylevel;
+  Bool notend,isarray=FALSE,iskey=TRUE,stop=FALSE;
   int firstcell,lastcell,last,cell;
-  Bool first=FALSE,islastcell=FALSE;
-  String name;
+  Bool first=FALSE,islastcell=FALSE,isjson=FALSE;
   for(iarg=1;iarg<argc;iarg++)
     if(argv[iarg][0]=='-')
     {
@@ -79,6 +57,8 @@ int main(int argc,char **argv)
         key=argv[++iarg];
         iskey=FALSE;
       }
+      else if(!strcmp(argv[iarg],"-json"))
+        isjson=TRUE;
       else if(!strcmp(argv[iarg],"-first"))
         stop=TRUE;
       else
@@ -96,12 +76,9 @@ int main(int argc,char **argv)
             USAGE,argv[0]);
     return EXIT_FAILURE;
   }
-  file=fopen(argv[iarg],"rb");
+  file=bstruct_open(argv[iarg],TRUE);
   if(file==NULL)
-  {
-    printfopenerr(argv[iarg]);
     return EXIT_FAILURE;
-  }
   firstcell=0;
   if(argc>iarg+1)
   {
@@ -117,20 +94,6 @@ int main(int argc,char **argv)
       return EXIT_FAILURE;
     }
   }
-  version=READ_VERSION;
-  if(freadtopheader(file,&swap,BSTRUCT_HEADER,&version,TRUE))
-  {
-    fprintf(stderr,"ERROR154: Invalid header in restart file '%s'.\n",argv[1]);
-    fclose(file);
-    return EXIT_FAILURE;
-  }
-  if(version!=BSTRUCT_VERSION)
-  {
-    fprintf(stderr,"ERROR154: Invalid version %d in restart file '%s', must be %d.\n",
-            version,argv[1],BSTRUCT_VERSION);
-    fclose(file);
-    return EXIT_FAILURE;
-  }
   if(argc>iarg+2)
   {
     lastcell=strtol(argv[iarg+2],&endptr,10);
@@ -141,17 +104,20 @@ int main(int argc,char **argv)
     }
     islastcell=TRUE;
   }
-  printf("%% YAML 1.2\n"
-         "---\n"
-         "filename: %s\n",
-         argv[iarg]);
+  if(isjson)
+    printf("{\n\"filename\" : \"%s\"",argv[iarg]);
+  else
+    printf("%% YAML 1.2\n"
+           "---\n"
+           "filename: %s\n",
+           argv[iarg]);
   level=0;
   cell=firstcell;
   notend=TRUE;
   keylevel=0;
   while(notend)
   {
-    if(fread(&token,1,1,file)!=1)
+    if(bstruct_readdata(file,&data))
     {
       fprintf(stderr,"Error reading cell %d in '%s'.\n",cell,argv[iarg]);
       break;
@@ -159,10 +125,16 @@ int main(int argc,char **argv)
 #ifdef DEBUG
     printf("%d,%d,%s:",cell,level,bstruct_typenames[token]);
 #endif
-    switch(token)
+    switch(data.token)
     {
       case BSTRUCT_ENDSTRUCT: case BSTRUCT_ENDARRAY:
         level--;
+        if(isjson && iskey)
+        {
+          putchar('\n');
+          repeatch(' ',2*(level-keylevel));
+          putchar(data.token==BSTRUCT_ENDSTRUCT ? '}' : ']');
+        }
         if(key!=NULL && level==keylevel)
         {
           if(iskey && stop)
@@ -178,67 +150,66 @@ int main(int argc,char **argv)
         }
         break;
       case BSTRUCT_STRUCT: case BSTRUCT_ARRAY: case BSTRUCT_ARRAY1:
-        readname2(file,name);
-        if(key!=NULL && !strcmp(name,key))
+        if(key!=NULL && !strcmp(data.name,key))
         {
           iskey=TRUE;
           keylevel=level;
         }
-        if(token==BSTRUCT_ARRAY)
-          fseek(file, sizeof(int),SEEK_CUR);
-        else if(token==BSTRUCT_ARRAY1)
-          fseek(file,1,SEEK_CUR);
         if(iskey)
         {
-          if(first)
-            first=FALSE;
-          else
-            repeatch(' ',2*(level-keylevel));
-          if(name[0]=='\0')
+          if(isjson)
           {
-            fputs("- ",stdout);
+            if(!first)
+              puts(",");
             first=TRUE;
+            repeatch(' ',2*(level-keylevel));
+            if(data.name[0]=='\0')
+              puts(data.token==BSTRUCT_STRUCT ? "{" : "[");
+            else
+              printf("\"%s\" : %c\n",data.name,data.token==BSTRUCT_STRUCT ? '{' : '[');
           }
           else
           {
-            printname(name);
-            fputc('\n',stdout);
+            if(first)
+              first=FALSE;
+            else
+              repeatch(' ',2*(level-keylevel));
+            if(data.name[0]=='\0')
+            {
+              fputs("- ",stdout);
+              first=TRUE;
+            }
+            else
+            {
+              printname(data.name);
+              fputc('\n',stdout);
+            }
           }
         }
         level++;
         break;
       case BSTRUCT_INDEXARRAY:
         isarray=TRUE;
-        if(freadint(&len,1,swap,file)!=1)
-        {
-          fprintf(stderr,"Error reading size of index array in '%s'.\n",argv[iarg]);
-          printf("...\n");
-          fclose(file);
-          return EXIT_FAILURE;
-        }
         if(islastcell)
           last=lastcell;
         else
-          last=len-1;
-        if(last>=len)
+          last=data.size-1;
+        if(last>=data.size)
         {
-          fprintf(stderr,"Last cell %d is greater than upper number of cells %d.\n",last,len-1);
-          fclose(file);
+          fprintf(stderr,"Last cell %d is greater than upper number of cells %d.\n",last,data.size-1);
+          bstruct_close(file);
           return EXIT_FAILURE;
         }
-        if(firstcell>=len)
+        if(firstcell>=data.size)
         {
-          fprintf(stderr,"First cell %d is greater than upper number of cells %d.\n",firstcell,len-1);
-          fclose(file);
+          fprintf(stderr,"First cell %d is greater than upper number of cells %d.\n",firstcell,data.size-1);
+          bstruct_close(file);
           return EXIT_FAILURE;
         }
-        fseek(file,sizeof(long long)*firstcell,SEEK_CUR);
-        freadlong(&filepos,1,swap,file);
-        fseek(file,filepos,SEEK_SET);
+        fseek(bstruct_getfile(file),data.data.index[firstcell],SEEK_SET);
         break;
-      case BSTRUCT_ZERO:
-        readname2(file,name);
-        if(key!=NULL && !strcmp(name,key))
+      default:
+        if(key!=NULL && !strcmp(data.name,key))
         {
           if(stop)
             notend=FALSE;
@@ -247,236 +218,37 @@ int main(int argc,char **argv)
         }
         if(!iskey)
           break;
-        if(first)
-          first=FALSE;
-        else
+        if(isjson)
+        {
+          if(first)
+            first=FALSE;
+          else
+            puts(",");
           repeatch(' ',2*(level-keylevel));
-        if(name[0]=='\0')
-          fputs("- ",stdout);
-        else
-          printname(name);
-        printf("0\n");
-        if(key!=NULL && !strcmp(name,key))
-          iskey=FALSE;
-        break;
-      case BSTRUCT_BYTE:
-        readname2(file,name);
-        if(key!=NULL && !strcmp(name,key))
-        {
-          if(stop)
-            notend=FALSE;
-          iskey=TRUE;
-          keylevel=level;
+          if(data.name[0]!='\0')
+            printf("\"%s\" : ",data.name);
         }
-        fread(&b,1,1,file);
-        if(!iskey)
-          break;
-        if(first)
-          first=FALSE;
         else
-        repeatch(' ',2*(level-keylevel));
-        if(name[0]=='\0')
-          fputs("- ",stdout);
-        else
-          printname(name);
-        printf("%d\n",b);
-        if(key!=NULL && !strcmp(name,key))
-          iskey=FALSE;
-        break;
-      case BSTRUCT_BOOL:
-        readname2(file,name);
-        fread(&b,1,1,file);
-        if(key!=NULL && !strcmp(name,key))
-        {
-          if(stop)
-            notend=FALSE;
-          iskey=TRUE;
-          keylevel=level;
-        }
-        if(!iskey)
-          break;
-        if(first)
-          first=FALSE;
-        else
-        repeatch(' ',2*(level-keylevel));
-        if(name[0]=='\0')
-          fputs("- ",stdout);
-        else
-          printname(name);
-        printf("%s\n",bool2str(b));
-        if(key!=NULL && !strcmp(name,key))
-          iskey=FALSE;
-        break;
-      case BSTRUCT_SHORT:
-        readname2(file,name);
-        freadshort(&s,1,swap,file);
-        if(key!=NULL && !strcmp(name,key))
-        {
-          if(stop)
-            notend=FALSE;
-          iskey=TRUE;
-          keylevel=level;
-        }
-        if(!iskey)
-          break;
-        if(first)
-          first=FALSE;
-        else
-          repeatch(' ',2*(level-keylevel));
-        if(name[0]=='\0')
-          fputs("- ",stdout);
-        else
-          printname(name);
-        printf("%d\n",s);
-        if(key!=NULL && !strcmp(name,key))
-          iskey=FALSE;
-        break;
-      case BSTRUCT_USHORT:
-        readname2(file,name);
-        freadushort(&us,1,swap,file);
-        if(key!=NULL && !strcmp(name,key))
-        {
-          if(stop)
-            notend=FALSE;
-          iskey=TRUE;
-          keylevel=level;
-        }
-        if(!iskey)
-          break;
-        if(first)
-          first=FALSE;
-        else
-          repeatch(' ',2*(level-keylevel));
-        if(name[0]=='\0')
-          fputs("- ",stdout);
-        else
-          printname(name);
-        printf("%d\n",us);
-        if(key!=NULL && !strcmp(name,key))
-          iskey=FALSE;
-        break;
-      case BSTRUCT_INT:
-        readname2(file,name);
-        freadint(&i,1,swap,file);
-        if(key!=NULL && !strcmp(name,key))
-        {
-          if(stop)
-            notend=FALSE;
-          keylevel=level;
-          iskey=TRUE;
-        }
-        if(!iskey)
-          break;
-        if(first)
-          first=FALSE;
-        else
-          repeatch(' ',2*(level-keylevel));
-        if(name[0]=='\0')
-          fputs("- ",stdout);
-        else
-          printname(name);
-        printf("%d\n",i);
-        if(key!=NULL && !strcmp(name,key))
-          iskey=FALSE;
-        break;
-      case BSTRUCT_FLOAT:
-        readname2(file,name);
-        freadfloat(&f,1,swap,file);
-        if(key!=NULL && !strcmp(name,key))
-        {
-          if(stop)
-            notend=FALSE;
-          keylevel=level;
-          iskey=TRUE;
-        }
-        if(!iskey)
-          break;
-        if(first)
-          first=FALSE;
-        else
-          repeatch(' ',2*(level-keylevel));
-        if(name[0]=='\0')
-          fputs("- ",stdout);
-        else
-          printname(name);
-        printf("%g\n",f);
-        if(key!=NULL && !strcmp(name,key))
-          iskey=FALSE;
-        break;
-      case BSTRUCT_DOUBLE:
-        readname2(file,name);
-        freaddouble(&d,1,swap,file);
-        if(key!=NULL && !strcmp(name,key))
-        {
-          if(stop)
-            notend=FALSE;
-          iskey=TRUE;
-          keylevel=level;
-        }
-        if(!iskey)
-          break;
-        if(first)
-          first=FALSE;
-        else
-          repeatch(' ',2*(level-keylevel));
-        if(name[0]=='\0')
-          fputs("- ",stdout);
-        else
-          printname(name);
-        printf("%g\n",d);
-        if(key!=NULL && !strcmp(name,key))
-          iskey=FALSE;
-        break;
-      case BSTRUCT_STRING:
-        readname2(file,name);
-        if(freadint(&len,1,swap,file)!=1)
-        {
-          fprintf(stderr,"Error reading string '%s' in '%s'.\n",name,argv[iarg]);
-          printf("...\n");
-          fclose(file);
-          return EXIT_FAILURE;
-        }
-        string=malloc(len+1);
-        if(string==NULL)
-        {
-          printallocerr("string");
-          printf("...\n");
-          fclose(file);
-          return EXIT_SUCCESS;
-        }
-        fread(string,1,len,file);
-        string[len]='\0';
-        if(key!=NULL && !strcmp(name,key))
-        {
-          if(stop)
-            notend=FALSE;
-          iskey=TRUE;
-          keylevel=level;
-        }
-        if(iskey)
         {
           if(first)
             first=FALSE;
           else
             repeatch(' ',2*(level-keylevel));
-          if(name[0]=='\0')
+          if(data.name[0]=='\0')
             fputs("- ",stdout);
           else
-            printname(name);
-          printf("\"%s\"\n",string);
+            printname(data.name);
         }
-        free(string);
-        if(key!=NULL && !strcmp(name,key))
+        bstruct_fprintdata(stdout,&data);
+        if(!isjson)
+          fputc('\n',stdout);
+        if(key!=NULL && !strcmp(data.name,key))
           iskey=FALSE;
         break;
-      default:
-        fprintf(stderr,"Invalid token %d in '%s'.\n",token,argv[iarg]);
-        printf("...\n");
-        fclose(file);
-        return EXIT_FAILURE;
     } /* of switch(token) */
+    bstruct_freedata(&data);
   } /* of while */
-  printf("...\n");
-  fclose(file);
+  puts(isjson ? "}" : "...");
+  bstruct_close(file);
   return EXIT_SUCCESS;
 } /* of 'main' */

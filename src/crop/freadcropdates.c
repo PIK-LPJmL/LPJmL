@@ -30,7 +30,7 @@ static Bool readcropdate(Bstruct file,Cropdates *cropdates)
     return TRUE;
   if(bstruct_readint(file,"last_update_vern",&cropdates->last_update_vern))
     return TRUE;
-  return bstruct_readendstruct(file);
+  return bstruct_readendstruct(file,NULL);
 } /* of 'readcropdate' */
 
 Cropdates *freadcropdates(Bstruct file, /**< Pointer to binary file */
@@ -58,7 +58,7 @@ Cropdates *freadcropdates(Bstruct file, /**< Pointer to binary file */
       return NULL;
     }
   }
-  if(bstruct_readendarray(file))
+  if(bstruct_readendarray(file,name))
   {
     free(cropdates);
     return NULL;

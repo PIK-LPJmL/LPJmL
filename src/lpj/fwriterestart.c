@@ -80,6 +80,7 @@ Bool fwriterestart(const Cell grid[],   /**< cell array               */
     bstruct_writestruct(file,"global_attrs");
     bstruct_writestring(file,"GIT_repo",getrepo());
     bstruct_writestring(file,"GIT_hash",gethash());
+    /* write global attributes */
     for(p=0;p<config->n_global;p++)
     {
       bstruct_writestring(file,config->global_attrs[p].name,config->global_attrs[p].value);
@@ -97,6 +98,7 @@ Bool fwriterestart(const Cell grid[],   /**< cell array               */
     bstruct_writebool(file,"crop_phu_option",config->crop_phu_option>=PRESCRIBED_CROP_PHU);
     bstruct_writebool(file,"river_routing",config->river_routing);
     bstruct_writebool(file,"separate_harvests",config->separate_harvests);
+    /* write array of all PFT names */
     bstruct_writearray(file,"pfts",npft+ncft);
     for(p=0;p<npft+ncft;p++)
       bstruct_writestring(file,NULL,config->pftpar[p].name);

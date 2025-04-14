@@ -3,7 +3,7 @@
 restart2yml \- Convert LPJmL restart file into YAML.
 .SH SYNOPSIS
 .B restart2yaml
-\fIrestartfile\fP [\-name key] [\-first] [start [end]]
+\fIrestartfile\fP [\-name key] [\-first] [\-json] [start [end]]
 .SH DESCRIPTION
 Program prints contents of restart file of a LPJmL model run in YAML format.
 .SH OPTIONS
@@ -13,6 +13,9 @@ Print only variables/array/structures with name key.
 .TP
 \-first
 Stop at first occurence of key specified by the \-name option.
+.TP
+\-json
+Ouput format is set to JSON, default ist YAML.
 .TP
 .I restartfile
 Name of restart file.
