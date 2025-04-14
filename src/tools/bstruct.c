@@ -27,6 +27,9 @@
 #include "swap.h"
 #include "bstruct.h"
 
+#define BSTRUCT_HEADER "BSTRUCT"
+#define BSTRUCT_VERSION 1
+
 static const size_t bstruct_typesizes[]={1,sizeof(short),sizeof(int),sizeof(float),
                                          sizeof(double),1,sizeof(unsigned short),0};
 
@@ -43,27 +46,34 @@ struct bstruct
 
 static Bool skipdata(Bstruct,Byte);
 
-static Bool readtoken(Bstruct bstr,Byte *b,int token,const char *name)
+static Bool readtoken(Bstruct bstr,     /**< pointer to restart file */
+                      Byte *token_read, /**< token read from file */
+                      int token,        /**< token expected */
+                      const char *name  /**< name of object expected */
+                     )                  /** \return TRUE on error */
 {
-  if(fread(b,1,1,bstr->file)!=1)
+  /* Function reads token from file */
+  if(fread(token_read,1,1,bstr->file)!=1)
   {
     if(bstr->isout)
       fprintf(stderr,"ERROR501: Cannot read '%s': %s.\n",
               name,strerror(errno));
     return TRUE;
   }
-  if(*b>BSTRUCT_ENDARRAY)
+  if(*token_read>BSTRUCT_ENDARRAY)
   {
     if(bstr->isout)
     {
       if(name==NULL)
-        fprintf(stderr,"ERROR502: Invalid token %d reading %s.\n",*b,bstruct_typenames[token]);
+        fprintf(stderr,"ERROR502: Invalid token %d reading %s.\n",
+                *token_read,bstruct_typenames[token]);
       else
-        fprintf(stderr,"ERROR502: Invalid token %d reading '%s'.\n",*b,name);
+        fprintf(stderr,"ERROR502: Invalid token %d reading '%s'.\n",
+                *token_read,name);
     }
     return TRUE;
   }
-  if(*b==BSTRUCT_ENDARRAY)
+  if(*token_read==BSTRUCT_ENDARRAY)
   {
     if(bstr->isout)
     {
@@ -75,7 +85,7 @@ static Bool readtoken(Bstruct bstr,Byte *b,int token,const char *name)
     }
     return TRUE;
   }
-  if(*b==BSTRUCT_ENDSTRUCT)
+  if(*token_read==BSTRUCT_ENDSTRUCT)
   {
     if(bstr->isout)
     {
@@ -207,9 +217,9 @@ static Bool writename(FILE *file,const String name)
 {
   /* Function write name of object into restart file */
   Bool rc;
-  Byte b;
+  Byte name_length;
   if(name==NULL)
-    b=0;
+    name_length=0;
   else
   {
     if(strlen(name)>UCHAR_MAX)
@@ -217,11 +227,11 @@ static Bool writename(FILE *file,const String name)
       fprintf(stderr,"ERROR610: String too long for key, must be less than 256.\n");
       return TRUE;
     }
-    b=strlen(name);
+    name_length=strlen(name);
   }
-  rc=fwrite(&b,1,1,file)!=1;
-  if(b)
-    rc=fwrite(name,1,b,file)!=b;
+  rc=fwrite(&name_length,1,1,file)!=1;
+  if(name_length)
+    rc=fwrite(name,1,name_length,file)!=name_length;
   return rc;
 } /* of 'writename' */
 
@@ -339,21 +349,21 @@ Bool bstruct_isdefined(Bstruct bstr,   /**< pointer to restart file */
 {
   long long pos;
   Bool rc;
-  Byte b,isout;
+  Byte token,isout;
   /* store file position */
   pos=ftell(bstr->file);
   /* read token */
-  if(fread(&b,1,1,bstr->file)!=1)
+  if(fread(&token,1,1,bstr->file)!=1)
     return FALSE;
-  if(b==BSTRUCT_ENDARRAY || b==BSTRUCT_ENDSTRUCT)
+  if(token==BSTRUCT_ENDARRAY || token==BSTRUCT_ENDSTRUCT)
   {
     fseek(bstr->file,pos,SEEK_SET);
     return FALSE;
   }
   isout=bstr->isout;
   /* temporarily switch off error messages */
-  bstr->isout=FALSE; 
-  rc=cmpkey(bstr,&b,key);
+  bstr->isout=FALSE;
+  rc=cmpkey(bstr,&token,key);
   bstr->isout=isout;
   /* restore position in file */
   fseek(bstr->file,pos,SEEK_SET);
@@ -380,9 +390,9 @@ Bool bstruct_writebyte(Bstruct bstr,     /**< pointer to restart file */
                       )                  /** \return TRUE on error */
 {
   Bool rc=FALSE;
-  Byte b;
-  b=(value==0) ? BSTRUCT_ZERO : BSTRUCT_BYTE;
-  fwrite(&b,1,1,bstr->file);
+  Byte token;
+  token=(value==0) ? BSTRUCT_ZERO : BSTRUCT_BYTE;
+  fwrite(&token,1,1,bstr->file);
   if(writename(bstr->file,name))
     return TRUE;
   if(value)
@@ -396,9 +406,9 @@ Bool bstruct_writeint(Bstruct bstr,     /**< pointer to restart file */
                      )                  /** \return TRUE on error */
 {
   Bool rc=FALSE;
-  Byte b;
-  b=(value==0) ? BSTRUCT_ZERO : BSTRUCT_INT;
-  fwrite(&b,1,1,bstr->file);
+  Byte token;
+  token=(value==0) ? BSTRUCT_ZERO : BSTRUCT_INT;
+  fwrite(&token,1,1,bstr->file);
   if(writename(bstr->file,name))
     return TRUE;
   if(value)
@@ -457,9 +467,9 @@ Bool bstruct_writeushort(Bstruct bstr,         /**< pointer to restart file */
                         )                      /** \return TRUE on error */
 {
   Bool rc=FALSE;
-  Byte b;
-  b=(value==0) ? BSTRUCT_ZERO : BSTRUCT_USHORT;
-  fwrite(&b,1,1,bstr->file);
+  Byte token;
+  token=(value==0) ? BSTRUCT_ZERO : BSTRUCT_USHORT;
+  fwrite(&token,1,1,bstr->file);
   if(writename(bstr->file,name))
     return TRUE;
   if(value)
@@ -473,9 +483,9 @@ Bool bstruct_writeshort(Bstruct bstr,     /**< pointer to restart file */
                        )                  /** \return TRUE on error */
 {
   Bool rc=FALSE;
-  Byte b;
-  b=(value==0) ? BSTRUCT_ZERO : BSTRUCT_SHORT;
-  fwrite(&b,1,1,bstr->file);
+  Byte token;
+  token=(value==0) ? BSTRUCT_ZERO : BSTRUCT_SHORT;
+  fwrite(&token,1,1,bstr->file);
   if(writename(bstr->file,name))
     return TRUE;
   if(value)
@@ -490,12 +500,12 @@ Bool bstruct_writereal(Bstruct bstr,     /**< pointer to restart file */
                       )                  /** \return TRUE on error */
 {
   Bool rc=FALSE;
-  Byte b;
+  Byte token;
   if(value==0.0)
-    b=BSTRUCT_ZERO;
+    token=BSTRUCT_ZERO;
   else
-    b=(sizeof(Real)==sizeof(double)) ? BSTRUCT_DOUBLE : BSTRUCT_FLOAT;
-  fwrite(&b,1,1,bstr->file);
+    token=(sizeof(Real)==sizeof(double)) ? BSTRUCT_DOUBLE : BSTRUCT_FLOAT;
+  fwrite(&token,1,1,bstr->file);
   if(writename(bstr->file,name))
     return TRUE;
   if(value!=0.0)
@@ -509,9 +519,9 @@ Bool bstruct_writefloat(Bstruct bstr,     /**< pointer to restart file */
                        )                  /** \return TRUE on error */
 {
   Bool rc=FALSE;
-  Byte b;
-  b=(value==0) ? BSTRUCT_ZERO : BSTRUCT_FLOAT;
-  fwrite(&b,1,1,bstr->file);
+  Byte token;
+  token=(value==0) ? BSTRUCT_ZERO : BSTRUCT_FLOAT;
+  fwrite(&token,1,1,bstr->file);
   if(writename(bstr->file,name))
     return TRUE;
   if(value!=0.0)
@@ -525,9 +535,9 @@ Bool bstruct_writestring(Bstruct bstr,     /**< pointer to restart file */
                         )                  /** \return TRUE on error */
 {
   int len;
-  Byte b;
-  b=BSTRUCT_STRING;
-  fwrite(&b,1,1,bstr->file);
+  Byte token;
+  token=BSTRUCT_STRING;
+  fwrite(&token,1,1,bstr->file);
   if(writename(bstr->file,name))
     return TRUE;
   len=strlen(value);
@@ -562,11 +572,11 @@ Bool bstruct_writeindexarray(Bstruct bstr,       /**< pointer to restart file */
                             )                    /** \return TRUE on error */
 {
   /* define array with index vector and get position of first element of index vector */
-  Byte b;
+  Byte token;
   if(bstruct_writearray(bstr,name,size))
     return TRUE;
-  b=BSTRUCT_INDEXARRAY;
-  fwrite(&b,1,1,bstr->file);
+  token=BSTRUCT_INDEXARRAY;
+  fwrite(&token,1,1,bstr->file);
   if(fwrite(&size,sizeof(size),1,bstr->file)!=1)
     return TRUE;
   *filepos=ftell(bstr->file);
@@ -590,26 +600,26 @@ Bool bstruct_writestruct(Bstruct bstr,    /**< pointer to restart file */
                          const char *name /**< name of object or NULL */
                         )                 /** \return TRUE on error */
 {
-  Byte b;
-  b=BSTRUCT_STRUCT;
-  fwrite(&b,1,1,bstr->file);
+  Byte token;
+  token=BSTRUCT_STRUCT;
+  fwrite(&token,1,1,bstr->file);
   return writename(bstr->file,name);
 } /* of 'bstruct_writestruct' */
 
 Bool bstruct_writeendstruct(Bstruct bstr /**< pointer to restart file */
                            )             /** \return TRUE on error */
 {
-  Byte b;
-  b=BSTRUCT_ENDSTRUCT;
-  return fwrite(&b,1,1,bstr->file)!=1;
+  Byte token;
+  token=BSTRUCT_ENDSTRUCT;
+  return fwrite(&token,1,1,bstr->file)!=1;
 } /* of 'bstruct_writeendstruct' */
 
 Bool bstruct_writeendarray(Bstruct bstr /**< pointer to restart file */
                           )             /** \return TRUE on error */
 {
-  Byte b;
-  b=BSTRUCT_ENDARRAY;
-  return fwrite(&b,1,1,bstr->file)!=1;
+  Byte token;
+  token=BSTRUCT_ENDARRAY;
+  return fwrite(&token,1,1,bstr->file)!=1;
 } /* of 'bstruct_writeendarray' */
 
 static Bool skipdata(Bstruct bstr, /**< pointer to restart file */
@@ -743,6 +753,144 @@ static Bool skipdata(Bstruct bstr, /**< pointer to restart file */
   return FALSE;
 } /* of 'skipdata' */
 
+Bool bstruct_readdata(Bstruct bstr,      /**< pointer to restart file */
+                      Bstruct_data *data /**< data read from file */
+                     )                   /**  \return TRUE on error */
+{
+  /* Function reads one data object */
+  Byte len;
+  int string_length;
+  data->name=NULL;
+  if(fread(&data->token,1,1,bstr->file)!=1)
+    return TRUE;
+  if(data->token==BSTRUCT_ENDARRAY || data->token==BSTRUCT_ENDSTRUCT)
+    return FALSE;
+  if(data->token>BSTRUCT_ENDARRAY)
+  {
+    if(bstr->isout)
+      fprintf(stderr,"ERROR502: Invalid token %d.\n",data->token);
+    return TRUE;
+  }
+  if(data->token!=BSTRUCT_INDEXARRAY)
+  {
+    if(fread(&len,1,1,bstr->file)!=1)
+      return TRUE;
+    data->name=malloc((int)len+1);
+    if(data->name==NULL)
+    {
+      printallocerr("name");
+      return TRUE;
+    }
+    if(fread(data->name,1,len,bstr->file)!=len)
+    {
+      free(data->name);
+      data->name=NULL;
+      return TRUE;
+    }
+    data->name[len]='\0';
+  }
+  switch(data->token)
+  {
+    case BSTRUCT_BYTE: case BSTRUCT_BOOL:
+      return fread(&data->data.b,1,1,bstr->file)!=1;
+    case BSTRUCT_USHORT:
+      return freadushort(&data->data.us,1,bstr->swap,bstr->file)!=1;
+    case BSTRUCT_SHORT:
+      return freadshort(&data->data.s,1,bstr->swap,bstr->file)!=1;
+    case BSTRUCT_INT:
+      return freadint(&data->data.i,1,bstr->swap,bstr->file)!=1;
+    case BSTRUCT_FLOAT:
+      return freadfloat(&data->data.f,1,bstr->swap,bstr->file)!=1;
+    case BSTRUCT_DOUBLE:
+      return freaddouble(&data->data.d,1,bstr->swap,bstr->file)!=1;
+    case BSTRUCT_STRING:
+      if(freadint(&string_length,1,bstr->swap,bstr->file)!=1)
+        return TRUE;
+      data->data.string=malloc(string_length+1);
+      if(data->data.string==NULL)
+      {
+        printallocerr("string");
+        return TRUE;
+      }
+      if(fread(data->data.string,1,string_length,bstr->file)!=string_length)
+        return TRUE;
+      data->data.string[string_length]='\0';
+      return FALSE;
+    case BSTRUCT_ARRAY1:
+      if(fread(&len,1,1,bstr->file)!=1)
+        return TRUE;
+      data->size=len;
+      return FALSE;
+    case BSTRUCT_ARRAY:
+      return freadint(&data->size,1,bstr->swap,bstr->file)!=1;
+    case BSTRUCT_INDEXARRAY:
+      if(freadint(&data->size,1,bstr->swap,bstr->file)!=1)
+        return TRUE;
+      data->data.index=newvec(long long,data->size);
+      if(data->data.index==NULL)
+      {
+        printallocerr("index");
+        return TRUE;
+      }
+      return freadlong(data->data.index,data->size,bstr->swap,bstr->file)!=data->size;
+    default:
+      return FALSE;
+  }
+  return FALSE;
+} /* of 'bstruct_readdata' */
+
+void bstruct_freedata(Bstruct_data *data)
+{
+  free(data->name);
+  switch(data->token)
+  {
+    case BSTRUCT_STRING:
+      free(data->data.string);
+      break;
+    case BSTRUCT_INDEXARRAY:
+      free(data->data.index);
+      break;
+    default:
+      break;
+  }
+} /* of 'bstruct_freedata' */
+
+void bstruct_fprintdata(FILE *file,const Bstruct_data *data)
+{
+  switch(data->token)
+  {
+    case BSTRUCT_ZERO:
+      fputc('0',file);
+      break;
+    case BSTRUCT_BOOL:
+      fprintf(file,"%s",bool2str(data->data.b));
+      break;
+    case BSTRUCT_BYTE:
+      fprintf(file,"%d",data->data.b);
+      break;
+    case BSTRUCT_SHORT:
+      fprintf(file,"%d",data->data.s);
+      break;
+    case BSTRUCT_USHORT:
+      fprintf(file,"%d",data->data.us);
+      break;
+    case BSTRUCT_INT:
+      fprintf(file,"%d",data->data.i);
+      break;
+    case BSTRUCT_FLOAT:
+      fprintf(file,"%g",data->data.f);
+      break;
+    case BSTRUCT_DOUBLE:
+      fprintf(file,"%g",data->data.d);
+      break;
+    case BSTRUCT_STRING:
+      fprintf(file,"\"%s\"",data->data.string);
+      break;
+    default:
+      break;
+  } /* of switch(data->token) */
+} /* of 'bstruct_fprintdata' */
+
 Bool bstruct_readbool(Bstruct bstr,     /**< pointer to restart file */
                       const char *name, /**< name of object or NULL */
                       Bool *value       /**< value read from file */
@@ -766,27 +914,26 @@ Bool bstruct_readbool(Bstruct bstr,     /**< pointer to restart file */
   return FALSE;
 } /* of 'bstruct_readbool' */
 
-
 Bool bstruct_readbyte(Bstruct bstr,     /**< pointer to restart file */
                       const char *name, /**< name of object or NULL */
                       Byte *value       /**< value read from file */
                      )                  /** \return TRUE on error */
 {
-  Byte b;
-  if(readtoken(bstr,&b,BSTRUCT_BYTE,name))
+  Byte token;
+  if(readtoken(bstr,&token,BSTRUCT_BYTE,name))
     return TRUE;
-  if(cmpkey(bstr,&b,name))
+  if(cmpkey(bstr,&token,name))
     return TRUE;
-  if(b==BSTRUCT_ZERO)
+  if(token==BSTRUCT_ZERO)
   {
     *value=0;
     return FALSE;
   }
-  if(b!=BSTRUCT_BYTE)
+  if(token!=BSTRUCT_BYTE)
   {
     if(bstr->isout)
       fprintf(stderr,"ERROR509: Type of '%s'=%s is not byte.\n",
-              name,bstruct_typenames[b]);
+              name,bstruct_typenames[token]);
     return TRUE;
   }
   return fread(value,1,1,bstr->file)!=1;
@@ -797,21 +944,21 @@ Bool bstruct_readint(Bstruct bstr,     /**< pointer to restart file */
                      int *value        /**< value read from file */
                     )                  /** \return TRUE on error */
 {
-  Byte b;
-  if(readtoken(bstr,&b,BSTRUCT_INT,name))
+  Byte token;
+  if(readtoken(bstr,&token,BSTRUCT_INT,name))
     return TRUE;
-  if(cmpkey(bstr,&b,name))
+  if(cmpkey(bstr,&token,name))
     return TRUE;
-  if(b==BSTRUCT_ZERO)
+  if(token==BSTRUCT_ZERO)
   {
     *value=0;
     return FALSE;
   }
-  if(b!=BSTRUCT_INT)
+  if(token!=BSTRUCT_INT)
   {
     if(bstr->isout)
       fprintf(stderr,"ERROR509: Type of '%s'=%s is not int.\n",
-              name,bstruct_typenames[b]);
+              name,bstruct_typenames[token]);
     return TRUE;
   }
   return freadint(value,1,bstr->swap,bstr->file)!=1;
@@ -822,21 +969,21 @@ Bool bstruct_readshort(Bstruct bstr,     /**< pointer to restart file */
                        short *value      /**< value read from file */
                       )                  /** \return TRUE on error */
 {
-  Byte b;
-  if(readtoken(bstr,&b,BSTRUCT_SHORT,name))
+  Byte token;
+  if(readtoken(bstr,&token,BSTRUCT_SHORT,name))
     return TRUE;
-  if(cmpkey(bstr,&b,name))
+  if(cmpkey(bstr,&token,name))
     return TRUE;
-  if(b==BSTRUCT_ZERO)
+  if(token==BSTRUCT_ZERO)
   {
     *value=0;
     return FALSE;
   }
-  if(b!=BSTRUCT_SHORT)
+  if(token!=BSTRUCT_SHORT)
   {
     if(bstr->isout)
       fprintf(stderr,"ERROR509: Type of '%s'=%s is not short.\n",
-              name,bstruct_typenames[b]);
+              name,bstruct_typenames[token]);
     return TRUE;
   }
   return freadshort(value,1,bstr->swap,bstr->file)!=1;
@@ -847,21 +994,21 @@ Bool bstruct_readushort(Bstruct bstr,         /**< pointer to restart file */
                         unsigned short *value /**< value read from file */
                        )                      /** \return TRUE on error */
 {
-  Byte b;
-  if(readtoken(bstr,&b,BSTRUCT_USHORT,name))
+  Byte token;
+  if(readtoken(bstr,&token,BSTRUCT_USHORT,name))
     return TRUE;
-  if(cmpkey(bstr,&b,name))
+  if(cmpkey(bstr,&token,name))
     return TRUE;
-  if(b==BSTRUCT_ZERO)
+  if(token==BSTRUCT_ZERO)
   {
     *value=0;
     return FALSE;
   }
-  if(b!=BSTRUCT_USHORT)
+  if(token!=BSTRUCT_USHORT)
   {
     if(bstr->isout)
       fprintf(stderr,"ERROR509: Type of '%s'=%s is not unsigned short.\n",
-              name,bstruct_typenames[b]);
+              name,bstruct_typenames[token]);
     return TRUE;
   }
   return freadushort(value,1,bstr->swap,bstr->file)!=1;
@@ -872,21 +1019,21 @@ Bool bstruct_readfloat(Bstruct bstr,     /**< pointer to restart file */
                        float *value      /**< value read from file */
                       )                  /** \return TRUE on error */
 {
-  Byte b;
-  if(readtoken(bstr,&b,BSTRUCT_FLOAT,name))
+  Byte token;
+  if(readtoken(bstr,&token,BSTRUCT_FLOAT,name))
     return TRUE;
-  if(cmpkey(bstr,&b,name))
+  if(cmpkey(bstr,&token,name))
     return TRUE;
-  if(b==BSTRUCT_ZERO)
+  if(token==BSTRUCT_ZERO)
   {
     *value=0;
     return FALSE;
   }
-  if(b!=BSTRUCT_FLOAT)
+  if(token!=BSTRUCT_FLOAT)
   {
     if(bstr->isout)
       fprintf(stderr,"ERROR509: Type of '%s'=%s is not float.\n",
-              name,bstruct_typenames[b]);
+              name,bstruct_typenames[token]);
     return TRUE;
   }
   return freadfloat(value,1,bstr->swap,bstr->file)!=1;
@@ -897,21 +1044,21 @@ Bool bstruct_readreal(Bstruct bstr,     /**< pointer to restart file */
                       Real *value       /**< value read from file */
                      )                  /** \return TRUE on error */
 {
-  Byte b;
-  if(readtoken(bstr,&b,(sizeof(Real)==sizeof(double)) ? BSTRUCT_DOUBLE : BSTRUCT_FLOAT,name))
+  Byte token;
+  if(readtoken(bstr,&token,(sizeof(Real)==sizeof(double)) ? BSTRUCT_DOUBLE : BSTRUCT_FLOAT,name))
     return TRUE;
-  if(cmpkey(bstr,&b,name))
+  if(cmpkey(bstr,&token,name))
     return TRUE;
-  if(b==BSTRUCT_ZERO)
+  if(token==BSTRUCT_ZERO)
   {
     *value=0;
     return FALSE;
   }
-  if(b!=((sizeof(Real)==sizeof(double)) ? BSTRUCT_DOUBLE : BSTRUCT_FLOAT))
+  if(token!=((sizeof(Real)==sizeof(double)) ? BSTRUCT_DOUBLE : BSTRUCT_FLOAT))
   {
     if(bstr->isout)
       fprintf(stderr,"ERROR509: Type of '%s'=%s is not real.\n",
-              name,bstruct_typenames[b]);
+              name,bstruct_typenames[token]);
     return TRUE;
   }
   return freadreal(value,1,bstr->swap,bstr->file)!=1;
@@ -923,16 +1070,16 @@ char *bstruct_readstring(Bstruct bstr,    /**< pointer to restart file */
 {
   char *s;
   int len;
-  Byte b;
-  if(readtoken(bstr,&b,BSTRUCT_STRING,name))
+  Byte token;
+  if(readtoken(bstr,&token,BSTRUCT_STRING,name))
     return NULL;
-  if(cmpkey(bstr,&b,name))
+  if(cmpkey(bstr,&token,name))
     return NULL;
-  if(b!=BSTRUCT_STRING)
+  if(token!=BSTRUCT_STRING)
   {
     if(bstr->isout)
       fprintf(stderr,"ERROR509: Type of '%s'=%s is not string.\n",
-              name,bstruct_typenames[b]);
+              name,bstruct_typenames[token]);
     return NULL;
   }
   if(freadint(&len,1,bstr->swap,bstr->file)!=1)
@@ -995,14 +1142,14 @@ Bool bstruct_readindexarray(Bstruct bstr,    /**< pointer to restart file */
                            )                 /** \return TRUE on error */
 {
   int n;
-  Byte b;
-  if(readtoken(bstr,&b,BSTRUCT_ARRAY,NULL))
+  Byte token;
+  if(readtoken(bstr,&token,BSTRUCT_INDEXARRAY,NULL))
     return TRUE;
-  if(b!=BSTRUCT_INDEXARRAY)
+  if(token!=BSTRUCT_INDEXARRAY)
   {
     if(bstr->isout)
       fprintf(stderr,"ERROR509: Type of %s is not an indexarray.\n",
-              bstruct_typenames[b]);
+              bstruct_typenames[token]);
     return TRUE;
   }
   if(freadint(&n,1,bstr->swap,bstr->file)!=1)
@@ -1027,14 +1174,14 @@ Bool bstruct_seekindexarray(Bstruct bstr, /**< pointer to restart file */
 {
   long long pos;
   int n;
-  Byte b;
-  if(readtoken(bstr,&b,BSTRUCT_INDEXARRAY,NULL))
+  Byte token;
+  if(readtoken(bstr,&token,BSTRUCT_INDEXARRAY,NULL))
     return TRUE;
-  if(b!=BSTRUCT_INDEXARRAY)
+  if(token!=BSTRUCT_INDEXARRAY)
   {
     if(bstr->isout)
       fprintf(stderr,"ERROR509: Type of %s is not an indexarray.\n",
-              bstruct_typenames[b]);
+              bstruct_typenames[token]);
     return TRUE;
   }
   if(freadint(&n,1,bstr->swap,bstr->file)!=1)
@@ -1080,7 +1227,7 @@ Bool bstruct_readshortarray(Bstruct bstr,     /**< pointer to restart file */
   for(i=0;i<n;i++)
     if(bstruct_readshort(bstr,NULL,data+i))
       return TRUE;
-  return bstruct_readendarray(bstr);
+  return bstruct_readendarray(bstr,name);
 } /* of 'bstruct_readshortarray' */
 
 Bool bstruct_readushortarray(Bstruct bstr,          /**< pointer to restart file */
@@ -1101,7 +1248,7 @@ Bool bstruct_readushortarray(Bstruct bstr,          /**< pointer to restart file
   for(i=0;i<n;i++)
     if(bstruct_readushort(bstr,NULL,data+i))
       return TRUE;
-  return bstruct_readendarray(bstr);
+  return bstruct_readendarray(bstr,name);
 } /* of 'bstruct_readushortarray' */
 
 Bool bstruct_readintarray(Bstruct bstr,     /**< pointer to restart file */
@@ -1122,7 +1269,7 @@ Bool bstruct_readintarray(Bstruct bstr,     /**< pointer to restart file */
   for(i=0;i<n;i++)
     if(bstruct_readint(bstr,NULL,data+i))
       return TRUE;
-  return bstruct_readendarray(bstr);
+  return bstruct_readendarray(bstr,name);
 } /* of 'bstruct_readintarray' */
 
 Bool bstruct_readrealarray(Bstruct bstr,     /**< pointer to restart file */
@@ -1143,7 +1290,7 @@ Bool bstruct_readrealarray(Bstruct bstr,     /**< pointer to restart file */
   for(i=0;i<n;i++)
     if(bstruct_readreal(bstr,NULL,data+i))
       return TRUE;
-  return bstruct_readendarray(bstr);
+  return bstruct_readendarray(bstr,name);
 } /* of 'bstruct_readrealarray' */
 
 Real *bstruct_readvarrealarray(Bstruct bstr,     /**< pointer to restart file */
@@ -1167,7 +1314,7 @@ Real *bstruct_readvarrealarray(Bstruct bstr,     /**< pointer to restart file */
       free(data);
       return NULL;
     }
-  if(bstruct_readendarray(bstr))
+  if(bstruct_readendarray(bstr,name))
   {
     free(data);
     return NULL;
@@ -1208,54 +1355,70 @@ Bool bstruct_readstruct(Bstruct bstr,    /**< pointer to restart file */
                         const char *name /**< name of object or NULL */
                        )                 /** \return TRUE on error */
 {
-  Byte b;
-  if(readtoken(bstr,&b,BSTRUCT_STRUCT,name))
+  Byte token;
+  if(readtoken(bstr,&token,BSTRUCT_STRUCT,name))
     return TRUE;
-  if(cmpkey(bstr,&b,name))
+  if(cmpkey(bstr,&token,name))
     return TRUE;
-  if(b!=BSTRUCT_STRUCT)
+  if(token!=BSTRUCT_STRUCT)
   {
     if(bstr->isout)
       fprintf(stderr,"ERROR509: Type of '%s'=%s is not struct.\n",
-              name,bstruct_typenames[b]);
+              name,bstruct_typenames[token]);
     return TRUE;
   }
   return FALSE;
 } /* of 'bstruct_readstruct' */
 
-Bool bstruct_readendstruct(Bstruct bstr /**< pointer to restart file */
-                          )             /** \return TRUE on error */
+Bool bstruct_readendstruct(Bstruct bstr,    /**< pointer to restart file */
+                           const char *name /**< object name */
+                          )                 /** \return TRUE on error */
 {
-  Byte b;
-  if(fread(&b,1,1,bstr->file)!=1)
+  Byte token;
+  if(fread(&token,1,1,bstr->file)!=1)
   {
     if(bstr->isout)
       fprintf(stderr,"ERROR513: Unexpected end of file reading token.\n");
     return TRUE;
   }
-  if(b!=BSTRUCT_ENDSTRUCT)
+  if(token!=BSTRUCT_ENDSTRUCT)
   {
     if(bstr->isout)
-      fprintf(stderr,"ERROR509: Type=%s is not endstruct.\n",bstruct_typenames[b]);
+    {
+      if(name==NULL)
+        fprintf(stderr,"ERROR509: Type=%s is not endstruct.\n",
+                bstruct_typenames[token]);
+      else
+        fprintf(stderr,"ERROR509: Type=%s is not endstruct for struct '%s'.\n",
+                bstruct_typenames[token],name);
+    }
     return TRUE;
   }
   return FALSE;
 } /* of 'bstruct_readendstruct' */
 
-Bool bstruct_readendarray(Bstruct bstr /**< pointer to restart file */
-                         )             /** \return TRUE on error */
+Bool bstruct_readendarray(Bstruct bstr,    /**< pointer to restart file */
+                          const char *name /**< object name */
+                         )                 /** \return TRUE on error */
 {
-  Byte b;
-  if(fread(&b,1,1,bstr->file)!=1)
+  Byte token;
+  if(fread(&token,1,1,bstr->file)!=1)
   {
     if(bstr->isout)
       fprintf(stderr,"ERROR513: Unexpected end of file reading token.\n");
     return TRUE;
   }
-  if(b!=BSTRUCT_ENDARRAY)
+  if(token!=BSTRUCT_ENDARRAY)
   {
     if(bstr->isout)
-      fprintf(stderr,"ERROR509: Type=%s is not endarrary.\n",bstruct_typenames[b]);
+    {
+      if(name==NULL)
+        fprintf(stderr,"ERROR509: Type=%s is not endarrary.\n",
+                bstruct_typenames[token]);
+      else
+        fprintf(stderr,"ERROR509: Type=%s is not endarray for array '%s'.\n",
+                bstruct_typenames[token],name);
+    }
     return TRUE;
   }
   return FALSE;

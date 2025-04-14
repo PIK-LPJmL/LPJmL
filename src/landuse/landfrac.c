@@ -176,10 +176,10 @@ Bool freadlandfrac(Bstruct file,         /**< pointer to restart file */
       return TRUE;
     if(bstruct_readreal(file,"biomass_tree",&landfrac[i].biomass_tree))
       return TRUE;
-    if(bstruct_readendstruct(file))
+    if(bstruct_readendstruct(file,NULL))
       return TRUE;
   }
-  return bstruct_readendarray(file);
+  return bstruct_readendarray(file,name);
 } /* of 'freadlandfrac' */
 
 Real landfrac_sum(const Landfrac landfrac[2], /**< land fractions (non-irrig., irrig.) */

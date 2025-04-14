@@ -17,7 +17,7 @@
 #include "lpj.h"
 
 #define checkptr(ptr) if(ptr==NULL) { printallocerr(#ptr); return TRUE;}
-#define readreal2(file,name,value) if(bstruct_readreal(file,name,value)) return TRUE
+#define readreal(file,name,value) if(bstruct_readreal(file,name,value)) return TRUE
 
 Bool freadcell(Bstruct file,           /**< File pointer to restart file */
                Cell *cell,             /**< Pointer to cell */
@@ -36,17 +36,17 @@ Bool freadcell(Bstruct file,           /**< File pointer to restart file */
     return TRUE;
   if(freadseed(file,"seed",cell->seed))
     return TRUE;
-  readreal2(file,"dmass_lake",&cell->discharge.dmass_lake);
+  readreal(file,"dmass_lake",&cell->discharge.dmass_lake);
   if(config->river_routing)
   {
 #ifdef IMAGE
-    readreal2(file,"dmass_gw",&cell->discharge.dmass_gw); // groundwater mass
+    readreal(file,"dmass_gw",&cell->discharge.dmass_gw); // groundwater mass
 #endif
-    readreal2(file,"dfout",&cell->discharge.dfout);
-    readreal2(file,"dmass_river",&cell->discharge.dmass_river);
-    readreal2(file,"dmass_sum",&cell->discharge.dmass_sum);
+    readreal(file,"dfout",&cell->discharge.dfout);
+    readreal(file,"dmass_river",&cell->discharge.dmass_river);
+    readreal(file,"dmass_sum",&cell->discharge.dmass_sum);
 #ifdef COUPLING_WITH_FMS
-    readreal2(file,"laketemp",&cell->laketemp);
+    readreal(file,"laketemp",&cell->laketemp);
 #endif
     cell->discharge.queue=freadqueue(file,"queue");
     if(cell->discharge.queue==NULL)
@@ -77,9 +77,9 @@ Bool freadcell(Bstruct file,           /**< File pointer to restart file */
       fprintf(stderr,"ERROR254: Cannot read ignition data.\n");
       return TRUE;
     }
-    readreal2(file,"excess_water",&cell->balance.excess_water);
+    readreal(file,"excess_water",&cell->balance.excess_water);
 
-    readreal2(file,"waterdeficit",&cell->discharge.waterdeficit);
+    readreal(file,"waterdeficit",&cell->discharge.waterdeficit);
     cell->gdd=newgdd(npft);
     checkptr(cell->gdd);
     if(bstruct_readrealarray(file,"gdd",cell->gdd,npft))
@@ -95,8 +95,8 @@ Bool freadcell(Bstruct file,           /**< File pointer to restart file */
       fprintf(stderr,"ERROR254: Cannot read stand list.\n");
       return TRUE;
     }
-    readreal2(file,"cropfrac_rf",&cell->ml.cropfrac_rf);
-    readreal2(file,"cropfrac_ir",&cell->ml.cropfrac_ir);
+    readreal(file,"cropfrac_rf",&cell->ml.cropfrac_rf);
+    readreal(file,"cropfrac_ir",&cell->ml.cropfrac_ir);
     if(freadclimbuf(file,"climbuf",&cell->climbuf,ncft))
     {
       fprintf(stderr,"ERROR254: Cannot read climbuf data.\n");
@@ -194,5 +194,5 @@ Bool freadcell(Bstruct file,           /**< File pointer to restart file */
       }
     }
   }
-  return bstruct_readendstruct(file);
+  return bstruct_readendstruct(file,NULL);
 } /* of 'freadcell' */

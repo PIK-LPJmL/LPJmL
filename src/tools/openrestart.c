@@ -16,6 +16,23 @@
 /**************************************************************************************/
 
 #include "lpj.h"
+#define readint(file,name,var) \
+if(bstruct_readint(file,name,var))\
+  {\
+    if(isroot(*config))\
+      fprintf(stderr,"ERROR245: Cannot read header in %s file '%s'.\n",type,filename);\
+    bstruct_close(file);\
+    return NULL; \
+  }
+
+#define readbool(file,name,var) \
+if(bstruct_readbool(file,name,var))\
+  {\
+    if(isroot(*config))\
+      fprintf(stderr,"ERROR245: Cannot read header in %s file '%s'.\n",type,filename);\
+    bstruct_close(file);\
+    return NULL; \
+  }
 
 Bstruct openrestart(const char *filename, /**< filename of restart file */
                     Config *config,       /**< LPJ configuration */
@@ -55,34 +72,10 @@ Bstruct openrestart(const char *filename, /**< filename of restart file */
             lpjversion,type,filename,getversion());
   }
   free(lpjversion);
-  if(bstruct_readint(file,"year",&firstyear))
-  {
-    if(isroot(*config))
-      fprintf(stderr,"ERROR245: Cannot read header in %s file '%s'.\n",type,filename);
-    bstruct_close(file);
-    return NULL;
-  }
-  if(bstruct_readint(file,"firstcell",&firstcell))
-  {
-    if(isroot(*config))
-      fprintf(stderr,"ERROR245: Cannot read header in %s file '%s'.\n",type,filename);
-    bstruct_close(file);
-    return NULL;
-  }
-  if(bstruct_readint(file,"npft",&restart_npft))
-  {
-    if(isroot(*config))
-      fprintf(stderr,"ERROR245: Cannot read header in %s file '%s'.\n",type,filename);
-    bstruct_close(file);
-    return NULL;
-  }
-  if(bstruct_readint(file,"ncft",&restart_ncft))
-  {
-    if(isroot(*config))
-      fprintf(stderr,"ERROR245: Cannot read header in %s file '%s'.\n",type,filename);
-    bstruct_close(file);
-    return NULL;
-  }
+  readint(file,"year",&firstyear);
+  readint(file,"firstcell",&firstcell);
+  readint(file,"npft",&restart_npft);
+  readint(file,"ncft",&restart_ncft);
   if(bstruct_readreal(file,"cellsize_lat",&cellsize_lat))
   {
     if(isroot(*config))
@@ -97,48 +90,12 @@ Bstruct openrestart(const char *filename, /**< filename of restart file */
     bstruct_close(file);
     return NULL;
   }
-  if(bstruct_readint(file,"datatype",(int *)(&datatype)))
-  {
-    if(isroot(*config))
-      fprintf(stderr,"ERROR245: Cannot read header in %s file '%s'.\n",type,filename);
-    bstruct_close(file);
-    return NULL;
-  }
-  if(bstruct_readbool(file,"landuse",&config->landuse_restart))
-  {
-    if(isroot(*config))
-      fprintf(stderr,"ERROR245: Cannot read header in %s file '%s'.\n",type,filename);
-    bstruct_close(file);
-    return NULL;
-  }
-  if(bstruct_readint(file,"sdate_option",&config->sdate_option_restart))
-  {
-    if(isroot(*config))
-      fprintf(stderr,"ERROR245: Cannot read header in %s file '%s'.\n",type,filename);
-    bstruct_close(file);
-    return NULL;
-  }
-  if(bstruct_readbool(file,"crop_phu_option",&config->crop_phu_option_restart))
-  {
-    if(isroot(*config))
-      fprintf(stderr,"ERROR245: Cannot read header in %s file '%s'.\n",type,filename);
-    bstruct_close(file);
-    return NULL;
-  }
-  if(bstruct_readbool(file,"river_routing",&river_routing))
-  {
-    if(isroot(*config))
-      fprintf(stderr,"ERROR245: Cannot read header in %s file '%s'.\n",type,filename);
-    bstruct_close(file);
-    return NULL;
-  }
-  if(bstruct_readbool(file,"separate_harvests",&separate_harvest))
-  {
-    if(isroot(*config))
-      fprintf(stderr,"ERROR245: Cannot read header in %s file '%s'.\n",type,filename);
-    bstruct_close(file);
-    return NULL;
-  }
+  readint(file,"datatype",(int *)(&datatype));
+  readbool(file,"landuse",&config->landuse_restart);
+  readint(file,"sdate_option",&config->sdate_option_restart);
+  readbool(file,"crop_phu_option",&config->crop_phu_option_restart);
+  readbool(file,"river_routing",&river_routing);
+  readbool(file,"separate_harvests",&separate_harvest);
   if(freadseed(file,"seed",config->seed))
   {
     if(isroot(*config))
@@ -146,7 +103,7 @@ Bstruct openrestart(const char *filename, /**< filename of restart file */
     bstruct_close(file);
     return NULL;
   }
-  if(bstruct_readendstruct(file))
+  if(bstruct_readendstruct(file,"header"))
   {
     bstruct_close(file);
     return NULL;

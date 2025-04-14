@@ -34,7 +34,7 @@ static Bool freadhist(Bstruct file,const char *name,Real hist[HIST_YEARS][NMONTH
     if(bstruct_readrealarray(file,NULL,hist[i],NMONTH))
       return TRUE;
   }
-  return bstruct_readendarray(file);
+  return bstruct_readendarray(file,name);
 } /* of 'freadhist' */
 
 Bool freadresdata(Bstruct file,     /**< pointer to restart file */
@@ -69,5 +69,5 @@ Bool freadresdata(Bstruct file,     /**< pointer to restart file */
   /* restore additional reservoir characteristics based on reservoir history */
   update_reservoir_annual(cell);
 
-  return bstruct_readendstruct(file);
+  return bstruct_readendstruct(file,name);
 } /* of 'freadresdata' */

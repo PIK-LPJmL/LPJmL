@@ -26,7 +26,7 @@ Bool freadstocks(Bstruct file,     /**< pointer to restart file */
     return TRUE;
   if(bstruct_readreal(file,"N",&stocks->nitrogen))
     return TRUE;
-  return bstruct_readendstruct(file);
+  return bstruct_readendstruct(file,name);
 } /* of 'freadstocks' */
 
 Bool freadstocksarray(Bstruct file,     /**< pointer to restart file */
@@ -46,6 +46,6 @@ Bool freadstocksarray(Bstruct file,     /**< pointer to restart file */
   for(i=0;i<n;i++)
     if(freadstocks(file,NULL,data+i))
       return TRUE;
-  return bstruct_readendarray(file);
+  return bstruct_readendarray(file,name);
 } /* of 'freadstocksarray' */
 

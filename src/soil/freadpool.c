@@ -27,7 +27,7 @@ Bool freadpool(Bstruct file,     /**< pointer to restart file */
     return TRUE;
   if(freadstocks(file,"fast",&pool->fast))
     return TRUE;
-  if(bstruct_readendstruct(file))
+  if(bstruct_readendstruct(file,name))
     return TRUE;
   return FALSE;
 } /* of 'freadpool' */

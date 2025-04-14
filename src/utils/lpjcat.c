@@ -193,7 +193,7 @@ int main(int argc,char **argv)
       bstruct_close(item[count].file);
       continue;
     }
-    if(bstruct_readendstruct(item[count].file))
+    if(bstruct_readendstruct(item[count].file,"header"))
     {
       free(header.version);
       bstruct_close(item[count].file);

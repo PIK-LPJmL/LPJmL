@@ -112,7 +112,7 @@ int fwritecell(Bstruct file,        /**< File pointer of binary file */
       if(grid[cell].ml.fertilizer_nr!=NULL)
         fwritelandfrac(file,"fertilizer_nr",grid[cell].ml.fertilizer_nr,ncft,config->nagtree);
       if(ischeckpoint && config->n_out)
-       fwriteoutputdata(file,"outputdata",&grid[cell].output,config);
+        fwriteoutputdata(file,"outputdata",&grid[cell].output,config);
     }
     bstruct_writeendstruct(file);
   } /* of 'for(cell=...)' */

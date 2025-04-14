@@ -84,7 +84,7 @@ Stand *freadstand(Bstruct file, /**< File pointer to restart file */
     freestand(stand);
     return NULL;
   }
-  if(bstruct_readendstruct(file))
+  if(bstruct_readendstruct(file,name))
   {
     freestand(stand);
     return NULL;

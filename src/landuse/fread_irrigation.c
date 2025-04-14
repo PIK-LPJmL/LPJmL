@@ -53,5 +53,5 @@ Bool fread_irrigation(Bstruct file,          /**< pointer to binary file */
     irrigation->ec=1;
     irrigation->conv_evap=irrigation->net_irrig_amount=irrigation->dist_irrig_amount=irrigation->irrig_amount=irrigation->irrig_stor=0.0;
   }
-  return bstruct_readendstruct(file);
+  return bstruct_readendstruct(file,name);
 } /* of 'fread_irrigation' */

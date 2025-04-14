@@ -24,7 +24,7 @@ static Bool freadtrait(Bstruct file,const char *name,Trait *trait)
     return TRUE;
   if(freadstocksarray(file,"wood",trait->wood,NFUELCLASS))
     return TRUE;
-  return bstruct_readendstruct(file);
+  return bstruct_readendstruct(file,name);
 } /* of ' freadtrait' */
 
 Bool freadlitter(Bstruct file, /**< File pointer to restrart file */
@@ -74,13 +74,13 @@ Bool freadlitter(Bstruct file, /**< File pointer to restrart file */
         return TRUE;
       if(freadstocks(file,"bg",&litter->item[i].bg))
         return TRUE;
-      if(bstruct_readendstruct(file))
+      if(bstruct_readendstruct(file,NULL))
         return TRUE;
     }
   }
   else
     litter->item=NULL;
-  if(bstruct_readendarray(file))
+  if(bstruct_readendarray(file,name))
     return TRUE;
   if(bstruct_readreal(file,"agtop_wcap",&litter->agtop_wcap))
     return TRUE;
