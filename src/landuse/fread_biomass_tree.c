@@ -19,7 +19,7 @@
 
 #define readint2(file,name,val) if(bstruct_readint(file,name,val)) return TRUE
 
-Bool fread_biomass_tree(Bstruct file, /**< pointer to binary file */
+Bool fread_biomass_tree(Bstruct file, /**< pointer to restart file */
                         Stand *stand  /**< stand pointer */
                        )              /** \return TRUE on error */
 {

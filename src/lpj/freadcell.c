@@ -4,7 +4,7 @@
 /**                                                                                \n**/
 /**     C implementation of LPJmL                                                  \n**/
 /**                                                                                \n**/
-/**     Function reads cell data from file                                         \n**/
+/**     Function reads cell data from restart file                                 \n**/
 /**                                                                                \n**/
 /** (C) Potsdam Institute for Climate Impact Research (PIK), see COPYRIGHT file    \n**/
 /** authors, and contributors see AUTHORS file                                     \n**/
@@ -19,7 +19,7 @@
 #define checkptr(ptr) if(ptr==NULL) { printallocerr(#ptr); return TRUE;}
 #define readreal(file,name,value) if(bstruct_readreal(file,name,value)) return TRUE
 
-Bool freadcell(Bstruct file,           /**< File pointer to restart file */
+Bool freadcell(Bstruct file,           /**< pointer to restart file */
                Cell *cell,             /**< Pointer to cell */
                int npft,               /**< number of natural PFTs */
                int ncft,               /**< number of crop PFTs */
@@ -35,7 +35,10 @@ Bool freadcell(Bstruct file,           /**< File pointer to restart file */
   if(bstruct_readbool(file,"skip",&cell->skip))
     return TRUE;
   if(freadseed(file,"seed",cell->seed))
+  {
+    fprintf(stderr,"ERROR254: Cannot read random seed.\n");
     return TRUE;
+  }
   readreal(file,"dmass_lake",&cell->discharge.dmass_lake);
   if(config->river_routing)
   {
@@ -64,7 +67,7 @@ Bool freadcell(Bstruct file,           /**< File pointer to restart file */
         return TRUE;
       }
     }
-  } 
+  }
   if(!cell->skip)
   {
     /* cell has valid soilcode */

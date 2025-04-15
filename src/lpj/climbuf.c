@@ -242,7 +242,7 @@ Bool freadclimbuf(Bstruct file,     /**< pointer to restart file */
   return bstruct_readendstruct(file,name);
 } /* of 'freadclimbuf' */
 
-void freeclimbuf(Climbuf *climbuf /**< pointer to binary file */
+void freeclimbuf(Climbuf *climbuf /**< pointer to climate buffer */
                 )
 {
   freebuffer(climbuf->max);

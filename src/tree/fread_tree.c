@@ -17,6 +17,8 @@
 #include "lpj.h"
 #include "tree.h"
 
+#define readreal(file,name,var) if(bstruct_readreal(file,name,var)) return TRUE
+
 static Bool freadtreephys2(Bstruct file,const char *name,Treephys2 *tree)
 {
   if(bstruct_readstruct(file,name))
@@ -49,12 +51,9 @@ static Bool freadtreephyspar(Bstruct file,const char *name,Treephyspar *tree)
 {
   if(bstruct_readstruct(file,name))
     return TRUE;
-  if(bstruct_readreal(file,"leaf",&tree->leaf))
-    return TRUE;
-  if(bstruct_readreal(file,"sapwood",&tree->sapwood))
-    return TRUE;
-  if(bstruct_readreal(file,"root",&tree->root))
-    return TRUE;
+  readreal(file,"leaf",&tree->leaf);
+  readreal(file,"sapwood",&tree->sapwood);
+  readreal(file,"root",&tree->root);
   return bstruct_readendstruct(file,name);
 } /* of 'freadtreephyspar' */
 
@@ -72,16 +71,11 @@ Bool fread_tree(Bstruct file, /**< pointer to binary file */
     return TRUE;
   }
   pft->nlimit=0.0;
-  if(bstruct_readreal(file,"height",&tree->height))
-    return TRUE;
-  if(bstruct_readreal(file,"crownarea",&tree->crownarea))
-    return TRUE;
-  if(bstruct_readreal(file,"barkthickness",&tree->barkthickness))
-    return TRUE;
-  if(bstruct_readreal(file,"gddtw",&tree->gddtw))
-    return TRUE;
-  if(bstruct_readreal(file,"aphen_raingreen",&tree->aphen_raingreen))
-    return TRUE;
+  readreal(file,"height",&tree->height);
+  readreal(file,"crownarea",&tree->crownarea);
+  readreal(file,"barkthickness",&tree->barkthickness);
+  readreal(file,"gddtw",&tree->gddtw);
+  readreal(file,"aphen_raingreen",&tree->aphen_raingreen);
   if(bstruct_readbool(file,"isphen",&tree->isphen))
     return TRUE;
   if(freadtreeturn(file,"turn",&tree->turn))
@@ -101,12 +95,9 @@ Bool fread_tree(Bstruct file, /**< pointer to binary file */
   }
   else
     tree->fruit.carbon=tree->fruit.nitrogen=0;
-  if(bstruct_readreal(file,"excess_carbon",&tree->excess_carbon))
-    return TRUE;
-  if(bstruct_readreal(file,"nfertilizer",&tree->nfertilizer))
-    return TRUE;
-  if(bstruct_readreal(file,"nmanure",&tree->nmanure))
-    return TRUE;
+  readreal(file,"excess_carbon",&tree->excess_carbon);
+  readreal(file,"nfertilizer",&tree->nfertilizer);
+  readreal(file,"nmanure",&tree->nmanure);
   if(bstruct_readint(file,"nfert_event",&tree->nfert_event))
     return TRUE;
   return freadtreephyspar(file,"falloc",&tree->falloc);

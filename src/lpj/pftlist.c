@@ -49,14 +49,13 @@ int delpft(Pftlist *pftlist, /**< PFT list */
   return pftlist->n;
 } /* of 'delpft ' */
 
-int fwritepftlist(Bstruct file,            /**< file pointer of binary file */
+int fwritepftlist(Bstruct file,          /**< pointer to restart file */
                   const char *name,      /**< name of object */
                   const Pftlist *pftlist /**< PFT list */
                  )                       /** \return number of PFTs written */
 {
   int p;
   bstruct_writearray(file,name,pftlist->n);
-  /* write number of established PFTs */
   for(p=0;p<pftlist->n;p++)
     if(fwritepft(file,pftlist->pft+p)) /* write PFT-specific data */
       break;
@@ -75,7 +74,7 @@ void fprintpftlist(FILE *file,            /**< pointer of text file */
     fprintpft(file,pftlist->pft+p);
 } /* of 'fprintpftlist' */
 
-Bool freadpftlist(Bstruct file,          /**< file pointer of a binary file */
+Bool freadpftlist(Bstruct file,          /**< pointer to restart file */
                   const char *name,      /**< name of object */
                   Stand *stand,          /**< Stand pointer */
                   Pftlist *pftlist,      /**< PFT list */
@@ -101,7 +100,7 @@ Bool freadpftlist(Bstruct file,          /**< file pointer of a binary file */
     for(p=0;p<pftlist->n;p++)
       if(freadpft(file,stand,pftlist->pft+p,pftpar,ntotpft,separate_harvests))
       {
-        fprintf(stderr,"ERROR254: Cannot read PFT %d.\n",p);
+        fprintf(stderr,"ERROR254: Cannot read PFT item %d of %s.\n",p,name);
         pftlist->n=p;
         return TRUE;
       }

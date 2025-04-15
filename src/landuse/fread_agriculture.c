@@ -17,7 +17,7 @@
 #include "lpj.h"
 #include "agriculture.h"
 
-Bool fread_agriculture(Bstruct file,  /**< pointer to binary file */
+Bool fread_agriculture(Bstruct file,  /**< pointer to restart file */
                        Stand *stand   /**< stand pointer */
                       )               /** \return TRUE on error */
 {

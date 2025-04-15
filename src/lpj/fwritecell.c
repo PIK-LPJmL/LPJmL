@@ -17,7 +17,7 @@
 
 #include "lpj.h"
 
-int fwritecell(Bstruct file,        /**< File pointer of binary file */
+int fwritecell(Bstruct file,      /**< pointer to restart file */
                long long index[], /**< index vector to be calculated */
                const Cell grid[], /**< cell data array */
                int ncell,         /**< number of cells */
@@ -41,8 +41,8 @@ int fwritecell(Bstruct file,        /**< File pointer of binary file */
     if(config->river_routing)
     {
 #ifdef IMAGE
-    if(bstruct_writereal(file,"dmass_gw",grid[cell].discharge.dmass_gw))
-      break;
+      if(bstruct_writereal(file,"dmass_gw",grid[cell].discharge.dmass_gw))
+        break;
 #endif
       if(bstruct_writereal(file,"dfout",grid[cell].discharge.dfout))
         break;

@@ -32,7 +32,7 @@ static Bool readrotation(Bstruct file,const char *name,Rotation *rotation)
   return bstruct_readendstruct(file,name);
 } /* of 'readrotation' */
 
-Bool fread_grassland(Bstruct file, /**< pointer to binary file */
+Bool fread_grassland(Bstruct file, /**< pointer to restart file */
                      Stand *stand  /**< stand pointer */
                     )              /** \return TRUE on error */
 {

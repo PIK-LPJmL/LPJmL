@@ -4,7 +4,7 @@
 /**                                                                                \n**/
 /**     C implementation of LPJmL                                                  \n**/
 /**                                                                                \n**/
-/**     Function reads soil data from file                                         \n**/
+/**     Function reads soil data from restart file                                 \n**/
 /**                                                                                \n**/
 /** (C) Potsdam Institute for Climate Impact Research (PIK), see COPYRIGHT file    \n**/
 /** authors, and contributors see AUTHORS file                                     \n**/
@@ -67,7 +67,7 @@ Bool freadsoil(Bstruct file,           /**< pointer to restart file */
   {
     if(freadpool(file,NULL,soil->pool+l))
     {
-      fprintf(stderr,"ERROR227: Cannout read pool for layer %d.\n",l);
+      fprintf(stderr,"ERROR227: Cannot read pool for layer %d.\n",l);
       return TRUE;
     }
   }

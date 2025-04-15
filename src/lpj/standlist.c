@@ -47,7 +47,7 @@ void fprintstandlist(FILE *file,                /**< Pointer to text file */
   }
 } /* of 'fprintstandlist' */
 
-Standlist freadstandlist(Bstruct file,          /**< File pointer to binary file */
+Standlist freadstandlist(Bstruct file,          /**< pointer to restart file */
                          const char *name,      /**< name of object */
                          Cell *cell,            /**< Cell pointer */
                          const Pftpar pftpar[], /**< pft parameter array */
@@ -75,7 +75,7 @@ Standlist freadstandlist(Bstruct file,          /**< File pointer to binary file
     if((getlistitem(standlist,s)=freadstand(file,NULL,cell,pftpar,ntotpft,soilpar,
                                             standtype,nstand,separate_harvests))==NULL)
     {
-      fprintf(stderr,"ERROR254: Cannot read stand %d.\n",s);
+      fprintf(stderr,"ERROR254: Cannot read stand item %d of %s.\n",s,name);
       return NULL;
     }
   if(bstruct_readendarray(file,name))
