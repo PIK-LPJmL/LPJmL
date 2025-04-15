@@ -25,12 +25,18 @@
 
 //#define DEBUG
 
-#define USAGE "Usage: %s [-name key] [-first] [-json] [-noindent] restartfile [first [last]]\n"
+#define USAGE "Usage: %s [-name key] [-first] [-json] [-noindent] [-v1.2] restartfile [first [last]]\n"
 
-static void printname(const char *name)
+static void printname(const char *name,Bool isold)
 {
-  fputprintable(stdout,name);
-  fputs(": ",stdout);
+  /* to check for string N is necessary because N will be interpreetd as FALSE in YAML 1.1 */
+  if(isold && !strcmp(name,"N"))
+    fputs("\"N\":",stdout);
+  else
+  {
+    fputprintable(stdout,name);
+    fputs(":",stdout);
+  }
 } /* of 'printname' */
 
 int main(int argc,char **argv)
@@ -42,7 +48,7 @@ int main(int argc,char **argv)
   int level,iarg,keylevel;
   Bool notend,isarray=FALSE,iskey=TRUE,stop=FALSE;
   int firstcell,lastcell,last,cell;
-  Bool first=FALSE,islastcell=FALSE,isjson=FALSE,indent=TRUE;
+  Bool first=FALSE,islastcell=FALSE,isjson=FALSE,indent=TRUE,isold=TRUE;
   for(iarg=1;iarg<argc;iarg++)
     if(argv[iarg][0]=='-')
     {
@@ -61,6 +67,8 @@ int main(int argc,char **argv)
         isjson=TRUE;
       else if(!strcmp(argv[iarg],"-noindent"))
         indent=FALSE;
+      else if(!strcmp(argv[iarg],"-v1.2"))
+        isold=FALSE;
       else if(!strcmp(argv[iarg],"-first"))
         stop=TRUE;
       else
@@ -185,9 +193,13 @@ int main(int argc,char **argv)
             }
             else
             {
-              printname(data.name);
-              fputc('\n',stdout);
+              printname(data.name,isold);
+              if(data.token!=BSTRUCT_STRUCT && data.size==0)
+                puts(" []");
+              else
+                fputc('\n',stdout);
             }
+        
           }
         }
         level++;
@@ -242,7 +254,10 @@ int main(int argc,char **argv)
           if(data.name[0]=='\0')
             fputs("- ",stdout);
           else
-            printname(data.name);
+          {
+            printname(data.name,isold);
+            putchar(' ');
+          }
         }
         bstruct_printdata(&data);
         if(!isjson)
@@ -253,7 +268,14 @@ int main(int argc,char **argv)
     } /* of switch(token) */
     bstruct_freedata(&data);
   } /* of while */
-  puts(isjson ? "]}" : "...");
+  if(isjson)
+  {
+    if(key==NULL)
+      puts("\n]");
+    puts("}");
+  }
+  else
+    puts("...");
   bstruct_close(file);
   return EXIT_SUCCESS;
 } /* of 'main' */

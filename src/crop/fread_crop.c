@@ -4,7 +4,7 @@
 /**                                                                                \n**/
 /**     C implementation of LPJmL                                                  \n**/
 /**                                                                                \n**/
-/**     Function reads crop-specific variables from binary file                    \n**/
+/**     Function reads crop-specific variables from restart file                   \n**/
 /**                                                                                \n**/
 /** (C) Potsdam Institute for Climate Impact Research (PIK), see COPYRIGHT file    \n**/
 /** authors, and contributors see AUTHORS file                                     \n**/
@@ -30,7 +30,33 @@ static Bool freadcropphys2(Bstruct file,const char *name,Cropphys2 *crop)
   readstocks2(file,"pool",&crop->pool);
   readstocks2(file,"so",&crop->so);
   return bstruct_readendstruct(file,name);
-}
+} /* of 'fread_sharvests' */
+
+static Bool fread_sharvests(Bstruct file,const char *name,Separate_harvests *sh)
+{
+  if(bstruct_readstruct(file,name))
+      return TRUE;
+  readreal(file,petsum,sh);
+  readreal(file,evapsum,sh);
+  readreal(file,transpsum,sh);
+  readreal(file,intercsum,sh);
+  readreal(file,precsum,sh);
+  readreal(file,sradsum,sh);
+  readreal(file,irrig_apply,sh);
+  readreal(file,tempsum,sh);
+  readreal(file,nirsum,sh);
+  readreal(file,lgp,sh);
+  readreal(file,runoffsum,sh);
+  readreal(file,n2o_denitsum,sh);
+  readreal(file,n2o_nitsum,sh);
+  readreal(file,n2_emissum,sh);
+  readreal(file,leachingsum,sh);
+  readreal(file,c_emissum,sh);
+  readreal(file,nfertsum,sh);
+  readint(file,sdate,sh);
+  readint(file,sowing_year,sh);
+  return bstruct_readendstruct(file,name);
+} /* of 'fread_sharvests' */
 
 Bool fread_crop(Bstruct file,          /**< file pointer */
                 Pft *pft,            /**< PFT data to be read */
@@ -78,29 +104,12 @@ Bool fread_crop(Bstruct file,          /**< file pointer */
       free(crop);
       return TRUE;
     }
-    if(bstruct_readstruct(file,"sh"))
+    if(fread_sharvests(file,"sh",crop->sh))
+    {
+      fprintf(stderr,"ERROR254: Cannot read separate harvests for '%s'.\n",
+              pft->par->name);
       return TRUE;
-    readreal(file,petsum,crop->sh);
-    readreal(file,evapsum,crop->sh);
-    readreal(file,transpsum,crop->sh);
-    readreal(file,intercsum,crop->sh);
-    readreal(file,precsum,crop->sh);
-    readreal(file,sradsum,crop->sh);
-    readreal(file,irrig_apply,crop->sh);
-    readreal(file,tempsum,crop->sh);
-    readreal(file,nirsum,crop->sh);
-    readreal(file,lgp,crop->sh);
-    readreal(file,runoffsum,crop->sh);
-    readreal(file,n2o_denitsum,crop->sh);
-    readreal(file,n2o_nitsum,crop->sh);
-    readreal(file,n2_emissum,crop->sh);
-    readreal(file,leachingsum,crop->sh);
-    readreal(file,c_emissum,crop->sh);
-    readreal(file,nfertsum,crop->sh);
-    readint(file,sdate,crop->sh);
-    readint(file,sowing_year,crop->sh);
-    if(bstruct_readendstruct(file,"sh"))
-      return TRUE;
+    }
   }
   else
     crop->sh=NULL;

@@ -25,9 +25,9 @@ static Bool writerotation(Bstruct file,const char *name,const Rotation *rotation
   bstruct_writeint(file,"paddocks",rotation->paddocks);
   bstruct_writeint(file,"mode",rotation->mode);
   return bstruct_writeendstruct(file);
-}
+} /* of 'writerotation' */
 
-Bool fwrite_grassland(Bstruct file,      /**< pointer to binary file */
+Bool fwrite_grassland(Bstruct file,      /**< pointer to restart file */
                       const Stand *stand /**< stand pointer */
                      )                   /** \return TRUE on error */
 {

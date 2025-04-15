@@ -17,7 +17,7 @@
 
 #include "lpj.h"
 
-int fwritecell(Bstruct file,        /**< File pointer of binary file */
+int fwritecell(Bstruct file,      /**< pointer to restart file */
                long long index[], /**< index vector to be calculated */
                const Cell grid[], /**< cell data array */
                int ncell,         /**< number of cells */

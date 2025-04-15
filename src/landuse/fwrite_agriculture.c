@@ -17,7 +17,7 @@
 #include "lpj.h"
 #include "agriculture.h"
 
-Bool fwrite_agriculture(Bstruct file,      /**< pointer to binary file */
+Bool fwrite_agriculture(Bstruct file,      /**< pointer to restart file */
                         const Stand *stand /**< stand pointer */
                        )                   /** \return TRUE on error */
 {

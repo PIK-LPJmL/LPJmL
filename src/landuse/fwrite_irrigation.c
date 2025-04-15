@@ -16,7 +16,7 @@
 
 #include "lpj.h"
 
-Bool fwrite_irrigation(Bstruct file,                /**< pointer to binary file */
+Bool fwrite_irrigation(Bstruct file,                /**< pointer to restart file */
                        const char *name,            /**< name of object */
                        const Irrigation *irrigation /**< irrigation pointer */
                       )                             /** \return TRUE on error */

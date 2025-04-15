@@ -4,7 +4,7 @@
 /**                                                                                \n**/
 /**     C implementation of LPJmL                                                  \n**/
 /**                                                                                \n**/
-/**     Function reads stand data from file                                        \n**/
+/**     Function reads stand data from restart file                                \n**/
 /**                                                                                \n**/
 /** (C) Potsdam Institute for Climate Impact Research (PIK), see COPYRIGHT file    \n**/
 /** authors, and contributors see AUTHORS file                                     \n**/
@@ -16,7 +16,7 @@
 
 #include "lpj.h"
 
-Stand *freadstand(Bstruct file, /**< File pointer to restart file */
+Stand *freadstand(Bstruct file, /**< pointer to restart file */
                   const char *name,    /**< name of object */
                   Cell *cell, /**< Cell pointer */
                   const Pftpar pftpar[],/**< Pft parameter array */
@@ -51,16 +51,16 @@ Stand *freadstand(Bstruct file, /**< File pointer to restart file */
     return NULL;
   }
   stand->type=standtype+landusetype;
-  if(freadpftlist(file,"pftlist",stand,&stand->pftlist,pftpar,ntotpft,separate_harvests))
-  {
-    fprintf(stderr,"ERROR254: Cannot read PFT list for %s stand.\n",stand->type->name);
-    free(stand);
-    return NULL;
-  }
   initstand(stand);
   if(freadsoil(file,"soil",&stand->soil,soilpar,pftpar,ntotpft))
   {
     fprintf(stderr,"ERROR254: Cannot read soil data for %s stand.\n",stand->type->name);
+    free(stand);
+    return NULL;
+  }
+  if(freadpftlist(file,"pftlist",stand,&stand->pftlist,pftpar,ntotpft,separate_harvests))
+  {
+    fprintf(stderr,"ERROR254: Cannot read PFT list for %s stand.\n",stand->type->name);
     free(stand);
     return NULL;
   }

@@ -4,7 +4,7 @@
 /**                                                                                \n**/
 /**     C implementation of LPJmL                                                  \n**/
 /**                                                                                \n**/
-/**     Function writes stand data to binary file                                  \n**/
+/**     Function writes stand data to restart file                                 \n**/
 /**                                                                                \n**/
 /** (C) Potsdam Institute for Climate Impact Research (PIK), see COPYRIGHT file    \n**/
 /** authors, and contributors see AUTHORS file                                     \n**/
@@ -24,11 +24,11 @@ Bool fwritestand(Bstruct file,       /**< pointer to restart file */
 {
   bstruct_writestruct(file,name);
   bstruct_writebyte(file,"landusetype",stand->type->landusetype);
-  /* write PFT list to file */
-  if(fwritepftlist(file,"pftlist",&stand->pftlist)!=getnpft(&stand->pftlist))
-    return TRUE;
   /* write soil data to file */
   if(fwritesoil(file,"soil",&stand->soil,ntotpft))
+    return TRUE;
+  /* write PFT list to file */
+  if(fwritepftlist(file,"pftlist",&stand->pftlist)!=getnpft(&stand->pftlist))
     return TRUE;
   bstruct_writereal(file,"Hag_Beta",stand->Hag_Beta);
   bstruct_writereal(file,"slope_mean",stand->slope_mean);

@@ -17,7 +17,7 @@
 #include "lpj.h"
 #include "biomass_tree.h"
 
-Bool fwrite_biomass_tree(Bstruct file,      /**< pointer to binary file */
+Bool fwrite_biomass_tree(Bstruct file,      /**< pointer to restart file */
                          const Stand *stand /**< stand pointer */
                         )                   /** \return TRUE on error */
 {

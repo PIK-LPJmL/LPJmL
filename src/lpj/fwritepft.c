@@ -36,6 +36,7 @@ Bool fwritepft(Bstruct file,  /**< File pointer to binary file */
   bstruct_writereal(file,"phen",pft->phen);
   bstruct_writeint(file,"inun_count",pft->inun_count);
   bstruct_writereal(file,"inun_stress",pft->inun_stress);
+  bstruct_writeint(file,"litter_id",pft->litter);
   /* write type-dependent PFT variables */
   if(pft->par->fwrite(file,pft))
     return TRUE;
@@ -47,6 +48,5 @@ Bool fwritepft(Bstruct file,  /**< File pointer to binary file */
   bstruct_writereal(file,"fapae",pft->fapar);
   bstruct_writereal(file,"nleaf",pft->nleaf);
   fwritestocks(file,"establish",&pft->establish);
-  bstruct_writeint(file,"litter_id",pft->litter);
   return bstruct_writeendstruct(file);
 } /* of 'fwritepft' */
