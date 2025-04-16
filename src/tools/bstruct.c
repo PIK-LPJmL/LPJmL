@@ -62,6 +62,7 @@ static Bool skipdata(Bstruct,Byte);
 static void freevar(Var *var)
 {
   free(var->name);
+  free(var);
 } /* of 'freevar' */
 
 static void freenamestack(Bstruct bstruct)
