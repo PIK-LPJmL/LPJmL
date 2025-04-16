@@ -25,6 +25,7 @@
 #include "types.h"
 #include "errmsg.h"
 #include "swap.h"
+#include "list.h"
 #include "bstruct.h"
 
 #define BSTRUCT_HEADER "BSTRUCT"
@@ -37,15 +38,61 @@ char *bstruct_typenames[]={"byte","short","int","float","double","bool","ushort"
                            "zero","string","array","array1","struct","indexarray",
                            "endstruct","endarray"};
 
+#define MAXLEVEL 15 /**< maximum number of nested structs */
+
 struct bstruct
 {
   FILE *file; /**< pointer to binary file */
   Bool swap;  /**< byte order has to be changed at reading */
   Bool isout; /**< error output on stderr enabled */
+  int level;  /**< number of nested structs */
+  int imiss;  /**< number of objects not in right order */
+  List *namestack[MAXLEVEL];  /* list of objects names for each nested level */
 };            /**< Definition of opaque datatype Bstruct */
+
+typedef struct
+{
+  char  *name;       /**< name of object */
+  long long filepos; /**< position of object in file */
+  Byte token;        /**< token of object */
+} Var;
 
 static Bool skipdata(Bstruct,Byte);
 
+static void freevar(Var *var)
+{
+  free(var->name);
+} /* of 'freevar' */
+
+static void freenamestack(Bstruct bstruct)
+{
+  int i,j;
+  for(i=0;i<bstruct->level;i++)
+  {
+    for(j=0;j<getlistlen(bstruct->namestack[i]);j++)
+      freevar(getlistitem(bstruct->namestack[i],j));
+    freelist(bstruct->namestack[i]);
+  }
+  bstruct->level=0;
+} /* of 'freenamestack' */
+
+static Bool findname(Bstruct bstruct,Byte *token,const char *name)
+{
+  Var *var;
+  int i;
+  bstruct->imiss++;
+  for(i=0;i<getlistlen(bstruct->namestack[bstruct->level-1]);i++)
+  {
+    var=getlistitem(bstruct->namestack[bstruct->level-1],i);
+    if(!strcmp(name,var->name))
+    {
+      *token=var->token;
+      return var->filepos;
+    }
+  }
+  return -1;
+}  /* of 'findname' */
+ 
 static Bool readtoken(Bstruct bstr,     /**< pointer to restart file */
                       Byte *token_read, /**< token read from file */
                       int token,        /**< token expected */
@@ -106,6 +153,8 @@ static Bool cmpkey(Bstruct bstr,    /**< pointer to restart file */
                   )                 /** \return TRUE if name was not found */
 {
   char *s;
+  Var *var;
+  long long filepos;
   Byte name_length;
   if(fread(&name_length,1,1,bstr->file)!=1)
   {
@@ -158,6 +207,12 @@ static Bool cmpkey(Bstruct bstr,    /**< pointer to restart file */
       /* name not found, search for it */
       do
       {
+        var=new(Var);
+        filepos=ftell(bstr->file);
+        var->filepos=filepos;
+        var->token=*token;
+        var->name=s;
+        addlistitem(bstr->namestack[bstr->level-1],var);
 #ifdef DEBUG_BSTRUCT
         printf("%s not found, %s\n",name,s);
 #endif
@@ -166,7 +221,6 @@ static Bool cmpkey(Bstruct bstr,    /**< pointer to restart file */
           if(bstr->isout)
             fprintf(stderr,"ERROR505: Cannot skip to next object, '%s' not found.\n",
                     name);
-          free(s);
           return TRUE;
         }
         /* read next token */
@@ -174,17 +228,20 @@ static Bool cmpkey(Bstruct bstr,    /**< pointer to restart file */
         {
           if(bstr->isout)
             fprintf(stderr,"ERROR513: Unexpected end of file reading token.\n");
-          free(s);
           return TRUE;
         }
         if(*token==BSTRUCT_ENDSTRUCT || *token==BSTRUCT_ENDARRAY)
         {
-          if(bstr->isout)
-            fprintf(stderr,"ERROR506: Object '%s' not found.\n",name);
-          free(s);
-          return TRUE;
+          filepos=findname(bstr,token,name);
+          if(filepos==-1)
+          {
+            if(bstr->isout)
+              fprintf(stderr,"ERROR506: Object '%s' not found.\n",name);
+            return TRUE;
+          }
+          fseek(bstr->file,filepos,SEEK_SET);
+          return FALSE;
         }
-        free(s);
         /* read next name */
         if(fread(&name_length,1,1,bstr->file)!=1)
         {
@@ -235,6 +292,11 @@ static Bool writename(FILE *file,const String name)
   return rc;
 } /* of 'writename' */
 
+int bstruct_getmiss(const Bstruct bstruct)
+{
+  return bstruct->imiss;
+}
+
 Bstruct bstruct_create(const char *filename)
 {
   /* Function creates restart file */
@@ -246,6 +308,7 @@ Bstruct bstruct_create(const char *filename)
     return NULL;
   }
   bstruct->isout=TRUE;
+  bstruct->level=0;
   bstruct->file=fopen(filename,"wb");
   if(bstruct->file==NULL)
   {
@@ -270,6 +333,8 @@ Bstruct bstruct_open(const char *filename,Bool isout)
     return NULL;
   }
   bstruct->isout=isout;
+  bstruct->imiss=0;
+  bstruct->level=0;
   bstruct->file=fopen(filename,"rb");
   if(bstruct->file==NULL)
   {
@@ -315,6 +380,7 @@ Bstruct bstruct_append(const char *filename,Bool isout)
     return NULL;
   }
   bstruct->isout=isout;
+  bstruct->level=0;
   bstruct->file=fopen(filename,"r+b");
   if(bstruct->file==NULL)
   {
@@ -332,16 +398,19 @@ void bstruct_close(Bstruct bstruct)
   /* Function closes restart file and frees memory */
   if(bstruct!=NULL)
   {
+    freenamestack(bstruct);
     fclose(bstruct->file);
     free(bstruct);
   }
 } /* of 'bstruct_close' */
 
-void bstruct_setout(Bstruct bstruct,Bool isout)
+void bstruct_setout(Bstruct bstruct, /**< pointer to restart file */
+                    Bool isout       /**< enable error output on stderr (TRUE/FALSE) */
+                   )
 {
   /* Function enables/disables error output on stderr */
   bstruct->isout=isout;
-} /* of 'bstruct_isout ' */
+} /* of 'bstruct_setout ' */
 
 Bool bstruct_isdefined(Bstruct bstr,   /**< pointer to restart file */
                        const char *key /**< key to compare */
@@ -419,7 +488,7 @@ Bool bstruct_writeint(Bstruct bstr,     /**< pointer to restart file */
 Bool bstruct_writeintarray(Bstruct bstr,      /**< pointer to restart file */
                            const char *name,  /**< name of object or NULL */
                            const int value[], /**< array written to file */
-                           int size           /**< size of arary */
+                           int size           /**< size of array */
                           )                   /** \return TRUE on error */
 {
   int i;
@@ -434,7 +503,7 @@ Bool bstruct_writeintarray(Bstruct bstr,      /**< pointer to restart file */
 Bool bstruct_writeushortarray(Bstruct bstr,                 /**< pointer to restart file */
                               const char *name,             /**< name of object or NULL */
                               const unsigned short value[], /**< array written to file */
-                              int size                      /**< size of arary */
+                              int size                      /**< size of array */
                              )                              /** \return TRUE on error */
 {
   int i;
@@ -449,7 +518,7 @@ Bool bstruct_writeushortarray(Bstruct bstr,                 /**< pointer to rest
 Bool bstruct_writeshortarray(Bstruct bstr,        /**< pointer to restart file */
                              const char *name,    /**< name of object or NULL */
                              const short value[], /**< array written to file */
-                             int size             /**< size of arary */
+                             int size             /**< size of array */
                             )                     /** \return TRUE on error */
 {
   int i;
@@ -783,6 +852,9 @@ Bool bstruct_readdata(Bstruct bstr,      /**< pointer to restart file */
     }
     if(fread(data->name,1,len,bstr->file)!=len)
     {
+      if(bstr->isout)
+         fprintf(stderr,"ERROR508: Unexpected end of file reading object name of '%s'.\n",
+                 bstruct_typenames[data->token]);
       free(data->name);
       data->name=NULL;
       return TRUE;
@@ -813,7 +885,11 @@ Bool bstruct_readdata(Bstruct bstr,      /**< pointer to restart file */
         return TRUE;
       }
       if(fread(data->data.string,1,string_length,bstr->file)!=string_length)
+      {
+        free(data->data.string);
+        data->data.string=NULL;
         return TRUE;
+      }
       data->data.string[string_length]='\0';
       return FALSE;
     case BSTRUCT_ARRAY1:
@@ -1369,6 +1445,15 @@ Bool bstruct_readstruct(Bstruct bstr,    /**< pointer to restart file */
               name,bstruct_typenames[token]);
     return TRUE;
   }
+  /* add empty list of names for this new level */
+  if(bstr->level==MAXLEVEL-1)
+  {
+    if(bstr->isout)
+      fprintf(stderr,"ERROR515: Too deep nesting of struct, %d allowed.\n",MAXLEVEL);
+    freenamestack(bstr);
+    return TRUE;
+  }
+  bstr->namestack[bstr->level++]=newlist(0);
   return FALSE;
 } /* of 'bstruct_readstruct' */
 
@@ -1376,6 +1461,7 @@ Bool bstruct_readendstruct(Bstruct bstr,    /**< pointer to restart file */
                            const char *name /**< object name */
                           )                 /** \return TRUE on error */
 {
+  int i;
   Byte token;
   if(fread(&token,1,1,bstr->file)!=1)
   {
@@ -1395,6 +1481,16 @@ Bool bstruct_readendstruct(Bstruct bstr,    /**< pointer to restart file */
                 bstruct_typenames[token],name);
     }
     return TRUE;
+  }
+  /* remove list of names for this level */
+  if(bstr->level)
+  {
+    for(i=0;i<getlistlen(bstr->namestack[bstr->level-1]);i++)
+    {
+      freevar(getlistitem(bstr->namestack[bstr->level-1],i));
+    }
+    freelist(bstr->namestack[bstr->level-1]);
+    bstr->level--;
   }
   return FALSE;
 } /* of 'bstruct_readendstruct' */
