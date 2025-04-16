@@ -40,6 +40,8 @@ char *bstruct_typenames[]={"byte","short","int","float","double","bool","ushort"
 
 #define MAXLEVEL 15 /**< maximum number of nested structs */
 
+#define getname(name) (name==NULL) ? "unnamed" : name
+
 struct bstruct
 {
   FILE *file; /**< pointer to binary file */
@@ -56,8 +58,6 @@ typedef struct
   long long filepos; /**< position of object in file */
   Byte token;        /**< token of object */
 } Var;
-
-static Bool skipdata(Bstruct,Byte);
 
 static void freevar(Var *var)
 {
@@ -79,9 +79,11 @@ static void freenamestack(Bstruct bstruct)
 
 static Bool findname(Bstruct bstruct,Byte *token,const char *name)
 {
+  /* Function finds name in list of already read names of current struct */
   Var *var;
   int i;
-  bstruct->imiss++;
+  if(bstruct->isout)
+    bstruct->imiss++;
   for(i=0;i<getlistlen(bstruct->namestack[bstruct->level-1]);i++)
   {
     var=getlistitem(bstruct->namestack[bstruct->level-1],i);
@@ -91,9 +93,9 @@ static Bool findname(Bstruct bstruct,Byte *token,const char *name)
       return var->filepos;
     }
   }
-  return -1;
+  return -1; /* name not found */
 }  /* of 'findname' */
- 
+
 static Bool readtoken(Bstruct bstr,     /**< pointer to restart file */
                       Byte *token_read, /**< token read from file */
                       int token,        /**< token expected */
@@ -147,6 +149,137 @@ static Bool readtoken(Bstruct bstr,     /**< pointer to restart file */
   }
   return FALSE;
 } /* of 'readtoken' */
+
+static Bool skipdata(Bstruct bstr, /**< pointer to restart file */
+                     Byte token    /**< token */
+                    )              /** \return TRUE on error */
+{
+  /* Function skips one object in restart file */
+  int string_len;
+  Byte len,b;
+  switch(token)
+  {
+    case BSTRUCT_STRUCT:
+      do
+      {
+        /* skip whole array */
+        if(fread(&b,1,1,bstr->file)!=1)
+          return TRUE;
+#ifdef DEBUB_BSTRUCT
+        printf("type %s\n",bstruct_typenames[b]);
+#endif
+        if(b==BSTRUCT_ENDARRAY)
+        {
+          if(bstr->isout)
+            fprintf(stderr,"ERROR507: Unexpected end of array token found in struct found.\n");
+          return TRUE;
+        }
+        if(b!=BSTRUCT_ENDSTRUCT)
+        {
+           /*skip object name */
+          if(fread(&len,1,1,bstr->file)!=1)
+          {
+            if(bstr->isout)
+              fprintf(stderr,"ERROR513: Unexpected end of file reading object name length.\n");
+            return TRUE;
+          }
+          if(fseek(bstr->file,len,SEEK_CUR))
+          {
+            if(bstr->isout)
+              fprintf(stderr,"ERROR513: Unexpected end of file skipping object name.\n");
+            return TRUE;
+          }
+          /* call skipdata() recursively */
+          if(skipdata(bstr,b))
+            return TRUE;
+        }
+      } while(b!=BSTRUCT_ENDSTRUCT);
+      break;
+    case BSTRUCT_ARRAY: case BSTRUCT_ARRAY1:
+      /* skip array size */
+      if(fseek(bstr->file,(token==BSTRUCT_ARRAY1) ? 1 : sizeof(int),SEEK_CUR))
+      {
+        if(bstr->isout)
+          fprintf(stderr,"ERROR513: Unexpected end of file skipping array length.\n");
+        return TRUE;
+      }
+      /* skip whole array */
+      do
+      {
+        if(fread(&b,1,1,bstr->file)!=1)
+        {
+          if(bstr->isout)
+            fprintf(stderr,"ERROR513: Unexpected end of file reading token.\n");
+          return TRUE;
+        }
+        if(b==BSTRUCT_ENDSTRUCT)
+        {
+          if(bstr->isout)
+            fprintf(stderr,"ERROR508: Unexpected end of struct token in array found.\n");
+          return TRUE;
+        }
+        if(b==BSTRUCT_INDEXARRAY)
+        {
+          if(freadint(&string_len,1,bstr->swap,bstr->file)!=1)
+          {
+            if(bstr->isout)
+              fprintf(stderr,"ERROR513: Unexpected end of file reading index array length.\n");
+            return TRUE;
+          }
+          if(fseek(bstr->file,sizeof(long long)*string_len,SEEK_CUR))
+          {
+            if(bstr->isout)
+              fprintf(stderr,"ERROR513: Unexpected end of file skipping index array.\n");
+            return TRUE;
+          }
+        }
+        else if(b!=BSTRUCT_ENDARRAY)
+        {
+          /*skip object name */
+          if(fread(&len,1,1,bstr->file)!=1)
+          {
+            if(bstr->isout)
+              fprintf(stderr,"ERROR513: Unexpected end of file reading object name length.\n");
+            return TRUE;
+          }
+          if(fseek(bstr->file,len,SEEK_CUR))
+          {
+            if(bstr->isout)
+              fprintf(stderr,"ERROR513: Unexpected end of file skipping object name.\n");
+            return TRUE;
+          }
+          /* call skipdata() recursively */
+          if(skipdata(bstr,b))
+            return TRUE;
+        }
+      } while(b!=BSTRUCT_ENDARRAY);
+      break;
+    case BSTRUCT_STRING:
+      if(freadint(&string_len,1,bstr->swap,bstr->file)!=1)
+      {
+        if(bstr->isout)
+          fprintf(stderr,"ERROR513: Unexpected end of file reading string length.\n");
+        return TRUE;
+      }
+      if(fseek(bstr->file,string_len,SEEK_CUR))
+      {
+        if(bstr->isout)
+          fprintf(stderr,"ERROR513: Unexpected end of file skipping string.\n");
+        return TRUE;
+      }
+      break;
+    default:
+      /* skip object data */
+      if(fseek(bstr->file,bstruct_typesizes[token],SEEK_CUR))
+      {
+        if(bstr->isout)
+          fprintf(stderr,"ERROR513: Unexpected end of file skipping %s.\n",
+                  bstruct_typenames[token]);
+        return TRUE;
+      }
+  } /* of switch(token) */
+  return FALSE;
+} /* of 'skipdata' */
 
 static Bool cmpkey(Bstruct bstr,    /**< pointer to restart file */
                    Byte *token,     /**< token matching name */
@@ -209,10 +342,10 @@ static Bool cmpkey(Bstruct bstr,    /**< pointer to restart file */
       do
       {
         var=new(Var);
-        filepos=ftell(bstr->file);
-        var->filepos=filepos;
+        var->filepos=ftell(bstr->file);
         var->token=*token;
         var->name=s;
+        /* add name and position to the list of already read objects */
         addlistitem(bstr->namestack[bstr->level-1],var);
 #ifdef DEBUG_BSTRUCT
         printf("%s not found, %s\n",name,s);
@@ -231,17 +364,26 @@ static Bool cmpkey(Bstruct bstr,    /**< pointer to restart file */
             fprintf(stderr,"ERROR513: Unexpected end of file reading token.\n");
           return TRUE;
         }
-        if(*token==BSTRUCT_ENDSTRUCT || *token==BSTRUCT_ENDARRAY)
+        if(*token==BSTRUCT_ENDSTRUCT)
         {
+          /* find name in the list of already read objects */
           filepos=findname(bstr,token,name);
           if(filepos==-1)
           {
+            /* not found, return with error */
             if(bstr->isout)
               fprintf(stderr,"ERROR506: Object '%s' not found.\n",name);
             return TRUE;
           }
+          /* found, goto object position */
           fseek(bstr->file,filepos,SEEK_SET);
           return FALSE;
+        }
+        if(*token==BSTRUCT_ENDARRAY)
+        {
+          if(bstr->isout)
+            fprintf(stderr,"ERROR506: Object '%s' not found.\n",name);
+          return TRUE;
         }
         /* read next name */
         if(fread(&name_length,1,1,bstr->file)!=1)
@@ -293,12 +435,14 @@ static Bool writename(FILE *file,const String name)
   return rc;
 } /* of 'writename' */
 
-int bstruct_getmiss(const Bstruct bstruct)
+int bstruct_getmiss(const Bstruct bstruct /**< pointer to restart file */
+                   )                      /** \return number of objects not in right order */
 {
   return bstruct->imiss;
-}
+} /* of 'bstruct_getmiss' */
 
-Bstruct bstruct_create(const char *filename)
+Bstruct bstruct_create(const char *filename /**< filename of restart file to create */
+                      )                     /** \return pointer to restart file or NULL in case of error */
 {
   /* Function creates restart file */
   Bstruct bstruct;
@@ -322,7 +466,9 @@ Bstruct bstruct_create(const char *filename)
   return bstruct;
 } /* of 'bstruct_create' */
 
-Bstruct bstruct_open(const char *filename,Bool isout)
+Bstruct bstruct_open(const char *filename, /**< filenaem of restart file to open */
+                     Bool isout            /**< enable error output on stderr */
+                    )                      /** \return pointer to restart file or NULL in case of error */
 {
   /* Function opens restart file for reading */
   Bstruct bstruct;
@@ -370,7 +516,9 @@ FILE *bstruct_getfile(Bstruct bstruct)
   return bstruct->file;
 } /* of 'bstruct_getfile' */
 
-Bstruct bstruct_append(const char *filename,Bool isout)
+Bstruct bstruct_append(const char *filename, /**< filename of restart file to append */
+                       Bool isout            /**< enable error output on stderr */
+                      )                      /** \return pointer to restart file or NULL in case of error */
 {
   /* Function opens restart file and seeks at the end of file to append data */
   Bstruct bstruct;
@@ -411,7 +559,7 @@ void bstruct_setout(Bstruct bstruct, /**< pointer to restart file */
 {
   /* Function enables/disables error output on stderr */
   bstruct->isout=isout;
-} /* of 'bstruct_setout ' */
+} /* of 'bstruct_setout' */
 
 Bool bstruct_isdefined(Bstruct bstr,   /**< pointer to restart file */
                        const char *key /**< key to compare */
@@ -692,137 +840,6 @@ Bool bstruct_writeendarray(Bstruct bstr /**< pointer to restart file */
   return fwrite(&token,1,1,bstr->file)!=1;
 } /* of 'bstruct_writeendarray' */
 
-static Bool skipdata(Bstruct bstr, /**< pointer to restart file */
-                     Byte token    /**< token */
-                    )              /** \return TRUE on error */
-{
-  /* Function skips one object in restart file */
-  int string_len;
-  Byte len,b;
-  switch(token)
-  {
-    case BSTRUCT_STRUCT:
-      do
-      {
-        /* skip whole array */
-        if(fread(&b,1,1,bstr->file)!=1)
-          return TRUE;
-#ifdef DEBUB_BSTRUCT
-        printf("type %s\n",bstruct_typenames[b]);
-#endif
-        if(b==BSTRUCT_ENDARRAY)
-        {
-          if(bstr->isout)
-            fprintf(stderr,"ERROR507: Unexpected end of array token found in struct found.\n");
-          return TRUE;
-        }
-        if(b!=BSTRUCT_ENDSTRUCT)
-        {
-           /*skip object name */
-          if(fread(&len,1,1,bstr->file)!=1)
-          {
-            if(bstr->isout)
-              fprintf(stderr,"ERROR513: Unexpected end of file reading object name length.\n");
-            return TRUE;
-          }
-          if(fseek(bstr->file,len,SEEK_CUR))
-          {
-            if(bstr->isout)
-              fprintf(stderr,"ERROR513: Unexpected end of file skipping object name.\n");
-            return TRUE;
-          }
-          /* call skipdata() recursively */
-          if(skipdata(bstr,b))
-            return TRUE;
-        }
-      } while(b!=BSTRUCT_ENDSTRUCT);
-      break;
-    case BSTRUCT_ARRAY: case BSTRUCT_ARRAY1:
-      /* skip array size */
-      if(fseek(bstr->file,(token==BSTRUCT_ARRAY1) ? 1 : sizeof(int),SEEK_CUR))
-      {
-        if(bstr->isout)
-          fprintf(stderr,"ERROR513: Unexpected end of file skipping array length.\n");
-        return TRUE;
-      }
-      /* skip whole array */
-      do
-      {
-        if(fread(&b,1,1,bstr->file)!=1)
-        {
-          if(bstr->isout)
-            fprintf(stderr,"ERROR513: Unexpected end of file reading token.\n");
-          return TRUE;
-        }
-        if(b==BSTRUCT_ENDSTRUCT)
-        {
-          if(bstr->isout)
-            fprintf(stderr,"ERROR508: Unexpected end of struct token in array found.\n");
-          return TRUE;
-        }
-        if(b==BSTRUCT_INDEXARRAY)
-        {
-          if(freadint(&string_len,1,bstr->swap,bstr->file)!=1)
-          {
-            if(bstr->isout)
-              fprintf(stderr,"ERROR513: Unexpected end of file reading index array length.\n");
-            return TRUE;
-          }
-          if(fseek(bstr->file,sizeof(long long)*string_len,SEEK_CUR))
-          {
-            if(bstr->isout)
-              fprintf(stderr,"ERROR513: Unexpected end of file skipping index array.\n");
-            return TRUE;
-          }
-        }
-        else if(b!=BSTRUCT_ENDARRAY)
-        {
-          /*skip object name */
-          if(fread(&len,1,1,bstr->file)!=1)
-          {
-            if(bstr->isout)
-              fprintf(stderr,"ERROR513: Unexpected end of file reading object name length.\n");
-            return TRUE;
-          }
-          if(fseek(bstr->file,len,SEEK_CUR))
-          {
-            if(bstr->isout)
-              fprintf(stderr,"ERROR513: Unexpected end of file skipping object name.\n");
-            return TRUE;
-          }
-          /* call skipdata() recursively */
-          if(skipdata(bstr,b))
-            return TRUE;
-        }
-      } while(b!=BSTRUCT_ENDARRAY);
-      break;
-    case BSTRUCT_STRING:
-      if(freadint(&string_len,1,bstr->swap,bstr->file)!=1)
-      {
-        if(bstr->isout)
-          fprintf(stderr,"ERROR513: Unexpected end of file reading string length.\n");
-        return TRUE;
-      }
-      if(fseek(bstr->file,string_len,SEEK_CUR))
-      {
-        if(bstr->isout)
-          fprintf(stderr,"ERROR513: Unexpected end of file skipping string.\n");
-        return TRUE;
-      }
-      break;
-    default:
-      /* skip object data */
-      if(fseek(bstr->file,bstruct_typesizes[token],SEEK_CUR))
-      {
-        if(bstr->isout)
-          fprintf(stderr,"ERROR513: Unexpected end of file skipping %s.\n",
-                  bstruct_typenames[token]);
-        return TRUE;
-      }
-  } /* of switch(token) */
-  return FALSE;
-} /* of 'skipdata' */
-
 Bool bstruct_readdata(Bstruct bstr,      /**< pointer to restart file */
                       Bstruct_data *data /**< data read from file */
                      )                   /**  \return TRUE on error */
@@ -909,7 +926,13 @@ Bool bstruct_readdata(Bstruct bstr,      /**< pointer to restart file */
         printallocerr("index");
         return TRUE;
       }
-      return freadlong(data->data.index,data->size,bstr->swap,bstr->file)!=data->size;
+      if(freadlong(data->data.index,data->size,bstr->swap,bstr->file)!=data->size)
+      {
+        free(data->data.index);
+        data->data.index=NULL;
+        return TRUE;
+      }
+      return FALSE;
     default:
       return FALSE;
   } /* of  switch(data->token) */
@@ -1164,7 +1187,7 @@ char *bstruct_readstring(Bstruct bstr,    /**< pointer to restart file */
   if(freadint(&len,1,bstr->swap,bstr->file)!=1)
   {
     if(bstr->isout)
-      fprintf(stderr,"ERROR512: Cannot read string length of '%s'.\n",name);
+      fprintf(stderr,"ERROR512: Cannot read string length of '%s'.\n",getname(name));
     return NULL;
   }
   s=malloc(len+1);
@@ -1176,7 +1199,7 @@ char *bstruct_readstring(Bstruct bstr,    /**< pointer to restart file */
   if(fread(s,1,len,bstr->file)!=len)
   {
     if(bstr->isout)
-      fprintf(stderr,"ERROR512: Cannot read string '%s'.\n",name);
+      fprintf(stderr,"ERROR512: Cannot read string '%s'.\n",getname(name));
     free(s);
     return NULL;
   }
@@ -1199,7 +1222,7 @@ Bool bstruct_readarray(Bstruct bstr,     /**< pointer to restart file */
     if(fread(&b,1,1,bstr->file)!=1)
     {
       if(bstr->isout)
-        fprintf(stderr,"ERROR512: Cannot read array length of '%s'.\n",name);
+        fprintf(stderr,"ERROR512: Cannot read array length of '%s'.\n",getname(name));
       return TRUE;
     }
     *size=b;
@@ -1300,7 +1323,8 @@ Bool bstruct_readshortarray(Bstruct bstr,     /**< pointer to restart file */
   if(size!=n)
   {
     if(bstr->isout)
-      fprintf(stderr,"ERROR510: Size of array '%s'=%d is not %d.\n",name,n,size);
+      fprintf(stderr,"ERROR510: Size of array '%s'=%d is not %d.\n",
+              getname(name),n,size);
     return TRUE;
   }
   for(i=0;i<n;i++)
@@ -1321,7 +1345,8 @@ Bool bstruct_readushortarray(Bstruct bstr,          /**< pointer to restart file
   if(size!=n)
   {
     if(bstr->isout)
-      fprintf(stderr,"ERROR510: Size of array '%s'=%d is not %d.\n",name,n,size);
+      fprintf(stderr,"ERROR510: Size of array '%s'=%d is not %d.\n",
+              getname(name),n,size);
     return TRUE;
   }
   for(i=0;i<n;i++)
@@ -1342,7 +1367,8 @@ Bool bstruct_readintarray(Bstruct bstr,     /**< pointer to restart file */
   if(size!=n)
   {
     if(bstr->isout)
-      fprintf(stderr,"ERROR510: Size of array '%s'=%d is not %d.\n",name,n,size);
+      fprintf(stderr,"ERROR510: Size of array '%s'=%d is not %d.\n",
+              getname(name),n,size);
     return TRUE;
   }
   for(i=0;i<n;i++)
@@ -1363,7 +1389,8 @@ Bool bstruct_readrealarray(Bstruct bstr,     /**< pointer to restart file */
   if(size!=n)
   {
     if(bstr->isout)
-      fprintf(stderr,"ERROR510: Size of array '%s'=%d is not %d.\n",name,n,size);
+      fprintf(stderr,"ERROR510: Size of array '%s'=%d is not %d.\n",
+              getname(name),n,size);
     return TRUE;
   }
   for(i=0;i<n;i++)
@@ -1413,12 +1440,12 @@ void bstruct_sync(Bstruct bstr)
 #endif
 } /* of 'bstruct_sync' */
 
-Bool bstruct_writearrayindex(Bstruct bstr,
-                             long long filepos,
-                             long long vec[],
+Bool bstruct_writearrayindex(Bstruct bstr,      /**< pointer to restart file */
+                             long long filepos, /**< file position of index vector */
+                             long long index[], /**< position vector to write */
                              int offset,
-                             int size
-                            )                    /** \return TRUE on error */
+                             int size           /**< size of index vector */
+                            )                   /** \return TRUE on error */
 {
   if(fseek(bstr->file,filepos+sizeof(long long)*offset,SEEK_SET))
   {
@@ -1427,7 +1454,7 @@ Bool bstruct_writearrayindex(Bstruct bstr,
     return TRUE;
   }
   /* write position vector */
-  return fwrite(vec,sizeof(long long),size,bstr->file)!=size;
+  return fwrite(index,sizeof(long long),size,bstr->file)!=size;
 } /* of bstruct_writearrayindex' */
 
 Bool bstruct_readstruct(Bstruct bstr,    /**< pointer to restart file */
@@ -1450,7 +1477,7 @@ Bool bstruct_readstruct(Bstruct bstr,    /**< pointer to restart file */
   if(bstr->level==MAXLEVEL-1)
   {
     if(bstr->isout)
-      fprintf(stderr,"ERROR515: Too deep nesting of struct, %d allowed.\n",MAXLEVEL);
+      fprintf(stderr,"ERROR515: Too deep nesting of structs, %d allowed.\n",MAXLEVEL);
     freenamestack(bstr);
     return TRUE;
   }
@@ -1479,7 +1506,7 @@ Bool bstruct_readendstruct(Bstruct bstr,    /**< pointer to restart file */
                 bstruct_typenames[token]);
       else
         fprintf(stderr,"ERROR509: Type=%s is not endstruct for struct '%s'.\n",
-                bstruct_typenames[token],name);
+                bstruct_typenames[token],getname(name));
     }
     return TRUE;
   }
@@ -1492,6 +1519,12 @@ Bool bstruct_readendstruct(Bstruct bstr,    /**< pointer to restart file */
     }
     freelist(bstr->namestack[bstr->level-1]);
     bstr->level--;
+  }
+  else if(bstr->level==0)
+  {
+    if(bstr->isout)
+      fprintf(stderr,"ERROR516: Too many endstructs found.\n");
+    return TRUE;
   }
   return FALSE;
 } /* of 'bstruct_readendstruct' */
@@ -1516,7 +1549,7 @@ Bool bstruct_readendarray(Bstruct bstr,    /**< pointer to restart file */
                 bstruct_typenames[token]);
       else
         fprintf(stderr,"ERROR509: Type=%s is not endarray for array '%s'.\n",
-                bstruct_typenames[token],name);
+                bstruct_typenames[token],getname(name));
     }
     return TRUE;
   }
