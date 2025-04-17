@@ -1499,7 +1499,8 @@ Bool bstruct_readendstruct(Bstruct bstr,    /**< pointer to restart file */
   if(fread(&token,1,1,bstr->file)!=1)
   {
     if(bstr->isout)
-      fprintf(stderr,"ERROR513: Unexpected end of file reading token for endstruct of '%s'.\n",name);
+      fprintf(stderr,"ERROR513: Unexpected end of file reading token for endstruct of '%s'.\n",
+              getname(name));
     return TRUE;
   }
   while(token!=BSTRUCT_ENDSTRUCT)
@@ -1517,9 +1518,17 @@ Bool bstruct_readendstruct(Bstruct bstr,    /**< pointer to restart file */
       if(fread(&token,1,1,bstr->file)!=1)
       {
         if(bstr->isout)
-          fprintf(stderr,"ERROR513: Unexpected end of file reading token for endstruct of '%s'.\n",name);
+          fprintf(stderr,"ERROR513: Unexpected end of file reading token for endstruct of '%s'.\n",
+                  getname(name));
         return TRUE;
       }
+    }
+    else
+    {
+      if(bstr->isout)
+        fprintf(stderr,"ERROR503: End of array found, endstruct of '%s' expected.\n",
+                getname(name));
+      return TRUE;
     }
   }
   /* remove list of names for this level */
