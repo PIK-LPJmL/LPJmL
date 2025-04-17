@@ -28,6 +28,8 @@
 #include "list.h"
 #include "bstruct.h"
 
+//#define DEBUG_BSTRUCT
+
 #define BSTRUCT_HEADER "BSTRUCT"
 #define BSTRUCT_VERSION 1
 
@@ -132,18 +134,6 @@ static Bool readtoken(Bstruct bstr,     /**< pointer to restart file */
                 bstruct_typenames[token]);
       else
         fprintf(stderr,"ERROR508: Object '%s' not found in array.\n",name);
-    }
-    return TRUE;
-  }
-  if(*token_read==BSTRUCT_ENDSTRUCT)
-  {
-    if(bstr->isout)
-    {
-      if(name==NULL)
-        fprintf(stderr,"ERROR503: End of struct found, %s expected.\n",
-                bstruct_typenames[token]);
-      else
-        fprintf(stderr,"ERROR503: Object '%s' not found in struct.\n",name);
     }
     return TRUE;
   }
@@ -290,6 +280,21 @@ static Bool cmpkey(Bstruct bstr,    /**< pointer to restart file */
   Var *var;
   long long filepos;
   Byte name_length;
+  if(*token==BSTRUCT_ENDSTRUCT)
+  {
+     /* find name in the list of already read objects */
+     filepos=findname(bstr,token,name);
+     if(filepos==-1)
+     {
+       /* not found, return with error */
+       if(bstr->isout)
+         fprintf(stderr,"ERROR506: Object '%s' not found.\n",name);
+       return TRUE;
+     }
+     /* found, goto object position */
+     fseek(bstr->file,filepos,SEEK_SET);
+     return FALSE;
+  }
   if(fread(&name_length,1,1,bstr->file)!=1)
   {
     if(bstr->isout)
@@ -1490,25 +1495,32 @@ Bool bstruct_readendstruct(Bstruct bstr,    /**< pointer to restart file */
                           )                 /** \return TRUE on error */
 {
   int i;
-  Byte token;
+  Byte token,len;
   if(fread(&token,1,1,bstr->file)!=1)
   {
     if(bstr->isout)
       fprintf(stderr,"ERROR513: Unexpected end of file reading token.\n");
     return TRUE;
   }
-  if(token!=BSTRUCT_ENDSTRUCT)
+  while(token!=BSTRUCT_ENDSTRUCT)
   {
-    if(bstr->isout)
+#ifdef DEBUG_BSTRUCT
+    printf("skip token %s in readendstruct\n",bstruct_typenames[token]);
+#endif
+    if(token!=BSTRUCT_ENDARRAY)
     {
-      if(name==NULL)
-        fprintf(stderr,"ERROR509: Type=%s is not endstruct.\n",
-                bstruct_typenames[token]);
-      else
-        fprintf(stderr,"ERROR509: Type=%s is not endstruct for struct '%s'.\n",
-                bstruct_typenames[token],getname(name));
+      /* skip object name */
+      fread(&len,1,1,bstr->file);
+      fseek(bstr->file,len,SEEK_CUR);
+      if(skipdata(bstr,token))
+        return TRUE;
+      if(fread(&token,1,1,bstr->file)!=1)
+      {
+        if(bstr->isout)
+          fprintf(stderr,"ERROR513: Unexpected end of file reading token.\n");
+        return TRUE;
+      }
     }
-    return TRUE;
   }
   /* remove list of names for this level */
   if(bstr->level)
