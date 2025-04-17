@@ -117,7 +117,7 @@ static Bool readtoken(Bstruct bstr,     /**< pointer to restart file */
     if(bstr->isout)
     {
       if(name==NULL)
-        fprintf(stderr,"ERROR502: Invalid token %d reading %s.\n",
+        fprintf(stderr,"ERROR502: Invalid token %d reading '%s'.\n",
                 *token_read,bstruct_typenames[token]);
       else
         fprintf(stderr,"ERROR502: Invalid token %d reading '%s'.\n",
@@ -471,7 +471,7 @@ Bstruct bstruct_create(const char *filename /**< filename of restart file to cre
   return bstruct;
 } /* of 'bstruct_create' */
 
-Bstruct bstruct_open(const char *filename, /**< filenaem of restart file to open */
+Bstruct bstruct_open(const char *filename, /**< filename of restart file to open */
                      Bool isout            /**< enable error output on stderr */
                     )                      /** \return pointer to restart file or NULL in case of error */
 {
@@ -1499,7 +1499,7 @@ Bool bstruct_readendstruct(Bstruct bstr,    /**< pointer to restart file */
   if(fread(&token,1,1,bstr->file)!=1)
   {
     if(bstr->isout)
-      fprintf(stderr,"ERROR513: Unexpected end of file reading token.\n");
+      fprintf(stderr,"ERROR513: Unexpected end of file reading token for endstruct of '%s'.\n",name);
     return TRUE;
   }
   while(token!=BSTRUCT_ENDSTRUCT)
@@ -1517,7 +1517,7 @@ Bool bstruct_readendstruct(Bstruct bstr,    /**< pointer to restart file */
       if(fread(&token,1,1,bstr->file)!=1)
       {
         if(bstr->isout)
-          fprintf(stderr,"ERROR513: Unexpected end of file reading token.\n");
+          fprintf(stderr,"ERROR513: Unexpected end of file reading token for endstruct of '%s'.\n",name);
         return TRUE;
       }
     }
