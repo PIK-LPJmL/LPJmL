@@ -72,7 +72,7 @@ static void freenamestack(Bstruct bstruct)
   int i,j;
   for(i=0;i<bstruct->level;i++)
   {
-    for(j=0;j<getlistlen(bstruct->namestack[i]);j++)
+    foreachlistitem(j,bstruct->namestack[i])
       freevar(getlistitem(bstruct->namestack[i],j));
     freelist(bstruct->namestack[i]);
   }
@@ -86,11 +86,12 @@ static Bool findname(Bstruct bstruct,Byte *token,const char *name)
   int i;
   if(bstruct->isout)
     bstruct->imiss++;
-  for(i=0;i<getlistlen(bstruct->namestack[bstruct->level-1]);i++)
+  foreachlistitem(i,bstruct->namestack[bstruct->level-1])
   {
     var=getlistitem(bstruct->namestack[bstruct->level-1],i);
     if(!strcmp(name,var->name))
     {
+      /* name found, return token and file position of object */
       *token=var->token;
       return var->filepos;
     }
@@ -152,7 +153,7 @@ static Bool skipdata(Bstruct bstr, /**< pointer to restart file */
     case BSTRUCT_STRUCT:
       do
       {
-        /* skip whole array */
+        /* skip whole struct */
         if(fread(&b,1,1,bstr->file)!=1)
           return TRUE;
 #ifdef DEBUB_BSTRUCT
@@ -378,6 +379,8 @@ static Bool cmpkey(Bstruct bstr,    /**< pointer to restart file */
             /* not found, return with error */
             if(bstr->isout)
               fprintf(stderr,"ERROR506: Object '%s' not found.\n",name);
+            /* undo last read */
+            fseek(bstr->file,-1,SEEK_CUR);
             return TRUE;
           }
           /* found, goto object position */
@@ -1534,7 +1537,7 @@ Bool bstruct_readendstruct(Bstruct bstr,    /**< pointer to restart file */
   /* remove list of names for this level */
   if(bstr->level)
   {
-    for(i=0;i<getlistlen(bstr->namestack[bstr->level-1]);i++)
+    foreachlistitem(i,bstr->namestack[bstr->level-1])
     {
       freevar(getlistitem(bstr->namestack[bstr->level-1],i));
     }
