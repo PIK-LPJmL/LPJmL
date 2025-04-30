@@ -70,6 +70,7 @@ static void freevar(Var *var)
 
 static void freenamestack(Bstruct bstruct)
 {
+  /* Function deallocates stack of already read objects */
   int i,j;
   for(i=0;i<bstruct->level;i++)
   {
@@ -125,8 +126,8 @@ static Bool readtoken(Bstruct bstr,     /**< pointer to restart file */
         fprintf(stderr,"ERROR502: Invalid token %d reading %s.\n",
                 *token_read,bstruct_typenames[token & 127]);
       else
-        fprintf(stderr,"ERROR502: Invalid token %d reading %s.\n",
-                *token_read,name);
+        fprintf(stderr,"ERROR502: Invalid token %d reading %s '%s'.\n",
+                *token_read,bstruct_typenames[token & 127],name);
     }
     return TRUE;
   }
@@ -566,7 +567,8 @@ Bstruct bstruct_open(const char *filename, /**< filename of restart file to open
   return bstruct;
 } /* of 'bstruct_open' */
 
-FILE *bstruct_getfile(Bstruct bstruct)
+FILE *bstruct_getfile(Bstruct bstruct /**< pointer to restart file */
+                     )                /** \return pointer to open file */
 {
   return bstruct->file;
 } /* of 'bstruct_getfile' */

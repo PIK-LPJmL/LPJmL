@@ -29,7 +29,7 @@
 
 static void printname(const char *name,Bool isold)
 {
-  /* to check for string N is necessary because N will be interpreetd as FALSE in YAML 1.1 */
+  /* to check for string N is necessary because N will be interpreted as FALSE in YAML 1.1 */
   if(isold && !strcmp(name,"N"))
     fputs("\"N\":",stdout);
   else
