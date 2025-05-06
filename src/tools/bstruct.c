@@ -139,18 +139,18 @@ static Bool readtoken(Bstruct bstr,     /**< pointer to restart file */
               name,strerror(errno));
     return TRUE;
   }
- if((*token_read & 63)>BSTRUCT_MAXTOKEN)
- {
-   if(bstr->isout)
-   {
-     if(name==NULL)
-       fprintf(stderr,"ERROR502: Invalid token %d reading %s.\n",
-               *token_read,bstruct_typenames[token & 63]);
-     else
-       fprintf(stderr,"ERROR502: Invalid token %d reading %s '%s'.\n",
-               *token_read,bstruct_typenames[token & 63],name);
-    }
-    return TRUE;
+  if((*token_read & 63)>BSTRUCT_MAXTOKEN)
+  {
+    if(bstr->isout)
+    {
+      if(name==NULL)
+        fprintf(stderr,"ERROR502: Invalid token %d reading %s.\n",
+                *token_read,bstruct_typenames[token & 63]);
+      else
+        fprintf(stderr,"ERROR502: Invalid token %d reading %s '%s'.\n",
+                *token_read,bstruct_typenames[token & 63],name);
+     }
+     return TRUE;
   }
   if(*token_read==BSTRUCT_ENDARRAY)
   {
@@ -525,7 +525,7 @@ static Bool writename(FILE *file,       /**< pointer to binary file */
     count=gethashcount(hash);
     if(count==SHRT_MAX)
     {
-      fprintf(stderr,"ERROR520: Maximum number of names=%d in table.\n",SHRT_MAX);
+      fprintf(stderr,"ERROR518: Maximum number of names=%d in table reached.\n",SHRT_MAX);
       return TRUE;
     }
     id=new(short);
@@ -997,10 +997,10 @@ Bool bstruct_writeshortarray(Bstruct bstr,        /**< pointer to restart file *
   return bstruct_writeendarray(bstr);
 } /* of 'bstruct_writeshortarray */
 
-Bool bstruct_writeushort(Bstruct bstr,         /**< pointer to restart file */
-                          const char *name,    /**< name of object or NULL */
-                          unsigned short value /**< value written to file */
-                        )                      /** \return TRUE on error */
+Bool bstruct_writeushort(Bstruct bstr,        /**< pointer to restart file */
+                         const char *name,    /**< name of object or NULL */
+                         unsigned short value /**< value written to file */
+                        )                     /** \return TRUE on error */
 {
   Byte token;
   if(value==0)
@@ -1198,7 +1198,7 @@ Bool bstruct_readdata(Bstruct bstr,      /**< pointer to restart file */
     return FALSE;
   if(data->token!=BSTRUCT_INDEXARRAY)
   {
-    if((data->token & 128)==128) /* all top 4 bits in token set, object name length stored in next byte */
+    if((data->token & 128)==128) /* top bit in token set, object name stored in next byte or short */
     {
       if((data->token & 64)==64) /* bit 7 set, id is of type short */
       {
@@ -1980,7 +1980,7 @@ Bool bstruct_writearrayindex(Bstruct bstr,      /**< pointer to restart file */
   if(fseek(bstr->file,filepos+sizeof(long long)*offset,SEEK_SET))
   {
     if(bstr->isout)
-      fprintf(stderr,"ERROR513: Cannout skip to position %d in index array.\n",offset);
+      fprintf(stderr,"ERROR519: Cannout skip to position %d in index array.\n",offset);
     return TRUE;
   }
   /* write position vector */

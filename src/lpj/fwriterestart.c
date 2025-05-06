@@ -150,8 +150,9 @@ Bool fwriterestart(const Cell grid[],   /**< cell array               */
   {
     /* send message to next task to write further data */
     MPI_Send(&iserror,1,MPI_INT,config->rank+1,MSGTAG,config->comm);
-    /* send file positiom ogf index vector */
+    /* send file position of index vector */
     MPI_Send(&filepos,1,MPI_LONG,config->rank+1,MSGTAG,config->comm);
+    /* send contents of hash */
     sendhash(bstruct_gethash(file),config->rank+1,config->comm);
     bstruct_freehash(file);
   }

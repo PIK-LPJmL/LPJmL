@@ -32,7 +32,7 @@ struct hash
   int (*hashfcn)(const void *,int);         /**< hash funtion */
   int (*cmpfcn)(const void *,const void *); /**< compare function */
   void (*freefcn)(void *);                  /**< function to deallocate data */
-};
+}; /**< Definition of opaque datatype Hash */
 
 Hash newhash(int size, /**< size of hash */
              int (*hashfcn)(const void *,int),
