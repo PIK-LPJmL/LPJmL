@@ -18,6 +18,10 @@
 
 #define MSGTAG 101 /* MPI message tag */
 
+#ifdef USE_TIMING
+double twrite=0; /* used for timing for writing restart file */
+#endif
+
 Bool fwriterestart(const Cell grid[],   /**< cell array               */
                    int npft,            /**< number of natural PFTs   */
                    int ncft,            /**< number of crop PFTs      */
@@ -38,8 +42,13 @@ Bool fwriterestart(const Cell grid[],   /**< cell array               */
   time_t t;
   int p;
   if(isroot(*config))
+  {
+#ifdef USE_TIMING
+    twrite=mrun();
+#endif
     /* create restart file */
     file=bstruct_create(filename);
+  }
   else
   {
 #ifdef USE_MPI
@@ -56,6 +65,9 @@ Bool fwriterestart(const Cell grid[],   /**< cell array               */
 #endif
     /* append file */
     file=bstruct_append(filename,TRUE);
+#ifdef USE_MPI
+    receivehash(bstruct_gethash(file),config->rank-1,config->comm);
+#endif
   }
   if(file==NULL)
   {
@@ -131,7 +143,6 @@ Bool fwriterestart(const Cell grid[],   /**< cell array               */
   if(config->ntask>1)
     /* wait until all data are completely written */
     bstruct_sync(file);
-  bstruct_close(file);
   free(index);
 #ifdef USE_MPI
   iserror=FALSE;
@@ -141,7 +152,17 @@ Bool fwriterestart(const Cell grid[],   /**< cell array               */
     MPI_Send(&iserror,1,MPI_INT,config->rank+1,MSGTAG,config->comm);
     /* send file positiom ogf index vector */
     MPI_Send(&filepos,1,MPI_LONG,config->rank+1,MSGTAG,config->comm);
+    sendhash(bstruct_gethash(file),config->rank+1,config->comm);
+    bstruct_freehash(file);
   }
+#endif
+  bstruct_close(file);
+#ifdef USE_TIMING
+#ifdef USE_MPI
+  MPI_Barrier(config->comm);
+#endif
+  if(isroot(*config))
+    twrite=mrun()-twrite;
 #endif
   return FALSE;
 } /* of 'fwriterestart' */

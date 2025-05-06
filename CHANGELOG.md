@@ -30,7 +30,7 @@ of `major.minor.patch` with
 
 ### Changed
 
-- Restart file format changed to include metadata. A binary JSON-like structure has been implemented.
+- Restart file format changed to include metadata. A binary JSON-like structure has been implemented. The order of the objects read can be different from the order objects have been written, but performance of reading can degraded.
 - Utility `lpjcat` updated to support the new restart file format.
 
 

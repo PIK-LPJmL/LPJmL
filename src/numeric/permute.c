@@ -16,6 +16,7 @@
 #include <stdlib.h>
 #include <math.h>
 #include "types.h"
+#include "hash.h"
 #include "bstruct.h"
 #include "numeric.h"
 

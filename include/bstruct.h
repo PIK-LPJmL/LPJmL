@@ -19,7 +19,7 @@
 /* Definition of datatypes */
 
 typedef enum {BSTRUCT_BYTE,BSTRUCT_SHORT,BSTRUCT_INT,BSTRUCT_FLOAT,BSTRUCT_DOUBLE,
-              BSTRUCT_BOOL,BSTRUCT_USHORT,BSTRUCT_ZERO,BSTRUCT_STRING,BSTRUCT_ARRAY,BSTRUCT_ARRAY1,
+              BSTRUCT_FALSE,BSTRUCT_TRUE,BSTRUCT_USHORT,BSTRUCT_ZERO,BSTRUCT_STRING,BSTRUCT_STRING1,BSTRUCT_ARRAY,BSTRUCT_ARRAY1,
               BSTRUCT_STRUCT,BSTRUCT_INDEXARRAY,BSTRUCT_ENDSTRUCT,BSTRUCT_ENDARRAY} Bstruct_token;
 
 typedef struct
@@ -49,7 +49,10 @@ extern char *bstruct_typenames[];
 extern Bstruct bstruct_create(const char *);
 extern Bstruct bstruct_open(const char *,Bool);
 extern Bstruct bstruct_append(const char *,Bool);
+extern int bstruct_getmiss(const Bstruct);
 extern FILE *bstruct_getfile(Bstruct);
+extern Hash bstruct_gethash(Bstruct);
+extern void bstruct_freehash(Bstruct);
 extern Bool bstruct_isdefined(Bstruct,const char *);
 extern Bool bstruct_writearrayindex(Bstruct,long long,long long vec[],int,int);
 extern void bstruct_close(Bstruct);

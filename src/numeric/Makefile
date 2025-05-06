@@ -27,7 +27,7 @@ INC     = ../../include
 LIBDIR  = ../../lib
 LIB     = libnum.$A
 
-HDRS    = $(INC)/types.h $(INC)/numeric.h $(INC)/date.h\
+HDRS    = $(INC)/types.h $(INC)/numeric.h $(INC)/date.h $(INC)/hash.h\
           $(INC)/list.h $(INC)/buffer.h $(INC)/errmsg.h $(INC)/bstruct.h
 
 $(LIBDIR)/$(LIB): $(OBJS)

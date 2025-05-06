@@ -22,9 +22,9 @@ Bool freadstocks(Bstruct file,     /**< pointer to restart file */
 {
   if(bstruct_readstruct(file,name))
     return TRUE;
-  if(bstruct_readreal(file,"C",&stocks->carbon))
+  if(bstruct_readreal(file,"carbon",&stocks->carbon))
     return TRUE;
-  if(bstruct_readreal(file,"N",&stocks->nitrogen))
+  if(bstruct_readreal(file,"nitrogen",&stocks->nitrogen))
     return TRUE;
   return bstruct_readendstruct(file,name);
 } /* of 'freadstocks' */

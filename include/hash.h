@@ -1,8 +1,8 @@
 /**************************************************************************************/
 /**                                                                                \n**/
-/**                         f  r  e  a  d  s  e  e  d  .  c                        \n**/
+/**                          h  a  s  h  .  h                                      \n**/
 /**                                                                                \n**/
-/**     Read seed of random number generator from restart file                     \n**/
+/**     C implementation of a hash                                                 \n**/
 /**                                                                                \n**/
 /** (C) Potsdam Institute for Climate Impact Research (PIK), see COPYRIGHT file    \n**/
 /** authors, and contributors see AUTHORS file                                     \n**/
@@ -12,20 +12,25 @@
 /**                                                                                \n**/
 /**************************************************************************************/
 
-#include <stdio.h>
-#include "types.h"
-#include "hash.h"
-#include "bstruct.h"
-#include "numeric.h"
+#ifndef HASH_H
+#define HASH_H
 
-Bool freadseed(Bstruct file,     /**< pointer to restart file */
-               const char *name, /**< name of object */
-               Seed seed         /**< seed of random number generator read */
-              )                  /** \return TRUE on error */
+typedef struct hash *Hash;
+
+typedef struct
 {
-#ifdef USE_RAND48
-  return bstruct_readushortarray(file,name,seed,NSEED);
-#else
-  return bstruct_readintarray(file,name,seed,NSEED);
+  void *key;
+  void *data;
+} Hashitem;
+
+extern Hash newhash(int,int (*)(const void *,int),int (*)(const void *,const void *),
+                    void (*)(void *));
+extern int addhashitem(Hash,void *,void *);
+extern Bool removehashitem(Hash,const void *);
+extern int gethashcount(const Hash);
+extern void *gethashitem(Hash,const void *);
+extern Hashitem *hash2array(const Hash);
+extern void deletehash(Hash);
+extern void freehash(Hash);
+
 #endif
-} /* of 'freadseed' */

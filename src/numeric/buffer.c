@@ -17,7 +17,8 @@
 #include <string.h>
 #include <errno.h>
 #include "types.h"
-#include "bstruct.h"   /* Definition of datatype Real  */
+#include "hash.h"
+#include "bstruct.h"
 #include "errmsg.h"
 #include "buffer.h"
 
