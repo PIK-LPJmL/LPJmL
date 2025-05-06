@@ -22,8 +22,8 @@ Bool fwritestocks(Bstruct file,        /**< pointer to restart file */
                  )                     /** \return TRUE on error */
 {
   bstruct_writestruct(file,name);
-  bstruct_writereal(file,"C",stocks->carbon);
-  bstruct_writereal(file,"N",stocks->nitrogen);
+  bstruct_writereal(file,"carbon",stocks->carbon);
+  bstruct_writereal(file,"nitrogen",stocks->nitrogen);
   return bstruct_writeendstruct(file);
 } /* of 'fwritestocks' */
 

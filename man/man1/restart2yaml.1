@@ -3,7 +3,7 @@
 restart2yaml \- Convert LPJmL restart file into YAML.
 .SH SYNOPSIS
 .B restart2yaml
-\fIrestartfile\fP [\-name key] [\-first] [\-json] [\-noindent] [-v1.2] [start [end]]
+\fIrestartfile\fP [\-name key] [\-first] [\-json] [\-noindent] [start [end]]
 .SH DESCRIPTION
 Program prints contents of restart file of a LPJmL model run in YAML/JSON format.
 .SH OPTIONS
@@ -19,9 +19,6 @@ Ouput format is set to JSON, default ist YAML.
 .TP
 \-noindent
 Disable indentations in JSON files to save storage space, default is 2 spaces per level.
-.TP
-\-v1.2
-Force YAML 1.2 version. The name "N" is not quoted.
 .TP
 .I restartfile
 Name of restart file.
