@@ -2017,7 +2017,6 @@ Bool bstruct_readstruct(Bstruct bstr,    /**< pointer to restart file */
               name,bstruct_typenames[token & 63]);
     return TRUE;
   }
-  /* add empty list of names for this new level */
   if(bstr->level==MAXLEVEL-1)
   {
     if(bstr->isout)
@@ -2025,7 +2024,9 @@ Bool bstruct_readstruct(Bstruct bstr,    /**< pointer to restart file */
     freenamestack(bstr);
     return TRUE;
   }
+  /* add empty list of names for this new level */
   bstr->namestack[bstr->level].varnames=newlist(0);
+  /* store name of struct */
   bstr->namestack[bstr->level++].name=(name==NULL) ? NULL : strdup(name);
   return FALSE;
 } /* of 'bstruct_readstruct' */
@@ -2091,7 +2092,7 @@ Bool bstruct_readendstruct(Bstruct bstr,    /**< pointer to restart file */
                   name);
         return TRUE;
       }
-    } 
+    }
     else
     {
       if(bstr->namestack[bstr->level-1].name==NULL)
@@ -2108,7 +2109,7 @@ Bool bstruct_readendstruct(Bstruct bstr,    /**< pointer to restart file */
                   bstr->namestack[bstr->level-1].name,name);
         return TRUE;
       }
-    } 
+    }
      /* remove list of names for this level */
     foreachlistitem(i,bstr->namestack[bstr->level-1].varnames)
     {
