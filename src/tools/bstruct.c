@@ -53,7 +53,11 @@ struct bstruct
   Bool isout; /**< error output on stderr enabled */
   int level;  /**< number of nested structs */
   int imiss;  /**< number of objects not in right order */
-  List *namestack[MAXLEVEL];  /**< list of objects names for each nested level */
+  struct
+  {
+    char *name;         /**< name of struct */
+    List *varnames;     /**< list of objects in struct */
+  } namestack[MAXLEVEL]; /**< list of objects names for each nested level */
   Hash hash;  /**< hash for object names used for writing restart files */
   int count;       /**< size of name table */
   Hashitem *names; /**< name table used for reading restart files */
@@ -95,9 +99,10 @@ static void freenamestack(Bstruct bstruct)
   int i,j;
   for(i=0;i<bstruct->level;i++)
   {
-    foreachlistitem(j,bstruct->namestack[i])
-      free(getlistitem(bstruct->namestack[i],j));
-    freelist(bstruct->namestack[i]);
+    free(bstruct->namestack[i].name);
+    foreachlistitem(j,bstruct->namestack[i].varnames)
+      free(getlistitem(bstruct->namestack[i].varnames,j));
+    freelist(bstruct->namestack[i].varnames);
   }
   bstruct->level=0;
 } /* of 'freenamestack' */
@@ -112,9 +117,9 @@ static long long findname(Bstruct bstruct, /**< pointer to restart file */
   int i;
   if(bstruct->isout)
     bstruct->imiss++;
-  foreachlistitem(i,bstruct->namestack[bstruct->level-1])
+  foreachlistitem(i,bstruct->namestack[bstruct->level-1].varnames)
   {
-    var=getlistitem(bstruct->namestack[bstruct->level-1],i);
+    var=getlistitem(bstruct->namestack[bstruct->level-1].varnames,i);
     if(id==var->id)
     {
       /* name found, return token and file position of object */
@@ -344,68 +349,6 @@ static Bool findobject(Bstruct bstr,    /**< pointer to restart file */
 #ifdef DEBUG_BSTRUCT
   printf("Looking for %s\n",name);
 #endif
-  if(name!=NULL)
-  {
-    key.key=strdup(name);
-    item=bsearch(&key,bstr->names,bstr->count,sizeof(Hashitem),cmpname);
-    free(key.key);
-    if(item==NULL)
-    {
-      /* not found, return with error */
-      if(bstr->isout)
-        fprintf(stderr,"ERROR506: Object '%s' not found in name table.\n",name);
-      /* undo last read */
-      fseek(bstr->file,-1,SEEK_CUR);
-      return TRUE;
-    }
-    id=item->data;
-#ifdef DEBUG_BSTRUCT
-    printf("Object '%s' is %d\n",name,*id);
-#endif
-  }
-  if(*token==BSTRUCT_ENDSTRUCT)
-  {
-     /* find name in the list of already read objects */
-     filepos=findname(bstr,token,*id);
-     if(filepos==-1)
-     {
-       /* not found, return with error */
-       if(bstr->isout)
-         fprintf(stderr,"ERROR506: Object '%s' not found.\n",name);
-       /* undo last read */
-       fseek(bstr->file,-1,SEEK_CUR);
-       return TRUE;
-     }
-     /* found, goto object position */
-     fseek(bstr->file,filepos,SEEK_SET);
-     return FALSE;
-  }
-  /* read object name */
-  if((*token & 128)==128) /* top bit in token set, object name stored in next byte or short */
-  {
-    if((*token & 64)==64) /* bit 7 set, id is of type short */
-    {
-      if(freadshort(&id2,1,bstr->swap,bstr->file)!=1)
-      {
-        if(bstr->isout)
-          fprintf(stderr,"ERROR508: Unexpected end of file reading object name.\n");
-        return TRUE;
-      }
-    }
-    else
-    {
-      if(fread(&id1,1,1,bstr->file)!=1)
-      {
-        if(bstr->isout)
-          fprintf(stderr,"ERROR508: Unexpected end of file reading object name.\n");
-        return TRUE;
-      }
-      id2=id1;
-    }
-#ifdef DEBUG_BSTRUCT
-    printf("Object is %d\n",id2);
-#endif
-  }
   if(name==NULL)
   {
     if((*token & 128)==128)
@@ -417,6 +360,73 @@ static Bool findobject(Bstruct bstr,    /**< pointer to restart file */
   }
   else
   {
+    key.key=strdup(name);
+    item=bsearch(&key,bstr->names,bstr->count,sizeof(Hashitem),cmpname);
+    free(key.key);
+    if(item==NULL)
+    {
+      /* not found, return with error */
+      if(bstr->isout)
+        fprintf(stderr,"ERROR506: Object '%s' in struct '%s' not found in name table.\n",
+                name,getname(bstr->namestack[bstr->level-1].name));
+      /* undo last read */
+      fseek(bstr->file,-1,SEEK_CUR);
+      return TRUE;
+    }
+    id=item->data;
+#ifdef DEBUG_BSTRUCT
+    printf("Object '%s' is %d\n",name,*id);
+#endif
+    if(*token==BSTRUCT_ENDSTRUCT)
+    {
+       /* find name in the list of already read objects */
+       filepos=findname(bstr,token,*id);
+       if(filepos==-1)
+       {
+         /* not found, return with error */
+         if(bstr->isout)
+           fprintf(stderr,"ERROR506: Object '%s' not found in struct '%s'.\n",
+                   name,getname(bstr->namestack[bstr->level-1].name));
+         /* undo last read */
+         fseek(bstr->file,-1,SEEK_CUR);
+         return TRUE;
+       }
+       /* found, goto object position */
+       fseek(bstr->file,filepos,SEEK_SET);
+       return FALSE;
+    }
+    /* read object name */
+    if((*token & 128)==128) /* top bit in token set, object name stored in next byte or short */
+    {
+      if((*token & 64)==64) /* bit 7 set, id is of type short */
+      {
+        if(freadshort(&id2,1,bstr->swap,bstr->file)!=1)
+        {
+          if(bstr->isout)
+            fprintf(stderr,"ERROR508: Unexpected end of file reading object name.\n");
+          return TRUE;
+        }
+      }
+      else
+      {
+        if(fread(&id1,1,1,bstr->file)!=1)
+        {
+          if(bstr->isout)
+            fprintf(stderr,"ERROR508: Unexpected end of file reading object name.\n");
+          return TRUE;
+        }
+        id2=id1;
+      }
+#ifdef DEBUG_BSTRUCT
+      printf("Object is %d\n",id2);
+#endif
+    }
+    else
+    {
+      if(bstr->isout)
+        fprintf(stderr,"ERROR504: Expected object name '%s', but no name found.\n",name);
+      return TRUE;
+    }
     if(*id!=id2)
     {
       /* name not found, search for it */
@@ -427,7 +437,7 @@ static Bool findobject(Bstruct bstr,    /**< pointer to restart file */
         var->token=*token;
         var->id=id2;
         /* add name and position to the list of already read objects */
-        addlistitem(bstr->namestack[bstr->level-1],var);
+        addlistitem(bstr->namestack[bstr->level-1].varnames,var);
 #ifdef DEBUG_BSTRUCT
         printf("%s=%d not found, %d\n",name,*id,id2);
 #endif
@@ -453,7 +463,8 @@ static Bool findobject(Bstruct bstr,    /**< pointer to restart file */
           {
             /* not found, return with error */
             if(bstr->isout)
-              fprintf(stderr,"ERROR506: Object '%s' not found.\n",name);
+              fprintf(stderr,"ERROR506: Object '%s' not found in struct '%s'.\n",
+                      name,getname(bstr->namestack[bstr->level-1].name));
             /* undo last read */
             fseek(bstr->file,-1,SEEK_CUR);
             return TRUE;
@@ -644,8 +655,9 @@ Bstruct bstruct_open(const char *filename, /**< filename of restart file to open
     free(bstruct);
     return NULL;
   }
-  bstruct->namestack[0]=newlist(0);
-  if(bstruct->namestack[0]==NULL)
+  bstruct->namestack[0].name=NULL;
+  bstruct->namestack[0].varnames=newlist(0);
+  if(bstruct->namestack[0].varnames==NULL)
   {
     printallocerr("namestack");
     fclose(bstruct->file);
@@ -2013,7 +2025,8 @@ Bool bstruct_readstruct(Bstruct bstr,    /**< pointer to restart file */
     freenamestack(bstr);
     return TRUE;
   }
-  bstr->namestack[bstr->level++]=newlist(0);
+  bstr->namestack[bstr->level].varnames=newlist(0);
+  bstr->namestack[bstr->level++].name=(name==NULL) ? NULL : strdup(name);
   return FALSE;
 } /* of 'bstruct_readstruct' */
 
@@ -2069,11 +2082,12 @@ Bool bstruct_readendstruct(Bstruct bstr,    /**< pointer to restart file */
   /* remove list of names for this level */
   if(bstr->level)
   {
-    foreachlistitem(i,bstr->namestack[bstr->level-1])
+    foreachlistitem(i,bstr->namestack[bstr->level-1].varnames)
     {
-      free(getlistitem(bstr->namestack[bstr->level-1],i));
+      free(getlistitem(bstr->namestack[bstr->level-1].varnames,i));
     }
-    freelist(bstr->namestack[bstr->level-1]);
+    freelist(bstr->namestack[bstr->level-1].varnames);
+    free(bstr->namestack[bstr->level-1].name);
     bstr->level--;
   }
   else if(bstr->level==0)
