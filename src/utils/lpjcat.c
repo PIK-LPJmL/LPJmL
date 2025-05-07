@@ -2,7 +2,7 @@
 /**                                                                                \n**/
 /**                l  p  j  c  a  t  .  c                                          \n**/
 /**                                                                                \n**/
-/**     LPJ utility programme. Concatenates Restart files to stdout                \n**/
+/**     LPJ utility programme. Concatenates restart files.                         \n**/
 /**     Program is obsolete for the MPI version of LPJ                             \n**/
 /**                                                                                \n**/
 /** (C) Potsdam Institute for Climate Impact Research (PIK), see COPYRIGHT file    \n**/
@@ -24,14 +24,13 @@ typedef struct
   long long *index;
   int firstcell;
   int ncell;
-  Header header;
 } Item;
 
-static int compare(const Item *a,const Item *b)
+static int compare(const void *a,const void *b)
 {
-  if(a->firstcell<b->firstcell)
+  if(((const Item *)a)->firstcell<((const Item *)b)->firstcell)
     return -1;
-  else if(a->firstcell==b->firstcell)
+  else if(((const Item *)a)->firstcell==((const Item *)b)->firstcell)
     return 0;
   else
     return 1;
@@ -311,7 +310,7 @@ int main(int argc,char **argv)
     return EXIT_FAILURE;
   }
   /* sort files by first cell index */
-  qsort(item,count,sizeof(Item),(int(*)(const void *,const void *))compare);
+  qsort(item,count,sizeof(Item),compare);
   for(i=1;i<count;i++)
   {
     if(item[i-1].firstcell+item[i-1].ncell!=item[i].firstcell)
