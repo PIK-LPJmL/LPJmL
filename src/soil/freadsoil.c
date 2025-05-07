@@ -37,7 +37,7 @@ Bool freadpoolpararray(Bstruct file,const char *name,Poolpar *pool,int size)
       return TRUE;
     readreal(file,"slow",&pool[i].slow);
     readreal(file,"fast",&pool[i].fast);
-    if(bstruct_readendstruct(file,name))
+    if(bstruct_readendstruct(file,NULL))
       return TRUE;
   }
   return bstruct_readendarray(file,name);

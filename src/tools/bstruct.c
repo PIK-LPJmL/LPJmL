@@ -2079,9 +2079,37 @@ Bool bstruct_readendstruct(Bstruct bstr,    /**< pointer to restart file */
       return TRUE;
     }
   }
-  /* remove list of names for this level */
   if(bstr->level)
   {
+    /* check for match name for struct and endstruct */
+    if(name==NULL)
+    {
+      if(bstr->namestack[bstr->level-1].name!=NULL)
+      {
+        if(bstr->isout)
+          fprintf(stderr,"ERROR520: Endstruct of '%s' found, but unnamed expected.\n",
+                  name);
+        return TRUE;
+      }
+    } 
+    else
+    {
+      if(bstr->namestack[bstr->level-1].name==NULL)
+      {
+        if(bstr->isout)
+          fprintf(stderr,"ERROR520: Unnamed endstruct found, but '%s' expected.\n",
+                  name);
+        return TRUE;
+      }
+      else if(strcmp(name,bstr->namestack[bstr->level-1].name))
+      {
+        if(bstr->isout)
+          fprintf(stderr,"ERROR520: Endstruct of '%s' found, but '%s' expected.\n",
+                  bstr->namestack[bstr->level-1].name,name);
+        return TRUE;
+      }
+    } 
+     /* remove list of names for this level */
     foreachlistitem(i,bstr->namestack[bstr->level-1].varnames)
     {
       free(getlistitem(bstr->namestack[bstr->level-1].varnames,i));
