@@ -16,6 +16,7 @@
 
 #include <stdio.h>
 #include "types.h"
+#include "hash.h"
 #include "bstruct.h"
 #include "date.h"
 #include "numeric.h"
