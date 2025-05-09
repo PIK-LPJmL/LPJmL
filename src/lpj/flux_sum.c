@@ -72,7 +72,8 @@ Real flux_sum(Flux *flux_global,   /**< global carbon and water fluxes */
       flux.CH4_oxidation+=grid[cell].balance.aCH4_oxid*grid[cell].coord.area;
       flux.CH4_sink+=grid[cell].balance.aCH4_sink*grid[cell].coord.area;
       flux.CH4_rice+=grid[cell].balance.aCH4_rice*grid[cell].coord.area;
-      flux.CH4_setaside+=grid[cell].balance.aCH4_setaside*grid[cell].coord.area;
+      flux.CH4_agr+=grid[cell].balance.aCH4_agr*grid[cell].coord.area;
+      flux.CH4_grassland+=grid[cell].balance.aCH4_grassland*grid[cell].coord.area;
       flux.CH4_fire+=grid[cell].balance.aCH4_fire*grid[cell].coord.area;
       flux.product.carbon+=(grid[cell].ml.product.fast.carbon+grid[cell].ml.product.slow.carbon)*grid[cell].coord.area;
       flux.product.nitrogen+=(grid[cell].ml.product.fast.nitrogen+grid[cell].ml.product.slow.nitrogen)*grid[cell].coord.area;

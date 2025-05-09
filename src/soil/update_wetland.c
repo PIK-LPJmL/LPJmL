@@ -101,24 +101,31 @@ void update_wetland(Cell *cell,          /**< pointer to cell */
   }
 #endif
 
-  if (!cell->hydrotopes.skip_cell && wtable_use >= -4.5 && natstandnum!=NOT_FOUND)
+  if ((!cell->hydrotopes.skip_cell && wtable_use >= (-(layerbound[LASTLAYER-1]+layerbound[0])/1000) && natstandnum!=NOT_FOUND) ||
+      (!cell->hydrotopes.skip_cell && wetlandstandnum!=NOT_FOUND && wtable_use < (-(layerbound[LASTLAYER-1]+layerbound[1])/1000) && natstandnum!=NOT_FOUND))
   {
     natstand = getstand(cell->standlist,natstandnum);
     // -----------------------------------------------------------------------------------------------
     //  determine wetland area
     //  min / max cti values
+    wtable_use=min(0,wtable_use);
     cti_min = natstand->soil.par->efold*(config->hydropar.wland_min - wtable_use) + cell->hydrotopes.cti_mean;   //Gleichung 10 Kleinen etal 2013
     cti_max = natstand->soil.par->ctimax;
     //cti_min_max = natstand->soil.par->efold*(hydropar.wland_min - cell->hydrotopes.wtable_max) + cell->hydrotopes.cti_mean; /*maximum should be cell->hydrotopes.wetland_wtable_max*/
-
     //  min / max p
-    p_min = gammp(cell->hydrotopes.cti_phi, ((cti_min - cell->hydrotopes.cti_mu) / cell->hydrotopes.cti_chi));
+
     if (cti_max >= cell->hydrotopes.cti_mu)
       p_max = gammp(cell->hydrotopes.cti_phi, ((cti_max - cell->hydrotopes.cti_mu) / cell->hydrotopes.cti_chi));
     else
     {
       p_max = 0.;
     }
+    if (cti_min > cell->hydrotopes.cti_mu)
+     p_min = gammp(cell->hydrotopes.cti_phi, ((cti_min - cell->hydrotopes.cti_mu) / cell->hydrotopes.cti_chi));
+    else
+     p_min = p_max;
+
+    //fprintf(stderr,"efold: %g wtable: %g standfrac: %g cti_min: %g p_max: %g p_min: %g layerbound: %g\n",natstand->soil.par->efold,wtable_use,natstand->frac,cti_min,p_max,p_min,layerbound[LASTLAYER-1]);
 
     //p_min_max = gammp(cell->hydrotopes.cti_phi,((cti_min_max - cell->hydrotopes.cti_mu) / cell->hydrotopes.cti_chi));
 
@@ -336,7 +343,7 @@ void update_wetland(Cell *cell,          /**< pointer to cell */
 //            wetstand->soil.pool[l].slow.carbon=wetstand->soil.pool[l].slow.nitrogen=0.;
 //
 //          } /* of forrootsoillayer */
-#ifdef CHECK_BALANCE
+#ifdef CHECK_BALANCE2
          if(year==1846)
           foreachstand(checkstand,s,cell->standlist)
             fprintf(stderr,"1 wetland exists and grows type %s frac:%g s: %d iswetland: %d delta_wetland: %g wetlandarea_old: %g delta_wetland: %g\n",
@@ -542,7 +549,7 @@ void update_wetland(Cell *cell,          /**< pointer to cell */
           if(cell->slope<slope)
             slope=cell->slope;
           wetstand->slope_mean = slope;
-          wetstand->Hag_Beta = min(1, (0.09*log(slope + 0.1) + 0.22) / 0.43);
+          wetstand->Hag_Beta = min(1, (0.06*log(tan(slope*M_PI/180)*100 + 0.1) + 0.22) / 0.43);
 
           s=findlandusetype(cell->standlist,NATURAL);            /*COULD BE AGRICULTURE AS WELL BUT NOT YET*/
           if(s == NOT_FOUND)
@@ -554,7 +561,7 @@ void update_wetland(Cell *cell,          /**< pointer to cell */
             natstand = getstand(cell->standlist,s);
             slope=exp(lambda*-cell->slope_max)*(-1/lambda-cell->slope_max)- exp(lambda*-slope_max)*(-1/lambda-slope_max);  //calculation of the integral of the PDF to get  mean slope
             slope/=-(exp(-lambda*cell->slope_max)-exp(-lambda*slope_max));                                                 //normalising the mean slope for a specific range
-            natstand->Hag_Beta=min(1,(0.06*log(slope+0.1)+0.22)/0.43);
+            natstand->Hag_Beta=min(1,(0.06*log(tan(slope*M_PI/180)*100+0.1)+0.22)/0.43);
             natstand->slope_mean=slope;
           }
         }
@@ -569,7 +576,7 @@ void update_wetland(Cell *cell,          /**< pointer to cell */
           {
             natstand = getstand(cell->standlist,s);
             natstand->slope_mean=cell->slope;
-            natstand->Hag_Beta=min(1,(0.06*log(cell->slope+0.1)+0.22)/0.43);
+            natstand->Hag_Beta=min(1,(0.06*log(tan(cell->slope*M_PI/180)*100+0.1)+0.22)/0.43);
           }
         }
         foreachstand(stand, s, cell->standlist)
@@ -579,7 +586,7 @@ void update_wetland(Cell *cell,          /**< pointer to cell */
             if(natstand!=NULL)
             {
               stand->slope_mean=natstand->slope_mean;
-              stand->Hag_Beta=min(1,(0.06*log(stand->slope_mean+0.1)+0.22)/0.43);
+              stand->Hag_Beta=min(1,(0.06*log(tan(stand->slope_mean*M_PI/180)*100+0.1)+0.22)/0.43);
             }
           }
           else
@@ -587,7 +594,7 @@ void update_wetland(Cell *cell,          /**< pointer to cell */
             if(wetstand!=NULL)
             {
               stand->slope_mean=wetstand->slope_mean;
-              stand->Hag_Beta=min(1,(0.09*log(stand->slope_mean+0.1)+0.22)/0.43);
+              stand->Hag_Beta=min(1,(0.06*log(tan(stand->slope_mean*M_PI/180)*100+0.1)+0.22)/0.43);
             }
           }
         }

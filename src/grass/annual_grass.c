@@ -57,13 +57,13 @@ Bool annual_grass(Stand *stand,        /**< pointer to stand */
     isdead=!survive(pft->par,&stand->cell->climbuf);
 #ifdef CHECK_BALANCE
   end = standstocks(stand).carbon + soilmethane(&stand->soil)*WC/WCH4-pft->establish.carbon;
-  if (fabs(end-start.carbon)>0.001)
-    fail(INVALID_CARBON_BALANCE_ERR,FAIL_ON_BALANCE,TRUE,"Invalid carbon balance in %s: %g start : %g end : %g growing days: %d bm_inc.carbon: %g stand.frac: %g type:%s  PFT:%s nind: %g",
-         __FUNCTION__,end-start.carbon, start.carbon, end, stand->growing_days,pft->bm_inc.carbon,stand->frac,stand->type->name,pft->par->name,pft->nind);
+  if (fabs(end-start.carbon)>0.0001)
+    fail(INVALID_CARBON_BALANCE_ERR,FAIL_ON_BALANCE,TRUE,"Invalid carbon balance in %s: %g start : %.4f end : %.4f growing days: %d bm_inc.carbon: %g stand.frac: %g type:%s  PFT:%s nind: %g establish.carbon: %g",
+         __FUNCTION__,end-start.carbon, start.carbon, end, stand->growing_days,pft->bm_inc.carbon,stand->frac,stand->type->name,pft->par->name,pft->nind,pft->establish.carbon);
   end = standstocks(stand).nitrogen-pft->establish.nitrogen;
-  if (fabs(end-start.nitrogen)>0.01)
-    fail(INVALID_NITROGEN_BALANCE_ERR,FAIL_ON_BALANCE,TRUE, "Invalid nitrogen balance in %s: %g start : %g end : %g  bm_inc.nitrogen: %g stand.frac: %g type:%s  PFT:%s nind: %g",
-         __FUNCTION__,end-start.nitrogen, start.nitrogen, end,pft->bm_inc.nitrogen,stand->frac,stand->type->name,pft->par->name,pft->nind);
+  if (fabs(end-start.nitrogen)>0.00001)
+    fail(INVALID_NITROGEN_BALANCE_ERR,FAIL_ON_BALANCE,TRUE, "Invalid nitrogen balance in %s: %g start : %g end : %g  bm_inc.nitrogen: %g stand.frac: %g type:%s  PFT:%s nind: %g establish.nitrogen: %g",
+         __FUNCTION__,end-start.nitrogen, start.nitrogen, end,pft->bm_inc.nitrogen,stand->frac,stand->type->name,pft->par->name,pft->nind,pft->establish.nitrogen);
 #endif
   stand->growing_days=0;
   return isdead;

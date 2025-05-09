@@ -121,7 +121,9 @@ void fprintcell(FILE *file,            /**< file pointer to text file */
       if(config->fire==SPITFIRE || config->fire==SPITFIRE_TMAX)
         fprintignition(file,&grid[cell].ignition);
       fprintf(file,"excess water:\t%g (mm)\n",grid[cell].balance.excess_water);
-      fprintstandlist(file,grid[cell].standlist,config->pftpar,npft+ncft);
+      fprintf(file,"lateral water:\t%g (mm)\n",grid[cell].lateral_water);
+      fprintf(file,"lateral NO3:\t%g (mm)\n",grid[cell].NO3_lateral);
+     fprintstandlist(file,grid[cell].standlist,config->pftpar,npft+ncft);
     }
     fprinthydrotope(file,&grid[cell].hydrotopes);
   } /* of 'for(cell=...)' */

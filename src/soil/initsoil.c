@@ -66,7 +66,7 @@ Bool initsoil(Stand *stand,           /**< Pointer to stand data */
   soil->w_evap=0.0;
   soil->count=0;
   soil->wa = 6000;
-  soil->wtable = layerbound[BOTTOMLAYER-2]-layerbound[0];
+  soil->wtable = layerbound[BOTTOMLAYER-1]+soildepth[0];
   soil->iswetland = FALSE;
   for (l=0;l<NSOILLAYER;l++)
   {
@@ -138,7 +138,7 @@ Bool initsoil(Stand *stand,           /**< Pointer to stand data */
     soil->beta_soil[BOTTOMLAYER]=-2.655/log10(soilpar->wfc/soilpar->wsat);
     soil->Ks[BOTTOMLAYER] = soilpar->Ks;
     soil->b[BOTTOMLAYER]=2.91 + 0.159*1*100;
-    soil->psi_sat[BOTTOMLAYER]=10*pow(10,1.88-0.0131*99*100);
+    soil->psi_sat[BOTTOMLAYER]=20;
   }
   else
   {
@@ -193,7 +193,7 @@ Bool initsoil(Stand *stand,           /**< Pointer to stand data */
   soil->Ks[BOTTOMLAYER] = 0.1;
   soil->beta_soil[BOTTOMLAYER] = -2.655 / log10(soil->wfc[BOTTOMLAYER] / soil->wsat[BOTTOMLAYER]);
   soil->b[BOTTOMLAYER]=2.91 + 0.159*1*100;
-  soil->psi_sat[BOTTOMLAYER]=10*pow(10,1.88-0.0131*99*100);
+  soil->psi_sat[BOTTOMLAYER]=20;
 
   for (l=0;l<LASTLAYER;l++)
   {

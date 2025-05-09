@@ -34,36 +34,36 @@ void fprintsoil(FILE *file,           /**< pointer to text file */
   forrootsoillayer(l)
     fprintf(file," %5d",l);
   fputs("\n--------------------------------------------------",file);
-  forrootsoillayer(l)
-    fputs(" -----",file);
-  fputc('\n',file);
-  for(p=0;p<ntotpft;p++)
-  {
-    fprintf(file,"%-50s",pftpar[p].name);
-    forrootsoillayer(l)
-      fprintf(file," %5.2f",soil->c_shift[l][p].fast);
-    fputc('\n',file);
-  }
-  fputs("--------------------------------------------------",file);
-  forrootsoillayer(l)
-    fputs(" -----",file);
-  fputc('\n',file);
-  fputs("C shift slow:\n"
-        "PFT                                               ",file);
-  forrootsoillayer(l)
-    fprintf(file," %5d",l);
-  fputs("\n--------------------------------------------------",file);
-  forrootsoillayer(l)
-    fputs(" -----",file);
-  fputc('\n',file);
-  for(p=0;p<ntotpft;p++)
-  {
-    fprintf(file,"%-50s",pftpar[p].name);
-    forrootsoillayer(l)
-      fprintf(file," %5.2f",soil->c_shift[l][p].slow);
-    fputc('\n',file);
-  }
-  fputs("--------------------------------------------------",file);
+//  forrootsoillayer(l)
+//    fputs(" -----",file);
+//  fputc('\n',file);
+//  for(p=0;p<ntotpft;p++)
+//  {
+//    fprintf(file,"%-50s",pftpar[p].name);
+//    forrootsoillayer(l)
+//      fprintf(file," %5.2f",soil->c_shift[l][p].fast);
+//    fputc('\n',file);
+//  }
+//  fputs("--------------------------------------------------",file);
+//  forrootsoillayer(l)
+//    fputs(" -----",file);
+//  fputc('\n',file);
+//  fputs("C shift slow:\n"
+//        "PFT                                               ",file);
+//  forrootsoillayer(l)
+//    fprintf(file," %5d",l);
+//  fputs("\n--------------------------------------------------",file);
+//  forrootsoillayer(l)
+//    fputs(" -----",file);
+//  fputc('\n',file);
+//  for(p=0;p<ntotpft;p++)
+//  {
+//    fprintf(file,"%-50s",pftpar[p].name);
+//    forrootsoillayer(l)
+//      fprintf(file," %5.2f",soil->c_shift[l][p].slow);
+//    fputc('\n',file);
+//  }
+//  fputs("--------------------------------------------------",file);
   forrootsoillayer(l)
     fputs(" -----",file);
   fputc('\n',file);

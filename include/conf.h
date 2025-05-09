@@ -85,7 +85,7 @@
 #define NO_FERTILIZER 0
 #define FERTILIZER 1
 #define AUTO_FERTILIZER 2
-#define NOUT 360
+#define NOUT 361
 /* number of output files */
 #define GRIDBASED 1         /* pft-specific outputs scaled by stand->frac */
 #define PFTBASED 0          /* pft-specific outputs not scaled by stand->frac */
@@ -429,7 +429,7 @@
 #define WTAB 333
 #define CH4_EMISSIONS 334
 #define CH4_SINK 335
-#define CH4_SETASIDE 336
+#define CH4_AGR 336
 #define MT_WATER 337
 #define MEANSOILO2 338
 #define MEANSOILCH4 339
@@ -453,6 +453,7 @@
 #define CH4_EMISSIONS_WET 357
 #define METHANOGENESIS 358
 #define CH4_LITTER 359
+#define CH4_GRASSLAND 360
 
 #define PFT_GCGP_COUNT 0
 #define NDAY_MONTH 1

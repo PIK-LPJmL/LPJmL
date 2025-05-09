@@ -50,9 +50,8 @@ void waterbalance(Stand *stand,           /**< Stand pointer */
   else
     data_irrig=NULL;
 
-  if(stand->type->landusetype==AGRICULTURE || stand->type->landusetype==SETASIDE_RF || stand->type->landusetype==SETASIDE_IR || stand->type->landusetype==SETASIDE_WETLAND ||
-      stand->type->landusetype==OTHERS || stand->type->landusetype==AGRICULTURE_TREE || stand->type->landusetype==AGRICULTURE_GRASS)
-    min_evap=0.2;
+  if(stand->type->landusetype!=NATURAL && stand->type->landusetype!=WETLAND)
+    min_evap=0.1;
 
   soil=&stand->soil;
   evap_ratio=evap_test=0.0;
@@ -65,7 +64,7 @@ void waterbalance(Stand *stand,           /**< Stand pointer */
   forrootsoillayer(l)
     aet+=aet_stand[l];
   /* Evaporation */
-  evap_energy=eeq*PRIESTLEY_TAYLOR*max(1-cover,0.05);
+  evap_energy=eeq*PRIESTLEY_TAYLOR*max(1-cover,min_evap);
 #ifdef SAFE
   foreachsoillayer(l)
   {
@@ -156,7 +155,7 @@ void waterbalance(Stand *stand,           /**< Stand pointer */
         evap_soil=evap_energy*(1-soil->litter.agtop_cover);     if above field cap then it's potential evap
      */
     if(w_evap>0)
-     evap_soil=evap_energy/(1+exp(5-10*w_evap/whcs_evap))*max(0.05,(1-soil->litter.agtop_cover));
+     evap_soil=evap_energy/(1+exp(5-10*w_evap/whcs_evap))*max(min_evap,(1-soil->litter.agtop_cover));
     else
       evap_soil=0;
     if(evap_soil>tmpwater)

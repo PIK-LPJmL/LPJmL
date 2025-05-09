@@ -81,7 +81,7 @@ void update_monthly(Cell *cell,  /**< Pointer to cell */
     end.carbon+=(st.carbon+soilmethane(&stand->soil)*WC/WCH4)*stand->frac;
     end.nitrogen+=st.nitrogen*stand->frac;
   }
-  if(fabs(start.carbon-end.carbon)>0.001)
+  if(fabs(start.carbon-end.carbon)>0.0001)
       fail(INVALID_CARBON_BALANCE_ERR,FAIL_ON_BALANCE,FALSE,"Invalid carbon balance in %s at the end: month=%d: C_ERROR=%g start : %g end : %g ",
            __FUNCTION__,month,start.carbon-end.carbon,start.carbon,end.carbon);
   if(fabs(start.nitrogen-end.nitrogen)>0.001)

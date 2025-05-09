@@ -110,12 +110,12 @@ Stocks cultivate(Cell *cell,           /**< cell pointer */
   if(cft==(config->rice_pft-npft))
   {
     cropstand->slope_mean=0;
-    cropstand->Hag_Beta=min(1,(0.09*log(cropstand->slope_mean+0.1)+0.22)/0.43);
+    cropstand->Hag_Beta=min(1,(0.06*log(tan(cropstand->slope_mean*M_PI/180)*100+0.1)+0.22)/0.43);
     cropstand->soil.iswetland=TRUE;
   }
   else
   {
-    cropstand->Hag_Beta=min(1,(0.06*log(cropstand->slope_mean+0.1)+0.22)/0.43);
+    cropstand->Hag_Beta=min(1,(0.06*log(tan(cropstand->slope_mean*M_PI/180)*100+0.1)+0.22)/0.43);
     cropstand->soil.iswetland=FALSE;
   }
   pft=addpft(cropstand,config->pftpar+npft+cft,year,day,config);
@@ -173,7 +173,7 @@ Stocks cultivate(Cell *cell,           /**< cell pointer */
   {
     end+=standstocks(stand).nitrogen*stand->frac;
   }
-  if (fabs(end-start.nitrogen-bm_inc.nitrogen-(manure+fertil)*cropstand->frac*param.nfert_split_frac)>0.01)
+  if (fabs(end-start.nitrogen-bm_inc.nitrogen-(manure+fertil)*cropstand->frac*param.nfert_split_frac)>0.0001)
   {
     fail(INVALID_NITROGEN_BALANCE_ERR,FAIL_ON_BALANCE,FALSE, "Invalid carbon balance in %s: day: %d  cft: %d %.4f start: %.4f  end: %.3f  bm_inc.nitrogen: %.4f manure: %.4f fertil: %f\n",
          "cropstand->frac: %g cropstand.nitrogen: %g setasidestand->frac: %g setasidestand.nitrogen: %g defores.nitrogen: %g timber_harvest.n: %g\n ",

@@ -1229,7 +1229,8 @@ Bool fwriteoutput(Outputfile *output,  /**< output file array */
   writeoutputvar(CH4_OXIDATION,1);
   writeoutputvar(CH4_LITTER,1);
   writeoutputvar(METHANOGENESIS,1);
-  writeoutputvar(CH4_SETASIDE,1);
+  writeoutputvar(CH4_AGR,1);
+  writeoutputvar(CH4_GRASSLAND,1);
   writeoutputvar(CH4_RICE_EM,1);
   writeoutputvar(CH4_EBULLITION,1);
   writeoutputvar(CH4_SINK,1);

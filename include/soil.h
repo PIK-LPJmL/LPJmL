@@ -105,24 +105,25 @@
 #define WH2O 18.0            /*18g/mol*/
 #define WCO2 44.0            /*44g/mol*/
 #define WN 14.0              /*14g/mol*/
-#define O2star 3.0           /*g/m3*/
-#define BO2 0.038            /*Bunsen coefficient of oxygen*/
-#define BCH4 0.043           /*Bunsen coefficient of methane  0.043 Khvorostynov etal. 2008*/
+#define O2star 10.0           /*g/m3*/
+#define BO2 0.031            /*Bunsen coefficient of oxygen*/
+#define BCH4 0.026           /*Bunsen coefficient of methane  0.043 Khvorostynov etal. 2008*/
 #define Vmax_CH4 10.0        /*Michaelis-Menten coefficient in mikroM/h =  mikro mol/l/h = 10−3 mol/m3/h */
-#define km_CH4 5.0           /*mikroM Michaelis-Menten coefficient in mikroM  convert  to 10−3 mol/m3*/
-#define km_O2 200.0          /*mikroM Michaelis-Menten coefficient in mikroM  convert  to 10−3 mol/m3 Seger 1998*/
+#define km_CH4 3.0           /*mikroM Michaelis-Menten coefficient in mikroM  convert  to 10−3 mol/m3*/
+#define km_O2 10.0           /*mikroM Michaelis-Menten coefficient in mikroM  convert  to 10−3 mol/m3 Seger 1998*/
 #define tau_CH4 12.5         /* life time of methane (yr) */
 #define R_gas 8.314          /* universal gas constant J mol-1 K-1 */
 #define p_s 1.01e5           /* atmospheric pressure (Pa=kg m-1 s-2) */
-#define D_O2_air 1.82e-5     /* free air oxygen diffusivity (m2s-1) Wassmann etal 1998*/
+#define D_O2_air 1.596e-5     /* free air oxygen diffusivity (m2s-1) Wassmann etal 1998*/
 #define D_O2_water 1.6e-9    /* O2 diffusivity in water (m2s-1) Khvorostynov etal. 2008*/
 #define eta (2.0/3.0)        /* tortuosity factor ( 2/3 )*/
 #define O2s 0.2095            /* atmospheric content of oxygen */
-#define D_CH4_air 1.952e-5   /* free air methane diffusivity (m2s-1) Wassmann etal 1998*/
+#define D_CH4_air 1.702e-5   /* free air methane diffusivity (m2s-1) Wassmann etal 1998*/
 #define D_CH4_water 2e-9     /* methane diffusivity in water (m2s-1) Khvorostynov etal. 2008*/
 //#define CH4s 0.00000179      /* atmospheric CH4 content (mol/mol)*/
 #define snowdens_first 150
 #define snowdens_end 500
+#define oxid_frac 0.95          /*remainig O2 during oxidation processes, Reduced Compounds is left assumed to be together 5% */
 
 /* Declaration of variables */
 
@@ -344,7 +345,7 @@ extern Real litter_agsub_sum(const Litter *);
 extern Real litter_agsub_sum_n(const Litter *);
 extern Real litter_agtop_grass(const Litter *);
 extern Real litter_agtop_sum_quick(const Litter *);
-extern Stocks littersom(Stand *,const Real [NSOILLAYER],Real,Real *,Real,Real,Real *,Real *,int,int,const Config *);
+extern Stocks littersom(Stand *,const Real [NSOILLAYER],Real,Real *,Real,Real,Real *,Real *, Real *,int,int,const Config *);
 extern Real littercarbon(const Litter *);
 extern Stocks litterstocks(const Litter *);
 extern Real moistfactor(const Litter *);
@@ -374,7 +375,7 @@ extern void apply_perc_enthalpy(Soil *);
 extern void freezefrac2soil(Soil *, const Real [NSOILLAYER]);
 extern void enth2freezefrac(Real *, const Real * ,const  Soil_thermal_prop *);
 extern void soilice2moisture(Soil *, Real *,int);
-extern void gasdiffusion(Soil*, Real, Real, Real *, Real *, Real *);
+extern void gasdiffusion(Soil*, Real, Real, Real *, Real *, Real *,int);
 extern Real soilmethane(const Soil *);
 extern Real temp_response(Real, Real);
 extern void update_soil_thermal_state(Soil *,Real,const Config *);

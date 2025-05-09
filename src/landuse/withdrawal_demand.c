@@ -27,6 +27,7 @@
 /**************************************************************************************/
 
 #include "lpj.h"
+#define neighbour_irrigation FALSE
 
 void withdrawal_demand(Cell *grid,          /**< LPJ grid */
                        const Config *config /**< LPJ configuration */
@@ -98,7 +99,8 @@ void withdrawal_demand(Cell *grid,          /**< LPJ grid */
       grid[cell].discharge.wd_deficit=grid[cell].discharge.wd_demand=0;
 
 
-
+if(neighbour_irrigation)
+{
   /* fill output buffer with water withdrawal deficits */
   for(i=0;i<pnet_outlen(config->irrig_neighbour);i++)
     out[i]=grid[pnet_outindex(config->irrig_neighbour,i)-config->startgrid+config->firstgrid].discharge.wd_deficit;
@@ -116,5 +118,5 @@ void withdrawal_demand(Cell *grid,          /**< LPJ grid */
     }
     grid[cell].discharge.wd_demand+=grid[cell].discharge.wd_neighbour;
   }
-
+}
 } /* of 'withdrawal_demand' */

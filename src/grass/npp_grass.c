@@ -16,6 +16,7 @@
 
 #include "lpj.h"
 #include "grass.h"
+#include "soil.h"
 
 Real npp_grass(Pft *pft,               /**< PFT variables */
                Real UNUSED(gtemp_air), /**< value of air temperature response function */
@@ -29,7 +30,6 @@ Real npp_grass(Pft *pft,               /**< PFT variables */
   Real npp,mresp,gresp,nc_root;
   int l;
   grass=pft->data;
-  Real tmp;
   par=pft->par->data;
   if(grass->ind.root.carbon>epsilon)
     nc_root=grass->ind.root.nitrogen/grass->ind.root.carbon;
@@ -49,12 +49,9 @@ Real npp_grass(Pft *pft,               /**< PFT variables */
   getoutput(&pft->stand->cell->output,RA,config)+=(mresp+gresp)*pft->stand->frac;
   forrootsoillayer(l)
   {
-    tmp=pft->stand->soil.O2[l];
-    pft->stand->soil.O2[l]-=pft->nind*(grass->ind.root.carbon*pft->par->respcoeff*param.k*nc_root*gtemp_soil*pft->phen)*pft->par->rootdist[l]*WO2/WC;
-    if(pft->stand->soil.O2[l]<0 && !pft->par->peatland)
-      pft->stand->soil.O2[l]=tmp*0.05;  //TODO HOW TO PUNISH WHEN NOT ENOUGH O2 FOR respiration and what is with flood tolerant grasses
-    else
-      pft->stand->soil.O2[l]=0;
+    pft->stand->soil.O2[l]-=min(pft->stand->soil.O2[l],pft->nind*(grass->ind.root.carbon*pft->par->respcoeff*param.k*nc_root*gtemp_soil*pft->phen)*pft->par->rootdist[l]*WO2/WC);
+    if(pft->stand->soil.O2[l]<0)
+      pft->stand->soil.O2[l]=0;  //TODO HOW TO PUNISH WHEN NOT ENOUGH O2 FOR respiration and what is with flood tolerant grasses
    }
 
   return npp;

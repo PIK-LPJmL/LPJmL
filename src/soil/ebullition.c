@@ -16,7 +16,7 @@
 
 #include "lpj.h"
 
-#define CH4_min  0.016 /* 0.012 threshold value at which ebullition occur at totally vegetated soils g*m-3*/
+#define CH4_min  0.014 /* 0.012 threshold value at which ebullition occur at totally vegetated soils g*m-3*/
 #define k_e 1          /* rate constant h-1 */
 
 #ifdef DEBUG
@@ -82,8 +82,8 @@ Real ebullition(Stand *stand   /**< pointer to stand */
         soil->CH4[l] -= Q_ebull2;
         Q_ebull[l]+=Q_ebull2;
       }
-      else
-        break;
+//      else                       //needs to be passed to the next layer
+//        break;
     }
     Q_ebull_day+=Q_ebull[0];
   }
