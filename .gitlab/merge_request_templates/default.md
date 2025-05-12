@@ -11,7 +11,7 @@
 # Checklist for MR Creator
 
 - [ ] MR labeled (trivial vs. non-trivial)
-- [ ] run with `./configure.sh -check` performed to check for out-of-bounds access
+- [ ] Run with `./configure.sh -check` performed to check for out-of-bounds access
 - [ ] Global benchmark report against the last version (`/p/project/lpjml/benchmark_run_outputs/...`) created
 - [ ] Bitwise comparison of outputs with `cmpbin` or `diff` done, if no changes are expected in the results
 - [ ] Compliance with `stylesheet.md` checked
@@ -53,5 +53,5 @@
 
 # Notes on responsibilities of author and reviewers
 
-- the reviewer opens discussion threads for any feedback
-- the author resolves the discussion threads
+- The reviewer opens discussion threads for any feedback
+- The author resolves the discussion threads
