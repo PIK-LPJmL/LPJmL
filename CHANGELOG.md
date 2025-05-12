@@ -20,6 +20,43 @@ of `major.minor.patch` with
 ## [Unreleased]
 
 
+## [5.9.23] - 2025-05-08
+
+### Contributors
+
+- author: Werner von Bloh (bloh@pik-potsdam.de)
+- code review: Jens Heinke (heinke@pik-potsdam.de), Fabian Stenzel(stenzel@pik-potsdam.de)
+
+### Changed
+
+- Option `-check` of `configure.sh` enables now run-time checks of memory leaks and memory access out of bounds and undefined variables for gcc and icx compiler. Optimization is not disabled. Use options `-debug -check` to disable.
+- Datatype `List` used in `fprintfiles.c`.
+- All allocated memory is now freed in utilities.
+- Prescribed landcover input file changed in `input.cjson` to a file with the same number of natural PFTs.
+- All remaining unsafe calls to `sprintf()` replaced by calls to `snprinf()` or `getsprinf()`.
+
+### Fixed
+
+- Check for missing values for integer input corrected in `readclimate_netcdf.c`.
+- Memory leak fixed in `filesexist.c`.
+- Calculation of global area fixed in `printglobal.c`.
+- Check for null attribute pointer added in `fprintjson.c`.
+- Uninitialized grid name initialized in `mathclm.c`.
+- Call to `snprintf()` replaced by `getsprintf()` in `reservoir2cdf.c`.
+- Datatype for index and writing the header corrected in `lpjcat.c`.
+- Functions for qsort(), bisect(), and leftmostzero() changed to avoid run-time errors with `-check` option.
+- Pointer set to NULL  if `k_est`is NULL in `initmanage.c`.
+- Missing argument added in opening aquifer file for IMAGE.
+- Scaling of coordinates fixed in `joingrid.c`.
+- Fraction pointer initialized to NULL in `freadresdata.c` to avoid SEGV in `lpjprint.c` if reservoir data is read from restart file.
+- Index set correctly for outflow cells in `regriddrain.c`.
+- Check for maximum discharge length corrected in `printdrain.c`.
+- Number of years of clm file set to 1 in `grid2clm.c`.
+- Function `fscanlandcovermap.c` corrected (issue https://github.com/PIK-LPJmL/LPJmL/issues/48).
+- Access out of bounds for `soil->freezdepth` fixed in `soiltemp.c`.
+- Format specifier changed in `cat2bsq.c` and `cutclm.c` to compile without warnings using the clang compiler (issue #372).
+
+
 ## [5.9.22] - 2025-03-14
 
 ### Contributors

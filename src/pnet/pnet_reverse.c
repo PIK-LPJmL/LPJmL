@@ -35,10 +35,10 @@ typedef struct
   int index,from;
 } data_t;
 
-static int compare(const data_t *a,const data_t *b)
+static int compare(const void *a,const void *b)
 {
   /* compare function to sort data_t items by their integer index */
-  return a->index-b->index;
+  return ((const data_t *)a)->index- ((const data_t *)b)->index;
 } /* of 'compare' */
 
 int pnet_reverse(Pnet *pnet /**< Pointer to Pnet structure */
@@ -101,7 +101,7 @@ int pnet_reverse(Pnet *pnet /**< Pointer to Pnet structure */
       in[size++].index=pnet->connect[i].index[j];
     }
   /* sort by their index in ascending order */
-  qsort(in,size,sizeof(data_t),(int (*)(const void *,const void *))compare);
+  qsort(in,size,sizeof(data_t),compare);
   task=0;
   /* calculate inlen vector */
   pnet->inlen[task]=0;

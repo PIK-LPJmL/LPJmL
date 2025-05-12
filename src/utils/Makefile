@@ -339,9 +339,9 @@ $(BIN)/printclm$E: printclm.$O $(LIBDIR)/libtools.$A $(LIBDIR)/libreservoir.$A $
 		$(LIBDIR)/libtools.$A\
 		$(LIBDIR)/libreservoir.$A $(LIBDIR)/libnum.$A $(LIBS)
 
-$(BIN)/printdrain$E: printdrain.$O $(LIBDIR)/libtools.$A
+$(BIN)/printdrain$E: printdrain.$O $(LIBDIR)/libtools.$A $(LIBDIR)/liblpj.$A
 	$(LINK) $(LNOPTS)$(BIN)/printdrain$E printdrain.$(O)\
-		$(LIBDIR)/libtools.$(A) $(LIBS)
+		$(LIBDIR)/libtools.$A $(LIBDIR)/liblpj.$A $(LIBS)
 
 $(BIN)/cat2bsq$E: cat2bsq.$O $(LIBDIR)/libtools.$A
 	$(LINK) $(LNOPTS)$(BIN)/cat2bsq$E cat2bsq.$O $(LIBDIR)/libtools.$A $(LIBS)

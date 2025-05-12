@@ -25,8 +25,7 @@
 int main(int argc,char **argv)
 {
 #ifdef USE_NETCDF
-  char *var;
-  var=NULL;
+  char *var=NULL;
   const double *lon,*lat;
   int *index;
   Coord *grid_soil,*grid;
@@ -322,7 +321,7 @@ int main(int argc,char **argv)
     printf("data[0]=%d\n",data[0]);
 #endif
     if(data[0]<0)
-     out[index[src_cell]]=data[0];
+      out[index[src_cell]]=data[0];
     else
     {
       if(data[0]>=n)
@@ -348,7 +347,14 @@ int main(int argc,char **argv)
   }
   rc=nc_put_var_int(ncid,index_varid,out);
   if(header.nbands==2)
+  {
     rc=nc_put_var_float(ncid,len_varid,len);
+    free(len);
+  }
+  free(out);
+  free(grid);
+  free(grid_soil);
+  free(index);
   nc_close(ncid);
   closecoord_netcdf(soil);
   return EXIT_SUCCESS;
