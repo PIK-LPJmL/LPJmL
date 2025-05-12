@@ -94,6 +94,7 @@ int main(int argc,char **argv)
   c2=newvec(Coord,n2);
   if(c2==NULL)
   {
+    free(c);
     printallocerr("c2");
     return EXIT_FAILURE;
   }
@@ -101,6 +102,8 @@ int main(int argc,char **argv)
     if(readcoord(coordfile,c2+i,&res))
     {
       fprintf(stderr,"Error reading cell %d in '%s'.\n",i,argv[1]);
+      free(c);
+      free(c2);
       return EXIT_FAILURE;
     }
   closecoord(coordfile);
@@ -108,23 +111,31 @@ int main(int argc,char **argv)
   if(file==NULL)
   {
     fprintf(stderr,"Error opening '%s': %s.\n",argv[3],strerror(errno));
+    free(c);
+    free(c2);
     return EXIT_FAILURE;
   }
   data_version=READ_VERSION;
   if(freadanyheader(file,&header,&swap,id,&data_version,TRUE))
   {
     fprintf(stderr,"Error reading header in '%s'.\n",argv[3]);
+    free(c);
+    free(c2);
     return EXIT_FAILURE;
   }
   if(data_version>CLM_MAX_VERSION)
   {
     fprintf(stderr,"Error: Unsupported version %d in '%s', must be less than %d.\n",
             data_version,argv[3],CLM_MAX_VERSION+1);
+    free(c);
+    free(c2);
     return EXIT_FAILURE;
   }
   if(header.nbands!=2)
   {
     fprintf(stderr,"Invalid number of bands=%d in '%s', must be 2.\n",header.nbands,argv[3]);
+    free(c);
+    free(c2);
     return EXIT_FAILURE;
   }
   if(header.nstep!=1)
@@ -135,17 +146,23 @@ int main(int argc,char **argv)
   if(header.timestep!=1)
   {
     fprintf(stderr,"Invalid time step=%d in '%s', must be 1.\n",header.timestep,argv[3]);
+    free(c);
+    free(c2);
     return EXIT_FAILURE;
   }
   if(data_version>2 && header.datatype!=LPJ_INT)
   {
     fprintf(stderr,"Invalid datatype %s in '%s', must be int.\n",typenames[header.datatype],argv[3]);
+    free(c);
+    free(c2);
     return EXIT_FAILURE;
   }
   if(header.ncell!=n1)
   {
     fprintf(stderr,"Invalid number of cells %d in '%s', not %d.\n",
             header.ncell,argv[3],n1);
+    free(c);
+    free(c2);
     return EXIT_FAILURE;
   }
   r=newvec(Routing,header.ncell);
@@ -153,11 +170,16 @@ int main(int argc,char **argv)
   {
     fclose(file);
     printallocerr("r");
+    free(c);
+    free(c2);
     return EXIT_FAILURE;
   }
   if(fread(r,sizeof(Routing),header.ncell,file)!=header.ncell)
   {
     fclose(file);
+    free(r);
+    free(c);
+    free(c2);
     fprintf(stderr,"Error reading routing in '%s'.\n",argv[3]);
     return EXIT_FAILURE;
   }
@@ -169,14 +191,21 @@ int main(int argc,char **argv)
   if(cnew==NULL)
   {
     printallocerr("cnew");
+    free(r);
+    free(c);
+    free(c2);
     return EXIT_FAILURE;
   }
   for(i=0;i<n2;i++)
     cnew[i]=c2[i];
+  free(c2);
   file=fopen(argv[4],"wb");
   if(file==NULL)
   {
     fprintf(stderr,"Error creating '%s': %s.\n",argv[4],strerror(errno));
+    free(cnew);
+    free(r);
+    free(c);
     return EXIT_FAILURE;
   }
   header.datatype=(isshort) ? LPJ_SHORT : LPJ_FLOAT;
@@ -198,6 +227,9 @@ int main(int argc,char **argv)
     if(index==NOT_FOUND)
     {
       fprintf(stderr,"Coordinate %s not found.\n",sprintcoord(s,cnew+i));
+      free(cnew);
+      free(r);
+      free(c);
       return EXIT_FAILURE;
     }
     for(j=0;;)
@@ -229,9 +261,13 @@ int main(int argc,char **argv)
       }
     }
   }
+  free(r);
+  free(c);
   if(fwriteheader(file,&header,LPJGRID_HEADER,LPJGRID_VERSION))
   {
     fprintf(stderr,"Error writing header in '%s'.\n",argv[4]);
+    free(cnew);
+    fclose(file);
     return EXIT_FAILURE;
   }
   if(isshort)
@@ -245,5 +281,6 @@ int main(int argc,char **argv)
     printf("%d cells added.\n",header.ncell-n2);
   else
     puts("No cells added.");
+  free(cnew);
   return EXIT_SUCCESS;
 } /* of 'main' */

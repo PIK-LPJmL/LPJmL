@@ -24,7 +24,7 @@
 
 typedef struct
 {
-  const Coord_array *index;
+  Coord_array *index;
   int ncid;
   int varid;
 } Cdf;
@@ -47,7 +47,7 @@ static Cdf *create_cdf(const char *filename,
                        Bool notime,
                        Bool isint,
                        Bool isnetcdf4,
-                       const Coord_array *array)
+                       Coord_array *array)
 {
   Cdf *cdf;
   double *lon,*lat;
@@ -498,6 +498,7 @@ static Bool write_int_cdf(const Cdf *cdf,const int vec[],int year,
 
 static void close_cdf(Cdf *cdf)
 {
+  freecoordarray(cdf->index);
   nc_close(cdf->ncid);
   free(cdf);
 } /* of 'close_cdf' */
@@ -864,7 +865,8 @@ int main(int argc,char **argv)
   if(argc!=iarg+2)
   {
     variable=argv[iarg];
-    grid_filename=argv[iarg+1];
+    grid_filename=strdup(argv[iarg+1]);
+    check(grid_filename);
   }
   else
   {
@@ -883,7 +885,7 @@ int main(int argc,char **argv)
     grid_filename=addpath(grid_name.name,path);
     if(grid_filename==NULL)
     {
-     printallocerr("name");
+      printallocerr("name");
       return EXIT_FAILURE;
     }
     free(grid_name.name);
@@ -1060,6 +1062,14 @@ int main(int argc,char **argv)
   }
   cdf=create_cdf(outname,map,source,history,variable,units,var_standard_name,long_name,&netcdf_config,arglist,global_attrs,n_global,&header,compress,landuse,notime,isint || ((header.datatype==LPJ_INT || header.datatype==LPJ_BYTE) && header.scalar==1),isnetcdf4,index);
   free(arglist);
+  free(source);
+  free(history);
+  free(var_name);
+  free(var_units);
+  free(var_standard_name);
+  free(var_long_name);
+  freemap(map);
+  freeattrs(global_attrs,n_global);
   if(cdf==NULL)
     return EXIT_FAILURE;
   if((isint ||((header.datatype==LPJ_INT || header.datatype==LPJ_BYTE) && header.scalar==1)))
@@ -1128,6 +1138,7 @@ int main(int argc,char **argv)
     free(data);
     free(f);
   }
+  free(grid_filename);
   close_cdf(cdf);
   fclose(file);
 

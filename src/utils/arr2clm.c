@@ -179,6 +179,7 @@ int main(int argc,char **argv)
   in=fopen(argv[iarg+1],"rb");
   if(in==NULL)
   {
+    free(coords);
     printfopenerr(argv[iarg+1]);
     return EXIT_FAILURE;
   }
@@ -187,6 +188,7 @@ int main(int argc,char **argv)
   out=fopen(argv[iarg+2],"wb");
   if(out==NULL)
   {
+    free(coords);
     printfcreateerr(argv[iarg+2]);
     return EXIT_FAILURE;
   }
@@ -194,6 +196,7 @@ int main(int argc,char **argv)
   data=newvec(float,nlon*nlat);
   if(data==NULL)
   {
+    free(coords);
     printallocerr("data");
     return EXIT_FAILURE;
   }
@@ -226,6 +229,8 @@ int main(int argc,char **argv)
               count,header.firstyear+header.nyear,replace);
     header.nyear++;
   }
+  free(data);
+  free(coords);
   printf("Number of years: %d\n",header.nyear);
   rewind(out);
   fwriteheader(out,&header,id,version);

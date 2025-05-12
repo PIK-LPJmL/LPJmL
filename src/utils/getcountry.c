@@ -276,9 +276,9 @@ static int findcountryname(const char *name,
   return NOT_FOUND;
 } /* 'findcountryname' */
 
-static int compare(const Countryname *a,const Countryname *b)
+static int compare(const void *a,const void *b)
 {
-  return strcmp(a->name,b->name);
+  return strcmp(((const Countryname *)a)->name,((const Countryname *)b)->name);
 }
 
 static Bool findcountry(const int country[],int n,int c)
@@ -452,6 +452,7 @@ int main(int argc,char **argv)
       outheader.ncell++;
     }
   }
+  free(country);
   fclose(file);
   fclose(grid);
   rewind(out);

@@ -25,7 +25,7 @@
 
 typedef struct
 {
-  const Coord_array *index;
+  Coord_array *index;
   int ncid;
   int varid_year;
   int varid_area;
@@ -45,7 +45,7 @@ static Cdf *create_cdf(const char *filename,
                        const Header *header,
                        int compress,
                        Bool isnetcdf4,
-                       const Coord_array *array)
+                       Coord_array *array)
 {
   Cdf *cdf;
   double *lon,*lat,*lon_bnds,*lat_bnds;
@@ -269,10 +269,11 @@ static Bool write_reservoir_cdf(const Cdf *cdf,const Reservoir r[],int size,floa
   free(grid);
   free(igrid);
   return FALSE;
-} /* of 'write_float_cdf' */
+} /* of 'write_reservoir_cdf' */
 
 static void close_cdf(Cdf *cdf)
 {
+  freecoordarray(cdf->index);
   nc_close(cdf->ncid);
   free(cdf);
 } /* of 'close_cdf' */
@@ -292,7 +293,7 @@ int main(int argc,char **argv)
   Attr *global_attrs=NULL;
   Attr *global_attrs2=NULL;
   int i,ngrid,version,iarg,compress,setversion;
-  Bool swap,isglobal,israw,ismeta,isnetcdf4;
+  Bool swap,isglobal,israw,ismeta,isnetcdf4,rc;
   int n_global,n_global2;
   float cellsize_lon,cellsize_lat;
   Reservoir *rdata;
@@ -551,30 +552,36 @@ int main(int argc,char **argv)
       version=4;
     else
     {
-    version=setversion;
-    if(freadanyheader(file,&header,&swap,headername,&version,TRUE))
-    {
-      fprintf(stderr,"Error reading header of '%s'.\n",filename);
-      fclose(file);
-      return EXIT_FAILURE;
-    }
-    if(version<3)
-      header.datatype=LPJ_INT;
-    if(version>CLM_MAX_VERSION)
-    {
-      fprintf(stderr,"Error: Unsupported version %d in '%s', must be less than %d.\n",
-              version,filename,CLM_MAX_VERSION+1);
-      fclose(file);
-      return EXIT_FAILURE;
-    }
-    filesize=getfilesizep(file)-headersize(headername,version);
-    if(filesize!=(long long)header.nyear*header.ncell*header.nbands*typesizes[header.datatype])
-      fprintf(stderr,"Warning: File size of '%s' does not match nbands*ncell*nyear.\n",filename);
+      version=setversion;
+      if(freadanyheader(file,&header,&swap,headername,&version,TRUE))
+      {
+        fprintf(stderr,"Error reading header of '%s'.\n",filename);
+        free(grid);
+        fclose(file);
+        return EXIT_FAILURE;
+      }
+      if(version<3)
+        header.datatype=LPJ_INT;
+      if(version>CLM_MAX_VERSION)
+      {
+        fprintf(stderr,"Error: Unsupported version %d in '%s', must be less than %d.\n",
+                version,filename,CLM_MAX_VERSION+1);
+        free(grid);
+        fclose(file);
+        return EXIT_FAILURE;
+      }
+      filesize=getfilesizep(file)-headersize(headername,version);
+      if(filesize!=(long long)header.nyear*header.ncell*header.nbands*typesizes[header.datatype])
+        fprintf(stderr,"Warning: File size of '%s' does not match nbands*ncell*nyear.\n",filename);
     }
     if(header.nyear>1 || header.nstep>1)
     {
       fprintf(stderr,"No time axis set, but number of time steps>1 in '%s'.\n",
               filename);
+      free(source);
+      free(history);
+      freeattrs(global_attrs,n_global);
+      free(grid);
       fclose(file);
       return EXIT_FAILURE;
     }
@@ -583,6 +590,10 @@ int main(int argc,char **argv)
     {
       fprintf(stderr,"Number of cells=%d in '%s' is different from %d in '%s'.\n",
               header.ncell,filename,ngrid,grid_filename);
+      free(source);
+      free(history);
+      freeattrs(global_attrs,n_global);
+      free(grid);
       fclose(file);
       return EXIT_FAILURE;
     }
@@ -595,6 +606,10 @@ int main(int argc,char **argv)
     {
       fprintf(stderr,"Longitudinal cell size=%g in '%s' differs from %g in '%s'.\n",
               header.cellsize_lon,filename,res.lon,grid_filename);
+      free(source);
+      free(history);
+      freeattrs(global_attrs,n_global);
+      free(grid);
       fclose(file);
       return EXIT_FAILURE;
     }
@@ -602,6 +617,10 @@ int main(int argc,char **argv)
     {
       fprintf(stderr,"Latitudinal cell size=%g in '%s' differs from %g in '%s'.\n",
               header.cellsize_lat,filename,res.lat,grid_filename);
+      free(source);
+      free(history);
+      freeattrs(global_attrs,n_global);
+      free(grid);
       fclose(file);
       return EXIT_FAILURE;
     }
@@ -626,22 +645,42 @@ int main(int argc,char **argv)
   {
     fprintf(stderr,"Number of bands=%d in '%s' must be 10.\n",
             header.nbands,filename);
+    free(source);
+    free(history);
+    freeattrs(global_attrs,n_global);
+    free(grid);
     fclose(file);
     return EXIT_FAILURE;
   }
   index=createindex(grid,ngrid,res,isglobal,FALSE);
   if(index==NULL)
+  {
+    free(source);
+    free(history);
+    freeattrs(global_attrs,n_global);
+    free(grid);
+    fclose(file);
     return EXIT_FAILURE;
+  }
   free(grid);
   arglist=catstrvec(argv,argc);
   cdf=create_cdf(outname,source,history,&netcdf_config,arglist,global_attrs,n_global,&header,compress,isnetcdf4,index);
   free(arglist);
+  free(source);
+  free(history);
+  freeattrs(global_attrs,n_global);
   if(cdf==NULL)
+  {
+    freecoordarray(index);
+    fclose(file);
     return EXIT_FAILURE;
+  }
   rdata=newvec(Reservoir,ngrid);
   if(rdata==NULL)
   {
     printallocerr("data");
+    fclose(file);
+    close_cdf(cdf);
     return EXIT_FAILURE;
   }
   for(i=0;i<ngrid;i++)
@@ -649,15 +688,18 @@ int main(int argc,char **argv)
     if(readreservoir(rdata+i,swap,file))
     {
       fprintf(stderr,"Error reading reservoir data of cell %d.\n",i);
+      free(rdata);
+      fclose(file);
+      close_cdf(cdf);
       return EXIT_FAILURE;
     }
     rdata[i].capacity*=1e-12; /* convert dm3 ->km3 */
   }
-  if(write_reservoir_cdf(cdf,rdata,ngrid,netcdf_config.missing_value.f,netcdf_config.missing_value.i))
-    return EXIT_FAILURE;
-  close_cdf(cdf);
   fclose(file);
-  return EXIT_SUCCESS;
+  rc=write_reservoir_cdf(cdf,rdata,ngrid,netcdf_config.missing_value.f,netcdf_config.missing_value.i);
+  free(rdata);
+  close_cdf(cdf);
+  return (rc) ? EXIT_FAILURE : EXIT_SUCCESS;
 #else
   fprintf(stderr,"ERROR401: NetCDF is not supported in this version of %s.\n",strippath(argv[0]));
   return EXIT_FAILURE;

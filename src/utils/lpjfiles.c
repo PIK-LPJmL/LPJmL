@@ -108,5 +108,6 @@ int main(int argc,char **argv)
     printincludes(config.filename,argc_save,argv_save);
     printfiles(input,output,&config);
   }
+  freeconfig(&config);
   return EXIT_SUCCESS;
 } /* of 'main' */

@@ -430,7 +430,8 @@ int main(int argc,char **argv)
                   ERR_USAGE,progname,progname);
           return EXIT_FAILURE;
         }
-        var=argv[++iarg];
+        var=strdup(argv[++iarg]);
+        check(var);
       }
       else if(!strcmp(argv[iarg],"-time"))
       {
@@ -451,7 +452,8 @@ int main(int argc,char **argv)
                   ERR_USAGE,progname,progname);
           return EXIT_FAILURE;
         }
-        units=argv[++iarg];
+        units=strdup(argv[++iarg]);
+        check(units);
       }
 #endif
       else if(!strcmp(argv[iarg],"-map"))
@@ -805,6 +807,19 @@ int main(int argc,char **argv)
     header.nyear+=climate.nyear;
     nc_close(climate.ncid);
   }
+  free(data);
+  switch(header.datatype)
+  {
+    case LPJ_SHORT:
+      free(s);
+      break;
+    case LPJ_INT:
+      free(idata);
+      break;
+    default:
+      break;
+  }
+  free(coords);
   rewind(file);
   if(version<4)
     header.nbands*=header.nstep;
@@ -831,8 +846,17 @@ int main(int argc,char **argv)
     grid_name.name=argv[iarg];
     grid_name.fmt=CLM;
     fprintjson(file,outname,NULL,source,history,arglist,&header,map,map_name,attrs,n_attr,var,units,standard_name,long_name,&grid_name,grid_type,CLM,id,FALSE,version);
+    free(arglist);
+    free(out_json);
     fclose(file);
   }
+  freeattrs(attrs,n_attr);
+  free(var);
+  free(units);
+  free(long_name);
+  free(standard_name);
+  free(history);
+  free(source);
   return EXIT_SUCCESS;
 #else
   fprintf(stderr,"ERROR401: NetCDF is not supported in this version of %s.\n",argv[0]);
