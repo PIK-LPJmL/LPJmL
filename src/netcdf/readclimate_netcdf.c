@@ -23,13 +23,12 @@ static Bool myopen_netcdf(Climatefile *file,int year,const Config *config)
 {
   int rc,ndims;
   char *s;
-  s=malloc(strlen(file->filename)+12);
+  s=getsprintf(file->filename,year+file->firstyear);
   if(s==NULL)
   {
     printallocerr("filename");
     return TRUE;
   }    
-  sprintf(s,file->filename,year+file->firstyear);
   rc=nc_open(s,NC_NOWRITE,&file->ncid);
   if(rc)
   {
@@ -431,7 +430,7 @@ Bool readintclimate_netcdf(Climatefile *file,   /* climate data file */
           }
           for(i=0;i<size;i++)
           {
-            if(ismissingvalue(f[file->nlon*(i*file->nlat+offsets[1])+offsets[2]],file->missing_value.i))
+            if(f[file->nlon*(i*file->nlat+offsets[1])+offsets[2]]==file->missing_value.i)
             {
               fprintf(stderr,"ERROR423: Missing value for cell=%d (%s) at %s %d.\n",
                       cell+config->startgrid,sprintcoord(line,&grid[cell].coord),isdaily(*file) ? "day" : "month",i+1);

@@ -44,7 +44,7 @@ Bstruct openrestart(const char *filename, /**< filename of restart file */
   char *lpjversion;
   Real cellsize_lon,cellsize_lat;
   int offset,ncell,restart_npft,restart_ncft,firstcell,firstyear;
-  Bool separate_harvest,river_routing;
+  Bool separate_harvests,river_routing;
   Type datatype;
   char *type;
   /* Open restart file */
@@ -95,7 +95,7 @@ Bstruct openrestart(const char *filename, /**< filename of restart file */
   readint(file,"sdate_option",&config->sdate_option_restart);
   readbool(file,"crop_phu_option",&config->crop_phu_option_restart);
   readbool(file,"river_routing",&river_routing);
-  readbool(file,"separate_harvests",&separate_harvest);
+  readbool(file,"separate_harvests",&separate_harvests);
   if(freadseed(file,"seed",config->seed))
   {
     if(isroot(*config))
@@ -140,7 +140,7 @@ Bstruct openrestart(const char *filename, /**< filename of restart file */
       bstruct_close(file);
       return NULL;
     }
-    if(separate_harvest!=config->separate_harvests)
+    if(separate_harvests!=config->separate_harvests)
     {
       if(isroot(*config))
         fprintf(stderr,"ERROR180: Double harvest setting %s is different from %s in %s file '%s'.\n",

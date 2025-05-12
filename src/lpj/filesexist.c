@@ -74,6 +74,7 @@ static int checksoilcode(Config *config)
     {
       printallocerr("name");
       fclose(file);
+      free(exist);
       return 1;
     }
     for(cell=0;cell<ncell;cell++)
@@ -84,6 +85,7 @@ static int checksoilcode(Config *config)
                 name,cell);
         free(name);
         fclose(file);
+        free(exist);
         return 1;
       }
       if(soilcode>=config->soilmap_size)
@@ -92,6 +94,7 @@ static int checksoilcode(Config *config)
                 soilcode,cell,name,config->soilmap_size-1);
         free(name);
         fclose(file);
+        free(exist);
         return 1;
       }
       exist[soilcode]=TRUE;
@@ -101,6 +104,7 @@ static int checksoilcode(Config *config)
       if(!exist[i] && config->soilmap[i]!=0)
         fprintf(stderr,"WARNING035: Soilcode %u ('%s') not found in '%s'.\n",
                 i,config->soilpar[config->soilmap[i]-1].name,name);
+    free(exist);
     free(name);
   }
   return 0;
@@ -275,20 +279,19 @@ static int checkclmfile(const Config *config,const char *data_name,const Filenam
         fprintf(stderr,"ERROR225: Cannot parse filename '%s'.\n",filename->name);
         return 0;
       }
-      name=malloc(strlen(s)+8);
       count=0;
       for(year=first;year<=last;year++)
       {
-        sprintf(name,s,year);
+        name=getsprintf(s,year);
         if(openclimate_netcdf(&input,name,filename->time,filename->var,filename->unit,unit,config))
         {
           count++;
         }
         else
           closeclimate_netcdf(&input,TRUE);
+        free(name);
       }
       free(s);
-      free(name);
       return count;
     }
     else

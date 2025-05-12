@@ -24,7 +24,7 @@
 
 typedef struct
 {
-  const Coord_array *index;
+  Coord_array *index;
   int ncid;
   int varid;
 } Cdf;
@@ -36,7 +36,7 @@ static Cdf *create_cdf(const char *filename,
                        Coord res,
                        int compress,
                        Bool isnetcdf4,
-                       const Coord_array *array)
+                       Coord_array *array)
 {
   Cdf *cdf;
   double *lon,*lat;
@@ -69,7 +69,7 @@ static Cdf *create_cdf(const char *filename,
 
   if(isnetcdf4)
     rc=nc_create(filename,(compress) ? NC_CLOBBER|NC_NETCDF4 : NC_CLOBBER,&cdf->ncid);
- else
+  else
     rc=nc_create(filename,NC_CLOBBER,&cdf->ncid);
   if(rc)
   {
@@ -172,6 +172,7 @@ static Bool write_short_cdf(const Cdf *cdf,const short vec[],int size)
 
 static void close_cdf(Cdf *cdf)
 {
+  freecoordarray(cdf->index);
   nc_close(cdf->ncid);
   free(cdf);
 } /* of 'close_cdf' */
@@ -379,10 +380,11 @@ int main(int argc,char **argv)
   }
   for(i=0;i<ngrid;i++)
     f[i]=data[header.nbands*i+inum];
+  free(data);
   write_short_cdf(cdf,f,ngrid);
+  free(f);
   close_cdf(cdf);
   fclose(file);
-  free(data);
   return EXIT_SUCCESS;
 #else
   fputs("NetCDF is not supported in this version of LPJmL.\n",stderr);

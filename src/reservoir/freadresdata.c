@@ -49,6 +49,7 @@ Bool freadresdata(Bstruct file,     /**< pointer to restart file */
     return TRUE;
   /*initialize other characteristics of this reservoir*/
   cell->ml.resdata->reservoir.area=0; /* to avoid uninitialized variable */
+  cell->ml.resdata->fraction=NULL;
   initresdata(cell);
   /* read from restart file */
   readreal2(file,"reservoirfrac",&cell->ml.reservoirfrac);

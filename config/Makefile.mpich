@@ -16,6 +16,7 @@
 
 CC	= mpicc
 DEBUGFLAGS  = -g
+CHECKFLAGS = -sanitize=address -fsanitize=bounds -fsanitize=undefined
 OPTFLAGS= -O3
 WFLAG	= -Wall -m64
 LPJFLAGS  = -DUSE_RAND48 -DUSE_MPI -DSAFE -DWITH_FPE -DUSE_NETCDF -DUSE_UDUNITS -DPERMUTE -DSTRICT_JSON
@@ -28,6 +29,6 @@ RM	= rm
 RMFLAGS	= -f
 LIBS	= -lm -lnetcdf -ludunits2 -ljson-c
 LINKMAIN= mpicc
-LINK	= cc -m64
+LINK	= gcc -m64
 MKDIR	= mkdir -p
 SLASH	= /

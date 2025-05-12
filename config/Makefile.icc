@@ -15,7 +15,7 @@
 
 CC	= icc
 DEBUGFLAGS  = -g -diag-disable=10441
-CHECKFLAGS = -g -check-pointers=rw -diag-disable=10441
+CHECKFLAGS = -check-pointers=rw
 OPTFLAGS= -O3 -ipo -xSSE4.1 -no-prec-div -no-inline-max-total-size -no-inline-max-size -no-vec -diag-disable=10441
 WFLAG   = -Wall
 LPJFLAGS  = -DUSE_RAND48 -DSAFE -DWITH_FPE -DUSE_NETCDF -DUSE_UDUNITS -DPERMUTE -DUSE_TIMING -DSTRICT_JSON #-DDAILY_ESTABLISHMENT
