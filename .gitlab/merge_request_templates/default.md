@@ -1,5 +1,4 @@
 # Changelog Entry for this MR
-```%{co_authored_by}```
 
 ### Added
 
