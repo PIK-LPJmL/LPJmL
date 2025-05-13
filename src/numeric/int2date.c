@@ -21,7 +21,7 @@ char *int2date(long date /**< date in format YYYYMMDD */
               )          /** \return date as string */
 {
   static char str[13];
-  sprintf(str,"%s %2d %4d",months[(date % 10000)/100-1],
+  snprintf(str,13,"%s %2d %4d",months[(date % 10000)/100-1],
           (int)(date % 100),(int)(date/10000));
   return str;
 } /* of 'int2date' */

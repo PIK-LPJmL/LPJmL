@@ -25,7 +25,7 @@
 
 typedef struct
 {
-  const Coord_array *index;
+  Coord_array *index;
   int ncid;
   int varid;
 } Cdf;
@@ -49,7 +49,7 @@ static Cdf *create_cdf(const char *filename,
                        int baseyear,
                        Bool ispft,
                        int compress,
-                       const Coord_array *array,
+                       Coord_array *array,
                        Bool with_days,
                        Bool absyear,
                        Bool notime,
@@ -592,6 +592,7 @@ static Bool write_short_cdf(const Cdf *cdf,const short vec[],int year,
 
 static void close_cdf(Cdf *cdf)
 {
+  freecoordarray(cdf->index);
   nc_close(cdf->ncid);
   free(cdf);
 } /* of 'close_cdf' */
@@ -628,7 +629,7 @@ int main(int argc,char **argv)
   char *var_units=NULL,*var_long_name=NULL,*var_name=NULL,*var_standard_name=NULL;
   char *source=NULL,*history=NULL;
   Filename grid_name;
-  char *variable,*grid_filename,*path;
+  char *variable,*grid_filename=NULL,*path;
   grid_name.fmt=RAW;
   grid_name.name=NULL;
   units=long_name=NULL;
@@ -965,7 +966,12 @@ int main(int argc,char **argv)
   if(argc!=iarg+2)
   {
     variable=argv[iarg];
-    grid_filename=argv[iarg+1];
+    grid_filename=strdup(argv[iarg+1]);
+    if(grid_filename==NULL)
+    {
+      printallocerr("name");
+      return EXIT_FAILURE;
+    }
   }
   else
   {
@@ -1226,6 +1232,14 @@ int main(int argc,char **argv)
 
   cdf=create_cdf(outname,map,map_name,cmdline,source,history,variable,units,var_standard_name,long_name,miss,miss_short,global_attrs,n_global,(isshort) ? LPJ_SHORT : LPJ_FLOAT,header,baseyear,ispft,compress,index,withdays,absyear,notime,isnetcdf4);
   free(cmdline);
+  free(var_units);
+  free(var_long_name);
+  free(var_name);
+  free(var_standard_name);
+  free(source);
+  free(history);
+  freemap(map);
+  freeattrs(global_attrs,n_global);
   if(cdf==NULL)
     return EXIT_FAILURE;
   if(isshort)
@@ -1299,6 +1313,7 @@ int main(int argc,char **argv)
     free(data_short);
   else
     free(data);
+  free(grid_filename);
   return EXIT_SUCCESS;
 #else
   fprintf(stderr,"ERROR401: NetCDF is not supported in this version of %s.\n",argv[0]);

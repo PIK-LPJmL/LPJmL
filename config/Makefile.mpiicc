@@ -18,7 +18,7 @@
 CC	= mpiicc
 OPTFLAGS= -g -O3 -ipo -xCORE-AVX2 -no-prec-div -no-inline-max-total-size -no-inline-max-size -no-vec -diag-disable=10441
 DEBUGFLAGS = -g -diag-disable=10441
-CHECKFLAGS = -g -check-pointers=rw -diag-disable=10441
+CHECKFLAGS = -check-pointers=rw
 LPJFLAGS=  -DUSE_RAND48 -DUSE_MPI -DSAFE -DWITH_FPE -DUSE_NETCDF -DUSE_UDUNITS -DPERMUTE -DUSE_TIMING -DSTRICT_JSON #-DDAILY_ESTABLISHMENT
 WFLAG   = -Wall
 O       = o

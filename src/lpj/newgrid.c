@@ -125,7 +125,7 @@ static Cell *newgrid2(Config *config,          /* Pointer to LPJ configuration *
   if(config->aquifer_irrig)
   {
     /* Open file with aquifer locations */
-    if(openinputdata(&aquifers,&config->aquifer_filename,"aquifer",NULL,LPJ_BYTE,1.0,config))
+    if(openinputdata(&aquifers,&config->aquifer_filename,"aquifer",NULL,LPJ_BYTE,1.0,0,config))
     {
       closecelldata(celldata,config);
       if(config->countrypar!=NULL)

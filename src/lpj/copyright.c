@@ -57,7 +57,7 @@ void copyright(const char *progname /**< program name */
   repo=getrepo();
   if(strlen(repo)>78-10)
   {
-    sprintf(s,"...%s",repo+strlen(repo)-78+10+3);
+    snprintf(s,STRING_LEN,"...%s",repo+strlen(repo)-78+10+3);
     t[15]=s;
   }
   else
