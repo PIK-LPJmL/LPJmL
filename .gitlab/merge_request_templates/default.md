@@ -1,5 +1,9 @@
 # Changelog Entry for this MR
-`%{co_authored_by}`
+
+### Contributors
+
+- author:
+- code review:
 
 ### Added
 
