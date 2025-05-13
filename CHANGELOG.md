@@ -20,6 +20,17 @@ of `major.minor.patch` with
 ## [Unreleased]
 
 
+## [5.9.24] - 2025-05-13
+
+### Contributors
+
+- author: David Hötten (davidho@pik-potsdam.de)
+- code review: Sebastian Ostberg
+
+### Added
+
+- Merge request template ```.gitlab/merge_request_templates/default.md``` that includes several checklists
+
 ## [5.9.23] - 2025-05-08
 
 ### Contributors
