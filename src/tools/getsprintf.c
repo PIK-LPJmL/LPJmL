@@ -1,10 +1,10 @@
 /**************************************************************************************/
 /**                                                                                \n**/
-/**            i  n  i  t  m  a  x  _  f  i  r  e  s  i  z  e  .  c                \n**/
+/**                      g  e  t  s  p  r  i  n  t  f  .  c                        \n**/
 /**                                                                                \n**/
-/**     C implementation of LPJ                                                    \n**/
+/**     C implementation of LPJmL                                                  \n**/
 /**                                                                                \n**/
-/**     Function reads maximum firesize from file                                  \n**/
+/**     Function prints formatted output into allocated string                     \n**/
 /**                                                                                \n**/
 /** (C) Potsdam Institute for Climate Impact Research (PIK), see COPYRIGHT file    \n**/
 /** authors, and contributors see AUTHORS file                                     \n**/
@@ -14,24 +14,40 @@
 /**                                                                                \n**/
 /**************************************************************************************/
 
-#include "lpj.h"
+#include <stdio.h>
+#include <stdlib.h>
+#include <stdarg.h>
+#include <string.h>
+#include "types.h"
 
-Bool initmax_firesize(Cell grid[],         /* LPJ grid */
-                      const Config *config /* LPJ configuration */
-                     )                     /* returns TRUE on error */
+char *getsprintf(const char *fmt, /**< format string */
+                 ...              /**< optional parameter for output */
+                )                 /** \return allocated string with output or NULL on error */
 {
-  int cell;
-  Infile input;
-  if(openinputdata(&input,&config->max_firesize_filename,"maximum firesize","hectare",LPJ_SHORT,0.001,0,config))
-    return TRUE;
-  for(cell=0;cell<config->ngridcell;cell++)
+  char *s;
+  size_t len;
+  va_list ap;
+  va_start(ap,fmt);
+#ifdef _WIN32
+  len = _vscprintf(fmt, ap);
+#else
+  len = vsnprintf(NULL,0,fmt, ap);
+#endif
+  va_end(ap);
+  if(len<0)
   {
-    if(readinputdata(&input,&grid[cell].max_firesize,&grid[cell].coord,cell+config->startgrid,&config->max_firesize_filename))
-    {
-      closeinput(&input);
-      return TRUE;
-    }
+    fprintf(stderr,"ERROR247: Invalid format in '%s'.\n",fmt);
+    return NULL;
   }
-  closeinput(&input);
-  return FALSE;
-} /* of 'initmax_firesize' */
+  s=malloc(len+1);
+  if(s==NULL)
+    return NULL;
+  va_start(ap,fmt);
+#ifdef _WIN32
+  _vsnprintf_s(s, len+1, _TRUNCATE, fmt, ap);
+#else
+  vsnprintf(s,len+1,fmt, ap);
+#endif
+  va_end(ap);
+  return s;
+} /* of 'getsprintf' */

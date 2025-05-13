@@ -45,7 +45,7 @@ Bool readintinputdata(Infile *file,            /**< Pointer to data file */
   }
   else
   {
-    if(readintvec(file->file,data,1,file->swap,file->type))
+    if(readintvec(file->file,data,file->nbands,file->swap,file->type))
     {
       name=getrealfilename(filename);
       fprintf(stderr,"ERROR190: Unexpected end of file in '%s' for cell %d.\n",

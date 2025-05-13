@@ -12,7 +12,6 @@
 /**                                                                                \n**/
 /**************************************************************************************/
 
-#undef USE_MPI
 #include "lpj.h"
 
 #define USAGE "Usage: %s [-h] [-swap] [-scale s] [-cellsize c] gridfile outfile\n"
@@ -27,7 +26,7 @@ int main(int argc,char **argv)
   long long filesize;
   char *endptr;
   swap=FALSE;
-  header.nyear=0;
+  header.nyear=1;
   header.firstyear=0;
   header.order=0;
   header.firstcell=0;
@@ -127,6 +126,7 @@ int main(int argc,char **argv)
   file=fopen(argv[i+1],"wb");
   if(file==NULL)
   {
+    free(data);
     fprintf(stderr,"Error creating '%s': %s\n",argv[i+1],strerror(errno));
     return EXIT_FAILURE;
   }
@@ -134,6 +134,7 @@ int main(int argc,char **argv)
   fwriteheader(file,&header,LPJGRID_HEADER,LPJGRID_VERSION);
   if(fwrite(data,sizeof(short),n,file)!=n)
   {
+    free(data);
     fprintf(stderr,"Error writing data to '%s': %s.\n",
             argv[i+1],strerror(errno));
     return EXIT_FAILURE;

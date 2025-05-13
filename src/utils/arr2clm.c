@@ -174,6 +174,7 @@ int main(int argc,char **argv)
   in=fopen(argv[iarg+1],"rb");
   if(in==NULL)
   {
+    free(coords);
     printfopenerr(argv[iarg+1]);
     return EXIT_FAILURE;
   }
@@ -182,6 +183,7 @@ int main(int argc,char **argv)
   out=fopen(argv[iarg+2],"wb");
   if(out==NULL)
   {
+    free(coords);
     printfcreateerr(argv[iarg+2]);
     return EXIT_FAILURE;
   }
@@ -189,6 +191,7 @@ int main(int argc,char **argv)
   data=newvec(float,nlon*nlat);
   if(data==NULL)
   {
+    free(coords);
     printallocerr("data");
     return EXIT_FAILURE;
   }
@@ -211,7 +214,7 @@ int main(int argc,char **argv)
       else
       {
         if(round(value/header.scalar)<SHRT_MIN || round(value/header.scalar)>SHRT_MAX)
-         fprintf(stderr,"Warning: Data overflow %g for cell %d.\n ",value/header.scalar,i);
+          fprintf(stderr,"Warning: Data overflow %g for cell %d.\n ",value/header.scalar,i);
         svalue=(short)round(value/header.scalar);
         fwrite(&svalue,sizeof(short),1,out);
       }
@@ -221,6 +224,8 @@ int main(int argc,char **argv)
               count,header.firstyear+header.nyear,replace);
     header.nyear++;
   }
+  free(data);
+  free(coords);
   printf("Number of years: %d\n",header.nyear);
   rewind(out);
   fwriteheader(out,&header,id,version);

@@ -19,19 +19,16 @@
 void createconfig(const Config *config)
 {
   char *cmd;
-  int len,rc;
+  int rc;
   if(config->json_filename!=NULL)
   {
-    len=snprintf(NULL,0,"%s -DGIT_REPO=\\\"%s\\\" -DGIT_HASH=\\\"%s\\\" -P >%s",
-                 config->cmd,getrepo(),gethash(),config->json_filename);
-    cmd=malloc(len+1);
+    cmd=getsprintf("%s -DGIT_REPO=\\\"%s\\\" -DGIT_HASH=\\\"%s\\\" -P >%s",
+                   config->cmd,getrepo(),gethash(),config->json_filename);
     if(cmd==NULL)
     {
       printallocerr("cmd");
       return;
     }
-    sprintf(cmd,"%s -DGIT_REPO=\\\"%s\\\" -DGIT_HASH=\\\"%s\\\" -P >%s",
-            config->cmd,getrepo(),gethash(),config->json_filename);
     if((rc=system(cmd)))
       fprintf(stderr,"ERROR263: Cannot write '%s', rc=%d.\n",
               config->json_filename,rc);

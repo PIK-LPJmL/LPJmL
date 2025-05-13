@@ -1,10 +1,11 @@
-#!/bin/sh
 #################################################################################
 ##                                                                             ##
-##           l  p  j  m  l  .  s  h                                            ##
+##    M  a  k  e  f  i  l  e  .  m  p  i  i  c  x                              ##
 ##                                                                             ##
-##    sh script to run lpjml on login as well as on batch nodes on cluster2015 ##
-##    at PIK                                                                   ##
+##   Make include file for compiler and os specific settings                   ##
+##   Compile and link options for Intel compiler mpiicx and library            ##
+##   settings for the new PIK cluster                                          ##
+##   Parallel MPI is enabled                                                   ##
 ##                                                                             ##
 ## (C) Potsdam Institute for Climate Impact Research (PIK), see COPYRIGHT file ##
 ## authors, and contributors see AUTHORS file                                  ##
@@ -14,9 +15,21 @@
 ##                                                                             ##
 #################################################################################
 
-host=$(hostname)
-if [ "$host" = "login01" ] || [ "$host" = "login02" ]
-then
-  unset I_MPI_DAPL_UD_PROVIDER
-fi
-$LPJROOT/bin/lpjml $*
+CC	= mpiicx
+OPTFLAGS= -g -O3 -no-vec
+DEBUGFLAGS = -g -O0
+CHECKFLAGS = -fsanitize=address -fsanitize=bounds -fsanitize=undefined
+LPJFLAGS=  -DUSE_RAND48 -DUSE_MPI -DSAFE -DWITH_FPE -DUSE_NETCDF -DUSE_UDUNITS -DPERMUTE -DUSE_TIMING -DSTRICT_JSON #-DDAILY_ESTABLISHMENT
+WFLAG   = -Wall
+O	= o
+A	= a
+E	=
+AR	= ar
+ARFLAGS	= r 
+RM	= rm 
+RMFLAGS	= -f
+LIBS    = -lnetcdf -ludunits2 -ljson-c
+LINKMAIN= mpiicx
+LINK	= icx
+SLASH	= /
+MKDIR	= mkdir -p

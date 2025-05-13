@@ -83,7 +83,10 @@ int main(int argc,char **argv)
   filename.fmt=(setversion==2) ? CLM2 : CLM;
   grid=opencoord(&filename,TRUE);
   if(grid==NULL)
+  {
+    free(c);
     return EXIT_FAILURE;
+  }
   ngrid2=numcoord(grid);
   getcellsizecoord(&lon,&lat,grid);
   res2.lon=lon;
@@ -91,6 +94,7 @@ int main(int argc,char **argv)
   c2=newvec(Coord,ngrid2);
   if(c2==NULL)
   {
+    free(c);
     closecoord(grid);
     printallocerr("c2");
     return EXIT_FAILURE;
@@ -99,6 +103,8 @@ int main(int argc,char **argv)
   {
     if(readcoord(grid,c2+i,&res2))
     {
+      free(c);
+      free(c2);
       closecoord(grid);
       fprintf(stderr,"Error reading cell %d in '%s'.\n",i,argv[2]);
       return EXIT_FAILURE;
@@ -109,13 +115,18 @@ int main(int argc,char **argv)
   data_file=fopen(argv[3],"rb");
   if(data_file==NULL)
   {
+    free(c);
+    free(c2);
     fprintf(stderr,"Error opening '%s': %s.\n",argv[3],strerror(errno));
     return EXIT_FAILURE;
   }
   data_version=setversion;
   if(freadanyheader(data_file,&header,&swap,id,&data_version,TRUE))
   {
+    free(c);
+    free(c2);
     fprintf(stderr,"Error reading header in '%s'.\n",argv[3]);
+    fclose(data_file);
     return EXIT_FAILURE;
   }
   if(header.nyear<=0)
@@ -127,6 +138,9 @@ int main(int argc,char **argv)
   {
     fprintf(stderr,"Invalid number of cells %d in '%s', not %d.\n",
             header.ncell,argv[3],ngrid);
+    free(c);
+    free(c2);
+    fclose(data_file);
     return EXIT_FAILURE;
   }
   size=getfilesizep(data_file)-headersize(id,data_version);
@@ -134,12 +148,19 @@ int main(int argc,char **argv)
   if(data==NULL)
   {
     printallocerr("idata");
+    free(c);
+    free(c2);
+    fclose(data_file);
     return EXIT_FAILURE;
   }
   if(size!=(long long)header.ncell*header.nyear*header.nbands*sizeof(int))
   {
     header.nyear=size/(sizeof(int)*header.ncell*header.nbands);
     fprintf(stderr,"File '%s' too short.\n",argv[3]);
+    free(c);
+    free(c2);
+    free(data);
+    fclose(data_file);
     return EXIT_FAILURE;
   }
   fread(data,sizeof(int),header.ncell,data_file);
@@ -148,6 +169,9 @@ int main(int argc,char **argv)
   if(file==NULL)
   {
     fprintf(stderr,"Error creating '%s': %s.\n",argv[4],strerror(errno));
+    free(c);
+    free(c2);
+    free(data);
     return EXIT_FAILURE;
   }
   header2=header;
@@ -155,6 +179,10 @@ int main(int argc,char **argv)
   if(fwriteheader(file,&header2,id,data_version))
   {
     fprintf(stderr,"Error writing header in '%s'.\n",argv[4]);
+    free(c);
+    free(c2);
+    free(data);
+    fclose(file);
     return EXIT_FAILURE;
   }
   for(i=0;i<ngrid2;i++)
@@ -173,6 +201,10 @@ int main(int argc,char **argv)
       fprintf(stderr,"Invalid index %d for cell %d (",index,i);
       fprintcoord(stderr,c2+i);
       fprintf(stderr,") found, must be in [0,%d].\n",ngrid-1);
+      free(c);
+      free(c2);
+      free(data);
+      fclose(file);
       return EXIT_FAILURE;
     }
     index2=findcoord(c+index,c2,&res,ngrid2);
@@ -188,5 +220,8 @@ int main(int argc,char **argv)
     fwrite(&index2,1,sizeof(int),file);
   }
   fclose(file);
+  free(c);
+  free(c2);
+  free(data);
   return EXIT_SUCCESS;
 } /* of 'main' */

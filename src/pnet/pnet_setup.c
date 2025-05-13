@@ -33,10 +33,10 @@
 #include "types.h"
 #include "pnet.h"
 
-static int compare(const int *a,const int *b)
+static int compare(const void *a,const void *b)
 {
   /* compare function to sort integers in ascending order, used by qsort() */
-  return *a-*b;
+  return *((const int *)a)-*((const int *)b);
 } /* of 'compare' */
 
 int pnet_setup(Pnet *pnet /**< Pointer to Pnet structure */
@@ -101,7 +101,7 @@ int pnet_setup(Pnet *pnet /**< Pointer to Pnet structure */
       for(j=0;j<pnet->connect[i].n;j++)
         in[k++]=pnet->connect[i].index[j];
     /* sort in ascending order */
-    qsort(in,size,sizeof(int),(int (*)(const void *,const void *))compare);
+    qsort(in,size,sizeof(int),compare);
     /* delete duplicates */
     insize=1;
     for(i=1;i<size;i++)

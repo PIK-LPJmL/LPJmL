@@ -118,7 +118,8 @@ int main(int argc,char **argv)
     }
     if(argc==iarg+4)
     {
-      filename.name=argv[iarg];
+      filename.name=strdup(argv[iarg]);
+      check(filename.name);
       filename.fmt=(setversion==2) ? CLM2 : CLM;
     }
     else
@@ -162,7 +163,8 @@ int main(int argc,char **argv)
               data_version,argv[iarg+2],CLM_MAX_VERSION+1);
         return EXIT_FAILURE;
     }
-    filename.name=argv[iarg];
+    filename.name=strdup(argv[iarg]);
+    check(filename.name);
     filename.fmt=(setversion==2) ? CLM2 : CLM;
   }
   grid=opencoord(&filename,TRUE);
@@ -190,7 +192,9 @@ int main(int argc,char **argv)
     //printf("c:%g %g\n",c[i].lon,c[i].lat);
   }
   closecoord(grid);
-  filename.name=argv[index_gridfile];
+  free(filename.name);
+  filename.name=strdup(argv[index_gridfile]);
+  check(filename.name);
   filename.fmt=(setversion==2) ? CLM2 : CLM;
   grid=opencoord(&filename,TRUE);
   if(grid==NULL)
@@ -462,7 +466,13 @@ int main(int argc,char **argv)
         }
       }
     }
-
+  free(index);
+  free(bdata);
+  free(idata);
+  free(zero);
+  free(data);
+  free(c);
+  free(c2);
   fclose(file);
   fclose(data_file);
   if(ismeta || isjson)
@@ -484,7 +494,18 @@ int main(int argc,char **argv)
     if(data_version<4)
       header2.nbands/=header2.nstep;
     fprintjson(file,argv[index_datafile+1],NULL,source,history,arglist,&header2,map,map_name,global_attrs,n_global,var_name,var_units,var_standard_name,var_long_name,&filename,grid_type,format,id,FALSE,data_version);
+    free(out_json);
+    free(arglist);
     fclose(file);
   }
+  free(filename.name);
+  freemap(map);
+  freeattrs(global_attrs,n_global);
+  free(var_name);
+  free(var_units);
+  free(var_long_name);
+  free(var_standard_name);
+  free(source);
+  free(history);
   return EXIT_SUCCESS;
 } /* of 'main' */

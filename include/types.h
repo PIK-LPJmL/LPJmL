@@ -185,6 +185,7 @@ extern Bool isdir(const char *);
 extern double mrun(void);
 void mergeattrs(Attr **,int *,const Attr *, int,Bool);
 extern char *getversion(void);
+extern char *getsprintf(const char *,...);
 #ifdef WITH_FPE
 extern void enablefpe(void);
 #endif

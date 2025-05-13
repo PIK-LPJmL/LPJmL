@@ -34,7 +34,7 @@ int main(int argc,char **argv)
   char *out_json;
   size_t offset;
   Map *map=NULL,*map2=NULL;
-  Attr *attrs;
+  Attr *attrs=NULL;
   int n_attr;
   char *units=NULL,*long_name=NULL,*variable=NULL,*standard_name=NULL,*source=NULL,*history=NULL;
   char *units2=NULL;
@@ -53,6 +53,8 @@ int main(int argc,char **argv)
   index=NOT_FOUND;
   ismeta=israw=isjson=isforce=FALSE;
   format=CLM;
+  grid_name.name=NULL;
+  grid_name2.name=NULL;
   for(iarg=1;iarg<argc;iarg++)
     if(argv[iarg][0]=='-')
     {
@@ -248,7 +250,9 @@ int main(int argc,char **argv)
         if(map!=NULL  && map2!=NULL && !cmpmap(map,map2))
           fprintf(stderr,"Warning: Map '%s' in '%s' differs from map in '%s'.\n",
                   map_name,argv[iarg+1],argv[iarg+2]);
-
+        free(units2);
+        freemap(map2);
+        free(grid_name2.name);
       }
       else
       {
@@ -714,6 +718,12 @@ int main(int argc,char **argv)
   if(op!=FLOAT && !isvalue)
     fclose(in2);
   fclose(out);
+  free(data1);
+  free(data2);
+  free(data3);
+  free(idata1);
+  free(idata2);
+  free(idata3);
   if(ismeta || isjson)
   {
     out_json=malloc(strlen(out_name)+strlen(JSON_SUFFIX)+1);
@@ -731,7 +741,18 @@ int main(int argc,char **argv)
       return EXIT_FAILURE;
     }
     fprintjson(out,out_name,NULL,source,history,arglist,&header3,map,map_name,attrs,n_attr,variable,units,standard_name,long_name,(grid_name.name==NULL) ? NULL : &grid_name,grid_type,format,id,FALSE,max(version,(ismeta) ? 4 : 3));
+    free(out_json);
+    free(arglist);
     fclose(out);
   }
+  free(grid_name.name);
+  freemap(map);
+  freeattrs(attrs,n_attr);
+  free(history);
+  free(source);
+  free(variable);
+  free(units);
+  free(standard_name);
+  free(long_name);
   return EXIT_FAILURE;
 } /* of 'main' */

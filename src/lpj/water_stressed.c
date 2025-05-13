@@ -23,8 +23,9 @@ typedef struct
   Bool compvm;
 } Data;
 
-static Real fcn(Real lambda,Data *data)
+static Real fcn(Real lambda,void *ptr)
 {
+  Data *data=(Data *)ptr;
   Real agd,rd;
 
 /*
@@ -200,7 +201,7 @@ Real water_stressed(Pft *pft,                  /**< [inout] pointer to PFT varia
     data.apar=par*(1-getpftpar(pft, albedo_leaf))*alphaa(pft,config->laimax_manage)*fpar(pft); /** par calculation do not include albedo*/
     data.daylength=daylength;
     data.vmax=pft->vmax;
-    lambda=bisect((Bisectfcn)fcn,0.02,LAMBDA_OPT+0.05,&data,0,EPSILON,30,&iter);
+    lambda=bisect(fcn,0.02,LAMBDA_OPT+0.05,&data,0,EPSILON,30,&iter);
     adtmm=photosynthesis(&agd,rd,&pft->vmax,data.path,lambda,data.tstress,data.b,data.co2,
                          temp,data.apar,daylength,TRUE);
     vmax=pft->vmax;
@@ -226,7 +227,7 @@ Real water_stressed(Pft *pft,                  /**< [inout] pointer to PFT varia
         gpd=hour2sec(daylength)*(gc-pft->par->gmin*fpar(pft));
         data.fac=gpd/1.6*ppm2bar(co2);
         data.vmax=pft->vmax;
-        lambda=bisect((Bisectfcn)fcn,0.02,lambda,&data,0,EPSILON,20,&iter);
+        lambda=bisect(fcn,0.02,lambda,&data,0,EPSILON,20,&iter);
         adtmm=photosynthesis(&agd,rd,&pft->vmax,data.path,lambda,data.tstress,data.b,data.co2,
                              temp,data.apar,daylength,FALSE);
         gc=(1.6*adtmm/(ppm2bar(co2)*(1.0-lambda)*hour2sec(daylength)))+

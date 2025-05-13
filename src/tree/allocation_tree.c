@@ -116,9 +116,10 @@ typedef struct
   Real k1,lm,k3,b,ind_leaf,ind_heart,allom3;
 } Data;
 
-static Real f(Real leaf_inc,Data *data) 
+static Real f(Real leaf_inc,void *ptr)
 {
- return data->k1*(data->b-leaf_inc*data->lm+data->ind_heart)-
+  Data *data=(Data*)ptr;
+  return data->k1*(data->b-leaf_inc*data->lm+data->ind_heart)-
          pow((data->b-leaf_inc*data->lm)/(data->ind_leaf+leaf_inc)*data->k3,
              1.0+2/data->allom3);
 } /* of 'f' */
@@ -237,7 +238,7 @@ Bool allocation_tree(Litter *litter,   /**< litter pool */
          || data.b-x2*data.lm<0.0 || data.ind_leaf+x2<=0.0 )
         tinc_ind.leaf.carbon=0;
       else
-        tinc_ind.leaf.carbon=leftmostzero((Bisectfcn)f,x1,x2,&data,0.001,1.0e-10,40);
+        tinc_ind.leaf.carbon=leftmostzero(f,x1,x2,&data,0.001,1.0e-10,40);
       if (tinc_ind.leaf.carbon<0.0)
         tinc_ind.root.carbon=0.0;
       else

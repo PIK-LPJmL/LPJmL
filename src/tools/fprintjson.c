@@ -74,7 +74,7 @@ void fprintjson(FILE *file,           /**< pointer to text file */
       fprintf(file,"\",\n");
     }
   }
-  if(n_attr)
+  if(attrs!=NULL && n_attr>0)
   {
     fprintf(file,"  \"global_attrs\" : {");
     for(i=0;i<n_attr;i++)

@@ -136,6 +136,7 @@ typedef struct
   Type type;     /**< data type in binary file */
   Real scalar;   /**< scaling factor */
   FILE *file;    /**< pointer to binary file */
+  int nbands;    /**< number of bands */
   Input_netcdf cdf;
 } Infile;
 
@@ -217,5 +218,6 @@ extern Bool mpi_write_pft_netcdf(const Netcdf *,void *,MPI_Datatype,int,
 /* Definition of macros */
 
 #define isdaily(climate) ((climate).time_step==DAY)
+#define ismissingvalue(f,miss) ((isnan(miss) && isnan(f)) || (!isnan(miss) && f==miss))
 
 #endif

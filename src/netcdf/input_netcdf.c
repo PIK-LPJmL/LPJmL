@@ -608,7 +608,7 @@ Bool readinput_netcdf(const Input_netcdf input,Real *data,
       }
       for(i=0;i<input->var_len;i++)
       {
-        if(f[i]==input->missing_value.f)
+        if(ismissingvalue(f[i],input->missing_value.f))
         {
           fprintf(stderr,"ERROR423: Missing value for cell (%s).\n",
                   sprintcoord(line,coord));
@@ -638,7 +638,7 @@ Bool readinput_netcdf(const Input_netcdf input,Real *data,
       }
       for(i=0;i<input->var_len;i++)
       {
-        if(d[i]==input->missing_value.d)
+        if(ismissingvalue(d[i],input->missing_value.d))
         {
           fprintf(stderr,"ERROR423: Missing value for cell (%s).\n",
                   sprintcoord(line,coord));
@@ -790,7 +790,7 @@ Bool readintinput_netcdf(const Input_netcdf input,int *data,
       }
       for(i=0;i<input->var_len;i++)
       {
-        if(f[i]==input->missing_value.f)
+        if(ismissingvalue(f[i],input->missing_value.f))
           *ismissing=TRUE;
         data[i]=(int)f[i];
       }

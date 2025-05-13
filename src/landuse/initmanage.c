@@ -36,7 +36,10 @@ Bool initmanage(Manage *manage,      /**< pointer to management data */
   }
   else
     manage->laimax=manage->par->laimax_cft-npft;  /* set pointer to country specific laimax */
-  manage->k_est = manage->par->k_est - npft + config->nagtree; /* set pointer to country specific k_est */
+  if(manage->par->k_est==NULL)
+    manage->k_est=NULL;
+  else
+    manage->k_est = manage->par->k_est - npft + config->nagtree; /* set pointer to country specific k_est */
 
   if(config->laimax_manage==LAIMAX_CONST)
     for(cft=0;cft<ncft;cft++)

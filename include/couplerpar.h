@@ -18,7 +18,7 @@
 
 /* List of input data streams */
 
-#define N_IN 25         /* Number of available input data streams */
+#define N_IN 27         /* Number of available input data streams */
 
 #define CLOUD_DATA 0
 #define TEMP_DATA 1
@@ -45,5 +45,7 @@
 #define HUMAN_IGNITION_DATA 22
 #define LIGHTNING_DATA 23
 #define GRASSLAND_LSUHA 24
+#define SDATE_DATA 25
+#define CROP_PHU_DATA 26
 
 #endif /* COUPLERPAR_H */

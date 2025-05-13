@@ -295,10 +295,14 @@ int main(int argc,char **argv)
         return EXIT_FAILURE;
       }
     }
-   /* close all open files */
+  free(vec);
+  free(nbands);
+  free(swap);
+  /* close all open files */
   for(i=0;i<numfiles;i++)
     if(files[i]!=NULL)
       fclose(files[i]);
+  free(files);
   fclose(out);
   return EXIT_SUCCESS;
 } /* of 'main' */

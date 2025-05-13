@@ -43,7 +43,7 @@ Bool create_netcdf(Netcdf *cdf,
 #ifdef USE_NETCDF
   char *s;
   time_t t;
-  int i,rc,nyear,imiss=MISSING_VALUE_INT,len;
+  int i,rc,nyear,imiss=MISSING_VALUE_INT;
   int bnds_dim_id;
   int dimids[2];
   short smiss=MISSING_VALUE_SHORT;
@@ -178,9 +178,8 @@ Bool create_netcdf(Netcdf *cdf,
     rc=nc_put_att_text(cdf->ncid,NC_GLOBAL,"title",
                        strlen(config->sim_name),config->sim_name);
     error(rc);
-    len=snprintf(NULL,0,"LPJmL C Version %s",getversion());
-    s=malloc(len+1);
-    sprintf(s,"LPJmL C Version %s",getversion());
+    s=getsprintf("LPJmL C Version %s",getversion());
+    check(s);
     rc=nc_put_att_text(cdf->ncid,NC_GLOBAL,"source",strlen(s),s);
     free(s);
     error(rc);
@@ -191,9 +190,8 @@ Bool create_netcdf(Netcdf *cdf,
                        strlen(gethash()),gethash());
     error(rc);
     time(&t);
-    len=snprintf(NULL,0,"%s: %s",strdate(&t),config->arglist);
-    s=malloc(len+1);
-    sprintf(s,"%s: %s",strdate(&t),config->arglist);
+    s=getsprintf("%s: %s",strdate(&t),config->arglist);
+    check(s);
     rc=nc_put_att_text(cdf->ncid,NC_GLOBAL,"history",strlen(s),s);
     free(s);
     error(rc);
@@ -222,23 +220,18 @@ Bool create_netcdf(Netcdf *cdf,
           s=strdup(YEARS_NAME);
         else
         {
-          len=snprintf(NULL,0,"%s since %d-1-1 0:0:0",(config->with_days) ? "days" : "years",config->baseyear);
-          s=malloc(len+1);
-          sprintf(s,"%s since %d-1-1 0:0:0",(config->with_days) ? "days" : "years",config->baseyear);
+          s=getsprintf("%s since %d-1-1 0:0:0",(config->with_days) ? "days" : "years",config->baseyear);
         }
       }
       else if(n==12)
       {
-        len=snprintf(NULL,0,"%s since %d-1-1 0:0:0",(config->with_days) ? "days" : "months",(oneyear) ? actualyear : config->baseyear);
-        s=malloc(len+1);
-        sprintf(s,"%s since %d-1-1 0:0:0",(config->with_days) ? "days" : "months",(oneyear) ? actualyear : config->baseyear);
+        s=getsprintf("%s since %d-1-1 0:0:0",(config->with_days) ? "days" : "months",(oneyear) ? actualyear : config->baseyear);
       }
       else
       {
-        len=snprintf(NULL,0,"days since %d-1-1 0:0:0",(oneyear) ? actualyear : config->baseyear);
-        s=malloc(len+1);
-        sprintf(s,"days since %d-1-1 0:0:0",(oneyear) ? actualyear : config->baseyear);
+        s=getsprintf("days since %d-1-1 0:0:0",(oneyear) ? actualyear : config->baseyear);
       }
+      check(s);
       rc=nc_put_att_text(cdf->ncid,cdf->time_var_id,"units",strlen(s),s);
       rc=nc_put_att_text(cdf->ncid,cdf->time_bnds_var_id,"units",strlen(s),s);
       free(s);
