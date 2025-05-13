@@ -44,6 +44,10 @@ of `major.minor.patch` with
 - Option `-timestep` added to `addheader`.
 - Option `sum`, `tsum` and `tmean` to `mathclm` added.
 
+### Fixed
+
+- Misspelled `-fsanitize=address` Option corrected in `Makefile.mpich`.
+
 
 ## [5.9.23] - 2025-05-08
 
