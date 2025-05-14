@@ -1,10 +1,10 @@
 /**************************************************************************************/
 /**                                                                                \n**/
-/**                c  r  e  a  t  e  c  o  n  f  i  g  .  c                        \n**/
+/**                      g  e  t  s  p  r  i  n  t  f  .  c                        \n**/
 /**                                                                                \n**/
 /**     C implementation of LPJmL                                                  \n**/
 /**                                                                                \n**/
-/**     Function write processed LPJ configuration file                            \n**/
+/**     Function prints formatted output into allocated string                     \n**/
 /**                                                                                \n**/
 /** (C) Potsdam Institute for Climate Impact Research (PIK), see COPYRIGHT file    \n**/
 /** authors, and contributors see AUTHORS file                                     \n**/
@@ -14,24 +14,40 @@
 /**                                                                                \n**/
 /**************************************************************************************/
 
-#include "lpj.h"
+#include <stdio.h>
+#include <stdlib.h>
+#include <stdarg.h>
+#include <string.h>
+#include "types.h"
 
-void createconfig(const Config *config)
+char *getsprintf(const char *fmt, /**< format string */
+                 ...              /**< optional parameter for output */
+                )                 /** \return allocated string with output or NULL on error */
 {
-  char *cmd;
-  int rc;
-  if(config->json_filename!=NULL)
+  char *s;
+  size_t len;
+  va_list ap;
+  va_start(ap,fmt);
+#ifdef _WIN32
+  len = _vscprintf(fmt, ap);
+#else
+  len = vsnprintf(NULL,0,fmt, ap);
+#endif
+  va_end(ap);
+  if(len<0)
   {
-    cmd=getsprintf("%s -DGIT_REPO=\\\"%s\\\" -DGIT_HASH=\\\"%s\\\" -P >%s",
-                   config->cmd,getrepo(),gethash(),config->json_filename);
-    if(cmd==NULL)
-    {
-      printallocerr("cmd");
-      return;
-    }
-    if((rc=system(cmd)))
-      fprintf(stderr,"ERROR263: Cannot write '%s', rc=%d.\n",
-              config->json_filename,rc);
-    free(cmd);
+    fprintf(stderr,"ERROR247: Invalid format in '%s'.\n",fmt);
+    return NULL;
   }
-} /* of 'createconfig' */
+  s=malloc(len+1);
+  if(s==NULL)
+    return NULL;
+  va_start(ap,fmt);
+#ifdef _WIN32
+  _vsnprintf_s(s, len+1, _TRUNCATE, fmt, ap);
+#else
+  vsnprintf(s,len+1,fmt, ap);
+#endif
+  va_end(ap);
+  return s;
+} /* of 'getsprintf' */

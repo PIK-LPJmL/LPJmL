@@ -14,7 +14,7 @@
 
 #include "lpj.h"
 
-#define USAGE  "Usage: %s [-var name] [-index i] [-{float|double}] [-scale s] [-raw] [-json] netcdffile coordfile\n"
+#define USAGE  "Usage: %s [-var name] [-index i] [-{float|double}] [-scale s] [-latlon] [-raw] [-json] netcdffile coordfile\n"
 
 #ifdef USE_NETCDF
 #include <netcdf.h>
@@ -26,7 +26,7 @@ int main(int argc,char **argv)
 {
 #ifdef USE_NETCDF
   int rc,ncid,var_id,*dimids,i,j,nvars,lon_id,lat_id,ndims,index,first;
-
+  int index1,index2,len1,len2;
   double *lat,*lon;
   float scalar=0.0;
   size_t lat_len,lon_len;
@@ -46,11 +46,11 @@ int main(int argc,char **argv)
   char *var;
   char *out_json,*arglist;
   FILE *out;
-  Bool isjson,israw,scalar_set;
+  Bool latlon,isjson,israw,scalar_set;
   var=NULL;
   header.datatype=LPJ_SHORT;
   header.scalar=0.01;
-  isjson=israw=scalar_set=FALSE;
+  latlon=isjson=israw=scalar_set=FALSE;
   for(i=1;i<argc;i++)
     if(argv[i][0]=='-')
     {
@@ -78,6 +78,8 @@ int main(int argc,char **argv)
         header.datatype=LPJ_DOUBLE;
         header.scalar=1;
       }
+      else if(!strcmp(argv[i],"-latlon"))
+        latlon=TRUE;
       else if(!strcmp(argv[i],"-index"))
       {
         if(argc==i+1)
@@ -271,9 +273,23 @@ int main(int argc,char **argv)
   if(!israw)
     fwriteheader(out,&header,LPJGRID_HEADER,LPJGRID_VERSION);
   header.ncell=0;
-  for(offsets[first]=0;offsets[first]<lat_len;offsets[first]++)
+  if(latlon)
   {
-    for(offsets[first+1]=0;offsets[first+1]<lon_len;offsets[first+1]++)
+    index1=first+1;
+    len1=lon_len;
+    index2=first;
+    len2=lat_len;
+  }
+  else
+  {
+    index1=first;
+    len1=lat_len;
+    index2=first+1;
+    len2=lon_len;
+  }
+  for(offsets[index1]=0;offsets[index1]<len1;offsets[index1]++)
+  {
+    for(offsets[index2]=0;offsets[index2]<len2;offsets[index2]++)
     {
       rc=nc_get_vara_double(ncid,var_id,offsets,counts,&data);
       error(rc);

@@ -25,7 +25,7 @@
 
 typedef struct
 {
-  const Coord_array *index;
+  Coord_array *index;
   int ncid;
   int varid;
 } Cdf;
@@ -49,7 +49,7 @@ static Cdf *create_cdf(const char *filename,
                        int baseyear,
                        Bool ispft,
                        int compress,
-                       const Coord_array *array,
+                       Coord_array *array,
                        Bool with_days,
                        Bool absyear,
                        Bool notime,
@@ -130,16 +130,13 @@ static Cdf *create_cdf(const char *filename,
   time(&t);
   if(history!=NULL)
   {
-    len=snprintf(NULL,0,"%s\n%s: %s",history,strdate(&t),cmdline);
-    s=malloc(len+1);
-    sprintf(s,"%s\n%s: %s",history,strdate(&t),cmdline);
+    s=getsprintf("%s\n%s: %s",history,strdate(&t),cmdline);
   }
   else
   {
-    len=snprintf(NULL,0,"%s: %s",strdate(&t),cmdline);
-    s=malloc(len+1);
-    sprintf(s,"%s: %s",strdate(&t),cmdline);
+    s=getsprintf("%s: %s",strdate(&t),cmdline);
   }
+  check(s);
   rc=nc_put_att_text(cdf->ncid,NC_GLOBAL,"history",strlen(s),s);
   free(s);
   for(i=0;i<n_global;i++)
@@ -166,9 +163,7 @@ static Cdf *create_cdf(const char *filename,
       case 1:
         if(with_days)
         {
-          len=snprintf(NULL,0,"days since %d-1-1 0:0:0",baseyear);
-          s=malloc(len+1);
-          sprintf(s,"days since %d-1-1 0:0:0",baseyear);
+          s=getsprintf("days since %d-1-1 0:0:0",baseyear);
         }
         else
         {
@@ -176,21 +171,15 @@ static Cdf *create_cdf(const char *filename,
             s=strdup(YEARS_NAME);
           else
           {
-            len=snprintf(NULL,0,"years since %d-1-1 0:0:0",baseyear);
-            s=malloc(len+1);
-            sprintf(s,"years since %d-1-1 0:0:0",baseyear);
+            s=getsprintf("years since %d-1-1 0:0:0",baseyear);
           }
         }
         break;
       case NMONTH:
-        len=snprintf(NULL,0,"%s since %d-1-1 0:0:0",(with_days) ? "days" : "months",baseyear);
-        s=malloc(len+1);
-        sprintf(s,"%s since %d-1-1 0:0:0",(with_days) ? "days" : "months",baseyear);
+        s=getsprintf("%s since %d-1-1 0:0:0",(with_days) ? "days" : "months",baseyear);
         break;
       case NDAYYEAR:
-        len=snprintf(NULL,0,"days since %d-1-1 0:0:0",baseyear);
-        s=malloc(len+1);
-        sprintf(s,"days since %d-1-1 0:0:0",baseyear);
+        s=getsprintf("days since %d-1-1 0:0:0",baseyear);
         break;
       default:
         fprintf(stderr,"Invalid time step %d in '%s'.\n",header.nstep,filename);
@@ -204,6 +193,7 @@ static Cdf *create_cdf(const char *filename,
         free(cdf);
         return NULL;
     } /* of switch(header.step) */
+    check(s);
     rc=nc_put_att_text(cdf->ncid,time_var_id,"units",strlen(s),s);
     rc=nc_put_att_text(cdf->ncid,time_bnds_var_id,"units",strlen(s),s);
     free(s);
@@ -602,6 +592,7 @@ static Bool write_short_cdf(const Cdf *cdf,const short vec[],int year,
 
 static void close_cdf(Cdf *cdf)
 {
+  freecoordarray(cdf->index);
   nc_close(cdf->ncid);
   free(cdf);
 } /* of 'close_cdf' */
@@ -638,7 +629,7 @@ int main(int argc,char **argv)
   char *var_units=NULL,*var_long_name=NULL,*var_name=NULL,*var_standard_name=NULL;
   char *source=NULL,*history=NULL;
   Filename grid_name;
-  char *variable,*grid_filename,*path;
+  char *variable,*grid_filename=NULL,*path;
   grid_name.fmt=RAW;
   grid_name.name=NULL;
   units=long_name=NULL;
@@ -975,7 +966,12 @@ int main(int argc,char **argv)
   if(argc!=iarg+2)
   {
     variable=argv[iarg];
-    grid_filename=argv[iarg+1];
+    grid_filename=strdup(argv[iarg+1]);
+    if(grid_filename==NULL)
+    {
+      printallocerr("name");
+      return EXIT_FAILURE;
+    }
   }
   else
   {
@@ -1236,6 +1232,14 @@ int main(int argc,char **argv)
 
   cdf=create_cdf(outname,map,map_name,cmdline,source,history,variable,units,var_standard_name,long_name,miss,miss_short,global_attrs,n_global,(isshort) ? LPJ_SHORT : LPJ_FLOAT,header,baseyear,ispft,compress,index,withdays,absyear,notime,isnetcdf4);
   free(cmdline);
+  free(var_units);
+  free(var_long_name);
+  free(var_name);
+  free(var_standard_name);
+  free(source);
+  free(history);
+  freemap(map);
+  freeattrs(global_attrs,n_global);
   if(cdf==NULL)
     return EXIT_FAILURE;
   if(isshort)
@@ -1309,6 +1313,7 @@ int main(int argc,char **argv)
     free(data_short);
   else
     free(data);
+  free(grid_filename);
   return EXIT_SUCCESS;
 #else
   fprintf(stderr,"ERROR401: NetCDF is not supported in this version of %s.\n",argv[0]);

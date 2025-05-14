@@ -23,7 +23,7 @@
 
 typedef struct
 {
-  const Coord_array *index;
+  Coord_array *index;
   int ncid;
   int varid;
 } Cdf;
@@ -47,7 +47,7 @@ static Cdf *create_cdf(const char *filename,
                        Bool notime,
                        Bool isint,
                        Bool isnetcdf4,
-                       const Coord_array *array)
+                       Coord_array *array)
 {
   Cdf *cdf;
   double *lon,*lat;
@@ -156,18 +156,13 @@ static Cdf *create_cdf(const char *filename,
   time(&t);
   if(history!=NULL)
   {
-    len=snprintf(NULL,0,"%s\n%s: %s",history,strdate(&t),args);
-    s=malloc(len+1);
-    check(s);
-    sprintf(s,"%s\n%s: %s",history,strdate(&t),args);
+    s=getsprintf("%s\n%s: %s",history,strdate(&t),args);
   }
   else
   {
-    len=snprintf(NULL,0,"%s: %s",strdate(&t),args);
-    s=malloc(len+1);
-    check(s);
-    sprintf(s,"%s: %s",strdate(&t),args);
+    s=getsprintf("%s: %s",strdate(&t),args);
   }
+  check(s);
   rc=nc_put_att_text(cdf->ncid,NC_GLOBAL,"history",strlen(s),s);
   free(s);
   error(rc);
@@ -184,18 +179,13 @@ static Cdf *create_cdf(const char *filename,
   {
     if(landuse || header->nbands==1)
     {
-      len=snprintf(NULL,0,"years since %d-1-1 0:0:0",header->firstyear);
-      s=malloc(len+1);
-      check(s);
-      sprintf(s,"years since %d-1-1 0:0:0",header->firstyear);
+      s=getsprintf("years since %d-1-1 0:0:0",header->firstyear);
     }
     else if(header->nbands>1)
     {
-      len=snprintf(NULL,0,"days since %d-1-1 0:0:0",header->firstyear);
-      s=malloc(len+1);
-      check(s);
-      sprintf(s,"days since %d-1-1 0:0:0",header->firstyear);
+      s=getsprintf("days since %d-1-1 0:0:0",header->firstyear);
     }
+    check(s);
     rc=nc_put_att_text(cdf->ncid,time_var_id,"units",strlen(s),s);
     free(s);
     error(rc);
@@ -493,6 +483,7 @@ static Bool write_int_cdf(const Cdf *cdf,const int vec[],int year,
 
 static void close_cdf(Cdf *cdf)
 {
+  freecoordarray(cdf->index);
   nc_close(cdf->ncid);
   free(cdf);
 } /* of 'close_cdf' */
@@ -835,7 +826,8 @@ int main(int argc,char **argv)
   if(argc!=iarg+2)
   {
     variable=argv[iarg];
-    grid_filename=argv[iarg+1];
+    grid_filename=strdup(argv[iarg+1]);
+    check(grid_filename);
   }
   else
   {
@@ -854,7 +846,7 @@ int main(int argc,char **argv)
     grid_filename=addpath(grid_name.name,path);
     if(grid_filename==NULL)
     {
-     printallocerr("name");
+      printallocerr("name");
       return EXIT_FAILURE;
     }
     free(grid_name.name);
@@ -1031,6 +1023,14 @@ int main(int argc,char **argv)
   }
   cdf=create_cdf(outname,map,source,history,variable,units,var_standard_name,long_name,miss,imiss,arglist,global_attrs,n_global,&header,compress,landuse,notime,isint || ((header.datatype==LPJ_INT || header.datatype==LPJ_BYTE) && header.scalar==1),isnetcdf4,index);
   free(arglist);
+  free(source);
+  free(history);
+  free(var_name);
+  free(var_units);
+  free(var_standard_name);
+  free(var_long_name);
+  freemap(map);
+  freeattrs(global_attrs,n_global);
   if(cdf==NULL)
     return EXIT_FAILURE;
   if((isint ||((header.datatype==LPJ_INT || header.datatype==LPJ_BYTE) && header.scalar==1)))
@@ -1099,6 +1099,7 @@ int main(int argc,char **argv)
     free(data);
     free(f);
   }
+  free(grid_filename);
   close_cdf(cdf);
   fclose(file);
 

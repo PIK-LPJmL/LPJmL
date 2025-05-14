@@ -253,6 +253,6 @@ void soiltemp(Soil *soil,          /**< pointer to soil data */
     if(soil->freeze_depth[l]>epsilon)
       break;
   }
-  if (soil->maxthaw_depth<layer-soil->freeze_depth[l])
-    soil->maxthaw_depth=layer-soil->freeze_depth[l];
+  if (soil->maxthaw_depth<layer-soil->freeze_depth[min(l,BOTTOMLAYER)])
+    soil->maxthaw_depth=layer-soil->freeze_depth[min(l,BOTTOMLAYER)];
 } /* of 'soiltemp' */
