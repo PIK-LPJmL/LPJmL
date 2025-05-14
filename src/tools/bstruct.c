@@ -726,7 +726,7 @@ Bstruct bstruct_open(const char *filename, /**< filename of restart file to open
     if(fread(bstruct->names[i].key,len,1,bstruct->file)!=1)
     {
       if(isout)
-        fprintf(stderr,"ERROR508: Unexpected end file reading name table of size %d.\n",
+        fprintf(stderr,"ERROR508: Unexpected end of file reading name table of size %d.\n",
                bstruct->count);
       fclose(bstruct->file);
       freenamestack(bstruct);
@@ -1410,7 +1410,7 @@ void bstruct_freedata(Bstruct_data *data)
 } /* of 'bstruct_freedata' */
 
 void bstruct_fprintdata(FILE *file,              /* pointer to text file */
-                        const Bstruct_data *data /* ponter to data object to print */
+                        const Bstruct_data *data /* pointer to data object to print */
                        )
 {
   switch(data->token)
@@ -1452,13 +1452,13 @@ Bool bstruct_readbool(Bstruct bstr,     /**< pointer to restart file */
                       Bool *value       /**< value read from file */
                      )                  /** \return TRUE on error */
 {
-  Byte b;
-  if(readtoken(bstr,&b,BSTRUCT_FALSE,name))
+  Byte token;
+  if(readtoken(bstr,&token,BSTRUCT_FALSE,name))
     return TRUE;
-  if(findobject(bstr,&b,name))
+  if(findobject(bstr,&token,name))
     return TRUE;
-  b&=63;
-  switch(b)
+  token&=63; /* strip top 2 bits in token */
+  switch(token)
   {
     case BSTRUCT_FALSE:
       *value=FALSE;
@@ -1469,7 +1469,7 @@ Bool bstruct_readbool(Bstruct bstr,     /**< pointer to restart file */
     default:
       if(bstr->isout)
         fprintf(stderr,"ERROR509: Type of '%s'=%s is not bool.\n",
-              getname(name),bstruct_typenames[b & 63]);
+              getname(name),bstruct_typenames[token & 63]);
     return TRUE;
   }
   return FALSE;
@@ -2052,7 +2052,7 @@ Bool bstruct_readendstruct(Bstruct bstr,    /**< pointer to restart file */
     if(token!=BSTRUCT_ENDARRAY)
     {
       /* skip object name */
-      if((token & 128)==128) /* all top 4 bits in token set, object name length stored in next byte */
+      if((token & 128)==128) /* top bit in token set, object name length stored in next byte */
       {
         if(fseek(bstr->file,((token & 64)==64) ? sizeof(short) : 1,SEEK_CUR))
         {
