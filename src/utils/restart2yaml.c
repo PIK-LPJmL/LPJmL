@@ -113,7 +113,7 @@ int main(int argc,char **argv)
   else
     printf("%%YAML 1.2\n"
            "---\n"
-           "filename: %s\n",
+           "filename: \"%s\"\n",
            argv[iarg]);
   level=0;
   cell=firstcell;

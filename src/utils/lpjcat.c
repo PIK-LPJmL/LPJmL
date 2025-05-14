@@ -38,7 +38,7 @@ static int compare(const void *a,const void *b)
 
 int main(int argc,char **argv)
 {
-  int i,ncell,count,k;
+  int i,ncell,count,k,cell;
   Item *item;
   long long *index;
   struct
@@ -362,7 +362,7 @@ int main(int argc,char **argv)
   for(i=0;i<count;i++)
   {
     len=getfilesizep(bstruct_getfile(item[i].file))-item[i].index[0]-1;
-    for(int cell=0;cell<item[i].ncell;cell++)
+    for(cell=0;cell<item[i].ncell;cell++)
       index[k++]=item[i].index[cell]-item[i].index[0]+offset;
     free(item[i].index);
     offset+=len;
