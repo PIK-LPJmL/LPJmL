@@ -20,7 +20,7 @@ of `major.minor.patch` with
 ## [Unreleased]
 
 
-## [TBD] - TBD
+## [5.9.24] - 2025-05-15
 
 ### Contributors
 
