@@ -11,6 +11,8 @@
 #include "list.h"
 #include "hash.h"
 #include "swap.h"
+#include "freadtopheader.h"
+#include "fwritepheader.h"
 #include "bstruct.h"
 
 void test_restart(void)
