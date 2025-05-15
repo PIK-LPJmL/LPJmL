@@ -89,6 +89,7 @@
   :source:
     - ../soil/**
     - ../landuse/**
+    - ../tools/**
   :include:
     - ../../include
   :support:

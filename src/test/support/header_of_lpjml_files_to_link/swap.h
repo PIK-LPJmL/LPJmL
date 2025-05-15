@@ -1,0 +1,16 @@
+short int swapshort(short int);
+unsigned short swapushort(unsigned short);
+int swapint(int);
+unsigned int swapuint(unsigned int);
+long long swaplong(long long);
+double swapdouble(Num);
+float swapfloat(int);
+size_t freadint(int *,size_t,Bool,FILE *);
+size_t freaduint(unsigned int *,size_t,Bool,FILE *);
+size_t freadlong(long long *,size_t,Bool,FILE *);
+size_t freadreal(Real *,size_t,Bool,FILE *);
+size_t freadfloat(float *,size_t,Bool,FILE *);
+size_t freaddouble(double *,size_t,Bool,FILE *);
+size_t freadshort(short *,size_t,Bool,FILE *);
+size_t freadushort(unsigned short *,size_t,Bool,FILE *);
+Bool bigendian(void);
