@@ -90,6 +90,7 @@
     - ../soil/**
     - ../landuse/**
     - ../tools/**
+    - ../bstruct/**
   :include:
     - ../../include
   :support:

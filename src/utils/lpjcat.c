@@ -106,7 +106,7 @@ int main(int argc,char **argv)
       continue;
     }
     /* read header */
-    if(bstruct_readstruct(item[count].file,"header"))
+    if(bstruct_readbeginstruct(item[count].file,"header"))
     {
       bstruct_close(item[count].file);
       continue;
@@ -201,7 +201,7 @@ int main(int argc,char **argv)
       bstruct_close(item[count].file);
       continue;
     }
-    if(bstruct_readarray(item[count].file,"grid",&item[count].ncell))
+    if(bstruct_readbeginarray(item[count].file,"grid",&item[count].ncell))
     {
       free(header.version);
       bstruct_close(item[count].file);
@@ -327,7 +327,7 @@ int main(int argc,char **argv)
   if(out==NULL)
     return EXIT_FAILURE;
   /* write header */
-  bstruct_writestruct(out,"header");
+  bstruct_writebeginstruct(out,"header");
   bstruct_writestring(out,"version",header_first.version);
   free(header_first.version);
   time(&t);

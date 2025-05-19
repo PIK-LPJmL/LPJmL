@@ -22,7 +22,7 @@ Bool fwritestand(Bstruct file,       /**< pointer to restart file */
                  int ntotpft         /**< total number of PFTs*/
                 )                    /** \return TRUE on error */
 {
-  bstruct_writestruct(file,name);
+  bstruct_writebeginstruct(file,name);
   bstruct_writebyte(file,"landusetype",stand->type->landusetype);
   /* write soil data to file */
   if(fwritesoil(file,"soil",&stand->soil,ntotpft))

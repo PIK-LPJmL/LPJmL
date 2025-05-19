@@ -21,9 +21,9 @@ Bool fwritepft(Bstruct file,  /**< File pointer to binary file */
                const Pft *pft /**< PFT variables */
               )               /** \return TRUE on error */
 {
-  bstruct_writestruct(file,NULL);
+  bstruct_writebeginstruct(file,NULL);
   bstruct_writeint(file,"id",pft->par->id);
-  bstruct_writestruct(file,"phen_gsi");
+  bstruct_writebeginstruct(file,"phen_gsi");
   bstruct_writereal(file,"tmin",pft->phen_gsi.tmin);
   bstruct_writereal(file,"tmax",pft->phen_gsi.tmax);
   bstruct_writereal(file,"wscal",pft->phen_gsi.wscal);

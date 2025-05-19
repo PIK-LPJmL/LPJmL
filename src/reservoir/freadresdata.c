@@ -21,7 +21,7 @@
 static Bool freadhist(Bstruct file,const char *name,Real hist[HIST_YEARS][NMONTH])
 {
   int size,i;
-  if(bstruct_readarray(file,name,&size))
+  if(bstruct_readbeginarray(file,name,&size))
     return TRUE;
   if(size!=HIST_YEARS)
   {
@@ -42,7 +42,7 @@ Bool freadresdata(Bstruct file,     /**< pointer to restart file */
                   Cell *cell        /**< pointer to cell */
                   )                 /**\return TRUE on error */
 {
-  if(bstruct_readstruct(file,name))
+  if(bstruct_readbeginstruct(file,name))
     return TRUE;
   cell->ml.resdata=new(Resdata);
   if(cell->ml.resdata==NULL)

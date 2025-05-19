@@ -31,6 +31,7 @@ void sendhash(const Hash hash, /**< pointer to hash */
               MPI_Comm comm    /**< MPI communicator */
              )
 {
+  /* Function sends hash to specified task */
   int i,count;
   Hashitem *items;
   Data data;

@@ -21,7 +21,7 @@ Bool fwritepool(Bstruct file,     /**< pointer to restart file */
                 const Pool *pool  /**<  pointer to pool to write */
                )                  /** \return TRUE on error */
 {
-  bstruct_writestruct(file,name);
+  bstruct_writebeginstruct(file,name);
   fwritestocks(file,"slow",&pool->slow);
   fwritestocks(file,"fast",&pool->fast);
   return bstruct_writeendstruct(file);

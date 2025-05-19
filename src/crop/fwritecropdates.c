@@ -16,7 +16,7 @@
 
 static Bool writecropdate(Bstruct file,const Cropdates *cropdates)
 {
-  bstruct_writestruct(file,NULL);
+  bstruct_writebeginstruct(file,NULL);
   bstruct_writeint(file,"fall_sdate20",cropdates->fall_sdate20);
   bstruct_writeint(file,"last_update_fall",cropdates->last_update_fall);
   bstruct_writeint(file,"spring_sdate20",cropdates->spring_sdate20);
@@ -33,7 +33,7 @@ Bool fwritecropdates(Bstruct file, /**< pointer to binary file */
                     )         /** \return TRUE on error */
 {
   int cft;
-  bstruct_writearray(file,name,ncft);
+  bstruct_writebeginarray(file,name,ncft);
   for(cft=0;cft<ncft;cft++)
     writecropdate(file,cropdates+cft);
   return bstruct_writeendarray(file);

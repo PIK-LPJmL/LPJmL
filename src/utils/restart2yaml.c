@@ -26,7 +26,7 @@
 
 //#define DEBUG
 
-#define USAGE "Usage: %s [-name key] [-first] [-json] [-noindent] restartfile [first [last]]\n"
+#define USAGE "Usage: %s [-name key] [-first] [-json] [-noindent] [-t] restartfile [first [last]]\n"
 
 static void printname(const char *name)
 {
@@ -44,7 +44,7 @@ int main(int argc,char **argv)
   int level,iarg,keylevel;
   Bool notend,isarray=FALSE,iskey=TRUE,stop=FALSE;
   int firstcell,lastcell,last,cell;
-  Bool first=FALSE,islastcell=FALSE,isjson=FALSE,indent=TRUE;
+  Bool first=FALSE,islastcell=FALSE,isjson=FALSE,indent=TRUE,istable=FALSE;
   for(iarg=1;iarg<argc;iarg++)
     if(argv[iarg][0]=='-')
     {
@@ -63,6 +63,8 @@ int main(int argc,char **argv)
         isjson=TRUE;
       else if(!strcmp(argv[iarg],"-noindent"))
         indent=FALSE;
+      else if(!strcmp(argv[iarg],"-t"))
+        istable=TRUE;
       else if(!strcmp(argv[iarg],"-first"))
         stop=TRUE;
       else
@@ -83,6 +85,26 @@ int main(int argc,char **argv)
   file=bstruct_open(argv[iarg],TRUE);
   if(file==NULL)
     return EXIT_FAILURE;
+  if(istable)
+  {
+    if(isjson)
+    {
+      printf("{\n\"filename\" : \"%s\",\n",argv[iarg]);
+      bstruct_printnametable("table",file,TRUE);
+      puts("\n}");
+    }
+    else
+    {
+      printf("%%YAML 1.2\n"
+             "---\n"
+             "filename: \"%s\"\n",
+             argv[iarg]);
+      bstruct_printnametable("table",file,FALSE);
+      puts("...");
+    }
+    bstruct_close(file);
+    return EXIT_SUCCESS;
+  }
   firstcell=0;
   if(argc>iarg+1)
   {
@@ -131,6 +153,9 @@ int main(int argc,char **argv)
 #endif
     switch(data.token)
     {
+      case BSTRUCT_END:
+        notend=FALSE;
+        break;
       case BSTRUCT_ENDSTRUCT: case BSTRUCT_ENDARRAY:
         level--;
         if(isjson && iskey)
@@ -154,7 +179,7 @@ int main(int argc,char **argv)
             notend=FALSE;
         }
         break;
-      case BSTRUCT_STRUCT: case BSTRUCT_ARRAY: case BSTRUCT_ARRAY1:
+      case BSTRUCT_BEGINSTRUCT: case BSTRUCT_BEGINARRAY: case BSTRUCT_BEGINARRAY1:
         if(key!=NULL && !strcmp(data.name,key))
         {
           iskey=TRUE;
@@ -170,9 +195,9 @@ int main(int argc,char **argv)
             if(indent)
               repeatch(' ',2*(level-keylevel));
             if(data.name==NULL)
-              puts(data.token==BSTRUCT_STRUCT ? "{" : "[");
+              puts(data.token==BSTRUCT_BEGINSTRUCT ? "{" : "[");
             else
-              printf("\"%s\" : %c\n",data.name,data.token==BSTRUCT_STRUCT ? '{' : '[');
+              printf("\"%s\" : %c\n",data.name,data.token==BSTRUCT_BEGINSTRUCT ? '{' : '[');
           }
           else
           {
@@ -188,7 +213,7 @@ int main(int argc,char **argv)
             else
             {
               printname(data.name);
-              if(data.token!=BSTRUCT_STRUCT && data.size==0)
+              if(data.token!=BSTRUCT_BEGINSTRUCT && data.size==0)
                 puts(" []");
               else
                 fputc('\n',stdout);

@@ -75,7 +75,7 @@ Bool fwritebuffer(Bstruct file,       /**< pointer to restart file */
                   const Buffer buffer /**< pointer to buffer */
                  )                    /** \return TRUE on error */
 {
-  bstruct_writestruct(file,name);
+  bstruct_writebeginstruct(file,name);
   bstruct_writeint(file,"size",buffer->size);
   bstruct_writeint(file,"index",buffer->index);
   bstruct_writereal(file,"sum",buffer->sum);
@@ -89,7 +89,7 @@ Buffer freadbuffer(Bstruct file,    /**< pointer to restart file */
 {
   int i,size;
   Buffer buffer;
-  if(bstruct_readstruct(file,name))
+  if(bstruct_readbeginstruct(file,name))
     return NULL;
   if(bstruct_readint(file,"size",&size))
     return NULL;
@@ -119,7 +119,7 @@ Buffer freadbuffer(Bstruct file,    /**< pointer to restart file */
     free(buffer);
     return NULL;
   }
-  if(bstruct_readarray(file,"data",&buffer->n))
+  if(bstruct_readbeginarray(file,"data",&buffer->n))
   {
     free(buffer->data);
     free(buffer);

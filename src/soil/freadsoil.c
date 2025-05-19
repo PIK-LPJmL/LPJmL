@@ -23,7 +23,7 @@
 Bool freadpoolpararray(Bstruct file,const char *name,Poolpar *pool,int size)
 {
   int i,n;
-  if(bstruct_readarray(file,name,&n))
+  if(bstruct_readbeginarray(file,name,&n))
     return TRUE;
   if(n!=size)
   {
@@ -33,7 +33,7 @@ Bool freadpoolpararray(Bstruct file,const char *name,Poolpar *pool,int size)
   }
   for(i=0;i<size;i++)
   {
-    if(bstruct_readstruct(file,NULL))
+    if(bstruct_readbeginstruct(file,NULL))
       return TRUE;
     readreal(file,"slow",&pool[i].slow);
     readreal(file,"fast",&pool[i].fast);
@@ -53,9 +53,9 @@ Bool freadsoil(Bstruct file,           /**< pointer to restart file */
 {
   int l,size;
   soil->par=soilpar;
-  if(bstruct_readstruct(file,name))
+  if(bstruct_readbeginstruct(file,name))
     return TRUE;
-  if(bstruct_readarray(file,"pool",&size))
+  if(bstruct_readbeginarray(file,"pool",&size))
     return TRUE;
   if(size!=LASTLAYER)
   {
@@ -73,7 +73,7 @@ Bool freadsoil(Bstruct file,           /**< pointer to restart file */
   }
   if(bstruct_readendarray(file,"pool"))
     return TRUE;
-  if(bstruct_readarray(file,"c_shift",&size))
+  if(bstruct_readbeginarray(file,"c_shift",&size))
     return TRUE;
   if(size!=LASTLAYER)
   {

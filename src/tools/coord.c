@@ -313,7 +313,7 @@ Bool bstruct_writecoord(Bstruct file,      /**< pointer to restart file */
                         const Coord *coord /**< cell coordinate written to file */
                        )                   /** \return FALSE for successful write */
 {
-  if(bstruct_writestruct(file,name))
+  if(bstruct_writebeginstruct(file,name))
     return TRUE;
   bstruct_writereal(file,"lon",coord->lon);
   bstruct_writereal(file,"lat",coord->lat);

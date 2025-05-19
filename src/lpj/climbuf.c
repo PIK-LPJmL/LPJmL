@@ -174,7 +174,7 @@ Bool fwriteclimbuf(Bstruct file,           /**< pointer to restart file */
                    int ncft                /**< number of crop pfts */
                   )                        /** \return TRUE on error */
 {
-  bstruct_writestruct(file,name);
+  bstruct_writebeginstruct(file,name);
   bstruct_writereal(file,"temp_max",climbuf->temp_max);
   bstruct_writereal(file,"temp_min",climbuf->temp_min);
   bstruct_writereal(file,"atemp_mean",climbuf->atemp_mean);
@@ -202,7 +202,7 @@ Bool freadclimbuf(Bstruct file,     /**< pointer to restart file */
                  )                  /** \return TRUE on error */
 {
   int m;
-  if(bstruct_readstruct(file,name))
+  if(bstruct_readbeginstruct(file,name))
     return TRUE;
   readreal(file,"temp_max",&climbuf->temp_max);
   readreal(file,"temp_min",&climbuf->temp_min);

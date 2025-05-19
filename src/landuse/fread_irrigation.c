@@ -21,7 +21,7 @@ Bool fread_irrigation(Bstruct file,          /**< pointer to restart file */
                       Irrigation *irrigation /**< irrigation pointer */
                      )                       /** \return TRUE on error */
 {
-  if(bstruct_readstruct(file,name))
+  if(bstruct_readbeginstruct(file,name))
     return TRUE;
   if(bstruct_readbool(file,"irrigation",&irrigation->irrigation))
     return TRUE;

@@ -13,7 +13,24 @@
 #include "swap.h"
 #include "freadtopheader.h"
 #include "fwritepheader.h"
-#include "bstruct.h"
+#include "bstruct_intern.h"
+#include "bstruct_skipdata.h"
+#include "bstruct_findobject.h"
+#include "bstruct_create.h"
+#include "bstruct_open.h"
+#include "bstruct_writeint.h"
+#include "bstruct_readint.h"
+#include "bstruct_writefloat.h"
+#include "bstruct_readfloat.h"
+#include "bstruct_writestruct.h"
+#include "bstruct_readbeginstruct.h"
+#include "bstruct_writeendstruct.h"
+#include "bstruct_readendstruct.h"
+#include "bstruct_writebeginarray.h"
+#include "bstruct_readbeginarray.h"
+#include "bstruct_writeendarray.h"
+#include "bstruct_readendarray.h"
+#include "bstruct_close.h"
 
 void test_restart(void)
 {
@@ -34,11 +51,11 @@ void test_restart(void)
   TEST_ASSERT_NOT_NULL(bstr);
   bstruct_writeint(bstr,"a",data1.a);
   bstruct_writefloat(bstr,"b",data1.b);
-  bstruct_writestruct(bstr,"s");
+  bstruct_writebeginstruct(bstr,"s");
   bstruct_writefloat(bstr,"c",data1.s.c);
   bstruct_writefloat(bstr,"d",data1.s.d);
   bstruct_writeendstruct(bstr);
-  bstruct_writearray(bstr,"vec",2);
+  bstruct_writebeginarray(bstr,"vec",2);
   for(i=0;i<2;i++)
     bstruct_writefloat(bstr,NULL,data1.vec[i]);
   bstruct_writeendarray(bstr);

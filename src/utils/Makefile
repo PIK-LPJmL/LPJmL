@@ -70,7 +70,7 @@ LPJLIBS = $(LIBDIR)/liblpj.$A $(LIBDIR)/libtree.$A\
           $(LIBDIR)/libgrass.$A $(LIBDIR)/libtree.$A\
           $(LIBDIR)/libspitfire.$A $(LIBDIR)/libsoil.$A\
           $(LIBDIR)/libcdf.$A $(LIBDIR)/libtools.$A $(LIBDIR)/libcoupler.$A\
-          $(LIBDIR)/libnum.$A
+          $(LIBDIR)/libnum.$A $(LIBDIR)/libbstruct.$A $(LIBDIR)/libtools.$A\
 
 all: $(BIN)/cru2clm$E $(BIN)/grid2clm$E $(BIN)/cfts26_lu2clm$E\
      $(BIN)/river_sections_input_grid$E $(BIN)/river_sections_input_soil$E\
@@ -112,7 +112,7 @@ clean:
 
 $(OBJS): $(HDRS)
 
-.c.$O: 
+.c.$O:
 	$(CC) $(CFLAGS) -I$(INC) -c $*.c
 
 country2cdf.$O: country2cdf.c
@@ -184,8 +184,8 @@ $(BIN)/statclm$E: statclm.$O $(LPJLIBS)
 $(BIN)/cmpbin$E: cmpbin.$O $(LPJLIBS)
 	$(LINK) $(LNOPTS)$(BIN)/cmpbin$E cmpbin.$O $(LPJLIBS) $(LIBS)
 
-$(BIN)/joingrid$E: joingrid.$O $(LIBDIR)/libtools.$A
-	$(LINK) $(LNOPTS)$(BIN)/joingrid$E joingrid.$O $(LIBDIR)/libtools.$A $(LIBS)
+$(BIN)/joingrid$E: joingrid.$O $(LPJLIBS)
+	$(LINK) $(LNOPTS)$(BIN)/joingrid$E joingrid.$O $(LPJLIBS) $(LIBS)
 
 $(BIN)/manage2js$E: manage2js.$O $(LPJLIBS)
 	$(LINK) $(LNOPTS)$(BIN)/manage2js$E manage2js.$O $(LPJLIBS) $(LIBS)
@@ -214,48 +214,48 @@ $(BIN)/printglobal$E: printglobal.$O $(LPJLIBS)
 $(BIN)/printharvest$E: printharvest.$O $(LPJLIBS)
 	$(LINK) $(LNOPTS)$(BIN)/printharvest$E printharvest.$O $(LPJLIBS) $(LIBS)
 
-$(BIN)/regridsoil$E: regridsoil.$O $(LIBDIR)/libtools.$A
-	$(LINK) $(LNOPTS)$(BIN)/regridsoil$E regridsoil.$O $(LIBDIR)/libtools.$A $(LIBS)
+$(BIN)/regridsoil$E: regridsoil.$O $(LPJLIBS)
+	$(LINK) $(LNOPTS)$(BIN)/regridsoil$E regridsoil.$O $(LPJLIBS) $(LIBS)
 
 $(BIN)/mathclm$E: mathclm.$O $(LPJLIBS)
 	$(LINK) $(LNOPTS)$(BIN)/mathclm$E mathclm.$O $(LPJLIBS) $(LIBS)
 
-$(BIN)/cutclm$E: cutclm.$O $(LIBDIR)/libtools.$A
-	$(LINK) $(LNOPTS)$(BIN)/cutclm$E cutclm.$O $(LIBDIR)/libtools.$A
+$(BIN)/cutclm$E: cutclm.$O $(LPJLIBS)
+	$(LINK) $(LNOPTS)$(BIN)/cutclm$E cutclm.$O $(LPJLIBS)
 
 $(BIN)/setclm$E: setclm.$O $(LPJLIBS)
 	$(LINK) $(LNOPTS)$(BIN)/setclm$E setclm.$O $(LPJLIBS) $(LIBS)
 
-$(BIN)/mergeclm$E: mergeclm.$O $(LIBDIR)/libtools.$A
-	$(LINK) $(LNOPTS)$(BIN)/mergeclm$E mergeclm.$O $(LIBDIR)/libtools.$A
+$(BIN)/mergeclm$E: mergeclm.$O $(LPJLIBS)
+	$(LINK) $(LNOPTS)$(BIN)/mergeclm$E mergeclm.$O $(LPJLIBS)
 
-$(BIN)/catclm$E: catclm.$O $(LIBDIR)/libtools.$A
-	$(LINK) $(LNOPTS)$(BIN)/catclm$E catclm.$O $(LIBDIR)/libtools.$A
+$(BIN)/catclm$E: catclm.$O $(LPJLIBS)
+	$(LINK) $(LNOPTS)$(BIN)/catclm$E catclm.$O $(LPJLIBS)
 
 $(BIN)/coupler_demo$E: coupler_demo.$O $(LIBDIR)/libsocket.$A $(LPJLIBS)
 	$(LINK) $(LNOPTS)$(BIN)/coupler_demo$E coupler_demo.$O $(LPJLIBS)\
 	        $(LIBDIR)/libsocket.$A $(LIBS) $(LIBDIR)/libtools.$A
 
-$(BIN)/adddrain$E: adddrain.$O $(LIBDIR)/libtools.$A
-	$(LINK) $(LNOPTS)$(BIN)/adddrain$E adddrain.$O $(LIBDIR)/libtools.$A $(LIBS)
+$(BIN)/adddrain$E: adddrain.$O $(LPJLIBS)
+	$(LINK) $(LNOPTS)$(BIN)/adddrain$E adddrain.$O $(LPJLIBS) $(LIBS)
 
 $(BIN)/regriddrain$E: regriddrain.$O $(LPJLIBS)
 	$(LINK) $(LNOPTS)$(BIN)/regriddrain$E regriddrain.$O $(LPJLIBS) $(LIBS)
 
-$(BIN)/regridirrig$E: regridirrig.$O $(LIBDIR)/libtools.$A
-	$(LINK) $(LNOPTS)$(BIN)/regridirrig$E regridirrig.$O $(LIBDIR)/libtools.$A $(LIBS)
+$(BIN)/regridirrig$E: regridirrig.$O $(LPJLIBS)
+	$(LINK) $(LNOPTS)$(BIN)/regridirrig$E regridirrig.$O $(LPJLIBS) $(LIBS)
 
-$(BIN)/regridclm$E: regridclm.$O $(LIBDIR)/libtools.$A
-	$(LINK) $(LNOPTS)$(BIN)/regridclm$E regridclm.$O $(LIBDIR)/libtools.$A $(LIBS)
+$(BIN)/regridclm$E: regridclm.$O $(LPJLIBS)
+	$(LINK) $(LNOPTS)$(BIN)/regridclm$E regridclm.$O $(LPJLIBS) $(LIBS)
 
-$(BIN)/headersize$E: getheadersize.$O $(LIBDIR)/libtools.$A
-	$(LINK) $(LNOPTS)$(BIN)/headersize$E getheadersize.$O $(LIBDIR)/libtools.$A $(LIBS)
+$(BIN)/headersize$E: getheadersize.$O $(LPJLIBS)
+	$(LINK) $(LNOPTS)$(BIN)/headersize$E getheadersize.$O $(LPJLIBS) $(LIBS)
 
 $(BIN)/lpjfiles$E: lpjfiles.$O $(LPJLIBS)
 	$(LINK) $(LNOPTS)$(BIN)/lpjfiles$E lpjfiles.$O $(LPJLIBS) $(LIBS)
 
-$(BIN)/getcountry$E: getcountry.$O $(LIBDIR)/libtools.$A $(LIBDIR)/liblanduse.$A
-	$(LINK) $(LNOPTS)$(BIN)/getcountry$E getcountry.$O $(LIBDIR)/liblanduse.$A $(LIBDIR)/libtools.$A $(LIBS)
+$(BIN)/getcountry$E: getcountry.$O $(LPJLIBS)
+	$(LINK) $(LNOPTS)$(BIN)/getcountry$E getcountry.$O $(LPJLIBS) $(LIBS)
 
 $(BIN)/restart2yaml$E: restart2yaml.$O $(LPJLIBS)
 	$(LINK) $(LNOPTS)$(BIN)/restart2yaml$E restart2yaml.$O $(LPJLIBS) $(LIBS)
@@ -263,25 +263,24 @@ $(BIN)/restart2yaml$E: restart2yaml.$O $(LPJLIBS)
 $(BIN)/lpjprint$E: lpjprint.$O $(LPJLIBS)
 	$(LINK) $(LNOPTS)$(BIN)/lpjprint$E lpjprint.$O $(LPJLIBS) $(LIBS)
 
-$(BIN)/cru2clm$E: cru2clm.$O $(LIBDIR)/libtools.$A
-	$(LINK) $(LNOPTS)$(BIN)/cru2clm$E cru2clm.$O\
-              	$(LIBDIR)/libtools.$A $(LIBS)
+$(BIN)/cru2clm$E: cru2clm.$O $(LPJLIBS)
+	$(LINK) $(LNOPTS)$(BIN)/cru2clm$E cru2clm.$O $(LPJLIBS) $(LIBS)
 
-$(BIN)/txt2clm$E: txt2clm.$O $(LIBDIR)/libtools.$A
+$(BIN)/txt2clm$E: txt2clm.$O $(LPJLIBS)
 	$(LINK) $(LNOPTS)$(BIN)/txt2clm$E txt2clm.$O\
-	        $(LIBDIR)/libtools.$A $(LIBS)
+	        $(LPJLIBS) $(LIBS)
 
-$(BIN)/grid2clm$E: grid2clm.$O $(LIBDIR)/libtools.$A
+$(BIN)/grid2clm$E: grid2clm.$O $(LPJLIBS)
 	$(LINK) $(LNOPTS)$(BIN)/grid2clm$E grid2clm.$O\
-		$(LIBDIR)/libtools.$A $(LIBS)
+		$(LPJLIBS) $(LIBS)
 
-$(BIN)/cfts26_lu2clm$E: cfts26_lu2clm.$O $(LIBDIR)/libtools.$A
+$(BIN)/cfts26_lu2clm$E: cfts26_lu2clm.$O $(LPJLIBS)
 	$(LINK) $(LNOPTS)$(BIN)/cfts26_lu2clm$E cfts26_lu2clm.$O\
-    	 	$(LIBDIR)/libtools.$A $(LIBS)
+		$(LPJLIBS) $(LIBS)
 
-$(BIN)/drainage$E: drainage.$O $(LIBDIR)/libtools.$A
+$(BIN)/drainage$E: drainage.$O $(LPJLIBS)
 	$(LINK) $(LM) $(LNOPTS)$(BIN)/drainage$E drainage.$O\
-		$(LIBDIR)/libtools.$A $(LIBS)
+		$(LPJLIBS) $(LIBS)
 
 $(BIN)/river_sections_input_grid$E: river_sections_input_grid.$O\
 		$(LIBDIR)/libtools.$A
@@ -290,72 +289,70 @@ $(BIN)/river_sections_input_grid$E: river_sections_input_grid.$O\
 		$(LIBDIR)/libtools.$A $(LIBS)
 
 $(BIN)/river_sections_input_soil$E: river_sections_input_soil.$O\
-		$(LIBDIR)/libtools.$A
+		$(LPJLIBS)
 	$(LINK) $(LNOPTS)$(BIN)/river_sections_input_soil$E\
 		river_sections_input_soil.$O\
-		$(LIBDIR)/libtools.$A $(LIBS)
+		$(LPJLIBS) $(LIBS)
 
 $(BIN)/river_sections_input_climate$E: river_sections_input_climate.$O\
-		$(LIBDIR)/libtools.$A
+		$(LPJLIBS)
 	$(LINK) $(LNOPTS)$(BIN)/river_sections_input_climate$E\
 		river_sections_input_climate.$O\
-		$(LIBDIR)/libtools.$A $(LIBS)
+		$(LPJLIBS) $(LIBS)
 
 $(BIN)/river_sections_input_landuse$E: river_sections_input_landuse.$O\
-		$(LIBDIR)/libtools.$A
+		$(LPJLIBS)
 	$(LINK) $(LNOPTS)$(BIN)/river_sections_input_landuse$E\
 		river_sections_input_landuse.$O\
-		$(LIBDIR)/libtools.$A $(LIBS)
+		$(LPJLIBS) $(LIBS)
 
 $(BIN)/river_sections_input_countrycode$E: river_sections_input_countrycode.$O\
-		$(LIBDIR)/libtools.$A
+		$(LPJLIBS)
 	$(LINK) $(LNOPTS)$(BIN)/river_sections_input_countrycode$E\
 		river_sections_input_countrycode.$O\
-		$(LIBDIR)/libtools.$A $(LIBS)
+		$(LPJLIBS) $(LIBS)
 
 $(BIN)/river_sections_input_irrig$E: river_sections_input_irrig.$O\
-		$(LIBDIR)/libtools.$A
+		$(LPJLIBS)
 	$(LINK) $(LNOPTS)$(BIN)/river_sections_input_irrig$E\
 		river_sections_input_irrig.$O\
-		$(LIBDIR)/libtools.$A $(LIBS)
+		$(LPJLIBS) $(LIBS)
 
-$(BIN)/water_use_input$E: water_use_input.$O $(LIBDIR)/libtools.$A
+$(BIN)/water_use_input$E: water_use_input.$O $(LPJLIBS)
 	$(LINK) $(LNOPTS)$(BIN)/water_use_input$E water_use_input.$O\
-		$(LIBDIR)/libtools.$A $(LIBS)
+		$(LPJLIBS) $(LIBS)
 
-$(BIN)/cft2clm$E: cft2clm.$O $(LIBDIR)/libtools.$A
+$(BIN)/cft2clm$E: cft2clm.$O $(LPJLIBS)
 	$(LINK) $(LNOPTS)$(BIN)/cft2clm$E cft2clm.$O\
-		$(LIBDIR)/libtools.$A  $(LIBS)
+		$(LPJLIBS) $(LIBS)
 
-$(BIN)/cvrtsoil$E: cvrtsoil.$O $(LIBDIR)/libtools.$A
+$(BIN)/cvrtsoil$E: cvrtsoil.$O $(LPJLIBS)
 	$(LINK) $(LNOPTS)$(BIN)/cvrtsoil$E cvrtsoil.$(O)\
-		$(LIBDIR)/libtools.$A $(LIBS)
+		$(LPJLIBS) $(LIBS)
 
-$(BIN)/lpjcat$E: lpjcat.$O $(LIBDIR)/libtools.$A $(LIBDIR)/libnum.$A 
-	$(LINK) $(LNOPTS)$(BIN)/lpjcat$E lpjcat.$(O)\
-		$(LIBDIR)/libtools.$A $(LIBDIR)/libnum.$A $(LIBS)
+$(BIN)/lpjcat$E: lpjcat.$O $(LPJLIBS)
+	$(LINK) $(LNOPTS)$(BIN)/lpjcat$E lpjcat.$(O) $(LPJLIBS) $(LIBS)
 
-$(BIN)/printreservoir$E: printreservoir.$O $(LIBDIR)/libtools.$A $(LIBDIR)/libreservoir.$A 
+$(BIN)/printreservoir$E: printreservoir.$O $(LPJLIBS)
 	$(LINK) $(LNOPTS)$(BIN)/printreservoir$E printreservoir.$(O)\
-		$(LIBDIR)/libtools.$A $(LIBDIR)/libreservoir.$A $(LIBS)
+		$(LPJLIBS) $(LIBS)
 
-$(BIN)/printclm$E: printclm.$O $(LIBDIR)/libtools.$A $(LIBDIR)/libreservoir.$A $(LIBDIR)/libnum.$A
+$(BIN)/printclm$E: printclm.$O $(LPJLIBS)
 	$(LINK) $(LNOPTS)$(BIN)/printclm$E printclm.$(O)\
-		$(LIBDIR)/libtools.$A\
-		$(LIBDIR)/libreservoir.$A $(LIBDIR)/libnum.$A $(LIBS)
+		$(LPJLIBS) $(LIBS)
 
-$(BIN)/printdrain$E: printdrain.$O $(LIBDIR)/libtools.$A $(LIBDIR)/liblpj.$A
+$(BIN)/printdrain$E: printdrain.$O $(LPJLIBS)
 	$(LINK) $(LNOPTS)$(BIN)/printdrain$E printdrain.$(O)\
-		$(LIBDIR)/libtools.$A $(LIBDIR)/liblpj.$A $(LIBS)
+		$(LPJLIBS) $(LIBS)
 
-$(BIN)/cat2bsq$E: cat2bsq.$O $(LIBDIR)/libtools.$A
-	$(LINK) $(LNOPTS)$(BIN)/cat2bsq$E cat2bsq.$O $(LIBDIR)/libtools.$A $(LIBS)
+$(BIN)/cat2bsq$E: cat2bsq.$O $(LPJLIBS)
+	$(LINK) $(LNOPTS)$(BIN)/cat2bsq$E cat2bsq.$O $(LPJLIBS) $(LIBS)
 
-$(BIN)/grd2bsq$E: grd2bsq.$O $(LIBDIR)/libtools.$A
-	$(LINK) $(LNOPTS)$(BIN)/grd2bsq$E grd2bsq.$O $(LIBDIR)/libtools.$A $(LIBS)
+$(BIN)/grd2bsq$E: grd2bsq.$O $(LPJLIBS)
+	$(LINK) $(LNOPTS)$(BIN)/grd2bsq$E grd2bsq.$O $(LPJLIBS) $(LIBS)
 
-$(BIN)/getcellindex$E: getcellindex.$O $(LIBDIR)/libtools.$A
-	$(LINK) $(LNOPTS)$(BIN)/getcellindex$E getcellindex.$O $(LIBDIR)/libtools.$A $(LIBS)
+$(BIN)/getcellindex$E: getcellindex.$O $(LPJLIBS)
+	$(LINK) $(LNOPTS)$(BIN)/getcellindex$E getcellindex.$O $(LPJLIBS) $(LIBS)
 
-$(BIN)/txt2grid$E: txt2grid.$O $(LIBDIR)/libtools.$A
-	$(LINK) $(LNOPTS)$(BIN)/txt2grid$E txt2grid.$O $(LIBDIR)/libtools.$A $(LIBS)
+$(BIN)/txt2grid$E: txt2grid.$O $(LPJLIBS)
+	$(LINK) $(LNOPTS)$(BIN)/txt2grid$E txt2grid.$O $(LPJLIBS) $(LIBS)

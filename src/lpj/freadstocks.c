@@ -20,7 +20,7 @@ Bool freadstocks(Bstruct file,     /**< pointer to restart file */
                  Stocks *stocks    /**< data read from file */
                 )                  /** \return TRUE on error */
 {
-  if(bstruct_readstruct(file,name))
+  if(bstruct_readbeginstruct(file,name))
     return TRUE;
   if(bstruct_readreal(file,"carbon",&stocks->carbon))
     return TRUE;
@@ -36,7 +36,7 @@ Bool freadstocksarray(Bstruct file,     /**< pointer to restart file */
                      )                  /** \return TRUE on error */
 {
   int i,n;
-  if(bstruct_readarray(file,name,&n))
+  if(bstruct_readbeginarray(file,name,&n))
     return TRUE;
   if(size!=n)
   {

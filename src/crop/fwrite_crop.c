@@ -34,7 +34,7 @@ Bool fwrite_crop(Bstruct file,  /**< pointer to file data */
   bstruct_writereal(file,"husum",crop->husum);
   bstruct_writereal(file,"vdsum",crop->vdsum);
   bstruct_writereal(file,"fphu",crop->fphu);
-  bstruct_writestruct(file,"ind");
+  bstruct_writebeginstruct(file,"ind");
   fwritestocks(file,"leaf",&crop->ind.leaf);
   fwritestocks(file,"root",&crop->ind.root);
   fwritestocks(file,"pool",&crop->ind.pool);
@@ -53,7 +53,7 @@ Bool fwrite_crop(Bstruct file,  /**< pointer to file data */
   bstruct_writereal(file,"vscal_sum",crop->vscal_sum);
   if(crop->sh!=NULL)
   {
-    bstruct_writestruct(file,"sh");
+    bstruct_writebeginstruct(file,"sh");
     bstruct_writereal(file,"petsum",crop->sh->petsum);
     bstruct_writereal(file,"evapsum",crop->sh->evapsum);
     bstruct_writereal(file,"transpsum",crop->sh->transpsum);

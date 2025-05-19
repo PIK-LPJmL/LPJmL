@@ -19,10 +19,10 @@
 static Bool fwritepoolpararray(Bstruct file,const char *name,const Poolpar *pool,int size)
 {
   int i;
-  bstruct_writearray(file,name,size);
+  bstruct_writebeginarray(file,name,size);
   for(i=0;i<size;i++)
   {
-    bstruct_writestruct(file,NULL);
+    bstruct_writebeginstruct(file,NULL);
     bstruct_writereal(file,"slow",pool[i].slow);
     bstruct_writereal(file,"fast",pool[i].fast);
     bstruct_writeendstruct(file);
@@ -37,14 +37,14 @@ Bool fwritesoil(Bstruct file,     /**< pointer to restart file */
                )                  /** \return TRUE on error */
 {
   int l;
-  bstruct_writestruct(file,name);
-  bstruct_writearray(file,"pool",LASTLAYER);
+  bstruct_writebeginstruct(file,name);
+  bstruct_writebeginarray(file,"pool",LASTLAYER);
   forrootsoillayer(l)
   {
     fwritepool(file,NULL,soil->pool+l);
   }
   bstruct_writeendarray(file);
-  bstruct_writearray(file,"c_shift",LASTLAYER);
+  bstruct_writebeginarray(file,"c_shift",LASTLAYER);
   forrootsoillayer(l)
   {
     fwritepoolpararray(file,NULL,soil->c_shift[l],ntotpft);

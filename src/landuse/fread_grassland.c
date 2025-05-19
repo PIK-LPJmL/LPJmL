@@ -19,7 +19,7 @@
 
 static Bool readrotation(Bstruct file,const char *name,Rotation *rotation)
 {
-  if(bstruct_readstruct(file,name))
+  if(bstruct_readbeginstruct(file,name))
     return TRUE;
   if(bstruct_readint(file,"grazing_days",&rotation->grazing_days))
     return TRUE;

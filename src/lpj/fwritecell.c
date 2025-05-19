@@ -32,7 +32,7 @@ int fwritecell(Bstruct file,      /**< pointer to restart file */
   {
     if(index!=NULL)
       index[cell]=bstruct_getarrayindex(file); /* store actual position in index vector */
-    bstruct_writestruct(file,NULL);
+    bstruct_writebeginstruct(file,NULL);
     bstruct_writecoord(file,"coord",&grid[cell].coord);
     bstruct_writebool(file,"skip",grid[cell].skip);
     fwriteseed(file,"seed",grid[cell].seed);

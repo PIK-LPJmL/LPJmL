@@ -82,14 +82,14 @@ Bool fwriterestart(const Cell grid[],   /**< cell array               */
   if(isroot(*config))
   {
     /* write header in restart file */
-    bstruct_writestruct(file,"header");
+    bstruct_writebeginstruct(file,"header");
     bstruct_writestring(file,"version",getversion());
     bstruct_writestring(file,"sim_name",config->sim_name);
     time(&t);
     s=getsprintf("%s: %s",strdate(&t),config->arglist);
     bstruct_writestring(file,"history",s);
     free(s);
-    bstruct_writestruct(file,"global_attrs");
+    bstruct_writebeginstruct(file,"global_attrs");
     bstruct_writestring(file,"GIT_repo",getrepo());
     bstruct_writestring(file,"GIT_hash",gethash());
     /* write global attributes */
@@ -111,7 +111,7 @@ Bool fwriterestart(const Cell grid[],   /**< cell array               */
     bstruct_writebool(file,"river_routing",config->river_routing);
     bstruct_writebool(file,"separate_harvests",config->separate_harvests);
     /* write array of all PFT names */
-    bstruct_writearray(file,"pfts",npft+ncft);
+    bstruct_writebeginarray(file,"pfts",npft+ncft);
     for(p=0;p<npft+ncft;p++)
       bstruct_writestring(file,NULL,config->pftpar[p].name);
     bstruct_writeendarray(file);

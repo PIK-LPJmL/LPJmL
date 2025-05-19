@@ -18,7 +18,7 @@
 
 static Bool freadtrait(Bstruct file,const char *name,Trait *trait)
 {
-  if(bstruct_readstruct(file,name))
+  if(bstruct_readbeginstruct(file,name))
     return TRUE;
   if(freadstocks(file,"leaf",&trait->leaf))
     return TRUE;
@@ -37,7 +37,7 @@ Bool freadlitter(Bstruct file, /**< File pointer to restrart file */
   int i,pft_id;
   if(bstruct_readrealarray(file,"avg_fbd",litter->avg_fbd,NFUELCLASS+1))
     return TRUE;
-  if(bstruct_readarray(file,name,&litter->n))
+  if(bstruct_readbeginarray(file,name,&litter->n))
     return TRUE;
   if(litter->n)
   {
@@ -49,7 +49,7 @@ Bool freadlitter(Bstruct file, /**< File pointer to restrart file */
     }
     for(i=0;i<litter->n;i++)
     {
-      if(bstruct_readstruct(file,NULL))
+      if(bstruct_readbeginstruct(file,NULL))
         return TRUE;
       if(bstruct_readint(file,"pft_id",&pft_id))
       {

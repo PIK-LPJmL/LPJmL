@@ -53,7 +53,7 @@ Bstruct openrestart(const char *filename, /**< filename of restart file */
     return NULL;
   type=(config->ischeckpoint) ? "checkpoint" : "restart";
   /* read header */
-  if(bstruct_readstruct(file,"header"))
+  if(bstruct_readbeginstruct(file,"header"))
   {
     if(isroot(*config))
       fprintf(stderr,"ERROR245: No header found in %s file '%s'.\n",type,filename);
@@ -108,7 +108,7 @@ Bstruct openrestart(const char *filename, /**< filename of restart file */
     bstruct_close(file);
     return NULL;
   }
-  if(bstruct_readarray(file,"grid",&ncell))
+  if(bstruct_readbeginarray(file,"grid",&ncell))
   {
     bstruct_close(file);
     return NULL;

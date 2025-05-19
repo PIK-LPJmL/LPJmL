@@ -60,7 +60,7 @@ Bool fwritequeue(Bstruct file,    /**< pointer to restart file */
                )                  /** \return TRUE on error */
 {
   int i;
-  bstruct_writearray(file,name,queue->size);
+  bstruct_writebeginarray(file,name,queue->size);
   for(i=0;i<queue->size;i++)
     if(bstruct_writereal(file,NULL,queue->data[(queue->first+i) % queue->size]))
       return TRUE;

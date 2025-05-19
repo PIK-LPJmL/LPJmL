@@ -111,10 +111,10 @@ Bool fwritelandfrac(Bstruct file,               /**< pointer to restart file */
                    )                            /** \return TRUE on error */
 {
   int i;
-  bstruct_writearray(file,name,2);
+  bstruct_writebeginarray(file,name,2);
   for(i=0;i<2;i++)
   {
-    bstruct_writestruct(file,NULL);
+    bstruct_writebeginstruct(file,NULL);
     bstruct_writerealarray(file,"crop",landfrac[i].crop,ncft);
     bstruct_writerealarray(file,"ag_tree",landfrac[i].ag_tree,nagtree);
     bstruct_writerealarray(file,"grass",landfrac[i].grass,NGRASS);
@@ -152,7 +152,7 @@ Bool freadlandfrac(Bstruct file,         /**< pointer to restart file */
                   )                      /** \return TRUE on error */
 {
   int size,i;
-  if(bstruct_readarray(file,name,&size))
+  if(bstruct_readbeginarray(file,name,&size))
     return TRUE;
   if(size!=2)
   {
@@ -162,7 +162,7 @@ Bool freadlandfrac(Bstruct file,         /**< pointer to restart file */
   }
   for(i=0;i<2;i++)
   {
-    if(bstruct_readstruct(file,NULL))
+    if(bstruct_readbeginstruct(file,NULL))
       return TRUE;
     if(bstruct_readrealarray(file,"crop",landfrac[i].crop,ncft))
       return TRUE;

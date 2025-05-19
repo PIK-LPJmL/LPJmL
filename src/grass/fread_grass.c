@@ -19,7 +19,7 @@
 
 static Bool freadgrassphys(Bstruct file,const char *name,Grassphys *grass)
 {
-  if(bstruct_readstruct(file,name))
+  if(bstruct_readbeginstruct(file,name))
     return TRUE;
   if(freadstocks(file,"leaf",&grass->leaf))
     return TRUE;
@@ -30,7 +30,7 @@ static Bool freadgrassphys(Bstruct file,const char *name,Grassphys *grass)
 
 static Bool freadgrassphyspar(Bstruct file,const char *name,Grassphyspar *grass)
 {
-  if(bstruct_readstruct(file,name))
+  if(bstruct_readbeginstruct(file,name))
     return TRUE;
   if(bstruct_readreal(file,"leaf",&grass->leaf))
     return TRUE;

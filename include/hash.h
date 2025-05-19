@@ -2,7 +2,7 @@
 /**                                                                                \n**/
 /**                          h  a  s  h  .  h                                      \n**/
 /**                                                                                \n**/
-/**     C implementation of a hash                                                 \n**/
+/**     C implementation of a hash table to store key/value items in a dictionary  \n**/
 /**                                                                                \n**/
 /** (C) Potsdam Institute for Climate Impact Research (PIK), see COPYRIGHT file    \n**/
 /** authors, and contributors see AUTHORS file                                     \n**/
@@ -19,16 +19,15 @@ typedef struct hash *Hash;
 
 typedef struct
 {
-  void *key;
-  void *data;
+  char *key;  /**< key to store/retrieve data */
+  void *data; /**< pointer to data stored for key */
 } Hashitem;
 
-extern Hash newhash(int,int (*)(const void *,int),int (*)(const void *,const void *),
-                    void (*)(void *));
-extern int addhashitem(Hash,void *,void *);
-extern Bool removehashitem(Hash,const void *);
+extern Hash newhash(int,int (*)(const char *,int),void (*)(void *));
+extern int addhashitem(Hash,char *,void *);
+extern Bool removehashitem(Hash,const char *);
 extern int gethashcount(const Hash);
-extern void *gethashitem(Hash,const void *);
+extern void *gethashitem(Hash,const char *);
 extern Hashitem *hash2array(const Hash);
 extern void deletehash(Hash);
 extern void freehash(Hash);

@@ -30,7 +30,7 @@ Bool freadcell(Bstruct file,           /**< pointer to restart file */
               )                        /** \return TRUE on error */
 {
   int i;
-  if(bstruct_readstruct(file,NULL))
+  if(bstruct_readbeginstruct(file,NULL))
     return TRUE;
   if(bstruct_readbool(file,"skip",&cell->skip))
     return TRUE;
