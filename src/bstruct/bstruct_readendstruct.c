@@ -44,7 +44,7 @@ Bool bstruct_readendstruct(Bstruct bstr,    /**< pointer to restart file */
     if(token!=BSTRUCT_ENDARRAY)
     {
       /* skip object name */
-      if((token & 128)==128) /* top  bit in token set, object name length stored in next byte/word */
+      if((token & 128)==128) /* top bit in token set, object name length stored in next byte/word */
       {
         if(fseek(bstr->file,((token & 64)==64) ? sizeof(short) : 1,SEEK_CUR))
         {
@@ -77,7 +77,7 @@ Bool bstruct_readendstruct(Bstruct bstr,    /**< pointer to restart file */
   } /* of while(token!=BSTRUCT_ENDSTRUCT) */
   if(bstr->level)
   {
-    /* check for match name for struct and endstruct */
+    /* check for matching name for struct and endstruct */
     if(name==NULL)
     {
       if(bstr->namestack[bstr->level-1].name!=NULL)

@@ -19,6 +19,7 @@
 Bool bstruct_writeendarray(Bstruct bstr /**< pointer to restart file */
                           )             /** \return TRUE on error */
 {
+  /* Function ends array */
   Byte token;
   if(bstr->namestack[bstr->level-1].type==BSTRUCT_BEGINSTRUCT)
   {
@@ -31,12 +32,13 @@ Bool bstruct_writeendarray(Bstruct bstr /**< pointer to restart file */
     fprintf(stderr,"ERROR516: Too many endarrays found.\n");
     return TRUE;
   }
+  /* Check for correct number of array items */
   if(bstr->namestack[bstr->level-1].nr!=bstr->namestack[bstr->level-1].size)
     fprintf(stderr,"ERROR522: Size of array '%s'=%d not equal of number of objects written=%d\n",
             getname(bstr->namestack[bstr->level-1].name),
             bstr->namestack[bstr->level-1].size,
             bstr->namestack[bstr->level-1].nr);
-  /* remove object from name stack */
+  /* remove array object from name stack */
   free(bstr->namestack[bstr->level-1].name);
   bstr->level--;
   token=BSTRUCT_ENDARRAY;

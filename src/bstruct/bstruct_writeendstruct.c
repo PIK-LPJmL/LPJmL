@@ -19,6 +19,7 @@
 Bool bstruct_writeendstruct(Bstruct bstr /**< pointer to restart file */
                            )             /** \return TRUE on error */
 {
+  /* Function ends current struct */
   Byte token;
   if(bstr->namestack[bstr->level-1].type==BSTRUCT_BEGINARRAY)
   {
@@ -31,7 +32,7 @@ Bool bstruct_writeendstruct(Bstruct bstr /**< pointer to restart file */
     fprintf(stderr,"ERROR516: Too many endstructs found.\n");
     return TRUE;
   }
-  /* remove object from name stack */
+  /* remove struct object from name stack */
   free(bstr->namestack[bstr->level-1].name);
   bstr->level--;
   token=BSTRUCT_ENDSTRUCT;
