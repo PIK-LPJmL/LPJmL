@@ -15,7 +15,7 @@
 
 include ../../Makefile.inc
 
-OBJS    = bstruct_append.$O bstruct_close.$O bstruct_create.$O bstruct_fprintdata.$O\
+OBJS    = bstruct_append.$O bstruct_finish.$O bstruct_create.$O bstruct_fprintdata.$O\
           bstruct_fprintnametable.$O bstruct_freedata.$O bstruct_freehash.$O\
           bstruct_getarrayindex.$O bstruct_getfile.$O bstruct_gethash.$O\
           bstruct_getmiss.$O bstruct_intern.$O bstruct_isdefined.$O bstruct_open.$O\

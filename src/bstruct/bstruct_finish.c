@@ -1,6 +1,6 @@
 /**************************************************************************************/
 /**                                                                                \n**/
-/**                   b  s  t  r  u  c  t  _  c l  o  s  e  .  c                   \n**/
+/**                   b  s  t  r  u  c  t  _  f  i  n  i  s  h  .  c               \n**/
 /**                                                                                \n**/
 /**     C implementation of LPJmL                                                  \n**/
 /**                                                                                \n**/
@@ -16,7 +16,7 @@
 
 #include "bstruct_intern.h"
 
-void bstruct_close(Bstruct bstruct)
+void bstruct_finish(Bstruct bstruct)
 {
   long long filepos;
   int i,count;
@@ -72,4 +72,4 @@ void bstruct_close(Bstruct bstruct)
     free(bstruct->names);
     free(bstruct);
   }
-} /* of 'bstruct_close' */
+} /* of 'bstruct_finish' */

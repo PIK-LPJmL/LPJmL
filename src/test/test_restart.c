@@ -12,7 +12,7 @@
 #include "hash.h"
 #include "swap.h"
 #include "freadtopheader.h"
-#include "fwritepheader.h"
+#include "fwritetopheader.h"
 #include "bstruct_intern.h"
 #include "bstruct_skipdata.h"
 #include "bstruct_findobject.h"
@@ -30,7 +30,7 @@
 #include "bstruct_readbeginarray.h"
 #include "bstruct_writeendarray.h"
 #include "bstruct_readendarray.h"
-#include "bstruct_close.h"
+#include "bstruct_finish.h"
 
 void test_restart(void)
 {
@@ -59,7 +59,7 @@ void test_restart(void)
   for(i=0;i<2;i++)
     bstruct_writefloat(bstr,NULL,data1.vec[i]);
   bstruct_writeendarray(bstr);
-  bstruct_close(bstr);
+  bstruct_finish(bstr);
   bstruct_open("test.lpj",TRUE);
   TEST_ASSERT_NOT_NULL(bstr);
   bstruct_readint(bstr,"a",&data2.a);
@@ -78,6 +78,6 @@ void test_restart(void)
     bstruct_readfloat(bstr,NULL,data2.vec+i);
   TEST_ASSERT_EQUAL_FLOAT_ARRAY(data1.vec,data2.vec,2);
   bstruct_readendarray(bstr,"vec");
-  bstruct_close(bstr);
+  bstruct_finish(bstr);
   unlink("test.lpj");
 }

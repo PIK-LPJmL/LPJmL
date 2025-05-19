@@ -23,7 +23,7 @@ Bool bstruct_skipdata(Bstruct bstr, /**< pointer to restart file */
   /* Function skips one object in restart file */
   int string_len;
   Byte len,b;
-  if((token & 63)>BSTRUCT_MAXTOKEN)
+  if(isinvalidtoken(token))
   {
     if(bstr->isout)
       fprintf(stderr,"ERROR502: Invalid token %d skipping data.\n",token);
@@ -41,7 +41,7 @@ Bool bstruct_skipdata(Bstruct bstr, /**< pointer to restart file */
             fprintf(stderr,"ERROR508: Unexpected end of file reading token in struct.\n");
           return TRUE;
         }
-        if((b & 63)>BSTRUCT_MAXTOKEN)
+        if(isinvalidtoken(b))
         {
           if(bstr->isout)
             fprintf(stderr,"ERROR502: Invalid token %d skipping data.\n",b);
@@ -97,7 +97,7 @@ Bool bstruct_skipdata(Bstruct bstr, /**< pointer to restart file */
             fprintf(stderr,"ERROR508: Unexpected end of file reading token in array.\n");
           return TRUE;
         }
-        if((b & 63)>BSTRUCT_MAXTOKEN)
+        if(isinvalidtoken(b))
         {
           if(bstr->isout)
             fprintf(stderr,"ERROR502: Invalid token %d skipping data.\n",b);

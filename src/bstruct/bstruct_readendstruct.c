@@ -44,7 +44,7 @@ Bool bstruct_readendstruct(Bstruct bstr,    /**< pointer to restart file */
     if(token!=BSTRUCT_ENDARRAY)
     {
       /* skip object name */
-      if((token & 128)==128) /* all top 4 bits in token set, object name length stored in next byte */
+      if((token & 128)==128) /* top  bit in token set, object name length stored in next byte/word */
       {
         if(fseek(bstr->file,((token & 64)==64) ? sizeof(short) : 1,SEEK_CUR))
         {

@@ -464,7 +464,7 @@ static Cell *newgrid2(Config *config,          /* Pointer to LPJ configuration *
     if(isroot(*config) && miss_total)
       fprintf(stderr,"WARNING042: %d objects not in right order in restart file '%s'.\n",
               miss_total,(config->ischeckpoint) ? config->checkpoint_restart_filename : config->restart_filename);
-    bstruct_close(file_restart);
+    bstruct_finish(file_restart);
   }
   closecelldata(celldata,config);
   if(config->grassharvest_filename.name!=NULL)

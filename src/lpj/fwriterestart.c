@@ -128,7 +128,7 @@ Bool fwriterestart(const Cell grid[],   /**< cell array               */
     fprintf(stderr,"ERROR153: Cannot write data in restart file '%s': %s\n",
             filename,strerror(errno));
     free(index);
-    bstruct_close(file);
+    bstruct_finish(file);
 #ifdef USE_MPI
     iserror=TRUE;
     if(config->rank<config->ntask-1)
@@ -157,7 +157,7 @@ Bool fwriterestart(const Cell grid[],   /**< cell array               */
     bstruct_freehash(file);
   }
 #endif
-  bstruct_close(file);
+  bstruct_finish(file);
 #ifdef USE_TIMING
 #ifdef USE_MPI
   MPI_Barrier(config->comm);

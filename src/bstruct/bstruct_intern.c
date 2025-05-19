@@ -23,7 +23,7 @@ char *bstruct_typenames[]={"byte","short","int","float","double","bool","bool","
                            "zero","fzero","string","string1","array","array1","struct","indexarray",
                            "endstruct","endarray","end"};
 
-int hashkey(const char *key,int size)
+int bstruct_gethashkey(const char *key,int size)
 {
   /* Function converts string into hash value in [0,size-1] */
   unsigned int hashvalue=0;

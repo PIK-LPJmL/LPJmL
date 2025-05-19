@@ -354,7 +354,7 @@ static int checkrestartfile(Config *config, const char *filename)
                    config->npft[GRASS]+config->npft[TREE],config->npft[CROP]);
   if(file==NULL)
     return 1;
-  bstruct_close(file);
+  bstruct_finish(file);
   return 0;
 } /* of 'checkrestartfile' */
 

@@ -44,7 +44,7 @@ Bstruct bstruct_create(const char *filename /**< filename of restart file to cre
     free(bstruct);
     return NULL;
   }
-  bstruct->hash=newhash(BSTRUCT_HASHSIZE,hashkey,free);
+  bstruct->hash=newhash(BSTRUCT_HASHSIZE,bstruct_gethashkey,free);
   if(bstruct->hash==NULL)
   {
     printallocerr("hash");

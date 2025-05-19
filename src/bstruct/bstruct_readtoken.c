@@ -23,11 +23,14 @@ Bool bstruct_readtoken(Bstruct bstr,     /**< pointer to restart file */
                       )                  /** \return TRUE on error */
 {
   /* Function reads token from file */
-  /* The bits of the token byte are define as follows:
+  /* The bits of the token byte are defined as follows:
      [   8   |  7    | 6  5  4  3  2  1|
      |hasname|id >255|  type (0..63)   |
      Next byte contains the index in the name table if bit 8 is set.
      Next 16bit word contains the index in the name table if bit 8 and 7 are set.
+     token & 128(=0b10000000)  gets top bit
+     token & 64 (=0b01000000)  gets bit 7
+     token & 63 (=0b00111111)  gets bit 1..6 for type
    */
   if(fread(token_read,1,1,bstr->file)!=1)
   {
@@ -36,7 +39,7 @@ Bool bstruct_readtoken(Bstruct bstr,     /**< pointer to restart file */
               name,strerror(errno));
     return TRUE;
   }
-  if((*token_read & 63)>BSTRUCT_MAXTOKEN) /* strip top 2 bits to get type */
+  if(isinvalidtoken(*token_read))
   {
     if(bstr->isout)
     {

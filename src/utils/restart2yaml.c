@@ -102,7 +102,7 @@ int main(int argc,char **argv)
       bstruct_printnametable("table",file,FALSE);
       puts("...");
     }
-    bstruct_close(file);
+    bstruct_finish(file);
     return EXIT_SUCCESS;
   }
   firstcell=0;
@@ -231,13 +231,13 @@ int main(int argc,char **argv)
         if(last>=data.size)
         {
           fprintf(stderr,"Last cell %d is greater than upper number of cells %d.\n",last,data.size-1);
-          bstruct_close(file);
+          bstruct_finish(file);
           return EXIT_FAILURE;
         }
         if(firstcell>=data.size)
         {
           fprintf(stderr,"First cell %d is greater than upper number of cells %d.\n",firstcell,data.size-1);
-          bstruct_close(file);
+          bstruct_finish(file);
           return EXIT_FAILURE;
         }
         fseek(bstruct_getfile(file),data.data.index[firstcell],SEEK_SET);
@@ -294,6 +294,6 @@ int main(int argc,char **argv)
   }
   else
     puts("...");
-  bstruct_close(file);
+  bstruct_finish(file);
   return EXIT_SUCCESS;
 } /* of 'main' */

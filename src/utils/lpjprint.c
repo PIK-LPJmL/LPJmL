@@ -183,7 +183,7 @@ static Bool printgrid(Config *config, /* Pointer to LPJ configuration */
       printcell(&grid,1,npft,ncft,config);
     freecell(&grid,npft,config);
   } /* of for(i=0;...) */
-  bstruct_close(file_restart);
+  bstruct_finish(file_restart);
   closecelldata(celldata,config);
   if(config->countrypar!=NULL)
   {

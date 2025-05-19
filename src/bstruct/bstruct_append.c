@@ -47,7 +47,7 @@ Bstruct bstruct_append(const char *filename, /**< filename of restart file to ap
     return NULL;
   }
   fseek(bstruct->file,0,SEEK_END); /* seek to end of file for append */
-  bstruct->hash=newhash(BSTRUCT_HASHSIZE,hashkey,free);
+  bstruct->hash=newhash(BSTRUCT_HASHSIZE,bstruct_gethashkey,free);
   if(bstruct->hash==NULL)
   {
     printallocerr("hash");
