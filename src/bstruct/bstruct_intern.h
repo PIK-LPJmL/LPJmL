@@ -74,4 +74,4 @@ extern void printnamestack(const Bstruct);
 extern Bool bstruct_readtoken(Bstruct,Byte *,Byte,const char *);
 extern Bool bstruct_skipdata(Bstruct,Byte);
 extern Bool bstruct_findobject(Bstruct,Byte *,Byte,const char *);
-extern Bool bstruct_writename(Bstruct bstr,Byte,const String);
+extern Bool bstruct_writename(Bstruct bstr,Byte,const char *);

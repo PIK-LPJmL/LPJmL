@@ -16,12 +16,12 @@
 
 #include "bstruct_intern.h"
 
-Bool bstruct_writename(Bstruct bstr,     /**< pointer to restart file */
-                       Byte token,       /**< token written to file */
-                       const String name /**< object name written to file or NULL */
-                      )                  /** \return TRUE on error */
+Bool bstruct_writename(Bstruct bstr,    /**< pointer to restart file */
+                       Byte token,      /**< token written to file */
+                       const char *name /**< object name written to file or NULL */
+                      )                 /** \return TRUE on error */
 {
-  /* Function writes token and name of object into restart file */
+  /* Function writes token and id of name of object into restart file */
   int len,count;
   short *id;
   Byte id1;
@@ -56,10 +56,11 @@ Bool bstruct_writename(Bstruct bstr,     /**< pointer to restart file */
   }
   token|=128; /* set top bit in token */
   fwrite(&token,1,1,bstr->file);
+  /* Look in hash table whether name has already been used */
   id=gethashitem(bstr->hash,name);
   if(id==NULL)
   {
-    /* name not found in hash, add name */
+    /* name not found in hash, add name and new id to hash table */
     count=gethashcount(bstr->hash);
     if(count==SHRT_MAX)
     {

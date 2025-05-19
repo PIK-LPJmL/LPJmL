@@ -91,6 +91,12 @@ Bool bstruct_findobject(Bstruct bstr,        /**< pointer to restart file */
       return TRUE;
     }
     key.key=strdup(name);
+    if(key.key==NULL)
+    {
+      printallocerr("key");
+      return TRUE;
+    }
+    /* Using binary search for finding the name in the ordered name table */
     item=bsearch(&key,bstr->names,bstr->count,sizeof(Hashitem),bstruct_cmpname);
     free(key.key);
     if(item==NULL)

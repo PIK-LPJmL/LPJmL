@@ -19,7 +19,20 @@
 Bstruct bstruct_create(const char *filename /**< filename of restart file to create */
                       )                     /** \return pointer to restart file or NULL in case of error */
 {
-  /* Function creates restart file */
+  /* Function creates restart file
+   *   Structure of restart file:
+   *   |'B'|'S'|'T'|'R'|'U'|'C'|'T'|1|0|0|0| # file header and versiona (7 + 4 bytes)
+   *   |p1|p2|p3|p4|p5|p6|p7|p8|             # pointer to name table    (8 bytes)
+   *   |00TOKEN|                             # type without id          (1 byte)
+   *   |10TOKEN|id|                          # type with byte id        (2 bytes)
+   *   |11TOKEN|id1|id2|                     # type with word id        (3 bytes)
+   *   ...
+   *   |BSTRUCT_END|                         # end token                (1 byte)
+   *   |size1|size2|size3|size4|             # size of name table       (4 bytes)
+   *   |len|s1|s2|...|sn|                    # name                     (1+ name length bytes)
+   *   |id1|id2|                             # id                       (2 bytes )
+   *   ....
+   */
   Bstruct bstruct;
   bstruct=new(struct bstruct);
   if(bstruct==NULL)
@@ -44,6 +57,7 @@ Bstruct bstruct_create(const char *filename /**< filename of restart file to cre
     free(bstruct);
     return NULL;
   }
+  /* Create empty hash to store/retrieve object names and their corresponding id */
   bstruct->hash=newhash(BSTRUCT_HASHSIZE,bstruct_gethashkey,free);
   if(bstruct->hash==NULL)
   {

@@ -31,6 +31,7 @@ void bstruct_finish(Bstruct bstruct)
       /* write end token */
       token=BSTRUCT_END;
       fwrite(&token,sizeof(token),1,bstruct->file);
+      /* save position of start of name table */
       filepos=ftell(bstruct->file);
       /* convert hash table into array */
       list=hash2array(bstruct->hash);
@@ -40,15 +41,20 @@ void bstruct_finish(Bstruct bstruct)
         return;
       }
       count=gethashcount(bstruct->hash);
-      /* sort array by names */
+      /* sort array by names. This is done to use binary search for
+         finding the id of object names */
       qsort(list,count,sizeof(Hashitem),bstruct_cmpname);
       /* write name table at end of restart file */
+      /* write size of name table */
       fwrite(&count,sizeof(int),1,bstruct->file);
       for(i=0;i<count;i++)
       {
         len=strlen(list[i].key);
+        /* write name length */
         fwrite(&len,1,1,bstruct->file);
+        /* write name */
         fwrite(list[i].key,len,1,bstruct->file);
+        /* write corresponding id */
         id=list[i].data;
         fwrite(id,sizeof(short),1,bstruct->file);
 #ifdef DEBUG_BSTRUCT
