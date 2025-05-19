@@ -36,7 +36,7 @@ Bool bstruct_readbeginstruct(Bstruct bstr,    /**< pointer to restart file */
   {
     if(bstr->isout)
       fprintf(stderr,"ERROR515: Too deep nesting of structs, %d allowed.\n",MAXLEVEL);
-    freenamestack(bstr);
+    bstruct_freenamestack(bstr);
     return TRUE;
   }
   /* add empty list of names for this new level */

@@ -80,7 +80,7 @@ Bstruct bstruct_open(const char *filename, /**< filename of restart file to open
     if(isout)
       fprintf(stderr,"ERROR517: Cannot read pointer to name table.\n");
     fclose(bstruct->file);
-    freenamestack(bstruct);
+    bstruct_freenamestack(bstruct);
     free(bstruct);
     return NULL;
   }
@@ -91,7 +91,7 @@ Bstruct bstruct_open(const char *filename, /**< filename of restart file to open
     if(isout)
       fprintf(stderr,"ERROR517: Cannot seek to name table.\n");
     fclose(bstruct->file);
-    freenamestack(bstruct);
+    bstruct_freenamestack(bstruct);
     free(bstruct);
     return NULL;
   }
@@ -101,7 +101,7 @@ Bstruct bstruct_open(const char *filename, /**< filename of restart file to open
     if(isout)
       fprintf(stderr,"ERROR517: Cannot read size of name table.\n");
     fclose(bstruct->file);
-    freenamestack(bstruct);
+    bstruct_freenamestack(bstruct);
     free(bstruct);
     return NULL;
   }
@@ -110,7 +110,7 @@ Bstruct bstruct_open(const char *filename, /**< filename of restart file to open
   {
     printallocerr("names");
     fclose(bstruct->file);
-    freenamestack(bstruct);
+    bstruct_freenamestack(bstruct);
     free(bstruct);
     return NULL;
   }
@@ -121,7 +121,7 @@ Bstruct bstruct_open(const char *filename, /**< filename of restart file to open
       if(isout)
         fprintf(stderr,"ERROR517: Cannot read length of name in table.\n");
       fclose(bstruct->file);
-      freenamestack(bstruct);
+      bstruct_freenamestack(bstruct);
       free(bstruct);
       return NULL;
     }
@@ -130,7 +130,7 @@ Bstruct bstruct_open(const char *filename, /**< filename of restart file to open
     {
       printallocerr("key");
       fclose(bstruct->file);
-      freenamestack(bstruct);
+      bstruct_freenamestack(bstruct);
       free(bstruct);
       return NULL;
     }
@@ -140,7 +140,7 @@ Bstruct bstruct_open(const char *filename, /**< filename of restart file to open
         fprintf(stderr,"ERROR508: Unexpected end of file reading name table of size %d.\n",
                bstruct->count);
       fclose(bstruct->file);
-      freenamestack(bstruct);
+      bstruct_freenamestack(bstruct);
       free(bstruct);
       return NULL;
     }
@@ -150,7 +150,7 @@ Bstruct bstruct_open(const char *filename, /**< filename of restart file to open
     {
       printallocerr("id");
       fclose(bstruct->file);
-      freenamestack(bstruct);
+      bstruct_freenamestack(bstruct);
       free(bstruct);
       return NULL;
     }
@@ -160,7 +160,7 @@ Bstruct bstruct_open(const char *filename, /**< filename of restart file to open
         fprintf(stderr,"ERROR508: Unexpected end of file reading name table of size %d.\n",
                 bstruct->count);
       fclose(bstruct->file);
-      freenamestack(bstruct);
+      bstruct_freenamestack(bstruct);
       free(bstruct);
       return NULL;
     }

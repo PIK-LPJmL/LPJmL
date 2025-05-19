@@ -26,9 +26,10 @@ Bool bstruct_writebeginstruct(Bstruct bstr,    /**< pointer to restart file */
   if(bstr->level==MAXLEVEL-1)
   {
     fprintf(stderr,"ERROR515: Too deep nesting of structs, %d allowed.\n",MAXLEVEL);
-    printnamestack(bstr);
+    bstruct_printnamestack(bstr);
     return TRUE;
   }
+  /* add new item to namestack */
   bstr->namestack[bstr->level].type=BSTRUCT_BEGINSTRUCT;
   bstr->namestack[bstr->level].nr=0;
   bstr->namestack[bstr->level].name=(name==NULL) ? NULL : strdup(name);

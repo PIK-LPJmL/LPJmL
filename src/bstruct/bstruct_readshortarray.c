@@ -31,7 +31,7 @@ Bool bstruct_readshortarray(Bstruct bstr,     /**< pointer to restart file */
     {
       fprintf(stderr,"ERROR510: Size of array '%s'=%d is not %d.\n",
               getname(name),n,size);
-      printnamestack(bstr);
+      bstruct_printnamestack(bstr);
     }
     return TRUE;
   }

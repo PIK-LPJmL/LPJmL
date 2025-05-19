@@ -70,7 +70,7 @@ Bool bstruct_readendstruct(Bstruct bstr,    /**< pointer to restart file */
       {
         fprintf(stderr,"ERROR503: End of array found, endstruct of '%s' expected.\n",
                 getname(name));
-        printnamestack(bstr);
+        bstruct_printnamestack(bstr);
       }
       return TRUE;
     }

@@ -40,7 +40,7 @@ int bstruct_cmpname(const void *ptr1,const void *ptr2)
   return strcmp(h1->key,h2->key);
 } /* of 'bstruct_cmpname' */
 
-void freenamestack(Bstruct bstruct)
+void bstruct_freenamestack(Bstruct bstruct)
 {
   /* Function deallocates stack of already read objects */
   int i,j;
@@ -55,9 +55,9 @@ void freenamestack(Bstruct bstruct)
     }
   }
   bstruct->level=0;
-} /* of 'freenamestack' */
+} /* of 'bstruct_freenamestack' */
 
-void printnamestack(const Bstruct bstr)
+void bstruct_printnamestack(const Bstruct bstr)
 {
   /* Function prints object stack */
   int i;
@@ -70,4 +70,4 @@ void printnamestack(const Bstruct bstr)
             getname(bstr->namestack[i].name),
             bstr->namestack[i].nr);
   }
-} /* of 'printnamestack' */
+} /* of 'bstruct_printnamestack' */

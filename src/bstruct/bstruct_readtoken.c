@@ -73,12 +73,12 @@ Bool bstruct_readtoken(Bstruct bstr,     /**< pointer to restart file */
       {
         fprintf(stderr,"ERROR503: End of array found, %s expected.\n",
                 bstruct_typenames[token & 63]);
-        printnamestack(bstr);
+        bstruct_printnamestack(bstr);
       }
       else
       {
         fprintf(stderr,"ERROR506: Object '%s' not found in array.\n",name);
-        printnamestack(bstr);
+        bstruct_printnamestack(bstr);
       }
     }
     return TRUE;

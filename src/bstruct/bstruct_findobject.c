@@ -63,7 +63,7 @@ Bool bstruct_findobject(Bstruct bstr,        /**< pointer to restart file */
       {
         fprintf(stderr,"ERROR521: Object name for %s must be specified in struct '%s'.\n",
                bstruct_typenames[token_expected],getname(bstr->namestack[bstr->level-1].name));
-        printnamestack(bstr);
+        bstruct_printnamestack(bstr);
       }
       return TRUE;
     }
@@ -73,7 +73,7 @@ Bool bstruct_findobject(Bstruct bstr,        /**< pointer to restart file */
       {
         fprintf(stderr,"ERROR504: Expected no object name for %s, but name found.\n",
                bstruct_typenames[token_expected]);
-        printnamestack(bstr);
+        bstruct_printnamestack(bstr);
       }
       return TRUE;
     }
@@ -86,7 +86,7 @@ Bool bstruct_findobject(Bstruct bstr,        /**< pointer to restart file */
       {
         fprintf(stderr,"ERROR521: Object name '%s' for %s not allowed in array '%s'.\n",name,
                 bstruct_typenames[token_expected],getname(bstr->namestack[bstr->level-1].name));
-        printnamestack(bstr);
+        bstruct_printnamestack(bstr);
       }
       return TRUE;
     }
@@ -106,7 +106,7 @@ Bool bstruct_findobject(Bstruct bstr,        /**< pointer to restart file */
       {
         fprintf(stderr,"ERROR506: Object name '%s' for %s in struct '%s' not found in name table.\n",
                 name,bstruct_typenames[token_expected],getname(bstr->namestack[bstr->level-1].name));
-        printnamestack(bstr);
+        bstruct_printnamestack(bstr);
       }
       /* undo last read */
       fseek(bstr->file,-1,SEEK_CUR);
@@ -127,7 +127,7 @@ Bool bstruct_findobject(Bstruct bstr,        /**< pointer to restart file */
          {
            fprintf(stderr,"ERROR506: Object '%s' for %s not found in struct '%s'.\n",
                    name,bstruct_typenames[token_expected],getname(bstr->namestack[bstr->level-1].name));
-           printnamestack(bstr);
+           bstruct_printnamestack(bstr);
          }
          /* undo last read */
          fseek(bstr->file,-1,SEEK_CUR);
@@ -148,7 +148,7 @@ Bool bstruct_findobject(Bstruct bstr,        /**< pointer to restart file */
           {
             fprintf(stderr,"ERROR508: Unexpected end of file reading object name for %s.\n",
                     bstruct_typenames[token_expected]);
-            printnamestack(bstr);
+            bstruct_printnamestack(bstr);
           }
           return TRUE;
         }
@@ -161,7 +161,7 @@ Bool bstruct_findobject(Bstruct bstr,        /**< pointer to restart file */
           {
             fprintf(stderr,"ERROR508: Unexpected end of file reading object name for %s.\n",
                     bstruct_typenames[token_expected]);
-            printnamestack(bstr);
+            bstruct_printnamestack(bstr);
           }
           return TRUE;
         }
@@ -177,7 +177,7 @@ Bool bstruct_findobject(Bstruct bstr,        /**< pointer to restart file */
       {
         fprintf(stderr,"ERROR504: Expected object name '%s' for %s, but no name found.\n",name,
                 bstruct_typenames[token_expected]);
-        printnamestack(bstr);
+        bstruct_printnamestack(bstr);
       }
       return TRUE;
     }
@@ -201,7 +201,7 @@ Bool bstruct_findobject(Bstruct bstr,        /**< pointer to restart file */
           {
             fprintf(stderr,"ERROR505: Cannot skip to next object, object '%s' for %s not found.\n",
                     name,bstruct_typenames[token_expected]);
-            printnamestack(bstr);
+            bstruct_printnamestack(bstr);
           }
           return TRUE;
         }
@@ -212,7 +212,7 @@ Bool bstruct_findobject(Bstruct bstr,        /**< pointer to restart file */
           {
             fprintf(stderr,"ERROR508: Unexpected end of file reading token at searching for name '%s' of %s.\n",
                     name,bstruct_typenames[token_expected]);
-            printnamestack(bstr);
+            bstruct_printnamestack(bstr);
           }
           return TRUE;
         }
@@ -222,7 +222,7 @@ Bool bstruct_findobject(Bstruct bstr,        /**< pointer to restart file */
           {
             fprintf(stderr,"ERROR508: Unexpectes end token found at searching for name '%s' of  %s.\n",name,
                     bstruct_typenames[token_expected]);
-            printnamestack(bstr);
+            bstruct_printnamestack(bstr);
           }
           return TRUE;
         }
@@ -238,7 +238,7 @@ Bool bstruct_findobject(Bstruct bstr,        /**< pointer to restart file */
               fprintf(stderr,"ERROR506: Object '%s' for %s not found in struct '%s'.\n",
                       name,bstruct_typenames[token_expected],
                       getname(bstr->namestack[bstr->level-1].name));
-              printnamestack(bstr);
+              bstruct_printnamestack(bstr);
             }
             /* undo last read */
             fseek(bstr->file,-1,SEEK_CUR);
@@ -254,7 +254,7 @@ Bool bstruct_findobject(Bstruct bstr,        /**< pointer to restart file */
           {
             fprintf(stderr,"ERROR506: Object '%s' for %s not found.\n",name,
                     bstruct_typenames[token_expected]);
-            printnamestack(bstr);
+            bstruct_printnamestack(bstr);
           }
           return TRUE;
         }
@@ -269,7 +269,7 @@ Bool bstruct_findobject(Bstruct bstr,        /**< pointer to restart file */
               {
                 fprintf(stderr,"ERROR508: Unexpected end of file reading object name for %s.\n",
                         bstruct_typenames[token_expected]);
-                printnamestack(bstr);
+                bstruct_printnamestack(bstr);
               }
               return TRUE;
             }
@@ -282,7 +282,7 @@ Bool bstruct_findobject(Bstruct bstr,        /**< pointer to restart file */
               {
                 fprintf(stderr,"ERROR508: Unexpected end of file reading object name for %s.\n",
                         bstruct_typenames[token_expected]);
-                printnamestack(bstr);
+                bstruct_printnamestack(bstr);
               }
               return TRUE;
             }

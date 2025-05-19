@@ -31,7 +31,7 @@ Bool bstruct_readbeginarray(Bstruct bstr,     /**< pointer to restart file */
   {
     if(bstr->isout)
       fprintf(stderr,"ERROR515: Too deep nesting of arrays, %d allowed.\n",MAXLEVEL);
-    freenamestack(bstr);
+    bstruct_freenamestack(bstr);
     return TRUE;
   }
   /* push object on name stack */

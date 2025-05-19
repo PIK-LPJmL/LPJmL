@@ -29,7 +29,7 @@ Bool bstruct_writebeginarray(Bstruct bstr,     /**< pointer to restart file */
   if(bstr->level==MAXLEVEL-1)
   {
     fprintf(stderr,"ERROR515: Too deep nesting of arrays, %d allowed.\n",MAXLEVEL);
-    printnamestack(bstr);
+    bstruct_printnamestack(bstr);
     return TRUE;
   }
   /* push object on name stack */

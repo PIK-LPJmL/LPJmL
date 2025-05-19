@@ -31,7 +31,7 @@
 
 #define BSTRUCT_HEADER "BSTRUCT"
 #define BSTRUCT_VERSION 1
-#define BSTRUCT_MAXTOKEN BSTRUCT_END
+#define BSTRUCT_MAXTOKEN BSTRUCT_END /* valid tokens are in the range of [0,BSTRUCT_MAXTOKEN] */
 #define BSTRUCT_HASHSIZE 1023
 #define MAXLEVEL 15 /**< maximum number of nested structs */
 
@@ -45,15 +45,15 @@ struct bstruct
   FILE *file; /**< pointer to binary file */
   Bool swap;  /**< byte order has to be changed at reading */
   Bool isout; /**< error output on stderr enabled */
-  int level;  /**< number of nested structs */
+  int level;  /**< number of nested structs/arrays */
   int imiss;  /**< number of objects not in right order */
   struct
   {
     int size;            /**< size of array */
     int nr;              /**< object number */
-    Byte type;           /**< type of object (BSTRUCT_ARRAY, BSTRUCT_STRUCT) */
+    Byte type;           /**< type of object (BSTRUCT_BEGINARRAY, BSTRUCT_BEGINSTRUCT) */
     char *name;          /**< name of struct */
-    List *varnames;      /**< list of objects in struct */
+    List *varnames;      /**< list of objects in struct or NULL for empty list */
   } namestack[MAXLEVEL]; /**< list of objects names for each nested level */
   Hash hash;             /**< hash for object names used for writing restart files */
   int count;             /**< size of name table */
@@ -69,8 +69,8 @@ typedef struct
 
 extern int bstruct_gethashkey(const char *,int);
 extern int bstruct_cmpname(const void *,const void *);
-extern void freenamestack(Bstruct);
-extern void printnamestack(const Bstruct);
+extern void bstruct_freenamestack(Bstruct);
+extern void bstruct_printnamestack(const Bstruct);
 extern Bool bstruct_readtoken(Bstruct,Byte *,Byte,const char *);
 extern Bool bstruct_skipdata(Bstruct,Byte);
 extern Bool bstruct_findobject(Bstruct,Byte *,Byte,const char *);

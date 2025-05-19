@@ -67,7 +67,7 @@ void bstruct_finish(Bstruct bstruct)
       fwrite(&filepos,sizeof(filepos),1,bstruct->file);
       freehash(bstruct->hash);
     }
-    freenamestack(bstruct);
+    bstruct_freenamestack(bstruct);
     fclose(bstruct->file);
     /* free name table */
     for(i=0;i<bstruct->count;i++)
