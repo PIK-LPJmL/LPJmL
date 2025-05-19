@@ -16,11 +16,11 @@
 
 #include "bstruct_intern.h"
 
-Bool bstruct_writedouhblearray(Bstruct bstr,    /**< pointer to restart file */
-                              const char *name, /**< name of object or NULL */
-                              double vec[],     /**< array written to file */
-                              int size          /**< size of array */
-                             )                  /** \return TRUE on error */
+Bool bstruct_writedoublearray(Bstruct bstr,       /**< pointer to restart file */
+                              const char *name,   /**< name of object or NULL */
+                              const double vec[], /**< array written to file */
+                              int size            /**< size of array */
+                             )                    /** \return TRUE on error */
 {
   int i;
   bstruct_writebeginarray(bstr,name,size);
