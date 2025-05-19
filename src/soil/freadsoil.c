@@ -131,6 +131,9 @@ Bool freadsoil(Bstruct file,           /**< pointer to restart file */
   readreal(file,"alag",&soil->alag);
   readreal(file,"amp",&soil->amp);
   readreal(file,"rw_buffer",&soil->rw_buffer);
+#ifdef MICRO_HEATING
+  foreachsoillayer(l) soil->decomC[l]=soil->micro_heating[l]=0;
+#endif
   if(freadpoolpararray(file,"k_mean",soil->k_mean,LASTLAYER))
     return TRUE;
   if(freadpoolpararray(file,"decay_rate",soil->decay_rate,LASTLAYER))

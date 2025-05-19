@@ -53,6 +53,7 @@ void receivehash(Hash hash,    /**< pointer to hash */
                  MPI_Comm comm /**< MPI communicator */
                 )
 {
+  /* Function receives hash from specified task */
   MPI_Status status;
   Data data;
   int i,count;
