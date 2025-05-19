@@ -3,7 +3,7 @@
 ##               M  a  k  e  f  i  l  e                                        ##
 ##                                                                             ##
 ##   Makefile for C implementation of reading/writing restart files in LPJmL   ##
-##   creates library ../../lib/libbstruct.h                                    ##
+##   creates library ../../lib/libbstruct.a                                    ##
 ##                                                                             ##
 ## (C) Potsdam Institute for Climate Impact Research (PIK), see COPYRIGHT file ##
 ## authors, and contributors see AUTHORS file                                  ##
