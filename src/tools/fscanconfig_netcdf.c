@@ -59,6 +59,16 @@ static Bool fscanaxis(LPJfile *file,   /**< pointer to LPJ file */
     axis->long_name=strdup(s);
     checkptr(axis->long_name);
   }
+  if(isnull(d,"comment"))
+    axis->comment=NULL;
+  else
+  {
+    s=fscanstring(d,NULL,"comment",verb);
+    if(s==NULL)
+      return TRUE;
+    axis->comment=strdup(s);
+    checkptr(axis->comment);
+  }
   if(isnull(d,"unit"))
     axis->unit=NULL;
   else

@@ -123,13 +123,17 @@ static Cdf *create_cdf(const char *filename,
   put_att_text(cdf->ncid, lon_var_id,"standard_name",netcdf_config->lon.standard_name);
   put_att_text(cdf->ncid, lon_bnds_var_id,"standard_name",netcdf_config->lon_bnds.standard_name);
   put_att_text(cdf->ncid, lon_var_id,"long_name",netcdf_config->lon.long_name);
+  put_att_text(cdf->ncid, lon_var_id,"comment",netcdf_config->lon.comment);
   put_att_text(cdf->ncid, lon_bnds_var_id,"long_name",netcdf_config->lon_bnds.long_name);
+  put_att_text(cdf->ncid, lon_bnds_var_id,"comment",netcdf_config->lon_bnds.comment);
   put_att_text(cdf->ncid,lon_bnds_var_id,"units", netcdf_config->lon_bnds.unit);
   put_att_text(cdf->ncid, lon_var_id,"bounds",netcdf_config->lon_bnds.name);
   put_att_text(cdf->ncid, lon_var_id,"axis","X");
   put_att_text(cdf->ncid,lat_var_id,"units",netcdf_config->lat.unit);
   put_att_text(cdf->ncid, lat_var_id,"long_name", netcdf_config->lat.long_name);
+  put_att_text(cdf->ncid, lat_var_id,"comment", netcdf_config->lat.comment);
   put_att_text(cdf->ncid, lat_bnds_var_id,"long_name",netcdf_config->lat_bnds.long_name);
+  put_att_text(cdf->ncid, lat_bnds_var_id,"comment",netcdf_config->lat_bnds.comment);
   put_att_text(cdf->ncid,lat_bnds_var_id,"units",netcdf_config->lat_bnds.unit);
   put_att_text(cdf->ncid, lat_var_id,"standard_name",netcdf_config->lat.standard_name);
   put_att_text(cdf->ncid, lat_bnds_var_id,"standard_name",netcdf_config->lat_bnds.standard_name);

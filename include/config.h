@@ -32,6 +32,7 @@ typedef struct
   char *standard_name;
   char *long_name;
   char *unit;
+  char *comment;
   double scale;
 } Axis;  /**< axis description */
 

@@ -25,12 +25,16 @@
 #define LON_STANDARD_NAME "longitude"
 #define LON_BNDS_STANDARD_NAME NULL
 #define LON_LONG_NAME "Longitude"
-#define LON_BNDS_LONG_NAME "Longitude bounds"
+#define LON_BNDS_LONG_NAME NULL
+#define LON_BNDS_UNIT NULL
+#define LON_BNDS_COMMENT "Longitude boundary coordinates"
 #define LON_UNITS "degrees_east"
 #define LAT_NAME "lat"
 #define LAT_BNDS_NAME "lat_bnds"
+#define LAT_BNDS_UNIT NULL
 #define LAT_LONG_NAME "Latitude"
-#define LAT_BNDS_LONG_NAME "Latitude bounds"
+#define LAT_BNDS_LONG_NAME NULL
+#define LAT_BNDS_COMMENT "Latitude boundary coordinates"
 #define LAT_STANDARD_NAME "latitude"
 #define LAT_BNDS_STANDARD_NAME NULL
 #define LAT_UNITS "degrees_north"
@@ -48,10 +52,12 @@
 #define DEPTH_LONG_NAME "Depth of Vertical Layer Center Below Surface"
 #define BNDS_NAME "bnds"
 #define TIME_BNDS_NAME "time_bnds"
-#define TIME_BNDS_LONG_NAME "start and end points of each time step"
+#define TIME_BNDS_LONG_NAME NULL
+#define TIME_BNDS_COMMENT "start and end points of each time step"
 #define BNDS_DIM_NAME "depth_bnds"
-#define DEPTH_BNDS_LONG_NAME "bnds=0 for the top of the layer, and bnds=1 for the bottom of the layer"
-#define DEPTH_BNDS_STANDARD_NAME ""
+#define DEPTH_BNDS_LONG_NAME NULL
+#define DEPTH_BNDS_COMMENT "bnds=0 for the top of the layer, and bnds=1 for the bottom of the layer"
+#define DEPTH_BNDS_STANDARD_NAME NULL
 #define PFTNAME_NAME "NamePFT"
 #define PFTNAME_DIM_NAME "len"
 #define PFTNAME_STANDARD_NAME ""
@@ -72,38 +78,46 @@ void initsetting_netcdf(Netcdf_config *nc_config)
   nc_config->time.dim=TIME_DIM_NAME;
   nc_config->time.standard_name=TIME_STANDARD_NAME;
   nc_config->time.long_name=TIME_LONG_NAME;
+  nc_config->time.comment=NULL;
   nc_config->time.unit="";
   nc_config->time_bnds.name=TIME_BNDS_NAME;
   nc_config->time_bnds.long_name=TIME_BNDS_LONG_NAME;
+  nc_config->time_bnds.comment=TIME_BNDS_COMMENT;
   nc_config->lon.name=LON_NAME;
   nc_config->lon.dim=LON_DIM_NAME;
   nc_config->lon.standard_name=LON_STANDARD_NAME;
   nc_config->lon.long_name=LON_LONG_NAME;
+  nc_config->lon.comment=NULL;
   nc_config->lon.unit=LON_UNITS;
   nc_config->lon_bnds.name=LON_BNDS_NAME;
   nc_config->lon_bnds.long_name=LON_BNDS_LONG_NAME;
+  nc_config->lon_bnds.comment=LON_BNDS_COMMENT;
   nc_config->lon_bnds.standard_name=LON_BNDS_STANDARD_NAME;
-  nc_config->lon_bnds.unit=LON_UNITS;
+  nc_config->lon_bnds.unit=LON_BNDS_UNIT;
   nc_config->lat.name=LAT_NAME;
   nc_config->lat.dim=LAT_DIM_NAME;
   nc_config->lat.standard_name=LAT_STANDARD_NAME;
   nc_config->lat.long_name=LAT_LONG_NAME;
+  nc_config->lat.comment=NULL;
   nc_config->lat.unit=LAT_UNITS;
   nc_config->lat_bnds.name=LAT_BNDS_NAME;
   nc_config->lat_bnds.long_name=LAT_BNDS_LONG_NAME;
+  nc_config->lat_bnds.comment=LAT_BNDS_COMMENT;
   nc_config->lat_bnds.standard_name=LAT_BNDS_STANDARD_NAME;
-  nc_config->lat_bnds.unit=LAT_UNITS;
+  nc_config->lat_bnds.unit=LAT_BNDS_UNIT;
   nc_config->depth.name=DEPTH_NAME;
   nc_config->depth.dim=DEPTH_DIM_NAME;
   nc_config->depth.standard_name=DEPTH_STANDARD_NAME;
   nc_config->depth.long_name=DEPTH_LONG_NAME;
+  nc_config->depth.comment=NULL;
   nc_config->depth.unit="m";
   nc_config->depth.scale=1e-3;
   nc_config->depth_bnds.name=DEPTH_BNDS_NAME;
   nc_config->depth_bnds.dim=BNDS_DIM_NAME;
   nc_config->depth_bnds.standard_name=DEPTH_BNDS_STANDARD_NAME;
   nc_config->depth_bnds.long_name=DEPTH_BNDS_LONG_NAME;
-  nc_config->depth_bnds.unit="m";
+  nc_config->depth_bnds.comment=DEPTH_BNDS_COMMENT;
+  nc_config->depth_bnds.unit=NULL;
   nc_config->depth_bnds.scale=1e-3;
   nc_config->pft.name=PFT_NAME;
   nc_config->pft.dim=PFT_DIM_NAME;
