@@ -25,7 +25,7 @@
                    "standard_name" : "latitude","unit" : "degrees_north", "scale" : 1.0},
     "latitude_bnds" : { "name" : "lat_bnds", "dim" : "lat", "long_name" : null,
                         "comment" : "Latitude boundary coordinates",
-                        "standard_name" : "latitude_boundary","unit" : null, "scale" : 1.0},
+                        "standard_name" : null,"unit" : null, "scale" : 1.0},
     "time" : { "name" : "time", "dim": "time", "long_name" : "Time", "standard_name": "time", "comment" : null,
                "unit" : "", "scale" : 1.0},
     "time_bnds" : { "name" : "time_bnds", "dim": "time", "long_name" : null,
