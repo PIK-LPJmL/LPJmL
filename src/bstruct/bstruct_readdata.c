@@ -22,8 +22,8 @@ Bool bstruct_readdata(Bstruct bstr,      /**< pointer to restart file */
 {
   /* Function reads one data object */
   Byte len,id1;
-  int string_length,i;
-  short id,*id2;
+  int string_length;
+  short id;
   data->name=NULL;
   if(fread(&data->token,1,1,bstr->file)!=1)
   {
@@ -58,15 +58,8 @@ Bool bstruct_readdata(Bstruct bstr,      /**< pointer to restart file */
         }
         id=id1;
       }
-      for(i=0;i<bstr->count;i++)
-      {
-        id2=bstr->names[i].data;
-        if(id==*id2)
-        {
-          data->name=bstr->names[i].key;
-          break;
-        }
-      }
+      if(id>=0 && id<bstr->count)
+        data->name=bstr->names2[id].key;
     }
   }
   data->token &= 63; /* strip top 2 bits in token */
