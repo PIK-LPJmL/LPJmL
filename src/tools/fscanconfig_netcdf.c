@@ -17,6 +17,12 @@
 #include "lpj.h"
 
 #define checkptr(ptr) if(ptr==NULL) { printallocerr(#ptr); return TRUE;}
+#define fscanaxis2(file,axis,name,verb) if(fscanaxis(file,axis,name,verb))\
+           {\
+              if(verb)\
+                fprintf(stderr,"ERROR265: Cannot read axis description for '%s'.\n",name);\
+              return TRUE;\
+           }
 
 static Bool fscanaxis(LPJfile *file,   /**< pointer to LPJ file */
                       Axis *axis,      /**< axis definition */
@@ -122,26 +128,16 @@ Bool fscanconfig_netcdf(LPJfile *file,            /**< pointer to LPJ file */
   if(fscanint(m,&i,"byte",FALSE,verb))
     return TRUE;
   nc_config->missing_value.b=(Byte)i;
-  if(fscanaxis(d,&nc_config->lat,"latitude",verb))
-    return TRUE;
-  if(fscanaxis(d,&nc_config->lat_bnds,"latitude_bnds",verb))
-    return TRUE;
-  if(fscanaxis(d,&nc_config->lon,"longitude",verb))
-    return TRUE;
-  if(fscanaxis(d,&nc_config->lon_bnds,"longitude_bnds",verb))
-    return TRUE;
-  if(fscanaxis(d,&nc_config->time,"time",verb))
-    return TRUE;
-  if(fscanaxis(d,&nc_config->time_bnds,"time_bnds",verb))
-    return TRUE;
-  if(fscanaxis(d,&nc_config->depth,"depth",verb))
-    return TRUE;
-  if(fscanaxis(d,&nc_config->depth_bnds,"depth_bnds",verb))
-    return TRUE;
-  if(fscanaxis(d,&nc_config->pft,"pft",verb))
-    return TRUE;
-  if(fscanaxis(d,&nc_config->pft_name,"pft_name",verb))
-    return TRUE;
+  fscanaxis2(d,&nc_config->lat,"latitude",verb);
+  fscanaxis2(d,&nc_config->lat_bnds,"latitude_bnds",verb);
+  fscanaxis2(d,&nc_config->lon,"longitude",verb);
+  fscanaxis2(d,&nc_config->lon_bnds,"longitude_bnds",verb);
+  fscanaxis2(d,&nc_config->time,"time",verb);
+  fscanaxis2(d,&nc_config->time_bnds,"time_bnds",verb);
+  fscanaxis2(d,&nc_config->depth,"depth",verb);
+  fscanaxis2(d,&nc_config->depth_bnds,"depth_bnds",verb);
+  fscanaxis2(d,&nc_config->pft,"pft",verb);
+  fscanaxis2(d,&nc_config->pft_name,"pft_name",verb);
   s=fscanstring(d,NULL,"bnds_name",verb);
   if(s==NULL)
     return TRUE;
