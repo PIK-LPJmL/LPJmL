@@ -114,6 +114,16 @@ Bstruct bstruct_open(const char *filename, /**< filename of restart file to open
     free(bstruct);
     return NULL;
   }
+  bstruct->names2=newvec(Hashitem,bstruct->count);
+  if(bstruct->names2==NULL)
+  {
+    printallocerr("names");
+    fclose(bstruct->file);
+    free(bstruct->names);
+    bstruct_freenamestack(bstruct);
+    free(bstruct);
+    return NULL;
+  }
   for(i=0;i<bstruct->count;i++)
   {
     if(fread(&len,1,1,bstruct->file)!=1)
@@ -169,6 +179,9 @@ Bstruct bstruct_open(const char *filename, /**< filename of restart file to open
     printf("%d: '%s'\n",*id,(char *)bstruct->names[i].key);
 #endif
   } /* of for(i=0;i<bstruct->count;i++) */
+  memcpy(bstruct->names2,bstruct->names,sizeof(Hashitem)*bstruct->count);
+  /* sort by id */
+  qsort(bstruct->names2,bstruct->count,sizeof(Hashitem),bstruct_cmpdata);
   /* restore file position */
   fseek(bstruct->file,save,SEEK_SET);
   return bstruct;

@@ -21,16 +21,17 @@ Bstruct bstruct_create(const char *filename /**< filename of restart file to cre
 {
   /* Function creates restart file
    *   Structure of restart file:
-   *   |'B'|'S'|'T'|'R'|'U'|'C'|'T'|1|0|0|0| # file header and versiona (7 + 4 bytes)
-   *   |p1|p2|p3|p4|p5|p6|p7|p8|             # pointer to name table    (8 bytes)
-   *   |00TOKEN|                             # type without id          (1 byte)
-   *   |10TOKEN|id|                          # type with byte id        (2 bytes)
-   *   |11TOKEN|id1|id2|                     # type with word id        (3 bytes)
+   *   |'B'|'S'|'T'|'R'|'U'|'C'|'T'|1|0|0|0| # file header and versiona    (7 + 4 bytes)
+   *   |p1|p2|p3|p4|p5|p6|p7|p8|             # pointer to name table       (8 bytes)
+   *   |00TOKEN|                             # type without id             (1 byte)
+   *   |10TOKEN|id|                          # type with byte id           (2 bytes)
+   *   |11TOKEN|id1|id2|                     # type with word id           (3 bytes)
+   *   |10TOKEN|id|d1|d2...|dn|              # type with byte id and data  (2 bytes + sizeof(data))
    *   ...
-   *   |BSTRUCT_END|                         # end token                (1 byte)
-   *   |size1|size2|size3|size4|             # size of name table       (4 bytes)
-   *   |len|s1|s2|...|sn|                    # name                     (1+ name length bytes)
-   *   |id1|id2|                             # id                       (2 bytes )
+   *   |BSTRUCT_END|                         # end token                   (1 byte)
+   *   |size1|size2|size3|size4|             # size of name table          (4 bytes)
+   *   |len|s1|s2|...|sn|                    # name                        (1+ name length bytes)
+   *   |id1|id2|                             # id                          (2 bytes )
    *   ....
    */
   Bstruct bstruct;
@@ -50,6 +51,7 @@ Bstruct bstruct_create(const char *filename /**< filename of restart file to cre
   bstruct->namestack[0].name=NULL;
   bstruct->count=0;
   bstruct->names=NULL;
+  bstruct->names2=NULL;
   bstruct->file=fopen(filename,"wb");
   if(bstruct->file==NULL)
   {

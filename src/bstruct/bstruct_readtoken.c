@@ -52,19 +52,6 @@ Bool bstruct_readtoken(Bstruct bstr,     /**< pointer to restart file */
      }
      return TRUE;
   }
-  if(*token_read==BSTRUCT_END)
-  {
-    if(bstr->isout)
-    {
-      if(name==NULL)
-        fprintf(stderr,"ERROR523: End token read reading %s.\n",
-                bstruct_typenames[token & 63]);
-      else
-        fprintf(stderr,"ERROR523: End token read reading %s '%s'.\n",
-                bstruct_typenames[token & 63],name);
-    }
-    return TRUE;
-  }
   if(*token_read==BSTRUCT_ENDARRAY)
   {
     if(bstr->isout)

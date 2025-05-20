@@ -34,11 +34,19 @@ int bstruct_gethashkey(const char *key,int size)
 
 int bstruct_cmpname(const void *ptr1,const void *ptr2)
 {
-  /* Function compares two hash items, used for sorting and searching items */
+  /* Function compares two hash items by key, used for sorting and searching items */
   const Hashitem *h1=ptr1;
   const Hashitem *h2=ptr2;
   return strcmp(h1->key,h2->key);
 } /* of 'bstruct_cmpname' */
+
+int bstruct_cmpdata(const void *ptr1,const void *ptr2)
+{
+  /* Function compares two hash items by data , used for sorting and searching items */
+  const Hashitem *h1=ptr1;
+  const Hashitem *h2=ptr2;
+  return *(const short *)(h1->data)-*(const short *)(h2->data);
+} /* of 'bstruct_cmpdata' */
 
 void bstruct_freenamestack(Bstruct bstruct)
 {
@@ -59,15 +67,27 @@ void bstruct_freenamestack(Bstruct bstruct)
 
 void bstruct_printnamestack(const Bstruct bstr)
 {
+  Var *var;
   /* Function prints object stack */
-  int i;
+  int i,j;
   fputs("=====001: Object stack:\n"
-        "=====002:   Type   Name                 Pos.\n",stderr);
+        "=====002:   Type   Name                 Pos. Objects\n",stderr);
   for(i=bstr->level-1;i>=0;i--)
   {
-    fprintf(stderr,"=====%03d:   %-6s %-20s %4d\n",bstr->level-i+2,
+    fprintf(stderr,"=====%03d:   %-6s %-20s %4d ",bstr->level-i+2,
             (bstr->namestack[i].type==BSTRUCT_BEGINSTRUCT) ? "struct" : "array",
             getname(bstr->namestack[i].name),
             bstr->namestack[i].nr);
+    if(bstr->namestack[i].varnames!=NULL)
+    {
+      foreachlistitem(j,bstr->namestack[i].varnames)
+      {
+        var=getlistitem(bstr->namestack[i].varnames,j);
+        fputs(bstr->names2[var->id].key,stderr);
+        if(j<getlistlen(bstr->namestack[i].varnames)-1)
+          fputs(", ",stderr);
+      }
+    }
+    fputc('\n',stderr);
   }
 } /* of 'bstruct_printnamestack' */

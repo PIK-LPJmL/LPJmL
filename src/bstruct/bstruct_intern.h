@@ -58,6 +58,7 @@ struct bstruct
   Hash hash;             /**< hash for object names used for writing restart files */
   int count;             /**< size of name table */
   Hashitem *names;       /**< name table used for reading restart files */
+  Hashitem *names2;      /**< name table sorted by id  */
 };                       /**< Definition of opaque datatype Bstruct */
 
 typedef struct
@@ -69,6 +70,7 @@ typedef struct
 
 extern int bstruct_gethashkey(const char *,int);
 extern int bstruct_cmpname(const void *,const void *);
+extern int bstruct_cmpdata(const void *,const void *);
 extern void bstruct_freenamestack(Bstruct);
 extern void bstruct_printnamestack(const Bstruct);
 extern Bool bstruct_readtoken(Bstruct,Byte *,Byte,const char *);

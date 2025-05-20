@@ -76,6 +76,7 @@ void bstruct_finish(Bstruct bstruct)
       free(bstruct->names[i].data);
     }
     free(bstruct->names);
+    free(bstruct->names2);
     free(bstruct);
   }
 } /* of 'bstruct_finish' */

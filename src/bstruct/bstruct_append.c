@@ -37,6 +37,7 @@ Bstruct bstruct_append(const char *filename, /**< filename of restart file to ap
   bstruct->namestack[0].varnames=NULL;
   bstruct->namestack[0].name=NULL;
   bstruct->names=NULL;
+  bstruct->names2=NULL;
   bstruct->count=0;
   bstruct->file=fopen(filename,"r+b");
   if(bstruct->file==NULL)
