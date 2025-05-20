@@ -48,4 +48,3 @@ Bool freadstocksarray(Bstruct file,     /**< pointer to restart file */
       return TRUE;
   return bstruct_readendarray(file,name);
 } /* of 'freadstocksarray' */
-

@@ -1,10 +1,10 @@
 /**************************************************************************************/
 /**                                                                                \n**/
-/**                          h  a  s  h  .  h                                      \n**/
+/**                          h  a  s  h  .  c                                      \n**/
 /**                                                                                \n**/
 /**     C implementation of a hash table to store key/value items in a dictionary  \n**/
-/**     key string is converted via hash function to index in an array. If hash    \n**/
-/**     value has been already used, key/values is added to a linked list          \n**/
+/**     Key string is converted via hash function to index in an array of linked   \n**/
+/**     lists. Key/value pair is added to the linked list                          \n**/
 /**                                                                                \n**/
 /** (C) Potsdam Institute for Climate Impact Research (PIK), see COPYRIGHT file    \n**/
 /** authors, and contributors see AUTHORS file                                     \n**/
@@ -31,7 +31,7 @@ struct hash
 {
   int size;                                 /**< hash size */
   int count;                                /**< number of objects in hash */
-  struct hashitem **array;                  /**< hash array of linked lists */
+  struct hashitem **array;                  /**< array of linked lists */
   int (*hashfcn)(const char *,int);         /**< hash function */
   void (*freefcn)(void *);                  /**< function to deallocate data */
 }; /**< Definition of opaque datatype Hash */
@@ -81,7 +81,15 @@ int addhashitem(Hash hash, /**< pointer to hash */
   {
     /* calculate hash from key */
     index=(*hash->hashfcn)(key,hash->size);
-    /* add item to the linnked list */
+#ifdef SAFE
+    /* index must be in [0,size-1] */
+    if(index<0 || index>=hash->size)
+    {
+      fprintf(stderr,"ERROR266: Invalid hash value %d, must be in [0,%d].\n",index,hash->size-1);
+      return 0;
+    }
+#endif
+    /* add item to the linked list */
     item=new(struct hashitem);
     if(item==NULL)
       return 0;
@@ -105,6 +113,14 @@ Bool removehashitem(Hash hash,      /**< pointer to hash */
   if(key!=NULL)
   {
     index=(*hash->hashfcn)(key,hash->size);
+#ifdef SAFE
+    /* index must be in [0,size-1] */
+    if(index<0 || index>=hash->size)
+    {
+      fprintf(stderr,"ERROR266: Invalid hash value %d, must be in [0,%d].\n",index,hash->size-1);
+      return TRUE;
+    }
+#endif
     for(item=prev=hash->array[index];item!=NULL;item=item->next)
     {
       if(!strcmp(key,item->key))
@@ -143,6 +159,14 @@ void *gethashitem(Hash hash,      /**< pointer to hash */
   if(key!=NULL)
   {
     index=(*hash->hashfcn)(key,hash->size);
+#ifdef SAFE
+    /* index must be in [0,size-1] */
+    if(index<0 || index>=hash->size)
+    {
+      fprintf(stderr,"ERROR266: Invalid hash value %d, must be in [0,%d].\n",index,hash->size-1);
+      return NULL;
+    }
+#endif
     for(item=hash->array[index];item!=NULL;item=item->next)
       if(!strcmp(key,item->key))
         return item->data;
