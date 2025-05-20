@@ -25,7 +25,7 @@ of `major.minor.patch` with
 ### Contributors
 
 - author: David Hötten (davidho@pik-potsdam.de)
-- code review: Sebastian Ostberg
+- code review: Sebastian Ostberg (ostberg@pik-potsdam.de), Maik Billing (billing@pik-potsdam.de)
 
 ### Added
 
