@@ -81,7 +81,7 @@ static Cdf *create_cdf(const char *filename,
   if(!notime)
   {
     /* set time vectors */
-    if(settimeaxis(&year,&time_bnds,header.nyear,header.nstep,header.timestep,
+    if(settimeaxis(&year,&time_bnds,header.nyear*header.timestep,header.nstep,header.timestep,
                    header.firstyear,baseyear,FALSE,with_days,absyear,filename))
     {
       free(lat);
