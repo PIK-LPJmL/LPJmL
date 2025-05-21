@@ -58,6 +58,8 @@ Directory tree after extracting the tar files:
      |
      +--numeric   : source for numerical routines
      |
+     +--bstruct   : source for reading/writing restart files
+     |
      +--tools     : source for tools
      |
      +--pnet      : source for library for distributed networks

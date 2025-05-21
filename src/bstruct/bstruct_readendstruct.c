@@ -84,7 +84,7 @@ Bool bstruct_readendstruct(Bstruct bstr,    /**< pointer to restart file */
       {
         if(bstr->isout)
           fprintf(stderr,"ERROR520: Endstruct of '%s' found, but unnamed expected.\n",
-                  name);
+                  bstr->namestack[bstr->level-1].name);
         return TRUE;
       }
     }
