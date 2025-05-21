@@ -77,6 +77,7 @@ Bool bstruct_writename(Bstruct bstr,    /**< pointer to restart file */
     s=strdup(name);
     if(s==NULL)
     {
+      free(id);
       printallocerr("name");
       return TRUE;
     }
