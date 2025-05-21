@@ -129,6 +129,7 @@ void fprintincludes(FILE *out,                 /**< pointer to text file */
     free(lpjinc);
   if(getfilesize(filename)==-1)
   {
+    free(cmd);
     free(options);
     return;
   }
