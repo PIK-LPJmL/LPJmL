@@ -379,7 +379,7 @@ int main(int argc,char **argv)
       return EXIT_FAILURE;
     }
     if(header.timestep>1)
-      fprintf(stderr,"Warning: Version of clm file is %d and timestep>1, is not written to clm file\n",version);
+      fprintf(stderr,"Warning: Version of clm file is %d and timestep>1, timestep is not written to clm file.\n",version);
   }
   file=fopen(argv[iarg],"r");
   if(file==NULL)
