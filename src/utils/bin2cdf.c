@@ -881,7 +881,7 @@ int main(int argc,char **argv)
           fprintf(stderr,"Error: Invalid number '%s' for option '-timestep'.\n",argv[iarg]);
           return EXIT_FAILURE;
         }
-        if(header.timestep<=1) 
+        if(header.timestep<1)
         {
           fprintf(stderr,"Error: Number of time steps=%d must >0.\n",header.timestep);
           return EXIT_FAILURE;
