@@ -49,6 +49,7 @@ of `major.minor.patch` with
 
 - Misspelled `-fsanitize=address` option corrected in `Makefile.mpich`.
 - Missing `free(cmd)` added in `fprintincludes.c`.
+- Parsing of options corrected in `fprintincludes.c`.
 - Utility `bin2cdf` fixed for timestep>1.
 
 
