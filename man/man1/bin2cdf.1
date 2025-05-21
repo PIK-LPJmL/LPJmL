@@ -3,7 +3,7 @@
 bin2cdf \- convert binary output files into NetCDF files
 .SH SYNOPSIS
 .B bin2cdf
-[\-h] [\-v] [\-clm] [\-floatgrid] [\-doublegrid] [\-revlat] [\-days] [\-absyear] [\-cellsize size] [\-compress level] [\-descr d] [\-missing_value val] [[\-attr name=value] ...] [\-units u] [-global] [-swap] [\-short] [\-nbands n] [\-nstep n] [\-ispft] [\-firstyear y] [\-baseyear y] [\-scale s] [\-notime] [\-metafile] [\-config file] [\-netcdf4] [\-map name]
+[\-h] [\-v] [\-clm] [\-floatgrid] [\-doublegrid] [\-revlat] [\-days] [\-absyear] [\-cellsize size] [\-compress level] [\-descr d] [\-missing_value val] [[\-attr name=value] ...] [\-units u] [-global] [-swap] [\-short] [\-nbands n] [\-nstep n] [\-timestep t] [\-ispft] [\-firstyear y] [\-baseyear y] [\-scale s] [\-notime] [\-metafile] [\-config file] [\-netcdf4] [\-map name]
 .I [varname gridfile] binfile netcdffile
 .SH DESCRIPTION
 Program converts binary output files into NetCDF file.
@@ -68,6 +68,9 @@ Set number of outputs per year, default is 1.
 .TP
 \-nbands n
 Set number of PFTs or layers, default is 1.
+.TP
+\-timestep t
+Set number of years between time steps, default is 1. If timestep is greater than 1 number of time steps within a year must be 1,
 .TP
 \-ispft
 Output is PFT specific.

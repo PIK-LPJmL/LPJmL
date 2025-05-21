@@ -22,7 +22,7 @@
 #define checkptr(ptr) if(ptr==NULL) { printallocerr(#ptr); free(lon);free(lon_bnds);free(lat);free(lat_bnds);free(year);free(time_bnds); free(layer); free(midlayer); free(bnds); nc_close(cdf->ncid); free(cdf);return NULL;}
 #define put_att_text(ncid,var,name,s) if(s!=NULL && strlen(s)) {rc=nc_put_att_text(ncid,var,name,strlen(s),s); error(rc);}
 
-#define USAGE "Usage: %s [-h] [-v] [-clm] [-floatgrid] [-doublegrid] [-revlat] [-days]\n       [-absyear] [-firstyear y] [-baseyear y] [-nbands n] [-nstep n]\n       [-cellsize size] [-swap] [[-attr name=value]..] [-global] [-short]\n       [-compress level] [-units u] [-descr d] [-missing_value val] [-scale s] [-notime] [-metafile]\n       [-map name] [-config file] [-netcdf4] [varname gridfile] binfile netcdffile\n"
+#define USAGE "Usage: %s [-h] [-v] [-clm] [-floatgrid] [-doublegrid] [-revlat] [-days]\n       [-absyear] [-firstyear y] [-baseyear y] [-nbands n] [-nstep n] [-timestep t] \n       [-cellsize size] [-swap] [[-attr name=value]..] [-global] [-short]\n       [-compress level] [-units u] [-descr d] [-missing_value val] [-scale s] [-notime] [-metafile]\n       [-map name] [-config file] [-netcdf4] [varname gridfile] binfile netcdffile\n"
 #define ERR_USAGE USAGE "\nTry \"%s --help\" for more information.\n"
 
 typedef struct
@@ -683,6 +683,7 @@ int main(int argc,char **argv)
                "-short           data type of NetCDF data is short, default is float\n"
                "-nbands n        number of bands, default is 1\n"
                "-nstep n         number of steps per year, default is 1\n"
+               "-timestep t      number of years between time steps, default is 1\n"
                "-ispft           output is PFT-specific\n"
                "-firstyear f     first year, default is %d\n"
                "-baseyear y      base year of annual time axis, default is firstyear\n"
@@ -863,6 +864,26 @@ int main(int argc,char **argv)
         if(header.nstep!=1 && header.nstep!=NMONTH && header.nstep!=NDAYYEAR)
         {
           fprintf(stderr,"Error: Number of steps=%d must be 1, 12, or 365.\n",header.nstep);
+          return EXIT_FAILURE;
+        }
+      }
+      else if(!strcmp(argv[iarg],"-timestep"))
+      {
+        if(iarg==argc-1)
+        {
+          fprintf(stderr,"Error: Missing argument after option '-timestep'.\n"
+                  ERR_USAGE,progname,progname);
+          return EXIT_FAILURE;
+        }
+        header.timestep=strtol(argv[++iarg],&endptr,10);
+        if(*endptr!='\0')
+        {
+          fprintf(stderr,"Error: Invalid number '%s' for option '-timestep'.\n",argv[iarg]);
+          return EXIT_FAILURE;
+        }
+        if(header.timestep<=1) 
+        {
+          fprintf(stderr,"Error: Number of time steps=%d must >0.\n",header.timestep);
           return EXIT_FAILURE;
         }
       }
