@@ -47,11 +47,11 @@ Bool bstruct_skipdata(Bstruct bstr, /**< pointer to restart file */
             fprintf(stderr,"ERROR502: Invalid token %d skipping data.\n",b);
           return TRUE;
         }
-#ifdef DEBUB_BSTRUCT
+#ifdef DEBUG_BSTRUCT
         printf("type %s\n",bstruct_typenames[b & 63]);
 #endif
         if(b==BSTRUCT_END)
-        { 
+        {
           if(bstr->isout)
             fprintf(stderr,"ERROR508: Unexpected end token found skipping struct.\n");
           return TRUE;
