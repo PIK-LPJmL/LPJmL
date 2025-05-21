@@ -16,10 +16,10 @@
 
 #include "bstruct_intern.h"
 
-static long long findname(Bstruct bstruct,         /**< pointer to restart file */
-                                  Byte *token,     /**< token of found object */
-                                  short id         /**< name to search for */
-                                 )                 /** \return file position of object found or -1 */
+static long long findname(Bstruct bstruct, /**< pointer to restart file */
+                          Byte *token,     /**< token of found object */
+                          short id         /**< name to search for */
+                         )                 /** \return file position of object found or -1 */
 {
   /* Function finds name in list of already read names of current struct */
   Var *var;
