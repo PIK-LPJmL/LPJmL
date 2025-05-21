@@ -16,7 +16,7 @@
 
 #include "lpj.h"
 
-#define USAGE "\nUsage: txt2clm [-h] [-version v] [-cellindex] [-scale s] [-float] [-int] [-nbands n] [-nstep n] [-cellsize size]\n               [-firstcell n] [-ncell n] [-firstyear f] [-header id] [-csv c] [-json] txtfile clmfile\n"
+#define USAGE "\nUsage: txt2clm [-h] [-version v] [-cellindex] [-scale s] [-float] [-int] [-nbands n] [-nstep n] [-timestep t] [-cellsize size]\n               [-firstcell n] [-ncell n] [-firstyear f] [-header id] [-csv c] [-json] txtfile clmfile\n"
 #define ERR_USAGE USAGE "\nTry \"txt2clm --help\" for more information.\n"
 
 static int getfloat(FILE *file,char sep,float *value)
@@ -116,6 +116,7 @@ int main(int argc,char **argv)
                "-int         write data as int, default is short\n"
                "-nbands n    number of bands, default is %d\n"
                "-nstep n     number of steps, default is %d\n"
+               "-timestep n  number of years between time step, defauls is %d\n"
                "-firstcell n index of first cell\n"
                "-ncell n     number of cells, default is %d\n"
                "-firstyear f first year, default is %d\n"
@@ -126,7 +127,7 @@ int main(int argc,char **argv)
                "txtfile      filename of text file\n"
                "clmfile      filename of clm data file\n\n"
                "(C) Potsdam Institute for Climate Impact Research (PIK), see COPYRIGHT file\n",
-               version,header.nbands,header.nstep,header.ncell,header.firstyear,header.cellsize_lon,id);
+               version,header.nbands,header.nstep,header.timestep,header.ncell,header.firstyear,header.cellsize_lon,id);
         return EXIT_SUCCESS;
       }
       else if(!strcmp(argv[iarg],"-float"))
@@ -210,7 +211,6 @@ int main(int argc,char **argv)
         }
         sep=argv[++iarg][0];
       }
-
       else if(!strcmp(argv[iarg],"-nstep"))
       {
         if(iarg==argc-1)
@@ -226,9 +226,30 @@ int main(int argc,char **argv)
                   argv[iarg]);
           return EXIT_FAILURE;
         }
-        if(header.nstep<1)
+        if(header.nstep!=1 && header.nstep!=NMONTH && header.nstep!=NDAYYEAR)
         {
-          fprintf(stderr,"Number of steps=%d must be greater than zero.\n",header.nstep);
+           fprintf(stderr,"Error: Number of steps=%d must be 1, 12, or 365.\n",header.nstep);
+           return EXIT_FAILURE;
+        }
+      }
+      else if(!strcmp(argv[iarg],"-timestep"))
+      {
+        if(iarg==argc-1)
+        {
+          fputs("Argument missing after '-timestep' option.\n"
+                ERR_USAGE,stderr);
+          return EXIT_FAILURE;
+        }
+        header.timestep=strtol(argv[++iarg],&endptr,10);
+        if(*endptr!='\0')
+        {
+          fprintf(stderr,"Invalid value '%s' for option '-timestep'.\n",
+                  argv[iarg]);
+          return EXIT_FAILURE;
+        }
+        if(header.timestep<1)
+        {
+          fprintf(stderr,"Number of time steps=%d must be greater than zero.\n",header.timestep);
           return EXIT_FAILURE;
         }
       }
@@ -335,6 +356,12 @@ int main(int argc,char **argv)
   {
     fputs("Filename(s) missing.\n"
           ERR_USAGE,stderr);
+    return EXIT_FAILURE;
+  }
+  if(header.timestep>1 && header.nstep>1)
+  {
+    fprintf(stderr,"Error: Number of time steps=%d within a year must be 1 if years between time steps=%d is greater than 1.\n",
+            header.nstep,header.timestep);
     return EXIT_FAILURE;
   }
   file=fopen(argv[iarg],"r");

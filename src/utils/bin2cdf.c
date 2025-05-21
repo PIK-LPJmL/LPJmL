@@ -1017,6 +1017,12 @@ int main(int argc,char **argv)
       return EXIT_FAILURE;
     }
   }
+  if(header.timestep>1 && header.nstep>1)
+  {
+    fprintf(stderr,"Error: Number of time steps=%d within a year must be 1 if years between time steps=%d is greater than 1.\n",
+            header.nstep,header.timestep);
+    return EXIT_FAILURE;
+  }
   if(argc!=iarg+2)
   {
     variable=argv[iarg];
