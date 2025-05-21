@@ -49,7 +49,7 @@ of `major.minor.patch` with
 
 - Misspelled `-fsanitize=address` option corrected in `Makefile.mpich`.
 - Missing `free(cmd)` added in `fprintincludes.c`.
-- Utility `bin2cdf` fixed for timestep>1. 
+- Utility `bin2cdf` fixed for timestep>1.
 
 
 ## [5.9.24] - 2025-05-15
@@ -61,7 +61,8 @@ of `major.minor.patch` with
 
 ### Added
 
-- Merge request template ```.gitlab/merge_request_templates/default.md``` that includes several checklists
+- Merge request template ``.gitlab/merge_request_templates/default.md`` that includes several checklists
+
 
 ## [5.9.23] - 2025-05-08
 
