@@ -288,9 +288,14 @@ int main(int argc,char **argv)
   } /* of while */
   if(isjson)
   {
-    if(key==NULL)
-      puts("\n]");
-    puts("}");
+    if(data.token==BSTRUCT_END)
+      puts("\n}");
+    else
+    {
+      if(key==NULL)
+        puts("\n]");
+      puts("}");
+    }
   }
   else
     puts("...");
