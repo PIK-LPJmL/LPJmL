@@ -35,6 +35,17 @@ of `major.minor.patch` with
 - Utility `lpjcat` updated to support the new restart file format.
 
 
+## [5.9.24] - 2025-05-15
+
+### Contributors
+
+- author: David Hötten (davidho@pik-potsdam.de)
+- code review: Sebastian Ostberg (ostberg@pik-potsdam.de), Maik Billing (billing@pik-potsdam.de)
+
+### Added
+
+- Merge request template ```.gitlab/merge_request_templates/default.md``` that includes several checklists
+
 ## [5.9.23] - 2025-05-08
 
 ### Contributors
