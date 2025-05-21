@@ -187,11 +187,21 @@ Bool bstruct_findobject(Bstruct bstr,        /**< pointer to restart file */
       do
       {
         var=new(Var);
+        if(var==NULL)
+        {
+          printallocerr("var");
+          return TRUE;
+        }
         var->filepos=ftell(bstr->file);
         var->token=*token;
         var->id=id2;
         /* add name and position to the list of already read objects */
-        addlistitem(bstr->namestack[bstr->level-1].varnames,var);
+        if(addlistitem(bstr->namestack[bstr->level-1].varnames,var)==0)
+        {
+          printallocerr("varnames");
+          free(var);
+          return TRUE;
+        }
 #ifdef DEBUG_BSTRUCT
         printf("%s=%d not found, %d\n",name,*id,id2);
 #endif
@@ -284,10 +294,19 @@ Bool bstruct_findobject(Bstruct bstr,        /**< pointer to restart file */
     else
     {
       var=new(Var);
+      {
+        printallocerr("var");
+        return TRUE;
+      }
       var->filepos=ftell(bstr->file);
       var->token=*token;
       var->id=id2;
-      addlistitem(bstr->namestack[bstr->level-1].varnames,var);
+      if(addlistitem(bstr->namestack[bstr->level-1].varnames,var)==0)
+      {
+        printallocerr("varnames");
+        free(var);
+        return TRUE;
+      }
     }
   }
   return FALSE;

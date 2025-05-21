@@ -64,12 +64,14 @@ void receivehash(Hash hash,    /**< pointer to hash */
   {
     MPI_Recv(&data,sizeof(data),MPI_BYTE,task,MSGTAG,comm,&status);
     id=new(short);
+    check(id);
     *id=data.id;
     key=malloc((int)data.len+1);
     check(key);
     MPI_Recv(key,data.len,MPI_BYTE,task,MSGTAG,comm,&status);
     key[data.len]='\0';
-    addhashitem(hash,key,id);
+    if(addhashitem(hash,key,id)==0)
+      fail(ALLOC_MEMORY_ERR,FALSE,"Cannot allocate memory for hash in receivehash()");
   }
 } /* of 'receivehash' */
 

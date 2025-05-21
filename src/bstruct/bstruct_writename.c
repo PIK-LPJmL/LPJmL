@@ -83,6 +83,8 @@ Bool bstruct_writename(Bstruct bstr,    /**< pointer to restart file */
     }
     if(addhashitem(bstr->hash,s,id)==0)
     {
+      free(id);
+      free(s);
       printallocerr("hash");
       return TRUE;
     }
