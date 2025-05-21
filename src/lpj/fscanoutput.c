@@ -333,15 +333,13 @@ Bool fscanoutput(LPJfile *file,  /**< pointer to LPJ file */
     else if(outputsize(flag,npft,ncft,config)==0)
     {
       if(verbosity)
-      {
         fprintf(stderr,"WARNING006: Number of bands in output file for '%s' is zero, will be ignored.\n",
                 config->outnames[flag].name);
-        freefilename(&config->outputvars[count].filename);
-        if(config->pedantic)
-        {
-          free(default_suffix);
-          return TRUE;
-        }
+      freefilename(&config->outputvars[count].filename);
+      if(config->pedantic)
+      {
+        free(default_suffix);
+        return TRUE;
       }
     }
     else if(config->outputvars[count].filename.fmt==CLM2)
