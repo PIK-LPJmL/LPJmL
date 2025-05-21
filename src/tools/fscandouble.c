@@ -33,13 +33,13 @@ Bool fscandouble(LPJfile *file,     /**< pointer to LPJ file */
     if(with_default)
     {
       if(verb)
-        fprintf(stderr,"WARNING027: Name '%s' for float not found, set to %g.\n",name,*value);
+        fprintf(stderr,"WARNING027: Name '%s' for double not found, set to %g.\n",name,*value);
       return FALSE;
     }
     else
     {
       if(verb)
-        fprintf(stderr,"ERROR225: Name '%s' for float not found.\n",name);
+        fprintf(stderr,"ERROR225: Name '%s' for double not found.\n",name);
       return TRUE;
     }
   }
@@ -48,7 +48,7 @@ Bool fscandouble(LPJfile *file,     /**< pointer to LPJ file */
     if(json_object_get_type(item)!=json_type_int)
     {
       if(verb)
-        fprintf(stderr,"ERROR226: Type of '%s' is not float.\n",name);
+        fprintf(stderr,"ERROR226: Type of '%s' is not double.\n",name);
       return TRUE;
     }
     *value=(float)json_object_get_int(item);
