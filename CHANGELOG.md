@@ -46,7 +46,8 @@ of `major.minor.patch` with
 
 ### Fixed
 
-- Misspelled `-fsanitize=address` Option corrected in `Makefile.mpich`.
+- Misspelled `-fsanitize=address` option corrected in `Makefile.mpich`.
+- Missing `free(cmd)` added in `fprintincludes.c`.
 
 
 ## [5.9.23] - 2025-05-08
