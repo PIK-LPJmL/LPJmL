@@ -364,6 +364,23 @@ int main(int argc,char **argv)
             header.nstep,header.timestep);
     return EXIT_FAILURE;
   }
+  if(version<4)
+  {
+    if(header.nstep>1 && header.nbands==1)
+    {
+      fprintf(stderr,"Warning: Version of clm file is %d and nstep>1, nbands set to nstep=%d\n",
+              version,header.nstep);
+      header.nbands=header.nstep;
+    }
+    else if(header.nstep>1 && header.nbands>1)
+    {
+      fprintf(stderr,"Error: Number of steps=%d and bands=%d must not be both >1 for verion %d clm files.\n",
+              header.nstep,header.nbands,version);
+      return EXIT_FAILURE;
+    }
+    if(header.timestep>1)
+      fprintf(stderr,"Warning: Version of clm file is %d and timestep>1, is not written to clm file\n",version);
+  }
   file=fopen(argv[iarg],"r");
   if(file==NULL)
   {
