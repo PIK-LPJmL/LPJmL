@@ -22,6 +22,7 @@ of `major.minor.patch` with
 ### Contributors
 
 - author: Werner von Bloh (bloh@pik-potsdam.de)
+- code review: Stephen Wirth (wirth@pik-potsdam.de), Sebastian Ostberg(ostberg@pik-potsdam.de)
 
 ### Changed
 
@@ -41,7 +42,7 @@ of `major.minor.patch` with
 - Option `-inpath` added to `regridlpj` in order to set directory where data can be found.
 - Options `-zero` and `-search` added to `regridlpj`.
 - Option `-double` added to `txt2grid` in order to create grid files with coordinate values of type double.
-- Option `-timestep` added to `addheader`.
+- Option `-timestep` added to `addheader`, `txt2clm` and `bin2cdf`.
 - Option `sum`, `tsum` and `tmean` to `mathclm` added.
 
 ### Fixed
