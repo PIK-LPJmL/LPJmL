@@ -16,6 +16,7 @@
 #################################################################################
 
 USAGE="Usage: $0 [-h] [-v] [-l] [-prefix dir] [-debug] [-nompi] [-check] [-noerror] [-Dmacro[=value] ...]"
+ERR_USAGE="\nTry \"$0 --help\" for more information."
 debug=0
 nompi=0
 prefix=$PWD
@@ -59,6 +60,7 @@ while(( "$#" )); do
       then
         echo >&2 Error: prefix directory missing
         echo >&2 $USAGE
+        echo -e >&2 $ERR_USAGE
         exit 1
       fi
       prefix=$2
@@ -85,13 +87,15 @@ while(( "$#" )); do
       shift 1
       ;;
     -*)
-      echo >&2 Invalid option $1
+      echo >&2 Error: Invalid option \'$1\'
       echo >&2 $USAGE
+      echo -e >&2 $ERR_USAGE
       exit 1
       ;;
     *)
-      echo >&2 Invalid argument $1
+      echo >&2 Error: Invalid argument \'$1\'
       echo >&2 $USAGE
+      echo -e >&2 $ERR_USAGE
       exit 1
       ;;
   esac

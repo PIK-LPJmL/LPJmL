@@ -175,6 +175,7 @@ bin/reservoir2cdf
 bin/drainage2cdf
 bin/cdf2grid
 bin/restart2yaml
+bin/splitclm
 
 # test build folder
 src/test/build

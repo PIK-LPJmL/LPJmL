@@ -143,7 +143,7 @@ Bstruct openrestart(const char *filename, /**< filename of restart file */
     if(separate_harvests!=config->separate_harvests)
     {
       if(isroot(*config))
-        fprintf(stderr,"ERROR180: Double harvest setting %s is different from %s in %s file '%s'.\n",
+        fprintf(stderr,"ERROR180: Separate harvest setting %s is different from %s in %s file '%s'.\n",
                 bool2str(config->separate_harvests),bool2str(separate_harvests),type,filename);
       bstruct_finish(file);
       return NULL;

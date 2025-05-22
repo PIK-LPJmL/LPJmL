@@ -36,6 +36,43 @@ of `major.minor.patch` with
 - Utility `lpjcat` updated to support the new restart file format.
 
 
+## [5.9.25] - 2025-05-22
+
+### Contributors
+
+- author: Werner von Bloh (bloh@pik-potsdam.de)
+- code review: Stephen Wirth (wirth@pik-potsdam.de), Fabian Stenzel (stenzel@pik-potsdam.de), Sebastian Ostberg(ostberg@pik-potsdam.de)
+
+### Changed
+
+- Axis names and missing values for NetCDF output are read from JSON file `netcdf.cjson` instead of being hard coded.
+- Warnings in `addheader` replaced by terminating errors.
+- Function `openinputfile()` returns an error if cell size differs in JSON metafile.
+- Function `openmetafile()` returns an error if binary file is empty.
+- Output format for cell size updated in `fprintheader.c`, `fprintoutputjson.c`, `fprintjson.c`, and `openinputfile.c`.
+
+### Added
+
+- New utility `splitclm` added to copy specific bands from a clm file.
+- Environment variables `LPJNOPP` and `LPJPEDANTIC` added. If set to `true`, preprocessor is disabled and pedantic checking is enabled, respectively.
+- Info about `--help` option added in case of error in command line arguments.
+- Option `-config` added to `cdf2clm`, `bin2cdf`, `country2cdf` and `clm2cdf` in order to read axis names and missing values from a JSON file. File `netcdf.json` added as a template.
+- Option `-json` added to `arr2clm`, `asc2clm`, `txt2grid`, `txt2clm`, `getcountry`, and `cdf2coord` in order to create additional JSON metafiles.
+- Option `-inpath` added to `regridlpj` in order to set directory where data can be found.
+- Options `-zero` and `-search` added to `regridlpj`.
+- Option `-double` added to `txt2grid` in order to create grid files with coordinate values of type double.
+- Option `-timestep` added to `addheader`, `txt2clm` and `bin2cdf`.
+- Option `sum`, `tsum` and `tmean` to `mathclm` added.
+- Check for correct setting of nstep and nbands added in `txt2clm`.
+
+### Fixed
+
+- Misspelled `-fsanitize=address` option corrected in `Makefile.mpich`.
+- Missing `free(cmd)` added in `fprintincludes.c`.
+- Parsing of options corrected in `fprintincludes.c`.
+- Utility `bin2cdf` fixed for timestep>1.
+
+
 ## [5.9.24] - 2025-05-15
 
 ### Contributors
@@ -45,7 +82,8 @@ of `major.minor.patch` with
 
 ### Added
 
-- Merge request template ```.gitlab/merge_request_templates/default.md``` that includes several checklists
+- Merge request template ``.gitlab/merge_request_templates/default.md`` that includes several checklists.
+
 
 ## [5.9.23] - 2025-05-08
 

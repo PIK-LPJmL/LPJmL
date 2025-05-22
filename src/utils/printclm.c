@@ -14,7 +14,7 @@
 
 #include "lpj.h"
 
-#define USAGE "Usage: %s [-metafile] [-header] [-data] [-text] [-json] [-scale]\n       [-longheader] [-type {byte|short|int|float|double}] [-map name]\n       [-nbands n] [-start s] [-end e] [-first f] [-last l] filename ...\n"
+#define USAGE "Usage: %s [-v] [-metafile] [-header] [-data] [-text] [-json] [-scale]\n       [-longheader] [-type {byte|short|int|float|double}] [-map name]\n       [-nbands n] [-start s] [-end e] [-first f] [-last l] filename ...\n"
 #define NO_HEADER 1
 #define NO_DATA 2
 #define NO_TEXT 4
@@ -423,7 +423,12 @@ int main(int argc,char **argv)
   for(i=1;i<argc;i++)
     if(argv[i][0]=='-')
     {
-      if(!strcmp(argv[i],"-header"))
+      if(!strcmp(argv[i],"-v") || !strcmp(argv[i],"--version"))
+      {
+        puts(getversion());
+        return EXIT_SUCCESS;
+      }
+      else if(!strcmp(argv[i],"-header"))
         output|=NO_HEADER;
       else if(!strcmp(argv[i],"-data"))
         output|=NO_DATA;
@@ -540,7 +545,7 @@ int main(int argc,char **argv)
                   USAGE,progname);
           return EXIT_FAILURE;
         }
-        index=findstr(argv[++i],typenames,5);
+        index=findstr(argv[++i],typenames,N_TYPES);
         if(index==NOT_FOUND)
         {
           fprintf(stderr,"Invalid argument '%s' for option '-type'.\n"

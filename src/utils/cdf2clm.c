@@ -15,10 +15,11 @@
 #include "lpj.h"
 
 #ifdef USE_UDUNITS
-#define USAGE "Usage: %s [-h] [-v] [-units unit] [-var name] [-time name] [-map name]\n       [-o filename] [-scale factor] [-id s] [-version v] [-int] [-float] [-zero]\n       [-json] gridfile netcdffile ...\n"
+#define USAGE "Usage: %s [-h] [-v] [-units unit] [-var name] [-time name] [-map name]\n       [-o filename] [-scale factor] [-id s] [-version v] [-int] [-float] [-zero]\n       [-json] [-config file] gridfile netcdffile ...\n"
 #else
-#define USAGE "Usage: %s [-h] [-v] [-var name] [-time name] [-map name]\n       [-o filename] [-scale factor] [-id s] [-version v] [-int] [-float] [-zero] [-json] gridfile netcdffile ...\n"
+#define USAGE "Usage: %s [-h] [-v] [-var name] [-time name] [-map name]\n       [-o filename] [-scale factor] [-id s] [-version v] [-int] [-float] [-zero] [-json] [-config file] gridfile netcdffile ...\n"
 #endif
+#define ERR_USAGE USAGE "\nTry \"%s --help\" for more information.\n"
 
 #ifdef USE_NETCDF
 #include <netcdf.h>
@@ -354,6 +355,7 @@ int main(int argc,char **argv)
   Config config;
   char *units,*var,*outname,*endptr,*time_name,*arglist,*long_name=NULL,*standard_name=NULL,*history=NULL,*source=NULL;
   char *map_name=NULL;
+  char * config_filename=NULL;
   Map *map=NULL;
   float scale,*data=NULL;
   Filename coord_filename;
@@ -370,6 +372,7 @@ int main(int argc,char **argv)
   Attr *attrs=NULL;
   int n_attr=0,len;
   char name[NC_MAX_NAME];
+  const char *progname;
   Filename grid_name;
   Type grid_type;
   Type datatype;
@@ -384,6 +387,8 @@ int main(int argc,char **argv)
   id=LPJ_CLIMATE_HEADER;
   version=LPJ_CLIMATE_VERSION;
   initconfig(&config);
+  initsetting_netcdf(&config.netcdf);
+  progname=strippath(argv[0]);
   for(iarg=1;iarg<argc;iarg++)
   {
     if(argv[iarg][0]=='-')
@@ -392,7 +397,7 @@ int main(int argc,char **argv)
       {
         printf("   cdf2clm (" __DATE__ ") Help\n"
                "   ==========================\n\n"
-               "Convert NetCDF data into CLM input data for LPJmL version %s\n\n",getversion());
+               "Convert NetCDF data into CLM input data for LPJmL version %s\n",getversion());
         printf(USAGE
                "\nArguments:\n"
                "-h,--help     print this help text\n"
@@ -401,7 +406,7 @@ int main(int argc,char **argv)
 #ifdef USE_UDUNITS
                "-units u      set unit to convert from NetCDF file\n"
 #endif
-               "-var name     variable  name in NetCDF file \n"
+               "-var name     variable name in NetCDF file\n"
                "-time name    name of time in NetCDF file, default is 'time' or 'TIME'\n"
                "-id string    LPJ header string in clm file\n"
                "-version v    version of clm header, default is 3\n"
@@ -410,10 +415,11 @@ int main(int argc,char **argv)
                "-zero         write zero values in clm file if data is not found\n"
                "-json         JSON metafile is created with suffix '.json'\n"
                "-o clmfile    filename of CLM data file written. Default is out.clm\n"
+               "-config file  read NetCDF setting from JSON file\n"
                "gridfile      filename of grid data file\n"
                "netcdffile    filename of NetCDF file(s) converted\n\n"
                "(C) Potsdam Institute for Climate Impact Research (PIK), see COPYRIGHT file\n",
-               argv[0]);
+               progname);
         return EXIT_SUCCESS;
       }
       if(!strcmp(argv[iarg],"-var"))
@@ -421,7 +427,7 @@ int main(int argc,char **argv)
         if(argc==iarg+1)
         {
           fprintf(stderr,"Missing argument after option '-var'.\n"
-                 USAGE,argv[0]);
+                  ERR_USAGE,progname,progname);
           return EXIT_FAILURE;
         }
         var=strdup(argv[++iarg]);
@@ -432,7 +438,7 @@ int main(int argc,char **argv)
         if(argc==iarg+1)
         {
           fprintf(stderr,"Missing argument after option '-time'.\n"
-                 USAGE,argv[0]);
+                  ERR_USAGE,progname,progname);
           return EXIT_FAILURE;
         }
         time_name=argv[++iarg];
@@ -443,7 +449,7 @@ int main(int argc,char **argv)
         if(argc==iarg+1)
         {
           fprintf(stderr,"Missing argument after option '-units'.\n"
-                 USAGE,argv[0]);
+                  ERR_USAGE,progname,progname);
           return EXIT_FAILURE;
         }
         units=strdup(argv[++iarg]);
@@ -465,7 +471,7 @@ int main(int argc,char **argv)
         if(argc==iarg+1)
         {
           fprintf(stderr,"Missing argument after option '-o'.\n"
-                 USAGE,argv[0]);
+                  ERR_USAGE,progname,progname);
           return EXIT_FAILURE;
         }
         outname=argv[++iarg];
@@ -475,7 +481,7 @@ int main(int argc,char **argv)
         if(argc==iarg+1)
         {
           fprintf(stderr,"Missing argument after option '-id'.\n"
-                 USAGE,argv[0]);
+                  ERR_USAGE,progname,progname);
           return EXIT_FAILURE;
         }
         id=argv[++iarg];
@@ -490,12 +496,22 @@ int main(int argc,char **argv)
         iszero=TRUE;
       else if(!strcmp(argv[iarg],"-json"))
         isjson=TRUE;
+      else if(!strcmp(argv[iarg],"-config"))
+      {
+        if(argc==iarg+1)
+        {
+          fprintf(stderr,"Error: Missing argument after option '-config'.\n"
+                  ERR_USAGE,progname,progname);
+          return EXIT_FAILURE;
+        }
+        config_filename=argv[++iarg];
+      }
       else if(!strcmp(argv[iarg],"-scale"))
       {
         if(argc==iarg+1)
         {
           fprintf(stderr,"Missing argument after option '-scale'.\n"
-                 USAGE,argv[0]);
+                  ERR_USAGE,progname,progname);
           return EXIT_FAILURE;
         }
         scale=(float)strtod(argv[++iarg],&endptr);
@@ -515,7 +531,7 @@ int main(int argc,char **argv)
         if(argc==iarg+1)
         {
           fprintf(stderr,"Missing argument after option '-version'.\n"
-                 USAGE,argv[0]);
+                  ERR_USAGE,progname,progname);
           return EXIT_FAILURE;
         }
         version=strtol(argv[++iarg],&endptr,10);
@@ -524,12 +540,22 @@ int main(int argc,char **argv)
           fprintf(stderr,"Invalid number '%s' for option '-version'.\n",argv[iarg]);
           return EXIT_FAILURE;
         }
+        if(version<1)
+        {
+          fprintf(stderr,"Version=%d must be greater than zero.\n",version);
+          return EXIT_FAILURE;
+        }
+        if(version>CLM_MAX_VERSION)
+        {
+          fprintf(stderr,"Version=%d greater than maximum version %d supported.\n",
+                  version,CLM_MAX_VERSION);
+          return EXIT_FAILURE;
+        }
       }
-
       else
       {
         fprintf(stderr,"Invalid option '%s'.\n"
-                USAGE,argv[iarg],argv[0]);
+                  ERR_USAGE,argv[iarg],progname,progname);
         return EXIT_FAILURE;
       }
     }
@@ -539,7 +565,7 @@ int main(int argc,char **argv)
   if(argc<iarg+2)
   {
     fprintf(stderr,"Missing arguments.\n"
-            USAGE,argv[0]);
+            ERR_USAGE,progname,progname);
     return EXIT_FAILURE;
   }
   if(datatype==LPJ_FLOAT && scale!=1)
@@ -548,6 +574,16 @@ int main(int argc,char **argv)
             scale);
     scale=1;
   }
+  if(config_filename!=NULL)
+  {
+    if(parse_config_netcdf(&config.netcdf,config_filename))
+    {
+      fprintf(stderr,"Error reading NetCDF configuration file `%s`.\n",config_filename);
+      return EXIT_FAILURE;
+    }
+  }
+  if(time_name==NULL)
+    time_name=config.netcdf.time.name;
   coord_filename.name=argv[iarg];
   coord_filename.fmt=CLM;
   coordfile=opencoord(&coord_filename,TRUE);

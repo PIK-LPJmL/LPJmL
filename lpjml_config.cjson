@@ -2,7 +2,7 @@
 /**                                                                                \n**/
 /**           l  p  j  m  l  _  c  o  n  f  i  g  .  c  j  s  o  n                 \n**/
 /**                                                                                \n**/
-/** Default configuration file for LPJmL C Version 5.9.24                          \n**/
+/** Default configuration file for LPJmL C Version 5.9.25                          \n**/
 /**                                                                                \n**/
 /** Configuration file is divided into five sections:                              \n**/
 /**                                                                                \n**/
@@ -224,6 +224,11 @@
     #include "par/outputvars.cjson"
   ,
 
+  /* Definition of missing values and axis names in NetCDF files */
+  "netcdf_config" :
+    #include "par/netcdf.cjson"
+  ,
+
   /* output data settings */
   "outpath" : null,           /* Default path to output files or null */
   "output_metafile" : true,   /* json metafile created (true/false) */
@@ -238,9 +243,6 @@
   "global_netcdf" : false,    /* use global grid for NetCDF files (true/false) */
   "netcdf4" : false,          /* NetCDF files are in NetCDF4 format (true/false) */
   "compress" : 0,             /* compression level (1-9, 0= no compression) */
-  "missing_value" : -1e32,    /* missing value in NetCDF files */
-  "pft_index" : "npft",       /* name of index variable for PFT output */
-  "layer_index" : "layer",    /* name of index variable for soil layer output */
   "compress_cmd" : "gzip -f", /* command for compression of output files */
   "compress_suffix" : ".gz",  /* file suffix for compressed output files */
   "json_suffix" : ".json",    /* file suffix for JSON metafiles */

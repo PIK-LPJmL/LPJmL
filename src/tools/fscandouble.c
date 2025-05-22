@@ -1,10 +1,10 @@
 /**************************************************************************************/
 /**                                                                                \n**/
-/**                   f  s  c  a  n  f  l  o  a  t  .  c                           \n**/
+/**                   f  s  c  a  n  d  o  u  b  l  e  .  c                        \n**/
 /**                                                                                \n**/
 /**     C implementation of LPJmL                                                  \n**/
 /**                                                                                \n**/
-/**     Function reads a float value from a text file                              \n**/
+/**     Function reads a double from a text file                                   \n**/
 /**                                                                                \n**/
 /** (C) Potsdam Institute for Climate Impact Research (PIK), see COPYRIGHT file    \n**/
 /** authors, and contributors see AUTHORS file                                     \n**/
@@ -20,12 +20,12 @@
 #include <json-c/json.h>
 #include "types.h"
 
-Bool fscanfloat(LPJfile *file,    /**< pointer to LPJ file */
-                float *value,     /**< float to be read from file */
-                const char *name, /**< name of variable */
-                Bool with_default, /**< allow default value */
-                Verbosity verb    /**< verbosity level (NO_ERR,ERR,VERB) */
-               )                  /** \return TRUE on error */
+Bool fscandouble(LPJfile *file,     /**< pointer to LPJ file */
+                 double *value,     /**< double to be read from file */
+                 const char *name,  /**< name of variable */
+                 Bool with_default, /**< allow default value */
+                 Verbosity verb     /**< verbosity level (NO_ERR,ERR,VERB) */
+                )                   /** \return TRUE on error */
 {
   struct json_object *item;
   if(!json_object_object_get_ex(file,name,&item))
@@ -33,13 +33,13 @@ Bool fscanfloat(LPJfile *file,    /**< pointer to LPJ file */
     if(with_default)
     {
       if(verb)
-        fprintf(stderr,"WARNING027: Name '%s' for float not found, set to %g.\n",name,*value);
+        fprintf(stderr,"WARNING027: Name '%s' for double not found, set to %g.\n",name,*value);
       return FALSE;
     }
     else
     {
       if(verb)
-        fprintf(stderr,"ERROR225: Name '%s' for float not found.\n",name);
+        fprintf(stderr,"ERROR225: Name '%s' for double not found.\n",name);
       return TRUE;
     }
   }
@@ -48,14 +48,14 @@ Bool fscanfloat(LPJfile *file,    /**< pointer to LPJ file */
     if(json_object_get_type(item)!=json_type_int)
     {
       if(verb)
-        fprintf(stderr,"ERROR226: Type of '%s' is not float.\n",name);
+        fprintf(stderr,"ERROR226: Type of '%s' is not double.\n",name);
       return TRUE;
     }
     *value=(float)json_object_get_int(item);
   }
   else
-    *value=(float)json_object_get_double(item);
+    *value=json_object_get_double(item);
   if (verb >= VERB)
     printf("\"%s\" : %g\n",name,*value);
   return FALSE;
-} /* of 'fscanfloat' */
+} /* of 'fscandouble' */
