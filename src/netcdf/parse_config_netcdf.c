@@ -1,10 +1,10 @@
 /**************************************************************************************/
 /**                                                                                \n**/
-/**                    w r i t e _ f l o a t _ n e t c d f . c                     \n**/
+/**     p  a  r  s  e  _  c  o  n  f  i  g  _  n  e  t  c  d  f  .  c              \n**/
 /**                                                                                \n**/
 /**     C implementation of LPJmL                                                  \n**/
 /**                                                                                \n**/
-/**     Function writes annual/monthly/daily float output in NetCDF file           \n**/
+/**     Function parses missing values and axis names from JSON file               \n**/
 /**                                                                                \n**/
 /** (C) Potsdam Institute for Climate Impact Research (PIK), see COPYRIGHT file    \n**/
 /** authors, and contributors see AUTHORS file                                     \n**/
@@ -16,46 +16,28 @@
 
 #include "lpj.h"
 
-#ifdef USE_NETCDF
-#include <netcdf.h>
-#endif
-
-Bool write_float_netcdf(const Netcdf *cdf,const float vec[],int year,int size)
+Bool parse_config_netcdf(Netcdf_config *nc_config, /**< NetCDF settings */
+                         const char *filename      /**< filename of JSON file */
+                        )                          /** \return TRUE on error */
 {
-#ifdef USE_NETCDF
-  int i,rc;
-  size_t offsets[3],counts[3];
-  float *grid;
-  grid=newvec(float,cdf->index->nlon*cdf->index->nlat);
-  if(grid==NULL)
+  FILE *file;
+  LPJfile *lpjfile;
+  Bool rc;
+  /* open JSON file */
+  if((file=fopen(filename,"r"))==NULL)
   {
-    printallocerr("grid");
+    printfopenerr(filename);
     return TRUE;
   }
-  for(i=0;i<cdf->index->nlon*cdf->index->nlat;i++)
-    grid[i]=cdf->missing_value.f;
-  for(i=0;i<size;i++)
-    grid[cdf->index->index[i]]=vec[i];
-  if(year==NO_TIME)
-    rc=nc_put_var_float(cdf->ncid,cdf->varid,grid);
-  else
+  initscan(filename);
+  lpjfile=parse_json(file,ERR);
+  if(lpjfile==NULL)
   {
-    counts[0]=1;
-    counts[1]=cdf->index->nlat;
-    counts[2]=cdf->index->nlon;
-    offsets[0]=year;
-    offsets[1]=offsets[2]=0;
-    rc=nc_put_vara_float(cdf->ncid,cdf->varid,offsets,counts,grid);
-  }
-  free(grid);
-  if(rc!=NC_NOERR)
-  {
-    fprintf(stderr,"ERROR431: Cannot write output data: %s.\n",
-            nc_strerror(rc));
+    fclose(file);
     return TRUE;
   }
-  return FALSE;
-#else
-  return TRUE;
-#endif
-} /* of 'write_float_netcdf' */
+  rc=fscanconfig_netcdf(lpjfile,nc_config,NULL,ERR);
+  closeconfig(lpjfile);
+  fclose(file);
+  return rc;
+} /* of 'parse_config_netcdf' */

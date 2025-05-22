@@ -21,6 +21,7 @@
 #################################################################################
 
 USAGE="Usage: lpjsubmit [-h] [-class c] [-group g] [-partition p] [-wtime time] [-blocking n] [-o output] [-e error]\n[-q] [-nocheck] [-norun] [-dependency id] [-couple program] [-constraint c] [[-option a=b] ...] [-cmd prg] ntasks args ..."
+ERR_USAGE="\nTry \"lpjsubmit --help\" for more information."
 
 class=short
 group=""
@@ -71,6 +72,7 @@ while(( "$#" )); do
     then
       echo >&2 Error: class missing
       echo -e >&2 $USAGE
+      echo -e >&2 $ERR_USAGE
       exit 1
     fi
     shift 1
@@ -93,6 +95,7 @@ while(( "$#" )); do
       then
         echo >&2 Error: group missing
         echo -e >&2 $USAGE
+        echo -e >&2 $ERR_USAGE
         exit 1
       fi
       shift 1
@@ -104,6 +107,7 @@ while(( "$#" )); do
       then
         echo >&2 Error: wall clock time missing
         echo -e >&2 $USAGE
+        echo -e >&2 $ERR_USAGE
         exit 1
       fi
       shift 1
@@ -115,6 +119,7 @@ while(( "$#" )); do
       then
         echo >&2 Error: blocking factor missing
         echo -e >&2 $USAGE
+        echo -e >&2 $ERR_USAGE
         exit 1
       fi
       shift 1
@@ -126,6 +131,7 @@ while(( "$#" )); do
      then
        echo >&2 Error: output filename missing
        echo -e >&2 $USAGE
+       echo -e >&2 $ERR_USAGE
        exit 1
      fi
      shift 1
@@ -137,6 +143,7 @@ while(( "$#" )); do
      then
        echo >&2 Error: error filename missing
        echo -e >&2 $USAGE
+       echo -e >&2 $ERR_USAGE
        exit 1
      fi
      shift 1
@@ -152,6 +159,7 @@ while(( "$#" )); do
      then
        echo >&2 Error: jobid missing
        echo -e >&2 $USAGE
+       echo -e >&2 $ERR_USAGE
        exit 1
      fi
      shift 1
@@ -163,6 +171,7 @@ while(( "$#" )); do
      then
        echo >&2 Error: program name missing
        echo -e >&2 $USAGE
+       echo -e >&2 $ERR_USAGE
        exit 1
      fi
      shift 1
@@ -185,6 +194,7 @@ while(( "$#" )); do
      then
        echo >&2 Error: constraint missing
        echo -e >&2 $USAGE
+       echo -e >&2 $ERR_USAGE
        exit 1
      fi
      shift 1
@@ -196,6 +206,7 @@ while(( "$#" )); do
      then
        echo >&2 Error: option missing
        echo -e >&2 $USAGE
+       echo -e >&2 $ERR_USAGE
        exit 1
      fi
      shift 1
@@ -211,8 +222,9 @@ while(( "$#" )); do
      norun=1
      ;;
    -*)
-     echo >&2 Invalid option $1
+     echo >&2 Invalid option \'$1\'
      echo -e >&2 $USAGE
+     echo -e >&2 $ERR_USAGE
      exit 1
      ;;
    *)
@@ -225,6 +237,7 @@ if [ $# -lt 1 ]
 then
   echo >&2 Error: Number of tasks missing
   echo -e >&2 $USAGE
+  echo -e >&2 $ERR_USAGE
   exit 1
 fi
 

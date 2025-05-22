@@ -74,7 +74,7 @@ int main(int argc,char **argv)
           fprintf(stderr,"Argument missing for option '-type'.\n");
           return EXIT_FAILURE;
         }
-        i=findstr(argv[++iarg],typenames,5);
+        i=findstr(argv[++iarg],typenames,N_TYPES);
         if(i==NOT_FOUND)
         {
           fprintf(stderr,"Invalid argument '%s' for option '-type'.\n"
