@@ -294,6 +294,7 @@ Bool bstruct_findobject(Bstruct bstr,        /**< pointer to restart file */
     else
     {
       var=new(Var);
+      if(var==NULL)
       {
         printallocerr("var");
         return TRUE;
