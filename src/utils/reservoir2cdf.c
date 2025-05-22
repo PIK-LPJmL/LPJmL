@@ -18,8 +18,10 @@
 #include <netcdf.h>
 
 #define error(rc) if(rc) {free(lon);free(lat);fprintf(stderr,"ERROR427: Cannot write '%s': %s.\n",filename,nc_strerror(rc)); nc_close(cdf->ncid); free(cdf);return NULL;}
+#define put_att_text(ncid,var,name,s) if(s!=NULL && strlen(s)) {rc=nc_put_att_text(ncid,var,name,strlen(s),s); error(rc);}
 
-#define USAGE "Usage: %s [-h] [-v] [-metafile] [-longheader] [-global] [-cellsize size]\n       [[-attr name=value] ...] [-raw] [-netcdf4] [-compress level]\n       [gridfile] clmfile netcdffile\n"
+#define USAGE "Usage: %s [-h] [-v] [-metafile] [-longheader] [-global] [-cellsize size]\n       [[-attr name=value] ...] [-raw] [-netcdf4] [-compress level]\n       [-config file] [gridfile] clmfile netcdffile\n"
+#define ERR_USAGE USAGE "\nTry \"%s --help\" for more information.\n"
 
 typedef struct
 {
@@ -36,8 +38,7 @@ typedef struct
 static Cdf *create_cdf(const char *filename,
                        const char *source,
                        const char *history,
-                       float miss,
-                       int imiss,
+                       Netcdf_config *netcdf_config,
                        const char *args,
                        const Attr *global_attrs,
                        int n_global,
@@ -47,32 +48,23 @@ static Cdf *create_cdf(const char *filename,
                        Coord_array *array)
 {
   Cdf *cdf;
-  double *lon,*lat;
+  double *lon,*lat,*lon_bnds,*lat_bnds;
   int i,rc,dim[3];
   char *s;
   time_t t;
+  int imiss=netcdf_config->missing_value.i;
+  float miss=netcdf_config->missing_value.f;
   int lat_var_id,lon_var_id,lat_dim_id,lon_dim_id;
+  int lon_bnds_var_id,lat_bnds_var_id;
+  int bnds_dim_id;
   int purpose_dim_id;
   cdf=new(Cdf);
-  lon=newvec(double,array->nlon);
-  if(lon==NULL)
+   /* set lon/lat vectors */
+  if(setlatlon(&lat,&lon,&lat_bnds,&lon_bnds,array))
   {
-    printallocerr("lon");
     free(cdf);
     return NULL;
   }
-  lat=newvec(double,array->nlat);
-  if(lat==NULL)
-  {
-    printallocerr("lat");
-    free(lon);
-    free(cdf);
-    return NULL;
-  }
-  for(i=0;i<array->nlon;i++)
-    lon[i]=array->lon_min+i*header->cellsize_lon;
-  for(i=0;i<array->nlat;i++)
-    lat[i]=array->lat_min+i*header->cellsize_lat;
   cdf->index=array;
   rc=nc_create(filename,(isnetcdf4) ? NC_CLOBBER|NC_NETCDF4 : NC_CLOBBER,&cdf->ncid);
   if(rc)
@@ -80,13 +72,13 @@ static Cdf *create_cdf(const char *filename,
     fprintf(stderr,"ERROR426: Cannot create file '%s': %s.\n",
             filename,nc_strerror(rc));
     free(lon);
+    free(lon_bnds);
     free(lat);
+    free(lat_bnds);
     free(cdf);
     return NULL;
   }
-  rc=nc_def_dim(cdf->ncid,LAT_DIM_NAME,array->nlat,&lat_dim_id);
-  error(rc);
-  rc=nc_def_dim(cdf->ncid,LON_DIM_NAME,array->nlon,&lon_dim_id);
+  rc=nc_def_dim(cdf->ncid,netcdf_config->bnds_name,2,&bnds_dim_id);
   error(rc);
   if(source!=NULL)
   {
@@ -111,28 +103,42 @@ static Cdf *create_cdf(const char *filename,
     rc=nc_put_att_text(cdf->ncid,NC_GLOBAL,global_attrs[i].name,strlen(global_attrs[i].value),global_attrs[i].value);
     error(rc);
   }
-  rc=nc_def_var(cdf->ncid,LAT_NAME,NC_DOUBLE,1,&lat_dim_id,&lat_var_id);
+  rc=nc_def_dim(cdf->ncid,netcdf_config->lat.dim,array->nlat,&lat_dim_id);
   error(rc);
-  rc=nc_def_var(cdf->ncid,LON_NAME,NC_DOUBLE,1,&lon_dim_id,&lon_var_id);
+  rc=nc_def_dim(cdf->ncid,netcdf_config->lon.dim,array->nlon,&lon_dim_id);
   error(rc);
-  rc=nc_put_att_text(cdf->ncid,lon_var_id,"units",strlen("degrees_east"),
-                     "degrees_east");
+  rc=nc_def_var(cdf->ncid,netcdf_config->lat.name,NC_DOUBLE,1,&lat_dim_id,&lat_var_id);
   error(rc);
-  rc=nc_put_att_text(cdf->ncid, lon_var_id,"long_name",strlen(LON_LONG_NAME),LON_LONG_NAME);
+  dim[0]=lat_dim_id;
+  dim[1]=bnds_dim_id;
+  rc=nc_def_var(cdf->ncid,netcdf_config->lat_bnds.name,NC_DOUBLE,2,dim,&lat_bnds_var_id);
   error(rc);
-  rc=nc_put_att_text(cdf->ncid, lon_var_id,"standard_name",strlen(LON_STANDARD_NAME),LON_STANDARD_NAME);
+  rc=nc_def_var(cdf->ncid,netcdf_config->lon.name,NC_DOUBLE,1,&lon_dim_id,&lon_var_id);
   error(rc);
-  rc=nc_put_att_text(cdf->ncid, lon_var_id,"axis",strlen("X"),"X");
+  dim[0]=lon_dim_id;
+  dim[1]=bnds_dim_id;
+  rc=nc_def_var(cdf->ncid,netcdf_config->lon_bnds.name,NC_DOUBLE,2,dim,&lon_bnds_var_id);
   error(rc);
-  rc=nc_put_att_text(cdf->ncid,lat_var_id,"units",strlen("degrees_north"),
-                   "degrees_north");
-  error(rc);
-  rc=nc_put_att_text(cdf->ncid, lat_var_id,"long_name",strlen(LAT_LONG_NAME),LAT_LONG_NAME);
-  error(rc);
-  rc=nc_put_att_text(cdf->ncid, lat_var_id,"standard_name",strlen(LAT_STANDARD_NAME),LAT_STANDARD_NAME);
-  error(rc);
-  rc=nc_put_att_text(cdf->ncid, lat_var_id,"axis",strlen("Y"),"Y");
-  error(rc);
+  put_att_text(cdf->ncid,lon_var_id,"units",netcdf_config->lon.unit);
+  put_att_text(cdf->ncid, lon_var_id,"standard_name",netcdf_config->lon.standard_name);
+  put_att_text(cdf->ncid, lon_bnds_var_id,"standard_name",netcdf_config->lon_bnds.standard_name);
+  put_att_text(cdf->ncid, lon_var_id,"long_name",netcdf_config->lon.long_name);
+  put_att_text(cdf->ncid, lon_var_id,"comment",netcdf_config->lon.comment);
+  put_att_text(cdf->ncid, lon_bnds_var_id,"long_name",netcdf_config->lon_bnds.long_name);
+  put_att_text(cdf->ncid, lon_bnds_var_id,"comment",netcdf_config->lon_bnds.comment);
+  put_att_text(cdf->ncid,lon_bnds_var_id,"units", netcdf_config->lon_bnds.unit);
+  put_att_text(cdf->ncid, lon_var_id,"bounds",netcdf_config->lon_bnds.name);
+  put_att_text(cdf->ncid, lon_var_id,"axis","X");
+  put_att_text(cdf->ncid,lat_var_id,"units",netcdf_config->lat.unit);
+  put_att_text(cdf->ncid, lat_var_id,"long_name", netcdf_config->lat.long_name);
+  put_att_text(cdf->ncid, lat_var_id,"comment", netcdf_config->lat.comment);
+  put_att_text(cdf->ncid, lat_bnds_var_id,"long_name",netcdf_config->lat_bnds.long_name);
+  put_att_text(cdf->ncid, lat_bnds_var_id,"comment",netcdf_config->lat_bnds.comment);
+  put_att_text(cdf->ncid,lat_bnds_var_id,"units",netcdf_config->lat_bnds.unit);
+  put_att_text(cdf->ncid, lat_var_id,"standard_name",netcdf_config->lat.standard_name);
+  put_att_text(cdf->ncid, lat_bnds_var_id,"standard_name",netcdf_config->lat_bnds.standard_name);
+  put_att_text(cdf->ncid, lat_var_id,"bounds",netcdf_config->lat_bnds.name);
+  put_att_text(cdf->ncid, lat_var_id,"axis","Y");
   rc=nc_def_dim(cdf->ncid,"purpose",NPURPOSE,&purpose_dim_id);
   error(rc);
   dim[0]=lat_dim_id;
@@ -183,13 +189,18 @@ static Cdf *create_cdf(const char *filename,
     error(rc);
   }
   rc=nc_enddef(cdf->ncid);
-  error(rc);
   rc=nc_put_var_double(cdf->ncid,lat_var_id,lat);
+  error(rc);
+  rc=nc_put_var_double(cdf->ncid,lat_bnds_var_id,lat_bnds);
   error(rc);
   rc=nc_put_var_double(cdf->ncid,lon_var_id,lon);
   error(rc);
+  rc=nc_put_var_double(cdf->ncid,lon_bnds_var_id,lon_bnds);
+  error(rc);
   free(lat);
+  free(lat_bnds);
   free(lon);
+  free(lon_bnds);
   return cdf;
 } /* of 'create_cdf' */
 
@@ -295,11 +306,10 @@ int main(int argc,char **argv)
   const char *progname;
   char *grid_filename,*path;
   Filename grid_name;
-  char *filename,*outname;
+  Netcdf_config netcdf_config;
+  char *filename,*outname,*config_filename=NULL;
   size_t filesize;
   char *source=NULL,*history=NULL;
-  float miss=MISSING_VALUE_FLOAT;
-  int imiss=MISSING_VALUE_INT;
   compress=0;
   cellsize_lon=cellsize_lat=0;
   isglobal=FALSE;
@@ -310,6 +320,8 @@ int main(int argc,char **argv)
   grid_name.fmt=CLM;
   n_global=0;
   progname=strippath(argv[0]);
+  initsetting_netcdf(&netcdf_config);
+
   for(iarg=1;iarg<argc;iarg++)
     if(argv[iarg][0]=='-')
     {
@@ -331,6 +343,7 @@ int main(int argc,char **argv)
                "-netcdf4         file written is in NetCDF4 format\n"
                "-compress l      set compression level for NetCDF4 files\n"
                "-attr name=value set global attribute name to value in NetCDF file\n"
+               "-config file     read NetCDF setting from JSON file\n"
                "gridfile         filename of grid data file\n"
                "clmfile          filename of CLM data file\n"
                "netcdffile       filename of NetCDF file created\n\n"
@@ -359,7 +372,7 @@ int main(int argc,char **argv)
         {
           fprintf(stderr,
                   "Error: Argument missing for '-attr' option.\n"
-                 USAGE,progname);
+                  ERR_USAGE,progname,progname);
           return EXIT_FAILURE;
         }
         pos=strchr(argv[++iarg],'=');
@@ -367,7 +380,7 @@ int main(int argc,char **argv)
         {
           fprintf(stderr,
                   "Error: Missing '=' for '-attr' option.\n"
-                 USAGE,progname);
+                  ERR_USAGE,progname,progname);
           return EXIT_FAILURE;
         }
         *pos='\0';
@@ -379,12 +392,22 @@ int main(int argc,char **argv)
         check(global_attrs[n_global].value);
         n_global++;
       }
+      else if(!strcmp(argv[iarg],"-config"))
+      {
+        if(iarg==argc-1)
+        {
+          fprintf(stderr,"Error: Missing argument after option '-config'.\n"
+                  ERR_USAGE,progname,progname);
+          return EXIT_FAILURE;
+        }
+        config_filename=argv[++iarg];
+      }
       else if(!strcmp(argv[iarg],"-cellsize"))
       {
         if(argc==iarg+1)
         {
           fprintf(stderr,"Error: Missing argument after option '-cellsize'.\n"
-                  USAGE,progname);
+                  ERR_USAGE,progname,progname);
           return EXIT_FAILURE;
         }
         cellsize_lon=cellsize_lat=(float)strtod(argv[++iarg],&endptr);
@@ -399,7 +422,7 @@ int main(int argc,char **argv)
         if(argc==iarg+1)
         {
           fprintf(stderr,"Error: Missing argument after option '-compress'.\n"
-                  USAGE,progname);
+                  ERR_USAGE,progname,progname);
           return EXIT_FAILURE;
         }
         compress=strtol(argv[++iarg],&endptr,10);
@@ -418,7 +441,7 @@ int main(int argc,char **argv)
       else
       {
         fprintf(stderr,"Error: Invalid option '%s'.\n"
-                USAGE,argv[iarg],progname);
+                ERR_USAGE,argv[iarg],progname,progname);
         return EXIT_FAILURE;
       }
     }
@@ -432,13 +455,21 @@ int main(int argc,char **argv)
   else if(argc<iarg+3)
   {
     fprintf(stderr,"Error: Missing arguments.\n"
-            USAGE,progname);
+            ERR_USAGE,progname,progname);
     return EXIT_FAILURE;
   }
   else
   {
     filename=argv[iarg+1];
     outname=argv[iarg+2];
+  }
+  if(config_filename!=NULL)
+  {
+    if(parse_config_netcdf(&netcdf_config,config_filename))
+    {
+      fprintf(stderr,"Error reading NetCDF configuration file `%s`.\n",config_filename);
+      return EXIT_FAILURE;
+    }
   }
   if(ismeta)
   {
@@ -637,7 +668,7 @@ int main(int argc,char **argv)
   }
   free(grid);
   arglist=catstrvec(argv,argc);
-  cdf=create_cdf(outname,source,history,miss,imiss,arglist,global_attrs,n_global,&header,compress,isnetcdf4,index);
+  cdf=create_cdf(outname,source,history,&netcdf_config,arglist,global_attrs,n_global,&header,compress,isnetcdf4,index);
   free(arglist);
   free(source);
   free(history);
@@ -669,7 +700,7 @@ int main(int argc,char **argv)
     rdata[i].capacity*=1e-12; /* convert dm3 ->km3 */
   }
   fclose(file);
-  rc=write_reservoir_cdf(cdf,rdata,ngrid,miss,imiss);
+  rc=write_reservoir_cdf(cdf,rdata,ngrid,netcdf_config.missing_value.f,netcdf_config.missing_value.i);
   free(rdata);
   close_cdf(cdf);
   return (rc) ? EXIT_FAILURE : EXIT_SUCCESS;

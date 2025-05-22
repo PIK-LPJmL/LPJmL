@@ -138,8 +138,8 @@ Bool fprintoutputjson(int index,           /**< index in outputvars array */
   fprintf(file,"  \"variable\" : \"%s\",\n",config->outnames[id].var);
   fprintf(file,"  \"firstcell\" : %d,\n",config->firstgrid);
   fprintf(file,"  \"ncell\" : %d,\n",(id==ADISCHARGE) ? config->nall : config->total);
-  fprintf(file,"  \"cellsize_lon\" : %f,\n",config->resolution.lon);
-  fprintf(file,"  \"cellsize_lat\" : %f,\n",config->resolution.lat);
+  fprintf(file,"  \"cellsize_lon\" : %.8g,\n",config->resolution.lon);
+  fprintf(file,"  \"cellsize_lat\" : %.8g,\n",config->resolution.lat);
   fprintf(file,"  \"nstep\" : %d,\n",max(1,getnyear(config->outnames,id)));
   fprintf(file,"  \"timestep\" : %d,\n",max(1,config->outputvars[index].filename.timestep));
   nbands=outputsize(id,

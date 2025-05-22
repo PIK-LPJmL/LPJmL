@@ -18,7 +18,7 @@ void fprintheader(FILE *file, /**< pointer to text file */
                   const Header *header /**< file header to print */
                  )
 {
-  if(header->datatype>=0 && header->datatype<5)
+  if(header->datatype>=0 && header->datatype<N_TYPES)
     fprintf(file,"Type:\t\t%s\n",typenames[header->datatype]);
   else
     fprintf(file,"Type:\t\t%d\n",(int)header->datatype);
@@ -33,7 +33,7 @@ void fprintheader(FILE *file, /**< pointer to text file */
           "Number of bands:%6d\n"
           "Number of steps:%6d\n"
           "Time step:      %6d\n"
-          "cellsize:\t%10.6f %10.6f\n"
+          "cellsize:        %.8g %.8g\n"
           "conversion factor:\t%g\n",
           header->firstyear,header->firstyear+(header->nyear-1)*header->timestep,
           header->firstcell,header->ncell,header->nbands,header->nstep,header->timestep,header->cellsize_lon,

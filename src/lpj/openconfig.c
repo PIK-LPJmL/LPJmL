@@ -30,9 +30,11 @@ FILE *openconfig(Config *config,      /**< configuration struct */
   char *lpjpath=NULL,*lpjinc,*env_options,*pos;
   char **options;
   char *endptr;
+  const char *progname;
   Bool iscpp;
   FILE *file;
   int i,len,dcount;
+  progname=strippath((*argv)[0]);
   config->nopp=FALSE;
   config->cmd=NULL;
   config->filter=getenv(LPJPREP);
@@ -71,6 +73,12 @@ FILE *openconfig(Config *config,      /**< configuration struct */
   config->pedantic=FALSE;
   config->ofiles=FALSE;
   config->scan_verbose=ERR; /* NO_ERR would suppress also error messages */
+  pos=getenv(LPJNOPP);
+  if(pos!=NULL && !strcmp(pos,"true"))
+    config->nopp=TRUE;
+  pos=getenv(LPJPEDANTIC);
+  if(pos!=NULL && !strcmp(pos,"true"))
+    config->pedantic=TRUE;
   pos=getenv(LPJWAIT);
   if(pos!=NULL)
   {
@@ -183,7 +191,7 @@ FILE *openconfig(Config *config,      /**< configuration struct */
           {
             fprintf(stderr,"ERROR164: Argument missing for '-wait' option.\n");
             if(usage!=NULL)
-              fprintf(stderr,usage,(*argv)[0]);
+              fprintf(stderr,usage,progname,progname);
           }
           free(options);
           return NULL;
@@ -216,7 +224,7 @@ FILE *openconfig(Config *config,      /**< configuration struct */
           {
             fprintf(stderr,"ERROR164: Argument missing for '-image' option.\n");
             if(usage!=NULL)
-              fprintf(stderr,usage,(*argv)[0]);
+              fprintf(stderr,usage,progname,progname);
           }
           free(options);
           return NULL;
@@ -265,7 +273,7 @@ FILE *openconfig(Config *config,      /**< configuration struct */
           {
             fprintf(stderr,"ERROR164: Argument missing for '-couple' option.\n");
             if(usage!=NULL)
-              fprintf(stderr,usage,(*argv)[0]);
+              fprintf(stderr,usage,progname,progname);
           }
           free(options);
           return NULL;
@@ -302,7 +310,7 @@ FILE *openconfig(Config *config,      /**< configuration struct */
           {
             fprintf(stderr,"ERROR164: Argument missing for '-pp' option.\n");
             if(usage!=NULL)
-              fprintf(stderr,usage,(*argv)[0]);
+              fprintf(stderr,usage,progname,progname);
           }
           free(options);
           return NULL;
@@ -327,7 +335,7 @@ FILE *openconfig(Config *config,      /**< configuration struct */
             fprintf(stderr,
                     "ERROR164: Argument missing for '-inpath' option.\n");
             if(usage!=NULL)
-              fprintf(stderr,usage,(*argv)[0]);
+              fprintf(stderr,usage,progname,progname);
           }
           free(options);
           return NULL;
@@ -348,7 +356,7 @@ FILE *openconfig(Config *config,      /**< configuration struct */
             fprintf(stderr,
                     "ERROR164: Argument missing for '-outpath' option.\n");
             if(usage!=NULL)
-              fprintf(stderr,usage,(*argv)[0]);
+              fprintf(stderr,usage,progname,progname);
           }
           free(options);
           return NULL;
@@ -368,7 +376,7 @@ FILE *openconfig(Config *config,      /**< configuration struct */
           {
             fprintf(stderr,"ERROR164: Argument missing for '-restartpath' option.\n");
             if(usage!=NULL)
-              fprintf(stderr,usage,(*argv)[0]);
+              fprintf(stderr,usage,progname,progname);
           }
           free(options);
           return NULL;
@@ -391,7 +399,7 @@ FILE *openconfig(Config *config,      /**< configuration struct */
         {
           fprintf(stderr,"ERROR162: Invalid option '%s'.\n",(*argv)[i]);
           if(usage!=NULL)
-            fprintf(stderr,usage,(*argv)[0]);
+            fprintf(stderr,usage,progname,progname);
         }
         free(options);
         return NULL;
@@ -404,9 +412,9 @@ FILE *openconfig(Config *config,      /**< configuration struct */
   {
     if(isroot(*config))
     {
-      fprintf(stderr,"ERROR164: Configuration filename missing.\n");
+      fprintf(stderr,"ERROR164: Configuration (*.cjson) filename missing.\n");
       if(usage!=NULL)
-        fprintf(stderr,usage,(*argv)[0]);
+        fprintf(stderr,usage,progname,progname);
     }
     free(options);
     return NULL;

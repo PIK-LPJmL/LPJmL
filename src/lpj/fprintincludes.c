@@ -90,10 +90,13 @@ void fprintincludes(FILE *out,                 /**< pointer to text file */
         i++;
       else if(!strcmp(argv[i],"-output"))
         i++;
-#ifdef IMAGE
       else if(!strcmp(argv[i],"-wait"))
         i++;
+#if defined IMAGE && defined COUPLED
       else if(!strcmp(argv[i],"-image"))
+        i++;
+#else
+      else if(!strcmp(argv[i],"-couple"))
         i++;
 #endif
     }
@@ -129,6 +132,7 @@ void fprintincludes(FILE *out,                 /**< pointer to text file */
     free(lpjinc);
   if(getfilesize(filename)==-1)
   {
+    free(cmd);
     free(options);
     return;
   }

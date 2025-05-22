@@ -174,9 +174,13 @@ int main(int argc,char **argv)
       if(data[band]>0)
         count++;
 
-    printf("year:%d count:%d\n",year,count);
+    printf("year:%d count:%d\n",year+header.firstyear,count);
 
-    fwrite(data,sizeof(short),n,ofile);
+    if(fwrite(data,sizeof(short),n,ofile)!=n)
+    {
+      fprintf(stderr,"Error writing data in '%s': %s.\n",argv[i+1],strerror(errno));
+      return EXIT_FAILURE;
+    }
   }
   fclose(ifile);
   free(data);

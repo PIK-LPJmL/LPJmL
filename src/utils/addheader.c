@@ -14,7 +14,7 @@
 
 #include "lpj.h"
 
-#define USAGE "Usage: %s [-swap] [-nyear n] [-firstyear n] [-lastyear n] [-ncell n]\n       [-firstcell n] [-nbands n] [-nstep n] [-order n] [-version n] [-cellsize s]\n       [-scale s] [-id s] [-type {byte|short|int|float|double}] binfile clmfile\n"
+#define USAGE "Usage: %s [-swap] [-nyear n] [-firstyear n] [-lastyear n] [-ncell n]\n       [-firstcell n] [-nbands n] [-nstep n] [-timestep n] [-order n] [-version n] [-cellsize s]\n       [-scale s] [-id s] [-type {byte|short|int|float|double}] binfile clmfile\n"
 
 #define BUFSIZE (1024*1024) /* size of read buffer */
 
@@ -180,6 +180,25 @@ int main(int argc,char **argv)
           return EXIT_FAILURE;
         }
       }
+      else if(!strcmp(argv[index],"-timestep"))
+      {
+        if(index==argc-1)
+        {
+          fprintf(stderr,"Argument missing for option '-timestep'.\n");
+          return EXIT_FAILURE;
+        }
+        header.timestep=strtol(argv[++index],&endptr,10);
+        if(*endptr!='\0')
+        {
+          fprintf(stderr,"Invalid number '%s' for option '-timestep'.\n",argv[index]);
+          return EXIT_FAILURE;
+        }
+        if(header.timestep<=0)
+        {
+          fputs("Number of time steps less than one.\n",stderr);
+          return EXIT_FAILURE;
+        }
+      }
       else if(!strcmp(argv[index],"-cellsize"))
       {
         if(index==argc-1)
@@ -269,7 +288,7 @@ int main(int argc,char **argv)
           fprintf(stderr,"Argument missing for option '-type'.\n");
           return EXIT_FAILURE;
         }
-        i=findstr(argv[++index],typenames,5);
+        i=findstr(argv[++index],typenames,N_TYPES);
         if(i==NOT_FOUND)
         {
           fprintf(stderr,"Invalid argument '%s' for option '-type'.\n"

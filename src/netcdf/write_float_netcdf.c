@@ -33,7 +33,7 @@ Bool write_float_netcdf(const Netcdf *cdf,const float vec[],int year,int size)
     return TRUE;
   }
   for(i=0;i<cdf->index->nlon*cdf->index->nlat;i++)
-    grid[i]=cdf->missing_value;
+    grid[i]=cdf->missing_value.f;
   for(i=0;i<size;i++)
     grid[cdf->index->index[i]]=vec[i];
   if(year==NO_TIME)

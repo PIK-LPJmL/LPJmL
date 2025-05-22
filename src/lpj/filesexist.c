@@ -25,7 +25,8 @@ static int checksoilcode(Config *config)
   size_t offset;
   Type type;
   int cell,ncell;
-  unsigned int i,soilcode;
+  int i;
+  unsigned int soilcode;
   char *name;
   Map *map;
   int *soilmap;
@@ -40,7 +41,7 @@ static int checksoilcode(Config *config)
               offset);
       return 1;
     }
-    ncell=getnsoilcode(&config->soil_filename,config->nsoil,TRUE);
+    ncell=getnsoilcode(&config->soil_filename,&config->netcdf,config->nsoil,TRUE);
     if(map!=NULL)
     {
       soilmap=getsoilmap(map,config);
@@ -102,7 +103,7 @@ static int checksoilcode(Config *config)
     fclose(file);
     for(i=0;i<config->soilmap_size;i++)
       if(!exist[i] && config->soilmap[i]!=0)
-        fprintf(stderr,"WARNING035: Soilcode %u ('%s') not found in '%s'.\n",
+        fprintf(stderr,"WARNING035: Soilcode %d ('%s') not found in '%s'.\n",
                 i,config->soilpar[config->soilmap[i]-1].name,name);
     free(exist);
     free(name);
@@ -363,7 +364,7 @@ static int checkrestartfile(Config *config, const char *filename)
 static int checksoilfile(Config *config,const Filename *filename)
 {
   int size;
-  size=getnsoilcode(filename,config->nsoil,TRUE);
+  size=getnsoilcode(filename,&config->netcdf,config->nsoil,TRUE);
   if(size==-1)
     return 1;
   if(size<config->nall+config->firstgrid)
@@ -412,7 +413,7 @@ static int checkcoordfileclm(Config *config,const Filename *filename)
 static int checkcoordfile(Config *config,const Filename *filename)
 {
   Coord_netcdf coord_netcdf;
-  coord_netcdf=opencoord_netcdf(filename->name,filename->var,TRUE);
+  coord_netcdf=opencoord_netcdf(filename->name,filename->var,&config->netcdf,TRUE);
   if(coord_netcdf==NULL)
     return 1;
   getresolution_netcdf(coord_netcdf,&config->resolution);

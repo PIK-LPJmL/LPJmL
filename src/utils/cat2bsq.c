@@ -49,7 +49,7 @@ int main(int argc,char **argv)
         }
         else
         {
-          k=findstr(argv[++i],typenames,5);
+          k=findstr(argv[++i],typenames,N_TYPES);
           if(k==NOT_FOUND)
           {
             fprintf(stderr,"Invalid argument '%s' for option '-type'.\n",argv[i]);

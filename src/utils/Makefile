@@ -27,7 +27,8 @@ OBJS    = cru2clm.$O cvrtsoil.$O grid2clm.$O cfts26_lu2clm.$O drainage.$O\
           getcellindex.$O copyheader.$O addheader.$O mathclm.$O cutclm.$O\
           cvrtclm.$O manage2js.$O getheadersize.$O regridirrig.$O mergeclm.$O\
           printglobal.$O binsum.$O arr2clm.$O regriddrain.$O coupler_demo.$O\
-          cmpbin.$O statclm.$O drainage2cdf.$O cdf2grid.$O reservoir2cdf.$O
+          cmpbin.$O statclm.$O drainage2cdf.$O cdf2grid.$O reservoir2cdf.$O\
+          splitclm.$O
 
 SRC    =  cru2clm.c cvrtsoil.c grid2clm.c cfts26_lu2clm.c drainage.c\
           river_sections_input_grid.c river_sections_input_soil.c\
@@ -37,7 +38,7 @@ SRC    =  cru2clm.c cvrtsoil.c grid2clm.c cfts26_lu2clm.c drainage.c\
           lpjprint.c lpjcat.c cat2bsq.c grd2bsq.c cft2clm.c regridsoil.c\
           printdrain.c lpjcheck.c printclm.c printharvest.c binsum.c\
           printreservoir.c setclm.c getcountry.c regridclm.c cdf2grid.c\
-          cdf2soil.c lpjfiles.c asc2clm.c joingrid.c clm2cdf.c\
+          cdf2soil.c lpjfiles.c asc2clm.c joingrid.c clm2cdf.c splitclm.c\
           cdf2clm.c bin2cdf.c adddrain.c txt2grid.c getcellindex.c\
           copyheader.c addheader.c mathclm.c cutclm.c cdf2bin.c cvrtclm.c\
           manage2js.c getheadersize.c regridirrig.c mergeclm.c printglobal.c\
@@ -76,7 +77,7 @@ all: $(BIN)/cru2clm$E $(BIN)/grid2clm$E $(BIN)/cfts26_lu2clm$E\
      $(BIN)/river_sections_input_climate$E $(BIN)/cdf2coord$E\
      $(BIN)/river_sections_input_landuse$E $(BIN)/cdf2soil$E\
      $(BIN)/river_sections_input_countrycode$E $(BIN)/txt2clm$E\
-     $(BIN)/setclm$E $(BIN)/lpjfiles$E $(BIN)/cdf2bin$E\
+     $(BIN)/setclm$E $(BIN)/lpjfiles$E $(BIN)/cdf2bin$E $(BIN)/splitclm$E\
      $(BIN)/lpjcat$E $(BIN)/cat2bsq$E $(BIN)/grd2bsq$E $(BIN)/drainage$E\
      $(BIN)/cvrtsoil$E $(BIN)/river_sections_input_irrig$E\
      $(BIN)/water_use_input$E $(BIN)/getcountry$E $(BIN)/clm2cdf$E\
@@ -106,7 +107,8 @@ clean:
             cdf2clm$E bin2cdf$E adddrain$E txt2grid$E getcellindex$E reservoir2cdf$E\
             copyheader$E addheader$E mathclm$E cutclm$E cdf2bin$E cvrtclm$E\
             manage2js$E headersize$E regridirrig$E mergeclm$E country2cdf$E\
-            printglobal$E binsum$E regriddrain$E coupler_demo$E cmpbin$E statclm$E)
+            printglobal$E binsum$E regriddrain$E coupler_demo$E cmpbin$E\
+            statclm$E splitclm$E)
 
 $(OBJS): $(HDRS)
 
@@ -217,6 +219,9 @@ $(BIN)/regridsoil$E: regridsoil.$O $(LIBDIR)/libtools.$A
 
 $(BIN)/mathclm$E: mathclm.$O $(LPJLIBS)
 	$(LINK) $(LNOPTS)$(BIN)/mathclm$E mathclm.$O $(LPJLIBS) $(LIBS)
+
+$(BIN)/splitclm$E: splitclm.$O $(LIBDIR)/libtools.$A
+	$(LINK) $(LNOPTS)$(BIN)/splitclm$E splitclm.$O $(LIBDIR)/libtools.$A
 
 $(BIN)/cutclm$E: cutclm.$O $(LIBDIR)/libtools.$A
 	$(LINK) $(LNOPTS)$(BIN)/cutclm$E cutclm.$O $(LIBDIR)/libtools.$A

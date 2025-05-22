@@ -3,7 +3,7 @@
 clm2cdf \- convert CLM files into NetCDF files
 .SH SYNOPSIS
 .B clm2cdf
-[\-h] [\-v] [\-global] [\-longheader] [\-scale factor] [\-cellsize size] [\-byte] [\-int] [\-float] [[\-attr name=value] ...] [\-intnetcdf] [\-metafile] [\-map name] [\-raw] [\-nbands n] [\-landuse] [\-notime] [\-compress level] [\-units u] [\-descr d] [\-missing_value val] [\-netcdf4]
+[\-h] [\-v] [\-global] [\-longheader] [\-scale factor] [\-cellsize size] [\-byte] [\-int] [\-float] [[\-attr name=value] ...] [\-intnetcdf] [\-metafile] [\-config \fIfile\fP] [\-map name] [\-raw] [\-nbands n] [\-landuse] [\-notime] [\-compress level] [\-units u] [\-descr d] [\-netcdf4] [\-missing_value val]
 [varname \fIgridfile\fP]
 .I clmfile netcdffile
 .SH DESCRIPTION
@@ -46,8 +46,17 @@ Set data type in NetCDF file to int, default is float for short and float dataty
 \-netcdf4
 File written is in NetCDF4 format, compress flag is enabled.
 .TP
+\-netcdf4
+File written is in NetCDF4 format, compress flag is enabled.
+.TP
+\-int
+set data type in CLM file to int, default is short or read from CLM header
+.TP
 \-metafile
 Set the input format to JSON metafile instead of CLM.
+.TP
+\-config \fIfile\fP
+read missing values and axis names from JSON file
 .TP
 \-map name
 Name of map in JSON metafile, default is "map".

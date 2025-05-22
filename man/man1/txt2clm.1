@@ -3,7 +3,7 @@
 txt2clm \- convert text files to clm data files for LPJmL
 .SH SYNOPSIS
 .B txt2clm
-[\-h] [\-version v] [\-float] [\-int] [\-csv c] [\-scale s] [\-nbands n] [-nstep n] [\-firstyear f] [\-firstcell c] [\-ncell n]  [\-header id]
+[\-h] [\-version v] [\-float] [\-int] [\-csv c] [\-scale s] [\-nbands n] [-nstep n] [\-timestep t] [\-firstyear f] [\-firstcell c] [\-ncell n]  [\-header id] [\-json]
 .I txtfile clmfile
 .SH DESCRIPTION
 Program converts text files containing white space separated numbers into LPJ climate data files. File is read until end of file is reached.
@@ -31,7 +31,10 @@ Scale data by a factor.
 Set number of bands, default is 12.
 .TP
 \-nstep n
-Set number of steps, default is 1.
+Set number of time steps within year, default is 1. Number of bands and number of steps can both by >1 only if version of clm file is set to 4.
+TP
+\-timestep t
+Set number of years between time steps, default is 1. If timestep is greater than 1 then number of time steps within a year must be 1.
 .TP
 \-firstyear f
 Set first year, default is 1901.
@@ -45,6 +48,8 @@ Set number of cells, default is 67420.
 \-header id
 Set header string in clm file, default is LPJCLIM.
 .TP
+\-json
+JSON metafile is created with suffix '.json'.
 .I txtfile
 Filename of text file.
 .TP

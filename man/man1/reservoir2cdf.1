@@ -3,7 +3,7 @@
 reservoir2cdf \- convert CLM reservoir file into NetCDF file
 .SH SYNOPSIS
 .B reservoir2cdf
-[\-h] [\-v] [\-global] [\-longheader] [\-cellsize size] [[\-attr name=value] ...] [\-metafile] [\-raw] [\-netcdf4] [\-compress level]
+[\-h] [\-v] [\-global] [\-longheader] [\-cellsize size] [[\-attr name=value] ...] [\-metafile] [\-raw] [\-netcdf4] [\-compress level] [\-config file]
 .I [gridfile] reservoirfile netcdffile
 .SH DESCRIPTION
 Program converts CLM reservoir input data into NetCDF input data.
@@ -38,6 +38,9 @@ File written is in NetCDF4 format, compress flag is enabled.
 .TP
 \-compress level
 compression level for NetCDF4 files.
+.TP
+\-config file
+read missing values and axis names from JSON file
 .TP
 .I gridfile
 filename of grid data file. If not specified grid name is read from metafile.

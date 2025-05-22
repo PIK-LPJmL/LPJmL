@@ -3,7 +3,7 @@
 country2cdf \- convert country code file into NetCDF file
 .SH SYNOPSIS
 .B country2cdf
-[\-global] [\-cellsize size] [\-compress level] [\-descr d] [\-index {0|1}] [\-netcdf4] varname
+[\-global] [-\cellsize size] [\-compress level] [\-descr d] [\-config \fIfile\fP] [\-index {0|1}] [\-netcdf4] varname
 .I gridfile countryfile netcdffile
 .SH DESCRIPTION
 Program converts country input file into NetCDF file.
@@ -20,6 +20,9 @@ Compression level for NetCDF4 files. Valid levels are 0 (no compression) to 9.
 .TP
 \-descr d
 Set long name in NetCDF file.
+.TP
+\-config \fIfile\fP
+read missing values and axis names from JSON file
 .TP
 \-index {0|1}
 Extract country (0) or region (1) in file. Default is 0.
