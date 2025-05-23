@@ -107,7 +107,7 @@ static Bool readclimate2(Climatefile *file,    /* climate data file */
       if(f==NULL)
       {
         printallocerr("data");
-        nc_close(file->ncid);
+        closeclimate_netcdf(file,TRUE);
         return TRUE;
       }
       if((rc=nc_get_vara_float(file->ncid,file->varid,offsets,counts,f)))
@@ -115,7 +115,7 @@ static Bool readclimate2(Climatefile *file,    /* climate data file */
         free(f);
         fprintf(stderr,"ERROR421: Cannot read float data: %s.\n",
                nc_strerror(rc));
-        nc_close(file->ncid);
+        closeclimate_netcdf(file,TRUE);
         return TRUE;
       }
       break;
@@ -124,7 +124,7 @@ static Bool readclimate2(Climatefile *file,    /* climate data file */
       if(d==NULL)
       {
         printallocerr("data");
-        nc_close(file->ncid);
+        closeclimate_netcdf(file,TRUE);
         return TRUE;
       }
       if((rc=nc_get_vara_double(file->ncid,file->varid,offsets,counts,d)))
@@ -132,7 +132,7 @@ static Bool readclimate2(Climatefile *file,    /* climate data file */
         free(d);
         fprintf(stderr,"ERROR421: Cannot read double data: %s.\n",
                nc_strerror(rc));
-        nc_close(file->ncid);
+        closeclimate_netcdf(file,TRUE);
         return TRUE;
       }
       break;
@@ -141,7 +141,7 @@ static Bool readclimate2(Climatefile *file,    /* climate data file */
       if(s==NULL)
       {
         printallocerr("data");
-        nc_close(file->ncid);
+        closeclimate_netcdf(file,TRUE);
         return TRUE;
       }
       if((rc=nc_get_vara_short(file->ncid,file->varid,offsets,counts,s)))
@@ -149,7 +149,7 @@ static Bool readclimate2(Climatefile *file,    /* climate data file */
         free(s);
         fprintf(stderr,"ERROR421: Cannot read short data: %s.\n",
                nc_strerror(rc));
-        nc_close(file->ncid);
+        closeclimate_netcdf(file,TRUE);
         return TRUE;
       }
       break;
@@ -158,7 +158,7 @@ static Bool readclimate2(Climatefile *file,    /* climate data file */
       if(idata==NULL)
       {
         printallocerr("data");
-        nc_close(file->ncid);
+        closeclimate_netcdf(file,TRUE);
         return TRUE;
       }
       if((rc=nc_get_vara_int(file->ncid,file->varid,offsets,counts,idata)))
@@ -166,14 +166,13 @@ static Bool readclimate2(Climatefile *file,    /* climate data file */
         free(idata);
         fprintf(stderr,"ERROR421: Cannot read int data: %s.\n",
                nc_strerror(rc));
-        nc_close(file->ncid);
+        closeclimate_netcdf(file,TRUE);
         return TRUE;
       }
       break;
-
     default:
       fprintf(stderr,"Datatype %s not supported.\n",typenames[file->datatype]);
-      nc_close(file->ncid);
+      closeclimate_netcdf(file,TRUE);
       return TRUE;
   }
   for(cell=0;cell<config->ngridcell;cell++)
@@ -205,7 +204,7 @@ static Bool readclimate2(Climatefile *file,    /* climate data file */
         default:
           break;
       }
-      nc_close(file->ncid);
+      closeclimate_netcdf(file,TRUE);
       return TRUE;
     }
     for(i=0;i<size*file->var_len;i++)
@@ -225,7 +224,7 @@ static Bool readclimate2(Climatefile *file,    /* climate data file */
             else
             {
               free(f);
-              nc_close(file->ncid);
+              closeclimate_netcdf(file,TRUE);
               return TRUE;
             }
           }
@@ -241,7 +240,7 @@ static Bool readclimate2(Climatefile *file,    /* climate data file */
             else
             {
               free(f);
-              nc_close(file->ncid);
+              closeclimate_netcdf(file,TRUE);
               return TRUE;
             }
           }
@@ -260,7 +259,7 @@ static Bool readclimate2(Climatefile *file,    /* climate data file */
             else
             {
               free(d);
-              nc_close(file->ncid);
+              closeclimate_netcdf(file,TRUE);
               return TRUE;
             }
           }
@@ -276,7 +275,7 @@ static Bool readclimate2(Climatefile *file,    /* climate data file */
             else
             {
               free(d);
-              nc_close(file->ncid);
+              closeclimate_netcdf(file,TRUE);
               return TRUE;
             }
           }
@@ -295,7 +294,7 @@ static Bool readclimate2(Climatefile *file,    /* climate data file */
             else
             {
               free(idata);
-              nc_close(file->ncid);
+              closeclimate_netcdf(file,TRUE);
               return TRUE;
             }
           }
@@ -314,7 +313,7 @@ static Bool readclimate2(Climatefile *file,    /* climate data file */
             else
             {
               free(s);
-              nc_close(file->ncid);
+              closeclimate_netcdf(file,TRUE);
               return TRUE;
             }
           }
@@ -617,6 +616,7 @@ int main(int argc,char **argv)
     return EXIT_FAILURE;
   }
   fwriteheader(file,&header,id,version);
+  climate.oneyear=FALSE;
   for(j=iarg+1;j<argc;j++)
   {
     if(openclimate_netcdf(&climate,argv[j],time_name,var,NULL,units,&config))
@@ -805,7 +805,7 @@ int main(int argc,char **argv)
       }
     } /* of for(year=0;...) */
     header.nyear+=climate.nyear;
-    nc_close(climate.ncid);
+    closeclimate_netcdf(&climate,TRUE);
   }
   free(data);
   switch(header.datatype)

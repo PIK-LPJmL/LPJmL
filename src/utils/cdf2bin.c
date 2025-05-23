@@ -64,7 +64,7 @@ static Bool readmydata(Climatefile *file,    /* climate data file */
       if(f==NULL)
       {
         printallocerr("data");
-        nc_close(file->ncid);
+        closeclimate_netcdf(file,TRUE);
         return TRUE;
       }
       break;
@@ -73,13 +73,13 @@ static Bool readmydata(Climatefile *file,    /* climate data file */
       if(s==NULL)
       {
         printallocerr("data");
-        nc_close(file->ncid);
+        closeclimate_netcdf(file,TRUE);
         return TRUE;
       }
       break;
     default:
       fprintf(stderr,"Datatype %s not supported.\n",typenames[file->datatype]);
-      nc_close(file->ncid);
+      closeclimate_netcdf(file,TRUE);
       return TRUE;
   }
   switch(file->time_step)
@@ -115,7 +115,7 @@ static Bool readmydata(Climatefile *file,    /* climate data file */
           free(f);
           fprintf(stderr,"ERROR421: Cannot read float data: %s.\n",
                   nc_strerror(rc));
-          nc_close(file->ncid);
+          closeclimate_netcdf(file,TRUE);
           return TRUE;
         }
       }
@@ -126,7 +126,7 @@ static Bool readmydata(Climatefile *file,    /* climate data file */
           free(s);
           fprintf(stderr,"ERROR421: Cannot read short data: %s.\n",
                  nc_strerror(rc));
-          nc_close(file->ncid);
+          closeclimate_netcdf(file,TRUE);
           return TRUE;
         }
       }
@@ -143,7 +143,7 @@ static Bool readmydata(Climatefile *file,    /* climate data file */
             free(f);
           else
             free(s);
-          nc_close(file->ncid);
+          closeclimate_netcdf(file,TRUE);
           return TRUE;
         }
         if(file->datatype==LPJ_FLOAT)
@@ -154,7 +154,7 @@ static Bool readmydata(Climatefile *file,    /* climate data file */
             fprintcoord(stderr,coords+cell);
             fprintf(stderr,").\n");
             free(f);
-            nc_close(file->ncid);
+            closeclimate_netcdf(file,TRUE);
             return TRUE;
           }
           else if(isnan(f[file->nlon*address[0]+address[1]]))
@@ -163,7 +163,7 @@ static Bool readmydata(Climatefile *file,    /* climate data file */
             fprintcoord(stderr,coords+cell);
             fprintf(stderr,").\n");
             free(f);
-            nc_close(file->ncid);
+            closeclimate_netcdf(file,TRUE);
             return TRUE;
           }
           if(isbyte)
@@ -191,7 +191,7 @@ static Bool readmydata(Climatefile *file,    /* climate data file */
             fprintcoord(stderr,coords+cell);
             fprintf(stderr,").\n");
             free(s);
-            nc_close(file->ncid);
+            closeclimate_netcdf(file,TRUE);
             return TRUE;
           }
           if(isbyte)
@@ -464,6 +464,7 @@ int main(int argc,char **argv)
     fprintf(stderr,"Error creating '%s': %s.\n",outname,strerror(errno));
     return EXIT_FAILURE;
   }
+  data.oneyear=FALSE;
   for(j=iarg+1;j<argc;j++)
   {
     if(verbose)
@@ -578,7 +579,7 @@ int main(int argc,char **argv)
       fprintf(stderr,"Error reading '%s'.\n",argv[j]);
       return EXIT_FAILURE;
     }
-    nc_close(data.ncid);
+    closeclimate_netcdf(&data,TRUE);
   }
   if(isclm)
   {
