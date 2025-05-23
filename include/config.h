@@ -39,7 +39,7 @@ typedef struct
 struct netcdf_config
 {
   Missing_value missing_value;
-  Axis lat,lat_bnds,lon,lon_bnds,time,time_bnds,depth,depth_bnds,pft,pft_name,fuel;
+  Axis lat,lat_bnds,lon,lon_bnds,time,time_bnds,depth,depth_bnds,pft,pft_name,fuel,stand,stand_name;
   char *bnds_name;
   char *years_name;
   char *calendar;

@@ -182,6 +182,8 @@ Bool create_pft_netcdf(Netcdf *cdf,
     rc=nc_def_dim(cdf->ncid,config->netcdf.depth.dim,size,&pft_dim_id);
   else if(index==FUEL)
     rc=nc_def_dim(cdf->ncid,config->netcdf.fuel.dim,size,&pft_dim_id);
+  else if(isstand(index))
+    rc=nc_def_dim(cdf->ncid,config->netcdf.stand.dim,size,&pft_dim_id);
   else
     rc=nc_def_dim(cdf->ncid,config->netcdf.pft.dim,size,&pft_dim_id);
   error(rc);
@@ -239,6 +241,41 @@ Bool create_pft_netcdf(Netcdf *cdf,
     error(rc);
     put_att_text(cdf->ncid,pft_var_id,"standard_name",config->netcdf.fuel.standard_name);
     put_att_text(cdf->ncid,pft_var_id,"long_name",config->netcdf.fuel.long_name);
+  }
+  else if(isstand(index))
+  {
+    rc=nc_def_var(cdf->ncid,config->netcdf.stand.name,NC_INT,1,&pft_dim_id,&pft_var_id2);
+    put_att_text(cdf->ncid,pft_var_id2,"long_name",config->netcdf.stand.long_name);
+    put_att_text(cdf->ncid,pft_var_id2,"comment",config->netcdf.stand.comment);
+    pftnames=createpftnames(index,npft,ncft,config);
+    if(pftnames==NULL)
+    {
+      free(lat);
+      free(lat_bnds);
+      free(lon);
+      free(lon_bnds);
+      free(year);
+      free(time_bnds);
+      printallocerr("pftnames");
+      return TRUE;
+    }
+    if(config->isnetcdf4)
+      rc=nc_def_var(cdf->ncid,config->netcdf.stand_name.name,NC_STRING,1,&pft_dim_id,&pft_var_id);
+    else
+    {
+      pft_len=0;
+      for(i=0;i<size;i++)
+        if(pft_len<strlen(pftnames[i]))
+          pft_len=strlen(pftnames[i]);
+      pft_len++;
+      rc=nc_def_dim(cdf->ncid,config->netcdf.stand_name.dim,pft_len,&pft_len_id);
+      error(rc);
+      dimids[0]=pft_dim_id;
+      dimids[1]=pft_len_id;
+      rc=nc_def_var(cdf->ncid,config->netcdf.stand_name.name,NC_CHAR,2,dimids,&pft_var_id);
+    }
+    error(rc);
+    put_att_text(cdf->ncid,pft_var_id,"long_name",config->netcdf.stand_name.long_name);
   }
   else
   {
