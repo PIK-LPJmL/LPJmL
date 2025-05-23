@@ -106,6 +106,7 @@ extern Bool bstruct_readdoublearray(Bstruct,const char *,double [],int);
 extern Bool bstruct_readfloatarray(Bstruct,const char *,float [],int);
 extern Real *bstruct_readvarrealarray(Bstruct,const char *,int *);
 extern void bstruct_fprintnametable(FILE *,const char *,const Bstruct,Bool);
+extern void bstruct_fprintnamestack(FILE *,const Bstruct);
 extern long long bstruct_getarrayindex(Bstruct);
 
 /* Definition of macros */

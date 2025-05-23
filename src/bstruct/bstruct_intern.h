@@ -39,6 +39,7 @@ extern const size_t bstruct_typesizes[];
 
 #define getname(name) (name==NULL) ? "unnamed" : name
 #define isinvalidtoken(token) (((token) & 63)>BSTRUCT_MAXTOKEN)
+#define bstruct_printnamestack(bstr) bstruct_fprintnamestack(stderr,bstr)
 
 struct bstruct
 {
@@ -72,7 +73,6 @@ extern int bstruct_gethashkey(const char *,int);
 extern int bstruct_cmpname(const void *,const void *);
 extern int bstruct_cmpdata(const void *,const void *);
 extern void bstruct_freenamestack(Bstruct);
-extern void bstruct_printnamestack(const Bstruct);
 extern Bool bstruct_readtoken(Bstruct,Byte *,Byte,const char *);
 extern Bool bstruct_skipdata(Bstruct,Byte);
 extern Bool bstruct_findobject(Bstruct,Byte *,Byte,const char *);

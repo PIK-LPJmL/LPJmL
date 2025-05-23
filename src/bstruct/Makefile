@@ -35,7 +35,7 @@ OBJS    = bstruct_append.$O bstruct_finish.$O bstruct_create.$O bstruct_fprintda
           bstruct_writestring.$O bstruct_writebeginstruct.$O bstruct_writeushortarray.$O\
           bstruct_writeushort.$O bstruct_writename.$O bstruct_readtoken.$O\
           bstruct_readdoublearray.$O bstruct_writedoublearray.$O bstruct_findobject.$O\
-          bstruct_skipdata.$O
+          bstruct_skipdata.$O bstruct_fprintnamestack.$O
 
 INC     = ../../include
 LIBDIR  = ../../lib
@@ -49,9 +49,9 @@ $(LIBDIR)/$(LIB): $(OBJS)
 
 $(OBJS): $(HDRS)
 
-.c.$O: 
+.c.$O:
 	$(CC) $(CFLAGS) -I$(INC) $(JSON_INC) -c $*.c
 
-clean: 
-	$(RM) $(RMFLAGS) $(OBJS) 
+clean:
+	$(RM) $(RMFLAGS) $(OBJS)
 	(cd $(LIBDIR) && $(RM) $(RMFLAGS) $(LIB))
