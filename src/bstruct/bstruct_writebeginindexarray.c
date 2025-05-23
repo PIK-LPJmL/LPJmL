@@ -1,6 +1,6 @@
 /**************************************************************************************/
 /**                                                                                \n**/
-/**    b  s  t  r  u  c  t  _  w  r  i  t  e  i  n  d  e  x  a  r  r  a  y  .  c   \n**/
+/**    b s t r u c t _ w r i t e b e g i n i n d e x a r r a y . c                 \n**/
 /**                                                                                \n**/
 /**     C implementation of LPJmL                                                  \n**/
 /**                                                                                \n**/
@@ -16,11 +16,11 @@
 
 #include "bstruct_intern.h"
 
-Bool bstruct_writeindexarray(Bstruct bstr,       /**< pointer to restart file */
-                             const char *name,   /**< name of object */
-                             long long *filepos, /**< [out] file position of index vector */
-                             int size            /**< size of array */
-                            )                    /** \return TRUE on error */
+Bool bstruct_writebeginindexarray(Bstruct bstr,       /**< pointer to restart file */
+                                  const char *name,   /**< name of object */
+                                  long long *filepos, /**< [out] file position of index vector */
+                                  int size            /**< size of array */
+                                 )                    /** \return TRUE on error */
 {
   /* define array with index vector and get position of first element of index vector */
   Byte token;
@@ -32,4 +32,4 @@ Bool bstruct_writeindexarray(Bstruct bstr,       /**< pointer to restart file */
     return TRUE;
   *filepos=ftell(bstr->file);
   return fseek(bstr->file,sizeof(long long)*size,SEEK_CUR);
-} /* of 'bstruct_writeindexarray' */
+} /* of 'bstruct_writebeginindexarray' */

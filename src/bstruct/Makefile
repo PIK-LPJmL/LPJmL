@@ -29,7 +29,7 @@ OBJS    = bstruct_append.$O bstruct_finish.$O bstruct_create.$O bstruct_fprintda
           bstruct_seekindexarray.$O bstruct_setout.$O bstruct_sync.$O bstruct_writebeginarray.$O\
           bstruct_writearrayindex.$O bstruct_writebool.$O bstruct_writebyte.$O\
           bstruct_writedouble.$O bstruct_writeendarray.$O bstruct_writeendstruct.$O\
-          bstruct_writefloatarray.$O bstruct_writefloat.$O bstruct_writeindexarray.$O\
+          bstruct_writefloatarray.$O bstruct_writefloat.$O bstruct_writebeginindexarray.$O\
           bstruct_writeintarray.$O bstruct_writeint.$O bstruct_writerealarray.$O\
           bstruct_writereal.$O bstruct_writeshortarray.$O bstruct_writeshort.$O\
           bstruct_writestring.$O bstruct_writebeginstruct.$O bstruct_writeushortarray.$O\

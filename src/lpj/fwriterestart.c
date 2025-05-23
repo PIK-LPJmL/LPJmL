@@ -118,7 +118,7 @@ Bool fwriterestart(const Cell grid[],   /**< cell array               */
     fwriteseed(file,"seed",config->seed);
     bstruct_writeendstruct(file);
     /* define array with index vector and get position of first element of index vector */
-    bstruct_writeindexarray(file,"grid",&filepos,config->nall);
+    bstruct_writebeginindexarray(file,"grid",&filepos,config->nall);
   }
   index=newvec(long long,config->ngridcell);
   check(index);

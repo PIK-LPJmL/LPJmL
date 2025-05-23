@@ -76,7 +76,7 @@ extern Bool bstruct_writedoublearray(Bstruct,const char *,const double [],int);
 extern Bool bstruct_writefloatarray(Bstruct,const char *,const float [],int);
 extern Bool bstruct_writestring(Bstruct,const char *,const char *);
 extern Bool bstruct_writebeginarray(Bstruct,const char *,int);
-extern Bool bstruct_writeindexarray(Bstruct,const char *,long long *,int);
+extern Bool bstruct_writebeginindexarray(Bstruct,const char *,long long *,int);
 extern Bool bstruct_writebeginstruct(Bstruct,const char *);
 extern Bool bstruct_writeendstruct(Bstruct);
 extern Bool bstruct_writeendarray(Bstruct);
