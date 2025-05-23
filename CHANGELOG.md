@@ -20,6 +20,17 @@ of `major.minor.patch` with
 ## [Unreleased]
 
 
+### Contributors
+
+- author: Werner von Bloh (bloh@pik-potsdam.de)
+
+### Fixed
+
+- Missing `free(axis->comment)` added in `freeaxis()` to avoid memory leak.
+- Missing deallocation of list added in `open_config.c`.
+- Function `nc_close()` replaced by `closeclimate_netcdf()` in `cdf2clm.c` and `cdf2bin.c` to avoid memory leak.
+
+
 ## [5.9.25] - 2025-05-22
 
 ### Contributors
