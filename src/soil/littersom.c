@@ -304,10 +304,10 @@ Stocks littersom(Stand *stand,                      /**< [inout] pointer to stan
         V = getV(soil,l);  /*soil air content (m3 air/m3 soil)*/
         if (V<=epsilon)
           V=epsilon+epsilon;
-        epsilon_O2=getepsilon_O2(V,soil_moist[l],soil->wsat[l]);
+        //epsilon_O2=getepsilon_O2(V,soil_moist[l],soil->wsat[l]);
 
         /*methanotrophy */
-        if((soil_moist[l]<0.8) && soil->wtable>=layerbound[l] && soil->freeze_depth[l]<soildepth[l])
+        if((V>0.2) && soil->wtable>=layerbound[l] && soil->freeze_depth[l]<soildepth[l])
         {
           //oxidation=(Vmax_CH4*1e-3*24/timesteps*WCH4*soil->CH4[l]/soildepth[l]/soil->wsat[l]*1000)/(km_CH4*1e-3*WCH4+soil->CH4[l]/soildepth[l]/soil->wsat[l]*1000)*gtemp_soil[l]*soildepth[l]*soil->wsat[l]/1000;   // gCH4/m3/h*24 = gCH4/m3/d ->gCH4/layer/m2
           if (soil->temp[l]>40)
@@ -457,7 +457,7 @@ Stocks littersom(Stand *stand,                      /**< [inout] pointer to stan
         V = getV(soil,0);  /*soil air content (m3 air/m3 soil)*/
         if (V<=epsilon)
           V=epsilon+epsilon;
-        epsilon_O2=getepsilon_O2(V,soil_moist[0],soil->wsat[l]);
+        //epsilon_O2=getepsilon_O2(V,soil_moist[0],soil->wsat[l]);
         response_agsub_leaves=response[0];
         response_agsub_wood=pow(soil->litter.item[p].pft->k_litter10.q10_wood,(soil->temp[0]-10)/10.0)*(INTERCEPT+MOIST_3*(moist[0]*moist[0]*moist[0])+MOIST_2*(moist[0]*moist[0])+MOIST*moist[0]);
         w_agtop=soil->litter.agtop_wcap>epsilon ? soil->litter.agtop_moist/soil->litter.agtop_wcap : moist[0];
@@ -634,7 +634,7 @@ Stocks littersom(Stand *stand,                      /**< [inout] pointer to stan
               V = getV(soil,l);  /*soil air content (m3 air/m3 soil)*/
               if (V<=epsilon)
                 V=epsilon+epsilon;
-              epsilon_O2=getepsilon_O2(V,soil_moist[l],soil->wsat[l]);
+              //epsilon_O2=getepsilon_O2(V,soil_moist[l],soil->wsat[l]);
               litter_flux=soil->litter.item[p].bg.carbon*param.k_litter10/k_red_litter/timesteps*socfraction[l]*gtemp_soil[l]*exp(-(soil->O2[l]*oxid_frac/ soil->wsat[l]/soildepth[l]*1000)/O2star);
               soil->litter.item[p].bg.carbon-=litter_flux*WC/WCH4;
               soil->CH4[l]+=litter_flux;

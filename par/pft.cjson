@@ -1157,7 +1157,7 @@
       "lmro_ratio" : 0.6,     /* lmro_ratio 18*/
       "lmro_offset" : 0.5,     /* lmro_ratio 18*/
       "ramp" : 100.0,          /* ramp 19*/
-      "lai_sapl" : 0.001,     /* lai_sapl 21*/
+      "lai_sapl" : 0.005,     /* lai_sapl 21*/
       "gdd5min" : 0.0,        /* gdd5min 30*/
       "twmax" : 1000.0,        /* twmax 31*/
       "twmax_daily" : 1000.0,  /* twmax_daily 31*/
@@ -1165,7 +1165,7 @@
       "min_temprange" : -1000.0,/* min_temprange 34*/
       "emax": 10.0,            /* emax 35*/
       "intc" : 0.02,          /* intc 36*/
-      "alphaa" : ALPHAA, /* alphaa, fraction of PAR assimilated at ecosystem level, relative to leaf level */
+      "alphaa" : 0.6, /* alphaa, fraction of PAR assimilated at ecosystem level, relative to leaf level */
       "albedo_leaf" : 0.21,   /* albedo of green leaves */
       "albedo_stem" : 0.15,   /* albedo of stems */
       "albedo_litter" : 0.1,  /* albedo of litter */
@@ -1255,7 +1255,7 @@
       "lmro_ratio" : 0.8,     /* lmro_ratio 18*/
       "lmro_offset" : 0.5,     /* lmro_ratio 18*/
       "ramp" : 100.0,          /* ramp 19*/
-      "lai_sapl" : 0.001,     /* lai_sapl 21*/
+      "lai_sapl" : 0.005,     /* lai_sapl 21*/
       "gdd5min" : 0.0,        /* gdd5min 30*/
       "twmax" : 1000.0,        /* twmax 31*/
       "twmax_daily" : 1000.0,  /* twmax_daily 31*/
@@ -1263,7 +1263,7 @@
       "min_temprange" : -1000.0,/* min_temprange 34*/
       "emax": 7.0,            /* emax 35*/
       "intc" : 0.02,          /* intc 36*/
-      "alphaa" : ALPHAA, /* alphaa, fraction of PAR assimilated at ecosystem level, relative to leaf level */
+      "alphaa" : 0.6, /* alphaa, fraction of PAR assimilated at ecosystem level, relative to leaf level */
       "albedo_leaf" : 0.23,   /* albedo of green leaves */
       "albedo_stem" : 0.15,   /* albedo of stems */
       "albedo_litter" : 0.1,  /* albedo of litter */
@@ -1353,7 +1353,7 @@
       "lmro_ratio" : 0.6,     /* lmro_ratio 18*/
       "lmro_offset" : 0.5,     /* lmro_ratio 18*/
       "ramp" : 100.0,          /* ramp 19*/
-      "lai_sapl" : 0.001,     /* lai_sapl 21*/
+      "lai_sapl" : 0.002,     /* lai_sapl 21*/
       "gdd5min" : 0.01,       /* gdd5min 30*/
       "twmax" : 1000.0,        /* twmax 31*/
       "twmax_daily" : 1000.0,  /* twmax_daily 31*/
@@ -1361,7 +1361,7 @@
       "min_temprange" : 18.0,  /* min_temprange 34*/
       "emax": 7.0,            /* emax 35*/
       "intc" : 0.02,          /* intc 36*/
-      "alphaa" : ALPHAA, /* alphaa, fraction of PAR assimilated at ecosystem level, relative to leaf level */
+      "alphaa" : 0.6, /* alphaa, fraction of PAR assimilated at ecosystem level, relative to leaf level */
       "albedo_leaf" : 0.23,   /* albedo of green leaves */
       "albedo_stem" : 0.1,    /* albedo of stems */
       "albedo_litter" : 0.1,  /* albedo of litter */
@@ -1451,7 +1451,7 @@
       "lmro_ratio" : 0.6,     /* lmro_ratio 18*/
       "lmro_offset" : 0.5,     /* lmro_ratio 18*/
       "ramp" : 75.0,          /* ramp 19*/
-      "lai_sapl" : 0.001,     /* lai_sapl 21*/
+      "lai_sapl" : 0.005,     /* lai_sapl 21*/
       "gdd5min" : 0.01,       /* gdd5min 30*/
       "twmax" : 1000.0,        /* twmax 31*/
       "twmax_daily" : 1000.0,  /* twmax_daily 31*/
@@ -1459,7 +1459,7 @@
       "min_temprange" : -1000,  /* min_temprange 34*/
       "emax": 7.0,            /* emax 35*/
       "intc" : 0.02,          /* intc 36*/
-      "alphaa" : ALPHAA, /* alphaa, fraction of PAR assimilated at ecosystem level, relative to leaf level */
+      "alphaa" : 0.8, /* alphaa, fraction of PAR assimilated at ecosystem level, relative to leaf level */
       "albedo_leaf" : 0.18,   /* albedo of green leaves */
       "albedo_stem" : 0.1,    /* albedo of stems */
       "albedo_litter" : 0.1,  /* albedo of litter */
@@ -1549,7 +1549,7 @@
       "lmro_ratio" : 0.4,     /* lmro_ratio 18*/
       "lmro_offset" : 0.5,     /* lmro_ratio 18*/
       "ramp" : 75.0,          /* ramp 19*/
-      "lai_sapl" : 0.001,     /* lai_sapl 21*/
+      "lai_sapl" : 0.01,     /* lai_sapl 21*/
       "gdd5min" : 0.01,       /* gdd5min 30*/
       "twmax" : 1000.0,        /* twmax 31*/
       "twmax_daily" : 1000.0,  /* twmax_daily 31*/
@@ -1557,7 +1557,7 @@
       "min_temprange" : -1000,  /* min_temprange 34*/
       "emax": 4.0,            /* emax 35*/
       "intc" : 0.02,          /* intc 36*/
-      "alphaa" : 0.6, /* alphaa, fraction of PAR assimilated at ecosystem level, relative to leaf level */
+      "alphaa" : 0.8, /* alphaa, fraction of PAR assimilated at ecosystem level, relative to leaf level */
       "albedo_leaf" : 0.23,   /* albedo of green leaves */
       "albedo_stem" : 0.1,    /* albedo of stems */
       "albedo_litter" : 0.1,  /* albedo of litter */

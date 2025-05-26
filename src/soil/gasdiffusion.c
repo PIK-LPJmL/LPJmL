@@ -68,11 +68,15 @@ void gasdiffusion(Soil *soil,     /**< [inout] pointer to soil data */
   O2_air = p_s / R_gas / degCtoK(airtemp)*O2s*WO2;       /*g/m3 oxygen concentration*/
   Bool do_diffusion = TRUE;
   Bool r = FALSE;
+  Real bO2,bCH4;
+  bO2=0.0647*exp(-0.0257*airtemp);
+  bCH4=0.0523*exp(-0.0236*airtemp);
+
   for (l = 0; l<BOTTOMLAYER; l++)
   {
     soil_moist = getsoilmoist(soil,l);
     V = getV(soil,l);  /*soil air content (m3 air/m3 soil)*/
-    epsilon_O2[l] = getepsilon_O2(V,soil_moist,soil->wsat[l]);
+    epsilon_O2[l] = getepsilon_O2(V,soil_moist,soil->wsat[l],bO2);
     if (V<0)
     {
       V = 0;
@@ -102,7 +106,7 @@ void gasdiffusion(Soil *soil,     /**< [inout] pointer to soil data */
   {
     soil_moist = getsoilmoist(soil,l);
     V = getV(soil,l);  /*soil air content (m3 air/m3 soil)*/
-    epsilon_CH4[l] = getepsilon_CH4(V,soil_moist,soil->wsat[l]);
+    epsilon_CH4[l] = getepsilon_CH4(V,soil_moist,soil->wsat[l],bCH4);
     if (V<0)
     {
       V = 0;

@@ -21,7 +21,7 @@
 #define tiller_weight  0.15  /* [gc] PARAMETER*/
 #define tiller_radius 0.05   //https://link.springer.com/article/10.1007/s10457-020-00590-7/tables/7 (maximum) tiller sqrt(area/pi* 0.0001) (conversion from cm2 to radius in m)
 #define tiller_por 0.7
-#define water_min 0.001
+#define water_min 0.1
 #define wind_speed 3.28      // average global wind speed in m/s over lands https://web.stanford.edu/group/efmh/winds/global_winds.html
 //#define DEBUG
 
@@ -95,6 +95,8 @@ Real plant_gas_transport(Stand *stand,        /**< pointer to stand */
   kCH4 = kCH4/100*24;
   kO2 = kO2/100*24;
   CH4_rice=CH4_plant=CH4_sink=0;
+  if(stand->type->landusetype==SETASIDE_WETLAND)
+    isrice=TRUE;
   foreachpft(pft, p, &stand->pftlist)
   {
     if(pft->par->id==config->rice_pft)
@@ -146,12 +148,12 @@ Real plant_gas_transport(Stand *stand,        /**< pointer to stand */
   getoutput(&stand->cell->output,CH4_PLANT_GAS,config)+=CH4_plant_all*stand->frac;
   if(stand->type->landusetype!=NATURAL && stand->type->landusetype!=WETLAND && stand->type->landusetype!=GRASSLAND && !isrice)
   {
-    stand->cell->balance.aCH4_agr+=CH4_plant_all*stand->frac;
-    getoutput(&stand->cell->output,CH4_AGR,config)+=CH4_plant_all*stand->frac;
+    stand->cell->balance.aCH4_agr+=(CH4_plant_all+CH4_sink)*stand->frac;
+    getoutput(&stand->cell->output,CH4_AGR,config)+=(CH4_plant_all+CH4_sink)*stand->frac;
   }
   if((stand->type->landusetype==GRASSLAND))
   {
-    stand->cell->balance.aCH4_grassland+=CH4_plant_all*stand->frac;
+    stand->cell->balance.aCH4_grassland+=(CH4_plant_all+CH4_sink)*stand->frac;
     getoutput(&stand->cell->output,CH4_GRASSLAND,config)+=CH4_plant_all+CH4_sink;
   }
 
