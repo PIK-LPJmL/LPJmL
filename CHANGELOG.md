@@ -26,13 +26,14 @@ of `major.minor.patch` with
 
 ### Added
 
-- Option `-h` added to utility `cdf2bin` to print help text.
+- Option `-h` added to utilities `cdf2bin`, `regridclm`, `regridsoil` and `printclm` to print help text.
 
 ### Fixed
 
 - Missing `free(axis->comment)` added in `freeaxis()` to avoid memory leak.
 - Missing deallocation of list added in `open_config.c`.
 - Function `nc_close()` replaced by `closeclimate_netcdf()` in `cdf2clm.c` and `cdf2bin.c` to avoid memory leak.
+- Argument for error message corrected in `getcellindex.c` and `getcountry.c`.
 
 
 ## [5.9.25] - 2025-05-22
