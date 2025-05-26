@@ -24,6 +24,10 @@ of `major.minor.patch` with
 
 - author: Werner von Bloh (bloh@pik-potsdam.de)
 
+### Added
+
+- Option `-h` added to utility `cdf2bin` to print help text.
+
 ### Fixed
 
 - Missing `free(axis->comment)` added in `freeaxis()` to avoid memory leak.
