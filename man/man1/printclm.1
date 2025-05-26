@@ -3,13 +3,16 @@
 printclm, printheader \- Print contents of clm files for LPJmL
 .SH SYNOPSIS
 .B printclm
-[-metafile] [-header] [-data] [-text] [-json] [-scale] [-longheader] [-type {byte|short|int|float|double}] [\-map name] [\-nbands n] [\-start s] [\-end e] [\-first f] [\-last l] \fIclmfile\fP ...
+[-h] [-metafile] [-header] [-data] [-text] [-json] [-scale] [-longheader] [-type {byte|short|int|float|double}] [\-map name] [\-nbands n] [\-start s] [\-end e] [\-first f] [\-last l] \fIclmfile\fP ...
 
 .B printheader
 \fIclmfile\fP ...
 .SH DESCRIPTION
 Program prints file header and data stored in clm data files for LPJmL. \fBprintheader\fP is an alias for \fBprintclm\fP printing the file header only.
 .SH OPTIONS
+.TP
+\-h,\--help
+Print a short help text.
 .TP
 -metafile
 File is a JSON metafile describing the structure of the raw binary file.

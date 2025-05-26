@@ -561,9 +561,15 @@ int main(int argc,char **argv)
     else
       break;
   }
+  if(argc<=iarg)
+  {
+    fprintf(stderr,"Grid and NetCDF file missing.\n"
+            ERR_USAGE,progname,progname);
+    return EXIT_FAILURE;
+  }
   if(argc<iarg+2)
   {
-    fprintf(stderr,"Missing arguments.\n"
+    fprintf(stderr,"NetCDF file missing.\n"
             ERR_USAGE,progname,progname);
     return EXIT_FAILURE;
   }
