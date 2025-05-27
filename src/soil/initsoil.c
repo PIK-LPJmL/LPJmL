@@ -66,7 +66,7 @@ Bool initsoil(Stand *stand,           /**< Pointer to stand data */
   soil->w_evap=0.0;
   soil->count=0;
   soil->wa = 6000;
-  soil->wtable = layerbound[BOTTOMLAYER-2]-layerbound[0];
+  soil->wtable = layerbound[BOTTOMLAYER-1]+soildepth[0];
   soil->iswetland = FALSE;
   for (l=0;l<NSOILLAYER;l++)
   {
@@ -138,7 +138,7 @@ Bool initsoil(Stand *stand,           /**< Pointer to stand data */
     soil->beta_soil[BOTTOMLAYER]=-2.655/log10(soilpar->wfc/soilpar->wsat);
     soil->Ks[BOTTOMLAYER] = soilpar->Ks;
     soil->b[BOTTOMLAYER]=2.91 + 0.159*1*100;
-    soil->psi_sat[BOTTOMLAYER]=10*pow(10,1.88-0.0131*99*100);
+    soil->psi_sat[BOTTOMLAYER]=20;
   }
   else
   {
@@ -193,15 +193,15 @@ Bool initsoil(Stand *stand,           /**< Pointer to stand data */
   soil->Ks[BOTTOMLAYER] = 0.1;
   soil->beta_soil[BOTTOMLAYER] = -2.655 / log10(soil->wfc[BOTTOMLAYER] / soil->wsat[BOTTOMLAYER]);
   soil->b[BOTTOMLAYER]=2.91 + 0.159*1*100;
-  soil->psi_sat[BOTTOMLAYER]=10*pow(10,1.88-0.0131*99*100);
+  soil->psi_sat[BOTTOMLAYER]=20;
 
   for (l=0;l<LASTLAYER;l++)
   {
     V=getV(soil,l);  /*soil air content (m3 air/m3 soil)*/
     soilmoist=getsoilmoist(soil,l);
-    epsilon_gas=getepsilon_O2(V,soilmoist,soil->wsat[l]);
+    epsilon_gas=getepsilon_O2(V,soilmoist,soil->wsat[l],BO2);
     soil->O2[l]=p_s/R_gas/(10+273.15)*O2s*WO2*soildepth[l]*epsilon_gas/1000; /*266 g/m3 converted to g/m2 per layer*/
-    epsilon_gas=getepsilon_CH4(V,soilmoist,soil->wsat[l]);
+    epsilon_gas=getepsilon_CH4(V,soilmoist,soil->wsat[l],BCH4);
     soil->CH4[l]=p_s/R_gas/(10+273.15)*param.pch4*1e-9*WCH4*soildepth[l]*epsilon_gas/1000;    /* corresponding to atmospheric CH4 concentration to g/m2 per layer*/
   }
   foreachsoillayer(l)

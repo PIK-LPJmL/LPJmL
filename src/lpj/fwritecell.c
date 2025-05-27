@@ -66,6 +66,8 @@ int fwritecell(FILE *file,        /**< File pointer of binary file */
     {
       if (fwrite(&grid[cell].lateral_water, sizeof(Real), 1, file) != 1)
         break;
+      if (fwrite(&grid[cell].NO3_lateral, sizeof(Real), 1, file) != 1)
+        break;
       if(fwrite(grid[cell].balance.estab_storage_tree,sizeof(Stocks),2,file)!=2)
         break;
       if(fwrite(grid[cell].balance.estab_storage_grass,sizeof(Stocks),2,file)!=2)

@@ -148,7 +148,7 @@ void update_annual(Cell *cell,          /**< Pointer to cell */
   getoutputindex(&cell->output,WPC,0,config) += wetlandfrac;
   cell->hydrotopes.wetland_wtable_mean /= NMONTH;
   cell->hydrotopes.wtable_mean /= NMONTH;
-  if(cell->lakefrac<1)
+  if(cell->lakefrac<1 && year>(config->firstyear-config->nspinup+1000))
     update_wetland(cell, npft + ncft,ncft,year,config);
 #ifdef CHECK_BALANCE
   end.carbon=end.nitrogen = end_w=0;
@@ -225,7 +225,7 @@ void update_annual(Cell *cell,          /**< Pointer to cell */
       -((cell->balance.deforest_emissions.carbon+cell->balance.prod_turnover.fast.carbon+cell->balance.prod_turnover.slow.carbon)-fluxes_prod.carbon);
   balance.nitrogen=(cell->balance.flux_estab.nitrogen-fluxes_estab.nitrogen)-(cell->balance.fire.nitrogen-fluxes_fire.nitrogen)-(cell->balance.neg_fluxes.nitrogen-fluxes_neg.nitrogen)
       -((cell->balance.deforest_emissions.nitrogen+cell->balance.prod_turnover.fast.nitrogen+cell->balance.prod_turnover.slow.nitrogen)-fluxes_prod.nitrogen);
-  if(fabs(start.carbon-end.carbon+balance.carbon)>0.001) fprintf(stderr,"C_ERROR update annual at the end: year=%d: C_ERROR=%g start : %g end : %g balance.carbon: %g\n",
+  if(fabs(start.carbon-end.carbon+balance.carbon)>0.0001) fprintf(stderr,"C_ERROR update annual at the end: year=%d: C_ERROR=%g start : %g end : %g balance.carbon: %g\n",
       year,start.carbon-end.carbon+balance.carbon,start.carbon,end.carbon,balance.carbon);
   if (fabs(start_w - end_w)>epsilon) fprintf(stderr, "W_ERROR update annual at the end: year=%d: W_ERROR=%g start : %g end : %g\n",
       year, start_w - end_w, start_w, end_w);

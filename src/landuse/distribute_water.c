@@ -28,20 +28,6 @@
 
 #include "lpj.h"
 
-static int findwtlayer(const Soil *soil)
-{
-  int l,lwt;              /**< layer index, index of layer in which the water table is located */
-  if(soil->wtable<0)
-    return 0;
-  lwt=0;
-  foreachsoillayer(l)
-    if (soil->wtable >= layerbound[l])
-      lwt = l;
-    else
-      break;
-  return lwt;
-} /* of 'findwtlayer' */
-
 void distribute_water(Cell *cell,            /**< pointer to LPJ cell */
                       int npft,              /**< number of natural PFTs */
                       int ncft,              /**< number of crop PFTs */
@@ -49,9 +35,9 @@ void distribute_water(Cell *cell,            /**< pointer to LPJ cell */
                       const Config *config   /**< LPJmL configuration */
                      )
 {
-  int s,nirrig,l,lwt;
+  int s,nirrig;
   Bool isrice;
-  Real conv_loss,irrig_stand,wtable_cor,S;
+  Real conv_loss,irrig_stand;
   Real frac_irrig_amount,frac_unsustainable;
   Stand *stand;
   Pft *pft;

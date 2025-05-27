@@ -86,7 +86,9 @@ void pedotransfer(Stand *stand,  /**< pointer to stand */
       w_fc = (wfct + (((1.283*wfct)*(1.283*wfct)) - 0.374*wfct - 0.015));
 
       w_sat = w_fc + ws33 - 0.097*soilpar->sand + 0.043;
-      f_sc=((soil->pool[l].fast.carbon + soil->pool[l].slow.carbon)/(soildepth[l]/1000))/maxSOM_dens;
+      f_sc=min(1,((soil->pool[l].fast.carbon + soil->pool[l].slow.carbon)/(soildepth[l]/1000))/maxSOM_dens);
+      if(f_sc<0) f_sc=0;
+
       //psi_sat_min=10*pow(1,1.88-0.0131*soilpar->sand*100);  // lawrence and slater caluclate it this way, I take precsribed parameter for the moment
       soil->psi_sat[l]=(1-f_sc)*soil->par->psi_sat + psi_som*f_sc;
       soil->b[l]=(1-f_sc)*soil->par->b + b_som*f_sc;

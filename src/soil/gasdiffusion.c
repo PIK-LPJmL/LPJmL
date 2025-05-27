@@ -21,12 +21,13 @@ void gasdiffusion(Soil *soil,     /**< [inout] pointer to soil data */
                   Real pch4,      /**< [in] atmospheric CH4 (ppm) */
                   Real *CH4_out,  /**< [out] CH4 emissions (gC/m2/day) */
                   Real *runoff,   /**< [out] runoff (mm/day) */
-                  Real *CH4_sink  /**< [out] CH4 soil sink (gC/m2/day) */
+                  Real *CH4_sink,  /**< [out] CH4 soil sink (gC/m2/day) */
+                  int timesteps
                  )
 {
   int l;
-  int diffsteps = 15;
-  Real dt = day2sec(1) / diffsteps;
+  int diffsteps = 1;
+  Real dt = day2sec(1) / diffsteps/timesteps;
   Real D_O2[BOTTOMLAYER], D_CH4[BOTTOMLAYER]; /* oxygen/methane diffusivity [m2/s]*/
   Real epsilon_CH4[BOTTOMLAYER], epsilon_O2[BOTTOMLAYER];
   Real V;                 /* total oxygen porosity */
@@ -37,7 +38,7 @@ void gasdiffusion(Soil *soil,     /**< [inout] pointer to soil data */
   end=start=tmp_water=out=in=0;
   /*waterbalance needs to be updated*/
   start = soilmethane(soil); //do not multiply by *WC/WCH4, is used for methane fluxes here
-  *runoff=*CH4_out=*CH4_sink=0;
+  *CH4_out=*CH4_sink=0;
 
 
   for (l = 0; l<BOTTOMLAYER; l++)
@@ -67,17 +68,21 @@ void gasdiffusion(Soil *soil,     /**< [inout] pointer to soil data */
   O2_air = p_s / R_gas / degCtoK(airtemp)*O2s*WO2;       /*g/m3 oxygen concentration*/
   Bool do_diffusion = TRUE;
   Bool r = FALSE;
+  Real bO2,bCH4;
+  bO2=0.0647*exp(-0.0257*airtemp);
+  bCH4=0.0523*exp(-0.0236*airtemp);
+
   for (l = 0; l<BOTTOMLAYER; l++)
   {
     soil_moist = getsoilmoist(soil,l);
     V = getV(soil,l);  /*soil air content (m3 air/m3 soil)*/
-    epsilon_O2[l] = getepsilon_O2(V,soil_moist,soil->wsat[l]);
+    epsilon_O2[l] = getepsilon_O2(V,soil_moist,soil->wsat[l],bO2);
     if (V<0)
     {
       V = 0;
     }
     D_O2[l]=D_O2_air*V*eta + D_O2_water*soil_moist*soil->wsat[l];  // eq. 11 in Khvorostyanov part 1 diffusivity (m2 s-1)
-    if (epsilon_O2[l] <= 0.001)
+    if (epsilon_O2[l] <= 0.001 &&  (soil->freeze_depth[l]+epsilon)>=soildepth[l])
       do_diffusion = FALSE;
   }
   if (do_diffusion)
@@ -101,13 +106,13 @@ void gasdiffusion(Soil *soil,     /**< [inout] pointer to soil data */
   {
     soil_moist = getsoilmoist(soil,l);
     V = getV(soil,l);  /*soil air content (m3 air/m3 soil)*/
-    epsilon_CH4[l] = getepsilon_CH4(V,soil_moist,soil->wsat[l]);
+    epsilon_CH4[l] = getepsilon_CH4(V,soil_moist,soil->wsat[l],bCH4);
     if (V<0)
     {
       V = 0;
     }
     D_CH4[l] = D_CH4_air*V*eta + D_CH4_water*soil_moist*soil->wsat[l];  // eq. 11 in Khvorostyanov part 1 diffusivity (m2 s-1)
-    if (epsilon_CH4[l] <= 0.001)
+    if (epsilon_CH4[l] <= 0.001 && (soil->freeze_depth[l]+epsilon)>=soildepth[l])
       do_diffusion = FALSE;
   }
 

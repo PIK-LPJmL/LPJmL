@@ -74,20 +74,49 @@ Real daily_agriculture(Stand *stand,                /**< [inout] stand pointer *
   cover_stand=intercep_stand=intercep_stand_blue=wet_all=rw_apply=intercept=sprink_interc=rainmelt=irrig_apply=0.0;
   evap=evap_blue=runoff=return_flow_b=0.0;
 #ifdef CHECK_BALANCE
+  Stand *checkstand;
+  int s;
   Real wfluxes_old=(stand->cell->balance.excess_water+stand->cell->lateral_water+stand->cell->balance.awater_flux+stand->cell->balance.aevap_res+stand->cell->balance.aevap_lake-stand->cell->balance.aMT_water);
   Real wstore_old=(stand->cell->discharge.dmass_lake+stand->cell->discharge.dmass_river)/stand->cell->coord.area+stand->cell->ground_st+stand->cell->ground_st_am;
   Real water_before=0;
   Real water_after,wstore_new,balancew;
   water_before+=soilwater(&stand->soil);
   Stocks start={0,0};
-  Stocks end={0,0};
-  Stocks harvest={0,0};
-  harvest.carbon=(stand->cell->balance.flux_estab.carbon+stand->cell->balance.influx.carbon-stand->cell->balance.flux_harvest.carbon)/stand->frac;
+  Stocks fluxes_in,fluxes_out;
+  Real end=0;
+  Real CH4_fluxes=(stand->cell->balance.aCH4_em+stand->cell->balance.aCH4_sink)*WC/WCH4;
   Real dcflux=0;
   Stocks influx={0,0};
-  start = standstocks(stand);
-  start.carbon+= soilmethane(&stand->soil)*WC/WCH4;
- #endif
+  fluxes_in.carbon=stand->cell->balance.anpp+stand->cell->balance.flux_estab.carbon+stand->cell->balance.influx.carbon; //influxes
+  fluxes_out.carbon=stand->cell->balance.arh+stand->cell->balance.fire.carbon+stand->cell->balance.neg_fluxes.carbon+stand->cell->balance.flux_harvest.carbon+stand->cell->balance.biomass_yield.carbon; //outfluxes
+  fluxes_in.nitrogen=stand->cell->balance.flux_estab.nitrogen+stand->cell->balance.influx.nitrogen; //influxes
+  fluxes_out.nitrogen=stand->cell->balance.fire.nitrogen+stand->cell->balance.n_outflux+stand->cell->balance.neg_fluxes.nitrogen
+      +stand->cell->balance.flux_harvest.nitrogen+stand->cell->balance.biomass_yield.nitrogen+stand->cell->balance.deforest_emissions.nitrogen; //outfluxes
+  foreachstand(checkstand,s,stand->cell->standlist)
+  {
+     if(stand->type->landusetype!=KILL)
+     {
+       start.carbon+=(standstocks(checkstand).carbon + soilmethane(&checkstand->soil)*WC/WCH4)*checkstand->frac;
+       start.nitrogen+=standstocks(checkstand).nitrogen*checkstand->frac;
+     }
+     else
+     {
+       fprintf(stderr, "landuse== KILL ind daily agriculture 1 stand.C= %.3f  standfrac:%.3f \n", (standstocks(checkstand).carbon + soilmethane(&checkstand->soil)*WC/WCH4),checkstand->frac);
+        start.carbon+=(standstocks(checkstand).carbon + soilmethane(&checkstand->soil)*WC/WCH4)*checkstand->frac;
+        start.nitrogen+=standstocks(checkstand).nitrogen*checkstand->frac;
+     }
+  }
+  start.carbon+=stand->cell->ml.product.fast.carbon+stand->cell->ml.product.slow.carbon+
+      stand->cell->balance.estab_storage_grass[0].carbon+stand->cell->balance.estab_storage_tree[0].carbon+stand->cell->balance.estab_storage_grass[1].carbon+stand->cell->balance.estab_storage_tree[1].carbon;
+  start.nitrogen+=stand->cell->ml.product.fast.nitrogen+stand->cell->ml.product.slow.nitrogen+stand->cell->NO3_lateral+
+      stand->cell->balance.estab_storage_grass[0].nitrogen+stand->cell->balance.estab_storage_tree[0].nitrogen+stand->cell->balance.estab_storage_grass[1].nitrogen+stand->cell->balance.estab_storage_tree[1].nitrogen;
+  if(stand->cell->ml.dam)
+  {
+    start.carbon+=stand->cell->ml.resdata->pool.carbon;
+    start.nitrogen+=stand->cell->ml.resdata->pool.nitrogen;
+  }
+
+#endif
 
   stand->growing_days++;
 
@@ -144,6 +173,7 @@ Real daily_agriculture(Stand *stand,                /**< [inout] stand pointer *
       getoutput(output,NMANURE_AGR,config)+=crop->nmanure*stand->frac;
       getoutput(output,NAPPLIED_MG,config)+=crop->nmanure*stand->frac;
       crop->nmanure=0;
+
     }
 #ifdef CHECK_BALANCE
     if(crop->fphu>0.25 && crop->nmanure>0) influx.carbon+=crop->nmanure*param.manure_cn;
@@ -428,6 +458,7 @@ Real daily_agriculture(Stand *stand,                /**< [inout] stand pointer *
 
         data->irrig_stor=0;
         data->irrig_amount=0;
+        data->irrigation=FALSE;
       } /* of if(data->irrigation) */
       delpft(&stand->pftlist,p);
       stand->type=&kill_stand;
@@ -495,17 +526,65 @@ Real daily_agriculture(Stand *stand,                /**< [inout] stand pointer *
   free(wet);
 
 #ifdef CHECK_BALANCE
-  end = standstocks(stand);
-  end.carbon+= soilmethane(&stand->soil)*WC/WCH4;
-  if (stand->type->landusetype!= KILL && fabs(end.carbon -start.carbon -dcflux-((stand->cell->balance.flux_estab.carbon+stand->cell->balance.influx.carbon-stand->cell->balance.flux_harvest.carbon)/stand->frac-harvest.carbon))>0.001)
+  fluxes_out.carbon=(stand->cell->balance.arh+stand->cell->balance.fire.carbon+stand->cell->balance.neg_fluxes.carbon
+                    +stand->cell->balance.flux_harvest.carbon+stand->cell->balance.biomass_yield.carbon)-fluxes_out.carbon; //outfluxes
+  fluxes_in.carbon=(stand->cell->balance.anpp+stand->cell->balance.flux_estab.carbon+stand->cell->balance.influx.carbon)-fluxes_in.carbon;
+  end=0;
+  CH4_fluxes=(stand->cell->balance.aCH4_em+stand->cell->balance.aCH4_sink)*WC/WCH4-CH4_fluxes;                                 //will be negative, because emissions at the end are higher, thus we have to substract
+  foreachstand(checkstand,s,checkstand->cell->standlist)
   {
-    fail(INVALID_CARBON_BALANCE_ERR,FAIL_ON_BALANCE,FALSE,"Invalid carbon balance in %s: %.3f at day: %d start: %.3f  end: %.3f type: %s influx: %.3f flux_estab: %.3f "
-         "dcflux: %.3f flux_estab: %.3f dcflux: %.3f  harvest: %.3f stand->cell->balance.flux_harvest: %.3f \n",
-         __FUNCTION__,end.carbon -start.carbon -dcflux-((stand->cell->balance.flux_estab.carbon+stand->cell->balance.influx.carbon-stand->cell->balance.flux_harvest.carbon)/stand->frac-harvest.carbon)-influx.carbon ,day,
-         start.carbon, end.carbon,stand->type->name,influx.carbon,
-         stand->cell->balance.flux_estab.carbon,stand->cell->output.dcflux,stand->cell->balance.flux_estab.carbon/stand->frac,
-         dcflux,harvest.carbon,stand->cell->balance.flux_harvest.carbon/stand->frac);
+   if(checkstand->type->landusetype!=KILL)
+   {
+     end+=(standstocks(checkstand).carbon + soilmethane(&checkstand->soil)*WC/WCH4)*checkstand->frac ;
+   }
+   else
+   {
+     //fprintf(stderr, "landuse== KILL ind daily_agriculture 2 stand.C= %.3f  standfrac:%.3f \n", (standstocks(checkstand).carbon + soilmethane(&checkstand->soil)*WC/WCH4),checkstand->frac);
+     end+=(standstocks(checkstand).carbon + soilmethane(&checkstand->soil)*WC/WCH4)*checkstand->frac ;
   }
+ }
+  end+=stand->cell->ml.product.fast.carbon+stand->cell->ml.product.slow.carbon+
+      stand->cell->balance.estab_storage_grass[0].carbon+stand->cell->balance.estab_storage_tree[0].carbon+stand->cell->balance.estab_storage_grass[1].carbon+stand->cell->balance.estab_storage_tree[1].carbon;
+
+  if (fabs(end-start.carbon-CH4_fluxes+fluxes_out.carbon-fluxes_in.carbon)>epsilon)
+  {
+    fail(INVALID_CARBON_BALANCE_ERR,FAIL_ON_BALANCE,FALSE,"Invalid carbon balance in %s: day: %d  %g start: %g  end: %g CH4_fluxes: %g flux_estab.carbon: %g flux_harvest.carbon: %g dcflux: %g fluxes_in.carbon: %g "
+        "fluxes_out.carbon: %g neg_fluxes: %g bm_inc: %g rh: %g aCH4_sink: %g aCH4_em : %g dcflux : %g\n",
+        __FUNCTION__,day,end-start.carbon-CH4_fluxes-fluxes_in.carbon+fluxes_out.carbon,start.carbon,end,CH4_fluxes,stand->cell->balance.flux_estab.carbon,stand->cell->balance.flux_harvest.carbon,
+        stand->cell->output.dcflux, fluxes_in.carbon,fluxes_out.carbon, stand->cell->balance.neg_fluxes.carbon,stand->cell->output.bm_inc,stand->cell->balance.arh,stand->cell->balance.aCH4_sink*WC/WCH4,
+        stand->cell->balance.aCH4_em*WC/WCH4,dcflux);
+  }
+//
+//  if (stand->type->landusetype!= KILL && fabs(end.carbon -start.carbon -dcflux-((stand->cell->balance.flux_estab.carbon+stand->cell->balance.influx.carbon-stand->cell->balance.flux_harvest.carbon)/stand->frac-harvest.carbon))>0.001)
+//  {
+//    fail(INVALID_CARBON_BALANCE_ERR,FAIL_ON_BALANCE,FALSE,"Invalid carbon balance in %s: %.3f at day: %d start: %.3f  end: %.3f type: %s influx: %.3f flux_estab: %.3f "
+//         "dcflux: %.3f flux_estab: %.3f dcflux: %.3f  harvest: %.3f stand->cell->balance.flux_harvest: %.3f \n",
+//         __FUNCTION__,end.carbon -start.carbon -dcflux-((stand->cell->balance.flux_estab.carbon+stand->cell->balance.influx.carbon-stand->cell->balance.flux_harvest.carbon)/stand->frac-harvest.carbon)-influx.carbon ,day,
+//         start.carbon, end.carbon,stand->type->name,influx.carbon,
+//         stand->cell->balance.flux_estab.carbon,stand->cell->output.dcflux,stand->cell->balance.flux_estab.carbon/stand->frac,
+//         dcflux,harvest.carbon,stand->cell->balance.flux_harvest.carbon/stand->frac);
+//  }
+   fluxes_out.nitrogen=(stand->cell->balance.fire.nitrogen+stand->cell->balance.n_outflux+stand->cell->balance.neg_fluxes.nitrogen
+                        +stand->cell->balance.flux_harvest.nitrogen+stand->cell->balance.biomass_yield.nitrogen+stand->cell->balance.deforest_emissions.nitrogen)-fluxes_out.nitrogen;
+    fluxes_in.nitrogen=(stand->cell->balance.flux_estab.nitrogen+stand->cell->balance.influx.nitrogen)-fluxes_in.nitrogen;
+    end=0;
+    foreachstand(checkstand,s,checkstand->cell->standlist)
+      //if(checkstand->type->landusetype!=KILL)
+        end+=standstocks(checkstand).nitrogen*checkstand->frac;
+     end+=stand->cell->ml.product.fast.nitrogen+stand->cell->ml.product.slow.nitrogen+stand->cell->NO3_lateral+
+         stand->cell->balance.estab_storage_grass[0].nitrogen+stand->cell->balance.estab_storage_tree[0].nitrogen+stand->cell->balance.estab_storage_grass[1].nitrogen+stand->cell->balance.estab_storage_tree[1].nitrogen;
+    if (fabs(end-start.nitrogen+fluxes_out.nitrogen-fluxes_in.nitrogen)>0.001)
+    {
+      fail(INVALID_NITROGEN_BALANCE_ERR,FAIL_ON_BALANCE,FALSE,"Invalid nitrogen balance in %s: day: %d    %g start: %g  end: %g flux_estab.nitrogen: %g flux_harvest.nitrogen: %g "
+             "influx: %g outflux: %g neg_fluxes: %g NO3_lateral: %g\n",
+             __FUNCTION__,day,end-start.nitrogen-fluxes_in.nitrogen+fluxes_out.nitrogen,start.nitrogen, end,stand->cell->balance.flux_estab.nitrogen,stand->cell->balance.flux_harvest.nitrogen,
+             fluxes_in.nitrogen,fluxes_out.nitrogen, stand->cell->balance.neg_fluxes.nitrogen,stand->cell->NO3_lateral);
+      foreachstand(checkstand,s,checkstand->cell->standlist)
+               fprintf(stderr,"daily_agriculture: standfrac: %g standtype: %s s= %d iswetland: %d cropfraction_rf: %g cropfraction_irr: %g grasfrac_rf: %g grasfrac_irr: %g\n",
+                   checkstand->frac, checkstand->type->name,s,checkstand->soil.iswetland, crop_sum_frac(checkstand->cell->ml.landfrac,12,config->nagtree,stand->cell->ml.reservoirfrac+stand->cell->lakefrac,FALSE),
+                       crop_sum_frac(stand->cell->ml.landfrac,12,config->nagtree,stand->cell->ml.reservoirfrac+stand->cell->lakefrac,TRUE),
+                       stand->cell->ml.landfrac[0].grass[0]+stand->cell->ml.landfrac[0].grass[1],stand->cell->ml.landfrac[1].grass[0]+stand->cell->ml.landfrac[1].grass[1]);
+    }
   transp=0;
   water_after=0;
   wstore_new=(stand->cell->discharge.dmass_lake+stand->cell->discharge.dmass_river)/stand->cell->coord.area+stand->cell->ground_st+stand->cell->ground_st_am;
@@ -520,6 +599,8 @@ Real daily_agriculture(Stand *stand,                /**< [inout] stand pointer *
     fail(INVALID_WATER_BALANCE_ERR,FAIL_ON_BALANCE,FALSE,"Invalid water balance in %s:  y: %d day: %d balanceW: %g water_before: %.6f water_after: %.6f aet: %g evap: %g intercep_stand %g runoff: %g influx: %g fluxes: %g irrig_apply: %g irrig_stor: %g frac: %g rice: %d wstore: %g wstore_new: %g wstore_old: %g \n",
         __FUNCTION__,year,day,balancew,water_before,water_after,transp,evap,intercep_stand,runoff,(climate->prec+melt+rw_apply+irrig_apply),(wfluxes_new-wfluxes_old)/stand->frac,irrig_apply,data->irrig_stor,stand->frac,isrice,(wstore_new-wstore_old)/stand->frac,wstore_new,wstore_old);
   }
+
+
  #endif
   return runoff;
 } /* of 'daily_agriculture' */

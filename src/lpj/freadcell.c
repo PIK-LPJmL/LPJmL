@@ -78,7 +78,7 @@ Bool freadcell(FILE *file,             /**< File pointer to binary file */
 #ifdef COUPLING_WITH_FMS
       cell->laketemp=0;
 #endif
-      cell->discharge.dfout=cell->discharge.dmass_river=cell->discharge.dmass_sum=cell->lateral_water=0.0;
+      cell->discharge.dfout=cell->discharge.dmass_river=cell->discharge.dmass_sum=cell->lateral_water=cell->NO3_lateral=0.0;
       cell->ml.dam=FALSE;
       cell->discharge.queue=NULL;
     }
@@ -86,6 +86,7 @@ Bool freadcell(FILE *file,             /**< File pointer to binary file */
   if(!cell->skip)
   {
     freadreal1(&cell->lateral_water, swap, file);
+    freadreal1(&cell->NO3_lateral, swap, file);
     freadreal((Real *)cell->balance.estab_storage_tree,2*sizeof(Stocks)/sizeof(Real),swap,file);
     freadreal((Real *)cell->balance.estab_storage_grass,2*sizeof(Stocks)/sizeof(Real),swap,file);
     if(freadignition(file,&cell->ignition,swap))

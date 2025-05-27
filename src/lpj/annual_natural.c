@@ -142,7 +142,7 @@ Bool annual_natural(Stand *stand,         /**< Pointer to stand */
   fluxes_in.nitrogen=(stand->cell->balance.flux_estab.nitrogen+stand->cell->balance.influx.nitrogen)/stand->frac-fluxes_in.nitrogen;
 
   end = standstocks(stand).carbon + soilmethane(&stand->soil)*WC/WCH4;
-  if (fabs(end-start.carbon+fluxes_out.carbon-fluxes_in.carbon)>0.01)
+  if (fabs(end-start.carbon+fluxes_out.carbon-fluxes_in.carbon)>0.0001)
   {
     fail(INVALID_CARBON_BALANCE_ERR,FAIL_ON_BALANCE,FALSE,"Invalid carbon balance in %s: end %g start:%.3f  end:%.3f  estab: %g fire: %g bm_inc: %g flux_out: %g flux_in: %g\n",
          __FUNCTION__,end-start.carbon+fluxes_out.carbon-fluxes_in.carbon , start.carbon,end,flux_estab.carbon, flux.carbon, bm_inc.carbon,

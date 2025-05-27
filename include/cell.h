@@ -94,8 +94,9 @@ typedef struct
   Real aCH4_sink;           /**< mCH4_sink */
   Real aCH4_fire;           /**< CH4 emissions from fire */
   Real aCH4_rice;           /**< CH4 emissions from rice stands*/
-  Real aCH4_setaside;
+  Real aCH4_agr;
   Real aCH4_oxid;
+  Real aCH4_grassland;
   Real aMT_water;          /**< water produced during Methanogenesis */
   Real temp;               /**< air temperature (celsius) */
   Real nat_fluxes;         //at the moment only
@@ -146,6 +147,7 @@ Received 19 November 1997; accepted 15 January 1999*/
   Real ground_st;
   Real ground_st_am;
   Real lateral_water;       /**< water which will be transported from upland area to lowland area */
+  Real NO3_lateral;         /**< leached NO3 transported to wetland    */
   Hydrotope hydrotopes;
   Balance balance;          /**< balance checks */
   Seed seed;                /**< seed for random generator */
