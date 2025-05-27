@@ -62,7 +62,7 @@ int main(int argc,char **argv)
         printf("\n\nAdd clm header to binary file for LPJmL version %s\n",getversion());
         printf(USAGE
                "\nArguments:\n"
-               "-swap        byte order is change in raw binary file\n"
+               "-swap        byte order is changed in raw binary file\n"
                "-nyear n     set number of years, default is 109\n"
                "-firstyear n set first year, default is 1901\n"
                "-lastyear    set last year, default is 2009\n"
@@ -75,7 +75,7 @@ int main(int argc,char **argv)
                "-version n   set version of clm file, default is %d\n"
                "-cellsize s  set cell size, default is 0.5\n"
                "-scale s     set scaling factor, default is 1\n"
-               "-id s        set id string factor, default is %s\n"
+               "-id s        set id string, default is %s\n"
                "-type t      set datatype of clm file, default is short\n"
                "binfile      filename of raw binary file\n"
                "clmfile      filename of clm data file\n\n"
