@@ -83,8 +83,7 @@ int main(int argc,char **argv)
                progname,version,id);
         return EXIT_SUCCESS;
       }
-
-      if(!strcmp(argv[index],"-firstyear"))
+      else if(!strcmp(argv[index],"-firstyear"))
       {
         if(index==argc-1)
         {
