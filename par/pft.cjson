@@ -1493,7 +1493,7 @@
       "phenology" : "any",      /* phenology */
       "path" : "C3",            /* pathway */
       "temp_co2" : { "low" : -4.0, "high" : 45.0 }, /* lower and upper temperature limit for co2 (deg C) 24 27*/
-      "temp_photos" : { "low" : 5., "high" : 30.0 },/* lower and upper limit of temperature optimum for photosynthesis(deg C) 25 26*/
+      "temp_photos" : { "low" : 5.0, "high" : 30.0 },/* lower and upper limit of temperature optimum for photosynthesis(deg C) 25 26*/
       "b":  BC3, /* leaf respiration as fraction of Vmax for C3 plants */
       "temp" : { "low" : -1000.0, "high" : 1000 }, /* lower and upper coldest monthly mean temperature(deg C) 28 29*/
       "soc_k" : 0.54056,     /* shape factor for soil organic matter vertical distribution*/
