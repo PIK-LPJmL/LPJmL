@@ -353,7 +353,7 @@ int main(int argc,char **argv)
   fwriteseed(out,"seed",seed);
   bstruct_writeendstruct(out);
     /* define array with index vector and get position of first element of index vector */
-  bstruct_writeindexarray(out,"grid",&filepos,ncell);
+  bstruct_writebeginindexarray(out,"grid",&filepos,ncell);
   offset=bstruct_getarrayindex(out);
   index=newvec(long long,ncell);
   check(index);
