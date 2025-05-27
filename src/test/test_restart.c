@@ -65,14 +65,14 @@ void test_restart(void)
   bstruct_readint(bstr,"a",&data2.a);
   TEST_ASSERT_EQUAL_INT(data1.a,data2.a);
   TEST_ASSERT_EQUAL_FLOAT(data1.b,data2.b);
-  bstruct_readstruct(bstr,"s");
+  bstruct_readbeginstruct(bstr,"s");
   bstruct_readfloat(bstr,"c",&data2.s.c);
   TEST_ASSERT_EQUAL_FLOAT(data1.s.c,data2.s.c);
   bstruct_readfloat(bstr,"d",&data2.s.d);
   TEST_ASSERT_EQUAL_FLOAT(data1.s.d,data2.s.d);
   bstruct_readendstruct(bstr,"s");
   bstruct_readfloat(bstr,"b",&data2.b);
-  bstruct_readarray(bstr,"vec",&size);
+  bstruct_readbeginarray(bstr,"vec",&size);
   TEST_ASSERT_EQUAL_INT(2,size);
   for(i=0;i<2;i++)
     bstruct_readfloat(bstr,NULL,data2.vec+i);
