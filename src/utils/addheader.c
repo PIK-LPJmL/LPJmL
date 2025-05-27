@@ -15,6 +15,7 @@
 #include "lpj.h"
 
 #define USAGE "Usage: %s [-swap] [-nyear n] [-firstyear n] [-lastyear n] [-ncell n]\n       [-firstcell n] [-nbands n] [-nstep n] [-timestep n] [-order n] [-version n] [-cellsize s]\n       [-scale s] [-id s] [-type {byte|short|int|float|double}] binfile clmfile\n"
+#define ERR_USAGE USAGE "\nTry \"%s --help\" for more information.\n"
 
 #define BUFSIZE (1024*1024) /* size of read buffer */
 
@@ -26,7 +27,7 @@ int main(int argc,char **argv)
   char *id;
   const char *progname;
   char *endptr;
-  int i,index;
+  int i,index,rc;
   size_t len;
   long long filesize;
   void *buffer;
@@ -34,7 +35,7 @@ int main(int argc,char **argv)
   Bool swap;
   progname=strippath(argv[0]);
   /* set default values for header */
-  version=LPJ_CLIMATE_VERSION; 
+  version=LPJ_CLIMATE_VERSION;
   id=LPJ_CLIMATE_HEADER;
   header.firstyear=1901;
   header.ncell=67420;
@@ -52,11 +53,43 @@ int main(int argc,char **argv)
   for(index=1;index<argc;index++)
     if(argv[index][0]=='-')
     {
+      if(!strcmp(argv[index],"-h") || !strcmp(argv[index],"--help"))
+      {
+        printf("     ");
+        rc=printf("%s (" __DATE__ ") Help",progname);
+        printf("\n     ");
+        repeatch('=',rc);
+        printf("\n\nAdd clm header to binary file for LPJmL version %s\n",getversion());
+        printf(USAGE
+               "\nArguments:\n"
+               "-swap        byte order is change in raw binary file\n"
+               "-nyear n     set number of years, default is 109\n"
+               "-firstyear n set first year, default is 1901\n"
+               "-lastyear    set last year, default is 2009\n"
+               "-ncell n     set number of cells, default is 67420\n"
+               "-firstcell n set index of first cell, default is 0\n"
+               "-nbands n    set number of bands, default is 12\n"
+               "-nstep n     set number of steps within years, default is 1\n"
+               "-timestep n  set number of years between time steps, default is 1\n"
+               "-order n     set order of data, default is 0\n"
+               "-version n   set version of clm file, default is %d\n"
+               "-cellsize s  set cell size, default is 0.5\n"
+               "-scale s     set scaling factor, default is 1\n"
+               "-id s        set id string factor, default is %s\n"
+               "-type t      set datatype of clm file, default is short\n"
+               "binfile      filename of raw binary file\n"
+               "clmfile      filename of clm data file\n\n"
+               "(C) Potsdam Institute for Climate Impact Research (PIK), see COPYRIGHT file\n",
+               progname,version,id);
+        return EXIT_SUCCESS;
+      }
+
       if(!strcmp(argv[index],"-firstyear"))
       {
         if(index==argc-1)
         {
-          fprintf(stderr,"Argument missing for option '-firstyear'.\n");
+          fprintf(stderr,"Argument missing for option '-firstyear'.\n"
+                  ERR_USAGE,progname,progname);
           return EXIT_FAILURE;
         }
         header.firstyear=strtol(argv[++index],&endptr,10);
@@ -70,7 +103,8 @@ int main(int argc,char **argv)
       {
         if(index==argc-1)
         {
-          fprintf(stderr,"Argument missing for option '-lastyear'.\n");
+          fprintf(stderr,"Argument missing for option '-lastyear'.\n"
+                  ERR_USAGE,progname,progname);
           return EXIT_FAILURE;
         }
         header.nyear=strtol(argv[++index],&endptr,10)-header.firstyear+1;
@@ -89,7 +123,8 @@ int main(int argc,char **argv)
       {
         if(index==argc-1)
         {
-          fprintf(stderr,"Argument missing for option '-nyear'.\n");
+          fprintf(stderr,"Argument missing for option '-nyear'.\n"
+                  ERR_USAGE,progname,progname);
           return EXIT_FAILURE;
         }
         header.nyear=strtol(argv[++index],&endptr,10);
@@ -108,7 +143,8 @@ int main(int argc,char **argv)
       {
         if(index==argc-1)
         {
-          fprintf(stderr,"Argument missing for option '-ncell'.\n");
+          fprintf(stderr,"Argument missing for option '-ncell'.\n"
+                  ERR_USAGE,progname,progname);
           return EXIT_FAILURE;
         }
         header.ncell=strtol(argv[++index],&endptr,10);
@@ -127,7 +163,8 @@ int main(int argc,char **argv)
       {
         if(index==argc-1)
         {
-          fprintf(stderr,"Argument missing for option '-firstcell'.\n");
+          fprintf(stderr,"Argument missing for option '-firstcell'.\n"
+                  ERR_USAGE,progname,progname);
           return EXIT_FAILURE;
         }
         header.firstcell=strtol(argv[++index],&endptr,10);
@@ -146,7 +183,8 @@ int main(int argc,char **argv)
       {
         if(index==argc-1)
         {
-          fprintf(stderr,"Argument missing for option '-nbands'.\n");
+          fprintf(stderr,"Argument missing for option '-nbands'.\n"
+                  ERR_USAGE,progname,progname);
           return EXIT_FAILURE;
         }
         header.nbands=strtol(argv[++index],&endptr,10);
@@ -165,7 +203,8 @@ int main(int argc,char **argv)
       {
         if(index==argc-1)
         {
-          fprintf(stderr,"Argument missing for option '-nstep'.\n");
+          fprintf(stderr,"Argument missing for option '-nstep'.\n"
+                  ERR_USAGE,progname,progname);
           return EXIT_FAILURE;
         }
         header.nstep=strtol(argv[++index],&endptr,10);
@@ -184,7 +223,8 @@ int main(int argc,char **argv)
       {
         if(index==argc-1)
         {
-          fprintf(stderr,"Argument missing for option '-timestep'.\n");
+          fprintf(stderr,"Argument missing for option '-timestep'.\n"
+                  ERR_USAGE,progname,progname);
           return EXIT_FAILURE;
         }
         header.timestep=strtol(argv[++index],&endptr,10);
@@ -203,7 +243,8 @@ int main(int argc,char **argv)
       {
         if(index==argc-1)
         {
-          fprintf(stderr,"Argument missing for option '-cellsize'.\n");
+          fprintf(stderr,"Argument missing for option '-cellsize'.\n"
+                  ERR_USAGE,progname,progname);
           return EXIT_FAILURE;
         }
         header.cellsize_lon=header.cellsize_lat=(float)strtod(argv[++index],&endptr);
@@ -222,7 +263,8 @@ int main(int argc,char **argv)
       {
         if(index==argc-1)
         {
-          fprintf(stderr,"Argument missing for option '-scale'.\n");
+          fprintf(stderr,"Argument missing for option '-scale'.\n"
+                  ERR_USAGE,progname,progname);
           return EXIT_FAILURE;
         }
         header.scalar=(float)strtod(argv[++index],&endptr);
@@ -241,7 +283,8 @@ int main(int argc,char **argv)
       {
         if(index==argc-1)
         {
-          fprintf(stderr,"Argument missing for option '-order'.\n");
+          fprintf(stderr,"Argument missing for option '-order'.\n"
+                  ERR_USAGE,progname,progname);
           return EXIT_FAILURE;
         }
         header.order=strtol(argv[++index],&endptr,10);
@@ -260,7 +303,8 @@ int main(int argc,char **argv)
       {
         if(index==argc-1)
         {
-          fprintf(stderr,"Argument missing for option '-version'.\n");
+          fprintf(stderr,"Argument missing for option '-version'.\n"
+                  ERR_USAGE,progname,progname);
           return EXIT_FAILURE;
         }
         version=strtol(argv[++index],&endptr,10);
@@ -285,14 +329,15 @@ int main(int argc,char **argv)
       {
         if(index==argc-1)
         {
-          fprintf(stderr,"Argument missing for option '-type'.\n");
+          fprintf(stderr,"Argument missing for option '-type'.\n"
+                  ERR_USAGE,progname,progname);
           return EXIT_FAILURE;
         }
         i=findstr(argv[++index],typenames,N_TYPES);
         if(i==NOT_FOUND)
         {
           fprintf(stderr,"Invalid argument '%s' for option '-type'.\n"
-                  USAGE,argv[index],progname);
+                  ERR_USAGE,argv[index],progname,progname);
           return EXIT_FAILURE;
         }
         header.datatype=(Type)i;
@@ -302,7 +347,8 @@ int main(int argc,char **argv)
       {
         if(index==argc-1)
         {
-          fprintf(stderr,"Argument missing for option '-id'.\n");
+          fprintf(stderr,"Argument missing for option '-id'.\n"
+                  ERR_USAGE,progname,progname);
           return EXIT_FAILURE;
         }
         id=argv[++index];
@@ -314,7 +360,7 @@ int main(int argc,char **argv)
       else
       {
         fprintf(stderr,"Invalid option '%s'.\n"
-                USAGE,argv[index],progname);
+                ERR_USAGE,argv[index],progname,progname);
         return EXIT_FAILURE;
       }
     }
@@ -323,7 +369,7 @@ int main(int argc,char **argv)
   if(argc<index+2)
   {
     fprintf(stderr,"Argument(s) missing.\n"
-            USAGE,progname);
+            ERR_USAGE,progname,progname);
     return EXIT_FAILURE;
   }
   if(!strcmp(argv[index],argv[index+1]))

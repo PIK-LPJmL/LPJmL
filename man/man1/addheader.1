@@ -3,13 +3,16 @@
 addheader \- Add clm header to binary file
 .SH SYNOPSIS
 .B addheader
-[-swap] [-nyear n] [-firstyear n] [-lastyear n] [-ncell n] [-firstcell n] [-nbands n] [-nstep n ] [-timestep n] [-order n] [-version n] [-cellsize s] [-scale s] [-id s] [-type {byte|short|int|float|double}] \fIbinfile\fP \fIclmfile\fP
+[-h] [-swap] [-nyear n] [-firstyear n] [-lastyear n] [-ncell n] [-firstcell n] [-nbands n] [-nstep n ] [-timestep n] [-order n] [-version n] [-cellsize s] [-scale s] [-id s] [-type {byte|short|int|float|double}] \fIbinfile\fP \fIclmfile\fP
 .SH DESCRIPTION
 Program adds clm header to raw  binary file for LPJmL.
 .SH OPTIONS
+TP
+\-h,\--help
+Print a short help text.
 .TP
 -swap
-Byte order is change in raw binary file.
+Byte order is changed in raw binary file.
 .TP
 -nyear n
 Set number of years, default is 109.

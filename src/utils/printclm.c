@@ -452,7 +452,7 @@ int main(int argc,char **argv)
         rc=printf("%s (" __DATE__ ") Help",progname);
         printf("\n     ");
         repeatch('=',rc);
-        printf("\n\nPrint contents of clm files for LPJmLversion %s\n",getversion());
+        printf("\n\nPrint contents of clm files for LPJmL version %s\n",getversion());
         printf(USAGE
                "\nArguments:\n"
                "-metafile   file is a JSON metafile describing the structure of the raw binary file\n"
