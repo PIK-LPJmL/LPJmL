@@ -63,7 +63,7 @@ Bstruct bstruct_open(const char *filename, /**< filename of restart file to open
     return NULL;
   }
   /* Initialize name stack */
-  bstruct->namestack[0].name=NULL;
+  bstruct->namestack[0].name=strdup("root");
   bstruct->namestack[0].type=BSTRUCT_BEGINSTRUCT;
   bstruct->namestack[0].nr=0;
   bstruct->namestack[0].size=0;
@@ -78,7 +78,16 @@ Bstruct bstruct_open(const char *filename, /**< filename of restart file to open
   if(freadlong(&filepos,1,bstruct->swap,bstruct->file)!=1)
   {
     if(isout)
-      fprintf(stderr,"ERROR517: Cannot read pointer to name table.\n");
+      fprintf(stderr,"ERROR517: Cannot read position of name table.\n");
+    fclose(bstruct->file);
+    bstruct_freenamestack(bstruct);
+    free(bstruct);
+    return NULL;
+  }
+  if(filepos==0)
+  {
+    if(isout)
+      fprintf(stderr,"ERROR524: No name table found in '%s'.\n",filename);
     fclose(bstruct->file);
     bstruct_freenamestack(bstruct);
     free(bstruct);

@@ -48,9 +48,8 @@ extern char *bstruct_typenames[];
 
 /* Declaration of functions */
 
-extern Bstruct bstruct_create(const char *);
 extern Bstruct bstruct_open(const char *,Bool);
-extern Bstruct bstruct_append(const char *,Bool);
+extern Bstruct bstruct_wopen(const char *,Bool,Bool);
 extern int bstruct_getmiss(const Bstruct);
 extern FILE *bstruct_getfile(Bstruct);
 extern Hash bstruct_gethash(Bstruct);
@@ -113,5 +112,7 @@ extern long long bstruct_getarrayindex(Bstruct);
 
 #define bstruct_printdata(data) bstruct_fprintdata(stdout,data)
 #define bstruct_printnametable(name,bstr,isjson) bstruct_fprintnametable(stdout,name,bstr,isjson)
+#define bstruct_create(filename) bstruct_wopen(filename,FALSE,TRUE)
+#define bstruct_append(filename,isout) bstruct_wopen(filename,TRUE,isout)
 
 #endif /* of BSTRUCT_H */
