@@ -91,10 +91,11 @@
     - ../landuse/**
     - ../tools/**
     - ../bstruct/**
+    - support/helper_code/src
   :include:
     - ../../include
-  :support:
-    - support/**
+    - support/header_of_lpjml_files_to_link
+    - support/helper_code/header
   :libraries: []
 
 :unity:

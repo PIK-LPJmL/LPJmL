@@ -7,22 +7,23 @@
 /* ------- headers with corresponding .c files that will be compiled/linked in by ceedling ------- */
 /* c unit testing framework */
 
-#include "fail.h"
+#include "support_fail_stub.h"
 #include "list.h"
 #include "hash.h"
 #include "swap.h"
 #include "freadtopheader.h"
 #include "fwritetopheader.h"
+#include "fputprintable.h"
 #include "bstruct_intern.h"
 #include "bstruct_skipdata.h"
 #include "bstruct_findobject.h"
 #include "bstruct_create.h"
 #include "bstruct_open.h"
 #include "bstruct_writeint.h"
+#include "bstruct_writename.h"
 #include "bstruct_readint.h"
 #include "bstruct_writefloat.h"
 #include "bstruct_readfloat.h"
-#include "bstruct_writestruct.h"
 #include "bstruct_readbeginstruct.h"
 #include "bstruct_writeendstruct.h"
 #include "bstruct_readendstruct.h"
@@ -31,6 +32,9 @@
 #include "bstruct_writeendarray.h"
 #include "bstruct_readendarray.h"
 #include "bstruct_finish.h"
+#include "bstruct_writebeginstruct.h"
+#include "bstruct_fprintnamestack.h"
+#include "bstruct_readtoken.h"
 
 void test_restart(void)
 {
@@ -64,7 +68,6 @@ void test_restart(void)
   TEST_ASSERT_NOT_NULL(bstr);
   bstruct_readint(bstr,"a",&data2.a);
   TEST_ASSERT_EQUAL_INT(data1.a,data2.a);
-  TEST_ASSERT_EQUAL_FLOAT(data1.b,data2.b);
   bstruct_readbeginstruct(bstr,"s");
   bstruct_readfloat(bstr,"c",&data2.s.c);
   TEST_ASSERT_EQUAL_FLOAT(data1.s.c,data2.s.c);
@@ -72,6 +75,7 @@ void test_restart(void)
   TEST_ASSERT_EQUAL_FLOAT(data1.s.d,data2.s.d);
   bstruct_readendstruct(bstr,"s");
   bstruct_readfloat(bstr,"b",&data2.b);
+  TEST_ASSERT_EQUAL_FLOAT(data1.b,data2.b);
   bstruct_readbeginarray(bstr,"vec",&size);
   TEST_ASSERT_EQUAL_INT(2,size);
   for(i=0;i<2;i++)
