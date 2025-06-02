@@ -26,7 +26,13 @@ of `major.minor.patch` with
 
 ### Added
 
-- Option `-h` added to utilities `cdf2bin`, `regridclm`, `regridsoil` and `printclm` to print help text.
+- Option `-h` added to utilities `addheader`, `cdf2bin`, `regridclm`, `regridsoil` and `printclm` to print help text.
+- Notice added in `configure.sh` that `make clean; make all` has to be performed after change in configuration.
+
+### Changed
+
+- If option `-ncell 0` is used in `addheader` utility then the number of cells is calculated from the file size of the binary file.
+- Utilities `grid2clm` and `cft2clm` are replaced by alias to `addheader`.
 
 ### Fixed
 
@@ -34,6 +40,7 @@ of `major.minor.patch` with
 - Missing deallocation of list added in `open_config.c`.
 - Function `nc_close()` replaced by `closeclimate_netcdf()` in `cdf2clm.c` and `cdf2bin.c` to avoid memory leak.
 - Argument for error message corrected in `getcellindex.c` and `getcountry.c`.
+- Typo in man page of `configure.sh` fixed.
 
 
 ## [5.9.25] - 2025-05-22

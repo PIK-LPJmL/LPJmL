@@ -219,6 +219,8 @@ export MANPATH=\$LPJROOT/man:\$MANPATH
 
 alias printheader="printclm -data"
 alias soil2cdf="clm2cdf -notime -raw -byte"
+alias grid2clm="addheader -nbands 2 -nyear 1 -scale 0.01 -ncell 0 -id LPJGRID"
+alias cft2clm="addheader -nbands 64 -firstyear 1700 -lastyear 2005 -scale 0.001 -ncell 0 -id LPJLUSE"
 EOF
 
 chmod +x bin/lpj_paths.sh
@@ -262,6 +264,8 @@ setenv MANPATH \$LPJROOT/man\:\$MANPATH
 
 alias printheader "printclm -data"
 alias soil2cdf "clm2cdf -notime -raw -byte"
+alias grid2clm "addheader -nbands 2 -nyear 1 -scale 0.01 -ncell 0 -id LPJGRID"
+alias cft2clm "addheader -nbands 64 -firstyear 1700 -lastyear 2005 -scale 0.001 -ncell 0 -id LPJLUSE"
 EOF
 chmod +x bin/lpj_paths.csh
 echo Put . $prefix/bin/lpj_paths.sh in your ~/.profile

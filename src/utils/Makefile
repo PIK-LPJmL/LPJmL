@@ -14,12 +14,12 @@
 
 include ../../Makefile.inc
 
-OBJS    = cru2clm.$O cvrtsoil.$O grid2clm.$O cfts26_lu2clm.$O drainage.$O\
+OBJS    = cru2clm.$O cvrtsoil.$O cfts26_lu2clm.$O drainage.$O\
           river_sections_input_grid.$O river_sections_input_soil.$O\
           river_sections_input_climate.$O river_sections_input_landuse.$O\
           river_sections_input_countrycode.$O river_sections_input_irrig.$O\
           txt2clm.$O water_use_input.$O catclm.$O asc2clm.$O\
-          lpjprint.$O lpjcat.$O cat2bsq.$O grd2bsq.$O cft2clm.$O txt2grid.$O\
+          lpjprint.$O lpjcat.$O cat2bsq.$O grd2bsq.$O txt2grid.$O\
           printdrain.$O lpjcheck.$O printclm.$O cdf2bin.$O country2cdf.$O\
           printharvest.$O printreservoir.$O setclm.$O getcountry.$O\
           regridclm.$O regridsoil.$O cdf2coord.$O cdf2soil.$O lpjfiles.$O\
@@ -30,12 +30,12 @@ OBJS    = cru2clm.$O cvrtsoil.$O grid2clm.$O cfts26_lu2clm.$O drainage.$O\
           cmpbin.$O statclm.$O drainage2cdf.$O cdf2grid.$O reservoir2cdf.$O\
           splitclm.$O
 
-SRC    =  cru2clm.c cvrtsoil.c grid2clm.c cfts26_lu2clm.c drainage.c\
+SRC    =  cru2clm.c cvrtsoil.c cfts26_lu2clm.c drainage.c\
           river_sections_input_grid.c river_sections_input_soil.c\
           river_sections_input_climate.c river_sections_input_landuse.c\
           river_sections_input_countrycode.c river_sections_input_irrig.c\
           txt2clm.c water_use_input.c catclm.c cdf2coord.c country2cdf.c\
-          lpjprint.c lpjcat.c cat2bsq.c grd2bsq.c cft2clm.c regridsoil.c\
+          lpjprint.c lpjcat.c cat2bsq.c grd2bsq.c regridsoil.c\
           printdrain.c lpjcheck.c printclm.c printharvest.c binsum.c\
           printreservoir.c setclm.c getcountry.c regridclm.c cdf2grid.c\
           cdf2soil.c lpjfiles.c asc2clm.c joingrid.c clm2cdf.c splitclm.c\
@@ -72,7 +72,7 @@ LPJLIBS = $(LIBDIR)/liblpj.$A $(LIBDIR)/libtree.$A\
           $(LIBDIR)/libcdf.$A $(LIBDIR)/libtools.$A $(LIBDIR)/libcoupler.$A\
           $(LIBDIR)/libnum.$A
 
-all: $(BIN)/cru2clm$E $(BIN)/grid2clm$E $(BIN)/cfts26_lu2clm$E\
+all: $(BIN)/cru2clm$E $(BIN)/cfts26_lu2clm$E\
      $(BIN)/river_sections_input_grid$E $(BIN)/river_sections_input_soil$E\
      $(BIN)/river_sections_input_climate$E $(BIN)/cdf2coord$E\
      $(BIN)/river_sections_input_landuse$E $(BIN)/cdf2soil$E\
@@ -81,7 +81,7 @@ all: $(BIN)/cru2clm$E $(BIN)/grid2clm$E $(BIN)/cfts26_lu2clm$E\
      $(BIN)/lpjcat$E $(BIN)/cat2bsq$E $(BIN)/grd2bsq$E $(BIN)/drainage$E\
      $(BIN)/cvrtsoil$E $(BIN)/river_sections_input_irrig$E\
      $(BIN)/water_use_input$E $(BIN)/getcountry$E $(BIN)/clm2cdf$E\
-     $(BIN)/cft2clm$E $(BIN)/printdrain$E $(BIN)/lpjcheck$E\
+     $(BIN)/printdrain$E $(BIN)/lpjcheck$E\
      $(BIN)/printreservoir$E $(BIN)/regridclm$E $(BIN)/asc2clm$E\
      $(BIN)/catclm$E $(BIN)/printclm$E $(BIN)/joingrid$E $(BIN)/cdf2grid$E\
      $(BIN)/printharvest$E $(BIN)/lpjprint$E $(BIN)/regridsoil$E\
@@ -95,13 +95,13 @@ all: $(BIN)/cru2clm$E $(BIN)/grid2clm$E $(BIN)/cfts26_lu2clm$E\
 
 clean:
 	$(RM) $(RMFLAGS) $(OBJS)
-	(cd $(BIN) && $(RM) $(RMFLAGS) cru2clm$E grid2clm$E cfts26_lu2clm$E\
+	(cd $(BIN) && $(RM) $(RMFLAGS) cru2clm$E cfts26_lu2clm$E\
             drainage$E river_sections_input_grid$E river_sections_input_soil$E\
             river_sections_input_climate$E river_sections_input_landuse$E\
             river_sections_input_countrycode$E txt2clm$E catclm$E cdf2coord$E\
             lpjcat$E cat2bsq$E grd2bsq$E lpjprint$E printclm$E arr2clm$E\
             cvrtsoil$E river_sections_input_irrig$E water_use_input$E\
-            cft2clm$E printdrain$E lpjcheck$E printharvest$E drainage2cdf$E\
+            printdrain$E lpjcheck$E printharvest$E drainage2cdf$E\
             printreservoir$E setclm$E getcountry$E regridclm$E regridsoil$E\
             cdf2soil$E lpjfiles$E asc2clm$E joingrid$E clm2cdf$E cdf2grid$E\
             cdf2clm$E bin2cdf$E adddrain$E txt2grid$E getcellindex$E reservoir2cdf$E\
@@ -271,10 +271,6 @@ $(BIN)/txt2clm$E: txt2clm.$O $(LIBDIR)/libtools.$A
 	$(LINK) $(LNOPTS)$(BIN)/txt2clm$E txt2clm.$O\
 	        $(LIBDIR)/libtools.$A $(LIBS)
 
-$(BIN)/grid2clm$E: grid2clm.$O $(LIBDIR)/libtools.$A
-	$(LINK) $(LNOPTS)$(BIN)/grid2clm$E grid2clm.$O\
-		$(LIBDIR)/libtools.$A $(LIBS)
-
 $(BIN)/cfts26_lu2clm$E: cfts26_lu2clm.$O $(LIBDIR)/libtools.$A
 	$(LINK) $(LNOPTS)$(BIN)/cfts26_lu2clm$E cfts26_lu2clm.$O\
     	 	$(LIBDIR)/libtools.$A $(LIBS)
@@ -322,10 +318,6 @@ $(BIN)/river_sections_input_irrig$E: river_sections_input_irrig.$O\
 $(BIN)/water_use_input$E: water_use_input.$O $(LIBDIR)/libtools.$A
 	$(LINK) $(LNOPTS)$(BIN)/water_use_input$E water_use_input.$O\
 		$(LIBDIR)/libtools.$A $(LIBS)
-
-$(BIN)/cft2clm$E: cft2clm.$O $(LIBDIR)/libtools.$A
-	$(LINK) $(LNOPTS)$(BIN)/cft2clm$E cft2clm.$O\
-		$(LIBDIR)/libtools.$A  $(LIBS)
 
 $(BIN)/cvrtsoil$E: cvrtsoil.$O $(LIBDIR)/libtools.$A
 	$(LINK) $(LNOPTS)$(BIN)/cvrtsoil$E cvrtsoil.$(O)\
