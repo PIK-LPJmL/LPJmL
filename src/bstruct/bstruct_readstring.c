@@ -20,6 +20,7 @@ char *bstruct_readstring(Bstruct bstr,    /**< pointer to restart file */
                          const char *name /**< name of object or NULL */
                         )                 /**< \return pointer to string read or NULL on error */
 {
+  /* Function reads string from restart file */
   char *s;
   int len;
   Byte token,len1;

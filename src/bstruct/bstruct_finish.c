@@ -66,6 +66,12 @@ void bstruct_finish(Bstruct bstruct)
       fseek(bstruct->file,strlen(BSTRUCT_HEADER)+sizeof(int),SEEK_SET);
       fwrite(&filepos,sizeof(filepos),1,bstruct->file);
       freehash(bstruct->hash);
+      if(bstruct->level>1)
+      {
+        fprintf(stderr,"ERROR523: %s not closed.\n",
+                bstruct->namestack[bstruct->level-1].type==BSTRUCT_BEGINSTRUCT ? "Struct" : "Array");
+        bstruct_printnamestack(bstruct);
+      }
     }
     bstruct_freenamestack(bstruct);
     fclose(bstruct->file);

@@ -35,7 +35,8 @@ OBJS    = bstruct_finish.$O bstruct_wopen.$O bstruct_fprintdata.$O\
           bstruct_writestring.$O bstruct_writebeginstruct.$O bstruct_writeushortarray.$O\
           bstruct_writeushort.$O bstruct_writename.$O bstruct_readtoken.$O\
           bstruct_readdoublearray.$O bstruct_writedoublearray.$O bstruct_findobject.$O\
-          bstruct_skipdata.$O bstruct_fprintnamestack.$O
+          bstruct_skipdata.$O bstruct_fprintnamestack.$O bstruct_writenull.$O\
+          bstruct_isnull.$O
 
 INC     = ../../include
 LIBDIR  = ../../lib

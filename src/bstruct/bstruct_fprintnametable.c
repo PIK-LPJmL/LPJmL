@@ -17,7 +17,7 @@
 #include "bstruct_intern.h"
 
 void bstruct_fprintnametable(FILE *file,         /**< pointer to open text file */
-                             const char *name,   /**< name of JSON array */
+                             const char *name,   /**< name of JSON/YAML array */
                              const Bstruct bstr, /**< pointer to restart file */
                              Bool isjson         /**< output is in JSON format */
                             )
@@ -26,6 +26,7 @@ void bstruct_fprintnametable(FILE *file,         /**< pointer to open text file 
   int i;
   if(isjson)
   {
+    /* output in JSON format */
     fprintf(file,"\"%s\" :\n[\n",name);
     for(i=0;i<bstr->count;i++)
     {

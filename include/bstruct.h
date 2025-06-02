@@ -20,7 +20,7 @@
 
 typedef enum {BSTRUCT_BYTE,BSTRUCT_SHORT,BSTRUCT_INT,BSTRUCT_FLOAT,BSTRUCT_DOUBLE,
               BSTRUCT_FALSE,BSTRUCT_TRUE,BSTRUCT_USHORT,BSTRUCT_ZERO,BSTRUCT_FZERO,
-              BSTRUCT_STRING,BSTRUCT_STRING1,BSTRUCT_BEGINARRAY,BSTRUCT_BEGINARRAY1,
+              BSTRUCT_NULL,BSTRUCT_STRING,BSTRUCT_STRING1,BSTRUCT_BEGINARRAY,BSTRUCT_BEGINARRAY1,
               BSTRUCT_BEGINSTRUCT, BSTRUCT_INDEXARRAY,BSTRUCT_ENDSTRUCT,BSTRUCT_ENDARRAY,
               BSTRUCT_END} Bstruct_token;
 
@@ -55,7 +55,7 @@ extern FILE *bstruct_getfile(Bstruct);
 extern Hash bstruct_gethash(Bstruct);
 extern void bstruct_freehash(Bstruct);
 extern Bool bstruct_isdefined(Bstruct,const char *);
-extern Bool bstruct_writearrayindex(Bstruct,long long,long long vec[],int,int);
+extern Bool bstruct_writearrayindex(Bstruct,long long,const long long vec[],int,int);
 extern void bstruct_finish(Bstruct);
 extern void bstruct_sync(Bstruct);
 extern void bstruct_setout(Bstruct,Bool);
@@ -107,6 +107,8 @@ extern Real *bstruct_readvarrealarray(Bstruct,const char *,int *);
 extern void bstruct_fprintnametable(FILE *,const char *,const Bstruct,Bool);
 extern void bstruct_fprintnamestack(FILE *,const Bstruct);
 extern long long bstruct_getarrayindex(Bstruct);
+extern Bool bstruct_writenull(Bstruct,const char *);
+extern Bool bstruct_isnull(Bstruct,const char *);
 
 /* Definition of macros */
 

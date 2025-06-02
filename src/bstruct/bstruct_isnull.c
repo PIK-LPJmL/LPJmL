@@ -1,6 +1,6 @@
 /**************************************************************************************/
 /**                                                                                \n**/
-/**    b  s  t  r  u  c  t  _  w  r  i  t  e  e  n  d  s  t  r  u  c  t  .  c      \n**/
+/**             b  s  t  r  u  c  t  _  i  s  n  u  l  l   .  c                   \n**/
 /**                                                                                \n**/
 /**     C implementation of LPJmL                                                  \n**/
 /**                                                                                \n**/
@@ -16,26 +16,32 @@
 
 #include "bstruct_intern.h"
 
-Bool bstruct_writeendstruct(Bstruct bstr /**< pointer to restart file */
-                           )             /** \return TRUE on error */
+Bool bstruct_isnull(Bstruct bstr,   /**< pointer to restart file */
+                    const char *key /**< key to compare */
+                   )                /** \return TRUE if key is null object */
 {
-  /* Function ends current struct */
+  /* Function checks if a key is null object */
+  long long pos;
+  Bool rc;
   Byte token;
-  if(bstr->namestack[bstr->level-1].type==BSTRUCT_BEGINARRAY)
+  /* store file position */
+  pos=ftell(bstr->file);
+  /* read token */
+  if(fread(&token,1,1,bstr->file)!=1)
   {
-    fprintf(stderr,"ERROR521: Endstruct not allowed in array '%s'.\n",
-            getname(bstr->namestack[bstr->level-1].name));
-    bstruct_printnamestack(bstr);
+    if(bstr->isout)
+      fprintf(stderr,"ERROR508: Unexpected end of file reading token.\n");
+    return FALSE;
   }
-  if(bstr->level<=1)
+  if(token==BSTRUCT_ENDARRAY)
   {
-    fprintf(stderr,"ERROR516: Too many endstructs found.\n");
-    bstruct_printnamestack(bstr);
+    fseek(bstr->file,pos,SEEK_SET);
+    return FALSE;
+  }
+  rc=bstruct_findobject(bstr,&token,BSTRUCT_NULL,key);
+  if(!rc && (token & 63)==BSTRUCT_NULL)
     return TRUE;
-  }
-  /* remove struct object from name stack */
-  free(bstr->namestack[bstr->level-1].name);
-  bstr->level--;
-  token=BSTRUCT_ENDSTRUCT;
-  return fwrite(&token,1,1,bstr->file)!=1;
-} /* of 'bstruct_writeendstruct' */
+  /* restore position in file */
+  fseek(bstr->file,pos,SEEK_SET);
+  return FALSE;
+} /* of bstruct_isnull' */

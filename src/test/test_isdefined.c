@@ -27,18 +27,15 @@
 #include "bstruct_readbeginstruct.h"
 #include "bstruct_writeendstruct.h"
 #include "bstruct_readendstruct.h"
-#include "bstruct_writebeginarray.h"
-#include "bstruct_readbeginarray.h"
-#include "bstruct_writeendarray.h"
-#include "bstruct_readendarray.h"
 #include "bstruct_finish.h"
 #include "bstruct_writebeginstruct.h"
 #include "bstruct_fprintnamestack.h"
 #include "bstruct_readtoken.h"
+#include "bstruct_isdefined.h"
 
-void test_restart(void)
+void test_isdefined(void)
 {
-  int i,size;
+  Bool rc;
   struct
   {
     int a;
@@ -48,8 +45,7 @@ void test_restart(void)
       float c;
       float d;
     } s;
-    float vec[2];
-  } data1={1,2.0,{3.0,4.0},{7.0,8.0}},data2={};
+  } data1={1,2.0,{3.0,4.0}},data2={};
   Bstruct bstr;
   bstr=bstruct_create("test.lpj");
   TEST_ASSERT_NOT_NULL(bstr);
@@ -59,10 +55,6 @@ void test_restart(void)
   bstruct_writefloat(bstr,"c",data1.s.c);
   bstruct_writefloat(bstr,"d",data1.s.d);
   bstruct_writeendstruct(bstr);
-  bstruct_writebeginarray(bstr,"vec",2);
-  for(i=0;i<2;i++)
-    bstruct_writefloat(bstr,NULL,data1.vec[i]);
-  bstruct_writeendarray(bstr);
   bstruct_finish(bstr);
   bstruct_open("test.lpj",TRUE);
   TEST_ASSERT_NOT_NULL(bstr);
@@ -73,15 +65,13 @@ void test_restart(void)
   TEST_ASSERT_EQUAL_FLOAT(data1.s.c,data2.s.c);
   bstruct_readfloat(bstr,"d",&data2.s.d);
   TEST_ASSERT_EQUAL_FLOAT(data1.s.d,data2.s.d);
+  rc=bstruct_isdefined(bstr,"c");
+  TEST_ASSERT_EQUAL_INT(TRUE,rc);
   bstruct_readendstruct(bstr,"s");
   bstruct_readfloat(bstr,"b",&data2.b);
   TEST_ASSERT_EQUAL_FLOAT(data1.b,data2.b);
-  bstruct_readbeginarray(bstr,"vec",&size);
-  TEST_ASSERT_EQUAL_INT(2,size);
-  for(i=0;i<2;i++)
-    bstruct_readfloat(bstr,NULL,data2.vec+i);
-  TEST_ASSERT_EQUAL_FLOAT_ARRAY(data1.vec,data2.vec,2);
-  bstruct_readendarray(bstr,"vec");
+  rc=bstruct_isdefined(bstr,"d");
+  TEST_ASSERT_EQUAL_INT(FALSE,rc);
   bstruct_finish(bstr);
   unlink("test.lpj");
 }

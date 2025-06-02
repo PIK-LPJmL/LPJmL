@@ -23,6 +23,8 @@ Bool bstruct_writebeginindexarray(Bstruct bstr,       /**< pointer to restart fi
                                  )                    /** \return TRUE on error */
 {
   /* define array with index vector and get position of first element of index vector */
+  long long zero=0;
+  int i;
   Byte token;
   if(bstruct_writebeginarray(bstr,name,size))
     return TRUE;
@@ -31,5 +33,8 @@ Bool bstruct_writebeginindexarray(Bstruct bstr,       /**< pointer to restart fi
   if(fwrite(&size,sizeof(size),1,bstr->file)!=1)
     return TRUE;
   *filepos=ftell(bstr->file);
-  return fseek(bstr->file,sizeof(long long)*size,SEEK_CUR);
+  for(i=0;i<size;i++)
+    if(fwrite(&zero,sizeof(zero),1,bstr->file)!=1)
+      return TRUE;
+  return FALSE;
 } /* of 'bstruct_writebeginindexarray' */

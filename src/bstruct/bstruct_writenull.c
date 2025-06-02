@@ -1,6 +1,6 @@
 /**************************************************************************************/
 /**                                                                                \n**/
-/**    b  s  t  r  u  c  t  _  w  r  i  t  e  e  n  d  s  t  r  u  c  t  .  c      \n**/
+/**               b  s  t  r  u  c  t  _  w  r  i  t  e  n  u  l  l  .  c          \n**/
 /**                                                                                \n**/
 /**     C implementation of LPJmL                                                  \n**/
 /**                                                                                \n**/
@@ -16,26 +16,9 @@
 
 #include "bstruct_intern.h"
 
-Bool bstruct_writeendstruct(Bstruct bstr /**< pointer to restart file */
-                           )             /** \return TRUE on error */
+Bool bstruct_writenull(Bstruct bstr,    /**< pointer to restart file */
+                       const char *name /**< name of object or NULL */
+                      )                 /** \return TRUE on error */
 {
-  /* Function ends current struct */
-  Byte token;
-  if(bstr->namestack[bstr->level-1].type==BSTRUCT_BEGINARRAY)
-  {
-    fprintf(stderr,"ERROR521: Endstruct not allowed in array '%s'.\n",
-            getname(bstr->namestack[bstr->level-1].name));
-    bstruct_printnamestack(bstr);
-  }
-  if(bstr->level<=1)
-  {
-    fprintf(stderr,"ERROR516: Too many endstructs found.\n");
-    bstruct_printnamestack(bstr);
-    return TRUE;
-  }
-  /* remove struct object from name stack */
-  free(bstr->namestack[bstr->level-1].name);
-  bstr->level--;
-  token=BSTRUCT_ENDSTRUCT;
-  return fwrite(&token,1,1,bstr->file)!=1;
-} /* of 'bstruct_writeendstruct' */
+  return bstruct_writename(bstr,BSTRUCT_NULL,name);
+} /* of 'bstruct_writenull' */

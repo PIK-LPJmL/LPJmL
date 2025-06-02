@@ -18,7 +18,7 @@
 
 Bool bstruct_seekindexarray(Bstruct bstr, /**< pointer to restart file */
                             int index,    /**< index of array to seek */
-                            int size      /**< [out] size of array */
+                            int size      /**< size of array */
                            )              /** \return TRUE on error */
 {
   long long pos;
@@ -53,6 +53,11 @@ Bool bstruct_seekindexarray(Bstruct bstr, /**< pointer to restart file */
   if(freadlong(&pos,1,bstr->swap,bstr->file)!=1)
   {
     fprintf(stderr,"ERROR512: Cannot read file index for %d.\n",index);
+    return TRUE;
+  }
+  if(pos<=0)
+  {
+    fprintf(stderr,"ERROR512: Invalid position in array.\n");
     return TRUE;
   }
   if(fseek(bstr->file,pos,SEEK_SET))

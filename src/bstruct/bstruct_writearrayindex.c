@@ -16,12 +16,12 @@
 
 #include "bstruct_intern.h"
 
-Bool bstruct_writearrayindex(Bstruct bstr,      /**< pointer to restart file */
-                             long long filepos, /**< file position of index vector */
-                             long long index[], /**< position vector to write */
+Bool bstruct_writearrayindex(Bstruct bstr,            /**< pointer to restart file */
+                             long long filepos,       /**< file position of index vector */
+                             const long long index[], /**< position vector to write */
                              int offset,
-                             int size           /**< size of index vector */
-                            )                   /** \return TRUE on error */
+                             int size                 /**< size of index vector */
+                            )                         /** \return TRUE on error */
 {
   Bool rc;
   if(fseek(bstr->file,filepos+sizeof(long long)*offset,SEEK_SET))

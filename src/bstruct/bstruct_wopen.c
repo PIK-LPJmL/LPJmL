@@ -103,8 +103,18 @@ Bstruct bstruct_wopen(const char *filename, /**< filename of restart file to cre
       free(bstruct);
       return NULL;
     }
+    if(bstruct->swap)
+    {
+      if(isout)
+        fprintf(stderr,"ERROR525: Byte order must not be different file '%s'.\n",
+                filename);
+      fclose(bstruct->file);
+      freehash(bstruct->hash);
+      free(bstruct);
+      return NULL;
+    }
     /* read position of name table */
-    if(freadlong(&filepos,1,bstruct->swap,bstruct->file)!=1)
+    if(fread(&filepos,sizeof(filepos),1,bstruct->file)!=1)
     {
       if(isout)
         fprintf(stderr,"ERROR517: Cannot read file position of name table.\n");
@@ -128,7 +138,7 @@ Bstruct bstruct_wopen(const char *filename, /**< filename of restart file to cre
         return NULL;
       }
       /* read size of name table */
-      if(freadint(&count,1,bstruct->swap,bstruct->file)!=1)
+      if(fread(&count,sizeof(count),1,bstruct->file)!=1)
       {
         if(isout)
           fprintf(stderr,"ERROR517: Cannot read size of name table.\n");
@@ -179,7 +189,7 @@ Bstruct bstruct_wopen(const char *filename, /**< filename of restart file to cre
           free(bstruct);
           return NULL;
         }
-        if(freadshort(id,1,bstruct->swap,bstruct->file)!=1)
+        if(fread(id,sizeof(short),1,bstruct->file)!=1)
         {
           if(isout)
             fprintf(stderr,"ERROR508: Unexpected end of file reading name table of size %d.\n",

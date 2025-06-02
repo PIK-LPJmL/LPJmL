@@ -21,9 +21,10 @@ Bool bstruct_writestring(Bstruct bstr,     /**< pointer to restart file */
                          const char *value /**< string written to file */
                         )                  /** \return TRUE on error */
 {
+  /* Function writes string to restart file */
   int len;
   Byte b;
-  len=strlen(value);
+  len=(value==NULL ) ? 0 : strlen(value);
   b=(len<=UCHAR_MAX) ? BSTRUCT_STRING1 : BSTRUCT_STRING;
   if(bstruct_writename(bstr,b,name))
     return TRUE;

@@ -1,1 +1,1 @@
-Bstruct bstruct_open(const char *,Bool);
+Bstruct bstruct_wopen(const char *,Bool,Bool);

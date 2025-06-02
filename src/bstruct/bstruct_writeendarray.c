@@ -27,9 +27,10 @@ Bool bstruct_writeendarray(Bstruct bstr /**< pointer to restart file */
             getname(bstr->namestack[bstr->level-1].name));
     bstruct_printnamestack(bstr);
   }
-  if(bstr->level==0)
+  if(bstr->level==1 && bstr->namestack[0].type!=BSTRUCT_BEGINARRAY)
   {
     fprintf(stderr,"ERROR516: Too many endarrays found.\n");
+    bstruct_printnamestack(bstr);
     return TRUE;
   }
   /* Check for correct number of array items */

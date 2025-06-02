@@ -17,10 +17,10 @@
 #include "bstruct_intern.h"
 
 const size_t bstruct_typesizes[]={1,sizeof(short),sizeof(int),sizeof(float),
-                                  sizeof(double),0,0,sizeof(unsigned short),0,0};
+                                  sizeof(double),0,0,sizeof(unsigned short),0,0,0};
 
 char *bstruct_typenames[]={"byte","short","int","float","double","bool","bool","ushort",
-                           "zero","fzero","string","string1","array","array1","struct","indexarray",
+                           "zero","fzero","null","string","string1","array","array1","struct","indexarray",
                            "endstruct","endarray","end"};
 
 int bstruct_gethashkey(const char *key,int size)

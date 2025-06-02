@@ -23,6 +23,9 @@ void bstruct_fprintdata(FILE *file,              /* pointer to text file */
   String line;
   switch(data->token)
   {
+    case BSTRUCT_NULL:
+      fputs("null",file);
+      break;
     case BSTRUCT_ZERO:
       fputc('0',file);
       break;
