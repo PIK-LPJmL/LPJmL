@@ -59,14 +59,14 @@ int main(int argc,char **argv)
         rc=printf("%s (" __DATE__ ") Help",progname);
         printf("\n     ");
         repeatch('=',rc);
-        printf("\n\nAdd clm header to binary file for LPJmL version %s\n",getversion());
+        printf("\n\nAdd clm header to binary file for LPJmL version %s\n\n",getversion());
         printf(USAGE
                "\nArguments:\n"
                "-swap        byte order is changed in raw binary file\n"
                "-nyear n     set number of years, default is 109\n"
                "-firstyear n set first year, default is 1901\n"
                "-lastyear    set last year, default is 2009\n"
-               "-ncell n     set number of cells, default is 67420\n"
+               "-ncell n     set number of cells, default is 67420, if 0 calculated from file size\n"
                "-firstcell n set index of first cell, default is 0\n"
                "-nbands n    set number of bands, default is 12\n"
                "-nstep n     set number of steps within years, default is 1\n"
@@ -152,7 +152,7 @@ int main(int argc,char **argv)
           fprintf(stderr,"Invalid number '%s' for option '-ncell'.\n",argv[index]);
           return EXIT_FAILURE;
         }
-        if(header.ncell<=0)
+        if(header.ncell<0)
         {
           fputs("Number of cells less than one.\n",stderr);
           return EXIT_FAILURE;
@@ -383,6 +383,8 @@ int main(int argc,char **argv)
     return EXIT_FAILURE;
   }
   filesize=getfilesizep(infile);
+  if(header.ncell==0) // if ncell=0 then calculate ncell from file size
+    header.ncell=filesize/header.nyear/header.nbands/header.nstep/len;
   if((header.order==CELLINDEX && filesize!=sizeof(int)*header.ncell+(long long)header.ncell*header.nbands*header.nstep*header.nyear*len) ||
     (header.order!=CELLINDEX && filesize!=(long long)header.ncell*header.nbands*header.nstep*header.nyear*len))
   {
