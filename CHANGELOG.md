@@ -23,11 +23,13 @@ of `major.minor.patch` with
 ### Contributors
 
 - author: Werner von Bloh (bloh@pik-potsdam.de)
+- code review:
 
 ### Added
 
 - Option `-h` added to utilities `addheader`, `cdf2bin`, `regridclm`, `regridsoil` and `printclm` to print help text.
 - Notice added in `configure.sh` that `make clean; make all` has to be performed after change in configuration.
+- Support for short datatype added in `cmpbin` utility.
 
 ### Changed
 
