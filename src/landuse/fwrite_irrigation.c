@@ -21,7 +21,7 @@ Bool fwrite_irrigation(Bstruct file,                /**< pointer to restart file
                        const Irrigation *irrigation /**< irrigation pointer */
                       )                             /** \return TRUE on error */
 {
-  bstruct_writestruct(file,name);
+  bstruct_writebeginstruct(file,name);
   bstruct_writebool(file,"irrigation",irrigation->irrigation);
   bstruct_writeint(file,"pft_id",irrigation->pft_id);
   if(irrigation->irrigation)

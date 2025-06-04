@@ -57,6 +57,7 @@ Celldata opencelldata(Config *config /**< LPJmL configuration */
   {
     celldata->soil.cdf=opencoord_netcdf(config->soil_filename.name,
                                         config->soil_filename.var,
+                                        &config->netcdf,
                                         isroot(*config));
     if(celldata->soil.cdf==NULL)
     {

@@ -21,7 +21,7 @@ if(bstruct_readint(file,name,var))\
   {\
     if(isroot(*config))\
       fprintf(stderr,"ERROR245: Cannot read header in %s file '%s'.\n",type,filename);\
-    bstruct_close(file);\
+    bstruct_finish(file);\
     return NULL; \
   }
 
@@ -30,7 +30,7 @@ if(bstruct_readbool(file,name,var))\
   {\
     if(isroot(*config))\
       fprintf(stderr,"ERROR245: Cannot read header in %s file '%s'.\n",type,filename);\
-    bstruct_close(file);\
+    bstruct_finish(file);\
     return NULL; \
   }
 
@@ -44,7 +44,7 @@ Bstruct openrestart(const char *filename, /**< filename of restart file */
   char *lpjversion;
   Real cellsize_lon,cellsize_lat;
   int offset,ncell,restart_npft,restart_ncft,firstcell,firstyear;
-  Bool separate_harvest;
+  Bool separate_harvests;
   Type datatype;
   char *type;
   /* Open restart file */
@@ -53,17 +53,17 @@ Bstruct openrestart(const char *filename, /**< filename of restart file */
     return NULL;
   type=(config->ischeckpoint) ? "checkpoint" : "restart";
   /* read header */
-  if(bstruct_readstruct(file,"header"))
+  if(bstruct_readbeginstruct(file,"header"))
   {
     if(isroot(*config))
       fprintf(stderr,"ERROR245: No header found in %s file '%s'.\n",type,filename);
-    bstruct_close(file);
+    bstruct_finish(file);
     return NULL;
   }
   lpjversion=bstruct_readstring(file,"version");
   if(lpjversion==NULL)
   {
-    bstruct_close(file);
+    bstruct_finish(file);
     return NULL;
   }
   if(isroot(*config) && strcmp(lpjversion,getversion()))
@@ -80,14 +80,14 @@ Bstruct openrestart(const char *filename, /**< filename of restart file */
   {
     if(isroot(*config))
       fprintf(stderr,"ERROR245: Cannot read header in %s file '%s'.\n",type,filename);
-    bstruct_close(file);
+    bstruct_finish(file);
     return NULL;
   }
   if(bstruct_readreal(file,"cellsize_lon",&cellsize_lon))
   {
     if(isroot(*config))
       fprintf(stderr,"ERROR245: Cannot read header in %s file '%s'.\n",type,filename);
-    bstruct_close(file);
+    bstruct_finish(file);
     return NULL;
   }
   readint(file,"datatype",(int *)(&datatype));
@@ -95,22 +95,22 @@ Bstruct openrestart(const char *filename, /**< filename of restart file */
   readint(file,"sdate_option",&config->sdate_option_restart);
   readbool(file,"crop_phu_option",&config->crop_phu_option_restart);
   readbool(file,"river_routing",&config->river_routing_restart);
-  readbool(file,"separate_harvests",&separate_harvest);
+  readbool(file,"separate_harvests",&separate_harvests);
   if(freadseed(file,"seed",config->seed))
   {
     if(isroot(*config))
       fprintf(stderr,"ERROR245: Cannot read header in %s file '%s'.\n",type,filename);
-    bstruct_close(file);
+    bstruct_finish(file);
     return NULL;
   }
   if(bstruct_readendstruct(file,"header"))
   {
-    bstruct_close(file);
+    bstruct_finish(file);
     return NULL;
   }
-  if(bstruct_readarray(file,"grid",&ncell))
+  if(bstruct_readbeginarray(file,"grid",&ncell))
   {
-    bstruct_close(file);
+    bstruct_finish(file);
     return NULL;
   }
   /* enable error output for all tasks */
@@ -120,7 +120,7 @@ Bstruct openrestart(const char *filename, /**< filename of restart file */
     if(isroot(*config))
       fprintf(stderr,"ERROR154: Cell size longitude %g different from %g in %s file '%s'.\n",
               cellsize_lon,config->resolution.lon,type,filename);
-    bstruct_close(file);
+    bstruct_finish(file);
     return NULL;
   }
   if(fabs(cellsize_lat-config->resolution.lat)/config->resolution.lat>1e-3)
@@ -128,7 +128,7 @@ Bstruct openrestart(const char *filename, /**< filename of restart file */
     if(isroot(*config))
       fprintf(stderr,"ERROR154: Cell size latitude %g different from %g in %s file '%s'.\n",
               cellsize_lat,config->resolution.lat,type,filename);
-    bstruct_close(file);
+    bstruct_finish(file);
     return NULL;
   }
   if(config->landuse_restart)
@@ -137,15 +137,15 @@ Bstruct openrestart(const char *filename, /**< filename of restart file */
     {
       if(isroot(*config))
         fprintf(stderr,"ERROR180: Land-use setting false is different from true in %s file '%s'.\n",type,filename);
-      bstruct_close(file);
+      bstruct_finish(file);
       return NULL;
     }
-    if(separate_harvest!=config->separate_harvests)
+    if(separate_harvests!=config->separate_harvests)
     {
       if(isroot(*config))
-        fprintf(stderr,"ERROR180: Double harvest setting %s is different from %s in %s file '%s'.\n",
+        fprintf(stderr,"ERROR180: Separate harvest setting %s is different from %s in %s file '%s'.\n",
                 bool2str(config->separate_harvests),bool2str(separate_harvests),type,filename);
-      bstruct_close(file);
+      bstruct_finish(file);
       return NULL;
     }
   }
@@ -159,7 +159,7 @@ Bstruct openrestart(const char *filename, /**< filename of restart file */
     if(isroot(*config))
       fprintf(stderr,"ERROR181: River-routing setting %s is different from %s in %s file '%s'.\n",
               bool2str(config->river_routing),bool2str(config->river_routing_restart),type,filename);
-    bstruct_close(file);
+    bstruct_finish(file);
     return NULL;
   }
   if(isroot(*config) && config->sdate_option_restart==NO_FIXED_SDATE && config->sdate_option>NO_FIXED_SDATE && config->firstyear-config->nspinup>config->sdate_fixyear)
@@ -170,7 +170,7 @@ Bstruct openrestart(const char *filename, /**< filename of restart file */
   {
     if(isroot(*config))
       fprintf(stderr,"ERROR182: Real datatype does not match in %s file '%s'.\n",type,filename);
-    bstruct_close(file);
+    bstruct_finish(file);
     return NULL;
   }
   if(restart_npft!=npft)
@@ -180,7 +180,7 @@ Bstruct openrestart(const char *filename, /**< filename of restart file */
       fprintf(stderr,
               "ERROR183: Number of natural PFTs=%d does not match %d present in %s file '%s'.\n",
               npft,restart_npft,type,filename);
-    bstruct_close(file);
+    bstruct_finish(file);
     return NULL;
   }
   if(restart_ncft!=ncft)
@@ -190,7 +190,7 @@ Bstruct openrestart(const char *filename, /**< filename of restart file */
       fprintf(stderr,
               "ERROR183: Number of crop PFTs=%d does not match %d present in %s file '%s'.\n",
               ncft,restart_ncft,type,filename);
-    bstruct_close(file);
+    bstruct_finish(file);
     return NULL;
   }
   if(config->ischeckpoint)
@@ -202,7 +202,7 @@ Bstruct openrestart(const char *filename, /**< filename of restart file */
       if(isroot(*config))
         fprintf(stderr,"ERROR233: Year %d in checkpoint file '%s' outside simulation years.\n",
                 config->checkpointyear,filename);
-      bstruct_close(file);
+      bstruct_finish(file);
       return NULL;
     }
   }
@@ -217,7 +217,7 @@ Bstruct openrestart(const char *filename, /**< filename of restart file */
     if(isroot(*config))
       fprintf(stderr,"ERROR155: First grid cell %d not in %s file '%s', starts at cell %d.\n",
               config->startgrid,type,filename,firstcell);
-    bstruct_close(file);
+    bstruct_finish(file);
     return NULL;
   }
   if(config->firstgrid>firstcell+ncell-1)
@@ -225,7 +225,7 @@ Bstruct openrestart(const char *filename, /**< filename of restart file */
     if(isroot(*config))
       fprintf(stderr,"ERROR155: First grid cell %d not in %s file '%s', starts at cell %d.\n",
               config->startgrid,type,filename,firstcell);
-    bstruct_close(file);
+    bstruct_finish(file);
     return NULL;
   }
   if(config->nall>ncell)
@@ -233,7 +233,7 @@ Bstruct openrestart(const char *filename, /**< filename of restart file */
     if(isroot(*config))
       fprintf(stderr,"ERROR155: %s file '%s' is too short, has only %d cells, %d needed.\n",
               type,filename,ncell,config->nall);
-    bstruct_close(file);
+    bstruct_finish(file);
     return NULL;
   }
   if(config->firstgrid+config->nall>firstcell+ncell)
@@ -242,7 +242,7 @@ Bstruct openrestart(const char *filename, /**< filename of restart file */
       fprintf(stderr,"ERROR155: %s file '%s' has cells in [%d,%d], must be [%d,%d].\n",
               type,filename,firstcell,firstcell+ncell-1,
               config->firstgrid,config->firstgrid+config->nall-1);
-    bstruct_close(file);
+    bstruct_finish(file);
     return NULL;
   }
   offset=config->startgrid-firstcell;
@@ -250,7 +250,7 @@ Bstruct openrestart(const char *filename, /**< filename of restart file */
   if(bstruct_seekindexarray(file,offset,ncell))
   {
     fprintf(stderr,"ERROR156: Cannot seek to index %d in %s file '%s'.\n",offset,type,filename);
-    bstruct_close(file);
+    bstruct_finish(file);
     return NULL;
   }
   return file;

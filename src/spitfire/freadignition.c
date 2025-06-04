@@ -18,7 +18,7 @@
 
 Bool freadignition(Bstruct file,const char *name,Ignition *ignition)
 {
-  if(bstruct_readstruct(file,name))
+  if(bstruct_readbeginstruct(file,name))
     return TRUE;
   if(bstruct_readreal(file,"nesterov_accum",&ignition->nesterov_accum))
     return TRUE;

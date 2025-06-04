@@ -20,7 +20,7 @@ Bool fwritehydrotope(Bstruct file,
                      const char *name,
                      const  Hydrotope *hydrotopes)
 {
-  bstruct_writestruct(file,name);
+  bstruct_writebeginstruct(file,name);
   bstruct_writereal(file,"wtable_mean",hydrotopes->wtable_mean);
   bstruct_writereal(file,"wtable_min",hydrotopes->wtable_min);
   bstruct_writereal(file,"wtable_max",hydrotopes->wtable_max);

@@ -16,7 +16,7 @@
 
 static Bool readcropdate(Bstruct file,Cropdates *cropdates)
 {
-  if(bstruct_readstruct(file,NULL))
+  if(bstruct_readbeginstruct(file,NULL))
     return TRUE;
   if(bstruct_readint(file,"fall_sdate20",&cropdates->fall_sdate20))
     return TRUE;
@@ -40,7 +40,7 @@ Cropdates *freadcropdates(Bstruct file, /**< Pointer to binary file */
 {
   int size,cft;
   Cropdates *cropdates;
-  if(bstruct_readarray(file,name,&size))
+  if(bstruct_readbeginarray(file,name,&size))
     return NULL;
   if(size!=ncft)
     return NULL;

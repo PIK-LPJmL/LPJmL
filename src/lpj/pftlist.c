@@ -55,7 +55,7 @@ int fwritepftlist(Bstruct file,          /**< pointer to restart file */
                  )                       /** \return number of PFTs written */
 {
   int p;
-  bstruct_writearray(file,name,pftlist->n);
+  bstruct_writebeginarray(file,name,pftlist->n);
   for(p=0;p<pftlist->n;p++)
     if(fwritepft(file,pftlist->pft+p)) /* write PFT-specific data */
       break;
@@ -85,7 +85,7 @@ Bool freadpftlist(Bstruct file,          /**< pointer to restart file */
 {
   int p;
   /* read number of established PFTs */
-  if(bstruct_readarray(file,name,&pftlist->n))
+  if(bstruct_readbeginarray(file,name,&pftlist->n))
     return TRUE;
   if(pftlist->n)
   {

@@ -17,7 +17,7 @@
 static Bool fwritehist(Bstruct file,const char *name,Real hist[HIST_YEARS][NMONTH])
 {
   int i;
-  bstruct_writearray(file,name,HIST_YEARS);
+  bstruct_writebeginarray(file,name,HIST_YEARS);
   for(i=0;i<HIST_YEARS;i++)
     bstruct_writerealarray(file,NULL,hist[i],NMONTH);
   return bstruct_writeendarray(file);
@@ -28,7 +28,7 @@ Bool fwriteresdata(Bstruct file,     /**< pointer to restart file */
                    const Cell *cell  /**< pointer to cell */
                   )                  /** \return TRUE on error */
 {
-  bstruct_writestruct(file,name);
+  bstruct_writebeginstruct(file,name);
   bstruct_writereal(file,"reservoirfrac",cell->ml.reservoirfrac);
   fwritestocks(file,"pool",&cell->ml.resdata->pool);
   bstruct_writereal(file,"dmass",cell->ml.resdata->dmass);

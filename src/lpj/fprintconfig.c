@@ -819,7 +819,7 @@ void fprintconfig(FILE *file,          /**< File pointer to text output file */
       fprintf(file,"Missing value in NetCDF:      %g\n"
                    "Base year in NetCDF:          %d\n"
                    "NetCDF grid:                  %s\n",
-              config->missing_value,config->baseyear,
+              config->netcdf.missing_value.f,config->baseyear,
               config->global_netcdf ? "global" : "local");
     }
     fprintf(file,"%*s Fmt  %*s Type   tstep nbd Filename\n",-width,"Variable",-width_unit,"Unit");

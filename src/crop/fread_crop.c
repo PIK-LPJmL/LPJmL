@@ -23,7 +23,7 @@
 
 static Bool freadcropphys2(Bstruct file,const char *name,Cropphys2 *crop)
 {
-  if(bstruct_readstruct(file,name))
+  if(bstruct_readbeginstruct(file,name))
     return TRUE;
   readstocks2(file,"leaf",&crop->leaf);
   readstocks2(file,"root",&crop->root);
@@ -34,7 +34,7 @@ static Bool freadcropphys2(Bstruct file,const char *name,Cropphys2 *crop)
 
 static Bool fread_sharvests(Bstruct file,const char *name,Separate_harvests *sh)
 {
-  if(bstruct_readstruct(file,name))
+  if(bstruct_readbeginstruct(file,name))
       return TRUE;
   readreal(file,petsum,sh);
   readreal(file,evapsum,sh);
@@ -59,9 +59,9 @@ static Bool fread_sharvests(Bstruct file,const char *name,Separate_harvests *sh)
 } /* of 'fread_sharvests' */
 
 Bool fread_crop(Bstruct file,          /**< file pointer */
-                Pft *pft,            /**< PFT data to be read */
+                Pft *pft,              /**< PFT data to be read */
                 Bool separate_harvests /**< double harvest output enabled? */
-               )                     /** \return TRUE on error */
+               )                       /** \return TRUE on error */
 {
   Pftcrop *crop;
   crop=new(Pftcrop);

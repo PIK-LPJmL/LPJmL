@@ -252,6 +252,7 @@ int main(int argc,char **argv)
   grid_type=LPJ_SHORT;
   cellsize_lon=cellsize_lat=0.5;      /* default cell size */
   initconfig(&config);
+  initsetting_netcdf(&config.netcdf);
   for(iarg=1;iarg<argc;iarg++)
   {
     if(argv[iarg][0]=='-')
@@ -458,7 +459,6 @@ int main(int argc,char **argv)
   header.cellsize_lat=(float)config.resolution.lat;
   header.cellsize_lon=(float)config.resolution.lon;
   header.ncell=config.ngridcell;
-  config.missing_value=MISSING_VALUE_FLOAT;
   file=fopen(outname,"wb");
   if(file==NULL)
   {
@@ -498,9 +498,9 @@ int main(int argc,char **argv)
           else
             map_name=BAND_NAMES;
         }
-        else if((map=readmap_netcdf(data.ncid,PFT_NAME))!=NULL)
+        else if((map=readmap_netcdf(data.ncid,config.netcdf.pft_name.name))!=NULL)
           map_name=BAND_NAMES;
-        else if((map=readmap_netcdf(data.ncid,DEPTH_NAME))!=NULL)
+        else if((map=readmap_netcdf(data.ncid,config.netcdf.depth.name))!=NULL)
           map_name=BAND_NAMES;
         if(nc_inq_natts(data.ncid,&len))
           n_attr=0;

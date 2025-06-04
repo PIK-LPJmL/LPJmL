@@ -18,7 +18,7 @@
 
 static Bool fwritetrait(Bstruct file,const char *name,const Trait *trait)
 {
-  bstruct_writestruct(file,name);
+  bstruct_writebeginstruct(file,name);
   fwritestocks(file,"leaf",&trait->leaf);
   fwritestocksarray(file,"wood",trait->wood,NFUELCLASS);
   return bstruct_writeendstruct(file);
@@ -31,10 +31,10 @@ Bool fwritelitter(Bstruct file,        /**< pointer to restart file */
 {
   int l;
   bstruct_writerealarray(file,"avg_fbd",litter->avg_fbd,NFUELCLASS+1);
-  bstruct_writearray(file,name,litter->n);
+  bstruct_writebeginarray(file,name,litter->n);
   for(l=0;l<litter->n;l++)
   {
-    bstruct_writestruct(file,NULL);
+    bstruct_writebeginstruct(file,NULL);
     bstruct_writeint(file,"pft_id",litter->item[l].pft->id);
     fwritetrait(file,"agtop",&litter->item[l].agtop);
     fwritetrait(file,"agsub",&litter->item[l].agsub);

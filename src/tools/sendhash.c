@@ -31,6 +31,7 @@ void sendhash(const Hash hash, /**< pointer to hash */
               MPI_Comm comm    /**< MPI communicator */
              )
 {
+  /* Function sends hash to specified task */
   int i,count;
   Hashitem *items;
   Data data;
@@ -52,6 +53,7 @@ void receivehash(Hash hash,    /**< pointer to hash */
                  MPI_Comm comm /**< MPI communicator */
                 )
 {
+  /* Function receives hash from specified task */
   MPI_Status status;
   Data data;
   int i,count;
@@ -62,12 +64,14 @@ void receivehash(Hash hash,    /**< pointer to hash */
   {
     MPI_Recv(&data,sizeof(data),MPI_BYTE,task,MSGTAG,comm,&status);
     id=new(short);
+    check(id);
     *id=data.id;
     key=malloc((int)data.len+1);
     check(key);
     MPI_Recv(key,data.len,MPI_BYTE,task,MSGTAG,comm,&status);
     key[data.len]='\0';
-    addhashitem(hash,key,id);
+    if(addhashitem(hash,key,id)==0)
+      fail(ALLOC_MEMORY_ERR,TRUE,FALSE,"Cannot allocate memory for hash in receivehash()");
   }
 } /* of 'receivehash' */
 

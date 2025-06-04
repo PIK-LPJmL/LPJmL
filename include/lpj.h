@@ -48,6 +48,7 @@
 typedef struct cell Cell;   /* forward declaration of cell */
 typedef struct stand Stand; /* forward declaration of stand */
 typedef struct config Config; /* forward declaration of stand */
+typedef struct netcdf_config Netcdf_config; /* forward declaration of NetCDF settings */
 
 /*  Defined header files for LPJ */
 
@@ -114,6 +115,8 @@ typedef struct config Config; /* forward declaration of stand */
 
 #define LPJROOT "LPJROOT"            /* LPJ root directory */
 #define LPJPREP "LPJPREP"            /* preprocessor command */
+#define LPJNOPP "LPJNOPP"            /* disable preprocessor */
+#define LPJPEDANTIC "LPJPEDANTIC"    /* enable pedantic mode */
 #define LPJOPTIONS "LPJOPTIONS"      /* LPJ runtime options */
 #define LPJINPUT "LPJINPATH"         /* path for input files */
 #define LPJOUTPUT "LPJOUTPATH"       /* path for output files */

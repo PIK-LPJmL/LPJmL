@@ -152,7 +152,7 @@ int main(int argc,char **argv)
   }
   if(data_version>2 && header.datatype!=LPJ_INT)
   {
-    fprintf(stderr,"Invalid datatype %s in '%s', muste bei int.\n",typenames[header.datatype],argv[3]);
+    fprintf(stderr,"Invalid datatype %s in '%s', must be int.\n",typenames[header.datatype],argv[3]);
     free(c);
     free(c2);
     return EXIT_FAILURE;
@@ -267,6 +267,7 @@ int main(int argc,char **argv)
   {
     fprintf(stderr,"Error writing header in '%s'.\n",argv[4]);
     free(cnew);
+    fclose(file);
     return EXIT_FAILURE;
   }
   if(isshort)

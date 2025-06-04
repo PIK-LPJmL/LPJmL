@@ -19,7 +19,7 @@
 
 static Bool fwritetreephys2(Bstruct file,const char *name,const Treephys2 *tree)
 {
-  bstruct_writestruct(file,name);
+  bstruct_writebeginstruct(file,name);
   fwritestocks(file,"leaf",&tree->leaf);
   fwritestocks(file,"sapwood",&tree->sapwood);
   fwritestocks(file,"heartwood",&tree->heartwood);
@@ -30,7 +30,7 @@ static Bool fwritetreephys2(Bstruct file,const char *name,const Treephys2 *tree)
 
 static Bool fwritetreeturn(Bstruct file,const char *name,const Treeturn *tree)
 {
-  bstruct_writestruct(file,name);
+  bstruct_writebeginstruct(file,name);
   fwritestocks(file,"leaf",&tree->leaf);
   fwritestocks(file,"root",&tree->root);
   return bstruct_writeendstruct(file);
@@ -38,7 +38,7 @@ static Bool fwritetreeturn(Bstruct file,const char *name,const Treeturn *tree)
 
 static Bool fwritetreephyspar(Bstruct file,const char *name,const Treephyspar *tree)
 {
-  bstruct_writestruct(file,name);
+  bstruct_writebeginstruct(file,name);
   bstruct_writereal(file,"leaf",tree->leaf);
   bstruct_writereal(file,"sapwood",tree->sapwood);
   bstruct_writereal(file,"root",tree->root);

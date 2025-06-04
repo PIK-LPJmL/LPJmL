@@ -19,7 +19,7 @@
 
 static Bool fwritegrassphys(Bstruct file,const char *name,const Grassphys *grass)
 {
-  bstruct_writestruct(file,name);
+  bstruct_writebeginstruct(file,name);
   fwritestocks(file,"leaf",&grass->leaf);
   fwritestocks(file,"root",&grass->root);
   return bstruct_writeendstruct(file);
@@ -27,7 +27,7 @@ static Bool fwritegrassphys(Bstruct file,const char *name,const Grassphys *grass
 
 static Bool fwritegrassphyspar(Bstruct file,const char *name,const Grassphyspar *grass)
 {
-  bstruct_writestruct(file,name);
+  bstruct_writebeginstruct(file,name);
   bstruct_writereal(file,"leaf",grass->leaf);
   bstruct_writereal(file,"root",grass->root);
   return bstruct_writeendstruct(file);

@@ -29,6 +29,7 @@ void freeconfig(Config *config /**< LPJmL configuration */
                )
 {
   int i;
+  freeconfig_netcdf(&config->netcdf);
   free(config->cmd);
   free(config->json_filename);
   free(config->coupled_model);
@@ -49,8 +50,6 @@ void freeconfig(Config *config /**< LPJmL configuration */
   freefilename(&config->hydrotopes_filename);
   free(config->arglist);
   free(config->sim_name);
-  free(config->pft_index);
-  free(config->layer_index);
   free(config->json_suffix);
   freeattrs(config->global_attrs,config->n_global);
   if(config->with_lakes)

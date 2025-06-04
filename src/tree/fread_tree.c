@@ -21,7 +21,7 @@
 
 static Bool freadtreephys2(Bstruct file,const char *name,Treephys2 *tree)
 {
-  if(bstruct_readstruct(file,name))
+  if(bstruct_readbeginstruct(file,name))
     return TRUE;
   if(freadstocks(file,"leaf",&tree->leaf))
     return TRUE;
@@ -38,7 +38,7 @@ static Bool freadtreephys2(Bstruct file,const char *name,Treephys2 *tree)
 
 static Bool freadtreeturn(Bstruct file,const char *name,Treeturn *tree)
 {
-  if(bstruct_readstruct(file,name))
+  if(bstruct_readbeginstruct(file,name))
     return TRUE;
   if(freadstocks(file,"leaf",&tree->leaf))
     return TRUE;
@@ -49,7 +49,7 @@ static Bool freadtreeturn(Bstruct file,const char *name,Treeturn *tree)
 
 static Bool freadtreephyspar(Bstruct file,const char *name,Treephyspar *tree)
 {
-  if(bstruct_readstruct(file,name))
+  if(bstruct_readbeginstruct(file,name))
     return TRUE;
   readreal(file,"leaf",&tree->leaf);
   readreal(file,"sapwood",&tree->sapwood);

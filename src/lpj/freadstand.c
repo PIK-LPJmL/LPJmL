@@ -29,7 +29,7 @@ Stand *freadstand(Bstruct file, /**< pointer to restart file */
 {
   Stand *stand;
   Byte landusetype;
-  if(bstruct_readstruct(file,name))
+  if(bstruct_readbeginstruct(file,name))
     return NULL;
   stand=new(Stand);
   if(stand==NULL)

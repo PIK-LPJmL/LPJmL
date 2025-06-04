@@ -338,7 +338,7 @@ extern int *getsoilmap(Map *,const Config *);
 extern Bool fwritesoil(Bstruct,const char *,const Soil *,int);
 extern Bool fwritelitter(Bstruct,const char *,const Litter *);
 extern void getlag(Soil *,int);
-extern int getnsoilcode(const Filename *,unsigned int,Bool);
+extern int getnsoilcode(const Filename *,const Netcdf_config *,unsigned int,Bool);
 extern Soilstate getstate(Real *); /*temperature above/below/at T_zero?*/
 extern Bool initsoil(Stand *soil,const Soilpar *,int,const Config *);
 extern Real litter_agtop_sum(const Litter *);

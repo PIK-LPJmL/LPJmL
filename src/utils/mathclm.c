@@ -15,17 +15,17 @@
 #include "lpj.h"
 #include <sys/stat.h>
 
-#define USAGE "Usage: %s [-v] [-f] [-longheader] [-raw] [-metafile] [-json] [-type {byte|short|int|float|double}] {add|sub|mul|div|avg|max|min|repl|float|int} infile1.clm [{infile2.clm|value}] outfile.clm\n"
+#define USAGE "Usage: %s [-v] [-f] [-longheader] [-raw] [-metafile] [-json] [-type {byte|short|int|float|double}] {add|sub|mul|div|avg|max|min|repl|float|int|sum|tsum|tmean} infile1.clm [{infile2.clm|value}] outfile.clm\n"
 
 int main(int argc,char **argv)
 {
   Header header1,header2,header3;
-  int version,yr,cell,k;
+  int version,yr,cell,k,s,isum;
   Bool swap1,swap2,flag;
   String id;
   float *data1=NULL,*data2=NULL,*data3=NULL;
   int *idata1=NULL,*idata2=NULL,*idata3=NULL;
-  float value;
+  float value,sum;
   int iarg,ivalue,setversion;
   char *endptr;
   size_t size;
@@ -38,6 +38,7 @@ int main(int argc,char **argv)
   int n_attr;
   char *units=NULL,*long_name=NULL,*variable=NULL,*standard_name=NULL,*source=NULL,*history=NULL;
   char *units2=NULL;
+  const char *progname;
   Type grid_type,grid_type2;
   Filename grid_name,grid_name2;
   Type type=LPJ_SHORT;
@@ -45,7 +46,7 @@ int main(int argc,char **argv)
   int *cell_index,*cell_index2;
   char *out_name;
   Bool isvalue=FALSE,intvalue,isint=FALSE,ismeta,israw,isjson,isforce;
-  enum {ADD,SUB,MUL,DIV,AVG,MAX,MIN,REPL,FLOAT,INT} op;
+  enum {ADD,SUB,MUL,DIV,AVG,MAX,MIN,REPL,FLOAT,INT,SUM,TSUM,TMEAN} op;
   FILE *in1,*in2=NULL,*out;
   struct stat filestat;
   char c;
@@ -53,6 +54,7 @@ int main(int argc,char **argv)
   index=NOT_FOUND;
   ismeta=israw=isjson=isforce=FALSE;
   format=CLM;
+  progname=strippath(argv[0]);
   grid_name.name=NULL;
   grid_name2.name=NULL;
   for(iarg=1;iarg<argc;iarg++)
@@ -81,14 +83,14 @@ int main(int argc,char **argv)
         if(argc-1==iarg)
         {
           fprintf(stderr,"Argument missing for option '-type'.\n"
-                  USAGE,argv[0]);
+                  USAGE,progname);
           return EXIT_FAILURE;
         }
-        index=findstr(argv[++iarg],typenames,5);
+        index=findstr(argv[++iarg],typenames,N_TYPES);
         if(index==NOT_FOUND)
         {
           fprintf(stderr,"Invalid argument '%s' for option '-type'.\n"
-                  USAGE,argv[iarg],argv[0]);
+                  USAGE,argv[iarg],progname);
           return EXIT_FAILURE;
         }
         type=(Type)index;
@@ -96,7 +98,7 @@ int main(int argc,char **argv)
       else
       {
         fprintf(stderr,"Invalid option '%s'.\n",argv[iarg]);
-        fprintf(stderr,USAGE,argv[0]);
+        fprintf(stderr,USAGE,progname);
         return EXIT_FAILURE;
       }
     }
@@ -105,7 +107,7 @@ int main(int argc,char **argv)
   if(argc<iarg+3)
   {
     fprintf(stderr,"Missing argument(s).\n"
-            USAGE,argv[0]);
+            USAGE,progname);
     return EXIT_FAILURE;
   }
   if(!strcmp(argv[iarg],"add"))
@@ -128,16 +130,22 @@ int main(int argc,char **argv)
     op=FLOAT;
   else if(!strcmp(argv[iarg],"int"))
     op=INT;
+  else if(!strcmp(argv[iarg],"sum"))
+    op=SUM;
+  else if(!strcmp(argv[iarg],"tsum"))
+    op=TSUM;
+  else if(!strcmp(argv[iarg],"tmean"))
+    op=TMEAN;
   else
   {
     fprintf(stderr,"Invalid operator '%s'.\n",argv[iarg]);
-    fprintf(stderr,USAGE,argv[0]);
+    fprintf(stderr,USAGE,progname);
     return EXIT_FAILURE;
   }
-  if(op!=FLOAT && op!=INT && argc<iarg+4)
+  if(op!=FLOAT && op!=INT && op!=SUM && op!=TMEAN && op!=TSUM && argc<iarg+4)
   {
     fprintf(stderr,"Missing argument(s).\n"
-            USAGE,argv[0]);
+            USAGE,progname);
     return EXIT_FAILURE;
   }
   if(ismeta)
@@ -206,7 +214,7 @@ int main(int argc,char **argv)
         fprintf(stderr,"Warning: File size of '%s' does not match nbands*nstep*ncell*nyear.\n",argv[iarg+1]);
     }
   }
-  if(op!=FLOAT && op!=INT)
+  if(op!=FLOAT && op!=INT && op!=SUM && op!=TSUM && op!=TMEAN)
   {
     value=(float)strtod(argv[iarg+2],&endptr);
     if(op!=REPL && *endptr=='\0')
@@ -344,7 +352,7 @@ int main(int argc,char **argv)
     if(isvalue)
       isint=(intvalue && header1.datatype==LPJ_INT && header1.scalar==1);
     else
-      isint=(header1.datatype==LPJ_INT && header2.datatype==LPJ_INT && header1.scalar==1 && header2.scalar==1);
+      isint=(header1.datatype==LPJ_INT && header2.datatype==LPJ_INT && header1.scalar==1 && header2.scalar==1 && op!=TMEAN);
     if(isint)
     {
       idata1=newvec(int,header1.nbands*header1.nstep);
@@ -375,12 +383,49 @@ int main(int argc,char **argv)
     idata1=newvec(int,header1.nbands*header1.nstep);
     check(idata1);
   }
-  else
+  else if(op==FLOAT)
   {
     data1=newvec(float,header1.nbands*header1.nstep);
     check(data1);
   }
-  out_name=argv[iarg+((op==FLOAT || op==INT) ? 2 : 3)];
+  else if(op==TSUM)
+  {
+    if(isint)
+    {
+      idata1=newvec(int,header1.nbands);
+      check(idata1);
+      idata2=newvec(int,header1.nbands);
+      check(idata2);
+    }
+    else
+    {
+      data1=newvec(float,header1.nbands);
+      check(data1);
+      data2=newvec(float,header1.nbands);
+      check(data2);
+    }
+  }
+  else if(op==TMEAN)
+  {
+    data1=newvec(float,header1.nbands);
+    check(data1);
+    data2=newvec(float,header1.nbands);
+    check(data2);
+  }
+  else
+  {
+    if(isint)
+    {
+      idata1=newvec(int,header1.nbands);
+      check(idata1);
+    }
+    else
+    {
+      data1=newvec(float,header1.nbands);
+      check(data1);
+    }
+  }
+  out_name=argv[iarg+((op==FLOAT || op==INT || op==SUM || op==TSUM || op==TMEAN) ? 2 : 3)];
   if(!isforce)
   {
     if(!stat(out_name,&filestat))
@@ -403,10 +448,44 @@ int main(int argc,char **argv)
     header3.datatype=LPJ_INT;
     header3.scalar=header1.scalar;
   }
-  else
+  else if(op==FLOAT)
   {
     header3.scalar=1;
     header3.datatype=(op!=FLOAT && isint) ? LPJ_INT : LPJ_FLOAT;
+  }
+  else if(op==TSUM)
+  {
+    if(isint)
+    {
+      header3.datatype=LPJ_INT;
+      header3.scalar=header1.scalar;
+    }
+    else
+    {
+      header3.scalar=1;
+      header3.datatype=LPJ_FLOAT;
+    }
+    header3.nstep=1;
+  }
+  else if(op==TMEAN)
+  {
+    header3.scalar=1;
+    header3.datatype=LPJ_FLOAT;
+    header3.nstep=1;
+  }
+  else
+  {
+    if(isint)
+    {
+      header3.datatype=LPJ_INT;
+      header3.scalar=header1.scalar;
+    }
+    else
+    {
+      header3.scalar=1;
+      header3.datatype=LPJ_FLOAT;
+    }
+    header3.nbands=1;
   }
   if(format==CLM)
     fwriteheader(out,&header3,id,max(version,(ismeta) ? 4 : 3));
@@ -487,6 +566,142 @@ int main(int argc,char **argv)
           return EXIT_FAILURE;
         }
       }
+  }
+  else if(op==TSUM)
+  {
+    if(isint)
+    {
+      for(yr=0;yr<header1.nyear;yr++)
+        for(cell=0;cell<header1.ncell;cell++)
+        {
+          for(k=0;k<header1.nbands;k++)
+            idata2[k]=0;
+          for(s=0;s<header1.nstep;s++)
+          {
+            if(readintvec(in1,idata1,header1.nbands,swap1,header1.datatype))
+            {
+              fprintf(stderr,"Unexpected end of file in '%s' in year %d.\n",
+                      argv[iarg+1],yr+header1.firstyear);
+              return EXIT_FAILURE;
+            }
+            for(k=0;k<header1.nbands;k++)
+              idata2[k]+=idata1[k];
+          }
+          if(fwrite(idata2,sizeof(int),header1.nbands,out)!=header1.nbands)
+          {
+            fprintf(stderr,"Error writing '%s' in year %d.\n",
+                    argv[iarg+2],yr+header1.firstyear);
+            return EXIT_FAILURE;
+          }
+        }
+    }
+    else
+    {
+      for(yr=0;yr<header1.nyear;yr++)
+        for(cell=0;cell<header1.ncell;cell++)
+        {
+          for(k=0;k<header1.nbands;k++)
+            data2[k]=0;
+          for(s=0;s<header1.nstep;s++)
+          {
+            if(readfloatvec(in1,data1,header1.scalar,header1.nbands,swap1,header1.datatype))
+            {
+              fprintf(stderr,"Unexpected end of file in '%s' in year %d.\n",
+                      argv[iarg+1],yr+header1.firstyear);
+              return EXIT_FAILURE;
+            }
+            for(k=0;k<header1.nbands;k++)
+              data2[k]+=data1[k];
+          }
+          if(fwrite(data2,sizeof(float),header1.nbands,out)!=header1.nbands)
+          {
+            fprintf(stderr,"Error writing '%s' in year %d.\n",
+                    argv[iarg+2],yr+header1.firstyear);
+            return EXIT_FAILURE;
+          }
+        }
+    }
+  }
+  else if(op==TMEAN)
+  {
+    for(yr=0;yr<header1.nyear;yr++)
+      for(cell=0;cell<header1.ncell;cell++)
+      {
+        for(k=0;k<header1.nbands;k++)
+          data2[k]=0;
+        for(s=0;s<header1.nstep;s++)
+        {
+          if(readfloatvec(in1,data1,header1.scalar,header1.nbands,swap1,header1.datatype))
+          {
+            fprintf(stderr,"Unexpected end of file in '%s' in year %d.\n",
+                    argv[iarg+1],yr+header1.firstyear);
+            return EXIT_FAILURE;
+          }
+          for(k=0;k<header1.nbands;k++)
+            data2[k]+=data1[k];
+        }
+        for(k=0;k<header1.nbands;k++)
+          data2[k]/=header1.nstep;
+        if(fwrite(data2,sizeof(float),header1.nbands,out)!=header1.nbands)
+        {
+          fprintf(stderr,"Error writing '%s' in year %d.\n",
+                  argv[iarg+2],yr+header1.firstyear);
+          return EXIT_FAILURE;
+        }
+      }
+  }
+  else if(op==SUM)
+  {
+    if(isint)
+    {
+      for(yr=0;yr<header1.nyear;yr++)
+        for(cell=0;cell<header1.ncell;cell++)
+        {
+          for(s=0;s<header1.nstep;s++)
+          {
+            if(readintvec(in1,idata1,header1.nbands,swap1,header1.datatype))
+            {
+              fprintf(stderr,"Unexpected end of file in '%s' in year %d.\n",
+                      argv[iarg+1],yr+header1.firstyear);
+              return EXIT_FAILURE;
+            }
+            isum=0;
+            for(k=0;k<header1.nbands;k++)
+              isum+=idata1[k];
+          }
+          if(fwrite(&isum,sizeof(int),1,out)!=1)
+          {
+            fprintf(stderr,"Error writing '%s' in year %d.\n",
+                    argv[iarg+2],yr+header1.firstyear);
+            return EXIT_FAILURE;
+          }
+        }
+    }
+    else
+    {
+      for(yr=0;yr<header1.nyear;yr++)
+        for(cell=0;cell<header1.ncell;cell++)
+        {
+          for(s=0;s<header1.nstep;s++)
+          {
+            if(readfloatvec(in1,data1,header1.scalar,header1.nbands,swap1,header1.datatype))
+            {
+              fprintf(stderr,"Unexpected end of file in '%s' in year %d.\n",
+                      argv[iarg+1],yr+header1.firstyear);
+              return EXIT_FAILURE;
+            }
+            sum=0;
+            for(k=0;k<header1.nbands;k++)
+              sum+=data1[k];
+          }
+          if(fwrite(&sum,sizeof(float),1,out)!=1)
+          {
+            fprintf(stderr,"Error writing '%s' in year %d.\n",
+                    argv[iarg+2],yr+header1.firstyear);
+            return EXIT_FAILURE;
+          }
+        }
+    }
   }
   else if(isint)
     for(yr=0;yr<header1.nyear;yr++)
@@ -594,6 +809,8 @@ int main(int argc,char **argv)
                   idata3[k]=idata1[k];
               break;
             case FLOAT: case INT:
+              break;
+            default:
               break;
           } /* of switch */
         }
@@ -704,6 +921,8 @@ int main(int argc,char **argv)
               break;
             case FLOAT: case INT:
               break;
+            default:
+              break;
           } /* of switch */
         }
         /* write float data to file */
@@ -715,7 +934,7 @@ int main(int argc,char **argv)
         }
       }
   fclose(in1);
-  if(op!=FLOAT && !isvalue)
+  if(op!=FLOAT && op!=INT && op!=SUM && op!=TSUM && op!=TMEAN && !isvalue)
     fclose(in2);
   fclose(out);
   free(data1);

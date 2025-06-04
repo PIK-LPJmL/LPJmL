@@ -20,7 +20,7 @@
 
 Bool freadhydrotope(Bstruct file,const char *name, Hydrotope *hydrotopes)
 {
-  if(bstruct_readstruct(file,name))
+  if(bstruct_readbeginstruct(file,name))
     return TRUE;
   readreal(file,"wtable_mean",&hydrotopes->wtable_mean);
   readreal(file,"wtable_min",&hydrotopes->wtable_min);

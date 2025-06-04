@@ -36,7 +36,7 @@ Define include directory for the preprocessor of the configuration file.
 Name of configuration file.
 .TP
 \-check
-Check only restart file, do not print
+Check only restart file, do not print.
 .TP
 .I start
 Index of first grid cell to be printed.
@@ -52,18 +52,24 @@ Print restart file with configuration file lpjml.cjson with restart file located
 .PP
 .SH ENVIRONMENT
 .TP
+LPJNOPP
+Disables preprocessor if set to "true", same as -nopp option.
+.TP
+LPJPEDANTIC
+Enables pedantic mode if set to "true", same as -pedantic option.
+.TP
 LPJPREP
-defines preprocessor command for LPJmL configuration file, default is \fBcpp\fP.
+Defines preprocessor command for LPJmL configuration file, default is \fBcpp\fP.
 .TP
 LPJROOT
-defines the root directory for LPJmL. This directory is added to the
-include directories of the preprocessor
+Defines the root directory for LPJmL. This directory is added to the
+include directories of the preprocessor.
 .TP
 LPJINPATH
 Path appended to the input filenames. Only done for filenames without absolute path.
 .TP
 LPJOPTIONS
-runtime options for the preprocessor of LPJmL configuration files
+Runtime options for the preprocessor of LPJmL configuration files.
 .TP
 LPJRESTARTPATH
 Path appended to the restart filenames. Only done for filenames without absolute path.

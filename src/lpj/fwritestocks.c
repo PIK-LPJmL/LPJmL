@@ -21,7 +21,7 @@ Bool fwritestocks(Bstruct file,        /**< pointer to restart file */
                   const Stocks *stocks /**< stocks written to file */
                  )                     /** \return TRUE on error */
 {
-  bstruct_writestruct(file,name);
+  bstruct_writebeginstruct(file,name);
   bstruct_writereal(file,"carbon",stocks->carbon);
   bstruct_writereal(file,"nitrogen",stocks->nitrogen);
   return bstruct_writeendstruct(file);
@@ -34,7 +34,7 @@ Bool fwritestocksarray(Bstruct file,       /**< pointer to restart file */
                       )                    /** \return TRUE on error */
 {
   int i;
-  bstruct_writearray(file,name,size);
+  bstruct_writebeginarray(file,name,size);
   for(i=0;i<size;i++)
     fwritestocks(file,NULL,vec+i);
   return bstruct_writeendarray(file);

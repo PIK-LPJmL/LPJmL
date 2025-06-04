@@ -82,14 +82,14 @@ Bool fwriterestart(const Cell grid[],   /**< cell array               */
   if(isroot(*config))
   {
     /* write header in restart file */
-    bstruct_writestruct(file,"header");
+    bstruct_writebeginstruct(file,"header");
     bstruct_writestring(file,"version",getversion());
     bstruct_writestring(file,"sim_name",config->sim_name);
     time(&t);
     s=getsprintf("%s: %s",strdate(&t),config->arglist);
     bstruct_writestring(file,"history",s);
     free(s);
-    bstruct_writestruct(file,"global_attrs");
+    bstruct_writebeginstruct(file,"global_attrs");
     bstruct_writestring(file,"GIT_repo",getrepo());
     bstruct_writestring(file,"GIT_hash",gethash());
     /* write global attributes */
@@ -111,14 +111,14 @@ Bool fwriterestart(const Cell grid[],   /**< cell array               */
     bstruct_writebool(file,"river_routing",config->river_routing);
     bstruct_writebool(file,"separate_harvests",config->separate_harvests);
     /* write array of all PFT names */
-    bstruct_writearray(file,"pfts",npft+ncft);
+    bstruct_writebeginarray(file,"pfts",npft+ncft);
     for(p=0;p<npft+ncft;p++)
       bstruct_writestring(file,NULL,config->pftpar[p].name);
     bstruct_writeendarray(file);
     fwriteseed(file,"seed",config->seed);
     bstruct_writeendstruct(file);
     /* define array with index vector and get position of first element of index vector */
-    bstruct_writeindexarray(file,"grid",&filepos,config->nall);
+    bstruct_writebeginindexarray(file,"grid",&filepos,config->nall);
   }
   index=newvec(long long,config->ngridcell);
   check(index);
@@ -128,7 +128,7 @@ Bool fwriterestart(const Cell grid[],   /**< cell array               */
     fprintf(stderr,"ERROR153: Cannot write data in restart file '%s': %s\n",
             filename,strerror(errno));
     free(index);
-    bstruct_close(file);
+    bstruct_finish(file);
 #ifdef USE_MPI
     iserror=TRUE;
     if(config->rank<config->ntask-1)
@@ -150,13 +150,14 @@ Bool fwriterestart(const Cell grid[],   /**< cell array               */
   {
     /* send message to next task to write further data */
     MPI_Send(&iserror,1,MPI_INT,config->rank+1,MSGTAG,config->comm);
-    /* send file positiom ogf index vector */
+    /* send file position of index vector */
     MPI_Send(&filepos,1,MPI_LONG,config->rank+1,MSGTAG,config->comm);
+    /* send contents of hash */
     sendhash(bstruct_gethash(file),config->rank+1,config->comm);
     bstruct_freehash(file);
   }
 #endif
-  bstruct_close(file);
+  bstruct_finish(file);
 #ifdef USE_TIMING
 #ifdef USE_MPI
   MPI_Barrier(config->comm);

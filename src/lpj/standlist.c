@@ -24,7 +24,7 @@ Bool fwritestandlist(Bstruct file,              /**< pointer to restart file */
 {
   const Stand *stand;
   int s;
-  bstruct_writearray(file,key,standlist->n);
+  bstruct_writebeginarray(file,key,standlist->n);
   foreachstand(stand,s,standlist)
     if(fwritestand(file,NULL,stand,ntotpft))
       return TRUE;
@@ -61,7 +61,7 @@ Standlist freadstandlist(Bstruct file,          /**< pointer to restart file */
   /* Function reads stand list from file */
   int s,n;
   Standlist standlist;
-  if(bstruct_readarray(file,name,&n))
+  if(bstruct_readbeginarray(file,name,&n))
     return NULL;
   /* Read number of stands */
   standlist=newlist(n);

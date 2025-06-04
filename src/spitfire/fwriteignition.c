@@ -18,7 +18,7 @@
 
 Bool fwriteignition(Bstruct file,const char *name,const Ignition *ignition)
 {
-  bstruct_writestruct(file,name);
+  bstruct_writebeginstruct(file,name);
   bstruct_writereal(file,"nesterov_accum",ignition->nesterov_accum);
   bstruct_writereal(file,"nesterov_max",ignition->nesterov_max);
   bstruct_writeint(file,"nesterov_day",ignition->nesterov_day);

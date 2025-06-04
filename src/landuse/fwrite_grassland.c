@@ -19,7 +19,7 @@
 
 static Bool writerotation(Bstruct file,const char *name,const Rotation *rotation)
 {
-  bstruct_writestruct(file,name);
+  bstruct_writebeginstruct(file,name);
   bstruct_writeint(file,"grazing_days",rotation->grazing_days);
   bstruct_writeint(file,"recovery_dates",rotation->recovery_days);
   bstruct_writeint(file,"paddocks",rotation->paddocks);

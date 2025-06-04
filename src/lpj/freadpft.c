@@ -21,7 +21,7 @@
 
 static Bool freadphen_gsi(Bstruct file,const char *name,Phenology *phen_gsi)
 {
-  if(bstruct_readstruct(file,name))
+  if(bstruct_readbeginstruct(file,name))
     return TRUE;
   if(bstruct_readreal(file,"tmin",&phen_gsi->tmin))
     return TRUE;
@@ -44,7 +44,7 @@ Bool freadpft(Bstruct file,          /**< pointer to restart file */
 {
   int id;
 
-  if(bstruct_readstruct(file,NULL))
+  if(bstruct_readbeginstruct(file,NULL))
     return TRUE;
   if(bstruct_readint(file,"id",&id))
     return TRUE;

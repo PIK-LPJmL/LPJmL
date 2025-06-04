@@ -29,9 +29,9 @@
 #define NTYPES 3
 #define NSTANDTYPES 15 /* number of stand types */
 
-#define USAGE "Usage: %s [-h] [-v]  [-nopp] [-pp cmd] [-inpath dir] [-restartpath dir]\n"\
+#define USAGE "\nUsage: %s [-h] [-v]  [-nopp] [-pp cmd] [-inpath dir] [-restartpath dir]\n"\
               "       [[-Dmacro[=value]] [-Idir] ...] filename [-check] [start [end]]\n"
-
+#define LPJ_USAGE USAGE "\nTry \"%s --help\" for more information.\n"
 
 static Bool printgrid(Config *config, /* Pointer to LPJ configuration */
                       Standtype standtype[],
@@ -184,7 +184,7 @@ static Bool printgrid(Config *config, /* Pointer to LPJ configuration */
       printcell(&grid,1,npft,ncft,config);
     freecell(&grid,npft,config);
   } /* of for(i=0;...) */
-  bstruct_close(file_restart);
+  bstruct_finish(file_restart);
   closecelldata(celldata,config);
   if(config->countrypar!=NULL)
   {
@@ -219,7 +219,7 @@ int main(int argc,char **argv)
                 progname);
       fputs("\n     ",stdout);
       repeatch('=',rc);
-      printf("\n\nPrint content of restart files for LPJmL %s\n\n",getversion());
+      printf("\n\nPrint content of restart files for LPJmL %s\n",getversion());
       printf(USAGE,progname);
       printf("\nArguments:\n"
              "-h,--help        print this help text\n"
@@ -252,7 +252,7 @@ int main(int argc,char **argv)
   title[3]="see COPYRIGHT file";
   banner(title,4,78);
   initconfig(&config);
-  if(readconfig(&config,scanfcn,NTYPES,NOUT,&argc,&argv,USAGE))
+  if(readconfig(&config,scanfcn,NTYPES,NOUT,&argc,&argv,LPJ_USAGE))
     fail(READ_CONFIG_ERR,TRUE,FALSE,"Cannot process configuration file");
   printf("Simulation: %s\n",config.sim_name);
   config.ischeckpoint=ischeckpointrestart(&config) && getfilesize(config.checkpoint_restart_filename)!=-1;
