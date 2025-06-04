@@ -423,7 +423,7 @@ static void regrowth(Cell *cell, /* pointer to cell */
       natstand=getstand(cell->standlist,s);
       mixsoil(natstand,mixstand,year,npft+ncft,config);
       mixstand->slope_mean=(mixstand->slope_mean*mixstand->frac+natstand->slope_mean*natstand->frac)/(mixstand->frac+natstand->frac);
-      mixstand->Hag_Beta=min(1,(0.06*log(mixstand->slope_mean+0.1)+0.22)/0.43);
+      mixstand->Hag_Beta=min(1,(0.06*log(tan(mixstand->slope_mean*M_PI/180)*100+0.1)+0.22)/0.43);
       foreachpft(pft,p,&natstand->pftlist)
         mix_veg(pft,natstand->frac/(natstand->frac-difffrac));
       natstand->frac+=mixstand->frac;
@@ -605,7 +605,7 @@ static void landexpansion(Cell *cell,            /* cell pointer */
         wetstand=getstand(cell->standlist,s);
         if(wetstand->frac<=epsilon-difffrac)
         {                                                     /*setaside stand has not enough space for grassland expansion*/
-          if(mixstand==NULL || mixstand->type->landusetype==KILL)
+          if(mixstand==NULL || mixstand->type->landusetype==KILL) /* in case only setaside_wetland found or other setaside stands are to small*/
           {
             if(mixstand==NULL)
             {
@@ -633,11 +633,8 @@ static void landexpansion(Cell *cell,            /* cell pointer */
           {
             old_mixfrac=mixstand->frac;
             mixsoil(mixstand,wetstand,year,npft+ncft,config);
-            if(irrigation)
-             mixstand->slope_mean=(mixstand->slope_mean*mixstand->frac+wetstand->slope_mean*wetstand->frac)/(mixstand->frac+wetstand->frac)*0.8; //needs to be adjusted more sophisticated
-            else
-              mixstand->slope_mean=((mixstand->slope_mean*mixstand->frac+wetstand->slope_mean*wetstand->frac)/(mixstand->frac+wetstand->frac));
-            mixstand->Hag_Beta=min(1,(0.06*log(mixstand->slope_mean+0.1)+0.22)/0.43);
+            mixstand->slope_mean=(mixstand->slope_mean*mixstand->frac+wetstand->slope_mean*wetstand->frac)/(mixstand->frac+wetstand->frac);
+            mixstand->Hag_Beta=min(1,(0.06*log(tan(mixstand->slope_mean*M_PI/180)*100+0.1)+0.22)/0.43);
             foreachpft(pft,p,&mixstand->pftlist)
                 mix_veg(pft,mixstand->frac/(mixstand->frac+wetstand->frac));
             difffrac=-wetstand->frac;
@@ -695,8 +692,8 @@ static void landexpansion(Cell *cell,            /* cell pointer */
             difffrac=0;
          }
        }
-      }
-    }
+      } /* of s!= NOT_FOUND */
+    } /* of difffrac<-epsilon */
     if(grassstand!=NULL)
     {
       if(mixstand2!=NULL)
@@ -708,16 +705,14 @@ static void landexpansion(Cell *cell,            /* cell pointer */
         delstand(cell->standlist,pos);
       }
       mixsoil(grassstand,mixstand,year,npft+ncft,config);
-      if(irrigation)
-       mixstand->slope_mean=(mixstand->slope_mean*mixstand->frac+grassstand->slope_mean*grassstand->frac)/(mixstand->frac+grassstand->frac)*0.8; //needs to be adjusted more sophisticated, grassstand needs to be adjusted as well
-      else
-        mixstand->slope_mean=((mixstand->slope_mean*mixstand->frac+grassstand->slope_mean*grassstand->frac)/(mixstand->frac+grassstand->frac));
-      mixstand->Hag_Beta=min(1,(0.06*log(mixstand->slope_mean+0.1)+0.22)/0.43);
+      mixstand->slope_mean=(mixstand->slope_mean*mixstand->frac+grassstand->slope_mean*grassstand->frac)/(mixstand->frac+grassstand->frac);
+      mixstand->Hag_Beta=min(1,(0.06*log(tan(mixstand->slope_mean*M_PI/180)*100+0.1)+0.22)/0.43);
       foreachpft(pft,p,&grassstand->pftlist)
         mix_veg(pft,grassstand->frac/(grassstand->frac-difffrac2));
       data=grassstand->data;
       data->irrig_stor*=grassstand->frac/(grassstand->frac-difffrac2);
       data->irrig_amount*=grassstand->frac/(grassstand->frac-difffrac2);
+      data->irrigation=irrigation;
       grassstand->frac+=mixstand->frac;
       foreachstand(stand,s,cell->standlist)
         if(stand->type->landusetype==KILL)
@@ -745,6 +740,8 @@ static void landexpansion(Cell *cell,            /* cell pointer */
           mixstand->type->freestand(mixstand);
           mixstand->type=&grassland_stand;
           mixstand->type->newstand(mixstand);
+          data=mixstand->data;
+          data->irrigation=irrigation;
           break;
         case OTHER_PASTURE:
           if(!config->others_to_crop)
@@ -767,6 +764,8 @@ static void landexpansion(Cell *cell,            /* cell pointer */
             mixstand->type->freestand(mixstand);
             mixstand->type=&others_stand;
             mixstand->type->newstand(mixstand);
+            data=mixstand->data;
+            data->irrigation=irrigation;
           }
           break;
         case BIOMASS_TREE_PLANTATION:
@@ -971,6 +970,7 @@ static void grasslandreduction(Cell *cell,            /* cell pointer */
 
     data->irrig_stor=0;
     data->irrig_amount=0;
+    data->irrigation=FALSE;
 
     cutpfts(grassstand,config);
     /*force one tillage event on new stand upon cultivation of previous grassland,  */
@@ -1380,7 +1380,7 @@ void landusechange(Cell *cell,          /**< pointer to cell */
   Real cropfrac;
   Real sum[2],sum_wl; /* rainfed, irrigated */
   int s,s2,pos;
-  Bool i,p;
+  int i,p;
 #if defined IMAGE && defined COUPLED
   int nnat;
   Real timberharvest=0;
@@ -1534,25 +1534,17 @@ void landusechange(Cell *cell,          /**< pointer to cell */
 #endif
 
   difffrac_rice=(config->rice_pft==NOT_FOUND) ? 0.0 : cell->ml.landfrac[1].crop[config->rice_pft-npft]+cell->ml.landfrac[0].crop[config->rice_pft-npft]-sum_wl;
+  // FIRST CONVERTION OF WETLANDS BECAUSE RICE SHOULD BE PREFERRED
+  if(difffrac_rice<=-epsilon)
+    regrowth(cell,difffrac_rice,npft,TRUE,TRUE,ncft,year,config);        /*regrowth*/
+  else if(difffrac_rice>=epsilon && cell->lakefrac+cell->ml.reservoirfrac+cell->ml.cropfrac_rf+cell->ml.cropfrac_ir+cell->ml.cropfrac_wl<(1-epsilon))
+    deforest(cell,difffrac_rice,intercrop,npft,FALSE,TRUE,TRUE,ncft,year,minnatfrac_luc,config);  /*deforestation  letzte wieder TRUE"""""""!!!!!!!!!!!!*/
 
   for(i=0;i<2;i++)
   {
     cropfrac=0;
     cropfrac= i==0 ? cell->ml.cropfrac_rf : cell->ml.cropfrac_ir;
-    grassfrac=cell->ml.landfrac[i].grass[0]+cell->ml.landfrac[i].grass[1]; /* pasture + others */
-
     difffrac=(crop_sum_frac(cell->ml.landfrac,ncft,config->nagtree,cell->ml.reservoirfrac+cell->lakefrac,i)-((config->rice_pft==NOT_FOUND) ? 0.0 : cell->ml.landfrac[i].crop[config->rice_pft-npft])-cropfrac); /*  added the resfrac, see function AND replaced to BEFORE next three lines */
-
-
-    // FIRST CONVERTION OF WETLANDS BECAUSE RICE SHOULD BE PREFERRED
-    if(i==0)
-    {
-      if(difffrac_rice<=-epsilon)
-        regrowth(cell,difffrac_rice,npft,i,TRUE,ncft,year,config);        /*regrowth*/
-      else if(difffrac_rice>=epsilon && cell->lakefrac+cell->ml.reservoirfrac+cell->ml.cropfrac_rf+cell->ml.cropfrac_ir+cell->ml.cropfrac_wl<(1-epsilon))
-        deforest(cell,difffrac_rice,intercrop,npft,FALSE,i,TRUE,ncft,year,minnatfrac_luc,config);  /*deforestation  letzte wieder TRUE"""""""!!!!!!!!!!!!*/
-    }
-
     if(difffrac<=-epsilon)
       regrowth(cell,difffrac,npft,i,FALSE,ncft,year,config);        /*regrowth*/
     else if(difffrac>=epsilon && cell->lakefrac+cell->ml.reservoirfrac+cell->ml.cropfrac_rf+cell->ml.cropfrac_ir+cell->ml.cropfrac_wl<(1-epsilon))

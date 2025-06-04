@@ -36,7 +36,7 @@
 #define HEIGHT_MAX 100.0  /* maximum height of trees */
 #define REPROD_COST 0.1 /* reproduction cost */
 #define K_EST 0.12 /* maximum overall sapling establishment rate (indiv/m2) */
-#define MORT_MAX 0.02
+#define MORT_MAX 0.015
 #define MORT_MAX_GRASS 0.00
 #define FN_TURNOVER 0.2      /* fraction of N not recovered before turnover */
 #define FN_TURNOVER_EV_BR 0.6   /* fraction of N not recovered before turnover */
@@ -96,7 +96,7 @@
       "cultivation_type" : "none", /* cultivation_type */
       "nfixing" : true,           /* N fixing in Ma et al., 2022 appraoch */
       "cn" : [30.0, 55.0, 70.0, 77.0], /* curve number */
-      "beta_root" : 0.952,    /* beta_root original 0.962*/
+      "beta_root" : 0.942,    /* beta_root original 0.962*/
       "minwscal" : 0.0,       /* minwscal 3*/
       "gmin"  : 1.6,          /* gmin 4*/
       "respcoeff" : 0.2,      /* respcoeff 5*/
@@ -120,7 +120,7 @@
       "albedo_stem" : 0.1,    /* albedo of stems */
       "albedo_litter" : 0.1,  /* albedo of litter */
       "snowcanopyfrac" : 0.4, /* maximum snow coverage in green canopy */
-      "lightextcoeff" : 0.5,  /* lightextcoeff, light extinction coeffcient in Lambert-Beer equation */
+      "lightextcoeff" : 0.6,  /* lightextcoeff, light extinction coeffcient in Lambert-Beer equation */
       "tmin" :
       {
         "slope" : 1.01,       /* new phenology: slope of cold-temperature limiting function */
@@ -212,14 +212,14 @@
       "cultivation_type" : "none", /* cultivation_type */
       "nfixing" : true,           /* N fixing in Ma et al., 2022 appraoch */
       "cn" : [30.0, 55.0, 70.0, 77.0], /* curve number */
-      "beta_root" : 0.952,    /* beta_root original 0.962*/
+      "beta_root" : 0.942,    /* beta_root original 0.962*/
       "minwscal" : 0.0,       /* minwscal 3*/
       "gmin"  : 1.6,          /* gmin 4*/
       "respcoeff" : 0.2,      /* respcoeff 5*/
       "nmax" : 100.0,         /* nmax 7*/
       "resist" : 0.12,        /* resist 8*/
       "longevity" : 1.6,      /* leaf longevity 10*/
-      "sla" : 0.025,         /* specific leaf area */
+      "sla" : 0.01986,         /* specific leaf area */
       "lmro_ratio" : 1.2,     /* lmro_ratio 18*/
       "lmro_offset" : 0.5,     /* lmro_ratio 18*/
       "ramp" : 1000.0,         /* ramp 19*/
@@ -230,13 +230,13 @@
       "gddbase" : 5.0,        /* gddbase (deg C) 33*/
       "min_temprange" : -1000.0, /* min_temprange 34*/
       "emax": 10.0,            /* emax 35*/
-      "intc" : 0.04,          /* intc 36*/
+      "intc" : 0.02,          /* intc 36*/
       "alphaa" : ALPHAA, /* alphaa, fraction of PAR assimilated at ecosystem level, relative to leaf level */
       "albedo_leaf" : 0.13,   /* albedo of green leaves */
       "albedo_stem" : 0.1,    /* albedo of stems */
       "albedo_litter" : 0.1,  /* albedo of litter */
       "snowcanopyfrac" : 0.4, /* maximum snow coverage in green canopy */
-      "lightextcoeff" : 0.5,  /* lightextcoeff, light extinction coeffcient in Lambert-Beer equation */
+      "lightextcoeff" : 0.6,  /* lightextcoeff, light extinction coeffcient in Lambert-Beer equation */
       "tmin" :
       {
         "slope" : 1.01,       /* new phenology: slope of cold-temperature limiting function */
@@ -286,7 +286,7 @@
       "windspeed_dampening" : 0.4, /* windspeed dampening */
       "roughness_length" : 2.0,  /* roughness length */
       "ist_m" : 0.5,             /* inundation stress threshold [m] */
-      "idt_d" : 80.0,             /* inundation duration threshold [days] */
+      "idt_d" : 300.0,             /* inundation duration threshold [days] */
       "alpha_e" : 0.7,             /* ebullition suppression factor */
       "irrig_threshold" : { "dry" : IRRIG_THRESHOLD_C3_DRY, "humid" : IRRIG_THRESHOLD_C3_HUMID },
       "leaftype" : "broadleaved",  /* leaftype */
@@ -345,14 +345,14 @@
       "twmax_daily" : 1000.0,  /* twmax_daily 31*/
       "gddbase" : 5.0,        /* gddbase (deg C) 33*/
       "min_temprange" : -1000.0, /* min_temprange 34*/
-      "emax": 10.0,            /* emax 35*/
+      "emax": 8.0,            /* emax 35*/
       "intc" : 0.02,          /* intc 36*/
       "alphaa" : ALPHAA, /* alphaa, fraction of PAR assimilated at ecosystem level, relative to leaf level */
       "albedo_leaf" : 0.14,   /* albedo of green leaves */
       "albedo_stem" : 0.1,   /* albedo of stems */
       "albedo_litter" : 0.1, /* albedo of litter */
       "snowcanopyfrac" : 0.5, /* maximum snow coverage in green canopy */
-      "lightextcoeff" : 0.5,  /* lightextcoeff, light extinction coeffcient in Lambert-Beer equation */
+      "lightextcoeff" : 0.6,  /* lightextcoeff, light extinction coeffcient in Lambert-Beer equation */
       "tmin" :
       {
         "slope" : 0.24,       /* new phenology: slope of cold-temperature limiting function */
@@ -517,7 +517,7 @@
       "fn_turnover" : FN_TURNOVER_EV, /* fraction of N not recovered before turnover */
       "windspeed_dampening" : 0.4,  /* windspeed dampening */
       "roughness_length" : 1.0,     /* roughness length */
-      "ist_m" : -0.25,             /* inundation stress threshold [m] */
+      "ist_m" : -0.4,             /* inundation stress threshold [m] */
       "idt_d" : 15.0,             /* inundation duration threshold [days] */
       "alpha_e" : 0.7,             /* ebullition suppression factor */
       "irrig_threshold" : { "dry" : IRRIG_THRESHOLD_C3_DRY, "humid" : IRRIG_THRESHOLD_C3_HUMID },
@@ -633,7 +633,7 @@
       "fn_turnover" : FN_TURNOVER_EV_BR, /* fraction of N not recovered before turnover */
       "windspeed_dampening" : 0.4,  /* windspeed dampening */
       "roughness_length" : 1.0, /* roughness length */
-      "ist_m" : -0.25,            /* inundation stress threshold [m] */
+      "ist_m" : -0.4,            /* inundation stress threshold [m] */
       "idt_d" : 15.0,             /* inundation duration threshold [days] */
       "alpha_e" : 0.7,             /* ebullition suppression factor */
       "irrig_threshold" : { "dry" : IRRIG_THRESHOLD_C3_DRY, "humid" : IRRIG_THRESHOLD_C3_HUMID },
@@ -812,7 +812,7 @@
       "gddbase" : 5.0,        /* gddbase (deg C) 33*/
       "min_temprange" : -1000.0, /* min_temprange 34*/
       "emax": 7.0, //7.0,            /* emax 35*/
-      "intc" : 0.04,          /* intc 36*/
+      "intc" : 0.06,          /* intc 36*/
       "alphaa" : ALPHAA, /* alphaa, fraction of PAR assimilated at ecosystem level, relative to leaf level */
       "albedo_leaf" : 0.18,   /* albedo of green leaves */
       "albedo_stem" : 0.1,    /* albedo of stems */
@@ -928,7 +928,7 @@
       "gddbase" : 5.0,        /* gddbase (deg C) 33*/
       "min_temprange" : -1000.0, /* min_temprange 34*/
       "emax": 7.0,            /* emax 35*/
-      "intc" : 0.06,          /* intc 36*/
+      "intc" : 0.04,          /* intc 36*/
       "alphaa" : ALPHAA, /* alphaa, fraction of PAR assimilated at ecosystem level, relative to leaf level */
       "albedo_leaf" : 0.18,   /* albedo of green leaves */
       "albedo_stem" : 0.1,    /* albedo of stems */
@@ -983,8 +983,8 @@
       "fn_turnover" : FN_TURNOVER, /* fraction of N not recovered before turnover */
       "windspeed_dampening" : 0.4,  /* windspeed dampening */
       "roughness_length" : 1.0,     /* roughness length */
-      "ist_m" : -0.25,             /* inundation stress threshold [m] */
-      "idt_d" : 20.0,             /* inundation duration threshold [days] */
+      "ist_m" : -0.2,             /* inundation stress threshold [m] */
+      "idt_d" : 25.0,             /* inundation duration threshold [days] */
       "alpha_e" : 0.6,             /* ebullition suppression factor */
       "irrig_threshold" : { "dry" : IRRIG_THRESHOLD_C3_DRY, "humid" : IRRIG_THRESHOLD_C3_HUMID },
       "leaftype" : "broadleaved",/* leaftype */
@@ -1101,7 +1101,7 @@
       "fn_turnover" : FN_TURNOVER, /* fraction of N not recovered before turnover */
       "windspeed_dampening" : 0.4,  /* windspeed dampening */
       "roughness_length" : 1.0,     /* roughness length */
-      "ist_m" : -0.2,             /* inundation stress threshold [m] */
+      "ist_m" : -0.3,             /* inundation stress threshold [m] */
       "idt_d" : 20.0,             /* inundation duration threshold [days] */
       "alpha_e" : 0.4,             /* ebullition suppression factor */
       "irrig_threshold" : { "dry" : IRRIG_THRESHOLD_C3_DRY, "humid" : IRRIG_THRESHOLD_C3_HUMID },
@@ -1149,7 +1149,7 @@
       "beta_root" : 0.972,    /* beta_root */
       "minwscal" : 0.20,      /* minwscal 3*/
       "gmin"  : 1.5,          /* gmin 4*/
-      "respcoeff" : 0.2,      /* respcoeff 5*/
+      "respcoeff" : 0.5,      /* respcoeff 5*/
       "nmax" : 100.0,          /* nmax 7*/
       "resist" : 0.01,        /* resist 8*/
       "longevity" : 0.4,      /* leaf longevity 10*/
@@ -1170,7 +1170,7 @@
       "albedo_stem" : 0.15,   /* albedo of stems */
       "albedo_litter" : 0.1,  /* albedo of litter */
       "snowcanopyfrac" : 0.4, /* maximum snow coverage in green canopy */
-      "lightextcoeff" : 0.4,  /* lightextcoeff, light extinction coeffcient in Lambert-Beer equation */
+      "lightextcoeff" : 0.6,  /* lightextcoeff, light extinction coeffcient in Lambert-Beer equation */
       "tmin" :
       {
         "slope" : 0.91,       /* new phenology: slope of cold-temperature limiting function */
@@ -1219,7 +1219,7 @@
       "fn_turnover" : FN_TURNOVER_GR, /* fraction of N not recovered before turnover */
       "windspeed_dampening" : 0.6,/* windspeed dampening */
       "roughness_length" : 0.03,  /* roughness length */
-      "ist_m" : -0.1,             /* inundation stress threshold [m] */
+      "ist_m" : -0.2,             /* inundation stress threshold [m] */
       "idt_d" : 20.0,             /* inundation duration threshold [days] */
       "alpha_e" : 0.3,             /* ebullition suppression factor */
       "irrig_threshold" : { "dry" : IRRIG_THRESHOLD_C4, "humid" : IRRIG_THRESHOLD_C4 },
@@ -1247,7 +1247,7 @@
       "beta_root" : 0.943,    /* beta_root */
       "minwscal" : 0.20,      /* minwscal 3*/
       "gmin"  : 0.8,          /* gmin 4*/
-      "respcoeff" : 0.8,      /* respcoeff 5*/
+      "respcoeff" : 0.5,      /* respcoeff 5*/
       "nmax" : 100.0,          /* nmax 7*/
       "resist" : 0.01,        /* resist 8*/
       "longevity" : 0.35,     /* leaf longevity 10*/
@@ -1268,7 +1268,7 @@
       "albedo_stem" : 0.15,   /* albedo of stems */
       "albedo_litter" : 0.1,  /* albedo of litter */
       "snowcanopyfrac" : 0.4, /* maximum snow coverage in green canopy */
-      "lightextcoeff" : 0.5,  /* lightextcoeff, light extinction coeffcient in Lambert-Beer equation */
+      "lightextcoeff" : 0.6,  /* lightextcoeff, light extinction coeffcient in Lambert-Beer equation */
       "tmin" :
       {
         "slope" : 0.3111,     /* new phenology: slope of cold-temperature limiting function */
@@ -1317,7 +1317,7 @@
       "fn_turnover" : FN_TURNOVER_GR, /* fraction of N not recovered before turnover */
       "windspeed_dampening" : 0.6, /* windspeed dampening */
       "roughness_length" : 0.03,   /* roughness length */
-      "ist_m" : -0.1,             /* inundation stress threshold [m] */
+      "ist_m" : -0.2,             /* inundation stress threshold [m] */
       "idt_d" : 20.0,             /* inundation duration threshold [days] */
       "alpha_e" : 0.3,             /* ebullition suppression factor */
       "irrig_threshold" : { "dry" : IRRIG_THRESHOLD_C3_DRY, "humid" : IRRIG_THRESHOLD_C3_HUMID },
@@ -1415,7 +1415,7 @@
       "fn_turnover" : FN_TURNOVER_GR, /* fraction of N not recovered before turnover */
       "windspeed_dampening" : 0.6,  /* windspeed dampening */
       "roughness_length" : 0.03,    /* roughness length */
-      "ist_m" : -0.1,             /* inundation stress threshold [m] */
+      "ist_m" : -0.2,             /* inundation stress threshold [m] */
       "idt_d" : 15.0,             /* inundation duration threshold [days] */
       "alpha_e" : 0.3,             /* ebullition suppression factor */
       "irrig_threshold" : { "dry" : IRRIG_THRESHOLD_C3_DRY, "humid" : IRRIG_THRESHOLD_C3_HUMID },
@@ -1440,10 +1440,10 @@
       "cultivation_type" : "none", /* cultivation_type */
       "nfixing" : false,           /* no N fixing */
       "cn" : [39.0, 61.0, 74.0, 80.0], /* curve number */
-      "beta_root" : 0.95,     /* beta_root */
+      "beta_root" : 0.93,     /* beta_root */
       "minwscal" : 0.10,      /* minwscal 3*/
       "gmin"  : 0.2,          /* gmin 4*/
-      "respcoeff" : 0.6,      /* respcoeff 5*/
+      "respcoeff" : 0.2,      /* respcoeff 5*/
       "nmax" : 30.0,          /* nmax 7*/
       "resist" : 0.01,        /* resist 8*/
       "longevity" : 0.2,     /* leaf longevity 10*/
@@ -1464,7 +1464,7 @@
       "albedo_stem" : 0.1,    /* albedo of stems */
       "albedo_litter" : 0.1,  /* albedo of litter */
       "snowcanopyfrac" : 0.4, /* maximum snow coverage in green canopy */
-      "lightextcoeff" : 0.5,  /* lightextcoeff, light extinction coeffcient in Lambert-Beer equation */
+      "lightextcoeff" : 0.6,  /* lightextcoeff, light extinction coeffcient in Lambert-Beer equation */
       "tmin" :
       {
         "slope" : 0.3111,     /* new phenology: slope of cold-temperature limiting function */
@@ -1503,7 +1503,7 @@
       "emission_factor" : { "co2" : 1568.0, "co" :  106.0, "ch4" : 4.80, "voc" : 5.70, "tpm" : 17.60, "nox" : 3.240}, /* emission factors */
       "aprec_min" : APREC_MIN,/* minimum annual precipitation to establish */
       "flam" : FLAM_GRASS,     /* flam */
-      "k_litter10" : { "leaf" : 1.2, "wood" : 1.2 }, /* K_LITTER10 turnover rate after Brovkin etal 2012*/
+      "k_litter10" : { "leaf" : 0.8, "wood" : 0.8 }, /* K_LITTER10 turnover rate after Brovkin etal 2012*/
       "k_litter10_q10_wood" : 1.0, /* Q10_wood */
       "vmax_up" : 5.51,             /* vmax_up, Maximum N uptake capacity per unit fine root mass, Smith et al. 2014 */
       "kNmin": 0.05,                /* kNmin, Rate of N uptake not associated with Michaelis-Menten Kinetics, Zaehle&Friend 2000 */
@@ -1514,7 +1514,7 @@
       "windspeed_dampening" : 0.6,  /* windspeed dampening */
       "roughness_length" : 0.03,    /* roughness length */
       "ist_m" : 0.2,             /* inundation stress threshold [m] */
-      "idt_d" : 55.0,             /* inundation duration threshold [days] */
+      "idt_d" : 200.0,             /* inundation duration threshold [days] */
       "alpha_e" : 0.7,             /* ebullition suppression factor */
       "irrig_threshold" : { "dry" : IRRIG_THRESHOLD_C3_DRY, "humid" : IRRIG_THRESHOLD_C3_HUMID },
       "turnover" : {"leaf" : 1.0, "root" : 2.0}, /* turnover leaf  root 9 12*/
@@ -1538,10 +1538,10 @@
       "cultivation_type" : "none", /* cultivation_type */
       "nfixing" : false,           /* no N fixing */
       "cn" : [39.0, 61.0, 74.0, 80.0], /* curve number */
-      "beta_root" : 0.95,     /* beta_root */
+      "beta_root" : 0.90,     /* beta_root */
       "minwscal" : 0.0,       /* minwscal 3*/
       "gmin"  : 0.2,          /* gmin 4*/
-      "respcoeff" : 0.2,      /* respcoeff 5*/
+      "respcoeff" : 0.1,      /* respcoeff 5*/
       "nmax" : 20.0,          /* nmax 7*/
       "resist" : 0.01,        /* resist 8*/
       "longevity" : 0.2,     /* leaf longevity 10*/
@@ -1562,7 +1562,7 @@
       "albedo_stem" : 0.1,    /* albedo of stems */
       "albedo_litter" : 0.1,  /* albedo of litter */
       "snowcanopyfrac" : 0.4, /* maximum snow coverage in green canopy */
-      "lightextcoeff" : 0.5,  /* lightextcoeff, light extinction coeffcient in Lambert-Beer equation */
+      "lightextcoeff" : 0.6,  /* lightextcoeff, light extinction coeffcient in Lambert-Beer equation */
       "tmin" :
       {
         "slope" : 0.13,       /* new phenology: slope of cold-temperature limiting function */
@@ -2679,7 +2679,7 @@
       "beta_root" : 0.94,    /* beta_root */
       "minwscal" : 0.30,      /* minwscal 3*/
       "gmin"  :1.0,          /* gmin 4*/
-      "respcoeff" : 0.6,      /* respcoeff 5*/
+      "respcoeff" : 0.8,      /* respcoeff 5*/
       "nmax" : 100.0,          /* nmax 7*/
       "resist" : 0.5,         /* resist 8*/
       "longevity" : 0.5,      /* leaf longevity 10*/
@@ -2792,10 +2792,10 @@
       "cultivation_type" : "annual crop", /* cultivation_type */
       "nfixing" : false,           /* No N fixing in Ma et al., 2022 appraoch */
       "cn" : [60.0, 72.0, 80.0, 84.0], /* curve number */
-      "beta_root" : 0.94,    /* beta_root */
+      "beta_root" : 0.91,    /* beta_root */
       "minwscal" : 0.30,      /* minwscal 3*/
       "gmin"  :1.6,          /* gmin 4*/
-      "respcoeff" : 0.6,      /* respcoeff 5*/
+      "respcoeff" : 0.8,      /* respcoeff 5*/
       "nmax" : 100.0,          /* nmax 7*/
       "resist" : 0.5,         /* resist 8*/
       "longevity" : 0.33,     /* leaf longevity 10*/
@@ -2911,7 +2911,7 @@
       "beta_root" : 0.94,    /* beta_root */
       "minwscal" : 0.30,      /* minwscal 3*/
       "gmin"  :1.2,          /* gmin 4*/
-      "respcoeff" : 0.6,      /* respcoeff 5*/
+      "respcoeff" : 0.8,      /* respcoeff 5*/
       "nmax" : 100.0,          /* nmax 7*/
       "resist" : 0.5,         /* resist 8*/
       "longevity" : 0.33,     /* leaf longevity 10*/
@@ -3027,7 +3027,7 @@
       "beta_root" : 0.94,    /* beta_root */
       "minwscal" : 0.30,      /* minwscal 3*/
       "gmin"  :1.6,          /* gmin 4*/
-      "respcoeff" : 0.6,      /* respcoeff 5*/
+      "respcoeff" : 0.8,      /* respcoeff 5*/
       "nmax" : 100.0,          /* nmax 7*/
       "resist" : 0.5,         /* resist 8*/
       "longevity" : 0.5,      /* leaf longevity 10*/
@@ -3143,7 +3143,7 @@
       "beta_root" : 0.94,    /* beta_root */
       "minwscal" : 0.30,      /* minwscal 3*/
       "gmin"  :1.0,          /* gmin 4*/
-      "respcoeff" : 0.6,      /* respcoeff 5*/
+      "respcoeff" : 0.8,      /* respcoeff 5*/
       "nmax" : 100.0,          /* nmax 7*/
       "resist" : 0.5,         /* resist 8*/
       "longevity" : 0.5,      /* leaf longevity 10*/
@@ -3266,7 +3266,7 @@
       "beta_root" : 0.94,    /* beta_root */
       "minwscal" : 0.30,      /* minwscal 3*/
       "gmin"  :1.0,          /* gmin 4*/
-      "respcoeff" : 0.6,      /* respcoeff 5*/
+      "respcoeff" : 0.8,      /* respcoeff 5*/
       "nmax" : 100.0,          /* nmax 7*/
       "resist" : 0.5,         /* resist 8*/
       "longevity" : 0.5,      /* leaf longevity 10*/
@@ -3279,7 +3279,7 @@
       "twmax_daily" : 1000.0,  /* twmax_daily 31*/
       "gddbase" : 3.0,         /* gddbase (deg C) 33*/
       "min_temprange" : -1000.0,/* min_temprange 34*/
-      "emax": 8.0,            /* emax 35*/
+      "emax": 7.0,            /* emax 35*/
       "intc" : 0.02,          /* intc 36*/
       "alphaa" : 1.0,         /* alphaa, fraction of PAR assimilated at ecosystem level, relative to leaf level */
       "albedo_leaf" : 0.18,   /* albedo of green leaves */
@@ -3382,7 +3382,7 @@
       "beta_root" : 0.94,    /* beta_root */
       "minwscal" : 0.30,      /* minwscal 3*/
       "gmin"  :1.6,          /* gmin 4*/
-      "respcoeff" : 0.6,      /* respcoeff 5*/
+      "respcoeff" : 0.8,      /* respcoeff 5*/
       "nmax" : 100.0,          /* nmax 7*/
       "resist" : 0.5,         /* resist 8*/
       "longevity" : 0.5,      /* leaf longevity 10*/
@@ -3395,7 +3395,7 @@
       "twmax_daily" : 1000.0,  /* twmax_daily 31*/
       "gddbase" : 15.0,        /* gddbase (deg C) 33*/
       "min_temprange" : -1000.0,/* min_temprange 34*/
-      "emax": 10.0,            /* emax 35*/
+      "emax": 10,            /* emax 35*/
       "intc" : 0.02,          /* intc 36*/
       "alphaa" : 1.0,         /* alphaa, fraction of PAR assimilated at ecosystem level, relative to leaf level */
       "albedo_leaf" : 0.18,   /* albedo of green leaves */
@@ -3498,7 +3498,7 @@
       "beta_root" : 0.94,    /* beta_root */
       "minwscal" : 0.3,       /* minwscal 3*/
       "gmin"  :1.0,          /* gmin 4*/
-      "respcoeff" : 0.6,      /* respcoeff 5*/
+      "respcoeff" : 0.8,      /* respcoeff 5*/
       "nmax" : 100.0,          /* nmax 7*/
       "resist" : 0.5,         /* resist 8*/
       "longevity" : 0.33,     /* leaf longevity 10*/
@@ -3511,7 +3511,7 @@
       "twmax_daily" : 1000.0,  /* twmax_daily 31*/
       "gddbase" : 6.0,         /* gddbase (deg C) 33*/
       "min_temprange" : -1000.0,/* min_temprange 34*/
-      "emax": 8.0,            /* emax 35*/
+      "emax": 7.0,            /* emax 35*/
       "intc" : 0.02,          /* intc 36*/
       "alphaa" : 1.0,         /* alphaa, fraction of PAR assimilated at ecosystem level, relative to leaf level */
       "albedo_leaf" : 0.18,   /* albedo of green leaves */
@@ -3614,7 +3614,7 @@
       "beta_root" : 0.94,    /* beta_root */
       "minwscal" : 0.30,      /* minwscal 3*/
       "gmin"  :1.2,          /* gmin 4*/
-      "respcoeff" : 0.6,      /* respcoeff 5*/
+      "respcoeff" : 0.8,      /* respcoeff 5*/
       "nmax" : 100.0,          /* nmax 7*/
       "resist" : 0.5,         /* resist 8*/
       "longevity" : 0.66,     /* leaf longevity 10*/
@@ -3737,7 +3737,7 @@
       "beta_root" : 0.94,    /* beta_root */
       "minwscal" : 0.30,      /* minwscal 3*/
       "gmin"  :1.6,          /* gmin 4*/
-      "respcoeff" : 0.6,      /* respcoeff 5*/
+      "respcoeff" : 0.8,      /* respcoeff 5*/
       "nmax" : 100.0,          /* nmax 7*/
       "resist" : 0.5,         /* resist 8*/
       "longevity" : 0.5,      /* leaf longevity 10*/
@@ -3853,7 +3853,7 @@
       "beta_root" : 0.94,    /* beta_root */
       "minwscal" : 0.30,      /* minwscal 3*/
       "gmin"  :1.0,          /* gmin 4*/
-      "respcoeff" : 0.6,      /* respcoeff 5*/
+      "respcoeff" : 0.8,      /* respcoeff 5*/
       "nmax" : 100.0,          /* nmax 7*/
       "resist" : 0.5,         /* resist 8*/
       "longevity" : 0.41,     /* leaf longevity 10*/
@@ -3866,7 +3866,7 @@
       "twmax_daily" : 1000.0,  /* twmax_daily 31*/
       "gddbase" : 0.0,         /* gddbase (deg C) 33*/
       "min_temprange" : -1000.0,/* min_temprange 34*/
-      "emax": 8.0,            /* emax 35*/
+      "emax": 7.0,            /* emax 35*/
       "intc" : 0.02,          /* intc 36*/
       "alphaa" : 1.0,         /* alphaa, fraction of PAR assimilated at ecosystem level, relative to leaf level */
       "albedo_leaf" : 0.18,   /* albedo of green leaves */
@@ -3969,7 +3969,7 @@
       "beta_root" : 0.94,    /* beta_root */
       "minwscal" : 0.30,      /* minwscal 3*/
       "gmin"  :1.6,          /* gmin 4*/
-      "respcoeff" : 0.6,      /* respcoeff 5*/
+      "respcoeff" : 0.8,      /* respcoeff 5*/
       "nmax" : 100.0,          /* nmax 7*/
       "resist" : 0.5,         /* resist 8*/
       "longevity" : 0.66,     /* leaf longevity 10*/

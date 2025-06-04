@@ -65,6 +65,7 @@ Real nuptake_crop(Pft *pft,             /**< pointer to PFT data */
 
   NCplant = (crop->ind.leaf.nitrogen + crop->ind.root.nitrogen) / (crop->ind.leaf.carbon + crop->ind.root.carbon); /* Plant's mobile nitrogen concentration, Eq.9, Zaehle&Friend 2010 Supplementary */
   f_NCplant = min(max(((NCplant-pft->par->ncleaf.high)/(pft->par->ncleaf.low-pft->par->ncleaf.high)),0),1); /*Eq.10, Zaehle&Friend 2010 Supplementary*/
+  //if(pft->par->id==config->rice_pft) f_NCplant=1;
 #ifdef DEBUG_N
   printf("f_NCplant=%g\n",f_NCplant);
 #endif
@@ -111,16 +112,16 @@ Real nuptake_crop(Pft *pft,             /**< pointer to PFT data */
         soil->NO3[l]-=(soil->NO3[l]*wscaler*rootdist_n[l]*n_uptake)/nsum;
         if(soil->NO3[l]<0)
         {
-          pft->bm_inc.nitrogen+=soil->NO3[l];
+          //pft->bm_inc.nitrogen+=soil->NO3[l];
           n_upfail+=soil->NO3[l];
           soil->NO3[l]=0;
         }
-        soil->NH4[l]-=soil->NH4[l]*wscaler*rootdist_n[l]*n_uptake/nsum; //-n_upfail*wscaler;
-//        if(wscaler>0)
-//          n_upfail=0;
+        soil->NH4[l]-=soil->NH4[l]*wscaler*rootdist_n[l]*n_uptake/nsum-n_upfail*wscaler;
+        if(wscaler>0)
+          n_upfail=0;
         if(soil->NH4[l]<0)
         {
-          pft->bm_inc.nitrogen+=soil->NH4[l];
+          //pft->bm_inc.nitrogen+=soil->NH4[l];
           n_upfail+=soil->NH4[l];
           soil->NH4[l]=0;
         }
@@ -134,7 +135,7 @@ Real nuptake_crop(Pft *pft,             /**< pointer to PFT data */
 
 #endif
       }
-      //pft->bm_inc.nitrogen+=n_upfail;
+      pft->bm_inc.nitrogen+=n_upfail;
    }
   }
   crop->ndemandsum += max(0, *n_plant_demand - pft->bm_inc.nitrogen);

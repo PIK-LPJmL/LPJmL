@@ -181,14 +181,14 @@ Stocks turnover_grass(Litter *litter, /**< Litter pool */
   litter_alt=stocks.nitrogen;
   stocks=litterstocks(litter);
   end = vegc_sum(pft)+pft->bm_inc.carbon+stocks.carbon-pft->establish.carbon;
-  if(fabs(end-start.carbon)>0.01)
+  if(fabs(end-start.carbon)>0.0001)
     fprintf(stderr, "C_ERROR turnover grass landusetype %s : %g start : %g end : %g  bm_inc.carbon: %g  bminc_alt: %g  PFT:%s nind: %g leaf_turn_litt: %g root_turn_litt: %g  root_turn: %g"
         "  leaf_turn: %g reprod: %g litter_alt: %g  litter: %g est.carbon: %g est.carbon_alt: %g fraction: %g vegsum: %g vegsum_alt: %g excess_carbon: %g excess_carbon_alt: %g\n",
         pft->stand->type->name,end-start.carbon, start.carbon,end,pft->bm_inc.carbon,bminc_alt,pft->par->name,pft->nind,grass->turn_litt.root.carbon,grass->turn_litt.leaf.carbon,
         grass->turn.root.carbon,grass->turn.leaf.carbon,reprod1,litter_alt,stocks.carbon,pft->establish.carbon, establish_alt, fraction,vegc_sum(pft),vegsum_alt,grass->excess_carbon,ecxess_carbon_alt);
 
   end = vegn_sum(pft)+pft->bm_inc.nitrogen+stocks.nitrogen-pft->establish.nitrogen;
-  if(fabs(end-start.nitrogen)>0.01)
+  if(fabs(end-start.nitrogen)>0.00001)
     fprintf(stderr, "N_ERROR turnover grass landusetype %s : %g start : %g end : %g  bm_inc.nitrogen: %g  bminc_alt: %g  PFT:%s nind: %g leaf_turn_litt: %g root_turn_litt: %g  root_turn: %g"
         "  leaf_turn: %g reprod: %g litter_alt: %g  litter: %g est.nitrogen: %g est.nitrogen_alt: %g fraction: %g vegsum: %g \n \n",
         pft->stand->type->name,end-start.nitrogen, start.nitrogen,end,pft->bm_inc.nitrogen,bminc_alt,pft->par->name,pft->nind,grass->turn_litt.root.nitrogen,grass->turn_litt.leaf.nitrogen,

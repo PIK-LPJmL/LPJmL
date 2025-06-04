@@ -85,6 +85,8 @@ Bool initsoiltemp(Climate* climate,    /**< pointer to climate data */
           pet=((temp>0) ? 924*dl*0.611*exp(17.3*temp/(temp+237.3))/(temp+273.2):0);
 
           balance=prec-pet;
+          if(prec<50)
+           balance=0;
           if(balance< epsilon)
             balance=0.0;
 #ifdef COUPLING_WITH_FMS

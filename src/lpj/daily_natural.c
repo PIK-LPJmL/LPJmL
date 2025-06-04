@@ -67,12 +67,16 @@ Real daily_natural(Stand *stand,                /**< [inout] stand pointer */
   soil = &stand->soil;
   output=&stand->cell->output;
 #ifdef CHECK_BALANCE
-  Real start = 0;
+  Stand *checkstand;
   Real end = 0;
   Real methane_start=soilmethane(&stand->soil)*WC/WCH4;
   Real wa=stand->soil.wa*stand->frac;
   Real dcflux=0;
-  start = standstocks(stand).carbon + soilmethane(&stand->soil)*WC/WCH4;//+stand->cell->output.dcflux;
+  Stocks start={0,0};
+  Stocks fluxes_in,fluxes_out;
+  int s;
+
+  start.carbon = standstocks(stand).carbon + soilmethane(&stand->soil)*WC/WCH4;//+stand->cell->output.dcflux;
   Real exess_old=(stand->cell->balance.excess_water+stand->cell->lateral_water);
   Real groundwater=(stand->cell->ground_st+stand->cell->ground_st_am);
   Real water_before=((stand->cell->discharge.dmass_lake+stand->cell->discharge.dmass_river)/stand->cell->coord.area+stand->cell->ground_st+stand->cell->ground_st_am);
@@ -81,6 +85,15 @@ Real daily_natural(Stand *stand,                /**< [inout] stand pointer */
   Real wfluxes_old=(stand->cell->balance.awater_flux+stand->cell->balance.atransp+stand->cell->balance.aevap+stand->cell->balance.ainterc+stand->cell->balance.aevap_lake
       +stand->cell->balance.aevap_res-stand->cell->balance.airrig-stand->cell->balance.aMT_water);
   water_before+=soilwater(&stand->soil)*stand->frac;
+   fluxes_in.nitrogen=stand->cell->balance.flux_estab.nitrogen+stand->cell->balance.influx.nitrogen; //influxes
+  fluxes_out.nitrogen=stand->cell->balance.fire.nitrogen+stand->cell->balance.n_outflux+stand->cell->balance.neg_fluxes.nitrogen
+      +stand->cell->balance.flux_harvest.nitrogen+stand->cell->balance.biomass_yield.nitrogen+stand->cell->balance.deforest_emissions.nitrogen; //outfluxes
+  foreachstand(checkstand,s,stand->cell->standlist)
+  {
+    start.nitrogen+=standstocks(checkstand).nitrogen*checkstand->frac;
+  }
+  start.nitrogen+=stand->cell->ml.product.fast.nitrogen+stand->cell->ml.product.slow.nitrogen+stand->cell->NO3_lateral+
+      stand->cell->balance.estab_storage_grass[0].nitrogen+stand->cell->balance.estab_storage_tree[0].nitrogen+stand->cell->balance.estab_storage_grass[1].nitrogen+stand->cell->balance.estab_storage_tree[1].nitrogen;
 #endif
   evap=evap_blue=cover_stand=intercep_stand=wet_all=0;
 
@@ -150,7 +163,7 @@ Real daily_natural(Stand *stand,                /**< [inout] stand pointer */
       stand->cell->lateral_water=0;
     }
   }
-  else
+  else if(stand->type->landusetype==WETLAND)
   {
     if(stand->cell->lateral_water/stand->frac>300)
       lateral_in=300;
@@ -273,11 +286,11 @@ Real daily_natural(Stand *stand,                /**< [inout] stand pointer */
 
 #ifdef CHECK_BALANCE
   end = standstocks(stand).carbon + soilmethane(&stand->soil)*WC/WCH4;
-  if (fabs(end -start -dcflux )>0.001)
+  if (fabs(end -start.carbon -dcflux )>0.0001)
   {
     fail(INVALID_CARBON_BALANCE_ERR,FAIL_ON_BALANCE,FALSE,"Invalid carbon balance in %s: %.3f start: %.3f  end: %.3f type: %s flux_estab: %.3f dcflux: %.3f "
          "methane: start: %.3f  end: %.3f dcflux: %.3f \n",
-         __FUNCTION__,end-start-dcflux, start, end,stand->type->name,stand->cell->balance.flux_estab.carbon,stand->cell->output.dcflux,
+         __FUNCTION__,end-start.carbon-dcflux, start.carbon, end,stand->type->name,stand->cell->balance.flux_estab.carbon,stand->cell->output.dcflux,
          methane_start,soilmethane(&stand->soil)*WC/WCH4,dcflux);
   }
   water_after=(stand->cell->discharge.dmass_lake+stand->cell->discharge.dmass_river)/stand->cell->coord.area+stand->cell->ground_st+stand->cell->ground_st_am;
@@ -286,6 +299,7 @@ Real daily_natural(Stand *stand,                /**< [inout] stand pointer */
           ((stand->cell->balance.awater_flux+stand->cell->balance.atransp+stand->cell->balance.aevap+stand->cell->balance.ainterc+stand->cell->balance.aevap_lake+runoff*stand->frac+stand->cell->balance.aevap_res
               -stand->cell->balance.airrig-stand->cell->balance.aMT_water)-wfluxes_old)
           +((stand->cell->balance.excess_water+stand->cell->lateral_water)-exess_old);
+
   if(fabs(balanceW)>0.1)
   {
     fail(INVALID_WATER_BALANCE_ERR,FAIL_ON_BALANCE,FALSE,"Invalid water balance in %s: day %d balanceW: %g  exess_old: %g balance.excess_water: %g  lateral_in: %g water_after: %g water_before: %g prec: %g melt: %g "
@@ -297,6 +311,28 @@ Real daily_natural(Stand *stand,                /**< [inout] stand pointer */
         stand->cell->discharge.drunoff,stand->cell->balance.awater_flux,stand->cell->lateral_water,((stand->cell->discharge.mfout-stand->cell->discharge.mfin)/stand->cell->coord.area),stand->cell->discharge.dmass_lake/stand->cell->coord.area,
         stand->cell->discharge.dmass_river/stand->cell->coord.area, stand->cell->ground_st_am,stand->cell->ground_st,groundwater-(stand->cell->ground_st_am+stand->cell->ground_st),
         ((stand->cell->balance.excess_water+stand->cell->lateral_water)-exess_old),groundwater,stand->cell->ground_st+stand->cell->ground_st_am,stand->frac,wa,stand->soil.wa*stand->frac);
+  }
+  fluxes_out.nitrogen=(stand->cell->balance.fire.nitrogen+stand->cell->balance.n_outflux+stand->cell->balance.neg_fluxes.nitrogen
+      +stand->cell->balance.flux_harvest.nitrogen+stand->cell->balance.biomass_yield.nitrogen+stand->cell->balance.deforest_emissions.nitrogen)-fluxes_out.nitrogen;
+  fluxes_in.nitrogen=(stand->cell->balance.flux_estab.nitrogen+stand->cell->balance.influx.nitrogen)-fluxes_in.nitrogen;
+  end=0;
+
+  foreachstand(checkstand,s,stand->cell->standlist)
+    //if(checkstand->type->landusetype!=KILL)
+      end+=standstocks(checkstand).nitrogen*checkstand->frac;
+  end+=stand->cell->ml.product.fast.nitrogen+stand->cell->ml.product.slow.nitrogen+stand->cell->NO3_lateral+
+      stand->cell->balance.estab_storage_grass[0].nitrogen+stand->cell->balance.estab_storage_tree[0].nitrogen+stand->cell->balance.estab_storage_grass[1].nitrogen+stand->cell->balance.estab_storage_tree[1].nitrogen;
+  if (fabs(end-start.nitrogen+fluxes_out.nitrogen-fluxes_in.nitrogen)>0.001)
+  {
+    fail(INVALID_NITROGEN_BALANCE_ERR,FAIL_ON_BALANCE,FALSE,"Invalid nitrogen balance in %s: day: %d    %g start: %g  end: %g flux_estab.nitrogen: %g flux_harvest.nitrogen: %g "
+        "influx: %g outflux: %g neg_fluxes: %g NO3_lateral: %g\n",
+        __FUNCTION__,day,end-start.nitrogen-fluxes_in.nitrogen+fluxes_out.nitrogen,start.nitrogen, end,stand->cell->balance.flux_estab.nitrogen,stand->cell->balance.flux_harvest.nitrogen,
+        fluxes_in.nitrogen,fluxes_out.nitrogen, stand->cell->balance.neg_fluxes.nitrogen,stand->cell->NO3_lateral);
+    foreachstand(checkstand,s,checkstand->cell->standlist)
+    fprintf(stderr,"update_daily: standfrac: %g standtype: %s s= %d iswetland: %d cropfraction_rf: %g cropfraction_irr: %g grasfrac_rf: %g grasfrac_irr: %g\n",
+        checkstand->frac, checkstand->type->name,s,checkstand->soil.iswetland, crop_sum_frac(stand->cell->ml.landfrac,12,config->nagtree,stand->cell->ml.reservoirfrac+stand->cell->lakefrac,FALSE),
+        crop_sum_frac(stand->cell->ml.landfrac,12,config->nagtree,stand->cell->ml.reservoirfrac+stand->cell->lakefrac,TRUE),
+        stand->cell->ml.landfrac[0].grass[0]+stand->cell->ml.landfrac[0].grass[1],stand->cell->ml.landfrac[1].grass[0]+stand->cell->ml.landfrac[1].grass[1]);
   }
 
 #endif

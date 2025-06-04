@@ -75,7 +75,7 @@ Bool freadcell(Bstruct file,           /**< pointer to restart file */
 #ifdef COUPLING_WITH_FMS
       cell->laketemp=0;
 #endif
-      cell->discharge.dfout=cell->discharge.dmass_river=cell->discharge.dmass_sum=cell->lateral_water=0.0;
+      cell->discharge.dfout=cell->discharge.dmass_river=cell->discharge.dmass_sum=cell->lateral_water=cell->NO3_lateral=0.0;
       cell->ml.dam=FALSE;
       cell->discharge.queue=NULL;
     }
@@ -84,6 +84,7 @@ Bool freadcell(Bstruct file,           /**< pointer to restart file */
   {
     /* cell has valid soilcode */
     readreal(file,"lateral_water",&cell->lateral_water);
+    readreal(file,"NO3_lateral",&cell->NO3_lateral);
     if(freadstocksarray(file,"estab_storage_tree",cell->balance.estab_storage_tree,2))
       return TRUE;
     if(freadstocksarray(file,"estab_storage_grass",cell->balance.estab_storage_grass,2))

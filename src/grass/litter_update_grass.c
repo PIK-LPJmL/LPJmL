@@ -67,14 +67,14 @@ void litter_update_grass(Litter *litter, /**< Litter pool */
   stocks=litterstocks(litter);
   end = vegc_sum(pft)+pft->bm_inc.carbon+stocks.carbon;
   //vegC needs to be substracted as it is not balanced here
-  if(fabs(end-start.carbon-(vegc_sum(pft)+pft->bm_inc.carbon))>0.01)
+  if(fabs(end-start.carbon-(vegc_sum(pft)+pft->bm_inc.carbon))>0.0001)
     fprintf(stderr, "C_ERROR litter_update grass landusetype %s : %g start : %g end : %g  bm_inc.carbon: %g  bminc_alt: %g  PFT:%s nind: %g leaf_turn_litt: %g root_turn_litt: %g  root_turn: %g"
         "  leaf_turn: %g litter_alt: %g  litter: %g est.carbon: %g vegsum: %g vegsum_alt: %g excess_carbon: %g excess_carbon_alt: %g frac: %g\n",
         pft->stand->type->name,end-start.carbon-(vegc_sum(pft)+pft->bm_inc.carbon), start.carbon,end,pft->bm_inc.carbon,bminc_alt,pft->par->name,pft->nind,grass->turn_litt.root.carbon,grass->turn_litt.leaf.carbon,
         grass->turn.root.carbon,grass->turn.leaf.carbon,litter_alt.carbon,stocks.carbon,pft->establish.carbon,vegc_sum(pft)+pft->bm_inc.carbon,vegcsum_alt,grass->excess_carbon,ecxess_carbon_alt,frac);
 
   end = vegn_sum(pft)+pft->bm_inc.nitrogen+stocks.nitrogen;
-  if(fabs(end-start.nitrogen-(vegn_sum(pft)+pft->bm_inc.nitrogen))>0.01)
+  if(fabs(end-start.nitrogen-(vegn_sum(pft)+pft->bm_inc.nitrogen))>0.00001)
     fprintf(stderr, "N_ERROR litter_update grass landusetype %s : %g start : %g end : %g  bm_inc.nitrogen: %g  bminc_alt: %g  PFT:%s nind: %g leaf_turn_litt: %g root_turn_litt: %g  root_turn: %g"
         "  leaf_turn: %g turn_old: %g litter_alt: %g  litter: %g est.nitrogen: %g  vegsum: %g veg_sum_alt; %g frac: %g\n \n",
         pft->stand->type->name,end-start.nitrogen-(vegn_sum(pft)+pft->bm_inc.nitrogen), start.nitrogen,end,pft->bm_inc.nitrogen,bminc_alt,pft->par->name,pft->nind,grass->turn_litt.root.nitrogen,grass->turn_litt.leaf.nitrogen,

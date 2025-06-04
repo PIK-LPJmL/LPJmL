@@ -296,7 +296,7 @@ void mixsetaside(Stand *setasidestand,Stand *cropstand,Bool intercrop,int year,i
 #endif
   mixsoil(setasidestand, cropstand, year, ntotpft,config);
   setasidestand->slope_mean=(setasidestand->slope_mean*setasidestand->frac+cropstand->slope_mean*cropstand->frac)/(setasidestand->frac+cropstand->frac);
-  setasidestand->Hag_Beta=min(1,(0.06*log(setasidestand->slope_mean+0.1)+0.22)/0.43);
+  setasidestand->Hag_Beta=min(1,(0.06*log(tan(setasidestand->slope_mean*M_PI/180)*100+0.1)+0.22)/0.43);
 
   if(intercrop)
   {
@@ -571,7 +571,7 @@ Bool setaside(Cell *cell,          /**< Pointer to LPJ cell */
       -((cell->balance.deforest_emissions.carbon+cell->balance.prod_turnover.fast.carbon+cell->balance.prod_turnover.slow.carbon+cell->balance.trad_biofuel.carbon)-fluxes_prod.carbon);
   balance.nitrogen=(cell->balance.flux_estab.nitrogen-fluxes_estab.nitrogen)-(cell->balance.fire.nitrogen-fluxes_fire.nitrogen)-(cell->balance.neg_fluxes.nitrogen-fluxes_neg.nitrogen)
       -((cell->balance.deforest_emissions.nitrogen+cell->balance.prod_turnover.fast.nitrogen+cell->balance.prod_turnover.slow.nitrogen+cell->balance.trad_biofuel.nitrogen)-fluxes_prod.nitrogen);
-  if(fabs(start.carbon-end.carbon+balance.carbon)>0.001)
+  if(fabs(start.carbon-end.carbon+balance.carbon)>0.0001)
     fail(INVALID_CARBON_BALANCE_ERR,FAIL_ON_BALANCE,FALSE,"Invalid carbon balance in %s at the end: year=%d: C_ERROR=%g start : %g end : %g balance.carbon: %g",
          __FUNCTION__,year,start.carbon-end.carbon+balance.carbon,start.carbon,end.carbon,balance.carbon);
   if (fabs(start_w - end_w)>0.001)

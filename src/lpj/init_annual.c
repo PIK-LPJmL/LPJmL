@@ -39,7 +39,7 @@ void init_annual(Cell *cell,          /**< Pointer to cell */
   cell->balance.fire.carbon=cell->balance.fire.nitrogen=0;
   cell->balance.flux_estab.carbon=cell->balance.flux_estab.nitrogen=0;
   cell->balance.flux_harvest.carbon=cell->balance.flux_harvest.nitrogen=0;
-  cell->balance.aCH4_em=cell->balance.aCH4_oxid=cell->balance.aCH4_sink=cell->balance.aCH4_fire=cell->balance.aCH4_rice=cell->balance.aCH4_setaside=cell->balance.aMT_water=0;
+  cell->balance.aCH4_em=cell->balance.aCH4_oxid=cell->balance.aCH4_sink=cell->balance.aCH4_fire=cell->balance.aCH4_rice=cell->balance.aCH4_agr=cell->balance.aCH4_grassland=cell->balance.aMT_water=0;
   cell->balance.timber_harvest.carbon=cell->balance.timber_harvest.nitrogen=0;
   cell->balance.deforest_emissions.carbon=cell->balance.deforest_emissions.nitrogen=0;
   cell->balance.prod_turnover.fast.carbon=cell->balance.prod_turnover.fast.nitrogen=0;

@@ -16,6 +16,7 @@
 
 #include "lpj.h"
 #include "crop.h"
+#include "soil.h"
 
 /*
 - called in npp_crop()
@@ -38,7 +39,7 @@ Real npp_crop(Pft *pft,           /**< [inout] PFT variables */
 {
   Pftcrop *crop;
   const Pftcroppar *par;
-  Real npp,tmp;
+  Real npp;
   Real soresp,presp,gresp;
   int l;
   Cropratio nc_ratio;
@@ -76,8 +77,8 @@ Real npp_crop(Pft *pft,           /**< [inout] PFT variables */
   npp=assim-soresp-presp-gresp;
   forrootsoillayer(l)
   {
-    tmp=min(pft->stand->soil.O2[l]*0.95,pft->nind*roresp*pft->par->rootdist[l]*WO2/WC);
-    pft->stand->soil.O2[l]-=tmp;
+    pft->stand->soil.O2[l]-=min(pft->stand->soil.O2[l],pft->nind*roresp*pft->par->rootdist[l]*WO2/WC);
+    if(pft->stand->soil.O2[l]<0)  pft->stand->soil.O2[l]=0;
   }
   if((pft->bm_inc.carbon+npp <=0.0001) ||
       (crop->lai-crop->lai_nppdeficit<=0 && !crop->senescence))

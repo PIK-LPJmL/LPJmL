@@ -266,7 +266,7 @@ Bool allocation_grass(Litter *litter,   /**< litter pool */
   stocks=litterstocks(litter);
   end = vegc_sum(pft)+stocks.carbon+neg_flux;
 
-  if(fabs(end-start.carbon)>0.01)
+  if(fabs(end-start.carbon)>0.0001)
     fprintf(stderr, "C_ERROR allocation_grass: %g start : %g end : %g  bm_inc.carbon: %g  PFT:%s nind: %g leaf_turn_litt: %g root_turn_litt: %g  root_turn: %g  leaf_turn: %g .neg_fluxes.carbon: %g\n",
         end-start.carbon, start.carbon,end,pft->bm_inc.carbon,pft->par->name,pft->nind,grass->turn_litt.root.carbon,grass->turn_litt.leaf.carbon,grass->turn.root.carbon,grass->turn.leaf.carbon,neg_flux);
 

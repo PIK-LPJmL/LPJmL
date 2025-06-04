@@ -28,7 +28,7 @@ void fprintflux(FILE *file,          /**< Output file pointer */
   int i,tabs;
   Real convert;
   if(config->ngridcell > 2) convert = 1e-15;
-    else convert = 1/flux.area;
+    else convert = 1/flux.area/config->ngridcell;
   if((year<config->firstyear &&
      (year-config->firstyear+config->nspinup) % LINES_PER_HEADER==0) ||
      (year>=config->firstyear && (year-config->firstyear) % LINES_PER_HEADER==0))
@@ -89,7 +89,7 @@ void fprintflux(FILE *file,          /**< Output file pointer */
       fputs("discharge  ",file);
     fputs("CH4em   CH4sink CH4fire ",file);
     if(config->withlanduse!=NO_LANDUSE)
-      fputs("CH4rice CH4seta ",file);
+      fputs("CH4rice CH4grass ",file);
     fputs("SoilC     slowSoilC VegC      SoilCH4   ",file);
     fputs("SoilNO3 SoilNH4 SoilN   nuptake ndefici nlosses ninflux ",file);
     fputc('\n',file);
@@ -126,7 +126,7 @@ void fprintflux(FILE *file,          /**< Output file pointer */
   fprintf(file, " %7.1f", flux.CH4_sink*convert*1000);
   fprintf(file, " %7.1f", flux.CH4_fire*convert*1000);
   if(config->withlanduse!=NO_LANDUSE)
-    fprintf(file, " %7.1f %7.1f", flux.CH4_rice*convert*1000,flux.CH4_setaside*convert*1000);
+    fprintf(file, " %7.1f %7.1f", flux.CH4_rice*convert*1000,flux.CH4_grassland*convert*1000);
 
   fprintf(file, " %9.1f", flux.soil.carbon*convert);
   fprintf(file, " %9.1f", flux.soil_slow.carbon*convert);

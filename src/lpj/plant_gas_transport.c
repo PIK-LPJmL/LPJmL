@@ -19,7 +19,7 @@
 
 #define np -0.5              /* parameter given in Riera et al. 1999*/
 #define tiller_weight  0.15  /* [gc] PARAMETER*/
-#define tiller_radius 0.03   //https://link.springer.com/article/10.1007/s10457-020-00590-7/tables/7 (maximum) tiller sqrt(area/pi* 0.0001) (conversion from cm2 to radius in m)
+#define tiller_radius 0.05   //https://link.springer.com/article/10.1007/s10457-020-00590-7/tables/7 (maximum) tiller sqrt(area/pi* 0.0001) (conversion from cm2 to radius in m)
 #define tiller_por 0.7
 #define water_min 0.001
 #define wind_speed 3.28      // average global wind speed in m/s over lands https://web.stanford.edu/group/efmh/winds/global_winds.html
@@ -61,6 +61,7 @@ Real plant_gas_transport(Stand *stand,        /**< pointer to stand */
   Real Conc_new;
   Real rice_em=0;
   int l, p;
+  Bool isrice=FALSE;
 #ifdef CHECK_BALANCE
   Real start = 0;
   Real end = 0;
@@ -96,12 +97,13 @@ Real plant_gas_transport(Stand *stand,        /**< pointer to stand */
   CH4_rice=CH4_plant=CH4_sink=0;
   foreachpft(pft, p, &stand->pftlist)
   {
+    if(pft->par->id==config->rice_pft)
+      isrice=TRUE;
     if (!istree(pft) || pft->par->peatland)
     {
       tillers = leafc(pft)*pft->phen / tiller_weight;
       for (l = 0; l<LASTLAYER; l++)
       {
-
         tiller_frac = tillers*pft->par->rootdist[l];
         tiller_area = max(0.01,tiller_radius*tiller_radius*M_PI*tiller_frac*tiller_por);
         soil_water_vol=(stand->soil.w[l]*stand->soil.whcs[l]+stand->soil.wpwps[l]*(1-stand->soil.ice_pwp[l])+stand->soil.w_fw[l])/soildepth[l];
@@ -118,8 +120,10 @@ Real plant_gas_transport(Stand *stand,        /**< pointer to stand */
           else
            CH4_plant_all+=CH4_plant;
 
-          if((stand->type->landusetype==AGRICULTURE && pft->par->id==config->rice_pft && CH4_plant>0) || (stand->type->landusetype==SETASIDE_WETLAND && CH4_plant>0))
+          if(isrice && CH4_plant>0)
+          {
             CH4_rice+=CH4_plant;
+          }
           /*OXYGEN*/
           Conc_new = 0;
           O2=stand->soil.O2[l]/soil_water_vol/soildepth[l]*1000;
@@ -140,19 +144,25 @@ Real plant_gas_transport(Stand *stand,        /**< pointer to stand */
   //if(CH4_rice>0) getoutput(&stand->cell->output,CH4_RICE_EM,config)+=CH4_rice*stand->frac;
   if(CH4_rice>0) rice_em=CH4_rice;
   getoutput(&stand->cell->output,CH4_PLANT_GAS,config)+=CH4_plant_all*stand->frac;
-  if((stand->type->landusetype!=NATURAL && stand->type->landusetype!=WETLAND) && CH4_rice==0)
+  if(stand->type->landusetype!=NATURAL && stand->type->landusetype!=WETLAND && stand->type->landusetype!=GRASSLAND && !isrice)
   {
-    stand->cell->balance.aCH4_setaside+=CH4_plant_all*stand->frac;
-    getoutput(&stand->cell->output,CH4_SETASIDE,config)+=CH4_plant_all*stand->frac;
+    stand->cell->balance.aCH4_agr+=CH4_plant_all*stand->frac;
+    getoutput(&stand->cell->output,CH4_AGR,config)+=CH4_plant_all*stand->frac;
   }
+  if((stand->type->landusetype==GRASSLAND))
+  {
+    stand->cell->balance.aCH4_grassland+=CH4_plant_all*stand->frac;
+    getoutput(&stand->cell->output,CH4_GRASSLAND,config)+=CH4_plant_all+CH4_sink;
+  }
+
   getoutput(&stand->cell->output,CH4_SINK,config)+=CH4_sink*stand->frac;
   stand->cell->balance.aCH4_sink+=CH4_sink*stand->frac;
 
  #ifdef CHECK_BALANCE
   end = standstocks(stand).carbon + soilmethane(&stand->soil)*WC/WCH4;
-  if (fabs(start - end - CH4_plant_all*WC/WCH4)>0.001)
-    fail(INVALID_CARBON_BALANCE_ERR,FAIL_ON_BALANCE,FALSE,"Invalid carbon balance in %s: %g start:%g  end:%g Plant_gas_transp: %g",
-         __FUNCTION__, start - end - CH4_plant_all*WC/WCH4, start, end, CH4_plant_all*WC/WCH4);
+  if (fabs(start - end - CH4_plant_all*WC/WCH4-CH4_sink*WC/WCH4)>0.0001)
+    fail(INVALID_CARBON_BALANCE_ERR,FAIL_ON_BALANCE,FALSE,"Invalid carbon balance in %s: %g start:%g  end:%g Plant_gas_transp: %g CH4_sink: %g",
+         __FUNCTION__, start - end - CH4_plant_all*WC/WCH4, start, end, CH4_plant_all*WC/WCH4,CH4_sink*WC/WCH4);
 #endif
  return rice_em;
 } /* of 'plant_gas_transport' */

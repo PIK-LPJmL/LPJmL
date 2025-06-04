@@ -34,7 +34,7 @@
  * See Khovorostyanov 2008 Vulnerability of permafrost ... p. 254
 */
 
-#define MAXTIMESTEPFV 10000000
+#define MAXTIMESTEPFV 100000
 
 void finite_volume_diffusion_timestep(Real * amount,          /**< g/m^2, substance absolute amount */
                                       const int n,            /**< number of gridpoints */

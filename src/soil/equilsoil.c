@@ -47,12 +47,15 @@ void equilsoil(Soil *soil,            /**< pointer to soil data */
   /* calculate c_shift */
   forrootsoillayer(l)
   {
-    V=getV(soil,l);  /*soil air content (m3 air/m3 soil)*/
-    soilmoist=getsoilmoist(soil,l);
-    epsilon_gas=getepsilon_O2(V,soilmoist,soil->wsat[l]);
-    soil->O2[l]=p_s/R_gas/(10+273.15)*O2s*WO2*soildepth[l]*epsilon_gas/1000; /*266 g/m3 converted to g/m2 per layer*/
-    epsilon_gas=getepsilon_CH4(V,soilmoist,soil->wsat[l]);
-    soil->CH4[l]=p_s/R_gas/(10+273.15)*param.pch4*1e-9*WCH4*soildepth[l]*epsilon_gas/1000;    /* corresponding to atmospheric CH4 concentration to g/m2 per layer*/
+    if(nremove)
+    {
+      V=getV(soil,l);  /*soil air content (m3 air/m3 soil)*/
+      soilmoist=getsoilmoist(soil,l);
+      epsilon_gas=getepsilon_O2(V,soilmoist,soil->wsat[l]);
+      soil->O2[l]=p_s/R_gas/(10+273.15)*O2s*WO2*soildepth[l]*epsilon_gas/1000; /*266 g/m3 converted to g/m2 per layer*/
+      epsilon_gas=getepsilon_CH4(V,soilmoist,soil->wsat[l]);
+      soil->CH4[l]=p_s/R_gas/(10+273.15)*param.pch4*1e-9*WCH4*soildepth[l]*epsilon_gas/1000;    /* corresponding to atmospheric CH4 concentration to g/m2 per layer*/
+    }
     if(soil->count>0)
     {
       soil->decay_rate[l].fast/=soil->count;

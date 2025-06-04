@@ -65,6 +65,8 @@ int fwritecell(Bstruct file,      /**< pointer to restart file */
     {
       if (bstruct_writereal(file,"lateral_water",grid[cell].lateral_water))
         break;
+      if (bstruct_writereal(file,"NO3_lateral",grid[cell].NO3_lateral))
+        break;
       if(fwritestocksarray(file,"estab_storage_tree",grid[cell].balance.estab_storage_tree,2))
         break;
       if(fwritestocksarray(file,"estab_storage_grass",grid[cell].balance.estab_storage_grass,2))
