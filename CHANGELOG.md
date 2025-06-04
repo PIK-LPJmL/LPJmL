@@ -45,6 +45,7 @@ of `major.minor.patch` with
 - Typo in man page of `configure.sh` fixed.
 - Comment for `pft` initialized in `initsetting_netcdf.c`.
 - Access to undefined `pft_name.comment` removed in `bin2cdf.c` to avoid SEGV.
+- Short data handled correctly for metafile input in `bin2cdf`.
 
 
 ## [5.9.25] - 2025-05-22
