@@ -43,6 +43,8 @@ of `major.minor.patch` with
 - Function `nc_close()` replaced by `closeclimate_netcdf()` in `cdf2clm.c` and `cdf2bin.c` to avoid memory leak.
 - Argument for error message corrected in `getcellindex.c` and `getcountry.c`.
 - Typo in man page of `configure.sh` fixed.
+- Comment for `pft` initialized in `initsetting_netcdf.c`.
+- Access to undefined `pft_name.comment` removed in `bin2cdf.c` to avoid SEGV.
 
 
 ## [5.9.25] - 2025-05-22

@@ -288,7 +288,6 @@ static Cdf *create_cdf(const char *filename,
       if(getmapsize(map)==header.nbands)
       {
         put_att_text(cdf->ncid,varid,"long_name",netcdf_config->pft_name.long_name);
-        put_att_text(cdf->ncid,varid,"comment",netcdf_config->pft_name.comment);
         rc=nc_def_var(cdf->ncid,netcdf_config->pft.name,NC_INT,1,&pft_dim_id,&pft_var_id);
         error(rc);
         put_att_text(cdf->ncid,pft_var_id,"long_name",netcdf_config->pft.long_name);
