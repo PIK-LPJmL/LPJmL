@@ -1,0 +1,36 @@
+#!/bin/bash
+#################################################################################
+##                                                                             ##
+##                  a  l  l  b  i  n  2  c  d  f                               ##
+##                                                                             ##
+##    bash script to convert all binary raw files to NetCDF files using th     ##
+##    JSON metafiles in current directory                                      ##
+##                                                                             ##
+##    Usage: allbin2cdf [directory]                                            ##
+##                                                                             ##
+## (C) Potsdam Institute for Climate Impact Research (PIK), see COPYRIGHT file ##
+## authors, and contributors see AUTHORS file                                  ##
+## This file is part of LPJmL and licensed under GNU AGPL Version 3            ##
+## or later. See LICENSE file or go to http://www.gnu.org/licenses/            ##
+## Contact: https://github.com/PIK-LPJmL/LPJmL                                 ##
+##                                                                             ##
+#################################################################################
+
+path="."
+count=0
+if [ $# -gt 0 ]
+then
+  path=$1
+fi
+for file in $path/*.bin.json
+do
+  if [ "$file" != "$path/grid.bin.json" ]
+  then
+    echo $file "-->" ${file%.bin.json}.nc
+    if bin2cdf -metafile $file ${file%.bin.json}.nc ;
+    then
+      ((count++))
+    fi
+  fi
+done
+exit $count
