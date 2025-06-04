@@ -637,6 +637,7 @@ int main(int argc,char **argv)
   header.nstep=1;
   header.timestep=1;
   header.scalar=1;
+  header.datatype=LPJ_FLOAT;
   ispft=FALSE;
   isshort=FALSE;
   gridtype=LPJ_SHORT;
@@ -727,7 +728,10 @@ int main(int argc,char **argv)
       else if(!strcmp(argv[iarg],"-metafile"))
         ismeta=TRUE;
       else if(!strcmp(argv[iarg],"-short"))
+      {
+        header.datatype=LPJ_SHORT;
         isshort=TRUE;
+      }
       else if(!strcmp(argv[iarg],"-global"))
         isglobal=TRUE;
       else if(!strcmp(argv[iarg],"-swap"))
@@ -997,6 +1001,13 @@ int main(int argc,char **argv)
     file=openmetafile(&header,&map,map_name,&global_attrs2,&n_global2,&source,&history,&var_name,&var_units,&var_standard_name,&var_long_name,&grid_name,&gridtype,NULL,&swap,&offset,filename,TRUE);
     if(file==NULL)
       return EXIT_FAILURE;
+    if(header.datatype!=LPJ_SHORT && header.datatype!=LPJ_FLOAT)
+    {
+      fprintf(stderr,"Error: Datatype %s in '%s' must be float or short.\n",
+              typenames[header.datatype],argv[iarg+2]);
+      return EXIT_FAILURE;
+    }
+    isshort=header.datatype==LPJ_SHORT;
     if(units==NULL && var_units!=NULL)
       units=var_units;
     if(long_name==NULL && var_long_name!=NULL)
@@ -1203,7 +1214,15 @@ int main(int argc,char **argv)
         }
       }
       if(version>=3)
+      {
+        if(header.datatype!=LPJ_SHORT && header.datatype!=LPJ_FLOAT)
+        {
+          fprintf(stderr,"Error: Datatype %s in '%s' must be float or short.\n",
+                  typenames[header.datatype],argv[iarg+2]);
+          return EXIT_FAILURE;
+        }
         isshort=header.datatype==LPJ_SHORT;
+      }
       if(header.nbands>1)
         ispft=TRUE;
       if(version>CLM_MAX_VERSION)
