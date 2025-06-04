@@ -44,7 +44,7 @@ void test_isnull(void)
   bstruct_writenull(bstr,"c");
   bstruct_writefloat(bstr,"b",b1);
   bstruct_finish(bstr);
-  bstruct_open("test.lpj",0);
+  bstr=bstruct_open("test.lpj",0);
   TEST_ASSERT_NOT_NULL(bstr);
   rc=bstruct_isnull(bstr,"a");
   TEST_ASSERT_EQUAL_INT(rc,FALSE);

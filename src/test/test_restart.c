@@ -64,7 +64,7 @@ void test_restart(void)
     bstruct_writefloat(bstr,NULL,data1.vec[i]);
   bstruct_writeendarray(bstr);
   bstruct_finish(bstr);
-  bstruct_open("test.lpj",TRUE);
+  bstr=bstruct_open("test.lpj",TRUE);
   TEST_ASSERT_NOT_NULL(bstr);
   bstruct_readint(bstr,"a",&data2.a);
   TEST_ASSERT_EQUAL_INT(data1.a,data2.a);

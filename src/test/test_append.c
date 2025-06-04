@@ -37,7 +37,7 @@ void test_restart(void)
   bstr=bstruct_append("test.lpj",TRUE);
   bstruct_writefloat(bstr,"b",b1);
   bstruct_finish(bstr);
-  bstruct_open("test.lpj",TRUE);
+  bstr=bstruct_open("test.lpj",TRUE);
   TEST_ASSERT_NOT_NULL(bstr);
   bstruct_readfloat(bstr,"a",&a2);
   bstruct_readfloat(bstr,"b",&b2);

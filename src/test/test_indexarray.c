@@ -56,7 +56,7 @@ void test_restart(void)
   bstruct_writearrayindex(bstr,filepos,pos,0,N);
   bstruct_writeendarray(bstr);
   bstruct_finish(bstr);
-  bstruct_open("test.lpj",TRUE);
+  bstr=bstruct_open("test.lpj",TRUE);
   TEST_ASSERT_NOT_NULL(bstr);
   bstruct_readbeginarray(bstr,"vec",&size);
   TEST_ASSERT_EQUAL_INT(N,size);
