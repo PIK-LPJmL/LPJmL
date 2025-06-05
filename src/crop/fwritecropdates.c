@@ -14,7 +14,7 @@
 
 #include "lpj.h"
 
-static Bool writecropdate(Bstruct file,const Cropdates *cropdates)
+static Bool fwritecropdatesitem(Bstruct file,const Cropdates *cropdates)
 {
   bstruct_writebeginstruct(file,NULL);
   bstruct_writeint(file,"fall_sdate20",cropdates->fall_sdate20);
@@ -24,7 +24,7 @@ static Bool writecropdate(Bstruct file,const Cropdates *cropdates)
   bstruct_writeint(file,"vern_date20",cropdates->vern_date20);
   bstruct_writeint(file,"last_update_vern",cropdates->last_update_vern);
   return bstruct_writeendstruct(file);
-}
+} /* of 'fwritecropdatesitem' */
 
 Bool fwritecropdates(Bstruct file, /**< pointer to binary file */
                      const char *name, /**< name of object */
@@ -35,6 +35,6 @@ Bool fwritecropdates(Bstruct file, /**< pointer to binary file */
   int cft;
   bstruct_writebeginarray(file,name,ncft);
   for(cft=0;cft<ncft;cft++)
-    writecropdate(file,cropdates+cft);
+    fwritecropdatesitem(file,cropdates+cft);
   return bstruct_writeendarray(file);
 } /* of 'fwritecropdates' */
