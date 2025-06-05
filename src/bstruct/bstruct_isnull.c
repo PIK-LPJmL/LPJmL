@@ -1,6 +1,6 @@
 /**************************************************************************************/
 /**                                                                                \n**/
-/**             b  s  t  r  u  c  t  _  i  s  n  u  l  l   .  c                   \n**/
+/**             b  s  t  r  u  c  t  _  i  s  n  u  l  l   .  c                    \n**/
 /**                                                                                \n**/
 /**     C implementation of LPJmL                                                  \n**/
 /**                                                                                \n**/
@@ -16,11 +16,11 @@
 
 #include "bstruct_intern.h"
 
-Bool bstruct_isnull(Bstruct bstr,   /**< pointer to restart file */
-                    const char *key /**< key to compare */
-                   )                /** \return TRUE if key is null object */
+Bool bstruct_isnull(Bstruct bstr,    /**< pointer to restart file */
+                    const char *name /**< name of object or NULL */
+                   )                 /** \return TRUE if is null object */
 {
-  /* Function checks if a key is null object */
+  /* Function checks if object is null ´*/
   long long pos;
   Bool rc;
   Byte token;
@@ -33,12 +33,7 @@ Bool bstruct_isnull(Bstruct bstr,   /**< pointer to restart file */
       fprintf(stderr,"ERROR508: Unexpected end of file reading token.\n");
     return FALSE;
   }
-  if(token==BSTRUCT_ENDARRAY)
-  {
-    fseek(bstr->file,pos,SEEK_SET);
-    return FALSE;
-  }
-  rc=bstruct_findobject(bstr,&token,BSTRUCT_NULL,key);
+  rc=bstruct_findobject(bstr,&token,BSTRUCT_NULL,name);
   if(!rc && (token & 63)==BSTRUCT_NULL)
     return TRUE;
   /* restore position in file */

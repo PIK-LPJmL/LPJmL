@@ -34,6 +34,7 @@ Bstruct bstruct_open(const char *filename, /**< filename of restart file to open
   }
   bstruct->isout=isout;
   bstruct->imiss=0;
+  bstruct->skipped=0;
   bstruct->level=1;
   bstruct->hash=NULL;
   bstruct->file=fopen(filename,"rb");

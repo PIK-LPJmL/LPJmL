@@ -40,7 +40,7 @@ static Bool freadhist(Bstruct file,const char *name,Real hist[HIST_YEARS][NMONTH
 Bool freadresdata(Bstruct file,     /**< pointer to restart file */
                   const char *name, /**< name of object */
                   Cell *cell        /**< pointer to cell */
-                  )                 /**\return TRUE on error */
+                 )                  /**\return TRUE on error */
 {
   if(bstruct_readbeginstruct(file,name))
     return TRUE;

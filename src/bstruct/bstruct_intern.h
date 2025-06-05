@@ -48,6 +48,7 @@ struct bstruct
   Bool isout; /**< error output on stderr enabled */
   int level;  /**< number of nested structs/arrays */
   int imiss;  /**< number of objects not in right order */
+  int skipped; /** number of objects skipped */
   struct
   {
     int size;            /**< size of array */
