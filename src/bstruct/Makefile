@@ -43,7 +43,7 @@ LIBDIR  = ../../lib
 LIB     = libbstruct.$A
 
 HDRS    = $(INC)/types.h $(INC)/swap.h $(INC)/header.h $(INC)/errmsg.h\
-          $(INC)/list.h $(INC)/bstruct.h $(INC)/hash.h bstruct_intern.h
+          $(INC)/list.h $(INC)/bstruct.h $(INC)/hash.h $(INC)/bstruct_intern.h
 
 $(LIBDIR)/$(LIB): $(OBJS)
 	$(AR) $(ARFLAGS)$(LIBDIR)/$(LIB) $(OBJS)
