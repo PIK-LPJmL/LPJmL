@@ -612,7 +612,7 @@ int main(int argc,char **argv)
   Type gridtype;
   float cellsize,fcoord[2];
   double dcoord[2];
-  char *units,*long_name,*endptr,*cmdline,*pos,*outname,*missing_value,*nounit;
+  char *units,*long_name,*endptr,*cmdline,*pos,*outname,*missing_value,*nounit=NULL;
   Filename coord_filename;
   float cellsize_lon,cellsize_lat,scalar;
   Netcdf_config netcdf_config;
