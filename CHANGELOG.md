@@ -23,7 +23,7 @@ of `major.minor.patch` with
 ### Contributors
 
 - author: Werner von Bloh (bloh@pik-potsdam.de)
-- code review:
+- code review: Maik Billing (billing@pik-potsdam.de)
 
 ### Added
 
