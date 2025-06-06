@@ -22,7 +22,7 @@
 #define checkptr(ptr) if(ptr==NULL) { printallocerr(#ptr); free(lon);free(lon_bnds);free(lat);free(lat_bnds);free(year);free(time_bnds); free(layer); free(midlayer); free(bnds); nc_close(cdf->ncid); free(cdf);return NULL;}
 #define put_att_text(ncid,var,name,s) if(s!=NULL && strlen(s)) {rc=nc_put_att_text(ncid,var,name,strlen(s),s); error(rc);}
 
-#define USAGE "Usage: %s [-h] [-v] [-clm] [-floatgrid] [-doublegrid] [-revlat] [-days]\n       [-absyear] [-firstyear y] [-baseyear y] [-nbands n] [-nstep n] [-timestep t] \n       [-cellsize size] [-swap] [[-attr name=value]..] [-global] [-short]\n       [-compress level] [-units u] [-descr d] [-missing_value val] [-scale s] [-notime] [-metafile]\n       [-map name] [-config file] [-netcdf4] [varname gridfile] binfile netcdffile\n"
+#define USAGE "Usage: %s [-h] [-v] [-clm] [-floatgrid] [-doublegrid] [-revlat] [-days]\n       [-absyear] [-firstyear y] [-baseyear y] [-nbands n] [-nstep n] [-timestep t] \n       [-cellsize size] [-swap] [[-attr name=value]..] [-global] [-short]\n       [-compress level] [-units u] [-nounit u] [-descr d] [-missing_value val] [-scale s] [-notime] [-metafile]\n       [-map name] [-config file] [-netcdf4] [varname gridfile] binfile netcdffile\n"
 #define ERR_USAGE USAGE "\nTry \"%s --help\" for more information.\n"
 
 typedef struct
@@ -612,9 +612,9 @@ int main(int argc,char **argv)
   Type gridtype;
   float cellsize,fcoord[2];
   double dcoord[2];
-  char *units,*long_name,*endptr,*cmdline,*pos,*outname,*missing_value;
+  char *units,*long_name,*endptr,*cmdline,*pos,*outname,*missing_value,*nounit;
   Filename coord_filename;
-  float cellsize_lon,cellsize_lat;
+  float cellsize_lon,cellsize_lat,scalar;
   Netcdf_config netcdf_config;
   Coordfile coordfile;
   Map *map=NULL;
@@ -648,6 +648,7 @@ int main(int argc,char **argv)
   withdays=FALSE;
   isnetcdf4=FALSE;
   map_name=BAND_NAMES;
+  scalar=0;
   n_global=0;
   missing_value=NULL;
   notime=FALSE;
@@ -677,6 +678,7 @@ int main(int argc,char **argv)
                "-attr name=value set global attribute name to value in NetCDF file\n"
                "-descr d         set long name in NetCDF file\n"
                "-units u         set units in NetCDF file\n"
+               "-nounit u        set unit to u if unit is empty string\n"
                "-missing_value v set missing value to v\n"
                "-global          use global grid for NetCDF file\n"
                "-swap            change byte order in binary file\n"
@@ -714,6 +716,16 @@ int main(int argc,char **argv)
           return EXIT_FAILURE;
         }
         units=argv[++iarg];
+      }
+      else if(!strcmp(argv[iarg],"-nounit"))
+      {
+        if(iarg==argc-1)
+        {
+          fprintf(stderr,"Error: Missing argument after option '-nounit'.\n"
+                  ERR_USAGE,progname,progname);
+          return EXIT_FAILURE;
+        }
+        nounit=argv[++iarg];
       }
       else if(!strcmp(argv[iarg],"-floatgrid"))
         gridtype=LPJ_FLOAT;
@@ -838,13 +850,13 @@ int main(int argc,char **argv)
                   USAGE,argv[0]);
           return EXIT_FAILURE;
         }
-        header.scalar=strtod(argv[++iarg],&endptr);
+        scalar=strtod(argv[++iarg],&endptr);
         if(*endptr!='\0')
         {
           fprintf(stderr,"Error: Invalid number '%s' for option '-scale'.\n",argv[iarg]);
           return EXIT_FAILURE;
         }
-        if(header.scalar==0)
+        if(scalar==0)
         {
           fputs("Error: Scaling factor must not be zero.\n",stderr);
           return EXIT_FAILURE;
@@ -1271,6 +1283,8 @@ int main(int argc,char **argv)
       }
     }
   }
+  if(scalar!=0)
+    header.scalar=scalar;
   if(isshort && header.scalar!=1)
     fprintf(stderr,"Scaling factor %g not equal 1 set for short output datatype, set to 1.\n",header.scalar);
   if(notime && (header.nstep>1 || header.nyear>1))
@@ -1306,7 +1320,8 @@ int main(int argc,char **argv)
       }
     }
   }
-
+  if(units==NULL || strlen(units)==0)
+    units=nounit;
   cdf=create_cdf(outname,map,map_name,cmdline,source,history,variable,units,var_standard_name,long_name,&netcdf_config,global_attrs,n_global,(isshort) ? LPJ_SHORT : LPJ_FLOAT,header,baseyear,ispft,compress,index,withdays,absyear,notime,isnetcdf4);
   free(cmdline);
   free(var_units);

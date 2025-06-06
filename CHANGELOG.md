@@ -31,12 +31,14 @@ of `major.minor.patch` with
 - Notice added in `configure.sh` that `make clean; make all` has to be performed after change in configuration.
 - Support for short datatype added in `cmpbin` utility.
 - Shell script `allbin2cdf` added to convert all binary raw output files in a directory to NetCDF files.
+- Option `-nounit` added to `bin2cdf` to set unit if unit is defined in the metafile as an empty string.
 
 ### Changed
 
 - If option `-ncell 0` is used in `addheader` utility then the number of cells is calculated from the file size of the binary file.
 - Utilities `grid2clm` and `cft2clm` are replaced by alias to `addheader`.
 - File `default.md` converted from DOS to Linux format.
+- If scaling factor is set as an option in `bin2cdf` then this scaling factor is used insteads that one defined in the JSON metafile.
 
 ### Fixed
 
