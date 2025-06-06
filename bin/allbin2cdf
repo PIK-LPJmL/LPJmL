@@ -6,7 +6,7 @@
 ##    bash script to convert all binary raw files to NetCDF files using th     ##
 ##    JSON metafiles in current directory                                      ##
 ##                                                                             ##
-##    Usage: allbin2cdf [directory]                                            ##
+##    Usage: allbin2cdf [[binpath] [netcdfpath]]                               ##
 ##                                                                             ##
 ## (C) Potsdam Institute for Climate Impact Research (PIK), see COPYRIGHT file ##
 ## authors, and contributors see AUTHORS file                                  ##
@@ -16,18 +16,24 @@
 ##                                                                             ##
 #################################################################################
 
-path="."
+binpath="."
 count=0
 if [ $# -gt 0 ]
 then
-  path=$1
+  binpath=$1
 fi
-for file in $path/*.bin.json
+if [ $# -gt 1 ]
+then
+  netcdfpath=$2
+else
+  netcdfpath=$binpath
+fi
+for file in $binpath/*.bin.json
 do
-  if [ "$file" != "$path/grid.bin.json" ]
+  if [ "$file" != "$binpath/grid.bin.json" ]
   then
-    echo $file "-->" ${file%.bin.json}.nc
-    if bin2cdf -metafile $file ${file%.bin.json}.nc ;
+    echo $file "-->" $netcdfpath/$(basename ${file%.bin.json}).nc
+    if bin2cdf -metafile $file $netcdfpath/$(basename ${file%.bin.json}).nc ;
     then
       ((count++))
     fi

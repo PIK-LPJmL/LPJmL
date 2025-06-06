@@ -3,17 +3,20 @@
 allbin2cdf \- convert all binary output files into NetCDF files
 .SH SYNOPSIS
 .B allbin2cdf
-[\fIpath\fP]
+[[\fIbinpath\fP] [\fInetcdfpath\fP]]
 .SH DESCRIPTION
 Program converts all binary output files in the current or specified directory into NetCDF files. It is necessary that the corresponding JSON (*.bin.json) metafiles are present.
 .SH OPTIONS
 .TP
-.I path
-Directory path to the output files, default is current directory.
+.I binpath
+Directory path of the binary output files, default is current directory.
 .TP
-Create NetCDF file for output directory:
+.I netcdfpath
+Directory path of the converted NetCDF files, default is current directory or directory specified by \FIbinpath\FP.
+.TP
+Create NetCDF files for output directory into output/netcdf directory:
 .B allbin2cdf
-output
+output output/netcdf
 .SH EXIT STATUS
 .B allbin2cdf
 returns the number of files converted or zero in case of failure.
