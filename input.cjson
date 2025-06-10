@@ -2,7 +2,7 @@
 /**                                                                                \n**/
 /**                       i  n  p  u  t  .  c  j  s  o  n                          \n**/
 /**                                                                                \n**/
-/** Configuration file for input dataset for LPJ C Version 5.9.18                  \n**/
+/** Configuration file for input dataset for LPJ C Version 5.9.25                  \n**/
 /**                                                                                \n**/
 /** (C) Potsdam Institute for Climate Impact Research (PIK), see COPYRIGHT file    \n**/
 /** authors, and contributors see AUTHORS file                                     \n**/
@@ -49,10 +49,10 @@
   "soil" :         { "id" : 41, "fmt" : "clm", "name" : "input_toolbox_30arcmin/soil_30arcmin_13_types.bin"},
   "coord" :        { "id" : 43, "fmt" : "clm",  "name" : "input_VERSION2/grid.bin"},
   "landfrac" :     { "id" : 44, "fmt" : "clm",  "name" : "/p/projects/lpjml/inputs/grid/30min/landfrac_gadm36.bin"},
-  "countrycode" :  { "id" : 25, "fmt" : "clm",  "name" : "input_VERSION2/cow_full_2018.bin"},
+  "countrycode" :  { "id" : 45, "fmt" : "clm",  "name" : "input_VERSION2/cow_full_2018.bin"},
   "no3deposition" : { "id" : 17, "fmt" : "clm",  "name" : "input_VERSION2/no3_deposition_rcp8p5.clm"},
   "nh4deposition" : { "id" : 16, "fmt" : "clm",  "name" : "input_VERSION2/nh4_deposition_rcp8p5.clm"},
-  "soilpH" :        { "id" : 26, "fmt" : "clm",  "name" : "input_toolbox_30arcmin/soil_pH_30arcmin.bin"},
+  "soilpH" :        { "id" : 46, "fmt" : "clm",  "name" : "input_toolbox_30arcmin/soil_pH_30arcmin.bin"},
 #ifdef OLD_LU
   "landuse" :      { "id" : 6, "fmt" : "clm",  "name" : "input_VERSION2/cft1700_2005_irrigation_systems_64bands.bin"},
   "fertilizer_nr" : { "id" : 18, "fmt" :"clm",  "name" : "input_VERSION3/fertilizer_luh2v2_1900-2015_32bands.clm"},
@@ -72,8 +72,8 @@
   "with_tillage" : { "id" : 7, "fmt" : "clm", "name" : "/p/projects/lpjml/inputs/land_management/30min/tillage_1973_1974-2010_1973_as_till_everywhere.clm"},
   "residue_on_field" : { "id" : 8, "fmt" : "clm", "name" : "/p/projects/lpjml/input/MADRAT/residues_madrat_1850-2015_16bands.clm"},
 //  "sdate" : { "id" : 28,"fmt" : "clm", "name" : "/p/projects/lpjml/input/historical/input_VERSION2/sdate_combined_filled.clm"}, /* insert prescribed sdate file name here */
-  "sdate" : { "id" : 28,"fmt" : "clm", "name" : "ISIMIP3a/sdate_24_bands.clm"},
-  "crop_phu" : {"fmt" : "clm", "name" : "ISIMIP3av2/phusum_gswp3-w5e5_obsclim_24_bands_annual_1901-2019.clm"},
+  "sdate" : { "id" : 25,"fmt" : "clm", "name" : "ISIMIP3a/sdate_24_bands.clm"},
+  "crop_phu" : {"id": 26,"fmt" : "clm", "name" : "ISIMIP3av2/phusum_gswp3-w5e5_obsclim_24_bands_annual_1901-2019.clm"},
   //"landuse" :      { "id" : 6, "fmt" : "clm",  "name" : "input_VERSION2/cft1700_2005_irrigation_systems_64bands.bin"},
   //"fertilizer_nr" : { "id" : 18, "fmt" : "clm",  "name" : "input_VERSION2/fertilizer_ggcmi.clm2"},
   "grass_harvest_options" : { "id" : 31, "fmt" : "raw", "name": "/p/projects/landuse/users/rolinski/Newinput/scenario_MO2.bin"},
@@ -91,7 +91,7 @@
   "human_ignition": { "id" : 22, "fmt" : "clm", "name" : "input_VERSION2/human_ignition.clm"},
   "popdens" :      { "id" : 21, "fmt" : "clm",  "name" : "input_VERSION2/popdens_HYDE3_1901_2011_bi.clm"},
   "burntarea" :    { "id" : 13, "fmt" : "clm",  "name" : "/data/biosx/mforkel/input_new/GFED_CNFDB_ALFDB_Interp.BA.360.720.1901.2012.30days.clm"},
-  "landcover":     { "id" : 42, "fmt" : "clm",  "name" : "/data/biosx/mforkel/input_new/landcover_synmap_koeppen_vcf_newPFT_forLPJ_20130910.clm"},/*synmap_koeppen_vcf_NewPFT_adjustedByLanduse_SpinupTransitionPrescribed_forLPJ.clm*/
+  "landcover":     { "id" : 42, "fmt" : "clm",  "name" : "/data/biosx/mforkel/input_new/landcover_dyn-fix1970_out20140909_gsi-dyn-lu-ba-co2-optfpc.clm"},
   "co2" :          { "id" : 5, "fmt" : "txt",  "name" : "/p/projects/lpjml/inputs/co2/global/TRENDY/v12/global_co2_ann_1700_2022.txt"},
   "wateruse" :     { "id" : 20, "fmt" : "clm",  "name" : "input_VERSION2/wateruse_1900_2000.bin" } /* water consumption for industry,household and livestock */
 }

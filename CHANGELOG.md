@@ -28,12 +28,213 @@ of `major.minor.patch` with
 - New functions `initmonthly_grid()`, `updatedaily_grid()` and `updateannual_grid()` defined to minimize lines of code in `iterateyear.c` and minimize duplicate code in `lpj_climber4.c`.
 
 
+## [5.9.25] - 2025-05-22
+
+### Contributors
+
+- author: Werner von Bloh (bloh@pik-potsdam.de)
+- code review: Stephen Wirth (wirth@pik-potsdam.de), Fabian Stenzel (stenzel@pik-potsdam.de), Sebastian Ostberg(ostberg@pik-potsdam.de)
+
+### Changed
+
+- Axis names and missing values for NetCDF output are read from JSON file `netcdf.cjson` instead of being hard coded.
+- Warnings in `addheader` replaced by terminating errors.
+- Function `openinputfile()` returns an error if cell size differs in JSON metafile.
+- Function `openmetafile()` returns an error if binary file is empty.
+- Output format for cell size updated in `fprintheader.c`, `fprintoutputjson.c`, `fprintjson.c`, and `openinputfile.c`.
+
+### Added
+
+- New utility `splitclm` added to copy specific bands from a clm file.
+- Environment variables `LPJNOPP` and `LPJPEDANTIC` added. If set to `true`, preprocessor is disabled and pedantic checking is enabled, respectively.
+- Info about `--help` option added in case of error in command line arguments.
+- Option `-config` added to `cdf2clm`, `bin2cdf`, `country2cdf` and `clm2cdf` in order to read axis names and missing values from a JSON file. File `netcdf.json` added as a template.
+- Option `-json` added to `arr2clm`, `asc2clm`, `txt2grid`, `txt2clm`, `getcountry`, and `cdf2coord` in order to create additional JSON metafiles.
+- Option `-inpath` added to `regridlpj` in order to set directory where data can be found.
+- Options `-zero` and `-search` added to `regridlpj`.
+- Option `-double` added to `txt2grid` in order to create grid files with coordinate values of type double.
+- Option `-timestep` added to `addheader`, `txt2clm` and `bin2cdf`.
+- Option `sum`, `tsum` and `tmean` to `mathclm` added.
+- Check for correct setting of nstep and nbands added in `txt2clm`.
+
+### Fixed
+
+- Misspelled `-fsanitize=address` option corrected in `Makefile.mpich`.
+- Missing `free(cmd)` added in `fprintincludes.c`.
+- Parsing of options corrected in `fprintincludes.c`.
+- Utility `bin2cdf` fixed for timestep>1.
+
+
+## [5.9.24] - 2025-05-15
+
+### Contributors
+
+- author: David Hötten (davidho@pik-potsdam.de)
+- code review: Sebastian Ostberg (ostberg@pik-potsdam.de), Maik Billing (billing@pik-potsdam.de)
+
+### Added
+
+- Merge request template ``.gitlab/merge_request_templates/default.md`` that includes several checklists.
+
+
+## [5.9.23] - 2025-05-08
+
+### Contributors
+
+- author: Werner von Bloh (bloh@pik-potsdam.de)
+- code review: Jens Heinke (heinke@pik-potsdam.de), Fabian Stenzel(stenzel@pik-potsdam.de)
+
+### Changed
+
+- Option `-check` of `configure.sh` enables now run-time checks of memory leaks and memory access out of bounds and undefined variables for gcc and icx compiler. Optimization is not disabled. Use options `-debug -check` to disable.
+- Datatype `List` used in `fprintfiles.c`.
+- All allocated memory is now freed in utilities.
+- Prescribed landcover input file changed in `input.cjson` to a file with the same number of natural PFTs.
+- All remaining unsafe calls to `sprintf()` replaced by calls to `snprinf()` or `getsprinf()`.
+
+### Fixed
+
+- Check for missing values for integer input corrected in `readclimate_netcdf.c`.
+- Memory leak fixed in `filesexist.c`.
+- Calculation of global area fixed in `printglobal.c`.
+- Check for null attribute pointer added in `fprintjson.c`.
+- Uninitialized grid name initialized in `mathclm.c`.
+- Call to `snprintf()` replaced by `getsprintf()` in `reservoir2cdf.c`.
+- Datatype for index and writing the header corrected in `lpjcat.c`.
+- Functions for qsort(), bisect(), and leftmostzero() changed to avoid run-time errors with `-check` option.
+- Pointer set to NULL  if `k_est`is NULL in `initmanage.c`.
+- Missing argument added in opening aquifer file for IMAGE.
+- Scaling of coordinates fixed in `joingrid.c`.
+- Fraction pointer initialized to NULL in `freadresdata.c` to avoid SEGV in `lpjprint.c` if reservoir data is read from restart file.
+- Index set correctly for outflow cells in `regriddrain.c`.
+- Check for maximum discharge length corrected in `printdrain.c`.
+- Number of years of clm file set to 1 in `grid2clm.c`.
+- Function `fscanlandcovermap.c` corrected (issue https://github.com/PIK-LPJmL/LPJmL/issues/48).
+- Access out of bounds for `soil->freezdepth` fixed in `soiltemp.c`.
+- Format specifier changed in `cat2bsq.c` and `cutclm.c` to compile without warnings using the clang compiler (issue #372).
+
+
+## [5.9.22] - 2025-03-14
+
+### Contributors
+
+- author: Werner von Bloh (bloh@pik-potsdam.de), Hester Biemans (hester.biemans@wur.nl)
+- code review: Susanne Rolinski (rolinski@pik-potsdam.de), Marie Hemmen (hemmen@pik-potsdam.de)
+
+### Changed
+
+- `input_netcdf.cjson` changed to the default dataset of `input.cjson` but in NetCDF format.
+- Code changed to compile under Windows OS.
+- New function `getsprintf()` added to allocate and print formatted output into string. Function replaces call to `snprintf()` function.
+- Default settings for `GIT_HASH` and `GIT_REPO` added.
+- Duplicate filenames removed from list of input/output filenames in utility `lpjfiles`.
+
+### Added
+
+- Option `-int` added to utility `cdf2clm`.
+- Option `-latlon` added to utility `cdf2coord` in order to change the order of the CLM grid file.
+- Utility `cdf2reservoir` added to convert NetCDF reservoir file into CLM file.
+- Utility `reservoir2cdf` added to convert CLM reservoir file into a NetCDF file using the soil code NetCDF file.
+- Macro `NETCDF_INPUT` added in `lpjml_config.cjson` to enable NetCDF input.
+- Reservoir, irrigation neighbor and drainage data can now be in NetCDF format:
+```java
+"drainage" :           { "fmt" : "cdf", "var" : "index", "name" : "cru_netcdf/drainage.nc"},
+"neighb_irrig" :       { "fmt" : "cdf", "var" : "index", "name" : "cru_netcdf/neighb_irrig.nc"},
+"river" :              { "fmt" : "cdf", "var" : "riverlen", "name" : "cru_netcdf/drainage.nc"},
+"reservoir" :          { "fmt" : "cdf", "var" : "year", "name" : "cru_netcdf/reservoir.nc"},
+"capacity_reservoir" : { "fmt" : "cdf", "var" : "capacity", "name" : "cru_netcdf/reservoir.nc"},
+"area_reservoir" :     { "fmt" : "cdf", "var" : "area", "name" : "cru_netcdf/reservoir.nc"},
+"inst_cap_reservoir" : { "fmt" : "cdf", "var" : "inst_cap", "name" : "cru_netcdf/reservoir.nc"},
+"height_reservoir" :   { "fmt" : "cdf", "var" : "height", "name" : "cru_netcdf/reservoir.nc"},
+"purpose_reservoir" :  { "fmt" : "cdf", "var" : "purpose", "name" : "cru_netcdf/reservoir.nc"},
+```
+
+### Fixed
+
+- River length is now correctly read in `initdrain.c` for data in NetCDF format.
+- Man page of `cvrtclm` corrected.
+- Missing check for open NetCDF file added to `openclimate.c`.
+
+
+## [5.9.21] - 2025-03-13
+
+### Contributors
+
+- author: Werner von Bloh (bloh@pik-potsdam.de)
+- code review: Jannes Breier (breier@pik-potsdam.de), Sebastian Ostberg (ostberg@pik-potsdam.de)
+
+### Added
+
+- `"coupled_host"` and `"coupled_port"` added to LPJmL configuration to specify where the coupled model is running and which port is used for communication.
+
+
+## [5.9.20] - 2025-03-13
+
+### Contributors
+
+- author: Werner von Bloh (bloh@pik-potsdam.de)
+- code review: Sebastian Ostberg (ostberg@pik-potsdam.de), Jens Heinke (heinke@pik-potsdam.de)
+
+### Added
+
+- Check for correct number of time steps added in `openclimate_netcdf.c`.
+- Option `timestep` added to `setclm`.
+
+### Changed
+
+- Function `freegrid()` is calling `freecell()` to avoid redundant code.
+- References in man pages updated.
+- `-v` option of `cdf2clm` prints leap days setting for daily time step.
+- Missing file `CHANGELOG.md` added to tar and zip file.
+- Longitude and latitude boundaries excluded as variables in `cdf2grid`.
+- Ids for sowing date and crop PHU input added to `couplerpar.h`.
+- Length of GIT repository output limited in `copyright.c`.
+
+### Fixed
+
+- Memory leaks in utility `lpjprint` closed.
+- Handling of NaN as missing value corrected in reading NetCDF files.
+- Doubled initialization of standtype array corrected in `lpj_clinber4.c`.
+- Option `type` corrected in `setclm`.
+- Handling of different endianness corrected in `setclm`.
+- If version is changed with `setclm` only version is updated in the clm file.
+- Check that CO2 data is coming completely from socket corrected in `readco2.c`.
+- Number of years are now calculated correctly from number of days in case of leap days if number of leap days reaches 365.
+- Check for identical filenames corrected in `cutclm.c`.
+- Missing `else` added in `readclimate()`.
+
+
+## [5.9.19] - 2025-03-12
+
+### Contributors
+
+- author: Werner von Bloh (bloh@pik-potsdam.de)
+- code review: Fabian Stenzel (stenzel@pik-potsdam.de), Jens Heinke (heinke@pik-potsdam.de)
+
+### Added
+
+- Option `-partition` added to `lpjsubmit` script.
+
+### Changed
+
+- Man page of lpjsubmit refers only to slurm commands.
+- If `icc` compiler is found, this compiler is used.
+- `enablefpc.c` updated to compile under Mac OS.
+
+### Removed
+
+- Support for old PIK cluster removed.
+- Support for LoadLeveler batch queueing system removed.
+- Support for AIX OS removed.
+- Alias for `lpjml` and obsolete `lpjml.sh` removed in `lpj_paths.sh`.
+
+
 ## [5.9.18] - 2025-01-31
 
 ### Contributors
 
 - author: Christoph Müller (cmueller@pik-potsdam.de)
-- code review: Sebastion Ostberg (ostberg@pik-potsdam.de), Marie Hemmen (hemmen@pik-potsdam.de)
+- code review: Sebastian Ostberg (ostberg@pik-potsdam.de), Marie Hemmen (hemmen@pik-potsdam.de)
 
 ### Fixed
 
@@ -59,7 +260,7 @@ of `major.minor.patch` with
 
 ### Fixed
 
-- `ALLOM3` parameter corrrected to 4.0 for oil palm in `pft.cjson` (issue #369).
+- `ALLOM3` parameter corrected to 4.0 for oil palm in `pft.cjson` (issue #369).
 - Missing `break` added in `convert_water.c`.
 
 

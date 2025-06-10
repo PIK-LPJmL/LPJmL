@@ -23,6 +23,7 @@
               "       [-couple hostname[:port]] [-pedantic]\n"\
               "       [-outpath dir] [-inpath dir] [-restartpath dir]\n"\
               "       [-nopp] [-pp cmd] [[-Dmacro[=value]] [-Idir] ...] filename\n"
+#define LPJ_USAGE USAGE  "\nTry \"%s --help\" for more information.\n"
 
 int main(int argc,char **argv)
 {
@@ -66,7 +67,7 @@ int main(int argc,char **argv)
               progname);
       fprintf(file,"\n     ");
       frepeatch(file,'=',rc);
-      fprintf(file,"\n\nChecks syntax of LPJmL version %s configuration (*.cjson) files\n\n",getversion());
+      fprintf(file,"\n\nCheck syntax of LPJmL version %s configuration (*.cjson) files\n",getversion());
       fprintf(file,USAGE,progname);
       fprintf(file,"\nArguments:\n"
              "-h,--help           print this help text\n"
@@ -110,7 +111,7 @@ int main(int argc,char **argv)
     banner(title,4,78);
   }
 
-  if(readconfig(&config,scanfcn,NTYPES,NOUT,&argc,&argv,USAGE))
+  if(readconfig(&config,scanfcn,NTYPES,NOUT,&argc,&argv,LPJ_USAGE))
   {
     fail(READ_CONFIG_ERR,FALSE,"Cannot process configuration file");
   }
@@ -142,5 +143,6 @@ int main(int argc,char **argv)
     else
       rc=EXIT_SUCCESS;
   }
+  freeconfig(&config);
   return rc;
 } /* of 'main' */

@@ -288,7 +288,7 @@ extern int *getsoilmap(Map *,const Config *);
 extern Bool fwritesoil(FILE *,const Soil *,int);
 extern Bool fwritelitter(FILE *,const Litter *);
 extern void getlag(Soil *,int);
-extern int getnsoilcode(const Filename *,unsigned int,Bool);
+extern int getnsoilcode(const Filename *,const Netcdf_config *,unsigned int,Bool);
 extern Soilstate getstate(Real *); /*temperature above/below/at T_zero?*/
 extern Bool initsoil(Stand *soil,const Soilpar *,int,const Config *);
 extern Real litter_agtop_sum(const Litter *);
@@ -363,11 +363,11 @@ given an enthalpy vector (enth) and a Soil_thermal_prop (th) */
  (((e)[(gp)]<0                       ?  (e)[(gp)]                            / (th)->c_frozen[(gp)]   : 0) +\
   ((e)[(gp)]>(th)->latent_heat[(gp)] ? ((e)[(gp)] - (th)->latent_heat[(gp)]) / (th)->c_unfrozen[(gp)] : 0))
 /* Calculate the energy of percolating water and add it to perc_energy */
-#define reconcile_layer_energy_with_water_shift(soil, layer, amount, vol_enthalpy, config) ({\
+#define reconcile_layer_energy_with_water_shift(soil, layer, amount, vol_enthalpy, config) {\
         if(config->percolation_heattransfer)\
         {\
           soil->perc_energy[layer]+=amount/1000*vol_enthalpy; /* add enthalpy of water coming from above */ \
           soil->wi_abs_enth_adj[layer]+=amount; /* update enth adjusted water ice content */ \
         }\
-        })
+        }
 #endif /* SOIL_H */

@@ -19,6 +19,34 @@
 
 typedef struct
 {
+   float f;
+   int i;
+   short s;
+   Byte b;
+} Missing_value; /**< Missing values for NetCDF files */
+
+typedef struct
+{
+  char *name;
+  char *dim;
+  char *standard_name;
+  char *long_name;
+  char *unit;
+  char *comment;
+  double scale;
+} Axis;  /**< axis description */
+
+struct netcdf_config
+{
+  Missing_value missing_value;
+  Axis lat,lat_bnds,lon,lon_bnds,time,time_bnds,depth,depth_bnds,pft,pft_name;
+  char *bnds_name;
+  char *years_name;
+  char *calendar;
+};
+
+typedef struct
+{
   Filename filename; /**< Filename of output file */
   int id;
   Bool oneyear;
@@ -82,6 +110,11 @@ struct config
   Filename wateruse_filename;
   Filename elevation_filename;
   Filename reservoir_filename;
+  Filename capacity_reservoir_filename;
+  Filename area_reservoir_filename;
+  Filename inst_cap_reservoir_filename;
+  Filename height_reservoir_filename;
+  Filename purpose_reservoir_filename;
   Filename sdate_filename;
   Filename crop_phu_filename;
   Filename burntarea_filename;
@@ -136,8 +169,6 @@ struct config
   Bool nofill;          /**< do not fill NetCDF files at creation (TRUE/FALSE) */
   Bool isnetcdf4;       /**< output file is in NetCDF4 format (TRUE/FALSE) */
   int fdi;
-  char *pft_index;
-  char *layer_index;
   Bool unlim_nitrogen;      /**< enable unlimited nitrogen (TRUE/FALSE) */
   Bool crop_resp_fix;      /**< with fixed crop respiration (TRUE/FALSE) */
   int tillage_type;      /**< type of tillage NO_TILLAGE=0, TILLAGE=1, READ_TILLAGE=2 */
@@ -147,6 +178,7 @@ struct config
   int fertilizer_input;     /**< simulation with fertilizer input */
   Bool manure_input;       /**< simulation with manure input */
   Bool prescribe_lsuha;    /**< simulation with prescribed grassland livestock density from file */
+  Netcdf_config netcdf;   /**< setting for missing values and axis names of NetCDF files */
   Bool global_netcdf;     /**< enable global grid for NetCDF output */
   Bool rev_lat;           /**< reverse lat coordinates in NetCDF output */
   Bool with_days;         /**< using days as a unit for monthly output */
@@ -187,7 +219,6 @@ struct config
   int cft_tropic;
   Verbosity scan_verbose;       /**< option -vv 2: verbosely print the read values during fscanconfig. default 1; 0 would supress even error messages */
   int compress;           /**< compress NetCDF output (0: no compression) */
-  float missing_value;    /**< Missing value in NetCDF files */
   Variable *outnames;
 #ifdef USE_MPI
   MPI_Comm comm; /**< MPI communicator */
@@ -283,7 +314,9 @@ struct config
 #endif
   Socket *socket;         /**< socket for in- and outgoing data */
   char *coupled_host;     /**< hostname for computer running the IMAGE model */
-  int coupler_port;       /**< port number for in- and outgoing data */
+  Bool coupled_port_set;  /**< coupler port set on command line */
+  Bool coupled_host_set;  /**< coupler host set on command line */
+  int coupled_port;       /**< port number for in- and outgoing data */
   int coupler_out;        /**< number of outgoing data streams */
   int coupler_in;         /**< number of ingoing data streams */
   int totalsize;          /**< size of shared output storage */
@@ -327,6 +360,8 @@ extern Bool getextension(Extension *,const Config *);
 extern void fprintincludes(FILE *,const char *,int,char **);
 extern size_t getsize(int,const Config *);
 extern int *fscanlandcovermap(LPJfile *,int *,const char *,int,const Config *);
+extern Bool fscanconfig_netcdf(LPJfile *,Netcdf_config *,const char *,Verbosity);
+extern void freeconfig_netcdf(Netcdf_config *);
 extern void createconfig(const Config *);
 extern Bool checkuniqoutput(int,int,const Config *);
 extern void closeconfig(LPJfile *);

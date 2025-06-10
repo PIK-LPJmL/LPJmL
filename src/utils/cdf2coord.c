@@ -14,7 +14,7 @@
 
 #include "lpj.h"
 
-#define USAGE  "Usage: %s [-var name] [-index i] [-{float|double}] [-scale s] [-raw] [-json] netcdffile coordfile\n"
+#define USAGE  "Usage: %s [-var name] [-index i] [-{float|double}] [-scale s] [-latlon] [-raw] [-json] netcdffile coordfile\n"
 
 #ifdef USE_NETCDF
 #include <netcdf.h>
@@ -26,7 +26,7 @@ int main(int argc,char **argv)
 {
 #ifdef USE_NETCDF
   int rc,ncid,var_id,*dimids,i,j,nvars,lon_id,lat_id,ndims,index,first;
-
+  int index1,index2,len1,len2;
   double *lat,*lon;
   float scalar=0.0;
   size_t lat_len,lon_len;
@@ -43,14 +43,16 @@ int main(int argc,char **argv)
   {
     float lon,lat;
   } coord_f;
+  Netcdf_config netcdf_config;
   char *var;
   char *out_json,*arglist;
   FILE *out;
-  Bool isjson,israw,scalar_set;
+  Bool latlon,isjson,israw,scalar_set;
   var=NULL;
   header.datatype=LPJ_SHORT;
   header.scalar=0.01;
-  isjson=israw=scalar_set=FALSE;
+  latlon=isjson=israw=scalar_set=FALSE;
+  initsetting_netcdf(&netcdf_config);
   for(i=1;i<argc;i++)
     if(argv[i][0]=='-')
     {
@@ -78,6 +80,8 @@ int main(int argc,char **argv)
         header.datatype=LPJ_DOUBLE;
         header.scalar=1;
       }
+      else if(!strcmp(argv[i],"-latlon"))
+        latlon=TRUE;
       else if(!strcmp(argv[i],"-index"))
       {
         if(argc==i+1)
@@ -145,7 +149,7 @@ int main(int argc,char **argv)
     for(j=0;j<nvars;j++)
     {
       nc_inq_varname(ncid,j,name);
-      if(strcmp(name,LON_NAME) && strcmp(name,LON_STANDARD_NAME) && strcmp(name,LAT_NAME) && strcmp(name,LAT_STANDARD_NAME) && strcmp(name,TIME_NAME) && strcmp(name,PFT_NAME) && strcmp(name,DEPTH_NAME) && strcmp(name,BNDS_NAME))
+      if(strcmp(name,netcdf_config.lon_bnds.name) && strcmp(name,netcdf_config.lat_bnds.name) && strcmp(name,netcdf_config.lon.name) && strcmp(name,netcdf_config.lon.standard_name) && strcmp(name,netcdf_config.lat.name) && strcmp(name,netcdf_config.lat.standard_name) && strcmp(name,netcdf_config.time.name) && strcmp(name,netcdf_config.pft.name) && strcmp(name,netcdf_config.depth.name) && strcmp(name,netcdf_config.depth_bnds.name) && strcmp(name,netcdf_config.time_bnds.name))
       {
         nc_inq_varndims(ncid,j,&ndims);
         if(ndims>1)
@@ -252,9 +256,9 @@ int main(int argc,char **argv)
     rc=nc_get_att_double(ncid,var_id,"_FillValue",&missing_value);
   if(rc)
   {
-    fprintf(stderr,"WARNING402: Cannot read missing or fill value in '%s': %s, set to %g.\n",
-            argv[i],nc_strerror(rc),MISSING_VALUE_FLOAT);
-    missing_value=MISSING_VALUE_FLOAT;
+    fprintf(stderr,"WARNING402: Cannot read missing for fill value in '%s': %s, set to %g.\n",
+            argv[i],nc_strerror(rc),netcdf_config.missing_value.f);
+    missing_value=netcdf_config.missing_value.f;
   }
   out=fopen(argv[i+1],"wb");
   if(out==NULL)
@@ -266,14 +270,28 @@ int main(int argc,char **argv)
     nc_close(ncid);
     return EXIT_FAILURE;
   }
-  header.cellsize_lon=(lon[lon_len-1]-lon[0])/(lon_len-1);
+  header.cellsize_lon=(float)((lon[lon_len-1]-lon[0])/(lon_len-1));
   header.cellsize_lat=(float)fabs((lat[lat_len-1]-lat[0])/(lat_len-1));
   if(!israw)
     fwriteheader(out,&header,LPJGRID_HEADER,LPJGRID_VERSION);
   header.ncell=0;
-  for(offsets[first]=0;offsets[first]<lat_len;offsets[first]++)
+  if(latlon)
   {
-    for(offsets[first+1]=0;offsets[first+1]<lon_len;offsets[first+1]++)
+    index1=first+1;
+    len1=lon_len;
+    index2=first;
+    len2=lat_len;
+  }
+  else
+  {
+    index1=first;
+    len1=lat_len;
+    index2=first+1;
+    len2=lon_len;
+  }
+  for(offsets[index1]=0;offsets[index1]<len1;offsets[index1]++)
+  {
+    for(offsets[index2]=0;offsets[index2]<len2;offsets[index2]++)
     {
       rc=nc_get_vara_double(ncid,var_id,offsets,counts,&data);
       error(rc);

@@ -38,7 +38,7 @@ Bool openclimate_netcdf(Climatefile *file,    /**< climate data file */
   double *date;
   size_t len,time_len;
   char var_name[NC_MAX_NAME];
-  Bool isopen,isdim;
+  Bool isopen,isdim,isfullyear;
   file->isopen=FALSE;
   if(filename==NULL || file==NULL)
     return TRUE;
@@ -83,7 +83,7 @@ Bool openclimate_netcdf(Climatefile *file,    /**< climate data file */
       }
       nc_get_att_text(file->ncid, var_id, "units",s);
       s[len]='\0';
-      if(!strcasecmp(YEARS_NAME,s))
+      if(!strcasecmp(config->netcdf.years_name,s))
       {
         file->time_step=YEAR;
         time=newvec(int,time_len);
@@ -351,10 +351,35 @@ Bool openclimate_netcdf(Climatefile *file,    /**< climate data file */
   switch(file->time_step)
   {
     case DAY:
-      file->nyear=time_len/NDAYYEAR;
+      if(time_len<NDAYYEAR)
+      {
+        fprintf(stderr,"ERROR438: Number of days=%zu in '%s' less than %d.\n",time_len,filename,NDAYYEAR);
+        free_netcdf(file->ncid);
+        return TRUE;
+      }
+      if(file->isleap)
+      {
+        file->nyear=getnyearfromdays(&isfullyear,file->firstyear,time_len);
+        if(!isfullyear)
+          fprintf(stderr,"ERROR439: Number of days=%zu in '%s' is not multiple of %d excluding leap days.\n",time_len,filename,NDAYYEAR);
+      }
+      else
+      {
+        if(time_len % NDAYYEAR)
+          fprintf(stderr,"ERROR439: Number of days=%zu in '%s' is not multiple of %d.\n",time_len,filename,NDAYYEAR);
+        file->nyear=time_len/NDAYYEAR;
+      }
       file->n=config->ngridcell*NDAYYEAR;
       break;
     case MONTH:
+      if(time_len<NMONTH)
+      {
+        fprintf(stderr,"ERROR438: Number of months=%zu in '%s' less than %d.\n",time_len,filename,NMONTH);
+        free_netcdf(file->ncid);
+        return TRUE;
+      }
+      else if(time_len % NMONTH)
+        fprintf(stderr,"ERROR439: Number of months=%zu in '%s' is not multiple of %d.\n",time_len,filename,NMONTH);
       file->nyear=time_len/NMONTH;
       file->n=config->ngridcell*NMONTH;
       break;

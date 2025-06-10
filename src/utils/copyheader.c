@@ -53,11 +53,22 @@ int main(int argc,char **argv)
     return EXIT_FAILURE;
   }
   if(version!=version2)
-    fprintf(stderr,"Warning: file versions differ.\n");
+  {
+    fprintf(stderr,"Error: file version %d in `%s` differs from %d in '%s'.\n",
+            version,argv[1],version2,argv[2]);
+    return EXIT_FAILURE;
+  }
   if(strlen(id)!=strlen(id2))
-    fprintf(stderr,"Warning: id lengths differ.\n");
+  {
+    fprintf(stderr,"Error: id length of '%s' in '%s' differs from length of `%s' in '%s'.\n",
+            id,argv[1],id2,argv[2]);
+    return EXIT_FAILURE;
+  }
   if(swap2)
-    fprintf(stderr,"Warning: data has to be swapped.\n");
+  {
+    fprintf(stderr,"Error: data in '%s' has to be swapped.\n",argv[2]);
+    return EXIT_FAILURE;
+  }
   rewind(file);
   fwriteheader(file,&header,id,version);
   fclose(file);

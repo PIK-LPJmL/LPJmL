@@ -148,7 +148,7 @@ static Bool readmydata(Climatefile *file,    /* climate data file */
         }
         if(file->datatype==LPJ_FLOAT)
         {
-          if(f[file->nlon*address[0]+address[1]]==file->missing_value.f)
+          if(ismissingvalue(f[file->nlon*address[0]+address[1]],file->missing_value.f))
           {
             fprintf(stderr,"ERROR423: Missing value for cell=%d (",cell);
             fprintcoord(stderr,coords+cell);
@@ -251,6 +251,7 @@ int main(int argc,char **argv)
   grid_type=LPJ_SHORT;
   cellsize_lon=cellsize_lat=0.5;      /* default cell size */
   initconfig(&config);
+  initsetting_netcdf(&config.netcdf);
   for(iarg=1;iarg<argc;iarg++)
   {
     if(argv[iarg][0]=='-')
@@ -277,7 +278,8 @@ int main(int argc,char **argv)
                  USAGE,argv[0]);
           return EXIT_FAILURE;
         }
-        var=argv[++iarg];
+        var=strdup(argv[++iarg]);
+        check(var);
       }
 #ifdef USE_UDUNITS
       else if(!strcmp(argv[iarg],"-units"))
@@ -288,7 +290,8 @@ int main(int argc,char **argv)
                  USAGE,argv[0]);
           return EXIT_FAILURE;
         }
-        units=argv[++iarg];
+        units=strdup(argv[++iarg]);
+        check(units);
       }
 #endif
       else if(!strcmp(argv[iarg],"-map"))
@@ -455,7 +458,6 @@ int main(int argc,char **argv)
   header.cellsize_lat=(float)config.resolution.lat;
   header.cellsize_lon=(float)config.resolution.lon;
   header.ncell=config.ngridcell;
-  config.missing_value=MISSING_VALUE_FLOAT;
   file=fopen(outname,"wb");
   if(file==NULL)
   {
@@ -495,9 +497,9 @@ int main(int argc,char **argv)
           else
             map_name=BAND_NAMES;
         }
-        else if((map=readmap_netcdf(data.ncid,PFT_NAME))!=NULL)
+        else if((map=readmap_netcdf(data.ncid,config.netcdf.pft_name.name))!=NULL)
           map_name=BAND_NAMES;
-        else if((map=readmap_netcdf(data.ncid,DEPTH_NAME))!=NULL)
+        else if((map=readmap_netcdf(data.ncid,config.netcdf.depth.name))!=NULL)
           map_name=BAND_NAMES;
         if(nc_inq_natts(data.ncid,&len))
           n_attr=0;
@@ -603,9 +605,19 @@ int main(int argc,char **argv)
     grid_name.name=argv[iarg];
     grid_name.fmt=(isclm) ? CLM : RAW;
     fprintjson(file,outname,title,source,history,arglist,&header,map,map_name,attrs,n_attr,var,units,standard_name,long_name,&grid_name,grid_type,(isclm) ? CLM : RAW,LPJOUTPUT_HEADER,FALSE,LPJOUTPUT_VERSION);
+    freeattrs(attrs,n_attr);
+    free(out_json);
+    free(arglist);
     fclose(file);
   }
+  free(var);
+  free(units);
+  free(long_name);
+  free(standard_name);
+  free(history);
+  free(source);
   freemap(map);
+  free(grid);
   return EXIT_SUCCESS;
 #else
   fprintf(stderr,"ERROR401: NetCDF is not supported in this version of %s.\n",argv[0]);

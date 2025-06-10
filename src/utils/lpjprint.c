@@ -28,9 +28,9 @@
 #define NTYPES 3
 #define NSTANDTYPES 13 /* number of stand types */
 
-#define USAGE "Usage: %s [-h] [-v]  [-nopp] [-pp cmd] [-inpath dir] [-restartpath dir]\n"\
+#define USAGE "\nUsage: %s [-h] [-v]  [-nopp] [-pp cmd] [-inpath dir] [-restartpath dir]\n"\
               "       [[-Dmacro[=value]] [-Idir] ...] filename [-check] [start [end]]\n"
-
+#define LPJ_USAGE USAGE "\nTry \"%s --help\" for more information.\n"
 
 static Bool printgrid(Config *config, /* Pointer to LPJ configuration */
                       Standtype standtype[],
@@ -150,6 +150,7 @@ static Bool printgrid(Config *config, /* Pointer to LPJ configuration */
     grid.discharge.next=0;
     grid.ml.fraction=NULL;
     grid.ml.resdata=NULL;
+    grid.discharge.tfunct=NULL;
     grid.ml.dam=FALSE;
     if(config->withlanduse!=NO_LANDUSE)
     {
@@ -162,6 +163,9 @@ static Bool printgrid(Config *config, /* Pointer to LPJ configuration */
       grid.ml.landfrac=NULL;
       grid.ml.fertilizer_nr=NULL;
     }
+    grid.ml.manure_nr=NULL;
+    grid.ml.residue_on_field=NULL;
+    grid. ml.irrig_system=NULL;
     grid.output.data=NULL;
     grid.output.syear2=NULL;
     grid.output.syear=NULL;
@@ -177,8 +181,6 @@ static Bool printgrid(Config *config, /* Pointer to LPJ configuration */
     }
     if(isout)
       printcell(&grid,1,npft,ncft,config);
-    freelandfrac(grid.ml.landfrac);
-    freelandfrac(grid.ml.fertilizer_nr);
     freecell(&grid,npft,config);
   } /* of for(i=0;...) */
   fclose(file_restart);
@@ -217,7 +219,7 @@ int main(int argc,char **argv)
                 progname);
       fputs("\n     ",stdout);
       repeatch('=',rc);
-      printf("\n\nPrint content of restart files for LPJmL %s\n\n",getversion());
+      printf("\n\nPrint content of restart files for LPJmL %s\n",getversion());
       printf(USAGE,progname);
       printf("\nArguments:\n"
              "-h,--help        print this help text\n"
@@ -250,7 +252,7 @@ int main(int argc,char **argv)
   title[3]="see COPYRIGHT file";
   banner(title,4,78);
   initconfig(&config);
-  if(readconfig(&config,scanfcn,NTYPES,NOUT,&argc,&argv,USAGE))
+  if(readconfig(&config,scanfcn,NTYPES,NOUT,&argc,&argv,LPJ_USAGE))
     fail(READ_CONFIG_ERR,FALSE,"Cannot process configuration file");
   printf("Simulation: %s\n",config.sim_name);
   config.ischeckpoint=ischeckpointrestart(&config) && getfilesize(config.checkpoint_restart_filename)!=-1;
@@ -317,5 +319,6 @@ int main(int argc,char **argv)
   standtype[WOODPLANTATION]=woodplantation_stand,
   standtype[KILL]=kill_stand;
   rc=printgrid(&config,standtype,config.npft[TREE]+config.npft[GRASS],config.npft[CROP],isout);
+  freeconfig(&config);
   return (rc) ? EXIT_FAILURE : EXIT_SUCCESS;
 } /* of 'main' */

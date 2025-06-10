@@ -74,7 +74,7 @@ int main(int argc,char **argv)
           fprintf(stderr,"Argument missing for option '-type'.\n");
           return EXIT_FAILURE;
         }
-        i=findstr(argv[++iarg],typenames,5);
+        i=findstr(argv[++iarg],typenames,N_TYPES);
         if(i==NOT_FOUND)
         {
           fprintf(stderr,"Invalid argument '%s' for option '-type'.\n"
@@ -194,15 +194,19 @@ int main(int argc,char **argv)
     if(index==NULL)
     {
       printallocerr("index");
+      free(buffer);
       return EXIT_FAILURE;
     }
     size-=sizeof(int)*header.ncell;
     freadint(index,header.ncell,swap,infile);
     if(fwrite(index,sizeof(int),header.ncell,outfile)!=header.ncell)
     {
+      free(index);
+      free(buffer);
       fprintf(stderr,"Error writing data in '%s'.\n",argv[iarg+1]);
       return EXIT_FAILURE;
     }
+    free(index);
   }
   for(i=0;i<size / BUFSIZE;i++)
   {
@@ -222,6 +226,7 @@ int main(int argc,char **argv)
     }
     if(fwrite(buffer,1,BUFSIZE,outfile)!=BUFSIZE)
     {
+      free(buffer);
       fprintf(stderr,"Error writing data in '%s'.\n",argv[iarg+1]);
       return EXIT_FAILURE;
     }
@@ -244,6 +249,7 @@ int main(int argc,char **argv)
     }
     if(fwrite(buffer,1,size % BUFSIZE,outfile)!=size % BUFSIZE)
     {
+      free(buffer);
       fprintf(stderr,"Error writing data in '%s'.\n",argv[iarg+1]);
       return EXIT_FAILURE;
     }

@@ -23,6 +23,7 @@ static nc_type nctype[]={NC_BYTE,NC_SHORT,NC_INT,NC_FLOAT,NC_DOUBLE};
 #endif
 
 #define error(rc) if(rc) {free(lon);free(lon_bnds);free(lat);free(lat_bnds);free(year);free(layer);free(bnds);free(time_bnds);free(pftnames); fprintf(stderr,"ERROR427: Cannot write '%s': %s.\n",filename,nc_strerror(rc)); nc_close(cdf->ncid); return TRUE;}
+#define put_att_text(ncid,var,name,s) if(s!=NULL && strlen(s)) {rc=nc_put_att_text(ncid,var,name,strlen(s),s); error(rc);}
 
 Bool create_pft_netcdf(Netcdf *cdf,
                        const char *filename, /**< filename of NetCDF file */
@@ -30,9 +31,9 @@ Bool create_pft_netcdf(Netcdf *cdf,
                        int npft,             /**< number of natural PFTs */
                        int ncft,             /**< number of crop PFTs */
                        const char *name,     /**< name of output variable */
-                       const char *standard_name, /**< standard name of output variable */
-                       const char *long_name,/**< long name of output variable */
-                       const char *units,    /**< unit of output variable */
+                       const char *standard_name, /**< standard name of output variable or NULL */
+                       const char *long_name,/**< long name of output variable or NULL */
+                       const char *units,    /**< unit of output variable or NULL */
                        Type type,            /**< type of output variable */
                        int n,                /**< number of samples per year (1/12/365) */
                        int timestep,         /**< time step for annual output (yrs) */
@@ -45,10 +46,8 @@ Bool create_pft_netcdf(Netcdf *cdf,
 #ifdef USE_NETCDF
   char *s;
   time_t t;
-  int i,rc,nyear,imiss=MISSING_VALUE_INT,size,len;
-  short smiss=MISSING_VALUE_SHORT;
+  int i,rc,nyear,size,*pft;
   double *lon=NULL,*lat=NULL,*lat_bnds,*lon_bnds;
-  float miss=config->missing_value;
   double *layer,*bnds,*time_bnds=NULL;
   double *year=NULL;
   int dim[4],bnds_var_id,bnds_dim_id,time_bnds_var_id,lon_bnds_var_id,lat_bnds_var_id;
@@ -57,13 +56,13 @@ Bool create_pft_netcdf(Netcdf *cdf,
   int dimids[2];
   int pft_len_id;
   size_t offset[2],count[2],pft_len;
-  int time_dim_id,lon_dim_id,lat_dim_id,time_var_id,lon_var_id,lat_var_id,pft_dim_id,pft_var_id;
+  int time_dim_id,lon_dim_id,lat_dim_id,time_var_id,lon_var_id,lat_var_id,pft_dim_id,pft_var_id,pft_var_id2;
   if(array==NULL || name==NULL || filename==NULL)
   {
     fputs("ERROR424: Invalid array pointer in create_pft_netcdf().\n",stderr);
     return TRUE;
   }
-  cdf->missing_value=config->missing_value;
+  cdf->missing_value=config->netcdf.missing_value;
   cdf->index=array;
   if(oneyear)
     nyear=1;
@@ -139,13 +138,13 @@ Bool create_pft_netcdf(Netcdf *cdf,
       return TRUE;
     }
     bnds[0]=0;
-    bnds[1]=layerbound[0]/1000;
-    layer[0]=midlayer[0]/1000;
+    bnds[1]=layerbound[0]*config->netcdf.depth_bnds.scale;
+    layer[0]=midlayer[0]*config->netcdf.depth.scale;
     for(i=1;i<size;i++)
     {
-      bnds[2*i]=layerbound[i-1]/1000;
-      bnds[2*i+1]=layerbound[i]/1000;
-      layer[i]=midlayer[i]/1000;
+      bnds[2*i]=layerbound[i-1]*config->netcdf.depth_bnds.scale;
+      bnds[2*i+1]=layerbound[i]*config->netcdf.depth_bnds.scale;
+      layer[i]=midlayer[i]*config->netcdf.depth.scale;
     }
   }
   else bnds=layer=NULL;
@@ -171,16 +170,16 @@ Bool create_pft_netcdf(Netcdf *cdf,
   if(year!=NULL)
   {
     if(n==1)
-      rc=nc_def_dim(cdf->ncid,TIME_DIM_NAME,nyear/timestep,&time_dim_id);
+      rc=nc_def_dim(cdf->ncid,config->netcdf.time.dim,nyear/timestep,&time_dim_id);
     else
-      rc=nc_def_dim(cdf->ncid,TIME_DIM_NAME,nyear*n,&time_dim_id);
+      rc=nc_def_dim(cdf->ncid,config->netcdf.time.dim,nyear*n,&time_dim_id);
     error(rc);
   }
-  rc=nc_def_dim(cdf->ncid,issoil(index) ? config->layer_index : config->pft_index,size,&pft_dim_id);
+  rc=nc_def_dim(cdf->ncid,issoil(index) ? config->netcdf.depth.dim : config->netcdf.pft.dim,size,&pft_dim_id);
   error(rc);
-  rc=nc_def_dim(cdf->ncid,LAT_DIM_NAME,array->nlat,&lat_dim_id);
+  rc=nc_def_dim(cdf->ncid,config->netcdf.lat.dim,array->nlat,&lat_dim_id);
   error(rc);
-  rc=nc_def_dim(cdf->ncid,LON_DIM_NAME,array->nlon,&lon_dim_id);
+  rc=nc_def_dim(cdf->ncid,config->netcdf.lon.dim,array->nlon,&lon_dim_id);
   error(rc);
   if(year==NULL)
   {
@@ -201,34 +200,36 @@ Bool create_pft_netcdf(Netcdf *cdf,
     chunk[2]=array->nlat;
     chunk[3]=array->nlon;
   }
-  rc=nc_def_dim(cdf->ncid,BNDS_NAME,2,&bnds_dim_id);
+  rc=nc_def_dim(cdf->ncid,config->netcdf.bnds_name,2,&bnds_dim_id);
   error(rc);
   if(issoil(index))
   {
-    rc=nc_def_var(cdf->ncid,DEPTH_NAME,NC_DOUBLE,1,&pft_dim_id,&pft_var_id);
+    rc=nc_def_var(cdf->ncid,config->netcdf.depth.name,NC_DOUBLE,1,&pft_dim_id,&pft_var_id);
     error(rc);
-    rc=nc_put_att_text(cdf->ncid,pft_var_id,"units",strlen("m"),"m");
-    error(rc);
-    rc=nc_put_att_text(cdf->ncid,pft_var_id,"standard_name",strlen(DEPTH_STANDARD_NAME),DEPTH_STANDARD_NAME);
-    error(rc);
-    rc=nc_put_att_text(cdf->ncid,pft_var_id,"long_name",strlen(DEPTH_LONG_NAME),DEPTH_LONG_NAME);
-    error(rc);
-    rc=nc_put_att_text(cdf->ncid,pft_var_id,"bounds",strlen(DEPTH_BNDS_NAME),DEPTH_BNDS_NAME);
+    put_att_text(cdf->ncid,pft_var_id,"units",config->netcdf.depth.unit);
+    put_att_text(cdf->ncid,pft_var_id,"standard_name",config->netcdf.depth.standard_name);
+    put_att_text(cdf->ncid,pft_var_id,"long_name",config->netcdf.depth.long_name);
+    put_att_text(cdf->ncid,pft_var_id,"comment",config->netcdf.depth.comment);
+    rc=nc_put_att_text(cdf->ncid,pft_var_id,"bounds",
+                       strlen(config->netcdf.depth_bnds.name),
+                       config->netcdf.depth_bnds.name);
     error(rc);
     rc=nc_put_att_text(cdf->ncid,pft_var_id,"positive",strlen("down"),"down");
     error(rc);
     rc=nc_put_att_text(cdf->ncid,pft_var_id,"axis",strlen("Z"),"Z");
+    error(rc);
     dimids[0]=pft_dim_id;
     dimids[1]=bnds_dim_id;
-    rc=nc_def_var(cdf->ncid,DEPTH_BNDS_NAME,NC_DOUBLE,2,dimids,&bnds_var_id);
+    rc=nc_def_var(cdf->ncid,config->netcdf.depth_bnds.name,NC_DOUBLE,2,dimids,&bnds_var_id);
     error(rc);
-    rc=nc_put_att_text(cdf->ncid,bnds_var_id,"units",strlen("m"),"m");
-    error(rc);
-    rc=nc_put_att_text(cdf->ncid,bnds_var_id,"comment",strlen(BNDS_LONG_NAME),BNDS_LONG_NAME);
-    error(rc);
+    put_att_text(cdf->ncid,bnds_var_id,"units",config->netcdf.depth_bnds.unit);
+    put_att_text(cdf->ncid,bnds_var_id,"comment",config->netcdf.depth_bnds.comment);
   }
   else
   {
+    rc=nc_def_var(cdf->ncid,config->netcdf.pft.name,NC_INT,1,&pft_dim_id,&pft_var_id2);
+    put_att_text(cdf->ncid,pft_var_id2,"long_name",config->netcdf.pft.long_name);
+    put_att_text(cdf->ncid,pft_var_id2,"comment",config->netcdf.pft.comment);
     pftnames=createpftnames(index,npft,ncft,config);
     if(pftnames==NULL)
     {
@@ -242,9 +243,7 @@ Bool create_pft_netcdf(Netcdf *cdf,
       return TRUE;
     }
     if(config->isnetcdf4)
-    {
-      rc=nc_def_var(cdf->ncid,PFT_NAME,NC_STRING,1,&pft_dim_id,&pft_var_id);
-    }
+      rc=nc_def_var(cdf->ncid,config->netcdf.pft_name.name,NC_STRING,1,&pft_dim_id,&pft_var_id);
     else
     {
       pft_len=0;
@@ -252,111 +251,89 @@ Bool create_pft_netcdf(Netcdf *cdf,
         if(pft_len<strlen(pftnames[i]))
           pft_len=strlen(pftnames[i]);
       pft_len++;
-      rc=nc_def_dim(cdf->ncid,"len",pft_len,&pft_len_id);
+      rc=nc_def_dim(cdf->ncid,config->netcdf.pft_name.dim,pft_len,&pft_len_id);
       error(rc);
       dimids[0]=pft_dim_id;
       dimids[1]=pft_len_id;
-      rc=nc_def_var(cdf->ncid,PFT_NAME,NC_CHAR,2,dimids,&pft_var_id);
+      rc=nc_def_var(cdf->ncid,config->netcdf.pft_name.name,NC_CHAR,2,dimids,&pft_var_id);
     }
+    error(rc);
+    put_att_text(cdf->ncid,pft_var_id,"long_name",config->netcdf.pft_name.long_name);
   }
   error(rc);
   if(year!=NULL)
   {
-    rc=nc_def_var(cdf->ncid,TIME_NAME,NC_DOUBLE,1,&time_dim_id,&time_var_id);
+    rc=nc_def_var(cdf->ncid,config->netcdf.time.name,NC_DOUBLE,1,&time_dim_id,&time_var_id);
     error(rc);
     dimids[0]=time_dim_id;
     dimids[1]=bnds_dim_id;
-    rc=nc_def_var(cdf->ncid,TIME_BNDS_NAME,NC_DOUBLE,2,dimids,&time_bnds_var_id);
+    rc=nc_def_var(cdf->ncid,config->netcdf.time_bnds.name,NC_DOUBLE,2,dimids,&time_bnds_var_id);
     error(rc);
     if(n==1)
     {
       if(config->absyear)
-        s=strdup(YEARS_NAME);
+        s=strdup(config->netcdf.years_name);
       else
       {
-        len=snprintf(NULL,0,"%s since %d-1-1 0:0:0",(config->with_days) ? "days" : "years",config->baseyear);
-        s=malloc(len+1);
-        sprintf(s,"%s since %d-1-1 0:0:0",(config->with_days) ? "days" : "years",config->baseyear);
+        s=getsprintf("%s since %d-1-1 0:0:0",(config->with_days) ? "days" : "years",config->baseyear);
       }
     }
     else if(n==12)
     {
-      len=snprintf(NULL,0,"%s since %d-1-1 0:0:0",(config->with_days) ? "days" : "months",(oneyear) ? actualyear : config->baseyear);
-      s=malloc(len+1);
-      sprintf(s,"%s since %d-1-1 0:0:0",(config->with_days) ? "days" : "months",(oneyear) ? actualyear : config->baseyear);
+      s=getsprintf("%s since %d-1-1 0:0:0",(config->with_days) ? "days" : "months",(oneyear) ? actualyear : config->baseyear);
     }
     else
     {
-      len=snprintf(NULL,0,"days since %d-1-1 0:0:0",(oneyear) ? actualyear : config->baseyear);
-      s=malloc(len+1);
-      sprintf(s,"days since %d-1-1 0:0:0",(oneyear) ? actualyear : config->baseyear);
+      s=getsprintf("days since %d-1-1 0:0:0",(oneyear) ? actualyear : config->baseyear);
     }
+    check(s);
     rc=nc_put_att_text(cdf->ncid,time_var_id,"units",strlen(s),s);
-    rc=nc_put_att_text(cdf->ncid,time_bnds_var_id,"units",strlen(s),s);
     free(s);
     error(rc);
-    rc=nc_put_att_text(cdf->ncid,time_var_id,"calendar",strlen(CALENDAR),
-                       CALENDAR);
-    error(rc);
-    rc=nc_put_att_text(cdf->ncid,time_bnds_var_id,"calendar",strlen(CALENDAR),
-                       CALENDAR);
-    rc=nc_put_att_text(cdf->ncid, time_var_id,"standard_name",strlen(TIME_STANDARD_NAME),TIME_STANDARD_NAME);
-    error(rc);
-    rc=nc_put_att_text(cdf->ncid, time_var_id,"long_name",strlen(TIME_LONG_NAME),TIME_LONG_NAME);
-    error(rc);
-    rc=nc_put_att_text(cdf->ncid, time_bnds_var_id,"long_name",strlen(TIME_BNDS_LONG_NAME),TIME_BNDS_LONG_NAME);
-    error(rc);
+    put_att_text(cdf->ncid,time_var_id,"calendar",config->netcdf.calendar);
+    put_att_text(cdf->ncid, time_var_id,"standard_name",config->netcdf.time.standard_name);
+    put_att_text(cdf->ncid, time_var_id,"long_name", config->netcdf.time.long_name);
+    put_att_text(cdf->ncid, time_var_id,"comment", config->netcdf.time.comment);
+    put_att_text(cdf->ncid, time_bnds_var_id,"long_name",config->netcdf.time_bnds.long_name);
+    put_att_text(cdf->ncid, time_bnds_var_id,"comment",config->netcdf.time_bnds.comment);
     rc=nc_put_att_text(cdf->ncid, time_var_id,"axis",strlen("T"),"T");
     error(rc);
   }
   /*rc=nc_def_var(cdf->ncid,"PFT",NC_INT,1,&pft_dim_id,&pft_var_id);
   error(rc); */
-  rc=nc_def_var(cdf->ncid,LAT_NAME,NC_DOUBLE,1,&lat_dim_id,&lat_var_id);
+  rc=nc_def_var(cdf->ncid,config->netcdf.lat.name,NC_DOUBLE,1,&lat_dim_id,&lat_var_id);
   error(rc)
   dimids[0]=lat_dim_id;
   dimids[1]=bnds_dim_id;
-  rc=nc_def_var(cdf->ncid,LAT_BNDS_NAME,NC_DOUBLE,2,dimids,&lat_bnds_var_id);
+  rc=nc_def_var(cdf->ncid,config->netcdf.lat_bnds.name,NC_DOUBLE,2,dimids,&lat_bnds_var_id);
   error(rc);
-  rc=nc_put_att_text(cdf->ncid,lat_var_id,"units",strlen("degrees_north"),
-                     "degrees_north");
-  error(rc);
-  rc=nc_put_att_text(cdf->ncid,lat_bnds_var_id,"units",strlen("degrees_north"),
-                     "degrees_north");
-  rc=nc_put_att_text(cdf->ncid, lat_var_id,"long_name",strlen(LAT_LONG_NAME),LAT_LONG_NAME);
-  error(rc);
-  if(strlen(LAT_BNDS_LONG_NAME))
-  {
-    rc=nc_put_att_text(cdf->ncid, lat_bnds_var_id,"long_name",strlen(LAT_BNDS_LONG_NAME),LAT_BNDS_LONG_NAME);
-    error(rc);
-  }
-  rc=nc_put_att_text(cdf->ncid, lat_var_id,"standard_name",strlen(LAT_STANDARD_NAME),LAT_STANDARD_NAME);
-  error(rc);
-  rc=nc_put_att_text(cdf->ncid, lat_var_id,"bounds",strlen(LAT_BNDS_NAME),LAT_BNDS_NAME);
+  put_att_text(cdf->ncid,lat_var_id,"units",config->netcdf.lat.unit);
+  put_att_text(cdf->ncid,lat_bnds_var_id,"units",config->netcdf.lat_bnds.unit);
+  put_att_text(cdf->ncid, lat_var_id,"long_name",config->netcdf.lat.long_name);
+  put_att_text(cdf->ncid, lat_var_id,"comment",config->netcdf.lat.comment);
+  put_att_text(cdf->ncid, lat_bnds_var_id,"long_name",config->netcdf.lat_bnds.long_name);
+  put_att_text(cdf->ncid, lat_bnds_var_id,"comment",config->netcdf.lat_bnds.comment);
+  put_att_text(cdf->ncid, lat_var_id,"standard_name",config->netcdf.lat.standard_name);
+  put_att_text(cdf->ncid, lat_bnds_var_id,"standard_name",config->netcdf.lat_bnds.standard_name);
+  rc=nc_put_att_text(cdf->ncid, lat_var_id,"bounds",strlen(config->netcdf.lat_bnds.name),config->netcdf.lat_bnds.name);
   error(rc);
   rc=nc_put_att_text(cdf->ncid, lat_var_id,"axis",strlen("Y"),"Y");
   error(rc);
-  rc=nc_def_var(cdf->ncid,LON_NAME,NC_DOUBLE,1,&lon_dim_id,&lon_var_id);
+  rc=nc_def_var(cdf->ncid,config->netcdf.lon.name,NC_DOUBLE,1,&lon_dim_id,&lon_var_id);
   error(rc);
   dimids[0]=lon_dim_id;
   dimids[1]=bnds_dim_id;
-  rc=nc_def_var(cdf->ncid,LON_BNDS_NAME,NC_DOUBLE,2,dimids,&lon_bnds_var_id);
+  rc=nc_def_var(cdf->ncid,config->netcdf.lon_bnds.name,NC_DOUBLE,2,dimids,&lon_bnds_var_id);
   error(rc);
-  rc=nc_put_att_text(cdf->ncid,lon_var_id,"units",strlen("degrees_east"),
-                     "degrees_east");
-  error(rc);
-  rc=nc_put_att_text(cdf->ncid,lon_bnds_var_id,"units",strlen("degrees_east"),
-                     "degrees_east");
-  error(rc);
-  rc=nc_put_att_text(cdf->ncid, lon_var_id,"long_name",strlen(LON_LONG_NAME),LON_LONG_NAME);
-  error(rc);
-  if(strlen(LON_BNDS_LONG_NAME))
-  {
-    rc=nc_put_att_text(cdf->ncid, lon_bnds_var_id,"long_name",strlen(LON_BNDS_LONG_NAME),LON_BNDS_LONG_NAME);
-    error(rc);
-  }
-  rc=nc_put_att_text(cdf->ncid, lon_var_id,"standard_name",strlen(LON_STANDARD_NAME),LON_STANDARD_NAME);
-  error(rc);
- rc=nc_put_att_text(cdf->ncid, lon_var_id,"bounds",strlen(LON_BNDS_NAME),LON_BNDS_NAME);
+  put_att_text(cdf->ncid,lon_var_id,"units",config->netcdf.lon.unit);
+  put_att_text(cdf->ncid,lon_bnds_var_id,"units",config->netcdf.lon.unit);
+  put_att_text(cdf->ncid, lon_var_id,"long_name",config->netcdf.lon.long_name);
+  put_att_text(cdf->ncid, lon_var_id,"comment",config->netcdf.lon.comment);
+  put_att_text(cdf->ncid,lon_bnds_var_id,"long_name",config->netcdf.lon_bnds.long_name);
+  put_att_text(cdf->ncid,lon_bnds_var_id,"comment",config->netcdf.lon_bnds.comment);
+  put_att_text(cdf->ncid, lon_var_id,"standard_name",config->netcdf.lon.standard_name);
+  put_att_text(cdf->ncid, lon_bnds_var_id,"standard_name",config->netcdf.lon_bnds.standard_name);
+  rc=nc_put_att_text(cdf->ncid, lon_var_id,"bounds",strlen(config->netcdf.lon_bnds.name),config->netcdf.lon_bnds.name);
   error(rc);
   rc=nc_put_att_text(cdf->ncid, lon_var_id,"axis",strlen("X"),"X");
   error(rc);
@@ -372,7 +349,7 @@ Bool create_pft_netcdf(Netcdf *cdf,
       error(rc);
     }
   }
-  if(units!=NULL)
+  if(units!=NULL && strlen(units))
   {
     rc=nc_put_att_text(cdf->ncid, cdf->varid,"units",strlen(units),units);
     error(rc);
@@ -388,18 +365,18 @@ Bool create_pft_netcdf(Netcdf *cdf,
     error(rc);
   }
   switch(type)
-  { 
+  {
     case LPJ_FLOAT:
-      nc_put_att_float(cdf->ncid, cdf->varid, "missing_value", NC_FLOAT,1,&miss);
-      rc=nc_put_att_float(cdf->ncid, cdf->varid, "_FillValue", NC_FLOAT,1,&miss);
+      nc_put_att_float(cdf->ncid, cdf->varid, "missing_value", NC_FLOAT,1,&config->netcdf.missing_value.f);
+      rc=nc_put_att_float(cdf->ncid, cdf->varid, "_FillValue", NC_FLOAT,1,&config->netcdf.missing_value.f);
       break;
     case LPJ_SHORT:
-      nc_put_att_short(cdf->ncid, cdf->varid, "missing_value", NC_SHORT,1,&smiss);
-      rc=nc_put_att_short(cdf->ncid, cdf->varid, "_FillValue", NC_SHORT,1,&smiss);
+      nc_put_att_short(cdf->ncid, cdf->varid, "missing_value", NC_SHORT,1,&config->netcdf.missing_value.s);
+      rc=nc_put_att_short(cdf->ncid, cdf->varid, "_FillValue", NC_SHORT,1,&config->netcdf.missing_value.s);
       break;
     case LPJ_INT:
-      nc_put_att_int(cdf->ncid, cdf->varid, "missing_value", NC_INT,1,&imiss);
-      rc=nc_put_att_int(cdf->ncid, cdf->varid, "_FillValue", NC_INT,1,&imiss);
+      nc_put_att_int(cdf->ncid, cdf->varid, "missing_value", NC_INT,1,&config->netcdf.missing_value.i);
+      rc=nc_put_att_int(cdf->ncid, cdf->varid, "_FillValue", NC_INT,1,&config->netcdf.missing_value.i);
       break;
     default:
       fputs("ERROR428: Invalid data type in NetCDF file.\n",stderr);
@@ -418,9 +395,8 @@ Bool create_pft_netcdf(Netcdf *cdf,
   rc=nc_put_att_text(cdf->ncid,NC_GLOBAL,"title",
                      strlen(config->sim_name),config->sim_name);
   error(rc);
-  len=snprintf(NULL,0,"LPJmL C Version %s",getversion());
-  s=malloc(len+1);
-  sprintf(s,"LPJmL C Version %s",getversion());
+  s=getsprintf("LPJmL C Version %s",getversion());
+  check(s);
   rc=nc_put_att_text(cdf->ncid,NC_GLOBAL,"source",strlen(s),s);
   free(s);
   error(rc);
@@ -431,9 +407,8 @@ Bool create_pft_netcdf(Netcdf *cdf,
                      strlen(gethash()),gethash());
   error(rc);
   time(&t);
-  len=snprintf(NULL,0,"%s: %s",strdate(&t),config->arglist);
-  s=malloc(len+1);
-  sprintf(s,"%s: %s",strdate(&t),config->arglist);
+  s=getsprintf("%s: %s",strdate(&t),config->arglist);
+  check(s);
   rc=nc_put_att_text(cdf->ncid,NC_GLOBAL,"history",strlen(s),s);
   free(s);
   error(rc);
@@ -460,6 +435,17 @@ Bool create_pft_netcdf(Netcdf *cdf,
   }
   else
   {
+    pft=newvec(int,size);
+    if(pft==NULL)
+    {
+      printallocerr("pft");
+      return TRUE;
+    }
+    for(i=0;i<size;i++)
+      pft[i]=i+1;
+    rc=nc_put_var_int(cdf->ncid,pft_var_id2,pft);
+    error(rc);
+    free(pft);
     if(config->isnetcdf4)
     {
       rc=nc_put_var_string(cdf->ncid,pft_var_id,(const char **)pftnames);

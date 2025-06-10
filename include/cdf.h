@@ -17,39 +17,8 @@
 #ifndef CDF_H
 #define CDF_H
 
-#define MISSING_VALUE_FLOAT -1e32
-#define MISSING_VALUE_SHORT -9999
-#define MISSING_VALUE_INT -999999
-#define MISSING_VALUE_BYTE 99
 #define NO_TIME -1
-#define LON_NAME "lon"
-#define LON_BNDS_NAME "lon_bnds"
-#define LON_STANDARD_NAME "longitude"
-#define LON_LONG_NAME "Longitude"
-#define LON_BNDS_LONG_NAME "Longitude bounds"
-#define LAT_NAME "lat"
-#define LAT_BNDS_NAME "lat_bnds"
-#define LAT_LONG_NAME "Latitude"
-#define LAT_BNDS_LONG_NAME "Latitude bounds"
-#define LAT_STANDARD_NAME "latitude"
-#define TIME_NAME "time"
-#define TIME_STANDARD_NAME "time"
-#define TIME_LONG_NAME "Time"
-#define LON_DIM_NAME "lon"
-#define LAT_DIM_NAME "lat"
-#define TIME_DIM_NAME "time"
-#define YEARS_NAME "Years"
 #define NULL_NAME "(null)"
-#define PFT_NAME "NamePFT"
-#define DEPTH_NAME "depth"
-#define DEPTH_BNDS_NAME "depth_bnds"
-#define DEPTH_STANDARD_NAME "depth_below_surface"
-#define DEPTH_LONG_NAME "Depth of Vertical Layer Center Below Surface"
-#define BNDS_NAME "bnds"
-#define TIME_BNDS_NAME "time_bnds"
-#define TIME_BNDS_LONG_NAME "start and end points of each time step"
-#define BNDS_LONG_NAME "bnds=0 for the top of the layer, and bnds=1 for the bottom of the layer"
-#define CALENDAR "noleap"
 
 typedef enum { ONEFILE,CREATE,APPEND,CLOSE} State_nc;
 
@@ -76,7 +45,7 @@ typedef struct cdf
   int time_bnds_var_id,lon_bnds_var_id,lat_bnds_var_id;
   int n;
   const Coord_array *index;
-  float missing_value;
+  Missing_value missing_value;
 } Netcdf;
 
 typedef struct
@@ -136,6 +105,7 @@ typedef struct
   Type type;     /**< data type in binary file */
   Real scalar;   /**< scaling factor */
   FILE *file;    /**< pointer to binary file */
+  int nbands;    /**< number of bands */
   Input_netcdf cdf;
 } Infile;
 
@@ -174,7 +144,7 @@ extern Bool readintdata_netcdf(const Climatefile *,int *,const Cell *,
                                int,const Config *);
 extern Bool readshortdata_netcdf(const Climatefile *,short *,const Cell *,
                                  int,const Config *);
-extern Coord_netcdf opencoord_netcdf(const char *,const char *,Bool);
+extern Coord_netcdf opencoord_netcdf(const char *,const char *,const Netcdf_config *,Bool);
 extern const double *getlon_netcdf(Coord_netcdf,int *);
 extern const double *getlat_netcdf(Coord_netcdf,int *);
 extern void closecoord_netcdf(Coord_netcdf);
@@ -204,6 +174,8 @@ extern Bool checkcoord(const size_t *,int,const Coord *,const Climatefile *);
 extern Map *readmap_netcdf(int,const char *);
 extern char *getattr_netcdf(int,int,const char *);
 extern char *getvarname_netcdf(const Climatefile *);
+extern void initsetting_netcdf(Netcdf_config *);
+extern Bool parse_config_netcdf(Netcdf_config *,const char *);
 extern Bool setlatlon(double **,double **,double **,double **,const Coord_array *);
 extern Bool settimeaxis(double **,double **,int,int,int,int,int,Bool,Bool,Bool,const char *);
 
@@ -217,5 +189,6 @@ extern Bool mpi_write_pft_netcdf(const Netcdf *,void *,MPI_Datatype,int,
 /* Definition of macros */
 
 #define isdaily(climate) ((climate).time_step==DAY)
+#define ismissingvalue(f,miss) ((isnan(miss) && isnan(f)) || (!isnan(miss) && f==miss))
 
 #endif

@@ -2,7 +2,7 @@
 /**                                                                                \n**/
 /**           l  p  j  m  l  _  c  o  n  f  i  g  .  c  j  s  o  n                 \n**/
 /**                                                                                \n**/
-/** Default configuration file for LPJmL C Version 5.9.18                          \n**/
+/** Default configuration file for LPJmL C Version 5.9.25                          \n**/
 /**                                                                                \n**/
 /** Configuration file is divided into five sections:                              \n**/
 /**                                                                                \n**/
@@ -21,7 +21,8 @@
 /**************************************************************************************/
 
 //#define BMGR_BROWN    /* enables brown harvest of biomass grass, instead of green harvest (default) */
-//#define CRU_MONTHLY /* Set macro for climate input selection. Options are  CRU_MONTHLY, CRU_NETCDF. If no makro is provided the default (GSWP3-W5E5) is used.*/
+//#define CRU_MONTHLY /* Set macro for climate input selection. If no makro is provided the default (GSWP3-W5E5) is used.*/
+//#define NETCDF_INPUT /* use NetCDF files as input */
 //#define OLD_LU /* Set macro for landuse, fertilizer and manure input selection. Options are  OLD_LU and MADRAT. If no makro is provided the default (LandInG toolbox) is used.*/
 
 {   /* LPJmL configuration in JSON format */
@@ -39,13 +40,15 @@
   "sim_name" : "LPJmL Run", /* Simulation description */
   "sim_id"   : "lpjml",     /* LPJML Simulation type with managed land use */
   "coupled_model" : null,   /* Coupled model: null (no model coupled), string (name of coupled model) */
+  "coupled_host" : "localhost", /* host where the coupled model is running */
+  "coupled_port" : 2224,    /* port for socket communication */
   "start_coupling": null,   /* Start year of model coupling: null (start_coupling is set to firstyear if coupled_model != null), int (start year of coupling) */
   "version"  : "5.9",       /* LPJmL version expected */
   "global_attrs" : {"institution" : "Potsdam Institute for Climate Impact Research",
                     "contact" : "", /* name and email address */
                     "comment" : ""  /* additional comments */
                    },       /* Global attributes for NetCDF output files */
-  #if defined CRU_MONTHLY || defined CRU_NETCDF
+  #ifdef CRU_MONTHLY
     "random_prec" : true,     /* Random weather generator for precipitation enabled */
     "radiation" : "radiation",/* type of radiation input to be used, options: "cloudiness", "radiation", "radiation_swonly", "radiation_lwdown" */
   #else
@@ -201,12 +204,15 @@
 /*  III. Input data section                                          */
 /*===================================================================*/
 
-
   "inpath" : "/p/projects/lpjml/input/historical",
 
-  /* Input files of CRU dataset */
+  /* Input files */
   "input" :
+#ifdef NETCDF_INPUT
+    #include "input_netcdf.cjson"
+#else
     #include "input.cjson"
+#endif
   ,
 
 /*===================================================================*/
@@ -216,6 +222,11 @@
   /* all available output variables and their definition */
   "outputvar" :
     #include "par/outputvars.cjson"
+  ,
+
+  /* Definition of missing values and axis names in NetCDF files */
+  "netcdf_config" :
+    #include "par/netcdf.cjson"
   ,
 
   /* output data settings */
@@ -232,9 +243,6 @@
   "global_netcdf" : false,    /* use global grid for NetCDF files (true/false) */
   "netcdf4" : false,          /* NetCDF files are in NetCDF4 format (true/false) */
   "compress" : 0,             /* compression level (1-9, 0= no compression) */
-  "missing_value" : -1e32,    /* missing value in NetCDF files */
-  "pft_index" : "npft",       /* name of index variable for PFT output */
-  "layer_index" : "layer",    /* name of index variable for soil layer output */
   "compress_cmd" : "gzip -f", /* command for compression of output files */
   "compress_suffix" : ".gz",  /* file suffix for compressed output files */
   "json_suffix" : ".json",    /* file suffix for JSON metafiles */
@@ -384,7 +392,7 @@ ID                               Fmt                        filename
   "nspinup" : 420,   /* spinup years */
   "nspinyear" : 30,  /* cycle length during spinup (yr)*/
   "firstyear": 1901, /* first year of simulation */
-#if defined CRU_MONTHLY || defined CRU_NETCDF
+#ifdef CRU_MONTHLY
   "lastyear" : 2011, /* last year of simulation */
 #else
   "lastyear" : 2019, /* last year of simulation */

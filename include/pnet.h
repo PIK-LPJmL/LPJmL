@@ -25,7 +25,7 @@
 
 /* Definition of constants */
 
-#define PNET_VERSION "1.0.4"
+#define PNET_VERSION "1.0.5"
 
 /* Return codes for Pnet functions */
 

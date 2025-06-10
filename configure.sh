@@ -16,9 +16,11 @@
 #################################################################################
 
 USAGE="Usage: $0 [-h] [-v] [-l] [-prefix dir] [-debug] [-nompi] [-check] [-noerror] [-Dmacro[=value] ...]"
+ERR_USAGE="\nTry \"$0 --help\" for more information."
 debug=0
 nompi=0
 prefix=$PWD
+checking=""
 macro=""
 warning="-Werror"
 while(( "$#" )); do
@@ -34,7 +36,7 @@ while(( "$#" )); do
       echo "-l,--license    print license"
       echo "-prefix dir     set installation directory for LPJmL. Default is current directory"
       echo "-debug          set debug flags and disable optimization"
-      echo "-check          set debug flags, enable pointer checking and disable optimization"
+      echo "-check          enable run-time checking of memory leaks and access out of bounds"
       echo "-noerror        do not stop compilation on warnings"
       echo "-nompi          do not build MPI version"
       echo "-Dmacro[=value] define macro for compilation"
@@ -58,6 +60,7 @@ while(( "$#" )); do
       then
         echo >&2 Error: prefix directory missing
         echo >&2 $USAGE
+        echo -e >&2 $ERR_USAGE
         exit 1
       fi
       prefix=$2
@@ -68,7 +71,7 @@ while(( "$#" )); do
       shift 1
       ;;
     -check)
-      debug=2
+      checking="\$(CHECKFLAGS)"
       shift 1
       ;;
     -noerror)
@@ -84,13 +87,15 @@ while(( "$#" )); do
       shift 1
       ;;
     -*)
-      echo >&2 Invalid option $1
+      echo >&2 Error: Invalid option \'$1\'
       echo >&2 $USAGE
+      echo -e >&2 $ERR_USAGE
       exit 1
       ;;
     *)
-      echo >&2 Invalid argument $1
+      echo >&2 Error: Invalid argument \'$1\'
       echo >&2 $USAGE
+      echo -e >&2 $ERR_USAGE
       exit 1
       ;;
   esac
@@ -108,79 +113,17 @@ else
   echo >&2 No input directory found, LPJINPATH has to be set
 fi
 
-if [ "$osname" = "Linux" ]  || [ "$osname" = "CYGWIN_NT-5.1" ]
-then
-  echo Operating system is $osname
-  if [ "$nompi" = "1" ]
-  then
-    if which icx >/dev/null 2>/dev/null ;
-    then
-      cp config/Makefile.icx Makefile.inc
-    elif which icc >/dev/null 2>/dev/null ;
-    then
-      warning=""
-      cp config/Makefile.intel Makefile.inc
-    elif which gcc >/dev/null 2>/dev/null ;
-    then
-      cp config/Makefile.gcc Makefile.inc
-    else
-      echo >&2 Error: No gcc found
-      exit 1
-    fi
-  else
-    if which mpiicx >/dev/null 2>/dev/null ;
-    then
-      echo New Intel MPI found
-      cp config/Makefile.hpc2024 Makefile.inc
-      if which sbatch >/dev/null 2>/dev/null ;
-      then
-         echo SLURM found
-         ln -sf lpjsubmit_hpc bin/lpjsubmit
-      else
-         echo >2 No batch system found
-      fi
-    elif which mpiicc >/dev/null 2>/dev/null ;
-    then
-      echo Intel MPI found
-      warning=""
-      cp config/Makefile.cluster2015 Makefile.inc
-      if which llsubmit >/dev/null 2>/dev/null ;
-      then
-         echo LoadLeveler found
-         ln -sf lpjsubmit_intel bin/lpjsubmit
-      elif which sbatch >/dev/null 2>/dev/null ;
-      then
-         echo SLURM found
-         ln -sf lpjsubmit_slurm bin/lpjsubmit
-      else
-         echo >2 No batch system found
-      fi
-    elif which mpicc >/dev/null 2>/dev/null ;
-    then
-      cp config/Makefile.mpich Makefile.inc
-      ln -sf lpjsubmit_mpich bin/lpjsubmit
-      echo MPICH found
-    elif which icc >/dev/null 2>/dev/null ;
-    then
-      warning=""
-      cp config/Makefile.intel Makefile.inc
-    elif which gcc >/dev/null 2>/dev/null ;
-    then
-      cp config/Makefile.gcc Makefile.inc
-    else
-      echo >&2 Error: No gcc found
-      exit 1
-    fi
-  fi
-  echo Create executables with make all
-elif [ "$osname" = "Darwin" ]
+if [ "$osname" = "Linux" ]  || [ "$osname" = "CYGWIN_NT-5.1" ] || [ "$osname" = "Darwin" ]
 then
   echo Operating system is $osname
   if [ "$nompi" = "1" ]
   then
     if which icc >/dev/null 2>/dev/null ;
     then
-      cp config/Makefile.intel Makefile.inc
+      cp config/Makefile.icc Makefile.inc
+    elif which icx >/dev/null 2>/dev/null ;
+    then
+      cp config/Makefile.icx Makefile.inc
     elif which gcc >/dev/null 2>/dev/null ;
     then
       cp config/Makefile.gcc Makefile.inc
@@ -189,32 +132,35 @@ then
       exit 1
     fi
   else
-    if which mpicc >/dev/null 2>/dev/null ;
+    if which mpiicc >/dev/null 2>/dev/null  && which icc >/dev/null 2>/dev/null ;
     then
-      cp config/Makefile.darwin_mpich Makefile.inc
+      echo Intel MPI compiler mpiicc found
+      cp config/Makefile.mpiicc Makefile.inc
+    elif which mpiicx >/dev/null 2>/dev/null ;
+    then
+      echo Intel MPI compiler mpiicx found
+      cp config/Makefile.mpiicx Makefile.inc
+    elif which mpicc >/dev/null 2>/dev/null ;
+    then
+      cp config/Makefile.mpich Makefile.inc
       echo MPICH found
+    elif which icc >/dev/null 2>/dev/null ;
+    then
+      cp config/Makefile.icc Makefile.inc
     elif which gcc >/dev/null 2>/dev/null ;
     then
-      cp config/Makefile.darwin_cc Makefile.inc
+      cp config/Makefile.gcc Makefile.inc
     else
       echo >&2 Error: No gcc found
       exit 1
     fi
-  fi
-  echo Create executables with make all
-elif [ "$osname" = "AIX" ]
-then
-  echo  Operating system is AIX
-  if [ "$nompi" = "1" ]
-  then
-    cp config/Makefile.aix Makefile.inc
-  elif which mpcc >/dev/null 2>/dev/null ;
-  then
-    echo IBM MPI found
-    cp config/Makefile.aix_mpi Makefile.inc
-    ln -sf lpjsubmit_aix bin/lpjsubmit
-  else
-    cp config/Makefile.aix Makefile.inc
+    if which sbatch >/dev/null 2>/dev/null ;
+    then
+       echo SLURM found
+       ln -sf lpjsubmit_hpc bin/lpjsubmit
+    else
+       echo >&2 No batch system found
+    fi
   fi
   echo Create executables with make all
 else
@@ -224,15 +170,11 @@ else
 fi
 if [ "$debug" = "1" ]
 then
-  echo "CFLAGS	= \$(WFLAG) \$(LPJFLAGS) $macro $warning \$(DEBUGFLAGS)" >>Makefile.inc
-  echo "LNOPTS	= \$(WFLAG) \$(DEBUGFLAGS) -o " >>Makefile.inc
-elif [ "$debug" = "2" ]
-then
-  echo "CFLAGS	= \$(WFLAG) \$(LPJFLAGS) $macro $warning \$(CHECKFLAGS)" >>Makefile.inc
-  echo "LNOPTS	= \$(WFLAG) \$(CHECKFLAGS) -o " >>Makefile.inc
+  echo "CFLAGS	= \$(WFLAG) \$(LPJFLAGS) $macro $warning $checking \$(DEBUGFLAGS)" >>Makefile.inc
+  echo "LNOPTS	= \$(WFLAG) \$(DEBUGFLAGS) $checking -o " >>Makefile.inc
 else
-  echo "CFLAGS	= \$(WFLAG) \$(LPJFLAGS) $macro $warning \$(OPTFLAGS)" >>Makefile.inc
-  echo "LNOPTS	= \$(WFLAG) \$(OPTFLAGS) -o " >>Makefile.inc
+  echo "CFLAGS	= \$(WFLAG) \$(LPJFLAGS) $macro $warning $checking \$(OPTFLAGS)" >>Makefile.inc
+  echo "LNOPTS	= \$(WFLAG) \$(OPTFLAGS) $checking -o " >>Makefile.inc
 fi
 echo "GIT_REPO=" $(git remote -v|head -1|cut  -f2|cut -d' ' -f1) >>Makefile.inc
 echo LPJROOT	= $prefix >>Makefile.inc
@@ -276,7 +218,6 @@ export MANPATH=\$LPJROOT/man:\$MANPATH
 
 alias printheader="printclm -data"
 alias soil2cdf="clm2cdf -notime -raw -byte"
-alias lpjml='lpjml.sh'
 EOF
 
 chmod +x bin/lpj_paths.sh
@@ -320,7 +261,6 @@ setenv MANPATH \$LPJROOT/man\:\$MANPATH
 
 alias printheader "printclm -data"
 alias soil2cdf "clm2cdf -notime -raw -byte"
-alias lpjml 'lpjml.sh'
 EOF
 chmod +x bin/lpj_paths.csh
 echo Put . $prefix/bin/lpj_paths.sh in your ~/.profile

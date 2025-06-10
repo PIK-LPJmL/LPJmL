@@ -366,20 +366,6 @@ void lpj_init_
     {name_crop,fscanpft_crop}
   };
 
-  standtype[NATURAL]=natural_stand;
-  standtype[SETASIDE_RF]=setaside_rf_stand;
-  standtype[SETASIDE_IR]=setaside_ir_stand;
-  standtype[AGRICULTURE]=agriculture_stand;
-  standtype[MANAGEDFOREST]=managedforest_stand;
-  standtype[GRASSLAND]=grassland_stand;
-  standtype[OTHERS]=others_stand;
-  standtype[BIOMASS_TREE]=biomass_tree_stand;
-  standtype[BIOMASS_GRASS]=biomass_grass_stand;
-  standtype[AGRICULTURE_TREE]=agriculture_tree_stand;
-  standtype[AGRICULTURE_GRASS]=agriculture_grass_stand;
-  standtype[WOODPLANTATION]=woodplantation_stand;
-  standtype[KILL]=kill_stand;
-
   /*
    * Use default communicator containing all processors. In defining your own
    * communicator it is possible to run LPJ on a subset of processors

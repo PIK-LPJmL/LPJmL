@@ -38,7 +38,8 @@ OBJS    = swap.$O freadheader.$O coord.$O openinputfile.$O\
           getfilefrommeta.$O isint.$O parse_json.$O closeconfig.$O isdir.$O\
           fscanmap.$O fprintjson.$O mrun.$O fscanintarray.$O cmpmap.$O\
           hasanysuffix.$O fprintattrs.$O fscanattrs.$O mergeattrs.$O\
-          freadheaderid.$O newarray.$O getversion.$O
+          freadheaderid.$O fscanconfig_netcdf.$O fscandouble.$O newarray.$O\
+          getversion.$O getsprintf.$O
 
 INC     = ../../include
 LIBDIR  = ../../lib

@@ -3,7 +3,7 @@
 cdf2clm \- convert NetCDF files into CLM files
 .SH SYNOPSIS
 .B cdf2clm
-[\-h] [\-v] [\-scale factor] [\-units u] [\-var name] [\-time name] [\-map name] [\-id string] [\-version v] [\-float] [\-zero] [\-json] [\-o \fIclmfile\fP]
+[\-h] [\-v] [\-scale factor] [\-units u] [\-var name] [\-time name] [\-map name] [\-id string] [\-version v] [\-int] [\-float] [\-zero] [\-json] [\-o \fIclmfile\fP] [\-config \fIfile\fP]
 .I gridfile netcdffile ...
 .SH DESCRIPTION
 Program converts NetCDF input data into CLM input data.
@@ -36,6 +36,9 @@ LPJ header string in clm file.
 \-version v
 Version of clm header, default is 3.
 .TP
+\-int
+write int values in clm file, default is short
+.TP
 \-float
 Write float values in clm file, default is short.
 .TP
@@ -48,6 +51,9 @@ JSON metafile is created with suffix '.json'.
  -o \fIclmfile\fP
 Filename of CLM data file written. Default is out.clm.
 .TP
+\-config \fIfile\fP
+Read missing values and axis names from JSON file. The names are used to find time, longitude and latitude values.
+.TP
 .I gridfile
 Filename of grid data file.
 .TP
@@ -57,7 +63,7 @@ Filename of NetCDF file(s) converted.
 .TP
 Create CLM data file and corresponding JSON metafile for temperature:
 .B cdf2clm
--float -json -units celsius -var tas -o temp1901-2010.clm  grid.clm tmp*.nc
+-float -json -units celsius -var tas -o temp1901-2010.clm grid.clm tmp*.nc
 .PP
 .SH EXIT STATUS
 .B cdf2clm
