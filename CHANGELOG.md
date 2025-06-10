@@ -39,6 +39,7 @@ of `major.minor.patch` with
 - Utilities `grid2clm` and `cft2clm` are replaced by alias to `addheader`.
 - File `default.md` converted from DOS to Linux format.
 - If scaling factor is set as an option in `bin2cdf` then this scaling factor is used insteads that one defined in the JSON metafile.
+- Man pages updated.
 
 ### Fixed
 
