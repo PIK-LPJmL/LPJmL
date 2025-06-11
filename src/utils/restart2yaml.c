@@ -280,7 +280,7 @@ int main(int argc,char **argv)
         bstruct_printdata(&data);
         if(!isjson)
           fputc('\n',stdout);
-        if(key!=NULL && !strcmp(data.name,key))
+        if(key!=NULL && data.name!=NULL && !strcmp(data.name,key))
           iskey=FALSE;
         break;
     } /* of switch(token) */
