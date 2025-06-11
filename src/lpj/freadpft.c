@@ -87,7 +87,7 @@ Bool freadpft(Bstruct file,          /**< pointer to restart file */
   readreal(file,"nind",&pft->nind);
   readreal(file,"gdd",&pft->gdd);
   readreal(file,"fpc",&pft->fpc);
-  readreal(file,"albdo",&pft->albedo);
+  readreal(file,"albedo",&pft->albedo);
   readreal(file,"fapar",&pft->fapar);
   readreal(file,"nleaf",&pft->nleaf);
   if(freadstocks(file,"establish",&pft->establish))

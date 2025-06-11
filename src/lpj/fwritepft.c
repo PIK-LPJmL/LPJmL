@@ -42,7 +42,7 @@ Bool fwritepft(Bstruct file,  /**< File pointer to binary file */
   bstruct_writereal(file,"nind",pft->nind);
   bstruct_writereal(file,"gdd",pft->gdd);
   bstruct_writereal(file,"fpc",pft->fpc);
-  bstruct_writereal(file,"albdo",pft->albedo);
+  bstruct_writereal(file,"albedo",pft->albedo);
   bstruct_writereal(file,"fapar",pft->fapar);
   bstruct_writereal(file,"nleaf",pft->nleaf);
   fwritestocks(file,"establish",&pft->establish);
