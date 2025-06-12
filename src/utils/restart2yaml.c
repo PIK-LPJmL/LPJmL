@@ -180,7 +180,7 @@ int main(int argc,char **argv)
         }
         break;
       case BSTRUCT_BEGINSTRUCT: case BSTRUCT_BEGINARRAY: case BSTRUCT_BEGINARRAY1:
-        if(key!=NULL && !strcmp(data.name,key))
+        if(key!=NULL && data.name!=NULL && !strcmp(data.name,key))
         {
           iskey=TRUE;
           keylevel=level;
@@ -243,7 +243,7 @@ int main(int argc,char **argv)
         fseek(bstruct_getfile(file),data.data.index[firstcell],SEEK_SET);
         break;
       default:
-        if(key!=NULL && !strcmp(data.name,key))
+        if(key!=NULL && data.name!=NULL && !strcmp(data.name,key))
         {
           if(stop)
             notend=FALSE;
@@ -280,7 +280,7 @@ int main(int argc,char **argv)
         bstruct_printdata(&data);
         if(!isjson)
           fputc('\n',stdout);
-        if(key!=NULL && !strcmp(data.name,key))
+        if(key!=NULL && data.name!=NULL && !strcmp(data.name,key))
           iskey=FALSE;
         break;
     } /* of switch(token) */

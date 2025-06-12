@@ -36,14 +36,14 @@ OBJS    = bstruct_finish.$O bstruct_wopen.$O bstruct_fprintdata.$O\
           bstruct_writeushort.$O bstruct_writename.$O bstruct_readtoken.$O\
           bstruct_readdoublearray.$O bstruct_writedoublearray.$O bstruct_findobject.$O\
           bstruct_skipdata.$O bstruct_fprintnamestack.$O bstruct_writenull.$O\
-          bstruct_isnull.$O
+          bstruct_isnull.$O bstruct_getskipped.$O
 
 INC     = ../../include
 LIBDIR  = ../../lib
 LIB     = libbstruct.$A
 
 HDRS    = $(INC)/types.h $(INC)/swap.h $(INC)/header.h $(INC)/errmsg.h\
-          $(INC)/list.h $(INC)/bstruct.h $(INC)/hash.h bstruct_intern.h
+          $(INC)/list.h $(INC)/bstruct.h $(INC)/hash.h $(INC)/bstruct_intern.h
 
 $(LIBDIR)/$(LIB): $(OBJS)
 	$(AR) $(ARFLAGS)$(LIBDIR)/$(LIB) $(OBJS)

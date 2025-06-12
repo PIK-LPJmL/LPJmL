@@ -43,6 +43,7 @@ static Cell *newgrid2(Config *config,          /* Pointer to LPJ configuration *
   unsigned int soilcode;
   int soil_id;
   int miss,miss_total;
+  int skipped,skipped_total;
   char *name;
   size_t offset;
   Bool isregion;
@@ -211,6 +212,7 @@ static Cell *newgrid2(Config *config,          /* Pointer to LPJ configuration *
         closeinput(&grassharvest_file);
       return NULL;
     }
+    skipped=bstruct_getskipped(file_restart);
     if(!config->ischeckpoint && config->new_seed)
       setseed(config->seed,config->seed_start);
   }
@@ -475,13 +477,25 @@ static Cell *newgrid2(Config *config,          /* Pointer to LPJ configuration *
   {
     miss=bstruct_getmiss(file_restart);
 #ifdef USE_MPI
-    MPI_Reduce(&miss,&miss_total,1,MPI_INT,MPI_SUM,0,config->comm);
+    MPI_Allreduce(&miss,&miss_total,1,MPI_INT,MPI_SUM,config->comm);
 #else
     miss_total=miss;
 #endif
     if(isroot(*config) && miss_total)
-      fprintf(stderr,"WARNING042: %d objects not in right order in restart file '%s'.\n",
+      fprintf(stderr,"REMARK002: %d objects not in right order in restart file '%s'.\n",
               miss_total,(config->ischeckpoint) ? config->checkpoint_restart_filename : config->restart_filename);
+    if(miss_total==0)
+    {
+      skipped=bstruct_getskipped(file_restart)-skipped;
+#ifdef USE_MPI
+      MPI_Reduce(&skipped,&skipped_total,1,MPI_INT,MPI_SUM,0,config->comm);
+#else
+      skipped_total=skipped;
+#endif
+      if(isroot(*config) && skipped_total)
+        fprintf(stderr,"REMARK003: %d objects skipped in restart file '%s'.\n",
+                skipped_total,(config->ischeckpoint) ? config->checkpoint_restart_filename : config->restart_filename);
+    }
     bstruct_finish(file_restart);
   }
   closecelldata(celldata,config);

@@ -1,8 +1,10 @@
 /**************************************************************************************/
 /**                                                                                \n**/
-/**                    s  t  r  d  a  t  e  .  c                                   \n**/
+/**             b  s  t  r  u  c  t  _  g  e  t  s  k  i  p  p  e  d  .  c         \n**/
 /**                                                                                \n**/
-/**     Function implements ctime() without trailing newline                       \n**/
+/**     C implementation of LPJmL                                                  \n**/
+/**                                                                                \n**/
+/**     Functions for reading/writing JSON-like objects from binary file           \n**/
 /**                                                                                \n**/
 /** (C) Potsdam Institute for Climate Impact Research (PIK), see COPYRIGHT file    \n**/
 /** authors, and contributors see AUTHORS file                                     \n**/
@@ -12,14 +14,10 @@
 /**                                                                                \n**/
 /**************************************************************************************/
 
-#include <stdlib.h>
-#include <stdio.h>
-#include <string.h>
-#include "types.h"
+#include "bstruct_intern.h"
 
-char *strdate(const time_t *t)
+int bstruct_getskipped(const Bstruct bstruct /**< pointer to restart file */
+                      )                      /** \return number of objects skipped */
 {
-  static String s;
-  strftime(s,STRING_LEN,"%c",localtime(t));
-  return s;
-} /* of 'strdate' */
+  return bstruct->skipped;
+} /* of 'bstruct_getskipped' */

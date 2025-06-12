@@ -55,7 +55,6 @@ Bool bstruct_writename(Bstruct bstr,    /**< pointer to restart file */
     return TRUE;
   }
   token|=128; /* set top bit in token */
-  fwrite(&token,1,1,bstr->file);
   /* Look in hash table whether name has already been used */
   id=gethashitem(bstr->hash,name);
   if(id==NULL)
@@ -92,8 +91,10 @@ Bool bstruct_writename(Bstruct bstr,    /**< pointer to restart file */
   if(*id>UCHAR_MAX)
   {
     token|=64; /* set bit 7 in token */
+    fwrite(&token,1,1,bstr->file);
     return fwrite(id,sizeof(short),1,bstr->file)!=1;
   }
   id1=*id;
+  fwrite(&token,1,1,bstr->file);
   return fwrite(&id1,1,1,bstr->file)!=1;
 } /* of 'bstruct_writename' */

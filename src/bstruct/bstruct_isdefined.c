@@ -29,11 +29,6 @@ Bool bstruct_isdefined(Bstruct bstr,   /**< pointer to restart file */
   /* read token */
   if(fread(&token,1,1,bstr->file)!=1)
     return FALSE;
-  if(token==BSTRUCT_ENDARRAY)
-  {
-    fseek(bstr->file,pos,SEEK_SET);
-    return FALSE;
-  }
   isout=bstr->isout;
   /* temporarily switch off error messages */
   bstr->isout=FALSE;

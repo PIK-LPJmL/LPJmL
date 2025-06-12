@@ -186,6 +186,8 @@ Bool bstruct_findobject(Bstruct bstr,        /**< pointer to restart file */
       /* name not found, search for it */
       do
       {
+        if(bstr->isout)
+          bstr->skipped++;
         var=new(Var);
         if(var==NULL)
         {

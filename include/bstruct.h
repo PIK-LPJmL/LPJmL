@@ -51,6 +51,7 @@ extern char *bstruct_typenames[];
 extern Bstruct bstruct_open(const char *,Bool);
 extern Bstruct bstruct_wopen(const char *,Bool,Bool);
 extern int bstruct_getmiss(const Bstruct);
+extern int bstruct_getskipped(const Bstruct);
 extern FILE *bstruct_getfile(Bstruct);
 extern Hash bstruct_gethash(Bstruct);
 extern void bstruct_freehash(Bstruct);
