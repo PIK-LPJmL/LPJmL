@@ -209,7 +209,7 @@ void update_daily(Cell *cell,            /**< cell pointer           */
     getoutput(&cell->output,TWS,config)+=stand->soil.litter.agtop_moist*stand->frac;
     isrice=ispftinstand(&stand->pftlist,config->rice_pft);
     rice_em+=plant_gas_transport(stand,climate.temp,ch4,config)*stand->frac;   //fluxes in routine written to output
-    ebul = ebullition(stand);
+    ebul = ebullition(stand,climate.temp);
     getoutput(&cell->output,CH4_EBULLITION,config) += ebul*stand->frac;
     if(isrice) cell->balance.ricefrac+=stand->frac;
     //gasdiffusion(&stand->soil,climate.temp,ch4,&CH4_em,&runoff,&CH4_sink,5);
@@ -292,14 +292,14 @@ void update_daily(Cell *cell,            /**< cell pointer           */
         }
         else if(stand->type->landusetype==GRASSLAND)
         {
-          cell->balance.aCH4_grassland+=CH4_em*stand->frac;
+          cell->balance.aCH4_grassland+=(CH4_em+CH4_sink)*stand->frac;
           getoutput(&cell->output,CH4_GRASSLAND,config)+=CH4_em+CH4_sink;
 
         }
         else
         {
-          cell->balance.aCH4_agr+=CH4_em*stand->frac;
-          getoutput(&cell->output,CH4_AGR,config)+=CH4_em*stand->frac;
+          cell->balance.aCH4_agr+=(CH4_em+CH4_sink)*stand->frac;
+          getoutput(&cell->output,CH4_AGR,config)+=(CH4_em+CH4_sink)*stand->frac;
         }
     }
     cell->balance.aMT_water+= MT_water*stand->frac;
