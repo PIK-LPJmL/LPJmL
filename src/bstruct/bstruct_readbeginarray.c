@@ -21,7 +21,6 @@ Bool bstruct_readbeginarray(Bstruct bstr,     /**< pointer to restart file */
                             int *size         /**< [out] size of array */
                            )                  /** \return TRUE on error */
 {
-  Bool rc;
   Byte b;
   if(bstruct_readtoken(bstr,&b,BSTRUCT_BEGINARRAY,name))
     return TRUE;
@@ -60,7 +59,20 @@ Bool bstruct_readbeginarray(Bstruct bstr,     /**< pointer to restart file */
               getname(name),bstruct_typenames[b]);
     return TRUE;
   }
-  rc=freadint(size,1,bstr->swap,bstr->file)!=1;
+  if(freadint(size,1,bstr->swap,bstr->file)!=1)
+  {
+    if(bstr->isout)
+      fprintf(stderr,"ERROR508: Unexpected end of file reading array size of '%s'.\n",
+              getname(name));
+    return TRUE;
+  }
+  if(*size<0)
+  {
+    if(bstr->isout)
+      fprintf(stderr,"ERROR526: Invalid array length %d of '%s'.\n",
+              *size,getname(name));
+    return TRUE;
+  }
   bstr->namestack[bstr->level++].size=*size;
-  return rc;
+  return FALSE;
 } /* of 'bstruct_readnbeginarray' */

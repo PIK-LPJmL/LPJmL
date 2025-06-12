@@ -22,6 +22,7 @@ Bool bstruct_readrealarray(Bstruct bstr,     /**< pointer to restart file */
                            int size          /**< size of array */
                           )                  /** \return TRUE on error */
 {
+  /* Function reads real array of specified size from restart file */
   int i,n;
   if(bstruct_readbeginarray(bstr,name,&n))
     return TRUE;

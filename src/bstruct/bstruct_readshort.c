@@ -34,12 +34,22 @@ Bool bstruct_readshort(Bstruct bstr,     /**< pointer to restart file */
       return FALSE;
     case BSTRUCT_BYTE:
       if(fread(&token,1,1,bstr->file)!=1)
+      {
+        if(bstr->isout)
+          fprintf(stderr,"ERROR508: Unexpected end of file reading short '%s'.\n",
+                  getname(name));
         return TRUE;
+      }
       *value=token;
       return FALSE;
     case BSTRUCT_SHORT:
       if(freadshort(value,1,bstr->swap,bstr->file)!=1)
+      {
+        if(bstr->isout)
+          fprintf(stderr,"ERROR508: Unexpected end of file reading short '%s'.\n",
+                  getname(name));
         return TRUE;
+      }
       return FALSE;
     default:
       if(bstr->isout)

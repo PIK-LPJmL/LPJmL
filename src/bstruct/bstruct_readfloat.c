@@ -21,6 +21,7 @@ Bool bstruct_readfloat(Bstruct bstr,     /**< pointer to restart file */
                        float *value      /**< value read from file */
                       )                  /** \return TRUE on error */
 {
+  /* Function reads float data */
   Byte token;
   if(bstruct_readtoken(bstr,&token,BSTRUCT_FLOAT,name))
     return TRUE;
