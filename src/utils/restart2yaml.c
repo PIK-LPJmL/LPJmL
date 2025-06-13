@@ -164,6 +164,7 @@ int main(int argc,char **argv)
           if(indent)
             repeatch(' ',2*(level-keylevel));
           putchar(data.token==BSTRUCT_ENDSTRUCT ? '}' : ']');
+           first=FALSE;
         }
         if(key!=NULL && level==keylevel)
         {

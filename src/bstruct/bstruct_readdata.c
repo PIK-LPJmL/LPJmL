@@ -147,6 +147,13 @@ Bool bstruct_readdata(Bstruct bstr,      /**< pointer to restart file */
           return TRUE;
         }
       }
+      if(string_length<0)
+      {
+        if(bstr->isout)
+          fprintf(stderr,"ERROR526: Invalid string length %d of '%s'.\n",
+                  string_length,getname(data->name));
+        return TRUE;
+      }
       data->data.string=malloc(string_length+1);
       if(data->data.string==NULL)
       {
@@ -182,12 +189,26 @@ Bool bstruct_readdata(Bstruct bstr,      /**< pointer to restart file */
                   getname(data->name));
         return TRUE;
       }
+      if(data->size<0)
+      {
+        if(bstr->isout)
+          fprintf(stderr,"ERROR526: Invalid length %d of array '%s'.\n",
+                  data->size,getname(data->name));
+        return TRUE;
+      }
       return FALSE;
     case BSTRUCT_INDEXARRAY:
       if(freadint(&data->size,1,bstr->swap,bstr->file)!=1)
       {
         if(bstr->isout)
           fprintf(stderr,"ERROR508: Unexpected end of file reading size of index array.\n");
+        return TRUE;
+      }
+      if(data->size<0)
+      {
+        if(bstr->isout)
+          fprintf(stderr,"ERROR526: Invalid length %d of index array.\n",
+                  data->size);
         return TRUE;
       }
       data->data.index=newvec(long long,data->size);

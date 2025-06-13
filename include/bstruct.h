@@ -16,6 +16,8 @@
 
 #ifndef BSTRUCT_H
 
+#define BSTRUCT_H
+
 /* Definition of datatypes */
 
 typedef enum {BSTRUCT_BYTE,BSTRUCT_SHORT,BSTRUCT_INT,BSTRUCT_FLOAT,BSTRUCT_DOUBLE,

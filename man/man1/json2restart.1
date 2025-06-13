@@ -1,0 +1,45 @@
+.TH json2restart 1  "USER COMMANDS"
+.SH NAME
+json2restart \- Convert JSON file into LPJmL restart file.
+.SH SYNOPSIS
+.B restart2yaml
+[\-index name] [\-noindex]
+. I jsonfile restartfile
+.SH DESCRIPTION
+Program converts JSON into binary restart file for LPJmL.
+.SH OPTIONS
+.TP
+\-index name
+Set name for array where array index is written, default is 'grid'.
+.TP
+\-noindex
+Write no array index.
+.TP
+.I jsonfile
+Name of JSON file.
+.TP
+.I restartfile
+Name of restart file created.
+
+.SH EXAMPLE
+.TP
+Create restart file:
+.B json2restart
+restart.json restart.lpj
+.PP
+.SH EXIT STATUS
+.B
+json2restart
+returns a zero exit status if the restart file has been created.
+Non zero is returned in case of failure.
+
+.SH AUTHORS
+
+For authors and contributors see AUTHORS file
+
+.SH COPYRIGHT
+
+(C) Potsdam Institute for Climate Impact Research (PIK), see COPYRIGHT file
+
+.SH SEE ALSO
+restart2yaml(1), lpjprint(1), lpjml(1), lpjcheck(1), lpjfiles(1)

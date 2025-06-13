@@ -38,6 +38,13 @@ char *bstruct_readstring(Bstruct bstr,    /**< pointer to restart file */
           fprintf(stderr,"ERROR512: Cannot read string length of '%s'.\n",getname(name));
         return NULL;
       }
+      if(len<0)
+      {
+        if(bstr->isout)
+          fprintf(stderr,"ERROR526: Invalid string length %d of '%s'.\n",
+                  len,getname(name));
+        return NULL;
+      }
       break;
     case BSTRUCT_STRING1:
       if(fread(&len1,1,1,bstr->file)!=1)

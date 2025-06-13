@@ -54,7 +54,7 @@ void bstruct_fprintdata(FILE *file,              /* pointer to text file */
         fputs(".0",file);
       break;
     case BSTRUCT_DOUBLE:
-      snprintf(line,STRING_LEN,"%g",data->data.d);
+      snprintf(line,STRING_LEN,"%.16g",data->data.d);
       fputs(line,file);
       if(strchr(line,'.')==NULL && strchr(line,'e')==NULL)
         fputs(".0",file);
