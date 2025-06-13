@@ -22,11 +22,12 @@ of `major.minor.patch` with
 ### Contributors
 
 - author: Werner von Bloh (bloh@pik-potsdam.de)
-- code reviewer: Stephen Wirth (wirth@pik-potsdam.de)
+- code reviewe: Stephen Wirth (wirth@pik-potsdam.de), Sibyll Schaphoff (sibylls@pik-potsdam.de)
 
 ### Added
 
 - Utility `restart2yaml` added to convert the new restart files into human readable YAML or JSON files.
+- Utility `json2restart` added to convert JSON files into restart files.
 - alias `restart2json` added for `restart2yaml -json`.
 - Output of time spent in reading and writing the restart file added.
 

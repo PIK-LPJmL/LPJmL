@@ -208,6 +208,7 @@ drainage2cdf  - convert CLM drainage file into NetCDF file
 getcellindex  - get cell index from latitude, longitude values
 grid2clm      - convert grid data file to CLM data files for LPJmL
 headersize    - print header size of CLM files
+json2restart  - convert JSON file into LPJmL restart file
 lpjcat        - concatenate restart files from distributed LPJmL simulations.
 lpjcheck      - check syntax of LPJmL configuration files
 lpjfiles      - print list of input/output files of LPJmL

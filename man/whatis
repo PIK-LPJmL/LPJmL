@@ -54,6 +54,7 @@ isopen (3) - determine whether output file is open
 isroot (3) - determine whether task is root task
 iterate (3) - main time loop for LPJmL
 iterateyear (3) - year time loop for LPJmL
+json2restart (1) - convert JSON file into LPJmL restart file
 lpjcat (1) - concatenate restart files from distributed LPJmL simulations.
 lpjcheck (1) - check syntax of LPJmL configuration files
 lpjfiles (1) - print list of input/output files of LPJmL
