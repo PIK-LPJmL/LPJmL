@@ -21,12 +21,15 @@ Bool bstruct_writeint(Bstruct bstr,     /**< pointer to restart file */
                       int value         /**< value written to file */
                      )                  /** \return TRUE on error */
 {
+  unsigned short us;
   short s;
   Byte token;
   if(value==0)
     token=BSTRUCT_ZERO;  // only non-zero values are written to reduce file size
   else if(value>=0 && value<=UCHAR_MAX)
     token=BSTRUCT_BYTE;
+  else if(value>=0 && value<USHRT_MAX)
+    token=BSTRUCT_USHORT;
   else if(value>=SHRT_MIN && value<=SHRT_MAX)
     token=BSTRUCT_SHORT;
   else
@@ -38,6 +41,9 @@ Bool bstruct_writeint(Bstruct bstr,     /**< pointer to restart file */
     case BSTRUCT_BYTE:
       token=value;
       return fwrite(&token,1,1,bstr->file)!=1;
+    case BSTRUCT_USHORT:
+      us=value;
+      return fwrite(&us,sizeof(us),1,bstr->file)!=1;
     case BSTRUCT_SHORT:
       s=value;
       return fwrite(&s,sizeof(short),1,bstr->file)!=1;

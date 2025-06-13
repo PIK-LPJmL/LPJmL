@@ -21,6 +21,7 @@ Bool bstruct_readint(Bstruct bstr,     /**< pointer to restart file */
                      int *value        /**< value read from file */
                     )                  /** \return TRUE on error */
 {
+  unsigned short us;
   short s;
   Byte token;
   if(bstruct_readtoken(bstr,&token,BSTRUCT_INT,name))
@@ -52,6 +53,16 @@ Bool bstruct_readint(Bstruct bstr,     /**< pointer to restart file */
         return TRUE;
       }
       *value=s;
+      return FALSE;
+    case BSTRUCT_USHORT:
+      if(freadushort(&us,1,bstr->swap,bstr->file)!=1)
+      {
+        if(bstr->isout)
+          fprintf(stderr,"ERROR508: Unexpected end of file reading int '%s'.\n",
+                  getname(name));
+        return TRUE;
+      }
+      *value=us;
       return FALSE;
     case BSTRUCT_INT:
       if(freadint(value,1,bstr->swap,bstr->file)!=1)
