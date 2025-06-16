@@ -58,8 +58,9 @@ else
 fi
 for file in $binpath/*.bin.json
 do
-  if [ "$file" != "$binpath/grid.bin.json" ]
+  if test -f $file && [ "$file" != "$binpath/grid.bin.json" ] # exclude grid file from conversion
   then
+#   basename strips path frpm filename, suffix .bin.json replaced by suffix .nc
     echo $file "-->" $netcdfpath/$(basename ${file%.bin.json}).nc
     if bin2cdf $options -metafile $file $netcdfpath/$(basename ${file%.bin.json}).nc ;
     then
