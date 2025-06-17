@@ -154,7 +154,7 @@ int main(int argc,char **argv)
         }
         if(header.ncell<0)
         {
-          fputs("Number of cells less than one.\n",stderr);
+          fputs("Number of cells less than zero.\n",stderr);
           return EXIT_FAILURE;
         }
       }
