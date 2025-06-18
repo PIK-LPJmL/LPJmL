@@ -4,8 +4,11 @@ restart2yaml \- Convert LPJmL restart file into YAML/JSON.
 .SH SYNOPSIS
 .B restart2yaml
 [\-name key] [\-first] [\-json] [\-noindent] [\-t] \fIrestartfile\fP [start [end]]
+
+.B restart2json
+[\-name key] [\-first] [\-noindent] [\-t] \fIrestartfile\fP [start [end]]
 .SH DESCRIPTION
-Program prints contents of restart file of a LPJmL model run in YAML/JSON format.
+Program prints contents of restart file of a LPJmL model run in YAML/JSON format. \fBrestart2json\fP is an alias for \fBrestart2yaml\fP -json.
 .SH OPTIONS
 .TP
 \-name key

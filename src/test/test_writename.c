@@ -37,15 +37,16 @@ void test_writename(void)
   Bstruct bstr;
   bstr=bstruct_create("test.lpj");
   TEST_ASSERT_NOT_NULL(bstr);
-  for(i=0;i<N;i++)
+  for(i=0;i<=N;i++)
   {
     snprintf(s,STRING_LEN,"%d",i);
-    bstruct_writeint(bstr,s,i);
+    rc=bstruct_writeint(bstr,s,i);
+    TEST_ASSERT_EQUAL_INT(FALSE,rc);
   }
   bstruct_finish(bstr);
   bstr=bstruct_open("test.lpj",TRUE);
   TEST_ASSERT_NOT_NULL(bstr);
-  for(i=0;i<N;i++)
+  for(i=0;i<=N;i++)
   {
     snprintf(s,STRING_LEN,"%d",i);
     rc=bstruct_readint(bstr,s,&value);

@@ -61,9 +61,9 @@ Bool bstruct_writename(Bstruct bstr,    /**< pointer to restart file */
   {
     /* name not found in hash, add name and new id to hash table */
     count=gethashcount(bstr->hash);
-    if(count==USHRT_MAX)
+    if(count==USHRT_MAX+1)
     {
-      fprintf(stderr,"ERROR518: Maximum number of names=%d in table reached.\n",SHRT_MAX);
+      fprintf(stderr,"ERROR518: Maximum number of names=%d in table reached.\n",USHRT_MAX+1);
       return TRUE;
     }
     id=new(Id);
