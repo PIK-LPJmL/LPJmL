@@ -40,15 +40,17 @@ extern const size_t bstruct_typesizes[];
 #define getname(name) (name==NULL) ? "unnamed" : name
 #define isinvalidtoken(token) (((token) & 63)>BSTRUCT_MAXTOKEN)
 #define bstruct_printnamestack(bstr) bstruct_fprintnamestack(stderr,bstr)
+#define bstruct_hasname(token) (((token) & 128)==128) /* check for top bit set in token */
 
 struct bstruct
 {
   FILE *file; /**< pointer to binary file */
   Bool swap;  /**< byte order has to be changed at reading */
   Bool isout; /**< error output on stderr enabled */
+  Bool print_noread; /**< print variable names not read from file */
   int level;  /**< number of nested structs/arrays */
   int imiss;  /**< number of objects not in right order */
-  int skipped; /** number of objects skipped */
+  int skipped; /** number of objects not read */
   struct
   {
     int size;            /**< size of array */
@@ -63,10 +65,13 @@ struct bstruct
   Hashitem *names2;      /**< name table sorted by id  */
 };                       /**< Definition of opaque datatype Bstruct */
 
+typedef unsigned short Id;
+
 typedef struct
 {
   long long filepos; /**< position of object in file */
-  short id;          /**< name of object */
+  Bool isread;       /**< object has been read */
+  Id id;             /**< name of object */
   Byte token;        /**< token of object */
 } Var;
 
@@ -78,3 +83,5 @@ extern Bool bstruct_readtoken(Bstruct,Byte *,Byte,const char *);
 extern Bool bstruct_skipdata(Bstruct,Byte);
 extern Bool bstruct_findobject(Bstruct,Byte *,Byte,const char *);
 extern Bool bstruct_writename(Bstruct bstr,Byte,const char *);
+extern Var *bstruct_findvar(Bstruct,Id);
+extern Bool bstruct_readid(Bstruct,Byte,Id *);

@@ -1,6 +1,6 @@
 /**************************************************************************************/
 /**                                                                                \n**/
-/**             b  s  t  r  u  c  t  _  g  e  t  s  k  i  p  p  e  d  .  c         \n**/
+/**    b  s  t  r  u  c  t  _  p  r  i  n  t  n  o  r  e  a  d  .  c               \n**/
 /**                                                                                \n**/
 /**     C implementation of LPJmL                                                  \n**/
 /**                                                                                \n**/
@@ -16,8 +16,9 @@
 
 #include "bstruct_intern.h"
 
-int bstruct_getskipped(const Bstruct bstruct /**< pointer to restart file */
-                      )                      /** \return number of objects skipped */
+void bstruct_printnoread(Bstruct bstr, /**< pointer to restart file */
+                         Bool flag     /**< enable print of unread variables (TRUE/FALSE) */
+                        )
 {
-  return bstruct->skipped;
-} /* of 'bstruct_getskipped' */
+  bstr->print_noread=flag;
+} /* of 'bstruct_printnoread' */

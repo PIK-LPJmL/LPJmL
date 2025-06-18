@@ -42,10 +42,10 @@ int bstruct_cmpname(const void *ptr1,const void *ptr2)
 
 int bstruct_cmpdata(const void *ptr1,const void *ptr2)
 {
-  /* Function compares two hash items by data , used for sorting and searching items */
+  /* Function compares two hash items by data, used for sorting and searching items */
   const Hashitem *h1=ptr1;
   const Hashitem *h2=ptr2;
-  return *(const short *)(h1->data)-*(const short *)(h2->data);
+  return (int)*(const unsigned short *)(h1->data)-*(const unsigned short *)(h2->data);
 } /* of 'bstruct_cmpdata' */
 
 void bstruct_freenamestack(Bstruct bstruct)

@@ -53,7 +53,7 @@ extern char *bstruct_typenames[];
 extern Bstruct bstruct_open(const char *,Bool);
 extern Bstruct bstruct_wopen(const char *,Bool,Bool);
 extern int bstruct_getmiss(const Bstruct);
-extern int bstruct_getskipped(const Bstruct);
+extern int bstruct_getnoread(const Bstruct);
 extern FILE *bstruct_getfile(Bstruct);
 extern Hash bstruct_gethash(Bstruct);
 extern void bstruct_freehash(Bstruct);
@@ -112,6 +112,7 @@ extern void bstruct_fprintnamestack(FILE *,const Bstruct);
 extern long long bstruct_getarrayindex(Bstruct);
 extern Bool bstruct_writenull(Bstruct,const char *);
 extern Bool bstruct_isnull(Bstruct,const char *);
+extern void bstruct_printnoread(Bstruct,Bool);
 
 /* Definition of macros */
 

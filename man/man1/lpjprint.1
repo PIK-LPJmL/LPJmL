@@ -3,7 +3,7 @@
 lpjprint \- Print contents of restart file of LPJmL model runs
 .SH SYNOPSIS
 .B lpjprint
-[\-h] [\-v] [\-nopp] [\-pp cmd] [\-inpath \fIdir\fP] [\-restartpath \fIdir\fP] [[\-Dmacro[=value]] [\-I\fIdir\fP] ...] \fIfilename\fP [-check] [start [end]]
+[\-h] [\-v] [\-nopp] [\-pp cmd] [\-pedantic] [\-print_noread] [\-inpath \fIdir\fP] [\-restartpath \fIdir\fP] [[\-Dmacro[=value]] [\-I\fIdir\fP] ...] \fIfilename\fP [-check] [start [end]]
 .SH DESCRIPTION
 Program prints contents of restart file of a LPJmL model run. The LPJmL configuration file is read in in order to find the location and name of the restart file.
 .SH OPTIONS
@@ -19,6 +19,12 @@ Disable preprocessing of configuration file by \fBcpp\fP.
 .TP
 \-pp cmd
 Set preprocessor program to cmd. Default is \fBcpp\fP.
+.TP
+\-pedantic
+Stop on warnings.
+.TP
+\-print_noread
+Print variable names not read from restart file.
 .TP
 \-inpath \fIdir\fP
 Set the input directory path. The path is added to the input filenames if they do not contain an absolute path.

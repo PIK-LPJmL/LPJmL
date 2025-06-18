@@ -22,48 +22,36 @@
 #include "bstruct_writeint.h"
 #include "bstruct_writename.h"
 #include "bstruct_readint.h"
-#include "bstruct_writefloat.h"
-#include "bstruct_readfloat.h"
-#include "bstruct_writebeginarray.h"
-#include "bstruct_readbeginarray.h"
-#include "bstruct_writeendarray.h"
-#include "bstruct_readendarray.h"
 #include "bstruct_finish.h"
 #include "bstruct_fprintnamestack.h"
 #include "bstruct_readid.h"
 #include "bstruct_readtoken.h"
-#include "bstruct_writebeginindexarray.h"
-#include "bstruct_getarrayindex.h"
-#include "bstruct_seekindexarray.h"
-#include "bstruct_writearrayindex.h"
 
-#define N 10
+#define N USHRT_MAX
 
-void test_restart(void)
+void test_writename(void)
 {
+  String s;
+  int i,value;
+  Bool rc;
   Bstruct bstr;
-  long long pos[N],filepos;
-  float vec[N],vec5=0;
-  int i,size;
   bstr=bstruct_create("test.lpj");
   TEST_ASSERT_NOT_NULL(bstr);
-  bstruct_writebeginindexarray(bstr,"vec",&filepos,N); 
   for(i=0;i<N;i++)
   {
-    vec[i]=i;
-    pos[i]=bstruct_getarrayindex(bstr);
-    bstruct_writefloat(bstr,NULL,vec[i]);
+    snprintf(s,STRING_LEN,"%d",i);
+    bstruct_writeint(bstr,s,i);
   }
-  bstruct_writearrayindex(bstr,filepos,pos,0,N);
-  bstruct_writeendarray(bstr);
   bstruct_finish(bstr);
   bstr=bstruct_open("test.lpj",TRUE);
   TEST_ASSERT_NOT_NULL(bstr);
-  bstruct_readbeginarray(bstr,"vec",&size);
-  TEST_ASSERT_EQUAL_INT(N,size);
-  bstruct_seekindexarray(bstr,5,N); 
-  bstruct_readfloat(bstr,NULL,&vec5);
-  TEST_ASSERT_EQUAL_FLOAT(vec[5],vec5);
+  for(i=0;i<N;i++)
+  {
+    snprintf(s,STRING_LEN,"%d",i);
+    rc=bstruct_readint(bstr,s,&value);
+    TEST_ASSERT_EQUAL_INT(FALSE,rc);
+    TEST_ASSERT_EQUAL_INT(i,value);
+  }
   bstruct_finish(bstr);
   unlink("test.lpj");
 }

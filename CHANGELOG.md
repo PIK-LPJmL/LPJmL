@@ -30,6 +30,9 @@ of `major.minor.patch` with
 - Utility `json2restart` added to convert JSON files into restart files.
 - alias `restart2json` added for `restart2yaml -json`.
 - Output of time spent in reading and writing the restart file added.
+- Option `-print_noread` added to `lpjml` to print variable names not read from restart file.
+- Check added that PFT names in restart file match PFT names in LPJmL configuration file.
+- Unit tests added for bstruct library functions.
 
 ### Changed
 

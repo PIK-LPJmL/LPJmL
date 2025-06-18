@@ -18,7 +18,7 @@
 
 static long long findname(Bstruct bstruct, /**< pointer to restart file */
                           Byte *token,     /**< token of found object */
-                          short id         /**< name to search for */
+                          Id id            /**< name to search for */
                          )                 /** \return file position of object found or -1 */
 {
   /* Function finds name in list of already read names of current struct */
@@ -33,11 +33,27 @@ static long long findname(Bstruct bstruct, /**< pointer to restart file */
     {
       /* name found, return token and file position of object */
       *token=var->token;
+      var->isread=TRUE;
       return var->filepos;
     }
   }
   return -1; /* name not found */
 }  /* of 'findname' */
+
+Var *bstruct_findvar(Bstruct bstruct, /**< pointer to restart file */
+                     Id id            /**< id to search for */
+                    )                 /**< return pointer to variable or NULL */
+{
+  Var *var;
+  int i;
+  foreachlistitem(i,bstruct->namestack[bstruct->level-1].varnames)
+  {
+    var=getlistitem(bstruct->namestack[bstruct->level-1].varnames,i);
+    if(id==var->id)
+      return var;
+  }
+  return NULL;
+} /* of 'bstruct_findvar' */
 
 Bool bstruct_findobject(Bstruct bstr,        /**< pointer to restart file */
                         Byte *token,         /**< token matching name */
@@ -46,11 +62,10 @@ Bool bstruct_findobject(Bstruct bstr,        /**< pointer to restart file */
                        )                     /** \return TRUE if name was not found */
 {
   /* Function finds object with specified name in struct */
-  short *id,id2;
+  Id  *id,id2;
   Hashitem *item,key;
   Var *var;
   long long filepos;
-  Byte id1;
 #ifdef DEBUG_BSTRUCT
   printf("Looking for %s\n",name);
 #endif
@@ -67,7 +82,7 @@ Bool bstruct_findobject(Bstruct bstr,        /**< pointer to restart file */
       }
       return TRUE;
     }
-    if((*token & 128)==128)
+    if(bstruct_hasname(*token))
     {
       if(bstr->isout)
       {
@@ -138,34 +153,17 @@ Bool bstruct_findobject(Bstruct bstr,        /**< pointer to restart file */
        return FALSE;
     }
     /* read object name */
-    if((*token & 128)==128) /* top bit in token set, object name stored in next byte or short */
+    if(bstruct_hasname(*token))
     {
-      if((*token & 64)==64) /* bit 7 set, id is of type short */
+      if(bstruct_readid(bstr,*token,&id2))
       {
-        if(freadshort(&id2,1,bstr->swap,bstr->file)!=1)
+        if(bstr->isout)
         {
-          if(bstr->isout)
-          {
-            fprintf(stderr,"ERROR508: Unexpected end of file reading object name for %s.\n",
-                    bstruct_typenames[token_expected]);
-            bstruct_printnamestack(bstr);
-          }
-          return TRUE;
+          fprintf(stderr,"ERROR508: Unexpected end of file reading object name for %s.\n",
+                  bstruct_typenames[token_expected]);
+          bstruct_printnamestack(bstr);
         }
-      }
-      else
-      {
-        if(fread(&id1,1,1,bstr->file)!=1)
-        {
-          if(bstr->isout)
-          {
-            fprintf(stderr,"ERROR508: Unexpected end of file reading object name for %s.\n",
-                    bstruct_typenames[token_expected]);
-            bstruct_printnamestack(bstr);
-          }
-          return TRUE;
-        }
-        id2=id1;
+        return TRUE;
       }
 #ifdef DEBUG_BSTRUCT
       printf("Object is %d\n",id2);
@@ -186,23 +184,26 @@ Bool bstruct_findobject(Bstruct bstr,        /**< pointer to restart file */
       /* name not found, search for it */
       do
       {
-        if(bstr->isout)
-          bstr->skipped++;
-        var=new(Var);
-        if(var==NULL)
+        if(bstruct_findvar(bstr,id2)==NULL)
         {
-          printallocerr("var");
-          return TRUE;
-        }
-        var->filepos=ftell(bstr->file);
-        var->token=*token;
-        var->id=id2;
-        /* add name and position to the list of already read objects */
-        if(addlistitem(bstr->namestack[bstr->level-1].varnames,var)==0)
-        {
-          printallocerr("varnames");
-          free(var);
-          return TRUE;
+          /* has been read for the first time, add it to the list of variables */
+          var=new(Var);
+          if(var==NULL)
+          {
+            printallocerr("var");
+            return TRUE;
+          }
+          var->filepos=ftell(bstr->file);
+          var->token=*token;
+          var->id=id2;
+          var->isread=FALSE;
+          /* add name and position to the list of already read objects */
+          if(addlistitem(bstr->namestack[bstr->level-1].varnames,var)==0)
+          {
+            printallocerr("varnames");
+            free(var);
+            return TRUE;
+          }
         }
 #ifdef DEBUG_BSTRUCT
         printf("%s=%d not found, %d\n",name,*id,id2);
@@ -261,39 +262,33 @@ Bool bstruct_findobject(Bstruct bstr,        /**< pointer to restart file */
           return TRUE;
         }
         /* read next name */
-        if((*token & 128)==128) /* top bit in token set, object name stored in next byte or short */
+        if(bstruct_hasname(*token))
         {
-          if((*token & 64)==64) /* bit 7 set, id is of type short */
+          if(bstruct_readid(bstr,*token,&id2))
           {
-            if(freadshort(&id2,1,bstr->swap,bstr->file)!=1)
+            if(bstr->isout)
             {
-              if(bstr->isout)
-              {
-                fprintf(stderr,"ERROR508: Unexpected end of file reading object name for %s.\n",
-                        bstruct_typenames[token_expected]);
-                bstruct_printnamestack(bstr);
-              }
-              return TRUE;
+              fprintf(stderr,"ERROR508: Unexpected end of file reading object name for %s.\n",
+                      bstruct_typenames[token_expected]);
+              bstruct_printnamestack(bstr);
             }
+            return TRUE;
           }
-          else
+        }
+        else
+        {
+          if(bstr->isout)
           {
-            if(fread(&id1,1,1,bstr->file)!=1)
-            {
-              if(bstr->isout)
-              {
-                fprintf(stderr,"ERROR508: Unexpected end of file reading object name for %s.\n",
-                        bstruct_typenames[token_expected]);
-                bstruct_printnamestack(bstr);
-              }
-              return TRUE;
-            }
-            id2=id1;
+            fprintf(stderr,"ERROR504: Expected object name '%s' for %s, but no name found.\n",name,
+                    bstruct_typenames[token_expected]);
+            bstruct_printnamestack(bstr);
           }
+          return TRUE;
         }
       }while(*id!=id2);
     }
-    else
+    var=bstruct_findvar(bstr,id2);
+    if(var==NULL)
     {
       var=new(Var);
       if(var==NULL)
@@ -304,6 +299,7 @@ Bool bstruct_findobject(Bstruct bstr,        /**< pointer to restart file */
       var->filepos=ftell(bstr->file);
       var->token=*token;
       var->id=id2;
+      var->isread=TRUE;
       if(addlistitem(bstr->namestack[bstr->level-1].varnames,var)==0)
       {
         printallocerr("varnames");
@@ -311,6 +307,8 @@ Bool bstruct_findobject(Bstruct bstr,        /**< pointer to restart file */
         return TRUE;
       }
     }
+    else
+      var->isread=TRUE;
   }
   return FALSE;
 } /* of 'bstruct_findobject' */

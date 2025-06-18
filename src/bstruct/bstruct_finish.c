@@ -21,6 +21,7 @@ void bstruct_finish(Bstruct bstruct)
   long long filepos;
   int i,count;
   Hashitem *list;
+  Var *var;
   Byte len,token;
   short *id;
   /* Function writes name table, closes restart file and frees memory */
@@ -71,6 +72,20 @@ void bstruct_finish(Bstruct bstruct)
         fprintf(stderr,"ERROR523: %s not closed.\n",
                 bstruct->namestack[bstruct->level-1].type==BSTRUCT_BEGINSTRUCT ? "Struct" : "Array");
         bstruct_printnamestack(bstruct);
+      }
+    }
+    else if(bstruct->namestack[bstruct->level-1].varnames!=NULL)
+    {
+      foreachlistitem(i,bstruct->namestack[bstruct->level-1].varnames)
+      {
+        var=getlistitem(bstruct->namestack[bstruct->level-1].varnames,i);
+        if(!var->isread)
+        {
+          bstruct->skipped++;
+          if(bstruct->isout && bstruct->print_noread)
+            fprintf(stderr,"REMARK502: Object '%s' in struct '%s' not read.\n",
+                    bstruct->names2[var->id].key,getname(bstruct->namestack[bstruct->level-1].name));
+        }
       }
     }
     bstruct_freenamestack(bstruct);

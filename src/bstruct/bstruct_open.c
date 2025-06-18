@@ -25,7 +25,7 @@ Bstruct bstruct_open(const char *filename, /**< filename of restart file to open
   int version,i;
   long long filepos,save;
   Byte len;
-  short *id;
+  unsigned short *id;
   bstruct=new(struct bstruct);
   if(bstruct==NULL)
   {
@@ -33,6 +33,7 @@ Bstruct bstruct_open(const char *filename, /**< filename of restart file to open
     return NULL;
   }
   bstruct->isout=isout;
+  bstruct->print_noread=FALSE;
   bstruct->imiss=0;
   bstruct->skipped=0;
   bstruct->level=1;
@@ -165,7 +166,7 @@ Bstruct bstruct_open(const char *filename, /**< filename of restart file to open
       return NULL;
     }
     ((char *)bstruct->names[i].key)[len]='\0';
-    id=new(short);
+    id=new(unsigned short);
     if(id==NULL)
     {
       printallocerr("id");
@@ -174,7 +175,7 @@ Bstruct bstruct_open(const char *filename, /**< filename of restart file to open
       free(bstruct);
       return NULL;
     }
-    if(freadshort(id,1,bstruct->swap,bstruct->file)!=1)
+    if(freadushort(id,1,bstruct->swap,bstruct->file)!=1)
     {
       if(isout)
         fprintf(stderr,"ERROR508: Unexpected end of file reading name table of size %d.\n",

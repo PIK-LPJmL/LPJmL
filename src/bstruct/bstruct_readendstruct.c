@@ -21,7 +21,9 @@ Bool bstruct_readendstruct(Bstruct bstr,    /**< pointer to restart file */
                           )                 /** \return TRUE on error */
 {
   /* Function ends current struct and skips all remaining data in struct */
+  Var *var;
   int i;
+  Id id;
   Byte token;
   if(fread(&token,1,1,bstr->file)!=1)
   {
@@ -43,16 +45,36 @@ Bool bstruct_readendstruct(Bstruct bstr,    /**< pointer to restart file */
 #endif
     if(token!=BSTRUCT_ENDARRAY)
     {
-      /* skip object name */
-      if((token & 128)==128) /* top bit in token set, object name length stored in next byte/word */
+       /* read object name */
+      if(bstruct_hasname(token))
       {
-        if(fseek(bstr->file,((token & 64)==64) ? sizeof(short) : 1,SEEK_CUR))
+        if(bstruct_readid(bstr,token,&id))
         {
           if(bstr->isout)
-            fprintf(stderr,"ERROR507: Unexpected end of file skipping object name processing endstruct of '%s'.\n",
-                    getname(name));
+          {
+            fprintf(stderr,"ERROR508: Unexpected end of file reading object name for %s.\n",
+                    bstruct_typenames[token & 63]);
+            bstruct_printnamestack(bstr);
+          }
           return TRUE;
         }
+        if(bstruct_findvar(bstr,id)==NULL)
+        {
+          bstr->skipped++;
+          if(bstr->isout && bstr->print_noread)
+            fprintf(stderr,"REMARK502: Object '%s' in struct '%s' not read.\n",
+                    bstr->names2[id].key,getname(bstr->namestack[bstr->level-1].name));
+        }
+      }
+      else
+      {
+        if(bstr->isout)
+        {
+          fprintf(stderr,"ERROR504: Expected object name for %s, but no name found in struct '%s'.\n",
+                  bstruct_typenames[token & 63],getname(name));
+          bstruct_printnamestack(bstr);
+        }
+        return TRUE;
       }
       if(bstruct_skipdata(bstr,token))
         return TRUE;
@@ -108,7 +130,15 @@ Bool bstruct_readendstruct(Bstruct bstr,    /**< pointer to restart file */
     /* remove list of names for this level */
     foreachlistitem(i,bstr->namestack[bstr->level-1].varnames)
     {
-      free(getlistitem(bstr->namestack[bstr->level-1].varnames,i));
+      var=getlistitem(bstr->namestack[bstr->level-1].varnames,i);
+      if(!var->isread)
+      {
+        bstr->skipped++;
+        if(bstr->isout && bstr->print_noread)
+          fprintf(stderr,"REMARK502: Object '%s' in struct '%s' not read.\n",
+                  bstr->names2[var->id].key,getname(bstr->namestack[bstr->level-1].name));
+      }
+      free(var);
     }
     freelist(bstr->namestack[bstr->level-1].varnames);
     free(bstr->namestack[bstr->level-1].name);
