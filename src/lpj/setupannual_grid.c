@@ -1,6 +1,6 @@
 /**************************************************************************************/
 /**                                                                                \n**/
-/**              i n i t a n n u a l _ g r i d . c                                 \n**/
+/**              s e t u p a n n u a l _ g r i d . c                               \n**/
 /**                                                                                \n**/
 /**     C implementation of LPJmL                                                  \n**/
 /**                                                                                \n**/
@@ -14,15 +14,15 @@
 
 #include "lpj.h"
 
-Bool initannual_grid(Outputfile *output,  /**< Output file data */
-                     Cell grid[],         /**< cell array */
-                     Input *input,        /**< input data */
-                     int year,            /**< simulation year (AD) */
-                     int npft,            /**< number of natural PFTs */
-                     int ncft,            /**< number of crop PFTs */
-                     Bool intercrop,      /**< intercropping enabled (TRUE/FALSE) */
-                     const Config *config /**< LPJ configuration */
-                    )                     /** \return TRUE on error */
+Bool setupannual_grid(Outputfile *output,  /**< Output file data */
+                      Cell grid[],         /**< cell array */
+                      Input *input,        /**< input data */
+                      int year,            /**< simulation year (AD) */
+                      int npft,            /**< number of natural PFTs */
+                      int ncft,            /**< number of crop PFTs */
+                      Bool intercrop,      /**< intercropping enabled (TRUE/FALSE) */
+                      const Config *config /**< LPJ configuration */
+                     )                     /** \return TRUE on error */
 {
   Stand *stand;
   Real norg_soil_agr,nmin_soil_agr,nveg_soil_agr;
@@ -181,4 +181,4 @@ Bool initannual_grid(Outputfile *output,  /**< Output file data */
     } /*gridcell skipped*/
   } /* of for(cell=...) */
   return FALSE;
-} /* of 'initannual_grid' */
+} /* of 'setupannual_grid' */

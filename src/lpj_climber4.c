@@ -1218,17 +1218,18 @@ void lpj_update_
         static int /*month,*/ /*dayofmonth,*/ dayofyear;
         int cell,i;
 
-        if (happynewyear) { /* things from iterateyear_river() to be done at begin of year */
+        if (happynewyear)
+        { /* things from iterateyear_river() to be done at begin of year */
           intercrop=getintercrop(input.landuse);
-          initannual_grid(grid,year,npft,ncft,intercrop,config);
+          setupannual_grid(grid,year,npft,ncft,intercrop,config);
           dayofyear = 1;
         } /* if (happynewyear) */
 
         //day=1;
         //foreachmonth(month)
-        if (newmoon) {
-           initmonthly_grid(grid,month,year,input.climate,&config);
-
+        if (newmoon)
+        {
+          initmonthly_grid(grid,month,year,input.climate,&config);
           for(cell=0;cell<config.ngridcell;cell++)
             if(!grid[cell].skip)
             {
@@ -1236,7 +1237,7 @@ void lpj_update_
               mevap_yesterday[cell] = mtransp_yesterday[cell] = 0.0;
               mevap_lake_yesterday[cell] = mevap_res_yesterday[cell] = 0.0;
               minterc_yesterday[cell] = 0.0; 
-          } /* of 'for(cell=...)' */
+            } /* of 'for(cell=...)' */
         } /* if(newmoon) */
 
         /*foreachdayofmonth(dayofmonth,month)*/  /* for(day=0;day<ndaymonth[month];day++) */

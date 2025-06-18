@@ -184,7 +184,7 @@ extern Bool readcelldata(Celldata,Cell *,unsigned int *,int,Config *);
 extern void closecelldata(Celldata,const Config *);
 extern Real albedo(Cell *, Real , Real );
 extern Bool initoutput(Outputfile *,Cell [],int,int,Config *);
-extern Bool initannual_grid(Outputfile*,Cell *,Input *,int,int,int,Bool,const Config *);
+extern Bool setupannual_grid(Outputfile*,Cell *,Input *,int,int,int,Bool,const Config *);
 extern void initmonthly_grid(Cell *,int,int,Climate *,const Config *);
 extern void updateannual_grid(Outputfile *,Cell *,Landcover,int,int,int,Bool,Bool,const Config *);
 extern void updatedaily_grid(Outputfile *,Cell *,Extflow,int,int,int,int,int,const Config *);

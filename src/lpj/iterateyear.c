@@ -32,7 +32,7 @@ Bool iterateyear(Outputfile *output,  /**< Output file data */
   int month,dayofmonth,day;
   int cell;
   intercrop=getintercrop(input.landuse);
-  if(initannual_grid(output,grid,&input,year,npft,ncft,intercrop,config))
+  if(setupannual_grid(output,grid,&input,year,npft,ncft,intercrop,config))
     return TRUE;
   day=1;
   foreachmonth(month)
