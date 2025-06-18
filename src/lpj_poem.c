@@ -1,8 +1,8 @@
 /**************************************************************************************/
 /**                                                                                \n**/
-/**                     l p j _ c l i m b e r 4  .  c                              \n**/
+/**                     l p j _ p o e m . c                                        \n**/
 /**                                                                                \n**/
-/**     coupling LPJmL4 to CLIMBER-4                                               \n**/
+/**     coupling LPJmL4 to POEM                                                    \n**/
 /**                                                                                \n**/
 /** (C) Potsdam Institute for Climate Impact Research (PIK), see COPYRIGHT file    \n**/
 /** authors, and contributors see AUTHORS file                                     \n**/
@@ -14,9 +14,9 @@
 
 /**
  * \file
- * C-side of the wrapper for coupling LPJ to Climber-4 / land_lad.
+ * C-side of the wrapper for coupling LPJ to POEM / land_lad.
  * This wrapper replaces the LPJ main program when LPJ is
- * compiled as part of Climber-4.
+ * compiled as part of POEM.
  * It is not compiled for stand-alone LPJ.
  * See lpjml.c for information about the original main program.
  */
@@ -52,7 +52,7 @@
 #include "cpl.h"
 
 //#ifndef DAILY_ESTABLISHMENT
-//#error for coupling with FMS/MOM4/Climber-4 , DAILY_ESTABLISHMENT must be #defined
+//#error for coupling with FMS/MOM4/POEM , DAILY_ESTABLISHMENT must be #defined
 //#endif
 
 #define NTYPES 3 /*< number of plant functional types: grass, tree, crop, bioenergy */
@@ -448,7 +448,7 @@ void lpj_init_
    * but for coupling with FMS we always want it enabled.
    */
   if (!config.river_routing) {
-    fprintf(stderr, "%s: for coupling with Climber-4, LPJ must be configured to use river routing\n",
+    fprintf(stderr, "%s: for coupling with POEM, LPJ must be configured to use river routing\n",
             __FUNCTION__);
     fflush(stderr);
     abort();
