@@ -44,8 +44,6 @@ Real nuptake_crop(Pft *pft,             /**< pointer to PFT data */
   Real rootdist_n[LASTLAYER];
   Real nc_ratio;
   int autofert=config->fertilizer_input;
-//  if(!strcmp(pft->par->name,"rice"))
-//    autofert=AUTO_FERTILIZER;
   int l,nirrig,nnat,index;
   soil=&pft->stand->soil;
   if(config->permafrost)
@@ -61,7 +59,6 @@ Real nuptake_crop(Pft *pft,             /**< pointer to PFT data */
   data=pft->stand->data;
   if(crop->ind.leaf.carbon+crop->ind.root.carbon==0)
     return 0;
-  //fprintcropphys2(stdout,crop->ind,pft->nind);
 
   NCplant = (crop->ind.leaf.nitrogen + crop->ind.root.nitrogen) / (crop->ind.leaf.carbon + crop->ind.root.carbon); /* Plant's mobile nitrogen concentration, Eq.9, Zaehle&Friend 2010 Supplementary */
   f_NCplant = min(max(((NCplant-pft->par->ncleaf.high)/(pft->par->ncleaf.low-pft->par->ncleaf.high)),0),1); /*Eq.10, Zaehle&Friend 2010 Supplementary*/

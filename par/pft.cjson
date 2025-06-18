@@ -41,7 +41,7 @@
 #define FN_TURNOVER 0.2      /* fraction of N not recovered before turnover */
 #define FN_TURNOVER_EV_BR 0.6   /* fraction of N not recovered before turnover */
 #define FN_TURNOVER_EV 0.7   /* fraction of N not recovered before turnover */
-#define FN_TURNOVER_GR 0.7   /* fraction of N not recovered before turnover */
+#define FN_TURNOVER_GR 0.3   /* fraction of N not recovered before turnover */
 #define ALPHAA 0.5            /* alphaa for simulations with nitrogen limitation */
 #define RATIO_SAPW 13.5 /* relative C:N ratio of sapwood */
 #define CN_BL_EG_MX 46.2
@@ -1353,7 +1353,7 @@
       "lmro_ratio" : 0.6,     /* lmro_ratio 18*/
       "lmro_offset" : 0.5,     /* lmro_ratio 18*/
       "ramp" : 100.0,          /* ramp 19*/
-      "lai_sapl" : 0.002,     /* lai_sapl 21*/
+      "lai_sapl" : 0.003,     /* lai_sapl 21*/
       "gdd5min" : 0.01,       /* gdd5min 30*/
       "twmax" : 1000.0,        /* twmax 31*/
       "twmax_daily" : 1000.0,  /* twmax_daily 31*/

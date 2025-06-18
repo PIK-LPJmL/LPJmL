@@ -50,6 +50,7 @@
 #define WTABTHRES 3000
 #define Q10 1.8
 #define timesteps 30
+#define LINEAR_DECAY
 
 //#define CALC_EFF_CARBON
 
@@ -307,7 +308,7 @@ Stocks littersom(Stand *stand,                      /**< [inout] pointer to stan
         //epsilon_O2=getepsilon_O2(V,soil_moist[l],soil->wsat[l]);
 
         /*methanotrophy */
-        if((V>0.2) && soil->wtable>=layerbound[l] && soil->freeze_depth[l]<soildepth[l])
+        if((V>0.25) && soil->wtable>=layerbound[l] && soil->freeze_depth[l]<soildepth[l])
         {
           //oxidation=(Vmax_CH4*1e-3*24/timesteps*WCH4*soil->CH4[l]/soildepth[l]/soil->wsat[l]*1000)/(km_CH4*1e-3*WCH4+soil->CH4[l]/soildepth[l]/soil->wsat[l]*1000)*gtemp_soil[l]*soildepth[l]*soil->wsat[l]/1000;   // gCH4/m3/h*24 = gCH4/m3/d ->gCH4/layer/m2
           if (soil->temp[l]>40)

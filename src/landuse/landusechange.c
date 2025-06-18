@@ -127,13 +127,11 @@ void deforest(Cell *cell,          /**< pointer to cell */
         stand->frac-=difffrac;
         difffrac=0;
       }
-      if(!timberharvest)
+      if(!timberharvest)    // TODO do not understand this enquiry
       {
         /* stand was already tilled, so put FALSE to tillage argument */
         if(setaside(cell,getstand(cell->standlist,pos),FALSE,intercrop,npft,ncft,irrig,iswetland,year,config))
           delstand(cell->standlist,pos);
-        check_stand_fracs(cell,cell->lakefrac+cell->ml.reservoirfrac,ncft);
-
       }
     }
     if(iswetland)
@@ -143,7 +141,7 @@ void deforest(Cell *cell,          /**< pointer to cell */
   {
     difffrac_old=difffrac;
     if(iswetland)
-      s=findlandusetype(cell->standlist,NATURAL); //now we search if natural is available
+      s=findlandusetype(cell->standlist,NATURAL); //now we search if natural is available when not enough wetland for SETASIDE_WETLAND is available
     else
       s=findlandusetype(cell->standlist,WETLAND);
     if(s!=NOT_FOUND){
@@ -164,7 +162,7 @@ void deforest(Cell *cell,          /**< pointer to cell */
         cutstand->frac=stand->frac;
         delstand(cell->standlist,s);
         if(iswetland)
-          pos=findlandusetype(cell->standlist,NATURAL);  // NEEDS TO BE THAT WAY FIRST WE LOOK FOR WETLAND IF WETLAND AND SECOND FOR NATURAL HERE
+          pos=findlandusetype(cell->standlist,NATURAL);  // NEEDS TO BE THAT WAY FIRST WE LOOK ISWETLAND AND SECOND FOR NATURAL HERE
         else
           pos=findlandusetype(cell->standlist,WETLAND);
       }
@@ -179,13 +177,18 @@ void deforest(Cell *cell,          /**< pointer to cell */
           delstand(cell->standlist,pos);
       }
     }
-    if(iswetland)
+    if(!iswetland)          // THIS happens when not enough natural land is available for deforest and the second loop deforest onwetland as well
       difffrac_wetland=difffrac_old-difffrac;
   }
-  check_stand_fracs(cell,cell->lakefrac+cell->ml.reservoirfrac,ncft);
-  cell->hydrotopes.wetland_area-=difffrac_wetland;
-  cell->hydrotopes.wetland_area_runmean-=difffrac_wetland;
+  s=findlandusetype(cell->standlist,WETLAND);
+  if(s!=NOT_FOUND)
+  {
+    stand=getstand(cell->standlist,s);
+    difffrac_wetland=stand->frac-difffrac_wetland;
+    cell->hydrotopes.wetland_area_runmean= runmean_add(cell->hydrotopes.wetland_area_runmean, difffrac_wetland, (float)HYD_AV_TIME);
+    cell->hydrotopes.wetland_area=cell->hydrotopes.wetland_area_runmean;
 
+  }
   if(s==NOT_FOUND && difffrac>0.01)
   {
 #ifdef DEBUG3
@@ -214,7 +217,10 @@ void deforest(Cell *cell,          /**< pointer to cell */
       }
     }
 #endif
-   fprintf(stderr,"WARNING041: No natural stand or wetland for deforest in (%s), difffrac= %g iswetland: %d  \n",sprintcoord(line,&cell->coord),difffrac, iswetland);
+   fprintf(stderr,"WARNING041: No natural stand or wetland for deforest in (%s), difffrac= %g iswetland: %d  lakefrac: %g reservoirfrac: %g \n",sprintcoord(line,&cell->coord),difffrac, iswetland,cell->lakefrac,cell->ml.reservoirfrac);
+//   foreachstand(stand,s,cell->standlist)
+//     fprintf(stderr,"frac[%s]= %g standNR: %d iswetland: %d\n",stand->type->name,stand->frac,s,stand->soil.iswetland);
+
 #ifdef DEBUG3
     for(j=0;j<ncft;j++)
       fprintf(stderr,"landfrac_rainfed: %g landfrac_irr: %g\n", cell->ml.landfrac[0].crop[j],cell->ml.landfrac[1].crop[j]);
@@ -615,8 +621,8 @@ static void landexpansion(Cell *cell,            /* cell pointer */
               cutpfts(mixstand,config);
               difffrac-=-mixstand->frac;
               difffrac2=-mixstand->frac;
-              cell->hydrotopes.wetland_area-=mixstand->frac;
-              cell->hydrotopes.wetland_area_runmean-=mixstand->frac;
+              cell->hydrotopes.wetland_area_runmean=runmean_add(cell->hydrotopes.wetland_area_runmean, cell->hydrotopes.wetland_area_runmean-mixstand->frac, (float)HYD_AV_TIME);
+              cell->hydrotopes.wetland_area=cell->hydrotopes.wetland_area_runmean;
             }
             else
             {
@@ -624,8 +630,8 @@ static void landexpansion(Cell *cell,            /* cell pointer */
               mixstand2->type=&kill_stand;
               mixstand2->soil.iswetland=FALSE;
               cutpfts(mixstand2,config);
-              cell->hydrotopes.wetland_area-=mixstand2->frac;
-              cell->hydrotopes.wetland_area_runmean-=mixstand2->frac;
+              cell->hydrotopes.wetland_area_runmean=runmean_add(cell->hydrotopes.wetland_area_runmean, cell->hydrotopes.wetland_area_runmean-mixstand2->frac, (float)HYD_AV_TIME);
+              cell->hydrotopes.wetland_area=cell->hydrotopes.wetland_area_runmean;
             }
             pos=s;
           }
@@ -643,8 +649,8 @@ static void landexpansion(Cell *cell,            /* cell pointer */
             mixstand->soil.iswetland=FALSE;
             delstand(cell->standlist,s);
             frac_change+=-(mixstand->frac-old_mixfrac);
-            cell->hydrotopes.wetland_area-=(mixstand->frac-old_mixfrac);
-            cell->hydrotopes.wetland_area_runmean-=(mixstand->frac-old_mixfrac);
+            cell->hydrotopes.wetland_area_runmean=runmean_add(cell->hydrotopes.wetland_area_runmean, cell->hydrotopes.wetland_area_runmean-(mixstand->frac-old_mixfrac), (float)HYD_AV_TIME);
+            cell->hydrotopes.wetland_area=cell->hydrotopes.wetland_area_runmean;
           }
         }
         else
@@ -660,8 +666,8 @@ static void landexpansion(Cell *cell,            /* cell pointer */
               mixstand->frac=-difffrac;
               reclaim_land(wetstand,mixstand,cell,config->luc_timber,npft+ncft,config);
               wetstand->frac+=difffrac;
-              cell->hydrotopes.wetland_area-=-difffrac;
-              cell->hydrotopes.wetland_area_runmean-=-difffrac;
+              cell->hydrotopes.wetland_area_runmean=runmean_add(cell->hydrotopes.wetland_area_runmean, cell->hydrotopes.wetland_area_runmean+difffrac, (float)HYD_AV_TIME);
+              cell->hydrotopes.wetland_area=cell->hydrotopes.wetland_area_runmean;
               difffrac2+=difffrac;
               difffrac=0;
             }
@@ -686,8 +692,8 @@ static void landexpansion(Cell *cell,            /* cell pointer */
             wetstand->frac=old_mixfrac+difffrac;
             mixstand->frac-=difffrac;
             mixstand->soil.iswetland=FALSE;
-            cell->hydrotopes.wetland_area-=-difffrac;
-            cell->hydrotopes.wetland_area_runmean-=-difffrac;
+            cell->hydrotopes.wetland_area_runmean=runmean_add(cell->hydrotopes.wetland_area_runmean, cell->hydrotopes.wetland_area_runmean+difffrac, (float)HYD_AV_TIME);
+            cell->hydrotopes.wetland_area=cell->hydrotopes.wetland_area_runmean;
             difffrac2+=difffrac;
             difffrac=0;
          }
