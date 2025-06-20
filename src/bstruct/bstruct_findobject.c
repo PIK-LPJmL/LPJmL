@@ -62,7 +62,7 @@ Bool bstruct_findobject(Bstruct bstr,        /**< pointer to restart file */
                        )                     /** \return TRUE if name was not found */
 {
   /* Function finds object with specified name in struct */
-  Id  *id,id2;
+  Id *id,id2;
   Hashitem *item,key;
   Var *var;
   long long filepos;
@@ -225,6 +225,16 @@ Bool bstruct_findobject(Bstruct bstr,        /**< pointer to restart file */
           {
             fprintf(stderr,"ERROR508: Unexpected end of file reading token at searching for name '%s' of %s.\n",
                     name,bstruct_typenames[token_expected]);
+            bstruct_printnamestack(bstr);
+          }
+          return TRUE;
+        }
+        if(isinvalidtoken(*token))
+        {
+          if(bstr->isout)
+          {
+            fprintf(stderr,"ERROR502: Invalid token %d read at searching for name '%s' of %s.\n",
+                    *token,name,bstruct_typenames[token_expected]);
             bstruct_printnamestack(bstr);
           }
           return TRUE;

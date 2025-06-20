@@ -43,7 +43,8 @@ void test_writename(void)
     rc=bstruct_writeint(bstr,s,i);
     TEST_ASSERT_EQUAL_INT(FALSE,rc);
   }
-  bstruct_finish(bstr);
+  rc=bstruct_finish(bstr);
+  TEST_ASSERT_EQUAL_INT(FALSE,rc);
   bstr=bstruct_open("test.lpj",TRUE);
   TEST_ASSERT_NOT_NULL(bstr);
   for(i=0;i<=N;i++)

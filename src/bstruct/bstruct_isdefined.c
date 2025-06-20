@@ -29,6 +29,13 @@ Bool bstruct_isdefined(Bstruct bstr,   /**< pointer to restart file */
   /* read token */
   if(fread(&token,1,1,bstr->file)!=1)
     return FALSE;
+  if(isinvalidtoken(token))
+  {
+    if(bstr->isout)
+      fprintf(stderr,"ERROR502: Invalid token %d checking for object '%s'.\n",
+              token,getname(key));
+    return FALSE;
+  }
   isout=bstr->isout;
   /* temporarily switch off error messages */
   bstr->isout=FALSE;
