@@ -23,10 +23,10 @@ Bool bstruct_writedouble(Bstruct bstr,     /**< pointer to restart file */
 {
   Bool rc=FALSE;
   Byte token;
-  token=(value==0) ? BSTRUCT_FZERO : BSTRUCT_DOUBLE;  // only non-zero values are written to reduce file size
+  token=(fpclassify(value)==FP_ZERO) ? BSTRUCT_FZERO : BSTRUCT_DOUBLE; // only non-zero values are written to reduce file size
   if(bstruct_writename(bstr,token,name))
     return TRUE;
-  if(value!=0.0)
+  if(token!=BSTRUCT_FZERO)
     rc=fwrite(&value,sizeof(value),1,bstr->file)!=1;
   return rc;
 } /* of 'bstruct_writedouble' */

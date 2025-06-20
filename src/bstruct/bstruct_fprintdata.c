@@ -50,13 +50,13 @@ void bstruct_fprintdata(FILE *file,              /* pointer to text file */
     case BSTRUCT_FLOAT:
       snprintf(line,STRING_LEN,"%g",data->data.f);
       fputs(line,file);
-      if(strchr(line,'.')==NULL && strchr(line,'e')==NULL)
+      if(strchr(line,'.')==NULL && strchr(line,'e')==NULL && strstr("nan",line) && strstr("inf",line))
         fputs(".0",file);
       break;
     case BSTRUCT_DOUBLE:
       snprintf(line,STRING_LEN,"%.16g",data->data.d);
       fputs(line,file);
-      if(strchr(line,'.')==NULL && strchr(line,'e')==NULL)
+      if(strchr(line,'.')==NULL && strchr(line,'e')==NULL && strstr("nan",line) && strstr("inf",line))
         fputs(".0",file);
       break;
     case BSTRUCT_STRING: case BSTRUCT_STRING1:

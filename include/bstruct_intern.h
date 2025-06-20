@@ -18,6 +18,7 @@
 #include <stdio.h>
 #include <errno.h>
 #include <string.h>
+#include <math.h>
 #include <limits.h>
 #ifndef _WIN32
 #include <unistd.h>
