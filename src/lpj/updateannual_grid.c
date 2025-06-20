@@ -17,6 +17,11 @@
 
 #include "lpj.h"
 
+#define isequilyear(year,config) \
+   ((year-(config->firstyear-config->nspinup+param.veg_equil_year-param.equisoil_years))%param.equisoil_interval==0 && \
+   (year-(config->firstyear-config->nspinup+param.veg_equil_year-param.equisoil_years))/param.equisoil_interval>=0 &&  \
+   (year-(config->firstyear-config->nspinup+param.veg_equil_year-param.equisoil_years))/param.equisoil_interval<param.nequilsoil)
+
 void updateannual_grid(Outputfile *output,  /**< Output file data */
                        Cell grid[],         /**< cell array */
                        Landcover landcover, /**< pointer to landcover data */
@@ -53,17 +58,13 @@ void updateannual_grid(Outputfile *output,  /**< Output file data */
 #endif
       if(config->equilsoil)
       {
-        if((year-(config->firstyear-config->nspinup+param.veg_equil_year-param.equisoil_years))%param.equisoil_interval==0 &&
-           (year-(config->firstyear-config->nspinup+param.veg_equil_year-param.equisoil_years))/param.equisoil_interval>=0 && 
-           (year-(config->firstyear-config->nspinup+param.veg_equil_year-param.equisoil_years))/param.equisoil_interval<param.nequilsoil)
+        if(isequilyear(year,config))
           equilveg(grid+cell,npft+ncft);
 
         if(year==(config->firstyear-config->nspinup+param.veg_equil_year))
           equilsom(grid+cell,npft+ncft,config->pftpar,TRUE);
 
-        if((year-(config->firstyear-config->nspinup+param.veg_equil_year))%param.equisoil_interval==0 &&
-           (year-(config->firstyear-config->nspinup+param.veg_equil_year))/param.equisoil_interval>0 && 
-           (year-(config->firstyear-config->nspinup+param.veg_equil_year))/param.equisoil_interval<param.nequilsoil)
+        if(isequilyear(year,config))
           equilsom(grid+cell,npft+ncft,config->pftpar,FALSE);
 
         if(param.equisoil_fadeout>0)
