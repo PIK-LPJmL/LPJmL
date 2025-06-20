@@ -226,7 +226,7 @@ void update_daily(Cell *cell,            /**< pointer to cell */
 
       /* update soil and litter properties to account for all changes from littersom */
       if(config->soilpar_option==NO_FIXED_SOILPAR || (config->soilpar_option==FIXED_SOILPAR && year<config->soilpar_fixyear))
-      pedotransfer(stand,NULL,NULL,stand->frac);
+        pedotransfer(stand,NULL,NULL,stand->frac);
       updatelitterproperties(stand,stand->frac);
 
       /*monthly rh for agricutural stands*/
@@ -246,7 +246,7 @@ void update_daily(Cell *cell,            /**< pointer to cell */
       {
         cell->rh_nat += hetres.carbon*stand->frac;
       } /* if NATURAL */
-      if (stand->type->landusetype == WOODPLANTATION)
+      else if (stand->type->landusetype == WOODPLANTATION)
       {
         cell->rh_wp += hetres.carbon*stand->frac;
       } /* if woodplantation */
