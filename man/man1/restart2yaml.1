@@ -3,13 +3,16 @@
 restart2yaml \- Convert LPJmL restart file into YAML/JSON.
 .SH SYNOPSIS
 .B restart2yaml
-[\-name key] [\-first] [\-json] [\-noindent] [\-invalid2null] [\-t] \fIrestartfile\fP [start [end]]
+[\-h] [\-name key] [\-first] [\-json] [\-noindent] [\-invalid2null] [\-d n] [\-t] \fIrestartfile\fP [start [end]]
 
 .B restart2json
 [\-name key] [\-first] [\-noindent] [\-invalid2null] [\-t] \fIrestartfile\fP [start [end]]
 .SH DESCRIPTION
 Program prints contents of restart file of a LPJmL model run in YAML/JSON format. \fBrestart2json\fP is an alias for \fBrestart2yaml\fP -json.
 .SH OPTIONS
+.TP
+\-h,\--help
+Print a short help text.
 .TP
 \-name key
 Print only variables/array/structures with name key.
@@ -18,13 +21,16 @@ Print only variables/array/structures with name key.
 Stop at first occurrence of key specified by the \-name option.
 .TP
 \-json
-Ouput format is set to JSON, default ist YAML.
+Output format is set to JSON, default ist YAML.
 .TP
 \-noindent
 Disable indentations in JSON files to save storage space, default is 2 spaces per level.
 .TP
 \-invalid2null
 Set all not a number (NaN) and infinite values to null. This is in particular useful for JSON output format, because these value are not defined in the standard.
+.TP
+\-d n
+Set the number of decimal places for float/double values, default is 16.
 .TP
 \-t
 Print only table of defined object names.

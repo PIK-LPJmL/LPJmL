@@ -82,7 +82,7 @@ extern Bool bstruct_writebeginindexarray(Bstruct,const char *,long long *,int);
 extern Bool bstruct_writebeginstruct(Bstruct,const char *);
 extern Bool bstruct_writeendstruct(Bstruct);
 extern Bool bstruct_writeendarray(Bstruct);
-extern void bstruct_fprintdata(FILE *,const Bstruct_data *);
+extern void bstruct_fprintdata(FILE *,const Bstruct_data *,int);
 extern Bool bstruct_readdata(Bstruct,Bstruct_data *);
 extern void bstruct_freedata(Bstruct_data *);
 extern Bool bstruct_readbeginarray(Bstruct,const char *,int *);
@@ -116,7 +116,7 @@ extern void bstruct_printnoread(Bstruct,Bool);
 
 /* Definition of macros */
 
-#define bstruct_printdata(data) bstruct_fprintdata(stdout,data)
+#define bstruct_printdata(data,decimals) bstruct_fprintdata(stdout,data,decimals)
 #define bstruct_printnametable(name,bstr,isjson) bstruct_fprintnametable(stdout,name,bstr,isjson)
 #define bstruct_create(filename) bstruct_wopen(filename,FALSE,TRUE)
 #define bstruct_append(filename,isout) bstruct_wopen(filename,TRUE,isout)

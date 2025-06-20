@@ -25,7 +25,9 @@
 #include "hash.h"
 #include "bstruct.h"
 
-#define USAGE "Usage: %s [-name key] [-first] [-json] [-noindent] [-invalid2null] [-t] restartfile [first [last]]\n"
+#define USAGE "Usage: %s [-h] [-name key] [-first] [-json] [-noindent] [-invalid2null] [-d n]\n"\
+              "       [-t] restartfile [first [last]]\n"
+#define ERR_USAGE USAGE "\nTry \"%s --help\" for more information.\n"
 #define getname(name) (name==NULL) ? "unnamed" : name
 
 static void printname(const char *name)
@@ -39,25 +41,72 @@ int main(int argc,char **argv)
 {
   Bstruct file;
   Bstruct_data data;
+  const char *progname;
   char *endptr;
   char *key=NULL;
   int level,iarg,keylevel;
   Bool notend,isarray=FALSE,iskey=TRUE,stop=FALSE,setnull=FALSE;
-  int firstcell,lastcell,last,cell;
+  int firstcell,lastcell,last,cell,decimals=16,rc;
   Bool first=FALSE,islastcell=FALSE,isjson=FALSE,indent=TRUE,istable=FALSE;
+  progname=strippath(argv[0]);
   for(iarg=1;iarg<argc;iarg++)
     if(argv[iarg][0]=='-')
     {
-      if(!strcmp(argv[iarg],"-name"))
+      if(!strcmp(argv[iarg],"-h") || !strcmp(argv[iarg],"--help"))
+      {   
+        fputs("     ",stdout);
+        rc=printf("%s (" __DATE__ ") Help",
+                  progname);
+        fputs("\n     ",stdout);
+        repeatch('=',rc);
+        printf("\n\nConvert restart file into YAML/JSON file for LPJmL %s\n\n",getversion());
+        printf(USAGE,progname);
+        printf("\nArguments:\n"
+               "-h,--help     print this help text\n"
+               "-name         key print only variables/array/structures with name key\n"
+               "-first        stop at first occurrence of key specified by the -name option\n"
+               "-json         output format is set to JSON, default ist YAML\n"
+               "-noindent     disable indentations in JSON files, default is 2 spaces per level\n"
+               "-invalid2null set all NaN and infinite values to null\n"
+               "-d n          set the number of decimal places for float/double values, default is 16\n"
+               "-t            print only table of defined object names\n"
+               "restartfile   name of restart file\n"
+               "start         index of first grid cell to be printed\n"
+               "end           index of last grid cell to be printed\n\n"
+               "(C) Potsdam Institute for Climate Impact Research (PIK), see COPYRIGHT file\n");
+        return EXIT_SUCCESS;
+      }   
+      else if(!strcmp(argv[iarg],"-name"))
       {
         if(argc==iarg+1)
         {
           fprintf(stderr,"Missing argument after option '-name'.\n"
-                 USAGE,argv[0]);
+                  ERR_USAGE,progname,progname);
           return EXIT_FAILURE;
         }
         key=argv[++iarg];
         iskey=FALSE;
+      }
+      else if(!strcmp(argv[iarg],"-d"))
+      {
+        if(iarg==argc-1)
+        {
+          fprintf(stderr,"Missing argument after option '-d'.\n"
+                  ERR_USAGE,progname,progname);
+          return EXIT_FAILURE;
+        }
+        decimals=strtol(argv[++iarg],&endptr,10);
+        if(*endptr!='\0')
+        {
+          fprintf(stderr,"Invalid value '%s' for option '-d'.\n",
+                  argv[iarg]);
+          return EXIT_FAILURE;
+        }
+        if(decimals<1)
+        {
+          fprintf(stderr,"Number of decimals=%d must be greater than zero.\n",decimals);
+          return EXIT_FAILURE;
+        }
       }
       else if(!strcmp(argv[iarg],"-json"))
         isjson=TRUE;
@@ -72,7 +121,7 @@ int main(int argc,char **argv)
       else
       {
         fprintf(stderr,"Invalid option '%s'.\n"
-                USAGE,argv[iarg],argv[0]);
+                ERR_USAGE,argv[iarg],progname,progname);
         return EXIT_FAILURE;
       }
     }
@@ -81,7 +130,7 @@ int main(int argc,char **argv)
   if(argc<iarg+1)
   {
     fprintf(stderr,"Missing argument(s).\n"
-            USAGE,argv[0]);
+            ERR_USAGE,progname,progname);
     return EXIT_FAILURE;
   }
   file=bstruct_open(argv[iarg],TRUE);
@@ -310,7 +359,7 @@ int main(int argc,char **argv)
               data.token=BSTRUCT_NULL;
           }
         }
-        bstruct_printdata(&data);
+        bstruct_printdata(&data,decimals);
         if(!isjson)
           fputc('\n',stdout);
         if(key!=NULL && data.name!=NULL && !strcmp(data.name,key))
