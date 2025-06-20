@@ -59,7 +59,7 @@ extern Hash bstruct_gethash(Bstruct);
 extern void bstruct_freehash(Bstruct);
 extern Bool bstruct_isdefined(Bstruct,const char *);
 extern Bool bstruct_writearrayindex(Bstruct,long long,const long long vec[],int,int);
-extern void bstruct_finish(Bstruct);
+extern Bool bstruct_finish(Bstruct);
 extern void bstruct_sync(Bstruct);
 extern void bstruct_setout(Bstruct,Bool);
 extern Bool bstruct_writebool(Bstruct,const char *,Bool);

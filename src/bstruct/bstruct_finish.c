@@ -16,12 +16,14 @@
 
 #include "bstruct_intern.h"
 
-void bstruct_finish(Bstruct bstruct)
+Bool bstruct_finish(Bstruct bstruct /**< pointer to open restart file */
+                   )                /** \return TRUE on error */
 {
   long long filepos;
   int i,count;
   Hashitem *list;
   Var *var;
+  Bool rc=FALSE;
   Byte len,token;
   short *id;
   /* Function writes name table, closes restart file and frees memory */
@@ -39,7 +41,7 @@ void bstruct_finish(Bstruct bstruct)
       if(list==NULL)
       {
         printallocerr("list");
-        return;
+        return TRUE;
       }
       count=gethashcount(bstruct->hash);
       /* sort array by names. This is done to use binary search for
@@ -57,7 +59,12 @@ void bstruct_finish(Bstruct bstruct)
         fwrite(list[i].key,len,1,bstruct->file);
         /* write corresponding id */
         id=list[i].data;
-        fwrite(id,sizeof(short),1,bstruct->file);
+        if(fwrite(id,sizeof(short),1,bstruct->file)!=1)
+        {
+          fprintf(stderr,"ERROR259: Cannot write name table.\n");
+          rc=TRUE;
+          break;
+        }
 #ifdef DEBUG_BSTRUCT
         printf("%d: '%s'\n",*id,(char *)list[i].key);
 #endif
@@ -72,6 +79,7 @@ void bstruct_finish(Bstruct bstruct)
         fprintf(stderr,"ERROR523: %s not closed.\n",
                 bstruct->namestack[bstruct->level-1].type==BSTRUCT_BEGINSTRUCT ? "Struct" : "Array");
         bstruct_printnamestack(bstruct);
+        rc=TRUE;
       }
     }
     else if(bstruct->namestack[bstruct->level-1].varnames!=NULL)
@@ -99,5 +107,7 @@ void bstruct_finish(Bstruct bstruct)
     free(bstruct->names);
     free(bstruct->names2);
     free(bstruct);
+    return rc;
   }
+  return TRUE;
 } /* of 'bstruct_finish' */
